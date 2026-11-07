@@ -36,7 +36,9 @@
  *                                                 α (rad/s²), t (> 0) y θ (rad; o vueltas), calcula los otros dos, como las
  *                                                 ecuaciones del MRUV. Devuelve omega0, omega, alfa, alfaV (α en vueltas/s²),
  *                                                 t, theta, f0, f, rpm0, rpm y vueltas; con r, también at = α·r, ac0 = ω0²·r
- *                                                 y ac = ω²·r.
+ *                                                 y ac = ω²·r. Sus errores van en vueltas: el rectángulo f0·t o f·t, la
+ *                                                 pendiente |f − f0|/t, θ leído como vueltas y vueltasEje = |f0|, lo que
+ *                                                 se lee en el eje de la gráfica al empezar.
  *   encuentroPista({ L | r, v1, v2, sentido, separacion, n })  dos corredores en una pista cerrada de largo L (o 2πr):
  *   encuentroPista({ omega1, omega2, theta0, sentido, n })     A a v1 y B a v2 (rapideces ≥ 0), sentido 'mismo' o
  *                                                 'contrario'; B sale separacion metros adelante de A, medidos en el
@@ -233,7 +235,7 @@
       errores: {
         // Lo que se lee mal en la gráfica ω-t: el rectángulo, el eje o la pendiente en vez del área
         vueltasRectanguloInicial: f0 * T, vueltasRectanguloFinal: f * T,
-        vueltasEje: Math.max(Math.abs(f0), Math.abs(f)), vueltasPendiente: Math.abs(f - f0) / T,
+        vueltasEje: Math.abs(f0), vueltasPendiente: Math.abs(f - f0) / T,
         vueltasSinDosPi: TH } };
     if (o.r !== undefined) { const r = pos(o.r, 'radio'); Object.assign(res, { r, at: AL * r, ac0: W0 * W0 * r, ac: W * W * r }); }
     return res;

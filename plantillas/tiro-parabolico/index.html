@@ -398,7 +398,7 @@ function vistaTiro(L, c, P){
     }
     if (pa.marca !== undefined && pa.marca !== null && pa.marca <= P.Ymax + 1e-9){
       ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([4, 3]); linea(ctx, xw - 10, Y(pa.marca), xw + ancho + 4, Y(pa.marca)); ctx.restore();
-      rotulo(ctx, c, xw - 14, Y(pa.marca), `tu respuesta: ${N1(pa.marca)} m`, c.ink, 'right', 700, W);
+      rotulo(ctx, c, xw + ancho + 6, Y(pa.marca) - 12, `tú: ${N1(pa.marca)} m`, c.ink, 'left', 700, W);
     }
     if (pa.asa){ ctx.save(); ctx.beginPath(); ctx.arc(xw + ancho/2, Y(0), pa.sobre ? 11 : 9, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); ctx.restore(); }
   }
@@ -587,8 +587,11 @@ function vistaTransmision(L, c, P){
   const ver = P.ver || {};
   if (P.tipo === 'cadena'){
     const Dm = P.r1 + P.r2 + 0.1, k = Math.min((W - 80)/(P.r1 + Dm + P.r2), (H - 120)/(2*Math.max(P.r1, P.r2)));
-    const R1 = P.r1*k, R2 = P.r2*k, D = Dm*k, x1 = (W - (R1 + D + R2))/2 + R1, x2 = x1 + D, y = H/2 + 4;
-    // Recorrido de la cadena: tangentes exteriores y los arcos que abraza en cada rueda
+    // La bicicleta mira a la derecha: la catalina (1) adelante, a la derecha, y el piñón (2) atrás. Pedalear hacia adelante
+    // es girar en sentido horario; el tramo de arriba de la cadena avanza hacia la catalina.
+    const R1 = P.r1*k, R2 = P.r2*k, D = Dm*k, x2 = (W - (R1 + D + R2))/2 + R2, x1 = x2 + D, y = H/2 + 4;
+    // Recorrido de la cadena: tangentes exteriores y los arcos que abraza en cada rueda (calculado con la catalina en el
+    // origen y el piñón hacia +x, y reflejado en pantalla)
     const cosA = (R1 - R2)/D, al = Math.acos(clamp(cosA, -1, 1)), sA = Math.sin(al);
     const T1 = [R1*cosA, R1*sA], T2 = [D + R2*cosA, R2*sA], B2 = [D + R2*cosA, -R2*sA], B1 = [R1*cosA, -R1*sA];
     const seg = Math.hypot(T2[0] - T1[0], T2[1] - T1[1]), arc2 = R2*2*al, arc1 = R1*(2*Math.PI - 2*al), tot = 2*seg + arc1 + arc2;
@@ -597,7 +600,7 @@ function vistaTransmision(L, c, P){
       else if ((u -= seg) < arc2){ const a = al - u/R2; q = [D + R2*Math.cos(a), R2*Math.sin(a)]; }
       else if ((u -= arc2) < seg){ const f = u/seg; q = [B2[0] + (B1[0] - B2[0])*f, B2[1] + (B1[1] - B2[1])*f]; }
       else { u -= seg; const a = -al - u/R1; q = [R1*Math.cos(a), R1*Math.sin(a)]; }
-      return [x1 + q[0], y - q[1]]; };
+      return [x1 - q[0], y - q[1]]; };
     rueda(ctx, c, x1, y, R1, P.th1, { dientes: Math.round(P.r1*200) });
     rueda(ctx, c, x2, y, R2, P.th2, { dientes: Math.max(5, Math.round(P.r2*200)) });
     // Biela y pedal de la catalina
@@ -605,10 +608,11 @@ function vistaTransmision(L, c, P){
     linea(ctx, x1, y, bx, by); ctx.fillStyle = c.ink; ctx.fillRect(bx - 9, by - 3, 18, 6); ctx.restore();
     // Eslabones: rayitas que avanzan a la rapidez de la cadena
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.lineCap = 'round';
-    const paso = 11, off = ((P.avance || 0)*k) % paso;
+    const paso = 11, off = ((-(P.avance || 0)*k) % paso + paso) % paso;   // reflejado: avanza hacia u decreciente
     for (let u = off; u < tot + off - 1; u += paso){ const a = pt(u), b = pt(u + 6); linea(ctx, a[0], a[1], b[0], b[1]); }
     ctx.restore();
-    if (ver.w1) arcoGiro(ctx, c, x1, y, R1 + 16, c.w, true, P.txtW1, W, x1 - R1*0.55, y - R1 - 26);
+    // Arco de f₁ por el lado derecho de la catalina, lejos de la flecha v de arriba
+    if (ver.w1) arcoGiro(ctx, c, x1, y, R1 + 14, c.w, true, P.txtW1, W, x1 + R1*0.45, y + R1 + 36, -0.6);
     if (ver.w2) arcoGiro(ctx, c, x2, y, R2 + 14, c.w, true, P.txtW2, W, x2, y + R2 + 38, 0.5);
     if (ver.v){
       const kv = Math.min(W*0.12, 48)/Math.max(P.v1, 1e-9);
@@ -616,7 +620,7 @@ function vistaTransmision(L, c, P){
       vector(ctx, c, { x:x2, y:y - R2, dx:P.v1*kv, dy:0, col:c.v, txt:'v', al:'left' }, W, H);
       if (P.txtV) rotulo(ctx, c, W/2, H - 14, P.txtV, c.v, 'center', 800, W);
     }
-    rotulo(ctx, c, x1, y + R1 + 16, `catalina · ${fmt(P.r1*100, 0)} cm`, c.ink, 'center', 700, W);
+    rotulo(ctx, c, x1, y - R1 - 30, `catalina · ${fmt(P.r1*100, 0)} cm`, c.ink, 'center', 700, W);
     rotulo(ctx, c, x2, y - R2 - 30, `piñón · ${fmt(P.r2*100, 0)} cm`, c.ink, 'center', 700, W);
   } else {
     const cx = W/2, cy = H/2 + 10, k = (Math.min(W*0.9, H) / 2 - 30)/0.35, R1 = P.r1*k, R2 = P.r2*k;
@@ -637,7 +641,7 @@ function vistaTransmision(L, c, P){
 }
 
 /* ---------- Frena la rueda: rueda que gira y gráfica ω-t con el área barrida ----------
-   P = { f0, tp, t, seguir, ver:{ area, cursor, flechas, rect } }   ω en vueltas por segundo; todo sale del motor */
+   P = { f0, tp, t, seguir, ver:{ area, cursor, flechas, rect } }   f en vueltas por segundo (ω = 2π·f); todo sale del motor */
 function vistaGiroW(L, c, P){
   const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
   const ver = P.ver || {}, r = 0.3, w0 = P.f0*M.TAU;
@@ -645,7 +649,10 @@ function vistaGiroW(L, c, P){
   const giro = M.mcuv({ r, omega0:w0, alfa:d.alfa, t:P.t || 0, frena:!P.seguir });
   const ancho = W >= 560;
   const tAx = Math.ceil(P.seguir ? P.tp*1.5 : P.tp + 1), fTop = Math.ceil(P.f0 + 0.5), fBot = P.seguir ? -Math.ceil(P.f0*(tAx/P.tp - 1) - 1e-9) : 0;
-  const gx0 = ancho ? W*0.4 : 46, gx1 = W - 16, gy0 = ancho ? 30 : Math.min(112, H*0.33), gy1 = H - (P.pie ? 46 : 32);
+  // El pie va en una línea si cabe; si no, en dos, cortado después de los dos puntos
+  ctx.font = `700 ${W < 480 ? 11 : 12}px ${c.font}`;
+  const pie = !P.pie ? [] : ctx.measureText(P.pie).width < W - 20 || P.pie.indexOf(': ') < 0 ? [P.pie] : [P.pie.slice(0, P.pie.indexOf(': ') + 1), P.pie.slice(P.pie.indexOf(': ') + 2)];
+  const gx0 = ancho ? W*0.4 : 46, gx1 = W - 16, gy0 = ancho ? 30 : Math.min(112, H*0.33), gy1 = H - 32 - 14*pie.length;
   const Xg = t => gx0 + t/tAx*(gx1 - gx0), Yg = f => gy0 + (fTop - f)/(fTop - fBot)*(gy1 - gy0);
   // Cuadrícula de 1 s por 1 vuelta/s
   ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
@@ -674,7 +681,7 @@ function vistaGiroW(L, c, P){
   for (let f = fBot; f <= fTop; f++) if (f) ctx.fillText(String(f).replace('-', '−'), Xg(0) - 5, Yg(f));
   ctx.restore();
   ctx.save(); ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
-  ctx.textBaseline = 'top'; ctx.fillText('t (s)', Xg(tAx), Yg(Math.min(0, fBot)) + 18); ctx.textBaseline = 'bottom'; ctx.textAlign = 'left'; ctx.fillText('ω (vueltas por segundo)', Xg(0) + 4, gy0 - 8); ctx.restore();
+  ctx.textBaseline = 'top'; ctx.fillText('t (s)', Xg(tAx), Yg(Math.min(0, fBot)) + 18); ctx.textBaseline = 'bottom'; ctx.textAlign = 'left'; ctx.fillText('f (vueltas por segundo)', Xg(0) + 4, gy0 - 8); ctx.restore();
   // La recta de ω
   ctx.save(); ctx.strokeStyle = c.w; ctx.lineWidth = 3; linea(ctx, Xg(0), Yg(P.f0), Xg(P.tp), Yg(0));
   if (P.seguir){ ctx.setLineDash([6, 5]); linea(ctx, Xg(P.tp), Yg(0), Xg(tAx), Yg(P.f0*(1 - tAx/P.tp))); }
@@ -682,7 +689,7 @@ function vistaGiroW(L, c, P){
   if (ver.cursor){
     const xt = Xg(Math.min(P.t, tAx));
     ctx.save(); ctx.strokeStyle = c.t; ctx.lineWidth = 2; linea(ctx, xt, Yg(fTop), xt, Yg(fBot)); ctx.restore();
-    rotulo(ctx, c, xt, Yg(fBot) - 10, `t = ${fmt(P.t, 1)} s`, c.t, 'center', 800, W);
+    rotulo(ctx, c, xt, Yg(fTop) + 10, `t = ${fmt(P.t, 1)} s`, c.t, 'center', 800, W);
   }
   // La rueda (arriba a la izquierda en pantalla grande; en la esquina libre del gráfico en el celular)
   const Rw = ancho ? Math.min(W*0.13, H*0.26) : Math.min(36, gy0*0.32), wx = ancho ? W*0.2 : W - 84, wy = ancho ? H*0.42 : gy0/2;
@@ -703,7 +710,7 @@ function vistaGiroW(L, c, P){
     rotulo(ctx, c, px + 10, py + aty, 'at', c.at, 'left', 800, W);
     if (lac > 12) rotulo(ctx, c, px + acx/2, py + 12, 'ac', c.a, 'center', 800, W);
   }
-  if (P.pie) rotulo(ctx, c, W/2, H - 10, P.pie, c.muted, 'center', 700, W);
+  pie.forEach((t, j) => rotulo(ctx, c, W/2, H - 10 - 16*(pie.length - 1 - j), t, c.muted, 'center', 700, W));
 }
 
 /* ---------- La pista: vista desde arriba, A y B corren; el arco grueso es la distancia que falta cerrar ----------
@@ -743,12 +750,12 @@ function vistaPista(L, c, P){
   rotulo(ctx, c, la[0], la[1], 'Ana', c.ink, 'center', 800, W); rotulo(ctx, c, lb[0], lb[1] + (lb[1] > cy ? 4 : -4), 'Beto', c.ink, 'center', 800, W);
   // Reloj
   ctx.save(); ctx.font = `800 ${c.chico ? 17 : 20}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.t;
-  ctx.fillText(`t = ${fmt(P.t || 0, 0)} s`, cx, cy - (ver.fin ? 12 : 0)); ctx.restore();
-  if (ver.fin && !e.nunca) rotulo(ctx, c, cx, cy + 14, `${mismo ? (P.v1 >= P.v2 ? '¡Ana alcanza a Beto!' : '¡Beto alcanza a Ana!') : '¡Se cruzan!'} · a ${N1(e.lugar)} m de la salida`, c.ink, 'center', 800, W);
+  ctx.fillText(`t = ${fmt(P.t || 0, 1)} s`, cx, cy - (ver.fin ? 12 : 0)); ctx.restore();
+  if (ver.fin && !e.nunca) rotulo(ctx, c, cx, cy + 30, `${mismo ? (P.v1 >= P.v2 ? '¡Ana alcanza a Beto!' : '¡Beto alcanza a Ana!') : '¡Se cruzan!'} · a ${N1(e.lugar)} m de la salida`, c.ink, 'center', 800, W);
 }
 
 const NOMBRES = { vx:'vx · velocidad horizontal (y su sombra)', vy:'vy · velocidad vertical (y su sombra)', v:'v · velocidad', a:'a · aceleración de la gravedad, g', t:'t · tiempo (líneas de igual instante)', w:'ω · velocidad angular' };
-const NOMBRES_RUEDAS = { v:'v · velocidad (del borde o de cada corredor)', a:'ac · aceleración centrípeta', at:'at · aceleración tangencial', w:'ω · velocidad angular', t:'t · tiempo' };
+const NOMBRES_RUEDAS = { v:'v · velocidad', a:'ac · aceleración centrípeta', at:'at · aceleración tangencial', w:'ω · velocidad angular (f = ω/2π, vueltas por segundo)', t:'t · tiempo' };
 function leyenda(el, claves, nombres){ const n = nombres || NOMBRES; el.innerHTML = (claves || []).map(k => `<span><i style="background:var(--c-${k})"></i>${n[k]}</span>`).join(''); }
 function animarValor(dur, paso, listo){
   if (RM){ paso(1); listo && listo(); return () => {}; }
@@ -1022,7 +1029,7 @@ function chipsPared(){
   const w = impacto();
   if (w.sinAvance) return '<div class="chips"><span class="chip">a 90° no avanza: no llega a la pared</span></div>';
   if (w.choca) return `<div class="chips"><span class="chip">golpea la pared a ${fmt(w.y, 1)} m</span><span class="chip">${FASES[w.fase]}</span><span class="chip">${V('v','v')} = ${fmt(w.v, 1)} m/s</span></div>`;
-  return `<div class="chips"><span class="chip">${w.motivo === 'cae-antes' ? `no llega: cae a ${fmt(w.alcance, 1)} m` : 'pasa por encima de la pared'}</span></div>`;
+  return `<div class="chips"><span class="chip">${w.motivo === 'cae-antes' ? (Math.abs(w.alcance - S.dPared) < 0.5 ? 'cae justo al pie de la pared' : `no llega: cae a ${fmt(w.alcance, 1)} m`) : 'pasa por encima de la pared'}</span></div>`;
 }
 // Asas del explorador: la boca del cañón (ángulo) y el pie de la pared (distancia). Celular.arrastre elige la más cercana.
 function asas(){
@@ -1208,7 +1215,7 @@ modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2',
   // El tiro vuela hasta E.T (o hasta el impacto) a 650 ms por segundo simulado.
   const volar = () => animar(dt => { E.t = Math.min(E.T, E.t + dt/0.65); return E.t < E.T; });
   const pared = () => M.impactoPared({ v0:50, angulo:37, d:E.d });
-  const golpe = () => M.impactoPared({ vx:15, y0:45, d:E.d, alto:60 });
+  const golpe = () => M.impactoPared({ vx:15, y0:50, d:E.d, alto:60 });
   return [
   { id:'mas-rapida', mid:'que-pasa-si-mas-rapida', corto:'Dos pelotas', ley:['t'], leyAntes:[], tipo:'tiro',
     q:`Desde lo alto de un acantilado de 80 m se lanzan dos pelotas en horizontal al mismo tiempo: una a 15 m/s y otra a 30 m/s. ¿Cuál llega primero al agua?`,
@@ -1230,7 +1237,7 @@ modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2',
     opts:[['a','Menos de 15 m: la velocidad horizontal se va gastando','P3-vx-se-gasta','documentado'],
           ['b','15 m: en horizontal nada la frena',null],
           ['c','Más de 15 m, porque cae cada vez más rápido','confunde-vx-con-vy','hipotesis'],
-          ['d','0 m: ya se le acabó el impulso y cae en picada','P3-cae-en-picada','documentado']],
+          ['d','0 m: ya se le acabó el impulso y cae en picada','P3-cae-en-picada','parcial']],
     ok:'b',
     antes:() => Object.assign(E, { cfg:{ tiros:[{ o:{ vx:15, y0:80 } }], xmin:-12, Xmax:70, Ymax:90, plataforma:true, ver:{ tray:'hasta', estrobo:1 } }, t:1, T:4 }),
     despues:() => { E.cfg.ver = { tray:'hasta', estrobo:1, sombras:true, vx:true, vy:true }; E.t = 0; volar(); },
@@ -1255,7 +1262,7 @@ modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2',
     alCambiar:() => {},
     exp:`<p>Al soltarlo, el paquete ya va a 50 m/s en horizontal, igual que la avioneta, y nada lo frena en horizontal. Por eso avanza a la par de la avioneta mientras cae: la línea a trazos que los une queda siempre vertical. Cae en 6 s (180 = 5t²), a 300 m de donde lo soltaron.</p>
       <p>Visto desde la avioneta, el paquete cae en línea recta, siempre debajo de ella. Visto desde el suelo, hace una parábola. Las dos descripciones son correctas. Lo que no pasa es lo de la opción A: caer recto sobre el punto del suelo donde lo soltaron. Con aire, el paquete sí se quedaría un poco atrás.</p>
-      ${fuente('Según Prescott y Mitchelmore (2005), en preguntas de este tipo (soltar algo desde un avión, una faja transportadora o alguien que camina) solo entre el 25 % y el 38 % acertó, según el caso, y entre el 30 % y el 53 % dijo que cae recto. Que se quede atrás es una idea vecina, sin cifra propia.')}`,
+      ${fuente('Según Prescott y Mitchelmore (2005), en preguntas de este tipo (soltar algo desde un avión, una faja transportadora o alguien que camina) solo entre el 25 % y el 38 % acertó, según el caso, y entre el 30 % y el 53 % dijo que cae recto. Que se quede atrás es parte de la misma idea (P4), sin cifra propia.')}`,
     desc: r => r ? 'El paquete cae siempre justo debajo de la avioneta y llega al suelo a los 6 segundos, a 300 metros.' : 'Una avioneta a 180 metros de altura, con el paquete a punto de soltarse.' },
   { id:'complementarios', mid:'que-pasa-si-complementarios', corto:'37° o 53°', ley:[], leyAntes:[], tipo:'tiro',
     q:`Dos proyectiles salen del suelo con la misma rapidez, 50 m/s: uno a 37° y otro a 53°. ¿Cuál llega más lejos?`,
@@ -1298,7 +1305,7 @@ modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2',
       const w = pared(), hit = w.choca && E.t >= w.t - 1e-9, resp = api2.pred('pared');
       const ver = Object.assign({}, E.cfg.ver, resp ? { mira:E.d } : {});
       vistaTiro(L, c, Object.assign({}, E.cfg, { ver, t:E.t, tFin: w.choca ? w.t : null,
-        pared:{ d:E.d, alto:Infinity, cota:true, asa:!!resp, sobre:E.sobre || E.agarrado, marca: resp && E.d === 160 ? E.marcaElegida : null, estrella: hit ? { x:E.d, y:w.y } : null } }));
+        pared:{ d:E.d, alto:Infinity, cota:true, asa:!!resp, sobre:E.sobre || E.agarrado, marca: resp && E.d === 160 && E.t >= E.T - 1e-9 ? E.marcaElegida : null, estrella: hit ? { x:E.d, y:w.y } : null } }));
     },
     arrastre:{
       cerca:(p, r) => { const m = marco(api2.L.W, api2.L.H, E.cfg); return Math.hypot(p.x - m.X(E.d) - 4, p.y - m.Y(0)) < r; },
@@ -1311,7 +1318,7 @@ modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2',
       const w = pared(); $('q-d-o').textContent = `${E.d} m`;
       $('chips2').innerHTML = w.choca
         ? `<span class="chip">llega a los ${fmt(w.t, 2)} s</span><span class="chip">sube ${fmt(w.sube, 1)} y cae ${fmt(w.cae, 1)}: ${fmt(w.y, 1)} m</span><span class="chip">${FASES[w.fase]}</span><span class="chip">${V('v','v')} = ${fmt(w.v, 1)} m/s</span>`
-        : `<span class="chip">no llega: cae a ${N1(w.alcance)} m, antes de la pared</span>`;
+        : `<span class="chip">${Math.abs(w.alcance - E.d) < 0.5 ? 'cae justo al pie de la pared' : `no llega: cae a ${N1(w.alcance)} m, antes de la pared`}</span>`;
     },
     alCambiar:() => { E.d = +$('q-d').value; const w = pared(); E.t = E.T = w.choca ? w.t : M.proyectil({ v0:50, angulo:37 }).tVuelo; },
     repetir:() => { const w = pared(); E.T = w.choca ? w.t : M.proyectil({ v0:50, angulo:37 }).tVuelo; E.t = 0; volar(); },
@@ -1320,11 +1327,11 @@ modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2',
       <p>La línea gris a trazos es hacia donde apunta el cañón: sin gravedad, llegaría a la pared a 120 m. La gravedad lo baja 5·t² metros: a los 4 s, 80 m. Lo más alto (45 m) lo pasó a los 120 m del cañón; en la pared ya va de bajada, con ${V('vy','vy')} = −10 m/s.</p>
       ${fuente('Las tres opciones incorrectas son hipótesis nuestras, sin estudio con porcentaje. La de la línea de mira se parece a una idea documentada: que un proyectil sigue recto un tramo antes de caer (McCloskey, 1983, según Prescott y Mitchelmore, 2005).')}`,
     desc: r => { if (!r) return 'Un cañón a 37 grados y una pared alta a 160 metros.'; const w = pared();
-      return w.choca ? `Con la pared a ${E.d} metros, el proyectil la golpea a los ${fmt(w.t, 1)} segundos, a ${fmt(w.y, 1)} metros de altura, ${FASES[w.fase]}.` : `Con la pared a ${E.d} metros, el proyectil cae antes de llegar.`; } },
+      return w.choca ? `Con la pared a ${E.d} metros, el proyectil la golpea a los ${fmt(w.t, 1)} segundos, a ${fmt(w.y, 1)} metros de altura, ${FASES[w.fase]}.` : Math.abs(w.alcance - E.d) < 0.5 ? `Con la pared a ${E.d} metros, el proyectil cae justo al pie de la pared.` : `Con la pared a ${E.d} metros, el proyectil cae antes de llegar.`; } },
   { id:'golpe', mid:'que-pasa-si-golpe', corto:'El golpe', ley:['vx','vy','v'], leyAntes:['vx'], tipo:'tiro',
-    q:`Desde una azotea de 45 m lanzas una pelota en horizontal a 15 m/s hacia la pared de otro edificio, que está a 30 m. Llega a la pared a los 2 s. ¿Con qué rapidez la golpea?`,
+    q:`Desde una azotea de 50 m lanzas una pelota en horizontal a 15 m/s hacia la pared de otro edificio, que está a 30 m. Llega a la pared a los 2 s. ¿Con qué rapidez la golpea?`,
     opts:[['a','15 m/s: en horizontal nada la frena, así que va igual de rápido','rapidez-constante','hipotesis'],
-          ['b','35 m/s: los 15 de la horizontal más los 20 que ganó al caer','VE-suma-modulos','parcial'],
+          ['b','35 m/s: los 15 de la horizontal más los 20 que ganó al caer','E8-suma-como-numeros','parcial'],
           ['c','25 m/s: los 15 y los 20 se combinan como los lados de una escuadra',null],
           ['d','20 m/s: al chocar solo cuenta lo que ganó al caer','pared-solo-vertical','hipotesis']],
     ok:'c',
@@ -1332,7 +1339,7 @@ modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2',
          a:'Elegiste la A. La parte horizontal sí se queda en 15 m/s, pero además ganó 20 m/s hacia abajo. La rapidez es la de las dos juntas. La correcta está marcada.',
          b:'Elegiste la B. 15 + 20 sería si las dos apuntaran hacia el mismo lado. Una va en horizontal y la otra en vertical, así que se suman como flechas: 25 m/s. La correcta está marcada.',
          d:'Elegiste la D. La parte horizontal no desaparece al chocar: la pelota sigue avanzando a 15 m/s cuando llega. La rapidez combina las dos: 25 m/s. La correcta está marcada.' },
-    antes:() => Object.assign(E, { d:30, t:0, T:0, cfg:{ tiros:[{ o:{ vx:15, y0:45 } }], xmin:-14, Xmax:60, Ymax:70, plataforma:true, altoTxt:true, ver:{ vx:true } } }),
+    antes:() => Object.assign(E, { d:30, t:0, T:0, cfg:{ tiros:[{ o:{ vx:15, y0:50 } }], xmin:-14, Xmax:60, Ymax:70, plataforma:true, altoTxt:true, ver:{ vx:true } } }),
     despues:() => { E.cfg.ver = { tray:'hasta', vx:true, vy:true, v:true, cortas:true }; const w = golpe(); E.T = w.choca ? w.t : w.tVuelo; E.t = 0; volar(); },
     dibujar:(L, c) => {
       const w = golpe(), hit = w.choca && E.t >= w.t - 1e-9;
@@ -1345,15 +1352,15 @@ modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2',
       const w = golpe(); $('q-dg-o').textContent = `${E.d} m`;
       $('chips2').innerHTML = w.choca
         ? `<span class="chip">en ${fmt(w.t, 2)} s cae ${fmt(w.cae, 1)} m: golpea a ${fmt(w.y, 1)} m</span><span class="chip">${V('v','v')} = √(${V('vx', fmt(w.vx, 0))}² + ${V('vy', fmt(Math.abs(w.vy), 1))}²) = ${fmt(w.v, 1)} m/s</span><span class="chip">${fmt(Math.abs(w.angulo), 0)}° bajo la horizontal</span>`
-        : `<span class="chip">llega justo al pie del edificio, a los ${fmt(w.tVuelo, 1)} s</span>`;
+        : `<span class="chip">${Math.abs(w.alcance - E.d) < 0.5 ? 'cae justo al pie del edificio' : `no llega: cae a ${N1(w.alcance)} m`}, a los ${fmt(w.tVuelo, 1)} s</span>`;
     },
     alCambiar:() => { E.d = +$('q-dg').value; const w = golpe(); E.t = E.T = w.choca ? w.t : w.tVuelo; },
     exp:`<div class="eqs"><div class="eq">${V('vy','vy')} = −10·${V('t','2')} = −20 m/s<span class="note">lo que ganó al caer</span></div>
       <div class="eq">${V('v','v')} = √(${V('vx','15')}² + ${V('vy','20')}²) = √625 = ${V('v','25 m/s')}<span class="note">las dos partes son perpendiculares</span></div></div>
-      <p>Las flechas ${V('vx','azul')} y ${V('vy','roja')} forman un ángulo recto, y la ${V('v','morada')} es la hipotenusa de ese triángulo: 15, 20 y 25, como el triángulo de 37° y 53°. Golpea a 25 m del suelo (cae 5·2² = 20 m), inclinada 53° bajo la horizontal.</p>
-      ${fuente('Sumar 15 + 20 como números tiene un pariente documentado: en una pregunta con dos cuerdas, cerca del 15 % de 132 alumnos trató las tensiones como números (Flores-García y otros, 2009). Las otras dos opciones son hipótesis nuestras.')}`,
-    desc: r => { if (!r) return 'Una azotea de 45 metros con una pelota en el borde, lista para lanzarse en horizontal a 15 metros por segundo hacia otro edificio a 30 metros.'; const w = golpe();
-      return w.choca ? `La pelota golpea el edificio de enfrente a ${fmt(w.y, 1)} metros de altura, a ${fmt(w.v, 1)} metros por segundo.` : 'La pelota llega justo al pie del edificio de enfrente.'; } },
+      <p>Las flechas ${V('vx','azul')} y ${V('vy','roja')} forman un ángulo recto, y la ${V('v','morada')} es la hipotenusa de ese triángulo: 15, 20 y 25, como el triángulo de 37° y 53°. Golpea a 30 m del suelo (cae 5·2² = 20 m), inclinada 53° bajo la horizontal.</p>
+      ${fuente('Sumar 15 + 20 tiene un pariente documentado: sumar fuerzas como números. En una pregunta con dos cuerdas de ángulos distintos, cerca del 15 % de 132 alumnos respondió que las dos tensiones eran iguales (Flores-García y otros, 2009). Las otras dos opciones son hipótesis nuestras.')}`,
+    desc: r => { if (!r) return 'Una azotea de 50 metros con una pelota en el borde, lista para lanzarse en horizontal a 15 metros por segundo hacia otro edificio a 30 metros.'; const w = golpe();
+      return w.choca ? `La pelota golpea el edificio de enfrente a ${fmt(w.y, 1)} metros de altura, a ${fmt(w.v, 1)} metros por segundo.` : 'La pelota cae al suelo antes de golpear el edificio de enfrente.'; } },
   ]; } });
 </script>
 <script>
@@ -1437,7 +1444,7 @@ modoExperimentos({ modo:'m3', cv:'cv3', exps:'exps3', ley:'ley3', k:'k3', t:'t3'
     dibujar:(L, c) => {
       const tr = cadena(), resp = api3.pred('cadena'), n = Math.min(3, Math.floor(E.t + 1e-9));
       vistaTransmision(L, c, { tipo:'cadena', r1:E.r1, r2:E.r2, th1:Math.PI/2 - tr.omega1*E.t, th2:Math.PI/2 - tr.omega2*E.t, avance:tr.v1*E.t, v1:tr.v1,
-        ver: resp ? { w1:true, w2:true, v:true } : { w1:true }, txtW1:'ω₁ = 1 vuelta/s', txtW2:`ω₂ = ${fmt(tr.f2, 2)} vueltas/s`,
+        ver: resp ? { w1:true, w2:true, v:true } : { w1:true }, txtW1:'f₁ = 1 vuelta/s', txtW2:`f₂ = ${fmt(tr.f2, 2)} vueltas/s`,
         txtV:`v = ${fmtPi(tr.v1)} ≈ ${fmt(tr.v1, 2)} m/s en los dos bordes`, contador: resp ? `catalina ${vueltas(n)} · piñón ${vueltas(n*tr.f2)}` : '' });
     },
     ctrl:() => `<div class="ctrls"><div class="slider"><label for="w-r1"><span>Radio de la catalina</span><output id="w-r1-o"></output></label><input id="w-r1" type="range" min="2" max="15" step="1" value="${Math.round(E.r1*100)}"></div>
@@ -1445,11 +1452,11 @@ modoExperimentos({ modo:'m3', cv:'cv3', exps:'exps3', ley:'ley3', k:'k3', t:'t3'
       <div class="chips" id="chips3"></div><p><button type="button" class="btn" id="repetir3">Otra vez</button></p>`,
     vivo:() => {
       const tr = cadena(); $('w-r1-o').textContent = `${fmt(E.r1*100, 0)} cm`; $('w-r2-o').textContent = `${fmt(E.r2*100, 0)} cm`;
-      $('chips3').innerHTML = `<span class="chip">${V('w','ω₂')} = ${V('w','ω₁')}·r₁/r₂ = 1·${fmt(E.r1*100, 0)}/${fmt(E.r2*100, 0)} = ${fmt(tr.f2, 2)} vueltas/s</span><span class="chip">misma ${V('v','v')} en los dos bordes: ${fmt(tr.v1, 2)} m/s</span>`;
+      $('chips3').innerHTML = `<span class="chip">${V('w','f₂')} = ${V('w','f₁')}·r₁/r₂ = 1·${fmt(E.r1*100, 0)}/${fmt(E.r2*100, 0)} = ${fmt(tr.f2, 2)} vueltas/s</span><span class="chip">misma ${V('v','v')} en los dos bordes: ${fmt(tr.v1, 2)} m/s</span>`;
     },
     alCambiar:() => { E.r1 = +$('w-r1').value/100; E.r2 = +$('w-r2').value/100; E.t = 3; },
     exp:`<div class="eqs"><div class="eq">${V('v','v')} = ${V('w','ω₁')}·r₁ = ${V('w','ω₂')}·r₂<span class="note">la cadena lleva la misma rapidez a los dos bordes</span></div>
-      <div class="eq">${V('w','ω₂')} = 1·${fr('12', '4')} = 3 vueltas/s</div></div>
+      <div class="eq">${V('w','f₂')} = ${V('w','f₁')}·${fr('r₁', 'r₂')} = 1·${fr('12', '4')} = 3 vueltas/s<span class="note">ω = 2π·f: en rad/s pasa igual</span></div></div>
       <p>Mira los eslabones: avanzan igual de rápido en las dos ruedas, y las flechas ${V('v','moradas')} de los bordes son iguales. El piñón tiene un contorno 3 veces más corto, así que con la misma cadena da 3 vueltas por cada vuelta de la catalina. Con cadena o faja, la rueda chica gira más rápido.</p>
       ${fuente('Las tres opciones incorrectas son hipótesis nuestras. No encontramos estudios con porcentaje sobre poleas, cadenas o engranajes. La de la A es la versión con cadena de un error que suponemos en los engranajes: tomar como directa una proporción inversa.')}`,
     desc: r => { if (!r) return 'Una catalina de 12 centímetros unida por una cadena a un piñón de 4 centímetros. La catalina da 1 vuelta por segundo; el dibujo está quieto.'; const tr = cadena();
@@ -1478,7 +1485,7 @@ modoExperimentos({ modo:'m3', cv:'cv3', exps:'exps3', ley:'ley3', k:'k3', t:'t3'
         pie: resp ? `gira en cámara lenta: de verdad da ${fmt(d.f2, 1)} vueltas por segundo` : 'piñón y rueda en el mismo eje · vista de lado' });
     },
     ctrl:() => `<div class="slider"><label for="w-re"><span>Radio de la rueda</span><output id="w-re-o"></output></label><input id="w-re" type="range" min="20" max="35" step="1" value="${Math.round(E.r2*100)}"></div>
-      <div class="chips" id="chips3"></div><p><button type="button" class="btn" id="w-cad">Cambiar a cadena</button></p>`,
+      <div class="chips" id="chips3"></div><p><button type="button" class="btn" id="w-cad">Ver la cadena (experimento 3)</button></p>`,
     enlazar:() => { $('w-cad').onclick = () => { api3.ir(2); $('t3').focus({ preventScroll:true }); }; },
     vivo:() => {
       const d = eje(E.r2); $('w-re-o').textContent = `${fmt(E.r2*100, 0)} cm`;
@@ -1492,24 +1499,24 @@ modoExperimentos({ modo:'m3', cv:'cv3', exps:'exps3', ley:'ley3', k:'k3', t:'t3'
     desc: r => { if (!r) return 'Un piñón de 4 centímetros y una rueda de 30 en el mismo eje. El borde del piñón va a 0,8 metros por segundo.'; const d = eje(E.r2);
       return `Piñón y rueda giran juntos a ${fmt(d.omega2, 0)} radianes por segundo; el borde de la rueda de ${fmt(E.r2*100, 0)} centímetros va a ${fmt(d.v2, 1)} metros por segundo.`; } },
   { id:'frena', mid:'ruedas-frena', corto:'Frena la rueda', ley:['w','t','at','a'], leyAntes:['w'], tipo:'frena',
-    q:`Una rueda de bicicleta gira a 2 vueltas por segundo. El ciclista frena y la rueda se detiene de manera pareja en 4 s. La gráfica muestra cómo baja su ω. ¿Cuántas vueltas da desde que empieza a frenar hasta detenerse?`,
+    q:`Una rueda de bicicleta gira a 2 vueltas por segundo. El ciclista frena y la rueda se detiene de manera pareja en 4 s. La gráfica muestra cómo baja su frecuencia f, en vueltas por segundo. ¿Cuántas vueltas da desde que empieza a frenar hasta detenerse?`,
     opts:[['a','8 vueltas: la altura de la recta al inicio por los 4 s','mcuv-sin-frenar','hipotesis'],
           ['b','4 vueltas: el área del triángulo bajo la recta',null],
           ['c','½ vuelta: la inclinación de la recta, 2 entre 4','G4-pendiente-en-vez-de-area','parcial'],
-          ['d','2 vueltas: lo que marca la recta al inicio','G4-lee-el-eje','parcial']],
+          ['d','2 vueltas: lo que se lee en el eje de f al empezar','G4-lee-el-eje','parcial']],
     ok:'b',
-    fb:{ b:'¡Bien! En cada momento la rueda da tantas vueltas por segundo como marca la recta. Al juntar los 4 s queda el área: un triángulo de 4 por 2, la mitad del rectángulo, 4 vueltas. Es lo mismo que ω media por tiempo: 1 vuelta/s durante 4 s.',
+    fb:{ b:'¡Bien! En cada momento la rueda da tantas vueltas por segundo como marca la recta. Al juntar los 4 s queda el área: un triángulo de 4 por 2, la mitad del rectángulo, 4 vueltas. Es lo mismo que la f media por el tiempo: 1 vuelta/s durante 4 s.',
          a:'Elegiste la A. 8 vueltas daría si no frenara: el rectángulo entero. Como va cada vez más lento, solo cuenta el triángulo bajo la recta, la mitad. La correcta está marcada.',
-         c:'Elegiste la C. La inclinación de la recta dice cuánto baja ω cada segundo: es α, −½ vuelta/s². Las vueltas que da son el área bajo la recta. La correcta está marcada.',
+         c:'Elegiste la C. La inclinación de la recta dice cuánto baja f cada segundo: −½ vuelta/s², que es α = −π rad/s². Las vueltas que da son el área bajo la recta. La correcta está marcada.',
          d:'Elegiste la D. 2 es lo rápido que giraba al empezar, no cuánto giró. Lo girado se acumula segundo a segundo: es el área. La correcta está marcada.' },
     antes:() => Object.assign(E, { f0:2, tp:4, t:0, seguir:false }),
     despues:() => { const fin = finFrena(); E.t = 0; animar(hasta('t', fin, Math.max(1, fin/5))); },
     dibujar:(L, c) => {
       const resp = api3.pred('frena');
       vistaGiroW(L, c, { f0:E.f0, tp:E.tp, t:E.t, seguir: !!resp && E.seguir, ver: resp ? { area:true, cursor:true, flechas:true, rect:E.t >= E.tp - 1e-9 } : {},
-        pie: resp ? 'flechas de aceleración sin escala: ac es mucho mayor que at' : '' });
+        pie: resp ? 'flechas sin escala: ac empieza mucho mayor que at y se hace cero al detenerse' : '' });
     },
-    ctrl:() => `<div class="ctrls"><div class="slider"><label for="w-f0"><span>${V('w','ω₀')} (vueltas por segundo)</span><output id="w-f0-o"></output></label><input id="w-f0" class="r-w" type="range" min="1" max="4" step="0.5" value="${E.f0}"></div>
+    ctrl:() => `<div class="ctrls"><div class="slider"><label for="w-f0"><span>${V('w','f₀')} (vueltas por segundo)</span><output id="w-f0-o"></output></label><input id="w-f0" class="r-w" type="range" min="1" max="4" step="0.5" value="${E.f0}"></div>
       <div class="slider"><label for="w-tp"><span>Tiempo de frenado</span><output id="w-tp-o"></output></label><input id="w-tp" class="r-t" type="range" min="2" max="8" step="1" value="${E.tp}"></div></div>
       <label class="check"><input type="checkbox" id="w-seg" ${E.seguir ? 'checked' : ''}> Seguir la fórmula después de detenerse</label>
       <div class="chips" id="chips3"></div><p><button type="button" class="btn" id="repetir3">Otra vez</button></p>`,
@@ -1517,7 +1524,7 @@ modoExperimentos({ modo:'m3', cv:'cv3', exps:'exps3', ley:'ley3', k:'k3', t:'t3'
       const d = frenado(), mitad = M.mcuv({ r:0.3, omega0:d.omega0, alfa:d.alfa, t:E.tp/2, frena:true });
       $('w-f0-o').textContent = `${fmt(E.f0, 1)} vueltas/s`; $('w-tp-o').textContent = `${E.tp} s`;
       let h = `<span class="chip">α = ${fmt(d.alfaV, 2)} vuelta/s² = ${fmtPi(d.alfa)} rad/s²</span><span class="chip">θ = ${fmt(d.vueltas, 1)} vueltas = ${fmtPi(d.theta)} rad</span>
-        <span class="chip">${V('at','at')} = α·r ≈ ${fmt(d.at, 2)} m/s²</span><span class="chip">${V('a','ac')} a los ${fmt(E.tp/2, 1)} s ≈ ${fmt(mitad.ac, 1)} m/s²</span><span class="chip">1 vuelta/s = 2π rad/s</span>`;
+        <span class="chip">${V('at','at')} = α·r ≈ ${fmt(d.at, 2)} m/s²</span><span class="chip">${V('a','ac')} a los ${fmt(E.tp/2, 1)} s ≈ ${fmt(mitad.ac, 1)} m/s²</span><span class="chip">${V('w','ω')} = 2π·${V('w','f')}: 1 vuelta/s = 2π rad/s</span>`;
       if (E.seguir){ const fin = finFrena(), libre = M.mcuv({ r:0.3, omega0:d.omega0, alfa:d.alfa, t:fin }), quieta = M.mcuv({ r:0.3, omega0:d.omega0, alfa:d.alfa, t:fin, frena:true });
         h += `<span class="chip">sin tope, a los ${fin} s la fórmula da ${fmt(libre.vueltas, 1)} vueltas en vez de ${fmt(quieta.vueltas, 1)}: «retrocede»</span>`; }
       $('chips3').innerHTML = h;
@@ -1525,10 +1532,10 @@ modoExperimentos({ modo:'m3', cv:'cv3', exps:'exps3', ley:'ley3', k:'k3', t:'t3'
     alCambiar:() => { E.f0 = +$('w-f0').value; E.tp = +$('w-tp').value; E.seguir = $('w-seg').checked; E.t = finFrena(); },
     exp:`<div class="eqs"><div class="eq">vueltas = área = ${fr('4·2', '2')} = 4 vueltas = 8π rad<span class="note">el triángulo bajo la recta</span></div>
       <div class="eq">α = ${fr('0 − 4π', '4')} = −π rad/s²<span class="note">la inclinación de la recta</span></div></div>
-      <p>El cursor ${V('t','naranja')} barre el tiempo y el área sombreada crece a la par del contador de vueltas: lo que gira es el área bajo la recta de ${V('w','ω')}. En el borde, ${V('at','at')} (ocre) frena la rueda y no cambia; ${V('a','ac')} (verde) se achica a medida que baja ω, porque ac = ω²·r. La resultante va a trazos.</p>
+      <p>El cursor ${V('t','naranja')} barre el tiempo y el área sombreada crece a la par del contador de vueltas: lo que gira es el área bajo la recta de ${V('w','f')}. En el borde, ${V('at','at')} frena la rueda y no cambia; ${V('a','ac')} se achica a medida que baja ${V('w','ω')}, porque ac = ω²·r. La resultante va a trazos.</p>
       <p>Marca «seguir la fórmula» para ver qué pasa si se usa θ = ω₀t + ½αt² después de los 4 s: daría que la rueda gira al revés y «desgira». Una rueda que frena se queda quieta.</p>
-      ${fuente('En un test con 524 escolares y universitarios, sacar el cambio de velocidad del área de una gráfica lo logró cerca de 1 de cada 4; calcular la pendiente o leer el eje en vez del área fue de los errores más comunes (Beichner, 1994). Aquí es la misma pregunta con una gráfica de giro. La opción del rectángulo es hipótesis nuestra.')}`,
-    desc: r => { if (!r) return 'Una rueda quieta y una gráfica de ω contra el tiempo: una recta que baja de 2 vueltas por segundo a cero en 4 segundos.'; const d = frenado();
+      ${fuente('En un test con 524 escolares y universitarios, sacar el cambio de velocidad del área de una gráfica a-t lo logró cerca de 1 de cada 4 (Beichner, 1994). En vez del área, hay quien calcula la pendiente o lee el eje vertical; esos errores están descritos, sin cifra propia. Aquí es la misma pregunta con una gráfica de giro. La opción del rectángulo es hipótesis nuestra.')}`,
+    desc: r => { if (!r) return 'Una rueda quieta y una gráfica de su frecuencia f contra el tiempo: una recta que baja de 2 vueltas por segundo a cero en 4 segundos.'; const d = frenado();
       return `La rueda baja de ${fmt(E.f0, 1)} vueltas por segundo a cero en ${E.tp} segundos y da ${fmt(d.vueltas, 1)} vueltas: el área bajo la recta.`; } },
   { id:'pista', mid:'ruedas-pista', corto:'La pista', ley:['v','t'], leyAntes:['v','t'], tipo:'pista',
     q:`En una pista circular de 400 m, Ana corre a 7 m/s y Beto a 3 m/s. Salen juntos del mismo punto y en el mismo sentido. ¿Cuánto tiempo pasa hasta que Ana vuelve a alcanzar a Beto?`,

@@ -1,6 +1,6 @@
 {
   "titulo": "Tiro parabólico y movimiento circular: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En el tiro parabólico, separa dos movimientos: en horizontal, velocidad constante (x = vx·t); en vertical, caída libre con 10 m/s² hacia abajo (vy = v₀y − 10t; y = y₀ + v₀y·t − 5t²), también en el punto más alto. El tiempo lo comparten. Descompón la velocidad inicial: vx = v₀·cos θ y v₀y = v₀·sen θ, con sen 37° = 3/5 y cos 37° = 4/5. En el movimiento circular uniforme, la rapidez es constante pero hay aceleración hacia el centro: ac = v²/r = ω²·r, con v = ω·r y ω = 2π/T. Toma g = 10 m/s² y no cuentes el aire. Con faja o cadena, los bordes van igual de rápido (misma v); en el mismo eje, giran juntos (misma ω). En una pista circular, el que alcanza cierra la distancia con v₁ − v₂; si van en sentidos contrarios, con v₁ + v₂. En el MCUV, lo que gira es el área bajo la gráfica ω-t.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En el tiro parabólico, separa dos movimientos: en horizontal, velocidad constante (x = vx·t); en vertical, caída libre con 10 m/s² hacia abajo (vy = v₀y − 10t; y = y₀ + v₀y·t − 5t²), también en el punto más alto. El tiempo lo comparten. Descompón la velocidad inicial: vx = v₀·cos θ y v₀y = v₀·sen θ, con sen 37° = 3/5 y cos 37° = 4/5. En el movimiento circular uniforme, la rapidez es constante pero hay aceleración hacia el centro: ac = v²/r = ω²·r, con v = ω·r y ω = 2π/T. Toma g = 10 m/s² y no cuentes el aire. Con faja o cadena, los bordes van igual de rápido (misma v); en el mismo eje, giran juntos (misma ω). En una pista circular, el que alcanza cierra la distancia con v₁ − v₂; si van en sentidos contrarios, con v₁ + v₂. En el MCUV, las vueltas son el área bajo la gráfica de la frecuencia f (vueltas por segundo) contra el tiempo; ω = 2π·f en rad/s.",
   "problemas": [
     {
       "id": "p1",
@@ -49,42 +49,43 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Desde la azotea de un edificio de 45 m, un niño lanza una pelota en horizontal a 15 m/s hacia la pared de otro edificio que está a 30 m. ¿Llega a la pared antes de tocar el suelo? ¿Cuánto tarda, a qué altura golpea la pared y con qué rapidez?",
-      "respuesta": "Sí: tardaría 3 s en llegar al suelo y llega a la pared a los 2 s. La golpea a 25 m de altura, a 25 m/s.",
+      "enunciado": "Desde la azotea de un edificio de 80 m, un niño lanza una pelota en horizontal a 40 m/s hacia la pared de otro edificio que está a 120 m. ¿Llega a la pared antes de tocar el suelo? ¿Cuánto tarda, a qué altura golpea la pared y con qué rapidez?",
+      "respuesta": "Sí: tardaría 4 s en llegar al suelo y llega a la pared a los 3 s. La golpea a 35 m de altura, a 50 m/s, inclinada 37° bajo la horizontal.",
       "pasos": [
-        "En horizontal va a 15 m/s constantes: llega a la pared en t = 30/15 = 2 s.",
-        "Al suelo tardaría 45 = 5t², t = 3 s. Como 2 s < 3 s, choca con la pared.",
-        "En 2 s cae 5·2² = 20 m: golpea a 45 − 20 = 25 m del suelo.",
-        "Velocidad al chocar: vx = 15 m/s; vy = −10·2 = −20 m/s. Rapidez √(15² + 20²) = 25 m/s, inclinada 53° hacia abajo. No es 15 + 20: las dos partes son perpendiculares."
+        "En horizontal va a 40 m/s constantes: llega a la pared en t = 120/40 = 3 s.",
+        "Al suelo tardaría 80 = 5t², t = 4 s. Como 3 s < 4 s, choca con la pared.",
+        "En 3 s cae 5·3² = 45 m: golpea a 80 − 45 = 35 m del suelo.",
+        "Velocidad al chocar: vx = 40 m/s; vy = −10·3 = −30 m/s. Rapidez √(40² + 30²) = 50 m/s, inclinada 37° hacia abajo. No es 40 + 30 = 70: las dos partes son perpendiculares."
       ],
       "verificar": [
         {
           "fn": "impactoPared",
           "args": [
             {
-              "vx": 15,
-              "y0": 45,
-              "d": 30
+              "vx": 40,
+              "y0": 80,
+              "d": 120
             }
           ],
           "espera": {
             "choca": true,
-            "t": 2,
-            "y": 25,
-            "vy": -20,
-            "v": 25
+            "t": 3,
+            "y": 35,
+            "vy": -30,
+            "v": 50,
+            "cae": 45
           }
         },
         {
           "fn": "proyectil",
           "args": [
             {
-              "vx": 15,
-              "y0": 45
+              "vx": 40,
+              "y0": 80
             }
           ],
           "espera": {
-            "tVuelo": 3
+            "tVuelo": 4
           }
         }
       ]
@@ -265,45 +266,45 @@
     {
       "id": "p8",
       "nivel": "intermedio",
-      "enunciado": "En una pista circular de 400 m, Ana corre a 7 m/s y Beto a 3 m/s. Salen juntos del mismo punto. a) Si corren en el mismo sentido, ¿cuándo alcanza Ana a Beto por primera vez y a qué distancia de la salida? b) Si corren en sentidos contrarios, ¿cada cuánto tiempo se cruzan?",
-      "respuesta": "a) A los 100 s, a 300 m de la salida (Ana corrió 700 m y Beto 300 m). b) Cada 40 s.",
+      "enunciado": "En una pista circular de 360 m, Ana corre a 7 m/s y Beto a 5 m/s. Salen juntos del mismo punto. a) Si corren en el mismo sentido, ¿cuándo alcanza Ana a Beto por primera vez y a qué distancia de la salida? b) Si corren en sentidos contrarios, ¿cada cuánto tiempo se cruzan?",
+      "respuesta": "a) A los 180 s, a 180 m de la salida (Ana corrió 1260 m y Beto 900 m). b) Cada 30 s.",
       "pasos": [
-        "Mismo sentido: cada segundo Ana le saca 7 − 3 = 4 m de ventaja.",
-        "Lo alcanza cuando le lleva una vuelta entera: 400/4 = 100 s. No cuenta el instante de la salida.",
-        "Ana corrió 7·100 = 700 m, que es una vuelta y 300 m; Beto, 300 m. Se juntan a 300 m de la salida.",
-        "Sentidos contrarios: juntos cierran 7 + 3 = 10 m por segundo; se cruzan cada 400/10 = 40 s. Restar en el alcance y sumar en el cruce, no al revés."
+        "Mismo sentido: cada segundo Ana le saca 7 − 5 = 2 m de ventaja.",
+        "Lo alcanza cuando le lleva una vuelta entera: 360/2 = 180 s. No cuenta el instante de la salida.",
+        "Ana corrió 7·180 = 1260 m, que son 3 vueltas y 180 m; Beto, 5·180 = 900 m, 2 vueltas y 180 m. Se juntan a 180 m de la salida.",
+        "Sentidos contrarios: juntos cierran 7 + 5 = 12 m por segundo; se cruzan cada 360/12 = 30 s. Restar en el alcance y sumar en el cruce, no al revés."
       ],
       "verificar": [
         {
           "fn": "encuentroPista",
           "args": [
             {
-              "L": 400,
+              "L": 360,
               "v1": 7,
-              "v2": 3,
+              "v2": 5,
               "sentido": "mismo"
             }
           ],
           "espera": {
-            "t": 100,
-            "lugar": 300,
-            "s1": 700,
-            "s2": 300
+            "t": 180,
+            "lugar": 180,
+            "s1": 1260,
+            "s2": 900
           }
         },
         {
           "fn": "encuentroPista",
           "args": [
             {
-              "L": 400,
+              "L": 360,
               "v1": 7,
-              "v2": 3,
+              "v2": 5,
               "sentido": "contrario"
             }
           ],
           "espera": {
-            "t": 40,
-            "periodo": 40
+            "t": 30,
+            "periodo": 30
           }
         }
       ]
@@ -343,48 +344,49 @@
     {
       "id": "p10",
       "nivel": "avanzado",
-      "enunciado": "La rueda de una bicicleta, de 30 cm de radio, gira a 2 vueltas por segundo. El ciclista frena y la rueda se detiene de manera uniforme en 4 s. ¿Cuántas vueltas da hasta detenerse? ¿Cuánto vale su aceleración angular? A los 2 s de empezar a frenar, ¿cuánto valen la aceleración tangencial y la centrípeta de un punto del borde? Usa π.",
-      "respuesta": "4 vueltas (8π rad); α = −π rad/s²; a los 2 s, at = −0,3π ≈ −0,94 m/s² y ac = 1,2π² ≈ 12 m/s².",
+      "enunciado": "La rueda de una bicicleta, de 40 cm de radio, gira con una frecuencia de 3 vueltas por segundo. El ciclista frena y la rueda se detiene de manera uniforme en 6 s. ¿Cuántas vueltas da hasta detenerse? ¿Cuánto vale su aceleración angular? A los 3 s de empezar a frenar, ¿cuánto valen la aceleración tangencial y la centrípeta de un punto del borde? Usa π.",
+      "respuesta": "9 vueltas (18π rad); α = −π rad/s²; a los 3 s, at = −0,4π ≈ −1,26 m/s² y ac = 3,6π² ≈ 35,5 m/s².",
       "pasos": [
-        "ω₀ = 2 vueltas/s = 4π rad/s; ω = 0 a los 4 s.",
-        "Vueltas: ω media por tiempo = (2 + 0)/2·4 = 4 vueltas = 8π rad. Es el área del triángulo bajo ω-t, no 2·4 = 8.",
-        "α = (0 − 4π)/4 = −π rad/s²: baja π rad/s cada segundo.",
-        "Tangencial: at = α·r = −0,3π m/s², la misma todo el frenado y contra el giro.",
-        "A los 2 s: ω = 4π − 2π = 2π rad/s, así que ac = ω²·r = 4π²·0,3 = 1,2π² ≈ 12 m/s². Con la ω de ese instante, no la inicial (eso daría 4,8π²)."
+        "f₀ = 3 vueltas/s, así que ω₀ = 2π·f₀ = 6π rad/s; ω = 0 a los 6 s.",
+        "Vueltas: frecuencia media por tiempo = (3 + 0)/2·6 = 9 vueltas = 18π rad. Es el área del triángulo bajo la gráfica f-t, no 3·6 = 18.",
+        "α = (0 − 6π)/6 = −π rad/s²: ω baja π rad/s cada segundo.",
+        "Tangencial: at = α·r = −0,4π ≈ −1,26 m/s², la misma todo el frenado y contra el giro.",
+        "A los 3 s: ω = 6π − 3π = 3π rad/s, así que ac = ω²·r = 9π²·0,4 = 3,6π² ≈ 35,5 m/s². Con la ω de ese instante, no la inicial (eso daría 14,4π²)."
       ],
       "verificar": [
         {
           "fn": "mcuvDatos",
           "args": [
             {
-              "f0": 2,
+              "f0": 3,
               "f": 0,
-              "t": 4,
-              "r": 0.3
+              "t": 6,
+              "r": 0.4
             }
           ],
           "espera": {
-            "vueltas": 4,
-            "theta": 25.132741228718345,
+            "vueltas": 9,
+            "theta": 56.548667764616276,
             "alfa": -3.141592653589793,
-            "at": -0.9424777960769379
+            "at": -1.2566370614359172
           }
         },
         {
           "fn": "mcuv",
           "args": [
             {
-              "r": 0.3,
-              "omega0": 12.566370614359172,
+              "r": 0.4,
+              "omega0": 18.84955592153876,
               "alfa": -3.141592653589793,
-              "t": 2,
+              "t": 3,
               "frena": true
             }
           ],
           "espera": {
-            "omega": 6.283185307179586,
-            "at": -0.9424777960769379,
-            "ac": 11.84352528130723
+            "omega": 9.42477796076938,
+            "at": -1.2566370614359172,
+            "ac": 35.53057584392169,
+            "errores.acConOmega0": 142.12230337568676
           }
         }
       ]
