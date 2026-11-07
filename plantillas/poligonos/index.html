@@ -664,7 +664,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const t0 = performance.now();
     const tick = now => {
       if (tok !== E.tok) return;
-      const f = Math.min(1, (now - t0)/dur); paso(de + (a - de)*f); E.dibujar(); E.avisar();
+      const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(de + (a - de)*f); E.dibujar(); E.avisar();
       if (f < 1) requestAnimationFrame(tick); else if (fin) fin();
     };
     requestAnimationFrame(tick);

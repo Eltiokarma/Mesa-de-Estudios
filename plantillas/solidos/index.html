@@ -382,7 +382,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const t0 = performance.now();
     const tick = now => {
       if (E.gen !== gen) return;
-      const f = Math.min(1, (now - t0)/dur); E.prog[k] = de + (hasta - de)*suave(f); E.dibujar(); if (E.alMover) E.alMover();
+      const f = Math.max(0, Math.min(1, (now - t0)/dur)); E.prog[k] = de + (hasta - de)*suave(f); E.dibujar(); if (E.alMover) E.alMover();
       if (f < 1) requestAnimationFrame(tick); else if (fin) fin();
     };
     requestAnimationFrame(tick);

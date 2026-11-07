@@ -468,7 +468,7 @@ function vuelta(lista, r, alTerminar, dibujar){
   const ini = elegidas.map(m => [m.x, m.y]);
   const T = RM ? 0 : 700, t0 = performance.now();
   const tick = now => {
-    const f = T ? Math.min(1, (now - t0)/T) : 1;
+    const f = T ? Math.max(0, Math.min(1, (now - t0)/T)) : 1;
     elegidas.forEach((m, k) => { m.x = ini[k][0] + (cx - ini[k][0])*f*0.8; m.y = ini[k][1] + (cy - ini[k][1])*f*0.8; m.alpha = 1 - f; });
     nuevas.forEach(m => { m.alpha = f; });
     dibujar();
@@ -794,7 +794,7 @@ function correr(desde, hasta, clave){
   cancelAnimationFrame(anim);
   if (RM){ E[clave] = hasta; draw(); return; }
   const t0 = performance.now(), dur = 2200;
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); E[clave] = desde + (hasta - desde)*f; draw(); if (f < 1) anim = requestAnimationFrame(tick); };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); E[clave] = desde + (hasta - desde)*f; draw(); if (f < 1) anim = requestAnimationFrame(tick); };
   anim = requestAnimationFrame(tick);
 }
 function draw(){

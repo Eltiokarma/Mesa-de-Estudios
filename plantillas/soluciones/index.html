@@ -244,7 +244,7 @@ const despertarTodo = () => ESCENAS.forEach(E => E.B && E.B.despertar());
 function tween(dur, paso, fin){
   if (RM || !dur){ paso(1); despertarTodo(); if (fin) setTimeout(fin, 0); return; }
   const t0 = performance.now(); TWEENS++; despertarTodo();
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else { TWEENS--; if (fin) fin(); } };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else { TWEENS--; if (fin) fin(); } };
   requestAnimationFrame(tick);
 }
 

@@ -259,7 +259,7 @@ const pl = (n, uno, varios) => (n === 1 ? uno : varios);
 function tween(dur, paso, fin){
   if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
   const t0 = performance.now();
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
   requestAnimationFrame(tick);
 }
 // Variables: A, B y C los conjuntos (azul, naranja, verde), I lo que está en todos los aros (fucsia), fu lo que queda

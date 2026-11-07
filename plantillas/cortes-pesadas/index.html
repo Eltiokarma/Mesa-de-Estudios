@@ -688,7 +688,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   E.parar = () => { E.tok++; E.gen++; E.anim = false; };
   // la balanza se inclina sola (no cuenta como animación de la escena); la corta un cambio de configuración
   E.inclinar = () => { const meta = angulo(), de = E.ang; if (RM){ E.ang = meta; E.dibujar(); return; }
-    const t0 = performance.now(), gen = E.gen, mio = ++E.inc; const tick = now => { if (gen !== E.gen || mio !== E.inc) return; const f = Math.min(1, (now - t0)/450); E.ang = de + (meta - de)*suave(f); E.dibujar(); if (f < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); };
+    const t0 = performance.now(), gen = E.gen, mio = ++E.inc; const tick = now => { if (gen !== E.gen || mio !== E.inc) return; const f = Math.max(0, Math.min(1, (now - t0)/450)); E.ang = de + (meta - de)*suave(f); E.dibujar(); if (f < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); };
 
   // ----- tocar (un toque no le quita el desplazamiento a la página) -----
   cv.addEventListener('click', e => {
