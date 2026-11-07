@@ -3814,7 +3814,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.analogias",
@@ -3835,7 +3837,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.sentido-contextual",
@@ -3905,7 +3909,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.plan-de-redaccion",
@@ -3925,7 +3931,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.cohesion-y-coherencia",
@@ -4997,7 +5005,11 @@
     "razonamiento-verbal.inferencias",
     "razonamiento-verbal.compatibilidad",
     "razonamiento-verbal.extrapolacion",
-    "razonamiento-verbal.textos-argumentativos-y-dialecticos"
+    "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+    "razonamiento-verbal.analogias",
+    "razonamiento-verbal.plan-de-redaccion",
+    "razonamiento-verbal.eliminacion-de-oraciones",
+    "razonamiento-verbal.definiciones"
    ],
    "url": "#/lectura/lectura-verbal",
    "banco": "/contenido/razonamiento-verbal/indice.json",
@@ -5027,7 +5039,34 @@
     "/contenido/razonamiento-verbal/textos/t015.json",
     "/contenido/razonamiento-verbal/textos/t016.json",
     "/contenido/razonamiento-verbal/textos/t017.json",
-    "/contenido/razonamiento-verbal/textos/t018.json"
+    "/contenido/razonamiento-verbal/textos/t018.json",
+    "/contenido/razonamiento-verbal/textos/t019.json",
+    "/contenido/razonamiento-verbal/textos/t020.json",
+    "/contenido/razonamiento-verbal/textos/t021.json",
+    "/contenido/razonamiento-verbal/textos/t022.json",
+    "/contenido/razonamiento-verbal/textos/t023.json",
+    "/contenido/razonamiento-verbal/textos/t024.json",
+    "/contenido/razonamiento-verbal/textos/t025.json",
+    "/contenido/razonamiento-verbal/textos/t026.json",
+    "/contenido/razonamiento-verbal/textos/t027.json",
+    "/contenido/razonamiento-verbal/textos/t028.json",
+    "/contenido/razonamiento-verbal/textos/t029.json",
+    "/contenido/razonamiento-verbal/textos/t030.json",
+    "/contenido/razonamiento-verbal/ejercicios/e001.json",
+    "/contenido/razonamiento-verbal/ejercicios/e002.json",
+    "/contenido/razonamiento-verbal/ejercicios/e003.json",
+    "/contenido/razonamiento-verbal/ejercicios/e004.json",
+    "/contenido/razonamiento-verbal/ejercicios/e005.json",
+    "/contenido/razonamiento-verbal/ejercicios/e006.json",
+    "/contenido/razonamiento-verbal/ejercicios/e007.json",
+    "/contenido/razonamiento-verbal/ejercicios/e008.json",
+    "/contenido/razonamiento-verbal/ejercicios/e009.json",
+    "/contenido/razonamiento-verbal/ejercicios/e010.json",
+    "/contenido/razonamiento-verbal/ejercicios/e011.json",
+    "/contenido/razonamiento-verbal/ejercicios/e012.json",
+    "/contenido/razonamiento-verbal/ejercicios/e013.json",
+    "/contenido/razonamiento-verbal/ejercicios/e014.json",
+    "/contenido/razonamiento-verbal/ejercicios/e015.json"
    ]
   },
   "limitante-particulas": {
