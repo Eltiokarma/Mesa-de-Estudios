@@ -719,6 +719,10 @@ Pedido por la principal al cerrar la lista. Son 12 pares en `reserva` de `catalo
 | ari-25 | lógica | negar una disyunción (De Morgan) | — |
 | ari-26 | lógica | cuándo no se cumple un condicional | — |
 
+- **Razonamiento numérico (ari-27 y ari-28):** dos pares más, ya revisados a ciegas.
+  - ari-27, falsa suposición: 14 autos / 20 carneros.
+  - ari-28, regresivo con «la mitad y k más»: 46 pasajeros / 48 panes.
+  - Seis códigos más, todos hipótesis. El revisor a ciegas encontró una sola correcta en cada ítem. Apliqué «solo bicicletas y autos» y «al final del día», y dejé los distractores como están porque salen del motor.
 - **Errores:** 36 códigos nuevos en `errores`, todos hipótesis salvo `AR15-promedio-simple`, que es parcial.
 - **Revisor a ciegas:** solo vio enunciados y opciones. Resolvió los 24 ítems y en todos encontró una sola correcta, sin datos de más o de menos y sin atajos; A y B tienen la misma dificultad. Apliqué sus cuatro arreglos:
   - ari-18: «que los sobrantes completen otra bolsa»;
