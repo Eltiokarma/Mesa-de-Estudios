@@ -1,0 +1,159 @@
+{
+  "titulo": "Termodinámica: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa los signos de las academias: Q es positivo si el gas recibe calor y W es positivo si el gas hace trabajo (se expande); la primera ley es Q = ΔU + W. Aquí W es siempre trabajo y T, temperatura. El trabajo es el área bajo la curva en el diagrama P-V. Las temperaturas de Carnot van en kelvin: T = t + 273. Toma R = 8,31 J/(mol·K). Si el gas es monoatómico, ΔU = (3/2)·n·R·ΔT = (3/2)·Δ(P·V).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un gas ideal está en un cilindro con un émbolo que se mueve libre, a 3 × 10⁵ Pa. Recibe 2000 J de calor y su volumen pasa de 0,002 m³ a 0,006 m³ a presión constante. ¿Cuánto trabajo hace el gas y cuánto cambia su energía interna?",
+      "respuesta": "W = 1200 J; ΔU = 800 J.",
+      "pasos": [
+        "A presión constante, el trabajo es el área de un rectángulo en el diagrama P-V: W = P·ΔV = 3 × 10⁵ · (0,006 − 0,002) = 3 × 10⁵ · 0,004 = 1200 J.",
+        "El gas se expande, así que el trabajo que hace es positivo.",
+        "Primera ley: ΔU = Q − W = 2000 − 1200 = 800 J.",
+        "Cuidado: P·V con el volumen final (3 × 10⁵ · 0,006 = 1800 J) no es el trabajo; el trabajo usa el cambio de volumen."
+      ],
+      "verificar": [
+        { "fn": "proceso", "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "V2": 0.006 }], "espera": { "W": 1200 } },
+        { "fn": "primeraLey", "args": [{ "Q": 2000, "W": 1200 }], "espera": { "dU": 800 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un tanque rígido contiene un gas ideal a 1 × 10⁵ Pa y 0,01 m³. Se le dan 500 J de calor. ¿Cuánto trabajo hace el gas y cuánto cambia su energía interna?",
+      "respuesta": "W = 0; ΔU = 500 J.",
+      "pasos": [
+        "El tanque es rígido: el volumen no cambia. En el diagrama P-V el proceso es una recta vertical y no tiene área debajo: W = 0.",
+        "Primera ley: ΔU = Q − W = 500 − 0 = 500 J. Todo el calor se queda en el gas, que se calienta.",
+        "Que la presión suba no hace trabajo: el trabajo necesita que el volumen cambie."
+      ],
+      "verificar": [
+        { "fn": "proceso", "args": [{ "tipo": "isocorico", "P1": 100000, "V1": 0.01, "Q": 500 }], "espera": { "W": 0, "dU": 500 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Se comprime un gas: el émbolo hace 800 J de trabajo sobre él y, mientras tanto, el gas cede 300 J de calor al ambiente. ¿Cuánto cambia la energía interna del gas? ¿Se calienta o se enfría?",
+      "respuesta": "ΔU = +500 J: se calienta.",
+      "pasos": [
+        "Pon los signos con la convención de las academias. El gas cede calor: Q = −300 J. El gas se comprime: el trabajo que hace el gas es W = −800 J.",
+        "Primera ley: ΔU = Q − W = −300 − (−800) = +500 J.",
+        "La energía interna de un gas ideal solo depende de su temperatura: si ΔU es positiva, la temperatura sube.",
+        "El error típico es poner +800 J: así saldría ΔU = −1100 J, como si el gas se enfriara al comprimirlo."
+      ],
+      "verificar": [
+        { "fn": "primeraLey", "args": [{ "Q": -300, "W": -800 }], "espera": { "dU": 500 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un gas ideal monoatómico va del estado A (1 × 10⁵ Pa; 0,002 m³) al estado B (3 × 10⁵ Pa; 0,006 m³) por dos caminos. Camino 1: primero a presión constante hasta 0,006 m³ y luego a volumen constante hasta 3 × 10⁵ Pa. Camino 2: primero a volumen constante hasta 3 × 10⁵ Pa y luego a presión constante hasta 0,006 m³. Halla el trabajo, el cambio de energía interna y el calor en cada camino.",
+      "respuesta": "Camino 1: W = 400 J, ΔU = 2400 J, Q = 2800 J. Camino 2: W = 1200 J, ΔU = 2400 J, Q = 3600 J.",
+      "pasos": [
+        "Trabajo del camino 1: solo el tramo a presión constante tiene área: 1 × 10⁵ · 0,004 = 400 J.",
+        "Trabajo del camino 2: ahora el tramo a presión constante va a 3 × 10⁵ Pa: 3 × 10⁵ · 0,004 = 1200 J. El trabajo depende del camino.",
+        "La energía interna depende solo del estado. Para el gas monoatómico: ΔU = (3/2)·(P_B·V_B − P_A·V_A) = 1,5 · (1800 − 200) = 2400 J, igual en los dos caminos.",
+        "Calor con la primera ley: Q₁ = 2400 + 400 = 2800 J y Q₂ = 2400 + 1200 = 3600 J. El calor también depende del camino."
+      ],
+      "verificar": [
+        { "fn": "camino", "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isobarico", "V2": 0.006 }, { "tipo": "isocorico", "P2": 300000 }] }], "espera": { "W": 400, "dU": 2400, "Q": 2800 } },
+        { "fn": "camino", "args": [{ "P1": 100000, "V1": 0.002, "tramos": [{ "tipo": "isocorico", "P2": 300000 }, { "tipo": "isobarico", "V2": 0.006 }] }], "espera": { "W": 1200, "dU": 2400, "Q": 3600 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En el diagrama P-V, un gas recorre un ciclo rectangular con presiones de 2 × 10⁵ Pa y 5 × 10⁵ Pa y volúmenes de 0,01 m³ y 0,04 m³. Si el ciclo se recorre en sentido horario, ¿cuál es el trabajo neto por ciclo? ¿Cuánto vale el calor neto? ¿Y si se recorre en sentido antihorario?",
+      "respuesta": "Horario: W neto = 9000 J y Q neto = 9000 J (ΔU = 0). Antihorario: W neto = −9000 J y Q neto = −9000 J.",
+      "pasos": [
+        "En un ciclo, el trabajo neto es el área encerrada: (5 × 10⁵ − 2 × 10⁵) · (0,04 − 0,01) = 3 × 10⁵ · 0,03 = 9000 J.",
+        "En sentido horario, el gas se expande a la presión alta y se comprime a la baja: hace más trabajo del que recibe. El neto es positivo: es una máquina térmica.",
+        "El gas vuelve a su estado inicial, así que ΔU = 0 en el ciclo completo. Primera ley: Q neto = W neto = 9000 J. No son cero, aunque el gas vuelva al inicio.",
+        "En sentido antihorario el área es la misma, pero el signo cambia: W neto = −9000 J. El entorno hace trabajo neto sobre el gas: es un refrigerador."
+      ],
+      "verificar": [
+        { "fn": "rectangulo", "args": [{ "Pa": 200000, "Pb": 500000, "Va": 0.01, "Vb": 0.04 }], "espera": { "W": 9000, "Q": 9000, "dU": 0, "sentido": "horario" } },
+        { "fn": "rectangulo", "args": [{ "Pa": 200000, "Pb": 500000, "Va": 0.01, "Vb": 0.04, "sentido": "antihorario" }], "espera": { "W": -9000, "Q": -9000, "tipo": "refrigerador" } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una máquina de Carnot trabaja entre 327 °C y 27 °C y recibe 800 J del foco caliente en cada ciclo. ¿Cuál es su eficiencia, cuánto trabajo da por ciclo y cuánto calor entrega al foco frío?",
+      "respuesta": "η = 50 %; W = 400 J; Qf = 400 J.",
+      "pasos": [
+        "Pasa las temperaturas a kelvin: Tc = 327 + 273 = 600 K y Tf = 27 + 273 = 300 K.",
+        "Eficiencia de Carnot: η = 1 − Tf/Tc = 1 − 300/600 = 0,5, es decir, 50 %.",
+        "Trabajo: W = η·Qc = 0,5 · 800 = 400 J. Calor al foco frío: Qf = Qc − W = 800 − 400 = 400 J.",
+        "Con grados Celsius saldría 1 − 27/327, cerca del 92 %: un número que no tiene sentido físico."
+      ],
+      "verificar": [
+        { "fn": "carnot", "args": [{ "Tc": 327, "Tf": 27, "Qc": 800, "unidad": "C" }], "espera": { "eta": 0.5, "W": 400, "Qf": 400 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un inventor dice que su máquina, entre focos a 500 K y 300 K, recibe 1200 J por ciclo y da 600 J de trabajo. ¿Es posible? ¿Cuál es el trabajo máximo que podría dar con ese calor?",
+      "respuesta": "No es posible: su eficiencia sería 50 %, mayor que la de Carnot, 40 %. El trabajo máximo es 480 J.",
+      "pasos": [
+        "Eficiencia que dice el inventor: η = W/Qc = 600/1200 = 0,5.",
+        "Ninguna máquina entre esos focos supera la de Carnot: η = 1 − 300/500 = 0,4.",
+        "Como 0,5 > 0,4, la máquina viola la segunda ley, aunque cumpla la primera (1200 = 600 + 600).",
+        "Trabajo máximo: 0,4 · 1200 = 480 J."
+      ],
+      "verificar": [
+        { "fn": "juzgar", "args": [{ "Tc": 500, "Tf": 300, "Qc": 1200, "W": 600 }], "espera": { "eta": 0.5, "etaCarnot": 0.4, "viola": "segunda" } },
+        { "fn": "carnot", "args": [{ "Tc": 500, "Tf": 300, "Qc": 1200 }], "espera": { "W": 480 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Un gas ideal está en un cilindro aislado y se lo comprime rápido, sin que entre ni salga calor. Su energía interna aumenta en 1500 J. ¿Cuánto vale el calor? ¿Cuánto trabajo hace el gas? ¿Qué pasa con su temperatura?",
+      "respuesta": "Q = 0; W = −1500 J; la temperatura sube.",
+      "pasos": [
+        "Aislado quiere decir que no hay calor: Q = 0. No quiere decir que la temperatura se quede igual.",
+        "Primera ley: W = Q − ΔU = 0 − 1500 = −1500 J. El signo menos dice que el gas no hace trabajo: lo recibe (el émbolo lo comprime).",
+        "La energía interna de un gas ideal solo depende de T: si sube 1500 J, la temperatura sube."
+      ],
+      "verificar": [
+        { "fn": "primeraLey", "args": [{ "Q": 0, "dU": 1500 }], "espera": { "W": -1500 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Dos moles de un gas ideal ocupan 0,02 m³ a 300 K. Se expanden a temperatura constante hasta 0,04 m³. ¿Cuánto calor reciben? ¿Cuánto cambia su energía interna? Usa ln 2 ≈ 0,693.",
+      "respuesta": "Q = W ≈ 3456 J; ΔU = 0.",
+      "pasos": [
+        "La temperatura no cambia, así que la energía interna tampoco: ΔU = 0.",
+        "El trabajo en una isoterma es W = n·R·T·ln(V₂/V₁) = 2 · 8,31 · 300 · ln 2 = 4986 · 0,693 ≈ 3456 J.",
+        "Primera ley: Q = ΔU + W = 0 + 3456 J. El gas sí recibe calor, aunque su temperatura no cambie: lo convierte entero en trabajo.",
+        "La presión inicial es n·R·T/V = 4986/0,02 = 249 300 Pa y la final, la mitad."
+      ],
+      "verificar": [
+        { "fn": "estado", "args": [{ "n": 2, "T": 300, "V": 0.02 }], "espera": { "P": 249300 } },
+        { "fn": "proceso", "args": [{ "tipo": "isotermico", "P1": 249300, "V1": 0.02, "V2": 0.04, "T1": 300 }], "espera": { "dU": 0, "Q": 3456.0318422718874, "final.P": 124650 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Una refrigeradora saca 600 J por ciclo de su interior, a −3 °C, y para eso usa 200 J de trabajo. La cocina está a 27 °C. ¿Cuánto calor entrega a la cocina? ¿Cuál es su coeficiente de rendimiento (COP)? ¿Cuál sería el COP de una refrigeradora de Carnot entre esas temperaturas?",
+      "respuesta": "Entrega 800 J; COP = 3; el de Carnot es 9.",
+      "pasos": [
+        "Lo que entra al gas en un ciclo sale de él: Qc = Qf + W = 600 + 200 = 800 J van a la cocina.",
+        "COP = calor sacado del interior / trabajo = 600/200 = 3.",
+        "En kelvin: Tf = −3 + 273 = 270 K y Tc = 27 + 273 = 300 K. COP de Carnot = Tf/(Tc − Tf) = 270/30 = 9.",
+        "Como 3 < 9, la refrigeradora es posible."
+      ],
+      "verificar": [
+        { "fn": "refrigerador", "args": [{ "Qf": 600, "W": 200, "Tc": 27, "Tf": -3, "unidad": "C" }], "espera": { "Qc": 800, "cop": 3, "copCarnot": 9, "posible": true } }
+      ]
+    }
+  ]
+}
