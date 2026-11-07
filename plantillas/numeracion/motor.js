@@ -18,6 +18,10 @@
  *   reagrupar(N, b1, b2)           cambiar de base: se desarma en b1 y se arma en b2; las fichas no cambian
  *   cuadro(plan, t)                el cuadro t de un plan ({ inicio, etapas }), t de 0 a etapas.length: cuántos grupos
  *                                  de la etapa en curso ya se formaron (o se abrieron); conserva las fichas
+ *   abrir(cuentas, b, k)           abre una pieza de orden k (k ≥ 1) en b piezas de orden k − 1 (el arrastre de la escena)
+ *   juntar(cuentas, b, k)          junta b piezas de orden k en una de orden k + 1; las dos devuelven estado(…)
+ *   estado(cuentas, b)             fichas, ¿ya es un numeral? (todas las cuentas menores que b), texto y órdenes llenos
+ *   desarmar(cuentas, b)           plan para abrir todo hasta dejar solo sueltas, desde cuentas cualesquiera
  * Cambio de base
  *   aBase(N, b)                    divisiones sucesivas: cifras, texto, divisiones, y los errores al leer los restos
  *   aDecimal(numeral, b)           descomposición polinómica: términos a·bᵏ, valor, Horner, y los errores típicos
@@ -162,6 +166,47 @@
     // Horner: lo que hay en el orden j − 1 después de abrir es el valor parcial ((a·b + c)·b + …)
     const horner = etapas.map(e => e.despues[e.orden - 1]);
     return { b, numeral: texto(c), inicio, etapas, horner, sueltas: num(cu[0]), cuentas: [num(cu[0])] };
+  }
+  // Desde cuentas cualesquiera (normalizadas o no): abrir de arriba hacia abajo hasta tener solo sueltas.
+  function desarmar(cuentas, b) {
+    base(b);
+    const cu = cuentasDe(cuentas).map(BigInt), inicio = cu.map(x => num(x)), etapas = [];
+    for (let j = cu.length - 1; j >= 1; j--) {
+      if (!cu[j]) continue;
+      const antes = cu.map(x => num(x)), abiertos = cu[j];
+      cu[j - 1] += abiertos * BigInt(b); cu[j] = 0n;
+      etapas.push({ tipo: 'abrir', orden: j, grupos: num(abiertos), antes, despues: cu.map(x => num(x)) });
+    }
+    return { b, inicio, etapas, sueltas: num(cu[0]), cuentas: cu.map(x => num(x)) };
+  }
+  // ---------- el arrastre: abrir una pieza o juntar b piezas ----------
+  function cuentasDe(cuentas) {
+    if (!Array.isArray(cuentas) || !cuentas.length) throw new Error('cuentas debe ser una lista con la cantidad de piezas de cada orden');
+    return cuentas.map((x, i) => num(natural(x, `cuentas[${i}]`)));
+  }
+  function estado(cuentas, b) {
+    base(b);
+    const c = cuentasDe(cuentas);
+    const fichas = c.reduce((s, x, k) => s + BigInt(x) * pot(b, k), 0n);
+    const normal = c.every(x => x < b);
+    let alto = c.length - 1; while (alto > 0 && !c[alto]) alto--;
+    const cifras = normal ? c.slice(0, alto + 1).reverse() : null;
+    return { b, cuentas: c, fichas: num(fichas), normal, cifras, texto: normal ? texto(cifras) : null,
+      llenos: c.map((x, k) => (x >= b ? k : -1)).filter(k => k >= 0) };
+  }
+  function abrir(cuentas, b, k) {
+    base(b); entero(k, 'k', 1);
+    const c = cuentasDe(cuentas);
+    if (!(c[k] >= 1)) throw new Error(`no hay piezas de orden ${k} para abrir`);
+    c[k] -= 1; c[k - 1] += b;
+    return Object.assign(estado(c, b), { accion: 'abrir', orden: k });
+  }
+  function juntar(cuentas, b, k) {
+    base(b); entero(k, 'k', 0);
+    const c = cuentasDe(cuentas);
+    if (!(c[k] >= b)) throw new Error(`para juntar hacen falta ${b} piezas de orden ${k}`);
+    c[k] -= b; while (c.length <= k + 1) c.push(0); c[k + 1] += 1;
+    return Object.assign(estado(c, b), { accion: 'juntar', orden: k });
   }
   function reagrupar(N, b1, b2) {
     const n = natural(N); base(b1, 'b1'); base(b2, 'b2');
@@ -430,7 +475,7 @@
     return { C: num(BigInt(C)), existe: true, paginas: num(paginas) };
   }
 
-  return { agrupar, normalizar, desagrupar, reagrupar, cuadro, aBase, aDecimal, valor, cambiarBase, agruparCifras,
+  return { agrupar, normalizar, desagrupar, desarmar, abrir, juntar, estado, reagrupar, cuadro, aBase, aDecimal, valor, cambiarBase, agruparCifras,
     valido, validos, baseMinima, comparar, baseDesconocida, leerEnBases, sumarUno, porLaBase,
     numerales, capicuas, cifrasPaginas, paginasConCifras, leer, texto, conBase, sup, sub, SIMBOLOS };
 });

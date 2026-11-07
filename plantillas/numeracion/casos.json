@@ -111,6 +111,14 @@
 
     { "nombre": "Una ficha más se lleva en cadena desde cualquier cuenta: [5, 4, 4] en base 5 → [0, 0, 0, 1] (1000₍₅₎ = 125)",
       "fn": "normalizar", "args": [[5, 4, 4], 5],
-      "espera": { "texto": "1000", "cuentas": [0, 0, 0, 1], "fichas": 125, "etapas.0.orden": 0, "etapas.1.orden": 1, "etapas.2.orden": 2 } }
+      "espera": { "texto": "1000", "cuentas": [0, 0, 0, 1], "fichas": 125, "etapas.0.orden": 0, "etapas.1.orden": 1, "etapas.2.orden": 2 } },
+
+    { "nombre": "El arrastre: abrir un paquete de 43₍₅₎ deja 3 paquetes y 8 sueltas (23 fichas, todavía no es un numeral); juntar 5 sueltas vuelve a 43₍₅₎",
+      "fn": "abrir", "args": [[3, 4], 5, 1],
+      "espera": { "cuentas": [8, 3], "fichas": 23, "normal": false, "llenos": [0] },
+      "tambien": [ { "fn": "juntar", "args": [[8, 3], 5, 0], "espera": { "cuentas": [3, 4], "fichas": 23, "normal": true, "texto": "43" } },
+                   { "fn": "juntar", "args": [[0, 5], 5, 1], "espera": { "cuentas": [0, 0, 1], "texto": "100" } },
+                   { "fn": "desarmar", "args": [[8, 3, 1], 5], "espera": { "sueltas": 48, "cuentas": [48, 0, 0] } },
+                   { "fn": "estado", "args": [[2, 0, 1, 0], 4], "espera": { "fichas": 18, "normal": true, "texto": "102" } } ] }
   ]
 }
