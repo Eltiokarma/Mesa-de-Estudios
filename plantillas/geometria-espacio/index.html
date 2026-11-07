@@ -1,0 +1,1176 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El cubo que gira: rectas y planos en el espacio</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de solidos.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   h rojo: la perpendicular al plano (la arista que sube, la altura de un punto); p turquesa: la proyección o sombra;
+   ℓ fucsia: la recta oblicua que se estudia (la varilla, la diagonal AG); L verde bosque: las rectas del plano (L, M, BD);
+   θ naranja: el ángulo entre recta y plano; α mostaza: el ángulo entre dos rectas; φ lavanda: el ángulo diedro;
+   d azul: la distancia. Las aristas del cubo, las letras de los vértices y el plano P van en tinta.
+   Elegidos con CIEDE2000 (script en el scratchpad del constructor): ΔE00 ≥ 21,3 entre los que salen juntos en el
+   mismo dibujo, en claro y en oscuro (el par más cercano es L y p). φ y ℓ quedan a ΔE00 ≈ 10, φ y d a ≈ 17, y θ y α a
+   ≈ 19, pero nunca salen juntos: φ solo sale con la tinta (la puerta) y θ nunca con α. Contraste AA ≥ 4,5:1 sobre el
+   papel, la tarjeta y el chip .v (fondo al 8 %) en los dos temas. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-h:#c0364a; --c-p:#0f766e; --c-l:#a10fbf; --c-L:#17451e; --c-t:#a05200; --c-al:#7d6a00; --c-f:#6b3dbd; --c-d:#1f5fbf; --gris:#716579;
+  --relleno:.24;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-h:#f17384; --c-p:#5ed9c8; --c-l:#cf6bfa; --c-L:#40bf59; --c-t:#f0a04a; --c-al:#e3c84a; --c-f:#ab8cf2; --c-d:#7cb0ff; --gris:#a99cb8;
+  --relleno:.28; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-h:#f17384; --c-p:#5ed9c8; --c-l:#cf6bfa; --c-L:#40bf59; --c-t:#f0a04a; --c-al:#e3c84a; --c-f:#ab8cf2; --c-d:#7cb0ff; --gris:#a99cb8;
+  --relleno:.28; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend, .mode.pendiente .control, .mode.pendiente .giro{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none; cursor:grab}
+canvas:active{cursor:grabbing}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:12px; height:12px; border-radius:3px; display:inline-block; border:2px solid; opacity:.9}
+.legend i.linea{width:16px; height:0; border-width:3px 0 0; border-radius:0}
+.legend i.trazos{width:16px; height:0; border-width:2px 0 0; border-style:dashed; border-radius:0; background:none!important}
+.giro{margin:0; padding:0 8px; font-size:.8rem; color:var(--muted)}
+
+/* El control de la varilla, la puerta o la esquina (también con teclado) */
+.control{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:0 4px}
+.control label{font-weight:800; font-size:.92rem}
+.control input[type=range]{flex:1 1 140px; min-width:120px; height:44px; accent-color:var(--ink); touch-action:none; margin:0}
+.control input[type=range]:disabled{opacity:.4}
+.control output{font:800 .95rem var(--mono); min-width:4.2em; text-align:right; font-variant-numeric:tabular-nums; color:var(--muted)}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
+.v-p{color:var(--c-p); background:color-mix(in srgb, var(--c-p) 8%, transparent)}
+.v-l{color:var(--c-l); background:color-mix(in srgb, var(--c-l) 8%, transparent)}
+.v-L{color:var(--c-L); background:color-mix(in srgb, var(--c-L) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-al{color:var(--c-al); background:color-mix(in srgb, var(--c-al) 8%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+sub{font-size:.7em}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{font-family:var(--mono); font-size:1.0rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+table.formulas{border-collapse:collapse; font-size:.92rem; width:100%}
+table.formulas th, table.formulas td{border-bottom:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top}
+table.formulas td{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.tabla{overflow-x:auto}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums; padding-top:1px}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.pasos{display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center}
+.paso{display:inline-flex; align-items:center; gap:6px; font-weight:800}
+.paso button{width:44px; height:44px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); font:800 1.2rem var(--font); cursor:pointer}
+.paso button:disabled{opacity:.4; cursor:not-allowed}
+.paso output{min-width:2.2em; text-align:center; font-family:var(--mono); font-variant-numeric:tabular-nums}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(104px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.0rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+.control output{min-width:3.4em}
+.mode.pendiente .control{display:none}
+.dibujar-nota{margin:0; padding:0 8px; font-size:.8rem; color:var(--muted)}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Geometría · Rectas y planos en el espacio · Problemas tipo admisión</p>
+      <h1>El cubo que gira</h1>
+      <p class="sub">Un cubo, el plano del piso y una varilla. Gíralos, mueve la varilla y abre una puerta para medir en el espacio.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del cubo">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del cubo"></canvas></div>
+      <div class="control" id="ctl1" hidden>
+        <label for="r1" id="rl1">Mover</label>
+        <input type="range" id="r1" min="0" max="100" step="1" value="0">
+        <output id="ro1" for="r1"></output>
+      </div>
+      <p class="giro">Arrastra el dibujo hacia los lados para girarlo (con teclado: tócalo y usa las flechas).</p>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <div class="control" id="ctl2" hidden>
+        <label for="r2" id="rl2">Mover</label>
+        <input type="range" id="r2" min="0" max="100" step="1" value="0">
+        <output id="ro2" for="r2"></output>
+      </div>
+      <p class="giro">Arrastra el dibujo hacia los lados para girarlo.</p>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/geometria-espacio">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'geometria-espacio', unidad: 'geometria.geometria-del-espacio', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la geometría (el cubo, la varilla, las sombras, distancias, ángulos, el diedro, el triedro y lo que da cada
+   error típico) sale de MotorEspacio (motor.js); aquí solo se proyecta, se pinta y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ME = MotorEspacio, UT = ME.util;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const gr1 = x => { const t = fmt(x, 1); return `${t.includes(',') ? t : t + ',0'}°`; };   // un decimal: 35,3° y 45,0°
+const gr0 = x => `${fmt(x, 0)}°`;
+// k√m si el número lo es (6√2); si no, con dos decimales
+function raiz(x){
+  const r = ME.radical(x); if (!r) return fmt(x, 2);
+  const [k, m] = r; return m === 1 ? String(k) : `${k === 1 ? '' : k}√${m}`;
+}
+const V_ = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const h_ = t => V_('h', t), p_ = t => V_('p', t), l_ = t => V_('l', t), L_ = t => V_('L', t), t_ = t => V_('t', t), al_ = t => V_('al', t), f_ = t => V_('f', t), d_ = t => V_('d', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const fuenteHip = que => `<p class="fuente">${que}: el informe de geometría no trae estudios sobre rectas y planos en el espacio, así que son hipótesis nuestras, tomadas de errores frecuentes en problemas de academia. El lanzamiento en el colegio dirá cuáles aparecen.</p>`;
+const fuenteDibujo = `<p class="fuente">Leer el ángulo en el dibujo en perspectiva es hipótesis nuestra. Se parece a dos errores descritos: leer las propiedades de una figura en su dibujo y no en su definición (descrito con los niveles de Van Hiele, sin cifras para el espacio) y tratar un sólido dibujado como si fuera plano, que fue el error más común al contar cubitos (Ben-Chaim, Lappan y Houang, 1985, según autores que lo citan).</p>`;
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    h:g('--c-h'), p:g('--c-p'), l:g('--c-l'), L:g('--c-L'), t:g('--c-t'), al:g('--c-al'), f:g('--c-f'), d:g('--c-d'), gris:g('--gris'),
+    relleno:Number(g('--relleno')) || .24, font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, tam){
+  ctx.font = `800 ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .85; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+const A6 = 6, CUBO = ME.cubo(A6), X = CUBO.vertices;
+const PISO0 = { min:-2.5, max:8.5 };
+const cajaDe = (piso, extra) => {
+  const P = [];
+  for (const x of [piso.min, piso.max]) for (const y of [piso.min2 === undefined ? piso.min : piso.min2, piso.max2 === undefined ? piso.max : piso.max2]) P.push([x, y, 0]);
+  return P.concat(extra || []);
+};
+const CAJA0 = cajaDe(PISO0, Object.values(X));
+
+/* ================= La escena =================
+   cfg = { vista:{ az, el }, cubo (true: el cubo de arista 6), cuboAlfa, piso ({ min, max } o false), letras (lista de
+   vértices con letra o false), caja (puntos que deben caber al girar), dibujo(L, E) (agrega lo de cada paso),
+   manija ({ punto(v), leer(), poner(v), min, max, etiqueta, fmt }), lect(E) (lecturas en vivo), ley, desc }. */
+function crearEscena(cv, idDesc, idLect, idLey, idCtl){
+  const E = { cfg:{}, prog:{}, az:28, el:22, hl:null, gen:0, compacto:false, desc:'' };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, encuadre = null, claveEnc = '';
+
+  function altoDe(w){
+    const h = innerWidth >= 900 ? clamp(w*.78, 340, Math.max(340, Math.min(560, innerHeight - 250))) : clamp(w*.95, 280, 420);
+    return Math.round(Celular.alto(h, E.compacto));
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = altoDe(w), dpr = Celular.dpr();
+    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); encuadre = null; }
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  addEventListener('modo', () => { W = 0; resize(); });
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.gen++;
+    E.cfg = o; E.prog = Object.assign({}, o.prog);
+    const v = o.vista || ME.VISTA0; E.az = v.az; E.el = v.el;
+    E.desc = o.desc || ''; encuadre = null;
+    cv.setAttribute('aria-label', E.desc || 'Dibujo de la escena');
+    resize(); E.lecturas(); E.leyenda(); E.control();
+    document.getElementById(idDesc).textContent = '';
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) { E.control(); return; } E.compacto = on; W = 0; resize(); E.control(); };
+  // Anima un número de E.prog (o la vista: 'az', 'el'); se corta solo si la escena se reconfigura.
+  const leer = k => (k === 'az' || k === 'el' ? E[k] : E.prog[k]);
+  const poner = (k, v) => { if (k === 'az' || k === 'el') E[k] = v; else E.prog[k] = v; };
+  E.animar = (k, hasta, dur, fin) => {
+    const gen = E.gen, de = leer(k);
+    if (RM || !dur){ poner(k, hasta); E.dibujar(); E.lecturas(); if (fin) setTimeout(() => { if (E.gen === gen) fin(); }, 0); return; }
+    const t0 = performance.now();
+    const tick = now => {
+      if (E.gen !== gen) return;
+      const f = Math.min(1, (now - t0)/dur); poner(k, de + (hasta - de)*suave(f)); E.dibujar(); E.lecturas();
+      if (f < 1) requestAnimationFrame(tick); else if (fin) fin();
+    };
+    requestAnimationFrame(tick);
+  };
+  E.cadena = (pasos, fin) => {
+    const gen = E.gen; let i = 0;
+    const sigue = () => { if (E.gen !== gen) return; if (i >= pasos.length) { if (fin) fin(); return; } pasos[i++](sigue); };
+    sigue();
+  };
+  E.pausa = ms => n => esperar(ms, n);
+  E.avisar = t => { document.getElementById(idDesc).textContent = t || E.desc; };
+  E.lecturas = () => {
+    const el = document.getElementById(idLect); if (!el) return;
+    const out = (typeof E.cfg.lect === 'function' ? E.cfg.lect(E) : E.cfg.lect) || [];
+    const html = out.map(([k, t, v]) => `<div class="lectura" style="--k:var(--c-${k}, var(--ink))"><b>${v}</b><span>${t}</span></div>`).join('');
+    if (el.dataset.h !== html){ el.dataset.h = html; el.innerHTML = html; }
+  };
+  E.leyenda = () => {
+    const l = (typeof E.cfg.ley === 'function' ? E.cfg.ley(E) : E.cfg.ley) || [];
+    document.getElementById(idLey).innerHTML = l.map(([k, t, cls]) => `<span><i class="${cls || ''}" style="border-color:var(--c-${k}, var(--${k}, var(--ink))); background:color-mix(in srgb, var(--c-${k}, var(--${k}, var(--ink))) 22%, transparent)"></i>${t}</span>`).join('');
+  };
+  E.recajar = () => { encuadre = null; E.dibujar(); };
+
+  // ----- el control deslizable que acompaña a la manija (teclado y lector de pantalla) -----
+  const ctl = document.getElementById(idCtl), rng = ctl.querySelector('input'), out = ctl.querySelector('output'), lab = ctl.querySelector('label');
+  const manijaActiva = () => !!(E.cfg.manija && !E.compacto && !E.cfg.manija.apagada);
+  E.control = () => {
+    const m = E.cfg.manija;
+    ctl.hidden = !m || !!m.apagada;
+    if (!m || m.apagada) return;
+    rng.min = m.min; rng.max = m.max; rng.step = m.paso || 1; rng.value = m.leer(E);
+    lab.textContent = m.etiqueta; out.textContent = m.fmt ? m.fmt(m.leer(E)) : String(m.leer(E));
+    rng.disabled = !manijaActiva();
+  };
+  rng.addEventListener('input', () => { const m = E.cfg.manija; if (!m || !manijaActiva() || E.ocupado) return; m.poner(E, +rng.value); out.textContent = m.fmt ? m.fmt(+rng.value) : rng.value; E.dibujar(); E.lecturas(); });
+
+  // ----- girar con el dedo o el ratón (hacia los lados: lo vertical sigue moviendo la página) -----
+  // La manija solo se queda con el gesto si el toque empieza cerca de ella (nucleo/celular.js).
+  const manijaPx = () => { const m = E.cfg.manija; if (!m) return null; const P = E.proyector(); return P(m.punto(m.leer(E))); };
+  const drag = Celular.arrastre(cv, {
+    activo: () => manijaActiva() && !E.ocupado,
+    cerca: (p, r) => { const q = manijaPx(); return !!q && Math.hypot(q[0] - p.x, q[1] - p.y) <= r; },
+    mover: p => {
+      const m = E.cfg.manija, P = E.proyector();
+      let mejor = m.leer(E), dm = Infinity;
+      const paso = (m.max - m.min)/240;
+      for (let v = m.min; v <= m.max + 1e-9; v += paso){ const q = P(m.punto(v)), dd = Math.hypot(q[0] - p.x, q[1] - p.y); if (dd < dm){ dm = dd; mejor = v; } }
+      mejor = Math.round(mejor/(m.paso || 1))*(m.paso || 1);
+      m.poner(E, clamp(mejor, m.min, m.max)); rng.value = mejor; out.textContent = m.fmt ? m.fmt(mejor) : String(mejor);
+      E.dibujar(); E.lecturas();
+    },
+  });
+  let giro = null;
+  cv.addEventListener('pointerdown', e => { if (drag.arrastrando()) return; giro = { x:e.clientX, y:e.clientY, az:E.az, el:E.el, id:e.pointerId, raton:e.pointerType === 'mouse' }; });
+  cv.addEventListener('pointermove', e => {
+    if (!giro || e.pointerId !== giro.id || drag.arrastrando()) return;
+    const dx = e.clientX - giro.x, dy = e.clientY - giro.y;
+    if (Math.abs(dx) < 3 && Math.abs(dy) < 3) return;
+    E.az = giro.az + dx*.45;
+    if (giro.raton) E.el = clamp(giro.el + dy*.3, 5, 88);
+    E.dibujar();
+  });
+  const soltar = () => { giro = null; };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar); cv.addEventListener('pointerleave', soltar);
+  cv.tabIndex = 0;
+  cv.addEventListener('keydown', e => {
+    const k = { ArrowLeft:[-6, 0], ArrowRight:[6, 0], ArrowUp:[0, 4], ArrowDown:[0, -4] }[e.key];
+    if (!k) return;
+    e.preventDefault(); E.az += k[0]; E.el = clamp(E.el + k[1], 5, 88); E.dibujar();
+  });
+
+  // ----- encuadre: la escala y el centro valen para cualquier giro, así el dibujo no salta al girar -----
+  function calcularEncuadre(){
+    const pts = E.cfg.caja || CAJA0;
+    const c3 = UT.mul(pts.reduce((s, p) => UT.add(s, p), [0, 0, 0]), 1/pts.length);
+    let mx = 1e-6, arriba = 1e-6, abajo = 1e-6;
+    for (let az = 0; az < 360; az += 10){
+      const V = ME.vista(az, E.el), cx = UT.dot(c3, V.u), cy = UT.dot(c3, V.up);
+      for (const p of pts){ const x = UT.dot(p, V.u) - cx, y = UT.dot(p, V.up) - cy; mx = Math.max(mx, Math.abs(x)); arriba = Math.max(arriba, y); abajo = Math.max(abajo, -y); }
+    }
+    const pad = { x:26, t:22, b:22 };
+    const s = Math.min((W - 2*pad.x)/(2*mx), (H - pad.t - pad.b)/(arriba + abajo));
+    return { s, c3, y0: pad.t + s*arriba + ((H - pad.t - pad.b) - s*(arriba + abajo))/2 };
+  }
+  E.proyector = () => {
+    const clave = `${W}x${H}|${Math.round(E.el*2)}`;
+    if (!encuadre || clave !== claveEnc){ encuadre = calcularEncuadre(); claveEnc = clave; }
+    const V = ME.vista(E.az, E.el), K = encuadre, cx = UT.dot(K.c3, V.u), cy = UT.dot(K.c3, V.up);
+    const f = p => [W/2 + K.s*(UT.dot(p, V.u) - cx), K.y0 - K.s*(UT.dot(p, V.up) - cy)];
+    f.V = V; f.s = K.s; return f;
+  };
+
+  E.dibujar = () => {
+    if (!W || !E.cfg) return;
+    const c = colores(), P = E.proyector(), V = P.V;
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    const L = lista();
+    if (E.cfg.dibujo) E.cfg.dibujo(L, E);
+    pintar(ctx, c, E, P, V, L, W, H);
+    // la manija
+    if (manijaActiva()){
+      const q = manijaPx();
+      ctx.save(); ctx.beginPath(); ctx.arc(q[0], q[1], 9, 0, 2*Math.PI); ctx.fillStyle = c.card; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = c.ink; ctx.stroke(); ctx.restore();
+    }
+  };
+  return E;
+}
+
+/* ================= Lo que se dibuja =================
+   Cada paso agrega piezas a una lista: planos (poli), segmentos (seg), arcos de ángulo (arco), marcas de ángulo recto
+   (recto), puntos (pto) y textos (txt). Los puntos de los arcos y de las marcas los da el motor. */
+function lista(){
+  const L = { poli:[], seg:[], arco:[], recto:[], pto:[], txt:[] };
+  L.poligono = (pts, col, o) => L.poli.push({ pts, col, o:o || {} });
+  L.linea = (p, q, col, o) => L.seg.push({ p, q, col, o:o || {} });
+  L.angulo = (o, p, q, r, col, et, op) => L.arco.push({ pts:ME.arco(o, p, q, r, 20), col, et, o:op || {} });
+  L.marca = (o, p, q, s, col, op) => L.recto.push({ pts:ME.marcaRecta(o, p, q, s || .55), col, o:op || {} });
+  L.punto = (p, col, et, o) => L.pto.push({ p, col, et, o:o || {} });
+  L.texto = (p, t, col, o) => L.txt.push({ p, t, col, o:o || {} });
+  return L;
+}
+function pintar(ctx, c, E, P, V, L, W, H){
+  const cf = E.cfg, col = k => c[k] || c.ink, fuerte = k => E.hl && E.hl === k;
+  const camino = pts => { ctx.beginPath(); pts.forEach((p, j) => { const q = P(p); j ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); }); };
+  // el plano P (el piso) con una cuadrícula suave
+  if (cf.piso !== false){
+    const pz = cf.piso || PISO0, y0 = pz.min2 === undefined ? pz.min : pz.min2, y1 = pz.max2 === undefined ? pz.max : pz.max2;
+    const esq = [[pz.min, y0, 0], [pz.max, y0, 0], [pz.max, y1, 0], [pz.min, y1, 0]];
+    ctx.save(); camino(esq); ctx.closePath(); ctx.fillStyle = c.ink; ctx.globalAlpha = .045; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.beginPath();
+    for (let x = Math.ceil(pz.min); x <= pz.max; x += 1){ const a = P([x, y0, 0]), b = P([x, y1, 0]); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); }
+    for (let y = Math.ceil(y0); y <= y1; y += 1){ const a = P([pz.min, y, 0]), b = P([pz.max, y, 0]); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); }
+    ctx.stroke(); ctx.globalAlpha = .55; ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; camino(esq); ctx.closePath(); ctx.stroke(); ctx.restore();
+    const q = P([pz.min + .5, y0 + .5, 0]); rotulo(ctx, c, q[0], q[1], 'plano P', c.muted, 'center', 12);
+  }
+  // planos (del fondo hacia adelante)
+  const prof = pts => UT.dot(UT.mul(pts.reduce((s, p) => UT.add(s, p), [0, 0, 0]), 1/pts.length), V.v);
+  L.poli.slice().sort((a, b) => prof(a.pts) - prof(b.pts)).forEach(it => {
+    ctx.save(); camino(it.pts); ctx.closePath(); ctx.fillStyle = col(it.col); ctx.globalAlpha = (it.o.alfa === undefined ? .16 : it.o.alfa)*(fuerte(it.col) ? 1.8 : 1); ctx.fill();
+    if (it.o.borde !== false){ ctx.globalAlpha = it.o.bordeAlfa === undefined ? .8 : it.o.bordeAlfa; ctx.strokeStyle = col(it.o.borde || it.col); ctx.lineWidth = 1.3; ctx.stroke(); }
+    ctx.restore();
+    if (it.o.et){ const q = P(it.o.etEn); rotulo(ctx, c, q[0], q[1], it.o.et, col(it.col), 'center', 12); }
+  });
+  // el cubo: aristas ocultas a trazos, visibles enteras
+  if (cf.cubo !== false){
+    const alfa = cf.cuboAlfa === undefined ? 1 : cf.cuboAlfa;
+    const caraVe = cara => UT.dot(cara.normal, V.v) > 1e-9;
+    for (const [i, j] of CUBO.aristas){
+      const caras = CUBO.caras.filter(f => f.vertices.includes(i) && f.vertices.includes(j));
+      const ve = caras.some(caraVe), a = P(X[i]), b = P(X[j]);
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineJoin = 'round';
+      if (ve){ ctx.lineWidth = 1.6; ctx.globalAlpha = .85*alfa; } else { ctx.lineWidth = 1; ctx.globalAlpha = .4*alfa; ctx.setLineDash([4, 4]); }
+      ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); ctx.restore();
+    }
+  }
+  // segmentos
+  for (const s of L.seg){
+    const a = P(s.p), b = P(s.q), o = s.o;
+    ctx.save(); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa; ctx.strokeStyle = col(s.col); ctx.lineWidth = (o.ancho || 3) + (fuerte(s.col) ? 2.5 : 0); ctx.lineCap = 'round';
+    if (o.trazos) ctx.setLineDash(o.trazos === true ? [6, 5] : o.trazos);
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); ctx.restore();
+    if (o.et && (o.alfa === undefined || o.alfa > .4)){
+      const t = o.etT === undefined ? .5 : o.etT, x = a[0] + (b[0] - a[0])*t + (o.dx || 0), y = a[1] + (b[1] - a[1])*t + (o.dy || 0);
+      ctx.save(); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa; rotulo(ctx, c, x, y, o.et, col(o.etCol || s.col), o.align || 'center', o.tam || 13); ctx.restore();
+    }
+  }
+  // marcas de ángulo recto y arcos
+  for (const m of L.recto){
+    ctx.save(); ctx.globalAlpha = m.o.alfa === undefined ? 1 : m.o.alfa; ctx.strokeStyle = col(m.col); ctx.lineWidth = 1.4; camino(m.pts); ctx.stroke(); ctx.restore();
+  }
+  for (const a of L.arco){
+    ctx.save(); ctx.globalAlpha = a.o.alfa === undefined ? 1 : a.o.alfa; ctx.strokeStyle = col(a.col); ctx.lineWidth = 2.4 + (fuerte(a.col) ? 2 : 0); camino(a.pts); ctx.stroke();
+    if (a.o.relleno){ const o = a.o.relleno; ctx.beginPath(); const q0 = P(o); ctx.moveTo(q0[0], q0[1]); a.pts.forEach(p => { const q = P(p); ctx.lineTo(q[0], q[1]); }); ctx.closePath(); ctx.fillStyle = col(a.col); ctx.globalAlpha *= .18; ctx.fill(); }
+    ctx.restore();
+    if (a.et && (a.o.alfa === undefined || a.o.alfa > .4)){
+      const m = a.pts[Math.floor(a.pts.length/2)], o = a.o.centro, q = P(m);
+      let dx = 0, dy = 0;
+      if (o){ const oc = P(o), dd = Math.hypot(q[0] - oc[0], q[1] - oc[1]) || 1; dx = (q[0] - oc[0])/dd*16; dy = (q[1] - oc[1])/dd*16; }
+      rotulo(ctx, c, q[0] + dx + (a.o.dx || 0), q[1] + dy + (a.o.dy || 0), a.et, col(a.col), 'center', 13);
+    }
+  }
+  // puntos
+  for (const p of L.pto){
+    const q = P(p.p);
+    ctx.save(); ctx.globalAlpha = p.o.alfa === undefined ? 1 : p.o.alfa; ctx.fillStyle = col(p.col); ctx.beginPath(); ctx.arc(q[0], q[1], p.o.r || 4, 0, 2*Math.PI); ctx.fill(); ctx.restore();
+    if (p.et) rotulo(ctx, c, q[0] + (p.o.dx === undefined ? 12 : p.o.dx), q[1] + (p.o.dy === undefined ? -10 : p.o.dy), p.et, col(p.o.etCol || 'ink'), 'center', 13);
+  }
+  // letras de los vértices: hacia afuera del cubo, en la pantalla
+  if (cf.cubo !== false && cf.letras !== false){
+    const cc = P(CUBO.centro), quien = cf.letras || 'ABCDEFGH';
+    for (const k of quien){
+      const q = P(X[k]); let dx = q[0] - cc[0], dy = q[1] - cc[1]; const n = Math.hypot(dx, dy) || 1;
+      rotulo(ctx, c, q[0] + dx/n*15, q[1] + dy/n*15, k, c.ink, 'center', 14);
+    }
+  }
+  for (const t of L.txt){ const q = P(t.p); ctx.save(); ctx.globalAlpha = t.o.alfa === undefined ? 1 : t.o.alfa; rotulo(ctx, c, q[0] + (t.o.dx || 0), q[1] + (t.o.dy || 0), t.t, col(t.col), t.o.align || 'center', t.o.tam || 13); ctx.restore(); }
+}
+// Rayos de sol que bajan (del cenit) sobre unos puntos: líneas finas a trazos.
+function rayosSol(L, pts, f, alto){
+  for (const p of pts){ const z0 = p[2] + (alto || 3); L.linea([p[0], p[1], z0], [p[0], p[1], z0 - (z0 - 0)*f], 'gris', { ancho:1.2, trazos:[3, 4], alfa:.8 }); }
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1', 'ctl1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+const O = [3, 3, 0];
+
+// ----- los datos de cada predicción, del motor -----
+const VAR = ME.varilla({ incl:60, dir:90, largo:4, O, vista:ME.VISTA0 });
+const DG = ME.anguloDiagonal({ largo:6, ancho:6, alto:6 });
+const TP = ME.tresPerpendiculares({ h:6, m:6, largo:6 });
+const DI = ME.diedro(X.A, X.B, X.C, X.G);
+const CR = ME.distanciaCruzadas({ a:6, r1:'AG', r2:'BF' });
+const ANCHO_PUERTA = 6*Math.SQRT2;
+
+const P1 = { id:'espacio-varilla', ok:'b', opts:[
+  ['a', 'Con todas', 'ESP-basta-una-recta', 'hipotesis'],
+  ['b', 'Solo con L'],
+  ['c', 'Con 2: L y la perpendicular a L', 'ESP-dos-rectas', 'hipotesis']],
+  fb:{ b:'¡Bien! Inclinada, la varilla forma 90° con una sola recta del piso que pasa por O. Mira la recta que gira: el ángulo cambia.',
+    a:'Elegiste la A. Que forme 90° con L no basta: mira la recta que gira en el piso. Solo con L el ángulo es 90°. La correcta está marcada.',
+    c:`Elegiste la C. La recta del piso perpendicular a L es justo la de la sombra de la varilla, y con ella forma ${gr0(VAR.respuestas.conM)}, no 90°. La correcta está marcada.` } };
+const P2 = { id:'espacio-diagonal-piso', ok:'c', opts:[
+  ['a', gr1(DG.errores.angulo.conArista), 'ESP-angulo-con-otra-recta', 'hipotesis'],
+  ['b', gr1(DG.errores.angulo.diagonalCara), 'ESP-diagonal-de-cara', 'hipotesis'],
+  ['c', gr1(DG.respuestas.angulo)],
+  ['d', gr1(DG.errores.angulo.hipotenusa), 'ESP-hipotenusa-como-cateto', 'hipotesis']],
+  fb:{ c:'¡Bien! El ángulo con el piso se mide con la sombra AC: tan θ = 6/(6√2) = √2/2.',
+    a:'Elegiste la A. Ese es el ángulo de AG con la arista AB. AB está en el piso, pero no es la sombra de AG: el ángulo con un plano se mide con la proyección. La correcta está marcada.',
+    b:'Elegiste la B. 45° es el ángulo de la diagonal AF de la cara del frente con el piso. AG sube lo mismo (6), pero avanza más por el piso (6√2): queda más echada. La correcta está marcada.',
+    d:'Elegiste la D. Sale con tan θ = 6/AG, usando la diagonal AG como cateto. En el triángulo AGC, AG es la hipotenusa; los catetos son GC = 6 y AC = 6√2. La correcta está marcada.' } };
+const P3 = { id:'espacio-tres-perpendiculares', ok:'a', opts:[
+  ['a', `${raiz(TP.respuestas.distancia)} u`],
+  ['b', `${raiz(TP.errores.distancia.alPlano)} u`, 'ESP-distancia-al-plano', 'hipotesis'],
+  ['c', `${raiz(TP.errores.distancia.alMedio)} u`, 'ESP-pie-en-el-medio', 'hipotesis'],
+  ['d', `${raiz(TP.errores.distancia.alExtremo)} u`, 'ESP-al-extremo', 'hipotesis']],
+  fb:{ a:'¡Bien! EA ⊥ piso y AB ⊥ L, así que EB ⊥ L: la distancia es EB = √(6² + 6²) = 6√2.',
+    b:'Elegiste la B. 6 es EA, la distancia de E al piso, no a la recta L. La perpendicular de E a L llega a L en B. La correcta está marcada.',
+    c:'Elegiste la C. 9 es la distancia de E al punto medio de BC. El pie de la perpendicular está en B, no en el medio. La correcta está marcada.',
+    d:'Elegiste la D. 6√3 es EC, la diagonal del cubo. La distancia a una recta es la más corta: la perpendicular EB. La correcta está marcada.' } };
+const P4 = { id:'espacio-diedro', ok:'d', opts:[
+  ['a', gr1(DI.errores.diedro.oblicuas), 'ESP-diedro-con-oblicuas', 'hipotesis'],
+  ['b', gr1(DI.errores.diedro.unaOblicua), 'ESP-diedro-una-oblicua', 'hipotesis'],
+  ['c', gr1(DI.errores.diedro.recto), 'ESP-diedro-recto', 'hipotesis'],
+  ['d', gr1(DI.respuestas.diedro)]],
+  fb:{ d:'¡Bien! AD y AH son perpendiculares a la arista AB, una en cada plano: el diedro es el ángulo DAH = 45°.',
+    a:'Elegiste la A. Es el ángulo CAG, medido con la diagonal del piso y la diagonal de la puerta. Ninguna de las dos es perpendicular a la arista AB, y por eso no miden el diedro. La correcta está marcada.',
+    b:'Elegiste la B. Es el ángulo entre AC y AH. AH sí es perpendicular a la arista AB, pero AC no: las dos tienen que serlo. La correcta está marcada.',
+    c:'Elegiste la C. El plano ABGH sube desde el piso, pero no es una pared: la pared ABFE sí forma 90°. Mira la puerta abrirse. La correcta está marcada.' } };
+const P5 = { id:'espacio-cruzadas', ok:'b', opts:[
+  ['a', `${raiz(CR.errores.distancia.entreExtremos)} u`, 'ESP-entre-extremos', 'hipotesis'],
+  ['b', `${raiz(CR.respuestas.distancia)} u`],
+  ['c', `${raiz(CR.errores.distancia.mitadDeR1)} u`, 'ESP-mitad-diagonal', 'hipotesis'],
+  ['d', `${raiz(CR.errores.distancia.perpendicularAUna)} u`, 'ESP-perpendicular-a-una', 'hipotesis']],
+  fb:{ b:'¡Bien! La perpendicular común va del centro del cubo al punto medio de BF y mide 3√2.',
+    a:'Elegiste la A. 6 es la distancia entre dos extremos (A y B, o G y F). Entre dos rectas se mide con la perpendicular común a las dos, y es más corta. La correcta está marcada.',
+    c:'Elegiste la C. 3√3 es la mitad de la diagonal AG: un largo de una de las rectas, no la separación entre las dos. La correcta está marcada.',
+    d:'Elegiste la D. 2√6 es la distancia de B a la diagonal AG. Ese segmento es perpendicular a AG, pero no a BF. La distancia entre rectas cruzadas va por la perpendicular a las dos. La correcta está marcada.' } };
+
+// ----- piezas de dibujo de cada paso -----
+function dibVarilla(L, E){
+  const V = ME.varilla({ incl:E.prog.incl, dir:90, largo:4, O });
+  L.linea([-1.5, 3, 0], [7.5, 3, 0], 'L', { ancho:2.4, et:'L', etT:.04, dy:-10 });
+  if (E.prog.M) L.linea([3, -1.5, 0], [3, 7.5, 0], 'L', { ancho:2.4, alfa:E.prog.M, et:'M', etT:.96, dx:12 });
+  if (E.prog.sombra) L.linea(O, V.pieSombra, 'p', { ancho:4, alfa:E.prog.sombra });
+  if (E.prog.sombra && V.sombra > .05) rayosSol(L, [V.punta], E.prog.sombra, 0);
+  if (E.prog.barre !== null && E.prog.barre !== undefined){
+    const ph = E.prog.barre*Math.PI/180, d = [Math.cos(ph), Math.sin(ph), 0];
+    L.linea(UT.add(O, UT.mul(d, -4.5)), UT.add(O, UT.mul(d, 4.5)), 'L', { ancho:2, trazos:[7, 5], alfa:.9 });
+    // el rayo de la recta que forma el ángulo agudo con la varilla
+    const r = UT.dot(d, V.direccion) >= 0 ? d : UT.mul(d, -1), g = ME.anguloConRecta({ incl:E.prog.incl, dir:90, phi:E.prog.barre });
+    L.angulo(O, V.punta, UT.add(O, r), 1.3, 'al', `α = ${gr0(g)}`, { centro:O });
+  }
+  L.marca(O, V.punta, [7, 3, 0], .75, 'ink');
+  L.linea(O, V.punta, 'l', { ancho:4.5 });
+  L.punto(O, 'ink', 'O', { dx:-12, dy:12 });
+  L.punto(V.punta, 'l', 'Q', { etCol:'l' });
+  return V;
+}
+const leyVarilla = r => [['l', 'varilla OQ', 'linea'], ['L', 'rectas del piso por O', 'linea']].concat(r ? [['al', 'ángulo α entre la varilla y una recta']] : []);
+const lectVarilla = E => [['al', 'α con L', gr0(ME.anguloConRecta({ incl:E.prog.incl, dir:90, phi:0 }))], ['al', 'α con M', gr0(ME.anguloConRecta({ incl:E.prog.incl, dir:90, phi:90 }))],
+  ['l', '¿perpendicular al piso?', E.prog.incl >= 89.5 ? 'sí' : 'no']];
+const manijaVarilla = { etiqueta:'Inclinar', min:10, max:90, paso:1, fmt:v => gr0(v), leer:E => E.prog.incl, poner:(E, v) => { E.prog.incl = v; },
+  punto:v => ME.varilla({ incl:v, dir:90, largo:4, O }).punta };
+
+const steps = [
+ { k:'Paso 1', t:'La habitación y su piso',
+   prep:() => E.config({ desc:'Un cubo ABCD-EFGH de arista 6 sobre un piso cuadriculado, el plano P.',
+     dibujo:L => { L.texto(UT.lerp(X.A, X.B, .5), 'a = 6', 'ink', { dy:16 }); },
+     ley:[['ink', 'cubo ABCD-EFGH, arista a = 6', 'linea'], ['muted', 'plano P (el piso)']] }),
+   body:() => `<p class="problem">Este cubo es una habitación de arista a = 6. Su piso ABCD está en el <b>plano P</b>, que sigue más allá de las paredes. Las letras son las de academia: ABCD abajo y E, F, G, H encima de A, B, C, D.</p>
+   <p>Arrastra el dibujo hacia los lados para girarlo y míralo desde varios lados. Las aristas que quedan detrás se dibujan a trazos.</p>
+   <p class="hint">En los pasos que siguen vas a clavar una varilla en el piso, mirar la sombra de una diagonal, abrir una puerta y medir distancias entre rectas.</p>` },
+
+ { k:'Paso 2', t:'Una varilla clavada en el piso', gate:P1,
+   prep:() => { const r = !!S.pred[P1.id];
+     E.config({ prog:{ incl:60, M:r ? 1 : 0, barre:null, sombra:0 }, letras:false, cuboAlfa:.35,
+       desc:'En el centro O del piso hay una varilla OQ inclinada. Por O pasa la recta L del piso, y entre la varilla y L hay una marca de ángulo recto.',
+       dibujo:(L, E) => dibVarilla(L, E), ley:leyVarilla(r), lect:r ? lectVarilla : null, manija:r ? manijaVarilla : null }); },
+   anima:fin => { E.cfg.ley = leyVarilla(true); E.leyenda();
+     E.cadena([n => { E.prog.barre = 0; E.animar('barre', 180, 3600, n); }, n => { E.prog.barre = 90; E.dibujar(); E.animar('M', 1, 500, n); }, E.pausa(900),
+       n => E.animar('incl', 90, 1300, n), n => { E.prog.barre = 90; E.animar('barre', 270, 3000, n); }, E.pausa(500), n => { E.prog.barre = null; E.animar('incl', 60, 1000, n); }], () => {
+       E.cfg.lect = lectVarilla; E.cfg.manija = manijaVarilla; E.lecturas(); E.control(); E.dibujar();
+       E.avisar('Una recta del piso giró alrededor de O: el ángulo α con la varilla inclinada fue 90° solo al pasar por L. Con la varilla vertical, fue 90° con todas. Ahora puedes inclinar la varilla con la manija de la punta.'); fin(); }); },
+   body:() => `<p class="problem">En el centro O del piso se clava una ${l_('varilla OQ')} inclinada. La ${L_('recta L')} del piso pasa por O, y la varilla forma 90° con ${L_('L')} (mira la marca). ¿Con cuántas de las rectas del piso que pasan por O forma la varilla un ángulo de 90°?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Una recta del piso giró alrededor de O. El ángulo ${al_('α')} con la varilla inclinada fue 90° una sola vez: al pasar por ${L_('L')}. Con la ${L_('recta M')}, la de la sombra, es ${al_(gr0(VAR.respuestas.conM))}. Cuando la varilla quedó vertical, ${al_('α')} fue 90° con todas.</p>
+   <p class="aviso">Ser perpendicular a una sola recta del plano no basta para ser perpendicular al plano.</p>
+   <p class="hint">Inclina la varilla con la manija de su punta (o con el control) y mira las lecturas.</p>
+   ${fuenteHip('Creer que basta una recta, o que bastan L y su perpendicular')}</div>` },
+
+ { k:'Paso 3', t:'¿Cuándo es perpendicular al piso?',
+   prep:() => E.config({ prog:{ incl:60, M:1, barre:null, sombra:1 }, letras:'ABDE',
+     desc:'La varilla OQ con su sombra en el piso, las rectas L y M por O, y la arista AE del cubo con sus marcas de ángulo recto con AB y AD.',
+     dibujo:(L, E) => {
+       L.linea(X.A, X.C, 'L', { ancho:2, trazos:[6, 5], alfa:.8 });
+       L.marca(X.A, X.E, X.B, .7, 'ink'); L.marca(X.A, X.E, X.D, .7, 'ink'); L.marca(X.A, X.E, X.C, .7, 'ink', { alfa:.7 });
+       L.linea(X.A, X.E, 'h', { ancho:4.5, et:'AE', dx:-18 });
+       dibVarilla(L, E);
+     },
+     ley:[['h', 'AE ⊥ P', 'linea'], ['l', 'varilla OQ', 'linea'], ['p', 'su sombra', 'linea'], ['L', 'rectas del piso', 'linea']],
+     lect:E => lectVarilla(E).concat([['p', 'sombra de OQ', fmt(ME.varilla({ incl:E.prog.incl, dir:90, largo:4 }).sombra, 2)]]), manija:manijaVarilla }),
+   body:() => `<p class="problem">Una recta es <b>perpendicular a un plano</b> si es perpendicular a <b>dos rectas secantes</b> del plano que pasan por su pie. Entonces es perpendicular a <b>todas</b> las rectas del plano.</p>
+   <div class="eqs"><div class="eq">${h_('AE')} ⊥ AB y ${h_('AE')} ⊥ AD → ${h_('AE')} ⊥ plano P</div>
+   <div class="eq">${h_('AE')} ⊥ P → ${h_('AE')} ⊥ ${L_('AC')}<span class="note">y ⊥ cualquier recta del piso</span></div></div>
+   <p>La arista ${h_('AE')} forma 90° con AB y con AD, que se cortan en A: por eso es perpendicular al piso, y también a la diagonal ${L_('AC')}. Las paredes del cubo se apoyan en eso.</p>
+   <p>Inclina la ${l_('varilla')}: forma 90° con ${L_('L')} siempre, pero con ${L_('M')} solo cuando queda vertical. Con el sol justo encima (cenital), su ${p_('sombra')} es su <b>proyección ortogonal</b> sobre el piso: cada punto cae por la perpendicular. La varilla vertical no tiene sombra: se proyecta en un punto.</p>` },
+
+ { k:'Paso 4', t:'La diagonal y el piso', gate:P2,
+   prep:() => { const r = !!S.pred[P2.id];
+     E.config({ prog:{ sol:r ? 1 : 0, sombra:r ? 1 : 0, marcas:r ? 1 : 0 },
+       desc:'El cubo de arista 6 con su diagonal AG, que va de una esquina del piso a la esquina opuesta del techo.',
+       dibujo:(L, E) => {
+         const pr = E.prog;
+         if (pr.sol){ rayosSol(L, [X.G, UT.lerp(X.A, X.G, .5)], pr.sol, 2.5); L.linea(X.G, UT.lerp(X.G, X.C, pr.sol), 'h', { ancho:3.5, et:pr.sol > .9 ? 'GC = 6' : '', dx:24 }); }
+         if (pr.sombra) L.linea(X.A, UT.lerp(X.A, X.C, pr.sombra), 'p', { ancho:4.5, et:pr.sombra > .9 ? 'AC = 6√2' : '', dy:16 });
+         if (pr.marcas){ L.angulo(X.A, X.C, X.G, 1.6, 't', 'θ', { alfa:pr.marcas, centro:X.A }); L.marca(X.C, X.G, X.A, .6, 'ink', { alfa:pr.marcas }); }
+         L.linea(X.A, X.G, 'l', { ancho:4.5, et:'AG', etT:.62, dx:-14, dy:-8 });
+       },
+       ley:r ? [['l', 'diagonal AG', 'linea'], ['h', 'GC ⊥ piso', 'linea'], ['p', 'sombra AC', 'linea'], ['t', 'θ con el piso']] : [['l', 'diagonal AG', 'linea']],
+       lect:r ? [['t', 'θ', gr1(DG.respuestas.angulo)], ['t', 'tan θ = GC/AC', '√2/2'], ['p', 'AC', '6√2']] : null }); },
+   anima:fin => { E.cfg.ley = [['l', 'diagonal AG', 'linea'], ['h', 'GC ⊥ piso', 'linea'], ['p', 'sombra AC', 'linea'], ['t', 'θ con el piso']]; E.leyenda();
+     E.cadena([n => E.animar('sol', 1, 1100, n), n => E.animar('sombra', 1, 1000, n), n => E.animar('marcas', 1, 600, n)], () => {
+       E.cfg.lect = [['t', 'θ', gr1(DG.respuestas.angulo)], ['t', 'tan θ = GC/AC', '√2/2'], ['p', 'AC', '6√2']]; E.lecturas();
+       E.avisar('El sol cenital proyecta G sobre C: la sombra de AG es la diagonal AC del piso. El ángulo θ con el piso está entre AG y AC.'); fin(); }); },
+   body:() => `<p class="problem">La ${l_('diagonal AG')} del cubo de arista 6 va de la esquina A del piso a la esquina G del techo. ¿Qué ángulo θ forma AG con el piso?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">proyección de G sobre el piso: C → proyección de ${l_('AG')}: ${p_('AC')}</div>
+   <div class="eq">tan ${t_('θ')} = ${h_('GC')} / ${p_('AC')} = ${h_('6')} / ${p_('6√2')} = √2/2 → ${t_('θ ≈ ' + gr1(DG.respuestas.angulo))}</div></div>
+   <p>El <b>ángulo entre una recta y un plano</b> es el ángulo entre la recta y su <b>proyección</b> sobre el plano. Para hallar la proyección se bajan perpendiculares: ${h_('GC')} ⊥ piso, así que la sombra de ${l_('AG')} es ${p_('AC')}.</p>
+   <p>Con otra recta del piso que pasa por A, como AB, el ángulo es mayor (${gr1(DG.errores.angulo.conArista)}). La proyección da el <b>menor</b> de todos esos ángulos.</p>
+   ${fuenteHip('Medir con otra recta del plano, usar la diagonal de una cara o tomar la diagonal AG como cateto')}</div>` },
+
+ { k:'Paso 5', t:'Del techo a una recta del piso', gate:P3,
+   prep:() => { const r = !!S.pred[P3.id];
+     E.config({ prog:{ ab:r ? 1 : 0, eb:r ? 1 : 0, otras:r ? 1 : 0 }, letras:'ABCDE',
+       desc:'El cubo de arista 6. La arista EA está marcada como perpendicular al piso, y la recta L del piso contiene a la arista BC.',
+       dibujo:(L, E) => {
+         const pr = E.prog;
+         L.linea([6, -2, 0], [6, 8, 0], 'L', { ancho:2.6, et:'L', etT:.97, dx:12 });
+         L.linea(X.E, X.A, 'h', { ancho:4.5, et:'EA = 6', dx:-30 });
+         L.marca(X.A, X.E, X.B, .6, 'ink'); L.marca(X.A, X.E, X.D, .6, 'ink');
+         if (pr.otras){ L.linea(X.E, [6, 3, 0], 'gris', { ancho:1.6, trazos:[5, 5], alfa:pr.otras, et:'9', etT:.6, dx:10 }); L.linea(X.E, X.C, 'gris', { ancho:1.6, trazos:[5, 5], alfa:pr.otras, et:'6√3', etT:.7, dy:-10 }); }
+         if (pr.ab){ L.linea(X.A, X.B, 'p', { ancho:4, alfa:pr.ab, et:'AB = 6', dy:16 }); L.marca(X.B, X.A, X.C, .6, 'ink', { alfa:pr.ab }); }
+         if (pr.eb){ L.linea(X.E, UT.lerp(X.E, X.B, pr.eb), 'd', { ancho:4.5, et:pr.eb > .9 ? 'd' : '', dx:14, dy:-6 }); if (pr.eb > .9) L.marca(X.B, X.E, X.C, .6, 'd'); }
+         L.punto(X.E, 'ink');
+       },
+       ley:r ? [['h', 'EA ⊥ piso', 'linea'], ['L', 'recta L (contiene a BC)', 'linea'], ['p', 'AB ⊥ L', 'linea'], ['d', 'distancia d = EB', 'linea']] : [['h', 'EA ⊥ piso', 'linea'], ['L', 'recta L (contiene a BC)', 'linea']],
+       lect:r ? [['d', 'd = EB', `6√2 ≈ ${fmt(TP.respuestas.distancia, 2)}`], ['h', 'EA', '6'], ['p', 'AB', '6']] : null }); },
+   anima:fin => { E.cfg.ley = [['h', 'EA ⊥ piso', 'linea'], ['L', 'recta L (contiene a BC)', 'linea'], ['p', 'AB ⊥ L', 'linea'], ['d', 'distancia d = EB', 'linea']]; E.leyenda();
+     E.cadena([n => E.animar('ab', 1, 800, n), E.pausa(400), n => E.animar('eb', 1, 1000, n), E.pausa(400), n => E.animar('otras', 1, 600, n)], () => {
+       E.cfg.lect = [['d', 'd = EB', `6√2 ≈ ${fmt(TP.respuestas.distancia, 2)}`], ['h', 'EA', '6'], ['p', 'AB', '6']]; E.lecturas();
+       E.avisar('Desde A se traza AB, perpendicular a L. Entonces EB también es perpendicular a L: la distancia de E a L es EB. Los segmentos hasta el punto medio de BC y hasta C, a trazos, son más largos.'); fin(); }); },
+   body:() => `<p class="problem">En el cubo de arista 6, la ${h_('arista EA')} es perpendicular al piso. La ${L_('recta L')} del piso contiene a la arista BC. ¿Cuál es la distancia del vértice E a la recta L?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${h_('EA')} ⊥ piso y ${p_('AB')} ⊥ ${L_('L')} → ${d_('EB')} ⊥ ${L_('L')}<span class="note">teorema de las tres perpendiculares</span></div>
+   <div class="eq">${d_('d')} = ${d_('EB')} = √(${h_('6')}² + ${p_('6')}²) = ${d_('6√2')}</div></div>
+   <p><b>Teorema de las tres perpendiculares.</b> Si ${h_('EA')} es perpendicular a un plano y desde su pie A se traza ${p_('AB')} perpendicular a una recta ${L_('L')} del plano, entonces ${d_('EB')} también es perpendicular a ${L_('L')}. ${p_('AB')} es la proyección de ${d_('EB')} sobre el piso.</p>
+   <p>La distancia de un punto a una recta es el segmento perpendicular: el más corto de todos. En el dibujo en perspectiva, el ángulo EBC no se ve recto, pero lo es.</p>
+   ${fuenteHip('Tomar la distancia al plano, poner el pie en el punto medio o ir hasta el otro extremo')}</div>` },
+
+ { k:'Paso 6', t:'La puerta que se abre', gate:P4,
+   prep:() => { const r = !!S.pred[P4.id];
+     E.config({ prog:{ abre:45, mide:r ? 1 : 0, obl:r ? 1 : 0 }, letras:'ABCDGH',
+       caja:CAJA0.concat([[0, 0, 8.5], [6, 0, 8.5], [0, -1.5, 8.4], [6, -1.5, 8.4]]),
+       desc:'El cubo de arista 6 cortado por el plano ABGH, que sube en diagonal desde la arista AB del piso hasta la arista GH del techo, como una puerta con bisagra en AB.',
+       dibujo:(L, E) => {
+         const pr = E.prog, Pt = ME.puerta({ a:6, ancho:ANCHO_PUERTA, abre:pr.abre }), [A, B, B2, A2] = Pt.esquinas;
+         L.poligono(Pt.esquinas, 'f', { alfa:.14, borde:'f', bordeAlfa:.7 });
+         L.linea(A, B, 'ink', { ancho:4 });
+         if (pr.obl){
+           const g = ME.anguloVectores(UT.sub(X.C, A), UT.sub(B2, A));
+           L.linea(A, X.C, 'gris', { ancho:1.8, trazos:[5, 5], alfa:pr.obl }); L.linea(A, B2, 'gris', { ancho:1.8, trazos:[5, 5], alfa:pr.obl });
+           L.angulo(A, X.C, B2, 4.2, 'gris', gr1(g), { alfa:pr.obl, centro:A });
+         }
+         if (pr.mide){
+           // el ángulo plano, medido en el punto medio M de la arista: MN en el piso y MK en la puerta, las dos ⊥ AB
+           const M = UT.lerp(A, B, .5), N = [3, 6, 0], K = UT.lerp(A2, B2, .5);
+           L.linea(M, UT.lerp(M, N, pr.mide), 'f', { ancho:4 }); L.linea(M, UT.lerp(M, K, pr.mide), 'f', { ancho:4 });
+           if (pr.mide > .9){ L.marca(M, B, N, .55, 'f'); L.marca(M, B, K, .55, 'f'); L.angulo(M, N, K, 2.2, 'f', `φ = ${gr0(pr.abre)}`, { centro:M }); L.punto(M, 'f', 'M', { dx:-6, dy:16, etCol:'f' }); }
+         }
+         L.punto(B2, 'f'); L.punto(A2, 'f');
+       },
+       ley:r ? [['f', 'plano ABGH (la puerta)'], ['f', 'φ: medido con rectas ⊥ a la arista', 'linea'], ['gris', 'AC y AG, oblicuas a la arista', 'trazos']] : [['f', 'plano ABGH (la puerta)'], ['ink', 'arista AB', 'linea']],
+       lect:r ? E => [['f', 'diedro φ', gr0(E.prog.abre)]] : null,
+       manija:r ? manijaPuerta : null }); },
+   anima:fin => { E.cfg.ley = [['f', 'plano ABGH (la puerta)'], ['f', 'φ: medido con rectas ⊥ a la arista', 'linea'], ['gris', 'AC y AG, oblicuas a la arista', 'trazos']]; E.leyenda();
+     E.cfg.lect = E => [['f', 'diedro φ', gr0(E.prog.abre)]];
+     E.cadena([n => E.animar('mide', 1, 800, n), E.pausa(300), n => E.animar('abre', 90, 1300, n), E.pausa(500), n => E.animar('abre', 15, 1500, n), n => E.animar('abre', 45, 1000, n), E.pausa(300), n => E.animar('obl', 1, 700, n)], () => {
+       E.cfg.manija = manijaPuerta; E.control(); E.dibujar();
+       E.avisar('La puerta se abrió hasta quedar vertical y se cerró hasta casi el piso; el diedro φ, medido con AD y AH, siguió a la puerta. Las oblicuas AC y AG dan otro ángulo. Puedes mover la puerta con la manija de su borde.'); fin(); }); },
+   body:() => `<p class="problem">El ${f_('plano ABGH')} corta el cubo en diagonal, como una puerta con bisagra en la arista AB. ¿Cuánto mide el ángulo diedro entre el piso y ese plano?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">AD ⊥ AB (en el piso) y AH ⊥ AB (en la puerta) → ${f_('φ')} = ∠DAH<span class="note">en el dibujo se mide en M, el punto medio de AB: da lo mismo</span></div>
+   <div class="eq">tan ${f_('φ')} = HD / AD = 6/6 = 1 → ${f_('φ = 45°')}</div></div>
+   <p>Un <b>ángulo diedro</b> se mide con su <b>ángulo plano</b>: desde un mismo punto de la arista se traza una recta perpendicular a la arista en cada cara. Así el ángulo no depende de dónde se mida y crece justo lo que se abre la puerta.</p>
+   <p>Con rectas oblicuas a la arista, como AC y AG, el ángulo cambia según cuáles se elijan: no sirve para medir el diedro.</p>
+   <p class="hint">Mueve la puerta con la manija de su borde o con el control.</p>
+   ${fuenteHip('Medir con rectas oblicuas a la arista, o tomar el plano como una pared')}</div>` },
+
+ { k:'Paso 7', t:'Dos rectas que no se cortan', gate:P5,
+   prep:() => { const r = !!S.pred[P5.id];
+     E.config({ prog:{ perp:r ? 1 : 0 }, letras:'ABCFG', vista:{ az:15, el:34 },
+       desc:'El cubo de arista 6 con la diagonal AG y la arista BF. No se cortan y no son paralelas.',
+       dibujo:(L, E) => {
+         const pr = E.prog, [X1, X2] = CR.pies;
+         L.linea(X.B, X.F, 'h', { ancho:4.5, et:'BF', etT:.85, dx:16 });
+         L.linea(X.A, X.G, 'l', { ancho:4.5, et:'AG', etT:.75, dx:-16, dy:-6 });
+         if (pr.perp){
+           L.linea(X1, UT.lerp(X1, X2, pr.perp), 'd', { ancho:4.5, et:pr.perp > .9 ? 'd' : '', dy:-12 });
+           if (pr.perp > .9){ L.marca(X1, X2, X.G, .55, 'd'); L.marca(X2, X1, X.F, .55, 'd'); }
+           L.punto(X1, 'd'); L.punto(X2, 'd');
+         }
+       },
+       ley:r ? [['l', 'diagonal AG', 'linea'], ['h', 'arista BF', 'linea'], ['d', 'perpendicular común d', 'linea']] : [['l', 'diagonal AG', 'linea'], ['h', 'arista BF', 'linea']],
+       lect:r ? [['d', 'd', `3√2 ≈ ${fmt(CR.respuestas.distancia, 2)}`], ['al', 'ángulo entre AG y BF', gr1(CR.respuestas.angulo)]] : null }); },
+   anima:fin => { E.cfg.ley = [['l', 'diagonal AG', 'linea'], ['h', 'arista BF', 'linea'], ['d', 'perpendicular común d', 'linea']]; E.leyenda();
+     E.cadena([n => E.animar('perp', 1, 1000, n), E.pausa(500), n => E.animar('el', 86, 1500, n), E.pausa(1600), n => E.animar('el', 34, 1300, n)], () => {
+       E.cfg.lect = [['d', 'd', `3√2 ≈ ${fmt(CR.respuestas.distancia, 2)}`], ['al', 'ángulo entre AG y BF', gr1(CR.respuestas.angulo)]]; E.lecturas();
+       E.avisar('La perpendicular común va del centro del cubo al punto medio de BF. Visto desde arriba, BF se ve como el punto B y AG como la diagonal AC: d es la distancia de B a AC.'); fin(); }); },
+   body:() => `<p class="problem">La ${l_('diagonal AG')} y la ${h_('arista BF')} del cubo de arista 6 no se cortan y no son paralelas: son <b>rectas cruzadas</b>. ¿Cuál es la distancia entre ellas?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${d_('d')} = distancia de B a la diagonal AC del piso = (6√2)/2 = ${d_('3√2')}<span class="note">visto desde arriba</span></div></div>
+   <p>La <b>distancia entre dos rectas cruzadas</b> es el largo de su <b>perpendicular común</b>: el único segmento que es perpendicular a las dos a la vez. Aquí va del centro del cubo (3; 3; 3) al punto medio de ${h_('BF')}.</p>
+   <p>Truco de academia: si una de las rectas es perpendicular a un plano (${h_('BF')} ⊥ piso), mira desde ese lado. ${h_('BF')} se ve como un punto y ${l_('AG')} como su proyección AC; la distancia se lee en el dibujo plano.</p>
+   ${fuenteHip('Medir entre extremos, tomar media diagonal o bajar una perpendicular que solo lo es a una de las rectas')}</div>` },
+
+ { k:'Paso 8', t:'Tres caras en una esquina',
+   prep:() => E.config({ prog:{ f:1 }, letras:'A', cuboAlfa:.45,
+     desc:'La esquina A del cubo: las tres caras que llegan a A, dibujadas como sectores. Con el control se abren hasta quedar en el piso.',
+     dibujo:(L, E) => {
+       const D = ME.desarrolloTriedro({ caras:[90, 90, 90], f:E.prog.f, R:4.2 });
+       const al = [.12, .2, .28];
+       D.caras.forEach((cara, i) => L.poligono(cara.puntos, 'ink', { alfa:al[i], borde:'ink', bordeAlfa:.75 }));
+       L.texto(UT.mul(UT.add(D.caras[0].puntos[11], [0, 0, 0]), .6), '90°', 'ink');
+       L.texto(UT.mul(D.caras[1].puntos[11], .6), '90°', 'ink'); L.texto(UT.mul(D.caras[2].puntos[11], .6), '90°', 'ink');
+     },
+     ley:[['ink', 'las tres caras del triedro de vértice A']],
+     lect:E => [['ink', 'suma de las caras', '270°'], ['ink', 'la esquina', E.prog.f < .02 ? 'abierta: falta 90°' : E.prog.f > .98 ? 'cerrada' : 'a medio cerrar']],
+     manija:{ etiqueta:'Cerrar', min:0, max:100, paso:1, fmt:v => `${Math.round(v)} %`, leer:E => Math.round(E.prog.f*100), poner:(E, v) => { E.prog.f = v/100; },
+       punto:v => ME.desarrolloTriedro({ caras:[90, 90, 90], f:v/100, R:4.2 }).libres[0] } }),
+   entrar:() => { E.cadena([E.pausa(600), n => E.animar('f', 0, 1800, n), E.pausa(700), n => E.animar('f', 1, 1800, n)], () => { E.control(); E.avisar('Las tres caras de la esquina se abrieron hasta quedar en el piso, dejando un hueco de 90°, y se volvieron a cerrar.'); }); },
+   body:() => `<p class="problem">En la esquina A se juntan tres caras del cubo: es un <b>ángulo triedro</b>, con tres caras de 90°. Míralas abrirse hasta quedar en el piso.</p>
+   <div class="eqs"><div class="eq">90° + 90° + 90° = 270° &lt; 360°</div></div>
+   <p>Para que tres caras se cierren en una esquina, al abrirlas en el piso <b>no deben cubrir toda la vuelta</b>: la suma de las caras de un triedro es mayor que 0° y menor que 360°. Además, cada cara es menor que la suma de las otras dos.</p>
+   <div class="tabla"><table class="formulas"><tr><th>Qué se mide</th><th>Cómo se mide</th></tr>
+   <tr><td>recta ⊥ plano</td><td>⊥ a dos rectas secantes del plano por su pie</td></tr>
+   <tr><td>${t_('θ')} recta y plano</td><td>con la proyección de la recta</td></tr>
+   <tr><td>${d_('d')} punto y recta</td><td>tres perpendiculares: ${h_('EA')} ⊥ plano, ${p_('AB')} ⊥ L → EB ⊥ L</td></tr>
+   <tr><td>${f_('φ')} diedro</td><td>dos rectas ⊥ a la arista, una en cada cara</td></tr>
+   <tr><td>${d_('d')} rectas cruzadas</td><td>la perpendicular común</td></tr>
+   <tr><td>triedro</td><td>0° &lt; suma de caras &lt; 360°</td></tr></table></div>
+   <p class="hint">Sigue con «¿Qué pasa si…?» para poner a prueba lo que viste.</p>` },
+];
+function manijaPuertaPunto(v){ const P = ME.puerta({ a:6, ancho:ANCHO_PUERTA, abre:v }).esquinas; return UT.lerp(P[2], P[3], .5); }
+var manijaPuerta = { etiqueta:'Abrir', min:5, max:100, paso:1, fmt:v => gr0(v), leer:E => Math.round(E.prog.abre), poner:(E, v) => { E.prog.abre = v; }, punto:manijaPuertaPunto };
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; li.appendChild(b); dots.appendChild(li);
+  b.addEventListener('click', () => go(k));
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = !!(s.gate && !S.pred[s.gate.id]); Celular.compactar($('m1'), E.compacto);
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.entrar) s.entrar();
+  if (!s.gate) E.avisar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Paso ${k + 1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.setAttribute('aria-label', `Ir al paso ${k + 1}: ${steps[k].t}`); }
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){
+  const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return;
+  if (k > S.max) S.max = Math.min(k, steps.length - 1);
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); E.compactar(false); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; E.ocupado = true; nav();
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.ocupado = false; nav(); E.control(); }),
+      () => S.step === paso, { siNo:() => { S.ocupado = false; E.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   La sombra de una varilla, ángulos entre rectas que se cortan o se cruzan, un ángulo recto en perspectiva, tres caras
+   que quieren ser una esquina y la distancia de un vértice a la diagonal. La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', 'ctl2');
+const V0 = ME.VISTA0, V4 = { az:-40, el:15 };
+const SO = ME.proyeccion({ largo:10, h2:6 });
+const AB = ME.anguloRectasCubo({ a:6, r1:'AE', r2:'BD', vista:V0 });
+const FH = ME.anguloEnVertice({ a:6, v:'A', p:'F', q:'H', vista:V0 });
+const EB = ME.anguloEnVertice({ a:6, v:'B', p:'E', q:'C', vista:V4 });
+const TR = ME.triedro({ caras:[100, 120, 150] }), TR2 = ME.triedro({ caras:[100, 110, 130] });
+const BG = ME.distanciaVerticeRecta({ a:6, v:'B', r:'AG' });
+const O = [3, 3, 0];
+const PISO_VAR = { min:-2, max:11, min2:-4, max2:4 };
+const PISO_TRI = { min:-6, max:6 };
+const varillaDe = incl => ME.varilla({ incl, dir:0, largo:10 });
+const RAZON = { existe:'existe', suma:'suma', obtusa:'obtusa' };
+
+const EXPS = [
+ { id:'sombra', corto:'La sombra de una varilla', ok:'c',
+   q:`Una ${l_('varilla')} de 10 está apoyada en el piso y su punta queda a ${h_('6')} de altura. Con el sol justo encima (cenital), ¿cuánto mide su ${p_('sombra')}?`,
+   opts:[['a', `${raiz(SO.errores.proyeccion.igual)} u`, 'ESP-proyeccion-igual', 'hipotesis'], ['b', `${raiz(SO.errores.proyeccion.resta)} u`, 'ESP-proyeccion-resta', 'hipotesis'],
+     ['c', `${raiz(SO.respuestas.proyeccion)} u`], ['d', `${raiz(SO.errores.proyeccion.altura)} u`, 'ESP-proyeccion-altura', 'hipotesis']],
+   fb:{ a:'La sombra de una varilla inclinada es más corta que la varilla; solo una varilla echada en el piso da una sombra igual a ella.',
+     b:'10 − 6 resta largos que no están en la misma recta. La varilla, su sombra y la altura forman un triángulo rectángulo.',
+     d:'6 es la altura de la punta, el lado vertical del triángulo; la sombra es el lado que queda en el piso.' },
+   antes:r => E.config({ prog:{ incl:SO.respuestas.angulo, sol:r ? 1 : 0 }, cubo:false, piso:PISO_VAR,
+     caja:cajaDe(PISO_VAR, [[0, 0, 10.5], [10, 0, 6.5]]), vista:{ az:-18, el:20 },
+     desc:'Una varilla de 10 apoyada en el piso, con la punta a 6 de altura; una línea a trazos baja de la punta al piso.',
+     dibujo:(L, E) => {
+       const V = varillaDe(E.prog.incl), pr = E.prog;
+       L.linea(V.punta, V.pieSombra, 'h', { ancho:2.6, trazos:[6, 5], et:`h = ${fmt(V.altura, 1)}`, dx:30 });
+       if (pr.sol){ rayosSol(L, [V.punta, UT.lerp(V.O, V.punta, .5)], pr.sol, 2.5); L.linea(V.O, UT.lerp(V.O, V.pieSombra, pr.sol), 'p', { ancho:5, et:pr.sol > .9 ? `sombra = ${fmt(V.sombra, 1)}` : '', dy:18 }); if (pr.sol > .9) L.marca(V.pieSombra, V.punta, V.O, .6, 'ink'); }
+       L.linea(V.O, V.punta, 'l', { ancho:5, et:'10', etT:.5, dx:-14, dy:-10 });
+       L.punto(V.punta, 'l');
+     },
+     ley:r ? [['l', 'varilla (10)', 'linea'], ['h', 'altura de la punta', 'trazos'], ['p', 'sombra', 'linea']] : [['l', 'varilla (10)', 'linea'], ['h', 'altura de la punta', 'trazos']],
+     lect:r ? E => { const V = varillaDe(E.prog.incl); return [['p', 'sombra', fmt(V.sombra, 2)], ['h', 'altura h', fmt(V.altura, 2)], ['t', 'θ con el piso', gr1(E.prog.incl)]]; } : null,
+     manija:r ? manijaSombra : null }),
+   despues:fin => { E.cfg.ley = [['l', 'varilla (10)', 'linea'], ['h', 'altura de la punta', 'trazos'], ['p', 'sombra', 'linea']]; E.leyenda();
+     E.animar('sol', 1, 1300, () => { E.cfg.lect = E => { const V = varillaDe(E.prog.incl); return [['p', 'sombra', fmt(V.sombra, 2)], ['h', 'altura h', fmt(V.altura, 2)], ['t', 'θ con el piso', gr1(E.prog.incl)]]; };
+       E.cfg.manija = manijaSombra; E.lecturas(); E.control(); E.dibujar(); E.avisar('Los rayos del sol bajan verticales: la sombra va del pie de la varilla al pie de la altura, y mide 8. Puedes inclinar la varilla con la manija.'); fin(); }); },
+   exp:() => `<div class="eqs"><div class="eq">${p_('sombra')} = √(${l_('10')}² − ${h_('6')}²) = √64 = ${p_('8')}</div><div class="eq">sen ${t_('θ')} = ${h_('6')}/${l_('10')} → ${t_('θ ≈ ' + gr1(SO.respuestas.angulo))}</div></div>
+     <p>La sombra con sol cenital es la <b>proyección ortogonal</b>: la varilla, su sombra y la altura forman un triángulo rectángulo. La proyección de un segmento nunca es más larga que él, y solo es igual si el segmento está paralelo al plano.</p>
+     <p class="hint">Inclina la varilla: con 90° no hay sombra; echada, la sombra mide 10.</p>${fuenteHip('Creer que la sombra mide lo mismo, restar los largos o tomar la altura')}` },
+
+ { id:'cruzadas-angulo', corto:'Una arista y una diagonal del piso', ok:'a',
+   q:`La ${h_('arista AE')} y la ${L_('diagonal BD')} del piso no se cortan. ¿Qué ángulo forman?`,
+   opts:[['a', gr0(AB.respuestas.angulo)], ['b', gr0(AB.errores.angulo.paralelas), 'ESP-cruzadas-paralelas', 'hipotesis'],
+     ['c', gr0(AB.errores.angulo.medio), 'ESP-diagonal-45', 'hipotesis'], ['d', gr0(AB.errores.angulo.dibujo), 'ESP-angulo-del-dibujo', 'parcial']],
+   fb:{ b:'Que no se corten no las vuelve paralelas: AE sube y BD está en el piso. Son rectas cruzadas, y entre ellas sí hay ángulo.',
+     c:'BD forma 45° con las aristas del piso, pero AE no está en el piso: es perpendicular a él.',
+     d:`${gr0(AB.errores.angulo.dibujo)} es lo que mide el ángulo en el dibujo, en perspectiva. Gira el cubo: ese número cambia, el ángulo de verdad no.` },
+   antes:r => E.config({ prog:{ mueve:r ? 1 : 0, marca:r ? 1 : 0 }, letras:'ABDE', vista:V0,
+     desc:'El cubo de arista 6 con la arista AE, que sube desde A, y la diagonal BD del piso, que no pasa por A.',
+     dibujo:(L, E) => {
+       const pr = E.prog, base = UT.lerp(X.A, O, pr.mueve);
+       L.linea(X.B, X.D, 'L', { ancho:4, et:'BD', etT:.15, dy:14 });
+       L.linea(X.A, X.E, 'h', { ancho:4.5, et:'AE', dx:-18 });
+       if (pr.mueve){ L.linea(base, UT.add(base, [0, 0, 6]), 'h', { ancho:3, trazos:[7, 5], alfa:.85 }); }
+       if (pr.marca){ L.marca(O, [3, 3, 6], X.D, .6, 'al', { alfa:pr.marca }); L.marca(O, [3, 3, 6], X.B, .6, 'al', { alfa:pr.marca }); L.texto([3.4, 3, 1.4], 'α = 90°', 'al', { alfa:pr.marca, dx:24 }); }
+     },
+     ley:r ? [['h', 'AE y su paralela por O', 'linea'], ['L', 'diagonal BD', 'linea'], ['al', 'α']] : [['h', 'arista AE', 'linea'], ['L', 'diagonal BD', 'linea']],
+     lect:r ? [['al', 'α', '90°'], ['d', 'distancia entre AE y BD', `3√2 ≈ ${fmt(AB.distancia, 2)}`]] : null }),
+   despues:fin => { E.cfg.ley = [['h', 'AE y su paralela por O', 'linea'], ['L', 'diagonal BD', 'linea'], ['al', 'α']]; E.leyenda();
+     E.cadena([n => E.animar('mueve', 1, 1400, n), n => E.animar('marca', 1, 500, n)], () => { E.cfg.lect = [['al', 'α', '90°'], ['d', 'distancia entre AE y BD', `3√2 ≈ ${fmt(AB.distancia, 2)}`]]; E.lecturas();
+       E.avisar('Una copia de AE se deslizó, paralela a sí misma, hasta el centro O del piso, que está en BD. Ahí se ve el ángulo recto con BD.'); fin(); }); },
+   exp:() => `<p>El ángulo entre dos <b>rectas cruzadas</b> se mide trasladando una de ellas, paralela a sí misma, hasta que corte a la otra. La copia de ${h_('AE')} por O sigue siendo perpendicular al piso, así que forma ${al_('90°')} con ${L_('BD')}.</p>
+     <p>Una recta perpendicular a un plano es perpendicular a <b>todas</b> las rectas del plano, también a las que no pasan por su pie.</p>${fuenteHip('Creer que dos rectas que no se cortan son paralelas, o usar los 45° de la diagonal')}${fuenteDibujo}` },
+
+ { id:'diagonales-caras', corto:'Dos diagonales de caras vecinas', ok:'d',
+   q:'Las diagonales AF y AH de dos caras vecinas del cubo salen del mismo vértice A. ¿Qué ángulo α forman?',
+   opts:[['a', gr0(FH.errores.angulo.recto), 'ESP-caras-perpendiculares', 'hipotesis'], ['b', gr0(FH.errores.angulo.medio), 'ESP-diagonal-45', 'hipotesis'],
+     ['c', gr0(FH.errores.angulo.dibujo), 'ESP-angulo-del-dibujo', 'parcial'], ['d', gr0(FH.respuestas.angulo)]],
+   fb:{ a:'Las dos caras son perpendiculares entre sí, pero sus diagonales no: cada una está inclinada 45° respecto de la arista común.',
+     b:'45° es el ángulo de cada diagonal con una arista de su cara, no el ángulo entre las dos diagonales.',
+     c:`${gr0(FH.errores.angulo.dibujo)} es lo que mide el ángulo en el dibujo, en perspectiva. Gira el cubo: ese número cambia, el ángulo de verdad no.` },
+   antes:r => E.config({ prog:{ tri:r ? 1 : 0 }, letras:'AFH', vista:r ? { az:-45, el:35.26 } : V0,
+     desc:'El cubo de arista 6 con las diagonales AF (de la cara del frente) y AH (de la cara de la izquierda), que salen de A.',
+     dibujo:(L, E) => {
+       const pr = E.prog;
+       if (pr.tri){ L.poligono([X.A, X.F, X.H], 'al', { alfa:.14*pr.tri, borde:false }); L.linea(X.F, X.H, 'ink', { ancho:2.5, alfa:pr.tri, et:'6√2', dy:-12 }); }
+       L.linea(X.A, X.F, 'ink', { ancho:4, et:pr.tri ? '6√2' : '', dx:16 }); L.linea(X.A, X.H, 'ink', { ancho:4, et:pr.tri ? '6√2' : '', dx:-18 });
+       L.angulo(X.A, X.F, X.H, 1.5, 'al', pr.tri > .9 ? 'α = 60°' : 'α', { centro:X.A });
+     },
+     ley:[['ink', 'diagonales de las caras', 'linea'], ['al', 'α']],
+     lect:r ? [['al', 'α', '60°'], ['ink', 'AF = FH = AH', '6√2']] : null }),
+   despues:fin => E.cadena([n => E.animar('tri', 1, 800, n), E.pausa(300), n => { E.animar('az', -45, 1500); E.animar('el', 35.26, 1500, n); }], () => {
+     E.cfg.lect = [['al', 'α', '60°'], ['ink', 'AF = FH = AH', '6√2']]; E.lecturas();
+     E.avisar('Se dibujó FH: AF, FH y AH son diagonales de caras, todas de 6√2. El cubo giró hasta mirar el triángulo AFH de frente: es equilátero.'); fin(); }),
+   exp:() => `<p>AF, FH y AH son diagonales de tres caras: miden lo mismo (6√2). El triángulo AFH es <b>equilátero</b>, así que ${al_('α = 60°')}. Visto de frente, el triángulo se ve con su forma real.</p>
+     <p class="aviso">Un ángulo en el espacio se ve con su medida real solo si se mira de frente el plano que lo contiene.</p>${fuenteHip('Creer que las diagonales de caras perpendiculares son perpendiculares, o usar 45°')}${fuenteDibujo}` },
+
+ { id:'angulo-dibujo', corto:'Un ángulo en el dibujo', ok:'b',
+   q:'En este dibujo del cubo, mira el ángulo α entre EB y BC. ¿Cuánto mide de verdad?',
+   opts:[['a', gr0(EB.errores.angulo.dibujo), 'ESP-angulo-del-dibujo', 'parcial'], ['b', gr0(EB.respuestas.angulo)],
+     ['c', gr0(EB.errores.angulo.medio), 'ESP-diagonal-45', 'hipotesis'], ['d', gr0(EB.errores.angulo.equilatero), 'ESP-triangulo-equilatero', 'hipotesis']],
+   fb:{ a:`${gr0(EB.errores.angulo.dibujo)} es lo que mide en el dibujo. En perspectiva, un ángulo recto puede verse muy cerrado o muy abierto.`,
+     c:'45° es el ángulo EBA, en la cara del frente. El ángulo EBC sale de esa cara hacia el fondo.',
+     d:'El triángulo EBC no es equilátero: EB = 6√2, BC = 6 y EC = 6√3.' },
+   antes:r => E.config({ prog:{ tres:r ? 1 : 0 }, letras:'ABCE', vista:r ? { az:90, el:45 } : V4,
+     desc:'El cubo de arista 6 visto desde un lado, con los segmentos EB y BC marcados y el ángulo α entre ellos.',
+     dibujo:(L, E) => {
+       const pr = E.prog;
+       if (pr.tres){ L.linea(X.E, X.A, 'h', { ancho:3.5, alfa:pr.tres }); L.linea(X.A, X.B, 'p', { ancho:3.5, alfa:pr.tres }); L.marca(X.A, X.E, X.B, .55, 'ink', { alfa:pr.tres }); L.marca(X.B, X.A, X.C, .55, 'ink', { alfa:pr.tres }); }
+       L.linea(X.E, X.B, 'ink', { ancho:4 }); L.linea(X.B, X.C, 'L', { ancho:4 });
+       if (pr.tres > .9) L.marca(X.B, X.E, X.C, .6, 'al'); else L.angulo(X.B, X.E, X.C, 1.3, 'al', 'α', { centro:X.B });
+     },
+     ley:r ? [['ink', 'EB', 'linea'], ['L', 'BC', 'linea'], ['h', 'EA ⊥ piso', 'linea'], ['p', 'AB ⊥ BC', 'linea'], ['al', 'α']] : [['ink', 'EB', 'linea'], ['L', 'BC', 'linea'], ['al', 'α']],
+     lect:r ? [['al', 'α de verdad', '90°']] : null }),
+   despues:fin => { E.cfg.ley = [['ink', 'EB', 'linea'], ['L', 'BC', 'linea'], ['h', 'EA ⊥ piso', 'linea'], ['p', 'AB ⊥ BC', 'linea'], ['al', 'α']]; E.leyenda();
+     E.cadena([n => E.animar('tres', 1, 800, n), E.pausa(400), n => { E.animar('az', 90, 1800); E.animar('el', 45, 1800, n); }], () => {
+       E.cfg.lect = [['al', 'α de verdad', '90°']]; E.lecturas();
+       E.avisar('Aparecieron EA, perpendicular al piso, y AB, perpendicular a BC. El cubo giró hasta mirar de frente el plano EBC: el ángulo se ve recto.'); fin(); }); },
+   exp:() => `<p>${h_('EA')} ⊥ piso y ${p_('AB')} ⊥ BC, así que EB ⊥ BC por el <b>teorema de las tres perpendiculares</b>: ${al_('α = 90°')}. En el dibujo inicial se veía de ${gr0(EB.errores.angulo.dibujo)}.</p>
+     <p class="aviso">En un dibujo en perspectiva, los ángulos y largos no se leen: se deducen de las perpendiculares que sabes que hay.</p>${fuenteDibujo}${fuenteHip('Usar 45° o creer que el triángulo es equilátero')}` },
+
+ { id:'triedro', corto:'Tres caras para una esquina', ok:'c',
+   q:'Se quiere doblar tres caras de 100°, 120° y 150° para formar la esquina de un sólido (un ángulo triedro). ¿Se puede?',
+   opts:[['a', 'Sí: cada cara mide menos de 180°', 'ESP-triedro-solo-cada-cara', 'hipotesis'], ['b', 'Sí: la mayor es menor que la suma de las otras dos', 'ESP-triedro-solo-desigualdad', 'hipotesis'],
+     ['c', 'No: las tres suman más de 360°'], ['d', 'No: un triedro no puede tener caras obtusas', 'ESP-triedro-obtusa', 'hipotesis']],
+   fb:{ a:'Que cada cara mida menos de 180° es necesario, pero no basta: falta mirar la suma.',
+     b:'150° < 100° + 120° sí se cumple, pero no basta: falta mirar la suma.',
+     d:'Un triedro sí puede tener caras obtusas: con 100°, 110° y 130° (suma 340°) se cierra. El problema aquí es la suma.' },
+   antes:r => E.config({ prog:{ sep:r ? 0 : 1, f2:r ? 1 : 0, dos:r ? 1 : 0 }, cubo:false, piso:PISO_TRI, vista:{ az:20, el:38 },
+     caja:cajaDe(PISO_TRI, [[0, 0, 5], [-5, -5, 0], [5, 5, 0]]),
+     desc:'Tres caras con forma de sector, de 100°, 120° y 150°, sueltas en el piso, cada una con su ángulo marcado.',
+     dibujo:(L, E) => {
+       const pr = E.prog;
+       if (pr.dos > .01){
+         const D = ME.desarrolloTriedro({ caras:[100, 110, 130], f:pr.f2, R:4 }), al = [.12, .2, .28];
+         D.caras.forEach((cara, i) => L.poligono(cara.puntos, 'ink', { alfa:al[i]*pr.dos, borde:'ink', bordeAlfa:.75*pr.dos }));
+         L.texto([0, 0, 0], '100°, 110° y 130°', 'ink', { dy:28, alfa:pr.dos });
+         return;
+       }
+       const D = ME.desarrolloTriedro({ caras:[100, 120, 150], f:0, R:4 }), al = [.12, .2, .28], et = ['150°', '120°', '100°'];
+       D.caras.forEach((cara, i) => {
+         const m = cara.puntos[Math.floor(cara.puntos.length/2)], dir = UT.mul(UT.unit([m[0], m[1], 0]), 2.2*pr.sep);
+         const pts = cara.puntos.map(p => UT.add(p, dir));
+         L.poligono(pts, 'ink', { alfa:al[i], borde:'ink', bordeAlfa:.75 });
+         L.texto(UT.add(UT.mul(m, .55), dir), et[i], 'ink');
+       });
+       if (pr.sep < .05){
+         // lo que se encima: de 240° a 250° (desde e1, contra el reloj)
+         const pts = [[0, 0, 0]]; for (let g = 240; g <= 250; g += 1) pts.push([4.6*Math.cos(g*Math.PI/180), 4.6*Math.sin(g*Math.PI/180), 0]);
+         L.poligono(pts, 'ink', { alfa:.55, borde:'ink' });
+         L.texto(pts[6], `se enciman ${TR.traslape}°`, 'ink', { dy:16 });
+       }
+     },
+     ley:[['ink', 'caras del triedro']],
+     lect:r ? [['ink', 'suma de las caras', `${TR.suma}°`], ['ink', 'con 100°, 110° y 130°', `${TR2.suma}°: se cierra`]] : null }),
+   despues:fin => E.cadena([n => E.animar('sep', 0, 1400, n), E.pausa(2200), n => { E.prog.dos = 0.02; E.animar('dos', 1, 500, n); }, n => E.animar('f2', 1, 1800, n)], () => {
+     E.cfg.lect = [['ink', 'suma de las caras', `${TR.suma}°`], ['ink', 'con 100°, 110° y 130°', `${TR2.suma}°: se cierra`]]; E.lecturas();
+     E.avisar(`Las tres caras se juntaron alrededor del vértice y se enciman ${TR.traslape}°: no se pueden doblar. Después, caras de 100°, 110° y 130° (suma 340°) sí se cerraron en una esquina.`); fin(); }),
+   exp:() => `<div class="eqs"><div class="eq">100° + 120° + 150° = ${TR.suma}° &gt; 360°</div><div class="eq">100° + 110° + 130° = ${TR2.suma}° &lt; 360°</div></div>
+     <p>Las caras de un triedro, abiertas en el piso alrededor del vértice, <b>no pueden cubrir toda la vuelta</b>: si suman 360° o más, se enciman y no hay esquina. Además, cada cara tiene que ser menor que la suma de las otras dos. Las caras obtusas sí se pueden usar.</p>${fuenteHip('Mirar un solo criterio o creer que no puede haber caras obtusas')}` },
+
+ { id:'vertice-diagonal', corto:'De un vértice a la diagonal', ok:'a',
+   q:`¿A qué distancia ${d_('d')} está el vértice B de la ${l_('diagonal AG')} del cubo de arista 6?`,
+   opts:[['a', `${raiz(BG.respuestas.distancia)} u`], ['b', `${raiz(BG.errores.distancia.alMedio)} u`, 'ESP-al-punto-medio', 'hipotesis'],
+     ['c', `${raiz(BG.errores.distancia.alExtremo)} u`, 'ESP-al-extremo', 'hipotesis'], ['d', `${raiz(BG.errores.distancia.conLaSombra)} u`, 'ESP-con-la-sombra', 'hipotesis']],
+   fb:{ b:'3√3 es la distancia de B al centro del cubo, el punto medio de AG. Pero el pie de la perpendicular no está en el medio.',
+     c:'6 es la distancia de B a A, un extremo de la diagonal. El segmento BA no es perpendicular a AG.',
+     d:'3√2 es la distancia de B a la sombra AC de la diagonal. La sombra no es la recta: AG sube, y su distancia a B es otra.' },
+   antes:r => E.config({ prog:{ tri:r ? 1 : 0 }, letras:'ABCG', vista:r ? { az:0, el:45 } : V0,
+     desc:'El cubo de arista 6 con la diagonal AG y el vértice B marcado.',
+     dibujo:(L, E) => {
+       const pr = E.prog;
+       if (pr.tri){ L.linea(X.A, X.B, 'ink', { ancho:2.4, alfa:pr.tri, et:'6', dy:14 }); L.linea(X.B, X.G, 'ink', { ancho:2.4, alfa:pr.tri, et:'6√2', etT:.3, dx:22 }); L.marca(X.B, X.A, X.G, .55, 'ink', { alfa:pr.tri });
+         L.linea(X.B, UT.lerp(X.B, BG.pie, pr.tri), 'd', { ancho:4.5, et:pr.tri > .9 ? 'd' : '', dx:-12 }); if (pr.tri > .9) L.marca(BG.pie, X.B, X.G, .5, 'd'); }
+       L.linea(X.A, X.G, 'l', { ancho:4.5, et:'AG', etT:.8, dx:-16 });
+       L.punto(X.B, 'ink', '', { r:5 });
+     },
+     ley:r ? [['l', 'diagonal AG', 'linea'], ['ink', 'triángulo ABG, recto en B', 'linea'], ['d', 'distancia d', 'linea']] : [['l', 'diagonal AG', 'linea']],
+     lect:r ? [['d', 'd = 6 · 6√2 / 6√3', `2√6 ≈ ${fmt(BG.respuestas.distancia, 2)}`]] : null }),
+   despues:fin => { E.cfg.ley = [['l', 'diagonal AG', 'linea'], ['ink', 'triángulo ABG, recto en B', 'linea'], ['d', 'distancia d', 'linea']]; E.leyenda();
+     E.cadena([n => E.animar('tri', 1, 1000, n), E.pausa(300), n => { E.animar('az', 0, 1500); E.animar('el', 45, 1500, n); }], () => {
+       E.cfg.lect = [['d', 'd = 6 · 6√2 / 6√3', `2√6 ≈ ${fmt(BG.respuestas.distancia, 2)}`]]; E.lecturas();
+       E.avisar('Se dibujó el triángulo ABG, recto en B, y la perpendicular de B a AG. El cubo giró hasta mirar ese triángulo de frente.'); fin(); }); },
+   exp:() => `<div class="eqs"><div class="eq">${d_('d')} = AB · BG / ${l_('AG')} = 6 · 6√2 / ${l_('6√3')} = ${d_('2√6')}</div></div>
+     <p>AB es perpendicular a la cara BCGF, así que AB ⊥ BG: el triángulo ABG es <b>rectángulo en B</b>. La distancia de B a ${l_('AG')} es la altura relativa a la hipotenusa. Su pie está a un tercio de la diagonal, no en el medio.</p>${fuenteHip('Ir al punto medio, a un extremo o a la sombra de la diagonal')}` },
+];
+var manijaSombra = { etiqueta:'Inclinar', min:5, max:90, paso:1, fmt:v => gr0(v), leer:E => Math.round(E.prog.incl), poner:(E, v) => { E.prog.incl = v; }, punto:v => varillaDe(v).punta };
+
+const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k > primeraLibre() || E.ocupado) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  E.compacto = !S.pred[x.id]; Celular.compactar($('m2'), E.compacto);
+  x.antes(!!S.pred[x.id]);
+  E.compactar(!S.pred[x.id]);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { if (E.ocupado) return; ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); E.compactar(false); pintar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    E.ocupado = true; botonesOcupado(true);
+    const listo = () => { E.ocupado = false; botonesOcupado(false); E.control(); };
+    Celular.alResponder($('cv2'), () => x.despues(() => { if (S.k === k) E.dibujar(); listo(); }), () => S.k === k, { siNo:listo });
+  });
+  pintar();
+}
+// Mientras corre la animación de la respuesta, no se cambia de experimento (se terminaría a medias).
+function botonesOcupado(on){
+  $('exps').querySelectorAll('button').forEach(b => { if (!b.hasAttribute('aria-disabled')) b.disabled = on; });
+  const sig = $('sig2'); if (sig) sig.disabled = on;
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
