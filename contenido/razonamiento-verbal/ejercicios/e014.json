@@ -1,0 +1,85 @@
+{
+  "id": "e014",
+  "version": 1,
+  "tipo": "eliminacion",
+  "unidad": "razonamiento-verbal.eliminacion-de-oraciones",
+  "titulo": "Eliminación de oraciones: El chuño",
+  "grado": 4,
+  "dificultad": 2,
+  "cuerpo": {
+    "oraciones": [
+      {
+        "n": "I",
+        "t": "El chuño es papa deshidratada con las heladas y el sol de la puna."
+      },
+      {
+        "n": "II",
+        "t": "Es un alimento que dura mucho."
+      },
+      {
+        "n": "III",
+        "t": "Para hacerlo, las papas se dejan afuera varias noches de helada y luego se pisan para sacarles el agua y se secan al sol."
+      },
+      {
+        "n": "IV",
+        "t": "Así preparado, el chuño puede guardarse durante años sin echarse a perder."
+      }
+    ]
+  },
+  "previo": {
+    "tipo": "marcar-oracion",
+    "pide": "Antes de ver las alternativas: toca la oración que sobra.",
+    "aceptadas": [
+      "II"
+    ],
+    "codigos": {
+      "I": "RV38",
+      "III": "RV5",
+      "IV": "RV30"
+    },
+    "explicacion": "La oración II dice que el chuño dura mucho, y la IV dice lo mismo con más precisión (\"durante años\"): la II está contenida en la IV y no aporta nada.",
+    "explicaciones": {
+      "I": "La oración I presenta el tema: dice qué es el chuño.",
+      "III": "No repite la palabra \"chuño\", pero explica cómo se hace: es pertinente.",
+      "IV": "Dice lo mismo que la II, pero con más precisión: si se elimina, se pierde el \"durante años\". La que sobra es la II."
+    }
+  },
+  "enunciado": "¿Qué oración se debe eliminar?",
+  "alternativas": [
+    {
+      "t": "II",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Repite lo que dice la IV, con menos precisión: es redundante."
+    },
+    {
+      "t": "I",
+      "codigo": "RV38",
+      "explicacion": "Presenta el tema: sin ella no se sabe qué es el chuño."
+    },
+    {
+      "t": "III",
+      "codigo": "RV5",
+      "explicacion": "No dice \"chuño\", pero explica cómo se prepara: es pertinente."
+    },
+    {
+      "t": "IV",
+      "codigo": "RV30",
+      "explicacion": "Es la que dice cuánto dura el chuño (\"durante años\"); la II dice lo mismo con menos precisión."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El chuño se elabora congelando papas en las noches de helada, pisándolas para sacarles el agua y secándolas al sol; se conserva por años.",
+      "fuente": "FAO, Año Internacional de la Papa 2008; CIP, Centro Internacional de la Papa."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. Se agregó el secado al sol y «sin echarse a perder»."
+  }
+}

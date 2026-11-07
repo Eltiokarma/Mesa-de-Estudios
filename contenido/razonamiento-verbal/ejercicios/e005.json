@@ -1,0 +1,54 @@
+{
+  "id": "e005",
+  "version": 1,
+  "tipo": "termino-excluido",
+  "unidad": "razonamiento-verbal.definiciones",
+  "grado": 3,
+  "dificultad": 2,
+  "cuerpo": {
+    "terminos": [
+      "cóndor",
+      "pingüino",
+      "suri",
+      "murciélago"
+    ]
+  },
+  "enunciado": "¿Qué término no pertenece al grupo?",
+  "alternativas": [
+    {
+      "t": "murciélago",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Es el único mamífero: el cóndor, el pingüino y el suri son aves, tienen plumas y ponen huevos. \"Vuela o no vuela\" no sirve: parte el grupo en dos y dos."
+    },
+    {
+      "t": "pingüino",
+      "codigo": "RV22",
+      "explicacion": "No vive en los Andes, pero es un ave, como el cóndor y el suri. La clase es \"ave\", no \"andino\"."
+    },
+    {
+      "t": "cóndor",
+      "codigo": "RV39",
+      "explicacion": "Es el más grande y come carroña, pero eso son rasgos secundarios: sigue siendo un ave."
+    },
+    {
+      "t": "suri",
+      "codigo": "RV40",
+      "explicacion": "El suri es un ave grande de la puna, parecida al avestruz, que no vuela: es un ave, como el cóndor y el pingüino."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El suri (Rhea pennata) es un ave no voladora que vive en la puna del sur del Perú, como en Puno y Tacna; el murciélago es un mamífero.",
+      "fuente": "SERFOR, Libro Rojo de la fauna silvestre amenazada del Perú (2018)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. Sin cambios de clave."
+  }
+}

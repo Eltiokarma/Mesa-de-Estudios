@@ -1,0 +1,86 @@
+{
+  "id": "e012",
+  "version": 1,
+  "tipo": "plan-de-redaccion",
+  "unidad": "razonamiento-verbal.plan-de-redaccion",
+  "titulo": "Plan de redacción: El cuy",
+  "grado": 3,
+  "dificultad": 1,
+  "cuerpo": {
+    "oraciones": [
+      {
+        "n": "I",
+        "t": "Su carne, rica en proteínas, es el plato de las grandes ocasiones.",
+        "retoma": "III"
+      },
+      {
+        "n": "II",
+        "t": "En algunos pueblos, el curandero lo pasa por el cuerpo del enfermo para \"leer\" su mal.",
+        "retoma": "V"
+      },
+      {
+        "n": "III",
+        "t": "El cuy es un roedor que los pueblos andinos crían desde hace miles de años."
+      },
+      {
+        "n": "IV",
+        "t": "Por eso, para muchas familias andinas, el cuy es mucho más que una carne."
+      },
+      {
+        "n": "V",
+        "t": "Pero el cuy no es solo alimento: también tiene un lugar en la medicina tradicional.",
+        "retoma": "I"
+      }
+    ]
+  },
+  "previo": {
+    "tipo": "ordenar",
+    "pide": "Antes de ver las alternativas: arrastra las tarjetas al orden que tendría el texto.",
+    "aceptada": [
+      "III",
+      "I",
+      "V",
+      "II",
+      "IV"
+    ],
+    "explicacion": "Primero se presenta el cuy (III); \"su carne\" lo retoma (I); \"pero… no es solo alimento\" se opone a la I (V); el curandero es un ejemplo de esa medicina (II), y \"por eso\" cierra (IV)."
+  },
+  "enunciado": "Elige el orden correcto de las oraciones.",
+  "alternativas": [
+    {
+      "t": "III – I – V – II – IV",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Presenta al cuy, su uso como alimento, su otro uso, un ejemplo y la conclusión."
+    },
+    {
+      "t": "IV – III – I – V – II",
+      "codigo": "RV37",
+      "explicacion": "Empieza por la conclusión: \"por eso\" se apoya en lo que todavía no se ha contado."
+    },
+    {
+      "t": "III – V – I – II – IV",
+      "codigo": "RV28",
+      "explicacion": "\"No es solo alimento\" (V) aparece antes de decir que es alimento (I): la oposición queda sin su primera parte."
+    },
+    {
+      "t": "III – I – V – IV – II",
+      "codigo": "RV29",
+      "explicacion": "Cierra antes de dar el ejemplo del curandero (II), que queda suelto después de la conclusión."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El cuy se domesticó en los Andes hace varios miles de años; en la medicina tradicional andina se usa en la «soba» o «limpia» con cuy para diagnosticar enfermedades.",
+      "fuente": "FAO, Producción de cuyes (Chauca, 1997); estudios etnográficos sobre la «jubeada» o soba de cuy."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. Sin cambios de clave."
+  }
+}

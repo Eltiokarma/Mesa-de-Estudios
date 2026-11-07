@@ -4,7 +4,7 @@ Cada ejecución hace la primera pieza que falte:
 
 1. [x] Informe `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`
 2. [x] Diseño del formato lectura, `docs/formato-lectura.md`
-3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (30 de 30, más la pareja de entrada y salida; faltan los ejercicios sueltos)
+3. [x] Banco de textos propios en `contenido/razonamiento-verbal/` (30 de 30, más la pareja de entrada y salida y 15 ejercicios sueltos)
 4. [x] Guía para profesores, `docs/guia-profesores.md` (adelantada: se hizo antes de llegar a 30 textos)
 
 ---
@@ -363,3 +363,57 @@ También corregí el validador: `\b` de JavaScript toma las letras con tilde com
 **Pruebas:** `banco.test.js` da 36 de 36. `npm test` da 3986 de 3987; la que falla es la de siempre, «app/datos/catalogo.json está al día», que se arregla con `npm run catalogo`.
 
 **Pedido para la integración:** correr `npm run catalogo`, porque el índice cambió.
+
+---
+
+## 7 nov 2026 · Pieza 3, ejercicios sueltos: e001 a e015
+
+**Qué hice.** Quince ejercicios en `contenido/razonamiento-verbal/ejercicios/`, tres por tipo:
+
+| Tipo | Ejercicios | Unidad | Paso previo |
+| --- | --- | --- | --- |
+| Analogía | e001 a e003 (agricultor y chaquitaclla, cuy y roedor, pétalo y flor) | `analogias` | relación de la pareja |
+| Término excluido | e004 a e006 (instrumentos, aves, metales) | `definiciones` (provisional) | ninguno |
+| Conectores | e007 a e009 (la mala cosecha, el quechua, el Q'eswachaka) | `conectores` | relación (oposición) |
+| Plan de redacción | e010 a e012 (quinua, Titicaca, cuy) | `plan-de-redaccion` | ordenar tarjetas |
+| Eliminación | e013 a e015 (la llama, el chuño, el agua en la altura) | `eliminacion-de-oraciones` | tocar la que sobra |
+
+En la eliminación, uno es impertinente, otro redundante y otro incompatible. En el plan, el orden correcto cambia en cada ejercicio.
+
+**Códigos nuevos en el informe** (los cuatro son hipótesis):
+- RV37: el plan empieza por la conclusión.
+- RV38: se elimina la oración que presenta el tema.
+- RV39: en término excluido, se saca el que difiere en un rasgo secundario.
+- RV40: en término excluido, se saca la palabra que no se conoce.
+
+**Validación.** `banco.test.js` valida ahora también los ejercicios:
+- corre `validar` de `nucleo/lectura.js`;
+- revisa la forma del cuerpo según el tipo y que el paso previo corresponda al tipo;
+- en término excluido y eliminación, que las alternativas sean los términos o los numerales;
+- en el plan, que la alternativa con RV28 rompa un retoma y las demás no;
+- que cada oración que no sobra tenga en el paso previo el mismo código que en la alternativa;
+- que haya explicaciones en el paso previo.
+
+**Subagentes:** tres revisores a ciegas (cinco ejercicios cada uno) y una segunda verificación de los cinco que cambiaron.
+- **Dos respuestas defendibles:**
+  - e004: la trompeta era la única no andina; ahora van flauta dulce y armónica, y el origen parte el grupo dos y dos;
+  - e002: en el paso previo, «la sequía produce hambruna» y «la sequía causa hambruna» valían igual. Cambié la pareja por CUY : ROEDOR (ver pedido 2).
+- **Hecho y criterio:**
+  - e015: la oración incompatible decía que en la altura se cocina más rápido; para verla incompatible había que saber física. Ahora contradice a la oración I dentro del mismo ejercicio;
+  - e006: el carbón no es un elemento; quedó el azufre. El oro, único metal precioso, pasó a cobre.
+- **Ajustes:**
+  - e013 estaba muy fácil;
+  - e010 afirmaba de más sobre el consumo de quinua;
+  - e014 decía «malograrse».
+
+**En el índice** entran solo e007 a e009, porque su unidad (`conectores`) ya está en la ficha. Los otros doce están aprobados, pero fuera del índice: `catalogo.test.js` exige que la ficha liste cada unidad del banco.
+
+**Pruebas:** `banco.test.js` da 52 de 52. `npm test` da 4002 de 4003; la que falla es la de siempre, «app/datos/catalogo.json está al día».
+
+**Pedidos para la integración:**
+1. Agregar a `plantillas/lectura-verbal/plantilla.json` las unidades `razonamiento-verbal.analogias`, `razonamiento-verbal.plan-de-redaccion`, `razonamiento-verbal.eliminacion-de-oraciones` y `razonamiento-verbal.definiciones`, y `lectura-verbal` a sus `plantillas` en `catalogo/cursos/razonamiento-verbal.json`. Después agregar e001 a e006 y e010 a e015 a `indice.json` y correr `npm run catalogo`. Si se prefiere una unidad propia para término excluido (por ejemplo, `series-verbales`), avisar y cambio la de e004 a e006.
+2. En `nucleo/lectura.js`, `ANALOGIAS` tiene «produce» y «causa», que el alumno no distingue en pares como sequía y hambruna. Propongo definir «produce» como «fabrica o da» (vaca y leche) o juntarlas. Mientras tanto no uso analogías de causa.
+3. En `nucleo/lectura.js`, el paso previo «ordenar» solo da RV28 o RV29. Podría dar RV37 cuando la primera tarjeta es la conclusión (una oración sin retoma que empieza con «por eso», «así» o «por ello»), igual que las alternativas.
+4. Correr `npm run catalogo`: el índice cambió.
+
+**Con esto la pieza 3 queda cerrada.** Las cuatro piezas de la rutina están hechas. Lo que sigue depende de Gerson: más textos, ejercicios de oraciones incompletas con palabra (RV23 con contenido y no solo con conector) o los ejercicios que falten cuando la integración agregue las unidades.

@@ -1,0 +1,54 @@
+{
+  "id": "e004",
+  "version": 1,
+  "tipo": "termino-excluido",
+  "unidad": "razonamiento-verbal.definiciones",
+  "grado": 3,
+  "dificultad": 1,
+  "cuerpo": {
+    "terminos": [
+      "pinkillo",
+      "flauta dulce",
+      "armónica",
+      "charango"
+    ]
+  },
+  "enunciado": "¿Qué término no pertenece al grupo?",
+  "alternativas": [
+    {
+      "t": "charango",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Es el único de cuerda: el pinkillo, la flauta dulce y la armónica son de viento, se tocan soplando."
+    },
+    {
+      "t": "flauta dulce",
+      "codigo": "RV22",
+      "explicacion": "Se piensa en la clase de música del colegio y no en la fiesta del pueblo, pero la flauta dulce es de viento, como las otras dos."
+    },
+    {
+      "t": "armónica",
+      "codigo": "RV39",
+      "explicacion": "No tiene forma de tubo y suena con lengüetas de metal, pero eso es un rasgo secundario: igual se toca soplando."
+    },
+    {
+      "t": "pinkillo",
+      "codigo": "RV40",
+      "explicacion": "El pinkillo es una flauta andina: se toca soplando, como la flauta dulce y la armónica."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El pinkillo es una flauta andina de pico; la armónica es un instrumento de viento de lengüeta libre; el charango es de cuerda.",
+      "fuente": "Clasificación de instrumentos de Hornbostel y Sachs; Mapa de los instrumentos musicales de uso popular en el Perú (INC, 1978)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. La trompeta abría un segundo criterio («no andina»); quedó flauta dulce y armónica, que parten el origen dos y dos."
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "id": "e007",
+  "version": 1,
+  "tipo": "conector",
+  "unidad": "razonamiento-verbal.conectores",
+  "grado": 3,
+  "dificultad": 1,
+  "cuerpo": {
+    "oracion": "___ la cosecha fue mala, la familia tuvo comida todo el año gracias al chuño guardado."
+  },
+  "previo": {
+    "tipo": "relacion",
+    "pide": "Antes de ver las alternativas: ¿qué relación hay entre \"la cosecha fue mala\" y \"la familia tuvo comida todo el año\"?",
+    "aceptada": "oposicion",
+    "codigos": {
+      "suma": "RV26",
+      "causa": "RV24"
+    },
+    "explicacion": "Tras una mala cosecha se espera que falte comida, pero no faltó: las dos partes se oponen.",
+    "explicaciones": {
+      "suma": "No es otra noticia en la misma dirección: una mala cosecha y tener comida van en sentidos contrarios.",
+      "causa": "La mala cosecha no causó que hubiera comida: la comida vino del chuño guardado, a pesar de la cosecha."
+    }
+  },
+  "enunciado": "Elige el conector que completa la oración.",
+  "alternativas": [
+    {
+      "t": "Aunque",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Lo esperable tras una mala cosecha es pasar hambre, y pasó lo contrario: \"aunque\" marca esa oposición."
+    },
+    {
+      "t": "Como",
+      "codigo": "RV24",
+      "explicacion": "\"Como\" presenta una causa, pero la mala cosecha no es la razón de que hubiera comida: el chuño guardado lo es."
+    },
+    {
+      "t": "Además de que",
+      "codigo": "RV26",
+      "explicacion": "\"Además\" suma dos ideas en la misma dirección, y aquí una va en contra de la otra."
+    },
+    {
+      "t": "Es decir,",
+      "codigo": "RV35",
+      "explicacion": "\"Es decir\" anuncia que se va a repetir lo mismo con otras palabras, y la segunda parte dice otra cosa."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. Sin cambios de clave."
+  }
+}
