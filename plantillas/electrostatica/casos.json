@@ -19,15 +19,15 @@
       "fn": "coulomb", "args": [3, -5, 0.5],
       "espera": { "F": 0.54, "sobre1": 0.54, "sobre2": 0.54, "tipo": "atraccion", "E2en1": 180000, "E1en2": 108000 } },
 
-    { "nombre": "Predicción 2 (paso 2): esferas iguales de 20 g con 1 µC y 2 µC, separadas 0,3 m → F = 1/5 N sobre cada una, tan θ = F/(mg) = 1 y θ = 45° para LAS DOS (EL3: la de menor carga se aparta el doble, o la mayor el doble; versión extrema: la mayor queda vertical)",
-      "fn": "esferas", "args": [1, 2, 0.3, 0.02, 0.02],
-      "espera": { "F": 0.2, "tan1": 1, "tan2": 1, "theta1": 45, "theta2": 45, "mismoAngulo": true, "razon": 1, "peso1": 0.2,
-                  "T1": 0.282842712474619, "T2": 0.282842712474619,
+    { "nombre": "Predicción 2 (paso 2): esferas iguales de 0,2 g con 100 nC y 200 nC (0,1 µC y 0,2 µC), separadas 0,3 m → F = 2 × 10⁻³ N sobre cada una (igual al peso), tan θ = F/(mg) = 1 y θ = 45° para LAS DOS (EL3: la de menor carga se aparta el doble, o la mayor el doble; versión extrema: la mayor queda vertical)",
+      "fn": "esferas", "args": [0.1, 0.2, 0.3, 0.0002, 0.0002],
+      "espera": { "F": 0.002, "tan1": 1, "tan2": 1, "theta1": 45, "theta2": 45, "mismoAngulo": true, "razon": 1, "peso1": 0.002,
+                  "T1": 0.00282842712474619, "T2": 0.00282842712474619,
                   "errores.menorSeAparta": 2, "errores.mayorSeAparta": 0.5, "errores.mayorVertical.thetaMayor": 0 } },
 
     { "nombre": "Las mismas esferas con hilos de L = 0,15√2 m desde un mismo punto: el equilibrio (2L·sen θ = r) cae en r = 0,3 m y θ = 45°",
-      "fn": "esferasColgadas", "args": [1, 2, 0.02, 0.02, 0.21213203435596426],
-      "espera": { "r": 0.3, "theta1": 45, "theta2": 45, "F": 0.2, "mismoAngulo": true } },
+      "fn": "esferasColgadas", "args": [0.1, 0.2, 0.0002, 0.0002, 0.21213203435596426],
+      "espera": { "r": 0.3, "theta1": 45, "theta2": 45, "F": 0.002, "mismoAngulo": true } },
 
     { "nombre": "Masas distintas, cargas iguales: 2 µC y 2 µC a 0,3 m, de 30 g y 40 g → F = 2/5 N; la más liviana se aparta más (tan θ1 = 4/3, θ1 = 53°; tan θ2 = 1, θ2 = 45°): el ángulo lo decide la masa, no la carga",
       "fn": "esferas", "args": [2, 2, 0.3, 0.03, 0.04],
