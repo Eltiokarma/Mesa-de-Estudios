@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 2046 pruebas.
+Deben pasar 2110 pruebas.
 
 ```bash
 npm run dev
@@ -51,7 +51,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito`, `poligonos`, `solidos` y `geometria-analitica` | Falta congruencia (sesión matematica-b) |
+| ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito`, `poligonos`, `solidos`, `geometria-analitica` y `segmentos-angulos` | Faltan congruencia, simetría, geometría del espacio y razonamiento con figuras (sesión matematica-b) |
 | ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig`, `caso-ambiguo` e `identidades-trig` | Hecha también `funciones-trig-inversas` (7 nov). Faltan transformaciones, cónicas y polares (sesión matematica-a) |
 | ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización), `sucesiones`, `exponenciales-logaritmos` y `polinomios` (Ruffini, resto, raíces racionales) | Faltan números reales, lógica y conjuntos, matrices, complejos, binomio de Newton y programación lineal |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
@@ -73,6 +73,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 
+- **Segmentos y ángulos** (`plantillas/segmentos-angulos/`, 7 nov 2026, subagentes de la conversación principal): la escuadra y las paralelas (segmentos que se pisan y puntos medios, complemento y suplemento que completan la escuadra y la recta, bisectrices, los ocho ángulos con la secante que gira, «¿son paralelas?» con el corte a escala, quiebre y serrucho con su condición); 21 casos verificados aparte; 10 de papel; 5 predicciones y 5 «¿qué pasa si…?»; todo hipótesis salvo GE17 (sin dato). Sin ítems en el banco de geometría.
 - **Enlace** (`plantillas/enlace/`, rutina de química, 7 nov 2026): la molécula en 3D (electrones de valencia, Lewis con pares enlazantes y libres, forma por repulsión de pares, dipolos que se suman al girar la molécula, enlace iónico con Na⁺ y Cl⁻); 58 casos verificados aparte (322 campos); revisión con 2 graves y 11 medios corregidos. La polaridad usa ΔEN sin el dipolo de los pares libres: en pantalla dice solo «polar» o «apolar», con un aviso para NH₃ contra NF₃. Sin ítems en el banco de química.
 - **Funciones trigonométricas inversas** (`plantillas/funciones-trig-inversas/`, sesión de matemática A, 7 nov 2026): la ventana principal (la recta y = k corta la onda muchas veces y solo un corte cae en la ventana; reflejo en y = x, arcsen y arccos en la circunferencia, compuestas con el triángulo, dominio y suma de arcotangentes); 19 casos verificados aparte; IN1 a IN29 son hipótesis. Con 2 pares en el banco de trigonometría desde el 7 nov (arcsen(sen θ) fuera de rango y sen(arctan k)).
 - **Balance de reacciones** (`plantillas/balance-reacciones/`, 7 nov 2026, subagentes de la conversación principal): balancear es contar átomos (tablero de moléculas con la cuenta por elemento, subíndice contra coeficiente, el frasco que no es la ecuación, tanteo animado, conservación de la masa en frasco abierto y cerrado, clasificación, números de oxidación, agentes y formas oxidada y reducida, ion-electrón en medio ácido y básico con fichas de electrones); 20 casos verificados aparte; 10 de papel; 5 predicciones y 5 «¿qué pasa si…?». Documentados: ES9, ES11 (H₁₀O₄), ES12, ES13 y EC9; cambiar subíndices es parcial; redox ion-electrón, hipótesis. Sin ítems en el banco de química.

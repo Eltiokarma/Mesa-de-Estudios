@@ -1,0 +1,15 @@
+{
+  "id": "segmentos-angulos",
+  "titulo": "La escuadra y las paralelas: segmentos y ángulos",
+  "formato": "escena",
+  "unidades": [
+    "geometria.segmentos-y-angulos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

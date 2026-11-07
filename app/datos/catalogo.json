@@ -2309,7 +2309,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "segmentos-angulos"
+     ]
     },
     {
      "id": "geometria.triangulos",
@@ -4913,6 +4915,23 @@
     "/plantillas/relojes-calendarios/index.html",
     "/plantillas/relojes-calendarios/motor.js",
     "/plantillas/relojes-calendarios/papel.json"
+   ]
+  },
+  "segmentos-angulos": {
+   "id": "segmentos-angulos",
+   "titulo": "La escuadra y las paralelas: segmentos y ángulos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.segmentos-y-angulos"
+   ],
+   "url": "/plantillas/segmentos-angulos/index.html",
+   "papel": "/plantillas/segmentos-angulos/papel.json",
+   "archivos": [
+    "/plantillas/segmentos-angulos/index.html",
+    "/plantillas/segmentos-angulos/motor.js",
+    "/plantillas/segmentos-angulos/papel.json"
    ]
   },
   "solidos": {
