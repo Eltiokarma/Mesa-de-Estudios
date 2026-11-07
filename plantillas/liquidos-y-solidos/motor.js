@@ -84,7 +84,7 @@
  * de hidrógeno = tener oxígeno, o tener F o N), EN16 (el punto de ebullición lo decide el número de carbonos), GQ16 (las
  * partículas cambian de tamaño al condensar) y los de cálculo sin respaldo: no restar la presión de vapor al gas recogido
  * sobre agua y la humedad relativa como fracción del aire.
- * CABECERA: líneas 1 a 81 (funciones, unidades, datos y convenciones).
+ * CABECERA: líneas 1 a 88 (funciones, unidades, datos y convenciones).
  */
 (function (root, fabrica) {
   const motor = fabrica();

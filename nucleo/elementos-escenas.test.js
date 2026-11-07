@@ -52,6 +52,18 @@ const ESCENAS = {
       // La red de NaCl; por si acaso, contra todas las variables de la escena.
       [['Na', 'Cl'], ['--c-enl', '--c-libre', '--c-dip', '--c-mu']],
     ] },
+  'liquidos-y-solidos': {
+    elementos: ['H', 'C', 'N', 'O', 'F', 'S'],   // los grupos CH₃, CH₂ y CH de los alcanos van con el color del C
+    vistas: [
+      [['H', 'O'], ['--c-Pv', '--c-Pext', '--c-T']],           // frascos de agua, la olla, Puno y la olla a presión
+      [['H', 'O'], ['--c-T', '--c-pu']],                       // agua líquida con sus puentes de hidrógeno
+      [['H', 'S'], ['--c-T', '--c-pu']],                       // el H₂S gaseoso junto al agua
+      [['N', 'H', 'C', 'F', 'O'], ['--c-pu']],                 // NH₃, CH₃F y CH₃OCH₃
+      [['H', 'O', 'C'], ['--c-Pv', '--c-Pext', '--c-T']],      // el explorador (agua, etanol y acetona)
+      [['H', 'O'], ['--c-Pext', '--c-Pv', '--c-Pgas']],        // el gas recogido sobre agua
+      [['C'], ['--c-T']],                                      // butano, isobutano, pentano y neopentano
+      [['H', 'O'], ['--c-T']],                                 // el vapor que se enfría
+    ] },
 };
 
 const leer = d => fs.readFileSync(path.join(raiz, d, 'index.html'), 'utf8');
