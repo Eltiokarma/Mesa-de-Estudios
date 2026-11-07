@@ -66,19 +66,18 @@
           "o4",
           "o7"
         ],
-        "ninguna": "RV3",
+        "ninguna": "correcta",
         "codigos": {
           "o1": "RV4"
         },
-        "explicacion": "La oración 4 dice cómo funciona la vacuna y la 7 saca la conclusión: vacunarse protege también a los demás.",
+        "explicacion": "La oración 4 dice cómo funciona la vacuna y la 7 saca la conclusión: vacunarse protege también a los demás. También vale \"ninguna la dice completa\", porque la idea entera junta las dos.",
         "explicaciones": {
           "o1": "La primera oración explica qué pasa con un microbio nuevo: es el punto de partida.",
           "o2": "Dice qué puede pasarle a la persona mientras tanto: es un detalle.",
           "o3": "Explica la memoria del cuerpo, que la vacuna aprovecha; es un paso de la explicación.",
           "o5": "Cuenta qué pasa cuando llega el microbio verdadero: es una consecuencia.",
           "o6": "Explica cómo se protege a los bebés: es un ejemplo de la conclusión de la oración 7.",
-          "ninguna": "Las oraciones 4 y 7 sí lo dicen: la vacuna aprovecha la memoria del cuerpo y protege también a los demás.",
-          "o8": "Es una imagen que resume cómo funciona la vacuna, pero deja fuera la protección de los demás."
+          "o8": "Es una imagen que repite, con otras palabras, lo que la oración 4 dice directamente."
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
@@ -257,5 +256,10 @@
       "fuente": "Jenner, E. (1798), vacuna contra la viruela."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: el revisor marcó «ninguna la dice completa» en el previo de idea principal, y tenía razón: la idea junta las oraciones 4 y 7, así que ahora «ninguna» también se acepta. El resto, 6 de 6. Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+  }
 }

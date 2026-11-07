@@ -55,7 +55,7 @@
       {
         "id": "o9",
         "rol": "principal",
-        "t": "Caral muestra, en todo caso, que en los Andes se formó una vida urbana muy temprana, y que lo que sabemos de ella depende de lo que todavía falta descubrir."
+        "t": "Caral muestra, en todo caso, que en los Andes se formó una vida urbana muy temprana, y que lo que sabemos de ella todavía puede cambiar con lo que falta descubrir."
       }
     ]
   ],
@@ -74,7 +74,7 @@
         "codigos": {
           "o1": "RV4"
         },
-        "explicacion": "La oración 9 resume el texto: en los Andes hubo vida urbana muy temprana, y lo que sabemos de ella depende de lo que falta descubrir.",
+        "explicacion": "La oración 9 resume el texto: en los Andes hubo vida urbana muy temprana, y lo que sabemos de ella todavía puede cambiar con lo que falta descubrir.",
         "explicaciones": {
           "o1": "La primera oración dice dónde está Caral y cuándo se construyó: es el punto de partida.",
           "o2": "Compara la antigüedad de Caral con la de Egipto: es un dato que la presenta.",
@@ -84,7 +84,7 @@
           "o6": "Cuenta lo que no se ha encontrado; es el dato que abre el debate.",
           "o7": "Es la postura de \"algunos investigadores\", no la conclusión del texto.",
           "o8": "Es la postura de \"otros\" investigadores, que piden prudencia.",
-          "ninguna": "La oración 9 sí lo dice completo: Caral muestra una vida urbana muy temprana, y lo que sabemos de ella todavía está incompleto."
+          "ninguna": "La oración 9 sí lo dice completo: Caral muestra una vida urbana muy temprana, y lo que sabemos de ella todavía puede cambiar."
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
@@ -95,7 +95,7 @@
           "evidencia": [
             "o9"
           ],
-          "explicacion": "Es lo que dice la oración 9, que cierra el texto por encima del debate: Caral prueba una ciudad muy temprana, y lo que sabemos de ella todavía es incompleto."
+          "explicacion": "Es lo que dice la oración 9, que cierra el texto por encima del debate: Caral muestra una ciudad muy temprana, y lo que sabemos de ella todavía puede cambiar."
         },
         {
           "t": "Entre los restos de Caral se encontraron anchovetas, conchas, algodón y frutos cultivados en el valle de Supe.",
@@ -160,10 +160,10 @@
           "explicacion": "Choca con la oración 6: no se han encontrado armas en cantidad. Los prudentes no discuten eso."
         },
         {
-          "t": "proponen que Caral se organizó más por el comercio y la religión que por la guerra.",
+          "t": "dan por probado que Caral se organizó más por el comercio y la religión que por la guerra.",
           "codigo": "RV5",
           "origen": "o7",
-          "explicacion": "Repite palabras de la oración 7, pero esa es la propuesta de \"algunos investigadores\", no la de los que piden prudencia."
+          "explicacion": "Repite palabras de la oración 7, pero los que piden prudencia dicen justo que no está probado (oración 8)."
         },
         {
           "t": "creen que ya no queda nada por excavar en Caral.",
@@ -247,5 +247,10 @@
       "fuente": "Shady, R. y otros (2001). Dating Caral, a preceramic site in the Supe Valley. Science 292(5517); Zona Arqueológica Caral."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6. Cambios: o9 redactada sin la frase que sonaba contradictoria (\"lo que sabemos depende de lo que falta descubrir\"); distractor de compatibilidad endurecido («dan por probado»). Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+  }
 }

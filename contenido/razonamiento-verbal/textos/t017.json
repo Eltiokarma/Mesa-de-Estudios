@@ -89,10 +89,10 @@
           "explicacion": "El autor usa Chan Chan para llegar a una idea general sobre la conservación (oración 8): busca convencer."
         },
         {
-          "t": "Describir los muros de Chan Chan y las figuras de peces y aves que los decoran.",
+          "t": "Explicar por qué las lluvias de El Niño ponen en peligro los muros de Chan Chan.",
           "codigo": "RV14",
-          "origen": "o2",
-          "explicacion": "Eso aparece en la oración 2, pero es solo el comienzo; esta alternativa deja fuera la postura del autor."
+          "origen": "o3",
+          "explicacion": "Eso está en las oraciones 2 y 3, pero el autor lo explica para llegar a una idea sobre conservar."
         },
         {
           "t": "Contar la historia del reino chimú hasta la llegada de los incas.",
@@ -195,8 +195,8 @@
         {
           "t": "reconstrucciones completas.",
           "codigo": "RV19",
-          "origen": "o7",
-          "explicacion": "Está en el mismo campo (trabajos sobre los muros), pero es lo contrario de lo que dice la oración: intervenciones \"pequeñas\"."
+          "origen": "o5",
+          "explicacion": "Es la solución de la oración 5 que el autor discute; la oración 7 habla de intervenciones \"pequeñas\"."
         },
         {
           "t": "techos sobre todos los muros.",
@@ -235,7 +235,7 @@
           "t": "la falta de lluvias ayudó a conservar una ciudad de barro.",
           "codigo": "RV8",
           "origen": "o2",
-          "explicacion": "Puede sonar extraño, pero es lo que dice la oración 2: los muros resistieron porque casi nunca llueve."
+          "explicacion": "Puede sonar extraño, porque uno espera que el agua dañe y no que su falta ayude, pero es lo que dice la oración 2: los muros resistieron porque casi nunca llueve."
         }
       ]
     },
@@ -284,5 +284,10 @@
       "fuente": "Principio de mínima intervención (Carta de Venecia, 1964; Documento de Nara sobre la autenticidad, 1994); planes de manejo de Chan Chan del Ministerio de Cultura. Por confirmar lo de la humedad en un estudio concreto."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 7 de 7. Cambios: distractor de intención que se descartaba enseguida reemplazado por uno más cercano; origen y explicación de p3; código RV8 en el distractor compatible de la pregunta de incompatibilidad. Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+  }
 }

@@ -66,19 +66,18 @@
           "o5",
           "o8"
         ],
-        "ninguna": "RV3",
+        "ninguna": "correcta",
         "codigos": {
           "o1": "RV4"
         },
-        "explicacion": "La oración 5 da la idea central (llueve porque el bosque existe) y la 8 saca la conclusión.",
+        "explicacion": "La oración 5 da la idea central (llueve porque el bosque existe) y la 8 saca la conclusión. También vale \"ninguna la dice completa\", porque la idea entera junta las dos.",
         "explicaciones": {
           "o1": "La primera oración da un dato sobre un árbol: es el punto de partida.",
           "o2": "Explica qué son los ríos voladores: es un paso de la explicación.",
           "o3": "Explica dónde cae la humedad: es otro paso.",
           "o4": "Presenta lo que solemos pensar, que el texto va a completar.",
           "o6": "Explica qué pasa cuando se tala: es un argumento.",
-          "o7": "Saca una consecuencia del argumento, pero no la idea principal.",
-          "ninguna": "Las oraciones 5 y 8 sí lo dicen: llueve porque el bosque existe, y cuidarlo es cuidar el agua de otras regiones."
+          "o7": "Saca una consecuencia del argumento, pero no la idea principal."
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
@@ -143,9 +142,10 @@
           "explicacion": "Repite palabras de la oración 1, pero \"esto\" retoma lo que se dice justo antes, en la oración 6."
         },
         {
-          "t": "A que los países deberían cerrar sus fronteras.",
-          "codigo": "RV7",
-          "explicacion": "El texto no habla de cerrar fronteras; esa lectura va más allá de lo que dice."
+          "t": "A que, cuando se tala, sale menos vapor hacia el aire.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Es solo la primera parte de la oración 6; lo que vuelve la tala un problema sin fronteras es que la lluvia baja lejos."
         }
       ]
     },
@@ -156,44 +156,44 @@
       "previo": {
         "tipo": "clasificar",
         "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
-        "sonda": "Los ríos voladores se pueden ver a simple vista desde un avión.",
+        "sonda": "Los ríos voladores llevan más agua que el río Amazonas.",
         "clase": "no-se-sabe",
         "codigos": {
           "lo-dice": "RV5",
-          "se-deduce": "RV7",
+          "se-deduce": "RV8",
           "lo-contradice": null
         },
-        "explicacion": "El texto no dice nada sobre si esas corrientes se pueden ver. No se puede saber.",
+        "explicacion": "El texto no compara la cantidad de agua de los ríos voladores con la del Amazonas. No se puede saber.",
         "explicaciones": {
-          "lo-dice": "El texto nombra los ríos voladores, pero nunca dice si se ven.",
-          "se-deduce": "Que se llamen \"ríos\" no permite concluir que se vean como un río: eso va más allá del texto.",
-          "lo-contradice": "El texto no dice que no se puedan ver; simplemente no habla de eso."
+          "lo-dice": "El texto habla de los ríos voladores, pero nunca los compara con el Amazonas.",
+          "se-deduce": "Quizá lo hayas leído en otra parte, pero el texto no compara los ríos voladores con el Amazonas: con lo que dice, no se puede deducir.",
+          "lo-contradice": "El texto no dice que lleven menos agua; simplemente no hace esa comparación."
         }
       },
-      "enunciado": "Se infiere del texto que la expresión «ríos voladores»",
+      "enunciado": "Se deduce del texto que a las corrientes de aire húmedo de la oración 2 se las llama «ríos voladores» porque",
       "alternativas": [
         {
-          "t": "compara el aire húmedo con un río porque también lleva agua de un lugar a otro.",
+          "t": "llevan agua de un lugar a otro, como un río.",
           "correcta": true,
           "evidencia": [
             "o2",
             "o3"
           ],
-          "explicacion": "El texto no lo explica, pero se deduce: esas corrientes llevan agua en forma de vapor y la dejan caer lejos, como un río la lleva por el suelo."
+          "explicacion": "El texto no lo explica, pero se deduce: esas corrientes llevan agua en forma de vapor y la dejan caer lejos (oraciones 2 y 3), como un río la lleva por el suelo."
         },
         {
-          "t": "es el nombre que algunos científicos dan a corrientes de aire húmedo.",
+          "t": "así las llaman algunos científicos.",
           "codigo": "RV6",
           "origen": "o2",
-          "explicacion": "Eso lo dice el texto tal cual (oración 2): no es una inferencia sobre por qué se llaman así."
+          "explicacion": "Es lo que dice la oración 2, pero no explica por qué se las llama así."
         },
         {
-          "t": "se refiere a ríos de agua que pasan por encima de los Andes.",
+          "t": "pasan sobre los Andes como un río de agua líquida.",
           "codigo": "RV18",
-          "explicacion": "Toma la expresión al pie de la letra; el texto habla de aire húmedo, no de ríos de agua líquida."
+          "explicacion": "Toma la expresión al pie de la letra; el texto habla de aire húmedo, no de agua líquida."
         },
         {
-          "t": "significa que los ríos de la Amazonía se evaporan por completo.",
+          "t": "los ríos de la Amazonía se evaporan por completo.",
           "codigo": "RV7",
           "explicacion": "El texto dice que el vapor sale de las hojas de los árboles, no que los ríos se evaporen; esa lectura va más allá."
         }
@@ -240,5 +240,10 @@
       "fuente": "Nobre, A. D. (2014). O futuro climático da Amazônia; Staal, A. y otros (2018). Forest-rainfall cascades buffer against drought across the Amazon. Nature Climate Change 8."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: el revisor marcó «ninguna» en el previo de idea principal (ahora se acepta, como en t016) y dudó en p3, porque la alternativa literal era defendible: se reescribió la pregunta («se las llama así porque…»). Sonda del previo cambiada (la anterior podía leerse como contradicha). Distractor de referente más cercano (RV3). Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+  }
 }

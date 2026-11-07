@@ -72,7 +72,8 @@
         ],
         "ninguna": "RV3",
         "codigos": {
-          "o1": "RV4"
+          "o1": "RV4",
+          "o3": "RV3"
         },
         "explicacion": "La oración 6 es la enseñanza del abuelo, y el resto del relato la muestra: los frutos tardan, y quien se aburre no llega a cosechar.",
         "explicaciones": {
@@ -183,9 +184,10 @@
           "correcta": true,
           "evidencia": [
             "o1",
+            "o2",
             "o8"
           ],
-          "explicacion": "Una nota limpia es la que suena bien, sin el silbido que le salía a Mateo (oraciones 2 y 8)."
+          "explicacion": "Una nota limpia es la que suena bien, sin el silbido que le salía a Mateo (oraciones 1, 2 y 8)."
         },
         {
           "t": "lavada, sin suciedad.",
@@ -210,5 +212,10 @@
   "origen": "propio",
   "fecha": "2026-11-06",
   "hechos": [],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 5 de 5. Cambios: RV3 para o3 en el previo (coherente con el distractor que sale de ella) y evidencia de p3. Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+  }
 }

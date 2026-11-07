@@ -67,7 +67,13 @@
         ],
         "ninguna": "RV3",
         "codigos": {
-          "o1": "RV4"
+          "o1": "RV4",
+          "o2": "RV33",
+          "o3": "RV33",
+          "o4": "RV33",
+          "o5": "RV33",
+          "o6": "RV3",
+          "o8": "RV3"
         },
         "explicacion": "La oración 7 dice la tesis: la pregunta útil no es si el celular entra al aula, sino para qué entra.",
         "explicaciones": {
@@ -169,7 +175,7 @@
           "t": "las notificaciones del celular ayudan a los alumnos a concentrarse.",
           "codigo": "RV5",
           "origen": "o2",
-          "explicacion": "Usa palabras de la oración 2, pero dice lo contrario: las notificaciones interrumpen la atención."
+          "explicacion": "Usa palabras de la oración 2, pero dice lo contrario: las notificaciones interrumpen la atención, y el autor da parte de razón a quienes ven el celular como distracción (oración 6)."
         }
       ]
     },
@@ -260,5 +266,10 @@
       "fuente": "Unesco (2023). Informe GEM 2023: La tecnología en la educación: ¿una herramienta en los términos de quién?"
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 7 de 7. Cambios: códigos del previo de tesis (RV33 para las posturas citadas, RV3 para o6 y o8) y explicación del distractor de las notificaciones. Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+  }
 }
