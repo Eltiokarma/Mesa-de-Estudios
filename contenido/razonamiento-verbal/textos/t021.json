@@ -4,19 +4,19 @@
   "titulo": "Túpac Amaru II: ¿rebelde o precursor?",
   "tema": "Historia · la rebelión de 1780",
   "grado": 5,
-  "dificultad": 3,
+  "dificultad": 2,
   "tipo_texto": "argumentativo",
   "parrafos": [
     [
       {
         "id": "o1",
         "rol": "detalle",
-        "t": "En noviembre de 1780, José Gabriel Condorcanqui, un curaca de Tinta, en el Cusco, que tomó el nombre de Túpac Amaru II, apresó y ejecutó al corregidor Antonio de Arriaga."
+        "t": "En noviembre de 1780, José Gabriel Condorcanqui, un curaca de la provincia de Tinta, en el Cusco, que tomó el nombre de Túpac Amaru II, apresó y ejecutó al corregidor Antonio de Arriaga."
       },
       {
         "id": "o2",
         "rol": "detalle",
-        "t": "Con eso comenzó la mayor rebelión del siglo XVIII en los Andes, que se extendió hasta el Alto Perú y fue derrotada al año siguiente."
+        "t": "Con eso comenzó la mayor rebelión del siglo XVIII en los Andes, que se extendió hasta el Alto Perú y fue aplastada en los dos años siguientes."
       },
       {
         "id": "o3",
@@ -50,7 +50,7 @@
       {
         "id": "o8",
         "rol": "principal",
-        "t": "Lo que el debate enseña es que llamar «precursor» a alguien es también una interpretación: se mira el pasado desde lo que pasó después, y conviene distinguir lo que él dijo de lo que nosotros vemos en su lucha."
+        "t": "Por eso sostengo que, más que decidir quién gana, conviene aceptar lo que el debate enseña: llamar «precursor» a alguien es también una interpretación, porque se mira el pasado desde lo que pasó después, y hay que distinguir lo que él dijo de lo que nosotros vemos en su lucha."
       }
     ]
   ],
@@ -76,7 +76,7 @@
       "enunciado": "¿Cuál es la intención principal del autor?",
       "alternativas": [
         {
-          "t": "Mostrar que la manera de juzgar un hecho histórico depende de cómo se interpreta.",
+          "t": "Convencer al lector de que llamar «precursor» a alguien es una interpretación hecha desde lo que vino después.",
           "correcta": true,
           "evidencia": [
             "o8"
@@ -187,7 +187,7 @@
         "explicaciones": {
           "lo-dice": "El texto dice lo opuesto: las dos lecturas se apoyan en documentos reales (oración 7).",
           "se-deduce": "Nada permite concluir eso; la oración 7 dice lo contrario.",
-          "no-se-sabe": "Sí se puede saber: la oración 7 lo dice, y dice lo contrario."
+          "no-se-sabe": "Sí se puede saber: la oración 7 trata ese punto y dice lo contrario."
         }
       },
       "enunciado": "Es compatible con el texto afirmar que los historiadores que ven en Túpac Amaru II un objetivo más limitado",
@@ -202,10 +202,10 @@
           "explicacion": "Es lo que dice la oración 6, y la 7 aclara que esa lectura se apoya en documentos reales."
         },
         {
-          "t": "niegan que la rebelión se haya extendido hasta el Alto Perú.",
+          "t": "sostienen que desde el inicio desconoció la autoridad del rey de España.",
           "codigo": "RV9",
-          "origen": "o2",
-          "explicacion": "Choca con el texto: la extensión de la rebelión es un hecho (oración 2), no algo que una postura niegue."
+          "origen": "o6",
+          "explicacion": "Choca con la oración 6: según esta postura, en sus primeros documentos declaraba lealtad al rey."
         },
         {
           "t": "sostienen que llamó a levantarse a indios, mestizos y criollos para independizarse.",
@@ -270,9 +270,10 @@
           "explicacion": "La otra lectura se apoya en sus primeros documentos de lealtad al rey (oración 6). Una carta temprana en sentido contrario debilitaría esa base y reforzaría la de la oración 5."
         },
         {
-          "t": "seguiría siendo cierto que en sus primeros documentos declaraba lealtad al rey.",
+          "t": "las dos lecturas quedarían igual de apoyadas que antes, porque ambas se basan en documentos reales.",
           "codigo": "RV12",
-          "explicacion": "Cambia la condición, pero deja igual la consecuencia: la nueva carta sería uno de esos primeros documentos, y diría lo contrario."
+          "origen": "o7",
+          "explicacion": "Repite lo que el texto ya dice (oración 7), sin ver que la carta quitaría base a la lectura de la oración 6."
         },
         {
           "t": "quedaría demostrado que todos los rebeldes de América querían la independencia.",
@@ -295,5 +296,10 @@
       "fuente": "Walker, C. F. (2014). The Tupac Amaru rebellion. Harvard University Press; O'Phelan Godoy, S. (1988). Un siglo de rebeliones anticoloniales. CBC."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: el revisor marcó «explicar» en el previo de propósito; se reescribió la oración 8 («sostengo que…») y la correcta de intención. Cambios: la rebelión fue aplastada en los dos años siguientes (no al año siguiente); distractores de compatibilidad y extrapolación que eran defendibles; dificultad bajada a 2. Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+  }
 }

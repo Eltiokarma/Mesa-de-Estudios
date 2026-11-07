@@ -38,7 +38,7 @@
       {
         "id": "o6",
         "rol": "detalle",
-        "t": "La capa de óxido tampoco protege al hierro que está debajo: se agrieta y deja pasar más agua."
+        "t": "Podría pensarse que la capa de óxido protege al hierro que está debajo, pero se agrieta y deja pasar el agua."
       }
     ],
     [
@@ -50,7 +50,7 @@
       {
         "id": "o8",
         "rol": "principal",
-        "t": "Todas hacen lo mismo: impiden que el agua y el oxígeno lleguen juntos al hierro."
+        "t": "Todas hacen lo mismo: como el hierro se oxida solo cuando le llegan juntos el agua y el oxígeno, impiden que eso ocurra."
       }
     ]
   ],
@@ -104,10 +104,10 @@
           "explicacion": "Es demasiado general: el texto habla del hierro y de por qué se oxida."
         },
         {
-          "t": "La sal acelera la oxidación del hierro.",
+          "t": "El hierro se oxida con el agua y el oxígeno, y la sal y el aire del mar lo aceleran.",
           "codigo": "RV3",
           "origen": "o4",
-          "explicacion": "Es una parte del texto, pero deja fuera la causa principal y cómo se protege el hierro."
+          "explicacion": "Junta la causa y lo que la acelera, pero deja fuera la otra mitad del texto: cómo se protege el hierro."
         },
         {
           "t": "El acero inoxidable no se oxida nunca.",
@@ -120,31 +120,30 @@
       "id": "p2",
       "tipo": "conector",
       "unidad": "razonamiento-verbal.conectores",
-      "enunciado": "¿Qué conector podría ir al comienzo de la oración 6 (\"___, la capa de óxido tampoco protege…\") sin cambiar el sentido del texto?",
+      "enunciado": "En la oración 6, ¿qué conector podría reemplazar a PERO sin cambiar el sentido?",
       "alternativas": [
         {
-          "t": "Además,",
+          "t": "sin embargo,",
           "correcta": true,
           "evidencia": [
-            "o5",
             "o6"
           ],
-          "explicacion": "La oración 6 suma otra razón por la que el hierro se deteriora: va en la misma dirección que las anteriores, como lo anuncia el \"tampoco\"."
+          "explicacion": "La oración presenta lo que podría pensarse (que el óxido protege) y luego lo contradice: es una oposición, como con \"sin embargo\"."
         },
         {
-          "t": "Sin embargo,",
+          "t": "además,",
           "codigo": "RV26",
-          "explicacion": "Marca una oposición que no existe: la oración 6 no contradice a la 5, agrega otro problema."
+          "explicacion": "\"Además\" suma algo en la misma dirección, pero la segunda parte de la oración contradice a la primera."
         },
         {
-          "t": "Por lo tanto,",
+          "t": "por lo tanto,",
           "codigo": "RV24",
-          "explicacion": "Lee como consecuencia lo que es una suma: que el aire de la costa sea salado no es la razón de que la capa de óxido se agriete."
+          "explicacion": "Lee como consecuencia lo que es una oposición: que alguien piense que el óxido protege no es la causa de que se agriete."
         },
         {
-          "t": "Es decir,",
+          "t": "es decir,",
           "codigo": "RV35",
-          "explicacion": "\"Es decir\" anuncia que se repite lo mismo, pero la oración 6 dice algo nuevo."
+          "explicacion": "\"Es decir\" anuncia que se repite lo mismo con otras palabras, pero la segunda parte dice lo contrario de la primera."
         }
       ]
     },
@@ -155,18 +154,18 @@
       "previo": {
         "tipo": "clasificar",
         "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
-        "sonda": "Las calaminas de zinc se oxidan más rápido que una reja de hierro sin pintar.",
+        "sonda": "Pintar el hierro cuesta menos que cubrirlo con zinc.",
         "clase": "no-se-sabe",
         "codigos": {
           "lo-dice": "RV5",
           "se-deduce": "RV7",
           "lo-contradice": null
         },
-        "explicacion": "El texto dice que el zinc protege al hierro (oración 7), pero no compara cuánto se oxida el zinc. No se puede saber.",
+        "explicacion": "El texto nombra la pintura y el zinc como formas de protección (oración 7), pero no dice cuánto cuesta cada una. No se puede saber.",
         "explicaciones": {
-          "lo-dice": "El texto nombra el zinc y las calaminas, pero no dice cuánto se oxidan.",
-          "se-deduce": "Que el zinc sirva para proteger al hierro no permite concluir cuánto se oxida él mismo: eso va más allá del texto.",
-          "lo-contradice": "El texto no compara el zinc con el hierro sin pintar; simplemente no habla de eso."
+          "lo-dice": "El texto nombra la pintura y el zinc, pero nunca habla de su precio.",
+          "se-deduce": "Que las dos sirvan para proteger no permite concluir cuál cuesta menos: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice que el zinc sea más barato; simplemente no habla de precios."
         }
       },
       "enunciado": "Es compatible con el texto afirmar que",
@@ -187,9 +186,9 @@
         },
         {
           "t": "la capa de óxido protege al hierro que está debajo.",
-          "codigo": "RV9",
+          "codigo": "RV8",
           "origen": "o6",
-          "explicacion": "Choca con la oración 6: la capa se agrieta y deja pasar más agua."
+          "explicacion": "Es una creencia común, pero la oración 6 la presenta como lo que \"podría pensarse\" y la corrige: la capa se agrieta y deja pasar el agua."
         },
         {
           "t": "las rejas de la costa se oxidan más despacio que las de la sierra seca.",
@@ -242,5 +241,10 @@
       "fuente": "Química general (p. ej., Chang, R. Química, cap. de electroquímica: corrosión)."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: el revisor marcó «ninguna» en el previo de idea principal y «lo contradice» en el de clasificar (la sonda del zinc tenía dos lecturas). Cambios: o8 resume el texto entero; sonda nueva (costo de pintar); pregunta de conector reescrita para que la relación sea oposición (los códigos RV24 y RV26 no servían para una suma); códigos de dos distractores. Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+  }
 }

@@ -4,7 +4,7 @@ Cada ejecución hace la primera pieza que falte:
 
 1. [x] Informe `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`
 2. [x] Diseño del formato lectura, `docs/formato-lectura.md`
-3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (18 de 30, más la pareja de entrada y salida)
+3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (24 de 30, más la pareja de entrada y salida)
 4. [x] Guía para profesores, `docs/guia-profesores.md` (adelantada: se hizo antes de llegar a 30 textos)
 
 ---
@@ -298,3 +298,40 @@ En el informe amplié la definición de RV10 para que cubra también el caso inv
 5. **Cuando la app tenga dirección pública (la3),** hay que completar el punto 2.1 de la guía.
 
 **Lo que sigue:** dos tandas de textos para llegar a 30 (t019 a t030) y después los ejercicios sueltos, cuando Gerson lo confirme o en las próximas ejecuciones de la rutina.
+
+---
+
+## 7 nov 2026 · Pieza 3, cuarta tanda: t019 a t024
+
+Gerson confirmó que siga sin parar con los textos y los ejercicios sueltos.
+
+**Qué hice.** Seis textos más:
+
+| Texto | Tema | Grado y dificultad |
+| --- | --- | --- |
+| t019 | Anchoveta, afloramiento y El Niño | 4.º, 2 |
+| t020 | El hierro que se oxida | 3.º, 1 |
+| t021 | Túpac Amaru II, debate entre historiadores | 5.º, 2 (bajó de 3) |
+| t022 | Relato «Medir dos veces» | 3.º, 1 |
+| t023 | Semmelweis y el lavado de manos | 5.º, 2 (bajó de 3) |
+| t024 | El agua en Lima | 4.º, 2 |
+
+Ya son 24 textos de práctica en el índice.
+
+También corregí el validador: `\b` de JavaScript toma las letras con tilde como separadores, y "la década" se leía como "la D".
+
+**Subagentes:** tres revisores a ciegas (dos textos cada uno) y una verificación de los cambios.
+- **Pasos previos fallados a ciegas, todos reescritos:**
+  - t021: propósito, "explicar" contra "convencer";
+  - t020: idea principal, el revisor marcó "ninguna";
+  - t020: la sonda del zinc, que tenía dos lecturas.
+- **Distractores defendibles:** en t021, la extrapolación y la compatibilidad; en t023 y t024, la inferencia.
+- **Códigos que no correspondían:**
+  - la pregunta de conector de t020 era de suma, y RV24 y RV26 solo sirven donde hay oposición;
+  - en t019 y t020, dos RV3 que eran detalles;
+  - en t024, RV11 y RV7 estaban cruzados.
+- **Hechos:** la rebelión de Túpac Amaru no terminó "al año siguiente", sino en 1782.
+- **Dificultad:** t021 y t023 no llegaban a dificultad 3; quedaron en 2.
+- **Verificación final:** la concordancia de t023 p2 estaba rota ("las parteras… las parteras") y se ajustaron cuatro detalles más.
+
+**Pruebas:** `banco.test.js` da 30 de 30. `npm test` da 3980 de 3981; la que falla es la de siempre, "app/datos/catalogo.json está al día", que se arregla con `npm run catalogo`.

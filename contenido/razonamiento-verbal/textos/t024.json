@@ -16,7 +16,7 @@
       {
         "id": "o2",
         "rol": "detalle",
-        "t": "Casi toda el agua que usan sus habitantes viene de tres ríos que bajan de la sierra: el Rímac, el Chillón y el Lurín."
+        "t": "La mayor parte del agua que usan sus habitantes viene de tres ríos que bajan de la sierra: el Rímac, el Chillón y el Lurín."
       },
       {
         "id": "o3",
@@ -168,7 +168,7 @@
         "codigos": {
           "lo-dice": "RV5",
           "se-deduce": "RV7",
-          "lo-contradice": null
+          "lo-contradice": "RV36"
         },
         "explicacion": "El texto no dice de dónde sacan el agua los camiones cisterna. No se puede saber.",
         "explicaciones": {
@@ -180,12 +180,12 @@
       "enunciado": "Se infiere del texto que las familias de las afueras que compran agua a camiones cisterna",
       "alternativas": [
         {
-          "t": "gastan en agua más que las familias que la reciben por tubería.",
+          "t": "por la misma cantidad de agua, pagan más que las familias que la reciben por tubería.",
           "correcta": true,
           "evidencia": [
             "o6"
           ],
-          "explicacion": "La oración 6 dice que pagan \"un precio mucho más alto\"; de ahí se deduce que gastan más en agua."
+          "explicacion": "La oración 6 dice que la compran \"a un precio mucho más alto\"; de ahí se deduce que la misma cantidad les cuesta más."
         },
         {
           "t": "compran el agua a camiones cisterna a un precio mucho más alto.",
@@ -227,14 +227,14 @@
         },
         {
           "t": "ya nadie tendría que cuidar el agua en Lima.",
-          "codigo": "RV7",
+          "codigo": "RV11",
           "origen": "o3",
-          "explicacion": "No sale del texto: la ciudad seguiría en el desierto y con meses en que los ríos llevan poca agua (oración 3)."
+          "explicacion": "\"Ya nadie\" es un término absoluto que no sale del texto: la ciudad seguiría en el desierto y con meses en que los ríos llevan poca agua (oración 3)."
         },
         {
           "t": "los ríos Rímac, Chillón y Lurín llevarían el doble de agua.",
-          "codigo": "RV11",
-          "explicacion": "El texto no da ninguna base para eso: que la ciudad deje de crecer no cambia el agua de los ríos."
+          "codigo": "RV7",
+          "explicacion": "El texto no da ninguna base para eso: que la ciudad deje de crecer no cambia el agua que llevan los ríos."
         }
       ]
     }
@@ -247,5 +247,10 @@
       "fuente": "Sunass y Sedapal, información sobre el abastecimiento de Lima; Ioris, A. A. R. (2012), sobre el agua y la desigualdad en Lima."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 7 de 7. Cambios: la correcta de inferencia decía más de lo que el texto permite (gasto total frente a precio por cantidad); códigos RV11 y RV7 cruzados; «la mayor parte del agua». Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+  }
 }

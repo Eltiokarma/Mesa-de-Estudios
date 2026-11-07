@@ -104,10 +104,10 @@
           "explicacion": "Puede ser cierto, pero el texto no lo dice. La idea principal sale de lo que se leyó."
         },
         {
-          "t": "Los fenómenos de El Niño calientan el agua de la superficie del mar.",
+          "t": "La anchoveta se alimenta de algas, y de ella comen aves, lobos marinos y peces más grandes.",
           "codigo": "RV3",
-          "origen": "o5",
-          "explicacion": "Es una parte del texto, pero deja fuera lo principal: el papel de la anchoveta en la cadena."
+          "origen": "o2",
+          "explicacion": "Resume solo el primer párrafo: deja fuera por qué importa y la conclusión de cuidarla."
         },
         {
           "t": "Los océanos son importantes para la vida en el planeta.",
@@ -242,8 +242,13 @@
   "hechos": [
     {
       "afirmacion": "El afloramiento frente a la costa peruana trae agua fría y rica en nutrientes; la anchoveta (menos de 20 cm) es la base de la cadena (guanay, lobos marinos); El Niño reduce los nutrientes; la pesquería colapsó a comienzos de los años 70 por sobrepesca y El Niño de 1972.",
-      "fuente": "Chavez, F. P. y otros (2008). The northern Humboldt Current System. Progress in Oceanography 79; Imarpe, información sobre la anchoveta."
+      "fuente": "Chavez, F. P. y otros (2008). The northern Humboldt Current System. Progress in Oceanography 79; Imarpe, información sobre la anchoveta. Talla: FishBase, Engraulis ringens (talla máxima cercana a 20 cm)."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 9 de 9. Cambios: distractor RV3 que era un detalle reemplazado por un resumen a medias; fuente de la talla de la anchoveta. Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+  }
 }

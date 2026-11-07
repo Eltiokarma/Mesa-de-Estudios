@@ -4,14 +4,14 @@
   "titulo": "Lavarse las manos",
   "tema": "Ciencia e historia · Semmelweis",
   "grado": 5,
-  "dificultad": 3,
+  "dificultad": 2,
   "tipo_texto": "argumentativo",
   "parrafos": [
     [
       {
         "id": "o1",
         "rol": "detalle",
-        "t": "En 1847, en un hospital de Viena, el médico húngaro Ignaz Semmelweis notó algo extraño: en la sala atendida por médicos, muchas más madres morían de fiebre después del parto que en la sala atendida por parteras."
+        "t": "Hacia 1847, en un hospital de Viena, el médico húngaro Ignaz Semmelweis notó algo extraño: en la sala atendida por médicos, muchas más madres morían de fiebre después del parto que en la sala atendida por parteras."
       },
       {
         "id": "o2",
@@ -103,10 +103,10 @@
           "explicacion": "Es demasiado general: el texto habla de por qué tardó en aceptarse una medida concreta."
         },
         {
-          "t": "Lavarse las manos con cloro redujo las muertes después del parto.",
+          "t": "Semmelweis tenía razón, pero sus colegas no quisieron aceptarlo.",
           "codigo": "RV3",
-          "origen": "o4",
-          "explicacion": "Es una parte del caso, pero deja fuera lo que el autor saca de él: por qué tardó en aceptarse."
+          "origen": "o6",
+          "explicacion": "Resume el caso, pero le falta lo que el autor saca de él: que además de tener razón hacía falta una explicación."
         },
         {
           "t": "Los médicos de Viena eran malos profesionales.",
@@ -127,7 +127,7 @@
         "codigos": {
           "lo-dice": "RV5",
           "se-deduce": "RV7",
-          "lo-contradice": null
+          "lo-contradice": "RV36"
         },
         "explicacion": "El texto no dice nada sobre premios. No se puede saber.",
         "explicaciones": {
@@ -136,36 +136,36 @@
           "lo-contradice": "El texto no dice que no lo premiaran; dice que muchos colegas rechazaron su medida, que no es lo mismo."
         }
       },
-      "enunciado": "Se infiere del texto que, en la sala atendida por parteras, morían menos madres porque",
+      "enunciado": "Se infiere del texto que las parteras de ese hospital",
       "alternativas": [
         {
-          "t": "las parteras no pasaban de examinar cadáveres a atender partos.",
+          "t": "no pasaban de examinar cadáveres a atender partos.",
           "correcta": true,
           "evidencia": [
             "o1",
             "o2"
           ],
-          "explicacion": "El texto no lo dice así, pero se deduce: lo que distinguía a los médicos era pasar de los cadáveres a los partos sin lavarse (oración 2)."
+          "explicacion": "El texto no lo dice así, pero se deduce: lo que distinguía a los médicos era pasar de los cadáveres a los partos (oración 2), y en la sala de las parteras morían menos (oración 1)."
         },
         {
-          "t": "los médicos solían pasar de examinar cadáveres a atender partos sin lavarse.",
+          "t": "atendían partos en una sala distinta de la de los médicos.",
           "codigo": "RV6",
-          "origen": "o2",
-          "explicacion": "Eso lo dice el texto tal cual (oración 2) y habla de los médicos; la pregunta pide qué explica la diferencia en la otra sala."
+          "origen": "o1",
+          "explicacion": "Eso lo dice el texto (oración 1): no es una inferencia sobre las parteras."
         },
         {
-          "t": "las parteras sabían que los microbios causan enfermedades.",
+          "t": "sabían que los microbios causan enfermedades.",
           "codigo": "RV9",
           "origen": "o7",
-          "explicacion": "Choca con el texto: los microbios se demostraron \"décadas después\" (oración 7), así que nadie lo sabía entonces."
+          "explicacion": "Choca con el texto: los microbios se demostraron \"décadas después\" (oración 7), así que todavía no se había demostrado."
         },
         {
-          "t": "las parteras atendían a menos madres que los médicos.",
+          "t": "atendían a menos madres que los médicos.",
           "codigo": "RV7",
           "explicacion": "El texto no dice cuántas madres atendía cada sala; esa razón no sale de lo que se lee."
         },
         {
-          "t": "las parteras se lavaban las manos con cloro desde mucho antes que los médicos.",
+          "t": "se lavaban las manos con cloro desde mucho antes que los médicos.",
           "codigo": "RV5",
           "origen": "o3",
           "explicacion": "Usa palabras de la oración 3 (\"lavaran\", \"cloro\"), pero el texto dice que el lavado con cloro lo ordenó Semmelweis."
@@ -179,7 +179,7 @@
       "enunciado": "En la oración 8, la expresión REVISAR SUS PROPIAS IDEAS significa",
       "alternativas": [
         {
-          "t": "estar dispuesto a cambiar lo que uno cree si hay razones.",
+          "t": "volver a examinar lo que uno cree y cambiarlo si hay razones.",
           "correcta": true,
           "evidencia": [
             "o6",
@@ -188,9 +188,9 @@
           "explicacion": "Los colegas de Semmelweis rechazaron la medida por lo que ya creían (oración 6); revisar sus ideas habría sido aceptar que podían estar equivocados."
         },
         {
-          "t": "leer de nuevo un texto para corregir la ortografía.",
+          "t": "volver a pensar en un tema para recordarlo mejor.",
           "codigo": "RV18",
-          "explicacion": "Es un sentido común de \"revisar\" (revisar un examen), pero aquí se habla de las creencias."
+          "explicacion": "Es un sentido común de \"revisar\" (repasar para un examen), pero aquí no se trata de recordar, sino de cambiar lo que uno cree."
         },
         {
           "t": "defender con más fuerza lo que uno ya piensa.",
@@ -246,5 +246,10 @@
       "fuente": "Semmelweis, I. (1861). Die Ätiologie, der Begriff und die Prophylaxis des Kindbettfiebers; Carter, K. C. (2005). Childbed fever. Transaction Publishers."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6, pero un distractor de inferencia era defendible: se reescribió la pregunta («las parteras de ese hospital…»). Distractores más cercanos; dificultad bajada a 2 (no llegaba a tipo UNI). Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+  }
 }
