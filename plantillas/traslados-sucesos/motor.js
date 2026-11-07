@@ -39,7 +39,8 @@
  *                               respuesta (= pastillas), errores (en pastillas): sinMasUno (⌊t/k⌋ · porToma),
  *                               menosUno ((⌊t/k⌋ − 1) · porToma), deMas ((⌊t/k⌋ + 2) · porToma: los dos extremos
  *                               sumados aparte), sinMultiplicar (tomas; solo si porToma > 1) }. Sin final, los
- *                               errores son conElFinal ((tomas + 1) · porToma) y menosUno ((tomas − 1) · porToma).
+ *                               errores son conElFinal ((tomas + 1) · porToma), menosUno ((tomas − 1) · porToma) y
+ *                               sinMultiplicar (tomas; también solo si porToma > 1).
  *   proximaCoincidencia({ intervalos, inicio })   varios sucesos (combis) ocurren juntos en el minuto inicio (por
  *                               defecto 0) y después cada uno con su intervalo. ¿Cuándo vuelven a ocurrir todos
  *                               juntos? { mcm, mcd, producto, suma (de los intervalos), minutos (= mcm: lo que pasa
@@ -53,8 +54,9 @@
  *   vecesCoinciden({ intervalos, inicio, fin })   cuántas veces ocurren todos juntos de inicio a fin, contando la de
  *                               inicio y la de fin si cae. { mcm, lapso (fin − inicio), veces (⌊lapso/mcm⌋ + 1),
  *                               momentos: [minutos], horas: [textos], comprobado (true si recorrerMinutos da los mismos
- *                               momentos), errores: sinLaPrimera (veces − 1), conSuma (⌊lapso/suma⌋ + 1), conMcd
- *                               (⌊lapso/mcd⌋ + 1), conProducto (⌊lapso/producto⌋ + 1) }.
+ *                               momentos), errores: sinLaPrimera (veces − 1), sinExtremos (veces − 2: sin la de inicio
+ *                               ni la de fin), conSuma (⌊lapso/suma⌋ + 1), conMcd (⌊lapso/mcd⌋ + 1), conProducto
+ *                               (⌊lapso/producto⌋ + 1) }.
  *   diaSemana({ desde, dias })  el día de la semana que es 'dias' días después de 'desde' (dias puede ser negativo).
  *                               { dia, resto (dias mod 7, de 0 a 6) }.
  *   descanso({ ciclo, primero, n })   un turno que se repite: un descanso cada 'ciclo' días (trabaja ciclo − 1 días y
@@ -69,13 +71,18 @@
  *                               dias (días pasados desde el primero), descansos: [{ num, dia (días desde el primero),
  *                               nombre }] }.
  *   triangulo(filas, invertido)   las monedas de un triángulo de 'filas' filas: hacia arriba, la fila v = 0 tiene
- *                               'filas' monedas (u = 0 … filas − 1) y la de arriba una. Invertido: el reflejo, con la
- *                               fila larga arriba (fila v = filas − 1) y la punta abajo (v = 0). Devuelve [[u, v]].
+ *                               'filas' monedas (u = 0 … filas − 1) y la de arriba una, en (0, filas − 1); se listan
+ *                               fila por fila de abajo arriba. Invertido: el reflejo, cada (u, v) va a (u + v,
+ *                               filas − 1 − v): la fila larga arriba, en v = filas − 1 con u = 0 … filas − 1; la
+ *                               siguiente en v = filas − 2 con u = 1 … filas − 1; …; la punta en (filas − 1, 0). Se
+ *                               listan de arriba abajo y de izquierda a derecha (con 3 filas: [[0,2],[1,2],[2,2],[1,1],
+ *                               [2,1],[2,0]]). Devuelve [[u, v]].
  *   minMovimientos(origen, destino)   el menor número de jugadas para pasar de la disposición origen a la figura
  *                               destino puesta en cualquier lugar (corrida): N − (la mayor cantidad de monedas de
  *                               origen que coinciden con alguna traslación de destino), porque cada moneda que no
  *                               está ya en su lugar se mueve al menos una vez y basta con moverla una vez. { minimo,
- *                               traslado: [du, dv] (el que más deja en su lugar; si empatan, el de menor |du| + |dv|),
+ *                               traslado: [du, dv] (el que más deja en su lugar; si empatan, el de menor |du| + |dv|;
+ *                               si siguen empatados, el de menor dv y después el de menor du),
  *                               meta: [[u, v]] (destino corrido), quedan: [las que no se mueven], mover: [las que se
  *                               mueven], a: [los lugares libres de la meta, en el mismo orden] }.
  *   monedasTriangulo({ filas })   el triángulo de 'filas' filas que apunta hacia arriba debe quedar apuntando hacia
@@ -84,7 +91,7 @@
  *                               (filas + 1: la fila de abajo y la punta), todas (monedas) }.
  *   revisarMonedas(posiciones, filas)   lo que armó el alumno: { llego (posiciones es el triángulo invertido de
  *                               'filas' filas, corrido a cualquier lugar), faltan (el menor número de jugadas que le
- *                               quedan), repetida (dos monedas en el mismo punto) }.
+ *                               quedan; null si hay monedas repetidas), repetida (dos monedas en el mismo punto) }.
  *   recorrido(tramos)           tramos: [[rumbo, cuadras], …] con rumbo 'N', 'E', 'S' u 'O'. { x, y (dónde termina),
  *                               puntos: [[x, y]] (el inicio y el final de cada tramo), total (cuadras caminadas),
  *                               distancia (en línea recta al inicio), d2 (su cuadrado), exacto (texto: '13' o '5√2'), direccion (desde el
@@ -101,12 +108,12 @@
  *                               recorrido), x, y, distancia, exacto, direccion, respuesta (texto 'N cuadras hacia el
  *                               …'), errores (textos de la misma forma): izquierda (giros al otro lado), sumaTodo (las
  *                               cuadras caminadas, con la dirección correcta), sumaCatetos (|x| + |y|, con la dirección
- *                               correcta) }.
+ *                               correcta), izquierdaCatetos (|x| + |y| con la dirección de los giros al otro lado) }.
  *   NOMBRES                     { N: 'norte', E: 'este', S: 'sur', O: 'oeste' }.
  *
  * Configuraciones predefinidas (motor.escena): las de la escena, para que el HTML y las pruebas usen los mismos datos.
  *   pastillas   { k: 6, t: 48 }                    una cada 6 h durante 2 días, lunes 8:00 a miércoles 8:00 → 9.
- *   combis      { intervalos: [12, 18], inicio: 360, fin: 540 }   6:00 a 9:00 → juntas a las 6:36; 6 veces.
+ *   combis      { intervalos: [16, 24], inicio: 360, fin: 600 }   6:00 a 10:00 → juntas a las 6:48; 6 veces.
  *   turno       { ciclo: 6, primero: 'lunes', n: 10 }               → sábado.
  *   monedas     { filas: 4 }                       → 3 jugadas.
  *   plaza       [['N', 7], ['E', 4], ['S', 2], ['E', 8]]           → 13 cuadras al noreste.
@@ -229,7 +236,7 @@
     const momentos = Array.from({ length: veces }, (_, j) => inicio + j * M);
     const comprobado = recorrerMinutos({ intervalos: I, inicio, fin }).join() === momentos.join();
     const D = mcd(I), producto = I.reduce((a, b) => a * b, 1), suma = I.reduce((a, b) => a + b, 0);
-    const err = { sinLaPrimera: veces - 1, conSuma: Math.floor(lapso / suma) + 1, conMcd: Math.floor(lapso / D) + 1, conProducto: Math.floor(lapso / producto) + 1 };
+    const err = { sinLaPrimera: veces - 1, sinExtremos: veces - 2, conSuma: Math.floor(lapso / suma) + 1, conMcd: Math.floor(lapso / D) + 1, conProducto: Math.floor(lapso / producto) + 1 };
     return Object.assign({ mcm: M, lapso, veces, momentos, horas: momentos.map(horaTexto), comprobado }, apartar(err, veces));
   }
 
@@ -285,7 +292,9 @@
       const meta = destino.map(r => [r[0] + du, r[1] + dv]);
       const quedan = meta.filter(r => O.has(clave(r))).length;
       const peso = Math.abs(du) + Math.abs(dv);
-      if (!mejor || quedan > mejor.quedan || (quedan === mejor.quedan && peso < mejor.peso)) mejor = { du, dv, meta, quedan, peso };
+      const gana = !mejor || quedan > mejor.quedan || (quedan === mejor.quedan && (peso < mejor.peso ||
+        (peso === mejor.peso && (dv < mejor.dv || (dv === mejor.dv && du < mejor.du)))));
+      if (gana) mejor = { du, dv, meta, quedan, peso };
     }
     const M = new Set(mejor.meta.map(clave));
     return { minimo: origen.length - mejor.quedan, traslado: [mejor.du, mejor.dv], meta: mejor.meta,
@@ -387,13 +396,14 @@
     const tramos = caminar(inicio, o.pasos), R = recorrido(tramos), Ri = recorrido(caminar(inicio, o.pasos, true));
     const respuesta = textoCuadras(R.exacto, R.direccion);
     const err = { izquierda: textoCuadras(Ri.exacto, Ri.direccion), sumaTodo: textoCuadras(String(R.total), R.direccion),
-      sumaCatetos: textoCuadras(String(Math.abs(R.x) + Math.abs(R.y)), R.direccion) };
+      sumaCatetos: textoCuadras(String(Math.abs(R.x) + Math.abs(R.y)), R.direccion),
+      izquierdaCatetos: textoCuadras(String(Math.abs(Ri.x) + Math.abs(Ri.y)), Ri.direccion) };
     return Object.assign({ tramos, x: R.x, y: R.y, puntos: R.puntos, total: R.total, distancia: R.distancia, exacto: R.exacto, direccion: R.direccion, respuesta }, apartar(err, respuesta));
   }
 
   const escena = {
     pastillas: { k: 6, t: 48 },
-    combis: { intervalos: [12, 18], inicio: 360, fin: 540 },
+    combis: { intervalos: [16, 24], inicio: 360, fin: 600 },
     turno: { ciclo: 6, primero: 'lunes', n: 10 },
     monedas: { filas: 4 },
     plaza: [['N', 7], ['E', 4], ['S', 2], ['E', 8]],

@@ -78,7 +78,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Ana almuerza pescado cada 3 días y Beto cada 5 días. Un martes los dos almorzaron pescado. ¿Qué día de la semana vuelven a almorzar pescado el mismo día por primera vez?",
+      "enunciado": "Ana almuerza pescado cada 3 días (después de un día de pescado, pasan 2 días sin pescado y al tercero le toca otra vez) y Beto cada 5 días (4 días sin pescado y al quinto le toca). Un martes los dos almorzaron pescado. ¿Qué día de la semana vuelven a almorzar pescado el mismo día por primera vez?",
       "respuesta": "Un miércoles.",
       "pasos": [
         "Coinciden cada MCM(3, 5) = 15 días.",

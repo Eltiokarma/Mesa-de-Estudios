@@ -335,7 +335,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     lin:null, com:null, cal:null, mon:null, pla:null, bru:null, alMover:null };
   ESCENAS.push(E);
   const ctx = cv.getContext('2d');
-  let W = 0, Hh = 0, geo = null, drag = null, cursor = -1, mano = -1;
+  let W = 0, Hh = 0, geo = null, drag = null, cursor = -1, mano = -1, xMeta = null;
   function altoBase(w){
     const ancho = w >= 560;
     if (E.modo === 'linea') return ancho ? 210 : 190;
@@ -363,10 +363,10 @@ function crearEscena(cv, idDesc, idLect, idLey){
     E.tok++; E.anim = false; drag = null; mano = -1;
     Object.assign(E, { modo:'linea', lect:[], ley:null, alCambiar:null, desc:'', tocar:false, lin:null, com:null, cal:null, mon:null, pla:null, bru:null, alMover:null }, o);
     if (E.lin) E.lin = Object.assign({ porToma:1, final:true, ver:0, marcas:[], intervalos:false }, E.lin);
-    if (E.com) E.com = Object.assign({ inicio:360, paso:10, horas:false, contar:false }, E.com, { ahora: E.com.ahora === undefined ? E.com.inicio || 360 : E.com.ahora });
+    if (E.com) E.com = Object.assign({ inicio:360, paso:10, horas:false, contar:false, sinHoras:false }, E.com, { ahora: E.com.ahora === undefined ? E.com.inicio || 360 : E.com.ahora });
     if (E.cal) E.cal = Object.assign({ hasta:1, marcas:false, filas:9 }, E.cal);
     if (E.mon) E.mon = Object.assign({ movidas:[], anim:null, jugadas:0, puntos:false }, E.mon, { pos:E.mon.pos.map(p => p.slice()) });
-    if (E.pla) E.pla = Object.assign({ prog:0, catetos:false, recta:false, rotulos:false }, E.pla);
+    if (E.pla) E.pla = Object.assign({ prog:0, catetos:false, recta:false, rotulos:false, simetrica:false }, E.pla);
     if (E.bru) E.bru = Object.assign({ ang:0 }, E.bru);
     cv.tabIndex = E.tocar ? 0 : -1;
     cursor = -1;
@@ -439,7 +439,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
     });
     // el eje del tiempo
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:x0 - 4, y:yEje }, { x:x1 + 4, y:yEje }); ctx.restore();
-    for (let m = C.inicio; m <= C.fin; m += C.paso){
+    if (C.sinHoras) rotulo(ctx, c, x0, yEje + 16, `${hora(C.inicio)} →`, c.muted, 'left', 700, 11);
+    else for (let m = C.inicio; m <= C.fin; m += C.paso){
       ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, { x:X(m), y:yEje - 4 }, { x:X(m), y:yEje + 4 }); ctx.restore();
       rotulo(ctx, c, X(m), yEje + 16, hora(m), c.muted, m === C.inicio ? 'left' : m + C.paso > C.fin && X(m) > W - 30 ? 'right' : 'center', 700, 11);
     }
@@ -514,7 +515,10 @@ function crearEscena(cv, idDesc, idLect, idLey){
   function cajaPlano(){
     const P = E.pla ? MT.recorrido(E.pla.tramos).puntos : [[0, 0]];
     const xs = P.map(p => p[0]).concat([-1]), ys = P.map(p => p[1]).concat([-1]);
-    const xa = Math.min(...xs) - 1, xb = Math.max(...xs) + 1, ya = Math.min(...ys) - 1, yb = Math.max(...ys) + 1;
+    let xa = Math.min(...xs) - 1, xb = Math.max(...xs) + 1, ya = Math.min(...ys) - 1, yb = Math.max(...ys) + 1;
+    if (E.pla && E.pla.simetrica){     // antes de responder: centrada en la salida, sin delatar hacia dónde ni cuánto
+      const mx = Math.max(-xa, xb), my = Math.max(-ya, yb); xa = -mx; xb = mx; ya = -my; yb = my;
+    }
     return { xa, xb, ya, yb, nx:xb - xa, ny:yb - ya };
   }
   function dibPlano(c){
@@ -650,12 +654,18 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const pts = geo.pts, M = E.mon;
     if (cursor < 0) cursor = pts.findIndex(p => igualP(p, M.pos[0]));
     const p = pts[cursor], x = p[0] + p[1]/2;
+    // arriba y abajo siguen una columna (xMeta): si dos lugares quedan a la misma distancia, se elige el del otro lado,
+    // y así el cursor zigzaguea alrededor de la columna en vez de irse siempre a la izquierda
     const buscar = (dx, dv) => {
+      if (dv && xMeta === null) xMeta = x;
       let mejor = -1, dm = Infinity;
       pts.forEach((q, k) => { const qx = q[0] + q[1]/2, ok = dv ? q[1] === p[1] + dv : q[1] === p[1] && Math.sign(qx - x) === dx;
-        if (!ok) return; const d = Math.abs(qx - x); if (d < dm){ dm = d; mejor = k; } });
+        if (!ok) return; const d = Math.abs(qx - (dv ? xMeta : x));
+        const preferido = dv && Math.abs(d - dm) < 1e-9 && (x <= xMeta ? qx > xMeta : qx < xMeta);
+        if (d < dm - 1e-9 || preferido){ dm = d; mejor = k; } });
       return mejor;
     };
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') xMeta = null;
     let k = -1;
     if (e.key === 'ArrowLeft') k = buscar(-1, 0); else if (e.key === 'ArrowRight') k = buscar(1, 0);
     else if (e.key === 'ArrowUp') k = buscar(0, 1); else if (e.key === 'ArrowDown') k = buscar(0, -1);
@@ -677,7 +687,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
   function avisarCursor(){
     if (!idDesc || !geo || cursor < 0) return;
     const p = geo.pts[cursor], hay = E.mon.pos.some(q => igualP(q, p));
-    document.getElementById(idDesc).textContent = `Fila ${p[1] + 2} desde abajo, lugar ${Math.round((p[0] + p[1]/2 + 1)*2) + 1} desde la izquierda: ${hay ? 'hay una moneda' : 'libre'}.${mano >= 0 ? ' Llevas una moneda: Enter la deja en un lugar libre.' : hay ? ' Enter la levanta.' : ''}`;
+    const fila = geo.pts.filter(q => q[1] === p[1]), lugar = fila.filter(q => q[0] < p[0]).length + 1;
+    document.getElementById(idDesc).textContent = `Fila ${p[1] + 2} desde abajo, lugar ${lugar} de ${fila.length} desde la izquierda: ${hay ? 'hay una moneda' : 'libre'}.${mano >= 0 ? ' Llevas una moneda: Enter la deja en un lugar libre.' : hay ? ' Enter la levanta.' : ''}`;
   }
   return E;
 }
@@ -731,21 +742,21 @@ const G1 = { id:'traslados-paso1', ok:'b', unidad:U_FREC, opts:[
 const G3 = { id:'traslados-paso3', ok:'d', unidad:U_FREC, opts:[
   ['a', C3.horas.mcd, 'AR13-mcd-en-vez-de-mcm', 'parcial'],
   ['b', C3.horas.suma, 'coincidencia-suma-de-intervalos', 'hipotesis'],
-  ['c', C3.horas.producto, 'AR13-producto', 'parcial'],
+  ['c', C3.horas.producto, 'coincidencia-producto', 'hipotesis'],
   ['d', C3.hora]],
-  fb:{ d:`¡Bien! La combi A sale a los 12, 24, ${M_(String(C3.mcm))}, … minutos y la B a los 18, ${M_(String(C3.mcm))}, …: el primer número que está en las dos listas es el menor múltiplo común de 12 y 18, ${M_('M')} = ${M_(String(C3.mcm))}. 6:00 + ${C3.mcm} min = ${C3.hora}.`,
-    a:`Elegiste la A. ${C3.mcd} es el mayor divisor común de 12 y 18 (el MCD). Pero a los ${C3.mcd} minutos todavía no sale ninguna combi: la primera A sale a las 6:12. Para que salgan juntas tiene que pasar un número de minutos que sea múltiplo de 12 y también de 18. La correcta está marcada.`,
-    b:`Elegiste la B. A los ${C3.suma} minutos (12 + 18) no sale ninguna: la A sale a las 6:24 y luego a las 6:36; la B, a las 6:18 y luego a las 6:36. La correcta está marcada.`,
-    c:`Elegiste la C. 12 · 18 = ${C3.producto} minutos (${C3.horas.producto}) es un momento en que sí salen juntas, pero no el primero: antes ya coincidieron varias veces. El producto es un múltiplo común, no el menor. La correcta está marcada.` } };
+  fb:{ d:`¡Bien! La combi A sale a los 16, 32, ${M_(String(C3.mcm))}, … minutos y la B a los 24, ${M_(String(C3.mcm))}, …: el primer número que está en las dos listas es el menor múltiplo común de 16 y 24, ${M_('M')} = ${M_(String(C3.mcm))}. 6:00 + ${C3.mcm} min = ${C3.hora}.`,
+    a:`Elegiste la A. ${C3.mcd} es el mayor divisor común de 16 y 24 (el MCD). Pero a los ${C3.mcd} minutos todavía no sale ninguna combi: la primera A sale a las 6:16. Para que salgan juntas tiene que pasar un número de minutos que sea múltiplo de 16 y también de 24. La correcta está marcada.`,
+    b:`Elegiste la B. A los ${C3.suma} minutos (16 + 24) no sale ninguna: la A sale a las 6:32 y luego a las 6:48; la B, a las 6:24 y luego a las 6:48. La correcta está marcada.`,
+    c:`Elegiste la C. 16 · 24 = ${C3.producto} minutos (${C3.horas.producto}) es un momento en que sí salen juntas, pero no el primero: antes ya coincidieron varias veces. El producto es un múltiplo común, no el menor. La correcta está marcada.` } };
 const G4 = { id:'traslados-paso4', ok:'a', unidad:U_FREC, opts:[
   ['a', `${C4.veces} veces`],
   ['b', `${C4.errores.sinLaPrimera} veces`, 'coincidencias-sin-la-primera', 'hipotesis'],
-  ['c', `${C4.errores.conSuma} veces`, 'coincidencias-cada-suma', 'hipotesis'],
+  ['c', `${C4.errores.sinExtremos} veces`, 'coincidencias-sin-extremos', 'hipotesis'],
   ['d', `${C4.errores.conMcd} veces`, 'AR13-mcd-en-vez-de-mcm', 'parcial']],
-  fb:{ a:`¡Bien! Salen juntas cada ${M_(String(C4.mcm))} min. En los ${C4.lapso} minutos de 6:00 a 9:00 caben ${C4.lapso} ÷ ${C4.mcm} = ${C4.veces - 1} intervalos, y hay una salida juntas más que intervalos: ${s_('s')} = ${C4.veces - 1} + 1 = ${s_(String(C4.veces))}, con la de las 6:00 y la de las 9:00.`,
-    b:`Elegiste la B. ${C4.lapso} ÷ ${C4.mcm} = ${C4.veces - 1} cuenta los intervalos; falta la salida de las 6:00, con la que empieza todo: ${C4.horas.join(', ')} son ${C4.veces}. La correcta está marcada.`,
-    c:`Elegiste la C. Juntas salen cada ${C4.mcm} minutos, no cada ${IA + IB} (12 + 18). Con ${IA + IB} saldrían ${C4.errores.conSuma} veces, pero a las 6:30 no sale ninguna. La correcta está marcada.`,
-    d:`Elegiste la D. ${C4.errores.conMcd} sería si salieran juntas cada 6 minutos (el MCD de 12 y 18), pero en 6 minutos ninguna combi vuelve a salir. La correcta está marcada.` } };
+  fb:{ a:`¡Bien! Salen juntas cada ${M_(String(C4.mcm))} min. En los ${C4.lapso} minutos de 6:00 a 10:00 caben ${C4.lapso} ÷ ${C4.mcm} = ${C4.veces - 1} intervalos, y hay una salida juntas más que intervalos: ${s_('s')} = ${C4.veces - 1} + 1 = ${s_(String(C4.veces))}, con la de las 6:00 y la de las 10:00.`,
+    b:`Elegiste la B. ${C4.lapso} ÷ ${C4.mcm} = ${C4.veces - 1} cuenta los intervalos; falta la salida de las 6:00, con la que empieza todo. La correcta está marcada.`,
+    c:`Elegiste la C. ${C4.errores.sinExtremos} deja fuera las dos puntas: la salida de las 6:00 y la de las 10:00 también cuentan, porque las dos caen dentro del horario. La correcta está marcada.`,
+    d:`Elegiste la D. ${C4.errores.conMcd} sería si salieran juntas cada ${C3.mcd} minutos (el MCD de 16 y 24), pero en ${C3.mcd} minutos ninguna combi vuelve a salir. La correcta está marcada.` } };
 const G5 = { id:'traslados-paso5', ok:'c', unidad:U_FREC, opts:[
   ['a', 'El viernes', 'turno-un-ciclo-de-mas', 'hipotesis'],
   ['b', 'El lunes', 'turno-siempre-el-mismo-dia', 'hipotesis'],
@@ -791,14 +802,14 @@ function linea2(){
   if (d) d.innerHTML = `<div class="eq">${fr(t_(String(t)), k_(String(S.k2)))} = ${R.intervalos}<span class="note">intervalos de ${S.k2} h</span></div>
     <div class="eq">${n_('n')} = ${R.intervalos}${S.f2 ? ' + 1' : ''} = ${n_(String(R.tomas))}<span class="note">${S.f2 ? 'una toma al empezar cada intervalo y otra al final' : 'al cumplirse el tiempo ya no se toma'}</span></div>`;
 }
-const combis3 = ya => ({ modo:'combis', com:{ intervalos:ESC.combis.intervalos, inicio:360, fin:420, paso:10, ahora: ya ? 420 : 360, horas:ya },
+const combis3 = ya => ({ modo:'combis', com:{ intervalos:ESC.combis.intervalos, inicio:360, fin:420, paso:10, ahora: ya ? 420 : 360, horas:ya, sinHoras:!ya },
   lect:[L('a', 'A sale cada a', `${IA} min`), L('b', 'B sale cada b', `${IB} min`), L('M', 'Otra vez juntas', ya ? C3.hora : '?')],
   ley: [['a', 'a · combi A'], ['b', 'b · combi B']].concat(ya ? [['M', 'M · salen juntas']] : []),
-  desc: ya ? `Las salidas de 6:00 a 7:00: la A cada 12 minutos y la B cada 18; salen juntas a las 6:00 y a las ${C3.hora}.` : 'Una línea de tiempo de 6:00 a 7:00 con las dos combis saliendo juntas a las 6:00.' });
-const combis4 = ya => ({ modo:'combis', com:{ intervalos:ESC.combis.intervalos, inicio:360, fin:540, paso:30, ahora: ya ? 540 : 360, horas:ya, contar:ya },
-  lect:[L('M', 'Juntas cada M', `${C3.mcm} min`), L('ink', 'Desde … hasta', '6:00 a 9:00'), L('s', 'Veces juntas s', ya ? String(C4.veces) : '?')],
+  desc: ya ? `Las salidas de 6:00 a 7:00: la A cada 16 minutos y la B cada 24; salen juntas a las 6:00 y a las ${C3.hora}.` : 'Una línea de tiempo que empieza a las 6:00, con las dos combis saliendo juntas a esa hora.' });
+const combis4 = ya => ({ modo:'combis', com:{ intervalos:ESC.combis.intervalos, inicio:360, fin:600, paso:60, ahora: ya ? 600 : 360, horas:ya, contar:ya },
+  lect:[L('M', 'Juntas cada M', `${C3.mcm} min`), L('ink', 'Desde … hasta', '6:00 a 10:00'), L('s', 'Veces juntas s', ya ? String(C4.veces) : '?')],
   ley: [['a', 'a · combi A'], ['b', 'b · combi B']].concat(ya ? [['M', 'M · salen juntas'], ['s', 's · cuenta de las veces', 'pt']] : []),
-  desc: ya ? `Las salidas de 6:00 a 9:00; salen juntas ${C4.veces} veces: ${C4.horas.join(', ')}.` : 'Una línea de tiempo de 6:00 a 9:00 con las dos combis saliendo juntas a las 6:00.' });
+  desc: ya ? `Las salidas de 6:00 a 10:00; salen juntas ${C4.veces} veces: ${C4.horas.join(', ')}.` : 'Una línea de tiempo de 6:00 a 10:00 con las dos combis saliendo juntas a las 6:00.' });
 const turno5 = ya => ({ modo:'calendario', cal:{ ciclo:6, n:10, filas:9, hasta: ya ? D5.dias + 1 : 1, marcas:ya },
   lect: ya ? [L('D', 'Del 1.º al 10.º D', `${D5.dias} días`), L('r', 'Sobran r', `${D5.resto} días`), L('ink', 'Décimo descanso', D5.dia)]
            : [L('ink', 'Primer descanso', 'lunes'), L('ink', 'Décimo descanso', '?')],
@@ -822,7 +833,7 @@ function vivo7(){
   else if (S.j7 > 0){ m.textContent = `Llevas ${S.j7} ${S.j7 === 1 ? 'jugada' : 'jugadas'}. Desde aquí te faltan al menos ${R.faltan}.`; m.className = 'msg'; }
   else { m.textContent = ''; m.className = 'msg'; }
 }
-const plaza8 = ya => ({ modo:'plano', pla:{ tramos:ESC.plaza, prog: ya ? ESC.plaza.length : 0, catetos:ya, recta:ya, rotulos:ya },
+const plaza8 = ya => ({ modo:'plano', pla:{ tramos:ESC.plaza, prog: ya ? ESC.plaza.length : 0, catetos:ya, recta:ya, rotulos:ya, simetrica:!ya },
   lect: ya ? [L('x', 'Al este x', `${R8.x} cuadras`), L('y', 'Al norte y', `${R8.y} cuadras`), L('d', 'En línea recta d', `${R8.exacto} cuadras`)]
            : [L('ink', 'Camina', '7N 4E 2S 8E'), L('d', 'En línea recta d', '?')],
   ley: ya ? [['x', 'x · de oeste a este'], ['y', 'y · de sur a norte'], ['d', 'd · en línea recta']] : [],
@@ -853,25 +864,25 @@ const steps = [
    prep:() => E.config(combis3(!!S.pred[G3.id])),
    anima:fin => { const o = combis3(true); o.com.ahora = 360; E.config(o); const C = E.com;
      E.animar(360, 420, 3400, v => { C.ahora = v; }, () => { E.config(combis3(true)); fin(); }, true); },
-   body:() => `<p class="problem">En un paradero de Juliaca, las combis de la línea A salen cada ${a_('12 minutos')} y las de la línea B cada ${b_('18 minutos')}. A las 6:00 salen juntas una combi de cada línea.</p>
+   body:() => `<p class="problem">En un paradero de Juliaca, las combis de la línea A salen cada ${a_('16 minutos')} y las de la línea B cada ${b_('24 minutos')}. A las 6:00 salen juntas una combi de cada línea.</p>
    <p>¿A qué hora vuelven a salir juntas por primera vez?</p>${opcionesHTML(G3.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">A: ${a_('12')}, 24, ${M_('36')}, 48, …<span class="note">múltiplos de 12</span></div>
-     <div class="eq">B: ${b_('18')}, ${M_('36')}, 54, …<span class="note">múltiplos de 18</span></div>
-     <div class="eq">${M_('M')} = MCM(${a_('12')}, ${b_('18')}) = ${M_(String(C3.mcm))} → 6:00 + ${C3.mcm} min = ${C3.hora}</div></div>
+     <div class="eq">A: ${a_('16')}, 32, ${M_('48')}, 64, …<span class="note">múltiplos de 16</span></div>
+     <div class="eq">B: ${b_('24')}, ${M_('48')}, 72, …<span class="note">múltiplos de 24</span></div>
+     <div class="eq">${M_('M')} = MCM(${a_('16')}, ${b_('24')}) = ${M_(String(C3.mcm))} → 6:00 + ${C3.mcm} min = ${C3.hora}</div></div>
    <p>Salir juntas otra vez pide un tiempo que sea múltiplo de los dos intervalos, y el primero de esos es el mínimo común múltiplo. El motor lo comprueba además recorriendo los minutos uno por uno.</p>
-   <p class="fuente">Usar el MCD donde va el MCM, o el producto, está descrito en estudios con escolares de primaria de Indonesia y de Taiwán, pero sin una cifra que se pueda comparar. Sumar los intervalos es hipótesis nuestra.</p></div>` },
+   <p class="fuente">Usar el MCD donde va el MCM está descrito en estudios con escolares de primaria de Indonesia y de Taiwán, sin una cifra que se pueda comparar. Usar el producto o sumar los intervalos son hipótesis nuestras.</p></div>` },
  { k:'Paso 4', t:'Predice: cuántas veces en la mañana', gate:G4,
    prep:() => E.config(combis4(!!S.pred[G4.id])),
    anima:fin => { const o = combis4(true); o.com.ahora = 360; E.config(o); const C = E.com;
-     E.animar(360, 540, 4600, v => { C.ahora = v; }, () => { E.config(combis4(true)); fin(); }, true); },
-   body:() => `<p class="problem">Las combis siguen saliendo así toda la mañana, la A cada ${a_('12')} minutos y la B cada ${b_('18')}.</p>
-   <p>¿Cuántas veces salen juntas una combi A y una combi B desde las 6:00 hasta las 9:00, contando la salida de las 6:00 y, si la hay, la de las 9:00?</p>${opcionesHTML(G4.opts, 'fb')}
+     E.animar(360, 600, 5200, v => { C.ahora = v; }, () => { E.config(combis4(true)); fin(); }, true); },
+   body:() => `<p class="problem">Las combis siguen saliendo así toda la mañana, la A cada ${a_('16')} minutos y la B cada ${b_('24')}.</p>
+   <p>¿Cuántas veces salen juntas una combi A y una combi B desde las 6:00 hasta las 10:00, contando la de las 6:00 y, si la hay, la de las 10:00?</p>${opcionesHTML(G4.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${fr(String(C4.lapso), M_(String(C4.mcm)))} = ${C4.veces - 1}<span class="note">intervalos de ${C4.mcm} min en 3 horas</span></div>
+     <div class="eq">${fr(String(C4.lapso), M_(String(C4.mcm)))} = ${C4.veces - 1}<span class="note">intervalos de ${C4.mcm} min en 4 horas</span></div>
      <div class="eq">${s_('s')} = ${C4.veces - 1} + 1 = ${s_(String(C4.veces))}<span class="note">${C4.horas.join(', ')}</span></div></div>
-   <p>Es la misma cuenta que la de las pastillas: un suceso que se repite cada ${C4.mcm} minutos, contando el primero. El motor recorrió los ${C4.lapso + 1} minutos de 6:00 a 9:00 con un reloj para cada combi y encontró las mismas ${C4.veces} salidas juntas.</p>
-   <p class="fuente">Olvidar la primera y salir juntas cada 30 minutos son hipótesis nuestras; el MCD en lugar del MCM está descrito en estudios con escolares de primaria, sin cifra comparable.</p></div>` },
+   <p>Es la misma cuenta que la de las pastillas: un suceso que se repite cada ${C4.mcm} minutos, contando el primero. El motor recorrió los ${C4.lapso + 1} minutos de 6:00 a 10:00 con un reloj para cada combi y encontró las mismas ${C4.veces} salidas juntas.</p>
+   <p class="fuente">Olvidar la primera y dejar fuera las dos puntas son hipótesis nuestras; el MCD en lugar del MCM está descrito en estudios con escolares de primaria, sin cifra comparable.</p></div>` },
  { k:'Paso 5', t:'Predice: el décimo descanso', gate:G5,
    prep:() => E.config(turno5(!!S.pred[G5.id])),
    anima:fin => { const o = turno5(true); o.cal.hasta = 1; o.cal.marcas = false; E.config(o); const C = E.cal;
@@ -887,7 +898,7 @@ const steps = [
  { k:'Paso 6', t:'Predice: las diez monedas', gate:G6,
    prep:() => E.config(monedas6(!!S.pred[G6.id])),
    anima:fin => { E.config(monedas6(false)); E.anim = false; animarPlan(E, PL6, 800, () => { E.config(monedas6(true)); fin(); }); },
-   body:() => `<p class="problem">Sobre la mesa hay 10 monedas de un sol que forman un triángulo que apunta hacia arriba: 4 en la fila de abajo, luego 3, 2 y 1. Una jugada es levantar una moneda y ponerla en otro lugar de la mesa, junto a las demás.</p>
+   body:() => `<p class="problem">Sobre la mesa hay 10 monedas de un sol que forman un triángulo que apunta hacia arriba: 4 en la fila de abajo, luego 3, 2 y 1. Una jugada es levantar una moneda y ponerla en otro lugar de la mesa.</p>
    <p>¿Cuántas jugadas hacen falta, como mínimo, para que el triángulo apunte hacia abajo?</p>${opcionesHTML(G6.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${m_('m')} = 10 − (las que pueden quedarse quietas)<span class="note">cada moneda fuera de su lugar se mueve una vez</span></div>
@@ -899,7 +910,7 @@ const steps = [
    body:() => `<p class="problem">Arrastra las monedas con el dedo o el ratón hasta un punto libre. Con el teclado: entra al dibujo con Tab, muévete con las flechas, levanta una moneda con Enter y déjala con otro Enter.</p>
    <p class="msg" id="msg7" aria-live="polite"></p>
    <div class="fila"><button type="button" class="btn chico" id="borrar7">Empezar de nuevo</button><button type="button" class="btn chico" id="motor7">Que lo haga el motor</button></div>
-   <p>Prueba también otro camino: deja quieta la fila de 4 y arma el triángulo invertido encima. ¿Cuántas jugadas te toma?</p>` },
+   <p>Prueba también otro camino: arma el triángulo invertido con su fila de 4 a la altura de la moneda de arriba. ¿Cuántas jugadas te toma? ¿Por qué son más que 3?</p>` },
  { k:'Paso 8', t:'Predice: la caminata desde la plaza', gate:G8,
    prep:() => E.config(plaza8(!!S.pred[G8.id])),
    anima:fin => { const o = plaza8(true); Object.assign(o.pla, { prog:0, catetos:false, recta:false }); E.config(o); const P = E.pla;
@@ -1018,11 +1029,11 @@ const EXPS = [
     opts:[['a', `${Q1.errores.sinMasUno} pastillas`, 'pastillas-sin-mas-uno', 'hipotesis'],
           ['b', `${Q1.errores.sinMultiplicar} pastillas`, 'pastillas-sin-multiplicar', 'hipotesis'],
           ['c', `${Q1.pastillas} pastillas`],
-          ['d', `${Q1.errores.deMas} pastillas`, 'pastillas-extremos-de-mas', 'hipotesis']],
+          ['d', `${Q1.errores.menosUno} pastillas`, 'pastillas-menos-uno', 'hipotesis']],
     ok:'c',
     fb:{ a:`${Q1.errores.sinMasUno} = 2 · ${Q1.intervalos} cuenta una toma por cada intervalo de 8 h (72 ÷ 8 = ${Q1.intervalos}). Falta la toma del final: son ${Q1.tomas} tomas de 2.`,
          b:`${Q1.tomas} son las tomas, pero en cada una se toman 2 pastillas.`,
-         d:`Las dos tomas de los extremos no se suman aparte: la primera ya abre el primer intervalo. Son ${Q1.intervalos} + 1 = ${Q1.tomas} tomas de 2.` },
+         d:`${Q1.errores.menosUno} = 2 · ${Q1.intervalos - 1} deja fuera las dos tomas de los extremos: la del inicio y la del final también se toman. Son ${Q1.tomas} tomas de 2.` },
     antes:ya => E.config({ modo:'linea', lin:Object.assign({}, ESC.dosPastillas, { ver: ya ? Q1.tomas : 0, intervalos:ya, marcas:[0, 24, 48, 72].map(h => ({ h, texto: h ? `${h} h` : 'inicio' })) }),
       lect:[L('k', 'Cada k', '8 h'), L('t', 'Durante t', '72 h'), L('n', 'Tomas n', ya ? String(Q1.tomas) : '?'), L('P', 'Pastillas P', ya ? String(Q1.pastillas) : '?')],
       ley: ya ? [['n', 'n · cada toma', 'pt'], ['P', 'P · cada pastilla'], ['k', 'k · entre dos tomas']] : [['t', 't · todo el tratamiento']],
@@ -1037,20 +1048,20 @@ const EXPS = [
     opts:[['a', `${Q2.errores.mcmDeDos} minutos`, 'coincidencia-mcm-de-dos', 'hipotesis'],
           ['b', `${Q2.mcm} minutos`],
           ['c', `${Q2.errores.suma} minutos`, 'coincidencia-suma-de-intervalos', 'hipotesis'],
-          ['d', `${Q2.errores.producto} minutos`, 'AR13-producto', 'parcial']],
+          ['d', `${Q2.errores.producto} minutos`, 'coincidencia-producto', 'hipotesis']],
     ok:'b',
     fb:{ a:`${Q2.errores.mcmDeDos} es cuando coinciden la A y la B, pero a los ${Q2.errores.mcmDeDos} minutos la C no sale: ${Q2.errores.mcmDeDos} no es múltiplo de ${I3}.`,
          c:`${I1} + ${I2} + ${I3} = ${Q2.errores.suma}, pero ${Q2.errores.suma} no es múltiplo de ${I1} ni de ${I3}: a esa hora solo sale la B.`,
          d:`${I1} · ${I2} · ${I3} = ${Q2.errores.producto} es un múltiplo común, pero no el menor: mucho antes ya salen las tres juntas.` },
-    antes:ya => E.config({ modo:'combis', com:{ intervalos:ESC.tresCombis.intervalos, inicio:360, fin:510, paso:30, ahora: ya ? 510 : 360, horas:ya },
-      lect:[L('a', 'A cada a', `${I1} min`), L('b', 'B cada b', `${I2} min`), L('c', 'C cada c', `${I3} min`), L('M', 'Las tres juntas cada M', ya ? `${Q2.mcm} min` : '?')],
+    antes:ya => E.config({ modo:'combis', com:{ intervalos:ESC.tresCombis.intervalos, inicio:360, fin:510, paso:30, ahora: ya ? 510 : 360, horas:ya, sinHoras:!ya },
+      lect:[L('a', 'A cada a', `${I1} min`), L('b', 'B cada b', `${I2} min`), L('c', 'C cada c', `${I3} min`), L('M', 'Juntas cada M', ya ? `${Q2.mcm} min` : '?')],
       ley:[['a', 'a · combi A'], ['b', 'b · combi B'], ['c', 'c · combi C']].concat(ya ? [['M', 'M · salen las tres']] : []),
-      desc: ya ? `Las salidas de 6:00 a 8:30; las tres salen juntas a las 6:00 y a las ${Q2.hora}.` : 'Una línea de tiempo de 6:00 a 8:30 con las tres combis saliendo juntas a las 6:00.' }),
+      desc: ya ? `Las salidas de 6:00 a 8:30; las tres salen juntas a las 6:00 y a las ${Q2.hora}.` : 'Una línea de tiempo que empieza a las 6:00, con las tres combis saliendo juntas a esa hora.' }),
     despues:() => { const x = EXPS[1]; x.antes(true); const C = E.com; C.ahora = 360; E.animar(360, 510, 4200, v => { C.ahora = v; }, () => x.antes(true), true); },
     exp:() => `<div class="eqs"><div class="eq">${a_(String(I1))} = 2³<span class="note">;</span> ${b_(String(I2))} = 2 · 5<span class="note">;</span> ${c_(String(I3))} = 2² · 3</div>
       <div class="eq">${M_('M')} = 2³ · 3 · 5 = ${M_(String(Q2.mcm))} min → ${Q2.hora}<span class="note">cada primo con su mayor exponente</span></div></div>
       <p>Con tres o más sucesos la idea es la misma: el primer momento en que coinciden todos es el mínimo común múltiplo de todos los intervalos, no el de solo dos.</p>
-      <p class="fuente">Usar el producto en lugar del MCM está descrito en estudios con escolares de primaria, sin cifra comparable; las otras dos son hipótesis nuestras.</p>` },
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras; el informe solo describe, sin cifras, la confusión entre MCD y MCM.</p>` },
   { id:'guardia', corto:'El guardia que gira',
     q:'Un guardia de la Plaza de Armas mira al norte. Gira 90° a la derecha, otra vez 90° a la derecha, una vez más 90° a la derecha y después da media vuelta (180°). ¿Hacia dónde mira al final?',
     opts:[['a', 'Hacia el oeste', 'giro-derecha-por-izquierda', 'hipotesis'],
@@ -1091,19 +1102,19 @@ const EXPS = [
       <p>Se mueven la punta de arriba y la punta de abajo a la izquierda. Con más filas la regla es la misma: se busca el lugar del triángulo invertido que deje quietas más monedas.</p>
       <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'pileta', corto:'Caminar y girar',
-    q:'Pedro sale de la pileta de la plaza mirando al norte y camina 4 cuadras. Gira a la derecha y camina 6. Vuelve a girar a la derecha y camina 12. ¿A cuántas cuadras de la pileta queda, en línea recta, y hacia dónde?',
+    q:'Pedro sale de una esquina de la plaza mirando al norte y camina 4 cuadras. Gira a la derecha y camina 6. Vuelve a girar a la derecha y camina 12. ¿A cuántas cuadras de esa esquina queda, en línea recta, y hacia dónde?',
     opts:[['a', mayus(Q5.errores.sumaCatetos), 'cardinal-suma-los-catetos', 'hipotesis'],
           ['b', mayus(Q5.respuesta)],
           ['c', mayus(Q5.errores.izquierda), 'giro-derecha-por-izquierda', 'hipotesis'],
-          ['d', mayus(Q5.errores.sumaTodo), 'cardinal-suma-todo-el-camino', 'hipotesis']],
+          ['d', mayus(Q5.errores.izquierdaCatetos), 'giro-izquierda-y-catetos', 'hipotesis']],
     ok:'b',
     fb:{ a:`${Math.abs(Q5.x)} + ${Math.abs(Q5.y)} = ${Math.abs(Q5.x) + Math.abs(Q5.y)} es lo que caminaría para volver por las calles. En línea recta es la hipotenusa.`,
          c:'La distancia está bien, pero el lado no: mirando al norte, la derecha es el este.',
-         d:`${Q5.total} es todo lo que caminó (4 + 6 + 12); el camino da vueltas.` },
-    antes:ya => E.config({ modo:'plano', pla:{ tramos:Q5.tramos, prog: ya ? Q5.tramos.length : 0, catetos:ya, recta:ya, rotulos:ya },
-      lect: ya ? [L('x', 'Al este x', `${Q5.x} cuadras`), L('y', 'Al sur', `${-Q5.y} cuadras`), L('d', 'En línea recta d', `${Q5.exacto} cuadras`)] : [L('ink', 'Empieza mirando', 'al norte'), L('d', 'En línea recta d', '?')],
-      ley: ya ? [['x', 'x · de oeste a este'], ['y', 'y · de sur a norte'], ['d', 'd · en línea recta']] : [],
-      desc: ya ? `El camino de Pedro: termina ${Q5.x} cuadras al este y ${-Q5.y} al sur de la pileta, a ${Q5.exacto} cuadras en línea recta, hacia el ${Q5.direccion}.` : 'Un plano de cuadras con la plaza y el punto de salida; el camino no está dibujado.' }),
+         d:`${Math.abs(Q5.x) + Math.abs(Q5.y)} sale de sumar ${Math.abs(Q5.x)} + ${Math.abs(Q5.y)} en vez de usar Pitágoras, y además, mirando al norte, la derecha es el este, no el oeste.` },
+    antes:ya => E.config({ modo:'plano', pla:{ tramos:Q5.tramos, prog: ya ? Q5.tramos.length : 0, catetos:ya, recta:ya, rotulos:ya, simetrica:!ya },
+      lect: ya ? [L('x', 'Al este x', `${Q5.x} cuadras`), L('y', 'Al sur y', `${-Q5.y} cuadras`), L('d', 'En línea recta d', `${Q5.exacto} cuadras`)] : [L('ink', 'Empieza mirando', 'al norte'), L('d', 'En línea recta d', '?')],
+      ley: ya ? [['x', 'x · de oeste a este'], ['y', 'y · de norte a sur'], ['d', 'd · en línea recta']] : [],
+      desc: ya ? `El camino de Pedro: termina ${Q5.x} cuadras al este y ${-Q5.y} al sur de la esquina de salida, a ${Q5.exacto} cuadras en línea recta, hacia el ${Q5.direccion}.` : 'Un plano de cuadras con la plaza y el punto de salida; el camino no está dibujado.' }),
     despues:() => { const x = EXPS[4]; x.antes(true); const P = E.pla; Object.assign(P, { prog:0, catetos:false, recta:false });
       E.animar(0, Q5.tramos.length, 3000, v => { P.prog = v; }, () => x.antes(true), true); },
     exp:() => `<div class="eqs"><div class="eq">norte → (derecha) este → (derecha) sur<span class="note">cada giro a la derecha es un cuarto de vuelta</span></div>

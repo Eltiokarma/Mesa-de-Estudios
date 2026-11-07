@@ -191,6 +191,12 @@ test('monedas: el mínimo por la regla coincide con una búsqueda en anchura', (
   assert.ok(motor.revisarMonedas(fin, 4).llego, 'moviendo las del motor se llega');
   assert.equal(R.mover.length, R.minimo);
   sinChoques(R, R.minimo, 'monedas 4');
+  // el reto del paso 7: con la fila de 4 del invertido a la altura de la moneda de arriba (v = 3) hacen falta 4
+  let mejor = 0;
+  for (let du = -8; du <= 8; du++) { const meta = motor.triangulo(4, true).map(p => [p[0] + du, p[1]]); mejor = Math.max(mejor, meta.filter(q => R.inicio.some(p => clave(p) === clave(q))).length); }
+  assert.equal(10 - mejor, 4, 'reto del paso 7');
+  // desempate de la traslación: con 6 monedas hay dos de peso 1; gana la de menor dv
+  assert.deepEqual(motor.minMovimientos(motor.triangulo(3), motor.triangulo(3, true)).traslado, [0, -1]);
   // la regla para triángulos más grandes: ⌊monedas/3⌋ jugadas
   for (let f = 2; f <= 7; f++) { const T = motor.monedasTriangulo({ filas: f }); assert.equal(T.minimo, Math.floor(T.monedas / 3)); sinChoques(T, T.minimo, `f=${f}`); }
   // revisarMonedas: corrido a cualquier lugar sigue siendo la meta; una moneda fuera de lugar deja faltan = 1
@@ -239,7 +245,7 @@ test('plano: la distancia por Pitágoras es la de las coordenadas paso a paso; g
 test('las predicciones de la escena tienen errores distintos de la respuesta', () => {
   const E = motor.escena;
   sinChoques(motor.tomas(E.pastillas), 9, 'paso 1');
-  sinChoques(motor.proximaCoincidencia(E.combis), 36, 'paso 3');
+  sinChoques(motor.proximaCoincidencia(E.combis), 48, 'paso 3');
   sinChoques(motor.vecesCoinciden(E.combis), 6, 'paso 4');
   sinChoques(motor.descanso(E.turno), 'sábado', 'paso 5');
   sinChoques(motor.monedasTriangulo(E.monedas), 3, 'paso 6');
