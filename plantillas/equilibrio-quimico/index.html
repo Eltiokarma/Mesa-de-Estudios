@@ -231,6 +231,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'equilibrio-quimico', unidad: 'quimica.equilibrio-quimico', version: '0.1.0' };
@@ -245,7 +246,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    Aquí solo se pinta. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ME = MotorEquilibrio;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -337,7 +338,7 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
   }
   E.resize = () => {
     const w = cv.clientWidth; if (!w) return;
-    Lz = layout(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    Lz = layout(w); const h = Lz.H, dpr = Celular.dpr();
     if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
     E.dibujar();
   };
@@ -538,6 +539,19 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
     }
     const el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t;
   };
+  // Un bucle por caja (nucleo/celular.js): avanza la caja a la vista (si no está congelada) y la dibuja. Se detiene
+  // si el lienzo no se ve, y se duerme si nada se mueve (caja congelada y sin cambio gradual) hasta el próximo dibujo.
+  // Con movimiento reducido la química sigue (los contadores cuentan), pero las porciones no se desplazan.
+  const pintar = E.dibujar;
+  E.dibujar = () => { pintar(); if (E.B) E.B.despertar(); };
+  E.B = Celular.bucle(cv, dt => {
+    dt = Math.min(0.05, dt);
+    if (!E.sim) return false;
+    if (E.anima) E.anima(dt);
+    if (!E.vista.congelada && dt > 0) E.sim.paso(dt);
+    pintar(); E.describir();
+    return !!E.anima || !E.vista.congelada;
+  });
   return E;
 }
 // Leyenda con solo lo que se ve en ese momento.
@@ -573,27 +587,13 @@ document.addEventListener('mouseover', e => { const s = e.target.closest && e.ta
 document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
 document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
 
-// Un solo bucle: avanza la caja que está a la vista (si no está congelada) y la dibuja.
-// Con movimiento reducido la química sigue (los contadores cuentan), pero las porciones no se desplazan.
-(function(){
-  let ultimo = performance.now();
-  const tick = now => {
-    const dt = Math.min(0.05, (now - ultimo)/1000); ultimo = now;
-    for (const E of ESCENAS){
-      if (document.getElementById(E.modoId).hidden || !E.sim) continue;
-      if (E.anima) E.anima(dt);
-      if (!E.vista.congelada && dt > 0) E.sim.paso(dt);
-      E.dibujar(); E.describir();
-    }
-    requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-})();
+// El bucle de cada caja está en crearEscena (se duerme cuando nada se mueve).
 // Cambio gradual (temperatura, volumen dibujado). Con movimiento reducido, de una vez.
 function gradual(E, dur, paso, fin){
   if (RM){ paso(1); E.anima = null; if (fin) fin(); return; }
   let t = 0;
   E.anima = dt => { t += dt; const f = Math.min(1, t/dur); paso(f); if (f >= 1){ E.anima = null; if (fin) fin(); } };
+  if (E.B) E.B.despertar();
 }
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${'abcd'.indexOf(k) + 1}: ${t}"><span class="l">${'abcd'.indexOf(k) + 1}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;

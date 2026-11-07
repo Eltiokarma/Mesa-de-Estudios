@@ -243,7 +243,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    Tres niveles a la vez (Johnstone): las moléculas (lo que no se ve), la ecuación (los símbolos) y la cuenta de átomos. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MB = MotorBalance;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
   const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
@@ -317,9 +317,14 @@ const ease = p => p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2)/2;
 
 /* ----- Texto en el lienzo por piezas: { t, k, mod, peso } -----
    Si no entra en el ancho, baja la letra hasta 10 px; nunca se sale del dibujo. */
-function anchoP(ctx, c, ps, tam){ let w = 0; for (const p of ps){ ctx.font = `${p.peso || 800} ${p.mod ? tam*0.68 : tam}px ${c.font}`; w += ctx.measureText(p.t).width; } return w; }
+// Anchos y tamaños de letra guardados (la2): el mismo texto con la misma letra mide siempre lo mismo, así que no se
+// vuelve a medir en cada cuadro (antes, measureText y ctx.font de 0,5 en 0,5 px en cada dibujo).
+const ANCHOS = new Map(), TAMANOS = new Map();
+function medir(ctx, font, t){ const k = font + '\u0001' + t; let w = ANCHOS.get(k); if (w === undefined){ ctx.font = font; w = ctx.measureText(t).width; if (ANCHOS.size > 5000) ANCHOS.clear(); ANCHOS.set(k, w); } return w; }
+function recordarTam(k, calcular){ let t = TAMANOS.get(k); if (t === undefined){ t = calcular(); if (TAMANOS.size > 2000) TAMANOS.clear(); TAMANOS.set(k, t); } return t; }
+function anchoP(ctx, c, ps, tam){ let w = 0; for (const p of ps) w += medir(ctx, `${p.peso || 800} ${p.mod ? tam*0.68 : tam}px ${c.font}`, p.t); return w; }
 function pintarP(ctx, c, ps, x, y, tam, align, max, hl){
-  let t = tam; if (max) while (t > 10 && anchoP(ctx, c, ps, t) > max) t -= 0.5;
+  let t = tam; if (max) t = recordarTam(`${c.font}|${tam}|${max}|${ps.map(p => (p.peso || 800) + ':' + (p.mod ? 'm' : '') + ':' + p.t).join('\u0002')}`, () => { let u = tam; while (u > 10 && anchoP(ctx, c, ps, u) > max) u -= 0.5; return u; });
   const w = anchoP(ctx, c, ps, t); let x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
   ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
   for (const p of ps){
@@ -439,7 +444,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
     const w = cv.clientWidth; if (!w) return;
     W = w; L = layout(w); Hn = L.H;
     const h = Math.round(Celular.alto(Hn, E.compacto, { tope:380 })); esc = h/Hn;
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Celular.dpr();
     if (h !== H || cv.width !== Math.round(w*dpr)){ H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
   };
   new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
@@ -644,7 +649,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
   E.dibujar = () => {
     const w = cv.clientWidth; if (!w) return;
     if (!L || llave !== llaveDe() || w !== W){ E.resize(); llave = llaveDe(); }
-    const c = colores(), dpr = window.devicePixelRatio || 1;
+    const c = colores(), dpr = Celular.dpr();
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
     // Compacto: todo el dibujo a escala, centrado.
     ctx.setTransform(dpr*esc, 0, 0, dpr*esc, dpr*(W - W*esc)/2, 0);

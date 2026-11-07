@@ -249,7 +249,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    desplazamiento a la página) va con nucleo/celular.js. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const M = MotorPotenciacion;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Texto plano para el lector de pantalla: «12²» se dice «12 al cuadrado» (si no, se leería «122»).
 const quitar = t => String(t).replace(/<sup>2<\/sup>|²/g, ' al cuadrado').replace(/<sup>3<\/sup>|³/g, ' al cubo')
   .replace(/⁴/g, ' a la cuarta').replace(/∛/g, 'raíz cúbica de ').replace(/√/g, 'raíz de ').replace(/ × /g, ' por ').replace(/ × /g, ' por ')
@@ -311,7 +311,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     area5: w => (w >= 560 ? 330 : 310), cifras: () => 230 };
   function resize(){
     const w = cv.clientWidth; if (!w) return;
-    const h = Math.round(Celular.alto(ALTO[E.modo](w), E.compacto)), dpr = window.devicePixelRatio || 1;
+    const h = Math.round(Celular.alto(ALTO[E.modo](w), E.compacto)), dpr = Celular.dpr();
     if (w === W && h === H) { E.dibujar(); return; }
     W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);

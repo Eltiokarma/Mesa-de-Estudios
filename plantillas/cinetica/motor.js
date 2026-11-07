@@ -207,6 +207,38 @@
       return energia && bien;
     }
 
+    // Grilla para los choques de un subpaso. Celda de lado ≥ 2·(radio mayor) + MARGEN: si b no se alejó más de MARGEN
+    // de su lugar en la grilla y toca al disco a, está en la celda de a o en una vecina. vecinos(i, a, desde) da, en
+    // orden creciente, los índices j > i (y > desde) que pueden tocar a a: los de las 9 celdas más los sueltos.
+    function grilla(P) {
+      const N = P.length, rMax = S.r * 1.4, MARGEN = rMax, n = Math.max(1, Math.floor(1 / (2 * rMax + MARGEN)));
+      const celda = v => { const c = Math.floor(v * n); return c < 0 ? 0 : c >= n ? n - 1 : c; };
+      // Índices agrupados por celda (orden contado): los de la celda c están en orden[ini[c] .. ini[c + 1]), crecientes.
+      const ini = new Int32Array(n * n + 1), cel = new Int32Array(N), orden = new Int32Array(N);
+      const gx = new Float64Array(N), gy = new Float64Array(N), suelto = new Uint8Array(N), sueltos = [];
+      for (let k = 0; k < N; k++) { gx[k] = P[k].x; gy[k] = P[k].y; cel[k] = celda(gy[k]) * n + celda(gx[k]); ini[cel[k] + 1]++; }
+      for (let c = 0; c < n * n; c++) ini[c + 1] += ini[c];
+      const lleno = ini.slice(0, n * n);
+      for (let k = 0; k < N; k++) orden[lleno[cel[k]]++] = k;
+      const buf = new Int32Array(N);
+      return {
+        vecinos(i, a, desde) {
+          const d = desde === undefined ? i : Math.max(i, desde);
+          let m = 0;
+          if (n <= 3) { for (let k = d + 1; k < N; k++) buf[m++] = k; return buf.subarray(0, m); }
+          const cx = celda(a.x), cy = celda(a.y);
+          for (let y = cy > 0 ? cy - 1 : 0, y1 = cy < n - 1 ? cy + 1 : n - 1; y <= y1; y++) {
+            for (let x = cx > 0 ? cx - 1 : 0, x1 = cx < n - 1 ? cx + 1 : n - 1; x <= x1; x++) {
+              for (let t = ini[y * n + x], t1 = ini[y * n + x + 1]; t < t1; t++) { const k = orden[t]; if (k > d && !suelto[k]) buf[m++] = k; }
+            }
+          }
+          for (const k of sueltos) if (k > d) buf[m++] = k;
+          return buf.subarray(0, m).sort();
+        },
+        movio(k, p) { if (!suelto[k] && Math.hypot(p.x - gx[k], p.y - gy[k]) > MARGEN) { suelto[k] = 1; sueltos.push(k); } },
+      };
+    }
+
     S.paso = function (dt) {
       dt = positivo(dt, 'paso');
       // Subpaso que se achica con la rapidez (∝ √T): cada disco avanza poco entre una revisión de choques y la siguiente.
@@ -219,10 +251,16 @@
           if (p.y < r) { p.y = 2 * r - p.y; p.vy = Math.abs(p.vy); } if (p.y > 1 - r) { p.y = 2 * (1 - r) - p.y; p.vy = -Math.abs(p.vy); }
         }
         const quitar = new Set(), nuevas = [];
+        // Grilla de choques (la2): en vez de revisar todos los pares, cada disco revisa solo a los de su celda y las
+        // vecinas, en el mismo orden (j creciente) y con las mismas cuentas, así que el resultado es idéntico al de
+        // todos contra todos. La grilla se arma al empezar el subpaso; los discos que un choque aleja más de MARGEN de
+        // donde estaban se revisan siempre ("sueltos"), y si el disco a se mueve, se vuelve a buscar a sus vecinos.
+        const G = grilla(S.parts);
         for (let i = 0; i < S.parts.length; i++) {
           const a = S.parts[i]; if (quitar.has(a)) continue;
-          for (let j = i + 1; j < S.parts.length; j++) {
-            const b = S.parts[j]; if (quitar.has(b)) continue;
+          let cand = G.vecinos(i, a), ax = a.x, ay = a.y;
+          for (let q = 0; q < cand.length; q++) {
+            const j = cand[q], b = S.parts[j]; if (quitar.has(b)) continue;
             const dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy, rr = radio(a) + radio(b);
             if (d2 >= rr * rr || d2 === 0) continue;
             // Los discos ya se enciman: se busca el instante de contacto (τ segundos antes), para usar la normal y la
@@ -256,6 +294,8 @@
             const ex = b.x - a.x, ey = b.y - a.y, e = Math.hypot(ex, ey);
             if (e < rr && e > 0) { const s2 = (rr - e) / 2; a.x -= ex / e * s2; a.y -= ey / e * s2; b.x += ex / e * s2; b.y += ey / e * s2; }
             for (const p of [a, b]) { const r = radio(p); p.x = Math.min(1 - r, Math.max(r, p.x)); p.y = Math.min(1 - r, Math.max(r, p.y)); }
+            G.movio(j, b);
+            if (a.x !== ax || a.y !== ay) { ax = a.x; ay = a.y; cand = G.vecinos(i, a, j); q = -1; }
           }
         }
         if (quitar.size) { S.parts = S.parts.filter(p => !quitar.has(p)); S.parts.push(...nuevas); }

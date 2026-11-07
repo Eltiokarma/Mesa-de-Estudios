@@ -249,7 +249,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    se rompen nunca, ni al evaporar ni al hervir ni al condensar. Se dibujan muchas menos moléculas de las que hay. */
 const RM = Celular.movimientoReducido();
 const ML = MotorLiquidos;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
   const p = Math.pow(10, d === undefined ? 0 : d), r = Math.round(n*p)/p + 0;
@@ -357,6 +357,7 @@ let TT = 0; // reloj de las moléculas (s)
 function crearEscena(cv, idDesc, modoId, idLey){
   const E = { vista:{ paneles:[] }, hl:null, modoId, anims:[], compacto:false, manijas:[], vel:3 };
   ESCENAS.push(E);
+  E.ve = Celular.aLaVista(cv, () => pedir());   // si el lienzo no se ve, su caja no avanza ni se dibuja (nucleo/celular.js)
   const ctx = cv.getContext('2d');
   let W = 0, H = 0, Lz = null;
   const paneles = () => (E.vista.paneles || []).filter(k => E.vista[k]);
@@ -392,7 +393,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
   }
   E.resize = () => {
     const w = cv.clientWidth; if (!w) return;
-    Lz = layout(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    Lz = layout(w); const h = Lz.H, dpr = Celular.dpr();
     if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
   };
   E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); E.compacto = on; E.resize(); E.dibujar(); };
@@ -801,14 +802,15 @@ document.addEventListener('mouseover', e => { const s = e.target.closest && e.ta
 document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
 document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
 
-// Un bucle: avanza las cajas de la escena visible (el motor hace la física) y las animaciones.
+// Un bucle: avanza las cajas de la escena visible (el motor hace la física) y las animaciones. Se duerme cuando
+// nada se mueve, y también con la pestaña oculta o el lienzo fuera de pantalla (vuelve solo al regresar).
 let RAF = 0, ULT = 0;
 function pedir(){ if (!RAF){ ULT = performance.now(); RAF = requestAnimationFrame(tick); } }
 function tick(now){
   RAF = 0; const dt = Math.min(0.05, (now - ULT)/1000); ULT = now; let sigue = false;
   if (!RM) TT += dt;
   for (const E of ESCENAS){
-    if (document.getElementById(E.modoId).hidden) continue;
+    if (!E.ve()) continue;
     for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(f); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
     if (!RM && E.vista.frascos) for (const f of E.vista.frascos.items) if (f.caja) ML.pasoCaja(f.caja, dt*E.vel);
     if (E.alAvanzar) E.alAvanzar();

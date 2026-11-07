@@ -243,7 +243,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, un
    MotorCortes (motor.js); aquí solo se pinta, se toca y se anima. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MC = MotorCortes;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
   d = d === undefined ? 2 : d;
@@ -338,7 +338,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   function resize(){
     const w = cv.clientWidth; if (!w) return;
     const tope = E.modo === 'lineas' ? (w >= 560 ? 270 : 340) : E.modo === 'monedas' ? 260 : E.modo === 'balanza' ? 250 : undefined;
-    const h = Math.round(Celular.alto(altoBase(w), E.compacto, { tope })), dpr = window.devicePixelRatio || 1;
+    const h = Math.round(Celular.alto(altoBase(w), E.compacto, { tope })), dpr = Celular.dpr();
     if (w === W && h === Hh) { E.dibujar(); return; }
     W = w; Hh = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);

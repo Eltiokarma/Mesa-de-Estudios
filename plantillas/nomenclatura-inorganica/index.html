@@ -248,7 +248,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    neutralización y los nombres en las tres nomenclaturas. Aquí solo se pinta lo que el motor dice. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MN = MotorNomenclatura;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const EL = ['H', 'C', 'N', 'O', 'Na', 'Al', 'P', 'S', 'Cl', 'K', 'Ca', 'Fe', 'Zn', 'Pb'];
 const NOMBRE = Object.fromEntries(EL.map(e => [e, MN.ESTADOS[e].nombre]));
@@ -381,7 +381,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idNom){
     const w = cv.clientWidth; if (!w) return;
     W = w; L = layout(w); Hn = L.H;
     const h = Math.round(Celular.alto(Hn, E.compacto, { tope:300 })); esc = h/Hn;
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Celular.dpr();
     if (h !== H || cv.width !== Math.round(w*dpr)){ H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
   };
   new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
@@ -519,7 +519,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idNom){
   E.dibujar = () => {
     const w = cv.clientWidth; if (!w) return;
     if (!L || llave !== llaveDe() || w !== W){ E.resize(); llave = llaveDe(); }
-    const c = colores(), dpr = window.devicePixelRatio || 1;
+    const c = colores(), dpr = Celular.dpr();
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
     ctx.setTransform(dpr*esc, 0, 0, dpr*esc, dpr*(W - W*esc)/2, 0);
     const v = E.vista;

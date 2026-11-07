@@ -242,6 +242,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'cinetica', unidad: 'quimica.cinetica-quimica', version: '0.1.0' };
@@ -258,7 +259,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MC = MotorCinetica;
 const EA = 5000, EA_CAT = 2000, DH = -3000, EA_ALTA = 8000; // J/mol, en la escala de la escena
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -346,18 +347,33 @@ const svgFig = {
 
 /* ----- Cuentas por detrás (sin dibujar) -----
    Una caja sola fluctúa mucho. Para comparar rapideces se cuentan varias cajas, con otras semillas, en pedacitos
-   para no trabar la animación. Cola de tareas que avanza unos milisegundos en cada cuadro. */
+   para no trabar la animación. Cola de tareas que avanza en los ratos libres del navegador (requestIdleCallback) y,
+   mientras la caja se mueve, ~3 ms por cuadro (la2: antes eran 12 a 16 ms en cada cuadro y la animación no pasaba de 30 FPS). */
 const TAREAS = [];
 // modos: en qué pestaña se usa el resultado ('m1', 'm2'). Solo avanzan las de la pestaña visible; primero = adelante.
-function tarea(gen, modos, primero){ const t = { gen, modos, listo:null, hecho:false, valor:null }; if (primero) TAREAS.unshift(t); else TAREAS.push(t); return t; }
+function tarea(gen, modos, primero){ const t = { gen, modos, listo:null, hecho:false, valor:null }; if (primero) TAREAS.unshift(t); else TAREAS.push(t); bombear(); return t; }
+// Devuelve false si no queda ninguna tarea de la pestaña visible.
 function avanzarTareas(ms){
   const fin = performance.now() + ms, visibles = ['m1', 'm2'].filter(m => !document.getElementById(m).hidden);
   while (performance.now() < fin){
-    const t = TAREAS.find(q => q.modos.some(m => visibles.includes(m))); if (!t) return;
+    const t = TAREAS.find(q => q.modos.some(m => visibles.includes(m))); if (!t) return false;
     const r = t.gen.next();
-    if (r.done){ TAREAS.splice(TAREAS.indexOf(t), 1); t.hecho = true; t.valor = r.value; if (t.listo) t.listo(r.value); }
+    if (r.done){
+      TAREAS.splice(TAREAS.indexOf(t), 1); t.hecho = true; t.valor = r.value; if (t.listo) t.listo(r.value);
+      ESCENAS.forEach(E => E.B && E.B.despertar());   // un panel puede estar esperando este resultado
+    }
   }
+  return true;
 }
+// Las cuentas en los ratos libres: hasta 12 ms por vez, sin quitarle cuadros a la animación.
+const ocioso = typeof requestIdleCallback === 'function' ? requestIdleCallback : fn => setTimeout(() => fn({ timeRemaining: () => 8 }), 16);
+let BOMBA = false;
+function bombear(){
+  if (BOMBA || !TAREAS.length) return;
+  BOMBA = true;
+  ocioso(d => { BOMBA = false; if (avanzarTareas(Math.min(12, Math.max(1, d.timeRemaining())))) bombear(); }, { timeout: 200 });
+}
+addEventListener('modo', bombear);
 // Promedio de A y C contra t en n cajas iguales (semillas distintas). prep(caja) se aplica al crearla.
 function* promedio(o, dur, n, sem0, prep){
   const curvas = [];
@@ -435,7 +451,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idVel){
   }
   E.resize = () => {
     const w = cv.clientWidth; if (!w) return;
-    Lz = layout(w); llaveLz = llave(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    Lz = layout(w); llaveLz = llave(w); const h = Lz.H, dpr = Celular.dpr();
     if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
   };
   new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
@@ -689,6 +705,10 @@ function crearEscena(cv, idDesc, modoId, idLey, idVel){
     if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
     pintarVel();
   };
+  // El bucle dibuja con E.pintar; E.dibujar, que se llama desde afuera tras un cambio, además lo despierta.
+  E.pintar = E.dibujar;
+  E.dibujar = () => { E.pintar(); if (E.B) E.B.despertar(); };
+  bucleCaja(E, cv);
   // Velocidad de la película: la química no cambia, solo se ve más rápido.
   const velEl = document.getElementById(idVel);
   function pintarVel(){
@@ -738,31 +758,29 @@ document.addEventListener('mouseover', e => { const s = e.target.closest && e.ta
 document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
 document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
 
-// Un solo bucle: avanza la caja que está a la vista (si no está congelada), la dibuja y avanza las cuentas de fondo.
-// Con movimiento reducido la química sigue (los contadores cuentan), pero las porciones no se desplazan.
-(function(){
-  let ultimo = performance.now();
-  const tick = now => {
-    const dt = Math.min(0.05, (now - ultimo)/1000); ultimo = now;
-    for (const E of ESCENAS){
-      if (document.getElementById(E.modoId).hidden || !E.sim) continue;
-      if (E.anima) E.anima(dt);
-      if (!E.vista.congelada && dt > 0) E.sim.paso(dt*E.vel);
-      // Paso 1: la caja repite sus primeros segundos en bucle, para no mostrar todavía cómo cambia la rapidez.
-      if (E.vista.bucle && E.sim.t > E.vista.bucle){ E.sim = E.rearmar(); E.casa = new WeakMap(); }
-      E.dibujar();
-    }
-    // Con la caja quieta (esperando una respuesta) sobra tiempo en cada cuadro: las cuentas avanzan más.
-    if (TAREAS.length) avanzarTareas(ESCENAS.some(E => !document.getElementById(E.modoId).hidden && E.vista.congelada) ? 16 : 12);
-    requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-})();
+// Un bucle por caja (nucleo/celular.js): avanza la caja que está a la vista (si no está congelada), la dibuja y avanza
+// un poco las cuentas de fondo. Se detiene si el lienzo no se ve y se duerme si nada se mueve (caja congelada).
+// Cada cuadro avanza a lo más 1/60 s de película (×vel): en un equipo lento la película va más despacio en vez de
+// apilar subpasos del motor (la2). Con movimiento reducido la química sigue (los contadores cuentan), pero las porciones no se desplazan.
+function bucleCaja(E, cv){
+  E.B = Celular.bucle(cv, dt => {
+    const dtSim = Math.min(1/60, dt);
+    if (!E.sim) return false;
+    if (E.anima) E.anima(Math.min(0.05, dt));
+    if (!E.vista.congelada && dtSim > 0) E.sim.paso(dtSim*E.vel);
+    // Paso 1: la caja repite sus primeros segundos en bucle, para no mostrar todavía cómo cambia la rapidez.
+    if (E.vista.bucle && E.sim.t > E.vista.bucle){ E.sim = E.rearmar(); E.casa = new WeakMap(); }
+    E.pintar();
+    if (TAREAS.length) avanzarTareas(3);
+    return !!E.anima || !E.vista.congelada;
+  });
+}
 // Cambio gradual (temperatura). Con movimiento reducido, de una vez.
 function gradual(E, dur, paso, fin){
   if (RM){ paso(1); E.anima = null; if (fin) fin(); return; }
   let t = 0;
   E.anima = dt => { t += dt; const f = Math.min(1, t/dur); paso(f); if (f >= 1){ E.anima = null; if (fin) fin(); } };
+  if (E.B) E.B.despertar();
 }
 function marcarBase(E){ E.base = { ...E.sim.cuenta }; }
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${'abcd'.indexOf(k) + 1}: ${t}"><span class="l">${'abcd'.indexOf(k) + 1}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;

@@ -236,7 +236,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    Toda la química (pH, ionización, neutralización y cuántas partículas ve cada lupa) sale de MotorAcido
    (motor.js); aquí solo se pinta y se anima. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -270,7 +270,7 @@ function crearLienzo(cv, alto, dibujar){
   const L = { cv, ctx, W:0, H:0 };
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const Hh = Math.round(Celular.alto(alto(W), L.compacto, { tope:340 })), dpr = window.devicePixelRatio || 1;
+    const Hh = Math.round(Celular.alto(alto(W), L.compacto, { tope:340 })), dpr = Celular.dpr();
     L.W = W; L.H = Hh; cv.style.height = Hh + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(Hh*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     dibujar();
@@ -312,7 +312,7 @@ function colores(){
 }
 // Resaltar en el dibujo la variable que se toca en el texto (regla 4: el mismo color en el texto y en el dibujo).
 const ESCENAS = [];
-function resaltar(k){ ESCENAS.forEach(E => E.hl = k); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; if (E.dibujar) E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
 document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
 document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
 document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
@@ -374,17 +374,16 @@ function crearEscena(cv, idDesc, idLey){
     E.marcas = (cfg.marcas || []).map(m => Object.assign({ etiqueta:'', fantasma:false }, m, { ver: m.pH }));
     E.pOH = !!cfg.pOH; E.extra = cfg.extra || null; E.descr = cfg.descr || null; E.sinEscala = !!cfg.sinEscala;
     if (idLey) document.getElementById(idLey).innerHTML = cfg.leyenda !== undefined ? cfg.leyenda : leyenda(['H', 'OH', 'A', 'HA']);
-    L.resize();
+    L.resize(); B.despertar();
   };
   // Cambiar lo que mira una lupa: las partículas se rompen, se juntan, entran o salen poco a poco.
-  E.lupaA = (id, sol, escala, cambios) => { const lu = E.lupa(id); if (!lu) return; fijar(lu, sol, escala === undefined ? lu.escala : escala, false); if (cambios) Object.assign(lu, cambios); };
-  E.agregarLupa = o => { E.lupas.push(armar(o)); L.resize(); };
-  E.quitarLupa = id => { E.lupas = E.lupas.filter(l => l.id !== id); L.resize(); };
-  E.marca = (id, pH, cambios) => { const m = E.marcas.find(q => q.id === id); if (m){ m.pH = pH; if (cambios) Object.assign(m, cambios); } };
-  E.agregarMarca = m => E.marcas.push(Object.assign({ etiqueta:'', fantasma:false }, m, { ver: m.ver !== undefined ? m.ver : m.pH }));
+  E.lupaA = (id, sol, escala, cambios) => { const lu = E.lupa(id); if (!lu) return; fijar(lu, sol, escala === undefined ? lu.escala : escala, false); if (cambios) Object.assign(lu, cambios); B.despertar(); };
+  E.agregarLupa = o => { E.lupas.push(armar(o)); L.resize(); B.despertar(); };
+  E.quitarLupa = id => { E.lupas = E.lupas.filter(l => l.id !== id); L.resize(); B.despertar(); };
+  E.marca = (id, pH, cambios) => { const m = E.marcas.find(q => q.id === id); if (m){ m.pH = pH; if (cambios) Object.assign(m, cambios); } B.despertar(); };
+  E.agregarMarca = m => { E.marcas.push(Object.assign({ etiqueta:'', fantasma:false }, m, { ver: m.ver !== undefined ? m.ver : m.pH })); B.despertar(); };
 
   // ----- movimiento: siempre -----
-  let ultimo = performance.now();
   function cuenta(lu){ const k = {}; for (const p of lu.parts) if (!p.sale) k[p.t] = (k[p.t] || 0) + 1; return k; }
   function mover(dt){
     for (const lu of E.lupas){
@@ -435,12 +434,14 @@ function crearEscena(cv, idDesc, idLey){
     }
     for (const m of E.marcas){ const d = m.pH - m.ver; m.ver += RM ? d : d*Math.min(1, dt*5); if (Math.abs(d) < 1e-3) m.ver = m.pH; }
   }
-  function loop(now){
-    const dt = Math.min(0.05, (now - ultimo)/1000); ultimo = now;
-    if (cv.offsetParent !== null && L.W){ mover(dt); dibujar(now); }
-    requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
+  // El bucle corre mientras algo se mueve (partículas en una lupa a la vista o una marca que llega) y el lienzo se ve;
+  // si no, se duerme (nucleo/celular.js) y lo despiertan los cambios de la escena.
+  const seMueve = () => !!E.extra || E.lupas.some(lu => !lu.oculto && lu.parts.length) || E.marcas.some(m => m.ver !== m.pH);
+  const B = Celular.bucle(cv, (dt, now) => {
+    if (!L.W) return true;
+    mover(Math.min(0.05, dt)); dibujar(now);
+    return seMueve();
+  });
 
   // ----- dibujo -----
   // Rótulos de las marcas: las que se enciman suben de fila. Se calcula antes del layout para reservar lugar.
@@ -592,7 +593,7 @@ function crearEscena(cv, idDesc, idLey){
       + (E.marcas.length ? '. Escala de pH: ' + E.marcas.map(m => `${m.etiqueta || 'solución'} en pH ${fpH(m.pH)}`).join(', ') : '');
     if (d !== E.desc && idDesc){ E.desc = d; document.getElementById(idDesc).textContent = d; }
   }
-  E.dibujar = () => dibujar(performance.now());
+  E.dibujar = () => { dibujar(performance.now()); B.despertar(); };
   alRedibujarTema(E.dibujar);
   addEventListener('modo', () => L.resize());
   return E;

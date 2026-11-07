@@ -245,7 +245,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
 /* ================= Piezas compartidas =================
    Toda la física sale de MotorGas (motor.js); aquí solo se pinta. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -264,7 +264,7 @@ function crearLienzo(cv, alto, dibujar){
   const L = { cv, ctx, W:0, H:0 };
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:340 })), dpr = window.devicePixelRatio || 1;
+    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:340 })), dpr = Celular.dpr();
     L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     dibujar();
@@ -389,19 +389,16 @@ function termometro(ctx, c, x, y, h, TK){
   ctx.font = `600 10px ${c.mono}`; ctx.textBaseline = 'top'; ctx.fillText(`${fmt(TK, 0)} K`, x, y + h + 16);
   ctx.restore();
 }
-// Bucle que mueve las partículas mientras el modo está a la vista. Mide los choques por segundo (ventana de 1 s).
-function bucle(modoId, sims, dibujar){
-  let ultimo = performance.now(), hist = [];
-  const tick = now => {
-    const dt = Math.min(0.05, (now - ultimo)/1000); ultimo = now;
-    if (!document.getElementById(modoId).hidden && !RM){
-      for (const s of sims()) s.paso(dt);
-      dibujar();
-    }
-    requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-  return () => { hist = []; };
+// Bucle que mueve las partículas mientras el lienzo está a la vista (nucleo/celular.js): se detiene con la pestaña
+// oculta, el modo escondido o el lienzo fuera de pantalla, y vuelve solo. Con movimiento reducido no corre.
+function bucle(cv, sims, dibujar){
+  if (RM) return;
+  Celular.bucle(cv, dt => {
+    dt = Math.min(0.05, dt);
+    for (const s of sims()) s.paso(dt);
+    dibujar();
+    return true;
+  });
 }
 // Dibujitos SVG para las opciones de la primera predicción (cómo se ven las partículas al enfriar).
 function bosquejo(tipo){
@@ -588,7 +585,7 @@ $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step +
 $('prev').addEventListener('click', () => go(S.step - 1));
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
-bucle('m1', () => S.sim ? [S.sim] : [], draw);
+bucle(cv, () => S.sim ? [S.sim] : [], draw);
 L.resize(); go(0);
 })();
 </script>
@@ -764,7 +761,7 @@ function ir(k){
 }
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
-bucle('m2', () => E.sim ? [E.sim] : [], draw);
+bucle(cv, () => E.sim ? [E.sim] : [], draw);
 L.resize(); ir(0);
 })();
 </script>

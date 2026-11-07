@@ -219,7 +219,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    Toda la química (moles, concentraciones, cuántos puntos y cuántos cuadros) sale de MotorSolucion (motor.js);
    aquí solo se pinta y se anima. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -234,10 +234,13 @@ const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const MS = MotorSolucion;
 const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
 const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+// Las transiciones solo cambian números; el bucle de cada escena las dibuja (y se despierta para eso).
+let TWEENS = 0;
+const despertarTodo = () => ESCENAS.forEach(E => E.B && E.B.despertar());
 function tween(dur, paso, fin){
-  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
-  const t0 = performance.now();
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  if (RM || !dur){ paso(1); despertarTodo(); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now(); TWEENS++; despertarTodo();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else { TWEENS--; if (fin) fin(); } };
   requestAnimationFrame(tick);
 }
 
@@ -246,7 +249,7 @@ function crearLienzo(cv, alto, dibujar){
   const L = { cv, ctx, W:0, H:0 };
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:340 })), dpr = window.devicePixelRatio || 1;
+    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:340 })), dpr = Celular.dpr();
     L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     dibujar();
@@ -285,7 +288,7 @@ function leyendaBase(esc, extra){
 }
 // Resaltar en el dibujo la variable que se toca en el texto (regla 4: el mismo color en el texto y en el dibujo).
 const ESCENAS = [];
-function resaltar(k){ ESCENAS.forEach(E => E.hl = k); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; if (E.B) E.B.despertar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
 document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
 document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
 document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
@@ -327,6 +330,7 @@ function crearEscena(cv, idDesc, idLey){
     });
     E.lupas = (cfg.lupas || []).map(E.nuevaLupa);
     if (idLey) document.getElementById(idLey).innerHTML = cfg.leyenda !== undefined ? cfg.leyenda : leyendaBase(E.esc);
+    if (E.B) E.B.despertar();
   };
   E.M = vs => vs.mL > 0 ? vs.n/(vs.mL/1000) : 0;
 
@@ -380,7 +384,6 @@ function crearEscena(cv, idDesc, idLey){
   E.iones = (id, k) => { const vs = E.vaso(id); if (vs) vs.iones = k; E.lupas.forEach(lu => { if (lu.vaso === id) lu.iones = k; }); };
 
   // ----- movimiento: siempre -----
-  let ultimo = performance.now();
   function mover(dt, now){
     for (const vs of E.vasos){
       vs.puntos = vs.puntos.filter(p => !p.sale || now - p.sale < 650);
@@ -404,12 +407,15 @@ function crearEscena(cv, idDesc, idLey){
       lu.parts = lu.parts.filter(q => !(q.sale && q.alpha <= 0));
     }
   }
-  function loop(now){
-    const dt = Math.min(0.05, (now - ultimo)/1000); ultimo = now;
-    if (cv.offsetParent !== null && L.W){ mover(dt, now); dibujar(now); }
-    requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
+  // El bucle corre mientras algo se mueve (puntos, lupas o una transición) y el lienzo se ve; si no, se duerme
+  // (nucleo/celular.js) y lo despiertan los cambios de la escena.
+  const seMueve = () => TWEENS > 0 || !!E.extra || E.vasos.some(v => v.puntos.length) || E.lupas.some(lu => lu.parts.length || lu.cuenta > 0);
+  E.B = Celular.bucle(cv, (dt, now) => {
+    if (!L.W) return true;
+    mover(Math.min(0.05, dt), now); dibujar(now);
+    return seMueve();
+  });
+  for (const k of ['reubicar', 'nivel', 'pasar', 'agregar', 'quitar', 'lupaA', 'iones']){ const f = E[k]; E[k] = (...a) => { const r = f(...a); E.B.despertar(); return r; }; }
 
   // ----- dibujo -----
   function layout(W, H){
@@ -548,7 +554,7 @@ function crearEscena(cv, idDesc, idLey){
     const d = E.descr ? E.descr() : E.vasos.filter(v => !v.oculto && v.mL > 0).map(v => `${v.etiqueta || 'Recipiente'}: ${fmt(v.mL, 0)} mL, ${v.puntos.filter(p => !p.sale).length} puntos en ${cuadrosDe(v)} cuadros, ${fM(E.M(v))}`).join('. ') + (E.lupas.length ? '. Lupa: ' + E.lupas.map(l => `${fmt(l.cuenta, 1)} puntos`).join(' y ') : '');
     if (d !== E.desc && idDesc){ E.desc = d; document.getElementById(idDesc).textContent = d; }
   }
-  E.dibujar = () => dibujar(performance.now());
+  E.dibujar = () => { dibujar(performance.now()); E.B.despertar(); };
   alRedibujarTema(E.dibujar);
   addEventListener('modo', () => L.resize());
   return E;
