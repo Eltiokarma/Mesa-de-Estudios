@@ -5,12 +5,13 @@
   "verificacion": "",
   "tolerancia": 1e-9,
   "casos": [
-    { "nombre": "Predicción 2 (paso 3): P(5; 1) respecto de y = x + 2 → H(2; 4), P'(−1; 7), d = 3√2 (errores: se queda en el pie H(2; 4); en vertical (5; 13); en horizontal (−7; 1); intercambia x e y (1; 5))",
+    { "nombre": "Predicción 2 (paso 3): P(5; 1) respecto de y = x + 2 → H(2; 4), P′(−1; 7), d = 3√2 (errores: se queda en el pie H(2; 4); en vertical (5; 13); en horizontal (−7; 1); intercambia x e y (1; 5))",
       "fn": "reflejar", "args": [{ "x": 5, "y": 1 }, { "m": 1, "n": 2 }],
       "espera": { "P.x": -1, "P.y": 7, "H.x": 2, "H.y": 4, "d": 4.242640687119285,
                   "errores.pie.x": 2, "errores.pie.y": 4, "errores.vertical.x": 5, "errores.vertical.y": 13,
                   "errores.horizontal.x": -7, "errores.horizontal.y": 1, "errores.intercambia.x": 1, "errores.intercambia.y": 5 },
       "tambien": [ { "args": [{ "x": 5, "y": 1 }, { "a": 1, "b": -1, "c": 2 }], "espera": { "P.x": -1, "P.y": 7 } },
+                   { "args": [{ "x": 0, "y": 2 }, { "m": 1, "n": 2 }], "espera": { "P.x": 0, "P.y": 2, "H.x": 0, "H.y": 2, "d": 0 } },
                    { "args": [{ "x": 5, "y": 1 }, { "A": { "x": 0, "y": 2 }, "B": { "x": 3, "y": 5 } }], "espera": { "P.x": -1, "P.y": 7, "H.x": 2, "H.y": 4 } } ] },
 
     { "nombre": "Rectas verticales y horizontales: P(3; −2) respecto de x = 1 → (−1; −2) con H(1; −2) y d = 2; respecto de y = 1 → (3; 4)",
@@ -23,28 +24,30 @@
       "espera": { "P.x": 1, "P.y": 4, "H.x": 2.5, "H.y": 2.5 },
       "tambien": [ { "args": [{ "x": 4, "y": 1 }, { "a": 1, "b": 1, "c": 0 }], "espera": { "P.x": -1, "P.y": -4 } } ] },
 
-    { "nombre": "Recta oblicua 3x + 4y − 12 = 0 y P(7; 0): distancia 9/5 = 1,8; H(148/25; −36/25) = (5,92; −1,44); P'(4,84; −2,88)",
+    { "nombre": "Recta oblicua 3x + 4y − 12 = 0 y P(7; 0): distancia 9/5 = 1,8; H(148/25; −36/25) = (5,92; −1,44); P′(4,84; −2,88)",
       "fn": "reflejar", "args": [{ "x": 7, "y": 0 }, { "a": 3, "b": 4, "c": -12 }],
       "espera": { "d": 1.8, "H.x": 5.92, "H.y": -1.44, "P.x": 4.84, "P.y": -2.88 } },
 
-    { "nombre": "El doblez del espejo: a la mitad (t = 0,5) el punto pasa por H; al final (t = 1) llega a P'; al inicio (t = 0) es P",
+    { "nombre": "El doblez del espejo: a la mitad (t = 0,5) el punto pasa por H; al final (t = 1) llega a P′; al inicio (t = 0) es P",
       "fn": "pliegue", "args": [{ "x": 5, "y": 1 }, { "m": 1, "n": 2 }, 0.5],
       "espera": { "x": 2, "y": 4 },
       "tambien": [ { "args": [{ "x": 5, "y": 1 }, { "m": 1, "n": 2 }, 1], "espera": { "x": -1, "y": 7 } },
                    { "args": [{ "x": 5, "y": 1 }, { "m": 1, "n": 2 }, 0], "espera": { "x": 5, "y": 1 } } ] },
 
-    { "nombre": "Predicción 1 (paso 1): bandera con mástil en x = 2 (de y = 0 a y = 4) y la tela apuntando a la derecha; espejo x = 0 → la imagen apunta a la izquierda con la tela arriba (errores: copia sin invertir → derecha y arriba; media vuelta → izquierda y abajo; reflejo en una horizontal → derecha y abajo)",
-      "fn": "reflejoBandera", "args": [{}],
-      "espera": { "apunta": "izquierda", "tela": "arriba", "puntos.tela.1.x": -5, "puntos.tela.1.y": 3, "puntos.pie.x": -2,
-                  "errores.copia.apunta": "derecha", "errores.copia.tela": "arriba",
-                  "errores.giro180.apunta": "izquierda", "errores.giro180.tela": "abajo",
-                  "errores.horizontal.apunta": "derecha", "errores.horizontal.tela": "abajo" } },
+    { "nombre": "Predicción 1 (paso 1): letra F con el tallo en x = 2 (de y = 0 a y = 4), barra larga de 3 arriba y corta de 2 a media altura, hacia la derecha; espejo x = 0 → la imagen tiene el tallo en x = −2, las barras hacia la izquierda (punta de la larga en (−5; 4)) y la larga sigue arriba (errores: copia corrida sin voltear → derecha y arriba; media vuelta alrededor de (0; 0) → izquierda y abajo; volteada de arriba abajo → derecha y abajo)",
+      "fn": "reflejoEfe", "args": [{}],
+      "espera": { "apunta": "izquierda", "larga": "arriba", "puntos.larga.1.x": -5, "puntos.larga.1.y": 4, "puntos.corta.1.x": -4, "puntos.pie.x": -2,
+                  "errores.copia.apunta": "derecha", "errores.copia.larga": "arriba",
+                  "errores.giro180.apunta": "izquierda", "errores.giro180.larga": "abajo",
+                  "errores.horizontal.apunta": "derecha", "errores.horizontal.larga": "abajo" },
+      "tambien": [ { "args": [{ "tallo": -1, "alto": 4, "larga": 1.5, "corta": 1, "espejo": -3 }], "espera": { "apunta": "izquierda", "puntos.pie.x": -5, "puntos.larga.1.x": -6.5 } } ] },
 
     { "nombre": "Simetría central: (3; 2) respecto de O(1; −1) → (−1; −4), O punto medio (errores: reflejo en x = 1 → (−1; 2); en y = −1 → (3; −4); giro de 90° → (−2; 1))",
       "fn": "central", "args": [{ "x": 3, "y": 2 }, { "x": 1, "y": -1 }],
       "espera": { "P.x": -1, "P.y": -4, "medio.x": 1, "medio.y": -1, "d": 3.605551275463989,
                   "errores.reflejoVertical.x": -1, "errores.reflejoVertical.y": 2, "errores.reflejoHorizontal.x": 3, "errores.reflejoHorizontal.y": -4,
-                  "errores.giro90.x": -2, "errores.giro90.y": 1 } },
+                  "errores.giro90.x": -2, "errores.giro90.y": 1 },
+      "tambien": [ { "args": [{ "x": 1, "y": -1 }, { "x": 1, "y": -1 }], "espera": { "P.x": 1, "P.y": -1, "d": 0 } } ] },
 
     { "nombre": "Predicción 3 (paso 4): triángulo A(1; 1), B(4; 1), C(2; 3) antihorario y su simétrico respecto de O(0; 0): (−1; −1), (−4; −1), (−2; −3), también antihorario y con la misma área 3 (errores: como reflexión en x = 0 queda horario; un giro de 90° sigue antihorario)",
       "fn": "centralTriangulo", "args": [[{ "x": 1, "y": 1 }, { "x": 4, "y": 1 }, { "x": 2, "y": 3 }], { "x": 0, "y": 0 }],
@@ -62,7 +65,9 @@
       "fn": "componer", "args": [{ "x": 1 }, { "x": 4 }],
       "espera": { "tipo": "traslacion", "vector.x": 6, "vector.y": 0, "distancia": 3, "modulo": 6,
                   "errores.sinDuplicar": 3, "errores.tercerEspejo": "reflexion", "errores.vuelveAlInicio": 0 },
-      "tambien": [ { "args": [{ "x": 4 }, { "x": 1 }], "espera": { "vector.x": -6, "modulo": 6 } } ] },
+      "tambien": [ { "args": [{ "x": 4 }, { "x": 1 }], "espera": { "vector.x": -6, "modulo": 6 } },
+                   { "args": [{ "m": 1, "n": 0 }, { "m": 1, "n": 2 }], "espera": { "tipo": "traslacion", "vector.x": -2, "vector.y": 2, "distancia": 1.4142135623730951 } },
+                   { "args": [{ "x": 2 }, { "x": 2 }], "espera": { "tipo": "identidad" } } ] },
 
     { "nombre": "Las dos reflexiones punto por punto: (2; 3) en x = 1 → (0; 3); luego en x = 4 → (8; 3) = (2; 3) + (6; 0)",
       "fn": "aplicarDos", "args": [{ "x": 2, "y": 3 }, { "x": 1 }, { "x": 4 }],
@@ -72,6 +77,7 @@
       "fn": "componer", "args": [{ "y": 0 }, { "punto": { "x": 0, "y": 0 }, "angulo": 40 }],
       "espera": { "tipo": "giro", "centro.x": 0, "centro.y": 0, "theta": 40, "angulo": 80, "errores.sinDuplicar": 40, "errores.mitad": 20 },
       "tambien": [ { "args": [{ "punto": { "x": 0, "y": 0 }, "angulo": 40 }, { "y": 0 }], "espera": { "theta": -40, "angulo": -80 } },
+                   { "args": [{ "y": 0 }, { "x": 0 }], "espera": { "tipo": "giro", "centro.x": 0, "centro.y": 0, "theta": 90, "angulo": 180 } },
                    { "fn": "aplicarDos", "args": [{ "x": 1, "y": 0 }, { "y": 0 }, { "punto": { "x": 0, "y": 0 }, "angulo": 40 }],
                      "espera": { "x": 0.17364817766693033, "y": 0.984807753012208 } } ] },
 
@@ -107,7 +113,7 @@
                    { "args": [{ "fig": ["trapecio", 6, 2, 3] }], "espera": { "ejes": 1, "centro": false } },
                    { "args": [{ "fig": ["circunferencia", 2] }], "espera": { "ejes": "infinitos", "centro": true } } ] },
 
-    { "nombre": "Letras (trazadas en una cuadrícula de 3 o 4 de ancho y 4 de alto): A y T 1 eje vertical; E 1 eje horizontal; H, I y X 2 ejes y centro; N, S y Z 0 ejes pero con centro",
+    { "nombre": "Letras (trazadas en una cuadrícula de 3 o 4 de ancho y 4 de alto; la X y la N en una caja de 3 × 4, no cuadrada): A y T 1 eje vertical; E 1 eje horizontal; H, I y X 2 ejes y centro; N, S y Z 0 ejes pero con centro. Una X en caja cuadrada de 4 × 4 tiene 4 ejes (sus trazos también son ejes)",
       "fn": "simetrias", "args": [{ "fig": ["letra", "N"] }],
       "espera": { "numEjes": 0, "tieneCentro": true, "centro.x": 1.5, "centro.y": 2 },
       "tambien": [ { "args": [{ "fig": ["letra", "A"] }], "espera": { "numEjes": 1, "tieneCentro": false, "ejes.0.angulo": 90 } },
@@ -116,16 +122,21 @@
                    { "args": [{ "fig": ["letra", "X"] }], "espera": { "numEjes": 2, "tieneCentro": true } },
                    { "args": [{ "fig": ["letra", "S"] }], "espera": { "numEjes": 0, "tieneCentro": true } },
                    { "args": [{ "fig": ["letra", "Z"] }], "espera": { "numEjes": 0, "tieneCentro": true } },
-                   { "args": [{ "fig": ["letra", "T"] }], "espera": { "numEjes": 1, "tieneCentro": false } } ] },
+                   { "args": [{ "fig": ["letra", "T"] }], "espera": { "numEjes": 1, "tieneCentro": false } },
+                   { "args": [{ "fig": ["segmentos", [[[0, 0], [4, 4]], [[0, 4], [4, 0]]]] }], "espera": { "numEjes": 4, "tieneCentro": true } } ] },
 
     { "nombre": "Predicción 7 (paso 8): el cubo tiene 9 planos de simetría (3 paralelos a las caras y 6 por aristas opuestas) (errores: 3 solo los paralelos a las caras; 6 uno por cara; 12 uno por arista)",
       "fn": "prediccionPlanos", "args": [{ "poli": ["cubo", 2] }],
       "espera": { "planos": 9, "errores.soloCaras": 3, "errores.unoPorCara": 6, "errores.unoPorArista": 12 } },
 
-    { "nombre": "Experimento 3: caja de 4 × 3 × 2 → 3 planos (error: 9 como el cubo). Prisma de base cuadrada 2 × 2 × 5: 5; tetraedro regular: 6; pirámide de base cuadrada: 4",
+    { "nombre": "Experimento 3: caja de 4 × 3 × 2 → 3 planos (errores: 9 como el cubo; 6 uno por cara; 5 como un prisma de base cuadrada). Prisma de base cuadrada 2 × 2 × 5: 5; caja 2 × 2 × 2 y prisma 2 × 2 × 2 (son cubos): 9; prisma regular triangular: 4; hexagonal: 7; tetraedro regular: 6; pirámide de base cuadrada: 4",
       "fn": "prediccionPlanos", "args": [{ "poli": ["caja", 4, 3, 2] }],
-      "espera": { "planos": 3, "errores.comoCubo": 9, "errores.unoPorCara": 6 },
+      "espera": { "planos": 3, "errores.comoCubo": 9, "errores.unoPorCara": 6, "errores.comoPrisma": 5 },
       "tambien": [ { "args": [{ "poli": ["prismaCuadrado", 2, 5] }], "espera": { "planos": 5 } },
+                   { "args": [{ "poli": ["caja", 2, 2, 2] }], "espera": { "planos": 9 } },
+                   { "args": [{ "poli": ["prismaCuadrado", 2, 2] }], "espera": { "planos": 9 } },
+                   { "args": [{ "poli": ["prismaRegular", 3, 2, 5] }], "espera": { "planos": 4 } },
+                   { "args": [{ "poli": ["prismaRegular", 6, 2, 5] }], "espera": { "planos": 7 } },
                    { "args": [{ "poli": ["tetraedro", 2] }], "espera": { "planos": 6 } },
                    { "args": [{ "poli": ["piramideCuadrada", 2, 3] }], "espera": { "planos": 4 } } ] },
 
@@ -134,8 +145,11 @@
       "espera": { "x": 1, "y": 2, "z": -3 },
       "tambien": [ { "fn": "girar3D", "args": [{ "x": 1, "y": 0, "z": 5 }, 90, { "x": 0, "y": 0, "z": 0 }], "espera": { "x": 0, "y": 1, "z": 5 } }, { "args": [{ "x": 1, "y": 2, "z": 3 }, { "normal": { "x": 1, "y": 1, "z": 1 }, "d": 3 }], "espera": { "x": -1, "y": 0, "z": 1 } } ] },
 
-    { "nombre": "Experimento 4: la mano derecha (pulgar x, índice y, medio z) frente al espejo y = 3 → su imagen es una mano izquierda, y sigue siendo izquierda después de media vuelta (errores: copia y «girándola se vuelve derecha» dan derecha)",
-      "fn": "manoEnEspejo", "args": [{ "pulgar": { "x": 1, "y": 0, "z": 0 }, "indice": { "x": 0, "y": 1, "z": 0 }, "medio": { "x": 0, "y": 0, "z": 1 } }, { "normal": { "x": 0, "y": 1, "z": 0 }, "d": 3 }],
-      "espera": { "original": "derecha", "imagen": "izquierda", "trasGiro": "izquierda", "reflejo.indice.y": -1, "errores.copia": "derecha", "errores.giroLaVuelve": "derecha" } }
+    { "nombre": "Experimento 4: el simétrico de P(2; 3; 4) respecto del plano z = 0 (el plano xy) es (2; 3; −4), con el pie H(2; 3; 0) y d = 4 (errores: el pie (2; 3; 0); el simétrico respecto del origen (−2; −3; −4); respecto del eje z (−2; −3; 4)). La mano derecha (pulgar x, índice y, medio z) frente al espejo y = 3 se ve izquierda, y sigue izquierda tras media vuelta",
+      "fn": "simetricoEspacio", "args": [{ "x": 2, "y": 3, "z": 4 }, { "normal": { "x": 0, "y": 0, "z": 1 }, "d": 0 }],
+      "espera": { "P.x": 2, "P.y": 3, "P.z": -4, "H.z": 0, "d": 4, "errores.pie.z": 0, "errores.centralOrigen.x": -2, "errores.centralOrigen.y": -3, "errores.centralOrigen.z": -4,
+                  "errores.ejeNormal.x": -2, "errores.ejeNormal.y": -3, "errores.ejeNormal.z": 4 },
+      "tambien": [ { "fn": "manoEnEspejo", "args": [{ "pulgar": { "x": 1, "y": 0, "z": 0 }, "indice": { "x": 0, "y": 1, "z": 0 }, "medio": { "x": 0, "y": 0, "z": 1 } }, { "normal": { "x": 0, "y": 1, "z": 0 }, "d": 3 }],
+                     "espera": { "original": "derecha", "imagen": "izquierda", "trasGiro": "izquierda", "errores.copia": "derecha" } } ] }
   ]
 }

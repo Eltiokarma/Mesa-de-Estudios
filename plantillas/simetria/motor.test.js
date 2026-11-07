@@ -183,11 +183,16 @@ test('ningún error típico coincide con la respuesta', () => {
   // la recta del paso 3
   const p3 = motor.reflejar({ x: 5, y: 1 }, { m: 1, n: 2 });
   for (const Q of Object.values(p3.errores)) assert.ok(!mismo(Q, p3.P));
-  // paso 1: la bandera, con cualquier mástil y espejo
+  // pasos 1 y 7: la letra F, con cualquier tallo y espejo
   for (let k = 0; k < 50; k++) {
-    const e = ent(-3, 3), b = motor.reflejoBandera({ espejo: e, mastil: e + ent(1, 4), alto: ent(3, 6), tela: ent(2, 4) });
-    for (const x of Object.values(b.errores)) assert.ok(!(x.apunta === b.apunta && x.tela === b.tela));
-    assert.ok(new Set(Object.values(b.errores).map(x => x.apunta + x.tela)).size === 3, 'los tres errores son distintos');
+    const e = ent(-3, 3), b = motor.reflejoEfe({ espejo: e, tallo: e + ent(1, 4), alto: ent(3, 6), larga: ent(3, 4), corta: ent(1, 2) });
+    for (const x of Object.values(b.errores)) assert.ok(!(x.apunta === b.apunta && x.larga === b.larga));
+    assert.ok(new Set(Object.values(b.errores).map(x => x.apunta + x.larga)).size === 3, 'los tres errores son distintos');
+  }
+  // experimento 4: el simétrico de un punto respecto de un plano
+  for (let k = 0; k < N; k++) {
+    const P = { x: ent(1, 5), y: ent(1, 5), z: ent(1, 5) }, r = motor.simetricoEspacio(P, { normal: { x: 0, y: 0, z: 1 }, d: 0 });
+    for (const Q of Object.values(r.errores)) assert.ok(!(Q.x === r.P.x && Q.y === r.P.y && Q.z === r.P.z));
   }
   // paso 4: el sentido del triángulo simétrico respecto de un punto
   for (let k = 0; k < N; k++) {
@@ -216,7 +221,7 @@ test('ningún error típico coincide con la respuesta', () => {
   for (const e of ['soloCaras', 'unoPorCara', 'unoPorArista']) assert.notEqual(cubo.errores[e], cubo.planos);
   for (let k = 0; k < 30; k++) {
     const a = ent(1, 5), b = a + ent(1, 3), c = b + ent(1, 3), p = motor.prediccionPlanos(motor.poliedro('caja', a, b, c));
-    for (const e of ['comoCubo', 'unoPorCara']) assert.notEqual(p.errores[e], p.planos);
+    for (const e of ['comoCubo', 'unoPorCara', 'comoPrisma', 'unoPorArista']) assert.notEqual(p.errores[e], p.planos);
   }
   const mano = motor.manoEnEspejo({ pulgar: { x: 1, y: 0, z: 0 }, indice: { x: 0, y: 1, z: 0 }, medio: { x: 0, y: 0, z: 1 } }, { normal: { x: 0, y: 1, z: 0 }, d: 3 });
   for (const v of Object.values(mano.errores)) assert.notEqual(v, mano.imagen);
@@ -236,7 +241,9 @@ test('errores de entrada', () => {
   assert.throws(() => motor.poliedro('dodecaedro'), /desconocido/);
   assert.throws(() => motor.planos({ vertices: [{ x: 0, y: 0, z: 0 }] }), /cuatro vértices/);
   assert.throws(() => motor.quiralidad({ x: 1, y: 0, z: 0 }, { x: 2, y: 0, z: 0 }, { x: 0, y: 1, z: 0 }), /mismo plano/);
-  assert.throws(() => motor.reflejoBandera({ espejo: 3, mastil: 2 }), /derecha del espejo/);
+  assert.throws(() => motor.reflejoEfe({ espejo: 3, tallo: 2 }), /derecha del espejo/);
+  assert.throws(() => motor.efe({ larga: 1, corta: 2 }), /larga > corta/);
+  assert.throws(() => motor.poliedro('prismaRegular', 2, 1, 1), /entero de 3 o más/);
   assert.throws(() => motor.reflejarEnPlano({ x: 1, y: 1, z: 1 }, { normal: { x: 0, y: 0, z: 0 } }), /cero/);
   assert.equal(motor.componer({ x: 2 }, { x: 2 }).tipo, 'identidad');
 });

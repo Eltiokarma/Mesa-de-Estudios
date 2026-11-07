@@ -1,28 +1,28 @@
 {
   "titulo": "El espejo en la cuadrícula: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Haz siempre un dibujo en la cuadrícula. Para el simétrico de un punto respecto de una recta, baja la perpendicular hasta la recta (el pie H) y sigue otro tanto: P' = 2H − P. Respecto de un punto O, O es el punto medio: P' = 2O − P. Un eje de simetría es una recta que, usada como espejo, deja la figura encima de sí misma; compruébalo doblando, no a ojo.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Haz siempre un dibujo en la cuadrícula. Para el simétrico de un punto respecto de una recta, baja la perpendicular hasta la recta (el pie H) y sigue otro tanto: P′ = 2H − P. Respecto de un punto O, O es el punto medio: P′ = 2O − P. Un eje de simetría es una recta que, usada como espejo, deja la figura encima de sí misma; compruébalo doblando, no a ojo.",
   "problemas": [
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Halla el simétrico del punto P(3; −2) respecto de la recta x = 1.",
-      "respuesta": "P'(−1; −2).",
+      "enunciado": "Halla el simétrico del punto P(3; −2) respecto de la recta x = 1 (simetría axial: la recta es el eje de simetría).",
+      "respuesta": "P′(−1; −2).",
       "pasos": [
         "La recta x = 1 es vertical: la perpendicular desde P es horizontal y se queda en y = −2.",
         "El pie es H(1; −2), y P está 2 unidades a su derecha.",
-        "P' queda 2 unidades a la izquierda de H: P'(1 − 2; −2) = (−1; −2). Comprobación: H es el punto medio de PP'."
+        "P′ queda 2 unidades a la izquierda de H: P′(1 − 2; −2) = (−1; −2). Comprobación: H es el punto medio de PP′."
       ],
       "verificar": [ { "fn": "reflejar", "args": [{ "x": 3, "y": -2 }, { "x": 1 }], "espera": { "P.x": -1, "P.y": -2, "H.x": 1, "d": 2 } } ]
     },
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Halla el simétrico del punto A(−4; 5) respecto del punto O(1; 2).",
-      "respuesta": "A'(6; −1).",
+      "enunciado": "Halla el simétrico del punto A(−4; 5) respecto del punto O(1; 2) (simetría central o respecto de un punto).",
+      "respuesta": "A′(6; −1).",
       "pasos": [
-        "O es el punto medio de AA': A' = 2O − A.",
-        "A' = (2·1 − (−4); 2·2 − 5) = (6; −1).",
-        "Comprobación: el punto medio de A(−4; 5) y A'(6; −1) es (1; 2), que es O."
+        "O es el punto medio de AA′: A′ = 2O − A.",
+        "A′ = (2·1 − (−4); 2·2 − 5) = (6; −1).",
+        "Comprobación: el punto medio de A(−4; 5) y A′(6; −1) es (1; 2), que es O."
       ],
       "verificar": [ { "fn": "central", "args": [{ "x": -4, "y": 5 }, { "x": 1, "y": 2 }], "espera": { "P.x": 6, "P.y": -1 } } ]
     },
@@ -30,12 +30,12 @@
       "id": "p3",
       "nivel": "intermedio",
       "enunciado": "Halla el simétrico del punto P(6; 2) respecto de la recta L: y = x + 2.",
-      "respuesta": "P'(0; 8).",
+      "respuesta": "P′(0; 8).",
       "pasos": [
         "La perpendicular a L por P tiene pendiente −1: y − 2 = −(x − 6), es decir, y = −x + 8.",
         "Se corta con L: x + 2 = −x + 8, así que x = 3 e y = 5. El pie es H(3; 5).",
-        "P' = 2H − P = (2·3 − 6; 2·5 − 2) = (0; 8).",
-        "Comprobación: P'(0; 8) también está en y = −x + 8, y H es el punto medio de PP'."
+        "P′ = 2H − P = (2·3 − 6; 2·5 − 2) = (0; 8).",
+        "Comprobación: P′(0; 8) también está en y = −x + 8, y H es el punto medio de PP′."
       ],
       "verificar": [ { "fn": "reflejar", "args": [{ "x": 6, "y": 2 }, { "m": 1, "n": 2 }], "espera": { "P.x": 0, "P.y": 8, "H.x": 3, "H.y": 5 } } ]
     },
@@ -43,12 +43,12 @@
       "id": "p4",
       "nivel": "avanzado",
       "enunciado": "Halla el simétrico de P(5; 5) respecto de la recta L: 3x + 4y − 10 = 0 y la distancia de P a L.",
-      "respuesta": "P'(−1; −3) y la distancia es 5.",
+      "respuesta": "P′(−1; −3) y la distancia es 5.",
       "pasos": [
         "Distancia de P a L: |3·5 + 4·5 − 10| / √(3² + 4²) = 25/5 = 5.",
         "La perpendicular a L va en la dirección (3; 4), que tiene longitud 5: un paso de 5 unidades es justo (3; 4).",
         "Como 3·5 + 4·5 − 10 es positivo, P está del lado hacia donde apunta (3; 4); para llegar a L se resta: H = (5 − 3; 5 − 4) = (2; 1). Comprobación: 3·2 + 4·1 − 10 = 0.",
-        "P' = 2H − P = (4 − 5; 2 − 5) = (−1; −3)."
+        "P′ = 2H − P = (4 − 5; 2 − 5) = (−1; −3)."
       ],
       "verificar": [ { "fn": "reflejar", "args": [{ "x": 5, "y": 5 }, { "a": 3, "b": 4, "c": -10 }], "espera": { "P.x": -1, "P.y": -3, "H.x": 2, "H.y": 1, "d": 5 } } ]
     },
@@ -72,7 +72,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Con las letras A, E, H, N, S, T, X y Z escritas en imprenta mayúscula (como en la escena), sea m el número de letras con centro de simetría y n el número de letras con exactamente un eje. Calcula m − n.",
+      "enunciado": "Con las letras A, E, H, N, S, T, X y Z escritas en imprenta mayúscula de trazos rectos, sea m el número de letras con centro de simetría y n el número de letras con exactamente un eje. Calcula m − n.",
       "respuesta": "m − n = 2.",
       "pasos": [
         "Centro de simetría: la letra queda igual al girarla media vuelta. Lo cumplen H, N, S, X y Z: m = 5.",

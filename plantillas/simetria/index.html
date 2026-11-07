@@ -7,16 +7,16 @@
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   la figura original (P, A, B, C, la bandera) azul; su imagen (P', A', B', C') fucsia; el espejo L (o L₁, los ejes y el
+   la figura original (P, A, B, C, la letra F) azul; su imagen (P′, A′, B′, C′) fucsia; el espejo L (o L₁, los ejes y el
    plano de simetría) naranja; el pie H y la distancia d turquesa; el centro O verde; el segundo espejo L₂ oliva y la
-   imagen final después de los dos espejos (P'') granate, con la traslación o el giro que la lleva.
+   imagen final después de los dos espejos (P″) granate, con la traslación o el giro que la lleva.
    Entre las variables que salen juntas, ΔE00 ≥ 25; con la tinta y el gris, ≥ 20. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-F:#1f5fbf; --c-I:#a10fbf; --c-E:#a05200; --c-H:#0f766e; --c-O:#466d14; --c-S:#5f6f00; --c-J:#77032c;
+  --c-F:#1f5fbf; --c-I:#a10fbf; --c-E:#a05200; --c-H:#0f766e; --c-O:#1b7530; --c-S:#5f6f00; --c-J:#77032c;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -25,13 +25,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-F:#7cb0ff; --c-I:#cf6bfa; --c-E:#f0a04a; --c-H:#5ed9c8; --c-O:#a3d65e; --c-S:#c8dc3c; --c-J:#ff8fa3;
+  --c-F:#7cb0ff; --c-I:#cf6bfa; --c-E:#f0a04a; --c-H:#5ed9c8; --c-O:#6fdc8c; --c-S:#c8dc3c; --c-J:#ff8fa3;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-F:#7cb0ff; --c-I:#cf6bfa; --c-E:#f0a04a; --c-H:#5ed9c8; --c-O:#a3d65e; --c-S:#c8dc3c; --c-J:#ff8fa3;
+  --c-F:#7cb0ff; --c-I:#cf6bfa; --c-E:#f0a04a; --c-H:#5ed9c8; --c-O:#6fdc8c; --c-S:#c8dc3c; --c-J:#ff8fa3;
   color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -81,6 +81,8 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .v-O{color:var(--c-O); background:color-mix(in srgb, var(--c-O) 8%, transparent)}
 .v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
 .v-J{color:var(--c-J); background:color-mix(in srgb, var(--c-J) 8%, transparent)}
+.v{white-space:nowrap}
+.opt .v{background:transparent}
 .v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
@@ -226,7 +228,7 @@ function fmt(n, d){
   const [e, f] = String(Math.abs(r)).split('.');
   return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
 }
-const pt = (P, d) => `(${fmt(P.x, d)}; ${fmt(P.y, d)})`;
+const pt = (P, d) => `(${fmt(P.x, d)};\u00a0${fmt(P.y, d)})`;
 const gr = (n, d) => fmt(n, d === undefined ? 0 : d) + '°';
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
@@ -384,6 +386,7 @@ function vista3d(L, c, V){
   const extra = [];
   (V.flechas3 || []).forEach(f => { extra.push(f.O, { x:f.O.x + f.v.x, y:f.O.y + f.v.y, z:f.O.z + f.v.z }); });
   if (V.espejo3) extra.push(...V.espejo3);
+  (V.puntos3 || []).forEach(p => extra.push(p.P)); (V.extra3 || []).forEach(p => extra.push(p));
   const P = proyector(V, W, H, (V.poli ? V.poli.vertices : []).concat(extra));
   const pol = (pts, color, alpha, borde, ancho, dash) => {
     ctx.save(); ctx.beginPath(); pts.forEach((Q, i) => { const p = P(Q); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); }); ctx.closePath();
@@ -401,10 +404,12 @@ function vista3d(L, c, V){
   }
   for (const f of V.flechas3 || []){
     const a = P(f.O), b = P({ x:f.O.x + f.v.x, y:f.O.y + f.v.y, z:f.O.z + f.v.z });
-    flecha(ctx, a.x, a.y, b.x, b.y, c[f.k], 3.2);
-    if (f.t){ const dx = b.x - a.x, dy = b.y - a.y, n = Math.hypot(dx, dy) || 1; rotulo(ctx, c, clamp(b.x + dx/n*20, 26, W - 26), clamp(b.y + dy/n*14, 10, H - 10), f.t, c[f.k], 'center', 11); }
+    const col = f.k ? c[f.k] : c.muted;
+    flecha(ctx, a.x, a.y, b.x, b.y, col, f.k ? 3.2 : 1.6);
+    if (f.t){ const dx = b.x - a.x, dy = b.y - a.y, n = Math.hypot(dx, dy) || 1; rotulo(ctx, c, clamp(b.x + dx/n*14, 14, W - 14), clamp(b.y + dy/n*12, 10, H - 10), f.t, col, 'center', 11); }
   }
-  for (const f of V.palmas || []){ const p = P(f.P); punto(ctx, p.x, p.y, 6, c[f.k]); }
+  for (const g of V.segs3 || []){ const a = P(g.P), b = P(g.Q); ctx.save(); ctx.strokeStyle = g.k ? c[g.k] : c.muted; ctx.lineWidth = 2; if (g.dash) ctx.setLineDash(g.dash); linea(ctx, a.x, a.y, b.x, b.y); ctx.restore(); }
+  for (const f of V.puntos3 || []){ const p = P(f.P); punto(ctx, p.x, p.y, 5, c[f.k]); if (f.t) rotulo(ctx, c, clamp(p.x + 16, 14, W - 14), clamp(p.y - 12, 10, H - 10), f.t, c[f.k], 'center', 12); }
   if (V.nota) rotulo(ctx, c, W/2, H - 12, V.nota, c.muted, 'center', 11);
 }
 
@@ -466,10 +471,10 @@ function moverEspejo(V, id, p, tecla){
 }
 // La recta de un espejo, para el motor.
 const rectaDe = e => ({ punto:e.punto, angulo:e.angulo });
-const banderaPts = b => [b.pie, b.punta].concat(b.tela);   // mástil y tela, en un solo trazo
-function figBandera(b, k, extra){ return Object.assign({ pts:[b.pie, b.punta], k, ancho:3 }, extra || {}); }
-function figTela(b, k, extra){ return Object.assign({ pts:b.tela, cerrada:true, k, relleno:true, alpha:.3 }, extra || {}); }
-const mapear = (b, f) => ({ pie:f(b.pie), punta:f(b.punta), tela:b.tela.map(f) });
+// La letra F (motor.efe): el tallo y las dos barras. Las barras van en un solo trazo que baja por el tallo.
+function figTallo(b, k, extra){ return Object.assign({ pts:[b.pie, b.punta], k, ancho:4 }, extra || {}); }
+function figBarras(b, k, extra){ return Object.assign({ pts:[b.larga[1], b.larga[0], b.corta[0], b.corta[1]], k, ancho:4 }, extra || {}); }
+const mapear = (b, f) => ({ pie:f(b.pie), punta:f(b.punta), larga:b.larga.map(f), corta:b.corta.map(f) });
 // Una figura con sus ejes (los halla el motor) y su centro de simetría, si lo tiene.
 function vistaFigura(fig, conEjes){
   const s = M.simetrias(fig), G = s.G;
@@ -513,33 +518,33 @@ function animar(dur, cada, fin){
 const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
 
 // ---- Datos de los pasos (todo sale del motor) ----
-const B1 = M.reflejoBandera({ mastil:2, alto:4, tela:3, espejo:0 });
+const B1 = M.reflejoEfe({ tallo:2, alto:4, larga:3, corta:2, espejo:0 });
 const P3 = { x:5, y:1 }, R3 = { m:1, n:2 }, D3 = M.reflejar(P3, R3), REC3 = M.recta(R3);
 const T4 = [{ x:1, y:1 }, { x:4, y:1 }, { x:2, y:3 }], O4 = { x:0, y:0 }, D4 = M.centralTriangulo(T4, O4);
 const F5 = M.figura('rectangulo', 6, 4), D5 = M.prediccionEjes(F5);
 const F6 = M.girarFigura(M.figura('cuadrado', 4), 45), D6 = M.prediccionEjes(F6);
-const B7 = M.bandera({ mastil:-1, alto:4, tela:1.5 }), L7a = { x:1 }, L7b = { x:4 }, D7 = M.componer(L7a, L7b);
+const B7 = M.efe({ tallo:-1, alto:4, larga:1.5, corta:1 }), L7a = { x:1 }, L7b = { x:4 }, D7 = M.componer(L7a, L7b);
 const CUBO = M.poliedro('cubo', 2), D8 = M.prediccionPlanos(CUBO);
 // los planos del cubo: primero los 3 paralelos a las caras y después los 6 por aristas opuestas
 const PLANOS8 = D8.lista.slice().sort((p, q) => [p.normal.x, p.normal.y, p.normal.z].filter(v => Math.abs(v) > 1e-9).length - [q.normal.x, q.normal.y, q.normal.z].filter(v => Math.abs(v) > 1e-9).length);
 
 function opciones(P){ return `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`; }
 const FUENTE_H = '<p class="fuente">Las opciones incorrectas son errores que suponemos (hipótesis nuestra): el informe de geometría no cubre la simetría y no encontramos un estudio con porcentajes para este tipo de pregunta. El lanzamiento en el colegio dirá cuáles aparecen.</p>';
-const FUENTE_GE9 = '<p class="fuente">El informe de geometría (GE9, respaldo parcial) describe, sin porcentajes para secundaria, que una figura girada se reconoce por su aspecto y no por sus propiedades: un cuadrado girado 45° «es un rombo». Las demás opciones incorrectas son hipótesis nuestras.</p>';
-const lado = (a, t) => `Apunta hacia la ${a} y la tela queda ${t}`;
+const FUENTE_GE9 = '<p class="fuente">El informe de geometría (GE9) describe que una figura girada se reconoce por su aspecto: un cuadrado girado 45° «es un rombo». Hay datos solo en niños de 3 a 6 años y en secundaria no hay cifras. Que de ahí salga contar 2 ejes es una suposición nuestra, igual que las demás opciones incorrectas.</p>';
+const lado = (a, t) => `Las barras salen hacia la ${a} y la larga queda ${t}`;
 
-const P1 = { id:'si-paso1-bandera', ok:'b',
-  opts:[['a', lado(B1.errores.copia.apunta, B1.errores.copia.tela), 'refleja-copiando-sin-invertir', 'hipotesis'], ['b', lado(B1.apunta, B1.tela)],
-        ['c', lado(B1.errores.giro180.apunta, B1.errores.giro180.tela), 'reflexion-como-media-vuelta', 'hipotesis'], ['d', lado(B1.errores.horizontal.apunta, B1.errores.horizontal.tela), 'voltea-de-arriba-abajo', 'hipotesis']],
-  fb:{ b:'¡Bien! Cada punto pasa al otro lado del espejo a la misma distancia, por una perpendicular. La punta de la tela estaba 5 cuadritos a la derecha: queda 5 a la izquierda. Lo de arriba sigue arriba.',
-       a:'Elegiste la A. Así sería una copia corrida al otro lado, sin voltear. En el espejo, lo que está más lejos (la punta de la tela) queda también más lejos del otro lado: la tela apunta hacia la izquierda. La correcta está marcada.',
-       c:'Elegiste la C. Eso sería dar media vuelta a la bandera alrededor de un punto del espejo: lo de arriba bajaría. Un espejo vertical solo cambia izquierda por derecha; las alturas no cambian. La correcta está marcada.',
+const P1 = { id:'si-paso1-letra-f', ok:'b',
+  opts:[['a', lado(B1.errores.copia.apunta, B1.errores.copia.larga), 'refleja-copiando-sin-invertir', 'hipotesis'], ['b', lado(B1.apunta, B1.larga)],
+        ['c', lado(B1.errores.giro180.apunta, B1.errores.giro180.larga), 'reflexion-como-media-vuelta', 'hipotesis'], ['d', lado(B1.errores.horizontal.apunta, B1.errores.horizontal.larga), 'voltea-de-arriba-abajo', 'hipotesis']],
+  fb:{ b:'¡Bien! Cada punto pasa al otro lado del espejo a la misma distancia, por una perpendicular. La punta de la barra larga estaba 5 cm a la derecha de L: queda 5 cm a la izquierda. Lo de arriba sigue arriba.',
+       a:'Elegiste la A. Así sería una copia corrida al otro lado, sin voltear. En el espejo, lo que está más lejos (la punta de las barras) queda también más lejos del otro lado: las barras salen hacia la izquierda. La correcta está marcada.',
+       c:'Elegiste la C. Eso sería dar media vuelta a la F alrededor de un punto del espejo: la barra larga bajaría. Un espejo vertical solo cambia izquierda por derecha; las alturas no cambian. La correcta está marcada.',
        d:'Elegiste la D. Así se reflejaría en un espejo horizontal (el piso de un lago). Este espejo es vertical: cambia izquierda por derecha y deja las alturas como están. La correcta está marcada.' } };
 const P2 = { id:'si-paso3-coordenadas', ok:'a',
-  opts:[['a', `${V('I',"P'")}${pt(D3.P)}`], ['b', `${V('I',"P'")}${pt(D3.errores.pie)}`, 'se-queda-en-el-pie', 'hipotesis'],
-        ['c', `${V('I',"P'")}${pt(D3.errores.vertical)}`, 'refleja-en-vertical', 'hipotesis'], ['d', `${V('I',"P'")}${pt(D3.errores.intercambia)}`, 'intercambia-coordenadas', 'hipotesis']],
-  fb:{ a:`¡Bien! La perpendicular por P llega a L en H${pt(D3.H)}; P' está otro tanto más allá: P' = 2H − P = ${pt(D3.P)}.`,
-       b:`Elegiste la B. ${pt(D3.H)} es el pie H: ahí se llega a mitad de camino. P' está otro tanto más allá de L: P' = 2H − P. La correcta está marcada.`,
+  opts:[['a', `${V('I',"P′")}${pt(D3.P)}`], ['b', `${V('I',"P′")}${pt(D3.errores.pie)}`, 'se-queda-en-el-pie', 'hipotesis'],
+        ['c', `${V('I',"P′")}${pt(D3.errores.vertical)}`, 'refleja-en-vertical', 'hipotesis'], ['d', `${V('I',"P′")}${pt(D3.errores.intercambia)}`, 'intercambia-coordenadas', 'hipotesis']],
+  fb:{ a:`¡Bien! La perpendicular por P llega a L en H${pt(D3.H)}; P′ está otro tanto más allá: P′ = 2H − P = ${pt(D3.P)}.`,
+       b:`Elegiste la B. ${pt(D3.H)} es el pie H: ahí se llega a mitad de camino. P′ está otro tanto más allá de L: P′ = 2H − P. La correcta está marcada.`,
        c:`Elegiste la C. Subiste en vertical hasta L y seguiste otro tanto. Pero el camino al espejo tiene que ser perpendicular a L, y L está inclinada: por eso la perpendicular va en diagonal. La correcta está marcada.`,
        d:`Elegiste la D. Cambiar x por y es el reflejo en y = x. Esta recta es y = x + 2: está corrida 2 unidades, y el resultado cambia. La correcta está marcada.` } };
 const P3p = { id:'si-paso4-central', ok:'a',
@@ -557,47 +562,47 @@ const P4 = { id:'si-paso5-rectangulo', ok:'b',
        c:'Elegiste la C. El eje vertical sirve, pero la recta horizontal por el centro también: doblando por ella, el lado de arriba cae sobre el de abajo. La correcta está marcada.',
        d:'Elegiste la D. Doblando el rectángulo por la mitad, a lo largo o a lo ancho, una mitad cae justo sobre la otra: tiene ejes. La correcta está marcada.' } };
 const P5 = { id:'si-paso6-cuadrado-girado', ok:'c',
-  opts:[['a', n(D6.errores.soloRectos), 'GE9-cuadrado-girado-como-rombo', 'parcial'], ['b', n(D6.errores.dobleCuenta), 'cuenta-cada-eje-dos-veces', 'hipotesis'], ['c', n(D6.ejes)], ['d', n(D6.errores.ninguno), 'figura-girada-sin-ejes', 'hipotesis']],
+  opts:[['a', n(D6.errores.soloRectos), 'GE9-cuadrado-girado-como-rombo', 'hipotesis'], ['b', n(D6.errores.dobleCuenta), 'cuenta-cada-eje-dos-veces', 'hipotesis'], ['c', n(D6.ejes)], ['d', n(D6.errores.ninguno), 'figura-girada-sin-ejes', 'hipotesis']],
   fb:{ c:'¡Bien! Sigue siendo un cuadrado: 4 ejes. Girar la figura gira también sus ejes; las dos diagonales ahora están derechas y las dos medianas, inclinadas.',
        a:'Elegiste la A. Así de costado parece un rombo, que tiene 2 ejes (sus diagonales). Pero es un cuadrado: además de las diagonales, las rectas que unen los puntos medios de los lados opuestos también son ejes, aunque ahora estén inclinadas. La correcta está marcada.',
        b:'Elegiste la B. Cada eje cruza la figura de lado a lado y se cuenta una sola vez: son 4 rectas. La correcta está marcada.',
        d:'Elegiste la D. Girar no rompe la simetría: los ejes giran con la figura. Siguen siendo 4, solo que en otra posición. La correcta está marcada.' } };
 const P6 = { id:'si-paso7-dos-espejos', ok:'c',
-  opts:[['a', `Corrida ${fmt(D7.errores.sinDuplicar)} cm hacia la derecha, sin voltear`, 'traslada-la-distancia-sin-duplicar', 'hipotesis'], ['b', 'Volteada, como si hubiera un solo espejo', 'dos-reflexiones-son-otra-reflexion', 'hipotesis'],
-        ['c', `Corrida ${fmt(D7.modulo)} cm hacia la derecha, sin voltear`], ['d', 'En su lugar de partida, sin voltear', 'dos-reflexiones-se-cancelan', 'hipotesis']],
+  opts:[['a', `Corrida ${fmt(D7.errores.sinDuplicar)} cm hacia la derecha, sin voltear`, 'traslada-la-distancia-sin-duplicar', 'hipotesis'], ['b', `Corrida ${fmt(D7.modulo)} cm hacia la derecha, pero volteada`, 'dos-reflexiones-son-otra-reflexion', 'hipotesis'],
+        ['c', `Corrida ${fmt(D7.modulo)} cm hacia la derecha, sin voltear`], ['d', `Corrida ${fmt(D7.errores.vuelveAlInicio)} cm (en su lugar), sin voltear`, 'dos-reflexiones-se-cancelan', 'hipotesis']],
   fb:{ c:`¡Bien! La primera reflexión la voltea y la segunda la vuelve a voltear: queda derecha. Y avanza el doble de la distancia entre los espejos: 2 · 3 = ${fmt(D7.modulo)} cm.`,
-       a:`Elegiste la A. Los espejos están a 3 cm, pero la bandera no avanza solo 3: del mástil a L₁ hay 3 cm y pasa 3 cm más allá; luego llega a L₂ y sigue otro tanto. En total, el doble: ${fmt(D7.modulo)} cm. La correcta está marcada.`,
-       b:'Elegiste la B. Cada espejo voltea la figura; dos volteos seguidos la dejan derecha otra vez. El resultado no es un reflejo, es una traslación. La correcta está marcada.',
-       d:'Elegiste la D. La segunda reflexión deshace el volteo, pero no la vuelve al mismo lugar: la bandera queda corrida. Solo volvería al inicio si los dos espejos fueran el mismo. La correcta está marcada.' } };
+       a:`Elegiste la A. Los espejos están a 3 cm, pero la F avanza más: el tallo está 2 cm antes de L₁ y su primera imagen queda 2 cm después, a 1 cm de L₂; L₂ la pasa 1 cm más allá. En total, 2 + 2 + 1 + 1 = ${fmt(D7.modulo)} cm, el doble de 3. La correcta está marcada.`,
+       b:'Elegiste la B. La distancia sí es 6 cm, pero cada espejo voltea la figura y dos volteos seguidos la dejan derecha otra vez: las barras de la F salen hacia la derecha, como al inicio. El resultado no es un reflejo, es una traslación. La correcta está marcada.',
+       d:'Elegiste la D. La segunda reflexión deshace el volteo, pero no devuelve la F a su lugar: queda corrida. Solo volvería al inicio si los dos espejos fueran el mismo. La correcta está marcada.' } };
 const pl = x => `${x} planos`;
 const P7 = { id:'si-paso8-cubo', ok:'d',
   opts:[['a', pl(D8.errores.soloCaras), 'cubo-solo-planos-paralelos-a-caras', 'hipotesis'], ['b', pl(D8.errores.unoPorCara), 'cubo-un-plano-por-cara', 'hipotesis'],
         ['c', pl(D8.errores.unoPorArista), 'cubo-un-plano-por-arista', 'hipotesis'], ['d', pl(D8.planos)]],
   fb:{ d:'¡Bien! 3 planos paralelos a las caras (por la mitad de cada dirección) y 6 que contienen dos aristas opuestas, como un corte en diagonal. Total: 9.',
        a:'Elegiste la A. Los 3 planos paralelos a las caras sí son de simetría, pero faltan los 6 que cortan el cubo en diagonal, por dos aristas opuestas: el corte es un rectángulo y cada mitad es el reflejo de la otra. La correcta está marcada.',
-       b:'Elegiste la B. Una cara no es un plano de simetría: deja todo el cubo de un solo lado. Los planos de simetría pasan por el centro. Son 3 paralelos a las caras y 6 en diagonal. La correcta está marcada.',
+       b:'Elegiste la B. Si pensaste en un plano por cara: una cara no es un plano de simetría, porque deja todo el cubo de un solo lado. Si contaste solo los 6 en diagonal (por dos aristas opuestas), faltan los 3 paralelos a las caras. Son 3 + 6 = 9. La correcta está marcada.',
        c:'Elegiste la C. Cada plano diagonal usa dos aristas opuestas a la vez, así que las 12 aristas dan 6 planos, no 12. Con los 3 paralelos a las caras: 9. La correcta está marcada.' } };
 
 // ---- Vistas de cada paso ----
 function vista1(resuelto, t){
   const b = B1.original.puntos, img = mapear(b, P => M.pliegue(P, { x:0 }, t === undefined ? 1 : t));
   const V = { tipo:'plano', ventana:[-6.5, 6.5, -1, 5.5], espejos:[{ id:'L', punto:{ x:0, y:2 }, angulo:90, k:'E', nombre:'L' }],
-    figuras:[figBandera(b, 'F'), figTela(b, 'F')] };
+    figuras:[figTallo(b, 'F'), figBarras(b, 'F')] };
   if (resuelto){
-    V.figuras.push(figBandera(img, 'I'), figTela(img, 'I'));
-    const T = b.tela[1], T2 = img.tela[1];
+    V.figuras.push(figTallo(img, 'I'), figBarras(img, 'I'));
+    const T = b.larga[1], T2 = img.larga[1];
     V.segs = [{ P:T, Q:T2, k:'H', dash:[5, 4] }];
-    V.puntos = [{ P:T, k:'F', t:'T', dx:12, dy:-12 }, { P:T2, k:'I', t:"T'", dx:-12, dy:-12 }];
+    V.puntos = [{ P:T, k:'F', t:'T', dx:12, dy:-12 }, { P:T2, k:'I', t:"T′", dx:-12, dy:-12 }];
   }
   return V;
 }
 function vista2(V){
   const b = B1.original.puntos, r = rectaDe(V.espejos[0]);
-  const img = mapear(b, P => M.reflejar(P, r).P), T = b.tela[1], q = M.reflejar(T, r);
-  V.figuras = [figBandera(b, 'F'), figTela(b, 'F'), figBandera(img, 'I'), figTela(img, 'I')];
+  const img = mapear(b, P => M.reflejar(P, r).P), T = b.larga[1], q = M.reflejar(T, r);
+  V.figuras = [figTallo(b, 'F'), figBarras(b, 'F'), figTallo(img, 'I'), figBarras(img, 'I')];
   V.segs = [{ P:T, Q:q.P, k:'H', dash:[5, 4] }];
   V.rectos = q.d > 0.3 ? [{ H:q.H, angulo:r.angulo, hacia:T }] : [];
-  V.puntos = [{ P:T, k:'F', t:'T', dx:12, dy:-12 }, { P:q.P, k:'I', t:"T'", dx:-12, dy:-12 }, { P:q.H, k:'H', t:'H', dx:12, dy:12, r:4 }];
+  V.puntos = [{ P:T, k:'F', t:'T', dx:12, dy:-12 }, { P:q.P, k:'I', t:"T′", dx:-12, dy:-12 }, { P:q.H, k:'H', t:'H', dx:12, dy:12, r:4 }];
   return V;
 }
 function vista3(resuelto){
@@ -606,7 +611,7 @@ function vista3(resuelto){
   if (resuelto){
     V.segs = [{ P:P3, Q:D3.P, k:'H', dash:[5, 4] }];
     V.rectos = [{ H:D3.H, angulo:REC3.angulo, hacia:P3 }];
-    V.puntos.push({ P:D3.H, k:'H', t:'H', dx:14, dy:10 }, { P:D3.P, k:'I', t:"P'", dx:14, dy:-12 });
+    V.puntos.push({ P:D3.H, k:'H', t:'H', dx:14, dy:10 }, { P:D3.P, k:'I', t:"P′", dx:14, dy:-12 });
   }
   return V;
 }
@@ -641,7 +646,7 @@ const GALERIA = [
 function vista7(V){
   const [e1, e2] = V.espejos, r1 = rectaDe(e1), r2 = rectaDe(e2);
   const b = B7, i1 = mapear(b, P => M.reflejar(P, r1).P), i2 = mapear(b, P => M.aplicarDos(P, r1, r2));
-  V.figuras = [figBandera(b, 'F'), figTela(b, 'F'), figBandera(i1, 'I', { dash:[6, 4] }), figTela(i1, 'I', { alpha:.12 }), figBandera(i2, 'J'), figTela(i2, 'J')];
+  V.figuras = [figTallo(b, 'F'), figBarras(b, 'F'), figTallo(i1, 'I', { dash:[6, 4] }), figBarras(i1, 'I', { dash:[6, 4] }), figTallo(i2, 'J'), figBarras(i2, 'J')];
   const c = M.componer(r1, r2); V._c = c;
   V.flechas = []; V.arcos = [];
   if (c.tipo === 'traslacion') V.flechas.push({ P:b.pie, Q:i2.pie, k:'J', t:`${fmt(c.modulo, 1)} cm` });
@@ -655,56 +660,56 @@ function vista7(V){
 }
 function vista7base(resuelto){
   const V = { tipo:'plano', ventana:[-3, 11, -1.5, 5.5], espejos:[{ id:'a', punto:{ x:1, y:2 }, angulo:90, k:'E', nombre:'L₁' }, { id:'b', punto:{ x:4, y:2 }, angulo:90, k:'S', nombre:'L₂' }] };
-  if (!resuelto){ V.figuras = [figBandera(B7, 'F'), figTela(B7, 'F')]; return V; }
+  if (!resuelto){ V.figuras = [figTallo(B7, 'F'), figBarras(B7, 'F')]; return V; }
   // L₂ solo se corre de lado, sin pasar a L₁ (qué pasa si se inclina queda para «¿Qué pasa si…?»)
   V.espejos[1].mover = true; V.espejos[1].soloX = true;
   V.espejos[1].limitar = q => q.x > 1.4 && q.x < 9;
   return vista7(V);
 }
 function vista8(plano, todos){
-  return { tipo:'3d', poli:CUBO, yaw:-32, pitch:24, plano, todos: todos ? PLANOS8 : [] };
+  return { tipo:'3d', poli:CUBO, yaw:-18, pitch:32, plano, todos: todos ? PLANOS8 : [] };
 }
 
 const steps = [
- { k:'Paso 1', t:'La bandera frente al espejo: predice', gate:P1, leg:['F','I','E','H'], legAntes:['F','E'], leyTextos:{ F:'la bandera', H:'el camino de T a T′' },
+ { k:'Paso 1', t:'La letra F frente al espejo: predice', gate:P1, leg:['F','I','E','H'], legAntes:['F','E'], leyTextos:{ F:'la letra F', H:'el camino perpendicular (dos veces d)' },
    vista:() => vista1(!!S.pred[P1.id]),
-   desc:() => 'Una cuadrícula con un espejo vertical L. A su derecha, una bandera: el mástil a 2 cuadritos de L y la tela, triangular, apunta hacia la derecha; su punta T está a 5 cuadritos de L.' + (S.pred[P1.id] ? ' Del otro lado, la imagen: su mástil también a 2 cuadritos y la tela apuntando hacia la izquierda, con la punta T′ a 5 cuadritos.' : ''),
-   body:() => `<p class="problem">Una ${V('F','bandera')} está frente a un ${V('E','espejo L')} vertical, con la tela apuntando hacia la derecha, lejos del espejo. ¿Cómo se ve su imagen del otro lado de L?</p>
+   desc:() => 'Una cuadrícula de cuadritos de 1 cm con un espejo vertical L. A su derecha, una letra F: el tallo a 2 cm de L y las barras hacia la derecha; la punta T de la barra larga, arriba, está a 5 cm de L.' + (S.pred[P1.id] ? ' Del otro lado, la imagen: el tallo también a 2 cm y las barras hacia la izquierda, con la punta T′ a 5 cm; la barra larga sigue arriba.' : ''),
+   body:() => `<p class="problem">Una ${V('F','letra F')} está frente a un ${V('E','espejo L')} vertical, con las barras hacia la derecha, lejos del espejo. Cada cuadrito mide 1 cm. ¿Cómo se ve su imagen del otro lado de L?</p>
      <p>Antes de ver el reflejo, elige.</p>${opciones(P1)}`,
-   tras:() => `<p>El espejo dobla el plano por L, como una hoja doblada. Cada punto viaja por una perpendicular a L y queda a la misma distancia del otro lado: la punta ${V('F','T')} está a 5 cuadritos y ${V('I',"T'")}, también. El ${V('H','segmento TT′')} es perpendicular a L y L pasa por su punto medio.</p>
+   tras:() => `<p>Esto es la <b>simetría axial</b>: L es el eje de simetría. El espejo dobla el plano por L, como una hoja doblada. Cada punto viaja por una perpendicular a L y queda a la misma distancia del otro lado: la punta ${V('F','T')} está a 5 cm y ${V('I','T′')}, también. El ${V('H','segmento TT′')} es perpendicular a L y L pasa por su punto medio.</p>
      <p>Por eso el reflejo invierte izquierda y derecha, pero no arriba y abajo: la imagen está «volteada».</p>`,
    animar:() => animar(1400, f => { S.vista = vista1(true, suave(f)); if (f < 1){ S.vista.segs = []; S.vista.puntos = []; } }) },
- { k:'Paso 2', t:'Mueve el espejo', leg:['F','I','E','H'], leyTextos:{ F:'la bandera' }, arrastre:true,
-   vista:() => vista2({ tipo:'plano', ventana:[-6.5, 7.5, -2.5, 6.5], espejos:[{ id:'L', punto:{ x:0, y:2 }, angulo:90, k:'E', nombre:'L', mover:true, girar:true }] }),
-   desc:() => { const e = S.vista.espejos[0], q = M.reflejar(B1.original.puntos.tela[1], rectaDe(e)); return `El espejo L está inclinado ${gr(e.angulo)}. La punta T está a ${fmt(q.d, 1)} cuadritos de L y su imagen T′, también.`; },
+ { k:'Paso 2', t:'Mueve el espejo', leg:['F','I','E','H'], leyTextos:{ F:'la letra F', H:'el pie H y la distancia d' }, arrastre:true,
+   vista:() => vista2({ tipo:'plano', ventana:[-6.5, 7.5, -2.5, 6.5], ejesXY:true, espejos:[{ id:'L', punto:{ x:0, y:2 }, angulo:90, k:'E', nombre:'L', mover:true, girar:true }] }),
+   desc:() => { const e = S.vista.espejos[0], q = M.reflejar(B1.original.puntos.larga[1], rectaDe(e)); return `El espejo L forma ${gr(e.angulo)} con la horizontal. La punta T está a ${fmt(q.d, 1)} cm de L y su imagen T′, también.`; },
    body:() => `<p>Arrastra el centro del ${V('E','espejo L')} para correrlo y la manija de la punta para girarlo (o toca el dibujo y usa las flechas; Enter cambia de manija). La ${V('I','imagen')} se recalcula con el motor en cada movimiento.</p><div id="vivo" class="body"></div>
-     <p>Gires como gires el espejo, el camino de ${V('F','T')} a ${V('I',"T'")} es perpendicular a L y ${V('H','H')} queda justo a la mitad: ${V('I',"T'")} = 2${V('H','H')} − ${V('F','T')}.</p>`,
-   vivo:() => { const e = S.vista.espejos[0], T = B1.original.puntos.tela[1], q = M.reflejar(T, rectaDe(e));
-     return `<div class="eqs"><div class="eq">${V('H','d')}(${V('F','T')}, L) = ${V('H', fmt(q.d, 2))}<span class="note">y ${V('H','d')}(${V('I',"T'")}, L) = ${V('H', fmt(q.d, 2))}</span></div>
-       <div class="eq">${V('H','H')} = ${V('H', pt(q.H, 2))} → ${V('I',"T'")} = 2${V('H','H')} − ${V('F','T')} = ${V('I', pt(q.P, 2))}</div></div>`; } },
+     <p>Gires como gires el espejo, el camino de ${V('F','T')} a ${V('I',"T′")} es perpendicular a L y ${V('H','H')} queda justo a la mitad: ${V('I',"T′")} = 2${V('H','H')} − ${V('F','T')}.</p>`,
+   vivo:() => { const e = S.vista.espejos[0], T = B1.original.puntos.larga[1], q = M.reflejar(T, rectaDe(e));
+     return `<div class="eqs"><div class="eq">${V('H','d')}(${V('F','T')}, L) = ${V('H', fmt(q.d, 2))}<span class="note">y ${V('H','d')}(${V('I',"T′")}, L) = ${V('H', fmt(q.d, 2))}</span></div>
+       <div class="eq">${V('H','H')} = ${V('H', pt(q.H, 2))} → ${V('I',"T′")} = 2${V('H','H')} − ${V('F','T')} = ${V('I', pt(q.P, 2))}</div></div>`; } },
  { k:'Paso 3', t:'Con coordenadas: predice', gate:P2, leg:['F','I','E','H'], legAntes:['F','E'],
    vista:() => vista3(!!S.pred[P2.id]),
-   desc:() => 'Un plano cartesiano con la recta L: y = x + 2, que sube a 45° y corta el eje y en 2, y el punto P(5; 1).' + (S.pred[P2.id] ? ` La perpendicular por P llega a L en H${pt(D3.H)} y sigue hasta P'${pt(D3.P)}.` : ''),
-   body:() => `<p class="problem">Halla el simétrico ${V('I',"P'")} del punto ${V('F','P(5; 1)')} respecto de la recta ${V('E','L: y = x + 2')}.</p>${opciones(P2)}`,
+   desc:() => 'Un plano cartesiano con la recta L: y = x + 2, que sube a 45° y corta el eje y en 2, y el punto P(5; 1).' + (S.pred[P2.id] ? ` La perpendicular por P llega a L en H${pt(D3.H)} y sigue hasta P′${pt(D3.P)}.` : ''),
+   body:() => `<p class="problem">Halla el simétrico ${V('I',"P′")} del punto ${V('F','P(5; 1)')} respecto de la recta ${V('E','L: y = x + 2')}.</p>${opciones(P2)}`,
    tras:() => `<div class="eqs"><div class="eq">perpendicular a L por ${V('F','P')}: y − 1 = −(x − 5) → y = −x + 6<span class="note">pendiente −1</span></div>
      <div class="eq">x + 2 = −x + 6 → x = 2 → ${V('H','H(2; 4)')}<span class="note">el pie, en L</span></div>
-     <div class="eq">${V('I',"P'")} = 2${V('H','H')} − ${V('F','P')} = (4 − 5; 8 − 1) = ${V('I',"(−1; 7)")}</div></div>
-     <p>${V('H','H')} es el punto medio de ${V('F','P')}${V('I',"P'")}. Con cualquier recta: primero el pie ${V('H','H')} por la perpendicular, después ${V('I',"P'")} = 2${V('H','H')} − ${V('F','P')}.</p>`,
-   animar:() => { animar(1100, f => { const t = suave(f), Q = M.pliegue(P3, R3, t); S.vista = vista3(true); S.vista.segs = [{ P:P3, Q, k:'H', dash:[5, 4] }]; if (f < 1) S.vista.puntos = S.vista.puntos.filter(p => p.t !== "P'").concat([{ P:Q, k:'I', r:4 }]); }); } },
- { k:'Paso 4', t:'Simétrico respecto de un punto: predice', gate:P3p, leg:['F','I','O'], legAntes:['F','O'], leyTextos:{ F:'el triángulo ABC', I:'el simétrico A′B′C′' },
+     <div class="eq">${V('I',"P′")} = 2${V('H','H')} − ${V('F','P')} = (4 − 5; 8 − 1) = ${V('I',"(−1; 7)")}</div></div>
+     <p>${V('H','H')} es el punto medio de ${V('F','P')}${V('I',"P′")}. Con cualquier recta: primero el pie ${V('H','H')} por la perpendicular, después ${V('I',"P′")} = 2${V('H','H')} − ${V('F','P')}.</p>`,
+   animar:() => { animar(1100, f => { const t = suave(f), Q = M.pliegue(P3, R3, t); S.vista = vista3(true); S.vista.segs = [{ P:P3, Q, k:'H', dash:[5, 4] }]; if (f < 1) S.vista.puntos = S.vista.puntos.filter(p => p.t !== "P′").concat([{ P:Q, k:'I', r:4 }]); }); } },
+ { k:'Paso 4', t:'Simetría central: predice', gate:P3p, leg:['F','I','O'], legAntes:['F','O'], leyTextos:{ F:'el triángulo ABC', I:'el simétrico A′B′C′' },
    vista:() => vista4(!!S.pred[P3p.id]),
    desc:() => 'El triángulo ABC: A(1; 1), B(4; 1) y C(2; 3); leído A, B, C va en sentido antihorario. El punto O es el origen.' + (S.pred[P3p.id] ? ' Su simétrico respecto de O es A′(−1; −1), B′(−4; −1), C′(−2; −3): el mismo triángulo después de media vuelta alrededor de O.' : ''),
-   body:() => `<p class="problem">Cada vértice del ${V('F','triángulo ABC')} se lleva al otro lado del punto ${V('O','O')}, de modo que ${V('O','O')} sea el punto medio de AA′, de BB′ y de CC′ (simetría respecto de un punto). ¿Qué le pasa al triángulo?</p>${opciones(P3p)}`,
+   body:() => `<p class="problem">Cada vértice del ${V('F','triángulo ABC')} se lleva al otro lado del punto ${V('O','O')}, de modo que ${V('O','O')} sea el punto medio de AA′, de BB′ y de CC′ (simetría central o respecto de un punto). ¿Qué le pasa al triángulo?</p>${opciones(P3p)}`,
    tras:() => `<div class="eqs"><div class="eq">${V('I',"A′")} = 2${V('O','O')} − ${V('F','A')} = ${V('I', pt(D4.puntos[0]))}, ${V('I',"B′")} = ${V('I', pt(D4.puntos[1]))}, ${V('I',"C′")} = ${V('I', pt(D4.puntos[2]))}</div>
      <div class="eq">área de ${V('F','ABC')} = área de ${V('I',"A′B′C′")} = ${fmt(D4.area)} u²<span class="note">sentido: ${D4.sentidoOriginal} y ${D4.sentido}</span></div></div>
-     <p>La simetría respecto de un punto es una media vuelta: no voltea. Por eso no es lo mismo que un reflejo en una recta, que sí cambia el sentido (míralo en el paso 1: la tela apuntaba al otro lado).</p>`,
+     <p>La simetría central (respecto de un punto) es una media vuelta: no voltea. Por eso no es lo mismo que la simetría axial, el reflejo en una recta, que sí cambia el sentido (míralo en el paso 1: las barras de la F salían hacia el otro lado).</p>`,
    animar:() => animar(1500, f => { S.vista = vista4(true, suave(f)); }) },
  { k:'Paso 5', t:'Los ejes del rectángulo: predice', gate:P4, leg:['F','I','E'], legAntes:['F'], leyTextos:{ E:'el espejo por el centro', I:'el reflejo del rectángulo' },
    vista:() => vista5(!!S.pred[P4.id], S.pred[P4.id] ? 90 : 0),
-   desc:() => { if (!S.pred[P4.id] || !S.vista.espejos) return 'Un rectángulo de 6 por 4 cuadritos.'; const e = S.vista.espejos[0], ok = M.coincide(F5, rectaDe(e)); return `Un espejo pasa por el centro del rectángulo, inclinado ${gr(e.angulo)}. El reflejo ${ok ? 'cae justo sobre el rectángulo: es un eje' : 'no cae sobre el rectángulo: no es un eje'}.`; },
+   desc:() => { if (!S.pred[P4.id] || !S.vista.espejos) return 'Un rectángulo de 6 cm por 4 cm.'; const e = S.vista.espejos[0], ok = M.coincide(F5, rectaDe(e)); return `Un espejo pasa por el centro del rectángulo, inclinado ${gr(e.angulo)}. El reflejo ${ok ? 'cae justo sobre el rectángulo: es un eje' : 'no cae sobre el rectángulo: no es un eje'}.`; },
    body:() => `<p>Un <b>eje de simetría</b> es una recta que, usada como espejo, deja la figura justo encima de sí misma: al doblar por ella, cada punto cae sobre otro punto de la figura.</p>
      <p class="problem">¿Cuántos ejes de simetría tiene un ${V('F','rectángulo')} de 6 cm por 4 cm?</p>${opciones(P4)}`,
-   tras:() => `<div id="vivo" class="body"></div><p>Gira el ${V('E','espejo')} con la manija (o con las flechas). En línea punteada, el ${V('I','reflejo')} del rectángulo. Solo a 0° y a 90° cae encima. Ponlo sobre la diagonal (unos 35°): la mitad de abajo pasa arriba, pero inclinada; no encaja.</p>`,
+   tras:() => `<div id="vivo" class="body"></div><p>Gira el ${V('E','espejo')} con la manija (o con las flechas). En línea punteada, el ${V('I','reflejo')} del rectángulo. Solo a 0° y a 90° cae encima. Ponlo a unos 35°, casi sobre la diagonal: la mitad de abajo pasa arriba, pero inclinada; no encaja.</p>`,
    vivo:() => { if (!S.vista.espejos) return ''; const e = S.vista.espejos[0], ok = M.coincide(F5, rectaDe(e));
      return `<div class="chips"><span class="chip">${V('E','espejo a ' + gr(e.angulo))}</span><span class="chip ${ok ? 'vivo-ok' : 'vivo-no'}">${ok ? 'el reflejo cae encima: es un eje' : 'el reflejo no cae encima'}</span></div>`; },
    animar:() => animar(2400, f => { const a = 90*suave(f); S.vista = vista5(true, a); }, () => { S.vista = vista5(true, 90); vivo(); describir(); }) },
@@ -729,18 +734,18 @@ const steps = [
    } },
  { k:'Paso 7', t:'Dos espejos seguidos: predice', gate:P6, leg:['F','I','E','S','J'], legAntes:['F','E','S'], leyTextos:{ E:'el primer espejo L₁', S:'el segundo espejo L₂', I:'la imagen en L₁' },
    vista:() => vista7base(!!S.pred[P6.id]),
-   desc:() => { if (!S.pred[P6.id] || !S.vista._c) return 'Dos espejos verticales: L₁ en x = 1 y L₂ en x = 4, a 3 cuadritos. A la izquierda de L₁, una bandera con el mástil en x = −1 y la tela hacia la derecha.'; const c = S.vista._c;
-     return c.tipo === 'traslacion' ? `Espejos paralelos: la imagen final está corrida ${fmt(c.modulo, 1)} cuadritos, sin voltear.` : c.tipo === 'giro' ? `Los espejos se cortan en Q: la imagen final es la bandera girada ${gr(Math.abs(c.angulo))} alrededor de Q.` : 'Los dos espejos coinciden: la bandera vuelve a su lugar.'; },
-   body:() => `<p class="problem">Dos espejos paralelos, ${V('E','L₁')} y ${V('S','L₂')}, están a 3 cm. La ${V('F','bandera')} se refleja en ${V('E','L₁')} y esa ${V('I','imagen')}, en ${V('S','L₂')}. ¿Dónde queda la ${V('J','imagen final')}?</p>${opciones(P6)}`,
-   tras:() => `<div id="vivo" class="body"></div><p>Corre ${V('S','L₂')} con su manija (o con las flechas). La ${V('J','imagen final')} siempre es la bandera corrida el doble de la distancia entre los espejos, y siempre queda derecha: dos volteos se anulan.</p>
+   desc:() => { if (!S.pred[P6.id] || !S.vista._c) return 'Dos espejos verticales: L₁ en x = 1 y L₂ en x = 4, a 3 cm. A la izquierda de L₁, una letra F con el tallo en x = −1 y las barras hacia la derecha.'; const c = S.vista._c;
+     return c.tipo === 'traslacion' ? `Espejos paralelos: la imagen final está corrida ${fmt(c.modulo, 1)} cm, sin voltear.` : c.tipo === 'giro' ? `Los espejos se cortan en Q: la imagen final es la F girada ${gr(Math.abs(c.angulo))} alrededor de Q.` : 'Los dos espejos coinciden: la F vuelve a su lugar.'; },
+   body:() => `<p class="problem">Dos espejos paralelos, ${V('E','L₁')} y ${V('S','L₂')}, están a 3 cm. La ${V('F','letra F')} se refleja en ${V('E','L₁')} y esa ${V('I','imagen')}, en ${V('S','L₂')}. ¿Dónde queda la ${V('J','imagen final')}?</p>${opciones(P6)}`,
+   tras:() => `<div id="vivo" class="body"></div><p>Corre ${V('S','L₂')} con su manija (o con las flechas). La ${V('J','imagen final')} siempre es la F corrida el doble de la distancia entre los espejos, y siempre queda derecha: dos volteos se anulan.</p>
      <p>¿Y si los espejos no fueran paralelos? Pruébalo en «¿Qué pasa si…?».</p>`,
    vivo:() => { const c = S.vista._c, e2 = S.vista.espejos[1]; if (!c) return '';
      if (c.tipo === 'traslacion') return `<div class="eqs"><div class="eq">distancia entre ${V('E','L₁')} y ${V('S','L₂')} = ${fmt(c.distancia, 1)} → ${V('J','traslación')} = 2 · ${fmt(c.distancia, 1)} = ${V('J', fmt(c.modulo, 1) + ' cm')}</div></div>`;
      if (c.tipo === 'giro') return `<div class="eqs"><div class="eq">ángulo de ${V('E','L₁')} a ${V('S','L₂')} = ${gr(Math.abs(c.theta))} → ${V('J','giro')} = 2 · ${gr(Math.abs(c.theta))} = ${V('J', gr(Math.abs(c.angulo)))}<span class="note">alrededor de Q</span></div></div>`;
-     return `<div class="eqs"><div class="eq">${V('S','L₂')} sobre ${V('E','L₁')}: la bandera vuelve a su lugar (x = ${fmt(e2.punto.x, 1)})</div></div>`; },
+     return `<div class="eqs"><div class="eq">${V('S','L₂')} sobre ${V('E','L₁')}: la F vuelve a su lugar (x = ${fmt(e2.punto.x, 1)})</div></div>`; },
    animar:() => { const V = vista7base(true), fin = V.figuras.slice(); animar(1600, f => { const a = Math.min(1, f*2), b = Math.max(0, f*2 - 1), r1 = rectaDe(V.espejos[0]), r2 = rectaDe(V.espejos[1]);
        const i1 = mapear(B7, P => M.pliegue(P, r1, suave(a))), i2 = b > 0 ? mapear(mapear(B7, P => M.reflejar(P, r1).P), P => M.pliegue(P, r2, suave(b))) : null;
-       S.vista = Object.assign(V, { figuras:[fin[0], fin[1], figBandera(i1, 'I', { dash:[6, 4] }), figTela(i1, 'I', { alpha:.12 })].concat(i2 ? [figBandera(i2, 'J'), figTela(i2, 'J')] : []), flechas: f >= 1 ? vista7(V).flechas : [] });
+       S.vista = Object.assign(V, { figuras:[fin[0], fin[1], figTallo(i1, 'I', { dash:[6, 4] }), figBarras(i1, 'I', { dash:[6, 4] })].concat(i2 ? [figTallo(i2, 'J'), figBarras(i2, 'J')] : []), flechas: f >= 1 ? vista7(V).flechas : [] });
      }, () => { S.vista = vista7base(true); draw(); }); } },
  { k:'Paso 8', t:'Los planos del cubo: predice', gate:P7, leg:['E'], legAntes:[], leyTextos:{ E:'el plano de simetría' },
    vista:() => vista8(S.pred[P7.id] ? PLANOS8[S.plano8 || 0] : null, false),
@@ -878,15 +883,15 @@ const NOHAY = '<p class="fuente">Hipótesis nuestra: las opciones incorrectas so
 const n = x => `${x} ${x === 1 ? 'eje' : 'ejes'}`, pl = x => `${x} planos`;
 
 // Experimento 1: espejos que se cortan en Q a 40°
-const E1b = M.bandera({ mastil:3, alto:2, tela:1.5 });
+const E1b = M.efe({ tallo:3, alto:2, larga:1.5, corta:1 });
 const E1r1 = { y:0 }, E1r2 = { punto:{ x:0, y:0 }, angulo:40 }, E1 = M.componer(E1r1, E1r2);
 function vistaE1(resuelto, ang){
   const a = ang === undefined ? 40 : ang;
   const V = { tipo:'plano', ventana:[-5, 5, -4, 5], espejos:[{ id:'a', punto:{ x:0, y:0 }, angulo:0, k:'E', nombre:'L₁' }, { id:'b', punto:{ x:0, y:0 }, angulo:a, k:'S', nombre:'L₂', girar:resuelto, limitar:(q, g) => g >= 5 && g <= 175 }],
-    figuras:[figBandera(E1b, 'F'), figTela(E1b, 'F')], puntos:[{ P:{ x:0, y:0 }, t:'Q', dx:-12, dy:14 }] };
+    figuras:[figTallo(E1b, 'F'), figBarras(E1b, 'F')], puntos:[{ P:{ x:0, y:0 }, t:'Q', dx:-12, dy:14 }] };
   if (resuelto){
     const r1 = E1r1, r2 = { punto:{ x:0, y:0 }, angulo:a }, i1 = mapear(E1b, P => M.reflejar(P, r1).P), i2 = mapear(E1b, P => M.aplicarDos(P, r1, r2)), c = M.componer(r1, r2);
-    V.figuras.push(figBandera(i1, 'I', { dash:[6, 4] }), figTela(i1, 'I', { alpha:.12 }), figBandera(i2, 'J'), figTela(i2, 'J'));
+    V.figuras.push(figTallo(i1, 'I', { dash:[6, 4] }), figBarras(i1, 'I', { dash:[6, 4] }), figTallo(i2, 'J'), figBarras(i2, 'J'));
     const a0 = Math.atan2(E1b.punta.y, E1b.punta.x)/RAD;
     V.arcos = [{ O:{ x:0, y:0 }, rU:Math.hypot(E1b.punta.x, E1b.punta.y), desde:a0, hasta:a0 + c.angulo, k:'J', t:gr(c.angulo) }];
     V._c = c;
@@ -909,18 +914,18 @@ function vistaE2(resuelto, ang, g180){
 }
 // Experimento 3: la caja de 4 × 3 × 2
 const CAJA = M.poliedro('caja', 4, 3, 2), E3 = M.prediccionPlanos(CAJA);
-// Experimento 4: la mano derecha frente al espejo y = 3
-const MANO = { pulgar:{ x:0, y:0, z:1.4 }, indice:{ x:0, y:1.4, z:0 }, medio:{ x:-1.4, y:0, z:0 } }, PLANO4 = { normal:{ x:0, y:1, z:0 }, d:3 };
-const E4 = M.manoEnEspejo(MANO, PLANO4), PALMA = { x:0, y:0.4, z:0.6 }, PALMA2 = M.reflejarEnPlano(PALMA, PLANO4);
-function vistaE4(resuelto, giro){
-  const V = { tipo:'3d', yaw:-58, pitch:16, espejo3:[{ x:-2.4, y:3, z:-0.6 }, { x:2.4, y:3, z:-0.6 }, { x:2.4, y:3, z:2.6 }, { x:-2.4, y:3, z:2.6 }],
-    flechas3:[{ O:PALMA, v:MANO.pulgar, k:'F', t:'pulgar' }, { O:PALMA, v:MANO.indice, k:'F', t:'índice' }, { O:PALMA, v:MANO.medio, k:'F', t:'medio' }], palmas:[{ P:PALMA, k:'F' }] };
+// Experimento 4: el simétrico de P(2; 3; 4) respecto del plano xy (z = 0)
+const P4e = { x:2, y:3, z:4 }, PLANO4 = { normal:{ x:0, y:0, z:1 }, d:0 }, E4 = M.simetricoEspacio(P4e, PLANO4);
+const p3t = P => `(${fmt(P.x)};\u00a0${fmt(P.y)};\u00a0${fmt(P.z)})`;
+function vistaE4(resuelto){
+  const O = { x:0, y:0, z:0 };
+  const V = { tipo:'3d', yaw:-35, pitch:22, espejo3:[{ x:-1, y:-1, z:0 }, { x:5, y:-1, z:0 }, { x:5, y:5, z:0 }, { x:-1, y:5, z:0 }],
+    flechas3:[{ O, v:{ x:5.5, y:0, z:0 }, t:'x' }, { O, v:{ x:0, y:5.5, z:0 }, t:'y' }, { O, v:{ x:0, y:0, z:5.5 }, t:'z' }],
+    segs3:[{ P:{ x:2, y:0, z:0 }, Q:{ x:2, y:3, z:0 }, dash:[3, 4] }, { P:{ x:0, y:3, z:0 }, Q:{ x:2, y:3, z:0 }, dash:[3, 4] }],
+    puntos3:[{ P:P4e, k:'F', t:'P' }], extra3:[{ x:0, y:0, z:-4.5 }] };
   if (resuelto){
-    const g = giro || 0, rot = v => M.girar3D(v, 180*g);
-    // la imagen gira alrededor de la recta vertical que pasa por su palma
-    const O2 = PALMA2;
-    V.flechas3.push({ O:O2, v:rot(E4.reflejo.pulgar), k:'I', t:'pulgar' }, { O:O2, v:rot(E4.reflejo.indice), k:'I', t:'índice' }, { O:O2, v:rot(E4.reflejo.medio), k:'I', t:'medio' });
-    V.palmas.push({ P:O2, k:'I' });
+    V.segs3.push({ P:P4e, Q:E4.P, k:'H', dash:[6, 4] });
+    V.puntos3.push({ P:E4.H, k:'H', t:'H' }, { P:E4.P, k:'I', t:'P′' });
   }
   return V;
 }
@@ -928,21 +933,27 @@ function vistaE4(resuelto, giro){
 const E5f = M.figura('regular', 7, 3), E5 = M.prediccionEjes(E5f);
 
 const EXPS = [
-  { id:'espejos-en-angulo', corto:'Espejos en ángulo', leg:['F','I','E','S','J'], legAntes:['F','E','S'], leyTextos:{ F:'la bandera', E:'el primer espejo L₁', S:'el segundo espejo L₂', I:'la imagen en L₁' },
-    q:'Los espejos L₁ y L₂ se cortan en Q y forman un ángulo de 40°. La bandera se refleja en L₁ y esa imagen, en L₂. ¿Cómo queda la imagen final?',
+  { id:'espejos-en-angulo', corto:'Espejos en ángulo', leg:['F','I','E','S','J'], legAntes:['F','E','S'], leyTextos:{ F:'la letra F', E:'el primer espejo L₁', S:'el segundo espejo L₂', I:'la imagen en L₁' },
+    q:'Los espejos L₁ y L₂ se cortan en Q y forman un ángulo de 40°. La letra F se refleja en L₁ y esa imagen, en L₂. ¿Cómo queda la imagen final?',
     opts:[['a', `Girada ${gr(E1.errores.sinDuplicar)} alrededor de Q, sin voltear`, 'giro-del-angulo-sin-duplicar', 'hipotesis'], ['b', `Girada ${gr(E1.angulo)} alrededor de Q, sin voltear`],
-          ['c', `Girada ${gr(E1.errores.mitad)} alrededor de Q, sin voltear`, 'giro-de-la-mitad-del-angulo', 'hipotesis'], ['d', 'Volteada, como si hubiera un solo espejo', 'dos-reflexiones-son-otra-reflexion', 'hipotesis']],
+          ['c', `Girada ${gr(E1.errores.mitad)} alrededor de Q, sin voltear`, 'giro-de-la-mitad-del-angulo', 'hipotesis'], ['d', `Girada ${gr(E1.angulo)} alrededor de Q, pero volteada`, 'dos-reflexiones-son-otra-reflexion', 'hipotesis']],
     ok:'b',
+    fb:{ a:'Elegiste la A. 40° es el ángulo entre los espejos, pero cada espejo aporta: el primero lleva la F a un lado de L₁ y el segundo la pasa al otro lado de L₂. El giro es el doble: 80°. La correcta está marcada.',
+         c:'Elegiste la C. 20° es la mitad del ángulo entre los espejos; el giro va al revés: es el doble, 80°. La correcta está marcada.',
+         d:'Elegiste la D. El giro sí es de 80°, pero cada espejo voltea la F y dos volteos seguidos la dejan derecha: las barras siguen del mismo lado del tallo. La correcta está marcada.' },
     antes:() => vistaE1(false), despues:() => vistaE1(true),
-    desc:v => v._c ? `Los espejos forman ${gr(v.espejos[1].angulo)}: la imagen final es la bandera girada ${gr(v._c.angulo)} alrededor de Q, sin voltear.` : 'Dos espejos que se cortan en Q: L₁ horizontal y L₂ a 40°. Junto a L₁, por arriba, una bandera.',
+    desc:v => v._c ? `Los espejos forman ${gr(v.espejos[1].angulo)}: la imagen final es la F girada ${gr(v._c.angulo)} alrededor de Q, sin voltear.` : 'Dos espejos que se cortan en Q: L₁ horizontal y L₂ a 40°. Entre los dos espejos, apoyada en L₁, una letra F.',
     vivo:v => !v._c ? '' : `<div class="eqs"><div class="eq">ángulo entre ${V('E','L₁')} y ${V('S','L₂')} = ${gr(v.espejos[1].angulo)} → ${V('J','giro')} = 2 · ${gr(v.espejos[1].angulo)} = ${V('J', gr(v._c.angulo))}</div></div>`,
     exp:`<p>Q está en los dos espejos: no se mueve. Todo lo demás gira alrededor de Q. Un punto que forma un ángulo α con L₁ pasa a −α con el primer reflejo y a 80° + α con el segundo: avanza el doble del ángulo entre los espejos.</p>
       <p>Gira ${V('S','L₂')} con su manija. Con 90°, el giro es de 180°: dos espejos perpendiculares hacen una simetría respecto de Q.</p>` + NOHAY },
   { id:'romboide', corto:'El romboide', leg:['F','I','E','O'], legAntes:['F'], leyTextos:{ F:'el romboide', I:'su reflejo en el espejo', O:'el centro O y la media vuelta' },
     q:'Un romboide es un paralelogramo que no es rectángulo ni rombo, como el del dibujo. ¿Cuántos ejes de simetría tiene y tiene centro de simetría?',
-    opts:[['a', '2 ejes (sus diagonales) y sí tiene centro', 'diagonales-del-romboide-como-ejes', 'hipotesis'], ['b', '0 ejes y no tiene centro', 'sin-ejes-no-hay-simetria', 'hipotesis'],
-          ['c', '2 ejes (sus medianas) y no tiene centro', 'romboide-como-rectangulo', 'hipotesis'], ['d', '0 ejes y sí tiene centro']],
+    opts:[['a', `${n(E2.errores.conDiagonales)} y sí tiene centro`, 'diagonales-del-romboide-como-ejes', 'hipotesis'], ['b', `${n(E2.ejes)} y no tiene centro`, 'sin-ejes-no-hay-simetria', 'hipotesis'],
+          ['c', '2 ejes y no tiene centro', 'romboide-como-rectangulo', 'hipotesis'], ['d', `${n(E2.ejes)} y sí tiene centro`]],
     ok:'d',
+    fb:{ a:'Elegiste la A. Las diagonales parten al romboide en dos triángulos iguales, pero al doblar por una diagonal las puntas no caen una sobre otra: no son ejes. El centro sí lo tiene. La correcta está marcada.',
+         b:'Elegiste la B. Es cierto que no tiene ejes, pero eso no le quita la simetría central: después de media vuelta alrededor de O cae justo encima. La correcta está marcada.',
+         c:'Elegiste la C. Así sería un rectángulo, pero este no lo es: al doblarlo por la recta que une los puntos medios de los lados, las esquinas inclinadas no coinciden. Y sí tiene centro. La correcta está marcada.' },
     antes:() => vistaE2(false), despues:() => vistaE2(true, 0),
     anima:v => animar(1600, f => { Object.assign(v, vistaE2(true, v.espejos[0].angulo, suave(f))); }),
     desc:v => v.espejos ? `Un espejo pasa por el centro O del romboide, a ${gr(v.espejos[0].angulo)}: el reflejo ${v._ok ? 'cae encima' : 'no cae encima'}. Después de media vuelta alrededor de O, el romboide sí queda igual.` : 'Un romboide: los lados de abajo y de arriba miden 5 y los inclinados se corren 2 hacia la derecha.',
@@ -951,8 +962,11 @@ const EXPS = [
       <p>Una figura puede no tener ejes y aun así ser simétrica respecto de un punto. Les pasa a todos los paralelogramos y a letras como N, S y Z.</p>` + NOHAY },
   { id:'caja', corto:'La caja de zapatos', leg:['E'], legAntes:[], leyTextos:{ E:'los planos de simetría' },
     q:'Una caja de zapatos tiene largo 4, ancho 3 y alto 2 (las tres aristas distintas). ¿Cuántos planos de simetría tiene?',
-    opts:[['a', pl(E3.errores.comoCubo), 'caja-como-cubo', 'hipotesis'], ['b', pl(E3.planos)], ['c', pl(E3.errores.unoPorCara), 'un-plano-por-cara', 'hipotesis'], ['d', pl(E3.errores.unoPorArista), 'un-plano-por-arista', 'hipotesis']],
+    opts:[['a', pl(E3.errores.comoCubo), 'caja-como-cubo', 'hipotesis'], ['b', pl(E3.planos)], ['c', pl(E3.errores.unoPorCara), 'un-plano-por-cara', 'hipotesis'], ['d', pl(E3.errores.comoPrisma), 'caja-como-prisma-de-base-cuadrada', 'hipotesis']],
     ok:'b',
+    fb:{ a:'Elegiste la A. 9 tiene el cubo, porque sus tres medidas son iguales. En esta caja un plano en diagonal llevaría el largo (4) sobre el ancho (3), y no encajan. La correcta está marcada.',
+         c:'Elegiste la C. Una cara no es un plano de simetría: deja toda la caja de un solo lado. Los planos de simetría pasan por el centro. La correcta está marcada.',
+         d:'Elegiste la D. 5 tiene un prisma de base cuadrada: el plano horizontal más 4 verticales, 2 de ellos por las diagonales de la base. Aquí la base es de 4 por 3, no cuadrada, y las diagonales ya no sirven. La correcta está marcada.' },
     antes:() => ({ tipo:'3d', poli:CAJA, yaw:-32, pitch:24 }),
     despues:() => ({ tipo:'3d', poli:CAJA, yaw:-32, pitch:24, plano:E3.lista[0], todos:E3.lista }),
     desc:v => v.plano ? `La caja con sus ${E3.planos} planos de simetría, todos paralelos a las caras. Los planos en diagonal del cubo ya no sirven.` : 'Una caja de 4 de largo, 3 de ancho y 2 de alto.',
@@ -960,21 +974,26 @@ const EXPS = [
     montar:() => { const g = $('pl3'); if (!g) return; g.querySelectorAll('button').forEach(b => b.onclick = () => { S.vista.plano = E3.lista[+b.dataset.p]; g.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); draw(); }); },
     exp:`<p>Solo quedan los 3 ${V('E','planos')} paralelos a las caras, por la mitad del largo, del ancho y del alto. Un plano en diagonal, como los del cubo, ya no sirve: lleva el largo (4) sobre el ancho (3), y no encajan.</p>
       <p>En el cubo las tres medidas son iguales, y eso cambia la cuenta: compruébalo en el paso 8 de «Paso a paso».</p>` + NOHAY },
-  { id:'mano', corto:'La mano en el espejo', leg:['F','I','E'], legAntes:['F','E'], leyTextos:{ F:'tu mano derecha', I:'la mano del espejo', E:'el espejo' },
-    q:'Pones tu mano derecha frente a un espejo: el pulgar hacia arriba, el índice apuntando al espejo y el medio hacia la izquierda. ¿Qué mano ves en el espejo?',
-    opts:[['a', 'Una mano derecha: el espejo copia la mano tal cual', 'espejo-copia-sin-invertir', 'hipotesis'], ['b', 'Una mano izquierda: ningún giro la vuelve derecha'],
-          ['c', 'Una mano izquierda, pero media vuelta la vuelve derecha', 'un-giro-deshace-el-reflejo', 'hipotesis'], ['d', 'Una mano derecha, pero puesta de cabeza', 'espejo-pone-de-cabeza', 'hipotesis']],
-    ok:'b',
-    antes:() => vistaE4(false), despues:() => vistaE4(true, 0),
-    desc:v => v.palmas.length > 1 ? `En el espejo, el índice apunta de vuelta hacia ti y el pulgar y el medio no cambian: es una mano ${E4.imagen}. Después de media vuelta sigue siendo ${E4.trasGiro}.` : 'Tu mano derecha frente a un espejo vertical: el pulgar hacia arriba, el índice hacia el espejo y el medio hacia la izquierda.',
-    vivo:() => `<div class="nav"><button type="button" class="btn" id="girar4">Dale media vuelta a la imagen</button></div>`,
-    montar:() => { const b = $('girar4'); if (!b) return; let g = 0; b.onclick = () => { const de = g, a = de ? 0 : 1; g = a; animar(1200, f => { S.vista = vistaE4(true, de + (a - de)*suave(f)); }); b.textContent = a ? 'Devuélvela a su lugar' : 'Dale media vuelta a la imagen'; }; },
-    exp:`<p>El espejo solo invierte lo que va hacia él: el ${V('I','índice')} de la imagen apunta de vuelta hacia ti. El pulgar y el medio no cambian. Con eso la mano ya no es derecha: es una izquierda.</p>
-      <p>Dale media vuelta: el índice vuelve a apuntar al espejo, pero el medio queda hacia la derecha. Ningún giro arregla eso: un reflejo cambia la «mano» y un giro no.</p>` + NOHAY },
+  { id:'espacio', corto:'Un punto y un plano', leg:['F','I','E','H'], legAntes:['F','E'], leyTextos:{ F:'el punto P', I:'su simétrico P′', E:'el plano xy (z = 0)', H:'el pie H y la distancia' },
+    q:`En el espacio, ¿cuál es el simétrico del punto P${p3t(P4e)} respecto del plano xy (el plano z = 0)?`,
+    opts:[['a', `P′${p3t(E4.errores.pie)}`, 'se-queda-en-el-plano', 'hipotesis'], ['b', `P′${p3t(E4.errores.centralOrigen)}`, 'simetria-central-respecto-del-origen', 'hipotesis'],
+          ['c', `P′${p3t(E4.P)}`], ['d', `P′${p3t(E4.errores.ejeNormal)}`, 'simetria-respecto-del-eje-z', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`Elegiste la A. ${p3t(E4.H)} es el pie H: el punto del plano más cercano a P. El simétrico está otro tanto más allá, del otro lado del plano. La correcta está marcada.`,
+         b:'Elegiste la B. Cambiar el signo de las tres coordenadas es la simetría respecto del origen (un punto). Respecto del plano xy solo cambia lo que mide la distancia al plano: la z. La correcta está marcada.',
+         d:'Elegiste la D. Así sería el simétrico respecto del eje z (una recta): cambian x e y. Respecto del plano xy, x e y se quedan y solo cambia el signo de z. La correcta está marcada.' },
+    antes:() => vistaE4(false), despues:() => vistaE4(true),
+    desc:v => v.puntos3.length > 1 ? `P${p3t(P4e)} está a ${fmt(E4.d)} unidades sobre el plano xy. La perpendicular baja hasta H${p3t(E4.H)} y sigue otro tanto: P′${p3t(E4.P)}.` : `Los ejes x, y, z y el plano xy. El punto P${p3t(P4e)} está encima del plano.`,
+    vivo:() => '',
+    exp:`<p>Es la misma regla que en el plano, con una coordenada más: se baja la perpendicular al plano hasta el ${V('H','pie H')} y se sigue otro tanto. ${V('I','P′')} = 2${V('H','H')} − ${V('F','P')} = ${p3t(E4.P)}.</p>
+      <p>Respecto del plano xy cambia solo z; respecto del eje z cambian x e y; respecto del origen cambian las tres.</p>` + NOHAY },
   { id:'heptagono', corto:'El heptágono', leg:['F','E'], legAntes:['F'], leyTextos:{ F:'el heptágono', E:'los ejes de simetría' },
     q:'Un heptágono regular tiene 7 lados iguales y 7 ángulos iguales. ¿Cuántos ejes de simetría tiene?',
     opts:[['a', n(E5.errores.soloVertical), 'solo-el-eje-vertical', 'hipotesis'], ['b', n(E5.errores.ninguno), 'impar-sin-ejes', 'hipotesis'], ['c', n(E5.errores.dobleCuenta), 'cuenta-vertices-y-lados-aparte', 'hipotesis'], ['d', n(E5.ejes)]],
     ok:'d',
+    fb:{ a:'Elegiste la A. El eje vertical sirve, pero el heptágono es regular: lo mismo pasa por cada uno de sus 7 vértices. La correcta está marcada.',
+         b:'Elegiste la B. Que tenga un número impar de lados no le quita ejes: cada eje va de un vértice al punto medio del lado de enfrente. La correcta está marcada.',
+         c:'Elegiste la C. Con 7 lados, el eje que sale de un vértice es el mismo que llega al punto medio del lado de enfrente: no se cuentan por separado. Son 7. La correcta está marcada.' },
     antes:() => vistaFigura(E5f, false), despues:() => vistaFigura(E5f, true),
     anima:v => { const ejes = v.segs.slice(); animar(1800, f => { v.segs = ejes.slice(0, Math.ceil(f*ejes.length)); }); },
     desc:v => v.segs && v.segs.length ? `El heptágono regular con sus ${E5.ejes} ejes: cada uno va de un vértice al punto medio del lado de enfrente. No tiene centro de simetría.` : 'Un heptágono regular con un vértice arriba.',
@@ -1017,7 +1036,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira el dibujo para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira el dibujo para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = `<div id="vivo2" class="body">${x.montar ? x.vivo(S.vista) : ''}</div>` + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     if (x.montar) x.montar();

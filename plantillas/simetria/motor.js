@@ -18,24 +18,27 @@
  *
  * SIMETRÍA RESPECTO DE UNA RECTA (reflexión)
  *   recta(o)                    normaliza la recta: { a, b, c } con a² + b² = 1, más { punto, angulo } (angulo en [0, 180))
- *   reflejar(P, r)              P' simétrico de P respecto de r: P' = 2H − P, con H el pie de la perpendicular.
- *                               Devuelve { P: P', H, d (distancia de P a r), errores }, con los errores típicos:
+ *   reflejar(P, r)              P′ simétrico de P respecto de r: P′ = 2H − P, con H el pie de la perpendicular.
+ *                               Devuelve { P: P′, H, d (distancia de P a r), errores }, con los errores típicos:
  *                                 errores.pie        se queda en H (la mitad del camino)
  *                                 errores.vertical   va en vertical hasta la recta y sigue otro tanto (no en perpendicular);
  *                                                    null si r es vertical
  *                                 errores.horizontal lo mismo en horizontal; null si r es horizontal
  *                                 errores.intercambia cambia x por y (lo que vale solo para y = x)
  *   reflejarFigura(pts, r)      la lista de puntos reflejada
- *   pliegue(P, r, t)            el punto a la fracción t ∈ [0, 1] del doblez: H + (P − H)·cos(π·t). En t = 1 es P'.
+ *   pliegue(P, r, t)            el punto a la fracción t ∈ [0, 1] del doblez: H + (P − H)·cos(π·t). En t = 1 es P′.
  *                               Sirve para animar el espejo que dobla la figura.
- *   bandera(o) / reflejoBandera(o) una banderita (mástil y tela) y lo que pasa con ella al reflejarla en una recta
- *                               vertical: hacia dónde apunta la tela y si queda arriba o abajo (paso 1).
- *                               o = { mastil:x, alto, tela, espejo:x } (por defecto mástil en x = 2, espejo en x = 0).
- *                               reflejoBandera devuelve { apunta:'izquierda'|'derecha', tela:'arriba'|'abajo',
- *                               puntos, errores:{ copia, giro180, horizontal } } con { apunta, tela } de cada error.
+ *   efe(o) / reflejoEfe(o)     la letra F de los pasos 1 y 7 y lo que pasa con ella al reflejarla en la recta vertical
+ *                               x = o.espejo. o = { tallo, alto, larga, corta, espejo } (por defecto tallo en x = 2,
+ *                               alto 4, larga 3, corta 2, espejo 0). La F: tallo de (tallo; 0) a (tallo; alto); barra larga
+ *                               de (tallo; alto) a (tallo + larga; alto); barra corta de (tallo; alto/2) a
+ *                               (tallo + corta; alto/2). reflejoEfe devuelve { apunta:'izquierda'|'derecha' (hacia dónde
+ *                               salen las barras), larga:'arriba'|'abajo', puntos, original, errores:{ copia (corrida sin
+ *                               voltear), giro180 (media vuelta alrededor de (espejo; 0)), horizontal (volteada de arriba
+ *                               abajo y corrida) } }, cada error con { apunta, larga, puntos }.
  *
  * SIMETRÍA RESPECTO DE UN PUNTO (simetría central)
- *   central(P, O)               P' = 2O − P (O es el punto medio de PP'). errores: reflejo en la recta vertical u
+ *   central(P, O)               P′ = 2O − P (O es el punto medio de PP′). errores: reflejo en la recta vertical u
  *                               horizontal que pasa por O y giro de 90° alrededor de O (antihorario)
  *   girar(P, O, grados)         giro alrededor de O (antihorario si grados > 0)
  *   trasladar(P, v)             P + v
@@ -58,7 +61,16 @@
  *                               'rectangulo'(b, h), 'cuadrado'(l), 'rombo'(d1, d2), 'romboide'(b, h, corrimiento),
  *                               'equilatero'(l), 'isosceles'(base, altura), 'escaleno'() con vértices fijos (0; 0), (6; 0) y (1; 3),
  *                               'trapecio'(B, b, h) isósceles, 'trapecioRecto'(B, b, h), 'regular'(n, R),
- *                               'letra'(L) con L en A, E, H, I, N, S, T, U, X, Z, y 'circunferencia'(R) → { circunferencia, R }
+ *                               'letra'(L) con L en A, E, H, I, N, S, T, U, X, Z, 'segmentos'([[[x1, y1], [x2, y2]], …])
+ *                               con segmentos libres, y 'circunferencia'(R) → { circunferencia, R }.
+ *                               Las letras se trazan con segmentos sobre la cuadrícula (puntos [x, y]):
+ *                                 A: (0;0)-(2;4), (2;4)-(4;0), (1;2)-(3;2)          E: (0;0)-(0;4), (0;4)-(3;4), (0;2)-(2;2), (0;0)-(3;0)
+ *                                 H: (0;0)-(0;4), (3;0)-(3;4), (0;2)-(3;2)          I: (0;4)-(2;4), (1;4)-(1;0), (0;0)-(2;0)
+ *                                 N: (0;0)-(0;4), (0;4)-(3;0), (3;0)-(3;4)  (caja 3 × 4)
+ *                                 S: quebrada (3;4), (0;4), (0;2), (3;2), (3;0), (0;0)   T: (0;4)-(4;4), (2;4)-(2;0)
+ *                                 U: quebrada (0;4), (0;0), (3;0), (3;4)              Z: quebrada (0;4), (3;4), (0;0), (3;0)
+ *                                 X: (0;0)-(3;4), (0;4)-(3;0)  (caja 3 × 4, NO cuadrada: por eso 2 ejes; en caja cuadrada
+ *                                    serían 4, porque las diagonales de la caja también serían ejes)
  *   poligono(pts)               un polígono cerrado (lista de vértices) como figura de segmentos
  *   girarFigura(fig, grados, O) la figura girada (por defecto alrededor de su centro de puntos)
  *   simetrias(fig)              { ejes:[{ punto, angulo }], numEjes, centro:{x,y}|null, tieneCentro, G }.
@@ -77,13 +89,17 @@
  *                                 ninguno         0 (cree que la figura no tiene ejes); solo si en verdad tiene alguno
  *
  * SIMETRÍA RESPECTO DE UN PLANO (en el espacio)
- *   poliedro(nombre, ...)       { vertices, lista (aristas como pares de índices), caras, aristas } para 'cubo'(a), 'caja'(a, b, c), 'prismaCuadrado'(a, h),
+ *   simetricoEspacio(P, plano)  { P: P′, H (pie), d, errores: { pie, centralOrigen (−P), ejeNormal (simétrico respecto de la
+ *                               recta normal al plano por el origen) } }
+ *   poliedro(nombre, ...)       { vertices, lista (aristas como pares de índices), caras, aristas } para
+ *                               'prismaRegular'(n, lado, h) (base: polígono regular de n lados centrado en el eje z), 'cubo'(a), 'caja'(a, b, c), 'prismaCuadrado'(a, h),
  *                               'tetraedro'(a) regular y 'piramideCuadrada'(a, h)
  *   reflejarEnPlano(P, plano)   el simétrico de P respecto del plano
  *   planos(poli)                { planos:[{ normal, d }], numPlanos, G }: fuerza bruta con los planos mediadores de
  *                               pares de vértices y los planos que pasan por G y dos vértices
  *   prediccionPlanos(poli)      { planos, errores: { soloCaras (paralelos a las caras), unoPorCara, unoPorArista,
- *                               comoCubo (9) } } (las caras y aristas se cuentan del poliedro convexo)
+ *                               comoCubo (9), comoPrisma (5, el
+ *                               prisma de base cuadrada) } } (las caras y aristas se cuentan del poliedro convexo)
  *   seccion(poli, plano)        el corte del poliedro con el plano: polígono ordenado (para dibujar el plano)
  *   girar3D(P, grados, C)       giro alrededor de la recta vertical (eje z) que pasa por C (por defecto el origen)
  *   quiralidad(u, v, w)         'derecha' | 'izquierda' según el signo del producto mixto u·(v × w)
@@ -170,32 +186,31 @@
     return L({ x: H.x + (P.x - H.x) * k, y: H.y + (P.y - H.y) * k });
   }
 
-  // ================= La bandera del paso 1 =================
-  function bandera(o) {
-    o = Object.assign({ mastil: 2, alto: 4, tela: 3 }, o);
-    const x = num(o.mastil, 'mastil'), h = num(o.alto, 'alto'), t = num(o.tela, 'tela');
-    // mástil de (x, 0) a (x, h); tela triangular de (x, h) a (x + t, h − 1) a (x, h − 2)
-    return { pie: { x, y: 0 }, punta: { x, y: h }, tela: [{ x, y: h }, { x: x + t, y: h - 1 }, { x, y: h - 2 }] };
+  // ================= La letra F de los pasos 1 y 7 =================
+  // Tallo vertical de (x; 0) a (x; alto); barra larga arriba, de (x; alto) a (x + larga; alto); barra corta a media
+  // altura, de (x; alto/2) a (x + corta; alto/2). Las barras salen hacia la derecha.
+  function efe(o) {
+    o = Object.assign({ tallo: 2, alto: 4, larga: 3, corta: 2 }, o);
+    const x = num(o.tallo, 'tallo'), h = num(o.alto, 'alto'), a = num(o.larga, 'larga'), b = num(o.corta, 'corta');
+    if (!(h > 0 && a > b && b > 0)) throw new Error('la F necesita alto > 0 y larga > corta > 0');
+    return { pie: { x, y: 0 }, punta: { x, y: h }, larga: [{ x, y: h }, { x: x + a, y: h }], corta: [{ x, y: h / 2 }, { x: x + b, y: h / 2 }] };
   }
-  function leerBandera(b) {
-    const base = b.pie, top = b.punta, vertice = b.tela[1];
-    return { apunta: vertice.x > top.x ? 'derecha' : 'izquierda', tela: top.y > base.y ? 'arriba' : 'abajo' };
+  const mapaEfe = (F, f) => ({ pie: f(F.pie), punta: f(F.punta), larga: F.larga.map(f), corta: F.corta.map(f) });
+  function leerEfe(F) {
+    return { apunta: F.larga[1].x > F.larga[0].x ? 'derecha' : 'izquierda', larga: F.larga[0].y > (F.pie.y + F.punta.y) / 2 ? 'arriba' : 'abajo' };
   }
-  const mapaBandera = (b, f) => ({ pie: f(b.pie), punta: f(b.punta), tela: b.tela.map(f) });
-  function reflejoBandera(o) {
+  function reflejoEfe(o) {
     o = Object.assign({ espejo: 0 }, o);
-    const b = bandera(o), xe = num(o.espejo, 'espejo');
-    if (b.pie.x <= xe) throw new Error('la bandera debe estar a la derecha del espejo');
-    const r = { x: xe }, O = { x: xe, y: 0 };
-    const img = mapaBandera(b, P => reflejar(P, r).P);
-    const copia = mapaBandera(b, P => L({ x: P.x - 2 * (b.pie.x - xe), y: P.y }));
-    const giro = mapaBandera(b, P => central(P, O).P);
-    const hor = mapaBandera(b, P => L({ x: P.x - 2 * (b.pie.x - xe), y: -P.y }));
-    return Object.assign(leerBandera(img), {
-      original: Object.assign(leerBandera(b), { puntos: b }), puntos: img,
-      errores: { copia: Object.assign(leerBandera(copia), { puntos: copia }), giro180: Object.assign(leerBandera(giro), { puntos: giro }),
-        horizontal: Object.assign(leerBandera(hor), { puntos: hor }) }
-    });
+    const F = efe(o), xe = num(o.espejo, 'espejo');
+    if (F.pie.x <= xe) throw new Error('la F debe estar a la derecha del espejo');
+    const r = { x: xe }, O = { x: xe, y: 0 }, d = 2 * (F.pie.x - xe);
+    const img = mapaEfe(F, P => reflejar(P, r).P);
+    const copia = mapaEfe(F, P => L({ x: P.x - d, y: P.y }));
+    const giro = mapaEfe(F, P => central(P, O).P);
+    const hor = mapaEfe(F, P => L({ x: P.x - d, y: -P.y }));
+    const con = X => Object.assign(leerEfe(X), { puntos: X });
+    return Object.assign(leerEfe(img), { original: con(F), puntos: img,
+      errores: { copia: con(copia), giro180: con(giro), horizontal: con(hor) } });
   }
 
   // ================= Simetría central y giros =================
@@ -305,6 +320,10 @@
         if (!s) throw new Error(`no hay letra ${a}`);
         return deSegmentos(s.map(([P, Q]) => [p(P[0], P[1]), p(Q[0], Q[1])]), `letra ${a}`);
       }
+      case 'segmentos': {
+        if (!Array.isArray(a) || !a.length) throw new Error('faltan los segmentos');
+        return deSegmentos(a.map(([P, Q]) => [p(P[0], P[1]), p(Q[0], Q[1])]), 'figura de segmentos');
+      }
       case 'circunferencia': return { circunferencia: true, R: num(a === undefined ? 1 : a, 'R'), nombre: 'circunferencia', segmentos: [] };
       default: throw new Error(`figura desconocida: ${nombre}`);
     }
@@ -398,6 +417,15 @@
     P = p3(P); const pl = plano(po), s = punto3(pl.normal, P) - pl.d;
     return L3({ x: P.x - 2 * s * pl.normal.x, y: P.y - 2 * s * pl.normal.y, z: P.z - 2 * s * pl.normal.z });
   }
+  // Simétrico de P respecto de un plano, con el pie H y los errores típicos: se queda en el pie, toma el simétrico
+  // respecto del origen (central) o respecto de la recta normal que pasa por el origen (el eje).
+  function simetricoEspacio(P, po) {
+    P = p3(P); const pl = plano(po), s = punto3(pl.normal, P) - pl.d, n = pl.normal;
+    const H = L3({ x: P.x - s * n.x, y: P.y - s * n.y, z: P.z - s * n.z });
+    const k = punto3(n, P);
+    return { P: reflejarEnPlano(P, po), H, d: limpio(Math.abs(s)),
+      errores: { pie: H, centralOrigen: L3({ x: -P.x, y: -P.y, z: -P.z }), ejeNormal: L3({ x: 2 * k * n.x - P.x, y: 2 * k * n.y - P.y, z: 2 * k * n.z - P.z }) } };
+  }
   function poliedro(nombre, a, b, c) {
     const v = (x, y, z) => ({ x, y, z });
     const caja = (A, B, C) => [v(0, 0, 0), v(A, 0, 0), v(A, B, 0), v(0, B, 0), v(0, 0, C), v(A, 0, C), v(A, B, C), v(0, B, C)];
@@ -412,6 +440,14 @@
       case 'piramideCuadrada': { a = num(a, 'a'); const h = num(b, 'h');
         return { nombre: 'pirámide de base cuadrada', vertices: [v(0, 0, 0), v(a, 0, 0), v(a, a, 0), v(0, a, 0), v(a / 2, a / 2, h)], caras: 5, aristas: 8,
           lista: [[0, 1], [1, 2], [2, 3], [3, 0], [0, 4], [1, 4], [2, 4], [3, 4]] }; }
+      case 'prismaRegular': {
+        const n = num(a, 'n'), l = num(b, 'el lado'), h = num(c, 'la altura');
+        if (!Number.isInteger(n) || n < 3) throw new Error('n debe ser un entero de 3 o más');
+        const R = l / (2 * Math.sin(Math.PI / n)), base = Array.from({ length: n }, (_, k) => ({ x: R * Math.cos(2 * Math.PI * k / n), y: R * Math.sin(2 * Math.PI * k / n) }));
+        const lista = [];
+        for (let k = 0; k < n; k++) lista.push([k, (k + 1) % n], [n + k, n + (k + 1) % n], [k, n + k]);
+        return { nombre: `prisma regular de ${n} lados`, vertices: base.map(P => v(P.x, P.y, 0)).concat(base.map(P => v(P.x, P.y, h))), caras: n + 2, aristas: 3 * n, lista };
+      }
       default: throw new Error(`poliedro desconocido: ${nombre}`);
     }
   }
@@ -442,7 +478,8 @@
     const r = planos(poli);
     // paralelos a alguna cara: la normal del plano es paralela a la normal de una cara de la caja (ejes x, y, z)
     const soloCaras = r.planos.filter(p => [p.normal.x, p.normal.y, p.normal.z].filter(c => Math.abs(c) > 1e-9).length === 1).length;
-    return { planos: r.numPlanos, lista: r.planos, errores: { soloCaras, unoPorCara: poli.caras, unoPorArista: poli.aristas, comoCubo: 9 } };
+    // comoPrisma: lo que tendría un prisma de base cuadrada (1 plano horizontal + 4 verticales)
+    return { planos: r.numPlanos, lista: r.planos, errores: { soloCaras, unoPorCara: poli.caras, unoPorArista: poli.aristas, comoCubo: 9, comoPrisma: 5 } };
   }
   // Corte del poliedro convexo con un plano: los puntos donde el plano corta las aristas (y los vértices que caen en
   // él), ordenados alrededor de su centro. Sirve para dibujar el plano de simetría dentro del sólido.
@@ -493,7 +530,7 @@
   }
 
   return {
-    recta, reflejar, reflejarFigura, pliegue, bandera, reflejoBandera, seccion, girar3D,
+    recta, reflejar, reflejarFigura, pliegue, efe, reflejoEfe, seccion, girar3D, simetricoEspacio,
     central, girar, trasladar, orientacion, areaConSigno, centralTriangulo,
     componer, aplicarDos,
     figura, poligono, girarFigura, simetrias, coincide, prediccionEjes, LETRAS: Object.keys(LETRAS),
