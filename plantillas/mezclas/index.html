@@ -263,7 +263,7 @@ const pl = (n, uno, varios) => (n === 1 ? uno : varios);
 function tween(dur, paso, fin, lineal){
   if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
   const t0 = performance.now();
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
   requestAnimationFrame(tick);
 }
 // Variables: A el primer ingrediente (azul), B el segundo (naranja), pm el precio, grado o ley de la mezcla (fucsia),

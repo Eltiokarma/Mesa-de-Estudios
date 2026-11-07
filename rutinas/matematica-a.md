@@ -549,3 +549,188 @@ En `npm test` falla, además de lo esperado, la prueba de matrices, que todavía
    ΔE00 mínimo: 23,5 en claro y 23,7 en oscuro. Contraste mínimo: 4,54.
 3. Informe de trigonometría: registrar TT1 a TT13 como hipótesis nuestras.
 4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Transformaciones trigonométricas (7 nov 2026, sesión de matemática A): `plantillas/transformaciones-trig/` (dos flechas en la circunferencia: la suma es un rombo que apunta en la semisuma y mide 2 cos de la semidiferencia; suma a producto, producto a suma, cocientes y pulsaciones; 22 casos verificados aparte)». Con esto, la fila ma1 de pendientes queda cubierta salvo cónicas y polares.
+
+## 7 nov 2026 · Matrices y determinantes: el plano que se deforma (`plantillas/matrices/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, fracciones exactas). La cabecera llega hasta la línea 98 e incluye un bloque «ENTRADAS QUE LANZAN». Cubre:
+  - elemento aᵢⱼ y tipos (cuadrada, diagonal, identidad, triangular, simétrica y traza);
+  - suma, escalar, producto fila por columna (con la condición de orden) y transpuesta;
+  - determinante 2×2 y 3×3, por Sarrus y por cofactores;
+  - propiedades: det(AB), det(kA) = kⁿ det A, Aᵀ, intercambio de filas, fila de ceros y filas proporcionales;
+  - inversa 2×2 con la adjunta;
+  - Cramer 2×2 y 3×3;
+  - cizallas;
+  - `kSinInversa`, `kSistema` y `sustituir`.
+
+  Tiene los errores MT1 a MT34.
+- **`casos.json`**: 22 casos con sus `tambien`.
+- **`motor.test.js`**: 39 pruebas. Comprueba propiedades con matrices al azar y que A·A⁻¹ = I, que Cramer cumple el sistema, que (AB)ᵀ = BᵀAᵀ y que la cizalla conserva el área. Incluye la prueba de propiedades y las predicciones.
+- **`papel.json`**: 10 problemas propios.
+- **`plantilla.json`**: unidades `algebra.matrices-y-determinantes` y `algebra.sistemas-de-ecuaciones`. Esta última va por Cramer (escena, motor y papel) y por el sistema con parámetro.
+- **`index.html`**: la matriz 2×2 como transformación del plano. El cuadradito se deforma en el paralelogramo de las columnas u y v, cuya área con signo es el determinante; si det = 0, el paralelogramo colapsa a una recta.
+  - **Paso a paso** (7 predicciones):
+    - construir aᵢⱼ = 2i − j;
+    - AB fila por columna contra BA;
+    - estirar y luego girar = AB, con el orden de la composición;
+    - det 4 con cuadritos;
+    - det −5, con la orientación invertida;
+    - k sin inversa;
+    - la inversa con adj A / det A.
+  - **¿Qué pasa si…?** (6):
+    - det(3A) con 9 copias;
+    - det(AB) contra det(A + B);
+    - órdenes que no permiten multiplicar;
+    - Sarrus;
+    - Cramer como deslizar w a lo largo de v;
+    - «sin solución única» para kx + 2y = 3; 2x + y = 5.
+- **Respaldo.** Todo es hipótesis nuestra, porque el informe no trata matrices. La excepción es AL17, que es 'parcial' en el sistema con k: Ochoviet (2009, tesis, sin cifras) según el informe.
+
+**Pruebas.** `npm test`: 4287; pasan 4285 y fallan solo las 2 esperadas del catálogo. La pasada del celular no da QUEDA. Playwright pasa en las 8 combinaciones:
+- sin errores ni desbordes;
+- el bloqueo aguanta;
+- el lienzo sube al responder;
+- el dedo lejos desplaza la página.
+
+Ya lleva el estilo «pegatinas»: `data-curso="algebra"` y `nucleo/pegatina.css`.
+
+**Subagentes.**
+
+- **Verificador independiente.** No leyó el motor. Calculó los determinantes por eliminación gaussiana y las inversas por Gauss-Jordan, contrastó Cramer con A⁻¹b y (AB)ᵀ con BᵀAᵀ. Coincidieron los 21 casos campo por campo y los 10 de papel. Entraron sus bordes:
+  - matrices singulares en inversa y en Cramer 2×2 y 3×3, incompatibles e indeterminadas;
+  - productos 1×3 por 3×1 y A²;
+  - triangular, columna proporcional y 1×1;
+  - inversas con fracciones;
+  - (AB)ᵀ no cuadrada;
+  - traza fraccionaria;
+  - det(kA) con k negativo y fraccionario;
+  - k sin inversa;
+  - entradas que lanzan.
+
+  Además, p2 ahora comprueba x e y de verdad.
+- **Revisor de contenido.** Lo grave: P2 mostraba antes de responder la matriz vacía de 2 × 3 con sus índices, y el aria-live lo decía. Eso descartaba dos de los tres errores. Ahora no hay dibujo hasta responder. Otras correcciones:
+  - ecuaciones con scroll lateral en P3 y en Sarrus (también en la PC);
+  - el pie del experimento 3, que contradecía al dibujo;
+  - la notación: «det M o |M|», adj A, el área sin «|−5|» y las matrices dibujadas en las lecturas;
+  - el distractor «matriz nula» de P4, que no era creíble; ahora es 2A (MT33);
+  - la predicción nueva del sistema con k;
+  - textos de los feedback;
+  - el 3 de «(2 × 3)», que estaba en el color de la fila;
+  - rótulos en oscuro;
+  - A⁻¹ con superíndice;
+  - MT2 con un solo nombre; la composición pasa a ser MT34.
+
+  El constructor encontró además un error en `tween`: el avance negativo del primer cuadro colgaba la animación en el celular. Ya está acotado. Puede estar también en polinomios, por el molde; lo reviso aparte.
+
+**Pendiente.** El determinante en vivo aparece solo en el paso 8, después de responder.
+
+**Pedidos para la integración.**
+
+1. Catálogo: `matrices` en `algebra.matrices-y-determinantes` y en `algebra.sistemas-de-ecuaciones`, y luego `npm run catalogo`. Los ítems de prueba van a `reserva`.
+2. `docs/diseno.md`: misma paleta que polinomios.
+
+   | Variable | Claro | Oscuro |
+   | --- | --- | --- |
+   | u (columna 1) | #1f5fbf | #7cb0ff |
+   | v (columna 2) | #a05200 | #f0a04a |
+   | det (área con signo) | #a10fbf | #cf6bfa |
+   | k | #0f766e | #5ed9c8 |
+   | fila i | #77032c | #fdb4ce |
+   | columna j | #466d14 | #a3d65e |
+
+   ΔE00 mínimo: 23,6 en claro y 25,2 en oscuro. Contraste mínimo: 4,63. La fila i queda a 17,4 del rojo de los avisos en oscuro; los avisos siempre llevan texto.
+3. Informe de álgebra: registrar MT1 a MT34 como hipótesis, con una línea «este informe no cubre matrices», como la que ya existe para polinomios.
+4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Matrices (7 nov 2026, sesión de matemática A): `plantillas/matrices/` (el plano que se deforma: el determinante es el área con signo del paralelogramo de las columnas, AB contra BA como orden de aplicación, inversa, Sarrus y Cramer como deslizar un vector; 22 casos verificados aparte)».
+
+## 7 nov 2026 · Arreglos chicos en transformaciones y polinomios
+
+- **`transformaciones-trig/index.html`:** en el celular, la circunferencia del paso 1 salía cortada por abajo. El encuadre `CAJA_DRAG` llegaba solo hasta y = −0,28 y ahora baja hasta −1,1, así que el círculo se ve entero (330 × 325 a 390 px). No toqué `Celular.alto` ni el estilo pegatinas. En los pasos 2 a 8, con la predicción pendiente, lo que se pregunta se ve entero.
+- **`polinomios/index.html` y `transformaciones-trig/index.html`:** tenían el mismo defecto de `tween` que encontré en matrices: el avance negativo del primer cuadro podía colgar una animación en el celular. Lo acoté con `Math.max(0, …)`.
+- **Pruebas:**
+  - `node --test`: 42 en verde en transformaciones y 41 en polinomios.
+  - La pasada del celular no da QUEDA.
+  - Playwright en las 8 combinaciones, respondiendo los 8 pasos: sin errores ni pasos colgados.
+- **Pedido:** integrar los dos `index.html`. Puede que otras escenas armadas con el mismo molde de `tween` tengan el defecto. Conviene buscar `function tween` en las plantillas y revisarlas.
+
+## 7 nov 2026 · Binomio de Newton: el tablero de los caminos (`plantillas/binomio-newton/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, BigInt y fracciones exactas; la cabecera llega hasta la línea 79).
+  - Funciones: factorial, combinatorio, caminos, Pascal, fila, términos, desarrollo con suma acumulada, monomio, término tₖ₊₁, coeficiente de xᵐ, término central, suma de coeficientes, Galton y simulación con semilla.
+  - Fuera de rango lanza error con mensaje: k > n y un lugar mayor que n + 1.
+  - Tiene los errores BN1 a BN27.
+- **`casos.json`**: 20 casos con sus `tambien`, incluidos los bordes del verificador.
+- **`motor.test.js`**: 39 pruebas.
+  - Propiedades: C(n, k) contra factoriales, simetría, Pascal, la suma 2ⁿ, el desarrollo contra (A + B)ⁿ evaluado y Galton.
+  - Prueba de que ningún error típico coincide con la respuesta, en los casos y en 300 al azar.
+  - Las 13 predicciones de la escena.
+- **`papel.json`**: 10 problemas propios.
+- **`plantilla.json`**: unidad `algebra.binomio-de-newton`.
+- **`index.html`**: el tablero de caminos. Cada término elige a o b en cada uno de los n paréntesis, y los caminos que llegan a un casillero son C(n, k). El triángulo de Pascal se arma con fichas y hay una perilla para n.
+  - **Paso a paso** (8 predicciones):
+    - C(5, 3);
+    - la suma de Pascal C(7, 3) + C(7, 4);
+    - la suma de la fila 6;
+    - los términos de (a + b)⁷;
+    - t₄ de (a + b)⁹;
+    - el coeficiente de x⁴ en (2x + 1)⁶;
+    - t₄ de (x − 2)⁵;
+    - el término independiente de (x² + 1/x)⁶, con la recta de exponentes.
+  - **¿Qué pasa si…?** (5):
+    - la suma de coeficientes de (2x + 1)⁵;
+    - el término central de (x + y)¹⁰;
+    - los dos centrales de (a + b)⁷;
+    - el tablero de Galton con 128 bolitas, con aviso de que es una simulación con azar;
+    - la suma de coeficientes de (x − 2)⁷.
+- **Respaldo.**
+  - AL11 queda como hipótesis.
+  - AL8 aparece como 'parcial', pero solo en el texto de fuente.
+  - BN1 a BN27 son hipótesis nuestras. El texto dice que el informe trata (a + b)² y el reparto del exponente, pero no el desarrollo de Newton.
+
+**Pruebas.** `motor.test.js` pasa 39 de 39. `npm test` da 4285 en verde y solo fallan las 2 de catálogo. La pasada del celular no da QUEDA, y Playwright pasa en las 8 combinaciones. Lleva el estilo pegatinas (`data-curso="algebra"`) y el bloque de dos columnas desde 900 px.
+
+**Subagentes.**
+
+- **Verificador independiente:** calculó C(n, k) con el triángulo de Pascal sumado, expandió los desarrollos multiplicando los n paréntesis y contó en Galton los 2ⁿ caminos. Coincidieron los 198 campos y los 10 de papel. De la simulación con semilla solo comprobó los totales y que fuera coherente. Entraron sus bordes:
+  - k > n, que da error;
+  - (x/2 − 3)⁴ y (x/2 − 3)⁵, con fracciones;
+  - (√x + 1/x)ⁿ, haciendo x = y²;
+  - el término central de (2x − 1)⁵;
+  - (2x − 3y)⁴;
+  - C(200, 100);
+  - (x − 1)¹;
+  - Galton con n = 0.
+- **Revisor de contenido:** encontró dos graves.
+  - La recta de exponentes del paso 8 iba de −6 a 12 con marcas cada 3. Eso delataba el paso −3 y que el 0 se alcanza, y descartaba «No tiene». Ahora va de −8 a 14 cada 2 hasta responder.
+  - En pantalla grande faltaban las dos columnas.
+
+  También corregí:
+  - el Galton, que al volver al experimento salía vacío;
+  - los enunciados de P4 a P7, que resolvían el error que medían; las explicaciones pasaron a después de responder;
+  - la notación: Cⁿₖ o (n k), y tₖ₊₁;
+  - una frase falsa de p10;
+  - la nota de simulación del Galton;
+  - el texto de las hipótesis;
+  - la k en fucsia del paso 8;
+  - los códigos repetidos: BN17 para «no junta semejantes» y BN27 para la suma de coeficientes = n.
+
+  Sobre la semilla del Galton, el revisor juzgó que es honesto: la pregunta pide el promedio y la tanda que se ve (33 en k = 3) no coincide con él.
+
+**Pedidos para la integración.**
+
+1. Catálogo: `binomio-newton` en `algebra.binomio-de-newton`, y luego `npm run catalogo`. Los ítems de prueba van a `reserva`.
+2. `docs/diseno.md`, con la paleta de complejos:
+
+   | Variable | Claro | Oscuro |
+   | --- | --- | --- |
+   | a, primer término | #a05200 | #f0a04a |
+   | b, segundo término | #466d14 | #a3d65e |
+   | k | #a10fbf | #cf6bfa |
+   | n | #1f5fbf | #7cb0ff |
+   | exponente de x | #0f766e | #5ed9c8 |
+
+   ΔE00 mínimo: 23,6 en claro y 25,3 en oscuro. Contraste mínimo: 4,63.
+3. Informe de álgebra: registrar BN1 a BN27 como hipótesis nuestras.
+4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Binomio de Newton (7 nov 2026, sesión de matemática A): `plantillas/binomio-newton/` (el tablero de los caminos: cada término elige a o b en cada paréntesis, Pascal con fichas, término general, central e independiente con la recta de exponentes, Galton; 20 casos verificados aparte)».

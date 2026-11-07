@@ -1,0 +1,15 @@
+{
+  "id": "geometria-espacio",
+  "titulo": "El cubo que gira: rectas y planos en el espacio",
+  "formato": "escena",
+  "unidades": [
+    "geometria.geometria-del-espacio"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

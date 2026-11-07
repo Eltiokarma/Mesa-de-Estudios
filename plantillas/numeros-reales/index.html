@@ -243,7 +243,7 @@ const r3 = v => Math.round(v*1000)/1000 + 0;
 function tween(dur, paso, fin){
   if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
   const t0 = performance.now();
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
   requestAnimationFrame(tick);
 }
 const CLAVES = ['A', 'B', 'res', 'x', 'd', 'irr', 'e'];

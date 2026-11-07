@@ -1669,7 +1669,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "matrices"
+     ]
     },
     {
      "id": "algebra.sistemas-de-ecuaciones",
@@ -1698,7 +1700,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "traductor-enunciados"
+      "traductor-enunciados",
+      "matrices"
      ]
     },
     {
@@ -1779,7 +1782,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "binomio-newton"
+     ]
     }
    ]
   },
@@ -2717,7 +2722,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "geometria-espacio"
+     ]
     },
     {
      "id": "geometria.poliedros",
@@ -2859,7 +2866,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "razonamiento-figuras"
+     ]
     }
    ]
   },
@@ -4379,6 +4388,23 @@
     "/plantillas/balance-reacciones/papel.json"
    ]
   },
+  "binomio-newton": {
+   "id": "binomio-newton",
+   "titulo": "El tablero de los caminos: binomio de Newton",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.binomio-de-newton"
+   ],
+   "url": "/plantillas/binomio-newton/index.html",
+   "papel": "/plantillas/binomio-newton/papel.json",
+   "archivos": [
+    "/plantillas/binomio-newton/index.html",
+    "/plantillas/binomio-newton/motor.js",
+    "/plantillas/binomio-newton/papel.json"
+   ]
+  },
   "biomoleculas": {
    "id": "biomoleculas",
    "titulo": "El taller de las piezas: azúcares, proteínas y grasas",
@@ -4902,6 +4928,23 @@
     "/plantillas/geometria-analitica/papel.json"
    ]
   },
+  "geometria-espacio": {
+   "id": "geometria-espacio",
+   "titulo": "El cubo que gira: rectas y planos en el espacio",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.geometria-del-espacio"
+   ],
+   "url": "/plantillas/geometria-espacio/index.html",
+   "papel": "/plantillas/geometria-espacio/papel.json",
+   "archivos": [
+    "/plantillas/geometria-espacio/index.html",
+    "/plantillas/geometria-espacio/motor.js",
+    "/plantillas/geometria-espacio/papel.json"
+   ]
+  },
   "grafica-perillas": {
    "id": "grafica-perillas",
    "titulo": "La gráfica con perillas: funciones y sus transformaciones",
@@ -5212,6 +5255,24 @@
     "/plantillas/materia-energia/index.html",
     "/plantillas/materia-energia/motor.js",
     "/plantillas/materia-energia/papel.json"
+   ]
+  },
+  "matrices": {
+   "id": "matrices",
+   "titulo": "El plano que se deforma: matrices y determinantes",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.matrices-y-determinantes",
+    "algebra.sistemas-de-ecuaciones"
+   ],
+   "url": "/plantillas/matrices/index.html",
+   "papel": "/plantillas/matrices/papel.json",
+   "archivos": [
+    "/plantillas/matrices/index.html",
+    "/plantillas/matrices/motor.js",
+    "/plantillas/matrices/papel.json"
    ]
   },
   "maximos-minimos": {
@@ -5559,6 +5620,23 @@
     "/plantillas/quimica-ambiente/index.html",
     "/plantillas/quimica-ambiente/motor.js",
     "/plantillas/quimica-ambiente/papel.json"
+   ]
+  },
+  "razonamiento-figuras": {
+   "id": "razonamiento-figuras",
+   "titulo": "El reflector de figuras: conteo de figuras y de cubos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.razonamiento-con-figuras"
+   ],
+   "url": "/plantillas/razonamiento-figuras/index.html",
+   "papel": "/plantillas/razonamiento-figuras/papel.json",
+   "archivos": [
+    "/plantillas/razonamiento-figuras/index.html",
+    "/plantillas/razonamiento-figuras/motor.js",
+    "/plantillas/razonamiento-figuras/papel.json"
    ]
   },
   "razonamiento-numerico": {

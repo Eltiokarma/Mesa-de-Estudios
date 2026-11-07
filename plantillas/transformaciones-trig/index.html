@@ -250,7 +250,7 @@ const lerp = (a, b, f) => a + (b - a)*f;
 function tween(dur, paso, fin){
   if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
   const t0 = performance.now();
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
   requestAnimationFrame(tick);
 }
 // En el celular, una ecuación larga se parte solo entre tramos (después de ⟹, de = o de ;), nunca a media expresión.
@@ -564,7 +564,7 @@ const P8 = { id:'transformaciones-trig-paso8', ok:'d', opts:[
     c:`Elegiste la C. tan x usa la semidiferencia, (5x − 3x)/2. Arriba y abajo aparece cos x, que se cancela; queda la semisuma. La correcta está marcada.` } };
 
 // ----- configuraciones del dibujo -----
-const CAJA_DRAG = { x0:-1.15, x1:2.08, y0:-.28, y1:2.08 };
+const CAJA_DRAG = { x0:-1.15, x1:2.08, y0:-1.1, y1:2.08 };   // con la circunferencia entera (y hasta −1)
 const LEY_AB = [['a', 'A, su flecha y sen A'], ['b', 'B, su flecha y sen B']];
 const LEY_SUMA = LEY_AB.concat([['s', 'la flecha suma'], ['m', 'M = (A + B)/2', 'trazos']]);
 // Paso 1: las dos flechas se arrastran

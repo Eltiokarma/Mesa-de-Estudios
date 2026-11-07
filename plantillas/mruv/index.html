@@ -760,7 +760,7 @@ function correr(desde, hasta){
   cancelAnimationFrame(anim);
   if (RM){ E.t = hasta; sincronizar(); return; }
   const t0 = performance.now(), dur = (hasta - desde)*650;
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); E.t = desde + (hasta - desde)*f; sincronizar(); if (f < 1) anim = requestAnimationFrame(tick); };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); E.t = desde + (hasta - desde)*f; sincronizar(); if (f < 1) anim = requestAnimationFrame(tick); };
   anim = requestAnimationFrame(tick);
 }
 function draw(){

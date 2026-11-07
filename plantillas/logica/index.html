@@ -547,7 +547,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const listo = () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); };
     if (RM || !dur){ paso(1); E.dibujar(); setTimeout(listo, 0); return; }
     const t0 = performance.now();
-    const tick = now => { if (tok !== E.tok) return; const f = Math.min(1, (now - t0)/dur); paso(suave(f)); E.dibujar(); if (f < 1) requestAnimationFrame(tick); else listo(); };
+    const tick = now => { if (tok !== E.tok) return; const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(suave(f)); E.dibujar(); if (f < 1) requestAnimationFrame(tick); else listo(); };
     requestAnimationFrame(tick);
   };
   // Estados uno tras otro (cada uno se queda ms milisegundos); cada estado es una función que cambia E.st.

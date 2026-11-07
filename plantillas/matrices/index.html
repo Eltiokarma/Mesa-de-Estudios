@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="es" data-curso="algebra">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El plano que se deforma: matrices y determinantes</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de polinomios.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   la columna u (primera columna de la matriz que mueve el plano) azul, la columna v (segunda) naranja, el determinante
+   (el área con signo del paralelogramo) fucsia, el número k turquesa, la fila (índice i, fila de A en el producto)
+   granate y la columna que se recorre (índice j, columna de B en el producto) verde. La cuadrícula, los ejes, el vector w
+   de los términos independientes, los productos y los totales van en tinta o en gris.
+   La misma paleta de polinomios, medida otra vez con CIEDE2000 (docs/metodo/paleta.py): ΔE00 mínimo 23,6 en claro
+   (k–columna) y 25,2 en oscuro (det–fila); contraste AA sobre el papel (mínimo 5,15 claro y 5,57 oscuro) y sobre su
+   chip .v al 8 % (mínimo 4,63, el turquesa en claro). El granate de la fila queda a ΔE00 20,6 (claro) y 17,4 (oscuro)
+   del rojo de los avisos: el aviso siempre va con texto. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8; --eje:#a99cb0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-u:#1f5fbf; --c-v:#a05200; --c-d:#a10fbf; --c-k:#0f766e; --c-f:#77032c; --c-b:#466d14;
+  --relleno:.16;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6f6380;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-u:#7cb0ff; --c-v:#f0a04a; --c-d:#cf6bfa; --c-k:#5ed9c8; --c-f:#fdb4ce; --c-b:#a3d65e;
+  --relleno:.2; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6f6380;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-u:#7cb0ff; --c-v:#f0a04a; --c-d:#cf6bfa; --c-k:#5ed9c8; --c-f:#fdb4ce; --c-b:#a3d65e;
+  --relleno:.2; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:12px; height:12px; border-radius:3px; display:inline-block; border:2px solid; opacity:.9}
+.legend i.linea{width:16px; height:0; border-width:3px 0 0; border-radius:0}
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-u{color:var(--c-u); background:color-mix(in srgb, var(--c-u) 8%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 8%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+/* matrices escritas: corchetes con bordes, una casilla por elemento */
+.mat{display:inline-flex; vertical-align:middle; align-items:stretch; margin:2px 3px; white-space:nowrap}
+.mat::before,.mat::after{content:""; width:5px; border:2px solid currentColor; border-radius:2px}
+.mat::before{border-right:0} .mat::after{border-left:0}
+.mat-in{display:inline-grid; gap:0 .75em; padding:2px 5px; font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:center; line-height:1.45}
+.mat-in .c-u{color:var(--c-u); font-weight:800} .mat-in .c-v{color:var(--c-v); font-weight:800} .mat-in .c-k{color:var(--c-k); font-weight:800}
+.opt .m .mat{color:var(--ink)}
+.tipos{display:flex; flex-wrap:wrap; gap:6px}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .tramo{white-space:nowrap}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.pasos{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center}
+.paso{display:inline-flex; align-items:center; gap:6px; font-weight:800}
+.paso button{width:44px; height:44px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); font:800 1.2rem var(--font); cursor:pointer}
+.paso button:disabled{opacity:.4; cursor:not-allowed}
+.paso output{min-width:3.2em; text-align:center; font-family:var(--mono); font-variant-numeric:tabular-nums}
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap}
+.lectura.ancho{grid-column:span 2}
+.lectura > span{display:block; font-size:.76rem; color:var(--muted)}
+.lectura b .mat{font-size:.92rem}
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+<link rel="stylesheet" href="../../nucleo/pegatina.css">
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Álgebra · Matrices y determinantes · Problemas tipo admisión</p>
+      <h1>El plano que se deforma</h1>
+      <p class="sub">Una matriz de 2 × 2 mueve todo el plano: el cuadrito de la cuadrícula se vuelve un paralelogramo. Mira qué reglas salen de ahí y cuáles solo lo parecen.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/matrices">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'matrices', unidad: 'algebra.matrices-y-determinantes', version: '0.1.0' };
+const U_SIS = 'algebra.sistemas-de-ecuaciones';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+/* ================= Piezas compartidas =================
+   Toda la matemática (elementos, productos, determinantes, Sarrus, inversas, Cramer, las cizallas que conservan el área
+   y los errores típicos) sale de MotorMatrices (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ME = MotorMatrices;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+const nt = x => ME.textoNumero(x);
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const u_ = t => V('u', t), v_ = t => V('v', t), d_ = t => V('d', t), k_ = t => V('k', t), f_ = t => V('f', t), b_ = t => V('b', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const lerp = (a, b, f) => a + (b - a)*f;
+const lerpV = (p, q, f) => [lerp(p[0], q[0], f), lerp(p[1], q[1], f)];
+const cols = M => ({ u:[M[0][0], M[1][0]], v:[M[0][1], M[1][1]] });
+const deCols = (u, v) => [[u[0], v[0]], [u[1], v[1]]];
+const punto = p => `(${nt(p[0])}; ${nt(p[1])})`;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = clamp((now - t0)/dur, 0, 1); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+// Matriz escrita en HTML. M: lista de filas (números o textos), o el texto del motor '[1, 0, −1; 3, 2, 1]'.
+// o.col: colorea la primera columna como u y la segunda como v; o.k: colorea la 'k'.
+function mHTML(M, o){
+  o = o || {};
+  if (typeof M === 'string') M = M.replace(/^\[|\]$/g, '').split('; ').map(f => f.split(', '));
+  const n = M[0].length, tx = x => (typeof x === 'number' ? nt(x) : String(x).replace('-', '−'));
+  const celdas = M.map(f => f.map((x, j) => { const c = x === 'k' && o.k ? 'c-k' : o.col && n === 2 ? (j ? 'c-v' : 'c-u') : ''; return `<span${c ? ` class="${c}"` : ''}>${tx(x)}</span>`; }).join('')).join('');
+  const lee = M.map(f => f.map(tx).join(', ')).join('; ');
+  return `<span class="mat" role="img" aria-label="matriz de ${M.length} × ${n}: ${lee}"><span class="mat-in" aria-hidden="true" style="grid-template-columns:repeat(${n}, auto)">${celdas}</span></span>`;
+}
+// En el celular, una ecuación larga se parte solo entre tramos (después de ⟹, ⟺, ;, «: » o « = »), nunca dentro de una
+// variable coloreada ni dentro de una matriz. Un tramo de más de ~28 letras también se parte en « + ».
+function tramos(raiz){ raiz.querySelectorAll('.eq').forEach(q => { if (q.dataset.tr) return; q.dataset.tr = '1';
+  const nota = q.querySelector('.note'), html = nota ? q.innerHTML.replace(nota.outerHTML, '') : q.innerHTML;
+  const out = []; let cur = '', hondo = 0;
+  for (const p of html.split(/(<[^>]*>)/)){
+    if (p.startsWith('<')){ cur += p; if (/^<\//.test(p)) hondo--; else if (!/\/>$/.test(p)) hondo++; continue; }
+    if (hondo > 0){ cur += p; continue; }
+    const ts = p.split(/(⟹|⟺|;|: | = | \+ )/);
+    ts.forEach((t, k) => { cur += t; if (k % 2 && (t !== ' + ' || cur.replace(/<[^>]*>/g, '').length > 28)){ out.push(cur); cur = ''; } });
+  }
+  if (cur) out.push(cur);
+  q.innerHTML = out.map(t => `<span class="tramo">${t}</span>`).join(' ') + (nota ? ' ' + nota.outerHTML : ''); }); }
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m">${/^\[/.test(t) ? mHTML(t) : t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+function colores(){
+  const g = n => css(n);
+  const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), eje:g('--eje'), paper:g('--paper'), card:g('--card'), line:g('--line'), warn:g('--warn'),
+    relleno:Number(g('--relleno')) || .16, font:g('--font'), mono:g('--mono') };
+  for (const k of ['u', 'v', 'd', 'k', 'f', 'b']) c[k] = g('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, peso, tam, fuente, fondo){
+  ctx.font = `${peso || 700} ${tam || 13}px ${fuente || c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  if (fondo !== false){ ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = typeof fondo === 'number' ? fondo : .88; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore(); }
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function caja(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function flecha(ctx, p, q, color, ancho){
+  const a = Math.atan2(q.y - p.y, q.x - p.x), L = Math.hypot(q.x - p.x, q.y - p.y);
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round';
+  if (L < 2) return;
+  const h = Math.min(13, L*.45), b = { x:q.x - h*Math.cos(a), y:q.y - h*Math.sin(a) };
+  linea(ctx, p, b); ctx.lineCap = 'butt';
+  ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.lineTo(b.x + h*.5*Math.sin(a), b.y - h*.5*Math.cos(a)); ctx.lineTo(b.x - h*.5*Math.sin(a), b.y + h*.5*Math.cos(a)); ctx.closePath(); ctx.fill();
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+/* ================= La escena =================
+   El lienzo apila piezas, de arriba abajo (cada una es opcional):
+     mats    matrices escritas como fichas, con operaciones entre ellas (·, =, +). Puede marcar una fila (granate) y una
+             columna (verde), dejar casillas vacías (solo el orden) y mostrar los índices i y j.
+     sarrus  la matriz de 3 × 3 con las dos primeras columnas repetidas y las seis diagonales, que se dibujan por pasos.
+     plano   la cuadrícula con el cuadrito unidad (a trazos), las columnas u y v como flechas desde el origen, el
+             paralelogramo que forman, el giro de u a v, copias del paralelogramo y el vector w. Las puntas de u y v se
+             pueden arrastrar (a puntos enteros). */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, cad:0, anim:false, compacto:false, desc:'', sel:'u' };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = null;
+  const chico = () => innerWidth < 900;
+  const PIEZAS = ['mats', 'sarrus', 'plano'];
+  function pide(k, w){
+    const P = E[k];
+    if (k === 'mats'){ const filas = Math.max(...P.items.filter(x => x.M || x.dim).map(x => (x.dim ? x.dim[0] : x.M.length))); return 40 + filas*Math.min(34, P.alto || 34) + (P.indices ? 18 : 0) + (P.pie ? 28 : 0) + 10; }
+    if (k === 'sarrus') return 210;
+    if (k === 'plano'){ const g = innerWidth >= 900 ? Math.max(300, Math.min(460, innerHeight - 320)) : Math.round(clamp(w*(P.prop || .85), 250, 380)); return g; }
+    return 0;
+  }
+  function alto(w){
+    const t = PIEZAS.filter(k => E[k]).reduce((s, k) => s + pide(k, w), 0);
+    return Math.round(Celular.alto(Math.max(160, t), E.compacto));
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = Celular.dpr();
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const arrastrable = () => !!(E.plano && E.plano.arrastre);
+  E.config = o => {
+    E.tok++; E.cad++; E.anim = false;
+    Object.assign(E, { lect:[], ley:null, alCambiar:null, desc:'', mensaje:'', mats:null, sarrus:null, plano:null }, o);
+    cv.tabIndex = arrastrable() ? 0 : -1;
+    cv.setAttribute('aria-label', arrastrable() ? 'Dibujo: arrastra las puntas de las flechas u y v. Con el teclado, Espacio elige la flecha y las flechas del teclado la mueven.' : 'Dibujo de la escena');
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.rehacer = () => { W = 0; resize(); };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2 : base);
+  function zonas(){
+    const ks = PIEZAS.filter(k => E[k]), pd = ks.map(k => pide(k, W)), tot = pd.reduce((a, b) => a + b, 0) || 1, f = Math.min(1, H/tot);
+    let y = 0; const z = {};
+    ks.forEach((k, i) => { const h = k === 'plano' ? H - y : pd[i]*f; z[k] = { x:0, y, w:W, h }; y += h; });
+    return z;
+  }
+  // ----- matrices escritas -----
+  function dibMats(c, Z){
+    const P = E.mats, its = P.items;
+    const filas = Math.max(...its.filter(x => x.M || x.dim).map(x => (x.dim ? x.dim[0] : x.M.length)));
+    const nCols = its.reduce((s, x) => s + (x.M ? x.M[0].length : x.dim ? x.dim[1] : 0), 0), nOps = its.filter(x => x.op).length, nMat = its.filter(x => x.M || x.dim).length;
+    const disp = Z.w - 20 - nOps*26 - nMat*16;
+    const cw = Math.max(18, Math.min(46, disp/nCols)), rh = Math.min(34, P.alto || 34, (Z.h - 50 - (P.indices ? 18 : 0) - (P.pie ? 28 : 0))/filas);
+    const tot = nCols*cw + nOps*26 + nMat*16;
+    let x = (Z.w - tot)/2;
+    const y0 = Z.y + 26 + (P.indices ? 16 : 0), tam = cw < 30 ? 12 : 15;
+    for (const it of its){
+      if (it.op){ rotulo(ctx, c, x + 13, y0 + filas*rh/2, it.op, it.opColor ? c[it.opColor] : c.ink, 'center', 800, 18, c.font, false); x += 26; continue; }
+      const m = it.dim ? it.dim[0] : it.M.length, n = it.dim ? it.dim[1] : it.M[0].length, al = it.alfa === undefined ? 1 : it.alfa;
+      if (al <= 0){ x += n*cw + 16; continue; }
+      ctx.save(); ctx.globalAlpha = al;
+      const yt = y0 + (filas - m)*rh/2, xl = x + 8;
+      // corchetes
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(xl + 4, yt - 2); ctx.lineTo(xl - 2, yt - 2); ctx.lineTo(xl - 2, yt + m*rh + 2); ctx.lineTo(xl + 4, yt + m*rh + 2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(xl + n*cw - 4, yt - 2); ctx.lineTo(xl + n*cw + 2, yt - 2); ctx.lineTo(xl + n*cw + 2, yt + m*rh + 2); ctx.lineTo(xl + n*cw - 4, yt + m*rh + 2); ctx.stroke();
+      if (it.nombre) { if (P.indices && it.indices) rotulo(ctx, c, xl - 30, yt + m*rh/2, it.nombre + ' =', c.ink, 'right', 800, 14, c.font, false); else rotulo(ctx, c, xl + n*cw/2, yt - 15, it.nombre, c.ink, 'center', 800, 13, c.font, false); }
+      if (it.dimTexto) rotulo(ctx, c, xl + n*cw/2, yt + m*rh + 15, it.dimTexto, it.dimColor ? c[it.dimColor] : c.muted, 'center', 700, 12, c.mono, false);
+      // fila y columna marcadas
+      if (it.fila !== undefined && it.fila !== null){ ctx.strokeStyle = c.f; ctx.lineWidth = grosor('f', 2.5); caja(ctx, xl + 1, yt + it.fila*rh + 2, n*cw - 2, rh - 4, 8); ctx.stroke(); }
+      if (it.col !== undefined && it.col !== null){ ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 2.5); caja(ctx, xl + it.col*cw + 3, yt + 1, cw - 6, m*rh - 2, 8); ctx.stroke(); }
+      if (P.indices && it.indices){
+        for (let i = 0; i < m; i++) rotulo(ctx, c, xl - 14, yt + i*rh + rh/2, String(i + 1), c.f, 'center', 800, 12, c.font, false);
+        for (let j = 0; j < n; j++) rotulo(ctx, c, xl + j*cw + cw/2, yt - 12, String(j + 1), c.b, 'center', 800, 12, c.font, false);
+      }
+      for (let i = 0; i < m; i++) for (let j = 0; j < n; j++){
+        const cx = xl + j*cw + cw/2, cy = yt + i*rh + rh/2, vis = it.ver ? it.ver(i, j) : true;
+        const val = it.M ? it.M[i][j] : null;
+        if (!it.M || !vis || val === null){
+          if (it.huecos !== false){ ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; caja(ctx, cx - cw/2 + 4, cy - rh/2 + 4, cw - 8, rh - 8, 5); ctx.stroke(); ctx.restore(); }
+          continue;
+        }
+        const t = typeof val === 'number' ? nt(val) : String(val);
+        const col = val === 'k' ? c.k : it.colCol ? (j ? c.v : c.u) : c.ink;
+        ctx.fillStyle = col; ctx.font = `800 ${t.length > 3 ? tam - 2 : tam}px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, cx, cy + 1);
+      }
+      ctx.restore();
+      x += n*cw + 16;
+    }
+    if (P.pie) rotulo(ctx, c, Z.w/2, Z.y + Z.h - 18, P.pie, P.pieColor ? c[P.pieColor] : c.ink, 'center', 700, 13, c.mono);
+  }
+  // ----- Sarrus -----
+  function dibSarrus(c, Z){
+    const S = E.sarrus, M = S.M, R = S.res, f = S.f === undefined ? 0 : S.f;
+    const cw = Math.min(50, (Z.w - 40)/5), rh = 32, x0 = (Z.w - 5*cw)/2, y0 = Z.y + 44;
+    const X = j => x0 + j*cw + cw/2, Y = i => y0 + i*rh + rh/2;
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(x0 + 4, y0 - 2); ctx.lineTo(x0 - 2, y0 - 2); ctx.lineTo(x0 - 2, y0 + 3*rh + 2); ctx.lineTo(x0 + 4, y0 + 3*rh + 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x0 + 3*cw - 4, y0 - 2); ctx.lineTo(x0 + 3*cw + 2, y0 - 2); ctx.lineTo(x0 + 3*cw + 2, y0 + 3*rh + 2); ctx.lineTo(x0 + 3*cw - 4, y0 + 3*rh + 2); ctx.stroke();
+    const numeros = () => { for (let i = 0; i < 3; i++) for (let j = 0; j < 5; j++){
+      const rep = j >= 3; if (rep && !S.repetir) continue;
+      rotulo(ctx, c, X(j), Y(i), nt(M[i][j % 3]), rep ? c.muted : c.ink, 'center', 800, 15, c.mono);
+    } };
+    if (!R){ numeros(); return; }
+    const diag = (lst, base, baja) => {
+      lst.forEach((d, n) => {
+        const a = clamp(f - (base + n), 0, 1); if (a <= 0) return;
+        const j0 = baja ? n : n + 2, j2 = baja ? n + 2 : n;
+        ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = baja ? c.ink : c.muted; ctx.lineWidth = 2; if (!baja) ctx.setLineDash([6, 4]);
+        const p0 = { x:X(j0) + (baja ? -12 : 12), y:Y(0) - 14 }, p1 = { x:X(j2) + (baja ? 12 : -12), y:Y(2) + 14 };
+        linea(ctx, p0, { x:lerp(p0.x, p1.x, a), y:lerp(p0.y, p1.y, a) }); ctx.setLineDash([]);
+        ctx.restore();
+      });
+    };
+    diag(R.suman, 0, true); diag(R.restan, 3, false);
+    numeros();
+    const fin = (lst, base, baja) => lst.forEach((d, n) => { if (f < base + n + 1) return; const j0 = baja ? n : n + 2, j2 = baja ? n + 2 : n;
+      rotulo(ctx, c, baja ? X(j2) + 6 : X(j0) + 6, baja ? Y(2) + 28 : Y(0) - 28, (baja ? '+ ' : '− ') + nt(d.producto), baja ? c.ink : c.muted, 'center', 800, 13, c.mono); });
+    fin(R.suman, 0, true); fin(R.restan, 3, false);
+    if (f >= 6) rotulo(ctx, c, Z.w/2, Z.y + Z.h - 14, `${nt(R.principales)} − ${nt(R.secundarias)} = ${R.texto}`, c.d, 'center', 800, 15, c.mono);
+  }
+  // ----- el plano -----
+  function geo(Z){
+    const P = E.plano, m = 18, xr = P.xr, yr = P.yr;
+    const s = Math.min((Z.w - 2*m)/(xr[1] - xr[0]), (Z.h - 2*m)/(yr[1] - yr[0]));
+    const cx = Z.w/2, cy = Z.y + Z.h/2, xm = (xr[0] + xr[1])/2, ym = (yr[0] + yr[1])/2;
+    return { s, X: x => cx + (x - xm)*s, Y: y => cy - (y - ym)*s, wx: px => xm + (px - cx)/s, wy: py => ym - (py - cy)/s,
+      x0: cx - (xm - xr[0])*s, x1: cx + (xr[1] - xm)*s, y0: cy - (yr[1] - ym)*s, y1: cy + (ym - yr[0])*s };
+  }
+  function poli(g, o, u, v){ const p = [[0, 0], u, [u[0] + v[0], u[1] + v[1]], v]; ctx.beginPath(); p.forEach(([a, b], i) => { const X = g.X(o[0] + a), Y = g.Y(o[1] + b); if (i) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); }); ctx.closePath(); }
+  function dibPlano(c, Z){
+    const P = E.plano, g = geo(Z), O = { x:g.X(0), y:g.Y(0) };
+    ctx.save(); ctx.beginPath(); ctx.rect(0, Z.y, Z.w, Z.h); ctx.clip();
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let x = Math.ceil(P.xr[0]); x <= P.xr[1]; x++) linea(ctx, { x:g.X(x), y:g.y0 }, { x:g.X(x), y:g.y1 });
+    for (let y = Math.ceil(P.yr[0]); y <= P.yr[1]; y++) linea(ctx, { x:g.x0, y:g.Y(y) }, { x:g.x1, y:g.Y(y) });
+    ctx.strokeStyle = c.eje; ctx.lineWidth = 1.5;
+    linea(ctx, { x:g.x0, y:O.y }, { x:g.x1, y:O.y }); linea(ctx, { x:O.x, y:g.y0 }, { x:O.x, y:g.y1 });
+    // cuadrito unidad
+    if (P.cuad !== false){ ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; poli(g, [0, 0], [1, 0], [0, 1]); ctx.stroke(); ctx.restore(); }
+    // paralelogramo de w y v (Cramer)
+    if (P.parW){ const Q = P.parW; ctx.save(); poli(g, [0, 0], Q.u, Q.v); ctx.globalAlpha = .1; ctx.fillStyle = c.ink; ctx.fill(); ctx.globalAlpha = 1; ctx.setLineDash([6, 4]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); ctx.restore(); }
+    // el paralelogramo de u y v
+    if (P.u && P.v && P.par !== false){
+      const det = P.u[0]*P.v[1] - P.u[1]*P.v[0], fu = P.par === 'gris' ? c.muted : c.d;
+      ctx.save(); poli(g, [0, 0], P.u, P.v); ctx.globalAlpha = (E.hl === 'd' && P.par !== 'gris' ? 2 : 1)*c.relleno*(P.par === 'gris' ? .7 : 1.2); ctx.fillStyle = fu; ctx.fill(); ctx.globalAlpha = 1;
+      ctx.strokeStyle = fu; ctx.lineWidth = P.par === 'gris' ? 1.5 : grosor('d', 2); ctx.stroke(); ctx.restore();
+      if (Math.abs(det) < 1e-9 && P.par !== 'gris'){ ctx.strokeStyle = c.d; ctx.lineWidth = 4; ctx.lineCap = 'round'; const ps = [[0, 0], P.u, P.v, [P.u[0] + P.v[0], P.u[1] + P.v[1]]].sort((a, b) => a[0] - b[0] || a[1] - b[1]); linea(ctx, { x:g.X(ps[0][0]), y:g.Y(ps[0][1]) }, { x:g.X(ps[3][0]), y:g.Y(ps[3][1]) }); ctx.lineCap = 'butt'; }
+    }
+    for (const q of P.copias || []){ ctx.save(); ctx.globalAlpha = q.alfa === undefined ? 1 : q.alfa; ctx.setLineDash([4, 3]); ctx.strokeStyle = c.d; ctx.lineWidth = 1.4; poli(g, q.o, q.u, q.v); ctx.stroke(); ctx.restore(); }
+    if (P.fantasma){ const q = P.fantasma; ctx.save(); ctx.setLineDash([5, 4]); ctx.strokeStyle = c.muted; ctx.lineWidth = 2; poli(g, [0, 0], q.u, q.v); ctx.stroke(); ctx.restore(); if (q.texto) rotulo(ctx, c, g.X(q.u[0] + q.v[0]) , g.Y(q.u[1] + q.v[1]) - 12, q.texto, c.muted, 'center', 700, 12); }
+    // giro de u a v
+    if (P.giro && P.u && P.v){
+      const a1 = Math.atan2(P.u[1], P.u[0]), a2 = Math.atan2(P.v[1], P.v[0]); let dl = a2 - a1; while (dl > Math.PI) dl -= 2*Math.PI; while (dl <= -Math.PI) dl += 2*Math.PI;
+      if (Math.abs(dl) > .05 && Math.abs(Math.abs(dl) - Math.PI) > .05){
+        const r = Math.min(30, .45*g.s*Math.min(Math.hypot(...P.u), Math.hypot(...P.v)));
+        ctx.strokeStyle = c.d; ctx.lineWidth = grosor('d', 2.2); ctx.beginPath(); ctx.arc(O.x, O.y, r, -a1, -(a1 + dl*.92), dl > 0); ctx.stroke();
+        const ae = a1 + dl*.92, px = O.x + r*Math.cos(-ae), py = O.y + r*Math.sin(-ae), t = dl > 0 ? -ae - Math.PI/2 : -ae + Math.PI/2;
+        ctx.fillStyle = c.d; ctx.beginPath(); ctx.moveTo(px + 7*Math.cos(t), py + 7*Math.sin(t)); ctx.lineTo(px + 5*Math.cos(t + 2.2), py + 5*Math.sin(t + 2.2)); ctx.lineTo(px + 5*Math.cos(t - 2.2), py + 5*Math.sin(t - 2.2)); ctx.closePath(); ctx.fill();
+      }
+    }
+    // el vector w de los términos independientes
+    if (P.w){ flecha(ctx, O, { x:g.X(P.w[0]), y:g.Y(P.w[1]) }, c.ink, 2.6); rotulo(ctx, c, g.X(P.w[0]) + 10, g.Y(P.w[1]) - 12, P.wTexto || 'w', c.ink, 'left', 800, 13); }
+    // u y v
+    if (P.u && P.v){
+      flecha(ctx, O, { x:g.X(P.v[0]), y:g.Y(P.v[1]) }, c.v, grosor('v', 3.2));
+      flecha(ctx, O, { x:g.X(P.u[0]), y:g.Y(P.u[1]) }, c.u, grosor('u', 3.2));
+      const et = (p, k) => { const L = Math.hypot(p[0], p[1]) || 1; rotulo(ctx, c, g.X(p[0]) + 14*p[0]/L + (k === 'u' ? 0 : 0), g.Y(p[1]) - 14*p[1]/L - (Math.abs(p[1]) < .3 ? 12 : 0), k, c[k], 'center', 900, 14, c.font, .6); };
+      if (P.etiquetas !== false){ et(P.u, 'u'); et(P.v, 'v'); }
+      if (P.arrastre) for (const k of ['u', 'v']){ const p = P[k], X = g.X(p[0]), Y = g.Y(p[1]); ctx.beginPath(); ctx.arc(X, Y, 8, 0, 7); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c[k]; ctx.lineWidth = (arrastrando === k || sobre === k || (document.activeElement === cv && E.sel === k)) ? 4 : 2.5; ctx.stroke(); }
+    }
+    if (P.cuenta) rotulo(ctx, c, g.X(P.cuenta.x), g.Y(P.cuenta.y), P.cuenta.texto, c.d, 'center', 800, 14);
+    ctx.restore();
+  }
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores(), z = zonas();
+    ctx.clearRect(0, 0, W, H);
+    if (E.mats) dibMats(c, z.mats);
+    if (E.sarrus) dibSarrus(c, z.sarrus);
+    if (E.plano) dibPlano(c, z.plano);
+    if (E.mensaje && !PIEZAS.some(k => E[k])) rotulo(ctx, c, W/2, H/2, E.mensaje, c.muted, 'center', 700, 13);
+  };
+  const it = (k, t, tipo) => `<span><i class="${tipo || ''}" style="border-color:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k});${tipo ? '' : `background:color-mix(in srgb, var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k}) 30%, transparent)`}"></i>${t}</span>`;
+  E.leyenda = () => {
+    let l = E.ley;
+    if (!l){
+      l = [];
+      if (E.plano && E.plano.u){ l.push(['u', 'u: columna 1', 'linea'], ['v', 'v: columna 2', 'linea']); if (E.plano.cuad !== false) l.push(['muted', 'cuadrito unidad']); }
+      if (E.mats && E.mats.items.some(x => x.fila !== undefined && x.fila !== null)) l.push(['f', 'fila i'], ['b', 'columna j']);
+    }
+    document.getElementById(idLey).innerHTML = l.map(([k, t, tipo]) => it(k, t, tipo)).join('');
+  };
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v, an]) => `<div class="lectura${an ? ' ancho' : ''}" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${/^\[/.test(v) ? mHTML(v) : v}</b></div>`).join('');
+    if (idDesc && !E.anim) document.getElementById(idDesc).textContent = [E.desc || 'Dibujo de la escena.', ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  E.cadena = (fs, fin) => { const id = ++E.cad; let i = 0; const sig = () => { if (id !== E.cad) return; if (i >= fs.length){ if (fin) fin(); return; } fs[i++](sig); }; sig(); };
+  E.parar = () => { E.tok++; E.cad++; E.anim = false; };
+  // ----- arrastrar las puntas de u y v (táctil, ratón y teclado; nucleo/celular.js) -----
+  function puntas(){ const Z = zonas().plano, g = geo(Z); return { g, u:{ x:g.X(E.plano.u[0]), y:g.Y(E.plano.u[1]) }, v:{ x:g.X(E.plano.v[0]), y:g.Y(E.plano.v[1]) } }; }
+  function cual(p, radio){
+    if (!arrastrable() || E.ocupado || E.anim) return null;
+    const q = puntas(), du = Math.hypot(p.x - q.u.x, p.y - q.u.y), dv = Math.hypot(p.x - q.v.x, p.y - q.v.y);
+    if (Math.min(du, dv) >= radio) return null;
+    return du <= dv ? 'u' : 'v';
+  }
+  function poner(k, p){
+    const P = E.plano, r = P.rango || [P.xr[0], P.xr[1], P.yr[0], P.yr[1]];
+    const q = [clamp(Math.round(p[0]), Math.ceil(r[0]), Math.floor(r[1])), clamp(Math.round(p[1]), Math.ceil(r[2]), Math.floor(r[3]))];
+    if (q[0] === P[k][0] && q[1] === P[k][1]) return;
+    P[k] = q; if (P.alMover) P.alMover(); E.dibujar(); E.avisar();
+  }
+  E.poner = poner;
+  Celular.arrastre(cv, {
+    activo: () => arrastrable() && !E.ocupado && !E.anim,
+    cerca: (p, r) => !!cual(p, r),
+    empezar: p => { arrastrando = cual(p, 44); E.sel = arrastrando; E.dibujar(); },
+    mover: p => { if (!arrastrando) return; const g = puntas().g; poner(arrastrando, [g.wx(p.x), g.wy(p.y)]); },
+    soltar: () => { arrastrando = null; E.dibujar(); },
+  });
+  cv.addEventListener('pointermove', e => { if (arrastrando || !arrastrable()) return; const r = cv.getBoundingClientRect(), k = cual({ x:e.clientX - r.left, y:e.clientY - r.top }, 32); if (k !== sobre){ sobre = k; E.dibujar(); } });
+  cv.addEventListener('focus', () => E.dibujar()); cv.addEventListener('blur', () => E.dibujar());
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !arrastrable()) return;
+    if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); E.sel = E.sel === 'u' ? 'v' : 'u'; E.dibujar(); document.getElementById(idDesc).textContent = `Flecha ${E.sel} elegida.`; return; }
+    const d = { ArrowRight:[1, 0], ArrowLeft:[-1, 0], ArrowUp:[0, 1], ArrowDown:[0, -1] }[e.key];
+    if (!d) return;
+    e.preventDefault(); const p = E.plano[E.sel]; poner(E.sel, [p[0] + d[0], p[1] + d[1]]);
+  });
+  return E;
+}
+// Botones + y − con su lectura
+function control(id, nombre, valor, k){ return `<span class="paso">${V(k, nombre)} <button type="button" data-c="${id}" data-d="-1" aria-label="Disminuir ${nombre}">−</button><output id="o-${id}" aria-live="off">${valor}</output><button type="button" data-c="${id}" data-d="1" aria-label="Aumentar ${nombre}">+</button></span>`; }
+// Animar el plano de unas columnas a otras (interpolación de las puntas)
+function moverPlano(E, de, a, dur, fin){
+  const P = E.plano, u0 = de.u, v0 = de.v;
+  E.animar(0, 1, dur, f => { P.u = lerpV(u0, a.u, f); P.v = lerpV(v0, a.v, f); }, () => { P.u = a.u.slice(); P.v = a.v.slice(); E.dibujar(); if (fin) fin(); });
+}
+const fuenteHip = `<p class="fuente">Los informes de investigación del proyecto no traen datos sobre errores con matrices. Estas opciones incorrectas son hipótesis nuestras, que la medición en el colegio va a confirmar o descartar.</p>`;
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, u1:[2, 1], v1:[1, 3], k7:4, u8:[4, 2], v8:[3, 2] };
+// Todo lo que se pregunta sale del motor, con sus errores típicos
+const R2 = ME.construir({ filas:2, columnas:3, formula:{ i:2, j:-1, c:0 } });
+const A3 = [[1, 2], [3, -1]], B3 = [[2, 0], [1, 4]], R3 = ME.producto({ A:A3, B:B3 });
+const B4 = [[2, 0], [0, 1]], A4 = [[0, -1], [1, 0]], R4 = ME.composicion({ primero:B4, luego:A4 });
+const M5 = [[2, 2], [1, 3]], R5 = ME.det2({ M:M5 }), Z5 = ME.cizalla({ M:M5 });
+const M6 = [[1, 4], [2, 3]], R6 = ME.det2({ M:M6 }), Z6 = ME.cizalla({ M:M6 });
+const M7 = [['k', 6], [2, 3]], R7 = ME.kSinInversa({ M:M7 });
+const M8 = [[4, 3], [2, 2]], R8 = ME.inversa2({ M:M8 });
+const SUB = { '1':'₁', '2':'₂', '3':'₃' }, aij = (i, j) => `a${SUB[i]}${SUB[j]}`;
+const P2 = { id:'matrices-paso2', ok:'b', opts:[
+  ['a', R2.errores.cambiaIJ.texto, 'MT10-aij-cambia-i-con-j', 'hipotesis'],
+  ['b', R2.texto],
+  ['c', R2.errores.porColumnas.texto, 'MT12-escribe-por-columnas', 'hipotesis'],
+  ['d', R2.errores.ordenAlReves.texto, 'MT11-orden-al-reves', 'hipotesis']],
+  fb:{ b:`¡Bien! Dos filas y tres columnas; en cada casilla, i es la fila y j la columna: ${aij(1, 1)} = 2 − 1 = 1, ${aij(2, 3)} = 4 − 3 = 1.`,
+    a:`Elegiste la A. Esa matriz usa 2j − i: toma i como columna y j como fila. En aᵢⱼ, la primera letra es la fila. La correcta está marcada.`,
+    c:`Elegiste la C. Los números están bien calculados, pero escritos en 3 filas y 2 columnas: es la transpuesta. El orden 2 × 3 pide 2 filas. La correcta está marcada.`,
+    d:`Elegiste la D. Esa matriz tiene 3 filas y 2 columnas: el orden 2 × 3 se leyó al revés. Primero van las filas. La correcta está marcada.` } };
+const P3 = { id:'matrices-paso3', ok:'c', opts:[
+  ['a', R3.errores.elementoAElemento.texto, 'MT1-multiplica-elemento-a-elemento', 'hipotesis'],
+  ['b', R3.errores.alReves.texto, 'MT2-calcula-ba', 'hipotesis'],
+  ['c', R3.texto],
+  ['d', R3.errores.filaPorFila.texto, 'MT14-fila-por-fila', 'hipotesis']],
+  fb:{ c:`¡Bien! Cada casilla de AB junta una fila de A con una columna de B: casilla (1; 1) = 1 · 2 + 2 · 1 = 4.`,
+    a:`Elegiste la A. Esa matriz multiplica cada elemento por el de su misma posición. Así se suma, pero no se multiplica: el producto empareja la fila de A con la columna de B. La correcta está marcada.`,
+    b:`Elegiste la B. Esa es BA: fila de B por columna de A. En general AB y BA no son iguales; aquí se pidió AB. La correcta está marcada.`,
+    d:`Elegiste la D. Esa cuenta empareja la fila de A con la fila de B. Se recorre la fila de A y la columna de B. La correcta está marcada.` } };
+const P4 = { id:'matrices-paso4', ok:'a', opts:[
+  ['a', R4.texto],
+  ['b', R4.errores.alReves.texto, 'MT34-composicion-en-orden-de-accion', 'hipotesis'],
+  ['c', R4.errores.suma.texto, 'MT17-composicion-como-suma', 'hipotesis'],
+  ['d', R4.errores.escalar.texto, 'MT33-composicion-como-escalar', 'hipotesis']],
+  fb:{ a:`¡Bien! La que actúa primero va a la derecha: «primero B, luego A» es A · B. Las columnas de AB son a dónde llegan (1; 0) y (0; 1) después de las dos cosas.`,
+    b:`Elegiste la B. Esa es BA: primero gira y después estira. Mira la flecha u: estirada y girada termina en (0; 2), no en (0; 1). La correcta está marcada.`,
+    c:`Elegiste la C. Hacer una cosa y luego otra no es sumar las matrices: es multiplicarlas. A + B no gira ni estira. La correcta está marcada.`,
+    d:`Elegiste la D. Esa es 2A: estira al doble en todas las direcciones; B solo estira a lo ancho. La correcta está marcada.` } };
+const P5 = { id:'matrices-paso5', ok:'d', opts:[
+  ['a', R5.errores.sumaDiagonales.texto, 'MT5-det-suma-diagonales', 'hipotesis'],
+  ['b', R5.errores.alReves.texto, 'MT18-det-resta-al-reves', 'hipotesis'],
+  ['c', R5.errores.filas.texto, 'MT19-det-por-filas', 'hipotesis'],
+  ['d', R5.texto]],
+  fb:{ d:`¡Bien! det M = 2 · 3 − 2 · 1 = 6 − 2 = 4: diagonal principal menos diagonal secundaria.`,
+    a:`Elegiste la A. 8 = 6 + 2 suma los productos de las dos diagonales. El determinante los resta: ad − bc. La correcta está marcada.`,
+    b:`Elegiste la B. −4 = 2 − 6 resta al revés: primero va la diagonal principal (a·d), luego se resta b·c. La correcta está marcada.`,
+    c:`Elegiste la C. 1 = 2 · 2 − 1 · 3 multiplica a lo largo de las filas. Las diagonales cruzan de una fila a la otra. La correcta está marcada.` } };
+const P6 = { id:'matrices-paso6', ok:'c', opts:[
+  ['a', R6.errores.sinSigno.texto, 'MT20-det-sin-signo', 'hipotesis'],
+  ['b', R6.errores.sumaDiagonales.texto, 'MT5-det-suma-diagonales', 'hipotesis'],
+  ['c', R6.texto],
+  ['d', R6.errores.filas.texto, 'MT19-det-por-filas', 'hipotesis']],
+  fb:{ c:`¡Bien! det N = 1 · 3 − 4 · 2 = 3 − 8 = −5. El signo dice algo: el giro de u a v va al revés.`,
+    a:`Elegiste la A. El área del paralelogramo sí es 5, pero el determinante guarda además el sentido: 1 · 3 − 4 · 2 = −5. La correcta está marcada.`,
+    b:`Elegiste la B. 11 = 3 + 8 suma las dos diagonales. Se restan: 3 − 8. La correcta está marcada.`,
+    d:`Elegiste la D. −2 = 1 · 4 − 2 · 3 multiplica por filas. Las diagonales van de la esquina de arriba a la de abajo. La correcta está marcada.` } };
+const P7 = { id:'matrices-paso7', ok:'b', opts:[
+  ['a', R7.errores.filas.texto, 'MT19-det-por-filas', 'hipotesis'],
+  ['b', R7.texto],
+  ['c', R7.errores.sumaDiagonales.texto, 'MT5-det-suma-diagonales', 'hipotesis'],
+  ['d', R7.errores.cero.texto, 'MT21-sin-inversa-si-hay-un-cero', 'hipotesis']],
+  fb:{ b:`¡Bien! Sin inversa ⟺ det = 0: 3k − 12 = 0 da k = 4. Con k = 4 las columnas (4; 2) y (6; 3) apuntan en la misma dirección.`,
+    a:`Elegiste la A. Esa cuenta iguala a 0 el producto por filas, 6k − 6. El determinante es 3k − 12. La correcta está marcada.`,
+    c:`Elegiste la C. Esa cuenta iguala a 0 la suma 3k + 12. El determinante resta: 3k − 12. La correcta está marcada.`,
+    d:`Elegiste la D. Con k = 0 el determinante es −12, no 0: la matriz sí tiene inversa. Un cero suelto no la impide; lo que la impide es det = 0. La correcta está marcada.` } };
+const P8 = { id:'matrices-paso8', ok:'a', opts:[
+  ['a', R8.texto],
+  ['b', R8.errores.sinDividir.texto, 'MT7-inversa-sin-dividir', 'hipotesis'],
+  ['c', R8.errores.sinIntercambiar.texto, 'MT22-inversa-sin-intercambiar', 'hipotesis'],
+  ['d', R8.errores.sinSignos.texto, 'MT13-inversa-sin-cambiar-signos', 'hipotesis']],
+  fb:{ a:`¡Bien! det A = 8 − 6 = 2; se intercambian a₁₁ = 4 y a₂₂ = 2, se cambia el signo de a₁₂ = 3 y a₂₁ = 2, y todo se divide entre 2.`,
+    b:`Elegiste la B. Esa es la adjunta, adj A: falta dividir entre det A = 2. Multiplicada por A da 2 veces la identidad. La correcta está marcada.`,
+    c:`Elegiste la C. Esa cambia los signos de 3 y 2 pero deja el 4 y el 2 de la diagonal en su sitio: hay que intercambiarlos. La correcta está marcada.`,
+    d:`Elegiste la D. Esa intercambia la diagonal pero no cambia el signo de los otros dos. La correcta está marcada.` } };
+// Lecturas
+const tipoTexto = M => { const t = ME.tipos({ M }), l = [];
+  if (t.nula) l.push('nula'); if (t.identidad) l.push('identidad'); else if (t.escalar) l.push('escalar'); else if (t.diagonal) l.push('diagonal');
+  if (!t.diagonal && t.triangularSuperior) l.push('triangular superior'); if (!t.diagonal && t.triangularInferior) l.push('triangular inferior');
+  if (t.simetrica) l.push('simétrica'); if (t.antisimetrica && !t.nula) l.push('antisimétrica'); return l.join(', ') || 'ninguno de estos'; };
+const matA = () => deCols(E.plano.u, E.plano.v);
+function lect1(){ return [() => ['ink', 'A', ME.textoMatriz(matA()), 1], () => ['ink', 'tipo', tipoTexto(matA()), 1], () => ['ink', 'traza', ME.tipos({ M:matA() }).trazaTexto]]; }
+function lect8(){ return [() => ['ink', 'A', ME.textoMatriz(matA()), 1], () => ['d', 'det A', ME.det2({ M:matA() }).texto],
+  () => { const d = ME.det2({ M:matA() }).valor; return ['ink', 'A⁻¹', d === 0 ? 'no existe' : ME.inversa2({ M:matA() }).texto, 1]; }]; }
+const ID = { u:[1, 0], v:[0, 1] };
+const steps = [
+ { k:'Paso 1', t:'Dos flechas que mueven el plano',
+   prep:() => config1(),
+   body:() => `<p class="problem">Las dos flechas son las columnas de una matriz A de 2 × 2: ${u_('u')} es la columna 1 y ${v_('v')} la columna 2. Arrastra sus puntas (o, en el dibujo, Espacio elige la flecha y las flechas del teclado la mueven).</p>
+   <p>A es de <b>orden</b> 2 × 2: 2 filas y 2 columnas; una matriz de m × n tiene m filas y n columnas. El elemento aᵢⱼ está en la fila ${f_('i')} y en la columna ${b_('j')}: i cuenta de arriba abajo y j de izquierda a derecha.</p>
+   <p>¿Por qué columnas? Al multiplicar A por el punto (1; 0) sale la columna 1, y por (0; 1), la columna 2. Así A lleva el cuadrito unidad (a trazos) a un paralelogramo, y con él toda la cuadrícula.</p>
+   <div class="tipos" id="tipos"><button type="button" class="btn" data-m="i">Identidad</button><button type="button" class="btn" data-m="d">Diagonal</button><button type="button" class="btn" data-m="t">Triangular</button><button type="button" class="btn" data-m="s">Simétrica</button><button type="button" class="btn" data-m="T">Transpuesta</button></div>
+   <p>La <b>identidad</b> I deja todo igual. Una <b>diagonal</b> solo estira a lo largo de los ejes. Una <b>triangular superior</b> tiene ceros debajo de la diagonal principal. Una <b>simétrica</b> cumple aᵢⱼ = aⱼᵢ. La <b>transpuesta</b> Aᵀ cambia filas por columnas. La <b>traza</b> es la suma de la diagonal principal.</p>
+   <p>Dos matrices son <b>iguales</b> si tienen el mismo orden y el mismo elemento en cada posición. Se <b>suman</b> elemento a elemento (solo si son del mismo orden), y ${k_('k')} · A multiplica cada elemento por ${k_('k')}.</p>`,
+   entrar:() => { $('stepBody').querySelectorAll('[data-m]').forEach(b => b.onclick = () => { if (E.anim) return;
+     const m = b.dataset.m, P = E.plano, de = { u:P.u.slice(), v:P.v.slice() };
+     const a = m === 'i' ? ID : m === 'd' ? { u:[2, 0], v:[0, 3] } : m === 't' ? { u:[2, 0], v:[1, 2] } : m === 's' ? { u:[2, 1], v:[1, 3] } : cols(ME.transpuesta({ A:matA() }).matriz);
+     moverPlano(E, de, a, 700, () => { S.u1 = P.u.slice(); S.v1 = P.v.slice(); E.avisar(); }); }); } },
+ { k:'Paso 2', t:'Predice: la matriz de una fórmula', gate:P2,
+   prep:() => (S.pred[P2.id] ? config2(6) : E.config({ mensaje:'Responde para llenar la matriz.', desc:'Sin dibujo hasta responder.' })),
+   anima:fin => { config2(0); const it = E.mats.items[0];
+     E.animar(0, 6, RM ? 0 : 3600, v => { S.n2 = v; const n = Math.min(5, Math.floor(v)); it.fila = Math.floor(n/3); it.col = n % 3; E.mats.pie = pie2(n); }, () => { config2(6); fin(); }, true); },
+   body:() => `<p class="problem">Escribe la matriz A = (aᵢⱼ) de orden 2 × 3 con aᵢⱼ = 2${f_('i')} − ${b_('j')}.</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">fila ${f_('1')}: 2 · 1 − 1 = 1;  2 · 1 − 2 = 0;  2 · 1 − 3 = −1</div><div class="eq">fila ${f_('2')}: 2 · 2 − 1 = 3;  2 · 2 − 2 = 2;  2 · 2 − 3 = 1</div>
+   <div class="eq">A = ${mHTML(R2.texto)}</div></div>
+   <p>El orden m × n pone primero las filas: 2 × 3 son 2 filas de 3 casillas. En aᵢⱼ, ${f_('i')} es la fila y ${b_('j')} la columna: se recorre cada fila de izquierda a derecha y se reemplazan i y j en la fórmula.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 3', t:'Predice: un producto', gate:P3,
+   prep:() => config3(S.pred[P3.id] ? 4 : -1),
+   anima:fin => { config3(0); E.animar(0, 4, RM ? 0 : 4000, v => { pinta3(Math.min(3, Math.floor(v)), v); }, () => { config3(4); fin(); }, true); },
+   body:() => `<p class="problem">Si A = ${mHTML(A3)} y B = ${mHTML(B3)}, ¿cuánto vale AB?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs">${[0, 1].flatMap(i => [0, 1].map(j => `<div class="eq">(${f_(String(i + 1))}; ${b_(String(j + 1))}): ${R3.celdas[i][j].texto} = ${nt(R3.matriz[i][j])}</div>`)).join('')}
+   <div class="eq">AB = ${mHTML(R3.texto)};  BA = ${mHTML(R3.errores.alReves.texto)}<span class="note">no son iguales</span></div></div>
+   <p>La casilla (${f_('i')}; ${b_('j')}) de AB empareja la fila ${f_('i')} de A con la columna ${b_('j')} de B, ficha con ficha: se multiplican por parejas y se suman. Por eso hace falta que cada fila de A tenga tantas fichas como cada columna de B: A de m × n por B de n × p da una matriz de m × p.</p>
+   <p>Al cambiar el orden cambian las parejas: en general AB ≠ BA.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 4', t:'Predice: una cosa y luego otra', gate:P4,
+   prep:() => config4(!!S.pred[P4.id]),
+   anima:fin => { config4(false); const P = E.plano;
+     E.cadena([n => esperar(300, n), n => moverPlano(E, ID, cols(B4), 1000, n), n => esperar(450, n), n => moverPlano(E, cols(B4), cols(R4.matriz), 1200, n)], () => { config4(true); fin(); }); },
+   body:() => `<p class="problem">B = ${mHTML(B4, { col:true })} estira al doble a lo ancho y A = ${mHTML(A4, { col:true })} gira un cuarto de vuelta. Primero se aplica B y después A. ¿Qué matriz hace las dos cosas?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">primero B, luego A: A · B = ${mHTML(R4.texto, { col:true })}</div><div class="eq">primero A, luego B: B · A = ${mHTML(R4.errores.alReves.texto)}</div></div>
+   <p>Mira el dibujo: el cuadrito se estira a lo ancho y después gira; sus columnas terminan en ${u_('u = (0; 2)')} y ${v_('v = (−1; 0)')}, que son las columnas de AB. La matriz que actúa primero se escribe a la derecha, como en A(B·p).</p>
+   <p>El paralelogramo a trazos es BA: girar primero y estirar después deja otra figura. El orden importa: AB ≠ BA.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 5', t:'Predice: un determinante', gate:P5,
+   prep:() => { if (S.pred[P5.id]) return config5(2); E.config({ mats:{ items:[{ M:M5, colCol:true, nombre:'M' }] }, desc:'La matriz M.' }); },
+   anima:fin => { config5(-1); const P = E.plano;
+     E.cadena([n => moverPlano(E, ID, cols(M5), 1000, n), n => { P.par = true; P.giro = true; E.dibujar(); esperar(700, n); },
+       n => moverPlano(E, Z5.pasos[0], Z5.pasos[1], 1100, n), n => esperar(300, n), n => moverPlano(E, Z5.pasos[1], Z5.pasos[2], 1100, n)], () => { config5(2); fin(); }); },
+   body:() => `<p class="problem">¿Cuánto vale el determinante de M = ${mHTML(M5, { col:true })}?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${d_('det M')} = ${u_('2')} · ${v_('3')} − ${v_('2')} · ${u_('1')} = 6 − 2 = ${d_(R5.texto)}</div></div>
+   <p>El ${d_('determinante')} se escribe det M o |M|. El de ${mHTML([['a', 'b'], ['c', 'd']])} es ad − bc, y mide cuánto agranda M el área: el cuadrito unidad pasa a un paralelogramo de área ${d_('4')}. Para contarla, el dibujo desliza una columna a lo largo de la otra (sumarle a una columna un múltiplo de la otra no cambia el determinante) hasta que queda un rectángulo de 2 por 2: cuatro cuadritos.</p>
+   <p>El arco fucsia va de ${u_('u')} a ${v_('v')} en sentido antihorario: por eso el signo es +.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 6', t:'Predice: otro determinante', gate:P6,
+   prep:() => { if (S.pred[P6.id]) return config6(2); E.config({ mats:{ items:[{ M:M6, colCol:true, nombre:'N' }] }, desc:'La matriz N.' }); },
+   anima:fin => { config6(-1); const P = E.plano;
+     E.cadena([n => moverPlano(E, ID, cols(M6), 1000, n), n => { P.par = true; P.giro = true; E.dibujar(); esperar(800, n); },
+       n => moverPlano(E, Z6.pasos[0], Z6.pasos[1], 1100, n), n => esperar(300, n), n => moverPlano(E, Z6.pasos[1], Z6.pasos[2], 1100, n)], () => { config6(2); fin(); }); },
+   body:() => `<p class="problem">¿Cuánto vale el determinante de N = ${mHTML(M6, { col:true })}?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${d_('det N')} = ${u_('1')} · ${v_('3')} − ${v_('4')} · ${u_('2')} = 3 − 8 = ${d_(R6.texto)}</div>
+   <div class="eq">área = 5<span class="note">el determinante sin su signo; el signo dice el sentido del giro de u a v</span></div></div>
+   <p>El paralelogramo tiene área 5, pero ahora el arco de ${u_('u')} a ${v_('v')} gira en sentido horario: el plano quedó dado vuelta, como en un espejo. El ${d_('determinante')} es un área <b>con signo</b>: negativo cuando la orientación se invierte. Al deslizar queda un rectángulo de 1 de ancho y 5 de alto, hacia abajo del eje: área 5 con signo −.</p>
+   <p>Lo mismo pasa al intercambiar dos columnas (o dos filas): u y v cambian de lugar, el giro se invierte y el determinante cambia de signo.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 7', t:'Predice: cuándo no hay inversa', gate:P7,
+   prep:() => { if (S.pred[P7.id]) return config7(S.k7); E.config({ mats:{ items:[{ M:M7, colCol:true, nombre:'Q' }] }, desc:'La matriz Q con un elemento k.' }); },
+   anima:fin => { config7(1); E.animar(1, 4, 1600, v => { E.plano.u = [v, 2]; }, () => { S.k7 = 4; config7(4); fin(); }); },
+   body:() => `<p class="problem">¿Para qué valor de ${k_('k')} la matriz Q = ${mHTML(M7, { col:true, k:true })} no tiene inversa?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${d_('det Q')} = 3${k_('k')} − 6 · 2 = 3${k_('k')} − 12 = 0 ⟹ ${k_(R7.texto)}</div></div>
+   <p>Con ${k_('k = 4')}, ${u_('u = (4; 2)')} y ${v_('v = (6; 3)')} quedan sobre la misma recta: el paralelogramo se aplasta, su área es 0 y todo el plano cae en esa recta. Muchos puntos van a parar al mismo sitio, así que no hay manera de deshacerlo: no existe la inversa. Una matriz tiene inversa exactamente cuando ${d_('det ≠ 0')}.</p>
+   <p>Cambia ${k_('k')} y mira cómo se abre el paralelogramo.</p>
+   <div class="pasos">${control('k7', 'k', nt(S.k7), 'k')}</div>
+   ${fuenteHip}</div>`,
+   entrar:() => { if (S.pred[P7.id]) enlazar('k7', d => { S.k7 = clamp(S.k7 + d, 0, 7); config7(S.k7); pintarK(); }); pintarK(); } },
+ { k:'Paso 8', t:'Predice: la inversa', gate:P8,
+   prep:() => { if (S.pred[P8.id]) return config8(true); E.config({ mats:{ items:[{ M:M8, colCol:true, nombre:'A' }] }, desc:'La matriz A.' }); },
+   anima:fin => { config8(false); const P = E.plano;
+     E.cadena([n => moverPlano(E, ID, cols(M8), 1000, n), n => { P.par = true; E.dibujar(); esperar(700, n); }, n => moverPlano(E, cols(M8), ID, 1300, n), n => esperar(300, n)],
+       () => { S.u8 = [4, 2]; S.v8 = [3, 2]; config8(true); fin(); }); },
+   body:() => `<p class="problem">¿Cuál es la inversa de A = ${mHTML(M8, { col:true })}?</p>${opcionesHTML(P8.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${d_('det A')} = 4 · 2 − 3 · 2 = ${d_(R8.detTexto)}</div>
+   <div class="eq">A<sup>−1</sup> = (1/det A) · adj A</div>
+   <div class="eq">A<sup>−1</sup> = (1/${d_(R8.detTexto)}) · ${mHTML(R8.adjunta)} = ${mHTML(R8.texto)}</div>
+   <div class="eq">A · A<sup>−1</sup> = ${mHTML([[1, 0], [0, 1]])} = I</div></div>
+   <p>Para una 2 × 2: se intercambian los dos elementos de la diagonal principal, se les cambia el signo a los otros dos y todo se divide entre ${d_('det A')}. El dibujo lo muestra: A lleva el cuadrito a un paralelogramo de área 2 y A<sup>−1</sup> lo devuelve a su lugar, achicando el área a la mitad.</p>
+   <p>Ahora arrastra ${u_('u')} y ${v_('v')}: las lecturas dan ${d_('det A')} y la inversa. Pon las dos flechas sobre una misma recta y la inversa deja de existir.</p>
+   ${fuenteHip}</div>` },
+];
+function config1(){
+  E.config({ plano:{ xr:[-4.5, 4.5], yr:[-4.5, 4.5], u:S.u1.slice(), v:S.v1.slice(), par:'gris', arrastre:true, rango:[-4, 4, -4, 4], alMover:() => { S.u1 = E.plano.u.slice(); S.v1 = E.plano.v.slice(); } },
+    lect:lect1(), ley:[['u', 'u: columna 1', 'linea'], ['v', 'v: columna 2', 'linea'], ['muted', 'cuadrito unidad y su imagen']], desc:'La cuadrícula con las columnas u y v de A y el paralelogramo que forman.' });
+}
+function pie2(n){ const i = Math.floor(n/3) + 1, j = n % 3 + 1; return `${aij(i, j)} = 2 · ${i} − ${j} = ${nt(R2.matriz[i - 1][j - 1])}`; }
+function config2(n){
+  S.n2 = n; const listo = n >= 6;
+  E.config({ mats:{ indices:true, pie: listo ? `orden ${R2.orden}` : (n > 0 ? pie2(0) : ''), items:[{ M:R2.matriz, nombre:'A', indices:true, ver:(i, j) => i*3 + j < S.n2 }] },
+    ley:[['f', 'i: número de fila'], ['b', 'j: número de columna']], lect: listo ? [() => ['ink', 'orden', R2.orden]] : [], desc: listo ? 'La matriz A llena.' : 'La matriz A se llena casilla por casilla.' });
+}
+function pinta3(k, v){
+  const [Ai, , Bi, , Ri] = E.mats.items, i = Math.floor(k/2), j = k % 2;
+  Ai.fila = i; Bi.col = j; Ri.ver = (a, b) => a*2 + b < k || (a*2 + b === k && v - k > .5);
+  E.mats.pie = `${R3.celdas[i][j].texto} = ${nt(R3.matriz[i][j])}`;
+}
+function config3(n){
+  const listo = n >= 4;
+  E.config({ mats:{ pie:'', items:[{ M:A3, nombre:'A' }, { op:'·' }, { M:B3, nombre:'B' }, { op:'=' }, n < 0 ? { dim:[2, 2], nombre:'AB' } : { M:R3.matriz, nombre:'AB', ver:(a, b) => listo || a*2 + b < n }] },
+    lect: listo ? [() => ['ink', 'AB', R3.texto, 1]] : [], desc: listo ? 'A por B, con AB lleno.' : 'Las matrices A y B; AB todavía vacía.' });
+  if (n >= 0 && !listo) pinta3(0, 0);
+}
+function config4(listo){
+  const ab = cols(R4.matriz), ba = cols(R4.errores.alReves.matriz);
+  E.config({ plano:{ xr:[-2.6, 2.6], yr:[-1.2, 2.6], u: listo ? ab.u : [1, 0], v: listo ? ab.v : [0, 1], par:'gris', fantasma: listo ? { u:ba.u, v:ba.v, texto:'BA' } : null },
+    lect: listo ? [() => ['ink', 'AB', R4.texto], () => ['ink', 'BA', R4.errores.alReves.texto]] : [],
+    ley:[['u', 'u: a dónde va (1; 0)', 'linea'], ['v', 'v: a dónde va (0; 1)', 'linea'], ['muted', 'cuadrito unidad']], desc: listo ? 'El cuadrito estirado y girado: AB; a trazos, BA.' : 'El cuadrito unidad, todavía sin mover.' });
+}
+const LEY_DET = [['u', 'u: columna 1', 'linea'], ['v', 'v: columna 2', 'linea'], ['d', 'área con signo: det']];
+function config5(etapa){
+  const fin = etapa >= 2, p = fin ? Z5.pasos[2] : ID;
+  E.config({ mats:{ items:[{ M:M5, colCol:true, nombre:'M' }] }, plano:{ xr:[-1, 5], yr:[-.6, 4.6], u:p.u.slice(), v:p.v.slice(), par: fin, giro: fin, cuenta: fin ? { x:1, y:1, texto:'4 cuadritos' } : null, fantasma: fin ? { u:cols(M5).u, v:cols(M5).v } : null },
+    ley:LEY_DET, lect: fin ? [() => ['d', 'det M', R5.texto], () => ['d', 'área', R5.texto]] : [], desc: fin ? 'El paralelogramo de M, deslizado hasta un rectángulo de 2 por 2.' : 'La matriz M y el cuadrito unidad.' });
+}
+function config6(etapa){
+  const fin = etapa >= 2, p = fin ? Z6.pasos[2] : ID;
+  E.config({ mats:{ items:[{ M:M6, colCol:true, nombre:'N' }] }, plano:{ xr:[-1, 5.6], yr:[-5.4, 5.4], u:p.u.slice(), v:p.v.slice(), par: fin, giro: fin, cuenta: fin ? { x:.5, y:-2.5, texto:'5 cuadritos' } : null, fantasma: fin ? { u:cols(M6).u, v:cols(M6).v } : null },
+    ley:LEY_DET, lect: fin ? [() => ['d', 'det N', R6.texto], () => ['ink', 'área', '5'], () => ['d', 'giro de u a v', 'horario']] : [], desc: fin ? 'El paralelogramo de N: el giro de u a v es horario; deslizado queda un rectángulo de 1 por −5.' : 'La matriz N y el cuadrito unidad.' });
+}
+function config7(k){
+  const M = [[k, 6], [2, 3]];
+  E.config({ mats:{ items:[{ M:[['k', 6], [2, 3]], colCol:true, nombre:'Q' }] }, plano:{ xr:[-.6, 13.6], yr:[-.6, 5.6], prop:.6, u:[k, 2], v:[6, 3], par:true, giro:true },
+    ley:LEY_DET, lect:[() => ['k', 'k', nt(E.plano.u[0])], () => ['d', 'det Q', ME.det2({ M:deCols(E.plano.u, E.plano.v) }).texto], () => ['ink', 'inversa', Math.abs(ME.det2({ M:deCols(E.plano.u, E.plano.v) }).valor) < 1e-9 ? 'no existe' : 'existe', 1]],
+    desc:`Las columnas (${nt(k)}; 2) y (6; 3) y su paralelogramo.` });
+}
+function pintarK(){ const o = $('o-k7'); if (!o) return; o.textContent = nt(S.k7);
+  $('stepBody').querySelector('[data-c="k7"][data-d="-1"]').disabled = S.k7 <= 0; $('stepBody').querySelector('[data-c="k7"][data-d="1"]').disabled = S.k7 >= 7; }
+function enlazar(id, fn){ $('stepBody').querySelectorAll(`[data-c="${id}"]`).forEach(b => b.onclick = () => { if (E.ocupado || S.ocupado || E.anim) return; fn(Number(b.dataset.d)); }); }
+function config8(libre){
+  E.config({ mats:{ items:[{ M:M8, colCol:true, nombre:'A' }, { op:' ' }, { M:R8.matriz, nombre:'A⁻¹', alfa: libre ? 1 : 0 }] },
+    plano:{ xr:[-4.5, 7.5], yr:[-4.5, 4.6], u: libre ? S.u8.slice() : [1, 0], v: libre ? S.v8.slice() : [0, 1], par: libre ? true : 'gris', arrastre: libre, rango:[-4, 7, -4, 4],
+      alMover:() => { S.u8 = E.plano.u.slice(); S.v8 = E.plano.v.slice(); } },
+    ley:LEY_DET, lect: libre ? lect8() : [], desc: libre ? 'Las columnas de A se pueden arrastrar; las lecturas dan det A y la inversa.' : 'La matriz A y el cuadrito unidad.' });
+}
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  tramos($('stepBody'));
+  E.compacto = false; E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.entrar) s.entrar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); if (s.entrar) s.entrar(); }), () => S.step === paso,
+      { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   det(3A), dos propiedades del determinante, los órdenes de AB y BA, Sarrus, la regla de Cramer como áreas y el k que deja
+   un sistema sin solución única.
+   La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const A1 = [[2, 1], [0, 2]], D1 = ME.detK({ detA:ME.det2({ M:A1 }).valor, k:3, n:2 });
+const A2 = [[2, 1], [0, 1]], B2 = [[1, 0], [1, 3]], D2 = ME.propiedadesDet({ detA:ME.det2({ M:A2 }).valor, detB:ME.det2({ M:B2 }).valor });
+const AB2 = ME.producto({ A:A2, B:B2 }), SUMA2 = ME.sumar({ A:A2, B:B2 }), DS2 = ME.det2({ M:SUMA2.matriz });
+const D3 = ME.ordenProducto({ A:[2, 3], B:[3, 4] });
+const M4 = [[2, 1, 3], [0, 4, 1], [1, 2, 5]], D4 = ME.det3({ M:M4 });
+const A5 = [[2, 1], [1, 2]], W5 = [5, 4], D5 = ME.cramer2({ A:A5, b:W5 });
+const D6 = ME.kSistema({ A:[['k', 2], [2, 1]], b:[3, 5] });
+const fuente = t => `<p class="fuente">${t}</p>`;
+const HIP = 'No encontramos estudios con cifras sobre este error; las opciones incorrectas son hipótesis nuestras.';
+const LEY_DET = [['u', 'u: columna 1', 'linea'], ['v', 'v: columna 2', 'linea'], ['d', 'área con signo: det']];
+const EXPS = [
+  { id:'el-triple', corto:'El triple',
+    q:`A = ${mHTML(A1, { col:true })} tiene ${d_('det A = 4')}. ¿Cuánto vale det(${k_('3')}A)?`,
+    opts:[['a', D1.errores.lineal.texto, 'MT4-det-kA-lineal', 'hipotesis'],
+          ['b', D1.texto],
+          ['c', D1.errores.porElementos.texto, 'MT24-det-kA-por-elementos', 'hipotesis']], ok:'b',
+    fb:{ a:'12 = 3 · 4 multiplicaría el área por 3. Pero 3A alarga las dos columnas al triple, y el área crece por 3 a lo ancho y por 3 a lo alto.',
+         c:'324 = 3⁴ · 4 eleva 3 al número de elementos (4). Cada fila aporta un factor 3, y A tiene 2 filas.' },
+    antes:ya => E.config(conf1(ya ? 3 : 1, ya)),
+    despues:() => { E.config(conf1(1, false)); const P = E.plano;
+      E.animar(1, 3, 1500, k => { P.u = [2*k, 0]; P.v = [k, 2*k]; }, () => { E.config(conf1(3, true)); }); },
+    exp:() => `<div class="eqs"><div class="eq">det(${k_('3')}A) = ${k_('3')}² · ${d_('det A')} = 9 · 4 = ${d_(D1.texto)}</div></div>
+      <p>${k_('3')}A multiplica por 3 cada elemento: las dos columnas se alargan al triple y el paralelogramo crece 3 veces a lo largo de ${u_('u')} y 3 veces a lo largo de ${v_('v')}. Caben 9 copias del original (a trazos). Cada fila que se multiplica por ${k_('k')} multiplica el determinante por ${k_('k')}: para una matriz de n × n, det(${k_('k')}A) = ${k_('k')}ⁿ · det A.</p>${fuente(HIP)}` },
+  { id:'dos-determinantes', corto:'Dos determinantes',
+    q:`A y B son matrices de 2 × 2 con ${d_('det A = 2')} y ${d_('det B = 3')}. ¿Cuál de estas igualdades se cumple siempre?`,
+    opts:[['a', D2.errores.suma.texto, 'MT3-det-de-la-suma', 'hipotesis'],
+          ['b', D2.errores.transpuesta.texto, 'MT25-transpuesta-cambia-signo', 'hipotesis'],
+          ['c', D2.texto],
+          ['d', D2.errores.ordenCambia.texto, 'MT26-orden-cambia-signo', 'hipotesis']], ok:'c',
+    fb:{ a:`Sumar matrices no suma áreas. Con A = [2, 1; 0, 1] y B = [1, 0; 1, 3], A + B = ${SUMA2.texto} y su determinante es ${DS2.texto}, no 5.`,
+         b:'Transponer no cambia el determinante: [a, c; b, d] da ad − cb, lo mismo que ad − bc.',
+         d:'AB y BA pueden ser distintas, pero sus determinantes son el mismo número: det A · det B = det B · det A = 6.' },
+    antes:ya => E.config(ya ? conf2(true) : { mensaje:'Responde para ver un ejemplo.', desc:'Sin dibujo hasta responder.' }),
+    despues:() => { E.config(conf2(false)); const P = E.plano;
+      E.cadena([n => moverPlano(E, { u:[1, 0], v:[0, 1] }, cols(B2), 1000, n), n => { E.lect = [() => ['d', 'det B', '3']]; E.avisar(); esperar(600, n); },
+        n => moverPlano(E, cols(B2), cols(AB2.matriz), 1200, n)], () => E.config(conf2(true))); },
+    exp:() => `<div class="eqs"><div class="eq">A = ${mHTML(A2)};  B = ${mHTML(B2)};  AB = ${mHTML(AB2.texto, { col:true })}</div>
+      <div class="eq">${d_('det(AB)')} = 3 · 3 − 3 · 1 = ${d_('6')} = 2 · 3</div><div class="eq">A + B = ${mHTML(SUMA2.texto)};  det(A + B) = ${DS2.texto} ≠ 2 + 3</div></div>
+      <p>En el dibujo, primero actúa B: el cuadrito pasa a un paralelogramo de área 3. Después A agranda <b>toda</b> área al doble, también esa: queda 6. Por eso det(AB) = det A · det B. La suma no tiene esa lectura, y det(A + B) casi nunca es det A + det B. Además, det(Aᵀ) = det A.</p>${fuente(HIP)}` },
+  { id:'ordenes', corto:'Órdenes',
+    q:'A es una matriz de 2 × 3 y B es de 3 × 4. ¿Qué se puede decir de AB y de BA?',
+    opts:[['a', D3.texto],
+          ['b', D3.errores.medio.texto, 'MT15-orden-con-los-de-en-medio', 'hipotesis'],
+          ['c', D3.errores.reves.texto, 'MT8-ba-siempre-existe', 'hipotesis'],
+          ['d', D3.errores.mismoOrden.texto, 'MT16-solo-mismo-orden', 'hipotesis']], ok:'a',
+    fb:{ b:'3 × 3 usa los números de en medio, que son los que tienen que coincidir. AB toma las filas de A y las columnas de B: 2 × 4.',
+         c:'Para BA, cada fila de B (4 fichas) tendría que emparejarse con una columna de A (2 fichas): no alcanza. BA no existe.',
+         d:'Para multiplicar no hace falta el mismo orden: basta que las columnas de la primera sean tantas como las filas de la segunda.' },
+    antes:ya => E.config(conf3(ya)),
+    despues:() => { E.config(conf3(false)); const it = E.mats.items;
+      E.cadena([n => { it[0].fila = 0; it[2].col = 0; E.mats.pie = 'fila de A: 3 fichas · columna de B: 3 fichas'; E.leyenda(); E.dibujar(); esperar(1200, n); },
+        n => E.animar(0, 1, 900, v => { it[4].alfa = v; it[3].alfa = v; }, n)], () => E.config(conf3(true))); },
+    exp:() => `<div class="eqs"><div class="eq">(2 × 3) · (3 × 4) ⟹ AB es 2 × 4</div><div class="eq">(3 × 4) · (2 × 3) ⟹ 4 ≠ 2: BA no existe</div></div>
+      <p>Cada casilla de AB empareja una ${f_('fila de A')} con una ${b_('columna de B')}, ficha con ficha: tienen que tener el mismo largo. Los números de en medio deben coincidir y los de los extremos dan el orden del producto: m × n por n × p da m × p.</p>
+      <p>En BA, las filas de B tienen 4 fichas y las columnas de A solo 2: no hay parejas para todas. Que exista AB no garantiza que exista BA.</p>${fuente(HIP)}` },
+  { id:'sarrus', corto:'Sarrus',
+    q:`¿Cuánto vale el determinante de R = ${mHTML(M4)}?`,
+    opts:[['a', D4.errores.alReves.texto, 'MT28-sarrus-resta-al-reves', 'hipotesis'],
+          ['b', D4.texto],
+          ['c', D4.errores.sumaTodo.texto, 'MT6-sarrus-suma-todo', 'hipotesis'],
+          ['d', D4.errores.soloPrincipal.texto, 'MT27-sarrus-solo-diagonal', 'hipotesis']], ok:'b',
+    fb:{ a:'−25 resta al revés: las diagonales que bajan hacia la derecha suman y las que bajan hacia la izquierda restan, no al contrario.',
+         c:'57 suma las seis diagonales. Las tres que bajan hacia la izquierda se restan.',
+         d:'40 es solo el producto de la diagonal principal. Sarrus usa seis diagonales: tres suman y tres restan.' },
+    antes:ya => E.config(conf4(ya ? 6 : null)),
+    despues:() => { E.config(conf4(0)); E.animar(0, 6, 3600, v => { E.sarrus.f = v; }, () => E.config(conf4(6)), true); },
+    exp:() => `<div class="eqs"><div class="eq">↘: 2 · 4 · 5 + 1 · 1 · 1 + 3 · 0 · 2</div><div class="eq">= 40 + 1 + 0 = ${D4.principales}</div>
+      <div class="eq">↙: 3 · 4 · 1 + 2 · 1 · 2 + 1 · 0 · 5</div><div class="eq">= 12 + 4 + 0 = ${D4.secundarias}</div>
+      <div class="eq">${d_('det R')} = ${D4.principales} − ${D4.secundarias} = ${d_(D4.texto)}</div>
+      <div class="eq">por cofactores de la primera fila:</div><div class="eq">= 2 · 18 − 1 · (−1) + 3 · (−4)</div><div class="eq">= 36 + 1 − 12 = ${d_(D4.texto)}</div></div>
+      <p>Los menores: al tachar la fila 1 y la columna 1 queda [4, 1; 2, 5], de determinante 18; con la columna 2, [0, 1; 1, 5], −1; con la columna 3, [0, 4; 1, 2], −4.</p>
+      <p><b>Sarrus</b> (solo para 3 × 3): se copian las dos primeras columnas a la derecha; las tres diagonales que bajan hacia la derecha suman y las tres que bajan hacia la izquierda restan. Por <b>cofactores</b>: cada elemento de la primera fila por el determinante 2 × 2 que queda al tachar su fila y su columna, con signos +, −, +.</p>
+      <p>Propiedades que ahorran cuentas: una fila de ceros o dos filas proporcionales dan det = 0, e intercambiar dos filas cambia el signo.</p>${fuente(HIP)}` },
+  { id:'cramer', corto:'Cramer', unidad:U_SIS,
+    q:`Resuelve por la regla de Cramer: ${u_('2')}x + ${v_('1')}y = 5; ${u_('1')}x + ${v_('2')}y = 4. ¿Cuánto vale x?`,
+    opts:[['a', D5.errores.sinDividir.texto, 'MT29-cramer-sin-dividir', 'hipotesis'],
+          ['b', D5.errores.alReves.texto, 'MT30-cramer-al-reves', 'hipotesis'],
+          ['c', D5.errores.otraColumna.texto, 'MT31-cramer-otra-columna', 'hipotesis'],
+          ['d', D5.texto]], ok:'d',
+    fb:{ a:'6 es Δx, el determinante con la columna de x cambiada. Falta dividirlo entre Δ = 3.',
+         b:'1/2 divide al revés: x = Δx/Δ, el determinante cambiado arriba.',
+         c:'1 es Δy/Δ: se cambió la columna de y. Para x se cambia la primera columna, la que acompaña a x.' },
+    antes:ya => E.config(ya ? conf5(1) : { mats:{ items:[{ M:A5, colCol:true, nombre:'A' }, { op:'·' }, { M:[['x'], ['y']] }, { op:'=' }, { M:[[5], [4]], nombre:'w' }] }, desc:'El sistema escrito con matrices.' }),
+    despues:() => { E.config(conf5(0)); const P = E.plano;
+      E.cadena([n => esperar(900, n), n => E.animar(0, 1, 1600, t => { P.parW.u = [W5[0] - t*1, W5[1] - t*2]; P.w = P.parW.u; }, n)], () => E.config(conf5(1))); },
+    exp:() => `<div class="eqs"><div class="eq">${d_('Δ')} = det ${mHTML(A5, { col:true })} = 4 − 1 = ${d_('3')}</div>
+      <div class="eq">Δx = det ${mHTML([[5, 1], [4, 2]])} = 10 − 4 = 6 ⟹ x = Δx/${d_('Δ')} = 6/3 = 2</div>
+      <div class="eq">Δy = det ${mHTML([[2, 5], [1, 4]])} = 8 − 5 = 3 ⟹ y = Δy/${d_('Δ')} = 3/3 = 1</div></div>
+      <p>El sistema dice w = x · ${u_('u')} + y · ${v_('v')}, con w = (5; 4). Δx es el área (con signo) del paralelogramo de w y ${v_('v')}, el de trazos. Deslizar w a lo largo de ${v_('v')} no cambia esa área y lo deja en x · ${u_('u')}: un paralelogramo que es x copias del de ${u_('u')} y ${v_('v')}. Por eso Δx = x · ${d_('Δ')} y x = Δx/${d_('Δ')}.</p>
+      <p>La regla vale igual para 3 × 3 (x = Δx/Δ, y = Δy/Δ, z = Δz/Δ) y solo si ${d_('Δ ≠ 0')}.</p>${fuente(HIP)}` },
+  { id:'sin-solucion', corto:'Sin solución única', unidad:U_SIS,
+    q:`En el sistema ${k_('k')}x + 2y = 3; 2x + y = 5, ¿para qué valor de ${k_('k')} no hay solución única?`,
+    opts:[['a', D6.errores.sumaDiagonales.texto, 'MT5-det-suma-diagonales', 'hipotesis'],
+          ['b', D6.errores.cero.texto, 'MT21-sin-solucion-si-hay-un-cero', 'hipotesis'],
+          ['c', D6.texto],
+          ['d', D6.errores.cambiado.texto, 'AL17-sin-solucion-si-delta-y-es-cero', 'parcial']], ok:'c',
+    fb:{ a:'−4 iguala a 0 la suma k + 4. El determinante resta: Δ = k · 1 − 2 · 2 = k − 4.',
+         b:'Con k = 0, Δ = −4 ≠ 0: hay una sola solución, x = 7/4 e y = 3/2.',
+         d:'6/5 anula Δy = 5k − 6. Un Δy nulo solo dice que y vale 0; lo que quita la solución única es Δ = 0.' },
+    antes:ya => E.config(ya ? conf6(4) : { mats:{ items:[{ M:[['k', 2], [2, 1]], colCol:true, nombre:'A' }, { op:'·' }, { M:[['x'], ['y']] }, { op:'=' }, { M:[[3], [5]], nombre:'w' }] }, desc:'El sistema escrito con matrices.' }),
+    despues:() => { E.config(conf6(1)); E.animar(1, 4, 1600, k => { E.plano.u = [k, 2]; }, () => E.config(conf6(4))); },
+    exp:() => `<div class="eqs"><div class="eq">${d_('Δ')} = det ${mHTML([['k', 2], [2, 1]], { col:true, k:true })} = ${k_('k')} − 4 = 0 ⟹ ${k_(D6.texto)}</div></div>
+      <p>Con ${k_('k = 4')}, ${u_('u = (4; 2)')} y ${v_('v = (2; 1)')} están sobre la misma recta: x · ${u_('u')} + y · ${v_('v')} solo llega a puntos de esa recta, y w = (3; 5) no está en ella. El sistema no tiene solución: 4x + 2y = 3 y 2x + y = 5 son rectas paralelas. Si w estuviera en esa recta habría infinitas. En los dos casos falta la solución única; por eso Cramer exige ${d_('Δ ≠ 0')}.</p>
+      ${fuente('Una tesis (Ochoviet, 2009, según nuestro informe) estudia cómo entienden los alumnos la solución de un sistema de 2 × 2, sin porcentajes: el distractor de Δy = 0 se relaciona con esa idea (AL17, respaldo parcial). Las otras dos opciones son hipótesis nuestras.')}` },
+];
+function conf1(k, listo){
+  return { plano:{ xr:[-.6, 9.6], yr:[-.6, 6.6], prop:.75, u:[2*k, 0], v:[k, 2*k], par:true, giro:false,
+      copias: listo ? [0, 1, 2].flatMap(i => [0, 1, 2].map(j => ({ o:[2*i + j, 2*j], u:[2, 0], v:[1, 2] }))) : [] },
+    ley:LEY_DET.concat(listo ? [['d', 'copias de A (a trazos)']] : []), lect: listo ? [() => ['d', 'det A', '4'], () => ['k', 'k', '3'], () => ['d', 'det(3A)', D1.texto]] : [() => ['d', 'det A', '4']],
+    desc: listo ? 'El paralelogramo de 3A, con las 9 copias del de A.' : 'El paralelogramo de A.' };
+}
+function conf2(listo){
+  const p = listo ? cols(AB2.matriz) : { u:[1, 0], v:[0, 1] };
+  return { mats:{ items:[{ M:A2, nombre:'A' }, { op:' ' }, { M:B2, nombre:'B' }] }, plano:{ xr:[-.6, 6.6], yr:[-.6, 4.6], prop:.7, u:p.u, v:p.v, par:true },
+    ley:LEY_DET, lect: listo ? [() => ['d', 'det B', '3'], () => ['d', 'det(AB)', ME.det2({ M:AB2.matriz }).texto], () => ['ink', 'det(A + B)', DS2.texto]] : [],
+    desc: listo ? 'El cuadrito después de B y luego de A: un paralelogramo de área 6.' : 'El cuadrito unidad.' };
+}
+function conf3(listo){
+  return { mats:{ pie: listo ? 'AB: 3 con 3 → 2 × 4 · BA: 4 contra 2' : '', items:[{ dim:[2, 3], nombre:'A', dimTexto:'2 × 3', fila: listo ? 0 : null }, { op:'·' }, { dim:[3, 4], nombre:'B', dimTexto:'3 × 4', col: listo ? 0 : null },
+    { op:'=', alfa: listo ? 1 : 0 }, { dim:[2, 4], nombre:'AB', dimTexto:'2 × 4', alfa: listo ? 1 : 0 }] },
+    lect: listo ? [() => ['ink', 'AB', '2 × 4'], () => ['ink', 'BA', 'no existe']] : [], desc: listo ? 'A por B da una matriz de 2 × 4.' : 'Una matriz de 2 × 3 y otra de 3 × 4, sin números.' };
+}
+function conf4(f){
+  return { sarrus:{ M:M4, res: f === null ? null : D4, f: f || 0, repetir: f !== null },
+    ley: f === null ? [] : [['ink', 'diagonales que suman', 'linea'], ['muted', 'diagonales que restan (a trazos)', 'linea'], ['d', 'det']],
+    lect: f >= 6 ? [() => ['ink', 'suman', String(D4.principales)], () => ['ink', 'restan', String(D4.secundarias)], () => ['d', 'det R', D4.texto]] : [],
+    desc: f === null ? 'La matriz R de 3 × 3.' : 'Sarrus: la matriz con las dos primeras columnas repetidas y sus seis diagonales.' };
+}
+function conf6(k){
+  return { plano:{ xr:[-.6, 6.2], yr:[-.6, 5.6], prop:.8, u:[k, 2], v:[2, 1], par:true, w:[3, 5], wTexto:'w = (3; 5)' },
+    ley:LEY_DET.concat([['ink', 'w: términos independientes', 'linea']]),
+    lect:[() => ['k', 'k', nt(E.plano.u[0])], () => ['d', 'Δ', ME.det2({ M:deCols(E.plano.u, E.plano.v) }).texto], () => ['ink', 'solución única', Math.abs(ME.det2({ M:deCols(E.plano.u, E.plano.v) }).valor) < 1e-9 ? 'no' : 'sí']],
+    desc:`Las columnas u = (${nt(k)}; 2) y v = (2; 1), su paralelogramo y el vector w = (3; 5).` };
+}
+function conf5(etapa){
+  const fin = etapa >= 1, w = fin ? [4, 2] : W5.slice();
+  return { plano:{ xr:[-.6, 7.2], yr:[-.6, 6.6], prop:.8, u:[2, 1], v:[1, 2], par:true, w, wTexto: fin ? 'x · u' : 'w = (5; 4)', parW:{ u:w, v:[1, 2] },
+      copias: fin ? [{ o:[0, 0], u:[2, 1], v:[1, 2] }, { o:[2, 1], u:[2, 1], v:[1, 2] }] : [] },
+    ley:LEY_DET.concat([['ink', 'w y el paralelogramo de w y v: Δx']]),
+    lect: fin ? [() => ['d', 'Δ', String(D5.det)], () => ['ink', 'Δx', String(D5.detX)], () => ['ink', 'x', String(D5.x)]] : [() => ['d', 'Δ', String(D5.det)]],
+    desc: fin ? 'w deslizado a lo largo de v hasta x · u: el paralelogramo de trazos es dos copias del de u y v.' : 'u, v y w, con el paralelogramo de u y v y, a trazos, el de w y v.' };
+}
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = false; E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    tramos($('res2'));
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); }, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); }, () => S.k === k);
+  });
+  pintar();
+}
+addEventListener('modo', () => { if (!document.getElementById('m2').hidden) E.rehacer(); });
+ir(0);
+})();
+</script>
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
