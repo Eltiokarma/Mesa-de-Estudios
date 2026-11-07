@@ -330,6 +330,30 @@ El `respaldo` no se escribe en el banco: se toma de `codigos.json` por el códig
 3. **Si el revisor falló un ítem a ciegas**, ese ítem se reescribe, no solo se justifica.
 4. Se anota `revision` y recién entonces el texto entra al índice.
 
+### 5.7 Un índice por módulo, figuras e idioma (rutina verbal B, 7 nov 2026)
+
+**Un índice por módulo.** `indice.json` es el de `lectura-verbal` (con la entrada y la salida). Cada módulo más tiene `indice-<módulo>.json` en la misma carpeta, y su ficha apunta a él con `"banco"`. Todos usan `textos/`. `banco.test.js` valida todos los índices: un texto va en un solo módulo, y la entrada y la salida solo en `indice.json`. Los seis módulos de esta rutina son `tipologia-textual`, `resumen-sintesis`, `textos-discontinuos`, `texto-contexto`, `textos-filosoficos-cientificos` y `lectura-ingles`, uno por unidad.
+
+**Tipos de pregunta nuevos:** `tipo-de-texto` (con previo `proposito`), `estructura` (organización o función de un párrafo), `resumen` y `titulo` (los dos admiten el previo `marcar-oracion`, igual que `idea-principal`), `dato` (leer o comparar un valor de una figura) y `contexto` (emisor, destinatario, situación).
+
+**Figuras (textos discontinuos).** Un texto con `"tipo_texto": "discontinuo"`, y solo él, lleva `figuras`:
+
+```json
+"figuras": [
+  { "id": "f1", "tipo": "tabla", "despues": 1, "titulo": "…", "columnas": ["Grado", "Agosto"], "filas": [{ "id": "f1a", "celdas": ["3.º", "42"] }], "nota": "Datos inventados para el ejercicio." },
+  { "id": "f2", "tipo": "barras", "despues": 1, "titulo": "…", "unidad": "inscritos", "barras": [{ "id": "f2a", "etiqueta": "Fútbol 2025", "valor": 120 }] },
+  { "id": "f3", "tipo": "recuadros", "despues": 0, "titulo": "…", "recuadros": [{ "id": "f3a", "titulo": "Antes", "t": "…" }] }
+]
+```
+
+- `despues`: cuántos párrafos van antes de la figura (0, arriba de todo).
+- Cada fila, barra o recuadro tiene su id, y `evidencia` y `origen` pueden apuntar a él o a la figura entera; la app los pinta con los mismos colores que las oraciones (borde y fondo) y los cita debajo de la explicación («la fila «4.º» de la tabla»).
+- Las barras son horizontales y empiezan en 0. Con datos inventados, la nota lo dice y no se nombra un lugar ni una institución real.
+- El largo mínimo de un discontinuo es 120 palabras, contando celdas, títulos y nota.
+- Lo valida `validar` de `nucleo/lectura.js` (`figuras`, `elementos`, `referencias`, `etiquetaRef`, `citas`), con pruebas en `nucleo/lectura.test.js`.
+
+**Idioma.** `"idioma": "en"` marca un texto en inglés (unidad `lectura-en-ingles`): la app pone `lang="en"` al texto y a sus citas, y el largo mínimo baja a 100 palabras. Las preguntas, los pasos previos y las explicaciones van en español.
+
 ## 6. Medición
 
 Se usa `nucleo/medicion.js` y sus columnas. Hay dos tipos de evento nuevos, que `resumir` hoy no cuenta (solo suma al alumno) y el CSV exporta con las mismas columnas. Así **el paso previo no se mezcla con el acierto de las preguntas**:
