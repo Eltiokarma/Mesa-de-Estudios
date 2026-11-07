@@ -2254,7 +2254,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "potenciacion"
+     ]
     },
     {
      "id": "aritmetica.sucesiones-y-series",
@@ -5173,6 +5175,23 @@
    "papel": null,
    "archivos": [
     "/plantillas/porcentajes-sucesivos/generador.js"
+   ]
+  },
+  "potenciacion": {
+   "id": "potenciacion",
+   "titulo": "El cuadrado de fichas: potenciación y radicación",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.potenciacion-y-radicacion"
+   ],
+   "url": "/plantillas/potenciacion/index.html",
+   "papel": "/plantillas/potenciacion/papel.json",
+   "archivos": [
+    "/plantillas/potenciacion/index.html",
+    "/plantillas/potenciacion/motor.js",
+    "/plantillas/potenciacion/papel.json"
    ]
   },
   "probabilidad-dados": {

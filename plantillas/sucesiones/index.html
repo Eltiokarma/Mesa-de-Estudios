@@ -228,6 +228,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'sucesiones', unidad: 'razonamiento-matematico.razonamiento-inductivo', version: '0.1.0' };
@@ -243,7 +244,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, un
    cruces) sale de MotorSucesiones (motor.js); aquí solo se pinta, se arrastra y se anima. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MS = MotorSucesiones, PI = Math.PI;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
 function fmt(n, d){
   if (n === Infinity) return '∞';
@@ -333,7 +334,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   }
   function resize(){
     const w = cv.clientWidth; if (!w) return;
-    const h = alto(w), dpr = window.devicePixelRatio || 1;
+    const h = alto(w), dpr = Celular.dpr();
     if (w === W && h === H) { E.dibujar(); return; }
     W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);

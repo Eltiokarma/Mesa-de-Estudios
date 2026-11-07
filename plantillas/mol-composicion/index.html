@@ -243,6 +243,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'mol-composicion', unidad: 'quimica.mol-y-composicion', version: '0.1.0' };
@@ -260,7 +261,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const TMAX = 0.16; // inclinación máxima de la balanza (rad)
 const MM = MotorMol;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -317,8 +318,15 @@ function hashTxt(t){ let h = 2166136261; for (const ch of String(t)) h = Math.im
 /* ----- Texto en el lienzo, por piezas de colores -----
    Una línea es una lista de piezas [texto, clave de color, peso]. Si no entra en el ancho, baja la letra hasta 10 px;
    nunca se corta a medias ni se sale del dibujo. */
-function anchoPiezas(ctx, c, ps, tam){ let w = 0; for (const [t, , peso, mono] of ps){ ctx.font = `${peso || 700} ${tam}px ${mono ? c.mono : c.font}`; w += ctx.measureText(t).width; } return w; }
-function tamQueEntra(ctx, c, ps, tam, max){ let t = tam; while (t > 10 && anchoPiezas(ctx, c, ps, t) > max) t -= 0.5; return t; }
+// Anchos y tamaños de letra guardados (la2): el mismo texto con la misma letra mide siempre lo mismo, así que no se
+// vuelve a medir en cada cuadro (antes, measureText y ctx.font de 0,5 en 0,5 px en cada dibujo).
+const ANCHOS = new Map(), TAMANOS = new Map();
+function medir(ctx, font, t){ const k = font + '\u0001' + t; let w = ANCHOS.get(k); if (w === undefined){ ctx.font = font; w = ctx.measureText(t).width; if (ANCHOS.size > 5000) ANCHOS.clear(); ANCHOS.set(k, w); } return w; }
+function recordarTam(k, calcular){ let t = TAMANOS.get(k); if (t === undefined){ t = calcular(); if (TAMANOS.size > 2000) TAMANOS.clear(); TAMANOS.set(k, t); } return t; }
+function anchoPiezas(ctx, c, ps, tam){ let w = 0; for (const [t, , peso, mono] of ps) w += medir(ctx, `${peso || 700} ${tam}px ${mono ? c.mono : c.font}`, t); return w; }
+function tamQueEntra(ctx, c, ps, tam, max){
+  return recordarTam(`${c.font}|${c.mono}|${tam}|${max}|${ps.map(p => (p[2] || 700) + ':' + (p[3] ? 'm' : '') + ':' + p[0]).join('\u0002')}`, () => { let t = tam; while (t > 10 && anchoPiezas(ctx, c, ps, t) > max) t -= 0.5; return t; });
+}
 function dibujarPiezas(ctx, c, ps, x, y, tam, align, max, hl){
   const t = max ? tamQueEntra(ctx, c, ps, tam, max) : tam, w = anchoPiezas(ctx, c, ps, t);
   let x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
@@ -439,7 +447,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idCnt){
   }
   E.resize = () => {
     const w = cv.clientWidth; if (!w) return;
-    Lz = layout(w); llaveLz = llave(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    Lz = layout(w); llaveLz = llave(w); const h = Lz.H, dpr = Celular.dpr();
     if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
   };
   new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);

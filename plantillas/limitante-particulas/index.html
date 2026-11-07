@@ -241,7 +241,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
 /* ================= Piezas compartidas =================
    Toda la química sale de MotorReaccion (motor.js); aquí solo se pinta. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -260,7 +260,7 @@ function crearLienzo(cv, alto, dibujar){
   const L = { cv, ctx, W:0, H:0 };
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:420 })), dpr = window.devicePixelRatio || 1;
+    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:420 })), dpr = Celular.dpr();
     L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     dibujar();

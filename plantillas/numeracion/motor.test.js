@@ -8,6 +8,7 @@
 //    sumar uno, multiplicar por la base y juntar cifras coinciden con hacerlo pasando por base 10. Y lo más
 //    importante para la escena: ningún error típico da la respuesta correcta ni dos errores dan lo mismo.
 //    Bordes: N = 0, b = 2, b = 10 y números grandes con BigInt.
+//    El arrastre: abrir y juntar al azar conservan las fichas, y juntar todo lleva al numeral de siempre.
 // 3. Errores de entrada.
 // 4. Cada problema de papel.json coincide con el motor.
 
@@ -191,6 +192,62 @@ test('conteos: numerales de k cifras, capicúas y cifras de las páginas, contra
     assert.equal(M.paginasConCifras(total).paginas, n);
   }
   assert.equal(M.capicuas(30, 10).cantidad, 9 * 1e14, 'exacto aunque sea grande');
+});
+
+test('el arrastre: abrir y juntar al azar conservan las fichas; juntar todo da el numeral de aBase', () => {
+  for (let k = 0; k < N; k++) {
+    const b = ent(2, 10), n = ent(0, 300);
+    let cu = M.agrupar(n, b).cuentas.slice(); while (cu.length < 4) cu.push(0);
+    for (let paso = 0; paso < 30; paso++) {
+      const E0 = M.estado(cu, b), abribles = cu.map((x, j) => (j >= 1 && x >= 1 ? j : -1)).filter(j => j >= 0);
+      assert.equal(E0.fichas, n);
+      assert.equal(E0.normal, cu.every(x => x < b));
+      assert.deepEqual(E0.llenos, cu.map((x, j) => (x >= b ? j : -1)).filter(j => j >= 0));
+      const usarAbrir = abribles.length && (rnd() < .5 || !E0.llenos.length);
+      if (!usarAbrir && !E0.llenos.length) break;
+      const R = usarAbrir ? M.abrir(cu, b, abribles[ent(0, abribles.length - 1)]) : M.juntar(cu, b, E0.llenos[ent(0, E0.llenos.length - 1)]);
+      assert.equal(R.fichas, n, 'abrir o juntar no cambia la cantidad de fichas');
+      cu = R.cuentas;
+    }
+    const Nz = M.normalizar(cu, b);
+    assert.equal(Nz.texto, bruto(n, b), 'juntar todo lleva al numeral de siempre');
+    if (M.estado(cu, b).normal) assert.equal(M.estado(cu, b).texto, bruto(n, b), 'si ninguna cuenta llega a b, el numeral es único');
+    const D = M.desarmar(cu, b);
+    assert.equal(D.sueltas, n);
+    for (let t = 0; t <= D.etapas.length; t += .25) assert.equal(fichas(M.cuadro(D, t).cuentas, b), n);
+  }
+  assert.throws(() => M.abrir([3, 0], 5, 1), /no hay piezas/);
+  assert.throws(() => M.abrir([3, 1], 5, 0), /mayor o igual que 1/);
+  assert.throws(() => M.juntar([4, 1], 5, 0), /hacen falta 5/);
+  assert.throws(() => M.estado([], 5), /cuentas/);
+});
+
+test('el arrastre: abrir y juntar al azar conservan las fichas; juntar todo da el numeral de aBase', () => {
+  for (let k = 0; k < N; k++) {
+    const b = ent(2, 10), n = ent(0, 300);
+    let cu = M.agrupar(n, b).cuentas.slice(); while (cu.length < 4) cu.push(0);
+    for (let paso = 0; paso < 30; paso++) {
+      const E0 = M.estado(cu, b), abribles = cu.map((x, j) => (j >= 1 && x >= 1 ? j : -1)).filter(j => j >= 0);
+      assert.equal(E0.fichas, n);
+      assert.equal(E0.normal, cu.every(x => x < b));
+      assert.deepEqual(E0.llenos, cu.map((x, j) => (x >= b ? j : -1)).filter(j => j >= 0));
+      const usarAbrir = abribles.length && (rnd() < .5 || !E0.llenos.length);
+      if (!usarAbrir && !E0.llenos.length) break;
+      const R = usarAbrir ? M.abrir(cu, b, abribles[ent(0, abribles.length - 1)]) : M.juntar(cu, b, E0.llenos[ent(0, E0.llenos.length - 1)]);
+      assert.equal(R.fichas, n, 'abrir o juntar no cambia la cantidad de fichas');
+      cu = R.cuentas;
+    }
+    const Nz = M.normalizar(cu, b);
+    assert.equal(Nz.texto, bruto(n, b), 'juntar todo lleva al numeral de siempre');
+    if (M.estado(cu, b).normal) assert.equal(M.estado(cu, b).texto, bruto(n, b), 'si ninguna cuenta llega a b, el numeral es único');
+    const D = M.desarmar(cu, b);
+    assert.equal(D.sueltas, n);
+    for (let t = 0; t <= D.etapas.length; t += .25) assert.equal(fichas(M.cuadro(D, t).cuentas, b), n);
+  }
+  assert.throws(() => M.abrir([3, 0], 5, 1), /no hay piezas/);
+  assert.throws(() => M.abrir([3, 1], 5, 0), /mayor o igual que 1/);
+  assert.throws(() => M.juntar([4, 1], 5, 0), /hacen falta 5/);
+  assert.throws(() => M.estado([], 5), /cuentas/);
 });
 
 // 3. Errores de entrada

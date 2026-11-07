@@ -226,6 +226,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/azar.js"></script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'probabilidad-dados', unidad: 'aritmetica.probabilidades', version: '0.1.0' };
@@ -242,7 +243,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, un
    simulaciones con semilla) sale de MotorDados (motor.js); aquí solo se pinta y se anima. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MD = MotorDados, PI = Math.PI;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal, espacio de miles (sin corte) y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -347,7 +348,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   function resize(){
     const w = cv.clientWidth; if (!w) return;
     const h = (E.compacto && innerWidth < 900) ? 240 : alto(w);
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Celular.dpr();
     if (w === W && h === H) { E.dibujar(); return; }
     W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -517,27 +518,46 @@ function crearEscena(cv, idDesc, idLect, idLey){
   }
 
   // ----- tres dados: seis tablitas -----
+  // Las 216 casillas apagadas, los dados y los rótulos se dibujan una vez en un lienzo aparte (la2) y en cada cuadro
+  // se copian; encima se pintan solo las casillas encendidas y las cuentas.
+  let fondoTres = null, llaveTres = '';
   function dibTres(c){
     const X = E.tres;
     if (!X.mostrar){ const s = Math.min(80, H*.36, W/5.4); E.dados.cuadro = null; tiraDados(c, W/2, H*.5, s, s*1.5, 0);
       if (!chico()) [0, 1, 2].forEach(j => rotulo(ctx, c, W/2 + (j - 1)*s*1.5, H*.5 + s*.78 + 6, ['rojo', 'azul', 'café'][j], [c.R, c.B, c.T][j], 'center', 700, 13, false)); return; }
     const g = W >= 560, cols = 3, filas = 2, gap = g ? 16 : 8, cab = 22;
     const side = Math.min((W - 12 - gap*(cols - 1))/cols, (H - 8 - filas*cab - gap)/filas), x00 = (W - (cols*side + (cols - 1)*gap))/2;
-    const cs = side/6;
+    const cs = side/6, dpr = cv.width/W;
+    const lugar = k => [x00 + ((k - 1) % cols)*(side + gap), 4 + Math.floor((k - 1)/cols)*(side + cab + gap) + cab];
+    const llave = `${W}|${H}|${cv.width}|${E.hl === 'T'}|${JSON.stringify(c)}`;
+    if (!fondoTres || llave !== llaveTres){
+      llaveTres = llave; fondoTres = fondoTres || document.createElement('canvas');
+      fondoTres.width = cv.width; fondoTres.height = cv.height;
+      const f = fondoTres.getContext('2d'); f.setTransform(dpr, 0, 0, dpr, 0, 0); f.clearRect(0, 0, W, H);
+      for (let k = 1; k <= 6; k++){
+        const [x0, y0] = lugar(k);
+        dado(f, c, x0 + 10, y0 - cab/2 - 1, 16, k, c.T, 0, E.hl === 'T');
+        rotulo(f, c, x0 + 24, y0 - cab/2, 'café ' + k, c.T, 'left', 800, 12, false);
+        // filas: rojo; columnas: azul (las rayitas de color al borde lo recuerdan)
+        f.save(); f.fillStyle = c.R; f.fillRect(x0 - 4, y0, 2.5, side); f.fillStyle = c.B; f.fillRect(x0, y0 - 4, side, 2.5); f.restore();
+        for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++){
+          f.save(); rr(f, x0 + (b - 1)*cs + 1, y0 + (a - 1)*cs + 1, cs - 2, cs - 2, 3);
+          f.fillStyle = c.card; f.fill(); f.lineWidth = 1; f.strokeStyle = c.grid; f.stroke(); f.restore();
+        }
+      }
+    }
+    ctx.drawImage(fondoTres, 0, 0, W, H);
     for (let k = 1; k <= 6; k++){
-      const x0 = x00 + ((k - 1) % cols)*(side + gap), y0 = 4 + Math.floor((k - 1)/cols)*(side + cab + gap) + cab;
-      dado(ctx, c, x0 + 10, y0 - cab/2 - 1, 16, k, c.T, 0, E.hl === 'T');
-      rotulo(ctx, c, x0 + 24, y0 - cab/2, 'café ' + k, c.T, 'left', 800, 12, false);
-      // filas: rojo; columnas: azul (las rayitas de color al borde lo recuerdan)
-      ctx.save(); ctx.fillStyle = c.R; ctx.fillRect(x0 - 4, y0, 2.5, side); ctx.fillStyle = c.B; ctx.fillRect(x0, y0 - 4, side, 2.5); ctx.restore();
+      const [x0, y0] = lugar(k);
       let cuenta = 0;
-      for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++){
-        const key = a + ',' + b + ',' + k, on = X.lit && X.lit.has(key) && X.orden.get(key) < X.prog;
-        if (on) cuenta++;
+      if (X.lit) for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++){
+        const key = a + ',' + b + ',' + k, on = X.lit.has(key) && X.orden.get(key) < X.prog;
+        if (!on) continue;
+        cuenta++;
         ctx.save(); rr(ctx, x0 + (b - 1)*cs + 1, y0 + (a - 1)*cs + 1, cs - 2, cs - 2, 3);
         ctx.fillStyle = c.card; ctx.fill();
-        if (on){ ctx.save(); ctx.fillStyle = c.F; ctx.globalAlpha = c.relleno; ctx.fill(); ctx.restore(); }
-        ctx.lineWidth = on ? (E.hl === 'F' ? 2.6 : 2) : 1; ctx.strokeStyle = on ? c.F : c.grid; ctx.stroke(); ctx.restore();
+        ctx.save(); ctx.fillStyle = c.F; ctx.globalAlpha = c.relleno; ctx.fill(); ctx.restore();
+        ctx.lineWidth = E.hl === 'F' ? 2.6 : 2; ctx.strokeStyle = c.F; ctx.stroke(); ctx.restore();
       }
       if (cuenta) rotulo(ctx, c, x0 + side, y0 - cab/2, String(cuenta), c.F, 'right', 800, 12, false);
     }
