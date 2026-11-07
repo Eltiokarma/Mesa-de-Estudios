@@ -1,0 +1,131 @@
+{
+  "titulo": "Los interruptores de la lógica: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Si te ayuda, imagina cada proposición simple como un interruptor que puede estar en V o en F, y arma la tabla fila por fila.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "¿Cuántas filas tiene la tabla de verdad de la fórmula [(p ∨ s) ∧ ~q] ↔ (r → p)?",
+      "respuesta": "16 filas.",
+      "pasos": [
+        "Las variables distintas son p, q, r y s: 4 variables (la p aparece dos veces, pero se cuenta una sola vez).",
+        "Cada variable puede ser V o F, y cada una duplica las combinaciones: 2 × 2 × 2 × 2 = 2⁴.",
+        "2⁴ = 16 filas."
+      ],
+      "verificar": [ { "fn": "filasDe", "args": ["[(p ∨ s) ∧ ~q] ↔ (r → p)"], "espera": { "variables": 4, "filas": 16 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Si p es verdadera, q es falsa y r es falsa, halla el valor de verdad de (p ∨ q) → (q ↔ r).",
+      "respuesta": "V.",
+      "pasos": [
+        "Antecedente: p ∨ q = V ∨ F = V.",
+        "Consecuente: q ↔ r = F ↔ F = V, porque las dos tienen el mismo valor.",
+        "Fórmula: V → V = V."
+      ],
+      "verificar": [ { "fn": "valorConPartes", "args": ["(p ∨ q) → (q ↔ r)", { "p": true, "q": false, "r": false }], "espera": { "valoresPartes": [true, true], "valor": true } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se sabe que la proposición ~p → q es falsa. ¿Cuáles son los valores de p y de q?",
+      "respuesta": "p es F y q es F.",
+      "pasos": [
+        "Un condicional solo es falso en un caso: el antecedente es V y el consecuente es F.",
+        "Entonces ~p es V, así que p es F; y q es F.",
+        "Control: ~F → F es V → F, que es F."
+      ],
+      "verificar": [ { "fn": "filasFalsas", "args": ["~p → q"], "espera": { "falsas": ["F F"] } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Arma la tabla de verdad de (p ∧ q) → ~p y di si es tautología, contradicción o contingencia.",
+      "respuesta": "Contingencia: su columna es F V V V.",
+      "pasos": [
+        "Filas en orden: p = V, q = V; p = V, q = F; p = F, q = V; p = F, q = F.",
+        "p ∧ q: V F F F. ~p: F F V V.",
+        "(p ∧ q) → ~p: V → F = F; F → F = V; F → V = V; F → V = V. La columna es F V V V.",
+        "Tiene filas V y una fila F: es una contingencia."
+      ],
+      "verificar": [ { "fn": "clasificar", "args": ["(p ∧ q) → ~p"], "espera": { "tipo": "contingencia", "matriz": "FVVV" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Clasifica la fórmula [(p → q) ∧ p] → q.",
+      "respuesta": "Es una tautología.",
+      "pasos": [
+        "p → q: V F V V. (p → q) ∧ p: V F F F.",
+        "[(p → q) ∧ p] → q: V → V = V; F → F = V; F → V = V; F → F = V.",
+        "Todas las filas son V: es una tautología (es la regla que en lógica se llama modus ponens)."
+      ],
+      "verificar": [ { "fn": "clasificar", "args": ["((p → q) ∧ p) → q"], "espera": { "tipo": "tautologia", "matriz": "VVVV" } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Escribe la negación de «Luis juega fútbol o va al cine», con p: Luis juega fútbol y q: Luis va al cine.",
+      "respuesta": "~p ∧ ~q: «Luis no juega fútbol y no va al cine».",
+      "pasos": [
+        "La frase es p ∨ q. Su negación es ~(p ∨ q).",
+        "Al negar una disyunción, se niega cada parte y el «o» pasa a ser «y»: ~(p ∨ q) ≡ ~p ∧ ~q.",
+        "En palabras: Luis no juega fútbol y no va al cine."
+      ],
+      "verificar": [ { "fn": "negar", "args": ["p ∨ q"], "espera": { "texto": "~p ∧ ~q" } },
+                     { "fn": "equivalentes", "args": ["~(p ∨ q)", "~p ∧ ~q"], "espera": { "equivalentes": true } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Niega la proposición «Si hace frío, me pongo la chompa» y escríbela en palabras.",
+      "respuesta": "«Hace frío y no me pongo la chompa» (p ∧ ~q).",
+      "pasos": [
+        "Con p: hace frío y q: me pongo la chompa, la frase es p → q.",
+        "p → q solo es falsa cuando p es V y q es F. Su negación es verdadera justo en ese caso: p ∧ ~q.",
+        "En palabras: hace frío y no me pongo la chompa."
+      ],
+      "verificar": [ { "fn": "negar", "args": ["p → q"], "espera": { "texto": "p ∧ ~q" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Simplifica ~(~p ∨ q) ∨ q usando leyes lógicas.",
+      "respuesta": "p ∨ q.",
+      "pasos": [
+        "De Morgan: ~(~p ∨ q) ≡ ~~p ∧ ~q ≡ p ∧ ~q.",
+        "Queda (p ∧ ~q) ∨ q. Por la distributiva: (p ∨ q) ∧ (~q ∨ q).",
+        "~q ∨ q es siempre V, y algo ∧ V es ese algo: queda p ∨ q."
+      ],
+      "verificar": [ { "fn": "equivalentes", "args": ["~(~p ∨ q) ∨ q", "p ∨ q"], "espera": { "equivalentes": true } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Se sabe que (p ∧ ~q) → (r ∨ s) es falsa. Halla el valor de verdad de (p ↔ r) Δ (q ∨ s).",
+      "respuesta": "F.",
+      "pasos": [
+        "El condicional es falso solo si el antecedente es V y el consecuente es F.",
+        "p ∧ ~q = V obliga a p = V y q = F. r ∨ s = F obliga a r = F y s = F.",
+        "p ↔ r = V ↔ F = F. q ∨ s = F ∨ F = F.",
+        "F Δ F = F, porque la disyunción exclusiva es V solo cuando las dos partes tienen valores distintos."
+      ],
+      "verificar": [ { "fn": "filasFalsas", "args": ["(p ∧ ~q) → (r ∨ s)"], "espera": { "falsas": ["V F F F"] } },
+                     { "fn": "evaluar", "args": ["(p ↔ r) Δ (q ∨ s)", { "p": true, "q": false, "r": false, "s": false }], "espera": { "valor": false } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Escribe la negación de «Todos los números primos son impares». ¿La frase original es verdadera o falsa?",
+      "respuesta": "«Algún número primo no es impar». La original es falsa, porque 2 es primo y par.",
+      "pasos": [
+        "Negar «todos los … son …» no es decir «ninguno es …»: basta con que uno no cumpla.",
+        "La negación es «algún número primo no es impar».",
+        "El 2 es primo y no es impar: la negación es verdadera, así que la frase original es falsa."
+      ],
+      "verificar": [ { "fn": "negarCuantificador", "args": ["todos"], "espera": { "respuesta": "algunoNo" } },
+                     { "fn": "cuantificador", "args": ["todos", [false, true, true, true, true]], "espera": { "valor": false } } ]
+    }
+  ]
+}
