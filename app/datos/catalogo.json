@@ -332,7 +332,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "fluidos"
+     ]
     },
     {
      "id": "fisica.temperatura-y-calor",
@@ -4572,6 +4574,23 @@
     "/plantillas/exponenciales-logaritmos/index.html",
     "/plantillas/exponenciales-logaritmos/motor.js",
     "/plantillas/exponenciales-logaritmos/papel.json"
+   ]
+  },
+  "fluidos": {
+   "id": "fluidos",
+   "titulo": "Fluidos: presión, Pascal y Arquímedes",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.fluidos"
+   ],
+   "url": "/plantillas/fluidos/index.html",
+   "papel": "/plantillas/fluidos/papel.json",
+   "archivos": [
+    "/plantillas/fluidos/index.html",
+    "/plantillas/fluidos/motor.js",
+    "/plantillas/fluidos/papel.json"
    ]
   },
   "fracciones": {
