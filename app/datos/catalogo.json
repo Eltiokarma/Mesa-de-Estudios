@@ -480,7 +480,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "magnetismo"
+     ]
     },
     {
      "id": "fisica.induccion-electromagnetica",
@@ -4821,6 +4823,23 @@
     "/plantillas/liquidos-y-solidos/index.html",
     "/plantillas/liquidos-y-solidos/motor.js",
     "/plantillas/liquidos-y-solidos/papel.json"
+   ]
+  },
+  "magnetismo": {
+   "id": "magnetismo",
+   "titulo": "Imanes, cables y cargas: campo y fuerza magnética",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnetismo"
+   ],
+   "url": "/plantillas/magnetismo/index.html",
+   "papel": "/plantillas/magnetismo/papel.json",
+   "archivos": [
+    "/plantillas/magnetismo/index.html",
+    "/plantillas/magnetismo/motor.js",
+    "/plantillas/magnetismo/papel.json"
    ]
   },
   "materia-energia": {
