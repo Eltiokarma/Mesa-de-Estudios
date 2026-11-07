@@ -2977,7 +2977,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "geometria-analitica"
+     ]
     },
     {
      "id": "trigonometria.angulos-en-posicion-normal",
@@ -4783,7 +4785,8 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "geometria.geometria-analitica"
+    "geometria.geometria-analitica",
+    "trigonometria.recta-en-el-plano"
    ],
    "url": "/plantillas/geometria-analitica/index.html",
    "papel": "/plantillas/geometria-analitica/papel.json",
