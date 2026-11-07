@@ -87,7 +87,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
 
 /* Datos con color. Fondo del 8 % (el verde de N, del 4 %: con 8 % no llegaba al contraste AA). Resaltado: contorno, sin fondo. */
-.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
 .v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
 .v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 4%, transparent)}
 .v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
@@ -122,7 +122,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 .slider output{font-family:var(--mono); color:var(--muted)}
 input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
-input.r-F{accent-color:var(--c-F)} input.r-T{accent-color:var(--c-T)}
+input.r-F{accent-color:var(--c-F)} input.r-T{accent-color:var(--c-T)} input.r-T2{accent-color:var(--c-T2)}
 .chips{display:flex; flex-wrap:wrap; gap:6px}
 .chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
 .chip.ok{border-color:var(--ok); color:var(--ok)}
@@ -347,11 +347,11 @@ function techo(ctx, c, x1, x2, y){
 const N1 = n => fmt(n, Math.abs(n - Math.round(n)) < 1e-9 ? 0 : 1);
 // Texto del rótulo: "T = 150 N · cuerda".
 const rot = (sim, F, quien, oculta) => `${sim} = ${oculta ? '?' : N1(F) + ' N'} · ${quien}`;
-const giroTxt = t => Math.abs(t) < 1e-9 ? '0' : `${N2(Math.abs(t))} N·m ${t > 0 ? '↺' : '↻'}`;
+const giroTxt = t => Math.abs(t) < 1e-9 ? '0 N·m' : `${N2(Math.abs(t))} N·m ${t > 0 ? '↺' : '↻'}`;
 
 // Leyenda: solo las variables que aparecen en la escena.
 const NOMBRES = { P:'P · peso (la Tierra)', N:'N · reacción del apoyo (empuja)', Nn:'N · normal (el piso)', f:'f · roce (el piso)', T:'T · tensión (la cuerda)',
-  T1:'T₁ · tensión de la cuerda 1', T2:'T₂ · tensión de la cuerda 2', F:'F · fuerza de una mano' };
+  T1:'T₁ · tensión de la cuerda 1', T2:'T₂ · tensión de la cuerda 2', F:'F · fuerza aplicada (por una mano o una persona)' };
 function leyenda(el, claves){
   el.innerHTML = claves.map(k => {
     if (k === 'brazo') return '<span><i class="cota"></i>brazo de una fuerza; arco: su giro τ, en el color de la fuerza (τ = fuerza × brazo)</span>';
@@ -398,8 +398,8 @@ function vistaBarra(L, c, P){
   ctx.restore();
   // A y B a los lados de los extremos; los metros, encima de la barra (debajo van las cuerdas y el apoyo).
   if (P.pasador){ ctx.save(); ctx.beginPath(); ctx.arc(xs, yb, 3.6, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); ctx.restore(); }
-  rotulo(ctx, c, A.x - 7, A.y, 'A', c.ink, 'right', 800, W, H);
-  rotulo(ctx, c, B.x + 7, B.y, 'B', c.ink, 'left', 800, W, H);
+  rotulo(ctx, c, A.x - 11, A.y, 'A', c.ink, 'right', 800, W, H);
+  rotulo(ctx, c, B.x + 11, B.y, 'B', c.ink, 'left', 800, W, H);
   if (P.regla && !th){
     ctx.save(); ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
     for (let x = 1; x < P.L - 1e-9; x += 1) if (Math.abs(x - P.s) > 0.3 && !(P.O !== null && P.O !== undefined && Math.abs(x - P.O) < 0.3)) ctx.fillText(`${fmt(x, 0)} m`, pt(x).x, yb - grosor/2 - 3);
@@ -413,7 +413,7 @@ function vistaBarra(L, c, P){
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, p.x, p.y + grosor/2, p.x, yB - lado/2); ctx.restore();
     bloque(ctx, c, p.x, yB, lado + 10, lado, q.ver === 'oculta' ? '?' : `${N1(q.F)} N`);
     if (q.ver) lista.push({ x:p.x, y:p.y + grosor/2, dx:0, dy:1, F:q.F || 0, k, col:c.T, hl:hl === 'T', crece:crec(q.ver), oculta:q.ver === 'oculta', largoOculto:40,
-      txt:rot('T', q.F, 'cuerda', q.ver === 'oculta'), al:'left', lx:p.x - 14, ly:yB + lado/2 + 14 });
+      txt:rot('T', q.F, 'cuerda', q.ver === 'oculta'), al:'left', ...(yB + lado/2 + 24 > g.piso ? { lx:p.x + (lado + 10)/2 + 6, ly:yB } : { lx:p.x - 14, ly:yB + lado/2 + 14 }) });
   });
   const b = P.barra, cg = pt(b.xcg);
   if (P.verP) lista.push({ x:cg.x, y:cg.y + grosor/2, dx:0, dy:1, F:b.P, k, col:c.P, hl:hl === 'P', crece:crec(P.verP), txt:rot('P', b.P, 'Tierra'), al:'left', lx:cg.x + 8, ly:cg.y + grosor/2 + Math.min(b.P*k, 140) - 6 });
@@ -439,7 +439,7 @@ function vistaBarra(L, c, P){
     const po = pt(P.O), s = P.sobre === 'O' ? 9 : 7;
     ctx.save(); ctx.beginPath(); ctx.arc(po.x, po.y, s, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.stroke();
     ctx.beginPath(); ctx.arc(po.x, po.y, 2.4, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
-    rotulo(ctx, c, po.x, po.y + 20, 'O', c.ink, 'center', 800, W, H);
+    rotulo(ctx, c, po.x + 10, po.y - 16, 'O', c.ink, 'left', 800, W, H);
   }
   // Asas para arrastrar
   (P.asas || []).forEach(a => {
@@ -477,13 +477,15 @@ function vistaBate(L, c, P){
   if (!P.corte){
     ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; rr(ctx, xc - 7, yb + rMango + 1, 14, 34, 7); ctx.fill(); ctx.stroke(); ctx.restore();
     rotulo(ctx, c, xc - 12, yb + rMango + 30, 'dedo', c.muted, 'right', 700, W, H);
-    const k = Math.min(W, H)*0.16/b.P;
-    fuerza(ctx, c, { x:xc, y:yb - rPunta - 2, dx:0, dy:-1, F:b.P, k, col:c.N, txt:rot('N', b.P, 'dedo'), al:'left', lx:xc + 8, ly:yb - rPunta - 2 - b.P*k + 4 }, W, H);
-    fuerza(ctx, c, { x:xc + 2, y:yb, dx:0, dy:1, F:b.P, k, col:c.P, txt:rot('P', b.P, 'Tierra'), al:'left', lx:xc + 22, ly:yb + rMango + 22 }, W, H);
+    // El peso llega al bate desde arriba, con la punta en el centro de gravedad; el dedo empuja desde abajo.
+    // Así las dos flechas van sobre la misma vertical sin taparse con el dedo.
+    const k = Math.min(W, H)*0.14/b.P, lp = b.P*k, yDedo = yb + rMango + 36;
+    fuerza(ctx, c, { x:xc, y:yb - rPunta - 2 - lp, dx:0, dy:1, F:b.P, k, col:c.P, txt:rot('P', b.P, 'Tierra'), al:'left', lx:xc + 8, ly:yb - rPunta - 2 - lp + 6 }, W, H);
+    fuerza(ctx, c, { x:xc, y:yDedo + 2 + lp, dx:0, dy:-1, F:b.P, k, col:c.N, txt:rot('N', b.P, 'dedo'), al:'left', lx:xc + 8, ly:yDedo + 2 + lp - 6 }, W, H);
   }
   // Línea del corte
   ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.4; linea(ctx, xc, yb - rPunta - 6 - (P.corte ? 0 : 0), xc, yb + rPunta + 6); ctx.restore();
-  if (!P.corte) rotulo(ctx, c, xc - 10, yb - rPunta - 12, 'se corta aquí ✂', c.ink, 'right', 800, W, H);
+  if (!P.corte) rotulo(ctx, c, xc - 10, yb - rPunta - 10, 'se corta aquí ✂', c.ink, 'right', 800, W, H);
   // Balanza de platos (brazos iguales)
   const cx = W/2, yv = Math.round(H*0.62), brazo = clamp(W*0.3, 100, 190);
   const tilt = (P.balanza || 0)*(b.masMasa === 'punta' ? 1 : b.masMasa === 'mango' ? -1 : 0)*0.16;
@@ -510,7 +512,7 @@ function vistaBate(L, c, P){
       rotulo(ctx, c, pi.x, pi.y + 16, `mango: ${N2(b.mango.m)} kg`, c.ink, 'center', 800, W, H);
       rotulo(ctx, c, pd.x, pd.y + 16, `punta: ${N2(b.punta.m)} kg`, c.ink, 'center', 800, W, H);
     }
-  } else rotulo(ctx, c, cx, yv - 22, 'balanza de platos', c.muted, 'center', 700, W, H);
+  } else rotulo(ctx, c, cx - brazo, yv + 58, 'balanza de platos', c.muted, 'center', 700, W, H);
 }
 
 /* ---------- Una fuerza inclinada en el extremo de una barra con eje ----------
@@ -575,7 +577,7 @@ let parar = () => {};
 const L = crearLienzo(cv, altoLienzo, draw);
 
 const P1 = { id:'estatica-peso-en-A', ok:'b',
-  opts:[['a','100 N','E1-mismo-peso-a-cada-lado','documentado'], ['b','150 N',null,''],
+  opts:[['a','100 N','E1-mismo-peso-a-cada-lado','parcial'], ['b','150 N',null,''],
         ['c','300 N','igualar-pesos-sin-distancias','hipotesis'], ['d','600 N','peso-de-la-barra-en-su-extremo','hipotesis']],
   fb:{ b:'¡Bien! Lo que se iguala es el giro: 150 N con 2 m de brazo hacen girar tanto como los 300 N de la barra con 1 m.',
        a:'Elegiste la A. Con 100 N habría el mismo peso a cada lado del apoyo (100 N de barra más 100 N colgados, contra 200 N de barra), pero lo que tiene que ser igual es el giro, no el peso. La barra giraría hacia B. La correcta está marcada.',
@@ -600,18 +602,18 @@ const P3 = { id:'estatica-inclinada', ok:'c',
 const P4 = { id:'estatica-bate', ok:'c',
   opts:[['a','Pesan lo mismo, porque el bate estaba en equilibrio.','E1-mismo-peso-a-cada-lado','documentado'],
         ['b','La del mango, porque es más larga.','mas-largo-mas-masa','hipotesis'],
-        ['c','La gruesa, porque su peso actúa más cerca del corte.',null,''],
-        ['d','Pesan lo mismo, porque el corte pasa por su centro de gravedad.','E2-centro-de-gravedad-reparte-la-mitad','hipotesis']],
-  fb:{ c:'¡Bien! El equilibrio iguala los giros, no las masas. La parte gruesa tiene su peso más cerca del corte, así que necesita más peso para girar lo mismo.',
+        ['c','La de la punta, porque su peso actúa más cerca del corte.',null,''],
+        ['d','La del mango, porque su peso actúa más lejos del corte y hace más giro.','giro-mayor-mas-peso','hipotesis']],
+  fb:{ c:'¡Bien! El equilibrio iguala los giros, no las masas. La punta, que es gruesa, tiene su peso más cerca del corte, así que necesita más peso para girar lo mismo.',
        a:'Elegiste la A. En equilibrio se igualan los giros respecto al corte, no los pesos. La parte del mango tiene su peso lejos del corte y le basta con menos. La correcta está marcada.',
        b:'Elegiste la B. Más larga no es más pesada: el mango es delgado. Y al ser larga, su peso actúa lejos del corte, así que le basta con menos peso para equilibrar. La correcta está marcada.',
-       d:'Elegiste la D. El corte sí pasa por el centro de gravedad, pero eso iguala los giros de las dos partes, no sus masas. La correcta está marcada.' } };
+       d:'Elegiste la D. Respecto al corte, las dos partes giran lo mismo: por eso el bate estaba en equilibrio. El mango tiene su peso lejos del corte, así que le basta con menos masa. La correcta está marcada.' } };
 const P5 = { id:'estatica-fuerza-inclinada', ok:'b',
   opts:[['a','30 N·m','olvidar-la-distancia','hipotesis'], ['b','60 N·m',null,''],
         ['c','80 N·m','coseno-en-vez-de-seno','hipotesis'], ['d','100 N·m','sin-el-seno','hipotesis']],
   fb:{ b:'¡Bien! El brazo es la distancia perpendicular del eje a la línea de la fuerza: 2·sen 37° = 1,2 m. Y 50·1,2 = 60 N·m.',
        a:'Elegiste la A. 30 N es la parte de la fuerza que hace girar, pero falta multiplicarla por su distancia al eje, 2 m. La correcta está marcada.',
-       c:'Elegiste la C. 80 N·m usa el coseno: esa parte de la fuerza va a lo largo de la barra y apunta al eje, así que no gira nada. La correcta está marcada.',
+       c:'Elegiste la C. 80 N·m usa el coseno: esa parte de la fuerza va a lo largo de la barra, sobre una línea que pasa por el eje, así que no gira nada. La correcta está marcada.',
        d:'Elegiste la D. 50·2 = 100 N·m valdría si la fuerza fuera perpendicular a la barra. Inclinada, gira menos. La correcta está marcada.' } };
 
 const fuente = t => `<p class="fuente">${t}</p>`;
@@ -636,7 +638,7 @@ const steps = [
      </div>
      <p>Cada fuerza hace girar la barra alrededor del apoyo, y gira más cuanto más lejos actúa. Su giro, o momento τ, es la fuerza por su <b>brazo</b>: la distancia del apoyo a la línea de la fuerza. En el dibujo, cada brazo es una línea con topes y cada giro, un arco, en el color de su fuerza.</p>
      <p>A la izquierda del apoyo hay menos barra (2 m contra 4 m), pero eso no importa: lo que cuenta es dónde actúa el peso entero de la barra, su centro.</p>
-     ${fuente('Igualar lo que hay a cada lado del apoyo es un error documentado: con un bate apoyado en su punto de equilibrio, la mayoría de más de 1000 universitarios dijo que las dos partes pesan igual (Ortiz, Heron y Shaffer, 2005); según un póster que cita ese estudio, fue cerca del 80 %. Las opciones de 300 N y 600 N son errores que suponemos, sin estudio con porcentaje.')}`; },
+     ${fuente('Igualar lo que hay a cada lado del apoyo es la cara numérica de un error documentado con el bate (paso 6): la mayoría de más de 1000 universitarios dijo que las dos partes pesan igual (Ortiz, Heron y Shaffer, 2005), cerca del 80 % según un póster que cita ese estudio. En esta barra no está medido. Las opciones de 300 N y 600 N son errores que suponemos.')}`; },
    lect:() => S.pred[P1.id] ? (() => { const m = M.momentoNeto(CON, 2).lista; return [['T', `τ de T = ${N1(m[1].F*-1)} × ${N2(m[1].brazo)} = ${giroTxt(m[1].tau)}`], ['P', `τ de P = 300 × ${N2(m[0].brazo)} = ${giroTxt(m[0].tau)}`]]; })() : [],
    desc:() => S.pred[P1.id] ? 'En A cuelgan 150 newtons, a 2 metros del apoyo: giran 300 newton metro en sentido antihorario. El peso de la barra, 300 newtons a 1 metro del apoyo, gira 300 newton metro en sentido horario.' : 'Una barra de 6 metros apoyada a 2 metros de A, con su peso de 300 newtons en el centro. El peso del bloque en A todavía no se muestra.' },
  { k:'Paso 3', t:'¿Cuánto empuja el apoyo?', gate:P2, ley:['P','T','N'],
@@ -667,7 +669,7 @@ const steps = [
        <div class="eq">brazo de ${V('T','T')}: 2 · cos ${INCL}° = ${V('T', N2(m[1].brazo) + ' m')}; giro ${V('T', giroTxt(m[1].tau))}</div>
        <div class="eq">brazo de ${V('P','P')}: 1 · cos ${INCL}° = ${V('P', N2(m[0].brazo) + ' m')}; giro ${V('P', giroTxt(m[0].tau))}</div>
        <div class="eq">Στ = ${giroTxt(b.momentos(2).neto)}<span class="note">sigue en equilibrio</span></div></div>
-     <p>Las fuerzas siguen siendo verticales, así que cada brazo se mide en horizontal, desde el apoyo hasta la línea de la fuerza. Al inclinar la barra, los dos brazos se acortan por el mismo factor, cos ${INCL}° = 24/25. Los giros se achican igual y siguen cancelándose: la barra se queda quieta, inclinada.</p>
+     <p>Las fuerzas siguen siendo verticales, así que cada brazo se mide en horizontal, desde el apoyo hasta la línea de la fuerza. Al inclinar la barra, los dos brazos se acortan por el mismo factor, cos ${INCL}° = 24/25. Los giros se achican igual y siguen cancelándose: la barra se queda quieta, inclinada. Aunque el bloque cuelga más abajo, su cuerda jala en A, que está en la línea del pasador.</p>
      ${fuente('Tratar al cuerpo inclinado y en reposo como un caso distinto del horizontal es una idea que, según el resumen de Ortiz, Heron y Shaffer (2005), tienen muchos estudiantes; el resumen no da porcentaje. Las otras dos opciones son errores que suponemos.')}`; },
    lect:() => { if (!S.pred[P3.id]) return []; const b = M.barra(Object.assign({ inclinacion:INCL }, CON)), m = b.momentos(2).lista; return [['T', `τ de T ${giroTxt(m[1].tau)}`], ['P', `τ de P ${giroTxt(m[0].tau)}`], ['suma', `Στ = ${giroTxt(b.momentos(2).neto)}`]]; },
    desc:() => S.pred[P3.id] ? 'La barra se queda quieta, inclinada 16 grados. Los brazos horizontales miden 1,92 y 0,96 metros, y los dos giros valen 288 newton metro, en sentidos opuestos.' : 'La barra inclinada 16 grados, con el extremo B arriba, 150 newtons colgados en A, su peso de 300 newtons en el centro y el apoyo. Todavía no se muestra qué pasa al soltarla.' },
@@ -676,9 +678,9 @@ const steps = [
    body:() => `<p>Un bate de juguete de ${N2(BATE.L)} m tiene un mango delgado y una punta gruesa. Se equilibra sobre un dedo a ${N2(BATE.xcg)} m del extremo del mango: ahí está su centro de gravedad. Se corta justo ahí y cada parte va a un plato de una balanza. ¿Qué parte pesa más?</p>${opcionesHTML(P4.opts, 'fb')}<div id="res" class="body"></div>`,
    exp:() => `<div class="eqs">
        <div class="eq">mango: ${N2(BATE.mango.m)} kg, su centro a ${N2(BATE.mango.brazo)} m del corte → ${N2(BATE.mango.P)} N · ${N2(BATE.mango.brazo)} m = ${N2(BATE.mango.tau)} N·m</div>
-       <div class="eq">punta: ${N2(BATE.punta.m)} kg, su centro a ${N2(BATE.punta.brazo)} m del corte → ${N2(BATE.punta.P)} N · ${N2(BATE.punta.brazo)} m = ${N2(BATE.punta.tau)} N·m</div></div>
+       <div class="eq">punta: ${N2(BATE.punta.m)} kg, su centro a ${N2(BATE.punta.brazo)} m del corte → ${N2(BATE.punta.P)} N · ${N2(BATE.punta.brazo)} m = ${N2(Math.abs(BATE.punta.tau))} N·m</div></div>
      <p>Las dos partes giran lo mismo respecto al corte, y por eso el bate estaba en equilibrio. Pero la punta tiene su peso más cerca del corte: para girar lo mismo necesita el doble de masa. En la balanza de platos, que tiene brazos iguales, la punta baja.</p>
-     ${fuente('Es la idea errónea más fuerte de estática que encontramos: con el bate, la mayoría de más de 1000 universitarios, después del curso, dijo que las dos partes pesan igual (Ortiz, Heron y Shaffer, 2005); según un póster de Fischer y otros (2014) que cita ese estudio, fue cerca del 80 %. Con dos cajas sobre una tabla, en cambio, casi todos aciertan: el error aparece cuando la masa está repartida.')}`,
+     ${fuente('Es la idea errónea más fuerte de estática que encontramos: con el bate, la mayoría de más de 1000 universitarios, después del curso, dijo que las dos partes pesan igual (Ortiz, Heron y Shaffer, 2005); según un póster de Fischer y otros (2014) que cita ese estudio, fue cerca del 80 %. Con dos cajas sobre una tabla, en cambio, alrededor del 95 % acierta en el estudio de Ortiz (70 % en los grupos de Fischer): el error aparece cuando la masa está repartida.')}`,
    lect:() => [],
    desc:() => S.pred[P4.id] ? `El bate cortado: el mango pesa ${N2(BATE.mango.m)} kilogramos y la punta ${N2(BATE.punta.m)}. En la balanza baja el plato de la punta.` : 'Un bate de 0,9 metros con el mango delgado y la punta gruesa, equilibrado sobre un dedo a 0,6 metros del extremo del mango. Debajo, una balanza de platos vacía.' },
  { k:'Paso 7', t:'Una fuerza inclinada', gate:P5, ley:['F'], leyDespues:['F','brazo'],
@@ -688,7 +690,7 @@ const steps = [
        <div class="eq">brazo = ${N2(LLAVE.d)} · sen 37° = ${V('F', N2(llave.brazo) + ' m')}</div>
        <div class="eq">τ = ${V('F','50')} · ${V('F', N2(llave.brazo))} = ${V('F', N2(llave.tau) + ' N·m')} ↺</div>
        <div class="eq">otra forma: (${V('F','50')} · sen 37°) · ${N2(LLAVE.d)} = ${V('F', N1(llave.Fperp))} · ${N2(LLAVE.d)} = ${N2(llave.tau)} N·m</div></div>
-     <p>El brazo no es la distancia hasta donde se aplica la fuerza: es la distancia perpendicular del eje a la <b>línea</b> de la fuerza (a trazos). Otra forma de verlo: de la fuerza, solo la parte perpendicular a la barra, ${N1(llave.Fperp)} N, hace girar; la parte a lo largo, ${N1(llave.Fpar)} N, apunta al eje y no gira nada.</p>
+     <p>El brazo no es la distancia hasta donde se aplica la fuerza: es la distancia perpendicular del eje a la <b>línea</b> de la fuerza (a trazos). Otra forma de verlo: de la fuerza, solo la parte perpendicular a la barra, ${N1(llave.Fperp)} N, hace girar; la parte a lo largo, ${N1(llave.Fpar)} N, va sobre una línea que pasa por el eje y no gira nada.</p>
      ${fuente('Olvidar el seno, o usar el coseno, son errores que suponemos: no encontramos un estudio que los mida en estudiantes.')}`,
    lect:() => S.pred[P5.id] ? [['F', `τ de F = ${N2(llave.tau)} N·m ↺`]] : [],
    desc:() => S.pred[P5.id] ? 'El brazo de la fuerza es la perpendicular del eje a su línea: 1,2 metros. El momento vale 60 newton metro, antihorario.' : 'Una barra con un eje en el extremo izquierdo. A 2 metros del eje, una mano jala con 50 newtons formando 37 grados con la barra.' },
@@ -968,7 +970,8 @@ function vistaPolea(L, c, P){
   ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.stroke();
   ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
   const base = H*0.55, off = clamp(P.off, -H*0.18, H*0.18);
-  const y1 = base - H*0.1 + off, y2 = base + H*0.1 - off; // balde (izquierda) más arriba que el bloque (derecha) al empezar
+  // Balde (izquierda) más arriba que el bloque (derecha) al empezar; ninguno se mete en la rueda.
+  const y1 = Math.max(cy + R + 64, base - H*0.1 + off), y2 = Math.max(cy + R + 52, base + H*0.1 - off);
   const x1 = cx - R, x2 = cx + R;
   ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(cx, cy, R, Math.PI, 0); ctx.stroke();
   linea(ctx, x1, cy, x1, y1 - 16); linea(ctx, x2, cy, x2, y2 - 16); ctx.restore();
@@ -1003,7 +1006,7 @@ function vistaRoce(L, c, P){
   // Mano
   ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, cx - l/2 - 22, cb.y - 12, 20, 24, 7); ctx.fill(); ctx.stroke(); linea(ctx, cx - l/2 - 22, cb.y, cx - l/2 - 54, cb.y - 8); ctx.restore();
   const k = Math.min(W, H)*0.4/r.P, cr = P.crece === undefined ? 1 : P.crece, fv = P.verf;
-  if (P.F > 0) fuerza(ctx, c, { x:cx - l/2 - 26 - P.F*k, y:cb.y - l*0.3, dx:1, dy:0, F:P.F, k, col:c.F, hl:P.hl === 'F', txt:rot('F', P.F, 'mano'), al:'right', lx:cx - l/2 - 8, ly:cb.y - l*0.3 - 16 }, W, H);
+  if (P.F > 0) fuerza(ctx, c, { x:cx - l/2 - P.F*k, y:cb.y - l*0.3, dx:1, dy:0, F:P.F, k, col:c.F, hl:P.hl === 'F', txt:rot('F', P.F, 'mano'), al:'right', lx:cx - l/2 - 8, ly:cb.y - l*0.3 - 16 }, W, H);
   fuerza(ctx, c, { x:cb.x + l*0.12, y:cb.y + 8, dx:0, dy:1, F:r.P, k, col:c.P, txt:rot('P', r.P, 'Tierra'), al:'left', lx:cb.x + l*0.12 + 8, ly:cb.y + 8 + r.P*k - 6 }, W, H);
   fuerza(ctx, c, { x:cb.x - l*0.3, y:y0, dx:0, dy:-1, F:r.N, k, col:c.N, txt:rot('N', r.N, 'piso'), al:'right', lx:cb.x - l*0.3 - 8, ly:y0 - r.N*k + 8 }, W, H);
   if (fv){
@@ -1011,23 +1014,23 @@ function vistaRoce(L, c, P){
     if (fv === 'oculta' || mod > 1e-9) fuerza(ctx, c, { x:x0, y:y0 + 6, dx:-1, dy:0, F:mod, k, col:c.f, oculta:fv === 'oculta', crece:fv === 'nueva' ? cr : 1, largoOculto:40,
       txt:fv === 'oculta' ? 'f = ? · piso' : r.quieto ? rot('f', r.roce, 'piso') : `f llega a ${N1(r.fsMax)} N y no alcanza`, al:'left', lx:x0 + 6, ly:y0 + 22 }, W, H);
   }
-  rotulo(ctx, c, cb.x - l/2 + 6, cb.y - l/2 + 12, '20 kg', c.ink, 'left', 800, W, H);
+  rotulo(ctx, c, cb.x + l/2 - 6, cb.y - l/2 + 12, '20 kg', c.ink, 'right', 800, W, H);
 }
 
 const S = { k:0, pred:{}, t0:Date.now() };
 const EXPS = [
-  { id:'nudo', corto:'Dos cuerdas distintas', ley:['P','T1','T2'],
+  { id:'nudo', corto:'El nudo de 37° y 53°', ley:['P','T1','T2'],
     q:`Un bloque de 10 kg cuelga de un nudo. Del nudo salen dos cuerdas al techo: la ${V('T','cuerda 1')} forma 37° con el techo y la ${V('T2','cuerda 2')}, 53°. ¿Qué cuerda está más tensa?`,
-    opts:[['a','La 1, porque está más tendida y hace más esfuerzo.','cuerda-mas-tendida-mas-tensa','documentado'],
+    opts:[['a','La 1, porque está más tendida y hace más esfuerzo.','E8-cuerda-mas-vertical-menos-tensa','documentado'],
           ['b','Las dos igual, porque cada una sostiene la mitad del peso.','E8-tensiones-como-numeros','documentado'],
           ['c','La 2, porque está más cerca de la vertical y sostiene más del peso.',null],
-          ['d','La 1, porque es la más larga y sostiene más cuerda.','E7-tension-depende-del-largo','documentado']],
+          ['d','No se puede saber, porque depende de cuánto mide cada cuerda.','E7-tension-depende-del-largo','documentado']],
     ok:'c',
     antes:() => Object.assign(E, { tipo:'nudo', a1:37, a2:53, h:1, ver:'oculta' }),
     despues:() => { E.ver = 'nueva'; E.triangulo = true; crecer(); },
     ctrl:() => `<div class="ctrls">
         <div class="slider"><label for="q-a1"><span>Ángulo de la ${V('T','cuerda 1')}</span><output id="q-a1-o"></output></label><input id="q-a1" class="r-T" type="range" min="5" max="90" step="1" value="${E.a1}"></div>
-        <div class="slider"><label for="q-a2"><span>Ángulo de la ${V('T2','cuerda 2')}</span><output id="q-a2-o"></output></label><input id="q-a2" type="range" min="5" max="90" step="1" value="${E.a2}"></div>
+        <div class="slider"><label for="q-a2"><span>Ángulo de la ${V('T2','cuerda 2')}</span><output id="q-a2-o"></output></label><input id="q-a2" class="r-T2" type="range" min="5" max="90" step="1" value="${E.a2}"></div>
         <div class="slider"><label for="q-h"><span>Profundidad del nudo (alarga las cuerdas)</span><output id="q-h-o"></output></label><input id="q-h" type="range" min="0.5" max="2" step="0.1" value="${E.h}"></div></div><div class="chips" id="chips2"></div>`,
     vivo:() => {
       $('q-a1-o').textContent = `${E.a1}°`; $('q-a2-o').textContent = `${E.a2}°`; $('q-h-o').textContent = `${fmt(E.h, 1)} m`;
@@ -1043,8 +1046,8 @@ const EXPS = [
       <div class="eq">${V('T','T₁')} = ${V('T','60 N')}; ${V('T2','T₂')} = ${V('T2','80 N')}</div></div>
       <p>La cuerda más cercana a la vertical sostiene más del peso, así que está más tensa. Y fíjate: 60 + 80 = 140 N sostienen un peso de 100 N. Las tensiones no se suman como números sino como flechas: al ponerlas una detrás de otra, con el peso, cierran un triángulo (a la derecha del dibujo). Aquí las dos cuerdas forman 90° entre sí, y el triángulo es el 3-4-5 de los libros.</p>
       <p>Mueve los ángulos: si una cuerda se acerca a la horizontal, su tensión crece mucho. Y baja el nudo: las cuerdas se alargan, pero las tensiones no cambian, porque solo dependen de los ángulos y del peso.</p>
-      ${fuente('Las tres opciones incorrectas están documentadas por Flores-García y otros (2009), con estudiantes de Estados Unidos y de Ciudad Juárez que ya habían llevado el tema. En una pregunta de dos cuerdas con ángulos y largos distintos, alrededor del 20 % de 132 estudiantes razonó con los largos, cerca del 15 % dijo que las tensiones eran iguales y un cuarto eligió que la cuerda más vertical tenía menos tensión.')}` },
-  { id:'simetrico', corto:'Dos cuerdas iguales', ley:['P','T1','T2'],
+      ${fuente('Las tres opciones incorrectas están documentadas por Flores-García y otros (2009), con estudiantes de Estados Unidos y de Ciudad Juárez que ya habían llevado el tema. En una pregunta de dos cuerdas con ángulos y largos distintos, alrededor del 20 % de 132 estudiantes razonó con los largos (aquí no hacen falta: la tensión solo depende de los ángulos y del peso), cerca del 15 % dijo que las tensiones eran iguales y un cuarto eligió que la cuerda más vertical tenía menos tensión.')}` },
+  { id:'simetrico', corto:'El nudo de 53° y 53°', ley:['P','T1','T2'],
     q:`Ahora el bloque de 10 kg cuelga de dos cuerdas iguales, ${V('T','1')} y ${V('T2','2')}, que forman 53° con el techo cada una. ¿Cuánto vale la tensión de cada cuerda?`,
     opts:[['a','40 N','mitad-por-seno','hipotesis'], ['b','50 N','E8-mitad-del-peso','parcial'], ['c','62,5 N',null], ['d','83,3 N','angulo-con-la-vertical','hipotesis']],
     ok:'c',
@@ -1059,12 +1062,12 @@ const EXPS = [
       <p>Cada cuerda jala inclinada: solo su parte vertical, la tensión por sen 53°, sostiene el peso. Por eso cada una tiene que jalar con más de la mitad del peso: 62,5 N y no 50 N. Las partes horizontales se cancelan entre sí.</p>
       <p>Baja el ángulo: a 30° cada cuerda ya soporta los 100 N enteros, y cerca de la horizontal la tensión crece sin límite. La mitad del peso solo vale con las cuerdas verticales.</p>
       ${fuente('Repartir el peso por mitades tiene respaldo cualitativo, sin porcentaje en este caso: Flores-García y otros (2009) citan como hallazgo previo que los estudiantes suman las tensiones como números. Las otras dos opciones, multiplicar en vez de dividir y medir el ángulo desde la vertical, son errores que suponemos.')}` },
-  { id:'par', corto:'Dos manos en la tabla', ley:['F'],
+  { id:'par', corto:'La tabla en el hielo', ley:['F'],
     q:`Una tabla de 2 m y 12 kg está sobre una pista de hielo, sin roce. Dos personas la empujan en sus extremos con ${V('F','6 N')} cada una, en sentidos opuestos y perpendicular a la tabla, siempre perpendicular aunque se mueva. ¿Qué hace la tabla?`,
     opts:[['a','Se queda quieta, porque las dos fuerzas se cancelan.','E4-momento-igual-fuerza','parcial'],
           ['b','Gira en su sitio, porque las fuerzas se cancelan pero sus giros se suman.',null],
           ['c','Se desliza hacia un lado, porque una de las dos fuerzas siempre gana.','una-fuerza-gana','hipotesis'],
-          ['d','Gira alrededor de uno de sus extremos, porque cada fuerza la hace girar desde el otro.','E5-giro-respecto-a-un-extremo','hipotesis']],
+          ['d','Gira alrededor de uno de sus extremos, porque cada fuerza la hace girar desde el otro.','gira-alrededor-de-un-extremo','hipotesis']],
     ok:'b',
     antes:() => Object.assign(E, { tipo:'par', ang:0, giro:false }),
     despues:() => { E.giro = true; girar(); },
@@ -1079,9 +1082,12 @@ const EXPS = [
     q:`Un balde y un bloque cuelgan de los extremos de una cuerda que pasa por una rueda fija (una polea sin roce). Están quietos, el bloque más abajo que el balde. ¿Qué se puede decir de sus pesos?`,
     opts:[['a','El bloque pesa más, porque está más abajo.','E9-el-de-abajo-pesa-mas','documentado'],
           ['b','Pesan lo mismo, porque la cuerda jala igual a los dos.',null],
-          ['c','El balde pesa más, porque su lado de la cuerda es más corto.','E7-tension-depende-del-largo','parcial'],
-          ['d','El bloque pesa más, porque cerca del peso la cuerda está más tensa.','E6-tension-cambia-en-la-cuerda','documentado']],
+          ['c','No se puede saber, porque depende de cuánta cuerda hay a cada lado.','E7-tension-depende-del-largo','parcial'],
+          ['d','El balde pesa más, porque está más cerca de la rueda, donde la cuerda está más tensa.','E6-tension-cambia-en-la-cuerda','parcial']],
     ok:'b',
+    fb:{ a:'Elegiste la A. Estar más abajo no cambia el peso: en equilibrio, cada uno pesa lo que jala la cuerda, y la cuerda jala igual a los dos. La correcta está marcada; mira la escena.',
+         c:'Elegiste la C. Cuánta cuerda hay a cada lado no importa: una cuerda ligera en una polea sin roce tiene la misma tensión en todos sus puntos. La correcta está marcada; mira la escena.',
+         d:'Elegiste la D. La tensión no crece cerca de la rueda: es la misma en toda la cuerda, a los dos lados. La correcta está marcada; mira la escena.' },
     antes:() => Object.assign(E, { tipo:'polea', off:0, ver:'oculta' }),
     despues:() => { E.ver = 'nueva'; E.puntos = true; crecer(); },
     ctrl:() => `<div class="slider"><label for="q-off"><span>Mueve la cuerda (sube el bloque, baja el balde)</span><output id="q-off-o"></output></label><input id="q-off" type="range" min="-50" max="50" step="5" value="${E.off}"></div><div class="chips" id="chips2"></div>`,
@@ -1090,7 +1096,7 @@ const EXPS = [
     alCambiar:() => { E.off = +$('q-off').value; },
     exp:`<p>Sobre cada cuerpo actúan dos fuerzas: su ${V('P','peso')} hacia abajo y la ${V('T','tensión')} de la cuerda hacia arriba. Como están quietos, en cada uno la tensión es igual al peso. Y una cuerda ligera que pasa por una polea sin roce tiene la misma tensión en todos sus puntos, a los dos lados (mira los tres puntos rojos). Entonces los dos pesos son iguales.</p>
       <p>Mueve la cuerda: el bloque sube, el balde baja, y siguen quietos donde los dejes. La altura no cambia nada.</p>
-      ${fuente('Según Flores-García y otros (2009), que citan un estudio de Gunstone y White con 463 alumnos, alrededor de un cuarto dijo que el bloque pesa más, sobre todo porque está más cerca del suelo. En otra pregunta de su estudio, al ordenar la tensión en cinco puntos de una cuerda, acertó el 42 % de 90 alumnos en Nuevo México y el 34 % de 105 en Ciudad Juárez; alrededor de un tercio razona según la cercanía al peso o a la polea. Que dependa del largo de la cuerda está documentado con dos cuerdas distintas, no con esta polea.')}` },
+      ${fuente('Según Flores-García y otros (2009), que citan un estudio de Gunstone y White con 463 alumnos, alrededor de un cuarto dijo que el bloque pesa más, sobre todo porque está más cerca del suelo. En otra pregunta de su estudio, al ordenar la tensión en cinco puntos de una cuerda, acertó el 42 % de 90 alumnos en Nuevo México y el 34 % de 105 en Ciudad Juárez; alrededor de un tercio razona según la cercanía al peso o a la polea; con esta polea no está medido. Que la tensión dependa del largo de la cuerda está documentado con dos cuerdas distintas, tampoco con esta polea.')}` },
   { id:'roce', corto:'La caja en el piso', ley:['P','Nn','f','F'],
     q:`Una caja de 20 kg está sobre un piso con coeficiente de rozamiento estático μs = 0,5. La empujas horizontalmente con ${V('F','30 N')} y no se mueve. ¿Cuánto vale el ${V('f','roce')} del piso?`,
     opts:[['a','0 N','sin-movimiento-sin-roce','hipotesis'], ['b','30 N',null], ['c','70 N','lo-que-falta-para-el-maximo','hipotesis'], ['d','100 N','E10-roce-estatico-siempre-maximo','parcial']],
@@ -1122,7 +1128,7 @@ function draw(){
     let r; try { r = vistaNudo(L, c, E); } catch (e) { return; }
     lecturas($('lect2'), ya ? [['T', `T₁ = ${N1(r.T1)} N`], ['T2', `T₂ = ${N1(r.T2)} N`], ['P', `P = ${N1(r.P)} N`]] : []);
     decir($('desc2'), ya ? `Cuerdas a ${E.a1} y ${E.a2} grados con el techo. Tensión de la cuerda 1, ${N1(r.T1)} newtons; de la cuerda 2, ${N1(r.T2)} newtons. Con el peso, cierran un triángulo.`
-      : `Un bloque de 10 kilogramos cuelga de un nudo con dos cuerdas al techo, a ${E.a1} y ${E.a2} grados. La cuerda de ${E.a1 === E.a2 ? 'cada lado' : '37 grados es la más larga'}. Las tensiones todavía no tienen valor.`);
+      : `Un bloque de 10 kilogramos cuelga de un nudo con dos cuerdas al techo, a ${E.a1} y ${E.a2} grados. ${E.a1 === E.a2 ? 'Las dos cuerdas miden lo mismo' : 'La cuerda de 37 grados es la más larga'}. Las tensiones todavía no tienen valor.`);
   } else if (E.tipo === 'par'){
     vistaPar(L, c, { F:6, ang:E.ang, giro:E.giro });
     lecturas($('lect2'), ya ? [['F', `F = 6 N cada una`], ['suma', 'ΣF = 0'], ['suma', 'Στ = 12 N·m ↺']] : []);
@@ -1135,7 +1141,7 @@ function draw(){
   } else if (E.tipo === 'roce'){
     const r = M.planoRoce({ m:20, mus:E.mus, F:E.F });
     vistaRoce(L, c, { r, F:E.F, mus:E.mus, verf:E.verf, crece:E.crece });
-    lecturas($('lect2'), ya ? [['F', `F = ${N1(E.F)} N`], ['f', r.quieto ? `f = ${N1(r.roce)} N` : 'f no alcanza'], ['N', `máximo ${N1(r.fsMax)} N`]] : []);
+    lecturas($('lect2'), ya ? [['F', `F = ${N1(E.F)} N`], ['f', r.quieto ? `f = ${N1(r.roce)} N` : 'f no alcanza'], ['f', `f máx = μs·N = ${N1(r.fsMax)} N`]] : []);
     decir($('desc2'), ya ? (r.quieto ? `Empuje de ${N1(E.F)} newtons; el roce estático vale ${N1(r.roce)} newtons, de un máximo de ${N1(r.fsMax)}.` : `Empuje de ${N1(E.F)} newtons: supera el máximo de ${N1(r.fsMax)} y la caja desliza.`)
       : 'Una caja de 20 kilogramos en el piso, empujada con 30 newtons. Peso y normal de 200 newtons. El roce todavía no tiene valor.');
   }
@@ -1175,7 +1181,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { if (E.tipo !== 'par') parar(); E.crece = 1; x.alCambiar(); x.vivo(); draw(); }));

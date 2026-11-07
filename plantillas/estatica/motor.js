@@ -8,7 +8,9 @@
  * notable, como en el examen: sen 37° = 3/5, cos 37° = 4/5 (y 53°, 16° y 74°); 30°, 45°, 60° y 90° son exactos
  * de por sí. Cualquier otro ángulo usa el seno de verdad. Con { exacto: true } también 37°, 53°, 16° y 74° usan el
  * seno de verdad. El seno de una suma de ángulos se arma con sen(a + b) = sen a·cos b + cos a·sen b, para que
- * 53° + 53° dé 24/25 y no el seno de verdad de 106°.
+ * 53° + 53° dé 24/25 y no el seno de verdad de 106°. Los suplementos de los ángulos notables (143°, 127°, 164°,
+ * 106°, 150°, 135°, 120°) también se toman como notables, como en la academia: sen 143° = sen 37° = 3/5 y
+ * cos 143° = −cos 37° = −4/5.
  *
  * Convenciones. La barra va de su extremo A (x = 0, a la izquierda) a su extremo B (x = L). Las cargas son
  * fuerzas verticales hacia abajo (F positiva; negativa si tira hacia arriba); los apoyos y las cuerdas verticales
@@ -37,7 +39,9 @@
  *   bate({ tramos } | { L, m, razon }, corte)  objeto alargado que no es parejo: por tramos [{ largo, m }] desde el
  *                                         mango, o cónico (densidad que crece en línea recta; razon = grueso/delgado).
  *                                         Halla su punto de equilibrio, lo corta ahí (o en 'corte') y da la masa,
- *                                         el largo y el centro de cada parte.
+ *                                         el largo y el centro de cada parte. 'tau' es el momento del peso de cada
+ *                                         parte respecto al corte, con signo (antihorario positivo): el del mango
+ *                                         (a la izquierda) sale positivo y el de la punta, negativo.
  *   nudo({ m | P, a1, a2 })               bloque colgado de un nudo con dos cuerdas que forman a1 (la de la
  *                                         izquierda) y a2 (la de la derecha) con el techo. Tensiones por
  *                                         componentes y por el teorema de Lamy; geometria(h) da dónde se amarran.
@@ -75,9 +79,15 @@
   function trig(angulo, exacto) {
     const a = num(angulo, 'ángulo');
     const k = Math.abs(a), s = Math.sign(a) || 1;
-    if (Object.prototype.hasOwnProperty.call(NOTABLES, k) && !(exacto && (k === 37 || k === 53 || k === 16 || k === 74))) {
+    const fino = q => exacto && (q === 37 || q === 53 || q === 16 || q === 74);
+    if (Object.prototype.hasOwnProperty.call(NOTABLES, k) && !fino(k)) {
       const [sen, cos] = NOTABLES[k];
       return { sen: s * sen, cos };
+    }
+    // Suplemento de un notable: mismo seno, coseno con el signo cambiado.
+    if (k > 90 && k <= 180 && Object.prototype.hasOwnProperty.call(NOTABLES, 180 - k) && !fino(180 - k)) {
+      const [sen, cos] = NOTABLES[180 - k];
+      return { sen: s * sen, cos: -cos };
     }
     const r = a * Math.PI / 180;
     return { sen: Math.sin(r), cos: Math.cos(r) };
@@ -284,7 +294,7 @@
     const masMasa = Math.abs(mI - mD) < EPS ? 'iguales' : (mI > mD ? 'mango' : 'punta');
     return { L, M, P: M * G, xcg: limpio(xcg), corte: c,
       mango: { m: limpio(mI), P: limpio(mI * G), largo: c, xcg: limpio(xI), brazo: limpio(brazoIzq), tau: limpio(mI * G * brazoIzq) },
-      punta: { m: limpio(mD), P: limpio(mD * G), largo: L - c, xcg: limpio(xD), brazo: limpio(brazoDer), tau: limpio(mD * G * brazoDer) },
+      punta: { m: limpio(mD), P: limpio(mD * G), largo: L - c, xcg: limpio(xD), brazo: limpio(brazoDer), tau: limpio(-mD * G * brazoDer) },
       masMasa, errores: { masasIguales: M / 2, centroEnLaMitad: L / 2 } };
   }
 

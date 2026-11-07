@@ -128,7 +128,8 @@ test('E1: el mismo peso a cada lado solo coincide con la respuesta si el apoyo e
 test('E1 en el bate: las dos partes giran igual respecto al corte, pero la gruesa pesa más', () => {
   for (const razon of [1.5, 2, 4, 9]) {
     const r = motor.bate({ L: 0.84, m: 1.1, razon });
-    cerca(r.mango.tau, r.punta.tau, `momentos iguales con razón ${razon}`, 1e-9);
+    cerca(r.mango.tau, -r.punta.tau, `momentos iguales y opuestos con razón ${razon}`, 1e-9);
+    assert.ok(r.punta.tau < 0 && r.mango.tau > 0, 'antihorario positivo');
     cerca(r.mango.m + r.punta.m, r.M, 'masa total');
     assert.ok(r.punta.m > r.mango.m, 'la parte gruesa pesa más'); assert.equal(r.masMasa, 'punta');
     assert.ok(r.punta.largo < r.mango.largo, 'y es más corta');
@@ -191,7 +192,8 @@ test('los ángulos notables coinciden con el seno de verdad a menos de 0,4° y s
     assert.ok(d < 0.4, `${k}°: ${d}`);
     cerca(t.sen * t.sen + t.cos * t.cos, 1, `sen² + cos² en ${k}°`);
   }
-  cerca(motor.senSuma(53, 53), 24 / 25, 'sen 106° de academia'); cerca(motor.senSuma(37, 53), 1, 'sen 90°');
+  cerca(motor.senSuma(53, 53), 24 / 25, 'sen 106° de academia');
+  for (const [k, sen, cos] of [[143, 3/5, -4/5], [127, 4/5, -3/5], [164, 7/25, -24/25], [106, 24/25, -7/25]]) { cerca(motor.trig(k).sen, sen, `sen ${k}°`); cerca(motor.trig(k).cos, cos, `cos ${k}°`); } cerca(motor.senSuma(37, 53), 1, 'sen 90°');
 });
 
 // 4. Errores de entrada

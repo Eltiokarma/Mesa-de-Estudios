@@ -59,7 +59,7 @@
       "pasos": [
         "El brazo no es el largo de la llave: es la distancia perpendicular desde la tuerca hasta la línea de la fuerza, 0,25 · sen 53° = 0,25 · 4/5 = 0,2 m.",
         "Momento = 80 · 0,2 = 16 N·m.",
-        "Otra forma: solo la parte de la fuerza perpendicular a la llave hace girar, 80 · sen 53° = 64 N, y 64 · 0,25 = 16 N·m. La parte a lo largo de la llave, 80 · cos 53° = 48 N, apunta a la tuerca y no gira nada.",
+        "Otra forma: solo la parte de la fuerza perpendicular a la llave hace girar, 80 · sen 53° = 64 N, y 64 · 0,25 = 16 N·m. La parte a lo largo de la llave, 80 · cos 53° = 48 N, tiene su línea pasando por la tuerca y no gira nada.",
         "Perpendicular, el brazo es la llave entera: 80 · 0,25 = 20 N·m. Por eso conviene jalar en ángulo recto."
       ],
       "verificar": [
