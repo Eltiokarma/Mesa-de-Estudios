@@ -1,0 +1,126 @@
+{
+  "titulo": "Conteo de figuras: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Cuenta con un sistema: primero las figuras de una pieza, después las de dos, las de tres, y así hasta la figura entera. Ponle una letra a cada pieza y anota cada figura por sus letras, para no olvidar ninguna ni contar una dos veces. Para los cubos, cuenta capa por capa, también los que no se ven.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una recta se marcan 7 puntos. ¿Cuántos segmentos tienen sus dos extremos entre esos puntos?",
+      "respuesta": "21 segmentos.",
+      "pasos": [
+        "Un segmento queda fijo cuando se eligen sus dos extremos, y AB es el mismo segmento que BA.",
+        "Por tamaños: 6 de un tramo, 5 de dos tramos, 4 de tres, 3 de cuatro, 2 de cinco y 1 de seis.",
+        "6 + 5 + 4 + 3 + 2 + 1 = 21. Con la fórmula: C(7, 2) = 7 · 6 / 2 = 21."
+      ],
+      "verificar": [ { "fn": "segmentosRecta", "args": [7], "espera": { "total": 21 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Desde el vértice de un triángulo salen rayos que parten la base en 6 piezas (en total hay 7 rayos, contando los dos lados). ¿Cuántos triángulos hay en la figura?",
+      "respuesta": "21 triángulos.",
+      "pasos": [
+        "Todo triángulo de la figura tiene el vértice de arriba y dos puntos de la base.",
+        "En la base hay 7 puntos: cada par de puntos da un triángulo, como cada par da un segmento.",
+        "Con n = 6 piezas: n(n + 1)/2 = 6 · 7 / 2 = 21."
+      ],
+      "verificar": [ { "fn": "triangulosAbanico", "args": [6], "espera": { "total": 21, "bruta": 21 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un abanico tiene 5 piezas en la base y lo cruzan 2 cuerdas paralelas a la base, de un borde al otro. ¿Cuántos triángulos hay?",
+      "respuesta": "45 triángulos.",
+      "pasos": [
+        "Cada línea horizontal (la base y las dos cuerdas) forma con los rayos su propio abanico de 5 piezas.",
+        "En cada abanico hay 5 · 6 / 2 = 15 triángulos, todos con el vértice de arriba.",
+        "Son 3 líneas horizontales: 3 · 15 = 45."
+      ],
+      "verificar": [ { "fn": "triangulosAbanico", "args": [5, 3], "espera": { "total": 45, "bruta": 45 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un abanico tiene 5 piezas en la base y lo cruza una sola cuerda paralela a la base. ¿Cuántos cuadriláteros hay?",
+      "respuesta": "15 cuadriláteros.",
+      "pasos": [
+        "Cada cuadrilátero es un trapecio: tiene un lado en la cuerda, otro en la base y los otros dos en dos rayos.",
+        "Elegir los dos rayos es elegir dos de los 6 puntos de la base: C(6, 2) = 15.",
+        "Con una sola cuerda hay un solo par de líneas horizontales; el total es 1 · 15 = 15."
+      ],
+      "verificar": [ { "fn": "cuadrilaterosAbanico", "args": [5, 2], "espera": { "total": 15, "bruta": 15 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Un tablero de 5 × 5 casillas, ¿cuántos cuadrados tiene en total?",
+      "respuesta": "55 cuadrados.",
+      "pasos": [
+        "Por tamaños: de 1 × 1 hay 5 · 5 = 25; de 2 × 2, 4 · 4 = 16; de 3 × 3, 9; de 4 × 4, 4; de 5 × 5, uno solo.",
+        "25 + 16 + 9 + 4 + 1 = 55.",
+        "Es la suma de cuadrados: 1² + 2² + … + n² = n(n + 1)(2n + 1)/6 = 5 · 6 · 11 / 6 = 55."
+      ],
+      "verificar": [ { "fn": "cuadradosCuadricula", "args": [5, 5], "espera": { "total": 55, "bruta": 55 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una cuadrícula tiene 4 filas y 6 columnas de cuadritos. ¿Cuántos cuadrados hay?",
+      "respuesta": "50 cuadrados.",
+      "pasos": [
+        "Un cuadrado de lado k cabe en (4 − k + 1) posiciones hacia abajo y (6 − k + 1) hacia la derecha.",
+        "k = 1: 4 · 6 = 24; k = 2: 3 · 5 = 15; k = 3: 2 · 4 = 8; k = 4: 1 · 3 = 3. De lado 5 no cabe ninguno.",
+        "24 + 15 + 8 + 3 = 50."
+      ],
+      "verificar": [ { "fn": "cuadradosCuadricula", "args": [4, 6], "espera": { "total": 50, "bruta": 50 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "En una cuadrícula de 3 × 3, ¿cuántos rectángulos hay que NO sean cuadrados?",
+      "respuesta": "22 rectángulos.",
+      "pasos": [
+        "Un rectángulo queda fijo al elegir 2 de las 4 rectas horizontales y 2 de las 4 verticales: C(4, 2) · C(4, 2) = 6 · 6 = 36.",
+        "Los cuadrados también son rectángulos: hay 9 + 4 + 1 = 14.",
+        "Los que no son cuadrados: 36 − 14 = 22."
+      ],
+      "verificar": [ { "fn": "rectangulosCuadricula", "args": [3, 3], "espera": { "total": 36, "cuadrados": 14, "noCuadrados": 22 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una tira de cuadritos tiene 2 filas y 5 columnas. ¿Cuántos rectángulos hay en total?",
+      "respuesta": "45 rectángulos.",
+      "pasos": [
+        "Rectas horizontales: 3; se eligen 2: C(3, 2) = 3.",
+        "Rectas verticales: 6; se eligen 2: C(6, 2) = 15.",
+        "Cada elección de las dos horizontales se combina con cada elección de las dos verticales: 3 · 15 = 45 (se multiplica, no se suma)."
+      ],
+      "verificar": [ { "fn": "rectangulosCuadricula", "args": [2, 5], "espera": { "total": 45, "bruta": 45 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Una pirámide escalonada de cubitos está apoyada en la esquina de un cuarto: la capa de abajo es de 5 × 5, la siguiente de 4 × 4, y así hasta un solo cubito arriba. ¿Cuántos cubitos tiene y cuántos no se ven desde el frente, la derecha y arriba?",
+      "respuesta": "55 cubitos; 30 no se ven.",
+      "pasos": [
+        "Capa por capa: 25 + 16 + 9 + 4 + 1 = 55.",
+        "Desde esa vista se ve un solo cubito por columna, el de arriba: hay 5 · 5 = 25 columnas.",
+        "Los demás están tapados por arriba y por los costados: 55 − 25 = 30."
+      ],
+      "verificar": [ { "fn": "piramideEsquina", "args": [5], "espera": { "total": 55, "visibles": 25, "ocultos": 30 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "En un triángulo se trazan sus tres medianas. ¿Cuántos triángulos hay en la figura?",
+      "respuesta": "16 triángulos.",
+      "pasos": [
+        "Las medianas se cortan en un punto G y parten el triángulo en 6 piezas triangulares.",
+        "De 2 piezas: hay 3 (cada uno tiene un lado del triángulo y el vértice G). De 3 piezas: 6 (cada mediana parte al triángulo en dos mitades).",
+        "Con la figura entera: 6 + 3 + 6 + 1 = 16."
+      ],
+      "verificar": [ { "fn": "contar", "args": [{ "fig": ["tresMedianas"] }, "triangulos"], "espera": { "total": 16, "piezas": 6, "porTamano.2": 3, "porTamano.3": 6 } } ]
+    }
+  ]
+}

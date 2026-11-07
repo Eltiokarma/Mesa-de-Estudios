@@ -1,0 +1,99 @@
+{
+  "plantilla": "razonamiento-figuras",
+  "unidades": "Coordenadas sin unidades, con el eje y hacia arriba; puntos como { x, y }. Una figura es { lineas: [[P, Q], …], puntos }. Los cubos son de arista 1; alturas[i][j] es la altura de la columna x = j, y = i.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.soloPiezas, porTamano.2). Un argumento { fig: [nombre, …] } es la figura motor[nombre](…) (constructores de la cabecera: recta, abanico, cuadricula, cuadradoDiagonales, dosCevianas, tresMedianas, cuadradoCompleto). En contar, 'piezas' son las figuras del tipo pedido que no tienen nada dibujado adentro (tamaño 1); los cuadriláteros cuentan solo si son convexos; los cuadrados también son rectángulos. En las pilas, un cubo se ve si tiene expuesta una de sus caras +x, +y o +z.",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción 1 (paso 1): 6 puntos en una recta → C(6, 2) = 15 segmentos (errores: solo los 5 tramos; tramos y el total, 6; AB y BA aparte, 30)",
+      "fn": "segmentosRecta", "args": [6],
+      "espera": { "total": 15, "errores.soloPiezas": 5, "errores.piezasYTotal": 6, "errores.conOrden": 30 },
+      "tambien": [ { "fn": "contar", "args": [{ "fig": ["recta", 6] }, "segmentos"],
+                     "espera": { "total": 15, "piezas": 5, "porTamano.1": 5, "porTamano.2": 4, "porTamano.3": 3, "porTamano.4": 2, "porTamano.5": 1 } },
+                   { "fn": "segmentosRecta", "args": [2], "espera": { "total": 1 } } ] },
+
+    { "nombre": "Predicción 2 (paso 2): abanico de 4 piezas → 4·5/2 = 10 triángulos (errores: 4 piezas; piezas y el grande, 5; cada uno dos veces, 20)",
+      "fn": "triangulosAbanico", "args": [4],
+      "espera": { "total": 10, "bruta": 10, "errores.soloPiezas": 4, "errores.piezasYTotal": 5, "errores.dobleCuenta": 20 },
+      "tambien": [ { "fn": "contar", "args": [{ "fig": ["abanico", 4] }, "triangulos"],
+                     "espera": { "total": 10, "piezas": 4, "compuestas": 6, "caras": 4, "porTamano.1": 4, "porTamano.2": 3, "porTamano.3": 2, "porTamano.4": 1 } } ] },
+
+    { "nombre": "Abanico de 1 pieza: un solo triángulo; abanico de 7 piezas: 28",
+      "fn": "triangulosAbanico", "args": [1], "espera": { "total": 1, "bruta": 1 },
+      "tambien": [ { "args": [7], "espera": { "total": 28, "bruta": 28 } } ] },
+
+    { "nombre": "Experimento 1: abanico de 3 piezas con una cuerda (2 líneas horizontales) → 2·6 = 12 triángulos (errores: 3 piezas triangulares; un solo nivel, 6; un nivel y las piezas, 9)",
+      "fn": "triangulosAbanico", "args": [3, 2],
+      "espera": { "total": 12, "bruta": 12, "porNivel": 6, "errores.soloPiezas": 3, "errores.unNivel": 6, "errores.unNivelYPiezas": 9 } },
+
+    { "nombre": "Abanico de 2 piezas con 3 líneas horizontales → 3·3 = 9 triángulos",
+      "fn": "triangulosAbanico", "args": [2, 3], "espera": { "total": 9, "bruta": 9 } },
+
+    { "nombre": "Experimento 2: cuadriláteros del abanico de 3 piezas con una cuerda → C(2, 2)·6 = 6 trapecios (errores: 3 piezas; piezas y el grande, 4; como los triángulos, 12)",
+      "fn": "cuadrilaterosAbanico", "args": [3, 2],
+      "espera": { "total": 6, "bruta": 6, "errores.soloPiezas": 3, "errores.piezasYTotal": 4, "errores.comoTriangulos": 12 },
+      "tambien": [ { "fn": "contar", "args": [{ "fig": ["abanico", 3, 2] }, "cuadrilateros"], "espera": { "total": 6, "piezas": 3, "porTamano.2": 2, "porTamano.3": 1 } } ] },
+
+    { "nombre": "Abanico de 4 piezas con 3 líneas horizontales → C(3, 2)·10 = 30 cuadriláteros",
+      "fn": "cuadrilaterosAbanico", "args": [4, 3], "espera": { "total": 30, "bruta": 30, "errores.soloPiezas": 8 } },
+
+    { "nombre": "Predicción 4 (paso 4): cuadrado con sus dos diagonales → 8 triángulos: 4 piezas y 4 mitades (errores: 4; las piezas y las mitades de una sola diagonal, 6; las mitades dos veces, 12)",
+      "fn": "triangulosCuadradoDiagonales", "args": [],
+      "espera": { "total": 8, "piezas": 4, "errores.soloPiezas": 4, "errores.unaDiagonal": 6, "errores.compuestasDosVeces": 12 },
+      "tambien": [ { "fn": "contar", "args": [{ "fig": ["cuadradoDiagonales", 2] }, "triangulos"], "espera": { "total": 8, "porTamano.1": 4, "porTamano.2": 4, "caras": 4 } },
+                   { "fn": "contar", "args": [{ "fig": ["cuadradoDiagonales", 2] }, "cuadrilateros"], "espera": { "total": 1, "piezas": 0 } },
+                   { "fn": "contar", "args": [{ "fig": ["cuadradoDiagonales", 2] }, "segmentos"], "espera": { "total": 10, "piezas": 8 } } ] },
+
+    { "nombre": "Predicción 5 (paso 5): cuadrados en la cuadrícula 4 × 4 → 16 + 9 + 4 + 1 = 30 (errores: n² = 16; 16 y el grande, 17; los grandes solo por la diagonal, 22)",
+      "fn": "cuadradosCuadricula", "args": [4, 4],
+      "espera": { "total": 30, "bruta": 30, "porLado.1": 16, "porLado.2": 9, "porLado.3": 4, "porLado.4": 1,
+                  "errores.soloPiezas": 16, "errores.piezasYGrande": 17, "errores.soloDiagonal": 22 } },
+
+    { "nombre": "Experimento 3: cuadrados en la cuadrícula 3 × 5 → 15 + 8 + 3 = 26 (errores: 15 piezas; como si fuera 3 × 3, 14; con el lado largo, Σk² hasta 5 = 55)",
+      "fn": "cuadradosCuadricula", "args": [3, 5],
+      "espera": { "total": 26, "bruta": 26, "porLado.1": 15, "porLado.2": 8, "porLado.3": 3, "errores.soloPiezas": 15, "errores.comoCuadrada": 14, "errores.ladoLargo": 55 },
+      "tambien": [ { "args": [5, 3], "espera": { "total": 26 } }, { "args": [1, 1], "espera": { "total": 1 } } ] },
+
+    { "nombre": "Predicción 6 (paso 6): rectángulos en la cuadrícula 2 × 3 → C(3, 2)·C(4, 2) = 3·6 = 18, de los que 8 son cuadrados (errores: 6 piezas; sin los cuadrados, 10; 3 + 6 = 9)",
+      "fn": "rectangulosCuadricula", "args": [2, 3],
+      "espera": { "total": 18, "bruta": 18, "cuadrados": 8, "noCuadrados": 10, "errores.soloPiezas": 6, "errores.sinCuadrados": 10, "errores.suma": 9 } },
+
+    { "nombre": "Rectángulos en la cuadrícula 3 × 4 → 6·10 = 60, de los que 12 + 6 + 2 = 20 son cuadrados",
+      "fn": "rectangulosCuadricula", "args": [3, 4], "espera": { "total": 60, "bruta": 60, "cuadrados": 20, "noCuadrados": 40, "errores.suma": 16 } },
+
+    { "nombre": "Segmentos de la cuadrícula 2 × 2: 3 horizontales y 3 verticales, cada una con 3 puntos → 6·3 = 18",
+      "fn": "contar", "args": [{ "fig": ["cuadricula", 2, 2] }, "segmentos"], "espera": { "total": 18, "piezas": 12 } },
+
+    { "nombre": "Experimento 5: triángulo con dos cevianas que se cortan → 8 triángulos, 3 de ellos piezas (errores: 3; las piezas y el grande, 4; cada uno dos veces, 16)",
+      "fn": "triangulosDosCevianas", "args": [],
+      "espera": { "total": 8, "piezas": 3, "errores.soloPiezas": 3, "errores.piezasYTotal": 4, "errores.dobleCuenta": 16 },
+      "tambien": [ { "fn": "contar", "args": [{ "fig": ["dosCevianas"] }, "triangulos"], "espera": { "total": 8, "porTamano.1": 3, "porTamano.2": 4, "porTamano.4": 1, "caras": 4 } } ] },
+
+    { "nombre": "Triángulo con sus tres medianas → 16 triángulos (6 piezas, 3 de dos piezas, 6 mitades y el grande)",
+      "fn": "contar", "args": [{ "fig": ["tresMedianas"] }, "triangulos"],
+      "espera": { "total": 16, "piezas": 6, "porTamano.1": 6, "porTamano.2": 3, "porTamano.3": 6, "porTamano.6": 1 } },
+
+    { "nombre": "Cuadrado con diagonales y medianas → 16 triángulos, 17 cuadriláteros convexos y 5 cuadrados",
+      "fn": "contar", "args": [{ "fig": ["cuadradoCompleto", 2] }, "triangulos"], "espera": { "total": 16, "piezas": 8 },
+      "tambien": [ { "args": [{ "fig": ["cuadradoCompleto", 2] }, "cuadrilateros"], "espera": { "total": 17, "piezas": 0 } },
+                   { "args": [{ "fig": ["cuadradoCompleto", 2] }, "cuadrados"], "espera": { "total": 5 } } ] },
+
+    { "nombre": "Predicción 7 (paso 7): pirámide de 3 capas en la esquina → 9 + 4 + 1 = 14 cubos; se ven 9 y hay 5 ocultos (errores: solo los que se ven, 9; las caras que se ven, 21; la caja de 3 × 3 × 3, 27)",
+      "fn": "piramideEsquina", "args": [3],
+      "espera": { "total": 14, "formula": 14, "visibles": 9, "ocultos": 5, "caras": 21, "caja": 27,
+                  "errores.soloVisibles": 9, "errores.carasVisibles": 21, "errores.caja": 27 } },
+
+    { "nombre": "Pirámide de 4 capas en la esquina → 30 cubos; se ven 16 (uno por columna), ocultos 14, caras 16 + 20 = 36, caja 64",
+      "fn": "piramideEsquina", "args": [4], "espera": { "total": 30, "visibles": 16, "ocultos": 14, "caras": 36, "caja": 64 } },
+
+    { "nombre": "Experimento 4: escalera de columnas 4, 3, 2, 1 con 2 de fondo → 20 cubos; se ven 14, ocultos 6, caras 8 + 10 + 8 = 26, caja 4 × 2 × 4 = 32",
+      "fn": "escaleraCubos", "args": [[4, 3, 2, 1], 2],
+      "espera": { "total": 20, "formula": 20, "visibles": 14, "ocultos": 6, "caras": 26, "caja": 32,
+                  "errores.soloVisibles": 14, "errores.carasVisibles": 26, "errores.caja": 32 } },
+
+    { "nombre": "Pila pequeña [[2, 1], [1, 0]]: 4 cubos, 1 oculto (el de abajo en la esquina), 9 caras a la vista, caja 8; proyección isométrica de (1; 0; 0)",
+      "fn": "pila", "args": [[[2, 1], [1, 0]]], "espera": { "total": 4, "visibles": 3, "ocultos": 1, "caras": 9, "caja": 8 },
+      "tambien": [ { "fn": "isometrico", "args": [{ "x": 1, "y": 0, "z": 0 }], "espera": { "u": 0.8660254037844386, "v": -0.5 } },
+                   { "fn": "isometrico", "args": [{ "x": 1, "y": 1, "z": 2 }], "espera": { "u": 0, "v": 1 } } ] }
+  ]
+}
