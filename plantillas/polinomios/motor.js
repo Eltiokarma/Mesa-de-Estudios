@@ -45,11 +45,14 @@
  *   ruffini({ coefs, divisor })     → división de P entre a·x + b por Ruffini (divisor [a, b], a ≠ 0). {
  *                                     raiz: −b/a (número), raizTexto, arriba: coefs (números), productos: [null, …]
  *                                     (lo que se escribe en la segunda fila: raíz por la suma anterior),
- *                                     sumas: [ … ] (tercera fila; la última es el resto), cocienteProvisional: coefs
+ *                                     sumas: [ … ] (tercera fila; la última es el resto). Un dividendo constante
+ *                                     (grado 0) no se divide: lanza «el dividendo debe ser de grado 1 o más».
+ *                                     cocienteProvisional: coefs
  *                                     (sumas sin la última), cociente: coefs (las provisionales divididas entre a),
  *                                     resto (número), texto (cociente), restoTexto, par: 'Q = …; R = …',
  *                                     errores (cada uno { cociente, resto, texto, restoTexto, par, id, regla }):
- *                                     sinCero (PO1: no pone el 0 de los términos que faltan), signo (PO2: usa b/a
+ *                                     sinCero (PO1: no pone el 0 de los términos que faltan; no aparece si no hay
+ *                                     ceros o si sin ellos queda una constante), signo (PO2: usa b/a
  *                                     en vez de −b/a), sinDividir (PO3: no divide el cociente entre a; solo si a ≠ 1),
  *                                     restoDividido (PO4: divide también el resto entre a; solo si a ≠ 1),
  *                                     todaLaFila (PO18: toma toda la última fila como cociente, grado del dividendo) }.
@@ -62,14 +65,14 @@
  *                                     del cociente), columnas: [ … ] (términos del divisor), celdas: [[{ coef, exp,
  *                                     texto }]] (producto de cada fila por cada columna), resto: coefs, restoTexto,
  *                                     comprobacion: coefs de divisor·cociente + resto (= dividendo) }.
- *   restoSustitucion({ dividendo, k }) → resto de P ÷ (x² + k) cambiando x² por −k. { resto: coefs [p, q] (p·x + q),
+ *   restoSustitucion({ dividendo, k }) → resto de P ÷ (x² + k) cambiando x² por −k (k puede ser 0: divisor x²). { resto: coefs [p, q] (p·x + q),
  *                                     texto: 'px + q', cociente: coefs (de dividir), errores (cada uno { resto, texto,
  *                                     id, regla }): signo (PO16: x² = k), unaVez (PO31: xⁿ → (−k)·x^(n mod 2), el
  *                                     signo de una sola sustitución), pierdeX (PO32: xⁿ → (−k)^⌊n/2⌋, se pierde la x
  *                                     que sobra) }.
  *   teoremaResto({ coefs, divisor }) → resto de P ÷ (a·x + b) = P(−b/a). { valor, texto, raiz, raizTexto, errores:
- *                                     signo (PO8: P(b/a)), parNegativo (PO15: con raíz negativa, (−r)ⁿ de exponente par
- *                                     sale negativo), independiente (PO27: el término independiente) }.
+ *                                     signo (PO8: P(b/a)), parNegativo (PO15: (−r)ⁿ de exponente par sale negativo;
+ *                                     SOLO existe si la raíz −b/a es negativa: con raíz 0 o positiva no aparece), independiente (PO27: el término independiente) }.
  *   factorK({ coefs, raiz })        → coefs con UN coeficiente desconocido escrito 'k' (p. ej. [1, -3, 'k', 6]);
  *                                     el valor de k para que (x − raiz) sea factor, o sea P(raiz) = 0. { valor, texto:
  *                                     'k = −1', cociente: coefs de P ÷ (x − raiz) con ese k, errores: signo (PO17:
@@ -346,7 +349,6 @@
   function restoSustitucion(o) {
     o = o || {};
     const D = poli(o.dividendo, 'el dividendo'), k = aF(o.k, 'k');
-    if (k.n === 0) throw new Error('k no puede ser 0: x² no es de la forma x² + k con k ≠ 0');
     const mk = fNeg(k);
     const bien = sustituir(D, e => [fPot(mk, Math.floor(e / 2)), e % 2 === 1]);
     const { q, r } = dividirF(D, [UNO, CERO, k]);

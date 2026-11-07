@@ -1,6 +1,6 @@
 {
   "titulo": "La máquina de Ruffini: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Tres controles antes de marcar: en Ruffini, cada grado tiene su casilla y la que falta lleva un 0; la raíz que se baja es la que anula el divisor (para x + 1 es −1); y si el divisor es ax + b con a distinto de 1, el cociente se divide entre a pero el resto no.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Tres controles antes de marcar: en Ruffini, cada grado tiene su casilla y la que falta lleva un 0; la raíz que se baja es la que anula el divisor (para x + 1 es −1); y si el divisor tiene coeficiente principal distinto de 1 (como 3x − 1), el cociente se divide entre ese número, pero el resto no.",
   "problemas": [
     {
       "id": "p1",

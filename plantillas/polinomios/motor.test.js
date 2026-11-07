@@ -75,7 +75,7 @@ test('división clásica y por sustitución: dividendo = divisor · cociente + r
     const R = motor.dividir({ dividendo: D, divisor: d });
     cerca(recorta(suma(mul(recorta(d), R.cociente), R.resto)), recorta(D), `(${D}) ÷ (${d})`, 1e-9);
     assert.ok(recorta(R.resto).length < recorta(d).length || (R.resto.length === 1 && R.resto[0] === 0), 'grado del resto');
-    const kk = ent(-5, 5) || 1, S = motor.restoSustitucion({ dividendo: D, k: kk }), C = motor.dividir({ dividendo: D, divisor: [1, 0, kk] });
+    const kk = ent(-5, 5), S = motor.restoSustitucion({ dividendo: D, k: kk }), C = motor.dividir({ dividendo: D, divisor: [1, 0, kk] });
     cerca(recorta(S.resto), recorta(C.resto.length === 1 ? [0, C.resto[0]] : C.resto), 'sustitución = división', 1e-9);
     const caja = motor.cajaDivision({ dividendo: D, divisor: [1, 0, kk] }); cerca(caja.comprobacion, recorta(D), 'la caja suma el dividendo', 1e-9);
   }
@@ -141,7 +141,7 @@ const ESCENA = {
   'paso3': () => { const r = motor.grado({ terminos: P.M }); return [r.texto, r.errores.relativo.texto, r.errores.sumaTodos.texto, r.errores.sumaRelativos.texto]; },
   'paso4': () => { const r = motor.gradoProducto({ m: 3, n: 4 }); return [r.texto, r.errores.producto.texto, r.errores.mayor.texto]; },
   'paso5': () => { const r = motor.ruffini({ coefs: [2, 0, -7, 4], divisor: [1, -2] }); return [r.texto, r.errores.sinCero.texto, r.errores.signo.texto, r.errores.todaLaFila.texto]; },
-  'paso6': () => { const r = motor.teoremaResto({ coefs: [1, -3, 1, 4], divisor: [1, 2] }); return [r.texto, r.errores.signo.texto, r.errores.parNegativo.texto, r.errores.independiente.texto]; },
+  'paso6': () => { const r = motor.teoremaResto({ coefs: [1, -4, -1, 4], divisor: [1, 2] }); return [r.texto, r.errores.signo.texto, r.errores.parNegativo.texto, r.errores.independiente.texto]; },
   'paso7': () => { const r = motor.ruffini({ coefs: [4, -2, 6, 1], divisor: [2, -1] }); return [r.par, r.errores.sinDividir.par, r.errores.restoDividido.par, r.errores.signo.par]; },
   'paso8': () => { const r = motor.factorK({ coefs: [1, -3, 'k', 6], raiz: 2 }); return [r.texto, r.errores.signo.texto, r.errores.sumaCoef.texto, r.errores.despeje.texto]; },
   'p-de-uno': () => { const r = motor.pDeUno({ coefs: [2, -5, 1, 7] }); return [r.texto, r.errores.independiente.texto, r.errores.principal.texto, r.errores.sinSignos.texto]; },
@@ -178,7 +178,7 @@ test('entradas inválidas', () => {
   assert.throws(() => motor.factorK({ coefs: ['k', 1], raiz: 0 }), /no aparece/);
   assert.throws(() => motor.raicesRacionales({ coefs: [1, 2, 0] }), /distinto de 0/);
   assert.throws(() => motor.raicesRacionales({ coefs: [1, '1/2', 3] }), /enteros/);
-  assert.throws(() => motor.restoSustitucion({ dividendo: [1, 2, 3], k: 0 }), /k no puede ser 0/);
+  assert.throws(() => motor.ruffini({ coefs: [5], divisor: [1, -2] }), /grado 1 o más/);
   assert.throws(() => motor.curva({ coefs: [1], desde: 2, hasta: 1 }), /mayor que desde/);
 });
 
