@@ -714,7 +714,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "enlace"
+     ]
     },
     {
      "id": "quimica.nomenclatura-inorganica",
@@ -4442,6 +4444,23 @@
     "/plantillas/energia/index.html",
     "/plantillas/energia/motor.js",
     "/plantillas/energia/papel.json"
+   ]
+  },
+  "enlace": {
+   "id": "enlace",
+   "titulo": "La molécula en 3D: enlace, forma y polaridad",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.enlace-quimico"
+   ],
+   "url": "/plantillas/enlace/index.html",
+   "papel": "/plantillas/enlace/papel.json",
+   "archivos": [
+    "/plantillas/enlace/index.html",
+    "/plantillas/enlace/motor.js",
+    "/plantillas/enlace/papel.json"
    ]
   },
   "equilibrio-quimico": {

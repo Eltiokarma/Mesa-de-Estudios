@@ -1,0 +1,1144 @@
+{
+  "plantilla": "enlace",
+  "unidades": "Electrones y pares en unidades; ángulos en grados; electronegatividad de Pauling y dipolos del modelo sin unidades (el dipolo de enlace vale ΔEN).",
+  "constantes": "Electronegatividad de Pauling (Allred 1961, tabla del CRC): H 2,20; Li 0,98; Be 1,57; B 2,04; C 2,55; N 3,04; O 3,44; F 3,98; Na 0,93; Mg 1,31; Al 1,61; Si 1,90; P 2,19; S 2,58; Cl 3,16; K 0,82; Ca 1,00; Br 2,96; I 2,66; Xe 2,60. Lewis de central único con O y S terminales en doble enlace cuando el central es del período 3 o más y tiene carga formal positiva (cargas formales mínimas). Cortes por ΔEN: ≥ 1,7 iónico; de 0,4 a menos de 1,7 covalente polar; < 0,4 covalente apolar. Pares libres sin dipolo propio.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (ligandos.0.orden es el orden del primer ligando; total.1 es la componente y del dipolo; errores.x es lo que da el error típico x). Los textos, booleanos y listas se comparan exactos; los números, con la tolerancia. Ejes: y hacia arriba, z hacia quien mira; orden de los ligandos como en la fórmula del catálogo de motor.js.",
+  "verificacion": "Verificó un subagente independiente (7 nov 2026), sin leer el motor ni las pruebas. Recalculó con Python, con fracciones y vectores 3D propios: electrones, cargas formales, octeto y resonancia; el conteo AXₙEₘ con ángulos e hibridación; la suma de dipolos con electronegatividades de Pauling (cotejadas de memoria con la tabla CRC); los cortes de ΔEN y la red de NaCl. Coinciden 322 campos de 58 casos. Las 4 diferencias son de convención (orden de posiciones, orientación de los pares del H₂O y el formato \"1:1\"), no errores.",
+  "tolerancia": 1e-09,
+  "casos": [
+    {
+      "nombre": "NH₃: 8 electrones de valencia (5 + 3 × 1), 3 pares enlazantes y 1 par libre en el N; con la \"valencia\" 3 del N (6 electrones) no queda ningún par libre",
+      "fn": "lewis",
+      "args": [
+        "NH3"
+      ],
+      "espera": {
+        "electrones": 8,
+        "paresEnlazantes": 3,
+        "paresLibres": 1,
+        "electronesCentral": 8,
+        "octeto": "completo",
+        "cfCentral": 0,
+        "errores.valencia-como-enlaces": 6,
+        "errores.libres-valencia-como-enlaces": 0,
+        "errores.libres-electrones-como-pares": 2,
+        "errores.libres-octeto-todo-libre": 4
+      }
+    },
+    {
+      "nombre": "NH₄⁺: 5 + 4 − 1 = 8 electrones; carga formal del N +1 y suma de cargas formales +1 (sin restar la carga saldrían 9; sumándola, 10)",
+      "fn": "lewis",
+      "args": [
+        "NH4^+"
+      ],
+      "espera": {
+        "electrones": 8,
+        "paresLibres": 0,
+        "cfCentral": 1,
+        "sumaCF": 1,
+        "errores.ignora-la-carga": 9,
+        "errores.carga-al-reves": 10
+      }
+    },
+    {
+      "nombre": "CO₃²⁻: 4 + 18 + 2 = 24 electrones; un C=O y dos C–O con carga formal −1; 3 estructuras de resonancia; con el O de 2 electrones saldrían 12",
+      "fn": "lewis",
+      "args": [
+        "CO3^2-"
+      ],
+      "espera": {
+        "electrones": 24,
+        "paresLibres": 0,
+        "pi": 1,
+        "ligandos.0.orden": 2,
+        "ligandos.1.orden": 1,
+        "ligandos.2.orden": 1,
+        "ligandos.0.cf": 0,
+        "ligandos.1.cf": -1,
+        "cfCentral": 0,
+        "sumaCF": -2,
+        "resonancia": 3,
+        "errores.ignora-la-carga": 22,
+        "errores.carga-al-reves": 20,
+        "errores.valencia-del-O": 12
+      }
+    },
+    {
+      "nombre": "NO₃⁻: 24 electrones, N con carga formal +1, un N=O y 3 estructuras de resonancia",
+      "fn": "lewis",
+      "args": [
+        "NO3^-"
+      ],
+      "espera": {
+        "electrones": 24,
+        "cfCentral": 1,
+        "sumaCF": -1,
+        "pi": 1,
+        "resonancia": 3
+      }
+    },
+    {
+      "nombre": "CO₂: dos enlaces dobles (2 pi), sin pares libres en el C",
+      "fn": "lewis",
+      "args": [
+        "CO2"
+      ],
+      "espera": {
+        "electrones": 16,
+        "pi": 2,
+        "ligandos.0.orden": 2,
+        "ligandos.1.orden": 2,
+        "paresLibres": 0,
+        "electronesCentral": 8
+      }
+    },
+    {
+      "nombre": "HCN: enlace triple C≡N y simple H–C",
+      "fn": "lewis",
+      "args": [
+        "HCN"
+      ],
+      "espera": {
+        "electrones": 10,
+        "ligandos.0.orden": 1,
+        "ligandos.1.orden": 3,
+        "pi": 2,
+        "ligandos.1.paresLibres": 1
+      }
+    },
+    {
+      "nombre": "H₂O: 8 electrones y 2 pares libres; contando el O con 2 electrones saldrían 4",
+      "fn": "lewis",
+      "args": [
+        "H2O"
+      ],
+      "espera": {
+        "electrones": 8,
+        "paresLibres": 2,
+        "errores.valencia-del-O": 4
+      }
+    },
+    {
+      "nombre": "BF₃: octeto incompleto, el B con 6 electrones",
+      "fn": "lewis",
+      "args": [
+        "BF3"
+      ],
+      "espera": {
+        "electrones": 24,
+        "electronesCentral": 6,
+        "octeto": "incompleto",
+        "paresLibres": 0
+      }
+    },
+    {
+      "nombre": "BeCl₂: octeto incompleto, el Be con 4 electrones",
+      "fn": "lewis",
+      "args": [
+        "BeCl2"
+      ],
+      "espera": {
+        "electrones": 16,
+        "electronesCentral": 4,
+        "octeto": "incompleto"
+      }
+    },
+    {
+      "nombre": "PCl₅: octeto expandido, el P con 10 electrones",
+      "fn": "lewis",
+      "args": [
+        "PCl5"
+      ],
+      "espera": {
+        "electrones": 40,
+        "electronesCentral": 10,
+        "octeto": "expandido",
+        "paresLibres": 0
+      }
+    },
+    {
+      "nombre": "SF₆: octeto expandido, el S con 12 electrones",
+      "fn": "lewis",
+      "args": [
+        "SF6"
+      ],
+      "espera": {
+        "electrones": 48,
+        "electronesCentral": 12,
+        "octeto": "expandido"
+      }
+    },
+    {
+      "nombre": "XeF₄: 36 electrones, 2 pares libres en el Xe y 12 electrones a su alrededor",
+      "fn": "lewis",
+      "args": [
+        "XeF4"
+      ],
+      "espera": {
+        "electrones": 36,
+        "paresLibres": 2,
+        "electronesCentral": 12,
+        "octeto": "expandido"
+      }
+    },
+    {
+      "nombre": "I₃⁻: 7 × 3 + 1 = 22 electrones, 3 pares libres en el I central, carga formal −1",
+      "fn": "lewis",
+      "args": [
+        "I3^-"
+      ],
+      "espera": {
+        "electrones": 22,
+        "paresLibres": 3,
+        "cfCentral": -1,
+        "sumaCF": -1,
+        "errores.ignora-la-carga": 21
+      }
+    },
+    {
+      "nombre": "SO₄²⁻ (convención: cargas formales mínimas): dos S=O y dos S–O⁻, carga formal del S 0, 6 estructuras",
+      "fn": "lewis",
+      "args": [
+        "SO4^2-"
+      ],
+      "espera": {
+        "electrones": 32,
+        "ligandos.0.orden": 2,
+        "ligandos.1.orden": 2,
+        "ligandos.2.orden": 1,
+        "ligandos.3.orden": 1,
+        "cfCentral": 0,
+        "sumaCF": -2,
+        "resonancia": 6
+      }
+    },
+    {
+      "nombre": "SO₂ (convención: cargas formales mínimas): dos S=O y 1 par libre en el S",
+      "fn": "lewis",
+      "args": [
+        "SO2"
+      ],
+      "espera": {
+        "electrones": 18,
+        "ligandos.0.orden": 2,
+        "ligandos.1.orden": 2,
+        "paresLibres": 1,
+        "cfCentral": 0
+      }
+    },
+    {
+      "nombre": "CO₂: AX₂, lineal, sp, apolar",
+      "fn": "vsepr",
+      "args": [
+        "CO2"
+      ],
+      "espera": {
+        "AXE": "AX2",
+        "dominios": 2,
+        "geometriaDominios": "lineal",
+        "geometria": "lineal",
+        "hibridacion": "sp",
+        "anguloMenor": 180
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "CO2"
+          ],
+          "espera": {
+            "polar": false
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "H₂O: AX₂E₂, angular, sp³, polar",
+      "fn": "vsepr",
+      "args": [
+        "H2O"
+      ],
+      "espera": {
+        "AXE": "AX2E2",
+        "dominios": 4,
+        "geometriaDominios": "tetraédrica",
+        "geometria": "angular",
+        "hibridacion": "sp3",
+        "anguloMenor": 109.471220634491
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "H2O"
+          ],
+          "espera": {
+            "polar": true
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "SO₂: AX₂E, angular, sp², polar",
+      "fn": "vsepr",
+      "args": [
+        "SO2"
+      ],
+      "espera": {
+        "AXE": "AX2E",
+        "dominios": 3,
+        "geometriaDominios": "trigonal plana",
+        "geometria": "angular",
+        "hibridacion": "sp2",
+        "anguloMenor": 120
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "SO2"
+          ],
+          "espera": {
+            "polar": true
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "SO₃: AX₃, trigonal plana, sp², apolar",
+      "fn": "vsepr",
+      "args": [
+        "SO3"
+      ],
+      "espera": {
+        "AXE": "AX3",
+        "dominios": 3,
+        "geometriaDominios": "trigonal plana",
+        "geometria": "trigonal plana",
+        "hibridacion": "sp2",
+        "anguloMenor": 120
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "SO3"
+          ],
+          "espera": {
+            "polar": false
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "BF₃: AX₃, trigonal plana, sp², apolar",
+      "fn": "vsepr",
+      "args": [
+        "BF3"
+      ],
+      "espera": {
+        "AXE": "AX3",
+        "dominios": 3,
+        "geometriaDominios": "trigonal plana",
+        "geometria": "trigonal plana",
+        "hibridacion": "sp2",
+        "anguloMenor": 120
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "BF3"
+          ],
+          "espera": {
+            "polar": false
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "NH₃: AX₃E, piramidal trigonal, sp³, polar",
+      "fn": "vsepr",
+      "args": [
+        "NH3"
+      ],
+      "espera": {
+        "AXE": "AX3E",
+        "dominios": 4,
+        "geometriaDominios": "tetraédrica",
+        "geometria": "piramidal trigonal",
+        "hibridacion": "sp3",
+        "anguloMenor": 109.471220634491
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "NH3"
+          ],
+          "espera": {
+            "polar": true
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "CH₄: AX₄, tetraédrica, sp³, apolar",
+      "fn": "vsepr",
+      "args": [
+        "CH4"
+      ],
+      "espera": {
+        "AXE": "AX4",
+        "dominios": 4,
+        "geometriaDominios": "tetraédrica",
+        "geometria": "tetraédrica",
+        "hibridacion": "sp3",
+        "anguloMenor": 109.471220634491
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "CH4"
+          ],
+          "espera": {
+            "polar": false
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "CCl₄: AX₄, tetraédrica, sp³, apolar",
+      "fn": "vsepr",
+      "args": [
+        "CCl4"
+      ],
+      "espera": {
+        "AXE": "AX4",
+        "dominios": 4,
+        "geometriaDominios": "tetraédrica",
+        "geometria": "tetraédrica",
+        "hibridacion": "sp3",
+        "anguloMenor": 109.471220634491
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "CCl4"
+          ],
+          "espera": {
+            "polar": false
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "CH₂Cl₂: AX₄, tetraédrica, sp³, polar",
+      "fn": "vsepr",
+      "args": [
+        "CH2Cl2"
+      ],
+      "espera": {
+        "AXE": "AX4",
+        "dominios": 4,
+        "geometriaDominios": "tetraédrica",
+        "geometria": "tetraédrica",
+        "hibridacion": "sp3",
+        "anguloMenor": 109.471220634491
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "CH2Cl2"
+          ],
+          "espera": {
+            "polar": true
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "CHCl₃: AX₄, tetraédrica, sp³, polar",
+      "fn": "vsepr",
+      "args": [
+        "CHCl3"
+      ],
+      "espera": {
+        "AXE": "AX4",
+        "dominios": 4,
+        "geometriaDominios": "tetraédrica",
+        "geometria": "tetraédrica",
+        "hibridacion": "sp3",
+        "anguloMenor": 109.471220634491
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "CHCl3"
+          ],
+          "espera": {
+            "polar": true
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "SF₄: AX₄E, balancín, sp³d, polar",
+      "fn": "vsepr",
+      "args": [
+        "SF4"
+      ],
+      "espera": {
+        "AXE": "AX4E",
+        "dominios": 5,
+        "geometriaDominios": "bipirámide trigonal",
+        "geometria": "balancín",
+        "hibridacion": "sp3d",
+        "anguloMenor": 90
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "SF4"
+          ],
+          "espera": {
+            "polar": true
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "ClF₃: AX₃E₂, forma de T, sp³d, polar",
+      "fn": "vsepr",
+      "args": [
+        "ClF3"
+      ],
+      "espera": {
+        "AXE": "AX3E2",
+        "dominios": 5,
+        "geometriaDominios": "bipirámide trigonal",
+        "geometria": "forma de T",
+        "hibridacion": "sp3d",
+        "anguloMenor": 90
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "ClF3"
+          ],
+          "espera": {
+            "polar": true
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "PCl₅: AX₅, bipirámide trigonal, sp³d, apolar",
+      "fn": "vsepr",
+      "args": [
+        "PCl5"
+      ],
+      "espera": {
+        "AXE": "AX5",
+        "dominios": 5,
+        "geometriaDominios": "bipirámide trigonal",
+        "geometria": "bipirámide trigonal",
+        "hibridacion": "sp3d",
+        "anguloMenor": 90
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "PCl5"
+          ],
+          "espera": {
+            "polar": false
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "SF₆: AX₆, octaédrica, sp³d², apolar",
+      "fn": "vsepr",
+      "args": [
+        "SF6"
+      ],
+      "espera": {
+        "AXE": "AX6",
+        "dominios": 6,
+        "geometriaDominios": "octaédrica",
+        "geometria": "octaédrica",
+        "hibridacion": "sp3d2",
+        "anguloMenor": 90
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "SF6"
+          ],
+          "espera": {
+            "polar": false
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "XeF₄: AX₄E₂, cuadrada plana, sp³d², apolar",
+      "fn": "vsepr",
+      "args": [
+        "XeF4"
+      ],
+      "espera": {
+        "AXE": "AX4E2",
+        "dominios": 6,
+        "geometriaDominios": "octaédrica",
+        "geometria": "cuadrada plana",
+        "hibridacion": "sp3d2",
+        "anguloMenor": 90
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "XeF4"
+          ],
+          "espera": {
+            "polar": false
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "I₃⁻: AX₂E₃, lineal, sp³d (dominios en bipirámide)",
+      "fn": "vsepr",
+      "args": [
+        "I3^-"
+      ],
+      "espera": {
+        "AXE": "AX2E3",
+        "dominios": 5,
+        "geometriaDominios": "bipirámide trigonal",
+        "geometria": "lineal",
+        "hibridacion": "sp3d",
+        "anguloMenor": 180
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "I3^-"
+          ],
+          "espera": {
+            "polar": false
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "BrF₅: AX₅E, pirámide cuadrada, sp³d², polar",
+      "fn": "vsepr",
+      "args": [
+        "BrF5"
+      ],
+      "espera": {
+        "AXE": "AX5E",
+        "dominios": 6,
+        "geometriaDominios": "octaédrica",
+        "geometria": "pirámide cuadrada",
+        "hibridacion": "sp3d2",
+        "anguloMenor": 90
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "BrF5"
+          ],
+          "espera": {
+            "polar": true
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "NH₃, errores de forma: del dibujo plano, trigonal plana; contando los dominios, tetraédrica; hibridación sp² (solo ligandos), sp³d (por los 5 electrones del N), sp (por subcapas)",
+      "fn": "vsepr",
+      "args": [
+        "NH3"
+      ],
+      "espera": {
+        "geometria": "piramidal trigonal",
+        "errores.dibujo-plano": "trigonal plana",
+        "errores.cuenta-solo-los-ligandos": "trigonal plana",
+        "errores.geometria-de-dominios": "tetraédrica",
+        "errores.par-libre-dobla": "angular",
+        "errores.hibridacion-solo-ligandos": "sp2",
+        "errores.hibridacion-por-electrones": "sp3d",
+        "errores.hibridacion-por-subcapas": "sp"
+      }
+    },
+    {
+      "nombre": "PCl₅: ángulos ideales de 90°, 120° y 180°",
+      "fn": "vsepr",
+      "args": [
+        "PCl5"
+      ],
+      "espera": {
+        "angulos": [
+          90,
+          120,
+          180
+        ]
+      }
+    },
+    {
+      "nombre": "ClF₃: ángulos ideales de 90° y 180°",
+      "fn": "vsepr",
+      "args": [
+        "ClF3"
+      ],
+      "espera": {
+        "angulos": [
+          90,
+          180
+        ]
+      }
+    },
+    {
+      "nombre": "Solo con los números: AX₂E₂ (n = 2, m = 2) da angular, sp³ y 109,47°",
+      "fn": "vsepr",
+      "args": [
+        {
+          "n": 2,
+          "m": 2
+        }
+      ],
+      "espera": {
+        "geometria": "angular",
+        "hibridacion": "sp3",
+        "anguloMenor": 109.471220634491
+      }
+    },
+    {
+      "nombre": "Posiciones AX₃E: el par libre arriba (0, 1, 0) y el primer ligando en (0, −1/3, √8/3)",
+      "fn": "posiciones",
+      "args": [
+        3,
+        1
+      ],
+      "espera": {
+        "pares.0.0": 0,
+        "pares.0.1": 1,
+        "pares.0.2": 0,
+        "ligandos.0.0": 0,
+        "ligandos.0.1": -0.333333333333,
+        "ligandos.0.2": 0.942809041582,
+        "ligandos.1.1": -0.333333333333
+      }
+    },
+    {
+      "nombre": "Posiciones AX₄E (balancín): el par libre en una ecuatorial (0, 0, 1); dos ligandos axiales en (0, ±1, 0)",
+      "fn": "posiciones",
+      "args": [
+        4,
+        1
+      ],
+      "espera": {
+        "pares.0.0": 0,
+        "pares.0.1": 0,
+        "pares.0.2": 1,
+        "ligandos.0.1": 1,
+        "ligandos.1.1": -1,
+        "ligandos.2.0": 0.866025403784,
+        "ligandos.2.2": -0.5
+      }
+    },
+    {
+      "nombre": "Posiciones AX₄E₂: los dos pares libres opuestos en (0, ±1, 0)",
+      "fn": "posiciones",
+      "args": [
+        4,
+        2
+      ],
+      "espera": {
+        "pares.0.1": 1,
+        "pares.1.1": -1,
+        "ligandos.0.0": 1,
+        "ligandos.2.2": 1
+      }
+    },
+    {
+      "nombre": "Dipolo del CH₂Cl₂: (0,61 + 0,35) × 2/√3 ≈ 1,1085 hacia los Cl (abajo); en el dibujo plano los Cl opuestos se anulan",
+      "fn": "polaridad",
+      "args": [
+        "CH2Cl2"
+      ],
+      "espera": {
+        "polar": true,
+        "modulo": 1.108512516844,
+        "total.0": 0,
+        "total.1": -1.108512516844,
+        "total.2": 0,
+        "moduloPlano": 0,
+        "enlaces.0.dEN": -0.35,
+        "enlaces.2.dEN": 0.61,
+        "errores.dibujo-plano": false,
+        "errores.simetrica-apolar": false,
+        "errores.atomos-distintos": true,
+        "errores.enlaces-polares": true
+      }
+    },
+    {
+      "nombre": "Dipolo del NH₃: 0,84 hacia el par libre (arriba)",
+      "fn": "polaridad",
+      "args": [
+        "NH3"
+      ],
+      "espera": {
+        "polar": true,
+        "modulo": 0.84,
+        "total.0": 0,
+        "total.1": 0.84,
+        "total.2": 0
+      }
+    },
+    {
+      "nombre": "Dipolo del H₂O: 1,24 × 2/√3 ≈ 1,4318; en el dibujo H–O–H se anula",
+      "fn": "polaridad",
+      "args": [
+        "H2O"
+      ],
+      "espera": {
+        "polar": true,
+        "modulo": 1.43182866759,
+        "total.1": 1.43182866759,
+        "errores.dibujo-plano": false
+      }
+    },
+    {
+      "nombre": "CO₂: los dos dipolos C=O se anulan; tiene enlaces polares y átomos distintos",
+      "fn": "polaridad",
+      "args": [
+        "CO2"
+      ],
+      "espera": {
+        "polar": false,
+        "modulo": 0,
+        "errores.enlaces-polares": true,
+        "errores.atomos-distintos": true,
+        "errores.dibujo-plano": false
+      }
+    },
+    {
+      "nombre": "SO₂: dipolo 0,86 (la suma de los dos S=O a 120°); dibujado O=S=O en línea se anularía",
+      "fn": "polaridad",
+      "args": [
+        "SO2"
+      ],
+      "espera": {
+        "polar": true,
+        "modulo": 0.86,
+        "total.1": -0.86,
+        "errores.dibujo-plano": false
+      }
+    },
+    {
+      "nombre": "CHCl₃ y CH₃Cl: dipolo 0,96 cada uno; en el dibujo plano también son polares",
+      "fn": "polaridad",
+      "args": [
+        "CHCl3"
+      ],
+      "espera": {
+        "polar": true,
+        "modulo": 0.96,
+        "errores.dibujo-plano": true
+      },
+      "tambien": [
+        {
+          "fn": "polaridad",
+          "args": [
+            "CH3Cl"
+          ],
+          "espera": {
+            "polar": true,
+            "modulo": 0.96,
+            "errores.dibujo-plano": true
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "XeF₄: los cuatro dipolos Xe–F se anulan en el cuadrado",
+      "fn": "polaridad",
+      "args": [
+        "XeF4"
+      ],
+      "espera": {
+        "polar": false,
+        "modulo": 0,
+        "errores.simetrica-apolar": false
+      }
+    },
+    {
+      "nombre": "NaCl: ΔEN = 3,16 − 0,93 = 2,23, iónico",
+      "fn": "tipoEnlace",
+      "args": [
+        "Na",
+        "Cl"
+      ],
+      "espera": {
+        "dEN": 2.23,
+        "tipo": "iónico",
+        "porAtomos": "iónico",
+        "coincide": true
+      }
+    },
+    {
+      "nombre": "HCl: ΔEN 0,96, covalente polar (con el H como metal saldría iónico)",
+      "fn": "tipoEnlace",
+      "args": [
+        "H",
+        "Cl"
+      ],
+      "espera": {
+        "dEN": 0.96,
+        "tipo": "covalente polar",
+        "porAtomos": "covalente",
+        "coincide": true,
+        "mas": "Cl",
+        "errores.H-como-metal": "iónico"
+      }
+    },
+    {
+      "nombre": "HF: ΔEN 1,78 pasa el corte de 1,7, pero son dos no metales: el corte no coincide",
+      "fn": "tipoEnlace",
+      "args": [
+        "H",
+        "F"
+      ],
+      "espera": {
+        "dEN": 1.78,
+        "tipo": "iónico",
+        "porAtomos": "covalente",
+        "coincide": false
+      }
+    },
+    {
+      "nombre": "Mg–Cl: ΔEN 1,85, iónico; Al–Cl: 1,55, covalente polar por el corte aunque es metal con no metal",
+      "fn": "tipoEnlace",
+      "args": [
+        "Mg",
+        "Cl"
+      ],
+      "espera": {
+        "dEN": 1.85,
+        "tipo": "iónico",
+        "coincide": true
+      },
+      "tambien": [
+        {
+          "fn": "tipoEnlace",
+          "args": [
+            "Al",
+            "Cl"
+          ],
+          "espera": {
+            "dEN": 1.55,
+            "tipo": "covalente polar",
+            "porAtomos": "iónico",
+            "coincide": false
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "C–H: ΔEN 0,35, covalente apolar; Cl–Cl: 0",
+      "fn": "tipoEnlace",
+      "args": [
+        "C",
+        "H"
+      ],
+      "espera": {
+        "dEN": 0.35,
+        "tipo": "covalente apolar"
+      },
+      "tambien": [
+        {
+          "fn": "tipoEnlace",
+          "args": [
+            "Cl",
+            "Cl"
+          ],
+          "espera": {
+            "dEN": 0,
+            "tipo": "covalente apolar",
+            "mas": null
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Resonancia del CO₃²⁻: 3 estructuras, cada C–O con orden promedio 4/3",
+      "fn": "resonancia",
+      "args": [
+        "CO3^2-"
+      ],
+      "espera": {
+        "cuantas": 3,
+        "ordenPromedio.0": 1.333333333333,
+        "ordenPromedio.1": 1.333333333333,
+        "ordenPromedio.2": 1.333333333333,
+        "estructuras.1.ordenes": [
+          1,
+          2,
+          1
+        ],
+        "estructuras.1.cf": [
+          -1,
+          0,
+          -1
+        ]
+      }
+    },
+    {
+      "nombre": "Resonancia del NO₂⁻: 2 estructuras, orden promedio 3/2",
+      "fn": "resonancia",
+      "args": [
+        "NO2^-"
+      ],
+      "espera": {
+        "cuantas": 2,
+        "ordenPromedio.0": 1.5
+      }
+    },
+    {
+      "nombre": "Trozo de 3 × 3 × 3 con Cl⁻ en la esquina: 13 Na⁺ y 14 Cl⁻, ninguna molécula (contar pares daría 13)",
+      "fn": "redNaCl",
+      "args": [
+        3,
+        "Cl"
+      ],
+      "espera": {
+        "Na": 13,
+        "Cl": 14,
+        "total": 27,
+        "moleculas": 0,
+        "coordinacion": 6,
+        "errores.pares-como-moleculas": 13,
+        "errores.cada-ion-una-molecula": 27
+      }
+    },
+    {
+      "nombre": "Trozo de 4 × 4 × 4: 32 Na⁺ y 32 Cl⁻ (razón 1:1)",
+      "fn": "redNaCl",
+      "args": [
+        4
+      ],
+      "espera": {
+        "Na": 32,
+        "Cl": 32,
+        "razon": "1:1"
+      }
+    },
+    {
+      "nombre": "El ion del centro de un trozo de 3 × 3 × 3 tiene 6 vecinos; el de una esquina, 3",
+      "fn": "vecinos",
+      "args": [
+        3,
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "espera": {
+        "length": 6
+      },
+      "tambien": [
+        {
+          "fn": "vecinos",
+          "args": [
+            3,
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "espera": {
+            "length": 3
+          }
+        },
+        {
+          "fn": "vecinos",
+          "args": [
+            3,
+            [
+              1,
+              0,
+              1
+            ]
+          ],
+          "espera": {
+            "length": 5
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "girar: el eje x girado 90° en torno al eje y queda en −z",
+      "fn": "girar",
+      "args": [
+        [
+          1,
+          0,
+          0
+        ],
+        1.5707963267948966,
+        0
+      ],
+      "espera": {
+        "0": 0,
+        "1": 0,
+        "2": -1
+      }
+    },
+    {
+      "nombre": "dibujo del CH₂Cl₂: en el papel (f = 0) el dipolo se anula; en 3D (f = 1) vale ≈ 1,1085",
+      "fn": "dibujo",
+      "args": [
+        "CH2Cl2",
+        {
+          "f": 0
+        }
+      ],
+      "espera": {
+        "modulo": 0
+      },
+      "tambien": [
+        {
+          "fn": "dibujo",
+          "args": [
+            "CH2Cl2",
+            {
+              "f": 1,
+              "giro": 0.7,
+              "inclinacion": -0.3
+            }
+          ],
+          "espera": {
+            "modulo": 1.108512516844
+          }
+        }
+      ]
+    }
+  ]
+}
