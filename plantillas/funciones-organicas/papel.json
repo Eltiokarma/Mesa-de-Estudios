@@ -45,7 +45,7 @@
       "pasos": [
         "Hay dos esqueletos de 4 carbonos: la cadena recta y la ramificada (un C unido a otros tres).",
         "Alcoholes: el –OH en la cadena recta puede ir en una punta o en un carbono del medio (2 alcoholes); en la ramificada, en una punta o en el carbono central (2 más). Total: 4.",
-        "Éteres: el O se mete entre dos carbonos. En la cadena recta: entre el 1 y el 2 (metoxipropano) o entre el 2 y el 3 (etoxietano). En la ramificada: entre el central y una punta (2-metoxipropano). Total: 3.",
+        "Éteres: el O se mete entre dos carbonos. En la cadena recta: entre el 1 y el 2 (1-metoxipropano) o entre el 2 y el 3 (etoxietano). En la ramificada: entre el central y una punta (2-metoxipropano). Total: 3.",
         "Ojo con los repetidos: el –OH en el carbono 3 de la cadena recta es el butan-2-ol otra vez.",
         "4 + 3 = 7 isómeros estructurales."
       ],
@@ -102,8 +102,8 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "El butan-1-ol, el butanal y el etoxietano tienen 4 carbonos cada uno. Ordénalos de mayor a menor punto de ebullición y explica el orden. (De tabla: 117,7 °C, 74,8 °C y 34,5 °C, en otro orden.)",
-      "respuesta": "Butan-1-ol (117,7 °C) > butanal (74,8 °C) > etoxietano (34,5 °C).",
+      "enunciado": "El butan-1-ol, el butanal y el etoxietano tienen 4 carbonos cada uno. Ordénalos de mayor a menor punto de ebullición y explica el orden. (De tabla, en desorden: 34,5 °C, 117,7 °C y 74,8 °C.)",
+      "respuesta": "Butan-1-ol (117,7 °C) > butanal (74,8 °C) > etoxietano (34,5 °C).",
       "pasos": [
         "El butan-1-ol tiene un H unido a O: forma puentes de hidrógeno entre sus moléculas. Es el que más cuesta separar.",
         "El butanal tiene un C=O, que es polar, pero ningún H unido a O: sus moléculas se atraen menos que las del alcohol.",
@@ -219,8 +219,8 @@
       "pasos": [
         "El grupo –CHO es un aldehído: va siempre en la punta y es el carbono 1 (por eso no se escribe su número).",
         "La cadena más larga que contiene el C del –CHO tiene 4 carbonos: butanal.",
-        "Contando desde el –CHO, el metilo queda en el carbono 3.",
-        "Nombre: 3-metilbutanal (no 2-metilbutanal, que sería numerar desde el otro lado)."
+        "Contando desde el –CHO, el metilo queda en el carbono 3. Si se numerara desde el CH₃ de la izquierda, el metilo quedaría en el 2, pero el C del –CHO tiene que ser el 1.",
+        "Nombre: 3-metilbutanal."
       ],
       "verificar": [
         {

@@ -9,7 +9,7 @@
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
 
    Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 (nucleo/elementos.js, la misma medida de
-   docs/metodo/paleta.py) y contraste WCAG sobre #fdf7f1 y #241c2e, también sobre el chip .v (fondo del 8 %): contraste
+   docs/metodo/paleta.py) y contraste WCAG sobre #fdf7f1 y #241c2e, también sobre el chip .v (fondo del 8 %): contraste
    mínimo 4,6 en los dos modos.
      ELEMENTOS: paleta común de nucleo/elementos.js (C gris, H turquesa, O rojo, N azul), en el bloque generado de abajo.
      VARIABLES
@@ -121,9 +121,9 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
   background:var(--card); border:1.5px solid var(--line)}
 .opt:hover:not(:disabled){border-color:var(--ink)}
 .opt:disabled{cursor:default}
-.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 6%, var(--paper))}
 .opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
-.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 6%, var(--paper))}
 .opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
 .opt.correct .v, .opt.wrong .v{background:none}
 .fb{font-weight:700; margin:0}
@@ -350,7 +350,7 @@ function pintarMolecula(ctx, c, it, box, hl){
     ctx.save(); ctx.strokeStyle = c.pu; ctx.lineWidth = hl === 'pu' ? 4 : 3; ctx.setLineDash([3, 5]); linea(ctx, a.X, a.Y, b.X, b.Y); ctx.restore();
   }
   // Átomos.
-  const radio = p => (p.el === 'H' ? RH : RC)*s;
+  const radio = p => (p.el === 'H' ? (it.rh || RH) : RC)*s;
   for (const p of A){
     const q = P(p), r = radio(p);
     ctx.beginPath(); ctx.arc(q.X, q.Y, r, 0, Math.PI*2); ctx.fillStyle = c.el[p.el] || c.muted; ctx.fill();
@@ -394,30 +394,30 @@ function pintarMolecula(ctx, c, it, box, hl){
     texto(ctx, c, String(k + 1), q.X, q.Y + 0.5, Math.max(10, r2*1.2), c.loc, 'center', 0, 900);
   });
   // La caja de grupos: lugares donde puede ir el grupo (anillos pálidos) y el elegido al arrastrar (punteado).
-  if (op.objetivos) for (const o of op.objetivos){ const q = P(o); ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.globalAlpha = alfa0*0.7; ctx.beginPath(); ctx.arc(q.X, q.Y, Math.max(12, s*0.42), 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+  if (op.objetivos) for (const o of op.objetivos){ const q = P(o); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.setLineDash([1, 6]); ctx.beginPath(); ctx.arc(q.X, q.Y, Math.max(12, s*0.42), 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
   if (op.marca){ const q = P(op.marca); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.arc(q.X, q.Y, Math.max(14, s*0.5), 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
   ctx.restore();
 }
 // Una fila o cuadrícula de moléculas, con su rótulo y, si hay, su termómetro.
 function celdas(W, n, v){
-  if (v.reaccion) return W < 560 ? { cols: 2, filas: Math.ceil(n/2) } : { cols: n, filas: 1 };
+  if (v.reaccion) return n <= 2 ? { cols: n, filas: 1 } : { cols: 2, filas: Math.ceil(n/2) };
   if (v.apilar && W < 560) return { cols: 1, filas: n };
   const cols = W < 560 ? (n <= 2 ? n : 2) : (n === 4 ? 2 : Math.min(n, 3));
   return { cols, filas: Math.ceil(n/cols) };
 }
 function altoCelda(W, n, v){
-  const base = n === 1 || (v.apilar && W < 560) ? (W < 560 ? (n === 1 ? 220 : 175) : 290) : v.reaccion ? (W < 560 ? 150 : 200) : (W < 560 ? (n <= 2 ? 165 : 140) : n <= 3 ? 230 : 180);
+  const base = n === 1 || (v.apilar && W < 560) ? (W < 560 ? (n === 1 ? 220 : 200) : 290) : v.reaccion ? (W < 560 ? 150 : 175) : (W < 560 ? (n <= 2 ? 165 : 140) : n <= 3 ? 230 : 180);
   return base + 30 + (v.items.some(it => it.rot2) ? 16 : 0) + (v.items.some(it => it.teb) ? 34 : 0) + (v.extra || 0);
 }
 const PINTA = {};
 PINTA.mols = {
-  alto: (w, v) => { const { filas } = celdas(w, v.items.length, v); return filas*altoCelda(w, v.items.length, v) + 8 + (v.reaccion && w < 560 ? 18 : 0); },
+  alto: (w, v) => { const { filas } = celdas(w, v.items.length, v); return filas*altoCelda(w, v.items.length, v) + 8 + (v.reaccion && v.items.length > 2 ? 18 : 0); },
   llave: v => v.items.length + '|' + v.items.map(it => it.c.atomos.length).join(',') + '|' + !!v.reaccion + !!v.apilar + v.items.some(it => it.rot2) + v.items.some(it => it.teb),
   pintar(ctx, c, W, v, hl){
     const n = v.items.length, { cols } = celdas(W, n, v), ch = altoCelda(W, n, v), cw = (W - 8)/cols;
     const conT = v.items.some(z => z.teb), con2 = v.items.some(z => z.rot2), pie = 30 + (con2 ? 16 : 0) + (conT ? 34 : 0);
-    const gap = v.reaccion && W < 560 ? 18 : 0;
-    const caja = k => ({ x: 4 + (k % cols)*cw, y: 4 + Math.floor(k/cols)*(ch + gap) });
+    const gap = v.reaccion && n > 2 ? 18 : 0;
+    const caja = k => ({ x: 4 + (k % cols)*cw, y: 4 + Math.floor(k/cols)*(ch + gap) });
     const sComun = v.mismaEscala ? Math.min(...v.items.map(it => ajuste(it, { w: cw - 20, h: ch - pie - 14 }).s)) : 0;
     v.items.forEach(it => { it._sFija = sComun || 0; });
     v.items.forEach((it, k) => {
@@ -457,7 +457,7 @@ PINTA.mols = {
     if (v.items.some(it => it.op && it.op.tags && Object.values(it.op.tags).includes('al'))) l.push(leyAnillo('var(--c-al)', 'parte del alcohol'));
     if (op('sale')) l.push(leyAnillo('var(--ink)', 'sale como agua', true));
     if (op('cuenta')) l.push(leyAnillo('var(--ink)', 'carbonos que se cuentan', true));
-    if (op('objetivos')) l.push(leyAnillo('var(--muted)', 'lugares para el grupo'));
+    if (op('objetivos')) l.push(`<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="0.5 4"/></svg>lugares para el grupo</span>`);
     return l;
   },
   describir: v => v.desc || v.items.map(it => it.desc || it.rot || '').join(' '),
@@ -465,15 +465,15 @@ PINTA.mols = {
 const leyAt = (e, t) => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--el-${e})"/></svg>${e} · ${t}</span>`;
 const leyVar = (k, t) => `<span><i style="background:var(--c-${k})"></i>${t}</span>`;
 const leyAnillo = (col, t, dash) => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="${col}" stroke-width="2"${dash ? ' stroke-dasharray="2 2"' : ''}/></svg>${t}</span>`;
-// Termómetro horizontal, con la marca del aula (20 °C).
+// Termómetro horizontal, con la marca del aula (20 °C).
 function termometro(ctx, c, t, x, y, w, rango){
   const [a, b] = rango, X = T => x + (clamp(T, a, b) - a)/(b - a)*w;
   ctx.save(); rr(ctx, x, y - 4, w, 8, 4); ctx.fillStyle = c.grid; ctx.fill(); ctx.strokeStyle = c.line; ctx.stroke();
   ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.setLineDash([2, 3]); linea(ctx, X(20), y - 4, X(20), y + 9); ctx.setLineDash([]);
-  texto(ctx, c, 'aula 20 °C', X(20), y + 16, 10, c.muted, 'center', 0, 700);
+  texto(ctx, c, 'aula 20 °C', X(20), y + 16, 10, c.muted, 'center', 0, 700);
   if (t.sinDato) texto(ctx, c, 'sin dato de tabla', x + w/2, y - 13, 11, c.muted, 'center', 0, 700);
   else if (t.ver){ const p = t.p === undefined ? 1 : t.p, v = a + (t.valor - a)*p; rr(ctx, x, y - 4, Math.max(8, X(v) - x), 8, 4); ctx.fillStyle = c.T; ctx.fill();
-    texto(ctx, c, `${fmt(t.valor)} °C`, clamp(X(v), x + 24, x + w - 24), y - 13, 12, c.T, 'center', 0, 900); }
+    texto(ctx, c, `${fmt(t.valor)} °C`, clamp(X(v), x + 24, x + w - 24), y - 13, 12, c.T, 'center', 0, 900); }
   else texto(ctx, c, '¿?', x + w/2, y - 13, 12, c.muted, 'center', 0, 900);
   ctx.restore();
 }
@@ -566,10 +566,18 @@ function enPar(it){
   if (pu.entreMoleculas){
     const d = pu.donadores[0], hA = A.find(p => p.padre === d), oA = A[d], acc = pu.aceptores[0];
     const L = Math.hypot(hA.x - oA.x, hA.y - oA.y), u = { x:(hA.x - oA.x)/L, y:(hA.y - oA.y)/L };
-    const th = Math.atan2(u.y, u.x) - Math.atan2(cen.y - A[acc].y, cen.x - A[acc].x);
-    const rot = p => ({ x: p.x*Math.cos(th) - p.y*Math.sin(th), y: p.x*Math.sin(th) + p.y*Math.cos(th) });
-    const t = { x: hA.x + u.x*1.15, y: hA.y + u.y*1.15 }, r0 = rot(A[acc]);
-    B = A.map(p => { const q = rot(p); return { ...p, x: q.x - r0.x + t.x, y: q.y - r0.y + t.y }; });
+    const t = { x: hA.x + u.x*1.15, y: hA.y + u.y*1.15 };
+    // La segunda copia se gira para que sus enlaces (también su propio H del O o del N) apunten lejos del puente: el
+    // hueco libre de su O o N (donde llega el H) mira hacia la primera molécula.
+    const lazos = A.filter(p => p.i !== acc && (p.padre === acc || it.m.en.some(e => (e.a === acc && e.b === p.i) || (e.b === acc && e.a === p.i))));
+    const w = lazos.reduce((sm, p) => { const l = Math.hypot(p.x - A[acc].x, p.y - A[acc].y); return { x: sm.x + (p.x - A[acc].x)/l, y: sm.y + (p.y - A[acc].y)/l }; }, { x:0, y:0 });
+    // Si el O o N no tiene hueco en el dibujo plano (un NH₂ con tres enlaces), se busca el giro que más aleje las copias.
+    const copia = th => { const rot = p => ({ x: p.x*Math.cos(th) - p.y*Math.sin(th), y: p.x*Math.sin(th) + p.y*Math.cos(th) }), r0 = rot(A[acc]);
+      return A.map(p => { const q = rot(p); return { ...p, x: q.x - r0.x + t.x, y: q.y - r0.y + t.y }; }); };
+    const holgura = Bc => Math.min(...Bc.filter((q, k) => k !== acc).map(q => Math.min(...A.map(p => Math.hypot(p.x - q.x, p.y - q.y)))));
+    const th0 = Math.atan2(u.y, u.x) - Math.atan2(w.y, w.x);
+    B = copia(th0);
+    if (holgura(B) < 0.9) for (let k = 1; k < 72; k++){ const C = copia(th0 + k*Math.PI/36); if (holgura(C) > holgura(B) + 1e-9) B = C; }
     lineas.push([hA.i, n + acc]);
   } else {
     let x0 = Infinity, x1 = -Infinity; for (const p of A){ x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); }
@@ -577,7 +585,7 @@ function enPar(it){
   }
   it.c = { atomos: [...A, ...B.map(p => ({ ...p, i: p.i + n, padre: p.padre === null ? null : p.padre + n }))], enlaces: [] };
   it.en = [...it.m.en, ...it.m.en.map(e => ({ ...e, a: e.a + n, b: e.b + n }))];
-  it.op.pu = lineas; it.puentes = pu;
+  it.op.pu = lineas; it.puentes = pu; it.rh = 0.21;
   return it;
 }
 // Marcas de origen en el dibujo de un éster, de un ácido o de un alcohol (los H siguen a su átomo).
@@ -622,7 +630,7 @@ function interaccionCaja(E){
     const k = { ArrowRight:1, ArrowDown:1, ArrowLeft:-1, ArrowUp:-1 }[e.key]; if (!k) return;
     e.preventDefault();
     const l = MF.posiciones(E.caja.n, E.caja.g), i = l.indexOf(E.caja.pos);
-    poner(l[(i + k + l.length) % l.length]);
+    poner(l[(i + k + l.length) % l.length]);
   });
   function poner(pos){ const K = E.caja; if (!K) return; const antes = K.r; K.pos = pos; K.r = MF.ponerGrupo(K.n, K.g, pos); K.alCambiar(K.r, antes); }
   E.ponerCaja = poner;
@@ -675,9 +683,9 @@ const P2 = { id:'fo-ebullicion-puente-h', ok:'c', opts:[
   ['b', 'El metoximetano: su O forma puentes de hidrógeno con las moléculas vecinas', 'FO2-puente-por-tener-O', 'documentado'],
   ['c', 'El etanol: su H unido al O forma puentes de hidrógeno con las moléculas vecinas'],
   ['d', 'El metoximetano: su molécula es simétrica y se acomoda mejor con las vecinas', 'FO-eter-simetrico', 'hipotesis']],
-  fb:{ c:`¡Bien! El etanol hierve a ${fmt(EB.a.teb)} °C y el metoximetano a ${fmt(EB.b.teb)} °C (de tabla). Mira la línea punteada: el H unido al O de un etanol apunta al O de otro. En el éter todos los H están en carbonos: no hay puente.`,
-    a:`Elegiste la 1. La misma fórmula no da la misma atracción entre moléculas: depende de cómo están unidos los átomos. Hay más de 100 °C de diferencia: ${fmt(EB.a.teb)} °C contra ${fmt(EB.b.teb)} °C (de tabla). Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    b:'Elegiste la 2. Tener un O no basta: el puente de hidrógeno es un H unido a O (o a N) que se va hacia el O de otra molécula. En el metoximetano todos los H están en carbonos. En una pregunta de opción múltiple, cerca de un tercio de los escolares de dos grupos (34 % de 112 y 31 % de 82) eligió el éter como el que forma puentes (Schmidt, 1996). La correcta está marcada.',
+  fb:{ c:`¡Bien! El etanol hierve a ${fmt(EB.a.teb)} °C y el metoximetano a ${fmt(EB.b.teb)} °C (de tabla). Mira la línea punteada: el H unido al O de un etanol apunta al O de otro. En el éter todos los H están en carbonos: no hay puente.`,
+    a:`Elegiste la 1. La misma fórmula no da la misma atracción entre moléculas: depende de cómo están unidos los átomos. Hay más de 100 °C de diferencia: ${fmt(EB.a.teb)} °C contra ${fmt(EB.b.teb)} °C (de tabla). Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    b:'Elegiste la 2. Tener un O no basta: el puente de hidrógeno es un H unido a O (o a N) que se va hacia el O de otra molécula. En el metoximetano todos los H están en carbonos. En otra pregunta (cuál de NH₃, CH₃F y CH₃OCH₃ forma puentes), alrededor de un tercio de dos grupos de escolares alemanes (34 % de 112 y 31 % de 82) eligió solo el éter (Schmidt, 1996, tabla 1). La correcta está marcada.',
     d:'Elegiste la 4. La simetría no le da atracción: el metoximetano no tiene ningún H unido al O, así que sus moléculas se atraen menos y hierve mucho antes. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
 const P3 = { id:'fo-aldehido-cetona', ok:'a', opts:[
   ['a', `A: ${NPAL.nombre}; B: ${NPONA.nombre}`],
@@ -703,7 +711,7 @@ const P5 = { id:'fo-nombre-ester', ok:'c', opts:[
   ['c', nP(NEST.nombre)],
   ['d', nP(NEST.errores.eterMasCetona), 'FO-ester-eter-mas-cetona', 'hipotesis']],
   fb:{ c:`¡Bien! La parte con el C=O viene del ácido etanoico y da «${NEST.ester.parteAcido}»; la que está unida al O del puente viene del metanol y da «de ${NEST.ester.alquilo}». Mira la reacción con las dos partes de colores.`,
-    a:`Elegiste la 1: las partes van al revés. La parte que lleva el C=O (aquí, 2 C) es la del ácido y va primero, con -ato; la del alcohol (1 C), unida al O del puente, va después con -ilo. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    a:`Elegiste la 1: las partes van al revés. La parte que lleva el C=O (aquí, 2 C) es la del ácido y va primero, con ‑ato; la del alcohol (1 C), unida al O del puente, va después con ‑ilo. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
     b:`Elegiste la 2. El ${NEST.errores.comoAcido} tiene la misma fórmula, ${sub(MF.formula(EST).texto)}, pero es otra sustancia: su –COOH tiene un H unido al O. Aquí el O del medio está entre dos carbonos: es un éster. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
     d:'Elegiste la 4. El –COO– es un solo grupo, el éster: no se parte en un éter (–O–) y una cetona (C=O). Leer un grupo como la suma de otros dos es una hipótesis nuestra que sale de lo descrito en el informe. La correcta está marcada.' } };
 const P6 = { id:'fo-clase-amina', ok:'a', opts:[
@@ -749,7 +757,7 @@ function vEbullicion(r, p){
   const a = mol(ETOH, { rot:'etanol', teb:{ valor: EB.a.teb, ver: !!r, p } }), b = mol(ETER, { rot:'metoximetano', teb:{ valor: EB.b.teb, ver: !!r, p } });
   a.desc = 'Etanol: CH3–CH2–OH.'; b.desc = 'Metoximetano: CH3–O–CH3.';
   if (r){ enPar(a); enPar(b); a.desc = `Dos moléculas de etanol: el H unido al O de una apunta al O de la otra, un puente de hidrógeno. Hierve a ${fmt(EB.a.teb)} grados.`; b.desc = `Dos moléculas de metoximetano, sin puente: todos sus H están en carbonos. Hierve a ${fmt(EB.b.teb)} grados: a 20 grados ya es gas.`; }
-  return { tipo:'mols', items:[a, b], mismaEscala:true, apilar: !!r, rango:[-40, 100] };
+  return { tipo:'mols', items:[a, b], mismaEscala: !r, apilar: !!r, rango:[-40, 100] };
 }
 function vCarbonilo(r){
   const a = mol(PAL, { rot:'A', desc:'Molécula A: tres carbonos en fila; el último tiene un O con doble enlace y un H.' });
@@ -779,7 +787,7 @@ function vEster(r, p){
   const f = p === undefined ? 1 : p; es.op.alpha = f; ag.op.alpha = f;
   ac.desc = 'Ácido etanoico: pierde el OH de su grupo.'; al.desc = 'Metanol: pierde el H de su OH.';
   es.desc = `${REAC.nombre}: la parte del ácido con el C=O y la del alcohol unida al O del puente.`; ag.desc = 'Y una molécula de agua.';
-  return { tipo:'mols', items:[ac, al, es, ag], reaccion:true, signos:['+', '→', '+'] };
+  return { tipo:'mols', items:[ac, al, es, ag], reaccion:true, mismaEscala:true, signos:['+', '→', '+'] };
 }
 function vAmina(r){
   const a = conNombre(mol(AMI), []); a.desc = `${NAMI.nombre}: un carbono unido a tres CH3 y a un NH2.`;
@@ -799,9 +807,9 @@ function vCetona(r){
 }
 
 const prioridadHTML = () => `<div class="tablaw"><table class="tabla"><tr><th>Familia</th><th>Grupo</th><th>En el nombre</th><th>Ejemplo</th></tr>
-  ${[['ácido carboxílico', '–COOH', 'ácido …-oico', 'CH3-COOH'], ['éster', '–COO–', '…-oato de …-ilo', 'CH3-COO-CH3'], ['amida', '–CONH2', '-amida', 'CH3-CONH2'], ['nitrilo', '–C≡N', '-nitrilo', 'CH3-CN'],
+  ${[['ácido carboxílico', '–COOH', 'ácido …-oico', 'CH3-COOH'], ['éster', '–COO–', '…‑oato de …‑ilo', 'CH3-COO-CH3'], ['amida', '–CONH2', '-amida', 'CH3-CONH2'], ['nitrilo', '–C≡N', '-nitrilo', 'CH3-CN'],
      ['aldehído', '–CHO', '-al', 'CH3-CHO'], ['cetona', '–CO– (entre dos C)', '-ona', 'CH3-CO-CH3'], ['alcohol', '–OH', '-ol', 'CH3-CH2-OH'], ['amina', '–NH2, –NH–, –N<', '-amina', 'CH3-NH2'], ['éter', '–O–', 'alcoxi-', 'CH3-O-CH3']]
-    .map(([f, g, s, e]) => { const r = MF.nombre(e); return `<tr><td>${f}</td><td>${F(g)}</td><td>${s}</td><td>${N(r)}${r.comun ? ` <span class="hint">(${esc(r.comun)})</span>` : ''}</td></tr>`; }).join('')}</table></div>`;
+    .map(([f, g, s, e]) => { const r = sinPartesEster(MF.nombre(e)); return `<tr><td>${f}</td><td>${F(g)}</td><td>${s}</td><td>${N(r)}${r.comun ? ` <span class="hint">(${esc(r.comun)})</span>` : ''}</td></tr>`; }).join('')}</table></div>`;
 
 const steps = [
  { k:'Paso 1', t:'El mismo esqueleto, otro grupo', vista:() => vIntro(),
@@ -814,23 +822,23 @@ const steps = [
    <p class="hint">El halo del ${V('gf', 'grupo funcional')}, la ${V('cad', 'cadena principal')} y los ${V('loc', 'localizadores')} tienen su propio color. Toca un color del texto para resaltarlo en el dibujo.</p>` },
  { k:'Paso 2', t:'Moverle el O al etanol', gate:P1, vista:r => vIsomeros(r),
    body:() => `<p>El dibujo A es el etanol, ${F('CH3–CH2–OH')}. Si el O se pasa al medio, entre los dos carbonos, queda el dibujo B: ${F('CH3–O–CH3')}. En los dos, cada átomo tiene sus enlaces: el C 4, el O 2 y el H 1.</p>
-   <p>¿El ${F('CH3–O–CH3')} es un isómero del etanol, es decir, otra sustancia con la misma fórmula molecular?</p>${opcionesHTML(P1.opts, 'fb')}
-   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">${N(MF.nombre(ETOH))} ${F(ISO.formulaA)} · ${N(MF.nombre(ETER))} ${F(ISO.formulaB)}</span><span class="note">Misma fórmula molecular, otra forma de unión: isómeros. Como cambia la familia (alcohol y éter), son isómeros <b>de función</b>.</span></div></div>
-   <p>Si cambiara solo el lugar del grupo, sin cambiar la familia (propan-1-ol y propan-2-ol), serían isómeros de <b>posición</b>; si cambiara el esqueleto (butan-1-ol y 2-metilpropan-2-ol), de <b>cadena</b>.</p>
+   <p>¿El ${F('CH3–O–CH3')} es un isómero del etanol?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div class="tras" hidden><p>Isómeros: sustancias distintas con la misma fórmula molecular.</p><div class="eqs"><div class="eq"><span class="ex">${N(MF.nombre(ETOH))} ${F(ISO.formulaA)} · ${N(MF.nombre(ETER))} ${F(ISO.formulaB)}</span><span class="note">Misma fórmula molecular, otra forma de unión: isómeros. Como cambia la familia (alcohol y éter), son isómeros <b>de función</b>.</span></div></div>
+   <p>Si cambiara solo el lugar del grupo, sin cambiar la familia (propan-1-ol y propan-2-ol), serían isómeros de <b>posición</b>; si cambiara el esqueleto (butan-1-ol y 2-metilpropan-1-ol), de <b>cadena</b>.</p>
    <div class="fila">${otraVez}</div>
    <p class="fuente">Que un alcohol y un éter «no pueden ser isómeros porque son de otra clase» está descrito en escolares (Schmidt, 1992, por su resumen), sin porcentaje en lo que leímos. Perder el H al mover el O y confundirlo con la misma sustancia son hipótesis nuestras.</p></div>` },
  { k:'Paso 3', t:'¿Cuál hierve a más temperatura?', gate:P2, vista:r => vEbullicion(r, r ? 1 : undefined),
-   body:() => `<p>El etanol y el metoximetano son isómeros: los dos son ${F('C2H6O')}. El etanol es el alcohol de las bebidas y del alcohol para heridas; el metoximetano (éter dimetílico) se usa como gas en algunos aerosoles.</p>
+   body:() => `<p>El etanol y el metoximetano son isómeros: los dos son ${F('C2H6O')}. El etanol es el alcohol de las bebidas y del alcohol para heridas.</p>
    <p>¿Cuál tiene el ${V('T', 'punto de ebullición')} más alto, y por qué?</p>${opcionesHTML(P2.opts, 'fb')}
-   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">etanol: ${V('T', fmt(EB.a.teb) + ' °C')} · metoximetano: ${V('T', fmt(EB.b.teb) + ' °C')}</span><span class="note">Datos de tabla (CRC Handbook y NIST), no salen de una fórmula. A 20 °C el etanol es líquido y el metoximetano, gas.</span></div></div>
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">etanol: ${V('T', fmt(EB.a.teb) + ' °C')} · metoximetano: ${V('T', fmt(EB.b.teb) + ' °C')}</span><span class="note">Datos de tabla (CRC Handbook y NIST), no salen de una fórmula. A 20 °C el etanol es líquido y el metoximetano, gas: por eso el metoximetano (éter dimetílico) se usa como gas en algunos aerosoles.</span></div></div>
    <p>Un ${V('pu', 'puente de hidrógeno')} es un H unido a O (o a N) que se va hacia el O o el N de otra molécula. El etanol tiene ese H en su –OH; el metoximetano tiene O, pero todos sus H están en carbonos. Su O sí puede recibir el H de una molécula de agua: por eso el metoximetano se disuelve en agua, aunque no forme puentes consigo mismo.</p>
    <div class="fila">${otraVez}</div>
-   <p class="fuente">«Puente de hidrógeno es tener oxígeno» (FO2): en una pregunta de opción múltiple, cerca de un tercio de los escolares de dos grupos (34 % de 112 y 31 % de 82) eligió el éter (Schmidt, 1996). Las cifras salen de un resumen y están por verificar. Las otras opciones son hipótesis nuestras.</p></div>` },
+   <p class="fuente">«Puente de hidrógeno es tener oxígeno» (FO2): en otra pregunta (cuál de NH₃, CH₃F y CH₃OCH₃ forma puentes), alrededor de un tercio de dos grupos de escolares alemanes (34 % de 112 y 31 % de 82) eligió solo el éter (Schmidt, 1996, tabla 1). Las otras opciones son hipótesis nuestras.</p></div>` },
  { k:'Paso 4', t:'El C=O en la punta o en el medio', gate:P3, vista:r => vCarbonilo(r),
    body:() => `<p>Las moléculas A, ${F('CH3–CH2–CHO')}, y B, ${F('CH3–CO–CH3')}, tienen el mismo esqueleto de 3 carbonos y un O con doble enlace (C=O). En A está en la punta; en B, en el carbono del medio.</p>
    <p>¿Cómo se llaman?</p>${opcionesHTML(P3.opts, 'fb')}
    <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">A: ${N(NPAL)} (aldehído, ${F('–CHO')}) · B: ${N(NPONA)} (cetona, C=O entre dos C)</span><span class="note">Nombres comunes: ${NPAL.comun}; ${NPONA.comun}. Los dos son ${F(ISO3.formulaA)}: isómeros de función.</span></div></div>
-   <p>En el aldehído, el C del grupo es siempre el carbono 1, por eso no se escribe su número. En una cetona sí puede hacer falta (pentan-2-ona y pentan-3-ona son distintas); en la propanona y la butanona no, porque solo hay un lugar posible.</p>
+   <p>En el aldehído, el C del grupo es siempre el carbono 1, por eso no se escribe su número. En una cetona sí puede hacer falta (pentan-2-ona y pentan-3-ona son distintas); en la propanona y la butanona no, porque solo hay un lugar posible (muchos libros escriben propan-2-ona y butan-2-ona; las dos formas se aceptan).</p>
    <p class="fuente">Agrupar compuestos por un solo rasgo de superficie, y cambiar de rasgo, está descrito en estudiantes (Domin, Al-Masum y Mensah, 2008, por la descripción de Graulich y Bhattacharyya, 2017), sin porcentaje. Confundir propanal y propanona, o -al con -ol, son hipótesis nuestras que salen de ahí.</p></div>` },
  { k:'Paso 5', t:'Tres alcoholes', gate:P4, vista:r => vAlcoholes(r),
    body:() => `<p>Los tres son alcoholes: ${N(MF.nombre(ALCS[0]))}, ${N(MF.nombre(ALCS[1]))} y ${N(MF.nombre(ALCS[2]))}, ${F('(CH3)3C–OH')}. Los alcoholes se clasifican en primarios, secundarios y terciarios.</p>
@@ -842,9 +850,9 @@ const steps = [
    body:() => `<p>Esta molécula es ${F('CH3–COO–CH3')}: un éster. Su grupo, ${F('–COO–')}, tiene un C con un O de doble enlace y otro O de puente hacia un carbono. Los ésteres dan el olor de muchas frutas y se usan en perfumes.</p>
    <p>¿Cuál es su nombre IUPAC?</p>${opcionesHTML(P5.opts, 'fb')}
    <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">${esc(REAC.nombreAcido)} + ${esc(REAC.nombreAlcohol)} → ${N(NEST)} + agua</span><span class="note">El ácido pierde el –OH de su grupo y el alcohol, el H de su –OH: juntos forman el agua. Por eso el O del puente viene del alcohol.</span></div>
-   <div class="eq"><span class="ex">Nombre: (${V('ac', 'parte del ácido')}, con -ato) de (${V('al', 'parte del alcohol')}, con -ilo).</span><span class="note">Nombre común: ${NEST.comun} (del ácido acético). Fórmula: ${F(REAC.formula)}, la misma del ácido propanoico: son isómeros de función.</span></div></div>
+   <div class="eq"><span class="ex">Nombre: (${V('ac', 'parte del ácido')}, con ‑ato) de (${V('al', 'parte del alcohol')}, con ‑ilo).</span><span class="note">Nombre común: ${NEST.comun} (del ácido acético). Fórmula: ${F(REAC.formula)}, la misma del ácido propanoico: son isómeros de función.</span></div></div>
    <div class="fila">${otraVez}</div>
-   <p class="fuente">Las cuatro opciones salen de la tabla de lo que no tiene respaldo del informe (confundir éter con éster, leer un grupo como la suma de otros); son hipótesis nuestras, sin estudio que las mida.</p></div>` },
+   <p class="fuente">Las tres opciones incorrectas salen de la tabla de lo que no tiene respaldo del informe (confundir éter con éster, leer un grupo como la suma de otros); son hipótesis nuestras, sin estudio que las mida.</p></div>` },
  { k:'Paso 7', t:'Una amina', gate:P6, vista:r => vAmina(r),
    body:() => `<p>Esta amina es ${F('(CH3)3C–NH2')}: ${N(NAMI)} (en muchos libros, ${NAMI.comun}). Las aminas son como el amoniaco, ${F('NH3')}, con uno, dos o tres H cambiados por carbonos; huelen a pescado.</p>
    <p>¿Es primaria, secundaria o terciaria?</p>${opcionesHTML(P6.opts, 'fb')}
@@ -970,13 +978,13 @@ function resumenCaja(r, antes){
     else comp = `La anterior (${esc(antes.nombre)}) era ${F(antes.formula)}: otra fórmula, no son isómeros.`;
   }
   return `<div class="eqs"><div class="eq"><span class="ex">${N(sinPartesEster(r))} · ${F(r.formula)}</span><span class="note">Familia: ${V('gf', esc(r.nombreFamilia))}, grupo ${F(r.grupo)}.${r.comun ? ` Nombre común: ${esc(r.comun)}.` : ''}${r.antiguo !== r.nombre ? ` Forma anterior: ${esc(r.antiguo)}.` : ''}</span></div>
-    <div class="eq"><span class="ex">${V('T', 'Ebullición')}: ${r.teb === null ? 'sin dato en la tabla de la escena' : V('T', fmt(r.teb) + ' °C') + ' (de tabla)'}</span><span class="note">${r.puentes ? 'Forma puentes de hidrógeno entre sus moléculas: tiene un H unido a O o a N.' : 'No forma puentes de hidrógeno entre sus moléculas: ningún H está unido a O o a N.'}${r.conAgua ? ' Con el agua sí puede: tiene O o N que reciben el H del agua.' : ''}</span></div>
+    <div class="eq"><span class="ex">${V('T', 'Ebullición')}: ${r.teb === null ? 'sin dato en la tabla de la escena' : V('T', fmt(r.teb) + ' °C') + ' (de tabla)'}</span><span class="note">${r.puentes ? 'Forma puentes de hidrógeno entre sus moléculas: tiene un H unido a O o a N.' : 'No forma puentes de hidrógeno entre sus moléculas: ningún H está unido a O o a N.'}${r.conAgua ? ' Con el agua sí puede: tiene O o N que reciben el H del agua.' : ''}${r.puentes && r.familia === 'amina' ? ' El N forma puentes más débiles que el O; con masas parecidas, la diferencia con uno sin puentes puede ser chica.' : ''}${r.nombre === 'metanonitrilo' ? ' Ojo: el HCN (cianuro de hidrógeno) en las academias se trata como un compuesto inorgánico.' : ''}</span></div>
     ${comp ? `<div class="eq"><span class="ex">${comp}</span></div>` : ''}</div>`;
 }
 function abrirCaja(grupos, inicio){
   Object.assign(CAJA, inicio, { grupos });
   CAJA.r = MF.ponerGrupo(CAJA.n, CAJA.g, CAJA.pos);
-  CAJA.alCambiar = (r, antes) => { pintarCaja(); const el = $('cajaRes'); if (el) el.innerHTML = resumenCaja(r, antes); E.describir(); const st = $('cajaEst'); if (st) st.textContent = `${MF.CAJA[CAJA.g].texto} en el ${MF.CAJA[CAJA.g].lugar === 'enlace' ? 'enlace ' + CAJA.pos + '–' + (CAJA.pos + 1) : 'carbono ' + CAJA.pos}: ${r.nombre}.`; };
+  CAJA.alCambiar = (r, antes) => { pintarCaja(); const el = $('cajaRes'); if (el) el.innerHTML = resumenCaja(r, antes); E.describir(); const st = $('cajaEst'); if (st) st.textContent = `${MF.CAJA[CAJA.g].texto} ${MF.CAJA[CAJA.g].lugar === 'enlace' ? 'entre dos carbonos' : 'en el carbono ' + (r.cadena.indexOf(CAJA.pos - 1) + 1)}: ${r.nombre}.`; };
   E.caja = CAJA; E.cv.tabIndex = 0;
   pintarCaja();
   const el = $('cajaRes'); if (el) el.innerHTML = resumenCaja(CAJA.r, null);
@@ -1016,14 +1024,14 @@ const EXPS = [
       d:'El carbono 3 de una cadena de 4 es el carbono 2 visto desde la otra punta: sale la misma butanona. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
     antes:() => { const it = conNombre(deResumen(BAL), []); it.op.marca = it.c.atomos[2]; it.desc = 'Butanal: cuatro carbonos en fila; el de la punta tiene el C=O. El tercer carbono está marcado con un anillo punteado.'; return { tipo:'mols', items:[it] }; },
     caja:{ grupos:['CO'], inicio:{ n:4, g:'CO', pos:3 } },
-    exp:() => `<p>Ahora mueve tú el C=O por el esqueleto. En una punta es un ${V('gf', 'aldehído')} (-al); en el medio, una ${V('gf', 'cetona')} (-ona). Con 4 carbonos solo hay dos cetonas posibles… que son la misma.</p>${controlesCaja(['CO'])}
+    exp:() => `<p>Ahora mueve tú el C=O por el esqueleto. En una punta es un ${V('gf', 'aldehído')} (-al); en el medio, una ${V('gf', 'cetona')} (-ona). Con 4 carbonos, el C=O en el carbono 2 o en el 3 da la misma cetona: la butanona.</p>${controlesCaja(['CO'])}
       <p class="fuente">El motor compara las dos moléculas por su grafo: si sale la misma forma canónica, es la misma sustancia.</p>` },
   { id:'isomeros-c3h8o', corto:'Los isómeros del C₃H₈O',
-    q:`¿Cuántas sustancias distintas tienen la fórmula ${F('C3H8O')} (alcoholes o éteres, con el esqueleto sin dobles enlaces)?`,
+    q:`¿Cuántas sustancias distintas tienen la fórmula ${F('C3H8O')} (sin anillos ni dobles enlaces)?`,
     opts:[['a', `${C3.errores.sinEteres}: solo los alcoholes cuentan, porque los isómeros son de la misma familia`, 'FO1-sin-eteres', 'parcial'],
           ['b', `${C3.n}: dos alcoholes y un éter`],
           ['c', `${C3.errores.eteresPorEnlace}: dos alcoholes y un éter por cada enlace entre carbonos`, 'FO-eter-por-enlace', 'hipotesis'],
-          ['d', `${C3.errores.porPosiciones}: el –OH en cada carbono y el O en cada enlace`, 'FO-cada-posicion', 'hipotesis']],
+          ['d', `${C3.errores.porPosiciones}: el –OH en cada uno de los 3 carbonos y el O en cada uno de los 2 enlaces, sin quitar repetidos`, 'FO-cada-posicion', 'hipotesis']],
     ok:'b',
     fb:{ a:'Un éter con la misma fórmula también es isómero: los isómeros pueden ser de familias distintas. Que un alcohol y un éter «no pueden ser isómeros» está descrito en escolares (Schmidt, 1992, por su resumen), sin porcentaje en lo que leímos.',
       c:'El O entre el carbono 1 y el 2, o entre el 2 y el 3, da la misma molécula: un CH₃ de un lado y un CH₂–CH₃ del otro. Es un solo éter. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
@@ -1054,7 +1062,7 @@ const EXPS = [
     fb:{ a:'Si el éster tuviera todos los átomos, ¿de dónde saldría el agua? El agua se lleva 2 H y 1 O de la suma. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
       b:'Lo que sale no es H₂ sino H₂O: el –OH del ácido y el H del –OH del alcohol. Falta quitar también un O. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
       d:'Sale una sola molécula de agua por cada enlace nuevo: el ácido pone el –OH y el alcohol pone el H. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
-    antes:() => { const a = mol('CH3-COOH', { rot:'ácido etanoico' }), b = mol('CH3-CH2-OH', { rot:'etanol' }); a.desc = 'Ácido etanoico.'; b.desc = 'Etanol.'; return { tipo:'mols', items:[a, b], reaccion:true, signos:['+'] }; },
+    antes:() => { const a = mol('CH3-COOH', { rot:'ácido etanoico' }), b = mol('CH3-CH2-OH', { rot:'etanol' }); a.desc = 'Ácido etanoico.'; b.desc = 'Etanol.'; return { tipo:'mols', items:[a, b], reaccion:true, mismaEscala:true, signos:['+'] }; },
     despues:p => {
       const f = p === undefined ? 1 : p;
       const ac = marcar(mol('CH3-COOH', { rot: ES.nombreAcido }), () => 'ac'), al = marcar(mol('CH3-CH2-OH', { rot: ES.nombreAlcohol }), () => 'al');
@@ -1064,20 +1072,20 @@ const EXPS = [
       const ag = mol('O', { rot:'agua' }); ag.op.tags = { 0:'ac', 1:'ac', 2:'al' };
       es.op.alpha = f; ag.op.alpha = f; es.rot2 = sub(ES.formula); es.rot2Color = 'ink';
       ac.desc = 'El ácido etanoico pierde el OH de su grupo.'; al.desc = 'El etanol pierde el H de su OH.'; es.desc = `${ES.nombre}, ${ES.formula}.`; ag.desc = 'Y sale una molécula de agua.';
-      return { tipo:'mols', items:[ac, al, es, ag], reaccion:true, signos:['+', '→', '+'] };
+      return { tipo:'mols', items:[ac, al, es, ag], reaccion:true, mismaEscala:true, signos:['+', '→', '+'] };
     },
     anima:true,
-    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${F(ES.formulaAcido)} + ${F(ES.formulaAlcohol)} = ${F(ES.sumaReactivos)}; menos ${F('H2O')}: ${F(ES.formula)}</span><span class="note">${N({ partes: ES.partes })}: la ${V('ac', 'parte del ácido')} (con el C=O) y la ${V('al', 'parte del alcohol')} (unida al O del puente). Nombre común: acetato de etilo, el olor del quitaesmalte.</span></div></div>
-      <p>Con isótopos se comprobó que el O del agua sale del ácido y el del puente, del alcohol, como en el dibujo. La reacción necesita un ácido fuerte como catalizador y llega a un equilibrio.</p>` },
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${F(ES.formulaAcido)} + ${F(ES.formulaAlcohol)} = ${F(ES.sumaReactivos)}; menos ${F('H2O')}: ${F(ES.formula)}</span><span class="note">${N({ partes: ES.partes })}: la ${V('ac', 'parte del ácido')} (con el C=O) y la ${V('al', 'parte del alcohol')} (unida al O del puente). Nombre común: acetato de etilo, el olor de algunos quitaesmaltes.</span></div></div>
+      <p>Con oxígeno-18 en el alcohol (Roberts y Urey, 1938) se comprobó que el O del puente viene del alcohol y el del agua, del ácido, como en el dibujo. La reacción se acelera con un ácido fuerte (H₂SO₄) como catalizador y llega a un equilibrio.</p>` },
   { id:'h-que-falta', corto:'El H que falta',
-    q:`El metoximetano, ${F('CH3–O–CH3')}, y la metanamina (metilamina), ${F('CH3–NH2')}, son gases a 20 °C. ¿Cuál forma puentes de hidrógeno entre sus propias moléculas?`,
-    opts:[['a', 'Los dos: uno tiene O y el otro N, y eso basta para formar puentes', 'FO2-basta-O-o-N', 'parcial'],
-          ['b', 'Solo el metoximetano: el O atrae más a los H que el N', 'FO-solo-el-O', 'hipotesis'],
+    q:`El metoximetano, ${F('CH3–O–CH3')}, y la metanamina (metilamina), ${F('CH3–NH2')}, son gases a 20 °C. ¿Cuál forma puentes de hidrógeno entre sus propias moléculas?`,
+    opts:[['a', 'Los dos: uno tiene O y el otro N, y eso basta para formar puentes', 'FO-basta-O-o-N', 'hipotesis'],
+          ['b', 'Solo el metoximetano: tiene O, y el puente es con O', 'FO2-solo-el-eter', 'parcial'],
           ['c', 'Solo la metanamina: tiene H unidos directamente al N'],
           ['d', 'Ninguno: para formar puentes hace falta un grupo –OH', 'FO-solo-OH', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Tener O o N no basta: hace falta un H unido a ellos. En el metoximetano todos los H están en carbonos. Creer que basta tener O está medido en escolares: cerca de un tercio eligió el éter en una pregunta parecida (Schmidt, 1996).',
-      b:'El O sí atrae más, pero en el metoximetano no hay ningún H unido al O que atraer: sus H están en carbonos. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+    fb:{ a:'Tener O o N no basta: hace falta un H unido a ellos. En el metoximetano todos los H están en carbonos. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      b:'Tener O no basta: el puente necesita un H unido al O (o al N), y en el metoximetano todos los H están en carbonos. En otra pregunta (cuál de NH₃, CH₃F y CH₃OCH₃ forma puentes), alrededor de un tercio de dos grupos de escolares alemanes eligió solo el éter (Schmidt, 1996, tabla 1).',
       d:'No solo el –OH: un H unido a N también forma puentes, como en las aminas, las amidas y el amoniaco. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
     antes:() => { const a = mol('CH3-O-CH3', { rot:'metoximetano', teb:{ valor: TEE.teb, ver:false } }), b = mol('CH3-NH2', { rot:'metanamina', teb:{ valor: TEA.teb, ver:false } }); a.desc = 'Metoximetano: CH3–O–CH3.'; b.desc = 'Metanamina: CH3–NH2.'; return { tipo:'mols', items:[a, b], mismaEscala:true, rango:[-40, 100] }; },
     despues:p => {
@@ -1085,10 +1093,10 @@ const EXPS = [
       const a = enPar(mol('CH3-O-CH3', { rot:'metoximetano', teb:{ valor: TEE.teb, ver:true, p:f } })), b = enPar(mol('CH3-NH2', { rot:'metanamina', teb:{ valor: TEA.teb, ver:true, p:f } }));
       a.rot2 = 'sin puente'; b.rot2 = 'puente N–H···N'; a.rot2Color = b.rot2Color = 'ink';
       a.desc = `Dos moléculas de metoximetano, sin puente: hierve a ${fmt(TEE.teb)} grados.`; b.desc = `Dos de metanamina: el H unido al N de una apunta al N de la otra. Hierve a ${fmt(TEA.teb)} grados.`;
-      return { tipo:'mols', items:[a, b], mismaEscala:true, apilar:true, rango:[-40, 100] };
+      return { tipo:'mols', items:[a, b], apilar:true, rango:[-40, 100] };
     },
     anima:true,
-    exp:() => `<div class="eqs"><div class="eq"><span class="ex">metoximetano: ${V('T', fmt(TEE.teb) + ' °C')} · metanamina: ${V('T', fmt(TEA.teb) + ' °C')}</span><span class="note">De tabla. ${cap(PUE.razon)}. La metanamina ${PUA.razon}.</span></div></div>
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">metoximetano: ${V('T', fmt(TEE.teb) + ' °C')} · metanamina: ${V('T', fmt(TEA.teb) + ' °C')}</span><span class="note">De tabla. ${cap(PUE.razon)}. La metanamina ${PUA.razon}.</span></div></div>
       <p>Con el agua los dos forman ${V('pu', 'puentes de hidrógeno')}: el agua pone el H y lo lleva hacia el O del éter o hacia el N de la amina. Por eso los dos se disuelven bien en agua.</p>` },
   { id:'caja', corto:'La caja de grupos',
     q:'En el mismo esqueleto de 3 carbonos se pone, en el carbono 1, uno de estos grupos. ¿Con cuál la sustancia hierve a la temperatura más alta?',
@@ -1102,7 +1110,7 @@ const EXPS = [
       d:'El N atrae menos que el O: los puentes N–H···N son más débiles que los O–H···O. La amina hierve mucho más bajo que el alcohol. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
     antes:() => { const it = conNombre(mol('CCC'), []); it.rot = 'el esqueleto de 3 carbonos'; it.partes = null; it.desc = 'El esqueleto: tres carbonos en fila, sin grupo.'; return { tipo:'mols', items:[it] }; },
     caja:{ grupos:Object.keys(MF.CAJA), inicio:{ n:3, g:'COOH', pos:1 } },
-    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${CJ.map(r => `${N(r)}: ${V('T', fmt(r.teb) + ' °C')}`).join(' · ')}</span><span class="note">De tabla. El más alto: ${esc(mayorCJ.nombre)}.</span></div></div>
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${CJ.map(r => `${N(r)}: ${V('T', fmt(r.teb) + ' °C')}`).join(' · ')}</span><span class="note">De tabla. El más alto: ${esc(mayorCJ.nombre)}. La amina forma puentes y aun así hierve casi igual que el propanal: el N forma puentes más débiles que el O; con masas parecidas, la diferencia puede ser chica.</span></div></div>
       <p>Ahora arma lo que quieras: elige un grupo y ponlo en el esqueleto. El nombre, la familia, la fórmula y la ${V('T', 'ebullición')} se recalculan solos; si la fórmula no cambia, el motor te dice que son isómeros y de qué tipo.</p>${controlesCaja(Object.keys(MF.CAJA))}
       <p class="fuente">Los puntos de ebullición son de tabla (CRC Handbook y NIST); conviene compararlos con la tabla de tu libro. Las opciones incorrectas son hipótesis nuestras.</p>` },
 ];

@@ -105,8 +105,8 @@
       "fn": "nombre", "args": ["CH3-CONH2"], "espera": { "nombre": "etanamida", "comun": "acetamida", "familia": "amida" },
       "tambien": [ { "args": ["CH3-CN"], "espera": { "nombre": "etanonitrilo", "comun": "acetonitrilo", "familia": "nitrilo" } }, { "fn": "formula", "args": ["CH3-CONH2"], "espera": { "texto": "C2H5NO" } } ] },
 
-    { "nombre": "Isomería de posición y de cadena: propan-1-ol y propan-2-ol (posición); butan-1-ol y 2-metilpropan-2-ol (cadena)",
+    { "nombre": "Isomería de posición y de cadena: propan-1-ol y propan-2-ol (posición); butan-1-ol y 2-metilpropan-1-ol (cadena)",
       "fn": "compararIsomeria", "args": ["CH3-CH2-CH2-OH", "CH3-CH(OH)-CH3"], "espera": { "isomeros": true, "tipo": "posición" },
-      "tambien": [ { "args": ["CH3-CH2-CH2-CH2-OH", "(CH3)3C-OH"], "espera": { "isomeros": true, "tipo": "cadena" } }, { "args": ["CCO", "OCC"], "espera": { "isomeros": false, "mismaMolecula": true } } ] }
+      "tambien": [ { "args": ["CH3-CH2-CH2-CH2-OH", "CH3-CH(CH3)-CH2-OH"], "espera": { "isomeros": true, "tipo": "cadena" } }, { "args": ["CCO", "OCC"], "espera": { "isomeros": false, "mismaMolecula": true } } ] }
   ]
 }
