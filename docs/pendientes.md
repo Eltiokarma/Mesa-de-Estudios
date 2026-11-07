@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 3860 pruebas.
+Deben pasar 3888 pruebas.
 
 ```bash
 npm run dev
@@ -122,7 +122,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - Pasar la tipografía a la misma de la app (hoy carga Google Fonts, que sin conexión cae a la del sistema).
   - Revisar a 1366 × 768.
 - **Espejos:**
-  - Falta la animación del "doblez", que explica por qué la imagen real queda delante del espejo; hoy hay una nota en el paso 7.
+  - Hecho (7 nov, 0.2.0): el doblez (paso 7 y experimento 5), casos en fn/args/espera, retroalimentación por opción, pinch-zoom y siete respaldos a parcial.
   - El 30 % de S1 no se cita al alumno hasta confirmarlo en el artículo original.
 - **Circuitos:**
   - Hecho (7 nov, 0.2.0): pestaña «Medir» con amperímetro y voltímetro, ideales y reales, que se arrastran con imán al puesto más cercano (también con teclado) y 5 predicciones; el amperímetro en paralelo siempre da corto; 19 casos nuevos verificados aparte.
