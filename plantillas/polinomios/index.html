@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La máquina de Ruffini: polinomios y división</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de exponenciales-logaritmos.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   los coeficientes (las fichas, también k) azul, el número a que se pone en lugar de x (la raíz del divisor x − a)
+   naranja, el valor P(a) que es también el resto R fucsia, el cociente Q verde, los exponentes y el grado turquesa y
+   el divisor granate. La curva y = P(x), los ejes, los productos intermedios y los totales van en tinta o en gris.
+   Elegidos con CIEDE2000: ΔE00 mínimo 23,6 en claro (Q–grado) y 25,2 en oscuro (R–divisor), y contraste AA sobre el
+   papel y sobre su chip (.v, fondo al 8 %): el más bajo es el turquesa en claro, 4,63. El granate del divisor queda a
+   ΔE00 20,6 (claro) y 17,4 (oscuro) del rojo de los avisos: el aviso siempre va con texto. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-c:#1f5fbf; --c-a:#a05200; --c-r:#a10fbf; --c-q:#466d14; --c-g:#0f766e; --c-d:#77032c;
+  --relleno:.14;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-c:#7cb0ff; --c-a:#f0a04a; --c-r:#cf6bfa; --c-q:#a3d65e; --c-g:#5ed9c8; --c-d:#fdb4ce;
+  --relleno:.18; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-c:#7cb0ff; --c-a:#f0a04a; --c-r:#cf6bfa; --c-q:#a3d65e; --c-g:#5ed9c8; --c-d:#fdb4ce;
+  --relleno:.18; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:12px; height:12px; border-radius:3px; display:inline-block; border:2px solid; opacity:.9}
+.legend i.linea{width:16px; height:0; border-width:3px 0 0; border-radius:0}
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-q{color:var(--c-q); background:color-mix(in srgb, var(--c-q) 8%, transparent)}
+.v-g{color:var(--c-g); background:color-mix(in srgb, var(--c-g) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .tramo{white-space:nowrap}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.pasos{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center}
+.paso{display:inline-flex; align-items:center; gap:6px; font-weight:800}
+.paso button{width:44px; height:44px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); font:800 1.2rem var(--font); cursor:pointer}
+.paso button:disabled{opacity:.4; cursor:not-allowed}
+.paso output{min-width:3.2em; text-align:center; font-family:var(--mono); font-variant-numeric:tabular-nums}
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap}
+.lectura.ancho{grid-column:span 2}
+.lectura span{display:block; font-size:.76rem; color:var(--muted)}
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Álgebra · Polinomios y división · Problemas tipo admisión</p>
+      <h1>La máquina de Ruffini</h1>
+      <p class="sub">Una ficha por grado, un número que se pone en lugar de x y una curva que dice cuánto da. Mira qué reglas salen de ahí y cuáles solo lo parecen.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/polinomios">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'polinomios', unidad: 'algebra.polinomios', version: '0.1.0' };
+const U_DIV = 'algebra.division-de-polinomios', U_ECU = 'algebra.ecuaciones-polinomiales';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (valores, grados, las tres filas de Ruffini, la división clásica, los restos, k, los candidatos
+   y los errores típicos) sale de MotorPolinomios (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ME = MotorPolinomios;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Números de la escena: exactos si son fracciones cortas (1/2, −3/2); si no, con coma decimal.
+function fq(x){
+  if (!Number.isFinite(x)) return '—';
+  for (let d = 1; d <= 12; d++){ const n = Math.round(x*d); if (Math.abs(n/d - x) < 1e-9){ const g = (function m(a, b){ return b ? m(b, a % b) : Math.abs(a); })(n, d) || 1; const N = n/g, D = d/g; return (N < 0 ? '−' : '') + Math.abs(N) + (D === 1 ? '' : '/' + D); } }
+  const r = Math.round(x*100)/100 + 0; return (r < 0 ? '−' : '') + String(Math.abs(r)).replace('.', ',');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const c_ = t => V('c', t), a_ = t => V('a', t), r_ = t => V('r', t), q_ = t => V('q', t), g_ = t => V('g', t), d_ = t => V('d', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const lerp = (a, b, f) => a + (b - a)*f;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+// En el celular, una ecuación larga se parte solo entre tramos (después de ⟹, ⟺, ;, «: » o « = »), nunca dentro de una
+// variable coloreada ni a media expresión.
+function tramos(raiz){ raiz.querySelectorAll('.eq').forEach(q => { if (q.dataset.tr) return; q.dataset.tr = '1';
+  const nota = q.querySelector('.note'), html = nota ? q.innerHTML.replace(nota.outerHTML, '') : q.innerHTML;
+  const out = []; let cur = '', hondo = 0;
+  for (const p of html.split(/(<[^>]*>)/)){
+    if (p.startsWith('<')){ cur += p; if (/^<\//.test(p)) hondo--; else if (!/\/>$/.test(p)) hondo++; continue; }
+    if (hondo > 0){ cur += p; continue; }
+    const ts = p.split(/(⟹|⟺|;|: | = )/);
+    ts.forEach((t, k) => { cur += t; if (k % 2){ out.push(cur); cur = ''; } });
+  }
+  if (cur) out.push(cur);
+  q.innerHTML = out.map(t => `<span class="tramo">${t}</span>`).join(' ') + (nota ? ' ' + nota.outerHTML : ''); }); }
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+function colores(){
+  const g = n => css(n);
+  const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), warn:g('--warn'),
+    relleno:Number(g('--relleno')) || .14, font:g('--font'), mono:g('--mono') };
+  for (const k of ['c', 'a', 'r', 'q', 'g', 'd']) c[k] = g('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, peso, tam, fuente){
+  ctx.font = `${peso || 700} ${tam || 13}px ${fuente || c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function caja(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+const SUP = { '0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹' };
+const sup = n => String(n).split('').map(ch => SUP[ch] || ch).join('');
+const potX = e => (e === 0 ? 'x⁰' : e === 1 ? 'x' : 'x' + sup(e));
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+function alDibujo(cv, sigue, fn){
+  const chico = innerWidth < 900;
+  if (chico) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+  esperar(chico ? 380 : 0, () => { if (sigue()) fn(); });
+}
+
+/* ================= La escena =================
+   El lienzo apila piezas, de arriba abajo (cada una es opcional):
+     fichas   filas de casillas, una por grado (exponente en turquesa debajo); una casilla vacía es un hueco a trazos.
+              Encima de cada ficha puede ir lo que vale ese término, y a la derecha el total.
+     ruf      la tabla de Ruffini: arriba los coeficientes, a la izquierda el número a, en medio los productos y abajo
+              las sumas: el cociente (verde) y, separado, el resto (fucsia). Se llena por pasos (prog).
+     rect     el rectángulo divisor × cociente con la tira del resto (esquema, no a escala).
+     graf     la curva y = P(x) con el número a (triángulo naranja) que se arrastra sobre el eje x y la altura P(a).
+     bloques  cada término como una fila de bloques, uno por factor x o y (su largo es su grado).
+     caja     la tabla de área de una división clásica: divisor arriba, cociente a la izquierda, productos dentro. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, cad:0, anim:false, compacto:false, desc:'' };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = false, sobre = false;
+  const chico = () => innerWidth < 900;
+  const PIEZAS = ['fichas', 'ruf', 'rect', 'bloques', 'caja', 'graf'];
+  // alto que pide cada pieza con ancho w
+  function pide(k, w){
+    const P = E[k];
+    if (k === 'fichas') return 22 + P.filas.length*(P.sinProd ? 62 : 80);
+    if (k === 'ruf') return 46 + 38*(P.res && P.res.cociente && P.dividir ? 4 : 3);
+    if (k === 'rect') return 190;
+    if (k === 'bloques') return 26 + P.filas.length*44;
+    if (k === 'caja') return 70 + 40*(P.c ? P.c.filas.length + 1 : 3);
+    if (k === 'graf'){ const g = innerWidth >= 900 ? Math.max(260, Math.min(420, innerHeight - 330)) : Math.round(clamp(w*0.75, 230, 330)); return P.alto || g; }
+    return 0;
+  }
+  function alto(w){
+    if (E.compacto && chico()) return 240;
+    const t = PIEZAS.filter(k => E[k]).reduce((s, k) => s + pide(k, w), 0);
+    return Math.max(160, t);
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  E.config = o => {
+    E.tok++; E.cad++; E.anim = false;
+    Object.assign(E, { lect:[], ley:null, alCambiar:null, desc:'', mensaje:'', fichas:null, ruf:null, rect:null, graf:null, bloques:null, caja:null }, o);
+    cv.tabIndex = arrastrable() ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.rehacer = () => { W = 0; resize(); };
+  const arrastrable = () => !!(E.graf && E.graf.arrastre);
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  // dónde va cada pieza
+  function zonas(){
+    const ks = PIEZAS.filter(k => E[k]), pd = ks.map(k => pide(k, W)), tot = pd.reduce((a, b) => a + b, 0) || 1, f = Math.min(1, H/tot);
+    let y = 0; const z = {};
+    ks.forEach((k, i) => { const h = k === 'graf' ? H - y : pd[i]*f; z[k] = { x:0, y, w:W, h }; y += h; });
+    return z;
+  }
+
+  // ----- fichas -----
+  function dibFichas(c, Z){
+    const F = E.fichas, G = Math.max(...F.filas.map(f => f.coefs.length - 1)), n = G + 1;
+    const lab = F.filas.some(f => f.nombre) ? 40 : 0, der = F.filas.some(f => f.total !== undefined) ? 70 : 0;
+    const s = Math.min(54, (Z.w - 20 - lab - der)/n), alto = Math.min(F.sinProd ? 62 : 80, (Z.h - 16)/F.filas.length);
+    const bx = Math.min(s - 6, alto*(F.sinProd ? .62 : .5)), x0 = lab + (Z.w - lab - der - n*s)/2;
+    F.filas.forEach((f, j) => {
+      const g = f.coefs.length - 1, y = Z.y + 8 + j*alto + (F.sinProd ? 0 : alto*.26), al = f.alfa === undefined ? 1 : f.alfa;
+      if (al <= 0) return;
+      if (f.sueltos){   // términos sueltos, en el orden en que se escribieron
+        const ws = f.sueltos.map(t => { ctx.font = `800 15px ${c.mono}`; return ctx.measureText(t).width + 22; }), tot = ws.reduce((p, q) => p + q + 10, -10);
+        let x = (Z.w - tot)/2;
+        f.sueltos.forEach((t, i) => { caja(ctx, x, y, ws[i], bx, 8); ctx.save(); ctx.fillStyle = c.c; ctx.globalAlpha = .1; ctx.fill(); ctx.restore(); ctx.strokeStyle = c.c; ctx.lineWidth = grosor('c', 2); ctx.stroke();
+          ctx.fillStyle = c.c; ctx.font = `800 15px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, x + ws[i]/2, y + bx/2 + 1); x += ws[i] + 10; });
+        return;
+      }
+      ctx.save(); ctx.globalAlpha = al;
+      if (f.nombre) rotulo(ctx, c, 6, y + bx/2, f.nombre, c.ink, 'left', 800, 13);
+      f.coefs.forEach((co, i) => {
+        const e = g - i, x = x0 + (G - e)*s + (s - bx)/2, hueco = co === null || (f.huecos && f.huecos.includes(i) && !(f.fHueco >= 1));
+        const apaga = f.apaga ? f.apaga[i] : 1;
+        ctx.save(); ctx.globalAlpha = al*(apaga === undefined ? 1 : lerp(.25, 1, apaga));
+        caja(ctx, x, y, bx, bx, 8);
+        if (hueco){ ctx.setLineDash([4, 3]); ctx.strokeStyle = c.c; ctx.lineWidth = 1.6; ctx.stroke(); ctx.setLineDash([]); }
+        else {
+          ctx.fillStyle = c.c; ctx.globalAlpha *= E.hl === 'c' ? .22 : .1; ctx.fill(); ctx.globalAlpha = al*(apaga === undefined ? 1 : lerp(.25, 1, apaga));
+          ctx.strokeStyle = c.c; ctx.lineWidth = grosor('c', 2); ctx.stroke();
+          const t = typeof co === 'string' ? co : fq(co);
+          ctx.fillStyle = c.c; ctx.font = `800 ${t.length > 3 ? 12 : 15}px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, x + bx/2, y + bx/2 + 1);
+        }
+        ctx.restore();
+        if (f.exps !== false) rotulo(ctx, c, x + bx/2, y + bx + 11, potX(e), c.g, 'center', E.hl === 'g' ? 900 : 800, 12);
+        if (f.prod && f.prod[i] !== undefined && f.prod[i] !== null) rotulo(ctx, c, x + bx/2, y - 12, f.prod[i], c.muted, 'center', 700, 11, c.mono);
+      });
+      if (f.total !== undefined) rotulo(ctx, c, x0 + n*s + 6, y + bx/2, f.total, c.r, 'left', 800, 15, c.mono);
+      ctx.restore();
+    });
+  }
+
+  // ----- Ruffini -----
+  function dibRuf(c, Z){
+    const R = E.ruf; if (!R.res) { dibMarco(c, Z, R.n || 4); return; }
+    const res = R.res, n = res.arriba.length, rc = 58, cw = Math.min(58, (Z.w - rc - 24)/n), x0 = (Z.w - rc - n*cw)/2 + rc;
+    const filas = R.dividir ? 4 : 3, rh = Math.min(38, (Z.h - 40)/filas), y0 = Z.y + 26;
+    const X = i => x0 + i*cw + cw/2, Y = j => y0 + j*rh + rh/2 + (j >= 2 ? 6 : 0);
+    const p = R.prog === undefined ? 99 : R.prog;
+    // exponentes arriba
+    res.arriba.forEach((_, i) => rotulo(ctx, c, X(i), Z.y + 12, potX(n - 1 - i), c.g, 'center', E.hl === 'g' ? 900 : 700, 11));
+    // líneas de la L
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
+    linea(ctx, { x:x0 - 4, y:y0 - 2 }, { x:x0 - 4, y:y0 + 2*rh + 2 });
+    linea(ctx, { x:x0 - rc + 6, y:y0 + 2*rh + 2 }, { x:x0 + n*cw, y:y0 + 2*rh + 2 });
+    // separador del resto
+    ctx.setLineDash([4, 3]); linea(ctx, { x:x0 + (n - 1)*cw + 2, y:y0 + rh*.2 }, { x:x0 + (n - 1)*cw + 2, y:Y(2) + rh/2 }); ctx.setLineDash([]);
+    // el número a
+    if (R.raiz !== false){ rotulo(ctx, c, x0 - rc/2 - 2, Y(1), res.raizTexto, c.a, 'center', E.hl === 'a' ? 900 : 800, 15, c.mono);
+      rotulo(ctx, c, x0 - rc/2 - 2, Y(0), R.etiquetaRaiz || 'a', c.a, 'center', 700, 11); }
+    // fila de arriba (con el hueco)
+    res.arriba.forEach((v, i) => {
+      const hueco = R.huecos && R.huecos.includes(i) && !(R.fHueco >= 1);
+      if (hueco){ ctx.strokeStyle = c.c; ctx.lineWidth = 1.6; ctx.setLineDash([4, 3]); caja(ctx, X(i) - 15, Y(0) - 13, 30, 26, 6); ctx.stroke(); ctx.setLineDash([]); }
+      else rotulo(ctx, c, X(i), Y(0), fq(v), c.c, 'center', E.hl === 'c' ? 900 : 800, 15, c.mono);
+      if (R.huecos && R.huecos.includes(i) && R.fHueco >= 1){ ctx.strokeStyle = c.c; ctx.lineWidth = 1.2; ctx.setLineDash([3, 3]); caja(ctx, X(i) - 15, Y(0) - 13, 30, 26, 6); ctx.stroke(); ctx.setLineDash([]); }
+    });
+    // productos y sumas
+    for (let i = 0; i < n; i++){
+      if (i > 0){ const k = 2*i - 1, f = clamp(p - k + 1, 0, 1);
+        if (f > 0){ ctx.save(); ctx.globalAlpha = f; rotulo(ctx, c, X(i), Y(1), fq(res.productos[i]), c.ink, 'center', 700, 14, c.mono);
+          if (f < 1 || (p >= k && p < k + 1)){ ctx.strokeStyle = c.a; ctx.lineWidth = 1.5; linea(ctx, { x:X(i - 1) + 12, y:Y(2) - 10 }, { x:X(i) - 12, y:Y(1) + 9 }); }
+          ctx.restore(); } }
+      const k = i === 0 ? 0 : 2*i, f = clamp(p - k + 1, 0, 1);
+      if (f > 0){
+        ctx.save(); ctx.globalAlpha = f;
+        const ult = i === n - 1, col = ult ? c.r : c.q;
+        if (ult){ ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 2); caja(ctx, X(i) - cw/2 + 5, Y(2) - rh/2 + 3, cw - 10, rh - 6, 8); ctx.stroke(); }
+        rotulo(ctx, c, X(i), Y(2), fq(res.sumas[i]), R.dividir && !ult ? c.ink : col, 'center', E.hl === (ult ? 'r' : 'q') ? 900 : 800, 15, c.mono);
+        ctx.restore();
+      }
+    }
+    if (R.dividir){
+      const f = clamp(p - 2*(n - 1), 0, 1);
+      if (f > 0){ ctx.save(); ctx.globalAlpha = f;
+        rotulo(ctx, c, x0 - rc/2 - 2, Y(3), `÷ ${R.dividir}`, c.d, 'center', 800, 13, c.mono);
+        res.cociente.forEach((v, i) => rotulo(ctx, c, X(i), Y(3), fq(v), c.q, 'center', E.hl === 'q' ? 900 : 800, 15, c.mono));
+        ctx.restore(); }
+    }
+  }
+  // la tabla vacía (antes de responder): sin números
+  function dibMarco(c, Z, n){
+    const rc = 58, cw = Math.min(58, (Z.w - rc - 24)/n), x0 = (Z.w - rc - n*cw)/2 + rc, rh = Math.min(38, (Z.h - 40)/3), y0 = Z.y + 26;
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 2;
+    linea(ctx, { x:x0 - 4, y:y0 - 2 }, { x:x0 - 4, y:y0 + 2*rh + 2 });
+    linea(ctx, { x:x0 - rc + 6, y:y0 + 2*rh + 2 }, { x:x0 + n*cw, y:y0 + 2*rh + 2 });
+    ctx.setLineDash([4, 3]); linea(ctx, { x:x0 + (n - 1)*cw + 2, y:y0 + rh*.2 }, { x:x0 + (n - 1)*cw + 2, y:y0 + 3*rh + 6 }); ctx.setLineDash([]);
+    rotulo(ctx, c, Z.w/2, y0 + 3*rh + 20, 'la tabla se llena al responder', c.muted, 'center', 700, 12);
+  }
+
+  // ----- rectángulo divisor × cociente + resto (esquema) -----
+  function dibRect(c, Z){
+    const R = E.rect, f = R.f || 0, k = lerp(1, R.a, f);
+    const w0 = Math.min(Z.w*.26, 110), h0 = Math.min(Z.h - 50, 130), w = w0*k, h = h0/k, x = 26 + (Z.w - 60 - w0*R.a - 50)/2, y = Z.y + 18 + (h0 - h);
+    ctx.save(); ctx.globalAlpha = c.relleno; ctx.fillStyle = c.q; ctx.fillRect(x, y, w, h); ctx.restore();
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.strokeRect(x, y, w, h);
+    ctx.strokeStyle = c.d; ctx.lineWidth = grosor('d', 3); linea(ctx, { x, y:y + h + 4 }, { x:x + w, y:y + h + 4 });
+    ctx.strokeStyle = c.q; ctx.lineWidth = grosor('q', 3); linea(ctx, { x:x - 4, y }, { x:x - 4, y:y + h });
+    rotulo(ctx, c, x + w/2, y + h + 18, f >= 1 ? R.divFin : R.divIni, c.d, 'center', 800, 13, c.mono);
+    ctx.save(); ctx.translate(x - 14, y + h/2); ctx.rotate(-Math.PI/2); rotulo(ctx, c, 0, 0, f >= 1 ? R.cocFin : R.cocIni, c.q, 'center', 800, 13, c.mono); ctx.restore();
+    // la tira del resto, que no cambia
+    const xr = x + w + 18, wr = 16, hr = Math.min(h0, 44);
+    ctx.save(); ctx.globalAlpha = c.relleno*1.6; ctx.fillStyle = c.r; ctx.fillRect(xr, Z.y + 18 + h0 - hr, wr, hr); ctx.restore();
+    ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 2); ctx.strokeRect(xr, Z.y + 18 + h0 - hr, wr, hr);
+    rotulo(ctx, c, xr + wr + 6, Z.y + 18 + h0 - hr/2, `R = ${R.resto}`, c.r, 'left', 800, 13, c.mono);
+    rotulo(ctx, c, Z.w - 8, Z.y + Z.h - 10, 'esquema: no a escala', c.muted, 'right', 600, 11);
+  }
+
+  // ----- bloques: el grado de cada término -----
+  function dibBloques(c, Z){
+    const B = E.bloques, lab = Math.min(96, Z.w*.3), maxB = Math.max(...B.filas.map(f => (f.x || 0) + (f.y || 0)), 1);
+    const s = Math.min(26, (Z.w - lab - 70)/maxB), rh = Math.min(44, (Z.h - 20)/B.filas.length);
+    B.filas.forEach((f, j) => {
+      const y = Z.y + 12 + j*rh, n = (f.x || 0) + (f.y || 0), ff = f.f !== undefined ? f.f : (B.f === undefined ? 1 : B.f), vis = clamp(ff*n, 0, n);
+      if (f.f !== undefined && f.f <= 0) return;
+      rotulo(ctx, c, 8, y + s/2, f.texto, c.ink, 'left', 800, 14, c.mono);
+      for (let i = 0; i < n; i++){
+        const fi = clamp(vis - i, 0, 1); if (fi <= 0) break;
+        const x = lab + i*s, esX = i < (f.x || 0);
+        ctx.save(); ctx.globalAlpha = fi; caja(ctx, x + 1, y + 1, s - 3, s - 3, 5);
+        if (esX){ ctx.fillStyle = c.g; ctx.globalAlpha = fi*(E.hl === 'g' ? .4 : .22); ctx.fill(); ctx.globalAlpha = fi; }
+        ctx.strokeStyle = c.g; ctx.lineWidth = grosor('g', 1.8); if (!esX) ctx.setLineDash([3, 2]); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = c.g; ctx.font = `800 ${Math.round(s*.5)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(esX ? 'x' : 'y', x + s/2 - 1, y + s/2);
+        ctx.restore();
+      }
+      if (B.cuenta && vis >= n) rotulo(ctx, c, lab + n*s + 8, y + s/2, `${n}`, c.g, 'left', 900, 14, c.mono);
+      if (B.mayor !== undefined && B.mayor === j && vis >= n){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; caja(ctx, lab - 4, y - 3, n*s + 6, s + 4, 7); ctx.stroke(); }
+    });
+  }
+
+  // ----- tabla de área de la división clásica -----
+  function dibCaja(c, Z){
+    const K = E.caja, C = K.c, nc = C.columnas.length, nf = C.filas.length, f = K.f === undefined ? 1 : K.f;
+    const hw = 54, cw = Math.min(86, (Z.w - hw - 24)/nc), ch = Math.min(40, (Z.h - 70)/(nf + 1)), x0 = (Z.w - hw - nc*cw)/2 + hw, y0 = Z.y + 10 + ch;
+    C.columnas.forEach((t, i) => rotulo(ctx, c, x0 + i*cw + cw/2, y0 - ch/2, t.texto, c.d, 'center', 800, 14, c.mono));
+    C.filas.forEach((t, j) => {
+      const fj = clamp(f*nf - j, 0, 1); if (fj <= 0) return;
+      ctx.save(); ctx.globalAlpha = fj;
+      rotulo(ctx, c, x0 - 8, y0 + j*ch + ch/2, t.texto, c.q, 'right', 800, 14, c.mono);
+      C.celdas[j].forEach((cel, i) => {
+        const x = x0 + i*cw, y = y0 + j*ch;
+        ctx.strokeStyle = c.line; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, cw, ch);
+        const anula = K.anulan && K.anulan.some(([a, b]) => a === j && b === i);
+        rotulo(ctx, c, x + cw/2, y + ch/2, cel.texto, anula ? c.muted : c.ink, 'center', 700, 13, c.mono);
+        if (anula){ ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; linea(ctx, { x:x + 10, y:y + ch - 8 }, { x:x + cw - 10, y:y + 8 }); }
+      });
+      ctx.restore();
+    });
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.strokeRect(x0, y0, nc*cw, nf*ch);
+    if (f >= 1 && K.resto) rotulo(ctx, c, Z.w/2, y0 + nf*ch + 22, `resto: ${K.resto}`, c.r, 'center', 800, 14, c.mono);
+  }
+
+  // ----- la curva y = P(x) y el número a -----
+  function geoGraf(Z){
+    const G = E.graf, l = 30, r = 12, t = 12, b = 26;
+    const sx = (Z.w - l - r)/(G.xr[1] - G.xr[0]), sy = (Z.h - t - b)/(G.yr[1] - G.yr[0]);
+    return { X: x => l + (x - G.xr[0])*sx, Y: y => Z.y + t + (G.yr[1] - y)*sy, wx: px => G.xr[0] + (px - l)/sx, sx, sy, x0:l, x1:Z.w - r, y0:Z.y + t, y1:Z.y + Z.h - b };
+  }
+  const pasoEje = s => [1, 2, 5, 10, 20, 50].find(p => p*s >= 24) || 100;
+  function dibGraf(c, Z){
+    const G = E.graf, g = geoGraf(Z);
+    ctx.save(); ctx.beginPath(); ctx.rect(g.x0, g.y0, g.x1 - g.x0, g.y1 - g.y0); ctx.clip();
+    const px = pasoEje(g.sx), py = pasoEje(g.sy);
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let x = Math.ceil(G.xr[0]/px)*px; x <= G.xr[1]; x += px) linea(ctx, { x:g.X(x), y:g.y0 }, { x:g.X(x), y:g.y1 });
+    for (let y = Math.ceil(G.yr[0]/py)*py; y <= G.yr[1]; y += py) linea(ctx, { x:g.x0, y:g.Y(y) }, { x:g.x1, y:g.Y(y) });
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5;
+    linea(ctx, { x:g.x0, y:g.Y(0) }, { x:g.x1, y:g.Y(0) }); if (G.xr[0] <= 0 && G.xr[1] >= 0) linea(ctx, { x:g.X(0), y:g.y0 }, { x:g.X(0), y:g.y1 });
+    if (G.coefs){
+      const pts = ME.curva({ coefs:G.coefs, desde:G.xr[0], hasta:G.xr[1], n:240 }).pts, hasta = G.hasta === undefined ? Infinity : G.hasta;
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.lineJoin = 'round'; ctx.beginPath(); let ab = false;
+      for (const [x, y] of pts){ if (x > hasta) break; const Y = g.Y(clamp(y, G.yr[0] - 50, G.yr[1] + 50)); if (!ab){ ctx.moveTo(g.X(x), Y); ab = true; } else ctx.lineTo(g.X(x), Y); }
+      ctx.stroke();
+    }
+    // la altura P(a)
+    if (G.a !== null && G.a !== undefined && G.coefs && G.altura){
+      const v = ME.evaluar({ coefs:G.coefs, x:G.a }).valor, X = g.X(G.a), f = G.fAlt === undefined ? 1 : G.fAlt;
+      ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 4); ctx.lineCap = 'round'; linea(ctx, { x:X, y:g.Y(0) }, { x:X, y:g.Y(lerp(0, v, f)) }); ctx.lineCap = 'butt';
+      if (f >= 1){ ctx.fillStyle = c.r; ctx.beginPath(); ctx.arc(X, g.Y(clamp(v, G.yr[0], G.yr[1])), 6, 0, 7); ctx.fill(); }
+    }
+    for (const p of G.puntos || []){ ctx.fillStyle = c[p.color] || c.ink; ctx.beginPath(); ctx.arc(g.X(p.x), g.Y(p.y), 6, 0, 7); ctx.fill(); }
+    ctx.restore();
+    // números de los ejes
+    ctx.fillStyle = c.muted; ctx.font = `600 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    const arriba = !!(G.marcas && G.marcas.length);   // con marcas bajo el eje, los números van encima
+    for (let x = Math.ceil(G.xr[0]/px)*px; x <= G.xr[1]; x += px) if (x !== 0) ctx.fillText(fq(x), g.X(x), arriba ? g.Y(0) - 17 : Math.min(g.Y(0) + 4, g.y1 + 4));
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let y = Math.ceil(G.yr[0]/py)*py; y <= G.yr[1]; y += py) if (y !== 0) ctx.fillText(fq(y), Math.max(g.X(0) - 4, 26), g.Y(y));
+    // candidatos (marcas naranjas finas) y raíces
+    for (const x of G.marcas || []){ ctx.strokeStyle = c.a; ctx.lineWidth = 2; linea(ctx, { x:g.X(x), y:g.Y(0) }, { x:g.X(x), y:g.Y(0) + 9 }); }
+    for (const p of G.puntos || []) if (p.texto) rotulo(ctx, c, g.X(p.x) + 9, g.Y(p.y) - 13, p.texto, c.ink, 'left', 800, 12);
+    // el número a: triángulo bajo el eje
+    if (G.a !== null && G.a !== undefined){
+      const X = g.X(G.a), y = clamp(g.Y(0) + 28, g.y0 + 10, g.y1 + 16);
+      ctx.fillStyle = c.a; ctx.beginPath(); ctx.moveTo(X, y - 9); ctx.lineTo(X - 10, y + 8); ctx.lineTo(X + 10, y + 8); ctx.closePath(); ctx.fill();
+      if (arrastrando || sobre){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); }
+    }
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores(), z = zonas();
+    ctx.clearRect(0, 0, W, H);
+    if (E.fichas) dibFichas(c, z.fichas);
+    if (E.ruf) dibRuf(c, z.ruf);
+    if (E.rect) dibRect(c, z.rect);
+    if (E.bloques) dibBloques(c, z.bloques);
+    if (E.caja) dibCaja(c, z.caja);
+    if (E.graf) dibGraf(c, z.graf);
+    if (E.mensaje && !PIEZAS.some(k => E[k])) rotulo(ctx, c, W/2, H/2, E.mensaje, c.muted, 'center', 700, 13);
+  };
+  const it = (k, t, tipo) => `<span><i class="${tipo || ''}" style="border-color:var(${k === 'ink' ? '--ink' : '--c-' + k});${tipo ? '' : `background:color-mix(in srgb, var(--c-${k}) 30%, transparent)`}"></i>${t}</span>`;
+  E.leyenda = () => {
+    let l = E.ley;
+    if (!l){
+      l = [];
+      if (E.fichas || E.ruf) l.push(['c', 'coeficientes'], ['g', 'exponentes']);
+      if (E.ruf && E.ruf.res) l.push(['a', 'a (el número que se pone en x)'], ['q', 'cociente Q'], ['r', 'resto R']);
+      if (E.rect || E.caja || (E.ruf && E.ruf.dividir)) l.push(['d', 'divisor']);
+      if (E.caja) l.push(['q', 'cociente Q'], ['r', 'resto R']);
+      if (E.bloques) l.push(['g', 'un bloque, un factor x o y']);
+      if (E.graf) l.push(['ink', E.graf.nombre || 'y = P(x)', 'linea']);
+      if (E.graf && E.graf.altura) l.push(['r', E.graf.alturaNombre || 'altura P(a)', 'linea']);
+    }
+    document.getElementById(idLey).innerHTML = l.map(([k, t, tipo]) => it(k, t, tipo)).join('');
+  };
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v, an]) => `<div class="lectura${an ? ' ancho' : ''}" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim) document.getElementById(idDesc).textContent = [E.desc || 'Dibujo de la escena.', ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  E.cadena = (fs, fin) => { const id = ++E.cad; let i = 0; const sig = () => { if (id !== E.cad) return; if (i >= fs.length){ if (fin) fin(); return; } fs[i++](sig); }; sig(); };
+  E.parar = () => { E.tok++; E.cad++; E.anim = false; };
+
+  // ----- arrastrar el número a (táctil, ratón y teclado) -----
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  function manija(){ if (!arrastrable()) return null; const Z = zonas().graf, g = geoGraf(Z); return { x:g.X(E.graf.a), y:clamp(g.Y(0) + 28, g.y0 + 10, g.y1 + 16) }; }
+  function cerca(p, radio){ if (E.ocupado || E.anim) return false; const m = manija(); return !!m && Math.hypot(p.x - m.x, p.y - m.y) < radio; }
+  // a solo toma los valores permitidos (G.valores) o va de G.paso en G.paso entre G.min y G.max
+  function ajustar(x){
+    const G = E.graf;
+    if (G.valores) return G.valores.reduce((m, v) => (Math.abs(v - x) < Math.abs(m - x) ? v : m), G.valores[0]);
+    return clamp(Math.round(x/G.paso)*G.paso, G.min, G.max);
+  }
+  function poner(a){ const G = E.graf; if (a === G.a) return; G.a = a; if (G.alMover) G.alMover(a); E.dibujar(); E.avisar(); }
+  E.ponerA = a => poner(ajustar(a));
+  E.moverA = d => { const G = E.graf; if (G.valores){ const i = clamp(G.valores.indexOf(G.a) + d, 0, G.valores.length - 1); poner(G.valores[i]); } else poner(clamp(G.a + d*G.paso, G.min, G.max)); };
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cerca({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const p = local(e); if (!cerca(p, e.pointerType === 'mouse' ? 32 : 40)) return;
+    arrastrando = true; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando){ if (arrastrable()) poner(ajustar(geoGraf(zonas().graf).wx(p.x))); return; }
+    const sv = cerca(p, 32);
+    if (sv !== sobre){ sobre = sv; cv.style.cursor = sv ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando){ arrastrando = false; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !arrastrable()) return;
+    const mas = ['ArrowRight', 'ArrowUp'].includes(e.key), menos = ['ArrowLeft', 'ArrowDown'].includes(e.key);
+    if (!mas && !menos) return;
+    e.preventDefault(); E.moverA(mas ? 1 : -1);
+  });
+  return E;
+}
+// Botones + y − con su lectura
+function control(id, nombre, valor, k){ return `<span class="paso">${V(k, nombre)} <button type="button" data-c="${id}" data-d="-1" aria-label="Disminuir ${nombre}">−</button><output id="o-${id}" aria-live="off">${valor}</output><button type="button" data-c="${id}" data-d="1" aria-label="Aumentar ${nombre}">+</button></span>`; }
+// Ruffini de P entre x − a, para la máquina que se mueve con a
+const rufA = (coefs, a) => ME.ruffini({ coefs, divisor:[1, -a] });
+const divisorTx = a => (a === 0 ? 'x' : a > 0 ? `x − ${fq(a)}` : `x + ${fq(-a)}`);
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, orden:false, a2:0, a6:-2, k8:null };
+
+// Todo lo que se pregunta sale del motor, con sus errores típicos
+const P1 = [1, -2, -5, 6];
+const T2 = [3, 0, -5, 4, -6], PC = ME.pDeCero({ coefs:T2 });
+const M3 = [{ c:4, x:3, y:2 }, { c:-7, x:5, y:1 }, { c:2, x:1, y:4 }], GM = ME.grado({ terminos:M3 });
+const GP = ME.gradoProducto({ m:3, n:4 });
+const D5 = [2, 0, -7, 4], R5 = ME.ruffini({ coefs:D5, divisor:[1, -2] });
+const P6 = [1, -4, -1, 4], TR = ME.teoremaResto({ coefs:P6, divisor:[1, 2] });
+const D7 = [4, -2, 6, 1], R7 = ME.ruffini({ coefs:D7, divisor:[2, -1] });
+const FK = ME.factorK({ coefs:[1, -3, 'k', 6], raiz:2 });
+S.k8 = FK.valor;
+const conK = k => [1, -3, k, 6];
+const br = t => t.replace('; ', '<br>');
+
+const fuenteHip = `<p class="fuente">Los estudios que revisamos casi no traen datos sobre polinomios: una prueba diagnóstica con ingresantes de Costa Rica y México describe errores con polinomios en general (Gamboa y otros, 2019, según resúmenes), sin una cifra para cada error. Estas opciones incorrectas son hipótesis nuestras, que la medición en el colegio va a confirmar o descartar.</p>`;
+
+const P2 = { id:'polinomios-paso2', ok:'c', opts:[
+  ['a', PC.errores.sumaCoef.texto, 'PO7-p0-suma-de-coeficientes', 'hipotesis'],
+  ['b', PC.errores.principal.texto, 'PO19-p0-coeficiente-principal', 'hipotesis'],
+  ['c', PC.texto],
+  ['d', PC.errores.cero.texto, 'PO34-p0-es-cero', 'hipotesis']],
+  fb:{ c:`¡Bien! Con x = 0 todos los términos que llevan x valen 0: solo queda el término independiente, −6.`,
+    a:`Elegiste la A. −4 es la suma de coeficientes: eso es T(1), porque con x = 1 cada potencia vale 1. Con x = 0, cada término con x se anula. La correcta está marcada.`,
+    b:`Elegiste la B. 3 es el coeficiente principal, el del término de mayor grado. Pero 3 · 0⁴ = 0. La correcta está marcada.`,
+    d:`Elegiste la D. Los términos con x sí se anulan, pero el término independiente, −6, no lleva x: queda. La correcta está marcada.` } };
+const P3 = { id:'polinomios-paso3', ok:'b', opts:[
+  ['a', GM.errores.sumaTodos.texto, 'PO11-ga-suma-todos-los-exponentes', 'hipotesis'],
+  ['b', GM.texto],
+  ['c', GM.errores.relativo.texto, 'PO10-ga-como-grado-relativo', 'hipotesis'],
+  ['d', GM.errores.sumaRelativos.texto, 'PO28-ga-suma-de-relativos', 'hipotesis']],
+  fb:{ b:`¡Bien! Cada término tiene su grado (la suma de sus exponentes): 5, 6 y 5. El grado absoluto es el mayor: 6.`,
+    a:`Elegiste la A. 16 suma los exponentes de todos los términos. El grado se mide término por término: cada fila de bloques por separado. La correcta está marcada.`,
+    c:`Elegiste la C. 5 es el mayor exponente de x: el grado relativo a x. El absoluto cuenta x e y juntos en cada término. La correcta está marcada.`,
+    d:`Elegiste la D. 9 = 5 + 4 suma los dos grados relativos, pero el 5 de x y el 4 de y están en términos distintos: ningún término tiene 9 factores. La correcta está marcada.` } };
+const P4 = { id:'polinomios-paso4', ok:'c', opts:[
+  ['a', GP.errores.producto.texto, 'PO5-grado-producto-multiplica', 'hipotesis'],
+  ['b', GP.errores.mayor.texto, 'PO23-grado-producto-el-mayor', 'hipotesis'],
+  ['c', GP.texto]],
+  fb:{ c:`¡Bien! x³ · x⁴ = x⁷: al multiplicar se juntan los factores, así que los exponentes se suman.`,
+    a:`Elegiste la A. 12 = 3 · 4 multiplica los grados. Pero x³ · x⁴ es poner 3 factores x y luego 4 más: 7. La correcta está marcada.`,
+    b:`Elegiste la B. 4 es el grado de la suma F + G, no del producto: al multiplicar, los factores x se juntan. La correcta está marcada.` } };
+const P5 = { id:'polinomios-paso5', ok:'d', unidad:U_DIV, opts:[
+  ['a', R5.errores.sinCero.texto, 'PO1-ruffini-sin-el-cero', 'hipotesis'],
+  ['b', R5.errores.signo.texto, 'PO2-ruffini-signo-del-divisor', 'hipotesis'],
+  ['c', R5.errores.todaLaFila.texto, 'PO18-cociente-con-el-resto', 'hipotesis'],
+  ['d', R5.texto]],
+  fb:{ d:`¡Bien! Con el 0 en la casilla del x², la fila de abajo da 2, 4, 1 y el resto 6: el cociente es de grado 2.`,
+    a:`Elegiste la A. Esa cuenta usa solo 2, −7 y 4: falta la ficha del x², que es 0. Sin ella, cada número cae en la casilla de otro grado. La correcta está marcada.`,
+    b:`Elegiste la B. Esa cuenta baja −2. Pero el número que va en la máquina es el que anula el divisor: x − 2 = 0 da x = 2. La correcta está marcada.`,
+    c:`Elegiste la C. El último número de la fila, 6, es el resto, no un coeficiente: el cociente tiene un grado menos que el dividendo. La correcta está marcada.` } };
+const P6b = { id:'polinomios-paso6', ok:'b', unidad:U_DIV, opts:[
+  ['a', TR.errores.signo.texto, 'PO8-resto-con-el-signo-del-divisor', 'hipotesis'],
+  ['b', TR.texto],
+  ['c', TR.errores.independiente.texto, 'PO27-resto-es-el-independiente', 'hipotesis'],
+  ['d', TR.errores.parNegativo.texto, 'PO15-potencia-par-de-negativo', 'hipotesis']],
+  fb:{ b:`¡Bien! x + 2 = 0 da x = −2, y P(−2) = −8 − 16 + 2 + 4 = ${TR.texto}. El resto es el valor de P en ese número.`,
+    a:`Elegiste la A. ${TR.errores.signo.texto} es P(2). Pero x + 2 se anula en x = −2: el resto es P(−2). La correcta está marcada.`,
+    c:`Elegiste la C. ${TR.errores.independiente.texto} es el término independiente: eso sería el resto de dividir entre x, que se anula en 0. La correcta está marcada.`,
+    d:`Elegiste la D. Esa cuenta usa (−2)² = −4 y da ${TR.errores.parNegativo.texto}. Pero (−2)² = (−2)(−2) = 4: una potencia par de un negativo es positiva. La correcta está marcada.` } };
+const P7 = { id:'polinomios-paso7', ok:'c', unidad:U_DIV, opts:[
+  ['a', br(R7.errores.sinDividir.par), 'PO3-no-divide-el-cociente-entre-a', 'hipotesis'],
+  ['b', br(R7.errores.signo.par), 'PO2-ruffini-signo-del-divisor', 'hipotesis'],
+  ['c', br(R7.par)],
+  ['d', br(R7.errores.restoDividido.par), 'PO4-divide-tambien-el-resto', 'hipotesis']],
+  fb:{ c:`¡Bien! Con 1/2 la fila da 4, 0, 6 y el resto 4. Como 2x − 1 = 2(x − 1/2), el cociente se divide entre 2; el resto no.`,
+    a:`Elegiste la A. 4x² + 6 es el cociente de dividir entre x − 1/2. El divisor es 2x − 1, el doble: el cociente tiene que ser la mitad. La correcta está marcada.`,
+    b:`Elegiste la B. Esa cuenta usa −1/2. Pero 2x − 1 = 0 da x = 1/2. La correcta está marcada.`,
+    d:`Elegiste la D. El cociente sí se divide entre 2, pero el resto no: es lo que sobra, y sobra lo mismo. Mira el rectángulo: cambia de forma, la tira del resto no. La correcta está marcada.` } };
+const P8 = { id:'polinomios-paso8', ok:'d', unidad:U_DIV, opts:[
+  ['a', FK.errores.signo.texto, 'PO17-factor-con-el-signo-cambiado', 'hipotesis'],
+  ['b', FK.errores.despeje.texto, 'AL16-despeje-con-signo-cambiado', 'hipotesis'],
+  ['c', FK.errores.sumaCoef.texto, 'PO33-factor-con-suma-de-coeficientes', 'hipotesis'],
+  ['d', FK.texto]],
+  fb:{ d:`¡Bien! x − 2 es factor si el resto es 0, o sea P(2) = 0: 8 − 12 + 2k + 6 = 0 da 2k = −2 y k = −1.`,
+    a:`Elegiste la A. Esa cuenta iguala a 0 P(−2): sería para el factor x + 2. El factor x − 2 se anula en x = 2. La correcta está marcada.`,
+    b:`Elegiste la B. 2k + 2 = 0 da 2k = −2: al pasar el 2 al otro lado cambia de signo. Con k = 1 el resto sale 4. La correcta está marcada.`,
+    c:`Elegiste la C. Esa cuenta iguala a 0 la suma de coeficientes, P(1): eso diría que x − 1 es factor, no x − 2. La correcta está marcada.` } };
+
+// Lecturas
+const lectA = (coefs, nombre) => [() => ['a', 'a', fq(E.graf.a)], () => ['r', `${nombre}(a)`, fq(ME.evaluar({ coefs, x:E.graf.a }).valor)]];
+const lectRuf = (coefs, extra) => [() => ['d', 'divisor', divisorTx(E.graf.a)], () => ['q', 'cociente Q', ME.texto(E.ruf.res.cociente), 1], () => ['r', 'resto R', E.ruf.res.restoTexto]].concat(extra || []);
+// Fila de fichas con lo que vale cada término en a y el total
+function filaValores(coefs, a, nombre){
+  const v = ME.evaluar({ coefs, x:a });
+  return { coefs, prod: v.terminos.map(t => fq(t.valor)), total:`= ${fq(v.valor)}`, nombre };
+}
+
+const steps = [
+ { k:'Paso 1', t:'Una casilla por grado',
+   prep:() => config1(),
+   body:() => `<p class="problem">P(x) = −5x + x³ + 6 − 2x². Sus coeficientes son ${c_('fichas azules')}. Toca «Ordenar» y mira dónde cae cada una.</p>
+   <div class="pasos"><button type="button" class="btn" id="ordenar" aria-pressed="false">Ordenar</button></div>
+   <p>Ordenado, P(x) = x³ − 2x² − 5x + 6: los ${g_('exponentes')} van del mayor al menor (aquí bajan de uno en uno porque además está completo), hasta el término independiente, que es el término con x⁰ (x⁰ = 1). Cada grado tiene su casilla.</p>
+   <p>El <b>grado</b> de P es su mayor exponente: ${g_('3')}. Un polinomio de grado 3 que tiene todas sus casillas ocupadas se llama <b>completo</b>. Si falta un término, su casilla queda vacía: un hueco.</p>
+   <p>Lo que va en cada casilla es el coeficiente con su signo: −2 en la del x² y −5 en la del x.</p>`,
+   entrar:() => { const b = $('ordenar'); if (!b) return; b.setAttribute('aria-pressed', String(S.orden)); b.textContent = S.orden ? 'Desordenar' : 'Ordenar';
+     b.onclick = () => { S.orden = !S.orden; config1(); steps[0].entrar(); }; } },
+ { k:'Paso 2', t:'Predice: T(0)', gate:P2,
+   prep:() => { if (S.pred[P2.id]) return config2(); E.config({ fichas:{ sinProd:true, filas:[{ coefs:[3, null, -5, 4, -6] }] }, desc:'Las fichas de T(x).' }); },
+   anima:fin => { E.config({ fichas:{ filas:[{ coefs:[3, null, -5, 4, -6], apaga:[1, 1, 1, 1, 1], prod:['3 · 0⁴', '', '−5 · 0²', '4 · 0', ''] }] } });
+     const F = E.fichas.filas[0];
+     E.animar(0, 1, 1400, v => { F.apaga = [1 - v, 1, 1 - v, 1 - v, 1]; }, () => { config2(); E.graf.fAlt = 0; E.animar(0, 1, 900, v => { E.graf.fAlt = v; }, fin); }); },
+   body:() => `<p class="problem">T(x) = ${c_('3')}x${g_('⁴')} ${c_('− 5')}x${g_('²')} ${c_('+ 4')}x ${c_('− 6')}. ¿Cuánto vale ${r_('T(0)')}?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${r_('T(0)')} = 3 · 0⁴ − 5 · 0² + 4 · 0 − 6 = ${r_(PC.texto)}</div>
+   <div class="eq">T(1) = 3 − 5 + 4 − 6 = ${PC.errores.sumaCoef.texto}<span class="note">la suma de coeficientes es T(1), no T(0)</span></div></div>
+   <p>El <b>valor numérico</b> es lo que da el polinomio cuando se pone un número en lugar de x. Con 0, cada término con x se anula: T(0) es el término independiente. En la gráfica, es donde la curva corta el eje y.</p>
+   <p>Ahora arrastra el ${a_('triángulo naranja')} (o usa ← y → en el dibujo): elige el número ${a_('a')} que se pone en lugar de x. Encima de cada ficha está lo que vale su término y a la derecha el total ${r_('T(a)')}: la altura de la curva en ${a_('a')}.</p>
+   <p class="hint">La casilla vacía es la del x³: T no tiene término de grado 3, así que vale 0.</p>
+   ${fuenteHip}</div>`,
+   entrar:() => {} },
+ { k:'Paso 3', t:'Predice: el grado absoluto', gate:P3,
+   prep:() => { const r = !!S.pred[P3.id]; E.config({ bloques:{ filas:M3.map((t, i) => ({ texto:['4x³y²', '−7x⁵y', '2xy⁴'][i], x:t.x, y:t.y })), f: r ? 1 : 0, cuenta:r, mayor: r ? 1 : undefined },
+     desc:'Los tres términos de M, cada uno como una fila de bloques.', lect: r ? lect3() : [] }); },
+   anima:fin => { const B = E.bloques; E.animar(0, 1, 1800, v => { B.f = v; }, () => { B.cuenta = true; B.mayor = 1; E.lect = lect3(); E.dibujar(); E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">M(x; y) = 4x${g_('³')}y${g_('²')} − 7x${g_('⁵')}y + 2xy${g_('⁴')}. ¿Cuál es su <b>grado absoluto</b>?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">grados de los términos: 3 + 2 = ${g_('5')};  5 + 1 = ${g_('6')};  1 + 4 = ${g_('5')}  ⟹  GA = ${g_(GM.texto)}</div>
+   <div class="eq">GR(x) = ${g_(String(GM.GR.x))};  GR(y) = ${g_(String(GM.GR.y))}<span class="note">el mayor exponente de cada letra</span></div></div>
+   <p>Cada bloque es un factor: x³y² es x · x · x · y · y, cinco bloques. El grado de un término es cuántos factores tiene; el grado absoluto del polinomio es el del término más largo (la fila marcada). El grado relativo mira una sola letra: el mayor exponente de x es 5 y el de y, 4.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 4', t:'Predice: el grado de un producto', gate:P4,
+   prep:() => { const r = !!S.pred[P4.id]; E.config({ bloques:{ filas:[{ texto:'2x³', x:3 }, { texto:'5x⁴', x:4 }, { texto:'10x⁷', x:7, f: r ? 1 : 0 }], cuenta:true },
+     desc:'Los términos principales de F y G como filas de bloques.', lect: r ? [() => ['g', 'grado de F · G', GP.texto]] : [] }); },
+   anima:fin => { const fl = E.bloques.filas[2]; fl.f = 0.001; E.animar(0, 1, 1500, v => { fl.f = Math.max(.001, v); }, () => { E.lect = [() => ['g', 'grado de F · G', GP.texto]]; E.dibujar(); E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">F(x) es de grado ${g_('3')} y empieza con 2x³; G(x) es de grado ${g_('4')} y empieza con 5x⁴. ¿De qué grado es F(x) · G(x)?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(2x${g_('³')} + …)(5x${g_('⁴')} + …) = 10x${g_('⁷')} + …  ⟹  grado ${g_('3')} + ${g_('4')} = ${g_(GP.texto)}</div></div>
+   <p>El término de mayor grado del producto sale de multiplicar los dos términos principales: sus bloques se ponen uno tras otro. Por eso en un producto los grados se suman, y en una potencia [F(x)]ⁿ se suman n veces: el grado se multiplica por n.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 5', t:'Predice: un cociente por Ruffini', gate:P5,
+   prep:() => { if (S.pred[P5.id]) return E.config({ ruf:{ res:R5, huecos:[1], fHueco:1 }, lect:lect5(), desc:'La tabla de Ruffini llena.' }); E.config({ ruf:{ n:4 }, desc:'La tabla de Ruffini, vacía.' }); },
+   anima:fin => { E.config({ ruf:{ res:R5, huecos:[1], fHueco:0, prog:-1 }, desc:'La tabla de Ruffini.' }); const R = E.ruf;
+     E.cadena([n => esperar(700, () => { R.fHueco = 1; E.dibujar(); esperar(500, n); }), n => E.animar(-1, 6, 3600, v => { R.prog = v; }, n, true)], () => { E.lect = lect5(); E.leyenda(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Divide ${c_('2')}x³ ${c_('− 7')}x ${c_('+ 4')} entre ${d_('x − 2')} por Ruffini. ¿Cuál es el ${q_('cociente')}?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">fichas: ${c_('2')}, ${c_('0')}, ${c_('−7')}, ${c_('4')}</div><div class="eq">${d_('x − 2')} = 0 ⟹ x = ${a_('2')}</div>
+   <div class="eq">${q_('Q(x) = ' + R5.texto)};  ${r_('R = ' + R5.restoTexto)}</div></div>
+   <p>La máquina: se baja el primer coeficiente; se multiplica por ${a_('a')} y el producto se escribe en la columna siguiente; se suma, y otra vez. La fila de abajo es el ${q_('cociente')}, con un grado menos, y el último número, separado, es el ${r_('resto')}.</p>
+   <p>El x² no aparece, así que su ficha es 0: si se salta, el −7 cae en la casilla del x² y toda la cuenta se corre.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 6', t:'Predice: el resto entre x + 2', gate:P6b,
+   prep:() => { if (S.pred[P6b.id]) return config6(); E.config({ ruf:{ n:4 }, desc:'La tabla de Ruffini, vacía.' }); },
+   anima:fin => { E.config({ ruf:{ res:rufA(P6, -2), prog:-1 } }); const R = E.ruf;
+     E.animar(-1, 6, 3200, v => { R.prog = v; }, () => { config6(); E.graf.fAlt = 0; E.animar(0, 1, 900, v => { E.graf.fAlt = v; }, fin); }, true); },
+   body:() => `<p class="problem">¿Cuál es el ${r_('resto')} de dividir P(x) = x³ − 4x² − x + 4 entre ${d_('x + 2')}?</p>${opcionesHTML(P6b.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${d_('x + 2')} = 0 ⟹ ${a_('a = −2')};  ${r_('R')} = P(${a_('−2')}) = −8 − 16 + 2 + 4 = ${r_(TR.texto)}</div></div>
+   <p><b>Teorema del resto:</b> el resto de dividir P(x) entre ${d_('x − a')} es ${r_('P(a)')}. Como P(x) = (x − a) · Q(x) + R, al poner x = a el primer sumando se anula y queda R.</p>
+   <p>Arrastra el ${a_('triángulo')} (o usa ← y →): la máquina divide entre ${d_('x − a')} con cada ${a_('a')}, y el ${r_('resto')} es siempre la altura de la curva en ${a_('a')}. Busca un ${a_('a')} donde la curva toque el eje: ahí el resto es 0 y ${d_('x − a')} es factor.</p>
+   <p class="fuente">Que una potencia par de un negativo salga negativa, como (−2)² = −4, es una hipótesis nuestra: se parece a los errores de jerarquía de operaciones y paréntesis que una prueba diagnóstica con ingresantes de Costa Rica y México describe sin cifras (Gamboa y otros, 2019). Las otras dos opciones también son hipótesis nuestras.</p></div>`,
+   entrar:() => {} },
+ { k:'Paso 7', t:'Predice: un divisor 2x − 1', gate:P7,
+   prep:() => { if (S.pred[P7.id]) return config7(1); E.config({ ruf:{ n:4 }, desc:'La tabla de Ruffini, vacía.' }); },
+   anima:fin => { config7(0); const R = E.ruf; R.prog = -1;
+     E.cadena([n => E.animar(-1, 7, 3800, v => { R.prog = v; }, n, true), n => esperar(400, n), n => E.animar(0, 1, 1600, v => { E.rect.f = v; }, n)], () => { E.lect = lect7(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Divide ${c_('4')}x³ ${c_('− 2')}x² ${c_('+ 6')}x ${c_('+ 1')} entre ${d_('2x − 1')}. ¿Cuánto valen el ${q_('cociente Q')} y el ${r_('resto R')}?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${d_('2x − 1')} = 0 ⟹ x = ${a_('1/2')}</div><div class="eq">fila con ${a_('1/2')}: 4, 0, 6 | ${r_('4')}</div>
+   <div class="eq">P(x) = (x − 1/2)(4x² + 6) + 4 = ${d_('(2x − 1)')}${q_('(2x² + 3)')} + ${r_('4')}</div></div>
+   <p>Ruffini con ${a_('1/2')} divide entre x − 1/2: la fila 4, 0, 6 es un «cociente falso», el de ese divisor. El divisor de verdad, ${d_('2x − 1')}, es el doble: el rectángulo se estira al doble de ancho y queda a la mitad de alto, con la misma área. Por eso el ${q_('cociente')} se divide entre 2. El ${r_('resto')} es lo que sobra fuera del rectángulo y no cambia.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 8', t:'Predice: un factor', gate:P8,
+   prep:() => { if (S.pred[P8.id]) return config8(); E.config({ fichas:{ sinProd:true, filas:[{ coefs:[1, -3, 'k', 6] }] }, desc:'Las fichas de P(x), una con k.' }); },
+   anima:fin => { S.k8 = FK.valor; config8(); E.graf.fAlt = 0; E.ruf.prog = -1; const R = E.ruf;
+     E.cadena([n => E.animar(-1, 6, 2600, v => { R.prog = v; }, n, true), n => E.animar(0, 1, 800, v => { E.graf.fAlt = v; }, n)], fin); },
+   body:() => `<p class="problem">¿Para qué valor de ${c_('k')} el binomio ${d_('x − 2')} es factor de P(x) = x³ − 3x² + ${c_('k')}x + 6?</p>${opcionesHTML(P8.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${d_('x − 2')} es factor ⟺ ${r_('P(2) = 0')}:  8 − 12 + 2${c_('k')} + 6 = 0 ⟹ ${c_(FK.texto)}</div>
+   <div class="eq">P(x) = ${d_('(x − 2)')}${q_('(' + ME.texto(FK.cociente) + ')')}</div></div>
+   <p><b>Teorema del factor:</b> ${d_('x − a')} es factor de P(x) exactamente cuando ${r_('P(a) = 0')}, porque entonces el resto es 0. En la gráfica, a es un punto donde la curva corta el eje x: una <b>raíz</b>.</p>
+   <p>Cambia ${c_('k')} y mira: la curva deja de pasar por (2; 0) y la máquina da un resto distinto de 0.</p>
+   <div class="pasos">${control('k8', 'k', fq(S.k8), 'c')}</div>
+   <p class="fuente">Kieran (1992) describe la transposición, el «pasar al otro lado», como una regla que se aplica sin significado; no da porcentaje de este error (AL16, hipótesis). Las otras dos opciones son hipótesis nuestras.</p></div>`,
+   entrar:() => { if (S.pred[P8.id]) enlazar('k8', d => { S.k8 = clamp(S.k8 + d, -8, 6); config8(); pintarK(); }); pintarK(); } },
+];
+
+function config1(){
+  E.config({ fichas: S.orden ? { sinProd:true, filas:[{ coefs:P1 }] } : { sinProd:true, filas:[{ coefs:[1], exps:false, sueltos:['−5x', 'x³', '6', '−2x²'] }] },
+    desc: S.orden ? 'Las fichas de P ordenadas: 1, −2, −5 y 6 sobre x³, x², x y x⁰.' : 'Cuatro términos sueltos: −5x, x³, 6 y −2x².' });
+}
+function config2(){
+  const coefs = T2, mov = a => { E.fichas.filas[0] = Object.assign(filaValores(coefs, a), { coefs:[3, null, -5, 4, -6] }); S.a2 = a; };
+  E.config({ fichas:{ filas:[Object.assign(filaValores(coefs, S.a2), { coefs:[3, null, -5, 4, -6] })] },
+    graf:{ coefs, xr:[-2, 2], yr:[-12, 12], a:S.a2, alturaNombre:'altura T(a)', altura:true, arrastre:true, paso:.5, min:-2, max:2, alMover:mov, nombre:'y = T(x)', puntos:[{ x:0, y:-6, color:'ink', texto:'(0; −6)' }] },
+    lect: lectA(coefs, 'T'), desc:'Las fichas de T con el valor de cada término en a, y la curva y = T(x).' });
+}
+function lect3(){ return [() => ['g', 'grado absoluto', GM.texto], () => ['g', 'GR(x)', String(GM.GR.x)], () => ['g', 'GR(y)', String(GM.GR.y)]]; }
+function lect5(){ return [() => ['q', 'cociente Q', R5.texto, 1], () => ['r', 'resto R', R5.restoTexto]]; }
+function config6(){
+  E.config({ ruf:{ res:rufA(P6, S.a6) },
+    graf:{ coefs:P6, xr:[-2.5, 4.5], yr:[-22, 10], a:S.a6, altura:true, arrastre:true, paso:1, min:-2, max:4, nombre:'y = P(x)',
+      alMover:a => { S.a6 = a; E.ruf.res = rufA(P6, a); } },
+    lect: lectRuf(P6, [() => ['r', 'P(a)', fq(ME.evaluar({ coefs:P6, x:E.graf.a }).valor)]]), desc:'La máquina de Ruffini con a y la curva y = P(x) con la altura P(a).' });
+}
+function config7(f){
+  E.config({ ruf:{ res:R7, dividir:'2', etiquetaRaiz:'a' },
+    rect:{ a:2, f, divIni:'x − 1/2', divFin:'2x − 1', cocIni:'4x² + 6', cocFin:'2x² + 3', resto:R7.restoTexto },
+    lect: f >= 1 ? lect7() : [], desc:'La tabla de Ruffini con 1/2 y el rectángulo divisor por cociente, con la tira del resto.' });
+}
+function lect7(){ return [() => ['q', 'cociente Q', R7.texto], () => ['r', 'resto R', R7.restoTexto]]; }
+function config8(){
+  const coefs = conK(S.k8);
+  E.config({ ruf:{ res:rufA(coefs, 2) }, graf:{ coefs, xr:[-2.5, 4], yr:[-14, 14], a:2, altura:true, nombre:'y = P(x)' },
+    lect:[() => ['c', 'k', fq(S.k8)], () => ['r', 'resto R = P(2)', E.ruf.res.restoTexto], () => ['q', 'cociente Q', ME.texto(E.ruf.res.cociente), 1]],
+    desc:'La máquina de Ruffini con a = 2 y la curva y = P(x).' });
+}
+function pintarK(){ const o = $('o-k8'); if (!o) return; o.textContent = fq(S.k8);
+  $('stepBody').querySelector('[data-c="k8"][data-d="-1"]').disabled = S.k8 <= -8; $('stepBody').querySelector('[data-c="k8"][data-d="1"]').disabled = S.k8 >= 6; }
+function enlazar(id, fn){ $('stepBody').querySelectorAll(`[data-c="${id}"]`).forEach(b => b.onclick = () => { if (E.ocupado || S.ocupado || E.anim) return; fn(Number(b.dataset.d)); }); }
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  tramos($('stepBody'));
+  E.compacto = false; E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.entrar) s.entrar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    alDibujo($('cv'), () => true, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); if (s.entrar) s.entrar(); });
+    });
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   P(1), un completo de 13 términos, el grado de una suma, el resto entre x² + 1 (tabla de área) y los candidatos a raíz
+   racional. La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const C1 = [2, -5, 1, 7], D1 = ME.pDeUno({ coefs:C1 });
+const D2 = ME.gradoDeCompleto({ terminos:13 });
+const D3 = ME.gradoSuma({ m:5, n:3 }), F3 = [2, 0, 0, 1, 0, -3], G3 = [4, 0, -1, 1];
+const DV = [1, 3, 0, -2, 5], D4 = ME.restoSustitucion({ dividendo:DV, k:1 }), K4 = ME.cajaDivision({ dividendo:DV, divisor:[1, 0, 1] });
+const C5 = [2, -3, -11, 6], D5 = ME.raicesRacionales({ coefs:C5 });
+const huecos = p => p.map(c => (c === 0 ? null : c));
+const sumaF = ME.sumar({ p:F3, q:G3 }).coefs;
+const fuente = t => `<p class="fuente">${t}</p>`;
+const HIP = 'No encontramos estudios con cifras sobre este error; las opciones incorrectas son hipótesis nuestras.';
+
+const EXPS = [
+  { id:'p-de-uno', corto:'P(1)',
+    q:`P(x) = ${c_('2')}x³ ${c_('− 5')}x² ${c_('+ 1')}x ${c_('+ 7')}. ¿Cuánto vale ${r_('P(1)')}?`,
+    opts:[['a', D1.errores.independiente.texto, 'PO12-p1-termino-independiente', 'hipotesis'],
+          ['b', D1.texto],
+          ['c', D1.errores.sinSignos.texto, 'PO21-p1-suma-sin-signos', 'hipotesis'],
+          ['d', D1.errores.principal.texto, 'PO20-p1-coeficiente-principal', 'hipotesis']], ok:'b',
+    fb:{ a:'7 es el término independiente: eso es P(0). Con x = 1 ningún término se anula.',
+         c:'15 suma los coeficientes sin sus signos. El −5 resta: 2 − 5 + 1 + 7 = 5.',
+         d:'2 es el coeficiente principal. Con x = 1, cada potencia de 1 vale 1 y quedan todos los coeficientes.' },
+    antes:ya => E.config(ya ? conf1() : { fichas:{ sinProd:true, filas:[{ coefs:C1 }] }, desc:'Las fichas de P(x).' }),
+    despues:() => { E.config(conf1()); E.graf.fAlt = 0; E.animar(0, 1, 1000, v => { E.graf.fAlt = v; }); },
+    exp:() => `<div class="eqs"><div class="eq">${r_('P(1)')} = 2 · 1³ − 5 · 1² + 1 · 1 + 7 = 2 − 5 + 1 + 7 = ${r_(D1.texto)}</div></div>
+      <p>Toda potencia de 1 vale 1, así que P(1) es la <b>suma de coeficientes</b>, con sus signos. Y P(0) es el término independiente. Son los dos valores numéricos más preguntados.</p>${fuente(HIP)}` },
+  { id:'trece-terminos', corto:'Trece términos',
+    q:`Un polinomio en x completo y ordenado tiene 13 términos. ¿De qué ${g_('grado')} es?`,
+    opts:[['a', D2.errores.igual.texto, 'PO9-completo-n-terminos', 'hipotesis'],
+          ['b', D2.errores.masUno.texto, 'PO29-completo-suma-uno', 'hipotesis'],
+          ['c', D2.texto]], ok:'c',
+    fb:{ a:'13 cuenta los términos, pero uno de ellos es el independiente, el de x⁰: los exponentes van del 12 al 0.',
+         b:'14 suma 1 en vez de restarlo. Con grado n hay n + 1 casillas: 13 casillas son grado 12.' },
+    antes:ya => E.config({ fichas:{ sinProd:true, filas:[{ coefs:Array(13).fill(null), exps:ya }] }, lect: ya ? [() => ['g', 'grado', D2.texto]] : [], desc:'Trece casillas en fila.' }),
+    despues:() => { E.fichas.filas[0].exps = true; E.lect = [() => ['g', 'grado', D2.texto]]; E.dibujar(); E.avisar(); },
+    exp:() => `<div class="eqs"><div class="eq">exponentes: ${g_('12')}, 11, …, 1, ${g_('0')}  ⟹  13 términos, grado ${g_(D2.texto)}</div></div>
+      <p>Un polinomio completo de grado n tiene <b>n + 1</b> términos: uno por cada exponente de n a 0. La casilla del final, x⁰, es el término independiente, y también cuenta.</p>${fuente(HIP)}` },
+  { id:'grado-de-la-suma', corto:'Grado de una suma',
+    q:`F(x) es de grado ${g_('5')} y G(x) es de grado ${g_('3')}. ¿De qué grado es F(x) + G(x)?`,
+    opts:[['a', D3.errores.suma.texto, 'PO6-grado-suma-suma-grados', 'hipotesis'],
+          ['b', D3.texto],
+          ['c', D3.errores.producto.texto, 'PO5-grado-suma-multiplica', 'hipotesis'],
+          ['d', D3.errores.menor.texto, 'PO22-grado-suma-el-menor', 'hipotesis']], ok:'b',
+    fb:{ a:'8 = 5 + 3 es el grado del producto F · G. Al sumar no se juntan factores: se suman fichas de la misma casilla.',
+         c:'15 multiplica los grados; ni siquiera el producto F · G llega ahí (es de grado 8).',
+         d:'3 es el grado de G. Pero el x⁵ de F no tiene con quién anularse: sigue en la suma.' },
+    antes:ya => E.config(ya ? conf3(1) : { mensaje:'Responde para ver dos ejemplos.', desc:'Sin dibujo hasta responder.' }),
+    despues:() => { E.config(conf3(0)); const fl = E.fichas.filas[2]; E.animar(0, 1, 1200, v => { fl.alfa = v; }, () => { E.lect = [() => ['g', 'grado de F + G', D3.texto]]; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">F = ${ME.texto(F3)}</div><div class="eq">G = ${ME.texto(G3)}</div><div class="eq">F + G = ${ME.sumar({ p:F3, q:G3 }).texto}</div></div>
+      <p>Al sumar, cada casilla suma con la de su mismo grado. Con grados distintos, el término de mayor grado queda solo: la suma tiene el grado del mayor, ${g_('5')}. Con grados iguales puede bajar, si los términos principales se anulan (x³ + (−x³ + 2) = 2).</p>${fuente(HIP)}` },
+  { id:'entre-x2-mas-1', corto:'Entre x² + 1', unidad:U_DIV,
+    q:`¿Cuál es el ${r_('resto')} de dividir x⁴ + 3x³ − 2x + 5 entre ${d_('x² + 1')}?`,
+    opts:[['a', D4.errores.signo.texto, 'PO16-sustituye-x2-con-signo-cambiado', 'hipotesis'],
+          ['b', D4.errores.unaVez.texto, 'PO31-sustituye-una-sola-vez', 'hipotesis'],
+          ['c', D4.texto],
+          ['d', D4.errores.pierdeX.texto, 'PO32-pierde-la-x-sobrante', 'hipotesis']], ok:'c',
+    fb:{ a:'x + 6 sale de cambiar x² por 1. Pero x² + 1 = 0 da x² = −1: así x⁴ = 1 y x³ = −x.',
+         b:'−5x + 4 cambia x⁴ por −1. Pero x⁴ = (x²)² = (−1)² = 1.',
+         d:'−2x + 3 cambia x³ por −1 y pierde una x: x³ = x² · x = −x.' },
+    antes:ya => E.config(ya ? conf4(1) : { fichas:{ sinProd:true, filas:[{ coefs:huecos(DV) }] }, desc:'Las fichas del dividendo.' }),
+    despues:() => { E.config(conf4(0)); E.animar(0, 1, 1800, v => { E.caja.f = v; }, () => { E.lect = lect4(); E.avisar(); }, true); },
+    exp:() => `<div class="eqs"><div class="eq">${d_('x² + 1')} = 0 ⟹ x² = −1:  x⁴ = (x²)² = 1;  3x³ = 3x² · x = −3x</div>
+      <div class="eq">${r_('R')} = 1 − 3x − 2x + 5 = ${r_(D4.texto)}</div>
+      <div class="eq">x⁴ + 3x³ − 2x + 5 = ${d_('(x² + 1)')} · ${q_('Q')} + ${r_('R')}</div><div class="eq">${q_('Q = ' + ME.texto(D4.cociente))};  ${r_('R = ' + D4.texto)}</div></div>
+      <p>La tabla comprueba la sustitución: es la división clásica como un rectángulo de área: arriba los términos del ${d_('divisor')}, a la izquierda los del ${q_('cociente')} y dentro sus productos; x² y −x² se anulan. Lo que falta para llegar al dividendo es el ${r_('resto')}, de grado menor que el divisor. Con coeficientes negativos, el «área» se cuenta con signo: es un modelo, no una medida. Con divisores de segundo grado también sirve el método de Horner, que es esta misma cuenta en tabla.</p>${fuente(HIP)}` },
+  { id:'candidatos', corto:'Candidatos a raíz', unidad:U_ECU,
+    q:`P(x) = ${c_('2')}x³ − 3x² − 11x ${c_('+ 6')}. Las raíces racionales posibles son ± (divisor de ${c_('6')}) / (divisor de ${c_('2')}). ¿Cuántos candidatos distintos hay?`,
+    opts:[['a', D5.errores.soloPositivos.texto, 'PO24-candidatos-solo-positivos', 'hipotesis'],
+          ['b', D5.errores.sinSimplificar.texto, 'PO26-candidatos-sin-simplificar', 'hipotesis'],
+          ['c', D5.errores.soloIndependiente.texto, 'PO25-candidatos-solo-del-independiente', 'hipotesis'],
+          ['d', D5.texto]], ok:'d',
+    fb:{ a:'6 cuenta solo los positivos. Cada candidato tiene también su negativo.',
+         b:'16 cuenta 2/2, 6/2 y otras fracciones que se simplifican a un número que ya estaba (1, 3).',
+         c:'8 son ±1, ±2, ±3 y ±6: faltan los que salen de dividir entre 2, como 1/2 y 3/2.' },
+    antes:ya => E.config(ya ? conf5() : { fichas:{ sinProd:true, filas:[{ coefs:C5 }] }, desc:'Las fichas de P(x).' }),
+    despues:() => { E.config(conf5()); E.graf.fAlt = 0; E.animar(0, 1, 900, v => { E.graf.fAlt = v; }); },
+    exp:() => `<p>Los ${D5.texto} candidatos: ${D5.candidatosTexto.join('; ')}.</p>
+      <div class="eqs"><div class="eq">raíces: ${D5.raices.map(fq).join('; ')}</div></div>
+      <p>Las marcas ${a_('naranjas')} del eje son los 12 candidatos. Arrastra el ${a_('triángulo')}: salta de candidato en candidato y la máquina divide entre x − a. Donde el ${r_('resto')} da 0, la curva corta el eje: es una raíz y x − a es factor. Ser candidato no garantiza ser raíz: solo 3 de los 12 lo son.</p>${fuente(HIP)}` },
+];
+function conf1(){ const v = ME.evaluar({ coefs:C1, x:1 });
+  return { fichas:{ filas:[{ coefs:C1, prod:v.terminos.map(t => fq(t.valor)), total:`= ${D1.texto}` }] },
+    graf:{ coefs:C1, xr:[-1.6, 3], yr:[-12, 14], a:1, altura:true, nombre:'y = P(x)' }, lect:[() => ['r', 'P(1)', D1.texto]], desc:'Las fichas con su valor en x = 1 y la curva.' }; }
+function conf3(f){ return { fichas:{ sinProd:true, filas:[{ coefs:huecos(F3), nombre:'F' }, { coefs:huecos(G3), nombre:'G' }, { coefs:huecos(sumaF), nombre:'F+G', alfa:f }] },
+  lect: f >= 1 ? [() => ['g', 'grado de F + G', D3.texto]] : [], desc:'F, G y su suma, casilla por casilla.' }; }
+function conf4(f){ return { caja:{ c:K4, f, anulan:[[0, 1], [2, 0]], resto:K4.restoTexto }, lect: f >= 1 ? lect4() : [], desc:'La tabla de área de la división entre x² + 1.' }; }
+function lect4(){ return [() => ['q', 'cociente Q', ME.texto(D4.cociente), 1], () => ['r', 'resto R', D4.texto]]; }
+function conf5(){
+  const a0 = 1;
+  return { ruf:{ res:rufA(C5, a0) }, graf:{ coefs:C5, xr:[-6.5, 6.5], yr:[-30, 30], a:a0, altura:true, arrastre:true, valores:D5.candidatos, marcas:D5.candidatos, nombre:'y = P(x)',
+    alMover:a => { E.ruf.res = rufA(C5, a); } },
+    lect:[() => ['a', 'a', fq(E.graf.a)], () => ['r', 'resto R', E.ruf.res.restoTexto], () => ['ink', 'candidatos', D5.texto]], desc:'La máquina con un candidato a y la curva con los 12 candidatos.' };
+}
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = false; E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    tramos($('res2'));
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); E.dibujar(); });
+  });
+  pintar();
+}
+addEventListener('modo', () => { if (!document.getElementById('m2').hidden) E.rehacer(); });
+ir(0);
+})();
+</script>
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+
+</body>
+</html>
