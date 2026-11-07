@@ -249,7 +249,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "choques"
+     ]
     },
     {
      "id": "fisica.oscilaciones",
@@ -4301,6 +4303,23 @@
     "/plantillas/celda-galvanica/index.html",
     "/plantillas/celda-galvanica/motor.js",
     "/plantillas/celda-galvanica/papel.json"
+   ]
+  },
+  "choques": {
+   "id": "choques",
+   "titulo": "Choques: impulso y cantidad de movimiento",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.impulso-y-choques"
+   ],
+   "url": "/plantillas/choques/index.html",
+   "papel": "/plantillas/choques/papel.json",
+   "archivos": [
+    "/plantillas/choques/index.html",
+    "/plantillas/choques/motor.js",
+    "/plantillas/choques/papel.json"
    ]
   },
   "cinetica": {

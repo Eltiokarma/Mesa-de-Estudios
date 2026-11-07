@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 2110 pruebas.
+Deben pasar 2157 pruebas.
 
 ```bash
 npm run dev
@@ -73,6 +73,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 
+- **Choques** (`plantillas/choques/`, rutina de física, 7 nov 2026): choques en un riel (cantidad de movimiento como flecha que se conserva en el sistema, energía cinética como barra que se puede perder, impulso como área F–t, coeficiente de restitución); 21 casos verificados aparte; 4 predicciones y 5 «¿qué pasa si…?». Falta en la escena el choque en dos dimensiones (está en motor y papel p10). Sin ítems en el banco de física.
 - **Segmentos y ángulos** (`plantillas/segmentos-angulos/`, 7 nov 2026, subagentes de la conversación principal): la escuadra y las paralelas (segmentos que se pisan y puntos medios, complemento y suplemento que completan la escuadra y la recta, bisectrices, los ocho ángulos con la secante que gira, «¿son paralelas?» con el corte a escala, quiebre y serrucho con su condición); 21 casos verificados aparte; 10 de papel; 5 predicciones y 5 «¿qué pasa si…?»; todo hipótesis salvo GE17 (sin dato). Sin ítems en el banco de geometría.
 - **Enlace** (`plantillas/enlace/`, rutina de química, 7 nov 2026): la molécula en 3D (electrones de valencia, Lewis con pares enlazantes y libres, forma por repulsión de pares, dipolos que se suman al girar la molécula, enlace iónico con Na⁺ y Cl⁻); 58 casos verificados aparte (322 campos); revisión con 2 graves y 11 medios corregidos. La polaridad usa ΔEN sin el dipolo de los pares libres: en pantalla dice solo «polar» o «apolar», con un aviso para NH₃ contra NF₃. Sin ítems en el banco de química.
 - **Funciones trigonométricas inversas** (`plantillas/funciones-trig-inversas/`, sesión de matemática A, 7 nov 2026): la ventana principal (la recta y = k corta la onda muchas veces y solo un corte cae en la ventana; reflejo en y = x, arcsen y arccos en la circunferencia, compuestas con el triángulo, dominio y suma de arcotangentes); 19 casos verificados aparte; IN1 a IN29 son hipótesis. Con 2 pares en el banco de trigonometría desde el 7 nov (arcsen(sen θ) fuera de rango y sen(arctan k)).
