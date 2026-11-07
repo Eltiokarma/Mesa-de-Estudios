@@ -232,6 +232,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'celda-galvanica', unidad: 'quimica.electroquimica', version: '0.1.0' };
@@ -263,7 +264,6 @@ const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></spa
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const MC = MotorCelda;
 // En el celular, tras responder, llevar la vista al dibujo: el texto pide mirarlo y queda arriba, fuera de la pantalla.
-function verDibujo(id){ if (innerWidth < 900) document.getElementById(id).scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block:'start' }); }
 const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
 // Metales con color propio en la escena; los demás de la tabla solo aparecen en texto.
 const METALES = ['Zn', 'Fe', 'Cu', 'Ag'];
@@ -276,12 +276,14 @@ function crearLienzo(cv, alto, dibujar){
   const L = { cv, ctx, W:0, H:0 };
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(alto(W)), dpr = window.devicePixelRatio || 1;
+    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:420 })), dpr = window.devicePixelRatio || 1;
     L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     dibujar();
   };
   new ResizeObserver(L.resize).observe(cv);
+  // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === !!L.compacto) return; L.compacto = on; L.resize(); };
   return L;
 }
 function alRedibujarTema(fn){
@@ -796,6 +798,7 @@ function go(k){
   $('stepBody').innerHTML = s.body();
   pintarDots();
   if (s.gate) prediccion(s.gate);
+  E.L.compactar(s.gate && !S.pred[s.gate.id]);
   if (s.accion) accion();
   if (s.explora) explorar();
   nav(); E.dibujar();
@@ -844,9 +847,9 @@ function prediccion(P){
     const o = P.opts.find(q => q[0] === b.dataset.k);
     S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
     registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
-    P.anima(); nav();
+    nav();
     $('next').focus({ preventScroll:true });
-    verDibujo('cv');
+    const paso = S.step; E.L.compactar(false); Celular.alResponder(E.L.cv, () => P.anima(), () => S.step === paso);
   }));
   pintar();
 }
@@ -993,6 +996,7 @@ function ir(k){
   const x = EXPS[k], visto = !!S.pred[x.id];
   x.antes(visto);
   if (visto && x.id === 'faraday'){ E.far.llegados = [8, 8]; E.far.salidos = [8, 8]; E.far.emitidos = 8; }
+  E.L.compactar(!S.pred[x.id]);
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1012,8 +1016,8 @@ function ir(k){
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; botones(); pintar(); x.despues(); E.dibujar();
-    verDibujo('cv2');
+    S.pred[x.id] = o[0]; botones(); pintar(); E.L.compactar(false);
+    Celular.alResponder(E.L.cv, () => { x.despues(); E.dibujar(); }, () => S.k === k);
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
   });
   pintar(); E.dibujar();
