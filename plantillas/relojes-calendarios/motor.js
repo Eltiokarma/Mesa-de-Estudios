@@ -26,8 +26,11 @@
  *                               errores } con errores (todos el primer M > 0 de su ecuación, con su fraccion):
  *                               horarioQuieto (|30H − 6M| = alfa), sumaRapideces (6,5 en vez de 5,5 por minuto),
  *                               sinElMedio (|30H − 11M| = alfa: olvida dividir 11M entre 2), signoCambiado
- *                               (|30H + 11M/2| = alfa) y conElSuplemento (resuelve con 180 − alfa; 0 ↔ 180).
- *                               Si en esa hora no hay ningún M > 0, primera es null. alfa debe ser múltiplo de 0,5.
+ *                               (30H + 11M/2 = alfa, literal y sin reducir módulo 360; si no hay M en (0, 60), no va)
+ *                               y conElSuplemento (resuelve con 180 − alfa; 0 ↔ 180). Un error que da lo mismo que la
+ *                               respuesta va a 'coinciden'; uno que da lo mismo que otro error anterior no se ofrece y
+ *                               va a 'repetidos' ({ error: el que repite }). Si en esa hora no hay ningún M > 0,
+ *                               primera es null. alfa debe ser múltiplo de 0,5.
  *   coincidencias({ horas, tipo }) cuántas veces, en [0, horas) contadas desde las 12:00 (0:00), las agujas quedan
  *                               'superpuestas', 'opuestas' o 'rectas' (90°). horas entero positivo. { veces, instantes
  *                               (minutos, exactos como número), errores: unaPorHora (lo que da contar las de cada hora
@@ -74,7 +77,7 @@
  *                               { conteo (7 números, de lunes a domingo), cinco (nombres de los días que salen 5 veces,
  *                               en orden desde primerDia), ultimo (nombre del último día), errores (listas de nombres):
  *                               contarPartida (los r días que sobran empiezan al día siguiente del primero),
- *                               alReves (los r días hacia atrás desde el primero, en orden de la semana),
+ *                               alReves (los r días anteriores al primero, sin incluirlo, en orden de la semana),
  *                               restoDesplazado (los r días empiezan r días después del primero), soloElPrimero
  *                               ([primerDia]), unoDeMas (un día más de los que tocan), ninguno ([]: «4 semanas») }.
  *                               r = diasMes − 28.
@@ -172,15 +175,12 @@
     }
     return out.map(x => ({ M: limpio(x.num / v), fraccion: fraccion(x.num, v) })).sort((p, q) => p.M - q.M);
   }
-  // Resuelve |30H + vM| ≡ alfa (mod 360): el error de sumar los minutos en la fórmula.
+  // El error de sumar los minutos, tal como se escribe: 30H + (v/2)M = alfa (el lado izquierdo nunca es negativo),
+  // sin reducir módulo 360. Solo vale un M en (0, 60); si no hay, no se ofrece.
   function resolverSuma(H, alfa, v) {
-    const dos = Math.round(2 * alfa), out = [];
-    for (const s of [1, -1]) for (let k = -3; k <= 3; k++) {
-      const num = -60 * H + s * dos + 720 * k;
-      if (num < 0 || num >= 60 * v) continue;
-      if (!out.includes(num)) out.push(num);
-    }
-    return out.map(num => ({ M: limpio(num / v), fraccion: fraccion(num, v) })).sort((p, q) => p.M - q.M);
+    const num = -60 * H + Math.round(2 * alfa);
+    if (num <= 0 || num >= 60 * v) return [];
+    return [{ M: limpio(num / v), fraccion: fraccion(num, v) }];
   }
   function horaConAngulo(o) {
     const H = numero(o.H, 'la hora H', { entero: true, min: 0, max: 12 }) % 12;
@@ -193,8 +193,14 @@
       sinElMedio: primeraDe(resolver(H, alfa, 22)), signoCambiado: primeraDe(resolverSuma(H, alfa, 11)),
       conElSuplemento: primeraDe(resolver(H, 180 - alfa, 11)) };
     const e = {}, coinciden = [];
-    for (const [k, v] of Object.entries(err)) { if (!v) continue; if (primera && igual(v.M, primera.M)) coinciden.push(k); else e[k] = v; }
-    return { soluciones, primera, errores: e, coinciden };
+    const repetidos = {};
+    for (const [k, v] of Object.entries(err)) {
+      if (!v) continue;
+      if (primera && igual(v.M, primera.M)) { coinciden.push(k); continue; }
+      const otro = Object.keys(e).find(j => igual(e[j].M, v.M));
+      if (otro) repetidos[k] = otro; else e[k] = v;
+    }
+    return { soluciones, primera, errores: e, coinciden, repetidos };
   }
   // Cuántas veces quedan superpuestas, opuestas o en ángulo recto en [0, horas): el minutero le saca 5,5° por minuto
   // al horario; la diferencia vuelve a valer lo mismo cada 720/11 min (superpuestas y opuestas: 11 veces en 12 h)

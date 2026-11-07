@@ -2,7 +2,7 @@
   "plantilla": "relojes-calendarios",
   "unidades": "Ángulos en grados sexagesimales; H es la hora del horario (0 a 12) y M los minutos; las horas del día en minutos desde las 0:00 (480 = 8:00 a. m., 1050 = 5:30 p. m.); adelantos en minutos, periodos y tiempos en horas; campanadas en segundos; fechas { a, m, d } del calendario gregoriano.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.horarioQuieto, primera.fraccion, soluciones.0.M); 'length' es el largo de una lista; las listas, objetos y textos se comparan completos. Las fracciones son { num, den, entero, resto } (16 4/11 = 180/11). 'tambien' son llamadas extra del mismo caso (con 'fn' propia si la traen).",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026; dos pasadas), sin leer el código del motor: recalculó todo con python3 y Fraction exacta. Las horas se obtuvieron con la congruencia 30H − 5,5M ≡ ±α (mod 360) y los instantes con (o + 360k)/5,5; las fechas, con la congruencia de Zeller y el número de día juliano, comparados con datetime. Coinciden los 172 valores esperados, incluidos los bordes M = 60, el 29 de febrero en la partida y el 1900 no bisiesto; el único desacuerdo (signoCambiado a las 3 con α = 0) se corrigió en el motor.",
   "tolerancia": 1e-09,
   "casos": [
     {
@@ -170,12 +170,7 @@
           "entero": 8,
           "resto": 2
         },
-        "errores.signoCambiado.fraccion": {
-          "num": 540,
-          "den": 11,
-          "entero": 49,
-          "resto": 1
-        }
+        "repetidos": {}
       }
     },
     {
