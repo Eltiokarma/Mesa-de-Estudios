@@ -36,5 +36,5 @@ No hay pares para conjuntos y lógica en álgebra porque ya están en la reserva
 
 **Dudoso.**
 
-- `GE11-resta-cuadrados` está como `hipotesis` en el diccionario de geometría, pero la escena de congruencia lo marca `parcial`. Lo dejé en hipótesis porque en la duda se baja un escalón. Conviene igualar la escena o el banco.
+- `GE11-resta-cuadrados` estaba como `hipotesis` en el banco y como `parcial` en la escena. Al integrar, la principal lo dejó en `parcial` (el informe de geometría lo da así por el estudio de Bolema).
 - si-02 B (el triángulo, 3 ejes) puede salir más fácil que A (el pentágono). El heptágono está en la escena y el eneágono obligaba a escribir «nueve lados», lo que dejaba la respuesta en el enunciado.
