@@ -5,17 +5,18 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Un gas ideal está en un cilindro con un émbolo que se mueve libre, a 3 × 10⁵ Pa. Recibe 2000 J de calor y su volumen pasa de 0,002 m³ a 0,006 m³ a presión constante. ¿Cuánto trabajo hace el gas y cuánto cambia su energía interna?",
-      "respuesta": "W = 1200 J; ΔU = 800 J.",
+      "enunciado": "Un gas ideal monoatómico está en un cilindro con un émbolo que se mueve libre, a 3 × 10⁵ Pa. Recibe 2250 J de calor y su volumen pasa de 0,002 m³ a 0,005 m³ a presión constante. ¿Cuánto trabajo hace el gas y cuánto cambia su energía interna?",
+      "respuesta": "W = 900 J; ΔU = 1350 J.",
       "pasos": [
-        "A presión constante, el trabajo es el área de un rectángulo en el diagrama P-V: W = P·ΔV = 3 × 10⁵ · (0,006 − 0,002) = 3 × 10⁵ · 0,004 = 1200 J.",
+        "A presión constante, el trabajo es el área de un rectángulo en el diagrama P-V: W = P·ΔV = 3 × 10⁵ · (0,005 − 0,002) = 3 × 10⁵ · 0,003 = 900 J.",
         "El gas se expande, así que el trabajo que hace es positivo.",
-        "Primera ley: ΔU = Q − W = 2000 − 1200 = 800 J.",
-        "Cuidado: P·V con el volumen final (3 × 10⁵ · 0,006 = 1800 J) no es el trabajo; el trabajo usa el cambio de volumen."
+        "Primera ley: ΔU = Q − W = 2250 − 900 = 1350 J.",
+        "Cuidado: P·V con el volumen final (3 × 10⁵ · 0,005 = 1500 J) no es el trabajo; el trabajo usa el cambio de volumen."
       ],
       "verificar": [
-        { "fn": "proceso", "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "V2": 0.006 }], "espera": { "W": 1200 } },
-        { "fn": "primeraLey", "args": [{ "Q": 2000, "W": 1200 }], "espera": { "dU": 800 } }
+        { "fn": "proceso", "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "V2": 0.005 }], "espera": { "W": 900, "dU": 1350, "Q": 2250 } },
+        { "fn": "proceso", "args": [{ "tipo": "isobarico", "P1": 300000, "V1": 0.002, "Q": 2250 }], "espera": { "final.V": 0.005 } },
+        { "fn": "primeraLey", "args": [{ "Q": 2250, "W": 900 }], "espera": { "dU": 1350 } }
       ]
     },
     {
@@ -128,11 +129,11 @@
       "id": "p9",
       "nivel": "avanzado",
       "enunciado": "Dos moles de un gas ideal ocupan 0,02 m³ a 300 K. Se expanden a temperatura constante hasta 0,04 m³. ¿Cuánto calor reciben? ¿Cuánto cambia su energía interna? Usa ln 2 ≈ 0,693.",
-      "respuesta": "Q = W ≈ 3456 J; ΔU = 0.",
+      "respuesta": "Q = W ≈ 3455 J; ΔU = 0.",
       "pasos": [
         "La temperatura no cambia, así que la energía interna tampoco: ΔU = 0.",
-        "El trabajo en una isoterma es W = n·R·T·ln(V₂/V₁) = 2 · 8,31 · 300 · ln 2 = 4986 · 0,693 ≈ 3456 J.",
-        "Primera ley: Q = ΔU + W = 0 + 3456 J. El gas sí recibe calor, aunque su temperatura no cambie: lo convierte entero en trabajo.",
+        "El trabajo en una isoterma es W = n·R·T·ln(V₂/V₁) = 2 · 8,31 · 300 · ln 2 = 4986 · 0,693 ≈ 3455 J.",
+        "Primera ley: Q = ΔU + W = 0 + 3455 J. El gas sí recibe calor, aunque su temperatura no cambie: lo convierte entero en trabajo.",
         "La presión inicial es n·R·T/V = 4986/0,02 = 249 300 Pa y la final, la mitad."
       ],
       "verificar": [

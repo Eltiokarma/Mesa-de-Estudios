@@ -16,7 +16,7 @@
    temperatura (no hay periodo).
    ΔE00 mínimo 23,0 en claro (V–ΔU) y 23,6 en oscuro (T–W); contraste ≥ 4,5 sobre el papel, sobre el chip (8 %) y sobre
    las opciones ya respondidas, en claro y en oscuro (docs/metodo/paleta.py). ΔU queda a 11 del verde de «correcto» y
-   T a 5 del rojo de los avisos: los dos estados siempre llevan texto y borde. El morado de marca no se usa aquí. */
+   T a 7,6 (claro) y 6,7 (oscuro) del rojo de los avisos: los dos estados siempre llevan texto y borde. El morado de marca no se usa aquí. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
@@ -387,13 +387,31 @@ function diagrama(ctx, c, b, D){
   ctx.save(); ctx.fillStyle = c.paper; ctx.fillRect(b.x, b.y, b.w, b.h);
   ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted;
   ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-  for (let v = Math.ceil(D.R.V[0]/px)*px; v <= D.R.V[1] + 1e-9; v += px){ linea(ctx, X(v), b.y, X(v), b.y + b.h); ctx.fillText(fmt(v, 0), X(v), b.y + b.h + 4); }
+  // Los números del eje que quedan debajo del rótulo de la proyección del estado actual no se escriben.
+  const ap = D.actual && D.proy ? D.actual : null;
+  for (let v = Math.ceil(D.R.V[0]/px)*px; v <= D.R.V[1] + 1e-9; v += px){ linea(ctx, X(v), b.y, X(v), b.y + b.h); if (!ap || Math.abs(X(v) - X(ap.V)) > 22) ctx.fillText(fmt(v, 0), X(v), b.y + b.h + 4); }
   ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-  for (let p = Math.ceil(D.R.P[0]/py)*py; p <= D.R.P[1] + 1e-9; p += py){ linea(ctx, b.x, Y(p), b.x + b.w, Y(p)); ctx.fillText(fmt(p, 0), b.x - 5, Y(p)); }
+  for (let p = Math.ceil(D.R.P[0]/py)*py; p <= D.R.P[1] + 1e-9; p += py){ linea(ctx, b.x, Y(p), b.x + b.w, Y(p)); if (!ap || Math.abs(Y(p) - Y(ap.P)) > 13) ctx.fillText(fmt(p, 0), b.x - 5, Y(p)); }
   ctx.restore();
+  // Dónde van los rótulos de las isotermas (en el color de T), donde la curva sale por la derecha o por arriba.
+  // Una isoterma 'opcional' (la del estado B en el explorador) no se dibuja si su rótulo quedaría a menos de 17 px de otro;
+  // entonces su temperatura se escribe junto al punto.
+  const rotIso = [], marcoIso = { x0: b.x, x1: b.x + b.w, y0: b.y, y1: b.y + b.h - 18 };
+  let tJunto = null;
+  [...(D.iso || [])].sort((p, q) => (p.opcional ? 1 : 0) - (q.opcional ? 1 : 0) || p.T - q.T).forEach(t => {
+    const k = t.nR*t.T; let v = D.R.V[1]*0.985, p = k/v;
+    if (p > D.R.P[1]*0.93){ p = D.R.P[1]*0.93; v = k/p; }
+    if (p < D.R.P[0] + (D.R.P[1] - D.R.P[0])*0.04) p = D.R.P[0] + (D.R.P[1] - D.R.P[0])*0.04;
+    let y = clamp(Y(p) - 10, marcoIso.y0 + 9, marcoIso.y1 - 9);
+    const choca = yy => rotIso.some(q => Math.abs(q.x - X(v)) < 70 && Math.abs(q.y - yy) < 17);
+    if (t.opcional){ if (choca(y)){ tJunto = t.txt; return; } }
+    else { let paso = -17; while (choca(y)){ y += paso; if (y < marcoIso.y0 + 9){ paso = 17; y = Math.max(...rotIso.map(q => q.y)) + 17; } } }   // la más caliente sube
+    rotIso.push({ x: X(v), y, t });
+  });
+  const isoVisibles = rotIso.map(q => q.t);
   ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip();
   // Isotermas
-  (D.iso || []).forEach(t => {
+  isoVisibles.forEach(t => {
     const k = t.nR*t.T;
     ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = D.hl === 'T' ? 2.4 : 1.3; ctx.setLineDash([5, 4]); ctx.globalAlpha = .8; ctx.beginPath();
     for (let i = 0; i <= 80; i++){ const v = D.R.V[0] + (D.R.V[1] - D.R.V[0])*Math.max(i, 0.5)/80, p = k/v; const x = X(v), y = Y(p); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
@@ -433,20 +451,14 @@ function diagrama(ctx, c, b, D){
   // Ejes y títulos
   ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h); linea(ctx, b.x, b.y, b.x, b.y + b.h); ctx.restore();
   ctx.save(); ctx.font = `800 11px ${c.mono}`;
-  ctx.fillStyle = c.V; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText('V (L)', b.x + b.w - 2, b.y + b.h - 3);
-  ctx.fillStyle = c.P; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('P (kPa)', b.x + 4, b.y + 3);
+  const enEsquina = D.actual && Math.hypot(X(D.actual.V) - (b.x + b.w), Y(D.actual.P) - (b.y + b.h)) < 30;
+  ctx.fillStyle = c.V; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; if (!enEsquina) ctx.fillText('V (L)', b.x + b.w - 2, b.y + b.h - 3);
+  // El título de P se esconde si el estado actual (o su asa) cae encima de él.
+  const tapaP = D.actual && X(D.actual.V) < b.x + 72 && Y(D.actual.P) < b.y + 30;
+  ctx.fillStyle = c.P; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; if (!tapaP) ctx.fillText('P (kPa)', b.x + 4, b.y + 3);
   ctx.restore();
   // Rótulos de las isotermas, en el color de T, donde la curva sale de la caja por la derecha o por arriba
-  const puestos = [];
-  [...(D.iso || [])].sort((p, q) => q.T - p.T).forEach(t => {
-    const k = t.nR*t.T; let v = D.R.V[1]*0.985, p = k/v;
-    if (p > D.R.P[1]*0.93){ p = D.R.P[1]*0.93; v = k/p; }
-    if (p < D.R.P[0] + (D.R.P[1] - D.R.P[0])*0.04) p = D.R.P[0] + (D.R.P[1] - D.R.P[0])*0.04;
-    let y = Y(p) - 10;
-    puestos.forEach(q => { if (Math.abs(q.x - X(v)) < 70 && Math.abs(q.y - y) < 17) y = q.y + 17; });
-    const r = rotulo(ctx, c, X(v) - 4, y, t.txt, c.T, 'right', 800, { x0: b.x, x1: b.x + b.w, y0: b.y, y1: b.y + b.h - 14 });
-    puestos.push({ x: X(v), y: r.y });
-  });
+  rotIso.forEach(q => rotulo(ctx, c, q.x - 4, q.y, q.t.txt, c.T, 'right', 800, marcoIso));
   // Proyecciones del estado actual sobre los ejes
   const a = D.actual;
   if (a && D.proy){
@@ -471,6 +483,7 @@ function diagrama(ctx, c, b, D){
       ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash(D.foco ? [] : [3, 2]); ctx.stroke(); ctx.restore();
     }
     ctx.save(); ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+    if (tJunto){ const der = x < b.x + b.w*0.7; rotulo(ctx, c, x + (der ? 16 : -16), der ? y - 16 : y, tJunto, c.T, der ? 'left' : 'right', 800, { x0: b.x, x1: b.x + b.w, y0: b.y, y1: b.y + b.h }); }
   }
   return { X, Y };
 }
@@ -547,7 +560,7 @@ function focos(ctx, c, b, F){
 function vista(L, c, E){
   const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
   if (E.focos){ focos(ctx, c, { x: 10, y: 8, w: W - 20, h: H - 16 }, E.focos); return; }
-  const filas = E.barras && !L.compacto ? E.barras.filas : [];
+  const filas = E.barras && !(L.compacto && innerWidth < 900) ? E.barras.filas : [];
   const hb = filas.length ? 16 + filas.length*Math.min(24, 22) : 0;
   const dos = E.cil && E.cil.length > 1;
   const cw = E.cil ? (dos ? clamp(W*0.36, 130, 230) : clamp(W*(c.chico ? 0.27 : 0.22), 92, 160)) : 0;
@@ -564,7 +577,7 @@ function vista(L, c, E){
 }
 // Geometría del diagrama en el lienzo, para el arrastre (la misma cuenta que en vista).
 function cajaDiagrama(L, c, E){
-  const filas = E.barras && !L.compacto ? E.barras.filas : [];
+  const filas = E.barras && !(L.compacto && innerWidth < 900) ? E.barras.filas : [];
   const hb = filas.length ? 16 + filas.length*22 : 0, dos = E.cil && E.cil.length > 1;
   const cw = E.cil ? (dos ? clamp(L.W*0.36, 130, 230) : clamp(L.W*(c.chico ? 0.27 : 0.22), 92, 160)) : 0;
   const top = 8, bajo = L.H - hb - 4, x = 6 + cw + (c.chico ? 36 : 46);
@@ -572,10 +585,12 @@ function cajaDiagrama(L, c, E){
 }
 
 const NOMBRES = { P:'P · presión', V:'V · volumen', T:'T · temperatura', iso:'isoterma: estados con la misma T', Q:'Q · calor (+ si entra al gas)',
-  W:'W · trabajo del gas (+ si se expande)', area:'área bajo la curva = W (rayada si W < 0)', U:'ΔU · cambio de energía interna',
+  W:'W · trabajo del gas (+ si se expande)', Wp:'W · trabajo que hace el gas', area:'área bajo la curva = W (rayada si W < 0)', U:'ΔU · cambio de energía interna',
   Qcf:'Qc y Qf · calor del foco caliente y al foco frío', nota:'W es siempre trabajo: aquí no hay ningún peso' };
-function leyenda(el, claves){
+// Con una predicción pendiente, W no dice su signo (la convención está en el paso 1).
+function leyenda(el, claves, pendiente){
   el.innerHTML = claves.map(k => {
+    if (k === 'W' && pendiente) return `<span><i style="background:var(--c-W)"></i>${NOMBRES.Wp}</span>`;
     if (k === 'iso') return `<span><i class="iso"></i>${NOMBRES.iso}</span>`;
     if (k === 'area') return `<span><i class="area" style="background:var(--c-W)"></i>${NOMBRES.area}</span>`;
     if (k === 'nota') return `<span>${NOMBRES.nota}</span>`;
@@ -746,14 +761,14 @@ const steps = [
    vista:() => {
      const ya = S.pred[P5.id], f = ya ? S.f : 0, e = carC.en(f), k = Math.round(pts(carC).length/4), tr = e.tramo;
      const Qc = carC.tramos[0].en(clamp(f*4, 0, 1)).Q, Qf = tr >= 2 ? carC.tramos[2].en(clamp(f*4 - 2, 0, 1)).Q : 0;
-     const iso2 = [{ T:car.Tc, nR:carC.nR, txt: ya ? '500 K' : '227 °C' }, { T:car.Tf, nR:carC.nR, txt: ya ? '300 K' : '27 °C' }];
+     const iso2 = [{ T:car.Tc, nR:carC.nR, txt: ya ? '227 °C = 500 K' : '227 °C' }, { T:car.Tf, nR:carC.nR, txt: ya ? '27 °C = 300 K' : '27 °C' }];
      const foco = tr === 0 ? { txt:'foco', txtT: ya ? '500 K' : '227 °C' } : tr === 2 ? { txt:'foco', txtT: ya ? '300 K' : '27 °C' } : null;
      return { cil:[{ V:ya ? e.V : 5, Vmax:25, foco: ya ? foco : { txt:'foco', txtT:'227 °C' }, aislado: ya && (tr === 1 || tr === 3), q: ya ? (tr === 0 ? +1 : tr === 2 ? -1 : 0) : 0, w: ya ? (tr < 2 ? +1 : -1) : 0, hl:S.hl }],
-       diag:{ R:{ V:[0, 32], P:[0, 360] }, iso:iso2, curvas:[{ pts:pts(carC), flechas:flechasDe(4, k), w: ya && f < 1 ? 1.4 : 2.6, alfa: ya && f < 1 ? 0.5 : 1 }, ...(ya && f < 1 ? [{ pts:pts(carC, f) }] : [])],
+       diag:{ R:{ V:[0, 40], P:[0, 360] }, iso:iso2, curvas:[{ pts:pts(carC), flechas:flechasDe(4, k), w: ya && f < 1 ? 1.4 : 2.6, alfa: ya && f < 1 ? 0.5 : 1 }, ...(ya && f < 1 ? [{ pts:pts(carC, f) }] : [])],
          areas: ya && f >= 1 ? [{ pts:pts(carC), signo:1, encerrada:true }] : [], estados:carC.vertices.map((q, i) => ({ P:q.P, V:q.V, txt:'1234'[i], lado:['e','ne','sw','sw'][i] })),
          actual: ya ? { P:e.P, V:e.V } : null, proy:false, hl:S.hl },
-       barras:{ filas: ya ? [{ k:'Q', txt:'Qc', valor:Qc }, { k:'Q', txt:'Qf', valor:Qf }, { k:'W', txt:'W neto', valor:e.W }]
-                         : [{ k:'Q', txt:'Qc', valor:1000 }, { k:'Q', txt:'Qf', oculto:true }, { k:'W', txt:'W neto', oculto:true }], max:1100 }, hl:S.hl }; },
+       barras:{ filas: ya ? [{ k:'Q', txt:'Qc', valor:Qc }, { k:'Q', txt:'Qf (sale)', valor:Qf }, { k:'W', txt:'W neto', valor:e.W }]
+                         : [{ k:'Q', txt:'Qc', valor:1000 }, { k:'Q', txt:'Qf (sale)', oculto:true }, { k:'W', txt:'W neto', oculto:true }], max:1100 }, hl:S.hl }; },
    body:() => `<p>Una máquina térmica trabaja entre un foco a ${V('T','227 °C')} y otro a ${V('T','27 °C')}, y recibe ${V('Q','Qc = 1000 J')} del foco caliente en cada ciclo. La mejor máquina posible entre esos dos focos sigue el ciclo de Carnot, dibujado en el diagrama: dos isotermas (1 → 2 y 3 → 4) y dos adiabáticas, sin calor (2 → 3 y 4 → 1).</p>
      <p>¿Cuál es la eficiencia máxima posible, η = ${V('W','W')}/${V('Q','Qc')}?</p>${opcionesHTML(P5.opts, 'fb')}<div id="res" class="body"></div>`,
    exp:() => `<div class="eqs">
@@ -776,12 +791,12 @@ function procExplorador(){
   const t = S.ex.tipo;
   return M.proceso(Object.assign({ tipo:t }, A, t === 'isocorico' ? { P2:S.ex.x } : { V2:S.ex.x }));
 }
-function limitesEx(t){ return M.limites({ tipo:t, P1:200, V1:10, Pmin:20, Pmax:490, Vmin:2, Vmax:40 }); }
+function limitesEx(t){ return M.limites({ tipo:t, P1:200, V1:10, Pmin:20, Pmax:460, Vmin:2, Vmax:40 }); }
 function vistaExplorador(){
   const r = procExplorador(), p = pts(r), t = S.ex.tipo;
-  return { cil:[{ V:r.final.V, Vmax:40, foco: t === 'adiabatico' ? null : { txt: t === 'isotermico' ? 'baño' : 'mechero', txtT: t === 'isotermico' ? '300 K' : '' }, aislado: t === 'adiabatico',
+  return { cil:[{ V:r.final.V, Vmax:40, foco: t === 'adiabatico' ? null : { txt: t === 'isotermico' ? 'baño' : (r.Q < 0 ? 'agua fría' : 'mechero'), txtT: t === 'isotermico' ? '300 K' : '' }, aislado: t === 'adiabatico',
       q: Math.abs(r.Q) > 1 ? Math.sign(r.Q) : 0, w: Math.abs(r.W) > 1 ? Math.sign(r.W) : 0, trabado: t === 'isocorico', hl:S.hl }],
-    diag:{ R:RNG, iso:[{ T:300, nR, txt:'300 K' }, ...(Math.abs(r.final.T - 300) > 60 ? [{ T:r.final.T, nR, txt:`${fmt(r.final.T, 0)} K` }] : [])],
+    diag:{ R:RNG, iso:[{ T:300, nR, txt:'300 K' }, ...(Math.abs(r.final.T - 300) > 0.5 ? [{ T:r.final.T, nR, txt:`${fmt(r.final.T, 0)} K`, opcional:true }] : [])],
       curvas:[{ pts:p, flechas: p.length > 4 && Math.hypot(r.final.V - 10, (r.final.P - 200)/12) > 3 ? [Math.round(p.length/2)] : [] }],
       areas: Math.abs(r.W) > 1 ? [{ pts:p, signo:Math.sign(r.W) }] : [], estados:[estA], actual:{ P:r.final.P, V:r.final.V }, proy:true, asa:true, sobre:S.sobre, foco:document.activeElement === cv, hl:S.hl },
     barras:{ filas:filas(r.Q, r.W, r.dU), max:14000 }, hl:S.hl };
@@ -819,7 +834,7 @@ function go(n){
   if (s.explora) explorar();
   nav(); draw();
 }
-function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley); }
+function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley, !!(s.gate && !S.pred[s.gate.id])); }
 function nav(){
   const s = steps[S.step];
   $('prev').disabled = S.step === 0;
@@ -881,7 +896,7 @@ function vivo(){
   const r = procExplorador(), t = S.ex.tipo;
   const nota = { isobarico:'P fija: el área es un rectángulo y parte del calor sale como trabajo.',
     isocorico:'V fijo: no hay área, W = 0 y todo el calor cambia la energía interna.',
-    isotermico:'T fija: ΔU = 0, pero sí hay calor. Todo el calor que entra sale como trabajo.',
+    isotermico:'T fija: ΔU = 0, pero sí hay calor. Todo el calor que entra sale como trabajo; si lo comprimes, todo el trabajo que recibe sale como calor.',
     adiabatico:'Aislado: Q = 0 y, aun así, la temperatura cambia. Si lo comprimes, se calienta; si se expande, se enfría.' }[t];
   $('live').innerHTML = `<div class="eqs">
       <div class="eq">B: ${V('V', fmt(r.final.V, 1) + ' L')}, ${V('P', fmt(r.final.P, 0) + ' kPa')}, ${V('T', fmt(r.final.T, 0) + ' K')}</div>
@@ -950,7 +965,7 @@ function correr(dur){ parar(); E.f = 0; parar = animarValor(dur, f => { E.f = f;
 
 const EXPS = [
   { id:'aislado', corto:'Cilindro aislado', ley:['P','V','T','iso','Q','W','U','area','nota'],
-    q:`Un gas ideal monoatómico está en un cilindro aislado, a ${V('P','100 kPa')}, ${V('V','27 L')} y ${V('T','300 K')}. Una mano empuja el émbolo rápido hasta que el gas ocupa ${V('V','8 L')}. ¿Qué pasa con su temperatura?`,
+    q:`Un gas ideal monoatómico está en un cilindro aislado, a ${V('P','100 kPa')}, ${V('V','27 L')} y ${V('T','300 K')}. Una mano empuja el émbolo hasta que el gas ocupa ${V('V','8 L')}. ¿Qué pasa con su temperatura?`,
     opts:[['a','No cambia: el cilindro está aislado y no entra ni sale calor.','T4-aislado-T-no-cambia','documentado'],
           ['b','Sube: el trabajo que hace la mano sobre el gas aumenta su energía interna.',null],
           ['c','Baja: como no entra calor, el gas pierde energía al comprimirse.','baja-sin-calor','hipotesis'],
@@ -968,9 +983,9 @@ const EXPS = [
     exp:`<div class="eqs"><div class="eq">${V('Q','Q')} = 0<span class="note">aislado</span></div>
       <div class="eq">${V('W','W')} = −5062,5 J<span class="note">el gas se comprime: la mano hace el trabajo</span></div>
       <div class="eq">${V('U','ΔU')} = ${V('Q','Q')} − ${V('W','W')} = +5062,5 J → ${V('T','T')} sube de 300 K a 675 K</div></div>
-      <p>El área bajo la curva va rayada: el trabajo del gas es negativo. Como no sale calor, toda esa energía se queda en el gas y su temperatura sube. La curva adiabática corta las isotermas: cruza la de 300 K y llega a la de 675 K.</p>
+      <p>El área bajo la curva va rayada: el trabajo del gas es negativo. Como no sale calor, toda esa energía se queda en el gas y su temperatura sube. La curva adiabática corta las isotermas: sale de la isoterma de 300 K y llega a la de 675 K.</p>
       <p>Así se calienta el inflador de una bicicleta cuando bombeas rápido. Mueve el volumen final: cuanto más comprimes, más sube la temperatura.</p>
-      ${fuente('En una compresión adiabática, solo cerca del 10 % de 179 universitarios predijo que la temperatura sube; en otro grupo, cerca del 40 % razonó que el aislante mantiene la temperatura (Loverude, 1999). Razonar con PV = nRT moviendo dos variables y fijando la tercera sin motivo llegó al 70 % en un curso (Loverude, 1999); la opción D es su cara en este problema. La C es una hipótesis nuestra.')}` },
+      ${fuente('En una compresión adiabática, solo cerca del 10 % de 179 universitarios predijo que la temperatura sube; en otro grupo, cerca del 40 % razonó que el aislante mantiene la temperatura (Loverude, 1999). Razonar con PV = nRT moviendo dos variables y fijando la tercera sin motivo fue el razonamiento de entre el 10 % y el 70 %, según el curso (Loverude, 1999); la opción D es su cara en este problema. La C es una hipótesis nuestra.')}` },
   { id:'bano', corto:'Baño a 300 K', ley:['P','V','T','iso','Q','W','U','area'],
     q:`Un gas ideal está a ${V('P','200 kPa')}, ${V('V','10 L')} y ${V('T','300 K')}, en contacto con un baño de agua a 300 K. Se expande despacio hasta ${V('V','20 L')} y su temperatura se queda en 300 K todo el tiempo. Durante la expansión, ¿el gas recibe calor?`,
     opts:[['a','No recibe calor: su temperatura no cambia.','T11-isoterma-sin-calor','documentado'],
@@ -995,7 +1010,7 @@ const EXPS = [
   { id:'reves', corto:'La vuelta al revés', ley:['P','V','Q','W','U','area'],
     q:`El gas da la misma vuelta del paso 6 (200 y 400 kPa, 10 y 30 L), pero en sentido antihorario: A → B → D → C → A. ¿Cuánto vale el trabajo neto ${V('W','W')} del gas en una vuelta?`,
     opts:[['a','−4000 J: el área encerrada es la misma, pero ahora el gas recibe más trabajo del que hace.',null],
-          ['b','0 J: el gas vuelve a su estado inicial y no le queda nada.','T10-trabajo-neto-cero','parcial'],
+          ['b','0 J: el gas vuelve a su estado inicial y no le queda nada.','T10-trabajo-neto-cero','documentado'],
           ['c','+4000 J: el área encerrada es la misma que en sentido horario.','sentido-no-importa','hipotesis'],
           ['d','−12 000 J: las dos áreas se suman, ahora con signo menos.','suma-las-areas-sin-signo','hipotesis']],
     ok:'a',
@@ -1009,12 +1024,11 @@ const EXPS = [
     exp:(() => { const r = M.rectangulo({ Pa:200, Pb:400, Va:10, Vb:30, T1:300, sentido:'antihorario' });
       return `<div class="eqs"><div class="eq">${V('W','W')} neto = ${V('W','+4000')} + ${V('W','(−8000)')} = ${V('W','−4000 J')}</div>
       <div class="eq">${V('Q','Q')} neto = ${V('W','W')} neto = ${V('Q','−4000 J')}; ${V('U','ΔU')} = 0</div>
-      <div class="eq">el gas recibe ${V('Q', fmt(r.Qabs, 0) + ' J')} y entrega ${V('Q', fmt(r.Qced, 0) + ' J')}</div>
-      <div class="eq">COP = ${fmt(r.Qabs, 0)}/4000 = ${fmt(r.cop, 2)}<span class="note">calor que saca por cada joule de trabajo</span></div></div>
-      <p>En sentido antihorario, el gas se expande a 200 kPa (área positiva, de 4000 J) y se comprime a 400 kPa (área rayada, de −8000 J). El entorno le da 4000 J netos de trabajo, y el gas entrega más calor del que recibe: es un <b>refrigerador</b>. Saca calor de un lado y lo bota en otro, a cambio de trabajo.</p>
-      ${fuente('Que el trabajo neto de un ciclo sea cero porque el gas vuelve al inicio lo dijo cerca del 47 % de un grupo de universitarios australianos en otra pregunta de ciclos (Wattanakasiwich y otros, 2013). Las opciones C y D son hipótesis nuestras.')}`; })() },
+      <div class="eq">el gas recibe ${V('Q', fmt(r.Qabs, 0) + ' J')} y entrega ${V('Q', fmt(r.Qced, 0) + ' J')}</div></div>
+      <p>En sentido antihorario, el gas se expande a 200 kPa (área positiva, de 4000 J) y se comprime a 400 kPa (área rayada, de −8000 J). El entorno le da 4000 J netos de trabajo, y el gas entrega más calor del que recibe: es un <b>refrigerador</b>. En las academias, al ciclo antihorario se le llama refrigerador: el entorno hace trabajo neto sobre el gas y el gas entrega más calor del que recibe.</p>
+      ${fuente('Que el trabajo neto de un ciclo sea cero porque el gas vuelve al inicio lo dijo cerca del 47 % de un grupo de universitarios australianos (Wattanakasiwich y otros, 2013). Las opciones C y D son hipótesis nuestras.')}`; })() },
   { id:'inventor', corto:'El inventor', ley:['T','Qcf','W'],
-    q:`Un inventor dice que su máquina trabaja entre un foco a ${V('T','127 °C')} y otro a ${V('T','27 °C')}, recibe ${V('Q','1000 J')} del foco caliente y da ${V('W','300 J')} de trabajo en cada ciclo. ¿Es posible?`,
+    q:`Un inventor dice que su máquina trabaja entre un foco a ${V('T','127 °C')} y otro a ${V('T','27 °C')}, recibe ${V('Q','1000 J')} del foco caliente y da ${V('W','300 J')} de trabajo en cada ciclo. ¿Es posible? ¿Por qué?`,
     opts:[['a','Sí: da menos trabajo que el calor que recibe, así que no pasa del 100 %.','T15-no-aplica-la-segunda-ley','parcial'],
           ['b','Sí: el límite es 1 − 27/127, cerca del 79 %, y la máquina da 30 %.','carnot-con-celsius','hipotesis'],
           ['c','No: ninguna máquina convierte en trabajo más de la mitad del calor que recibe.','limite-del-cincuenta','hipotesis'],
@@ -1052,7 +1066,7 @@ const EXPS = [
       $('chips2').innerHTML = `<span class="chip">trabado: T = ${fmt(a.final.T, 0)} K</span><span class="chip">libre: T = ${fmt(b.final.T, 0)} K</span><span class="chip">ΔT trabado / ΔT libre = 5/3</span>`; },
     exp:`<div class="eqs"><div class="eq">trabado: ${V('W','W')} = 0 → ${V('U','ΔU')} = ${V('Q','3000 J')}; ${V('T','T')} sube a 600 K</div>
       <div class="eq">libre: ${V('Q','Q')} = (5/2)·${V('P','P')}·Δ${V('V','V')} → Δ${V('V','V')} = 6 L; ${V('W','W')} = 1200 J; ${V('U','ΔU')} = 1800 J; ${V('T','T')} sube a 480 K</div></div>
-      <p>Con el émbolo libre, el gas empuja el émbolo mientras se calienta: de cada 5 J de calor, 2 J salen como trabajo y 3 J se quedan. Por eso hace falta más calor para subir un grado a presión fija que a volumen fijo: el calor específico a presión constante, cp, es mayor que el de volumen constante, cv. Para un gas monoatómico, cp/cv = 5/3.</p>
+      <p>Con el émbolo libre, el gas empuja el émbolo mientras se calienta: de cada 5 J de calor, 2 J salen como trabajo y 3 J se quedan. Por eso hace falta más calor para subir un grado a presión fija que a volumen fijo: el calor molar a presión constante, Cp, es mayor que el calor molar a volumen constante, Cv. Para un gas monoatómico, Cp/Cv = 5/3.</p>
       ${fuente('Pensar que todo el calor se vuelve energía interna aunque el gas se expanda lo dijo cerca del 42 % de un grupo de universitarios australianos (Wattanakasiwich y otros, 2013); la opción B es su cara en esta comparación. Las opciones C y D son hipótesis nuestras.')}` },
 ];
 
@@ -1106,7 +1120,7 @@ function descE(){
   const x = EXPS[S.k], ya = !!S.pred[x.id];
   if (E.tipo === 'adiab') return ya ? 'El gas se comprime sin calor por una curva adiabática que cruza las isotermas: la temperatura sube de 300 a 675 kelvin. El trabajo del gas es negativo y el cambio de energía interna, positivo.' : 'Un cilindro aislado con el gas a 27 litros y 100 kilopascales. Una mano va a empujar el émbolo hasta 8 litros. El calor es cero; el trabajo y el cambio de energía interna todavía no se muestran.';
   if (E.tipo === 'iso') return ya ? 'El gas se expande por la isoterma de 300 kelvin. El calor que recibe del baño es igual al trabajo que hace; el cambio de energía interna es cero.' : 'Un cilindro sobre un baño a 300 kelvin, con el gas a 10 litros y 200 kilopascales. Las barras todavía no se muestran.';
-  if (E.tipo === 'reves') return ya ? 'El ciclo rectangular en sentido antihorario. El trabajo neto es de menos 4000 joules: es un refrigerador.' : 'El ciclo rectangular de 200 y 400 kilopascales y 10 y 30 litros, en sentido antihorario. Las barras todavía no se muestran.';
+  if (E.tipo === 'reves') return ya ? 'El ciclo rectangular en sentido antihorario. El trabajo neto es de menos 4000 joules: el entorno hace trabajo neto sobre el gas.' : 'El ciclo rectangular de 200 y 400 kilopascales y 10 y 30 litros, en sentido antihorario. Las barras todavía no se muestran.';
   if (E.tipo === 'focos') return ya ? `Foco caliente a 400 kelvin y frío a 300. La máquina promete una eficiencia de ${pct(E.W/1000)}; el límite de Carnot es 25 %.` : 'Un foco caliente a 127 grados Celsius arriba, la máquina al centro y un foco frío a 27 grados abajo. Entran 1000 joules y salen 300 de trabajo.';
   return ya ? 'Con el émbolo trabado, la temperatura sube a 600 kelvin; con el émbolo libre, solo a 480, porque parte del calor sale como trabajo.' : 'Dos cilindros iguales con un mechero cada uno: uno con el émbolo trabado y otro con el émbolo libre. Las barras todavía no se muestran.';
 }
@@ -1135,7 +1149,7 @@ function ir(k){
   reiniciar(x);
   E.f = ya ? 1 : 0;
   botones();
-  leyenda($('ley2'), x.ley);
+  leyenda($('ley2'), x.ley, !ya);
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
   $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
@@ -1158,7 +1172,7 @@ function ir(k){
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; botones();
+    S.pred[x.id] = o[0]; botones(); leyenda($('ley2'), x.ley, false);
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
     E.f = 0;
     pintar();
