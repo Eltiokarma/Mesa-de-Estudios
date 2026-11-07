@@ -14,7 +14,8 @@
  *   circunferencia({ h, k, r2 })
  *       (x − h)² + (y − k)² = r2. → { tipo 'circunferencia', h, k, r2, r (valor), rTexto, centroTexto '(3; −4)',
  *       ecuacion, general ('x² + y² − 6x + 8y − 11 = 0'), D, E, F, texto ('(3; −4) y r = 6'), errores, coinciden, num }.
- *       errores: signos (CO8, centro (−h; −k)), radioCuadrado (CO9, r = r2).
+ *       errores: signos (CO8, centro (−h; −k)), radioCuadrado (CO9, r = r2). crudos: los mismos errores antes de quitar
+ *       los que coinciden (los usa circunferenciaGeneral). La respuesta es un texto: 'valor' es null.
  *   circunferenciaGeneral({ A, D, E, F })
  *       A x² + A y² + D x + E y + F = 0 (A = 1 si no se da). Completa cuadrados: h = −D/(2A), k = −E/(2A),
  *       r² = (D² + E² − 4AF)/(4A²). → { tipo: 'circunferencia' | 'punto' | 'vacia', h, k, r2, completada

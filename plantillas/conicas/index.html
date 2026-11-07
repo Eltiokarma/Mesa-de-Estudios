@@ -144,6 +144,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{out
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
 .pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
 .pie a{color:var(--ink); font-weight:700}
+.nw{white-space:nowrap}
 .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
 .volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
   font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
@@ -623,7 +624,7 @@ function est2(L, f, g){
   if (f > 0) L.curvas.push(curva(E54.num, { t0:0, t1:t, ancho:2.2 }));
   cuerda(L, E54, P, g >= 1 ? { color1:'a', color2:'a', dy1:-12, dy2:-12 } : null);
   if (g > 0){
-    L.segs.push(seg(O, foco(E54, 1), 'c', { ancho:4.5, f:g, texto: g >= 1 ? 'c = 4' : null, dy:14 }), seg(O, P, 'b', { ancho:4.5, f:g, texto: g >= 1 ? 'b = 3' : null, dx:-24 }));
+    L.segs.push(seg(O, foco(E54, 1), 'c', { ancho:4.5, f:g, texto: g >= 1 ? 'c = 4' : null, dy:16, en:.6 }), seg(O, P, 'b', { ancho:4.5, f:g, texto: g >= 1 ? 'b = 3' : null, dx:-24 }));
     if (g >= 1) L.textos.push({ p:pt(2, 1.5), t:[['a = 5', 'a']], dx:16, align:'left' });
   }
   L.manijas = []; L.estado.P = P;
@@ -671,7 +672,7 @@ function config4(r){
     ley: r ? [['a', 'a'], ['b', 'b'], ['c', 'c']].concat(LEY_CUERDA) : [],
     desc: r ? 'La elipse vertical de centro (2; −1), con sus focos y un lápiz que se arrastra sobre ella.' : 'El plano cartesiano, todavía sin la elipse.' });
 }
-const lect4 = () => [() => ['f1', 'PF₁', fmt(MC.distancias(E4, S.s4.P).PF1)], () => ['f2', 'PF₂', fmt(MC.distancias(E4, S.s4.P).PF2)], () => ['a', 'PF₁ + PF₂ = 2a', fmt(MC.distancias(E4, S.s4.P).suma)]];
+const lect4 = () => [() => ['f1', 'PF₁', fmt(MC.distancias(E4, S.s4.P).PF1)], () => ['f2', 'PF₂', fmt(MC.distancias(E4, S.s4.P).PF2)], () => ['a', 'PF₁ + PF₂', fmt(MC.distancias(E4, S.s4.P).suma)]];
 // Paso 5 y 6: la parábola (y − 1)² = −8(x − 2)
 const Vp = pt(2, 1), Fp = deLista(P5.num.F);
 function baseParabola(L, f){
@@ -704,7 +705,7 @@ function est6(L, f){
   if (f <= 0) return;
   const U = pt(0, 5), D = pt(0, -3);
   L.curvas.push(curva(P5.num, { f }));
-  L.segs.push(seg(D, U, 'lr', { ancho:5, f, texto: f >= 1 ? 'LR = 8' : null, dx:-34 }),
+  L.segs.push(seg(D, U, 'lr', { ancho:8, f, texto: f >= 1 ? 'LR = 8' : null, dx:-34, en:.2 }),
     seg(Fp, U, 'pf', { ancho:2.6, f, texto: f >= 1 ? 'PF = 4' : null, dx:30, en:.6, dy:0 }), seg(U, pt(4, 5), 'pd', { ancho:2.6, f, texto: f >= 1 ? 'PD = 4' : null, dy:-12 }));
   L.puntos.push(pun(U, 'lr', null, { r:4.5, f }), pun(D, 'lr', null, { r:4.5, f }));
 }
@@ -786,7 +787,7 @@ const steps = [
  { k:'Paso 4', t:'Predice: dónde están los clavos', gate:P4,
    prep:() => config4(!!S.pred[P4.id]),
    anima:fin => E.animar(1300, f => est4(E.pl, f, false), () => { config4(true); E.compactar(false); fin(); }),
-   body:() => `<p class="problem">Una elipse tiene la ecuación ${E4.ecuacion}. ¿Dónde están sus focos?</p>${opcionesHTML(P4.opts, 'fb')}
+   body:() => `<p class="problem">Una elipse tiene la ecuación <span class="nw">${E4.ecuacion}</span>. ¿Dónde están sus focos?</p>${opcionesHTML(P4.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">centro (h; k) = (2; −1)<span class="note">(x − 2)² da h = 2; (y + 1)² da k = −1</span></div>
    <div class="eq">${a_('a')}² = 25 (bajo y), ${b_('b')}² = 9 ⟹ ${c_('c')} = √(25 − 9) = 4</div>
@@ -796,7 +797,7 @@ const steps = [
  { k:'Paso 5', t:'Predice: dónde está el foco', gate:P5p,
    prep:() => config5(!!S.pred[P5p.id]),
    anima:fin => E.animar(1300, f => est5(E.pl, f, false), () => { config5(true); E.compactar(false); fin(); }),
-   body:() => `<p class="problem">Ahora hay un solo foco ${pf_('F')} y una recta, la directriz. La <b>parábola</b> es el lugar geométrico de los puntos que están a la misma distancia del foco y de la directriz. Para la parábola (y − 1)² = −8(x − 2), ¿dónde está su foco?</p>${opcionesHTML(P5p.opts, 'fb')}
+   body:() => `<p class="problem">Ahora hay un solo foco ${pf_('F')} y una recta, la directriz. La <b>parábola</b> es el lugar geométrico de los puntos que están a la misma distancia del foco y de la directriz. Para la parábola <span class="nw">${P5.ecuacion}</span>, ¿dónde está su foco?</p>${opcionesHTML(P5p.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">(y − k)² = 4${p_('p')}(x − h)<span class="note">la variable al cuadrado es y: eje horizontal</span></div>
    <div class="eq">V = (2; 1), 4${p_('p')} = −8 ⟹ ${p_('p = −2')}</div>
@@ -818,7 +819,7 @@ const steps = [
      sig => E.animar(1000, f => est7(E.pl, f, 0, false), sig),
      sig => E.animar(1000, g => est7(E.pl, 1, g, false), sig)],
      () => { config7(true); E.compactar(false); fin(); }),
-   body:() => `<p class="problem">La <b>hipérbola</b> es el lugar geométrico de los puntos cuya <i>diferencia</i> de distancias a dos focos es constante, 2${a_('a')}. Para la hipérbola ${H7.ecuacion}, ¿dónde están sus focos?</p>${opcionesHTML(P7.opts, 'fb')}
+   body:() => `<p class="problem">La <b>hipérbola</b> es el lugar geométrico de los puntos cuya <i>diferencia</i> de distancias a dos focos es constante, 2${a_('a')}. Para la hipérbola <span class="nw">${H7.ecuacion}</span>, ¿dónde están sus focos?</p>${opcionesHTML(P7.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${a_('a')}² = 9 (el positivo), ${b_('b')}² = 16</div>
    <div class="eq">${c_('c')}² = ${a_('a')}² + ${b_('b')}² = 25 ⟹ ${c_('c = 5')}; focos ${H7.focosTexto}</div>
@@ -828,7 +829,7 @@ const steps = [
  { k:'Paso 8', t:'Predice: qué cónica es', gate:P8,
    prep:() => config8(!!S.pred[P8.id]),
    anima:fin => E.animar(1300, f => est8(E.pl, f), () => { config8(true); E.compactar(false); fin(); }),
-   body:() => `<p class="problem">Un examen da la ecuación general ${G8.ecuacionGeneral}. Sin completar cuadrados todavía, ¿qué cónica es?</p>${opcionesHTML(P8.opts, 'fb')}
+   body:() => `<p class="problem">Un examen da la ecuación general <span class="nw">${G8.ecuacionGeneral}</span>. Sin completar cuadrados todavía, ¿qué cónica es?</p>${opcionesHTML(P8.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">Ax² + Cy² + Dx + Ey + F = 0<span class="note">A·C &gt; 0 elipse (A = C: circunferencia); A·C &lt; 0 hipérbola; A o C cero: parábola</span></div>
    <div class="eq">×(−1): 4x² − 8x + 9y² + 36y + 4 = 0</div>
@@ -945,7 +946,7 @@ function circ(L, f){
 function antena(L, f){
   const borde = PL.borde, w = borde[0], d = borde[1], tope = w/(2*PL.valor);
   L.curvas = [curva(PLc.num, { t0:-tope, t1:tope, ancho:3 })];
-  L.segs = [seg(pt(-w, d), pt(w, d), 'ink', { ancho:1.2, dash:true, texto:'boca: 120 cm', dy:-12 }), seg(pt(0, 0), pt(0, d), 'ink', { ancho:1.2, dash:true, texto:'20 cm', dx:-30, en:.5 })];
+  L.segs = [seg(pt(-w, d), pt(w, d), 'ink', { ancho:1.2, dash:true, texto:'boca: 120 cm', dy:-12, en:.84 }), seg(pt(0, 0), pt(0, d), 'ink', { ancho:1.2, dash:true, texto:'20 cm', dx:-30, en:.5 })];
   L.puntos = [pun(pt(0, 0), 'ink', 'V', { r:3.5, dx:8, dy:12 })];
   if (f <= 0) return;
   const F = deLista(PLc.num.F);
@@ -954,7 +955,7 @@ function antena(L, f){
     L.segs.push(seg(A, pt(x, lerp(66, Q.y, f1)), 'ink', { ancho:1.4 }));
     if (f2 > 0) L.segs.push(seg(Q, pt(lerp(Q.x, F.x, f2), lerp(Q.y, F.y, f2)), 'ink', { ancho:1.4 }));
   }
-  if (f >= 1){ L.segs.push(seg(pt(0, 0), F, 'p', { ancho:4, texto:`p = ${PL.texto}`, dx:44, en:.6 })); L.puntos.push(pun(F, 'pf', 'F', { r:5.5, dx:10, dy:-10 })); }
+  if (f >= 1){ L.segs.push(seg(pt(0, 0), F, 'p', { ancho:4, texto:`p = ${PL.texto}`, dx:8, en:.72, align:'left' })); L.puntos.push(pun(F, 'pf', 'F', { r:5.5, dx:10, dy:-10 })); }
 }
 // Exp. 4: la hipérbola vertical y sus asíntotas
 function asint(L, f){
@@ -990,7 +991,7 @@ const EXPS = [
       <p>La circunferencia es la elipse de excentricidad 0: los dos focos se vuelven un solo centro y todos los puntos quedan a la misma distancia ${a_('r')}. En el otro extremo, con las estacas a 10 m (c = a, e = 1), la cuerda queda pegada al suelo y el lápiz recorre un segmento.</p>
       ${FUENTE}` },
   { id:'circunferencia', corto:'Centro y radio sin dibujo', ok:'b',
-    q:`Halla el centro y el radio de la circunferencia ${CG.general}.`,
+    q:`Halla el centro y el radio de la circunferencia <span class="nw">${CG.general}</span>.`,
     opts:[['a', ER(CG, 'signos'), 'CO8-centro-con-signos-cambiados', 'hipotesis'], ['b', T(CG)], ['c', ER(CG, 'sinSumar'), 'CO10-completa-sin-sumar-al-otro-lado', 'hipotesis'], ['d', ER(CG, 'radioCuadrado'), 'CO9-radio-igual-a-r2', 'hipotesis']],
     fb:{ a:'(−3; 4) cambia los signos al revés: −6x sale de (x − 3)², así que h = 3; +8y sale de (y + 4)², así que k = −4.',
       c:'r = √11 sale de completar cuadrados sin sumar al otro lado el 9 y el 16 que se agregaron: (x − 3)² + (y + 4)² = 11 + 9 + 16 = 36.',
@@ -1016,7 +1017,7 @@ const EXPS = [
       <p>Pon el vértice en el origen y el eje hacia arriba: el borde del plato es el punto (60; 20), con la mitad de la boca. Toda señal que llega paralela al eje rebota en el plato y pasa por el foco ${pf_('F')}. Este plato es poco hondo, así que su foco queda 25 cm por encima del borde, sostenido por un brazo.</p>
       ${FUENTE}` },
   { id:'asintotas', corto:'La hipérbola parada', ok:'d',
-    q:`¿Cuáles son las pendientes de las asíntotas de la hipérbola ${HV.ecuacion}?`,
+    q:`¿Cuáles son las pendientes de las asíntotas de la hipérbola <span class="nw">${HV.ecuacion}</span>?`,
     opts:[['a', ER(HV.pendiente, 'sinRaiz'), 'CO22-asintotas-sin-raiz', 'hipotesis'], ['b', ER(HV.pendiente, 'invertida'), 'CO21-asintotas-invertidas', 'hipotesis'], ['c', ER(HV.pendiente, 'invertidaSinRaiz'), 'CO23-invertidas-y-sin-raiz', 'hipotesis'], ['d', T(HV.pendiente)]],
     fb:{ a:'±4/9 usa a² y b² sin raíz: la pendiente se arma con a y b.',
       b:'±3/2 = b/a es la de la hipérbola horizontal. Aquí el término positivo es el de y: el eje es vertical y la asíntota sube a = 2 por cada b = 3 de avance.',
