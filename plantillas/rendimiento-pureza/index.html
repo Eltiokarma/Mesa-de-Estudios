@@ -13,21 +13,23 @@
      pur   reactivo puro (su masa y su fórmula en la ecuación)            verde azulado #0d6f6b / #4fd1c5
      teo   producto teórico, el máximo que da la ecuación (caja punteada) violeta   #6a3fc0 / #b49cff
      real  producto real, el que se obtiene                               verde     #36700c / #8fd14f
-     vol   volumen del gas en condiciones normales                        fucsia    #a3168f / #f07ce0
+     vol   volumen del gas en condiciones normales                        vino / magenta #730030 / #ff47c8
      eq    equivalentes                                                   naranja   #a04f00 / #ffa64d
      Fe, O átomos de la lupa de la hematita: paleta común (nucleo/elementos.js, --el-Fe y --el-O)
    La masa de la muestra, los porcentajes, los otros productos (CO₂ en la caliza, CO, CaO del gas) y las masas molares
    van en tinta. Salen juntos imp, pur, teo y real (con Fe y O en la hematita); imp, pur, real y vol (gas); eq solo.
    ΔE00 mínimo entre lo que sale junto: 20,1 en claro (teo–Fe) y 24,7 en oscuro (teo–Fe); pur–real 24,7 / 26,9;
-   contra la tinta, 24,3 / 26,3 (teo). Contraste mínimo contra el papel, la tarjeta y el chip (8 %): 4,91 en claro (eq)
-   y 5,54 en oscuro (vol); todos pasan AA (4,5). pur y real quedan a ΔE00 13 a 16 del verde de «correcto» (--ok):
+   contra la tinta, 24,3 / 26,3 (teo). vol (recalibrado con docs/metodo/paleta.py) sale con imp, pur, teo, real, la tinta y
+   el gris de «otro producto»: mínimo 22,0 en claro (vol–tinta) y 22,7 en oscuro (vol–teo); contra el rojo de los avisos,
+   22,4 / 22,8. Contraste mínimo contra el papel, la tarjeta y el chip (8 %): 4,91 en claro (eq)
+   y 4,61 en oscuro (vol); todos pasan AA (4,5). pur y real quedan a ΔE00 13 a 16 del verde de «correcto» (--ok):
    ese verde solo marca el borde de la opción y siempre va con texto. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-imp:#7a4a1e; --c-pur:#0d6f6b; --c-teo:#6a3fc0; --c-real:#36700c; --c-vol:#a3168f; --c-eq:#a04f00;
+  --c-imp:#7a4a1e; --c-pur:#0d6f6b; --c-teo:#6a3fc0; --c-real:#36700c; --c-vol:#730030; --c-eq:#a04f00;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -36,12 +38,12 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-imp:#d9a877; --c-pur:#4fd1c5; --c-teo:#b49cff; --c-real:#8fd14f; --c-vol:#f07ce0; --c-eq:#ffa64d; color-scheme:dark } }
+  --c-imp:#d9a877; --c-pur:#4fd1c5; --c-teo:#b49cff; --c-real:#8fd14f; --c-vol:#ff47c8; --c-eq:#ffa64d; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-imp:#d9a877; --c-pur:#4fd1c5; --c-teo:#b49cff; --c-real:#8fd14f; --c-vol:#f07ce0; --c-eq:#ffa64d; color-scheme:dark }
+  --c-imp:#d9a877; --c-pur:#4fd1c5; --c-teo:#b49cff; --c-real:#8fd14f; --c-vol:#ff47c8; --c-eq:#ffa64d; color-scheme:dark }
 /* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
    Elementos.css(['O', 'Fe']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
 :root{ --el-O:#c4284e; --el-Fe:#1768be }
@@ -68,8 +70,6 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
 .lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
 /* El dedo desplaza la página sobre el dibujo; solo un toque que empieza sobre un átomo gira la molécula (nucleo/celular.js). */
 canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
-.giro{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:0 4px; font-size:.84rem; color:var(--muted)}
-.giro button{font:700 .85rem var(--font); padding:6px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:36px}
 .legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
 .legend span{display:inline-flex; align-items:center; gap:6px}
 .legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
@@ -452,8 +452,9 @@ function crearEscena(cv, idDesc, modoId, idLey){
     if (P.unir > 0 && !P.grupos.some(G => G.tapa) && P.grupos.length === 2){
       ctx.save(); ctx.globalAlpha = P.unir; ctx.strokeStyle = c.eq; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]);
       const n = Math.min(P.grupos[0].n, P.grupos[1].n);
-      for (let i = 0; i < n; i++){ const xa = pos[0][i] + fw/2, xb = pos[1][i] + fw/2, yy = yT + fh;
-        ctx.beginPath(); ctx.moveTo(xa, yy); ctx.bezierCurveTo(xa, yy + 26 + i*6, xb, yy + 26 + i*6, xb, yy); ctx.stroke(); }
+      // Arcos anidados (el de afuera, más hondo): ninguno cruza a otro.
+      for (let i = 0; i < n; i++){ const xa = pos[0][i] + fw/2, xb = pos[1][n - 1 - i] + fw/2, yy = yT + fh, h = 16 + (n - 1 - i)*12;
+        ctx.beginPath(); ctx.moveTo(xa, yy); ctx.bezierCurveTo(xa, yy + h, xb, yy + h, xb, yy); ctx.stroke(); }
       ctx.restore();
     }
   }
@@ -475,7 +476,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
   return E;
 }
 const LEY = { imp:'impureza', pur:'reactivo puro', teo:'producto teórico (caja punteada)', real:'producto real', vol:'volumen del gas en CN',
-  eq:'equivalentes', Fe:'átomo de Fe', O:'átomo de O', otro:'otro producto' };
+  eq:'equivalentes', Fe:'átomo de Fe (dentro del Fe₂O₃)', O:'átomo de O (dentro del Fe₂O₃)', otro:'otro producto' };
 function leyendaHTML(v){
   return (v.vars || []).map(k => k === 'Fe' || k === 'O' ? `<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="var(--el-${k})"/></svg>${LEY[k]}</span>`
     : k === 'teo' ? `<span><svg width="16" height="10" aria-hidden="true"><rect x="1" y="1" width="14" height="8" rx="2" fill="none" stroke="var(--c-teo)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>${LEY.teo}</span>`
@@ -508,7 +509,8 @@ function animar(E, dur, paso, fin, retraso){
 function cortar(E){ E.anims = []; }
 // Opciones numeradas del 1 al 4 (las letras chocarían con los símbolos de los elementos).
 const LETRAS = 'abcd';
-const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const duro = t => t.replace(/(\d) (g|L|%|mol|eq)(?=[\s,.:;)]|$)/g, '$1\u00a0$2');   // el número no se separa de su unidad
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => (t = duro(t), `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`)).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
 // La fuente queda escrita aquí para quien lea el código; la medición guarda solo la categoría.
 const RES = (cat, fuente) => cat;
@@ -541,18 +543,25 @@ function vistaMuestra(o){
       { tipo:'barras', max:mmax, filas:[{ etq:[[`muestra: ${g(o.muestra)} g`, 'ink', 700]], tapa:true, tapaAncho:o.muestra }, { etq:[[`${nomP}: ? g`, 'ink', 700]], tapa:true }] }],
       vars:[] };
   }
-  const r = MR.reparto({ impureza:d.impureza, pura:d.pura, teorico:d.teorico, real:d.real, reacciona:0 }, o.f === undefined ? 1 : o.f);
-  const s = r.separa, av = r.avance;
   const tapaR = !!o.tapaReal;
+  // Lo que reacciona del puro: la fracción η (lo demás queda sin reaccionar, como en el paso 5). Con el real tapado, nada.
+  const reacciona = tapaR ? 0 : o.reacciona === undefined ? o.eta/100 : o.reacciona;
+  const r = MR.reparto({ impureza:d.impureza, pura:d.pura, teorico:d.teorico, real:d.real, reacciona }, o.f === undefined ? 1 : o.f);
+  const s = r.separa, av = r.avance;
+  const otro = o.otro ? { f:o.otro, masa:MR.masaAMasa(o.reac, d.pura*reacciona, R.reactivo, o.otro) } : null;
+  if (otro) Object.assign(xs, { pur:0.37, otro:0.66, prod:0.88 });
   const completo = d.noFormado < 1e-9, vTxt = gas && o.V !== false ? (o.tapaV ? [[' · ', 'muted', 700], ['? L', 'muted', 800]] : [[' · ', 'muted', 700], [`${g(d.nProducto*MR.VM*av)} L en CN`, 'vol', 800]]) : [];
   const prodEtq = tapaR ? [[[nomP + ': ?', 'ink', 800]], [[o.tapaTxt || '', 'muted', 700]]]
     : [[[`${g(r.formado)} g de ${nomP}`, 'real', 800], ...vTxt], completo ? [['rendimiento 100 %', 'muted', 700]] : [[`teórico: `, 'muted', 700], [`${g(d.teorico)} g`, 'teo', 800]]];
+  const anchoE = otro ? 0.26 : 0.38;
   const items = [
     { x:xs.mez, k:'mezcla', masa:o.muestra, alfa:1 - s },
     { x:xs.mez + (xs.imp - xs.mez)*s, k:'imp', masa:d.impureza, alfa:s, etqMax:0.24, etq:[[[`${g(d.impureza)} g`, 'imp', 800]], [['impureza', 'imp', 700]]] },
-    { x:xs.mez + (xs.pur - xs.mez)*s, k:'pur', masa:d.pura, alfa:s, etqMax:0.3, relleno:0.85 - 0.5*av, etq:[[[`${g(d.pura)} g de ${nomR}`, 'pur', 800]], [[av > 0.5 ? 'puro, al inicio' : 'puro', 'pur', 700]]] },
-    tapaR ? { x:xs.prod, tapa:true, etq:prodEtq, etqAlfa:1, etqMax:0.36 }
-      : { x:xs.prod, k:'real', masa:r.formado, teo: completo ? 0 : d.teorico, teoAlfa:r.teoricoVisible, gas, relleno: gas ? 0.3 : 0.85, etq:prodEtq, etqAlfa:1, etqMax:0.38 },
+    { x:xs.mez + (xs.pur - xs.mez)*s, k:'pur', masa:r.puroQueda, alfa:s, etqMax: otro ? 0.26 : 0.3,
+      etq:[[[`${g(r.puroQueda, 1)} g de ${nomR}`, 'pur', 800]], [[av > 0.5 ? 'sin reaccionar' : 'puro', 'pur', 700]]] },
+    ...(otro ? [{ x:xs.otro, k:'otro', masa:otro.masa*av, alfa:Math.min(1, av*3), etqAlfa:Math.min(1, av*3), etqMax:0.24, etq:[[[`${g(otro.masa*av, 1)} g de ${fx(otro.f)}`, 'ink', 800]], [['otro producto', 'muted', 700]]] }] : []),
+    tapaR ? { x:xs.prod, tapa:true, etq:prodEtq, etqAlfa:1, etqMax:anchoE }
+      : { x:xs.prod, k:'real', masa:r.formado, teo: completo ? 0 : d.teorico, teoAlfa:r.teoricoVisible, gas, relleno: gas ? 0.3 : 0.85, etq:prodEtq, etqAlfa:1, etqMax:anchoE },
   ];
   const filas = [
     { etq:[['muestra ', 'ink', 700], [`${g(o.muestra)} g`, 'ink', 800], ['  =  ', 'muted', 700], [`${g(d.impureza)} g`, 'imp', 800], [' + ', 'ink', 700], [`${g(d.pura)} g`, 'pur', 800]],
@@ -562,9 +571,9 @@ function vistaMuestra(o){
       : { etq:[[nomP + ' ', 'ink', 700], [`${g(r.formado)} g`, 'real', 800], [' de ', 'ink', 700], [`${g(d.teorico)} g`, 'teo', 800], [' posibles', 'ink', 700]],
         segs:[{ k:'real', masa:r.formado }, { k:'teo', masa:(d.teorico - r.formado)*r.teoricoVisible, punteado:true }] },
   ];
-  return { ec, mmax, d, paneles:[{ tipo:'montones', mmax, flechas:[[0.55, 0.64]], items },
+  return { ec, mmax, d, paneles:[{ tipo:'montones', mmax, flechas:[otro ? [0.5, 0.56] : [0.55, 0.64]], items },
     { tipo:'barras', max:mmax, filas, casillasDe:o.muestra/10 }],
-    vars:['imp', 'pur', ...(tapaR ? [] : completo ? ['real'] : ['teo', 'real']), ...(gas && !tapaR && !o.tapaV && o.V !== false ? ['vol'] : []), ...(lupa ? ['Fe', 'O'] : [])] };
+    vars:['imp', 'pur', ...(tapaR ? [] : completo ? ['real'] : ['teo', 'real']), ...(gas && !tapaR && !o.tapaV && o.V !== false ? ['vol'] : []), ...(otro ? ['otro'] : []), ...(lupa ? ['Fe', 'O'] : [])] };
 }
 </script>
 
@@ -600,7 +609,7 @@ const P1 = { id:'rendimiento-paso4', ok:'b', opts:[
   ['a', `${pct0(CALe['sobre-reactivo'])}: de los 50 g de CaCO₃, solo 21 g terminaron convertidos en CaO.`, 'sobre-reactivo', RES('hipotesis', 'tabla de lo que no tiene respaldo: rendimiento aplicado al reactivo')],
   ['b', `${pct0(CAL.porcentaje)}: con 50 g de CaCO₃ se podían formar ${g(CAL.teorico)} g de CaO, y se formaron 21 g.`],
   ['c', `${pct0(CALe['lo-que-falta'])}: de los ${g(CAL.teorico)} g de CaO que se podían formar, faltaron ${g(CAL.noFormado)} g.`, 'lo-que-falta', RES('hipotesis', 'hipótesis nuestra')],
-  ['d', `${pct0(CALe['otro-producto'])}: con 50 g de CaCO₃ se podían formar ${g(CO2t)} g de CO₂, y se obtuvieron 21 g.`, 'otro-producto', RES('hipotesis', 'hipótesis nuestra')]],
+  ['d', `${pct0(CALe['otro-producto'])}: con 50 g de CaCO₃ se podían formar ${g(CO2t)} g de CO₂, y se obtuvieron 21 g de CaO.`, 'otro-producto', RES('hipotesis', 'hipótesis nuestra')]],
   fb:{ b:`¡Bien! El rendimiento compara el ${Re_('producto real')} con el ${Te_('teórico')} del mismo producto: 21 ÷ ${g(CAL.teorico)} × 100 = ${pct0(CAL.porcentaje)}.`,
     a:`Elegiste la 1. 21 ÷ 50 compara el CaO con el CaCO₃, dos sustancias distintas. Aunque todo el CaCO₃ reaccionara, nunca saldrían 50 g de CaO: el máximo es ${Te_(g(CAL.teorico) + ' g')}, porque parte de la masa se va como CO₂. Rendimiento = 21 ÷ ${g(CAL.teorico)} = ${pct0(CAL.porcentaje)}. ${HIPO} La correcta está marcada.`,
     c:`Elegiste la 3. ${pct0(CALe['lo-que-falta'])} es lo que no se formó. El rendimiento mide lo que sí se obtuvo: ${Re_('21 g')} de ${Te_(g(CAL.teorico) + ' g')}, ${pct0(CAL.porcentaje)}. ${HIPO} La correcta está marcada.`,
@@ -629,7 +638,7 @@ const P3 = { id:'rendimiento-paso6', ok:'a', opts:[
     d:`Elegiste la 4. Multiplicar por el rendimiento sirve para ir del teórico al real. Aquí se va al revés, del real al teórico: 42 ÷ 0,75 = ${Te_(g(INV.teorico) + ' g')}, más que 42, porque el horno pierde una parte. ${HIPO} La correcta está marcada.` } };
 
 // ----- Vistas -----
-const pieFe = 'La muestra es un solo montón: todavía no sabemos cuánto es Fe₂O₃. La caja del hierro se llena al responder.';
+const pieFe = 'La muestra es un solo montón: el Fe₂O₃ y la roca todavía no se separan. La caja del hierro se llena al responder.';
 const vFe = (r, f) => r ? { ...vistaMuestra({ reac:'hierro', muestra:200, p:80, eta:90, f }),
     pie:'Abajo, la muestra en casillas de 10 % de su masa: en la lupa, cada unidad Fe₂O₃ con sus 2 Fe y 3 O.',
     desc:`La muestra de 200 gramos se separa en 40 gramos de roca y 160 gramos de óxido de hierro. Se forman ${g(FE.real)} gramos de hierro de ${g(FE.teorico)} posibles; la caja punteada muestra los ${g(FE.noFormado)} gramos que no se formaron.` }
@@ -685,21 +694,22 @@ function vInv(r, f){
 const steps = [
  { k:'Paso 1', t:'El problema', vista:() => vFe(false),
    body:() => `<p class="problem">Un mineral de hierro, la hematita, tiene 80 % de Fe₂O₃; el resto es roca. Se tratan 200 g del mineral con CO en exceso: Fe₂O₃ + 3CO → 2Fe + 3CO₂. La reacción tiene un rendimiento de 90 %. ¿Cuántos gramos de hierro se obtienen?</p>
-   <p>Dos palabras del enunciado. La <b>pureza</b> dice qué parte de la masa de la muestra es la sustancia que se pide (aquí, Fe₂O₃). El <b>rendimiento</b> dice qué parte del ${Te_('producto teórico')}, el máximo que da la ecuación, se obtiene de verdad: el ${Re_('producto real')}.</p>
+   <p>Dos palabras del enunciado. La <b>pureza</b> dice qué parte de la masa de la muestra es la sustancia que reacciona (aquí, Fe₂O₃); el resto es impureza y no reacciona. El <b>rendimiento</b> dice qué parte del ${Te_('producto teórico')}, el máximo que da la ecuación, se obtiene de verdad: el ${Re_('producto real')}.</p>
    <p>Masas molares: Fe₂O₃ = 2 × 56 + 3 × 16 = 160 g/mol; Fe = 56 g/mol.</p>
-   <p class="hint">Cada variable tiene su color en el texto, en el dibujo y en las cuentas. Toca un color del texto para resaltarlo en el dibujo.</p>` },
+` },
  { k:'Paso 2', t:'El hierro de la hematita: predice', gate:P0, vista:r => vFe(!!r, 1),
    anima: fin => animar(E, 2.6, f => { E.vista = vFe(true, f); }, () => { E.vista = vFe(true, 1); fin(); }, 0.2),
    body:() => `<p>200 g de mineral con 80 % de Fe₂O₃, CO en exceso y 90 % de rendimiento. ¿Cuántos gramos de hierro se obtienen?</p>${opcionesHTML(P0.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq"><span class="ex">200 g × 0,80 = ${Pu_('160 g de Fe₂O₃')} &nbsp;(+ ${Im_('40 g')} de roca)</span></div>
      <div class="eq"><span class="ex">160 ÷ 160 = 1 mol de Fe₂O₃ → 2 mol de Fe → ${Te_(g(FE.teorico) + ' g')}</span></div>
-     <div class="eq"><span class="ex">${Te_(g(FE.teorico) + ' g')} × 0,90 = ${Re_(g(FE.real) + ' g')}</span><span class="note">La caja punteada guarda los ${g(FE.noFormado)} g que no se formaron.</span></div></div>
-   <p class="fuente">Las cuatro opciones salen de errores que suponemos frecuentes en los problemas de academia. Ningún estudio que hayamos leído los mide: son hipótesis nuestras, y la escena las va a poner a prueba.</p></div>` },
+     <div class="eq"><span class="ex">${Te_(g(FE.teorico) + ' g')} × 0,90 = ${Re_(g(FE.real) + ' g')}</span><span class="note">La caja punteada marca el lugar de los ${g(FE.noFormado)} g que no se formaron: esa masa nunca existió como hierro. Del Fe₂O₃, ${g(FE.pura*0.1)} g quedan sin reaccionar.</span></div></div>
+   <p class="fuente">Las tres opciones incorrectas salen de errores que suponemos frecuentes en los problemas de academia. Ningún estudio que hayamos leído los mide: son hipótesis nuestras, y la escena las va a poner a prueba.</p></div>` },
  { k:'Paso 3', t:'Uno después del otro', vista:() => vFe(true, 1),
    body:() => `<p>La pureza y el rendimiento actúan en lugares distintos. La pureza separa la muestra: solo el ${Pu_('Fe₂O₃ puro')} entra a la ecuación y la ${Im_('roca')} se queda afuera. El rendimiento actúa al final, sobre el producto: de la ${Te_('caja teórica')} solo se llena una parte con ${Re_('hierro real')}.</p>
    <div class="eqs"><div class="eq"><span class="ex">${Re_('real')} = 200 × 0,80 × (112 ÷ 160) × 0,90 = ${Re_(g(FE.real) + ' g')}</span><span class="note">112 ÷ 160 = 0,7: cada gramo de Fe₂O₃ da 0,7 g de Fe (masa → mol → mol → masa).</span></div>
    <div class="eq"><span class="ex">0,80 × 0,90 = 0,72 &nbsp;→&nbsp; 72 % de lo que darían 200 g de Fe₂O₃ puro: ${g(FE140)} × 0,72 = ${g(FE.real)} g</span><span class="note">Como se multiplican, da lo mismo el orden: primero la pureza o primero el rendimiento. Sumarlos y restar 100 no sale de ninguna cuenta con la masa.</span></div></div>
+   <p class="hint">Cada variable tiene su color en el texto, en el dibujo y en las cuentas. Toca un color del texto para resaltarlo en el dibujo.</p>
    <p>El rendimiento se aplica una sola vez, al producto. Si se aplicara también al reactivo, saldrían ${g(FEe['rendimiento-dos-veces'])} g: el 90 % estaría contado dos veces.</p>` },
  { k:'Paso 4', t:'La cal viva: predice', gate:P1, vista:r => vCal(!!r, 1),
    anima: fin => animar(E, 1.2, f => { E.vista = vCal(true, f); }, () => { E.vista = vCal(true, 1); fin(); }, 0.2),
@@ -725,7 +735,7 @@ const steps = [
      <div class="eq"><span class="ex">caliza = ${Pu_(g(INV.pura) + ' g')} ÷ 0,80 = ${g(INV.muestra)} g &nbsp;(${Im_(g(INV.impureza) + ' g')} de impureza)</span><span class="note">Hacia adelante se multiplica por la pureza y por el rendimiento; hacia atrás se divide. Comprobación: 125 × 0,80 = 100 g → 56 g → 56 × 0,75 = 42 g.</span></div></div></div>` },
  { k:'Paso 7', t:'Ahora explora tú', explora:true, vista:() => ({ paneles:[] }),
    body:() => `<div class="ctrls">
-     <label class="campo" for="xR">Reacción del examen<select id="xR">${Object.entries(MR.REACCIONES).map(([k, r]) => `<option value="${k}">${r.texto} · ${r.nombre}</option>`).join('')}</select></label>
+     <label class="campo" for="xR">Reacción del examen<select id="xR">${Object.entries(MR.REACCIONES).map(([k, r]) => `<option value="${k}">${r.texto}</option>`).join('')}</select></label>
      <div class="slider"><label for="xM"><span>Masa de la muestra</span><output id="xMo"></output></label><input id="xM" type="range" min="20" max="400" step="5" value="200"></div>
      <div class="slider"><label for="xP"><span>Pureza</span><output id="xPo"></output></label><input id="xP" type="range" min="10" max="100" step="1" value="80"></div>
      <div class="slider"><label for="xE"><span>Rendimiento</span><output id="xEo"></output></label><input id="xE" type="range" min="10" max="100" step="1" value="90"></div>
@@ -741,16 +751,16 @@ function explorar(){
     const R = MR.REACCIONES[X.reac], d = MR.producir({ reaccion:X.reac, muestra:X.m, pureza:X.p, rendimiento:X.eta });
     const gas = R.gases.includes(R.producto);
     // Lo que regalaría el experimento 2 (pureza o rendimiento al 100 %) y el 3 (volumen de gas en CN).
-    const tapaM = !PRED_EXP['mejora'] && (X.p === 100 || X.eta === 100), tapaV = !PRED_EXP['gas'];
+    const tapaM = !PRED_EXP['mejora'], tapaV = !PRED_EXP['gas'];
     $('xR').value = X.reac; $('xM').value = X.m; $('xP').value = X.p; $('xE').value = X.eta;
     $('xMo').textContent = g(X.m) + ' g'; $('xPo').textContent = X.p + ' %'; $('xEo').textContent = X.eta + ' %';
     const P = fx(R.producto), Rr = fx(R.reactivo);
     $('live').innerHTML = `<div class="fila"><span>${Pu_(g(d.pura, 1) + ' g de ' + Rr)} puro</span><span>${Im_(g(d.impureza, 1) + ' g')} de impureza</span><span>${g(d.n, 3)} mol de ${Rr}</span></div>
-      <div class="fila">${tapaM ? `<span>${P}: ? (${DESCUBRE}, experimento 2)</span>` : `<span>teórico: ${Te_(g(d.teorico, 2) + ' g de ' + P)}</span><span>real: ${Re_(g(d.real, 2) + ' g')}</span><span>no se formó: ${g(d.noFormado, 2)} g</span>`}</div>
+      <div class="fila">${tapaM ? `<span>real y teórico de ${P}: ? (responde primero el experimento 2 de «¿Qué pasa si…?»)</span>` : `<span>teórico: ${Te_(g(d.teorico, 2) + ' g de ' + P)}</span><span>real: ${Re_(g(d.real, 2) + ' g')}</span><span>no se formó: ${g(d.noFormado, 2)} g</span>`}</div>
       ${gas ? `<div class="fila"><span>${tapaV ? `Volumen en CN: ? (${DESCUBRE}, experimento 3)` : tapaM ? 'Volumen en CN: ?' : `Volumen en CN: ${Vo_(g(d.V, 2) + ' L')} (22,4 L por mol)`}</span></div>` : ''}
       <div class="fila"><span>${R.exceso ? `El ${fx(R.exceso)} está en exceso: no limita.` : 'Un solo reactivo: se descompone con el calor.'}</span></div>`;
     const mmax = Math.max(400, 400*MR.masaAMasa(X.reac, 1, R.reactivo, R.producto));
-    E.vista = { ...vistaMuestra({ reac:X.reac, muestra:X.m, p:X.p, eta:X.eta, f:1, mmax, tapaReal:tapaM, tapaTxt:'experimento 2', tapaV }),
+    E.vista = { ...vistaMuestra({ reac:X.reac, muestra:X.m, p:X.p, eta:X.eta, f:1, mmax, tapaReal:tapaM, tapaTxt:'responde primero el experimento 2', tapaV }),
       pie: X.reac === 'hierro' ? 'Abajo, la muestra en casillas de 10 % de su masa; en la lupa, unidades Fe₂O₃.' : 'Abajo, la muestra en casillas de 10 % de su masa. Los gases van en globos (misma escala de masa).',
       desc:'' };
     E.dibujar();
@@ -777,7 +787,8 @@ function go(n){
   $('stepT').textContent = s.t;
   $('stepBody').innerHTML = s.body();
   pintarDots();
-  E.compactar(s.gate && !S.pred[s.gate.id]);
+  // En el celular, el lienzo queda fijo arriba con una predicción pendiente y en el explorador (se ve al mover los deslizadores).
+  E.compactar((s.gate && !S.pred[s.gate.id]) || !!s.explora);
   if (s.gate) prediccion(s);
   if (s.explora) explorar();
   nav(); E.dibujar(); E.describir();
