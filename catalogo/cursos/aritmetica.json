@@ -531,7 +531,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["razonamiento-numerico"],
       "investigacion": null
     }
   ]

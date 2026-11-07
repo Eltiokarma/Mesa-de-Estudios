@@ -2328,7 +2328,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "razonamiento-numerico"
+     ]
     }
    ]
   },
@@ -5436,6 +5438,23 @@
     "/plantillas/quimica-ambiente/index.html",
     "/plantillas/quimica-ambiente/motor.js",
     "/plantillas/quimica-ambiente/papel.json"
+   ]
+  },
+  "razonamiento-numerico": {
+   "id": "razonamiento-numerico",
+   "titulo": "Las fichas que se cambian: razonamiento numérico",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.razonamiento-numerico"
+   ],
+   "url": "/plantillas/razonamiento-numerico/index.html",
+   "papel": "/plantillas/razonamiento-numerico/papel.json",
+   "archivos": [
+    "/plantillas/razonamiento-numerico/index.html",
+    "/plantillas/razonamiento-numerico/motor.js",
+    "/plantillas/razonamiento-numerico/papel.json"
    ]
   },
   "regla-de-tres": {
