@@ -178,5 +178,25 @@
   "nombre": "En incompatibilidad, se marca como incompatible lo que el texto solo no menciona",
   "respaldo": "hipotesis",
   "por_verificar": false
+ },
+ "RV37": {
+  "nombre": "En plan de redacción, se empieza por la conclusión",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV38": {
+  "nombre": "En eliminación, se saca la oración que presenta el tema",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV39": {
+  "nombre": "En término excluido, se saca el que difiere en un rasgo secundario",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV40": {
+  "nombre": "En término excluido, se saca la palabra que no se conoce",
+  "respaldo": "hipotesis",
+  "por_verificar": false
  }
 }
