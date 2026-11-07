@@ -128,7 +128,7 @@ Los colores de r, θ, x e y son los mismos que el módulo, el argumento, Re e Im
 
 **Pendiente o dudoso.**
 
-- El dedo desplaza la página lejos del punto: el revisor lo comprobó con toque simulado (scrollY de 200 a 373).
+- n no tiene el mismo tono en claro y en oscuro (café y amarillo). El revisor lo aceptó porque hay precedentes; si Gerson prefiere un solo tono, hay que sacrificar ΔE00 en uno de los dos temas.
 - Falta una línea en el informe de trigonometría: «Coordenadas polares (CP1 a CP27, 7 nov 2026): hipótesis nuestras; la lista está en la cabecera de `plantillas/coordenadas-polares/motor.js`».
 
 **Pedidos para la integración.**
@@ -136,4 +136,4 @@ Los colores de r, θ, x e y son los mismos que el módulo, el argumento, Re e Im
 1. Subir `VERSION` en `app/sw.js` (no lo toqué, para no chocar con la principal).
 2. Agregar a `docs/diseno.md` los colores de la tabla de arriba.
 3. Agregar la línea anterior a `docs/investigacion/trigonometria-ideas-erroneas.md`.
-4. Líneas para `docs/pendientes.md` y `CLAUDE.md`: «Coordenadas polares (7 nov 2026, rutina de matemática C): `plantillas/coordenadas-polares/` (el radar: r negativo que pasa por el polo, el cuadrante que la calculadora no ve, θ = k como recta, r = a cos θ como circunferencia que pasa por el polo, rosas con pétalos de r negativo y la forma polar del complejo enlazada con la flecha en el plano; 20 casos verificados aparte)». Con esto, todas las unidades de trigonometría tienen escena salvo las que ya listaba pendientes.
+4. Líneas para `docs/pendientes.md` y `CLAUDE.md`: «Coordenadas polares (7 nov 2026, rutina de matemática C): `plantillas/coordenadas-polares/` (el radar: r negativo que pasa por el polo, el cuadrante que la calculadora no ve, θ = k como recta, r = a cos θ como circunferencia que pasa por el polo, rosas con pétalos de r negativo y la forma polar del complejo enlazada con la flecha en el plano; 20 casos verificados aparte)».
