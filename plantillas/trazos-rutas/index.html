@@ -1,0 +1,1340 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El lápiz y la hormiga: trazos, perímetros y rutas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de maximos-minimos/.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   figuras: puntos impares i fucsia, el trazo t azul, lo que se repite R naranja; escalera: base b (lados horizontales)
+   turquesa, altura h (lados verticales) rojo, entrante e ocre; calles: cuadras a la derecha m verde, hacia arriba n
+   granate, caminos N índigo; caja y reja: largo x celeste, ancho y magenta, alto z ámbar, ruta de la hormiga d verde
+   oscuro; arcos: el semicírculo grande G violeta y los chicos c café.
+   Elegidos con CIEDE2000; mínimos entre los que salen juntos (claro / oscuro): figuras (i, t, R) 27,1 / 29,3;
+   escalera (b, h, e) 32,1 / 34,8; calles (m, n, N) 32,4 / 26,2; caja (x, y, z, d) 34,1 / 37,2; reja (x, y, z, N)
+   22,7 / 26,2; arcos (G, c) 46,1 / 43,5. Pares por debajo de 20 que nunca comparten vista: R–z, z–c, N–G, m–d, R–c,
+   t–x, i–G, e–z, n–y, t–N y h–y. Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %), en claro y en
+   oscuro: mínimo 4,54 (claro) y 4,64 (oscuro). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-i:#a10fbf; --c-t:#1f5fbf; --c-R:#a05200; --c-b:#0f766e; --c-h:#c0364a; --c-e:#7d6a00; --c-m:#466d14; --c-n:#77032c; --c-N:#3328c4;
+  --c-x:#086a96; --c-y:#b3246b; --c-z:#8f5800; --c-d:#255c1f; --c-G:#6a3fc0; --c-c:#7a4a1e;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-i:#cf6bfa; --c-t:#7cb0ff; --c-R:#f0a04a; --c-b:#5ed9c8; --c-h:#f17384; --c-e:#e3c84a; --c-m:#a3d65e; --c-n:#fdb4ce; --c-N:#9f9bff;
+  --c-x:#25caf4; --c-y:#ff86bd; --c-z:#ffc04d; --c-d:#5fe06a; --c-G:#b49cff; --c-c:#d9a877;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-i:#cf6bfa; --c-t:#7cb0ff; --c-R:#f0a04a; --c-b:#5ed9c8; --c-h:#f17384; --c-e:#e3c84a; --c-m:#a3d65e; --c-n:#fdb4ce; --c-N:#9f9bff;
+  --c-x:#25caf4; --c-y:#ff86bd; --c-z:#ffc04d; --c-d:#5fe06a; --c-G:#b49cff; --c-c:#d9a877;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend:empty{display:none}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.pt{width:12px; height:12px; border-radius:50%}
+.legend i.dash{background:none!important; border-top:2px dashed var(--k); height:0}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-i{color:var(--c-i); background:color-mix(in srgb, var(--c-i) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-R{color:var(--c-R); background:color-mix(in srgb, var(--c-R) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
+.v-e{color:var(--c-e); background:color-mix(in srgb, var(--c-e) 8%, transparent)}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 8%, transparent)}
+.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
+.v-y{color:var(--c-y); background:color-mix(in srgb, var(--c-y) 8%, transparent)}
+.v-z{color:var(--c-z); background:color-mix(in srgb, var(--c-z) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v-G{color:var(--c-G); background:color-mix(in srgb, var(--c-G) 8%, transparent)}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em; align-self:stretch; text-align:center}
+.frac > span:last-child{padding:0 .25em}
+.frac > span:first-child{align-self:stretch; text-align:center}
+.frac > span{white-space:nowrap}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+.msg{margin:0; font-weight:700; min-height:1.5em}
+.msg.mal{color:var(--warn)} .msg.ok{color:var(--ok)}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:center; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn.chico{padding:8px 14px; min-height:40px; font-size:.9rem}
+.btn[aria-pressed="true"]{border-color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.fila{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.punto{min-width:44px}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+.flechas{font:800 1.05rem var(--mono); letter-spacing:.06em; overflow-wrap:anywhere}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Trazos, perímetros y rutas · Problemas tipo admisión</p>
+      <h1>El lápiz y la hormiga</h1>
+      <p class="sub">Dibuja figuras sin levantar el lápiz, recorre los senderos de un parque, mide el borde de una escalera, cuenta caminos por las calles de Juliaca y guía a una hormiga sobre una caja. Primero predices; después, el motor prueba todas las posibilidades.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: figuras, escalera, calles o caja">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos de trazos, perímetros y rutas">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/trazos-rutas">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'trazos-rutas', unidad: 'razonamiento-matematico.trazos-y-perimetros', version: '0.1.0' };
+const U_RUTAS = 'razonamiento-matematico.rutas-y-visualizacion-espacial';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (grados, búsquedas, recorridos mínimos, perímetros, caminos y la ruta de la hormiga) sale de
+   MotorTrazos (motor.js); aquí solo se pinta, se toca, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MT = MotorTrazos, FIG = MT.figuras;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  d = d === undefined ? 2 : d;
+  const p = Math.pow(10, d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const VARS = ['i', 't', 'R', 'b', 'h', 'e', 'm', 'n', 'N', 'x', 'y', 'z', 'd', 'G', 'c'];
+const W_ = {}; VARS.forEach(k => { W_[k] = t => V(k, t); });
+const aprox = (ex, v) => (ex && ex === String(Math.round(v)) && Math.abs(v - Math.round(v)) < 1e-9) ? ex : `${ex} ≈ ${fmt(v, 1)}`;
+const flechas = s => s.split('').map(ch => ch === 'D' ? W_.m('→') : W_.n('↑')).join('');
+
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'), warn:css('--warn'), font:css('--font') };
+  for (const k of VARS) c[k] = css('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function punto(ctx, x, y, r, relleno, borde, ancho){ ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fillStyle = relleno; ctx.fill(); if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = ancho || 2; ctx.stroke(); } ctx.restore(); }
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Modos:
+   'figura'    una o varias figuras de líneas. fig = { figs: [{ f (figura del motor), nombre }], grados (escribe cuántas
+               líneas llegan a cada punto), impares (marca los impares), numeros (numera los puntos), longitudes (escribe
+               la longitud de cada tramo), trazo: [nodos que tocó el alumno], ruta: { nodos, prog } (un recorrido que se
+               dibuja de a poco), repetir: [tramos que se pasan dos veces], marca (nodo con un anillo) }. Con E.tocar,
+               tocar un punto llama a E.alTocar(nodo).
+   'escalera'  un polígono de lados horizontales y verticales sobre una cuadrícula de 1 m. esc = { vertices, paredes (lados
+               del entrante), prog (0 a 1: cuánto se corrió cada lado hacia el rectángulo que la encierra), colores (cada
+               lado con su color: horizontales b, verticales h, paredes e), medidas ('dos': solo la base y el lado
+               izquierdo | 'caja': ancho y alto del rectángulo), caja (el rectángulo a trazos), muesca: { ancho, alto, desde,
+               hasta, profundidad } (con E.drag, el fondo del entrante se arrastra) }.
+   'calles'    una cuadrícula de m × n cuadras. cal = { m, n, tabla (del motor), llenos: Set('x,y'), cerrados, camino
+               (texto de pasos D y A), prog (cuánto del camino se dibujó), siguiente (cruce que se llena ahora) }. Con
+               E.tocar, tocar un cruce llama a E.alTocar([x, y]).
+   'caja'      una caja de x × y × z con la hormiga y el azúcar. caja = { x, y, z, H (resultado del motor), des (índice del
+               desarrollo; −1 ninguno), abrir (0 a 1), ruta (0 a 1), diagonal (la recta por dentro, a trazos) }.
+   'arcos'     un diámetro con un semicírculo grande arriba y semicírculos chicos abajo. arc = { diametro, partes, ver }.
+   'reja'      la reja de a × b × c cubos con la araña. reja = { a, b, c, tabla, prog (se llenan los nodos con
+               x + y + z ≤ prog) }.
+   Antes de responder, lo que se pregunta se dibuja como «?» y nada adelanta la respuesta. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'figura', lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:'',
+    drag:false, tocar:false, fig:null, esc:null, cal:null, caja:null, arc:null, reja:null, alArrastrar:null, alTocar:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, Hh = 0, sobre = false, arr = false, geo = null;
+  function altoBase(w){
+    const ancho = w >= 560, entre = (h, a, b) => Math.round(Math.max(a, Math.min(b, h)));
+    if (E.modo === 'figura' && E.fig) return E.fig.figs.length > 1 ? (ancho ? 290 : 230) : (ancho ? 360 : 320);
+    if (E.modo === 'escalera' && E.esc){ const P = MT.perimetro({ vertices:E.esc.vertices }), s = Math.min((w - 90)/P.ancho, 34); return entre(P.alto*s + 84, 220, 380); }
+    if (E.modo === 'calles' && E.cal){ const C = E.cal, s = Math.min((w - 96)/C.m, 76); return entre(C.n*s + 92, 220, 380); }
+    if (E.modo === 'caja' && E.caja){ const X = extCaja(); return entre(X.h/X.w*(w - margenCaja(w).tot) + 76, 200, ancho ? 360 : 340); }
+    if (E.modo === 'arcos') return ancho ? 280 : 240;
+    if (E.modo === 'reja') return ancho ? 340 : 320;
+    return 300;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(altoBase(w), E.compacto)), dpr = Celular.dpr();
+    if (w === W && h === Hh) { E.dibujar(); return; }
+    W = w; Hh = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false;
+    Object.assign(E, { modo:'figura', lect:[], ley:null, alCambiar:null, desc:'', drag:false, tocar:false, fig:null, esc:null, cal:null,
+      caja:null, arc:null, reja:null, alArrastrar:null, alTocar:null }, o);
+    if (E.fig) E.fig = Object.assign({ grados:false, impares:false, numeros:false, longitudes:false, trazo:[], ruta:null, repetir:[], marca:null }, E.fig);
+    if (E.esc) E.esc = Object.assign({ paredes:[], prog:0, colores:false, medidas:'dos', caja:false }, E.esc);
+    if (E.cal) E.cal = Object.assign({ llenos:new Set(), cerrados:[], camino:null, prog:1, siguiente:null }, E.cal);
+    if (E.caja) E.caja = Object.assign({ des:-1, abrir:0, ruta:0, diagonal:false }, E.caja);
+    cv.tabIndex = E.drag ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  const atenuar = k => (E.hl && E.hl !== k ? .45 : 1);
+
+  // ----- figuras de líneas -----
+  function geoFiguras(){
+    const F = E.fig, k = F.figs.length, celdas = [];
+    const pie = k > 1 ? 30 : 12, mg = k > 1 ? 18 : 34;
+    F.figs.forEach((g, j) => {
+      const xs = g.f.nodos.map(p => p[0]), ys = g.f.nodos.map(p => p[1]);
+      const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+      const cw = W/k, cx0 = j*cw;
+      const s = Math.min((cw - 2*mg)/Math.max(x1 - x0, .01), (Hh - 2*mg - pie)/Math.max(y1 - y0, .01));
+      const ox = cx0 + (cw - (x1 - x0)*s)/2 - x0*s, oy = mg + (Hh - 2*mg - pie - (y1 - y0)*s)/2 + y1*s;
+      const P = q => ({ x:ox + q[0]*s, y:oy - q[1]*s });
+      const cen = P([(x0 + x1)/2, (y0 + y1)/2]);
+      celdas.push({ P, s, cx0, cw, cen, pts:g.f.nodos.map(P) });
+    });
+    return celdas;
+  }
+  function dibFiguras(c){
+    const F = E.fig, celdas = geoFiguras(); geo = { celdas };
+    F.figs.forEach((g, j) => {
+      const C = celdas[j], f = g.f, pts = C.pts, GR = MT.grados(f);
+      const solo = F.figs.length === 1;
+      // tramos
+      ctx.save(); ctx.lineCap = 'round'; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6;
+      f.tramos.forEach(([a, b]) => linea(ctx, pts[a], pts[b])); ctx.restore();
+      if (solo && F.longitudes) f.tramos.forEach(([a, b, L], k) => {
+        const p = pts[a], q = pts[b], mx = (p.x + q.x)/2, my = (p.y + q.y)/2, dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy) || 1;
+        let nx = -dy/d, ny = dx/d; if ((mx + nx - C.cen.x)*nx + (my + ny - C.cen.y)*ny < 0 && Math.hypot(mx - C.cen.x, my - C.cen.y) > 30){ nx = -nx; ny = -ny; }
+        const largo = L !== undefined ? L : Math.hypot(f.nodos[a][0] - f.nodos[b][0], f.nodos[a][1] - f.nodos[b][1]);
+        const off = F.repetir.includes(k) ? 26 : 12;
+        rotulo(ctx, c, mx + nx*off, my + ny*off, `${fmt(largo)} m`, c.ink, 'center', 700, 11);
+      });
+      // lo que se repite (paralelo, un poco afuera)
+      if (solo && F.repetir.length){
+        ctx.save(); ctx.strokeStyle = c.R; ctx.globalAlpha = atenuar('R'); ctx.lineWidth = grosor('R', 4); ctx.lineCap = 'round'; ctx.setLineDash([9, 5]);
+        for (const k of F.repetir){ const [a, b] = f.tramos[k], p = pts[a], q = pts[b], dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy) || 1;
+          let nx = -dy/d*9, ny = dx/d*9; const mx = (p.x + q.x)/2, my = (p.y + q.y)/2; if ((mx + nx - C.cen.x)*nx + (my + ny - C.cen.y)*ny < 0){ nx = -nx; ny = -ny; }
+          linea(ctx, { x:p.x + nx, y:p.y + ny }, { x:q.x + nx, y:q.y + ny }); }
+        ctx.restore();
+      }
+      // el trazo del alumno
+      if (solo && F.trazo.length > 1){
+        ctx.save(); ctx.strokeStyle = c.t; ctx.globalAlpha = .85*atenuar('t'); ctx.lineWidth = grosor('t', 6); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.beginPath(); F.trazo.forEach((v, q) => { if (q) ctx.lineTo(pts[v].x, pts[v].y); else ctx.moveTo(pts[v].x, pts[v].y); }); ctx.stroke(); ctx.restore();
+      }
+      // un recorrido que se dibuja de a poco
+      const R = F.ruta && (F.ruta.fig === undefined || F.ruta.fig === j) ? F.ruta : null;
+      if (R && R.nodos && R.nodos.length > 1){
+        const n = R.nodos.length - 1, hasta = clamp(R.prog, 0, 1)*n;
+        ctx.save(); ctx.strokeStyle = c.t; ctx.globalAlpha = .85*atenuar('t'); ctx.lineWidth = grosor('t', 6); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.beginPath(); ctx.moveTo(pts[R.nodos[0]].x, pts[R.nodos[0]].y);
+        let fin = pts[R.nodos[0]];
+        for (let q = 1; q <= n && q - 1 < hasta; q++){
+          const a = pts[R.nodos[q - 1]], b = pts[R.nodos[q]], f2 = Math.min(1, hasta - (q - 1));
+          fin = { x:a.x + (b.x - a.x)*f2, y:a.y + (b.y - a.y)*f2 }; ctx.lineTo(fin.x, fin.y);
+        }
+        ctx.stroke(); ctx.restore();
+        punto(ctx, pts[R.nodos[0]].x, pts[R.nodos[0]].y, 10, 'transparent', c.t, 3);
+        if (R.prog < 1) punto(ctx, fin.x, fin.y, 5, c.t);
+      }
+      // puntos
+      pts.forEach((p, v) => {
+        const imp = F.impares && GR.grados[v] % 2 === 1;
+        if (imp){ ctx.save(); ctx.globalAlpha = atenuar('i'); punto(ctx, p.x, p.y, grosor('i', 8), c.i, c.paper, 2); ctx.restore(); }
+        else punto(ctx, p.x, p.y, 5, c.ink);
+        if (F.grados){
+          let dx = p.x - C.cen.x, dy = p.y - C.cen.y; const d = Math.hypot(dx, dy);
+          if (d < 4){ dx = 0; dy = -1; } else { dx /= d; dy /= d; }   // el del centro, derecho hacia arriba: ahí no pasa ninguna línea
+          const off = solo ? 20 : 15;
+          rotulo(ctx, c, p.x + dx*off, p.y + dy*off, String(GR.grados[v]), imp ? c.i : c.ink, 'center', 800, solo ? 13 : 11);
+        }
+        if (F.numeros && solo){
+          let dx = p.x - C.cen.x, dy = p.y - C.cen.y; const d = Math.hypot(dx, dy);
+          if (d < 4){ dx = -0.7; dy = 0.7; } else { dx /= d; dy /= d; }
+          // el número del punto, del otro lado que el grado
+          const nx = -dy, ny = dx;
+          ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(`P${v + 1}`, p.x + (dx*8 + nx*14), p.y + (dy*8 + ny*14)); ctx.restore();
+        }
+      });
+      if (solo && F.trazo.length){ const p = pts[F.trazo[F.trazo.length - 1]]; punto(ctx, p.x, p.y, 11, 'transparent', c.t, 3); }
+      if (F.marca !== null && solo){ const p = pts[F.marca]; punto(ctx, p.x, p.y, 13, 'transparent', c.ink, 2); }
+      if (!solo){
+        rotulo(ctx, c, C.cx0 + C.cw/2, Hh - 14, W < 480 ? g.nombre : `${j + 1} · ${g.nombre}`, c.ink, 'center', 800, W < 480 ? 11 : 12);
+        if (j) { ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; linea(ctx, { x:C.cx0, y:10 }, { x:C.cx0, y:Hh - 10 }); ctx.restore(); }
+      }
+    });
+  }
+  function nodoEn(p){
+    if (E.modo !== 'figura' || !geo || !geo.celdas || E.fig.figs.length !== 1) return -1;
+    let mejor = -1, dm = 26;
+    geo.celdas[0].pts.forEach((q, v) => { const d = Math.hypot(q.x - p.x, q.y - p.y); if (d < dm){ dm = d; mejor = v; } });
+    return mejor;
+  }
+
+  // ----- escalera, chakana y entrante -----
+  function geoEsc(){
+    const P = MT.perimetro({ vertices:E.esc.vertices }), xs = E.esc.vertices.map(p => p[0]), ys = E.esc.vertices.map(p => p[1]);
+    const x0 = Math.min(...xs), y0 = Math.min(...ys);
+    const s = Math.min((W - 90)/P.ancho, (Hh - 76)/P.alto);
+    const ox = (W - P.ancho*s)/2 - x0*s + 6, oy = 30 + P.alto*s + y0*s + (Hh - 76 - P.alto*s)/2;
+    return { P, s, x0, y0, x1:x0 + P.ancho, y1:y0 + P.alto, T:(x, y) => ({ x:ox + x*s, y:oy - y*s }) };
+  }
+  function dibEscalera(c){
+    const S = E.esc, g = geoEsc(), P = g.P; geo = g;
+    // cuadrícula de 1 m
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let x = g.x0; x <= g.x1 + 1e-9; x++) linea(ctx, g.T(x, g.y0), g.T(x, g.y1));
+    for (let y = g.y0; y <= g.y1 + 1e-9; y++) linea(ctx, g.T(g.x0, y), g.T(g.x1, y));
+    ctx.restore();
+    // relleno de la figura
+    ctx.save(); ctx.beginPath(); S.vertices.forEach((q, k) => { const p = g.T(q[0], q[1]); if (k) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); }); ctx.closePath();
+    ctx.fillStyle = c.muted; ctx.globalAlpha = .1; ctx.fill(); ctx.restore();
+    if (S.caja || S.prog > 0){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([6, 5]); ctx.lineWidth = 1.4; const a = g.T(g.x0, g.y0), b = g.T(g.x1, g.y1); ctx.strokeRect(a.x, b.y, b.x - a.x, a.y - b.y); ctx.restore();
+    }
+    // los lados (si se corrieron, en su nueva posición; el contorno de antes queda tenue)
+    if (S.prog > 0){ ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .25; ctx.lineWidth = 2; ctx.beginPath(); S.vertices.forEach((q, k) => { const p = g.T(q[0], q[1]); if (k) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); }); ctx.closePath(); ctx.stroke(); ctx.restore(); }
+    P.lados.forEach((L, k) => {
+      const pared = S.paredes.includes(k), col = !S.colores ? c.ink : pared ? c.e : L.eje === 'h' ? c.b : c.h, var_ = pared ? 'e' : L.eje === 'h' ? 'b' : 'h';
+      let a = L.desde.slice(), b = L.hasta.slice();
+      const f = S.prog;
+      if (L.eje === 'h'){ const y = a[1] + (L.destino - a[1])*f; a[1] = b[1] = y; }
+      else { const x = a[0] + (L.destino - a[0])*f; a[0] = b[0] = x; }
+      let pa = g.T(a[0], a[1]), pb = g.T(b[0], b[1]);
+      // las paredes del entrante caen sobre un lado que ya está: se dibujan un poco afuera para que se vean
+      if (pared && f > 0){ const sg = L.destino > (g.x0 + g.x1)/2 ? 1 : -1; pa = { x:pa.x + sg*8*f, y:pa.y }; pb = { x:pb.x + sg*8*f, y:pb.y }; }
+      ctx.save(); ctx.lineCap = 'round'; ctx.strokeStyle = col; ctx.globalAlpha = S.colores ? atenuar(var_) : 1; ctx.lineWidth = S.colores ? grosor(var_, 4.5) : 3.2; linea(ctx, pa, pb); ctx.restore();
+    });
+    // medidas
+    const bajo = g.T((g.x0 + g.x1)/2, g.y0), izq = g.T(g.x0, (g.y0 + g.y1)/2);
+    rotulo(ctx, c, bajo.x, bajo.y + 16, `${fmt(P.ancho)} m`, S.colores ? c.b : c.ink, 'center', 800, 12);
+    rotulo(ctx, c, izq.x - (S.paredes.length && S.prog > 0 ? 20 : 8), izq.y, `${fmt(P.alto)} m`, S.colores ? c.h : c.ink, 'right', 800, 12);
+    if (S.muesca){
+      const M = S.muesca, p = g.T((M.desde + M.hasta)/2, M.alto - M.profundidad), w = g.T(M.desde, M.alto);
+      rotulo(ctx, c, g.T(M.hasta, 0).x + 8, g.T(0, M.alto - M.profundidad/2).y, `e = ${fmt(M.profundidad)} m`, c.e, 'left', 800, 12);
+      rotulo(ctx, c, (w.x + g.T(M.hasta, M.alto).x)/2, w.y - 12, `${fmt(M.hasta - M.desde)} m`, c.ink, 'center', 700, 11);
+      if (E.drag){
+        ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arr || sobre) ? .2 : .1; ctx.beginPath(); ctx.arc(p.x, p.y, 16, 0, 7); ctx.fill(); ctx.restore();
+        punto(ctx, p.x, p.y, 7, c.card, c.ink);
+      }
+      geo.mango = p;
+    }
+    const tit = S.verP ? `perímetro: ${fmt(P.perimetro)} m` : 'perímetro: ?';
+    rotulo(ctx, c, W - 8, 12, tit, c.ink, 'right', 800, 12);
+  }
+
+  // ----- calles -----
+  function geoCalles(){
+    const C = E.cal, s = Math.min((W - 96)/C.m, (Hh - 92)/C.n, 76);
+    const ox = (W - C.m*s)/2, oy = Hh - 46 - (Hh - 92 - C.n*s)/2;
+    return { s, T:(x, y) => ({ x:ox + x*s, y:oy - y*s }) };
+  }
+  function dibCalles(c){
+    const C = E.cal, g = geoCalles(); geo = g;
+    const cerr = new Set(C.cerrados.map(q => q[0] + ',' + q[1]));
+    // manzanas
+    const mg = Math.min(9, g.s*.16);
+    ctx.save(); ctx.fillStyle = c.grid;
+    for (let x = 0; x < C.m; x++) for (let y = 0; y < C.n; y++){ const a = g.T(x, y + 1); ctx.beginPath(); ctx.roundRect(a.x + mg, a.y + mg, g.s - 2*mg, g.s - 2*mg, 6); ctx.fill(); }
+    ctx.restore();
+    // calles
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 2; ctx.globalAlpha = .7;
+    for (let x = 0; x <= C.m; x++) linea(ctx, g.T(x, 0), g.T(x, C.n));
+    for (let y = 0; y <= C.n; y++) linea(ctx, g.T(0, y), g.T(C.m, y));
+    ctx.restore();
+    // un camino
+    if (C.camino){
+      const pasos = C.camino.length, hasta = clamp(C.prog, 0, 1)*pasos;
+      let x = 0, y = 0;
+      ctx.save(); ctx.lineCap = 'round'; ctx.lineWidth = 6;
+      for (let q = 0; q < pasos && q < hasta; q++){
+        const dx = C.camino[q] === 'D' ? 1 : 0, dy = 1 - dx, f = Math.min(1, hasta - q), k = dx ? 'm' : 'n';
+        ctx.strokeStyle = dx ? c.m : c.n; ctx.globalAlpha = atenuar(k); ctx.lineWidth = grosor(k, 6);
+        linea(ctx, g.T(x, y), g.T(x + dx*f, y + dy*f)); x += dx; y += dy;
+      }
+      ctx.restore();
+    }
+    // cruces
+    for (let y = 0; y <= C.n; y++) for (let x = 0; x <= C.m; x++){
+      const p = g.T(x, y), clave = x + ',' + y;
+      if (cerr.has(clave)){
+        ctx.save(); ctx.strokeStyle = c.warn; ctx.lineWidth = 4; ctx.lineCap = 'round';
+        linea(ctx, { x:p.x - 10, y:p.y - 10 }, { x:p.x + 10, y:p.y + 10 }); linea(ctx, { x:p.x + 10, y:p.y - 10 }, { x:p.x - 10, y:p.y + 10 }); ctx.restore();
+        rotulo(ctx, c, p.x, p.y + (y === 0 ? 20 : -20), 'obras', c.warn, 'center', 800, 11);
+        continue;
+      }
+      const lleno = C.llenos.has(clave) && C.tabla;
+      if (lleno){
+        const t = String(C.tabla[y][x]); ctx.font = `800 ${g.s < 50 ? 11 : 13}px ${c.font}`;
+        const r = Math.max(11, ctx.measureText(t).width/2 + 5);
+        ctx.save(); ctx.globalAlpha = atenuar('N'); punto(ctx, p.x, p.y, r, c.paper, c.N, 2); ctx.fillStyle = c.N; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, p.x, p.y + .5); ctx.restore();
+      } else punto(ctx, p.x, p.y, E.tocar ? 8 : 4, c.paper, c.muted, 1.6);
+      if (C.siguiente && C.siguiente[0] === x && C.siguiente[1] === y) punto(ctx, p.x, p.y, 15, 'transparent', c.ink, 2);
+    }
+    const ca = g.T(0, 0), co = g.T(C.m, C.n);
+    rotulo(ctx, c, ca.x, ca.y + 22, 'casa', c.ink, 'center', 800, 12);
+    rotulo(ctx, c, co.x, co.y - 22, 'colegio', c.ink, 'center', 800, 12);
+    rotulo(ctx, c, (ca.x + g.T(C.m, 0).x)/2, ca.y + 22, `${C.m} cuadras →`, c.m, 'center', 800, 11);
+    rotulo(ctx, c, ca.x - 14, (ca.y + g.T(0, C.n).y)/2, `${C.n} cuadras ↑`, c.n, 'right', 800, 11);
+  }
+  function cruceEn(p){
+    if (E.modo !== 'calles' || !geo || !geo.T) return null;
+    const C = E.cal; let mejor = null, dm = 24;
+    for (let y = 0; y <= C.n; y++) for (let x = 0; x <= C.m; x++){ const q = geo.T(x, y), d = Math.hypot(q.x - p.x, q.y - p.y); if (d < dm){ dm = d; mejor = [x, y]; } }
+    return mejor;
+  }
+
+  // ----- la caja y la hormiga -----
+  const K = { k:.55, ang:Math.PI*32/180 };
+  const pr = (p, g) => ({ x:g.ox + (p[0] + p[1]*K.k*Math.cos(K.ang))*g.s, y:g.oy - (p[2] + p[1]*K.k*Math.sin(K.ang))*g.s });
+  // cómo se abre la segunda cara de cada desarrollo (a = ángulo, de 0 cerrada a π/2 abierta)
+  function abrirPunto(des, q, a, B){
+    if (des === 0) return [q[0], q[1]*Math.cos(a), B.z + q[1]*Math.sin(a)];
+    if (des === 1) return [B.x + q[1]*Math.sin(a), q[1]*Math.cos(a), q[2]];
+    return [B.x + q[2]*Math.sin(a), q[1], q[2]*Math.cos(a)];
+  }
+  function extCaja(){
+    const B = E.caja, pts = [];
+    for (const x of [0, B.x]) for (const y of [0, B.y]) for (const z of [0, B.z]) pts.push([x, y, z]);
+    // el desarrollo abierto también tiene que caber
+    if (B.des >= 0) for (const q of pts.slice()) pts.push(abrirPunto(B.des, q, Math.PI/2, B));
+    const g0 = { ox:0, oy:0, s:1 }, pp = pts.map(p => pr(p, g0));
+    const xs = pp.map(p => p.x), ys = pp.map(p => p.y);
+    return { w:Math.max(...xs) - Math.min(...xs), h:Math.max(...ys) - Math.min(...ys), x0:Math.min(...xs), y0:Math.min(...ys) };
+  }
+  const margenCaja = w => (w < 560 ? { iz:62, tot:116 } : { iz:100, tot:180 });
+  function geoCaja(){
+    const X = extCaja(), w = X.w, h = X.h, xs = [X.x0], ys = [X.y0], { iz, tot } = margenCaja(W);
+    const s = Math.min((W - tot)/w, (Hh - 64)/h);
+    const ox = iz + (W - tot - w*s)/2 - Math.min(...xs)*s, oy = (Hh - h*s)/2 - Math.min(...ys)*s + 4;
+    return { s, ox, oy };
+  }
+  function poli(ctx, ps){ ctx.beginPath(); ps.forEach((p, k) => (k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.closePath(); }
+  function dibCaja(c){
+    const B = E.caja, g = geoCaja(); geo = g;
+    const P = p => pr(p, g), X = B.x, Y = B.y, Z = B.z;
+    const a = B.abrir*Math.PI/2;
+    // caras visibles con relleno tenue (frente, tapa, costado); si una se abre, se dibuja abierta
+    const caras = {
+      frente:[[0,0,0],[X,0,0],[X,0,Z],[0,0,Z]], tapa:[[0,0,Z],[X,0,Z],[X,Y,Z],[0,Y,Z]], costado:[[X,0,0],[X,Y,0],[X,Y,Z],[X,0,Z]], base:[[0,0,0],[X,0,0],[X,Y,0],[0,Y,0]] };
+    const segunda = B.des === 0 ? 'tapa' : B.des >= 1 ? 'costado' : null, primera = B.des === 2 ? 'base' : B.des >= 0 ? 'frente' : null;
+    for (const k of ['frente', 'tapa', 'costado']){
+      if (k === segunda) continue;
+      ctx.save(); poli(ctx, caras[k].map(P)); ctx.fillStyle = c.muted; ctx.globalAlpha = k === primera ? .16 : .07; ctx.fill(); ctx.restore();
+    }
+    if (primera === 'base'){ ctx.save(); poli(ctx, caras.base.map(P)); ctx.fillStyle = c.muted; ctx.globalAlpha = .16; ctx.fill(); ctx.restore(); }
+    // aristas por dirección: x celeste, y magenta, z ámbar; las de atrás, a trazos
+    const aristas = [];
+    for (const y of [0, Y]) for (const z of [0, Z]) aristas.push(['x', [0, y, z], [X, y, z]]);
+    for (const x of [0, X]) for (const z of [0, Z]) aristas.push(['y', [x, 0, z], [x, Y, z]]);
+    for (const x of [0, X]) for (const y of [0, Y]) aristas.push(['z', [x, y, 0], [x, y, Z]]);
+    const oculta = (p, q) => (p[0] === 0 && p[1] === Y && p[2] === 0) || (q[0] === 0 && q[1] === Y && q[2] === 0);
+    const deLaSegunda = (p, q) => segunda === 'tapa' ? (p[2] === Z && q[2] === Z && !(p[1] === 0 && q[1] === 0)) : segunda === 'costado' ? (p[0] === X && q[0] === X && !(B.des === 1 ? (p[1] === 0 && q[1] === 0) : (p[2] === 0 && q[2] === 0))) : false;
+    for (const [k, p, q] of aristas){
+      ctx.save(); ctx.lineCap = 'round'; ctx.strokeStyle = c[k];
+      const des2 = deLaSegunda(p, q);
+      ctx.globalAlpha = (des2 && B.abrir > 0 ? .25 : 1)*atenuar(k);
+      ctx.lineWidth = grosor(k, oculta(p, q) ? 1.6 : 3); if (oculta(p, q) || (des2 && B.abrir > 0)) ctx.setLineDash([5, 5]);
+      linea(ctx, P(p), P(q)); ctx.restore();
+    }
+    // la segunda cara, abierta
+    if (segunda && B.abrir > 0){
+      const vs = caras[segunda].map(q => abrirPunto(B.des, q, a, B));
+      ctx.save(); poli(ctx, vs.map(P)); ctx.fillStyle = c.muted; ctx.globalAlpha = .16; ctx.fill(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .8; ctx.lineWidth = 1.6; ctx.stroke(); ctx.restore();
+    }
+    // la recta por dentro
+    if (B.diagonal){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 4]); ctx.lineWidth = 2; linea(ctx, P([0, 0, 0]), P([X, Y, Z])); ctx.restore();
+      const m = P([X/2, Y/2, Z/2]); rotulo(ctx, c, m.x, m.y - 10, 'por dentro', c.muted, 'center', 700, 11);
+      if (B.des >= 0 && B.abrir > .05){
+        // donde estaba el azúcar antes de abrir la caja: ahí termina la recta por dentro
+        const g0 = P([X, Y, Z]); ctx.save(); ctx.globalAlpha = .6*B.abrir; punto(ctx, g0.x, g0.y, 4, c.muted); ctx.restore();
+        ctx.save(); ctx.globalAlpha = B.abrir; rotulo(ctx, c, g0.x - 8, g0.y - 12, 'el azúcar, con la caja cerrada', c.muted, 'right', 700, 10); ctx.restore();
+      }
+    }
+    // la ruta de la hormiga
+    let G = [X, Y, Z];
+    if (B.des >= 0){
+      const D = B.H.desarrollos[B.des], cr = [D.cruce.x, D.cruce.y, D.cruce.z];
+      G = abrirPunto(B.des, [X, Y, Z], a, B);
+      if (B.ruta > 0){
+        const A = P([0, 0, 0]), Cc = P(cr), Gg = P(G), f = B.ruta;
+        const l1 = Math.hypot(cr[0], cr[1], cr[2]), l2 = D.longitud - l1, t = f*D.longitud;
+        ctx.save(); ctx.strokeStyle = c.d; ctx.globalAlpha = atenuar('d'); ctx.lineWidth = grosor('d', 4); ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(A.x, A.y);
+        if (t <= l1){ const u = t/l1; ctx.lineTo(A.x + (Cc.x - A.x)*u, A.y + (Cc.y - A.y)*u); }
+        else { ctx.lineTo(Cc.x, Cc.y); const u = (t - l1)/l2; ctx.lineTo(Cc.x + (Gg.x - Cc.x)*u, Cc.y + (Gg.y - Cc.y)*u); }
+        ctx.stroke(); ctx.restore();
+        if (f >= 1) punto(ctx, Cc.x, Cc.y, 4, c.d);
+      }
+    }
+    // medidas
+    const mx = P([X/2, 0, 0]), my = P([X, Y/2, 0]), mz = P([0, 0, Z/2]);
+    rotulo(ctx, c, mx.x, mx.y + 15, `x = ${fmt(X)} cm`, c.x, 'center', 800, 12);
+    rotulo(ctx, c, my.x + 10, my.y + 6, `y = ${fmt(Y)} cm`, c.y, 'left', 800, 12);
+    rotulo(ctx, c, mz.x - 8, mz.y, `z = ${fmt(Z)} cm`, c.z, 'right', 800, 12);
+    // la hormiga y el azúcar
+    const A = P([0, 0, 0]), Gp = P(G);
+    punto(ctx, A.x, A.y, 6, c.ink); rotulo(ctx, c, A.x - 6, A.y + 16, 'hormiga', c.ink, 'right', 800, 11);
+    ctx.save(); ctx.fillStyle = c.paper; ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.fillRect(Gp.x - 6, Gp.y - 6, 12, 12); ctx.strokeRect(Gp.x - 6, Gp.y - 6, 12, 12); ctx.restore();
+    rotulo(ctx, c, Gp.x + 10, Gp.y - 12, 'azúcar', c.ink, 'left', 800, 11);
+  }
+
+  // ----- arcos -----
+  function dibArcos(c){
+    const A = E.arc, alto = A.diametro/2 + A.diametro/4,   // caben de 2 partes en adelante
+      s = Math.min((W - 60)/A.diametro, (Hh - 76)/alto), cx = W/2, cy = 32 + A.diametro*s/2 + (Hh - 76 - alto*s)/2;
+    const x0 = cx - A.diametro*s/2;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.setLineDash([4, 4]); linea(ctx, { x:x0 - 8, y:cy }, { x:x0 + A.diametro*s + 8, y:cy }); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.G; ctx.globalAlpha = atenuar('G'); ctx.lineWidth = grosor('G', 4); ctx.beginPath(); ctx.arc(cx, cy, A.diametro*s/2, Math.PI, 2*Math.PI); ctx.stroke(); ctx.restore();
+    const r = A.diametro*s/(2*A.partes);
+    ctx.save(); ctx.strokeStyle = c.c; ctx.globalAlpha = atenuar('c'); ctx.lineWidth = grosor('c', 4);
+    for (let k = 0; k < A.partes; k++){ ctx.beginPath(); ctx.arc(x0 + r*(2*k + 1), cy, r, 0, Math.PI); ctx.stroke(); }
+    ctx.restore();
+    rotulo(ctx, c, cx, cy - A.diametro*s/2 - 12, A.ver ? `G = ${A.verTxt.G}` : 'G = ?', c.G, 'center', 800, 12);
+    rotulo(ctx, c, cx, cy + r + 16, A.ver ? `c = ${A.verTxt.c}` : 'c = ?', c.c, 'center', 800, 12);
+    rotulo(ctx, c, x0 + A.diametro*s - 2, cy - 12, `${fmt(A.diametro)} m`, c.ink, 'right', 700, 11);
+  }
+
+  // ----- la reja de cubos -----
+  function dibReja(c){
+    const R = E.reja, g0 = { ox:0, oy:0, s:1 };
+    const esq = [[0,0,0],[R.a,0,0],[0,R.b,0],[R.a,R.b,0],[0,0,R.c],[R.a,R.b,R.c],[R.a,0,R.c],[0,R.b,R.c]].map(p => pr(p, g0));
+    const xs = esq.map(p => p.x), ys = esq.map(p => p.y), w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
+    const s = Math.min((W - 150)/w, (Hh - 70)/h), g = { s, ox:70 + (W - 150 - w*s)/2 - Math.min(...xs)*s, oy:(Hh - h*s)/2 - Math.min(...ys)*s + 6 };
+    geo = g;
+    const P = p => pr(p, g);
+    ctx.save(); ctx.lineCap = 'round';
+    for (let z = 0; z <= R.c; z++) for (let y = 0; y <= R.b; y++) for (let x = 0; x <= R.a; x++){
+      if (x < R.a){ ctx.strokeStyle = c.x; ctx.lineWidth = grosor('x', 2.4); ctx.globalAlpha = atenuar('x'); linea(ctx, P([x, y, z]), P([x + 1, y, z])); }
+      if (y < R.b){ ctx.strokeStyle = c.y; ctx.lineWidth = grosor('y', 2.4); ctx.globalAlpha = atenuar('y'); linea(ctx, P([x, y, z]), P([x, y + 1, z])); }
+      if (z < R.c){ ctx.strokeStyle = c.z; ctx.lineWidth = grosor('z', 2.4); ctx.globalAlpha = atenuar('z'); linea(ctx, P([x, y, z]), P([x, y, z + 1])); }
+    }
+    ctx.restore();
+    for (let z = 0; z <= R.c; z++) for (let y = 0; y <= R.b; y++) for (let x = 0; x <= R.a; x++){
+      const p = P([x, y, z]);
+      if (R.tabla && x + y + z <= R.prog){
+        const t = String(R.tabla[z][y][x]); ctx.font = `800 12px ${c.font}`; const r = Math.max(10, ctx.measureText(t).width/2 + 4);
+        ctx.save(); ctx.globalAlpha = atenuar('N'); punto(ctx, p.x, p.y, r, c.paper, c.N, 2); ctx.fillStyle = c.N; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, p.x, p.y + .5); ctx.restore();
+      } else punto(ctx, p.x, p.y, 4, c.ink);
+    }
+    const A = P([0, 0, 0]), B = P([R.a, R.b, R.c]);
+    rotulo(ctx, c, A.x - 6, A.y + 16, 'araña', c.ink, 'right', 800, 11);
+    rotulo(ctx, c, B.x + 8, B.y - 14, 'llegada', c.ink, 'left', 800, 11);
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, Hh); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, Hh);
+    if (E.modo === 'figura' && E.fig) dibFiguras(c);
+    else if (E.modo === 'escalera' && E.esc) dibEscalera(c);
+    else if (E.modo === 'calles' && E.cal) dibCalles(c);
+    else if (E.modo === 'caja' && E.caja) dibCaja(c);
+    else if (E.modo === 'arcos' && E.arc) dibArcos(c);
+    else if (E.modo === 'reja' && E.reja) dibReja(c);
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const vr = k => k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k;
+    const it = (k, t, f) => `<span style="--k:var(${vr(k)})"><i class="${f || ''}" style="background:var(${vr(k)})"></i>${t}</span>`;
+    const l = E.ley || [];
+    document.getElementById(idLey).innerHTML = l.map(([k, t, f]) => it(k, t, f)).join('');
+  };
+  E.avisar = () => {
+    const filas = E.lect.map(f => f(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = { figura:'Figuras hechas de líneas rectas.', escalera:'Una figura de lados horizontales y verticales sobre una cuadrícula de 1 m.', calles:'Un plano de calles en cuadrícula.',
+        caja:'Una caja con una hormiga en una esquina y un poco de azúcar en la esquina opuesta.', arcos:'Un semicírculo grande y semicírculos chicos sobre el mismo diámetro.', reja:'Una reja de cubos.' }[E.modo];
+      document.getElementById(idDesc).textContent = [E.desc || base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); E.avisar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+
+  // ----- arrastrar el fondo del entrante (dedo, ratón y teclado) -----
+  function ponerHondo(e){
+    const M = E.esc.muesca; e = clamp(Math.round(e), 1, M.alto - 1);
+    if (e === M.profundidad) return;
+    M.profundidad = e; E.esc.vertices = MT.muesca(M).vertices;
+    if (E.alArrastrar) E.alArrastrar(e); E.dibujar(); E.avisar();
+  }
+  Celular.arrastre(cv, {
+    activo: () => !!E.drag && !E.ocupado && !E.anim && E.modo === 'escalera',
+    cerca: (p, r) => !!geo && !!geo.mango && Math.hypot(p.x - geo.mango.x, p.y - geo.mango.y) < r,
+    empezar: () => { arr = true; E.dibujar(); },
+    mover: p => { if (!geo || !geo.T) return; const M = E.esc.muesca, yy = (geo.T(0, 0).y - p.y)/geo.s; ponerHondo(M.alto - yy); },
+    soltar: () => { arr = false; E.dibujar(); },
+    sobre: s => { sobre = s; E.dibujar(); }
+  });
+  cv.addEventListener('keydown', e => {
+    if (!E.drag || E.ocupado || E.anim || E.modo !== 'escalera') return;
+    const M = E.esc.muesca;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight'){ e.preventDefault(); ponerHondo(M.profundidad + 1); }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft'){ e.preventDefault(); ponerHondo(M.profundidad - 1); }
+  });
+  // tocar un punto o un cruce (un toque no le quita el desplazamiento a la página)
+  cv.addEventListener('click', e => {
+    if (!E.tocar || E.ocupado || E.anim || !E.alTocar) return;
+    const r = cv.getBoundingClientRect(), p = { x:e.clientX - r.left, y:e.clientY - r.top };
+    if (E.modo === 'figura'){ const v = nodoEn(p); if (v >= 0) E.alTocar(v); }
+    else if (E.modo === 'calles'){ const q = cruceEn(p); if (q) E.alTocar(q); }
+  });
+  return E;
+}
+
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const L = (k, nombre, valor) => () => [k, nombre, valor];
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, fig2:'casita', trazo:[], msg:'', esc5:'escalera', prog5:0, hondo:3, llenos7:null, camino7:null, k7:0, des8:0 };
+const { i:i_, t:t_, R:R_, b:b_, h:h_, e:e_, m:m_, n:n_, N:N_, x:x_, y:y_, z:z_, d:d_ } = W_;
+
+// Números de la escena: todos salen del motor
+const FIGS1 = [{ f:FIG.sobre, nombre:'el sobre' }, { f:FIG.casita, nombre:'la casita' }, { f:FIG.ventanas, nombre:'las tres ventanas' }];
+const P1 = MT.compararFiguras(FIGS1.map(g => g.f));
+const U1 = FIGS1.map(g => MT.unTrazo(g.f));
+const C3 = MT.cartero(FIG.parque), C3c = MT.cartero(FIG.parque, { volver:true });
+const ESC4 = MT.escalera({ anchos:[3, 3, 2], altos:[2, 2, 2] }), P4 = MT.perimetro(ESC4);
+const CHK = MT.chakana({ medias:[1, 3, 5], alturas:[5, 3, 1] });
+const MU = { ancho:10, alto:6, desde:4, hasta:7 };
+const C6 = MT.caminos({ m:4, n:3 }), L6 = MT.enumerarCaminos({ m:4, n:3 });
+const H8 = MT.hormiga({ x:8, y:4, z:2 });
+const nom = k => FIGS1[k].nombre;
+
+const G1 = { id:'trazos-paso1', ok:'c', opts:[
+  ['a', `${nom(P1.errores.menosLineas)[0].toUpperCase() + nom(P1.errores.menosLineas).slice(1)}: tiene menos líneas que las otras dos`, 'trazo-menos-lineas', 'hipotesis'],
+  ['b', `${nom(P1.errores.sinCruces)[0].toUpperCase() + nom(P1.errores.sinCruces).slice(1)}: no tiene ningún cruce`, 'trazo-sin-cruces', 'hipotesis'],
+  ['c', `${nom(P1.correcta)[0].toUpperCase() + nom(P1.correcta).slice(1)}: sus líneas se encadenan de una esquina de abajo a la otra`],
+  ['d', 'Las tres: cualquiera sale si se empieza en el punto justo', 'trazo-todas-si-se-empieza-bien', 'hipotesis']],
+  fb:{ c:`¡Bien! Cuenta cuántas líneas llegan a cada punto. En la casita solo hay ${i_('2')} puntos impares, las dos esquinas de abajo: se empieza en una y se termina en la otra. El sobre y las ventanas tienen ${i_('4')} impares cada uno: con un solo trazo no se puede.`,
+    a:`Elegiste la A. El sobre tiene menos líneas (4 lados y 2 diagonales), pero sus cuatro esquinas tienen 3 líneas cada una. Cada vez que el lápiz pasa por un punto, entra por una línea y sale por otra: un punto con número impar de líneas tiene que ser el inicio o el final. Cuatro puntos así no caben en un solo trazo. La correcta está marcada.`,
+    b:'Elegiste la B. Los cruces no estorban: el lápiz pasa por un cruce entrando por una línea y saliendo por otra. Lo que estorba son los puntos con un número impar de líneas: las tres ventanas tienen cuatro (las uniones en forma de T). La correcta está marcada.',
+    d:`Elegiste la D. Empezar bien ayuda, pero no siempre alcanza. El motor probó todos los caminos en el sobre y en las ventanas: el lápiz quedó trabado ${U1[0].probados} y ${U1[2].probados} veces, y nunca pasó por todas las líneas. La correcta está marcada.` } };
+const G3 = { id:'trazos-paso3', ok:'b', opts:[
+  ['a', `${C3.errores.sinRepetir} m: lo que suman todos los senderos`, 'cartero-sin-repetir', 'hipotesis'],
+  ['b', `${C3.minimo} m: repite uno de los lados cortos`],
+  ['c', `${C3.errores.cerrar} m: repite dos de los lados cortos`, 'cartero-empareja-todos', 'hipotesis'],
+  ['d', `${C3.errores.todoDoble} m: pasa por cada sendero de ida y de vuelta`, 'cartero-todo-doble', 'hipotesis']],
+  fb:{ b:`¡Bien! Las cuatro esquinas son impares. Dos pueden ser el inicio y el final; las otras dos hay que unirlas repitiendo el camino más corto entre ellas: un lado de ${R_('6 m')}. Total: 48 + 6 = ${C3.minimo} m.`,
+    a:'Elegiste la A. Para no repetir nada, la figura tendría que salir de un solo trazo, y el parque tiene cuatro esquinas impares: hay que pasar dos veces por algún tramo. Lo mínimo es repetir un lado de 6 m: 54 m. La correcta está marcada.',
+    c:'Elegiste la C. Repetir dos lados cortos sirve para volver al punto de partida, pero aquí puede terminar donde quiera: dos esquinas impares pueden quedar como inicio y final. Basta repetir un lado: 54 m. La correcta está marcada.',
+    d:'Elegiste la D. Así recorre todo, pero camina el doble. Solo hace falta repetir lo necesario para que no queden impares sueltos: un lado de 6 m. Total: 54 m. La correcta está marcada.' } };
+const G4 = { id:'trazos-paso4', ok:'d', opts:[
+  ['a', `${P4.errores.soloConNumero} m: 8 + 6, los dos lados que tienen medida`, 'perimetro-solo-lados-con-numero', 'hipotesis'],
+  ['b', `${P4.errores.diagonal} m: 8 + 6 y los escalones, que van como la diagonal de 10 m`, 'perimetro-escalera-como-diagonal', 'hipotesis'],
+  ['c', `${P4.errores.area} m: los cuadraditos de 1 m que hay adentro`, 'GE4-area-por-perimetro', 'parcial'],
+  ['d', `${P4.perimetro} m: los escalones suman lo mismo que la base y el lado izquierdo`]],
+  fb:{ d:`¡Bien! Corre los tramos horizontales de los escalones hacia arriba: juntos cubren justo ${b_('8 m')}, como la base. Corre los verticales hacia la derecha: cubren ${h_('6 m')}. El perímetro es el del rectángulo: 2(8 + 6) = ${P4.perimetro} m.`,
+    a:'Elegiste la A. 8 + 6 son solo dos lados. Los escalones también son borde: sus tramos horizontales suman otros 8 m y los verticales otros 6 m. Total: 28 m. La correcta está marcada.',
+    b:'Elegiste la B. Los escalones van cerca de la diagonal, pero no la siguen: van en zigzag, horizontal y vertical. Ese zigzag mide 8 + 6 = 14 m, más que los 10 m de la diagonal, por pequeños que sean los escalones. Total: 28 m. La correcta está marcada.',
+    c:'Elegiste la C. 34 son los cuadraditos de adentro: eso es el área, en m². El perímetro mide solo el borde: 28 m. La correcta está marcada.' } };
+const G6 = { id:'trazos-paso6', ok:'a', unidad:U_RUTAS, opts:[
+  ['a', `${C6.caminos}: cada cruce suma los caminos de su izquierda y los de abajo`],
+  ['b', `${C6.errores.producto}: 4 · 3, las cuadras de un lado por las del otro`, 'caminos-producto', 'hipotesis'],
+  ['c', `${C6.errores.aMano}: los que salen al dibujarlos uno por uno`, 'AR18-enumeracion-sin-sistema', 'documentado'],
+  ['d', `${C6.errores.potencia}: en cada una de las 7 cuadras hay 2 opciones`, 'caminos-dos-a-la-n', 'hipotesis']],
+  fb:{ a:`¡Bien! A cada cruce se llega desde el de la izquierda o desde el de abajo, así que sus caminos son la suma de los de esos dos. Llenando la cuadrícula, al colegio llegan ${N_(String(C6.caminos))}.`,
+    b:'Elegiste la B. 4 · 3 = 12 son las manzanas, no los caminos. Cada camino tiene 7 cuadras, y hay muchas formas de ordenar las 4 de la derecha y las 3 hacia arriba: 35. La correcta está marcada.',
+    c:`Elegiste la C. Al dibujarlos uno por uno salen primero los de pocos giros (los que tienen 3 giros o menos son ${C6.errores.aMano}), y los demás se escapan. Con un orden, llenando la cuadrícula cruce por cruce, salen ${C6.caminos}. La correcta está marcada.`,
+    d:'Elegiste la D. No siempre hay 2 opciones: al llegar al borde de arriba o al de la derecha, solo queda una. Y cada camino tiene justo 4 cuadras a la derecha y 3 hacia arriba; 2⁷ cuenta también los que se pasan. Son 35. La correcta está marcada.' } };
+const G8 = { id:'trazos-paso8', ok:'c', unidad:U_RUTAS, opts:[
+  ['a', `${aprox(H8.exactos.diagonalInterior, H8.errores.diagonalInterior)} cm: la recta que une las dos esquinas`, 'hormiga-diagonal-interior', 'hipotesis'],
+  ['b', `${H8.errores.porAristas} cm: por las aristas, 8 + 4 + 2`, 'hormiga-por-aristas', 'hipotesis'],
+  ['c', `${H8.exacto} cm: subiendo en diagonal por el frente y siguiendo por la tapa`],
+  ['d', `${aprox(H8.exactos.caraYArista, H8.errores.caraYArista)} cm: por la diagonal de la base y subiendo 2 cm`, 'hormiga-cara-y-arista', 'hipotesis']],
+  fb:{ c:`¡Bien! Abre la caja: el frente (8 × 2) y la tapa (8 × 4) quedan juntos en un rectángulo de ${x_('8')} por ${y_('4')} + ${z_('2')} = 6. La ruta más corta es su diagonal: √(8² + 6²) = ${d_('10 cm')}.`,
+    a:`Elegiste la A. Esa recta (${H8.diagonalExacta} ≈ ${fmt(H8.diagonal, 1)} cm) atraviesa la caja por dentro, y la hormiga camina por la superficie. Abriendo el frente y la tapa sobre el plano, la ruta es una recta de 10 cm. La correcta está marcada.`,
+    b:'Elegiste la B. Por las aristas mide 14 cm, pero cortar en diagonal por las caras ahorra mucho. Abriendo el frente y la tapa, la ruta es una recta de 10 cm. La correcta está marcada.',
+    d:`Elegiste la D. Ir en diagonal por la base y después subir (${H8.exactos.caraYArista} ≈ ${fmt(H8.errores.caraYArista, 1)} cm) es mejor que las aristas (${H8.errores.porAristas} cm), pero no es una sola recta: dobla en la esquina. Abriendo el frente y la tapa, la ruta es una recta de 10 cm. La correcta está marcada.` } };
+
+// ---- configuraciones ----
+const leyFig = conImp => conImp ? [['i', 'i · punto impar (llega un número impar de líneas)', 'pt'], ['t', 't · el trazo']] : [['t', 't · el trazo']];
+function figuras1(ya){
+  E.config({ modo:'figura', fig:{ figs:FIGS1, grados:ya, impares:ya, ruta: ya ? { fig:1, nodos:U1[1].recorrido, prog:1 } : null },
+    lect: ya ? FIGS1.map((g, k) => L(k === 1 ? 't' : 'i', g.nombre, k === 1 ? 'un trazo' : `${U1[k].numImpares} impares`)) : [L('ink', 'Figuras', '3'), L('ink', '¿De un solo trazo?', '?')],
+    ley: ya ? leyFig(true) : [], desc:'Tres figuras: el sobre (un cuadrado con sus dos diagonales), la casita (el sobre con un techo) y las tres ventanas (tres cuadrados en fila).' });
+}
+const FIGS2 = { casita:{ f:FIG.casita, nombre:'la casita' }, sobre:{ f:FIG.sobre, nombre:'el sobre' }, ventanas:{ f:FIG.ventanas, nombre:'las tres ventanas' } };
+function figura2(){
+  const g = FIGS2[S.fig2];
+  E.config({ modo:'figura', tocar:true, fig:{ figs:[g], grados:true, impares:true, numeros:true, trazo:S.trazo.slice() },
+    lect:[E0 => { const R = MT.revisarTrazo(g.f, S.trazo); return ['t', 'Líneas recorridas', `${R.usados.length} de ${g.f.tramos.length}`]; },
+      L('i', 'Puntos impares i', String(MT.grados(g.f).numImpares)), L('ink', 'Trazos que hacen falta', String(MT.unTrazo(g.f).trazos))],
+    ley:leyFig(true), alTocar:tocar2, alCambiar:vivo2, desc:`${g.nombre[0].toUpperCase() + g.nombre.slice(1)}: toca los puntos en orden para trazarla.` });
+}
+function tocar2(v){
+  const g = FIGS2[S.fig2], prueba = S.trazo.concat([v]);
+  const R = MT.revisarTrazo(g.f, prueba);
+  if (S.trazo.length && !R.valido){ S.msg = R.problema.tipo === 'sin-linea' ? 'No hay una línea entre esos dos puntos.' : 'Esa línea ya la pasaste: no se vale repetir.'; pintarMsg(true); return; }
+  S.trazo = prueba; E.fig.trazo = S.trazo.slice(); E.fig.ruta = null;
+  if (R.completo) S.msg = `¡Lo lograste! Pasaste por las ${g.f.tramos.length} líneas sin repetir ninguna.`;
+  else if (S.trazo.length > 1 && R.salidas === 0) S.msg = `Te quedaste trabado: no sale ninguna línea libre de este punto y faltan ${R.faltan}.`;
+  else S.msg = '';
+  pintarMsg(!R.completo && S.trazo.length > 1 && R.salidas === 0); E.dibujar(); E.avisar(); pintarPuntos();
+}
+function pintarMsg(mal){ const m = $('msg2'); if (m){ m.textContent = S.msg; m.className = 'msg ' + (S.msg ? (mal ? 'mal' : 'ok') : ''); } }
+function pintarPuntos(){
+  const cont = $('puntos2'); if (!cont) return;
+  const g = FIGS2[S.fig2];
+  cont.innerHTML = g.f.nodos.map((_, v) => `<button type="button" class="btn chico punto" data-v="${v}">P${v + 1}</button>`).join('');
+  cont.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { if (!S.ocupado && !E.anim) tocar2(+b.dataset.v); });
+}
+function vivo2(){
+  const d = $('vivo2'); if (!d) return;
+  const g = FIGS2[S.fig2], U = MT.unTrazo(g.f);
+  const regla = U.regla === 'circuito' ? 'se puede y se vuelve al inicio' : U.regla === 'camino' ? 'se puede: se empieza en un impar y se termina en el otro' : 'no se puede de un solo trazo';
+  d.innerHTML = `<div class="eq">${i_('i')} = ${i_(String(U.numImpares))}<span class="note">${regla}</span></div>
+    <div class="eq">trazos = ${fr(i_('i'), '2')} = ${fr(i_(String(U.numImpares)), '2')} = ${t_(String(U.trazos))}</div>`;
+}
+const parque = ya => ({ modo:'figura', fig:{ figs:[{ f:FIG.parque, nombre:'el parque' }], longitudes:true, impares:ya, grados:ya, repetir: ya ? C3.repetir : [], ruta: ya ? { nodos:C3.ruta, prog:1 } : null },
+  lect: ya ? [L('ink', 'Senderos', `${C3.suma} m`), L('R', 'Repetido R', `${C3.repetido} m`), L('t', 'Caminata', `${C3.minimo} m`)] : [L('ink', 'Senderos', 'el borde y 2 diagonales'), L('ink', 'Caminata mínima', '?')],
+  ley: ya ? [['i', 'i · esquina impar', 'pt'], ['R', 'R · lo que se repite', 'dash'], ['t', 't · la caminata']] : [],
+  desc:'El parque: un rectángulo de 8 m por 6 m con sus dos diagonales, que se cruzan en el centro; cada media diagonal mide 5 m.' });
+const lectEsc = ya => ya ? [L('b', 'Horizontales', `${fmt(P4.horizontales/2)} + ${fmt(P4.horizontales/2)} m`), L('h', 'Verticales', `${fmt(P4.verticales/2)} + ${fmt(P4.verticales/2)} m`), L('ink', 'Perímetro', `${P4.perimetro} m`)]
+  : [L('ink', 'Base', `${P4.ancho} m`), L('ink', 'Lado izquierdo', `${P4.alto} m`), L('ink', 'Perímetro', '?')];
+const escalera4 = ya => ({ modo:'escalera', esc:{ vertices:ESC4.vertices, colores:ya, caja:ya, prog: ya ? 1 : 0, verP:ya }, lect:lectEsc(ya),
+  ley: ya ? [['b', 'b · lados horizontales'], ['h', 'h · lados verticales'], ['muted', 'rectángulo que la encierra', 'dash']] : [],
+  desc:'Una figura en forma de escalera, con todos sus ángulos rectos, sobre una cuadrícula de 1 m. Se conocen su base y su lado izquierdo.' });
+function forma5(){
+  const k = S.esc5;
+  const vert = k === 'escalera' ? ESC4.vertices : k === 'chakana' ? CHK.vertices : MT.muesca(Object.assign({ profundidad:S.hondo }, MU)).vertices;
+  const muesca = k === 'entrante' ? Object.assign({ profundidad:S.hondo }, MU) : null;
+  const P = () => MT.perimetro({ vertices:E.esc.vertices });
+  E.config({ modo:'escalera', drag:k === 'entrante', esc:{ vertices:vert, colores:true, caja:true, prog:S.prog5, verP:true, paredes: k === 'entrante' ? MT.muesca(Object.assign({ profundidad:S.hondo }, MU)).paredes : [], muesca },
+    lect:[E0 => ['ink', 'Perímetro', `${fmt(P().perimetro)} m`], E0 => ['ink', 'Rectángulo', `${fmt(P().caja)} m`]].concat(k === 'entrante' ? [E0 => ['e', 'Diferencia', `${fmt(P().exceso)} m = 2e`]] : []),
+    ley:[['b', 'b · horizontales'], ['h', 'h · verticales']].concat(k === 'entrante' ? [['e', 'e · paredes del entrante']] : []).concat([['muted', 'rectángulo que la encierra', 'dash']]),
+    alArrastrar:v => { S.hondo = v; }, alCambiar:vivo5,
+    desc: k === 'escalera' ? 'La escalera del paso 4.' : k === 'chakana' ? 'Una chakana simplificada: una cruz escalonada de 10 m por 10 m.' : 'Un rectángulo de 10 m por 6 m con un entrante arriba: arrastra su fondo.' });
+}
+function vivo5(){
+  const d = $('vivo5'); if (!d) return;
+  const P = MT.perimetro({ vertices:E.esc.vertices });
+  d.innerHTML = `<div class="eq">horizontales: ${fmt(P.horizontales)} = 2 · ${b_(fmt(P.ancho))}<span class="note">${b_('b')} = ${fmt(P.ancho)}, el ancho</span></div>
+    <div class="eq">verticales: ${fmt(P.verticales)} = 2 · ${h_(fmt(P.alto))}${S.esc5 === 'entrante' ? ` + 2 · ${e_(fmt(E.esc.muesca.profundidad))}` : ''}<span class="note">${h_('h')} = ${fmt(P.alto)}, el alto</span></div>
+    <div class="eq">perímetro = ${fmt(P.perimetro)} m<span class="note">${P.sinEntrantes ? 'igual que el rectángulo que la encierra' : `el rectángulo mide ${fmt(P.caja)}: sobran las dos paredes del entrante`}</span></div>`;
+}
+const lectCalles = ya => [L('m', 'A la derecha m', '4 cuadras'), L('n', 'Hacia arriba n', '3 cuadras'), L('N', 'Caminos N', ya ? String(C6.caminos) : '?')];
+const todos = (m, n) => { const s = new Set(); for (let y = 0; y <= n; y++) for (let x = 0; x <= m; x++) s.add(x + ',' + y); return s; };
+const calles6 = ya => ({ modo:'calles', cal:{ m:4, n:3, tabla:C6.tabla, llenos: ya ? todos(4, 3) : new Set() }, lect:lectCalles(ya),
+  ley: ya ? [['m', 'm · cuadra a la derecha'], ['n', 'n · cuadra hacia arriba'], ['N', 'N · caminos hasta el cruce', 'pt']] : [],
+  desc:'Un plano de calles de Juliaca: la casa en la esquina de abajo a la izquierda y el colegio 4 cuadras a la derecha y 3 hacia arriba.' });
+function calles7(){
+  E.config({ modo:'calles', tocar:true, cal:{ m:4, n:3, tabla:C6.tabla, llenos:S.llenos7, camino:S.camino7 },
+    lect:[E0 => ['N', 'Cruces llenos', `${S.llenos7.size} de 20`], L('N', 'Al colegio', S.llenos7.has('4,3') ? String(C6.caminos) : '?')],
+    ley:[['m', 'm · →'], ['n', 'n · ↑'], ['N', 'N · caminos hasta el cruce', 'pt']], alTocar:tocar7, alCambiar:vivo7,
+    desc:'El plano de calles: toca un cruce para escribir cuántos caminos llegan a él.' });
+}
+function tocar7(q){
+  const [x, y] = q, k = x + ',' + y, msg = $('msg7');
+  if (S.llenos7.has(k)) return;
+  if ((x > 0 && !S.llenos7.has((x - 1) + ',' + y)) || (y > 0 && !S.llenos7.has(x + ',' + (y - 1)))){ if (msg){ msg.textContent = 'Primero llena el cruce de su izquierda y el de abajo.'; msg.className = 'msg mal'; } return; }
+  S.llenos7.add(k); if (msg){ { const nn = C6.tabla[y][x]; msg.textContent = nn === 1 ? 'Al cruce llega 1 camino.' : `Al cruce llegan ${nn} caminos.`; } msg.className = 'msg ok'; }
+  E.cal.llenos = S.llenos7; E.dibujar(); E.avisar();
+}
+function vivo7(){
+  const d = $('vivo7'); if (!d) return;
+  d.innerHTML = S.camino7 ? `<div class="eq flechas" aria-label="Camino: ${S.camino7.split('').map(ch => ch === 'D' ? 'derecha' : 'arriba').join(', ')}">${flechas(S.camino7)}</div>
+    <div class="eq">camino ${S.k7} de ${L6.total}<span class="note">siempre 4 ${m_('→')} y 3 ${n_('↑')}</span></div>` : '';
+}
+const lectCaja = (ya, k) => [L('x', 'Largo x', '8 cm'), L('y', 'Ancho y', '4 cm'), L('z', 'Alto z', '2 cm'),
+  ya ? L('d', 'Ruta d', `${aprox(H8.desarrollos[k].exacto, H8.desarrollos[k].longitud)} cm`) : L('d', 'Ruta d', '?')];
+const caja8 = (ya, k) => ({ modo:'caja', caja:{ x:8, y:4, z:2, H:H8, des: ya ? k : -1, abrir: ya ? 1 : 0, ruta: ya ? 1 : 0, diagonal:ya }, lect:lectCaja(ya, k),
+  ley: ya ? [['x', 'x · largo'], ['y', 'y · ancho'], ['z', 'z · alto'], ['d', 'd · ruta de la hormiga'], ['muted', 'recta por dentro', 'dash']] : [['x', 'x · largo'], ['y', 'y · ancho'], ['z', 'z · alto']],
+  desc:'Una caja de fósforos grande, de 8 cm de largo, 4 de ancho y 2 de alto. La hormiga está en una esquina de abajo, adelante a la izquierda; el azúcar, en la esquina de arriba más alejada.' });
+const NOMDES = ['frente y tapa', 'frente y costado', 'base y costado'];
+function probar8(k){
+  S.des8 = k; const o = caja8(true, k); o.caja.abrir = 0; o.caja.ruta = 0; E.config(o); const B = E.caja;
+  E.animar(0, 1, 1300, v => { B.abrir = v; }, () => E.animar(0, 1, 1000, v => { B.ruta = v; }, () => { E.config(caja8(true, k)); botones8(); }));
+}
+function botones8(){
+  const cont = $('des8'); if (!cont) return;
+  cont.innerHTML = H8.desarrollos.map((D, k) => `<button type="button" aria-pressed="${k === S.des8}" data-k="${k}">${NOMDES[k]}</button>`).join('');
+  cont.querySelectorAll('button').forEach(b => b.onclick = () => { if (S.ocupado || E.anim) return; probar8(+b.dataset.k); if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); });
+  const d = $('vivo8'); if (d){ const D = H8.desarrollos[S.des8];
+    d.innerHTML = `<div class="eq">${NOMDES[S.des8]}: un rectángulo de ${fmt(D.largo)} por ${fmt(D.suma)}</div><div class="eq">${d_('d')} = √(${fmt(D.largo)}² + ${fmt(D.suma)}²) = ${d_(aprox(D.exacto, D.longitud) + ' cm')}</div>`; }
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: ¿cuál sale de un solo trazo?', gate:G1,
+   prep:() => figuras1(!!S.pred[G1.id]),
+   anima:fin => { figuras1(true); const F = E.fig; F.ruta.prog = 0; F.grados = false; F.impares = false; E.dibujar();
+     E.animar(0, 1, 900, () => {}, () => { F.grados = true; F.impares = true; E.leyenda(); E.animar(0, 1, 2600, v => { F.ruta.prog = v; }, () => { figuras1(true); fin(); }, true); }); },
+   body:() => `<p class="problem">Hay que dibujar cada figura sin levantar el lápiz y sin pasar dos veces por la misma línea (cruzar una línea por un punto sí se vale).</p>
+   <p>¿Cuál de las tres figuras se puede dibujar así?</p>${opcionesHTML(G1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">el sobre: ${i_('i')} = ${i_(String(U1[0].numImpares))}<span class="note">no se puede</span></div>
+     <div class="eq">la casita: ${i_('i')} = ${i_(String(U1[1].numImpares))}<span class="note">un ${t_('trazo')}, de una esquina de abajo a la otra</span></div>
+     <div class="eq">las tres ventanas: ${i_('i')} = ${i_(String(U1[2].numImpares))}<span class="note">no se puede</span></div></div>
+   <p>El número junto a cada punto dice cuántas líneas llegan a él. Si el lápiz pasa por un punto, entra por una línea y sale por otra: gasta dos. Por eso un punto con un número impar de líneas solo puede ser el inicio o el final del trazo.</p>
+   <p class="aviso">Con 0 puntos impares se puede, y se termina donde se empezó. Con 2, se puede: se empieza en uno y se termina en el otro. Con más, no se puede de un solo trazo.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras: no encontramos estudios con cifras sobre figuras de un solo trazo. El motor no se fía solo de la regla: prueba todos los caminos posibles, uno por uno.</p></div>` },
+ { k:'Paso 2', t:'Traza tú', explora:'trazo',
+   prep:() => figura2(),
+   body:() => `<p class="problem">Toca los puntos en orden (o usa sus botones) para dibujar la figura. Prueba empezar en un punto impar y también en uno par.</p>
+   <div class="seg" id="fig2" role="group" aria-label="Figura">${Object.entries(FIGS2).map(([k, g]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.fig2}">${g.nombre}</button>`).join('')}</div>
+   <div class="fila" id="puntos2" role="group" aria-label="Puntos de la figura"></div>
+   <p class="msg" id="msg2" aria-live="polite"></p>
+   <div class="fila"><button type="button" class="btn chico" id="deshacer2">Deshacer</button><button type="button" class="btn chico" id="borrar2">Borrar</button><button type="button" class="btn chico" id="motor2">Que lo intente el motor</button></div>
+   <div class="eqs" id="vivo2"></div>
+   <p>Si una figura tiene más de dos puntos impares, necesita más de un ${t_('trazo')}: cada trazo se lleva a lo más dos impares, uno al empezar y otro al terminar. Por eso hacen falta ${fr(i_('i'), '2')} trazos.</p>` },
+ { k:'Paso 3', t:'Predice: el vigilante del parque', gate:G3,
+   prep:() => E.config(parque(!!S.pred[G3.id])),
+   anima:fin => { const o = parque(true); o.fig.ruta.prog = 0; E.config(o); const F = E.fig;
+     E.animar(0, 1, 3200, v => { F.ruta.prog = v; }, () => { E.config(parque(true)); fin(); }, true); },
+   body:() => `<p class="problem">Un vigilante recorre todos los senderos de un parque rectangular de 8 m por 6 m: el borde y las dos diagonales, que se cruzan en el centro. Puede empezar y terminar donde quiera, y puede pasar más de una vez por un sendero.</p>
+   <p>¿Cuántos metros camina como mínimo?</p>${opcionesHTML(G3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">senderos: 8 + 8 + 6 + 6 + 4 · 5 = ${C3.suma} m</div>
+     <div class="eq">${i_('i')} = ${i_('4')}<span class="note">dos esquinas son el inicio y el final; las otras dos se unen repitiendo</span></div>
+     <div class="eq">${R_('R')} = ${R_(C3.repetido + ' m')}</div>
+     <div class="eq">${C3.suma} + ${R_(String(C3.repetido))} = ${t_(C3.minimo + ' m')}</div></div>
+   <p>Repetir un tramo es como dibujarle una línea más: las dos esquinas que une dejan de ser impares. Lo mínimo es unir dos esquinas impares por el camino más corto entre ellas, un lado de 6 m. Si tuviera que volver al punto de partida, tendría que unir las cuatro: ${C3c.minimo} m.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras. El motor prueba todas las formas de emparejar las esquinas impares y se queda con la más corta.</p></div>` },
+ { k:'Paso 4', t:'Predice: el borde de la escalera', gate:G4,
+   prep:() => E.config(escalera4(!!S.pred[G4.id])),
+   anima:fin => { const o = escalera4(true); o.esc.prog = 0; E.config(o); const Es = E.esc;
+     E.animar(0, 0, 500, () => {}, () => E.animar(0, 1, 2200, v => { Es.prog = v; }, () => { E.config(escalera4(true)); fin(); })); },
+   body:() => `<p class="problem">El dibujo muestra una figura en forma de escalera, con todos sus ángulos rectos. Su base mide 8 m y su lado de la izquierda, 6 m. La cuadrícula es de 1 m.</p>
+   <p>¿Cuál es el perímetro de la figura?</p>${opcionesHTML(G4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${b_('b')} = 3 + 3 + 2 = 8<span class="note">los escalones horizontales: igual que la base</span></div>
+     <div class="eq">${h_('h')} = 2 + 2 + 2 = 6<span class="note">los escalones verticales: igual que el lado izquierdo</span></div>
+     <div class="eq">perímetro = 2(${b_('8')} + ${h_('6')}) = ${P4.perimetro} m</div></div>
+   <p>Mira cómo los tramos de los escalones se corren hasta el rectángulo que encierra la figura: los horizontales hacia arriba, los verticales hacia la derecha. No sobra ni falta nada.</p>
+   <p class="fuente">Dar el área (los cuadraditos) cuando se pide el perímetro es la confusión entre área y perímetro (GE4 del informe de geometría). En TIMSS 1999, cerca de 3 de cada 10 alumnos de 8.º grado eligieron el perímetro cuando se pedía el área; aquí es al revés, por eso lo tomamos como respaldo parcial. Contar solo los lados con número y usar la diagonal son hipótesis nuestras.</p></div>` },
+ { k:'Paso 5', t:'Escaleras, chakana y un entrante', explora:'formas',
+   prep:() => forma5(),
+   body:() => `<p class="problem">Elige una figura y toca «Correr los lados». Con el entrante, arrastra su fondo (o usa las flechas del teclado) para hacerlo más hondo.</p>
+   <div class="seg" id="esc5" role="group" aria-label="Figura">${[['escalera', 'Escalera'], ['chakana', 'Chakana'], ['entrante', 'Con entrante']].map(([k, t]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.esc5}">${t}</button>`).join('')}</div>
+   <div class="fila"><button type="button" class="btn chico" id="correr5" aria-pressed="${S.prog5 > 0}">Correr los lados</button></div>
+   <div class="eqs" id="vivo5"></div>
+   <p>La chakana tiene 20 lados, pero sus tramos se corren igual: su perímetro es el del cuadrado que la encierra. Con el entrante no pasa lo mismo: el fondo del entrante tapa el hueco de arriba, pero sus dos paredes de ${e_('e')} metros no tienen adónde ir. Sobran 2${e_('e')}.</p>
+   <p class="aviso">La regla del rectángulo vale solo si la figura no tiene entrantes: cualquier recta horizontal o vertical la corta en un solo tramo.</p>` },
+ { k:'Paso 6', t:'Predice: de la casa al colegio', gate:G6,
+   prep:() => E.config(calles6(!!S.pred[G6.id])),
+   anima:fin => { const o = calles6(true); o.cal.llenos = new Set(); E.config(o); const C = E.cal;
+     E.animar(0, 7.999, 3000, v => { C.llenos = new Set([...todos(4, 3)].filter(k => { const [x, y] = k.split(',').map(Number); return x + y <= v; })); }, () => { E.config(calles6(true)); fin(); }, true); },
+   body:() => `<p class="problem">En un barrio de Juliaca, las calles forman una cuadrícula. Diego va de su casa al colegio, que está 4 cuadras a la ${m_('derecha')} y 3 cuadras hacia ${n_('arriba')}, por el camino más corto: nunca va hacia la izquierda ni hacia abajo.</p>
+   <p>¿Cuántos caminos distintos puede seguir?</p>${opcionesHTML(G6.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${N_('N')} = ${N_('N')}<sub>izquierda</sub> + ${N_('N')}<sub>abajo</sub><span class="note">en cada cruce</span></div>
+     <div class="eq">fila de arriba: 1, 4, 10, 20, ${N_(String(C6.caminos))}</div></div>
+   <p>Los cruces de la primera calle de abajo y de la primera de la izquierda tienen 1: hasta ellos se llega de una sola forma. Desde ahí, cada número es la suma del de su izquierda y el de abajo.</p>
+   <p class="fuente">Hacer la lista a mano, sin un orden, y olvidar caminos es la enumeración sin sistema (AR18 del informe de aritmética y razonamiento). Un estudio con 720 alumnos españoles de 14 y 15 años (Navarro-Pelayo, Batanero y Godino, 1996) encontró que fue el error más frecuente entre los que no habían estudiado combinatoria; la cifra está por confirmar en el original. Que la lista se quede en los caminos de pocos giros es una hipótesis nuestra, igual que 4 · 3 y 2⁷.</p></div>` },
+ { k:'Paso 7', t:'Llena los cruces', explora:'calles',
+   prep:() => { if (!S.llenos7) S.llenos7 = new Set(['0,0']); calles7(); },
+   body:() => `<p class="problem">Toca un cruce para escribir cuántos caminos llegan a él. Solo se puede llenar un cruce si ya están llenos el de su izquierda y el de abajo.</p>
+   <p class="msg" id="msg7" aria-live="polite"></p>
+   <div class="fila"><button type="button" class="btn chico" id="llenar7">Llenar todo</button><button type="button" class="btn chico" id="borrar7">Borrar</button><button type="button" class="btn chico" id="camino7">Ver otro camino</button></div>
+   <div class="eqs" id="vivo7"></div>
+   <p>Cada camino es una fila de 7 flechas: 4 ${m_('→')} y 3 ${n_('↑')}. Contar caminos es contar de cuántas formas se eligen los 3 lugares de las ${n_('↑')} entre los 7: ${fr('7 · 6 · 5', '3 · 2 · 1')} = ${N_(String(C6.caminos))}. Se divide entre 3 · 2 · 1 porque las tres ${n_('↑')} son iguales: cambiarlas de lugar entre sí no da otro camino.</p>` },
+ { k:'Paso 8', t:'Predice: la hormiga y la caja', gate:G8,
+   prep:() => { E.config(caja8(!!S.pred[G8.id], S.des8)); },
+   anima:fin => { S.des8 = 0; const o = caja8(true, 0); Object.assign(o.caja, { abrir:0, ruta:0, diagonal:true }); E.config(o); const B = E.caja;
+     E.animar(0, 0, 700, () => {}, () => E.animar(0, 1, 1500, v => { B.abrir = v; }, () => E.animar(0, 1, 1200, v => { B.ruta = v; }, () => { E.config(caja8(true, 0)); botones8(); fin(); }))); },
+   body:() => `<p class="problem">Una hormiga está en una esquina de abajo de una caja de fósforos grande, de ${x_('8 cm')} de largo, ${y_('4 cm')} de ancho y ${z_('2 cm')} de alto. En la esquina de arriba más alejada hay un poco de azúcar. La hormiga camina por la superficie de la caja.</p>
+   <p>¿Cuánto mide su ruta más corta?</p>${opcionesHTML(G8.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">frente y tapa abiertos: ${x_('8')} por ${y_('4')} + ${z_('2')} = 6</div>
+     <div class="eq">${d_('d')} = √(8² + 6²) = √100 = ${d_('10 cm')}<span class="note">por dentro: ${H8.diagonalExacta} ≈ ${fmt(H8.diagonal, 1)}, pero atraviesa la caja</span></div></div>
+   <p>Prueba los tres desarrollos: cada uno junta dos caras en un rectángulo, y la ruta es su diagonal. Gana el que suma las dos medidas más chicas (${y_('4')} + ${z_('2')}) y deja sola la más grande (${x_('8')}).</p>
+   <div class="seg" id="des8" role="group" aria-label="Desarrollo de la caja"></div>
+   <div class="eqs" id="vivo8"></div>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras: no encontramos estudios con cifras sobre rutas en la superficie de un sólido.</p></div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+const subir = () => { if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = false;
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.explora === 'trazo') montar2();
+  if (s.explora === 'formas') montar5();
+  if (s.explora === 'calles') montar7();
+  if (s.gate === G8 && S.pred[G8.id]) botones8();
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function montar2(){
+  $('fig2').querySelectorAll('button').forEach(b => b.onclick = () => { if (S.ocupado || E.anim) return; S.fig2 = b.dataset.k; S.trazo = []; S.msg = '';
+    $('fig2').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); figura2(); pintarPuntos(); pintarMsg(); });
+  $('deshacer2').onclick = () => { E.parar(); S.trazo.pop(); S.msg = ''; figura2(); pintarMsg(); };
+  $('borrar2').onclick = () => { E.parar(); S.trazo = []; S.msg = ''; figura2(); pintarMsg(); };
+  $('motor2').onclick = () => {
+    if (E.anim) return;
+    const g = FIGS2[S.fig2], U = MT.unTrazo(g.f);
+    S.trazo = []; figura2();
+    if (!U.sePuede){ S.msg = `El motor probó todos los caminos, desde cada punto: quedó trabado ${U.probados} veces y nunca pasó por todas las líneas.`; pintarMsg(true); subir(); return; }
+    S.msg = `El motor empieza en P${U.recorrido[0] + 1} y termina en P${U.recorrido[U.recorrido.length - 1] + 1}.`; pintarMsg(false);
+    const paso = S.step; subir();
+    Celular.alResponder($('cv'), () => { E.fig.ruta = { nodos:U.recorrido, prog:0 }; const F = E.fig; E.animar(0, 1, 2600, v => { F.ruta.prog = v; }, null, true); }, () => S.step === paso);
+  };
+  pintarPuntos(); pintarMsg();
+}
+function montar5(){
+  $('esc5').querySelectorAll('button').forEach(b => b.onclick = () => { if (E.anim) return; S.esc5 = b.dataset.k; S.prog5 = 0;
+    $('esc5').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); $('correr5').setAttribute('aria-pressed', 'false'); forma5(); });
+  $('correr5').onclick = () => {
+    if (E.anim) return;
+    const a = S.prog5 > 0 ? 0 : 1, de = S.prog5, Es = E.esc, paso = S.step;
+    $('correr5').setAttribute('aria-pressed', a > 0);
+    subir();
+    Celular.alResponder($('cv'), () => E.animar(de, a, 1600, v => { Es.prog = v; S.prog5 = v; }, () => { S.prog5 = a; }), () => S.step === paso);
+  };
+}
+function montar7(){
+  $('llenar7').onclick = () => { if (E.anim) return; S.llenos7 = todos(4, 3); E.cal.llenos = S.llenos7; E.dibujar(); E.avisar(); const m = $('msg7'); m.textContent = `Al colegio llegan ${C6.caminos} caminos.`; m.className = 'msg ok'; };
+  $('borrar7').onclick = () => { if (E.anim) return; S.llenos7 = new Set(['0,0']); S.camino7 = null; calles7(); $('msg7').textContent = ''; };
+  $('camino7').onclick = () => {
+    if (E.anim) return;
+    S.k7 = S.k7 % L6.total + 1; S.camino7 = L6.lista[(S.k7*13) % L6.total];
+    // recorre la lista saltando de 13 en 13 (13 y 35 no tienen divisores comunes: pasa por todos)
+    E.cal.camino = S.camino7; E.cal.prog = 0; const C = E.cal, paso = S.step; vivo7(); subir();
+    Celular.alResponder($('cv'), () => E.animar(0, 1, 1400, v => { C.prog = v; }, null, true), () => S.step === paso);
+  };
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.innerHTML = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos: el ventanal, los lazos de semicírculos, la calle en obras, el dado y la araña en la reja.
+   La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const { i:i_, t:t_, m:m_, n:n_, N:N_, x:x_, y:y_, z:z_, d:d_, G:G_, c:c_ } = W_;
+const E1 = MT.unTrazo(FIG.ventanal);
+const E2 = MT.semicirculos({ diametro:12, partes:3 });
+const E3 = MT.cerrarCruce({ m:3, n:3, x:1, y:1 });
+const E4 = MT.hormiga({ x:2, y:2, z:2 });
+const E5 = MT.caminosEspacio({ a:2, b:2, c:1 });
+const todos = (m, n) => { const s = new Set(); for (let y = 0; y <= n; y++) for (let x = 0; x <= m; x++) s.add(x + ',' + y); return s; };
+const pi = t => t;   // los exactos ya traen la π
+
+const EXPS = [
+  { id:'ventanal', corto:'El ventanal',
+    q:'Un ventanal tiene 4 vidrios cuadrados en fila, separados por un marco de líneas rectas. ¿Cuántos trazos, como mínimo, hacen falta para dibujar todo el marco sin pasar dos veces por la misma línea?',
+    opts:[['a', `${E1.errores.unoPorImpar}: uno por cada unión en forma de T`, 'trazos-uno-por-impar', 'hipotesis'],
+          ['b', `${E1.trazos}: cada trazo empieza y termina en una unión en forma de T`],
+          ['c', `${E1.errores.unSoloTrazo}: sale de un solo trazo si se empieza bien`, 'trazo-todas-si-se-empieza-bien', 'hipotesis'],
+          ['d', `${E1.errores.dosSiempre}: uno para el borde y otro para las líneas de adentro`, 'trazos-dos-siempre', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Un trazo abierto se lleva dos impares: el del inicio y el del final. Con 6 uniones en T bastan 3 trazos.',
+         c:`Con 6 puntos impares no hay forma: el motor probó todos los caminos y quedó trabado ${E1.probados} veces. Hacen falta 3.`,
+         d:'El borde sale de un trazo, pero las 3 líneas de adentro quedan sueltas y cada una necesita el suyo. Juntando bien, bastan 3 en total.' },
+    antes:ya => E.config({ modo:'figura', fig:{ figs:[{ f:FIG.ventanal, nombre:'el ventanal' }], grados:ya, impares:ya },
+      lect: ya ? [L('i', 'Puntos impares i', String(E1.numImpares)), L('t', 'Trazos', String(E1.trazos))] : [L('ink', 'Líneas', String(E1.tramos)), L('t', 'Trazos', '?')],
+      ley: ya ? [['i', 'i · punto impar', 'pt'], ['t', 't · un trazo']] : [], desc:'Un ventanal de 4 vidrios cuadrados en fila.' }),
+    despues:() => { const x = EXPS[0]; x.antes(true); const F = E.fig;
+      // tres trazos: cada uno empieza y termina en uniones en T (los arma el motor: con dos líneas falsas, sale de un solo trazo)
+      const imp = E1.impares, falsas = [[imp[2], imp[3]], [imp[4], imp[5]]];
+      const R = MT.unTrazo({ nodos:FIG.ventanal.nodos, tramos:FIG.ventanal.tramos.concat(falsas) });
+      const esFalsa = (a, b) => falsas.some(([p, q]) => (p === a && q === b) || (p === b && q === a));
+      // se corta el recorrido en las líneas falsas: quedan tres trazos
+      const trazos = [[R.recorrido[0]]];
+      for (let k = 1; k < R.recorrido.length; k++){ const a = R.recorrido[k - 1], b = R.recorrido[k]; if (esFalsa(a, b)) trazos.push([b]); else trazos[trazos.length - 1].push(b); }
+      x.trazos = trazos.filter(t => t.length > 1);
+      let k = 0;
+      const sig = () => { if (k >= x.trazos.length){ x.antes(true); F.trazo = []; return; } F.trazo = []; F.ruta = { nodos:x.trazos[k], prog:0 }; const r = F.ruta; k++;
+        E.animar(0, 1, 1300, v => { r.prog = v; }, () => setTimeout(() => { if (E.fig === F) sig(); }, RM ? 0 : 250), true); };
+      sig(); },
+    exp:() => `<div class="eqs"><div class="eq">${i_('i')} = ${i_(String(E1.numImpares))} → trazos = ${fr(i_('6'), '2')} = ${t_(String(E1.trazos))}</div></div>
+      <p>Cada trazo abierto tiene dos puntas, y cada punta es un punto impar. Con 6 impares hacen falta 6 ÷ 2 = 3 trazos. El motor los armó: mira cómo cada uno empieza y termina en una unión en T.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'lazos', corto:'Los lazos',
+    q:`Sobre una recta de 12 m, Ana pone un lazo en forma de ${G_('semicírculo grande')}, que tiene la recta como diámetro. Su hermano pone otro lazo del otro lado formando ${c_('3 semicírculos iguales')}, uno tras otro, sobre la misma recta. ¿Cuánto lazo usa el hermano?`,
+    opts:[['a', `${E2.exactos.cadaUnoComoElGrande} ≈ ${fmt(E2.errores.cadaUnoComoElGrande, 1)} m: cada semicírculo chico usa tanto lazo como el grande`, 'arcos-cada-uno-como-el-grande', 'hipotesis'],
+          ['b', `${E2.exactos.comoElArea} ≈ ${fmt(E2.errores.comoElArea, 1)} m: encierran mucho menos espacio, así que usan mucho menos lazo`, 'GE5-menos-area-menos-perimetro', 'parcial'],
+          ['c', `${E2.exacto} ≈ ${fmt(E2.chicos, 1)} m: tres arcos de 4 m de diámetro`],
+          ['d', `${E2.exactos.comoLaRecta} m: los arcos chicos se pegan a la recta`, 'arcos-como-la-recta', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Cada semicírculo chico tiene un diámetro tres veces menor, así que su arco también es tres veces menor. Los tres juntos miden lo mismo que el grande: 6π.',
+         b:'Encierran menos espacio, pero eso no dice nada del borde: el lazo mide 3 · 2π = 6π, lo mismo que el grande.',
+         d:'Aunque se parta en muchos semicírculos, cada uno sube y baja: el lazo nunca se acerca a 12 m. Siempre mide 6π.' },
+    antes:ya => E.config({ modo:'arcos', arc:{ diametro:12, partes:3, ver:ya, verTxt:{ G:`${E2.exacto} m`, c:`${E2.exacto} m` } },
+      lect: ya ? [L('G', 'Lazo de Ana G', `${E2.exacto} m`), L('c', 'Lazo del hermano c', `${E2.exacto} m`)] : [L('G', 'Lazo de Ana G', '?'), L('c', 'Lazo del hermano c', '?')],
+      ley:[['G', 'G · semicírculo grande'], ['c', 'c · semicírculos chicos']], desc:'Una recta de 12 m con un semicírculo grande arriba y tres semicírculos chicos abajo.' }),
+    despues:() => { const x = EXPS[1]; x.antes(true); const A = E.arc; let k = 2;
+      const sig = () => { if (k > 6){ x.antes(true); return; } A.partes = k; E.dibujar(); k++; E.animar(0, 1, 500, () => {}, sig); };
+      sig(); },
+    exp:() => `<div class="eqs"><div class="eq">${G_('G')} = ${fr('π · 12', '2')} = ${G_(E2.exacto)}</div>
+      <div class="eq">${c_('c')} = 3 · ${fr('π · 4', '2')} = 3 · 2π = ${c_(E2.exacto)}</div></div>
+      <p>En el dibujo, los semicírculos chicos pasan de 2 a 3, 4… hasta 6: el lazo mide siempre 6π. Cada arco mide π por su diámetro entre 2, y los diámetros siempre suman 12.</p>
+      <p class="fuente">Creer que si el espacio encerrado es menor, el borde también lo es, es la idea «más área, más perímetro» (GE5 del informe de geometría), que D'Amore y Fandiño Pinilla (2007) describen como frecuente, sin cifras en lo que pudimos ver (respaldo parcial). Las otras dos opciones son hipótesis nuestras.</p>` },
+  { id:'obras', corto:'La calle en obras', unidad:U_RUTAS,
+    q:`En otro barrio de Juliaca, la casa de Sofía y su colegio están en esquinas opuestas de un plano de 3 cuadras a la ${m_('derecha')} y 3 hacia ${n_('arriba')}. El cruce que está 1 cuadra a la derecha y 1 hacia arriba de la casa está cerrado por obras. ¿Cuántos caminos de la menor longitud le quedan?`,
+    opts:[['a', `${E3.errores.restarUno}: se pierde un solo camino, el que pasa por la obra`, 'obras-resta-uno', 'hipotesis'],
+          ['b', `${E3.errores.restarHasta}: se pierden los ${E3.hasta} caminos que llegan a la obra`, 'obras-resta-los-que-llegan', 'hipotesis'],
+          ['c', `${E3.errores.sinCambio}: los caminos rodean la obra y siguen siendo los mismos`, 'obras-sin-cambio', 'hipotesis'],
+          ['d', `${E3.quedan}: se pierden todos los caminos que pasan por la obra`]],
+    ok:'d',
+    fb:{ a:`Por la obra pasan muchos caminos, no uno: se llega a ella de ${E3.hasta} formas y se sigue de ${E3.desde}, así que pasan ${E3.porElCruce}. Quedan ${E3.total} − ${E3.porElCruce} = ${E3.quedan}.`,
+         b:`A la obra llegan ${E3.hasta} caminos, pero cada uno sigue de ${E3.desde} formas hasta el colegio: se pierden ${E3.porElCruce}. Quedan ${E3.quedan}.`,
+         c:`Rodear la obra obliga a dar una vuelta más larga: ya no es un camino de la menor longitud. Quedan ${E3.quedan}.` },
+    antes:ya => E.config({ modo:'calles', cal:{ m:3, n:3, tabla:E3.tabla, cerrados:[[1, 1]], llenos: ya ? todos(3, 3) : new Set() },
+      lect:[L('ink', 'Sin obras', ya ? String(E3.total) : '?'), L('N', 'Con la obra N', ya ? String(E3.quedan) : '?')],
+      ley: ya ? [['N', 'N · caminos hasta el cruce', 'pt']] : [], desc:'Un plano de 3 por 3 cuadras con el cruce (1, 1) cerrado por obras.' }),
+    despues:() => { const x = EXPS[2]; x.antes(true); const C = E.cal; C.llenos = new Set();
+      E.animar(0, 6, 2400, v => { C.llenos = new Set([...todos(3, 3)].filter(k => { const [a, b] = k.split(',').map(Number); return a + b <= v; })); }, () => x.antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">hasta la obra: ${E3.hasta}; desde la obra: ${E3.desde} → pasan ${E3.hasta} · ${E3.desde} = ${E3.porElCruce}</div>
+      <div class="eq">${N_('N')} = ${E3.total} − ${E3.porElCruce} = ${N_(String(E3.quedan))}</div></div>
+      <p>En la cuadrícula, el cruce cerrado vale 0: no le pasa caminos a sus vecinos. Los demás se llenan igual, sumando el de la izquierda y el de abajo.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'dado', corto:'El dado', unidad:U_RUTAS,
+    q:`Una hormiga camina por la superficie de un dado, un cubo de 2 cm de arista, desde una esquina hasta la esquina opuesta. ¿Cuánto mide su ruta más corta?`,
+    opts:[['a', `${E4.exacto} ≈ ${fmt(E4.minimo, 1)} cm: pasando por el medio de una arista`],
+          ['b', `${E4.exactos.diagonalInterior} ≈ ${fmt(E4.errores.diagonalInterior, 1)} cm: la recta que une las dos esquinas`, 'hormiga-diagonal-interior', 'hipotesis'],
+          ['c', `${E4.exactos.porAristas} cm: por tres aristas`, 'hormiga-por-aristas', 'hipotesis'],
+          ['d', `${E4.exactos.caraYArista} ≈ ${fmt(E4.errores.caraYArista, 1)} cm: la diagonal de una cara y una arista`, 'hormiga-cara-y-arista', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Esa recta atraviesa el dado por dentro, y la hormiga camina por fuera. Abriendo dos caras, la ruta es la diagonal de un rectángulo de 2 por 4: 2√5.',
+         c:'Por las aristas mide 6 cm; cortar en diagonal por dos caras es más corto: 2√5 ≈ 4,5 cm.',
+         d:'La diagonal de una cara y después una arista dobla en una esquina. Abriendo dos caras, la ruta es una sola recta: 2√5 ≈ 4,5 cm.' },
+    antes:ya => E.config({ modo:'caja', caja:{ x:2, y:2, z:2, H:E4, des: ya ? 0 : -1, abrir: ya ? 1 : 0, ruta: ya ? 1 : 0, diagonal:ya },
+      lect:[L('ink', 'Aristas x = y = z', '2 cm'), L('d', 'Ruta d', ya ? `${E4.exacto} cm` : '?')],
+      ley:[['x', 'x · largo'], ['y', 'y · ancho'], ['z', 'z · alto']].concat(ya ? [['d', 'd · ruta de la hormiga']] : []), desc:'Un dado de 2 cm de arista con la hormiga en una esquina y el azúcar en la opuesta.' }),
+    despues:() => { const x = EXPS[3]; x.antes(true); const B = E.caja; B.abrir = 0; B.ruta = 0;
+      E.animar(0, 1, 1400, v => { B.abrir = v; }, () => E.animar(0, 1, 1000, v => { B.ruta = v; }, () => x.antes(true))); },
+    exp:() => `<div class="eqs"><div class="eq">dos caras abiertas: un rectángulo de 2 por 4</div>
+      <div class="eq">${d_('d')} = √(2² + 4²) = √20 = ${d_(E4.exacto + ' cm')}</div></div>
+      <p>En un cubo, los tres desarrollos dan lo mismo: hay seis rutas igual de cortas, y cada una cruza una arista justo por su punto medio.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'reja', corto:'La araña en la reja', unidad:U_RUTAS,
+    q:`Una araña camina por las aristas de una reja hecha con 4 cubitos: ${x_('2 de largo')}, ${y_('2 de ancho')} y ${z_('1 de alto')}. Va de una esquina a la opuesta, siempre alejándose: solo a lo largo, a lo ancho o hacia arriba. ¿Cuántos caminos distintos puede seguir?`,
+    opts:[['a', `${E5.errores.producto}: uno por cada esquina de la reja`, 'reja-producto', 'hipotesis'],
+          ['b', `${E5.caminos}: las formas de ordenar 2 pasos de largo, 2 de ancho y 1 de alto`],
+          ['c', `${E5.errores.conOrden}: las formas de ordenar los 5 pasos`, 'AR17-error-de-orden', 'parcial'],
+          ['d', `${E5.errores.potencia}: en cada uno de los 5 pasos hay 3 direcciones`, 'reja-tres-a-la-n', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Las esquinas de la reja son 18, pero por cada una pasan varios caminos. Contando con la suma de los tres vecinos de atrás, llegan 30.',
+         c:'5 · 4 · 3 · 2 · 1 = 120 trata los 5 pasos como si fueran distintos. Los 2 de largo son iguales entre sí, y los 2 de ancho también: 120 ÷ (2 · 2) = 30.',
+         d:'No siempre hay tres opciones: al llegar a un borde quedan menos. Cada camino tiene justo 2 pasos de largo, 2 de ancho y 1 de alto: son 30.' },
+    antes:ya => E.config({ modo:'reja', reja:{ a:2, b:2, c:1, tabla:E5.tabla, prog: ya ? 9 : -1 },
+      lect:[L('x', 'Largo x', '2'), L('y', 'Ancho y', '2'), L('z', 'Alto z', '1'), L('N', 'Caminos N', ya ? String(E5.caminos) : '?')],
+      ley:[['x', 'x · arista a lo largo'], ['y', 'y · arista a lo ancho'], ['z', 'z · arista hacia arriba']].concat(ya ? [['N', 'N · caminos hasta la esquina', 'pt']] : []),
+      desc:'Una reja de 2 por 2 por 1 cubitos con la araña en una esquina de abajo.' }),
+    despues:() => { const x = EXPS[4]; x.antes(true); const R = E.reja; R.prog = -1;
+      E.animar(0, 5.999, 2400, v => { R.prog = Math.floor(v); }, () => x.antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">${N_('N')} = ${N_('N')}<sub>${x_('x')}</sub> + ${N_('N')}<sub>${y_('y')}</sub> + ${N_('N')}<sub>${z_('z')}</sub><span class="note">en cada esquina: lo que traen sus tres vecinos de atrás</span></div>
+      <div class="eq">${fr('5!', '2! · 2! · 1!')} = ${fr('120', '4')} = ${N_(String(E5.caminos))}</div></div>
+      <p>Es la cuadrícula de calles con un piso más: cada esquina suma lo que traen la de atrás a lo largo, la de atrás a lo ancho y la de abajo.</p>
+      <p class="fuente">Contar como distintos los pasos que van en la misma dirección se parece al error de orden (AR17 del informe de aritmética y razonamiento): en el estudio de Navarro-Pelayo y otros (1996), con 720 alumnos españoles de 14 y 15 años, el error de orden fue el más frecuente entre los que ya habían estudiado combinatoria (cifra por confirmar en el original). Ese estudio lo midió al elegir grupos, no al ordenar pasos repetidos; por eso lo tomamos como respaldo parcial. Las otras dos opciones son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = false;
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => { x.despues(); E.avisar(); }, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); }, () => S.k === k);
+  });
+  pintar();
+}
+void pi;
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

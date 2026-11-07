@@ -18,6 +18,15 @@
  *      por el lado reactivo de A (orientación). Con la distribución de rapideces de Maxwell, la fracción de
  *      choques A–B eficaces es p·e^(−Ea/RT), con p la fracción de orientaciones buenas: así lo dice la
  *      teoría de colisiones, y en dos dimensiones da lo mismo. Cada disco es una porción, no una molécula.
+ *
+ * Huecos llenados (7 nov 2026), para los experimentos 6 y 7 de «¿Qué pasa si…?»:
+ *   ordenes(exps, coeficientes)  además de los órdenes, los pares de experimentos que se compararon (factor de la
+ *                                concentración y de la velocidad) y 'errores': órdenes iguales a los coeficientes
+ *                                (CI9), proporción directa v₂/v₁ ÷ c₂/c₁ y "orden 1 en todo".
+ *   vidasMedias(orden, k, C0, n) las n primeras vidas medias seguidas: cuánto dura cada una y dónde empieza.
+ *   primerOrdenQueda(C0, t½, t)  cuánto queda en primer orden y 'errores': "se acaba en dos vidas medias" (restar la
+ *                                mitad cada vez), 1/(2n) y la vida media que depende de [A]₀ (como en segundo orden).
+ * CABECERA: líneas 1 a 30 (qué calcula, datos, partículas y los huecos llenados el 7 nov 2026).
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -67,9 +76,12 @@
   // donde solo ella cambia y despeja el orden: m = log(v₂/v₁)/log(c₂/c₁). Redondea a entero o medio si está a
   // menos de 1e-6. Devuelve órdenes, orden total, k (promedio de todos los experimentos) y las unidades.
   // Error típico que se devuelve: tomar como orden el cociente v₂/v₁ dividido entre c₂/c₁ (proporción directa).
-  function ordenes(exps) {
+  // coeficientes (opcional) = { A: a, B: b }, los de la ecuación balanceada: si se dan, errores.coeficientes los devuelve
+  // como órdenes (el error CI9). pares[sp] = { i, j, fc, fv }: los dos experimentos comparados (índices desde 0) y por
+  // cuánto se multiplicaron la concentración y la velocidad.
+  function ordenes(exps, coeficientes) {
     if (!Array.isArray(exps) || exps.length < 2) throw new Error('hacen falta al menos dos experimentos');
-    const especies = Object.keys(exps[0].conc), r = {}, proporcion = {};
+    const especies = Object.keys(exps[0].conc), r = {}, proporcion = {}, pares = {};
     for (const sp of especies) {
       let hallado = false;
       for (let i = 0; i < exps.length && !hallado; i++) for (let j = 0; j < exps.length && !hallado; j++) {
@@ -81,13 +93,18 @@
         let m = Math.log(fv) / Math.log(fc);
         const redondo = Math.round(m * 2) / 2;
         if (Math.abs(m - redondo) < 1e-6) m = redondo;
-        r[sp] = m; proporcion[sp] = fv / fc; hallado = true;
+        r[sp] = m; proporcion[sp] = fv / fc; pares[sp] = { i, j, fc, fv }; hallado = true;
       }
       if (!hallado) throw new Error(`no hay dos experimentos donde solo cambie ${sp}`);
     }
     const ks = exps.map(e => e.v / velocidad({ k: 1, ordenes: r }, e.conc));
     const k = ks.reduce((s, x) => s + x, 0) / ks.length, n = ordenTotal(r);
-    return { ordenes: r, ordenTotal: n, k, unidades: unidadesK(n).texto, proporcion };
+    const errores = { proporcion, todosUno: Object.fromEntries(especies.map(sp => [sp, 1])) };
+    if (coeficientes) errores.coeficientes = Object.fromEntries(especies.map(sp => {
+      if (coeficientes[sp] === undefined) throw new Error(`falta el coeficiente de ${sp}`);
+      return [sp, positivo(coeficientes[sp], `coeficiente de ${sp}`)];
+    }));
+    return { ordenes: r, ordenTotal: n, k, unidades: unidadesK(n).texto, proporcion, pares, errores };
   }
 
   // ---------- Leyes integradas y vida media (A → productos, v = k·[A]^n) ----------
@@ -118,6 +135,29 @@
   }
   // Primer orden por vidas medias: después de n vidas medias queda (1/2)^n. Error típico: creer que en dos vidas
   // medias se acaba todo (restar la mitad dos veces) o que queda 1/(2n).
+  // Las n primeras vidas medias seguidas (A → productos, v = k·[A]^orden). Devuelve una lista con, para cada una,
+  // cuándo empieza (desde), cuánto dura, la concentración al empezar (C) y al terminar (C/2). En orden 1 todas duran
+  // ln 2/k; en orden 2 cada una dura el doble que la anterior; en orden 0, la mitad.
+  function vidasMedias(orden, k, C0, n) {
+    const veces = noNegativo(n, 'número de vidas medias'), lista = [];
+    let t = 0, c = positivo(C0, 'concentración inicial');
+    for (let q = 0; q < veces; q++) {
+      const d = vidaMedia(orden, k, c);
+      lista.push({ desde: t, dura: d, hasta: t + d, C: c, Cfin: c / 2 });
+      t += d; c /= 2;
+    }
+    return lista;
+  }
+  // Primer orden: si [A] baja de C0 a C0/2 en un tiempo th, cuánto queda en t. Errores típicos (hipótesis nuestras):
+  //   restando: se resta la mitad de C0 en cada vida media, así que "se acaba en dos vidas medias";
+  //   dividiendo: queda C0/(2n) tras n vidas medias;
+  //   vidaMediaCrece: la vida media depende de [A]₀ como en segundo orden (cada una dura el doble que la anterior).
+  function primerOrdenQueda(C0, th, t) {
+    const c0 = positivo(C0, 'concentración inicial'), h = positivo(th, 'vida media'), tt = noNegativo(t, 'tiempo');
+    const n = tt / h, f = fraccionQueda(n);
+    return { valor: c0 * f.valor, vidas: n,
+      errores: { restando: c0 * f.restando, dividiendo: c0 * f.dividiendo, vidaMediaCrece: concentracion(2, 1 / (c0 * h), c0, tt) } };
+  }
   function fraccionQueda(n) { const x = noNegativo(n, 'vidas medias'); return { valor: Math.pow(0.5, x), restando: Math.max(0, 1 - x / 2), dividiendo: x ? 1 / (2 * x) : 1 }; }
 
   // ---------- Temperatura ----------
@@ -335,6 +375,6 @@
     return S;
   }
 
-  return { R, K0, kelvin, velocidad, factor, ordenTotal, unidadesK, ordenes, concentracion, tiempo, vidaMedia, fraccionQueda,
+  return { R, K0, kelvin, velocidad, factor, ordenTotal, unidadesK, ordenes, concentracion, tiempo, vidaMedia, vidasMedias, fraccionQueda, primerOrdenQueda,
     arrhenius, razonK, energiaActivacion, regla10, fraccionEficaz, perfil, caja };
 });

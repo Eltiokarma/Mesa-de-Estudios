@@ -64,6 +64,36 @@ test('el orden se lee de los datos, no de los coeficientes', () => {
   const r = motor.ordenes([{ conc: { A: 0.2, B: 0.5 }, v: 1 }, { conc: { A: 0.4, B: 0.5 }, v: 1 }, { conc: { A: 0.2, B: 1 }, v: 4 }]);
   assert.equal(r.ordenes.A, 0); assert.equal(r.ordenes.B, 2); assert.equal(r.unidades, 'L/(mol·s)');
 });
+test('huecos (7 nov 2026): el orden puede no ser el coeficiente y los errores de la tabla salen distintos de la correcta', () => {
+  const ley = { k: 1.2, ordenes: { NO: 2, H2: 1 } }, concs = [{ NO: 0.1, H2: 0.1 }, { NO: 0.3, H2: 0.1 }, { NO: 0.1, H2: 0.2 }];
+  const r = motor.ordenes(concs.map(c => ({ conc: c, v: motor.velocidad(ley, c) })), { NO: 2, H2: 2 });
+  const txt = o => JSON.stringify(o);
+  const leyes = [r.ordenes, r.errores.coeficientes, r.errores.proporcion, r.errores.todosUno].map(txt);
+  assert.equal(new Set(leyes).size, 4, 'las cuatro leyes de las opciones son distintas');
+  assert.notEqual(r.ordenes.H2, r.errores.coeficientes.H2, 'el orden de H₂ no es su coeficiente');
+  for (const sp of ['NO', 'H2']) cerca(r.pares[sp].fv, Math.pow(r.pares[sp].fc, r.ordenes[sp]), `factor de ${sp}`);
+  assert.throws(() => motor.ordenes(concs.map(c => ({ conc: c, v: motor.velocidad(ley, c) })), { NO: 2 }), /coeficiente/);
+});
+test('huecos: vidas medias seguidas encadenan con la ley integrada; en orden 1 todas iguales, en orden 2 cada una el doble', () => {
+  for (const n of [0, 1, 2]) {
+    const l = motor.vidasMedias(n, 0.2, 0.8, 4);
+    for (const q of l) cerca(motor.concentracion(n, 0.2, 0.8, q.hasta), q.Cfin, `orden ${n} en t = ${q.hasta}`);
+    for (let i = 1; i < l.length; i++) {
+      cerca(l[i].desde, l[i - 1].hasta, 'seguidas');
+      cerca(l[i].dura / l[i - 1].dura, n === 1 ? 1 : n === 2 ? 2 : 0.5, `razón en orden ${n}`);
+    }
+  }
+  assert.equal(motor.vidasMedias(1, 1, 1, 0).length, 0);
+});
+test('huecos: lo que queda en primer orden coincide con la ley integrada; los errores dan otra cosa', () => {
+  for (const [C0, th, t] of [[0.8, 10, 30], [80, 5, 20], [1, 3, 7.5]]) {
+    const r = motor.primerOrdenQueda(C0, th, t);
+    cerca(r.valor, motor.concentracion(1, Math.LN2 / th, C0, t), `C0 = ${C0}, t = ${t}`);
+    cerca(r.errores.vidaMediaCrece, motor.concentracion(2, 1 / (C0 * th), C0, t), 'segundo orden con la misma primera t½');
+    for (const e of Object.values(r.errores)) assert.ok(Math.abs(e - r.valor) > 1e-6 * C0, 'cada error da distinto de la correcta');
+  }
+  cerca(motor.primerOrdenQueda(0.8, 10, 10).valor, 0.4, 'una vida media');
+});
 
 // 3. Partículas
 const correr = (c, s) => { for (let i = 0; i < Math.round(s * 60); i++) c.paso(1 / 60); return c; };
@@ -133,6 +163,8 @@ test('errores de entrada', () => {
   assert.throws(() => motor.perfil({ Ea: 50, dH: -20, EaCat: 60 }), /no sube/);
   assert.throws(() => motor.energiaActivacion(1, 300, 2, 300), /distintas/);
   assert.throws(() => motor.caja({ nA: 1 }).agregar('C', 1), /solo/);
+  assert.throws(() => motor.primerOrdenQueda(1, 0, 1), /vida media/);
+  assert.throws(() => motor.vidasMedias(3, 1, 1, 2), /orden/);
 });
 
 // 5. Problemas de papel (regla 6)

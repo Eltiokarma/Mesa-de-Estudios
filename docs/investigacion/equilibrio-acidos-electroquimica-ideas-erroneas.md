@@ -132,7 +132,7 @@ Errores de cálculo típicos de los problemas de admisión. No encontré estudio
 | Espontaneidad | Creer que la reacción es espontánea si la fem es negativa, o confundir el signo de ΔG = −nFE | EC8 |
 | Faraday | Olvidar la carga del ion: 9650 C depositan 3,175 g de Cu, no 6,35 g | Ninguno directo |
 | Faraday | Usar minutos en vez de segundos; confundir F (96 500 C/mol) con el número de electrones | Ninguno directo |
-| Electrólisis en agua | Predecir sodio en el cátodo al electrolizar NaCl acuoso (en realidad sale H₂) | EC7 (la UNAM documenta "la reducción del hidrógeno ocurre en el polo positivo", sin porcentaje) |
+| Electrólisis en agua | Predecir sodio en el cátodo al electrolizar NaCl acuoso (en realidad sale H₂) | EC3 y EC6 (confusión de polos; la UNAM documenta "la reducción del hidrógeno ocurre en el polo positivo", sin porcentaje) |
 
 Se confirman igual que en los otros temas: con hojas resueltas en la prueba del pase 2 y con predicciones de respuesta abierta.
 

@@ -31,6 +31,50 @@
  *   empujon({ m, F, dur, muk })              F empuja durante dur segundos desde el reposo y luego se suelta.
  *   resultante(fuerzas, m)                   suma de fuerzas [{ F, angulo }] y la aceleración que dan.
  *   centripeta({ m, v, r })                  fuerza neta hacia el centro en un movimiento circular uniforme.
+ *   vertical({ m, v, r, theta })             cuerda o pista por dentro de un círculo vertical (columpio, balde, rizo).
+ *                                            theta desde el punto más bajo (0 abajo, 90 a la altura del centro,
+ *                                            180 arriba), de 0° a menos de 360°; v es la rapidez en ese punto.
+ *                                            S (alias T y N) es lo que jala la cuerda o empuja la pista hacia el
+ *                                            centro: S = m·v²/r + m·g·cos θ. Si saldría negativa, la cuerda está floja
+ *                                            (floja = true) y S = 0.
+ *   loma({ m, r, phi, v, desdeReposo })      por encima de una superficie convexa (loma, domo). phi desde la cima,
+ *                                            de 0° a 90°. N = m·g·cos φ − m·v²/r; si saldría negativa, despega y N = 0.
+ *                                            Con desdeReposo, v² = 2·g·r·(1 − cos φ) (sin roce, por energía).
+ *                                            desdeCima(t): el auto sale de la cima con rapidez v constante (el motor
+ *                                            del auto la mantiene) y sigue la pista hasta que N llega a 0; desde ahí,
+ *                                            caída libre. Origen en la cima, x hacia adelante, y hacia arriba;
+ *                                            giro: dirección de la velocidad, en grados bajo la horizontal.
+ *   curva({ m, v, r, peralte, mus })         auto en una curva horizontal, plana o peraltada. El roce f es positivo
+ *                                            hacia abajo de la pendiente (hacia el centro en la curva plana).
+ *   tren({ masas, F, muk })                  carritos unidos por cuerdas; F jala masas[0] (el de adelante). La cuerda
+ *                                            k (1 … n−1) une masas[k−1] con masas[k]; tensiones[k−1] es su tensión.
+ *                                            Si F no vence el roce, quedan quietos y las tensiones no se determinan (null).
+ *   apilados({ mA, mB, F, en, mus, muk, muPiso })  A encima de B; F horizontal en el de abajo (en: 'abajo') o en el
+ *                                            de arriba ('arriba'). μs y μk entre A y B; μPiso bajo B (estático igual al
+ *                                            cinético; 0 si no se da). roceA es el roce de B sobre A, positivo hacia
+ *                                            donde apunta F; sobre B actúa roceB = −roceA (tercera ley).
+ *   poleaMovil({ m1, m2 })                   m1 cuelga de una polea móvil; la cuerda está atada al techo, pasa por la
+ *                                            polea móvil, sube a una polea fija y baja hasta m2. Positivo: m2 baja y
+ *                                            m1 sube, con a1 = a2/2.
+ *   tren, apilados y poleaMovil traen recorrido(t): lo que avanzó cada cuerpo desde el reposo a los t segundos.
+ *
+ * Campos de las funciones nuevas (ángulos de academia también en 143°, 180°, etc.: sen(180° − θ) = sen θ):
+ *   vertical → S, T, N, ac = v²/r, at = g·|sen θ| (tangencial), P, floja, vMinArriba = √(g·r), neta (resultante hacia
+ *     el centro, m·ac), masaAparente = S/g. Errores: igualPeso = m·g; sinPeso = m·v²/r; signoPeso = m·v²/r − m·g·cos θ;
+ *     centripetaExtra = m·g·cos θ − m·v²/r (la «centrípeta» como una fuerza más, en equilibrio).
+ *   loma → N, P, v2, v, ac = v²/r, at = g·sen φ, despega, vMaxCima = √(g·r), phiDespegue = arccos(2/3) en grados
+ *     (desde el reposo). Errores: igualPeso = m·g; sumaCentripeta = m·g·cos φ + m·v²/r; soloCentripeta = m·v²/r;
+ *     sinCos = m·g − m·v²/r.
+ *   curva → N, f, fMax = μs·N, derrapa (|f| > fMax), ac, vIdeal = √(g·r·tan θ), vMax (sin derrapar; Infinity si
+ *     cos θ − μs·sen θ ≤ 0). Errores: conCentrifuga = 0; roceMaximo = μs·N.
+ *   tren → a, sentido ('avanza' o 'quieto'), tensiones, neta y roce (por carrito). Errores (por cuerda k): igualF = F;
+ *     repartida = F/(n − 1); bloqueDelante = masas[k−1]·a; masaDelante = (suma de las masas delante de la cuerda)·a.
+ *   apilados → juntos, quietos, a (si van juntos), aA, aB, roceA, roceB, fsMax = μs·mA·g, tipoRoce ('estatico',
+ *     'cinetico' o 'ninguno'), rocePiso (positivo hacia F), Fmax (la mayor F con la que no resbalan). Errores:
+ *     roceMaximo = μs·mA·g; roceConPesoTotal = μs·(mA + mB)·g; FcontraRoceMax = μs·mA·g; aSoloB = F/mB.
+ *   poleaMovil → a1, a2, T, P1, P2, sostiene = 2T, equilibrio, sentido ('m2 baja', 'm2 sube' o 'quieto').
+ *     Errores: mismaAceleracion = la aceleración común si a1 fuera igual a a2; dobleRapido = 2·a2 (a1 al doble de a2);
+ *     tensionMitadPeso1 = m1·g/2; tensionPeso2 = m2·g; comoAtwood = (m2 − m1)·g/(m1 + m2).
  *
  * Cada resultado trae 'errores': los números que salen de las ideas erróneas del informe
  * (docs/investigacion/dinamica-ideas-erroneas.md). La escena los usa para las opciones incorrectas.
@@ -200,5 +244,136 @@
     return { ac, F: m * ac, errores: { sinCuadrado: m * Math.abs(v) / r, porRadio: m * v * v * r } };
   }
 
-  return { G, NOTABLES, trig, plano, piso, planoPolea, mesaPolea, atwood, ascensor, contacto, empujon, resultante, centripeta };
+  // Ángulo de 0° a 360° con los valores de academia en cada cuadrante (143° = 180° − 37°, etc.).
+  function trigVuelta(angulo) {
+    const a = num(angulo, 'ángulo');
+    if (a < 0 || a >= 360) throw new Error('el ángulo va de 0° a menos de 360°');
+    if (a <= 90) return trig(a);
+    if (a <= 180) { const t = trig(180 - a); return { sen: t.sen, cos: -t.cos }; }
+    if (a <= 270) { const t = trig(a - 180); return { sen: -t.sen, cos: -t.cos }; }
+    const t = trig(360 - a); return { sen: -t.sen, cos: t.cos };
+  }
+
+  function vertical(o) {
+    const m = pos(o.m, 'masa'), v = num(o.v, 'rapidez'), r = pos(o.r, 'radio'), g = o.g === undefined ? G : pos(o.g, 'g');
+    const { sen, cos } = trigVuelta(o.theta === undefined ? 0 : o.theta);
+    const v2 = v * v, ac = v2 / r, P = m * g;
+    const libre = m * ac + m * g * cos;          // lo que tendría que jalar la cuerda hacia el centro
+    const floja = libre < -EPS, S = floja ? 0 : limpio(libre);
+    // Rapidez en el punto más bajo (por energía) y hasta qué ángulo subiría como un péndulo; null si pasa de 90°.
+    const vb2 = v2 + 2 * g * r * (1 - cos), q = 1 - vb2 / (2 * g * r);
+    const anguloMax = q >= -EPS ? Math.acos(Math.min(1, Math.max(-1, q))) * 180 / Math.PI : null;
+    const periodo = 2 * Math.PI * Math.sqrt(r / g);
+    return { S, T: S, N: S, ac, at: limpio(g * Math.abs(sen)), P, floja, vMinArriba: Math.sqrt(g * r),
+      // Resultante hacia el centro: m·v²/r mientras hay círculo; si la cuerda está floja, solo la parte del peso.
+      neta: floja ? limpio(-m * g * cos) : m * ac, masaAparente: S / g, anguloMax, periodo,
+      // Vaivén para animar (aproximación de péndulo con forma de seno, en grados).
+      vaiven: t => (anguloMax === null ? null : anguloMax * Math.sin(2 * Math.PI * t / periodo)),
+      errores: { igualPeso: P, sinPeso: m * ac, signoPeso: m * ac - m * g * cos, centripetaExtra: m * g * cos - m * ac } };
+  }
+
+  function loma(o) {
+    const m = pos(o.m, 'masa'), r = pos(o.r, 'radio'), g = o.g === undefined ? G : pos(o.g, 'g');
+    const phi = num(o.phi === undefined ? 0 : o.phi, 'ángulo');
+    if (phi < 0 || phi > 90) throw new Error('el ángulo desde la cima va de 0° a 90°');
+    const { sen, cos } = trig(phi), reposo = !!o.desdeReposo;
+    const vIn = reposo ? 0 : num(o.v, 'rapidez');
+    const v2 = reposo ? 2 * g * r * (1 - cos) : vIn * vIn, v = Math.sqrt(v2), ac = v2 / r, P = m * g;
+    const libre = m * g * cos - m * ac, despega = libre < -EPS, N = despega ? 0 : limpio(libre);
+    const neta = limpio(m * g * cos - N);
+    // Para animar: sale de la cima con rapidez v constante; despega donde cos φ = v²/(g·r).
+    const fd = v2 >= g * r ? 0 : Math.acos(v2 / (g * r)), td = v > EPS ? fd * r / v : Infinity;
+    function desdeCima(t) {
+      t = num(t, 'tiempo');
+      if (v <= EPS) return { x: 0, y: 0, phi: 0, giro: 0, enPista: true };
+      if (t <= td) { const f = v * t / r, d = f * 180 / Math.PI; return { x: r * Math.sin(f), y: -r * (1 - Math.cos(f)), phi: d, giro: d, enPista: true }; }
+      const x0 = r * Math.sin(fd), y0 = -r * (1 - Math.cos(fd)), s = t - td, vx = v * Math.cos(fd), vy = -v * Math.sin(fd) - g * s;
+      // giro: hacia dónde apunta la velocidad, en grados bajo la horizontal.
+      return { x: x0 + vx * s, y: y0 - v * Math.sin(fd) * s - g * s * s / 2, phi: null, giro: Math.atan2(-vy, vx) * 180 / Math.PI, enPista: false };
+    }
+    return { N, P, v2, v, ac, at: limpio(g * sen), despega, vMaxCima: Math.sqrt(g * r),
+      phiDespegue: Math.acos(2 / 3) * 180 / Math.PI, neta, aRadial: neta / m,
+      despegaEn: reposo ? null : fd * 180 / Math.PI, desdeCima,
+      errores: { igualPeso: P, sumaCentripeta: m * g * cos + m * ac, soloCentripeta: m * ac, sinCos: P - m * ac } };
+  }
+
+  function curva(o) {
+    const m = pos(o.m, 'masa'), v = num(o.v, 'rapidez'), r = pos(o.r, 'radio'), g = o.g === undefined ? G : pos(o.g, 'g');
+    const th = num(o.peralte || 0, 'peralte');
+    if (th < 0 || th >= 90) throw new Error('el peralte va de 0° a menos de 90°');
+    const { sen, cos } = trig(th), mus = noNeg(o.mus, 'μs');
+    const ac = v * v / r;
+    // Ejes: horizontal hacia el centro y vertical. N·sen θ + f·cos θ = m·ac y N·cos θ − f·sen θ = m·g.
+    const N = limpio(m * g * cos + m * ac * sen), f = limpio(m * ac * cos - m * g * sen), fMax = mus * N;
+    const den = cos - mus * sen, numMin = sen - mus * cos;
+    return { N, f, fMax, derrapa: Math.abs(f) > fMax + EPS, ac,
+      vIdeal: Math.sqrt(g * r * sen / cos),
+      vMax: den <= EPS ? Infinity : Math.sqrt(g * r * (sen + mus * cos) / den),
+      vMin: numMin <= EPS ? 0 : Math.sqrt(g * r * numMin / (cos + mus * sen)),
+      errores: { conCentrifuga: 0, roceMaximo: fMax } };
+  }
+
+  function tren(o) {
+    if (!Array.isArray(o.masas) || o.masas.length < 2) throw new Error('el tren necesita al menos 2 masas');
+    const masas = o.masas.map((x, i) => pos(x, `masa ${i + 1}`)), n = masas.length;
+    const g = o.g === undefined ? G : pos(o.g, 'g'), F = noNeg(o.F, 'fuerza'), muk = noNeg(o.muk, 'μk');
+    const M = masas.reduce((s, x) => s + x, 0);
+    const detras = k => masas.slice(k).reduce((s, x) => s + x, 0), delante = k => masas.slice(0, k).reduce((s, x) => s + x, 0);
+    const quieto = F <= muk * M * g + EPS, a = quieto ? 0 : limpio((F - muk * M * g) / M);
+    const cuerdas = Array.from({ length: n - 1 }, (_, i) => i + 1);
+    return { a, sentido: quieto ? 'quieto' : 'avanza', M,
+      tensiones: quieto ? null : cuerdas.map(k => detras(k) * (a + muk * g)),
+      neta: masas.map(x => x * a), roce: masas.map(x => muk * x * g),
+      recorrido: t => a * t * t / 2,
+      errores: { igualF: F, repartida: F / (n - 1), bloqueDelante: cuerdas.map(k => masas[k - 1] * a), masaDelante: cuerdas.map(k => delante(k) * a) } };
+  }
+
+  function apilados(o) {
+    const mA = pos(o.mA, 'masa de arriba'), mB = pos(o.mB, 'masa de abajo'), g = o.g === undefined ? G : pos(o.g, 'g');
+    const F = noNeg(o.F, 'fuerza'), en = o.en === undefined ? 'abajo' : o.en;
+    if (en !== 'abajo' && en !== 'arriba') throw new Error(`en debe ser 'abajo' o 'arriba': ${en}`);
+    const { mus, muk } = coeficientes(o), muPiso = noNeg(o.muPiso, 'μ del piso');
+    const M = mA + mB, fsA = mus * mA * g, fk = muk * mA * g, p = muPiso * M * g;
+    let juntos, quietos = false, a = null, aA, aB, roceA, rocePiso, tipoRoce, Fmax;
+    if (en === 'abajo') {
+      Fmax = (mus + muPiso) * g * M;
+      if (F <= p + EPS) { juntos = true; quietos = true; a = 0; roceA = 0; rocePiso = -F; }
+      else {
+        const aj = (F - p) / M;
+        if (mA * aj <= fsA + EPS) { juntos = true; a = aj; roceA = mA * aj; rocePiso = -p; }
+        else { juntos = false; aA = muk * g; aB = (F - fk - p) / mB; roceA = fk; rocePiso = -p; }
+      }
+    } else {
+      // Con el piso que aguanta más que el roce entre los bloques, B no se mueve y A resbala desde F = fsA.
+      Fmax = fsA > p ? (fsA * M - mA * p) / mB : fsA;
+      const resbala = () => { juntos = false; aA = (F - fk) / mA; aB = Math.max(0, (fk - p) / mB); roceA = -fk; rocePiso = aB > 0 ? -p : -fk; };
+      if (F <= p + EPS) {
+        if (F <= fsA + EPS) { juntos = true; quietos = true; a = 0; roceA = -F; rocePiso = -F; } else resbala();
+      } else {
+        const aj = (F - p) / M, atras = F - mA * aj;
+        if (atras <= fsA + EPS) { juntos = true; a = aj; roceA = -atras; rocePiso = -p; } else resbala();
+      }
+    }
+    if (juntos) { aA = a; aB = a; }
+    a = a === null ? null : limpio(a); aA = limpio(aA); aB = limpio(aB); roceA = limpio(roceA); rocePiso = limpio(rocePiso);
+    tipoRoce = juntos ? (Math.abs(roceA) > EPS ? 'estatico' : 'ninguno') : (fk > EPS ? 'cinetico' : 'ninguno');
+    return { juntos, quietos, a, aA, aB, roceA, roceB: limpio(-roceA), fsMax: fsA, fk, tipoRoce, NAB: mA * g, Npiso: M * g, rocePiso, Fmax,
+      recorrido: t => ({ xA: aA * t * t / 2, xB: aB * t * t / 2 }),
+      errores: { roceMaximo: fsA, roceConPesoTotal: mus * M * g, FcontraRoceMax: fsA, aSoloB: F / mB } };
+  }
+
+  function poleaMovil(o) {
+    const m1 = pos(o.m1, 'masa 1'), m2 = pos(o.m2, 'masa 2'), g = o.g === undefined ? G : pos(o.g, 'g');
+    // m2: m2·g − T = m2·a2. Polea móvil (ligera) con m1: 2T − m1·g = m1·a1. Ligadura: a1 = a2/2.
+    const a2 = limpio(2 * g * (2 * m2 - m1) / (4 * m2 + m1)), a1 = a2 / 2, T = m2 * (g - a2);
+    const equilibrio = Math.abs(2 * m2 - m1) < EPS;
+    return { a1, a2, T, P1: m1 * g, P2: m2 * g, sostiene: 2 * T, equilibrio,
+      sentido: a2 > 0 ? 'm2 baja' : a2 < 0 ? 'm2 sube' : 'quieto',
+      recorrido: t => ({ y2: a2 * t * t / 2, y1: a1 * t * t / 2 }),
+      errores: { mismaAceleracion: g * (2 * m2 - m1) / (2 * m2 + m1), dobleRapido: 2 * a2, tensionMitadPeso1: m1 * g / 2,
+        tensionPeso2: m2 * g, comoAtwood: (m2 - m1) * g / (m1 + m2) } };
+  }
+
+  return { G, NOTABLES, trig, plano, piso, planoPolea, mesaPolea, atwood, ascensor, contacto, empujon, resultante, centripeta,
+    vertical, loma, curva, tren, apilados, poleaMovil };
 });

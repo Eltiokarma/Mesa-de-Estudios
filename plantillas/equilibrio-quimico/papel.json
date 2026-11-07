@@ -422,6 +422,96 @@
           }
         }
       ]
+    },
+    {
+      "id": "p10",
+      "enunciado": "El N₂O₄ se disocia según N₂O₄(g) ⇌ 2 NO₂(g), con Kp = 1 a cierta temperatura (es la reacción del problema 7). En un cilindro con émbolo se mezclan 1 mol de N₂O₄ y 4,5 mol de argón, un gas que no reacciona, y la presión total se mantiene en 3 atm. a) ¿Cuál es el grado de disociación? b) Sin argón, a 3 atm, el grado era cerca de 0,28. ¿Por qué cambió? c) Si el argón se hubiera metido con el émbolo trabado (a volumen fijo) en el equilibrio sin argón, ¿hacia dónde se desplazaría?",
+      "respuesta": "a) α = 0,5 (50 %). b) A presión total fija, el argón agranda el volumen y baja las presiones parciales del N₂O₄ y del NO₂: el equilibrio se corre hacia el lado con más moles de gas (el NO₂). c) No se desplaza: a volumen fijo las presiones parciales no cambian.",
+      "pasos": [
+        "Parte de 1 mol de N₂O₄. Quedan 1 − α de N₂O₄ y se forman 2α de NO₂. Los moles de gas son 1 + α de la reacción más 4,5 de argón: 5,5 + α en total.",
+        "Presiones parciales: P(NO₂) = 2α/(5,5 + α) · 3 y P(N₂O₄) = (1 − α)/(5,5 + α) · 3. El argón no entra en Kp, pero sí en los moles totales.",
+        "Kp = P(NO₂)² / P(N₂O₄) = 12α² / ((1 − α)(5,5 + α)) = 1. Desarrolla: 12α² = (1 − α)(5,5 + α) → 26α² + 9α − 11 = 0 → α = (−9 + 35)/52 = 0,5 (la otra raíz es negativa).",
+        "Comprueba: hay 0,5 mol de N₂O₄, 1 mol de NO₂ y 4,5 de argón, 6 mol en total. P(NO₂) = 1/6 · 3 = 0,5 atm y P(N₂O₄) = 0,5/6 · 3 = 0,25 atm; 0,5²/0,25 = 1.",
+        "b) Con la presión total fija, el argón ocupa lugar: la suma de las presiones parciales de N₂O₄ y NO₂ baja de 3 atm a 0,75 atm. Es como descomprimir la mezcla, y se corre hacia el lado con más moles de gas: se disocia más (de 0,28 a 0,5). Con argón, las presiones parciales de N₂O₄ y NO₂ suman 0,75 atm, igual que en el problema 7a: por eso sale el mismo α = 0,5.",
+        "c) Con el émbolo trabado, el argón sube la presión total, pero no cambia ni los moles ni el volumen del N₂O₄ y del NO₂: sus presiones parciales siguen igual y Q sigue igual a K. No se desplaza."
+      ],
+      "verificar": [
+        {
+          "fn": "equilibrioP",
+          "args": [
+            "N2O4(g) = 2 NO2(g)",
+            {
+              "moles": {
+                "N2O4": 1
+              },
+              "P": 3,
+              "K": 1,
+              "inerte": 4.5
+            }
+          ],
+          "espera": {
+            "grado": 0.5,
+            "nTotal": 6,
+            "presiones.NO2": 0.5,
+            "presiones.N2O4": 0.25
+          }
+        },
+        {
+          "fn": "equilibrioP",
+          "args": [
+            "N2O4(g) = 2 NO2(g)",
+            {
+              "moles": {
+                "N2O4": 1
+              },
+              "P": 3,
+              "K": 1
+            }
+          ],
+          "espera": {
+            "grado": 0.277350098112615
+          }
+        },
+        {
+          "fn": "inerte",
+          "args": [
+            "N2O4(g) = 2 NO2(g)",
+            {
+              "moles": {
+                "N2O4": 0.7226499018873854,
+                "NO2": 0.5547001962252291
+              },
+              "V": 1,
+              "K": 0.4257833660375382
+            },
+            4.5,
+            "V"
+          ],
+          "espera": {
+            "sentido": "equilibrio"
+          }
+        },
+        {
+          "fn": "inerte",
+          "args": [
+            "N2O4(g) = 2 NO2(g)",
+            {
+              "moles": {
+                "N2O4": 0.7226499018873854,
+                "NO2": 0.5547001962252291
+              },
+              "V": 1,
+              "K": 0.4257833660375382
+            },
+            4.5,
+            "P"
+          ],
+          "espera": {
+            "sentido": "directa"
+          }
+        }
+      ],
+      "nivel": "avanzado"
     }
   ]
 }
