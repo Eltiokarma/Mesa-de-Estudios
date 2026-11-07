@@ -1,0 +1,306 @@
+{
+  "titulo": "La antena y el arcoíris: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa c = 3 × 10⁸ m/s, hc = 1240 eV·nm, 1 eV = 1,6 × 10⁻¹⁹ J y ε₀ = 8,85 × 10⁻¹² C²/(N·m²). Onda: c = λ·f; en la expresión sen(k·x − ω·t), k = 2π/λ y ω = 2π·f. Fotón: E = h·f = hc/λ. Recorrido: d = v·t. En un medio: v = c/n y λ' = λ/n. Campos de la onda: (campo eléctrico) = c·B. Intensidad media: I = c·ε₀·(campo eléctrico máximo)²/2. En los libros y en el examen verás E₀ = c·B₀, con E el campo eléctrico; aquí lo escribimos con palabras porque E ya es la energía del fotón.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una emisora de radio AM transmite en 750 kHz y una de FM en 90 MHz. Con c = 3 × 10⁸ m/s, ¿cuál es la longitud de onda de cada una?",
+      "respuesta": "AM: 400 m; FM: 10/3 m ≈ 3,33 m.",
+      "pasos": [
+        "750 kHz = 7,5 × 10⁵ Hz y 90 MHz = 9 × 10⁷ Hz.",
+        "λ = c/f = 3 × 10⁸ / (7,5 × 10⁵) = 400 m.",
+        "λ = 3 × 10⁸ / (9 × 10⁷) = 10/3 m ≈ 3,33 m. Más frecuencia, menos longitud de onda; la rapidez es la misma."
+      ],
+      "verificar": [
+        {
+          "fn": "onda",
+          "args": [
+            750,
+            "kHz"
+          ],
+          "espera": {
+            "lambda": 400
+          }
+        },
+        {
+          "fn": "onda",
+          "args": [
+            90,
+            "MHz"
+          ],
+          "espera": {
+            "lambda": 3.33333333333
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un horno de microondas trabaja con ondas de 12 cm de longitud de onda. Con c = 3 × 10⁸ m/s, ¿cuál es su frecuencia, en GHz?",
+      "respuesta": "f = 2,5 × 10⁹ Hz = 2,5 GHz.",
+      "pasos": [
+        "12 cm = 0,12 m.",
+        "f = c/λ = 3 × 10⁸ / 0,12 = 2,5 × 10⁹ Hz.",
+        "1 GHz = 10⁹ Hz: f = 2,5 GHz."
+      ],
+      "verificar": [
+        {
+          "fn": "ondaDeLambda",
+          "args": [
+            12,
+            "cm"
+          ],
+          "espera": {
+            "f": 2500000000.0,
+            "region": "microondas"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una luz verde tiene una longitud de onda de 500 nm. Con c = 3 × 10⁸ m/s y hc = 1240 eV·nm, halla su frecuencia y la energía de cada fotón, en eV y en joules (1 eV = 1,6 × 10⁻¹⁹ J).",
+      "respuesta": "f = 6 × 10¹⁴ Hz; E = 2,48 eV ≈ 3,97 × 10⁻¹⁹ J.",
+      "pasos": [
+        "500 nm = 5 × 10⁻⁷ m; f = 3 × 10⁸ / (5 × 10⁻⁷) = 6 × 10¹⁴ Hz.",
+        "E = hc/λ = 1240/500 = 2,48 eV.",
+        "En joules: 2,48 · 1,6 × 10⁻¹⁹ ≈ 3,97 × 10⁻¹⁹ J."
+      ],
+      "verificar": [
+        {
+          "fn": "ondaDeLambda",
+          "args": [
+            500,
+            "nm"
+          ],
+          "espera": {
+            "f": 600000000000000.0,
+            "E": 2.48,
+            "EJ": 3.968e-19,
+            "color": "verde"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La luz de un láser llega a una pantalla con un campo eléctrico máximo de 100 V/m. Con c = 3 × 10⁸ m/s y ε₀ = 8,85 × 10⁻¹² C²/(N·m²), ¿cuál es la intensidad media de esa luz? ¿Cuánto vale el campo magnético máximo?",
+      "respuesta": "I = 13,275 W/m² (unos 13,3 W/m²); B₀ = 1/3 × 10⁻⁶ T ≈ 3,33 × 10⁻⁷ T.",
+      "pasos": [
+        "I = c·ε₀·(campo eléctrico máximo)²/2 = 3 × 10⁸ · 8,85 × 10⁻¹² · 100² / 2, como sigue:",
+        "3 × 10⁸ · 8,85 × 10⁻¹² = 2,655 × 10⁻³; por 10⁴ da 26,55; entre 2: I = 13,275 W/m².",
+        "B₀ = (campo eléctrico máximo)/c = 100 / (3 × 10⁸) ≈ 3,33 × 10⁻⁷ T."
+      ],
+      "verificar": [
+        {
+          "fn": "intensidad",
+          "args": [
+            100
+          ],
+          "espera": {
+            "I": 13.275
+          }
+        },
+        {
+          "fn": "campos",
+          "args": [
+            100
+          ],
+          "espera": {
+            "B0": 3.33333333333e-07
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "La luz del Sol recorre 1,5 × 10¹¹ m hasta la Tierra a 3 × 10⁸ m/s. ¿Cuánto tarda, en minutos y segundos?",
+      "respuesta": "500 s = 8 min 20 s.",
+      "pasos": [
+        "t = d/c = 1,5 × 10¹¹ / (3 × 10⁸) = 500 s.",
+        "500 s = 8 · 60 s + 20 s = 8 min 20 s."
+      ],
+      "verificar": [
+        {
+          "fn": "viaje",
+          "args": [
+            150000000000.0
+          ],
+          "espera": {
+            "t": 500,
+            "min": 8,
+            "s": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un radar manda un pulso hacia un avión y recibe el eco 3 × 10⁻⁴ s después. Las ondas viajan a 3 × 10⁸ m/s. ¿A qué distancia está el avión?",
+      "respuesta": "45 km.",
+      "pasos": [
+        "En 3 × 10⁻⁴ s el pulso va y vuelve: recorre 3 × 10⁸ · 3 × 10⁻⁴ = 9 × 10⁴ m.",
+        "El avión está a la mitad: 4,5 × 10⁴ m = 45 km."
+      ],
+      "verificar": [
+        {
+          "fn": "eco",
+          "args": [
+            0.0003
+          ],
+          "espera": {
+            "d": 45000
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "En una onda electromagnética que viaja en el vacío, el campo magnético máximo es 2 × 10⁻⁸ T. Con c = 3 × 10⁸ m/s, ¿cuál es el campo eléctrico máximo? Si el campo eléctrico oscila de arriba abajo y la onda avanza hacia el este, ¿en qué dirección oscila el campo magnético?",
+      "respuesta": "6 V/m; el campo magnético oscila en la horizontal norte-sur, perpendicular al campo eléctrico y al avance.",
+      "pasos": [
+        "(campo eléctrico) = c·B = 3 × 10⁸ · 2 × 10⁻⁸ = 6 V/m.",
+        "Los dos campos son perpendiculares entre sí y a la dirección de avance (la onda es transversal).",
+        "Perpendicular a la vertical y al este queda la dirección norte-sur."
+      ],
+      "verificar": [
+        {
+          "fn": "campoDeB",
+          "args": [
+            2e-08
+          ],
+          "espera": {
+            "electrico0": 6
+          }
+        },
+        {
+          "fn": "direccionB",
+          "args": [
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              1,
+              0,
+              0
+            ]
+          ],
+          "espera": {
+            "valor": [
+              0,
+              -1,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Una luz roja de 660 nm (medida en el aire) entra a un vidrio de índice n = 3/2. Con c = 3 × 10⁸ m/s, ¿cuánto valen su rapidez, su longitud de onda y su frecuencia dentro del vidrio? ¿Cambia el color?",
+      "respuesta": "v = 2 × 10⁸ m/s; λ' = 440 nm; f = 5/11 × 10¹⁵ ≈ 4,55 × 10¹⁴ Hz, la misma de afuera. El color no cambia: lo pone la frecuencia.",
+      "pasos": [
+        "v = c/n = 3 × 10⁸ / 1,5 = 2 × 10⁸ m/s.",
+        "La frecuencia no cambia al pasar de un medio a otro: f = c/λ = 3 × 10⁸ / (6,6 × 10⁻⁷) ≈ 4,55 × 10¹⁴ Hz.",
+        "λ' = v/f = λ/n = 660/1,5 = 440 nm. Sigue siendo roja, aunque 440 nm en el aire sería violeta."
+      ],
+      "verificar": [
+        {
+          "fn": "medio",
+          "args": [
+            660,
+            1.5
+          ],
+          "espera": {
+            "v": 200000000.0,
+            "lambdaNm": 440,
+            "f": 454545454545000.0,
+            "color": "rojo"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "El campo eléctrico de una onda electromagnética en el vacío, que oscila a lo largo del eje y, es: campo eléctrico = 30 sen(4π × 10⁶ x − 12π × 10¹⁴ t), en V/m, con x en m y t en s. Halla su longitud de onda, su frecuencia y su rapidez, di en qué región del espectro está y en qué dirección oscila el campo magnético y con qué valor máximo (c = 3 × 10⁸ m/s).",
+      "respuesta": "λ = 0,5 µm = 500 nm (luz visible, verde); f = 6 × 10¹⁴ Hz; v = 3 × 10⁸ m/s; avanza hacia +x, así que B oscila a lo largo del eje z, con B₀ = 10⁻⁷ T.",
+      "pasos": [
+        "k = 4π × 10⁶ rad/m: λ = 2π/k = 2π / (4π × 10⁶) = 5 × 10⁻⁷ m = 500 nm.",
+        "ω = 12π × 10¹⁴ rad/s: f = ω/(2π) = 6 × 10¹⁴ Hz; v = ω/k = 3 × 10⁸ m/s.",
+        "El signo menos (k·x − ω·t) dice que la onda avanza hacia +x. B es perpendicular al campo eléctrico (eje y) y al avance (eje x): oscila a lo largo del eje z.",
+        "B₀ = 30 / (3 × 10⁸) = 10⁻⁷ T."
+      ],
+      "verificar": [
+        {
+          "fn": "leerOnda",
+          "args": [
+            {
+              "E0": 30,
+              "k": 12566370.614359172,
+              "w": 3769911184307752,
+              "signo": "-"
+            }
+          ],
+          "espera": {
+            "lambda": 5e-07,
+            "f": 600000000000000.0,
+            "v": 300000000.0,
+            "region": "visible",
+            "color": "verde",
+            "B0": 1e-07,
+            "dirB": [
+              0,
+              0,
+              1
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Una antena de celular emite a 1,5 GHz con mucha potencia. Con hc = 1240 eV·nm y c = 3 × 10⁸ m/s, ¿cuánta energía trae cada fotón? Para arrancar un electrón de un átomo hacen falta unos 10 eV. ¿Puede ionizar si se sube su potencia? ¿Qué longitud de onda, como máximo, tiene una luz que sí ioniza?",
+      "respuesta": "λ = 0,2 m = 2 × 10⁸ nm y E = 6,2 × 10⁻⁶ eV: no ioniza con ninguna potencia, porque la potencia cambia cuántos fotones salen, no la energía de cada uno. Ioniza la luz de 124 nm o menos.",
+      "pasos": [
+        "λ = c/f = 3 × 10⁸ / (1,5 × 10⁹) = 0,2 m = 2 × 10⁸ nm.",
+        "E = hc/λ = 1240 / (2 × 10⁸) = 6,2 × 10⁻⁶ eV, más de un millón de veces menos que 10 eV.",
+        "Para 10 eV: λ = 1240/10 = 124 nm, en el ultravioleta."
+      ],
+      "verificar": [
+        {
+          "fn": "onda",
+          "args": [
+            1.5,
+            "GHz"
+          ],
+          "espera": {
+            "lambda": 0.2,
+            "E": 6.2e-06
+          }
+        },
+        {
+          "fn": "ionizante",
+          "args": [
+            1500000000.0
+          ],
+          "espera": {
+            "ioniza": false,
+            "lambdaBordeNm": 124
+          }
+        }
+      ]
+    }
+  ]
+}
