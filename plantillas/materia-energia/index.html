@@ -1,0 +1,1243 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La lupa y la balanza: materia y energía</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 (docs/metodo/paleta.py) y contraste WCAG sobre
+   #fdf7f1 y #241c2e, también sobre el chip .v (fondo del 8 %): contraste mínimo 4,5 en los dos modos.
+     ELEMENTOS (bloque único, fácil de reemplazar cuando exista nucleo/elementos.js; los de balance-reacciones salvo donde se dice)
+       H  hidrógeno  turquesa      #0f766e / #5ed9c8
+       O  oxígeno    rojo          #c0364a / #f17384
+       C  carbono    gris          #6b6b6b / #9a9a9a
+       Cl cloro      verde         #466d14 / #a3d65e
+       Fe hierro     celeste       #03649b / #30b4f2   (en claro, un poco más oscuro que en balance, #036a99, para
+                                                         quedar a ΔE00 20,7 del C: el clavo y el azúcar salen juntos)
+       Na sodio      fucsia        #a10fbf / #cf6bfa   (nuevo)
+       Si silicio    oliva oscuro  #5c531f / #c8dc3c   (nuevo)
+       S  azufre     añil          #3a1fe0 / #9f9bff   (el de mol-composicion; en oscuro se aclaró para el chip)
+       He helio      violeta       #6b3dbd / #ab8cf2   (nuevo)
+     VARIABLES
+       m  masa (lo que marca la balanza; también Δm)   mostaza       #7d6a00 / #e3c84a
+       E  energía                                      magenta       #b3246b / #ff86bd
+       c  rapidez de la luz                            verde oscuro  #255c1f / #5fe06a
+       fases                                           naranja       #a05200 / #f0a04a
+       componentes                                     azul          #1f5fbf / #7cb0ff
+       T  temperatura (solo en Juliaca)                ámbar         #8f5800 / #ffc04d
+   Qué sale junto: H, O y He (cajas); H, O, Na y Cl con fases y componentes (vaso); C, H y O con m (frasco); C, H, O y Fe
+   (azúcar y clavo); H y O con Na y Cl, con Si, con C, o Fe y S (separación, una mezcla a la vez); m, E y c; Fe, O y m;
+   H, O y T; O; S. ΔE00 mínimo entre los que salen juntos: 20,7 en claro (C–Fe) y 22,3 en oscuro (C–tinta).
+   Parecidos que nunca comparten dibujo: fases–T (6,5), Fe–componentes (7,2), S–He (8,7), Cl–c (8,8).
+   Los tonos de agua, aceite, arena, hielo, azufre en polvo y llama son pálidos y no nombran variables. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  /* elementos */
+  --e-H:#0f766e; --e-O:#c0364a; --e-C:#6b6b6b; --e-Cl:#466d14; --e-Fe:#03649b; --e-Na:#a10fbf; --e-Si:#5c531f; --e-S:#3a1fe0; --e-He:#6b3dbd;
+  /* variables */
+  --c-m:#7d6a00; --c-E:#b3246b; --c-c:#255c1f; --c-fa:#a05200; --c-co:#1f5fbf; --c-T:#8f5800;
+  /* tonos del mundo (no son variables) */
+  --vidrio:#8e97a8; --caja:#f6ece4; --letra-atomo:#ffffff; --agua:#dbe9ef; --aceite:#f3e5ad; --arena:#e6d3ae; --hielo:#ffffff;
+  --polvo:#efe08a; --llama:#f6c48e;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --e-H:#5ed9c8; --e-O:#f17384; --e-C:#9a9a9a; --e-Cl:#a3d65e; --e-Fe:#30b4f2; --e-Na:#cf6bfa; --e-Si:#c8dc3c; --e-S:#9f9bff; --e-He:#ab8cf2;
+  --c-m:#e3c84a; --c-E:#ff86bd; --c-c:#5fe06a; --c-fa:#f0a04a; --c-co:#7cb0ff; --c-T:#ffc04d;
+  --vidrio:#5e5670; --caja:#211a2a; --letra-atomo:#1d1626; --agua:#2b3a46; --aceite:#4a4326; --arena:#4d4131; --hielo:#3a4553;
+  --polvo:#6a6230; --llama:#7a4f34; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --e-H:#5ed9c8; --e-O:#f17384; --e-C:#9a9a9a; --e-Cl:#a3d65e; --e-Fe:#30b4f2; --e-Na:#cf6bfa; --e-Si:#c8dc3c; --e-S:#9f9bff; --e-He:#ab8cf2;
+  --c-m:#e3c84a; --c-E:#ff86bd; --c-c:#5fe06a; --c-fa:#f0a04a; --c-co:#7cb0ff; --c-T:#ffc04d;
+  --vidrio:#5e5670; --caja:#211a2a; --letra-atomo:#1d1626; --agua:#2b3a46; --aceite:#4a4326; --arena:#4d4131; --hielo:#3a4553;
+  --polvo:#6a6230; --llama:#7a4f34; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* Nada se arrastra en esta escena: el dedo siempre desplaza la página sobre el dibujo. */
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend svg{flex:none}
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+.v{font-weight:800; border-radius:6px; padding:0 2px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.f{white-space:nowrap}
+.f .v{padding:0; border-radius:3px; text-decoration:none}
+.f sub, .f sup{font-size:.72em; line-height:0}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v-E{color:var(--c-E); background:color-mix(in srgb, var(--c-E) 8%, transparent)}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v-fa{color:var(--c-fa); background:color-mix(in srgb, var(--c-fa) 8%, transparent)}
+.v-co{color:var(--c-co); background:color-mix(in srgb, var(--c-co) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-H{color:var(--e-H)} .v-O{color:var(--e-O)} .v-C{color:var(--e-C)} .v-Cl{color:var(--e-Cl)} .v-Fe{color:var(--e-Fe)}
+.v-Na{color:var(--e-Na)} .v-Si{color:var(--e-Si)} .v-S{color:var(--e-S)} .v-He{color:var(--e-He)}
+.v.hl{background:none; outline:2px solid currentColor; outline-offset:1px}
+.carga{color:var(--ink); font-weight:800}
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-size:1.04rem; font-variant-numeric:tabular-nums; min-width:0}
+.eq .note{font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq .ex{white-space:normal; line-height:2}
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:20px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:40px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.campo{display:grid; gap:6px; font-weight:700; font-size:.92rem}
+.estado{font-weight:700; margin:0}
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Materia y energía · Problemas tipo admisión</p>
+      <h1>La lupa y la balanza</h1>
+      <p class="sub">Lo que se ve, al lado de las partículas que no se ven, y una balanza que no miente. Predice y después mira.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="La lupa y la balanza">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Lo que se ve a simple vista y, en círculos, lo que muestra la lupa: las partículas"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con la lupa y la balanza">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="El experimento: la balanza, la olla o la caja, y la lupa con las partículas"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/materia-energia">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'materia-energia', unidad: 'quimica.materia-y-energia', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorMateria (motor.js): qué es cada caja, cuántas fases y componentes, si un cambio es
+   físico, químico o nuclear, lo que marca la balanza, qué separa cada método y E = mc². Aquí solo se pinta. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MM = MotorMateria;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const fmt2 = n => (Math.round(n*100)/100).toFixed(2).replace('.', ',');
+const SUP = { '0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻' };
+// Notación científica de academia: 9 × 10¹³.
+function cien(x){
+  if (x === 0) return '0';
+  const e = Math.floor(Math.log10(Math.abs(x)) + 1e-9), m = Math.round(x/Math.pow(10, e)*100)/100;
+  if (e >= 0 && e <= 3) return fmt(x, 3);
+  return `${fmt(m, 2)} × 10${String(e).split('').map(ch => SUP[ch]).join('')}`;
+}
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const ELEM = ['H', 'O', 'C', 'Cl', 'Fe', 'Na', 'Si', 'S', 'He'];
+const SUBD = { '0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉' };
+function txt(f){ const [c, q] = String(f).split('^'); return c.replace(/\d/g, d => SUBD[d]) + (q ? (q === '+' ? '⁺' : q === '-' ? '⁻' : q) : ''); }
+// Fórmula en el texto: cada elemento con su color; al tocarlo se resalta en el dibujo.
+function F(f){
+  const [cuerpo, q] = String(f).split('^'); let h = '';
+  cuerpo.replace(/([A-Z][a-z]?)(\d*)/g, (m, el, d) => { h += `<span class="v v-${el}" data-var="${el}" tabindex="0">${el}${d ? `<sub>${d}</sub>` : ''}</span>`; return m; });
+  if (q) h += `<sup class="carga">${q === '-' ? '−' : q}</sup>`;
+  return `<span class="f">${h}</span>`;
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const Vm = t => V('m', t), VE = t => V('E', t), Vc = t => V('c', t), Vfa = t => V('fa', t), Vco = t => V('co', t), VT = t => V('T', t);
+
+function colores(){
+  const g = n => css(n), el = {};
+  for (const e of ELEM) el[e] = g('--e-' + e);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), ok:g('--ok'), warn:g('--warn'),
+    m:g('--c-m'), E:g('--c-E'), c:g('--c-c'), fa:g('--c-fa'), co:g('--c-co'), T:g('--c-T'), el,
+    vidrio:g('--vidrio'), caja:g('--caja'), letra:g('--letra-atomo'), agua:g('--agua'), aceite:g('--aceite'), arena:g('--arena'),
+    hielo:g('--hielo'), polvo:g('--polvo'), llama:g('--llama'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function azar(sem){ let s = sem >>> 0 || 1; return () => (s = (s*1664525 + 1013904223) >>> 0)/4294967296; }
+const ease = p => p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2)/2;
+// Texto en el lienzo; si no entra, baja la letra hasta 10 px.
+function texto(ctx, c, t, x, y, tam, color, align, max, peso){
+  let s = tam; ctx.font = `${peso || 700} ${s}px ${c.font}`;
+  if (max) while (s > 10 && ctx.measureText(t).width > max){ s -= 0.5; ctx.font = `${peso || 700} ${s}px ${c.font}`; }
+  ctx.fillStyle = color; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, x, y);
+  return ctx.measureText(t).width;
+}
+const colDe = (c, k) => c.el[k] || c[k] || c.ink;
+
+/* ----- Partículas -----
+   Cada átomo lleva el color de su elemento y su letra si cabe. Coordenadas en radios de átomo. El azúcar y el aceite
+   van simplificados (un anillo y una cadena): la leyenda lo dice. */
+const RADIO = { H:0.62, He:0.85, C:0.95, O:0.95, Na:1.1, Cl:1.15, Si:1.05, Fe:1.1, S:1.0 };
+const anillo = (n, r, els) => els.map((e, k) => [e, r*Math.cos(2*Math.PI*k/n - Math.PI/2), r*Math.sin(2*Math.PI*k/n - Math.PI/2)]);
+const FORMAS = {
+  H2:[['H',-.6,0],['H',.6,0]], O2:[['O',-.78,0],['O',.78,0]], N2:[['N',-.78,0],['N',.78,0]],
+  O3:[['O',-1.4,.55],['O',0,-.25],['O',1.4,.55]], H2O:[['H',-.92,.58],['H',.92,.58],['O',0,-.12]],
+  He:[['He',0,0]], Fe:[['Fe',0,0]], S:[['S',0,0]], 'Na^+':[['Na',0,0]], 'Cl^-':[['Cl',0,0]],
+  NaCl:[['Na',-1.05,0],['Cl',1.1,0]], SiO2:[['O',-1.75,0],['O',1.75,0],['Si',0,0]],
+  C2H5OH:[['H',-2.3,-.7],['H',-2.3,.7],['H',-1.35,1.05],['H',.15,1.05],['H',.15,-1.05],['H',2.45,.35],['C',-1.35,0],['C',.15,0],['O',1.6,-.45]],
+  Fe2O3:[['Fe',-1.95,.45],['Fe',1.95,.45],['O',-3.9,-.45],['O',0,-.45],['O',3.9,-.45]],
+  S8:anillo(8, 1.75, Array(8).fill('S')),
+  C12H22O11:[...anillo(6, 1.55, ['O','C','C','C','C','C']), ['O', 2.75, -1.6], ['O', -2.75, 1.6]],
+  aceite:[['C',-3.6,.3],['C',-2.4,-.3],['C',-1.2,.3],['C',0,-.3],['C',1.2,.3],['C',2.4,-.3],['O',3.55,.25],['O',3.4,-1.35]],
+};
+const CARGA = { 'Na^+':'+', 'Cl^-':'−' };
+const radioDe = e => RADIO[e] || 1;
+function extension(f){ let x = 0; for (const [e, dx, dy] of FORMAS[f]) x = Math.max(x, Math.hypot(dx, dy) + radioDe(e)); return x; }
+// Átomos de una partícula en (x, y), girada ang.
+function atomosEn(f, x, y, R, ang){
+  const co = Math.cos(ang || 0), si = Math.sin(ang || 0);
+  return FORMAS[f].map(([e, dx, dy]) => ({ e, x: x + (dx*co - dy*si)*R, y: y + (dx*si + dy*co)*R, r: radioDe(e)*R }));
+}
+function pintarAtomos(ctx, c, ats, hl, alpha){
+  ctx.save(); ctx.globalAlpha = alpha === undefined ? 1 : alpha;
+  for (const a of ats){
+    ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI*2); ctx.fillStyle = c.el[a.e] || c.muted; ctx.fill();
+    ctx.strokeStyle = c.paper; ctx.lineWidth = a.r > 4 ? 1.2 : 0.7; ctx.stroke();
+    if (hl && hl === a.e){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(a.x, a.y, a.r + 2.2, 0, Math.PI*2); ctx.stroke(); }
+    if (a.r >= 6.5){ ctx.fillStyle = c.letra; ctx.font = `800 ${Math.round(a.r*(a.e.length > 1 ? 0.8 : 0.95))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(a.e, a.x, a.y + 0.5); }
+  }
+  ctx.restore();
+}
+function particula(ctx, c, f, x, y, R, ang, hl, alpha){
+  pintarAtomos(ctx, c, atomosEn(f, x, y, R, ang), hl, alpha);
+  if (CARGA[f] && R >= 3){ ctx.save(); ctx.globalAlpha = alpha === undefined ? 1 : alpha; texto(ctx, c, CARGA[f], x + radioDe(FORMAS[f][0][0])*R + 3, y - radioDe(FORMAS[f][0][0])*R, Math.max(10, R*1.2), c.ink, 'center', 0, 900); ctx.restore(); }
+}
+// Lugares para n partículas dentro de un círculo (o rectángulo), sin encimarse: cuadrícula con un poco de azar.
+function lugares(n, zona, sem, paso){
+  const rnd = azar(sem), pts = [];
+  const { x, y, w, h, circ } = zona;
+  let s = paso || Math.sqrt(w*h/(Math.max(1, n)*1.25));
+  for (let intento = 0; intento < 12 && pts.length < n; intento++){
+    pts.length = 0;
+    for (let yy = y + s/2; yy < y + h; yy += s) for (let xx = x + s/2; xx < x + w; xx += s){
+      if (circ){ const cx = x + w/2, cy = y + h/2; if (Math.hypot(xx - cx, yy - cy) > Math.min(w, h)/2 - s*0.45) continue; }
+      pts.push([xx + (rnd() - .5)*s*0.3, yy + (rnd() - .5)*s*0.3, rnd()*Math.PI*2]);
+    }
+    if (pts.length < n) s *= 0.9;
+  }
+  // Barajar con la semilla y tomar n.
+  for (let i = pts.length - 1; i > 0; i--){ const j = Math.floor(rnd()*(i + 1)); [pts[i], pts[j]] = [pts[j], pts[i]]; }
+  return pts.slice(0, n);
+}
+// Lista de partículas [{ f, n }] → [{ f, x, y, a }] en una zona.
+function repartir(items, zona, sem){
+  const lista = []; items.forEach(it => { for (let k = 0; k < it.n; k++) lista.push(it.f); });
+  const pts = lugares(lista.length, zona, sem);
+  return lista.map((f, i) => ({ f, x: pts[i][0], y: pts[i][1], a: pts[i][2] }));
+}
+// Radio de átomo que hace caber las partículas en la zona.
+function radioPara(items, zona){
+  const n = items.reduce((s, it) => s + it.n, 0), ext = Math.max(...items.map(it => extension(it.f)));
+  const s = Math.sqrt(zona.w*zona.h*(zona.circ ? 0.72 : 1)/(n*1.25));
+  return clamp(s*0.42/ext, 2.2, 11);
+}
+// Transición antes → después dentro de una zona. Si las sustancias son las mismas (cambio físico), cada partícula viaja
+// entera; si cambian (químico), cada átomo viaja a su lugar en una partícula nueva.
+function transicion(ctx, c, ant, des, R, p, quimico, hl){
+  const pe = ease(clamp(p, 0, 1));
+  if (pe <= 0){ ant.forEach(q => particula(ctx, c, q.f, q.x, q.y, R, q.a, hl)); return; }
+  if (pe >= 1){ des.forEach(q => particula(ctx, c, q.f, q.x, q.y, R, q.a, hl)); return; }
+  if (!quimico){
+    const usados = new Set();
+    for (const q of des){
+      let j = -1, d = Infinity; ant.forEach((b, k) => { if (!usados.has(k) && b.f === q.f){ const dd = Math.hypot(b.x - q.x, b.y - q.y); if (dd < d){ d = dd; j = k; } } });
+      if (j < 0){ particula(ctx, c, q.f, q.x, q.y, R, q.a, hl, pe); continue; }
+      usados.add(j); const b = ant[j];
+      particula(ctx, c, q.f, b.x + (q.x - b.x)*pe, b.y + (q.y - b.y)*pe, R, b.a + (q.a - b.a)*pe, hl);
+    }
+    ant.forEach((b, k) => { if (!usados.has(k)) particula(ctx, c, b.f, b.x, b.y, R, b.a, hl, 1 - pe); });
+    return;
+  }
+  const a0 = ant.flatMap(q => atomosEn(q.f, q.x, q.y, R, q.a)), a1 = des.flatMap(q => atomosEn(q.f, q.x, q.y, R, q.a)), usados = new Set(), ats = [];
+  for (const at of a1){
+    let j = -1, d = Infinity; a0.forEach((b, k) => { if (!usados.has(k) && b.e === at.e){ const dd = Math.hypot(b.x - at.x, b.y - at.y); if (dd < d){ d = dd; j = k; } } });
+    usados.add(j); const b = a0[j] || at; ats.push({ e: at.e, r: at.r, x: b.x + (at.x - b.x)*pe, y: b.y + (at.y - b.y)*pe });
+  }
+  pintarAtomos(ctx, c, ats, hl);
+}
+// La lupa: un círculo con borde grueso y su mango hacia el punto que mira.
+function lupa(ctx, c, cx, cy, r, hacia, fondo){
+  ctx.save();
+  if (hacia){ ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.setLineDash([3, 4]); linea(ctx, hacia[0], hacia[1], cx + (hacia[0] - cx)/Math.hypot(hacia[0] - cx, hacia[1] - cy)*r, cy + (hacia[1] - cy)/Math.hypot(hacia[0] - cx, hacia[1] - cy)*r); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(hacia[0], hacia[1], 7, 0, Math.PI*2); ctx.stroke(); }
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fillStyle = fondo || c.paper; ctx.fill();
+  ctx.restore();
+}
+function bordeLupa(ctx, c, cx, cy, r){ ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.stroke(); ctx.restore(); }
+function recortar(ctx, cx, cy, r){ ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r - 1.5, 0, Math.PI*2); ctx.clip(); }
+// Balanza digital: plato y pantalla con la lectura en el color de la masa.
+function balanza(ctx, c, cx, y, w, lectura, color){
+  ctx.save(); rr(ctx, cx - w/2, y, w, 34, 9); ctx.fillStyle = c.vidrio; ctx.fill();
+  rr(ctx, cx - w*0.36, y + 6, w*0.72, 22, 5); ctx.fillStyle = c.paper; ctx.fill(); ctx.restore();
+  texto(ctx, c, lectura, cx, y + 17.5, 15, color || c.m, 'center', w*0.68, 900);
+}
+function flechaH(ctx, x1, y, x2, col){ ctx.save(); ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2; linea(ctx, x1, y, x2 - 6, y); ctx.beginPath(); ctx.moveTo(x2, y); ctx.lineTo(x2 - 7, y - 5); ctx.lineTo(x2 - 7, y + 5); ctx.closePath(); ctx.fill(); ctx.restore(); }
+function llama(ctx, c, x, y, w){ ctx.save(); ctx.fillStyle = c.llama; for (let k = -1; k <= 1; k++){ ctx.beginPath(); const xx = x + k*w*0.3; ctx.moveTo(xx - 7, y); ctx.quadraticCurveTo(xx - 6, y - 14, xx, y - 22); ctx.quadraticCurveTo(xx + 6, y - 14, xx + 7, y); ctx.closePath(); ctx.fill(); } ctx.restore(); }
+
+/* ----- La escena -----
+   E.vista.tipo dice qué se dibuja; cada tipo tiene su alto natural (layout) y su pintura. En el celular, con una
+   predicción pendiente, todo el dibujo se encoge a escala (nucleo/celular.js). Nada regala la respuesta: lo que la
+   respondería (rótulos, lecturas, la lupa de después) se muestra solo con r = true. */
+const ESCENAS = [];
+const PINTA = {};
+function crearEscena(cv, idDesc, modoId, idLey){
+  const E = { vista:{ tipo:'cajas' }, hl:null, modoId, anims:[], compacto:false, ctx: cv.getContext('2d'), cv };
+  ESCENAS.push(E);
+  let H = 0, Hn = 0;
+  E.W = 0; E.esc = 1;
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    E.W = w; const P = PINTA[E.vista.tipo]; Hn = P.alto(w, E.vista);
+    const h = Math.round(Celular.alto(Hn, E.compacto)); E.esc = h/Hn;
+    const dpr = window.devicePixelRatio || 1;
+    if (h !== H || cv.width !== Math.round(w*dpr)){ H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+  };
+  new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; E.resize(); E.dibujar(); };
+  let llave = '';
+  E.dibujar = () => {
+    const w = cv.clientWidth; if (!w) return;
+    const k = `${w}|${E.vista.tipo}|${PINTA[E.vista.tipo].llave ? PINTA[E.vista.tipo].llave(E.vista) : ''}|${E.compacto}`;
+    if (k !== llave){ E.resize(); llave = k; }
+    const c = colores(), dpr = window.devicePixelRatio || 1, ctx = E.ctx;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, E.W, H);
+    ctx.setTransform(dpr*E.esc, 0, 0, dpr*E.esc, dpr*(E.W - E.W*E.esc)/2, 0);
+    PINTA[E.vista.tipo].pintar(ctx, c, E.W, E.vista, E.hl);
+    const ley = (PINTA[E.vista.tipo].leyenda ? PINTA[E.vista.tipo].leyenda(E.vista) : []).join(''), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+  };
+  E.describir = () => { const t = PINTA[E.vista.tipo].describir(E.vista), el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t; };
+  return E;
+}
+const LEY_EL = { H:'hidrógeno', O:'oxígeno', C:'carbono', Cl:'cloro', Fe:'hierro', Na:'sodio', Si:'silicio', S:'azufre', He:'helio' };
+const leyEl = els => els.map(e => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--e-${e})"/></svg>${e} · ${LEY_EL[e]}</span>`);
+const leyVar = (k, t) => `<span><i style="background:var(--c-${k})"></i>${t}</span>`;
+
+/* --- Las cuatro cajas (paso 2) --- */
+PINTA.cajas = {
+  alto: w => (w < 560 ? 2 : 1)*((w < 560 ? (w - 30)/2 : (w - 50)/4)*0.95 + 34) + 14,
+  pintar(ctx, c, W, v, hl){
+    const dos = W < 560, n = dos ? 2 : 4, bw = (W - 10*(n + 1))/n, bh = bw*0.95;
+    [1, 2, 3, 4].forEach((k, i) => {
+      const x = 10 + (i % n)*(bw + 10), y = 8 + Math.floor(i/n)*(bh + 34);
+      rr(ctx, x, y, bw, bh, 14); ctx.fillStyle = c.caja; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.stroke();
+      const items = MM.CAJAS[k].map(p => ({ f:p.formula, n:p.n })), zona = { x:x + 6, y:y + 6, w:bw - 12, h:bh - 12 }, R = radioPara(items, zona);
+      repartir(items, zona, 11 + k).forEach(q => particula(ctx, c, q.f, q.x, q.y, R, q.a, hl));
+      const rot = v.r ? `caja ${k}: ${MM.clasificarCaja(MM.CAJAS[k]).nombre.replace('sustancia pura (', '').replace(')', '')}` : `caja ${k}`;
+      texto(ctx, c, rot, x + bw/2, y + bh + 14, 13, v.r && MM.clasificarCaja(MM.CAJAS[k]).tipo === 'compuesto' ? c.ink : c.muted, 'center', bw, 800);
+    });
+  },
+  leyenda: () => leyEl(['H', 'O', 'He']),
+  describir: v => v.r ? 'Caja 1: moléculas de O₂, un elemento. Caja 2: moléculas de H₂O, un compuesto. Caja 3: átomos de He sueltos, un elemento. Caja 4: moléculas de H₂ y de O₂ sin unirse, una mezcla homogénea.'
+    : 'Cuatro cajas con partículas. Caja 1: moléculas de dos átomos de oxígeno. Caja 2: moléculas de dos átomos de hidrógeno y uno de oxígeno. Caja 3: átomos de helio sueltos. Caja 4: moléculas de dos átomos de hidrógeno y moléculas de dos átomos de oxígeno.',
+};
+
+/* --- El vaso (paso 3): agua, hielo, sal disuelta, aceite y arena --- */
+PINTA.vaso = {
+  alto: w => w < 560 ? 300 : 330,
+  pintar(ctx, c, W, v, hl){
+    const chico = W < 560, gx = chico ? 14 : 24, gw = chico ? W*0.5 : W*0.44, top = 26, gh = chico ? 236 : 262, base = top + gh;
+    const yAce = top + gh*0.2, yAg = top + gh*0.36, yAr = base - gh*0.16;
+    // Contenido.
+    ctx.fillStyle = c.aceite; ctx.fillRect(gx, yAce, gw, yAg - yAce);
+    ctx.fillStyle = c.agua; ctx.fillRect(gx, yAg, gw, yAr - yAg);
+    ctx.fillStyle = c.arena; ctx.fillRect(gx, yAr, gw, base - yAr);
+    const rnd = azar(5); ctx.fillStyle = c.muted; for (let i = 0; i < 70; i++){ ctx.beginPath(); ctx.arc(gx + 4 + rnd()*(gw - 8), yAr + 3 + rnd()*(base - yAr - 6), 1.3, 0, Math.PI*2); ctx.fill(); }
+    // Hielo flotando entre el agua y el aceite.
+    const cub = [[0.18, -6], [0.48, -2], [0.74, -7]];
+    cub.forEach(([fx, dy]) => { const s = gw*0.16; rr(ctx, gx + gw*fx - s/2, yAg + dy - s*0.45, s, s, 5); ctx.fillStyle = c.hielo; ctx.fill(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 1.4; ctx.stroke(); });
+    // Vidrio.
+    ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(gx, top); ctx.lineTo(gx, base); ctx.lineTo(gx + gw, base); ctx.lineTo(gx + gw, top); ctx.stroke(); ctx.restore();
+    // Rótulos a la derecha del vaso.
+    const xr = gx + gw + 8, max = chico ? W - xr - 8 : W*0.18;
+    const etq = (t, y) => { ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, gx + gw - 6, y, xr - 2, y); ctx.restore(); texto(ctx, c, t, xr, y, 12, c.ink, 'left', max, 700); };
+    if (!chico || !v.r){ etq('aceite', (yAce + yAg)/2 - 6); etq('hielo', yAg + 8); etq(v.r ? 'agua con sal' : 'agua', (yAg + yAr)/2 + 12); etq('arena', (yAr + base)/2); }
+    texto(ctx, c, 'aire', gx + gw/2, top + 14, 12, c.muted, 'center', gw, 700);
+    if (v.r){
+      // Las cuatro fases, numeradas, en el color de las fases.
+      const zonas = [[gx + 3, yAce + 2, gw - 6, yAg - yAce - 10], [gx + gw*0.1, yAg - gw*0.09, gw*0.74, gw*0.15], [gx + 3, yAg + gw*0.1, gw - 6, yAr - yAg - gw*0.1 - 3], [gx + 3, yAr + 2, gw - 6, base - yAr - 5]];
+      ctx.save(); ctx.strokeStyle = c.fa; ctx.lineWidth = 2; ctx.setLineDash([5, 3]);
+      zonas.forEach(([x, y, w, h], i) => { rr(ctx, x, y, w, h, 6); ctx.stroke(); });
+      ctx.restore();
+      zonas.forEach(([x, y, w, h], i) => { ctx.beginPath(); ctx.arc(x + 12, y + h/2, 9, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.fa; ctx.lineWidth = 2; ctx.stroke(); texto(ctx, c, String(i + 1), x + 12, y + h/2 + 0.5, 12, c.fa, 'center', 0, 900); });
+      // Lupa sobre el agua con sal.
+      const lr = chico ? Math.min(W*0.2, 74) : Math.min(W*0.17, 92), lx = chico ? W - lr - 8 : gx + gw + W*0.2 + lr, ly = chico ? top + gh*0.62 : top + gh*0.55;
+      lupa(ctx, c, lx, ly, lr, [gx + gw*0.55, (yAg + yAr)/2 + 16], c.paper);
+      recortar(ctx, lx, ly, lr);
+      const items = [{ f:'H2O', n:14 }, { f:'Na^+', n:3 }, { f:'Cl^-', n:3 }], zona = { x:lx - lr, y:ly - lr, w:2*lr, h:2*lr, circ:true };
+      repartir(items, zona, 23).forEach(q => particula(ctx, c, q.f, q.x, q.y, radioPara(items, zona), q.a, hl));
+      ctx.restore(); bordeLupa(ctx, c, lx, ly, lr);
+      texto(ctx, c, 'la sal, repartida en el agua', lx, ly + lr + 13, 11, c.muted, 'center', chico ? 2*lr + 14 : 2*lr + 40, 700);
+      // Componentes.
+      const comp = ['H₂O (agua y hielo)', 'NaCl (sal)', 'aceite', 'SiO₂ (arena)'], x0 = chico ? 14 : xr;
+      if (chico){ texto(ctx, c, `componentes: ${comp.join(' · ')}`, W/2, base + 22, 11, c.co, 'center', W - 16, 800); }
+      else comp.forEach((t, i) => texto(ctx, c, (i ? '' : 'componentes: ') + t, x0, base - 70 + i*18, 12, c.co, 'left', W - x0 - 8, 800));
+    }
+  },
+  leyenda: v => v.r ? [...leyEl(['H', 'O', 'Na', 'Cl']), leyVar('fa', 'fases (numeradas)'), leyVar('co', 'componentes')] : [],
+  describir: v => v.r ? 'Cuatro fases numeradas: el aceite, el hielo, el agua con la sal disuelta y la arena. La lupa muestra los iones de la sal repartidos entre las moléculas de agua. Cuatro componentes: agua, sal, aceite y arena.'
+    : 'Un vaso con una capa de aceite arriba, cubitos de hielo flotando, agua con sal disuelta y arena en el fondo.',
+};
+
+/* --- La olla que hierve (paso 4) --- */
+PINTA.olla = {
+  alto: w => w < 560 ? 270 : 300,
+  llave: v => v.r ? 1 : 0,
+  pintar(ctx, c, W, v, hl){
+    const chico = W < 560, ox = chico ? 16 : 30, ow = chico ? W*0.46 : W*0.42, oy = 40, oh = chico ? 150 : 170;
+    // Olla con agua y burbujas.
+    ctx.fillStyle = c.agua; rr(ctx, ox, oy + 16, ow, oh - 16, 10); ctx.fill();
+    ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 3.5; rr(ctx, ox, oy, ow, oh, 12); ctx.stroke(); ctx.restore();
+    const t = (v.t || 0), rnd = azar(9);
+    for (let i = 0; i < 11; i++){ const bx = ox + 12 + rnd()*(ow - 24), sp = 0.5 + rnd(), yy = oy + oh - 8 - ((rnd()*oh + t*60*sp) % (oh - 24)); const br = 3 + rnd()*6;
+      ctx.beginPath(); ctx.arc(bx, yy, br, 0, Math.PI*2); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 1.4; ctx.stroke(); }
+    llama(ctx, c, ox + ow/2, oy + oh + 30, ow*0.8);
+    texto(ctx, c, 'agua hirviendo', ox + ow/2, oy - 14, 12, c.ink, 'center', ow, 700);
+    // Lupa sobre una burbuja.
+    const lr = chico ? Math.min(W*0.22, 86) : Math.min(W*0.2, 110), lx = chico ? W - lr - 10 : ox + ow + (W - ox - ow)/2, ly = oy + oh/2 + 10;
+    const bx = ox + ow*0.6, by = oy + oh*0.5;
+    lupa(ctx, c, lx, ly, lr, [bx, by], c.paper);
+    recortar(ctx, lx, ly, lr);
+    const br = lr*0.52, items = [{ f:'H2O', n:24 }], zona = { x:lx - lr, y:ly - lr, w:2*lr, h:2*lr, circ:true }, R = radioPara(items, zona)*0.95;
+    repartir(items, zona, 31).filter(q => Math.hypot(q.x - lx, q.y - ly) > br + extension('H2O')*R).forEach(q => particula(ctx, c, q.f, q.x, q.y, R, q.a, hl));
+    ctx.beginPath(); ctx.arc(lx, ly, br, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 1.5; ctx.stroke();
+    if (v.r){ const p = v.p === undefined ? 1 : v.p, pts = [[-0.45, -0.3, 0.5], [0.4, -0.05, 2], [-0.05, 0.45, 4]];
+      pts.forEach(([dx, dy, a], i) => particula(ctx, c, 'H2O', lx + dx*br*Math.min(1, p*1.3), ly + dy*br*Math.min(1, p*1.3), R, a + t, hl, clamp(p*2 - i*0.3, 0, 1))); }
+    else texto(ctx, c, '?', lx, ly, 30, c.muted, 'center', 0, 900);
+    ctx.restore(); bordeLupa(ctx, c, lx, ly, lr);
+    texto(ctx, c, v.r ? 'dentro de la burbuja: vapor de agua' : 'dentro de la burbuja', Math.min(lx, W - lr - 6), ly + lr + 14, 11, c.muted, 'center', 2*lr + 8, 700);
+  },
+  leyenda: () => leyEl(['H', 'O']),
+  describir: v => v.r ? 'En la lupa, dentro de la burbuja hay moléculas de agua separadas unas de otras; afuera, las moléculas del agua líquida, juntas.' : 'Una olla con agua que hierve. La lupa mira una burbuja: afuera, moléculas de agua juntas; adentro, un signo de pregunta.',
+};
+
+/* --- El frasco sobre la balanza (pasos 1 y 5) --- */
+// v: { masa, recipiente, p (0 a 1: cuánto se evaporó), q (0 a 1: cuánto vapor salió, sin tapa), tapa, oculta, sust }
+PINTA.frasco = {
+  alto: w => w < 560 ? 300 : 320,
+  llave: v => `${v.tapa}|${v.sust}`,
+  pintar(ctx, c, W, v, hl){
+    const chico = W < 560, cx = chico ? W*0.36 : W*0.36, fw = chico ? W*0.5 : Math.min(W*0.4, 240), yb = chico ? 238 : 252, fh = chico ? 170 : 186, yT = yb - fh;
+    const p = v.p || 0, q = v.q || 0, f = v.sust || 'C2H5OH';
+    // Frasco.
+    ctx.save(); rr(ctx, cx - fw/2, yT, fw, fh, 18); ctx.fillStyle = c.caja; ctx.fill(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 3; ctx.stroke(); ctx.restore();
+    if (v.tapa){ ctx.save(); rr(ctx, cx - fw*0.32, yT - 14, fw*0.64, 16, 5); ctx.fillStyle = c.vidrio; ctx.fill(); ctx.restore(); }
+    else { ctx.save(); ctx.fillStyle = c.paper; ctx.fillRect(cx - fw*0.3, yT - 3, fw*0.6, 7); ctx.restore(); }
+    // Líquido que baja y moléculas: abajo juntas (líquido), arriba sueltas (vapor).
+    const nTot = 12, nVap = Math.round(nTot*p), nSale = Math.round(nVap*q), hLiq = (fh - 24)*0.36*(1 - p);
+    if (hLiq > 1){ ctx.fillStyle = c.agua; rr(ctx, cx - fw/2 + 5, yb - 5 - hLiq, fw - 10, hLiq, 8); ctx.fill(); }
+    const R = chico ? 3.4 : 4, liq = lugares(nTot, { x:cx - fw/2 + 10, y:yb - 4 - (fh - 24)*0.36, w:fw - 20, h:(fh - 24)*0.36 }, 41, 0), gas = lugares(nTot, { x:cx - fw/2 + 10, y:yT + 10, w:fw - 20, h:fh*0.55 }, 43, 0);
+    for (let i = 0; i < nTot; i++){
+      const enGas = i < nVap, sale = i < nSale;
+      if (!enGas){ const [x, y, a] = liq[i], h0 = (fh - 24)*0.36, yy = yb - 5 - hLiq + (y - (yb - 4 - h0))/h0*Math.max(hLiq, 2*R + 2); particula(ctx, c, f, x, yy, R, a, hl); continue; }
+      const [gx, gy, a] = gas[i];
+      if (sale){ const k = clamp((q*nVap - i)/1, 0, 1), ty = Math.max(10, yT - 20 - 40*k); particula(ctx, c, f, gx + (cx - gx)*k*0.6, gy + (ty - gy)*k, R, a, hl, 1 - k*0.85); }
+      else particula(ctx, c, f, gx, gy, R, a, hl);
+    }
+    // Balanza.
+    const r = MM.evaporar({ recipiente: v.recipiente, masa: v.masa, fraccion: p*q, cerrado: false });
+    balanza(ctx, c, cx, yb + 4, fw*1.1, v.oculta ? '? g' : `${fmt2(r.despues)} g`);
+    texto(ctx, c, v.tapa ? 'frasco con tapa' : 'frasco destapado', cx, yb + 52, 12, c.ink, 'center', fw*1.2, 700);
+    // Lado derecho: el contenido en palabras.
+    const xr = chico ? cx + fw/2 + 10 : cx + fw/2 + 24, max = W - xr - 8;
+    texto(ctx, c, `frasco: ${fmt(v.recipiente, 2)} g`, xr, yT + 20, 12, c.muted, 'left', max, 700);
+    texto(ctx, c, `${v.sust === 'H2O' ? 'agua' : 'alcohol'}: ${fmt(v.masa, 2)} g`, xr, yT + 40, 12, c.muted, 'left', max, 700);
+    if (p > 0.05) texto(ctx, c, v.tapa ? 'el vapor queda adentro' : (q > 0 ? 'el vapor se va al aire' : 'vapor'), xr, yT + 66, 12, c.ink, 'left', max, 700);
+  },
+  leyenda: v => [...leyEl(v.sust === 'H2O' ? ['H', 'O'] : ['C', 'H', 'O']), leyVar('m', 'm · lo que marca la balanza')],
+  describir: v => {
+    const r = MM.evaporar({ recipiente: v.recipiente, masa: v.masa, fraccion: (v.p || 0)*(v.q || 0), cerrado: false });
+    return `Un frasco ${v.tapa ? 'con tapa' : 'destapado'} sobre una balanza. ${(v.p || 0) > 0.5 ? 'El líquido se evaporó.' : 'Tiene líquido en el fondo.'} ${v.oculta ? 'La lectura final está tapada hasta que respondas.' : `La balanza marca ${fmt2(r.despues)} gramos.`}`;
+  },
+};
+
+/* --- Azúcar contra clavo (paso 6) --- */
+// v: { r, p (0 a 1, la transición), ev (0 a 1, se evapora el agua azucarada) }
+PINTA.dos = {
+  alto: w => w < 560 ? 300 : 330,
+  pintar(ctx, c, W, v, hl){
+    const chico = W < 560, cw = W/2, lr = chico ? Math.min(cw*0.44, 80) : Math.min(cw*0.36, 100), ly = chico ? 196 : 200, p = v.r ? (v.p === undefined ? 1 : v.p) : 0, ev = v.ev || 0;
+    [0, 1].forEach(i => {
+      const x0 = i*cw, gx = x0 + cw*0.28, gw = cw*0.44, gy = 30, gh = chico ? 74 : 80;
+      ctx.fillStyle = c.agua; ctx.fillRect(gx, gy + gh*(0.25 + 0.7*ev*(1 - i)), gw, gh*(0.75 - 0.7*ev*(1 - i)));
+      ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(gx, gy); ctx.lineTo(gx, gy + gh); ctx.lineTo(gx + gw, gy + gh); ctx.lineTo(gx + gw, gy); ctx.stroke(); ctx.restore();
+      if (i === 0){ const n = p < 0.5 ? 3 : 0; for (let k = 0; k < n; k++){ ctx.fillStyle = c.hielo; ctx.strokeStyle = c.vidrio; ctx.lineWidth = 1; rr(ctx, gx + 6 + k*gw*0.3, gy + gh - 14, 11, 11, 2); ctx.fill(); ctx.stroke(); }
+        if (ev > 0.6){ ctx.fillStyle = c.hielo; ctx.strokeStyle = c.vidrio; for (let k = 0; k < 5; k++){ rr(ctx, gx + 4 + k*gw*0.19, gy + gh - 7, 6, 5, 1); ctx.fill(); ctx.stroke(); } } }
+      else { ctx.save(); ctx.strokeStyle = p > 0.5 ? c.muted : c.vidrio; ctx.lineWidth = 4; linea(ctx, gx + gw*0.3, gy - 8, gx + gw*0.62, gy + gh - 5); ctx.restore(); }
+      texto(ctx, c, i ? 'clavo en agua, al aire' : (ev > 0.6 ? 'se evaporó el agua' : 'azúcar en agua'), x0 + cw/2, gy + gh + 14, 12, c.ink, 'center', cw - 8, 700);
+      const lx = x0 + cw/2;
+      lupa(ctx, c, lx, ly, lr, [gx + gw*(i ? 0.5 : 0.35), gy + gh - 12], c.paper);
+      recortar(ctx, lx, ly, lr);
+      const zona = { x:lx - lr, y:ly - lr, w:2*lr, h:2*lr, circ:true };
+      if (i === 0){
+        // Azúcar: abajo, cristales juntos; después, moléculas repartidas entre las de agua.
+        const ag = repartir([{ f:'H2O', n:12 }], zona, 51), R = lr/15;
+        const cris = [[-0.35, 0.55], [0.1, 0.62], [0.55, 0.48]].map(([dx, dy], k) => ({ f:'C12H22O11', x:lx + dx*lr, y:ly + dy*lr, a:k }));
+        const sueltas = [[-0.45, -0.35], [0.4, -0.3], [0, 0.25]].map(([dx, dy], k) => ({ f:'C12H22O11', x:lx + dx*lr, y:ly + dy*lr, a:k*2 }));
+        const aguaQ = ag.filter(q => cris.every(s => Math.hypot(q.x - s.x, q.y - s.y) > R*4.2) && sueltas.every(s => Math.hypot(q.x - s.x, q.y - s.y) > R*4.2));
+        aguaQ.forEach((q, k) => { const sube = clamp(ev*1.6 - k*0.05, 0, 1); particula(ctx, c, 'H2O', q.x, q.y - sube*lr*1.6, R, q.a, hl, 1 - sube); });
+        transicion(ctx, c, cris, ev > 0 ? sueltas.map((s, k) => ({ ...s, x: cris[k].x + (s.x - cris[k].x)*(1 - ev), y: cris[k].y + (s.y - cris[k].y)*(1 - ev) })) : sueltas, R, p, false, hl);
+      } else {
+        const ant = [{ f:'Fe', x:-0.45, y:0.5 }, { f:'Fe', x:-0.15, y:0.62 }, { f:'Fe', x:0.15, y:0.62 }, { f:'Fe', x:0.45, y:0.5 }, { f:'O2', x:-0.4, y:-0.5 }, { f:'O2', x:0.15, y:-0.6 }, { f:'O2', x:0.5, y:-0.2 }, { f:'H2O', x:-0.55, y:0 }, { f:'H2O', x:0.05, y:-0.15 }]
+          .map((q, k) => ({ f:q.f, x:lx + q.x*lr, y:ly + q.y*lr, a:k }));
+        const des = [{ f:'Fe2O3', x:-0.15, y:0.45, a:0 }, { f:'Fe2O3', x:0.2, y:0.05, a:0.6 }, { f:'H2O', x:-0.55, y:-0.05, a:7 }, { f:'H2O', x:0.05, y:-0.5, a:8 }].map(q => ({ ...q, x:lx + q.x*lr, y:ly + q.y*lr }));
+        const R = lr/10.5;
+        transicion(ctx, c, ant, des, R, p, true, hl);
+      }
+      ctx.restore(); bordeLupa(ctx, c, lx, ly, lr);
+      if (v.r && p >= 1) texto(ctx, c, i ? 'sustancia nueva: Fe₂O₃' : (ev > 0.6 ? 'vuelve el azúcar' : 'las mismas moléculas'), lx, ly + lr + 14, 11, c.ink, 'center', cw - 6, 800);
+    });
+  },
+  leyenda: () => leyEl(['C', 'H', 'O', 'Fe']).concat(['<span>azúcar: dibujo simplificado (un anillo de C y O)</span>']),
+  describir: v => v.r ? `En la lupa del azúcar, las mismas moléculas de azúcar quedan repartidas entre las de agua${v.ev > 0.6 ? ', y al evaporarse el agua vuelven a juntarse' : ''}. En la del clavo, los átomos de hierro y de oxígeno se reacomodan en Fe₂O₃, una sustancia nueva.`
+    : 'Dos vasos: azúcar en agua y un clavo de hierro en agua, al aire. Las lupas muestran las partículas del principio.',
+};
+
+/* --- Separar una mezcla (paso 7) --- */
+// v: { mezcla, metodo (o null), p }
+const PART = { agua:[{ f:'H2O', n:9 }], sal:[{ f:'Na^+', n:2 }, { f:'Cl^-', n:2 }], arena:[{ f:'SiO2', n:3 }], aceite:[{ f:'aceite', n:2 }],
+  alcohol:[{ f:'C2H5OH', n:3 }], hierro:[{ f:'Fe', n:5 }], azufre:[{ f:'S8', n:2 }] };
+const PART_SOLIDO = { sal:[{ f:'NaCl', n:2 }] };
+const ETQ = { filtracion:['queda en el papel', 'pasa por el papel'], decantacion:['arriba: se vierte', 'abajo: queda'], destilacion:['se recoge (destilado)', 'queda en el balón'],
+  imantacion:['pegado al imán', 'queda'], evaporacion:['queda en el plato'] };
+const ELS_MEZCLA = { 'agua-sal':['H', 'O', 'Na', 'Cl'], 'agua-arena':['H', 'O', 'Si'], 'agua-aceite':['H', 'O', 'C'], 'agua-alcohol':['H', 'O', 'C'], 'hierro-azufre':['Fe', 'S'] };
+PINTA.separar = {
+  alto: w => w < 560 ? 306 : 290,
+  llave: v => `${v.mezcla}|${v.metodo}`,
+  pintar(ctx, c, W, v, hl){
+    const chico = W < 560, mez = MM.MEZCLAS[v.mezcla], p = v.metodo ? (v.p === undefined ? 1 : v.p) : 0;
+    const r = v.metodo ? MM.separar(v.mezcla, v.metodo) : null;
+    const cajaLupa = (x, y, w, h, nombres, sem, alpha, solido, etq) => {
+      rr(ctx, x, y, w, h, 12); ctx.fillStyle = c.caja; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.stroke();
+      if (etq) texto(ctx, c, etq, x + w/2, y + h + 12, 11, c.ink, 'center', w + 8, 700);
+      if (!nombres.length) { texto(ctx, c, 'nada', x + w/2, y + h/2, 12, c.muted, 'center', w, 700); return; }
+      const items = nombres.flatMap(n => (solido && PART_SOLIDO[n]) || PART[n]), zona = { x:x + 4, y:y + 4, w:w - 8, h:h - 8 };
+      const R = radioPara(items, zona); repartir(items, zona, sem).forEach(q => particula(ctx, c, q.f, q.x, q.y, R, q.a, hl, alpha));
+    };
+    texto(ctx, c, mez.nombre.toLowerCase(), W/2, 14, 13, c.ink, 'center', W - 16, 800);
+    if (chico){
+      // Celular: la mezcla arriba a la izquierda, el método al lado; las fracciones abajo.
+      const mw = W*0.5, mh = 104;
+      cajaLupa(10, 30, mw, mh, mez.partes.map(q => q.nombre), 61, 1 - (r ? ease(p) : 0)*0.85, false, 'la mezcla');
+      texto(ctx, c, r ? r.nombre : 'elige un método', 10 + mw + (W - 20 - mw)/2 + 5, 30 + mh/2, 14, c.ink, 'center', W - mw - 30, 800);
+      if (r){ flechaH(ctx, 10 + mw + 6, 30 + mh/2 + 18, W - 14, c.muted); dibujarResultado(160, 98); }
+    } else {
+      const mw = W*0.3, mh = 150;
+      cajaLupa(12, 36, mw, mh, mez.partes.map(q => q.nombre), 61, 1 - (r ? ease(p) : 0)*0.85, false, 'la mezcla');
+      texto(ctx, c, r ? r.nombre : 'elige un método', 12 + mw + W*0.09, 36 + mh/2 - 14, 14, c.ink, 'center', W*0.17, 800);
+      if (r){ flechaH(ctx, 12 + mw + 10, 36 + mh/2 + 4, 12 + mw + W*0.17, c.muted); dibujarResultado(36, mh, 12 + mw + W*0.19); }
+    }
+    function dibujarResultado(y0, h, x0){
+      const x = x0 || 10, ancho = W - x - 10, frs = r.fracciones.length ? r.fracciones : [], n = frs.length + (r.pierde.length ? 1 : 0);
+      const w = (ancho - (n - 1)*10)/Math.max(1, n), a = ease(p);
+      frs.forEach((fr, k) => cajaLupa(x + k*(w + 10), y0, w, h, fr, 70 + k, a, v.metodo === 'evaporacion' || (v.metodo === 'destilacion' && k === 1), r.separa ? ETQ[v.metodo][k] : (frs.length === 2 ? ETQ[v.metodo][k] : 'todo junto')));
+      if (r.pierde.length){ const xx = x + frs.length*(w + 10); ctx.save(); ctx.setLineDash([4, 4]); rr(ctx, xx, y0, w, h, 12); ctx.strokeStyle = c.muted; ctx.stroke(); ctx.restore();
+        const items = r.pierde.flatMap(nm => PART[nm]), zona = { x:xx + 4, y:y0 + 4, w:w - 8, h:h - 8 }, R = radioPara(items, zona);
+        repartir(items, zona, 80).forEach(q => particula(ctx, c, q.f, q.x, q.y - (1 - a)*12, R, q.a, hl, a*0.8));
+        texto(ctx, c, 'se va al aire', xx + w/2, y0 + h + 12, 11, c.ink, 'center', w + 8, 700); }
+      if (p >= 1) texto(ctx, c, r.separa ? (r.adecuado ? '✓ se separaron' : 'se separaron, pero no es el método de examen') : '✗ no se separó nada', W/2, y0 + h + 34, 13, c.ink, 'center', W - 16, 800);
+    }
+  },
+  leyenda: v => [...leyEl(ELS_MEZCLA[v.mezcla]), ...(v.mezcla === 'agua-aceite' ? ['<span>aceite: dibujo simplificado (cadenas de C)</span>'] : [])],
+  describir: v => { if (!v.metodo) return `${MM.MEZCLAS[v.mezcla].nombre}. Todavía no se aplica ningún método.`; const r = MM.separar(v.mezcla, v.metodo); return `${MM.MEZCLAS[v.mezcla].nombre}, por ${r.nombre}: ${r.razon}. ${r.separa ? 'Se separaron.' : 'No se separó nada.'}`; },
+};
+
+/* --- E = mc² en una escala de potencias de 10 (paso 8) --- */
+PINTA.emc = {
+  alto: w => w < 560 ? 262 : 250,
+  llave: v => v.r ? 1 : 0,
+  pintar(ctx, c, W, v, hl){
+    const chico = W < 560, x0 = 24, x1 = W - 24, y = chico ? 160 : 150, e0 = 4, e1 = 18, X = e => x0 + (e - e0)/(e1 - e0)*(x1 - x0);
+    // 1 g en la balanza.
+    ctx.save(); ctx.beginPath(); ctx.arc(W/2, 34, 10, 0, Math.PI*2); ctx.fillStyle = c.muted; ctx.fill(); ctx.restore();
+    balanza(ctx, c, W/2, 48, 130, '1,00 g');
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, x0, y, x1, y);
+    for (let e = e0; e <= e1; e += 2){ linea(ctx, X(e), y - 5, X(e), y + 5); texto(ctx, c, `10${String(e).split('').map(ch => SUP[ch]).join('')}`, X(e), y + 16, 11, c.muted, 'center', 0, 700); }
+    ctx.restore();
+    texto(ctx, c, 'energía en J (cada marca, 100 veces más)', W/2, y + 36, 11, c.muted, 'center', W - 20, 700);
+    if (v.r){
+      const r = MM.energia(1, 'g'), ops = [[r.errores.sinCuadrado, 'sin el cuadrado'], [r.errores.cEnKmPorS, 'c en km/s'], [r.E, 'E = mc²'], [r.errores.gramosSinConvertir, 'en gramos']];
+      ops.forEach(([val, t], i) => { const e = Math.log10(val), xx = X(e), ok = i === 2, yy = y - [22, 46, 50, 22][i];
+        ctx.save(); ctx.strokeStyle = ok ? c.E : c.muted; ctx.lineWidth = ok ? 3 : 1.5; linea(ctx, xx, y, xx, yy + 8); ctx.restore();
+        texto(ctx, c, `${cien(val)}${ok ? ' J' : ''}`, xx, yy - 2, ok ? 13 : 11, ok ? c.E : c.muted, xx < 60 ? 'left' : xx > W - 60 ? 'right' : 'center', 0, ok ? 900 : 700);
+        if (!chico || ok) texto(ctx, c, t, xx, yy - 16, 10, ok ? c.ink : c.muted, xx < 60 ? 'left' : xx > W - 60 ? 'right' : 'center', 0, 700); });
+      texto(ctx, c, `= ${cien(r.kWh)} kWh`, X(Math.log10(r.E)), y + 58, 12, c.E, 'center', W - 20, 800);
+    } else texto(ctx, c, '¿dónde cae 1 g convertido en energía?', W/2, y - 28, 12, c.muted, 'center', W - 20, 700);
+  },
+  leyenda: () => [leyVar('m', 'm · masa'), leyVar('E', 'E · energía'), leyVar('c', 'c · rapidez de la luz')],
+  describir: v => v.r ? 'En la escala de potencias de 10, la energía de 1 gramo cae en 9 por 10 a la 13 joules. Las otras marcas son los errores: sin el cuadrado, con c en kilómetros por segundo y con la masa en gramos.' : 'Un gramo sobre una balanza y una escala de energía en potencias de 10, todavía sin marcas.',
+};
+
+/* ----- Resaltar en el dibujo lo que se toca en el texto (regla 4) ----- */
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un bucle que solo corre mientras algo se mueve.
+let RAF = 0, ULT = 0;
+function pedir(){ if (!RAF){ ULT = performance.now(); RAF = requestAnimationFrame(tick); } }
+function tick(now){
+  RAF = 0; const dt = Math.min(0.05, (now - ULT)/1000); ULT = now; let sigue = false;
+  for (const E of ESCENAS){
+    if (document.getElementById(E.modoId).hidden) continue;
+    for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(Math.max(0, f)); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
+    E.dibujar();
+  }
+  if (sigue) pedir();
+}
+function animar(E, dur, paso, fin, retraso){
+  if (RM){ paso(1); if (fin) fin(); E.dibujar(); return; }
+  E.anims.push({ t:-(retraso || 0), dur, paso, fin }); pedir();
+}
+function cortar(E){ E.anims = []; }
+const LETRAS = 'abcd';
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Pasos 1 a 4 de «Propuesta para las plantillas → 1. Materia: la lupa y la balanza» de
+   docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md, más fases y componentes, separación y E = mc². */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1');
+const S = { step:0, max:0, pred:{} };
+const TIPOS = Object.fromEntries(Object.keys(MM.CAJAS).map(k => [k, MM.clasificarCaja(MM.CAJAS[k])]));
+const C4 = TIPOS[4], C1 = TIPOS[1], C3 = TIPOS[3];
+const VASO = MM.contarSistema(MM.VASO), BUR = MM.burbujas('H2O');
+const FR = { recipiente:300, masa:0.5 }, EV = MM.evaporar({ ...FR, fraccion:1, cerrado:true }), EVA = MM.evaporar({ ...FR, fraccion:1, cerrado:false });
+const AZ = MM.fenomeno('disolver-azucar'), CL = MM.fenomeno('oxidar-hierro');
+const SAL = MM.metodoPara('agua-sal'), FIL = MM.separar('agua-sal', 'filtracion'), EVP = MM.separar('agua-sal', 'evaporacion');
+const EMC = MM.energia(1, 'g');
+// Las cuatro opciones de fases y componentes salen del motor (y son distintas: lo comprueba motor.test.js).
+const fc = (f, k) => `${Vfa(f + ' fases')} y ${Vco(k + ' componentes')}`;
+
+const P1 = { id:'materia-cajas', ok:'c', opts:[
+  ['a', `La caja 4: tiene dos clases de átomos, ${F('H')} y ${F('O')}`, 'MA9-dos-clases-de-atomos', 'parcial'],
+  ['b', `La caja 1: sus átomos están unidos de a dos`, 'MA9-unidos-es-compuesto', 'parcial'],
+  ['c', `La caja 2: cada partícula une átomos de dos elementos distintos`],
+  ['d', `La caja 3: muchos átomos juntos forman un compuesto`, 'MA9-atomo-es-sustancia', 'hipotesis']],
+  fb:{ c:'¡Bien! En la caja 2 todas las partículas son iguales (una sola sustancia) y cada una tiene átomos de H y de O unidos: es un compuesto, H₂O. Mira los rótulos de las cajas.',
+    a:`Elegiste la 1. En la caja 4 hay H y O, pero no están unidos entre sí: son moléculas de H₂ y moléculas de O₂ revueltas. Dos sustancias sin unirse forman una ${C4.nombre}. Confundir compuesto y mezcla al leer dibujos de partículas está documentado en universitarios, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen). La correcta está marcada.`,
+    b:'Elegiste la 2. Los átomos de la caja 1 están unidos, pero todos son de oxígeno: el O₂ es un elemento. Un compuesto necesita átomos de elementos distintos unidos. Esta confusión está documentada, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen). La correcta está marcada.',
+    d:'Elegiste la 4. Juntar muchos átomos iguales no forma un compuesto: el helio de la caja 3 es un elemento, con una sola clase de átomo. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P2 = { id:'materia-fases', ok:'d', opts:[
+  ['a', `${fc(VASO.errores.cadaCosaUnaFase, VASO.errores.cadaCosaUnComponente)}: cada cosa nombrada cuenta una vez`, 'fases-cada-cosa', 'hipotesis'],
+  ['b', `${fc(VASO.nFases, VASO.errores.hieloOtroComponente)}: el hielo y el agua son componentes distintos`, 'fases-hielo-otro-componente', 'hipotesis'],
+  ['c', `${fc(VASO.errores.disueltoEsFase, VASO.nComponentes)}: la sal disuelta es una fase aparte`, 'fases-disuelto-es-fase', 'hipotesis'],
+  ['d', `${fc(VASO.nFases, VASO.nComponentes)}: la sal está dentro de la fase del agua, y el hielo es agua`]],
+  fb:{ d:'¡Bien! Fases: aceite, hielo, agua con sal y arena. Componentes: agua (líquida y sólida, la misma sustancia), sal, aceite y arena. Mira la lupa: la sal está repartida entre las moléculas de agua.',
+    a:'Elegiste la 1. Las cosas nombradas no son lo mismo que las fases ni que los componentes: la sal disuelta no forma una zona aparte, y el hielo y el agua son la misma sustancia. Esta opción es una hipótesis nuestra, de la tabla de lo que no tiene respaldo del informe. La correcta está marcada.',
+    b:'Elegiste la 2. Las fases están bien, pero el hielo es H₂O igual que el agua: un componente es una sustancia, no un estado. Son 4. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    c:'Elegiste la 3. Los componentes están bien, pero la sal disuelta no forma una zona aparte: sus iones se reparten entre las moléculas de agua y todo se ve igual. Agua con sal es una sola fase. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P3 = { id:'materia-burbujas', ok:'b', opts:[
+  ['a', `Hidrógeno y oxígeno (${F('H2')} y ${F('O2')}): el calor separa el agua en sus elementos`, 'MA1-cambio-de-estado-es-reaccion', 'parcial'],
+  ['b', `Moléculas de agua (${F('H2O')}): las mismas, solo que separadas unas de otras`],
+  ['c', 'Aire que estaba disuelto en el agua: el calor lo saca', 'MA1-burbujas-de-aire', 'hipotesis'],
+  ['d', 'Nada: son huecos vacíos que se abren en el agua caliente', 'MA1-burbujas-vacias', 'hipotesis']],
+  fb:{ b:'¡Bien! Hervir es un cambio físico: las moléculas de H₂O se separan unas de otras y forman vapor, pero ninguna se rompe. Mira la lupa: dentro de la burbuja hay las mismas moléculas, más sueltas.',
+    a:'Elegiste la 1. Para separar el agua en hidrógeno y oxígeno hace falta una reacción química (la electrólisis, con corriente eléctrica), no una cocina. Al hervir, las moléculas de H₂O no se rompen. En una pregunta parecida, sobre el agua que aparece afuera de un vaso frío, cerca de un tercio de 358 universitarios de química general creyó que se forma con el hidrógeno y el oxígeno del aire, antes y después del curso (Salame y Casino, 2021). La correcta está marcada.',
+    c:'Elegiste la 3. Las primeras burbujitas sí son aire, pero salen al principio. El agua lleva minutos hirviendo: las burbujas grandes son de vapor de agua. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    d:'Elegiste la 4. La burbuja no está vacía: tiene vapor de agua, moléculas de H₂O muy separadas. Por eso sube y empuja el agua. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P4 = { id:'materia-frasco-cerrado', ok:'a', opts:[
+  ['a', `${Vm(fmt2(EV.despues) + ' g')}: el vapor sigue dentro del frasco, y pesa`],
+  ['b', `${Vm(fmt2(EV.errores.vaporNoPesa) + ' g')}: el vapor de alcohol no pesa`, 'MA4-el-gas-no-pesa', 'parcial'],
+  ['c', `Entre ${Vm(fmt2(EV.errores.vaporPesaMenos[0]))} y ${Vm(fmt2(EV.errores.vaporPesaMenos[1]) + ' g')}: el vapor pesa, pero menos que el líquido`, 'MA4-el-gas-pesa-menos', 'hipotesis'],
+  ['d', `Más de ${Vm(fmt2(EV.antes) + ' g')}: el vapor ocupa más lugar y empuja hacia abajo`, 'MA4-el-gas-empuja', 'hipotesis']],
+  fb:{ a:`¡Bien! Las moléculas de alcohol no salen del frasco: solo se separan. La balanza sigue en ${fmt2(EV.despues)} g. Ahora prueba a quitar la tapa.`,
+    b:`Elegiste la 2. El gas pesa: son las mismas moléculas de alcohol, solo más separadas, y siguen dentro del frasco. Que el gas no pesa aparece en un estudio con escolares israelíes (Stavy, 1990); un resumen secundario dice que cerca de la mitad de los de 15 años no conservaba la materia al evaporarse, cifra que no pudimos verificar. La correcta está marcada.`,
+    c:'Elegiste la 3. Cada molécula pesa lo mismo en el líquido que en el vapor; están más separadas, nada más. La masa de vapor es la masa de líquido que se evaporó. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    d:'Elegiste la 4. Ocupar más lugar no es tener más masa: no entró nada al frasco. El vapor empuja la tapa y las paredes por igual, no hacia la balanza. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P5 = { id:'materia-disolver-oxidar', ok:'c', opts:[
+  ['a', 'En los dos: el azúcar y el clavo se convierten en otra cosa', 'MA3-disolver-es-reaccionar', 'parcial'],
+  ['b', 'Solo en el del azúcar: el azúcar desaparece y se forma «agua azucarada»', 'MA3-disolver-es-desaparecer', 'parcial'],
+  ['c', `Solo en el del clavo: el óxido es una sustancia nueva, de ${F('Fe')} y ${F('O')} unidos`],
+  ['d', 'En ninguno: el óxido es hierro sucio, y el hierro sigue siendo hierro', 'MA2-oxidar-es-fisico', 'parcial']],
+  fb:{ c:'¡Bien! El azúcar se reparte entre las moléculas de agua sin cambiar: si se evapora el agua, vuelve a aparecer. En el clavo, los átomos de hierro se unen con los de oxígeno y forman Fe₂O₃, una sustancia con otras propiedades (rojiza y quebradiza). Mira las lupas.',
+    a:'Elegiste la 1. Disolver no es reaccionar: las moléculas de azúcar siguen siendo de azúcar, solo repartidas entre las de agua. Que al disolverse se forma otra sustancia está documentado, sin porcentaje en lo que leímos (citado por Smith y Nakhleh, 2011). La correcta está marcada.',
+    b:'Elegiste la 2. El azúcar no desaparece: ya no se ve porque sus moléculas se separaron, pero el agua sabe dulce y, al evaporarla, queda el azúcar. Usar «derretir» por «disolver» aparece en entrevistas con escolares, con una cifra que no pudimos revisar. La correcta está marcada.',
+    d:'Elegiste la 4. El óxido no es hierro con suciedad encima: los átomos de hierro se unieron con oxígeno y forman otra sustancia, con otro color y otra dureza. En un estudio con 28 escolares españoles, cerca de 1 de cada 4 llamó cambio físico a una reja que se oxida (Dávila Acedo y otros, 2017; solo vimos fragmentos del artículo). La correcta está marcada.' } };
+const P6 = { id:'materia-separar', ok:'c', opts:[
+  ['a', 'Filtrar: el papel de filtro retiene la sal', 'separar-filtrar-lo-disuelto', 'hipotesis'],
+  ['b', 'Decantar: dejar reposar hasta que la sal se asiente', 'separar-decantar-lo-disuelto', 'hipotesis'],
+  ['c', 'Evaporar el agua: la sal se queda en el plato'],
+  ['d', 'No se puede: la sal se volvió parte del agua', 'MA3-la-sal-ya-no-esta', 'parcial']],
+  fb:{ c:`¡Bien! El agua se va al aire como vapor y la sal, que hierve a ${MM.MEZCLAS['agua-sal'].partes[1].tEb} °C, se queda. Abajo puedes probar cada método con cada mezcla, también los equivocados.`,
+    a:`Elegiste la 1. ${FIL.razon[0].toUpperCase() + FIL.razon.slice(1)}: no se separa nada. Pruébalo abajo. Filtrar una mezcla homogénea es una hipótesis nuestra, de la tabla de lo que no tiene respaldo del informe. La correcta está marcada.`,
+    b:'Elegiste la 2. Lo disuelto no se asienta: sus partículas se mueven entre las del agua y no caen al fondo, por más que esperes. Esta opción es una hipótesis nuestra, de la tabla de lo que no tiene respaldo del informe. La correcta está marcada.',
+    d:'Elegiste la 4. La sal no se volvió agua: sus iones siguen ahí, repartidos, y se recuperan al evaporar. Creer que al disolverse se forma otra sustancia está documentado, sin porcentaje en lo que leímos (citado por Smith y Nakhleh, 2011). La correcta está marcada.' } };
+const P7 = { id:'materia-emc2', ok:'b', opts:[
+  ['a', `${VE(cien(EMC.errores.gramosSinConvertir) + ' J')}`, 'emc2-gramos-sin-convertir', 'hipotesis'],
+  ['b', `${VE(cien(EMC.E) + ' J')}`],
+  ['c', `${VE(cien(EMC.errores.cEnKmPorS) + ' J')}`, 'emc2-c-en-km-s', 'hipotesis'],
+  ['d', `${VE(cien(EMC.errores.sinCuadrado) + ' J')}`, 'emc2-sin-cuadrado', 'hipotesis']],
+  fb:{ b:`¡Bien! E = 0,001 kg × (3 × 10⁸ m/s)² = ${cien(EMC.E)} J. Mira la escala: las otras tres opciones caen lejísimos.`,
+    a:`Elegiste la 1. Salió de poner 1 (los gramos) en la fórmula: en E = mc² la masa va en kilogramos, y 1 g = 0,001 kg. El resultado queda 1000 veces más grande. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    c:`Elegiste la 3. Salió de usar c = 3 × 10⁵ (km/s): con J, la rapidez va en m/s, 3 × 10⁸. Al elevar al cuadrado, el error es de un millón de veces. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`Elegiste la 4. Salió de multiplicar por c sin elevarla al cuadrado: E = mc², c por c. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+
+// Vistas.
+const vCajas = r => ({ tipo:'cajas', r });
+const vVaso = r => ({ tipo:'vaso', r });
+const vOlla = (r, p) => ({ tipo:'olla', r, p, t: E.vista.t || 0 });
+const vFrasco = o => ({ tipo:'frasco', recipiente:FR.recipiente, masa:FR.masa, sust:'C2H5OH', tapa:true, p:0, q:0, ...o });
+const vDos = (r, p, ev) => ({ tipo:'dos', r, p, ev });
+const SEP = { mezcla:'agua-sal', metodo:null };
+const vSep = (p) => ({ tipo:'separar', mezcla:SEP.mezcla, metodo:SEP.metodo, p });
+const vEmc = r => ({ tipo:'emc', r });
+
+const steps = [
+ { k:'Paso 1', t:'La lupa y la balanza', vista:() => ({ tipo:'frasco', recipiente:250, masa:100, sust:'H2O', tapa:true, p:0, q:0 }),
+   body:() => `<p class="problem">Todo lo que ves está hecho de partículas que no se ven: átomos, y átomos unidos en moléculas. En esta escena, la lupa muestra esas partículas al lado de lo que se ve, y una balanza dice cuánta masa hay.</p>
+   <p>En el frasco hay 100 g de agua. La balanza marca la masa del frasco más la del agua: ${Vm('350,00 g')}.</p>
+   <p>Dos ideas mandan en toda la escena. Primera: para saber si algo es un elemento, un compuesto o una mezcla, no basta mirarlo: hay que ver qué partículas tiene. Segunda: si el frasco está cerrado, la masa no cambia nunca, pase lo que pase adentro.</p>
+   <p class="hint">Cada elemento tiene su color en el texto y en el dibujo: ${F('H')} el hidrógeno y ${F('O')} el oxígeno. Ese color es una clave, no el color real del átomo. La masa ${Vm('m')} va en mostaza. Toca un color del texto para resaltarlo en el dibujo.</p>` },
+ { k:'Paso 2', t:'Antes de mirar, predice', gate:P1, vista:r => vCajas(r),
+   body:() => `<p>Cada caja muestra las partículas de una muestra, vistas con una lupa muy potente. Cada círculo es un átomo; los que se tocan están unidos.</p>
+   <p>¿En cuál caja hay un compuesto?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex"><b>Elemento</b>: una sola clase de átomo, sueltos (${F('He')}) o unidos en moléculas (${F('O2')}).</span></div>
+   <div class="eq"><span class="ex"><b>Compuesto</b>: átomos de elementos distintos unidos, siempre en la misma proporción (${F('H2O')}: 2 H por cada O).</span></div>
+   <div class="eq"><span class="ex"><b>Mezcla</b>: dos o más sustancias sin unirse (${F('H2')} con ${F('O2')}). Se ve igual en todas partes: es homogénea.</span></div></div>
+   <p>Elementos y compuestos son <b>sustancias puras</b>: todas sus partículas son iguales. Hay ${C1.atomos} átomos en la caja 1 y ${C3.atomos} en la 3, pero la cantidad no decide nada: decide qué clase de partículas hay.</p>
+   <p class="fuente">Confundir compuesto con mezcla, y elemento con átomo, al leer dibujos de partículas (MA9): documentado en universitarios, sin porcentaje en lo que leímos; según el resumen, algunos de esos razonamientos son más fuertes en quienes llevaron más cursos de química (Stains y Talanquer, 2007).</p></div>` },
+ { k:'Paso 3', t:'Fases y componentes', gate:P2, vista:r => vVaso(r),
+   body:() => `<p>Pregunta clásica de academia. En un vaso hay agua con sal disuelta, unos cubitos de hielo, una capa de aceite y arena en el fondo.</p>
+   <p>Una <b>fase</b> es cada zona con las mismas propiedades en toda ella; un <b>componente</b> es cada sustancia distinta. ¿Cuántas ${Vfa('fases')} y cuántos ${Vco('componentes')} tiene el sistema? (El aire de arriba no se cuenta.)</p>${opcionesHTML(P2.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">${Vfa('Fases')}: aceite · hielo · agua con sal · arena = ${Vfa(VASO.nFases)}</span><span class="note">Lo disuelto no forma otra fase: está repartido en la del líquido.</span></div>
+   <div class="eq"><span class="ex">${Vco('Componentes')}: ${F('H2O')} (agua y hielo) · ${F('NaCl')} · aceite · ${F('SiO2')} = ${Vco(VASO.nComponentes)}</span><span class="note">El hielo es agua sólida: el mismo componente en otra fase. Sistema ${VASO.nombre}.</span></div></div>
+   <p>Si te preguntan por los <b>elementos</b> (especies atómicas), se cuentan las clases de átomo: H, O, Na, Cl, Si… y los del aceite, que es una mezcla de grasas con C, H y O.</p></div>` },
+ { k:'Paso 4', t:'¿Qué hay en las burbujas?', gate:P3, vista:r => vOlla(r, r ? 1 : 0), anima:true,
+   body:() => `<p>Una olla con agua lleva varios minutos hirviendo a borbotones (las burbujitas de aire del principio ya salieron). Del fondo suben burbujas grandes.</p>
+   <p>¿Qué hay dentro de esas burbujas?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div class="tras" hidden><p>Hervir, fundir, evaporar y condensar son <b>cambios físicos</b>: cambia cómo están juntas las moléculas, no las moléculas. Las de ${F('H2O')} siguen siendo de ${F('H2O')}.</p>
+   <p>Lo mismo pasa con el agua que aparece afuera de un vaso con hielo: es vapor del aire que se condensa, no agua que «se forma».</p>
+   <p class="fuente">Leer un cambio de estado como una reacción (MA1): en una pregunta sobre el vaso frío, cerca de un tercio de 358 universitarios de química general eligió que el agua se forma con el oxígeno y el hidrógeno del aire, antes y después del curso (Salame y Casino, 2021). Lo de las burbujas de aire o vacías es hipótesis nuestra.</p></div>` },
+ { k:'Paso 5', t:'La balanza con el frasco cerrado', gate:P4, vista:r => vFrasco(r ? { p:1 } : { oculta:false }),
+   body:() => `<p>En un frasco grande con tapa (${Vm(fmt2(FR.recipiente) + ' g')}) se echan ${Vm(fmt2(FR.masa) + ' g')} de alcohol. La balanza marca ${Vm(fmt2(EV.antes) + ' g')}. Se deja al sol y, al rato, ya no se ve líquido: todo el alcohol se evaporó dentro del frasco.</p>
+   <p>¿Qué marca ahora la balanza?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">Cerrado: ${Vm(fmt2(EV.antes) + ' g')} → ${Vm(fmt2(EV.despues) + ' g')}</span><span class="note">Ley de conservación de la masa (Lavoisier): en un sistema cerrado la masa no cambia, ni en un cambio físico ni en uno químico.</span></div>
+   <div class="eq"><span class="ex">Destapado: ${Vm(fmt2(EVA.antes) + ' g')} → ${Vm(fmt2(EVA.despues) + ' g')}</span><span class="note">El vapor se va al aire: la balanza baja en los ${fmt2(EVA.seVa)} g que salieron. La masa no desapareció; está afuera.</span></div></div>
+   <div class="nav"><button type="button" class="btn" id="destapar">Quitar la tapa</button>${otraVez}</div>
+   <p class="fuente">«El gas no pesa» (MA4): Stavy (1990) lo encontró en escolares israelíes y vio que quien conserva el peso al evaporarse la acetona no siempre lo conserva al sublimarse el yodo; la cifra de cerca de la mitad de los de 15 años viene de un resumen secundario y no la pudimos verificar. Las otras dos opciones son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Disolver contra oxidar', gate:P5, vista:r => vDos(r, r ? 1 : 0, 0),
+   body:() => `<p>En un vaso, un poco de azúcar se disuelve en agua y ya no se ve. En otro, un clavo de hierro pasa unos días en agua, al aire, y se cubre de herrumbre rojiza.</p>
+   <p>¿En cuál aparece una sustancia nueva?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">Azúcar: las mismas sustancias antes y después (${AZ.sustanciasDespues.map(F).join(' y ')}) → cambio ${AZ.tipo}</span></div>
+   <div class="eq"><span class="ex">Clavo: aparece ${CL.nuevas.map(F).join(', ')} con los mismos átomos (${CL.atomosAntes.Fe} ${F('Fe')} y ${CL.atomosAntes.O} ${F('O')} antes y después) → cambio ${CL.tipo}</span><span class="note">La herrumbre real lleva además agua en su estructura (Fe₂O₃·xH₂O); la lupa la dibuja como Fe₂O₃. El agua ayuda a que pase.</span></div></div>
+   <p>Un cambio químico se reconoce porque aparecen sustancias nuevas, no porque «se vea irreversible» ni porque cambie el color. Y si cambian los propios elementos (el uranio que se parte en bario y kriptón), el cambio es <b>nuclear</b>.</p>
+   <div class="nav"><button type="button" class="btn" id="evaporar">Evaporar el agua azucarada</button>${otraVez}</div>
+   <p class="fuente">Describir una reacción por lo que se ve y no por las partículas (MA8): según el resumen de Ahtee y Varjola (1998), solo cerca del 6 % de los escolares de último ciclo y del 14 % de los universitarios de primer año la describieron bien.</p></div>` },
+ { k:'Paso 7', t:'Separar la mezcla', gate:P6, vista:r => vSep(1),
+   body:() => `<p>Quieres recuperar la sal de un vaso de agua salada. ¿Qué método funciona?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div class="tras" hidden><p>Cada método aprovecha una propiedad en la que los componentes son distintos. Elige una mezcla y un método, y mira qué pasa.</p>
+   <div class="campo" id="sepMez">Mezcla<div class="seg" role="group" aria-label="Mezcla">${Object.entries(MM.MEZCLAS).map(([k, m]) => `<button type="button" data-m="${k}" aria-pressed="${k === SEP.mezcla}">${m.nombre.replace('Limaduras de hierro con azufre en polvo', 'Hierro con azufre')}</button>`).join('')}</div></div>
+   <div class="campo" id="sepMet">Método<div class="seg" role="group" aria-label="Método">${Object.entries(MM.METODOS).map(([k, m]) => `<button type="button" data-k="${k}" aria-pressed="false">${m.nombre}</button>`).join('')}</div></div>
+   <p class="estado" id="sepEst" aria-live="polite"></p>
+   <div class="eqs"><div class="eq"><span class="ex">Agua con sal → ${SAL.adecuados.map(k => MM.METODOS[k].nombre).join(' o ')} (difiere ${SAL.difiere})</span></div>
+   <div class="eq"><span class="ex">Filtración: tamaño · decantación: densidad · destilación: temperatura de ebullición · imantación: magnetismo</span></div></div></div>` },
+ { k:'Paso 8', t:'E = mc²: la masa que se vuelve energía', gate:P7, vista:r => vEmc(r),
+   body:() => `<p>En las reacciones nucleares, una parte pequeñísima de la masa ${Vm('m')} se transforma en energía ${VE('E')}, según ${VE('E')} = ${Vm('m')}${Vc('c')}², con ${Vc('c')} = 3 × 10⁸ m/s, la rapidez de la luz.</p>
+   <p>Si 1 g de materia se transformara por completo en energía, ¿cuánta energía daría?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">${VE('E')} = ${Vm('m')}${Vc('c')}² = ${Vm('0,001 kg')} × (${Vc('3 × 10⁸ m/s')})² = ${VE(cien(EMC.E) + ' J')}</span><span class="note">La masa en kg, c en m/s y al cuadrado: así sale en joules. En kWh: ${cien(EMC.E)} ÷ 3,6 × 10⁶ = ${cien(EMC.kWh)} kWh. Si una casa gastara 150 kWh al mes, le alcanzaría para unos ${fmt(EMC.kWh/150/12, 0)} años.</span></div></div>
+   <p>En una reacción química la masa también cambia, pero tan poco que ninguna balanza lo nota (lo ves en «¿Qué pasa si…?»). Por eso, en química se dice que la masa se conserva.</p>
+   <p class="fuente">No encontramos estudios que midan estos errores de cálculo con E = mc² (gramos sin convertir, c en km/s, olvidar el cuadrado): son hipótesis nuestras, de la tabla de lo que no tiene respaldo del informe. La idea de que «una parte de la masa se convierte en energía» es el lenguaje de examen; lo que pasa es que la energía del sistema y su masa cambian a la vez.</p></div>` },
+];
+
+// ----- Navegación -----
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+// La olla siempre burbujea un poco (salvo con movimiento reducido).
+let burbujeo = 0;
+function burbujear(){ if (RM || burbujeo) return; const f = now => { if (S.step !== 3 || $('m1').hidden){ burbujeo = 0; return; } E.vista.t = now/1000; E.dibujar(); burbujeo = requestAnimationFrame(f); }; burbujeo = requestAnimationFrame(f); }
+// Lo que pasa después de responder (o al pedir "Ver de nuevo"); todo lo calcula el motor.
+function mostrar(n){
+  cortar(E);
+  if (n === 3){ E.vista = vOlla(true, 0); animar(E, 1.2, f => { E.vista.p = f; }, null, 0.2); }
+  else if (n === 4){ E.vista = vFrasco({ p:0 }); animar(E, 1.8, f => { E.vista.p = f; }, () => E.describir(), 0.3); }
+  else if (n === 5){ E.vista = vDos(true, 0, 0); animar(E, 1.8, f => { E.vista.p = f; }, () => E.describir(), 0.3); }
+  else if (n === 6){ if (SEP.metodo){ E.vista = vSep(0); animar(E, 1.4, f => { E.vista.p = f; }, () => E.describir(), 0.2); } else E.vista = vSep(1); }
+  else E.vista = steps[n].vista(true);
+  E.dibujar(); pedir();
+}
+function estadoSep(){
+  const el = $('sepEst'); if (!el) return;
+  if (!SEP.metodo){ el.textContent = 'Elige un método.'; return; }
+  const r = MM.separar(SEP.mezcla, SEP.metodo);
+  el.textContent = `${r.nombre[0].toUpperCase() + r.nombre.slice(1)} (aprovecha ${r.propiedad}): ${r.razon}. ${r.separa ? (r.adecuado ? 'Separa.' : 'Separa, pero no es el método que pide el examen para esta mezcla.') : 'No separa nada.'}`;
+}
+function enlazar(){
+  const body = $('stepBody');
+  const rep = body.querySelector('[data-repetir]'); if (rep) rep.onclick = () => { mostrar(S.step); E.describir(); };
+  const des = $('destapar'); if (des) des.onclick = () => { cortar(E); E.vista = vFrasco({ p:1, tapa:false, q:0 }); animar(E, 2.2, f => { E.vista.q = f; }, () => E.describir(), 0.1); E.dibujar(); pedir(); subir(); };
+  const ev = $('evaporar'); if (ev) ev.onclick = () => { cortar(E); E.vista = vDos(true, 1, 0); animar(E, 2.0, f => { E.vista.ev = f; }, () => E.describir(), 0.1); E.dibujar(); pedir(); subir(); };
+  body.querySelectorAll('#sepMez button').forEach(b => b.onclick = () => { SEP.mezcla = b.dataset.m; SEP.metodo = null; body.querySelectorAll('#sepMez button').forEach(x => x.setAttribute('aria-pressed', x === b)); body.querySelectorAll('#sepMet button').forEach(x => x.setAttribute('aria-pressed', 'false')); cortar(E); E.vista = vSep(1); E.dibujar(); E.describir(); estadoSep(); });
+  body.querySelectorAll('#sepMet button').forEach(b => b.onclick = () => { SEP.metodo = b.dataset.k; body.querySelectorAll('#sepMet button').forEach(x => x.setAttribute('aria-pressed', x === b)); estadoSep(); mostrar(6); E.describir(); subir(); });
+  estadoSep();
+}
+const subir = () => { if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  const s = steps[n]; S.step = n; cortar(E);
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  E.vista = s.vista(r);
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  enlazar(); pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  nav(); E.dibujar(); pedir(); E.describir();
+  if (n === 3) burbujear();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('stepBody').querySelectorAll('.tras').forEach(el => el.hidden = false);
+    enlazar();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots(); nav();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    // En el celular el dibujo sube a la vista y la animación arranca ~380 ms después (nucleo/celular.js).
+    const paso = S.step; E.compactar(false);
+    Celular.alResponder($('cv'), () => { mostrar(paso); E.describir(); if (paso === 3) burbujear(); }, () => S.step === paso);
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); if (S.step === 3) burbujear(); });
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Cada experimento arranca con una predicción; lo que la respondería (la lectura, los rótulos, la lupa de después)
+   se muestra después de responder. */
+
+/* --- Lana de acero que arde sobre la balanza --- */
+// v: { r, p, cerrado }
+PINTA.lana = {
+  alto: w => w < 560 ? 280 : 290,
+  llave: v => `${v.cerrado}`,
+  pintar(ctx, c, W, v, hl){
+    const chico = W < 560, cx = chico ? W*0.3 : W*0.32, yb = 196, p = v.r ? (v.p === undefined ? 1 : v.p) : 0;
+    const r = MM.quemarMetal({ metal:'Fe', masa:5.6, oxido:'Fe2O3', recipiente: v.cerrado ? 200 : 0, cerrado: !!v.cerrado });
+    if (v.cerrado){ ctx.save(); rr(ctx, cx - 70, yb - 150, 140, 150, 16); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 3; ctx.stroke(); ctx.restore(); }
+    // Montón de lana (hebras grises) que se vuelve polvo.
+    ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 1.2; const rnd = azar(3);
+    for (let i = 0; i < 26; i++){ ctx.globalAlpha = 1 - p*0.8; ctx.beginPath(); const x = cx - 40 + rnd()*80, y = yb - 8 - rnd()*34; ctx.ellipse(x, y, 10 + rnd()*12, 4 + rnd()*5, rnd()*3, 0, Math.PI*2); ctx.stroke(); }
+    ctx.restore();
+    if (p > 0 && p < 1) llama(ctx, c, cx, yb - 20, 70);
+    balanza(ctx, c, cx, yb, chico ? W*0.48 : 180, `${fmt2(r.antes + (r.despues - r.antes)*ease(p))} g`);
+    texto(ctx, c, v.cerrado ? 'en un frasco cerrado' : 'balanza abierta, al aire', cx, yb + 50, 12, c.ink, 'center', W*0.55, 700);
+    // Lupa: Fe con O₂ del aire → Fe₂O₃.
+    const lr = chico ? Math.min(W*0.2, 76) : Math.min(W*0.18, 98), lx = chico ? W - lr - 8 : W*0.74, ly = 110;
+    lupa(ctx, c, lx, ly, lr, [cx + 20, yb - 24], c.paper); recortar(ctx, lx, ly, lr);
+    const ant = [[-0.5, 0.45], [-0.17, 0.55], [0.17, 0.55], [0.5, 0.45]].map(([x, y], k) => ({ f:'Fe', x:lx + x*lr, y:ly + y*lr, a:0 }))
+      .concat([[-0.45, -0.55], [0.05, -0.7], [0.55, -0.4]].map(([x, y], k) => ({ f:'O2', x:lx + x*lr, y:ly + y*lr, a:k })));
+    const des = [{ f:'Fe2O3', x:lx, y:ly + 0.42*lr, a:0 }, { f:'Fe2O3', x:lx, y:ly - 0.05*lr, a:0 }];
+    const R = lr/9; transicion(ctx, c, ant, des, R, p, true, hl);
+    ctx.restore(); bordeLupa(ctx, c, lx, ly, lr);
+    if (p >= 1) texto(ctx, c, 'el O₂ del aire queda unido', lx, ly + lr + 14, 11, c.ink, 'center', chico ? 2*lr + 14 : 2*lr + 40, 800);
+  },
+  leyenda: () => [...leyEl(['Fe', 'O']), leyVar('m', 'm · lo que marca la balanza')],
+  describir: v => { const r = MM.quemarMetal({ metal:'Fe', masa:5.6, oxido:'Fe2O3', recipiente: v.cerrado ? 200 : 0, cerrado: !!v.cerrado }); return v.r ? `La balanza pasa de ${fmt2(r.antes)} a ${fmt2(r.despues)} gramos. En la lupa, el hierro se une con moléculas de oxígeno y forma Fe₂O₃.` : `Lana de acero sobre una balanza que marca ${fmt2(r.antes)} gramos.`; },
+};
+/* --- Oxígeno y ozono en una caja --- */
+PINTA.ozono = {
+  alto: w => w < 560 ? 230 : 250,
+  pintar(ctx, c, W, v, hl){
+    const bw = Math.min(W - 30, 420), bx = (W - bw)/2, by = 12, bh = W < 560 ? 180 : 200;
+    rr(ctx, bx, by, bw, bh, 16); ctx.fillStyle = c.caja; ctx.fill(); ctx.strokeStyle = c.line; ctx.stroke();
+    const items = [{ f:'O2', n:4 }, { f:'O3', n:3 }], zona = { x:bx + 8, y:by + 8, w:bw - 16, h:bh - 16 }, R = Math.min(radioPara(items, zona), 10);
+    repartir(items, zona, 91).forEach(q => { particula(ctx, c, q.f, q.x, q.y, R, q.a, hl); if (v.r) texto(ctx, c, q.f === 'O2' ? 'O₂' : 'O₃', q.x, q.y + extension(q.f)*R + 8, 11, c.ink, 'center', 0, 800); });
+    texto(ctx, c, v.r ? 'una mezcla: oxígeno (O₂) y ozono (O₃)' : 'la caja', W/2, by + bh + 14, 12, v.r ? c.ink : c.muted, 'center', W - 20, 800);
+  },
+  leyenda: () => leyEl(['O']),
+  describir: v => v.r ? 'La caja tiene 4 moléculas de O₂ y 3 de O₃: dos sustancias del mismo elemento, una mezcla.' : 'Una caja con moléculas de dos átomos de oxígeno y moléculas de tres átomos de oxígeno.',
+};
+/* --- Un átomo de azufre --- */
+PINTA.azufre = {
+  alto: w => w < 560 ? 250 : 260,
+  pintar(ctx, c, W, v, hl){
+    const chico = W < 560, px = chico ? W*0.2 : W*0.18, py = 190;
+    ctx.save(); ctx.fillStyle = c.polvo; ctx.beginPath(); ctx.moveTo(px - 60, py); ctx.quadraticCurveTo(px, py - 90, px + 60, py); ctx.closePath(); ctx.fill(); ctx.restore();
+    texto(ctx, c, 'azufre en polvo', px, py + 16, 12, c.ink, 'center', W*0.36, 700);
+    const lr = chico ? Math.min(W*0.19, 70) : Math.min(W*0.16, 86), lx = chico ? W*0.56 : W*0.5, ly = 112;
+    lupa(ctx, c, lx, ly, lr, [px + 10, py - 30], c.paper); recortar(ctx, lx, ly, lr);
+    const R = lr/9.5; [[-0.42, -0.4, 0], [0.42, -0.3, 0.4], [0, 0.45, 0.8]].forEach(([x, y, a]) => particula(ctx, c, 'S8', lx + x*lr, ly + y*lr, R, a, hl));
+    ctx.restore(); bordeLupa(ctx, c, lx, ly, lr);
+    texto(ctx, c, 'moléculas S₈', lx, ly + lr + 14, 11, c.muted, 'center', 2*lr + 10, 700);
+    // Un solo átomo, aparte.
+    const ax = chico ? W - 40 : W*0.83, ay = ly;
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 4]); linea(ctx, lx + lr, ly, ax - 26, ay); ctx.restore();
+    particula(ctx, c, 'S', ax, ay, chico ? 15 : 18, 0, hl);
+    texto(ctx, c, 'un átomo', ax, ay + 34, 11, c.muted, 'center', 80, 700);
+    if (v.r) texto(ctx, c, 'sin color, sin fusión, sin dureza', ax - (chico ? 30 : 0), ay + 52, 11, c.ink, chico ? 'right' : 'center', chico ? W*0.5 : W*0.3, 800);
+  },
+  leyenda: () => leyEl(['S']).concat(['<span>el añil es la clave del azufre en el dibujo, no su color</span>']),
+  describir: v => v.r ? 'Un átomo de azufre solo tiene masa y su forma de combinarse; el color amarillo, la fusión y la dureza son del conjunto de muchos átomos.' : 'Un montón de azufre en polvo amarillo; la lupa muestra moléculas de ocho átomos de azufre y, aparte, un solo átomo.',
+};
+/* --- Juliaca: la meseta de la ebullición --- */
+PINTA.juliaca = {
+  alto: w => w < 560 ? 270 : 260,
+  pintar(ctx, c, W, v, hl){
+    const chico = W < 560, ox = 16, ow = chico ? W*0.4 : W*0.3, oy = 50, oh = 120, p = v.r ? (v.p === undefined ? 1 : v.p) : 0;
+    ctx.fillStyle = c.agua; rr(ctx, ox, oy + 14, ow, oh - 14, 10); ctx.fill();
+    ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 3.5; rr(ctx, ox, oy, ow, oh, 12); ctx.stroke(); ctx.restore();
+    llama(ctx, c, ox + ow/2, oy + oh + 30, ow*0.8);
+    // Termómetro.
+    const tx = ox + ow*0.75; ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; rr(ctx, tx - 4, oy - 30, 8, oh, 4); ctx.stroke(); ctx.restore();
+    texto(ctx, c, v.r ? '87 °C' : '87 °C → ?', tx, oy - 42, 13, c.T, 'center', ow, 900);
+    // Gráfica T contra t: sube y se queda en 87 mientras hierve.
+    const gx = ox + ow + (chico ? 24 : 40), gw = W - gx - 16, gy = 30, gh = chico ? 170 : 160;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; linea(ctx, gx, gy, gx, gy + gh); linea(ctx, gx, gy + gh, gx + gw, gy + gh); ctx.restore();
+    texto(ctx, c, 'T', gx - 10, gy + 6, 12, c.T, 'center', 0, 900); texto(ctx, c, 'tiempo', gx + gw - 20, gy + gh + 14, 11, c.muted, 'center', 0, 700);
+    const Ty = T => gy + gh - (T - 10)/(110 - 10)*gh;
+    ctx.save(); ctx.setLineDash([3, 4]); ctx.strokeStyle = c.muted; linea(ctx, gx, Ty(100), gx + gw, Ty(100)); ctx.restore();
+    texto(ctx, c, '100 °C', gx + gw, Ty(100) - 9, 10, c.muted, 'right', 0, 700);
+    ctx.save(); ctx.strokeStyle = c.T; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(gx, Ty(15)); ctx.lineTo(gx + gw*0.45, Ty(87)); ctx.stroke();
+    if (p > 0){ ctx.beginPath(); ctx.moveTo(gx + gw*0.45, Ty(87)); ctx.lineTo(gx + gw*(0.45 + 0.5*p), Ty(87)); ctx.stroke(); }
+    ctx.restore();
+    texto(ctx, c, 'empieza a hervir', gx + gw*0.45, Ty(87) + 16, 10, c.muted, 'center', gw*0.5, 700);
+    if (p >= 1) texto(ctx, c, '5 min más: sigue en 87 °C', gx + gw*0.72, Ty(87) - 12, 11, c.T, 'center', gw*0.55, 800);
+  },
+  leyenda: () => [leyVar('T', 'T · temperatura')],
+  describir: v => v.r ? 'La gráfica sube hasta 87 grados y se queda horizontal mientras el agua hierve: el termómetro sigue en 87 grados.' : 'Una olla que hierve en Juliaca con un termómetro en 87 grados y una gráfica de temperatura que sube hasta que empieza a hervir.',
+};
+/* --- La balanza nuclear --- */
+PINTA.nuclear = {
+  alto: w => w < 560 ? 230 : 230,
+  pintar(ctx, c, W, v, hl){
+    const chico = W < 560, cx = W/2, yb = 118, p = v.r ? (v.p === undefined ? 1 : v.p) : 0, b = MM.balanzaNuclear(1.8e14);
+    ctx.save(); rr(ctx, cx - 70, yb - 92, 140, 90, 14); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 3; ctx.stroke(); ctx.restore();
+    texto(ctx, c, 'combustible y productos, todo adentro', cx, yb - 104, 11, c.muted, 'center', W - 20, 700);
+    ctx.save(); ctx.fillStyle = c.muted; for (let i = 0; i < 5; i++){ rr(ctx, cx - 50 + i*21, yb - 40, 16, 34, 4); ctx.fill(); } ctx.restore();
+    balanza(ctx, c, cx, yb, chico ? W*0.7 : 260, v.r ? `M − ${fmt(b.baja*ease(p), 2)} g` : 'M');
+    // La energía que sale, en su color, al responder.
+    if (v.r && p > 0){ ctx.save(); ctx.strokeStyle = c.E; ctx.lineWidth = 2.5; for (let k = 0; k < 6; k++){ const a = -Math.PI/2 + (k - 2.5)*0.35, r0 = 52, r1 = 52 + 34*ease(p); linea(ctx, cx + Math.cos(a)*r0, yb - 46 + Math.sin(a)*r0, cx + Math.cos(a)*r1, yb - 46 + Math.sin(a)*r1); } ctx.restore();
+      texto(ctx, c, `E = 1,8 × 10¹⁴ J`, chico ? W - 12 : cx + 120, yb - 70, 13, c.E, chico ? 'right' : 'left', chico ? W*0.4 : W*0.3, 900); }
+    texto(ctx, c, v.r && p >= 1 ? `baja ${fmt(b.baja, 2)} g = 2 × 10⁻³ kg` : 'se liberan 1,8 × 10¹⁴ J', cx, yb + 52, 13, v.r && p >= 1 ? c.m : c.ink, 'center', W - 20, 800);
+  },
+  leyenda: () => [leyVar('m', 'm · masa'), leyVar('E', 'E · energía')],
+  describir: v => v.r ? 'La balanza baja 2 gramos: la masa que corresponde a la energía liberada.' : 'Una caja cerrada con el combustible sobre una balanza que marca M.',
+};
+
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2');
+const LANA = MM.quemarMetal({ metal:'Fe', masa:5.6, oxido:'Fe2O3', cerrado:false }), LANAC = MM.quemarMetal({ metal:'Fe', masa:5.6, oxido:'Fe2O3', recipiente:200, cerrado:true });
+const OZ = MM.clasificarCaja([{ formula:'O2', n:4 }, { formula:'O3', n:3 }]);
+const AZU = MM.particula('S', ['color', 'temperatura de fusión', 'dureza', 'masa']);
+const JUL = MM.hervir({ masa:500, Teb:87, minutos:5, potencia:2000 });
+const NUC = MM.balanzaNuclear(1.8e14), MET = MM.masaDeEnergia(890000);
+
+const EXPS = [
+  { id:'lana-de-acero', corto:'La lana de acero que arde',
+    q:`Sobre una balanza abierta hay ${Vm('5,60 g')} de lana de acero (hilos finos de ${F('Fe')}). Se enciende y arde toda, hasta volverse un polvo oscuro: óxido de hierro. ¿Qué pasa con la lectura de la balanza?`,
+    opts:[['a', 'Sube: el hierro se une con oxígeno del aire'],
+          ['b', 'No cambia: la masa siempre se conserva', 'balanza-abierta-conserva', 'hipotesis'],
+          ['c', 'Baja: al arder, parte del hierro se va como humo', 'MA5-arder-pierde-masa', 'parcial'],
+          ['d', 'Sube: el calor del fuego queda guardado en el polvo, y el calor pesa', 'calor-pesa', 'hipotesis']],
+    ok:'a',
+    fb:{ b:`La masa se conserva, pero hay que contarla toda: aquí entra oxígeno del aire, que la balanza abierta no pesaba al principio. Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
+      c:'El hierro no se va: se queda en el plato, unido con oxígeno. Por eso el polvo pesa más que la lana. Creer que la masa cambia cuando algo arde está documentado: en 195 escolares de Israel, las respuestas erróneas sobre la masa en una combustión en recipiente cerrado bajaron de cerca del 45 % al 19 % al enseñar el tema (Basheer y otros, 2018).',
+      d:'Sube, pero no por el calor: el calor es energía y no se pesa en una balanza. Sube por el oxígeno que se unió al hierro. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ tipo:'lana' }), despues:p => ({ tipo:'lana', r:true, p }), anima:true,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${F('Fe')} → ${F('Fe2O3')}: ${Vm(fmt2(LANA.antes) + ' g')} → ${Vm(fmt2(LANA.despues) + ' g')}</span><span class="note">${fmt(LANA.moles, 2)} mol de Fe × 3/2 × 16 g = ${fmt(LANA.oxigeno, 2)} g de oxígeno que vinieron del aire.</span></div>
+      <div class="eq"><span class="ex">En un frasco cerrado: ${Vm(fmt2(LANAC.antes) + ' g')} → ${Vm(fmt2(LANAC.despues) + ' g')}</span><span class="note">El oxígeno ya estaba dentro del frasco: la balanza no se mueve.</span></div></div>
+      <p>Es lo contrario de lo que pasa con un papel que arde: ahí se forman gases (CO₂ y vapor) que se van, y la balanza abierta baja. En los dos casos, la masa total se conserva.</p>
+      <div class="nav"><button type="button" class="btn" id="xCerrado">Hacerlo en un frasco cerrado</button></div>
+      <p class="fuente">Que la masa cambia cuando algo arde o se forma un gas (MA5): solo el 38 % de 79 escolares argentinos aceptó que la masa se conserva en un recipiente cerrado (Casado y Raviolo, 2005). La versión con oxígeno que entra, al revés, es hipótesis nuestra.</p>` },
+  { id:'oxigeno-ozono', corto:'Oxígeno con ozono',
+    q:`En la caja hay moléculas de ${F('O2')} (el oxígeno que respiras) y moléculas de ${F('O3')} (el ozono), revueltas. ¿Cómo se clasifica lo que hay en la caja?`,
+    opts:[['a', 'Sustancia pura: solo hay átomos de oxígeno', 'MA9-un-elemento-una-sustancia', 'hipotesis'],
+          ['b', 'Sustancia pura, un compuesto: el O₃ es una combinación de átomos', 'MA9-unidos-es-compuesto', 'parcial'],
+          ['c', 'Mezcla: hay dos sustancias distintas, del mismo elemento'],
+          ['d', 'Mezcla de dos elementos: el O₂ y el O₃ son elementos distintos', 'alotropo-otro-elemento', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Un solo elemento no quiere decir una sola sustancia: las moléculas de O₂ y de O₃ son distintas (el ozono huele fuerte y es tóxico; el oxígeno, no). Esta opción es una hipótesis nuestra, de la tabla de lo que no tiene respaldo del informe.',
+      b:'El O₃ tiene sus átomos unidos, pero todos son de oxígeno: es un elemento, no un compuesto. Confundir «unido» con «compuesto» está documentado, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen).',
+      d:'El O₂ y el O₃ son el mismo elemento, oxígeno, en dos formas (alótropos). Un elemento se define por su clase de átomo, no por la molécula. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ tipo:'ozono' }), despues:() => ({ tipo:'ozono', r:true }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">Sustancias: ${OZ.sustancias.map(F).join(' y ')} = ${OZ.nSustancias} · elementos: ${OZ.elementos.map(F).join('')} = ${OZ.nElementos}</span><span class="note">${OZ.nombre[0].toUpperCase() + OZ.nombre.slice(1)}: dos sustancias sin unirse, repartidas por igual. Lo mismo vale para el diamante y el grafito: los dos son carbono puro.</span></div></div>
+      <p class="fuente">MA9 (elemento, compuesto y mezcla en dibujos de partículas): documentado sin porcentaje en lo que leímos (Stains y Talanquer, 2007). Que un elemento nunca forme moléculas, o que O₂ y O₃ sean compuestos, está en la tabla de hipótesis del informe.</p>` },
+  { id:'atomo-de-azufre', corto:'Un solo átomo de azufre',
+    q:`El azufre en polvo es amarillo, quebradizo y se funde a unos 113 °C. Imagina que, con una lupa imposible, tomas un solo átomo de ${F('S')}. ¿Cómo es ese átomo?`,
+    opts:[['a', 'Amarillo, quebradizo y se funde a 113 °C, como el polvo', 'MA11-particula-con-propiedades-de-la-sustancia', 'documentado'],
+          ['b', 'Amarillo, pero no se funde: un átomo solo no se derrite', 'MA11-color-en-el-atomo', 'hipotesis'],
+          ['c', 'Sin color ni temperatura de fusión: eso es de muchos átomos juntos'],
+          ['d', 'Del color del dibujo, añil: ese es el color real del átomo', 'color-del-dibujo', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Ser amarillo, quebrarse o fundirse a 113 °C son propiedades del conjunto: dependen de cómo se ordenan y se mueven muchísimas moléculas juntas. Un átomo solo tiene masa y su forma de combinarse. Entre 358 universitarios, cerca del 40 % antes del curso y del 46 % después eligió que un átomo tendría todas las propiedades de la sustancia (Salame y Casino, 2021).',
+      b:'El color tampoco es del átomo: sale de cómo muchos átomos juntos devuelven la luz. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'El añil es solo la clave del azufre en este dibujo, para distinguirlo de otros elementos. Un átomo solo no tiene color. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ tipo:'azufre' }), despues:() => ({ tipo:'azufre', r:true }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">Un átomo de ${F('S')} tiene: ${AZU.tiene.join(', ')} (y su forma de combinarse). No tiene: ${AZU.noTiene.join(', ')}.</span><span class="note">Por eso un cambio de estado no cambia las partículas: fundir el azufre cambia cómo están juntas las moléculas, no las moléculas.</span></div></div>
+      <p class="fuente">MA11 (AT1 del informe de átomo y enlace): Salame y Casino (2021), ítem 22 del Chemical Concepts Inventory, 358 universitarios de química general.</p>` },
+  { id:'juliaca', corto:'El agua que hierve en Juliaca',
+    q:`En Juliaca, a 3825 m, una olla con 500 g de agua ya hierve, y el termómetro marca ${VT('87 °C')}. La cocina le sigue dando calor 5 minutos más. ¿Qué marca el termómetro al final?`,
+    opts:[['a', `${VT('100 °C')}: el agua hierve siempre a 100 °C`, 'MA7-siempre-100', 'documentado'],
+          ['b', `${VT('87 °C')}: mientras hierve, el calor se usa en volver vapor el agua`],
+          ['c', `${VT(fmt(JUL.errores.sigueSubiendo, 0) + ' °C')}: sigue subiendo mientras haya fuego`, 'MA6-calor-siempre-sube', 'documentado'],
+          ['d', `Menos de ${VT('87 °C')}: el vapor se lleva el calor y el agua se enfría`, 'vapor-enfria', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'A 3825 m la presión del aire es menor y el agua hierve antes, a unos 87 °C. Y una vez que hierve, no sube más. Con 858 universitarios de Sídney, entre un tercio y algo más de 4 de cada 10, según el grupo, dijo que el agua hierve siempre a la misma temperatura (Georgiou y Sharma, 2010).',
+      c:`Salió de sumar todo el calor como si calentara: 87 + 10 000/500 = ${fmt(JUL.errores.sigueSubiendo, 0)}. Pero mientras hierve, ese calor separa moléculas y forma vapor. Con 858 universitarios de Sídney, entre el 30 % y el 48 %, según el grupo, creyó que agregar calor siempre sube la temperatura (Georgiou y Sharma, 2010).`,
+      d:'El vapor sí se lleva energía, pero la cocina la repone: el agua se queda en 87 °C mientras haya líquido. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ tipo:'juliaca' }), despues:p => ({ tipo:'juliaca', r:true, p }), anima:true,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">Calor: 2000 cal/min × 5 min = ${fmt(JUL.Q, 0)} cal → se vuelven vapor ${fmt(JUL.Q, 0)} ÷ 540 ≈ ${fmt(JUL.vapor, 1)} g de agua</span><span class="note">La temperatura se queda en ${VT('87 °C')}: es la meseta de la ebullición. La escena del calor y los cambios de fase está en <a href="../calorimetria/">calorimetría</a>.</span></div></div>
+      <p class="fuente">MA6 y MA7: Georgiou y Sharma (2010), 858 universitarios de primer año en Sídney, preguntas 6 y 8. «Sigue subiendo mientras hierve»: entre 1 y 2 de cada 10, según el grupo.</p>` },
+  { id:'defecto-de-masa', corto:'La balanza de un reactor',
+    q:`En un reactor nuclear se liberan ${VE('1,8 × 10¹⁴ J')}. Si pudieras pesar todo (el combustible y lo que se forma) dentro de una caja cerrada, ¿cuánto bajaría la balanza?`,
+    opts:[['a', `${Vm('0 g')}`, 'nuclear-conserva-masa', 'hipotesis'],
+          ['b', `${Vm(fmt(NUC.errores.kgComoGramos, 3) + ' g')}`, 'emc2-kg-como-gramos', 'hipotesis'],
+          ['c', `${Vm(fmt(NUC.baja, 0) + ' g')}`],
+          ['d', `${Vm(fmt(NUC.errores.cEnKmPorS, 0) + ' kg')}`, 'emc2-c-en-km-s', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'En una reacción nuclear la masa sí baja de forma que se puede medir: es el defecto de masa. Lo que se conserva es la energía total. Esta opción es una hipótesis nuestra; que la masa «se convierte» en energía es una idea muy repetida, documentada sin porcentaje.',
+      b:'Salió de calcular 1,8 × 10¹⁴ ÷ 9 × 10¹⁶ = 0,002 y leerlo como gramos: la fórmula da kilogramos. 0,002 kg = 2 g. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Salió de usar c = 3 × 10⁵ (km/s): al cuadrado, el resultado sale un millón de veces más grande. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ tipo:'nuclear' }), despues:p => ({ tipo:'nuclear', r:true, p }), anima:true,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${Vm('Δm')} = ${VE('E')} ÷ ${Vc('c')}² = 1,8 × 10¹⁴ ÷ (${Vc('3 × 10⁸')})² = ${Vm('2 × 10⁻³ kg')} = ${Vm(fmt(NUC.baja, 0) + ' g')}</span></div>
+      <div class="eq"><span class="ex">Química: arder 1 mol de metano libera unos 890 000 J → ${Vm('Δm')} ≈ ${cien(MET.g)} g</span><span class="note">También baja, pero menos de una cienmillonésima de gramo: ninguna balanza lo nota. Por eso en química decimos que la masa se conserva.</span></div></div>
+      <p>En el nuclear, además, cambian los elementos: el uranio-235 se parte en bario y kriptón. En una reacción química, los elementos nunca cambian.</p>
+      <p class="fuente">No encontramos estudios con porcentaje sobre masa y energía. La idea de que «una parte de la masa se convierte en energía» es muy común y la repiten los libros de divulgación (Taber, por la descripción de un buscador; Riggs, 2023, por su resumen). Los errores de cálculo son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan.
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function despues(x, vista){
+  cortar(E);
+  const v = vista || x.despues;
+  if (x.anima){ E.vista = v(0); E.dibujar(); animar(E, 1.6, f => { E.vista = v(f); }, () => { E.vista = v(1); E.describir(); }, 0.3); }
+  else E.vista = v();
+  E.dibujar(); pedir();
+}
+function ir(k){
+  if (!abierto(k)) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  cortar(E); E.vista = x.antes();
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const explicar = () => {
+    if (S.k !== k || !S.pred[x.id]) return;
+    $('res2').innerHTML = x.exp() + `<div class="nav">${x.anima ? otraVez : '<span></span>'}${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const rep = $('res2').querySelector('[data-repetir]'); if (rep) rep.onclick = () => { despues(x); E.describir(); };
+    const ce = $('xCerrado'); if (ce) ce.onclick = () => { despues(x, p => ({ tipo:'lana', r:true, p, cerrado:true })); E.describir(); if (innerWidth < 900) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    explicar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones(); E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => { despues(x); E.describir(); }, () => S.k === k);
+  });
+  if (S.pred[x.id]) E.vista = x.anima ? x.despues(1) : x.despues();
+  E.compactar(!S.pred[x.id]);
+  pintar(); E.dibujar(); pedir(); E.describir();
+}
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
