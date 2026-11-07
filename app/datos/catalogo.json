@@ -602,7 +602,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "fisica-moderna"
+     ]
     }
    ]
   },
@@ -1253,7 +1255,10 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "conjuntos",
+      "logica"
+     ]
     },
     {
      "id": "algebra.numeros-reales",
@@ -1715,7 +1720,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "programacion-lineal"
+     ]
     },
     {
      "id": "algebra.sucesiones-y-series",
@@ -1796,7 +1803,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "logica"
+     ]
     },
     {
      "id": "aritmetica.conjuntos",
@@ -1820,7 +1829,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "conjuntos"
+     ]
     },
     {
      "id": "aritmetica.razones-y-proporciones",
@@ -3497,7 +3508,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "arreglos-giros"
+     ]
     },
     {
      "id": "razonamiento-matematico.razonamiento-inductivo",
@@ -3717,7 +3730,10 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "arreglos-giros",
+      "ampliadora"
+     ]
     },
     {
      "id": "razonamiento-matematico.rutas-y-visualizacion-espacial",
@@ -4245,7 +4261,8 @@
     "geometria.areas-poligonales",
     "geometria.prisma-y-piramide",
     "geometria.solidos-de-revolucion",
-    "geometria.longitud-y-areas-circulares"
+    "geometria.longitud-y-areas-circulares",
+    "razonamiento-matematico.transformaciones-de-figuras"
    ],
    "url": "/plantillas/ampliadora/index.html",
    "papel": "/plantillas/ampliadora/papel.json",
@@ -4271,6 +4288,24 @@
     "/plantillas/angulo-inscrito/index.html",
     "/plantillas/angulo-inscrito/motor.js",
     "/plantillas/angulo-inscrito/papel.json"
+   ]
+  },
+  "arreglos-giros": {
+   "id": "arreglos-giros",
+   "titulo": "Fichas, banderas y ruedas: arreglos y movimientos de figuras",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.arreglos-numericos",
+    "razonamiento-matematico.transformaciones-de-figuras"
+   ],
+   "url": "/plantillas/arreglos-giros/index.html",
+   "papel": "/plantillas/arreglos-giros/papel.json",
+   "archivos": [
+    "/plantillas/arreglos-giros/index.html",
+    "/plantillas/arreglos-giros/motor.js",
+    "/plantillas/arreglos-giros/papel.json"
    ]
   },
   "atomo-y-tabla": {
@@ -4486,6 +4521,24 @@
     "/plantillas/congruencia/papel.json"
    ]
   },
+  "conjuntos": {
+   "id": "conjuntos",
+   "titulo": "Las fichas en los aros: conjuntos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.conjuntos",
+    "algebra.logica-y-conjuntos"
+   ],
+   "url": "/plantillas/conjuntos/index.html",
+   "papel": "/plantillas/conjuntos/papel.json",
+   "archivos": [
+    "/plantillas/conjuntos/index.html",
+    "/plantillas/conjuntos/motor.js",
+    "/plantillas/conjuntos/papel.json"
+   ]
+  },
   "cortes-pesadas": {
    "id": "cortes-pesadas",
    "titulo": "La sierra y la balanza: cortes y pesadas",
@@ -4689,6 +4742,23 @@
     "/plantillas/exponenciales-logaritmos/index.html",
     "/plantillas/exponenciales-logaritmos/motor.js",
     "/plantillas/exponenciales-logaritmos/papel.json"
+   ]
+  },
+  "fisica-moderna": {
+   "id": "fisica-moderna",
+   "titulo": "La lámpara y la placa: fotones y efecto fotoeléctrico",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.fisica-moderna"
+   ],
+   "url": "/plantillas/fisica-moderna/index.html",
+   "papel": "/plantillas/fisica-moderna/papel.json",
+   "archivos": [
+    "/plantillas/fisica-moderna/index.html",
+    "/plantillas/fisica-moderna/motor.js",
+    "/plantillas/fisica-moderna/papel.json"
    ]
   },
   "fluidos": {
@@ -4982,6 +5052,24 @@
     "/plantillas/liquidos-y-solidos/index.html",
     "/plantillas/liquidos-y-solidos/motor.js",
     "/plantillas/liquidos-y-solidos/papel.json"
+   ]
+  },
+  "logica": {
+   "id": "logica",
+   "titulo": "Los interruptores de la lógica: lógica proposicional",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.logica-proposicional",
+    "algebra.logica-y-conjuntos"
+   ],
+   "url": "/plantillas/logica/index.html",
+   "papel": "/plantillas/logica/papel.json",
+   "archivos": [
+    "/plantillas/logica/index.html",
+    "/plantillas/logica/motor.js",
+    "/plantillas/logica/papel.json"
    ]
   },
   "magnetismo": {
@@ -5296,6 +5384,23 @@
     "/plantillas/probabilidad-dados/papel.json"
    ]
   },
+  "programacion-lineal": {
+   "id": "programacion-lineal",
+   "titulo": "La región que se arma: programación lineal",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.programacion-lineal"
+   ],
+   "url": "/plantillas/programacion-lineal/index.html",
+   "papel": "/plantillas/programacion-lineal/papel.json",
+   "archivos": [
+    "/plantillas/programacion-lineal/index.html",
+    "/plantillas/programacion-lineal/motor.js",
+    "/plantillas/programacion-lineal/papel.json"
+   ]
+  },
   "quimica-ambiente": {
    "id": "quimica-ambiente",
    "titulo": "Del pozo al cielo: combustión, petróleo, metales y el aire",
@@ -5478,7 +5583,7 @@
    "titulo": "Tiro parabólico y movimiento circular",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.movimiento-parabolico-y-circular"
    ],

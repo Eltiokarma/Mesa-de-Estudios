@@ -1,0 +1,1079 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Los interruptores de la lógica: lógica proposicional</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de «La balanza de las mezclas».
+   Dentro del dibujo y de las fórmulas solo mandan los colores de las variables (regla 4), uno por proposición simple en
+   toda la escena (los mismos hex que las hermanas): p azul #1f5fbf / #7cb0ff; q naranja #a05200 / #f0a04a; r verde
+   #466d14 / #a3d65e; s turquesa #0f766e / #5ed9c8, y el valor de la fórmula entera (el foco grande y su columna en la
+   tabla) fucsia #a10fbf / #cf6bfa. Los cables, las cajas y los focos chicos de las partes van en tinta; lo apagado, en gris.
+   V y F nunca van solo con color: siempre con su letra.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py), claro / oscuro: p–q 48,9 / 47,7; p–r 56,1 / 57,1; p–s 31,7 / 31,1;
+   p–res 27,1 / 29,3; q–r 37,2 / 36,0; q–s 42,7 / 43,8; q–res 51,1 / 54,4; r–s 23,6 / 25,3; r–res 78,3 / 82,6;
+   s–res 39,4 / 45,5. Contraste AA sobre el papel, la tarjeta, el chip (.v, fondo al 8 %) y las opciones ya marcadas
+   (correcta y elegida), donde el color va sin chip (.t-*): mínimo 4,53 en claro (s en la opción marcada) y 4,63 en
+   oscuro (res en la opción correcta). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-p:#1f5fbf; --c-q:#a05200; --c-r:#466d14; --c-s:#0f766e; --c-res:#a10fbf;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-p:#7cb0ff; --c-q:#f0a04a; --c-r:#a3d65e; --c-s:#5ed9c8; --c-res:#cf6bfa;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-p:#7cb0ff; --c-q:#f0a04a; --c-r:#a3d65e; --c-s:#5ed9c8; --c-res:#cf6bfa;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){ .mode.pendiente .lecturas{gap:4px} .mode.pendiente .lectura{padding:2px 8px} }
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-p{color:var(--c-p); background:color-mix(in srgb, var(--c-p) 8%, transparent)}
+.v-q{color:var(--c-q); background:color-mix(in srgb, var(--c-q) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-s{color:var(--c-s); background:color-mix(in srgb, var(--c-s) 8%, transparent)}
+.v-res{color:var(--c-res); background:color-mix(in srgb, var(--c-res) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+/* En las fórmulas y en las opciones, el color va solo en la letra (sin el fondo del chip): así pasa AA sobre la opción marcada. */
+.t-p{color:var(--c-p); font-weight:800}
+.t-q{color:var(--c-q); font-weight:800}
+.t-r{color:var(--c-r); font-weight:800}
+.t-s{color:var(--c-s); font-weight:800}
+.t-res{color:var(--c-res); font-weight:800}
+.fx{font-family:var(--mono); white-space:nowrap; font-size:.97em}
+.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.75; font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.eq .note{display:block; font-family:var(--font); font-size:.84rem; line-height:1.4; color:var(--muted); white-space:normal}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); overflow-wrap:anywhere}
+.lectura > span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+.llaves{display:flex; flex-wrap:wrap; gap:6px}
+.llaves button{font:800 1rem var(--mono); min-width:44px; height:44px; padding:0 10px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer}
+.llaves button[aria-pressed="true"]{border-color:var(--ink); background:var(--ink); color:var(--card)}
+.llaves button[aria-pressed="true"] span{color:inherit}
+.campo{width:100%; font:700 1.1rem var(--mono); padding:10px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink)}
+.error{color:var(--warn); font-weight:700}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Aritmética y álgebra · Lógica proposicional · Problemas tipo admisión</p>
+      <h1>Los interruptores de la lógica</h1>
+      <p class="sub">Cada proposición es un interruptor y cada fórmula, un circuito con un foco. Antes de cada respuesta, predice; después, la escena te muestra por qué.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: interruptores, circuitos, focos y la tabla de verdad">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con interruptores y fórmulas">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/logica">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+/* Para el análisis de la medición: casi todos los distractores miden una idea ingenua previa. Estos miden RETENCIÓN de lo
+   que la escena ya enseñó (el condicional con el antecedente F es V, del paso 3), no una idea ingenua:
+   paso 4 opción D (condicional-con-antecedente-falso-es-falso), paso 5 opción D (condicional-como-conjuncion) y
+   «¿Qué pasa si…?» 3 opciones A (condicional-con-antecedente-falso-es-falso) y D (condicional-como-bicondicional). */
+const PLANTILLA = { id: 'logica', unidad: 'aritmetica.logica-proposicional', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la lógica (leer fórmulas, evaluarlas, las tablas, las leyes, el circuito de cada fórmula con su disposición y
+   por dónde pasa la corriente) sale de MotorLogica (motor.js); aquí solo se pinta y se anima. El celular va con
+   nucleo/celular.js. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const M = MotorLogica;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+const CLAVES = ['p', 'q', 'r', 's', 'res'];
+const esVar = k => M.VARS.includes(k);
+// Texto plano para el lector de pantalla.
+const quitar = t => String(t).replace(/<span class="fx" aria-hidden="true">[\s\S]*?(?=<span class="sr">)/g, '').replace(/<span class="sr">([^<]*)<\/span>/g, ' $1 ')
+  .replace(/<[^>]+>/g, '').replace(/…/g, '').replace(/\s+/g, ' ').trim();
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const T = (k, t) => `<span class="t-${k}">${t}</span>`;
+// Una fórmula con cada letra en su color; el lector de pantalla la oye con palabras (motor.leer).
+const pinta = t => String(t).replace(/[pqrs]/g, m => `<span class="t-${m}">${m}</span>`);
+const fx = t => `<span class="fx" aria-hidden="true">${pinta(M.imprimir(t))}</span><span class="sr">${M.leer(t)}</span>`;
+// V y F: la letra a la vista y la palabra para el lector de pantalla.
+const vf = b => `<b aria-hidden="true">${M.VF(b)}</b><span class="sr">${b ? 'verdadero' : 'falso'}</span>`;
+const vfPalabra = b => (b ? 'verdadero' : 'falso');
+// Un texto con símbolos dicho con palabras, para el lector de pantalla (solo cambia la escritura, no calcula nada).
+const DICHOS = { '~':' no ', '∧':' y ', '∨':' o ', 'Δ':' o exclusivo ', '→':' entonces ', '↔':' si y solo si ', '≡':' equivale a ', '(':' abre paréntesis ', ')':' cierra paréntesis ', '·':', ' };
+const dicho = t => String(t).replace(/[~∧∨Δ→↔≡()·]/g, m => DICHOS[m]).replace(/\bV\b/g, 'verdadero').replace(/\bF\b/g, 'falso').replace(/\s+/g, ' ').trim();
+const sx = t => `<span aria-hidden="true">${pinta(t)}</span><span class="sr">${dicho(t)}</span>`;
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const decir = (el, t) => { el.innerHTML = `<span aria-hidden="true">${esc(t)}</span><span class="sr">${esc(dicho(t))}</span>`; };
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    mono:css('--mono'), font:css('--font') };
+  for (const k of CLAVES) c[k] = css('--c-' + k);
+  return c;
+}
+const col = (c, k) => (c[k] || c.ink);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function redondeado(ctx, x, y, w, h, r){ r = Math.max(0, Math.min(r, w/2, h/2)); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
+// Un circuito listo para pintar: el árbol del motor, su disposición y, para cada nodo, la caja o grupo que lo contiene
+// (para tapar con «?» lo que todavía no se debe ver).
+function armar(f, o){
+  const C = M.circuito(f, o), D = M.disposicion(C), grupo = {}, compuestos = [];
+  (function rec(x, g){ const comp = x.k !== 'int'; if (comp) compuestos.push(x.id); grupo[x.id] = comp ? x.id : g;
+    (x.hijos || []).forEach(h => rec(h, comp ? x.id : g)); if (x.a) rec(x.a, x.id); if (x.b) rec(x.b, x.id); })(C, C.id);
+  return { f: M.imprimir(f), C, D, grupo, compuestos, oculto:new Set() };
+}
+const taparTodo = A => { A.oculto = new Set(A.compuestos); return A; };
+// Una tabla para pintar: las variables, las columnas (fórmulas) y las filas en el orden de academia.
+function tabla(cols, ks, o){
+  const T0 = M.tablaVerdad(cols[0], { columnas: cols, variables: o && o.vars });
+  return { vars:T0.variables, cols:T0.columnas.map((t, i) => ({ texto:t, k:(ks && ks[i]) || 'res' })), filas:T0.filas.map(x => ({ valores:x.valores, celdas:x.celdas })),
+    llenas:0, reveladas:0, actual:-1 };
+}
+const filaPalabras = (vars, val) => vars.map(x => `${x} ${vfPalabra(val[x])}`).join(', ');
+</script>
+<script>
+/* ================= La escena =================
+   Modo 'circuito': uno o más circuitos (cada uno con su pila, sus interruptores, sus cajas y su foco) y, si hay, la tabla
+   de verdad (a la derecha en pantalla ancha, abajo en el celular). Modo 'alumnos': un salón de cinco alumnos con su
+   foco de «aprobó» y los focos de dos frases con cuantificador. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'circuito', st:{}, lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:null, foco:0 };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, H0 = 0, K = 1, OX = 0, arr = null;
+  const RF = 19, CAB = 24; // alto de una fila de la tabla y de su encabezado
+  // ----- geometría natural (antes de achicar para que quepa) -----
+  function medirTabla(c){
+    const t = E.st.tabla; if (!t) return null;
+    ctx.font = `800 13px ${c.mono}`;
+    const anchos = t.vars.map(() => 24).concat(t.cols.map(x => Math.max(30, ctx.measureText(x.texto).width + 14)));
+    return { w: anchos.reduce((s, a) => s + a, 0) + 8, h: CAB + RF*t.filas.length + 6, anchos };
+  }
+  let LIM = 0; // con una predicción pendiente en el celular: el alto que hay (los circuitos se achican para caber)
+  function geo(c, lim){
+    const st = E.st, P = 10; lim = lim === undefined ? LIM : lim;
+    if (E.modo === 'alumnos') return { h: 250 };
+    const circs = st.circuitos || [];
+    let tb = medirTabla(c);
+    // apretado (celular con una predicción pendiente): la tabla va al lado solo si cabe; si no, se ve después de responder
+    if (lim && tb && W < 560 && tb.w > W*.42 && circs.length) tb = null;
+    const lado = !!tb && (W >= 560 || (lim && W >= 330)) && circs.length;
+    const areaW = Math.max(120, (lado ? W - tb.w - 3*P : W - 2*P));
+    const maxA = Math.max(1, ...circs.map(x => x.D.ancho));
+    let U = Math.min(34, areaW/maxA);
+    if (lim){ const fijo = 2*P + circs.length*26 + (tb && !lado ? tb.h + 2 : 0), sumA = circs.reduce((s, x) => s + x.D.alto, 0); if (sumA) U = Math.max(12, Math.min(U, (lim - fijo)/sumA)); }
+    // cada circuito centrado en el ancho que tiene
+    let y = P; const pos = circs.map(x => { const r = { x:P + Math.max(0, (areaW - x.D.ancho*U)/2), y:y + 18, U }; y += 18 + x.D.alto*U + 8; return r; });
+    const hc = circs.length ? y : 0;
+    let tx = P, ty = hc + 2;
+    if (lado){ tx = W - tb.w - P; ty = P; }
+    const ht = tb ? ty + tb.h + P : 0;
+    return { pos, tb, tx, ty, h: Math.max(hc + P, ht, 80), lado };
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    W = w; const c = colores();
+    // con cajas (una dentro de otra o varias) o con dos circuitos, el dibujo apretado no se lee en 240 px: tope de 300
+    const cs = E.st.circuitos || [], anidado = cs.length > 1 || cs.some(A => A.D.elementos.some(e => e.tipo !== 'interruptor'));
+    LIM = 0; const hn = Math.round(geo(c).h), cap = Math.round(Celular.alto(hn, E.compacto, anidado ? { tope:300 } : undefined));
+    if (cap < hn){ LIM = cap; H0 = Math.round(geo(c).h); } else H0 = hn;
+    const h = Math.min(cap, H0), dpr = Celular.dpr();
+    K = Math.min(1, h/H0); OX = (W - W*K)/2;
+    if (h !== H || cv.width !== Math.round(w*dpr)){ H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(() => { W = 0; resize(); }).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false;
+    Object.assign(E, { modo:'circuito', st:{}, lect:[], ley:null, alCambiar:null, desc:null }, o);
+    E.listo = true; E.etiquetar();
+    resize(); E.leyenda(); E.avisar();
+  };
+  E.redimensionar = () => resize();
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; resize(); };
+  E.etiquetar = () => {
+    const m = !!E.st.interactivo;
+    cv.tabIndex = m ? 0 : -1;
+    const vars = E.varsInteractivas();
+    cv.setAttribute('aria-label', m ? `Interruptores ${vars.map(x => `${x} en ${vfPalabra(E.st.valores[x])}`).join(', ')}. Usa las teclas ${vars.join(', ')} o las flechas y la barra espaciadora para cambiarlos.` : 'Dibujo de la escena');
+  };
+  E.varsInteractivas = () => (E.st.interactivo ? M.VARS.filter(x => E.st.valores && typeof E.st.valores[x] === 'boolean' && (E.st.circuitos || []).some(A => A.D.elementos.some(e => e.n === x))) : []);
+
+  function rotulo(c, x, y, t, color, align, peso, tam, fuente){
+    ctx.font = `${peso || 700} ${tam || 13}px ${fuente || c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 2, y - 8, w + 4, 16); ctx.restore();
+    ctx.fillStyle = color; ctx.fillText(t, x, y);
+    return w;
+  }
+  // Una fórmula con cada letra en su color.
+  function formula(c, x, y, t, colorResto, align, tam){
+    ctx.font = `800 ${tam || 13}px ${c.mono}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const w = ctx.measureText(t).width; let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    for (const ch of t){ ctx.fillStyle = esVar(ch) ? c[ch] : colorResto; ctx.fillText(ch, x0, y); x0 += ctx.measureText(ch).width; }
+    return w;
+  }
+  function linea(x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+  const OPNOM = { no:'~  no', si:'→  si … entonces', sii:'↔  si y solo si', ox:'Δ  o exclusivo' };
+
+  // ----- un circuito -----
+  let posInt = [];
+  function dibCircuito(c, A, o){
+    const { D, C } = A, U = o.U, X = x => o.x + x*U, Y = y => o.y + y*U;
+    const R = M.corriente(C, E.st.valores);
+    const tapado = id => A.oculto.has(A.grupo[id]);
+    // rótulo: la fórmula
+    formula(c, o.x + Math.max(2, A.D.pila.x*U - 6), o.y - 9, A.rot || A.f, col(c, A.k || 'res'), 'left', 13);
+    // cables
+    const cable = (x1, y1, x2, y2, encendido) => { ctx.save(); ctx.strokeStyle = encendido ? c.ink : c.muted; ctx.lineWidth = encendido ? 3.2 : 1.5; ctx.globalAlpha = encendido ? 1 : .7; ctx.lineCap = 'round'; linea(X(x1), Y(y1), X(x2), Y(y2)); ctx.restore(); };
+    for (const k of D.cables) cable(k.x1, k.y1, k.x2, k.y2, !tapado(k.id) && R.encendido[k.id]);
+    for (const k of D.retorno) cable(k.x1, k.y1, k.x2, k.y2, !tapado(C.id) && R.valor);
+    // pila
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; const px = X(D.pila.x), py = Y(D.pila.y);
+    linea(px - 7, py - 2, px + 7, py - 2); ctx.lineWidth = 4; linea(px - 4, py + 4, px + 4, py + 4); ctx.restore();
+    // cajas e interruptores
+    for (const e of D.elementos){
+      if (e.tipo === 'interruptor'){
+        const x1 = X(e.x + .3), x2 = X(e.x + e.w - .3), y = Y(e.ym), cerrado = R.pasa[e.id], k = e.n, grueso = E.hl === k || (arr && arr.n === k);
+        ctx.save(); ctx.fillStyle = c[k]; [x1, x2].forEach(x => { ctx.beginPath(); ctx.arc(x, y, 3.2, 0, 7); ctx.fill(); }); ctx.restore();
+        const L = x2 - x1, ang = cerrado ? 0 : -0.4;
+        ctx.save(); ctx.strokeStyle = c[k]; ctx.lineWidth = grueso ? 5 : 3.5; ctx.lineCap = 'round'; linea(x1, y, x1 + L*Math.cos(ang), y + L*Math.sin(ang)); ctx.restore();
+        if (e.negado){ ctx.save(); ctx.strokeStyle = c[k]; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x1, y, 7, 0, 7); ctx.stroke(); ctx.restore(); }
+        const tam = Math.max(10, Math.min(13, U*.42));
+        formula(c, (x1 + x2)/2, Y(e.y) + tam*.2, e.texto, c[k], 'center', tam);
+        // el valor de la variable, con su letra
+        const val = E.st.valores[k];
+        // con el dibujo apretado (celular, predicción pendiente) el valor va solo en las lecturas de abajo
+        if (U >= 17) rotulo(c, (x1 + x2)/2, Y(e.y + e.h) - tam*.25, `${k} = ${M.VF(val)}`, c[k], 'center', 800, Math.max(9, tam - 2));
+        if (E.st.interactivo){
+          posInt.push({ n:k, x:(x1 + x2)/2, y, x1, x2 });
+          if (E.focoVisible && E.varsInteractivas()[E.foco] === k){ ctx.save(); ctx.strokeStyle = c[k]; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.5; redondeado(ctx, x1 - 8, Y(e.y) - 2, x2 - x1 + 16, Y(e.y + e.h) - Y(e.y) + 4, 8); ctx.stroke(); ctx.restore(); }
+        }
+      } else {
+        const x = X(e.x), y = Y(e.y), w = e.w*U, h = e.h*U;
+        ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .045; redondeado(ctx, x, y, w, h, 8); ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.stroke(); ctx.restore();
+        const tc = Math.max(9, Math.min(12, M.MEDIDAS.cab*U*.55));
+        rotulo(c, x + 6, y + Math.max(tc*.6 + 4, M.MEDIDAS.cab*U*.5), OPNOM[e.op], c.ink, 'left', 800, tc);
+        // lo que sale de la caja: su valor
+        const t = tapado(e.id) ? '?' : M.VF(R.pasa[e.id]);
+        const bs = Math.max(12, Math.min(18, U*.7));
+        ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; redondeado(ctx, x + w + 1, e.ym*U + o.y - bs/2, bs, bs, 4); ctx.fill(); ctx.stroke(); ctx.restore();
+        ctx.font = `800 ${Math.round(bs*.66)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.ink; ctx.fillText(t, x + w + 1 + bs/2, e.ym*U + o.y + .5);
+      }
+    }
+    // focos
+    for (const f of D.focos){
+      const x = X(f.x), y = Y(f.y), r = Math.max(f.principal ? 11 : 6, f.r*U), t = tapado(f.id), on = R.pasa[f.id];
+      ctx.save();
+      if (t){ ctx.strokeStyle = c.muted; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.stroke(); }
+      else if (on){ ctx.fillStyle = f.principal ? c.res : c.ink; ctx.globalAlpha = f.principal ? .95 : .8; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+        if (f.principal){ ctx.globalAlpha = .25; ctx.beginPath(); ctx.arc(x, y, r + 6, 0, 7); ctx.fill(); } }
+      else { ctx.fillStyle = c.card; ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); ctx.stroke(); }
+      ctx.restore();
+      if (f.principal || r >= 9){
+        ctx.font = `800 ${f.principal ? 13 : 10}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = t ? c.muted : on ? c.card : c.muted; ctx.fillText(t ? '?' : M.VF(on), x, y + .5);
+      }
+    }
+  }
+  // ----- la tabla -----
+  function dibTabla(c, g){
+    const t = E.st.tabla, tb = g.tb; let x = g.tx + 4; const y0 = g.ty;
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.line; redondeado(ctx, g.tx, y0, tb.w, tb.h, 10); ctx.fill(); ctx.stroke(); ctx.restore();
+    const xs = []; tb.anchos.forEach(a => { xs.push(x + a/2); x += a; });
+    t.vars.forEach((v, j) => rotulo(c, xs[j], y0 + CAB/2 + 2, v, c[v], 'center', 800, 13, c.mono));
+    t.cols.forEach((k, j) => formula(c, xs[t.vars.length + j], y0 + CAB/2 + 2, k.texto, col(c, k.k), 'center', 12));
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; linea(g.tx + 4, y0 + CAB, g.tx + tb.w - 4, y0 + CAB);
+    const xsep = g.tx + 4 + tb.anchos.slice(0, t.vars.length).reduce((s, a) => s + a, 0); linea(xsep, y0 + 4, xsep, y0 + tb.h - 4); ctx.restore();
+    t.filas.forEach((f, i) => {
+      const y = y0 + CAB + 3 + RF*i + RF/2;
+      if (i === t.actual){ ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .08; ctx.fillRect(g.tx + 3, y - RF/2, tb.w - 6, RF); ctx.restore(); }
+      if (i >= t.llenas || f.oculta) { ctx.fillStyle = c.muted; ctx.font = `700 12px ${c.mono}`; ctx.textAlign = 'center'; t.vars.concat(t.cols).forEach((_, j) => ctx.fillText('·', xs[j], y)); return; }
+      ctx.font = `800 13px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      t.vars.forEach((v, j) => { ctx.fillStyle = c[v]; ctx.fillText(M.VF(f.valores[v]), xs[j], y); });
+      t.cols.forEach((k, j) => { const ya = i < t.reveladas; ctx.fillStyle = ya ? col(c, k.k) : c.muted; ctx.fillText(ya ? M.VF(f.celdas[j]) : '?', xs[t.vars.length + j], y); });
+    });
+  }
+  // ----- el salón (cuantificadores) -----
+  function dibAlumnos(c){
+    const s = E.st, n = s.lista.length, paso = Math.min(70, (W - 20)/n), x0 = W/2 - paso*(n - 1)/2, y = 70;
+    rotulo(c, W/2, 18, s.titulo || '', c.ink, 'center', 800, 13);
+    s.lista.forEach((a, i) => {
+      const x = x0 + paso*i;
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .12; ctx.beginPath(); ctx.arc(x, y - 4, 12, 0, 7); ctx.fill(); ctx.fillRect(x - 13, y + 10, 26, 26); ctx.restore();
+      ctx.save(); if (a){ ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(x, y + 50, 10, 0, 7); ctx.fill(); } else { ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.fillStyle = c.card; ctx.beginPath(); ctx.arc(x, y + 50, 10, 0, 7); ctx.fill(); ctx.stroke(); } ctx.restore();
+      ctx.font = `800 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = a ? c.card : c.muted; ctx.fillText(M.VF(a), x, y + 50.5);
+    });
+    (s.frases || []).forEach((f, j) => {
+      const yy = 160 + j*40, xf = W - 34;
+      rotulo(c, 14, yy, f.texto, c.ink, 'left', 800, 13);
+      const t = f.valor == null;
+      ctx.save();
+      if (t){ ctx.strokeStyle = c.muted; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(xf, yy, 12, 0, 7); ctx.stroke(); }
+      else if (f.valor){ ctx.fillStyle = c.res; ctx.beginPath(); ctx.arc(xf, yy, 12, 0, 7); ctx.fill(); }
+      else { ctx.fillStyle = c.card; ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(xf, yy, 12, 0, 7); ctx.fill(); ctx.stroke(); }
+      ctx.restore();
+      ctx.font = `800 13px ${c.font}`; ctx.textAlign = 'center'; ctx.fillStyle = t ? c.muted : f.valor ? c.card : c.muted; ctx.fillText(t ? '?' : M.VF(f.valor), xf, yy + .5);
+    });
+  }
+
+  E.dibujar = () => {
+    if (!W || !E.listo) return;
+    const c = colores(); ctx.save(); ctx.clearRect(0, 0, W, H);
+    ctx.translate(OX, 0); ctx.scale(K, K);
+    posInt = [];
+    if (E.modo === 'alumnos') dibAlumnos(c);
+    else { const g = geo(c); (E.st.circuitos || []).forEach((A, i) => dibCircuito(c, A, g.pos[i])); if (g.tb) dibTabla(c, g); }
+    ctx.restore();
+  };
+
+  // ----- lo que se mueve: las palancas de los interruptores (dedo, ratón y teclado) -----
+  const natural = p => ({ x:(p.x - OX)/K, y:p.y/K });
+  const cercano = (p, r) => { const q = natural(p); let mejor = null, d0 = r/K; for (const s of posInt){ const d = Math.hypot(q.x - s.x, q.y - s.y); if (d < d0){ d0 = d; mejor = s; } } return mejor; };
+  const activo = () => !E.ocupado && !E.anim && !!E.st.interactivo;
+  const cambiar = (n, valor) => { if (!activo() || typeof E.st.valores[n] !== 'boolean') return; const v = valor === undefined ? !E.st.valores[n] : valor; if (v === E.st.valores[n]) return; E.st.valores[n] = v; E.dibujar(); E.avisar(); };
+  E.cambiar = cambiar;
+  Celular.arrastre(cv, {
+    activo,
+    cerca: (p, r) => !!cercano(p, r),
+    empezar: p => { const s = cercano(p, 60); arr = s ? { n:s.n, y0:natural(p).y, movido:false, negado:false } : null; E.dibujar(); },
+    // arrastrar hacia abajo cierra la palanca y hacia arriba la abre; tocar sin arrastrar la cambia
+    mover: p => { if (!arr) return; const dy = natural(p).y - arr.y0; if (Math.abs(dy) < 8) return; arr.movido = true;
+      const e = (E.st.circuitos || []).flatMap(A => A.D.elementos).find(x => x.n === arr.n);
+      const cerrar = dy > 0; cambiar(arr.n, e && e.negado ? !cerrar : cerrar); },
+    soltar: () => { if (arr && !arr.movido) cambiar(arr.n); arr = null; E.dibujar(); },
+  });
+  cv.addEventListener('focus', () => { E.focoVisible = true; E.dibujar(); });
+  cv.addEventListener('blur', () => { E.focoVisible = false; E.dibujar(); });
+  cv.addEventListener('keydown', e => {
+    if (!activo()) return;
+    const vars = E.varsInteractivas(); if (!vars.length) return;
+    if (vars.includes(e.key)){ e.preventDefault(); E.foco = vars.indexOf(e.key); cambiar(e.key); return; }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ e.preventDefault(); E.foco = (E.foco + (e.key === 'ArrowRight' ? 1 : vars.length - 1)) % vars.length; E.dibujar(); E.avisar(); return; }
+    const n = vars[E.foco % vars.length];
+    if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); cambiar(n); }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); cambiar(n, e.key === 'ArrowUp'); }
+  });
+
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t) => `<span><i style="background:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k})"></i>${t}</span>`;
+    let L = E.ley || [];
+    // el interruptor invertido se explica en la leyenda desde que aparece
+    if ((E.st.circuitos || []).some(A => A.D.elementos.some(e => e.negado))) L = L.concat([['ink', '○ interruptor invertido (~): se cierra cuando su letra es F']]);
+    document.getElementById(idLey).innerHTML = L.map(([k, t]) => it(k, t)).join('');
+  };
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const d = typeof E.desc === 'function' ? E.desc(E) : (E.desc || '');
+      document.getElementById(idDesc).textContent = quitar(d);
+    }
+    E.etiquetar();
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (dur, paso, fin) => {
+    const tok = ++E.tok; E.anim = true;
+    const listo = () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); };
+    if (RM || !dur){ paso(1); E.dibujar(); setTimeout(listo, 0); return; }
+    const t0 = performance.now();
+    const tick = now => { if (tok !== E.tok) return; const f = Math.min(1, (now - t0)/dur); paso(suave(f)); E.dibujar(); if (f < 1) requestAnimationFrame(tick); else listo(); };
+    requestAnimationFrame(tick);
+  };
+  // Estados uno tras otro (cada uno se queda ms milisegundos); cada estado es una función que cambia E.st.
+  E.secuencia = (estados, ms, fin) => {
+    const tok = ++E.tok; E.anim = true; let j = 0;
+    const sig = () => { if (tok !== E.tok) return;
+      if (j >= estados.length){ E.anim = false; E.avisar(); if (fin) fin(); return; }
+      estados[j](E.st); E.redimensionar(); const espera = Array.isArray(ms) ? ms[j] : ms; j++; setTimeout(sig, RM ? 0 : espera); };
+    sig();
+  };
+  // Recorre las filas de la tabla: los interruptores toman los valores de cada fila y la fila se llena.
+  E.recorrer = (o, fin) => {
+    const t = E.st.tabla, pasos = t.filas.map((f, i) => st => { st.valores = Object.assign({}, st.valores, f.valores); t.actual = i; t.llenas = Math.max(t.llenas, i + 1); t.reveladas = i + 1; if (o && o.cada) o.cada(st, i); });
+    pasos.push(st => { st.tabla.actual = -1; if (o && o.final) o.final(st); });
+    E.secuencia(pasos, (o && o.ms) || 650, fin);
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+  return E;
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, e1:{ op:'y', valores:{ p:true, q:false }, vistas:new Set() }, e8:{ texto:'(p → q) ∧ ~r', valores:{ p:true, q:true, r:true, s:true } } };
+const p_ = t => V('p', t), q_ = t => V('q', t), r_ = t => V('r', t), res_ = t => V('res', t);
+const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+const FUENTE = '<p class="fuente">Todavía no revisamos estudios sobre estos errores: las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
+const LEY_VARS = vars => vars.map(x => [x, `interruptor ${x}`]);
+const LEY_FOCO = [['res', 'foco de la fórmula: encendido V, apagado F'], ['ink', 'cable con corriente']];
+
+// Números de la escena: todos salen del motor
+const F2 = '(p ∧ q) ∧ ~r', N2 = M.filasDe(F2);
+const F3 = 'p → q', FF3 = M.filasFalsas(F3);
+const F4 = '~(p ∨ q) → (q ∨ r)', VAL4 = { p:false, q:true, r:true }, P4 = M.valorConPartes(F4, VAL4);
+const F5 = '(p → q) ∨ (q → p)', C5 = M.clasificar(F5);
+const N6 = M.negar('p ∧ q');
+const FC7 = M.formasCondicional('p', 'q');
+console.assert(N2.filas === 8 && Object.keys(N2.errores).length === 3, 'paso 2: revisar las opciones');
+console.assert(FF3.falsas.join() === 'V F' && Object.keys(FF3.errores).length === 3, 'paso 3: revisar las opciones');
+console.assert(P4.texto === 'F V | V' && Object.keys(P4.errores).length === 3, 'paso 4: revisar las opciones');
+console.assert(C5.tipo === 'tautologia' && Object.keys(C5.errores).length === 3, 'paso 5: revisar las opciones');
+console.assert(N6.texto === '~p ∨ ~q' && Object.keys(N6.errores).length === 3, 'paso 6: revisar las opciones');
+console.assert(FC7.respuesta === '~q → ~p' && Object.keys(FC7.errores).length === 3, 'paso 7: revisar las opciones');
+
+const P_2 = { id:'logica-paso2', ok:'b', opts:[
+  ['a', `${N2.errores.dobleDeVariables} filas`, 'filas-doble-de-variables', 'hipotesis'],
+  ['b', `${N2.filas} filas`],
+  ['c', `${N2.errores.igualAVariables} filas`, 'filas-igual-a-variables', 'hipotesis'],
+  ['d', `${N2.errores.cuadrado} filas`, 'filas-variables-al-cuadrado', 'hipotesis']],
+  fb:{ b:`¡Bien! Cada interruptor tiene 2 posiciones, V y F, y cada uno que se agrega duplica las combinaciones: 2 × 2 × 2 = 2³ = ${N2.filas}.`,
+    a:`${N2.errores.dobleDeVariables} = 2 × 3 cuenta 2 posiciones por interruptor, pero sueltas. Las filas son combinaciones de los tres a la vez: por cada posición de p hay 4 de q y r juntas. 2 × 2 × 2 = ${N2.filas}.`,
+    c:`${N2.errores.igualAVariables} es cuántas variables hay, no cuántas combinaciones de valores. Con tres interruptores de dos posiciones cada uno salen 2 × 2 × 2 = ${N2.filas} filas.`,
+    d:`${N2.errores.cuadrado} = 3 × 3 multiplica las variables entre sí. Lo que se multiplica son las posiciones de cada una: 2 × 2 × 2 = 2³ = ${N2.filas}.` } };
+
+// Una fila «V F» dicha como situación de la promesa.
+const SIT = { 'V V':'llueve y llevo paraguas', 'V F':'llueve y no llevo paraguas', 'F V':'no llueve y llevo paraguas', 'F F':'no llueve y no llevo paraguas' };
+const sit = filas => 'Cuando ' + filas.map(f => SIT[f]).join(', y también cuando ');
+const P_3 = { id:'logica-paso3', ok:'b', opts:[
+  ['a', sit(FF3.errores.alReves), 'condicional-al-reves', 'hipotesis'],
+  ['b', sit(FF3.falsas)],
+  ['c', sit(FF3.errores.ambasFalsas), 'antecedente-falso-hace-falsa-la-promesa', 'hipotesis'],
+  ['d', sit(FF3.errores.comoBicondicional), 'condicional-como-bicondicional', 'hipotesis']],
+  fb:{ b:'¡Bien! La promesa solo habla de lo que pasa cuando llueve. Si llueve y llevo paraguas, cumplí; si no llueve, no prometí nada para ese caso y no la rompí, lleve o no lleve paraguas. Solo se rompe si llueve y no lo llevo.',
+    a:'Si no llueve y llevo paraguas, no rompí nada: la promesa no dice qué hago cuando no llueve. Solo se rompe si llueve y no llevo paraguas.',
+    c:'Si no llueve, la promesa no se pone a prueba: no prometí nada para ese caso, así que no la rompí. Solo se rompe si llueve y no llevo paraguas.',
+    d:'Esa sería la promesa «llevo paraguas si y solo si llueve». «Si llueve, llevo paraguas» no prohíbe llevarlo en un día sin lluvia: solo se rompe si llueve y no llevo paraguas.' } };
+
+const tri = x => `${fx('~(p ∨ q)')} es ${vf(x.partes[0])}; ${fx('q ∨ r')} es ${vf(x.partes[1])}; la fórmula es ${vf(x.valor)}`;
+const P_4 = { id:'logica-paso4', ok:'c', opts:[
+  ['a', tri(P4.errores.negacionSoloPrimera), 'negacion-solo-a-la-primera-letra', 'hipotesis'],
+  ['b', tri(P4.errores.oExclusiva), 'o-como-exclusiva', 'hipotesis'],
+  ['c', tri(P4.respuesta)],
+  ['d', tri(P4.errores.condicionalComoY), 'condicional-con-antecedente-falso-es-falso', 'hipotesis']],
+  fb:{ c:'¡Bien! p ∨ q = F ∨ V = V, y la negación de todo el paréntesis es F. q ∨ r = V ∨ V = V. Un condicional con el antecedente F no se rompe: F → V = V.',
+    a:'La negación está delante del paréntesis: niega todo p ∨ q, no solo la p. p ∨ q = F ∨ V = V, así que ~(p ∨ q) = F. Con ~p ∨ q saldría V, pero esa es otra fórmula.',
+    b:'La disyunción ∨ es V cuando al menos una parte es V, también cuando lo son las dos: q ∨ r = V ∨ V = V. La que da F con las dos V es la exclusiva, Δ.',
+    d:'Las partes están bien, pero un condicional con el antecedente F no se rompe: F → V es V, como en el paso de la promesa.' } };
+
+const clas = x => `${x.nombre[0].toUpperCase() + x.nombre.slice(1)}: V en ${x.verdaderas} ${x.verdaderas === 1 ? 'fila' : 'filas'} y F en ${x.falsas}`;
+const P_5 = { id:'logica-paso5', ok:'c', opts:[
+  ['a', clas(C5.errores.oComoY), 'o-leida-como-y', 'hipotesis'],
+  ['b', clas(C5.errores.tipoOpuesto), 'promesas-opuestas-se-contradicen', 'hipotesis'],
+  ['c', clas(C5.respuesta)],
+  ['d', clas(C5.errores.condicionalComoY), 'condicional-como-conjuncion', 'hipotesis']],
+  fb:{ c:'¡Bien! p → q solo es F en la fila p = V, q = F, y q → p solo en la fila p = F, q = V. Nunca fallan las dos en la misma fila, y con ∨ basta que una sea V: la fórmula es V en las 4 filas.',
+    a:'Es F en 2 filas si se piden las dos promesas a la vez (con ∧). Con ∨ basta una: en la fila donde falla p → q, se cumple q → p, y al revés. Es V en las 4 filas.',
+    b:'Las dos promesas no se contradicen: en cada fila se cumple por lo menos una. p → q falla solo con p = V, q = F, y ahí q → p es V. Es V en las 4 filas.',
+    d:'Un condicional no es «las dos partes V»: también es V cuando el antecedente es F. p → q falla solo en una fila, y ahí q → p se cumple. Es V en las 4 filas.' } };
+
+const frase6 = { '~p ∨ ~q':'Ana no canta o no baila', '~p ∧ ~q':'Ana no canta y no baila', '~p ∨ q':'Ana no canta o baila', '~p ∧ q':'Ana no canta y baila' };
+const neg6 = t => `${fx(t)}: «${frase6[t]}»`;
+const P_6 = { id:'logica-paso6', ok:'b', opts:[
+  ['a', neg6(N6.errores.negaPartes), 'niega-las-partes-sin-cambiar-el-conectivo', 'hipotesis'],
+  ['b', neg6(N6.texto)],
+  ['c', neg6(N6.errores.niegaSoloPrimera), 'niega-solo-la-primera-y-cambia', 'hipotesis'],
+  ['d', neg6(N6.errores.niegaPrimeraSinCambiar), 'niega-solo-la-primera', 'hipotesis']],
+  fb:{ b:'¡Bien! «Canta y baila» es falsa en cuanto falle una de las dos: basta que no cante o que no baile. Se niega cada parte y el «y» pasa a «o».',
+    a:'«Ana no canta y no baila» dice más que la negación: pide que no haga ninguna de las dos. Si canta pero no baila, «canta y baila» ya es falsa. Se niega cada parte y el «y» pasa a «o».',
+    c:'Falta negar la segunda parte: si Ana canta y no baila, «canta y baila» es falsa, pero «no canta o baila» también es falsa. Se niegan las dos partes y el «y» pasa a «o».',
+    d:'Falta negar la segunda parte y cambiar el conectivo: si Ana canta y no baila, «canta y baila» es falsa, pero «no canta y baila» también. Se niegan las dos partes y el «y» pasa a «o».' } };
+
+const frase7 = { 'q → p':'si un número es par, entonces termina en 0', '~p → ~q':'si un número no termina en 0, entonces no es par', '~q → ~p':'si un número no es par, entonces no termina en 0', 'p ↔ q':'un número termina en 0 si y solo si es par' };
+const op7 = t => `${fx(t)}: «${frase7[t]}»`;
+const P_7 = { id:'logica-paso7', ok:'c', opts:[
+  ['a', op7(FC7.errores.reciproca), 'reciproca-como-equivalente', 'hipotesis'],
+  ['b', op7(FC7.errores.inversa), 'inversa-como-equivalente', 'hipotesis'],
+  ['c', op7(FC7.contrarreciproca)],
+  ['d', op7(FC7.errores.bicondicional), 'condicional-como-bicondicional', 'hipotesis']],
+  fb:{ c:'¡Bien! Es la contrarrecíproca: se cambian de lugar y se niegan las dos partes. Si un número no es par, no puede terminar en 0, porque todos los que terminan en 0 son pares. Su columna es la misma que la de p → q.',
+    a:'Esa es la recíproca: solo cambia de lugar las partes. 4 es par y no termina en 0: la recíproca puede fallar donde la original se cumple. La que equivale es la contrarrecíproca, ~q → ~p.',
+    b:'Esa es la inversa: niega las partes sin cambiarlas de lugar. 14 no termina en 0 y sí es par: la inversa falla donde la original se cumple. La que equivale es la contrarrecíproca, ~q → ~p.',
+    d:'El bicondicional dice además que todo par termina en 0, y 4 no termina en 0. La que equivale es la contrarrecíproca, ~q → ~p.' } };
+
+// ----- paso 1: dos interruptores y un conectivo -----
+const OP1 = { y:'p ∧ q' }; // el paso 1 solo usa ∧: ∨ aparece recién en el paso 4
+function prep1(){
+  const e = S.e1, A = armar(OP1[e.op]);
+  const t = tabla([OP1[e.op]]);
+  const marcar = () => { t.filas.forEach((f, i) => { if (f.valores.p === e.valores.p && f.valores.q === e.valores.q) e.vistas.add(i); }); t.llenas = 4; t.reveladas = 4; t.visible = e.vistas; t.actual = t.filas.findIndex(f => f.valores.p === e.valores.p && f.valores.q === e.valores.q); };
+  marcar();
+  // las filas todavía no recorridas no se muestran
+  t.filas.forEach((f, i) => { f.oculta = !e.vistas.has(i); });
+  E.config({ st:{ circuitos:[A], valores:e.valores, tabla:t, interactivo:true }, ley:[...LEY_VARS(['p', 'q']), ...LEY_FOCO],
+    lect:[() => ['p', 'interruptor p', M.VF(e.valores.p)], () => ['q', 'interruptor q', M.VF(e.valores.q)], () => ['res', 'foco', M.VF(M.evaluar(OP1[e.op], e.valores))]],
+    desc:() => `Interruptor p en ${vfPalabra(e.valores.p)}, interruptor q en ${vfPalabra(e.valores.q)}. El foco de ${M.leer(OP1[e.op])} está ${M.evaluar(OP1[e.op], e.valores) ? 'encendido: verdadero' : 'apagado: falso'}. Filas de la tabla recorridas: ${e.vistas.size} de 4.`,
+    alCambiar:() => { marcar(); t.filas.forEach((f, i) => { f.oculta = !e.vistas.has(i); }); vivo1(); } });
+}
+function vivo1(){
+  const d = $('vivo1'); if (!d) return; const e = S.e1;
+  $('stepBody').querySelectorAll('[data-int]').forEach(b => { const n = b.dataset.int; b.setAttribute('aria-pressed', String(e.valores[n])); b.innerHTML = `${T(n, n)} = ${vf(e.valores[n])}`; b.disabled = S.ocupado; });
+  d.innerHTML = `<p class="hint" style="margin:0">${e.vistas.size < 4 ? `Llevas ${e.vistas.size} de las 4 combinaciones.` : 'Ya recorriste las 4 combinaciones: la tabla está completa.'}</p>`;
+}
+
+// ----- paso 8: arma tu fórmula -----
+let A8 = null, err8 = '';
+function prep8(){
+  const e = S.e8;
+  try { M.analizar(e.texto); err8 = ''; } catch (x){ err8 = x.message; }
+  if (!err8){
+    const vars = M.variables(e.texto), A = armar(e.texto);
+    if (A.D.ancho > 26 || A.D.alto > 22) err8 = 'la fórmula es muy larga para dibujarla: prueba con una más corta';
+    else {
+      A8 = A; const t = tabla([e.texto]); t.llenas = t.reveladas = t.filas.length;
+      t.actual = t.filas.findIndex(f => vars.every(x => f.valores[x] === e.valores[x]));
+      E.config({ st:{ circuitos:[A8], valores:e.valores, tabla:t, interactivo:true }, ley:[...LEY_VARS(vars), ...LEY_FOCO],
+        lect:[...vars.map(x => () => [x, `interruptor ${x}`, M.VF(e.valores[x])]), () => ['res', 'foco', M.VF(M.evaluar(e.texto, e.valores))]],
+        desc:() => `Fórmula: ${M.leer(e.texto)}. ${filaPalabras(vars, e.valores)}. El foco está ${M.evaluar(e.texto, e.valores) ? 'encendido: verdadero' : 'apagado: falso'}.`,
+        alCambiar:() => { t.actual = t.filas.findIndex(f => vars.every(x => f.valores[x] === e.valores[x])); vivo8(); } });
+    }
+  }
+  vivo8();
+}
+function vivo8(){
+  const d = $('vivo8'); if (!d) return; const e = S.e8;
+  if (err8){ d.innerHTML = `<p class="error" role="status">No se puede leer: ${err8}.</p>`; return; }
+  const C = M.clasificar(e.texto), vars = M.variables(e.texto);
+  $('stepBody').querySelectorAll('[data-int8]').forEach(b => { const n = b.dataset.int8, en = vars.includes(n); b.disabled = !en; b.setAttribute('aria-pressed', String(en && e.valores[n])); b.setAttribute('aria-label', en ? `Cambiar ${n}, ahora ${vfPalabra(e.valores[n])}` : `${n} no está en la fórmula`); });
+  d.innerHTML = `<div class="eqs"><div class="eq">${fx(e.texto)}<span class="note">${M.filasDe(e.texto).filas} filas; columna: ${C.matriz}</span></div>
+    <div class="eq" style="font-family:var(--font)">${C.nombre[0].toUpperCase() + C.nombre.slice(1)}: es V en ${C.verdaderas} y F en ${C.falsas} de las ${C.total} filas<span class="note">con ${filaPalabras(vars, e.valores).replace(/verdadero/g, 'V').replace(/falso/g, 'F').replace(/ (V|F)/g, ' = $1')}, la fórmula es ${M.VF(M.evaluar(e.texto, e.valores))}</span></div></div>`;
+}
+const TECLAS8 = ['p', 'q', 'r', 's', '~', '∧', '∨', 'Δ', '→', '↔', '(', ')', '[', ']'];
+const DICHO = { '~':'no', '∧':'y', '∨':'o', 'Δ':'o exclusivo', '→':'entonces', '↔':'si y solo si', '(':'abre paréntesis', ')':'cierra paréntesis', '[':'abre corchete', ']':'cierra corchete' };
+
+// ----- estados del dibujo de cada predicción -----
+const V3 = { p:true, q:true, r:true };
+function prep2(ya){
+  const A = armar(F2);
+  E.config({ st:{ circuitos:[A], valores:Object.assign({}, V3), tabla: ya ? Object.assign(tabla([F2]), { llenas:8, reveladas:8 }) : null },
+    ley:[...LEY_VARS(['p', 'q', 'r']), ...LEY_FOCO],
+    desc: ya ? `La tabla de ${M.leer(F2)} tiene ${N2.filas} filas, una por cada combinación de los tres interruptores.` : `Un circuito con los interruptores p, q y r para la fórmula ${M.leer(F2)}.`,
+    lect: ya ? [() => ['ink', 'filas', String(N2.filas)]] : [] });
+}
+function anima2(fin){
+  const s = E.st; s.tabla = tabla([F2]); E.redimensionar();
+  E.recorrer({ ms:520 }, () => { E.desc = `La tabla de ${M.leer(F2)} tiene ${N2.filas} filas, una por cada combinación de los tres interruptores.`; E.lect = [() => ['ink', 'filas', String(N2.filas)]]; E.avisar(); fin(); });
+}
+function prep3(ya){
+  const A = armar(F3); A.rot = 'p → q'; if (!ya) taparTodo(A);
+  const t = tabla([F3]); t.llenas = 4; t.reveladas = ya ? 4 : 0;
+  E.config({ st:{ circuitos:[A], valores:{ p:true, q:true }, tabla:t }, ley:[['p', 'p: llueve'], ['q', 'q: llevo paraguas'], ...LEY_FOCO],
+    desc: ya ? `La promesa ${M.leer(F3)} solo es falsa en la fila p verdadero, q falso: llueve y no llevo paraguas. En las otras tres filas el foco está encendido.` : `La promesa ${M.leer(F3)} en una caja, con el foco tapado, y la tabla con las cuatro filas sin resultado.`,
+    lect:[] });
+}
+function prep4(ya, etapa){
+  const A = armar(F4);
+  // etapa 0: todo tapado; 1: las partes de adentro; 2: la negación; 3: todo
+  etapa = ya ? 3 : (etapa || 0);
+  const inv = A.C.a.id, cajaB = A.C.b.id, adentro = A.C.a.a.id;
+  A.oculto = new Set(etapa === 0 ? A.compuestos : etapa === 1 ? [inv, A.C.id] : etapa === 2 ? [A.C.id] : []);
+  if (etapa === 1) A.oculto.delete(adentro), A.oculto.delete(cajaB);
+  E.config({ st:{ circuitos:[A], valores:Object.assign({}, VAL4) }, ley:[...LEY_VARS(['p', 'q', 'r']), ['ink', 'caja, foco chico y cable con corriente'], ['res', 'foco de la fórmula']],
+    desc: ya ? `Con p falso, q verdadero y r verdadero: ${M.leer(P4.partes[0])} es ${vfPalabra(P4.valoresPartes[0])}, ${M.leer(P4.partes[1])} es ${vfPalabra(P4.valoresPartes[1])}, y la fórmula es ${vfPalabra(P4.valor)}.` : `El circuito de ${M.leer(F4)} con p falso, q verdadero y r verdadero. Los focos están tapados.`,
+    lect: ya ? [() => ['ink', '~(p ∨ q)', M.VF(P4.valoresPartes[0])], () => ['ink', 'q ∨ r', M.VF(P4.valoresPartes[1])], () => ['res', 'fórmula', M.VF(P4.valor)]]
+      : ['p', 'q', 'r'].map(x => () => [x, x, M.VF(VAL4[x])]) });
+}
+function anima4(fin){
+  const A = E.st.circuitos[0], inv = A.C.a.id;
+  E.secuencia([st => { A.oculto = new Set([inv, A.C.id]); }, st => { A.oculto = new Set([A.C.id]); }, st => { A.oculto = new Set(); }], [900, 900, 0],
+    () => { prep4(true); fin(); });
+}
+function prep5(ya){
+  const A = armar(F5); if (!ya) taparTodo(A);
+  const t = tabla([F5]); t.llenas = 4; t.reveladas = ya ? 4 : 0;
+  E.config({ st:{ circuitos:[A], valores:{ p:true, q:true }, tabla:t }, ley:[...LEY_VARS(['p', 'q']), ...LEY_FOCO],
+    desc: ya ? `La fórmula ${M.leer(F5)} es verdadera en las cuatro filas: es una tautología.` : `Dos cajas de condicional en paralelo, con los focos tapados, y la tabla de cuatro filas sin resultado.`, lect:[] });
+}
+function prep6(ya){
+  const A = armar('~(p ∧ q)'); if (!ya) taparTodo(A);
+  const circs = [A]; if (ya) circs.push(armar(N6.texto));
+  const t = tabla(['~(p ∧ q)', N6.texto], ['res', 'res']); t.llenas = 4; t.reveladas = ya ? 4 : 0;
+  E.config({ st:{ circuitos:circs, valores:{ p:true, q:true }, tabla: ya ? t : null }, ley:[['p', 'p: Ana canta'], ['q', 'q: Ana baila'], ...LEY_FOCO],
+    desc: ya ? `Los focos de ${M.leer('~(p ∧ q)')} y de ${M.leer(N6.texto)} están iguales en las cuatro filas.` : `Una caja que niega p y q en serie, ${M.leer('~(p ∧ q)')}, con el foco tapado.`, lect:[] });
+}
+function prep7(ya){
+  const A = armar(F3); if (!ya) taparTodo(A);
+  const circs = [A]; if (ya) circs.push(armar(FC7.contrarreciproca));
+  const t = tabla([F3, FC7.contrarreciproca, FC7.reciproca], ['res', 'res', 'ink']); t.llenas = 4; t.reveladas = ya ? 4 : 0;
+  E.config({ st:{ circuitos:circs, valores:{ p:true, q:true }, tabla: ya ? t : null }, ley:[['p', 'p: termina en 0'], ['q', 'q: es par'], ...LEY_FOCO],
+    desc: ya ? `Las columnas de ${M.leer(F3)} y de ${M.leer(FC7.contrarreciproca)} son iguales: ${FC7.matrices.condicional.split('').join(', ')}. La de ${M.leer(FC7.reciproca)} es otra: ${FC7.matrices.reciproca.split('').join(', ')}.` : `Una caja de condicional, ${M.leer(F3)}, con el foco tapado.`, lect:[] });
+}
+const recorrerYListo = (prep, fin) => () => { E.recorrer({}, () => { prep(true); fin(); }); };
+
+const steps = [
+ { k:'Paso 1', t:'Explora: dos interruptores y un foco', explora:true,
+   prep:() => prep1(),
+   body:() => `<p class="problem">Cada proposición simple es un interruptor: en ${vf(true)} (verdadera) la palanca está cerrada y deja pasar la corriente; en ${vf(false)} (falsa), abierta. El foco es la proposición compuesta: encendido es V; apagado, F.</p>
+   <p>Cambia ${p_('p')} y ${q_('q')}: toca cada palanca, arrástrala hacia abajo para cerrarla o hacia arriba para abrirla, o usa los botones.</p>
+   <div class="llaves">${['p', 'q'].map(n => `<button type="button" data-int="${n}" aria-pressed="false"></button>`).join('')}</div>
+   <p>El foco es ${fx('p ∧ q')} («p y q»): los dos interruptores están en serie.</p>
+   <div id="vivo1"></div>
+   <p class="hint">Recorre todas las combinaciones de los dos interruptores y mira cómo se llena la tabla de verdad.</p>`,
+   luego:() => {
+     $('stepBody').querySelectorAll('[data-int]').forEach(b => b.onclick = () => E.cambiar(b.dataset.int));
+     vivo1(); } },
+ { k:'Paso 2', t:'Predice: las filas de la tabla', gate:P_2,
+   prep:() => prep2(!!S.pred[P_2.id]), anima:anima2,
+   body:() => `<p class="problem">La tabla de verdad tiene una fila por cada combinación de valores de los interruptores. ¿Cuántas filas tiene la tabla de ${fx(F2)}?</p>${opcionesHTML(P_2.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq">2 × 2 × 2 = 2<sup>3</sup> = ${N2.filas}<span class="note">2 posiciones por interruptor, multiplicadas</span></div></div>
+   <p>El interruptor de ${fx('~r')} lleva un círculo: es un <b>interruptor invertido</b>, que se cierra (deja pasar la corriente) cuando ${r_('r')} es F.</p>
+   <p>Con <b>n</b> variables distintas, la tabla tiene <b>2<sup>n</sup></b> filas. Se ordenan como en la academia: ${p_('p')} es V en la primera mitad y F en la otra, ${q_('q')} cambia por cuartos y ${r_('r')}, la última, alterna V, F, V, F.</p>${FUENTE}</div>` },
+ { k:'Paso 3', t:'Predice: ¿cuándo se rompe la promesa?', gate:P_3,
+   prep:() => prep3(!!S.pred[P_3.id]), anima:fin => { E.st.circuitos[0].oculto = new Set(); recorrerYListo(prep3, fin)(); },
+   body:() => `<p class="problem">Una promesa: «Si ${p_('llueve')}, ${q_('llevo paraguas')}». Es el condicional ${fx('p → q')}: ${p_('p')} es el antecedente y ${q_('q')} el consecuente. ¿En qué caso la promesa es falsa?</p>${opcionesHTML(P_3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq">${sx('V → V = V · V → F = F · F → V = V · F → F = V')}<span class="note">el condicional solo es F con el antecedente V y el consecuente F</span></div></div>
+   <p>El foco del condicional se apaga en una sola fila. Cuando el antecedente es F, la promesa no se pone a prueba y el condicional es V.</p>${FUENTE}</div>` },
+ { k:'Paso 4', t:'Predice: el valor de una fórmula', gate:P_4,
+   prep:() => prep4(!!S.pred[P_4.id]), anima:anima4,
+   body:() => `<p class="problem">Con ${p_('p')} = ${vf(false)}, ${q_('q')} = ${vf(true)} y ${r_('r')} = ${vf(true)}, ¿qué valen las dos partes de ${fx(F4)} y la fórmula entera?</p>${opcionesHTML(P_4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${sx('~(F ∨ V) = ~V = F')}<span class="note">la negación abarca todo el paréntesis</span></div>
+     <div class="eq">${sx('V ∨ V = V')}<span class="note">∨ es V si al menos una parte es V</span></div>
+     <div class="eq">${sx('F → V =')} ${res_('V')}<span class="note">el conectivo principal: el que queda afuera de todos los paréntesis</span></div></div>
+   <p><b>Jerarquía</b> (la más usada en las academias): la ~ se aplica solo a lo que tiene justo a la derecha (${fx('~p ∧ q')} es «no p», y eso con q); ∧, ∨ y Δ van al mismo nivel y, mezclados, piden paréntesis; después viene → y el de mayor jerarquía es ↔. Por eso ${fx('p ∧ q → r')} es ${fx('(p ∧ q) → r')}. En esta escena siempre ponemos los paréntesis.</p>${FUENTE}</div>` },
+ { k:'Paso 5', t:'Predice: ¿qué tipo de fórmula es?', gate:P_5,
+   prep:() => prep5(!!S.pred[P_5.id]), anima:fin => { E.st.circuitos[0].oculto = new Set(); recorrerYListo(prep5, fin)(); },
+   body:() => `<p class="problem">Una fórmula es <b>tautología</b> si es V en todas las filas, <b>contradicción</b> si es F en todas, y <b>contingencia</b> si tiene filas V y filas F. ¿Qué es ${fx(F5)}?</p>${opcionesHTML(P_5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq">${sx('p → q: V F V V · q → p: V V F V')}<span class="note">cada promesa falla en una fila distinta</span></div>
+     <div class="eq">${sx('(p → q) ∨ (q → p):')} ${res_('V V V V')}<span class="note">tautología</span></div></div>
+   <p>Otras de memoria: ${fx('p ∨ ~p')} es tautología (o pasa o no pasa) y ${fx('p ∧ ~p')} es contradicción (no puede pasar y no pasar a la vez).</p>${FUENTE}</div>` },
+ { k:'Paso 6', t:'Predice: negar una «y»', gate:P_6,
+   prep:() => prep6(!!S.pred[P_6.id]), anima:fin => { prep6(true); E.st.tabla.reveladas = 0; E.st.tabla.llenas = 4; E.redimensionar(); E.recorrer({}, () => { prep6(true); fin(); }); },
+   body:() => `<p class="problem">Con ${p_('p')}: «Ana canta» y ${q_('q')}: «Ana baila», ¿cuál dice lo mismo que «No es cierto que Ana canta y baila», ${fx('~(p ∧ q)')}?</p>${opcionesHTML(P_6.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq">${sx('~(p ∧ q) ≡ ~p ∨ ~q')}<span class="note">ley de De Morgan; ≡ quiere decir «la misma columna en todas las filas»</span></div>
+     <div class="eq">${sx('~(p ∨ q) ≡ ~p ∧ ~q')}<span class="note">la otra ley de De Morgan</span></div>
+     <div class="eq">${sx('~~p ≡ p')}<span class="note">doble negación: negar dos veces deja lo mismo</span></div></div>
+   <p>En los circuitos: la caja que niega dos interruptores en serie se enciende justo cuando se enciende el circuito de dos interruptores invertidos en paralelo.</p>${FUENTE}</div>` },
+ { k:'Paso 7', t:'Predice: lo que dice lo mismo que una promesa', gate:P_7,
+   prep:() => prep7(!!S.pred[P_7.id]), anima:fin => { prep7(true); E.st.tabla.reveladas = 0; E.redimensionar(); E.recorrer({}, () => { prep7(true); fin(); }); },
+   body:() => `<p class="problem">Con ${p_('p')}: «un número termina en 0» y ${q_('q')}: «el número es par», ¿cuál de estas dice lo mismo que «si un número termina en 0, entonces es par», ${fx('p → q')}, en todas las filas?</p>${opcionesHTML(P_7.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${sx('p → q ≡ ~q → ~p')}<span class="note">contrarrecíproca: cambia de lugar y niega las dos partes</span></div>
+     <div class="eq">${sx('q → p · ~p → ~q')}<span class="note">recíproca e inversa: no equivalen a p → q (entre ellas sí son equivalentes)</span></div></div>
+   <p>En la tabla, la columna de la recíproca se separa de la del condicional en las filas V F y F V.</p>${FUENTE}</div>` },
+ { k:'Paso 8', t:'Explora: arma tu fórmula', explora:true,
+   prep:() => prep8(),
+   body:() => `<p class="problem">Escribe una fórmula o ármala con los botones (hasta cuatro variables: ${p_('p')}, ${q_('q')}, ${r_('r')} y ${V('s', 's')}). La escena dibuja su circuito y su tabla; cambia los interruptores para recorrer las filas.</p>
+   <label class="hint" for="campo8">Fórmula</label>
+   <input id="campo8" class="campo" type="text" autocomplete="off" spellcheck="false" value="${S.e8.texto}">
+   <div class="llaves" role="group" aria-label="Símbolos">${TECLAS8.map(t => `<button type="button" data-tecla="${t}" aria-label="Escribir ${DICHO[t] || t}">${esVar(t) ? T(t, t) : t}</button>`).join('')}<button type="button" data-tecla="⌫" aria-label="Borrar el último símbolo">⌫</button></div>
+   <div class="llaves" role="group" aria-label="Interruptores">${M.VARS.map(n => `<button type="button" data-int8="${n}" aria-label="Cambiar ${n}">${T(n, n)}</button>`).join('')}</div>
+   <div id="vivo8" aria-live="polite"></div>
+   <p><a class="btn primary" href="#que-pasa-si" style="display:inline-block; text-decoration:none">Seguir con ¿Qué pasa si…?</a></p>`,
+   luego:() => {
+     const campo = $('campo8');
+     let tiempo = 0;
+     const leer = () => { clearTimeout(tiempo); tiempo = setTimeout(() => { S.e8.texto = campo.value; prep8(); }, 250); };
+     campo.addEventListener('input', leer);
+     $('stepBody').querySelectorAll('[data-tecla]').forEach(b => b.onclick = () => {
+       const t = b.dataset.tecla, v = campo.value.replace(/\s+$/, '');
+       campo.value = t === '⌫' ? v.slice(0, -1) : (['∧', '∨', 'Δ', '→', '↔'].includes(t) ? `${v} ${t} ` : campo.value + t);
+       S.e8.texto = campo.value; prep8(); });
+     $('stepBody').querySelectorAll('[data-int8]').forEach(b => b.onclick = () => E.cambiar(b.dataset.int8));
+     vivo8(); } },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  E.parar();
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.luego) s.luego();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+  pintarDots();
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max || (S.ocupado && k !== S.step);
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb'); decir(f, fb(p, P.ok, P.fb[p])); f.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('fb').focus({ preventScroll:true });
+    const paso = S.step, listo = () => { S.ocupado = false; E.avisar(); nav(); };
+    Celular.alResponder($('cv'), () => s.anima(listo), () => S.step === paso, { siNo:listo });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Una variable más (las filas se duplican), el circuito del condicional (~p ∨ q), el condicional con el antecedente
+   falso, la disyunción exclusiva contra la inclusiva y la negación de «todos». La escena cambia recién después de
+   responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const p_ = t => V('p', t), q_ = t => V('q', t), r_ = t => V('r', t), s_ = t => V('s', t);
+const FUENTE = '<p class="fuente">Todavía no revisamos estudios sobre estos errores: las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
+const LEY_FOCO = [['res', 'foco de la fórmula: encendido V, apagado F'], ['ink', 'cable con corriente']];
+const S = { k:0, pred:{}, t0:Date.now() };
+const F3a = '(p ∧ q) ∨ r', F4a = '(p ∧ q) ∨ (r ∧ s)', MF = M.masFilas(3);
+const CC = M.condicionalComoCircuito('p', 'q');
+const FAF = 'p → (q ∧ ~r)', AF = M.conAntecedenteFalso(FAF);
+const DX = M.diferencias('p Δ q', 'p ∨ q');
+const NQ = M.negarCuantificador('todos');
+console.assert(MF.despues === 16 && Object.keys(MF.errores).length === 3 && CC.respuesta === '~p ∨ q' && Object.keys(CC.errores).length === 3
+  && AF.respuesta === 'siempreV' && Object.keys(AF.errores).length === 3 && DX.filas.join() === 'V V' && Object.keys(DX.errores).length === 3
+  && NQ.respuesta === 'algunoNo' && Object.keys(NQ.errores).length === 3, 'qué pasa si: revisar las opciones');
+const tablaLlena = (cols, ks, o) => { const t = tabla(cols, ks, o); t.llenas = t.reveladas = t.filas.length; return t; };
+
+const AFTXT = { siempreV:'V en todos los casos', siempreF:'F en todos los casos', igualConsecuente:`lo mismo que ${fx('q ∧ ~r')}`, contrarioConsecuente:`lo contrario de ${fx('q ∧ ~r')}` };
+const FILA = { 'V V':`${T('p', 'p')} = V, ${T('q', 'q')} = V`, 'F F':`${T('p', 'p')} = F, ${T('q', 'q')} = F` };
+const DXTXT = d => (d.length === 0 ? 'En ninguna: dan lo mismo en todas las filas' : d.length === 1 ? `Solo en la fila ${FILA[d[0]]}` : `En las filas donde ${T('p', 'p')} y ${T('q', 'q')} tienen valores distintos`);
+const QTXT = { algunoNo:'«Algún alumno del salón no aprobó»', ninguno:'«Ningún alumno del salón aprobó»', alguno:'«Algún alumno del salón aprobó»', soloAlgunos:'«Solo algunos alumnos del salón aprobaron»' };
+const SALONES = [[true, true, true, true, true], [true, true, false, true, true], [false, true, false, false, true], [false, false, false, false, false]];
+
+const EXPS = [
+  { id:'mas-filas', corto:'Una variable más',
+    q:`La tabla de ${fx(F3a)} tiene 8 filas. Si se agrega una cuarta variable, ${s_('s')}, en ${fx(F4a)}, ¿cuántas filas tiene la tabla?`,
+    opts:[['a', `${MF.errores.sumaIgual} filas`, 'filas-crecen-de-a-cuatro', 'hipotesis'], ['b', `${MF.despues} filas`], ['c', `${MF.errores.sumaUna} filas`, 'filas-suma-una', 'hipotesis'], ['d', `${MF.errores.sumaDos} filas`, 'filas-suma-dos', 'hipotesis']],
+    ok:'b', fuente:FUENTE,
+    fb:{ a:`Con 1 variable hay 2 filas; con 2, 4; con 3, 8. No suben siempre lo mismo (+2, luego +4): se duplican. Cada fila de antes aparece dos veces, una con s = V y otra con s = F: ${MF.despues}.`,
+      c:`No se agrega una sola fila: cada una de las 8 filas de antes se parte en dos, una con s = V y otra con s = F. 8 × 2 = ${MF.despues}.`,
+      d:`No se agregan solo una fila con s = V y otra con s = F: eso pasa en cada una de las 8 filas de antes. 8 × 2 = ${MF.despues}.` },
+    antes:ya => { const A = armar(ya ? F4a : F3a);
+      E.config({ st:{ circuitos:[A], valores:{ p:true, q:true, r:true, s:true }, tabla: ya ? tablaLlena([F4a]) : tablaLlena([F3a]) }, ley:[['p', 'p'], ['q', 'q'], ['r', 'r'], ...(ya ? [['s', 's']] : []), ...LEY_FOCO],
+        desc: ya ? `La tabla de ${M.leer(F4a)} tiene ${MF.despues} filas.` : `La tabla de ${M.leer(F3a)}, con sus 8 filas.`, lect: ya ? [() => ['ink', 'filas', String(MF.despues)]] : [() => ['ink', 'filas con p, q y r', '8']] }); },
+    despues:() => { const A = armar(F4a); E.st.circuitos = [A]; E.st.tabla = tabla([F4a]); E.ley = [['p', 'p'], ['q', 'q'], ['r', 'r'], ['s', 's'], ...LEY_FOCO]; E.leyenda(); E.redimensionar();
+      E.recorrer({ ms:300 }, () => { E.lect = [() => ['ink', 'filas', String(MF.despues)]]; E.desc = `La tabla de ${M.leer(F4a)} tiene ${MF.despues} filas: las 8 de antes, cada una con s verdadero y con s falso.`; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">2<sup>3</sup> = 8; 2<sup>4</sup> = ${MF.despues}<span class="note">cada variable nueva duplica las filas</span></div></div><p>Con 5 variables serían 32 filas, y con 6, 64: las tablas crecen muy rápido. Por eso en el examen conviene buscar la fila que interesa en vez de armar la tabla entera.</p>` },
+
+  { id:'condicional-circuito', corto:'El circuito del condicional',
+    q:`¿Cuál de estos circuitos se enciende exactamente en las mismas filas que la promesa ${fx('p → q')}?`,
+    opts:[['a', `${fx(CC.errores.invierteConsecuente)}: ${T('p', 'p')} en paralelo con un interruptor invertido de ${T('q', 'q')}`, 'invierte-el-consecuente', 'hipotesis'],
+          ['b', `${fx(CC.errores.enSerie)}: un interruptor invertido de ${T('p', 'p')} en serie con ${T('q', 'q')}`, 'condicional-en-serie', 'hipotesis'],
+          ['c', `${fx(CC.respuesta)}: un interruptor invertido de ${T('p', 'p')} en paralelo con ${T('q', 'q')}`],
+          ['d', `${fx(CC.errores.sinInversor)}: ${T('p', 'p')} en paralelo con ${T('q', 'q')}`, 'condicional-sin-inversor', 'hipotesis']],
+    ok:'c', fuente:FUENTE,
+    fb:{ a:`Ese circuito se apaga con p = F, q = V, pero la promesa no se rompe ahí. Se apaga donde se apaga q → p, no p → q. El que va es ~p ∨ q.`,
+      b:`En serie, los dos tendrían que dejar pasar: se encendería solo con p = F, q = V. La promesa es V en tres filas. El que va es ~p ∨ q.`,
+      d:`Ese se apaga solo con p = F, q = F, y ahí la promesa se cumple. Se rompe con p = V, q = F. El que va es ~p ∨ q.` },
+    antes:ya => { const A = armar('p → q'); if (!ya) taparTodo(A);
+      E.config({ st:{ circuitos: ya ? [A, armar(CC.respuesta)] : [A], valores:{ p:true, q:false }, tabla: ya ? tablaLlena(['p → q', CC.respuesta]) : null }, ley:[['p', 'p'], ['q', 'q'], ...LEY_FOCO],
+        desc: ya ? `Los focos de ${M.leer('p → q')} y de ${M.leer(CC.respuesta)} están iguales en las cuatro filas.` : `La caja de ${M.leer('p → q')}, con el foco tapado.`, lect:[] }); },
+    despues:() => { const A = armar('p → q'); E.st.circuitos = [A, armar(CC.respuesta)]; E.st.tabla = tabla(['p → q', CC.respuesta]); E.redimensionar();
+      E.recorrer({}, () => { E.desc = `Los focos de ${M.leer('p → q')} y de ${M.leer(CC.respuesta)} están iguales en las cuatro filas.`; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${sx('p → q ≡ ~p ∨ q')}<span class="note">«o no se cumple el antecedente, o se cumple el consecuente»</span></div></div><p>Con esta equivalencia, cualquier condicional se puede dibujar con interruptores: un interruptor invertido del antecedente en paralelo con el consecuente.</p>` },
+
+  { id:'antecedente-falso', corto:'Antecedente falso',
+    q:`Si ${p_('p')} es ${vf(false)}, ¿qué vale ${fx(FAF)}, para los distintos valores de ${q_('q')} y ${r_('r')}?`,
+    opts:[['a', AFTXT[AF.errores.comoY], 'condicional-con-antecedente-falso-es-falso', 'hipotesis'], ['b', AFTXT[AF.errores.comoConsecuente], 'condicional-como-su-consecuente', 'hipotesis'],
+          ['c', AFTXT[AF.respuesta]], ['d', AFTXT[AF.errores.comoBicondicional], 'condicional-como-bicondicional', 'hipotesis']],
+    ok:'c', fuente:FUENTE,
+    fb:{ a:'Con el antecedente F la promesa no se pone a prueba: no se rompe. El condicional es V en las cuatro filas, valga lo que valga el consecuente.',
+      b:'El consecuente solo decide cuando el antecedente es V. Con p = F el condicional es V aunque q ∧ ~r sea F.',
+      d:'Eso pasaría con el bicondicional, que pide que las dos partes valgan lo mismo. El condicional con el antecedente F es siempre V.' },
+    antes:ya => { const A = armar(FAF); if (!ya) taparTodo(A);
+      const t = { vars:['q', 'r'], cols:[{ texto:AF.consecuente, k:'ink' }, { texto:M.imprimir(FAF), k:'res' }], filas:AF.tabla, llenas:4, reveladas: ya ? 4 : 0, actual:-1 };
+      E.config({ st:{ circuitos:[A], valores:{ p:false, q:true, r:true }, tabla:t }, ley:[['p', 'p = F'], ['q', 'q'], ['r', 'r'], ...LEY_FOCO],
+        desc: ya ? `Con p falso, el foco de ${M.leer(FAF)} queda encendido en las cuatro filas.` : `La caja de ${M.leer(FAF)} con p falso y los focos tapados.`, lect:[] }); },
+    despues:() => { E.st.circuitos[0].oculto = new Set(); E.st.tabla.reveladas = 0; E.recorrer({}, () => { E.desc = `Con p falso, el foco de ${M.leer(FAF)} queda encendido en las cuatro filas.`; E.avisar(); }); },
+    exp:() => `<p>Un condicional con el antecedente F siempre es V (se dice que es verdadero «por vacuidad»). En los problemas de examen sirve al revés: si te dicen que un condicional es F, ya sabes que su antecedente es V y su consecuente es F.</p>` },
+
+  { id:'o-exclusiva', corto:'«O estudias o trabajas»',
+    q:`Con ${p_('p')}: «estudias» y ${q_('q')}: «trabajas», «O estudias o trabajas», dicho como que pasa una y no las dos, es la disyunción exclusiva ${fx('p Δ q')}. ¿En qué filas da un valor distinto de la disyunción ${fx('p ∨ q')}?`,
+    opts:[['a', DXTXT(DX.errores.ambasF), 'exclusiva-difiere-con-las-dos-falsas', 'hipotesis'], ['b', DXTXT(DX.errores.distintas), 'exclusiva-difiere-con-valores-distintos', 'hipotesis'],
+          ['c', DXTXT(DX.errores.ninguna), 'exclusiva-igual-a-inclusiva', 'hipotesis'], ['d', DXTXT(DX.filas)]],
+    ok:'d', fuente:FUENTE,
+    fb:{ a:'Con p = F y q = F, las dos son F: no se hace ninguna de las dos cosas. Difieren cuando las dos son V: p ∨ q es V y p Δ q es F.',
+      b:'Cuando p y q tienen valores distintos, las dos son V: se hace exactamente una cosa. Difieren cuando las dos son V.',
+      c:'Difieren en una fila: si estudias y trabajas, p ∨ q es V, pero p Δ q es F, porque dice que pasa solo una.' },
+    antes:ya => { const A = armar('p ∨ q'), B = armar('p Δ q'); if (!ya){ taparTodo(A); taparTodo(B); }
+      const t = tablaLlena(['p ∨ q', 'p Δ q'], ['ink', 'res']); A.k = 'ink'; if (!ya) t.reveladas = 0;
+      E.config({ st:{ circuitos:[A, B], valores:{ p:true, q:true }, tabla:t }, ley:[['p', 'p: estudias'], ['q', 'q: trabajas'], ...LEY_FOCO],
+        desc: ya ? `${M.leer('p ∨ q')}, y ${M.leer('p Δ q')}, solo dan distinto en la fila p verdadero, q verdadero.` : `Los circuitos de ${M.leer('p ∨ q')} y de ${M.leer('p Δ q')}, con los focos tapados.`, lect:[] }); },
+    despues:() => { E.st.circuitos.forEach(A => { A.oculto = new Set(); }); E.st.tabla.reveladas = 0; E.recorrer({}, () => { E.desc = `${M.leer('p ∨ q')}, y ${M.leer('p Δ q')}, solo dan distinto en la fila p verdadero, q verdadero.`; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${sx('p Δ q ≡ ~(p ↔ q)')}<span class="note">la exclusiva es V cuando p y q tienen valores distintos</span></div></div><p>En el lenguaje de todos los días «o» puede ser de las dos clases; en lógica, ∨ es la inclusiva (una, la otra o las dos) y Δ la exclusiva (solo una).</p>` },
+
+  { id:'cuantificador', corto:'Negar «todos»',
+    q:`¿Cuál es la negación de «Todos los alumnos del salón aprobaron»?`,
+    opts:[['a', QTXT[NQ.errores.niegaTodo], 'negar-todos-es-ninguno', 'hipotesis'], ['b', QTXT[NQ.errores.cambiaSinNegar], 'cambia-el-cuantificador-sin-negar', 'hipotesis'],
+          ['c', QTXT[NQ.respuesta]], ['d', QTXT[NQ.errores.soloAlgunos], 'negar-todos-es-solo-algunos', 'hipotesis']],
+    ok:'c', fuente:FUENTE,
+    fb:{ a:'Para que «todos aprobaron» sea falsa, basta con que uno no apruebe; no hace falta que nadie apruebe. Si cuatro aprueban y uno no, «ningún alumno aprobó» también es falsa.',
+      b:'«Algún alumno aprobó» puede ser verdadera junto con «todos aprobaron»: si aprueban los cinco, las dos son V. La negación tiene que ser V justo cuando la original es F.',
+      d:'Si nadie aprueba, «todos aprobaron» es F, pero «solo algunos aprobaron» también es F. La negación es «algún alumno no aprobó».' },
+    antes:ya => { const L = ya ? SALONES[1] : SALONES[0];
+      E.config({ modo:'alumnos', st:{ lista:L, titulo:'Un salón de 5 alumnos', frases: ya ? [{ texto:'Todos aprobaron', valor:M.cuantificador('todos', L) }, { texto:'Algún alumno no aprobó', valor:M.cuantificador('algunoNo', L) }] : [{ texto:'Todos aprobaron', valor:null }] },
+        ley:[['ink', 'aprobó (V)'], ['muted', 'no aprobó (F)'], ['res', 'foco de la frase']],
+        desc: ya ? 'En cada salón, todos aprobaron y algún alumno no aprobó tienen valores opuestos.' : 'Un salón de cinco alumnos que aprobaron y la frase «Todos aprobaron» con el foco tapado.', lect:[] }); },
+    despues:() => { E.secuencia(SALONES.map(L => st => { st.lista = L; st.frases = [{ texto:'Todos aprobaron', valor:M.cuantificador('todos', L) }, { texto:'Algún alumno no aprobó', valor:M.cuantificador('algunoNo', L) }]; }), 1100,
+      () => { E.desc = 'En los cuatro salones, todos aprobaron y algún alumno no aprobó tienen valores opuestos.'; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq" style="font-family:var(--font)"><span aria-hidden="true">~(todos cumplen) ≡ alguno no cumple</span><span class="sr">la negación de «todos cumplen» equivale a «alguno no cumple»</span><span class="note">y ~(alguno cumple) ≡ ninguno cumple</span></div></div><p>Al negar, el cuantificador cambia («todos» pasa a «alguno») y la propiedad se niega («aprobó» pasa a «no aprobó»).</p>` },
+];
+
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb2');
+    decir(f, p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`);
+    f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + x.fuente + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); x.antes(false); Celular.alResponder($('cv2'), () => { x.despues(); }, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false); $('fb2').focus({ preventScroll:true });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

@@ -4,6 +4,125 @@ Rama `rutina/fisica-b`, sacada de `claude/awesome-wozniak-5etl1n`. Unidades de 5
 
 **Ya resuelto:** la conversación principal le avisó a la rutina de física que la electricidad es de esta rama.
 
+## 7 nov 2026 · Física moderna: la lámpara y la placa (`plantillas/fisica-moderna/`)
+
+### Qué hice
+
+Escena «La lámpara y la placa: fotones y efecto fotoeléctrico» para la unidad `fisica.fisica-moderna`. Relatividad queda fuera: es solo de San Marcos. La idea central:
+- La luz llega en paquetes de energía hf = hc/λ.
+- La frecuencia decide si sale un electrón y con cuánta energía máxima: Kmax = hf − φ, una recta con pendiente h y corte en f₀.
+- La intensidad decide cuántos fotones llegan, y con eso cuántos electrones salen por segundo, que es la corriente de saturación.
+- La pila solo acelera o frena a los electrones que ya salieron (V₀ = Kmax/e).
+- Bajo la frecuencia umbral no hay corriente, con ninguna intensidad ni voltaje.
+
+**Motor** (`MotorFisicaModerna`, cabecera hasta la línea 104). Usa dos juegos de constantes: «eV» con hc = 1240 eV·nm, y «SI» con h = 6,6 × 10⁻³⁴ J·s. Calcula:
+- el fotón y el efecto fotoeléctrico;
+- el fototubo con su curva I–V, un modelo simple que la escena declara como tal;
+- el viaje de cada electrón;
+- fotones por segundo;
+- Bohr, con transiciones y la serie de Balmer;
+- rayos X: λmin y espectro;
+- la recta Kmax–f, Wien e incertidumbre;
+- el color de la luz, solo para el dibujo.
+
+**El experimento:** deslizadores de λ, intensidad P y voltaje V, con electrones visibles entre las placas. En el paso a paso se habilitan de a poco y solo después de responder, para no adelantar el paso siguiente.
+
+**Paso a paso** (8 pasos, todos con predicción; las correctas van B D A C D A C B):
+1. 620 nm con el doble de intensidad.
+2. Subir la pila.
+3. Kmax y V₀ con 310 nm.
+4. El doble de intensidad con 310 nm.
+5. La gráfica Kmax–f.
+6. Fotones por segundo de un láser.
+7. Bohr de 3 a 2.
+8. Rayos X a 31 kV.
+
+**¿Qué pasa si…?** (5 experimentos): el zinc, la luz roja intensa contra la azul tenue, la pila al revés, la mitad de λ y el tubo de rayos X de 31 a 62 kV.
+
+**Papel:** 10 problemas propios.
+
+### Pruebas
+
+- 21 casos en `casos.json`.
+- 44 pruebas del motor. Una de ellas comprueba que los electrones del dibujo llegan en la misma fracción que la corriente del modelo; otra, que 620 nm se dibuja rojo.
+- `npm test`: 3215 pasan; fallan solo las 2 de catálogo, que es lo esperado.
+- `herramientas/pasada-celular.py`: no marca QUEDA. La escena usa Celular.dpr, Celular.variable y Celular.bucle.
+- Playwright a 390×844 y 1366×768, claro y oscuro, con y sin movimiento reducido: sin errores de consola ni desbordes.
+  - El dedo sobre el lienzo desplaza la página, porque no hay nada que arrastrar.
+  - Los deslizadores responden al toque y tienen 44 px de alto.
+
+### Subagentes y lo que corrigieron
+
+**Verificador independiente.** Recalculó por otros caminos (E = hf con f = c/λ, Rydberg para Bohr, energía total en 1 s). Coinciden 178 de 180 campos. Las 2 diferencias son convenciones del electrón, ya escritas en la cabecera:
+- xMax = null si el electrón llega al colector;
+- x = 0 después de volver al cátodo.
+
+**Revisor, grave.** El color de la luz del haz quedaba al lado de colores de variable casi iguales: violeta 405 nm contra P (ΔE00 2,4), cian 490 nm contra λ oscuro, y 620 nm pintado naranja junto a I y E. Lo corregido:
+- El color de la luz va solo en la banda translúcida.
+- Los fotones, las líneas del espectro y los puntos del láser van en tinta, o con contorno de tinta y relleno al 35 %.
+- 620 nm se ve rojo.
+
+**Revisor, medios.**
+- FM3 pasa a «parcial», porque su dato es de aciertos.
+- La fuente de FM1 en el paso 1 aclara que el dato es de la pregunta del voltaje.
+- El paso 7 trae En = −13,6/n² en el enunciado, con un distractor nuevo: «el nivel de llegada», que da 365 nm.
+- Pantalla grande: deslizadores en 3 columnas, y el banco se desplaza por dentro si no cabe.
+- La curva I–V se declara como «modelo simple».
+- En el celular, con la predicción pendiente, el banco mide 311 px como máximo; antes eran unos 400.
+
+**Revisor, bajos:** textos de las fuentes de Bohr y del paso 4, el rótulo −V₀ que se montaba sobre el eje, y los deslizadores a 44 px.
+
+### Predicciones y respaldo
+
+- **Documentado:**
+  - FM1, la pila arranca electrones: cerca de 1 de cada 5 acierta, y el error lo comete cerca del 42 % de los que fallan.
+  - FM1 en el paso 1 C, con la aclaración de que el dato es de la pregunta del voltaje.
+  - FM2, «basta subir la intensidad», en el paso 1 A y el experimento 2 B: lo dice explícito cerca de 1 de cada 20 de los que fallan.
+- **Parcial:** FM3, las variantes de FM2 y FM4 en el paso 4, y la variante de FM1 «la pila vence la función trabajo».
+- **Hipótesis:** Kmax sin restar φ, mezclar J y eV, los fotones por segundo, Bohr con 1/n y el nivel de llegada, rayos X sin el kilo o sin e, y los distractores de los experimentos.
+
+### Colores
+
+| Variable | Claro | Oscuro | Nota |
+| --- | --- | --- | --- |
+| λ longitud de onda | #0d6b78 | #24e4f9 | el petróleo de Φ en inducción |
+| f frecuencia | #5c531f | #fdf2b4 | el oliva de las longitudes |
+| E energía del fotón | #a55412 | #ffa64d | el ocre de ε en inducción |
+| φ función trabajo | #1f5fbf | #7cb0ff | el azul de F |
+| Kmax | #2a7638 | #7fd67f | el verde de B y U |
+| V y V₀ | #b3246b | #ff86bd | el magenta de circuitos |
+| I corriente | #6e110c | #f95a24 | el de inducción |
+| P intensidad | #7614b8 | #aa74fb | nuevo |
+
+- ΔE00 mínimo entre los que salen juntos: 21,1 en claro (f–Kmax) y 20,6 en oscuro (E–I).
+- Todos pasan AA sobre el papel y sobre el chip. Los más justos: E claro con 4,58 y P oscuro con 4,61.
+- n, h, N y e van en tinta.
+- El color de la luz no es un color de variable: solo va en la banda translúcida, y la leyenda lo dice.
+
+### Pendiente
+
+- Cuerpo negro (Wien) e incertidumbre están solo en el motor y el papel; láser y relatividad quedan fuera de la escena.
+- En 1366×768, el banco de los pasos 3 y 4 con la curva I–V mide 12 px más que el espacio; se resuelve con el desplazamiento interno.
+- 620 nm se llama «rojo», aunque los punteros reales son de 630 a 650 nm. Se dejó así porque da 2 eV exactos.
+- Las cifras del informe están por verificar con los PDF.
+
+### Pedidos para la integración
+
+- `catalogo/cursos/fisica.json`: en `fisica.fisica-moderna`, `"plantillas": ["fisica-moderna"]`. Luego `npm run catalogo` y subir `VERSION` en `app/sw.js`.
+- `docs/diseno.md`, variables de física moderna (`plantillas/fisica-moderna/`):
+  - λ petróleo (#0d6b78, oscuro #24e4f9);
+  - f oliva (#5c531f, oscuro #fdf2b4);
+  - energía del fotón E ocre (#a55412, oscuro #ffa64d);
+  - función trabajo φ azul (#1f5fbf, oscuro #7cb0ff);
+  - Kmax verde (#2a7638, oscuro #7fd67f);
+  - V y V₀ magenta;
+  - I granate de inducción;
+  - intensidad P violeta (#7614b8, oscuro #aa74fb), nuevo.
+  - El color de la luz solo va en la banda translúcida del haz; los fotones van en tinta.
+- `docs/pendientes.md`, línea propuesta: «**Física moderna** (`plantillas/fisica-moderna/`, rutina de física B, 7 nov 2026): la lámpara y la placa (fotoeléctrico con deslizadores de λ, intensidad y voltaje; intensidad que no arranca electrones, la pila que no los saca, Kmax y potencial de frenado, corriente de saturación, gráfica Kmax–f, fotones por segundo, Bohr con Balmer y rayos X); 21 casos verificados aparte; 10 de papel; 8 predicciones y 5 «¿qué pasa si…?». Documentados: FM1 y FM2; parciales: FM3 y FM4. Falta en la escena: cuerpo negro, láser e incertidumbre (Wien e incertidumbre están en el motor y el papel). Sin ítems en el banco de física.»
+- `CLAUDE.md`: agregar «la lámpara y la placa» a la lista de plantillas, y en la historia: «Física moderna (7 nov 2026, rutina de física B): `plantillas/fisica-moderna/` (la lámpara y la placa: fotoeléctrico que el alumno ajusta, intensidad contra frecuencia, potencial de frenado, recta Kmax–f, fotones, Bohr y rayos X; 21 casos verificados aparte).»
+- Banco de física: candidato la luz de 620 nm sobre φ = 2,5 eV con el doble de intensidad (FM2, documentado).
+
 ## 7 nov 2026 · Inducción: el imán, la espira y el foquito (`plantillas/induccion/`)
 
 ### Qué hice
