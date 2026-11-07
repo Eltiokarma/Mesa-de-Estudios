@@ -107,3 +107,72 @@ Mínimo de la escena contando pares de elementos: 20,3. Contraste mínimo de las
 - **`docs/diseno.md`:** «Variables del árbol de las funciones (`plantillas/nomenclatura-inorganica/`): solo los elementos de la paleta común (H, C, N, O, Na, Al, P, S, Cl, K, Ca, Fe, Zn, Pb); carga, estado de oxidación, número romano y coeficientes en tinta (ningún tono queda a ΔE00 ≥ 20 de los catorce). Las fichas llevan tinte al 8 %. En la mesa y el árbol libres, las parejas de `Elementos.CERCANOS` se apagan con aviso; Cu, Ag, Hg, Br e I no entran.»
 - **`docs/pendientes.md`:** «**El árbol de las funciones** (`plantillas/nomenclatura-inorganica/`, rutina de química B, 7 nov 2026): estados de oxidación (también fraccionarios), funciones inorgánicas como árbol que se destapa, mesa de fichas con cruce y simplificación (el peróxido no se parte), nombres en sistemática, stock y tradicional, sales ácidas e hidratadas; 25 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todo hipótesis o parcial (NO1, NO2). **Para Gerson:** romano con o sin espacio, «tetraoxosulfato (VI)» y si la tabla de estados incluye S +2, N +1 y P +1. Sin ítems en el banco de química.»
 - **`CLAUDE.md`, historia:** «Nomenclatura inorgánica (7 nov 2026, rutina de química B): `plantillas/nomenclatura-inorganica/` (el árbol de las funciones: estados de oxidación, árbol de óxidos, hidróxidos, ácidos y sales, mesa de fichas que cruza cargas y los tres nombres a la vez; 25 casos verificados aparte).»
+
+## 7 nov 2026 · Bolitas y palitos (`plantillas/hidrocarburos/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, `window.MotorHidrocarburos`, sin DOM; 8 convenciones en la cabecera, líneas 1 a 64). Cadena principal de alquenos con la regla escolar (IUPAC 1979/93: primero la de más enlaces múltiples, luego la más larga); `nombre().difiereIUPAC2013` avisa cuando la regla de 2013 elegiría otra, y la escena evita esas moléculas en las predicciones. Localizador delante del sufijo (but-2-eno) y la forma antigua (2-buteno) aparte.
+  - Lee semidesarrolladas y SMILES sencillos con valencia 4 comprobada.
+  - Fórmula, tipo, fórmula general, insaturaciones, tipos de carbono, hibridación y ángulo, σ y π.
+  - Forma canónica (con o sin cis/trans) para decidir si dos dibujos son la misma molécula.
+  - Nombre IUPAC de C1 a C10 (ramas alfabéticas, isopropil, sec- y terc-butil, dienos y eninos, ciclos, benceno, tolueno y xilenos, cis-/trans-).
+  - Enumera isómeros: alcanos hasta C10, alquenos y alquinos hasta C8, cicloalcanos hasta C6.
+  - Coordenadas 2D con z; `girar` rota una rama alrededor de un enlace simple y se niega en el doble y en anillos; `intercambiar` hace cis↔trans; `armar` agrega o quita C y cambia órdenes de enlace.
+  - Puntos de ebullición de tabla (CRC), los mismos de `liquidos-y-solidos`.
+- **`casos.json`:** 23 casos. **`motor.test.js`:** 48 pruebas (conteos conocidos hasta C10 = 75, hexenos 13 y 17 con cis-trans, alquinos C7 = 14, cicloalcanos C6 = 12; la semidesarrollada vuelve a la misma molécula; la forma canónica no depende del orden; girar no cambia la molécula y conserva largos; intercambiar cambia la molécula si y solo si hay cis-trans; ningún error da el nombre correcto). **`papel.json`:** 10 problemas propios.
+- **`index.html`, paso a paso** (8 pasos, 7 predicciones que bloquean):
+  1. pentano recto contra torcido: la misma sustancia (HC1 y HC3, hipótesis o parcial);
+  2. CH₃–CH(C₂H₅)–CH₂–CH₃: 3-metilpentano (HC3);
+  3. cuántos C₅H₁₂: 3;
+  4. cis-trans: solo el but-2-eno (HC4, parcial);
+  5. ebullición del pentano contra el 2,2-dimetilpropano: el pentano (HC2, **documentado**, Schmidt 1996, con cautela);
+  6. 4-metilpent-2-eno (numerar por el doble enlace);
+  7. hibridación del propino: sp, sp, sp³.
+- **¿Qué pasa si…?** (5): arma tu alcano (luego armado libre), los 5 isómeros del C₆H₁₄, girar el 2-metilpropeno (cis = trans), ciclobutano contra but-1-eno (isómeros) y el ángulo del etino (180°).
+
+**Subagentes y lo que corrigieron.**
+
+- **Verificador:** sin leer el motor, recalculó los 23 casos con árboles libres y forma canónica AHU (C1 a C10 = A000602), alquenos como árbol con un enlace marcado y un nombrador propio por fuerza bruta; todo coincide y los puntos de ebullición difieren menos de 0,1 °C del CRC.
+- **Revisor:** tres graves. Arrastrar un enlace congelaba la escena sin movimiento reducido (`blanco = null` antes de animar); en la ebullición cada molécula se escalaba sola y el 2,2-dimetilpropano parecía tocar más que el pentano (ahora misma escala); el etino y el propino dibujados en línea regalaban el 180° y la hibridación (ahora solo la fórmula hasta responder). Medias: número de opción mal en una retro, cita de HC2 más cautelosa («cerca de 1 de cada 5 de 246», «acertó 3 de cada 10»), el aviso de IUPAC 2013 que se prometía y no salía, el lienzo fuera de vista en la mesa del celular, «2-buteno» como forma de muchos libros, y el 3-metilpentano redibujado en zigzag. Bajas: nube pálida, termómetro, H del CH₃ que salían en cruz de 90° (el motor ahora los separa como máximo 60°), cautela con Şendur, «más compacta», «unos 120°». Todo aplicado.
+
+**Colores.** C y H con `Elementos.css(['C','H'])`, después de los `:root` propios.
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| cadena principal | #1f5fbf | #7cb0ff |
+| localizadores | #b3246b | #ff86bd |
+| sustituyentes | #a05200 | #f0a04a |
+| enlace doble o triple | #4d00b8 | #b27aff |
+| temperatura de ebullición T | #255c1f | #5fe06a |
+| ángulo de enlace | #756300 | #e3c84a |
+
+ΔE00 ≥ 20 entre los que salen juntos (el más justo, T–H 20,4); sustituyentes–ángulo 18,9 nunca comparten dibujo (las vistas de hibridación no tienen ramas). Contraste mínimo 4,54 (C sobre su chip).
+
+**Pruebas.** `npm test`: 3177, pasan 3175; fallan solo `catalogo.json` y «está en el catálogo». `elementos-escenas` con la entrada de abajo: 18 de 18 (en el scratchpad). `herramientas/pasada-celular.py` sin QUEDA. Playwright a 390×844 y 1366×768, claro y oscuro, con y sin movimiento reducido, con arrastre real de enlace por ratón y por toque: sin errores de consola ni desbordes.
+
+**Pendiente.**
+
+- Sin Z/E: solo cis/trans respecto de la cadena principal.
+- El 109,5° del sp³ va en el texto; el dibujo plano no lo muestra.
+- Algunos H se enciman en los C₈ muy ramificados.
+- Puntos de ebullición de tabla, por contrastar con el libro que se use.
+- Confirmar en un celular real que el arrastre de un enlace se queda con el dedo.
+- Sin ítems en el banco de química.
+
+### Pedidos para la integración
+
+- **Catálogo:** `hidrocarburos` en `quimica.hidrocarburos`; `npm run catalogo`; subir `VERSION`.
+- **`nucleo/elementos-escenas.test.js`:**
+  ```js
+    'hidrocarburos': {
+      elementos: ['C', 'H'],
+      vistas: [
+        [['C', 'H'], ['--c-cad', '--c-loc', '--c-sus', '--c-mul']],
+        [['C', 'H'], ['--c-T']],
+        [['C', 'H'], ['--c-mul', '--c-ang']],
+      ] },
+  ```
+- **`docs/diseno.md`:** «Variables de bolitas y palitos (`plantillas/hidrocarburos/`): C y H de la paleta común; cadena principal azul (#1f5fbf, oscuro #7cb0ff), localizadores magenta (#b3246b, oscuro #ff86bd), sustituyentes naranja (#a05200, oscuro #f0a04a), enlace doble o triple violeta (#4d00b8, oscuro #b27aff), temperatura de ebullición T verde oscuro (#255c1f, oscuro #5fe06a) y ángulo mostaza (#756300, oscuro #e3c84a); ΔE00 mínimo 20,4 (T–H); sustituyentes y ángulo (18,9) nunca comparten dibujo; contraste mínimo 4,54.»
+- **`docs/pendientes.md`:** «**Bolitas y palitos** (`plantillas/hidrocarburos/`, rutina de química B, 7 nov 2026): la molécula como grafo (girar un enlace simple no cambia la sustancia, el doble no gira), cadena principal y numeración IUPAC con la regla escolar de alquenos (avisa cuando la de 2013 difiere), isómeros contados hasta C10, cis-trans, hibridación y ángulos, ebullición y ramificación; armado libre; 23 casos verificados aparte; 10 de papel; 7 predicciones y 5 «¿qué pasa si…?»; documentado solo HC2 (Schmidt 1996). Falta: Z/E y confirmar el arrastre en un celular real. Sin ítems en el banco de química.»
+- **`CLAUDE.md`, historia:** «Hidrocarburos (7 nov 2026, rutina de química B): `plantillas/hidrocarburos/` (bolitas y palitos: la molécula como grafo, cadena principal y nombre IUPAC, isómeros, cis-trans, hibridación y ebullición; 23 casos verificados aparte).»
