@@ -8,9 +8,75 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico, energía, calorimetría, circuitos y espejos (hechas, abajo); Banco Óptico 0.3.0 (en curso).
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico, energía, calorimetría, circuitos, espejos y Banco Óptico 0.3.0, todas hechas (abajo). La siguiente ejecución espera un orden nuevo de Gerson.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Banco Óptico 0.3.0: correcciones (`plantillas/optica-lente-delgada/`)
+
+La conversación principal lo agregó a la lista después de espejos. Lleva las mismas correcciones y no tiene contenido nuevo.
+
+**Qué cambió.**
+
+- **Celular.**
+  - El lienzo acepta pinch-zoom.
+  - Las animaciones usan Celular.bucle, sin requestAnimationFrame directo.
+  - Hay tres arrastres con Celular.arrastre: el objeto en «Una lente», el objeto O en «Dos o tres lentes» y la pantalla en «Correr la pantalla». Hacen lo mismo que los deslizadores. Al arrastrar O el marco queda fijo, porque Chromium manda pointerdown antes que touchstart.
+  - En los modos 1 y 2, al responder la pantalla baja hasta la retroalimentación; en el modo 3, el lienzo sube a la vista.
+- **Colores.**
+  - Chips al 8 % y .v.hl con contorno.
+  - A tiene color propio, separado de h, y los rayos se separaron de f.
+  - El anillo de foco va en tinta.
+  - Lo correcto y lo incorrecto se marcan con --ok y --warn.
+  - Los deslizadores llevan el color de su variable, y d₁₂ y d₂₃ van con el color de d.
+- **Accesibilidad.** Los pasos bloqueados se leen «Paso N, bloqueado» y el aria-live solo anuncia la cabecera.
+- **Retroalimentación.** Cada opción tiene la suya, en los 4 experimentos y en los dos pasos 3, con «hipótesis nuestra» donde no hay dato.
+- **Respaldos.** Solo E5-pantalla-cualquier-lado bajó a parcial: el informe la describe sin cifra. Siguen 6 documentados, con cifras de John y otros (2017).
+- **Opciones emparejadas.** Las de «Pantalla» y «Lente más ancha»; la correcta de «Correr la pantalla» ahora dice «La misma imagen, pero borrosa». La c de «Quitar la pantalla» era defendible y se reemplazó por «Se forma en otro lugar» (hipótesis).
+- **Textos.**
+  - Rayo por el centro: «como un vidrio de ventana».
+  - «Paralelos al eje».
+  - Decimales con coma: antes Chromium sacaba punto.
+  - Rótulos que antes se enciman, ahora con un rotulador común.
+  - Comillas latinas.
+- **Desbordes a 390 px.** Las notas de las ecuaciones bajan a otra línea y las filas con «→» se parten. Se midió cada paso con scrollWidth, también con los deslizadores en sus extremos.
+- **Casos.**
+  - casos.json pasó al formato fn/args/espera con la función `problema()`, sin cambiar valores.
+  - Valores exactos, con tolerancia 1e-9.
+  - 9 casos: entran la imagen intermedia en el foco de la lente siguiente y o = 4 del explorador.
+  - 30 pruebas.
+- **Papel.** p8 tiene datos nuevos (f₁ = 8, f₂ = 12, d = 44, o₁ = 12; A = 3 e imagen a 74 cm), porque antes repetía el problema guiado.
+
+**Verificador independiente.** Recalculó los 7 casos de dos maneras: con la ecuación de la lente encadenada en fracciones exactas, con el objeto virtual como o < 0, y con matrices ABCD y dos rayos paraxiales. Todo coincide. La conversación principal verificó los casos 8 y 9 y el nuevo p8.
+
+**Revisor de contenido.**
+- **Lo grave:** una retroalimentación nueva del paso 3 de «Una lente» decía que un objeto muy lejano forma su imagen entre la lente y F′. Es falso: con una lente convergente y un objeto real, la imagen siempre cae más allá de F′. Se corrigió.
+- **Lo medio:** decimales con punto, desbordes de .eqs, la retroalimentación fuera de la pantalla en el celular, el anillo de foco del color de f, la opción c de «Quitar la pantalla» y d₁₂/d₂₃ sin color.
+- **Lo bajo:** subíndices separados, la correcta que se distinguía en «Correr la pantalla», el arrastre de O, la opción c del paso 3, «algo más de un tercio», rótulos encimados y leyendas sin A ni rayos.
+- **Lo que está bien:** los 6 respaldos documentados tienen su cifra, el convenio de signos es igual al de espejos y los números están bien.
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| o | #a05200 | #f0a04a |
+| f | #6b3dbd | #ab8cf2 |
+| i | #0f766e | #3dcdc3 |
+| h | #b02c41 | #f17384 |
+| A | #3d2e00 | #ffdc14 |
+| d | #466d14 | #a3d65e |
+| rayos | #035c8c | #5cb8ff |
+
+- Es la misma paleta que espejos.
+- Antes h y A eran iguales y f–rayos tenía ΔE00 de 17,3 y 15,9. Ahora el mínimo es 22,0 en claro (f–rayos) y 21,5 en oscuro (A–d).
+- AA mínimo: 4,63.
+
+**Pedidos para la integración.**
+1. `npm run catalogo` (0.3.0).
+2. Colores en docs/diseno.md.
+3. En `docs/investigacion/optica-ideas-erroneas.md`:
+   - la tabla «Cruce», opción a, dice «Parcial», pero el código registra hipótesis (un escalón abajo); hay que actualizarla;
+   - conviene confirmar en el PDF de John y otros (2017) qué mitad taparon. Si fue la de abajo, el «46 dijeron mitad de arriba» no corresponde al error de la escena.
 
 ## 7 nov 2026 · Calorimetría 0.2.0: dilatación y transferencia de calor (`plantillas/calorimetria/`)
 

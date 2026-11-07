@@ -92,6 +92,8 @@ b.v-o{ color:var(--c-o) } b.v-f{ color:var(--c-f) } b.v-h{ color:var(--c-h) }
 .eqs{ display:grid; gap:10px; padding:14px; border-radius:8px; background:var(--paper); border:1px solid var(--line); overflow-x:auto }
 .eq{ display:flex; align-items:center; gap:.45em; font-family:var(--mono); font-size:1.1rem; white-space:nowrap; font-variant-numeric:tabular-nums }
 .eq .note{ font-family:var(--body); font-size:.85rem; color:var(--muted); margin-left:.6em; white-space:normal }
+.eq .m{ display:inline-flex; align-items:center; gap:.45em }
+@media (max-width:520px){ .eqs{ padding:12px 10px } .eq{ font-size:.95rem; gap:.3em; flex-wrap:wrap; row-gap:4px; white-space:normal } .eq .note{ flex:1 0 100%; margin-left:0 } }
 .frac{ display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15 }
 .frac > span:first-child{ border-bottom:1.5px solid currentColor; padding:0 .25em; align-self:stretch; text-align:center }
 .frac > span:last-child{ padding:0 .25em }
@@ -130,7 +132,7 @@ input.r-o{ accent-color:var(--c-o) } input.r-f{ accent-color:var(--c-f) } input.
   background:transparent; color:var(--ink); cursor:pointer }
 .nav button.primary{ background:var(--ink); border-color:var(--ink); color:var(--card) }
 .nav button:disabled{ opacity:.4; cursor:not-allowed }
-button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{ outline:2px solid var(--c-f); outline-offset:2px }
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible, canvas:focus-visible{ outline:3px solid var(--ink); outline-offset:2px }
 .hint{ font-size:.88rem; color:var(--muted) }
 </style>
 </head>
@@ -157,6 +159,8 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{ ou
         <span data-var="f"><i style="background:var(--c-f)"></i>f · distancia focal</span>
         <span data-var="i"><i style="background:var(--c-i)"></i>i · distancia de la imagen</span>
         <span data-var="h"><i style="background:var(--c-h)"></i>h · alturas</span>
+        <span data-var="A"><i style="background:var(--c-a)"></i>A · aumento (brillo sobre las flechas)</span>
+        <span><i style="background:var(--ray)"></i>rayos</span>
       </div>
     </section>
     <section class="guide">
@@ -184,6 +188,8 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{ ou
         <span><i style="background:var(--c-i)"></i>i · distancia de cada imagen</span>
         <span><i style="background:var(--c-d)"></i>d · separación entre lentes</span>
         <span><i style="background:var(--c-h)"></i>O, I₁, I₂ · objeto e imágenes (punteada: virtual o que nunca llega a formarse)</span>
+        <span><i style="background:var(--c-a)"></i>A · aumento (brillo sobre las flechas)</span>
+        <span><i style="background:var(--ray)"></i>rayos</span>
       </div>
     </section>
     <section class="guide">
@@ -250,6 +256,31 @@ const ERR_PASO3 = {
   m1: { a: 'objeto-lejano-en-el-foco', c: 'imagen-espejo', d: 'real-virtual' },
   m2: { a: 'E6-una-sola-inversion', c: 'sistema-invertida-menor', d: 'sistema-mismo-tamano' },
 };
+// Rótulos del lienzo sin encimarse (390 px): se encolan mientras se dibuja y al final cada uno toma la primera
+// posición libre de su lista (la suya y las alternativas), sobre una pastilla del color del papel.
+function rotulador(ctx, W, H){
+  const cola = [], ocupado = [];
+  const choca = (r, q) => r[0] < q[2] && q[0] < r[2] && r[1] < q[3] && q[1] < r[3];
+  return {
+    obstaculo(x1, y1, x2, y2){ ocupado.push([Math.min(x1,x2), Math.min(y1,y2), Math.max(x1,x2), Math.max(y1,y2)]); },
+    poner(txt, cx, cy, color, font, alts){ cola.push({ txt, cx, cy, color, font, alts: alts || [] }); },
+    dibujar(papel){
+      for (const q of cola){
+        ctx.font = q.font;
+        const w = ctx.measureText(q.txt).width + 6, h = 16;
+        const rect = ([x, y]) => { x = Math.max(w/2 + 1, Math.min(W - w/2 - 1, x)); y = Math.max(h/2 + 1, Math.min(H - h/2 - 1, y)); return [x - w/2, y - h/2, x + w/2, y + h/2]; };
+        const cands = [[q.cx, q.cy], ...q.alts].map(rect);
+        const r = cands.find(c => !ocupado.some(o => choca(c, o))) || cands[0];
+        ocupado.push(r);
+        ctx.save(); ctx.globalAlpha = 0.88; ctx.fillStyle = papel; ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(r[0], r[1], w, h, 4); else ctx.rect(r[0], r[1], w, h);
+        ctx.fill(); ctx.restore();
+        ctx.fillStyle = q.color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(q.txt, (r[0] + r[2])/2, (r[1] + r[3])/2 + 1);
+      }
+    }
+  };
+}
 // Aviso para el lector de pantalla (región aria-live de cada modo). Se vacía antes para que repita un mismo texto.
 function decir(id, t){ const el = document.getElementById(id); if (!el) return; el.textContent = ''; setTimeout(() => { el.textContent = t; }, 30); }
 </script>
@@ -261,14 +292,14 @@ const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const F = 10, HO = 4, BASE = 30, XR = 44, YL = 12;
 const S = { step:0, max:0, d:BASE, rays:[0,0,0], pred:null, hl:null,
   show:{obj:false, f:false, img:false, i:false}, active:-1, explore:false, sobre:false };
-let W = 0, H = 0, sx = 1, sy = 1, rayo = null, agarra = false;
+let W = 0, H = 0, sx = 1, sy = 1, rayo = null, agarra = false, rot = null;
 // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
 let compacto = false;
 function compactar(on){ on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === compacto) return; compacto = on; resize(); }
 
 // Signo menos tipográfico (−) y sin «−0»; par() pone entre paréntesis un negativo que va después de un signo.
-const fmt = n => (Math.round(n*10)/10 + 0).toLocaleString('es-PE', {maximumFractionDigits:1}).replace('-','−');
-const fmt2 = n => (Math.round(n*100)/100 + 0).toLocaleString('es-PE', {maximumFractionDigits:2}).replace('-','−');
+const fmt = n => String(Math.round(n*10)/10 + 0).replace('.', ',').replace('-', '−');
+const fmt2 = n => String(Math.round(n*100)/100 + 0).replace('.', ',').replace('-', '−');
 const par = n => Math.round(n*10)/10 < 0 ? `(${fmt(n)})` : fmt(n);
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
 const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
@@ -319,13 +350,13 @@ function arrow(x, h, color, w, dashed){
   line(x0,y0,x0,y1); ctx.setLineDash([]);
   const s = Math.sign(h) || 1, a = 7 + w;
   ctx.beginPath(); ctx.moveTo(x0, y1 - s*2); ctx.lineTo(x0 - a*0.6, y1 + s*a); ctx.lineTo(x0 + a*0.6, y1 + s*a); ctx.closePath(); ctx.fill();
+  if (rot) rot.obstaculo(x0 - a*0.6, y0, x0 + a*0.6, y1);
 }
 function dim(x1, x2, y, color, label, on){
   const a = X(Math.min(x1,x2)), b = X(Math.max(x1,x2)), yy = Y(y);
   glow(on, color); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = on ? 2.6 : 1.5;
-  line(a,yy,b,yy); line(a,yy-5,a,yy+5); line(b,yy-5,b,yy+5);
-  ctx.font = `700 ${on ? 13 : 12}px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-  ctx.fillText(label, (a+b)/2, yy - 4); glow(false);
+  line(a,yy,b,yy); line(a,yy-5,a,yy+5); line(b,yy-5,b,yy+5); glow(false);
+  rot.poner(label, (a+b)/2, yy - 11, color, `700 ${on ? 13 : 12}px ${css('--mono')}`, [[(a+b)/2, yy + 12]]);
 }
 function drawPath(pts, p, color, w){
   const c = pts.map(q => [X(q[0]), Y(q[1])]);
@@ -342,7 +373,7 @@ function drawPath(pts, p, color, w){
 function draw(){
   if (!W) return;
   const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), lens:css('--lens'), paper:css('--paper'),
-    o:css('--c-o'), f:css('--c-f'), i:css('--c-i'), h:css('--c-h'), ray:css('--ray') };
+    o:css('--c-o'), f:css('--c-f'), i:css('--c-i'), h:css('--c-h'), a:css('--c-a'), ray:css('--ray') };
   ctx.clearRect(0,0,W,H);
   ctx.lineWidth = 1; ctx.strokeStyle = c.grid; ctx.setLineDash([]);
   for (let x = -40; x <= 40; x += 5) line(X(x),0,X(x),H);
@@ -356,21 +387,21 @@ function draw(){
 
   const g = geo(S.d), hl = S.hl;
   const {paths} = rayPaths(S.d);
+  rot = rotulador(ctx, W, H);
 
   if (S.show.f){
-    ctx.font = `700 12px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
     [[-2*F,'2F',c.muted],[-F,'F',c.f],[F,'F′',c.f],[2*F,'2F′',c.muted]].forEach(([x,lab,col]) => {
       const on = hl === 'f' && Math.abs(x) === F;
       glow(on, col); ctx.fillStyle = col;
-      ctx.beginPath(); ctx.arc(X(x), Y(0), on ? 5 : 3.5, 0, Math.PI*2); ctx.fill();
-      ctx.fillText(lab, X(x), Y(0) + 7); glow(false);
+      ctx.beginPath(); ctx.arc(X(x), Y(0), on ? 5 : 3.5, 0, Math.PI*2); ctx.fill(); glow(false);
+      rot.poner(lab, X(x), Y(0) + 13, col, `700 12px ${css('--mono')}`, [[X(x), Y(0) - 13], [X(x) - 16, Y(0) + 13], [X(x) + 16, Y(0) + 13]]);
     });
     dim(0, F, -8.5, c.f, `f = ${fmt(F)} cm`, hl === 'f');
   }
 
   if (S.show.obj){
     const onH = hl === 'h' || hl === 'A', mano = S.explore && (S.sobre || agarra);
-    glow(onH || hl === 'o' || mano, c.h); arrow(-S.d, HO, c.h, onH || mano ? 3.4 : 2.4, false); glow(false);
+    glow(onH || hl === 'o' || mano, hl === 'A' ? c.a : c.h); arrow(-S.d, HO, c.h, onH || mano ? 3.4 : 2.4, false); glow(false);
     dim(-S.d, 0, -6.6, c.o, `o = ${fmt(S.d)} cm`, hl === 'o');
   }
 
@@ -393,10 +424,11 @@ function draw(){
     }
     if (Math.abs(g.hi) < YL){
       const onH = hl === 'h' || hl === 'A' || hl === 'i';
-      glow(onH, c.h); arrow(g.di, g.hi, c.h, onH ? 3.4 : 2.4, virt); glow(false);
+      glow(onH, hl === 'A' ? c.a : c.h); arrow(g.di, g.hi, c.h, onH ? 3.4 : 2.4, virt); glow(false);
     }
     if (S.show.i) dim(0, g.di, virt ? 8.6 : -6.6, c.i, `i = ${fmt(Math.abs(g.di))} cm`, hl === 'i');
   }
+  rot.dibujar(c.paper); rot = null;
 }
 function labelRay(k, p, c){
   const a = p[0], b = p[1];
@@ -457,15 +489,15 @@ const steps = [
    <p>Donde los tres rayos se cruzan está la punta de la imagen. Basta con dos rayos; el tercero sirve para comprobar.</p>` },
  { k:'Paso 7', t:'La ecuación es el mismo dibujo', show:{obj:true, f:true, img:true, i:true}, rays:3,
    body:() => `<div class="eqs">
-     <div class="eq">${fr('1',V('f','f'))} = ${fr('1',V('o','o'))} + ${fr('1',V('i','i'))}<span class="note">Ecuación de Descartes para lentes</span></div>
-     <div class="eq">${fr('1',V('f','10'))} = ${fr('1',V('o','30'))} + ${fr('1',V('i','i'))}<span class="note">Reemplazas cada color por su dato</span></div>
+     <div class="eq"><span class="m">${fr('1',V('f','f'))} = ${fr('1',V('o','o'))} + ${fr('1',V('i','i'))}</span><span class="note">Ecuación de Descartes para lentes</span></div>
+     <div class="eq"><span class="m">${fr('1',V('f','10'))} = ${fr('1',V('o','30'))} + ${fr('1',V('i','i'))}</span><span class="note">Reemplazas cada color por su dato</span></div>
      <div class="eq">${fr('1',V('i','i'))} = ${fr('1','10')} − ${fr('1','30')} = ${fr('3','30')} − ${fr('1','30')} = ${fr('2','30')}</div>
-     <div class="eq">${V('i','i')} = 15 cm<span class="note">Positivo: la imagen es real, al otro lado de la lente</span></div>
+     <div class="eq"><span class="m">${V('i','i')} = 15 cm</span><span class="note">Positivo: la imagen es real, al otro lado de la lente</span></div>
    </div>
    <p>Los rayos se cruzaron a 15 cm, entre F′ (10 cm) y 2F′ (20 cm). La ecuación y el dibujo dicen lo mismo. ${S.pred === 'b' ? 'Tu predicción era correcta.' : 'Compara con lo que predijiste en el paso 3.'}</p>` },
  { k:'Paso 8', t:'El tamaño de la imagen', show:{obj:true, f:true, img:true, i:true}, rays:3,
    body:() => `<div class="eqs">
-     <div class="eq">${V('A','A')} = −${fr(V('i','i'),V('o','o'))} = −${fr(V('i','15'),V('o','30'))} = −0,5<span class="note">Aumento</span></div>
+     <div class="eq"><span class="m">${V('A','A')} = −${fr(V('i','i'),V('o','o'))} = −${fr(V('i','15'),V('o','30'))} = −0,5</span><span class="note">Aumento</span></div>
      <div class="eq">${V('h','h<sub>i</sub>')} = ${V('A','A')}·${V('h','h<sub>o</sub>')} = (−0,5)(4 cm) = −2 cm</div>
    </div>
    <p>El signo menos es lo que ves en el dibujo: la imagen está de cabeza. El 0,5 dice que mide la mitad del objeto.</p>
@@ -521,7 +553,7 @@ function unlock(n){ if (n > S.max){ S.max = n; } }
 // Una retroalimentación por opción: qué error refleja y por qué falla. Las tres incorrectas no tienen
 // datos de cuántos alumnos las eligen (docs/investigacion/optica-ideas-erroneas.md): son hipótesis nuestras.
 const FB1 = {
-  a: 'No es ahí. Entre la lente y F′ caería la imagen de un objeto muy lejano, cuyos rayos llegan casi paralelos al eje y se juntan cerca del foco. A 30 cm el objeto no está tan lejos: con 1/i = 1/10 − 1/30, i = 15 cm, más allá de F′. (Que este error venga de confundir «lejos» con «en el infinito» es una hipótesis nuestra.)',
+  a: 'No es ahí. Con un objeto real, una lente convergente nunca forma la imagen entre la lente y F′: aun de un objeto lejanísimo, cuyos rayos llegan casi paralelos al eje, la imagen cae apenas pasando F′. A 30 cm el objeto no está tan lejos: con 1/i = 1/10 − 1/30, i = 15 cm, entre F′ y 2F′. (Que este error venga de confundir «lejos» con «en el infinito» es una hipótesis nuestra.)',
   b: 'Bien. Con el objeto más allá de 2F, la imagen cae entre F′ y 2F′. Ahora veamos por qué con los rayos.',
   c: 'No es ahí. Más allá de 2F′ cae la imagen cuando el objeto está entre F y 2F; aquí está más lejos que 2F, así que la imagen queda más cerca de la lente: i = 15 cm, entre F′ y 2F′. Tampoco se copia la distancia del objeto, como en un espejo plano. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)',
   d: 'No es ahí. Del lado del objeto solo cae la imagen virtual, cuando el objeto está más cerca que F (una lupa). A 30 cm los rayos sí se cruzan detrás de la lente: la imagen es real. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)'
@@ -537,7 +569,8 @@ function setupPred(){
   btns.forEach(b => b.addEventListener('click', () => { if (S.pred) return; S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots();
     $('fb').focus({ preventScroll:true });
     registrarPrediccion('una-lente-paso3', S.pred, S.pred === 'b', ERR_PASO3.m1[S.pred], 'hipotesis', t0);
-    const paso = S.step; compactar(false); Celular.alResponder(cv, draw, () => S.step === paso); }));
+    // En el celular, la retroalimentación queda a la vista (el dibujo no cambia al responder).
+    compactar(false); draw(); $('fb').scrollIntoView({ block:'nearest', behavior: RM ? 'auto' : 'smooth' }); }));
   paint();
 }
 // Un paso bloqueado no anuncia su título: se lee «Paso N, bloqueado».
@@ -582,15 +615,17 @@ Celular.arrastre(cv, {
 function renderLive(){
   const g = geo(S.d), live = $('live');
   if (g.inf){
-    live.innerHTML = `<div class="eqs"><div class="eq">${fr('1',V('f','10'))} = ${fr('1',V('o','10'))} + ${fr('1',V('i','i'))} → ${fr('1',V('i','i'))} = 0</div></div>
-    <p>Con el objeto justo en el foco, los rayos salen paralelos y nunca se cruzan. No se forma imagen (o se forma "en el infinito").</p>`;
+    live.innerHTML = `<div class="eqs"><div class="eq">${fr('1',V('f','10'))} = ${fr('1',V('o','10'))} + ${fr('1',V('i','i'))}</div><div class="eq">${fr('1',V('i','i'))} = 0</div></div>
+    <p>Con el objeto justo en el foco, los rayos salen paralelos y nunca se cruzan. No se forma imagen (o se forma «en el infinito»).</p>`;
     return;
   }
   const real = g.di > 0, inv = g.m < 0, am = Math.abs(g.m);
   const size = Math.abs(am - 1) < 0.02 ? 'Del mismo tamaño' : (am > 1 ? 'Más grande' : 'Más pequeña');
   live.innerHTML = `<div class="eqs">
-    <div class="eq">${fr('1',V('f','10'))} = ${fr('1',V('o',fmt(S.d)))} + ${fr('1',V('i','i'))} → ${V('i','i')} = ${fmt(g.di)} cm</div>
-    <div class="eq">${V('A','A')} = −${fr(V('i',par(g.di)),V('o',fmt(S.d)))} = ${fmt2(g.m)} → ${V('h','h<sub>i</sub>')} = ${fmt(g.hi)} cm</div>
+    <div class="eq">${fr('1',V('f','10'))} = ${fr('1',V('o',fmt(S.d)))} + ${fr('1',V('i','i'))}</div>
+    <div class="eq">${V('i','i')} = ${fmt(g.di)} cm</div>
+    <div class="eq">${V('A','A')} = −${fr(V('i',par(g.di)),V('o',fmt(S.d)))} = ${fmt2(g.m)}</div>
+    <div class="eq">${V('h','h<sub>i</sub>')} = ${fmt(g.hi)} cm</div>
   </div>
   <div class="chips">
     <span class="chip ${real ? 'real' : 'virt'}">${real ? 'Real' : 'Virtual'}</span>
@@ -630,7 +665,7 @@ const YL = 10, HO = 2, LH = 7.5;
 const PROBP = { n:2, o1:15, d:[50,30], f:[10,10,-10] };
 const EXP   = { n:2, o1:15, d:[50,30], f:[10,10,-10] };
 const S = { step:0, max:0, pred:null, hl:null, reveal:-1e9, imgs:0, dims:[], explore:false, sobre:false };
-let W = 0, H = 0, sx = 1, sy = 1, XMIN = -22, XMAX = 78, rev = null, agarra = false;
+let W = 0, H = 0, sx = 1, sy = 1, XMIN = -22, XMAX = 78, rev = null, agarra = false, rot = null;
 // Mientras se arrastra el objeto, el marco del banco queda fijo (si no, el banco se movería bajo el dedo).
 let marco = null;
 // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
@@ -639,8 +674,9 @@ function compactar(on){ on = !!on; Celular.compactar(cv.closest('.mode'), on); i
 const SUB = ['₀','₁','₂','₃'];
 
 const r1 = n => Math.round(n*10)/10 + 0, r2 = n => Math.round(n*100)/100 + 0;
-const fmt = n => r1(n).toLocaleString('es-PE',{maximumFractionDigits:1}).replace('-','−');
-const fmt2 = n => r2(n).toLocaleString('es-PE',{maximumFractionDigits:2}).replace('-','−');
+// Coma decimal y signo menos tipográfico (toLocaleString('es-PE') da punto en Chromium).
+const fmt = n => String(r1(n)).replace('.', ',').replace('-', '−');
+const fmt2 = n => String(r2(n)).replace('.', ',').replace('-', '−');
 const par = n => r1(n) < 0 ? `(${fmt(n)})` : fmt(n);
 const V = (key, cls, t) => `<span class="v v-${cls}" data-var="${key}" tabindex="0">${t}</span>`;
 const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
@@ -684,15 +720,15 @@ function arrow(x, h, color, w, dashed, label){
   line(x0,y0,x0,y1); ctx.setLineDash([]);
   const s = Math.sign(h) || 1, a = 6 + w;
   ctx.beginPath(); ctx.moveTo(x0, y1 - s*2); ctx.lineTo(x0 - a*0.6, y1 + s*a); ctx.lineTo(x0 + a*0.6, y1 + s*a); ctx.closePath(); ctx.fill();
-  ctx.font = `700 12px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = s > 0 ? 'bottom' : 'top';
-  ctx.fillText(label, x0, y1 - s*6);
+  rot.obstaculo(x0 - a*0.6, y0, x0 + a*0.6, y1);
+  const cy = y1 - s*14;
+  rot.poner(label, x0, cy, color, `700 12px ${css('--mono')}`, [[x0 - 18, cy], [x0 + 18, cy], [x0 - 18, y1 + s*4], [x0 + 18, y1 + s*4], [x0, cy - s*16]]);
 }
 function dim(x1, x2, y, color, label, on){
   const a = X(Math.min(x1,x2)), b = X(Math.max(x1,x2)), yy = Y(y);
   glow(on, color); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = on ? 2.6 : 1.5;
-  line(a,yy,b,yy); line(a,yy-5,a,yy+5); line(b,yy-5,b,yy+5);
-  ctx.font = `700 ${on ? 13 : 12}px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-  ctx.fillText(label, (a+b)/2, yy - 4); glow(false);
+  line(a,yy,b,yy); line(a,yy-5,a,yy+5); line(b,yy-5,b,yy+5); glow(false);
+  rot.poner(label, (a+b)/2, yy - 11, color, `700 ${on ? 13 : 12}px ${css('--mono')}`, [[(a+b)/2, yy + 12]]);
 }
 function lens(L, k, c){
   const x = X(L.x), top = Y(LH), bot = Y(-LH), w = Math.max(5, Math.min(9, 0.8*sx));
@@ -705,8 +741,7 @@ function lens(L, k, c){
   }
   ctx.save(); ctx.globalAlpha = 0.28; ctx.fillStyle = c.lens; ctx.fill(); ctx.restore();
   ctx.strokeStyle = c.lens; ctx.lineWidth = 1.5; ctx.stroke();
-  ctx.fillStyle = c.muted; ctx.font = `700 12px ${css('--mono')}`; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
-  ctx.fillText(`L${SUB[k+1]}`, x + w + 3, top + 4);
+  rot.poner(`L${SUB[k+1]}`, x + w + 12, top - 2, c.muted, `700 12px ${css('--mono')}`, [[x - w - 12, top - 2], [x + w + 12, bot + 4], [x - w - 12, bot + 4]]);
 }
 
 function draw(){
@@ -720,9 +755,10 @@ function draw(){
   } else { XMIN = -22; XMAX = 78; }
   sx = W/(XMAX - XMIN);
   const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), lens:css('--lens'), paper:css('--paper'),
-    o:css('--c-o'), f:css('--c-f'), i:css('--c-i'), h:css('--c-h'), d:css('--c-d'), ray:css('--ray') };
+    o:css('--c-o'), f:css('--c-f'), i:css('--c-i'), h:css('--c-h'), a:css('--c-a'), d:css('--c-d'), ray:css('--ray') };
   const hl = S.hl;
   ctx.clearRect(0,0,W,H); ctx.setLineDash([]); ctx.globalAlpha = 1;
+  rot = rotulador(ctx, W, H);
   ctx.lineWidth = 1; ctx.strokeStyle = c.grid;
   for (let x = Math.ceil(XMIN/5)*5; x <= XMAX; x += 5) line(X(x),0,X(x),H);
   for (let y = -8; y <= 8; y += 2) line(0,Y(y),W,Y(y));
@@ -730,13 +766,12 @@ function draw(){
 
   sys.lenses.forEach((L,k) => lens(L, k, c));
 
-  ctx.font = `700 11px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
   sys.lenses.forEach((L,k) => {
     const a = Math.abs(L.f), on = hl === 'f' + (k+1);
     [[L.x - a, `F${SUB[k+1]}`],[L.x + a, `F${SUB[k+1]}′`]].forEach(([x,lab]) => {
       glow(on, c.f); ctx.fillStyle = c.f;
-      ctx.beginPath(); ctx.arc(X(x), Y(0), on ? 5 : 3.2, 0, Math.PI*2); ctx.fill();
-      ctx.fillText(lab, X(x), Y(0) + 6); glow(false);
+      ctx.beginPath(); ctx.arc(X(x), Y(0), on ? 5 : 3.2, 0, Math.PI*2); ctx.fill(); glow(false);
+      rot.poner(lab, X(x), Y(0) + 12, c.f, `700 11px ${css('--mono')}`, [[X(x), Y(0) - 12], [X(x) - 14, Y(0) + 12], [X(x) + 14, Y(0) + 12]]);
     });
   });
 
@@ -771,9 +806,10 @@ function draw(){
     const dashed = ck.i < 0 || (nextL && ck.x > nextL.x);
     const on = hl === 'h' || hl === 'A' || hl === 'i' + (k+1);
     ctx.globalAlpha = isLast || on ? 1 : 0.75;
-    glow(on, c.h); arrow(ck.x, ck.h, c.h, on ? 3.4 : (isLast ? 2.6 : 1.8), dashed, `I${SUB[k+1]}`); glow(false);
+    glow(on, hl === 'A' ? c.a : c.h); arrow(ck.x, ck.h, c.h, on ? 3.4 : (isLast ? 2.6 : 1.8), dashed, `I${SUB[k+1]}`); glow(false);
     ctx.globalAlpha = 1;
   });
+  rot.dibujar(c.paper); rot = null;
 }
 
 // Los rayos avanzan con Celular.bucle: se duerme cuando nada se mueve o el lienzo no se ve.
@@ -797,7 +833,8 @@ function pararTodo(){ if (rev){ const l = rev.listo; S.reveal = rev.b; rev = nul
 addEventListener('modo', () => { if (cv.offsetParent === null){ pararTodo(); draw(); } });
 
 const L1 = 'L<sub>1</sub>', L2 = 'L<sub>2</sub>', I1 = 'I<sub>1</sub>', I2 = 'I<sub>2</sub>';
-const sub = (b, n) => `${b}<sub>${n}</sub>`;
+// En un span: el gap de .eq no separa la letra de su subíndice («A 1»).
+const sub = (b, n) => `<span>${b}<sub>${n}</sub></span>`;
 const steps = [
  { k:'Paso 1', t:'El problema', reveal:-1e9, imgs:0, dims:['o1','d'],
    body:() => `<p class="problem">Un objeto de ${V('h','h','2 cm')} de altura está a ${V('o1','o','15 cm')} de una lente convergente ${L1} de distancia focal ${V('f1','f','10 cm')}. A ${V('d','d','50 cm')} de ${L1} hay una segunda lente convergente ${L2}, también de ${V('f2','f','10 cm')}. ¿Dónde se forma la imagen final y cómo es?</p>
@@ -820,32 +857,35 @@ const steps = [
    </div><p class="fb" id="fb2" tabindex="-1"></p>` },
  { k:'Paso 4', t:'Lente 1: la primera imagen', imgs:0, dims:['o1','i1'], anim:{from:-16, to:50, imgs:1, end:50},
    body:() => `<div class="eqs">
-     <div class="eq">${fr('1',V('f1','f',sub('f',1)))} = ${fr('1',V('o1','o',sub('o',1)))} + ${fr('1',V('i1','i',sub('i',1)))}<span class="note">Descartes para ${L1}</span></div>
+     <div class="eq"><span class="m">${fr('1',V('f1','f',sub('f',1)))} = ${fr('1',V('o1','o',sub('o',1)))} + ${fr('1',V('i1','i',sub('i',1)))}</span><span class="note">Descartes para ${L1}</span></div>
      <div class="eq">${fr('1',V('f1','f','10'))} = ${fr('1',V('o1','o','15'))} + ${fr('1',V('i1','i',sub('i',1)))}</div>
      <div class="eq">${fr('1',V('i1','i',sub('i',1)))} = ${fr('3','30')} − ${fr('2','30')} = ${fr('1','30')}</div>
-     <div class="eq">${V('i1','i',sub('i',1))} = 30 cm<span class="note">Real: los rayos se cruzan de verdad entre las dos lentes</span></div>
-     <div class="eq">${V('A','A',sub('A',1))} = −${fr('30','15')} = −2 → ${V('h','h',sub('h',1))} = (−2)(2 cm) = −4 cm</div>
+     <div class="eq"><span class="m">${V('i1','i',sub('i',1))} = 30 cm</span><span class="note">Real: los rayos se cruzan de verdad entre las dos lentes</span></div>
+     <div class="eq">${V('A','A',sub('A',1))} = −${fr('30','15')} = −2</div>
+     <div class="eq">${V('h','h',sub('h',1))} = ${V('A','A',sub('A',1))}·${V('h','h',sub('h','o'))} = (−2)(2 cm) = −4 cm</div>
    </div>
    <p>${I1} sale de cabeza y del doble del tamaño. Los rayos se cruzan en ${I1} y siguen de largo hacia ${L2}.</p>` },
  { k:'Paso 5', t:'La imagen pasa a ser objeto', reveal:50, imgs:1, dims:['i1','d','o2'],
    body:() => `<div class="eqs">
-     <div class="eq">${V('o2','o',sub('o',2))} = ${V('d','d','d')} − ${V('i1','i',sub('i',1))} = 50 − 30 = 20 cm<span class="note">Distancia de ${I1} a ${L2}</span></div>
+     <div class="eq"><span class="m">${V('o2','o',sub('o',2))} = ${V('d','d','d')} − ${V('i1','i',sub('i',1))} = 50 − 30 = 20 cm</span><span class="note">Distancia de ${I1} a ${L2}</span></div>
    </div>
    <p>Para ${L2}, ${I1} es un objeto como cualquier otro. A ${L2} le da igual que la luz salga de una vela o de una imagen: lo que le llega son rayos que salen de ese punto.</p>
    <p class="hint">Si ${I1} cayera más allá de ${L2}, o<sub>2</sub> saldría negativo. Eso se llama objeto virtual: los rayos llegan a ${L2} juntándose hacia un punto al que nunca llegan. Lo puedes probar en el paso 8.</p>` },
  { k:'Paso 6', t:'Lente 2: la imagen final', imgs:1, dims:['o2','i2'], anim:{from:50, to:80, imgs:2, end:Infinity},
    body:() => `<div class="eqs">
-     <div class="eq">${fr('1',V('f2','f',sub('f',2)))} = ${fr('1',V('o2','o',sub('o',2)))} + ${fr('1',V('i2','i',sub('i',2)))}<span class="note">Descartes para ${L2}</span></div>
+     <div class="eq"><span class="m">${fr('1',V('f2','f',sub('f',2)))} = ${fr('1',V('o2','o',sub('o',2)))} + ${fr('1',V('i2','i',sub('i',2)))}</span><span class="note">Descartes para ${L2}</span></div>
      <div class="eq">${fr('1',V('f2','f','10'))} = ${fr('1',V('o2','o','20'))} + ${fr('1',V('i2','i',sub('i',2)))}</div>
      <div class="eq">${fr('1',V('i2','i',sub('i',2)))} = ${fr('2','20')} − ${fr('1','20')} = ${fr('1','20')}</div>
-     <div class="eq">${V('i2','i',sub('i',2))} = 20 cm<span class="note">Real, a la derecha de ${L2}</span></div>
-     <div class="eq">${V('A','A',sub('A',2))} = −${fr('20','20')} = −1 → ${V('h','h',sub('h',2))} = (−1)(−4 cm) = +4 cm</div>
+     <div class="eq"><span class="m">${V('i2','i',sub('i',2))} = 20 cm</span><span class="note">Real, a la derecha de ${L2}</span></div>
+     <div class="eq">${V('A','A',sub('A',2))} = −${fr('20','20')} = −1</div>
+     <div class="eq">${V('h','h',sub('h',2))} = ${V('A','A',sub('A',2))}·${V('h','h',sub('h',1))} = (−1)(−4 cm) = +4 cm</div>
    </div>
    <p>${L2} voltea la imagen otra vez. Lo que estaba de cabeza vuelve a quedar derecho.</p>` },
  { k:'Paso 7', t:'El aumento total', reveal:Infinity, imgs:2, dims:['o1','i1','o2','i2'],
    body:() => `<div class="eqs">
-     <div class="eq">${V('A','A','A')} = A<sub>1</sub> · A<sub>2</sub> = (−2)(−1) = +2<span class="note">Positivo: derecha. Mayor que 1: más grande</span></div>
-     <div class="eq">${V('h','h','h<sub>final</sub>')} = A · h<sub>o</sub> = (+2)(2 cm) = 4 cm</div>
+     <div class="eq"><span class="m">${V('A','A','A')} = ${sub('A',1)} · ${sub('A',2)} = (−2)(−1) = +2</span><span class="note">Positivo: derecha. Mayor que 1: más grande</span></div>
+     <div class="eq">${V('h','h',sub('h','final'))} = ${V('A','A','A')} · ${V('h','h',sub('h','o'))}</div>
+     <div class="eq">${V('h','h',sub('h','final'))} = (+2)(2 cm) = 4 cm</div>
    </div>
    <p>${S.pred === 'b' ? 'Tu predicción era correcta: dos inversiones se cancelan.' : 'Compara con lo que predijiste en el paso 3: cada lente invierte una vez, y dos inversiones se cancelan.'}</p>
    <p class="answer">Respuesta: la imagen final se forma 20 cm a la derecha de ${L2} (70 cm de ${L1}). Es real, derecha y mide 4 cm, el doble del objeto.</p>` },
@@ -868,7 +908,7 @@ function explorerHTML(){
         <button type="button" data-k="${k}" data-t="-1" aria-pressed="${!conv}">Divergente</button></div>
       <div class="slider"><label for="e-f${k}"><span>Focal ${V('f'+(k+1),'f','f<sub>'+(k+1)+'</sub>')}</span><output id="e-f${k}-out"></output></label>
       <input id="e-f${k}" class="r-f" type="range" min="4" max="25" step="0.5" value="${Math.abs(EXP.f[k])}"></div>`;
-    if (k > 0) h += `<div class="slider"><label for="e-d${k}"><span>Distancia ${V('d','d','d')} desde L${SUB[k]}</span><output id="e-d${k}-out"></output></label>
+    if (k > 0) h += `<div class="slider"><label for="e-d${k}"><span>Distancia ${V('d'+k+(k+1),'d',sub('d',`${k}${k+1}`))} desde L${SUB[k]}</span><output id="e-d${k}-out"></output></label>
       <input id="e-d${k}" class="r-d" type="range" min="2" max="70" step="0.5" value="${EXP.d[k-1]}"></div>`;
     h += `</fieldset>`;
   }
@@ -906,19 +946,22 @@ function renderLive(){
   ch.forEach((c, k) => {
     const n = k + 1, s = n;
     if (k > 0){
-      const pv = ch[k-1], dn = `d<sub>${k}${k+1}</sub>`;
-      eq += `<div class="eq">${V('o'+n,'o',sub('o',s))} = ${dn} − ${V('i'+k,'i',sub('i',k))} = ${fmt(EXP.d[k-1])} − ${par(pv.i)} = ${fmt(c.o)} cm<span class="note">${c.o < 0 ? 'Objeto virtual' : 'Objeto real'}</span></div>`;
+      const pv = ch[k-1], dn = V('d'+k+(k+1), 'd', sub('d', `${k}${k+1}`));
+      eq += `<div class="eq">${V('o'+n,'o',sub('o',s))} = ${dn} − ${V('i'+k,'i',sub('i',k))}</div>
+        <div class="eq"><span class="m">${V('o'+n,'o',sub('o',s))} = ${fmt(EXP.d[k-1])} − ${par(pv.i)} = ${fmt(c.o)} cm</span><span class="note">${c.o < 0 ? 'Objeto virtual' : 'Objeto real'}</span></div>`;
       if (c.o < 0) notes.push(`I<sub>${k}</sub> cae detrás de L<sub>${n}</sub>, así que o<sub>${n}</sub> es negativo: objeto virtual. Los rayos llegan a L<sub>${n}</sub> juntándose hacia I<sub>${k}</sub> (línea punteada) pero L<sub>${n}</sub> los desvía antes de que se crucen.`);
     }
-    if (c.inf){ eq += `<div class="eq">o<sub>${n}</sub> = f<sub>${n}</sub> → los rayos salen paralelos</div>`; return; }
-    eq += `<div class="eq">${fr('1',V('f'+n,'f',par(c.L.f)))} = ${fr('1',V('o'+n,'o',par(c.o)))} + ${fr('1',V('i'+n,'i',sub('i',s)))} → ${V('i'+n,'i',sub('i',s))} = ${fmt(c.i)} cm<span class="note">A<sub>${n}</sub> = ${fmt2(c.m)}</span></div>`;
+    if (c.inf){ eq += `<div class="eq">${V('o'+n,'o',sub('o',n))} = ${V('f'+n,'f',sub('f',n))}</div><div class="eq">Los rayos salen paralelos</div>`; return; }
+    eq += `<div class="eq">${fr('1',V('f'+n,'f',par(c.L.f)))} = ${fr('1',V('o'+n,'o',par(c.o)))} + ${fr('1',V('i'+n,'i',sub('i',s)))}</div>
+      <div class="eq"><span class="m">${V('i'+n,'i',sub('i',s))} = ${fmt(c.i)} cm</span><span class="note">${sub('A',n)} = ${fmt2(c.m)}</span></div>`;
   });
   const done = ch.length === sys.lenses.length && !ch[ch.length - 1].inf;
   let out = `<div class="eqs">${eq}`;
   if (done){
     const A = ch.reduce((p, c) => p*c.m, 1), last = ch[ch.length - 1], nL = ch.length;
     const prod = ch.map(c => r2(c.m) < 0 ? `(${fmt2(c.m)})` : fmt2(c.m)).join(' · ');
-    out += `<div class="eq">${V('A','A','A')} = ${prod} = ${fmt2(A)} → ${V('h','h','h<sub>final</sub>')} = ${fmt(A*HO)} cm</div></div>`;
+    out += `<div class="eq">${V('A','A','A')} = ${prod} = ${fmt2(A)}</div>
+      <div class="eq">${V('h','h',sub('h','final'))} = ${fmt(A*HO)} cm</div></div>`;
     const real = last.i > 0, am = Math.abs(A);
     const size = Math.abs(am - 1) < 0.02 ? 'Del mismo tamaño' : (am > 1 ? 'Más grande' : 'Más pequeña');
     out += `<div class="chips"><span class="chip ${real ? 'real' : 'virt'}">${real ? 'Real' : 'Virtual'}</span>
@@ -977,7 +1020,7 @@ function updateNav(){
 const FB2 = {
   a: 'No es esa. Es pensar que «la lente voltea la imagen» y quedarse con una sola vuelta. Aquí la luz pasa por dos lentes que forman imagen real, y cada una la invierte: dos inversiones se cancelan y la imagen final queda derecha. (Hipótesis nuestra, a partir de una idea errónea descrita sin cifras: la imagen como algo que la lente voltea.)',
   b: 'Bien. Cada lente invierte la imagen y dos inversiones se cancelan. Veamos el tamaño con los números.',
-  c: 'No es esa. Invertida y más pequeña es lo que da una sola lente con el objeto lejos, más allá de 2F. Aquí el objeto está entre F y 2F de la primera lente, así que I₁ sale más grande, y la segunda lente la vuelve a voltear: la imagen final queda derecha. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)',
+  c: 'No es esa. Invertida y más pequeña es lo que da una sola lente con el objeto lejos, más allá de 2F. Aquí el objeto está entre F y 2F de la primera lente, así que I₁ sale más grande (el doble), y la segunda, con I₁ justo en su 2F, la deja del mismo tamaño y la vuelve a voltear: la imagen final queda derecha y más grande. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)',
   d: 'No es esa. Que salga derecha es correcto: dos inversiones se cancelan. Pero el tamaño no vuelve al del objeto: los aumentos se multiplican, y con el primero de −2 y el segundo de −1, la imagen final mide el doble. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)'
 };
 function setupPred(){
@@ -991,7 +1034,8 @@ function setupPred(){
   btns.forEach(b => b.addEventListener('click', () => { if (S.pred) return; S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots();
     $('fb2').focus({ preventScroll:true });
     registrarPrediccion('sistema-paso3', S.pred, S.pred === 'b', ERR_PASO3.m2[S.pred], 'hipotesis', t0);
-    const paso = S.step; compactar(false); Celular.alResponder(cv, draw, () => S.step === paso); }));
+    // En el celular, la retroalimentación queda a la vista (el dibujo no cambia al responder).
+    compactar(false); draw(); $('fb2').scrollIntoView({ block:'nearest', behavior: RM ? 'auto' : 'smooth' }); }));
   paint();
 }
 $('next2').addEventListener('click', () => { unlock(S.step + 1); go(S.step + 1); if ($('next2').disabled) $('stepT2').focus({ preventScroll:true }); });
@@ -999,6 +1043,8 @@ $('prev2').addEventListener('click', () => { go(S.step - 1); if ($('prev2').disa
 
 // Arrastre del objeto O en el paso 8 (nucleo/celular.js): solo captura cerca de la flecha; lejos, el dedo desplaza la página.
 function cercaObjeto(p, r){
+  // Chromium manda pointerdown antes que touchstart: si el arrastre ya empezó (y el marco cambió), el toque sigue siendo nuestro.
+  if (agarra) return true;
   const x = X(-EXP.o1), y1 = Math.min(Y(HO), Y(0)), y2 = Math.max(Y(HO), Y(0));
   const dy = p.y < y1 ? y1 - p.y : p.y > y2 ? p.y - y2 : 0;
   return Math.hypot(p.x - x, dy) < r;
@@ -1006,7 +1052,7 @@ function cercaObjeto(p, r){
 Celular.arrastre(cv, {
   activo: () => S.explore,
   cerca: cercaObjeto,
-  empezar: () => { agarra = true; marco = { xmin: XMIN, xmax: XMAX }; cv.classList.add('agarrando'); draw(); },
+  empezar: () => { agarra = true; marco = { xmin: -47, xmax: XMAX }; cv.classList.add('agarrando'); draw(); },
   mover: p => {
     const sl = $('e-o1'); if (!sl) return;
     const x = Math.max(marco.xmin + 1, XMIN + p.x/sx);
@@ -1055,7 +1101,7 @@ let compacto = false;
 function compactar(on){ on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === compacto) return; compacto = on; resize(); }
 const X = x => W*0.5 + x*sx, Y = y => H/2 - y*sy;
 const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
-const fmt = n => n.toLocaleString('es-PE', {maximumFractionDigits:1});
+const fmt = n => String(Math.round(n*10)/10 + 0).replace('.', ',').replace('-', '−');
 
 // Estado de la escena: lo cambia cada experimento después de la predicción.
 const E = { tapa:null, pantalla:true, xp:IMG.i, D:D0 };
@@ -1083,19 +1129,19 @@ const EXPS = [
             'No. Es pensar que la pantalla «atrapa» la imagen o la fabrica. Los rayos se cruzan en el mismo punto haya o no pantalla: la imagen real sigue ahí, en el aire. La pantalla solo esparce esa luz para que la veas desde cualquier lugar.'],
           ['b','Sigue ahí, en el mismo lugar',null,'',
             'Bien. Los rayos se siguen cruzando en el mismo punto: la imagen real está ahí, en el aire. La pantalla solo esparce la luz para que la veas desde cualquier lado.'],
-          ['c','Se vuelve más brillante','E2-mas-brillante','hipotesis',
-            'No. Es pensar que la pantalla le quita luz a la imagen. La lente manda la misma luz al mismo punto, con pantalla o sin ella; lo que cambia es que, sin pantalla, la luz no se esparce y solo la ves si pones el ojo donde llegan esos rayos. (Que alguien elija esta opción es una hipótesis nuestra: no tenemos datos.)']],
+          ['c','Se forma en otro lugar, más cerca de la lente','E2-se-mueve','hipotesis',
+            'No. Es pensar que la pantalla decide dónde queda la imagen. Los rayos de cada punto se cruzan siempre en el mismo lugar, a 15 cm, haya o no pantalla: la imagen sigue ahí, en el aire. (Que alguien elija esta opción es una hipótesis nuestra: no tenemos datos.)']],
     ok:'b', aplicar:() => { E.pantalla = false; },
     ctrl:() => `<div class="seg" role="group" aria-label="Pantalla"><button type="button" data-pant="0">Sin pantalla</button><button type="button" data-pant="1">Con pantalla</button></div>`,
-    exp:`<p>Los rayos se cruzan en el mismo punto haya o no pantalla: la imagen real está ahí, en el aire. La pantalla no la "atrapa"; solo desvía la luz hacia todos lados para que la veas desde cualquier lugar. Sin pantalla, la ves si pones el ojo más allá de la imagen, mirando hacia la lente, donde llegan esos rayos.</p>
+    exp:`<p>Los rayos se cruzan en el mismo punto haya o no pantalla: la imagen real está ahí, en el aire. La pantalla no la «atrapa»; solo desvía la luz hacia todos lados para que la veas desde cualquier lugar. Sin pantalla, la ves si pones el ojo más allá de la imagen, mirando hacia la lente, donde llegan esos rayos.</p>
       <p class="hint">En el mismo estudio con 70 escolares (John, Molepo y Chirwa, 2017), cerca de cuatro de cada cinco (56) dijeron que la imagen desaparece; solo 2 acertaron. La idea ya la habían descrito Galili, Bendall y Goldberg (1993).</p>` },
   { id:'correr', corto:'Correr la pantalla',
     q:'La imagen se ve nítida con la pantalla a 15 cm de la lente. Si <b>alejas la pantalla</b> hasta 25 cm, ¿qué ves en ella?',
     opts:[['a','La misma imagen, más grande y nítida','E5-pantalla-cualquier-lado','parcial',
-            'No. Es pensar que la imagen «viaja» con la pantalla y solo crece al alejarla, como la de un proyector. Pero hay una sola distancia donde los rayos de cada punto se juntan: i = 15 cm. A 25 cm ya se separaron, y cada punto deja una mancha: la imagen se ve borrosa.'],
+            'No. Es pensar que la imagen «viaja» con la pantalla y solo crece al alejarla. Pero hay una sola distancia donde los rayos de cada punto se juntan: i = 15 cm. A 25 cm ya se separaron, y cada punto deja una mancha: la imagen se ve borrosa.'],
           ['b','La misma imagen, sin ningún cambio','E5-no-cambia','hipotesis',
             'No. Es pensar que la imagen no depende de dónde esté la pantalla. Los rayos de cada punto se juntan solo a 15 cm; a 25 cm llegan separados y dejan manchas que se enciman: la imagen se ve borrosa. (Que alguien elija esta opción es una hipótesis nuestra: no tenemos datos.)'],
-          ['c','Una mancha borrosa',null,'',
+          ['c','La misma imagen, pero borrosa',null,'',
             'Bien. Los rayos de cada punto se juntan solo a 15 cm. A 25 cm ya se separaron: cada punto deja una mancha y la imagen se ve borrosa.']],
     ok:'c', aplicar:() => { E.xp = 25; },
     ctrl:() => `<div class="slider"><label for="xp3"><span>Pantalla a</span><output id="xp3-out"></output></label><input id="xp3" type="range" min="6" max="36" step="0.5" value="${E.xp}"></div><p id="xp3-info" class="hint"></p>`,
@@ -1114,7 +1160,7 @@ const EXPS = [
     ok:'d', aplicar:() => { E.D = 2*D0; },
     ctrl:() => `<div class="slider"><label for="d3"><span>Ancho de la lente</span><output id="d3-out"></output></label><input id="d3" type="range" min="4" max="18" step="0.5" value="${E.D}"></div><p id="d3-info" class="hint"></p>`,
     exp:`<p>El tamaño y el lugar de la imagen dependen solo de f y de o (la ecuación no tiene el ancho de la lente). Una lente más ancha recoge más rayos de cada punto del objeto y los manda al mismo punto imagen: la imagen sale <b>más brillante</b>. Si la lente es redonda, el doble de ancho junta 4 veces más luz.</p>
-      <p class="hint">De 70 escolares (John, Molepo y Chirwa, 2017), cerca de un tercio (25) dijo «más grande», 6 «más pequeña» y 12 «no cambia nada»; solo 18 dijeron «más brillante».</p>` },
+      <p class="hint">De 70 escolares (John, Molepo y Chirwa, 2017), algo más de un tercio (25) dijo «más grande», 6 «más pequeña» y 12 «no cambia nada»; solo 18 dijeron «más brillante».</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now(), sobre:false };
 let agarra = false;
