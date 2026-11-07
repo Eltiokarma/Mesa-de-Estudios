@@ -1,0 +1,171 @@
+{
+  "titulo": "Enlace químico y geometría molecular: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Electrones de valencia: suma los de cada átomo; a un anión súmale su carga y a un catión réstasela. Dominios del átomo central = átomos unidos + pares libres (un enlace doble o triple cuenta como un solo dominio). Hibridación por dominios: 2 sp, 3 sp², 4 sp³, 5 sp³d, 6 sp³d². La forma de la molécula solo mira dónde están los átomos, pero los pares libres también ocupan lugar. Polaridad: dibuja una flecha por enlace hacia el átomo más electronegativo y súmalas en 3D, no en el dibujo del papel. Electronegatividades de Pauling: H 2,20; C 2,55; N 3,04; O 3,44; F 3,98; Na 0,93; K 0,82; Cl 3,16; B 2,04; P 2,19; S 2,58; Xe 2,60. Tipo de enlace por diferencia de electronegatividad: 1,7 o más, iónico; de 0,4 a menos de 1,7, covalente polar; menos de 0,4, covalente apolar (es una guía: el paso es gradual).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dibuja la estructura de Lewis del ion hidronio, H₃O⁺. ¿Cuántos electrones de valencia tiene? ¿Cuántos pares libres quedan en el O? ¿Qué forma tiene?",
+      "respuesta": "8 electrones de valencia; 1 par libre en el O; piramidal trigonal (AX₃E).",
+      "pasos": [
+        "Electrones de valencia: O aporta 6 y cada H, 1: 6 + 3 = 9. Es un catión de carga 1+, así que le falta un electrón: 9 − 1 = 8.",
+        "Tres enlaces O–H usan 3 pares (6 electrones). Quedan 8 − 6 = 2 electrones: 1 par libre en el O.",
+        "El O tiene 4 dominios (3 enlaces y 1 par libre): AX₃E. Los dominios apuntan a los vértices de un tetraedro, pero la forma solo mira a los átomos: piramidal trigonal, como el NH₃."
+      ],
+      "verificar": [
+        { "fn": "lewis", "args": ["H3O^+"], "espera": { "electrones": 8, "paresLibres": 1, "cfCentral": 1 } },
+        { "fn": "vsepr", "args": ["H3O^+"], "espera": { "AXE": "AX3E", "geometria": "piramidal trigonal" } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En el ion carbonato, CO₃²⁻, el carbono es el átomo central. ¿Cuántos electrones de valencia hay que repartir? ¿Cuántas estructuras de resonancia tiene y qué forma tiene el ion?",
+      "respuesta": "24 electrones; 3 estructuras de resonancia; trigonal plana (AX₃, sp²).",
+      "pasos": [
+        "Electrones: C aporta 4 y cada O, 6: 4 + 18 = 22. La carga 2− son 2 electrones más: 24.",
+        "Tres enlaces simples C–O (6 electrones) y cada O completa su octeto con 3 pares libres (18 electrones): se usan los 24. Pero el C solo tiene 6 electrones: un O le presta un par y se forma un C=O.",
+        "El enlace doble puede ir con cualquiera de los tres O: hay 3 estructuras de resonancia. Los átomos no se mueven de una a otra; solo cambia dónde se dibujan los electrones.",
+        "El C tiene 3 dominios (el doble cuenta como uno) y ningún par libre: AX₃, trigonal plana, sp²."
+      ],
+      "verificar": [
+        { "fn": "lewis", "args": ["CO3^2-"], "espera": { "electrones": 24, "resonancia": 3, "paresLibres": 0 } },
+        { "fn": "vsepr", "args": ["CO3^2-"], "espera": { "geometria": "trigonal plana", "hibridacion": "sp2" } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Calcula la carga formal del nitrógeno en el ion amonio (NH₄⁺) y en el ion nitrato (NO₃⁻), dibujado con un N=O y dos N–O. ¿La carga formal del N es la carga del ion?",
+      "respuesta": "En los dos, la carga formal del N es +1. No es la carga del ion: el nitrato tiene carga 1− y aun así su N tiene carga formal +1.",
+      "pasos": [
+        "Carga formal = electrones de valencia − electrones de sus pares libres − pares enlazantes.",
+        "NH₄⁺: el N tiene 5 electrones de valencia, ningún par libre y 4 enlaces: 5 − 0 − 4 = +1. Cada H: 1 − 0 − 1 = 0. Suma: +1, la carga del ion.",
+        "NO₃⁻: el N tiene 5, ningún par libre y 4 pares enlazantes (un doble y dos simples): 5 − 0 − 4 = +1. El O del doble: 6 − 4 − 2 = 0. Cada O del simple: 6 − 6 − 1 = −1. Suma: +1 + 0 − 1 − 1 = −1, la carga del ion.",
+        "La carga formal es una cuenta átomo por átomo; lo que da la carga del ion es la suma de todas."
+      ],
+      "verificar": [
+        { "fn": "lewis", "args": ["NH4^+"], "espera": { "cfCentral": 1, "sumaCF": 1 } },
+        { "fn": "lewis", "args": ["NO3^-"], "espera": { "cfCentral": 1, "sumaCF": -1, "ligandos.0.cf": 0, "ligandos.1.cf": -1 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Para el tetrafluoruro de azufre, SF₄: ¿cuántos pares libres tiene el S? Da su notación AXE, su forma, la hibridación del S y di si es polar.",
+      "respuesta": "1 par libre; AX₄E; balancín; sp³d; polar.",
+      "pasos": [
+        "Electrones: 6 + 4 × 7 = 34. Cuatro enlaces S–F (8) y 3 pares libres en cada F (24): quedan 34 − 32 = 2, un par libre en el S. El S queda con 10 electrones: octeto expandido.",
+        "Dominios: 4 enlaces + 1 par libre = 5: AX₄E, sp³d.",
+        "En la bipirámide trigonal, el par libre va a una posición ecuatorial (tiene más espacio). Los cuatro F forman un balancín.",
+        "Los dipolos S–F no se anulan en el balancín: la molécula es polar."
+      ],
+      "verificar": [
+        { "fn": "lewis", "args": ["SF4"], "espera": { "paresLibres": 1, "electronesCentral": 10 } },
+        { "fn": "vsepr", "args": ["SF4"], "espera": { "AXE": "AX4E", "geometria": "balancín", "hibridacion": "sp3d" } },
+        { "fn": "polaridad", "args": ["SF4"], "espera": { "polar": true } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "avanzado",
+      "enunciado": "El trifluoruro de cloro (ClF₃) y el ion triyoduro (I₃⁻) tienen, los dos, 5 dominios alrededor del átomo central. ¿Qué forma tiene cada uno y cuál es el menor ángulo entre dos átomos unidos al central?",
+      "respuesta": "ClF₃: forma de T (AX₃E₂), con ángulos de 90°. I₃⁻: lineal (AX₂E₃), con 180°.",
+      "pasos": [
+        "ClF₃: 7 + 21 = 28 electrones; 3 enlaces (6) y 3 pares en cada F (18); quedan 4: 2 pares libres en el Cl. AX₃E₂.",
+        "I₃⁻: 3 × 7 + 1 = 22 electrones; 2 enlaces (4) y 3 pares en cada I de los extremos (12); quedan 6: 3 pares libres en el I central. AX₂E₃.",
+        "En la bipirámide trigonal, los pares libres ocupan las posiciones ecuatoriales. Con 2 pares, los 3 F quedan en T: dos axiales y uno ecuatorial, a 90°. Con 3 pares, los dos I quedan en los dos extremos axiales: lineal, a 180°.",
+        "Los dos tienen 5 dominios, así que el central es sp³d en los dos casos."
+      ],
+      "verificar": [
+        { "fn": "vsepr", "args": ["ClF3"], "espera": { "AXE": "AX3E2", "geometria": "forma de T", "anguloMenor": 90 } },
+        { "fn": "vsepr", "args": ["I3^-"], "espera": { "AXE": "AX2E3", "geometria": "lineal", "anguloMenor": 180, "hibridacion": "sp3d" } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "El BCl₃ y el PCl₃ tienen, los dos, tres átomos de cloro unidos al átomo central. ¿Tienen la misma forma? ¿Cuál es polar?",
+      "respuesta": "No. El BCl₃ es trigonal plano y apolar; el PCl₃ es piramidal trigonal y polar.",
+      "pasos": [
+        "BCl₃: 3 + 21 = 24 electrones. Tres enlaces y 3 pares en cada Cl usan los 24: el B no tiene pares libres y queda con 6 electrones (octeto incompleto). AX₃: trigonal plana, sp².",
+        "PCl₃: 5 + 21 = 26 electrones. Sobran 2: un par libre en el P. AX₃E: piramidal trigonal, sp³.",
+        "En el BCl₃, los tres dipolos B–Cl están en un plano a 120° y se anulan: apolar. En el PCl₃, los tres dipolos apuntan hacia abajo, hacia los Cl, y no se anulan: polar."
+      ],
+      "verificar": [
+        { "fn": "vsepr", "args": ["BCl3"], "espera": { "geometria": "trigonal plana", "hibridacion": "sp2" } },
+        { "fn": "polaridad", "args": ["BCl3"], "espera": { "polar": false } },
+        { "fn": "vsepr", "args": ["PCl3"], "espera": { "geometria": "piramidal trigonal", "hibridacion": "sp3" } },
+        { "fn": "polaridad", "args": ["PCl3"], "espera": { "polar": true } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuáles de estas moléculas son polares: CO₂, H₂O, CCl₄ y CH₃Cl?",
+      "respuesta": "Son polares el H₂O y el CH₃Cl. El CO₂ y el CCl₄ son apolares.",
+      "pasos": [
+        "CO₂: lineal (AX₂). Los dos dipolos C=O son iguales y opuestos: se anulan. Tener enlaces polares no basta.",
+        "H₂O: angular (AX₂E₂), aunque en el papel se escriba H–O–H en línea. Los dos dipolos O–H apuntan hacia el O y su suma no es cero: polar.",
+        "CCl₄: tetraédrica con cuatro ligandos iguales: los cuatro dipolos se anulan.",
+        "CH₃Cl: también tetraédrica, pero un ligando es distinto. El dipolo C–Cl (hacia el Cl) no lo anulan los tres C–H: polar."
+      ],
+      "verificar": [
+        { "fn": "polaridad", "args": ["CO2"], "espera": { "polar": false } },
+        { "fn": "polaridad", "args": ["H2O"], "espera": { "polar": true } },
+        { "fn": "polaridad", "args": ["CCl4"], "espera": { "polar": false } },
+        { "fn": "polaridad", "args": ["CH3Cl"], "espera": { "polar": true } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "Con la diferencia de electronegatividad, clasifica el enlace en KCl, HCl y Cl₂. Después mira el HF: ¿qué dice el corte y qué tipo de enlace tiene en realidad?",
+      "respuesta": "KCl: 2,34, iónico. HCl: 0,96, covalente polar. Cl₂: 0, covalente apolar. HF: 1,78 pasa el corte de 1,7, pero es covalente polar: son dos no metales que comparten un par.",
+      "pasos": [
+        "KCl: 3,16 − 0,82 = 2,34. Es 1,7 o más: iónico (un metal del grupo 1 con un no metal).",
+        "HCl: 3,16 − 2,20 = 0,96. Entre 0,4 y 1,7: covalente polar. El H está en el grupo 1, pero no es un metal.",
+        "Cl₂: 3,16 − 3,16 = 0: covalente apolar.",
+        "HF: 3,98 − 2,20 = 1,78. El corte diría iónico, pero el H y el F son no metales y comparten el par: el HF es covalente polar, muy polar. El corte es una guía: entre covalente e iónico el paso es gradual."
+      ],
+      "verificar": [
+        { "fn": "tipoEnlace", "args": ["K", "Cl"], "espera": { "dEN": 2.34, "tipo": "iónico" } },
+        { "fn": "tipoEnlace", "args": ["H", "Cl"], "espera": { "dEN": 0.96, "tipo": "covalente polar" } },
+        { "fn": "tipoEnlace", "args": ["Cl", "Cl"], "espera": { "dEN": 0, "tipo": "covalente apolar" } },
+        { "fn": "tipoEnlace", "args": ["H", "F"], "espera": { "dEN": 1.78, "tipo": "iónico", "porAtomos": "covalente", "coincide": false } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Un trozo de cristal de cloruro de sodio tiene 4 iones por arista (4 × 4 × 4 iones, alternados). ¿Cuántos Na⁺ y cuántos Cl⁻ tiene? ¿Cuántas moléculas de NaCl? ¿Cuántos vecinos de carga opuesta tiene un ion del interior?",
+      "respuesta": "32 Na⁺ y 32 Cl⁻; ninguna molécula; 6 vecinos.",
+      "pasos": [
+        "En total hay 4 × 4 × 4 = 64 iones. Como se alternan y la arista es par, la mitad de cada tipo: 32 y 32.",
+        "No hay moléculas: cada Na⁺ atrae por igual a todos sus Cl⁻ vecinos, sin pareja propia. La fórmula NaCl solo dice la proporción, 1 a 1.",
+        "Un ion del interior tiene un vecino arriba, uno abajo y uno a cada lado en las tres direcciones: 6, todos del otro tipo y a la misma distancia (coordinación 6:6)."
+      ],
+      "verificar": [
+        { "fn": "redNaCl", "args": [4], "espera": { "Na": 32, "Cl": 32, "moleculas": 0, "coordinacion": 6 } },
+        { "fn": "vecinos", "args": [4, [1, 2, 1]], "espera": { "length": 6 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "El xenón, un gas noble, forma XeF₂ y XeF₄. Para cada uno: pares libres del Xe, hibridación, forma y polaridad.",
+      "respuesta": "XeF₂: 3 pares libres, sp³d, lineal, apolar. XeF₄: 2 pares libres, sp³d², cuadrada plana, apolar.",
+      "pasos": [
+        "XeF₂: 8 + 14 = 22 electrones. Dos enlaces (4) y 3 pares en cada F (12): quedan 6, 3 pares libres. 5 dominios (AX₂E₃): sp³d. Los pares libres van a las 3 ecuatoriales y los F a los extremos: lineal.",
+        "XeF₄: 8 + 28 = 36 electrones. Cuatro enlaces (8) y 3 pares en cada F (24): quedan 4, 2 pares libres. 6 dominios (AX₄E₂): sp³d². Los dos pares libres quedan opuestos y los 4 F en un plano: cuadrada plana.",
+        "En las dos, los dipolos Xe–F son iguales y opuestos de dos en dos: se anulan. Tener pares libres no hace polar a una molécula si su forma es simétrica."
+      ],
+      "verificar": [
+        { "fn": "vsepr", "args": ["XeF2"], "espera": { "m": 3, "hibridacion": "sp3d", "geometria": "lineal" } },
+        { "fn": "polaridad", "args": ["XeF2"], "espera": { "polar": false } },
+        { "fn": "vsepr", "args": ["XeF4"], "espera": { "m": 2, "hibridacion": "sp3d2", "geometria": "cuadrada plana" } },
+        { "fn": "polaridad", "args": ["XeF4"], "espera": { "polar": false } }
+      ]
+    }
+  ]
+}
