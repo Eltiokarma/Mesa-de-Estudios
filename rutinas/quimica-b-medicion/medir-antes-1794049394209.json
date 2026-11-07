@@ -1,0 +1,292 @@
+{
+ "version": "antes",
+ "reps": 3,
+ "crudo": {
+  "acidos-bases": [
+   {
+    "escena": "acidos-bases",
+    "reposo": {
+     "fps": 60,
+     "fpsInt": 60,
+     "cuadros": 121,
+     "activos": 121,
+     "js": 1.34,
+     "peorCuadro": 20
+    },
+    "paso": {
+     "fps": 58.4,
+     "fpsInt": 58.4,
+     "cuadros": 292,
+     "activos": 292,
+     "js": 2.38,
+     "peorCuadro": 36
+    },
+    "toquePaso": 242,
+    "explorador": {
+     "fps": 44.9,
+     "fpsInt": 45.2,
+     "cuadros": 230,
+     "activos": 211,
+     "js": 4.29,
+     "peorCuadro": 56
+    },
+    "toqueExp": 87,
+    "reposoFinal": {
+     "fps": 56,
+     "fpsInt": 56,
+     "cuadros": 113,
+     "activos": 113,
+     "js": 2.85,
+     "peorCuadro": 34
+    },
+    "errores": [],
+    "peor": 44.9,
+    "jsMax": 4.29,
+    "toque": 242
+   },
+   {
+    "escena": "acidos-bases",
+    "reposo": {
+     "fps": 59.5,
+     "fpsInt": 59.9,
+     "cuadros": 120,
+     "activos": 120,
+     "js": 1.44,
+     "peorCuadro": 22
+    },
+    "paso": {
+     "fps": 59.5,
+     "fpsInt": 59.6,
+     "cuadros": 298,
+     "activos": 298,
+     "js": 2.02,
+     "peorCuadro": 36
+    },
+    "toquePaso": 117,
+    "explorador": {
+     "fps": 52,
+     "fpsInt": 52.1,
+     "cuadros": 263,
+     "activos": 243,
+     "js": 3.42,
+     "peorCuadro": 66
+    },
+    "toqueExp": 75,
+    "reposoFinal": {
+     "fps": 51.8,
+     "fpsInt": 52.3,
+     "cuadros": 105,
+     "activos": 105,
+     "js": 3.55,
+     "peorCuadro": 33
+    },
+    "errores": [],
+    "peor": 52,
+    "jsMax": 3.42,
+    "toque": 117
+   },
+   {
+    "escena": "acidos-bases",
+    "reposo": {
+     "fps": 58.9,
+     "fpsInt": 59,
+     "cuadros": 119,
+     "activos": 119,
+     "js": 2.28,
+     "peorCuadro": 29
+    },
+    "paso": {
+     "fps": 59.8,
+     "fpsInt": 59.7,
+     "cuadros": 299,
+     "activos": 299,
+     "js": 2.35,
+     "peorCuadro": 41
+    },
+    "toquePaso": 239,
+    "explorador": {
+     "fps": 50.6,
+     "fpsInt": 50.5,
+     "cuadros": 257,
+     "activos": 237,
+     "js": 3.48,
+     "peorCuadro": 48
+    },
+    "toqueExp": 86,
+    "reposoFinal": {
+     "fps": 59.3,
+     "fpsInt": 59.8,
+     "cuadros": 119,
+     "activos": 119,
+     "js": 2.35,
+     "peorCuadro": 22
+    },
+    "errores": [],
+    "peor": 50.6,
+    "jsMax": 3.48,
+    "toque": 239
+   }
+  ],
+  "liquidos-y-solidos": [
+   {
+    "escena": "liquidos-y-solidos",
+    "reposo": {
+     "fps": 59.6,
+     "fpsInt": 59.5,
+     "cuadros": 120,
+     "activos": 120,
+     "js": 3.52,
+     "peorCuadro": 22
+    },
+    "paso": {
+     "fps": 53.2,
+     "fpsInt": 52.9,
+     "cuadros": 268,
+     "activos": 262,
+     "js": 5.21,
+     "peorCuadro": 56
+    },
+    "toquePaso": 129,
+    "explorador": {
+     "fps": 34.1,
+     "fpsInt": 31.9,
+     "cuadros": 298,
+     "activos": 3,
+     "js": 3.55,
+     "peorCuadro": 49
+    },
+    "toqueExp": 101,
+    "reposoFinal": {
+     "fps": 59.9,
+     "fpsInt": 60,
+     "cuadros": 120,
+     "activos": 0,
+     "js": 0,
+     "peorCuadro": 25
+    },
+    "errores": [],
+    "peor": 34.1,
+    "jsMax": 5.21,
+    "toque": 129
+   },
+   {
+    "escena": "liquidos-y-solidos",
+    "reposo": {
+     "fps": 60,
+     "fpsInt": 60,
+     "cuadros": 121,
+     "activos": 121,
+     "js": 2.52,
+     "peorCuadro": 21
+    },
+    "paso": {
+     "fps": 53.4,
+     "fpsInt": 53.4,
+     "cuadros": 269,
+     "activos": 264,
+     "js": 5.08,
+     "peorCuadro": 54
+    },
+    "toquePaso": 122,
+    "explorador": {
+     "fps": 28.4,
+     "fpsInt": 27.1,
+     "cuadros": 297,
+     "activos": 3,
+     "js": 3.4,
+     "peorCuadro": 64
+    },
+    "toqueExp": 93,
+    "reposoFinal": {
+     "fps": 59.9,
+     "fpsInt": 60,
+     "cuadros": 120,
+     "activos": 0,
+     "js": 0,
+     "peorCuadro": 24
+    },
+    "errores": [],
+    "peor": 28.4,
+    "jsMax": 5.08,
+    "toque": 122
+   },
+   {
+    "escena": "liquidos-y-solidos",
+    "reposo": {
+     "fps": 59.9,
+     "fpsInt": 60,
+     "cuadros": 120,
+     "activos": 120,
+     "js": 2.15,
+     "peorCuadro": 21
+    },
+    "paso": {
+     "fps": 54,
+     "fpsInt": 53.8,
+     "cuadros": 271,
+     "activos": 265,
+     "js": 5.19,
+     "peorCuadro": 93
+    },
+    "toquePaso": 126,
+    "explorador": {
+     "fps": 13.4,
+     "fpsInt": 12.4,
+     "cuadros": 290,
+     "activos": 3,
+     "js": 8.3,
+     "peorCuadro": 144
+    },
+    "toqueExp": 126,
+    "reposoFinal": {
+     "fps": 59.8,
+     "fpsInt": 60,
+     "cuadros": 120,
+     "activos": 0,
+     "js": 0,
+     "peorCuadro": 19
+    },
+    "errores": [],
+    "peor": 13.4,
+    "jsMax": 8.3,
+    "toque": 126
+   }
+  ]
+ },
+ "mediana": {
+  "acidos-bases": {
+   "reposoInt": 59.9,
+   "pasoInt": 59.6,
+   "exploradorInt": 50.5,
+   "reposo": 59.5,
+   "paso": 59.5,
+   "explorador": 50.6,
+   "peor": 50.6,
+   "jsPaso": 2.35,
+   "jsExp": 3.48,
+   "jsMax": 3.48,
+   "toque": 239,
+   "peorCuadro": 56,
+   "activosReposo2s": 120,
+   "activosReposoFinal2s": 113,
+   "errores": []
+  },
+  "liquidos-y-solidos": {
+   "reposoInt": 60,
+   "pasoInt": 53.4,
+   "exploradorInt": 27.1,
+   "reposo": 59.9,
+   "paso": 53.4,
+   "explorador": 28.4,
+   "peor": 28.4,
+   "jsPaso": 5.19,
+   "jsExp": 3.55,
+   "jsMax": 5.21,
+   "toque": 126,
+   "peorCuadro": 64,
+   "activosReposo2s": 120,
+   "activosReposoFinal2s": 0,
+   "errores": []
+  }
+ }
+}
