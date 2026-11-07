@@ -2147,8 +2147,8 @@
      "describe": "Suma |Δx| + |Δy|, el camino por la cuadrícula"
     },
     "GE11-resta-cuadrados": {
-     "respaldo": "hipotesis",
-     "describe": "Resta los cuadrados en vez de sumarlos"
+     "respaldo": "parcial",
+     "describe": "Resta los cuadrados en vez de sumarlos (GE11, Pitágoras mal aplicado; Bolema, sin porcentaje)"
     },
     "distancia-recta-sin-raiz": {
      "respaldo": "hipotesis",
