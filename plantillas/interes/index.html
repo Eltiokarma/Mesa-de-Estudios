@@ -1,0 +1,1084 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La alcancía que gana interés: interés simple y compuesto, tasas y descuento</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de la regla de tres.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   capital C azul, interés del capital I naranja, interés sobre interés fucsia (sin letra), monto M verde,
+   tasa r turquesa, tiempo t rojo; en el descuento: valor nominal Vn mostaza, valor actual Va índigo,
+   descuento comercial Dc granate (en oscuro, naranja rojizo) y descuento racional Dr oliva casi negro (en oscuro, gris oliva).
+   Elegidos con CIEDE2000; mínimos entre los que salen juntos (claro / oscuro): la alcancía (C, I, interés sobre interés,
+   M, r, t) 22,0 / 22,0; el descuento (Vn, Va, Dc, Dr, r, t) 22,6 / 21,2. En claro, Dc y Dr quedan a 22,6 o más de todos
+   los demás colores de la plantilla; en oscuro, Dc queda a 17,5 del naranja del interés (nunca salen juntos) y lo demás
+   a 20 o más. Par parecido que nunca sale junto: C y Va (17,0 / 12,1). La t roja se parece al rojo de los avisos
+   (5,4 / 5,0), y Dc oscuro también (17,4): el aviso siempre va con texto. Contraste AA sobre el papel, la tarjeta y su
+   chip (.v, fondo al 8 %), en claro y en oscuro (mínimo 4,54). Cifras en el informe del constructor. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-C:#1f5fbf; --c-I:#a05200; --c-X:#a10fbf; --c-M:#466d14; --c-r:#0f766e; --c-t:#c0364a;
+  --c-Vn:#7d6a00; --c-Va:#3328c4; --c-Dc:#5a0f0f; --c-Dr:#2d2d0f;
+  --relleno:.14;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-C:#7cb0ff; --c-I:#f0a04a; --c-X:#cf6bfa; --c-M:#a3d65e; --c-r:#5ed9c8; --c-t:#f17384;
+  --c-Vn:#e3c84a; --c-Va:#9f9bff; --c-Dc:#ff692d; --c-Dr:#a5a596;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-C:#7cb0ff; --c-I:#f0a04a; --c-X:#cf6bfa; --c-M:#a3d65e; --c-r:#5ed9c8; --c-t:#f17384;
+  --c-Vn:#e3c84a; --c-Va:#9f9bff; --c-Dc:#ff692d; --c-Dr:#a5a596;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.8}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 8%, transparent)}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 8%, transparent)}
+.v-X{color:var(--c-X); background:color-mix(in srgb, var(--c-X) 8%, transparent)}
+.v-M{color:var(--c-M); background:color-mix(in srgb, var(--c-M) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-Vn{color:var(--c-Vn); background:color-mix(in srgb, var(--c-Vn) 8%, transparent)}
+.v-Va{color:var(--c-Va); background:color-mix(in srgb, var(--c-Va) 8%, transparent)}
+.v-Dc{color:var(--c-Dc); background:color-mix(in srgb, var(--c-Dc) 8%, transparent)}
+.v-Dr{color:var(--c-Dr); background:color-mix(in srgb, var(--c-Dr) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+.tabla{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.95rem; background:var(--paper); border-radius:12px; overflow:hidden}
+.tabla th,.tabla td{padding:5px 12px; border-bottom:1px solid var(--line); text-align:right}
+.tabla th{font-size:.82rem; color:var(--muted); font-weight:700}
+.tabla-wrap{overflow-x:auto}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Aritmética · Interés y descuento · Problemas tipo admisión</p>
+      <h1>La alcancía que gana interés</h1>
+      <p class="sub">Cada periodo, la alcancía recibe una ficha de interés. En el interés simple, todas las fichas son iguales; en el compuesto, la ficha nueva se calcula sobre todo lo que ya hay. Mira crecer la torre y descubre qué cambia cuando el interés también gana interés.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: la torre de la alcancía, la gráfica del monto o las fichas de una letra">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con interés y descuento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/interes">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'interes', unidad: 'aritmetica.interes-y-descuento', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (interés simple y compuesto, tasas, capitalización, valor presente y descuentos) sale de
+   MotorInteres (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MI = MotorInteres;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 10 000) y signo menos tipográfico. 'fijo' deja siempre d decimales.
+function fmt(n, d, fijo){
+  if (!Number.isFinite(n)) return '—';
+  d = d === undefined ? 2 : d;
+  const p = Math.pow(10, d), r = Math.round(n*p)/p + 0;
+  let [e, f] = (fijo ? Math.abs(r).toFixed(d) : String(Math.abs(r))).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const soles = x => `S/ ${fmt(x, 2, true)}`;
+const solesC = x => `S/ ${fmt(x, 2)}`;           // sin ceros de más (S/ 1000, S/ 1048,81)
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const C_ = t => V('C', t), I_ = t => V('I', t), X_ = t => V('X', t), M_ = t => V('M', t), r_ = t => V('r', t), t_ = t => V('t', t),
+  Vn_ = t => V('Vn', t), Va_ = t => V('Va', t), Dc_ = t => V('Dc', t), Dr_ = t => V('Dr', t);
+const VARS = ['C', 'I', 'X', 'M', 'r', 't', 'Vn', 'Va', 'Dc', 'Dr'];
+
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    relleno:Number(css('--relleno')) || .14, font:css('--font') };
+  for (const k of VARS) c[k] = css('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function redondeado(ctx, x, y, w, h, r){ r = Math.min(r, Math.abs(h)/2, w/2); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Modos:
+   'torre'   una columna de fichas por periodo: el capital C abajo (recortado: no está a escala, con un corte en zigzag),
+             encima una ficha naranja de interés del capital por periodo y, en el compuesto, la capa fucsia del interés
+             sobre interés. Con 'graf', al lado o debajo la gráfica del monto M contra el tiempo t.
+   'grafica' solo la gráfica de M contra t (recta del simple y curva del compuesto).
+   'barras'  una torre por forma de capitalizar (anual, mensual…) al cabo de un año, con la misma tasa nominal.
+   'fichas'  columnas de fichas iguales: el capital y su interés, o una letra con su valor actual y su descuento.
+   Antes de responder, lo que se pregunta se dibuja como «?» y la escala no sale de la respuesta. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'torre', graf:false, lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false,
+    torre:null, g:null, barras:null, fichas:null, desc:'' };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = false, sobre = false;
+  const chico = () => innerWidth < 900;
+  function alto(w){
+    if (E.compacto && chico()) return Math.round(clamp(w*0.62, 220, 245));
+    if (E.graf && E.modo === 'torre') return w >= 640 ? 380 : 250 + 230;
+    return w >= 560 ? 350 : 300;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  function regiones(){
+    if (E.modo === 'grafica') return { graf:{ x:0, y:0, w:W, h:H } };
+    if (E.modo !== 'torre' || !E.graf || (E.compacto && chico())) return { dib:{ x:0, y:0, w:W, h:H } };
+    if (W >= 640){ const a = Math.round(W*0.54); return { dib:{ x:0, y:0, w:a, h:H }, graf:{ x:a, y:0, w:W - a, h:H } }; }
+    return { dib:{ x:0, y:0, w:W, h:250 }, graf:{ x:0, y:250, w:W, h:H - 250 } };
+  }
+
+  E.config = o => {
+    E.tok++; E.anim = false;   // una animación vieja no sigue moviendo el dibujo nuevo
+    Object.assign(E, { modo:'torre', graf:false, lect:[], ley:null, alCambiar:null, torre:null, g:null, barras:null, fichas:null, desc:'' }, o);
+    if (E.torre) E.torre = Object.assign({ C:1000, r:10, tipo:'simple', tmax:3, prog:0, ocultos:false, imax:400, valores:true, etiqueta:k => String(k), unidad:'años' }, E.torre);
+    if (E.g) E.g = Object.assign({ C:1000, r:10, tmax:10, ymin:0, ymax:3000, ypaso:500, xpaso:1, simple:true, comp:true, hasta:null, cursor:null, drag:false, lineaH:null, marcas:[], etX:'t (años) →' }, E.g);
+    if (E.barras) E.barras = Object.assign({ C:1000, j:24, ops:[1, 2, 4, 12], ver:4, sel:null, imax:300, tope:false, prog:1 }, E.barras);
+    if (E.fichas) E.fichas = Object.assign({ vmax:7000, cols:[], prog:1 }, E.fichas);
+    cv.tabIndex = arrastrable() ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  const arrastrable = () => !!(E.g && E.g.drag && (E.modo === 'grafica' || (E.modo === 'torre' && E.graf)));
+  // Con una predicción pendiente en el celular, el dibujo se achica y queda pegado arriba (sticky) para verse al elegir.
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+
+  // ----- la torre de la alcancía -----
+  function zigzag(c, x, y, w){
+    ctx.save(); ctx.fillStyle = c.paper; ctx.beginPath(); ctx.moveTo(x - 2, y + 4);
+    const n = 6; for (let j = 0; j <= n; j++) ctx.lineTo(x - 2 + (w + 4)*j/n, y + (j % 2 ? -4 : 4));
+    ctx.lineTo(x + w + 2, y + 9); ctx.lineTo(x - 2, y + 9); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x - 2, y + 4);
+    for (let j = 0; j <= n; j++) ctx.lineTo(x - 2 + (w + 4)*j/n, y + (j % 2 ? -4 : 4)); ctx.stroke(); ctx.restore();
+  }
+  // Un bloque de fichas apiladas (con rayas de canto, como monedas).
+  function bloque(c, x, y, w, h, color, k){
+    if (h <= 0.2) return;
+    ctx.save(); ctx.fillStyle = color; ctx.globalAlpha = E.hl && E.hl !== k ? .45 : .9; ctx.fillRect(x, y, w, h); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.paper; ctx.lineWidth = 1.4; ctx.strokeRect(x + .7, y + .7, w - 1.4, h - 1.4); ctx.restore();
+    if (E.hl === k){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; ctx.strokeRect(x, y, w, h); ctx.restore(); }
+  }
+  function pendiente(c, x, y, w, h){
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5; redondeado(ctx, x, y, w, h, 6); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, x + w/2, y + h/2, '?', c.muted, 'center', 800, 16);
+  }
+  function dibTorre(c, R){
+    const T = E.torre, n = T.tmax;
+    const B = R.y + R.h - 34, Tp = R.y + 30, L = R.x + 14, Rr = R.x + R.w - 10;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:L, y:B }, { x:Rr, y:B }); ctx.restore();
+    const paso = (Rr - L)/(n + 1), cw = Math.min(54, paso*0.68);
+    const hBase = (B - Tp)*0.3, s = (B - Tp - hBase - 18)/T.imax, b = T.C*T.r/100;
+    const X = MI.compuesto({ C:T.C, r:T.r, t:n });
+    for (let k = 0; k <= n; k++){
+      const x = L + paso*(k + .5) - cw/2;
+      rotulo(ctx, c, x + cw/2, B + 13, T.etiqueta(k), c.muted, 'center', 700, 11);
+      if (T.ocultos && k > 0){ pendiente(c, x, B - hBase - 30, cw, hBase + 30); continue; }
+      const f = k <= Math.floor(T.prog + 1e-9) ? 1 : (k - 1 < T.prog ? T.prog - (k - 1) : 0);
+      // el capital, recortado
+      bloque(c, x, B - hBase, cw, hBase, c.C, 'C'); zigzag(c, x, B - hBase*0.55, cw);
+      if (k === 0){ ctx.save(); ctx.fillStyle = c.paper; ctx.font = `800 13px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('C', x + cw/2, B - hBase*0.25); ctx.restore(); }
+      if (f <= 0){ continue; }
+      let y = B - hBase;
+      for (let j = 0; j < k; j++){ const h = b*s*f; bloque(c, x, y - h, cw, h, c.I, 'I'); y -= h; }
+      if (T.tipo === 'compuesto'){ const h = X.torre[k].sobreInteres*s*f; bloque(c, x, y - h, cw, h, c.X, 'X'); y -= h; }
+      // el monto: la raya verde de arriba
+      ctx.save(); ctx.strokeStyle = c.M; ctx.lineWidth = grosor('M', 3); linea(ctx, { x:x - 4, y }, { x:x + cw + 4, y }); ctx.restore();
+      if (T.valores && f >= 1 && (k === n || cw > 46 || k === Math.round(T.prog))){
+        const v = T.tipo === 'compuesto' ? X.torre[k].M : T.C + b*k;
+        rotulo(ctx, c, x + cw/2, y - 11, fmt(v, 2), c.M, 'center', 800, cw > 46 ? 12 : 11);
+      }
+    }
+    rotulo(ctx, c, Rr, R.y + 12, `t (${T.unidad})`, c.t, 'right', 800, 12);
+  }
+
+  // ----- la gráfica de M contra t -----
+  function geoGraf(R){
+    const G = E.g, L = R.x + 52, Rr = R.x + R.w - 16, Tt = R.y + 28, B = R.y + R.h - 30;
+    return { L, Rr, Tt, B, X: t => L + (Rr - L)*t/G.tmax, Y: m => B - (B - Tt)*(m - G.ymin)/(G.ymax - G.ymin), T: x => (x - L)/(Rr - L)*G.tmax };
+  }
+  function dibGraf(c, R){
+    const G = E.g, g = geoGraf(R), { L, Rr, Tt, B, X, Y } = g;
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let t = G.xpaso; t <= G.tmax + 1e-9; t += G.xpaso) linea(ctx, { x:X(t), y:Tt }, { x:X(t), y:B });
+    for (let m = G.ymin + G.ypaso; m <= G.ymax + 1e-9; m += G.ypaso) linea(ctx, { x:L, y:Y(m) }, { x:Rr, y:Y(m) });
+    ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, { x:L, y:Tt - 8 }, { x:L, y:B }); linea(ctx, { x:L, y:B }, { x:Rr + 6, y:B }); ctx.restore();
+    ctx.fillStyle = c.muted; ctx.font = `600 11px ${c.font}`; ctx.textBaseline = 'top'; ctx.textAlign = 'center';
+    const xet = G.tmax > 12 ? 4 : G.tmax > 6 ? 2 : 1;
+    for (let t = 0; t <= G.tmax + 1e-9; t += G.xpaso*xet) ctx.fillText(fmt(t, 1), X(t), B + 4);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let m = G.ymin; m <= G.ymax + 1e-9; m += G.ypaso) ctx.fillText(fmt(m, 0), L - 5, Y(m));
+    if (G.lineaH){ ctx.save(); ctx.strokeStyle = c.M; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.6; linea(ctx, { x:L, y:Y(G.lineaH.y) }, { x:Rr, y:Y(G.lineaH.y) }); ctx.restore();
+      rotulo(ctx, c, L + 6, Y(G.lineaH.y) - 11, G.lineaH.t, c.M, 'left', 800, 11); }
+    const hasta = G.hasta === null ? G.tmax : G.hasta;
+    const cu = MI.curvas({ C:G.C, r:G.r, tmax:G.tmax, pasos:120 });
+    ctx.save(); ctx.beginPath(); ctx.rect(L, Tt - 10, X(hasta) - L + 1, B - Tt + 10); ctx.clip();
+    const trazo = (pts, dash, ancho) => { ctx.save(); ctx.strokeStyle = c.M; ctx.lineWidth = grosor('M', ancho); if (dash) ctx.setLineDash(dash);
+      ctx.beginPath(); pts.forEach((p, j) => j ? ctx.lineTo(X(p.t), Y(p.M)) : ctx.moveTo(X(p.t), Y(p.M))); ctx.stroke(); ctx.restore(); };
+    if (G.simple) trazo(cu.simple, [7, 5], 2.2);
+    if (G.comp) trazo(cu.compuesto, null, 2.8);
+    ctx.restore();
+    if (hasta > 0.3){
+      const fin = Math.min(hasta, G.tmax), ys = G.C*(1 + G.r*fin/100), yc = G.C*Math.pow(1 + G.r/100, fin);
+      if (G.simple && ys <= G.ymax) rotulo(ctx, c, Math.min(X(fin) + 4, Rr - 50), Y(ys) + (yc > ys ? 12 : -12), 'simple', c.M, 'left', 700, 11);
+      if (G.comp && yc <= G.ymax) rotulo(ctx, c, Math.min(X(fin) + 4, Rr - 70), Y(yc) + (yc > ys ? -12 : 12), 'compuesto', c.M, 'left', 800, 11);
+    }
+    for (const mk of G.marcas){
+      ctx.save(); ctx.strokeStyle = c.t; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.4; linea(ctx, { x:X(mk.t), y:Y(mk.y) }, { x:X(mk.t), y:B }); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.paper; ctx.strokeStyle = c.M; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.arc(X(mk.t), Y(mk.y), 4.5, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+      if (mk.et) rotulo(ctx, c, X(mk.t) + (mk.dx || 0), B - 12 + (mk.dy || 0), mk.et, c.t, mk.align || 'center', 800, 11);
+    }
+    if (G.cursor !== null){
+      const x = X(G.cursor);
+      ctx.save(); ctx.strokeStyle = c.t; ctx.lineWidth = grosor('t', 1.8); linea(ctx, { x, y:Tt - 4 }, { x, y:B }); ctx.restore();
+      for (const [on, m] of [[G.simple, G.C*(1 + G.r*G.cursor/100)], [G.comp, G.C*Math.pow(1 + G.r/100, G.cursor)]]) if (on && m <= G.ymax){
+        ctx.save(); ctx.fillStyle = c.M; ctx.beginPath(); ctx.arc(x, Y(m), 4.5, 0, 7); ctx.fill(); ctx.restore(); }
+      if (G.drag){
+        ctx.save(); ctx.fillStyle = c.t; ctx.globalAlpha = (arrastrando || sobre) ? .2 : .1; ctx.beginPath(); ctx.arc(x, B, 18, 0, 7); ctx.fill(); ctx.restore();
+        ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.t; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(x, B, 8, 0, 7); ctx.fill(); ctx.stroke();
+        ctx.lineWidth = 1.6; linea(ctx, { x:x - 3, y:B - 3 }, { x:x - 6, y:B }); linea(ctx, { x:x - 6, y:B }, { x:x - 3, y:B + 3 });
+        linea(ctx, { x:x + 3, y:B - 3 }, { x:x + 6, y:B }); linea(ctx, { x:x + 6, y:B }, { x:x + 3, y:B + 3 }); ctx.restore();
+      }
+    }
+    rotulo(ctx, c, Rr, B - 12, G.etX, c.t, 'right', 800, 12);
+    rotulo(ctx, c, L + 6, R.y + 12, '↑ monto M (S/)', c.M, 'left', 800, 12);
+  }
+
+  // ----- una torre por forma de capitalizar (la misma tasa nominal, un año) -----
+  const NOMBRE_CAP = { 1:'anual', 2:'semestral', 4:'trimestral', 12:'mensual', 360:'diaria', continua:'continua' };
+  function dibBarras(c, R){
+    const Bq = E.barras, n = Bq.ops.length;
+    const B = R.y + R.h - 34, Tp = R.y + 30, L = R.x + 14, Rr = R.x + R.w - 10;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:L, y:B }, { x:Rr, y:B }); ctx.restore();
+    const paso = (Rr - L)/n, cw = Math.min(70, paso*0.6);
+    const hBase = (B - Tp)*0.3, s = (B - Tp - hBase - 18)/Bq.imax, nom = Bq.C*Bq.j/100;
+    if (Bq.tope){
+      const lim = MI.capitalizacion({ C:Bq.C, j:Bq.j, m:'continua' }).I, y = B - hBase - lim*s;
+      ctx.save(); ctx.strokeStyle = c.M; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.6; linea(ctx, { x:L, y }, { x:Rr, y }); ctx.restore();
+      rotulo(ctx, c, L + 2, y - 11, `tope: ${fmt(Bq.C + lim, 2)}`, c.M, 'left', 800, 11);
+    }
+    Bq.ops.forEach((m, k) => {
+      const x = L + paso*(k + .5) - cw/2;
+      rotulo(ctx, c, x + cw/2, B + 13, NOMBRE_CAP[m], Bq.sel === k ? c.ink : c.muted, 'center', Bq.sel === k ? 800 : 700, 11);
+      if (k >= Bq.ver){ pendiente(c, x, B - hBase - 30, cw, hBase + 30); return; }
+      const K = MI.capitalizacion({ C:Bq.C, j:Bq.j, m }), f = k === Bq.ver - 1 ? Bq.prog : 1;
+      bloque(c, x, B - hBase, cw, hBase, c.C, 'C'); zigzag(c, x, B - hBase*0.55, cw);
+      let y = B - hBase;
+      const h1 = nom*s*f; bloque(c, x, y - h1, cw, h1, c.I, 'I'); y -= h1;
+      const h2 = (K.I - nom)*s*f; bloque(c, x, y - h2, cw, h2, c.X, 'X'); y -= h2;
+      ctx.save(); ctx.strokeStyle = c.M; ctx.lineWidth = grosor('M', 3); linea(ctx, { x:x - 4, y }, { x:x + cw + 4, y }); ctx.restore();
+      if (f >= 1) rotulo(ctx, c, x + cw/2, y - 11, fmt(K.M, 2), c.M, 'center', 800, cw > 56 ? 12 : 11);
+      if (Bq.sel === k){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([4, 3]); ctx.strokeRect(x - 7, y - 22, cw + 14, B - y + 22); ctx.restore(); }
+    });
+  }
+
+  // ----- columnas de fichas iguales (capital e interés, o una letra y su descuento) -----
+  // cada columna: { titulo, partes:[{ v, k, n (fichas), rot, ver }], total:{ v, k, rot }, oculto }
+  function dibFichas(c, R){
+    const F = E.fichas, n = F.cols.length;
+    const B = R.y + R.h - 34, Tp = R.y + 24, L = R.x + 10, Rr = R.x + R.w - 10;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:L, y:B }, { x:Rr, y:B }); ctx.restore();
+    const paso = (Rr - L)/n, cw = Math.min(80, paso*0.42), s = (B - Tp - 8)/F.vmax;
+    F.cols.forEach((col, k) => {
+      const x = L + paso*(k + .5) - cw/2 - 18;
+      rotulo(ctx, c, x + cw/2, B + 14, col.titulo, c.ink, 'center', 800, 12);
+      let y = B;
+      for (const p of col.partes){
+        if (col.oculto && !p.ver) continue;
+        const h = col.oculto ? 26 : p.v*s*F.prog, nf = col.oculto ? 1 : (p.n || 1);
+        for (let j = 0; j < nf; j++) bloque(c, x, y - h*(j + 1)/nf, cw, h/nf, c[p.k], p.k);
+        if (p.trama && h > 2){ ctx.save(); ctx.beginPath(); ctx.rect(x, y - h, cw, h); ctx.clip(); ctx.strokeStyle = c.paper; ctx.lineWidth = 1.5; for (let d = -h; d < cw; d += 8) linea(ctx, { x:x + d, y }, { x:x + d + h, y:y - h }); ctx.restore(); }
+        if (p.rot && h > 15) rotulo(ctx, c, x + cw/2, y - h/2, p.rot, c.ink, 'center', 800, 11);
+        else if (p.rot) rotulo(ctx, c, x - 4, y - h/2, p.rot, c[p.k], 'right', 800, 11);
+        y -= h;
+      }
+      if (col.oculto){ pendiente(c, x, Tp + 30, cw, (B - Tp)*0.62); }
+      if (col.total && (!col.oculto || col.total.ver)){
+        const yt = col.oculto ? Tp + 30 : B - col.total.v*s*F.prog, xb = x + cw + 8;
+        ctx.save(); ctx.strokeStyle = c[col.total.k]; ctx.lineWidth = grosor(col.total.k, 2.4);
+        linea(ctx, { x:xb - 4, y:yt }, { x:xb, y:yt }); linea(ctx, { x:xb, y:yt }, { x:xb, y:B }); linea(ctx, { x:xb, y:B }, { x:xb - 4, y:B }); ctx.restore();
+        ctx.save(); ctx.translate(xb + 12, (yt + B)/2); ctx.rotate(-Math.PI/2); rotulo(ctx, c, 0, 0, col.total.rot, c[col.total.k], 'center', 800, 12); ctx.restore();
+      }
+    });
+  }
+
+  E.dibujar = () => {
+    if (!W || !(E.torre || E.g || E.barras || E.fichas)) return;
+    const c = colores(), R = regiones();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    if (R.dib && R.graf){
+      ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.5;
+      if (R.graf.x > 0) linea(ctx, { x:R.graf.x, y:12 }, { x:R.graf.x, y:H - 12 }); else linea(ctx, { x:12, y:R.graf.y }, { x:W - 12, y:R.graf.y });
+      ctx.restore();
+    }
+    if (E.modo === 'torre'){ dibTorre(c, R.dib); if (R.graf) dibGraf(c, R.graf); }
+    else if (E.modo === 'grafica') dibGraf(c, R.graf);
+    else if (E.modo === 'barras') dibBarras(c, R.dib);
+    else if (E.modo === 'fichas') dibFichas(c, R.dib);
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t, sq) => `<span><i class="${sq ? 'sq' : ''}" style="background:var(--c-${k})"></i>${t}</span>`;
+    let l = E.ley;
+    if (!l){
+      if (E.modo === 'torre' || E.modo === 'barras'){
+        const comp = (E.torre && E.torre.tipo === 'compuesto' && !E.torre.ocultos) || (E.modo === 'barras' && E.barras.ver > 1);
+        l = [['C', 'C · capital (recortado, no a escala)', true], ['I', comp ? 'interés del capital (como en el simple)' : 'I · interés', true]].concat(comp ? [['X', 'interés sobre interés', true]] : []).concat([['M', 'M · monto']]);
+        if (E.graf) l.push(['t', 't · tiempo']);
+      } else if (E.modo === 'grafica') l = [['M', 'M · monto: recta a trazos (simple) y curva (compuesto)'], ['t', 't · tiempo']];
+      else l = [];
+    }
+    document.getElementById(idLey).innerHTML = l.map(([k, t, sq]) => it(k, t, sq)).join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(f => f(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = { torre:'Torre de fichas: una columna por periodo, con el capital abajo y las fichas de interés encima.', grafica:'Gráfica del monto contra el tiempo.',
+        barras:'Una torre por forma de capitalizar, al cabo de un año.', fichas:'Columnas de fichas iguales.' }[E.modo];
+      document.getElementById(idDesc).textContent = [E.desc || base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); E.avisar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+
+  // ----- arrastrar el tiempo en la gráfica (táctil, ratón y teclado) -----
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  function manija(){
+    if (!arrastrable() || E.g.cursor === null) return null;
+    const R = regiones().graf; if (!R) return null;
+    const g = geoGraf(R); return { x:g.X(E.g.cursor), y:g.B, g };
+  }
+  // Con el dedo, el dibujo deja desplazar la página (touch-action: pan-y); solo un toque que empieza cerca de la
+  // manija (radio de 40 px) se queda con el gesto. Con ratón, radio de 32 px.
+  function cerca(p, radio){ if (E.ocupado || E.anim) return false; const m = manija(); return !!m && Math.hypot(p.x - m.x, p.y - m.y) < radio; }
+  function ponerT(t){
+    const G = E.g; t = clamp(Math.round(t), 0, G.tmax); if (t === G.cursor) return;
+    G.cursor = t; if (E.torre) { E.torre.tmax = Math.max(t, 1); E.torre.prog = t; } E.dibujar(); E.avisar();
+  }
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cerca({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const p = local(e); if (!cerca(p, e.pointerType === 'mouse' ? 32 : 40)) return;
+    arrastrando = true; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando){ const m = manija(); if (m) ponerT(m.g.T(p.x)); return; }
+    const sv = cerca(p, 32);
+    if (sv !== sobre){ sobre = sv; cv.style.cursor = sv ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando){ arrastrando = false; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !arrastrable()) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ e.preventDefault(); ponerT(E.g.cursor + (e.key === 'ArrowRight' ? 1 : -1)); }
+  });
+  return E;
+}
+
+// Opciones de predicción (las mismas en los dos modos)
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const tablaHTML = (cab, filas) => `<div class="tabla-wrap"><table class="tabla"><thead><tr>${cab.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${filas.map(f => `<tr>${f.map(x => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+// En el celular, el dibujo se lleva arriba de la pantalla antes de animar; si el alumno cambió de paso, no se anima.
+function alDibujo(cv, sigue, fn){
+  const chico = innerWidth < 900;
+  if (chico) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+  esperar(chico ? 380 : 0, () => { if (sigue()) fn(); });
+}
+// Lecturas reutilizables: [color, nombre, valor]
+const L = (k, nombre, valor) => () => [k, nombre, valor];
+const etAnios = k => String(k), etMeses = k => String(k);
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, x:{ tipo:'compuesto', r:10 } };
+
+// Números de la escena: todos salen del motor
+const P1 = MI.interesSimple({ C:2400, r:15, tasa:'anual', t:8, tiempo:'meses' });
+const P3 = MI.compuesto({ C:1000, r:10, t:3 });
+const P5 = MI.efectiva({ r:2, n:12 });
+const P5T = MI.compuesto({ C:100, r:2, t:12 });
+const P7 = MI.capitalDesdeMonto({ M:3450, r:10, tasa:'anual', t:18, tiempo:'meses', tipo:'simple' });
+const P8 = MI.descuento({ Vn:6300, r:15, tasa:'anual', t:4, tiempo:'meses' });
+const CAPS = [1, 2, 4, 12].map(m => MI.capitalizacion({ C:1000, j:24, m }));
+const pct = x => `${fmt(x, 2, true)} % anual`;
+
+const G1 = { id:'interes-paso1', ok:'b', opts:[
+  ['a', soles(P1.errores.sinConvertir), 'unidades-sin-convertir', 'hipotesis'],
+  ['b', soles(P1.I)],
+  ['c', soles(P1.errores.daElMonto), 'AR5-da-el-monto', 'hipotesis'],
+  ['d', soles(P1.errores.unPeriodo), 'interes-de-un-anio', 'hipotesis']],
+  fb:{ b:'¡Bien! 8 meses son 8/12 de año. Al 15 % anual, cada mes gana el 15/12 = 1,25 % de S/ 2400, que es S/ 30. En 8 meses: S/ 240.',
+    a:'Elegiste la A. Esa cuenta usa los 8 meses como si fueran 8 años con la tasa anual. La tasa y el tiempo tienen que estar en la misma unidad. La correcta está marcada.',
+    c:'Elegiste la C. S/ 2640 es lo que hay en la alcancía al final: el monto, capital más interés. La pregunta es solo por el interés. La correcta está marcada.',
+    d:'Elegiste la D. S/ 360 es el interés de un año entero (el 15 % de 2400). Pero el dinero estuvo solo 8 meses. La correcta está marcada.' } };
+const G3 = { id:'interes-paso3', ok:'c', opts:[
+  ['a', soles(P3.errores.comoSimple), 'AR16-compuesto-como-simple', 'parcial'],
+  ['b', soles(P3.errores.factorPorTiempo), 'factor-por-tiempo', 'hipotesis'],
+  ['c', soles(P3.M)],
+  ['d', soles(P3.errores.unPeriodoMenos), 'cuenta-un-periodo-menos', 'hipotesis']],
+  fb:{ c:'¡Bien! El primer año gana S/ 100 y llega a S/ 1100. El segundo gana el 10 % de 1100, que es S/ 110. El tercero, el 10 % de 1210, que es S/ 121. Total: S/ 1331.',
+    a:'Elegiste la A. Así sería con interés simple: S/ 100 cada año. En el compuesto, desde el segundo año el interés también gana interés, y cada ficha es más grande que la anterior. La correcta está marcada.',
+    b:'Elegiste la B. Esa cuenta multiplica 1000 · 1,1 por 3. Pero el factor 1,1 se aplica tres veces seguidas: 1000 · 1,1 · 1,1 · 1,1. La correcta está marcada.',
+    d:'Elegiste la D. S/ 1210 es lo que hay al final del segundo año. Falta un año más de interés. La correcta está marcada.' } };
+const G5 = { id:'interes-paso5', ok:'a', opts:[
+  ['a', pct(P5.efectiva)],
+  ['b', pct(P5.errores.proporcional), 'tasa-equivalente-como-proporcional', 'hipotesis'],
+  ['c', pct(P5.errores.factorComoTasa), 'AR4-factor-como-tasa', 'parcial'],
+  ['d', pct(P5.errores.alReves), 'convierte-al-reves', 'hipotesis']],
+  fb:{ a:'¡Bien! Cada mes el dinero se multiplica por 1,02. En 12 meses, por 1,02 elevado a 12, que es casi 1,2682: gana un 26,82 % en el año.',
+    b:'Elegiste la B. 12 · 2 % = 24 % sería si cada mes ganara solo sobre el capital (interés simple). Con capitalización mensual, desde el segundo mes también gana sobre el interés. La correcta está marcada.',
+    c:'Elegiste la C. 1,2682 es el factor: por cuánto se multiplica el dinero. El interés es lo que pasa de 1, o sea 0,2682: un 26,82 %. La correcta está marcada.',
+    d:'Elegiste la D. Esa cuenta divide 2 % entre 12, como si se pasara de anual a mensual. Es al revés: un año tiene 12 meses, así que la tasa anual es mayor que la mensual. La correcta está marcada.' } };
+const G7 = { id:'interes-paso7', ok:'a', opts:[
+  ['a', soles(P7.C)],
+  ['b', soles(P7.errores.interesSobreMonto), 'AR3-porcentaje-del-monto', 'parcial'],
+  ['c', soles(P7.errores.sinTiempo), 'olvida-el-tiempo', 'hipotesis'],
+  ['d', soles(P7.errores.restaTasa), 'AR3-resta-la-tasa-del-monto', 'parcial']],
+  fb:{ a:'¡Bien! En 18 meses (1,5 años) al 10 % anual gana el 15 % del capital. Entonces el monto es el 115 % del capital: 3450 ÷ 1,15 = 3000.',
+    b:'Elegiste la B. Esa cuenta saca el 15 % de S/ 3450 y lo resta. Pero el 15 % es del capital, no del monto: el interés salió de lo que se depositó. Comprueba: 2932,50 más su 15 % da 3372,38, no 3450. La correcta está marcada.',
+    c:'Elegiste la C. Esa cuenta divide entre 1,10, como si el dinero hubiera estado un año. Estuvo 18 meses: el interés total es el 15 %. La correcta está marcada.',
+    d:'Elegiste la D. Esa cuenta resta el 10 % del monto: olvida el tiempo y además saca el porcentaje del monto. La correcta está marcada.' } };
+const G8 = { id:'interes-paso8', ok:'b', opts:[
+  ['a', soles(P8.racional.errores.comoComercial), 'racional-como-comercial', 'hipotesis'],
+  ['b', soles(P8.racional.D)],
+  ['c', soles(P8.racional.errores.sobreVaComercial), 'racional-sobre-va-comercial', 'hipotesis'],
+  ['d', soles(P8.racional.errores.vaComoDescuento), 'valor-actual-como-descuento', 'hipotesis']],
+  fb:{ b:'¡Bien! En 4 meses al 15 % anual, r · t = 5 %. El valor actual más su 5 % tiene que dar 6300: Va = 6300 ÷ 1,05 = 6000. El descuento racional es 6300 − 6000 = S/ 300.',
+    a:'Elegiste la A. S/ 315 es el 5 % de 6300: así se calcula el descuento comercial, sobre el valor nominal. El racional se calcula sobre el valor actual, que es menor. La correcta está marcada.',
+    c:'Elegiste la C. Esa cuenta saca el 5 % de 5985, el valor actual del descuento comercial. El racional usa su propio valor actual: el que, sumado a su 5 %, da 6300. Ese es 6000, y su 5 % es 300. La correcta está marcada.',
+    d:'Elegiste la D. S/ 6000 es lo que recibes hoy, el valor actual. El descuento es lo que se queda el banco: la diferencia con 6300. La correcta está marcada.' } };
+
+// ---- configuraciones de la escena ----
+const torreP1 = ya => ({ modo:'torre', torre:{ C:2400, r:1.25, tipo:'simple', tmax:8, prog: ya ? 8 : 0, ocultos:!ya, imax:300, etiqueta:etMeses, unidad:'meses' },
+  lect: [L('C', 'Capital C', 'S/ 2400'), L('r', 'Tasa r', '15 % anual'), L('t', 'Tiempo t', '8 meses')].concat(ya ? [L('r', 'Tasa por mes', '1,25 %'), L('I', 'Interés I', soles(P1.I))] : []),
+  desc:'Torre de la alcancía mes a mes: el capital abajo y, encima, las fichas de interés de cada mes.' });
+const torreP3 = ya => ({ modo:'torre', torre:{ C:1000, r:10, tipo:'compuesto', tmax:3, prog: ya ? 3 : 0, ocultos:!ya, imax:380 },
+  lect: [L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa r', '10 % anual'), L('t', 'Tiempo t', '3 años')].concat(ya ? [L('M', 'Monto M', soles(P3.M)), L('X', 'Interés sobre interés', soles(P3.sobreInteres))] : []),
+  desc:'Torre de la alcancía año a año con interés compuesto.' });
+const torreP5 = ya => ({ modo:'torre', torre:{ C:100, r:2, tipo:'compuesto', tmax:12, prog: ya ? 12 : 0, ocultos:!ya, imax:30, etiqueta:etMeses, unidad:'meses', valores:true },
+  lect: [L('C', 'Capital C', 'S/ 100'), L('r', 'Tasa r', '2 % mensual'), L('t', 'Tiempo t', '12 meses')].concat(ya ? [L('M', 'Monto M', soles(P5T.M)), L('r', 'Tasa efectiva anual', `${fmt(P5.efectiva, 2, true)} %`)] : []),
+  desc:'Torre de S/ 100 mes a mes con capitalización mensual.' });
+// La letra y el depósito como fichas iguales: el interés (o el descuento) es una ficha del tamaño que corresponde.
+const fichasP7 = ya => ({ modo:'fichas', fichas:{ vmax:3450*1.08, prog:1, cols: ya
+    ? [{ titulo:'El depósito', partes:[{ v:P7.C, k:'C', n:20, rot:'' }, { v:P7.I, k:'I', n:3 }], total:{ v:3450, k:'M', rot:'M = S/ 3450' } },
+       { titulo:'Si se resta el 15 % de M', partes:[{ v:P7.errores.interesSobreMonto, k:'muted', rot:'lo que queda', trama:true }, { v:3450 - P7.errores.interesSobreMonto, k:'muted', rot:'15 % de M' }], total:{ v:3450, k:'M', rot:'M = S/ 3450' } }]
+    : [{ titulo:'El depósito', partes:[], total:{ v:3450, k:'M', rot:'M = S/ 3450', ver:true }, oculto:true }] },
+  lect: [L('M', 'Monto M', 'S/ 3450'), L('r', 'Tasa r', '10 % anual'), L('t', 'Tiempo t', '18 meses')].concat(ya ? [L('C', 'Capital C', soles(P7.C)), L('I', 'Interés I', soles(P7.I))] : []),
+  ley: ya ? [['C', 'C · capital: 20 fichas de S/ 150', true], ['I', 'I · interés: 3 fichas iguales (15 %)', true], ['M', 'M · monto']] : [['M', 'M · monto']],
+  desc:'El monto como una columna; adentro, el capital y el interés.' });
+const fichasP8 = ya => ({ modo:'fichas', fichas:{ vmax:6300*1.08, prog:1, cols: ya
+    ? [{ titulo:'Racional', partes:[{ v:P8.racional.Va, k:'Va', n:P8.fichas, rot:'' }, { v:P8.racional.D, k:'Dr', rot:'Dr' }], total:{ v:6300, k:'Vn', rot:'Vn = S/ 6300' } },
+       { titulo:'Comercial', partes:[{ v:P8.comercial.Va, k:'Va', n:P8.fichas - 1, rot:'' }, { v:P8.comercial.D, k:'Dc', rot:'Dc' }], total:{ v:6300, k:'Vn', rot:'Vn = S/ 6300' } }]
+    : [{ titulo:'Racional', partes:[], total:{ v:6300, k:'Vn', rot:'Vn = S/ 6300', ver:true }, oculto:true },
+       { titulo:'Comercial', partes:[], total:{ v:6300, k:'Vn', rot:'Vn = S/ 6300', ver:true }, oculto:true }] },
+  lect: [L('Vn', 'Valor nominal Vn', 'S/ 6300'), L('r', 'Tasa r', '15 % anual'), L('t', 'Faltan t', '4 meses')].concat(ya ? [L('Dr', 'Descuento racional Dr', soles(P8.racional.D)), L('Dc', 'Descuento comercial Dc', soles(P8.comercial.D))] : []),
+  ley: ya ? [['Va', 'Va · valor actual (fichas)', true], ['Dr', 'Dr · descuento racional', true], ['Dc', 'Dc · descuento comercial', true], ['Vn', 'Vn · valor nominal']] : [['Vn', 'Vn · valor nominal']],
+  desc:'La letra como una columna de fichas: el valor actual y el descuento, con el descuento racional y con el comercial.' });
+
+function vivoSimple(){
+  const d = $('vivoS'); if (!d) return;
+  const t = E.g.cursor, I = MI.interesSimple({ C:1000, r:10, t }).I;
+  d.innerHTML = `<div class="eq">${I_('I')} = ${fr(`${C_('1000')} · ${r_('10')} · ${t_(fmt(t, 0))}`, '100')} = ${I_(fmt(I, 0))}</div>
+    <div class="eq">${M_('M')} = ${C_('1000')} + ${I_(fmt(I, 0))} = ${M_(fmt(1000 + I, 0))}<span class="note">cada año suma lo mismo: S/ 100</span></div>`;
+}
+function vivoComp(){
+  const d = $('vivoK'); if (!d) return;
+  const t = E.g.cursor, X = MI.compuesto({ C:1000, r:10, t });
+  d.innerHTML = `<div class="eq">${M_('M')} = ${C_('1000')} · (1 + ${r_('0,10')})<sup>${t_(fmt(t, 0))}</sup> = ${M_(fmt(X.M, 2))}</div>
+    <div class="eq">simple: ${M_(fmt(X.simple.M, 0))}; ${X_('interés sobre interés')} = ${fmt(X.M, 2)} − ${fmt(X.simple.M, 0)} = ${X_(fmt(X.sobreInteres, 2))}</div>`;
+}
+const torreExplora = (tipo, r, tmax, imax, alCambiar) => ({ modo:'torre', graf:true,
+  torre:{ C:1000, r, tipo, tmax:Math.max(3, 3), prog:3, imax },
+  g:{ C:1000, r, tmax, ymin:0, ymax: r >= 20 ? 7000 : 3000, ypaso: r >= 20 ? 1000 : 500, simple:true, comp: tipo === 'compuesto', cursor:3, drag:true },
+  lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa r', `${r} % anual`), E0 => ['t', 'Tiempo t', `${fmt(E0.g.cursor, 0)} años`],
+    E0 => ['M', 'Monto M', soles(tipo === 'compuesto' ? MI.compuesto({ C:1000, r, t:E0.g.cursor }).M : MI.interesSimple({ C:1000, r, t:E0.g.cursor }).M)]],
+  alCambiar });
+
+const steps = [
+ { k:'Paso 1', t:'Predice: ocho meses en la alcancía', gate:G1,
+   prep:() => E.config(torreP1(!!S.pred[G1.id])),
+   anima:fin => { const T = E.torre; T.ocultos = false; T.prog = 0; E.animar(0, 8, RM ? 0 : 2400, p => { T.prog = p; }, () => { E.config(torreP1(true)); fin(); }, true); },
+   body:() => `<p class="problem">Ana deposita ${C_('S/ 2400')} en una caja que paga el ${r_('15 % anual')} de <b>interés simple</b>. Retira su dinero a los ${t_('8 meses')}.</p>
+   <p>¿Cuánto ganó de ${I_('interés')}?</p>${opcionesHTML(G1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${I_('I')} = ${fr(`${C_('C')} · ${r_('r')} · ${t_('t')}`, '100')}<span class="note">con r y t en la misma unidad</span></div>
+     <div class="eq">${I_('I')} = ${fr(`${C_('2400')} · ${r_('15')} · ${t_('8')}`, '1200')} = ${I_(fmt(P1.I, 0))}<span class="note">el 1200 es 100 · 12: los meses pasan a años</span></div></div>
+   <p>La tasa es <b>anual</b> y el tiempo está en <b>meses</b>. Hay dos caminos: pasar el tiempo a años (8 meses = 8/12 de año) o la tasa a meses (15 % anual = 1,25 % mensual). En el dibujo, cada mes suma una ficha de ${I_('S/ 30')}: el 1,25 % de ${C_('2400')}.</p>
+   <p class="aviso">Antes de multiplicar, mira las unidades: «% anual» con «meses» no se puede multiplicar así nomás.</p>
+   <p class="fuente">No encontramos estudios con cifras sobre mezclar la tasa anual con el tiempo en meses: es una hipótesis nuestra. Responder el monto en vez del interés es AR5 del informe, también sin datos; la otra opción es hipótesis nuestra.</p></div>` },
+ { k:'Paso 2', t:'La recta del interés simple', explora:'simple',
+   prep:() => E.config(torreExplora('simple', 10, 10, 1100, vivoSimple)),
+   body:() => `<p class="problem">Ahora, ${C_('S/ 1000')} al ${r_('10 % anual')} de interés simple. Arrastra el punto rojo de la gráfica (sobre el eje del tiempo) para ver la torre de cada año.</p>
+   <div class="eqs" id="vivoS"></div>
+   <p>En el <b>interés simple</b>, el interés de cada periodo se calcula siempre sobre el ${C_('capital')} del inicio: todas las fichas son iguales (${I_('S/ 100')} por año). Por eso el ${M_('monto')} sube lo mismo cada año y su gráfica es una <b>recta</b>.</p>
+   ${tablaHTML(['Convierte', 'Año comercial', 'Ejemplo'], [['meses → años', '1 año = 12 meses', '8 meses = 8/12 de año'], ['días → años', '1 año = 360 días', '90 días = 1/4 de año'], ['tasa anual → mensual', 'divide entre 12', '15 % anual = 1,25 % mensual'], ['tasa mensual → diaria', 'divide entre 30', '3 % mensual = 0,1 % diario']])}
+   <p>En el simple, pasar la tasa de una unidad a otra es repartirla: por eso se divide. Las academias escriben ${I_('I')} = ${C_('C')} · ${r_('r')} · ${t_('t')}/100 con ${t_('t')} en años, ${I_('I')} = ${C_('C')} · ${r_('r')} · ${t_('t')}/1200 con ${t_('t')} en meses e ${I_('I')} = ${C_('C')} · ${r_('r')} · ${t_('t')}/36 000 con ${t_('t')} en días, siempre con la tasa anual.</p>
+   <p class="hint">Con teclado: toca el dibujo; las flechas ← y → cambian el tiempo de año en año.</p>` },
+ { k:'Paso 3', t:'Predice: tres años con interés compuesto', gate:G3,
+   prep:() => E.config(torreP3(!!S.pred[G3.id])),
+   anima:fin => { const T = E.torre; T.ocultos = false; T.prog = 0; E.leyenda(); E.animar(0, 3, RM ? 0 : 2400, p => { T.prog = p; }, () => { E.config(torreP3(true)); fin(); }, true); },
+   body:() => `<p class="problem">Beto deposita ${C_('S/ 1000')} al ${r_('10 % anual')} de <b>interés compuesto</b>: cada año, el interés se suma al dinero de la alcancía y desde ese momento también gana interés.</p>
+   <p>¿Cuánto tendrá a los ${t_('3 años')}?</p>${opcionesHTML(G3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   ${tablaHTML(['Año', 'Al empezar', 'Interés del año', 'Al terminar'], P3.torre.slice(1).map(p => [t_(String(p.k)), fmt(P3.torre[p.k - 1].M, 0), I_(fmt(p.interesDelPeriodo, 0)), M_(fmt(p.M, 0))]))}
+   <div class="eqs"><div class="eq">${M_('M')} = ${C_('C')} (1 + ${r_('r')}/100)<sup>${t_('t')}</sup> = ${C_('1000')} · 1,1<sup>${t_('3')}</sup> = ${M_(fmt(P3.M, 0))}</div></div>
+   <p>Mira la torre: cada año tiene las fichas ${I_('naranjas')} del interés del capital (S/ 100 por año, como en el simple) y, encima, una capa ${X_('fucsia')}: el <b>interés sobre interés</b>. El segundo año es S/ 10 (el 10 % de los S/ 100 del primer año) y al tercero ya suma S/ 31.</p>
+   <p class="fuente">Calcular el compuesto como si fuera simple (S/ 1300) es la idea errónea AR16. En una encuesta a adultos de 39 países, solo el 42 % respondió bien una pregunta de interés compuesto (OECD/INFE, 2023, según resúmenes que revisamos). Es una cifra de adultos, no de escolares, y no dice qué respondieron los demás; no encontramos la cifra peruana. Las opciones de S/ 3300 y S/ 1210 son hipótesis nuestras.</p></div>` },
+ { k:'Paso 4', t:'La capa que crece', explora:'compuesto',
+   prep:() => E.config(torreExplora('compuesto', 10, 10, 1700, vivoComp)),
+   body:() => `<p class="problem">Los mismos ${C_('S/ 1000')} al ${r_('10 % anual')}, ahora con interés compuesto. Arrastra el punto rojo para avanzar o retroceder los años.</p>
+   <div class="eqs" id="vivoK"></div>
+   <p>En la gráfica, la recta a trazos es el simple y la curva es el compuesto. Al principio casi coinciden; con los años, la capa ${X_('fucsia')} del interés sobre interés crece cada vez más rápido y la curva se separa de la recta. En el simple, cada año <b>se suma</b> lo mismo; en el compuesto, cada año <b>se multiplica</b> por lo mismo (por 1,1).</p>
+   <p>Mira la diferencia a los 10 años: S/ 2000 con el simple y S/ 2593,74 con el compuesto.</p>
+   <p class="hint">Con teclado: toca el dibujo; las flechas ← y → cambian el tiempo de año en año.</p>` },
+ { k:'Paso 5', t:'Predice: la tasa de un año', gate:G5,
+   prep:() => E.config(torreP5(!!S.pred[G5.id])),
+   anima:fin => { const T = E.torre; T.ocultos = false; T.prog = 0; E.leyenda(); E.animar(0, 12, RM ? 0 : 3000, p => { T.prog = p; }, () => { E.config(torreP5(true)); fin(); }, true); },
+   body:() => `<p class="problem">Una cooperativa paga el ${r_('2 % mensual')} con capitalización mensual: cada mes, el interés se suma a la cuenta.</p>
+   <p>Si dejas el dinero ${t_('un año')}, ¿qué tasa anual ganas de verdad (la tasa efectiva anual)?</p>${opcionesHTML(G5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${C_('100')} · 1,02<sup>${t_('12')}</sup> = ${M_(fmt(P5T.M, 2))}</div>
+     <div class="eq">tasa efectiva = 1,02<sup>${t_('12')}</sup> − 1 = ${fmt(P5.factor, 4)} − 1 = ${r_(fmt(P5.efectiva, 2) + ' %')}</div></div>
+   <p>Con ${C_('S/ 100')} se lee directo: al final del año hay ${M_(fmt(P5T.M, 2))}, o sea ${fmt(P5.efectiva, 2)} soles de interés por cada 100. Por eso el «24 % anual capitalizable mensualmente» (la <b>tasa nominal</b>) equivale a una <b>tasa efectiva</b> del ${fmt(P5.efectiva, 2)} % anual. Dos tasas son <b>equivalentes</b> si, con el mismo capital y el mismo tiempo, dan el mismo monto.</p>
+   <p class="aviso">En el compuesto, una tasa no se reparte ni se junta multiplicando: se eleva. De mensual a anual, (1 + r)<sup>12</sup> − 1; de anual a mensual, la raíz duodécima.</p>
+   <p class="fuente">No encontramos estudios con cifras sobre tasas equivalentes. Tomar el factor 1,2682 como si fuera la tasa es AR4 del informe (confundir el factor con el porcentaje; parcial, sin cifra). Las otras dos opciones son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'¿Cada cuánto se capitaliza?', explora:'barras',
+   prep:() => { E.config({ modo:'barras', barras:{ C:1000, j:24, ops:[1, 2, 4, 12], ver:4, sel: S.cap === undefined ? 3 : S.cap, imax:300 },
+     lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa nominal', '24 % anual'), L('t', 'Tiempo t', '1 año'),
+       E0 => ['M', 'Monto, ' + ['anual', 'semestral', 'trimestral', 'mensual'][E0.barras.sel], soles(CAPS[E0.barras.sel].M)]], alCambiar:vivoCap }); },
+   body:() => `<p class="problem">Un banco anuncia el ${r_('24 % anual')}, pero puede capitalizar una vez al año, cada semestre, cada trimestre o cada mes. Elige una forma y mira su torre al cabo de ${t_('un año')}.</p>
+   <div class="seg" role="group" aria-label="Forma de capitalizar">${['Anual', 'Semestral', 'Trimestral', 'Mensual'].map((t, k) => `<button type="button" data-cap="${k}" aria-pressed="${(S.cap === undefined ? 3 : S.cap) === k}">${t}</button>`).join('')}</div>
+   <div class="eqs" id="vivoC"></div>
+   ${tablaHTML(['Capitaliza', 'Tasa por periodo', 'Periodos', 'Monto', 'Tasa efectiva'], CAPS.map((K, k) => [['anual', 'semestral', 'trimestral', 'mensual'][k], `${fmt(K.porPeriodo, 0)} %`, [1, 2, 4, 12][k], fmt(K.M, 2), `${fmt(K.efectiva, 2)} %`]))}
+   <p>La tasa nominal se reparte entre los periodos (24 % entre 4 trimestres = 6 % trimestral), pero el monto se calcula componiendo: 1,06<sup>4</sup>. Las fichas ${I_('naranjas')} son iguales en todas las torres (el 24 % de ${C_('1000')}); lo que cambia es la capa ${X_('fucsia')}: cuanto más seguido se capitaliza, antes empieza el interés a ganar interés.</p>` },
+ { k:'Paso 7', t:'Predice: lo que se depositó', gate:G7,
+   prep:() => E.config(fichasP7(!!S.pred[G7.id])),
+   anima:fin => { E.config(fichasP7(true)); E.fichas.prog = 0; E.animar(0, 1, 1400, p => { E.fichas.prog = p; }, fin); },
+   body:() => `<p class="problem">Luis depositó un capital al ${r_('10 % anual')} de interés simple. A los ${t_('18 meses')} retiró ${M_('S/ 3450')} en total.</p>
+   <p>¿Cuánto había depositado?</p>${opcionesHTML(G7.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${r_('r')} · ${t_('t')} = ${r_('10')} · ${t_('1,5')} = 15 %<span class="note">18 meses = 1,5 años</span></div>
+     <div class="eq">${M_('M')} = ${C_('C')} + 15 % de ${C_('C')} = 1,15 · ${C_('C')}</div>
+     <div class="eq">${C_('C')} = ${fr(M_('3450'), '1,15')} = ${C_(fmt(P7.C, 0))}</div></div>
+   <p>Si el ${C_('capital')} son 20 fichas iguales (cada una, el 5 %), el ${I_('interés')} del 15 % son 3 fichas más del mismo tamaño: el ${M_('monto')} son 23 fichas. Cada ficha vale 3450 ÷ 23 = S/ 150 y el capital, 20 · 150 = S/ 3000. A la derecha, en gris, lo que pasa si se resta el 15 % del monto: lo que se resta es más grande que el interés de verdad y lo que queda es menos que el capital que se depositó.</p>
+   <p class="aviso">Un porcentaje es siempre «de algo». El interés es un porcentaje del capital: si te dan el monto, divide entre (1 + r · t/100); no restes.</p>
+   <p class="fuente">Sacar el porcentaje del monto (y no del capital) es AR3 del informe: el porcentaje sobre la base equivocada, descrito en un estudio con universitarios sin cifra propia y en guías docentes (parcial). Olvidar el tiempo es hipótesis nuestra.</p></div>` },
+ { k:'Paso 8', t:'Predice: el descuento de una letra', gate:G8,
+   prep:() => E.config(fichasP8(!!S.pred[G8.id])),
+   anima:fin => { E.config(fichasP8(true)); E.fichas.prog = 0; E.animar(0, 1, 1400, p => { E.fichas.prog = p; }, fin); },
+   body:() => `<p class="problem">Una letra de cambio dice que dentro de ${t_('4 meses')} se pagarán ${Vn_('S/ 6300')}: es su <b>valor nominal</b> ${Vn_('Vn')}. Su dueña la cambia hoy en un banco, que le descuenta el ${r_('15 % anual')}. Lo que recibe hoy es el <b>valor actual</b> ${Va_('Va')}.</p>
+   <p>El <b>descuento comercial</b> ${Dc_('Dc')} se calcula sobre el valor nominal. El <b>descuento racional</b> ${Dr_('Dr')} se calcula sobre el valor actual: es el interés que ${Va_('Va')} ganaría hasta el vencimiento. ¿Cuánto es el descuento racional?</p>${opcionesHTML(G8.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${r_('r')} · ${t_('t')} = ${r_('15')} · ${fr(t_('4'), '12')} = 5 %</div>
+     <div class="eq">${Dc_('Dc')} = ${fr(`${Vn_('Vn')} · ${r_('r')} · ${t_('t')}`, '100')} = 5 % de ${Vn_('6300')} = ${Dc_(fmt(P8.comercial.D, 0))}<span class="note">Va = ${fmt(P8.comercial.Va, 0)}</span></div>
+     <div class="eq">${Dr_('Dr')} = ${fr(`${Vn_('Vn')} · ${r_('r')} · ${t_('t')}`, `100 + ${r_('r')} · ${t_('t')}`)} = ${fr(`${Vn_('6300')} · 5`, '105')} = ${Dr_(fmt(P8.racional.D, 0))}<span class="note">Va = ${fmt(P8.racional.Va, 0)}</span></div></div>
+   <p>En el racional, el ${Va_('valor actual')} son 20 fichas y el descuento es una ficha más del mismo tamaño (el 5 % de ${Va_('Va')}): ${Vn_('Vn')} = 21 fichas de S/ 300. En el comercial, el ${Vn_('valor nominal')} son 20 fichas y el descuento es una de ellas (el 5 % de ${Vn_('Vn')}): fichas de S/ 315. Por eso el comercial siempre es mayor.</p>
+   <p>La diferencia, ${Dc_('315')} − ${Dr_('300')} = 15, es justo el 5 % de ${Dr_('300')}: el comercial es el racional más su interés. De ahí sale la fórmula de academia ${Vn_('Vn')} = ${fr(`${Dc_('Dc')} · ${Dr_('Dr')}`, `${Dc_('Dc')} − ${Dr_('Dr')}`)}.</p>
+   <p class="fuente">No encontramos estudios con cifras sobre el descuento. Las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 9', t:'Ahora explora tú', explora:'libre',
+   prep:() => explorarPrep(),
+   body:() => `<p>Elige el tipo de interés y la tasa, y arrastra el punto rojo de la gráfica para cambiar el tiempo. Todas las cuentas salen del motor.</p>
+   <div class="seg" role="group" aria-label="Tipo de interés">${[['simple', 'Simple'], ['compuesto', 'Compuesto']].map(([k, t]) => `<button type="button" data-tipo="${k}" aria-pressed="${S.x.tipo === k}">${t}</button>`).join('')}</div>
+   <div class="seg" role="group" aria-label="Tasa anual">${[5, 10, 20].map(r => `<button type="button" data-r="${r}" aria-pressed="${S.x.r === r}">${r} % anual</button>`).join('')}</div>
+   <div class="eqs" id="vivoX"></div>` },
+];
+
+function vivoCap(){
+  const d = $('vivoC'); if (!d) return;
+  const k = E.barras.sel, m = [1, 2, 4, 12][k], K = CAPS[k];
+  d.innerHTML = `<div class="eq">${M_('M')} = ${C_('1000')} · (1 + ${fr(r_('0,24'), String(m))})<sup>${m}</sup> = ${M_(fmt(K.M, 2))}<span class="note">tasa efectiva: ${fmt(K.efectiva, 2)} %</span></div>`;
+}
+function explorarPrep(){
+  const imax = S.x.tipo === 'compuesto' ? (S.x.r === 20 ? 5300 : S.x.r === 10 ? 1700 : 700) : (S.x.r === 20 ? 2100 : S.x.r === 10 ? 1100 : 550);
+  E.config(torreExplora(S.x.tipo, S.x.r, 10, imax, vivoX));
+}
+function vivoX(){
+  const d = $('vivoX'); if (!d) return;
+  const t = E.g.cursor, r = S.x.r;
+  if (S.x.tipo === 'simple'){ const I = MI.interesSimple({ C:1000, r, t }).I; d.innerHTML = `<div class="eq">${M_('M')} = ${C_('1000')} + ${fr(`${C_('1000')} · ${r_(String(r))} · ${t_(fmt(t, 0))}`, '100')} = ${M_(fmt(1000 + I, 2))}<span class="note">se suma lo mismo cada año</span></div>`; }
+  else { const X = MI.compuesto({ C:1000, r, t }); d.innerHTML = `<div class="eq">${M_('M')} = ${C_('1000')} · (1 + ${r_(fmt(r/100, 2))})<sup>${t_(fmt(t, 0))}</sup> = ${M_(fmt(X.M, 2))}<span class="note">${X_('interés sobre interés')}: ${fmt(X.sobreInteres, 2)}</span></div>`; }
+}
+function explorar(){
+  const body = $('stepBody');
+  body.querySelectorAll('[data-tipo]').forEach(b => b.onclick = () => { if (E.anim) return; S.x.tipo = b.dataset.tipo; body.querySelectorAll('[data-tipo]').forEach(q => q.setAttribute('aria-pressed', String(q === b))); explorarPrep(); });
+  body.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { if (E.anim) return; S.x.r = +b.dataset.r; body.querySelectorAll('[data-r]').forEach(q => q.setAttribute('aria-pressed', String(q === b))); explorarPrep(); });
+}
+function barrasSel(){
+  $('stepBody').querySelectorAll('[data-cap]').forEach(b => b.onclick = () => {
+    S.cap = +b.dataset.cap; $('stepBody').querySelectorAll('[data-cap]').forEach(q => q.setAttribute('aria-pressed', String(q === b)));
+    E.barras.sel = S.cap; E.dibujar(); E.avisar();
+  });
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.explora === 'libre') explorar();
+  if (s.explora === 'barras') barrasSel();
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    alDibujo($('cv'), () => true, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos: el doble de tiempo, medio año, cuándo se duplica, días y meses, los dos descuentos y capitalizar
+   cada vez más seguido. La escena cambia recién después de responder. Un experimento se abre solo si los anteriores
+   ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const DOB = MI.dobleTiempo({ C:1000, r:10, t:5 });
+const MED = MI.comparar({ C:1000, r:10, t:0.5 });
+const DUP = MI.tiempo({ C:1, M:2, r:10, tipo:'compuesto' });
+const DIAS = MI.interesSimple({ C:3600, r:3, tasa:'mensual', t:45, tiempo:'dias' });
+const DES = MI.nominalDesdeDescuentos({ Dc:330, Dr:300 });
+const DESL = MI.descuento({ Vn:DES.Vn, r:DES.rt, tasa:'anual', t:1, tiempo:'anios' });
+const CONT = [1, 12, 360, 'continua'].map(m => MI.capitalizacion({ C:1000, j:100, m }));
+const anios = x => `En unos ${fmt(x, 1, true)} años`;
+const etQ = k => `${15*k} d`;
+
+const EXPS = [
+  { id:'doble-de-tiempo', corto:'El doble de tiempo',
+    q:`${C_('S/ 1000')} al ${r_('10 % anual')} de interés compuesto ganan S/ 610,51 de interés en ${t_('5 años')}. ¿Cuánto interés ganan en ${t_('10 años')}?`,
+    opts:[['a', soles(DOB.errores.doble), 'AR16-doble-tiempo', 'hipotesis'],
+          ['b', soles(DOB.I2)],
+          ['c', soles(DOB.errores.daElMonto), 'AR5-da-el-monto', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'El doble de tiempo da el doble de interés solo en el simple. En el compuesto, los segundos 5 años empiezan con S/ 1610,51, no con S/ 1000: ganan más que los primeros.', c:'S/ 2593,74 es lo que hay en la alcancía a los 10 años: el monto, con el capital incluido. La pregunta es solo por el interés.' },
+    antes:ya => E.config({ modo:'torre', graf:true, torre:{ C:1000, r:10, tipo:'compuesto', tmax:10, prog: ya ? 10 : 5, imax:1700, valores:true },
+      g:{ C:1000, r:10, tmax:10, ymax:3000, simple:false, comp:true, hasta: ya ? 10 : 5, cursor: ya ? 10 : 5 },
+      lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa r', '10 % anual'), L('ink', 'Interés en 5 años', soles(DOB.I1))].concat(ya ? [L('ink', 'Interés en 10 años', soles(DOB.I2))] : []) }),
+    despues:() => { const T = E.torre, G = E.g; E.animar(5, 10, 2400, p => { T.prog = p; G.hasta = p; G.cursor = Math.round(p); }, () => { EXPS[0].antes(true); }, true); },
+    exp:() => `<div class="eqs"><div class="eq">interés (10 años) = ${C_('1000')} · (1,1<sup>${t_('10')}</sup> − 1) = ${fmt(DOB.I2, 2)}</div>
+      <div class="eq">${fr(fmt(DOB.I2, 2), fmt(DOB.I1, 2))} = ${fmt(DOB.razon, 2)} = 1,1<sup>${t_('5')}</sup> + 1<span class="note">más del doble</span></div></div>
+      <p>En los primeros 5 años la alcancía pasa de 1000 a 1610,51. En los siguientes 5, cada sol se vuelve a multiplicar por 1,61, pero ahora hay 1610,51 soles trabajando. La capa ${X_('fucsia')} crece cada vez más rápido.</p>
+      <p class="fuente">Esperar el doble es tratar el compuesto como simple, ligado a la idea AR16 (con cifra en adultos, parcial; ver el paso 3). Esta forma de preguntarlo y sus opciones son hipótesis nuestras; dar el monto en vez del interés es AR5, sin datos.</p>` },
+  { id:'medio-anio', corto:'Medio año',
+    q:`${C_('S/ 1000')} al ${r_('10 % anual')}, durante ${t_('medio año')}. Con interés simple o con interés compuesto capitalizable cada año (usando la misma fórmula, con t = 0,5), ¿cuál da más?`,
+    opts:[['a', 'Da más el compuesto'], ['b', 'Da más el simple'], ['c', 'Dan exactamente lo mismo']].map(([k, t]) =>
+      [k, t, ...(k === 'a' ? ['compuesto-siempre-gana', 'hipotesis'] : k === 'c' ? ['simple-y-compuesto-iguales', 'hipotesis'] : [])]),
+    ok: MED.mayor === 'simple' ? 'b' : 'a',
+    fb:{ a:'Antes de completar un periodo, el compuesto todavía no tiene interés que gane interés, y la curva queda por debajo de la recta.', c:'Empatan justo en t = 1 año. Antes, la curva queda por debajo de la recta; después, por encima.' },
+    antes:ya => E.config({ modo:'grafica', g:{ C:1000, r:10, tmax:2, xpaso:0.5, ymin:950, ymax:1250, ypaso:50, simple:!!ya, comp:!!ya, etX:'t (años) →',
+        marcas: ya ? [{ t:0.5, y:MED.compuesto, et:'0,5' }, { t:1, y:1100, et:'1' }] : [] },
+      lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa r', '10 % anual'), L('t', 'Tiempo t', 'medio año')].concat(ya ? [L('M', 'Simple', soles(MED.simple)), L('M', 'Compuesto', soles(MED.compuesto))] : []) }),
+    despues:() => { const G = E.g; G.simple = G.comp = true; G.hasta = 0; E.animar(0, 2, 1800, p => { G.hasta = p; }, () => EXPS[1].antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">simple: ${C_('1000')} · (1 + ${r_('0,10')} · ${t_('0,5')}) = ${M_(fmt(MED.simple, 2))}</div>
+      <div class="eq">compuesto: ${C_('1000')} · 1,1<sup>${t_('0,5')}</sup> = ${M_(fmt(MED.compuesto, 2))}</div></div>
+      <p>La recta y la curva se cruzan en t = 1: ahí las dos dan ${M_('S/ 1100')}. Antes del primer año, la recta va por encima; después, la curva. El compuesto gana «a la larga», no siempre.</p>
+      <p class="fuente">Pensar que el compuesto siempre da más es una hipótesis nuestra. En los exámenes, el compuesto casi siempre se pregunta con un número entero de periodos.</p>` },
+  { id:'duplicar', corto:'¿Cuándo se duplica?',
+    q:`Un capital ${C_('C')} se deposita al ${r_('10 % anual')} de interés compuesto. ¿En cuánto tiempo se duplica (llega a 2${C_('C')})?`,
+    opts:[['a', anios(DUP.errores.comoSimple), 'AR16-duplica-como-simple', 'hipotesis'],
+          ['b', anios(DUP.errores.mitadDelSimple), 'mitad-del-simple', 'hipotesis'],
+          ['c', anios(DUP.t)]],
+    ok:'c',
+    fb:{ a:'Con interés simple, al 10 % anual, se duplica en 10 años: cada año suma el 10 % del capital. Con el compuesto, el interés sobre interés lo adelanta.', b:'Lo adelanta, pero no tanto: a los 5 años hay 1,1⁵ ≈ 1,61 veces el capital, todavía lejos del doble.' },
+    antes:ya => E.config({ modo:'grafica', g:{ C:1000, r:10, tmax:12, ymin:0, ymax:3000, ypaso:500, simple:!!ya, comp:!!ya, lineaH:{ y:2000, t:'2C = el doble' },
+        marcas: ya ? [{ t:DUP.t, y:2000, et:fmt(DUP.t, 1), dx:-8, align:'right' }, { t:10, y:2000, et:'10', dx:8, align:'left' }] : [] },
+      lect:[L('C', 'Capital C', 'S/ 1000 (por ejemplo)'), L('r', 'Tasa r', '10 % anual')].concat(ya ? [L('t', 'Se duplica a los', `${fmt(DUP.t, 2)} años`)] : []) }),
+    despues:() => { const G = E.g; G.simple = G.comp = true; G.hasta = 0; E.animar(0, 12, 2400, p => { G.hasta = p; }, () => EXPS[2].antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">1,1<sup>${t_('t')}</sup> = 2 → ${t_('t')} = ${fr('log 2', 'log 1,1')} ≈ ${t_(fmt(DUP.t, 2))} años</div></div>
+      <p>Con 7 años no llega (1,1<sup>7</sup> ≈ 1,95) y con 8 se pasa (1,1<sup>8</sup> ≈ 2,14). La «regla del 72» lo estima rápido: 72 ÷ 10 ≈ 7,2 años. En el simple, en cambio, se duplica cuando el interés es el 100 % del capital: 100 ÷ 10 = 10 años.</p>
+      <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras; la de 10 años es el compuesto calculado como simple, ligada a AR16.</p>` },
+  { id:'dias', corto:'Días y meses',
+    q:`Un préstamo de ${C_('S/ 3600')} cobra el ${r_('3 % mensual')} de interés simple y se paga a los ${t_('45 días')}. Con el año comercial, ¿cuánto es el interés?`,
+    opts:[['a', soles(DIAS.I)],
+          ['b', soles(DIAS.errores.anio365), 'anio-de-365-dias', 'hipotesis'],
+          ['c', soles(DIAS.errores.sinConvertir), 'dias-sin-convertir', 'hipotesis'],
+          ['d', soles(DIAS.errores.unPeriodo), 'un-solo-mes', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Esa cuenta usa el año de 365 días. En los problemas de admisión se usa el año comercial: 360 días y meses de 30, salvo que digan otra cosa.', c:'Esa cuenta usa los 45 días como si fueran 45 meses. La tasa es mensual: hay que pasar los días a meses (45 días = 1,5 meses).', d:'S/ 108 es el interés de un mes (30 días). Fueron 45 días: mes y medio.' },
+    antes:ya => E.config({ modo:'torre', torre:{ C:3600, r:1.5, tipo:'simple', tmax:3, prog: ya ? 3 : 0, ocultos:!ya, imax:220, etiqueta:etQ, unidad:'días' },
+      lect:[L('C', 'Capital C', 'S/ 3600'), L('r', 'Tasa r', '3 % mensual'), L('t', 'Tiempo t', '45 días')].concat(ya ? [L('r', 'Cada 15 días', '1,5 %'), L('I', 'Interés I', soles(DIAS.I))] : []),
+      desc:'Torre del préstamo cada 15 días.' }),
+    despues:() => { const T = E.torre; T.ocultos = false; T.prog = 0; E.animar(0, 3, 1800, p => { T.prog = p; }, () => EXPS[3].antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">${t_('45 días')} = ${fr('45', '30')} = ${t_('1,5 meses')}</div>
+      <div class="eq">${I_('I')} = ${fr(`${C_('3600')} · ${r_('3')} · ${t_('1,5')}`, '100')} = ${I_(fmt(DIAS.I, 0))}</div></div>
+      <p>En el dibujo, cada columna son 15 días (medio mes, el 1,5 % de ${C_('3600')} = ${I_('S/ 54')}). Tres fichas de 54 hacen ${I_('S/ 162')}. Con la tasa anual: 3 % mensual = 36 % anual, e ${I_('I')} = 3600 · 36 · 45/36 000 = 162.</p>
+      <p class="fuente">Olvidar la conversión, usar 365 días y quedarse con un solo mes son hipótesis nuestras.</p>` },
+  { id:'dos-descuentos', corto:'Los dos descuentos',
+    q:`De una letra se sabe que su descuento comercial es ${Dc_('Dc = S/ 330')} y su descuento racional es ${Dr_('Dr = S/ 300')} (a la misma tasa y el mismo tiempo). ¿Cuál es su valor nominal ${Vn_('Vn')}?`,
+    opts:[['a', soles(DES.errores.suma), 'suma-los-descuentos', 'hipotesis'],
+          ['b', soles(DES.errores.promedio), 'promedio-de-los-descuentos', 'hipotesis'],
+          ['c', soles(DES.Vn)],
+          ['d', soles(DES.errores.diferencia), 'diferencia-de-los-descuentos', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Los dos descuentos son dos formas de calcular lo mismo, no dos pedazos de la letra: no se suman.', b:'El promedio de los descuentos sigue siendo un descuento, mucho menor que la letra.', d:'S/ 30 es la diferencia entre los descuentos: el interés del descuento racional. La letra vale mucho más.' },
+    antes:ya => E.config({ modo:'fichas', fichas:{ vmax: DES.Vn*1.12, prog:1, cols: ya
+        ? [{ titulo:'Racional', partes:[{ v:DESL.racional.Va, k:'Va', n:DESL.fichas, rot:'' }, { v:300, k:'Dr', rot:'Dr' }], total:{ v:DES.Vn, k:'Vn', rot:`Vn = S/ ${fmt(DES.Vn, 0)}` } },
+           { titulo:'Comercial', partes:[{ v:DESL.comercial.Va, k:'Va', n:DESL.fichas - 1, rot:'' }, { v:330, k:'Dc', rot:'Dc' }], total:{ v:DES.Vn, k:'Vn', rot:`Vn = S/ ${fmt(DES.Vn, 0)}` } }]
+        : [{ titulo:'Racional', partes:[{ v:300, k:'Dr', rot:'Dr', ver:true }], oculto:true }, { titulo:'Comercial', partes:[{ v:330, k:'Dc', rot:'Dc', ver:true }], oculto:true }] },
+      lect:[L('Dc', 'Descuento comercial Dc', 'S/ 330'), L('Dr', 'Descuento racional Dr', 'S/ 300')].concat(ya ? [L('Vn', 'Valor nominal Vn', soles(DES.Vn)), L('r', 'r · t', `${fmt(DES.rt, 0)} %`)] : []),
+      ley: ya ? [['Va', 'Va · valor actual (fichas)', true], ['Dr', 'Dr · descuento racional', true], ['Dc', 'Dc · descuento comercial', true], ['Vn', 'Vn · valor nominal']] : [['Dr', 'Dr · descuento racional', true], ['Dc', 'Dc · descuento comercial', true]] }),
+    despues:() => { EXPS[4].antes(true); E.fichas.prog = 0; E.animar(0, 1, 1400, p => { E.fichas.prog = p; }); },
+    exp:() => `<div class="eqs"><div class="eq">${Dc_('330')} − ${Dr_('300')} = 30 = 10 % de ${Dr_('300')} → ${r_('r')} · ${t_('t')} = 10 %</div>
+      <div class="eq">${Vn_('Vn')} = ${fr(`${Dc_('Dc')} · ${Dr_('Dr')}`, `${Dc_('Dc')} − ${Dr_('Dr')}`)} = ${fr(`${Dc_('330')} · ${Dr_('300')}`, '30')} = ${Vn_(fmt(DES.Vn, 0))}</div></div>
+      <p>El comercial es el 10 % del ${Vn_('nominal')}: 330 ÷ 0,10 = 3300. En el dibujo, la letra son 10 fichas de S/ 330 en el comercial (una es el descuento) y 11 fichas de S/ 300 en el racional (10 son el ${Va_('valor actual')} y una más es el descuento).</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'mas-seguido', corto:'Cada vez más seguido',
+    q:`Un banco imaginario paga el ${r_('100 % anual')} sobre ${C_('S/ 1000')}. Si capitaliza una vez al año, al final hay S/ 2000. Si capitaliza cada mes, cada día, cada hora, cada segundo… ¿qué pasa con el monto al cabo de ${t_('un año')}?`,
+    opts:[['a', 'Crece sin límite: más capitalizaciones, más monto', 'crece-sin-limite', 'hipotesis'],
+          ['b', 'Crece, pero se acerca a un tope de unos S/ 2718', ],
+          ['c', 'No cambia: la tasa es la misma, S/ 2000 siempre', 'no-cambia-con-la-frecuencia', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Sí crece, pero cada vez menos: de anual a mensual sube más de S/ 600; de mensual a diaria, unos S/ 100; de diaria a continua, menos de S/ 4.', c:'La tasa nominal es la misma, pero con capitalización más seguida el interés empieza antes a ganar interés: el monto sube.' },
+    antes:ya => E.config({ modo:'barras', barras:{ C:1000, j:100, ops:[1, 12, 360, 'continua'], ver: ya ? 4 : 1, imax:1900, tope:!!ya },
+      lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa nominal', '100 % anual'), L('M', 'Anual', soles(CONT[0].M))].concat(ya ? [L('M', 'Mensual', soles(CONT[1].M)), L('M', 'Diaria', soles(CONT[2].M)), L('M', 'Continua', soles(CONT[3].M))] : []) }),
+    despues:() => { const B = E.barras; B.prog = 0; let k = 1;
+      const sig = () => { if (k > 3) { EXPS[5].antes(true); return; } B.ver = k + 1; B.prog = 0; E.animar(0, 1, 900, p => { B.prog = p; }, () => { k++; esperar(250, sig); }); };
+      sig(); },
+    exp:() => `<div class="eqs"><div class="eq">mensual: ${C_('1000')} · (1 + ${fr('1', '12')})<sup>12</sup> = ${M_(fmt(CONT[1].M, 2))}</div>
+      <div class="eq">diaria: ${C_('1000')} · (1 + ${fr('1', '360')})<sup>360</sup> = ${M_(fmt(CONT[2].M, 2))}</div>
+      <div class="eq">continua: ${C_('1000')} · e = ${M_(fmt(CONT[3].M, 2))}<span class="note">e ≈ 2,71828</span></div></div>
+      <p>Capitalizar más seguido ayuda cada vez menos: los montos se acercan a ${C_('C')} · e<sup>r·t/100</sup>, el <b>interés continuo</b>. Con el 100 % en un año, el tope es 1000 · e ≈ S/ 2718,28. Así aparece el número e.</p>
+      <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); x.antes(false); E.compactar(false); alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.avisar(); }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); });
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
