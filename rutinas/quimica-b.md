@@ -378,3 +378,48 @@ Los vértices van en tinta. ΔE00 mínimo 23,7 en claro y 22,0 en oscuro (r1 con
 - **`docs/diseno.md`:** «Variables de la recta en trozos (`plantillas/numeros-reales/`): A azul (#1f5fbf, oscuro #7cb0ff), B naranja (#a05200, oscuro #f0a04a), conjunto pedido y cotas fucsia (#a10fbf, oscuro #cf6bfa), punto x oliva (#5f6f00, oscuro #c8dc3c), centro y distancia del valor absoluto celeste (#086a96, oscuro #25caf4), irracional de la lupa (#541d12, oscuro #97fcfc) y neutro e (#6b3dbd, oscuro #fdecaa); el irracional y el neutro cambian de tono entre modos; ΔE00 mínimo 20,4; contraste mínimo 4,64. Intervalos con ⟨ ⟩ abiertos, [ ] cerrados y «;».»
 - **`docs/pendientes.md`:** «**La recta en trozos** (`plantillas/numeros-reales/`, rutina de química B, 7 nov 2026): intervalos como trozos con extremos que entran o no, operaciones con conjuntos con extremos arrastrables, valor absoluto como distancia, imagen de un intervalo por funciones afines, x² y 1/x, densidad con lupa y 0,999… = 1, supremo contra máximo, y operaciones binarias por tabla; 22 casos verificados aparte; 10 de papel; 8 predicciones y 5 «¿qué pasa si…?»; AL22 parcial, lo demás hipótesis. Falta: los axiomas de cuerpo y de orden en escena. Sin ítems en el banco de álgebra.»
 - **`CLAUDE.md`, historia:** «Números reales (7 nov 2026, rutina de química B): `plantillas/numeros-reales/` (la recta en trozos: intervalos y sus operaciones, valor absoluto como distancia, imagen de un intervalo, densidad, supremo y tablas de operación; 22 casos verificados aparte).»
+
+## 7 nov 2026 · Rendimiento de pH y líquidos y sólidos en gama baja
+
+**Qué hice** (un subagente midió y cambió; sin tocar motores, `nucleo/` ni lo que se ve):
+
+- **`plantillas/acidos-bases/index.html`:**
+  - El fondo de la escena va a un lienzo fuera de pantalla: el papel y el agua de las lupas, los «?», los rótulos, los conteos y la escala de pH. Solo se rehace cuando cambia su firma.
+  - En cada cuadro se pega el fondo y encima van las partículas (mismo código y mismo orden), el borde y el mango.
+  - La descripción para el lector de pantalla se recalcula solo cuando cambia el fondo.
+  - `resize` ya no vuelve a reservar el mapa de bits si el tamaño no cambió.
+- **`plantillas/liquidos-y-solidos/index.html`:**
+  - Las moléculas chicas (menos de 10 px, sin letras) se pegan desde una hoja con 128 giros, pintada de una vez en tiempo libre. Las grandes o con letras siguen con trazo directo.
+  - Anchos de texto en caché y la transparencia del borde calculada una vez por molécula.
+  - `tick` redibuja solo si algo se mueve, y `resize` asigna solo la medida que cambió.
+
+**Medición** con el método de `docs/medicion/la2-gama-baja-2026-11-07.md`: celular de 360×740, dpr 2, táctil y CPU ×6, mediana de 3 corridas. Los scripts y los datos crudos están en `rutinas/quimica-b-medicion/`.
+
+| Escena | Reposo | Paso a paso | Explorador | Peor | JS/cuadro máx | Toque | Cuadros en 2 s de reposo |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| ácidos, antes | 59,5 | 59,5 | 50,6 | 50,6 | 3,48 ms | 239 ms | 120 |
+| ácidos, después | 60 | 59,3 | 58,4 | **58,4** | 2,36 ms | 175 ms | 121 |
+| líquidos, antes | 59,9 | 53,4 | 28,4* | 28,4* | 5,21 ms | 126 ms | 120 (frasco) / 0 (quieto) |
+| líquidos, después | 60 | **58,9** | 28,1* | 28,1* | 5,04 ms | 187 ms** | 121 (frasco) / 0 (quieto) |
+
+Una corrida de control mía, con el código final, dio lo mismo: ácidos con peor de 58,4 y toque de 168 ms; líquidos con paso a paso de 59,4, explorador de 28 y toque de 178 ms.
+
+- **El «antes» ya no es el del informe** (43 y 32 FPS): el commit e11c420 de la principal ya había puesto `Celular.dpr()`, `Celular.variable` y el bucle que se duerme.
+- **\* Explorador de líquidos:** después de responder, la escena queda quieta. En 5 s dibuja solo 2 cuadros, los del cambio de tamaño del lienzo y el reacomodo de la página (46 a 71 ms; antes, 49 a 144). Con la fórmula del informe esos 2 cuadros se cargan con todos los que faltan, así que la cifra no mide animación: el bucle ya está dormido.
+- **\*\* Toque de líquidos:** el ruido es grande (σ ≈ 30 ms). En 6 + 6 corridas intercaladas, antes y después, la mediana fue igual: 185,5 ms contra 185,5 ms.
+- **El toque de ácidos** (unos 150 a 175 ms) queda dominado por el reacomodo de la página al responder (`compactar`), que es común a todas las escenas.
+- **El bucle de ácidos** no se duerme mientras se ven partículas, porque moverse siempre es parte de lo que se enseña. Sí se duerme si el lienzo no se ve.
+
+**Se ve igual.** Se compararon 344 capturas (390×844 y 1366×768, claro y oscuro, con movimiento reducido, en cada paso y experimento, antes y después de responder) con reloj virtual. Dos corridas del «antes» salieron idénticas entre sí.
+
+- **Ácidos:** 160 de 160 idénticas píxel a píxel.
+- **Líquidos:** solo cambia el borde suavizado de las moléculas chicas (posición a medio píxel y giro de unos 1,4°). Afecta al 0,5 % de los píxeles con un cambio mayor de 64 de 255, y no se nota ni ampliado 3×.
+- **Sin movimiento reducido:** lo que se mueve y lo que queda quieto coincide estado por estado. No hubo errores de consola.
+
+**Pruebas.** `npm test` 3971 de 3971. `pasada-celular.py` sin cambios ni QUEDA.
+
+### Pedidos para la integración
+
+- Traer `plantillas/acidos-bases/index.html` y `plantillas/liquidos-y-solidos/index.html` y subir `VERSION`.
+- Si se quiere, agregar a `docs/medicion/la2-gama-baja-2026-11-07.md` (o a un informe nuevo) la tabla de arriba y la nota de que el explorador de líquidos mide el reacomodo de la página al responder, no la animación.
+- `docs/pendientes.md`: «Rendimiento de ácidos y bases y de líquidos y sólidos (7 nov 2026, rutina de química B): fondo fuera de pantalla en ácidos y hoja de moléculas en líquidos; peor ventana animada de 50,6 a 58,4 FPS (ácidos) y paso a paso de 53,4 a 58,9 (líquidos), sin cambio visible. Queda el costo del reacomodo de la página al responder (`compactar`), común a todas las escenas.»

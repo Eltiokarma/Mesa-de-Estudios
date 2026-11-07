@@ -289,18 +289,25 @@ function flecha(ctx, x1, y1, x2, y2, col, w){
 }
 
 /* ----- Texto en el lienzo, por piezas de colores: [texto, clave de color, peso]. Baja la letra hasta 9 px si no entra. ----- */
-function anchoPiezas(ctx, c, ps, tam){ let w = 0; for (const [t, , peso] of ps){ ctx.font = `${peso || 700} ${tam}px ${c.font}`; w += ctx.measureText(t).width; } return w; }
+// Anchos de texto guardados por letra y texto (la2): medirlos en cada cuadro pesa en gama baja. Deja puesta la letra.
+const ANCHOS = new Map();
+function ancho(ctx, font, t){
+  const k = font + '|' + t; let w = ANCHOS.get(k);
+  if (w === undefined){ if (ANCHOS.size > 3000) ANCHOS.clear(); ctx.font = font; w = ctx.measureText(t).width; ANCHOS.set(k, w); }
+  return w;
+}
+function anchoPiezas(ctx, c, ps, tam){ let w = 0; for (const [t, , peso] of ps) w += ancho(ctx, `${peso || 700} ${tam}px ${c.font}`, t); return w; }
 function dibujarPiezas(ctx, c, ps, x, y, tam, align, max){
   let t = tam; if (max) while (t > 9 && anchoPiezas(ctx, c, ps, t) > max) t -= 0.5;
   const w = anchoPiezas(ctx, c, ps, t);
   let x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
   ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-  for (const [txt, k, peso] of ps){ ctx.font = `${peso || 700} ${t}px ${c.font}`; ctx.fillStyle = colVar(c, k); ctx.fillText(txt, x0, y); x0 += ctx.measureText(txt).width; }
+  for (const [txt, k, peso] of ps){ const f = `${peso || 700} ${t}px ${c.font}`; ctx.font = f; ctx.fillStyle = colVar(c, k); ctx.fillText(txt, x0, y); x0 += ancho(ctx, f, txt); }
   return w;
 }
 function envolver(ctx, c, txt, max, tam){
-  ctx.font = `700 ${tam}px ${c.font}`; const pal = String(txt).split(' '), lineas = []; let l = '';
-  for (const p of pal){ const t = l ? l + ' ' + p : p; if (ctx.measureText(t).width > max && l){ lineas.push(l); l = p; } else l = t; }
+  const f = `700 ${tam}px ${c.font}`; ctx.font = f; const pal = String(txt).split(' '), lineas = []; let l = '';
+  for (const p of pal){ const t = l ? l + ' ' + p : p; if (ancho(ctx, f, t) > max && l){ lineas.push(l); l = p; } else l = t; }
   if (l) lineas.push(l); return lineas;
 }
 
@@ -310,28 +317,74 @@ function envolver(ctx, c, txt, max, tam){
 let DIBUJADOS = new Set();
 const RAD = { H:0.3, O:0.46, N:0.48, C:0.5, F:0.44, S:0.6, CH3:0.62, CH2:0.6, CH:0.58 };
 const colAt = (c, el) => /^CH/.test(el) ? c.C : (c[el] || c.C);
+// Las moléculas chicas (u < 10 px: líquido, vapor, burbuja, tubo) se pegan con drawImage desde una hoja con la misma
+// molécula pintada en 128 giros (la2): son decenas por cuadro y cada una pedía unos diez trazos. La figura cae en el píxel
+// real más cercano: la diferencia con el trazo directo no pasa de medio píxel real. La hoja de cada tamaño se pinta
+// entera, de una vez, en un rato libre del navegador; mientras tanto la molécula va con trazo directo, así que ni un
+// toque ni un cambio de tamaño pagan la hoja. Las grandes (con letras o u ≥ 10) van siempre con trazo directo.
+const HOJAS = new Map(), GIROS = 128, COLS = 16;
+const ocioso = typeof requestIdleCallback === 'function' ? fn => requestIdleCallback(fn, { timeout: 300 }) : fn => setTimeout(fn, 50);
+function pintarHoja(h){
+  const S = ML.SUSTANCIAS[h.s], ext = Math.max(...S.atomos.map(a => Math.hypot(a.x, a.y) + (RAD[a.el] || 0.5)))*h.u + 2, n = Math.ceil(2*ext*h.d) + 2;
+  const cv = document.createElement('canvas'); cv.width = n*COLS; cv.height = n*GIROS/COLS;
+  const g = cv.getContext('2d');
+  for (let k = 0; k < GIROS; k++){
+    g.setTransform(h.d, 0, 0, h.d, (k % COLS)*n + n/2, Math.floor(k/COLS)*n + n/2);
+    trazarMolecula(g, h.c, S, molPuntos(S, 0, 0, h.u, k/GIROS*2*Math.PI), h.u, {});
+  }
+  h.cv = cv; h.n = n;
+}
+function figura(c, s, u, k, d){
+  const clave = `${s}|${u}|${d}|${c.ink}|${c.borde}|${c.H}|${c.O}|${c.N}|${c.C}|${c.F}|${c.S}`;
+  let h = HOJAS.get(clave);
+  if (!h){
+    if (HOJAS.size > 24) HOJAS.clear();
+    h = { c, s, u, d, cv:null }; HOJAS.set(clave, h);
+    ocioso(() => pintarHoja(h));
+  }
+  return h.cv ? { cv:h.cv, sx:(k % COLS)*h.n, sy:Math.floor(k/COLS)*h.n, n:h.n } : null;
+}
+function molPuntos(S, x, y, u, ang){
+  const co = Math.cos(ang || 0), si = Math.sin(ang || 0);
+  return S.atomos.map(a => [x + u*(a.x*co - a.y*si), y + u*(a.x*si + a.y*co)]);
+}
 function molecula(ctx, c, s, x, y, u, ang, o){
   o = o || {};
-  const S = ML.SUSTANCIAS[s], co = Math.cos(ang || 0), si = Math.sin(ang || 0);
-  const pts = S.atomos.map(a => [x + u*(a.x*co - a.y*si), y + u*(a.x*si + a.y*co)]);
+  const S = ML.SUSTANCIAS[s], pts = molPuntos(S, x, y, u, ang);
   for (const a of S.atomos) DIBUJADOS.add(/^CH/.test(a.el) ? 'C' : a.el);
+  const t = ctx.getTransform();
+  if (!o.letras && u < 10 && o.alfa === undefined && !t.b && !t.c && t.a === t.d){
+    const d = t.a, a2 = (((ang || 0) % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI), f = figura(c, s, u, Math.round(a2/(2*Math.PI)*GIROS) % GIROS, d);
+    if (f){
+      const ga = ctx.globalAlpha;
+      ctx.setTransform(1, 0, 0, 1, 0, 0); if (ga !== 1) ctx.globalAlpha = 1;
+      ctx.drawImage(f.cv, f.sx, f.sy, f.n, f.n, Math.round(x*d + t.e - f.n/2), Math.round(y*d + t.f - f.n/2), f.n, f.n);
+      ctx.setTransform(t); if (ga !== 1) ctx.globalAlpha = ga;
+      return pts;
+    }
+  }
+  trazarMolecula(ctx, c, S, pts, u, o);
+  return pts;
+}
+function trazarMolecula(ctx, c, S, pts, u, o){
   ctx.save(); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa;
   ctx.strokeStyle = c.ink; ctx.lineWidth = Math.max(0.9, u*0.12); ctx.lineCap = 'round';
+  const borde = alfa(c.borde, 0.5);
   for (const [i, j] of S.enlaces) linea(ctx, pts[i][0], pts[i][1], pts[j][0], pts[j][1]);
   const orden = S.atomos.map((a, i) => i).sort((i, j) => (S.atomos[i].el === 'H') - (S.atomos[j].el === 'H'));
   for (const i of orden){
     const el = S.atomos[i].el, r = u*(RAD[el] || 0.5);
     ctx.beginPath(); ctx.arc(pts[i][0], pts[i][1], r, 0, Math.PI*2); ctx.fillStyle = colAt(c, el); ctx.fill();
-    ctx.lineWidth = Math.max(0.6, u*0.05); ctx.strokeStyle = alfa(c.borde, 0.5); ctx.stroke();
+    ctx.lineWidth = Math.max(0.6, u*0.05); ctx.strokeStyle = borde; ctx.stroke();
     if (o.letras && u >= 15){
       ctx.fillStyle = c.letra; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      const t = el.replace(/\d/g, d => SUB[d]); let fs = Math.min(u*0.42, 14); ctx.font = `800 ${fs}px ${c.font}`;
-      while (fs > 7 && ctx.measureText(t).width > 2*r - 2){ fs -= 0.5; ctx.font = `800 ${fs}px ${c.font}`; }
+      const t = el.replace(/\d/g, d => SUB[d]); let fs = Math.min(u*0.42, 14);
+      while (fs > 7 && ancho(ctx, `800 ${fs}px ${c.font}`, t) > 2*r - 2) fs -= 0.5;
+      ctx.font = `800 ${fs}px ${c.font}`;
       ctx.fillText(t, pts[i][0], pts[i][1] + 0.5);
     }
   }
   ctx.restore();
-  return pts;
 }
 function puntito(ctx, c, x1, y1, x2, y2, w){
   ctx.save(); ctx.strokeStyle = c.pu; ctx.lineWidth = w || 2.2; ctx.setLineDash([1.5, 3.2]); ctx.lineCap = 'round'; linea(ctx, x1, y1, x2, y2); ctx.restore();
@@ -394,7 +447,14 @@ function crearEscena(cv, idDesc, modoId, idLey){
   E.resize = () => {
     const w = cv.clientWidth; if (!w) return;
     Lz = layout(w); const h = Lz.H, dpr = Celular.dpr();
-    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
+    if (w !== W || h !== H){
+      W = w; H = h; cv.style.height = h + 'px';
+      // Cada asignación vuelve a reservar el mapa de bits: solo la medida que cambió (la2).
+      const nw = Math.round(w*dpr), nh = Math.round(h*dpr);
+      if (cv.width !== nw) cv.width = nw;
+      if (cv.height !== nh) cv.height = nh;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
   };
   E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); E.compacto = on; E.resize(); E.dibujar(); };
   new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
@@ -811,11 +871,14 @@ function tick(now){
   if (!RM) TT += dt;
   for (const E of ESCENAS){
     if (!E.ve()) continue;
+    const anima = E.anims.length > 0;
     for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(f); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
+    const vivo = !RM && E.vivo();
     if (!RM && E.vista.frascos) for (const f of E.vista.frascos.items) if (f.caja) ML.pasoCaja(f.caja, dt*E.vel);
     if (E.alAvanzar) E.alAvanzar();
-    E.dibujar();
-    if (!RM && E.vivo()) sigue = true;
+    // Si nada se mueve, el dibujo ya está al día: quien cambia la vista llama a E.dibujar antes de pedir() (la2).
+    if (anima || vivo) E.dibujar();
+    if (vivo) sigue = true;
   }
   if (sigue) pedir();
 }
