@@ -235,7 +235,7 @@
             "error": "ES21-menor-coeficiente"
           },
           {
-            "texto": "El CO, porque se acaba primero",
+            "texto": "El CO, porque para 7 O₂ harían falta 14 CO",
             "clave": "CO",
             "correcta": true
           },
@@ -289,14 +289,14 @@
             "error": "ES21-menor-coeficiente"
           },
           {
-            "texto": "El O₂, porque se acaba primero",
-            "clave": "O2",
-            "correcta": true
-          },
-          {
             "texto": "Los dos, porque se acaban a la vez",
             "clave": "los-dos",
             "error": "ES22-se-acaban-los-dos"
+          },
+          {
+            "texto": "El O₂, porque para 3 C₂H₄ harían falta 9 O₂",
+            "clave": "O2",
+            "correcta": true
           }
         ]
       }

@@ -301,14 +301,14 @@
             "error": "GE8-altura-como-mediana"
           },
           {
-            "texto": "14,4 cm",
-            "valor": 14.4,
-            "correcta": true
-          },
-          {
             "texto": "10,8 cm",
             "valor": 10.8,
             "error": "proyeccion-como-altura"
+          },
+          {
+            "texto": "14,4 cm",
+            "valor": 14.4,
+            "correcta": true
           }
         ]
       }
@@ -383,7 +383,7 @@
       "unidad": "geometria.poligonos-y-cuadrilateros",
       "mide": "Diagonales de un polígono: n(n − 3)/2",
       "A": {
-        "enunciado": "En una reunión, 9 amigos se sientan alrededor de una mesa redonda. Cada uno da un apretón de manos a cada persona que no tiene a su lado. ¿Cuántos apretones de manos hay en total?",
+        "enunciado": "En una reunión, 9 amigos se sientan alrededor de una mesa redonda. Cada pareja de amigos que no está sentada junta se da un apretón de manos. ¿Cuántos apretones de manos hay en total?",
         "datos": {
           "n": 9
         },
@@ -422,14 +422,14 @@
             "error": "GE23-diagonales-con-lados"
           },
           {
-            "texto": "44",
-            "valor": 44,
-            "correcta": true
-          },
-          {
             "texto": "88",
             "valor": 88,
             "error": "diagonales-contadas-dos-veces"
+          },
+          {
+            "texto": "44",
+            "valor": 44,
+            "correcta": true
           },
           {
             "texto": "8",

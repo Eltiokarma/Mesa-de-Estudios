@@ -651,14 +651,14 @@
             "error": "objeto-lejano-en-el-foco"
           },
           {
-            "texto": "9 cm",
-            "valor": 9,
-            "correcta": true
-          },
-          {
             "texto": "18 cm",
             "valor": 18,
             "error": "imagen-espejo"
+          },
+          {
+            "texto": "9 cm",
+            "valor": 9,
+            "correcta": true
           }
         ]
       }
@@ -762,7 +762,7 @@
         ]
       },
       "B": {
-        "enunciado": "Un niño de 30 kg se lanza desde 3,2 m de altura por un tobogán sin roce. ¿Con qué rapidez llega abajo? (g = 10 m/s²)",
+        "enunciado": "Un niño de 30 kg se deja deslizar desde el reposo por un tobogán sin roce, desde 3,2 m de altura. ¿Con qué rapidez llega abajo? (g = 10 m/s²)",
         "datos": {
           "m": 30,
           "h": 3.2
@@ -774,14 +774,14 @@
             "error": "energia-sin-raiz"
           },
           {
-            "texto": "8 m/s",
-            "valor": 8,
-            "correcta": true
-          },
-          {
             "texto": "5,7 m/s",
             "valor": 5.657,
             "error": "energia-sin-mitad"
+          },
+          {
+            "texto": "8 m/s",
+            "valor": 8,
+            "correcta": true
           },
           {
             "texto": "32 m/s",

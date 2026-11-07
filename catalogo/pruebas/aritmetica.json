@@ -736,7 +736,7 @@
       "unidad": "aritmetica.mcd-y-mcm",
       "mide": "Coincidencias periódicas: el primer momento común es el MCM",
       "A": {
-        "enunciado": "Dos luces se encienden juntas. Una parpadea cada 8 segundos y la otra cada 12 segundos. ¿Cuántos segundos después vuelven a encenderse juntas por primera vez?",
+        "enunciado": "Dos luces se encienden juntas. Una se enciende cada 8 segundos y la otra cada 12 segundos. ¿Cuántos segundos después vuelven a encenderse juntas por primera vez?",
         "datos": {
           "a": 8,
           "b": 12
@@ -777,14 +777,14 @@
             "error": "AR13-mcd-en-vez-de-mcm"
           },
           {
-            "texto": "18 horas",
-            "valor": 18,
-            "correcta": true
-          },
-          {
             "texto": "54 horas",
             "valor": 54,
             "error": "AR13-producto"
+          },
+          {
+            "texto": "18 horas",
+            "valor": 18,
+            "correcta": true
           },
           {
             "texto": "15 horas",

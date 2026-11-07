@@ -445,7 +445,7 @@
       "unidad": "trigonometria.triangulos-oblicuangulos",
       "mide": "Ley de cosenos: a² = b² + c² − 2bc·cos A",
       "A": {
-        "enunciado": "Una lámpara de escritorio tiene dos brazos rectos unidos por una bisagra: el de abajo, fijo a la base, mide 15 cm y el de arriba, que lleva el foco, mide 7 cm. Si los brazos forman un ángulo de 60° en la bisagra, ¿qué distancia hay entre la base y el foco? (cos 60° = 0,5)",
+        "enunciado": "Una lámpara de escritorio tiene dos brazos rectos unidos por una bisagra: el de abajo, fijo a la base, mide 15 cm y el de arriba, que lleva el foco, mide 7 cm. El ángulo entre los dos brazos, medido por dentro en la bisagra, es de 60°. ¿Cuál es la distancia en línea recta entre el punto donde el brazo de abajo se une a la base y el foco? (cos 60° = 0,5)",
         "datos": {
           "b": 7,
           "c": 15,
@@ -475,7 +475,7 @@
         ]
       },
       "B": {
-        "enunciado": "Un brazo robótico de juguete tiene dos piezas rectas unidas por una articulación: la de abajo, fija a la base, mide 16 cm y la de arriba, que lleva la pinza, mide 10 cm. Si las piezas forman un ángulo de 60° en la articulación, ¿qué distancia hay entre la base y la pinza? (cos 60° = 0,5)",
+        "enunciado": "Un brazo robótico de juguete tiene dos piezas rectas unidas por una articulación: la de abajo, fija a la base, mide 16 cm y la de arriba, que lleva la pinza, mide 10 cm. El ángulo entre las dos piezas, medido por dentro en la articulación, es de 60°. ¿Cuál es la distancia en línea recta entre el punto donde la pieza de abajo se une a la base y la pinza? (cos 60° = 0,5)",
         "datos": {
           "b": 10,
           "c": 16,
@@ -493,14 +493,14 @@
             "error": "TR24-sin-termino"
           },
           {
-            "texto": "14 cm",
-            "valor": 14,
-            "correcta": true
-          },
-          {
             "texto": "26 cm",
             "valor": 26,
             "error": "suma-de-lados"
+          },
+          {
+            "texto": "14 cm",
+            "valor": 14,
+            "correcta": true
           }
         ]
       }
