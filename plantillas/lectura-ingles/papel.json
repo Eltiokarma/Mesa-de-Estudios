@@ -1,0 +1,624 @@
+{
+  "titulo": "Reading in English: lectura para lápiz y papel",
+  "indicacion": "Lee cada texto con calma y resuelve en tu hoja, sin la app. Haz lo que te pide «Antes de mirar las alternativas» tapando las alternativas con una hoja: así ves qué pensabas tú y no lo que te sugieren. Las oraciones llevan número para que puedas citarlas al revisar.",
+  "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "t051",
+      "nivel": "básico",
+      "enunciado": "Lee el texto «Rosa and the Clay» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "Rosa and the Clay",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Rosa is sixteen and lives in a small town near Ica."
+            },
+            {
+              "n": 2,
+              "t": "Every Saturday, she goes to her grandfather's workshop, where he teaches her to make pots from clay, just as his father taught him."
+            },
+            {
+              "n": 3,
+              "t": "First, they mix the clay with water and a little sand."
+            },
+            {
+              "n": 4,
+              "t": "Then Rosa shapes each pot slowly with her hands."
+            },
+            {
+              "n": 5,
+              "t": "After that, the pots dry in the sun for several days before they go into the kiln (a special oven)."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "At first, Rosa's pots were not very good."
+            },
+            {
+              "n": 7,
+              "t": "Some of them broke in the kiln, and she felt embarrassed in front of her grandfather."
+            },
+            {
+              "n": 8,
+              "t": "He just laughed and said, \"My first pots broke too.\""
+            },
+            {
+              "n": 9,
+              "t": "Now she can paint birds and fish on them, like the ones on the old Nasca pots in the museum in Ica."
+            },
+            {
+              "n": 10,
+              "t": "Rosa wants to keep her family's craft alive, and she feels proud of every pot she makes."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Rosa aprende de su abuelo la cerámica, un oficio familiar, y se siente orgullosa de él."
+            },
+            {
+              "letra": "B",
+              "t": "Al principio, las vasijas que hacía Rosa no eran buenas y algunas se le rompían en el horno."
+            },
+            {
+              "letra": "C",
+              "t": "La cerámica es un arte muy antiguo que se practica en muchas regiones del Perú."
+            },
+            {
+              "letra": "D",
+              "t": "Antes de entrar al horno, las vasijas se secan al sol durante varios días."
+            },
+            {
+              "letra": "E",
+              "t": "En Ica, muchos ceramistas venden sus vasijas pintadas a los turistas."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "En la oración «she felt embarrassed in front of her grandfather», la palabra EMBARRASSED significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "embarazada."
+            },
+            {
+              "letra": "B",
+              "t": "rota."
+            },
+            {
+              "letra": "C",
+              "t": "enfadada con su abuelo."
+            },
+            {
+              "letra": "D",
+              "t": "avergonzada."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Cuál de estas afirmaciones es compatible con el texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Rosa ya pinta sus vasijas mejor que los antiguos ceramistas nasca."
+            },
+            {
+              "letra": "B",
+              "t": "Las vasijas de Rosa todavía no son buenas y siguen rompiéndose en el horno."
+            },
+            {
+              "letra": "C",
+              "t": "Con la práctica, Rosa mejoró: ahora pinta aves y peces en sus vasijas."
+            },
+            {
+              "letra": "D",
+              "t": "Desde el principio, las vasijas que hacía Rosa salieron muy bien."
+            },
+            {
+              "letra": "E",
+              "t": "El abuelo de Rosa guarda las vasijas de su familia en el museo de Ica."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "¿Por qué el abuelo le dice a Rosa «My first pots broke too» («Mis primeras vasijas también se rompieron»)?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Porque se burla de Rosa y piensa que ella nunca aprenderá el oficio."
+            },
+            {
+              "letra": "B",
+              "t": "Para que Rosa no se sienta mal: a él también le pasó cuando empezaba."
+            },
+            {
+              "letra": "C",
+              "t": "Porque antes los hornos rompían muchas más vasijas que los hornos de ahora."
+            },
+            {
+              "letra": "D",
+              "t": "Porque su padre le enseñó a hacer vasijas de arcilla en ese mismo taller."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: D · 3: C · 4: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 2 o la oración 10. La oración 2 dice de qué trata todo: Rosa aprende con su abuelo a hacer vasijas de arcilla, un oficio que pasa de padre a hijo. La 10 lo cierra: quiere mantener vivo ese oficio familiar y está orgullosa de lo que hace.",
+        "Pregunta 1. Clave A. Junta lo que dicen las oraciones 2 y 10: el abuelo le enseña a hacer vasijas, como a él le enseñó su padre, y Rosa quiere mantener vivo ese oficio.",
+        "Pregunta 2. Clave D. «Embarrassed» quiere decir avergonzada. Encaja con el texto: sus vasijas se rompieron delante del abuelo, y él la calma diciendo «My first pots broke too» («Mis primeras vasijas también se rompieron»).",
+        "Pregunta 3. Clave C. «At first … were not very good» (al principio no eran muy buenas) está en pasado, y «Now she can paint birds and fish» (ahora puede pintar aves y peces) muestra que mejoró.",
+        "Pregunta 4. Clave B. Rosa se siente avergonzada porque sus vasijas se rompieron (oración 7). El abuelo le cuenta que a él le pasó lo mismo al comienzo: la consuela."
+      ]
+    },
+    {
+      "id": "t052",
+      "nivel": "básico",
+      "enunciado": "Lee el texto «The Train to Machu Picchu» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "The Train to Machu Picchu",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Every day, thousands of visitors travel to Machu Picchu, the famous Inca city in the mountains of Cusco."
+            },
+            {
+              "n": 2,
+              "t": "Most of them go by train, because no road connects Aguas Calientes, the town at the foot of the mountain, with the rest of the country."
+            },
+            {
+              "n": 3,
+              "t": "The train leaves from Ollantaytambo or from a station near Cusco, and it follows the Urubamba River."
+            },
+            {
+              "n": 4,
+              "t": "From the windows, passengers can see snowy mountains, small farms and, near the end, the green forest."
+            },
+            {
+              "n": 5,
+              "t": "The trip from Ollantaytambo takes about an hour and a half."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "In Aguas Calientes, visitors take a bus up a winding road to the ruins, or they walk up for more than an hour."
+            },
+            {
+              "n": 7,
+              "t": "Ana, a guide from Cusco, used to take this train almost every day."
+            },
+            {
+              "n": 8,
+              "t": "Now she works in an office, but she says she will never forget those trips."
+            },
+            {
+              "n": 9,
+              "t": "\"People think the ruins are the best part,\" she says, \"but actually, I loved the trip just as much.\""
+            },
+            {
+              "n": 10,
+              "t": "For many visitors, the train is not only the way to Machu Picchu: it is also part of the adventure."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La mayoría llega a Machu Picchu en tren, y ese viaje también es parte de la aventura."
+            },
+            {
+              "letra": "B",
+              "t": "Desde Ollantaytambo, el viaje en tren hasta Aguas Calientes dura más o menos una hora y media."
+            },
+            {
+              "letra": "C",
+              "t": "Cusco recibe cada año a muchísimos turistas que llegan de todo el mundo."
+            },
+            {
+              "letra": "D",
+              "t": "La mayoría de los visitantes va en tren porque ninguna carretera une Aguas Calientes con el resto del país."
+            },
+            {
+              "letra": "E",
+              "t": "Machu Picchu fue declarado patrimonio mundial por la Unesco en el año 1983."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "En la frase de Ana «but actually, I loved the trip just as much», la palabra ACTUALLY significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "todos los días."
+            },
+            {
+              "letra": "B",
+              "t": "en realidad."
+            },
+            {
+              "letra": "C",
+              "t": "felizmente."
+            },
+            {
+              "letra": "D",
+              "t": "actualmente."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Qué se puede afirmar sobre Ana?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Está triste porque no le gusta nada su trabajo en la oficina."
+            },
+            {
+              "letra": "B",
+              "t": "Sigue tomando el tren casi todos los días para llevar turistas a las ruinas."
+            },
+            {
+              "letra": "C",
+              "t": "Ya se olvidó de cómo eran los viajes que hacía en el tren."
+            },
+            {
+              "letra": "D",
+              "t": "Antes viajaba en ese tren casi a diario, pero hoy ya no lo hace."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: B · 3: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 2 o la oración 10. La oración 2 dice que la mayoría llega a Machu Picchu en tren y por qué. La 10 completa la idea: el tren no es solo el camino, también es parte de la aventura.",
+        "Pregunta 1. Clave A. Junta las oraciones 2 y 10: el tren es el camino de casi todos los visitantes y, además, un viaje que vale por sí mismo.",
+        "Pregunta 2. Clave B. «Actually» quiere decir «en realidad»: Ana corrige lo que la gente cree («People think the ruins are the best part») y dice lo que de verdad piensa.",
+        "Pregunta 3. Clave D. «Used to take this train» quiere decir que lo tomaba antes y ya no; «Now she works in an office» (ahora trabaja en una oficina) lo confirma."
+      ]
+    },
+    {
+      "id": "t053",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «A Morning at Belén Market» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "A Morning at Belén Market",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Iquitos is a city in the Amazon rainforest, and no road connects it with Lima."
+            },
+            {
+              "n": 2,
+              "t": "Because of this, a lot of its food arrives by river, and much of it is sold at Belén Market."
+            },
+            {
+              "n": 3,
+              "t": "The market opens very early, when the boats come in with fish, bananas and other products."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Some stalls sell aguaje, the fruit of a palm tree, which people eat fresh or drink as juice."
+            },
+            {
+              "n": 5,
+              "t": "Others sell medicinal plants, and the sellers explain what each plant is good for."
+            },
+            {
+              "n": 6,
+              "t": "Visitors soon realize that the market is more than a place to buy food: it shows how the whole city lives with the river."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Next to the market, down by the river, is the neighborhood of Belén, where many houses stand on tall wooden posts."
+            },
+            {
+              "n": 8,
+              "t": "For several months each year, the river rises, and people in this area move around by canoe."
+            },
+            {
+              "n": 9,
+              "t": "Doña Elvira, a fish seller, says the market may move to a new building one day."
+            },
+            {
+              "n": 10,
+              "t": "However, she hopes it will not leave the river, because the river is what keeps it alive."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La Amazonía peruana tiene muchos ríos y una enorme variedad de frutas y plantas."
+            },
+            {
+              "letra": "B",
+              "t": "En el mercado de Belén se vende la comida que llega a Iquitos por el río."
+            },
+            {
+              "letra": "C",
+              "t": "En algunos puestos del mercado venden aguaje, el fruto de una palmera, que se come o se toma en jugo."
+            },
+            {
+              "letra": "D",
+              "t": "Iquitos es la ciudad más grande del mundo a la que no se puede llegar por carretera."
+            },
+            {
+              "letra": "E",
+              "t": "El mercado de Belén es más que un lugar de compras: muestra cómo Iquitos vive con el río."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "En la oración «Visitors soon realize that the market is more than a place to buy food», la palabra REALIZE significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "realizan."
+            },
+            {
+              "letra": "B",
+              "t": "se dan cuenta."
+            },
+            {
+              "letra": "C",
+              "t": "visitan."
+            },
+            {
+              "letra": "D",
+              "t": "se preguntan si."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Según el texto, ¿qué piensa doña Elvira sobre el mercado?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Espera que el mercado se vaya a un edificio nuevo, lejos del río."
+            },
+            {
+              "letra": "B",
+              "t": "Está segura de que muy pronto el mercado se mudará a un edificio nuevo."
+            },
+            {
+              "letra": "C",
+              "t": "Cree posible que algún día se mude, pero quiere que siga junto al río."
+            },
+            {
+              "letra": "D",
+              "t": "Todos los vendedores del mercado quieren que se quede junto al río."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "¿Qué se deduce sobre el barrio de Belén?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Las familias de Belén viven todo el año dentro de sus canoas."
+            },
+            {
+              "letra": "B",
+              "t": "Sus calles se inundan porque en Iquitos llueve mucho más que en Lima."
+            },
+            {
+              "letra": "C",
+              "t": "Los vendedores del mercado llegan cada mañana en canoa desde ese barrio."
+            },
+            {
+              "letra": "D",
+              "t": "Durante varios meses del año, el agua del río llega hasta sus calles."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: B · 3: C · 4: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 6. La oración 6 junta todo: el mercado es más que un lugar para comprar comida, porque muestra cómo la ciudad vive con el río. Lo demás (los botes, el aguaje, las casas sobre postes, la canoa) son ejemplos de esa vida con el río.",
+        "Pregunta 1. Clave E. Es lo que dice la oración 6 («more than a place to buy food: it shows how the whole city lives with the river»), y el resto del texto lo muestra con ejemplos.",
+        "Pregunta 2. Clave B. «Realize» quiere decir darse cuenta: al poco tiempo, los visitantes notan que el mercado es más que un lugar para comprar comida.",
+        "Pregunta 3. Clave C. «The market may move» dice que es posible, no seguro; y «she hopes it will not leave the river» dice que ella espera que no se aleje del río.",
+        "Pregunta 4. Clave D. Si cuando el río crece la gente se mueve en canoa (oración 8), el agua cubre por donde antes se caminaba. Eso explica también las casas sobre postes altos (oración 7)."
+      ]
+    },
+    {
+      "id": "t054",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «The Sun in Arequipa» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "The Sun in Arequipa",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Many people in Arequipa believe that the sun is only dangerous on hot days at the beach."
+            },
+            {
+              "n": 2,
+              "t": "I used to think the same, until a doctor visited my school and explained how strong the sun is here."
+            },
+            {
+              "n": 3,
+              "t": "Arequipa is more than 2,000 meters above sea level, and at that height the sun's rays are stronger."
+            },
+            {
+              "n": 4,
+              "t": "On some mornings the air feels cool, but the sun can still burn your skin very quickly."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "However, most of us do very little to protect ourselves."
+            },
+            {
+              "n": 6,
+              "t": "We walk to school without a hat, and few students use sunscreen."
+            },
+            {
+              "n": 7,
+              "t": "Some say that sunscreen is expensive, and that is true for many families."
+            },
+            {
+              "n": 8,
+              "t": "Although that problem is real, there are cheaper ways to stay safe: a hat with a wide brim, long sleeves and some shade at midday."
+            }
+          ],
+          [
+            {
+              "n": 9,
+              "t": "In my opinion, protecting ourselves from the sun should be a daily habit in Arequipa, not something we only do in summer."
+            },
+            {
+              "n": 10,
+              "t": "It is the sensible thing to do, and if we start now, we will probably have fewer skin problems when we are older."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que dice la opinión que defiende el autor. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "El sol es peligroso sobre todo en los días calurosos, cuando uno va a la playa."
+            },
+            {
+              "letra": "B",
+              "t": "Arequipa está a más de 2000 metros sobre el nivel del mar, y a esa altura los rayos del sol son más fuertes."
+            },
+            {
+              "letra": "C",
+              "t": "La luz del sol puede dañar la piel de las personas en cualquier lugar del mundo."
+            },
+            {
+              "letra": "D",
+              "t": "Arequipa tiene uno de los índices de radiación ultravioleta más altos del planeta."
+            },
+            {
+              "letra": "E",
+              "t": "En Arequipa, cuidarse del sol debería ser una costumbre diaria, no solo de verano."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "En la oración «It is the sensible thing to do», la palabra SENSIBLE significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "barato."
+            },
+            {
+              "letra": "B",
+              "t": "sensato."
+            },
+            {
+              "letra": "C",
+              "t": "sensible."
+            },
+            {
+              "letra": "D",
+              "t": "agradable."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Qué se puede afirmar sobre el autor del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Todavía piensa que el sol de Arequipa solo es peligroso en los días calurosos de verano."
+            },
+            {
+              "letra": "B",
+              "t": "Ya convenció a todos sus compañeros de ir al colegio con sombrero."
+            },
+            {
+              "letra": "C",
+              "t": "Es el médico que visitó el colegio para hablar sobre el sol de Arequipa."
+            },
+            {
+              "letra": "D",
+              "t": "Antes creía que el sol solo era peligroso en la playa, pero cambió de opinión."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "¿Qué piensa el autor sobre el precio del protector solar?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Como el protector es caro, cree que no tiene sentido tratar de protegerse del sol."
+            },
+            {
+              "letra": "B",
+              "t": "Solo dice que el protector solar es caro para muchas de las familias de la ciudad."
+            },
+            {
+              "letra": "C",
+              "t": "Propone que los colegios de Arequipa regalen protector solar a todos sus alumnos cada verano."
+            },
+            {
+              "letra": "D",
+              "t": "Admite que es caro para muchas familias, pero dice que hay otras formas baratas de cuidarse."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: B · 3: D · 4: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 9. La oración 9 empieza con «In my opinion» y dice la tesis: cuidarse del sol debería ser una costumbre diaria en Arequipa, no solo de verano. Las demás la preparan o la sostienen.",
+        "Pregunta 1. Clave E. Es la tesis de la oración 9 («In my opinion, protecting ourselves from the sun should be a daily habit…»). Lo demás son razones y respuestas a objeciones.",
+        "Pregunta 2. Clave B. «Sensible» en inglés quiere decir sensato, prudente: cuidarse del sol es lo razonable, porque así habrá menos problemas de piel más adelante.",
+        "Pregunta 3. Clave D. «I used to think the same» (antes pensaba lo mismo) habla de una idea del pasado que ya dejó, y «until a doctor… explained» dice qué lo hizo cambiar.",
+        "Pregunta 4. Clave D. «That is true for many families» acepta el problema, y «Although that problem is real, there are cheaper ways…» (aunque el problema es real, hay formas más baratas) lo responde."
+      ]
+    }
+  ]
+}

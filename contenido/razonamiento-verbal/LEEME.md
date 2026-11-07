@@ -8,6 +8,7 @@ Textos propios para el formato lectura. El formato completo está en `docs/forma
 - `indice-<módulo>.json`: el índice de cada módulo que no es `lectura-verbal` (tipología, resumen, discontinuos, contexto, filosóficos y científicos, inglés). Un texto va en un solo índice. Los discontinuos llevan `figuras` y los de inglés `"idioma": "en"` (`docs/formato-lectura.md`, sección 5.7).
 - `frases.json`: una frase para el alumno por cada código RV ("Elegiste un detalle verdadero…").
 - `banco.test.js`: corre con `npm test` y aplica las reglas de la sección 5.5 del diseño, a los textos y a los ejercicios.
+- `plantillas/<módulo>/papel.json`: la hoja de lápiz y papel de cada módulo; se genera del banco con `npm run catalogo` (`herramientas/papel-lectura.js`) y no se edita a mano.
 - `codigos.json`: el respaldo de cada código; se genera del informe con `node herramientas/codigos-verbal.js`.
 
 Reglas cortas para escribir un texto:

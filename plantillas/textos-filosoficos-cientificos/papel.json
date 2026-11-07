@@ -1,0 +1,720 @@
+{
+  "titulo": "Textos filosóficos y científicos: lectura para lápiz y papel",
+  "indicacion": "Lee cada texto con calma y resuelve en tu hoja, sin la app. Haz lo que te pide «Antes de mirar las alternativas» tapando las alternativas con una hoja: así ves qué pensabas tú y no lo que te sugieren. Las oraciones llevan número para que puedas citarlas al revisar.",
+  "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "t047",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «¿Qué es un amigo?» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "¿Qué es un amigo?",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Cuando alguien dice que tiene doscientos amigos en una red social, casi nadie le cree del todo."
+            },
+            {
+              "n": 2,
+              "t": "Intuimos que la palabra «amigo» pide algo más que aparecer en una lista, aunque cuesta decir qué."
+            },
+            {
+              "n": 3,
+              "t": "Mi respuesta es esta: el amigo de verdad, el que dura, es quien quiere tu bien por ti mismo, y no por lo que tú le das."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Se dirá que un amigo es, sencillamente, alguien con quien uno la pasa bien o alguien que te ayuda cuando lo necesitas."
+            },
+            {
+              "n": 5,
+              "t": "Es cierto que la mayoría de las amistades empiezan así: jugamos en el mismo equipo de fútbol, nos pasamos las tareas o nos reímos de las mismas cosas."
+            },
+            {
+              "n": 6,
+              "t": "Pero pensemos en el compañero que solo te busca la semana de exámenes porque eres bueno en matemática y que, cuando terminan las clases, desaparece."
+            },
+            {
+              "n": 7,
+              "t": "Lo que buscaba no eras tú, sino tus resoluciones."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "Hace más de dos mil años, Aristóteles ya distinguía la amistad por utilidad y la amistad por placer de una tercera, la de quienes se quieren por lo que el otro es, y sostenía que esta última es la que dura."
+            },
+            {
+              "n": 9,
+              "t": "Las dos primeras no son falsas, pero sí frágiles: se acaban cuando se acaba el provecho o la diversión."
+            },
+            {
+              "n": 10,
+              "t": "Por eso la prueba de un amigo no es cuánto te ayuda en las buenas, sino si sigue queriendo tu bien cuando ya no tienes nada que darle."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor dice la tesis del autor. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la tesis del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Amigo es quien quiere tu bien por ti, y eso se ve cuando ya no tienes nada que darle."
+            },
+            {
+              "letra": "B",
+              "t": "El compañero que solo te busca en la semana de exámenes desaparece cuando terminan las clases."
+            },
+            {
+              "letra": "C",
+              "t": "Cuando alguien dice que tiene doscientos amigos en una red social, casi nadie le cree del todo."
+            },
+            {
+              "letra": "D",
+              "t": "Las relaciones entre las personas son difíciles de definir, y por eso cada quien entiende la amistad a su manera."
+            },
+            {
+              "letra": "E",
+              "t": "Un amigo es alguien con quien uno la pasa bien o alguien que te ayuda cuando lo necesitas."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿Qué entiende el autor por amistad POR UTILIDAD?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La que resulta útil para toda la sociedad y para el país."
+            },
+            {
+              "letra": "B",
+              "t": "La que se sostiene mientras uno obtiene algún provecho del otro."
+            },
+            {
+              "letra": "C",
+              "t": "La que se basa en el gusto de pasarla bien juntos."
+            },
+            {
+              "letra": "D",
+              "t": "La del compañero que solo te busca en la semana de exámenes porque eres bueno."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Es incompatible con lo que sostiene el autor afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "no todo el que te ayuda en los exámenes te quiere por lo que eres."
+            },
+            {
+              "letra": "B",
+              "t": "las amistades por utilidad o por placer son, en el fondo, amistades falsas."
+            },
+            {
+              "letra": "C",
+              "t": "muchas amistades verdaderas empezaron porque dos compañeros se pasaban las tareas."
+            },
+            {
+              "letra": "D",
+              "t": "Aristóteles escribió también sobre la política y sobre la naturaleza."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Si dos amigos de la infancia viven ahora en ciudades distintas y ya no pueden jugar juntos ni ayudarse, según el autor,",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "la amistad se acabaría, porque un amigo es aquel con quien uno se divierte y se ayuda."
+            },
+            {
+              "letra": "B",
+              "t": "ninguna amistad puede sobrevivir a la distancia ni a los años, por más que lo intenten."
+            },
+            {
+              "letra": "C",
+              "t": "el compañero de los exámenes seguiría desapareciendo cuando terminan las clases."
+            },
+            {
+              "letra": "D",
+              "t": "la amistad seguiría en pie si cada uno sigue queriendo el bien del otro."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "¿Cuál es la intención principal del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Explicar las tres clases de amistad que distinguía Aristóteles hace más de dos mil años."
+            },
+            {
+              "letra": "B",
+              "t": "Contar la historia de un compañero que solo aparecía en la semana de exámenes."
+            },
+            {
+              "letra": "C",
+              "t": "Defender una idea de lo que es un amigo frente a la definición más común."
+            },
+            {
+              "letra": "D",
+              "t": "Advertir al lector que desconfíe de quienes le piden ayuda."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: B · 3: B · 4: D · 5: C.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 3 o la oración 10. La oración 3 anuncia la tesis y la 10 la completa: amigo es quien quiere tu bien por ti, y eso se prueba cuando ya no tienes nada que darle.",
+        "Pregunta 1. Clave A. Junta las oraciones 3 y 10: el amigo quiere tu bien por ti, y la prueba llega cuando no tienes nada que darle.",
+        "Pregunta 2. Clave B. Las oraciones 8 y 9 la presentan como una amistad que se acaba cuando se acaba el provecho.",
+        "Pregunta 3. Clave B. La oración 9 dice lo contrario: «no son falsas, pero sí frágiles».",
+        "Pregunta 4. Clave D. Para el autor, lo que hace amigo a alguien es querer tu bien por ti, y eso no depende de la diversión ni de la ayuda (oraciones 3 y 10).",
+        "Pregunta 5. Antes de las alternativas: Convencer. El autor dice «Mi respuesta es esta», discute una opinión contraria y la responde: defiende una postura.",
+        "Pregunta 5. Clave C. El autor da su respuesta (oración 3), discute la opinión común (oración 4) y la sostiene con un ejemplo y con Aristóteles: busca convencer."
+      ]
+    },
+    {
+      "id": "t048",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «¿Justa porque la votamos?» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "¿Justa porque la votamos?",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En un salón de quinto de secundaria se votó una regla: los que se sientan en la última fila barrerán el aula todos los viernes."
+            },
+            {
+              "n": 2,
+              "t": "Ganó por veintiocho votos contra seis, y los seis eran, claro, los de la última fila."
+            },
+            {
+              "n": 3,
+              "t": "¿Es justa esa regla?"
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Se dirá que sí, porque una regla es justa cuando la aprueba la mayoría."
+            },
+            {
+              "n": 5,
+              "t": "La votación es, sin duda, una buena manera de decidir; pero decidir quién gana no es lo mismo que decidir qué es justo."
+            },
+            {
+              "n": 6,
+              "t": "Si bastara con contar votos, una mayoría podría declarar justo cualquier abuso contra unos pocos, y nadie podría reclamarle nada."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Propongo otra prueba: una regla es justa si la aceptarías sin saber de antemano qué lugar te tocará ocupar cuando se aplique."
+            },
+            {
+              "n": 8,
+              "t": "Es la vieja receta para repartir una torta entre dos: uno la corta y el otro elige, y quien corta, como no sabe qué pedazo le quedará, procura que sean iguales."
+            },
+            {
+              "n": 9,
+              "t": "El filósofo John Rawls llevó esta idea a la sociedad entera: imaginó que elegimos los principios de justicia de una sociedad detrás de un «velo de ignorancia», sin saber si seremos ricos o pobres, fuertes o débiles."
+            },
+            {
+              "n": 10,
+              "t": "Aplicada al salón, la prueba es clara: nadie que ignorara dónde se iba a sentar votaría por que la última fila barra siempre."
+            },
+            {
+              "n": 11,
+              "t": "Por eso, una regla es justa si pasa esa prueba, y la mayoría sirve para elegir entre reglas justas, no para volver justa una regla que no lo es."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor dice la tesis del autor. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la tesis del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Para repartir una torta entre dos, conviene que uno la corte y que el otro elija su pedazo."
+            },
+            {
+              "letra": "B",
+              "t": "Una regla es justa cuando la aprueba la mayoría de quienes tienen que cumplirla."
+            },
+            {
+              "letra": "C",
+              "t": "Toda comunidad necesita reglas para que sus miembros puedan convivir en paz."
+            },
+            {
+              "letra": "D",
+              "t": "En un salón de quinto se votó que la última fila barra el aula todos los viernes, y la regla ganó por veintiocho votos contra seis."
+            },
+            {
+              "letra": "E",
+              "t": "Una regla es justa si uno la aceptaría sin saber qué lugar le tocará, y ganar la votación no basta para hacerla justa."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «Para el autor, los seis alumnos de la última fila tienen razón en reclamar contra la regla.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Se infiere del texto que, para el autor,",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "en el salón habría que dejar de votar las reglas y que el profesor sea quien las decida."
+            },
+            {
+              "letra": "B",
+              "t": "una votación bien contada puede dar una regla injusta."
+            },
+            {
+              "letra": "C",
+              "t": "decidir quién gana no es lo mismo que decidir qué es justo."
+            },
+            {
+              "letra": "D",
+              "t": "la regla del salón habría sido justa si la hubieran aprobado todos, incluidos los seis de la última fila."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Si el salón votara de nuevo antes de saber quién se sentará en la última fila, según la lógica del texto,",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "ningún alumno aceptaría barrer el aula nunca, ni siquiera por turnos."
+            },
+            {
+              "letra": "B",
+              "t": "la regla volvería a ganar por veintiocho votos contra seis, como en la primera votación."
+            },
+            {
+              "letra": "C",
+              "t": "probablemente no ganaría la regla de que esa fila barra siempre."
+            },
+            {
+              "letra": "D",
+              "t": "la regla sería justa de todos modos, siempre que la apruebe la mayoría del salón."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Es compatible con el texto afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "cualquier regla aprobada por una mayoría es injusta para los alumnos que perdieron la votación."
+            },
+            {
+              "letra": "B",
+              "t": "para el autor, votar no es una buena manera de tomar decisiones en un grupo como un salón."
+            },
+            {
+              "letra": "C",
+              "t": "una regla queda justificada cuando gana la votación por un margen muy amplio."
+            },
+            {
+              "letra": "D",
+              "t": "una regla de turnos en la que cada fila barre una semana podría pasar la prueba del autor."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "¿Qué entiende el texto por VELO DE IGNORANCIA?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "No saber qué lugar ocupará uno cuando se apliquen las reglas que elige."
+            },
+            {
+              "letra": "B",
+              "t": "El secreto con que cada uno marca su voto en una elección."
+            },
+            {
+              "letra": "C",
+              "t": "Repartir una torta de modo que uno la corte y el otro elija su pedazo."
+            },
+            {
+              "letra": "D",
+              "t": "La falta de estudios o de información que tiene una persona sobre algún tema."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: B · 3: C · 4: D · 5: A.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 7 o la oración 11. La oración 7 propone la prueba de la justicia, y la 11 junta las dos mitades: una regla es justa si pasa esa prueba, y ganar una votación no basta para volverla justa.",
+        "Pregunta 1. Clave E. Junta la prueba que propone el autor (oración 7) con su conclusión sobre la mayoría (oración 11).",
+        "Pregunta 2. Antes de las alternativas: Se deduce del texto. Se deduce: la regla no pasa la prueba de la oración 7, porque nadie que ignorara dónde se iba a sentar votaría por ella (oración 10), y la oración 6 muestra que, si bastara con contar votos, nadie podría reclamar contra un abuso.",
+        "Pregunta 2. Clave B. El problema no está en cómo se cuenta: decidir quién gana no es decidir qué es justo (oraciones 5 y 11).",
+        "Pregunta 3. Clave C. Es la prueba del autor aplicada al salón: sin saber dónde le tocará sentarse, nadie votaría por esa regla (oración 10).",
+        "Pregunta 4. Clave D. Uno podría aceptar los turnos sin saber dónde se sentará, porque a todos les toca igual: es lo que pide la oración 7.",
+        "Pregunta 5. Clave A. La oración 9 lo explica: elegir las reglas sin saber si uno será rico o pobre, fuerte o débil."
+      ]
+    },
+    {
+      "id": "t049",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «El reloj que se apaga al morir» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "El reloj que se apaga al morir",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "A fines de la década de 1940, el químico estadounidense Willard Libby partió de dos hechos conocidos."
+            },
+            {
+              "n": 2,
+              "t": "En la atmósfera se forma sin cesar carbono 14, una variante radiactiva del carbono; las plantas lo absorben junto con el carbono común al tomar dióxido de carbono, y los animales lo reciben al comerlas."
+            },
+            {
+              "n": 3,
+              "t": "Además, el carbono 14 se desintegra a un ritmo fijo: cada unos 5700 años queda la mitad."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "De ahí sacó su hipótesis: mientras un ser vive, repone el carbono 14 que pierde; cuando muere, deja de reponerlo, y el que tiene empieza a disminuir como la arena de un reloj de arena."
+            },
+            {
+              "n": 5,
+              "t": "Si eso era cierto, bastaría medir cuánto carbono 14 le queda a un resto para saber hace cuánto murió."
+            },
+            {
+              "n": 6,
+              "t": "Para ponerlo a prueba, Libby fechó maderas cuya edad ya se conocía por otros medios, como piezas de tumbas egipcias, y las fechas coincidieron bastante bien."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Pero el método suponía algo más: que la cantidad de carbono 14 en el aire había sido siempre la misma."
+            },
+            {
+              "n": 8,
+              "t": "Al comparar con la madera de árboles muy antiguos, cuyos anillos se cuentan año por año, se vio que esa cantidad sí había variado; desde entonces, cada fecha se corrige con curvas de calibración, que todavía se siguen afinando."
+            },
+            {
+              "n": 9,
+              "t": "El método tiene además un límite: pasados unos 50 000 años queda tan poco carbono 14 que ya no se mide bien, y una punta de piedra no se fecha así, porque nunca estuvo viva."
+            },
+            {
+              "n": 10,
+              "t": "El carbono 14 es, entonces, un reloj confiable, pero no porque su primera suposición fuera cierta, sino porque se descubrió en qué fallaba y se aprendió a corregirla."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "El fechado con carbono 14 es confiable porque se descubrió en qué fallaba su primera suposición y se corrigió."
+            },
+            {
+              "letra": "B",
+              "t": "La química ha permitido grandes avances en el estudio del pasado."
+            },
+            {
+              "letra": "C",
+              "t": "Midiendo el carbono 14 que le queda a un resto se puede saber hace cuánto murió el ser vivo."
+            },
+            {
+              "letra": "D",
+              "t": "Libby comprobó que el carbono 14 del aire había sido siempre el mismo, y por eso todas sus fechas resultaron exactas."
+            },
+            {
+              "letra": "E",
+              "t": "El carbono 14 se desintegra a un ritmo fijo, de modo que cada unos 5700 años queda la mitad."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «Las maderas egipcias que fechó Libby eran las más antiguas que se conocían en su época.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Es compatible con el texto afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "una punta de piedra puede fecharse por su carbono 14, aunque nunca haya estado viva."
+            },
+            {
+              "letra": "B",
+              "t": "la cantidad de carbono 14 del aire se ha mantenido igual a lo largo de los siglos."
+            },
+            {
+              "letra": "C",
+              "t": "el hueso de un animal muerto hace 30 000 años aún podría fecharse así."
+            },
+            {
+              "letra": "D",
+              "t": "el método da la edad de cualquier objeto antiguo, sea cual sea el material del que esté hecho."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "En la oración 8, ¿a qué se refiere el texto con CURVAS DE CALIBRACIÓN?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "A las curvas que muestran cómo baja el carbono 14 de un resto con el paso de los años."
+            },
+            {
+              "letra": "B",
+              "t": "Al ritmo fijo con que se desintegra el carbono 14 dentro de cualquier resto."
+            },
+            {
+              "letra": "C",
+              "t": "A los anillos que se cuentan año por año en la madera de árboles muy antiguos, uno por cada año vivido."
+            },
+            {
+              "letra": "D",
+              "t": "A registros para corregir cada fecha según el carbono 14 que había en el aire en cada época."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Si la cantidad de carbono 14 del aire de verdad hubiera sido siempre la misma, según el texto,",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "las fechas obtenidas serían exactas hasta el día, en cualquier resto y de cualquier época."
+            },
+            {
+              "letra": "B",
+              "t": "el método serviría también para fechar rocas y puntas de piedra."
+            },
+            {
+              "letra": "C",
+              "t": "igual habría que corregir cada fecha con curvas de calibración, tal como se hace en la actualidad."
+            },
+            {
+              "letra": "D",
+              "t": "no habría hecho falta corregir las fechas comparándolas con los anillos de los árboles."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: C · 3: D · 4: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 10. La oración 10 junta las dos partes del texto: el método funciona, y funciona porque se corrigió la suposición que fallaba.",
+        "Pregunta 1. Clave A. Es la oración 10, que junta todo el texto: el método funciona, pero gracias a que se corrigió.",
+        "Pregunta 2. Antes de las alternativas: El texto no lo dice ni se deduce. El texto dice que la edad de esas maderas ya se conocía, no que fueran las más antiguas. No se puede saber.",
+        "Pregunta 2. Clave C. Los animales reciben carbono 14 al comer plantas (oración 2), y 30 000 años está dentro del límite de unos 50 000 (oración 9).",
+        "Pregunta 3. Clave D. Se usan porque la cantidad de carbono 14 del aire varió (oración 8): sirven para corregir la fecha.",
+        "Pregunta 4. Clave D. La corrección existe porque esa cantidad varió (oración 8). Si no hubiera variado, la suposición de la oración 7 habría bastado."
+      ]
+    },
+    {
+      "id": "t050",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Un centímetro de arcilla» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Un centímetro de arcilla",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En las rocas de Gubbio, en Italia, hay una capa de arcilla de un centímetro que separa las rocas de la época de los dinosaurios de las que se formaron después."
+            },
+            {
+              "n": 2,
+              "t": "A fines de la década de 1970, el geólogo Walter Álvarez y su padre, el físico Luis Álvarez, quisieron calcular cuánto tiempo había tardado en formarse."
+            },
+            {
+              "n": 3,
+              "t": "Para eso midieron el iridio, un metal muy escaso en la corteza terrestre, que en los sedimentos llega sobre todo con el polvo del espacio, y encontraron en la capa muchísimo más del que esperaban."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Propusieron entonces una hipótesis atrevida: un asteroide de unos diez kilómetros chocó contra la Tierra, esparció su iridio por todo el planeta y provocó la extinción de los dinosaurios."
+            },
+            {
+              "n": 5,
+              "t": "Una hipótesis así obliga a predecir: si el choque ocurrió, la misma capa rica en iridio debería aparecer en otros lugares del mundo, y en alguna parte tendría que existir un cráter enorme de esa edad."
+            },
+            {
+              "n": 6,
+              "t": "La capa fue apareciendo en cada vez más sitios del mundo, y en 1991 se identificó el cráter de Chicxulub, de unos 180 kilómetros, enterrado bajo la península de Yucatán, en México."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Hoy casi nadie duda de que el choque ocurrió, hace unos 66 millones de años."
+            },
+            {
+              "n": 8,
+              "t": "Lo que sigue en discusión es cuánto pesó en la extinción: en esa misma época, enormes erupciones en la India llevaban mucho tiempo echando gases a la atmósfera, y algunos investigadores creen que ya habían debilitado a muchas especies."
+            },
+            {
+              "n": 9,
+              "t": "El caso muestra cómo avanza la ciencia: una medición inesperada sugiere una hipótesis, la hipótesis se pone a prueba con lo que predice, y aun lo comprobado deja preguntas abiertas."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En 1991 se identificó bajo la península de Yucatán un cráter de unos 180 kilómetros de diámetro."
+            },
+            {
+              "letra": "B",
+              "t": "El caso del iridio muestra que una hipótesis se prueba con lo que predice y que lo comprobado deja preguntas abiertas."
+            },
+            {
+              "letra": "C",
+              "t": "Una capa de arcilla con mucho iridio llevó a dos científicos a proponer que un asteroide chocó contra la Tierra."
+            },
+            {
+              "letra": "D",
+              "t": "Se demostró que el choque de un asteroide fue la causa única de que se extinguieran los dinosaurios y muchas otras especies."
+            },
+            {
+              "letra": "E",
+              "t": "La ciencia estudia el pasado de la Tierra con métodos muy variados."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «Las erupciones de la India ya habían debilitado a muchas especies cuando cayó el asteroide.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Se infiere del texto que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "los Álvarez estaban buscando desde el principio la causa de la extinción de los dinosaurios y de otras especies."
+            },
+            {
+              "letra": "B",
+              "t": "el cráter de Chicxulub sirvió para poner a prueba la hipótesis, y no fue lo que llevó a proponerla."
+            },
+            {
+              "letra": "C",
+              "t": "el iridio es un metal muy escaso en la corteza terrestre y llega sobre todo del espacio."
+            },
+            {
+              "letra": "D",
+              "t": "todas las especies que vivían en esa época desaparecieron el mismo día del choque."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Qué entiende el texto por PREDECIR en la oración 5?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Medir cuánto iridio hay en una capa de roca muy antigua."
+            },
+            {
+              "letra": "B",
+              "t": "Deducir de una hipótesis qué debería encontrarse si fuera cierta."
+            },
+            {
+              "letra": "C",
+              "t": "Adivinar lo que va a pasar en el futuro, antes de que ocurra cualquier cosa."
+            },
+            {
+              "letra": "D",
+              "t": "Encontrar el cráter de Chicxulub enterrado bajo la península de Yucatán."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Es compatible con el texto afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "los Álvarez midieron el iridio de la capa porque ya sospechaban de un asteroide."
+            },
+            {
+              "letra": "B",
+              "t": "el cráter de Chicxulub se formó mucho después de que se extinguieran los dinosaurios."
+            },
+            {
+              "letra": "C",
+              "t": "la capa rica en iridio solo se ha encontrado hasta hoy en las rocas de Gubbio, en Italia."
+            },
+            {
+              "letra": "D",
+              "t": "la capa de Gubbio se habría estudiado igual aunque nadie sospechara de un asteroide."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "Si se encontrara una capa con mucho iridio, de hace unos 66 millones de años, en las rocas de la costa peruana, según el texto, ese hallazgo",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "demostraría que el asteroide fue la causa de toda la extinción, sin ayuda de las erupciones."
+            },
+            {
+              "letra": "B",
+              "t": "indicaría que el asteroide cayó en el Perú y no en la península de Yucatán."
+            },
+            {
+              "letra": "C",
+              "t": "sería otra prueba del choque, sin resolver cuánto pesó en la extinción."
+            },
+            {
+              "letra": "D",
+              "t": "probaría que ningún dinosaurio sobrevivió en ningún lugar de la costa del Pacífico."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: B · 3: B · 4: D · 5: C.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 9. La oración 9 dice para qué se cuenta el caso: una medición sugiere una hipótesis, la hipótesis se prueba con lo que predice y aun así quedan preguntas.",
+        "Pregunta 1. Clave B. Es la oración 9, que dice para qué se cuenta todo el caso: cómo avanza la ciencia.",
+        "Pregunta 2. Antes de las alternativas: El texto no lo dice ni se deduce. El texto dice que algunos investigadores lo creen y que sigue en discusión: no lo da por cierto ni por falso.",
+        "Pregunta 2. Clave B. La hipótesis nació del iridio (oraciones 3 y 4); el cráter se buscó porque la hipótesis lo predecía, y se halló después, en 1991 (oraciones 5 y 6).",
+        "Pregunta 3. Clave B. La oración 5 lo muestra: si hubo choque, debería haber la misma capa en otros lugares y un cráter de esa edad.",
+        "Pregunta 4. Clave D. Los Álvarez empezaron a estudiarla para calcular cuánto había tardado en formarse (oración 2); el asteroide vino después, como hipótesis para explicar el iridio (oraciones 3 y 4).",
+        "Pregunta 5. Clave C. Es otra capa como la que predecía la hipótesis (oración 5); lo que se discute (oración 8) es otra cosa, y una capa más no lo decide."
+      ]
+    }
+  ]
+}

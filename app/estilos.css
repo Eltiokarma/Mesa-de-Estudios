@@ -174,6 +174,19 @@ kbd{font:600 12px/1 var(--font);border:1.5px solid var(--line);border-bottom-wid
 details summary{cursor:pointer;font-weight:700;color:var(--brand)}
 details[open] summary{margin-bottom:8px}
 @media (min-width:900px){ .lista.papel{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start} }
+.papel-texto{margin:0 0 14px;padding:12px 14px;border-left:4px solid var(--line);font-size:16px;line-height:1.55}
+.papel-texto h3{margin:0 0 8px;font-size:17px}
+.papel-texto p{margin:0 0 10px}
+.papel-texto sup.n{font-size:11px;font-weight:700;color:var(--muted);margin-right:2px}
+.papel-preg{margin:0 0 12px;padding-left:22px}
+.papel-preg>li{margin-bottom:14px}
+.papel-preg p{margin:0 0 6px}
+.papel-previo{font-size:14px;padding:6px 10px;border-radius:8px;background:var(--brand-soft)}
+.papel-alts{list-style:none;margin:0;padding:0}
+.papel-alts li{margin:3px 0}
+.sol.sol-lectura{list-style:none;padding-left:0}
+.sol.sol-lectura li{margin-bottom:6px}
+.lista.papel .card:has(.papel-texto){grid-column:1/-1}
 @media print{ #nav,.volver,.btn{display:none!important} body{background:#fff} #app{margin:0!important;max-width:none!important;padding:0!important}
   .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} details{display:none} }
 

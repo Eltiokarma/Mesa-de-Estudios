@@ -9,5 +9,5 @@
   "version": "0.1.0",
   "banco": "../../contenido/razonamiento-verbal/indice-textos-filosoficos-cientificos.json",
   "pruebas": "../../contenido/razonamiento-verbal/banco.test.js",
-  "papel": null
+  "papel": "papel.json"
 }

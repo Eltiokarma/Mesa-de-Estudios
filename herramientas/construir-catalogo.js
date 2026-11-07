@@ -5,7 +5,8 @@
 // sitio estático. Una prueba (app/app.test.js) avisa si quedó desactualizado.
 // También arma app/datos/pruebas.json con el banco de pruebas de entrada y salida por curso
 // (catalogo/pruebas/<curso>.json), sin los datos que solo sirven para verificarlo, y
-// contenido/razonamiento-verbal/codigos.json desde el informe (herramientas/codigos-verbal.js).
+// contenido/razonamiento-verbal/codigos.json desde el informe (herramientas/codigos-verbal.js), y el papel.json
+// de cada módulo de lectura desde su banco (herramientas/papel-lectura.js).
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -91,6 +92,9 @@ if (require.main === module) {
   // Los códigos del formato lectura salen del informe de razonamiento verbal (la app no lee Markdown).
   const codigos = require('./codigos-verbal');
   fs.writeFileSync(codigos.SALIDA, codigos.texto());
+  // Lápiz y papel de los módulos de lectura: sale de su banco (herramientas/papel-lectura.js).
+  const papel = require('./papel-lectura');
+  for (const { ficha, dir } of papel.modulos()) fs.writeFileSync(path.join(dir, 'papel.json'), papel.texto(ficha, dir));
   fs.mkdirSync(path.dirname(SALIDA), { recursive: true });
   fs.writeFileSync(SALIDA, texto());
   fs.writeFileSync(SALIDA_PRUEBAS, textoPruebas());
