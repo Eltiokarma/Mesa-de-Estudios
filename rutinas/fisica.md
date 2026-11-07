@@ -8,9 +8,59 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico, energía, calorimetría, circuitos, espejos y Banco Óptico 0.3.0, todas hechas (abajo). La siguiente ejecución espera un orden nuevo de Gerson.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico, energía, calorimetría, circuitos, espejos y Banco Óptico 0.3.0, todas hechas (abajo). Después, fis-16 a fis-22 en la reserva del banco de física (abajo). La siguiente ejecución espera un orden nuevo de Gerson.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Banco de física: fis-16 a fis-22 en reserva (pedido de la principal)
+
+### Qué hice
+- Agregué 7 pares A/B a la `reserva` de `catalogo/pruebas/fisica.json`, uno por cada escena mía que no tenía ítems. Siguen en reserva porque cada forma admite como máximo 10 ítems.
+- Cada par tiene su verificador en `catalogo/pruebas/verificar.js`, que saca la respuesta y los distractores del motor de su escena.
+- El banco pasa a la versión 1.3.0:
+  - se agregaron 21 códigos de error, cada uno con el mismo respaldo que tiene en su escena;
+  - entró al banco el informe `momento-gravitacion-ondas-ideas-erroneas.md`.
+- Se tocó `catalogo/` porque la principal lo pidió (igual que con fis-11 a fis-15 de física B). Lo numeré desde fis-16 para que no choque con física B.
+
+### Pares y unidades
+
+| Par | Escena | Unidad | Qué pide | A / B | Códigos (respaldo) | Predicción que imita |
+| --- | --- | --- | --- | --- | --- | --- |
+| fis-16 | estatica | `fisica.estatica` | Cuál de dos cuerdas de un nudo está más tensa (A: lámpara, 53° y 30° con el techo; B: parlante, 45° y 60° con una viga) | el cable izquierdo / la cadena derecha (la que baja más parada) | E8 cuerda más vertical menos tensa, E8 tensiones como números y E7 depende del largo (documentados) | «¿Qué cuerda está más tensa?» |
+| fis-17 | choques | `fisica.impulso-y-choques` | Rapidez después de un choque plástico con el segundo quieto (A: autos de 1200 y 800 kg a 15 m/s; B: rugby, 90 y 60 kg a 6 m/s) | 9 m/s / 3,6 m/s | M1 sigue igual (parcial), promedio sin masas (hipótesis), M5 conserva Ec (parcial) | «Siguen enganchados» |
+| fis-18 | fluidos | `fisica.fluidos` | Presión manométrica de un sensor bajo un techo, con el agua subiendo por un tubo (A: tanque subterráneo; B: acuario con tapa) | 17 000 Pa / 7000 Pa | F4 h hasta el techo (documentado), h desde el fondo (hipótesis), F7 igual en todo (documentado) | El sensor bajo el techo de la botella |
+| fis-19 | mas | `fisica.oscilaciones` | Período de un péndulo de reloj al cambiar la pesa por otra 4 veces más pesada (A: 0,64 m, de 150 a 600 g; B: 0,49 m, de 250 g a 1 kg; π² = 10) | 1,6 s / 1,4 s | O3 pesada más lenta y más rápida (parciales), T ∝ √m como resorte (hipótesis) | El péndulo de 100 g a 400 g. Aquí además se calcula T con la fórmula |
+| fis-20 | ondas | `fisica.ondas-mecanicas` | Qué cambio hace que el pulso llegue antes (A: soga de clase; B: cable de tendedero) | tensar con el doble de fuerza (las dos) | ON1–ON2 mano más rápida (documentado), ON1–ON3 mano más alta (parcial), ON4 cuerda más pesada (documentado) | Paso 2 de la escena (el pulso más rápido) |
+| fis-21 | gravitacion | `fisica.gravitacion` | Lo que marca un dinamómetro en otro planeta (A: robot de 80 kg, 3 masas y 2 radios; B: sonda de 120 kg, 8 masas y 2 radios) | 600 N / 2400 N | G4 olvida el radio y G3 radio sin cuadrado (parciales), olvida la masa (hipótesis, nueva) | «Otro planeta» |
+| fis-22 | termodinamica | `fisica.termodinamica` | ΔU del helio a presión constante, dados Q y W (A: gasómetro de campana, 2500 y 1000 J; B: depósito en la azotea, 750 y 300 J) | 1500 J / 450 J | T9 suma el trabajo (parcial), T8 todo el calor a ΔU (documentado), ΔU = 0 a presión constante (hipótesis) | Paso «recibió 10 000 J e hizo 4000 J» |
+
+### Revisiones
+- **Constructor:** rehízo varios enunciados que se parecían a otros.
+  - fis-19 calcaba en un 89 % la predicción del péndulo.
+  - fis-22 compartía 5 palabras con su pregunta.
+  - fis-16 A, fis-18 A y fis-22 se parecían a problemas del papel.
+- **Revisor a ciegas:** resolvió los 14 ítems antes de ver el banco y acertó las 14 claves. No encontró nada grave. Esto es lo que se corrigió:
+  - fis-16: «más inclinado» se podía leer al revés, las justificaciones copiaban las de la escena y A tenía ángulos complementarios como los de la escena.
+  - fis-18 A: el sensor estaba a 0,5 m, igual que en la escena, y daba el mismo distractor. Pasó a 0,7 m.
+  - fis-19 A: copiaba las masas de la escena. Pasó a 150 → 600 g.
+  - fis-21: la correcta era siempre la menor. Entró «olvida la masa», que queda por debajo. Además, A calcaba la frase de la escena.
+  - fis-22: A repetía la situación de la escena y del papel, y B estaba mal redactada («tapa flotante»). También se ajustó el volumen del modelo para que las temperaturas sean realistas (360 y 330 K).
+  - Detalles: largo de las opciones de fis-20, «oscilaciones pequeñas» y «derriba con un tacle».
+
+### Notas para el análisis
+- fis-19: quien sabe que la masa no importa pero no recuerda la fórmula del período falla igual. Lo dice el campo «mide».
+- fis-20: las claves de los distractores son de texto fijo, como en fis-04 y fis-14. El motor decide qué pulso llega primero.
+- fis-16: el enunciado no da el largo de las cuerdas, así que E7 puede atraer menos que en la escena.
+- fis-17: A y B tienen la misma razón de masas (3:2). Es paralelo y correcto.
+
+### Pruebas
+- `node --test catalogo/pruebas/pruebas.test.js`: 61 de 62. Solo falla «app/datos/pruebas.json está al día», que se arregla con `npm run catalogo`.
+- `parecidos.js`: ningún parecido. Quedan 7 avisos de «comparte códigos con la predicción que imita», que es lo esperado. Los revisé a mano: la situación y los números son otros.
+- En el curso, la correcta es el menor valor en 2 de 26 ítems numéricos y nunca el mayor. En los de texto es la más corta en 2 de 18 y la más larga en 2 de 18. La letra de la correcta cambia entre A y B en los 7 pares.
+
+### Pedidos
+- `npm run catalogo`.
+- Los pares quedan en reserva hasta que se arme la forma del piloto. La prueba avisa que estas 7 escenas ya están en el catálogo.
 
 ## 7 nov 2026 · Banco Óptico 0.3.0: correcciones (`plantillas/optica-lente-delgada/`)
 

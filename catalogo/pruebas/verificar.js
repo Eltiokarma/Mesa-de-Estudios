@@ -129,6 +129,67 @@ const V = {
       'OE-la-luz-siempre-va-a-c': `${v(e.nadaCambia.v)}|${l(e.nadaCambia.lambdaNm)}|${colorF(e.nadaCambia.f)}` } };
   },
 
+  // fis-16 a fis-22: escenas de mecánica, ondas y calor que no tenían ítems (en "reserva": las formas tienen un tope de 10).
+  'fis-16': d => {
+    // Nudo con dos cuerdas (a1 la de la izquierda, a2 la de la derecha, con el techo): la más tensa sale del motor.
+    // E8 al revés: la que sería la más tensa si las tensiones se intercambiaran (la más tendida).
+    const r = motor('estatica').nudo({ m: d.m, a1: d.a1, a2: d.a2 }), inv = r.errores.invertidas;
+    if (r.masTensa === 'iguales') throw new Error('el ítem supone cuerdas con tensiones distintas');
+    return { correcta: r.masTensa, errores: { 'E8-cuerda-mas-vertical-menos-tensa': inv.T1 > inv.T2 ? 'cuerda 1' : 'cuerda 2',
+      'E8-tensiones-como-numeros': 'iguales', 'E7-tension-depende-del-largo': 'no-se-sabe' } };
+  },
+  'fis-17': d => {
+    // Choque plástico en una recta: el 2 está quieto (v2 = 0).
+    const r = motor('choques').choque({ m1: d.m1, v1: d.v1, m2: d.m2, v2: 0, e: 0 });
+    if (!r.juntos) throw new Error('el ítem supone que quedan juntos');
+    return { correcta: r.v1f, errores: { 'M1-sigue-igual': r.errores.sigueIgual, 'promedio-sin-masas': r.errores.promedioSinMasas,
+      'M5-conserva-ec-plastico': r.errores.conservaEc } };
+  },
+  'fis-18': d => {
+    // Recipiente de dos tramos: el de abajo, ancho, con techo a la altura d.techo; encima, un tubo angosto lleno hasta H.
+    // El sensor está en la pared del tramo ancho (x en el modelo), bajo el techo, a d.y del fondo.
+    const r = motor('fluidos').recipiente({ secciones: [{ alto: d.techo, ancho: d.ancho }, { alto: d.altoTubo, ancho: d.anchoTubo }], H: d.H });
+    const p = r.presionEn(d.x, d.y);
+    if (!p.bajoTecho) throw new Error('el sensor debe estar bajo el techo');
+    return { correcta: p.P, errores: { 'F4-h-hasta-el-techo': p.errores.hHastaTecho, 'h-desde-el-fondo': p.errores.hDesdeFondo,
+      'F7-igual-en-todo': p.errores.igualEnTodo } };
+  },
+  'fis-19': d => {
+    // Péndulo con π² = 10 (convención de examen, pi2); se cambia la esfera por otra más pesada con el mismo largo.
+    const M = motor('mas'), m1 = d.m1g / 1000, m2 = d.m2kg !== undefined ? d.m2kg : d.m2g / 1000;
+    const a = { L: d.L, m: m1, pi2: true }, b = { L: d.L, m: m2, pi2: true };
+    const T1 = M.pendulo(a).T, c = M.comparar('pendulo', a, b), e = c.errores;
+    return { correcta: M.pendulo(b).T, errores: { 'O3-pendulo-pesada-mas-lenta': T1 * e.pesadaMasLenta,
+      'O3-pendulo-pesada-mas-rapida': T1 * e.pesadaMasRapida, 'pendulo-T-raiz-m-como-resorte': T1 * e.formulaResorte } };
+  },
+  'fis-20': d => {
+    // Carrera de pulsos (motor carrera): la mano más rápida (pulso más angosto), un pulso más alto, el doble de tensión y
+    // el doble de masa por metro. Llega antes el que da el motor; se comprueba que los cambios de la mano no adelantan nada.
+    const r = motor('ondas').carrera({ L: d.L, base: { T: d.T, mu: d.mu, A: d.A, ancho: d.ancho }, cambios: [
+      { nombre: 'mano-rapida', cambio: { ancho: d.ancho / 2 } }, { nombre: 'mano-alta', cambio: { A: 2 * d.A } },
+      { nombre: 'tensar', cambio: { T: 2 * d.T } }, { nombre: 'mas-pesada', cambio: { mu: 2 * d.mu } }] });
+    if (!['mano-rapida', 'mano-alta'].every(n => r.igualQueBase.includes(n)) || !(r.llegada['mas-pesada'] > r.llegada.base)) throw new Error('la carrera no da lo que supone el ítem');
+    return { correcta: r.primero, errores: { 'ON1-ON2-mano-mas-rapida': 'mano-rapida', 'ON1-ON3-mano-mas-alta': 'mano-alta', 'ON4-cuerda-mas-pesada': 'mas-pesada' } };
+  },
+  'fis-21': d => {
+    // Peso en otro planeta (kM masas y kR radios de la Tierra; el triple se escribe en palabras, por eso van en el modelo);
+    // el peso en la Tierra del enunciado es m·g₀. olvida-la-masa: el mismo cálculo con la masa de la Tierra (kM = 1).
+    const G = motor('gravitacion'), r = G.planeta({ kM: d.kM, kR: d.kR }), e = r.errores, g0 = G.planeta({}).g;
+    if (Math.abs(d.m * g0 - d.P) > 1e-9) throw new Error('el peso en la Tierra no es m·g₀');
+    return { correcta: d.m * r.g, errores: { 'G4-olvida-el-radio': d.m * e.soloMasa, 'G3-radio-sin-cuadrado': d.m * e.radioLineal,
+      'olvida-la-masa': d.P * G.planeta({ kM: 1, kR: d.kR }).g / g0 } };
+  },
+  'fis-22': d => {
+    // Primera ley con Q y W del enunciado. Se comprueba que son los de un isobárico de helio (monoatómico) a la presión y
+    // el volumen del modelo (kPa y L): el calor dado produce justo ese trabajo.
+    const T = motor('termodinamica'), r = T.primeraLey({ Q: d.Q, W: d.W });
+    const pr = T.proceso({ tipo: 'isobarico', P1: d.P, V1: d.V1, T1: d.T1, Q: d.Q });
+    if (Math.abs(pr.W - d.W) > 1e-6 || Math.abs(pr.dU - r.dU) > 1e-6) throw new Error('Q y W no son los de un isobárico monoatómico');
+    if (!(pr.final.T > 273 && pr.final.T < 400)) throw new Error('la temperatura final no es realista');
+    return { correcta: r.dU, errores: { 'T8-todo-el-calor-a-energia-interna': r.errores.olvidaTrabajo, 'T9-suma-el-trabajo': r.errores.signoCambiado,
+      'dU-cero-a-presion-constante': 0 } };
+  },
+
   // ---------------- Química ----------------
   'qui-01': d => {
     const L = motor('limitante-particulas'), r = L.reaccion(d.reaccion);
