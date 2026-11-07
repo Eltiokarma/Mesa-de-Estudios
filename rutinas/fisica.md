@@ -8,9 +8,78 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico y energía (hechas, abajo), calorimetría y circuitos (en curso), calorimetría, circuitos y espejos.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico, energía y circuitos (hechas, abajo), calorimetría y espejos (en curso), calorimetría, circuitos y espejos.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Circuitos 0.2.0: medidores que se arrastran (`plantillas/circuitos-cc/`)
+
+Es el punto 5 de la lista nueva.
+
+**Qué hay de nuevo.**
+
+- **Pestaña «Medir» (tercera).** El circuito mixto tiene una pila de 6 V, B1 y, en paralelo, B2 y B3, todas de 12 Ω. Son 8 pasos con 5 predicciones:
+  - M0, el amperímetro en serie;
+  - M1, dónde se pone;
+  - M2, el amperímetro en paralelo, que hace un corto;
+  - M3, el voltímetro en serie, que marca casi la fem;
+  - M4, el voltímetro real de 60 Ω, que marca 3,75 V.
+
+  Además hay un banco libre con medidores ideales y reales (rₐ y Rᵥ).
+- **Arrastre.** Usa Celular.arrastre, con imán al puesto más cercano a 48 px y el medidor 28 px sobre el dedo. Hay también un modo de dos toques y teclado: Enter, flechas, Escape y Supr. Los puestos se abren en orden.
+- **Motor.** El amperímetro ideal es una rama de resistencia 0 y el voltímetro ideal no conduce; los reales llevan Rint.
+  - Funciones: conectarMedidor, conectarMedidores, efectoMedidor (con siete diagnósticos), PUESTOS_MIXTO (diez puestos), medidoresMixto y prediccionesMedidores.
+  - Avisos nuevos: `lectura-indeterminada` y `nodo-flotante`. Corrigen un error de antes: un amperímetro ideal en paralelo con un cable marcaba la mitad sin avisar.
+  - Un amperímetro en paralelo nunca da «bien» ni «carga».
+  - Los 9 casos de antes siguen igual.
+- **Casos y pruebas.** 29 casos (20 nuevos) y 68 pruebas, entre ellas que el medidor real tiende al ideal.
+- **Respaldos.**
+  - Parciales: C15 («el amperímetro consume»), C2 y C7, con datos de errores vecinos.
+  - Hipótesis, con «hipótesis nuestra» en pantalla: el amperímetro en paralelo y el voltímetro en serie (C15v). El informe los pone en «sin respaldo».
+- **Papel.** Entran p10 (amperímetro en paralelo y voltímetro en serie) y p11 (voltímetros de 10 kΩ y 1 MΩ); sale p6. Siguen siendo 10, de básico a avanzado.
+- **Lo que se arregló de lo publicado.**
+  - Chips al 8 % y .v.hl con contorno.
+  - Las tres correctas sin razón de «¿Qué pasa si…?».
+  - Cinco «documentado» sin cifra pasaron a parcial.
+  - Retroalimentación por distractor en el modo 2.
+  - La cita del paso 3 («una», no «la primera»).
+  - pinch-zoom.
+  - La B3 quitada en el paso 8 ya no pasa al explorador.
+  - Los pasos bloqueados se leen «Paso N, bloqueado».
+
+**Verificador independiente.** El casos.json de esta plantilla tiene otro formato que entradas.py, así que la conversación principal le armó las entradas a mano, sin los valores.
+- Recalculó los casos 10 a 28 con reducción serie-paralelo, fracciones y divisores, sin el método nodal. Los 19 coinciden.
+- Pidió documentar en la cabecera PUESTOS_MIXTO y los diagnósticos. Ya está.
+- Después de la revisión, cambiaron los diagnósticos de dos casos sin cambiar sus números:
+  - el 23 (amperímetro de 2 Ω en paralelo) pasa a corto-elemento;
+  - el 26 pasa a corto-pila.
+- La conversación principal verificó el caso 29 (amperímetro de 0,1 Ω en la pila: 60 A) con fracciones.
+
+**Revisor de contenido.**
+- **Lo grave:**
+  - La tabla del paso 8 daba «Sin el medidor: 0,33 A · 200 %» con el amperímetro mal conectado, y eso reforzaba los distractores M2 a y M3 a. Ahora dice «— (mal conectado)».
+  - Un amperímetro real en paralelo con la pila salía «bien» con 60 A. Ahora es cortocircuito.
+- **Lo medio:**
+  - «Cambió un poco» salía siempre; ahora va según cambioMax.
+  - La opción d de M2 no coincidía con su código.
+  - En el celular, el bloque fijo ocupaba 450 de 844 px; ahora ocupa 253.
+  - Desborde a 320 px.
+  - Una retroalimentación remitía al paso equivocado.
+  - El nombre de la fila con dos medidores.
+- **Lo bajo:** textos de circuito abierto y de M4, la letra R repetida (ahora Rᵥ y rₐ), rótulos encimados a 320, la pastilla de corto cortada y el orden del papel.
+
+**Colores** (para `docs/diseno.md`):
+- **--corto nuevo:** #b81c0c en claro y #ff6b33 en oscuro.
+  - Contraste: 6,15 en claro y 5,78 en oscuro.
+  - ΔE00 de 22,6 o más con I, V, R, P y la tinta.
+- --corto queda a 9,6 de --warn, pero nunca salen juntos: --warn va solo en las opciones.
+- I, V, R y P no cambian; entre ellos el ΔE00 mínimo es 31,7 en claro.
+
+**Pedidos para la integración.**
+1. `npm run catalogo` (0.2.0).
+2. Llevar --corto y su nota a docs/diseno.md.
+3. Actualizar pendientes.
+4. Que entradas.py acepte el formato de casos de circuitos (circuito/helper + esperado), o migrar circuitos al formato fn/args/espera, para que la próxima verificación no se arme a mano.
 
 ## 7 nov 2026 · Tiro parabólico 0.2.0: ruedas, pared y encuentros (`plantillas/tiro-parabolico/`)
 

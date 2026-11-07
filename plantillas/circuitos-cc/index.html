@@ -733,7 +733,8 @@ function crearEscena(cv, opciones){
       if (p.sol.ok){
         const m = p.sol.ramas[x.id];
         lin.push([Number.isNaN(m.lectura) ? '¿?' : fmt(m.lectura) + (esA ? ' A' : ' V'), c[esA ? 'c-I' : 'c-V'], 800]);
-        if (Number.isFinite(m.Rint) && m.Rint > 0) lin.push([(esA ? 'rₐ = ' : 'Rᵥ = ') + fmt(m.Rint, 2) + ' Ω', c['c-R'], 700]);
+        // En el celular (lienzo angosto) la resistencia interna va en el botón del medidor y en el deslizador, no aquí.
+        if (P.s >= 30 && Number.isFinite(m.Rint) && m.Rint > 0) lin.push([(esA ? 'rₐ = ' : 'Rᵥ = ') + fmt(m.Rint, 2) + ' Ω', c['c-R'], 700]);
       }
       rotulos(ctx, c, M[0], M[1], x.l.et || 'arr', r + 6, lin, tam);
     }
@@ -1415,7 +1416,7 @@ const RVS = [60, 600, 6000, 60000, Infinity], RAS = [0, 0.1, 0.5, 2, 6];
 const w = (k, t) => `<span class="v v-${k}" style="cursor:default; text-decoration:none">${t}</span>`;
 
 // Dibujo (unidades de cuadrícula). Las pinzas del puesto en paralelo con la pila (y = 2,6 y 5,8) caen sobre el cable,
-// fuera de la pila (que ocupa de y = 3,66 a 5,14).
+// fuera de la pila (que ocupa de y = 3,66 a 5,14); su lectura va debajo del medidor, por debajo de la pila.
 LAY.med = { w:12.8, h:8.9, uniones:[[6.9,2.0],[6.9,6.4]], cortoX:6.4, cortoY:0.62,
   ramas:{
     pila:{ comp:'pila', path:[[1.6,6.4],[1.6,2.0]], sc:2.0, et:'der', etI:false },
@@ -1435,8 +1436,8 @@ const PUESTO = {
   'G-p':   { ancla:[8.5,4.2],  et:'aba', nombre:'en paralelo con B2 y B3', pinzas:[[8.5,2.0],[8.5,6.4]] },
   'B3-a':  { ancla:[10.1,2.85], et:'der', nombre:'en serie con B3, arriba' },
   'B3-b':  { ancla:[10.1,5.55], et:'der', nombre:'en serie con B3, abajo' },
-  'ret':   { ancla:[4.0,6.4],  et:'arr', nombre:'en el cable de regreso a la pila' },
-  'pila-p':{ ancla:[0.55,4.2], et:'arr', nombre:'en paralelo con la pila', pinzas:[[1.6,2.6],[0.55,2.6],[0.55,5.8],[1.6,5.8]] },
+  'ret':   { ancla:[4.6,6.4],  et:'arr', nombre:'en el cable de regreso a la pila' },
+  'pila-p':{ ancla:[0.55,4.6], et:'aba', nombre:'en paralelo con la pila', pinzas:[[1.6,2.6],[0.55,2.6],[0.55,5.8],[1.6,5.8]] },
 };
 const ORDEN = ['B1-p','B1-a','B1-b','B2-a','B2-b','G-p','B3-a','B3-b','ret','pila-p'];
 const SERIE = ORDEN.filter(p => M.PUESTOS_MIXTO[p].modo === 'serie');
@@ -1605,7 +1606,8 @@ function botones(){
     else b.removeAttribute('aria-label');
     b.setAttribute('aria-pressed', String(S.tomado === id || !!(S.teclado && S.teclado.id === id)));
     const pu = S.col[id], ef = S.r && S.r.efecto[id];
-    b.querySelector('.t').innerHTML = `${Nom(id)} · ${pu ? PUESTO[pu].nombre : 'en la bandeja'}` + (pu && ef ? ` · marca <span class="lec-${VAR[id]}">${lectura(id, ef)}</span>` : '');
+    const R = rintDe(id), rint = R !== undefined && R !== 0 && R !== Infinity ? ` · <span style="color:var(--c-R)">${id === 'A' ? 'rₐ' : 'Rᵥ'} = ${fmt(R, 2)} Ω</span>` : '';
+    b.querySelector('.t').innerHTML = `${Nom(id)}${rint} · ${pu ? PUESTO[pu].nombre : 'en la bandeja'}` + (pu && ef ? ` · marca <span class="lec-${VAR[id]}">${lectura(id, ef)}</span>` : '');
   }
 }
 const desc = t => decir($('desc3'), t);
@@ -1886,7 +1888,7 @@ function vivo8(){
     if (!pu || !ef) return { donde:'en la bandeja', marca:'—', sin:'—', dif:'—', que:'—' };
     const ideal = ef.magnitud === 'I' ? ef.sinMedidor.I : ef.sinMedidor.V;
     // Mal conectado no mide nada de ese lugar: no hay con qué comparar (una «diferencia» reforzaría el error).
-    const mal = ef.diagnostico !== 'bien' && ef.diagnostico !== 'carga', nada = '— (mal conectado: no mide nada de ese lugar)';
+    const mal = (ef.diagnostico !== 'bien' && ef.diagnostico !== 'carga') || !(typeof ideal === 'number' && Number.isFinite(ideal)), nada = '— (mal conectado: no mide nada de ese lugar)';
     return { donde: PUESTO[pu].nombre, marca: w(VAR[id], lectura(id, ef, 4)),
       sin: mal ? nada : typeof ideal === 'number' && Number.isFinite(ideal) ? w(VAR[id], fmt(ideal, 4) + UNI[id]) : '—',
       dif: mal ? nada : Number.isFinite(ef.errorRel) ? fmt(ef.errorRel*100, Math.abs(ef.errorRel) < 0.01 ? 3 : 1) + ' %' : '—', que: queHizo(ef) };

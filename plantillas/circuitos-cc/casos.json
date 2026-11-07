@@ -238,7 +238,7 @@
       "helper": "medidoresMixto",
       "args": {"colocados": {"A": {"puesto": "pila-p", "Rint": 0.1}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
       "esperado": {"ramas": {"A": {"lectura": 60, "V": 6}, "pila": {"I": 60.333333333333336}, "B1": {"P": 1.3333333333333333}, "B2": {"P": 0.3333333333333333}, "B3": {"P": 0.3333333333333333}}, "efecto": {"A": {"lectura": 60, "diagnostico": "corto-pila", "apaga": []}}},
-      "verificacion": ""
+      "verificacion": "Verificado por la conversación principal (7 nov 2026) con fracciones exactas: serie 12 + (12 ∥ 12) = 18 Ω da 1/3 A con la pila ideal; el amperímetro de 0,1 Ω entre los bornes lleva 6/0,1 = 60 A; pila 181/3 A; P1 = 4/3 W y P2 = P3 = 1/3 W. Los diagnósticos nuevos de los casos 23 y 26 (corto-elemento y corto-pila) siguen la regla de que un amperímetro en paralelo nunca da bien ni carga; sus números, verificados antes, no cambiaron."
     }
   ]
 }
