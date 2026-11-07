@@ -821,7 +821,7 @@ const steps = [
  { k:'Paso 1', t:'La lupa y la balanza', vista:() => ({ tipo:'frasco', recipiente:250, masa:100, sust:'H2O', tapa:true, p:0, q:0 }),
    body:() => `<p class="problem">Todo lo que ves está hecho de partículas que no se ven: átomos, y átomos unidos en moléculas. En esta escena, la lupa muestra esas partículas al lado de lo que se ve, y una balanza dice cuánta masa hay.</p>
    <p>En el frasco hay 100 g de agua. La balanza marca la masa del frasco más la del agua: ${Vm('350,00 g')}.</p>
-   <p>Para saber si algo es un elemento, un compuesto o una mezcla, no basta mirarlo: hay que ver qué partículas tiene. Y la balanza va a contestar otra pregunta: ¿qué le pasa a la masa cuando algo cambia?</p>
+   <p>Dos preguntas guían toda la escena: ¿qué partículas hay?, y ¿qué marca la balanza cuando algo cambia? Para saber si algo es un elemento, un compuesto o una mezcla, no basta mirarlo: hay que ver qué partículas tiene.</p>
    <p class="hint">Cada elemento tiene su color en el texto y en el dibujo: ${F('H')} el hidrógeno y ${F('O')} el oxígeno. Ese color es una clave, no el color real del átomo. La masa ${Vm('m')} va en mostaza. Toca un color del texto para resaltarlo en el dibujo.</p>` },
  { k:'Paso 2', t:'Antes de mirar, predice', gate:P1, vista:r => vCajas(r),
    body:() => `<p>Cada caja muestra las partículas de una muestra, vistas con una lupa muy potente. Cada círculo es un átomo; los que se tocan están unidos.</p>

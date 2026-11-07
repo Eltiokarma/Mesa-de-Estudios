@@ -1,6 +1,6 @@
 {
   "titulo": "Las fichas que se agrupan: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Para pasar de base 10 a otra base, divide entre la base una y otra vez; los restos son las cifras, pero se leen desde el último cociente hacia el primer resto. Para pasar a base 10, multiplica cada cifra por la base elevada a su orden (las unidades tienen orden 0). En base b las cifras van del 0 al b − 1: la cifra b nunca aparece, porque b sueltas ya forman un grupo. El subíndice indica la base: 213₍₅₎ es 213 en base 5.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. El subíndice indica la base: 213₍₅₎ es 213 en base 5.",
   "problemas": [
     {
       "id": "p1",

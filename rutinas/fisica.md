@@ -8,9 +8,67 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques y fluidos (7 nov) quedaron hechos (abajo); MAS está en curso.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos y MAS (7 nov) quedaron hechos (abajo); ondas mecánicas y termodinámica están en curso.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Movimiento armónico simple (`plantillas/mas/`)
+
+**Qué hay.**
+- `motor.js` (MotorMAS):
+  - `resorte` horizontal y vertical, con deq = mg/k y el mismo período en los dos;
+  - `estado(t)` con el punto del círculo de referencia;
+  - vmax, amax y energías;
+  - `pendulo`, con g efectiva (ascensor o vagón) y corrección de amplitud grande;
+  - `comparar`, que da las razones entre dos sistemas;
+  - `resortes` en serie y en paralelo.
+
+  π es el real; con `pi2:true`, π² ≈ 10 solo en T y f. Cada resultado trae `errores`.
+- `casos.json`: 23 casos, entre ellos los 4 del informe.
+- `motor.test.js`: 49 pruebas. Comprueban la conservación de la energía, que v y a sean derivadas numéricas, que el movimiento se repita cada T, la sombra del círculo de referencia, que T no dependa de A ni de la masa del péndulo, el mismo T en vertical y en el ascensor, y que en A/2 la cinética sea 3/4 de E.
+- `papel.json`: 10 problemas propios.
+- `index.html`:
+  - **Paso a paso:** 8 pasos con 4 predicciones: T al soltar desde el doble de amplitud, T con 1,6 kg, dónde va más rápido y dónde acelera más, y Ec en A/2. El bloque y el resorte van sincronizados con las gráficas x-t, v-t y a-t, el círculo de referencia y las barras de energía. En el explorador, el bloque se arrastra (en la mesa o colgado).
+  - **«¿Qué pasa si…?»:** 5 experimentos con pastillas bloqueadas: péndulo con la masa, péndulo con el largo, resorte colgado, ascensor y resortes en serie o en paralelo.
+  - Usa `nucleo/celular.js`.
+
+**Verificador independiente.** Trabajó con energía para vmax, el círculo de referencia para los instantes, un diagrama de fuerzas para la g efectiva, y fuerza con estiramiento para serie y paralelo. Coincidieron los 23 casos. Encontró un problema real, ya corregido: `errores.periodoConG` daba el período correcto (deq/g = m/k), así que un distractor con ese valor habría sido correcto. Ninguna opción lo usaba.
+
+**Revisor de contenido.** Recalculó todo y estaba bien. Lo que se corrigió:
+- **Lo grave:**
+  - El paso 2 tenía O1 como «documentado». El 25 % es una explicación de universitarios de tercer año, no esa opción: ahora es «parcial», en sus dos versiones numéricas.
+  - Los chips no pasaban AA sobre las opciones ya respondidas. Cambió la paleta y t pasó a tinta.
+- **Lo medio:**
+  - «a = 0 en los extremos» pasó a C1 «parcial» (Thornton y Sokoloff).
+  - En la fuente de O3 cambió «documentado» por «descrito».
+  - El subtítulo adelantaba que importan la masa y el largo.
+  - Había rótulos encimados en el resorte colgado y en el explorador.
+  - «Uno al lado del otro» dibujaba un solo resorte.
+  - El chip de cámara lenta ahora aclara que las gráficas marcan el tiempo real, y no sale con movimiento reducido.
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| x | #1f5fbf | #7cb0ff |
+| v | #b02c41 | #f6909d |
+| a | #466d14 | #a3d65e |
+| T período | #a10fbf | #d98bfb |
+| Ec | #0b6b63 | #5ed9c8 |
+| Ep | #944b00 | #f0a04a |
+
+- t va en tinta, igual que A, m, k, L, g, ω, φ y E.
+- ΔE00 mínimo: 23,1 en claro y 23,9 en oscuro.
+- AA mínimo: 4,52, también en chips sobre opciones respondidas.
+- Entre escenas: el fucsia es F en dinámica y aquí es T; el turquesa es la aceleración en dinámica y aquí es Ec; el naranja de Ep es el de t en otras escenas.
+
+**Pedidos para la integración.**
+1. Unidad `fisica.oscilaciones` → `"plantillas": ["mas"]`, y `npm run catalogo`.
+2. Los colores en `docs/diseno.md`, con sus cruces entre escenas.
+3. Pendientes y `CLAUDE.md`.
+4. Hay que decidir si t en tinta (aquí) se vuelve la norma cuando el naranja no pasa AA en chips de opciones respondidas.
+
+**Pendiente.** π² ≈ 10 solo aparece en el papel (p4), no en la escena.
 
 ## 7 nov 2026 · Fluidos: presión, Pascal y Arquímedes (`plantillas/fluidos/`)
 

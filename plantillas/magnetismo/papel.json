@@ -1,0 +1,129 @@
+{
+  "titulo": "Imanes, cables y cargas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa μ₀ = 4π × 10⁻⁷ T·m/A (así, μ₀/2π = 2 × 10⁻⁷), sen 37° = 3/5, sen 53° = 4/5 y sen 30° = 1/2. La fuerza sobre una carga es F = |q|·v·B·sen θ, con θ el ángulo entre v y B, y su sentido sale de la regla de la mano derecha (al revés si la carga es negativa). Si v es perpendicular a B: r = m·v/(|q|·B) y T = 2π·m/(|q|·B). El campo de un hilo largo es B = 2 × 10⁻⁷ · I / d; el de una espira en su centro, μ₀·I/(2R); el de un solenoide, μ₀·n·I. Sobre un conductor, F = B·I·L·sen θ. Entre dos cables paralelos, F/L = 2 × 10⁻⁷ · I₁·I₂ / d.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un electrón está quieto entre los polos de un imán, donde el campo vale 0,4 T. ¿Qué fuerza magnética actúa sobre él?",
+      "respuesta": "Ninguna: F = 0.",
+      "pasos": [
+        "La fuerza magnética es F = |q|·v·B·sen θ.",
+        "El electrón está quieto: v = 0, así que F = 0, por grande que sea el campo.",
+        "Un imán no es una carga eléctrica: sus polos no atraen ni repelen a una carga en reposo."
+      ],
+      "verificar": [ { "fn": "fuerzaCarga", "args": [-1.6e-19, { "x": 0, "y": 0, "z": 0 }, { "x": 0.4, "y": 0, "z": 0 }], "espera": { "modulo": 0, "quieta": true } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una partícula con carga de 2 µC se mueve a 3 × 10⁴ m/s, perpendicular a un campo magnético de 0,5 T. ¿Cuánto vale la fuerza magnética sobre ella?",
+      "respuesta": "0,03 N.",
+      "pasos": [
+        "Pasa la carga a coulomb: 2 µC = 2 × 10⁻⁶ C.",
+        "Como v es perpendicular a B, sen 90° = 1: F = |q|·v·B.",
+        "F = 2 × 10⁻⁶ · 3 × 10⁴ · 0,5 = 3 × 10⁻² N = 0,03 N."
+      ],
+      "verificar": [ { "fn": "fuerzaModulo", "args": [2e-6, 3e4, 0.5, 90], "espera": { "F": 0.03 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "La misma partícula del problema anterior entra ahora formando 37° con las líneas del campo. ¿Cuánto vale la fuerza? ¿Y si entrara paralela al campo?",
+      "respuesta": "0,018 N; paralela al campo, 0 N.",
+      "pasos": [
+        "El ángulo que importa es el que forman v y B: θ = 37°, y sen 37° = 3/5.",
+        "F = 2 × 10⁻⁶ · 3 × 10⁴ · 0,5 · 3/5 = 0,03 · 3/5 = 0,018 N.",
+        "Paralela al campo, θ = 0° y sen 0° = 0: no hay fuerza y la partícula sigue en línea recta sin frenarse."
+      ],
+      "verificar": [ { "fn": "fuerzaModulo", "args": [2e-6, 3e4, 0.5, 37], "espera": { "F": 0.018 } }, { "fn": "fuerzaModulo", "args": [2e-6, 3e4, 0.5, 0], "espera": { "F": 0 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un protón (q = 1,6 × 10⁻¹⁹ C; toma m = 1,6 × 10⁻²⁷ kg) entra a 4 × 10⁵ m/s perpendicular a un campo de 0,02 T. Halla el radio de su trayectoria y su periodo. Si entrara con el triple de rapidez, ¿cómo cambiarían?",
+      "respuesta": "r = 0,2 m y T = π × 10⁻⁶ s. Con el triple de rapidez, r = 0,6 m y T no cambia.",
+      "pasos": [
+        "La fuerza magnética es la fuerza centrípeta: |q|·v·B = m·v²/r, así que r = m·v/(|q|·B).",
+        "r = 1,6 × 10⁻²⁷ · 4 × 10⁵ / (1,6 × 10⁻¹⁹ · 0,02) = 6,4 × 10⁻²² / 3,2 × 10⁻²¹ = 0,2 m.",
+        "T = 2π·r/v = 2π·m/(|q|·B) = 2π · 1,6 × 10⁻²⁷ / 3,2 × 10⁻²¹ = π × 10⁻⁶ s.",
+        "Con el triple de rapidez el radio se triplica (0,6 m), pero T = 2π·m/(|q|·B) no tiene v: recorre una vuelta tres veces más larga tres veces más rápido."
+      ],
+      "verificar": [ { "fn": "movimientoCircular", "args": [1.6e-19, 1.6e-27, 4e5, 0.02], "espera": { "r": 0.2, "Tpi": 1e-6 } },
+                     { "fn": "cambioVelocidad", "args": [1.6e-19, 1.6e-27, 4e5, 0.02, 3], "espera": { "r1": 0.6, "Tpi1": 1e-6 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Por un cable recto y muy largo circulan 5 A. ¿Cuánto vale el campo magnético a 10 cm del cable? ¿Y a 50 cm?",
+      "respuesta": "10⁻⁵ T a 10 cm y 2 × 10⁻⁶ T a 50 cm.",
+      "pasos": [
+        "B = μ₀·I/(2π·d) = 2 × 10⁻⁷ · I / d.",
+        "A 0,1 m: B = 2 × 10⁻⁷ · 5 / 0,1 = 10⁻⁵ T.",
+        "A 0,5 m la distancia es 5 veces mayor y B va con 1/d: 10⁻⁵ / 5 = 2 × 10⁻⁶ T (no se divide entre 25)."
+      ],
+      "verificar": [ { "fn": "campoHilo", "args": [5, 0.1], "espera": { "B": 1e-5 } }, { "fn": "cambioDistanciaHilo", "args": [5, 0.1, 5], "espera": { "B1": 2e-6 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Dos cables paralelos y largos están separados 40 cm; por cada uno circulan 8 A, en sentidos opuestos. ¿Cuánto vale el campo magnético en el punto medio entre ellos? ¿Y si las corrientes fueran en el mismo sentido?",
+      "respuesta": "1,6 × 10⁻⁵ T con corrientes opuestas; 0 con corrientes en el mismo sentido.",
+      "pasos": [
+        "El punto medio está a 0,2 m de cada cable: cada uno da B = 2 × 10⁻⁷ · 8 / 0,2 = 8 × 10⁻⁶ T.",
+        "Con la regla de la mano derecha, con corrientes opuestas los dos campos apuntan hacia el mismo lado en el punto medio: se suman, 1,6 × 10⁻⁵ T.",
+        "Con corrientes en el mismo sentido, en el punto medio los campos apuntan en sentidos opuestos y se anulan: B = 0."
+      ],
+      "verificar": [ { "fn": "puntoMedio", "args": [8, -8, 0.4], "espera": { "B": 1.6e-5 } }, { "fn": "puntoMedio", "args": [8, 8, 0.4], "espera": { "B": 0 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Una espira circular de 5 cm de radio lleva una corriente de 2 A. ¿Cuánto vale el campo magnético en su centro?",
+      "respuesta": "8π × 10⁻⁶ T (unos 2,5 × 10⁻⁵ T).",
+      "pasos": [
+        "En el centro de una espira, B = μ₀·I/(2R).",
+        "B = 4π × 10⁻⁷ · 2 / (2 · 0,05) = 8π × 10⁻⁷ / 0,1 = 8π × 10⁻⁶ T.",
+        "No es la fórmula del cable recto (2 × 10⁻⁷ · I / R), que daría 8 × 10⁻⁶ T, sin la π."
+      ],
+      "verificar": [ { "fn": "espira", "args": [2, 0.05], "espera": { "Bpi": 8e-6, "errores.comoHilo": 8e-6 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "Un solenoide de 20 cm de largo tiene 400 espiras y lleva 3 A. ¿Cuánto vale el campo magnético en su interior?",
+      "respuesta": "24π × 10⁻⁴ T (unos 7,5 × 10⁻³ T).",
+      "pasos": [
+        "Espiras por metro: n = 400 / 0,2 = 2000.",
+        "B = μ₀·n·I = 4π × 10⁻⁷ · 2000 · 3 = 24π × 10⁻⁴ T.",
+        "Si se enrollaran las mismas 400 espiras en 40 cm, n bajaría a la mitad y B también."
+      ],
+      "verificar": [ { "fn": "solenoideNL", "args": [3, 400, 0.2], "espera": { "Bpi": 2.4e-3 } }, { "fn": "solenoideNL", "args": [3, 400, 0.4], "espera": { "Bpi": 1.2e-3 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Un tramo recto de cable de 40 cm lleva 5 A dentro de un campo uniforme de 0,2 T. El cable forma 53° con las líneas del campo. ¿Qué fuerza actúa sobre el tramo? ¿Y si se gira hasta quedar paralelo al campo?",
+      "respuesta": "0,32 N; paralelo al campo, 0 N.",
+      "pasos": [
+        "F = B·I·L·sen θ, con θ el ángulo entre el cable y el campo.",
+        "F = 0,2 · 5 · 0,4 · sen 53° = 0,4 · 4/5 = 0,32 N.",
+        "Paralelo al campo, sen 0° = 0: no hay fuerza."
+      ],
+      "verificar": [ { "fn": "fuerzaConductor", "args": [5, 0.4, 0.2, 53], "espera": { "F": 0.32 } }, { "fn": "fuerzaConductor", "args": [5, 0.4, 0.2, 0], "espera": { "F": 0 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Dos cables paralelos de 2 m de largo están separados 15 cm. Uno lleva 30 A y el otro 15 A, en el mismo sentido. ¿Se atraen o se repelen? ¿Qué fuerza actúa sobre cada uno?",
+      "respuesta": "Se atraen, con 1,2 × 10⁻³ N sobre cada uno.",
+      "pasos": [
+        "Corrientes en el mismo sentido se atraen; en sentidos opuestos, se repelen.",
+        "Por metro: F/L = 2 × 10⁻⁷ · 30 · 15 / 0,15 = 6 × 10⁻⁴ N/m.",
+        "En 2 m: F = 1,2 × 10⁻³ N.",
+        "Es la misma fuerza sobre los dos cables (tercera ley de Newton), aunque uno lleve el doble de corriente."
+      ],
+      "verificar": [ { "fn": "cablesParalelos", "args": [30, 15, 0.15, 2], "espera": { "porLargo": 6e-4, "sobre1": 1.2e-3, "sobre2": 1.2e-3, "tipo": "atraccion" } } ]
+    }
+  ]
+}

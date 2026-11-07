@@ -1,0 +1,1290 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Imanes, cables y cargas: campo y fuerza magnética</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de electrostática.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), con la convención de
+   electrostática para lo que se repite (el informe pide la misma para fuerza y campo en las dos plantillas):
+   carga q naranja, fuerza F azul, longitudes (d al hilo o entre cables, r del círculo, R de la espira, L del
+   conductor) oliva y ángulo θ entre v y B (o entre el cable y B) fucsia. Nuevos: velocidad v rojo (el de MRUV y
+   choques), campo magnético B verde (no el turquesa del campo eléctrico E, para que no se confundan) y corriente I
+   granate (el azul de circuitos ya es la fuerza F aquí). El signo de una carga NO tiene color: va escrito en el disco.
+   La masa m, el periodo T, las espiras por metro n, los polos N y S del imán, las brújulas, los ejes y las
+   trayectorias van en tinta o gris.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py): entre los que salen juntos (q, v, B, F, θ y las longitudes; o I, B,
+   F, θ y las longitudes), ΔE00 mínimo 21,1 en claro y 21,9 en oscuro (el par más justo es B con las longitudes). Par
+   parecido que nunca comparte pantalla: v–I (18,0 y 12,9). Todos pasan AA (≥ 4,5) sobre el papel y sobre su chip (.v,
+   fondo al 8 %), en claro y en oscuro; el más justo es v claro #c0364a, 4,56 sobre su chip. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-q:#a05200; --c-F:#1f5fbf; --c-r:#5c531f; --c-th:#a10fbf; --c-v:#c0364a; --c-B:#2a7638; --c-I:#7a1010;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-q:#f0a04a; --c-F:#7cb0ff; --c-r:#fdf2b4; --c-th:#cf6bfa; --c-v:#f17384; --c-B:#7fd67f; --c-I:#ff5e4d;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-q:#f0a04a; --c-F:#7cb0ff; --c-r:#fdf2b4; --c-th:#cf6bfa; --c-v:#f17384; --c-B:#7fd67f; --c-I:#ff5e4d;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend span span{display:inline}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:50%}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-q{color:var(--c-q); background:color-mix(in srgb, var(--c-q) 8%, transparent)}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 8%, transparent)}
+.v-th{color:var(--c-th); background:color-mix(in srgb, var(--c-th) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:block; line-height:1.9; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal; line-height:1.4}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(128px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura.ancha{grid-column:1/-1}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.35fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+.sim{display:inline-block; font-family:var(--font); font-weight:800}
+.acciones .btn{min-height:40px; padding:9px 16px}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Magnetismo · Problemas tipo admisión</p>
+      <h1>Imanes, cables y cargas</h1>
+      <p class="sub">¿Un imán empuja a una carga quieta? ¿Hacia dónde se va un protón que cruza un campo magnético? ¿Cómo es el campo alrededor de un cable? Predice frente al dibujo, gira la velocidad en una vista en tres dimensiones y mueve un punto alrededor de los cables.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del paso">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del paso"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/magnetismo">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'magnetismo', unidad: 'fisica.magnetismo', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la física (F = q·v×B, el círculo y su periodo, la trayectoria, el campo de hilos, espiras y solenoides, las
+   fuerzas entre cables, las brújulas y las líneas del imán que se dibujan) sale de MotorMagnetismo (motor.js); aquí
+   solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MM = MotorMagnetismo;
+const QP = MM.E_CARGA, MP = MM.M_PROTON, ME_ = MM.M_ELECTRON;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const SUP = { '-':'⁻', '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹' };
+const pot = e => `10${String(e).split('').map(c => SUP[c]).join('')}`;
+// Notación científica de academia: 6,4 × 10⁻¹⁴ y 10⁻⁵ (sin el «1 ×»); entre 0,01 y 9999 se escribe normal.
+function sci(n, d){
+  if (!Number.isFinite(n)) return '—';
+  if (Math.abs(n) < 1e-300) return '0';
+  const a = Math.abs(n);
+  if (a >= 0.01 && a < 1e4) return fmt(n, d === undefined ? 2 : d);
+  let e = Math.floor(Math.log10(a) + 1e-9), m = n / Math.pow(10, e);
+  const p = Math.pow(10, d === undefined ? 2 : d); m = Math.round(m*p)/p;
+  if (Math.abs(m) >= 10){ m /= 10; e++; }
+  if (m === 1) return pot(e);
+  if (m === -1) return '−' + pot(e);
+  return `${fmt(m, d === undefined ? 2 : d)} × ${pot(e)}`;
+}
+// Coeficiente de π con un exponente fijo: piCon(8e-4, -4) = «8π × 10⁻⁴».
+const piCon = (c, e) => `${fmt(c/Math.pow(10, e), 2)}π × ${pot(e)}`;
+const V_ = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const q_ = t => V_('q', t), F_ = t => V_('F', t), r_ = t => V_('r', t), th_ = t => V_('th', t), v_ = t => V_('v', t),
+  B_ = t => V_('B', t), I_ = t => V_('I', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const mix = (a, b, f) => a + (b - a)*f;
+const RAD = Math.PI/180;
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    q:g('--c-q'), F:g('--c-F'), r:g('--c-r'), th:g('--c-th'), v:g('--c-v'), B:g('--c-B'), I:g('--c-I'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con fondo del color del papel, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  const T = tam || 13;
+  ctx.textBaseline = 'middle'; ctx.font = `${peso || 700} ${T}px ${c.font}`;
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - T*.7, w + 6, T*1.4); ctx.restore();
+  ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
+  return w;
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Vistas: 'iman' (un imán de barra con sus líneas y una carga), 'plano' (vista de frente: campo uniforme con ⊗, ⊙ o
+   flechas, y cargas que se mueven), 'p3d' (vista en perspectiva con los tres ejes: v o el cable, B y F), 'hilos'
+   (vista de frente de cables perpendiculares a la pantalla, ⊙ sale y ⊗ entra: campo en un punto, fuerzas, brújulas)
+   y 'solenoide' (un tramo de solenoide visto de costado). */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { vista:'plano', caja:{ x0:-.25, x1:.25, y0:-.25, y1:.25 }, hl:null, tok:0, ocupado:false, compacto:false,
+    lect:() => [], desc:() => '', alCambiar:null, arr:{}, ver:{}, prog:{} };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = false, cacheIman = null;
+  function altoVista(w){
+    const chico = w < 560;
+    if (E.vista === 'p3d') return chico ? 300 : 380;
+    if (E.vista === 'solenoide') return chico ? 230 : 290;
+    const c = E.caja, r = (c.y1 - c.y0)/(c.x1 - c.x0);
+    return Math.round(chico ? clamp(w*r, 220, 400) : clamp(w*r, 280, 460));
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(altoVista(w), E.compacto, { tope: E.vista === 'p3d' ? 260 : 250 }));
+    const dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0); cacheIman = null;
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.ocupado = false;
+    Object.assign(E, { vista:'plano', arr:{}, lect:() => [], desc:() => '', alCambiar:null, campo:null, parts:[], im:null, carga:null,
+      p3:null, hilos:[], P:null, Q:null, brujulas:null, sol:null, leyendaExtra:null, kB:6e6 }, o);
+    E.caja = Object.assign({ x0:-.25, x1:.25, y0:-.25, y1:.25 }, o.caja);
+    E.ver = Object.assign({}, o.ver);
+    E.prog = Object.assign({ F:1, giro:1, B:1, sol:1 }, o.prog);
+    E.parts = (o.parts || []).map(p => ({ t:0, ...p }));
+    if (o.p3) E.p3 = { yaw:-35, pitch:18, ...o.p3 };
+    E.hilos = (o.hilos || []).map(h => ({ ...h }));
+    E.P = o.P ? { ...o.P } : null; E.Q = o.Q ? { ...o.Q } : null;
+    cacheIman = null;
+    cv.tabIndex = Object.values(E.arr).some(Boolean) ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === !!E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.permitir = o => { E.arr = Object.assign({}, o); cv.tabIndex = Object.values(E.arr).some(Boolean) ? 0 : -1; E.dibujar(); };
+  E.cambio = () => { E.dibujar(); E.avisar(); };
+  E.tween = (dur, paso, fin) => {
+    const tok = E.tok;
+    if (RM || !dur){ paso(1); if (fin) setTimeout(() => { if (E.tok === tok) fin(); }, 0); return; }
+    const t0 = performance.now();
+    const tick = now => {
+      if (E.tok !== tok) return;
+      const f = Math.min(1, (now - t0)/dur); paso(f);
+      if (f < 1) requestAnimationFrame(tick); else if (fin) fin();
+    };
+    requestAnimationFrame(tick);
+  };
+  E.crecer = (k, dur, fin) => { E.prog[k] = 0; E.tween(dur, f => { E.prog[k] = suave(f); E.dibujar(); }, fin); };
+
+  // ----- del mundo (m) a la pantalla -----
+  function escala(){
+    const c = E.caja, pad = 14;
+    const k = Math.min((W - 2*pad)/(c.x1 - c.x0), (H - 2*pad)/(c.y1 - c.y0));
+    return { k, ox: W/2 - k*(c.x0 + c.x1)/2, oy: H/2 + k*(c.y0 + c.y1)/2 };
+  }
+  const aP = (P, s) => ({ x: s.ox + s.k*P.x, y: s.oy - s.k*P.y });
+  const aMundo = (p, s) => ({ x:(p.x - s.ox)/s.k, y:(s.oy - p.y)/s.k });
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  function flecha(P, Q, color, ancho, o){
+    o = o || {};
+    let L = Math.hypot(Q.x - P.x, Q.y - P.y); if (L < 2) return null;
+    const u = { x:(Q.x - P.x)/L, y:(Q.y - P.y)/L }, n = { x:-u.y, y:u.x };
+    if (o.tope && L > o.tope){ L = o.tope; Q = { x:P.x + u.x*L, y:P.y + u.y*L }; }
+    const cab = Math.min(L*.5, 8 + ancho*1.5), base = { x:Q.x - u.x*cab, y:Q.y - u.y*cab };
+    ctx.save(); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa; ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round';
+    if (o.trazos) ctx.setLineDash([6, 4]);
+    linea(ctx, P, base); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(Q.x, Q.y); ctx.lineTo(base.x + n.x*cab*.5, base.y + n.y*cab*.5); ctx.lineTo(base.x - n.x*cab*.5, base.y - n.y*cab*.5); ctx.closePath(); ctx.fill();
+    ctx.restore();
+    return Q;
+  }
+  // ⊙ (sale de la pantalla) y ⊗ (entra), en el color de la variable.
+  function simbolo(P, sale, rad, color, ancho, alfa, fondo){
+    ctx.save(); ctx.globalAlpha = alfa === undefined ? 1 : alfa; ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho || 1.6;
+    if (fondo){ ctx.save(); ctx.fillStyle = fondo; ctx.beginPath(); ctx.arc(P.x, P.y, rad, 0, 7); ctx.fill(); ctx.restore(); }
+    ctx.beginPath(); ctx.arc(P.x, P.y, rad, 0, 7); ctx.stroke();
+    if (sale){ ctx.beginPath(); ctx.arc(P.x, P.y, Math.max(1.6, rad*.28), 0, 7); ctx.fill(); }
+    else { const d = rad*.62; linea(ctx, { x:P.x - d, y:P.y - d }, { x:P.x + d, y:P.y + d }); linea(ctx, { x:P.x - d, y:P.y + d }, { x:P.x + d, y:P.y - d }); }
+    ctx.restore();
+  }
+  function disco(P, q, rad, c){
+    ctx.save();
+    ctx.fillStyle = c.q; ctx.globalAlpha = .2; ctx.beginPath(); ctx.arc(P.x, P.y, rad, 0, 7); ctx.fill();
+    ctx.globalAlpha = 1; ctx.fillStyle = c.paper; ctx.beginPath(); ctx.arc(P.x, P.y, rad*.62, 0, 7); ctx.fill();
+    ctx.strokeStyle = c.q; ctx.lineWidth = grosor('q', 2.4); ctx.beginPath(); ctx.arc(P.x, P.y, rad, 0, 7); ctx.stroke();
+    ctx.fillStyle = c.ink; ctx.font = `800 ${Math.round(clamp(rad*.95, 13, 20))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(q > 0 ? '+' : '−', P.x, P.y + 1);
+    ctx.restore();
+  }
+  function manija(P, r, c){
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arrastrando || sobre) ? .16 : .07; ctx.beginPath(); ctx.arc(P.x, P.y, r + 4, 0, 7); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(P.x, P.y, r, 0, 7); ctx.stroke(); ctx.restore();
+  }
+  function cuadricula(c, s){
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    const paso = (E.caja.x1 - E.caja.x0) > .8 ? .1 : .05;
+    for (let x = Math.ceil(E.caja.x0/paso - 4)*paso; x <= E.caja.x1 + 4*paso; x += paso){ const X = aP({ x, y:0 }, s).x; linea(ctx, { x:X, y:0 }, { x:X, y:H }); }
+    for (let y = Math.ceil(E.caja.y0/paso - 4)*paso; y <= E.caja.y1 + 4*paso; y += paso){ const Y = aP({ x:0, y }, s).y; linea(ctx, { x:0, y:Y }, { x:W, y:Y }); }
+    ctx.restore();
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = E.c = colores();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    ({ iman:dibujarIman, plano:dibujarPlano, p3d:dibujar3D, hilos:dibujarHilos, solenoide:dibujarSolenoide })[E.vista](c);
+  };
+
+  // ----- el imán y una carga -----
+  // E.im = { x, y, largo, ang, B0, a } (motor.campoIman); E.carga = { q, x, y, n }; ver.F0: el rótulo de la fuerza.
+  function dibujarIman(c){
+    const s = escala(); cuadricula(c, s);
+    if (!cacheIman) cacheIman = MM.lineasIman(E.im, 14, E.caja, { desdeS:true });
+    ctx.save(); ctx.strokeStyle = c.B; ctx.lineWidth = grosor('B', 1.4); ctx.globalAlpha = .55;
+    for (const l of cacheIman){ ctx.beginPath(); l.forEach((p, k) => { const P = aP(p, s); if (k) ctx.lineTo(P.x, P.y); else ctx.moveTo(P.x, P.y); }); ctx.stroke(); }
+    ctx.restore();
+    // una punta de flecha por línea, a un tercio de su largo (el sentido del campo: del norte hacia afuera)
+    for (const l of cacheIman){
+      const k = Math.floor(l.length*.3); if (k < 2) continue;
+      const A = aP(l[k - 1], s), B = aP(l[k + 1], s);
+      if (A.x < 6 || A.x > W - 6 || A.y < 6 || A.y > H - 6) continue;
+      const u = { x:B.x - A.x, y:B.y - A.y }, L = Math.hypot(u.x, u.y) || 1;
+      flecha({ x:A.x - u.x/L*6, y:A.y - u.y/L*6 }, { x:A.x + u.x/L*6, y:A.y + u.y/L*6 }, c.B, 1.4, { alfa:.75 });
+    }
+    // el imán: dos mitades, N y S escritos (los polos no tienen color de carga)
+    const L = E.im.largo, h = L*.26, x0 = E.im.x - L/2, A = aP({ x:x0, y:E.im.y + h/2 }, s), Bp = aP({ x:x0 + L, y:E.im.y - h/2 }, s), xm = (A.x + Bp.x)/2;
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
+    ctx.fillRect(A.x, A.y, Bp.x - A.x, Bp.y - A.y); ctx.globalAlpha = .14; ctx.fillStyle = c.ink; ctx.fillRect(xm, A.y, Bp.x - xm, Bp.y - A.y); ctx.globalAlpha = 1;
+    ctx.strokeRect(A.x, A.y, Bp.x - A.x, Bp.y - A.y); linea(ctx, { x:xm, y:A.y }, { x:xm, y:Bp.y });
+    ctx.fillStyle = c.ink; ctx.font = `800 ${Math.round(clamp((Bp.y - A.y)*.55, 13, 22))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('S', (A.x + xm)/2, (A.y + Bp.y)/2 + 1); ctx.fillText('N', (xm + Bp.x)/2, (A.y + Bp.y)/2 + 1); ctx.restore();
+    // la carga, con el campo que hay donde está
+    if (E.carga){
+      const P = aP(E.carga, s), b = MM.campoIman(E.im, E.carga), u = { x:b.x/b.modulo, y:-b.y/b.modulo };
+      const Q = flecha({ x:P.x + u.x*16, y:P.y + u.y*16 }, { x:P.x + u.x*62, y:P.y + u.y*62 }, c.B, grosor('B', 3.2));
+      if (Q) rotulo(ctx, c, (P.x + Q.x)/2 + 8, P.y - 16, `B = ${fmt(b.modulo, 1)} T`, c.B, 'center', 800, 13);
+      disco(P, E.carga.q, 12, c);
+      rotulo(ctx, c, P.x, P.y + 26, E.carga.n, c.q, 'center', 800, 13);
+      if (E.ver.F0 && E.prog.F >= 1) rotulo(ctx, c, P.x, P.y + 46, 'F magnética = 0', c.F, 'center', 800, 13);
+    }
+  }
+
+  // ----- vista de frente con campo uniforme -----
+  // E.campo = { tipo:'entra'|'sale'|'derecha', B, etq }; E.parts = [{ q, m, v0:{x,y}, p0:{x,y}, Bz, t, n, lv, lf, verF,
+  // traza, ampliar, radio }]: la posición sale de motor.trayectoria (con ampliar, el dibujo se agranda alrededor de p0).
+  function posicion(p){
+    const r = MM.trayectoria(p.q, p.m, p.v0, p.Bz, p.t, p.p0), k = p.ampliar || 1;
+    const P = p.p0 || { x:0, y:0 };
+    return { x:P.x + (r.x - P.x)*k, y:P.y + (r.y - P.y)*k, vx:r.vx, vy:r.vy, centro: r.centro ? { x:P.x + (r.centro.x - P.x)*k, y:P.y + (r.centro.y - P.y)*k } : null };
+  }
+  function dibujarPlano(c){
+    const s = escala(); cuadricula(c, s);
+    const C = E.campo, ps = E.parts.map(p => ({ p, a:posicion(p) }));
+    if (C){
+      const paso = 0.05*s.k < 34 ? .1 : .05, pts = ps.map(o => aP(o.a, s));
+      if (C.tipo === 'derecha'){
+        for (let y = Math.ceil(E.caja.y0/paso)*paso; y <= E.caja.y1 + 1e-9; y += paso){
+          const Y = aP({ x:0, y }, s).y; if (Y < 8 || Y > H - 8) continue;
+          if (pts.some(P => Math.abs(P.y - Y) < 18)) continue;
+          ctx.save(); ctx.strokeStyle = c.B; ctx.globalAlpha = .5; ctx.lineWidth = grosor('B', 1.4); linea(ctx, { x:8, y:Y }, { x:W - 8, y:Y }); ctx.restore();
+          for (const f of [.3, .7]) flecha({ x:W*f - 8, y:Y }, { x:W*f + 8, y:Y }, c.B, 1.6, { alfa:.75 });
+        }
+      } else {
+        for (let y = Math.ceil(E.caja.y0/paso)*paso; y <= E.caja.y1 + 1e-9; y += paso)
+          for (let x = Math.ceil(E.caja.x0/paso)*paso; x <= E.caja.x1 + 1e-9; x += paso){
+            const P = aP({ x, y }, s); if (P.x < 10 || P.x > W - 10 || P.y < 10 || P.y > H - 10) continue;
+            if (pts.some(Q => Math.hypot(Q.x - P.x, Q.y - P.y) < 26)) continue;
+            if (C.etq && P.y < 30 && P.x < 190) continue;
+            simbolo(P, C.tipo === 'sale', 6, c.B, grosor('B', 1.3), .55);
+          }
+      }
+      if (C.etq) rotulo(ctx, c, 10, 14, C.etq, c.B, 'left', 800, 12);
+    }
+    for (const { p, a } of ps){
+      const P = aP(a, s);
+      // la trayectoria recorrida (punteada, en gris)
+      if (p.traza && p.t > 0){
+        const n = Math.max(4, Math.round(80*Math.min(1, p.t/(p.tVuelta || p.t)))), pts = MM.trayectoriaPuntos(p.q, p.m, p.v0, p.Bz, p.t, n, p.p0), k = p.ampliar || 1, O = p.p0 || { x:0, y:0 };
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.setLineDash([4, 4]); ctx.beginPath();
+        pts.forEach((q, j) => { const Q = aP({ x:O.x + (q.x - O.x)*k, y:O.y + (q.y - O.y)*k }, s); if (j) ctx.lineTo(Q.x, Q.y); else ctx.moveTo(Q.x, Q.y); });
+        ctx.stroke(); ctx.restore();
+      }
+      if (p.radio && a.centro){
+        // el radio se dibuja hacia la izquierda del centro, no hacia la carga (ahí apunta F)
+        const Cc = aP(a.centro, s), R = Math.hypot(a.x - a.centro.x, a.y - a.centro.y)*s.k, Pr = { x:Cc.x - R, y:Cc.y };
+        ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 1.8); linea(ctx, Cc, Pr); ctx.fillStyle = c.r; ctx.beginPath(); ctx.arc(Cc.x, Cc.y, 3, 0, 7); ctx.fill(); ctx.restore();
+        rotulo(ctx, c, Cc.x - 10, Cc.y + 13, p.radio, c.r, 'right', 800, 12);
+      }
+      const vm = Math.hypot(a.vx, a.vy), u = vm ? { x:a.vx/vm, y:-a.vy/vm } : { x:1, y:0 };
+      const Qv = flecha({ x:P.x + u.x*14, y:P.y + u.y*14 }, { x:P.x + u.x*(14 + p.lv), y:P.y + u.y*(14 + p.lv) }, c.v, grosor('v', 3.4));
+      if (Qv && p.rotV !== false) rotulo(ctx, c, Qv.x + u.x*10 + (Math.abs(u.x) < .5 ? 10 : 0), Qv.y + u.y*10 - (Math.abs(u.x) >= .5 ? 12 : 0), 'v', c.v, 'center', 800, 14);
+      if (p.verF && E.prog.F > 0){
+        const f = MM.fuerzaCarga(p.q, { x:a.vx, y:a.vy, z:0 }, { x:0, y:0, z:p.Bz }).F, fm = Math.hypot(f.x, f.y);
+        if (fm){
+          const w = { x:f.x/fm, y:-f.y/fm }, L = p.lf*E.prog.F;
+          const Qf = flecha({ x:P.x + w.x*14, y:P.y + w.y*14 }, { x:P.x + w.x*(14 + L), y:P.y + w.y*(14 + L) }, c.F, grosor('F', 3.6));
+          if (Qf && E.prog.F >= 1) rotulo(ctx, c, Qf.x + w.x*10 + 12*(p.fLado || 1), Qf.y + w.y*10, 'F', c.F, 'center', 800, 14);
+        }
+      }
+      if (p.F0 && E.prog.F >= 1) rotulo(ctx, c, P.x, P.y + 46, 'F magnética = 0', c.F, 'center', 800, 13);
+      disco(P, p.q, 11, c);
+      if (p.n) rotulo(ctx, c, P.x + (p.nDx || 0), P.y + (p.nDy || 25), p.n, c.q, p.nAl || 'center', 800, 12);
+    }
+    if (E.ver.nota) rotulo(ctx, c, W - 8, H - 12, E.ver.nota, c.muted, 'right', 700, 11);
+  }
+
+  // ----- perspectiva con los tres ejes -----
+  // E.p3 = { modo:'carga'|'conductor', phi (grados: v, o el cable, en el plano xy desde el eje x), q, v, B, I, L,
+  // yaw, pitch, alfa (arco con la horizontal), theta (arco θ), verF }. B va por +y (carga) o por +x (conductor).
+  function proy(){
+    const p = E.p3, a = p.yaw*RAD, b = p.pitch*RAD, S = Math.min(W*.36, H*.4), cx = W/2, cy = H*.54;
+    const f = v => { const x1 = v.x*Math.cos(a) + v.z*Math.sin(a), y1 = v.y, z1 = -v.x*Math.sin(a) + v.z*Math.cos(a);
+      const y2 = y1*Math.cos(b) - z1*Math.sin(b), z2 = y1*Math.sin(b) + z1*Math.cos(b);
+      return { x:cx + S*x1, y:cy - S*y2, z:z2 }; };
+    return { f, cx, cy, S };
+  }
+  function datos3D(){
+    const p = E.p3, d = { x:Math.cos(p.phi*RAD), y:Math.sin(p.phi*RAD), z:0 };
+    if (p.modo === 'carga'){
+      const v = { x:d.x*p.v, y:d.y*p.v, z:0 }, B = { x:0, y:p.B, z:0 }, r = MM.fuerzaCarga(p.q, v, B);
+      return { d, B:{ x:0, y:1, z:0 }, r, Fmax:Math.abs(p.q)*p.v*p.B };
+    }
+    const r = MM.fuerzaConductorVector(p.I, { x:d.x*p.L, y:d.y*p.L, z:0 }, { x:p.B, y:0, z:0 });
+    return { d, B:{ x:1, y:0, z:0 }, r, Fmax:Math.abs(p.I)*p.L*p.B };
+  }
+  function arco3D(f, u, w, rad, color, ancho){
+    // arco en el plano de u y w (unitarios), de u hacia w
+    const ang = Math.acos(clamp(u.x*w.x + u.y*w.y + u.z*w.z, -1, 1)); if (ang < 1e-3) return null;
+    const n = { x:w.x - u.x*Math.cos(ang), y:w.y - u.y*Math.cos(ang), z:w.z - u.z*Math.cos(ang) }, nm = Math.hypot(n.x, n.y, n.z) || 1;
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho; ctx.beginPath();
+    for (let k = 0; k <= 30; k++){ const t = ang*k/30, P = f({ x:rad*(u.x*Math.cos(t) + n.x/nm*Math.sin(t)), y:rad*(u.y*Math.cos(t) + n.y/nm*Math.sin(t)), z:rad*(u.z*Math.cos(t) + n.z/nm*Math.sin(t)) }); if (k) ctx.lineTo(P.x, P.y); else ctx.moveTo(P.x, P.y); }
+    ctx.stroke(); ctx.restore();
+    const t = ang/2; return f({ x:rad*1.32*(u.x*Math.cos(t) + n.x/nm*Math.sin(t)), y:rad*1.32*(u.y*Math.cos(t) + n.y/nm*Math.sin(t)), z:rad*1.32*(u.z*Math.cos(t) + n.z/nm*Math.sin(t)) });
+  }
+  function dibujar3D(c){
+    const p = E.p3, { f } = proy(), O = f({ x:0, y:0, z:0 }), D = datos3D();
+    // el plano xy (el de la pantalla en la vista de frente), con una cuadrícula suave
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let k = -4; k <= 4; k++){ linea(ctx, f({ x:k*.28, y:-1.12, z:0 }), f({ x:k*.28, y:1.12, z:0 })); linea(ctx, f({ x:-1.12, y:k*.28, z:0 }), f({ x:1.12, y:k*.28, z:0 })); }
+    ctx.restore();
+    // ejes
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.setLineDash([3, 4]);
+    for (const e of [{ x:1, y:0, z:0 }, { x:0, y:1, z:0 }, { x:0, y:0, z:1 }]) linea(ctx, f({ x:-e.x*1.25, y:-e.y*1.25, z:-e.z*1.25 }), f({ x:e.x*1.25, y:e.y*1.25, z:e.z*1.25 }));
+    ctx.restore();
+    for (const [e, t] of [[{ x:1.36, y:0, z:0 }, 'x'], [{ x:0, y:1.36, z:0 }, 'y'], [{ x:0, y:0, z:1.36 }, 'z']]){ const P = f(e); rotulo(ctx, c, P.x, P.y, t, c.muted, 'center', 700, 12); }
+    // F: el vector del motor, con largo relativo a su máximo
+    const F = D.r.F, Fm = D.r.modulo, Fl = Fm && D.Fmax ? .95*Fm/D.Fmax*E.prog.F : 0;
+    const Fu = Fm ? { x:F.x/Fm, y:F.y/Fm, z:F.z/Fm } : null;
+    const dibF = () => {
+      if (!p.verF || !Fu || Fl < .02) return;
+      const Q = flecha(O, f({ x:Fu.x*Fl, y:Fu.y*Fl, z:Fu.z*Fl }), c.F, grosor('F', 4.2));
+      if (Q && E.prog.F >= 1) rotulo(ctx, c, Q.x + (Q.x < O.x ? -14 : 14), Q.y, 'F', c.F, 'center', 800, 15);
+      if (E.prog.F >= 1){
+        // escuadras: F forma 90° con v (o el cable) y con B
+        for (const w of [D.d, D.B]){
+          const a = .13, P1 = f({ x:Fu.x*a, y:Fu.y*a, z:Fu.z*a }), P2 = f({ x:Fu.x*a + w.x*a, y:Fu.y*a + w.y*a, z:Fu.z*a + w.z*a }), P3 = f({ x:w.x*a, y:w.y*a, z:w.z*a });
+          ctx.save(); ctx.strokeStyle = c.F; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(P1.x, P1.y); ctx.lineTo(P2.x, P2.y); ctx.lineTo(P3.x, P3.y); ctx.stroke(); ctx.restore();
+        }
+      }
+    };
+    if (Fu && Fu.z < 0) dibF();   // detrás del plano
+    // B: una flecha principal y dos líneas del campo paralelas
+    const Bd = D.B, side = p.modo === 'carga' ? { x:1, y:0, z:0 } : { x:0, y:1, z:0 };
+    for (const sgn of [-1, 1]){ const a = { x:side.x*.78*sgn - Bd.x*1.05, y:side.y*.78*sgn - Bd.y*1.05, z:0 }, b = { x:side.x*.78*sgn + Bd.x*1.05, y:side.y*.78*sgn + Bd.y*1.05, z:0 }; flecha(f(a), f(b), c.B, grosor('B', 1.6), { alfa:.55 }); }
+    const QB = flecha(O, f({ x:Bd.x, y:Bd.y, z:0 }), c.B, grosor('B', 3.6));
+    if (QB) rotulo(ctx, c, QB.x + (p.modo === 'carga' ? -14 : 4), QB.y + (p.modo === 'carga' ? 0 : -14), 'B', c.B, 'center', 800, 15);
+    // v (carga) o el cable con su corriente I (conductor)
+    const d = D.d, tip = f({ x:d.x*.95, y:d.y*.95, z:0 });
+    if (p.modo === 'carga'){
+      const Qv = flecha(O, tip, c.v, grosor('v', 3.8));
+      if (Qv){ const u = { x:Qv.x - O.x, y:Qv.y - O.y }, L = Math.hypot(u.x, u.y) || 1; rotulo(ctx, c, Qv.x + u.x/L*26, Qv.y + u.y/L*26, 'v', c.v, 'center', 800, 15); }
+      disco(O, p.q, 9, c);
+    } else {
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.globalAlpha = .55; linea(ctx, f({ x:-d.x*1.05, y:-d.y*1.05, z:0 }), f({ x:d.x*1.05, y:d.y*1.05, z:0 })); ctx.restore();
+      // la flecha de I va al costado del cable (en el plano xy), no encima
+      const nI = { x:-d.y*.13, y:d.x*.13 }, A0 = f({ x:d.x*.2 + nI.x, y:d.y*.2 + nI.y, z:0 });
+      const QI = flecha(A0, f({ x:d.x*.68 + nI.x, y:d.y*.68 + nI.y, z:0 }), c.I, grosor('I', 3.4));
+      if (QI){ const u = { x:QI.x - A0.x, y:QI.y - A0.y }, L = Math.hypot(u.x, u.y) || 1; rotulo(ctx, c, (A0.x + QI.x)/2 + u.y/L*16, (A0.y + QI.y)/2 - u.x/L*16, 'I', c.I, 'center', 800, 15); }
+      const L0 = f({ x:-d.x*1.05, y:-d.y*1.05, z:0 });
+      rotulo(ctx, c, L0.x + 8, L0.y + 14, `L = ${fmt(p.L, 1)} m`, c.r, 'left', 800, 12);
+    }
+    if (p.alfa){ const P = arco3D(f, { x:1, y:0, z:0 }, d, .34, c.muted, 1.6); if (P) rotulo(ctx, c, P.x + 6, P.y, `${fmt(p.phi, 0)}° con la horizontal`, c.muted, 'left', 700, 12); }
+    if (p.theta){
+      const P = arco3D(f, d, Bd, .5, c.th, grosor('th', 2.4));
+      const th = MM.anguloEntre(d, Bd);
+      if (P) rotulo(ctx, c, P.x, P.y, `θ = ${fmt(Math.round(th), 0)}°`, c.th, 'center', 800, 13);
+    }
+    if (Fu && Fu.z >= 0) dibF();
+    if (E.arr.giro) manija(tip, 16, c);
+  }
+
+  // ----- cables perpendiculares a la pantalla -----
+  // E.hilos = [{ I, x, y, n }] (I > 0 sale ⊙); E.P y E.Q = { x, y, n } puntos donde se mide B; ver = { circ:[{x,y,r}],
+  // BP, BQ, partes, fuerzas, Botro }; E.brujulas = [{ x, y, a0, a1 }] (prog.giro de a0 a a1); E.kB: px por tesla.
+  function dibujarHilos(c){
+    const s = escala(); cuadricula(c, s);
+    const kB = E.kB*clamp(W/390, 1, 1.6);   // px por tesla, un poco más en pantalla grande
+    const circs = [...(E.ver.circ || [])];
+    if (E.ver.circP && E.P && E.hilos.length){ const h = E.hilos[0]; circs.push({ x:h.x, y:h.y, r:Math.hypot(E.P.x - h.x, E.P.y - h.y) }); }
+    for (const ci of circs){
+      const C = aP(ci, s), R = ci.r*s.k;
+      ctx.save(); ctx.strokeStyle = c.B; ctx.globalAlpha = .55; ctx.lineWidth = grosor('B', 1.6); ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.arc(C.x, C.y, R, 0, 7); ctx.stroke(); ctx.restore();
+      // sentido del campo arriba de la circunferencia (del motor)
+      const top = { x:ci.x, y:ci.y + ci.r }, b = MM.campoHilos(E.hilos, top), T = aP(top, s), sx = Math.sign(b.x) || 1;
+      flecha({ x:T.x - sx*7, y:T.y }, { x:T.x + sx*7, y:T.y }, c.B, 1.8, { alfa:.8 });
+    }
+    if (E.brujulas){
+      for (const b of E.brujulas){
+        const P = aP(b, s), a = mix(b.a0, b.a1, E.prog.giro)*RAD, L = 17, u = { x:Math.cos(a), y:-Math.sin(a) }, n = { x:-u.y, y:u.x };
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.fillStyle = c.card; ctx.beginPath(); ctx.arc(P.x, P.y, L + 4, 0, 7); ctx.fill(); ctx.stroke();
+        // aguja: la mitad norte rellena (tinta), la sur solo con borde
+        ctx.fillStyle = c.ink; ctx.beginPath(); ctx.moveTo(P.x + u.x*L, P.y + u.y*L); ctx.lineTo(P.x + n.x*4.5, P.y + n.y*4.5); ctx.lineTo(P.x - n.x*4.5, P.y - n.y*4.5); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(P.x - u.x*L, P.y - u.y*L); ctx.lineTo(P.x + n.x*4.5, P.y + n.y*4.5); ctx.lineTo(P.x - n.x*4.5, P.y - n.y*4.5); ctx.closePath(); ctx.stroke();
+        ctx.restore();
+      }
+    }
+    // los cables
+    E.hilos.forEach((h, i) => {
+      const P = aP(h, s);
+      simbolo(P, h.I > 0, 13, c.I, grosor('I', 2.4), 1, c.card);
+      if (h.n) rotulo(ctx, c, P.x + (h.nDx || 0), P.y + (h.nDy || 28), h.n, c.I, 'center', 800, 12);
+    });
+    // fuerzas entre cables: la misma flecha (largo fijo) sobre cada uno; y el campo de cada uno donde está el otro
+    if (E.ver.fuerzas && E.hilos.length === 2){
+      const [a, b] = E.hilos, cp = MM.cablesParalelos(a.I, b.I, Math.hypot(a.x - b.x, a.y - b.y));
+      const A = aP(a, s), Bq = aP(b, s), u = { x:(Bq.x - A.x), y:(Bq.y - A.y) }, Lu = Math.hypot(u.x, u.y); u.x /= Lu; u.y /= Lu;
+      const sg = cp.tipo === 'atraccion' ? 1 : -1, L = 52*E.prog.F;
+      for (const [P, s2] of [[A, sg], [Bq, -sg]]){
+        const o = { x:P.x + u.x*s2*15, y:P.y + u.y*s2*15 };
+        const Q = flecha(o, { x:o.x + u.x*s2*L, y:o.y + u.y*s2*L }, c.F, grosor('F', 4));
+        if (Q && E.prog.F >= 1) rotulo(ctx, c, (o.x + Q.x)/2, o.y - 16, 'F', c.F, 'center', 800, 14);
+      }
+      if (E.ver.Botro && E.prog.F >= 1){
+        for (const [h, otro, nom] of [[a, b, 'B₁'], [b, a, 'B₂']]){
+          const Bv = MM.campoHilos([h], otro), P = aP(otro, s), w = { x:Bv.x/Bv.modulo, y:-Bv.y/Bv.modulo }, Lb = Bv.modulo*kB;
+          const Q = flecha({ x:P.x + w.x*15, y:P.y + w.y*15 }, { x:P.x + w.x*(15 + Lb), y:P.y + w.y*(15 + Lb) }, c.B, grosor('B', 2.4));
+          if (Q) rotulo(ctx, c, Q.x + 8, Q.y + 6, `${nom} = ${sci(Bv.modulo)} T`, c.B, 'left', 800, 11);
+        }
+      }
+    }
+    // puntos donde se mide el campo
+    for (const [pt, ver, key] of [[E.P, E.ver.BP, 'P'], [E.Q, E.ver.BQ, 'Q']]){
+      if (!pt) continue;
+      const P = aP(pt, s);
+      if (ver && E.hilos.length){
+        const r = MM.campoHilos(E.hilos, pt), g = key === 'Q' ? E.prog.B : 1;
+        if (E.ver.partes && key === 'P' && r.partes.length === 2){
+          // polígono: B₁ desde P y B₂ desde la punta de B₁ (corridos a la derecha); la suma, gruesa, a la izquierda
+          const [p1, p2] = r.partes, a1 = { x:p1.x*kB, y:-p1.y*kB }, a2 = { x:p2.x*kB, y:-p2.y*kB }, dx = 9, f1 = E.prog.B, f2 = E.prog.giro;
+          const o = { x:P.x + dx, y:P.y }, m1 = { x:o.x + a1.x*f1, y:o.y + a1.y*f1 };
+          const Q1 = flecha(o, m1, c.B, grosor('B', 2), { alfa:.85 });
+          if (f1 >= 1 && f2 > 0) flecha({ x:m1.x + 5, y:m1.y }, { x:m1.x + 5 + a2.x*f2, y:m1.y + a2.y*f2 }, c.B, grosor('B', 2), { alfa:.85, trazos:true });
+          if (f1 >= 1 && Q1) rotulo(ctx, c, m1.x + 16, (o.y + m1.y)/2, 'B₁', c.B, 'left', 800, 12);
+          if (f2 >= 1) rotulo(ctx, c, m1.x + 20, m1.y + a2.y/2, 'B₂', c.B, 'left', 800, 12);
+          if (E.ver.total && E.prog.F > 0){
+            const t = { x:r.x*kB*E.prog.F, y:-r.y*kB*E.prog.F };
+            if (Math.hypot(t.x, t.y) > 2){ const Q = flecha({ x:P.x - dx, y:P.y }, { x:P.x - dx + t.x, y:P.y + t.y }, c.B, grosor('B', 4.2)); if (Q && E.prog.F >= 1) rotulo(ctx, c, P.x - dx - 12, P.y + t.y/2, 'B', c.B, 'right', 800, 14); }
+            else if (E.prog.F >= 1) rotulo(ctx, c, P.x - 14, P.y - 22, 'B = 0', c.B, 'right', 800, 13);
+          }
+        } else if (r.modulo){
+          const w = { x:r.x/r.modulo, y:-r.y/r.modulo }, L = r.modulo*kB*g;
+          const Q = flecha(P, { x:P.x + w.x*L, y:P.y + w.y*L }, c.B, grosor('B', 3.6), { tope: H*.45 });
+          if (Q && g >= 1 && E.ver.rotB !== false) rotulo(ctx, c, Q.x + (w.x >= 0 ? 10 : -10), Q.y + (Math.abs(w.y) > .5 ? 0 : -12), 'B', c.B, w.x >= 0 ? 'left' : 'right', 800, 14);
+        }
+      }
+      if (E.ver.dist && E.hilos.length && key === (E.ver.dist === true ? 'P' : E.ver.dist)){
+        const h = E.hilos[0], H0 = aP(h, s), y = Math.max(H0.y, P.y) + 26;
+        if (Math.abs(P.y - H0.y) < 4){
+          ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 1.6); linea(ctx, { x:H0.x, y }, { x:P.x, y }); linea(ctx, { x:H0.x, y:y - 5 }, { x:H0.x, y:y + 5 }); linea(ctx, { x:P.x, y:y - 5 }, { x:P.x, y:y + 5 }); ctx.restore();
+          rotulo(ctx, c, (H0.x + P.x)/2, y + 12, `d = ${fmt(Math.hypot(pt.x - h.x, pt.y - h.y), 2)} m`, c.r, 'center', 800, 12);
+        }
+      }
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(P.x, P.y, 5, 0, 7); ctx.stroke(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(P.x, P.y, 1.8, 0, 7); ctx.fill(); ctx.restore();
+      rotulo(ctx, c, P.x + (pt.dx === undefined ? -10 : pt.dx), P.y + (pt.dy === undefined ? -14 : pt.dy), pt.n || key, c.ink, pt.dx > 0 ? 'left' : 'right', 800, 13);
+      if (key === 'P' && E.arr.P) manija(P, 16, c);
+    }
+  }
+
+  // ----- un tramo de solenoide, de costado -----
+  // E.sol = { n (espiras/m), I, Bpi, k (px por π·T), nVer (espiras que se ven en el tramo de 1 cm) }
+  function dibujarSolenoide(c){
+    const S = E.sol, x0 = Math.max(26, W*.1), x1 = W - Math.max(26, W*.1), yc = H*.48, ry = Math.min(H*.25, 70), rx = 7;
+    const n = Math.max(1, Math.round(S.nVer));
+    // mitad de atrás de cada espira (fina) y mitad de adelante (gruesa), en el color de la corriente
+    for (let k = 0; k < n; k++){
+      const x = mix(x0, x1, (k + .5)/n);
+      ctx.save(); ctx.strokeStyle = c.I; ctx.globalAlpha = .4; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.ellipse(x, yc, rx, ry, 0, Math.PI/2, 3*Math.PI/2); ctx.stroke(); ctx.restore();
+    }
+    // campo adentro: flechas iguales hacia la derecha, largo ∝ B
+    const L = Math.min((x1 - x0)*.8, S.Bpi*S.k*E.prog.B);
+    for (const dy of [-.45, 0, .45]){
+      const y = yc + dy*ry, xm = (x0 + x1)/2;
+      if (L > 4) flecha({ x:xm - L/2, y }, { x:xm + L/2, y }, c.B, grosor('B', dy ? 2 : 3.4), { alfa: dy ? .7 : 1 });
+    }
+    for (let k = 0; k < n; k++){
+      const x = mix(x0, x1, (k + .5)/n);
+      ctx.save(); ctx.strokeStyle = c.I; ctx.lineWidth = grosor('I', 2.6); ctx.beginPath(); ctx.ellipse(x, yc, rx, ry, 0, -Math.PI/2, Math.PI/2); ctx.stroke(); ctx.restore();
+    }
+    // sentido de la corriente: baja por delante (con B hacia la derecha, regla de la mano derecha)
+    const xa = mix(x0, x1, .5/n) + rx;
+    flecha({ x:xa, y:yc - 10 }, { x:xa, y:yc + 12 }, c.I, 2.4);
+    rotulo(ctx, c, x0 - 6, yc + ry*.6, 'I', c.I, 'right', 800, 14);
+    if (E.ver.rotB !== false && L > 4) rotulo(ctx, c, (x0 + x1)/2, yc - ry*.45 - 16, 'B', c.B, 'center', 800, 14);
+    // el tramo dibujado mide 1 cm
+    const yr = yc + ry + 22;
+    ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 1.6); linea(ctx, { x:x0, y:yr }, { x:x1, y:yr }); linea(ctx, { x:x0, y:yr - 5 }, { x:x0, y:yr + 5 }); linea(ctx, { x:x1, y:yr - 5 }, { x:x1, y:yr + 5 }); ctx.restore();
+    rotulo(ctx, c, (x0 + x1)/2, yr + 13, `1 cm: ${n} espiras`, c.r, 'center', 800, 12);
+  }
+
+  function leyenda(){
+    const it = (k, t, sq) => `<span><i class="${sq ? 'sq' : ''}" style="background:var(--c-${k})"></i><span>${t}</span></span>`;
+    const l = [], v = E.vista;
+    if (v === 'iman'){ l.push(it('B', 'B · campo magnético (sus líneas)')); l.push(it('q', 'q · carga (el signo va escrito)', true)); l.push('<span>N y S: polos del imán</span>'); }
+    else if (v === 'plano'){
+      l.push(it('B', E.campo && E.campo.tipo === 'derecha' ? 'B · campo magnético' : `B · campo: ${E.campo && E.campo.tipo === 'sale' ? '⊙ sale' : '⊗ entra a'} la pantalla`));
+      l.push(it('q', 'q · carga', true)); l.push(it('v', 'v · velocidad'));
+      if (E.parts.some(p => p.verF)) l.push(it('F', 'F · fuerza magnética'));
+      if (E.parts.some(p => p.radio)) l.push(it('r', 'r · radio'));
+      if (E.parts.some(p => p.traza)) l.push('<span>punteado: la trayectoria</span>');
+    } else if (v === 'p3d'){
+      l.push(it('B', 'B · campo magnético'));
+      l.push(E.p3.modo === 'carga' ? it('v', 'v · velocidad') : it('I', 'I · corriente (el cable, en gris)'));
+      if (E.p3.verF) l.push(it('F', 'F · fuerza magnética'));
+      if (E.p3.theta) l.push(it('th', E.p3.modo === 'carga' ? 'θ · ángulo entre v y B' : 'θ · ángulo entre el cable y B'));
+      if (E.p3.modo === 'conductor') l.push(it('r', 'L · largo del cable'));
+      l.push('<span>ejes a trazos: x, y; z sale hacia ti</span>');
+    } else if (v === 'hilos'){
+      l.push(it('I', 'I · corriente: ⊙ sale, ⊗ entra', true));
+      if (E.ver.BP || E.ver.BQ || (E.ver.circ || []).length || E.ver.Botro) l.push(it('B', 'B · campo magnético'));
+      if (E.ver.fuerzas) l.push(it('F', 'F · fuerza sobre cada cable'));
+      if (E.ver.dist) l.push(it('r', 'd · distancia'));
+      if (E.brujulas) l.push('<span>brújulas: la punta rellena es el norte</span>');
+    } else if (v === 'solenoide'){ l.push(it('I', 'I · corriente en las espiras')); l.push(it('B', 'B · campo adentro')); l.push(it('r', 'largo del tramo')); }
+    if (E.leyendaExtra) l.push(E.leyendaExtra);
+    return l.join('');
+  }
+  E.leyenda = () => { if (idLey) document.getElementById(idLey).innerHTML = leyenda(); };
+  // Lecturas y descripción: solo lo que cada paso pide (no adelantan la respuesta).
+  E.avisar = () => {
+    const ls = E.lect() || [];
+    if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura${String(v).length > 14 ? ' ancha' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc) document.getElementById(idDesc).textContent = (E.desc() || '') + (ls.length ? ' ' + ls.map(([, t, v]) => `${t}: ${v}`).join('. ') + '.' : '');
+    if (E.alCambiar) E.alCambiar();
+  };
+
+  // ----- arrastrar (táctil, ratón y teclado; nucleo/celular.js) -----
+  function cual(p, r){
+    if (E.ocupado) return null;
+    if (E.vista === 'p3d' && E.arr.giro){ const { f } = proy(), d = datos3D().d, T = f({ x:d.x*.95, y:d.y*.95, z:0 }); return Math.hypot(p.x - T.x, p.y - T.y) < r ? 'giro' : null; }
+    if (E.vista === 'hilos' && E.arr.P && E.P){ const P = aP(E.P, escala()); return Math.hypot(p.x - P.x, p.y - P.y) < r ? 'P' : null; }
+    return null;
+  }
+  function ponerGiro(phi){
+    const g = E.arr.giro, lim = (g && g.lim) || null;
+    let a = Math.round(phi); a = ((a % 360) + 360) % 360;
+    if (lim) a = clamp(a > 270 ? a - 360 : a, lim[0], lim[1]);
+    if (a === E.p3.phi) return;
+    E.p3.phi = a; E.p3.alfa = false; E.cambio();
+  }
+  function poner(k, p){
+    if (k === 'giro'){
+      // del punto en la pantalla al ángulo en el plano xy: se invierte la proyección de los ejes x e y
+      const { f } = proy(), O = f({ x:0, y:0, z:0 }), X = f({ x:1, y:0, z:0 }), Y = f({ x:0, y:1, z:0 });
+      const a = X.x - O.x, b = Y.x - O.x, c2 = X.y - O.y, d = Y.y - O.y, det = a*d - b*c2, px = p.x - O.x, py = p.y - O.y;
+      const cx = (d*px - b*py)/det, sy = (-c2*px + a*py)/det;
+      if (Math.hypot(cx, sy) < .12) return;
+      ponerGiro(Math.atan2(sy, cx)/RAD);
+      return;
+    }
+    const s = escala(), w = aMundo(p, s), c = E.caja;
+    const x = clamp(Math.round(w.x*100)/100, c.x0 + .02, c.x1 - .02), y = clamp(Math.round(w.y*100)/100, c.y0 + .02, c.y1 - .02);
+    if (E.hilos.some(h => Math.hypot(h.x - x, h.y - y) < (E.arr.min || .04))) return;
+    if (x === E.P.x && y === E.P.y) return;
+    E.P.x = x; E.P.y = y; E.cambio();
+  }
+  Celular.arrastre(cv, {
+    activo: () => (E.arr.giro || E.arr.P) && !E.ocupado,
+    cerca: (p, r) => !!cual(p, r),
+    empezar: p => { arrastrando = cual(p, 40); E.dibujar(); },
+    mover: p => { if (arrastrando) poner(arrastrando, p); },
+    soltar: () => { arrastrando = null; E.dibujar(); },
+    sobre: on => { sobre = on; E.dibujar(); },
+  });
+  // Teclado: ← → giran v (o el cable) de a 1°; en los cables, las flechas mueven P de a 1 cm.
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado) return;
+    if (E.vista === 'p3d' && E.arr.giro){
+      const d = { ArrowLeft:1, ArrowUp:1, ArrowRight:-1, ArrowDown:-1 }[e.key]; if (!d) return;
+      e.preventDefault(); ponerGiro(E.p3.phi + d*(e.shiftKey ? 10 : 1)); return;
+    }
+    if (E.vista === 'hilos' && E.arr.P && E.P){
+      const d = { ArrowLeft:[-1, 0], ArrowRight:[1, 0], ArrowUp:[0, 1], ArrowDown:[0, -1] }[e.key]; if (!d) return;
+      e.preventDefault();
+      const x = clamp(Math.round((E.P.x + d[0]*.01)*100)/100, E.caja.x0 + .02, E.caja.x1 - .02), y = clamp(Math.round((E.P.y + d[1]*.01)*100)/100, E.caja.y0 + .02, E.caja.y1 - .02);
+      if (E.hilos.some(h => Math.hypot(h.x - x, h.y - y) < (E.arr.min || .04))) return;
+      E.P.x = x; E.P.y = y; E.cambio();
+    }
+  });
+  E.girarVista = (dy, fin) => { const y0 = E.p3.yaw; E.tween(700, f => { E.p3.yaw = y0 + dy*suave(f); E.dibujar(); }, fin); };
+  return E;
+}
+
+// Opciones de predicción (las mismas en los dos modos)
+const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;');
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${sinCorte(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// Fuentes (cifras de resúmenes, por verificar con los PDF: docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md)
+const fuenteSingh = 'Singh, 2017';
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Respaldos (docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md): 'documentado' solo MG1 (paso 1) y MG5
+   (paso 7), con porcentaje de aciertos; 'parcial' MG2, MG3, MG4, MG6 y EL9 («el error más común», sin porcentaje del
+   error) y la mano derecha invertida (un alumno en entrevistas); lo demás, hipótesis nuestras. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+
+// Números de la escena (todos del motor)
+const IM1 = { x:-0.12, y:0, largo:0.2, ang:0, B0:0.2, a:0.08 }, C1 = { q:QP, x:0.06, y:0, n:'protón quieto' };
+const F1 = MM.fuerzaCarga(QP, { x:0, y:0, z:0 }, MM.campoIman(IM1, C1));
+const F2 = MM.fuerzaCarga(QP, { x:-2e6, y:0, z:0 }, { x:0.5, y:0, z:0 }), T2 = 0.36/2e6;
+const F3 = MM.fuerzaCarga(QP, { x:2e6, y:0, z:0 }, { x:0, y:0, z:-0.2 }), M3 = MM.movimientoCircular(QP, MP, 2e6, 0.2);
+const F4 = MM.fuerzaCarga(QP, MM.vectorAngulo(5e6, 37), { x:0, y:0.5, z:0 }), F4m = MM.fuerzaModulo(QP, 5e6, 0.5, 53);
+const F5 = MM.fuerzaCarga(-QP, { x:2e6, y:0, z:0 }, { x:0, y:0, z:-0.2 }), M5 = MM.movimientoCircular(-QP, ME_, 2e6, 0.2);
+const H6 = MM.cambioDistanciaHilo(10, 0.2, 2);
+const PM7 = MM.puntoMedio(10, -10, 0.2), PM7i = MM.puntoMedio(10, 10, 0.2);
+const CP8 = MM.cablesParalelos(10, -20, 0.1);
+
+const P1 = { id:'magnetismo-paso1', ok:'c', opts:[
+  ['a', 'Lo atrae hacia el polo N: el imán atrae a las cargas', 'MG1-iman-atrae-carga-quieta', 'documentado'],
+  ['b', 'Lo repele, porque el polo N actúa como una carga positiva', 'EL9-polo-como-carga', 'parcial'],
+  ['c', 'No sufre fuerza magnética, porque está quieto'],
+  ['d', 'Lo hace girar alrededor del imán, porque las líneas del campo son curvas', 'MG-quieta-gira-con-las-lineas', 'hipotesis']],
+  fb:{ c:'¡Bien! La fuerza magnética necesita que la carga se mueva: con v = 0, F = 0, por fuerte que sea el campo.',
+    a:'Elegiste la A. Un imán no atrae ni repele a una carga quieta: la fuerza magnética es |q|·v·B·sen θ, y con v = 0 vale cero. La correcta está marcada.',
+    b:'Elegiste la B. El polo N no es una carga positiva: un imán no atrae ni repele a una carga quieta. La correcta está marcada.',
+    d:'Elegiste la D. Las líneas dicen hacia dónde apunta B, pero sin velocidad no hay fuerza magnética: el protón no se mueve. La correcta está marcada.' } };
+const P2 = { id:'magnetismo-paso2', ok:'a', opts:[
+  ['a', 'Sigue en línea recta con la misma rapidez'],
+  ['b', 'Sigue en línea recta, pero se va frenando', 'MG2-paralela-se-frena', 'parcial'],
+  ['c', 'Se desvía hacia arriba', 'MG-paralela-se-desvia-arriba', 'hipotesis'],
+  ['d', 'Se desvía hacia abajo', 'MG-paralela-se-desvia-abajo', 'hipotesis']],
+  fb:{ a:'¡Bien! Con v contraria a B, θ = 180° y sen 180° = 0: no hay fuerza magnética.',
+    b:'Elegiste la B. La fuerza magnética no va a lo largo del campo, así que no lo frena. Con v paralela (o contraria) a B, sen θ = 0 y F = 0. La correcta está marcada.',
+    c:'Elegiste la C. Para desviarlo haría falta una fuerza, y con v contraria a B no la hay: sen 180° = 0. La correcta está marcada.',
+    d:'Elegiste la D. No hay hacia dónde desviarse: con v contraria a B, F = |q|·v·B·sen 180° = 0. La correcta está marcada.' } };
+const P3 = { id:'magnetismo-paso3', ok:'b', opts:[
+  ['a', 'Hacia abajo de la pantalla', 'MG-mano-derecha-invertida', 'parcial'],
+  ['b', 'Hacia arriba de la pantalla'],
+  ['c', 'Hacia adentro de la pantalla, como B', 'MG2-fuerza-en-la-direccion-del-campo', 'parcial'],
+  ['d', 'Hacia la derecha, como v', 'MG-fuerza-hacia-donde-va', 'hipotesis']],
+  fb:{ b:'¡Bien! Pulgar en el sentido de v (derecha), los otros dedos en el de B (adentro): la palma empuja hacia arriba.',
+    a:'Elegiste la A. Así sale si se cambian los papeles de los dedos y el pulgar. Con el pulgar en v y los dedos en B, la palma de la mano derecha empuja hacia arriba. La correcta está marcada.',
+    c:'Elegiste la C. La fuerza magnética no va en la dirección del campo: es perpendicular a B y también a v. La correcta está marcada.',
+    d:'Elegiste la D. La fuerza magnética es perpendicular a v: no la empuja hacia adelante, la desvía. La correcta está marcada.' } };
+const sci13 = x => `${fmt(x/1e-13, 1)} × 10⁻¹³ N`;
+const P4 = { id:'magnetismo-paso4', ok:'c', opts:[
+  ['a', `F = ${sci13(F4.errores.sinSeno)}`, 'MG-olvida-el-seno', 'hipotesis'],
+  ['b', `F = ${sci13(F4.errores.anguloConHorizontal)}`, 'MG3-angulo-con-la-horizontal', 'parcial'],
+  ['c', `F = ${sci13(F4.modulo)}`],
+  ['d', 'F = 0', 'MG-fuerza-solo-a-90', 'hipotesis']],
+  fb:{ c:'¡Bien! El ángulo entre v y B es 90° − 37° = 53°: F = |q|·v·B·sen 53°.',
+    a:'Elegiste la A. Falta el sen θ: v y B no son perpendiculares. Entre ellas hay 53°, y F = |q|·v·B·sen 53°. La correcta está marcada.',
+    b:'Elegiste la B. Los 37° se miden desde la horizontal, pero B es vertical: el ángulo entre v y B es 53°. La correcta está marcada.',
+    d:'Elegiste la D. Hay fuerza aunque v y B no formen 90°: solo es cero si son paralelas. Aquí vale |q|·v·B·sen 53°. La correcta está marcada.' } };
+const P5 = { id:'magnetismo-paso5', ok:'d', opts:[
+  ['a', 'Hacia arriba de la pantalla', 'MG-olvida-el-signo-de-la-carga', 'hipotesis'],
+  ['b', 'Hacia adentro de la pantalla', 'MG2-fuerza-en-la-direccion-del-campo', 'parcial'],
+  ['c', 'No sufre fuerza magnética', 'MG-electron-sin-fuerza', 'hipotesis'],
+  ['d', 'Hacia abajo de la pantalla']],
+  fb:{ d:'¡Bien! F = q·v×B con q negativa: la regla de la mano derecha da arriba y el signo menos la da vuelta.',
+    a:'Elegiste la A. Así sería para un protón. El electrón tiene carga negativa: F = q·v×B apunta al revés, hacia abajo. La correcta está marcada.',
+    b:'Elegiste la B. La fuerza magnética es perpendicular a B, sea cual sea el signo de la carga. La correcta está marcada.',
+    c:'Elegiste la C. El electrón tiene carga y se mueve: sí siente fuerza, del mismo tamaño que el protón (|q| es igual). La correcta está marcada.' } };
+const P6 = { id:'magnetismo-paso6', ok:'b', opts:[
+  ['a', `B = ${sci(H6.errores.cuadrado)} T`, 'MG-hilo-uno-sobre-d2', 'hipotesis'],
+  ['b', `B = ${sci(H6.B1)} T`],
+  ['c', `B = ${sci(H6.errores.sinCambio)} T`, 'MG-hilo-no-depende-de-d', 'hipotesis'],
+  ['d', `B = ${sci(H6.errores.alReves)} T`, 'MG-hilo-crece-con-d', 'hipotesis']],
+  fb:{ b:'¡Bien! El campo de un hilo va con 1/d: el doble de distancia, la mitad del campo.',
+    a:'Elegiste la A. Es la cuarta parte: así sería con 1/d², como en la ley de Coulomb. El campo del hilo va con 1/d. La correcta está marcada.',
+    c:'Elegiste la C. La corriente es la misma, pero el campo depende de la distancia: B = 2 × 10⁻⁷ · I / d. La correcta está marcada.',
+    d:'Elegiste la D. Más lejos del cable el campo es más débil, no más fuerte. La correcta está marcada.' } };
+const P7 = { id:'magnetismo-paso7', ok:'c', opts:[
+  ['a', 'B = 0 T', 'MG5-opuestas-se-anulan', 'documentado'],
+  ['b', `B = ${sci(PM7.errores.distanciaEntreCables)} T`, 'MG-usa-la-distancia-entre-cables', 'hipotesis'],
+  ['c', `B = ${sci(PM7.B)} T`],
+  ['d', `B = ${sci(PM7.errores.unoSobreD2)} T`, 'MG-hilo-uno-sobre-d2', 'hipotesis']],
+  fb:{ c:'¡Bien! Con corrientes opuestas, en el medio los dos campos apuntan hacia el mismo lado y se suman.',
+    a:'Elegiste la A. Las corrientes son opuestas, pero sus campos en el medio no: los dos apuntan hacia arriba y se suman. La correcta está marcada.',
+    b:'Elegiste la B. El punto medio está a 0,1 m de cada cable, no a 0,2 m: cada uno da 2 × 10⁻⁵ T. La correcta está marcada.',
+    d:'Elegiste la D. El campo de un hilo va con 1/d, no con 1/d². La correcta está marcada.' } };
+const P8 = { id:'magnetismo-paso8', ok:'a', opts:[
+  ['a', 'Se repelen, con la misma fuerza sobre cada cable'],
+  ['b', 'Se atraen, con la misma fuerza sobre cada cable', 'MG4-opuestas-se-atraen', 'parcial'],
+  ['c', 'Se repelen, y el cable de 10 A recibe el doble de fuerza', 'MG6-mas-corriente-empuja-mas', 'parcial'],
+  ['d', 'Se atraen, y el cable de 20 A recibe el doble de fuerza', 'MG-mas-corriente-recibe-mas', 'hipotesis']],
+  fb:{ a:'¡Bien! Corrientes opuestas se repelen, y las dos fuerzas son iguales (tercera ley): F/L = 2 × 10⁻⁷ · I₁ · I₂ / d.',
+    b:'Elegiste la B. Las corrientes no son cargas: corrientes opuestas se repelen y las del mismo sentido se atraen. La correcta está marcada.',
+    c:'Elegiste la C. Sí se repelen, pero la fórmula usa el producto I₁ · I₂: es la misma fuerza sobre los dos. La correcta está marcada.',
+    d:'Elegiste la D. Corrientes opuestas se repelen, y la fuerza es la misma sobre los dos cables. La correcta está marcada.' } };
+
+// ----- configuraciones -----
+const proton = (o) => ({ q:QP, m:MP, n:'protón', lv:46, lf:44, ...o });
+function lecturasCirculo(p){
+  const a = MM.trayectoria(p.q, p.m, p.v0, p.Bz, p.t, p.p0), f = MM.fuerzaCarga(p.q, { x:a.vx, y:a.vy, z:0 }, { x:0, y:0, z:p.Bz });
+  return [['v', 'Rapidez', `${sci(Math.hypot(a.vx, a.vy))} m/s`], ['F', 'Fuerza F', `${sci(f.modulo)} N`]];
+}
+function lecturas4(){
+  const p = E.p3, v = MM.vectorAngulo(p.v, p.phi), r = MM.fuerzaCarga(p.q, v, { x:0, y:p.B, z:0 });
+  return [['th', 'Ángulo θ entre v y B', `${fmt(r.theta, 0)}°`], ['th', 'sen θ', fmt(r.sen, 2)], ['F', 'Fuerza F', `${sci(r.modulo)} N ${r.modulo ? (r.F.z > 0 ? '(hacia +z)' : '(hacia −z)') : ''}`]];
+}
+function lecturasP(){
+  const r = MM.campoHilos(E.hilos, E.P), d = Math.hypot(E.P.x - E.hilos[0].x, E.P.y - E.hilos[0].y);
+  return [['r', 'Distancia d de P', `${fmt(d, 2)} m`], ['B', 'Campo B en P', `${sci(r.modulo)} T`]];
+}
+function lecturas7(){
+  const r = MM.campoHilos(E.hilos, E.P);
+  return [['B', 'B₁ (del cable 1)', `${sci(r.partes[0].modulo)} T`], ['B', 'B₂ (del cable 2)', `${sci(r.partes[1].modulo)} T`], ['B', 'B total en el punto', `${sci(r.modulo)} T`]];
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: un imán y una carga quieta', gate:P1,
+   prep:() => { const ya = !!S.pred[P1.id]; E.config({ vista:'iman', caja:{ x0:-.3, x1:.3, y0:-.16, y1:.16 }, im:IM1, carga:C1, ver:{ F0:ya },
+     lect: () => ya ? [['B', 'B donde está el protón', '0,2 T'], ['v', 'Rapidez del protón', '0 m/s'], ['F', 'Fuerza magnética', `${fmt(F1.modulo, 0)} N`]] : [['B', 'B donde está el protón', '0,2 T'], ['v', 'Rapidez del protón', '0 m/s']],
+     desc: () => 'Un imán de barra con el polo norte a la derecha y sus líneas de campo. A la derecha del polo norte hay un protón quieto.' }); },
+   anima:fin => { E.ver.F0 = true; E.crecer('F', 500, () => { E.lect = () => [['B', 'B donde está el protón', '0,2 T'], ['v', 'Rapidez del protón', '0 m/s'], ['F', 'Fuerza magnética', `${fmt(F1.modulo, 0)} N`]]; E.avisar(); fin(); }); },
+   body:() => `<p>Un imán de barra tiene su polo norte (N) a la derecha. Junto al polo hay un protón quieto, con carga ${q_('q = +1,6 × 10⁻¹⁹ C')}; ahí el campo del imán vale ${B_('B = 0,2 T')} y apunta hacia la derecha. ¿Qué pasa con el protón?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${F_('F')} = |${q_('q')}| · ${v_('v')} · ${B_('B')} · sen ${th_('θ')} = ${q_('1,6 × 10⁻¹⁹')} · ${v_('0')} · ${B_('0,2')} · sen ${th_('θ')} = ${F_('0')}</div></div>
+   <p>La fuerza magnética solo actúa sobre cargas que se mueven. Un imán no tiene cargas eléctricas en sus polos: el norte no es «positivo» ni el sur «negativo». Por eso, frente a una carga quieta, el imán no hace nada.</p>
+   <p class="fuente">En un estudio con 466 universitarios, después del curso solo cerca de 4 de cada 10 acertó una pregunta como esta, y el error más común fue sumarle a la carga una fuerza del imán (Singh, 2017). Que los polos son cargas eléctricas (opción B) aparece en «muchos» de 214 universitarios según una revisión, sin porcentaje en lo que leímos (Maloney, 1985, citado por Sağlam y Millar): respaldo parcial. La opción D es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 2', t:'Predice: un protón a lo largo del campo', gate:P2,
+   prep:() => { const ya = !!S.pred[P2.id]; E.config({ caja:{ x0:-.25, x1:.25, y0:-.12, y1:.12 }, campo:{ tipo:'derecha', B:.5, etq:'B = 0,5 T' },
+     parts:[proton({ v0:{ x:-2e6, y:0 }, p0:{ x:.18, y:0 }, Bz:0, t: ya ? T2 : 0, traza:true, tVuelta:T2, F0:ya })],
+     lect: () => ya || S.p2 ? [['v', 'Rapidez', '2 × 10⁶ m/s, sin cambio'], ['th', 'Ángulo θ entre v y B', `${fmt(F2.theta, 0)}°`], ['F', 'Fuerza magnética', `${fmt(F2.modulo, 0)} N`]] : [['v', 'Rapidez', '2 × 10⁶ m/s'], ['B', 'Campo B', '0,5 T']],
+     desc: () => 'Un campo uniforme hacia la derecha y un protón que avanza hacia la izquierda, contra el campo.' }); },
+   // el campo es paralelo a v (F = 0, del motor), así que la trayectoria es la de Bz = 0: una recta
+   anima:fin => { S.p2 = true; const p = E.parts[0]; p.F0 = true; E.tween(1800, f => { p.t = f*T2; E.dibujar(); }, () => { E.avisar(); fin(); }); },
+   body:() => `<p>En un campo uniforme de ${B_('B = 0,5 T')} hacia la derecha entra un protón (${q_('q = +1,6 × 10⁻¹⁹ C')}) a ${v_('v = 2 × 10⁶ m/s')} hacia la izquierda: paralelo al campo, pero en sentido contrario. ¿Qué hace el protón?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${th_('θ')} = 180° → sen ${th_('180°')} = 0 → ${F_('F')} = |${q_('q')}| · ${v_('v')} · ${B_('B')} · 0 = ${F_('0')}</div></div>
+   <p>La fuerza magnética no empuja a lo largo de las líneas del campo, ni a favor ni en contra. Si la carga va paralela al campo (o en contra), no hay fuerza: sigue recta y con la misma rapidez.</p>
+   <p class="fuente">Que la carga se frena fue el error más común en una pregunta así (Singh, 2017), aunque el texto que leímos no da su porcentaje: por eso la opción B tiene un respaldo solo parcial. Las opciones C y D son hipótesis nuestras.</p></div>` },
+ { k:'Paso 3', t:'Predice: un protón que cruza el campo', gate:P3,
+   prep:() => { const ya = !!S.pred[P3.id]; E.config({ caja:{ x0:-.2, x1:.2, y0:-.15, y1:.15 }, campo:{ tipo:'entra', B:.2, etq:'B = 0,2 T, entra (⊗)' },
+     parts:[proton({ v0:{ x:2e6, y:0 }, p0:{ x:0, y:-.1 }, Bz:-.2, t: ya ? M3.T : 0, traza:ya, tVuelta:M3.T, verF:ya, radio: ya ? 'r = 0,1 m' : null, n:'' })],
+     lect: () => ya || S.p3 ? [...lecturasCirculo(E.parts[0]), ['r', 'Radio r', `${fmt(M3.r, 2)} m`], ['ink', 'Periodo T', `π × 10⁻⁷ s`]] : [['v', 'Rapidez', '2 × 10⁶ m/s'], ['B', 'Campo B', '0,2 T (entra)']],
+     desc: () => 'Vista de frente: un campo uniforme que entra a la pantalla (cruces) y un protón que avanza hacia la derecha.' }); },
+   anima:fin => { S.p3 = true; const p = E.parts[0]; p.verF = true; E.leyenda();
+     E.crecer('F', 600, () => { p.traza = true; E.leyenda(); E.lect = () => [...lecturasCirculo(p), ['r', 'Radio r', '…'], ['ink', 'Periodo T', '…']];
+       E.tween(2800, f => { p.t = f*M3.T; E.dibujar(); E.avisar(); }, () => { p.t = M3.T; p.radio = 'r = 0,1 m'; E.lect = () => [...lecturasCirculo(p), ['r', 'Radio r', `${fmt(M3.r, 2)} m`], ['ink', 'Periodo T', 'π × 10⁻⁷ s']]; E.leyenda(); E.dibujar(); E.avisar(); fin(); }); }); },
+   body:() => `<p>Ahora el campo, de ${B_('B = 0,2 T')}, entra a la pantalla (⊗). El protón (${q_('q = +1,6 × 10⁻¹⁹ C')}; toma m = 1,6 × 10⁻²⁷ kg) va hacia la derecha a ${v_('v = 2 × 10⁶ m/s')}, perpendicular al campo. Mira el dibujo: ¿hacia dónde apunta la fuerza magnética en ese instante?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p><b>Regla de la mano derecha</b> (para una carga positiva): el pulgar en el sentido de ${v_('v')} y los otros cuatro dedos en el de ${B_('B')}; la palma empuja hacia ${F_('F')}.</p>
+   <div class="eqs"><div class="eq">${F_('F')} = |${q_('q')}| · ${v_('v')} · ${B_('B')} = ${q_('1,6 × 10⁻¹⁹')} · ${v_('2 × 10⁶')} · ${B_('0,2')} = ${F_(sci(F3.modulo) + ' N')}<span class="note">sen 90° = 1</span></div>
+   <div class="eq">${r_('r')} = m · ${v_('v')} / (|${q_('q')}| · ${B_('B')}) = 1,6 × 10⁻²⁷ · ${v_('2 × 10⁶')} / (${q_('1,6 × 10⁻¹⁹')} · ${B_('0,2')}) = ${r_(fmt(M3.r, 2) + ' m')}</div>
+   <div class="eq">T = 2π · m / (|${q_('q')}| · ${B_('B')}) = π × 10⁻⁷ s<span class="note">una vuelta</span></div></div>
+   <p>Como ${F_('F')} es siempre perpendicular a ${v_('v')}, no la acelera ni la frena: solo le cambia la dirección. La rapidez se queda en 2 × 10⁶ m/s y el protón da vueltas en un círculo, con ${F_('F')} apuntando siempre hacia el centro.</p>
+   <p class="fuente">En otra pregunta sobre hacia dónde apunta la fuerza, acertó cerca de 1 de cada 4 universitarios antes del curso y menos de la mitad después; creer que la fuerza va en la dirección del campo fue el error más común en ese estudio, sin porcentaje del error (Singh, 2017): respaldo parcial para la opción C. Cambiar los papeles de los dedos y el pulgar (opción A) apareció en entrevistas con un alumno, al usar otra regla de la mano derecha, la del campo de un cable (Secrest y Novodvorsky, 2005): respaldo parcial. La opción D es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 4', t:'Predice: v y B en ángulo', gate:P4,
+   prep:() => { const ya = !!S.pred[P4.id]; E.config({ vista:'p3d', p3:{ modo:'carga', q:QP, v:5e6, B:.5, phi: ya ? (S.phi4 === undefined ? 37 : S.phi4) : 37, alfa: !ya || S.phi4 === undefined || S.phi4 === 37, theta:ya, verF:ya, yaw: S.yaw4 === undefined ? -35 : S.yaw4 },
+     arr: ya ? { giro:true } : {}, alCambiar:() => { if (S.pred[P4.id]) { S.phi4 = E.p3.phi; S.yaw4 = E.p3.yaw; } },
+     lect: () => ya || S.p4 ? lecturas4() : [['v', 'Rapidez v', '5 × 10⁶ m/s'], ['B', 'Campo B (vertical)', '0,5 T'], ['ink', 'v con la horizontal', '37°']],
+     desc: () => 'Vista en perspectiva con los ejes x, y, z. El campo B es vertical, hacia arriba; la velocidad del protón está en el plano xy, a 37° de la horizontal.' }); },
+   anima:fin => { S.p4 = true; E.p3.theta = true; E.p3.verF = true; E.leyenda(); E.lect = lecturas4;
+     E.crecer('F', 900, () => { E.permitir({ giro:true }); E.avisar(); fin(); }); },
+   entrar:() => { for (const [id, dy] of [['izq4', -40], ['der4', 40]]){ const b = $(id); if (b) b.onclick = () => { if (S.ocupado) return; S.ocupado = true; E.ocupado = true; nav(); E.girarVista(dy, () => { S.yaw4 = E.p3.yaw; S.ocupado = false; E.ocupado = false; nav(); }); }; } },
+   body:() => `<p>El campo ${B_('B = 0,5 T')} es vertical, hacia arriba. Un protón (${q_('q = +1,6 × 10⁻¹⁹ C')}) se mueve a ${v_('v = 5 × 10⁶ m/s')} formando 37° con la horizontal, en el mismo plano que ${B_('B')}. ¿Cuánto vale la fuerza magnética?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${th_('θ')} = 90° − 37° = ${th_('53°')}<span class="note">el ángulo entre v y B, no con la horizontal</span></div>
+   <div class="eq">${F_('F')} = |${q_('q')}| · ${v_('v')} · ${B_('B')} · sen ${th_('53°')} = ${q_('1,6 × 10⁻¹⁹')} · ${v_('5 × 10⁶')} · ${B_('0,5')} · 4/5 = ${F_(sci(F4m.F) + ' N')}</div></div>
+   <p>El eje z sale del plano de ${v_('v')} y ${B_('B')} hacia ti. Con la mano derecha: pulgar en ${v_('v')}, dedos en ${B_('B')}; la palma mira hacia ti, hacia +z. La fuerza forma 90° con ${v_('v')} y con ${B_('B')} (las escuadras azules). Arrastra la punta de ${v_('v')} (o toca el dibujo y usa ← →): ${F_('F')} se hace más grande cuando ${v_('v')} se acerca a 90° de ${B_('B')}, se anula cuando son paralelas y cambia de lado si ${v_('v')} pasa al otro lado de ${B_('B')}.</p>
+   <div class="acciones"><button type="button" class="btn" id="izq4">Girar la vista ◀</button><button type="button" class="btn" id="der4">Girar la vista ▶</button></div>
+   <p class="fuente">Leer el ángulo con la horizontal como si fuera el ángulo con el campo fue el error más común en una pregunta así (Singh, 2017), sin porcentaje en el texto que leímos: respaldo parcial para la opción B. Las opciones A y D son hipótesis nuestras.</p></div>` },
+ { k:'Paso 5', t:'Predice: ahora un electrón', gate:P5,
+   prep:() => { const ya = !!S.pred[P5.id], k = M3.r/M5.r; E.config({ caja:{ x0:-.2, x1:.2, y0:-.15, y1:.15 }, campo:{ tipo:'entra', B:.2, etq:'B = 0,2 T, entra (⊗)' },
+     parts:[{ q:-QP, m:ME_, v0:{ x:2e6, y:0 }, p0:{ x:0, y:.1 }, Bz:-.2, t: ya ? M5.T : 0, ampliar:k, traza:ya, tVuelta:M5.T, verF:ya, lv:46, lf:44, radio: ya ? 'r ≈ 5,7 × 10⁻⁵ m' : null, n:'' }],
+     ver:{ nota: ya ? 'el círculo del electrón se dibuja unas 1800 veces más grande que el real' : '' },
+     lect: () => ya || S.p5 ? [...lecturasCirculo(E.parts[0]), ['r', 'Radio r', `${sci(M5.r, 1)} m`]] : [['v', 'Rapidez', '2 × 10⁶ m/s'], ['B', 'Campo B', '0,2 T (entra)']],
+     desc: () => 'El mismo campo que entra a la pantalla; ahora es un electrón el que avanza hacia la derecha.' }); },
+   anima:fin => { S.p5 = true; const p = E.parts[0]; p.verF = true; E.leyenda();
+     E.crecer('F', 600, () => { p.traza = true; E.ver.nota = 'el círculo del electrón se dibuja unas 1800 veces más grande que el real'; E.leyenda();
+       E.tween(2800, f => { p.t = f*M5.T; E.dibujar(); E.avisar(); }, () => { p.t = M5.T; p.radio = 'r ≈ 5,7 × 10⁻⁵ m'; E.lect = () => [...lecturasCirculo(p), ['r', 'Radio r', `${sci(M5.r, 1)} m`]]; E.leyenda(); E.dibujar(); E.avisar(); fin(); }); }); },
+   body:() => `<p>En el mismo campo (${B_('B = 0,2 T')}, entra) entra un electrón, con ${q_('q = −1,6 × 10⁻¹⁹ C')} y m = 9,1 × 10⁻³¹ kg, a la misma ${v_('v = 2 × 10⁶ m/s')} hacia la derecha. ¿Hacia dónde apunta la fuerza magnética sobre él?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${F_('F')} = ${q_('q')} · ${v_('v')} × ${B_('B')}: con ${q_('q')} negativa, al revés que para el protón → hacia abajo, ${F_(sci(F5.modulo) + ' N')}</div>
+   <div class="eq">${r_('r')} = 9,1 × 10⁻³¹ · ${v_('2 × 10⁶')} / (${q_('1,6 × 10⁻¹⁹')} · ${B_('0,2')}) ≈ ${r_(sci(M5.r, 1) + ' m')}<span class="note">mucho más chico: la masa es unas 1800 veces menor</span></div></div>
+   <p>El electrón siente una fuerza del mismo tamaño que el protón (su |${q_('q')}| es igual), pero hacia el otro lado: gira en sentido horario y el protón, antihorario. Usa la regla de la mano derecha y, si la carga es negativa, da vuelta el resultado.</p>
+   <p class="fuente">Olvidar el signo de la carga (opción A) y la opción C son hipótesis nuestras. Que la fuerza va en la dirección del campo (opción B) tiene un respaldo parcial (Singh, 2017).</p></div>` },
+ { k:'Paso 6', t:'Predice: el campo de un cable', gate:P6,
+   prep:() => { const ya = !!S.pred[P6.id]; E.config({ vista:'hilos', caja:{ x0:-.1, x1:.5, y0:-.24, y1:.2 }, hilos:[{ I:10, x:0, y:0, n:'I = 10 A, sale', nDy:-26 }],
+     P: ya && S.P6 ? S.P6 : { x:.2, y:0, n:'P', dx:-8, dy:-16 }, Q:{ x:.4, y:0, n:'Q', dx:10, dy:-16 }, kB:6e6,
+     ver:{ circ: ya ? [{ x:0, y:0, r:.4 }] : [], circP:true, BP:true, BQ:ya, dist:'P' }, prog:{ B:1 }, arr: ya ? { P:true } : {},
+     alCambiar:() => { if (S.pred[P6.id]) S.P6 = { ...E.P }; },
+     lect: () => (ya || S.p6) ? [...lecturasP(), ['B', 'Campo B en Q (a 0,4 m)', `${sci(H6.B1)} T`]] : [['r', 'Distancia d de P', '0,2 m'], ['B', 'Campo B en P', `${sci(H6.B0)} T`], ['r', 'Distancia d de Q', '0,4 m']],
+     desc: () => 'Vista de frente: un cable perpendicular a la pantalla con la corriente saliendo. P está a 0,2 m y Q a 0,4 m, en la misma recta.' }); },
+   anima:fin => { S.p6 = true; E.ver.BQ = true; E.ver.circ = [{ x:0, y:0, r:.4 }]; E.leyenda();
+     E.crecer('B', 900, () => { E.permitir({ P:true }); E.lect = () => [...lecturasP(), ['B', 'Campo B en Q (a 0,4 m)', `${sci(H6.B1)} T`]]; E.avisar(); fin(); }); },
+   body:() => `<p>Un cable recto y largo, perpendicular a la pantalla, lleva ${I_('I = 10 A')} que sale (⊙). En P, a ${r_('d = 0,2 m')}, el campo vale ${B_('B = 10⁻⁵ T')} y da vueltas alrededor del cable (la circunferencia a trazos). ¿Cuánto vale el campo en Q, al doble de distancia (${r_('0,4 m')})?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${B_('B')} = μ₀ · ${I_('I')} / (2π · ${r_('d')}) = 2 × 10⁻⁷ · ${I_('I')} / ${r_('d')}</div>
+   <div class="eq">${B_('B')}(Q) = 2 × 10⁻⁷ · ${I_('10')} / ${r_('0,4')} = ${B_(sci(H6.B1) + ' T')}<span class="note">la mitad que en P</span></div></div>
+   <p>Las líneas del campo de un cable son circunferencias alrededor de él. Su sentido sale de otra regla de la mano derecha: el pulgar en el sentido de ${I_('I')} y los dedos se cierran como gira ${B_('B')}. Con la corriente saliendo, gira en sentido antihorario.</p>
+   <p class="problem">Arrastra P (o toca el dibujo y usa las flechas): ${B_('B')} siempre es tangente a la circunferencia centrada en el cable que pasa por P (a trazos), y baja con 1/${r_('d')}.</p>
+   <p class="fuente">Usar 1/d² en vez de 1/d (opción A) y las demás opciones son hipótesis nuestras: no encontramos estudios que las midan.</p></div>` },
+ { k:'Paso 7', t:'Predice: entre dos corrientes opuestas', gate:P7,
+   prep:() => { const ya = !!S.pred[P7.id]; E.config({ vista:'hilos', caja:{ x0:-.25, x1:.25, y0:-.15, y1:.17 }, kB:2e6,
+     hilos:[{ I:10, x:-.1, y:0, n:'I₁ = 10 A, sale' }, { I: S.mismo7 && ya ? 10 : -10, x:.1, y:0, n: S.mismo7 && ya ? 'I₂ = 10 A, sale' : 'I₂ = 10 A, entra' }],
+     P: ya && S.P7 ? S.P7 : { x:0, y:0, n:'M', dx:-14, dy:22 }, ver:{ BP:ya, partes:true, total:true }, prog:{ B: ya ? 1 : 0, giro: ya ? 1 : 0, F: ya ? 1 : 0 }, arr: ya ? { P:true } : {},
+     alCambiar:() => { if (S.pred[P7.id]) S.P7 = { ...E.P }; },
+     lect: () => (ya || S.p7) ? lecturas7() : [['r', 'Separación de los cables', '0,2 m'], ['I', 'Corrientes', '10 A y 10 A']],
+     desc: () => 'Dos cables perpendiculares a la pantalla, separados 0,2 m: el de la izquierda con la corriente saliendo y el de la derecha con la corriente entrando. M es el punto medio.' }); },
+   anima:fin => { S.p7 = true; E.ver.BP = true; E.leyenda(); E.lect = lecturas7;
+     E.crecer('B', 700, () => E.crecer('giro', 700, () => E.crecer('F', 700, () => { E.permitir({ P:true }); E.avisar(); fin(); }))); },
+   entrar:() => { const b = $('mismo7'); if (b) b.onclick = () => { if (S.ocupado || !S.pred[P7.id]) return; S.mismo7 = !S.mismo7; const h = E.hilos[1]; h.I = S.mismo7 ? 10 : -10; h.n = S.mismo7 ? 'I₂ = 10 A, sale' : 'I₂ = 10 A, entra';
+     b.textContent = S.mismo7 ? 'Volver a corrientes opuestas' : 'Poner las dos corrientes saliendo'; E.cambio(); }; },
+   body:() => `<p>Dos cables paralelos, separados ${r_('0,2 m')}, llevan ${I_('10 A')} cada uno, en sentidos opuestos: el de la izquierda sale (⊙) y el de la derecha entra (⊗). ¿Cuánto vale el campo magnético en el punto medio M?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${B_('B₁')} = ${B_('B₂')} = 2 × 10⁻⁷ · ${I_('10')} / ${r_('0,1')} = ${B_(sci(PM7.B1) + ' T')}<span class="note">M está a 0,1 m de cada cable</span></div>
+   <div class="eq">${B_('B')} = ${B_('B₁')} + ${B_('B₂')} = ${B_(sci(PM7.B) + ' T')}<span class="note">los dos apuntan hacia arriba</span></div></div>
+   <p>El campo del cable que sale gira en sentido antihorario: a su derecha apunta hacia arriba. El del cable que entra gira en sentido horario: a su izquierda también apunta hacia arriba. Las corrientes son opuestas, pero sus campos en el medio van hacia el mismo lado. Con las dos corrientes en el mismo sentido, en el medio se anularían.</p>
+   <div class="acciones"><button type="button" class="btn" id="mismo7">${S.mismo7 ? 'Volver a corrientes opuestas' : 'Poner las dos corrientes saliendo'}</button></div>
+   <p class="problem">Arrastra M (o usa las flechas): ${B_('B₁')} y ${B_('B₂')} se suman como flechas, la segunda desde la punta de la primera.</p>
+   <p class="fuente">En un estudio con 466 universitarios, solo cerca de 4 de cada 10 acertó una pregunta como esta después del curso, sin mejora respecto de antes; la respuesta «se anula» viene de pensar que dos efectos opuestos se cancelan (Singh, 2017). Las opciones B y D son hipótesis nuestras.</p></div>` },
+ { k:'Paso 8', t:'Predice: dos cables con corriente', gate:P8,
+   prep:() => { const ya = !!S.pred[P8.id]; E.config({ vista:'hilos', caja:{ x0:-.2, x1:.2, y0:-.11, y1:.13 }, kB:1.5e6,
+     hilos:[{ I:10, x:-.05, y:0, n:'I₁ = 10 A' }, { I:-20, x:.05, y:0, n:'I₂ = 20 A' }], ver:{ fuerzas:ya, Botro:ya }, prog:{ F:1 },
+     lect: () => (ya || S.p8) ? [['F', 'F/L sobre el cable 1', `${sci(CP8.sobre1)} N/m`], ['F', 'F/L sobre el cable 2', `${sci(CP8.sobre2)} N/m`], ['ink', 'Se…', CP8.tipo === 'repulsion' ? 'repelen' : 'atraen']] : [['r', 'Separación d', '0,1 m'], ['I', 'Corrientes', '10 A y 20 A, opuestas']],
+     desc: () => 'Dos cables paralelos perpendiculares a la pantalla, separados 0,1 m: el de la izquierda con 10 A saliendo y el de la derecha con 20 A entrando.' }); },
+   anima:fin => { S.p8 = true; E.ver.fuerzas = true; E.ver.Botro = true; E.leyenda(); E.lect = () => [['F', 'F/L sobre el cable 1', `${sci(CP8.sobre1)} N/m`], ['F', 'F/L sobre el cable 2', `${sci(CP8.sobre2)} N/m`], ['ink', 'Se…', 'repelen']];
+     E.crecer('F', 1000, () => { E.avisar(); fin(); }); },
+   body:() => `<p>Dos cables largos y paralelos, separados ${r_('d = 0,1 m')}, llevan ${I_('I₁ = 10 A')} (sale) e ${I_('I₂ = 20 A')} (entra), en sentidos opuestos. ¿Cómo son las fuerzas que se hacen?</p>${opcionesHTML(P8.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${F_('F')}/L = 2 × 10⁻⁷ · ${I_('I₁')} · ${I_('I₂')} / ${r_('d')} = 2 × 10⁻⁷ · ${I_('10')} · ${I_('20')} / ${r_('0,1')} = ${F_(sci(CP8.porLargo) + ' N/m')}<span class="note">sobre cada uno</span></div>
+   <div class="eq">${F_('F₁')}/L = ${I_('I₁')} · ${B_('B₂')} = ${I_('10')} · ${B_(sci(CP8.B2en1))} = ${F_(sci(CP8.sobre1))}; ${F_('F₂')}/L = ${I_('I₂')} · ${B_('B₁')} = ${I_('20')} · ${B_(sci(CP8.B1en2))} = ${F_(sci(CP8.sobre2))}</div></div>
+   <p>Cada cable está en el campo del otro. Los campos son distintos (${B_('B₂')}, del cable de 20 A, es el doble), pero el cable que siente el campo más fuerte lleva la mitad de corriente: las dos fuerzas son iguales y opuestas, como pide la tercera ley. Y con corrientes opuestas se repelen; con corrientes del mismo sentido se atraen: al revés que las cargas.</p>
+   <p class="fuente">Que corrientes opuestas se atraen fue el error más común en una pregunta así, sin porcentaje en el texto leído; y ninguno de los entrevistados que acertó pudo explicarlo con las dos reglas de la mano derecha (Singh, 2017): respaldo parcial para la opción B. Que el cable con más corriente ejerce más fuerza (opción C) lo reporta Maloney y otros (2001), citado por Sağlam y Millar, sin porcentaje: respaldo parcial. La opción D es una hipótesis nuestra. Sigue con «¿Qué pasa si…?» y con los problemas de lápiz y papel.</p></div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = !!(s.gate && !S.pred[s.gate.id]); Celular.compactar($('m1'), E.compacto);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  nav();
+  if (s.entrar) s.entrar();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  [...dots.querySelectorAll('button')].forEach((b, j) => { b.disabled = j > S.max || S.ocupado; });
+  ['izq4', 'der4', 'mismo7'].forEach(id => { const b = $(id); if (b) b.disabled = S.ocupado; });
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // un paso bloqueado no anuncia su título
+    if (k > S.max){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Paso ${k + 1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.setAttribute('aria-label', `Ir al paso ${k + 1}: ${steps[k].t}`); }
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; E.ocupado = true; nav();
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    E.compactar(false);
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo: () => { S.ocupado = false; E.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Respaldos: MG6 (parcial, sin porcentaje) en el experimento 3; lo demás, hipótesis nuestras
+   (docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md). La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const V1 = MM.cambioVelocidad(QP, MP, 2e6, 0.2, 2);
+const A2 = MM.cambioAnguloConductor(4, 0.5, 0.3, 90, 30);
+const C3 = MM.cablesParalelos(10, -20, 0.1), C3b = MM.cablesParalelos(10, 20, 0.1);
+const S4 = MM.cambioSolenoide(2, 1000, 2);
+const O5 = [0, 45, 90, 135, 180, 225, 270, 315].map(a => ({ x:.12*Math.cos(a*RAD), y:.12*Math.sin(a*RAD) }));
+const ang5 = I => O5.map(p => MM.brujula([{ I, x:0, y:0 }], p).angulo);
+const A5 = ang5(100), A5b = ang5(-100), B5 = MM.campoHilo(100, .12).B;
+const piT = (c, e) => piCon(c, e) + ' T';
+const proton = o => ({ q:QP, m:MP, Bz:-.2, lf:18, ...o });
+const chico = () => $('cv2').clientWidth < 560;
+
+function lect3d(){ const p = E.p3, r = MM.fuerzaConductorVector(p.I, MM.vectorAngulo(p.L, p.phi), { x:p.B, y:0, z:0 }); return [['th', 'θ entre cable y B', `${fmt(r.theta, 0)}°`], ['F', 'Fuerza F', `${fmt(r.modulo, 2)} N ${r.modulo ? (r.F.z > 0 ? '(hacia +z)' : '(hacia −z)') : ''}`]]; }
+
+const EXPS = [
+  { id:'doble-rapidez', corto:'El doble de rapidez',
+    q:`En el campo de ${B_('B = 0,2 T')} que entra, el protón 1 (${q_('q = +1,6 × 10⁻¹⁹ C')}; m = 1,6 × 10⁻²⁷ kg) va a ${v_('v = 2 × 10⁶ m/s')} y da vueltas con ${r_('r = 0,1 m')} y periodo T = π × 10⁻⁷ s. El protón 2, igual, entra en el mismo campo con el doble de rapidez, ${v_('4 × 10⁶ m/s')}. ¿Con qué radio y qué periodo gira el protón 2?`,
+    opts:[['a', `r = ${fmt(V1.r1, 1)} m y T = 2π × 10⁻⁷ s`, 'MG-periodo-crece-con-v', 'hipotesis'],
+          ['b', `r = ${fmt(V1.r1, 1)} m y T = π × 10⁻⁷ s`],
+          ['c', `r = ${fmt(V1.errores.radioIgual, 1)} m y T = 0,5π × 10⁻⁷ s`, 'MG-radio-no-depende-de-v', 'hipotesis'],
+          ['d', `r = ${fmt(V1.errores.radioCuadrado, 1)} m y T = π × 10⁻⁷ s`, 'MG-radio-con-v-al-cuadrado', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'El radio se duplica, pero el periodo no cambia: T = 2πm/(|q|B) no tiene v. La vuelta es el doble de larga y la recorre el doble de rápido.', c:'El radio sí cambia: r = m·v/(|q|B), con el doble de v, el doble de radio. Y el periodo no cambia.', d:'El radio va con v, no con v²: r = m·v/(|q|B) se duplica.' },
+    antes:ya => E.config({ caja:{ x0:-.24, x1:.24, y0:-.24, y1:.29 }, campo:{ tipo:'entra', B:.2, etq:'B = 0,2 T, entra (⊗)' },
+      // el protón 2 arranca arriba de su círculo yendo a la izquierda (centro en el origen, como el 1): nada se pisa
+      parts:[proton({ v0:{ x:2e6, y:0 }, p0:{ x:0, y:-.1 }, lv:34, n:'1', nDx:-18, nDy:0, nAl:'right', lf: chico() ? 12 : 18, t: ya ? V1.T0 : 0, traza:ya, tVuelta:V1.T0, verF:ya }),
+             proton({ v0:{ x:-4e6, y:0 }, p0:{ x:0, y:.2 }, lv:68, n:'2', nDx:18, nDy:0, nAl:'left', lf: chico() ? 24 : 36, t: ya ? V1.T0 : 0, traza:ya, tVuelta:V1.T0, verF:ya })],
+      lect: () => (ya ? [['r', 'Radios', `${fmt(V1.r0, 1)} m y ${fmt(V1.r1, 1)} m`], ['ink', 'Periodos', 'π × 10⁻⁷ s los dos']] : [['v', 'Rapideces', '2 × 10⁶ y 4 × 10⁶ m/s']]),
+      desc: () => 'Dos protones en el mismo campo que entra a la pantalla, uno más rápido que el otro.' }),
+    despues:() => { const [a, b] = E.parts; a.verF = b.verF = true; a.traza = b.traza = true; E.leyenda();
+      E.lect = () => [['ink', 'Tiempo', `${fmt(a.t/1e-7, 2)} × 10⁻⁷ s`], ['r', 'Radios', `${fmt(V1.r0, 1)} m y ${fmt(V1.r1, 1)} m`]];
+      E.crecer('F', 500, () => E.tween(3000, f => { a.t = b.t = f*V1.T0; E.dibujar(); E.avisar(); }, () => { E.lect = () => [['r', 'Radios', `${fmt(V1.r0, 1)} m y ${fmt(V1.r1, 1)} m`], ['ink', 'Periodos', 'π × 10⁻⁷ s los dos']]; E.avisar(); })); },
+    exp:() => `<div class="eqs"><div class="eq">${r_('r')} = m · ${v_('v')} / (|${q_('q')}| · ${B_('B')}) → con ${v_('2v')}, ${r_('2r')} = ${r_(fmt(V1.r1, 1) + ' m')}</div>
+      <div class="eq">T = 2π · m / (|${q_('q')}| · ${B_('B')}) = π × 10⁻⁷ s<span class="note">no tiene v</span></div></div>
+      <p>Los dos protones terminan la vuelta al mismo tiempo: el 2 recorre una circunferencia el doble de larga, pero va el doble de rápido. En eso se basa el ciclotrón, que acelera partículas que giran siempre con el mismo periodo.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'cable-girado', corto:'El cable girado',
+    q:`Un tramo de cable de ${r_('L = 0,5 m')} lleva ${I_('I = 4 A')} en un campo uniforme de ${B_('B = 0,3 T')}. Perpendicular al campo, siente ${F_('F = 0,6 N')}. Si se gira el cable, dentro del plano que forman el cable y el campo, hasta que forme ${th_('θ = 30°')} con el campo, ¿qué fuerza siente?`,
+    opts:[['a', `F = ${fmt(A2.errores.sinCambio, 1)} N`, 'MG-conductor-sin-seno', 'hipotesis'],
+          ['b', `F ≈ ${fmt(A2.errores.conCoseno, 2)} N`, 'MG-conductor-con-coseno', 'hipotesis'],
+          ['c', `F = ${fmt(A2.F1, 1)} N`],
+          ['d', 'F = 0 N', 'MG-conductor-solo-a-90', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'El ángulo sí importa: F = B·I·L·sen θ. A 30°, sen 30° = 1/2.', b:'Es con el seno del ángulo entre el cable y B, no con el coseno: sen 30° = 1/2.', d:'Solo es cero si el cable queda paralelo al campo. A 30°, F = B·I·L·sen 30°.' },
+    antes:ya => E.config({ vista:'p3d', p3:{ modo:'conductor', I:4, L:.5, B:.3, phi: ya ? 30 : 90, theta:true, verF:true, yaw:32 }, arr: ya ? { giro:{ lim:[0, 180] } } : {},
+      lect: () => (ya ? lect3d() : [['th', 'θ entre cable y B', '90°'], ['F', 'Fuerza F', '0,6 N (hacia −z)']]),
+      desc: () => 'Vista en perspectiva: el campo B va por el eje x; el cable está en el plano xy y la fuerza sobre él, a lo largo del eje z.' }),
+    despues:() => { E.lect = lect3d; E.tween(1500, f => { E.p3.phi = Math.round(mix(90, 30, suave(f))); E.dibujar(); E.avisar(); }, () => { E.p3.phi = 30; E.permitir({ giro:{ lim:[0, 180] } }); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${F_('F')} = ${B_('B')} · ${I_('I')} · ${r_('L')} · sen ${th_('θ')} = ${B_('0,3')} · ${I_('4')} · ${r_('0,5')} · sen ${th_('30°')} = ${F_('0,6')} · 1/2 = ${F_(fmt(A2.F1, 1) + ' N')}</div></div>
+      <p>Es la misma fórmula que para una carga (${F_('F')} = |q|·v·B·sen θ): la corriente son cargas que se mueven a lo largo del cable. La fuerza sigue perpendicular al cable y al campo. Arrastra el extremo del cable (o usa ← →): con el cable paralelo a ${B_('B')}, la fuerza se anula.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'corriente-invertida', corto:'Una corriente al revés',
+    q:`Los cables del paso 8 (${I_('I₁ = 10 A')} y ${I_('I₂ = 20 A')} a ${r_('0,1 m')}) llevan corrientes opuestas: se repelen con ${F_(sci(C3.porLargo) + ' N/m')} cada uno. Si se invierte la corriente del cable de 20 A y las dos quedan saliendo, ¿qué pasa?`,
+    opts:[['a', `Se repelen, con ${sci(C3.porLargo)} N/m sobre cada uno`, 'MG-el-sentido-no-importa', 'hipotesis'],
+          ['b', `Se atraen: ${sci(2*C3b.porLargo)} N/m sobre el de 10 A y ${sci(C3b.porLargo)} N/m sobre el de 20 A`, 'MG6-mas-corriente-empuja-mas', 'parcial'],
+          ['c', `Se atraen, con ${sci(C3b.porLargo)} N/m sobre cada uno`],
+          ['d', 'Dejan de hacerse fuerza: 0 N/m', 'MG-mismo-sentido-se-anulan', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'El sentido de las corrientes sí importa: del mismo sentido se atraen; opuestas, se repelen.', b:'Sí se atraen, pero con la misma fuerza: el producto I₁·I₂ es el mismo para los dos cables (tercera ley).', d:'Los campos de los dos no se anulan en el lugar de cada cable: cada uno siente el campo del otro y se atraen.' },
+    antes:ya => E.config({ vista:'hilos', caja:{ x0:-.2, x1:.2, y0:-.11, y1:.13 }, kB:1.5e6,
+      hilos:[{ I:10, x:-.05, y:0, n:'I₁ = 10 A' }, { I: ya ? 20 : -20, x:.05, y:0, n:'I₂ = 20 A' }], ver:{ fuerzas:true, Botro:ya }, prog:{ F:1 },
+      lect: () => [['F', 'F/L sobre cada cable', `${sci(C3.porLargo)} N/m`], ['ink', 'Se…', ya ? 'atraen' : 'repelen']],
+      desc: () => 'Dos cables paralelos perpendiculares a la pantalla, separados 0,1 m, con sus fuerzas.' }),
+    despues:() => { const h = E.hilos[1]; E.tween(500, f => { E.prog.F = 1 - f; E.dibujar(); }, () => { h.I = 20; E.ver.Botro = true;
+      E.lect = () => [['F', 'F/L sobre cada cable', `${sci(C3b.porLargo)} N/m`], ['ink', 'Se…', 'atraen']]; E.avisar(); E.leyenda(); E.crecer('F', 800); }); },
+    exp:() => `<div class="eqs"><div class="eq">${F_('F')}/L = 2 × 10⁻⁷ · ${I_('10')} · ${I_('20')} / ${r_('0,1')} = ${F_(sci(C3b.porLargo) + ' N/m')}<span class="note">el mismo valor, ahora de atracción</span></div></div>
+      <p>El tamaño de la fuerza no cambia, porque las corrientes y la distancia son las mismas. Al invertir ${I_('I₂')}, se invierte el campo ${B_('B₂')} que siente el cable 1; el cable 2 sigue en el mismo ${B_('B₁')}, pero con su corriente al revés. Las dos fuerzas cambian de sentido y ahora tiran hacia adentro.</p>
+      <p class="fuente">Que el cable con más corriente ejerce más fuerza (opción B) lo reporta Maloney y otros (2001), citado por Sağlam y Millar, sin porcentaje: respaldo parcial. Las opciones A y D son hipótesis nuestras.</p>` },
+  { id:'solenoide-doble', corto:'Más espiras por metro',
+    q:`Un solenoide largo tiene n = 1000 espiras por metro y lleva ${I_('I = 2 A')}: adentro, el campo vale ${B_('B = 8π × 10⁻⁴ T')}. Se enrolla otro con la misma corriente y el doble de espiras por metro (n = 2000). ¿Cuánto vale el campo adentro?`,
+    opts:[['a', `B = ${piT(S4.errores.mitad, -4)}`, 'MG-solenoide-espiras-se-estorban', 'hipotesis'],
+          ['b', `B = ${piT(S4.errores.sinCambio, -4)}`, 'MG-solenoide-solo-depende-de-I', 'hipotesis'],
+          ['c', `B = ${piT(S4.errores.cuadrado, -4)}`, 'MG-solenoide-con-n-al-cuadrado', 'hipotesis'],
+          ['d', `B = ${piT(S4.Bpi1, -4)}`]],
+    ok:'d',
+    fb:{ a:'Las espiras no se estorban: sus campos se suman adentro. Más espiras por metro, más campo.', b:'El campo depende de la corriente y también de cuántas espiras hay por metro: B = μ₀·n·I.', c:'B va con n, no con n²: el doble de espiras por metro, el doble de campo.' },
+    antes:ya => E.config({ vista:'solenoide', sol:{ n: ya ? 2000 : 1000, I:2, Bpi: ya ? S4.Bpi1 : S4.Bpi0, k:112500, nVer: ya ? 20 : 10 },
+      lect: () => [['ink', 'Espiras por metro n', ya ? '2000' : '1000'], ['B', 'Campo B adentro', ya ? piT(S4.Bpi1, -4) : piT(S4.Bpi0, -4)]],
+      desc: () => 'Un tramo de 1 cm de un solenoide visto de costado, con las espiras y el campo adentro.' }),
+    despues:() => { E.sol.nVer = 20; E.sol.n = 2000; E.lect = () => [['ink', 'Espiras por metro n', '2000'], ['B', 'Campo B adentro', piT(S4.Bpi1, -4)]]; E.avisar();
+      E.tween(1200, f => { E.sol.Bpi = mix(S4.Bpi0, S4.Bpi1, suave(f)); E.dibujar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${B_('B')} = μ₀ · n · ${I_('I')} = 4π × 10⁻⁷ · 2000 · ${I_('2')} = ${B_(piT(S4.Bpi1, -4))}<span class="note">el doble</span></div></div>
+      <p>Cada espira aporta su campo y adentro se suman. Con las espiras más juntas hay más campo en el mismo largo. Lo que cuenta es n = N/L: 400 espiras en 20 cm dan lo mismo que 2000 espiras en 1 m.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'oersted', corto:'La brújula y el cable',
+    q:`Alrededor de un cable perpendicular a la pantalla hay ocho brújulas. Con ${I_('100 A')} saliendo (⊙), en cada brújula, a 12 cm, el campo del cable vale ${B_('B ≈ ' + sci(B5, 1) + ' T')}: varias veces el de la Tierra en el Perú (unos 2,5 a 3 × 10⁻⁵ T), así que cada brújula se orienta con el campo del cable. Si se invierte la corriente, ¿qué hacen las brújulas?`,
+    opts:[['a', 'Giran media vuelta: cada una apunta al revés'],
+          ['b', 'No cambian: el campo es el mismo con cualquier sentido de la corriente', 'MG-campo-no-depende-del-sentido', 'hipotesis'],
+          ['c', 'Giran un cuarto de vuelta: apuntan hacia el cable', 'MG-brujula-apunta-al-cable', 'hipotesis'],
+          ['d', 'Giran un cuarto de vuelta: apuntan hacia afuera del cable', 'MG-brujula-apunta-afuera', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'El sentido del campo sale del sentido de la corriente (regla de la mano derecha): si la corriente se invierte, el campo también.', c:'El campo de un cable no apunta hacia el cable: da vueltas alrededor de él. Al invertir la corriente, gira al revés.', d:'El campo de un cable no apunta hacia afuera: es tangente a circunferencias alrededor del cable.' },
+    antes:ya => E.config({ vista:'hilos', caja:{ x0:-.2, x1:.2, y0:-.17, y1:.17 }, hilos:[{ I: ya ? -100 : 100, x:0, y:0, n:'', nDy:0 }],
+      brujulas:O5.map((p, k) => ({ ...p, a0: ya ? A5b[k] : A5[k], a1: ya ? A5b[k] : A5[k] })), ver:{},
+      lect: () => [['I', 'Corriente', ya ? '100 A, entra' : '100 A, sale'], ['B', 'B en cada brújula', `${sci(B5, 1)} T`]],
+      desc: () => 'Un cable perpendicular a la pantalla rodeado por ocho brújulas.' }),
+    despues:() => { E.hilos[0].I = -100; E.brujulas = O5.map((p, k) => ({ ...p, a0:A5[k], a1:A5[k] + 180 })); E.lect = () => [['I', 'Corriente', '100 A, entra'], ['B', 'B en cada brújula', `${sci(B5, 1)} T`]]; E.avisar();
+      E.crecer('giro', 1400, () => { E.brujulas = O5.map((p, k) => ({ ...p, a0:A5b[k], a1:A5b[k] })); E.dibujar(); }); },
+    exp:() => `<p>Es el experimento de Oersted (1820): una corriente desvía una brújula. Con la corriente saliendo, el campo da vueltas en sentido antihorario; al invertirla, en sentido horario, y cada aguja gira media vuelta. Ninguna apunta hacia el cable: todas quedan tangentes a una circunferencia alrededor de él.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta; las respondidas se revisitan.
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k > primeraLibre()) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = !ya; Celular.compactar($('m2'), !ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la opción ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); pintar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    E.compactar(false);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

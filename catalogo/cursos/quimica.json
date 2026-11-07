@@ -303,7 +303,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["liquidos-y-solidos"],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
     },
     {

@@ -1,5 +1,5 @@
 {
-  "titulo": "Una sola respuesta: problemas para lápiz y papel",
+  "titulo": "La ventana principal: problemas para lápiz y papel",
   "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja la circunferencia o el triángulo cuando te ayude. Tres controles antes de marcar: la respuesta de un arco tiene que estar en su rango (arcsen y arctan, del lado derecho: entre −π/2 y π/2; arccos y arccot, de arriba: entre 0 y π); arcsen y arccos solo reciben números entre −1 y 1; y sen⁻¹k es un ángulo, no 1/sen k.",
   "problemas": [
     {

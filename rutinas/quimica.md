@@ -339,3 +339,80 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
    - ΔE00 mínimo 20,7 en claro y 25,2 en oscuro;
    - el rojo de los avisos queda a 17,4 del Na⁺ en oscuro, y el aviso siempre va con texto.
 3. En `docs/pendientes.md` y `CLAUDE.md`, una línea como las demás.
+
+## 7 nov 2026 · liquidos-y-solidos (la última de la cola)
+
+**Contexto.** Enlace quedó integrado. La conversación principal trajo la paleta común de elementos (`nucleo/elementos.js`): esta escena la usa, con `Elementos.css([...])`, y se sumó a `nucleo/elementos-escenas.test.js`. Ese test es la única excepción fuera de mi carpeta, y la pidió la conversación principal. Al juntar la rama principal hubo un conflicto en `plantillas/enlace/index.html`: tomé su versión, que es la mía con el Na⁺ de la paleta común. El contenedor se reinició a mitad de camino y retomé a los constructores desde el disco.
+
+**Qué se hizo.** `plantillas/liquidos-y-solidos/` (unidad `quimica.liquidos-y-solidos`). Usa los informes de gases y soluciones (GQ16 a GQ19), de átomo y enlace (EN13 a EN16) y de física (Q9).
+
+- **`motor.js`** (`window.MotorLiquidos`):
+  - presión de vapor de agua, etanol y acetona con Antoine (rangos declarados);
+  - punto de ebullición según la presión y según la altitud, con la misma atmósfera estándar de calorimetría: una prueba comprueba que Juliaca da igual en las dos;
+  - olla a presión;
+  - puentes de hidrógeno (EN15) y orden de puntos de ebullición, con datos del CRC;
+  - gas recogido sobre agua, humedad relativa y punto de rocío;
+  - frasco cerrado (GQ18) con una caja de partículas que se evaporan y condensan hasta igualar los dos flujos;
+  - diagramas de fases del agua y del CO₂.
+- **Números:** 52 casos, 10 problemas de papel y 80 pruebas.
+- **`index.html`:**
+  - **Paso a paso:** 8 pasos con 5 predicciones:
+    - el frasco grande contra el chico (GQ18);
+    - qué hay en las burbujas (EN13);
+    - por qué en Puno hierve antes (Q9);
+    - H₂O contra H₂S (EN14);
+    - quién forma puentes de hidrógeno (EN15).
+  - **¿Qué pasa si…?:** 5 experimentos bloqueados en orden: butano contra isobutano (EN16), gas sobre agua, olla a presión, hielo seco y el vapor que se enfría (GQ16).
+  - **Explorador:** líquido, temperatura y presión externa.
+
+**Subagentes.**
+- **Verificador:** con `entradas.py` y sin leer el motor. 48 de 52 casos coinciden exactos; los otros 4 coinciden una vez declaradas las constantes que faltaban en la cabecera (R, los puntos del CO₂ en Pa).
+- **Revisor:** encontró dos graves:
+  - la correcta caía siempre en b en «¿Qué pasa si…?»;
+  - la barra del gas sobre agua regalaba la respuesta.
+  
+  Y estos medios:
+  - dos opciones con la misma respuesta (Puno, butano);
+  - el dibujo del butano insinuaba la respuesta;
+  - moléculas encimadas;
+  - con movimiento reducido, el paso 3 no mostraba el equilibrio;
+  - lecturas con ruido;
+  - la T verde dentro del texto verde de «correcto»;
+  - el puente de hidrógeno contra la presión externa en oscuro.
+  
+  Además, 10 bajos.
+- **Estado:** todo corregido. Decidí bajar GQ18 y GQ16 a 'parcial', que es lo prudente. Lo que se arregló:
+  - las correctas ahora caen en posiciones variadas, y en ninguna predicción la correcta es la más larga;
+  - la barra del gas sobre agua solo aparece después de responder;
+  - opciones nuevas para Puno y para el butano;
+  - el butano sin orientar antes de responder;
+  - el paso 3 con el ritmo de equilibrio del motor también con movimiento reducido;
+  - el color del puente de hidrógeno pasó a granate/rosa (#570011 / #fbb1e5), porque el propuesto no pasaba AA en oscuro;
+  - la cabecera del motor ya declara R y el CO₂ en Pa;
+  - con la regla nueva de la conversación principal, el subtítulo y el paso 1 ya no regalan nada.
+
+  Volvió a correr Playwright en las 8 combinaciones, sin errores.
+
+**Pendiente.**
+- La humedad relativa solo está en el motor y en el papel; no tiene escena.
+- Hay que cotejar con la tabla del colegio:
+  - las constantes de Antoine;
+  - los puntos de ebullición del CRC;
+  - los puntos triples;
+  - los momentos dipolares que cita el paso 6 (H₂O 1,85 D y H₂S 0,97 D, de memoria; no salen de un informe).
+- El agua tiene dos tramos de Antoine que difieren 0,55 % a 100 °C; el motor deja la ebullición en 100,0 °C entre 760,1 y 764,3 mmHg.
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/quimica.json`, unidad `quimica.liquidos-y-solidos`, poner `"plantillas": ["liquidos-y-solidos"]`. Después, `npm run catalogo` y, si hace falta, rebalancear el banco de química.
+2. En `docs/diseno.md`, las variables de líquidos y sólidos (`plantillas/liquidos-y-solidos/`):
+   - presión de vapor Pv: azul (#1f5fbf, oscuro #7cb0ff);
+   - presión externa Pext: naranja (#a05200, oscuro #f0a04a);
+   - temperatura T: verde (#377703, oscuro #97f91f), no rojo, porque el O de la paleta común es rojo;
+   - puente de hidrógeno: granate (#570011, oscuro #fbb1e5);
+   - presión del gas seco Pgas: fucsia (#a10fbf, oscuro #cf6bfa);
+   - los elementos, con la paleta común.
+
+   El ΔE00 mínimo entre variables es 20,4 (puente de hidrógeno contra Pgas).
+3. En `docs/pendientes.md` y en `CLAUDE.md`, una línea como las demás.
+
+**Con esto se termina la cola de esta rutina** (equilibrio químico, cinética, mol y composición, átomo y tabla, enlace, líquidos y sólidos). Si Gerson quiere más química A, hay que darle una lista nueva. La química B (materia, nomenclatura y orgánica) va en su propia rutina.
