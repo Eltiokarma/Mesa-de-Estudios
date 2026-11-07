@@ -433,7 +433,7 @@
   const CAJAS = Object.freeze({
     1: [{ formula: 'O2', n: 6 }],
     2: [{ formula: 'H2O', n: 6 }],
-    3: [{ formula: 'He', n: 9 }],
+    3: [{ formula: 'Fe', n: 9 }],
     4: [{ formula: 'H2', n: 5 }, { formula: 'O2', n: 3 }],
   });
   // El vaso del paso 3.

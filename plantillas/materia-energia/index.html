@@ -10,17 +10,7 @@
 
    Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 (docs/metodo/paleta.py) y contraste WCAG sobre
    #fdf7f1 y #241c2e, también sobre el chip .v (fondo del 8 %): contraste mínimo 4,5 en los dos modos.
-     ELEMENTOS (bloque único, fácil de reemplazar cuando exista nucleo/elementos.js; los de balance-reacciones salvo donde se dice)
-       H  hidrógeno  turquesa      #0f766e / #5ed9c8
-       O  oxígeno    rojo          #c0364a / #f17384
-       C  carbono    gris          #6b6b6b / #9a9a9a
-       Cl cloro      verde         #466d14 / #a3d65e
-       Fe hierro     celeste       #03649b / #30b4f2   (en claro, un poco más oscuro que en balance, #036a99, para
-                                                         quedar a ΔE00 20,7 del C: el clavo y el azúcar salen juntos)
-       Na sodio      fucsia        #a10fbf / #cf6bfa   (nuevo)
-       Si silicio    oliva oscuro  #5c531f / #c8dc3c   (nuevo)
-       S  azufre     añil          #3a1fe0 / #9f9bff   (el de mol-composicion; en oscuro se aclaró para el chip)
-       He helio      violeta       #6b3dbd / #ab8cf2   (nuevo)
+     ELEMENTOS: paleta común de nucleo/elementos.js (variables --el-<Símbolo>), en el bloque generado de abajo.
      VARIABLES
        m  masa (lo que marca la balanza; también Δm)   mostaza       #7d6a00 / #e3c84a
        E  energía                                      magenta       #b3246b / #ff86bd
@@ -28,18 +18,22 @@
        fases                                           naranja       #a05200 / #f0a04a
        componentes                                     azul          #1f5fbf / #7cb0ff
        T  temperatura (solo en Juliaca)                ámbar         #8f5800 / #ffc04d
-   Qué sale junto: H, O y He (cajas); H, O, Na y Cl con fases y componentes (vaso); C, H y O con m (frasco); C, H, O y Fe
-   (azúcar y clavo); H y O con Na y Cl, con Si, con C, o Fe y S (separación, una mezcla a la vez); m, E y c; Fe, O y m;
-   H, O y T; O; S. ΔE00 mínimo entre los que salen juntos: 20,7 en claro (C–Fe) y 22,3 en oscuro (C–tinta).
-   Parecidos que nunca comparten dibujo: fases–T (6,5), Fe–componentes (7,2), S–He (8,7), Cl–c (8,8).
+   Qué sale junto: H, O y Fe (cajas); H, O, Na y Cl con fases y componentes (vaso); C, H y O con m (frasco); C, H, O y Fe
+   (azúcar y clavo); H y O con Na y Cl, con Si o con C, o Fe y S (separación, una mezcla a la vez); m, E y c; Fe, O y m;
+   H, O y T; O; S. Las variables quedan a ΔE00 ≥ 20 de los elementos de cada vista y de la tinta.
+   Pares de Elementos.CERCANOS que sí salen juntos (pendiente de la paleta común, cada átomo lleva su letra):
+   O–Na (12,5) en el vaso y en la separación del agua con sal; C–Fe (3,6) en las lupas del azúcar y del clavo.
+   Parecidos entre variables que nunca comparten dibujo: fases–T (6,5), S–componentes.
    Los tonos de agua, aceite, arena, hielo, azufre en polvo y llama son pálidos y no nombran variables. */
+/* Bloque generado con Elementos.css(['H', 'C', 'O', 'Na', 'Si', 'S', 'Cl', 'Fe']); no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-O:#c4284e; --el-Na:#8d3656; --el-Si:#6b3a14; --el-S:#3328c4; --el-Cl:#466d14; --el-Fe:#6a676d }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-O:#f17384; --el-Na:#c2849e; --el-Si:#e0a878; --el-S:#9f9bff; --el-Cl:#a3d65e; --el-Fe:#9e9ea4 } }
+:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-O:#f17384; --el-Na:#c2849e; --el-Si:#e0a878; --el-S:#9f9bff; --el-Cl:#a3d65e; --el-Fe:#9e9ea4 }
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  /* elementos */
-  --e-H:#0f766e; --e-O:#c0364a; --e-C:#6b6b6b; --e-Cl:#466d14; --e-Fe:#03649b; --e-Na:#a10fbf; --e-Si:#5c531f; --e-S:#3a1fe0; --e-He:#6b3dbd;
   /* variables */
   --c-m:#7d6a00; --c-E:#b3246b; --c-c:#255c1f; --c-fa:#a05200; --c-co:#1f5fbf; --c-T:#8f5800;
   /* tonos del mundo (no son variables) */
@@ -52,7 +46,6 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --e-H:#5ed9c8; --e-O:#f17384; --e-C:#9a9a9a; --e-Cl:#a3d65e; --e-Fe:#30b4f2; --e-Na:#cf6bfa; --e-Si:#c8dc3c; --e-S:#9f9bff; --e-He:#ab8cf2;
   --c-m:#e3c84a; --c-E:#ff86bd; --c-c:#5fe06a; --c-fa:#f0a04a; --c-co:#7cb0ff; --c-T:#ffc04d;
   --vidrio:#5e5670; --caja:#211a2a; --letra-atomo:#1d1626; --agua:#2b3a46; --aceite:#4a4326; --arena:#4d4131; --hielo:#3a4553;
   --polvo:#6a6230; --llama:#7a4f34; color-scheme:dark } }
@@ -60,7 +53,6 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --e-H:#5ed9c8; --e-O:#f17384; --e-C:#9a9a9a; --e-Cl:#a3d65e; --e-Fe:#30b4f2; --e-Na:#cf6bfa; --e-Si:#c8dc3c; --e-S:#9f9bff; --e-He:#ab8cf2;
   --c-m:#e3c84a; --c-E:#ff86bd; --c-c:#5fe06a; --c-fa:#f0a04a; --c-co:#7cb0ff; --c-T:#ffc04d;
   --vidrio:#5e5670; --caja:#211a2a; --letra-atomo:#1d1626; --agua:#2b3a46; --aceite:#4a4326; --arena:#4d4131; --hielo:#3a4553;
   --polvo:#6a6230; --llama:#7a4f34; color-scheme:dark }
@@ -110,8 +102,8 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .v-fa{color:var(--c-fa); background:color-mix(in srgb, var(--c-fa) 8%, transparent)}
 .v-co{color:var(--c-co); background:color-mix(in srgb, var(--c-co) 8%, transparent)}
 .v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
-.v-H{color:var(--e-H)} .v-O{color:var(--e-O)} .v-C{color:var(--e-C)} .v-Cl{color:var(--e-Cl)} .v-Fe{color:var(--e-Fe)}
-.v-Na{color:var(--e-Na)} .v-Si{color:var(--e-Si)} .v-S{color:var(--e-S)} .v-He{color:var(--e-He)}
+.v-H{color:var(--el-H)} .v-O{color:var(--el-O)} .v-C{color:var(--el-C)} .v-Cl{color:var(--el-Cl)} .v-Fe{color:var(--el-Fe)}
+.v-Na{color:var(--el-Na)} .v-Si{color:var(--el-Si)} .v-S{color:var(--el-S)}
 .v.hl{background:none; outline:2px solid currentColor; outline-offset:1px}
 .carga{color:var(--ink); font-weight:800}
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
@@ -223,6 +215,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 });
 </script>
 <script src="motor.js"></script>
+<script src="../../nucleo/elementos.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
 <script>
@@ -257,7 +250,7 @@ function cien(x){
   return `${fmt(m, 2)} × 10${String(e).split('').map(ch => SUP[ch]).join('')}`;
 }
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
-const ELEM = ['H', 'O', 'C', 'Cl', 'Fe', 'Na', 'Si', 'S', 'He'];
+const ELEM = ['H', 'O', 'C', 'Cl', 'Fe', 'Na', 'Si', 'S'];
 const SUBD = { '0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉' };
 function txt(f){ const [c, q] = String(f).split('^'); return c.replace(/\d/g, d => SUBD[d]) + (q ? (q === '+' ? '⁺' : q === '-' ? '⁻' : q) : ''); }
 // Fórmula en el texto: cada elemento con su color; al tocarlo se resalta en el dibujo.
@@ -272,7 +265,7 @@ const Vm = t => V('m', t), VE = t => V('E', t), Vc = t => V('c', t), Vfa = t => 
 
 function colores(){
   const g = n => css(n), el = {};
-  for (const e of ELEM) el[e] = g('--e-' + e);
+  for (const e of ELEM) el[e] = g('--el-' + e);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), ok:g('--ok'), warn:g('--warn'),
     m:g('--c-m'), E:g('--c-E'), c:g('--c-c'), fa:g('--c-fa'), co:g('--c-co'), T:g('--c-T'), el,
     vidrio:g('--vidrio'), caja:g('--caja'), letra:g('--letra-atomo'), agua:g('--agua'), aceite:g('--aceite'), arena:g('--arena'),
@@ -298,12 +291,12 @@ const colDe = (c, k) => c.el[k] || c[k] || c.ink;
 /* ----- Partículas -----
    Cada átomo lleva el color de su elemento y su letra si cabe. Coordenadas en radios de átomo. El azúcar y el aceite
    van simplificados (un anillo y una cadena): la leyenda lo dice. */
-const RADIO = { H:0.62, He:0.85, C:0.95, O:0.95, Na:1.1, Cl:1.15, Si:1.05, Fe:1.1, S:1.0 };
+const RADIO = { H:0.62, C:0.95, O:0.95, Na:1.1, Cl:1.15, Si:1.05, Fe:1.1, S:1.0 };
 const anillo = (n, r, els) => els.map((e, k) => [e, r*Math.cos(2*Math.PI*k/n - Math.PI/2), r*Math.sin(2*Math.PI*k/n - Math.PI/2)]);
 const FORMAS = {
   H2:[['H',-.6,0],['H',.6,0]], O2:[['O',-.78,0],['O',.78,0]], N2:[['N',-.78,0],['N',.78,0]],
   O3:[['O',-1.4,.55],['O',0,-.25],['O',1.4,.55]], H2O:[['H',-.92,.58],['H',.92,.58],['O',0,-.12]],
-  He:[['He',0,0]], Fe:[['Fe',0,0]], S:[['S',0,0]], 'Na^+':[['Na',0,0]], 'Cl^-':[['Cl',0,0]],
+  Fe:[['Fe',0,0]], S:[['S',0,0]], 'Na^+':[['Na',0,0]], 'Cl^-':[['Cl',0,0]],
   NaCl:[['Na',-1.05,0],['Cl',1.1,0]], SiO2:[['O',-1.75,0],['O',1.75,0],['Si',0,0]],
   C2H5OH:[['H',-2.3,-.7],['H',-2.3,.7],['H',-1.35,1.05],['H',.15,1.05],['H',.15,-1.05],['H',2.45,.35],['C',-1.35,0],['C',.15,0],['O',1.6,-.45]],
   Fe2O3:[['Fe',-1.95,.45],['Fe',1.95,.45],['O',-3.9,-.45],['O',0,-.45],['O',3.9,-.45]],
@@ -440,8 +433,8 @@ function crearEscena(cv, idDesc, modoId, idLey){
   E.describir = () => { const t = PINTA[E.vista.tipo].describir(E.vista), el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t; };
   return E;
 }
-const LEY_EL = { H:'hidrógeno', O:'oxígeno', C:'carbono', Cl:'cloro', Fe:'hierro', Na:'sodio', Si:'silicio', S:'azufre', He:'helio' };
-const leyEl = els => els.map(e => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--e-${e})"/></svg>${e} · ${LEY_EL[e]}</span>`);
+const LEY_EL = { H:'hidrógeno', O:'oxígeno', C:'carbono', Cl:'cloro', Fe:'hierro', Na:'sodio', Si:'silicio', S:'azufre' };
+const leyEl = els => els.map(e => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--el-${e})"/></svg>${e} · ${LEY_EL[e]}</span>`);
 const leyVar = (k, t) => `<span><i style="background:var(--c-${k})"></i>${t}</span>`;
 
 /* --- Las cuatro cajas (paso 2) --- */
@@ -452,20 +445,20 @@ PINTA.cajas = {
     [1, 2, 3, 4].forEach((k, i) => {
       const x = 10 + (i % n)*(bw + 10), y = 8 + Math.floor(i/n)*(bh + 34);
       rr(ctx, x, y, bw, bh, 14); ctx.fillStyle = c.caja; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.stroke();
-      const items = MM.CAJAS[k].map(p => ({ f:p.formula, n:p.n })), zona = { x:x + 6, y:y + 6, w:bw - 12, h:bh - 12 }, R = radioPara(items, zona);
+      const items = MM.CAJAS[k].map(p => ({ f:p.formula, n:p.n })), zona = k === 3 ? { x:x + bw*0.2, y:y + bh*0.2, w:bw*0.6, h:bh*0.6 } : { x:x + 6, y:y + 6, w:bw - 12, h:bh - 12 }, R = k === 3 ? radioPara(items, zona)*1.25 : radioPara(items, zona);
       repartir(items, zona, 11 + k).forEach(q => particula(ctx, c, q.f, q.x, q.y, R, q.a, hl));
       const rot = v.r ? `caja ${k}: ${MM.clasificarCaja(MM.CAJAS[k]).nombre.replace('sustancia pura (', '').replace(')', '')}` : `caja ${k}`;
       texto(ctx, c, rot, x + bw/2, y + bh + 14, 13, v.r && MM.clasificarCaja(MM.CAJAS[k]).tipo === 'compuesto' ? c.ink : c.muted, 'center', bw, 800);
     });
   },
-  leyenda: () => leyEl(['H', 'O', 'He']),
-  describir: v => v.r ? 'Caja 1: moléculas de O₂, un elemento. Caja 2: moléculas de H₂O, un compuesto. Caja 3: átomos de He sueltos, un elemento. Caja 4: moléculas de H₂ y de O₂ sin unirse, una mezcla homogénea.'
-    : 'Cuatro cajas con partículas. Caja 1: moléculas de dos átomos de oxígeno. Caja 2: moléculas de dos átomos de hidrógeno y uno de oxígeno. Caja 3: átomos de helio sueltos. Caja 4: moléculas de dos átomos de hidrógeno y moléculas de dos átomos de oxígeno.',
+  leyenda: () => leyEl(['H', 'O', 'Fe']),
+  describir: v => v.r ? 'Caja 1: moléculas de O₂, un elemento. Caja 2: moléculas de H₂O, un compuesto. Caja 3: átomos de Fe, un elemento. Caja 4: moléculas de H₂ y de O₂ sin unirse, una mezcla homogénea.'
+    : 'Cuatro cajas con partículas. Caja 1: moléculas de dos átomos de oxígeno. Caja 2: moléculas de dos átomos de hidrógeno y uno de oxígeno. Caja 3: átomos de hierro, uno al lado del otro. Caja 4: moléculas de dos átomos de hidrógeno y moléculas de dos átomos de oxígeno.',
 };
 
 /* --- El vaso (paso 3): agua, hielo, sal disuelta, aceite y arena --- */
 PINTA.vaso = {
-  alto: w => w < 560 ? 300 : 330,
+  alto: w => w < 560 ? 300 : 334,
   pintar(ctx, c, W, v, hl){
     const chico = W < 560, gx = chico ? 14 : 24, gw = chico ? W*0.5 : W*0.44, top = 26, gh = chico ? 236 : 262, base = top + gh;
     const yAce = top + gh*0.2, yAg = top + gh*0.36, yAr = base - gh*0.16;
@@ -500,9 +493,8 @@ PINTA.vaso = {
       ctx.restore(); bordeLupa(ctx, c, lx, ly, lr);
       texto(ctx, c, 'la sal, repartida en el agua', lx, ly + lr + 13, 11, c.muted, 'center', chico ? 2*lr + 14 : 2*lr + 40, 700);
       // Componentes.
-      const comp = ['H₂O (agua y hielo)', 'NaCl (sal)', 'aceite', 'SiO₂ (arena)'], x0 = chico ? 14 : xr;
-      if (chico){ texto(ctx, c, `componentes: ${comp.join(' · ')}`, W/2, base + 22, 11, c.co, 'center', W - 16, 800); }
-      else comp.forEach((t, i) => texto(ctx, c, (i ? '' : 'componentes: ') + t, x0, base - 70 + i*18, 12, c.co, 'left', W - x0 - 8, 800));
+      const comp = ['H₂O (agua y hielo)', 'NaCl (sal)', 'aceite', 'SiO₂ (arena)'];
+      texto(ctx, c, `componentes: ${comp.join(' · ')}`, W/2, base + 22, chico ? 11 : 13, c.co, 'center', W - 16, 800);
     }
   },
   leyenda: v => v.r ? [...leyEl(['H', 'O', 'Na', 'Cl']), leyVar('fa', 'fases (numeradas)'), leyVar('co', 'componentes')] : [],
@@ -585,9 +577,9 @@ PINTA.frasco = {
 /* --- Azúcar contra clavo (paso 6) --- */
 // v: { r, p (0 a 1, la transición), ev (0 a 1, se evapora el agua azucarada) }
 PINTA.dos = {
-  alto: w => w < 560 ? 300 : 330,
+  alto: w => w < 560 ? 314 : 340,
   pintar(ctx, c, W, v, hl){
-    const chico = W < 560, cw = W/2, lr = chico ? Math.min(cw*0.44, 80) : Math.min(cw*0.36, 100), ly = chico ? 196 : 200, p = v.r ? (v.p === undefined ? 1 : v.p) : 0, ev = v.ev || 0;
+    const chico = W < 560, cw = W/2, lr = chico ? Math.min(cw*0.44, 80) : Math.min(cw*0.36, 100), ly = chico ? 212 : 222, p = v.r ? (v.p === undefined ? 1 : v.p) : 0, ev = v.ev || 0;
     [0, 1].forEach(i => {
       const x0 = i*cw, gx = x0 + cw*0.28, gw = cw*0.44, gy = 30, gh = chico ? 74 : 80;
       ctx.fillStyle = c.agua; ctx.fillRect(gx, gy + gh*(0.25 + 0.7*ev*(1 - i)), gw, gh*(0.75 - 0.7*ev*(1 - i)));
@@ -753,7 +745,7 @@ const P1 = { id:'materia-cajas', ok:'c', opts:[
   fb:{ c:'¡Bien! En la caja 2 todas las partículas son iguales (una sola sustancia) y cada una tiene átomos de H y de O unidos: es un compuesto, H₂O. Mira los rótulos de las cajas.',
     a:`Elegiste la 1. En la caja 4 hay H y O, pero no están unidos entre sí: son moléculas de H₂ y moléculas de O₂ revueltas. Dos sustancias sin unirse forman una ${C4.nombre}. Confundir compuesto y mezcla al leer dibujos de partículas está documentado en universitarios, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen). La correcta está marcada.`,
     b:'Elegiste la 2. Los átomos de la caja 1 están unidos, pero todos son de oxígeno: el O₂ es un elemento. Un compuesto necesita átomos de elementos distintos unidos. Esta confusión está documentada, sin porcentaje en lo que leímos (Stains y Talanquer, 2007, por su resumen). La correcta está marcada.',
-    d:'Elegiste la 4. Juntar muchos átomos iguales no forma un compuesto: el helio de la caja 3 es un elemento, con una sola clase de átomo. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+    d:'Elegiste la 4. Juntar muchos átomos iguales no forma un compuesto: el hierro de la caja 3 es un elemento, con una sola clase de átomo. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
 const P2 = { id:'materia-fases', ok:'d', opts:[
   ['a', `${fc(VASO.errores.cadaCosaUnaFase, VASO.errores.cadaCosaUnComponente)}: cada cosa nombrada cuenta una vez`, 'fases-cada-cosa', 'hipotesis'],
   ['b', `${fc(VASO.nFases, VASO.errores.hieloOtroComponente)}: el hielo y el agua son componentes distintos`, 'fases-hielo-otro-componente', 'hipotesis'],
@@ -828,7 +820,7 @@ const steps = [
  { k:'Paso 2', t:'Antes de mirar, predice', gate:P1, vista:r => vCajas(r),
    body:() => `<p>Cada caja muestra las partículas de una muestra, vistas con una lupa muy potente. Cada círculo es un átomo; los que se tocan están unidos.</p>
    <p>¿En cuál caja hay un compuesto?</p>${opcionesHTML(P1.opts, 'fb')}
-   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex"><b>Elemento</b>: una sola clase de átomo, sueltos (${F('He')}) o unidos en moléculas (${F('O2')}).</span></div>
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex"><b>Elemento</b>: una sola clase de átomo, sueltos (${F('Fe')}, un metal) o unidos en moléculas (${F('O2')}).</span></div>
    <div class="eq"><span class="ex"><b>Compuesto</b>: átomos de elementos distintos unidos, siempre en la misma proporción (${F('H2O')}: 2 H por cada O).</span></div>
    <div class="eq"><span class="ex"><b>Mezcla</b>: dos o más sustancias sin unirse (${F('H2')} con ${F('O2')}). Se ve igual en todas partes: es homogénea.</span></div></div>
    <p>Elementos y compuestos son <b>sustancias puras</b>: todas sus partículas son iguales. Hay ${C1.atomos} átomos en la caja 1 y ${C3.atomos} en la 3, pero la cantidad no decide nada: decide qué clase de partículas hay.</p>
@@ -1034,7 +1026,7 @@ PINTA.azufre = {
     ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 4]); linea(ctx, lx + lr, ly, ax - 26, ay); ctx.restore();
     particula(ctx, c, 'S', ax, ay, chico ? 15 : 18, 0, hl);
     texto(ctx, c, 'un átomo', ax, ay + 34, 11, c.muted, 'center', 80, 700);
-    if (v.r) texto(ctx, c, 'sin color, sin fusión, sin dureza', ax - (chico ? 30 : 0), ay + 52, 11, c.ink, chico ? 'right' : 'center', chico ? W*0.5 : W*0.3, 800);
+    if (v.r) texto(ctx, c, 'el átomo solo: sin color, sin fusión, sin dureza', chico ? W/2 : ax, chico ? 236 : ay + 52, 11, c.ink, 'center', chico ? W - 16 : W*0.3, 800);
   },
   leyenda: () => leyEl(['S']).concat(['<span>el añil es la clave del azufre en el dibujo, no su color</span>']),
   describir: v => v.r ? 'Un átomo de azufre solo tiene masa y su forma de combinarse; el color amarillo, la fusión y la dureza son del conjunto de muchos átomos.' : 'Un montón de azufre en polvo amarillo; la lupa muestra moléculas de ocho átomos de azufre y, aparte, un solo átomo.',
@@ -1043,7 +1035,7 @@ PINTA.azufre = {
 PINTA.juliaca = {
   alto: w => w < 560 ? 270 : 260,
   pintar(ctx, c, W, v, hl){
-    const chico = W < 560, ox = 16, ow = chico ? W*0.4 : W*0.3, oy = 50, oh = 120, p = v.r ? (v.p === undefined ? 1 : v.p) : 0;
+    const chico = W < 560, ox = 16, ow = chico ? W*0.4 : W*0.3, oy = 64, oh = 120, p = v.r ? (v.p === undefined ? 1 : v.p) : 0;
     ctx.fillStyle = c.agua; rr(ctx, ox, oy + 14, ow, oh - 14, 10); ctx.fill();
     ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 3.5; rr(ctx, ox, oy, ow, oh, 12); ctx.stroke(); ctx.restore();
     llama(ctx, c, ox + ow/2, oy + oh + 30, ow*0.8);
@@ -1060,8 +1052,8 @@ PINTA.juliaca = {
     ctx.save(); ctx.strokeStyle = c.T; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(gx, Ty(15)); ctx.lineTo(gx + gw*0.45, Ty(87)); ctx.stroke();
     if (p > 0){ ctx.beginPath(); ctx.moveTo(gx + gw*0.45, Ty(87)); ctx.lineTo(gx + gw*(0.45 + 0.5*p), Ty(87)); ctx.stroke(); }
     ctx.restore();
-    texto(ctx, c, 'empieza a hervir', gx + gw*0.45, Ty(87) + 16, 10, c.muted, 'center', gw*0.5, 700);
-    if (p >= 1) texto(ctx, c, '5 min más: sigue en 87 °C', gx + gw*0.72, Ty(87) - 12, 11, c.T, 'center', gw*0.55, 800);
+    if (!chico) texto(ctx, c, 'empieza a hervir', gx + gw*0.45 - 6, Ty(87) - 12, 10, c.muted, 'right', gw*0.45, 700);
+    if (p >= 1) texto(ctx, c, chico ? 'sigue en 87 °C' : '5 min más: sigue en 87 °C', gx + gw*0.74, Ty(87) + 16, 11, c.T, 'center', gw*0.5, 800);
   },
   leyenda: () => [leyVar('T', 'T · temperatura')],
   describir: v => v.r ? 'La gráfica sube hasta 87 grados y se queda horizontal mientras el agua hierve: el termómetro sigue en 87 grados.' : 'Una olla que hierve en Juliaca con un termómetro en 87 grados y una gráfica de temperatura que sube hasta que empieza a hervir.',
@@ -1070,14 +1062,14 @@ PINTA.juliaca = {
 PINTA.nuclear = {
   alto: w => w < 560 ? 230 : 230,
   pintar(ctx, c, W, v, hl){
-    const chico = W < 560, cx = W/2, yb = 118, p = v.r ? (v.p === undefined ? 1 : v.p) : 0, b = MM.balanzaNuclear(1.8e14);
+    const chico = W < 560, cx = W/2, yb = 128, p = v.r ? (v.p === undefined ? 1 : v.p) : 0, b = MM.balanzaNuclear(1.8e14);
     ctx.save(); rr(ctx, cx - 70, yb - 92, 140, 90, 14); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 3; ctx.stroke(); ctx.restore();
-    texto(ctx, c, 'combustible y productos, todo adentro', cx, yb - 104, 11, c.muted, 'center', W - 20, 700);
+    texto(ctx, c, 'combustible y productos, todo adentro', cx, yb + 74, 11, c.muted, 'center', W - 20, 700);
     ctx.save(); ctx.fillStyle = c.muted; for (let i = 0; i < 5; i++){ rr(ctx, cx - 50 + i*21, yb - 40, 16, 34, 4); ctx.fill(); } ctx.restore();
     balanza(ctx, c, cx, yb, chico ? W*0.7 : 260, v.r ? `M − ${fmt(b.baja*ease(p), 2)} g` : 'M');
     // La energía que sale, en su color, al responder.
-    if (v.r && p > 0){ ctx.save(); ctx.strokeStyle = c.E; ctx.lineWidth = 2.5; for (let k = 0; k < 6; k++){ const a = -Math.PI/2 + (k - 2.5)*0.35, r0 = 52, r1 = 52 + 34*ease(p); linea(ctx, cx + Math.cos(a)*r0, yb - 46 + Math.sin(a)*r0, cx + Math.cos(a)*r1, yb - 46 + Math.sin(a)*r1); } ctx.restore();
-      texto(ctx, c, `E = 1,8 × 10¹⁴ J`, chico ? W - 12 : cx + 120, yb - 70, 13, c.E, chico ? 'right' : 'left', chico ? W*0.4 : W*0.3, 900); }
+    if (v.r && p > 0){ ctx.save(); ctx.strokeStyle = c.E; ctx.lineWidth = 2.5; for (const a of [-0.45, 0, 0.45, Math.PI - 0.45, Math.PI, Math.PI + 0.45]){ const r0 = 80, r1 = 80 + 26*ease(p); linea(ctx, cx + Math.cos(a)*r0, yb - 46 + Math.sin(a)*r0, cx + Math.cos(a)*r1, yb - 46 + Math.sin(a)*r1); } ctx.restore();
+      texto(ctx, c, `E = 1,8 × 10¹⁴ J`, cx, yb - 106, 13, c.E, 'center', W - 20, 900); }
     texto(ctx, c, v.r && p >= 1 ? `baja ${fmt(b.baja, 2)} g = 2 × 10⁻³ kg` : 'se liberan 1,8 × 10¹⁴ J', cx, yb + 52, 13, v.r && p >= 1 ? c.m : c.ink, 'center', W - 20, 800);
   },
   leyenda: () => [leyVar('m', 'm · masa'), leyVar('E', 'E · energía')],

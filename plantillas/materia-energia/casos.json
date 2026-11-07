@@ -9,12 +9,12 @@
       "fn": "clasificarCaja", "args": [[{ "formula": "H2O", "n": 6 }]],
       "espera": { "tipo": "compuesto", "nombre": "sustancia pura (compuesto)", "pura": true, "nSustancias": 1, "elementos": ["H", "O"], "particulas": 6, "atomos": 18, "nFases": 1 } },
 
-    { "nombre": "Predicción 1, distractor (MA9): la caja 4 (5 H2 y 3 O2) es mezcla homogénea de dos elementos; quien mira «dos clases de átomos» o «átomos unidos» dice compuesto; quien mira a la vista (MA10), sustancia pura",
+    { "nombre": "Predicción 1, distractor (MA9): la caja 4 (5 H2 y 3 O2); las cajas 1 (O2) y 3 (Fe, un metal) son elementos es mezcla homogénea de dos elementos; quien mira «dos clases de átomos» o «átomos unidos» dice compuesto; quien mira a la vista (MA10), sustancia pura",
       "fn": "clasificarCaja", "args": [[{ "formula": "H2", "n": 5 }, { "formula": "O2", "n": 3 }]],
       "espera": { "tipo": "mezcla", "nombre": "mezcla homogénea", "sustancias": ["H2", "O2"], "nElementos": 2, "particulas": 8, "atomos": 16,
                   "errores.dosClasesDeAtomos": "compuesto", "errores.atomosUnidos": "compuesto", "errores.aLaVista": "sustancia pura" },
       "tambien": [ { "args": [[{ "formula": "O2", "n": 6 }]], "espera": { "tipo": "elemento", "nombre": "sustancia pura (elemento)", "atomos": 12, "errores.atomosUnidos": "compuesto", "errores.dosClasesDeAtomos": "elemento" } },
-                   { "args": [[{ "formula": "He", "n": 9 }]], "espera": { "tipo": "elemento", "atomos": 9, "errores.atomosUnidos": "elemento", "errores.cadaAtomoUnaSustancia": 9 } },
+                   { "args": [[{ "formula": "Fe", "n": 9 }]], "espera": { "tipo": "elemento", "atomos": 9, "errores.atomosUnidos": "elemento", "errores.cadaAtomoUnaSustancia": 9 } },
                    { "fn": "especie", "args": ["O3"], "espera": { "tipo": "elemento", "nAtomos": 3, "masaMolar": 48, "errores.porUnion": "compuesto" } } ] },
 
     { "nombre": "Experimento 2 (MA9): 4 moléculas de O2 y 3 de O3 son una mezcla de dos sustancias de un solo elemento (alótropos)",
