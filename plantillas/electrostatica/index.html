@@ -746,7 +746,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
       for (let x = xL + 9; x < Math.min(x1, xL + ancho) - 4; x += 16){ ctx.fillText('−', x, yT + 9); ctx.fillText('+', x, yB - 9); }
       ctx.restore();
     }
-    rotulo(ctx, c, Math.min(xL + ancho/2, W - 30), yC, `κ = ${fmt(D.o.kappa, 1)}`, c.ink, 'center', 800, 12);
+    if (D.f >= .98) rotulo(ctx, c, x1 + 8, yC, `κ = ${fmt(D.o.kappa, 1)}`, c.ink, 'left', 800, 12);
+    else rotulo(ctx, c, Math.min(xL + ancho/2, (xL + W)/2), yC, `κ = ${fmt(D.o.kappa, 1)}`, c.ink, 'center', 800, 12);
     // campo: líneas verticales, tantas como E/E0 · 9
     const n = Math.max(1, Math.round(9*R.E/R.E0));
     for (let k = 0; k < n; k++){ const x = x0 + ancho*(k + .5)/n; flecha({ x, y:yT + 3 }, { x, y:yB - 3 }, c.E, grosor('E', 1.8), { alfa:.75 }); }
@@ -755,16 +756,20 @@ function crearEscena(cv, idDesc, idLect, idLey){
     // cargas libres de las placas: un signo por cada 20 µC
     const m = Math.max(1, Math.round(R.Q/20));
     ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 13px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    for (let k = 0; k < m; k++){ const x = x0 + ancho*(k + .5)/m; ctx.fillText('+', x, yT - 16); ctx.fillText('−', x, yB + 17); }
+    // sin signos encima del cable, que sale del centro de cada placa
+    for (let k = 0; k < m; k++){ const x = x0 + ancho*(k + .5)/m; if (Math.abs(x - (x0 + ancho/2)) < 7) continue; ctx.fillText('+', x, yT - 16); ctx.fillText('−', x, yB + 17); }
     ctx.restore();
     // pila: conectada o no
     const xp = x0 - 46, yP = yC;
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
     linea(ctx, { x:x0 + ancho/2, y:yT - 7 }, { x:x0 + ancho/2, y:yT - 30 }); linea(ctx, { x:x0 + ancho/2, y:yB + 7 }, { x:x0 + ancho/2, y:yB + 30 });
-    const corte = D.conectado ? 0 : 14;
-    linea(ctx, { x:x0 + ancho/2, y:yT - 30 }, { x:xp + corte, y:yT - 30 }); linea(ctx, { x:x0 + ancho/2, y:yB + 30 }, { x:xp, y:yB + 30 });
-    linea(ctx, { x:xp, y:yT - 30 }, { x:xp, y:yP - 8 }); linea(ctx, { x:xp, y:yP + 8 }, { x:xp, y:yB + 30 });
-    if (!D.conectado){ ctx.strokeStyle = c.paper; ctx.lineWidth = 4; linea(ctx, { x:xp - 1, y:yT - 30 }, { x:xp + corte, y:yT - 30 }); }
+    // arriba, un interruptor: cerrado si está conectada; abierto (el brazo levantado) si no
+    const yS = yT - 30, xa = xp + 10, xb = xp + 34;
+    linea(ctx, { x:x0 + ancho/2, y:yS }, { x:xb, y:yS }); linea(ctx, { x:xp, y:yS }, { x:xa, y:yS });
+    linea(ctx, { x:xa, y:yS }, D.conectado ? { x:xb, y:yS } : { x:xb - 4, y:yS - 15 });
+    ctx.fillStyle = c.ink; for (const x of [xa, xb]){ ctx.beginPath(); ctx.arc(x, yS, 2.6, 0, 7); ctx.fill(); }
+    linea(ctx, { x:x0 + ancho/2, y:yB + 30 }, { x:xp, y:yB + 30 });
+    linea(ctx, { x:xp, y:yS }, { x:xp, y:yP - 8 }); linea(ctx, { x:xp, y:yP + 8 }, { x:xp, y:yB + 30 });
     ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, { x:xp - 12, y:yP - 8 }, { x:xp + 12, y:yP - 8 }); ctx.lineWidth = 5; linea(ctx, { x:xp - 6, y:yP + 8 }, { x:xp + 6, y:yP + 8 });
     ctx.restore();
     rotulo(ctx, c, Math.max(8, xp - 16), yB + 46, D.conectado ? 'pila conectada' : 'pila desconectada', c.muted, 'left', 700, 11);
@@ -995,7 +1000,8 @@ function vivoPar(){
 function lecturasPrueba(){
   if (!E.prueba) { const e = ME.campo(Q5, { x:.3, y:0 }); return [['E', 'Campo en (0,3; 0)', `${sci(e.modulo)} ${NC}`], ['q', 'q₀', 'sin carga de prueba']]; }
   const r = ME.prueba(Q5, E.prueba, E.prueba.q), d = Math.hypot(E.prueba.x, E.prueba.y);
-  return [['r', 'Distancia a Q', `${fmt(d, 2)} m`], ['E', 'Campo E', `${sci(r.E.modulo)} ${NC}`], ['q', 'q₀', `${conSigno(E.prueba.q)} µC`],
+  // con la predicción pendiente, sin la distancia (está en el enunciado): el banco del celular no pasa de ~320 px
+  return [...(E.compacto ? [] : [['r', 'Distancia a Q', `${fmt(d, 2)} m`]]), ['E', 'Campo E', `${sci(r.E.modulo)} ${NC}`], ['q', 'q₀', `${conSigno(E.prueba.q)} µC`],
     ['F', 'F = q₀·E', `${fmt(r.F.modulo, 3)} N ${r.mismoSentido ? 'con E' : 'contra E'}`]];
 }
 function lecturasSonda(){
