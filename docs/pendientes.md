@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 3888 pruebas.
+Deben pasar 3924 pruebas.
 
 ```bash
 npm run dev
@@ -130,7 +130,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - Algunos rótulos quedan apretados en el celular (junto a B1 y en McDermott).
   - Si el alumno quita B3 en el paso 8, la quitada pasa al explorador.
 - **Calorimetría** (`plantillas/calorimetria/`, hecha el 5 nov 2026):
-  - La unidad también pide dilatación y transferencia de calor (conducción, convección, radiación); la escena no las cubre todavía.
+  - Hecho (7 nov, 0.2.0, «Temperatura y calor»): pestañas «Dilatación» y «Transferencia» (Stefan marcado «Para la UNI»), experimento «Dos tazas» (parcial), la noche en Puno que amanece más fría; Q2 documentado (Jara Guerrero, 48 %); se quitó la «temperatura de contacto» del hielo.
   - El punto de ebullición según la altitud y lo que "siente" la mano son modelos aproximados (atmósfera estándar con Antoine; efusividades de tabla). Sirven para comparar, no para medir.
   - El vapor de la olla destapada se va: en "Sigo calentando" la animación termina a los 300 s, mientras todavía hierve.
 - **Energía** (`plantillas/energia/`, hecha el 6 nov 2026):
