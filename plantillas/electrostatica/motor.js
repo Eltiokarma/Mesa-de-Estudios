@@ -6,7 +6,8 @@
  *
  * Unidades: cargas en µC (microcoulomb), distancias y posiciones en metros, masas en kg, campo en N/C, potencial
  * en V, fuerza en N, trabajo y energía en J. Excepciones:
- *   - serie, paralelo y energiaCondensador: capacidades en µF, cargas en µC y energías en µJ (µF · V² = µJ).
+ *   - serie, paralelo, energiaCondensador y dielectrico: capacidades en µF, cargas en µC y energías en µJ
+ *     (µF · V² = µJ); en dielectrico, la distancia d entre placas (opcional) en m y el campo E en V/m (= N/C).
  *   - capacidad y cambioPlacas: todo en SI (A en m², d en m, Q en C, C en F); además dan la capacidad en pF.
  *   - contacto: cargas en µC y radios en m.
  * k = 9 × 10⁹ N·m²/C², ε₀ = 8,85 × 10⁻¹² C²/(N·m²) y g = 10 m/s², como en las academias.
@@ -30,6 +31,9 @@
  *   cambioPlacas(A, d, fA, fD)         la capacidad cuando el área se multiplica por fA y la distancia por fD
  *   serie(Cs, V), paralelo(Cs, V)      condensadores: capacidad equivalente, carga, voltaje y energía de cada uno
  *   energiaCondensador(C, V)           U = C·V²/2 = Q·V/2 = Q²/(2C)
+ *   dielectrico(o)                     se mete una lámina de dieléctrico κ que llena el espacio entre las placas (o una
+ *                                      fracción del área): C × κ siempre; CONECTADO a la pila, V fijo y Q, U × κ;
+ *                                      DESCONECTADO, Q fija y V, E, U ÷ κ
  *   contacto(Q1, R1, Q2, R2)           dos esferas conductoras que se tocan: la carga se reparte hasta igualar el
  *                                      potencial (proporcional al radio), no en partes iguales
  *   mapaCampo(cargas, caja, n)         flechitas del campo en una cuadrícula, con su dirección y su intensidad relativa
@@ -45,6 +49,8 @@
  *   fuerzaSobre y campo: sinCuadrados = √(F1 + F2 + …), «Pitágoras sin elevar al cuadrado»; sumaModulos y
  *     restaModulos suman o restan los módulos como números.
  *   campoYPotencial: todoSeAnula, cambiados y nadaSeAnula dicen qué se anularía (Ecero, Vcero) según cada idea.
+ *   dielectrico: nadaCambia (V y Q de antes: «el aislante no hace nada»), vSubeConC (V × κ con Q fija),
+ *     otraSituacion (V, Q y U de la otra conexión: confundir conectado con desconectado) y cNoCambia (C de antes).
  *   trabajoCamino: caminoLargoMas y caminoLargoMenos escalan W con la razón de largos (camino / recta y al revés);
  *     cero, «por un camino que vuelve por equipotenciales no hay trabajo».
  */
@@ -439,6 +445,39 @@
       errores: { sinMedio: limpio(C * V * V), lineal: limpio(C * V / 2) } };
   }
 
+  // o = { C0 (µF), V0 (V) o Q0 (µC), kappa, conectado (bool), d (m, opcional), fraccion (0 a 1, opcional) }.
+  // La lámina tiene el grosor del espacio entre placas; si cubre solo una fracción f del área, son dos condensadores
+  // en paralelo: C = C0·(1 + (κ − 1)·f). El campo es V/d en todo el espacio (con o sin lámina).
+  function dielectrico(o) {
+    if (!o || typeof o !== 'object') throw new Error('faltan los datos: { C0, V0 o Q0, kappa, conectado }');
+    positivo(o.C0, 'la capacidad C0');
+    const k = positivo(o.kappa, 'la constante dieléctrica κ');
+    if (k < 1) throw new Error('la constante dieléctrica κ debe ser 1 o más');
+    if (typeof o.conectado !== 'boolean') throw new Error('falta decir si está conectado (true o false)');
+    if ((o.V0 === undefined) === (o.Q0 === undefined)) throw new Error('da V0 o Q0, uno de los dos');
+    const f = o.fraccion === undefined ? 1 : numero(o.fraccion, 'la fracción');
+    if (f < 0 || f > 1) throw new Error('la fracción debe estar entre 0 y 1');
+    if (o.d !== undefined) positivo(o.d, 'la distancia d');
+    const V0 = o.V0 !== undefined ? numero(o.V0, 'V0') : o.Q0 / o.C0, Q0 = o.Q0 !== undefined ? numero(o.Q0, 'Q0') : o.C0 * V0;
+    const factor = 1 + (k - 1) * f, C = o.C0 * factor;
+    const estado = conectado => {
+      const V = conectado ? V0 : Q0 / C, Q = conectado ? C * V0 : Q0;
+      return { C: limpio(C), V: limpio(V), Q: limpio(Q), U: limpio(Q * V / 2), E: o.d ? limpio(V / o.d) : undefined };
+    };
+    const r = estado(o.conectado), otra = estado(!o.conectado);
+    const U0 = Q0 * V0 / 2;
+    return {
+      ...r, C0: o.C0, V0: limpio(V0), Q0: limpio(Q0), U0: limpio(U0), E0: o.d ? limpio(V0 / o.d) : undefined,
+      factor: limpio(factor), razonU: limpio(r.U / U0), razonV: limpio(r.V / V0), razonQ: limpio(r.Q / Q0),
+      errores: {
+        nadaCambia: { V: limpio(V0), Q: limpio(Q0), C: o.C0 },             // EL6 (parcial): «el aislante no hace nada»
+        vSubeConC: { V: limpio(V0 * factor), Q: limpio(Q0) },               // C sube κ veces y V «también»
+        otraSituacion: { V: otra.V, Q: otra.Q, U: otra.U },                 // confundir conectado con desconectado
+        cNoCambia: { C: o.C0 },                                              // «no cambian A ni d»
+      },
+    };
+  }
+
   // ---------- Conductores que se tocan ----------
   // Dos esferas conductoras (cargas en µC, radios en m) se tocan y se separan: la carga total se reparte hasta que
   // las dos tengan el mismo potencial, kQ1'/R1 = kQ2'/R2. La esfera más grande se queda con más carga.
@@ -528,7 +567,7 @@
     K, EPS0, MICRO, G, TOL,
     coulomb, cambioDistancia, fuerzaSobre, campo, potencial, campoYPotencial, prueba, trabajo, trabajoCamino,
     esferas, esferasColgadas, campoUniforme, trayectoriaUniforme,
-    capacidad, cambioPlacas, serie, paralelo, energiaCondensador, contacto,
+    capacidad, cambioPlacas, serie, paralelo, energiaCondensador, dielectrico, contacto,
     mapaCampo, curvaNivel, radioEquipotencial, azar,
   };
 });

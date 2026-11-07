@@ -199,6 +199,21 @@ test('la capacidad de placas no depende de la carga; crece con el área y baja c
     cerca(motor.capacidad({ A, d, k: 3 }).C, 3 * a.C, 'dieléctrico');
   }
 });
+test('dieléctrico: C × κ siempre; desconectado, Q se conserva y U, V, E ÷ κ; conectado, V fijo y Q, U × κ', () => {
+  for (let k = 0; k < N; k++) {
+    const C0 = al(0.5, 50), V0 = al(1, 300), ka = al(1, 10), d = al(1e-4, 1e-2), f = rnd();
+    const des = motor.dielectrico({ C0, V0, kappa: ka, conectado: false, d }), con = motor.dielectrico({ C0, V0, kappa: ka, conectado: true, d });
+    const U0 = C0 * V0 * V0 / 2;
+    cerca(des.C, ka * C0, 'C desconectado'); cerca(con.C, ka * C0, 'C conectado');
+    cerca(des.Q, C0 * V0, 'Q se conserva'); cerca(des.U, U0 / ka, 'U0/κ'); cerca(des.V, V0 / ka, 'V/κ'); cerca(des.E, V0 / ka / d, 'E/κ');
+    cerca(con.V, V0, 'V fijo'); cerca(con.Q, ka * C0 * V0, 'Q×κ'); cerca(con.U, ka * U0, 'κ·U0'); cerca(con.E, V0 / d, 'E igual');
+    cerca(des.errores.otraSituacion.Q, con.Q, 'la otra situación'); cerca(con.errores.otraSituacion.V, des.V, 'la otra situación, al revés');
+    // con Q0 en vez de V0 da lo mismo; con una fracción del área, C crece en proporción
+    cerca(motor.dielectrico({ C0, Q0: C0 * V0, kappa: ka, conectado: false }).V, des.V, 'con Q0');
+    cerca(motor.dielectrico({ C0, V0, kappa: ka, conectado: true, fraccion: f }).C, C0 * (1 + (ka - 1) * f), 'fracción');
+    cerca(motor.dielectrico({ C0, V0, kappa: 1, conectado: false }).U, U0, 'κ = 1 no cambia nada');
+  }
+});
 test('conductores que se tocan: la carga se conserva y quedan al mismo potencial (no con la misma carga)', () => {
   for (let k = 0; k < N; k++) {
     const Q1 = qAzar(), Q2 = qAzar(), R1 = al(0.005, 0.2), R2 = al(0.005, 0.2);
@@ -252,6 +267,9 @@ test('errores de entrada', () => {
   assert.throws(() => motor.contacto(1, 0, 1, 1), /mayor que cero/);
   assert.throws(() => motor.mapaCampo([{ q: 1, x: 0, y: 0 }], { x0: 1, x1: 0, y0: 0, y1: 1 }), /caja/);
   assert.throws(() => motor.radioEquipotencial(4, -1), /mismo signo/);
+  assert.throws(() => motor.dielectrico({ C0: 10, V0: 12, kappa: 0.5, conectado: true }), /1 o más/);
+  assert.throws(() => motor.dielectrico({ C0: 10, V0: 12, Q0: 120, kappa: 3, conectado: true }), /uno de los dos/);
+  assert.throws(() => motor.dielectrico({ C0: 10, V0: 12, kappa: 3 }), /conectado/);
   assert.throws(() => motor.trabajoCamino([{ q: 1, x: 0, y: 0 }], [{ x: 1, y: 0 }], 1), /dos puntos/);
   // acepta el punto como [x, y]
   cerca(motor.campo([{ q: 4, x: 0, y: 0 }], [0.3, 0]).modulo, 400000, 'punto como lista');

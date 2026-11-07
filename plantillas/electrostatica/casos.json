@@ -113,6 +113,16 @@
 
     { "nombre": "Experimento 5: esfera de 1 cm con +12 µC toca una neutra de 3 cm → quedan 3 µC y 9 µC (proporcional al radio, mismo potencial 2,7 × 10⁶ V); EL8: 6 y 6",
       "fn": "contacto", "args": [12, 0.01, 0, 0.03],
-      "espera": { "total": 12, "Q1f": 3, "Q2f": 9, "V": 2700000, "pasa": 9, "errores.mitades": 6, "errores.alReves.Q2f": 3, "errores.todaPasa.Q2f": 12 } }
+      "espera": { "total": 12, "Q1f": 3, "Q2f": 9, "V": 2700000, "pasa": 9, "errores.mitades": 6, "errores.alReves.Q2f": 3, "errores.todaPasa.Q2f": 12 } },
+
+    { "nombre": "Experimento 6 (dieléctrico, DESCONECTADO): C0 = 10 µF cargado a 12 V (Q0 = 120 µC, U0 = 720 µJ, placas a 1 mm) y se separa de la pila; se llena con κ = 3 → C = 30 µF, Q = 120 µC (se conserva), V = 4 V, E = 4000 V/m (antes 12 000), U = 240 µJ (un tercio). Errores: nada cambia 12 V y 120 µC; V sube con C 36 V; conectado 12 V y 360 µC",
+      "fn": "dielectrico", "args": [{ "C0": 10, "V0": 12, "kappa": 3, "conectado": false, "d": 0.001 }],
+      "espera": { "C": 30, "Q": 120, "V": 4, "E": 4000, "U": 240, "Q0": 120, "U0": 720, "E0": 12000, "razonU": 0.3333333333333333,
+                  "errores.nadaCambia.V": 12, "errores.nadaCambia.Q": 120, "errores.vSubeConC.V": 36, "errores.otraSituacion.V": 12, "errores.otraSituacion.Q": 360, "errores.cNoCambia.C": 10 } },
+
+    { "nombre": "Dieléctrico CONECTADO a la pila: el mismo condensador (10 µF, 12 V, 1 mm) con κ = 3 → C = 30 µF, V = 12 V (lo fija la pila), Q = 360 µC, E = 12 000 V/m (igual), U = 2160 µJ (el triple). Con la lámina hasta la mitad: C = 10 · (1 + 2 · 1/2) = 20 µF y Q = 240 µC",
+      "fn": "dielectrico", "args": [{ "C0": 10, "V0": 12, "kappa": 3, "conectado": true, "d": 0.001 }],
+      "espera": { "C": 30, "Q": 360, "V": 12, "E": 12000, "U": 2160, "razonU": 3, "razonQ": 3, "errores.otraSituacion.V": 4, "errores.otraSituacion.U": 240 },
+      "tambien": [ { "args": [{ "C0": 10, "V0": 12, "kappa": 3, "conectado": true, "fraccion": 0.5 }], "espera": { "C": 20, "Q": 240, "V": 12, "U": 1440 } } ] }
   ]
 }
