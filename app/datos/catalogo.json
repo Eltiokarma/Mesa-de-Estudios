@@ -2098,7 +2098,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "divisores"
+     ]
     },
     {
      "id": "aritmetica.numeros-primos-y-divisores",
@@ -2127,7 +2129,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "divisores"
+     ]
     },
     {
      "id": "aritmetica.mcd-y-mcm",
@@ -4382,6 +4386,24 @@
     "/plantillas/dinamica/index.html",
     "/plantillas/dinamica/motor.js",
     "/plantillas/dinamica/papel.json"
+   ]
+  },
+  "divisores": {
+   "id": "divisores",
+   "titulo": "El rectángulo de fichas: divisores, primos y restos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeros-primos-y-divisores",
+    "aritmetica.divisibilidad"
+   ],
+   "url": "/plantillas/divisores/index.html",
+   "papel": "/plantillas/divisores/papel.json",
+   "archivos": [
+    "/plantillas/divisores/index.html",
+    "/plantillas/divisores/motor.js",
+    "/plantillas/divisores/papel.json"
    ]
   },
   "energia": {

@@ -1,0 +1,126 @@
+{
+  "titulo": "El rectángulo de fichas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Para contar divisores, descompón en primos y piensa que cada divisor elige cuántas veces toma cada primo, desde 0 hasta su exponente: por eso se suma 1 a cada exponente. Para los restos de potencias grandes, busca el ciclo de los restos potenciales (su largo es el gaussiano) y divide el exponente entre ese largo. Si el divisor es un primo p, recuerda el teorema de Wilson: (p − 1)! deja resto p − 1. En las ecuaciones con números enteros, no te quedes con la primera solución: busca todas.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "¿Cuántos divisores tiene 1200?",
+      "respuesta": "30.",
+      "pasos": [
+        "Descompón en primos: 1200 = 12 · 100 = 2² · 3 · 2² · 5² = 2⁴ · 3 · 5².",
+        "Un divisor toma el 2 de 0 a 4 veces (5 maneras), el 3 de 0 a 1 vez (2 maneras) y el 5 de 0 a 2 veces (3 maneras).",
+        "Cantidad de divisores: (4 + 1)(1 + 1)(2 + 1) = 5 · 2 · 3 = 30. Multiplicar los exponentes sin sumar 1 daría 4 · 1 · 2 = 8, y dejaría fuera divisores como el 1 o el 3."
+      ],
+      "verificar": [ { "fn": "divisores", "args": [1200], "espera": { "cantidad": 30, "texto": "2⁴·3·5²", "errores.multiplicaExponentes": 8 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántos divisores de 1200 son múltiplos de 15?",
+      "respuesta": "10.",
+      "pasos": [
+        "Un divisor de 1200 que es múltiplo de 15 se escribe 15 · m, y entonces m tiene que ser divisor de 1200 ÷ 15 = 80.",
+        "80 = 2⁴ · 5, que tiene (4 + 1)(1 + 1) = 10 divisores.",
+        "Son 15 · 1, 15 · 2, 15 · 4, 15 · 5, 15 · 8, 15 · 10, 15 · 16, 15 · 20, 15 · 40 y 15 · 80: diez divisores."
+      ],
+      "verificar": [ { "fn": "divisoresMultiplosDe", "args": [1200, 15], "espera": { "cantidad": 10, "cociente": 80, "errores.todos": 30 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "¿Qué resto se obtiene al dividir 2¹⁰⁰ entre 7?",
+      "respuesta": "2.",
+      "pasos": [
+        "Restos de las potencias de 2 entre 7: 2¹ deja 2, 2² deja 4, 2³ = 8 deja 1. Desde ahí se repiten: 2, 4, 1, 2, 4, 1, …, un ciclo de 3.",
+        "100 = 3 · 33 + 1: después de 33 vueltas completas al ciclo, queda 1 paso más.",
+        "El primer resto del ciclo es 2. Ojo: el 1 que sobra de dividir 100 entre 3 dice en qué lugar del ciclo caes; no es el resto pedido."
+      ],
+      "verificar": [ { "fn": "restoPotencia", "args": [2, 100, 7], "espera": { "resto": 2, "periodo": 3, "restoExponente": 1 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Halla la cifra a para que el número de cuatro cifras 7a42, donde a es la cifra de las centenas, sea divisible entre 11.",
+      "respuesta": "a = 9 (el número es 7942).",
+      "pasos": [
+        "Criterio del 11: contando desde la derecha, la suma de las cifras de orden impar menos la suma de las de orden par debe ser múltiplo de 11 (puede ser 0).",
+        "Orden impar: 2 (unidades) y a (centenas). Orden par: 4 (decenas) y 7 (millares). Entonces (2 + a) − (4 + 7) = a − 9.",
+        "Como a es una cifra (de 0 a 9), a − 9 vale entre −9 y 0; el único múltiplo de 11 posible es 0, así que a = 9. Control: 7942 = 11 · 722."
+      ],
+      "verificar": [ { "fn": "cifraFaltante", "args": ["7a42", 11], "espera": { "cifras": [9] } }, { "fn": "criterio", "args": [7942, 11], "espera": { "divisible": true, "alterna": 0 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un número de la forma 2ⁿ · 3 tiene 12 divisores. ¿Cuál es ese número?",
+      "respuesta": "96.",
+      "pasos": [
+        "La cantidad de divisores de 2ⁿ · 3¹ es (n + 1)(1 + 1) = 2(n + 1).",
+        "2(n + 1) = 12, así que n + 1 = 6 y n = 5.",
+        "El número es 2⁵ · 3 = 96. Si se olvida sumar 1 (2n = 12, n = 6) se obtiene 192, que tiene 14 divisores, no 12."
+      ],
+      "verificar": [ { "fn": "numeroConDivisores", "args": [2, 3, 12], "espera": { "n": 5, "numero": 96, "errores.sinSumar1": 192 } }, { "fn": "divisores", "args": [192], "espera": { "cantidad": 14 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuánto suman todos los divisores de 72?",
+      "respuesta": "195.",
+      "pasos": [
+        "72 = 2³ · 3².",
+        "Cada divisor es una potencia de 2 (1, 2, 4 u 8) por una potencia de 3 (1, 3 o 9). Al multiplicar (1 + 2 + 4 + 8)(1 + 3 + 9), salen todos esos productos sumados, una vez cada uno.",
+        "15 · 13 = 195. Con la fórmula: SD = (2⁴ − 1)/(2 − 1) · (3³ − 1)/(3 − 1) = 15 · 13. Control: 1 + 2 + 3 + 4 + 6 + 8 + 9 + 12 + 18 + 24 + 36 + 72 = 195."
+      ],
+      "verificar": [ { "fn": "sumaDivisores", "args": [72], "espera": { "suma": 195, "terminos.0.suma": 15, "terminos.1.suma": 13 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "¿En qué cifra termina 3²⁰²⁷?",
+      "respuesta": "En 7.",
+      "pasos": [
+        "Las últimas cifras de 3¹, 3², 3³, 3⁴ son 3, 9, 7, 1; luego se repiten: un ciclo de 4.",
+        "2027 = 4 · 506 + 3: tras 506 vueltas completas quedan 3 pasos.",
+        "El tercer lugar del ciclo es 7, así que 3²⁰²⁷ termina en 7."
+      ],
+      "verificar": [ { "fn": "restoPotencia", "args": [3, 2027, 10], "espera": { "resto": 7, "ciclo": [3, 9, 7, 1], "restoExponente": 3 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una librería vende lapiceros a 4 soles y cuadernos a 7 soles. Ana gastó exactamente 100 soles y compró al menos un lapicero y al menos un cuaderno. ¿De cuántas maneras pudo hacer su compra?",
+      "respuesta": "De 3 maneras: 4 lapiceros y 12 cuadernos, 11 y 8, o 18 y 4.",
+      "pasos": [
+        "Con x lapiceros e y cuadernos: 4x + 7y = 100, con x e y enteros mayores o iguales que 1.",
+        "4x y 100 son múltiplos de 4, así que 7y también lo es: y es múltiplo de 4. Con y = 4, 8 y 12 queda x = 18, 11 y 4 (con y = 16, 7y pasa de 100).",
+        "Las soluciones avanzan de 7 en 7 en x y de 4 en 4 en y, porque 4 · 7 = 7 · 4. Son 3; no basta con encontrar una. (y = 0 da x = 25, pero no cumple «al menos un cuaderno».)"
+      ],
+      "verificar": [ { "fn": "diofantica", "args": [4, 7, 100, 1], "espera": { "cantidad": 3, "soluciones": [[4, 12], [11, 8], [18, 4]], "errores.unaSola": 1 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántos enteros positivos menores que 36 son primos entre sí (PESI) con 36?",
+      "respuesta": "12.",
+      "pasos": [
+        "36 = 2² · 3². Un número es PESI con 36 si no es múltiplo de 2 ni de 3.",
+        "Con la función de Euler: φ(36) = 36 · (1 − 1/2) · (1 − 1/3) = 36 · 1/2 · 2/3 = 12.",
+        "Son 1, 5, 7, 11, 13, 17, 19, 23, 25, 29, 31 y 35. El 25 y el 35 no son primos, pero sí son PESI con 36: PESI no quiere decir «primos»."
+      ],
+      "verificar": [ { "fn": "euler", "args": [36], "espera": { "phi": 12, "lista": [1, 5, 7, 11, 13, 17, 19, 23, 25, 29, 31, 35] } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "¿Qué resto se obtiene al dividir 10! = 1 · 2 · 3 · … · 10 entre 11?",
+      "respuesta": "10.",
+      "pasos": [
+        "Teorema de Wilson: si p es primo, (p − 1)! deja resto p − 1 al dividirlo entre p.",
+        "11 es primo y 10! = (11 − 1)!, así que el resto es 11 − 1 = 10.",
+        "Control por restos: agrupa en parejas que multiplicadas dejan resto 1 entre 11: 2 · 6, 3 · 4, 5 · 9 y 7 · 8. Queda 1 · 10, que deja resto 10."
+      ],
+      "verificar": [ { "fn": "wilson", "args": [11], "espera": { "resto": 10 } }, { "fn": "restoProducto", "args": [7, 8, 11], "espera": { "resto": 1 } } ]
+    }
+  ]
+}

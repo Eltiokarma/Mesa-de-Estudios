@@ -365,7 +365,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["divisores"],
       "investigacion": null
     },
     {
@@ -395,7 +395,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["divisores"],
       "investigacion": null
     },
     {
