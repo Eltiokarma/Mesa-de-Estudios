@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 3743 pruebas.
+Deben pasar 3776 pruebas.
 
 ```bash
 npm run dev
@@ -124,7 +124,8 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - Falta la animación del "doblez", que explica por qué la imagen real queda delante del espejo; hoy hay una nota en el paso 7.
   - El 30 % de S1 no se cita al alumno hasta confirmarlo en el artículo original.
 - **Circuitos:**
-  - Faltan los medidores que se arrastran (amperímetro en paralelo, que hace un corto; C15). El motor ya los resuelve.
+  - Hecho (7 nov, 0.2.0): pestaña «Medir» con amperímetro y voltímetro, ideales y reales, que se arrastran con imán al puesto más cercano (también con teclado) y 5 predicciones; el amperímetro en paralelo siempre da corto; 19 casos nuevos verificados aparte.
+  - El `casos.json` de circuitos tiene un formato que `docs/metodo/entradas.py` no lee; la próxima verificación hay que armarla a mano o migrar los casos a fn/args/espera.
   - Algunos rótulos quedan apretados en el celular (junto a B1 y en McDermott).
   - Si el alumno quita B3 en el paso 8, la quitada pasa al explorador.
 - **Calorimetría** (`plantillas/calorimetria/`, hecha el 5 nov 2026):
