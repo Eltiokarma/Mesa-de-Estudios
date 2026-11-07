@@ -1,6 +1,6 @@
 {
   "titulo": "Trabajo, energía y potencia: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa W = F·d·cos θ para una fuerza constante, el área bajo la gráfica F–x para una fuerza variable, W neto = ΔEc = ½mv² − ½mv₀², Ep = mgh, Ee = ½kx² (x es la deformación del resorte, no su largo) y P = W/t. La eficiencia es potencia útil entre potencia consumida. Toma g = 10 m/s², sen 37° = cos 53° = 3/5 y cos 37° = sen 53° = 4/5. Sin roce ni aire, salvo que el problema diga otra cosa. Antes de calcular, dibuja las fuerzas y decide el signo del trabajo de cada una.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa W = F·d·cos θ para una fuerza constante, el área bajo la gráfica F–x para una fuerza variable, W neto = ΔEc = ½mv² − ½mv₀², Ep = mgh, Ee = ½kx² (en un resorte, x es su deformación, no su largo; en una gráfica F–x, x es la posición) y P = W/t. La eficiencia es potencia útil entre potencia consumida. Toma g = 10 m/s², sen 37° = cos 53° = 3/5 y cos 37° = sen 53° = 4/5. Sin roce ni aire, salvo que el problema diga otra cosa. Antes de calcular, dibuja las fuerzas y decide el signo del trabajo de cada una.",
   "problemas": [
     {
       "id": "p1",
@@ -12,21 +12,28 @@
         "espera": { "F": 20, "WF": 300, "Wroce": -300, "Wpeso": 0, "WN": 0, "Wneto": 0 } } ]
     },
     {
-      "id": "p2",
-      "nivel": "básico",
-      "enunciado": "Un bloque de 4 kg está en reposo sobre un piso horizontal con coeficiente de roce 0,5. Se lo empuja con una fuerza horizontal de 30 N a lo largo de 5 m. ¿Cuál es el trabajo neto y con qué rapidez termina?",
-      "respuesta": "El trabajo neto es 50 J y termina a 5 m/s.",
-      "pasos": ["Roce: 0,5·40 = 20 N. Su trabajo es −20·5 = −100 J.", "Trabajo de la fuerza: 30·5 = 150 J. El peso y la normal no trabajan.", "Trabajo neto: 150 − 100 = 50 J. Por el teorema trabajo-energía, eso es lo que gana de energía cinética.", "½·4·v² = 50, así que v² = 25 y v = 5 m/s.", "Si usas solo el trabajo de la fuerza (150 J) te sale v ≈ 8,7 m/s: el teorema pide el trabajo de todas las fuerzas."],
-      "verificar": [ { "fn": "trabajos", "args": [{ "m": 4, "d": 5, "mu": 0.5, "F": 30, "v0": 0 }],
-        "espera": { "WF": 150, "Wroce": -100, "Wneto": 50, "v2": 25 } } ]
+      "id": "p12",
+      "nivel": "intermedio",
+      "enunciado": "Un bloque de 2 kg está en reposo sobre un piso horizontal con coeficiente de roce 0,5. Lo empuja una fuerza horizontal que vale 20 N al inicio y crece de forma pareja hasta 40 N cuando el bloque ha avanzado 5 m. ¿Cuánto trabajo hace la fuerza, cuánto el roce y con qué rapidez termina?",
+      "respuesta": "La fuerza hace 150 J, el roce −50 J y el bloque termina a 10 m/s.",
+      "pasos": ["Trabajo de la fuerza: el área del trapecio bajo la gráfica F–x, (20 + 40)/2·5 = 150 J. Con 40·5 = 200 J tomarías la fuerza final todo el camino.", "Roce: N = mg = 20 N y el roce vale 0,5·20 = 10 N, constante (aquí se toma el mismo coeficiente al arrancar y en movimiento). Como 20 N supera los 10 N, el bloque arranca. El trabajo del roce es −10·5 = −50 J.", "El peso y la normal no trabajan. Trabajo neto: 150 − 50 = 100 J. Por el teorema trabajo-energía, ½·2·v² = 100, así que v = 10 m/s.", "Si usas solo el trabajo de la fuerza, ½·2·v² = 150 y te sale v ≈ 12,2 m/s: el teorema pide el trabajo de todas las fuerzas."],
+      "verificar": [ { "fn": "trabajoArea", "args": [[[0, 20], [5, 40]]],
+        "espera": {"valor": 150} },
+        { "fn": "trabajos", "args": [{"m": 2, "d": 5, "mu": 0.5, "F": 30, "v0": 0}],
+        "espera": {"Wroce": -50, "WF": 150, "Wneto": 100, "v2": 100} },
+        { "fn": "fuerzaVariable", "args": [{"puntos": [[0, 20], [5, 40]], "m": 2}],
+        "espera": {"W": 150, "Fmedia": 30, "errores.FfinalPorD": 200} } ]
     },
     {
-      "id": "p3",
-      "nivel": "básico",
-      "enunciado": "Dos niños, uno de 20 kg y otro de 40 kg, se sueltan desde el reposo en lo alto de un tobogán curvo de 5 m de altura, sin roce. ¿Con qué rapidez llega cada uno al pie del tobogán?",
-      "respuesta": "Los dos llegan a 10 m/s.",
-      "pasos": ["Sin roce, la energía mecánica se conserva: mgh = ½mv².", "La masa está en los dos lados y se cancela: v² = 2gh = 2·10·5 = 100, así que v = 10 m/s.", "El más pesado tiene más energía al llegar (2000 J contra 1000 J), pero no va más rápido.", "Tampoco importa la forma del tobogán: solo cuenta la altura que baja."],
-      "verificar": [ { "fn": "rapidez", "args": [5, 0, 0], "espera": { "valor": 10 } } ]
+      "id": "p11",
+      "nivel": "intermedio",
+      "enunciado": "Un bloque de 2 kg pasa por x = 0 a 7 m/s, hacia la derecha, sobre un piso sin roce. Sobre él actúa una fuerza horizontal F = 10x − 30 (F en newtons, x en metros), positiva hacia la derecha. ¿Cuánto trabajo hace F entre x = 0 y x = 4 m? ¿Dónde va más lento el bloque y con qué rapidez pasa por ahí? ¿Con qué rapidez llega a x = 4 m?",
+      "respuesta": "F hace −40 J. El bloque va más lento en x = 3 m, a 2 m/s, y llega a x = 4 m a 3 m/s.",
+      "pasos": ["Dibuja la gráfica F–x: es una recta que vale −30 N en x = 0 y cruza el eje en x = 3 m (10x − 30 = 0). En x = 4 m vale 10 N.", "De 0 a 3 m el área está bajo el eje: ½·3·30 = 45 J, con signo menos. Ahí la fuerza va contra el movimiento.", "De 3 a 4 m: ½·1·10 = 5 J, positivo. Trabajo total: −45 + 5 = −40 J. Si sumas las dos áreas como positivas, te sale 50 J.", "Mientras F es negativa, el bloque frena; desde x = 3 m vuelve a acelerar. Va más lento justo donde F = 0: ½·2·v² = 49 − 45 = 4, así que v = 2 m/s.", "En x = 4 m: ½·2·v² = 49 − 40 = 9, así que v = 3 m/s."],
+      "verificar": [ { "fn": "fuerzaVariable", "args": [{"puntos": [[0, -30], [4, 10]], "m": 2, "v0": 7}],
+        "espera": {"W": -40, "positiva": 5, "negativa": -45, "Ecmin": 4, "xEcmin": 3, "vmin": 2, "v2": 9, "errores.sumaSinSigno": 50} },
+        { "fn": "areaPartes", "args": [[[0, -30], [4, 10]]],
+        "espera": {"ceros.0": 3} } ]
     },
     {
       "id": "p4",
@@ -40,22 +47,15 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Sobre un bloque de 4 kg, en reposo en un piso sin roce, actúa una fuerza horizontal que cambia con la posición: sube en forma pareja de 0 N a 40 N en los primeros 4 m, se mantiene en 40 N hasta x = 6 m y baja en forma pareja hasta 0 N en x = 8 m. ¿Cuánto trabajo hace la fuerza en los 8 m y con qué rapidez termina el bloque?",
-      "respuesta": "La fuerza hace 200 J y el bloque termina a 10 m/s.",
-      "pasos": ["Con una fuerza variable, el trabajo es el área bajo la gráfica F–x, no F·d con un solo valor de F.", "Triángulo de 0 a 4 m: ½·4·40 = 80 J. Rectángulo de 4 a 6 m: 2·40 = 80 J. Triángulo de 6 a 8 m: ½·2·40 = 40 J.", "Total: 80 + 80 + 40 = 200 J. Si usas 40·8 = 320 J, tomas la fuerza máxima como si actuara todo el tiempo.", "Es el mismo trabajo que haría una fuerza constante de 200/8 = 25 N en los 8 m.", "Sin roce, todo el trabajo va a energía cinética: ½·4·v² = 200, así que v² = 100 y v = 10 m/s."],
-      "verificar": [ { "fn": "trabajoArea", "args": [[[0, 0], [4, 40], [6, 40], [8, 0]]], "espera": { "valor": 200 } },
-        { "fn": "trabajoArea", "args": [[[0, 0], [4, 40], [6, 40], [8, 0]], 0, 4], "espera": { "valor": 80 } },
-        { "fn": "trabajos", "args": [{ "m": 4, "d": 8, "F": 25, "v0": 0 }], "espera": { "WF": 200, "v2": 100 } } ]
-    },
-    {
-      "id": "p6",
-      "nivel": "intermedio",
-      "enunciado": "Un resorte de constante 400 N/m ya está estirado 0,1 m. ¿Cuánto trabajo hay que hacer para estirarlo hasta 0,3 m?",
-      "respuesta": "16 J.",
-      "pasos": ["El trabajo es lo que cambia la energía del resorte: ½k(x₂² − x₁²).", "½·400·(0,3² − 0,1²) = 200·(0,09 − 0,01) = 200·0,08 = 16 J.", "Si usas ½k(x₂ − x₁)² = ½·400·0,2², te sale 8 J: eso sería estirarlo 0,2 m desde su largo natural, que cuesta menos porque al inicio la fuerza es chica.", "En la gráfica F–x, el área de 0,1 m a 0,3 m es un trapecio: bases de 40 N y 120 N, altura 0,2 m, área ½·(40 + 120)·0,2 = 16 J."],
-      "verificar": [ { "fn": "trabajoResorte", "args": [400, 0.1, 0.3], "espera": { "valor": 16 } },
-        { "fn": "trabajoResorte", "args": [400, 0, 0.2], "espera": { "valor": 8 } },
-        { "fn": "trabajoArea", "args": [[[0.1, 40], [0.3, 120]]], "espera": { "valor": 16 } } ]
+      "enunciado": "Sobre un bloque de 5 kg, en reposo en un piso sin roce, actúa una fuerza horizontal que cambia con la posición: vale 10 N en x = 0, sube en forma pareja hasta 40 N en x = 2 m, se mantiene en 40 N hasta x = 6 m y baja en forma pareja hasta 0 N en x = 8 m. ¿Cuánto trabajo hace la fuerza en los 8 m y con qué rapidez termina el bloque?",
+      "respuesta": "La fuerza hace 250 J y el bloque termina a 10 m/s.",
+      "pasos": ["Con una fuerza variable, el trabajo es el área bajo la gráfica F–x, no F·d con un solo valor de F. Como la fuerza empieza en 10 N, el bloque arranca desde el reposo.", "Trapecio de 0 a 2 m: (10 + 40)/2·2 = 50 J. Rectángulo de 2 a 6 m: 4·40 = 160 J. Triángulo de 6 a 8 m: ½·2·40 = 40 J.", "Total: 50 + 160 + 40 = 250 J. Si usas 40·8 = 320 J, tomas la fuerza máxima como si actuara todo el camino.", "Es el mismo trabajo que haría una fuerza constante de 250/8 = 31,25 N en los 8 m.", "Sin roce, todo el trabajo va a energía cinética: ½·5·v² = 250, así que v² = 100 y v = 10 m/s."],
+      "verificar": [ { "fn": "trabajoArea", "args": [[[0, 10], [2, 40], [6, 40], [8, 0]]],
+        "espera": {"valor": 250} },
+        { "fn": "trabajoArea", "args": [[[0, 10], [2, 40], [6, 40], [8, 0]], 0, 2],
+        "espera": {"valor": 50} },
+        { "fn": "fuerzaVariable", "args": [{"puntos": [[0, 10], [2, 40], [6, 40], [8, 0]], "m": 5}],
+        "espera": {"W": 250, "Fmedia": 31.25, "v2": 100, "seDetiene": false} } ]
     },
     {
       "id": "p7",
@@ -92,6 +92,19 @@
       "pasos": ["A velocidad constante la energía cinética no cambia, pero la potencial sube: mgh = 80·10·30 = 24 000 J. La energía mecánica no se conserva; aumenta por el trabajo de la ciclista.", "El largo de la cuesta no entra: el trabajo contra el peso solo depende de los 30 m que sube. Una cuesta más suave pide menos fuerza, pero más recorrido, y el trabajo es el mismo.", "Potencia útil: 24 000 J / 120 s = 200 W.", "Eficiencia del 25 %: consume 200 / 0,25 = 800 W. El resto lo vuelve calor, por eso suda."],
       "verificar": [ { "fn": "potencia", "args": [{ "m": 80, "h": 30, "t": 120, "eficiencia": 0.25 }],
         "espera": { "W": 24000, "Putil": 200, "Pconsumida": 800 } } ]
+    },
+    {
+      "id": "p13",
+      "nivel": "avanzado",
+      "enunciado": "Un resorte de 500 N/m está comprimido 0,2 m. Lo llevas despacio con la mano hasta que queda estirado 0,2 m. ¿Cuánto trabajo hace tu mano mientras el resorte vuelve a su largo natural? ¿Y mientras lo estiras de 0 a 0,2 m? ¿Y en todo el recorrido?",
+      "respuesta": "−10 J en la primera parte, +10 J en la segunda y 0 J en total.",
+      "pasos": ["Toma la deformación como negativa si el resorte está comprimido y positiva si está estirado. Como vas despacio, tu mano hace una fuerza igual y contraria a la del resorte: F = k·(deformación). Va de −100 N a +100 N: una recta que cruza el eje en el largo natural.", "De −0,2 m a 0: mientras sueltas, el resorte empuja tu mano hacia afuera y tú lo frenas. Tu fuerza va contra el movimiento: el área está bajo el eje, −½·0,2·100 = −10 J. El resorte devuelve esos 10 J.", "De 0 a 0,2 m: +½·0,2·100 = +10 J, que el resorte guarda como energía elástica.", "Total: −10 + 10 = 0 J. Tiene sentido: el resorte empieza y termina con la misma energía, ½·500·0,2² = 10 J. Si sumas las áreas sin signo, te sale 20 J; con ½·500·(0,4)², 40 J."],
+      "verificar": [ { "fn": "areaPartes", "args": [[[-0.2, -100], [0.2, 100]]],
+        "espera": {"W": 0, "positiva": 10, "negativa": -10, "ceros.0": 0} },
+        { "fn": "resorteArea", "args": [500, -0.2, 0.2],
+        "espera": {"W": 0, "errores.mitadDeltaCuadrado": 40} },
+        { "fn": "trabajoResorte", "args": [500, 0, 0.2],
+        "espera": {"valor": 10} } ]
     }
   ]
 }

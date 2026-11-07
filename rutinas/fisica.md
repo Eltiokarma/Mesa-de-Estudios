@@ -8,9 +8,91 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica (hecha, abajo), tiro parabólico y energía (en curso), calorimetría, circuitos y espejos.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica y energía (hechas, abajo), tiro parabólico (en curso), calorimetría, circuitos y espejos.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Energía 0.2.0: fuerza variable (`plantillas/energia/`)
+
+Este es el punto 3 de la lista nueva.
+
+**Qué hay de nuevo.**
+
+- **Modo «Fuerza variable»** (`#fuerza-variable`): 9 pasos y 4 predicciones que bloquean el avance. Al final hay un explorador con una gráfica F–x de 5 puntos, en x = 0 a 8 m y F de −40 a 40 N, en pasos de 5 N.
+  - Los puntos se arrastran con Celular.arrastre (radio de 40 px) o con el teclado.
+  - El área positiva va rellena y la negativa rayada. La barra de Ec muestra W neto = ΔEc.
+  - Si el carrito se detiene, el área se pinta solo hasta ahí, y se lee «W hasta detenerse = −Ec0».
+  - Antes de responder no se pinta ningún área: se ve «W = ?» y barras con «?».
+- **Predicciones:**
+  - El área de un trapecio (100 J). Los distractores G4 son parciales (Beichner).
+  - Dos carritos de 2 y 8 kg con la misma fuerza: misma Ec. W6 es documentado (Singh y Rosengrant 2003, ítem 24).
+  - El trabajo negativo resta (24 J).
+  - El área del resorte de 0,1 a 0,3 m (24 J, no 36).
+- **Motor:**
+  - Funciones nuevas: validarGrafica, fuerzaEn, areaPartes, trabajoHasta, fuerzaVariable, recorridoFuerza (tiempo en forma cerrada por tramo) y resorteArea.
+  - **Se corrigieron 3 errores de trabajoArea** que ningún caso pisaba:
+    - límites al revés (daba −10 donde va −15);
+    - fuera de la gráfica: ahora se rechaza con un mensaje;
+    - salto vertical (daba 60 J donde van 80 J).
+  - Ningún resultado de antes cambió.
+- **Casos y pruebas:** 36 casos (19 nuevos) y 71 pruebas, entre ellas Simpson en 200 gráficas al azar, RK4 y el teorema trabajo-energía punto a punto.
+- **Papel:**
+  - p5 corregido: partía del reposo con F = 0 y nunca arrancaba.
+  - p2, p3 y p6 se reemplazaron por p12, p11 y p13.
+  - Quedan 10, ordenados por dificultad.
+- **Lo que se arregló de lo publicado:**
+  - Los pasos bloqueados se leen «Paso N, bloqueado».
+  - W9 pasó a parcial.
+  - El «20 J» del paso 2 va en el color de Ep.
+  - Las leyendas de Ec y Ee ya no salen partidas.
+  - Los chips van al 8 %.
+
+**Verificador independiente.** Recalculó los casos 17 a 35:
+- las áreas con fracciones exactas;
+- los tiempos en forma cerrada (cosh/asinh), contrastados con RK4.
+
+Todos coinciden. Aclaró dos lecturas, y en las dos tenía razón casos.json: v2 es v², y si el carrito se detiene, W es el trabajo hasta detenerse. Ahora las dos están escritas en la cabecera.
+
+**Revisor de contenido.** No encontró nada grave.
+- **Lo medio:**
+  - El explorador decía «W neto = 20 J» con un carrito que se detenía (lo de arriba).
+  - W9 subía de más.
+  - La línea de F media no tenía rótulo.
+- **Lo bajo:**
+  - las opciones de P2 parejas (sin «porque»);
+  - el caso en que el carrito llega justo a F = 0;
+  - la leyenda;
+  - la flecha de v en el borde;
+  - rótulos encimados;
+  - el rectángulo del paso 2;
+  - la barra antes de soltar;
+  - el orden del papel;
+  - 2 px de desborde en los deslizadores.
+
+**Colores** (para `docs/diseno.md`):
+
+F no pudo quedarse igual. Con el celeste de Ec ningún azul llegaba a ΔE00 ≥ 20, así que también se movió Ec en claro.
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| F | #0039a3 | #99b6ff |
+| x | #097163 | #52e0c9 |
+| Ec | #1c719c | #2fc8ee |
+| k | #9500eb | #e9adff |
+| Ee | #850068 | #fb1fff |
+| m | #ad4500 | igual |
+| Ep | #030099 | #7a8aff |
+| h | #466d14 | igual |
+
+- En el modo nuevo, el ΔE00 mínimo es 20,1 en claro y 20,4 en oscuro. AA mínimo: 4,52.
+- m sobre el papel pasó de 4,39 a 5,44.
+- Siguen bajo 20, y ya estaban así: m–roce en los modos 1 y 2 (12,8 y 10,5) y v–P en el modo 2 (13,3 y 12,4). Hace falta un ajuste aparte.
+- F–Ep queda en 12,2, pero nunca salen en el mismo modo.
+
+**Pedidos para la integración.**
+1. `npm run catalogo` (versión 0.2.0).
+2. En `docs/diseno.md`: la tabla de colores de energía.
+3. Pendientes: anotar m–roce y v–P bajo 20 en los modos 1 y 2.
 
 ## 7 nov 2026 · Dinámica 0.2.0: varios cuerpos y movimiento circular (`plantillas/dinamica/`)
 
