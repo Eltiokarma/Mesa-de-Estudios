@@ -1,0 +1,113 @@
+{
+  "plantilla": "razonamiento-numerico",
+  "unidades": "Cantidades de animales, preguntas, fichas o soles (enteros). Los valores que no son enteros salen como texto «a/b» (fracción irreducible, con «−» si es negativa). Una operación del método regresivo va como { \"op\": \"mas\" | \"menos\" | \"por\" | \"entre\", \"k\": número } o { \"op\": \"gasta\", \"parte\": [p, q], \"mas\": k } («gastó p/q de lo que tenía y k más»). Las casillas de los tableros se numeran así: triángulo de 3 por lado, vértices 0 (arriba), 1 (abajo a la izquierda) y 2 (abajo a la derecha), y 3, 4 y 5 en medio de los lados 0–1, 1–2 y 2–0; triángulo de 4 por lado, vértices 0, 1 y 2, y 3–4, 5–6 y 7–8 en los lados 0–1, 1–2 y 2–0; cuadrado 3 × 3, de 0 a 8 por filas.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.daLosSupuestos, detalle.0.suma: el índice de una lista también va con punto); las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o lo mismo que otro error.",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción del paso 2: 20 animales y 64 patas → todos gallinas 40, faltan 24, cada cambio + 2 → 12 conejos y 8 gallinas; los del tipo supuesto 8, faltan sin dividir 24, entre las patas del conejo 6",
+      "fn": "corral", "args": [20, 64],
+      "espera": { "posible": true, "respuesta": 12, "conejos": 12, "gallinas": 8, "supuestoTotal": 40, "faltan": 24, "diferencia": 2,
+        "cambios": [40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64],
+        "errores": { "daLosSupuestos": 8, "faltanSinDividir": 24, "divideEntreElOtro": 6 } } },
+
+    { "nombre": "Paso 1: 10 animales, 7 gallinas y 3 conejos → 10 cabezas y 26 patas; la meta de 32 patas sale con 6 conejos",
+      "fn": "contarCorral", "args": [["g", "g", "g", "g", "g", "g", "g", "c", "c", "c"]],
+      "espera": { "cabezas": 10, "gallinas": 7, "conejos": 3, "patas": 26 },
+      "tambien": [ { "fn": "corral", "args": [10, 32], "espera": { "respuesta": 6, "gallinas": 4 } } ] },
+
+    { "nombre": "Predicción del paso 3: 50 preguntas, + 4 la buena y − 1 la mala, 140 puntos → todas buenas 200, sobran 60, cada mala quita 5 → 12 malas y 38 buenas; las malas 12, 140 ÷ 4 = 35, con «4 − 1 = 3» 50 − 20 = 30",
+      "fn": "examen", "args": [50, 140, 4, -1],
+      "espera": { "respuesta": 38, "correctas": 38, "incorrectas": 12, "supuestoTotal": 200, "sobran": 60, "quita": 5,
+        "errores": { "daLasIncorrectas": 12, "sinDescuento": 35, "restaLosPuntos": 30 } } },
+
+    { "nombre": "Predicción del paso 4: × 3, − 8, ÷ 2, + 10 da 30 → de vuelta 30 − 10 = 20, × 2 = 40, + 8 = 48, ÷ 3 = 16; hacia adelante 51, el orden sin invertir 36, invertir sin el orden 26",
+      "fn": "regresivo", "args": [[{ "op": "por", "k": 3 }, { "op": "menos", "k": 8 }, { "op": "entre", "k": 2 }, { "op": "mas", "k": 10 }], 30],
+      "espera": { "respuesta": 16, "ida": [16, 48, 40, 20, 30], "cadena": ["× 3", "− 8", "÷ 2", "+ 10"],
+        "vuelta.0.texto": "− 10", "vuelta.0.a": 20, "vuelta.1.texto": "× 2", "vuelta.1.a": 40, "vuelta.2.texto": "+ 8", "vuelta.2.a": 48, "vuelta.3.texto": "÷ 3", "vuelta.3.a": 16,
+        "errores": { "haciaAdelante": 51, "ordenSinInvertir": 36, "invierteSinOrden": 26 } } },
+
+    { "nombre": "Predicción del paso 5: gastó la mitad y S/ 5 más, luego la mitad y S/ 3 más, le quedaron S/ 12 → (12 + 3) × 2 = 30 y (30 + 5) × 2 = 70; doblar y después devolver 59, el extra con el signo cambiado 26, sin el extra 48",
+      "fn": "mercado", "args": [[{ "op": "gasta", "parte": [1, 2], "mas": 5 }, { "op": "gasta", "parte": [1, 2], "mas": 3 }], 12],
+      "espera": { "respuesta": 70, "ida": [70, 30, 12], "vuelta.0.texto": "+ 3, × 2", "vuelta.0.a": 30, "vuelta.1.texto": "+ 5, × 2", "vuelta.1.a": 70,
+        "errores": { "devuelveDespues": 59, "restaElExtra": 26, "olvidaElExtra": 48 } },
+      "tambien": [ { "fn": "barras", "args": [[{ "op": "gasta", "parte": [1, 2], "mas": 5 }, { "op": "gasta", "parte": [1, 2], "mas": 3 }], 70],
+        "espera": { "0.antes": 70, "0.parte": 35, "0.extra": 5, "0.queda": 30, "1.antes": 30, "1.parte": 15, "1.extra": 3, "1.queda": 12 } } ] },
+
+    { "nombre": "Predicción del paso 6: fichas 1 a 6 en el triángulo de 3 por lado → sumas posibles 9, 10, 11 y 12 (24 soluciones, una sola por suma sin contar giros y reflejos); la menor 9 con 1, 2 y 3 en los vértices (3 × 9 = 21 + 6); las tres menores 6, 21 ÷ 3 = 7, la mayor 12",
+      "fn": "menorSuma", "args": ["triangulo3", [1, 2, 3, 4, 5, 6]],
+      "espera": { "respuesta": 9, "mayor": 12, "sumas": [9, 10, 11, 12], "total": 21, "vertices": [1, 2, 3], "soluciones": 6, "distintas": 1,
+        "cuenta.izquierda": 27, "cuenta.derecha": 27,
+        "errores": { "losMenores": 6, "totalEntreLineas": 7, "laMayor": 12 } },
+      "tambien": [ { "fn": "distribuir", "args": ["triangulo3", [1, 2, 3, 4, 5, 6]], "espera": { "soluciones": 24, "distintas": 4, "detalle.3.compartidas": [4, 5, 6] } } ] },
+
+    { "nombre": "Predicción del paso 7: cuadrado mágico con 1 a 9 → 8 soluciones, constante 15, en el centro solo el 5 (4 × 15 = 60 = 45 + 3 × 5); el mayor [9], los impares, cualquiera",
+      "fn": "centroMagico", "args": [],
+      "espera": { "respuesta": [5], "constante": 15, "total": 45, "soluciones": 8, "cuenta.izquierda": 60, "cuenta.centro": 5,
+        "errores": { "elMayor": [9], "losImpares": [1, 3, 5, 7, 9], "cualquiera": [1, 2, 3, 4, 5, 6, 7, 8, 9] } } },
+
+    { "nombre": "Paso 8: el triángulo de 4 por lado con 1 a 9 → sumas 17, 19, 20, 21 y 23; 96 + 192 + 288 + 192 + 96 = 864 soluciones y 144 sin contar giros y reflejos; con 17, los vértices suman 6",
+      "fn": "distribuir", "args": ["triangulo4", [1, 2, 3, 4, 5, 6, 7, 8, 9]],
+      "espera": { "sumas": [17, 19, 20, 21, 23], "soluciones": 864, "distintas": 144, "menor": 17, "mayor": 23,
+        "detalle.0.soluciones": 96, "detalle.0.distintas": 16, "detalle.0.sumaCompartidas": 6, "detalle.2.soluciones": 288, "detalle.2.distintas": 48 } },
+
+    { "nombre": "Paso 8: comprobar a mano. Triángulo de 3 por lado con 1 a 6 en orden (vértices 1, 2 y 3; medios 4, 5 y 6) → lados 1 + 4 + 2 = 7, 2 + 5 + 3 = 10, 3 + 6 + 1 = 10: completo, pero no iguales",
+      "fn": "comprobar", "args": ["triangulo3", [1, 2, 3, 4, 5, 6]],
+      "espera": { "completo": true, "iguales": false, "valido": false, "suma": null, "lineas.0.suma": 7, "lineas.1.suma": 10, "lineas.2.suma": 10, "distintas": 2 },
+      "tambien": [
+        { "fn": "comprobar", "args": ["triangulo3", [1, 2, 3, 6, 4, 5]], "espera": { "valido": true, "suma": 9 } },
+        { "fn": "comprobar", "args": ["cuadrado3", [2, 7, 6, 9, 5, 1, 4, 3, null]], "espera": { "completo": false, "puestas": 8, "valido": false, "lineas.0.suma": 15, "lineas.2.suma": null, "lineas.2.parcial": 7 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 1: suponer que los 20 son conejos → 80 patas, sobran 16, cada cambio − 2 → 8 gallinas y 12 conejos, lo mismo; leer el cociente como conejos 8, sobran sin dividir 16, 16 ÷ 4 = 4",
+      "fn": "corralAlReves", "args": [20, 64],
+      "espera": { "respuesta": 12, "gallinas": 8, "conejos": 12, "supuestoTotal": 80, "sobran": 16, "cambios": [80, 78, 76, 74, 72, 70, 68, 66, 64],
+        "errores": { "leeElCocienteComoConejos": 8, "sobranSinDividir": 16, "divideEntreElSupuesto": 4 } } },
+
+    { "nombre": "¿Qué pasa si…? 2: + 6 y × 2 da 30 → 9; con el orden cambiado, × 2 y + 6 da 30 → (30 − 6) ÷ 2 = 12; el de antes 9, hacia adelante 66, el orden sin invertir 72",
+      "fn": "ordenCambiado", "args": [[{ "op": "mas", "k": 6 }, { "op": "por", "k": 2 }], 30, 0],
+      "espera": { "antes": 9, "respuesta": 12, "cadena": ["× 2", "+ 6"], "ida": [12, 24, 30],
+        "errores": { "elDeAntes": 9, "haciaAdelante": 66, "ordenSinInvertir": 72 } } },
+
+    { "nombre": "¿Qué pasa si…? 3: 15 animales y 45 patas → todos gallinas 30, faltan 15, impar: no hay reparto (7 conejos dan 44 y 8 dan 46)",
+      "fn": "corral", "args": [15, 45],
+      "espera": { "posible": false, "supuestoTotal": 30, "faltan": 15, "abajo": 7, "arriba": 8, "errores": { "trunca": 7, "redondea": 8 } },
+      "tambien": [ { "fn": "contarCorral", "args": [["g", "g", "g", "g", "g", "g", "g", "g", "c", "c", "c", "c", "c", "c", "c"]], "espera": { "patas": 44 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 4: una distribución del triángulo con suma 10 (vértices 1, 3 y 5) y + 1 a cada ficha → cada lado suma 13; sin cambio 10, + 1 una vez 11, + 1 por cada una de las 6 fichas 16",
+      "fn": "subirFichas", "args": ["triangulo3", [1, 3, 5, 6, 2, 4], 1],
+      "espera": { "antes": 10, "respuesta": 13, "sube": 3, "colocacion": [2, 4, 6, 7, 3, 5],
+        "errores": { "sinCambio": 10, "subeUnaVez": 11, "porCadaFicha": 16 } },
+      "tambien": [ { "fn": "subirTodos", "args": ["triangulo3", [1, 2, 3, 4, 5, 6], 1], "espera": { "antes": 9, "respuesta": 12, "sumas": [12, 13, 14, 15] } } ] },
+
+    { "nombre": "¿Qué pasa si…? 5: los 8 cuadrados mágicos son giros y reflejos de uno solo → 1 distinto; contarlos todos 8, quitar solo los giros 2, quitar solo un reflejo 4",
+      "fn": "cuadradosDistintos", "args": [],
+      "espera": { "respuesta": 1, "soluciones": 8, "simetrias": 8, "errores": { "cuentaTodos": 8, "soloGiros": 2, "soloUnReflejo": 4 } } },
+
+    { "nombre": "Falsa suposición con billetes: 25 billetes de S/ 10 y S/ 20 que suman S/ 340 → todos de 10 son 250, faltan 90, cada cambio + 10 → 9 de S/ 20 y 16 de S/ 10",
+      "fn": "falsaSuposicion", "args": [25, 340, 10, 20],
+      "espera": { "posible": true, "base": 250, "falta": 90, "diferencia": 10, "otros": 9, "supuestos": 16 } },
+
+    { "nombre": "Bordes de la falsa suposición: todos de un tipo (10 animales y 20 patas → 0 conejos; 40 patas → 10 conejos), más del total (10 y 44 → 12 conejos, imposible) y tipos iguales",
+      "fn": "corral", "args": [10, 20],
+      "espera": { "posible": true, "respuesta": 0, "gallinas": 10, "cambios": [20] },
+      "tambien": [
+        { "fn": "corral", "args": [10, 40], "espera": { "respuesta": 10, "gallinas": 0 } },
+        { "fn": "falsaSuposicion", "args": [10, 44, 2, 4], "espera": { "posible": false, "otros": 12 } },
+        { "fn": "falsaSuposicion", "args": [10, 18, 2, 4], "espera": { "posible": false, "otros": -1 } },
+        { "fn": "falsaSuposicion", "args": [10, 30, 3, 3], "espera": { "posible": false } } ] },
+
+    { "nombre": "Regresivo con fracción: gastó la tercera parte y S/ 6 más, luego la mitad y S/ 4 más, le quedaron S/ 20 → (20 + 4) × 2 = 48 y (48 + 6) × 3/2 = 81",
+      "fn": "regresivo", "args": [[{ "op": "gasta", "parte": [1, 3], "mas": 6 }, { "op": "gasta", "parte": [1, 2], "mas": 4 }], 20],
+      "espera": { "respuesta": 81, "ida": [81, 48, 20], "vuelta.1.texto": "+ 6, × 3/2", "cadena": ["gasta la tercera parte y 6 más", "gasta la mitad y 4 más"],
+        "errores.devuelveDespues": 72, "errores.restaElExtra": 39, "errores.olvidaElExtra": 60 } },
+
+    { "nombre": "Regresivo que no da entero: + 1 y × 2 da 7 → 7 ÷ 2 − 1 = 5/2",
+      "fn": "regresivo", "args": [[{ "op": "mas", "k": 1 }, { "op": "por", "k": 2 }], 7],
+      "espera": { "respuesta": "5/2", "entero": false, "ida": ["5/2", "7/2", 7] } },
+
+    { "nombre": "Cuadrado mágico con 2 a 10 → constante 18 y en el centro el 6; el triángulo de 3 por lado con 2 a 7 → sumas 12 a 15",
+      "fn": "distribuir", "args": ["cuadrado3", [2, 3, 4, 5, 6, 7, 8, 9, 10]],
+      "espera": { "sumas": [18], "soluciones": 8, "distintas": 1, "posibles.4": [6] },
+      "tambien": [ { "fn": "distribuir", "args": ["triangulo3", [2, 3, 4, 5, 6, 7]], "espera": { "sumas": [12, 13, 14, 15], "soluciones": 24 } } ] }
+  ]
+}
