@@ -1,0 +1,123 @@
+{
+  "plantilla": "cuatro-operaciones",
+  "unidades": "Números enteros sin unidad. Los numerales van como texto, de la cifra de mayor orden a las unidades ('342' en base 5 es 342₍₅₎); las cuentas y las columnas, de las unidades hacia la izquierda ([4, 3, 0] son 4 sueltas, 3 paquetes y ninguna caja).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.todasANueve, columnas.0.llevadaSale: el índice de una lista también va con punto); 'valor' es el resultado si es un número, un texto o una lista sueltos; las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o lo mismo que otro error.",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso 1: 478 + 356 = 834 en columnas; unidades 8 + 6 = 14 (queda 4, sube 1 paquete), decenas 7 + 5 + 1 = 13 (queda 3, sube 1), centenas 4 + 3 + 1 = 8; sin llevar: 724; escribiendo cada suma entera: 71214",
+      "fn": "sumaColumnas", "args": [["478", "356"], 10],
+      "espera": { "texto": "834", "valor": 834, "K": 3, "llevadas": 2,
+        "columnas.0.total": 14, "columnas.0.cifra": 4, "columnas.0.llevadaSale": 1, "columnas.1.llevadaEntra": 1, "columnas.1.total": 13, "columnas.2.total": 8, "columnas.2.llevadaSale": 0,
+        "errores.sinLlevar": "724", "errores.escribeTodo": "71214" },
+      "tambien": [ { "fn": "cuadroColumnas", "args": [{ "filas": [[8, 7, 4], [6, 5, 3]], "columnas": [{ "total": 14, "cifra": 4, "llevadaSale": 1 }, { "total": 13, "cifra": 3, "llevadaSale": 1 }, { "total": 8, "cifra": 8, "llevadaSale": 0 }] }, 1.25],
+                     "espera": { "resultado": [4, null, null], "llevada": [0, 1, 0], "moviendo.tipo": "bajar", "moviendo.orden": 1, "moviendo.f": 0.5 } } ] },
+
+    { "nombre": "Paso 1 en base 5: 342₍₅₎ + 213₍₅₎ = 1110₍₅₎ (97 + 58 = 155); las tres columnas llegan a 5 o más y suben en cadena",
+      "fn": "sumaColumnas", "args": [["342", "213"], 5],
+      "espera": { "texto": "1110", "valor": 155, "valores": [97, 58], "K": 4, "llevadas": 3, "columnas.0.total": 5, "columnas.1.total": 6, "columnas.2.total": 6, "columnas.3.total": 1,
+        "conBaseResultado": "1110₍₅₎" } },
+
+    { "nombre": "Predicción del paso 2: CA(4073) = 10 000 − 4073 = 5927 (a 9 todas, a 10 la última significativa); todas a 9 sin el + 1: 5926; dejando el 0 del medio: 5027; con 100 000: 95927. N + CA llena la caja de 10 000 con cuatro llevadas",
+      "fn": "complemento", "args": ["4073", 10],
+      "espera": { "texto": "5927", "valor": 5927, "k": 4, "potencia": 10000, "regla": [5, 9, 2, 7], "ultimaSignificativa": 3, "cerosFinales": 0,
+        "relleno.texto": "10000", "relleno.llevadas": 4,
+        "errores.todasANueve": "5926", "errores.dejaElCero": "5027", "errores.potenciaDeMas": "95927" } },
+
+    { "nombre": "Complemento de 3740: 6260; la última significativa es el 4 (va a 10) y el 0 final queda; a 9 todas: 6259; «a 10 la última» sobre el 0 final: 6250; sin el 0 final: 626",
+      "fn": "complemento", "args": ["3740", 10],
+      "espera": { "texto": "6260", "regla": [6, 2, 6, 0], "ultimaSignificativa": 2, "cerosFinales": 1,
+        "errores.todasANueve": "6259", "errores.aBUltima": "6250", "errores.quitaLosCeros": "626", "errores.potenciaDeMas": "96260" } },
+
+    { "nombre": "¿Qué pasa si…? 1: CA(5800) = 4200; a 9 todas: 4199; «a 10 la última» sobre el 0: 4190; sin reponer los ceros: 42",
+      "fn": "complemento", "args": ["5800", 10],
+      "espera": { "texto": "4200", "valor": 4200, "cerosFinales": 2, "errores.todasANueve": "4199", "errores.aBUltima": "4190", "errores.quitaLosCeros": "42", "errores.potenciaDeMas": "94200" },
+      "tambien": [ { "fn": "complemento", "args": ["9500", 10], "espera": { "texto": "500", "regla": [0, 5, 0, 0] } } ] },
+
+    { "nombre": "Predicción del paso 3: 5003 − 1478 = 3525; el préstamo abre un cajón, una caja y un paquete en cadena; el menor del mayor en cada columna: 4475; presta sin descontar: 4635; los ceros que prestan quedan en 10: 3635",
+      "fn": "restaColumnas", "args": ["5003", "1478", 10],
+      "espera": { "texto": "3525", "valor": 3525, "tras": [13, 9, 9, 4], "resultado": [5, 2, 5, 3], "prestamos.0.desde": 3, "prestamos.0.para": 0,
+        "acciones.0.tipo": "abrir", "acciones.0.orden": 3, "acciones.2.orden": 1, "acciones.3.tipo": "quitar", "acciones.3.hay": 13, "acciones.3.quedan": 5,
+        "errores.menorDelMayor": "4475", "errores.sinDescontar": "4635", "errores.cerosComoB": "3635" },
+      "tambien": [ { "fn": "restaColumnas", "args": ["305", "128", 10], "espera": { "texto": "177", "tras": [15, 9, 2], "errores.menorDelMayor": "223" } } ] },
+
+    { "nombre": "Predicción del paso 4: ?85 + 6?? = 1282 tiene una sola solución, 585 + 697; faltan 5, 9 y 7, que suman 21; sin llevadas: 13; solo con la llevada de las unidades: 22; sumando la llevada en vez de restarla: 15",
+      "fn": "cifrasFaltantes", "args": [["?85", "6??"], "1282", 10],
+      "espera": { "unica": true, "faltan": [5, 9, 7], "filas": ["585", "697", "1282"], "suma": 21, "deduccion": 21,
+        "columnas.0.llevadaSale": 1, "columnas.1.llevadaSale": 1, "columnas.2.llevadaSale": 1,
+        "errores.sinLlevadas": 13, "errores.soloLaPrimera": 22, "errores.sumaLaLlevada": 15 },
+      "tambien": [ { "fn": "cifrasFaltantes", "args": [["?7", "?7"], "?4", 10], "espera": { "unica": false } } ] },
+
+    { "nombre": "Predicción del paso 5: 2 + 4 + … + 60 = 930 (30 términos; la escalera y su copia arman 30 filas de 62); con 1 + … + 60: 1830; con 29 términos: 899; sin dividir entre 2: 1860",
+      "fn": "sumaAritmetica", "args": [2, 60, 2],
+      "espera": { "n": 30, "par": 62, "S": 930, "dobles": 1860, "rectangulo.filas": 30, "rectangulo.ancho": 62,
+        "errores.ultimoComoN": 1830, "errores.sinMasUno": 899, "errores.sinDividir": 1860 },
+      "tambien": [ { "fn": "sumatoria", "args": ["pares", 30], "espera": { "S": 930, "ultimo": 60 } } ] },
+
+    { "nombre": "Suma de los números de 3 cifras: 100 + 101 + … + 999 = 494550 (900 términos); de 1 a 999: 499500; restando también el 100: 494450",
+      "fn": "sumaAritmetica", "args": [100, 999, 1],
+      "espera": { "n": 900, "S": 494550, "errores.ultimoComoN": 499500, "errores.restaElPrimero": 494450, "errores.sinDividir": 989100 },
+      "tambien": [ { "fn": "sumatoria", "args": ["impares", 40], "espera": { "S": 1600, "ultimo": 79 } },
+                   { "fn": "sumatoria", "args": ["cuadrados", 10], "espera": { "S": 385 } },
+                   { "fn": "sumatoria", "args": ["cubos", 5], "espera": { "S": 225 } } ] },
+
+    { "nombre": "Predicción del paso 6: 47 ÷ 9 por defecto da q = 5 y r = 2; por exceso, q = 6 y r′ = 7 (r + r′ = 9); r′ = r: 2; d − 1 − r: 6; d + r: 11",
+      "fn": "division", "args": [47, 9],
+      "espera": { "q": 5, "r": 2, "qExceso": 6, "rExceso": 7, "exacta": false, "residuoMaximo": 8, "filas.llenas": 5, "filas.sobran": 2, "filas.huecos": 7,
+        "errores.igualAlDefecto": 2, "errores.divisorMenosUnoMenosR": 6, "errores.sumaElDivisor": 11, "errores.masUno": 3 } },
+
+    { "nombre": "División exacta: 45 ÷ 9 = 5 sin residuo, no hay división por exceso; el residuo máximo al dividir entre 13 es 12 (no 13)",
+      "fn": "division", "args": [45, 9],
+      "espera": { "q": 5, "r": 0, "exacta": true, "qExceso": null, "rExceso": null },
+      "tambien": [ { "fn": "residuoMaximo", "args": [13], "espera": { "maximo": 12, "errores.igualAlDivisor": 13, "errores.mitad": 6 } },
+                   { "fn": "division", "args": [359, 23], "espera": { "q": 15, "r": 14, "rExceso": 9 } } ] },
+
+    { "nombre": "Predicción del paso 7: XY + YX = 132 con X e Y distintas → X + Y = 12 siempre (93, 84, 75, 57, 48, 39); suma de las cifras de 132: 6; las decenas sin la llevada: 13; la mitad: 66",
+      "fn": "invertidos", "args": [132],
+      "espera": { "suma": 12, "unica": true, "once": 12, "pares": ["93", "84", "75", "57", "48", "39"],
+        "errores.sumaCifras": 6, "errores.sinLlevada": 13, "errores.mitad": 66 } },
+
+    { "nombre": "Criptoaritmética del papel: XY + YX = ZYZ tiene una sola solución, 92 + 29 = 121; AB + AB = BCC: 61 + 61 = 122",
+      "fn": "cripto", "args": [["XY", "YX"], "ZYZ", { "distintas": true }],
+      "espera": { "unica": true, "solucion.X": 9, "solucion.Y": 2, "solucion.Z": 1, "letras": ["X", "Y", "Z"] },
+      "tambien": [ { "fn": "cripto", "args": [["AB", "AB"], "BCC", { "distintas": true }], "espera": { "unica": true, "solucion.A": 6, "solucion.B": 1, "solucion.C": 2 } },
+                   { "fn": "cripto", "args": [["XY", "YX"], "132", { "distintas": true }], "espera": { "unica": false } } ] },
+
+    { "nombre": "¿Qué pasa si…? 2: un número de 3 cifras menos su reverso, si la diferencia empieza con 4, es 495 = 99 · 5; sin préstamo: 404; presta sin descontar: 406; con el medio en 0: 405",
+      "fn": "diferenciaInvertida", "args": [4],
+      "espera": { "diferencia": 495, "texto": "495", "primeraMenosUltima": 5, "errores.sinPrestamo": "404", "errores.sinDescontar": "406", "errores.medioCero": "405" },
+      "tambien": [ { "fn": "conSuReverso", "args": ["752"], "espera": { "reverso": "257", "diferencia": 495, "k": 5 } },
+                   { "fn": "conSuReverso", "args": ["831"], "espera": { "diferencia": 693, "k": 7 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 3: un número de 4 cifras por uno de 3 tiene 6 o 7 cifras (1000 · 100 = 100000 y 9999 · 999 = 9989001); siempre 7: [7]; 4 · 3: [12]; 7 u 8: [7, 8]",
+      "fn": "cifrasProducto", "args": [4, 3],
+      "espera": { "cifras": [6, 7], "menor.producto": 100000, "menor.cifras": 6, "mayor.producto": 9989001, "mayor.cifras": 7,
+        "errores.siempreLaSuma": [7], "errores.multiplica": [12], "errores.unaDeMas": [7, 8] } },
+
+    { "nombre": "¿Qué pasa si…? 4: al dividir entre 14, el residuo por defecto y el por exceso son iguales solo si el residuo es 7 (21 y 35); entre 15, nunca",
+      "fn": "residuosIguales", "args": [14],
+      "espera": { "residuo": 7, "existe": true, "ejemplos": [21, 35], "errores.residuoCero": 0, "errores.residuoMaximo": 13, "errores.nunca": "nunca" },
+      "tambien": [ { "fn": "residuosIguales", "args": [15], "espera": { "residuo": "nunca", "existe": false, "ejemplos": [] } } ] },
+
+    { "nombre": "¿Qué pasa si…? 5: 34₍₅₎ · 3 = 212₍₅₎ (19 · 3 = 57); 12 sueltas → 2 paquetes y quedan 2; 9 + 2 = 11 paquetes → 2 cajas y queda 1; como en base 10: 102; sin llevar: 42; sin sumar la llevada: 142",
+      "fn": "multiplicaPorCifra", "args": ["34", 3, 5],
+      "espera": { "texto": "212", "valor": 57, "antes": 19, "filas": [[12, 9, 0]], "columnas.0.cifra": 2, "columnas.0.llevadaSale": 2, "columnas.1.total": 11, "columnas.1.llevadaSale": 2,
+        "errores.comoDecimal": "102", "errores.sinLlevar": "42", "errores.olvidaSumar": "142" },
+      "tambien": [ { "fn": "multiplicaPorCifra", "args": ["243", 4, 5], "espera": { "texto": "2132", "valor": 292 } } ] },
+
+    { "nombre": "Resta en base 5: 302₍₅₎ − 143₍₅₎ = 104₍₅₎ (77 − 48 = 29); el préstamo cruza el 0 y queda en 4, no en 5",
+      "fn": "restaColumnas", "args": ["302", "143", 5],
+      "espera": { "texto": "104", "valor": 29, "tras": [7, 4, 2], "conBaseResultado": "104₍₅₎" },
+      "tambien": [ { "fn": "cuadroResta", "args": [{ "b": 5, "K": 3, "arriba": [2, 0, 3], "abajo": [3, 4, 1], "acciones": [{ "tipo": "abrir", "orden": 2 }, { "tipo": "abrir", "orden": 1 }, { "tipo": "quitar", "orden": 0, "hay": 7, "quita": 3, "quedan": 4 }] }, 2.4],
+                     "espera": { "arriba": [7, 4, 2], "moviendo.tipo": "quitar", "moviendo.tachadas": 2 } } ] },
+
+    { "nombre": "Bordes: CA(1) = 9, CA(10) = 90, CA(999) = 1, CA(101₍₂₎) = 11₍₂₎; N − N = 0; 0 + 0 = 0; 111₍₂₎ + 1₍₂₎ = 1000₍₂₎",
+      "fn": "complemento", "args": ["1", 10],
+      "espera": { "texto": "9", "potencia": 10 },
+      "tambien": [ { "fn": "complemento", "args": ["10", 10], "espera": { "texto": "90" } }, { "fn": "complemento", "args": ["999", 10], "espera": { "texto": "1" } },
+                   { "fn": "complemento", "args": ["101", 2], "espera": { "texto": "11", "valor": 3 } },
+                   { "fn": "restaColumnas", "args": ["4073", "4073", 10], "espera": { "texto": "0", "valor": 0 } },
+                   { "fn": "sumaColumnas", "args": [["0", "0"], 10], "espera": { "texto": "0" } },
+                   { "fn": "sumaColumnas", "args": [["111", "1"], 2], "espera": { "texto": "1000", "llevadas": 3 } } ] }
+  ]
+}
