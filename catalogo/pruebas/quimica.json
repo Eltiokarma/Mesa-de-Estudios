@@ -1204,11 +1204,11 @@
       "nombreUnidad": "Estequiometría",
       "mide": "Rendimiento con muestra impura: el teórico se calcula solo con la parte pura de la muestra",
       "A": {
-        "enunciado": "Una muestra de 140 g de hierro, con 80 % de pureza, reacciona con ácido sulfúrico en exceso: Fe + H₂SO₄ → FeSO₄ + H₂. La impureza no reacciona. Se obtienen 3 g de H₂. ¿Cuál fue el rendimiento de la reacción? (Masas molares en g/mol: Fe = 56; H₂ = 2)",
+        "enunciado": "Una muestra de 160 g de hierro, con 70 % de pureza, reacciona con ácido sulfúrico en exceso: Fe + H₂SO₄ → FeSO₄ + H₂. La impureza no reacciona. Se obtienen 3 g de H₂. ¿Cuál fue el rendimiento de la reacción? (Masas molares en g/mol: Fe = 56; H₂ = 2)",
         "datos": {
           "ecuacion": "Fe + H2SO4 -> FeSO4 + H2",
-          "muestra": 140,
-          "pureza": 80,
+          "muestra": 160,
+          "pureza": 70,
           "real": 3,
           "producto": "H2",
           "masas": {
@@ -1218,8 +1218,8 @@
         },
         "opciones": [
           {
-            "texto": "60 %",
-            "valor": 60,
+            "texto": "52,5 %",
+            "valor": 52.5,
             "error": "olvida-pureza"
           },
           {
@@ -1228,24 +1228,24 @@
             "correcta": true
           },
           {
-            "texto": "48 %",
-            "valor": 48,
+            "texto": "36,75 %",
+            "valor": 36.75,
             "error": "multiplica-pureza"
           },
           {
-            "texto": "80 %",
-            "valor": 80,
+            "texto": "82,5 %",
+            "valor": 82.5,
             "error": "suma-porcentajes"
           }
         ]
       },
       "B": {
-        "enunciado": "Una muestra de 90 g de magnesio, con 80 % de pureza, reacciona con ácido clorhídrico en exceso: Mg + 2HCl → MgCl₂ + H₂. La impureza no reacciona. Se obtienen 4,5 g de H₂. ¿Cuál fue el rendimiento de la reacción? (Masas molares en g/mol: Mg = 24; H₂ = 2)",
+        "enunciado": "Una muestra de 96 g de magnesio, con 75 % de pureza, reacciona con ácido clorhídrico en exceso: Mg + 2HCl → MgCl₂ + H₂. La impureza no reacciona. Se obtienen 4,8 g de H₂. ¿Cuál fue el rendimiento de la reacción? (Masas molares en g/mol: Mg = 24; H₂ = 2)",
         "datos": {
           "ecuacion": "Mg + HCl -> MgCl2 + H2",
-          "muestra": 90,
-          "pureza": 80,
-          "real": 4.5,
+          "muestra": 96,
+          "pureza": 75,
+          "real": 4.8,
           "producto": "H2",
           "masas": {
             "Mg": 24,
@@ -1259,18 +1259,18 @@
             "error": "olvida-pureza"
           },
           {
-            "texto": "75 %",
-            "valor": 75,
+            "texto": "80 %",
+            "valor": 80,
             "correcta": true
           },
           {
-            "texto": "48 %",
-            "valor": 48,
+            "texto": "45 %",
+            "valor": 45,
             "error": "multiplica-pureza"
           },
           {
-            "texto": "80 %",
-            "valor": 80,
+            "texto": "85 %",
+            "valor": 85,
             "error": "suma-porcentajes"
           }
         ]
