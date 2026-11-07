@@ -1,0 +1,16 @@
+{
+  "id": "trazos-rutas",
+  "titulo": "El lápiz y la hormiga: trazos, perímetros y rutas",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.trazos-y-perimetros",
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

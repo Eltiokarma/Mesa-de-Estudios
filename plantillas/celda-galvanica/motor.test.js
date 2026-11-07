@@ -4,7 +4,8 @@
 // 2. Propiedades: E° > 0 si y solo si es espontánea; invertir la celda cambia el signo; la reacción global
 //    conserva átomos y carga; E° no se multiplica por los coeficientes; la masa de Faraday escala con I·t y
 //    con M/z; en la animación la carga se conserva en cada paso y los electrones nunca pasan por una
-//    disolución (EC2); sin puente, cada vaso se carga y la reacción se frena (EC1, EC11).
+//    disolución (EC2); sin puente, cada vaso se carga y la reacción se frena (EC1, EC11). Electrólisis con agua
+//    y con sal: los mismos moles de e⁻ en los dos electrodos, H₂ y O₂ en 2 : 1, V = n · 22,4 y los errores.
 // 3. Errores de entrada.
 // 4. Cada problema de papel.json coincide con el motor.
 
@@ -217,6 +218,63 @@ test('animación: con el circuito abierto no sale ningún electrón ni se disuel
   assert.ok(e.disueltos > 0 && e.depositados > 0);
 });
 
+// Electrólisis con agua y con sal
+const SIS = Object.keys(motor.SISTEMAS);
+test('electrólisis con agua y con sal: los mismos moles de e⁻ en los dos electrodos; n = moles de e⁻ / z y V = n · 22,4', () => {
+  assert.deepEqual(SIS.sort(), ['agua-acida', 'agua-sulfato', 'nacl-acuoso', 'nacl-fundido']);
+  const rnd = motor.azar(77);
+  for (const id of SIS) for (let k = 0; k < 40; k++) {
+    const Q = 1 + 1e5 * rnd(), r = motor.electrolizar(id, { Q });
+    cerca(r.molE, Q / 96500, 'moles de e⁻');
+    for (const lado of ['catodo', 'anodo']) {
+      const p = r[lado];
+      cerca(p.mol * p.z, r.molE, `${id} ${lado}: e⁻ que se usan`);
+      cerca(p.g, p.mol * p.M, 'masa');
+      if (p.gas) cerca(p.L, p.mol * 22.4, 'volumen en condiciones normales'); else assert.equal(p.L, null);
+      cerca(r.errores.sinDividir[lado], p.gas ? p.L * p.z : p.g * p.z, 'sin dividir entre z');
+      // la semirreacción lleva sus z electrones, del lado que toca
+      const ee = p.z === 1 ? 'e⁻' : `${p.z} e⁻`, [izq, der] = p.semirreaccion.split(' → ');
+      assert.ok((lado === 'catodo' ? izq : der).includes(ee), `${id} ${lado}: ${p.semirreaccion}`);
+      assert.ok(der.includes(p.producto), `${id} ${lado}: el producto sale a la derecha (${p.semirreaccion})`);
+    }
+    // la fuente manda: el cátodo es el polo − y ahí ocurre la reducción (EC3, EC8)
+    assert.equal(r.catodo.polo, '−'); assert.equal(r.anodo.polo, '+');
+    assert.equal(r.catodo.tipo, 'reducción'); assert.equal(r.anodo.tipo, 'oxidación');
+    if (r.razonVolumen !== null) cerca(r.catodo.L / r.anodo.L, r.razonVolumen, 'razón de volúmenes');
+    // la misma carga dada como I · t da lo mismo
+    cerca(motor.electrolizar(id, { I: 2, s: Q / 2 }).catodo.mol, r.catodo.mol, 'I · t');
+  }
+});
+test('agua: H₂ en el cátodo y O₂ en el ánodo, siempre el doble de H₂; los errores dan otra cosa', () => {
+  for (const id of ['agua-acida', 'agua-sulfato']) for (const Q of [965, 9650, 19300, 1234.5]) {
+    const r = motor.electrolizar(id, { Q });
+    assert.equal(r.catodo.producto, 'H₂'); assert.equal(r.anodo.producto, 'O₂');
+    assert.equal(r.razonVolumen, 2); cerca(r.catodo.L, 2 * r.anodo.L, '2 : 1');
+    assert.notEqual(r.errores.unoAUno, r.anodo.L); cerca(r.errores.unoAUno, r.catodo.L, '1 : 1');
+    assert.equal(r.errores.catodoAlReves, r.anodo.producto); assert.equal(r.errores.anodoAlReves, r.catodo.producto);
+    cerca(r.errores.oxigenoConDos, 2 * r.anodo.L, 'O₂ con 2 F en vez de 4');
+    assert.equal(r.global, '2 H₂O → 2 H₂ + O₂');
+  }
+});
+test('NaCl: en agua sale H₂ en el cátodo y nunca sodio; fundido, sodio; en los dos, Cl₂ en el ánodo', () => {
+  const a = motor.electrolizar('nacl-acuoso', { Q: 9650 }), f = motor.electrolizar('nacl-fundido', { Q: 9650 });
+  assert.equal(a.catodo.producto, 'H₂'); assert.notEqual(a.catodo.producto, a.errores.saleSodio);
+  assert.equal(f.catodo.producto, 'Na'); assert.notEqual(f.catodo.producto, f.errores.saleHidrogeno);
+  assert.equal(a.anodo.producto, 'Cl₂'); assert.equal(f.anodo.producto, 'Cl₂');
+  cerca(a.anodo.mol, f.anodo.mol, 'el mismo Cl₂ con la misma carga');
+  cerca(f.catodo.mol, 2 * a.catodo.mol, 'dos Na por cada H₂');
+  assert.ok(!/Na\b|Na$/.test(a.catodo.semirreaccion), 'en el cátodo de la salmuera no aparece sodio metálico');
+});
+test('productos: unidades · z + sobran = electrones, iguales en los dos electrodos', () => {
+  for (const id of SIS) for (let e = 0; e <= 40; e++) {
+    const r = motor.productos(id, e), x = motor.electrolizar(id);
+    for (const lado of ['catodo', 'anodo']) {
+      assert.equal(r[lado].unidades * x[lado].z + r[lado].sobran, e); assert.ok(r[lado].sobran < x[lado].z);
+      assert.equal(r[lado].producto, x[lado].producto);
+    }
+  }
+});
+
 // 3. Errores de entrada
 test('errores de entrada', () => {
   assert.throws(() => motor.par('Xx'), /tabla/);
@@ -242,6 +300,12 @@ test('errores de entrada', () => {
   assert.throws(() => motor.simular({ anodo: 'Zn', catodo: 'Cu' }, 0), /mayor que cero/);
   assert.throws(() => motor.voltimetro(null), /celda/);
   assert.throws(() => motor.voltimetro(motor.pila('Zn', 'Cu'), { puente: 'papel' }), /puente/);
+  assert.throws(() => motor.electrolizar('agua-salada', { Q: 10 }), /desconocido/);
+  assert.throws(() => motor.electrolizar('agua-acida', { Q: -5 }), /mayor que cero/);
+  assert.throws(() => motor.electrolizar('agua-acida', { I: 2 }), /tiempo/);
+  assert.throws(() => motor.electrolizar('nacl-acuoso', { I: 0, s: 10 }), /mayor que cero/);
+  assert.throws(() => motor.productos('nacl-fundido', 1.5), /enteros/);
+  assert.throws(() => motor.productos('vinagre', 4), /desconocido/);
 });
 
 // 4. Problemas de papel (regla 6)

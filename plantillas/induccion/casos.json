@@ -1,0 +1,113 @@
+{
+  "plantilla": "induccion",
+  "unidades": "Todo en SI: campo B en T, áreas A en m², largos L y distancias d en m, flujo Φ en Wb (por espira, salvo dPhiTotal = N·ΔΦ), tiempos en s, fem ε y voltajes V en V, corrientes I en A, resistencias R en Ω, fuerzas F en N, potencias P en W, velocidades v en m/s, ω en rad/s, f en Hz, ángulos en grados. θ es el ángulo entre B y la NORMAL a la espira; α (flujoPlano), el ángulo entre B y el plano de la espira. cos 60° = 1/2, cos 37° = 4/5, cos 53° = 3/5. Espira frente a un imán: Φ > 0 si el campo cruza la espira alejándose del imán (polo N hacia la espira); los sentidos de giro se dan VISTOS DESDE EL IMÁN. En la barra, los rieles van a lo horizontal con el extremo cerrado a la izquierda y el sentido se da visto de frente. R = 'abierta' es una espira cortada.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.alReves.sentido); los textos y los booleanos, exactos. 'tambien' repite la llamada con otros argumentos (y, si trae 'fn', con otra función). Los errores típicos van en 'errores': lo que da cada error (MG7 a MG10 del informe, o hipótesis nuestras; están definidos en la cabecera de motor.js). Los casos del imán que se acerca usan el modelo del dibujo (flujoIman: Φmax = 2 × 10⁻⁴ Wb, a = 0,03 m) y el movimiento de la escena: d de 0,15 m a 0,03 m entre t = 0,2 s y t = 1,7 s.",
+  "verificacion": "Verificado a ciegas (7 nov 2026) por un subagente que no leyó el motor ni los casos: Faraday, flujo, generador y transformador con fracciones exactas y ΔΦ como productos de áreas; Lenz y la barra por la fuerza q·v×B sobre los portadores (no por el signo de ΔΦ); dΦ/dd por paso complejo y el pico de cambioRapidez por muestreo. Coinciden los 22 casos; dos diferencias de convención: Pp con pila (0 frente a Vp·Ip = 6 W; tras la revisión el motor da Pp = null, porque con continua no hay transferencia por el núcleo y la primaria disipa Vp²/R) y el signo de errores.anguloConPlano (se usa el módulo).",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción 1 (paso 1): el imán se detuvo a 3 cm de una bobina de 200 vueltas (R = 20 Ω): con el imán QUIETO, vd = 0 → ε = 0 e I = 0 aunque el flujo no sea cero (Φ = 2 × 10⁻⁴ · 2^(−3/2) ≈ 7,07 × 10⁻⁵ Wb por espira). MG7: «hay corriente porque el campo es fuerte»",
+      "fn": "femIman", "args": [0.03, 0, {}, 200, 20],
+      "espera": { "fem": 0, "femModulo": 0, "I": 0, "Phi": 7.07106781187e-5 },
+      "tambien": [ { "fn": "faraday", "args": [200, 7.07106781187e-5, 7.07106781187e-5, 1, 20], "espera": { "dPhi": 0, "fem": 0, "I": 0, "cambio": "no cambia" } } ] },
+
+    { "nombre": "Caso del informe «imán quieto»: ΔΦ = 0 → ε = 0 (con cualquier flujo, cualquier N y cualquier Δt); quien pone el flujo en vez de su cambio (MG10) obtiene N·Φ/Δt = 100 · 0,01 / 1 = 1 V",
+      "fn": "faraday", "args": [100, 0.01, 0.01, 1],
+      "espera": { "dPhi": 0, "fem": 0, "femModulo": 0, "cambio": "no cambia", "errores.conFlujoInicial": 1 } },
+
+    { "nombre": "Paso 2: el movimiento del imán (de 0,15 m a 0,03 m entre 0,2 s y 1,7 s, arranque y frenado suaves): a la mitad del recorrido, t = 0,95 s, está a 0,09 m y va más rápido, a 0,12 m/s hacia la espira (vd = −0,12); en t = 1,7 s se detiene a 0,03 m",
+      "fn": "movimientoIman", "args": [0.95, { "d0": 0.15, "d1": 0.03, "t0": 0.2, "T": 1.5 }],
+      "espera": { "d": 0.09, "vd": -0.12, "quieto": false },
+      "tambien": [ { "args": [1.7, { "d0": 0.15, "d1": 0.03, "t0": 0.2, "T": 1.5 }], "espera": { "d": 0.03, "vd": 0 } },
+                   { "args": [2.4, { "d0": 0.15, "d1": 0.03, "t0": 0.2, "T": 1.5 }], "espera": { "d": 0.03, "vd": 0, "quieto": true } },
+                   { "args": [0, { "d0": 0.15, "d1": 0.03, "t0": 0.2, "T": 1.5 }], "espera": { "d": 0.15, "vd": 0, "quieto": true } } ] },
+
+    { "nombre": "Predicción 2 (paso 2): con 200 vueltas, la fem es la PENDIENTE de Φ(t): ε = −N·(dΦ/dd)·vd. En t = 1,5 s (d ≈ 0,0358 m, vd ≈ −0,0555 m/s) la corriente es mucho mayor que en t = 0,95 s, cuando el imán va más rápido pero lejos; en t = 1,7 s y después, con el flujo máximo, es cero",
+      "fn": "femIman", "args": [0.0358311111111, -0.0554666666667, {}, 200, 20],
+      "espera": { "fem": -0.0288915692479, "I": -0.0014445784624 },
+      "tambien": [ { "args": [0.09, -0.12, {}, 200, 20], "espera": { "fem": -0.00455367983064, "I": -0.000227683991532 } },
+                   { "fn": "dFlujoIman", "args": [0.03, {}], "espera": { "valor": -0.00353553390593 } } ] },
+
+    { "nombre": "Caso del informe «Faraday» (predicción 3, paso 3): N = 100; A = 0,02 m²; B baja de 0,5 T a 0,1 T en 0,2 s; R = 8 Ω → ΔΦ por espira = −1/125 Wb (−0,008); ε = 4 V; I = 1/2 A. Sin N, 0,04 V; con el flujo inicial en vez de su cambio (MG10), 5 V; con el final, 1 V; multiplicando por R, 32 A",
+      "fn": "faradayCampo", "args": [100, 0.02, 0.5, 0.1, 0.2, 8],
+      "espera": { "Phi0": 0.01, "Phi1": 0.002, "dPhi": -0.008, "dPhiTotal": -0.8, "fem": 4, "femModulo": 4, "I": 0.5, "cambio": "disminuye",
+                  "errores.sinN": 0.04, "errores.conFlujoInicial": 5, "errores.conFlujoFinal": 1, "errores.sumaFlujos": 6, "errores.sinDt": 0.8, "errores.IsinN": 0.005, "errores.IporR": 32 } },
+
+    { "nombre": "Predicción 4 (paso 4): se ACERCA el polo N: el flujo (positivo, alejándose del imán) aumenta → el campo inducido apunta hacia el imán, la corriente va en sentido ANTIHORARIO visto desde el imán, la cara que mira al imán es un polo N y lo REPELE. Con el sentido al revés (MG8): horario y atrae",
+      "fn": "lenz", "args": [1e-5, 7e-5],
+      "espera": { "sentido": "antihorario", "campoInducido": "hacia el imán", "cara": "N", "fuerza": "repele", "cambio": "aumenta", "polo": "N", "seOpone": true, "refuerza": false,
+                  "errores.alReves.sentido": "horario", "errores.alReves.fuerza": "atrae", "errores.contraElCampo.sentido": "antihorario" } },
+
+    { "nombre": "Predicción 5 (paso 5): se ALEJA el polo N: el flujo disminuye → el campo inducido apunta alejándose del imán, como el del imán: lo REFUERZA. La corriente va en sentido HORARIO visto desde el imán y la espira lo ATRAE. MG9 (siempre contra el campo) y MG8 (el contrario) dan antihorario y repele",
+      "fn": "lenz", "args": [7e-5, 1e-5],
+      "espera": { "sentido": "horario", "campoInducido": "alejándose del imán", "cara": "S", "fuerza": "atrae", "cambio": "disminuye", "refuerza": true, "seOpone": false,
+                  "errores.contraElCampo.sentido": "antihorario", "errores.contraElCampo.fuerza": "repele", "errores.alReves.sentido": "antihorario", "errores.sinCorriente.sentido": "ninguno" } },
+
+    { "nombre": "¿Qué pasa si…? 2: se da vuelta el imán y se ACERCA el polo S: el flujo (negativo, hacia el imán) crece en valor absoluto → el campo inducido apunta alejándose del imán, la corriente va en sentido HORARIO visto desde el imán y la cara que lo mira es un polo S: igual lo REPELE. Decidir solo por el movimiento (MG8) da antihorario",
+      "fn": "lenz", "args": [-1e-5, -7e-5],
+      "espera": { "sentido": "horario", "campoInducido": "alejándose del imán", "cara": "S", "fuerza": "repele", "polo": "S", "seOpone": true,
+                  "errores.soloMovimiento.sentido": "antihorario", "errores.alReves.fuerza": "atrae" } },
+
+    { "nombre": "Caso del informe «fem de movimiento» (predicción 6, paso 6): B = 0,5 T que entra, L = 0,4 m, v = 10 m/s hacia la derecha, R = 4 Ω → ε = 2 V; I = 1/2 A, que sube por la barra (antihorario visto de frente); F = B·I·L = 1/10 N contra v: la frena; P = F·v = ε·I = 1 W. Sin L, 5 V; MG10 («B no cambia»), 0 V",
+      "fn": "femMovimiento", "args": [0.5, 0.4, 10, 4, { "campo": "entra", "haciaDerecha": true }],
+      "espera": { "fem": 2, "I": 0.5, "F": 0.1, "P": 1, "Pelectrica": 1, "fuerza": "frena", "sentido": "antihorario", "enLaBarra": "sube", "campoInducido": "sale",
+                  "errores.sinL": 5, "errores.campoConstante": 0, "errores.fuerzaAyuda": "empuja", "errores.FconV": 2 } },
+
+    { "nombre": "Paso 6 (arrastre): la misma barra pasa de x = 0,2 m a x = 0,3 m en 0,01 s → el área crece 0,04 m², ΔΦ = 0,02 Wb, v = 10 m/s y ε = −ΔΦ/Δt = −2 V: lo mismo que B·L·v; I = 0,5 A y F = 0,1 N",
+      "fn": "barraEntre", "args": [0.5, 0.4, 0.2, 0.3, 0.01, 4],
+      "espera": { "v": 10, "dPhi": 0.02, "fem": -2, "femModulo": 2, "I": 0.5, "F": 0.1 } },
+
+    { "nombre": "Predicción 7 (paso 7): generador con N = 50, B = 0,4 T, A = 0,05 m², ω = 100 rad/s → εmax = N·B·A·ω = 100 V y eficaz = 100/√2 = 50√2 ≈ 70,7 V. Dividiendo entre 2, 50 V; multiplicando por √2, ≈ 141 V; sin N, 2 V (eficaz ≈ 1,41 V)",
+      "fn": "generador", "args": [50, 0.4, 0.05, 100],
+      "espera": { "femMax": 100, "eficaz": 70.7106781187, "PhiMax": 0.02, "f": 15.9154943092, "T": 0.0628318530718,
+                  "errores.eficazMitad": 50, "errores.eficazPorRaiz": 141.421356237, "errores.sinN": 2, "errores.sinNEficaz": 1.41421356237 } },
+
+    { "nombre": "Paso 7: el mismo generador cuando la espira giró un cuarto de vuelta (ωt = 90°, t = π/200 s): el flujo es CERO y la fem es la máxima, 100 V; al empezar (t = 0), el flujo es el máximo, 0,02 Wb por espira, y la fem vale cero",
+      "fn": "femGenerador", "args": [50, 0.4, 0.05, 100, 0.015707963267949],
+      "espera": { "theta": 90, "Phi": 0, "fem": 100 },
+      "tambien": [ { "args": [50, 0.4, 0.05, 100, 0], "espera": { "theta": 0, "Phi": 0.02, "PhiTotal": 1, "fem": 0 } } ] },
+
+    { "nombre": "Caso del informe «transformador ideal» (predicción 8, paso 8): Np = 200, Ns = 50, Vp = 220 V, Ip = 0,5 A → Vs = 55 V e Is = 2 A (reductor; 110 W de los dos lados). Con la razón invertida, 880 V y 0,125 A; con la corriente en la misma razón que el voltaje, 0,125 A; sin cambio, 220 V y 0,5 A",
+      "fn": "transformador", "args": [200, 50, 220, 0.5],
+      "espera": { "Vs": 55, "Is": 2, "razon": 0.25, "tipo": "reductor", "Pp": 110, "Ps": 110, "continua": false,
+                  "errores.razonInvertida.Vs": 880, "errores.razonInvertida.Is": 0.125, "errores.corrienteComoVoltaje.Is": 0.125, "errores.sinCambio.Vs": 220, "errores.sinCambio.Is": 0.5 } },
+
+    { "nombre": "¿Qué pasa si…? 4: el mismo transformador con una PILA de 12 V (continua): el flujo del núcleo no cambia → Vs = 0 e Is = 0 (salvo el instante en que se conecta). Creer que funciona igual (sale de MG7) da 3 V",
+      "fn": "transformador", "args": [200, 50, 12, 0.5, { "continua": true }],
+      "espera": { "Vs": 0, "Is": 0, "continua": true, "Pp": null, "Ps": 0, "errores.continuaPasa.Vs": 3, "errores.razonInvertida.Vs": 48, "errores.sinCambio.Vs": 12 } },
+
+    { "nombre": "Transformador ELEVADOR: Np = 100, Ns = 500, Vp = 220 V, Ip = 5 A → Vs = 1100 V e Is = 1 A: sube el voltaje y baja la corriente, con la misma potencia (1100 W)",
+      "fn": "transformador", "args": [100, 500, 220, 5],
+      "espera": { "Vs": 1100, "Is": 1, "razon": 5, "tipo": "elevador", "Pp": 1100, "Ps": 1100, "errores.razonInvertida.Vs": 44 } },
+
+    { "nombre": "Flujo con la espira girada 60° respecto de B (ángulo con la NORMAL): Φ = 0,5 · 0,02 · cos 60° = 1/200 Wb; tomando el ángulo como si fuera con el plano (sen 60°), ≈ 8,66 × 10⁻³ Wb",
+      "fn": "flujo", "args": [0.5, 0.02, 60],
+      "espera": { "Phi": 0.005, "cos": 0.5, "errores.conSeno": 0.00866025403784 },
+      "tambien": [ { "args": [0.5, 0.02], "espera": { "Phi": 0.01, "cos": 1 } }, { "args": [0.5, 0.02, 90], "espera": { "Phi": 0, "cos": 0 } } ] },
+
+    { "nombre": "Espira girada 37°: con 37° entre B y la normal, Φ = 0,4 · 0,05 · 4/5 = 0,016 Wb; si los 37° son entre B y el PLANO de la espira, Φ = 0,4 · 0,05 · sen 37° = 0,012 Wb (y usar el coseno con ese ángulo da 0,016, el error)",
+      "fn": "flujo", "args": [0.4, 0.05, 37],
+      "espera": { "Phi": 0.016, "cos": 0.8, "errores.conSeno": 0.012 },
+      "tambien": [ { "fn": "flujoPlano", "args": [0.4, 0.05, 37], "espera": { "Phi": 0.012, "theta": 53, "errores.conCoseno": 0.016 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 3: la espira GIRA (100 vueltas, A = 0,02 m², B = 0,5 T fijo) de θ = 0° a θ = 60° en 0,1 s → ΔΦ por espira = −1/200 Wb y ε = 5 V, aunque B no cambie. MG10 («B no cambia») da 0 V; con el ángulo desde el plano, ≈ 8,66 V; con el flujo inicial, 10 V",
+      "fn": "faradayAngulo", "args": [100, 0.5, 0.02, 0, 60, 0.1],
+      "espera": { "Phi0": 0.01, "Phi1": 0.005, "dPhi": -0.005, "fem": 5, "errores.campoNoCambia": 0, "errores.anguloConPlano": 8.66025403784, "errores.conFlujoInicial": 10, "errores.sinN": 0.05 } },
+
+    { "nombre": "Área que cambia: una espira elástica de 50 vueltas en B = 0,2 T se encoge de 0,04 m² a 0,01 m² en 0,5 s (R = 5 Ω) → ΔΦ por espira = −0,006 Wb, ε = 0,6 V e I = 0,12 A; con B fijo, MG10 da 0 V",
+      "fn": "faradayArea", "args": [50, 0.2, 0.04, 0.01, 0.5, 5],
+      "espera": { "Phi0": 0.008, "Phi1": 0.002, "dPhi": -0.006, "fem": 0.6, "I": 0.12, "errores.campoNoCambia": 0, "errores.sinN": 0.012 } },
+
+    { "nombre": "¿Qué pasa si…? 5: la bobina del paso 3 CORTADA (R = 'abierta'): la fem sigue siendo 4 V y queda como voltaje entre los extremos, pero no circula corriente (I = 0)",
+      "fn": "faradayCampo", "args": [100, 0.02, 0.5, 0.1, 0.2, "abierta"],
+      "espera": { "fem": 4, "I": 0, "voltajeExtremos": 4, "abierta": true, "errores.corrienteIgual": true } },
+
+    { "nombre": "¿Qué pasa si…? 1: el mismo recorrido del imán en la mitad del tiempo (f = 2): el pico de la fem se DUPLICA y el cambio de flujo ΔΦ es el mismo (de 2 × 10⁻⁴/26^(3/2) a 2 × 10⁻⁴/2^(3/2) Wb por espira)",
+      "fn": "cambioRapidez", "args": [{ "d0": 0.15, "d1": 0.03, "t0": 0.2, "T": 1.5 }, {}, 200, 2],
+      "espera": { "razon": 2, "dPhi0": 6.92020924638e-5, "dPhi1": 6.92020924638e-5, "T0": 1.5, "T1": 0.75 } },
+
+    { "nombre": "Modelo del imán: el flujo por espira con el polo N a 3 cm vale 2 × 10⁻⁴ · 2^(−3/2) ≈ 7,07 × 10⁻⁵ Wb; con el polo S, el mismo número con signo menos (el campo cruza hacia el imán); a 15 cm es unas 47 veces menor",
+      "fn": "flujoIman", "args": [0.03, {}],
+      "espera": { "valor": 7.07106781187e-5 },
+      "tambien": [ { "args": [0.03, { "polo": "S" }], "espera": { "valor": -7.07106781187e-5 } }, { "args": [0.15, {}], "espera": { "valor": 1.50858565491e-6 } } ] }
+  ]
+}

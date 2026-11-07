@@ -24,14 +24,20 @@
    El tiempo t va en tinta, como los ejes: un décimo color propio no entra a ΔE00 ≥ 20 de los otros nueve en oscuro
    (lo probamos: el marrón o el naranja del tiempo quedan a menos de 15 del naranja de B). La tinta no nombra otra
    variable. Los tres choques se distinguen además por forma: anillo (eficaz), cruz (sin energía) y flecha que gira
-   (mal orientado). */
+   (mal orientado).
+   Experimentos 6 y 7 (7 nov 2026, otra reacción: 2 N₂O₅ → 4 NO₂ + O₂; sin la caja):
+     [N₂O₅] (concentración)       granate   #652515 / rojo anaranjado #fa572e
+   Sale solo con v (mostaza), la tinta y el gris: ΔE00 ≥ 20 con ellos en los dos temas (claro: 32,4, 27,0 y 28,5;
+   oscuro: 44,1, 39,5 y 34,0). Contra los otros nueve: ≥ 21,2 en claro; en oscuro, 16,5 con B y 18,7 con T, que no
+   salen en esos experimentos (la caja y el termómetro se esconden). Contraste: 10,8 y 5,05; sobre el chip, 9,36 y 4,59.
+   Las vidas medias (t½) son tiempos y van en tinta, como t. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
   --c-A:#1f5fbf; --c-B:#b55302; --c-C:#c90eb4; --c-T:#c0364a; --c-Ea:#1c7170; --c-dH:#198036; --c-v:#856d02;
-  --c-sinE:#434038; --c-malO:#4b06b9;
+  --c-sinE:#434038; --c-malO:#4b06b9; --c-N:#652515;
   --vidrio:#8e97a8;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -42,14 +48,14 @@
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-A:#7cb0ff; --c-B:#fb9c5e; --c-C:#fe3dd6; --c-T:#f17384; --c-Ea:#79c6c5; --c-dH:#4fb256; --c-v:#d8c84a;
-  --c-sinE:#8c8f85; --c-malO:#9978fa;
+  --c-sinE:#8c8f85; --c-malO:#9978fa; --c-N:#fa572e;
   --vidrio:#5e5670; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-A:#7cb0ff; --c-B:#fb9c5e; --c-C:#fe3dd6; --c-T:#f17384; --c-Ea:#79c6c5; --c-dH:#4fb256; --c-v:#d8c84a;
-  --c-sinE:#8c8f85; --c-malO:#9978fa;
+  --c-sinE:#8c8f85; --c-malO:#9978fa; --c-N:#fa572e;
   --vidrio:#5e5670; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -102,6 +108,7 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 12%, transparent)}
 .v-sinE{color:var(--c-sinE); background:color-mix(in srgb, var(--c-sinE) 12%, transparent)}
 .v-malO{color:var(--c-malO); background:color-mix(in srgb, var(--c-malO) 12%, transparent)}
+.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 12%, transparent)}
 .v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
 input.r-T{accent-color:var(--c-T)}
 
@@ -111,7 +118,7 @@ input.r-T{accent-color:var(--c-T)}
 .eq{min-width:0}
 .eq .ex{white-space:normal; line-height:2}
 .frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
-.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em; align-self:stretch; text-align:center}
 .frac > span:last-child{padding:0 .25em}
 sup{font-size:.72em; line-height:0}
 .answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--c-C); max-width:66ch}
@@ -214,7 +221,8 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
   <div id="m2" class="mode" hidden>
     <section class="bench" aria-label="Experimentos con la rapidez de reacción">
-      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Una caja con porciones de A, B y C y, al responder, contadores de choques, un histograma de energía y una gráfica en el tiempo"></canvas></div>
+      <div class="lienzo" id="lz2"><canvas id="cv2" role="img" aria-label="Una caja con porciones de A, B y C y, al responder, contadores de choques, un histograma de energía y una gráfica en el tiempo"></canvas></div>
+      <div class="lienzo" id="lz3" hidden><canvas id="cv3" role="img" aria-label="Datos de otra reacción: barras o una gráfica de concentración contra tiempo"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="ley2"></div>
       <div class="pelicula" id="vel2"></div>
@@ -707,7 +715,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idVel){
   };
   // El bucle dibuja con E.pintar; E.dibujar, que se llama desde afuera tras un cambio, además lo despierta.
   E.pintar = E.dibujar;
-  E.dibujar = () => { E.pintar(); if (E.B) E.B.despertar(); };
+  E.dibujar = () => { if (E.oculta) return; E.pintar(); if (E.B) E.B.despertar(); };
   bucleCaja(E, cv);
   // Velocidad de la película: la química no cambia, solo se ve más rápido.
   const velEl = document.getElementById(idVel);
@@ -719,7 +727,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idVel){
   }
   // Descripción para lector de pantalla: solo lo que ya se puede saber.
   E.describir = (forzar) => {
-    if (!forzar) return; // El lector de pantalla habla al cambiar de paso, al responder y al pedirlo, no cada pocos segundos.
+    if (!forzar || E.oculta) return; // El lector de pantalla habla al cambiar de paso, al responder y al pedirlo, no cada pocos segundos.
     const s = E.sim, v = E.vista; if (!s) return;
     const n = s.contar();
     let t = `Hay ${n.A} porciones de A, ${n.B} de B y ${n.C} de C${v.termo ? `, a ${fmt(s.T, 0)} K` : ''}.`;
@@ -803,7 +811,7 @@ const catalizada = () => { const s = nueva(); s.catalizador(EA_CAT); return s; }
 const RES = (doc, txt) => doc;
 
 const P0 = { id:'cinetica-paso2', ok:'c', opts:[
-  ['a','Se mantiene igual hasta que se acaban A y B','CI2-constante', RES('documentado','Jusniar y otros 2020; revisión vía buscador; sin cifra verificada')],
+  ['a','Se mantiene igual hasta que se acaban A y B','CI2-constante', RES('parcial','Jusniar y otros 2020; revisión vía buscador; sin cifra verificada')],
   ['b','Aumenta, porque cada vez hay más C en la caja','CI1-cantidad', RES('documentado','Çakmakçı 2010; sin cifra verificada')],
   ['c','Disminuye, porque quedan menos A y B para chocar'],
   ['d','Aumenta un rato y después para de golpe','sube-y-para', RES('hipotesis','hipótesis nuestra')]],
@@ -812,17 +820,17 @@ const P0 = { id:'cinetica-paso2', ok:'c', opts:[
     b:'Elegiste la 2. Que haya cada vez más C no quiere decir que se forme más rápido: la rapidez es cuánto C se forma por segundo, y eso baja. Confundir la rapidez con la cantidad de producto es una idea documentada en Çakmakçı (2010), sin cifra verificada. La correcta está marcada.',
     d:'Elegiste la 4. No para de golpe: se va frenando poco a poco, porque los choques A–B se hacen cada vez más raros. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
 const P1 = { id:'cinetica-paso5', ok:'b', opts:[
-  ['a','Sí, porque al calentar baja la energía de activación','CI4-baja-Ea', RES('documentado','Çakmakçı 2010; sin cifra verificada')],
+  ['a','Sí, porque al calentar baja la energía de activación','CI4-baja-Ea', RES('parcial','Çakmakçı 2010; sin cifra verificada')],
   ['b','Sí, porque más choques alcanzan la energía de activación'],
   ['c','Sí, pero solo porque hay muchos más choques por segundo','solo-mas-choques', RES('hipotesis','hipótesis nuestra')],
-  ['d','No, porque la reacción ya libera calor por su cuenta','CI3-exotermica', RES('documentado','Çakmakçı 2010; Kolomuç y Tekin 2011; sin cifra verificada')]],
+  ['d','No, porque la reacción ya libera calor por su cuenta','CI3-exotermica', RES('parcial','Çakmakçı 2010; Kolomuç y Tekin 2011; sin cifra verificada')]],
   fb:{ b:'¡Bien! A 400 K los choques A–B son solo un poco más seguidos, pero muchos más alcanzan la energía de activación. Mira el histograma: se aplana y se estira hacia la derecha, y la línea de Ea no se mueve.',
     a:'Elegiste la 1. La energía de activación es la altura de la barrera y no cambia al calentar: mira la línea de Ea, se queda en su sitio. Lo que cambia es cuántos choques la alcanzan. Es una idea documentada en Çakmakçı (2010), sin cifra verificada. La correcta está marcada.',
     c:'Elegiste la 3. Al calentar sí hay más choques por segundo, pero solo unos pocos más. Lo que más pesa es que muchos más choques alcanzan la energía de activación. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
     d:'Elegiste la 4. Calentar acelera toda reacción, libere calor o lo absorba. Lo que depende del calor de reacción es el equilibrio, no la rapidez. Es una idea documentada en Çakmakçı (2010) y en Kolomuç y Tekin (2011), sin cifra verificada. La correcta está marcada.' } };
 const P2 = { id:'cinetica-paso7', ok:'d', opts:[
-  ['a','Les da más energía a las porciones de A y B','CI7-energia', RES('documentado','según revisiones: Kurt y Ayas 2012, entre otros; sin cifra verificada')],
-  ['b','Sube la energía de activación de la reacción','CI7b-sube-Ea', RES('documentado','Kolomuç y Tekin 2011 y otros, según revisiones; sin cifra verificada')],
+  ['a','Les da más energía a las porciones de A y B','CI7-energia', RES('parcial','según revisiones: Kurt y Ayas 2012, entre otros; sin cifra verificada')],
+  ['b','Sube la energía de activación de la reacción','CI7b-sube-Ea', RES('parcial','Kolomuç y Tekin 2011 y otros, según revisiones; sin cifra verificada')],
   ['c','Hace que la reacción libere más calor','cat-cambia-dH', RES('hipotesis','hipótesis nuestra')],
   ['d','Abre otro camino, con una barrera más baja']],
   fb:{ d:'¡Bien! El catalizador abre otro camino, con una barrera más baja. La temperatura no cambia, así que el histograma queda igual: lo que se mueve es la línea de Ea.',
@@ -1025,7 +1033,9 @@ go(0);
 
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
-   Preguntas de docs/investigacion/cinetica-ideas-erroneas.md (CI5, CI9, CI13 y EQ12) y de la ley de velocidad. Cada una
+   Preguntas de docs/investigacion/cinetica-ideas-erroneas.md (CI5, CI9, CI13 y EQ12) y de la ley de velocidad.
+   Las 6 y 7 (7 nov 2026) son de otra reacción, 2 N₂O₅ → 4 NO₂ + O₂, sin la caja: el orden que no es el coeficiente
+   (tabla de velocidades iniciales) y la vida media de primer orden contra la de segundo orden. Cada una
    arranca con la caja congelada; la caja corre y se muestran las cuentas recién después de responder.
    Para comparar rapideces se cuentan varias cajas por detrás: una caja sola fluctúa mucho. */
 (function(){
@@ -1043,6 +1053,156 @@ const CHICO = 0.015;
 const contadas = (n, dur) => `Promedio de ${n} cajas como esta, ${dur} s cada una, con semillas al azar: cambia un poco cada vez que abres la página.`;
 const tabla = (filas) => `<div class="scroll"><table class="tabla"><thead><tr><th></th>${filas.cab.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${filas.filas.map(f => `<tr><td>${f[0]}</td>${f.slice(1).map(x => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 const contando = n => `<p class="hint">Contando choques en ${n} cajas por detrás…</p>`;
+/* ----- Experimentos 6 y 7: otra reacción, sin la caja (7 nov 2026) -----
+   2 N₂O₅(g) → 4 NO₂(g) + O₂(g). No ocurre en un solo choque: su orden (1) no es su coeficiente (2). Por eso no se
+   usa la caja, que es una reacción elemental (v = k[A][B]). Todo lo que se dibuja sale del motor: velocidades con
+   MC.velocidad, órdenes y pares con MC.ordenes, curvas con MC.concentracion y vidas medias con MC.vidasMedias. */
+const N_ = t => V('N', t);
+const LEY_N = { k:5e-4, ordenes:{ N2O5:1 } };          // s⁻¹; la k se deja ver solo después de responder
+const FRASCOS = [0.10, 0.30, 0.20].map(c => ({ conc:{ N2O5:c }, v:MC.velocidad(LEY_N, { N2O5:c }) }));
+const TABLA_N = MC.ordenes(FRASCOS, { N2O5:2 });
+const C0_N = 0.8, TH_N = 10, K1_N = Math.LN2/TH_N, K2_N = 1/(C0_N*TH_N); // min; la de segundo orden tiene la misma primera t½
+const QUEDA_N = MC.primerOrdenQueda(C0_N, TH_N, 30);
+const VIDAS1 = MC.vidasMedias(1, K1_N, C0_N, 4), VIDAS2 = MC.vidasMedias(2, K2_N, C0_N, 3);
+// Decimales fijos con coma (0,10 y no 0,1) y notación científica con coma: 1,5 × 10⁻⁴.
+const dec = (n, d) => (Math.round(n*Math.pow(10, d))/Math.pow(10, d)).toFixed(d).replace('.', ',');
+function cien(n, d){
+  if (!(n > 0)) return fmt(n, d);
+  const e = Math.floor(Math.log10(n) + 1e-9), m = n/Math.pow(10, e), sup = String(e).replace('-', '⁻').replace(/\d/g, x => '⁰¹²³⁴⁵⁶⁷⁸⁹'[x]);
+  return `${dec(m, d === undefined ? 1 : d)} × 10${sup}`;
+}
+const D = (function(){
+  const cv = $('cv3'), ctx = cv.getContext('2d');
+  const D = { tipo:null, resp:false, f:1, hl:null, dibujar:null };
+  let W = 0, H = 0;
+  function medir(){
+    const w = cv.clientWidth; if (!w) return false;
+    const h = D.tipo === 'tabla' ? (w < 560 ? 280 : 320) : (w < 560 ? 290 : 340), dpr = Celular.dpr();
+    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
+    return true;
+  }
+  // Barras de los tres frascos: [N₂O₅] (granate) y v (mostaza). Al responder: por cuánto se multiplicó cada una entre
+  // los frascos que compara el motor, y a trazos lo que daría el orden 2 del coeficiente.
+  function tabla(c){
+    const chico = W < 560, x0 = chico ? 12 : 24, x1 = W - (chico ? 12 : 24), top = 44, base = H - 62, alto = base - top;
+    const p = TABLA_N.pares.N2O5, fFalso = MC.factor({ N2O5:TABLA_N.errores.coeficientes.N2O5 }, { N2O5:p.fc }).valor;
+    const vFalsa = FRASCOS[p.i].v*fFalso, ff = D.f;
+    // Antes de responder, solo las barras de [N₂O₅] y las velocidades como números (como en la tabla): unas barras de v
+    // del mismo alto que las de [N₂O₅] regalarían la proporción. Al responder crecen las de v, con espacio para el × 9.
+    const cmax = 0.30*1.15, vmax = Math.max(vFalsa, ...FRASCOS.map(f => f.v))*1.06, col = (x1 - x0)/3, bw = Math.min(46, col*0.26);
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('2 N₂O₅ → 4 NO₂ + O₂ · velocidad inicial en tres frascos', x0, 8);
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3; linea(ctx, x0, base, x1, base);
+    const pos = FRASCOS.map((f, i) => {
+      const xc = x0 + col*(i + 0.5), xa = D.resp ? xc - bw - 4 : xc - bw/2, xb = xc + 4;
+      const ha = f.conc.N2O5/cmax*alto, hb = f.v/vmax*alto*ff;
+      ctx.fillStyle = c.N; ctx.fillRect(xa, base - ha, bw, ha);
+      if (D.hl === 'N'){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.strokeRect(xa - 2, base - ha - 2, bw + 4, ha + 4); }
+      rotulo(ctx, c, xa + bw/2, base - ha - 10, dec(f.conc.N2O5, 2), c.N, 'center', 800, chico ? 10 : 11);
+      if (D.resp){
+        ctx.fillStyle = c.v; ctx.fillRect(xb, base - hb, bw, hb);
+        if (D.hl === 'v'){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.strokeRect(xb - 2, base - hb - 2, bw + 4, hb + 4); }
+      }
+      ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.fillText(`Frasco ${i + 1}`, xc, base + 6);
+      ctx.font = `800 ${chico ? 10 : 11}px ${c.mono}`; ctx.fillStyle = c.v; ctx.fillText(`v = ${cien(f.v)}`, xc, base + 23);
+      if (D.hl === 'v' && !D.resp){ const w = ctx.measureText(`v = ${cien(f.v)}`).width; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.strokeRect(xc - w/2 - 3, base + 20, w + 6, 17); }
+      return { xa, xb, xc, ha, hb };
+    });
+    ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('[N₂O₅] en mol/L · v en mol/(L·s)', x0, base + 42);
+    if (!D.resp){ rotulo(ctx, c, x1, 26, 'Responde para ver la comparación', c.muted, 'right', 700, 11); return; }
+    // La comparación que hizo el motor (frascos i y j) y, a trazos, la barra de v que daría el orden 2 del coeficiente.
+    const a = pos[p.i], b = pos[p.j], hF = vFalsa/vmax*alto*ff;
+    ctx.save(); ctx.setLineDash([5, 4]); ctx.strokeStyle = c.v; ctx.lineWidth = 2; ctx.strokeRect(b.xb, base - hF, bw, hF); ctx.restore();
+    if (ff >= 1){
+      const xT = b.xb + bw + 4, der = xT > x1 - 80;
+      rotulo(ctx, c, der ? b.xb - 4 : xT, base - hF + 10, `orden 2: × ${fmt(fFalso, 0)}`, c.muted, der ? 'right' : 'left', 700, 10);
+      rotulo(ctx, c, b.xb + bw/2, base - b.hb - 10, '× ' + fmt(p.fv, 0), c.v, 'center', 800, 11);
+      const y1 = base - Math.max(a.ha, a.hb) - 30;
+      flecha(ctx, a.xc + 16, y1, b.xa - 8, y1, c.ink, 1.6);
+      rotulo(ctx, c, (a.xc + b.xa)/2 + 4, y1 - 11, `[N₂O₅] × ${fmt(p.fc, 0)}`, c.N, 'center', 800, chico ? 10 : 11);
+      rotulo(ctx, c, (a.xc + b.xa)/2 + 4, y1 + 11, `v × ${fmt(p.fv, 0)} = ${fmt(p.fc, 0)}¹`, c.v, 'center', 800, chico ? 10 : 11);
+    }
+  }
+  // [N₂O₅] contra t (min). Antes de responder, solo los primeros 10 min. Después: la curva de primer orden con sus
+  // vidas medias (tinta) y, a trazos, la de segundo orden con la misma primera vida media (gris).
+  function vidas(c){
+    const chico = W < 560, gx = chico ? 40 : 48, gx1 = W - 14, gy = 30, gy1 = H - (D.resp ? (chico ? 82 : 86) : 40);
+    const tmax = 80, X = t => gx + t/tmax*(gx1 - gx), Y = y => gy1 - y/0.85*(gy1 - gy);
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('[N₂O₅] (mol/L) contra el tiempo', gx - 30, 8);
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (const y of [0, 0.2, 0.4, 0.6, 0.8]){ linea(ctx, gx, Y(y), gx1, Y(y)); ctx.fillText(fmt(y, 1), gx - 5, Y(y)); }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let t = 0; t <= tmax; t += 10){ linea(ctx, X(t), gy, X(t), gy1); if (!chico || t % 20 === 0) ctx.fillText(String(t), X(t), gy1 + 4); }
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, gx, gy1, gx1, gy1); linea(ctx, gx, gy, gx, gy1);
+    ctx.font = `800 11px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('t (min)', gx1, gy1 + 16);
+    const tFin = D.resp ? tmax*D.f : TH_N;
+    const curva = (orden, k, trazos) => {
+      ctx.save(); ctx.strokeStyle = c.N; ctx.lineWidth = trazos ? 2 : (D.hl === 'N' ? 4.5 : 3); if (trazos){ ctx.setLineDash([6, 4]); ctx.globalAlpha = .75; }
+      ctx.beginPath();
+      for (let t = 0; t <= tFin + 1e-9; t += 0.5){ const y = MC.concentracion(orden, k, C0_N, t); if (t) ctx.lineTo(X(t), Y(y)); else ctx.moveTo(X(t), Y(y)); }
+      ctx.stroke(); ctx.restore();
+    };
+    if (!D.resp){
+      curva(1, K1_N, false);
+      ctx.fillStyle = c.N; ctx.beginPath(); ctx.arc(X(TH_N), Y(C0_N/2), 4, 0, Math.PI*2); ctx.fill();
+      rotulo(ctx, c, X(TH_N) + 8, Y(C0_N/2) - 12, '0,40 a los 10 min', c.N, 'left', 800, 11);
+      ctx.font = `700 12px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('Responde para ver el resto', (X(TH_N) + gx1)/2 + 10, Y(0.62));
+      return;
+    }
+    curva(2, K2_N, true); curva(1, K1_N, false);
+    // Vidas medias: bajadas punteadas hasta el eje y tramos debajo, con lo que dura cada una.
+    const tiras = [[VIDAS1, c.ink, gy1 + (chico ? 32 : 34), 'primer orden'], [VIDAS2, c.muted, gy1 + (chico ? 54 : 58), 'segundo orden']];
+    for (const [lista, col, yT, nombre] of tiras){
+      ctx.save(); ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1.5;
+      for (const q of lista){
+        if (q.hasta > tFin + 1e-9) break;
+        ctx.setLineDash([2, 3]); linea(ctx, X(q.hasta), Y(q.Cfin), X(q.hasta), gy1); ctx.setLineDash([]);
+        linea(ctx, X(q.desde) + 2, yT, X(q.hasta) - 2, yT); linea(ctx, X(q.desde) + 2, yT - 4, X(q.desde) + 2, yT + 4); linea(ctx, X(q.hasta) - 2, yT - 4, X(q.hasta) - 2, yT + 4);
+        const txt = `${fmt(q.dura, 0)} min`; ctx.font = `800 ${chico ? 9 : 10}px ${c.font}`;
+        if (ctx.measureText(txt).width + 6 < X(q.hasta) - X(q.desde)) rotulo(ctx, c, (X(q.desde) + X(q.hasta))/2, yT - 8, txt, col, 'center', 800, chico ? 9 : 10);
+        else rotulo(ctx, c, (X(q.desde) + X(q.hasta))/2, yT - 8, fmt(q.dura, 0), col, 'center', 800, 9);
+      }
+      ctx.restore();
+      if (!chico) rotulo(ctx, c, gx1, yT + 9, nombre, col, 'right', 700, 10);   // en el celular lo dice la leyenda
+    }
+    if (D.f >= 1){
+      const y30 = QUEDA_N.valor, y30b = MC.concentracion(2, K2_N, C0_N, 30);
+      ctx.fillStyle = c.N; ctx.beginPath(); ctx.arc(X(30), Y(y30), 4, 0, Math.PI*2); ctx.fill();
+      rotulo(ctx, c, X(30) + 8, Y(y30) - 10, `${dec(y30, 2)} a los 30 min`, c.N, 'left', 800, 11);
+      rotulo(ctx, c, X(30) + 8, Y(y30b) - 10, `a trazos: ${dec(y30b, 2)}`, c.muted, 'left', 700, 10);
+    }
+  }
+  D.pintar = () => {
+    if (!D.tipo || $('lz3').hidden || !medir()) return;
+    const c = { ...colores(), N:css('--c-N') }; ctx.clearRect(0, 0, W, H);
+    if (D.tipo === 'tabla') tabla(c); else vidas(c);
+  };
+  D.dibujar = () => { D.pintar(); if (D.B) D.B.despertar(); };
+  // Al responder, la comparación (o el resto de la curva) aparece en ~1,4 s. Con movimiento reducido, de una vez.
+  D.B = Celular.bucle(cv, dt => { if (D.f < 1){ D.f = Math.min(1, D.f + Math.min(0.05, dt)/1.4); } D.pintar(); return D.f < 1; });
+  D.mostrar = (tipo, resp, animar) => { D.tipo = tipo; D.resp = resp; D.f = resp && animar && !RM ? 0 : 1; D.dibujar(); };
+  D.describir = () => {
+    let t;
+    if (D.tipo === 'tabla') t = D.resp
+      ? `Barras de los tres frascos. Del frasco ${TABLA_N.pares.N2O5.i + 1} al ${TABLA_N.pares.N2O5.j + 1}, [N₂O₅] se multiplica por ${fmt(TABLA_N.pares.N2O5.fc, 0)} y la velocidad también por ${fmt(TABLA_N.pares.N2O5.fv, 0)}. A trazos, la barra que daría orden 2: ${fmt(MC.factor({ N2O5:TABLA_N.errores.coeficientes.N2O5 }, { N2O5:TABLA_N.pares.N2O5.fc }).valor, 0)} veces.`
+      : `Barras de [N₂O₅] en los tres frascos: ${FRASCOS.map((f, i) => `frasco ${i + 1}, [N₂O₅] ${dec(f.conc.N2O5, 2)} mol/L y velocidad ${cien(f.v)} mol/(L·s)`).join('; ')}.`;
+    else t = D.resp
+      ? `Gráfica de [N₂O₅] contra el tiempo. En primer orden, las vidas medias duran ${VIDAS1.map(q => fmt(q.dura, 0)).join(', ')} minutos; a los 30 min quedan ${dec(QUEDA_N.valor, 2)} mol/L. A trazos, segundo orden con la misma primera vida media: duran ${VIDAS2.map(q => fmt(q.dura, 0)).join(', ')} minutos.`
+      : 'Gráfica de [N₂O₅] contra el tiempo: baja de 0,80 a 0,40 mol/L en los primeros 10 minutos; el resto está oculto hasta responder.';
+    $('desc2').textContent = t;
+  };
+  new ResizeObserver(() => D.dibujar()).observe(cv);
+  alRedibujarTema(() => D.dibujar());
+  ESCENAS.push(D);   // así resaltar() también lo redibuja
+  return D;
+})();
+const leyN = () => `<span><i style="background:var(--c-N)"></i>[N₂O₅] · concentración</span><span><i style="background:var(--c-v)"></i>v · velocidad inicial</span>`;
+const leyVidas = r => `<span><i style="background:var(--c-N)"></i>[N₂O₅] · concentración</span>${r ? '<span><i style="background:var(--ink)"></i>vidas medias de primer orden</span><span><i style="background:repeating-linear-gradient(90deg, var(--c-N) 0 4px, transparent 4px 7px)"></i>a trazos: [N₂O₅] si fuera de segundo orden</span><span><i style="background:var(--muted)"></i>en gris: sus vidas medias</span>' : ''}`;
+const tablaN = () => tabla({ cab:[N_('[N₂O₅]') + ' (mol/L)', v_('v') + ' inicial (mol/(L·s))'], filas:FRASCOS.map((f, i) => [`Frasco ${i + 1}`, dec(f.conc.N2O5, 2), cien(f.v)]) });
 const EXPS = [
   { id:'doble-A', corto:'El doble de A',
     q:`Una caja empieza con ${A_('30 de A')} y ${B_('30 de B')}. Otra igual empieza con ${A_('60 de A')} y las mismas ${B_('30 de B')}, a la misma temperatura. ¿Qué pasa con la rapidez al inicio?`,
@@ -1103,7 +1263,7 @@ const EXPS = [
     q:`Dos reacciones distintas a la misma temperatura, 300 K, cada una con 30 porciones de cada reactivo. Una tiene una barrera ${Ea_('Ea = 5000 J/mol')}; la otra, ${Ea_('Ea = 8000 J/mol')} (en la escala de la escena). La caja muestra la de 8000. ¿Cuál forma producto más rápido?`,
     opts:[['a','La de barrera más alta','CI13-mas-Ea', RES('hipotesis','CI13: estudio de diagramas de energía, por confirmar')],
           ['b','Las dos igual: solo importa la temperatura','solo-temperatura', RES('hipotesis','hipótesis nuestra')],
-          ['c','La que libere más calor, sea cual sea su barrera','CI5-dH', RES('documentado','Çakmakçı 2010; sin cifra verificada')],
+          ['c','La que libere más calor, sea cual sea su barrera','CI5-dH', RES('parcial','Çakmakçı 2010; sin cifra verificada')],
           ['d','La de barrera más baja']],
     ok:'d',
     fb:{ a:'Con la barrera más alta, menos choques la alcanzan y la reacción va más lenta. Esta idea aparece en un estudio sobre diagramas de energía que todavía está por confirmar (quizá Popova y Bretz, 2018).',
@@ -1138,7 +1298,47 @@ const EXPS = [
       ${m1 && m2 ? tabla({ cab:['choques eficaces por segundo'], filas:[['con la marca', fmt(m1.eficaces, 2)], ['cualquier lado', fmt(m2.eficaces, 2)], ['razón', '× ' + fmt(m2.eficaces/m1.eficaces, 1)]] }) +
         `<p class="hint">${contadas(6, 5)} La teoría dice × ${fmt(p2/p1, 0)}.</p>` : contando(12)}
       <p>En las moléculas reales también importa por dónde chocan: por eso, en las reacciones entre moléculas grandes, muchos choques con energía suficiente no reaccionan.</p>
-      <p class="fuente">Las opciones de esta pregunta son hipótesis nuestras: no encontramos estudios que midan este error.</p>`; } },
+      <p class="fuente">Las opciones de esta pregunta son hipótesis nuestras: no encontramos estudios que midan este error.</p>`; } },  { id:'tabla-orden', corto:'Una tabla de velocidades', datos:'tabla',
+    q:`Ahora otra reacción, no la de la caja: el N₂O₅ gaseoso se descompone según <span style="white-space:nowrap">2 N₂O₅(g) → 4 NO₂(g) + O₂(g)</span>. En tres frascos a la misma temperatura, con distinta ${N_('[N₂O₅]')}, se midió la velocidad inicial ${v_('v')}:</p>${tablaN()}<p>¿Cuál es la ley de velocidad?`,
+    opts:[['a','v = k·[N₂O₅]²','CI9-coeficiente', RES('parcial','Kolomuç y Tekin 2011, en profesores, según Bain y Towns 2016; sin cifra')],
+          ['b','v = k·[N₂O₅]³','orden-factor-v', RES('hipotesis','hipótesis nuestra')],
+          ['c','v = k·[N₂O₅]'],
+          ['d','v = k·[NO₂]⁴·[O₂]/[N₂O₅]²','ley-como-K', RES('hipotesis','hipótesis nuestra, cercana a CI10')]],
+    ok:'c', bien:'¡Bien leído! Mira las barras para ver por qué.',
+    fb:{ a:'El 2 es el coeficiente de la ecuación, pero el orden se mide. Del frasco 1 al 2, [N₂O₅] se triplica y v también se triplica (3¹); con orden 2 se habría multiplicado por 9 (3²). Tomar los órdenes de los coeficientes es una idea documentada incluso en profesores (Kolomuç y Tekin, 2011, según Bain y Towns, 2016), sin cifra.',
+      b:'El 3 es por cuánto se multiplicó v, no el orden. El orden es el exponente: 3 elevado al orden da 3, así que el orden es 1. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Esa expresión, con los productos arriba, se parece a la de la constante de equilibrio, pero no es una ley de velocidad: la velocidad inicial depende de los reactivos, con exponentes que se miden. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    arma:() => caja({}), vAntes:() => antes({}),
+    alResponder:() => {},
+    exp:() => { const p = TABLA_N.pares.N2O5, o3 = MC.factor({ N2O5:TABLA_N.ordenes.N2O5 }, { N2O5:FRASCOS[2].conc.N2O5/FRASCOS[0].conc.N2O5 }).valor;
+      return `<p>Compara los frascos ${p.i + 1} y ${p.j + 1}: ${N_('[N₂O₅]')} se multiplica por ${fmt(p.fc, 0)} y ${v_('v')} también por ${fmt(p.fv, 0)}. Si el orden es m, ${fmt(p.fc, 0)}<sup>m</sup> = ${fmt(p.fv, 0)}, y m = ${fmt(TABLA_N.ordenes.N2O5, 0)}.</p>
+      <div class="eqs">
+        <div class="eq"><span class="ex">${fr(v_('v₂'), v_('v₁'))} = (${fr(N_('[N₂O₅]₂'), N_('[N₂O₅]₁'))})<sup>m</sup></span></div>
+        <div class="eq"><span class="ex">${fr(v_(cien(FRASCOS[p.j].v)), v_(cien(FRASCOS[p.i].v)))} = (${fr(N_(dec(FRASCOS[p.j].conc.N2O5, 2)), N_(dec(FRASCOS[p.i].conc.N2O5, 2)))})<sup>m</sup></span></div>
+        <div class="eq"><span class="ex">${fmt(p.fv, 0)} = ${fmt(p.fc, 0)}<sup>m</sup> → m = ${fmt(TABLA_N.ordenes.N2O5, 0)}</span></div>
+        <div class="eq"><span class="ex">${v_('v')} = k · ${N_('[N₂O₅]')}, con k = ${cien(TABLA_N.k)} ${TABLA_N.unidades}</span><span class="note">El frasco 3 lo confirma: tiene el doble de N₂O₅ que el frasco 1 y su velocidad es × ${fmt(o3, 0)}.</span></div>
+      </div>
+      <p>El coeficiente 2 de la ecuación no es el orden. La ecuación dice cuánto se gasta y cuánto se forma; la ley de velocidad dice qué tan rápido, y se mide con experimentos como estos. Esta reacción ocurre en varias etapas. Solo en una reacción que ocurre en un solo choque (elemental), como la de la caja, los exponentes coinciden con los coeficientes.</p>
+      <p class="fuente">Tomar los órdenes de los coeficientes de la ecuación es una idea documentada incluso en profesores (Kolomuç y Tekin, 2011, según Bain y Towns, 2016), sin cifra. Las opciones 2 y 4 son hipótesis nuestras.</p>`; } },
+  { id:'vida-media', corto:'La vida media', datos:'vidas',
+    q:`Otra vez el N₂O₅, que es de primer orden, ahora en un frasco más caliente. ${N_('[N₂O₅]')} baja de 0,80 a 0,40 mol/L en los primeros 10 minutos. ¿Cuánto N₂O₅ queda a los 30 minutos?`,
+    opts:[['a',`${dec(QUEDA_N.errores.vidaMediaCrece, 2)} mol/L`,'vida-media-crece', RES('hipotesis','hipótesis nuestra: t½ de primer orden que depende de [A]₀')],
+          ['b',`${dec(QUEDA_N.valor, 2)} mol/L`],
+          ['c',`${fmt(QUEDA_N.errores.restando, 0)} mol/L`,'se-acaba-en-dos', RES('hipotesis','hipótesis nuestra')],
+          ['d',`${dec(QUEDA_N.errores.dividiendo, 2)} mol/L`,'un-sexto', RES('hipotesis','hipótesis nuestra')]],
+    ok:'b', bien:'¡Bien pensado! Mira la gráfica para ver por qué.',
+    fb:{ a:`Saldría ${dec(QUEDA_N.errores.vidaMediaCrece, 2)} si cada vida media durara el doble que la anterior (10 minutos y luego 20), como en segundo orden. En primer orden la vida media no depende de cuánto quede: las tres primeras duran 10 minutos cada una. Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
+      c:'En la segunda vida media no se gasta otra vez 0,40 mol/L, sino la mitad de lo que queda: de 0,40 a 0,20. No se acaba en dos vidas medias. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:`30 minutos son 3 vidas medias, pero no queda 1/(2 · 3) = 1/6 de lo inicial (${dec(QUEDA_N.errores.dividiendo, 2)} mol/L): queda (1/2)³ = 1/8. Esta opción es una hipótesis nuestra, sin estudio que la mida.` },
+    arma:() => caja({}), vAntes:() => antes({}),
+    alResponder:() => {},
+    exp:() => `<p>Cada 10 minutos queda la mitad de lo que había: ${VIDAS1.slice(0, 3).map(q => dec(q.C, 2)).join(' → ')} → ${dec(QUEDA_N.valor, 2)} mol/L. En la gráfica, las vidas medias de primer orden (en tinta) duran todas lo mismo: ${fmt(VIDAS1[0].dura, 0)} minutos.</p>
+      <div class="eqs">
+        <div class="eq"><span class="ex">${N_('[N₂O₅]')} = ${N_('0,80')} · (½)<sup>t/t½</sup> = ${N_('0,80')} · (½)<sup>${fmt(QUEDA_N.vidas, 0)}</sup> = ${N_(dec(QUEDA_N.valor, 2))} mol/L</span></div>
+        <div class="eq"><span class="ex">t½ = ${fr('ln 2', 'k')} = ${fmt(TH_N, 0)} min</span><span class="note">En primer orden, t½ no tiene ${N_('[N₂O₅]')}: dura lo mismo con 0,80 que con 0,10 mol/L.</span></div>
+      </div>
+      <p>A trazos, lo que pasaría si la reacción fuera de segundo orden, con la misma primera vida media: ahí t½ = 1/(k·[N₂O₅]₀) crece cuando queda menos, y cada vida media dura el doble que la anterior (${VIDAS2.slice(0, -1).map(q => fmt(q.dura, 0)).join(', ')} y ${fmt(VIDAS2[VIDAS2.length - 1].dura, 0)} minutos). A los 30 minutos quedarían ${dec(MC.concentracion(2, K2_N, C0_N, 30), 2)} mol/L.</p>
+      <p class="fuente">Las opciones de esta pregunta son hipótesis nuestras: no encontramos estudios que midan estos errores de cálculo.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
 // Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se
@@ -1155,6 +1355,10 @@ function ir(k){
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k];
   E.anima = null; E.casa = new WeakMap(); E.marcas = [];
+  // Experimentos 6 y 7: otra reacción, sin la caja. Se esconden la caja y la película y se muestra el lienzo de datos.
+  E.oculta = !!x.datos; $('lz2').hidden = E.oculta; $('vel2').hidden = E.oculta; $('lz3').hidden = !E.oculta;
+  if (x.datos){ const r = !!S.pred[x.id]; $('ley2').dataset.k = ''; $('ley2').innerHTML = x.datos === 'tabla' ? leyN() : leyVidas(r); D.mostrar(x.datos, r, false); }
+  else D.tipo = null;
   E.sim = x.arma(); E.vista = x.vAntes(); marcarBase(E);
   // Las cuentas de fondo empiezan ya (no se muestran hasta responder).
   if (!x.tareas && x.medir) x.tareas = x.medir();
@@ -1175,7 +1379,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la caja y las cuentas para ver por qué.' : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? (x.bien || '¡Bien pensado! Mira la caja y las cuentas para ver por qué.') : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     explicar();
   };
@@ -1185,15 +1389,18 @@ function ir(k){
     S.pred[x.id] = o[0]; pintar(); botones();
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
     const chico = innerWidth < 900;
-    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
-    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.alResponder(); E.casa = new WeakMap(); marcarBase(E); E.dibujar(); E.describir(true); setTimeout(() => E.describir(true), 1200); });
+    if (chico) $(x.datos ? 'cv3' : 'cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.k !== k) return;
+      if (x.datos){ if (x.datos === 'vidas') $('ley2').innerHTML = leyVidas(true); D.mostrar(x.datos, true, true); D.describir(); return; }
+      x.alResponder(); E.casa = new WeakMap(); marcarBase(E); E.dibujar(); E.describir(true); setTimeout(() => E.describir(true), 1200); });
   });
   // Si ya respondió antes, se muestra directo lo que pasa.
   if (S.pred[x.id]) x.alResponder();
-  pintar(); E.dibujar(); E.describir(true);
+  pintar(); E.dibujar(); E.describir(true); if (x.datos) D.describir();
 }
 alRedibujarTema(() => E.dibujar());
-addEventListener('modo', () => { E.resize(); E.dibujar(); });
+addEventListener('modo', () => { if (!E.oculta) E.resize(); E.dibujar(); D.dibujar(); });
 ir(0);
 })();
 </script>

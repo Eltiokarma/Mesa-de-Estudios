@@ -517,7 +517,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "induccion"
+     ]
     },
     {
      "id": "fisica.ondas-electromagneticas",
@@ -1090,7 +1092,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "hidrocarburos"
+     ]
     },
     {
      "id": "quimica.funciones-organicas",
@@ -1955,7 +1959,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "mezclas"
+     ]
     },
     {
      "id": "aritmetica.estadistica",
@@ -3405,7 +3411,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "trazos-rutas"
+     ]
     },
     {
      "id": "razonamiento-matematico.ordenamiento-de-informacion",
@@ -3725,7 +3733,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "trazos-rutas"
+     ]
     },
     {
      "id": "razonamiento-matematico.tablas-graficos-y-suficiencia",
@@ -4351,7 +4361,7 @@
    "titulo": "Redox y celda galvánica: electrones por el alambre, iones por el puente",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.electroquimica"
    ],
@@ -4385,7 +4395,7 @@
    "titulo": "Cinética química",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.cinetica-quimica"
    ],
@@ -4526,10 +4536,10 @@
   },
   "dinamica": {
    "id": "dinamica",
-   "titulo": "Dinámica: fuerzas, plano inclinado y poleas",
+   "titulo": "Dinámica: fuerzas, plano inclinado, poleas y movimiento circular",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.dinamica"
    ],
@@ -4615,7 +4625,7 @@
    "titulo": "Equilibrio químico",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.equilibrio-quimico"
    ],
@@ -4801,6 +4811,23 @@
     "/plantillas/gravitacion/papel.json"
    ]
   },
+  "hidrocarburos": {
+   "id": "hidrocarburos",
+   "titulo": "Bolitas y palitos: hidrocarburos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.hidrocarburos"
+   ],
+   "url": "/plantillas/hidrocarburos/index.html",
+   "papel": "/plantillas/hidrocarburos/papel.json",
+   "archivos": [
+    "/plantillas/hidrocarburos/index.html",
+    "/plantillas/hidrocarburos/motor.js",
+    "/plantillas/hidrocarburos/papel.json"
+   ]
+  },
   "identidades-trig": {
    "id": "identidades-trig",
    "titulo": "¿Se suman las alturas? identidades y arcos compuestos",
@@ -4818,6 +4845,23 @@
     "/plantillas/identidades-trig/index.html",
     "/plantillas/identidades-trig/motor.js",
     "/plantillas/identidades-trig/papel.json"
+   ]
+  },
+  "induccion": {
+   "id": "induccion",
+   "titulo": "El imán, la espira y el foquito: inducción electromagnética",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.induccion-electromagnetica"
+   ],
+   "url": "/plantillas/induccion/index.html",
+   "papel": "/plantillas/induccion/papel.json",
+   "archivos": [
+    "/plantillas/induccion/index.html",
+    "/plantillas/induccion/motor.js",
+    "/plantillas/induccion/papel.json"
    ]
   },
   "interes": {
@@ -4984,6 +5028,23 @@
     "/plantillas/maximos-minimos/index.html",
     "/plantillas/maximos-minimos/motor.js",
     "/plantillas/maximos-minimos/papel.json"
+   ]
+  },
+  "mezclas": {
+   "id": "mezclas",
+   "titulo": "La balanza de las mezclas: mezclas y aleaciones",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.mezclas-y-aleaciones"
+   ],
+   "url": "/plantillas/mezclas/index.html",
+   "papel": "/plantillas/mezclas/papel.json",
+   "archivos": [
+    "/plantillas/mezclas/index.html",
+    "/plantillas/mezclas/motor.js",
+    "/plantillas/mezclas/papel.json"
    ]
   },
   "mol-composicion": {
@@ -5325,7 +5386,7 @@
    "titulo": "Soluciones: concentración, dilución y mezcla",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.soluciones"
    ],
@@ -5424,6 +5485,24 @@
     "/plantillas/traductor-enunciados/index.html",
     "/plantillas/traductor-enunciados/motor.js",
     "/plantillas/traductor-enunciados/papel.json"
+   ]
+  },
+  "trazos-rutas": {
+   "id": "trazos-rutas",
+   "titulo": "El lápiz y la hormiga: trazos, perímetros y rutas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.trazos-y-perimetros",
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+   ],
+   "url": "/plantillas/trazos-rutas/index.html",
+   "papel": "/plantillas/trazos-rutas/papel.json",
+   "archivos": [
+    "/plantillas/trazos-rutas/index.html",
+    "/plantillas/trazos-rutas/motor.js",
+    "/plantillas/trazos-rutas/papel.json"
    ]
   },
   "triangulo-estira": {

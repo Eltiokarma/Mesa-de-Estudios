@@ -576,3 +576,77 @@ Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomol
   - que el-calor-sube depende de la lista que se pasa;
   - que invierte-la-regla no cuenta el horno.
 - El texto de verificación quedó agregado en `casos.json`.
+
+### 7 nov 2026, 09:37 · ejecución diaria
+
+- Junté la rama principal, que ya estaba en 8d435a9.
+- Los puntos 2 a 5 de la lista de huecos (cinética, equilibrio, soluciones y celda) siguen esperando el commit de rendimiento («dpr y bucles») que la conversación principal pidió esperar antes de editar esas escenas. Ese commit no está en la principal ni en ninguna rama del remoto.
+- Le pregunté a la conversación principal si arranco igual. Mientras no conteste, no toco esas cuatro carpetas, para no chocar.
+- Ya está: e11c420 y 63b91db (dpr, variable, bucle y la grilla de choques) entraron a la rama y arranqué. No deshice nada de ese commit.
+
+### 2. Cinética: orden ≠ coeficiente y vida media (hecho)
+- Dos experimentos nuevos al final de «¿Qué pasa si…?», con 2 N₂O₅ → 4 NO₂ + O₂ y un lienzo propio. La caja y la película se esconden mientras están abiertos.
+  - **6. Una tabla de velocidades.** [N₂O₅] ×3 da v ×3, así que la ley es v = k·[N₂O₅] aunque el coeficiente sea 2. Los distractores son el coeficiente (CI9, parcial y sin cifra), el factor de la velocidad y la ley escrita como K. Las barras de v salen recién al responder, para que su alto no regale la proporción.
+  - **7. La vida media.** Pasa de 0,80 a 0,40 en 10 min; a los 30 min quedan 0,10. Al lado va la curva de segundo orden, con vidas medias de 10, 20 y 40 min. Los distractores (0,20, 0 y 0,13) son hipótesis.
+- Motor: `ordenes()` devuelve pares y errores; `vidasMedias()` y `primerOrdenQueda()` son nuevas.
+- Casos 13 a 16: un verificador aparte coincidió en los 32 campos.
+- El p10 de papel es nuevo: 0,6 → 0,3 M en 15 min.
+- El revisor encontró una leyenda que no coincidía con el dibujo, un p10 que repetía los números de la escena y una cita que era indirecta. Todo corregido.
+- Color nuevo: [N₂O₅] granate #652515 (oscuro #fa572e). En oscuro queda a 16,5 de B y a 18,7 de T, pero esos dos no salen en esos experimentos.
+
+### 3. Equilibrio: Kp y gas inerte (hecho)
+- Tres experimentos nuevos:
+  - **6. Caja rígida.** Entran 30 porciones de gas inerte: la presión sube 2,9 veces, Q sigue en 1/8 y no se corre.
+  - **7. Émbolo libre.** V pasa a 2,875 L, Q = 23/64 > K y se corre a la inversa hasta quedar en 12 X y 6 Y en 3 L.
+  - **8. Kp con Δn.** Kp = 1/328. Los distractores (41/8, 1/8 y 1681/8) son errores de Δn.
+- Motor: `inerte(ec, o, n, 'V'|'P')`, los errores de `kp()` y, en la caja, `presionFija()`.
+- Casos 18 a 23: verificados aparte, todos coinciden. La cabecera ahora aclara cómo funciona soloReactivos.
+- El p10 de papel (N₂O₄ con argón a 3 atm, α = 1/2) se resuelve por cuadrática, no por tanteo.
+- Sugerencias del revisor que apliqué: «Kc» en el eje, las presiones en el aria-live y V pintado en la caja rígida. No apliqué la escala del émbolo antes de responder.
+- Color nuevo: el gas inerte va en gris (#8a8a86 / #85857f), solo en el dibujo. Los 500 K van sin color, porque T y Y quedaban a 18,9.
+- Pendiente: los experimentos antiguos marcan EQ14 y Tagle Barrios como «documentado»; habría que mirar si llegan a eso. Además, las pastillas desbloqueadas tienen aria-label null.
+
+### 4. Soluciones: curva de solubilidad (SO13) y gases (SO6) (hecho)
+- Dos experimentos nuevos:
+  - **6. Enfriar el vaso.** 80 g de KNO₃ en 100 g de agua pasan de 60 a 20 °C: cristalizan 48,4 g y el líquido queda **saturado**. Si no hay cristalito, queda sobresaturado. El distractor «queda insaturada porque es diluida» lleva SO13, parcial.
+  - **7. Dos gaseosas a 10 y 30 °C.** Hay más CO₂ en la fría. El distractor «más en caliente, como el azúcar» lleva SO6, parcial (6 entrevistas). Después se explora la presión con S = k·P, hasta destapar la botella.
+- Motor: `solubilidad`, `curva`, `tipoSolucion`, `enfriar`, `temperaturaSaturacion`, `henry`, `compararGasT` y `destapar`, con errores. Las tablas de KNO₃, NaCl y CO₂ están en la cabecera, con interpolación lineal.
+- Casos 23 a 34: verificados aparte, todos coinciden. La cabecera decía «exceso = g − cabe» y la corregí a máx(0, …), como ya hacía el motor.
+- Papel: el p5 es nuevo (KNO₃). La nota de seguridad del ácido pasó al p9.
+- El revisor encontró una leyenda que descartaba «no cristaliza nada» antes de responder y dos rótulos encimados. Todo corregido.
+- Colores nuevos: la curva S en verde #476e0c (oscuro #9bd35a) y la presión P en azul petróleo #093f53 (oscuro #409dbf). T va en tinta.
+- Pendiente: contrastar las tablas de solubilidad con el CRC Handbook. Son valores usuales de textos, redondeados.
+
+### 5. Celda galvánica: electrólisis del agua (hecho)
+- Hay dos experimentos nuevos al final de «¿Qué pasa si…?». Cada uno tiene tubos invertidos que se llenan de gas. Los electrones van solo por el cable, y los iones derivan y se gastan.
+  - **6. Electrolizo agua (Hofmann con Na₂SO₄).** Con 19 300 C salen 2,24 L de H₂ en el cátodo (−) y 1,12 L de O₂ en el ánodo (+). Los distractores son:
+    - gases 1 : 1, hipótesis;
+    - polos al revés, parcial: es la cita de la UNAM «la reducción del hidrógeno ocurre en el polo positivo», que es EC3/EC6, no EC7;
+    - el doble de O₂, hipótesis.
+  - **7. Sal en agua o fundida.** En la salmuera sale H₂, y el Na⁺ se queda como NaOH. En la sal fundida sale sodio. Los distractores son:
+    - sodio en las dos, hipótesis;
+    - «la corriente solo separa los iones», EC7, parcial;
+    - H₂ en las dos, hipótesis.
+  - La salmuera va matizada: si está diluida, en el ánodo sale también O₂.
+- Motor: `electrolizar()` (con Q, o con I y tiempo) y `productos()`, con errores típicos (1 : 1, polos al revés, sale sodio, olvidar el 2 o el 4). Usa F = 96 500 C/mol y 22,4 L/mol.
+- Casos 21 a 26: verificados aparte, todos coinciden.
+- Papel: el p11 (3 A durante 1 h 4 min 20 s) reemplaza al p7, porque ya había 10 problemas.
+- El revisor encontró dos cosas, ya corregidas: la salmuera no estaba matizada, y los iones del dibujo no se gastaban.
+- Colores: H, O, Na y Cl de la paleta común. Al Na⁺ le puse un aro y el «+» más grande, porque el Na claro (#3f4948) queda a unos 19,5 de la tinta.
+
+**Pedidos para la integración.**
+1. Traer `plantillas/celda-galvanica/` y `nucleo/elementos-escenas.test.js` (la escena declara H, O, Na y Cl y tiene dos vistas nuevas). Luego subir la versión y correr `npm run catalogo`.
+2. En `nucleo/elementos.js`, VISTAS: agregar «celda-galvanica: agua con Na₂SO₄» ['H','O','Na'] y «celda-galvanica: salmuera y NaCl fundido» ['H','Na','Cl'].
+3. En `docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md`, la fila «Electrólisis en agua» de lo que no tiene respaldo dice EC7. Debe decir EC3 (y EC6): la cita de la UNAM es una confusión de polos.
+4. El Na claro de la paleta (#3f4948) queda a unos 19,5 de la tinta. Si hay un tono más separado, mejor.
+
+**Con esto queda cerrada la lista de huecos** (puntos 1 a 5).
+
+### Pendientes que quedaban (pedido de la principal)
+- **Respaldos de equilibrio.** Los antiguos marcaban como «documentado» dos errores que en el informe no tienen cifra. Los pasé a «parcial»:
+  - EQ10 con Tagle Barrios, sin porcentaje: tres opciones. Bilgin deja el cambio de concentración bajo el 20 % y no lo reporta.
+  - EQ14 con Quílez, sin porcentaje: dos opciones.
+- **Respaldos de cinética.** Al revisar encontré lo mismo: CI2 a CI7 estaban como «documentado» y el informe dice «sin cifra leída». Pasaron a «parcial»; son seis opciones.
+  - CI1 se queda como documentado: 33 %, por verificar.
+- **Aria-label null de las pastillas.** No es un error. Las pastillas desbloqueadas no llevan aria-label a propósito, y su nombre accesible es el texto del botón («6. Gas que no reacciona, caja rígida»), como se ve en Playwright. No cambié nada.
+- Revisé soluciones y la celda galvánica: no tienen respaldos «documentado» sin cifra.

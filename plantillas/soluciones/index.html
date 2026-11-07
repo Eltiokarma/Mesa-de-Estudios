@@ -8,13 +8,14 @@
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), copiada del molde de limitante-particulas.
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
    soluto n (puntos) mostaza, volumen V (cuadros) azul, concentración M (puntos por lupa) magenta,
-   masa de soluto siena, solvente turquesa y equivalentes (H⁺, θ, N) morado. */
+   masa de soluto siena, solvente turquesa y equivalentes (H⁺, θ, N) morado; en solubilidad (experimentos 6 y 7),
+   la curva de solubilidad S verde y la presión del gas P azul petróleo. La temperatura T va en tinta: es la condición. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-n:#7d6a00; --c-V:#1f5fbf; --c-M:#b3246b; --c-g:#773922; --c-solv:#0f766e; --c-eq:#6b3dbd;
+  --c-n:#7d6a00; --c-V:#1f5fbf; --c-M:#b3246b; --c-g:#773922; --c-solv:#0f766e; --c-eq:#6b3dbd; --c-S:#476e0c; --c-P:#093f53;
   --vidrio:#8e97a8; --liquido:.10;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -24,13 +25,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-n:#e3c84a; --c-V:#7cb0ff; --c-M:#ff86bd; --c-g:#e0a07a; --c-solv:#5ed9c8; --c-eq:#ab8cf2;
+  --c-n:#e3c84a; --c-V:#7cb0ff; --c-M:#ff86bd; --c-g:#e0a07a; --c-solv:#5ed9c8; --c-eq:#ab8cf2; --c-S:#9bd35a; --c-P:#409dbf;
   --vidrio:#a99cb8; --liquido:.16; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-n:#e3c84a; --c-V:#7cb0ff; --c-M:#ff86bd; --c-g:#e0a07a; --c-solv:#5ed9c8; --c-eq:#ab8cf2;
+  --c-n:#e3c84a; --c-V:#7cb0ff; --c-M:#ff86bd; --c-g:#e0a07a; --c-solv:#5ed9c8; --c-eq:#ab8cf2; --c-S:#9bd35a; --c-P:#409dbf;
   --vidrio:#a99cb8; --liquido:.16; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -79,13 +80,15 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .v-g{color:var(--c-g); background:color-mix(in srgb, var(--c-g) 12%, transparent)}
 .v-solv{color:var(--c-solv); background:color-mix(in srgb, var(--c-solv) 12%, transparent)}
 .v-eq{color:var(--c-eq); background:color-mix(in srgb, var(--c-eq) 12%, transparent)}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 12%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 12%, transparent)}
 .v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
 .eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
 .eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
 .frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
-.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em; align-self:stretch; text-align:center}
 .frac > span:last-child{padding:0 .25em}
 .answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--c-M); max-width:66ch}
 .aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
@@ -275,7 +278,7 @@ function rotulo(ctx, c, x, y, t, color, align, peso, tam){
 function colores(){
   const g = n => css(n);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
-    n:g('--c-n'), V:g('--c-V'), M:g('--c-M'), g:g('--c-g'), solv:g('--c-solv'), eq:g('--c-eq'),
+    n:g('--c-n'), V:g('--c-V'), M:g('--c-M'), g:g('--c-g'), solv:g('--c-solv'), eq:g('--c-eq'), S:g('--c-S'), P:g('--c-P'),
     vidrio:g('--vidrio'), liquido:Number(g('--liquido')) || .1, mono:g('--mono'), font:g('--font') };
 }
 const fM = M => `${fmt(M, 2)} M`;
@@ -885,7 +888,8 @@ go(0);
 /* ================= MODO 2: ¿qué pasa si…? =================
    Experimentos del catálogo de docs/investigacion/gases-soluciones-ideas-erroneas.md:
    SO7/SO9 (¿cuál ocupa menos volumen?), SO10 (sacar una parte), SO11 (agregar agua),
-   SO14 (qué va en el denominador de cada unidad) y SO15 (normalidad).
+   SO14 (qué va en el denominador de cada unidad), SO15 (normalidad), SO13 (saturada no es concentrada: enfriar
+   el vaso con la curva de solubilidad) y SO6 (gases: dos gaseosas y la ley de Henry).
    La escena cambia recién después de responder. */
 (function(){
 const $ = id => document.getElementById(id);
@@ -950,6 +954,270 @@ const UNIDADES = {
   molar:{ t:'Molaridad', eq:() => `${Mm('M')} = ${fr(n('0,5 mol'), Vv(`${fmt(UNI.L, 4)} L`))} = ${Mm(fM(UNI.M))}`, d:`Divide entre los litros de <b>solución</b>. Hace falta la densidad: ${fmt(UNI.gSolucion, 0)} g / 1,2 g/mL = ${fmt(UNI.mL, 1)} mL.` },
   x:{ t:'Fracción molar', eq:() => `x = ${fr(n('0,5'), `${n('0,5')} + ${Sv(fmt(UNI.nSolvente, 2))}`)} = ${fmt(UNI.xSoluto, 3)}`, d:'Divide entre los moles de <b>todo</b>: soluto y solvente. Se cuenta con moles, no con gramos.' },
 };
+
+/* ===== Solubilidad (hueco SO13 y SO6, 7 nov 2026) =====
+   Experimento 6: 80 g de KNO₃ en 100 g de agua a 60 °C se enfrían a 20 °C. Cada punto es una porción de 4 g de KNO₃;
+   cada cuadro, una porción de 25 g de agua. Los puntos disueltos se mueven; los que cristalizan se apilan quietos en
+   el fondo. Al lado, la curva de solubilidad (tabla del motor) y el punto del vaso.
+   Experimento 7: dos gaseosas con CO₂ a la misma presión, a 10 °C y a 30 °C (ley de Henry del motor). Cada punto
+   disuelto es una porción de 0,1 g de CO₂; cada cuadro, 125 g de agua; los puntos de arriba son el gas. */
+const S_ = t => V('S', t), Pp = t => V('P', t);
+const G_PUNTO = 4, CR = { sus:'KNO3', g:80, gAgua:100, T1:60, T2:20 };
+const ENF = MS.enfriar({ sustancia:CR.sus, g:CR.g, gAgua:CR.gAgua, T1:CR.T1, T2:CR.T2 });
+const NACL = MS.enfriar({ sustancia:'NaCl', g:37, gAgua:100, T1:60, T2:20 });
+const CURVA = { KNO3: MS.curva('KNO3', 2).filter(([T]) => T <= 70), NaCl: MS.curva('NaCl', 5).filter(([T]) => T <= 70) };
+const VS = { T:CR.T1, semilla:true, ver:false, eq:null, parts:[], hist:[], gen:0, last:0, msg:'' };
+const azarSol = MS.azar(777);
+function vsEq(T, sobre){ return MS.equilibrio({ sustancia:CR.sus, g:CR.g, gAgua:CR.gAgua, T, sobresaturar:sobre }); }
+function vsIniciar(ver){
+  VS.ver = ver; VS.semilla = true; VS.gen++; VS.hist = []; VS.msg = '';
+  VS.T = ver ? CR.T2 : CR.T1; VS.eq = vsEq(VS.T, false);
+  const k = Math.round(CR.g / G_PUNTO);
+  VS.parts = Array.from({ length:k }, () => ({ u:.1 + .8*azarSol(), v:.1 + .8*azarSol(), ang:azarSol()*Math.PI*2, slot:-1, from:null, t0:0 }));
+  if (ver) VS.hist = CURVA.KNO3.filter(([T]) => T >= CR.T2 && T <= CR.T1).map(([T]) => [T, vsEq(T, false).disuelto]).concat([[CR.T1, CR.g]]);
+  vsAjustar(true);
+}
+// Posición (0 a 1 dentro del líquido) del cristal número i: filas de 6 desde el fondo.
+const slotXY = i => ({ u: (i % 6 + .5)/6 + ((Math.floor(i/6) % 2) ? .04 : -.04), v: .95 - Math.floor(i/6)*.075 });
+function vsPos(p, now){
+  const q = p.slot >= 0 ? slotXY(p.slot) : { u:p.u, v:p.v };
+  if (!p.from) return q;
+  const f = RM ? 1 : Math.min(1, (now - p.t0)/700);
+  if (f >= 1){ p.from = null; return q; }
+  const e = suave(f); return { u: p.from.u + (q.u - p.from.u)*e, v: p.from.v + (q.v - p.from.v)*e };
+}
+// Cuántos puntos quedan disueltos sale del motor (equilibrio); el dibujo redondea a porciones enteras.
+function vsAjustar(ya){
+  const now = performance.now(), meta = Math.round(VS.eq.disuelto / G_PUNTO);
+  let dis = VS.parts.filter(p => p.slot < 0);
+  while (dis.length > meta){
+    const p = dis.sort((a, b) => b.v - a.v)[0], usados = new Set(VS.parts.map(q => q.slot));
+    let i = 0; while (usados.has(i)) i++;
+    if (!ya) { p.from = vsPos(p, now); p.t0 = now; }
+    p.slot = i; dis = VS.parts.filter(q => q.slot < 0);
+  }
+  while (dis.length < meta){
+    const cr = VS.parts.filter(q => q.slot >= 0).sort((a, b) => b.slot - a.slot)[0]; if (!cr) break;
+    if (!ya) { cr.from = vsPos(cr, now); cr.t0 = now; }
+    cr.slot = -1; cr.u = .15 + .7*azarSol(); cr.v = .15 + .5*azarSol(); dis = VS.parts.filter(q => q.slot < 0);
+  }
+}
+const TIPO = { insaturada:'insaturada', saturada:'saturada', sobresaturada:'sobresaturada' };
+// Llevar el vaso a la temperatura T (animado). Sin cristalito y sin sólido, no cristaliza al enfriar.
+function vsIrA(T, fin){
+  const gen = ++VS.gen, de = VS.T, dur = RM ? 0 : Math.min(3200, 70*Math.abs(T - de) + 300);
+  tween(dur, f => {
+    if (gen !== VS.gen) return;
+    // de grado en grado, para que el camino del punto siga la curva aunque la animación salte (movimiento reducido)
+    const meta = de + (T - de)*f, sg = Math.sign(meta - VS.T);
+    while (Math.abs(meta - VS.T) > 1e-9){
+      VS.T = Math.abs(meta - VS.T) > 1 ? VS.T + sg : meta;
+      VS.eq = vsEq(VS.T, !VS.semilla && VS.eq.solido <= 1e-9);
+      VS.hist.push([VS.T, VS.eq.disuelto]); if (VS.hist.length > 400) VS.hist.shift();
+    }
+    vsAjustar(false);
+  }, () => { if (gen === VS.gen && fin) fin(); });
+}
+function dibujarCristal(ctx, c, W, H, now){
+  const dt = VS.last ? Math.min(.05, (now - VS.last)/1000) : 0; VS.last = now;
+  const lado = W >= 560 || H < 420;
+  const zv = lado ? { x:0, y:0, w:W*0.38, h:H } : { x:0, y:H*0.56, w:W, h:H*0.44 };
+  const zg = lado ? { x:W*0.38, y:0, w:W*0.62, h:H } : { x:0, y:0, w:W, h:H*0.56 };
+  // ----- vaso: 100 g de agua en 4 cuadros (2 × 2) -----
+  const wv = Math.min(zv.w - 40, (zv.h - 70)*0.95, 220), hv = wv*0.95;
+  const x = zv.x + (zv.w - wv)/2, base = zv.y + zv.h - (lado ? 46 : 40), top = base - hv;
+  ctx.save(); ctx.fillStyle = c.solv; ctx.globalAlpha = c.liquido; ctx.fillRect(x, top, wv, hv); ctx.restore();
+  ctx.save(); ctx.strokeStyle = c.solv; ctx.lineWidth = E.hl === 'solv' ? 2 : 1; ctx.globalAlpha = E.hl === 'solv' ? .95 : .55; ctx.setLineDash([3, 3]);
+  linea(ctx, x + wv/2, top, x + wv/2, base); linea(ctx, x, top + hv/2, x + wv, top + hv/2); ctx.restore();
+  ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2.2; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(x - 6, top - 22); ctx.lineTo(x - 4, base); ctx.lineTo(x + wv + 4, base); ctx.lineTo(x + wv + 6, top - 22); ctx.stroke(); ctx.restore();
+  const rp = clamp(wv*0.022, 2.6, 4.6)*(E.hl === 'g' ? 1.4 : 1);
+  for (const p of VS.parts){
+    if (p.slot < 0 && !p.from){
+      p.ang += (azarSol() - .5)*dt*4; p.u += Math.cos(p.ang)*.18*dt; p.v += Math.sin(p.ang)*.18*dt;
+      if (p.u < .06 || p.u > .94){ p.u = clamp(p.u, .06, .94); p.ang = Math.PI - p.ang; }
+      if (p.v < .06 || p.v > .8){ p.v = clamp(p.v, .06, .8); p.ang = -p.ang; }
+    }
+    const q = vsPos(p, now), px = x + q.u*wv, py = top + q.v*hv;
+    ctx.fillStyle = c.g; ctx.beginPath();
+    if (p.slot >= 0 && !p.from){ const r = rp*1.5; ctx.moveTo(px, py - r); ctx.lineTo(px + r, py); ctx.lineTo(px, py + r); ctx.lineTo(px - r, py); ctx.closePath(); }
+    else ctx.arc(px, py, rp, 0, Math.PI*2);
+    ctx.fill();
+  }
+  rotulo(ctx, c, x + wv/2, top - 34, `T = ${fmt(VS.T, 0)} °C`, c.ink, 'center', 800, 13);
+  rotulo(ctx, c, x + wv/2, base + 13, '100 g de agua', c.solv, 'center', 800, 11);
+  if (VS.ver) rotulo(ctx, c, x + wv/2, base + 29, `disuelto ${fmt(VS.eq.disuelto, 1)} g · sólido ${fmt(VS.eq.solido, 1)} g`, c.g, 'center', 800, 11);
+  else rotulo(ctx, c, x + wv/2, base + 29, `${fmt(CR.g, 0)} g de KNO₃`, c.g, 'center', 800, 11);
+  // ----- curva de solubilidad -----
+  const m = { l:zg.x + 40, r:zg.x + zg.w - 12, t:zg.y + 30, b:zg.y + zg.h - 30 };
+  const X = T => m.l + (m.r - m.l)*T/70, Y = s => m.b - (m.b - m.t)*s/140;
+  ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+  for (let T = 0; T <= 70; T += 10) linea(ctx, X(T), m.t, X(T), m.b);
+  for (let s = 0; s <= 140; s += 20) linea(ctx, m.l, Y(s), m.r, Y(s));
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, m.l, m.b, m.r, m.b); linea(ctx, m.l, m.b, m.l, m.t);
+  ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let T = 0; T <= 70; T += (m.r - m.l) < 260 ? 20 : 10) ctx.fillText(String(T), X(T), m.b + 4);
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let s = 0; s <= 140; s += 20) ctx.fillText(String(s), m.l - 5, Y(s));
+  ctx.restore();
+  rotulo(ctx, c, m.r, m.b + 21, 'T (°C)', c.ink, 'right', 700, 10);
+  rotulo(ctx, c, m.l - 34, m.t - 16, 'g de soluto por 100 g de agua', c.ink, 'left', 700, 10);
+  const trazar = (pts, dash, ancho) => { ctx.save(); ctx.strokeStyle = c.S; ctx.lineWidth = ancho; ctx.setLineDash(dash); ctx.beginPath();
+    pts.forEach(([T, s], i) => i ? ctx.lineTo(X(T), Y(s)) : ctx.moveTo(X(T), Y(s))); ctx.stroke(); ctx.restore(); };
+  trazar(CURVA.KNO3, [], E.hl === 'S' ? 4 : 2.6);
+  rotulo(ctx, c, X(68), Y(MS.solubilidad('KNO3', 70)) + 12, 'KNO₃', c.S, 'right', 800, 11);
+  if (VS.ver){ trazar(CURVA.NaCl, [6, 4], E.hl === 'S' ? 3 : 2); rotulo(ctx, c, X(68), Y(MS.solubilidad('NaCl', 70)) - 11, 'NaCl', c.S, 'right', 800, 11); }
+  // camino recorrido y punto del vaso (T, gramos disueltos por 100 g de agua)
+  if (VS.ver && VS.hist.length > 1){ ctx.save(); ctx.strokeStyle = c.g; ctx.globalAlpha = .45; ctx.lineWidth = 1.6; ctx.beginPath();
+    VS.hist.forEach(([T, s], i) => i ? ctx.lineTo(X(T), Y(s)) : ctx.moveTo(X(T), Y(s))); ctx.stroke(); ctx.restore(); }
+  const px = X(VS.T), py = Y(VS.eq.disuelto);
+  if (VS.ver && VS.eq.solido > 0.05){
+    ctx.save(); ctx.strokeStyle = c.g; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.6; linea(ctx, px, py, px, Y(CR.g));
+    ctx.setLineDash([]); ctx.beginPath(); ctx.arc(px, Y(CR.g), 4, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, px + 8, (py + Y(CR.g))/2, `sólido ${fmt(VS.eq.solido, 1)} g`, c.g, 'left', 800, 10);
+  }
+  ctx.beginPath(); ctx.arc(px, py, E.hl === 'g' ? 7 : 5.5, 0, Math.PI*2); ctx.fillStyle = c.g; ctx.fill();
+  ctx.strokeStyle = c.paper; ctx.lineWidth = 1.5; ctx.stroke();
+  // A la izquierda de 45 °C, ya respondido, el rótulo va debajo y a la derecha del punto: ahí no pasan las curvas.
+  const izq = px > X(45), abajo = VS.ver && !izq;
+  rotulo(ctx, c, px + (izq ? -10 : 10), py + (abajo ? 16 : -12), VS.ver ? `vaso · ${TIPO[VS.eq.tipo]}` : 'vaso', c.ink, izq ? 'right' : 'left', 800, 11);
+}
+const descCristal = () => VS.ver
+  ? `Vaso a ${fmt(VS.T, 0)} °C: ${fmt(VS.eq.disuelto, 1)} g de KNO₃ disueltos y ${fmt(VS.eq.solido, 1)} g de cristales en 100 g de agua; solución ${VS.eq.tipo}. En la curva caben ${fmt(VS.eq.cabe, 1)} g.`
+  : `Vaso con 100 g de agua a ${fmt(CR.T1, 0)} °C y ${fmt(CR.g, 0)} g de KNO₃, todo disuelto. Al lado, la curva de solubilidad del KNO₃ y el punto del vaso.`;
+const leyCristal = ver => `<span><i class="pt" style="background:var(--c-g)"></i>KNO₃ (cada punto: ${G_PUNTO} g${ver ? '; el disuelto se mueve, los cristales son rombos en el fondo' : ''})</span><span><i style="background:var(--c-solv)"></i>agua (cada cuadro: 25 g)</span><span><i style="background:var(--c-S)"></i>S · curva de solubilidad</span>`;
+function vsControles(){
+  return `<div><p class="hint" style="margin:0 0 6px">Temperatura del vaso:</p>
+    <div class="seg" role="group" aria-label="Temperatura del vaso">${[0, 10, 20, 30, 40, 50, 60].map(T => `<button type="button" data-vt="${T}" aria-pressed="${Math.round(VS.T) === T}">${T} °C</button>`).join('')}</div></div>
+    <div class="seg" role="group" aria-label="Cómo se enfría">${[[1, 'Con cristalito y agitando'], [0, 'Sin cristalito, sin agitar']].map(([k, t]) => `<button type="button" data-semilla="${k}" aria-pressed="${VS.semilla === !!k}">${t}</button>`).join('')}</div>
+    <div class="acciones"><button type="button" class="btn" id="vs-cristal" hidden>Echar un cristalito</button></div>
+    <p id="vs-msg" class="hint" aria-live="polite"></p>`;
+}
+function vsLeer(){
+  const e = VS.eq, d = $('vs-msg'); if (!d) return;
+  d.textContent = `${fmt(VS.T, 0)} °C: caben ${fmt(e.cabe, 1)} g; hay ${fmt(e.disuelto, 1)} g disueltos y ${fmt(e.solido, 1)} g de sólido. Solución ${e.tipo}.`
+    + (e.tipo === 'sobresaturada' ? ' Hay más disuelto de lo que cabe: el punto queda encima de la curva. Es inestable.' : '') + (VS.msg ? ' ' + VS.msg : '');
+  const b = $('vs-cristal'); if (b) b.hidden = e.tipo !== 'sobresaturada';
+  document.querySelectorAll('[data-vt]').forEach(y => y.setAttribute('aria-pressed', String(Math.abs(VS.T - +y.dataset.vt) < .01)));
+}
+function vsEnlazar(){
+  document.querySelectorAll('[data-vt]').forEach(b => b.onclick = () => { VS.msg = ''; vsIrA(+b.dataset.vt, vsLeer); });
+  document.querySelectorAll('[data-semilla]').forEach(b => b.onclick = () => {
+    VS.semilla = b.dataset.semilla === '1'; document.querySelectorAll('[data-semilla]').forEach(y => y.setAttribute('aria-pressed', String(y === b)));
+    VS.msg = VS.semilla ? '' : (VS.eq.solido > 1e-9 ? 'Los cristales que ya hay sirven de semilla: caliéntalo hasta que se disuelvan y vuelve a enfriar.' : ''); vsLeer();
+  });
+  const cr = $('vs-cristal'); if (cr) cr.onclick = () => {
+    VS.gen++; VS.eq = vsEq(VS.T, false); vsAjustar(false); VS.msg = 'Con el cristalito, lo que sobraba cristalizó de golpe.'; E.dibujar(); vsLeer();
+  };
+  vsLeer();
+}
+
+const GAS = { P:2, T:[10, 30], kg:0.5, gPunto:0.1 };
+const CMP = MS.compararGasT({ gas:'CO2', T1:GAS.T[0], T2:GAS.T[1], P:GAS.P, kgAgua:GAS.kg });
+const GS = { P:GAS.P, abierta:false, ver:false, bot:[], last:0, gen:0 };
+const gasDe = T => GS.abierta ? MS.destapar({ gas:'CO2', T, P1:GS.P, kgAgua:GAS.kg }).despues : MS.henry({ gas:'CO2', T, P:GS.P, kgAgua:GAS.kg }).g;
+const Pactual = () => GS.abierta ? MS.P_AIRE.CO2 : GS.P;
+function gsIniciar(ver){
+  GS.ver = ver; GS.P = GAS.P; GS.abierta = false; GS.gen++;
+  GS.bot = GAS.T.map(T => ({ T, dis:[], gas:[] }));
+  gsAjustar(true);
+}
+function gsAjustar(ya){
+  const now = performance.now();
+  for (const b of GS.bot){
+    const meta = Math.round(gasDe(b.T)/GAS.gPunto);
+    let vivos = b.dis.filter(p => !p.sale);
+    while (vivos.length > meta){ const p = vivos[Math.floor(azarSol()*vivos.length)]; if (ya) b.dis.splice(b.dis.indexOf(p), 1); else p.sale = now; vivos = b.dis.filter(q => !q.sale); }
+    while (vivos.length < meta){ const p = { u:.1 + .8*azarSol(), v: ya ? .1 + .8*azarSol() : .04, ang:azarSol()*Math.PI*2, sale:0 }; b.dis.push(p); vivos.push(p); }
+    const mg = GS.abierta ? 0 : Math.round(GS.P*4);
+    let gv = b.gas.filter(p => !p.sale);
+    while (gv.length > mg){ const p = gv.pop(); if (ya) b.gas.splice(b.gas.indexOf(p), 1); else p.sale = now; }
+    while (gv.length < mg){ const p = { u:.1 + .8*azarSol(), v:.15 + .7*azarSol(), ang:azarSol()*Math.PI*2, sale:0 }; b.gas.push(p); gv.push(p); }
+  }
+}
+function dibujarGaseosa(ctx, c, W, H, now){
+  const dt = GS.last ? Math.min(.05, (now - GS.last)/1000) : 0; GS.last = now;
+  const n = GS.bot.length, colW = W/n;
+  const hb = clamp(H - 92, 120, 380), wb = clamp(Math.min(colW*0.5, hb*0.55), 60, 150);
+  GS.bot.forEach((b, k) => {
+    const cx = colW*(k + .5), x = cx - wb/2, base = H - 46, top = base - hb, cuello = wb*0.34;
+    const yLiq = top + hb*0.30, hl = base - yLiq;
+    // cuerpo de la botella (hombros hacia el cuello) y la tapa
+    ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2.2; ctx.lineJoin = 'round'; ctx.beginPath();
+    ctx.moveTo(cx - cuello/2, top); ctx.lineTo(cx - cuello/2, top + hb*0.08); ctx.quadraticCurveTo(x, top + hb*0.12, x, top + hb*0.24);
+    ctx.lineTo(x, base - 8); ctx.quadraticCurveTo(x, base, x + 8, base); ctx.lineTo(x + wb - 8, base); ctx.quadraticCurveTo(x + wb, base, x + wb, base - 8);
+    ctx.lineTo(x + wb, top + hb*0.24); ctx.quadraticCurveTo(x + wb, top + hb*0.12, cx + cuello/2, top + hb*0.08); ctx.lineTo(cx + cuello/2, top); ctx.stroke(); ctx.restore();
+    if (!GS.abierta){ rr(ctx, cx - cuello/2 - 4, top - 12, cuello + 8, 12, 3); ctx.fillStyle = c.ink; ctx.fill(); }
+    // líquido: 0,5 kg de agua en 4 cuadros
+    ctx.save(); ctx.fillStyle = c.solv; ctx.globalAlpha = c.liquido; ctx.fillRect(x + 1, yLiq, wb - 2, hl - 1); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.solv; ctx.lineWidth = E.hl === 'solv' ? 2 : 1; ctx.globalAlpha = E.hl === 'solv' ? .95 : .55; ctx.setLineDash([3, 3]);
+    linea(ctx, cx, yLiq, cx, base); linea(ctx, x, yLiq + hl/2, x + wb, yLiq + hl/2); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.solv; ctx.lineWidth = 2; linea(ctx, x, yLiq, x + wb, yLiq); ctx.restore();
+    // gas sobre el líquido (presión del CO₂)
+    const rg = clamp(wb*0.035, 2.4, 4.2)*(E.hl === 'P' ? 1.4 : 1);
+    const gx0 = x + 6, gw = wb - 12, gy0 = top + hb*0.12, gh = yLiq - gy0 - 4;
+    b.gas = b.gas.filter(p => !p.sale || now - p.sale < 900);
+    for (const p of b.gas){
+      if (p.sale){ p.v -= dt*1.2; } else {
+        p.ang += (azarSol() - .5)*dt*4; p.u += Math.cos(p.ang)*.35*dt; p.v += Math.sin(p.ang)*.35*dt;
+        if (p.u < .05 || p.u > .95){ p.u = clamp(p.u, .05, .95); p.ang = Math.PI - p.ang; }
+        if (p.v < .05 || p.v > .95){ p.v = clamp(p.v, .05, .95); p.ang = -p.ang; }
+      }
+      const a = p.sale ? Math.max(0, 1 - (now - p.sale)/900) : 1, px = p.sale ? cx + (p.u - .5)*cuello : gx0 + p.u*gw;
+      ctx.save(); ctx.globalAlpha = a; ctx.beginPath(); ctx.arc(px, gy0 + p.v*gh, rg, 0, Math.PI*2); ctx.fillStyle = c.P; ctx.fill(); ctx.restore();
+    }
+    if (!GS.ver){
+      ctx.save(); rr(ctx, x + 3, yLiq + 3, wb - 6, hl - 7, 8); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.line; ctx.stroke();
+      ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(clamp(wb*0.25, 18, 30))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('?', cx, yLiq + hl/2); ctx.restore();
+    } else {
+      const rp = clamp(wb*0.03, 2.2, 3.8)*(E.hl === 'g' ? 1.4 : 1);
+      b.dis = b.dis.filter(p => !p.sale || p.v > -0.05);
+      for (const p of b.dis){
+        if (p.sale){ p.v -= dt*(RM ? 6 : .55); } else {
+          p.ang += (azarSol() - .5)*dt*4; p.u += Math.cos(p.ang)*.16*dt; p.v += Math.sin(p.ang)*.16*dt;
+          if (p.u < .06 || p.u > .94){ p.u = clamp(p.u, .06, .94); p.ang = Math.PI - p.ang; }
+          if (p.v < .06 || p.v > .94){ p.v = clamp(p.v, .06, .94); p.ang = -p.ang; }
+        }
+        const px = x + p.u*wb, py = yLiq + Math.max(0, p.v)*hl;
+        ctx.beginPath(); ctx.arc(px, py, p.sale ? rp*1.5 : rp, 0, Math.PI*2);
+        if (p.sale){ ctx.strokeStyle = c.g; ctx.lineWidth = 1.4; ctx.stroke(); } else { ctx.fillStyle = c.g; ctx.fill(); }
+      }
+    }
+    rotulo(ctx, c, cx, top - 26, `${b.T} °C`, c.ink, 'center', 800, 13);
+    // rótulo de la presión con fondo opaco, encima de los puntos de gas
+    { const t = GS.abierta ? 'destapada' : `P = ${fmt(GS.P, 0)} atm`; ctx.font = `800 11px ${c.font}`; const tw = ctx.measureText(t).width;
+      rr(ctx, cx - tw/2 - 5, gy0 + gh/2 - 9, tw + 10, 18, 9); ctx.fillStyle = c.paper; ctx.fill();
+      ctx.fillStyle = c.P; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, cx, gy0 + gh/2); }
+    rotulo(ctx, c, cx, base + 13, '0,5 kg de agua', c.solv, 'center', 800, 11);
+    if (GS.ver) rotulo(ctx, c, cx, base + 29, `${fmt(gasDe(b.T), GS.abierta ? 4 : 2)} g de CO₂ disuelto`, c.g, 'center', 800, 11);
+  });
+}
+const descGaseosa = () => GS.ver
+  ? GS.bot.map(b => `Botella a ${b.T} °C ${GS.abierta ? 'destapada' : `con CO₂ a ${fmt(GS.P, 0)} atm`}: ${fmt(gasDe(b.T), 3)} g de CO₂ disuelto en 0,5 kg de agua`).join('. ') + '.'
+  : 'Dos botellas cerradas de la misma gaseosa, con CO₂ a 2 atm sobre el líquido: una a 10 °C y otra a 30 °C. El CO₂ disuelto queda tapado hasta que respondas.';
+function gsControles(){
+  return `<div><p class="hint" style="margin:0 0 6px">Presión del CO₂ sobre el líquido (las dos botellas):</p>
+    <div class="seg" role="group" aria-label="Presión del CO₂">${[[1, '1 atm'], [2, '2 atm'], [3, '3 atm'], [0, 'Destapar']].map(([k, t]) => `<button type="button" data-gp="${k}" aria-pressed="${GS.abierta ? k === 0 : GS.P === k}">${t}</button>`).join('')}</div></div>
+    <div class="eqs" id="gs-eq"></div><p id="gs-msg" class="hint" aria-live="polite"></p>`;
+}
+function gsLeer(){
+  const d = $('gs-eq'); if (!d) return;
+  const P = Pactual(), Pt = GS.abierta ? '0,0004' : fmt(P, 0);
+  d.innerHTML = GS.bot.map(b => { const h = MS.henry({ gas:'CO2', T:b.T, P, kgAgua:GAS.kg });
+    return `<div class="eq">${b.T} °C: ${S_('S')} = k·${Pp('P')} = ${fmt(h.k, 3)} g/(kg·atm) · ${Pp(Pt + ' atm')} = ${S_(fmt(h.S, GS.abierta ? 4 : 2) + ' g/kg')} → ${G(fmt(h.g, GS.abierta ? 4 : 2) + ' g')}</div>`; }).join('');
+  $('gs-msg').textContent = GS.abierta
+    ? `Destapada, el CO₂ de arriba se mezcla con el aire, donde su presión es de unos 0,0004 atm: el gas disuelto sale en burbujas hasta que casi no queda (${fmt(MS.destapar({ gas:'CO2', T:GAS.T[0], P1:GS.P, kgAgua:GAS.kg }).escapa, 2)} g escapan de la botella fría).`
+    : `Con ${fmt(GS.P, 0)} atm: ${GS.bot.map(b => `${fmt(gasDe(b.T), 2)} g a ${b.T} °C`).join(' y ')}. Más presión, más gas disuelto; más temperatura, menos.`;
+  document.querySelectorAll('[data-gp]').forEach(y => y.setAttribute('aria-pressed', String(GS.abierta ? y.dataset.gp === '0' : +y.dataset.gp === GS.P)));
+}
+function gsEnlazar(){
+  document.querySelectorAll('[data-gp]').forEach(b => b.onclick = () => {
+    const k = +b.dataset.gp; if (k === 0) GS.abierta = true; else { GS.abierta = false; GS.P = k; }
+    gsAjustar(false); E.dibujar(); gsLeer();
+  });
+  gsLeer();
+}
 
 const EXPS = [
   { id:'menos-volumen', corto:'¿Cuál ocupa menos?',
@@ -1032,7 +1300,49 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">${n('n')} = ${fr(G('49 g'), '98 g/mol')} = ${n(fmol(NOR.n))} · ${Mm('M')} = ${fr(n('0,5'), Vv('0,5'))} = ${Mm(fM(NOR.M))}</div>
       <div class="eq">${Q('θ = 2')} H⁺ por fórmula → ${Q(`${fmt(NOR.eq, 0)} equivalente`)} </div><div class="eq">${Q('N')} = ${fr(Q('1 eq'), Vv('0,5 L'))} = ${Q('2 N')}</div><div class="eq">${Q('N')} = ${Mm('M')} · ${Q('θ')} = ${Mm('1')} · ${Q('2')} = ${Q(`${fmt(NOR.N, 0)} N`)}</div></div>
       <p>Cada H₂SO₄ puede entregar dos H⁺ al reaccionar con una base (los puntos morados). La lupa tenía 4 fórmulas y ahora cuenta 8 H⁺: hay el doble de H⁺ que de moléculas. La normalidad cuenta equivalentes (los H⁺ que puede entregar), no fórmulas. Por eso N = M · θ no es una regla suelta: sale de contar.</p>
-      <p class="fuente">De 131 futuros profesores de ciencias, el 62,6 % definió bien la normalidad, pero solo el 29,8 % el número de equivalentes: la autora lo interpreta como uso de N = M · θ sin contar equivalentes (Karaer, 2019, tabla 3). Las opciones 0,5 N y 4 N son hipótesis nuestras, sin estudio que las mida.</p>` },
+      <p class="fuente">De 131 futuros profesores de ciencias, el 62,6 % definió bien la normalidad, pero solo el 29,8 % el número de equivalentes: la autora lo interpreta como uso de N = M · θ sin contar equivalentes (Karaer, 2019, tabla 3). Las opciones 0,5 N y 4 N son hipótesis nuestras, sin estudio que las mida.</p>` },  { id:'enfriar', corto:'Enfriar el vaso',
+    q:`Un vaso tiene ${Sv('100 g de agua')} a 60 °C con ${G(`${fmt(CR.g, 0)} g de KNO₃`)}, todo disuelto. Se enfría hasta 20 °C, agitando y con un cristalito de KNO₃ dentro. Cada cuadro del dibujo es una porción de 25 g de agua, no de solución. Con la ${S_('curva de solubilidad')}, ¿qué pasa?`,
+    opts:[['a',`Cristalizan unos ${fmt(ENF.cristaliza, 0)} g; el líquido que queda está insaturado, porque ya es diluido`,'SO13-diluida-es-insaturada','parcial'],
+          ['b','No cristaliza nada; lo que ya se disolvió no vuelve a ser sólido','cristal-no-vuelve','hipotesis'],
+          ['c',`Cristalizan unos ${fmt(ENF.errores.laSolubilidad, 0)} g; el líquido que queda está saturado`,'cristaliza-la-solubilidad','hipotesis'],
+          ['d',`Cristalizan unos ${fmt(ENF.cristaliza, 0)} g; el líquido que queda está saturado`,null]],
+    ok:'d',
+    fb:{ a:`Elegiste la A. La cantidad está bien, pero el líquido que queda sobre los cristales está saturado: tiene justo lo que cabe a 20 °C (${fmt(ENF.cabe2, 1)} g). Saturada quiere decir que ya no admite más a esa temperatura, haya poco o mucho soluto; diluida solo dice que hay poco. La correcta está marcada.`,
+      b:`Elegiste la B. Lo disuelto sí vuelve a ser sólido: a 20 °C, en 100 g de agua solo caben ${fmt(ENF.cabe2, 1)} g, y con el cristalito y la agitación lo que sobra se separa como cristales. La correcta está marcada.`,
+      c:`Elegiste la C. ${fmt(ENF.cabe2, 1)} g es lo que marca la curva a 20 °C: lo que se queda disuelto, no lo que cristaliza. Cristaliza lo que sobra. La correcta está marcada.` },
+    antes:ver => { vsIniciar(ver); E.config({ vasos:[], lupas:[], extra:dibujarCristal, descr:descCristal,
+      leyenda:leyCristal(ver) }); },
+    despues:() => { $('leyenda2').innerHTML = leyCristal(true); VS.ver = true; VS.hist = [[VS.T, VS.eq.disuelto]]; vsIrA(CR.T2, vsLeer); },
+    ctrl:() => vsControles(),
+    enlazar:vsEnlazar,
+    exp:() => `<div class="eqs">
+        <div class="eq">60 °C: caben ${S_(`${fmt(ENF.cabe1, 0)} g`)} y hay ${G(`${fmt(CR.g, 0)} g`)}<span class="note">insaturada: todavía admite ${fmt(ENF.cabe1 - CR.g, 0)} g más</span></div>
+        <div class="eq">20 °C: caben ${S_(`${fmt(ENF.cabe2, 1)} g`)} → cristalizan ${G(`${fmt(CR.g, 0)} − ${fmt(ENF.cabe2, 1)} = ${fmt(ENF.cristaliza, 1)} g`)}</div>
+        <div class="eq">Empieza a cristalizar a unos ${fmt(ENF.Tsat, 0)} °C<span class="note">donde la curva baja a ${fmt(CR.g, 0)} g</span></div></div>
+      <p>El líquido que queda sobre los cristales está <b>saturado</b>: tiene justo lo que cabe a esa temperatura, y el punto del vaso baja por la curva. <b>Saturada, insaturada y sobresaturada</b> comparan lo disuelto con lo que cabe a esa temperatura (la curva). <b>Diluida y concentrada</b> solo dicen si hay poco o mucho soluto. Por eso a 60 °C el vaso era concentrado e insaturado, y una sal poco soluble puede dar una solución diluida y saturada.</p>
+      <p>Con NaCl (la curva a trazos) casi no cristaliza nada: ${fmt(37, 0)} g a 60 °C dejan apenas ${fmt(NACL.cristaliza, 1)} g de cristales al bajar a 20 °C, porque su curva es casi plana. Cambia la temperatura y prueba sin cristalito: si se enfría despacio y sin agitar, puede quedar más disuelto de lo que cabe. Esa solución es <b>sobresaturada</b>: el punto queda encima de la curva, y un cristalito la hace cristalizar de golpe.</p>
+      <p class="fuente">De 131 futuros profesores de ciencias, más de la mitad definió mal «solución diluida» y solo cerca de uno de cada cuatro la definió bien; las definiciones erróneas usaban «lo que el solvente puede disolver», que es lo que define a la saturada (Karaer, 2019). Que no cristalice nada o que cristalice lo que marca la curva son hipótesis nuestras, sin estudio que las mida. La curva usa valores de tabla redondeados, unidos en línea recta.</p>` },
+  { id:'gaseosa', corto:'Dos gaseosas',
+    q:`Dos botellas cerradas de la misma gaseosa tienen CO₂ a la misma presión sobre el líquido, ${Pp(`${fmt(GAS.P, 0)} atm`)}. Una está en la refrigeradora a ${GAS.T[0]} °C y la otra al sol a ${GAS.T[1]} °C. Cuando cada una se asienta, ¿en cuál hay más ${G('CO₂ disuelto')}? (Cada cuadro del dibujo es una porción de 125 g de agua, no de solución.)`,
+    opts:[['a','En la de 10 °C: en frío el agua retiene más gas',null],
+          ['b','En la de 30 °C: el calor ayuda a disolver, como con el azúcar','SO6-gas-mas-en-caliente','parcial'],
+          ['c','Igual en las dos: con la misma presión, la temperatura no cuenta','gas-solo-presion','hipotesis'],
+          ['d','En ninguna: el CO₂ no se disuelve, solo forma las burbujas','gas-no-se-disuelve','hipotesis']],
+    ok:'a',
+    fb:{ b:`Elegiste la B. Con muchos sólidos pasa eso, pero con los gases es al revés: al calentar, las moléculas de gas escapan más fácil del líquido. A ${GAS.T[0]} °C quedan ${fmt(CMP.g1, 2)} g disueltos y a ${GAS.T[1]} °C, ${fmt(CMP.g2, 2)} g. La correcta está marcada.`,
+      c:`Elegiste la C. La presión importa (más presión, más gas disuelto), pero la temperatura también: con la misma presión, la botella fría retiene casi el doble de CO₂ que la de ${GAS.T[1]} °C. La correcta está marcada.`,
+      d:'Elegiste la D. Las burbujas salen del CO₂ que estaba disuelto: en la botella cerrada el gas está repartido entre las moléculas de agua, sin verse. La correcta está marcada.' },
+    antes:ver => { gsIniciar(ver); E.config({ vasos:[], lupas:[], extra:dibujarGaseosa, descr:descGaseosa,
+      leyenda:`<span><i class="pt" style="background:var(--c-g)"></i>CO₂ disuelto (cada punto: ${fmt(GAS.gPunto, 1)} g)</span><span><i style="background:var(--c-solv)"></i>agua (cada cuadro: 125 g)</span><span><i class="pt" style="background:var(--c-P)"></i>P · CO₂ gaseoso sobre el líquido (más puntos, más presión)</span>` }); },
+    despues:() => { GS.ver = true; gsAjustar(true); E.dibujar(); },
+    ctrl:() => gsControles(),
+    enlazar:gsEnlazar,
+    exp:() => `<div class="eqs">
+        <div class="eq">Ley de Henry: ${S_('S')} = k · ${Pp('P')}<span class="note">k es lo que se disuelve con 1 atm del gas; baja al calentar</span></div>
+        <div class="eq">${GAS.T[0]} °C: k = ${fmt(MS.solubilidad('CO2', GAS.T[0]), 3)} g/(kg·atm) → ${S_('S')} = ${fmt(MS.solubilidad('CO2', GAS.T[0]), 3)} · ${Pp(`${fmt(GAS.P, 0)} atm`)} = ${S_(`${fmt(CMP.S1, 2)} g/kg`)} → en 0,5 kg, ${G(`${fmt(CMP.g1, 2)} g`)}</div>
+        <div class="eq">${GAS.T[1]} °C: k = ${fmt(MS.solubilidad('CO2', GAS.T[1]), 3)} g/(kg·atm) → ${S_('S')} = ${fmt(MS.solubilidad('CO2', GAS.T[1]), 3)} · ${Pp(`${fmt(GAS.P, 0)} atm`)} = ${S_(`${fmt(CMP.S2, 2)} g/kg`)} → en 0,5 kg, ${G(`${fmt(CMP.g2, 2)} g`)}</div></div>
+      <p>Un gas se disuelve <b>menos</b> al subir la temperatura y <b>más</b> al subir su presión sobre el líquido. Al destapar, la presión del CO₂ baja a la del aire y casi todo el gas sale en burbujas; en caliente sale más rápido y la gaseosa «se pasa». Por lo mismo, el agua tibia de un río lleva menos oxígeno para los peces. Prueba con las presiones.</p>
+      <p class="fuente">En entrevistas con 6 futuros profesores de química, uno dijo que el gas se disuelve más al subir la temperatura y otro, que se disuelve menos al subir la presión; la mitad sabía que las dos influyen, pero no explicó por qué (Dindar y otros, 2010). Son casos, no porcentajes. Las opciones «igual en las dos» y «el CO₂ no se disuelve» son hipótesis nuestras. La k sale de una tabla de solubilidad del CO₂ con valores redondeados, y los 2 atm son un valor de ejemplo.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
 // Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
@@ -1071,6 +1381,7 @@ function ir(k){
     $('res2').innerHTML = (x.ctrl ? x.ctrl() : '') + x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('res2').querySelectorAll('[data-uni]').forEach(b => b.onclick = () => { U.unidad = b.dataset.uni; $('res2').querySelectorAll('[data-uni]').forEach(y => y.setAttribute('aria-pressed', String(y === b))); pintarUnidad(); E.dibujar(); });
     pintarUnidad();
+    if (x.enlazar) x.enlazar();
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
   };
   btns.forEach(b => b.onclick = () => {

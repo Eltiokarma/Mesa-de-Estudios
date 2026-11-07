@@ -198,6 +198,8 @@
     ['balance-reacciones: N₂ + H₂, NH₃ + O₂, NO₂', ['N', 'O', 'H']],
     ['celda-galvanica: pila (dos de Zn, Fe, Cu, Ag) y el K⁺ del puente', ['Zn', 'Fe', 'Cu', 'Ag', 'K']],
     ['celda-galvanica: Faraday', ['Cu', 'Ag']],
+    ['celda-galvanica: agua con Na₂SO₄', ['H', 'O', 'Na']],
+    ['celda-galvanica: salmuera y NaCl fundido', ['H', 'Na', 'Cl']],
     ['enlace: la red de NaCl', ['Na', 'Cl']],
     ['materia-energia: las cajas', ['H', 'O', 'Fe']],
     ['materia-energia: la lupa del agua con sal', ['H', 'O', 'Na', 'Cl']],
