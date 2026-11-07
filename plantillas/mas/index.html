@@ -7,18 +7,19 @@
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), los de MRUV para el
-   movimiento: x posición azul, v velocidad rojo, a aceleración verde (el de triángulo y Ruffini, que pasa AA en el
-   chip), t tiempo naranja (el de tiro parabólico). Además: T período fucsia, Ec energía cinética turquesa y Ep energía
-   potencial marrón tostado (claro) / naranja rojizo (oscuro). ΔE00 mínimo entre los siete y la tinta: 23,6 en claro
-   (a–Ec) y 21,6 en oscuro (v–Ep y t–Ep), medidos con docs/metodo/paleta.py; todos con AA ≥ 4,5 sobre el papel y
-   sobre el chip al 8 %. La amplitud A, la masa m, la constante k, el largo L, g, ω, φ y la energía total E van en tinta.
-   El morado de marca no se usa aquí. */
+   movimiento: x posición azul, v velocidad rojo, a aceleración verde. Además: T período fucsia, Ec energía cinética
+   turquesa y Ep energía potencial ocre (claro) / naranja (oscuro). Medidos con docs/metodo/paleta.py: ΔE00 mínimo
+   23,1 en claro (a–Ec) y 23,9 en oscuro (v–T); AA ≥ 4,5 sobre el papel, la tarjeta, el chip al 8 % y el chip sobre
+   una opción ya respondida (.opt.correct y .opt.wrong; el mínimo es 4,52, x en claro). v queda cerca del rojo de los
+   avisos y Ec y a cerca del verde de «correcto»: los estados siempre llevan texto.
+   El tiempo t va en tinta (eje, cursor y datos), igual que la amplitud A, la masa m, la constante k, el largo L, g,
+   ω, φ y la energía total E. El morado de marca no se usa aquí. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-x:#1f5fbf; --c-v:#c0364a; --c-a:#466d14; --c-t:#a05200; --c-T:#a10fbf; --c-Ec:#0f766e; --c-Ep:#471500;
+  --c-x:#1f5fbf; --c-v:#b02c41; --c-a:#466d14; --c-t:var(--ink); --c-T:#a10fbf; --c-Ec:#0b6b63; --c-Ep:#944b00;
   --suelo:#d9c8bb; --bloque:#f3e3d3; --bloque2:#e8d2c0;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -28,13 +29,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-x:#7cb0ff; --c-v:#f17384; --c-a:#a3d65e; --c-t:#f0a04a; --c-T:#cf6bfa; --c-Ec:#5ed9c8; --c-Ep:#ff4f14;
+  --c-x:#7cb0ff; --c-v:#f6909d; --c-a:#a3d65e; --c-t:var(--ink); --c-T:#d98bfb; --c-Ec:#5ed9c8; --c-Ep:#f0a04a;
   --suelo:#4a3d55; --bloque:#5a4868; --bloque2:#4b3b58; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-x:#7cb0ff; --c-v:#f17384; --c-a:#a3d65e; --c-t:#f0a04a; --c-T:#cf6bfa; --c-Ec:#5ed9c8; --c-Ep:#ff4f14;
+  --c-x:#7cb0ff; --c-v:#f6909d; --c-a:#a3d65e; --c-t:var(--ink); --c-T:#d98bfb; --c-Ec:#5ed9c8; --c-Ep:#f0a04a;
   --suelo:#4a3d55; --bloque:#5a4868; --bloque2:#4b3b58; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -88,11 +89,10 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
 .v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
 .v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
-.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
 .v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
 .v-Ec{color:var(--c-Ec); background:color-mix(in srgb, var(--c-Ec) 8%, transparent)}
 .v-Ep{color:var(--c-Ep); background:color-mix(in srgb, var(--c-Ep) 8%, transparent)}
-.v-m,.v-k,.v-A,.v-L,.v-E{color:var(--ink); background:color-mix(in srgb, var(--ink) 7%, transparent)}
+.v-t,.v-m,.v-k,.v-A,.v-L,.v-E{color:var(--ink); background:color-mix(in srgb, var(--ink) 7%, transparent)}
 .v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
 
 .eqs{display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
@@ -156,7 +156,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <header>
       <p class="eyebrow">Física · Movimiento armónico simple · Problemas tipo admisión</p>
       <h1>El resorte, el péndulo y la sombra que gira</h1>
-      <p class="sub">¿De qué depende lo que tarda una oscilación? Suelta el bloque, cambia la masa o el largo y míralo a la vez en el dibujo, en tres gráficas y en la energía.</p>
+      <p class="sub">¿De qué depende lo que tarda una oscilación? Primero predice; después suelta el bloque o el péndulo y míralo en el dibujo, en las gráficas y en la energía.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -293,7 +293,7 @@ function rotulo(ctx, c, x, y, t, color, align, peso, tam, dash){
 function colores(W){
   const g = n => css(n);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
-    x:g('--c-x'), v:g('--c-v'), a:g('--c-a'), t:g('--c-t'), T:g('--c-T'), Ec:g('--c-Ec'), Ep:g('--c-Ep'),
+    x:g('--c-x'), v:g('--c-v'), a:g('--c-a'), t:g('--ink'), T:g('--c-T'), Ec:g('--c-Ec'), Ep:g('--c-Ep'),
     suelo:g('--suelo'), bloque:g('--bloque'), bloque2:g('--bloque2'), mono:g('--mono'), font:g('--font'), chico: W < 480, W };
 }
 function flecha(ctx, x1, y1, x2, y2, color, w, dash){
@@ -382,46 +382,68 @@ function celdaH(ctx, c, B, q, e, P, j){
   }
   return { X0, X, top, piso };
 }
-// Resorte vertical colgado del techo (o dos en serie). x hacia arriba desde el equilibrio.
+// Geometría del resorte colgado: dónde quedan el equilibrio y el largo natural en la celda B.
+// Con una escala de al menos ~300 px/m, el largo natural puede quedar fuera de la vista (más arriba).
+function geoV(B, q, P){
+  const techo = B.y + 10, lb = ladoBloque(q.m), hb = lb*0.82, esc = P.escV, deq = q.r.deq;
+  let yEq = techo + P.l0 + deq*esc;                                 // borde de arriba del bloque en el equilibrio
+  const fondo = B.y + B.h - 34 - hb - P.Aref*esc;                     // el bloque más abajo y su nombre deben caber
+  if (yEq > fondo) yEq = fondo;
+  return { techo, lb, hb, esc, yEq, yNat: yEq - deq*esc, cx: B.x + B.w/2 };
+}
+// Resorte vertical colgado del techo (uno, dos en serie o dos en paralelo). x hacia arriba desde el equilibrio.
 function celdaV(ctx, c, B, q, e, P, j){
-  const cx = B.x + B.w/2, techo = B.y + 10, lb = ladoBloque(q.m), hb = lb*0.82, esc = P.escV;
-  const l0 = P.l0, deq = q.r.deq;
+  const g = geoV(B, q, P), { techo, lb, hb, esc, yEq, yNat, cx } = g;
   rayas(ctx, c, cx - 40, techo - 10, 80, 10, false);
-  const yNat = techo + l0, yEq = yNat + deq*esc, top = yEq - e.x*esc;  // borde de arriba del bloque
-  // Largo natural y equilibrio
-  ctx.save(); ctx.lineWidth = 1.2; ctx.setLineDash([3, 3]);
-  if (P.marcas){ ctx.strokeStyle = c.muted; linea(ctx, cx - lb, yNat + hb/2, cx + lb, yNat + hb/2); }
-  ctx.strokeStyle = c.muted; linea(ctx, cx - lb - 4, yEq + hb/2, cx + lb + 4, yEq + hb/2); ctx.restore();
+  const top = yEq - e.x*esc;  // borde de arriba del bloque
+  const yE = yEq + hb/2, yN = yNat + hb/2, cerca = Math.abs(yE - yN) < 14, fuera = yN < techo + 6;
+  // Largo natural y equilibrio (a la altura del centro del bloque)
+  ctx.save(); ctx.lineWidth = 1.2; ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted;
+  if (P.marcas && !cerca && !fuera) linea(ctx, cx - lb, yN, cx + lb, yN);
+  linea(ctx, cx - lb - 4, yE, cx + lb + 4, yE); ctx.restore();
   if (P.marcas){
-    rotulo(ctx, c, cx - lb - 6, yNat + hb/2, 'largo natural', c.muted, 'right', 700, 10);
-    rotulo(ctx, c, cx - lb - 6, yEq + hb/2, 'equilibrio', c.muted, 'right', 700, 10);
+    if (cerca){ rotulo(ctx, c, cx - lb - 6, yE, 'equilibrio', c.muted, 'right', 700, 10); rotulo(ctx, c, cx - lb - 6, yE + 13, `(el largo natural está a ${fmt(q.r.deq*100, 1)} cm)`, c.muted, 'right', 700, 9); }
+    else {
+      rotulo(ctx, c, cx - lb - 6, yE, 'equilibrio', c.muted, 'right', 700, 10);
+      if (fuera) rotulo(ctx, c, cx - lb - 6, techo + 12, 'largo natural (más arriba)', c.muted, 'right', 700, 10);
+      else rotulo(ctx, c, cx - lb - 6, yN, 'largo natural', c.muted, 'right', 700, 10);
+    }
   }
   if (q.tipo === 'serie'){
     const ym = techo + (top - techo)/2;
     resorteDib(ctx, cx, techo, cx, ym - 3, c.ink, 7, 6); resorteDib(ctx, cx, ym + 3, cx, top, c.ink, 7, 6);
     ctx.fillStyle = c.ink; rr(ctx, cx - 6, ym - 3, 12, 6, 2); ctx.fill();
+  } else if (q.tipo === 'paralelo'){
+    // Dos resortes uno al lado del otro, unidos abajo por una barra de la que cuelga el bloque.
+    resorteDib(ctx, cx - 13, techo, cx - 13, top - 6, c.ink, 9, 5); resorteDib(ctx, cx + 13, techo, cx + 13, top - 6, c.ink, 9, 5);
+    ctx.fillStyle = c.ink; rr(ctx, cx - 20, top - 7, 40, 5, 2); ctx.fill();
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, cx, top - 2, cx, top);
   } else resorteDib(ctx, cx, techo, cx, top, c.ink, 10, 6);
   ctx.save(); ctx.fillStyle = j ? c.bloque2 : c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, cx - lb/2, top, lb, hb, 5); ctx.fill(); ctx.stroke(); ctx.restore();
-  if (q.nombre) rotulo(ctx, c, cx, top + hb + 12, q.nombre, c.ink, 'center', 800, 11);
-  // Marcas de x a la derecha (cm)
-  const xr = cx + lb/2 + 14;
+  // Marcas de x a la derecha (cm), cada 5 cm (o solo ±A si no caben)
+  const xr = cx + lb/2 + 14, Aref = P.Aref;
   ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.x; ctx.strokeStyle = c.x; ctx.lineWidth = 1; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-  const Aref = P.Aref, paso = Aref*esc < 40 ? Aref : Aref/2;
-  for (let v = -Aref; v <= Aref + 1e-9; v += paso){ const yy = yEq + hb/2 - v*esc; linea(ctx, xr - 3, yy, xr + 3, yy); ctx.fillText(fmt(v*100, 0) + (v > Aref - 1e-9 ? ' cm' : ''), xr + 8, yy); }
+  let paso = Aref <= 0.05 ? Aref : 0.05; if (paso*esc < 14) paso = Aref;
+  const n = Math.round(2*Aref/paso);
+  for (let i = 0; i <= n; i++){ const v = -Aref + i*paso, yy = yE - v*esc, cm = v*100;
+    linea(ctx, xr - 3, yy, xr + 3, yy); ctx.fillText(fmt(cm, Math.abs(cm - Math.round(cm)) < 1e-9 ? 0 : 1) + (i === n ? ' cm' : ''), xr + 8, yy); }
+  // Nombre debajo de la marca más baja y del punto más bajo del bloque
+  if (q.nombre) rotulo(ctx, c, cx, Math.max(yE + Aref*esc + 12, yEq + Aref*esc + hb + 12), q.nombre, c.ink, 'center', 800, 11);
   if (P.flechas){
-    const xf = cx - lb/2 - 12, yc = top + hb/2;
-    if (Math.abs(e.v) > 1e-3) flecha(ctx, xf, yc, xf, yc - e.v*P.kv, c.v, 3);
-    if (Math.abs(e.a) > 1e-3) flecha(ctx, xf - 12, yc, xf - 12, yc - e.a*P.ka, c.a, 3);
+    // A la derecha de las marcas, para no tapar los rótulos de la izquierda; siempre dentro de la celda.
+    const xf = Math.min(xr + 50, B.x + B.w - 26), yc = top + hb/2, dentro = y => clamp(y, B.y + 8, B.y + B.h - 8);
+    if (Math.abs(e.v) > 1e-3){ const ye = dentro(yc - e.v*P.kv); flecha(ctx, xf, yc, xf, ye, c.v, 3); rotulo(ctx, c, xf, ye + (e.v > 0 ? -9 : 9), 'v', c.v, 'center', 800, 11); }
+    if (Math.abs(e.a) > 1e-3){ const ye = dentro(yc - e.a*P.ka); flecha(ctx, xf + 16, yc, xf + 16, ye, c.a, 3); rotulo(ctx, c, xf + 16, ye + (e.a > 0 ? -9 : 9), 'a', c.a, 'center', 800, 11); }
   }
   return { cx, top };
 }
 // Péndulo: el arco s = L·θ es la x de la gráfica.
 function celdaP(ctx, c, B, q, e, P, j){
-  const cx = B.x + B.w/2, py = B.y + (q.ascensor ? 26 : 14), Lpx = q.r.L*P.escP;
+  const cx = B.x + B.w/2, py = B.y + (q.ascensor ? 30 : 14), Lpx = q.r.L*P.escP;
   if (q.ascensor){
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; rr(ctx, B.x + 6, B.y + 6, B.w - 12, B.h - 12, 10); ctx.stroke(); ctx.restore();
-    const flechaTxt = q.ascensor.sube === null ? '' : q.ascensor.sube ? ' ↑ ' : ' ↓ ';
-    rotulo(ctx, c, B.x + 14, B.y + 16, `ascensor${flechaTxt}${q.ascensor.texto || ''}`, c.ink, 'left', 800, 10);
+    const txt = q.ascensor.sube === null ? 'ascensor · sin acelerar' : `ascensor · a = ${q.ascensor.texto} ${q.ascensor.sube ? '↑' : '↓'}`;
+    rotulo(ctx, c, B.x + 14, B.y + 16 + (c.chico ? 4 : 0), txt, c.ink, 'left', 800, 10);
   }
   ctx.fillStyle = c.ink; rr(ctx, cx - 22, py - 5, 44, 5, 2); ctx.fill();
   const th = (e.theta*Math.PI)/180, bx = cx + Lpx*Math.sin(th), by = py + Lpx*Math.cos(th);
@@ -430,8 +452,9 @@ function celdaP(ctx, c, B, q, e, P, j){
   ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, cx, py, bx, by);
   const rb = clamp(5 + 9*Math.cbrt(q.m || 0.1), 7, 16);
   ctx.beginPath(); ctx.arc(bx, by, rb, 0, Math.PI*2); ctx.fillStyle = j ? c.bloque2 : c.bloque; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke();
-  if (q.nombre) rotulo(ctx, c, cx, Math.min(B.y + B.h - 10, py + Lpx + rb + 14), q.nombre, c.ink, 'center', 800, 11);
-  if (P.contar && q.vueltas !== undefined) rotulo(ctx, c, cx, B.y + B.h - (q.ascensor ? 22 : 8), `${q.vueltas} oscilaci${q.vueltas === 1 ? 'ón' : 'ones'}`, c.ink, 'center', 700, 11);
+  const yNom = py + Lpx + rb + 14;
+  if (q.nombre) rotulo(ctx, c, cx, yNom, q.nombre, c.ink, 'center', 800, 11);
+  if (P.contar && q.vueltas !== undefined) rotulo(ctx, c, cx, yNom + 18, `${q.vueltas} oscilaci${q.vueltas === 1 ? 'ón' : 'ones'}`, c.ink, 'center', 700, 11);
 }
 // Barras de energía del primer oscilador. P.barras = { oculto, marca }.
 function barras(ctx, c, B, e, P){
@@ -538,6 +561,7 @@ function vista(L, c, P){
   const celdas = osc.map((q, j) => P.disp === 'columnas'
     ? { x:banco.x + j*banco.w/n, y:banco.y, w:banco.w/n, h:banco.h }
     : { x:banco.x, y:banco.y + j*banco.h/n, w:banco.w, h:banco.h/n });
+  P.celdas = celdas;
   const lbMax = Math.max(...osc.map(q => ladoBloque(q.m)));
   const anchoH = Math.min(...celdas.map(b => b.w));
   P.lbMax = lbMax; P.esc = (anchoH - 12 - RESORTE_MIN - lbMax - 8)/2/P.Aref; P.escPista = P.esc;
@@ -551,9 +575,9 @@ function vista(L, c, P){
   const hv = Math.min(...celdas.map(b => b.h));
   P.l0 = clamp(hv*0.26, 30, 90);
   const deqMax = Math.max(0, ...osc.map(q => q.r.deq || 0));
-  P.escV = Math.max(15, (hv - 26 - P.l0 - lbMax*0.82 - 18)/(deqMax + P.Aref));
+  P.escV = Math.max(300, (hv - 34 - P.l0 - lbMax*0.82 - 18)/(deqMax + 2*P.Aref));
   const Lmax = Math.max(0, ...osc.map(q => (q.tipo === 'p' ? q.r.L : 0)));
-  if (Lmax) P.escP = (hv - 44 - (osc.some(q => q.ascensor) ? 26 : 0))/Lmax;
+  if (Lmax) P.escP = (hv - 44 - (osc.some(q => q.ascensor) ? 30 : 0) - (P.contar !== undefined && P.reservaContar ? 28 : 0))/Lmax;
   // Escalas de las flechas: vmax y amax más grandes del dibujo ocupan ~40 % de la media pista
   const vm = Math.max(...osc.map(q => q.r.vmax)), am = Math.max(...osc.map(q => q.r.amax));
   const media = P.disp === 'columnas' ? Math.min(banco.h, 200)*0.4 : Math.min(anchoH/2 - 10, 120);
@@ -561,7 +585,7 @@ function vista(L, c, P){
   osc.forEach((q, j) => {
     const B = celdas[j];
     if (q.tipo === 'h') celdaH(ctx, c, B, q, q.e, P, j);
-    else if (q.tipo === 'v' || q.tipo === 'serie') celdaV(ctx, c, B, q, q.e, P, j);
+    else if (q.tipo === 'v' || q.tipo === 'serie' || q.tipo === 'paralelo') celdaV(ctx, c, B, q, q.e, P, j);
     else celdaP(ctx, c, B, q, q.e, P, j);
   });
   // Incógnitas a trazos («?»), arriba a la izquierda
@@ -578,7 +602,7 @@ function leyenda(el, claves){
     `<span><i style="background:var(--c-${k})"></i>${NOM[k]}</span>`).join('');
 }
 function lecturas(el, items, lento){
-  if (lento) items = items.concat([['muted', TXT_LENTO]]);
+  if (lento && !RM) items = items.concat([['muted', TXT_LENTO]]);
   const h = items.map(([k, t]) => `<span class="lectura" style="--k:${k === 'ink' ? 'var(--ink)' : k === 'muted' ? 'var(--muted)' : `var(--c-${k})`}">${t}</span>`).join('');
   if (el.innerHTML !== h && el.dataset.h !== h){ el.innerHTML = h; el.dataset.h = h; }
 }
@@ -597,7 +621,7 @@ function animarValor(dur, paso, listo){
   id = requestAnimationFrame(tick);
   return () => cancelAnimationFrame(id);
 }
-const LENTO = 1/3, TXT_LENTO = 'cámara lenta: 3 veces más lento';
+const LENTO = 1/3, TXT_LENTO = 'cámara lenta ×3: las gráficas marcan el tiempo real';
 </script>
 <script>
 /* ================= MODO 1: paso a paso =================
@@ -606,7 +630,9 @@ const LENTO = 1/3, TXT_LENTO = 'cámara lenta: 3 veces más lento';
 (function(){
 const $ = id => document.getElementById(id);
 const cv = $('cv');
-const altoLienzo = W => W >= 560 ? clamp(W*0.8, 430, 580) : clamp(W*1.38, 470, 560);
+// El paso de la energía no tiene gráficas: el lienzo es más bajo. (steps se define más abajo; el ResizeObserver llama después.)
+const sinGraficas = () => { try { return !steps[S.step].vista().graficas.length; } catch (e) { return false; } };
+const altoLienzo = W => W >= 560 ? (sinGraficas() ? 300 : clamp(W*0.8, 430, 580)) : (sinGraficas() ? 380 : clamp(W*1.38, 470, 560));
 const L = crearLienzo(cv, altoLienzo, () => draw());
 const BASE = { m:0.4, k:40, A:0.1 };
 const rB = M.resorte(BASE), T0 = rB.T;
@@ -618,10 +644,10 @@ let parar = () => {};
 
 const T2x = tPi(T0*cmp1.errores.TproporcionalA);
 const P1 = { id:'mas-amplitud', ok:'b',
-  opts:[['a', `${V('T','2T')}: el doble, porque recorre el doble de camino`, 'O1-mas-amplitud-mas-periodo', 'documentado'],
+  opts:[['a', `${V('T','2T')}: el doble, porque recorre el doble de camino`, 'O1-mas-amplitud-el-doble', 'parcial'],
         ['b', `${V('T','T')}: lo mismo, porque recorre el doble pero va más rápido`, null, ''],
         ['c', `${V('T','T/2')}: la mitad, porque estirado el doble tira el doble de fuerte`, 'mas-amplitud-menos-periodo', 'hipotesis'],
-        ['d', `${V('T','1,4·T')}: un poco más, porque va más rápido pero no lo suficiente`, 'mas-periodo-raiz-amplitud', 'hipotesis']],
+        ['d', `${V('T','1,4·T')}: un poco más, porque va más rápido pero no lo suficiente`, 'O1-mas-amplitud-un-poco-mas', 'parcial']],
   fb:{ b:'¡Bien! Los dos tardan lo mismo. Mira las dos curvas de x: cruzan el cero en los mismos instantes.',
        a:'Elegiste la A. Recorre el doble de camino, sí, pero también va el doble de rápido en cada punto que le corresponde: llegan juntos. La correcta está marcada.',
        c:'Elegiste la C. Tira el doble de fuerte, pero también tiene el doble de camino: se compensa justo. La correcta está marcada.',
@@ -639,7 +665,7 @@ const P3 = { id:'mas-donde', ok:'a',
   opts:[['a', `Más ${V('v','rapidez')} en el centro y más ${V('a','aceleración')} en los extremos`, null, ''],
         ['b', `Más ${V('v','rapidez')} en los extremos y más ${V('a','aceleración')} en el centro`, 'vmax-en-extremos', 'hipotesis'],
         ['c', `Más ${V('v','rapidez')} en el centro y más ${V('a','aceleración')} también en el centro`, 'amax-en-centro', 'hipotesis'],
-        ['d', `Más ${V('v','rapidez')} en el centro; en los extremos ${V('a','a = 0')}, porque se detiene`, 'a-cero-en-extremos', 'hipotesis']],
+        ['d', `Más ${V('v','rapidez')} en el centro; en los extremos ${V('a','a = 0')}, porque se detiene`, 'C1-a-cero-en-extremos', 'parcial']],
   fb:{ a:'¡Bien! En el centro va más rápido; en los extremos, donde el resorte está más estirado o comprimido, la aceleración es la mayor.',
        b:'Elegiste la B. En los extremos el bloque se detiene un instante para dar la vuelta: ahí v = 0. Y en el centro el resorte no está estirado: no empuja. La correcta está marcada.',
        c:'Elegiste la C. En el centro el resorte tiene su largo natural y no hace fuerza: a = 0 justo donde va más rápido. La correcta está marcada.',
@@ -649,7 +675,7 @@ const P4 = { id:'mas-energia', ok:'b',
   opts:[['a', `${V('Ec', fr4(enMedio.errores.fEcLineal))}, la mitad de E`, 'Ec-mitad-en-media-amplitud', 'hipotesis'],
         ['b', `${V('Ec', fr4(enMedio.fEc))}, tres cuartos de E`, null, ''],
         ['c', `${V('Ec', fr4(enMedio.errores.fEcIntercambiada))}, un cuarto de E`, 'Ec-Ep-intercambiadas', 'hipotesis'],
-        ['d', `${V('Ec', fr4(enMedio.errores.fEcComoV))}, unos 0,87 de E`, 'Ec-como-fraccion-de-rapidez', 'hipotesis']],
+        ['d', `${V('Ec', fr4(enMedio.errores.fEcComoV))}, √3/2 de E (la fracción de la rapidez máxima)`, 'Ec-como-fraccion-de-rapidez', 'hipotesis']],
   fb:{ b:'¡Bien! A la mitad de la amplitud, la potencial es solo un cuarto: crece con el cuadrado de x.',
        a:'Elegiste la A. La energía potencial no crece en línea recta con x sino con x²: a la mitad de la distancia, un cuarto de potencial. La correcta está marcada.',
        c:'Elegiste la C. Ese cuarto es la potencial, no la cinética. La correcta está marcada.',
@@ -674,7 +700,7 @@ const steps = [
        <div class="eq">${V('T','T')} = 2π/ω = 2π/10 = ${V('T', tPi(T0))}<span class="note">los dos: la amplitud no aparece</span></div>
        <div class="eq">${V('v','v máx')} = ${V('A','A')}·ω: ${V('v','1 m/s')} con 10 cm y ${V('v','2 m/s')} con 20 cm</div></div>
      <p>El de 20 cm recorre el doble de camino, pero también va el doble de rápido. La razón de fondo es que la fuerza del resorte es proporcional a la distancia al equilibrio (F = −k·x): con el doble de distancia, el doble de fuerza en cada punto que se corresponde, y la compensación sale exacta.</p>
-     ${fuente('En un estudio con 46 estudiantes de mecánica de tercer año de universidad, cerca de uno de cada cuatro explicó, después de las clases, que más amplitud da más período; muchos de los que acertaron lo justificaron solo con «va más rápido pero recorre más», sin decir por qué la compensación es exacta (Ambrose, 2006). Las opciones C y D son hipótesis nuestras.')}`,
+     ${fuente('En un estudio con 46 estudiantes de mecánica de tercer año de universidad, cerca de uno de cada cuatro explicó, después de las clases, que más amplitud da más período (Ambrose, 2006). Las opciones A y D son dos versiones numéricas de esa idea. Muchos de los que acertaron lo justificaron solo con «va más rápido pero recorre más», sin decir por qué la compensación es exacta. La opción C es hipótesis nuestra.')}`,
    lect:() => S.pred[P1.id] ? [['T', `T = ${tPi(T0)} en los dos`]] : [],
    desc:() => S.pred[P1.id] ? 'Los dos bloques oscilan; sus curvas de posición cruzan el cero en los mismos instantes. El de 20 centímetros llega al doble de velocidad.' : 'Dos bloques iguales con resortes iguales: uno jalado 10 centímetros y el otro 20 centímetros, sujetos. Los períodos todavía no se muestran.' },
  { k:'Paso 3', t:'¿Y con más masa? Predice', gate:P2, ley:['x','t','trazos'], leyDespues:['x','t','T','trazos'],
@@ -694,7 +720,7 @@ const steps = [
        <div class="eq">${V('a','a máx')} = ${V('A','A')}·ω² = 0,1·100 = ${V('a','10 m/s²')}<span class="note">en x = ±10 cm</span></div>
        <div class="eq">${V('a','a')} = −ω²·${V('x','x')}<span class="note">siempre hacia el centro, proporcional a la distancia</span></div></div>
      <p>Mira las flechas: la roja (${V('v','v')}) es la más larga en el centro y desaparece en los extremos. La verde (${V('a','a')}) hace lo contrario: es cero en el centro, donde el resorte tiene su largo natural, y la más larga en los extremos, donde el resorte está más estirado o más comprimido. Cuando ${V('v','v')} es máxima, ${V('a','a')} es cero: las curvas de v y de a están corridas un cuarto de período.</p>
-     ${fuente('Que la aceleración sea cero donde la velocidad es cero es una idea documentada en el lanzamiento vertical (informe de cinemática); en el resorte no encontramos datos, así que las tres opciones incorrectas son hipótesis nuestras.')}`,
+     ${fuente('Creer que la aceleración es cero donde la velocidad es cero está medido en el lanzamiento vertical: después de un curso tradicional, solo cerca del 5 % de 240 alumnos respondió que la fuerza sobre la moneda es la misma al subir, en la cima y al bajar (Thornton y Sokoloff, 1998). La opción D es esa idea en el resorte. Las opciones B y C son hipótesis nuestras.')}`,
    lect:() => S.pred[P3.id] ? [['v', `v máx = ${N(rB.vmax)} m/s (centro)`], ['a', `a máx = ${N(rB.amax)} m/s² (extremos)`]] : [],
    desc:() => S.pred[P3.id] ? 'El bloque oscila con sus flechas: la velocidad es mayor en el centro y la aceleración, en los extremos.' : 'El bloque de 400 gramos, jalado 10 centímetros y sujeto. Su velocidad y su aceleración todavía no se muestran.' },
  { k:'Paso 5', t:'La sombra de un punto que gira', anima:true, ley:['x','v','a','t','T','P'],
@@ -726,7 +752,7 @@ const steps = [
    desc:() => 'El bloque oscila con sus flechas, el punto que gira, las barras de energía y las tres gráficas.' },
  { k:'Paso 8', t:'Ahora explora tú', explora:true, ley:['x','v','a','t','T','Ec','Ep','E','P'],
    vista:() => { const e = ex(), r = rEx(), vm = Math.max(r.vmax, 0.2), am = Math.max(r.amax, 1);
-     return base({ osc:[{ tipo: e.vert ? 'v' : 'h', r, m:e.m, nombre:`${N(e.m*1000 >= 1000 ? e.m : e.m*1000)} ${e.m >= 1 ? 'kg' : 'g'}` }], Aref:0.2, rango:{ x:0.2, v:vm, a:am },
+     return base({ osc:[{ tipo: e.vert ? 'v' : 'h', r, m:e.m, nombre:`${N(e.m*1000 >= 1000 ? e.m : e.m*1000)} ${e.m >= 1 ? 'kg' : 'g'}` }], Aref: e.vert ? 0.1 : 0.2, rango:{ x: e.vert ? 0.1 : 0.2, v:vm, a:am },
        ventana:2*r.T, curvas:!S.arrastra, flechas:true, circulo: !e.vert && e.circ, revelaT:!S.arrastra, barras:{ marca:false }, lento:TXT_LENTO, marcas:e.vert, fBanco:0.5 }); },
    body:() => `<p class="hint">Toma el bloque (o su carril), llévalo hasta donde quieras y suéltalo: desde ahí oscila. Con el teclado, enfoca el dibujo y usa ← → (↑ ↓ si cuelga).</p>
      <div class="ctrls">
@@ -775,7 +801,7 @@ function go(n){
   L.compactar(!!(s.gate && !S.pred[s.gate.id]));
   if (s.gate) prediccion(s);
   if (s.explora) explorar();
-  nav(); draw();
+  nav(); L.resize();
   if (s.anima || s.explora || (s.gate && S.pred[s.gate.id] && s.gate !== P4)) correr();
 }
 function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley); }
@@ -847,9 +873,8 @@ function geoBloque(){
     const hb = clamp(L.H*(P.fBanco || 0.42), 150, 300), piso = 4 + (hb - 8) - 20;
     return { vert:false, X0, esc:P.esc, x: X0 + e.x*P.esc, y: piso - lb*0.41 };
   }
-  const anchoBar = L.W < 480 ? 70 : 92, w = L.W - 16 - anchoBar, cx = 8 + w/2, techo = 14;
-  const yEq = techo + P.l0 + q.r.deq*P.escV, top = yEq - e.x*P.escV;
-  return { vert:true, Y0: yEq, esc:P.escV, x: cx, y: top + lb*0.41, off: lb*0.41 };
+  const g = geoV(P.celdas[0], q, P), top = g.yEq - e.x*g.esc;
+  return { vert:true, Y0: g.yEq, esc:g.esc, x: g.cx, y: top + lb*0.41, off: lb*0.41 };
 }
 function soltarDesde(x0){
   const A = Math.min(Math.abs(x0), S.ex.vert ? 0.1 : 0.2);
@@ -920,10 +945,10 @@ const rS = M.resortes({ k:[40, 40], modo:'serie', m:0.4 }), T1 = M.resorte({ m:0
 const EXPS = [
   { id:'pendulo-masa', corto:'Cambiar la esfera', ley:['x','t','trazos'], leyDespues:['x','t','T','trazos'],
     q:`Un péndulo de ${V('L','2,5 m')} con una esfera de ${V('m','100 g')}, soltado desde un ángulo pequeño, tarda ${V('T', tPi(Tp))} en una oscilación (g = 10 m/s²). Si se cambia la esfera por una de ${V('m','400 g')}, con el mismo hilo y el mismo ángulo, ¿cuánto tarda una oscilación?`,
-    opts:[['a', `Más, unos ${fmt(Tp*c1.errores.pesadaMasLenta, 1)} s: la pesada va más lenta`, 'O3-pendulo-pesada-mas-lenta', 'parcial'],
-          ['b', `Menos, unos ${fmt(Tp*c1.errores.pesadaMasRapida, 1)} s: la pesada cae más rápido`, 'O3-pendulo-pesada-mas-rapida', 'parcial'],
-          ['c', `Lo mismo, unos ${fmt(Tp*c1.razonT, 1)} s: pesa más, pero también cuesta más moverla`, null, ''],
-          ['d', `El doble, unos ${fmt(Tp*c1.errores.formulaResorte, 1)} s: como en el resorte, T crece con √m`, 'pendulo-T-raiz-m-como-resorte', 'hipotesis']],
+    opts:[['a', `Cuatro veces más, unos ${V('T', fmt(Tp*c1.errores.pesadaMasLenta, 1) + ' s')}: la pesada va más lenta, en proporción a su masa`, 'O3-pendulo-pesada-mas-lenta', 'parcial'],
+          ['b', `Cuatro veces menos, unos ${V('T', fmt(Tp*c1.errores.pesadaMasRapida, 1) + ' s')}: la pesada cae más rápido, en proporción a su masa`, 'O3-pendulo-pesada-mas-rapida', 'parcial'],
+          ['c', `Lo mismo, unos ${V('T', fmt(Tp*c1.razonT, 1) + ' s')}: pesa más, pero también cuesta más moverla`, null, ''],
+          ['d', `El doble, unos ${V('T', fmt(Tp*c1.errores.formulaResorte, 1) + ' s')}: como en el resorte, T crece con √m`, 'pendulo-T-raiz-m-como-resorte', 'hipotesis']],
     ok:'c',
     fb:{ a:'Elegiste la A. La esfera pesada sufre más fuerza de gravedad, pero tiene más masa que acelerar: las dos cosas crecen igual y se cancelan.',
          b:'Elegiste la B. Sin aire, todos los cuerpos caen igual de rápido, y en el péndulo pasa lo mismo: la masa no cambia el período.',
@@ -933,17 +958,17 @@ const EXPS = [
     vivo:() => { $('q-m-o').textContent = `${N(E.m2*1000)} g`; },
     alCambiar:() => { E.m2 = +$('q-m').value/1000; E.osc[1] = pend({ L:2.5, m:E.m2, theta0:10 }, `${N(E.m2*1000)} g`); },
     exp:() => `<div class="eqs"><div class="eq">${V('T','T')} = 2π·√(${V('L','L')}/g) = 2π·√(2,5/10) = 2π·0,5 = ${V('T', tPi(Tp))}<span class="note">no aparece la masa</span></div></div>
-      <p>Los dos péndulos van juntos, como si fueran uno. Mueve la masa de la segunda esfera: no se separan.</p>
-      ${fuente('Que el período dependa de la masa, en los dos sentidos («la pesada tarda más» y «la ligera tiene que ir más deprisa»), está documentado en un estudio de casos con ocho universitarios de España: la idea resistió a la lectura del libro y a las primeras mediciones (González, Mellado y Ruiz, 2005). No da porcentajes. La opción D es hipótesis nuestra.')}`,
+      <p>Los dos péndulos van juntos, como si fueran uno. Mueve la masa de la segunda esfera: no se separan. En la gráfica, x es el arco que recorre la esfera, medido sobre su camino.</p>
+      ${fuente('Que el período dependa de la masa, en los dos sentidos («la pesada tarda más» y «la ligera tiene que ir más deprisa»), está descrito en un estudio de casos con ocho universitarios de España: la idea resistió a la lectura del libro y a las primeras mediciones (González, Mellado y Ruiz, 2005). No da porcentajes. La opción D es hipótesis nuestra.')}`,
     lect:() => [['T', `T = ${tPi(Tp)} en los dos`]],
     desc:ya => ya ? 'Los dos péndulos oscilan juntos, en fase.' : 'Dos péndulos de 2,5 metros, uno con una esfera de 100 gramos y otro con una de 400 gramos, apartados un ángulo pequeño y quietos.',
     ventana:2*Tp, rango:0.5, vel:1 },
   { id:'pendulo-largo', corto:'Un hilo cuatro veces más largo', ley:['x','t','trazos'], leyDespues:['x','t','T','trazos'],
     q:`El péndulo de ${V('L','2,5 m')} tarda ${V('T', tPi(Tp))}. Se arma otro con un hilo de ${V('L','10 m')}, cuatro veces más largo, soltado desde el mismo ángulo pequeño. ¿Cuánto tarda una oscilación?`,
-    opts:[['a', `${tPi(Tp*c2.razonT)}: el doble`, null, ''],
-          ['b', `${tPi(Tp*c2.errores.TproporcionalL)}: cuatro veces`, 'pendulo-T-proporcional-L', 'hipotesis'],
-          ['c', `${tPi(Tp*c2.errores.TsinL)}: lo mismo`, 'pendulo-T-sin-L', 'hipotesis'],
-          ['d', `${tPi(Tp*c2.errores.Tinvertido)}: la mitad`, 'pendulo-T-invertido', 'hipotesis']],
+    opts:[['a', `${V('T', tPi(Tp*c2.razonT))}: el doble`, null, ''],
+          ['b', `${V('T', tPi(Tp*c2.errores.TproporcionalL))}: cuatro veces`, 'pendulo-T-proporcional-L', 'hipotesis'],
+          ['c', `${V('T', tPi(Tp*c2.errores.TsinL))}: lo mismo`, 'pendulo-T-sin-L', 'hipotesis'],
+          ['d', `${V('T', tPi(Tp*c2.errores.Tinvertido))}: la mitad`, 'pendulo-T-invertido', 'hipotesis']],
     ok:'a',
     fb:{ b:'Elegiste la B. El período no crece en proporción al largo sino a su raíz: √4 = 2.',
          c:'Elegiste la C. El largo sí importa: el péndulo largo recorre un arco mayor con la misma fuerza hacia el centro en cada ángulo.',
@@ -980,10 +1005,10 @@ const EXPS = [
     ventana:3*T1, rango:0.05, ux:100, vel:LENTO, lento:true },
   { id:'ascensor', corto:'El péndulo en un ascensor', ley:['x','t','trazos'], leyDespues:['x','t','T','trazos'],
     q:`El péndulo de ${V('L','2,5 m')} tarda ${V('T', tPi(Tp))} en el suelo. Se lo cuelga dentro de un ascensor que arranca hacia arriba con una aceleración de 2,5 m/s². Mientras acelera, ¿cuánto tarda una oscilación?`,
-    opts:[['a', `Unos ${fmt(asc.T, 1)} s: como si la gravedad fuera 12,5 m/s²`, null, ''],
-          ['b', `Unos ${fmt(asc.errores.gSignoContrario, 1)} s: como si la gravedad fuera 7,5 m/s²`, 'ascensor-signo-contrario', 'hipotesis'],
-          ['c', `Unos ${fmt(asc.errores.gSinCambio, 1)} s: la gravedad sigue siendo 10 m/s²`, 'ascensor-g-sin-cambio', 'hipotesis'],
-          ['d', `Unos ${fmt(asc.errores.gSinRaiz, 1)} s: baja en la misma proporción en que sube la gravedad`, 'ascensor-sin-raiz', 'hipotesis']],
+    opts:[['a', `Unos ${V('T', fmt(asc.T, 1) + ' s')}: como si la gravedad fuera 12,5 m/s²`, null, ''],
+          ['b', `Unos ${V('T', fmt(asc.errores.gSignoContrario, 1) + ' s')}: como si la gravedad fuera 7,5 m/s²`, 'ascensor-signo-contrario', 'hipotesis'],
+          ['c', `Unos ${V('T', fmt(asc.errores.gSinCambio, 1) + ' s')}: la gravedad sigue siendo 10 m/s²`, 'ascensor-g-sin-cambio', 'hipotesis'],
+          ['d', `Unos ${V('T', fmt(asc.errores.gSinRaiz, 1) + ' s')}: baja en la misma proporción en que sube la gravedad`, 'ascensor-sin-raiz', 'hipotesis']],
     ok:'a',
     fb:{ b:'Elegiste la B. Si el ascensor acelera hacia arriba, el piso te empuja más: te sientes más pesado. Para el péndulo, la gravedad efectiva sube a 10 + 2,5, no baja.',
          c:'Elegiste la C. La gravedad de la Tierra no cambia, pero dentro del ascensor que acelera todo se comporta como si fuera mayor: el péndulo sí lo nota.',
@@ -991,7 +1016,7 @@ const EXPS = [
     antes:() => Object.assign(E, { osc:[pend({ L:2.5, theta0:10 }, 'en el suelo'), pend({ L:2.5, ay:2.5, theta0:10 }, 'en el ascensor', { ascensor:{ sube:true, texto:'2,5 m/s²' } })], disp:'columnas', ay:2.5 }),
     ctrl:() => `<div class="slider"><label for="q-ay"><span>Aceleración del ascensor (+ hacia arriba)</span><output id="q-ay-o"></output></label><input id="q-ay" type="range" min="-7.5" max="10" step="2.5" value="${E.ay}"></div><p class="hint" id="q-ay-t"></p>`,
     vivo:() => { $('q-ay-o').textContent = `${fmt(E.ay, 1)} m/s²`; const r = E.osc[1].r; $('q-ay-t').textContent = `Gravedad efectiva: ${fmt(r.gef, 1)} m/s². Período: ${fmt(r.T, 2)} s.`; },
-    alCambiar:() => { E.ay = +$('q-ay').value; E.osc[1] = pend({ L:2.5, ay:E.ay, theta0:10 }, 'en el ascensor', { ascensor:{ sube: E.ay === 0 ? null : E.ay > 0, texto: E.ay === 0 ? 'quieto' : `${fmt(Math.abs(E.ay), 1)} m/s²` } }); E.t = 0; },
+    alCambiar:() => { E.ay = +$('q-ay').value; E.osc[1] = pend({ L:2.5, ay:E.ay, theta0:10 }, 'en el ascensor', { ascensor:{ sube: E.ay === 0 ? null : E.ay > 0, texto: `${fmt(Math.abs(E.ay), 1)} m/s²` } }); E.t = 0; },
     exp:() => `<div class="eqs"><div class="eq">g efectiva = 10 + 2,5 = 12,5 m/s²</div>
         <div class="eq">${V('T','T')} = 2π·√(2,5/12,5) = 2π/√5 ≈ ${fmt(asc.T, 2)} s</div></div>
       <p>Lo que cuenta es la aceleración del ascensor, no hacia dónde va: subir arrancando y bajar frenando dan la misma gravedad efectiva, mayor que 10. Bajar arrancando la achica. Prueba con el deslizador. Un resorte, en cambio, no cambiaría su período: solo su punto de equilibrio.</p>
@@ -1001,10 +1026,10 @@ const EXPS = [
     ventana:2*Tp, rango:0.5, vel:1 },
   { id:'resortes-serie', corto:'Dos resortes, uno tras otro', ley:['x','t','trazos'], leyDespues:['x','t','T','trazos'],
     q:`Con un resorte de ${V('k','40 N/m')}, el bloque de ${V('m','400 g')} tarda ${V('T', tPi(T1))}. Ahora se lo cuelga de dos resortes iguales de 40 N/m, unidos uno a continuación del otro. ¿Cuánto tarda una oscilación?`,
-    opts:[['a', `Unos ${fmt(rS.T, 2)} s`, null, ''],
-          ['b', `Unos ${fmt(rS.errores.TalReves, 2)} s`, 'serie-sumar-k', 'hipotesis'],
-          ['c', `Unos ${fmt(rS.errores.TsinRaiz, 2)} s`, 'serie-sin-raiz', 'hipotesis'],
-          ['d', `Unos ${fmt(rS.Tcon.unSolo, 2)} s`, 'serie-como-uno', 'hipotesis']],
+    opts:[['a', V('T', `${fmt(rS.T, 2)} s`), null, ''],
+          ['b', V('T', `${fmt(rS.errores.TalReves, 2)} s`), 'serie-sumar-k', 'hipotesis'],
+          ['c', V('T', `${fmt(rS.errores.TsinRaiz, 2)} s`), 'serie-sin-raiz', 'hipotesis'],
+          ['d', V('T', `${fmt(rS.Tcon.unSolo, 2)} s`), 'serie-como-uno', 'hipotesis']],
     ok:'a',
     fb:{ b:'Elegiste la B. Sumar las k vale cuando los resortes están uno al lado del otro (en paralelo). Uno tras otro, cada uno se estira con la fuerza entera: el par es más blando, no más duro.',
          c:'Elegiste la C. El par es la mitad de duro (k = 20 N/m), pero el período va con la raíz: √2 veces, no el doble.',
@@ -1012,7 +1037,7 @@ const EXPS = [
     antes:() => Object.assign(E, { osc:[{ tipo:'v', r:M.resorte({ m:0.4, k:40, A:0.04, phi:270, orientacion:'vertical' }), m:0.4, nombre:'un resorte' }, { tipo:'serie', r:M.resorte({ m:0.4, k:rS.keq, A:0.04, phi:270, orientacion:'vertical' }), m:0.4, nombre:'dos, en serie' }], disp:'columnas', modo:'serie' }),
     ctrl:() => `<div class="seg" id="q-modo" role="group" aria-label="Cómo se unen los dos resortes"><button type="button" data-m="serie">uno tras otro</button><button type="button" data-m="paralelo">uno al lado del otro</button></div>`,
     vivo:() => { const b = $('q-modo'); if (!b) return; b.querySelectorAll('button').forEach(x => { x.setAttribute('aria-pressed', String(x.dataset.m === E.modo)); x.onclick = () => { E.modo = x.dataset.m; const r = M.resortes({ k:[40, 40], modo:E.modo, m:0.4 });
-      E.osc[1] = { tipo: E.modo === 'serie' ? 'serie' : 'v', r:M.resorte({ m:0.4, k:r.keq, A:0.04, phi:270, orientacion:'vertical' }), m:0.4, nombre: E.modo === 'serie' ? 'dos, en serie' : 'dos, en paralelo' }; E.t = 0; EXPS[S.k].vivo(); draw(); }; }); },
+      E.osc[1] = { tipo: E.modo, r:M.resorte({ m:0.4, k:r.keq, A:0.04, phi:270, orientacion:'vertical' }), m:0.4, nombre: E.modo === 'serie' ? 'dos, en serie' : 'dos, en paralelo' }; E.t = 0; EXPS[S.k].vivo(); draw(); }; }); },
     alCambiar:() => {},
     exp:() => `<div class="eqs"><div class="eq">uno tras otro: 1/k = 1/40 + 1/40 → k = ${N(rS.keq)} N/m</div>
         <div class="eq">${V('T','T')} = 2π·√(0,4/20) = ${V('T', tPi(rS.T))}<span class="note">√2 veces el de un resorte</span></div></div>
@@ -1028,7 +1053,7 @@ function vistaAct(){
   const x = EXPS[S.k], ya = !!S.pred[x.id];
   const osc = E.osc.map(q => { const r = Object.assign({}, q); if (E.contar && ya) r.vueltas = q.r.oscilaciones(E.t); return r; });
   return { osc, disp:E.disp, t:E.t, graficas:['x'], rango:{ x:x.rango }, ventana:x.ventana, ux:x.ux || 1, curvas:ya, revelaT:ya, Aref: x.ux ? 0.05 : 0.5,
-    marcas:E.marcas, contar:E.contar && ya, lento: ya && x.lento ? TXT_LENTO : null, fBanco:0.62, aviso:'se dibuja al soltarlos',
+    marcas:E.marcas, contar:E.contar && ya, reservaContar:!!E.contar, lento: ya && x.lento ? TXT_LENTO : null, fBanco:0.62, aviso:'se dibuja al soltarlos',
     incog: ya ? [] : [['T = ?','T']] };
 }
 function draw(){

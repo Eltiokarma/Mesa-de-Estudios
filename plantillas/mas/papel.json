@@ -14,7 +14,21 @@
         "No hizo falta saber cuánto se apartó el bloque: el período no depende de la amplitud."
       ],
       "verificar": [
-        { "fn": "resorte", "args": [{ "m": 0.5, "k": 50, "A": 0.1 }], "espera": { "omega": 10, "T": 0.6283185307179586, "f": 1.5915494309189535 } }
+        {
+          "fn": "resorte",
+          "args": [
+            {
+              "m": 0.5,
+              "k": 50,
+              "A": 0.1
+            }
+          ],
+          "espera": {
+            "omega": 10,
+            "T": 0.6283185307179586,
+            "f": 1.5915494309189535
+          }
+        }
       ]
     },
     {
@@ -30,8 +44,40 @@
         "En t = 0: x = 0,2·sen 90° = 0,2 m. Es el extremo: ahí la velocidad es cero y la aceleración es máxima, hacia el centro."
       ],
       "verificar": [
-        { "fn": "resorte", "args": [{ "m": 1, "k": 25, "A": 0.2, "phi": 90 }], "espera": { "omega": 5, "T": 1.2566370614359172, "vmax": 1, "amax": 5 } },
-        { "fn": "estadoResorte", "args": [{ "m": 1, "k": 25, "A": 0.2, "phi": 90 }, 0], "espera": { "x": 0.2, "v": 0, "a": -5 } }
+        {
+          "fn": "resorte",
+          "args": [
+            {
+              "m": 1,
+              "k": 25,
+              "A": 0.2,
+              "phi": 90
+            }
+          ],
+          "espera": {
+            "omega": 5,
+            "T": 1.2566370614359172,
+            "vmax": 1,
+            "amax": 5
+          }
+        },
+        {
+          "fn": "estadoResorte",
+          "args": [
+            {
+              "m": 1,
+              "k": 25,
+              "A": 0.2,
+              "phi": 90
+            },
+            0
+          ],
+          "espera": {
+            "x": 0.2,
+            "v": 0,
+            "a": -5
+          }
+        }
       ]
     },
     {
@@ -46,8 +92,37 @@
         "Para que sean iguales, cada una vale 0,5 J: ½ · 200 · x² = 0,5, así que x² = 0,005 y x = 0,1/√2, cerca de 7,1 cm."
       ],
       "verificar": [
-        { "fn": "enPosicionResorte", "args": [{ "m": 2, "k": 200, "A": 0.1 }, 0.05], "espera": { "E": 1, "Ec": 0.75, "Ep": 0.25 } },
-        { "fn": "enPosicionResorte", "args": [{ "m": 2, "k": 200, "A": 0.1 }, 0.07071067811865475], "espera": { "Ec": 0.5, "Ep": 0.5 } }
+        {
+          "fn": "enPosicionResorte",
+          "args": [
+            {
+              "m": 2,
+              "k": 200,
+              "A": 0.1
+            },
+            0.05
+          ],
+          "espera": {
+            "E": 1,
+            "Ec": 0.75,
+            "Ep": 0.25
+          }
+        },
+        {
+          "fn": "enPosicionResorte",
+          "args": [
+            {
+              "m": 2,
+              "k": 200,
+              "A": 0.1
+            },
+            0.07071067811865475
+          ],
+          "espera": {
+            "Ec": 0.5,
+            "Ep": 0.5
+          }
+        }
       ]
     },
     {
@@ -56,13 +131,43 @@
       "enunciado": "En un reloj antiguo, el péndulo tarda 2 s en una oscilación completa. Toma g = π² m/s². ¿Cuánto mide el péndulo, desde el punto de suspensión hasta el centro de la pesa? Si se cambia la pesa por otra del doble de masa, ¿cuánto tarda ahora?",
       "respuesta": "L = 1 m. Con la pesa del doble de masa sigue tardando 2 s.",
       "pasos": [
-        "Para ángulos pequeños, T = 2π·√(L/g). Con T = 2 s: 2 = 2π·√(L/π²) = 2π·√L/π = 2·√L.",
+        "Para ángulos pequeños, T = 2π·√(L/g). Con T = 2 s: 2 = 2π·√(L/π²) = 2π·√L/π = 2·√L. (Es lo mismo que tomar g = 10 y π² ≈ 10, como en muchos exámenes.)",
         "Entonces √L = 1 y L = 1 m.",
         "La masa no aparece en la fórmula: una pesa más pesada sufre más fuerza de gravedad, pero también cuesta más acelerarla. Las dos cosas se compensan y el período sigue siendo 2 s."
       ],
       "verificar": [
-        { "fn": "pendulo", "args": [{ "L": 1, "g": 9.869604401089358, "m": 0.2 }], "espera": { "T": 2 } },
-        { "fn": "comparar", "args": ["pendulo", { "L": 1, "g": 9.869604401089358, "m": 0.2 }, { "L": 1, "g": 9.869604401089358, "m": 0.4 }], "espera": { "razonT": 1 } }
+        {
+          "fn": "pendulo",
+          "args": [
+            {
+              "L": 1,
+              "g": 9.869604401089358,
+              "m": 0.2
+            }
+          ],
+          "espera": {
+            "T": 2
+          }
+        },
+        {
+          "fn": "comparar",
+          "args": [
+            "pendulo",
+            {
+              "L": 1,
+              "g": 9.869604401089358,
+              "m": 0.2
+            },
+            {
+              "L": 1,
+              "g": 9.869604401089358,
+              "m": 0.4
+            }
+          ],
+          "espera": {
+            "razonT": 1
+          }
+        }
       ]
     },
     {
@@ -77,8 +182,30 @@
         "Mira el sentido de la aceleración, no el de la velocidad: un ascensor que baja frenando aumenta la gravedad efectiva."
       ],
       "verificar": [
-        { "fn": "pendulo", "args": [{ "L": 3, "ay": 2 }], "espera": { "gef": 12, "T": 3.141592653589793 } },
-        { "fn": "pendulo", "args": [{ "L": 3 }], "espera": { "T": 3.4414423257272855 } }
+        {
+          "fn": "pendulo",
+          "args": [
+            {
+              "L": 3,
+              "ay": 2
+            }
+          ],
+          "espera": {
+            "gef": 12,
+            "T": 3.141592653589793
+          }
+        },
+        {
+          "fn": "pendulo",
+          "args": [
+            {
+              "L": 3
+            }
+          ],
+          "espera": {
+            "T": 3.4414423257272855
+          }
+        }
       ]
     },
     {
@@ -93,8 +220,40 @@
         "T = 2π·√(0,2/90) = 2π/(15√2) = π√2/15 s, cerca de 0,30 s."
       ],
       "verificar": [
-        { "fn": "resortes", "args": [{ "k": [30, 60], "modo": "serie", "m": 0.2 }], "espera": { "keq": 20, "T": 0.6283185307179586 } },
-        { "fn": "resortes", "args": [{ "k": [30, 60], "modo": "paralelo", "m": 0.2 }], "espera": { "keq": 90, "T": 0.2961921958772244 } }
+        {
+          "fn": "resortes",
+          "args": [
+            {
+              "k": [
+                30,
+                60
+              ],
+              "modo": "serie",
+              "m": 0.2
+            }
+          ],
+          "espera": {
+            "keq": 20,
+            "T": 0.6283185307179586
+          }
+        },
+        {
+          "fn": "resortes",
+          "args": [
+            {
+              "k": [
+                30,
+                60
+              ],
+              "modo": "paralelo",
+              "m": 0.2
+            }
+          ],
+          "espera": {
+            "keq": 90,
+            "T": 0.2961921958772244
+          }
+        }
       ]
     },
     {
@@ -109,8 +268,35 @@
         "v máx = A·ω = 0,03 · 10√2 = 0,3√2 m/s, cerca de 0,42 m/s."
       ],
       "verificar": [
-        { "fn": "resorte", "args": [{ "m": 2, "k": 400, "A": 0.03, "orientacion": "vertical" }], "espera": { "deq": 0.05, "T": 0.4442882938158366, "vmax": 0.42426406871192857 } },
-        { "fn": "resorte", "args": [{ "m": 2, "k": 400, "A": 0.03 }], "espera": { "T": 0.4442882938158366 } }
+        {
+          "fn": "resorte",
+          "args": [
+            {
+              "m": 2,
+              "k": 400,
+              "A": 0.03,
+              "orientacion": "vertical"
+            }
+          ],
+          "espera": {
+            "deq": 0.05,
+            "T": 0.4442882938158366,
+            "vmax": 0.42426406871192857
+          }
+        },
+        {
+          "fn": "resorte",
+          "args": [
+            {
+              "m": 2,
+              "k": 400,
+              "A": 0.03
+            }
+          ],
+          "espera": {
+            "T": 0.4442882938158366
+          }
+        }
       ]
     },
     {
@@ -124,7 +310,28 @@
         "La energía es ½·k·A²: con el doble de amplitud es 2² = 4 veces mayor."
       ],
       "verificar": [
-        { "fn": "comparar", "args": ["resorte", { "m": 1, "k": 157.91367041742973, "A": 0.04 }, { "m": 1, "k": 157.91367041742973, "A": 0.08 }], "espera": { "T1": 0.5, "T2": 0.5, "razonVmax": 2, "razonE": 4 } }
+        {
+          "fn": "comparar",
+          "args": [
+            "resorte",
+            {
+              "m": 1,
+              "k": 157.91367041742973,
+              "A": 0.04
+            },
+            {
+              "m": 1,
+              "k": 157.91367041742973,
+              "A": 0.08
+            }
+          ],
+          "espera": {
+            "T1": 0.5,
+            "T2": 0.5,
+            "razonVmax": 2,
+            "razonE": 4
+          }
+        }
       ]
     },
     {
@@ -139,8 +346,37 @@
         "La ecuación es x = 0,05·sen(10t + 37°). La rapidez máxima es A·ω = 0,5 m/s."
       ],
       "verificar": [
-        { "fn": "resorte", "args": [{ "m": 0.1, "k": 10, "x0": 0.03, "v0": 0.4 }], "espera": { "A": 0.05, "vmax": 0.5 } },
-        { "fn": "estadoResorte", "args": [{ "m": 0.1, "k": 10, "A": 0.05, "phi": 37 }, 0], "espera": { "x": 0.03, "v": 0.4 } }
+        {
+          "fn": "resorte",
+          "args": [
+            {
+              "m": 0.1,
+              "k": 10,
+              "x0": 0.03,
+              "v0": 0.4
+            }
+          ],
+          "espera": {
+            "A": 0.05,
+            "vmax": 0.5
+          }
+        },
+        {
+          "fn": "estadoResorte",
+          "args": [
+            {
+              "m": 0.1,
+              "k": 10,
+              "A": 0.05,
+              "phi": 37
+            },
+            0
+          ],
+          "espera": {
+            "x": 0.03,
+            "v": 0.4
+          }
+        }
       ]
     },
     {
@@ -154,7 +390,20 @@
         "Si se toma solo el hilo, L = 2,4 m y T = 2π·√0,24, cerca de 3,08 s: la diferencia es pequeña, pero en una alternativa de examen cambia la respuesta."
       ],
       "verificar": [
-        { "fn": "pendulo", "args": [{ "hilo": 2.4, "radio": 0.1 }], "espera": { "L": 2.5, "T": 3.141592653589793, "errores.soloHilo": 3.0781195923884734 } }
+        {
+          "fn": "pendulo",
+          "args": [
+            {
+              "hilo": 2.4,
+              "radio": 0.1
+            }
+          ],
+          "espera": {
+            "L": 2.5,
+            "T": 3.141592653589793,
+            "errores.soloHilo": 3.0781195923884734
+          }
+        }
       ]
     }
   ]
