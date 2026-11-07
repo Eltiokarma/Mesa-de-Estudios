@@ -195,3 +195,7 @@ Ninguna leída completa: en esta sesión solo funcionó el buscador. Lo que digo
 - Montiel, G. (2005). *Estudio socioepistemológico de la función trigonométrica*. Tesis doctoral, CICATA-IPN, México.
 - Moore, K. C. (2013). *Making sense by measuring arcs: a teaching experiment in angle measure*. Educational Studies in Mathematics 83(2), 225–245. Y (2014) *Quantitative reasoning and the sine function: the case of Zac*, Journal for Research in Mathematics Education 45(1).
 - Matz, M. (1982). *Towards a process model for high school algebra errors*. En Sleeman y Brown (eds.), *Intelligent Tutoring Systems*, Academic Press. Visto solo en citas.
+
+## Anexo: funciones trigonométricas inversas (7 nov 2026)
+
+Este informe no cubre las inversas. Los errores IN1 a IN29 de `plantillas/funciones-trig-inversas/` (la ventana principal) son hipótesis nuestras: devolver todos los ángulos con ese seno en vez del de la ventana, arcsen(sen x) = x fuera de la ventana, arccos con la ventana del arcsen, sen⁻¹ tomado como 1/sen, dominio de arcsen fuera de [−1; 1] y los demás que lista la cabecera de su `motor.js`. Se confirman con los datos del colegio.

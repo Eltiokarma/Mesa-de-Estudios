@@ -714,7 +714,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "enlace"
+     ]
     },
     {
      "id": "quimica.nomenclatura-inorganica",
@@ -3179,7 +3181,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "funciones-trig-inversas"
+     ]
     },
     {
      "id": "trigonometria.ecuaciones-trigonometricas",
@@ -4442,6 +4446,23 @@
     "/plantillas/energia/papel.json"
    ]
   },
+  "enlace": {
+   "id": "enlace",
+   "titulo": "La molécula en 3D: enlace, forma y polaridad",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.enlace-quimico"
+   ],
+   "url": "/plantillas/enlace/index.html",
+   "papel": "/plantillas/enlace/papel.json",
+   "archivos": [
+    "/plantillas/enlace/index.html",
+    "/plantillas/enlace/motor.js",
+    "/plantillas/enlace/papel.json"
+   ]
+  },
   "equilibrio-quimico": {
    "id": "equilibrio-quimico",
    "titulo": "Equilibrio químico",
@@ -4526,6 +4547,23 @@
     "/plantillas/fracciones/index.html",
     "/plantillas/fracciones/motor.js",
     "/plantillas/fracciones/papel.json"
+   ]
+  },
+  "funciones-trig-inversas": {
+   "id": "funciones-trig-inversas",
+   "titulo": "Una sola respuesta: funciones trigonométricas inversas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.funciones-trigonometricas-inversas"
+   ],
+   "url": "/plantillas/funciones-trig-inversas/index.html",
+   "papel": "/plantillas/funciones-trig-inversas/papel.json",
+   "archivos": [
+    "/plantillas/funciones-trig-inversas/index.html",
+    "/plantillas/funciones-trig-inversas/motor.js",
+    "/plantillas/funciones-trig-inversas/papel.json"
    ]
   },
   "gases": {

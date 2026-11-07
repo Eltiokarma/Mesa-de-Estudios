@@ -197,7 +197,7 @@
       "universidades": {"uni": {"semanas": [11, 12]}, "unmsm": {"temas": [17, 18]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["funciones-trig-inversas"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {

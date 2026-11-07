@@ -217,6 +217,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'optica-lente-delgada', unidad: 'fisica.optica-geometrica', version: '0.2.0' };
@@ -240,6 +241,9 @@ const F = 10, HO = 4, BASE = 30, XR = 44, YL = 12;
 const S = { step:0, max:0, d:BASE, rays:[0,0,0], pred:null, hl:null,
   show:{obj:false, f:false, img:false, i:false}, active:-1, explore:false };
 let W = 0, H = 0, sx = 1, sy = 1, anim = null;
+// Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+let compacto = false;
+function compactar(on){ on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === compacto) return; compacto = on; resize(); }
 
 const fmt = n => n.toLocaleString('es-PE', {maximumFractionDigits:1});
 const fmt2 = n => n.toLocaleString('es-PE', {maximumFractionDigits:2});
@@ -250,7 +254,7 @@ const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).
 
 function resize(){
   W = cv.clientWidth; if (!W) return;
-  H = Math.max(240, Math.min(400, W*0.52));
+  H = Celular.alto(Math.max(240, Math.min(400, W*0.52)), compacto, { tope:240 });
   const dpr = window.devicePixelRatio || 1;
   cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -472,6 +476,7 @@ function go(n){
     animateRay(s.anim, () => { if (s.after){ Object.assign(S.show, s.after); } draw(); });
   }
   if (s.gate) setupPred();
+  compactar(s.gate && !S.pred);
   if (s.explore) setupExplore();
   updateNav(); draw();
 }
@@ -494,7 +499,8 @@ function setupPred(){
   };
   const t0 = Date.now();
   btns.forEach(b => b.addEventListener('click', () => { S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots();
-    registrarPrediccion('una-lente-paso3', S.pred, S.pred === 'b', ERR_PASO3.m1[S.pred], 'hipotesis', t0); }));
+    registrarPrediccion('una-lente-paso3', S.pred, S.pred === 'b', ERR_PASO3.m1[S.pred], 'hipotesis', t0);
+    const paso = S.step; compactar(false); Celular.alResponder(cv, draw, () => S.step === paso); }));
   paint();
 }
 function refreshDots(){ [...dots.querySelectorAll('button')].forEach((b,k) => { b.disabled = k > S.max; if (k !== S.step) b.className = k <= S.max ? 'done' : ''; }); }
@@ -556,6 +562,9 @@ const PROBP = { n:2, o1:15, d:[50,30], f:[10,10,-10] };
 const EXP   = { n:2, o1:15, d:[50,30], f:[10,10,-10] };
 const S = { step:0, max:0, pred:null, hl:null, reveal:-1e9, imgs:0, dims:[], explore:false };
 let W = 0, H = 0, sx = 1, sy = 1, XMIN = -22, XMAX = 78, anim = null;
+// Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+let compacto = false;
+function compactar(on){ on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === compacto) return; compacto = on; resize(); }
 const SUB = ['₀','₁','₂','₃'];
 
 const r1 = n => Math.round(n*10)/10 + 0, r2 = n => Math.round(n*100)/100 + 0;
@@ -589,7 +598,7 @@ function rays(sys){
 
 function resize(){
   W = cv.clientWidth; if (!W) return;
-  H = Math.max(260, Math.min(420, W*0.5));
+  H = Celular.alto(Math.max(260, Math.min(420, W*0.5)), compacto, { tope:260 });
   const dpr = window.devicePixelRatio || 1;
   cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -860,6 +869,7 @@ function go(n){
   refreshDots();
   if (s.anim){ S.reveal = s.anim.from; animReveal(s.anim.from, s.anim.to, () => { S.imgs = s.anim.imgs; S.reveal = s.anim.end; }); }
   if (s.gate) setupPred();
+  compactar(s.gate && !S.pred);
   if (s.explore) setupExplore();
   updateNav(); draw();
 }
@@ -880,7 +890,8 @@ function setupPred(){
   };
   const t0 = Date.now();
   btns.forEach(b => b.addEventListener('click', () => { S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots();
-    registrarPrediccion('sistema-paso3', S.pred, S.pred === 'b', ERR_PASO3.m2[S.pred], 'hipotesis', t0); }));
+    registrarPrediccion('sistema-paso3', S.pred, S.pred === 'b', ERR_PASO3.m2[S.pred], 'hipotesis', t0);
+    const paso = S.step; compactar(false); Celular.alResponder(cv, draw, () => S.step === paso); }));
   paint();
 }
 $('next2').addEventListener('click', () => { unlock(S.step + 1); go(S.step + 1); });
@@ -913,6 +924,9 @@ const $ = id => document.getElementById(id);
 const O = 30, F = 10, HO = 4, XR = 40, YL = 10, NR = 9, D0 = 8;
 const IMG = MotorLente.imagen(O, F, HO); // i = 15, altura −2
 let W = 0, H = 0, sx = 1, sy = 1;
+// Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+let compacto = false;
+function compactar(on){ on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === compacto) return; compacto = on; resize(); }
 const X = x => W*0.5 + x*sx, Y = y => H/2 - y*sy;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const fmt = n => n.toLocaleString('es-PE', {maximumFractionDigits:1});
@@ -963,7 +977,7 @@ const S = { k:0, pred:{}, t0:Date.now() };
 
 function resize(){
   W = cv.clientWidth; if (!W) return;
-  H = Math.max(240, Math.min(400, W*0.52));
+  H = Celular.alto(Math.max(240, Math.min(400, W*0.52)), compacto, { tope:240 });
   const dpr = window.devicePixelRatio || 1;
   cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -1073,6 +1087,7 @@ function ir(k){
   S.k = k; S.t0 = Date.now(); reiniciar();
   const x = EXPS[k], p = S.pred[x.id];
   if (p) x.aplicar();
+  compactar(!p);
   botones();
   $('k3').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t3').textContent = x.corto;
@@ -1090,7 +1105,8 @@ function ir(k){
   };
   btns.forEach(b => b.onclick = () => {
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; botones(); x.aplicar(); pintar(); draw();
+    S.pred[x.id] = o[0]; botones(); x.aplicar(); pintar(); compactar(false);
+    Celular.alResponder(cv, draw, () => S.k === k);
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
   });
   pintar(); draw();
