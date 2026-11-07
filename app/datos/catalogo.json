@@ -2047,7 +2047,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "numeracion"
+     ]
     },
     {
      "id": "aritmetica.cuatro-operaciones",
@@ -4773,6 +4775,23 @@
     "/plantillas/mruv/index.html",
     "/plantillas/mruv/motor.js",
     "/plantillas/mruv/papel.json"
+   ]
+  },
+  "numeracion": {
+   "id": "numeracion",
+   "titulo": "Las fichas que se agrupan: sistemas de numeración",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeracion"
+   ],
+   "url": "/plantillas/numeracion/index.html",
+   "papel": "/plantillas/numeracion/papel.json",
+   "archivos": [
+    "/plantillas/numeracion/index.html",
+    "/plantillas/numeracion/motor.js",
+    "/plantillas/numeracion/papel.json"
    ]
   },
   "optica-espejo-esferico": {

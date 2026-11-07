@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 2157 pruebas.
+Deben pasar 2194 pruebas.
 
 ```bash
 npm run dev
@@ -55,7 +55,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig`, `caso-ambiguo` e `identidades-trig` | Hecha también `funciones-trig-inversas` (7 nov). Faltan transformaciones, cónicas y polares (sesión matematica-a) |
 | ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización), `sucesiones`, `exponenciales-logaritmos` y `polinomios` (Ruffini, resto, raíces racionales) | Faltan números reales, lógica y conjuntos, matrices, complejos, binomio de Newton y programación lineal |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
-| ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres`, `probabilidad-dados`, `sucesiones` y `fracciones` (fracciones, decimales, MCD y MCM, promedios) | Hechas también `interes` y `divisores` (7 nov). Faltan numeración, cuatro operaciones, potenciación, mezclas y razonamiento numérico |
+| ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres`, `probabilidad-dados`, `sucesiones` y `fracciones` (fracciones, decimales, MCD y MCM, promedios) | Hechas también `interes` y `divisores` (7 nov). Hecha también `numeracion`. Faltan cuatro operaciones, potenciación, mezclas y razonamiento numérico |
 | ra1 | Razonamiento matemático | Hechas: `probabilidad-dados`, `regla-de-tres` (engranajes), `traductor-enunciados` (planteo), `sucesiones` (patrones con palitos, Gauss, series) y `orden-informacion` (orden, verdades y mentiras, certezas) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
 | ra2 y pl4 | Razonamiento verbal y formato lectura | `razonamiento-verbal-ideas-erroneas.md` (RV1 a RV34, ninguno documentado; hecho por la rutina) | Formato lectura hecho en la app (pl4, 6 nov); la rutina sigue con los 30 textos, los de entrada y salida, los ejercicios sueltos y la guía docente |
 
@@ -73,6 +73,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 
+- **Numeración** (`plantillas/numeracion/`, rutina de aritmética, 7 nov 2026): las fichas que se agrupan (cambio de base con divisiones sucesivas como rondas de agrupar, descomposición polinómica como abrir piezas, cifras válidas, comparar bases, base desconocida, capicúas, conteo de cifras de páginas, la llevada en cadena y bases potencia); 19 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todos los errores son hipótesis. Notación 213₍₅₎. Sin ítems en el banco de aritmética.
 - **Choques** (`plantillas/choques/`, rutina de física, 7 nov 2026): choques en un riel (cantidad de movimiento como flecha que se conserva en el sistema, energía cinética como barra que se puede perder, impulso como área F–t, coeficiente de restitución); 21 casos verificados aparte; 4 predicciones y 5 «¿qué pasa si…?». Falta en la escena el choque en dos dimensiones (está en motor y papel p10). Sin ítems en el banco de física.
 - **Segmentos y ángulos** (`plantillas/segmentos-angulos/`, 7 nov 2026, subagentes de la conversación principal): la escuadra y las paralelas (segmentos que se pisan y puntos medios, complemento y suplemento que completan la escuadra y la recta, bisectrices, los ocho ángulos con la secante que gira, «¿son paralelas?» con el corte a escala, quiebre y serrucho con su condición); 21 casos verificados aparte; 10 de papel; 5 predicciones y 5 «¿qué pasa si…?»; todo hipótesis salvo GE17 (sin dato). Sin ítems en el banco de geometría.
 - **Enlace** (`plantillas/enlace/`, rutina de química, 7 nov 2026): la molécula en 3D (electrones de valencia, Lewis con pares enlazantes y libres, forma por repulsión de pares, dipolos que se suman al girar la molécula, enlace iónico con Na⁺ y Cl⁻); 58 casos verificados aparte (322 campos); revisión con 2 graves y 11 medios corregidos. La polaridad usa ΔEN sin el dipolo de los pares libres: en pantalla dice solo «polar» o «apolar», con un aviso para NH₃ contra NF₃. Sin ítems en el banco de química.
