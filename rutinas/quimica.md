@@ -565,3 +565,14 @@ Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomol
 3. Una línea en `docs/pendientes.md` y otra en `CLAUDE.md`.
 
 **Con esto termina la lista nueva** (rendimiento y pureza, biomoléculas, química ambiental). Si hay más, hace falta una lista nueva.
+
+## 7 nov 2026 · lista de huecos (pedido de la conversación principal)
+
+### 1. Errores de la torre de quimica-ambiente (hecho)
+- Amplié el caso de la torre en `casos.json`: ahora comprueba los tres errores en las 7 sustancias, no solo en el hexadecano, y el destino del tetracosano.
+- Un verificador independiente, sin leer el motor, los recalculó desde la cabecera: coinciden los 32 campos.
+- Aclaré en la cabecera tres cosas:
+  - cuáles son las sustancias por omisión;
+  - que el-calor-sube depende de la lista que se pasa;
+  - que invierte-la-regla no cuenta el horno.
+- El texto de verificación quedó agregado en `casos.json`.

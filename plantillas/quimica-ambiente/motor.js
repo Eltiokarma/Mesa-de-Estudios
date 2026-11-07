@@ -38,9 +38,11 @@
  *    fraccion { s: nombre }, bandejas [{ T, nombre, sustancias }], errores { 'por-densidad', 'el-calor-sube',
  *    'invierte-la-regla' } }, cada error con el lugar que daría a cada sustancia: 'por-densidad', las de 12 C o más
  *    al fondo y las demás en su lugar real; 'el-calor-sube', se ordenan por punto de ebullición y cada una va al lugar
- *    real de la que ocupa la posición simétrica (la que hierve más alto, donde va la que hierve más bajo);
- *    'invierte-la-regla', la bandeja más fría de las que están MÁS calientes que su punto de ebullición (si ninguna,
- *    'gases'). La bandeja de abajo tiene que estar más fría que el horno. condensaEn(s, bandejas?, Thorno?).
+ *    real de la que ocupa la posición simétrica (la que hierve más alto, donde va la que hierve más bajo), DENTRO
+ *    de la lista de sustancias que se pasa (con otra lista cambia la simetría);
+ *    'invierte-la-regla', la bandeja más fría de las que están MÁS calientes que su punto de ebullición, sin contar
+ *    el horno (si ninguna, 'gases'). Sustancias por omisión (SUST_TORRE): metano, pentano, octano, dodecano,
+ *    hexadecano, tetracosano y residuo. La bandeja de abajo tiene que estar más fría que el horno. condensaEn(s, bandejas?, Thorno?).
  *    fraccionPorCarbonos(n).
  *  - metalurgia(mena, masa, ley, rendimiento): { puro, teorico, real, gas, errores { 'sin-ley', 'sin-rendimiento',
  *    'suma-perdidas' } }. MENAS: blenda (ZnS), calcosina (Cu₂S) y hematita (Fe₂O₃).
