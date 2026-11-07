@@ -401,6 +401,11 @@ test('medidores 6: conectar no cambia el circuito recibido, y el orden de la lis
   // El voltímetro «en paralelo con B1» queda en los bornes de B1, dentro de los amperímetros en serie.
   const s = motor.resolver(c1);
   cerca(s.ramas.V.lectura, s.ramas.B1.V, 'en los bornes de B1');
+  // Con dos medidores, «sin el medidor» de un amperímetro en serie es la corriente por ese punto (B1 y el voltímetro
+  // juntos), no la de B1 sola.
+  const r = motor.medidoresMixto({ A: { puesto: 'B1-a', Rint: 2 }, V: { puesto: 'B1-p', Rint: 60 } });
+  cerca(r.efecto.A.sinMedidor.I, 6 / (12 * 60 / 72 + 6), 'sin el amperímetro: 6 V / (10 + 6) Ω');
+  assert.ok(r.efecto.A.errorRel < 0, 'un amperímetro real en serie marca menos que sin él');
 });
 
 test('medidores 7: cada puesto de la escena se resuelve con cada medidor; ninguno da lectura indeterminada', () => {

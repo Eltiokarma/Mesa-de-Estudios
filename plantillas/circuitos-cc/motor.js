@@ -431,6 +431,8 @@
   // Qué hace el medidor `id` en el circuito `con` (que puede tener otros medidores). La referencia es el mismo
   // circuito SIN ese medidor (en serie se cambia por un cable; en paralelo se quita), con los demás puestos.
   //   → { lectura, magnitud:'I'|'V', sinMedidor:{ I, V }, diagnostico, apaga:[ids], cambioMax, error, errorRel }
+  //   sinMedidor: lo que había sin él (en serie, la corriente por ese punto; en paralelo, el voltaje entre sus puntas);
+  //   error = lectura − (I o V de sinMedidor, según lo que mide).
   // diagnostico: 'corto-pila' | 'indeterminada' | 'corto-elemento' | 'abre-circuito' | 'abre-rama' | 'carga' | 'bien'.
   // `base` (el circuito sin ningún medidor) se acepta por simetría con medidoresMixto; no hace falta para la cuenta.
   function efectoMedidor(base, con, id) {
@@ -445,9 +447,12 @@
     const info = m.medido || {};
     let sinMedidor = { I: NaN, V: NaN };
     if (sr.ok) {
-      if (info.rama) sinMedidor = { I: sr.ramas[info.rama].I, V: sr.ramas[info.rama].V };
-      else if (info.entre) sinMedidor = { I: null, V: sr.V[info.entre[0]] - sr.V[info.entre[1]] };
-      else sinMedidor = { I: null, V: sr.V[m.a] - sr.V[m.b] };
+      // En serie: la corriente que pasa por donde va el medidor (el cable que lo reemplaza); en paralelo: el voltaje
+      // entre sus puntas y, si está sobre una rama, la corriente de esa rama.
+      const Vab = sr.V[m.a] - sr.V[m.b];
+      if (info.modo === 'serie') sinMedidor = { I: sr.ramas[id].I, V: sr.ramas[info.rama].V };
+      else if (info.rama) sinMedidor = { I: sr.ramas[info.rama].I, V: Vab };
+      else sinMedidor = { I: null, V: Vab };
     }
     const ideal = magnitud === 'I' ? sinMedidor.I : sinMedidor.V;
     const salida = (lectura, diagnostico, apaga, cambioMax) => {
