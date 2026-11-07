@@ -644,7 +644,7 @@ function vistaGiroW(L, c, P){
   const giro = M.mcuv({ r, omega0:w0, alfa:d.alfa, t:P.t || 0, frena:!P.seguir });
   const ancho = W >= 560;
   const tAx = Math.ceil(P.seguir ? P.tp*1.5 : P.tp + 1), fTop = Math.ceil(P.f0 + 0.5), fBot = P.seguir ? -Math.ceil(P.f0*0.5) : 0;
-  const gx0 = ancho ? W*0.4 : 46, gx1 = W - 16, gy0 = ancho ? 30 : Math.min(96, H*0.3), gy1 = H - (P.pie ? 46 : 32);
+  const gx0 = ancho ? W*0.4 : 46, gx1 = W - 16, gy0 = ancho ? 30 : Math.min(112, H*0.33), gy1 = H - (P.pie ? 46 : 32);
   const Xg = t => gx0 + t/tAx*(gx1 - gx0), Yg = f => gy0 + (fTop - f)/(fTop - fBot)*(gy1 - gy0);
   // Cuadrícula de 1 s por 1 vuelta/s
   ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
@@ -684,21 +684,23 @@ function vistaGiroW(L, c, P){
     rotulo(ctx, c, xt, Yg(fBot) - 10, `t = ${fmt(P.t, 1)} s`, c.t, 'center', 800, W);
   }
   // La rueda (arriba a la izquierda en pantalla grande; en la esquina libre del gráfico en el celular)
-  const Rw = ancho ? Math.min(W*0.13, H*0.26) : Math.min(30, gy0*0.3), wx = ancho ? W*0.2 : W - 60, wy = ancho ? H*0.42 : gy0/2;
+  const Rw = ancho ? Math.min(W*0.13, H*0.26) : Math.min(36, gy0*0.32), wx = ancho ? W*0.2 : W - 84, wy = ancho ? H*0.42 : gy0/2;
   const th = Math.PI/2 - giro.theta;
   rueda(ctx, c, wx, wy, Rw, th, { llanta:true, rayos:8 });
   if (ver.cursor) rotulo(ctx, c, ancho ? wx : wx - Rw - 44, ancho ? wy + Rw + 22 : wy, `vueltas: ${fmt(giro.vueltas, 1)}`, c.ink, ancho ? 'center' : 'right', 800, W);
+  // Flechas en el punto del borde que pasa por la derecha (todos los puntos del borde tienen las mismas at y ac).
+  // Gira en sentido horario: ahí la velocidad apunta hacia abajo; at, que frena, hacia arriba; ac, al centro.
   if (ver.flechas && Math.abs(giro.omega) > 1e-9){
-    const px = wx + Rw*Math.cos(th), py = wy - Rw*Math.sin(th), acMax = w0*w0*r, Lm = ancho ? Rw*0.9 : 34;
-    const lac = giro.ac/acMax*Lm, lat = Math.max(14, Math.abs(giro.at)/acMax*Lm), sg = Math.sign(giro.omega);
-    // Gira en sentido horario: la velocidad va (sen θ, cos θ) en pantalla; at frena, en contra
-    const ux = Math.sin(th)*sg, uy = Math.cos(th)*sg, atx = giro.at < 0 ? -ux*lat : ux*lat, aty = giro.at < 0 ? -uy*lat : uy*lat;
-    const acx = -Math.cos(th)*lac, acy = Math.sin(th)*lac;
-    if (Math.abs(giro.at) > 1e-9){ flecha(ctx, px, py, px + atx + acx, py + aty + acy, c.ink, 1.8, [4, 3]); }
-    flecha(ctx, px, py, px + atx, py + aty, c.at, 3.6);
-    if (lac > 2) flecha(ctx, px, py, px + acx, py + acy, c.a, 3.2);
-    rotulo(ctx, c, px + atx*1.25, py + aty*1.25, 'at', c.at, 'center', 800, W);
-    if (lac > 10) rotulo(ctx, c, px + acx*0.55, py + acy*0.55 - 9, 'ac', c.a, 'center', 800, W);
+    const px = wx + Rw, py = wy, acMax = w0*w0*r, Lm = Rw*0.95;
+    const lac = giro.ac/acMax*Lm, lat = Math.max(26, Math.abs(giro.at)/acMax*Lm), sg = giro.at < 0 ? -1 : 1;
+    const atx = 0, aty = sg*lat, acx = -lac, acy = 0;
+    // Halo del color del papel: at (ocre oscuro en claro) no se confunde con la llanta ni con la resultante en tinta
+    const conHalo = (x2, y2, col, w, dash) => { flecha(ctx, px, py, x2, y2, c.paper, w + 4); flecha(ctx, px, py, x2, y2, col, w, dash); };
+    conHalo(px + atx + acx, py + aty + acy, c.ink, 1.8, [4, 3]);
+    if (lac > 2) conHalo(px + acx, py + acy, c.a, 3.6);
+    conHalo(px + atx, py + aty, c.at, 4);
+    rotulo(ctx, c, px + 10, py + aty, 'at', c.at, 'left', 800, W);
+    if (lac > 12) rotulo(ctx, c, px + acx/2, py + 12, 'ac', c.a, 'center', 800, W);
   }
   if (P.pie) rotulo(ctx, c, W/2, H - 10, P.pie, c.muted, 'center', 700, W);
 }
