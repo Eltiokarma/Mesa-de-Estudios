@@ -2,7 +2,7 @@
   "plantilla": "geometria-espacio",
   "unidades": "Distancias en las unidades del problema (u); ángulos en grados. El cubo de arista a es ABCD-EFGH con A(0,0,0), B(a,0,0), C(a,a,0), D(0,a,0) en el piso z = 0 y E, F, G, H encima de A, B, C, D.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.angulo.dibujo, pies.0); las listas se comparan completas. 'tambien' trae otras llamadas que comprueban lo mismo (con su propia 'fn' si cambia). Un error que con esos datos da lo mismo que la respuesta correcta no va en 'errores' sino en 'coinciden'. Los números irracionales van con 9 o más decimales y se comparan con tolerancia relativa 1e-9. 'dibujo' es el ángulo que se ve en el dibujo con la vista dada (giro az y elevación el; la vista con que abre la escena es az = 28, el = 22), redondeado a grados.",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas (7 nov 2026, dos pasadas) por un subagente que leyó solo la cabecera de motor.js: Python con fracciones; distancia entre rectas con producto mixto y minimizando |P(s)−Q(t)|² (pies incluidos); recta-plano con la normal y con la proyección; diedros con perpendiculares a la arista y con normales (triedros también con la ley de cosenos esférica); ángulos del dibujo reproduciendo la cámara ortográfica. Los 20 casos con todos sus 'tambien' (secantes, paralelas, diedro obtuso, triedros de borde) y papel.json coinciden sin discrepancias.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Paso a paso, predicción 1: la varilla de largo 4 clavada en O(3, 3, 0), inclinada 60° con su sombra hacia D, es perpendicular a una sola recta del piso que pasa por O (la paralela a AB): ni a ninguna, ni a dos, ni a todas",
