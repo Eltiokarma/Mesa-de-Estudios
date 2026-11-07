@@ -3385,7 +3385,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "coordenadas-polares"
+     ]
     }
    ]
   },
@@ -4563,6 +4565,23 @@
     "/plantillas/conjuntos/index.html",
     "/plantillas/conjuntos/motor.js",
     "/plantillas/conjuntos/papel.json"
+   ]
+  },
+  "coordenadas-polares": {
+   "id": "coordenadas-polares",
+   "titulo": "El radar: coordenadas polares",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.coordenadas-polares-y-complejos"
+   ],
+   "url": "/plantillas/coordenadas-polares/index.html",
+   "papel": "/plantillas/coordenadas-polares/papel.json",
+   "archivos": [
+    "/plantillas/coordenadas-polares/index.html",
+    "/plantillas/coordenadas-polares/motor.js",
+    "/plantillas/coordenadas-polares/papel.json"
    ]
   },
   "cortes-pesadas": {

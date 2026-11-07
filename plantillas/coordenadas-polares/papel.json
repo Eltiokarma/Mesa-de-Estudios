@@ -1,0 +1,136 @@
+{
+  "titulo": "Coordenadas polares: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de marcar, haz un dibujo rápido: ubica el punto en su cuadrante y comprueba que tu respuesta caiga ahí. El ángulo se mide desde el eje polar (la semirrecta horizontal hacia la derecha) en sentido antihorario, y las respuestas van con r ≥ 0 y θ entre 0° y 360° (sin llegar a 360°), salvo que el problema pida otra cosa.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "¿En qué cuadrante está el punto P = (5; 300°)? ¿Y el punto Q = (−5; 300°)?",
+      "respuesta": "P está en el IV cuadrante y Q en el II cuadrante.",
+      "pasos": [
+        "Desde el eje polar se giran 300° en sentido antihorario: pasa los 270° y no llega a 360°, así que P está en el IV cuadrante.",
+        "Q tiene r negativo: se mira en la dirección de 300° y se camina 5 hacia atrás, pasando por el polo. Eso es lo mismo que (5; 300° + 180°) = (5; 480°) = (5; 120°).",
+        "120° está entre 90° y 180°: Q está en el II cuadrante. P y Q son simétricos respecto del polo."
+      ],
+      "verificar": [ { "fn": "cuadrante", "args": [{ "r": 5, "theta": 300 }], "espera": { "texto": "IV cuadrante" } },
+                     { "fn": "cuadrante", "args": [{ "r": -5, "theta": 300 }], "espera": { "texto": "II cuadrante", "direccion": 120 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Escribe con r positivo y θ entre 0° y 360° los puntos (−4; 135°) y (4; −90°).",
+      "respuesta": "(−4; 135°) = (4; 315°) y (4; −90°) = (4; 270°).",
+      "pasos": [
+        "Con r negativo se suman 180° al ángulo y se cambia el signo de r: (−4; 135°) = (4; 135° + 180°) = (4; 315°).",
+        "No vale reflejar en un eje: (4; 45°) y (4; 225°) son otros puntos.",
+        "Un ángulo negativo se gira en sentido horario; sumar una vuelta no cambia el punto: −90° + 360° = 270°, así que (4; −90°) = (4; 270°)."
+      ],
+      "verificar": [ { "fn": "positivo", "args": [{ "r": -4, "theta": 135 }], "espera": { "texto": "(4; 315°)" } },
+                     { "fn": "positivo", "args": [{ "r": 4, "theta": -90 }], "espera": { "texto": "(4; 270°)" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Para el punto (2; 45°), da otra escritura con θ entre 360° y 720°, y otra con r negativo y θ entre 0° y 360°.",
+      "respuesta": "(2; 405°) y (−2; 225°).",
+      "pasos": [
+        "Dar una vuelta completa no mueve el punto: (2; 45° + 360°) = (2; 405°).",
+        "Para usar r = −2 hay que mirar al lado contrario: (−2; 45° + 180°) = (−2; 225°). Desde 225° se camina 2 hacia atrás y se llega a (2; 45°).",
+        "(−2; 45°) sería el punto opuesto, en el III cuadrante: no es el mismo."
+      ],
+      "verificar": [ { "fn": "mismoPunto", "args": [{ "p": { "r": 2, "theta": 45 }, "q": { "r": 2, "theta": 405 } }], "espera": { "valor": true } },
+                     { "fn": "conRNegativo", "args": [{ "r": 2, "theta": 45 }], "espera": { "texto": "(−2; 225°)" } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Pasa a coordenadas cartesianas los puntos (6; 240°) y (−2; 315°).",
+      "respuesta": "(6; 240°) = (−3; −3√3) y (−2; 315°) = (−√2; √2).",
+      "pasos": [
+        "x = r cos θ e y = r sen θ. 240° está en el III cuadrante, donde coseno y seno son negativos: cos 240° = −1/2 y sen 240° = −√3/2.",
+        "x = 6 · (−1/2) = −3 e y = 6 · (−√3/2) = −3√3.",
+        "Para (−2; 315°): cos 315° = √2/2 y sen 315° = −√2/2. x = −2 · √2/2 = −√2 e y = −2 · (−√2/2) = √2. El punto cae en el II cuadrante, como se espera de un r negativo con θ en el IV."
+      ],
+      "verificar": [ { "fn": "aCartesianas", "args": [{ "r": 6, "theta": 240 }], "espera": { "texto": "(−3; −3√3)" } },
+                     { "fn": "aCartesianas", "args": [{ "r": -2, "theta": 315 }], "espera": { "texto": "(−√2; √2)" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Pasa a coordenadas polares los puntos (−3; 3) y (2√3; −2).",
+      "respuesta": "(−3; 3) = (3√2; 135°) y (2√3; −2) = (4; 330°).",
+      "pasos": [
+        "r = √(x² + y²): para (−3; 3), r = √(9 + 9) = √18 = 3√2.",
+        "El punto está arriba a la izquierda, en el II cuadrante. La calculadora da arctan(3/(−3)) = −45°, que apunta al IV: se corrige con θ = 180° − 45° = 135°.",
+        "Para (2√3; −2): r = √(12 + 4) = 4. Está en el IV cuadrante y el ángulo agudo con el eje x es 30° (tan = 2/(2√3) = √3/3), así que θ = 360° − 30° = 330°."
+      ],
+      "verificar": [ { "fn": "aPolares", "args": [{ "x": -3, "y": 3 }], "espera": { "texto": "(3√2; 135°)" } },
+                     { "fn": "aPolares", "args": [{ "x": "2√3", "y": -2 }], "espera": { "texto": "(4; 330°)" } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Pasa a coordenadas polares los puntos (0; 5) y (−7; 0).",
+      "respuesta": "(0; 5) = (5; 90°) y (−7; 0) = (7; 180°).",
+      "pasos": [
+        "Sobre los ejes no hace falta la calculadora (y/x ni siquiera existe si x = 0): basta mirar hacia dónde apunta el punto.",
+        "(0; 5) está sobre el eje vertical, hacia arriba, a distancia 5: θ = 90°.",
+        "(−7; 0) está sobre el eje horizontal, hacia la izquierda, a distancia 7: θ = 180°. arctan(0/(−7)) = 0° apuntaría a la derecha."
+      ],
+      "verificar": [ { "fn": "aPolares", "args": [{ "x": 0, "y": 5 }], "espera": { "texto": "(5; 90°)" } },
+                     { "fn": "aPolares", "args": [{ "x": -7, "y": 0 }], "espera": { "texto": "(7; 180°)" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Halla el centro (en cartesianas) y el radio de las circunferencias r = 8 sen θ y r = −2 cos θ.",
+      "respuesta": "r = 8 sen θ: centro (0; 4) y radio 4. r = −2 cos θ: centro (−1; 0) y radio 1.",
+      "pasos": [
+        "Se multiplica por r: r² = 8r sen θ, o sea x² + y² = 8y. Completando cuadrados, x² + (y − 4)² = 16.",
+        "Es una circunferencia que pasa por el polo, de diámetro 8 sobre el eje vertical: centro (0; 4) y radio 4.",
+        "r = −2 cos θ da x² + y² = −2x, o sea (x + 1)² + y² = 1: centro (−1; 0) y radio 1. El signo de a decide hacia qué lado queda."
+      ],
+      "verificar": [ { "fn": "circuloEje", "args": [{ "a": 8, "f": "sen" }], "espera": { "texto": "centro (0; 4) y radio 4" } },
+                     { "fn": "circuloEje", "args": [{ "a": -2, "f": "cos" }], "espera": { "texto": "centro (−1; 0) y radio 1", "canonica": "(x + 1)² + y² = 1" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Escribe en cartesianas las ecuaciones polares r = −4 cos θ y θ = 135° (con r en todos los reales).",
+      "respuesta": "r = −4 cos θ es x² + y² = −4x, o sea (x + 2)² + y² = 4. θ = 135° es la recta y = −x.",
+      "pasos": [
+        "En r = −4 cos θ se multiplica por r: r² = −4r cos θ. Como r² = x² + y² y r cos θ = x, queda x² + y² = −4x.",
+        "Completando cuadrados: (x + 2)² + y² = 4, la circunferencia de centro (−2; 0) y radio 2.",
+        "En θ = 135°, todos los puntos están en la dirección de 135° o en la contraria (r negativo): y/x = tan 135° = −1, la recta y = −x completa."
+      ],
+      "verificar": [ { "fn": "cartesianaEje", "args": [{ "a": -4, "f": "cos" }], "espera": { "texto": "x² + y² = −4x" } },
+                     { "fn": "circuloEje", "args": [{ "a": -4, "f": "cos" }], "espera": { "canonica": "(x + 2)² + y² = 4" } },
+                     { "fn": "rectaTheta", "args": [{ "k": 135 }], "espera": { "cartesiana": "y = −x" } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "¿Cuántos pétalos tienen las rosas r = 5 sen 4θ y r = 3 cos 5θ, y cuánto mide cada pétalo?",
+      "respuesta": "r = 5 sen 4θ: 8 pétalos de largo 5. r = 3 cos 5θ: 5 pétalos de largo 3.",
+      "pasos": [
+        "El largo de cada pétalo es el mayor valor de |r|, el coeficiente: 5 en la primera y 3 en la segunda.",
+        "Con n par (n = 4), los pétalos que dibuja r negativo caen entre los de r positivo: hay 2n = 8.",
+        "Con n impar (n = 5), r negativo vuelve a dibujar los mismos pétalos: hay n = 5."
+      ],
+      "verificar": [ { "fn": "petalos", "args": [{ "a": 5, "n": 4, "f": "sen" }], "espera": { "texto": "8 pétalos de largo 5" } },
+                     { "fn": "petalos", "args": [{ "a": 3, "n": 5, "f": "cos" }], "espera": { "texto": "5 pétalos de largo 3" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Escribe el complejo z = −√3 + i en forma polar y en forma exponencial.",
+      "respuesta": "z = 2 cis 150° = 2e^(i·5π/6).",
+      "pasos": [
+        "z es el punto (−√3; 1): su par polar da la forma polar. r = √(3 + 1) = 2.",
+        "El punto está en el II cuadrante y el ángulo agudo con el eje es 30°: θ = 180° − 30° = 150°.",
+        "150° = 5π/6 rad, así que z = 2(cos 150° + i sen 150°) = 2 cis 150° = 2e^(i·5π/6)."
+      ],
+      "verificar": [ { "fn": "formaPolar", "args": [{ "re": "−√3", "im": 1 }], "espera": { "polar": "2 cis 150°", "exponencial": "2e^(i·5π/6)" } } ]
+    }
+  ]
+}
