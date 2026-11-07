@@ -1,0 +1,705 @@
+{
+  "plantilla": "biomoleculas",
+  "unidades": "Masas molares en g/mol; masas en g; índice de saponificación en mg de KOH por g; índice de yodo en g de I₂ por 100 g; energía en kcal.",
+  "constantes": "Masas atómicas de academia: H 1, C 12, N 14, O 16, Na 23, S 32, K 39, I 127 (H₂O 18, KOH 56, NaOH 40, I₂ 254). Factores de Atwater: 4 kcal/g carbohidratos y proteínas, 9 kcal/g grasas; las vitaminas no se cuentan.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (productos.0.gramos es el primer producto; errores.x es lo que da el error típico x). Si fn es masa, el resultado es un número y se compara con espera.valor. Los textos, booleanos y listas se comparan exactos; los números, con la tolerancia. Las piezas se unen en cadena lineal: n piezas, n − 1 uniones, un H₂O por unión; el triglicérido es glicerol + 3 ácidos grasos (3 uniones).",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    {
+      "nombre": "Glucosa C₆H₁₂O₆: 6·12 + 12·1 + 6·16 = 180",
+      "fn": "masa",
+      "args": [
+        "C6H12O6"
+      ],
+      "espera": {
+        "valor": 180
+      }
+    },
+    {
+      "nombre": "Sacarosa (glucosa + fructosa): C₁₂H₂₂O₁₁, 360 − 18 = 342, una unión y un agua; sin restar el agua, 360; restando dos aguas, 324; «se funden» en 180",
+      "fn": "sacarido",
+      "args": [
+        [
+          "glucosa",
+          "fructosa"
+        ]
+      ],
+      "espera": {
+        "M": 342,
+        "texto": "C₁₂H₂₂O₁₁",
+        "uniones": 1,
+        "aguas": 1,
+        "masaPiezas": 360,
+        "masaAgua": 18,
+        "tipo": "disacárido",
+        "nombre": "sacarosa",
+        "enlace": "glucosídico",
+        "errores.no-resta-agua": 360,
+        "errores.n-aguas": 324,
+        "errores.fusion-mismo-tamano": 180
+      }
+    },
+    {
+      "nombre": "Maltosa (glucosa + glucosa) y lactosa (glucosa + galactosa): también C₁₂H₂₂O₁₁ y 342",
+      "fn": "sacarido",
+      "args": [
+        [
+          "glucosa",
+          "glucosa"
+        ]
+      ],
+      "espera": {
+        "M": 342,
+        "texto": "C₁₂H₂₂O₁₁",
+        "nombre": "maltosa"
+      },
+      "tambien": [
+        {
+          "args": [
+            [
+              "galactosa",
+              "glucosa"
+            ]
+          ],
+          "espera": {
+            "M": 342,
+            "nombre": "lactosa"
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Tres glucosas en cadena: C₁₈H₃₂O₁₆, 540 − 36 = 504, dos aguas; oligosacárido",
+      "fn": "sacarido",
+      "args": [
+        [
+          "glucosa",
+          "glucosa",
+          "glucosa"
+        ]
+      ],
+      "espera": {
+        "M": 504,
+        "texto": "C₁₈H₃₂O₁₆",
+        "aguas": 2,
+        "tipo": "oligosacárido",
+        "errores.no-resta-agua": 540,
+        "errores.n-aguas": 486,
+        "errores.resta-un-agua": 522
+      }
+    },
+    {
+      "nombre": "Diez glucosas: C₆₀H₁₀₂O₅₁, 1800 − 162 = 1638, nueve aguas",
+      "fn": "sacarido",
+      "args": [
+        [
+          "glucosa",
+          "glucosa",
+          "glucosa",
+          "glucosa",
+          "glucosa",
+          "glucosa",
+          "glucosa",
+          "glucosa",
+          "glucosa",
+          "glucosa"
+        ]
+      ],
+      "espera": {
+        "M": 1638,
+        "texto": "C₆₀H₁₀₂O₅₁",
+        "aguas": 9,
+        "uniones": 9,
+        "tipo": "oligosacárido"
+      }
+    },
+    {
+      "nombre": "Polisacárido de 1000 glucosas: 162 018 exacto (162·1000 + 18), 162 000 con (C₆H₁₀O₅)ₙ, 999 enlaces y aguas; con 1000 aguas, 162 000; sin agua, 180 000; con una sola agua, 179 982",
+      "fn": "polisacarido",
+      "args": [
+        1000
+      ],
+      "espera": {
+        "M": 162018,
+        "Mformula": 162000,
+        "Munidad": 162,
+        "unidad": "C₆H₁₀O₅",
+        "enlaces": 999,
+        "aguas": 999,
+        "enlace": "α(1→4)",
+        "errores.n-aguas.aguas": 1000,
+        "errores.n-aguas.M": 162000,
+        "errores.sin-agua.M": 180000,
+        "errores.un-agua.M": 179982,
+        "errores.formula-glucosa.M": 180000
+      }
+    },
+    {
+      "nombre": "Celulosa de 2 glucosas: enlace β(1→4), 342",
+      "fn": "polisacarido",
+      "args": [
+        2,
+        "celulosa"
+      ],
+      "espera": {
+        "M": 342,
+        "enlace": "β(1→4)",
+        "enlaces": 1
+      }
+    },
+    {
+      "nombre": "Hidrólisis de 342 g de sacarosa: entra 1 agua (18 g) y salen 180 g de glucosa y 180 g de fructosa (360 g); sin agua, 171 g de cada una; restando el agua, 162; «todo glucosa», 342",
+      "fn": "hidrolisis",
+      "args": [
+        [
+          "glucosa",
+          "fructosa"
+        ],
+        342
+      ],
+      "espera": {
+        "aguas": 1,
+        "gramosAgua": 18,
+        "gramosProductos": 360,
+        "masaProductos": 360,
+        "productos.0.gramos": 180,
+        "productos.1.gramos": 180,
+        "productos.1.id": "fructosa",
+        "errores.sin-agua": 171,
+        "errores.resta-agua": 162,
+        "errores.todo-glucosa": 342
+      }
+    },
+    {
+      "nombre": "Hidrólisis de 324 g de almidón ((C₆H₁₀O₅)ₙ): 2 mol de unidades, 36 g de agua, 360 g de glucosa; sin agua, 324; restando, 288",
+      "fn": "hidrolisisAlmidon",
+      "args": [
+        324
+      ],
+      "espera": {
+        "molUnidades": 2,
+        "agua": 36,
+        "glucosa": 360,
+        "errores.sin-agua": 324,
+        "errores.resta-agua": 288
+      }
+    },
+    {
+      "nombre": "Aminoácidos: Gly C₂H₅NO₂ 75, Ala 89, Ser 105, Val 117, Cys (con S) 121",
+      "fn": "masa",
+      "args": [
+        "C2H5NO2"
+      ],
+      "espera": {
+        "valor": 75
+      },
+      "tambien": [
+        {
+          "args": [
+            "C3H7NO2"
+          ],
+          "espera": {
+            "valor": 89
+          }
+        },
+        {
+          "args": [
+            "C3H7NO3"
+          ],
+          "espera": {
+            "valor": 105
+          }
+        },
+        {
+          "args": [
+            "C5H11NO2"
+          ],
+          "espera": {
+            "valor": 117
+          }
+        },
+        {
+          "args": [
+            "C3H7NO2S"
+          ],
+          "espera": {
+            "valor": 121
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Gly-Gly-Gly: C₆H₁₁N₃O₄, 225 − 36 = 189, 2 enlaces peptídicos",
+      "fn": "peptido",
+      "args": [
+        [
+          "Gly",
+          "Gly",
+          "Gly"
+        ]
+      ],
+      "espera": {
+        "M": 189,
+        "texto": "C₆H₁₁N₃O₄",
+        "enlacesPeptidicos": 2,
+        "tipo": "tripéptido"
+      }
+    },
+    {
+      "nombre": "Gly-Ala-Ser: C₈H₁₅N₃O₅, 269 − 36 = 233, 2 enlaces y 2 aguas; con n enlaces, 3 y 3; sin agua, 2 y 0; mezclado, 3 y 2; sin restar, 269; con una sola agua, 251",
+      "fn": "peptido",
+      "args": [
+        [
+          "Gly",
+          "Ala",
+          "Ser"
+        ]
+      ],
+      "espera": {
+        "M": 233,
+        "texto": "C₈H₁₅N₃O₅",
+        "enlacesPeptidicos": 2,
+        "aguas": 2,
+        "masaPiezas": 269,
+        "nombre": "Gly-Ala-Ser",
+        "tipo": "tripéptido",
+        "enlace": "peptídico",
+        "errores.n-enlaces.enlaces": 3,
+        "errores.n-enlaces.aguas": 3,
+        "errores.sin-agua.enlaces": 2,
+        "errores.sin-agua.aguas": 0,
+        "errores.mezcla.enlaces": 3,
+        "errores.mezcla.aguas": 2,
+        "errores.no-resta-agua": 269,
+        "errores.resta-un-agua": 251
+      }
+    },
+    {
+      "nombre": "Ala-Ala-Val: C₁₁H₂₁N₃O₄, 295 − 36 = 259",
+      "fn": "peptido",
+      "args": [
+        [
+          "Ala",
+          "Ala",
+          "Val"
+        ]
+      ],
+      "espera": {
+        "M": 259,
+        "texto": "C₁₁H₂₁N₃O₄"
+      }
+    },
+    {
+      "nombre": "Gly-Ala-Ser-Val: 386 − 54 = 332, tetrapéptido con 3 enlaces",
+      "fn": "peptido",
+      "args": [
+        [
+          "Gly",
+          "Ala",
+          "Ser",
+          "Val"
+        ]
+      ],
+      "espera": {
+        "M": 332,
+        "enlacesPeptidicos": 3,
+        "tipo": "tetrapéptido"
+      }
+    },
+    {
+      "nombre": "Cadenas de n = 2, 3, 10, 51 y 100: 1, 2, 9, 50 y 99 enlaces y aguas",
+      "fn": "enlacesCadena",
+      "args": [
+        2
+      ],
+      "espera": {
+        "enlaces": 1,
+        "aguas": 1,
+        "errores.n-enlaces": 2,
+        "errores.n-mas-uno": 3
+      },
+      "tambien": [
+        {
+          "args": [
+            3
+          ],
+          "espera": {
+            "enlaces": 2
+          }
+        },
+        {
+          "args": [
+            10
+          ],
+          "espera": {
+            "enlaces": 9
+          }
+        },
+        {
+          "args": [
+            51
+          ],
+          "espera": {
+            "enlaces": 50,
+            "aguas": 50
+          }
+        },
+        {
+          "args": [
+            100
+          ],
+          "espera": {
+            "enlaces": 99,
+            "errores.n-enlaces": 100
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Tripéptidos con Gly, Ala y Ser una vez cada uno: 3! = 6 (olvidando el orden, 1); con 20 aminoácidos y repetición, 20³ = 8000",
+      "fn": "secuencias",
+      "args": [
+        3,
+        3,
+        false
+      ],
+      "espera": {
+        "total": 6,
+        "errores.olvida-orden": 1,
+        "errores.una-por-aminoacido": 3
+      },
+      "tambien": [
+        {
+          "args": [
+            20,
+            3,
+            true
+          ],
+          "espera": {
+            "total": 8000
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Ácidos grasos: esteárico C₁₈H₃₆O₂ 284, oleico 282, linoleico 280, palmítico 256",
+      "fn": "masa",
+      "args": [
+        "C18H36O2"
+      ],
+      "espera": {
+        "valor": 284
+      },
+      "tambien": [
+        {
+          "args": [
+            "C18H34O2"
+          ],
+          "espera": {
+            "valor": 282
+          }
+        },
+        {
+          "args": [
+            "C18H32O2"
+          ],
+          "espera": {
+            "valor": 280
+          }
+        },
+        {
+          "args": [
+            "C16H32O2"
+          ],
+          "espera": {
+            "valor": 256
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Triestearina: 92 + 3·284 − 3·18 = 890, C₅₇H₁₁₀O₆, índice de saponificación 3·56·1000/890 = 16800/89 ≈ 188,76, índice de yodo 0",
+      "fn": "trigliceridoDe",
+      "args": [
+        "estearico"
+      ],
+      "espera": {
+        "M": 890,
+        "texto": "C₅₇H₁₁₀O₆",
+        "dobles": 0,
+        "aguas": 3,
+        "indiceSaponificacion": 188.76404494382024,
+        "indiceYodo": 0,
+        "nombre": "triestearina"
+      }
+    },
+    {
+      "nombre": "Trioleína: C₅₇H₁₀₄O₆, 884; saponificación 42000/221 ≈ 190,05; yodo 3·254·100/884 = 19050/221 ≈ 86,20",
+      "fn": "trigliceridoDe",
+      "args": [
+        "oleico"
+      ],
+      "espera": {
+        "M": 884,
+        "texto": "C₅₇H₁₀₄O₆",
+        "dobles": 3,
+        "indiceSaponificacion": 190.0452488687783,
+        "indiceYodo": 86.19909502262443
+      }
+    },
+    {
+      "nombre": "Trilinoleína: C₅₇H₉₈O₆, 878; saponificación 84000/439 ≈ 191,34; yodo 76200/439 ≈ 173,58",
+      "fn": "trigliceridoDe",
+      "args": [
+        "linoleico"
+      ],
+      "espera": {
+        "M": 878,
+        "texto": "C₅₇H₉₈O₆",
+        "dobles": 6,
+        "indiceSaponificacion": 191.34396355353076,
+        "indiceYodo": 173.57630979498862
+      }
+    },
+    {
+      "nombre": "Tripalmitina: C₅₁H₉₈O₆, 806; saponificación 84000/403 ≈ 208,44",
+      "fn": "trigliceridoDe",
+      "args": [
+        "palmitico"
+      ],
+      "espera": {
+        "M": 806,
+        "texto": "C₅₁H₉₈O₆",
+        "indiceSaponificacion": 208.43672456575683,
+        "indiceYodo": 0
+      }
+    },
+    {
+      "nombre": "Tripalmitina contra triestearina: la más liviana gasta más KOH por gramo; «crece con la masa» elige la triestearina",
+      "fn": "compararSaponificacion",
+      "args": [
+        "palmitico",
+        "estearico"
+      ],
+      "espera": {
+        "mayor": "a",
+        "indices.0": 208.43672456575683,
+        "indices.1": 188.76404494382024,
+        "errores.crece-con-M": "b",
+        "errores.iguales-por-mol": "iguales",
+        "errores.confunde-con-yodo": "ninguna"
+      }
+    },
+    {
+      "nombre": "Hidrogenar la trioleína: 3 H₂, gana 6 (884 → 890, triestearina), el índice de yodo baja de 19050/221 a 0; contando H como H₂, 6 H₂ y 12",
+      "fn": "hidrogenar",
+      "args": [
+        "oleico"
+      ],
+      "espera": {
+        "H2": 3,
+        "masaGanada": 6,
+        "Mantes": 884,
+        "Mdespues": 890,
+        "yodoAntes": 86.19909502262443,
+        "yodoDespues": 0,
+        "producto": "triestearina",
+        "errores.cuenta-H-como-H2.H2": 6,
+        "errores.cuenta-H-como-H2.masaGanada": 12,
+        "errores.yodo-mide-masa.yodo": 86.19909502262443,
+        "errores.yodo-sube-con-masa.yodo": "sube"
+      }
+    },
+    {
+      "nombre": "Saponificar la triestearina con NaOH: 890 + 120 = 92 + 3·306 = 1010; estearato de sodio C₁₈H₃₅NaO₂, 306; con 445 g, 0,5 mol: 60 g de NaOH, 459 g de jabón y 46 g de glicerol",
+      "fn": "saponificacion",
+      "args": [
+        "estearico",
+        445
+      ],
+      "espera": {
+        "molBase": 3,
+        "masaBase": 120,
+        "jabon.M": 306,
+        "jabon.texto": "C₁₈H₃₅NaO₂",
+        "masaJabon": 918,
+        "masaGlicerol": 92,
+        "antes": 1010,
+        "despues": 1010,
+        "conserva": true,
+        "mol": 0.5,
+        "gramosBase": 60,
+        "gramosJabon": 459,
+        "gramosGlicerol": 46
+      }
+    },
+    {
+      "nombre": "Saponificar la tripalmitina con KOH: 806 + 168 = 92 + 3·294 = 974 (palmitato de potasio C₁₆H₃₁KO₂, 294)",
+      "fn": "saponificacion",
+      "args": [
+        "palmitico",
+        null,
+        "KOH"
+      ],
+      "espera": {
+        "masaBase": 168,
+        "jabon.M": 294,
+        "jabon.texto": "C₁₆H₃₁KO₂",
+        "antes": 974,
+        "despues": 974,
+        "conserva": true
+      }
+    },
+    {
+      "nombre": "Desnaturalizar una proteína de 12 aminoácidos: los 11 enlaces peptídicos siguen; las 5 atracciones débiles del plegado se pierden; sigue siendo una sola cadena",
+      "fn": "desnaturalizar",
+      "args": [
+        12
+      ],
+      "espera": {
+        "antes.peptidicos": 11,
+        "antes.debiles": 5,
+        "despues.peptidicos": 11,
+        "despues.debiles": 0,
+        "despues.piezas": 1,
+        "rompe": "débiles",
+        "secuencia": "igual",
+        "errores.separa-aminoacidos.piezas": 12,
+        "errores.separa-aminoacidos.peptidicos": 0,
+        "errores.proteina-rigida.cambia": false
+      }
+    },
+    {
+      "nombre": "Plegado de 12 en serpentín de 5 por fila: contactos entre filas 0–9, 1–8, 2–7, 3–6 y 8–11 (5 atracciones débiles); estirada, en fila y sin contactos",
+      "fn": "plegado",
+      "args": [
+        12,
+        0
+      ],
+      "espera": {
+        "ancho": 5,
+        "filas": 3,
+        "contactos.0": [
+          0,
+          9
+        ],
+        "contactos.1": [
+          1,
+          8
+        ],
+        "contactos.4": [
+          8,
+          11
+        ],
+        "pos.0.x": -2,
+        "pos.0.y": -1,
+        "pos.5.x": 2,
+        "pos.5.y": 0
+      },
+      "tambien": [
+        {
+          "args": [
+            12,
+            1
+          ],
+          "espera": {
+            "contactos": [],
+            "pos.0.x": -5.5,
+            "pos.11.x": 5.5,
+            "pos.11.y": 0
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Almidón con amilasa: la enzima corta el α(1→4); la celulosa, con enlace β(1→4), no se corta (aunque también es glucosa); la celulasa de los microbios sí",
+      "fn": "digerir",
+      "args": [
+        "almidon",
+        "amilasa"
+      ],
+      "espera": {
+        "corta": true,
+        "enlace": "α(1→4)",
+        "monomero": "glucosa"
+      },
+      "tambien": [
+        {
+          "args": [
+            "celulosa",
+            "amilasa"
+          ],
+          "espera": {
+            "corta": false,
+            "enlace": "β(1→4)",
+            "monomero": "glucosa",
+            "errores.misma-glucosa-se-digiere": true
+          }
+        },
+        {
+          "args": [
+            "celulosa",
+            "celulasa"
+          ],
+          "espera": {
+            "corta": true
+          }
+        },
+        {
+          "args": [
+            "glucogeno"
+          ],
+          "espera": {
+            "corta": true
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Energía con los factores de Atwater: 5 g de azúcar dan 20 kcal; 5 g de aceite, 45; las vitaminas no se cuentan (0)",
+      "fn": "energia",
+      "args": [
+        {
+          "carbohidrato": 5
+        }
+      ],
+      "espera": {
+        "kcal": 20
+      },
+      "tambien": [
+        {
+          "args": [
+            {
+              "grasa": 5
+            }
+          ],
+          "espera": {
+            "kcal": 45
+          }
+        },
+        {
+          "args": [
+            {
+              "vitamina": 0.1
+            }
+          ],
+          "espera": {
+            "kcal": 0
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Tableta de vitaminas del complejo B: 0 kcal; si se «quemara» como azúcar (0,1 g), 0,4",
+      "fn": "porcion",
+      "args": [
+        "vitaminas"
+      ],
+      "espera": {
+        "kcal": 0,
+        "errores.se-queman-como-azucar": 0.4
+      }
+    }
+  ]
+}
