@@ -105,7 +105,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": ["tipologia-textual"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.tema-e-idea-principal",
@@ -131,7 +131,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": ["resumen-sintesis"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.textos-discontinuos",
@@ -141,7 +141,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": ["textos-discontinuos"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.inferencias",
@@ -215,7 +215,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": ["textos-filosoficos-cientificos"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.lectura-en-ingles",
@@ -225,7 +225,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": ["lectura-ingles"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     }
   ]
 }
