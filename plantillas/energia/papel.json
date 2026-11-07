@@ -58,19 +58,6 @@
         "espera": {"W": 250, "Fmedia": 31.25, "v2": 100, "seDetiene": false} } ]
     },
     {
-      "id": "p13",
-      "nivel": "avanzado",
-      "enunciado": "Un resorte de 500 N/m está comprimido 0,2 m. Lo llevas despacio con la mano hasta que queda estirado 0,2 m. ¿Cuánto trabajo hace tu mano mientras el resorte vuelve a su largo natural? ¿Y mientras lo estiras de 0 a 0,2 m? ¿Y en todo el recorrido?",
-      "respuesta": "−10 J en la primera parte, +10 J en la segunda y 0 J en total.",
-      "pasos": ["Toma la deformación como negativa si el resorte está comprimido y positiva si está estirado. Como vas despacio, tu mano hace una fuerza igual y contraria a la del resorte: F = k·(deformación). Va de −100 N a +100 N: una recta que cruza el eje en el largo natural.", "De −0,2 m a 0: mientras sueltas, el resorte empuja tu mano hacia afuera y tú lo frenas. Tu fuerza va contra el movimiento: el área está bajo el eje, −½·0,2·100 = −10 J. El resorte devuelve esos 10 J.", "De 0 a 0,2 m: +½·0,2·100 = +10 J, que el resorte guarda como energía elástica.", "Total: −10 + 10 = 0 J. Tiene sentido: el resorte empieza y termina con la misma energía, ½·500·0,2² = 10 J. Si sumas las áreas sin signo, te sale 20 J; con ½·500·(0,4)², 40 J."],
-      "verificar": [ { "fn": "areaPartes", "args": [[[-0.2, -100], [0.2, 100]]],
-        "espera": {"W": 0, "positiva": 10, "negativa": -10, "ceros.0": 0} },
-        { "fn": "resorteArea", "args": [500, -0.2, 0.2],
-        "espera": {"W": 0, "errores.mitadDeltaCuadrado": 40} },
-        { "fn": "trabajoResorte", "args": [500, 0, 0.2],
-        "espera": {"valor": 10} } ]
-    },
-    {
       "id": "p7",
       "nivel": "intermedio",
       "enunciado": "En una casa de Puno, una bomba sube 900 L de agua desde la cisterna hasta el tanque del techo, 12 m más arriba, en 6 minutos. La bomba tiene una eficiencia del 60 %. ¿Qué potencia útil entrega y qué potencia consume de la red eléctrica? (1 L de agua tiene 1 kg de masa.)",
@@ -105,6 +92,19 @@
       "pasos": ["A velocidad constante la energía cinética no cambia, pero la potencial sube: mgh = 80·10·30 = 24 000 J. La energía mecánica no se conserva; aumenta por el trabajo de la ciclista.", "El largo de la cuesta no entra: el trabajo contra el peso solo depende de los 30 m que sube. Una cuesta más suave pide menos fuerza, pero más recorrido, y el trabajo es el mismo.", "Potencia útil: 24 000 J / 120 s = 200 W.", "Eficiencia del 25 %: consume 200 / 0,25 = 800 W. El resto lo vuelve calor, por eso suda."],
       "verificar": [ { "fn": "potencia", "args": [{ "m": 80, "h": 30, "t": 120, "eficiencia": 0.25 }],
         "espera": { "W": 24000, "Putil": 200, "Pconsumida": 800 } } ]
+    },
+    {
+      "id": "p13",
+      "nivel": "avanzado",
+      "enunciado": "Un resorte de 500 N/m está comprimido 0,2 m. Lo llevas despacio con la mano hasta que queda estirado 0,2 m. ¿Cuánto trabajo hace tu mano mientras el resorte vuelve a su largo natural? ¿Y mientras lo estiras de 0 a 0,2 m? ¿Y en todo el recorrido?",
+      "respuesta": "−10 J en la primera parte, +10 J en la segunda y 0 J en total.",
+      "pasos": ["Toma la deformación como negativa si el resorte está comprimido y positiva si está estirado. Como vas despacio, tu mano hace una fuerza igual y contraria a la del resorte: F = k·(deformación). Va de −100 N a +100 N: una recta que cruza el eje en el largo natural.", "De −0,2 m a 0: mientras sueltas, el resorte empuja tu mano hacia afuera y tú lo frenas. Tu fuerza va contra el movimiento: el área está bajo el eje, −½·0,2·100 = −10 J. El resorte devuelve esos 10 J.", "De 0 a 0,2 m: +½·0,2·100 = +10 J, que el resorte guarda como energía elástica.", "Total: −10 + 10 = 0 J. Tiene sentido: el resorte empieza y termina con la misma energía, ½·500·0,2² = 10 J. Si sumas las áreas sin signo, te sale 20 J; con ½·500·(0,4)², 40 J."],
+      "verificar": [ { "fn": "areaPartes", "args": [[[-0.2, -100], [0.2, 100]]],
+        "espera": {"W": 0, "positiva": 10, "negativa": -10, "ceros.0": 0} },
+        { "fn": "resorteArea", "args": [500, -0.2, 0.2],
+        "espera": {"W": 0, "errores.mitadDeltaCuadrado": 40} },
+        { "fn": "trabajoResorte", "args": [500, 0, 0.2],
+        "espera": {"valor": 10} } ]
     }
   ]
 }

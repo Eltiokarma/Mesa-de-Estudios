@@ -124,7 +124,7 @@ canvas.sin-scroll{touch-action:none}
 .slider{display:grid; gap:4px}
 .slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 .slider output{font-family:var(--mono); color:var(--muted)}
-input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+input[type=range]{width:100%; margin-inline:0; accent-color:var(--ink); min-height:28px}
 input.r-m{accent-color:var(--c-m)} input.r-v{accent-color:var(--c-v)} input.r-h{accent-color:var(--c-h)} input.r-k{accent-color:var(--c-k)} input.r-F{accent-color:var(--c-F)} input.r-f{accent-color:var(--c-f)} input.r-P{accent-color:var(--c-P)}
 .chips{display:flex; flex-wrap:wrap; gap:6px}
 .chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
@@ -1148,7 +1148,7 @@ const steps = [
    <div class="seg" role="group" aria-label="Gráficas de partida">${PRESETS.map(([id, t]) => `<button type="button" data-pre="${id}" aria-pressed="${S.ex.preset === id}">${t}</button>`).join('')}</div>
    <div class="nav" style="justify-content:flex-start"><button type="button" class="btn primary" id="soltar3">Soltar el carrito</button></div>
    <div id="live3" class="body"></div>
-   <p class="hint">Prueba que el área de arriba y la de abajo se anulen: el carrito termina con la misma rapidez con que empezó. Con «Baja a cero» la fuerza es la de un resorte que se suelta: el área es un triángulo.</p>` },
+   <p class="hint">Prueba que el área de arriba y la de abajo se anulen: el carrito termina con la misma rapidez con que empezó. Si se detiene, cuenta solo el área hasta donde llega: el trabajo hasta ese punto es −E<sub>c0</sub>. Con «Baja a cero» la fuerza es la de un resorte que se suelta: el área es un triángulo.</p>` },
 ];
 const PRESETS = [['constante', 'Constante', [20, 20, 20, 20, 20]], ['crece', 'Crece', [10, 15, 25, 30, 40]], ['sentido', 'Cambia de sentido', [-10, -5, 0, 10, 20]], ['baja', 'Baja a cero', [40, 30, 20, 10, 0]]];
 
@@ -1198,7 +1198,9 @@ function graficaFx(ctx, c, B, o){
   }
   if (o.media !== undefined && o.media !== null){
     ctx.save(); ctx.setLineDash([5, 4]); ctx.strokeStyle = c.F; ctx.lineWidth = 1.6;
-    linea(ctx, X(o.puntos[0][0]), Y(o.media), X(o.puntos[o.puntos.length - 1][0]), Y(o.media)); ctx.restore();
+    const xa = X(o.puntos[0][0]), xb = X(o.puntos[o.puntos.length - 1][0]);
+    if (o.mediaRect) ctx.strokeRect(xa, Y(o.media), xb - xa, Y(0) - Y(o.media)); else linea(ctx, xa, Y(o.media), xb, Y(o.media));
+    ctx.restore();
   }
   // Curva
   ctx.save(); ctx.strokeStyle = c.F; ctx.lineWidth = hlF ? 3.6 : 2.6; ctx.lineJoin = 'round';
@@ -1257,9 +1259,13 @@ function riel(ctx, c, b, X, cars, op){
       if (car.etqF){ ctx.font = `800 12px ${c.font}`; const w = ctx.measureText(car.etqF).width; rotuloEn(ctx, c, b, s > 0 ? x1 + 4 : x1 - w - 4, top - 26, car.etqF, c.F, 800); }
     }
     if (car.verV && car.v > 0.05){
-      const l = Math.min(b.x + b.w - 2 - px, clamp(car.v*op.kv, 10, 60)), y = top - 6;
-      flecha(ctx, px, y, px + l, y, c.v, S.hl === 'v' ? 4 : 3);
-      if (car.etqV) rotuloEn(ctx, c, b, px + l + 6, y, car.etqV, c.v, 800);
+      // Cerca del borde derecho, la flecha se corre a la izquierda (sigue apuntando hacia +x) y el rótulo va antes.
+      const l = clamp(car.v*op.kv, 10, 60), y = top - 6, x0 = Math.min(px, b.x + b.w - 4 - l);
+      flecha(ctx, x0, y, x0 + l, y, c.v, S.hl === 'v' ? 4 : 3);
+      if (car.etqV){
+        ctx.font = `800 12px ${c.font}`; const w = ctx.measureText(car.etqV).width;
+        rotuloEn(ctx, c, b, x0 + l + 6 + w > b.x + b.w - 4 ? x0 - w - 6 : x0 + l + 6, y, car.etqV, c.v, 800);
+      }
     }
     if (car.marca) rotuloEn(ctx, c, b, px + sw/2 + 6, top + 6, car.marca, c.ink, 700);
   });
@@ -1273,7 +1279,7 @@ function rielResorte(ctx, c, b, x, verF){
   rr(ctx, xe, y - 14, 22, 28, 8); ctx.fillStyle = c.bloque; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke();
   ctx.save(); ctx.setLineDash([3, 4]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, xp + Ln, y - 30, xp + Ln, y + 30); ctx.restore();
   rotuloEn(ctx, c, b, xp + Ln - 40, b.y + 10, 'largo natural', c.muted, 700);
-  cota(ctx, c, xp + Ln, y + 24, xe, y + 24, c.x, `x = ${fmt(x, 2)} m`, S.hl === 'x');
+  cota(ctx, c, xp + Ln, y + 30, xe, y + 30, c.x, `x = ${fmt(x, 2)} m`, S.hl === 'x');
   rotuloEn(ctx, c, b, xp + 6, y - 34, `k = ${K} N/m`, c.k, 800);
   if (verF){ const l = clamp(K*x/230*50, 10, 54); flecha(ctx, xe + 22, y, xe + 22 + l, y, c.F, 3); rotuloEn(ctx, c, b, xe + 26, y - 22, `F = ${fmt(K*x, 0)} N · mano`, c.F, 800); }
 }
@@ -1320,7 +1326,7 @@ function draw(){
   if (s.esc === 'A'){
     const e = recA.en(f*recA.tiempo), aqui = rev ? e.x : 0, final = rev && f >= 1;
     const err = S.step === 1 && final && ['a', 'd'].includes(S.pred[P1.id]) ? { x0:0, x1:4, F:S.pred[P1.id] === 'a' ? 40 : 10 } : null;
-    const ej = graficaFx(ctx, c, B, { puntos:GA, R:esc.R, pasoX:esc.pasoX, hasta:rev ? aqui : null, cursor:rev && !final ? aqui : null, media:S.step === 1 && final ? rA.Fmedia : null, error:err });
+    const ej = graficaFx(ctx, c, B, { puntos:GA, R:esc.R, pasoX:esc.pasoX, hasta:rev ? aqui : null, cursor:rev && !final ? aqui : null, media:S.step === 1 && final ? rA.Fmedia : null, mediaRect:true, error:err });
     if (rev && aqui > 0.05) rotulosArea(ctx, c, ej, GA, 0, aqui, { texto:w => `área = W = ${J(w)}` });
     if (!rev) rotuloEn(ctx, c, B, ej.X(2) - 20, ej.Y(18), 'W = ?', c.muted, 800);
     if (S.step === 1 && final){
@@ -1360,16 +1366,19 @@ function draw(){
   } else {
     const pts = ptsX(), r = rX(), Pg = M.areaPartes(pts), rec = S.ex.rec, e = rec ? rec.en(S.ex.tAnim) : null;
     const aqui = e ? e.x : 0, v = e ? e.v : S.ex.v0, Ec = e ? e.Ec : r.Ec0;
-    const ej = graficaFx(ctx, c, B, { puntos:pts, R:esc.R, pasoX:esc.pasoX, hasta:8, nodos:true, media:r.Fmedia, cursor:e ? aqui : null });
-    rotulosArea(ctx, c, ej, pts, 0, 8);
+    // Si se detiene, solo cuenta (y se pinta) el área hasta donde llega; el resto de la gráfica queda solo con su contorno.
+    const hastaX = r.seDetiene ? r.xDetiene : 8;
+    const ej = graficaFx(ctx, c, B, { puntos:pts, R:esc.R, pasoX:esc.pasoX, hasta:hastaX, nodos:true, media:r.llega ? r.Fmedia : null, cursor:e ? aqui : null });
+    if (hastaX > 0.05) rotulosArea(ctx, c, ej, pts, 0, hastaX);
+    if (r.llega) rotuloEn(ctx, c, B, ej.X(8) - 110, ej.Y(r.Fmedia) + (r.Fmedia >= 0 ? -14 : 14), `F media = ${fmt(r.Fmedia, 1)} N`, c.F, 800);
     if (r.seDetiene && r.arranca) { ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, ej.X(r.xDetiene), B.y, ej.X(r.xDetiene), B.y + B.h); ctx.restore();
-      rotuloEn(ctx, c, B, ej.X(r.xDetiene) + 6, B.y + 12, `se detiene en x = ${fmt(r.xDetiene, 1)} m`, c.ink, 800); }
+      rotuloEn(ctx, c, B, ej.X(r.xDetiene) + 6, B.y + 26, `se detiene en x = ${fmt(r.xDetiene, 1)} m`, c.ink, 800); }
     GEO = { X:ej.X, Y:ej.Y, Finv: py => esc.R.y0 + (B.y + B.h - py)/B.h*(esc.R.y1 - esc.R.y0), nodos:pts.map(([x, F]) => ({ x:ej.X(x), y:ej.Y(F) })) };
     const Fa = M.fuerzaEn(pts, aqui);
     riel(ctx, c, z.riel, X, [{ x:aqui, m:S.ex.m, F:Fa, etqF:`F = ${fmt(Fa, 0)} N`, v, verV:true, etqV:`v = ${fmt(v, 1)} m/s`, marca:!r.arranca ? 'no arranca' : '' }], { Fmax:40, kv:6 });
     if (z.barras){
       const tope = Math.max(20, r.Ec0 + Pg.positiva)*1.08;
-      barras3(ctx, c, z.barras, [{ nombre:'Ec', sub:'carrito', col:c.Ec, hl:'Ec', v:e ? Ec : Math.max(0, r.Ec), ini:r.Ec0 }], tope, r.llega ? `W neto = ΔEc = ${J(r.W)}` : r.arranca ? 'se detiene' : 'no arranca');
+      barras3(ctx, c, z.barras, [{ nombre:'Ec', sub:'carrito', col:c.Ec, hl:'Ec', v:e ? Ec : r.Ec0, ini:r.Ec0 }], tope, r.llega ? `W neto = ΔEc = ${J(r.W)}` : r.arranca ? `hasta detenerse: W = ${J(r.W)}` : 'no arranca');
     }
   }
 }
@@ -1468,13 +1477,23 @@ function describir(){
   else if (s.esc === 'D') t = rev ? `El área bajo F = kx entre 0,1 m y 0,3 m es un trapecio de ${J(rk.W)}: el triángulo de 0 a 0,3 m, ${J(rk.grande)}, menos el de 0 a 0,1 m, ${J(rk.chico)}. La energía elástica sube de ${J(rk.chico)} a ${J(rk.grande)}.` : 'Gráfica: la recta F = kx, con marcas en 0,1 m y 0,3 m. El resorte está estirado 0,1 m.';
   else {
     const r = rX(), i = S.ex.foco, P = M.areaPartes(ptsX());
-    t = `Punto en x = ${XS[i]} m: ${fmt(S.ex.F[i], 0)} N. Trabajo de 0 a 8 m: ${J(P.positiva)} por encima del eje y ${J(P.negativa)} por debajo; neto ${J(P.W)}. ` +
-      (!r.arranca ? 'Con esa rapidez inicial y esa fuerza en x = 0, el carrito no arranca.' : r.seDetiene ? `Con ${fmt(S.ex.m, 0)} kg y ${fmt(S.ex.v0, 1)} m/s, se detiene en x = ${fmt(r.xDetiene, 1)} m y la fuerza lo regresa.` : `Con ${fmt(S.ex.m, 0)} kg y ${fmt(S.ex.v0, 1)} m/s, termina a ${fmt(r.v, 1)} m/s.`);
+    t = `Punto en x = ${XS[i]} m: ${fmt(S.ex.F[i], 0)} N. Área de 0 a 8 m: ${J(P.positiva)} por encima del eje y ${J(P.negativa)} por debajo` + (r.llega ? `; trabajo neto ${J(P.W)}. ` : '. ') + finalX(r, true);
   }
   if (t !== descPrevio){ descPrevio = t; $('desc3').textContent = t; }
 }
 
 /* ---------- Explorador ---------- */
+// Cómo termina el carrito, en palabras (pastillas y lector de pantalla).
+function finalX(r, largo){
+  if (!r.arranca) return largo ? 'Con esa rapidez inicial y esa fuerza en x = 0, el carrito no arranca.' : 'no arranca: con v₀ = 0, la fuerza en x = 0 no lo empuja hacia adelante';
+  if (r.seDetiene){
+    const queda = Math.abs(M.fuerzaEn(ptsX(), r.xDetiene)) < 1e-9, x = fmt(r.xDetiene, 1);
+    if (!largo) return queda ? `llega justo a x = ${x} m con rapidez 0, donde la fuerza es cero: queda ahí` : `se detiene en x = ${x} m: la fuerza lo regresa`;
+    return `Con ${fmt(S.ex.m, 0)} kg y ${fmt(S.ex.v0, 1)} m/s, ` + (queda ? `llega justo a x = ${x} m con rapidez 0, donde la fuerza es cero: queda ahí.` : `se detiene en x = ${x} m y la fuerza lo regresa.`)
+      + ` Hasta ahí la fuerza hizo ${J(r.W)}, justo la energía cinética que traía; el resto de la gráfica no llega a actuar.`;
+  }
+  return largo ? `Con ${fmt(S.ex.m, 0)} kg y ${fmt(S.ex.v0, 1)} m/s, termina a ${fmt(r.v, 1)} m/s.` : `v final = ${fmt(r.v, 1)} m/s`;
+}
 function explorar(){
   $('xm').addEventListener('input', () => { S.ex.m = +$('xm').value; quieto(); });
   $('xv').addEventListener('input', () => { S.ex.v0 = +$('xv').value; quieto(); });
@@ -1497,10 +1516,12 @@ function vivo(){
   const r = rX(), P = M.areaPartes(ptsX());
   $('xm-o').textContent = `${fmt(S.ex.m, 0)} kg`; $('xv-o').textContent = `${fmt(S.ex.v0, 1)} m/s`;
   const chip = (k, t) => `<span class="chip" style="border-color:var(--c-${k});color:var(--c-${k})">${t}</span>`;
-  const fin = !r.arranca ? 'no arranca: con v₀ = 0, la fuerza en x = 0 no lo empuja hacia adelante'
-    : r.seDetiene ? `se detiene en x = ${fmt(r.xDetiene, 1)} m: la fuerza lo regresa` : `v final = ${fmt(r.v, 1)} m/s`;
-  $('live3').innerHTML = `<div class="chips">${chip('F', `W⁺ = +${J(P.positiva)}`)}${chip('F', `W⁻ = ${P.negativa < 0 ? '−' : ''}${J(Math.abs(P.negativa))}`)}${chip('F', `W neto = ${J(P.W)}`)}
-    ${chip('Ec', `E<sub>c0</sub> = ${J(r.Ec0)}`)}${r.llega ? chip('Ec', `E<sub>c</sub> final = ${J(r.Ec)}`) : ''}${chip('v', fin)}</div>`;
+  const neg = `${P.negativa < 0 ? '−' : ''}${J(Math.abs(P.negativa))}`;
+  $('live3').innerHTML = r.llega
+    ? `<div class="chips">${chip('F', `W⁺ = +${J(P.positiva)}`)}${chip('F', `W⁻ = ${neg}`)}${chip('F', `W neto = ${J(P.W)}`)}
+      ${chip('Ec', `E<sub>c0</sub> = ${J(r.Ec0)} → ${J(r.Ec)}`)}${chip('v', finalX(r))}</div>`
+    : `<div class="chips">${chip('F', `área de 0 a 8 m: +${J(P.positiva)} y ${neg}`)}${r.arranca ? chip('F', `W hasta detenerse = ${J(r.W)}`) : ''}
+      ${chip('Ec', `E<sub>c0</sub> = ${J(r.Ec0)} → 0 J`)}${chip('v', finalX(r))}</div>`;
   draw(); describir();
 }
 function nodoMasCercano(p, rad){

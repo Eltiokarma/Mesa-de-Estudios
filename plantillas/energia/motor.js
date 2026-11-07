@@ -24,7 +24,8 @@
  *   areaPartes(puntos, x1, x2)   área partida donde F cruza el cero: { W, positiva, negativa, ceros, tramos }
  *   trabajoHasta(puntos, x)      trabajo desde el inicio de la gráfica hasta x
  *   fuerzaVariable({ puntos, m, v0, x1, x2 })  carrito empujado por F(x) en un riel sin roce: W, ΔEc, rapidez,
- *                                si se detiene, y lo que da cada error típico al leer la gráfica (campo errores)
+ *                                si se detiene, y lo que da cada error típico al leer la gráfica (campo errores).
+ *                                v2 es v² (no la rapidez v). Si el carrito se detiene, W es el trabajo hasta detenerse.
  *   recorridoFuerza({ puntos, m, v0, n })  lo mismo, instante a instante, para animarlo
  *   resorteArea(k, x1, x2)       trabajo para llevar un resorte de x1 a x2 como resta de dos triángulos, con sus errores
  *
