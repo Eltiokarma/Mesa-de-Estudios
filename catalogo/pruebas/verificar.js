@@ -664,6 +664,12 @@ const V = {
   'tt-02': d => { const r = motor('transformaciones-trig').cociente({ p: d.p, q: d.q, num: '+', den: '+' }), e = r.errores;
     return { correcta: r.texto, errores: { 'TT4-no-divide-entre-2': e.sinDividir.texto, 'TT2-semidiferencia-por-semisuma': e.intercambia.texto, 'TT3-cot-por-tan': e.funcion.texto } }; },
 
+  // cp-01 y cp-02: coordenadas-polares (reserva).
+  'cp-01': d => { const r = motor('coordenadas-polares').aPolares({ x: d.x, y: d.y }), e = r.errores;
+    return { correcta: r.texto, errores: { 'CP10-arctan-de-la-calculadora': e.arctanDirecto.texto, 'CP13-r-sin-raiz': e.sinRaiz.texto, 'CP12-angulo-de-referencia': e.referencia.texto } }; },
+  'cp-02': d => { const r = motor('coordenadas-polares').circuloEje({ a: d.a, f: d.f }), e = r.errores;
+    return { correcta: r.texto, errores: { 'CP15-centro-en-el-polo': e.centroPolo.texto, 'CP16-centro-en-a': e.centroEnA.texto, 'CP17-eje-cruzado': e.ejeCruzado.texto } }; },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },

@@ -4022,6 +4022,30 @@
     "TT3-cot-por-tan": {
      "respaldo": "hipotesis",
      "describe": "Da la cotangente en vez de la tangente (avance entre altura)"
+    },
+    "CP10-arctan-de-la-calculadora": {
+     "respaldo": "hipotesis",
+     "describe": "Toma θ = arctan(y/x) tal como sale de la calculadora, sin mirar el cuadrante (CP10)"
+    },
+    "CP12-angulo-de-referencia": {
+     "respaldo": "hipotesis",
+     "describe": "Da el ángulo agudo con el eje x en vez del ángulo medido desde el eje polar (CP12)"
+    },
+    "CP13-r-sin-raiz": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida la raíz: r = x² + y² (CP13)"
+    },
+    "CP15-centro-en-el-polo": {
+     "respaldo": "hipotesis",
+     "describe": "Ve r = a sen θ como la circunferencia de centro en el polo y radio |a| (CP15)"
+    },
+    "CP16-centro-en-a": {
+     "respaldo": "hipotesis",
+     "describe": "Pone el centro a distancia |a| del polo, con radio |a|: no ve que |a| es el diámetro (CP16)"
+    },
+    "CP17-eje-cruzado": {
+     "respaldo": "hipotesis",
+     "describe": "Pone el centro en el otro eje: cruza seno y coseno (CP17)"
     }
    },
    "pares": [
