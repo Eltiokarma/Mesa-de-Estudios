@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El tablero de los caminos: binomio de Newton</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de numeros-complejos.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4): el primer término del
+   binomio, a (y cada paso a la izquierda del tablero), naranja; el segundo, b (y cada paso a la derecha), verde; k,
+   cuántas veces se eligió b (el casillero y su número de letras b), fucsia; n, el exponente (la fila del tablero),
+   azul; y el exponente de x en el término, petróleo. Los números del triángulo, los coeficientes y los resultados van
+   en tinta.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py): ΔE00 mínimo 23,6 en claro y 25,3 en oscuro (b contra el exponente
+   de x); contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %): el más bajo es el petróleo en claro,
+   4,63, y el fucsia en oscuro, 4,64. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-a:#a05200; --c-b:#466d14; --c-k:#a10fbf; --c-n:#1f5fbf; --c-m:#0f766e;
+  --relleno:.13;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-a:#f0a04a; --c-b:#a3d65e; --c-k:#cf6bfa; --c-n:#7cb0ff; --c-m:#5ed9c8;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-a:#f0a04a; --c-b:#a3d65e; --c-k:#cf6bfa; --c-n:#7cb0ff; --c-m:#5ed9c8;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:12px; height:12px; border-radius:3px; display:inline-block; border:2px solid; opacity:.9}
+.legend i.linea{width:16px; height:0; border-width:3px 0 0; border-radius:0}
+.legend i.trazos{width:16px; height:0; border-width:2px 0 0; border-style:dashed; border-radius:0}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); min-width:0}
+.eq{font-family:var(--mono); font-size:1rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .tramo{white-space:nowrap}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.opt .m.frase{font-family:var(--font)}
+@media (hover:hover){ .opt:hover:not(:disabled){border-color:var(--ink)} }
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.control{display:grid; gap:4px; max-width:420px}
+.control label{font-size:.9rem; color:var(--muted); font-weight:700}
+input[type=range]{width:100%; margin:0; accent-color:var(--ink); min-height:32px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .92rem var(--mono); font-variant-numeric:tabular-nums; white-space:normal; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+.palabras{display:flex; flex-wrap:wrap; gap:4px 8px; font:700 .95rem var(--mono); margin:0}
+.palabras span{white-space:nowrap}
+.palabras .la{color:var(--c-a)} .palabras .lb{color:var(--c-b)}
+.eq sup, .eq sub{font-size:.72em; line-height:0}
+.eq .v sup, .eq .v sub{font-size:.8em}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Álgebra · Binomio de Newton · Problemas tipo admisión</p>
+      <h1>El tablero de los caminos</h1>
+      <p class="sub">Una bolita baja por un tablero de clavos y en cada clavo elige izquierda o derecha. Cuenta sus caminos y arma, término por término, el desarrollo de (a + b)ⁿ.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena: el tablero de los caminos"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/binomio-newton">Problemas para lápiz y papel</a></p>
+</main>
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'binomio-newton', unidad: 'algebra.binomio-de-newton', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+/* ================= Piezas compartidas =================
+   Toda la matemática (combinatorios, filas, términos, coeficientes, Galton y los errores típicos) sale de
+   MotorBinomio (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MB = MotorBinomio;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+const Cnk = (n, k) => MB.combinatorio({ n, k }).texto;
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const a_ = t => V('a', t), b_ = t => V('b', t), k_ = t => V('k', t), n_ = t => V('n', t), m_ = t => V('m', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, f) => a + (b - a)*f;
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+// Una ecuación larga se parte solo entre tramos (después de ⟹, de = o de ;), nunca a media expresión.
+function tramos(raiz){ raiz.querySelectorAll('.eq').forEach(q => { if (q.dataset.tr) return; q.dataset.tr = '1';
+  const nota = q.querySelector('.note'), html = nota ? q.innerHTML.replace(nota.outerHTML, '') : q.innerHTML;
+  q.innerHTML = html.split(/(⟹|;| = )/).reduce((a, p, i, l) => (i % 2 ? a : a + `<span class="tramo">${p}${l[i + 1] || ''}</span> `), '') + (nota ? ' ' + nota.outerHTML : ''); }); }
+const opcionesHTML = (opts, idFb, frase) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m${frase ? ' frase' : ''}">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" aria-live="polite"></p>`;
+// Una palabra de caminos con sus letras de color (a naranja, b verde)
+const palabra = w => `<span>${[...w].map(c => `<i class="l${c}" style="font-style:normal">${c}</i>`).join('')}</span>`;
+const KS = ['a', 'b', 'k', 'n', 'm'];
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    relleno:Number(css('--relleno')) || .13, font:css('--font'), mono:css('--mono') };
+  for (const k of KS) c[k] = css('--c-' + k);
+  return c;
+}
+const col = (c, k) => (c[k] || k);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= El tablero =================
+   st.tipo = 'tri': el triángulo de Pascal como tablero de clavos. La fila n (azul) tiene n + 1 casilleros; el
+   casillero k (fucsia) es el de las palabras con k letras b. Cada paso a la izquierda es una a (naranja) y cada paso
+   a la derecha, una b (verde).
+     R: última fila; hasta: filas que se ven (con fracción, la siguiente aparece); numeros: hasta qué fila se escriben
+     los números; anillos: [[n, k], …] (fucsia); padres: [[n, k], …] (tinta, punteado); caminos: [{ w, f, tenue }];
+     sumas: hasta qué fila se escribe la suma a la derecha; abajo(k) → partes del rótulo bajo la última fila;
+     mano: { k, min, max } casillero de la última fila que se arrastra.
+   st.tipo = 'galton': el mismo tablero con casilleros abajo y bolitas que caen (st.bolas, st.t en ms).
+   st.tipo = 'regla': recta de exponentes de x (st.regla = { min, max, k, e(k), pasos, mostrar }). */
+function crearTablero(cv, idDesc, idLect, idLey){
+  const E = { st:null, lect:[], ley:[], hl:null, ocupado:false, tok:0, cad:0, anim:false, compacto:false, desc:'', alMover:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = false, sobre = false;
+  const margen = st => ({ l: 26, r: st.sumas !== undefined ? 46 : 12, t: 12, b: st.tipo === 'galton' ? 26 : (st.abajo ? 28 : 12) });
+  const extraU = st => (st.tipo === 'galton' ? 3 : 0);
+  function uDe(w, h){
+    const st = E.st, m = margen(st), R = st.R;
+    let u = Math.min(52, (w - m.l - m.r)/(R + 1));
+    if (h) u = Math.min(u, (h - m.t - m.b)/(1 + .86*R + extraU(st)));
+    return u;
+  }
+  function alto(w){
+    const st = E.st; if (!st) return 300;
+    let h;
+    if (st.tipo === 'regla') h = 170;
+    else { const m = margen(st), u = uDe(w); h = Math.round(m.t + m.b + u*(1 + .86*st.R + extraU(st))); }
+    const g = innerWidth >= 900 ? Math.max(320, Math.min(560, innerHeight - 200)) : 470;
+    return Celular.alto(clamp(h, 160, g), E.compacto, { tope:260 });
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = Celular.dpr();
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  // posiciones del tablero
+  function lay(){
+    const st = E.st, m = margen(st), u = uDe(W, H), R = st.R;
+    const alto = u*(1 + .86*R + extraU(st)), t0 = m.t + Math.max(0, (H - m.t - m.b - alto)/2);
+    const cx = m.l + (W - m.l - m.r)/2;
+    return { u, r: Math.min(17, .4*u), x: (n, k) => cx + (k - n/2)*u, y: n => t0 + u/2 + .86*u*n, m };
+  }
+  // la regla de exponentes
+  function layR(){
+    const g = E.st.regla, p = 22, x0 = p, x1 = W - p;
+    return { X: e => x0 + (e - g.min)*(x1 - x0)/(g.max - g.min), y: H*.62 };
+  }
+  E.lay = lay;
+  E.config = o => {
+    E.tok++; E.cad++; E.anim = false;
+    E.st = o.st; E.lect = o.lect || []; E.ley = o.ley || []; E.desc = o.desc || ''; E.alMover = o.alMover || null;
+    const mov = !!(E.st.mano || (E.st.regla && E.st.regla.mano));
+    cv.tabIndex = mov ? 0 : -1;
+    cv.setAttribute('aria-label', mov ? 'Dibujo de la escena: el tablero de los caminos. Usa las flechas del teclado para mover el casillero marcado.' : 'Dibujo de la escena: el tablero de los caminos');
+    W = 0; resize(); E.leyenda(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.redimensionar = () => { W = 0; resize(); };
+  function linea(p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+  function texto(c, x, y, partes, align, tam, peso, fondo){
+    if (typeof partes === 'string') partes = [[partes, 'ink']];
+    ctx.font = `${peso || 800} ${tam || 12}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const ws = partes.map(([t]) => ctx.measureText(t).width), w = ws.reduce((s, v) => s + v, 0);
+    let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    x0 = clamp(x0, 2, W - w - 2);
+    if (fondo){ ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .92; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore(); }
+    let xx = x0; partes.forEach(([t, k], i) => { ctx.fillStyle = col(c, k); ctx.fillText(t, xx, y); xx += ws[i]; });
+  }
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  // puntos de un camino: de (0, 0) baja fila por fila; 'b' suma 1 al casillero
+  function puntos(L, w){ const P = [{ x:L.x(0, 0), y:L.y(0) }]; let k = 0; [...w].forEach((ch, j) => { if (ch === 'b') k++; P.push({ x:L.x(j + 1, k), y:L.y(j + 1) }); }); return P; }
+  function dibujarCamino(c, L, w, f, tenue){
+    const P = puntos(L, w), tramos = w.length*clamp(f, 0, 1);
+    ctx.save(); ctx.lineCap = 'round'; ctx.globalAlpha = tenue ? .28 : 1;
+    for (let j = 0; j < w.length && j < tramos; j++){
+      const g = Math.min(1, tramos - j), p = P[j], q = P[j + 1], kk = w[j];
+      ctx.strokeStyle = c[kk]; ctx.lineWidth = grosor(kk, tenue ? 3 : 4.5);
+      linea(p, { x: lerp(p.x, q.x, g), y: lerp(p.y, q.y, g) });
+    }
+    ctx.restore();
+  }
+  function dibujarTri(c, L){
+    const st = E.st, R = st.R, hasta = st.hasta === undefined ? R : st.hasta, numeros = st.numeros === undefined ? R : st.numeros;
+    const visible = n => (n <= hasta ? 1 : clamp(hasta - n + 1, 0, 1));
+    // aristas: a la izquierda (a) y a la derecha (b), tenues
+    for (let n = 0; n < R; n++){ const al = visible(n + 1); if (!(al > 0)) continue;
+      for (let k = 0; k <= n; k++){
+        ctx.save(); ctx.globalAlpha = .35*al; ctx.lineWidth = grosor('a', 1.6); ctx.strokeStyle = c.a;
+        linea({ x:L.x(n, k), y:L.y(n) }, { x:L.x(n + 1, k), y:L.y(n + 1) });
+        ctx.lineWidth = grosor('b', 1.6); ctx.strokeStyle = c.b;
+        linea({ x:L.x(n, k), y:L.y(n) }, { x:L.x(n + 1, k + 1), y:L.y(n + 1) }); ctx.restore(); } }
+    // caminos
+    for (const P of st.caminos || []) dibujarCamino(c, L, P.w, P.f === undefined ? 1 : P.f, P.tenue);
+    // flechas de Pascal: de los padres al hijo
+    for (const F of st.flechas || []){ const f = F.f === undefined ? 1 : F.f; if (!(f > 0)) continue;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; ctx.globalAlpha = .85;
+      for (const [n, k] of F.de){ const p = { x:L.x(n, k), y:L.y(n) }, q = { x:L.x(F.a[0], F.a[1]), y:L.y(F.a[0]) };
+        linea(p, { x:lerp(p.x, q.x, f), y:lerp(p.y, q.y, f) }); } ctx.restore(); }
+    // casilleros
+    const fs = clamp(Math.round(L.r*.82), 8, 13);
+    for (let n = 0; n <= R; n++){ const al = visible(n); if (!(al > 0)) continue;
+      for (let k = 0; k <= n; k++){
+        const x = L.x(n, k), y = L.y(n);
+        ctx.save(); ctx.globalAlpha = al;
+        ctx.fillStyle = c.card; ctx.strokeStyle = c.line; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(x, y, L.r, 0, 7); ctx.fill(); ctx.stroke();
+        const extra = st.extra && st.extra[n + ',' + k];
+        const t = extra !== undefined ? extra : (n <= numeros ? Cnk(n, k) : '');
+        if (t){ ctx.font = `800 ${t.length > 3 ? fs - 2 : fs}px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, x, y + .5); }
+        ctx.restore(); } }
+    for (const [n, k] of st.padres || []){ ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([4, 3]); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(L.x(n, k), L.y(n), L.r + 3, 0, 7); ctx.stroke(); ctx.restore(); }
+    for (const [n, k] of st.anillos || []){ ctx.save(); ctx.strokeStyle = c.k; ctx.lineWidth = grosor('k', 3); ctx.beginPath(); ctx.arc(L.x(n, k), L.y(n), L.r + 3, 0, 7); ctx.stroke(); ctx.restore(); }
+    // número de fila (n, azul)
+    for (let n = 0; n <= R; n++){ if (!(visible(n) >= 1)) continue;
+      texto(c, 4, L.y(n), [[String(n), 'n']], 'left', E.hl === 'n' ? 13 : 11, 800); }
+    // suma de cada fila
+    if (st.sumas !== undefined) for (let n = 0; n <= Math.min(st.sumas, R); n++)
+      texto(c, W - 4, L.y(n), [['= ' + MB.fila({ n }).texto, 'ink']], 'right', 11, 800);
+    // rótulos bajo la última fila
+    if (st.abajo) for (let k = 0; k <= R; k++){ const p = st.abajo(k); if (p) texto(c, L.x(R, k), L.y(R) + L.r + 11, p, 'center', 10.5, 800); }
+    // casillero que se arrastra
+    if (st.mano){ const x = L.x(R, st.mano.k), y = L.y(R), on = arrastrando || sobre;
+      ctx.save(); ctx.fillStyle = c.k; ctx.globalAlpha = on ? .22 : .12; ctx.beginPath(); ctx.arc(x, y, L.r + 10, 0, 7); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.k; ctx.lineWidth = grosor('k', 3.5); ctx.beginPath(); ctx.arc(x, y, L.r + 4, 0, 7); ctx.stroke(); ctx.restore(); }
+  }
+  function dibujarGalton(c, L){
+    const st = E.st, R = st.R, g = st.galton;
+    // clavos
+    for (let n = 0; n < R; n++) for (let k = 0; k <= n; k++){ ctx.fillStyle = c.muted; ctx.beginPath(); ctx.arc(L.x(n, k), L.y(n) + L.u*.3, Math.max(2, L.u*.07), 0, 7); ctx.fill(); }
+    // casilleros
+    const yb = L.y(R) + L.u*3.2, alto = L.u*2.9, ancho = L.u*.78, tope = Math.max(40, ...g.cuenta);
+    for (let k = 0; k <= R; k++){
+      const x = L.x(R, k);
+      ctx.strokeStyle = k === g.marca ? c.k : c.line; ctx.lineWidth = k === g.marca ? grosor('k', 2.5) : 1.5;
+      ctx.strokeRect(x - ancho/2, yb - alto, ancho, alto);
+      const h = alto*g.cuenta[k]/tope;
+      ctx.save(); ctx.fillStyle = k === g.marca ? c.k : c.muted; ctx.globalAlpha = k === g.marca ? .5 : .32; ctx.fillRect(x - ancho/2 + 2, yb - h, ancho - 4, h); ctx.restore();
+      if (g.esperado){ const he = alto*g.esperado[k]/tope; ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.5; linea({ x:x - ancho/2, y:yb - he }, { x:x + ancho/2, y:yb - he }); ctx.restore(); }
+      if (g.contar) texto(c, x, yb - h - 9, [[String(g.cuenta[k]), k === g.marca ? 'k' : 'ink']], 'center', 10.5, 800);
+      texto(c, x, yb + 12, [[String(k), 'k']], 'center', 10.5, 800);
+    }
+    // bolitas en camino
+    const rb = Math.max(2.5, L.u*.11);
+    for (const B of g.vuelo || []){ ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(B.x, B.y, rb, 0, 7); ctx.fill(); }
+  }
+  function dibujarRegla(c){
+    const g = E.st.regla, Lr = layR(), y = Lr.y;
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; linea({ x:Lr.X(g.min), y }, { x:Lr.X(g.max), y });
+    for (let e = g.min; e <= g.max; e++){ const x = Lr.X(e), largo = e % 3 === 0 ? 7 : 4;
+      ctx.strokeStyle = e === 0 ? c.ink : c.muted; ctx.lineWidth = e === 0 ? 2.5 : 1.2; linea({ x, y:y - largo }, { x, y:y + largo });
+      if (e % 3 === 0 || e === 0) texto(c, x, y + 18, [[e < 0 ? '−' + (-e) : String(e), e === 0 ? 'ink' : 'muted']], 'center', 11, e === 0 ? 800 : 700); }
+    texto(c, W/2, H - 12, [['exponente de x', 'm']], 'center', 11, 700);
+    if (!g.mostrar) return;
+    // saltos desde k = 0 hasta el k actual
+    const kk = g.kf === undefined ? g.k : g.kf;
+    for (let j = 0; j < Math.ceil(kk); j++){
+      const f = Math.min(1, kk - j), x0 = Lr.X(g.e(j)), x1 = Lr.X(g.e(j + 1)), xm = lerp(x0, x1, .5), alto = 26;
+      ctx.save(); ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 2.5); ctx.beginPath();
+      const N = 16; for (let i = 0; i <= N*f; i++){ const t = i/N, xx = lerp(x0, x1, t), yy = y - 10 - 4*alto*t*(1 - t); if (i) ctx.lineTo(xx, yy); else ctx.moveTo(xx, yy); }
+      ctx.stroke(); ctx.restore();
+      if (f >= 1) texto(c, xm, y - 10 - alto - 8, [[g.salto, 'b']], 'center', 10.5, 800, true);
+    }
+    const e = kk === Math.floor(kk) ? g.e(kk) : lerp(g.e(Math.floor(kk)), g.e(Math.ceil(kk)), kk - Math.floor(kk)), x = Lr.X(e);
+    const on = arrastrando || sobre;
+    if (g.mano){ ctx.save(); ctx.fillStyle = c.m; ctx.globalAlpha = on ? .22 : .12; ctx.beginPath(); ctx.arc(x, y, 18, 0, 7); ctx.fill(); ctx.restore(); }
+    ctx.fillStyle = c.card; ctx.strokeStyle = c.m; ctx.lineWidth = grosor('m', 3.5); ctx.beginPath(); ctx.arc(x, y, 8, 0, 7); ctx.fill(); ctx.stroke();
+    texto(c, x, 18, [['k = ', 'k'], [String(Math.round(kk)), 'k']], 'center', 12, 800, true);
+  }
+  E.dibujar = () => {
+    if (!W || !E.st) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, H);
+    if (E.st.tipo === 'regla') return dibujarRegla(c);
+    const L = lay();
+    if (E.st.tipo === 'galton'){ E.st.mover && E.st.mover(L); dibujarGalton(c, L); }
+    else dibujarTri(c, L);
+  };
+  const it = (k, t, tipo) => `<span><i class="${tipo || ''}" style="border-color:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k});${tipo ? '' : `background:color-mix(in srgb, var(${k === 'ink' || k === 'muted' ? '--' + k : '--c-' + k}) 25%, transparent)`}"></i>${t}</span>`;
+  E.leyenda = () => { document.getElementById(idLey).innerHTML = E.ley.map(([k, t, tipo]) => it(k, t, tipo)).join(''); };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(f => f(E));
+    document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' || k === 'muted' ? '--' + k : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (!E.anim) document.getElementById(idDesc).textContent = [E.desc, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+  };
+  E.animar = (dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  // Varias animaciones en fila (un E.config nuevo o E.parar corta la cadena)
+  E.cadena = (fs, fin) => { const id = ++E.cad; let i = 0; const sig = () => { if (id !== E.cad) return; if (i >= fs.length){ if (fin) fin(); return; } fs[i++](sig); }; sig(); };
+  E.parar = () => { E.tok++; E.cad++; E.anim = false; };
+  // ---------- arrastrar el casillero marcado (táctil, ratón y teclado) ----------
+  function punta(){ const st = E.st;
+    if (st.tipo === 'regla'){ const g = st.regla, Lr = layR(); return { x:Lr.X(g.e(g.k)), y:Lr.y }; }
+    const L = lay(); return { x:L.x(st.R, st.mano.k), y:L.y(st.R) }; }
+  const movible = () => !!(E.st && (E.st.mano || (E.st.regla && E.st.regla.mano))) && !E.ocupado && !E.anim;
+  function cerca(p, radio){ if (!movible()) return false; const q = punta(); return Math.hypot(p.x - q.x, p.y - q.y) < radio; }
+  function fijar(k){
+    const st = E.st;
+    if (st.tipo === 'regla'){ const g = st.regla; k = clamp(k, 0, g.n); if (k === g.k) return; g.k = k; }
+    else { k = clamp(k, st.mano.min === undefined ? 0 : st.mano.min, st.mano.max === undefined ? st.R : st.mano.max); if (k === st.mano.k) return; st.mano.k = k; }
+    if (E.alMover) E.alMover(k); E.dibujar(); E.avisar();
+  }
+  function aK(p){ const st = E.st;
+    if (st.tipo === 'regla'){ const g = st.regla, Lr = layR(); let mejor = 0, dm = Infinity; for (let k = 0; k <= g.n; k++){ const d = Math.abs(Lr.X(g.e(k)) - p.x); if (d < dm){ dm = d; mejor = k; } } return mejor; }
+    const L = lay(); return Math.round((p.x - L.x(st.R, 0))/L.u); }
+  Celular.arrastre(cv, {
+    activo: movible,
+    cerca: (p, r) => cerca(p, r),
+    empezar: () => { arrastrando = true; E.dibujar(); },
+    mover: p => { if (arrastrando) fijar(aK(p)); },
+    soltar: () => { arrastrando = false; E.dibujar(); },
+    sobre: s => { sobre = s; E.dibujar(); }
+  });
+  cv.addEventListener('keydown', e => {
+    if (!movible()) return;
+    const d = { ArrowRight:1, ArrowLeft:-1, ArrowUp:1, ArrowDown:-1 }[e.key];
+    if (!d) return;
+    e.preventDefault();
+    const st = E.st; fijar((st.tipo === 'regla' ? st.regla.k : st.mano.k) + d);
+  });
+  return E;
+}
+</script>
+<script>
+// Textos de respaldo compartidos por los dos modos
+const HIP = `<p class="fuente">El informe de ideas erróneas de álgebra no trata el binomio de Newton: estas opciones son hipótesis nuestras (BN), armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.</p>`;
+const FUENTE_AL = `<p class="fuente">El informe de ideas erróneas de álgebra documenta de forma parcial el caso del cuadrado, (a + b)² = a² + b² (AL8: el SIMCE de Chile lo señala como el error típico del binomio, sin un porcentaje legible), y trata el caso general, (a + b)ⁿ = aⁿ + bⁿ, como hipótesis con base en Matz (1982), sin dato propio (AL11). Las otras opciones son hipótesis nuestras.</p>`;
+const LEY = [['a', 'paso a la izquierda: primer término', 'linea'], ['b', 'paso a la derecha: segundo término', 'linea'], ['n', 'fila n (exponente)'], ['k', 'casillero k (veces que se elige el segundo)']];
+const sub = MB.sub;
+const unCamino = (n, k) => 'a'.repeat(n - k) + 'b'.repeat(k);
+const mezcla = (n, k) => { const L = MB.caminos({ n, k }).lista; return L[Math.floor(L.length/2)]; };
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearTablero($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+const AB = { A:{ c:1, v:{ a:1 } }, B:{ c:1, v:{ b:1 } } };
+const C1 = MB.combinatorio({ n:5, k:3 });
+const P2c = MB.pascal({ n:7, k:3 });
+const F3 = MB.fila({ n:6 });
+const T4 = MB.terminos({ n:7 });
+const T5 = MB.termino(Object.assign({ n:9, lugar:4 }, AB));
+const B6 = { A:{ c:2, v:{ x:1 } }, B:{ c:1 } }, K6 = MB.coeficiente(Object.assign({ n:6, m:4 }, B6));
+const B7 = { A:{ c:1, v:{ x:1 } }, B:{ c:-2 } }, T7 = MB.termino(Object.assign({ n:5, lugar:4 }, B7));
+const B8 = { A:{ c:1, v:{ x:2 } }, B:{ c:1, v:{ x:-1 } } }, K8 = MB.coeficiente(Object.assign({ n:6, m:0 }, B8));
+const may = t => t.charAt(0).toUpperCase() + t.slice(1);
+
+const P1 = { id:'binomio-newton-paso1', ok:'c', opts:[
+  ['a', C1.errores.variacion.texto, 'BN12-variacion-ordena-las-b', 'hipotesis'],
+  ['b', C1.errores.soloK.texto, 'BN13-olvida-dividir-entre-(n-k)!', 'hipotesis'],
+  ['c', C1.texto],
+  ['d', C1.errores.todas.texto, 'BN14-cuenta-todos-los-caminos', 'hipotesis']],
+  fb:{ c:'¡Bien! Basta elegir en cuáles 3 de los 5 clavos la bolita va a la derecha: C(5, 3) = 10 maneras.',
+    a:'Elegiste la A. 60 = 5 · 4 · 3 cuenta las b como si fueran distintas (primera, segunda y tercera b). Las tres b son iguales: cada camino se contó 3! = 6 veces, y 60/6 = 10. La correcta está marcada.',
+    b:'Elegiste la B. 20 = 5!/3! olvida dividir también entre 2!, las maneras de ordenar las dos a. La correcta está marcada.',
+    d:'Elegiste la D. 32 = 2⁵ son todos los caminos de 5 filas, lleguen donde lleguen. Solo cuentan los que terminan con 3 letras b. La correcta está marcada.' } };
+const P2 = { id:'binomio-newton-paso2', ok:'b', opts:[
+  ['a', P2c.errores.desfase.texto, 'BN2-desfase-del-indice', 'hipotesis'],
+  ['b', P2c.texto],
+  ['c', P2c.errores.soloUno.texto, 'BN16-copia-sin-sumar', 'hipotesis'],
+  ['d', P2c.errores.multiplica.texto, 'BN15-multiplica-los-de-arriba', 'hipotesis']],
+  fb:{ b:'¡Bien! 35 + 35 = 70: cada camino que llega al casillero viene de uno de sus dos vecinos de arriba.',
+    a:'Elegiste la A. 56 = C(8, 3) es el casillero de al lado. El marcado está debajo de 35 y 35, entre los dos: es C(8, 4). La correcta está marcada.',
+    c:'Elegiste la C. 35 copia uno solo de los dos de arriba. Al casillero llegan los caminos de los dos: se suman. La correcta está marcada.',
+    d:'Elegiste la D. 1225 = 35 · 35. Un camino llega por un vecino o por el otro, no por los dos a la vez: se suma, no se multiplica. La correcta está marcada.' } };
+const P3 = { id:'binomio-newton-paso3', ok:'d', opts:[
+  ['a', F3.errores.sumaN.texto, 'BN5-suma-de-la-fila-es-n', 'hipotesis'],
+  ['b', F3.errores.doble.texto, 'BN6-suma-de-la-fila-es-2n', 'hipotesis'],
+  ['c', F3.errores.cuadrado.texto, 'BN18-suma-de-la-fila-es-n2', 'hipotesis'],
+  ['d', F3.texto]],
+  fb:{ d:'¡Bien! Cada casillero manda sus caminos a los dos de abajo, así que cada fila suma el doble que la de arriba: 1, 2, 4, …, 64 = 2⁶.',
+    a:'Elegiste la A. 6 es el número de la fila. La suma cuenta todos los caminos de 6 filas: con dos opciones en cada clavo son 2 · 2 · 2 · 2 · 2 · 2. La correcta está marcada.',
+    b:'Elegiste la B. 12 = 2 · 6 suma 2 por cada fila; en realidad cada fila multiplica por 2: 2⁶. La correcta está marcada.',
+    c:'Elegiste la C. 36 = 6². Suma la fila 6 en el dibujo (1 + 6 + 15 + 20 + 15 + 6 + 1) y compruébalo: es 2⁶, no 6². La correcta está marcada.' } };
+const P4 = { id:'binomio-newton-paso4', ok:'a', opts:[
+  ['a', T4.texto],
+  ['b', T4.errores.nTerminos.texto, 'BN1-n-terminos', 'hipotesis'],
+  ['c', T4.errores.reparte.texto, 'AL11-reparte-el-exponente', 'hipotesis'],
+  ['d', T4.errores.sinJuntar.texto, 'BN14-no-junta-semejantes', 'hipotesis']],
+  fb:{ a:'¡Bien! Los caminos de 7 filas terminan en 8 casilleros, con k = 0, 1, …, 7 letras b: (a + b)⁷ tiene 7 + 1 = 8 términos.',
+    b:'Elegiste la B. 7 deja fuera un casillero: k va de 0 a 7, y eso son 8 valores (a⁷, con k = 0, también es un término). La correcta está marcada.',
+    c:'Elegiste la C. 2 es pensar que (a + b)⁷ = a⁷ + b⁷, como si el exponente se repartiera. Esos son solo los caminos de los dos bordes: los del medio dan a⁶b, a⁵b², … La correcta está marcada.',
+    d:'Elegiste la D. 128 = 2⁷ son los caminos antes de juntar los que llegan al mismo casillero: abb… y bab… dan el mismo término. La correcta está marcada.' } };
+const P5 = { id:'binomio-newton-paso5', ok:'c', opts:[
+  ['a', T5.errores.desfase.texto, 'BN2-desfase-del-indice', 'hipotesis'],
+  ['b', T5.errores.kCompleto.texto, 'BN10-k-igual-al-lugar', 'hipotesis'],
+  ['c', T5.texto],
+  ['d', T5.errores.alReves.texto, 'BN11-exponentes-al-reves', 'hipotesis']],
+  fb:{ c:'¡Bien! t₄ es el cuarto casillero: k = 3 letras b y 9 − 3 = 6 letras a. t₄ = C(9, 3)a⁶b³ = 84a⁶b³.',
+    a:'Elegiste la A. Los exponentes están bien, pero C(9, 4) = 126 es el casillero de al lado: en t₄ va C(9, 3), con el mismo 3 que el exponente de b. La correcta está marcada.',
+    b:'Elegiste la B. 126a⁵b⁴ tiene 4 letras b: es t₅. Se cuenta desde t₁ = a⁹, que tiene k = 0; por eso t₄ tiene k = 3. La correcta está marcada.',
+    d:'Elegiste la D. 84a³b⁶ cambia los exponentes: en t₄ se eligió b solo 3 veces, así que b va al cubo y a, a la sexta. La correcta está marcada.' } };
+const P6 = { id:'binomio-newton-paso6', ok:'b', opts:[
+  ['a', K6.errores.sinElevar.texto, 'BN4-no-eleva-el-coeficiente', 'hipotesis'],
+  ['b', K6.texto],
+  ['c', K6.errores.desfase.texto, 'BN2-desfase-del-indice', 'hipotesis'],
+  ['d', K6.errores.sinCoef.texto, 'BN3-olvida-el-combinatorio', 'hipotesis']],
+  fb:{ b:'¡Bien! x⁴ sale de elegir 2x cuatro veces y 1 dos veces: k = 2. C(6, 2) · (2x)⁴ · 1² = 15 · 16x⁴ = 240x⁴.',
+    a:'Elegiste la A. 30 = 15 · 2 multiplica por 2 una sola vez. Cada una de las cuatro veces que se elige 2x entra un 2: (2x)⁴ = 16x⁴, no 2x⁴. La correcta está marcada.',
+    c:'Elegiste la C. 320 = 20 · 16 usa C(6, 3). Para x⁴ se eligió 1 dos veces: k = 2, y va C(6, 2) = 15. La correcta está marcada.',
+    d:'Elegiste la D. 16 = 2⁴ olvida contar los caminos: hay C(6, 2) = 15 maneras de elegir en qué dos paréntesis va el 1. La correcta está marcada.' } };
+const P7 = { id:'binomio-newton-paso7', ok:'b', opts:[
+  ['a', T7.errores.sinSigno.texto, 'BN8-olvida-el-signo', 'hipotesis'],
+  ['b', T7.texto],
+  ['c', T7.errores.sinElevar.texto, 'BN4-no-eleva-el-coeficiente', 'hipotesis'],
+  ['d', T7.errores.desfase.texto, 'BN2-desfase-del-indice', 'hipotesis']],
+  fb:{ b:'¡Bien! t₄ tiene k = 3: tres veces −2. C(5, 3) · x² · (−2)³ = 10 · x² · (−8) = −80x².',
+    a:'Elegiste la A. 80x² olvida el signo: (−2)³ = −8 es negativo porque el exponente es impar. En (x − 2)⁵ los signos de los términos se alternan. La correcta está marcada.',
+    c:'Elegiste la C. −20x² = 10 · (−2) · x² pone el −2 una sola vez; entra tres veces: (−2)³ = −8. La correcta está marcada.',
+    d:'Elegiste la D. −40x² = 5 · (−8)x² usa C(5, 4). En t₄ va C(5, 3) = 10, con el mismo 3 del exponente de −2. La correcta está marcada.' } };
+const P8 = { id:'binomio-newton-paso8', ok:'b', frase:true, opts:[
+  ['a', `${K8.errores.desfase.texto}: el exponente es cero en t₅, así que va C(6, 5)`, 'BN2-desfase-del-indice', 'hipotesis'],
+  ['b', `${K8.texto}: el exponente 12 − 3k vale cero cuando k = 4`],
+  ['c', `${K8.errores.central.texto}: el término sin x siempre es el central, t₄`, 'BN19-independiente-es-el-central', 'hipotesis'],
+  ['d', `${may(K8.errores.exponenteSuma.texto)}: el exponente 12 − k no vale cero con k ≤ 6`, 'BN9-suma-mal-los-exponentes', 'hipotesis']],
+  fb:{ b:'¡Bien! Con k pasos a la derecha, x queda con exponente 2(6 − k) − k = 12 − 3k. Vale cero con k = 4: t₅ = C(6, 4) = 15.',
+    a:'Elegiste la A. Es t₅, sí, pero t₅ tiene k = 4: va C(6, 4) = 15, no C(6, 5). La correcta está marcada.',
+    c:'Elegiste la C. El término central, t₄ = 20x³, todavía tiene x. El término sin x lo deciden los exponentes, no el lugar. La correcta está marcada.',
+    d:'Elegiste la D. 1/x es x⁻¹: cada paso a la derecha resta 1 al exponente, no lo suma. Queda 12 − 2k − k = 12 − 3k. La correcta está marcada.' } };
+
+// ---------- configuración de cada paso (antes = sin responder; despues = ya respondida y libre) ----------
+const s1 = { n:5, k:3 }, s2 = { k:4 }, s3 = { n:6 }, s4 = { n:7 }, s5 = { k:3 }, s6 = { k:2 }, s7 = { k:3 }, s8 = { k:4 };
+function pal1(){ const p = $('pal1'); if (!p) return; const L = MB.caminos({ n:s1.n, k:s1.k }).lista;
+  p.innerHTML = L.length <= 36 ? L.map(palabra).join('') : `<span>${L.length} palabras: demasiadas para escribirlas aquí.</span>`; }
+function cfg1(ya){
+  const st = ya
+    ? { tipo:'tri', R:s1.n, caminos: MB.caminos({ n:s1.n, k:s1.k }).lista.map(w => ({ w, tenue:true })), mano:{ k:s1.k } }
+    : { tipo:'tri', R:5, numeros:-1, anillos:[[5, 3]], caminos:[{ w:'abbab' }] };
+  E.config({ st, ley:LEY,
+    lect: ya ? [() => ['n', 'filas, n', String(s1.n)], () => ['k', 'letras b, k', String(s1.k)], () => ['ink', 'caminos, C(n, k)', Cnk(s1.n, s1.k)]]
+             : [() => ['n', 'filas, n', '5'], () => ['k', 'letras b, k', '3']],
+    desc: ya ? 'Cada casillero muestra cuántos caminos llegan a él.' : 'Tablero de 5 filas con los casilleros vacíos; el camino abbab llega al casillero marcado.',
+    alMover: k => { s1.k = k; st.caminos = MB.caminos({ n:s1.n, k }).lista.map(w => ({ w, tenue:true })); pal1(); } });
+}
+function cfg2(ya){
+  const k = ya ? s2.k : 4;
+  const st = { tipo:'tri', R:8, numeros: ya ? 8 : 7, anillos: ya ? [] : [[8, 4]], padres:[[7, k - 1], [7, k]], flechas: ya ? [{ de:[[7, k - 1], [7, k]], a:[8, k] }] : [], mano: ya ? { k, min:1, max:7 } : null };
+  E.config({ st, ley:LEY,
+    lect: ya ? [() => ['ink', `C(7, ${s2.k - 1}) + C(7, ${s2.k})`, `${Cnk(7, s2.k - 1)} + ${Cnk(7, s2.k)} = ${Cnk(8, s2.k)}`]] : [() => ['ink', 'arriba', '35 y 35']],
+    desc: ya ? 'Cada casillero es la suma de los dos que tiene arriba.' : 'Tablero hasta la fila 7 con sus números; en la fila 8 hay un casillero marcado debajo de 35 y 35.',
+    alMover: k => { s2.k = k; st.padres = [[7, k - 1], [7, k]]; st.flechas = [{ de:st.padres, a:[8, k] }]; } });
+}
+function cfg3(ya){
+  const st = ya ? { tipo:'tri', R:s3.n, sumas:s3.n } : { tipo:'tri', R:6, numeros:5 };
+  E.config({ st, ley:LEY.slice(0, 3),
+    lect: ya ? [() => ['n', 'fila n', String(s3.n)], () => ['ink', 'suma de la fila', MB.fila({ n:s3.n }).texto]] : [() => ['n', 'fila n', '6']],
+    desc: ya ? 'A la derecha, la suma de cada fila.' : 'Tablero con los números hasta la fila 5; la fila 6 está vacía.' });
+}
+function cfg4(ya){
+  const st = ya ? { tipo:'tri', R:s4.n, abajo: k => [['t' + sub(k + 1), 'ink']] } : { tipo:'tri', R:7, hasta:3, numeros:3 };
+  E.config({ st, ley:LEY,
+    lect: ya ? [() => ['n', 'exponente n', String(s4.n)], () => ['ink', 'términos', MB.terminos({ n:s4.n }).texto]] : [() => ['n', 'exponente n', '7']],
+    desc: ya ? 'Bajo la última fila, un término por casillero.' : 'Tablero de las primeras filas, hasta la fila 3.' });
+}
+const lugarK = (R, k) => [['t' + sub(k + 1), 'ink']];
+function cfg5(ya){
+  const D = MB.desarrollo(Object.assign({ n:9 }, AB));
+  const st = ya ? { tipo:'tri', R:9, caminos:[{ w:mezcla(9, s5.k) }], mano:{ k:s5.k }, abajo:k => lugarK(9, k) } : { tipo:'tri', R:9, numeros:8 };
+  E.config({ st, ley:LEY,
+    lect: ya ? [() => ['k', 'casillero k', String(s5.k)], () => ['ink', 'lugar', 't' + sub(s5.k + 1)], () => ['ink', 'término', D.terminos[s5.k].texto]] : [() => ['n', 'exponente n', '9']],
+    desc: ya ? 'Bajo la fila 9, el lugar de cada término.' : 'Tablero de 9 filas con los números hasta la fila 8.',
+    alMover: k => { s5.k = k; st.caminos = [{ w:mezcla(9, k) }]; } });
+}
+function cfg6(ya){
+  const D = MB.desarrollo(Object.assign({ n:6 }, B6));
+  const st = ya ? { tipo:'tri', R:6, caminos:[{ w:mezcla(6, s6.k) }], mano:{ k:s6.k }, abajo:k => [[D.terminos[k].texto, k === s6.k ? 'k' : 'ink']] } : { tipo:'tri', R:6, numeros:5 };
+  E.config({ st, ley:[['a', 'paso a la izquierda: 2x', 'linea'], ['b', 'paso a la derecha: 1', 'linea'], ['n', 'fila n'], ['k', 'casillero k']],
+    lect: ya ? [() => ['k', 'veces 1, k', String(s6.k)], () => ['a', 'veces 2x', String(6 - s6.k)], () => ['ink', 'término', D.terminos[s6.k].texto]] : [() => ['n', 'exponente n', '6']],
+    desc: ya ? 'Bajo la fila 6, el término de cada casillero.' : 'Tablero de 6 filas con los números hasta la fila 5.',
+    alMover: k => { s6.k = k; st.caminos = [{ w:mezcla(6, k) }]; } });
+}
+function cfg7(ya){
+  const D = MB.desarrollo(Object.assign({ n:5 }, B7));
+  const st = ya ? { tipo:'tri', R:5, caminos:[{ w:mezcla(5, s7.k) }], mano:{ k:s7.k }, abajo:k => [[D.terminos[k].texto, k === s7.k ? 'k' : 'ink']] } : { tipo:'tri', R:5, numeros:4 };
+  E.config({ st, ley:[['a', 'paso a la izquierda: x', 'linea'], ['b', 'paso a la derecha: −2', 'linea'], ['n', 'fila n'], ['k', 'casillero k']],
+    lect: ya ? [() => ['k', 'veces −2, k', String(s7.k)], () => ['ink', 'lugar', 't' + sub(s7.k + 1)], () => ['ink', 'término', D.terminos[s7.k].texto]] : [() => ['n', 'exponente n', '5']],
+    desc: ya ? 'Bajo la fila 5, el término de cada casillero, con su signo.' : 'Tablero de 5 filas con los números hasta la fila 4.',
+    alMover: k => { s7.k = k; st.caminos = [{ w:mezcla(5, k) }]; } });
+}
+function cfg8(ya){
+  const D = MB.desarrollo(Object.assign({ n:6 }, B8));
+  const g = { min:-6, max:12, n:6, k: ya ? s8.k : 0, e:k => K8.exponentes[k], salto:'−3', mostrar:ya, mano:ya };
+  E.config({ st:{ tipo:'regla', regla:g }, ley:[['m', 'exponente de x en el término'], ['b', 'un paso a la derecha más', 'linea']],
+    lect: ya ? [() => ['k', 'pasos a la derecha, k', String(g.k)], () => ['m', 'exponente de x', String(K8.exponentes[g.k]).replace('-', '−')], () => ['ink', 'término', D.terminos[g.k].texto]]
+             : [() => ['a', 'paso a la izquierda', 'x²'], () => ['b', 'paso a la derecha', '1/x']],
+    desc: ya ? 'La recta de exponentes de x con la marca del término elegido.' : 'Una recta de exponentes de x, de −6 a 12, sin marcas.',
+    alMover: k => { s8.k = k; } });
+}
+
+// ---------- animaciones al responder ----------
+function anima1(fin){
+  cfg1(false); const st = E.st; st.anillos = [[5, 3]];
+  const L = MB.caminos({ n:5, k:3 }).lista; let cuenta = 0;
+  E.lect = [() => ['k', 'letras b, k', '3'], () => ['ink', 'caminos contados', String(cuenta)]];
+  st.caminos = [];
+  const fs = L.map(w => n => { st.caminos.forEach(c => { c.tenue = true; }); const c = { w, f:0 }; st.caminos.push(c); E.animar(RM ? 0 : 320, f => { c.f = f; }, () => { cuenta++; E.avisar(); n(); }); });
+  fs.push(n => E.animar(900, f => { st.numeros = -1 + 6*f; }, n, true));
+  E.cadena(fs, () => esperar(400, () => { cfg1(true); fin(); }));
+}
+function anima2(fin){ cfg2(false); const st = E.st; st.flechas = [{ de:[[7, 3], [7, 4]], a:[8, 4], f:0 }];
+  E.cadena([n => E.animar(800, f => { st.flechas[0].f = f; }, n), n => { st.extra = { '8,4':'70' }; E.dibujar(); esperar(500, n); }, n => E.animar(700, f => { st.numeros = 7 + f; }, n, true)],
+    () => esperar(300, () => { s2.k = 4; cfg2(true); fin(); })); }
+function anima3(fin){ cfg3(false); const st = E.st; st.numeros = 6; st.sumas = -1;
+  E.animar(1500, f => { st.sumas = Math.floor(-1 + 7.99*f); }, () => esperar(400, () => { s3.n = 6; cfg3(true); fin(); }), true); }
+function anima4(fin){ cfg4(false); const st = E.st;
+  E.cadena([n => E.animar(1400, f => { st.hasta = 3 + 4*f; st.numeros = 3 + 4*f; }, n, true),
+    n => { let j = -1; st.abajo = k => (k <= j ? [['t' + sub(k + 1), 'ink']] : null); E.animar(1100, f => { j = Math.floor(8.99*f) - 1; }, n, true); }],
+    () => esperar(400, () => { s4.n = 7; cfg4(true); fin(); })); }
+function anima5(fin){ cfg5(false); const st = E.st; const c = { w:mezcla(9, 3), f:0 };
+  E.cadena([n => E.animar(600, f => { st.numeros = 8 + f; }, n, true), n => { st.anillos = [[9, 3]]; st.caminos = [c]; E.animar(1100, f => { c.f = f; }, n); }],
+    () => esperar(500, () => { s5.k = 3; cfg5(true); fin(); })); }
+function anima6(fin){ cfg6(false); const st = E.st; const c = { w:mezcla(6, 2), f:0 };
+  E.cadena([n => E.animar(600, f => { st.numeros = 5 + f; }, n, true), n => { st.anillos = [[6, 2]]; st.caminos = [c]; E.animar(1000, f => { c.f = f; }, n); }],
+    () => esperar(500, () => { s6.k = 2; cfg6(true); fin(); })); }
+function anima7(fin){ cfg7(false); const st = E.st; const c = { w:mezcla(5, 3), f:0 };
+  E.cadena([n => E.animar(600, f => { st.numeros = 4 + f; }, n, true), n => { st.anillos = [[5, 3]]; st.caminos = [c]; E.animar(900, f => { c.f = f; }, n); }],
+    () => esperar(500, () => { s7.k = 3; cfg7(true); fin(); })); }
+function anima8(fin){ cfg8(false); const g = E.st.regla; g.mostrar = true; g.kf = 0;
+  E.animar(RM ? 0 : 2000, f => { g.kf = 4*f; }, () => esperar(500, () => { s8.k = 4; cfg8(true); fin(); }), true); }
+
+const steps = [
+ { k:'Paso 1', t:'Predice: contar caminos', gate:P1, prep:() => cfg1(!!S.pred[P1.id]), anima:anima1, entrar:pal1,
+   body:() => `<p class="problem">Una bolita entra por arriba y baja ${n_('5')} filas de clavos. En cada clavo va a la izquierda (${a_('a')}) o a la derecha (${b_('b')}), así que su camino se escribe como una palabra de 5 letras; el dibujado es <span class="palabras" style="display:inline-flex">${palabra('abbab')}</span>. ¿Cuántos caminos distintos llegan al casillero marcado, el de ${k_('k = 3')} letras b?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">C(${n_('n')}, ${k_('k')}) = ${n_('n')}!/(${k_('k')}! (${n_('n')} − ${k_('k')})!)  ⟹  C(5, 3) = 5!/(3! · 2!) = 120/12 = 10</div></div>
+   <p>Un camino queda decidido al elegir en qué clavos va a la derecha: es elegir ${k_('k')} lugares entre ${n_('n')}, sin importar el orden. Eso es el número combinatorio C(${n_('n')}, ${k_('k')}). Las palabras que llegan al casillero:</p>
+   <p class="palabras" id="pal1"></p>
+   <div class="control"><label for="n1">Filas, n</label><input type="range" id="n1" min="1" max="10" step="1" value="${s1.n}"></div>
+   <p>Arrastra el casillero marcado por la última fila (o usa las flechas del teclado en el dibujo) y mueve n: el número de cada casillero cuenta los caminos que llegan a él. Fíjate en los bordes: C(${n_('n')}, 0) = C(${n_('n')}, ${n_('n')}) = 1, y en la simetría C(${n_('n')}, ${k_('k')}) = C(${n_('n')}, ${n_('n')} − ${k_('k')}).</p>
+   ${HIP}</div>` },
+ { k:'Paso 2', t:'Predice: la fila de abajo', gate:P2, prep:() => cfg2(!!S.pred[P2.id]), anima:anima2,
+   body:() => `<p class="problem">Para llegar a un casillero, la bolita pasa antes por uno de los dos que tiene arriba: el de arriba a la izquierda (y luego va a la derecha) o el de arriba a la derecha (y luego va a la izquierda). ¿Qué número va en el casillero marcado de la fila ${n_('8')}?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">C(${n_('n')}, ${k_('k')}) + C(${n_('n')}, ${k_('k')} + 1) = C(${n_('n')} + 1, ${k_('k')} + 1)  ⟹  C(7, 3) + C(7, 4) = 35 + 35 = 70 = C(8, 4)</div></div>
+   <p>Es la regla del triángulo de Pascal: cada número es la suma de los dos que tiene encima, y los bordes valen 1. Con ella se arma el triángulo fila por fila, sin factoriales.</p>
+   <p>Arrastra el casillero marcado por la fila 8: siempre suma a sus dos vecinos de arriba.</p>
+   ${HIP}</div>` },
+ { k:'Paso 3', t:'Predice: la suma de una fila', gate:P3, prep:() => cfg3(!!S.pred[P3.id]), anima:anima3,
+   body:() => `<p class="problem">Suma todos los números de la fila ${n_('6')}: C(6, 0) + C(6, 1) + … + C(6, 6). ¿Cuánto da?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">C(${n_('n')}, 0) + C(${n_('n')}, 1) + … + C(${n_('n')}, ${n_('n')}) = 2<sup>${n_('n')}</sup>  ⟹  1 + 6 + 15 + 20 + 15 + 6 + 1 = 64 = 2⁶</div></div>
+   <p>La suma de una fila cuenta todos los caminos de ${n_('n')} filas, lleguen donde lleguen. Con dos opciones en cada clavo hay 2 · 2 · … · 2 = 2<sup>${n_('n')}</sup>. También se ve en el tablero: cada número se reparte en los dos de abajo, así que cada fila suma el doble que la anterior.</p>
+   <div class="control"><label for="n3">Fila, n</label><input type="range" id="n3" min="0" max="10" step="1" value="${s3.n}"></div>
+   ${HIP}</div>` },
+ { k:'Paso 4', t:'Predice: cuántos términos', gate:P4, prep:() => cfg4(!!S.pred[P4.id]), anima:anima4,
+   body:() => `<p class="problem">Al multiplicar (${a_('a')} + ${b_('b')})(${a_('a')} + ${b_('b')})…(${a_('a')} + ${b_('b')}), con ${n_('7')} paréntesis, se elige ${a_('a')} o ${b_('b')} en cada uno: cada camino de 7 filas es un producto, como <span class="palabras" style="display:inline-flex">${palabra('abbabaa')}</span> = a⁴b³. Los caminos que llegan al mismo casillero dan el mismo término. ¿Cuántos términos tiene el desarrollo de (a + b)⁷ después de juntar los semejantes?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(${a_('a')} + ${b_('b')})<sup>${n_('n')}</sup> = C(${n_('n')}, 0)${a_('a')}<sup>${n_('n')}</sup> + C(${n_('n')}, 1)${a_('a')}<sup>${n_('n')}−1</sup>${b_('b')} + … + C(${n_('n')}, ${n_('n')})${b_('b')}<sup>${n_('n')}</sup>;  ${n_('n')} + 1 términos</div>
+   <div class="eq">(a + b)⁷ = a⁷ + 7a⁶b + 21a⁵b² + 35a⁴b³ + 35a³b⁴ + 21a²b⁵ + 7ab⁶ + b⁷</div></div>
+   <p>Hay un término por casillero de la última fila, y la fila ${n_('n')} tiene ${n_('n')} + 1 casilleros (k = 0, 1, …, ${n_('n')}). El coeficiente de cada término es el número de su casillero: cuántos caminos lo forman. En cada término los exponentes suman ${n_('n')}.</p>
+   <div class="control"><label for="n4">Exponente, n</label><input type="range" id="n4" min="1" max="10" step="1" value="${s4.n}"></div>
+   ${FUENTE_AL}</div>` },
+ { k:'Paso 5', t:'Predice: el cuarto término', gate:P5, prep:() => cfg5(!!S.pred[P5.id]), anima:anima5,
+   body:() => `<p class="problem">Los términos de (${a_('a')} + ${b_('b')})⁹ se cuentan desde la izquierda: t₁ = a⁹ es el del casillero sin letras b, t₂ el siguiente, y así. ¿Cuál es el cuarto término, t₄?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">t<sub>${k_('k')}+1</sub> = C(${n_('n')}, ${k_('k')}) ${a_('a')}<sup>${n_('n')}−${k_('k')}</sup> ${b_('b')}<sup>${k_('k')}</sup>  ⟹  t₄ = C(9, 3) a⁶ b³ = 84a⁶b³</div></div>
+   <p>El lugar se corre en 1: t<sub>${k_('k')}+1</sub> viene del casillero ${k_('k')}, porque el primer término tiene ${k_('k')} = 0. El mismo ${k_('k')} va en el número combinatorio y en el exponente de ${b_('b')}; ${a_('a')} se lleva lo que falta para ${n_('n')}.</p>
+   <p>Arrastra el casillero marcado por la fila 9 y mira cómo cambian el lugar y el término.</p>
+   ${HIP}</div>` },
+ { k:'Paso 6', t:'Predice: un coeficiente con 2x', gate:P6, prep:() => cfg6(!!S.pred[P6.id]), anima:anima6,
+   body:() => `<p class="problem">Ahora el primer término es ${a_('2x')} y el segundo, ${b_('1')}: cada paso a la izquierda multiplica por 2x. ¿Cuál es el coeficiente de x⁴ en el desarrollo de (2x + 1)⁶?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">t<sub>${k_('k')}+1</sub> = C(6, ${k_('k')}) (${a_('2x')})<sup>6−${k_('k')}</sup> · ${b_('1')}<sup>${k_('k')}</sup>;  x⁴  ⟹  6 − ${k_('k')} = 4  ⟹  ${k_('k')} = 2</div>
+   <div class="eq">C(6, 2) · 2⁴ = 15 · 16 = 240</div></div>
+   <p>El término del binomio se eleva entero: (2x)⁴ = 2x · 2x · 2x · 2x = 16x⁴. El 2 entra una vez por cada paso a la izquierda.</p>
+   <p>Arrastra el casillero marcado: bajo la fila 6 están todos los términos del desarrollo.</p>
+   ${HIP}</div>` },
+ { k:'Paso 7', t:'Predice: un binomio con resta', gate:P7, prep:() => cfg7(!!S.pred[P7.id]), anima:anima7,
+   body:() => `<p class="problem">En (${a_('x')} − 2)⁵ el segundo término es ${b_('−2')}: cada paso a la derecha multiplica por −2. ¿Cuál es el cuarto término, t₄?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">t₄ = C(5, 3) · ${a_('x')}<sup>5−3</sup> · (${b_('−2')})³ = 10 · x² · (−8) = −80x²</div></div>
+   <p>El signo viaja con el −2: con ${k_('k')} par, (−2)<sup>${k_('k')}</sup> es positivo; con ${k_('k')} impar, negativo. Por eso en (a − b)ⁿ los signos se alternan: +, −, +, −, …</p>
+   <p>Arrastra el casillero marcado y mira los signos bajo la fila 5.</p>
+   ${HIP}</div>` },
+ { k:'Paso 8', t:'Predice: el término sin x', gate:P8, prep:() => cfg8(!!S.pred[P8.id]), anima:anima8,
+   body:() => `<p class="problem">En (${a_('x²')} + ${b_('1/x')})⁶, cada paso a la izquierda multiplica por x² y cada paso a la derecha, por 1/x. ¿Cuánto vale el término independiente de x (el que no tiene x)?</p>${opcionesHTML(P8.opts, 'fb', true)}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">t<sub>${k_('k')}+1</sub> = C(6, ${k_('k')}) (${a_('x²')})<sup>6−${k_('k')}</sup> (${b_('x⁻¹')})<sup>${k_('k')}</sup> = C(6, ${k_('k')}) x<sup>${m_('12 − 3k')}</sup></div>
+   <div class="eq">${m_('12 − 3k')} = 0  ⟹  ${k_('k')} = 4  ⟹  t₅ = C(6, 4) = 15</div></div>
+   <p>En la recta, el exponente de x empieza en 12 (seis veces x²) y cada paso a la derecha lo baja 3: quita un x² y pone un 1/x. Llega a 0 en el cuarto paso.</p>
+   <p>Arrastra la marca por la recta (o usa las flechas del teclado): solo un término cae en el cero.</p>
+   ${HIP}</div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  tramos($('stepBody'));
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  enganchar();
+  if (s.entrar && (!s.gate || S.pred[s.gate.id])) s.entrar();
+  nav();
+}
+// perillas de n de los pasos 1, 3 y 4
+function enganchar(){
+  const r1 = $('n1'); if (r1) r1.oninput = () => { s1.n = +r1.value; s1.k = Math.min(s1.k, s1.n); cfg1(true); pal1(); };
+  const r3 = $('n3'); if (r3) r3.oninput = () => { s3.n = +r3.value; cfg3(true); };
+  const r4 = $('n4'); if (r4) r4.oninput = () => { s4.n = +r4.value; cfg4(true); };
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+  ['n1', 'n3', 'n4'].forEach(id => { const r = $(id); if (r) r.disabled = S.ocupado; });
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+// Se pasa al siguiente solo si el paso actual no tiene una predicción pendiente.
+function desbloquear(k){ const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); if (s.entrar) s.entrar(); }),
+      () => S.step === paso, { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+addEventListener('modo', () => { if (!$('m1').hidden) E.redimensionar(); });
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos con errores típicos: casi todos son hipótesis nuestras (BN), porque el informe de álgebra no trata
+   el binomio de Newton; el reparto del exponente es AL11. La escena cambia recién después de responder. Un
+   experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearTablero($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const X = { c:1, v:{ x:1 } };
+const B1 = { A:{ c:2, v:{ x:1 } }, B:{ c:1 } }, S1 = MB.sumaCoeficientes(Object.assign({ n:5 }, B1)), D1 = MB.desarrollo(Object.assign({ n:5 }, B1));
+const B2 = { A:X, B:{ c:1, v:{ y:1 } } }, C2 = MB.central(Object.assign({ n:10 }, B2));
+const B3 = { A:{ c:1, v:{ a:1 } }, B:{ c:1, v:{ b:1 } } }, C3 = MB.central(Object.assign({ n:7 }, B3));
+const G4 = MB.galton({ n:7, bolitas:128, k:3 }), ESP4 = [0, 1, 2, 3, 4, 5, 6, 7].map(k => MB.galton({ n:7, bolitas:128, k }).num);
+const B5 = { A:X, B:{ c:-2 } }, S5 = MB.sumaCoeficientes(Object.assign({ n:7 }, B5)), D5 = MB.desarrollo(Object.assign({ n:7 }, B5));
+function triBase(R, numeros, extra){ return Object.assign({ tipo:'tri', R, numeros }, extra || {}); }
+const LEY2 = (a, b) => [['a', `paso a la izquierda: ${a}`, 'linea'], ['b', `paso a la derecha: ${b}`, 'linea'], ['n', 'fila n'], ['k', 'casillero k']];
+
+// 1. Suma de coeficientes
+function cfg1(ya){
+  const st = triBase(5, ya ? 5 : 4, ya ? { abajo:k => [[D1.terminos[k].coef, 'ink']] } : {});
+  E.config({ st, ley:LEY2('2x', '1'), lect: ya ? [() => ['ink', 'suma de coeficientes', S1.texto]] : [() => ['n', 'exponente n', '5']],
+    desc: ya ? 'Bajo la fila 5, el coeficiente de cada término.' : 'Tablero con los números hasta la fila 4.' });
+}
+function anim1(){ cfg1(false); const st = E.st; let j = -1;
+  E.lect = [() => ['ink', 'suma hasta aquí', j >= 0 ? D1.terminos[j].suma : '0']];
+  E.cadena([n => E.animar(500, f => { st.numeros = 4 + f; }, n, true),
+    n => { st.abajo = k => (k <= j ? [[D1.terminos[k].coef, 'ink']] : null); E.animar(RM ? 0 : 1800, f => { const jj = Math.floor(5.99*f); if (jj !== j){ j = jj; E.avisar(); } }, n, true); }],
+    () => esperar(400, () => cfg1(true))); }
+// 2. Término central, n par
+function cfg2(ya){
+  const st = triBase(10, ya ? 10 : 9, ya ? { anillos:[[10, 5]], caminos:[{ w:'ababababab' }], abajo:k => [['t' + sub(k + 1), k === 5 ? 'k' : 'muted']] } : {});
+  E.config({ st, ley:LEY2('x', 'y'), lect: ya ? [() => ['ink', 'términos', '11'], () => ['ink', 'central', C2.lugar + ' = ' + C2.texto]] : [() => ['n', 'exponente n', '10']],
+    desc: ya ? 'Bajo la fila 10, los once lugares; el sexto está marcado.' : 'Tablero con los números hasta la fila 9.' });
+}
+function anim2(){ cfg2(false); const st = E.st; const c = { w:'ababababab', f:0 };
+  E.cadena([n => E.animar(600, f => { st.numeros = 9 + f; }, n, true), n => { st.caminos = [c]; E.animar(1100, f => { c.f = f; }, n); }],
+    () => esperar(300, () => cfg2(true))); }
+// 3. Términos centrales, n impar
+function cfg3(ya){
+  const st = ya ? triBase(7, 7, { anillos:[[7, 3], [7, 4]], abajo:k => [['t' + sub(k + 1), k === 3 || k === 4 ? 'k' : 'muted']] }) : triBase(7, 5, { hasta:5 });
+  E.config({ st, ley:LEY, lect: ya ? [() => ['ink', 'términos', '8'], () => ['ink', 'centrales', C3.terminos.join(' y ')]] : [() => ['n', 'exponente n', '7']],
+    desc: ya ? 'Bajo la fila 7, los ocho lugares; el cuarto y el quinto están marcados.' : 'Tablero de las primeras filas, hasta la fila 5.' });
+}
+function anim3(){ cfg3(false); const st = E.st;
+  E.animar(1200, f => { st.hasta = 5 + 2*f; st.numeros = 5 + 2*f; }, () => esperar(300, () => cfg3(true)), true); }
+// 4. Galton
+let semilla = 2203;
+function cfg4(ya, cuenta){
+  const g = { cuenta: cuenta || new Array(8).fill(0), marca:3, contar:!!ya, esperado: ya ? ESP4 : null, vuelo:[] };
+  E.config({ st:{ tipo:'galton', R:7, galton:g }, ley:[['k', 'casillero k'], ['ink', 'promedio esperado', 'trazos'], ['n', 'fila n']],
+    lect: ya ? [() => ['k', 'cayeron en k = 3', String(g.cuenta[3])], () => ['ink', 'promedio esperado', G4.texto]] : [() => ['ink', 'bolitas', '128'], () => ['n', 'filas', '7']],
+    desc: ya ? `Las bolitas cayeron en los casilleros: ${g.cuenta.join(', ')}. La línea punteada marca el promedio esperado.` : 'Un tablero de 7 filas de clavos con 8 casilleros abajo; el de k = 3 está marcado.' });
+}
+function anim4(){
+  const sim = MB.simular({ n:7, bolitas:128, semilla }); semilla += 1;
+  cfg4(false); const st = E.st, g = st.galton, DT = 24, T = 70, R = 7, total = 127*DT + (R + 1)*T;
+  st.t = 0;
+  st.mover = L => {
+    const cuenta = new Array(8).fill(0), vuelo = [];
+    sim.caminos.forEach((w, i) => {
+      const s = (st.t - i*DT)/T; if (s < 0) return;
+      let k = 0; for (let j = 0; j < Math.min(R, Math.floor(s)); j++) if (w[j] === 'b') k++;
+      if (s >= R + 1){ for (let j = Math.floor(s); j < R; j++) if (w[j] === 'b') k++; cuenta[k]++; return; }
+      const j = Math.floor(s), f = s - j;
+      if (j < R){ const k2 = k + (w[j] === 'b' ? 1 : 0); vuelo.push({ x:lerp(L.x(j, k), L.x(j + 1, k2), f), y:lerp(L.y(j), L.y(j + 1), f) }); }
+      else vuelo.push({ x:L.x(R, k), y:lerp(L.y(R), L.y(R) + L.u*1.4, f) });
+    });
+    g.cuenta = cuenta; g.vuelo = vuelo;
+  };
+  E.animar(RM ? 0 : total, f => { st.t = f*total; }, () => esperar(300, () => cfg4(true, sim.casilleros)), true);
+}
+// 5. Suma de coeficientes con signo
+function cfg5(ya){
+  const st = triBase(7, ya ? 7 : 6, ya ? { abajo:k => [[D5.terminos[k].coef, 'ink']] } : {});
+  E.config({ st, ley:LEY2('x', '−2'), lect: ya ? [() => ['ink', 'suma de coeficientes', S5.texto]] : [() => ['n', 'exponente n', '7']],
+    desc: ya ? 'Bajo la fila 7, el coeficiente de cada término, con su signo.' : 'Tablero con los números hasta la fila 6.' });
+}
+function anim5(){ cfg5(false); const st = E.st; let j = -1;
+  E.lect = [() => ['ink', 'suma hasta aquí', j >= 0 ? D5.terminos[j].suma : '0']];
+  E.cadena([n => E.animar(500, f => { st.numeros = 6 + f; }, n, true),
+    n => { st.abajo = k => (k <= j ? [[D5.terminos[k].coef, 'ink']] : null); E.animar(RM ? 0 : 2200, f => { const jj = Math.floor(7.99*f); if (jj !== j){ j = jj; E.avisar(); } }, n, true); }],
+    () => esperar(400, () => cfg5(true))); }
+
+const EXPS = [
+  { id:'suma-coeficientes', corto:'Sumar los coeficientes',
+    q:`¿Cuánto suman los coeficientes del desarrollo de (${a_('2x')} + ${b_('1')})⁵?`,
+    opts:[['a', S1.errores.ignoraCoef.texto, 'BN20-ignora-los-coeficientes', 'hipotesis'], ['b', S1.errores.reparte.texto, 'AL11-reparte-el-exponente', 'hipotesis'],
+      ['c', S1.texto], ['d', S1.errores.sumaN.texto, 'BN5-suma-es-n', 'hipotesis']], ok:'c',
+    fb:{ a:'32 = 2⁵ es la suma de la fila 5, que sirve cuando los dos términos del binomio son 1. Aquí cada paso a la izquierda multiplica por 2.',
+      b:'33 = 2⁵ + 1 reparte el exponente: (2x + 1)⁵ no es (2x)⁵ + 1⁵. Faltan todos los términos del medio.',
+      d:'5 es el exponente. La suma de los coeficientes es lo que vale el desarrollo con x = 1: (2 + 1)⁵.' },
+    antes:ya => cfg1(ya), despues:anim1,
+    exp:() => `<div class="eqs"><div class="eq">suma de coeficientes = valor con x = 1 = (2 · 1 + 1)⁵ = 3⁵ = 243</div><div class="eq">32 + 80 + 80 + 40 + 10 + 1 = 243</div></div>
+      <p>Los coeficientes son C(5, ${k_('k')}) · 2<sup>5−${k_('k')}</sup>: el número del casillero por un 2 en cada paso a la izquierda. Con x = 1 cada término vale su coeficiente, así que la suma es el binomio evaluado en 1.</p>${FUENTE_AL}` },
+  { id:'termino-central', corto:'El término del medio',
+    q:`¿Cuál es el término central del desarrollo de (${a_('x')} + ${b_('y')})¹⁰?`,
+    opts:[['a', C2.errores.masUno.texto, 'BN7-central-con-k-n/2+1', 'hipotesis'], ['b', C2.errores.antes.texto, 'BN23-central-es-t(n/2)', 'hipotesis'],
+      ['c', C2.errores.desfase.texto, 'BN2-desfase-del-indice', 'hipotesis'], ['d', C2.texto]], ok:'d',
+    fb:{ a:'210x⁴y⁶ tiene k = 6: es t₇. Con 11 términos, el del medio deja 5 a cada lado: t₆, con k = 5.',
+      b:'210x⁶y⁴ es t₅, con k = 4: deja 4 términos antes y 6 después.',
+      c:'Los exponentes están bien, pero el coeficiente del central es C(10, 5) = 252, el número más grande de la fila.' },
+    antes:ya => cfg2(ya), despues:anim2,
+    exp:() => `<div class="eqs"><div class="eq">${n_('n')} = 10 par  ⟹  11 términos;  central: t<sub>${n_('n')}/2+1</sub> = t₆ = C(10, 5)x⁵y⁵ = 252x⁵y⁵</div></div>
+      <p>Con ${n_('n')} par hay un número impar de términos, ${n_('n')} + 1, y uno solo queda en el medio: el de ${k_('k')} = ${n_('n')}/2, que es el lugar ${n_('n')}/2 + 1. El 1 se suma una sola vez: para pasar de ${k_('k')} al lugar.</p>${HIP}` },
+  { id:'n-impar', corto:'Un exponente impar', frase:true,
+    q:`¿Cuántos términos centrales tiene el desarrollo de (${a_('a')} + ${b_('b')})⁷?`,
+    opts:[['a', `Uno: ${C3.errores.soloAbajo.texto}, porque (7 + 1)/2 = 4`, 'BN24-un-solo-central-abajo', 'hipotesis'],
+      ['b', `Uno: ${C3.errores.soloArriba.texto}, porque 7/2 + 1 = 4,5 sube a 5`, 'BN25-un-solo-central-arriba', 'hipotesis'],
+      ['c', `Dos: ${C3.texto}, porque hay un número par de términos`],
+      ['d', `${may(C3.errores.ninguno.texto)}: 7/2 no es un número entero`, 'BN26-ningun-central', 'hipotesis']], ok:'c',
+    fb:{ a:'t₄ deja 3 términos antes y 4 después: no está en el medio. Con 8 términos, el medio cae entre t₄ y t₅.',
+      b:'t₅ deja 4 términos antes y 3 después. Con n impar hay un número par de términos, y el medio lo comparten dos.',
+      d:'Sí hay: con n impar, (a + b)ⁿ tiene un número par de términos, n + 1, y los dos del medio son los centrales.' },
+    antes:ya => cfg3(ya), despues:anim3,
+    exp:() => `<div class="eqs"><div class="eq">${n_('n')} = 7 impar  ⟹  8 términos;  centrales: t₄ = 35a⁴b³ y t₅ = 35a³b⁴</div></div>
+      <p>Los dos centrales tienen el mismo coeficiente porque el triángulo es simétrico: C(7, 3) = C(7, 4) = 35. En general, con ${n_('n')} impar son t<sub>(${n_('n')}+1)/2</sub> y t<sub>(${n_('n')}+3)/2</sub>.</p>${HIP}` },
+  { id:'galton', corto:'Bolitas que caen',
+    q:`Se sueltan 128 bolitas en un tablero de ${n_('7')} filas; en cada clavo, cada bolita va a la izquierda o a la derecha con la misma probabilidad. ¿Cuántas caen, en promedio, en el casillero marcado, el de ${k_('k = 3')}?`,
+    opts:[['a', G4.errores.uniforme.texto, 'BN21-casilleros-iguales', 'hipotesis'], ['b', G4.texto],
+      ['c', G4.errores.mitad.texto, 'BN22-mitad-al-centro', 'hipotesis'], ['d', G4.errores.desfase.texto, 'BN2-desfase-del-indice', 'hipotesis']], ok:'b',
+    fb:{ a:'16 = 128/8 supone que todos los casilleros reciben lo mismo. Pero a los del medio llegan muchos más caminos que a los bordes: al de k = 0 llega uno solo.',
+      c:'El medio tiene dos casilleros, k = 3 y k = 4, y entre los dos reciben en promedio 70 de 128, no 64 cada uno.',
+      d:'21 = C(7, 2) son los caminos del casillero de al lado. Al de k = 3 llegan C(7, 3) = 35 de los 2⁷ = 128 caminos.' },
+    antes:ya => cfg4(ya), despues:anim4,
+    exp:() => `<div class="eqs"><div class="eq">promedio = 128 · C(7, 3)/2⁷ = 128 · 35/128 = 35</div></div>
+      <p>Los 2⁷ = 128 caminos son igual de probables, y 35 de ellos terminan en ${k_('k = 3')}. En cada tanda caen unas más o unas menos (mira la altura de la barra contra la línea punteada); con muchas bolitas, la forma se parece cada vez más a la fila 7 del triángulo.</p>${HIP}` },
+  { id:'signos', corto:'Coeficientes con signo',
+    q:`¿Cuánto suman los coeficientes del desarrollo de (${a_('x')} − 2)⁷, cuyo segundo término es ${b_('−2')}?`,
+    opts:[['a', S5.errores.reparte.texto, 'AL11-reparte-el-exponente', 'hipotesis'], ['b', S5.errores.sinSigno.texto, 'BN8-olvida-el-signo', 'hipotesis'],
+      ['c', S5.errores.ignoraCoef.texto, 'BN20-ignora-los-coeficientes', 'hipotesis'], ['d', S5.texto]], ok:'d',
+    fb:{ a:'−127 = 1⁷ + (−2)⁷ reparte el exponente: (x − 2)⁷ no es x⁷ − 2⁷.',
+      b:'2187 = 3⁷ sería la suma para (x + 2)⁷. Con el signo, x = 1 da (1 − 2)⁷ = (−1)⁷.',
+      c:'128 = 2⁷ es la suma de la fila 7: sirve para (x + 1)⁷, no para (x − 2)⁷.' },
+    antes:ya => cfg5(ya), despues:anim5,
+    exp:() => `<div class="eqs"><div class="eq">(1 − 2)⁷ = (−1)⁷ = −1</div><div class="eq">1 − 14 + 84 − 280 + 560 − 672 + 448 − 128 = −1</div></div>
+      <p>Los coeficientes son C(7, ${k_('k')}) · (−2)<sup>${k_('k')}</sup>: grandes, con signos que se alternan, y casi se cancelan. La suma sigue siendo el desarrollo evaluado en x = 1.</p>${FUENTE_AL}` },
+];
+function may(t){ return t.charAt(0).toUpperCase() + t.slice(1); }
+
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2', x.frase)}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    tramos($('res2'));
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k);
+  });
+  pintar();
+}
+addEventListener('modo', () => { if (!$('m2').hidden) E.redimensionar(); });
+ir(0);
+})();
+</script>
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

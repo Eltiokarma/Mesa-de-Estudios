@@ -238,6 +238,7 @@
     if (fCero(h)) return `${v}²`;
     return `(${v} ${h.n > 0 ? MENOS : '+'} ${fTexto(fAbs(h))})²`;
   }
+  const sobreN = (t, n) => (n.n === 1 && n.d === 1 ? t : `${t}/${fTexto(n)}`);   // x²/9, y² (sin «/1»)
   function binomio(v, h) {
     if (fCero(h)) return v;
     return `${v} ${h.n > 0 ? MENOS : '+'} ${fTexto(fAbs(h))}`;
@@ -281,11 +282,12 @@
     const r = raiz(r2), D = fMul(F(-2), h), E = fMul(F(-2), k), Fc = fRes(fSum(fMul(h, h), fMul(k, k)), r2);
     const centroTexto = punto(fTexto(h), fTexto(k)), rT = rTexto(r);
     const texto = `${centroTexto} y r = ${rT}`;
-    const q = pregunta({ valor: rValor(r), texto }, {
-      signos: er('CO8', rValor(r), `${punto(fTexto(fNeg(h)), fTexto(fNeg(k)))} y r = ${rT}`),
-      radioCuadrado: er('CO9', fNum(r2), `${centroTexto} y r = ${fTexto(r2)}`)
-    });
-    return Object.assign(q, {
+    const crudos = {
+      signos: er('CO8', null, `${punto(fTexto(fNeg(h)), fTexto(fNeg(k)))} y r = ${rT}`),
+      radioCuadrado: er('CO9', null, `${centroTexto} y r = ${fTexto(r2)}`)
+    };
+    const q = pregunta({ valor: null, texto }, crudos);
+    return Object.assign(q, { crudos,
       tipo: 'circunferencia', h: fNum(h), k: fNum(k), r2: fNum(r2), r: rValor(r), rTexto: rT, centroTexto,
       ecuacion: `${cuadrado('x', h)} + ${cuadrado('y', k)} = ${fTexto(r2)}`,
       general: `${poli([[F(1), 'x²'], [F(1), 'y²'], [D, 'x'], [E, 'y'], [Fc, '']])} = 0`,
@@ -307,9 +309,9 @@
     }
     const C = circunferencia({ h, k, r2 });
     const sinSumar = fDiv(fNeg(Fc), A);
-    const errs = Object.assign({}, C.errores);
-    errs.sinSumar = sinSumar.n > 0 ? er('CO10', rValor(raiz(sinSumar)), `${C.centroTexto} y r = ${rTexto(raiz(sinSumar))}`) : null;
-    const q = pregunta({ valor: C.valor, texto: C.texto }, errs);
+    const errs = Object.assign({}, C.crudos);
+    errs.sinSumar = sinSumar.n > 0 ? er('CO10', null, `${C.centroTexto} y r = ${rTexto(raiz(sinSumar))}`) : null;
+    const q = pregunta({ valor: null, texto: C.texto }, errs);
     return Object.assign({}, C, q, { tipo: 'circunferencia', completada, ecuacion: C.ecuacion });
   }
 
@@ -376,7 +378,7 @@
     const c2 = fRes(a2, b2), a = raiz(a2), b = raiz(b2), c = raiz(c2);
     const e = rDiv(c, a), LR = rDiv(deFr(fMul(F(2), b2)), a);
     const nx = eje === 'x' ? a2 : b2, ny = eje === 'x' ? b2 : a2;
-    const ecuacion = `${cuadrado('x', h)}/${fTexto(nx)} + ${cuadrado('y', k)}/${fTexto(ny)} = 1`;
+    const ecuacion = `${sobreN(cuadrado('x', h), nx)} + ${sobreN(cuadrado('y', k), ny)} = 1`;
     const otro = eje === 'x' ? 'y' : 'x';
     const ch = raiz(fSum(a2, b2));
     // b desde a y c (el triángulo de la cuerda): errores
@@ -422,8 +424,8 @@
     const c2 = fSum(a2, b2), a = raiz(a2), b = raiz(b2), c = raiz(c2), e = rDiv(c, a), LR = rDiv(deFr(fMul(F(2), b2)), a);
     const otro = eje === 'x' ? 'y' : 'x';
     const ecuacion = eje === 'x'
-      ? `${cuadrado('x', h)}/${fTexto(a2)} ${MENOS} ${cuadrado('y', k)}/${fTexto(b2)} = 1`
-      : `${cuadrado('y', k)}/${fTexto(a2)} ${MENOS} ${cuadrado('x', h)}/${fTexto(b2)} = 1`;
+      ? `${sobreN(cuadrado('x', h), a2)} ${MENOS} ${sobreN(cuadrado('y', k), b2)} = 1`
+      : `${sobreN(cuadrado('y', k), a2)} ${MENOS} ${sobreN(cuadrado('x', h), b2)} = 1`;
     const m = eje === 'x' ? rDiv(b, a) : rDiv(a, b), mInv = eje === 'x' ? rDiv(a, b) : rDiv(b, a);
     const m2 = eje === 'x' ? fDiv(b2, a2) : fDiv(a2, b2), m2Inv = fDiv(F(1), m2);
     const pm = t => '±' + t;

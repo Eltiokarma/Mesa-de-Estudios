@@ -62,7 +62,7 @@
     { "nombre": "Desarrollo: (a + b)⁴ = a⁴ + 4a³b + 6a²b² + 4ab³ + b⁴; (x − 1/2)³ con fracciones; (2x + 1)⁰ = 1",
       "fn": "desarrollo", "args": [{ "A": { "c": 1, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 4 }],
       "espera": { "texto": "a⁴ + 4a³b + 6a²b² + 4ab³ + b⁴", "terminos.2.texto": "6a²b²", "terminos.2.lugar": 3, "terminos.2.combinatorio": "6" },
-      "tambien": [ { "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": "-1/2" }, "n": 3 }], "espera": { "texto": "x³ − (3/2)x² + (3/4)x − 1/8", "terminos.3.coef": "−1/8" } },
+      "tambien": [ { "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": "-1/2" }, "n": 3 }], "espera": { "texto": "x³ − (3/2)x² + (3/4)x − 1/8", "terminos.3.coef": "−1/8", "terminos.3.suma": "1/8", "terminos.1.suma": "−1/2" } },
                    { "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": 1 }, "n": 0 }], "espera": { "texto": "1" } },
                    { "args": [{ "A": { "c": 3, "v": { "x": 1 } }, "B": { "c": -2, "v": { "y": 1 } }, "n": 3 }], "espera": { "texto": "27x³ − 54x²y + 36xy² − 8y³" } } ] },
 

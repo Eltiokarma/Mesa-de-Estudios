@@ -38,7 +38,8 @@
  *                               (BN1: n), reparte (AL11, o AL8 si n = 2: aⁿ + bⁿ, dos términos), sinJuntar (BN14: 2ⁿ,
  *                               una por palabra, sin juntar semejantes) }.
  *   desarrollo({ A, B, n })   → (A + B)ⁿ término por término. { terminos: [{ k, lugar, texto, coef: texto,
- *                               combinatorio: texto C(n, k), exponentes: { letra: exponente } }, …] (de k = 0 a n),
+ *                               combinatorio: texto C(n, k), exponentes: { letra: exponente }, suma: texto de la suma
+ *                               de los coeficientes de t₁ hasta este término }, …] (de k = 0 a n),
  *                               texto: 'a⁴ + 4a³b + 6a²b² + 4ab³ + b⁴' (sin juntar términos de igual parte literal) }.
  *   monomio({ c, v })         → { texto } del monomio: monomio({ c: −80, v: { x: 2 } }).texto = '−80x²'; { c: 1 } → '1';
  *                               { c: '−1/2', v: { x: 1, a: 2 } } → '−(1/2)a²x' (letras en orden alfabético).
@@ -266,9 +267,11 @@
   function desarrollo(o) {
     const { A, B, n } = binomio(o);
     const ts = [];
+    let acum = F(0);
     for (let k = 0; k <= n; k++) {
       const t = armar(A, B, C(n, k), n - k, k);
-      ts.push({ k, lugar: k + 1, texto: tx(t), coef: fTexto(t.c), combinatorio: bTexto(C(n, k)), exponentes: Object.assign({}, t.v) });
+      acum = fSum(acum, t.c);
+      ts.push({ k, lugar: k + 1, texto: tx(t), coef: fTexto(t.c), combinatorio: bTexto(C(n, k)), exponentes: Object.assign({}, t.v), suma: fTexto(acum) });
     }
     const texto = ts.map((t, i) => (i === 0 ? t.texto : (t.texto.startsWith(MENOS) ? ' − ' + t.texto.slice(1) : ' + ' + t.texto))).join('');
     return { terminos: ts, texto };

@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La cuerda del jardinero: lugar geométrico y cónicas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de transformaciones-trig.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   elipse e hipérbola: PF₁ y el clavo F₁ azul, PF₂ y el clavo F₂ mostaza, el semieje a (y el radio r de la
+   circunferencia, que es la misma mitad de cuerda) fucsia, el semieje b verde y la semidistancia focal c granate.
+   Parábola: PF y el foco F naranja, PD y la directriz verde azulado, p (de V a F) añil y el lado recto LR café.
+   Las curvas, los centros, los vértices, las asíntotas y el cono van en tinta.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py; script en el scratchpad de la sesión). Salen juntos los cinco de la
+   elipse o los cuatro de la parábola, nunca los nueve: ΔE00 mínimo 23,5 en claro y 23,7 en oscuro entre los cinco
+   (mostaza–verde); 22,7 en claro y 27,5 en oscuro entre los cuatro. Entre un grupo y el otro, 14,7 y 12,5.
+   Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %): el más bajo es la mostaza en claro, 4,54,
+   y el añil en oscuro, 4,94. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-f1:#1f5fbf; --c-f2:#7d6a00; --c-a:#a10fbf; --c-b:#2e7535; --c-c:#77032c;
+  --c-pf:#b04a00; --c-pd:#0f766e; --c-p:#3605c7; --c-lr:#5c491f;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-f1:#7cb0ff; --c-f2:#e3c84a; --c-a:#cf6bfa; --c-b:#7fd36a; --c-c:#fdb4ce;
+  --c-pf:#ff8a3d; --c-pd:#5ed9c8; --c-p:#858bff; --c-lr:#f7ffb2;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-f1:#7cb0ff; --c-f2:#e3c84a; --c-a:#cf6bfa; --c-b:#7fd36a; --c-c:#fdb4ce;
+  --c-pf:#ff8a3d; --c-pd:#5ed9c8; --c-p:#858bff; --c-lr:#f7ffb2;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js pone lo demás). */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:16px; height:0; border-top:3px solid; display:inline-block}
+.legend i.trazos{border-top-style:dashed; border-top-width:2px}
+
+/* Barras: los dos tramos de la cuerda, uno a continuación del otro, contra la cuerda entera */
+.barras{display:grid; gap:4px; padding:2px 4px}
+.barras:empty{display:none}
+.barra{display:flex; height:16px; border-radius:6px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+.barra i{display:block; height:100%; background:var(--k); min-width:0}
+.barra i.hueco{background:repeating-linear-gradient(45deg, var(--k) 0 3px, transparent 3px 7px)}
+.barra-t{display:flex; justify-content:space-between; font-size:.74rem; color:var(--muted); gap:8px}
+.barra-t b{color:var(--k); font-family:var(--mono)}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-f1{color:var(--c-f1); background:color-mix(in srgb, var(--c-f1) 8%, transparent)}
+.v-f2{color:var(--c-f2); background:color-mix(in srgb, var(--c-f2) 8%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v-pf{color:var(--c-pf); background:color-mix(in srgb, var(--c-pf) 8%, transparent)}
+.v-pd{color:var(--c-pd); background:color-mix(in srgb, var(--c-pd) 8%, transparent)}
+.v-p{color:var(--c-p); background:color-mix(in srgb, var(--c-p) 8%, transparent)}
+.v-lr{color:var(--c-lr); background:color-mix(in srgb, var(--c-lr) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .tramo{white-space:nowrap}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+.control{display:grid; gap:4px; font-size:.92rem}
+.control input{width:100%; accent-color:var(--ink); min-height:32px}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Trigonometría · Lugar geométrico y cónicas · Problemas tipo admisión</p>
+      <h1>La cuerda del jardinero</h1>
+      <p class="sub">Una cuerda atada a dos clavos y un lápiz que la mantiene tensa. Arrastra el lápiz, mide las distancias y descubre qué curva sale de cada regla.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="barras" id="bar1"></div>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="barras" id="bar2"></div>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/conicas">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'conicas', unidad: 'trigonometria.conicas', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (las cónicas, sus elementos, las distancias, los puntos de cada curva, sus trazos, el cono y
+   los errores típicos) sale de MotorConicas (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MC = MotorConicas;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+// Coma decimal, signo menos tipográfico y decimales fijos (2 si no se dice): 7,40
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  d = d === undefined ? 2 : d;
+  const r = Number(n.toFixed(d)) + 0;
+  return (r < 0 ? '−' : '') + Math.abs(r).toFixed(d).replace('.', ',');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const f1_ = t => V('f1', t), f2_ = t => V('f2', t), a_ = t => V('a', t), b_ = t => V('b', t), c_ = t => V('c', t);
+const pf_ = t => V('pf', t), pd_ = t => V('pd', t), p_ = t => V('p', t), lr_ = t => V('lr', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const lerp = (a, b, f) => a + (b - a)*f;
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+// En el celular, una ecuación larga se parte solo entre tramos (después de ⟹, de = o de ;), nunca a media expresión.
+function tramos(raiz){ raiz.querySelectorAll('.eq').forEach(q => { if (q.dataset.tr) return; q.dataset.tr = '1';
+  const nota = q.querySelector('.note'), html = nota ? q.innerHTML.replace(nota.outerHTML, '') : q.innerHTML;
+  q.innerHTML = html.split(/(⟹|;| = )/).reduce((a, p, i, l) => (i % 2 ? a : a + `<span class="tramo">${p}${l[i + 1] || ''}</span> `), '') + (nota ? ' ' + nota.outerHTML : ''); }); }
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const KS = ['f1', 'f2', 'a', 'b', 'c', 'pf', 'pd', 'p', 'lr'];
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'), font:css('--font') };
+  for (const k of KS) c[k] = css('--c-' + k);
+  return c;
+}
+const col = (c, k) => (c[k] || k);
+const varCss = k => (k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con fondo del color del papel, para que se lea sobre las líneas. partes: [[texto, color], …]
+function rotuloM(ctx, c, x, y, partes, align, tam){
+  ctx.font = `800 ${tam || 12}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  const ws = partes.map(([t]) => ctx.measureText(t).width), w = ws.reduce((s, v) => s + v, 0);
+  const x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  let xx = x0; partes.forEach(([t, k], i) => { ctx.fillStyle = col(c, k); ctx.fillText(t, xx, y); xx += ws[i]; });
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+const pt = (x, y) => ({ x, y });
+const deLista = q => ({ x:q[0], y:q[1] });
+// Piezas del plano
+const seg = (p, q, color, o) => Object.assign({ p, q, color, ancho:3 }, o || {});
+const pun = (p, color, texto, o) => Object.assign({ p, color, texto }, o || {});
+const curva = (con, o) => Object.assign({ con, color:'ink', ancho:2 }, o || {});
+
+/* ================= La escena =================
+   Modos:
+     plano  el plano cartesiano con su cuadrícula: curvas (trazadas por el motor), rectas, segmentos, puntos y rótulos
+            en coordenadas del plano; las manijas (el lápiz sobre la curva, un clavo) se arrastran.
+     cono   el cono doble visto de costado, el plano que lo corta y, al lado, la curva que sale del corte. */
+function crearEscena(cv, idDesc, idLect, idLey, idBar){
+  const E = { modo:'plano', lect:[], ley:[], barras:null, hl:null, ocupado:false, tok:0, cad:0, anim:false, compacto:false, pl:null, co:null, desc:'' };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = false;
+  function alto(w){
+    const g = innerWidth >= 900 ? Math.max(300, Math.min(540, innerHeight - 230)) : 460;
+    let h;
+    if (E.modo === 'cono') h = w >= 560 ? Math.min(g, 360) : 260;
+    else { const B = E.pl ? E.pl.caja : { x0:-1, x1:1, y0:-1, y1:1 }; h = clamp(w*(B.y1 - B.y0)/(B.x1 - B.x0), 240, w >= 560 ? g : Math.min(g, 420)); }
+    return Math.round(Celular.alto(h, E.compacto, { tope:250 }));
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = Celular.dpr();
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.cad++; E.anim = false;
+    Object.assign(E, { modo:'plano', lect:[], ley:[], barras:null, pl:null, co:null, desc:'' }, o);
+    if (E.pl) E.pl = Object.assign({ caja:{ x0:-6, x1:6, y0:-4, y1:4 }, estado:{}, curvas:[], rectas:[], segs:[], puntos:[], textos:[], manijas:[], rehacer:null }, E.pl);
+    if (E.pl && E.pl.rehacer) E.pl.rehacer(E.pl);
+    cv.tabIndex = arrastrable() ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  const arrastrable = () => E.modo === 'plano' && E.pl && E.pl.manijas.length > 0;
+  E.arrastrable = arrastrable;
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  E.angosto = () => (cv.clientWidth || W) < 520;
+  E.rehacer = () => { if (E.pl && E.pl.rehacer) E.pl.rehacer(E.pl); cv.tabIndex = arrastrable() ? 0 : -1; E.dibujar(); E.avisar(); };
+
+  function escala(B, x0, y0, w, h, pad){
+    pad = pad === undefined ? 14 : pad;
+    const k = Math.min((w - 2*pad)/(B.x1 - B.x0), (h - 2*pad)/(B.y1 - B.y0));
+    const ox = x0 + (w - k*(B.x1 - B.x0))/2 - k*B.x0, oy = y0 + (h - k*(B.y1 - B.y0))/2 + k*B.y1;
+    return { k, B, P: p => ({ x: ox + k*p.x, y: oy - k*p.y }), mundo: q => ({ x:(q.x - ox)/k, y:(oy - q.y)/k }) };
+  }
+  const escPlano = () => escala(E.pl.caja, 0, 0, W, H);
+  const alfa = o => (o.f === undefined ? 1 : o.f);
+  const partes = (t, k) => (typeof t === 'string' ? [[t, k]] : t);
+  function punta(p, q, color, s){
+    const ang = Math.atan2(q.y - p.y, q.x - p.x);
+    ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(q.x, q.y);
+    ctx.lineTo(q.x - s*Math.cos(ang - .42), q.y - s*Math.sin(ang - .42)); ctx.lineTo(q.x - s*Math.cos(ang + .42), q.y - s*Math.sin(ang + .42)); ctx.fill();
+  }
+  // Trazos de una curva: completa (motor.trazar) o un tramo del parámetro (motor.puntoEn de t0 a t1)
+  function trazos(Cv, B){
+    if (Cv.t0 !== undefined){
+      const n = 120, pts = [];
+      for (let i = 0; i <= n; i++) pts.push(MC.puntoEn(Cv.con, lerp(Cv.t0, Cv.t1, i/n), Cv.rama));
+      return [pts];
+    }
+    return MC.trazar(Cv.con, Object.assign({}, B, { n:180 }));
+  }
+  function dibCurvas(e, c, lista, B){
+    for (const Cv of lista){ if (!(alfa(Cv) > 0)) continue;
+      ctx.save(); ctx.globalAlpha = alfa(Cv); ctx.strokeStyle = col(c, Cv.color); ctx.lineWidth = grosor(Cv.color, Cv.ancho); ctx.setLineDash(Cv.dash ? [6, 5] : []);
+      ctx.lineJoin = 'round';
+      for (const tr of trazos(Cv, B)){ ctx.beginPath(); tr.forEach((q, i) => { const p = e.P(q); if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); }); ctx.stroke(); }
+      ctx.restore(); }
+  }
+  function dibPlano(c){
+    const L = E.pl, e = escPlano(), B = e.B;
+    // cuadrícula con números en los ejes
+    const pasos = [1, 2, 5, 10, 20, 50], s = pasos.find(v => e.k*v >= 16) || 50, ls = e.k*s >= 24 ? s : 2*s;
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let x = Math.ceil(B.x0/s)*s; x <= B.x1; x += s) linea(ctx, e.P(pt(x, B.y0)), e.P(pt(x, B.y1)));
+    for (let y = Math.ceil(B.y0/s)*s; y <= B.y1; y += s) linea(ctx, e.P(pt(B.x0, y)), e.P(pt(B.x1, y)));
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3;
+    if (B.y0 < 0 && B.y1 > 0) linea(ctx, e.P(pt(B.x0, 0)), e.P(pt(B.x1, 0)));
+    if (B.x0 < 0 && B.x1 > 0) linea(ctx, e.P(pt(0, B.y0)), e.P(pt(0, B.y1)));
+    ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted;
+    const y0 = clamp(0, B.y0, B.y1), x0 = clamp(0, B.x0, B.x1);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let x = Math.ceil(B.x0/ls)*ls; x <= B.x1; x += ls){ if (x === 0 || Math.abs(x - B.x1) < 1e-9 || Math.abs(x - B.x0) < 1e-9) continue; const p = e.P(pt(x, y0)); ctx.fillText(fmt(x, 0), p.x, p.y + 3); }
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let y = Math.ceil(B.y0/ls)*ls; y <= B.y1; y += ls){ if (y === 0 || Math.abs(y - B.y1) < 1e-9 || Math.abs(y - B.y0) < 1e-9) continue; const p = e.P(pt(x0, y)); ctx.fillText(fmt(y, 0), p.x - 4, p.y); }
+    // rectas completas (directriz, asíntotas): un punto y una dirección
+    for (const Rr of L.rectas){ if (!(alfa(Rr) > 0)) continue;
+      const big = 4*Math.max(B.x1 - B.x0, B.y1 - B.y0), n = Math.hypot(Rr.d.x, Rr.d.y), u = { x:Rr.d.x/n, y:Rr.d.y/n };
+      ctx.save(); ctx.globalAlpha = alfa(Rr); ctx.strokeStyle = col(c, Rr.color); ctx.lineWidth = grosor(Rr.color, Rr.ancho || 2); ctx.setLineDash(Rr.dash ? [7, 5] : []);
+      linea(ctx, e.P(pt(Rr.p.x - big*u.x, Rr.p.y - big*u.y)), e.P(pt(Rr.p.x + big*u.x, Rr.p.y + big*u.y))); ctx.restore();
+      if (Rr.texto && alfa(Rr) >= 1){ const q = e.P(Rr.en || Rr.p); rotuloM(ctx, c, q.x + (Rr.dx || 0), q.y + (Rr.dy || 0), partes(Rr.texto, Rr.color), Rr.align || 'left', 12); } }
+    dibCurvas(e, c, L.curvas, B);
+    for (const S of L.segs){ if (!(alfa(S) > 0)) continue;
+      const p = e.P(S.p), q = e.P(S.q), color = col(c, S.color);
+      ctx.save(); ctx.globalAlpha = alfa(S); ctx.strokeStyle = color; ctx.lineWidth = grosor(S.color, S.ancho || 3);
+      ctx.lineCap = 'round'; ctx.setLineDash(S.dash ? [6, 5] : []);
+      if (S.flecha && Math.hypot(q.x - p.x, q.y - p.y) > 12){ const ang = Math.atan2(q.y - p.y, q.x - p.x), qq = { x:q.x - 7*Math.cos(ang), y:q.y - 7*Math.sin(ang) }; linea(ctx, p, qq); ctx.setLineDash([]); punta(p, q, color, 11); }
+      else linea(ctx, p, q);
+      ctx.restore();
+      if (S.texto && alfa(S) >= 1){ const en = S.en === undefined ? .5 : S.en; rotuloM(ctx, c, lerp(p.x, q.x, en) + (S.dx || 0), lerp(p.y, q.y, en) + (S.dy || 0), partes(S.texto, S.color), S.align || 'center', 12); }
+    }
+    for (const Pt of L.puntos){ if (!(alfa(Pt) > 0)) continue;
+      const p = e.P(Pt.p); ctx.save(); ctx.globalAlpha = alfa(Pt); ctx.fillStyle = col(c, Pt.color); ctx.beginPath(); ctx.arc(p.x, p.y, Pt.r === undefined ? 4.5 : Pt.r, 0, 7); ctx.fill(); ctx.restore();
+      if (Pt.texto && alfa(Pt) >= 1) rotuloM(ctx, c, p.x + (Pt.dx === undefined ? 8 : Pt.dx), p.y + (Pt.dy === undefined ? -12 : Pt.dy), partes(Pt.texto, Pt.color), Pt.align || 'left', 12); }
+    for (const T of L.textos){ if (!(alfa(T) > 0)) continue; const p = e.P(T.p);
+      rotuloM(ctx, c, p.x + (T.dx || 0), p.y + (T.dy || 0), partes(T.t, T.color || 'ink'), T.align || 'center', 12); }
+    for (const M of L.manijas){
+      const p = e.P(M.p()), on = arrastrando === M.id || (sobre && !arrastrando);
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = on ? .2 : .1; ctx.beginPath(); ctx.arc(p.x, p.y, 20, 0, 7); ctx.fill(); ctx.restore();
+      ctx.fillStyle = c.card; ctx.strokeStyle = col(c, M.color || 'ink'); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(p.x, p.y, 8, 0, 7); ctx.fill(); ctx.stroke();
+      if (M.texto) rotuloM(ctx, c, p.x + 14, p.y - 14, partes(M.texto, M.color || 'ink'), 'left', 12);
+    }
+  }
+  // El cono doble de costado (izquierda) y la curva del corte (derecha)
+  function dibCono(c){
+    const Q = E.co, R = MC.cono({ inclinacion:Q.fi, generatriz:Q.g }), ang = E.angosto();
+    const wl = ang ? W*.52 : W*.55, B1 = { x0:-1.9, x1:1.9, y0:-1.9, y1:1.9 }, e1 = escala(B1, 0, 0, wl, H, 10);
+    const t = Math.tan(Q.g*Math.PI/180), lim = 1.85;
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
+    for (const s of [1, -1]) linea(ctx, e1.P(pt(-lim/t, -s*lim)), e1.P(pt(lim/t, s*lim)));
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.setLineDash([4, 4]); linea(ctx, e1.P(pt(0, -lim)), e1.P(pt(0, lim))); ctx.setLineDash([]);
+    // el plano: y = tan(φ)·x − 1
+    const m = Math.tan(Q.fi*Math.PI/180), xs = Math.min(1.85, (lim + 1)/Math.max(m, 1e-6));
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 4; ctx.globalAlpha = .55; linea(ctx, e1.P(pt(-xs, -m*xs - 1)), e1.P(pt(xs, m*xs - 1))); ctx.restore();
+    if (Q.mostrar) for (const P of R.cortes){ const p = e1.P(P); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, 7); ctx.fill(); }
+    rotuloM(ctx, c, e1.P(pt(xs, m*xs - 1)).x - 4, e1.P(pt(xs, m*xs - 1)).y + 14, [['plano', 'ink']], 'right', 11);
+    // separador y la curva
+    ctx.strokeStyle = c.line; ctx.lineWidth = 1; linea(ctx, pt(wl, 10), pt(wl, H - 10));
+    const B2 = { x0:-3.2, x1:3.2, y0:-3.2, y1:3.2 }, e2 = escala(B2, wl, 0, W - wl, H, 10);
+    if (Q.mostrar){
+      const con = R.conica, desplaza = R.tipo === 'circunferencia' ? 0 : 0;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5;
+      for (const tr of MC.trazar(con, Object.assign({}, B2, { n:200 }))){ ctx.beginPath(); tr.forEach((q, i) => { const p = e2.P(pt(q.x + desplaza, q.y)); if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); }); ctx.stroke(); }
+      ctx.restore();
+      rotuloM(ctx, c, wl + (W - wl)/2, H - 16, [[R.nombre, 'ink']], 'center', 12);
+    } else rotuloM(ctx, c, wl + (W - wl)/2, H/2, [['¿qué curva sale?', 'muted']], 'center', 12);
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, H);
+    if (E.modo === 'cono' && E.co) dibCono(c); else if (E.pl) dibPlano(c);
+  };
+  E.leyenda = () => {
+    document.getElementById(idLey).innerHTML = E.ley.map(([k, t, tipo]) => `<span><i class="${tipo || ''}" style="border-color:var(${varCss(k)})"></i>${t}</span>`).join('');
+  };
+  // Lecturas, barras y descripción para lectores de pantalla (antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${varCss(k)})"><span>${t}</span><b>${v}</b></div>`).join('');
+    const Bc = E.barras ? E.barras(E) : null, bar = document.getElementById(idBar);
+    if (!Bc) bar.innerHTML = '';
+    else bar.innerHTML = Bc.filas.map(fila => `<div class="barra" aria-hidden="true">${fila.map(s => `<i class="${s.hueco ? 'hueco' : ''}" style="--k:var(${varCss(s.k)}); width:${clamp(100*s.v/Bc.max, 0, 100)}%"></i>`).join('')}</div>`).join('')
+      + `<div class="barra-t">${Bc.rotulos.map(([k, t]) => `<span style="--k:var(${varCss(k)})"><b>${t}</b></span>`).join('')}</div>`;
+    if (!E.anim) document.getElementById(idDesc).textContent = [E.desc, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+  };
+  E.animar = (dur, paso, fin) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); });
+  };
+  // Varias animaciones en fila (E.parar o un E.config nuevo cortan la cadena)
+  E.cadena = (fs, fin) => { const id = ++E.cad; let i = 0; const sig = () => { if (id !== E.cad) return; if (i >= fs.length){ if (fin) fin(); return; } fs[i++](sig); }; sig(); };
+  E.parar = () => { E.tok++; E.cad++; E.anim = false; };
+
+  // ---------- arrastrar el lápiz o un clavo (dedo, ratón y teclado) ----------
+  function manijas(){ if (!arrastrable() || !W) return []; const e = escPlano(); return E.pl.manijas.map(M => ({ id:M.id, p:e.P(M.p()) })); }
+  function cerca(p, radio){ if (E.ocupado || E.anim) return null; let mejor = null, dm = radio;
+    for (const m of manijas()){ const d = Math.hypot(p.x - m.p.x, p.y - m.p.y); if (d < dm){ dm = d; mejor = m.id; } } return mejor; }
+  function mover(id, q){ const M = E.pl.manijas.find(m => m.id === id); if (!M) return; M.mover(q); E.rehacer(); }
+  Celular.arrastre(cv, {
+    activo: () => arrastrable(),
+    cerca: (p, r) => cerca(p, r),
+    empezar: p => { arrastrando = cerca(p, 40); E.dibujar(); },
+    mover: p => { if (!arrastrando || !arrastrable()) return; mover(arrastrando, escPlano().mundo(p)); },
+    soltar: () => { arrastrando = null; E.dibujar(); },
+    sobre: s => { sobre = !!s; E.dibujar(); }
+  });
+  // Teclado: ← y → mueven la primera manija; ↑ y ↓, la segunda (si hay; si no, también la primera).
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !arrastrable()) return;
+    const ms = E.pl.manijas, k = { ArrowRight:[0, 1], ArrowLeft:[0, -1], ArrowUp:[1, 1], ArrowDown:[1, -1] }[e.key];
+    if (!k) return;
+    const M = ms[Math.min(k[0], ms.length - 1)]; e.preventDefault();
+    M.tecla(k[1]); E.rehacer();
+  });
+  return E;
+}
+
+// Un lápiz que corre sobre una cónica: con el dedo sigue a motor.sobre; con el teclado avanza el parámetro.
+function lapiz(st, con, o){
+  o = o || {};
+  return { id:'P', color:o.color || 'ink', texto:o.texto || 'P', p:() => st.P,
+    mover:q => { const s = MC.sobre(con, q); st.P = { x:s.x, y:s.y }; st.t = s.t; st.rama = s.rama; },
+    tecla:d => { st.t = (st.t || 0) + d*(o.paso || .08); if (o.tope) st.t = clamp(st.t, -o.tope, o.tope); const q = MC.puntoEn(con, st.t, st.rama); st.P = { x:q.x, y:q.y }; } };
+}
+</script>
