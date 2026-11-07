@@ -317,27 +317,27 @@ function envolver(ctx, c, txt, max, tam){
 let DIBUJADOS = new Set();
 const RAD = { H:0.3, O:0.46, N:0.48, C:0.5, F:0.44, S:0.6, CH3:0.62, CH2:0.6, CH:0.58 };
 const colAt = (c, el) => /^CH/.test(el) ? c.C : (c[el] || c.C);
-// Las moléculas chicas (u < 10 px: líquido, vapor, burbuja, tubo) se pintan una vez por giro en una hoja aparte y se
-// pegan con drawImage (la2): son decenas por cuadro y cada una pedía unos diez trazos. Hay 256 giros por hoja (uno por
-// casilla, pintado la primera vez que se usa) y la figura cae en el píxel real más cercano: la diferencia con el trazo
-// directo no pasa de medio píxel real. Las grandes (con letras o u ≥ 10) se siguen trazando directo.
-const HOJAS = new Map(), GIROS = 256, COLS = 16;
+// Las moléculas chicas (u < 10 px: líquido, vapor, burbuja, tubo) se pintan una vez por giro en un lienzo aparte y se
+// pegan con drawImage (la2): son decenas por cuadro y cada una pedía unos diez trazos. Hay 256 giros y la figura cae en
+// el píxel real más cercano: la diferencia con el trazo directo no pasa de medio píxel real. Cada dibujo prepara a lo
+// más 8 figuras nuevas (las demás van con trazo directo mientras tanto), para que un cambio de tamaño no trabe el toque.
+// Las grandes (con letras o u ≥ 10) se siguen trazando directo.
+const FIGURAS = new Map(), GIROS = 256;
+let NUEVAS = 0;
 function figura(c, s, u, k, d){
-  const clave = `${s}|${u}|${d}|${c.ink}|${c.borde}|${c.H}|${c.O}|${c.N}|${c.C}|${c.F}|${c.S}`;
-  let h = HOJAS.get(clave);
-  if (!h){
-    if (HOJAS.size > 40) HOJAS.clear();
+  const clave = `${s}|${u}|${k}|${d}|${c.ink}|${c.borde}|${c.H}|${c.O}|${c.N}|${c.C}|${c.F}|${c.S}`;
+  let f = FIGURAS.get(clave);
+  if (!f){
+    if (NUEVAS >= 8) return null;
+    NUEVAS++;
+    if (FIGURAS.size > 3000) FIGURAS.clear();
     const S = ML.SUSTANCIAS[s], ext = Math.max(...S.atomos.map(a => Math.hypot(a.x, a.y) + (RAD[a.el] || 0.5)))*u + 2, n = Math.ceil(2*ext*d) + 2;
-    const cv = document.createElement('canvas'); cv.width = n*COLS; cv.height = n*GIROS/COLS;
-    h = { S, cv, g: cv.getContext('2d'), n, hecho: new Uint8Array(GIROS) }; HOJAS.set(clave, h);
+    const cv = document.createElement('canvas'); cv.width = n; cv.height = n;
+    const g = cv.getContext('2d'); g.setTransform(d, 0, 0, d, n/2, n/2);
+    trazarMolecula(g, c, S, molPuntos(S, 0, 0, u, k/GIROS*2*Math.PI), u, {});
+    f = { cv, n }; FIGURAS.set(clave, f);
   }
-  const sx = (k % COLS)*h.n, sy = Math.floor(k/COLS)*h.n;
-  if (!h.hecho[k]){
-    h.g.setTransform(d, 0, 0, d, sx + h.n/2, sy + h.n/2);
-    trazarMolecula(h.g, c, h.S, molPuntos(h.S, 0, 0, u, k/GIROS*2*Math.PI), u, {});
-    h.hecho[k] = 1;
-  }
-  return { cv: h.cv, sx, sy, n: h.n };
+  return f;
 }
 function molPuntos(S, x, y, u, ang){
   const co = Math.cos(ang || 0), si = Math.sin(ang || 0);
@@ -350,10 +350,12 @@ function molecula(ctx, c, s, x, y, u, ang, o){
   const t = ctx.getTransform();
   if (!o.letras && u < 10 && o.alfa === undefined && !t.b && !t.c && t.a === t.d){
     const d = t.a, a2 = (((ang || 0) % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI), f = figura(c, s, u, Math.round(a2/(2*Math.PI)*GIROS) % GIROS, d);
-    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
-    ctx.drawImage(f.cv, f.sx, f.sy, f.n, f.n, Math.round(x*d + t.e - f.n/2), Math.round(y*d + t.f - f.n/2), f.n, f.n);
-    ctx.restore();
-    return pts;
+    if (f){
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
+      ctx.drawImage(f.cv, Math.round(x*d + t.e - f.n/2), Math.round(y*d + t.f - f.n/2));
+      ctx.restore();
+      return pts;
+    }
   }
   trazarMolecula(ctx, c, S, pts, u, o);
   return pts;
@@ -819,7 +821,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
   E.dibujar = () => {
     E.resize(); if (!W || !Lz) return; // la vista pudo cambiar de paneles: se rearma cada vez (es barato)
     const c = colores();
-    DIBUJADOS = new Set();
+    DIBUJADOS = new Set(); NUEVAS = 0;
     ctx.clearRect(0, 0, W, H);
     for (const P of Lz.p){
       if (P.k === 'frascos') panelFrascos(c, P);
