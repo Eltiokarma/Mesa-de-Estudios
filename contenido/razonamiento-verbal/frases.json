@@ -48,11 +48,12 @@
   "RV47": "Que dos datos vayan juntos en la figura no dice que uno cause el otro.",
   "RV48": "Respondiste con el título o la frase de la figura, pero la pregunta se responde con sus datos.",
   "RV49": "Lo leíste al pie de la letra. Piensa quién lo dice, a quién, dónde y para qué.",
-  "RV50": "Quien escribe no es la persona que el texto cita o menciona: separa al autor de las voces que trae.",
+  "RV50": "Quien escribe, o a quien le escribe, no es la persona que el texto cita o menciona: separa a los que se comunican de las voces que trae.",
   "RV51": "El destinatario no sale del tema, sino de cómo le habla el texto: el trato, el tono y a quién nombra.",
   "RV52": "El texto lo presenta como una suposición, no como algo comprobado.",
   "RV53": "Esa es la idea que el autor presenta para responderla, no la que defiende.",
   "RV54": "Esa palabra inglesa se parece a una española, pero no significa lo mismo (es un falso amigo).",
   "RV55": "Fíjate en el verbo: dice cuándo pasa algo o si es seguro, y eso cambia la respuesta.",
-  "RV56": "La pregunta pide qué es algo (el concepto), y elegiste un ejemplo o un caso."
+  "RV56": "La pregunta pide qué es algo (el concepto), y elegiste un ejemplo o un caso.",
+  "RV57": "Te fijaste en una parte pequeña del texto. El tipo y la estructura los decide lo que organiza todo el texto."
 }

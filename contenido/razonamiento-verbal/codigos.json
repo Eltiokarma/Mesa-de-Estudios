@@ -245,7 +245,7 @@
   "por_verificar": false
  },
  "RV50": {
-  "nombre": "Se confunde al emisor con alguien que el texto cita o menciona",
+  "nombre": "Se confunde al emisor o al destinatario con alguien que el texto cita o menciona",
   "respaldo": "hipotesis",
   "por_verificar": false
  },
@@ -276,6 +276,11 @@
  },
  "RV56": {
   "nombre": "Una pregunta de concepto se responde con un ejemplo o un hecho",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV57": {
+  "nombre": "Se reconoce el tipo o la estructura del texto por un pasaje o un detalle que no lo organiza",
   "respaldo": "hipotesis",
   "por_verificar": false
  }

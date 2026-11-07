@@ -140,7 +140,7 @@ Los ejemplos son propios, escritos para este informe.
 
 ### Tipología, resumen, textos discontinuos, contexto, textos filosóficos y científicos, y lectura en inglés
 
-Agregados por la rutina verbal B (7 nov 2026) para las seis unidades que no tenían módulo. Ninguno tiene estudio propio en esta revisión: los dieciséis son hipótesis, cada una ligada al error con algún dato del que sale.
+Agregados por la rutina verbal B (7 nov 2026) para las seis unidades que no tenían módulo. Ninguno tiene estudio propio en esta revisión: los diecisiete son hipótesis, cada una ligada al error con algún dato del que sale.
 
 | # | Idea errónea | Ejemplo tipo examen | Dato | Respaldo | Fuente |
 | --- | --- | --- | --- | --- | --- |
@@ -153,13 +153,14 @@ Agregados por la rutina verbal B (7 nov 2026) para las seis unidades que no ten�
 | RV47 | **Se toma como causa lo que la figura solo muestra junto**: dos datos que suben a la vez se leen como causa y efecto. | Gráfico con helados vendidos y casos de insolación por mes: "los helados causan insolación". | Sin estudio encontrado; vecino de RV7 (inferencia que el texto no autoriza). | Hipótesis (ligada a RV7) | — |
 | RV48 | **Se responde con el título o el texto que acompaña a la figura y no con sus datos.** | El título dice "La lluvia aumentó"; la tabla muestra que bajó en uno de los años, y la pregunta es por ese año. | Ya anotado como hueco en la versión anterior de este informe ("leer el título del gráfico y no los ejes"). | Hipótesis | — |
 | RV49 | **Se lee el mensaje al pie de la letra, sin la situación**: no se tiene en cuenta quién habla, a quién, dónde ni para qué. | Aviso en la puerta de una posta: "Aquí no se fía la salud". El alumno entiende que la posta no presta dinero. | Sin estudio encontrado; vecino de RV18 (sentido más frecuente y no el del contexto). | Hipótesis (ligada a RV18) | — |
-| RV50 | **Se confunde al emisor con alguien que el texto cita o menciona.** | Carta de una alcaldesa que cita las quejas de los vecinos: se dice que los vecinos escriben la carta. | Sin estudio encontrado; vecino de RV33 (postura que el autor no toma). | Hipótesis (ligada a RV33) | — |
+| RV50 | **Se confunde al emisor o al destinatario con alguien que el texto cita o menciona.** | Carta de una alcaldesa que cita las quejas de los vecinos: se dice que los vecinos escriben la carta. | Sin estudio encontrado; vecino de RV33 (postura que el autor no toma). | Hipótesis (ligada a RV33) | — |
 | RV51 | **Se supone el destinatario por el tema y no por las marcas del texto** (el trato de usted o de tú, el registro, a quién se nombra). | Un texto sobre vacunas escrito con "tú" y para que el lector convenza a sus papás: el alumno dice que va dirigido a médicos. | Sin estudio encontrado. | Hipótesis | — |
 | RV52 | **Se toma una hipótesis o una conjetura como un hecho comprobado.** | El texto dice "los investigadores suponen que…"; la alternativa dice "se demostró que…". | Sin estudio encontrado; vecino de RV11 (términos absolutos). | Hipótesis (ligada a RV11) | — |
 | RV53 | **Se toma la objeción que el autor expone para responderla como si fuera su tesis.** | Texto filosófico que empieza "Se dirá que la libertad es hacer lo que uno quiere" y luego lo refuta: el alumno elige esa frase como la postura del autor. | Sin estudio encontrado; vecino de RV4 y RV33. | Hipótesis (ligada a RV33) | — |
 | RV54 | **Falso amigo**: una palabra inglesa se traduce por la española que se le parece (actually, actualmente; library, librería; assist, asistir). | "She actually lives in Puno": el alumno entiende "ahora vive en Puno". | Sin dato en esta revisión; vecino de RV20 (parónimo). | Hipótesis (ligada a RV20) | — |
 | RV55 | **Se lee mal el tiempo o el modo del verbo inglés** (used to, will, would, may) y se cambia cuándo pasa algo o si es seguro. | "People used to cross the lake by boat": se entiende que hoy cruzan en bote. | Sin dato en esta revisión. | Hipótesis | — |
 | RV56 | **Una pregunta de concepto se responde con un ejemplo o un hecho**: ante "¿qué es…?" o "¿qué entiende el autor por…?", se elige un caso y no la definición. | Texto sobre qué es una ley científica: el alumno elige "la ley de la gravedad" como lo que el autor entiende por ley. | Sin estudio encontrado; vecino de RV1. | Hipótesis (ligada a RV1) | — |
+| RV57 | **Se reconoce el tipo o la estructura del texto por un pasaje o un detalle que no lo organiza** (una frase descriptiva, un dato mencionado una vez). | Texto argumentativo con una oración que describe el bosque: el alumno lo llama descriptivo. | Sin estudio encontrado; propuesto por el revisor de tipología (7 nov 2026). Vecino de RV41 y de RV1. | Hipótesis (ligada a RV41) | — |
 
 ## Lo que no tiene respaldo (todavía)
 
@@ -196,13 +197,14 @@ Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada 
 | Lo que va junto leído como causa (RV47) | RV7 |
 | Título de la figura y no sus datos (RV48) | Sin dato (unidad `textos-discontinuos`) |
 | Mensaje al pie de la letra, sin la situación (RV49) | RV18 |
-| Emisor confundido con quien se cita (RV50) | RV33 |
+| Emisor o destinatario confundido con quien se cita (RV50) | RV33 |
 | Destinatario por el tema (RV51) | Sin dato |
 | Hipótesis tomada por hecho (RV52) | RV11 |
 | Objeción tomada por tesis (RV53) | RV33 |
 | Falso amigo en inglés (RV54) | RV20 (unidad `lectura-en-ingles`) |
 | Tiempo o modo del verbo inglés (RV55) | Sin dato |
 | Concepto respondido con un ejemplo (RV56) | RV1 |
+| Tipo o estructura por un pasaje que no organiza el texto (RV57) | RV41 |
 
 Se confirman igual que en los otros temas: con las respuestas registradas por la app y algunas preguntas abiertas en la prueba de entrada.
 
