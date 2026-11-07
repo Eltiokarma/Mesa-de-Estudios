@@ -431,7 +431,7 @@
     const medio = lerp(R.p, R.q, 0.5);
     const sp = [R.p[0], R.p[1], 0], sq = [R.q[0], R.q[1], 0];
     const conSombra = norma(sub(sp, sq)) < EPS ? norma(sub(X, sp)) : distanciaPuntoRecta(X, sp, sub(sq, sp)).distancia;
-    return Object.assign({ pie: res.pie, t: res.t }, separar({ distancia: res.distancia, pie: res.pie }, { distancia: {
+    return Object.assign({ distancia: res.distancia, pie: res.pie, t: res.t }, separar({ distancia: res.distancia, pie: res.pie }, { distancia: {
       alMedio: norma(sub(X, medio)), alExtremo: Math.min(norma(sub(X, R.p)), norma(sub(X, R.q))), conLaSombra: conSombra,
     } }));
   }
