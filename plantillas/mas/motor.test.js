@@ -28,6 +28,7 @@ const leer = (o, k) => k.split('.').reduce((x, p) => (x === null || x === undefi
 const ATAJOS = {
   enPosicionResorte: (o, x) => motor.resorte(o).enPosicion(x),
   estadoResorte: (o, t) => motor.resorte(o).estado(t),
+  instantes: o => { const r = motor.resorte(o); return { maximo0: r.proximo(90, 0), maximoDespues: r.proximo(90, 1e-6), centroSubiendo: r.proximo(0, 0), oscilaciones: r.oscilaciones(7 * Math.PI / 10) }; },
 };
 function llamar(fn, args) {
   if (ATAJOS[fn]) return ATAJOS[fn](...args);
@@ -109,6 +110,30 @@ test('soltar desde x0 en reposo: A = |x0| y arranca en el extremo; desde el cent
   for (const [x0, v0] of [[0.03, 0.4], [-0.07, -0.2], [0.01, -0.9]]) {
     const q = motor.resorte({ m: 1.2, k: 30, x0, v0, exacto: true });
     cerca(q.x(0), x0, 'x(0)'); cerca(q.v(0), v0, 'v(0)');
+  }
+});
+
+test('proximo(fase, desde) cae en un instante con esa fase y no hay otro antes', () => {
+  for (const o of OSC.slice(0, 60)) {
+    const r = motor.resorte(o);
+    for (const fase of [0, 90, 180, 270]) for (const desde of [0, r.T * 0.3, r.T * 2.7]) {
+      const t = r.proximo(fase, desde);
+      assert.ok(t >= desde - 1e-12 && t < desde + r.T + 1e-9);
+      const d = Math.abs(((r.estado(t).fase - fase) % 360 + 540) % 360 - 180);
+      assert.ok(d < 1e-6, `fase ${r.estado(t).fase} en vez de ${fase}`);
+    }
+  }
+});
+
+test('proximo(fase, desde) cae en un instante con esa fase y no hay otro antes', () => {
+  for (const o of OSC.slice(0, 60)) {
+    const r = motor.resorte(o);
+    for (const fase of [0, 90, 180, 270]) for (const desde of [0, r.T * 0.3, r.T * 2.7]) {
+      const t = r.proximo(fase, desde);
+      assert.ok(t >= desde - 1e-12 && t < desde + r.T + 1e-9);
+      const d = Math.abs(((r.estado(t).fase - fase) % 360 + 540) % 360 - 180);
+      assert.ok(d < 1e-6, `fase ${r.estado(t).fase} en vez de ${fase}`);
+    }
   }
 });
 

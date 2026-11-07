@@ -40,6 +40,7 @@
  *       Con x0 y v0 (en lugar de A y phi) halla A = √(x0² + (v0/ω)²) y φ.
  *   pendulo({ L | hilo + radio, g, m, theta0, phi, ay, ax, pi2 })   T, ω, f, gef, amplitud en arco y en ángulo,
  *       vmax (por energía, exacta) y vmaxMAS = ω·L·θ0; estado(t).
+ *   Los dos traen proximo(grados, desde) (primer instante con esa fase) y oscilaciones(t) (vueltas completas).
  *   comparar(tipo, o1, o2)              tipo 'resorte' o 'pendulo': cuántas veces cambia T (y vmax, amax, E) del
  *                                       primero al segundo, con los errores típicos de proporcionalidad.
  *   resortes({ k: [k1, k2, ...], modo: 'serie' | 'paralelo', m, F })   constante equivalente, período con la masa m
@@ -94,7 +95,17 @@
   function oscilacion(A, w, phi, exacto) {
     const fase = t => phi + grad(w * num(t, 'tiempo'));
     const sc = t => trigFase(fase(t), exacto);
+    const Tr = 2 * Math.PI / w;   // período de verdad (la fase da la vuelta), aunque se informe T con π² ≈ 10
     return {
+      // Primer instante t ≥ desde en que la fase vale 'grados' (90°: extremo +A; 0°: centro hacia +x).
+      proximo: (grados, desde) => {
+        const d = desde === undefined ? 0 : num(desde, 'tiempo');
+        const t0 = (mod360(num(grados, 'fase') - phi) / 360) * Tr;
+        const n = Math.ceil((d - t0) / Tr - 1e-9);
+        return t0 + Math.max(0, n) * Tr;
+      },
+      // Oscilaciones completas desde t = 0.
+      oscilaciones: t => Math.floor(num(t, 'tiempo') / Tr + 1e-9),
       fase: t => mod360(fase(t)),
       x: t => limpio(A * sc(t).sen),
       v: t => limpio(A * w * sc(t).cos),
@@ -154,7 +165,7 @@
           vLineal: limpio(vmax * (1 - fr)) } };           // la rapidez baja en línea recta con la distancia
     };
     return { m, k, g, gef, orientacion, omega: w, T, f, A, phi: mod360(phi), vmax, amax, E, Fmax: k * A, deq,
-      x: os.x, v: os.v, a: os.a, estado, enPosicion, circulo: os.circulo,
+      x: os.x, v: os.v, a: os.a, estado, enPosicion, circulo: os.circulo, proximo: os.proximo, oscilaciones: os.oscilaciones,
       puntos: { centro: { x: 0, v: vmax, a: 0, Ec: E, Ep: 0 }, extremo: { x: A, v: 0, a: amax, Ec: 0, Ep: E } },
       errores: {
         periodoInvertido: 2 * PI * Math.sqrt(k / m),   // T = 2π√(k/m)
@@ -205,13 +216,14 @@
     const Tcon = (LL, gg) => 2 * PI * Math.sqrt(LL / gg);
     return { L, hilo, radio, m, g, gef, ay, ax, inclinacion, theta0, omega: w, T, f, amplitudArco: s0, amplitudHorizontal: L * Math.sin(th),
       vmax, vmaxMAS: w * s0, amax: w * w * s0, E, Tgrande, cambioPorAmplitud: Tgrande / T - 1,
-      x: os.x, v: os.v, a: os.a, estado, circulo: os.circulo,
+      x: os.x, v: os.v, a: os.a, estado, circulo: os.circulo, proximo: os.proximo, oscilaciones: os.oscilaciones,
       errores: {
         soloHilo: hilo === null ? null : Tcon(hilo, gef),             // O4: L solo hasta donde acaba el hilo
         invertido: 2 * PI * Math.sqrt(gef / L),                        // T = 2π√(g/L)
         sinRaiz: 2 * PI * L / gef,                                     // T ∝ L
         conMasaComoResorte: m === null ? null : 2 * PI * Math.sqrt(m / gef), // pasar la masa a la fórmula
         gSinCambio: Tcon(L, g),                                        // ignorar la aceleración del ascensor
+        gSinRaiz: Tcon(L, g) * g / gef,                                // T baja en la misma proporción que sube g
         gSignoContrario: g - ay > EPS ? Tcon(L, Math.hypot(g - ay, ax)) : null, // sumar cuando hay que restar (o al revés)
         gSumaHorizontal: Math.abs(ax) > EPS ? Tcon(L, gy + Math.abs(ax)) : null, // sumar g y a sin componer
       } };
@@ -275,6 +287,7 @@
     r.errores = {
       alReves: errK,                                   // sumar las k en serie, o sumar las inversas en paralelo
       promedio: suma / ks.length,                      // «es como un resorte más»
+      TsinRaiz: o.m === undefined ? null : 2 * piDe(o) * Math.sqrt(pos(o.m, 'masa') / ks[0]) * ks[0] / keq, // T ∝ 1/k sin la raíz (con resortes iguales)
       TalReves: o.m === undefined ? null : 2 * piDe(o) * Math.sqrt(pos(o.m, 'masa') / errK),
     };
     return r;
