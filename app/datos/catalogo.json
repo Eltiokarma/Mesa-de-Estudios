@@ -3723,7 +3723,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "tablas-graficos"
+     ]
     }
    ]
   },
@@ -5177,6 +5179,23 @@
     "/plantillas/sucesiones/index.html",
     "/plantillas/sucesiones/motor.js",
     "/plantillas/sucesiones/papel.json"
+   ]
+  },
+  "tablas-graficos": {
+   "id": "tablas-graficos",
+   "titulo": "La bodega en gráficos: tablas, gráficos y suficiencia de datos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.tablas-graficos-y-suficiencia"
+   ],
+   "url": "/plantillas/tablas-graficos/index.html",
+   "papel": "/plantillas/tablas-graficos/papel.json",
+   "archivos": [
+    "/plantillas/tablas-graficos/index.html",
+    "/plantillas/tablas-graficos/motor.js",
+    "/plantillas/tablas-graficos/papel.json"
    ]
   },
   "tiro-parabolico": {
