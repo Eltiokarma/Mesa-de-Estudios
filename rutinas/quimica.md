@@ -275,4 +275,48 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
    - los neutrones se escriben con la palabra entera, porque n es el nivel.
 3. En `docs/pendientes.md` y `CLAUDE.md`, una línea como las de las otras plantillas.
 
-**Siguiente en la cola:** `enlace`.
+
+## 7 nov 2026 · enlace (pedido de la conversación principal, que ahora es session_01P39d2yUDZET7Wso3ubSiiV)
+
+**Contexto.** Átomo y tabla quedó integrado. La conversación principal abrió una rutina de química B (`rutina/quimica-b`: materia, nomenclatura y orgánica). A esta rutina le quedan enlace y líquidos y sólidos. Puedo llevar hasta 3 subagentes a la vez y uso `nucleo/celular.js`. El constructor se cortó dos veces por el límite de 5 horas; guardé el avance en commits "en curso" y lo retomé.
+
+**Qué se hizo.** `plantillas/enlace/` (unidad `quimica.enlace-quimico`; informe `atomo-enlace-ideas-erroneas.md`):
+
+- **`motor.js`** (`window.MotorEnlace`):
+  - Lewis de átomo central único con iones, carga formal, octeto incompleto o expandido y número de estructuras de resonancia;
+  - VSEPR: AXₙEₘ, geometría de dominios y molecular, hibridación y ángulos;
+  - posiciones 3D (pares libres ecuatoriales en sp³d; AX₂E₂ con los pares arriba) y el dibujo plano del papel;
+  - polaridad como suma de vectores de ΔEN de Pauling, con los pares libres sin dipolo propio (simplificación declarada);
+  - tipo de enlace con los cortes 1,7 y 0,4, y un aviso cuando chocan con la clase de átomos (HF, B–F);
+  - red de NaCl.
+  - El O₃ quedó fuera del catálogo del motor: el modelo lo daría apolar.
+- **Números:** 58 casos, 10 problemas de papel y 80 pruebas.
+- **`index.html`:**
+  - **Paso a paso:** 8 pasos con 5 predicciones:
+    - pares libres del NH₃;
+    - su forma (EN8);
+    - su hibridación (EN12);
+    - polaridad del CH₂Cl₂ (EN10: 56 % y 71 %; EN11);
+    - moléculas en un trozo de NaCl (EN1: 92 % de 102).
+  - **¿Qué pasa si…?:** 5 experimentos bloqueados en orden: CO₂ contra SO₂, BF₃ contra NH₃, XeF₄, clorometanos y resonancia del CO₃²⁻ (EN6).
+  - **Explorador:** central, ligandos y pares libres, o 40 moléculas del examen, con lo de «¿Qué pasa si…?» tapado hasta responder.
+
+**Subagentes.**
+- **Verificador:** con `entradas.py` y sin leer el motor, recalculó todo con fracciones y vectores 3D. Coinciden 322 campos de 58 casos; las 4 diferencias son de convención.
+- **Revisor:** dos graves, ya en corrección:
+  - la opción 4 del CH₂Cl₂ («Polar, y lo sería cualquier…») era defendible: ahora el enunciado pide la respuesta y la razón correctas;
+  - el modelo sin dipolo de los pares libres invierte NH₃ contra NF₃: el explorador ya no muestra el tamaño del dipolo y avisa del caso.
+  
+  Medios:
+  - el turquesa del dipolo se confundía con el verde de «correcto»: pasa a marrón rojizo;
+  - la correcta siempre caía en la posición 2 o 3 y solía ser la más larga;
+  - un enunciado que delataba la respuesta;
+  - «tetraédrica» defendible para el NH₃;
+  - el paso 6 regalaba el experimento 1;
+  - analogías visibles en el explorador (CS₂ y NO₂⁻);
+  - fórmulas mal escritas en el menú;
+  - un desborde en el celular;
+  - notas de los cortes de ΔEN.
+  
+  Además, 7 bajos.
+- **Estado:** correcciones EN CURSO; este reporte se cierra al terminar.
