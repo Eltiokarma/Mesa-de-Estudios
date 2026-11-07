@@ -411,22 +411,26 @@ function crearEscena(cv, idDesc, idLect, idLey){
     ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(x0 + 4, y0 - 2); ctx.lineTo(x0 - 2, y0 - 2); ctx.lineTo(x0 - 2, y0 + 3*rh + 2); ctx.lineTo(x0 + 4, y0 + 3*rh + 2); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(x0 + 3*cw - 4, y0 - 2); ctx.lineTo(x0 + 3*cw + 2, y0 - 2); ctx.lineTo(x0 + 3*cw + 2, y0 + 3*rh + 2); ctx.lineTo(x0 + 3*cw - 4, y0 + 3*rh + 2); ctx.stroke();
-    for (let i = 0; i < 3; i++) for (let j = 0; j < 5; j++){
+    const numeros = () => { for (let i = 0; i < 3; i++) for (let j = 0; j < 5; j++){
       const rep = j >= 3; if (rep && !S.repetir) continue;
-      rotulo(ctx, c, X(j), Y(i), nt(M[i][j % 3]), rep ? c.muted : c.ink, 'center', 800, 15, c.mono, false);
-    }
-    if (!R) return;
-    const diag = (lst, base, baja, k) => {
+      rotulo(ctx, c, X(j), Y(i), nt(M[i][j % 3]), rep ? c.muted : c.ink, 'center', 800, 15, c.mono);
+    } };
+    if (!R){ numeros(); return; }
+    const diag = (lst, base, baja) => {
       lst.forEach((d, n) => {
         const a = clamp(f - (base + n), 0, 1); if (a <= 0) return;
         const j0 = baja ? n : n + 2, j2 = baja ? n + 2 : n;
-        ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = baja ? c.ink : c.muted; ctx.lineWidth = 2.2; if (!baja) ctx.setLineDash([6, 4]);
-        linea(ctx, { x:X(j0) + (baja ? -10 : 10), y:Y(0) - 12 }, { x:X(lerp(j0, j2, a)) + (baja ? 10 : -10)*a, y:lerp(Y(0) - 12, Y(2) + 12, a) }); ctx.setLineDash([]);
-        if (a >= 1){ const yy = baja ? Y(2) + 26 : Y(0) - 28; rotulo(ctx, c, baja ? X(j2) + 4 : X(j0) - 4, yy, (baja ? '+' : '−') + nt(d.producto), baja ? c.ink : c.muted, 'center', 800, 13, c.mono); }
+        ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = baja ? c.ink : c.muted; ctx.lineWidth = 2; if (!baja) ctx.setLineDash([6, 4]);
+        const p0 = { x:X(j0) + (baja ? -12 : 12), y:Y(0) - 14 }, p1 = { x:X(j2) + (baja ? 12 : -12), y:Y(2) + 14 };
+        linea(ctx, p0, { x:lerp(p0.x, p1.x, a), y:lerp(p0.y, p1.y, a) }); ctx.setLineDash([]);
         ctx.restore();
       });
     };
     diag(R.suman, 0, true); diag(R.restan, 3, false);
+    numeros();
+    const fin = (lst, base, baja) => lst.forEach((d, n) => { if (f < base + n + 1) return; const j0 = baja ? n : n + 2, j2 = baja ? n + 2 : n;
+      rotulo(ctx, c, baja ? X(j2) + 6 : X(j0) + 6, baja ? Y(2) + 28 : Y(0) - 28, (baja ? '+ ' : '− ') + nt(d.producto), baja ? c.ink : c.muted, 'center', 800, 13, c.mono); });
+    fin(R.suman, 0, true); fin(R.restan, 3, false);
     if (f >= 6) rotulo(ctx, c, Z.w/2, Z.y + Z.h - 14, `${nt(R.principales)} − ${nt(R.secundarias)} = ${R.texto}`, c.d, 'center', 800, 15, c.mono);
   }
   // ----- el plano -----
@@ -963,7 +967,7 @@ function conf2(listo){
     desc: listo ? 'El cuadrito después de B y luego de A: un paralelogramo de área 6.' : 'El cuadrito unidad.' };
 }
 function conf3(listo){
-  return { mats:{ pie: listo ? 'BA: fila de B con 4 fichas, columna de A con 2' : '', items:[{ dim:[2, 3], nombre:'A', dimTexto:'2 × 3', fila: listo ? 0 : null }, { op:'·' }, { dim:[3, 4], nombre:'B', dimTexto:'3 × 4', col: listo ? 0 : null },
+  return { mats:{ pie: listo ? 'BA: 4 fichas contra 2' : '', items:[{ dim:[2, 3], nombre:'A', dimTexto:'2 × 3', fila: listo ? 0 : null }, { op:'·' }, { dim:[3, 4], nombre:'B', dimTexto:'3 × 4', col: listo ? 0 : null },
     { op:'=', alfa: listo ? 1 : 0 }, { dim:[2, 4], nombre:'AB', dimTexto:'2 × 4', alfa: listo ? 1 : 0 }] },
     lect: listo ? [() => ['ink', 'AB', '2 × 4'], () => ['ink', 'BA', 'no existe']] : [], desc: listo ? 'A por B da una matriz de 2 × 4.' : 'Una matriz de 2 × 3 y otra de 3 × 4, sin números.' };
 }
