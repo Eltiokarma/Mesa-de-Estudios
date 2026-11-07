@@ -465,10 +465,10 @@ const V = {
   },
   'rm-14': d => {
     // Rectángulo con dos entrantes: el perímetro del motor sale de los vértices; se comprueba que esos vértices son la
-    // figura del enunciado (caja y área). Un solo entrante sale de motor.muesca.
+    // figura del enunciado (caja y área). Un solo entrante (el de arriba) sale de motor.muesca.
     const M = motor('trazos-rutas'), P = M.perimetro({ vertices: d.vertices });
-    if (P.ancho !== d.ancho || P.alto !== d.alto || Math.abs(P.area - (d.ancho * d.alto - 2 * d.entrante * d.hondo)) > 1e-9) throw new Error('los vértices no son la figura del enunciado');
-    const una = M.perimetro(M.muesca({ ancho: d.ancho, alto: d.alto, desde: d.desde, hasta: d.desde + d.entrante, profundidad: d.hondo }));
+    if (P.ancho !== d.ancho || P.alto !== d.alto || Math.abs(P.area - (d.ancho * d.alto - d.a1 * d.h1 - d.a2 * d.h2)) > 1e-9) throw new Error('los vértices no son la figura del enunciado');
+    const una = M.perimetro(M.muesca({ ancho: d.ancho, alto: d.alto, desde: d.desde, hasta: d.desde + d.a1, profundidad: d.h1 }));
     return { correcta: P.perimetro, errores: { 'perimetro-entrante-como-rectangulo': P.errores.comoRectangulo, 'perimetro-un-solo-entrante': una.perimetro, 'GE4-area-por-perimetro': P.errores.area } };
   },
   'rm-15': d => {
@@ -478,25 +478,30 @@ const V = {
   },
   'rm-16': d => {
     // Pentágono con un número en cada vértice y en el medio de cada lado: el motor prueba todas las distribuciones.
-    const numeros = Array.from({ length: d.hasta - d.desde + 1 }, (_, k) => d.desde + k);
-    const r = motor('arreglos-giros').sumaLado({ lados: d.lados, porLado: 3, numeros, extremo: d.extremo });
-    return { correcta: r.respuesta, errores: { 'arreglo-vertices-una-vez': r.errores.unaVez, 'arreglo-chicos-en-vertices': r.errores.alReves, 'arreglo-suma-de-vertices': r.errores.sumaVertices } };
+    // La menor suma por borde; los números no empiezan en 1 (de paso en paso, desde..hasta).
+    const numeros = []; for (let x = d.desde; x <= d.hasta; x += d.paso) numeros.push(x);
+    const r = motor('arreglos-giros').sumaLado({ lados: d.lados, porLado: 3, numeros, extremo: 'minimo' });
+    return { correcta: r.respuesta, errores: { 'arreglo-vertices-una-vez': r.errores.unaVez, 'arreglo-grandes-en-vertices': r.errores.alReves, 'arreglo-suma-de-vertices': r.errores.sumaVertices } };
   },
   'rm-17': d => {
-    // Rueda por dentro de un aro: el centro recorre un círculo de radio R − r.
-    const r = motor('arreglos-giros').rodarCirculo({ R: d.R, r: d.r, lado: 'dentro' });
-    return { correcta: r.vueltas, errores: { 'rueda-solo-el-borde-que-toca': r.errores.contacto, 'rueda-por-dentro-como-por-fuera': r.errores.otroLado, 'rueda-no-gira': r.errores.mismoLado } };
+    // Al revés: de las vueltas por dentro al radio del aro. Se busca con el motor el radio R (en pasos de r) que da esas
+    // vueltas; cada error es el R cuyo error del motor da las mismas vueltas, y el diámetro del aro correcto.
+    const A = motor('arreglos-giros');
+    const buscar = que => {
+      for (let k = 2; k <= 60; k++) { const R = k * d.r, x = A.rodarCirculo({ R, r: d.r, lado: 'dentro' }); if (Math.abs(que(x) - d.vueltas) < 1e-9) return R; }
+      throw new Error('ningún aro da esas vueltas');
+    };
+    const R = buscar(x => x.vueltas);
+    return { correcta: R, errores: { 'rueda-solo-el-borde-que-toca': buscar(x => x.contacto), 'rueda-por-dentro-como-por-fuera': buscar(x => x.errores.otroLado), 'GE19-diametro-como-radio': 2 * R } };
   },
   'rm-18': d => {
     // Regreso en línea recta: el motor sigue los giros; el regreso es el recorrido con cada tramo al revés.
-    const T = motor('traslados-sucesos'), pasos = [['avanza', d.d1], [d.lado], ['avanza', d.d2], [d.lado], ['avanza', d.d3]];
-    const otro = d.lado === 'I' ? 'D' : 'I';
-    const regreso = tramos => T.recorrido(tramos.map(([r, c]) => [T.girar(r, 'D', 180), c]));
-    const ida = T.caminarConGiros({ inicio: d.inicio, pasos }), vuelta = regreso(ida.tramos);
-    const espejo = regreso(T.caminarConGiros({ inicio: d.inicio, pasos: pasos.map(p => (p[0] === d.lado ? [otro] : p)) }).tramos);
-    const txt = (n, dir) => `${n} m hacia el ${dir}`;
+    const T = motor('traslados-sucesos');
+    const pasos = [['avanza', d.d1], [d.g1], ['avanza', d.d2], [d.g2], ['avanza', d.d3], [d.g3], ['avanza', d.d4]];
+    const ida = T.caminarConGiros({ inicio: d.inicio, pasos }), vuelta = T.recorrido(ida.tramos.map(([r, c]) => [T.girar(r, 'D', 180), c]));
+    const txt = (n, dir) => `${n} m hacia el ${dir}`, catetos = Math.abs(vuelta.x) + Math.abs(vuelta.y);
     return { correcta: txt(vuelta.exacto, vuelta.direccion), errores: { 'vuelta-da-la-ida': txt(ida.exacto, ida.direccion),
-      'giro-derecha-por-izquierda': txt(espejo.exacto, espejo.direccion), 'cardinal-suma-los-catetos': txt(Math.abs(vuelta.x) + Math.abs(vuelta.y), vuelta.direccion) } };
+      'cardinal-suma-los-catetos': txt(catetos, vuelta.direccion), 'catetos-y-vuelta-da-la-ida': txt(catetos, ida.direccion) } };
   },
   'rm-19': d => {
     // Tres sucesos en un lapso: coinciden cada MCM; el motor lo comprueba minuto a minuto (comprobado). El error de

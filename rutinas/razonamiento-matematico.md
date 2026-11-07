@@ -373,3 +373,39 @@ Sesión paralela a la conversación principal, en la rama `rutina/razonamiento-m
 - `docs/pendientes.md` (ra1): «Hecha `traslados-sucesos` (pastillas con el +1, sucesos que coinciden por MCM contando la primera, turnos con ciclo, el triángulo de monedas invertido y caminatas con brújula; 22 casos verificados aparte)».
 - `CLAUDE.md`, historia: «Traslados y sucesos (7 nov 2026, rutina de razonamiento matemático): `plantillas/traslados-sucesos/` (la posta, el paradero y la plaza: pastillas cada k horas, combis que vuelven a salir juntas, el día del décimo descanso, el triángulo de monedas que se invierte con el mínimo de jugadas y la caminata por cuadras con brújula; 22 casos verificados aparte).»
 - En `plantillas/fracciones/` (línea ~769), `AR13-producto` va como parcial y el informe no lo respalda: debería ser hipótesis.
+
+## 7 nov 2026 · Pares de reserva del banco de RM (pedido de la principal)
+
+**Qué se hizo.** 9 pares A/B nuevos, rm-11 a rm-19, en la `reserva` de `catalogo/pruebas/razonamiento-matematico.json` (versión 1.2.0 del banco; `pares` no se tocó porque el banco está lleno). Uno por cada unidad que cubren mis 6 escenas: son 9, no 10. Cada par tiene su verificador en `catalogo/pruebas/verificar.js`, que saca la correcta y cada distractor del motor de su escena. Esto toca `catalogo/`, que la rutina no deja tocar; se hizo porque la principal lo pidió. Al traer la principal hubo un conflicto en `verificar.js` (los bloques ari-15 a ari-28 y rm-11 a rm-19 en el mismo lugar): se quedaron los dos.
+
+**Pares y unidades**
+
+| Par | Escena | Unidad | Qué pide | A | B |
+| --- | --- | --- | --- | --- | --- |
+| rm-11 | maximos-minimos | `razonamiento-matematico.maximos-y-minimos` | Cerco con dos precios (frente y fondo con reja, costados con malla) y un presupuesto: mayor área; el óptimo no es el cuadrado | 1800 m² | 1200 m² |
+| rm-12 | tablas-graficos | `razonamiento-matematico.tablas-graficos-y-suficiencia` | Barras con el eje que no empieza en 0: en qué porcentaje supera una a otra | 20 % | 30 % |
+| rm-13 | cortes-pesadas | `razonamiento-matematico.cortes-y-pesadas` | Masas enteras distintas con pesas de 1, 4 y 6 kg (B: 1, 4 y 10) en los dos platillos: quedan huecos | 10 | 12 |
+| rm-14 | trazos-rutas | `razonamiento-matematico.trazos-y-perimetros` | Perímetro con dos entrantes (A: letra H; B: muesca arriba y otra en el costado) | 62 cm | 60 cm |
+| rm-15 | trazos-rutas | `razonamiento-matematico.rutas-y-visualizacion-espacial` | Caminos que pasan por una esquina obligada (se multiplican los tramos) | 24 | 15 |
+| rm-16 | arreglos-giros | `razonamiento-matematico.arreglos-numericos` | Pentágono con fichas que no empiezan en 1: menor suma por borde | 17 | 28 |
+| rm-17 | arreglos-giros | `razonamiento-matematico.transformaciones-de-figuras` | Al revés: de las vueltas por dentro sin resbalar al radio del aro | 8 cm | 15 cm |
+| rm-18 | traslados-sucesos | `razonamiento-matematico.traslados-y-puntos-cardinales` | Cuatro tramos con giros mezclados: distancia y dirección para regresar (opciones 2 × 2) | 130 m hacia el sureste | 170 m hacia el noroeste |
+| rm-19 | traslados-sucesos | `razonamiento-matematico.frecuencia-de-sucesos` | Tres sucesos que coinciden en un lapso, contando el primero y el último | 11 | 7 |
+
+**Códigos de error.** Todos «hipótesis», salvo `GE4-area-por-perimetro` («parcial», como en `trazos-rutas`). Los nuevos y los que comparten con las escenas están en el diccionario `errores` del archivo; `AR3-porcentaje-sobre-el-mayor` dice «ligado a AR3 (base equivocada), sin cifra propia». Se agregó `docs/investigacion/geometria-ideas-erroneas.md` a `informes`.
+
+**Revisión a ciegas.** El revisor resolvió los 18 ítems sin ver la clave: las 18 coinciden y cada código reproduce su distractor. Se corrigió:
+
+- grave: rm-11 A decía «los dos lados que dan a la calle», que se lee como esquina y vuelve correcto el distractor del cuadrado (1600): ahora «el frente y el fondo»;
+- rm-17 no decía «sin resbalar» y calcaba el papel p7: ahora pide el radio del aro a partir de las vueltas, con la flecha;
+- rm-18: las opciones delataban la correcta por mayoría y calcaba el experimento de la pileta: ahora 2 × 2, cuatro tramos con giros mezclados y ternas 5-12-13 y 8-15-17;
+- rm-12 B calcaba el paso 1 (razón 1,25): datos nuevos; rm-14 y rm-15 con figuras y cuadrículas que no son las de la escena ni del papel; rm-19 A con distractores de cuentas exactas.
+
+Las claves nuevas las recalculé a mano: coinciden.
+
+**Pruebas.** `node --test catalogo/pruebas/*.test.js`: 61 de 62; `npm test`: 3923 de 3924. Falla solo «app/datos/pruebas.json está al día» (se arregla con `npm run catalogo`, que escribe en `app/`). `parecidos.js`: ningún par sale como parecido; quedan avisos de códigos compartidos en rm-16 (3 códigos con la predicción del triángulo: es la misma idea, menor suma por lado, en un pentágono y con fichas que no empiezan en 1; el revisor lo seguía viendo cercano a un calco) y rm-19 (2 códigos con «tres combis», pero cuenta veces en un lapso, no la próxima hora).
+
+**Pedidos.**
+
+1. `npm run catalogo` para que `app/datos/pruebas.json` quede al día.
+2. Si rm-16 se ve muy cerca de la escena cuando se elijan los pares del piloto, cambiarlo por otro de arreglos (p. ej. completar un cuadrado mágico de 4 × 4 o un arreglo en estrella).
