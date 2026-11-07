@@ -653,7 +653,7 @@
      "describe": "Usa el MCD donde va el MCM (AR13)"
     },
     "AR13-producto": {
-     "respaldo": "parcial",
+     "respaldo": "hipotesis",
      "describe": "Multiplica los números en vez de buscar el MCM"
     },
     "suma": {

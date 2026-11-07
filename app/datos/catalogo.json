@@ -3493,7 +3493,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "traslados-sucesos"
+     ]
     },
     {
      "id": "razonamiento-matematico.arreglos-numericos",
@@ -3621,7 +3623,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "traslados-sucesos"
+     ]
     },
     {
      "id": "razonamiento-matematico.ruedas-poleas-engranajes",
@@ -5650,6 +5654,24 @@
     "/plantillas/traductor-enunciados/index.html",
     "/plantillas/traductor-enunciados/motor.js",
     "/plantillas/traductor-enunciados/papel.json"
+   ]
+  },
+  "traslados-sucesos": {
+   "id": "traslados-sucesos",
+   "titulo": "La posta, el paradero y la plaza: sucesos que se repiten, monedas y puntos cardinales",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.traslados-y-puntos-cardinales",
+    "razonamiento-matematico.frecuencia-de-sucesos"
+   ],
+   "url": "/plantillas/traslados-sucesos/index.html",
+   "papel": "/plantillas/traslados-sucesos/papel.json",
+   "archivos": [
+    "/plantillas/traslados-sucesos/index.html",
+    "/plantillas/traslados-sucesos/motor.js",
+    "/plantillas/traslados-sucesos/papel.json"
    ]
   },
   "trazos-rutas": {
