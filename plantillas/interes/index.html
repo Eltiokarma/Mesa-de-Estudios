@@ -265,7 +265,7 @@ const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
 function tween(dur, paso, fin, lineal){
   if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
   const t0 = performance.now();
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
   requestAnimationFrame(tick);
 }
 const C_ = t => V('C', t), I_ = t => V('I', t), X_ = t => V('X', t), M_ = t => V('M', t), r_ = t => V('r', t), t_ = t => V('t', t),
