@@ -4395,7 +4395,7 @@
    "titulo": "Cinética química",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.cinetica-quimica"
    ],
@@ -4625,7 +4625,7 @@
    "titulo": "Equilibrio químico",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.equilibrio-quimico"
    ],
@@ -5386,7 +5386,7 @@
    "titulo": "Soluciones: concentración, dilución y mezcla",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.soluciones"
    ],

@@ -20,6 +20,11 @@
  *      La cuenta de fondo es continua y las partículas la siguen de a una: cuando las dos rapideces son
  *      iguales, los cambios van en pares (uno de ida y uno de vuelta) y las cantidades no se mueven.
  *      Cada partícula dibujada es una porción de sustancia, no una molécula suelta.
+ *   3. Gas que no reacciona (7 nov 2026): inerte() mete n moles de un gas que no reacciona a volumen fijo (ninguna
+ *      concentración cambia y Q sigue igual a K) o a presión total fija (el volumen crece, todo se diluye y el
+ *      equilibrio se corre hacia el lado con más moles de gas), con sus errores típicos; la caja hace lo mismo con
+ *      inerte() y presionFija(). kp() trae además sus errores de Δn (sin Δn, signo al revés, un solo lado:
+ *      soloProductos y soloReactivos usan como Δn la suma de coeficientes gaseosos de ese lado, con signo +).
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -84,7 +89,11 @@
   function kp(ec, Kc, T) {
     const RT = R * positivo(T, 'temperatura'), dn = deltaN(ec), k = positivo(Kc, 'Kc');
     const prod = leer(ec).productos.filter(x => x.estado === 'g').reduce((s, x) => s + x.coef, 0);
-    return { valor: k * Math.pow(RT, dn), RT, deltaN: dn, soloProductos: k * Math.pow(RT, prod), dividido: k / Math.pow(RT, dn) };
+    const reac = leer(ec).reactivos.filter(x => x.estado === 'g').reduce((s, x) => s + x.coef, 0);
+    return { valor: k * Math.pow(RT, dn), RT, deltaN: dn, soloProductos: k * Math.pow(RT, prod), dividido: k / Math.pow(RT, dn),
+      // Lo que da cada Δn mal contado: sin Δn (Kp = Kc), con el signo al revés (igual que dividir), o con los moles
+      // de gas de un solo lado.
+      errores: { sinDeltaN: k, signo: k * Math.pow(RT, -dn), soloProductos: k * Math.pow(RT, prod), soloReactivos: k * Math.pow(RT, reac) } };
   }
   function kc(ec, Kp, T) { const RT = R * positivo(T, 'temperatura'), dn = deltaN(ec); return { valor: positivo(Kp, 'Kp') / Math.pow(RT, dn), RT, deltaN: dn }; }
 
@@ -179,6 +188,36 @@
     return { instante: { moles, conc, Q }, sentido: sentido(Q, o.K), final };
   }
 
+  // Meter n moles de un gas que no reacciona a un equilibrio. o = { moles (del equilibrio), V, K (Kc), inerte (el que
+  // ya había, opcional) }; cond = 'V' (volumen fijo) o 'P' (presión total fija, a la misma temperatura).
+  // A volumen fijo, el gas nuevo sube la presión total pero no cambia ninguna concentración: Q sigue igual a K.
+  // A presión total fija, el volumen crece en proporción a los moles de gas (V = n·RT/P): todas las concentraciones
+  // bajan a la vez y, si Δn ≠ 0, el equilibrio se corre hacia el lado con más moles de gas. El equilibrio nuevo se
+  // resuelve con equilibrioP usando c = n/V (moles de gas por litro, fija) en el lugar de P y Kc en el de Kp.
+  // errores: comoComprimir = lo que dice quien solo ve "entra gas, sube la presión" (hacia el lado con menos moles
+  // de gas); sinEfecto = "no reacciona, no pasa nada"; otraCondicion = lo que pasaría con la otra condición.
+  function inerte(ec, o, n, cond) {
+    const e = leer(ec), V = positivo(o.V, 'volumen'), nI = noNegativo(n, 'gas inerte'), antes = noNegativo(o.inerte || 0, 'gas inerte');
+    if (cond !== 'V' && cond !== 'P') throw new Error(`condición desconocida: ${cond} (usa 'V' o 'P')`);
+    const moles = { ...o.moles }, gases = especies(e).filter(x => x.estado === 'g');
+    const nt0 = gases.reduce((s, x) => s + noNegativo(moles[x.sp] || 0, x.sp), 0) + antes;
+    if (!(nt0 > 0)) throw new Error('no hay gas en el recipiente');
+    const c = nt0 / V, V1 = cond === 'V' ? V : (nt0 + nI) / c;
+    const conc = {}; for (const x of especies(e)) if (cuenta(x)) conc[x.sp] = (moles[x.sp] || 0) / V1;
+    const Q = cociente(e, conc), sen = sentido(Q, o.K);
+    let final;
+    if (cond === 'V') { const r = equilibrio(e, { moles, V, K: o.K }); final = { xi: r.xi, moles: r.moles, V, conc: r.conc }; }
+    else {
+      const r = equilibrioP(e, { moles, P: c, K: o.K, inerte: antes + nI }), Vf = r.nTotal / c, cf = {};
+      for (const x of especies(e)) if (cuenta(x)) cf[x.sp] = r.moles[x.sp] / Vf;
+      final = { xi: r.xi, moles: r.moles, V: Vf, conc: cf };
+    }
+    const dn = deltaN(e), comoComprimir = dn < 0 ? 'directa' : dn > 0 ? 'inversa' : 'equilibrio';
+    const otra = cond === 'V' ? sentido(cociente(e, Object.fromEntries(Object.entries(conc).map(([k, v]) => [k, v * nt0 / (nt0 + nI)]))), o.K) : 'equilibrio';
+    return { instante: { moles, V: V1, conc, Q, factorP: cond === 'V' ? (nt0 + nI) / nt0 : 1 }, sentido: sen, final, deltaN: dn,
+      errores: { comoComprimir, sinEfecto: 'equilibrio', otraCondicion: otra } };
+  }
+
   // K a otra temperatura (van 't Hoff): ln(K₂/K₁) = −(ΔH/R)·(1/T₂ − 1/T₁), con ΔH en J/mol.
   // ΔH < 0 (exotérmica): al calentar, K baja. ΔH > 0 (endotérmica): al calentar, K sube.
   function vantHoff(K1, T1, dH, T2) {
@@ -207,7 +246,7 @@
     const nueva = (t, x, y) => { const a = rnd() * 2 * Math.PI; return { tipo: t, x: x === undefined ? rnd() : x, y: y === undefined ? rnd() : y, dx: Math.cos(a), dy: Math.sin(a), cambio: -9 }; };
     const rol = n => { if (n === esc.a || n === 'A') return 'A'; if (n === esc.b || n === 'B') return 'B'; throw new Error(`especie desconocida: ${n}`); };
     const S = { tipo, ec: esc.ec, nombres: { A: esc.a, B: esc.b }, nu: esc.nu, parts: [], V: positivo(o.V || 1, 'volumen'), T: positivo(o.T || 300, 'temperatura'),
-      cat: 1, t: 0, eventos: [], historial: [], marcas: [] };
+      cat: 1, t: 0, eventos: [], historial: [], marcas: [], nI: 0, presion: null };
     for (let k = 0; k < noNegativo(o.nA || 0, 'nA'); k++) S.parts.push(nueva('A'));
     for (let k = 0; k < noNegativo(o.nB || 0, 'nB'); k++) S.parts.push(nueva('B'));
     const contar = t => S.parts.filter(p => p.tipo === t).length;
@@ -252,10 +291,13 @@
       }
       const sub = Math.max(1, Math.ceil(dt / 0.004)), h = dt / sub;
       for (let k = 0; k < sub; k++) {
+        // A presión total fija, el volumen sigue a los moles de gas (la cuenta continua más el gas que no reacciona).
+        if (S.presion) S.V = (nAc + nBc + S.nI) / S.presion;
         const r = rapideces(nAc, nBc);
         let d = (r.d - r.i) * h;
         d = Math.max(-nBc, Math.min(nAc / esc.nu, d));
         nAc -= esc.nu * d; nBc += d; xiC += d; accD += r.d * h; accI += r.i * h;
+        if (S.presion) S.V = (nAc + nBc + S.nI) / S.presion;
         S.t += h;
         // Cambios en pares (ida y vuelta) mientras las dos rapideces lo permitan: no mueven las cantidades.
         while (accD >= 1 && accI >= 1 && contar('A') >= esc.nu && contar('B') >= 1) { directa(); inversa(); accD -= 1; accI -= 1; }
@@ -277,17 +319,35 @@
     S.cuenta = () => ({ [esc.a]: contar('A'), [esc.b]: contar('B') });
     S.Q = () => cociente(esc.ec, { [esc.a]: contar('A') / S.V, [esc.b]: contar('B') / S.V });
     // Equilibrio exacto desde lo que hay ahora en la caja (el motor de cálculo, no las partículas).
-    S.equilibrio = () => { const c = S.cuenta(); const r = equilibrio(esc.ec, { moles: c, V: S.V, K: S.K() }); return r.moles; };
+    // A presión total fija, con equilibrioP y los moles de gas por litro en el lugar de P.
+    S.equilibrio = () => {
+      const c = S.cuenta();
+      if (S.presion) return equilibrioP(esc.ec, { moles: c, P: S.presion, K: S.K(), inerte: S.nI }).moles;
+      return equilibrio(esc.ec, { moles: c, V: S.V, K: S.K() }).moles;
+    };
     // Cambios hechos a mano: la cuenta de fondo arranca de lo que hay.
     const marca = q => S.marcas.push({ t: S.t, que: q });
     S.agregar = (t, n) => { for (let k = 0; k < noNegativo(n, 'cantidad'); k++) { const p = nueva(rol(t), rnd(), rnd() * 0.15); p.cambio = S.t; S.parts.push(p); } reiniciar(); marca(`+${n} ${t}`); };
     S.quitar = (t, n) => { for (let k = 0; k < noNegativo(n, 'cantidad'); k++) { const p = elegir(rol(t)); if (p) S.parts.splice(S.parts.indexOf(p), 1); } reiniciar(); marca(`−${n} ${t}`); };
     S.volumen = V => { S.V = positivo(V, 'volumen'); marca('V'); };
     S.temperatura = T => { S.T = positivo(T, 'temperatura'); marca('T'); };
+    // Gas que no reacciona: porciones de tipo 'I' que se mueven con las demás y no entran en Q ni en las rapideces.
+    // Con la presión fija, el volumen crece en el acto; si no, la caja es rígida y nada cambia.
+    S.inerte = n => {
+      for (let k = 0; k < noNegativo(n, 'cantidad'); k++) { const p = nueva('I', rnd(), rnd() * 0.15); p.cambio = S.t; S.parts.push(p); }
+      S.nI += n; if (S.presion) S.V = (contar('A') + contar('B') + S.nI) / S.presion;
+      reiniciar(); marca(`+${n} inerte`);
+    };
+    // Moles de gas por litro, con el gas que no reacciona (proporcional a la presión total: P = (n/V)·RT), y las
+    // presiones parciales en atm si cada porción es 1 mol: p = [i]·RT.
+    S.gasPorLitro = () => (contar('A') + contar('B') + S.nI) / S.V;
+    S.presiones = () => ({ [esc.a]: contar('A') / S.V * R * S.T, [esc.b]: contar('B') / S.V * R * S.T });
+    // Émbolo libre: la presión total queda fija en la de este momento (moles de gas por litro).
+    S.presionFija = on => { S.presion = on ? (contar('A') + contar('B') + S.nI) / S.V : null; marca('P'); };
     S.catalizador = f => { S.cat = f ? (f === true ? 3 : positivo(f, 'catalizador')) : 1; marca('cat'); };
     return S;
   }
 
   return { R, RJ, leer, deltaN, cociente, constante, kp, kc, invertir, escalar, sumar, sentido, equilibrio, equilibrioP,
-    perturbar, vantHoff, ESCENAS, Kescena, caja };
+    perturbar, inerte, vantHoff, ESCENAS, Kescena, caja };
 });
