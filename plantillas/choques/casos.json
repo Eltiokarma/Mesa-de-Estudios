@@ -2,7 +2,7 @@
   "plantilla": "choques",
   "unidades": "SI: kg, m, s, m/s, N, J y N·s (= kg·m/s); g = 10 m/s²; ángulos en grados desde el eje +x con los valores de academia sen 37° = 3/5 y cos 37° = 4/5 (53°, 16° y 74° igual)",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' (una lista) y compara 'espera'. Los campos anidados van con punto (errores.conservaEc). Los números se comparan con la tolerancia; los textos y los booleanos, exactos; null, exacto. 'escenarioEstado' es escenario(o).estado(t) y 'explosionEstado' es explosion(o).estado(t, x1, x2). Signos: en una recta, velocidades, cantidades de movimiento e impulsos positivos hacia la derecha; el cuerpo 1 empieza a la izquierda del 2. En pared(), v es la rapidez de llegada, positiva hacia la pared: dp y Fpelota son sobre la pelota y Fpared es la fuerza media de la pelota sobre la pared. En choque(), e es el coeficiente de restitución: e = (v2f − v1f)/(v1 − v2).",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas por un subagente (7 nov 2026), con Python y fracciones exactas, sin leer el motor ni casos.json: choques en el sistema del centro de masa (u' = −e·u) y Ec perdida como (1 − e²)·½μ·v_rel²; explosiones y péndulo con la energía en el centro de masa; áreas F-t por figuras y el medio seno por integral; choque en el plano con el triángulo de p. Coinciden todos los valores físicos de los 21 casos; las únicas diferencias fueron de convención (signos, tildes, ángulo real o de academia).",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Problema guiado (informe, caso «Plástico»): 2 kg a 6 m/s contra 1 kg en reposo, quedan juntos → v = 4 m/s; p = 12 antes y después; Ec de 36 J a 24 J (se pierde 1/3); conservar la Ec daría 2√6 ≈ 4,90 m/s y promediar sin masas, 3 m/s",

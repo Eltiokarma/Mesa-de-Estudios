@@ -34,6 +34,8 @@
  *   pendulo({ mb, v, M, L })               péndulo balístico: la bala mb a v se incrusta en el bloque M colgado.
  *                                          Choque (conserva p) y subida (conserva energía): V, h, Ec perdida y,
  *                                          si se da el largo L del hilo, el ángulo θ con cos θ = 1 − h/L.
+ *                                          Ojo: solo corta (error) si h > 2L; con h > L el hilo ya se afloja
+ *                                          antes de llegar arriba y θ deja de ser físico (la escena usa h < L).
  *   penduloInverso({ mb, M, h })           al revés: de la altura h a la rapidez v de la bala.
  *
  * Cada resultado que es la respuesta de una predicción trae 'errores': los números que salen de las ideas

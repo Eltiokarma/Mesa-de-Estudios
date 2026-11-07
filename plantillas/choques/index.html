@@ -8,7 +8,7 @@
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
    v velocidad rojo (el de MRUV), p cantidad de movimiento índigo (también Δp y el área bajo F-t, que es Δp),
-   Ec energía cinética celeste (el de energía), F fuerza fucsia (el de la fuerza aplicada en dinámica),
+   Ec energía cinética celeste (propio de esta escena), F fuerza fucsia (el de la fuerza aplicada en dinámica),
    Δt tiempo naranja y h altura verde (el de energía). Las masas, e y el centro de masa ⊕ van en tinta.
    Medidos con docs/metodo/paleta.py: ΔE00 ≥ 21 entre los seis, en claro y en oscuro; contraste ≥ 4,5 sobre
    #fdf7f1, #241c2e, las tarjetas y el chip .v (fondo al 8 %). El morado de marca no se usa aquí. */
@@ -17,7 +17,7 @@
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-v:#c0364a; --c-p:#0b0b8e; --c-E:#08709e; --c-F:#a10fbf; --c-t:#a75205; --c-h:#4b7416;
+  --c-v:#c0364a; --c-p:#0b0b8e; --c-E:#08709e; --c-F:#a10fbf; --c-t:#a05200; --c-h:#4b7416;
   --suelo:#d9c8bb; --bloque:#f3e3d3; --bloque2:#e6d3f0;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -27,13 +27,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-v:#f17384; --c-p:#6c89fb; --c-E:#25caf4; --c-F:#cf6bfa; --c-t:#f0a04a; --c-h:#a3d65e;
+  --c-v:#f17384; --c-p:#7b95ff; --c-E:#25caf4; --c-F:#cf6bfa; --c-t:#f0a04a; --c-h:#a3d65e;
   --suelo:#4a3d55; --bloque:#5a4868; --bloque2:#4b3a63; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-v:#f17384; --c-p:#6c89fb; --c-E:#25caf4; --c-F:#cf6bfa; --c-t:#f0a04a; --c-h:#a3d65e;
+  --c-v:#f17384; --c-p:#7b95ff; --c-E:#25caf4; --c-F:#cf6bfa; --c-t:#f0a04a; --c-h:#a3d65e;
   --suelo:#4a3d55; --bloque:#5a4868; --bloque2:#4b3a63; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -160,7 +160,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <header>
       <p class="eyebrow">Física · Impulso y choques · Problemas tipo admisión</p>
       <h1>Choques en un riel</h1>
-      <p class="sub">La cantidad de movimiento es una flecha y es del sistema entero. Cada carrito puede ganar o perder; el total, no.</p>
+      <p class="sub">La cantidad de movimiento es una flecha. Cada carrito tiene la suya y puede ganar o perder; la del sistema, sumada con su sentido, no cambia.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -351,13 +351,13 @@ function riel(ctx, c, B, R, cfg){
   if (cfg.resorte && geo.length === 2) resorte(ctx, geo[0].der, geo[1].izq, yR - 14, c.muted, 6);
   if (cfg.hilo && geo.length === 2){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1; ctx.setLineDash([2, 2]); linea(ctx, geo[0].der - 6, yR - 26, geo[1].izq + 6, yR - 26); ctx.restore(); }
   geo.forEach((g, j) => {
-    ctx.save(); ctx.fillStyle = j ? c.bloque2 : c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+    ctx.save(); ctx.fillStyle = j ? c.bloque2 : c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = c.hl === 'm' ? 3.6 : 1.6;
     rr(ctx, g.izq, g.top, g.w, g.h, 5); ctx.fill(); ctx.stroke();
     [g.izq + g.w*0.25, g.izq + g.w*0.75].forEach(x => { ctx.beginPath(); ctx.arc(x, yR + 1, 4.5, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); });
     ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    const txt = `${g.k.letra} · ${N(g.k.m)} kg`;
+    const txt = g.k.letra ? `${g.k.letra}: ${N(g.k.m)} kg` : `${N(g.k.m)} kg`;
     ctx.font = `800 ${c.chico ? 10 : 11}px ${c.font}`;
-    ctx.fillText(ctx.measureText(txt).width < g.w - 4 ? txt : g.k.letra, g.cx, cfg.fuerzas ? g.top + 11 : g.top + g.h/2);
+    ctx.fillText(ctx.measureText(txt).width < g.w - 4 || !g.k.letra ? txt : g.k.letra, g.cx, cfg.fuerzas ? g.top + 11 : g.top + g.h/2);
     ctx.restore();
   });
   // Flechas de velocidad sobre cada carrito (o una sola si van juntos).
@@ -366,7 +366,7 @@ function riel(ctx, c, B, R, cfg){
     if (oculta){ rotulo(ctx, c, x, yy, txt, c.v, 'center', 800); return; }
     // Más de 12 m/s: la flecha se corta en 12 (el rótulo dice el valor).
     const lv = clamp(v, -12, 12)*kv;
-    if (Math.abs(v) > 0.05) flecha(ctx, x, yy, x + lv, yy, c.v, 3);
+    if (Math.abs(v) > 0.05) flecha(ctx, x, yy, x + lv, yy, c.v, c.hl === 'v' ? 5.5 : 3);
     const lx = Math.abs(v) > 0.05 ? x + lv/2 : x;
     rotulo(ctx, c, lx, yy - 13, txt, c.v, 'center', 800);
   };
@@ -376,21 +376,21 @@ function riel(ctx, c, B, R, cfg){
   if (cfg.sistema && geo.length === 2){
     const x0 = Math.min(...geo.map(g => g.izq)) - 8, x1 = Math.max(...geo.map(g => g.der)) + 8, y0 = Math.min(...geo.map(g => g.top)) - 6;
     ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.setLineDash([6, 4]); rr(ctx, x0, y0, x1 - x0, yR + 10 - y0, 10); ctx.stroke(); ctx.restore();
-    if (!cfg.fuerzas) rotulo(ctx, c, x0, yR + 25, 'sistema A + B', c.muted, 'left', 700, 11);
+    if (!cfg.fuerzas) rotulo(ctx, c, x0, cfg.cm !== undefined ? yR + 41 : yR + 25, 'sistema 1 + 2', c.muted, 'left', 700, 11);
   }
   if (cfg.fuerzas && geo.length === 2){
     // El par de fuerzas, a la altura de las ruedas; sus rótulos, debajo del riel.
     const xc = (geo[0].der + geo[1].izq)/2, yf = yR - 9, l = 30;
-    flecha(ctx, xc, yf, xc - l, yf, c.F, 3); flecha(ctx, xc, yf, xc + l, yf, c.F, 3);
-    rotulo(ctx, c, xc - 6, yR + 25, 'F · B', c.F, 'right', 800, 11);
-    rotulo(ctx, c, xc + 6, yR + 25, 'F · A', c.F, 'left', 800, 11);
+    const wf = c.hl === 'F' ? 5.5 : 3; flecha(ctx, xc, yf, xc - l, yf, c.F, wf); flecha(ctx, xc, yf, xc + l, yf, c.F, wf);
+    rotulo(ctx, c, xc - 6, yR + 25, 'F de 2', c.F, 'right', 800, 11);
+    rotulo(ctx, c, xc + 6, yR + 25, 'F de 1', c.F, 'left', 800, 11);
   }
   if (cfg.medio !== undefined){
     const x = X(cfg.medio); ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]); linea(ctx, x, yR - 4, x, yR + 14); ctx.restore();
     ctx.fillStyle = c.muted; ctx.beginPath(); ctx.moveTo(x, yR + 6); ctx.lineTo(x - 5, yR + 14); ctx.lineTo(x + 5, yR + 14); ctx.closePath(); ctx.fill();
     rotulo(ctx, c, x, yR + 24, 'punto medio', c.muted, 'center', 700, 10);
   }
-  if (cfg.cm !== undefined) marcaCM(ctx, c, X(cfg.cm), yR + 8, cfg.cmRot);
+  if (cfg.cm !== undefined) marcaCM(ctx, c, X(cfg.cm), cfg.sistema ? yR + 24 : yR + 8, cfg.cmRot);
   return { X, esc, yR, geo };
 }
 
@@ -435,8 +435,8 @@ function filas(ctx, c, B, lista){
       const a = X(s), b = X(s + p.v), yc0 = yc;
       if (mixto) yc = yc0 + (k ? 6 : -6);
       if (f.tipo === 'E'){
-        if (b - a > 0.5){ ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = k ? .5 : 1; ctx.fillRect(a, yc - 7, b - a, 14); ctx.restore(); }
-      } else if (Math.abs(b - a) > 1.5){ ctx.save(); ctx.globalAlpha = k ? .55 : 1; flecha(ctx, a, yc, b, yc, col, f.tipo === 'dp' ? 4 : 6, f.tipo === 'dp' ? [5, 3] : null); ctx.restore(); }
+        if (b - a > 0.5){ ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = k ? .5 : 1; const g2 = c.hl === 'E' ? 2.5 : 0; ctx.fillRect(a, yc - 7 - g2, b - a, 14 + 2*g2); ctx.restore(); }
+      } else if (Math.abs(b - a) > 1.5){ ctx.save(); ctx.globalAlpha = k ? .55 : 1; flecha(ctx, a, yc, b, yc, col, (f.tipo === 'dp' ? 4 : 6) + (c.hl === 'p' ? 2.5 : 0), f.tipo === 'dp' ? [5, 3] : null); ctx.restore(); }
       if (p.letra && Math.abs(b - a) > 14){ ctx.font = `800 10px ${c.font}`; ctx.textAlign = 'center'; ctx.fillStyle = c.muted; ctx.fillText(p.letra, (a + b)/2, mixto && k ? yc + 11 : yc - 12); }
       s += p.v; yc = yc0;
     });
@@ -459,7 +459,7 @@ function graficaFt(ctx, c, B, o){
   ctx.fillText(fmt(o.Fmax, 0), B.x - 3, B.y + 4); ctx.fillText('0', B.x - 3, B.y + B.h);
   ctx.font = `800 10px ${c.mono}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillStyle = c.F; ctx.fillText('F (N)', B.x + 4, B.y + 2);
   ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillStyle = c.t; ctx.fillText('t (s)', B.x + B.w - 2, B.y + B.h - 2);
-  if (o.titulo){ ctx.font = `800 ${c.chico ? 11 : 12}px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillStyle = c.ink; ctx.fillText(o.titulo, B.x + 48, B.y + 2); }
+  if (o.titulo){ ctx.font = `800 ${c.chico ? 11 : 12}px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillStyle = c.ink; ctx.textAlign = 'right'; ctx.fillText(o.titulo, B.x + B.w - 4, B.y + 2); }
   if (o.oculta || !o.pulso){
     ctx.fillStyle = c.muted; ctx.font = `800 16px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', B.x + B.w/2, B.y + B.h/2);
     return;
@@ -485,11 +485,11 @@ function graficaFt(ctx, c, B, o){
     rotulo(ctx, c, Math.max(B.x + 2, X(p.dt/2) - 30), B.y + B.h + 9, `Δt = ${N(p.dt)} s`, c.t, 'left', 800, 10);
   }
 }
-const NOMBRES = { v:"v · velocidad", p:"p · cantidad de movimiento (y Δp)", E:"Ec · energía cinética", F:"F · fuerza del choque", t:"Δt · tiempo de contacto", h:"h · altura", cm:"⊕ centro de masa" };
+const NOMBRES = { v:"v · velocidad", p:"p · cantidad de movimiento (y Δp)", E:"Ec · energía cinética", F:"F · fuerza del choque", t:"Δt · tiempo de contacto", h:"h · altura", cm:"centro de masa" };
 function leyenda(el, claves){
   el.innerHTML = claves.map(k => k === 'cm' ? `<span><i class="cm"></i>${NOMBRES.cm}</span>` :
     k === 'perdida' ? '<span><i style="background:repeating-linear-gradient(135deg,var(--c-E) 0 2px,transparent 2px 5px);height:10px"></i>Ec perdida (rayada)</span>' :
-    k === 'AB' ? '<span>tono lleno: A · tono claro: B</span>' :
+    k === 'AB' ? '<span>tono lleno: 1 · tono claro: 2</span>' :
     `<span><i style="background:var(--c-${k})"></i>${NOMBRES[k]}</span>`).join('');
 }
 const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}" tabindex="-1"></p>`;
@@ -497,7 +497,7 @@ const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `
 <script>
 /* ================= MODO 1: paso a paso =================
    Problema guiado (casos de prueba del informe docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md):
-   A de 2 kg a 6 m/s contra B de 1 kg quieto; quedan enganchados. Luego, el elástico de 1 kg contra 2 kg. */
+   el carrito 1 de 2 kg a 6 m/s contra el 2 de 1 kg quieto; quedan enganchados. Luego, el elástico de 1 kg contra 2 kg. */
 (function(){
 const $ = id => document.getElementById(id);
 const cv = $('cv');
@@ -528,22 +528,22 @@ const SG = escenario(ESC.guiado), SE = escenario(ESC.elastico);
 const RG = M.choque(ESC.guiado), RE = M.choque(ESC.elastico);
 
 const P1 = { id:'choques-paso2', ok:'c',
-  opts:[['a','La del 1 no cambia y B gana la suya aparte','M1-p-de-cada-cuerpo','parcial'],
-        ['b','La del 1 pasa entera al 2 y A se queda quieto','intercambian-velocidades','hipotesis'],
+  opts:[['a','La del carrito 1 no cambia y el 2 gana la suya aparte','M1-p-de-cada-cuerpo','parcial'],
+        ['b','La del 1 pasa entera al 2 y el 1 se queda quieto','intercambian-velocidades','hipotesis'],
         ['c','La del 1 baja y la del 2 sube lo mismo',null,''],
         ['d','La del 1 baja y la del 2 sube menos','p-total-baja','hipotesis']],
-  fb:{ c:'¡Bien! B empuja al 1 hacia atrás y A empuja al 2 hacia adelante con fuerzas iguales, durante el mismo tiempo. Lo que A pierde de cantidad de movimiento, B lo gana: el total no cambia.',
-       a:'Elegiste la A. Si B gana cantidad de movimiento, alguien tiene que perderla: la fuerza del 2 sobre el 1 frena al 1. Cada carrito por separado cambia; lo que se conserva es el total del sistema. La correcta está marcada.',
-       b:'Elegiste la B. Eso pasaría en un choque con resorte entre carritos de la misma masa. Aquí B tiene la mitad de la masa del 1 y quedan enganchados: A no se detiene. La correcta está marcada.',
-       d:'Elegiste la D. Las fuerzas entre el 1 y el 2 son iguales y opuestas y duran lo mismo: lo que A pierde, B lo gana entero. El total no baja. La correcta está marcada.' } };
+  fb:{ c:'¡Bien! El 2 empuja al 1 hacia atrás y el 1 empuja al 2 hacia adelante con fuerzas iguales, durante el mismo tiempo. Lo que el 1 pierde de cantidad de movimiento, el 2 lo gana: el total no cambia.',
+       a:'Elegiste la A. Si el carrito 2 gana cantidad de movimiento, alguien tiene que perderla: la fuerza del 2 sobre el 1 frena al 1. Cada carrito por separado cambia; lo que se conserva es el total del sistema. La correcta está marcada.',
+       b:'Elegiste la B. Eso pasaría en un choque con resorte entre carritos de la misma masa. Aquí el 2 tiene la mitad de la masa del 1 y quedan enganchados: el 1 no se detiene. La correcta está marcada.',
+       d:'Elegiste la D. Las fuerzas entre el 1 y el 2 son iguales y opuestas y duran lo mismo: lo que el 1 pierde, el 2 lo gana entero. El total no baja. La correcta está marcada.' } };
 const P2 = { id:'choques-paso3', ok:'a',
   opts:[['a',`${N(RG.v1f)} m/s`,null,''],
         ['b',`${N(RG.errores.sigueIgual)} m/s`,'M1-sigue-igual','parcial'],
         ['c',`${N(RG.errores.promedioSinMasas)} m/s`,'promedio-sin-masas','hipotesis'],
         ['d',`${fmt(RG.errores.conservaEc, 1)} m/s`,'M5-conserva-ec-plastico','parcial']],
   fb:{ a:`¡Bien! La cantidad de movimiento del sistema es ${N(RG.pAntes)} kg·m/s antes y después. Juntos tienen 3 kg: 12/3 = 4 m/s.`,
-       b:'Elegiste la B. Si A siguiera a 6 m/s arrastrando al 2, el total sería 3·6 = 18 kg·m/s: aparecería cantidad de movimiento de la nada. La correcta está marcada.',
-       c:'Elegiste la C. 3 m/s es el promedio de 6 y 0, como si los dos carritos tuvieran la misma masa. A tiene el doble de masa que B y cuenta el doble. La correcta está marcada.',
+       b:'Elegiste la B. Si el 1 siguiera a 6 m/s arrastrando al 2, el total sería 3·6 = 18 kg·m/s: aparecería cantidad de movimiento de la nada. La correcta está marcada.',
+       c:'Elegiste la C. 3 m/s es el promedio de 6 y 0, como si los dos carritos tuvieran la misma masa. El 1 tiene el doble de masa que el 2 y cuenta el doble. La correcta está marcada.',
        d:`Elegiste la D. ${fmt(RG.errores.conservaEc, 1)} m/s sale de conservar la energía cinética (½·3·v'² = 36 J) en vez de la cantidad de movimiento. Con esa velocidad, el total sería 3·${fmt(RG.errores.conservaEc, 1)} ≈ ${fmt(RG.errores.pSiConservaEc, 1)} kg·m/s, más de los 12 que había. La correcta está marcada.` } };
 const P3 = { id:'choques-paso4', ok:'d',
   opts:[['a',`${N(RG.errores.EcSiSeConservara)} J`,'M5-ec-se-conserva','parcial'],
@@ -552,17 +552,17 @@ const P3 = { id:'choques-paso4', ok:'d',
         ['d',`${N(RG.EcDespues)} J`,null,'']],
   fb:{ d:`¡Bien! Ec después = ½·3·4² = ${N(RG.EcDespues)} J. Había ${N(RG.EcAntes)} J: se pierden ${N(RG.EcPerdida)} J en el choque.`,
        a:`Elegiste la A. Con 3 kg a 4 m/s, la energía cinética es ½·3·4² = ${N(RG.EcDespues)} J, no 36 J. Cuando quedan enganchados, parte de la energía cinética se va en deformar el enganche, en calor y en ruido. La correcta está marcada.`,
-       b:`Elegiste la B. ${N(RG.Ec1f)} J es la energía cinética del 1 solo (½·2·4²). B también se mueve a 4 m/s y tiene ${N(RG.Ec2f)} J. La correcta está marcada.`,
+       b:`Elegiste la B. ${N(RG.Ec1f)} J es la energía cinética del 1 solo (½·2·4²). El 2 también se mueve a 4 m/s y tiene ${N(RG.Ec2f)} J. La correcta está marcada.`,
        c:`Elegiste la C. ${N(RG.EcPerdida)} J es lo que se pierde, no lo que queda: 36 − 24 = 12. La correcta está marcada.` } };
 const P4 = { id:'choques-paso6', ok:'c',
-  opts:[['a',`A se queda quieto y B sale a ${N(RE.errores.intercambian2)} m/s`,'intercambian-velocidades','hipotesis'],
-        ['b',`A sigue a ${N(RE.errores.comoPlastico)} m/s y B sale a ${N(RE.errores.comoPlastico)} m/s`,'elastico-como-plastico','hipotesis'],
-        ['c',`A rebota a ${N(-RE.v1f)} m/s y B sale a ${N(RE.v2f)} m/s`,null,''],
-        ['d',`A rebota a ${N(-RE.errores.rebotaComoPared1)} m/s y B se queda quieto`,'rebota-como-pared','hipotesis']],
+  opts:[['a',`El 1 se queda quieto y el 2 sale a ${N(RE.errores.intercambian2)} m/s`,'intercambian-velocidades','hipotesis'],
+        ['b',`El 1 sigue a ${N(RE.errores.comoPlastico)} m/s y el 2 sale a ${N(RE.errores.comoPlastico)} m/s`,'elastico-como-plastico','hipotesis'],
+        ['c',`El 1 rebota a ${N(-RE.v1f)} m/s y el 2 sale a ${N(RE.v2f)} m/s`,null,''],
+        ['d',`El 1 rebota a ${N(-RE.errores.rebotaComoPared1)} m/s y el 2 se queda quieto`,'rebota-como-pared','hipotesis']],
   fb:{ c:'¡Bien! El carrito liviano rebota y el pesado sale hacia adelante. Cantidad de movimiento: 1·6 = 1·(−2) + 2·4 = 6 kg·m/s. Energía cinética: 18 J = 2 J + 16 J.',
-       a:'Elegiste la A. Intercambian velocidades solo si las masas son iguales. Si B, de 2 kg, saliera a 6 m/s, tendría 12 kg·m/s: el doble de los 6 que había. La correcta está marcada.',
+       a:'Elegiste la A. Intercambian velocidades solo si las masas son iguales. Si el 2, de 2 kg, saliera a 6 m/s, tendría 12 kg·m/s: el doble de los 6 que había. La correcta está marcada.',
        b:'Elegiste la B. Eso pasaría si quedaran pegados (6/3 = 2 m/s). Con un resorte se separan y, en un choque elástico, la energía cinética también se conserva: con 2 m/s cada uno tendrían solo 6 J de los 18. La correcta está marcada.',
-       d:'Elegiste la D. Así rebotaría contra una pared fija. B no es una pared: el resorte lo empuja y B sale con cantidad de movimiento. Si A rebotara a 6 m/s y B no se moviera, el total pasaría de +6 a −6 kg·m/s. La correcta está marcada.' } };
+       d:'Elegiste la D. Así rebotaría contra una pared fija. El 2 no es una pared: el resorte lo empuja y el 2 sale con cantidad de movimiento. Si el 1 rebotara a 6 m/s y el 2 no se moviera, el total pasaría de +6 a −6 kg·m/s. La correcta está marcada.' } };
 
 /* Cada paso dice qué se ve: esc (guiado/elastico), cuando ('inicio'|'contacto'|'final'), y qué se muestra antes
    y después de responder (antes/despues). ver = { pDesp, eDesp, vFin, fuerzas, sistema, cm } */
@@ -570,19 +570,19 @@ const steps = [
  { k:'Paso 1', t:'El problema', esc:'guiado', cuando:'inicio', ver:{}, ley:['v','p','E','AB'],
    body:() => `<p class="problem">El carrito 1, de ${V('m','2 kg')}, va a ${V('v','6 m/s')} por un riel sin roce hacia el carrito 2, de ${V('m','1 kg')}, que está quieto. Al chocar quedan enganchados. ¿Con qué ${V('v','velocidad')} siguen juntos? ¿Cuánta ${V('E','energía cinética')} se pierde en el choque?</p>
      <ul class="map">
-       <li><b>${V('p','p')} = m·${V('v','v')}</b><span>La cantidad de movimiento. Tiene sentido, como la velocidad: abajo la ves como una flecha. A: 2·6 = ${V('p','12 kg·m/s')}; B, quieto: ${V('p','0')}.</span></li>
-       <li><b>${V('E','Ec')} = ½·m·${V('v','v')}²</b><span>La energía cinética. No tiene sentido: es una barra. A: ½·2·6² = ${V('E','36 J')}; B: ${V('E','0')}.</span></li>
+       <li><b>${V('p','p')} = m·${V('v','v')}</b><span>La cantidad de movimiento. Tiene sentido, como la velocidad: abajo la ves como una flecha. Carrito 1: 2·6 = ${V('p','12 kg·m/s')}; carrito 2, quieto: ${V('p','0')}.</span></li>
+       <li><b>${V('E','Ec')} = ½·m·${V('v','v')}²</b><span>La energía cinética. No tiene sentido: es una barra. Carrito 1: ½·2·6² = ${V('E','36 J')}; carrito 2: ${V('E','0')}.</span></li>
      </ul>
      <p>Las filas de «después» tienen signos de pregunta: las vas a llenar tú. Toca o pasa el puntero sobre un dato para ver dónde está.</p>`,
-   desc:() => 'Carrito A de 2 kilogramos a 6 metros por segundo hacia el carrito 2 de 1 kilogramo, quieto. Cantidad de movimiento antes: 12 kilogramos metro por segundo. Energía cinética antes: 36 joules. Lo de después todavía no se muestra.' },
+   desc:() => 'Carrito 1 de 2 kilogramos a 6 metros por segundo hacia el carrito 2 de 1 kilogramo, quieto. Cantidad de movimiento antes: 12 kilogramos metro por segundo. Energía cinética antes: 36 joules. Lo de después todavía no se muestra.' },
  { k:'Paso 2', t:'Antes de ver el choque, predice', esc:'guiado', cuando:'contacto', gate:P1, ver:{}, despues:{ fuerzas:true, sistema:true }, ley:['v','p','E','AB'], leyDespues:['v','F','p','E','AB'],
-   body:() => `<p>En el choque, B empuja al 1 hacia atrás y A empuja al 2 hacia adelante. ¿Qué pasa con la ${V('p','cantidad de movimiento')} de los carritos?</p>${opcionesHTML(P1.opts, 'fb')}<div id="res" class="body"></div>`,
+   body:() => `<p>En el choque, el carrito 2 empuja al 1 hacia atrás y el 1 empuja al 2 hacia adelante. ¿Qué pasa con la ${V('p','cantidad de movimiento')} de los carritos?</p>${opcionesHTML(P1.opts, 'fb')}<div id="res" class="body"></div>`,
    exp:() => `<p>Las dos ${V('F','fuerzas')} forman un par de acción y reacción: son iguales, opuestas y duran lo mismo, el tiempo que los carritos están en contacto. Por eso cambian la cantidad de movimiento de cada uno en lo mismo, con signos opuestos:</p>
-     <div class="eqs"><div class="eq">${V('p','Δp')}<sub>1</sub> = −${V('p','Δp')}<sub>2</sub><span class="note">lo que pierdel 1 lo gana B</span></div>
+     <div class="eqs"><div class="eq">${V('p','Δp')}<sub>1</sub> = −${V('p','Δp')}<sub>2</sub><span class="note">lo que pierde el 1 lo gana el 2</span></div>
      <div class="eq">${V('p','p')}<sub>1</sub> + ${V('p','p')}<sub>2</sub> = constante<span class="note">la del sistema 1 + 2, la caja a trazos</span></div></div>
      <p>Fuera de la caja nada empuja a lo largo del riel: el peso y la normal son verticales y no hay roce. Con esa condición, la cantidad de movimiento del <b>sistema</b> se conserva. La de cada carrito, no.</p>
      <p class="fuente">Creer que cada cuerpo conserva lo suyo es una idea documentada: en un test con 336 universitarios de Estados Unidos, después del curso, cerca del 39 % eligió una opción que decía que en un choque se conserva la energía cinética de uno de los discos (Singh y Rosengrant, 2003). Las otras dos opciones incorrectas son hipótesis nuestras.</p>`,
-   desc:() => S.pred[P1.id] ? 'Los carritos en contacto. Dos fuerzas iguales y opuestas: la del 2 sobre el 1, hacia atrás, y la del 1 sobre el 2, hacia adelante. Una caja a trazos marca el sistema 1 más 2.' : 'Los carritos A y B en el instante en que se tocan.' },
+   desc:() => S.pred[P1.id] ? 'Los carritos en contacto. Dos fuerzas iguales y opuestas: la del 2 sobre el 1, hacia atrás, y la del 1 sobre el 2, hacia adelante. Una caja a trazos marca el sistema 1 más 2.' : 'Los carritos 1 y 2 en el instante en que se tocan.' },
  { k:'Paso 3', t:'¿Con qué velocidad siguen?', esc:'guiado', cuando:'inicio', cuandoDespues:'final', gate:P2, anima:true, ver:{ sistema:true, vFin:'oculta' }, despues:{ sistema:true, pDesp:true, vFin:true, cm:true },
    ley:['v','p','E','AB'], leyDespues:['v','p','E','AB','cm'],
    body:() => `<p>Quedan enganchados y siguen juntos. ¿Con qué ${V('v','velocidad')} v' se mueven?</p>${opcionesHTML(P2.opts, 'fb')}<div id="res" class="body"></div>`,
@@ -590,10 +590,10 @@ const steps = [
        <div class="eq">${V('p','p')} antes = ${V('m','2')}·${V('v','6')} + ${V('m','1')}·${V('v','0')} = ${V('p','12 kg·m/s')}</div>
        <div class="eq">${V('p','p')} después = (${V('m','2')} + ${V('m','1')})·${V('v',"v'")}</div>
        <div class="eq">12 = 3·${V('v',"v'")} → ${V('v',"v' = 4 m/s")}</div></div>
-     <p>Mira las flechas de abajo: antes, toda la cantidad de movimiento era del 1 (12). Después, A tiene ${V('p','8')} y B tiene ${V('p','4')}: la suma sigue en ${V('p','12')}. La marca ⊕ es el centro de masa de los dos carritos: avanza siempre a 4 m/s, antes y después del choque.</p>
+     <p>Mira las flechas de abajo: antes, toda la cantidad de movimiento era del 1 (12). Después, el 1 tiene ${V('p','8')} y el 2 tiene ${V('p','4')}: la suma sigue en ${V('p','12')}. La marca ⊕ es el centro de masa de los dos carritos: avanza siempre a 4 m/s, antes y después del choque.</p>
      <p><button type="button" class="btn" id="otra">Ver el choque otra vez</button></p>
      <p class="fuente">Promediar las velocidades sin pesar las masas es una hipótesis nuestra. Resolver con la energía en vez de con la cantidad de movimiento sale de un error documentado (lo verás en el paso 4).</p>`,
-   desc:() => S.pred[P2.id] ? 'Los carritos chocan y siguen juntos a 4 metros por segundo. Cantidad de movimiento después: 8 del 1 más 4 del 2, 12 en total, igual que antes. El centro de masa avanza a velocidad constante.' : 'Carrito A a 6 metros por segundo hacia B, quieto. La velocidad después del choque todavía no se muestra.' },
+   desc:() => S.pred[P2.id] ? 'Los carritos chocan y siguen juntos a 4 metros por segundo. Cantidad de movimiento después: 8 del 1 más 4 del 2, 12 en total, igual que antes. El centro de masa avanza a velocidad constante.' : 'Carrito 1 a 6 metros por segundo hacia el 2, quieto. La velocidad después del choque todavía no se muestra.' },
  { k:'Paso 4', t:'¿Y la energía cinética?', esc:'guiado', cuando:'final', gate:P3, ver:{ sistema:true, pDesp:true, vFin:true }, despues:{ sistema:true, pDesp:true, vFin:true, eDesp:true },
    ley:['v','p','E','AB'], leyDespues:['v','p','E','AB','perdida'],
    body:() => `<p>Ya sabes que siguen juntos a ${V('v','4 m/s')}. ¿Cuánta ${V('E','energía cinética')} tiene el sistema después del choque?</p>${opcionesHTML(P3.opts, 'fb')}<div id="res" class="body"></div>`,
@@ -616,30 +616,30 @@ const steps = [
    desc:() => 'Después del choque los dos carritos van juntos a 4 metros por segundo: no se alejan, el coeficiente de restitución es cero.' },
  { k:'Paso 6', t:'Con un resorte, predice', esc:'elastico', cuando:'inicio', cuandoDespues:'final', gate:P4, anima:true, ver:{ sistema:true, vFin:'oculta' }, despues:{ sistema:true, pDesp:true, vFin:true, eDesp:true, cm:true },
    ley:['v','p','E','AB'], leyDespues:['v','p','E','AB','cm'],
-   body:() => `<p>Ahora es otro par: A, de ${V('m','1 kg')}, va a ${V('v','6 m/s')}, y B, de ${V('m','2 kg')}, está quieto. Entre los dos hay un resorte, así que el choque es elástico (e = 1). ¿Qué pasa después del choque?</p>${opcionesHTML(P4.opts, 'fb')}<div id="res" class="body"></div>`,
+   body:() => `<p>Ahora es otro par: el carrito 1, de ${V('m','1 kg')}, va a ${V('v','6 m/s')}, y el 2, de ${V('m','2 kg')}, está quieto. Entre los dos hay un resorte, así que el choque es elástico (e = 1). ¿Qué pasa después del choque?</p>${opcionesHTML(P4.opts, 'fb')}<div id="res" class="body"></div>`,
    exp:() => `<div class="eqs">
        <div class="eq">${V('p','p')}: ${V('m','1')}·${V('v','6')} = ${V('m','1')}·${V('v',"v'<sub>1</sub>")} + ${V('m','2')}·${V('v',"v'<sub>2</sub>")}</div>
        <div class="eq">e = 1: ${V('v',"v'<sub>2</sub>")} − ${V('v',"v'<sub>1</sub>")} = 6 − 0 = 6</div>
        <div class="eq">→ ${V('v',"v'<sub>1</sub> = −2 m/s")} y ${V('v',"v'<sub>2</sub> = 4 m/s")}</div></div>
      <p>Las flechas de ${V('p','p')} lo muestran: después, la del 1 apunta hacia atrás (−2) y la del 2 hacia adelante (+8); sumadas con su sentido dan 6, lo mismo que antes. Restarlas sin signo no sirve. La ${V('E','Ec')} no tiene sentido: 2 J + 16 J = 18 J, sin pérdida, porque el resorte devuelve todo lo que guarda.</p>
-     <p>Solo con masas iguales intercambian velocidades. Con A más liviano que B, A rebota; con A más pesado, A sigue hacia adelante más lento. Pruébalo en el último paso.</p>
+     <p>Solo con masas iguales intercambian velocidades. Con el 1 más liviano que el 2, el 1 rebota; con el 1 más pesado, el 1 sigue hacia adelante más lento. Pruébalo en el último paso.</p>
      <p class="fuente">«Intercambian velocidades» con masas distintas y resolverlo como si quedaran pegados son errores que suponemos, sin un estudio con porcentaje.</p>`,
-   desc:() => S.pred[P4.id] ? 'El carrito 1 de 1 kilogramo rebota a 2 metros por segundo y B de 2 kilogramos sale a 4. Cantidad de movimiento: 6 antes y 6 después. Energía cinética: 18 joules antes y después.' : 'Carrito A de 1 kilogramo a 6 metros por segundo hacia B, de 2 kilogramos, quieto, con un resorte entre ellos. Lo de después todavía no se muestra.' },
+   desc:() => S.pred[P4.id] ? 'El carrito 1 de 1 kilogramo rebota a 2 metros por segundo y el 2, de 2 kilogramos, sale a 4. Cantidad de movimiento: 6 antes y 6 después. Energía cinética: 18 joules antes y después.' : 'Carrito 1 de 1 kilogramo a 6 metros por segundo hacia el 2, de 2 kilogramos, quieto, con un resorte entre ellos. Lo de después todavía no se muestra.' },
  { k:'Paso 7', t:'La respuesta', esc:'guiado', cuando:'final', ver:{ sistema:true, pDesp:true, vFin:true, eDesp:true, cm:true }, ley:['v','p','E','AB','perdida','cm'],
    body:() => `<p class="answer">Respuesta: siguen juntos a ${V('v','4 m/s')} y se pierden ${V('E','12 J')} de energía cinética (de 36 J a 24 J).</p>
      <p>En todo choque se conserva la ${V('p','cantidad de movimiento')} del sistema, sumada con su sentido. La ${V('E','energía cinética')} solo se conserva si el choque es elástico. Para resolver: primero el sentido positivo y los signos; después, p antes = p después; si falta una ecuación, el coeficiente e.</p>`,
    desc:() => 'Respuesta: siguen juntos a 4 metros por segundo y se pierden 12 joules de energía cinética, de 36 a 24.' },
  { k:'Paso 8', t:'Ahora explora tú', explora:true, ley:['v','p','E','AB','perdida','cm'],
    body:() => `<div class="ctrls">
-       <div class="slider"><label for="e-m1"><span>Masa del 1</span><output id="e-m1-o"></output></label><input id="e-m1" type="range" min="0.5" max="5" step="0.5" value="${S.ex.m1}"></div>
-       <div class="slider"><label for="e-v1"><span>Velocidad del 1 (${V('v','v<sub>1</sub>')})</span><output id="e-v1-o"></output></label><input id="e-v1" class="r-v" type="range" min="-10" max="10" step="0.5" value="${S.ex.v1}"></div>
-       <div class="slider"><label for="e-m2"><span>Masa del 2</span><output id="e-m2-o"></output></label><input id="e-m2" type="range" min="0.5" max="5" step="0.5" value="${S.ex.m2}"></div>
-       <div class="slider"><label for="e-v2"><span>Velocidad del 2 (${V('v','v<sub>2</sub>')})</span><output id="e-v2-o"></output></label><input id="e-v2" class="r-v" type="range" min="-10" max="10" step="0.5" value="${S.ex.v2}"></div>
+       <div class="slider"><label for="e-m1"><span>Masa del carrito 1</span><output id="e-m1-o"></output></label><input id="e-m1" type="range" min="0.5" max="5" step="0.5" value="${S.ex.m1}"></div>
+       <div class="slider"><label for="e-v1"><span>Velocidad del carrito 1 (${V('v','v<sub>1</sub>')})</span><output id="e-v1-o"></output></label><input id="e-v1" class="r-v" type="range" min="-10" max="10" step="0.5" value="${S.ex.v1}"></div>
+       <div class="slider"><label for="e-m2"><span>Masa del carrito 2</span><output id="e-m2-o"></output></label><input id="e-m2" type="range" min="0.5" max="5" step="0.5" value="${S.ex.m2}"></div>
+       <div class="slider"><label for="e-v2"><span>Velocidad del carrito 2 (${V('v','v<sub>2</sub>')})</span><output id="e-v2-o"></output></label><input id="e-v2" class="r-v" type="range" min="-10" max="10" step="0.5" value="${S.ex.v2}"></div>
        <div class="slider"><label for="e-e"><span>Coeficiente de restitución e</span><output id="e-e-o"></output></label><input id="e-e" type="range" min="0" max="1" step="0.1" value="${S.ex.e}"></div>
      </div>
      <p><button type="button" class="btn primary" id="chocar">Chocar</button></p>
      <div id="live" class="body"></div>
-     <p class="hint">También puedes arrastrar la punta de la flecha roja del 1 (o enfocar el dibujo y usar las flechas del teclado). Prueba masas iguales con e = 1, un A muy pesado contra un B liviano, y dos carritos que van en sentidos opuestos.</p>` },
+     <p class="hint">También puedes arrastrar la punta de la flecha roja del carrito 1 (o enfocar el dibujo y usar las flechas del teclado). Prueba masas iguales con e = 1, un carrito 1 muy pesado contra un 2 liviano, y dos carritos que van en sentidos opuestos.</p>` },
 ];
 
 function vistaActual(){
@@ -655,7 +655,7 @@ function datos(esc){
 function tiempoDe(cuando, sc){ return cuando === 'final' ? sc.fin : cuando === 'contacto' ? (sc.tChoque === null ? 0 : sc.tChoque) : 0; }
 function draw(){
   if (!L.W) return;
-  const { ctx, W, H } = L, c = colores(W), vista = vistaActual(), { o, sc, r } = datos(vista.esc), ver = vista.ver || {};
+  const { ctx, W, H } = L, c = Object.assign(colores(W), { hl:S.hl }), vista = vistaActual(), { o, sc, r } = datos(vista.esc), ver = vista.ver || {};
   ctx.clearRect(0, 0, W, H);
   const t = S.t, est = sc.estado(t), choco = sc.tChoque !== null && t >= sc.tChoque - 1e-9 && (vista.cuando !== 'contacto');
   const altoRiel = clamp(H*0.44, 118, 190);
@@ -675,13 +675,13 @@ function draw(){
     { et:'Ec antes', tipo:'E', partes:[{ v:r.Ec1, letra:'1' }, { v:r.Ec2, letra:'2' }], unidad:'J' },
     { et:'Ec después', tipo:'E', partes:[{ v:r.Ec1f, letra:'1' }, { v:r.Ec2f, letra:'2' }], perdida:r.EcPerdida, unidad:'J', oculta: !ver.eDesp }];
   if (!r.chocan){ fl[1].txt = 'no chocan'; fl[3].txt = 'no chocan'; }
-  const yF = altoRiel + 30;
+  const yF = altoRiel + (ver.cm && ver.sistema ? 46 : 30);
   filas(ctx, c, { x:14, y:yF, w:W - 28, h:H - yF - 6 }, fl);
   decir($('desc1'), S.explora ? resumen(r) : steps[S.step].desc());
 }
 function resumen(r){
-  if (!r.chocan) return 'Con esas velocidades, A no alcanza al 2: no chocan.';
-  return `Choque ${r.tipo}. Después: A a ${N(r.v1f)} y B a ${N(r.v2f)} metros por segundo. Cantidad de movimiento ${N(r.pAntes)} antes y después. Energía cinética de ${N(r.EcAntes)} a ${N(r.EcDespues)} joules.`;
+  if (!r.chocan) return 'Con esas velocidades, el 1 no alcanza al 2: no chocan.';
+  return `Choque ${r.tipo}. Después: el 1 a ${N(r.v1f)} y el 2 a ${N(r.v2f)} metros por segundo. Cantidad de movimiento ${N(r.pAntes)} antes y después. Energía cinética de ${N(r.EcAntes)} a ${N(r.EcDespues)} joules.`;
 }
 function correr(listo){
   parar();
@@ -700,7 +700,7 @@ function go(n){
   parar();
   const s = steps[n]; S.step = n; S.hl = null; S.explora = !!s.explora; S.cuando = 'inicio';
   cv.tabIndex = S.explora ? 0 : -1;
-  cv.setAttribute('aria-label', S.explora ? 'Riel del explorador: con las flechas del teclado cambias la velocidad del 1' : 'Un riel visto de costado con dos carritos y sus flechas de velocidad; debajo, las flechas de cantidad de movimiento y las barras de energía cinética, antes y después del choque');
+  cv.setAttribute('aria-label', S.explora ? 'Riel del explorador: con las flechas del teclado cambias la velocidad del carrito 1' : 'Un riel visto de costado con dos carritos y sus flechas de velocidad; debajo, las flechas de cantidad de movimiento y las barras de energía cinética, antes y después del choque');
   const v = vistaActual(); S.t = tiempoDe(v.cuando, datos(v.esc).sc);
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
@@ -771,7 +771,7 @@ function vivo(){
   $('e-v1-o').textContent = `${N(ex.v1)} m/s`; $('e-v2-o').textContent = `${N(ex.v2)} m/s`; $('e-e-o').textContent = fmt(ex.e, 1);
   if (+$('e-v1').value !== ex.v1) $('e-v1').value = ex.v1;
   const r = M.choque(ex);
-  $('live').innerHTML = !r.chocan ? `<p class="aviso">Con esas velocidades, A no alcanza al 2 (A tiene que ir más rápido hacia la derecha que B): no chocan.</p>` :
+  $('live').innerHTML = !r.chocan ? `<p class="aviso">Con esas velocidades, el 1 no alcanza al 2 (el 1 tiene que ir más rápido hacia la derecha que el 2): no chocan.</p>` :
     `<div class="eqs">
       <div class="eq">${V('v',"v'<sub>1</sub>")} = ${N(r.v1f)} m/s · ${V('v',"v'<sub>2</sub>")} = ${N(r.v2f)} m/s<span class="note">choque ${r.tipo}</span></div>
       <div class="eq">${V('p','p')}: ${N(r.pAntes)} → ${N(r.pDespues)} kg·m/s<span class="note">siempre igual</span></div>
@@ -845,7 +845,7 @@ const EXPS = [
     q:`Dos pelotas de ${V('m','0,5 kg')} llegan a una pared a ${V('v','10 m/s')}. La de goma rebota a ${V('v','10 m/s')}; la de plastilina se queda pegada. El contacto dura ${V('t','0,02 s')} en las dos. ¿Cuál empuja más fuerte a la pared?`,
     opts:[['a','Las dos igual, porque llegan con la misma masa y la misma rapidez','M3-empujan-igual','documentado'],
           ['b','La de plastilina, porque se queda y le entrega toda su energía','M4-entrega-toda-su-energia','parcial'],
-          ['c','La de goma, el doble, porque la pared además de frenarla la lanza de vuelta',null,''],
+          ['c','La de goma, porque la pared además de frenarla la lanza de vuelta',null,''],
           ['d','La de plastilina, porque la de goma rebota y no le pasa su cantidad de movimiento','M4-rebote-no-transmite','parcial']],
     ok:'c',
     fb:{ c:'¡Bien! La de goma cambia su cantidad de movimiento de +5 a −5 kg·m/s: el doble que la de plastilina, que va de +5 a 0.',
@@ -855,8 +855,9 @@ const EXPS = [
     exp:`<div class="eqs">
         <div class="eq">goma: ${V('p','Δp')} = 0,5·(−10) − 0,5·10 = ${V('p','−10 N·s')} → ${V('F','F')} = ${fr('10', V('t','0,02'))} = ${V('F','500 N')}</div>
         <div class="eq">plastilina: ${V('p','Δp')} = 0 − 0,5·10 = ${V('p','−5 N·s')} → ${V('F','F')} = ${fr('5', V('t','0,02'))} = ${V('F','250 N')}</div></div>
+      <p>Esa es la fuerza de la pared sobre la pelota; por la tercera ley, la pelota empuja a la pared con la misma fuerza.</p>
       <p>En las gráficas ${V('F','F')}-${V('t','t')}, el área bajo la curva es el cambio de cantidad de movimiento, ${V('p','Δp')} (1 N·s = 1 kg·m/s): por eso va pintada de índigo, el color de ${V('p','p')}. Con el mismo ${V('t','Δt')}, el doble de área pide el doble de altura. La línea a trazos es la fuerza media: un rectángulo con la misma área.</p>
-      <p class="fuente">En un test con más de 300 universitarios de Estados Unidos, cerca de la mitad eligió «fuerzas iguales» en esta misma situación, incluso después del curso; solo cerca de 1 de cada 4 acertó (Singh y Rosengrant, 2003). Las opciones B y D salen de una pregunta parecida de ese test, con una bala que se incrusta o rebota en un bloque: cerca del 30 % y del 20 % las eligió después del curso.</p>`,
+      <p class="fuente">En un test con más de 300 universitarios de Estados Unidos, cerca de la mitad eligió «fuerzas iguales» en una situación como esta, incluso después del curso; solo cerca de 1 de cada 4 acertó (Singh y Rosengrant, 2003). Las opciones B y D salen de una pregunta parecida de ese test, con una bala que se incrusta o rebota en un bloque: cerca del 30 % y del 20 % las eligió después del curso.</p>`,
     antes:() => Object.assign(E, { tipo:'pelotas', f:0 }),
     despues:() => anim(2200),
     desc:r => r ? 'La pelota de goma rebota y la de plastilina se queda pegada. Gráficas de fuerza contra tiempo: la de goma tiene el doble de área, 10 newton segundo, y una fuerza media de 500 newtons; la de plastilina, 5 newton segundo y 250 newtons.' : 'Dos pelotas iguales van hacia una pared a 10 metros por segundo. Las gráficas de fuerza contra tiempo todavía están vacías.' },
@@ -894,7 +895,7 @@ const EXPS = [
         <div class="eq">${V('p','p')} antes = 0 = ${V('m','1')}·${V('v','v<sub>1</sub>')} + ${V('m','3')}·${V('v','2')} → ${V('v','v<sub>1</sub> = −6 m/s')}</div>
         <div class="eq">${V('v','v')}<sub>cm</sub> = ${fr(V('p','p') + ' total', 'masa total')} = ${fr('0', '4')} = 0</div>
         <div class="eq">${V('E','Ec')}: 0 → ½·1·6² + ½·3·2² = 18 + 6 = ${V('E','24 J')}<span class="note">la daba el resorte</span></div></div>
-      <p>Las flechas de ${V('p','p')} de los dos carritos son iguales y opuestas: suman cero, antes y después. El ⊕ no se mueve; el triángulo gris, el punto medio, sí se va hacia la izquierda, porque no pesa las masas. La energía cinética, en cambio, aparece de la nada… del resorte: en una explosión se conserva ${V('p','p')}, no ${V('E','Ec')}.</p>
+      <p>Las flechas de ${V('p','p')} de los dos carritos son iguales y opuestas: suman cero, antes y después. El ⊕ no se mueve; el triángulo gris, el punto medio, sí se va hacia la izquierda, porque no pesa las masas. La energía cinética, en cambio, sí aparece: la guardaba el resorte apretado. En una explosión se conserva ${V('p','p')}, no ${V('E','Ec')}.</p>
       <p class="fuente">No encontramos estudios con porcentajes sobre el centro de masa: las tres opciones incorrectas son hipótesis nuestras. Sí está documentado que, ante una bomba que explota, muchos universitarios creen que se conserva la energía cinética (Singh y Rosengrant, 2003).</p>`,
     antes:() => Object.assign(E, { tipo:'hilo', f:0 }),
     despues:() => anim(1800),
@@ -973,7 +974,7 @@ function dPelotas(ctx, c, W, H, resp, f){
     rotulo(ctx, c, 8, yc + rad + 8, ln.n, c.ink, 'left', 800, 11);
     if (v !== 0){ flecha(ctx, xb, yc - rad - 8, xb + v*5, yc - rad - 8, c.v, 3); rotulo(ctx, c, xb + v*2.5, yc - rad - 20, `v = ${N(v)} m/s`, c.v, 'center', 800, 11); }
     else if (resp && ln.n === 'plastilina') rotulo(ctx, c, xb - 40, yc - rad - 14, 'v = 0', c.v, 'center', 800, 11);
-    if (resp && golpe >= 1){ flecha(ctx, xw + 2, yc + 4, xw + 2 + 18, yc + 4, c.F, 3); rotulo(ctx, c, xw - 4, yc + 18, `F = ${N(ln.r.Fpared)} N · ${ln.n}`, c.F, 'right', 800, 11); }
+    if (resp && golpe >= 1){ flecha(ctx, xw + 2, yc + 4, xw + 2 + 18, yc + 4, c.F, 3); rotulo(ctx, c, xw - 4, yc + 18, `${ln.n}: F = ${N(ln.r.Fpared)} N`, c.F, 'right', 800, 11); }
   });
   const g0 = arriba + 18, gh = (H - g0 - 20*2)/2;
   lanes.forEach((ln, j) => graficaFt(ctx, c, { x:44, y:g0 + j*(gh + 20), w:W - 60, h:gh }, { tmax:0.03, Fmax:800, pulso: resp ? ln.P : null, frac: golpe, oculta: !resp, titulo: ln.n, media:true }));
@@ -1054,12 +1055,12 @@ function dRebota(ctx, c, W, H, resp, f){
   let x = resp ? x0 + (xc - x0)*llega : x0, v = 10, comp = 0;
   if (resp && golpe > 0){ comp = Math.sin(golpe*Math.PI); x = xc + 0.5*comp; v = 0; }
   if (resp && sale > 0){ x = xc - (xc - x0)*0.6*sale; v = -6; }
-  riel(ctx, c, { x:14, y:6, w:W - 28, h:alto }, R, { carros:[{ x, m:0.5, letra:'0,5 kg', v, vTxt: v ? `v = ${N(v)} m/s` : 'v = 0' }], kv:4, tope:true, comp });
+  riel(ctx, c, { x:14, y:6, w:W - 28, h:alto }, R, { carros:[{ x, m:0.5, letra:'', v, vTxt: v ? `v = ${N(v)} m/s` : 'v = 0' }], kv:4, tope:true, comp });
   if (resp && golpe > 0.3 && sale === 0) rotulo(ctx, c, W - 30, alto - 40, 'F · tope', c.F, 'right', 800, 11);
   const yF = alto + 14, fh = clamp((H - yF)*0.42, 70, 120);
   filas(ctx, c, { x:14, y:yF, w:W - 28, h:fh }, [
     { et:'p antes', tipo:'p', partes:[{ v:REB.p1 }], unidad:'kg·m/s' },
-    { et:'p después', tipo:'p', partes:[{ v:REB.p2 }], unidad:'kg·m/s' },
+    { et:'p después', tipo:'p', partes:[{ v:REB.p2 }], unidad:'kg·m/s', oculta: !resp },
     { et:'Δp', tipo:'dp', desde:REB.p1, partes:[{ v:REB.dp }], total:REB.dp, unidad:'N·s', oculta: !resp }]);
   const g0 = yF + fh + 16;
   graficaFt(ctx, c, { x:44, y:g0, w:W - 60, h:H - g0 - 22 }, { tmax:0.03, Fmax:900, pulso: resp ? PRB : null, frac: golpe, oculta: !resp, titulo:'tope sobre el carrito', media:true });
