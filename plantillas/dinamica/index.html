@@ -3,19 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Dinámica: fuerzas, plano inclinado y poleas</title>
+<title>Dinámica: fuerzas, plano inclinado, poleas y movimiento circular</title>
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   P peso azul, N normal verde, f roce ámbar, T tensión rojo, F fuerza aplicada fucsia, a aceleración turquesa,
-   C fuerza de contacto entre dos cajas gris.
-   La masa, los ángulos y la resultante ΣF van en tinta (ΣF a trazos). El morado de marca no se usa aquí. */
+   P peso azul, N normal verde, f roce ámbar, T tensión rojo (T₁ en el tren), T₂ tensión de la segunda cuerda del tren
+   tostado (claro) / naranja (oscuro), F fuerza aplicada fucsia, a aceleración turquesa, C fuerza de contacto entre dos cajas gris.
+   Cuando dos cuerpos aceleran distinto (un bloque que resbala sobre otro, la polea móvil), las dos aceleraciones son la
+   misma magnitud: van en el mismo turquesa, con subíndice (a₁, a₂) y el rótulo pegado a su cuerpo.
+   La masa, los ángulos, el radio y la resultante ΣF van en tinta (ΣF a trazos); la velocidad v, que es un dato, en tinta suave.
+   El morado de marca no se usa aquí. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-P:#1f5fbf; --c-N:#4f7a17; --c-f:#8f5800; --c-T:#c0364a; --c-F:#a10fbf; --c-a:#0f766e; --c-C:#6b6b6b;
+  --c-P:#1f5fbf; --c-N:#4f7a17; --c-f:#8f5800; --c-T:#c0364a; --c-T2:#5a1f08; --c-F:#a10fbf; --c-a:#0f766e; --c-C:#6b6b6b;
   --suelo:#d9c8bb; --bloque:#f3e3d3;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -25,13 +28,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-P:#7cb0ff; --c-N:#a3d65e; --c-f:#ffc04d; --c-T:#f17384; --c-F:#cf6bfa; --c-a:#5ed9c8; --c-C:#b5b5b5;
+  --c-P:#7cb0ff; --c-N:#a3d65e; --c-f:#ffc04d; --c-T:#f17384; --c-T2:#f57a1f; --c-F:#cf6bfa; --c-a:#5ed9c8; --c-C:#b5b5b5;
   --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-P:#7cb0ff; --c-N:#a3d65e; --c-f:#ffc04d; --c-T:#f17384; --c-F:#cf6bfa; --c-a:#5ed9c8; --c-C:#b5b5b5;
+  --c-P:#7cb0ff; --c-N:#a3d65e; --c-f:#ffc04d; --c-T:#f17384; --c-T2:#f57a1f; --c-F:#cf6bfa; --c-a:#5ed9c8; --c-C:#b5b5b5;
   --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -52,7 +55,7 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
 .mode{display:grid; gap:16px; min-width:0; align-items:start}
 .bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
 .lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
-canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
 canvas.arrastrable{cursor:grab}
 canvas.agarrando{cursor:grabbing}
 canvas.sin-scroll{touch-action:none}
@@ -68,7 +71,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .dots button.done{border-color:var(--ink); color:var(--ink)}
 .dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .dots button:disabled{opacity:.45; cursor:not-allowed}
-#exps button:disabled{opacity:.45; cursor:not-allowed}
+#exps2 button:disabled, #exps3 button:disabled{opacity:.45; cursor:not-allowed}
 .step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
   color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
 .step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
@@ -84,11 +87,12 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 12%, transparent)}
 .v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 12%, transparent)}
 .v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 12%, transparent)}
+.v-T2{color:var(--c-T2); background:color-mix(in srgb, var(--c-T2) 12%, transparent)}
 .v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 12%, transparent)}
 .v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 12%, transparent)}
 .v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 12%, transparent)}
 .v-m{color:var(--ink); background:color-mix(in srgb, var(--ink) 9%, transparent)}
-.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+.v.hl{outline:2px solid currentColor; outline-offset:1px}
 
 .eqs{display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
 .eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
@@ -165,12 +169,13 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <div class="top">
     <header>
       <p class="eyebrow">Física · Dinámica · Problemas tipo admisión</p>
-      <h1>Fuerzas, plano inclinado y poleas</h1>
+      <h1>Fuerzas: rampa, poleas, bloques y curvas</h1>
       <p class="sub">Cada fuerza es una flecha con su color y con quién la ejerce. ¿Cuántas fuerzas hay y quién ejerce cada una? Predice y después mira.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
       <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+      <a href="#varios-cuerpos" id="tab3">Varios cuerpos</a>
     </nav>
   </div>
 
@@ -195,7 +200,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     </section>
   </div>
 
-  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <!-- ===== MODO 2: ¿qué pasa si…? (un solo cuerpo) ===== -->
   <div id="m2" class="mode" hidden>
     <section class="bench" aria-label="Experimento elegido, con sus fuerzas">
       <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
@@ -203,12 +208,29 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="legend" id="ley2"></div>
     </section>
     <section class="guide">
-      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div class="seg exps" id="exps2" role="group" aria-label="Experimentos"></div>
       <div aria-live="polite">
         <p class="step-k" id="k2"></p>
         <h2 class="step-t" id="t2"></h2>
       </div>
       <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 3: varios cuerpos ===== -->
+  <div id="m3" class="mode" hidden>
+    <section class="bench" aria-label="Experimento con varios cuerpos, con sus fuerzas">
+      <div class="lienzo"><canvas id="cv3" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc3" aria-live="polite"></p>
+      <div class="legend" id="ley3"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps3" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k3"></p>
+        <h2 class="step-t" id="t3"></h2>
+      </div>
+      <div id="body3" class="body"></div>
     </section>
   </div>
 
@@ -228,7 +250,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
-const PLANTILLA = { id: 'dinamica', unidad: 'fisica.dinamica', version: '0.1.0' };
+const PLANTILLA = { id: 'dinamica', unidad: 'fisica.dinamica', version: '0.2.0' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
   Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
@@ -251,22 +273,25 @@ const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</s
 const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const M = MotorDinamica;
-const chico = () => innerWidth < 900;
 // Escribe en una región aria-live solo si el texto cambia (si no, el lector de pantalla repite en cada cuadro).
 function decir(el, t){ if (el.textContent !== t) el.textContent = t; }
-function esperar(ms, fn){ return ms ? setTimeout(fn, ms) : fn(); }
 
 function crearLienzo(cv, alto, dibujar){
   const ctx = cv.getContext('2d');
-  const L = { cv, ctx, W:0, H:0 };
+  const L = { cv, ctx, W:0, H:0, compacto:false, tope:undefined };
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(alto(W)), dpr = Celular.dpr();
+    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:L.tope })), dpr = Celular.dpr();
     L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     dibujar();
   };
   new ResizeObserver(L.resize).observe(cv);
+  // Celular con predicción pendiente: el dibujo más bajo (240 px, o el tope que pida el experimento) y pegado arriba.
+  L.compactar = (on, tope) => {
+    on = !!on; Celular.compactar(cv.closest('.mode'), on);
+    if (on === L.compacto && tope === L.tope) return; L.compacto = on; L.tope = tope; L.resize();
+  };
   return L;
 }
 const altoLienzo = W => W >= 560 ? clamp(W*0.64, 340, 470) : clamp(W*0.98, 320, 420);
@@ -288,7 +313,7 @@ function rotulo(ctx, c, x, y, t, color, align, peso, W){
 function colores(W){
   const g = n => css(n);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
-    P:g('--c-P'), N:g('--c-N'), f:g('--c-f'), T:g('--c-T'), F:g('--c-F'), a:g('--c-a'), C:g('--c-C'),
+    P:g('--c-P'), N:g('--c-N'), f:g('--c-f'), T:g('--c-T'), T2:g('--c-T2'), F:g('--c-F'), a:g('--c-a'), C:g('--c-C'),
     suelo:g('--suelo'), bloque:g('--bloque'), mono:g('--mono'), font:g('--font'), chico: W < 480 };
 }
 // Flecha de (x1, y1) a (x2, y2); con trazos si dash.
@@ -325,6 +350,8 @@ function suelo(ctx, c, x1, x2, y){
   ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, x1, y, x2, y);
 }
 const N1 = n => fmt(n, Math.abs(n - Math.round(n)) < 1e-9 ? 0 : 1);
+// Hasta dos decimales, sin ceros de más (1,25; 2,5; 4).
+const N2 = n => fmt(n, Math.abs(n - Math.round(n)) < 1e-9 ? 0 : Math.abs(n*10 - Math.round(n*10)) < 1e-9 ? 1 : 2);
 // Texto del rótulo: "P = 100 N · Tierra". En el celular, el agente va igual (es lo que enseña la escena).
 const rot = (sim, F, quien, oculta) => `${sim} = ${oculta ? '?' : N1(F) + ' N'} · ${quien}`;
 
@@ -539,17 +566,269 @@ function vistaTiron(L, c, P){
   if (r.despega) rotulo(ctx, c, cb.x, y0 + 26, 'la soga lo levanta: N = 0', c.ink, 'center', 800, W);
 }
 
-// Leyenda: solo las variables que aparecen en la escena.
-const NOMBRES = { P:'P · peso (la Tierra)', N:'N · normal (la superficie)', f:'f · roce (la superficie)', T:'T · tensión (la cuerda)', F:'F · fuerza aplicada', a:'a · aceleración', C:'C · contacto entre las cajas', suma:'ΣF · resultante (a trazos)' };
-function leyenda(el, claves){
-  el.innerHTML = claves.map(k => `<span><i style="background:${k === 'suma' ? 'var(--ink)' : 'var(--c-' + k + ')'}"></i>${NOMBRES[k]}</span>`).join('');
+/* ---------- Columpio: la niña con su asiento, en el punto más bajo ----------
+   P = { r: M.vertical en el punto más bajo, v, th (grados, para el vaivén), verF (dibuja las fuerzas), crece } */
+function vistaColumpio(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const cx = W*0.44, top = 16, gy = H - 84, Lp = gy - top, r = P.r;
+  // Travesaño con sus dos patas
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 4; ctx.lineCap = 'round'; linea(ctx, cx - 74, top, cx + 74, top);
+  ctx.lineWidth = 2; linea(ctx, cx - 70, top, cx - 96, H - 14); linea(ctx, cx + 70, top, cx + 96, H - 14);
+  suelo(ctx, c, 4, W - 4, H - 14);
+  const th = (P.th || 0)*Math.PI/180, sx = cx + Lp*Math.sin(th), sy = top + Lp*Math.cos(th);
+  // Cadenas (a puntos) y asiento; la niña se dibuja en el marco que gira con las cadenas.
+  const ux = Math.cos(th), uy = -Math.sin(th);
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.setLineDash([2, 3]);
+  [-9, 9].forEach(d => linea(ctx, cx + d, top, sx + d*ux, sy + d*uy)); ctx.restore();
+  ctx.save(); ctx.translate(sx, sy); ctx.rotate(-th);
+  ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, -15, -3, 30, 7, 3); ctx.fill(); ctx.stroke();
+  ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.arc(-2, -44, 7, 0, Math.PI*2); ctx.stroke();
+  linea(ctx, -2, -37, -2, -5); linea(ctx, -2, -5, 14, -5); linea(ctx, 14, -5, 17, 13);
+  linea(ctx, -2, -28, -9, -22); linea(ctx, -2, -28, 9, -22);
+  ctx.restore();
+  // Radio, en tinta
+  rotulo(ctx, c, cx - 16, top + Lp*0.3, 'r = 2,5 m', c.ink, 'right', 700, W);
+  rotulo(ctx, c, sx - 30, sy + 22, '30 kg', c.ink, 'right', 800, W);
+  if (P.vaiven) return;
+  // Velocidad en tinta suave: es un dato, no una variable de color en esta escena.
+  if (P.v > 1e-9){ flecha(ctx, sx + 20, sy + 22, sx + 62, sy + 22, c.muted, 2); rotulo(ctx, c, sx + 68, sy + 22, `v = ${fmt(P.v, 1)} m/s`, c.muted, 'left', 700, W); }
+  if (!P.verF) return;
+  const k = Math.min((Lp - 50)*0.95/888, 50/300), cr = P.crece === undefined ? 1 : P.crece, lista = [];
+  lista.push({ x:sx, y:sy + 4, dx:0, dy:1, F:r.P, k, col:c.P, crece:cr, txt:rot('P', r.P, 'Tierra'), al:'left', ox:6, oy:-12 });
+  lista.push({ x:sx + 9, y:sy - 22, dx:0, dy:-1, F:r.T, k, col:c.T, crece:cr, txt:rot('T', r.T, 'cadenas'), al:'left', ox:6 });
+  if (r.neta > 1e-9){
+    lista.push({ x:sx - 44, y:sy - 14, dx:0, dy:-1, F:r.neta, k, col:c.ink, fina:true, crece:cr, txt:`ΣF = ${N1(r.neta)} N`, al:'right', ox:-4 });
+    lista.push({ x:sx + W*0.3, y:sy - 14, dx:0, dy:-1, F:r.ac, k:k*30, col:c.a, crece:cr, txt:`a = ${N1(r.ac)} m/s² (al centro)`, al:'center' });
+  }
+  lista.forEach(f => fuerza(ctx, c, f, W, H));
 }
-function animarValor(dur, paso, listo){
-  if (RM){ paso(1); listo && listo(); return () => {}; }
-  let id, ini = performance.now();
-  const tick = now => { const f = Math.min(1, (now - ini)/dur); paso(f); if (f < 1) id = requestAnimationFrame(tick); else listo && listo(); };
-  id = requestAnimationFrame(tick);
-  return () => cancelAnimationFrame(id);
+
+/* ---------- Loma: auto que pasa por la cima ----------
+   P = { r: M.loma en la cima, v, verN ('oculta' | 'nueva' | 'si'), verX (ΣF y a), crece, pos: { x, y, giro } en metros, o null } */
+function vistaLoma(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const R = W*0.95, pxm = R/40, cx = W*0.42, ytop = Math.round(H*0.4), oy = ytop + R;
+  // Pista: un arco del círculo de 40 m, rellena por debajo.
+  const fe = Math.asin(Math.min(1, (W*0.62)/R));
+  ctx.beginPath(); ctx.arc(cx, oy, R, -Math.PI/2 - fe, -Math.PI/2 + fe); ctx.lineTo(cx + R*Math.sin(fe), H); ctx.lineTo(cx - R*Math.sin(fe), H); ctx.closePath();
+  ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fill(); ctx.globalAlpha = 1;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(cx, oy, R, -Math.PI/2 - fe, -Math.PI/2 + fe); ctx.stroke();
+  // Hacia el centro de la loma (fuera del dibujo), a trazos.
+  ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.setLineDash([4, 5]); linea(ctx, cx, ytop + 4, cx, H - 24); ctx.restore();
+  rotulo(ctx, c, cx, H - 12, '↓ al centro de la loma, 40 m más abajo', c.muted, 'center', 700, W);
+  // Auto
+  const enCima = !P.pos, px = cx + (enCima ? 0 : P.pos.x*pxm), py = ytop - (enCima ? 0 : P.pos.y*pxm), giro = enCima ? 0 : P.pos.giro*Math.PI/180;
+  ctx.save(); ctx.translate(px, py); ctx.rotate(giro);
+  ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+  rr(ctx, -23, -21, 46, 13, 4); ctx.fill(); ctx.stroke(); rr(ctx, -13, -30, 24, 10, 4); ctx.fill(); ctx.stroke();
+  [-13, 13].forEach(x => { ctx.beginPath(); ctx.arc(x, -5, 5, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.stroke(); });
+  ctx.restore();
+  if (!enCima) return;
+  if (P.v > 1e-9){ flecha(ctx, cx + 28, ytop - 16, cx + 70, ytop - 16, c.muted, 2); rotulo(ctx, c, cx + 76, ytop - 16, `v = ${fmt(P.v, 0)} m/s`, c.muted, 'left', 700, W); }
+  const r = P.r, k = Math.min(ytop - 28, H - ytop - 58)/8000, cr = P.crece === undefined ? 1 : P.crece, lista = [];
+  lista.push({ x:cx - 8, y:ytop - 14, dx:0, dy:1, F:r.P, k, col:c.P, txt:rot('P', r.P, 'Tierra'), al:'center' });
+  if (P.verN === 'oculta') lista.push({ x:cx + 8, y:ytop, dx:0, dy:-1, F:r.N, k, col:c.N, oculta:true, largoOculto:46, txt:rot('N', r.N, 'pista', true), al:'left', ox:4 });
+  else if (r.N > 1e-9) lista.push({ x:cx + 8, y:ytop, dx:0, dy:-1, F:r.N, k, col:c.N, crece:P.verN === 'nueva' ? cr : 1, txt:rot('N', r.N, 'pista'), al:'left', ox:4 });
+  if (P.verX && r.neta > 1e-9){
+    const crx = P.verN === 'nueva' ? cr : 1;
+    lista.push({ x:cx - 72, y:ytop - 14, dx:0, dy:1, F:r.neta, k, col:c.ink, fina:true, crece:crx, txt:`ΣF = ${N1(r.neta)} N`, al:'right', ox:-2 });
+    lista.push({ x:cx + 60, y:ytop + 2, dx:0, dy:1, F:r.aRadial, k:k*800, col:c.a, crece:crx, txt:`a = ${N1(r.aRadial)} m/s²`, al:'left', ox:4 });
+  }
+  lista.forEach(f => fuerza(ctx, c, f, W, H));
+  rotulo(ctx, c, cx, ytop - 15, '800 kg', c.ink, 'center', 800, W);
+  if (P.verX && r.despega) rotulo(ctx, c, W/2, 14, 'la pista no puede jalarlo hacia abajo: se despega', c.ink, 'center', 800, W);
+}
+
+/* ---------- Tren de carritos jalado por una mano ----------
+   P = { masas (adelante primero), F, r: M.tren, verT ('oculta' | 'nueva' | 'si'), verA, crece, x (m avanzados), roce, mu, mano }
+   Devuelve la mano y la escala de F, para el arrastre. */
+function vistaTren(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const s = clamp(W/400, 0.9, 1.5), n = P.masas.length, y0 = Math.round(H*0.64), hc = 32*s, yc = y0 - 10 - hc/2;
+  const ws = P.masas.map(m => (26 + 5*m)*s), suma = ws.reduce((a, b) => a + b, 0);
+  const g = clamp((W - 14 - suma - 112*s)/(n - 1), 36, 140);
+  // Escala común de F y de las tensiones (las de la cuerda caben en su hueco).
+  const xf = 14 + suma + (n - 1)*g, k = Math.min((W - xf - 34*s)/80, (g - 8)/64);
+  // Piso que corre hacia atrás: el tren avanza.
+  ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(4, y0, W - 8, 10); ctx.globalAlpha = 1;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, 4, y0, W - 4, y0);
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .45; ctx.lineWidth = 1.2;
+  const des = ((P.x || 0)*20) % 40;
+  for (let x = 4 - des + 40; x < W; x += 40) linea(ctx, x, y0 + 2, x - 8, y0 + 10);
+  ctx.restore();
+  // Carritos: de atrás (izquierda) hacia adelante (derecha).
+  const caja = [];
+  let x = 14;
+  for (let i = n - 1; i >= 0; i--){ caja[i] = { x1:x, x2:x + ws[i] }; x += ws[i] + g; }
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+  for (let i = 1; i < n; i++) linea(ctx, caja[i].x2, yc, caja[i - 1].x1, yc);  // cuerdas
+  caja.forEach((b, i) => {
+    ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, b.x1, y0 - 10 - hc, b.x2 - b.x1, hc, 5); ctx.fill(); ctx.stroke();
+    [b.x1 + 9, b.x2 - 9].forEach(xx => { ctx.beginPath(); ctx.arc(xx, y0 - 5, 5, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.stroke(); });
+    ctx.fillStyle = c.ink; ctx.font = `800 ${c.chico ? 11 : 12}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(`${fmt(P.masas[i], 0)} kg`, (b.x1 + b.x2)/2, yc);
+  });
+  // La mano y F
+  const xm = xf + k*P.F;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, xf, yc, xm, yc);
+  flecha(ctx, xf, yc - 9, xf + k*P.F, yc - 9, c.F, P.mano && P.mano.agarra ? 4.6 : 3.2);
+  ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, xm, yc - 9, 15, 18, 6); ctx.fill(); ctx.stroke(); ctx.restore();
+  if (P.mano && (P.mano.sobre || P.mano.agarra)){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(xm + 7, yc, 16, 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+  rotulo(ctx, c, xf + 4, yc + 20, `F = ${N1(P.F)} N · mano`, c.F, 'left', 800, W);
+  // Tensiones: en cada cuerda, el par de flechas (sobre el de atrás, hacia adelante; sobre el de adelante, hacia atrás).
+  const yt = y0 - 10 - hc, cols = [c.T, c.T2], nom = ['T₁', 'T₂'];
+  for (let j = 1; j < n; j++){
+    const a = caja[j].x2, b = caja[j - 1].x1, mid = (a + b)/2, col = cols[j - 1] || c.T2, nm = nom[j - 1] || `T${j}`;
+    const ly = yt - 12 - (j - 1)*20;
+    if (P.verT === 'oculta'){ rotulo(ctx, c, mid, ly, `${nm} = ?`, col, 'center', 800, W); continue; }
+    if (!P.r.tensiones) continue;  // quietos: la tensión no queda determinada y no se muestra
+    const T = P.r.tensiones[j - 1], cr = P.verT === 'nueva' ? P.crece : 1;
+    fuerza(ctx, c, { x:a, y:yc - 6, dx:1, dy:0, F:T, k, col, crece:cr }, W, H);
+    fuerza(ctx, c, { x:b, y:yc + 6, dx:-1, dy:0, F:T, k, col, crece:cr }, W, H);
+    if (cr > 0.99) rotulo(ctx, c, mid, ly, `${nm} = ${N1(T)} N · cuerda`, col, 'center', 800, W);
+  }
+  if (P.roce){
+    caja.forEach((b, i) => { if (P.r.sentido !== 'quieto') fuerza(ctx, c, { x:(b.x1 + b.x2)/2, y:y0 + 3, dx:-1, dy:0, F:P.r.roce[i], k, col:c.f }, W, H); });
+    rotulo(ctx, c, 8, y0 + 24, P.r.sentido === 'quieto' ? `roce del piso (μ = ${fmt(P.mu, 1)}): alcanza para que no se muevan` : `fₖ · piso (μ = ${fmt(P.mu, 1)}): ${P.r.roce.map(f => N1(f)).join(' N, ')} N, hacia atrás`, c.f, 'left', 700, W);
+  }
+  rotulo(ctx, c, 8, y0 + (P.roce ? 44 : 24), 'en vertical, cada carrito está en equilibrio (no se dibujan P ni N)', c.muted, 'left', 600, W);
+  if (P.verA && P.r.a > 1e-9) fuerza(ctx, c, { x:caja[n - 1].x1 + 6, y:yt - 56, dx:1, dy:0, F:P.r.a, k:Math.min(W*0.3, 120)/10, col:c.a, txt:`a = ${N1(P.r.a)} m/s² (los ${n === 3 ? 'tres' : n})`, al:'left', ox:4 }, W, H);
+  return { mano:{ x:xm + 7, y:yc }, base:xf, k };
+}
+
+/* ---------- Un bloque sobre otro ----------
+   P = { r: M.apilados, F, en ('abajo' | 'arriba'), verF ('oculta' | 'nueva' | 'si'), verA, crece, x (m que avanzó el de abajo),
+         dx (m que el de arriba se corrió sobre el de abajo), mano }. Devuelve la mano, la escala de F y el borde. */
+function vistaApilados(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const s = clamp(W/400, 0.9, 1.4), y0 = Math.round(H*0.68), pxm = 20;
+  const wB = 130*s, hB = 44*s, wA = 76*s, hA = 34*s, xB = clamp((W - wB)/2 - 50*s, 20, 200), yi = y0 - hB;
+  const lim = (wB/2)/pxm, xA = xB + wB/2 + clamp(P.dx || 0, -lim, lim)*pxm;  // centro del de arriba
+  ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(4, y0, W - 8, 10); ctx.globalAlpha = 1;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, 4, y0, W - 4, y0);
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .45; ctx.lineWidth = 1.2;
+  const des = ((P.x || 0)*pxm) % 40;
+  for (let x = 4 - des + 40; x < W; x += 40) linea(ctx, x, y0 + 2, x - 8, y0 + 10);
+  ctx.restore();
+  bloque(ctx, c, xB + wB/2, y0 - hB/2, wB, hB, 0, 'B · 3 kg');
+  bloque(ctx, c, xA, yi - hA/2, wA, hA, 0, 'A · 2 kg');
+  rotulo(ctx, c, W - 8, y0 + 22, 'piso liso', c.muted, 'right', 700, W);
+  // Mano y F (en el de abajo o en el de arriba)
+  const cara = P.en === 'arriba' ? xA + wA/2 : xB + wB, yF = P.en === 'arriba' ? yi - hA/2 : y0 - hB/2;
+  // Escala fija (la del caso con la mano en A corrida hasta el borde), para que F no cambie de largo al deslizar.
+  const kF = Math.min(3*s, (W - (xB + wB + wA/2) - 28)/40), xm = cara + kF*P.F;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, cara, yF, xm, yF);
+  flecha(ctx, cara, yF - 8, xm, yF - 8, c.F, P.mano && P.mano.agarra ? 4.6 : 3.2);
+  ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, xm, yF - 9, 15, 18, 6); ctx.fill(); ctx.stroke(); ctx.restore();
+  if (P.mano && (P.mano.sobre || P.mano.agarra)){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(xm + 7, yF, 16, 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+  rotulo(ctx, c, cara + 4, P.en === 'arriba' ? yF - 22 : yF + 18, `F = ${N1(P.F)} N · mano`, c.F, 'left', 800, W);
+  // Roce entre los bloques: un par, sobre A y sobre B (tercera ley). Antes de responder, sin flecha ni dirección.
+  const r = P.r, xc = clamp(xA, xB + 14, xB + wB - 14);
+  if (P.verF === 'oculta') rotulo(ctx, c, xc, yi, 'roce = ?', c.f, 'center', 800, W);
+  else if (Math.abs(r.roceA) > 1e-9){
+    const cr = P.verF === 'nueva' ? P.crece : 1, sg = Math.sign(r.roceA), kf = kF, nm = r.tipoRoce === 'cinetico' ? 'fₖ' : 'fₛ';
+    const t = cr > 0.99 ? `${nm} = ${fmt(Math.abs(r.roceA), 1)} N · ` : '';
+    fuerza(ctx, c, { x:xc, y:yi - 4, dx:sg, dy:0, F:Math.abs(r.roceA), k:kf, col:c.f, crece:cr, txt:t && t + 'B → A', ox:sg*6, oy:-10 }, W, H);
+    fuerza(ctx, c, { x:xc, y:yi + 4, dx:-sg, dy:0, F:Math.abs(r.roceA), k:kf, col:c.f, crece:cr, txt:t && t + 'A → B', ox:-sg*6, oy:10 }, W, H);
+  }
+  rotulo(ctx, c, 8, y0 + 42, 'en vertical, cada bloque está en equilibrio (no se dibujan P ni N)', c.muted, 'left', 600, W);
+  if (P.verA){
+    const ka = Math.min(W*0.28, 110)/17;
+    // Si resbalan, cada bloque tiene su aceleración: el mismo turquesa, con subíndice y pegada a su bloque.
+    if (r.juntos){ if (r.a > 1e-9) fuerza(ctx, c, { x:xA - wA/2, y:yi - hA - 30, dx:1, dy:0, F:r.a, k:ka, col:c.a, txt:`a = ${N1(r.a)} m/s² (los dos)`, al:'left', ox:4 }, W, H); }
+    else {
+      if (r.aA > 1e-9) fuerza(ctx, c, { x:xA - wA/2, y:yi - hA - 30, dx:1, dy:0, F:r.aA, k:ka, col:c.a, txt:`a₁ = ${N2(r.aA)} m/s² (A, arriba)`, al:'left', ox:4 }, W, H);
+      if (r.aB > 1e-9) fuerza(ctx, c, { x:xB + 6, y:y0 + 24, dx:1, dy:0, F:r.aB, k:ka, col:c.a, txt:`a₂ = ${N2(r.aB)} m/s² (B, abajo)`, al:'left', ox:4 }, W, H);
+    }
+  }
+  return { mano:{ x:xm + 7, y:yF }, base:cara, k:kF, lim };
+}
+
+/* ---------- Polea móvil ----------
+   P = { r: M.poleaMovil, m1, m2, y1 (m que subió la polea), y2 (m que bajó el extremo), verT ('nueva' | 'si' | null), verA, crece }
+   Devuelve el rango de y2 que cabe en el dibujo. */
+function vistaPoleaMovil(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const s = clamp(W/400, 0.9, 1.3), Rm = 14*s, Rf = 22*s, top = 10, pxm = 20;
+  const xM = W*0.42, xF = xM + Rm + Rf, x2 = xF + Rf, yF = top + Rf + 8;
+  const w1 = (30 + 5*P.m1)*s*0.9, h1 = w1*0.8, w2 = (30 + 5*P.m2)*s*0.9, h2 = w2*0.8;
+  const yM0 = H*0.36, y20 = H*0.46;
+  const yM = yM0 - (P.y1 || 0)*pxm, yb2 = y20 + (P.y2 || 0)*pxm, yb1 = yM + Rm + 10 + h1/2;
+  // Techo
+  ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(xM - Rm - 40, 0, x2 - xM + Rm + 80, top); ctx.globalAlpha = 1;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, xM - Rm - 40, top, x2 + 40, top);
+  // Reglas en tinta suave: cuánto bajó el extremo y cuánto subió la polea.
+  const regla = (x, y0, y1, txt) => { ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, x, y0, x, y1); linea(ctx, x - 4, y0, x + 4, y0); linea(ctx, x - 4, y1, x + 4, y1); ctx.restore(); };
+  if (Math.abs(P.y2 || 0) > 0.02){ regla(x2 + w2/2 + 8, y20, yb2); regla(xM - w1/2 - 8, yM0 + Rm + 10 + h1/2, yb1); }
+  // Cuerda: techo → polea móvil (por abajo) → polea fija (por arriba) → m2
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+  linea(ctx, xM - Rm, top, xM - Rm, yM); ctx.beginPath(); ctx.arc(xM, yM, Rm, Math.PI, 0, true); ctx.stroke();
+  linea(ctx, xM + Rm, yM, xF - Rf, yF); ctx.beginPath(); ctx.arc(xF, yF, Rf, Math.PI, 0); ctx.stroke();
+  linea(ctx, x2, yF, x2, yb2 - h2/2);
+  // Poleas
+  linea(ctx, xF, top, xF, yF);
+  [[xM, yM, Rm], [xF, yF, Rf]].forEach(([x, y, R]) => { ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); });
+  linea(ctx, xM, yM + 2, xM, yb1 - h1/2);
+  bloque(ctx, c, xM, yb1, w1, h1, 0, `${fmt(P.m1, 0)} kg`); bloque(ctx, c, x2, yb2, w2, h2, 0, `${fmt(P.m2, 0)} kg`);
+  const r = P.r, k = H*0.16/Math.max(r.P1, r.P2, 30), cr = P.crece === undefined ? 1 : P.crece, lista = [];
+  lista.push({ x:xM, y:yb1 + h1/2, dx:0, dy:1, F:r.P1, k, col:c.P, txt:rot('P', r.P1, 'Tierra'), al:'right', ox:-6, oy:-12 });
+  lista.push({ x:x2, y:yb2 + h2/2, dx:0, dy:1, F:r.P2, k, col:c.P, txt:rot('P', r.P2, 'Tierra'), al:'left', ox:6, oy:-12 });
+  if (P.verT){
+    const c2 = P.verT === 'nueva' ? cr : 1, listo = c2 > 0.99;
+    lista.push({ x:xM - Rm, y:yM, dx:0, dy:-1, F:r.T, k, col:c.T, crece:c2, txt:listo ? rot('T', r.T, 'cuerda') : '', al:'right', ox:-4 });
+    lista.push({ x:xM + Rm, y:yM, dx:0, dy:-1, F:r.T, k, col:c.T, crece:c2 });
+    lista.push({ x:x2, y:yb2 - h2/2, dx:0, dy:-1, F:r.T, k, col:c.T, crece:c2, txt:listo ? rot('T', r.T, 'cuerda') : '', al:'left', ox:6, oy:4 });
+    if (listo) rotulo(ctx, c, xM - Rm - 8, yM + 4, `2T = ${N1(r.sostiene)} N`, c.T, 'right', 800, W);
+  }
+  if (P.verA && Math.abs(r.a2) > 1e-9){
+    const ka = H*0.12/5, sg = Math.sign(r.a2);
+    // Rótulo al costado del medio de cada flecha (pegado a su bloque), para no chocar con el de la tensión.
+    const x1 = xM - w1/2 - 30, x2a = x2 + w2/2 + 26, l1 = Math.abs(r.a1)*ka, l2 = Math.abs(r.a2)*ka;
+    lista.push({ x:x1, y:yb1 + l1/2*sg, dx:0, dy:-sg, F:Math.abs(r.a1), k:ka, col:c.a });
+    lista.push({ x:x2a, y:yb2 - l2/2*sg, dx:0, dy:sg, F:Math.abs(r.a2), k:ka, col:c.a });
+    rotulo(ctx, c, x1 - 8, yb1, `a₁ = ${N2(Math.abs(r.a1))} m/s²`, c.a, 'right', 800, W);
+    rotulo(ctx, c, x2a + 8, yb2, `a₂ = ${N2(Math.abs(r.a2))} m/s²`, c.a, 'left', 800, W);
+  }
+  // Los pesos al final, para que sus rótulos queden encima de las flechas de a.
+  lista.slice(2).concat(lista.slice(0, 2)).forEach(f => fuerza(ctx, c, f, W, H));
+  // Lo que cabe (en metros de y2): el extremo y la polea, sin chocar con la polea fija ni salirse por abajo.
+  const fondo1 = H - k*r.P1 - 26, fondo2 = H - k*r.P2 - 26, techo = yF + Rf + 10;
+  const y2max = Math.min((fondo2 - h2/2 - y20)/pxm, 2*(yM0 - Rm - techo)/pxm);
+  const y2min = Math.max((techo + h2/2 - y20)/pxm, -2*(fondo1 - yM0 - Rm - 10 - h1)/pxm);
+  return { y2max:Math.max(0, y2max), y2min:Math.min(0, y2min) };
+}
+
+// Leyenda: solo las variables que aparecen en la escena. Una clave puede traer su propio texto: ['T', 'T₁ · …'].
+const NOMBRES = { P:'P · peso (la Tierra)', N:'N · normal (la superficie)', f:'f · roce (la superficie)', T:'T · tensión (la cuerda)',
+  T2:'T₂ · tensión de la segunda cuerda', F:'F · fuerza aplicada', a:'a · aceleración', C:'C · contacto entre las cajas',
+  suma:'ΣF · resultante (a trazos)', v:'v · velocidad (dato)' };
+const COLOR_LEY = { suma:'var(--ink)', v:'var(--muted)' };
+function leyenda(el, claves){
+  el.innerHTML = claves.map(q => { const [k, t] = Array.isArray(q) ? q : [q, NOMBRES[q]];
+    return `<span><i style="background:${COLOR_LEY[k] || 'var(--c-' + k + ')'}"></i>${t}</span>`; }).join('');
+}
+// Animaciones que se pueden cortar (parar) o adelantar hasta su final (terminar), con las que encadenan al terminar.
+// Con movimiento reducido, cada una salta a su final de inmediato.
+function crearAnimador(){
+  let actual = null;
+  const A = {
+    anim(dur, paso, listo){
+      A.parar();
+      if (RM || !dur){ paso(1); if (listo) listo(); return; }
+      const reg = { paso, listo, id:0 }, ini = performance.now(); actual = reg;
+      const tick = now => {
+        if (actual !== reg) return;
+        const f = Math.min(1, (now - ini)/dur); paso(f);
+        if (f < 1) reg.id = requestAnimationFrame(tick); else { actual = null; if (listo) listo(); }
+      };
+      reg.id = requestAnimationFrame(tick);
+    },
+    parar(){ if (actual){ cancelAnimationFrame(actual.id); actual = null; } },
+    terminar(){ for (let n = 0; actual && n < 12; n++){ const a = actual; actual = null; cancelAnimationFrame(a.id); a.paso(1); if (a.listo) a.listo(); } },
+    activo:() => !!actual
+  };
+  return A;
 }
 const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}"></p>`;
 </script>
@@ -562,34 +841,34 @@ const cv = $('cv');
 const GUIA = { m:10, angulo:37, mus:0.5 };
 const S = { step:0, max:0, pred:{}, hl:null, s:0, crece:1, ocupado:false, explora:false,
   ang:37, m:10, mus:0.5, muk:0.5, sobreAsa:false, arrastrando:false };
-let parar = () => {};
+const A1 = crearAnimador(), parar = () => A1.parar();
 const INICIO = 1.6; // en el explorador, el saco empieza a 1,6 m de la punta, lejos del asa
 const L = crearLienzo(cv, altoLienzo, draw);
 const R = () => S.explora ? M.plano({ m:S.m, angulo:S.ang, mus:S.mus, muk:Math.min(S.muk, S.mus) }) : M.plano(GUIA);
 
 const P1 = { id:'dinamica-fuerzas', ok:'b',
   opts:[['a','Una sola: su peso. La rampa solo está en el camino.','D6-superficie-no-empuja','documentado'],
-        ['b','Tres: su peso, la normal de la rampa y el roce.',null,''],
+        ['b','Tres: su peso, la normal y el roce. La rampa ejerce las dos últimas.',null,''],
         ['c','Cuatro: su peso, la normal, el roce y la fuerza del movimiento, que lo lleva hacia abajo.','D1-fuerza-del-movimiento','documentado'],
-        ['d','Dos: la normal y el roce. El peso no es una fuerza: es lo que el saco «tiende» a hacer.','D8-gravedad-no-es-fuerza','documentado']],
+        ['d','Dos: la normal y el roce. El peso no es una fuerza: es lo que el saco «tiende» a hacer.','D8-gravedad-no-es-fuerza','parcial']],
   fb:{ b:'¡Bien! Tres fuerzas, y cada una tiene quién la ejerce: la Tierra, y la rampa dos veces (empuja hacia afuera y frena a lo largo).',
        a:'Elegiste la A. La rampa no solo está en el camino: empuja al saco hacia afuera (la normal) y lo frena (el roce). Si no empujara, el saco la atravesaría. La correcta está marcada.',
        c:'Elegiste la C. Ninguna cosa ejerce una «fuerza del movimiento»: busca quién la haría y no hay nadie. El saco baja porque su peso tira de él y nada lo equilibra a lo largo de la rampa. La correcta está marcada.',
        d:'Elegiste la D. El peso es una fuerza de verdad: la Tierra tira del saco, esté quieto, cayendo o apoyado. La correcta está marcada.' } };
 const P2 = { id:'dinamica-normal', ok:'b',
-  opts:[['a','100 N, igual al peso','N-igual-mg','hipotesis'], ['b','80 N',null,''],
-        ['c','60 N','sen-cos-cambiados','hipotesis'], ['d','0 N, porque el saco se está moviendo hacia abajo','normal-cero-si-se-mueve','hipotesis']],
+  opts:[['a','100 N','N-igual-mg','hipotesis'], ['b','80 N',null,''],
+        ['c','60 N','sen-cos-cambiados','hipotesis'], ['d','0 N','normal-cero-si-se-mueve','hipotesis']],
   fb:{ b:'¡Bien! La normal equilibra solo la parte del peso que aprieta la rampa: 100·cos 37° = 80 N.',
        a:'Elegiste la A. La normal no es el peso al revés: la rampa solo sostiene la parte del peso perpendicular a ella. La correcta está marcada.',
        c:'Elegiste la C. 60 N es la parte del peso a lo largo de la rampa (con el seno). La perpendicular va con el coseno. La correcta está marcada.',
-       d:'Elegiste la D. Que el saco se mueva a lo largo de la rampa no cambia lo que pasa en la dirección perpendicular: ahí no se hunde ni se despega, así que la rampa sí empuja. La correcta está marcada.' } };
+       d:'Elegiste la D. 0 N sería una rampa que no empuja. Que el saco se mueva a lo largo de la rampa no cambia lo que pasa en la dirección perpendicular: ahí no se hunde ni se despega, así que la rampa sí empuja. La correcta está marcada.' } };
 const P3 = { id:'dinamica-roce', ok:'a',
   opts:[['a','40 N',null,''], ['b','50 N','roce-con-peso','hipotesis'],
-        ['c','60 N, igual a la parte del peso que lo jala','roce-igual-componente','hipotesis'], ['d','0 N: si ya se mueve, no hay roce','sin-roce-en-movimiento','hipotesis']],
+        ['c','60 N','roce-igual-componente','hipotesis'], ['d','0 N','sin-roce-en-movimiento','hipotesis']],
   fb:{ a:'¡Bien! El roce cinético es μ·N = 0,5·80 = 40 N, con la normal y no con el peso.',
        b:'Elegiste la B. 0,5·100 usa el peso en lugar de la normal. El roce depende de cuánto se aprietan las superficies, y eso es N = 80 N. La correcta está marcada.',
-       c:'Elegiste la C. Si el roce valiera 60 N, las fuerzas a lo largo de la rampa se cancelarían y el saco no aceleraría. Mientras desliza, el roce vale μ·N. La correcta está marcada.',
-       d:'Elegiste la D. Mientras desliza, el roce sigue actuando: es el cinético, μ·N. La correcta está marcada.' } };
+       c:'Elegiste la C. 60 N es la parte del peso que lo jala a lo largo de la rampa. Si el roce valiera 60 N, las fuerzas a lo largo de la rampa se cancelarían y el saco no aceleraría. Mientras desliza, el roce vale μ·N. La correcta está marcada.',
+       d:'Elegiste la D. Que ya se mueva no apaga el roce: mientras desliza, el roce sigue actuando: es el cinético, μ·N. La correcta está marcada.' } };
 
 // Qué se dibuja en cada paso. 'antes' es antes de responder; 'despues', después.
 const steps = [
@@ -670,7 +949,7 @@ function soltar(listo){
   const r = R(), s0 = S.explora ? INICIO : 0; S.s = s0; S.crece = 1;
   if (r.sentido !== 'baja'){ draw(); chips(0, r); listo && listo(); return; }
   const smax = S.explora ? 4.6 : 3.6, T = Math.sqrt(2*(smax - s0)/r.a);
-  parar = animarValor(Math.min(2600, T*900), f => { const t = T*f; S.s = s0 + r.a*t*t/2; chips(t, r); draw(); }, listo);
+  A1.anim(Math.min(2600, T*900), f => { const t = T*f; S.s = s0 + r.a*t*t/2; chips(t, r); draw(); }, listo);
 }
 function chips(t, r){
   const el = $('chips1') || $('live-chips'); if (!el) return;
@@ -679,7 +958,7 @@ function chips(t, r){
 const dots = $('dots');
 steps.forEach((s, n) => {
   const li = document.createElement('li'), b = document.createElement('button');
-  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.type = 'button'; b.textContent = n + 1;
   b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
 });
 function go(n){
@@ -694,6 +973,7 @@ function go(n){
   $('stepBody').innerHTML = s.body();
   leyenda($('ley1'), s.gate && !S.pred[s.gate.id] && s.leyAntes ? s.leyAntes : (s.ley || []));
   pintarDots();
+  L.compactar(s.gate && !S.pred[s.gate.id]);
   if (s.gate) prediccion(s);
   if (s.anima){ soltar(); $('otra').onclick = () => soltar(); }
   if (s.explora) explorar();
@@ -709,6 +989,7 @@ function nav(){
 function pintarDots(){
   [...dots.querySelectorAll('button')].forEach((b, k) => {
     b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
     if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
   });
 }
@@ -728,14 +1009,14 @@ function prediccion(s){
     S.pred[P.id] = o[0]; desbloquear(S.step + 1);
     registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
     S.ocupado = true; S.crece = 0; pintar(); pintarDots(); nav(); leyenda($('ley1'), s.ley || []);
-    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de animar.
-    const paso = S.step, ch = chico();
-    if (ch) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    L.compactar(false);
+    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+    const fb = $('fb'); fb.tabIndex = -1; fb.focus({ preventScroll:true });
     draw();
-    esperar(ch ? 380 : 0, () => {
-      if (S.step !== paso){ S.ocupado = false; nav(); return; }
-      parar = animarValor(600, f => { S.crece = f; draw(); }, () => { S.ocupado = false; nav(); draw(); $('next').focus({ preventScroll:true }); });
-    });
+    // En el celular, el dibujo sube a la vista y crece un momento después (nucleo/celular.js).
+    const paso = S.step, fin = () => { S.ocupado = false; S.crece = 1; nav(); draw(); };
+    Celular.alResponder(cv, () => A1.anim(600, f => { S.crece = f; draw(); }, fin), () => S.step === paso && !$('m1').hidden,
+      { siNo: () => { if (S.step === paso) fin(); } });
   }));
   pintar();
 }
@@ -769,32 +1050,21 @@ function vivo(){
     <p class="hint">${quieto && S.mus > 0 ? `Empieza a deslizar desde unos ${fmt(r.anguloLimite, 1)}°, cuando la parte del peso a lo largo de la rampa iguala a μs·N.` : !quieto && S.muk < S.mus ? 'Con μk menor que μs, el saco arranca solo cuando el estático ya no alcanza, y desde ahí lo frena el cinético, que es más pequeño.' : ''}</p>`;
   draw();
 }
-// Arrastre de la rampa: solo cerca de la punta de arriba (el resto del dibujo deja desplazar la página).
-const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+// Arrastre de la rampa: solo cerca de la punta de arriba (el resto del dibujo deja desplazar la página; nucleo/celular.js).
 function cercaAsa(p, rad){ const g = geoRampa(L.W, L.H, S.ang); return Math.hypot(p.x - g.A.x, p.y - g.A.y) < rad; }
 function ponerAngulo(p){
   const g = geoRampa(L.W, L.H, S.ang);
   const a = Math.round(clamp(Math.atan2(g.B.y - p.y, g.B.x - p.x)*180/Math.PI, 0, 60));
   if (a !== S.ang){ parar(); S.ang = a; S.s = INICIO; vivo(); }
 }
-cv.addEventListener('touchstart', e => {
-  if (!S.explora || e.touches.length !== 1) return;
-  const r = cv.getBoundingClientRect(), t = e.touches[0];
-  if (cercaAsa({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
-}, { passive:false });
-cv.addEventListener('pointerdown', e => {
-  if (!S.explora) return;
-  const p = local(e); if (!cercaAsa(p, e.pointerType === 'mouse' ? 26 : 40)) return;
-  S.arrastrando = true; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); draw();
-}, { passive:false });
-cv.addEventListener('pointermove', e => {
-  const p = local(e);
-  if (S.arrastrando){ ponerAngulo(p); return; }
-  const s = S.explora && cercaAsa(p, 26);
-  if (s !== S.sobreAsa){ S.sobreAsa = s; cv.style.cursor = s ? 'grab' : ''; draw(); }
+Celular.arrastre(cv, {
+  activo: () => S.explora,
+  cerca: (p, rad) => cercaAsa(p, rad),
+  empezar: () => { S.arrastrando = true; draw(); },
+  mover: p => ponerAngulo(p),
+  soltar: () => { S.arrastrando = false; draw(); },
+  sobre: s => { S.sobreAsa = s; draw(); }
 });
-const soltarAsa = () => { if (S.arrastrando){ S.arrastrando = false; draw(); } };
-cv.addEventListener('pointerup', soltarAsa); cv.addEventListener('pointercancel', soltarAsa);
 cv.addEventListener('keydown', e => {
   if (!S.explora) return;
   const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (!d) return;
@@ -813,27 +1083,168 @@ document.addEventListener('pointerout', e => { const t = e.target.closest && e.t
 document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
 document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
 alRedibujarTema(draw);
-addEventListener('modo', () => L.resize());
+// Si se cambia de pestaña a mitad de una animación, salta a su final: «Siguiente» no queda trabado.
+addEventListener('modo', () => { if ($('m1').hidden) A1.terminar(); else L.resize(); });
 L.resize(); go(0);
 })();
 </script>
 <script>
-/* ================= MODO 2: ¿qué pasa si…? =================
-   Preguntas de docs/investigacion/dinamica-ideas-erroneas.md. La escena cambia recién después de responder.
-   Lo que se dibuja sale de MotorDinamica. */
+/* ================= Experimentos: «¿Qué pasa si…?» (un solo cuerpo) y «Varios cuerpos» =================
+   Una misma maquinaria para las dos pestañas, cada una con su propio bloqueo en orden: una pastilla solo se abre si
+   todos los experimentos anteriores de esa pestaña ya tienen respuesta (regla de Gerson, 6 nov 2026); las respondidas
+   se revisitan libres. Entre pestañas no se bloquea. La escena cambia recién después de responder; lo que se dibuja
+   sale de MotorDinamica. Preguntas de docs/investigacion/dinamica-ideas-erroneas.md. */
+// En estos modos los datos de color no resaltan nada en el dibujo: no son paradas del tabulador.
+const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
+const fuente = t => `<p class="fuente">${t}</p>`;
+// o = { modo, suf, titulo, E, exps, dibujar(L, c, S), alMostrar }. Cada experimento: { id, corto, q, opts, ok, fb?, ley,
+//   leyAntes?, tope?, antes(), despues(), ctrl(), vivo(), alCambiar(input)?, accion(cual, valor)?, repetir()?,
+//   mano(p)?, tecla(d)?, ariaArrastre?, exp }.
+function montarExperimentos(o){
+  const $ = id => document.getElementById(id), suf = o.suf, modo = $(o.modo), cv = $('cv' + suf);
+  const E = o.E, EXPS = o.exps, S = { k:0, pred:{}, t0:Date.now() }, A = crearAnimador();
+  const X = { E, S, A, cv };
+  const L = crearLienzo(cv, altoLienzo, draw); X.L = L;
+  let leyClave = null;
+  function ponerLeyenda(){
+    const x = EXPS[S.k], resp = !!S.pred[x.id];
+    const l = typeof x.ley === 'function' ? x.ley(resp) : (resp || !x.leyAntes ? x.ley : x.leyAntes);
+    const k = JSON.stringify(l); if (k !== leyClave){ leyClave = k; leyenda($('ley' + suf), l); }
+  }
+  function draw(){ if (!L.W || !E.tipo) return; o.dibujar(L, colores(L.W), S); ponerLeyenda(); cv.__mano = E.mano || null; /* para las pruebas en el navegador */ }
+  X.draw = draw;
+  X.crecer = listo => { E.crece = 0; A.anim(600, f => { E.crece = f; draw(); }, () => { E.crece = 1; draw(); if (listo) listo(); }); };
+  X.pausa = (ms, listo) => A.anim(ms, () => {}, listo);
+  function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+  // Los botones se crean una vez; luego solo cambia su estado (así el foco no se pierde).
+  function botones(){
+    const caja = $('exps' + suf);
+    if (!caja.children.length){
+      caja.innerHTML = EXPS.map((x, k) => `<button type="button" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+      caja.querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+    }
+    const libre = primeraLibre();
+    [...caja.children].forEach((b, k) => {
+      const cerrado = k > libre; b.disabled = cerrado; b.setAttribute('aria-pressed', String(!cerrado && k === S.k));
+      if (cerrado){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Experimento ${k+1}, bloqueado`); }
+      else { b.removeAttribute('aria-disabled'); b.removeAttribute('aria-label'); }
+    });
+  }
+  const arrastrable = () => { const x = EXPS[S.k]; return !!(x.mano && S.pred[x.id] && E.mano); };
+  function lienzoActivo(){
+    const x = EXPS[S.k], a = !!(x.mano && S.pred[x.id]);
+    cv.tabIndex = a ? 0 : -1;
+    cv.setAttribute('aria-label', a ? x.ariaArrastre : 'Dibujo del experimento elegido');
+  }
+  function ir(k){
+    if (k > primeraLibre()) return;
+    A.parar();
+    S.k = k; S.t0 = Date.now();
+    const x = EXPS[k];
+    for (const q of Object.keys(E)) delete E[q];
+    x.antes();
+    if (S.pred[x.id]){ x.despues(); A.terminar(); }
+    L.compactar(!S.pred[x.id], x.tope);
+    botones(); lienzoActivo();
+    $('k' + suf).textContent = `${o.titulo} · ${k+1} de ${EXPS.length}`;
+    $('t' + suf).textContent = x.corto;
+    $('body' + suf).innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb' + suf)}<div id="res${suf}" class="body"></div>`;
+    sinParada($('body' + suf));
+    const btns = [...$('body' + suf).querySelectorAll('.opt')];
+    const pintar = () => {
+      const p = S.pred[x.id]; if (!p) return;
+      btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+      const fb = $('fb' + suf);
+      fb.textContent = x.fb ? x.fb[p] : p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+      fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+      const res = $('res' + suf);
+      res.innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig${suf}">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+      res.querySelectorAll('input').forEach(inp => inp.addEventListener(inp.type === 'checkbox' ? 'change' : 'input', () => { A.terminar(); x.alCambiar(inp); x.vivo(); draw(); }));
+      res.querySelectorAll('[data-acc]').forEach(b => b.addEventListener('click', () => {
+        A.terminar(); x.accion(b.dataset.acc, b.dataset.v);
+        res.querySelectorAll(`[data-acc="${b.dataset.acc}"]`).forEach(q => q.setAttribute('aria-pressed', String(q === b)));
+        x.vivo(); draw();
+      }));
+      const rep = $('repetir' + suf); if (rep) rep.onclick = () => { A.terminar(); x.repetir(); };
+      const sig = $('sig' + suf);
+      if (sig) sig.onclick = () => {
+        ir(k + 1); modo.scrollIntoView({ behavior: RM ? 'auto' : 'smooth' });
+        const t = $('t' + suf); t.tabIndex = -1; t.focus({ preventScroll:true });
+      };
+      sinParada(res); x.vivo();
+    };
+    btns.forEach(b => b.onclick = () => {
+      if (S.pred[x.id]) return;
+      const op = x.opts.find(q => q[0] === b.dataset.k);
+      S.pred[x.id] = op[0]; botones();
+      registrarPrediccion('que-pasa-si-' + x.id, op[0], op[0] === x.ok, op[2] || '', op[3] || '', S.t0);
+      pintar(); L.compactar(false, x.tope);
+      // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+      const fb = $('fb' + suf); fb.tabIndex = -1; fb.focus({ preventScroll:true });
+      const seguir = () => { x.despues(); lienzoActivo(); draw(); };
+      // En el celular, el dibujo sube a la vista y la escena cambia un momento después (nucleo/celular.js).
+      Celular.alResponder(cv, seguir, () => S.k === k && !modo.hidden, { siNo: () => { if (S.k === k){ seguir(); A.terminar(); } } });
+    });
+    pintar(); draw();
+    if (o.alMostrar) o.alMostrar();
+  }
+  // Arrastre de la mano (solo cerca de ella; el resto del dibujo deja desplazar la página) y flechas del teclado.
+  Celular.arrastre(cv, {
+    activo: arrastrable,
+    cerca: (p, r) => Math.hypot(p.x - E.mano.x, p.y - E.mano.y) < r,
+    empezar: () => { A.terminar(); E.agarra = true; draw(); },
+    mover: p => { const x = EXPS[S.k]; x.mano(p); x.vivo(); draw(); },
+    soltar: () => { E.agarra = false; draw(); },
+    sobre: s => { E.sobre = s; draw(); }
+  });
+  cv.addEventListener('keydown', e => {
+    if (!arrastrable()) return;
+    const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (!d) return;
+    e.preventDefault(); A.terminar(); const x = EXPS[S.k]; x.tecla(d); x.vivo(); draw();
+  });
+  alRedibujarTema(draw);
+  // Al cambiar de pestaña, lo que se estaba animando salta a su final: nada queda a medias ni corriendo escondido.
+  addEventListener('modo', () => { if (modo.hidden) A.terminar(); else { L.resize(); if (o.alMostrar) o.alMostrar(); } });
+  X.ir = ir;
+  L.resize(); ir(0);
+  return X;
+}
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? (un solo cuerpo) ================= */
 (function(){
 const $ = id => document.getElementById(id);
-const cv = $('cv2');
-const L = crearLienzo(cv, altoLienzo, draw);
-let parar = () => {};
 const E = {};
-const fuente = t => `<p class="fuente">${t}</p>`;
+let X, B = null;
+const crecer = l => X.crecer(l);
+const rPlano = () => M.plano({ m:E.m, angulo:E.ang, mus:E.mus, muk:E.muk });
+const emp = () => M.empujon({ m:2, F:10, dur:2, muk:E.roce ? 0.25 : 0 });
+const rCol = () => M.vertical({ m:30, v:E.v, r:2.5, theta:0 });
+const rLoma = () => M.loma({ m:800, r:40, phi:0, v:E.v });
+function empujar(desde){
+  const T = 6, d = desde || 0;
+  X.A.anim(RM ? 0 : (T - d)*700, f => { E.t = d + (T - d)*f; X.draw(); sincronizar(); });
+}
+// El columpio se balancea dos vaivenes completos (decorativo) y termina abajo, donde se calculan las flechas.
+function balancear(){
+  const r = rCol(); if (RM || r.anguloMax === null || E.v < 1e-9){ E.vaiven = false; X.draw(); return; }
+  const T = 2*r.periodo; E.vaiven = true;
+  X.A.anim(T*1000, f => { E.th = r.vaiven(T*f); X.draw(); }, () => { E.th = 0; E.vaiven = false; X.draw(); });
+}
+// El auto sale de la cima con su rapidez y cruza la loma (1,5 s); luego vuelve a la cima con las flechas.
+function cruzar(){
+  const r = rLoma(); if (RM || r.v < 1e-9) return;
+  X.A.anim(1500, f => { E.pos = r.desdeCima(1.5*f); X.draw(); }, () => { E.pos = null; X.draw(); });
+}
 const EXPS = [
   { id:'quieto', corto:'El saco que no se mueve', ley:['P','N','f'],
     q:`El mismo saco de 10 kg está ahora en una rampa de 37° más áspera, con μs = 0,8 y μk = 0,5. No se mueve. ¿Cuánto vale el ${V('f','roce')}?`,
-    opts:[['a','64 N, que es μs·N = 0,8·80','roce-estatico-siempre-maximo','hipotesis'], ['b','60 N',null],
-          ['c','0 N: si no se mueve, no hay roce','sin-movimiento-sin-roce','hipotesis'], ['d','40 N, el cinético: μk·N = 0,5·80','roce-cinetico-en-reposo','hipotesis']],
+    opts:[['a','64 N','roce-estatico-siempre-maximo','hipotesis'], ['b','60 N',null], ['c','0 N','sin-movimiento-sin-roce','hipotesis'], ['d','40 N','roce-cinetico-en-reposo','hipotesis']],
     ok:'b',
+    fb:{ b:'¡Bien! El saco no se mueve: el roce vale justo lo que jala la parte del peso a lo largo de la rampa, 100·sen 37° = 60 N.',
+         a:'Elegiste la A. 64 N es μs·N, el máximo que puede dar el roce estático, no lo que da siempre. Con 64 N hacia arriba, las fuerzas a lo largo de la rampa no se cancelarían. La correcta está marcada.',
+         c:'Elegiste la C. Sin roce, la parte del peso a lo largo de la rampa (60 N) lo haría bajar. Si no se mueve, algo la equilibra: el roce estático. La correcta está marcada.',
+         d:'Elegiste la D. μk·N = 40 N es el roce cinético, el de cuando ya desliza. Con 40 N no alcanzaría para equilibrar los 60 N. La correcta está marcada.' },
     antes:() => Object.assign(E, { tipo:'plano', ang:37, mus:0.8, muk:0.5, m:10, ver:{ P:'si', N:'si', f:'oculta' } }),
     despues:() => { E.ver = { P:'si', N:'si', f:'nueva', comp:'nueva' }; crecer(); },
     ctrl:() => `<div class="slider"><label for="q-ang"><span>Ángulo de la rampa</span><output id="q-ang-o"></output></label><input id="q-ang" type="range" min="0" max="60" step="1" value="${E.ang}"></div><div class="chips" id="chips2"></div>`,
@@ -845,70 +1256,53 @@ const EXPS = [
     exp:`<p>Como el saco no se mueve, las fuerzas a lo largo de la rampa se cancelan: el ${V('f','roce')} vale justo lo que jala la parte del peso, 100·sen 37° = 60 N. El valor μs·N = 64 N es el <b>máximo</b> que puede dar el roce estático, no lo que da siempre.</p>
       <p>Mueve el ángulo: el roce crece junto con la parte del peso hasta alcanzar el máximo, que a su vez baja porque la normal baja. Ahí el saco empieza a deslizar, y el roce pasa a ser el cinético, μk·N.</p>
       ${fuente('Que el roce estático valga siempre μs·N es un error que suponemos: no tiene estudio con porcentaje. Es la cara numérica de ver el roce como algo fijo y no como una fuerza que se ajusta.')}` },
-  { id:'atwood', corto:'Dos bloques y una polea', ley:['P','T','a'],
-    q:`Por una polea ligera y sin roce pasa una cuerda ligera con un bloque de 3 kg en un extremo y uno de 2 kg en el otro. Se sueltan. ¿Cuánto vale la ${V('T','tensión')} de la cuerda?`,
-    opts:[['a','20 N, el peso del bloque liviano','T-igual-mg-liviano','hipotesis'], ['b','30 N, el peso del bloque pesado','T-igual-mg-pesado','hipotesis'],
-          ['c','24 N',null], ['d','50 N, la suma de los dos pesos','T-suma-de-pesos','hipotesis']],
-    ok:'c',
-    antes:() => Object.assign(E, { tipo:'atwood', m1:3, m2:2, s:0, ver:{ T:'oculta' } }),
-    despues:() => { E.ver = { T:'nueva', a:'nueva' }; crecer(() => correr()); },
-    ctrl:() => `<div class="slider"><label for="q-m1"><span>Masa del bloque de la izquierda</span><output id="q-m1-o"></output></label><input id="q-m1" type="range" min="1" max="8" step="1" value="${E.m1}"></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Soltar otra vez</button></p>`,
-    vivo:() => {
-      const r = M.atwood({ m1:E.m1, m2:E.m2 }); $('q-m1-o').textContent = `${E.m1} kg`;
-      $('chips2').innerHTML = `<span class="chip">a = ${N1(r.aModulo)} m/s²</span><span class="chip">T = ${N1(r.T)} N</span><span class="chip">pesos: ${N1(r.P1)} N y ${N1(r.P2)} N</span>`;
-    },
-    alCambiar:() => { E.m1 = +$('q-m1').value; E.s = 0; },
-    exp:`<div class="eqs"><div class="eq">3 kg (baja): 30 − ${V('T','T')} = 3·${V('a','a')}</div><div class="eq">2 kg (sube): ${V('T','T')} − 20 = 2·${V('a','a')}</div><div class="eq">${V('a','a')} = ${fr('30 − 20', '3 + 2')} = ${V('a','2 m/s²')} → ${V('T','T')} = 20 + 2·2 = ${V('T','24 N')}</div></div>
-      <p>La ${V('T','tensión')} queda entre los dos pesos. Si fuera 20 N, el bloque liviano no aceleraría; si fuera 30 N, el pesado no aceleraría. Pero los dos aceleran: el de 3 kg hacia abajo y el de 2 kg hacia arriba, los dos con 2 m/s².</p>
-      <p>Prueba con masas iguales: no se mueven y la tensión es igual a cada peso. Solo en ese caso.</p>
-      ${fuente('Las opciones incorrectas son errores que suponemos, sin estudio con porcentaje: tomar la tensión igual al peso de uno de los bloques, o a la suma de los dos.')}` },
-  { id:'ascensor', corto:'La balanza en el ascensor', ley:['P','N','a'],
+  { id:'ascensor', corto:'La balanza en el ascensor', ley:['P','N','a'], leyAntes:['P','N'],
     q:`Una persona de 60 kg está de pie sobre una balanza dentro de un ascensor que sube a 3 m/s constantes. ¿Cuánto marca la balanza?`,
-    opts:[['a','Más de 60 kg, porque el ascensor sube','normal-mayor-si-sube','hipotesis'], ['b','60 kg',null],
-          ['c','78 kg: hay que sumarle la velocidad a g','suma-velocidad-a-g','hipotesis'], ['d','Menos de 60 kg, porque al moverse se siente más liviana','normal-menor-si-se-mueve','hipotesis']],
+    opts:[['a','Más de 60 kg, porque el ascensor sube','normal-mayor-si-sube','hipotesis'], ['b','60 kg, porque su velocidad no cambia',null],
+          ['c','78 kg, porque a g hay que sumarle la velocidad','suma-velocidad-a-g','hipotesis'], ['d','Menos de 60 kg, porque al moverse se siente más liviana','normal-menor-si-se-mueve','hipotesis']],
     ok:'b',
+    fb:{ b:'¡Bien! A velocidad constante no hay aceleración: la normal equilibra el peso y la balanza marca 60 kg.',
+         a:'Elegiste la A. Para subir a velocidad constante no hace falta fuerza neta. La balanza marca más solo si el ascensor acelera hacia arriba. La correcta está marcada.',
+         c:'Elegiste la C. La velocidad no se suma a g: son cosas distintas (m/s y m/s²). La balanza no ve la velocidad; ve la aceleración. La correcta está marcada.',
+         d:'Elegiste la D. Moverse a velocidad constante se siente igual que estar quieto. Marca menos solo si el ascensor acelera hacia abajo. La correcta está marcada.' },
     antes:() => Object.assign(E, { tipo:'ascensor', a:0, verN:'oculta', y:0 }),
-    despues:() => { E.verN = 'nueva'; crecer(() => mover()); },
+    despues:() => { E.verN = 'nueva'; crecer(() => B && B.despertar()); },
     ctrl:() => `<div class="slider"><label for="q-a"><span>Aceleración del ascensor (${V('a','a')}, + hacia arriba)</span><output id="q-a-o"></output></label><input id="q-a" class="r-a" type="range" min="-4" max="4" step="1" value="${E.a}"></div><div class="chips" id="chips2"></div>`,
     vivo:() => {
       const r = M.ascensor({ m:60, a:E.a }); $('q-a-o').textContent = `${fmt(E.a, 0)} m/s²`;
       $('chips2').innerHTML = `<span class="chip">N = ${N1(r.N)} N</span><span class="chip">la balanza marca ${fmt(r.lectura, 0)} kg</span>`;
     },
     alCambiar:() => { E.a = +$('q-a').value; E.verA = true; },
-    exp:`<p>A velocidad constante, la aceleración es cero: la ${V('N','normal')} equilibra el ${V('P','peso')} y la balanza marca 600 N, es decir, 60 kg. Da igual que suba, baje o esté quieto. La balanza no ve la velocidad: ve la aceleración. La velocidad del momento no cambia lo que marca.</p>
+    exp:`<p>A velocidad constante, la aceleración es cero: la ${V('N','normal')} equilibra el ${V('P','peso')} y la balanza marca 600 N, es decir, 60 kg. Da igual que suba, baje o esté quieto. La balanza no ve la velocidad: ve la aceleración.</p>
       <div class="eqs"><div class="eq">${V('N','N')} − ${V('P','600')} = 60·${V('a','a')}<span class="note">positivo hacia arriba</span></div></div>
       <p>Mueve la aceleración: si el ascensor acelera hacia arriba con 2 m/s² (al arrancar subiendo o al frenar bajando), N = 720 N y marca 72 kg. Si acelera hacia abajo con 2 m/s², N = 480 N y marca 48 kg.</p>
       ${fuente('Creer que la normal es mayor porque el ascensor sube es un error que suponemos, sin estudio con porcentaje. Creemos que sale de la idea documentada de que el movimiento necesita una fuerza en su dirección (Halloun y Hestenes, 1985, citados por Mora y Herrera, 2009).')}` },
-  { id:'contacto', corto:'Las dos cajas', ley:['F','C','a'],
-    q:`Empujas con 50 N una caja grande de 8 kg, que a su vez empuja a una caja pequeña de 2 kg que está delante, sobre un piso sin roce. ¿Cuál de las dos cajas empuja más fuerte a la otra?`,
-    opts:[['a','La grande a la pequeña, porque tiene más masa','D10-mas-masa-mas-fuerza','documentado'], ['b','Las dos se empujan igual',null],
-          ['c','La pequeña a la grande, porque la frena','la-de-adelante-empuja-mas','hipotesis'], ['d','Igual, y por eso se anulan: las cajas no aceleran','D11-accion-reaccion-se-anulan','documentado']],
-    ok:'b',
-    antes:() => Object.assign(E, { tipo:'contacto', x:0, verC:'oculta' }),
-    despues:() => { E.verC = 'nueva'; E.verA = true; crecer(() => correr()); },
-    ctrl:() => `<div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Empujar otra vez</button></p>`,
-    vivo:() => { $('chips2').innerHTML = '<span class="chip">a = 5 m/s², las dos</span><span class="chip">grande → pequeña: C = 10 N</span><span class="chip">pequeña → grande: C = 10 N</span>'; },
-    exp:`<p>Las dos ${V('C','fuerzas de contacto')} son un par de acción y reacción: la caja grande empuja a la pequeña con 10 N y la pequeña empuja a la grande con 10 N hacia atrás. Siempre son iguales, aunque las masas sean distintas.</p>
-      <p>No se anulan porque actúan sobre cajas distintas. Sobre la pequeña, los 10 N son la única fuerza horizontal: 10 = 2·5. Sobre la grande actúan tus 50 N y los 10 N hacia atrás: 50 − 10 = 40 = 8·5. Las dos aceleran con 5 m/s².</p>
-      ${fuente('En choques, según Bao, Hogg y Zollman (2002), entre el 60 % y el 90 % de los alumnos de cinco cursos universitarios de Estados Unidos, según el curso, pensó que el de más masa o el más rápido ejerce más fuerza. Cuando un cuerpo empuja a otro, como aquí, sus respuestas fueron más mezcladas. Creer que acción y reacción se anulan está documentado (Hestenes, Wells y Swackhamer, 1992), sin porcentaje en las fuentes que leímos.')}` },
-  { id:'empujon', corto:'Se acaba el empujón', ley:['F'],
+  { id:'empujon', corto:'Se acaba el empujón', ley:['F'], leyAntes:[],
     q:`Empujas un bloque de 2 kg sobre hielo, sin roce, con 10 N durante 2 s, y lo sueltas. ¿Qué hace el bloque <b>después</b> de que lo sueltas?`,
-    opts:[['a','Va frenando poco a poco: la fuerza del empujón se va gastando','D2-la-fuerza-se-gasta','documentado'], ['b','Sigue con la misma velocidad',null],
-          ['c','Se detiene apenas lo sueltas: sin fuerza no hay movimiento','D1-movimiento-necesita-fuerza','documentado'], ['d','Sigue acelerando un rato más','sigue-acelerando','hipotesis']],
+    opts:[['a','Va frenando poco a poco: la fuerza del empujón se va gastando','D2-la-fuerza-se-gasta','documentado'], ['b','Sigue con la misma velocidad: ya ninguna fuerza horizontal la cambia',null],
+          ['c','Se detiene apenas lo sueltas: sin fuerza no hay movimiento','D1-movimiento-necesita-fuerza','documentado'], ['d','Sigue acelerando un rato más: le queda algo del empujón','sigue-acelerando','hipotesis']],
     ok:'b',
+    fb:{ b:'¡Bien! Sobre el hielo, al soltarlo ya no actúa ninguna fuerza horizontal: su velocidad no cambia y sigue a 10 m/s.',
+         a:'Elegiste la A. El empujón no se guarda dentro del bloque para irse gastando. Sin roce, nada lo frena. La correcta está marcada.',
+         c:'Elegiste la C. Para seguir moviéndose no hace falta una fuerza: la fuerza cambia la velocidad, no la mantiene. La correcta está marcada.',
+         d:'Elegiste la D. Apenas lo sueltas, la fuerza desaparece y con ella la aceleración. No le queda «algo del empujón». La correcta está marcada.' },
     antes:() => Object.assign(E, { tipo:'empujon', roce:false, t:2 }),
-    despues:() => { correr(2); },
-    ctrl:() => `<label class="check"><input type="checkbox" id="q-roce" ${E.roce ? 'checked' : ''}> Con roce (μ = 0,25)</label><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Empujar otra vez</button></p>`,
+    despues:() => { empujar(2); },
+    ctrl:() => `<label class="check"><input type="checkbox" id="q-roce" ${E.roce ? 'checked' : ''}> Con roce (μ = 0,25)</label><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir2">Empujar otra vez</button></p>`,
     vivo:() => { const e = emp(); $('chips2').innerHTML = `<span class="chip">t = ${fmt(E.t, 1)} s</span><span class="chip">v = ${fmt(e.v(E.t), 1)} m/s</span>`; },
-    alCambiar:() => { E.roce = $('q-roce').checked; E.t = 0; leyenda($('ley2'), E.roce ? ['F','f'] : ['F']); correr(); },
+    alCambiar:() => { E.roce = $('q-roce').checked; E.t = 0; empujar(); },
+    repetir:() => { E.t = 0; empujar(); },
     exp:`<p>Mientras lo empujas, la ${V('F','fuerza')} cambia su velocidad: a = 10/2 = 5 m/s², y a los 2 s va a 10 m/s. Al soltarlo, ya ninguna fuerza horizontal actúa sobre él, así que su velocidad ya no cambia: sigue a 10 m/s. Mira las fotos cada medio segundo: después de los 2 s quedan igual de separadas.</p>
       <p>Activa el roce: ahora sí frena, pero porque el piso ejerce una fuerza, el ${V('f','roce')}, no porque el empujón «se gaste». Un empujón no se guarda dentro del bloque.</p>
       ${fuente('Es el modelo de «ímpetu», el más común según Halloun y Hestenes (1985), citados por Mora y Herrera (2009): antes del curso, solo el 17 % de 478 universitarios razonaba de forma newtoniana.')}` },
-  { id:'tiron', corto:'El tirón en ángulo', ley:['P','N','F','a'],
+  { id:'tiron', corto:'El tirón en ángulo', ley:['P','N','F','a'], leyAntes:['P','N','F'],
     q:`Jalas un bloque de 10 kg por un piso liso con una soga que forma 37° con la horizontal, con 50 N. ¿Cuánto vale la ${V('N','normal')} del piso?`,
-    opts:[['a','100 N, igual al peso','N-igual-mg','hipotesis'], ['b','70 N',null],
-          ['c','130 N: el peso más la parte vertical de la soga','N-suma-Fy','hipotesis'], ['d','50 N: el peso menos la fuerza de la soga, sin descomponer','resta-sin-descomponer','hipotesis']],
+    opts:[['a','100 N','N-igual-mg','hipotesis'], ['b','70 N',null], ['c','130 N','N-suma-Fy','hipotesis'], ['d','50 N','resta-sin-descomponer','hipotesis']],
     ok:'b',
+    fb:{ b:'¡Bien! La soga jala un poco hacia arriba (50·sen 37° = 30 N) y ayuda a sostener el bloque: N = 100 − 30 = 70 N.',
+         a:'Elegiste la A. La normal no siempre es el peso: aquí la soga también tira hacia arriba, así que el piso empuja menos. La correcta está marcada.',
+         c:'Elegiste la C. Sumaste la parte vertical de la soga al peso, pero la soga jala hacia arriba, no hacia abajo. La correcta está marcada.',
+         d:'Elegiste la D. Restaste los 50 N enteros, pero solo una parte de la soga apunta hacia arriba: 50·sen 37° = 30 N. La correcta está marcada.' },
     antes:() => Object.assign(E, { tipo:'tiron', ang:37, F:50, verN:'oculta', comp:false }),
     despues:() => { E.verN = 'nueva'; E.comp = true; E.verA = true; crecer(); },
     ctrl:() => `<div class="slider"><label for="q-ang"><span>Ángulo de la soga</span><output id="q-ang-o"></output></label><input id="q-ang" class="r-F" type="range" min="0" max="80" step="1" value="${E.ang}"></div><div class="chips" id="chips2"></div>`,
@@ -921,50 +1315,67 @@ const EXPS = [
       <p>La ${V('F','soga')} jala un poco hacia arriba (30 N), así que ayuda a sostener el bloque y el piso empuja menos. Por eso la normal es 70 N y no 100 N. Con roce, eso importa: el roce sería μ·70, no μ·100.</p>
       <p>Mueve el ángulo: cuanto más empinada la soga, menor la normal. Con 50 N la soga nunca lo levanta: aun vertical, daría solo 50 N de los 100 que hacen falta.</p>
       ${fuente('Que la normal sea siempre igual al peso es un error que suponemos, sin estudio con porcentaje. Creemos que sale de una idea documentada: que la superficie «solo está en el camino» y no ejerce una fuerza propia (Minstrell, 1982, citado por Mora y Herrera, 2009).')}` },
+  { id:'columpio', corto:'El columpio', ley: resp => resp ? ['P','T','a','suma','v'] : ['v'],
+    q:`Una niña de 30 kg se balancea en un columpio de cadenas de 2,5 m (el asiento es liviano: toma a la niña y su asiento como un solo cuerpo). En el punto más bajo pasa a 5 m/s. En ese instante, ¿qué fuerzas actúan sobre ella?`,
+    opts:[['a','Tres: su peso, la tensión de las cadenas y la fuerza centrífuga, hacia abajo.','D9-fuerza-centrifuga','parcial'],
+          ['b','Dos: su peso y la tensión de las cadenas, hacia arriba.',null],
+          ['c','Tres: su peso, la tensión de las cadenas y la fuerza centrípeta, hacia arriba.','centripeta-fuerza-extra','hipotesis'],
+          ['d','Tres: su peso, la tensión de las cadenas y la fuerza del movimiento, hacia adelante.','D1-fuerza-del-movimiento','parcial']],
+    ok:'b',
+    fb:{ b:'¡Bien! Solo la Tierra y las cadenas jalan a la niña. La «fuerza centrípeta» no es una tercera fuerza: es el nombre de la resultante, que aquí apunta al centro.',
+         a:'Elegiste la A. Nadie ejerce una fuerza «centrífuga»: busca quién la haría y no hay nadie. Lo que se siente al pasar por abajo es que las cadenas jalan más fuerte que el peso. La correcta está marcada.',
+         c:'Elegiste la C. La centrípeta no se suma a las demás: es lo que queda al sumar el peso y la tensión. Si la dibujas aparte, la cuentas dos veces. La correcta está marcada.',
+         d:'Elegiste la D. Para seguir moviéndose hacia adelante no hace falta una fuerza hacia adelante. En el punto más bajo, ninguna fuerza apunta en esa dirección. La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'columpio', v:5, th:0, verF:false }),
+    despues:() => { E.verF = true; crecer(() => X.pausa(500, balancear)); },
+    ctrl:() => `<div class="slider"><label for="q-v"><span>Rapidez en el punto más bajo</span><output id="q-v-o"></output></label><input id="q-v" type="range" min="0" max="7" step="0.5" value="${E.v}"></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir2">Balancear otra vez</button></p>`,
+    vivo:() => {
+      const r = rCol(); $('q-v-o').textContent = `${fmt(E.v, 1)} m/s`;
+      $('chips2').innerHTML = `<span class="chip">T = ${N1(r.T)} N</span><span class="chip">las cadenas jalan como si colgaran ${fmt(r.masaAparente, 1)} kg</span>`;
+    },
+    alCambiar:() => { E.v = +$('q-v').value; E.th = 0; E.vaiven = false; },
+    repetir:() => balancear(),
+    exp:`<div class="eqs"><div class="eq">${V('T','T')} − ${V('P','P')} = m·${fr('v²', 'r')}<span class="note">hacia el centro, que está arriba</span></div>
+      <div class="eq">${V('T','T')} = 300 + 30·${fr('5²', '2,5')} = 300 + 300 = ${V('T','600 N')}</div>
+      <div class="eq">${V('a','a')} = ${fr('v²', 'r')} = ${fr('25', '2,5')} = ${V('a','10 m/s²')}<span class="note">hacia el centro</span></div></div>
+      <p>Sobre la niña solo actúan la Tierra y las cadenas. Lo que se llama «fuerza centrípeta» es la resultante de esas dos, ΣF = 300 N hacia el centro (la flecha a trazos): no se dibuja aparte. Las cadenas jalan el doble del peso; por eso, al pasar por abajo, se siente que el asiento aprieta más.</p>
+      <p>Mueve la rapidez: con v = 0, la tensión vale lo mismo que el peso. Cuanto más rápido pasa, más jalan las cadenas.</p>
+      <p>Repaso: una piedra de 0,5 kg gira a 4 m/s en un círculo horizontal de 1 m sobre una mesa lisa. Ahí la cuerda sola da la resultante: T = 0,5·16/1 = 8 N, hacia el centro. Si la cuerda se rompe, la piedra sigue en línea recta.</p>
+      ${fuente('Creer que hay una fuerza real hacia afuera está descrito en las fuentes del informe (McCloskey, Caramazza y Green, 1980), sin porcentaje; en la PUCP, el movimiento circular fue de lo peor contestado en un test de conceptos de fuerza (Castillo y otros, 2013). La «fuerza del movimiento» está medida en otro contexto: alrededor del 65 % de 478 universitarios (Halloun y Hestenes, 1985, citados por Mora y Herrera, 2009). Dibujar la centrípeta como una fuerza más es una hipótesis nuestra.')}` },
+  { id:'loma', corto:'La loma', ley: resp => resp ? ['P','N','a','suma','v'] : ['P','N','v'],
+    q:`Un auto de 800 kg pasa por la cima de una loma redondeada, de 40 m de radio, a 10 m/s. ¿Cuánto vale la ${V('N','normal')} de la pista sobre el auto?`,
+    opts:[['a','8000 N','N-igual-mg','hipotesis'], ['b','6000 N',null], ['c','10 000 N','N-suma-centripeta','hipotesis'], ['d','2000 N','N-igual-centripeta','hipotesis']],
+    ok:'b',
+    fb:{ b:'¡Bien! En la cima, el centro de la loma está abajo: la resultante debe apuntar hacia abajo, así que la normal es menor que el peso. 8000 − N = 800·10²/40 = 2000.',
+         a:'Elegiste la A. Si la normal valiera lo mismo que el peso, no habría resultante y el auto seguiría en línea recta, despegándose de la loma. La correcta está marcada.',
+         c:'Elegiste la C. Sumaste la centrípeta al peso como si fuera otra fuerza hacia abajo que la pista tiene que aguantar. La centrípeta es la resultante: P − N. La correcta está marcada.',
+         d:'Elegiste la D. 2000 N es la resultante, m·v²/r, no la normal. La normal es lo que falta para llegar al peso: 8000 − 2000. La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'loma', v:10, verN:'oculta', verX:false, pos:null }),
+    despues:() => { E.verN = 'nueva'; E.verX = true; crecer(() => X.pausa(700, cruzar)); },
+    ctrl:() => `<div class="slider"><label for="q-vl"><span>Rapidez en la cima</span><output id="q-vl-o"></output></label><input id="q-vl" type="range" min="0" max="25" step="1" value="${E.v}"></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir2">Pasar otra vez</button></p>`,
+    vivo:() => {
+      const r = rLoma(); $('q-vl-o').textContent = `${fmt(E.v, 0)} m/s`;
+      $('chips2').innerHTML = `<span class="chip">N = ${N1(r.N)} N</span><span class="chip">ΣF = ${N1(r.neta)} N hacia abajo</span>${r.despega ? '<span class="chip ok">se despega de la pista</span>' : ''}`;
+    },
+    alCambiar:() => { E.v = +$('q-vl').value; E.pos = null; },
+    repetir:() => cruzar(),
+    exp:`<div class="eqs"><div class="eq">${V('P','P')} − ${V('N','N')} = m·${fr('v²', 'r')}<span class="note">hacia el centro, que está abajo</span></div>
+      <div class="eq">8000 − ${V('N','N')} = 800·${fr('10²', '40')} = 2000 → ${V('N','N')} = ${V('N','6000 N')}</div>
+      <div class="eq">${V('a','a')} = ${fr('v²', 'r')} = ${fr('100', '40')} = ${V('a','2,5 m/s²')}<span class="note">hacia abajo</span></div></div>
+      <p>En la cima, el centro de la loma está abajo. Para que el auto siga la curva, la resultante tiene que apuntar hacia abajo: el peso le gana a la normal por 2000 N. Por eso la normal es menor que el peso, y en una loma se siente un vacío en el estómago.</p>
+      <p>Mueve la rapidez: a 20 m/s la normal llega a 0 (v = √(g·r)). Más rápido, el peso solo ya no alcanza para curvar al auto tanto como pide la loma, y la pista no puede jalarlo hacia abajo: se despega. En la animación, el auto mantiene su rapidez.</p>
+      ${fuente('Que la normal sea igual al peso, o que se le sume la centrípeta, son errores que suponemos: hipótesis nuestras, sin estudio con porcentaje.')}` },
 ];
-// En este modo los datos de color no resaltan nada en el dibujo: no son paradas del tabulador.
-const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
-const S = { k:0, pred:{}, t0:Date.now() };
-const rPlano = () => M.plano({ m:E.m, angulo:E.ang, mus:E.mus, muk:E.muk });
-const emp = () => M.empujon({ m:2, F:10, dur:2, muk:E.roce ? 0.25 : 0 });
-function crecer(listo){ parar(); E.crece = 0; parar = animarValor(600, f => { E.crece = f; draw(); }, () => { listo && listo(); draw(); }); }
-// Animación de lo que se mueve en cada experimento.
-function correr(desde0){
-  parar();
-  if (E.tipo === 'atwood'){
-    const r = M.atwood({ m1:E.m1, m2:E.m2 }), T = 1.6;
-    parar = animarValor(T*1000, f => { const t = T*f; E.s = r.a*t*t/2; draw(); });
-  } else if (E.tipo === 'contacto'){
-    const T = 1.8; parar = animarValor(T*1000, f => { const t = T*f; E.x = 5*t*t/2; draw(); });
-  } else if (E.tipo === 'empujon'){
-    const T = 6, desde = desde0 || 0;
-    parar = animarValor(RM ? 0 : (T - desde)*700, f => { E.t = desde + (T - desde)*f; draw(); sincronizar(); });
-  }
-}
-function mover(){ // el ascensor sube a velocidad constante: los pisos pasan hacia abajo
-  parar(); if (RM){ draw(); return; }
-  let id, ini = performance.now();
-  const tick = now => { E.y = (now - ini)/1000*3; draw(); id = requestAnimationFrame(tick); };
-  id = requestAnimationFrame(tick); parar = () => cancelAnimationFrame(id);
-}
-function draw(){
-  if (!L.W || !E.tipo) return;
-  const c = colores(L.W);
+function sincronizar(){ const x = EXPS[X.S.k]; if (X.S.pred[x.id] && $('chips2')) x.vivo(); }
+function dibujar(L, c, S){
   if (E.tipo === 'plano'){
-    vistaPlano(L, c, { r:rPlano(), ang:E.ang, s:0, largo:6, masa:'10 kg', ver:E.ver, crece:E.crece });
-    decir($('desc2'), S.pred.quieto ? `Rampa de ${E.ang} grados. ${rPlano().sentido === 'quieto' ? 'El saco no se mueve; el roce estático vale ' + N1(rPlano().roceModulo) + ' newtons.' : 'El saco desliza.'}` : 'Rampa de 37 grados con el saco quieto. El peso de 100 newtons y la normal de 80 newtons. El roce todavía no tiene valor.');
-  } else if (E.tipo === 'atwood'){
-    const r = M.atwood({ m1:E.m1, m2:E.m2 });
-    vistaAtwood(L, c, { r, m1:E.m1, m2:E.m2, s:E.s, ver:E.ver, crece:E.crece });
-    decir($('desc2'), S.pred.atwood ? `Bloques de ${E.m1} y ${E.m2} kilogramos. Tensión ${N1(r.T)} newtons, aceleración ${N1(r.aModulo)} metros por segundo al cuadrado.` : 'Una polea con un bloque de 3 kilogramos y otro de 2. Pesos de 30 y 20 newtons. La tensión todavía no tiene valor.');
+    const r = rPlano();
+    vistaPlano(L, c, { r, ang:E.ang, s:0, largo:6, masa:'10 kg', ver:E.ver, crece:E.crece });
+    decir($('desc2'), S.pred.quieto ? `Rampa de ${E.ang} grados. ${r.sentido === 'quieto' ? 'El saco no se mueve; el roce estático vale ' + N1(r.roceModulo) + ' newtons.' : 'El saco desliza.'}` : 'Rampa de 37 grados con el saco quieto. El peso de 100 newtons y la normal de 80 newtons. El roce todavía no tiene valor.');
   } else if (E.tipo === 'ascensor'){
     const r = M.ascensor({ m:60, a:E.a });
     vistaAscensor(L, c, { r, a:E.a, y:E.y, verN:E.verN, crece:E.crece, verA:E.verA, vTxt: E.a === 0 ? 'sube a 3 m/s' : 'ahora sube a 3 m/s' });
     decir($('desc2'), S.pred.ascensor ? `La balanza marca ${fmt(r.lectura, 0)} kilogramos; la normal es ${N1(r.N)} newtons.` : 'Un ascensor que sube a velocidad constante con una persona de 60 kilogramos sobre una balanza. La lectura todavía no se muestra.');
-  } else if (E.tipo === 'contacto'){
-    const r = M.contacto({ m1:8, m2:2, F:50 });
-    vistaContacto(L, c, { r, m1:8, m2:2, F:50, x:E.x, verC:E.verC, crece:E.crece, verA:E.verA });
-    decir($('desc2'), S.pred.contacto ? 'Las cajas se empujan entre sí con 10 newtons, en sentidos opuestos. Las dos aceleran con 5 metros por segundo al cuadrado.' : 'Una mano empuja con 50 newtons una caja de 8 kilogramos, que tiene delante una de 2 kilogramos. Las fuerzas entre las cajas todavía no se muestran.');
   } else if (E.tipo === 'empujon'){
     const e = emp();
     vistaEmpujon(L, c, { e, t:E.t, dur:2, roce:E.roce });
@@ -973,77 +1384,222 @@ function draw(){
     const r = M.piso({ m:10, F:E.F, angulo:E.ang });
     vistaTiron(L, c, { r, ang:E.ang, F:E.F, verN:E.verN, crece:E.crece, comp:E.comp, verA:E.verA });
     decir($('desc2'), S.pred.tiron ? `Soga a ${E.ang} grados. Normal ${N1(r.N)} newtons.` : 'Un bloque de 10 kilogramos jalado con 50 newtons por una soga a 37 grados. El peso es 100 newtons; la normal todavía no tiene valor.');
+  } else if (E.tipo === 'columpio'){
+    const r = rCol();
+    vistaColumpio(L, c, { r, v:E.v, th:E.th, vaiven:E.vaiven, verF:E.verF, crece:E.crece });
+    decir($('desc2'), S.pred.columpio ? `En el punto más bajo, a ${fmt(E.v, 1)} metros por segundo: peso de 300 newtons hacia abajo y tensión de las cadenas de ${N1(r.T)} newtons hacia arriba. La resultante, ${N1(r.neta)} newtons, apunta al centro.` : 'Una niña en un columpio, en el punto más bajo, pasando a 5 metros por segundo. Todavía no se dibuja ninguna fuerza.');
+  } else if (E.tipo === 'loma'){
+    const r = rLoma();
+    vistaLoma(L, c, { r, v:E.v, verN:E.verN, verX:E.verX, crece:E.crece, pos:E.pos });
+    decir($('desc2'), S.pred.loma ? (r.despega ? `A ${fmt(E.v, 0)} metros por segundo, el peso solo no alcanza para seguir la loma: el auto se despega y la normal vale 0.` : `En la cima, a ${fmt(E.v, 0)} metros por segundo: peso de 8000 newtons hacia abajo y normal de ${N1(r.N)} newtons hacia arriba. La resultante, ${N1(r.neta)} newtons, apunta hacia abajo, al centro de la loma.`) : 'Un auto de 800 kilogramos en la cima de una loma de 40 metros de radio, a 10 metros por segundo. Su peso, 8000 newtons; la normal todavía no tiene valor.');
   }
 }
-function sincronizar(){ const x = EXPS[S.k]; if (S.pred[x.id] && $('chips2')) x.vivo(); }
-// Los botones se crean una vez; luego solo cambia aria-pressed (así el foco no se pierde).
-// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
-// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
-function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
-function botones(){
-  if (!$('exps').children.length){
-    $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
-    $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+X = montarExperimentos({ modo:'m2', suf:'2', titulo:'¿Qué pasa si…?', E, exps:EXPS, dibujar, alMostrar:() => B && B.despertar() });
+// El ascensor sube a velocidad constante: los pisos pasan hacia abajo. Bucle que se duerme si no hace falta (nucleo/celular.js).
+B = Celular.bucle(X.cv, dt => {
+  if (RM || E.tipo !== 'ascensor' || !X.S.pred.ascensor || E.crece < 1) return false;
+  E.y = (E.y || 0) + Math.min(dt, 0.1)*3; X.draw(); return true;
+});
+})();
+</script>
+<script>
+/* ================= MODO 3: varios cuerpos ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = {};
+let X;
+const crecer = l => X.crecer(l);
+const MASAS = { '442':[4, 4, 2], '244':[2, 4, 4] };
+const rTren = () => M.tren({ masas:MASAS[E.orden], F:E.F, muk:E.roce ? 0.2 : 0 });
+const rApil = () => M.apilados({ mA:2, mB:3, F:E.F, en:E.en, mus:0.4, muk:0.3 });
+const rPolea = () => M.poleaMovil({ m1:4, m2:E.m2 });
+const T1 = ['T', 'T₁ · tensión de la primera cuerda'], T2 = ['T2', 'T₂ · tensión de la segunda cuerda'];
+function correrAtwood(){ const r = M.atwood({ m1:E.m1, m2:E.m2 }), T = 1.6; X.A.anim(T*1000, f => { const t = T*f; E.s = r.a*t*t/2; X.draw(); }); }
+function correrContacto(){ const T = 1.8; X.A.anim(T*1000, f => { const t = T*f; E.x = 5*t*t/2; X.draw(); }); }
+function avanzar(){ const r = rTren(); E.x = 0; if (r.sentido === 'quieto'){ X.draw(); return; } X.A.anim(1800, f => { E.x = r.recorrido(1.8*f); X.draw(); }); }
+// Si el de arriba resbala, se corre sobre el de abajo; la animación se detiene antes de que llegue al borde y vuelve a empezar.
+function deslizar(){
+  const r = rApil(); E.x = 0; E.dx = 0; E.borde = false;
+  X.A.anim(1800, f => {
+    if (!E.borde){ const d = r.recorrido(1.8*f); E.x = d.xB; E.dx = d.xA - d.xB; if (E.lim && Math.abs(E.dx) >= E.lim){ E.dx = Math.sign(E.dx)*E.lim; E.borde = true; } }
+    X.draw();
+  }, () => { E.x = 0; E.dx = 0; E.borde = false; X.draw(); });
+}
+function soltarPolea(){
+  const r = rPolea(); E.y1 = 0; E.y2 = 0; E.tope = false; if (r.equilibrio){ X.draw(); return; }
+  X.A.anim(1600, f => {
+    if (!E.tope){ const d = r.recorrido(1.6*f); E.y1 = d.y1; E.y2 = d.y2;
+      if (E.rango && (d.y2 > E.rango.y2max || d.y2 < E.rango.y2min)){ E.y2 = clamp(d.y2, E.rango.y2min, E.rango.y2max); E.y1 = E.y2/2; E.tope = true; } }
+    X.draw(); sincronizar();
+  });
+}
+const EXPS = [
+  { id:'atwood', corto:'Dos bloques y una polea', ley:['P','T','a'], leyAntes:['P','T'],
+    q:`Por una polea ligera y sin roce pasa una cuerda ligera con un bloque de 3 kg en un extremo y uno de 2 kg en el otro. Se sueltan. ¿Cuánto vale la ${V('T','tensión')} de la cuerda?`,
+    opts:[['a','20 N','T-igual-mg-liviano','hipotesis'], ['b','30 N','T-igual-mg-pesado','hipotesis'], ['c','24 N',null], ['d','50 N','T-suma-de-pesos','hipotesis']],
+    ok:'c',
+    fb:{ c:'¡Bien! La tensión queda entre los dos pesos: 30 − T = 3·2 y T − 20 = 2·2 dan T = 24 N.',
+         a:'Elegiste la A. Con T = 20 N, el bloque de 2 kg no aceleraría hacia arriba, y sí lo hace. La correcta está marcada.',
+         b:'Elegiste la B. Con T = 30 N, el bloque de 3 kg no aceleraría hacia abajo, y sí lo hace. La correcta está marcada.',
+         d:'Elegiste la D. La cuerda no carga los dos pesos como un gancho que los sostiene quietos: con 50 N, los dos bloques subirían. La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'atwood', m1:3, m2:2, s:0, ver:{ T:'oculta' } }),
+    despues:() => { E.ver = { T:'nueva', a:'nueva' }; crecer(() => correrAtwood()); },
+    ctrl:() => `<div class="slider"><label for="r-m1"><span>Masa del bloque de la izquierda</span><output id="r-m1-o"></output></label><input id="r-m1" type="range" min="1" max="8" step="1" value="${E.m1}"></div><div class="chips" id="chips3"></div><p><button type="button" class="btn" id="repetir3">Soltar otra vez</button></p>`,
+    vivo:() => {
+      const r = M.atwood({ m1:E.m1, m2:E.m2 }); $('r-m1-o').textContent = `${E.m1} kg`;
+      $('chips3').innerHTML = `<span class="chip">a = ${N1(r.aModulo)} m/s²</span><span class="chip">T = ${N1(r.T)} N</span><span class="chip">pesos: ${N1(r.P1)} N y ${N1(r.P2)} N</span>`;
+    },
+    alCambiar:() => { E.m1 = +$('r-m1').value; E.s = 0; },
+    repetir:() => { E.s = 0; correrAtwood(); },
+    exp:`<div class="eqs"><div class="eq">3 kg (baja): 30 − ${V('T','T')} = 3·${V('a','a')}</div><div class="eq">2 kg (sube): ${V('T','T')} − 20 = 2·${V('a','a')}</div><div class="eq">${V('a','a')} = ${fr('30 − 20', '3 + 2')} = ${V('a','2 m/s²')} → ${V('T','T')} = 20 + 2·2 = ${V('T','24 N')}</div></div>
+      <p>La ${V('T','tensión')} queda entre los dos pesos. Si fuera 20 N, el bloque liviano no aceleraría; si fuera 30 N, el pesado no aceleraría. Pero los dos aceleran: el de 3 kg hacia abajo y el de 2 kg hacia arriba, los dos con 2 m/s².</p>
+      <p>Prueba con masas iguales: no se mueven y la tensión es igual a cada peso. Solo en ese caso.</p>
+      ${fuente('Las opciones incorrectas son errores que suponemos, sin estudio con porcentaje: tomar la tensión igual al peso de uno de los bloques, o a la suma de los dos.')}` },
+  { id:'contacto', corto:'Las dos cajas', ley:['F','C','a'], leyAntes:['F','C'],
+    q:`Empujas con 50 N una caja grande de 8 kg, que a su vez empuja a una caja pequeña de 2 kg que está delante, sobre un piso sin roce. ¿Cuál de las dos cajas empuja más fuerte a la otra?`,
+    opts:[['a','La grande a la pequeña, porque tiene más masa','D10-mas-masa-mas-fuerza','documentado'], ['b','Las dos se empujan igual, porque es un par de acción y reacción',null],
+          ['c','La pequeña a la grande, porque la frena','la-de-adelante-empuja-mas','hipotesis'], ['d','Se empujan igual y por eso se anulan: las cajas no aceleran','D11-accion-reaccion-se-anulan','parcial']],
+    ok:'b',
+    fb:{ b:'¡Bien! Son un par de acción y reacción: 10 N cada una, en sentidos opuestos, aunque las masas sean distintas.',
+         a:'Elegiste la A. Tener más masa no hace empujar más fuerte: las dos fuerzas del par son siempre iguales. Lo distinto es lo que cada caja hace con ellas. La correcta está marcada.',
+         c:'Elegiste la C. La pequeña sí frena a la grande, pero con la misma fuerza con la que la grande la empuja a ella. La correcta está marcada.',
+         d:'Elegiste la D. Son iguales, pero no se anulan: actúan sobre cajas distintas. Las dos cajas aceleran. La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'contacto', x:0, verC:'oculta' }),
+    despues:() => { E.verC = 'nueva'; E.verA = true; crecer(() => correrContacto()); },
+    ctrl:() => `<div class="chips" id="chips3"></div><p><button type="button" class="btn" id="repetir3">Empujar otra vez</button></p>`,
+    vivo:() => { $('chips3').innerHTML = '<span class="chip">a = 5 m/s², las dos</span><span class="chip">grande → pequeña: C = 10 N</span><span class="chip">pequeña → grande: C = 10 N</span>'; },
+    repetir:() => { E.x = 0; correrContacto(); },
+    exp:`<p>Las dos ${V('C','fuerzas de contacto')} son un par de acción y reacción: la caja grande empuja a la pequeña con 10 N y la pequeña empuja a la grande con 10 N hacia atrás. Siempre son iguales, aunque las masas sean distintas.</p>
+      <p>No se anulan porque actúan sobre cajas distintas. Sobre la pequeña, los 10 N son la única fuerza horizontal: 10 = 2·5. Sobre la grande actúan tus 50 N y los 10 N hacia atrás: 50 − 10 = 40 = 8·5. Las dos aceleran con 5 m/s².</p>
+      ${fuente('En choques, según Bao, Hogg y Zollman (2002), entre el 60 % y el 90 % de los alumnos de cinco cursos universitarios de Estados Unidos, según el curso, pensó que el de más masa o el más rápido ejerce más fuerza. Cuando un cuerpo empuja a otro, como aquí, sus respuestas fueron más mezcladas. Creer que acción y reacción se anulan está descrito (Hestenes, Wells y Swackhamer, 1992), sin porcentaje en las fuentes que leímos.')}` },
+  { id:'tren', corto:'El tren de carritos',
+    ley: resp => { if (!resp) return ['F', T1, T2]; const q = rTren().sentido === 'quieto'; return ['F', ...(q ? [] : [T1, T2]), ...(E.roce ? ['f'] : []), ...(q ? [] : ['a'])]; },
+    q:`Tres carritos de 4 kg, 4 kg y 2 kg están unidos por dos cuerdas y ruedan sin roce. Jalas el primero con ${V('F','50 N')}. ¿Cuánto vale la ${V('T2','tensión')} de la cuerda que une el segundo carrito (4 kg) con el último (2 kg)?`,
+    opts:[['a','50 N','T-igual-F','hipotesis'], ['b','25 N','F-repartida-entre-cuerdas','hipotesis'], ['c','10 N',null], ['d','20 N','T-masa-de-adelante','hipotesis']],
+    ok:'c',
+    fb:{ c:'¡Bien! Al último carrito solo lo jala esa cuerda: T₂ = 2·5 = 10 N. Cada cuerda jala todo lo que tiene detrás.',
+         a:'Elegiste la A. Los 50 N jalan los 10 kg. La última cuerda solo jala 2 kg, así que necesita mucho menos. La correcta está marcada.',
+         b:'Elegiste la B. Las cuerdas no se reparten la fuerza en partes iguales: la primera jala 6 kg y la segunda, 2 kg. La correcta está marcada.',
+         d:'Elegiste la D. 4·5 usa el carrito de adelante de la cuerda, pero la cuerda acelera al que tiene detrás. La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'tren', orden:'442', F:50, roce:false, x:0, verT:'oculta', verA:false }),
+    despues:() => { E.verT = 'nueva'; E.verA = true; crecer(() => avanzar()); },
+    ctrl:() => `<div class="seg" role="group" aria-label="Orden de los carritos, del primero al último"><button type="button" data-acc="orden" data-v="442" aria-pressed="${E.orden === '442'}">orden 4-4-2</button><button type="button" data-acc="orden" data-v="244" aria-pressed="${E.orden === '244'}">orden 2-4-4</button></div>
+      <label class="check"><input type="checkbox" id="r-roce" ${E.roce ? 'checked' : ''}> Con roce (μ = 0,2)</label>
+      <div class="chips" id="chips3"></div><p class="hint">Arrastra la mano para cambiar ${V('F','F')} (o enfoca el dibujo y usa las flechas del teclado).</p><p><button type="button" class="btn" id="repetir3">Jalar otra vez</button></p>`,
+    vivo:() => {
+      const r = rTren();
+      $('chips3').innerHTML = `<span class="chip">F = ${N1(E.F)} N</span>` + (r.sentido === 'quieto' ? '<span class="chip">no se mueve: el roce alcanza</span>' : `<span class="chip">T₁ = ${N1(r.tensiones[0])} N</span><span class="chip">T₂ = ${N1(r.tensiones[1])} N</span><span class="chip">a = ${fmt(r.a, 2)} m/s²</span>`);
+    },
+    alCambiar:inp => { E.roce = inp.checked; E.x = 0; },
+    accion:(q, v) => { E.orden = v; E.x = 0; },
+    mano:p => { E.F = clamp(Math.round((p.x - E.manoBase)/E.kF), 0, 80); E.x = 0; },
+    tecla:d => { E.F = clamp(E.F + 5*d, 0, 80); E.x = 0; },
+    ariaArrastre:'Tren de carritos: con las flechas del teclado cambias la fuerza de la mano',
+    repetir:() => avanzar(),
+    exp:`<div class="eqs"><div class="eq">los tres juntos: ${V('a','a')} = ${fr(V('F','50'), '4 + 4 + 2')} = ${V('a','5 m/s²')}</div>
+      <div class="eq">el último (2 kg): ${V('T2','T₂')} = 2·5 = ${V('T2','10 N')}</div>
+      <div class="eq">los dos de atrás (4 + 2 kg): ${V('T','T₁')} = 6·5 = ${V('T','30 N')}</div>
+      <div class="eq">comprobación, el del medio: ${V('T','30')} − ${V('T2','10')} = 20 = 4·5</div></div>
+      <p>Cada cuerda jala todo lo que tiene detrás. A la última solo le toca acelerar al último carrito; por eso es la que menos jala. Cada cuerda jala hacia adelante al carrito de atrás y hacia atrás al de adelante, con la misma fuerza.</p>
+      <p>Activa el roce (μ = 0,2): la aceleración baja a 3 m/s², pero ${V('T','T₁')} y ${V('T2','T₂')} no cambian, porque cada cuerda también vence el roce de lo que arrastra. Cambia el orden a 2-4-4: ahora ${V('T2','T₂')} = 20 N.</p>
+      ${fuente('Las opciones incorrectas son errores que suponemos: hipótesis nuestras, sin estudio con porcentaje.')}` },
+  { id:'apilados', corto:'Un bloque sobre otro',
+    ley: resp => resp ? ['F','f','a'] : ['F','f'],
+    q:`Un bloque A de 2 kg está encima de otro B de 3 kg, sobre un piso liso. Entre los dos bloques, μs = 0,4 y μk = 0,3. Jalas el de abajo con ${V('F','15 N')} horizontales. ¿Qué pasa?`,
+    opts:[['a','Se mueven juntos; el roce sobre el de arriba vale 8 N, que es μs·N.','roce-estatico-siempre-maximo','hipotesis'],
+          ['b','Se mueven juntos; el roce sobre el de arriba vale 6 N, lo justo para que acelere con el otro.',null],
+          ['c','El de abajo avanza y el de arriba se queda en su sitio: el roce solo frena, nunca empuja.','roce-solo-frena','hipotesis'],
+          ['d','El de arriba resbala: los 15 N son más que los 8 N que puede dar el roce.','compara-F-con-roce-maximo','hipotesis']],
+    ok:'b',
+    fb:{ b:'¡Bien! Juntos aceleran 15/5 = 3 m/s². Al de arriba solo lo empuja el roce: 2·3 = 6 N, menos que los 8 N de máximo.',
+         a:'Elegiste la A. 8 N es el máximo del roce estático, no lo que da siempre. Con 8 N, el de arriba aceleraría 4 m/s² y se adelantaría al de abajo. La correcta está marcada.',
+         c:'Elegiste la C. El roce se opone a que las superficies resbalen entre sí, no al movimiento. El de abajo arrastra al de arriba hacia adelante. La correcta está marcada.',
+         d:'Elegiste la D. Los 15 N no actúan sobre el de arriba: se los haces al de abajo. Lo que hay que comparar es el roce que necesita el de arriba (6 N) con su máximo (8 N). La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'apilados', F:15, en:'abajo', x:0, dx:0, verF:'oculta', verA:false }),
+    despues:() => { E.verF = 'nueva'; E.verA = true; crecer(() => deslizar()); },
+    ctrl:() => `<div class="seg" role="group" aria-label="Qué bloque jala la mano"><button type="button" data-acc="en" data-v="abajo" aria-pressed="${E.en === 'abajo'}">jalo el de abajo</button><button type="button" data-acc="en" data-v="arriba" aria-pressed="${E.en === 'arriba'}">jalo el de arriba</button></div>
+      <div class="chips" id="chips3"></div><p class="hint">Arrastra la mano para cambiar ${V('F','F')} (o enfoca el dibujo y usa las flechas del teclado).</p><p><button type="button" class="btn" id="repetir3">Jalar otra vez</button></p>`,
+    vivo:() => {
+      const r = rApil();
+      $('chips3').innerHTML = `<span class="chip">F = ${N1(E.F)} N</span><span class="chip">roce sobre el de arriba: ${fmt(Math.abs(r.roceA), 1)} N${r.tipoRoce === 'estatico' ? ' (estático)' : r.tipoRoce === 'cinetico' ? ' (cinético)' : ''}</span><span class="chip ${r.juntos ? '' : 'ok'}">${r.juntos ? 'van juntos' : 'el de arriba resbala'}</span><span class="chip">resbala desde F = ${fmt(r.Fmax, 1)} N</span>`;
+    },
+    accion:(q, v) => { E.en = v; E.x = 0; E.dx = 0; },
+    mano:p => { E.F = clamp(Math.round((p.x - E.manoBase)/E.kF), 0, 40); E.x = 0; E.dx = 0; },
+    tecla:d => { E.F = clamp(E.F + d, 0, 40); E.x = 0; E.dx = 0; },
+    ariaArrastre:'Un bloque sobre otro: con las flechas del teclado cambias la fuerza de la mano',
+    repetir:() => deslizar(),
+    exp:`<div class="eqs"><div class="eq">juntos: ${V('a','a')} = ${fr(V('F','15'), '2 + 3')} = ${V('a','3 m/s²')}</div>
+      <div class="eq">el de arriba: ${V('f','fₛ')} = 2·3 = ${V('f','6 N')}<span class="note">el máximo es μs·N = 0,4·20 = 8 N: alcanza</span></div></div>
+      <p>Al de arriba nadie lo jala: solo el ${V('f','roce')} del de abajo lo empuja hacia adelante. El roce estático vale lo que haga falta, aquí 6 N, y no su máximo. Sobre el de abajo actúa el mismo roce, 6 N hacia atrás (tercera ley).</p>
+      <p>El de arriba puede acelerar como máximo μs·g = 4 m/s², así que juntos aguantan hasta ${V('F','F')} = 5·4 = 20 N. Arrastra la mano: desde 20 N el de arriba resbala y su roce pasa a ser cinético (6 N). Sigue acelerando, con 3 m/s², pero menos que el de abajo, y se va quedando atrás.</p>
+      <p>Prueba también a jalar el de arriba: ahora el roce lo frena a él y arrastra al de abajo; resbala desde unos 13,3 N.</p>
+      ${fuente('Las opciones incorrectas son errores que suponemos: hipótesis nuestras, sin estudio con porcentaje.')}` },
+  { id:'polea-movil', corto:'La polea móvil', tope:300,
+    ley: resp => resp ? ['P','T','a'] : ['P'],
+    q:`Un bloque de 4 kg cuelga de una polea móvil. La cuerda está atada al techo, pasa por la polea móvil, sube a una polea fija y en su otro extremo cuelga un bloque de 3 kg. Poleas y cuerda ligeras, sin roce. Se sueltan desde el reposo. ¿Qué pasa?`,
+    opts:[['a','Baja el de 4 kg y sube el de 3 kg, porque el de 4 kg pesa más.','gana-el-mas-pesado','hipotesis'],
+          ['b','Baja el de 3 kg y sube el de 4 kg, los dos igual de rápido, porque es una sola cuerda.','polea-movil-misma-aceleracion','hipotesis'],
+          ['c','Baja el de 3 kg y sube el de 4 kg, la mitad de rápido, porque la cuerda lo sostiene por dos lados.',null],
+          ['d','Baja el de 3 kg y sube el de 4 kg, el doble de rápido, porque la polea móvil duplica todo.','polea-movil-doble','hipotesis']],
+    ok:'c',
+    fb:{ c:'¡Bien! El de 4 kg cuelga de dos tramos: 2T = 45 N > 40 N y sube. Cuando el de 3 kg baja 1 m, cada tramo se acorta 0,5 m: sube la mitad, en el mismo tiempo.',
+         a:'Elegiste la A. El de 4 kg está sostenido por dos tramos de la misma cuerda. Con la misma tensión en los dos, 2T le gana a su peso. La correcta está marcada.',
+         b:'Elegiste la B. Es una sola cuerda, pero el de 4 kg no cuelga de su punta: cuelga de una polea que toma dos tramos. Si la punta baja 1 m, la polea sube 0,5 m. La correcta está marcada.',
+         d:'Elegiste la D. La polea móvil duplica la fuerza, no la rapidez: el bloque sube la mitad de lo que baja el otro. La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'poleaMovil', m2:3, y1:0, y2:0, verT:null, verA:false }),
+    despues:() => { E.verT = 'nueva'; E.verA = true; crecer(() => soltarPolea()); },
+    ctrl:() => `<div class="slider"><label for="r-m2"><span>Masa del bloque del extremo</span><output id="r-m2-o"></output></label><input id="r-m2" type="range" min="1" max="6" step="1" value="${E.m2}"></div><div class="chips" id="chips3"></div><p><button type="button" class="btn" id="repetir3">Soltar otra vez</button></p>`,
+    vivo:() => {
+      const r = rPolea(); $('r-m2-o').textContent = `${E.m2} kg`;
+      const mov = r.equilibrio ? '<span class="chip ok">equilibrio: T = 20 N, la mitad del peso de 4 kg</span>'
+        : `<span class="chip">a₁ = ${fmt(Math.abs(r.a1), 2)} m/s² (polea, ${r.a1 > 0 ? 'sube' : 'baja'})</span><span class="chip">a₂ = ${fmt(Math.abs(r.a2), 2)} m/s² (extremo, ${r.a2 > 0 ? 'baja' : 'sube'})</span>`;
+      const rec = Math.abs(E.y2) > 0.01 ? `<span class="chip">recorrido: el extremo ${fmt(Math.abs(E.y2), 2)} m, la polea ${fmt(Math.abs(E.y1), 2)} m</span>` : '';
+      $('chips3').innerHTML = mov + `<span class="chip">T = ${fmt(r.T, 2)} N</span>` + rec;
+    },
+    alCambiar:() => { E.m2 = +$('r-m2').value; E.y1 = 0; E.y2 = 0; },
+    repetir:() => soltarPolea(),
+    exp:`<div class="eqs"><div class="eq">3 kg (baja): 30 − ${V('T','T')} = 3·${V('a','a₂')}</div>
+      <div class="eq">polea con 4 kg (sube): 2·${V('T','T')} − 40 = 4·${V('a','a₁')}</div>
+      <div class="eq">ligadura: ${V('a','a₁')} = ${fr(V('a','a₂'), '2')}<span class="note">si el extremo baja 1 m, la polea sube 0,5 m</span></div>
+      <div class="eq">${V('a','a₂')} = ${V('a','2,5 m/s²')}, ${V('a','a₁')} = ${V('a','1,25 m/s²')}, ${V('T','T')} = ${V('T','22,5 N')}</div></div>
+      <p>El bloque de 4 kg cuelga de dos tramos de la misma cuerda, y cada uno jala con ${V('T','T')}: en total 2T = 45 N, más que sus 40 N de peso. Por eso sube, aunque pese más. Pero la polea móvil reparte el recorrido: cada metro que baja el extremo, la polea sube medio metro, en el mismo tiempo. Las reglas grises marcan lo que recorrió cada uno.</p>
+      <p>Mueve la masa del extremo: con 2 kg quedan en equilibrio (T = 20 N, la mitad de 40). Con masas iguales no hay equilibrio: baja el del extremo.</p>
+      ${fuente('Las opciones incorrectas son errores que suponemos: hipótesis nuestras, sin estudio con porcentaje. «Gana el más pesado» podría salir de una idea que el informe menciona sin cifra: que gana la fuerza más grande.')}` },
+];
+function sincronizar(){ const x = EXPS[X.S.k]; if (X.S.pred[x.id] && $('chips3')) x.vivo(); }
+function dibujar(L, c, S){
+  if (E.tipo === 'atwood'){
+    const r = M.atwood({ m1:E.m1, m2:E.m2 });
+    vistaAtwood(L, c, { r, m1:E.m1, m2:E.m2, s:E.s, ver:E.ver, crece:E.crece });
+    decir($('desc3'), S.pred.atwood ? `Bloques de ${E.m1} y ${E.m2} kilogramos. Tensión ${N1(r.T)} newtons, aceleración ${N1(r.aModulo)} metros por segundo al cuadrado.` : 'Una polea con un bloque de 3 kilogramos y otro de 2. Pesos de 30 y 20 newtons. La tensión todavía no tiene valor.');
+  } else if (E.tipo === 'contacto'){
+    const r = M.contacto({ m1:8, m2:2, F:50 });
+    vistaContacto(L, c, { r, m1:8, m2:2, F:50, x:E.x, verC:E.verC, crece:E.crece, verA:E.verA });
+    decir($('desc3'), S.pred.contacto ? 'Las cajas se empujan entre sí con 10 newtons, en sentidos opuestos. Las dos aceleran con 5 metros por segundo al cuadrado.' : 'Una mano empuja con 50 newtons una caja de 8 kilogramos, que tiene delante una de 2 kilogramos. Las fuerzas entre las cajas todavía no se muestran.');
+  } else if (E.tipo === 'tren'){
+    const r = rTren();
+    const g = vistaTren(L, c, { masas:MASAS[E.orden], F:E.F, r, verT:E.verT, verA:E.verA, crece:E.crece, x:E.x, roce:E.roce, mu:0.2, mano:{ sobre:E.sobre, agarra:E.agarra } });
+    E.mano = g.mano; E.manoBase = g.base; E.kF = g.k;
+    decir($('desc3'), S.pred.tren ? (r.sentido === 'quieto' ? `Con ${N1(E.F)} newtons y roce, el tren no se mueve.` : `Con ${N1(E.F)} newtons: la primera cuerda jala ${N1(r.tensiones[0])} newtons y la segunda ${N1(r.tensiones[1])}. Los carritos aceleran con ${fmt(r.a, 2)} metros por segundo al cuadrado.`) : 'Tres carritos unidos por cuerdas, jalados con 50 newtons. Las tensiones todavía no tienen valor.');
+  } else if (E.tipo === 'apilados'){
+    const r = rApil();
+    const g = vistaApilados(L, c, { r, F:E.F, en:E.en, verF:E.verF, verA:E.verA, crece:E.crece, x:E.x, dx:E.dx, mano:{ sobre:E.sobre, agarra:E.agarra } });
+    E.mano = g.mano; E.manoBase = g.base; E.kF = g.k; E.lim = g.lim;
+    decir($('desc3'), S.pred.apilados ? (r.juntos ? `Con ${N1(E.F)} newtons van juntos; el roce sobre el de arriba vale ${fmt(Math.abs(r.roceA), 1)} newtons.` : `Con ${N1(E.F)} newtons el de arriba resbala: roce cinético de ${fmt(Math.abs(r.roceA), 1)} newtons; aceleraciones de ${fmt(r.aA, 1)} y ${fmt(r.aB, 1)} metros por segundo al cuadrado.`) : 'Un bloque de 2 kilogramos sobre otro de 3, en un piso liso. Una mano jala el de abajo con 15 newtons. El roce entre los bloques todavía no se muestra.');
+  } else if (E.tipo === 'poleaMovil'){
+    const r = rPolea();
+    E.rango = vistaPoleaMovil(L, c, { r, m1:4, m2:E.m2, y1:E.y1, y2:E.y2, verT:E.verT, verA:E.verA, crece:E.crece });
+    decir($('desc3'), S.pred['polea-movil'] ? (r.equilibrio ? 'Con 2 kilogramos en el extremo, todo queda en equilibrio: la tensión vale 20 newtons.' : `El bloque del extremo ${r.a2 > 0 ? 'baja' : 'sube'} con ${fmt(Math.abs(r.a2), 2)} metros por segundo al cuadrado y la polea móvil ${r.a1 > 0 ? 'sube' : 'baja'} con la mitad. Tensión de ${fmt(r.T, 2)} newtons.`) : 'Un bloque de 4 kilogramos cuelga de una polea móvil y otro de 3 kilogramos del extremo de la cuerda. Sus pesos, 40 y 30 newtons. Todavía no se dibuja la tensión.');
   }
-  const libre = primeraLibre();
-  [...$('exps').children].forEach((b, k) => {
-    const cerrado = k > libre; b.disabled = cerrado; b.setAttribute('aria-pressed', String(!cerrado && k === S.k));
-    if (cerrado){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Experimento ${k+1}, bloqueado`); }
-    else { b.removeAttribute('aria-disabled'); b.removeAttribute('aria-label'); }
-  });
 }
-function reiniciar(x){ for (const k of Object.keys(E)) delete E[k]; x.antes(); }
-function ir(k){
-  if (k > primeraLibre()) return;
-  parar();
-  S.k = k; S.t0 = Date.now();
-  const x = EXPS[k];
-  reiniciar(x);
-  if (S.pred[x.id]){ x.despues(); parar(); E.crece = 1; if (E.tipo === 'empujon') E.t = 6; if (E.tipo === 'ascensor') mover(); }
-  botones();
-  leyenda($('ley2'), x.ley);
-  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
-  $('t2').textContent = x.corto;
-  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
-  sinParada($('body2'));
-  const btns = [...$('body2').querySelectorAll('.opt')];
-  const pintar = () => {
-    const p = S.pred[x.id]; if (!p) return;
-    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
-    const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
-    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
-    $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
-    $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener(inp.type === 'checkbox' ? 'change' : 'input', () => { if (E.tipo !== 'empujon' && E.tipo !== 'ascensor') parar(); x.alCambiar(); x.vivo(); draw(); }));
-    const rep = $('repetir'); if (rep) rep.onclick = () => { if (E.tipo === 'atwood') E.s = 0; if (E.tipo === 'empujon') E.t = 0; correr(); };
-    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
-    sinParada($('res2')); x.vivo();
-  };
-  btns.forEach(b => b.onclick = () => {
-    if (S.pred[x.id]) return;
-    const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; botones();
-    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
-    pintar();
-    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
-    $('fb2').tabIndex = -1; $('fb2').focus({ preventScroll:true });
-    // En el celular, el dibujo sube a la vista y la escena cambia un momento después.
-    const ch = chico();
-    if (ch) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
-    esperar(ch ? 380 : 0, () => { if (S.k !== k) return; x.despues(); draw(); });
-  });
-  pintar(); draw();
-}
-alRedibujarTema(draw);
-addEventListener('modo', () => { if ($('m2').hidden) parar(); else { L.resize(); if (E.tipo === 'ascensor' && S.pred.ascensor) mover(); } });
-L.resize(); ir(0);
+X = montarExperimentos({ modo:'m3', suf:'3', titulo:'Varios cuerpos', E, exps:EXPS, dibujar });
 })();
 </script>
 
 <script>
 /* ================= Pestañas ================= */
 (function(){
-  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2'], ['#varios-cuerpos', 'm3', 'tab3']];
   function route(){
     const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
     modos.forEach(([, m, t], j) => {
