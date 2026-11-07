@@ -1,12 +1,12 @@
 {
   "curso": "aritmetica",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "fecha": "2026-11-06",
-  "minutos": 14,
+  "minutos": 16,
   "informes": [
     "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
   ],
-  "nota": "Ocho pares, dos por cada módulo del curso: porcentajes sucesivos, regla de tres, los dos dados y la torre de fichas (sucesiones). Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica.",
+  "nota": "Diez pares, dos por cada módulo del curso: porcentajes sucesivos, regla de tres, los dos dados, la torre de fichas y la barra que se parte. Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica.",
   "errores": {
     "suma-descuentos": {
       "respaldo": "documentado",
@@ -99,6 +99,30 @@
     "ultimo-por-n": {
       "respaldo": "hipotesis",
       "describe": "Multiplica el último término por n"
+    },
+    "AR12-suma-numeradores-y-denominadores": {
+      "respaldo": "documentado",
+      "describe": "Suma numeradores y denominadores (AR12)"
+    },
+    "suma-numeradores-multiplica-denominadores": {
+      "respaldo": "hipotesis",
+      "describe": "Suma los numeradores y multiplica los denominadores"
+    },
+    "multiplica-en-vez-de-sumar": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica las fracciones en vez de sumarlas"
+    },
+    "AR13-mcd-en-vez-de-mcm": {
+      "respaldo": "parcial",
+      "describe": "Usa el MCD donde va el MCM (AR13)"
+    },
+    "AR13-producto": {
+      "respaldo": "parcial",
+      "describe": "Multiplica los números en vez de buscar el MCM"
+    },
+    "suma": {
+      "respaldo": "hipotesis",
+      "describe": "Suma los dos periodos"
     }
   },
   "pares": [
@@ -622,6 +646,150 @@
             "texto": "672",
             "valor": 672,
             "error": "n-en-vez-de-n-menos-1"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fr-01",
+      "plantilla": "fracciones",
+      "unidad": "aritmetica.numeros-racionales",
+      "mide": "Suma de fracciones: con denominador común, no sumando de frente",
+      "A": {
+        "enunciado": "¿Cuánto es 2/3 + 3/5?",
+        "datos": {
+          "modelo": {
+            "f": [
+              2,
+              3
+            ],
+            "g": [
+              3,
+              5
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "5/8",
+            "valor": 0.625,
+            "error": "AR12-suma-numeradores-y-denominadores"
+          },
+          {
+            "texto": "19/15",
+            "valor": 1.2666666666666666,
+            "correcta": true
+          },
+          {
+            "texto": "1/3",
+            "valor": 0.3333333333333333,
+            "error": "suma-numeradores-multiplica-denominadores"
+          },
+          {
+            "texto": "2/5",
+            "valor": 0.4,
+            "error": "multiplica-en-vez-de-sumar"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuánto es 2/5 + 1/4?",
+        "datos": {
+          "modelo": {
+            "f": [
+              2,
+              5
+            ],
+            "g": [
+              1,
+              4
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "1/3",
+            "valor": 0.3333333333333333,
+            "error": "AR12-suma-numeradores-y-denominadores"
+          },
+          {
+            "texto": "13/20",
+            "valor": 0.65,
+            "correcta": true
+          },
+          {
+            "texto": "3/20",
+            "valor": 0.15,
+            "error": "suma-numeradores-multiplica-denominadores"
+          },
+          {
+            "texto": "1/10",
+            "valor": 0.1,
+            "error": "multiplica-en-vez-de-sumar"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fr-02",
+      "plantilla": "fracciones",
+      "unidad": "aritmetica.mcd-y-mcm",
+      "mide": "Coincidencias periódicas: el primer momento común es el MCM",
+      "A": {
+        "enunciado": "Dos luces se encienden juntas. Una parpadea cada 8 segundos y la otra cada 12 segundos. ¿Cuántos segundos después vuelven a encenderse juntas por primera vez?",
+        "datos": {
+          "a": 8,
+          "b": 12
+        },
+        "opciones": [
+          {
+            "texto": "4 segundos",
+            "valor": 4,
+            "error": "AR13-mcd-en-vez-de-mcm"
+          },
+          {
+            "texto": "24 segundos",
+            "valor": 24,
+            "correcta": true
+          },
+          {
+            "texto": "96 segundos",
+            "valor": 96,
+            "error": "AR13-producto"
+          },
+          {
+            "texto": "20 segundos",
+            "valor": 20,
+            "error": "suma"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Dos alarmas suenan juntas. Una suena cada 10 minutos y la otra cada 15 minutos. ¿Cuántos minutos después vuelven a sonar juntas por primera vez?",
+        "datos": {
+          "a": 10,
+          "b": 15
+        },
+        "opciones": [
+          {
+            "texto": "5 minutos",
+            "valor": 5,
+            "error": "AR13-mcd-en-vez-de-mcm"
+          },
+          {
+            "texto": "30 minutos",
+            "valor": 30,
+            "correcta": true
+          },
+          {
+            "texto": "150 minutos",
+            "valor": 150,
+            "error": "AR13-producto"
+          },
+          {
+            "texto": "25 minutos",
+            "valor": 25,
+            "error": "suma"
           }
         ]
       }

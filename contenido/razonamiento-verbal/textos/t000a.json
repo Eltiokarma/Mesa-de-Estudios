@@ -1,0 +1,188 @@
+{
+  "version": 1,
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "revision": {
+    "por": "subagente (resolución a ciegas, paralelismo entre formas y verificación de hechos con búsqueda web)",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6 entre las dos formas. Cambios: se igualó la dificultad de p2 (A: «la isla va bajando»; B: «al mes siguiente») y de p3 (B: «algo indispensable»), la frecuencia de renovación de la totora (varias veces al año) y la evidencia de p1."
+  },
+  "id": "t000a",
+  "titulo": "Islas que flotan",
+  "tema": "Perú andino · el lago Titicaca",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En el lago Titicaca, cerca de Puno, varias familias uros viven sobre islas que ellas mismas construyen."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "La base de cada isla está hecha de grandes bloques de raíces de totora (una planta que crece en las orillas del lago) amarrados entre sí con sogas."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Encima se extienden capas de totora cortada, que forman el piso sobre el que se levantan las casas."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Sin embargo, la totora que toca el agua se pudre poco a poco y la isla va bajando."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Por eso, las familias ponen capas nuevas encima varias veces al año, y cada familia cuida la parte de la isla donde vive."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "La misma planta sirve también para hacer balsas y techos, y la parte tierna de su tallo se come."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Hoy, muchas de estas islas reciben a visitantes que llegan desde Puno en lancha."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Para los uros, entonces, la totora no es solo un material: es la condición para que su forma de vivir sobre el lago siga existiendo."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "La totora hace posible que los uros vivan sobre el lago, siempre que la renueven.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5",
+            "o8"
+          ],
+          "explicacion": "Junta lo que dice la oración 8 (la totora es la condición para vivir sobre el lago) con lo que explican las oraciones 4 y 5: hay que renovarla."
+        },
+        {
+          "t": "La base de cada isla está hecha de bloques de raíces de totora amarrados con sogas.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es un detalle de cómo se construye la isla. El texto lo cuenta para llegar a una idea más amplia."
+        },
+        {
+          "t": "Los pueblos que viven en el altiplano se adaptaron a su entorno.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de los uros y de la totora, no de todos los pueblos del altiplano."
+        },
+        {
+          "t": "La totora que toca el agua del lago se pudre poco a poco y la isla se va asentando.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Es una parte del texto, pero deja fuera lo principal: que la totora, renovada, es lo que permite vivir sobre el lago."
+        },
+        {
+          "t": "Los uros son uno de los pueblos más antiguos del altiplano.",
+          "codigo": "RV8",
+          "explicacion": "Puede decirse a menudo, pero el texto no lo menciona. La idea principal sale de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "enunciado": "Se infiere del texto que, si las familias dejaran de poner capas nuevas de totora,",
+      "alternativas": [
+        {
+          "t": "la isla se iría hundiendo con el tiempo.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5"
+          ],
+          "explicacion": "La oración 4 dice que la totora que toca el agua se pudre y la isla va bajando; las capas nuevas (oración 5) compensan eso. Sin ellas, la isla terminaría hundiéndose."
+        },
+        {
+          "t": "los uros tendrían que mudarse a Puno al día siguiente.",
+          "codigo": "RV7",
+          "explicacion": "El texto dice que la isla se asienta \"poco a poco\"; mudarse al día siguiente va mucho más allá de lo que se puede concluir."
+        },
+        {
+          "t": "las sogas se pudrirían y el viento se llevaría la isla.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Usa palabras del texto (\"sogas\", \"se pudre\"), pero el texto no dice nada de que el viento se lleve las islas."
+        },
+        {
+          "t": "todas las islas del lago desaparecerían de inmediato.",
+          "codigo": "RV11",
+          "explicacion": "\"Todas\" y \"de inmediato\" dicen más de lo que el texto permite: el cambio sería lento y en las islas que no se cuiden."
+        },
+        {
+          "t": "las casas seguirían levantadas sobre capas de totora cortada.",
+          "codigo": "RV12",
+          "origen": "o3",
+          "explicacion": "Repite lo que el texto ya dice (oración 3); no saca la consecuencia de dejar de renovar la totora."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 8, la palabra CONDICIÓN significa",
+      "alternativas": [
+        {
+          "t": "un requisito.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "La oración dice que, sin totora, esa forma de vivir no podría seguir: la totora es lo que se necesita, un requisito."
+        },
+        {
+          "t": "un estado.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de \"condición\" (\"está en buena condición\"), pero aquí no se habla del estado de algo."
+        },
+        {
+          "t": "una ventaja importante.",
+          "codigo": "RV19",
+          "explicacion": "Está cerca: la totora es útil. Pero \"condición\" dice algo más fuerte: que sin ella no se podría vivir así."
+        },
+        {
+          "t": "un material.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Repite una palabra de la misma oración, pero la oración dice justo que la totora \"no es solo un material\"."
+        }
+      ]
+    }
+  ],
+  "hechos": [
+    {
+      "afirmacion": "Los uros viven en islas flotantes de totora en el lago Titicaca, cerca de Puno; la base son bloques de raíces de totora y encima van capas de totora cortada que se renuevan varias veces al año (entre una vez al mes y cada tres meses, más seguido en lluvias).",
+      "fuente": "Descripciones etnográficas y turísticas (p. ej., Promperú; entradas de enciclopedia sobre los uros); por confirmar con una fuente académica."
+    },
+    {
+      "afirmacion": "La totora se usa también para balsas y techos, y la base tierna del tallo se come.",
+      "fuente": "Mismas fuentes."
+    }
+  ]
+}

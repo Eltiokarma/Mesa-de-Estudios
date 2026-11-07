@@ -1,0 +1,265 @@
+{
+  "id": "t007",
+  "version": 1,
+  "titulo": "El fruto que necesita al bosque",
+  "tema": "Amazonía · ecología y economía",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En los bosques de Madre de Dios crecen castaños que pueden pasar los cuarenta metros de altura, y sus frutos, unas cápsulas duras como piedra, guardan las castañas que se venden en todo el mundo."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Casi toda esa cosecha se recoge en el bosque, árbol por árbol, y no en plantaciones."
+      },
+      {
+        "id": "o3",
+        "rol": "contraste",
+        "t": "Podría parecer más práctico talar alrededor y sembrar castaños en filas ordenadas."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "El problema es que la flor del castaño solo se abre al empuje de abejas grandes y fuertes, capaces de levantar su tapa."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Algunas de esas abejas dependen, a su vez, de las orquídeas del bosque: los machos recogen en ellas los aromas con que atraen a las hembras."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Sin orquídeas hay menos abejas, y sin abejas el castaño florece, pero casi no da frutos."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Por eso, entre otras razones, los castaños sembrados lejos del bosque suelen producir muy poco."
+      },
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "La castaña, entonces, no es solo el producto de un árbol: es el producto de un bosque entero, y quien lo tala para sembrar castaños destruye justamente lo que los hace producir."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Cuidar el bosque, en este caso, no es un gasto que se opone a la ganancia, sino la condición para tenerla."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o8",
+          "o9"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "Las oraciones 8 y 9 dicen la idea: la castaña es producto del bosque entero, y cuidarlo es la condición para ganar con ella.",
+        "explicaciones": {
+          "o1": "La primera oración presenta los castaños y su fruto: es el punto de partida.",
+          "o2": "Dice dónde se recoge la castaña; es información de base.",
+          "o3": "Presenta una idea que el autor va a rechazar: talar y sembrar en filas parece práctico, pero no funciona.",
+          "o4": "Explica cómo se abre la flor: es un detalle que sirve de argumento.",
+          "o5": "Explica por qué las abejas necesitan orquídeas: es otro eslabón del argumento.",
+          "o6": "Saca una consecuencia de las oraciones 4 y 5, pero todavía no dice la conclusión del autor.",
+          "o7": "Es una consecuencia concreta; la conclusión general viene después.",
+          "ninguna": "Las oraciones 8 y 9 sí lo dicen completo: la castaña depende del bosque entero."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "La producción de castañas depende de que se conserve el bosque donde crecen los castaños.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9"
+          ],
+          "explicacion": "Es lo que dicen las oraciones 8 y 9: la castaña es producto del bosque entero, y cuidarlo es la condición para la ganancia."
+        },
+        {
+          "t": "La flor del castaño solo se abre al empuje de abejas grandes y fuertes, capaces de levantar su tapa.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Es un detalle de cómo se poliniza el castaño. El texto lo usa para llegar a una idea más amplia."
+        },
+        {
+          "t": "Los bosques amazónicos son importantes para la economía del Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de la castaña y de por qué necesita el bosque."
+        },
+        {
+          "t": "Los castaños sembrados en plantaciones lejos del bosque suelen producir muy poco.",
+          "codigo": "RV3",
+          "origen": "o7",
+          "explicacion": "Es una parte del texto, pero deja fuera la razón y la conclusión: que el bosque entero es lo que hace producir al castaño."
+        },
+        {
+          "t": "El Perú es uno de los mayores exportadores de castañas del mundo.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no lo dice. La idea principal sale de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Las abejas grandes que abren la flor del castaño visitan también las flores de muchas otras plantas.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto habla de esas abejas solo en relación con el castaño y con las orquídeas. No dice si visitan otras flores: no se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto nombra las abejas y las flores, pero nunca dice que visiten otras plantas.",
+          "se-deduce": "Que las abejas necesiten orquídeas no permite concluir que visiten muchas otras flores: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice que esas abejas solo visiten el castaño; simplemente no habla de otras plantas."
+        }
+      },
+      "enunciado": "Se infiere del texto que un castaño que creciera solo, en medio de un pastizal,",
+      "alternativas": [
+        {
+          "t": "probablemente daría pocos frutos, aunque floreciera.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Lejos del bosque habría menos orquídeas y menos abejas; según las oraciones 6 y 7, el castaño florecería, pero casi no daría frutos."
+        },
+        {
+          "t": "atraería a las abejas hembras con los aromas de las orquídeas del bosque.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Mezcla palabras de la oración 5 (\"aromas\", \"hembras\", \"orquídeas\"), pero los aromas los recogen los machos y no tienen nada que ver con el árbol."
+        },
+        {
+          "t": "dejaría de florecer por completo.",
+          "codigo": "RV9",
+          "origen": "o6",
+          "explicacion": "Choca con el texto aunque no lo diga con esas palabras: la oración 6 dice que el castaño sin abejas florece, pero casi no da frutos."
+        },
+        {
+          "t": "no daría ni un solo fruto en toda su vida.",
+          "codigo": "RV11",
+          "explicacion": "El texto dice \"casi no da frutos\" y \"suelen producir muy poco\"; \"ni un solo fruto\" y \"en toda su vida\" dicen más de lo que afirma."
+        },
+        {
+          "t": "crecería más rápido y daría más castañas, porque recibiría más sol.",
+          "codigo": "RV8",
+          "explicacion": "Es lo que uno podría suponer por su cuenta, pero el texto dice lo contrario: lejos del bosque, el castaño produce poco."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.compatibilidad",
+      "enunciado": "Es incompatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "los castaños sembrados en filas lejos del bosque producen tanto como los del bosque.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "La oración 7 dice que los castaños sembrados lejos del bosque suelen producir muy poco: esta afirmación choca con eso."
+        },
+        {
+          "t": "no todas las abejas pueden abrir la flor del castaño.",
+          "codigo": "RV10",
+          "origen": "o4",
+          "explicacion": "Tiene un \"no\", pero es compatible: la oración 4 dice que solo las abejas grandes y fuertes pueden abrirla."
+        },
+        {
+          "t": "las castañas de Madre de Dios se venden también en los mercados de Lima.",
+          "codigo": "RV36",
+          "explicacion": "El texto no lo menciona, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible."
+        },
+        {
+          "t": "talar el bosque puede reducir la ganancia de quienes viven de la castaña.",
+          "codigo": "RV8",
+          "origen": "o9",
+          "explicacion": "Va en contra de lo que mucha gente cree (que talar deja más espacio para producir), pero es justo lo que sostiene el texto en las oraciones 8 y 9."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si en una zona sin orquídeas viviera un tipo de abeja grande que no las necesitara, según la lógica del texto,",
+      "alternativas": [
+        {
+          "t": "los castaños de esa zona podrían dar frutos aunque no hubiera orquídeas.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o6"
+          ],
+          "explicacion": "El texto dice que el castaño necesita abejas grandes (oración 4) y que estas faltan cuando faltan las orquídeas (oración 6). Si hubiera abejas que no dependen de ellas, el castaño tendría quién abriera su flor."
+        },
+        {
+          "t": "los castaños de esa zona seguirían necesitando un bosque con orquídeas para dar frutos.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: si las abejas ya no necesitan orquídeas, el castaño tampoco depende de ellas."
+        },
+        {
+          "t": "todos los castaños del mundo empezarían a dar el doble de frutos.",
+          "codigo": "RV11",
+          "explicacion": "Habla de una sola zona; \"todos los castaños del mundo\" y \"el doble\" no salen del texto."
+        },
+        {
+          "t": "ya no haría falta cuidar ningún bosque de la Amazonía.",
+          "codigo": "RV7",
+          "explicacion": "Va mucho más allá: el caso cambiaría para esos castaños, no para todos los bosques."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "La castaña amazónica (Bertholletia excelsa) se cosecha casi toda en el bosque y las plantaciones suelen producir poco; la flor la abren abejas grandes, y los machos de algunas (abejas de las orquídeas, Euglossini) recogen aromas en orquídeas.",
+      "fuente": "Mori, S. A. y Prance, G. T. (1990). Taxonomy, ecology and economic botany of the Brazil nut. Advances in Economic Botany 8; Maués, M. M. (2002), sobre la polinización de la castaña."
+    },
+    {
+      "afirmacion": "Madre de Dios es la principal región castañera del Perú, y los castaños pueden pasar los 40 metros.",
+      "fuente": "Serfor y Minam, información sobre la castaña en Madre de Dios; por citar el documento concreto."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6 (4 preguntas y 2 pasos previos). Cambios: la poca producción de las plantaciones no se debe solo a la polinización (\"entre otras razones\"); clave de incompatibilidad precisada (sembrados en filas lejos del bosque). Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+  }
+}

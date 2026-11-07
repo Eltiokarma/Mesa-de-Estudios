@@ -1,0 +1,249 @@
+{
+  "id": "t008",
+  "version": 1,
+  "titulo": "Hervir no es lo mismo que cocinar",
+  "tema": "Ciencia de todos los días · el calor y la altura",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En Lima, el agua hierve a unos 100 °C; en Juliaca, a más de 3800 metros de altura, hierve cerca de los 87 °C."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Esto ocurre porque, a mayor altura, el aire presiona menos sobre el agua, y a esta le cuesta menos convertirse en vapor."
+      },
+      {
+        "id": "o3",
+        "rol": "contraste",
+        "t": "Mucha gente cree que, si el agua ya hierve, la comida se está cocinando con todo el calor posible."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Lo que cocina los alimentos no es el burbujeo, sino la temperatura del agua, y en la altura esa temperatura es menor."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Por eso, en Juliaca, unas papas o unos fideos tardan más en estar listos que en Lima."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Subir el fuego no arregla el problema: el agua hierve con más fuerza, pero no se calienta más."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "La olla a presión, en cambio, encierra el vapor y aumenta la presión sobre el agua, que entonces hierve por encima de los 100 °C."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Así, en la altura no cocina más rápido quien pone más fuego, sino quien logra que el agua esté más caliente."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o4",
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 4 dice lo esencial (cocina la temperatura, no el burbujeo) y la 8 lo resume para la altura.",
+        "explicaciones": {
+          "o1": "La primera oración da un dato: dónde hierve el agua a qué temperatura. Es el punto de partida.",
+          "o2": "Explica por qué el agua hierve a menor temperatura en la altura; es una explicación de apoyo.",
+          "o3": "Presenta una creencia que el texto va a corregir.",
+          "o5": "Es una consecuencia concreta (las papas tardan más), no la idea que lo explica.",
+          "o6": "Es un detalle: por qué subir el fuego no sirve.",
+          "o7": "Es un ejemplo de solución, la olla a presión, no la idea general.",
+          "ninguna": "Las oraciones 4 y 8 sí lo dicen: lo que cocina es la temperatura del agua, y en la altura es menor."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "En la altura la comida tarda más porque el agua hierve a menor temperatura, y eso no se arregla con más fuego.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o8"
+          ],
+          "explicacion": "Junta las dos ideas que el texto sostiene: lo que cocina es la temperatura del agua (oración 4) y en la altura hay que lograr que esté más caliente, no hervir más fuerte (oración 8)."
+        },
+        {
+          "t": "En Juliaca, a más de 3800 metros de altura, el agua hierve cerca de los 87 °C, y no a 100 °C como en Lima.",
+          "codigo": "RV1",
+          "origen": "o1",
+          "explicacion": "Es el dato con que empieza el texto, un detalle. La idea principal es lo que el texto explica a partir de ese dato."
+        },
+        {
+          "t": "La altura cambia muchas cosas en la vida diaria de las personas.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de cómo se cocina en la altura, no de todo lo que cambia."
+        },
+        {
+          "t": "Subir el fuego hace que el agua hierva con más fuerza, pero no la calienta más.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Es una parte del texto, pero deja fuera la razón: lo que cocina es la temperatura del agua, que en la altura es menor."
+        },
+        {
+          "t": "Todas las familias de la sierra deberían cocinar con olla a presión.",
+          "codigo": "RV33",
+          "explicacion": "El autor no dice eso: explica por qué la olla a presión cocina más rápido, pero no le pide a nadie que la use."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "referente",
+      "unidad": "razonamiento-verbal.cohesion-y-coherencia",
+      "enunciado": "En la oración 2, ¿a qué se refiere la palabra ESTO (en \"Esto ocurre porque…\")?",
+      "alternativas": [
+        {
+          "t": "A que en Juliaca el agua hierve a menor temperatura que en Lima.",
+          "correcta": true,
+          "evidencia": [
+            "o1"
+          ],
+          "explicacion": "\"Esto\" retoma lo que dice la oración 1: la diferencia entre la temperatura a la que hierve el agua en Lima y en Juliaca. La oración 2 explica por qué ocurre."
+        },
+        {
+          "t": "A los más de 3800 metros de altura a los que está Juliaca.",
+          "codigo": "RV27",
+          "origen": "o1",
+          "explicacion": "Es un dato que aparece cerca de \"esto\", en la oración anterior, pero la altura no \"ocurre\": lo que ocurre, y la oración 2 explica, es que el agua hierva a menor temperatura."
+        },
+        {
+          "t": "A que el agua se convierte en vapor cuando se calienta.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Repite palabras de la misma oración 2, pero eso no es lo que \"esto\" retoma: retoma lo dicho en la oración 1."
+        },
+        {
+          "t": "A que en Juliaca hace más frío que en Lima.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no habla del frío de Juliaca: \"esto\" retoma lo de la oración 1, la temperatura a la que hierve el agua."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "conector",
+      "unidad": "razonamiento-verbal.conectores",
+      "previo": {
+        "tipo": "relacion",
+        "pide": "Antes de ver las alternativas: ¿qué relación hay entre la oración 3 y la oración 4?",
+        "aceptada": "oposicion",
+        "codigos": {
+          "suma": "RV26",
+          "causa": "RV24"
+        },
+        "explicacion": "La oración 3 cuenta lo que mucha gente cree, y la 4 dice que no es así: se oponen.",
+        "explicaciones": {
+          "suma": "La oración 4 no agrega otra idea en la misma dirección: corrige la creencia de la 3.",
+          "causa": "La oración 4 no es una consecuencia de la 3: que la gente crea algo no causa que sea falso."
+        }
+      },
+      "enunciado": "¿Qué conector podría ir al comienzo de la oración 4 (\"___ lo que cocina los alimentos no es el burbujeo…\") sin cambiar el sentido del texto?",
+      "alternativas": [
+        {
+          "t": "Pero",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4"
+          ],
+          "explicacion": "La oración 3 presenta lo que mucha gente cree, y la 4 lo corrige: se oponen, y \"pero\" marca esa oposición."
+        },
+        {
+          "t": "Por lo tanto,",
+          "codigo": "RV24",
+          "explicacion": "Lee como consecuencia lo que es una oposición: la oración 4 no sale de la creencia de la 3, la corrige."
+        },
+        {
+          "t": "Además,",
+          "codigo": "RV26",
+          "explicacion": "La oración 4 no agrega algo en la misma dirección que la 3: va en contra de ella."
+        },
+        {
+          "t": "Dicho de otro modo,",
+          "codigo": "RV35",
+          "explicacion": "\"Dicho de otro modo\" anuncia que se repite lo mismo con otras palabras, pero la oración 4 dice lo contrario de la 3."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 6, la palabra ARREGLA significa",
+      "alternativas": [
+        {
+          "t": "soluciona.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "La oración dice que subir el fuego no resuelve el problema de que el agua esté menos caliente: no lo soluciona."
+        },
+        {
+          "t": "ordena.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de \"arreglar\" (arreglar un cuarto), pero aquí no se ordena nada: se habla de resolver un problema."
+        },
+        {
+          "t": "explica.",
+          "codigo": "RV19",
+          "explicacion": "Se puede explicar un problema, pero explicarlo no es resolverlo: subir el fuego no resuelve nada."
+        },
+        {
+          "t": "calienta más.",
+          "codigo": "RV5",
+          "origen": "o6",
+          "explicacion": "Repite palabras de la misma oración (\"no se calienta más\"), pero no dice qué significa \"arregla\"."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "El agua hierve a unos 100 °C al nivel del mar y cerca de 87 °C a unos 3800 m de altura.",
+      "fuente": "Cálculo con la presión de la atmósfera estándar y la ecuación de Antoine para el agua (el mismo modelo de plantillas/calorimetria/)."
+    },
+    {
+      "afirmacion": "Lo que cocina es la temperatura del agua; subir el fuego no aumenta la temperatura de ebullición; la olla a presión la eleva por encima de 100 °C.",
+      "fuente": "Física de los cambios de fase (cualquier texto de física general, p. ej., Hewitt, Física conceptual, cap. sobre cambio de fase)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6. Cambios: \"hierve más fría\" por \"a menor temperatura\"; distractor de referente que era una inferencia hacia adelante cambiado por uno de saber del mundo (RV8); explicaciones del referente y de \"explica\" corregidas. Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+  }
+}

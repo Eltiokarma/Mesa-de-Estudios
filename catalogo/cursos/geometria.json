@@ -214,7 +214,7 @@
       "universidades": {"uni": {"semanas": [14, 15]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["solidos"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -232,7 +232,7 @@
       "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [13, 14]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["ampliadora"],
+      "plantillas": ["ampliadora", "solidos"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -249,7 +249,7 @@
       "universidades": {"uni": {"semanas": [18, 19, 20]}, "unmsm": {"temas": [14, 15]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["ampliadora"],
+      "plantillas": ["ampliadora", "solidos"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -266,7 +266,7 @@
       "universidades": {"unmsm": {"temas": [16, 17, 18]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["geometria-analitica"],
       "investigacion": null
     },
     {

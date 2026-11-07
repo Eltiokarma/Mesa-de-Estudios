@@ -1518,7 +1518,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "grafica-perillas"
+      "grafica-perillas",
+      "exponenciales-logaritmos"
      ]
     },
     {
@@ -1546,7 +1547,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "exponenciales-logaritmos"
+     ]
     },
     {
      "id": "algebra.numeros-complejos",
@@ -2647,7 +2650,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "solidos"
+     ]
     },
     {
      "id": "geometria.prisma-y-piramide",
@@ -2678,7 +2683,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "ampliadora"
+      "ampliadora",
+      "solidos"
      ]
     },
     {
@@ -2710,7 +2716,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "ampliadora"
+      "ampliadora",
+      "solidos"
      ]
     },
     {
@@ -2735,7 +2742,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "geometria-analitica"
+     ]
     },
     {
      "id": "geometria.razonamiento-con-figuras",
@@ -3008,7 +3017,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "identidades-trig"
+     ]
     },
     {
      "id": "trigonometria.arcos-compuestos",
@@ -3032,7 +3043,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "identidades-trig"
+     ]
     },
     {
      "id": "trigonometria.arcos-multiples",
@@ -3058,7 +3071,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "identidades-trig"
+     ]
     },
     {
      "id": "trigonometria.transformaciones-trigonometricas",
@@ -4382,6 +4397,24 @@
     "/plantillas/estequiometria-limitante/generador.js"
    ]
   },
+  "exponenciales-logaritmos": {
+   "id": "exponenciales-logaritmos",
+   "titulo": "La escalera de la base: exponenciales y logaritmos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.exponenciales-y-logaritmos",
+    "algebra.tipos-de-funciones-e-inversa"
+   ],
+   "url": "/plantillas/exponenciales-logaritmos/index.html",
+   "papel": "/plantillas/exponenciales-logaritmos/papel.json",
+   "archivos": [
+    "/plantillas/exponenciales-logaritmos/index.html",
+    "/plantillas/exponenciales-logaritmos/motor.js",
+    "/plantillas/exponenciales-logaritmos/papel.json"
+   ]
+  },
   "fracciones": {
    "id": "fracciones",
    "titulo": "La barra que se parte: fracciones, decimales, MCD y MCM",
@@ -4418,6 +4451,23 @@
     "/plantillas/gases/papel.json"
    ]
   },
+  "geometria-analitica": {
+   "id": "geometria-analitica",
+   "titulo": "El plano con imán: distancia, pendiente y ecuación de la recta",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.geometria-analitica"
+   ],
+   "url": "/plantillas/geometria-analitica/index.html",
+   "papel": "/plantillas/geometria-analitica/papel.json",
+   "archivos": [
+    "/plantillas/geometria-analitica/index.html",
+    "/plantillas/geometria-analitica/motor.js",
+    "/plantillas/geometria-analitica/papel.json"
+   ]
+  },
   "grafica-perillas": {
    "id": "grafica-perillas",
    "titulo": "La gráfica con perillas: funciones y sus transformaciones",
@@ -4436,6 +4486,25 @@
     "/plantillas/grafica-perillas/index.html",
     "/plantillas/grafica-perillas/motor.js",
     "/plantillas/grafica-perillas/papel.json"
+   ]
+  },
+  "identidades-trig": {
+   "id": "identidades-trig",
+   "titulo": "Alturas que no se suman: identidades y arcos compuestos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.identidades-fundamentales",
+    "trigonometria.arcos-compuestos",
+    "trigonometria.arcos-multiples"
+   ],
+   "url": "/plantillas/identidades-trig/index.html",
+   "papel": "/plantillas/identidades-trig/papel.json",
+   "archivos": [
+    "/plantillas/identidades-trig/index.html",
+    "/plantillas/identidades-trig/motor.js",
+    "/plantillas/identidades-trig/papel.json"
    ]
   },
   "lectura-verbal": {
@@ -4457,16 +4526,26 @@
    "url": "#/lectura/lectura-verbal",
    "banco": "/contenido/razonamiento-verbal/indice.json",
    "papel": null,
+   "entrada": "t000a",
+   "salida": "t000b",
    "archivos": [
     "/contenido/razonamiento-verbal/indice.json",
     "/contenido/razonamiento-verbal/codigos.json",
     "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t000a.json",
+    "/contenido/razonamiento-verbal/textos/t000b.json",
     "/contenido/razonamiento-verbal/textos/t001.json",
     "/contenido/razonamiento-verbal/textos/t002.json",
     "/contenido/razonamiento-verbal/textos/t003.json",
     "/contenido/razonamiento-verbal/textos/t004.json",
     "/contenido/razonamiento-verbal/textos/t005.json",
-    "/contenido/razonamiento-verbal/textos/t006.json"
+    "/contenido/razonamiento-verbal/textos/t006.json",
+    "/contenido/razonamiento-verbal/textos/t007.json",
+    "/contenido/razonamiento-verbal/textos/t008.json",
+    "/contenido/razonamiento-verbal/textos/t009.json",
+    "/contenido/razonamiento-verbal/textos/t010.json",
+    "/contenido/razonamiento-verbal/textos/t011.json",
+    "/contenido/razonamiento-verbal/textos/t012.json"
    ]
   },
   "limitante-particulas": {
@@ -4643,6 +4722,25 @@
     "/plantillas/regla-de-tres/index.html",
     "/plantillas/regla-de-tres/motor.js",
     "/plantillas/regla-de-tres/papel.json"
+   ]
+  },
+  "solidos": {
+   "id": "solidos",
+   "titulo": "El sólido que se abre: prisma, pirámide, cilindro, cono y esfera",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.prisma-y-piramide",
+    "geometria.solidos-de-revolucion",
+    "geometria.poliedros"
+   ],
+   "url": "/plantillas/solidos/index.html",
+   "papel": "/plantillas/solidos/papel.json",
+   "archivos": [
+    "/plantillas/solidos/index.html",
+    "/plantillas/solidos/motor.js",
+    "/plantillas/solidos/papel.json"
    ]
   },
   "soluciones": {

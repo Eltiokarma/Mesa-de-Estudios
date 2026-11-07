@@ -1,13 +1,13 @@
 // Pantalla del formato "lectura" (razonamiento verbal; diseño en docs/formato-lectura.md).
 // Flujo: prueba de entrada (un texto fijo, sin paso previo ni corrección) → práctica texto por texto
 // (leer, "Ya lo leí", y por cada pregunta: paso previo que BLOQUEA las alternativas, alternativas,
-// explicación pintada en el texto) → prueba de salida, que se ofrece después de 3 textos.
+// explicación pintada en el texto) → prueba de salida, que solo se abre cuando el profesor la habilita
+// (…/app/?salida=razonamiento-verbal, como en las pruebas por curso). Ruta directa: #/lectura/<módulo>/salida.
 // La calificación y los eventos salen de nucleo/lectura.js; aquí solo va la interfaz.
 // Celular: el texto va entero al leer y queda plegado arriba en las preguntas; se relee en una hoja
 // que sube desde abajo. Pantalla grande (desde 900 px): texto a la izquierda y pregunta a la derecha.
 (function () {
 'use strict';
-const MIN_SALIDA = 3;
 const CIRC = '①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮';
 const PREMIOS = ['Te ganaste un bombón. 🍫', 'Leíste con lupa. 🔎', 'El gato está orgulloso. 🐾', 'Una más para la racha. ☕', 'Pensaste antes de mirar: eso es leer. 💜'];
 const L = () => window.Lectura;
@@ -39,6 +39,7 @@ async function vista(ctx, id, unidad) {
   document.body.style.overflow = '';
   actual = null;
   const ruta = location.hash;
+  const pideSalida = unidad === 'salida';
   // La unidad que abrió el alumno filtra los textos (cualquiera del catálogo: un ejercicio puede tocar otra).
   const unidadAbierta = cat.cursos.some(c => c.unidades.some(u => u.id === unidad)) ? unidad : '';
   const curso = cat.cursos.find(c => c.unidades.some(u => u.id === (unidadAbierta || pl.unidades[0])));
@@ -501,14 +502,21 @@ async function vista(ctx, id, unidad) {
   }
   const minuscula = t => { const x = String(t || ''); return x.charAt(0).toLowerCase() + x.slice(1); };
 
+  // La salida se ofrece solo si el profesor la abrió en este navegador, y después de la entrada.
+  function salidaAbierta() {
+    const P = window.PruebaCurso;
+    return !!(b.indice.salida && b.items[L().formaPrueba(b.indice, est.alumno, 'salida', CURSO).id] && st.entrada && !st.salida
+      && P && P.habilitada(est, CURSO));
+  }
+
   function terminado(it, bien) {
-    const salidaLista = b.indice.salida && b.items[L().formaPrueba(b.indice, est.alumno, 'salida', 'razonamiento-verbal').id] && st.entrada && !st.salida && st.textos >= MIN_SALIDA;
+    const salidaLista = salidaAbierta();
     $app.innerHTML = `${volver}<p class="sub">${subCurso}</p><h1>${esc(it.titulo)}</h1>
       <div class="card resultado" style="margin-top:16px">
         ${window.Ilus ? Ilus.taza('class="resultado-taza"') : ''}
         <p><b>${bien} de ${it.preguntas.length} ${it.preguntas.length === 1 ? 'pregunta' : 'preguntas'} bien.</b> ${bien === it.preguntas.length ? PREMIOS[st.textos % PREMIOS.length] : 'Cada error con nombre es algo que ya no te va a pasar.'}</p>
         <p class="sub">Llevas ${st.textos} ${st.textos === 1 ? 'texto' : 'textos'} y ${st.aciertos} de ${st.preguntas} preguntas bien.</p>
-        ${salidaLista ? `<div class="aviso">Ya leíste ${st.textos} textos. <a href="#" id="irSalida"><b>Haz la prueba final</b></a> cuando quieras.</div>` : ''}
+        ${salidaLista ? `<div class="aviso">Tu profesor abrió la prueba final. <a href="#" id="irSalida"><b>Hazla aquí</b></a> cuando quieras.</div>` : ''}
         <button type="button" class="btn morado ancho" id="seguir" style="margin-top:8px">Otro texto ›</button></div>`;
     document.getElementById('seguir').onclick = () => practica();
     const ir = document.getElementById('irSalida'); if (ir) ir.onclick = e => { e.preventDefault(); prueba('salida'); };
@@ -530,6 +538,11 @@ async function vista(ctx, id, unidad) {
   }
 
   if (b.indice.entrada && b.items[L().formaPrueba(b.indice, est.alumno, 'entrada', 'razonamiento-verbal').id] && !st.entrada) prueba('entrada');
+  else if (pideSalida && salidaAbierta()) prueba('salida');
+  else if (pideSalida && !st.salida) {
+    $app.innerHTML = `${volver}<p class="sub">${subCurso}</p><h1>Prueba de salida</h1><div class="card prueba-intro" style="margin-top:16px">
+      <p>La prueba de salida la abre tu profesor cuando terminen el curso.</p><a class="btn morado ancho" href="${esc(pl.url)}">Seguir leyendo</a></div>`;
+  } else if (pideSalida) resultado();
   else practica();
 }
 
