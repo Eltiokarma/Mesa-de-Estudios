@@ -382,7 +382,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
       else if (k === 'torre') h = Math.min(chico ? 300 : 320, resta);
       else if (k === 'clavo') h = Math.min(200, resta);
       else if (k === 'octano') h = Math.min(170, resta);
-      else if (k === 'grafica') h = Math.min(chico ? 220 : 250, resta);
+      else if (k === 'grafica') h = Math.min(chico ? 240 : 260, resta);
       L.p.push({ k, y, h }); y += h + 8;
     }
     if (v.pie && !(E.compacto && chico)){ const c = colores(); L.pie = envolver(ctx, c, v.pie, w - 24, 11.5); L.yPie = y; y += L.pie.length*15 + 2; }
@@ -504,7 +504,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
     }
     ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, 0, yG, W, yG);
     // Lupa en una gota.
-    const lx = W - 52, ly = P.y + P.h*0.55, R = Math.min(44, W*0.11);
+    const R = Math.min(64, W*0.12), lx = W - R - 10, ly = P.y + P.h*0.5;
     ctx.beginPath(); ctx.arc(lx, ly, R, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke();
     if (!K.ver){ dibujarPiezas(ctx, c, [['?', 'muted', 800]], lx, ly, 22, 'center'); }
     else for (const l of K.lupa) molecula(ctx, c, l, lx - R*0.78, ly - R*0.52, R*0.13);
@@ -514,7 +514,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
 
   // ----- Torre de destilación -----
   function panelTorre(c, P){
-    const K = E.vista.torre, t = K.t, nb = t.bandejas.length, tx0 = 30, tw = Math.min(W*0.46, 210), ytop = P.y + 26, ybot = P.y + P.h - 40;
+    const K = E.vista.torre, t = K.t, nb = t.bandejas.length, tx0 = 30, tw = Math.min(W*0.46, 210), ytop = P.y + 40, ybot = P.y + P.h - 40;
     const yB = i => ybot - (i + 1)*(ybot - ytop)/(nb + 1); // bandeja i (0 = la de abajo)
     ctx.strokeStyle = c.ink; ctx.lineWidth = 2; rr(ctx, tx0, ytop, tw, ybot - ytop, 10); ctx.stroke();
     // Salida de arriba (gases) y horno (abajo).
@@ -591,14 +591,25 @@ function crearEscena(cv, idDesc, modoId, idLey){
 
   // ----- Gráfica de líneas (laguna y smog) -----
   function panelGrafica(c, P){
-    const G = E.vista.grafica, x0 = 34, x1 = W - 12, y0 = P.y + P.h - 30, y1 = P.y + 26;
+    const G = E.vista.grafica, x0 = 34, x1 = W - 12, y0 = P.y + P.h - 30;
+    // Leyenda de la gráfica, arriba, en filas que se parten si no entran; la gráfica empieza debajo.
+    const ley = []; let yl = P.y + 9, xl = x0;
+    for (const s of G.series){
+      const w = anchoPiezas(ctx, c, [[s.etq, 'ink', 700]], 10.5) + 30;
+      if (xl + w > x1){ xl = x0; yl += 14; }
+      ley.push({ s, x:xl, y:yl }); xl += w;
+    }
+    const y1 = yl + 16 + (G.marcas && G.marcas.length ? 12 : 0);
+    for (const { s, x, y } of ley){
+      ctx.save(); ctx.strokeStyle = colVar(c, s.k); ctx.lineWidth = 2.4; if (s.dash) ctx.setLineDash(s.dash); linea(ctx, x, y, x + 16, y); ctx.restore();
+      dibujarPiezas(ctx, c, [[s.etq, 'ink', 700]], x + 20, y, 10.5, 'left');
+    }
     const px = x => x0 + x/G.xmax*(x1 - x0), py = y => y0 - y/G.ymax*(y0 - y1);
     ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted;
     for (let x = 0; x <= G.xmax; x += G.pasoX){ linea(ctx, px(x), y0, px(x), y1); ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(String(x), px(x), y0 + 3); }
     ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, x0, y0, x1, y0); linea(ctx, x0, y0, x0, y1);
     dibujarPiezas(ctx, c, [[G.xlab, 'muted', 700]], x1, y0 + 20, 10.5, 'right');
     const n = Math.round((G.p === undefined ? 1 : clamp(G.p, 0, 1))*(G.xs.length - 1));
-    let yl = P.y + 9, xl = x0;
     for (const s of G.series){
       const col = colVar(c, s.k);
       if (s.el) DIBUJADOS.add(s.el);
@@ -607,15 +618,9 @@ function crearEscena(cv, idDesc, modoId, idLey){
         for (let i = 0; i <= n; i++){ const X = px(G.xs[i]), Y = py(Math.min(s.ys[i], G.ymax)); if (i) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); }
         ctx.stroke(); ctx.restore();
       }
-      // Leyenda de la gráfica, arriba, en una fila que se parte si no entra.
-      ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2.4; if (s.dash) ctx.setLineDash(s.dash);
-      const w = anchoPiezas(ctx, c, [[s.etq, 'ink', 700]], 10.5) + 30;
-      if (xl + w > x1){ xl = x0; yl += 13; }
-      linea(ctx, xl, yl, xl + 16, yl); ctx.restore();
-      dibujarPiezas(ctx, c, [[s.etq, 'ink', 700]], xl + 20, yl, 10.5, 'left'); xl += w;
     }
     if (G.series.some(s => s.oculto)) chapa(ctx, c, [['? ', 'muted', 800], [G.series.filter(s => s.oculto).map(s => s.etq).join(' y ') + ': se ve al responder', 'ink', 700]], (x0 + x1)/2, (y0 + y1)/2 + 10, 11.5, 'center', x1 - x0 - 8);
-    for (const mk of G.marcas || []){ ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 3]); ctx.lineWidth = 1; linea(ctx, px(mk.x), y0, px(mk.x), y1 + 10); ctx.restore(); dibujarPiezas(ctx, c, [[mk.etq, 'muted', 700]], clamp(px(mk.x), x0 + 30, x1 - 30), y1 + 6, 10, 'center'); }
+    for (const mk of G.marcas || []){ ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 3]); ctx.lineWidth = 1; linea(ctx, px(mk.x), y0, px(mk.x), y1); ctx.restore(); dibujarPiezas(ctx, c, [[mk.etq, 'muted', 700]], clamp(px(mk.x), x0 + 30, x1 - 30), y1 - 6, 10, 'center'); }
   }
 
   E.dibujar = () => {
@@ -701,9 +706,9 @@ const S = { step:0, max:0, pred:{}, ocupado:false, abierto:false };
 // Datos de los pasos (todos del motor).
 const FR = MA.balanzaCombustion('metano', 1.6, 8, 250, true), FA = MA.balanzaCombustion('metano', 1.6, 0, 250, false);
 const RF = FR.reparto;
-const RE1 = Object.assign(MA.reacomodo([['CH4', 2], ['O2', 5]], [['CO2', 2], ['H2O', 4], ['O2', 1]], 20, 13, 3), { W:20, H:13 });
+const RE1 = Object.assign(MA.reacomodo([['CH4', 2], ['O2', 5]], [['CO2', 2], ['H2O', 4], ['O2', 1]], 14, 9, 3), { W:14, H:9 });
 const INC = MA.repartoO2('metano', 4, 6), INC_T = MA.combustion('metano', 'incompleta');
-const RE2 = Object.assign(MA.reacomodo([['CH4', 4], ['O2', 6]], listaProductos(INC), 20, 13, 5), { W:20, H:13 });
+const RE2 = Object.assign(MA.reacomodo([['CH4', 4], ['O2', 6]], listaProductos(INC), 16, 10, 5), { W:16, H:10 });
 const LIT = MA.co2PorLitro(1, 0.7, 'octano'), OCT_T = MA.combustion('octano');
 const C0 = MA.cielo({ ozono:300, co2:420 }), C1 = MA.cielo({ ozono:150, co2:420 }), CC = MA.cambioCielo({ ozono:300, co2:420 }, { ozono:150, co2:420 });
 const LL = MA.lluvia({ SO2:2.5e-5 }), VECES = MA.compararPH(LL.pH, MA.LLUVIA_NORMAL).veces;
