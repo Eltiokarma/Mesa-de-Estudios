@@ -748,7 +748,7 @@ const P1 = { id:'balance-paso2', ok:'b', opts:[
   ['a', `Cambiar ${Fh(sH2O2.formula)} por ${Fh(sH2O2.cambiada)}: así quedan 2 O a cada lado`, 'ES11-cambia-subindice', 'parcial'],
   ['b', `Poner ${C_(BA.coefs[0])} delante del ${Fh('H2')} y del ${Fh('H2O')}: así quedan 4 H y 2 O a cada lado`],
   ['c', `Cambiar ${Fh(sO.formula)} por ${Fh(sO.cambiada)}: así queda 1 O a cada lado`, 'ES11-cambia-subindice-reactivo', 'parcial'],
-  ['d', `Poner ${C_(SOLO.coefs[2])} delante del ${Fh('H2O')}: así quedan 2 O a cada lado`, 'ES12-un-solo-coeficiente', 'documentado']],
+  ['d', `Poner ${C_(SOLO.coefs[2])} delante del ${Fh('H2O')}: así quedan 2 O a cada lado`, 'ES12-un-solo-coeficiente', 'parcial']],
   fb:{ b:'¡Bien! Los coeficientes dicen cuántas moléculas hay; la fórmula de cada sustancia no se toca. Mira el tablero: aparecen una molécula de H₂ y una de H₂O más, y quedan 4 H y 2 O a cada lado.',
     a:'Elegiste la 1. Los átomos cuadran, pero H₂O₂ ya no es agua: es agua oxigenada, otra sustancia (blanquea y no se toma). El subíndice dice cuántos átomos tiene una molécula; si lo cambias, cambias la molécula. Confundir subíndices con coeficientes está documentado: en otra pregunta, cerca del 40 % de 79 escolares argentinos juntó todos los átomos en una sola fórmula (Casado y Raviolo, 2005). Cambiar un subíndice para balancear no tiene un dato propio. La correcta está marcada.',
     c:'Elegiste la 3. Así cuadran los átomos, pero el oxígeno del aire no viene en átomos sueltos: viene en moléculas de O₂. Cambiar el subíndice cambia la sustancia. Confundir subíndices con coeficientes está documentado: en otra pregunta, cerca del 40 % de 79 escolares argentinos juntó todos los átomos en una sola fórmula (Casado y Raviolo, 2005). Cambiar un subíndice para balancear no tiene un dato propio. La correcta está marcada.',
@@ -763,7 +763,7 @@ const P2 = { id:'balance-paso4', ok:'b', opts:[
     c:'Elegiste la 3. En el frasco no se formó una molécula gigante H₁₀O₄: se formaron moléculas de agua. Juntar todos los átomos en una sola fórmula es confundir subíndices con coeficientes. En un estudio con 79 escolares argentinos, cerca del 40 % eligió una opción así (Casado y Raviolo, 2005). La correcta está marcada.',
     d:'Elegiste la 4. Esa ecuación usa las cantidades del frasco y no está balanceada: tiene 10 H a la izquierda y 8 a la derecha. En un problema numérico, el 17 % de 42 universitarios escribió la ecuación con las cantidades del enunciado (Raviolo y Lerzo, 2016). La correcta está marcada.' } };
 const P3 = { id:'balance-paso6', ok:'b', opts:[
-  ['a', String(BP.errores.olvida.O.suma), 'ES12-olvida-el-oxigeno', 'documentado'],
+  ['a', String(BP.errores.olvida.O.suma), 'ES12-olvida-el-oxigeno', 'parcial'],
   ['b', String(BP.suma)],
   ['c', String(BP.errores.sinContarUnos), 'suma-sin-contar-el-1', 'hipotesis'],
   ['d', String(BP.errores.doble), 'no-simplifica', 'hipotesis']],
@@ -814,7 +814,7 @@ const steps = [
      <div class="eq"><span class="ex">${Fh('H')}: ${C_(2)}&nbsp;×&nbsp;2&nbsp;=&nbsp;4 &nbsp;→&nbsp; ${C_(2)}&nbsp;×&nbsp;2&nbsp;=&nbsp;4</span><span class="ex">${Fh('O')}: ${C_(1)}&nbsp;×&nbsp;2&nbsp;=&nbsp;2 &nbsp;→&nbsp; ${C_(2)}&nbsp;×&nbsp;1&nbsp;=&nbsp;2</span><span class="note">Átomos de un elemento = coeficiente × subíndice, sumado en cada sustancia del lado.</span></div>
    </div>
    <p>Si cambias el subíndice, cambias la sustancia: ${Fh('H2O2')} es agua oxigenada, no agua (lo ves aparte, abajo del tablero). Al balancear solo se mueven los coeficientes. Y ${C_(2)}${Fh('H')} no es ${Fh('H2')}: dos átomos sueltos no son una molécula.</p>
-   <p class="fuente">Confundir coeficientes con subíndices (ES11): en otra pregunta, cerca del 40 % de 79 escolares argentinos juntó todos los átomos en una sola fórmula (Casado y Raviolo, 2005); cambiar un subíndice para balancear no tiene un dato propio. Balancear sin contar todos los elementos (ES12): cerca de 1 de cada 5 de 32 escolares de Indonesia lo sostuvo con confianza alta (Christianto y otros, 2025).</p>` },
+   <p class="fuente">Confundir coeficientes con subíndices (ES11): en otra pregunta, cerca del 40 % de 79 escolares argentinos juntó todos los átomos en una sola fórmula (Casado y Raviolo, 2005); cambiar un subíndice para balancear no tiene un dato propio. Balancear sin contar todos los elementos (ES12): en el subtema de balance, cerca de 1 de cada 5 de 32 escolares de Indonesia tuvo una idea errónea con confianza alta, sin separar cuál (Christianto y otros, 2025).</p>` },
  { k:'Paso 4', t:'Lo que hay en el frasco', gate:P2, vista:r => vFrasco(r),
    body:() => `<p>En un frasco cerrado hay ${INI.H2} moléculas de ${Fh('H2')} y ${INI.O2} de ${Fh('O2')}. Reaccionan, y al final el frasco queda como en el dibujo: ${FR.final.H2O} moléculas de ${Fh('H2O')} y ${FR.final.H2} de ${Fh('H2')}.</p>
    <p>Una ecuación química dice qué sustancias reaccionan, cuáles se forman y en qué proporción. ¿Qué ecuación química representa la reacción que ocurrió en el frasco?</p>${opcionesHTML(P2.opts, 'fb')}` },
@@ -965,7 +965,7 @@ const vDic = r => tablero('Cr2O7^2- + Fe^2+ + H^+ -> Cr^3+ + Fe^3+ + H2O', r ? [
 const EXPS = [
   { id:'tablero-amoniaco', corto:'El tablero',
     q:`El amoniaco se fabrica con nitrógeno e hidrógeno del aire: ${EQ(AMO)}. Con los menores enteros, ¿qué ${C_('coeficiente')} lleva el ${Fh('H2')}?`,
-    opts:[['a', String(SOLO_N.coefs[1]), 'ES12-un-solo-coeficiente', 'documentado'],
+    opts:[['a', String(SOLO_N.coefs[1]), 'ES12-un-solo-coeficiente', 'parcial'],
           ['b', '2', 'copia-el-subindice', 'hipotesis'],
           ['c', String(BN.coefs[1])],
           ['d', String(BN.coefs[1]*2), 'cuenta-atomos-no-moleculas', 'hipotesis']],
