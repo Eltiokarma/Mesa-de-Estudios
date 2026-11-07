@@ -8,9 +8,99 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas y termodinámica (7 nov) quedaron hechos (abajo); gravitación está en curso.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa; la siguiente ejecución espera un orden nuevo de Gerson.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Gravitación universal y satélites (`plantillas/gravitacion/`)
+
+**Qué hay.**
+
+`motor.js` (MotorGravitacion):
+- **Valores de academia:** G = 6,67·10⁻¹¹, g0 = 10 m/s² y R = 6400 km. Se toma GM de la Tierra = g0·R², así g0 sale exacto. Otro planeta va como kM masas y kR radios terrestres.
+- **Funciones:**
+  - `fuerza` (tercera ley), `comparar`, `gAltura`, `alturaParaG` y `planeta`;
+  - `orbita` (con estado(t) y las energías), `kepler3` y `geoestacionario`;
+  - `escape` y `lanzamiento`: el cañón de Newton, con `vSinChoque`, la rapidez mínima para no chocar con el suelo;
+  - `balanza` (ascensor) y `kepler2` (áreas iguales).
+- **Errores:** cada resultado trae `errores`: 1/r en vez de 1/r², h en vez de R + h, olvidar el radio, rapidez según la masa, T ∝ r, «no hay gravedad», etc.
+
+`casos.json`: 19 casos, entre ellos los 4 de gravitación que propone el informe: h = R da g/4 y el error lineal da g/2; h = R/2 da 4/9; la estación da 256/289; con a = 4, T sale 8 veces.
+
+`motor.test.js`: 44 pruebas. Comprueba:
+- F·r² constante e igual sobre los dos cuerpos;
+- v²/r = g;
+- T²/r³ constante;
+- energía cero con la velocidad de escape;
+- en el cañón, energía y momento angular punto a punto;
+- áreas iguales medidas con triángulos.
+
+`papel.json`: 10 problemas propios.
+
+`index.html`:
+- **Paso a paso:** 8 pasos con 5 predicciones:
+  - la fuerza sobre la estación espacial (cerca del 89 %);
+  - la fuerza de la estación sobre la Tierra (la misma);
+  - a qué altura g baja a la cuarta parte;
+  - la rapidez de dos satélites de distinta masa en la misma órbita;
+  - el período a 4 veces el radio.
+
+  Dibuja la Tierra y el satélite con las dos fuerzas F, la órbita animada, la cota de h con su rótulo hacia afuera, una flecha de referencia «F en el suelo» y la gráfica g–r contra la curva 1/r a trazos. En el explorador se arrastra el satélite y se cambia su masa.
+- **«¿Qué pasa si…?»:** 5 experimentos con pastillas bloqueadas: cuatro veces más lejos, otro planeta, el ascensor con el cable cortado, el cañón de Newton desde una torre imaginaria y la órbita alargada (Kepler II).
+- **Antes de responder:** toda fuerza desconocida es un trazo fijo de 12 px con «F = ?», y toda rapidez desconocida, solo el rótulo «v = ?». Así ninguna flecha delata la respuesta.
+
+**Verificador independiente.** Recalculó los 193 campos con fracciones exactas y por otros caminos:
+- g = GM/r²;
+- T = 2πr/v;
+- Newton-Raphson para el geoestacionario;
+- rp·vp = ra·va.
+
+Todo coincide y no hay ninguna discrepancia. Pidió aclarar en la cabecera que, en un lanzamiento que cae, rMin y rMax son el perigeo y el apogeo de la cónica completa; ya está.
+
+**Revisor de contenido.** Lo que se corrigió:
+- **Lo grave:**
+  - El cañón decía que por debajo de la circular la bala cae. Desde 2R solo cae por debajo de 4,6 km/s, que ahora calcula el motor; entre eso y 5,7 km/s da vueltas en una elipse.
+  - En el experimento del planeta y en el paso de la tercera ley, la flecha «F = ?» medía lo mismo que la respuesta correcta.
+- **Lo medio:**
+  - una opción D que no se sostenía;
+  - el respaldo de T ∝ r bajó a hipótesis;
+  - «recta a trazos» pasó a «curva a trazos»;
+  - al cañón le faltaba la flecha de gravedad y la torre imaginaria no estaba explicada;
+  - el satélite tapaba la cota de 400 km;
+  - faltaba una flecha F en el suelo para comparar;
+  - con movimiento reducido, el paso 6 no mostraba 8 vueltas contra 1;
+  - la F del explorador no crecía con la masa.
+- **Lo bajo:**
+  - leyendas y rótulos encimados en el celular;
+  - el resaltado de h, r, v y T;
+  - textos más precisos;
+  - «1000 kg» en vez de «1 t», para no confundir con T;
+  - las flechas v del perihelio y del afelio en razón 4:1.
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| F fuerza | #a10fbf | #d47afb |
+| g gravedad | #456b14 | #a3d65e |
+| v velocidad | #b03244 | #f27a8a |
+| T período | #964d00 | #f0a04a |
+| r distancia al centro | #1f5ebd | #7cb0ff |
+| h altura | #0e6d66 | #5ed9c8 |
+
+- Las masas, R, la energía, el área barrida y la aceleración del ascensor van en tinta.
+- ΔE00 mínimo dentro de la escena: 23,3 en claro y 25,3 en oscuro (g–h).
+- AA mínimo: 4,55.
+- **Cruces entre escenas:**
+  - En dinámica y estática, el azul es el peso P y el rojo la tensión T.
+  - En el MAS, el fucsia es el período T, y aquí el período es naranja.
+  - En choques, el verde es la altura h, y aquí h es turquesa.
+  - En termodinámica, el naranja es Q.
+
+**Pedidos para la integración.**
+1. En la unidad `fisica.gravitacion`, agregar `"plantillas": ["gravitacion"]` y correr `npm run catalogo`.
+2. Llevar los colores y sus cruces a `docs/diseno.md`.
+3. Actualizar pendientes y `CLAUDE.md`.
 
 ## 7 nov 2026 · Termodinámica: primera ley, procesos y máquinas (`plantillas/termodinamica/`)
 

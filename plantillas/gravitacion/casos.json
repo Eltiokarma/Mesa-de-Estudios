@@ -1,0 +1,108 @@
+{
+  "plantilla": "gravitacion",
+  "unidades": "SI: kg, m, s, N, J. Valores de academia: G = 6,67·10⁻¹¹ N·m²/kg², g0 = 10 m/s², R = 6400 km = 6,4·10⁶ m, GM de la Tierra = g0·R² = 4,096·10¹⁴ m³/s², un día = 86 400 s, π el de verdad. Otro planeta: kM masas y kR radios terrestres.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' (una lista) y compara 'espera'. Los campos anidados van con punto (errores.lineal); los números se comparan con la tolerancia relativa; los textos y null, exactos. r va de centro a centro y h es la altura sobre la superficie (r = Rp + h). En comparar y kepler3 todo es razón (cuántas veces cambia). En lanzamiento, e lleva signo: negativo si el punto de lanzamiento es el más lejano del centro; phiChoque en radianes.",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026): recalculó los 193 campos de los 19 casos sin leer el código del motor, casos.json ni las pruebas, solo la cabecera de motor.js. Usó python3 con fracciones exactas, raíces exactas cuando el número es un cuadrado perfecto y caminos alternativos (g = GM/r², T = 2πr/v, Newton-Raphson para el geoestacionario, rp·vp = ra·va). Resultado: los 193 campos coinciden con tolerancia 1e-9 y ninguna discrepancia.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Informe, problema guiado (estación espacial a 400 km, R = 6400 km) → g = 10·(16/17)² = 2560/289 ≈ 8,86 m/s², el 256/289 ≈ 89 % del suelo. Distractores: cero (G1), la misma del suelo, 160/17 (g ∝ 1/r) y 2560 (distancia desde el suelo)",
+      "fn": "gAltura", "args": [{ "h": 400000 }],
+      "espera": { "r": 6800000, "g": 8.858131487889274, "fraccion": 0.8858131487889274, "gs": 10,
+                  "errores.lineal": 9.411764705882353, "errores.desdeSuperficie": 2560, "errores.sinCambio": 10, "errores.cero": 0 } },
+    { "nombre": "Informe: g a la altura h = R → 5/2 m/s² (el error lineal da 5); y a h = R/2 → 40/9 ≈ 4,44 m/s²",
+      "fn": "gAltura", "args": [{ "h": 6400000 }],
+      "espera": { "r": 12800000, "g": 2.5, "fraccion": 0.25, "errores.lineal": 5, "errores.desdeSuperficie": 10, "errores.sinCambio": 10 },
+      "tambien": [
+        { "args": [{ "h": 3200000 }], "espera": { "g": 4.444444444444445, "fraccion": 0.4444444444444444, "errores.lineal": 6.666666666666667, "errores.desdeSuperficie": 40 } },
+        { "args": [{ "h": 0 }], "espera": { "g": 10, "fraccion": 1, "errores.lineal": 10, "errores.desdeSuperficie": null } }
+      ] },
+    { "nombre": "Predicción de la altura: g baja a la cuarta parte en h = R = 6400 km. Distractores: 3R (g ∝ 1/r), 2R (distancia desde el suelo) y 4R (desde el suelo y lineal)",
+      "fn": "alturaParaG", "args": [{ "fraccion": 0.25 }],
+      "espera": { "h": 6400000, "r": 12800000, "hEnR": 1, "errores.lineal": 19200000, "errores.desdeSuperficie": 12800000, "errores.desdeSuperficieLineal": 25600000 },
+      "tambien": [
+        { "args": [{ "fraccion": 0.1111111111111111 }], "espera": { "h": 12800000, "hEnR": 2, "errores.lineal": 51200000 } },
+        { "args": [{ "fraccion": 1 }], "espera": { "h": 0, "hEnR": 0 } }
+      ] },
+    { "nombre": "Tercera ley: la Tierra (6·10²⁴ kg) y una estación de 4,2·10⁵ kg a r = 6,8·10⁶ m se atraen con la misma F ≈ 3,63·10⁶ N; la estación acelera ≈ 8,65 m/s² y la Tierra ≈ 6·10⁻¹⁹ m/s²",
+      "fn": "fuerza", "args": [{ "m1": 6e24, "m2": 420000, "r": 6800000 }],
+      "espera": { "F": 3635034.6020761244, "sobre1": 3635034.6020761244, "sobre2": 3635034.6020761244, "a1": 6.058391003460208e-19, "a2": 8.654844290657439, "masivo": 1,
+                  "errores.inversoR": 24718235294117.645, "errores.segunPropiaMasa": 2.5445242214532873e-13, "errores.soloElMasivo": 0 } },
+    { "nombre": "Contra G5: dos personas de 60 kg y 80 kg a 1 m también se atraen, con F = 6,67·10⁻¹¹·4800 ≈ 3,2·10⁻⁷ N (muy poco, pero no cero)",
+      "fn": "fuerza", "args": [{ "m1": 60, "m2": 80, "r": 1 }],
+      "espera": { "F": 3.2016e-7, "a1": 5.336e-9, "a2": 4.002e-9, "masivo": 2, "errores.inversoR": 3.2016e-7 } },
+    { "nombre": "Informe, G3 (NGCI versión 3): cuatro veces más lejos, la fuerza es 16 veces menor. Distractores medidos: 4 veces (lineal) y 8 veces",
+      "fn": "comparar", "args": [{ "kr": 4 }],
+      "espera": { "razon": 0.0625, "errores.lineal": 0.25, "errores.linealDoble": 0.125, "errores.raiz": 0.5, "errores.sinMasas": 0.0625 },
+      "tambien": [
+        { "args": [{ "kr": 2 }], "espera": { "razon": 0.25, "errores.lineal": 0.5 } },
+        { "args": [{ "km1": 2, "km2": 3, "kr": 2 }], "espera": { "razon": 1.5, "errores.lineal": 3, "errores.sinMasas": 0.25 } }
+      ] },
+    { "nombre": "G4: un planeta con 4 veces la masa y el doble del radio de la Tierra da la misma g (10 m/s²) y el mismo peso. Distractores: 40 (solo la masa), 20 (radio sin cuadrado), 80 (masa por radio)",
+      "fn": "planeta", "args": [{ "kM": 4, "kR": 2 }],
+      "espera": { "g": 10, "razon": 1, "Rp": 12800000, "GM": 1638400000000000, "vRasante": 11313.708498984761, "ve": 16000,
+                  "errores.soloMasa": 40, "errores.radioLineal": 20, "errores.masaPorRadio": 80 },
+      "tambien": [
+        { "args": [{ "kM": 0.1, "kR": 0.5 }], "espera": { "g": 4, "razon": 0.4, "errores.soloMasa": 1, "errores.radioLineal": 2 } },
+        { "args": [{}], "espera": { "g": 10, "razon": 1, "vRasante": 8000, "ve": 11313.708498984761 } }
+      ] },
+    { "nombre": "Estación espacial (h = 400 km, 4,2·10⁵ kg) en órbita circular → v ≈ 7,76 km/s, T ≈ 5505 s (unos 92 min); su aceleración centrípeta es la g de esa altura",
+      "fn": "orbita", "args": [{ "h": 400000, "m": 420000 }],
+      "espera": { "r": 6800000, "h": 400000, "v": 7761.140001162656, "T": 5505.075295951456, "g": 8.858131487889274, "F": 3720415.2249134947,
+                  "Ec": 12649411764705.883, "Ep": -25298823529411.766, "E": -12649411764705.883, "ve": 10975.909449120565,
+                  "errores.vConH": 32000, "errores.vConG0": 8246.211251235321, "errores.EpMgh": 1680000000000 } },
+    { "nombre": "Órbita rasante (r = R, sin aire): v = 8 km/s exactos y T = 2π·√(R/g0) = 1600π s ≈ 84 min",
+      "fn": "orbita", "args": [{ "r": 6400000 }],
+      "espera": { "h": 0, "v": 8000, "T": 5026.548245743669, "g": 10, "ve": 11313.708498984761, "errores.vConH": null, "errores.vConG0": 8000, "errores.EpMgh": 0 } },
+    { "nombre": "Satélite de 1000 kg a la altura h = R (r = 2R): v = 4000√2 ≈ 5657 m/s, T = 2π·√(5,12·10⁶) ≈ 14 217 s; Ep = −3,2·10¹⁰ J y E = −1,6·10¹⁰ J. Errores: v con h (8000), v con g del suelo (8000√2) y Ep = m·g·h (6,4·10¹⁰ J, positiva)",
+      "fn": "orbita", "args": [{ "h": 6400000, "m": 1000 }],
+      "espera": { "r": 12800000, "v": 5656.854249492381, "T": 14217.225402106771, "g": 2.5, "F": 2500, "Ec": 16000000000, "Ep": -32000000000, "E": -16000000000, "ve": 8000,
+                  "errores.vConH": 8000, "errores.vConG0": 11313.708498984761, "errores.EpMgh": 64000000000 } },
+    { "nombre": "Informe, tercera ley de Kepler: a = 4 (veces) → T² = 64, T = 8 (veces). Errores: T ∝ r da 4, T ∝ r² da 16, T ∝ √r da 2",
+      "fn": "kepler3", "args": [{ "r1": 1, "r2": 4, "T1": 1 }],
+      "espera": { "kr": 4, "kT": 8, "T2": 8, "kv": 0.5, "km": 1, "errores.Tlineal": 4, "errores.Tcuadrado": 16, "errores.Traiz": 2 },
+      "tambien": [
+        { "args": [{ "r1": 6400000, "r2": 25600000, "T1": 5026.548245743669 }], "espera": { "T2": 40212.38596594935, "kT": 8 } },
+        { "args": [{ "r1": 1, "r2": 9, "T1": 2 }], "espera": { "T2": 54, "kv": 0.3333333333333333 } }
+      ] },
+    { "nombre": "Predicción de la masa del satélite: en la misma órbita, uno de 2000 kg va igual de rápido que uno de 1000 kg (kv = 1). Errores: el doble (2) y √2",
+      "fn": "kepler3", "args": [{ "r1": 12800000, "r2": 12800000, "m1": 1000, "m2": 2000 }],
+      "espera": { "kr": 1, "kT": 1, "kv": 1, "km": 2, "errores.kvConMasa": 2, "errores.kvConRaizMasa": 1.4142135623730951 } },
+    { "nombre": "Satélite geoestacionario (T = 86 400 s): r = ∛(GM·T²/4π²) ≈ 4,26·10⁷ m ≈ 6,66 R, a unos 36 200 km de altura, con v ≈ 3,1 km/s",
+      "fn": "geoestacionario", "args": [{}],
+      "espera": { "r": 42626129.37450372, "h": 36226129.37450372, "rEnR": 6.660332714766206, "hEnR": 5.660332714766206, "v": 3099.8596040256703, "errores.alturaEsR": 42626129.37450372 } },
+    { "nombre": "Velocidad de escape desde el suelo: ve = √(2·g0·R) = 8000√2 ≈ 11,3 km/s, √2 veces la orbital rasante (8 km/s)",
+      "fn": "escape", "args": [{}],
+      "espera": { "r": 6400000, "ve": 11313.708498984761, "vc": 8000, "razon": 1.4142135623730951, "errores.orbital": 8000, "errores.doble": 16000 },
+      "tambien": [
+        { "args": [{ "h": 6400000 }], "espera": { "ve": 8000, "vc": 5656.854249492381, "errores.doble": 11313.708498984761 } }
+      ] },
+    { "nombre": "Cañón de Newton desde una torre imaginaria de altura R (r0 = 2R): con v0 = 8 km/s (la de escape ahí) la trayectoria es una parábola: e = 1, energía 0, escapa",
+      "fn": "lanzamiento", "args": [{ "v0": 8000, "h0": 6400000 }],
+      "espera": { "r0": 12800000, "e": 1, "p": 25600000, "tipo": "escapa", "energia": 0, "vc": 5656.854249492381, "ve": 8000 } },
+    { "nombre": "Cañón de Newton desde r0 = 2R con v0 = 4 km/s: e = −0,5, p = R; cae al suelo después de recorrer un cuarto de vuelta (φ = π/2)",
+      "fn": "lanzamiento", "args": [{ "v0": 4000, "h0": 6400000 }],
+      "espera": { "e": -0.5, "p": 6400000, "tipo": "cae", "phiChoque": 1.5707963267948966, "rMin": 4266666.666666667, "rMax": 12800000, "energia": -24000000 },
+      "tambien": [
+        { "args": [{ "v0": 6000, "h0": 6400000 }], "espera": { "e": 0.125, "p": 14400000, "tipo": "eliptica", "rMin": 12800000, "rMax": 16457142.857142857, "a": 14628571.428571429, "energia": -14000000 } },
+        { "args": [{ "v0": 5656.854249492381, "h0": 6400000 }], "espera": { "tipo": "circular", "rMin": 12800000, "rMax": 12800000, "T": 14217.225402106771 } },
+        { "args": [{ "v0": 9000, "h0": 6400000 }], "espera": { "e": 1.53125, "tipo": "escapa", "energia": 8500000 } }
+      ] },
+    { "nombre": "G8: ascensor con el cable cortado (a = g): la balanza de una persona de 50 kg marca 0 N, aunque su peso sigue siendo 500 N. Errores: 500 (no cambia), 1000 (aumenta), 250 (la mitad)",
+      "fn": "balanza", "args": [{ "m": 50, "a": 10 }],
+      "espera": { "lectura": 0, "peso": 500, "errores.sinCambio": 500, "errores.aumenta": 1000, "errores.mitad": 250 },
+      "tambien": [
+        { "args": [{ "m": 50 }], "espera": { "lectura": 500, "peso": 500 } },
+        { "args": [{ "m": 50, "a": 2 }], "espera": { "lectura": 400, "errores.aumenta": 600 } }
+      ] },
+    { "nombre": "G6, segunda ley de Kepler: elipse de e = 0,6 (a = 1, T = 1) → perihelio 0,4, afelio 1,6; va 4 veces más rápido en el perihelio. Cada uno de los 8 sectores barre π·a·b/8 = 0,1π",
+      "fn": "kepler2", "args": [{ "e": 0.6 }],
+      "espera": { "rp": 0.4, "ra": 1.6, "b": 0.8, "razonV": 4, "areaSector": 0.3141592653589793, "vp": 12.566370614359172, "va": 3.141592653589793,
+                  "errores.rapidezConstante": 1, "errores.alReves": 0.25 },
+      "tambien": [
+        { "args": [{ "e": 0.0167 }], "espera": { "razonV": 1.0339672531271611, "b": 0.99986054527619 } }
+      ] },
+    { "nombre": "g a la altura de un radio del planeta en el planeta de 4 masas y 2 radios: la misma cuarta parte, 2,5 m/s²",
+      "fn": "gAltura", "args": [{ "h": 12800000, "kM": 4, "kR": 2 }],
+      "espera": { "r": 25600000, "g": 2.5, "gs": 10, "fraccion": 0.25, "errores.lineal": 5 } }
+  ]
+}
