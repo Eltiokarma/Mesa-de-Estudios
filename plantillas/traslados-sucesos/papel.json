@@ -1,0 +1,132 @@
+{
+  "titulo": "La posta, el paradero y la plaza: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "A un niño le indican en la posta una pastilla cada 4 horas durante 2 días. Toma la primera apenas empieza el tratamiento y la última justo cuando se cumplen los 2 días. ¿Cuántas pastillas toma?",
+      "respuesta": "13 pastillas.",
+      "pasos": [
+        "2 días son 48 horas.",
+        "En 48 horas caben 48 ÷ 4 = 12 intervalos de 4 horas.",
+        "Hay una toma al inicio de cada intervalo y una más al final del último: 12 + 1 = 13.",
+        "Comprobación con las horas: 0, 4, 8, …, 44, 48 son 13 números."
+      ],
+      "verificar": [ { "fn": "tomas", "args": [{ "k": 4, "t": 48 }], "espera": { "tomas": 13 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Una receta dice: «2 pastillas cada 12 horas durante 5 días». La primera toma es al empezar y la última toma es 12 horas antes de que se cumplan los 5 días (al cumplirse ya no se toma). ¿Cuántas pastillas hay que comprar?",
+      "respuesta": "20 pastillas.",
+      "pasos": [
+        "5 días son 120 horas, y 120 ÷ 12 = 10 intervalos.",
+        "Como al cumplirse los 5 días ya no se toma, hay una toma al inicio de cada intervalo y ninguna más: 10 tomas.",
+        "Cada toma es de 2 pastillas: 10 · 2 = 20."
+      ],
+      "verificar": [ { "fn": "tomas", "args": [{ "k": 12, "t": 120, "porToma": 2, "final": false }], "espera": { "tomas": 10, "pastillas": 20 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "El reloj de la municipalidad da una campanada cada 15 minutos, desde las 8:00 hasta las 11:00 de la mañana, contando la de las 8:00 y la de las 11:00. ¿Cuántas campanadas da en ese tiempo?",
+      "respuesta": "13 campanadas.",
+      "pasos": [
+        "De 8:00 a 11:00 hay 180 minutos: 180 ÷ 15 = 12 intervalos.",
+        "Es lo mismo que con las pastillas: cada k, contando la primera. Hay una campanada más que intervalos: 12 + 1 = 13."
+      ],
+      "verificar": [ { "fn": "tomas", "args": [{ "k": 15, "t": 180 }], "espera": { "tomas": 13 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Del terminal salen buses a Puno cada 15 minutos y buses a Cusco cada 25 minutos. A las 5:30 salieron juntos un bus de cada destino. ¿A qué hora vuelven a salir juntos?",
+      "respuesta": "A las 6:45.",
+      "pasos": [
+        "Los de Puno salen a los 15, 30, 45, 60, 75, … minutos; los de Cusco a los 25, 50, 75, …",
+        "La primera vez que coinciden es el menor múltiplo común: MCM(15, 25) = 75 minutos.",
+        "5:30 + 75 min = 5:30 + 1 h 15 min = 6:45."
+      ],
+      "verificar": [ { "fn": "proximaCoincidencia", "args": [{ "intervalos": [15, 25], "inicio": 330 }], "espera": { "mcm": 75, "hora": "6:45" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En una feria, una alarma suena cada 20 minutos y otra cada 30 minutos. A las 6:00 sonaron juntas. ¿Cuántas veces suenan juntas desde las 6:00 hasta las 12:00, contando la de las 6:00 y la de las 12:00?",
+      "respuesta": "7 veces.",
+      "pasos": [
+        "Suenan juntas cada MCM(20, 30) = 60 minutos.",
+        "De 6:00 a 12:00 hay 360 minutos: 360 ÷ 60 = 6 intervalos.",
+        "Contando la de las 6:00: 6 + 1 = 7 veces (6:00, 7:00, …, 12:00)."
+      ],
+      "verificar": [ { "fn": "vecesCoinciden", "args": [{ "intervalos": [20, 30], "inicio": 360, "fin": 720 }], "espera": { "veces": 7, "comprobado": true } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una enfermera trabaja 3 días seguidos y descansa el cuarto, siempre así, sin importar domingos ni feriados. Su primer descanso fue un miércoles. ¿Qué día de la semana es su descanso número 15?",
+      "respuesta": "Un miércoles.",
+      "pasos": [
+        "Entre un descanso y el siguiente pasan 4 días.",
+        "Del 1.º al 15.º descanso hay 14 saltos de 4 días: 14 · 4 = 56 días.",
+        "56 = 7 · 8: son 8 semanas justas, sin días sobrantes.",
+        "El día de la semana no cambia: miércoles."
+      ],
+      "verificar": [ { "fn": "descanso", "args": [{ "ciclo": 4, "primero": "miércoles", "n": 15 }], "espera": { "dias": 56, "dia": "miércoles" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Ana almuerza pescado cada 3 días y Beto cada 5 días. Un martes los dos almorzaron pescado. ¿Qué día de la semana vuelven a almorzar pescado el mismo día por primera vez?",
+      "respuesta": "Un miércoles.",
+      "pasos": [
+        "Coinciden cada MCM(3, 5) = 15 días.",
+        "15 = 7 · 2 + 1: dos semanas y un día.",
+        "Un día después del martes es miércoles."
+      ],
+      "verificar": [
+        { "fn": "proximaCoincidencia", "args": [{ "intervalos": [3, 5] }], "espera": { "mcm": 15 } },
+        { "fn": "diaSemana", "args": [{ "desde": "martes", "dias": 15 }], "espera": { "dia": "miércoles" } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Desde la puerta del mercado, Rosa camina 18 cuadras al sur, después 8 al oeste y después 3 al norte. Todas las cuadras miden lo mismo. ¿A cuántas cuadras queda, en línea recta, de la puerta del mercado, y hacia qué dirección?",
+      "respuesta": "A 17 cuadras, hacia el suroeste.",
+      "pasos": [
+        "De norte a sur: 18 al sur y 3 al norte dejan 18 − 3 = 15 al sur.",
+        "De este a oeste: 8 al oeste.",
+        "Las dos medidas son los catetos de un triángulo rectángulo: d² = 8² + 15² = 64 + 225 = 289, así que d = 17.",
+        "Queda al sur y al oeste: hacia el suroeste."
+      ],
+      "verificar": [ { "fn": "recorrido", "args": [[["S", 18], ["O", 8], ["N", 3]]], "espera": { "distancia": 17, "direccion": "suroeste" } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "Un soldado mira al este. Gira 90° a la izquierda, después otra vez 90° a la izquierda y después 270° a la derecha. ¿Hacia dónde mira al final?",
+      "respuesta": "Hacia el sur.",
+      "pasos": [
+        "Del este, 90° a la izquierda: norte. Otra vez: oeste.",
+        "270° a la derecha son tres cuartos de vuelta: de oeste a norte, a este y a sur.",
+        "Otra forma: 180° a la izquierda y 270° a la derecha dejan 90° netos a la derecha; del este, 90° a la derecha es el sur."
+      ],
+      "verificar": [ { "fn": "giros", "args": [{ "inicio": "E", "giros": [["I", 90], ["I", 90], ["D", 270]] }], "espera": { "final": "S" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Quince fichas redondas iguales forman un triángulo que apunta hacia arriba: 5 en la fila de abajo, luego 4, 3, 2 y 1. Una jugada es levantar una ficha y ponerla en otro lugar. ¿Cuántas jugadas hacen falta, como mínimo, para que el triángulo apunte hacia abajo?",
+      "respuesta": "5 jugadas.",
+      "pasos": [
+        "Cada ficha que no está ya en su lugar final tiene que moverse al menos una vez; las que sí lo están no hace falta tocarlas.",
+        "Conviene poner el triángulo invertido donde comparta más fichas con el de partida: como mucho comparten 10.",
+        "Por ejemplo, se quedan la 3.ª y la 4.ª ficha de la fila de 5 (contando desde la izquierda), las 3 de la derecha de la fila de 4, las 3 de la fila de 3 y las 2 de la fila de 2.",
+        "Se mueven las otras 15 − 10 = 5: tres de la fila de abajo (las dos de la izquierda y la de la derecha), la de la izquierda de la fila de 4 y la punta de arriba. Van a completar la nueva fila de 5 (arriba), la de 4 y la nueva punta (abajo)."
+      ],
+      "verificar": [ { "fn": "monedasTriangulo", "args": [{ "filas": 5 }], "espera": { "minimo": 5 } } ]
+    }
+  ]
+}

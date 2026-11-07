@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La posta, el paradero y la plaza: sucesos que se repiten, monedas y puntos cardinales</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de arreglos-giros/.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   pastillas: cada k horas naranja, el tratamiento t azul, las tomas n fucsia, las pastillas P granate;
+   combis: la línea A (cada a) turquesa, la B (cada b) óxido, la C (cada c) azul noche, cada cuánto salen juntas M verde,
+   las veces que salen juntas s índigo; turno: los días del 1.º al n-ésimo descanso D violeta, el resto r café;
+   monedas: las que se mueven (jugadas m) verde oscuro; plano: hacia el este x petróleo, hacia el norte y rosa, la
+   distancia en línea recta d ámbar. El guardia y su brújula van en tinta.
+   Mínimos de CIEDE2000 entre los que salen juntos (claro / oscuro): pastillas (k, t, n, P) 27,1 / 25,2; combis del paso
+   (a, b, M, s) y del experimento (a, b, c, M) 23,6 / 25,3; turno (D, r) 46,1 / 43,5; plano (x, y, d) 42,5 / 49,5.
+   Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %), en claro y en oscuro: mínimo 4,63 / 4,64; b, óxido, queda a 16 de --warn y c, azul noche, a 13 de la tinta: el texto de corrección siempre lleva palabras y C solo sale en un experimento. */
+
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-k:#a05200; --c-t:#1f5fbf; --c-n:#a10fbf; --c-P:#77032c; --c-a:#0f766e; --c-b:#882107; --c-c:#1d3372; --c-M:#466d14;
+  --c-s:#3328c4; --c-D:#6a3fc0; --c-r:#7a4a1e; --c-m:#255c1f; --c-x:#086a96; --c-y:#b3246b; --c-d:#8f5800;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-k:#f0a04a; --c-t:#7cb0ff; --c-n:#cf6bfa; --c-P:#fdb4ce; --c-a:#5ed9c8; --c-b:#fb6a40; --c-c:#becbef; --c-M:#a3d65e;
+  --c-s:#9f9bff; --c-D:#b49cff; --c-r:#d9a877; --c-m:#5fe06a; --c-x:#25caf4; --c-y:#ff86bd; --c-d:#ffc04d;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-k:#f0a04a; --c-t:#7cb0ff; --c-n:#cf6bfa; --c-P:#fdb4ce; --c-a:#5ed9c8; --c-b:#fb6a40; --c-c:#becbef; --c-M:#a3d65e;
+  --c-s:#9f9bff; --c-D:#b49cff; --c-r:#d9a877; --c-m:#5fe06a; --c-x:#25caf4; --c-y:#ff86bd; --c-d:#ffc04d;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend:empty{display:none}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.pt{width:12px; height:12px; border-radius:50%}
+.legend i.dash{background:none!important; border-top:2px dashed var(--k); height:0}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em; align-self:stretch; text-align:center}
+.frac > span:last-child{padding:0 .25em}
+.frac > span:first-child{align-self:stretch; text-align:center}
+.frac > span{white-space:nowrap}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+.msg{margin:0; font-weight:700; min-height:1.5em}
+.msg.mal{color:var(--warn)} .msg.ok{color:var(--ok)}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:center; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn.chico{padding:8px 14px; min-height:40px; font-size:.9rem}
+.btn[aria-pressed="true"]{border-color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.fila{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.punto{min-width:44px}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+.flechas{font:800 1.05rem var(--mono); letter-spacing:.06em; overflow-wrap:anywhere}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+
+.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v-M{color:var(--c-M); background:color-mix(in srgb, var(--c-M) 8%, transparent)}
+.v-s{color:var(--c-s); background:color-mix(in srgb, var(--c-s) 8%, transparent)}
+.v-D{color:var(--c-D); background:color-mix(in srgb, var(--c-D) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
+.v-y{color:var(--c-y); background:color-mix(in srgb, var(--c-y) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+.rotulo-chico{font-size:.82rem; color:var(--muted); margin:0}
+.controles{display:grid; gap:8px}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Frecuencia de sucesos, traslados y puntos cardinales · Problemas tipo admisión</p>
+      <h1>La posta, el paradero y la plaza</h1>
+      <p class="sub">Sigue las pastillas de un tratamiento, mira salir las combis de un paradero de Juliaca, cuenta los descansos de un turno, mueve monedas sobre la mesa y camina por las cuadras de una plaza de armas. Primero predices; después, el motor cuenta uno por uno.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: línea de tiempo, salidas de combis, calendario, monedas o plano">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena" tabindex="-1"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos de sucesos, monedas y orientación">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido" tabindex="-1"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/traslados-sucesos">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'traslados-sucesos', unidad: 'razonamiento-matematico.traslados-y-puntos-cardinales', version: '0.1.0' };
+const U_FREC = 'razonamiento-matematico.frecuencia-de-sucesos';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (tomas, coincidencias, días de la semana, jugadas mínimas, distancias y giros) sale de
+   MotorTraslados (motor.js); aquí solo se pinta, se toca, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MT = MotorTraslados, ESC = MT.escena;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  d = d === undefined ? 2 : d;
+  const p = Math.pow(10, d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const VARS = ['k', 't', 'n', 'P', 'a', 'b', 'c', 'M', 's', 'D', 'r', 'm', 'x', 'y', 'd'];
+const W_ = {}; VARS.forEach(k => { W_[k] = t => V(k, t); });
+const hora = MT.horaTexto;
+const LETRA_COMBI = ['a', 'b', 'c'], NOMBRE_COMBI = ['A', 'B', 'C'];
+
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'), warn:css('--warn'), ok:css('--ok'), font:css('--font') };
+  for (const k of VARS) c[k] = css('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function punto(ctx, x, y, r, relleno, borde, ancho){ ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fillStyle = relleno; ctx.fill(); if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = ancho || 2; ctx.stroke(); } ctx.restore(); }
+function flecha(ctx, x0, y0, x1, y1, color, ancho){
+  const a = Math.atan2(y1 - y0, x1 - x0), h = 7 + (ancho || 2);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho || 2.4; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1 - h*.6*Math.cos(a), y1 - h*.6*Math.sin(a)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x1 - h*Math.cos(a - .45), y1 - h*Math.sin(a - .45)); ctx.lineTo(x1 - h*Math.cos(a + .45), y1 - h*Math.sin(a + .45)); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+function capsula(ctx, x, y, w, h, color, alfa){
+  ctx.save(); ctx.globalAlpha = alfa === undefined ? 1 : alfa; ctx.fillStyle = color; ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x - w/2, y - h/2, w, h, h/2); else ctx.rect(x - w/2, y - h/2, w, h);
+  ctx.fill(); ctx.restore();
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Modos:
+   'linea'      lin = { k, t, porToma, final, ver (tomas ya dibujadas), marcas: [{ h, texto }] (rótulos bajo el eje),
+                intervalos (los arcos de k entre tomas, tras responder) }.
+   'combis'     com = { intervalos, inicio, fin, ahora (hasta qué minuto ya salieron), paso (rótulos del eje cada
+                tantos minutos), horas (la hora de cada salida juntas), contar (numera las salidas juntas con s) }.
+   'calendario' cal = { ciclo, filas, hasta (días ya recorridos desde el primer descanso), marcas (las semanas
+                completas en D y el resto r, tras responder), n }.
+   'monedas'    mon = { filas, pos: [[u, v]], movidas: [índices en m], anim: { i, de, a, f }, jugadas, puntos (los
+                lugares libres de la red, en el modo de mover) }. Con E.tocar se arrastran con el dedo o se mueven con
+                el teclado (flechas, Enter o espacio).
+   'plano'      pla = { tramos, prog (tramos ya caminados, real), catetos (x e y), recta (d), rotulos (cuadras de cada
+                tramo) }.
+   'brujula'    bru = { ang (grados a la derecha desde el norte), rumbos (para el rótulo) }.
+   Antes de responder, lo que se pregunta no se dibuja: ni las tomas, ni las salidas, ni los descansos, ni las jugadas,
+   ni el camino. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'linea', lect:[], ley:null, hl:null, alCambiar:null, tok:0, anim:false, compacto:false, desc:'', tocar:false,
+    lin:null, com:null, cal:null, mon:null, pla:null, bru:null, alMover:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, Hh = 0, geo = null, drag = null, cursor = -1, mano = -1;
+  function altoBase(w){
+    const ancho = w >= 560;
+    if (E.modo === 'linea') return ancho ? 210 : 190;
+    if (E.modo === 'combis') return 64 + 40*E.com.intervalos.length + (E.com.contar ? 26 : 0);
+    if (E.modo === 'calendario') return 34 + E.cal.filas*Math.min(28, ancho ? 28 : 26) + 8;
+    if (E.modo === 'monedas'){ const f = E.mon.filas, r = Math.min(24, (w - 16)/(2*(f + 2))); return Math.round(((f + 1)*Math.sqrt(3) + 2)*r + 34); }
+    if (E.modo === 'plano'){ const B = cajaPlano(); const cel = Math.min(30, (w - 40)/B.nx); return Math.round(Math.min(360, B.ny*cel + 54)); }
+    if (E.modo === 'brujula') return ancho ? 250 : 230;
+    return 220;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const tope = E.modo === 'calendario' || E.modo === 'plano' || E.modo === 'monedas' ? 270 : 240;
+    const h = Math.round(Celular.alto(altoBase(w), E.compacto, { tope })), dpr = Celular.dpr();
+    if (w === W && h === Hh) { E.dibujar(); return; }
+    W = w; Hh = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  addEventListener('modo', () => { W = 0; resize(); });
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false; drag = null; mano = -1;
+    Object.assign(E, { modo:'linea', lect:[], ley:null, alCambiar:null, desc:'', tocar:false, lin:null, com:null, cal:null, mon:null, pla:null, bru:null, alMover:null }, o);
+    if (E.lin) E.lin = Object.assign({ porToma:1, final:true, ver:0, marcas:[], intervalos:false }, E.lin);
+    if (E.com) E.com = Object.assign({ inicio:360, paso:10, horas:false, contar:false }, E.com, { ahora: E.com.ahora === undefined ? E.com.inicio || 360 : E.com.ahora });
+    if (E.cal) E.cal = Object.assign({ hasta:1, marcas:false, filas:9 }, E.cal);
+    if (E.mon) E.mon = Object.assign({ movidas:[], anim:null, jugadas:0, puntos:false }, E.mon, { pos:E.mon.pos.map(p => p.slice()) });
+    if (E.pla) E.pla = Object.assign({ prog:0, catetos:false, recta:false, rotulos:false }, E.pla);
+    if (E.bru) E.bru = Object.assign({ ang:0 }, E.bru);
+    cv.tabIndex = E.tocar ? 0 : -1;
+    cursor = -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  const atenuar = k => (E.hl && E.hl !== k ? .45 : 1);
+
+  // ----- la línea de tiempo de las pastillas -----
+  function dibLinea(c){
+    const L = E.lin, x0 = 30, x1 = W - 30, yA = Math.round(Hh*.6), s = (x1 - x0)/L.t, X = h => x0 + h*s;
+    const R = MT.tomas({ k:L.k, t:L.t, porToma:L.porToma, final:L.final });
+    // el tratamiento t, arriba
+    const yt = 22;
+    ctx.save(); ctx.strokeStyle = c.t; ctx.globalAlpha = atenuar('t'); ctx.lineWidth = grosor('t', 2.5);
+    linea(ctx, { x:x0, y:yt }, { x:x1, y:yt }); linea(ctx, { x:x0, y:yt - 6 }, { x:x0, y:yt + 6 }); linea(ctx, { x:x1, y:yt - 6 }, { x:x1, y:yt + 6 }); ctx.restore();
+    rotulo(ctx, c, (x0 + x1)/2, yt, `t = ${L.t} h`, c.t, 'center', 800, 12);
+    // el eje
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:x0 - 8, y:yA }, { x:x1 + 8, y:yA }); ctx.restore();
+    for (const m of L.marcas){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; linea(ctx, { x:X(m.h), y:yA - 5 }, { x:X(m.h), y:yA + 5 }); ctx.restore();
+      rotulo(ctx, c, X(m.h), yA + 22, m.texto, c.muted, m.h === 0 ? 'left' : m.h === L.t ? 'right' : 'center', 700, 11);
+    }
+    // los arcos de k entre tomas
+    const ver = Math.min(L.ver, R.tomas);
+    if (L.intervalos){
+      ctx.save(); ctx.strokeStyle = c.k; ctx.globalAlpha = atenuar('k'); ctx.lineWidth = grosor('k', 1.8);
+      for (let j = 1; j < ver; j++){ const a = X(R.instantes[j - 1]), b = X(R.instantes[j]); ctx.beginPath(); ctx.moveTo(a, yA + 2); ctx.quadraticCurveTo((a + b)/2, yA + 16, b, yA + 2); ctx.stroke(); }
+      ctx.restore();
+      if (ver >= 2) rotulo(ctx, c, (X(R.instantes[0]) + X(R.instantes[1]))/2, yA + 38, `k = ${L.k} h`, c.k, 'center', 800, 11);
+    }
+    // las tomas
+    const dosis = L.porToma, w = Math.max(10, Math.min(16, s*L.k*.5));
+    for (let j = 0; j < ver; j++){
+      const x = X(R.instantes[j]);
+      ctx.save(); ctx.globalAlpha = atenuar('n'); punto(ctx, x, yA, grosor('n', 5), c.n); ctx.restore();
+      for (let q = 0; q < dosis; q++) capsula(ctx, x, yA - 14 - q*10, w, 8, dosis > 1 ? c.P : c.n, dosis > 1 ? atenuar('P') : atenuar('n'));
+      ctx.save(); ctx.globalAlpha = atenuar('n'); ctx.fillStyle = c.n; ctx.font = `800 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(String(j + 1), x, yA - 26 - (dosis - 1)*10); ctx.restore();
+    }
+  }
+
+  // ----- las combis del paradero -----
+  function dibCombis(c){
+    const C = E.com, nR = C.intervalos.length, x0 = 40, x1 = W - 18, s = (x1 - x0)/(C.fin - C.inicio), X = m => x0 + (m - C.inicio)*s;
+    const top = 26, rh = 40, yEje = top + nR*rh;
+    const R = MT.vecesCoinciden({ intervalos:C.intervalos, inicio:C.inicio, fin:C.fin });
+    // las salidas juntas (bandas)
+    R.momentos.forEach((m, j) => {
+      if (m > C.ahora + 1e-6) return;
+      const x = X(m);
+      ctx.save(); ctx.globalAlpha = .14*atenuar('M'); ctx.fillStyle = c.M; ctx.fillRect(x - 8, top - 8, 16, nR*rh + 4); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.M; ctx.globalAlpha = atenuar('M'); ctx.lineWidth = grosor('M', 1.5); ctx.strokeRect(x - 8, top - 8, 16, nR*rh + 4); ctx.restore();
+      if (C.horas && j > 0) rotulo(ctx, c, x, 10, hora(m), c.M, j === R.momentos.length - 1 && x > W - 30 ? 'right' : 'center', 800, 11);
+      if (C.contar){ ctx.save(); ctx.globalAlpha = atenuar('s'); punto(ctx, x, yEje + 38, grosor('s', 9), c.s); ctx.fillStyle = c.card; ctx.font = `800 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(j + 1), x, yEje + 38.5); ctx.restore(); }
+    });
+    // filas de cada línea
+    C.intervalos.forEach((p, i) => {
+      const y = top + i*rh + rh/2 - 6, k = LETRA_COMBI[i], col = c[k];
+      ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1; linea(ctx, { x:x0, y }, { x:x1, y }); ctx.restore();
+      ctx.save(); ctx.globalAlpha = atenuar(k); ctx.fillStyle = col; ctx.font = `800 14px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(NOMBRE_COMBI[i], 16, y); ctx.restore();
+      for (const m of MT.salidas({ intervalo:p, inicio:C.inicio, fin:C.fin })){
+        if (m > C.ahora + 1e-6) break;
+        const x = X(m);
+        ctx.save(); ctx.globalAlpha = atenuar(k); ctx.fillStyle = col; ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(x - 5, y - 8, 10, 14, 3); else ctx.rect(x - 5, y - 8, 10, 14); ctx.fill();
+        ctx.fillStyle = c.paper; ctx.fillRect(x - 3, y - 5, 6, 4); ctx.restore();
+      }
+    });
+    // el eje del tiempo
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:x0 - 4, y:yEje }, { x:x1 + 4, y:yEje }); ctx.restore();
+    for (let m = C.inicio; m <= C.fin; m += C.paso){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, { x:X(m), y:yEje - 4 }, { x:X(m), y:yEje + 4 }); ctx.restore();
+      rotulo(ctx, c, X(m), yEje + 16, hora(m), c.muted, m === C.inicio ? 'left' : m + C.paso > C.fin && X(m) > W - 30 ? 'right' : 'center', 700, 11);
+    }
+    if (E.anim && C.ahora < C.fin){ ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.5; linea(ctx, { x:X(C.ahora), y:top - 10 }, { x:X(C.ahora), y:yEje }); ctx.restore(); }
+  }
+
+  // ----- el calendario del turno -----
+  const INI = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
+  function dibCalendario(c){
+    const C = E.cal, cw = Math.min(52, (W - 20)/7), ch = Math.min(28, (Hh - 40)/C.filas), x0 = (W - 7*cw)/2, y0 = 30;
+    INI.forEach((t, j) => rotulo(ctx, c, x0 + (j + .5)*cw, 14, t, c.muted, 'center', 800, 11));
+    const R = MT.recorrerDias({ ciclo:C.ciclo, primero:'lunes', n:C.n }), resto = (C.n - 1)*C.ciclo % 7, semanas = Math.floor((C.n - 1)*C.ciclo/7);
+    for (let d = 0; d < 7*C.filas; d++){
+      const f = Math.floor(d/7), j = d % 7, x = x0 + j*cw, y = y0 + f*ch;
+      ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.strokeRect(x + 1, y + 1, cw - 2, ch - 2); ctx.restore();
+      if (C.marcas){
+        if (f < semanas){ ctx.save(); ctx.globalAlpha = .13*atenuar('D'); ctx.fillStyle = c.D; ctx.fillRect(x + 1, y + 1, cw - 2, ch - 2); ctx.restore(); }
+        else if (f === semanas && j >= 1 && j <= resto){ ctx.save(); ctx.globalAlpha = .2*atenuar('r'); ctx.fillStyle = c.r; ctx.fillRect(x + 1, y + 1, cw - 2, ch - 2); ctx.restore(); }
+      }
+      if (d >= C.hasta) continue;
+      const des = R.descansos.find(q => q.dia === d);
+      if (des){
+        const ult = des.num === C.n && C.marcas;
+        punto(ctx, x + cw/2, y + ch/2, Math.min(ch, cw)/2 - 2, ult ? c.ink : c.card, c.ink, ult ? 2.5 : 1.6);
+        ctx.fillStyle = ult ? c.card : c.ink; ctx.font = `800 ${ch > 22 ? 12 : 11}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(des.num), x + cw/2, y + ch/2 + .5);
+      } else { ctx.save(); ctx.fillStyle = c.muted; ctx.globalAlpha = .5; ctx.beginPath(); ctx.arc(x + cw/2, y + ch/2, 2, 0, 7); ctx.fill(); ctx.restore(); }
+    }
+    if (C.marcas){
+      // llave de las semanas completas, a la izquierda
+      const yA = y0 + 2, yB = y0 + semanas*ch - 2, xl = x0 - 4;
+      if (x0 > 12){ ctx.save(); ctx.strokeStyle = c.D; ctx.globalAlpha = atenuar('D'); ctx.lineWidth = grosor('D', 2.5); linea(ctx, { x:xl, y:yA }, { x:xl, y:yB }); ctx.restore(); }
+    }
+  }
+
+  // ----- monedas en la red triangular -----
+  function geoMonedas(){
+    const M = E.mon, f = M.filas, r = Math.min(24, (W - 16)/(2*(f + 2)), (Hh - 34)/((f + 1)*Math.sqrt(3) + 2));
+    const ancho = (f + 1)*2*r, cx0 = (W - ancho)/2, cy0 = Hh - 14 - r - r*Math.sqrt(3);   // la fila v = −1 abajo
+    const P = p => ({ x:cx0 + (p[0] + p[1]/2 + 1)*2*r, y:cy0 - p[1]*r*Math.sqrt(3) });
+    const pts = [];
+    for (let v = -1; v <= f; v++) for (let u = -f - 2; u <= f + 2; u++){ const x = u + v/2; if (x >= -1 - 1e-9 && x <= f + 1e-9) pts.push([u, v]); }
+    return { r, P, pts };
+  }
+  const igualP = (p, q) => p[0] === q[0] && p[1] === q[1];
+  function moneda(c, x, y, r, borde, relleno, alfa){
+    ctx.save(); ctx.globalAlpha = alfa === undefined ? 1 : alfa;
+    punto(ctx, x, y, r - 1.5, relleno, borde, 2.4);
+    ctx.strokeStyle = borde; ctx.globalAlpha *= .5; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x, y, r*.68, 0, 7); ctx.stroke();
+    ctx.restore();
+  }
+  function dibMonedas(c){
+    const M = E.mon, G = geoMonedas(); geo = G;
+    if (M.puntos) for (const p of G.pts){ if (M.pos.some(q => igualP(q, p))) continue; const q = G.P(p); punto(ctx, q.x, q.y, 2.6, c.muted); }
+    M.pos.forEach((p, i) => {
+      if (drag && drag.i === i && drag.movio) return;
+      let q = G.P(p);
+      if (M.anim && M.anim.i === i){ const a = G.P(M.anim.de), b = G.P(M.anim.a), f = M.anim.f; q = { x:a.x + (b.x - a.x)*f, y:a.y + (b.y - a.y)*f - Math.sin(f*Math.PI)*G.r*1.2 }; }
+      const mov = M.movidas.includes(i);
+      ctx.save(); ctx.globalAlpha = mov ? atenuar('m') : 1;
+      moneda(c, q.x, q.y, G.r, mov ? c.m : c.ink, mov ? c.paper : c.card);
+      if (mov){ ctx.globalAlpha *= .16; punto(ctx, q.x, q.y, G.r - 3, c.m); }
+      ctx.restore();
+      if (mano === i){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(q.x, q.y, G.r + 3, 0, 7); ctx.stroke(); ctx.restore(); }
+    });
+    if (drag && drag.movio){ moneda(c, drag.x, drag.y, G.r, c.m, c.card); }
+    if (E.tocar && cursor >= 0 && document.activeElement === cv){
+      const q = G.P(G.pts[cursor]); ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([4, 3]); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(q.x, q.y, G.r + 6, 0, 7); ctx.stroke(); ctx.restore();
+    }
+  }
+
+  // ----- el plano de cuadras -----
+  function cajaPlano(){
+    const P = E.pla ? MT.recorrido(E.pla.tramos).puntos : [[0, 0]];
+    const xs = P.map(p => p[0]).concat([-1]), ys = P.map(p => p[1]).concat([-1]);
+    const xa = Math.min(...xs) - 1, xb = Math.max(...xs) + 1, ya = Math.min(...ys) - 1, yb = Math.max(...ys) + 1;
+    return { xa, xb, ya, yb, nx:xb - xa, ny:yb - ya };
+  }
+  function dibPlano(c){
+    const L = E.pla, B = cajaPlano(), cel = Math.min(30, (W - 40)/B.nx, (Hh - 40)/B.ny);
+    const ox = (W - B.nx*cel)/2, oy = (Hh + B.ny*cel)/2 + 4;
+    const X = x => ox + (x - B.xa)*cel, Y = y => oy - (y - B.ya)*cel, Q = p => ({ x:X(p[0]), y:Y(p[1]) });
+    // manzanas y calles
+    for (let i = B.xa; i < B.xb; i++) for (let j = B.ya; j < B.yb; j++){
+      const plaza = i === -1 && j === -1;
+      ctx.save(); ctx.fillStyle = plaza ? c.grid : c.card; ctx.strokeStyle = c.line; ctx.lineWidth = 1;
+      const x = X(i) + 3, y = Y(j + 1) + 3, w = cel - 6;
+      ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, w, 4); else ctx.rect(x, y, w, w); ctx.fill(); ctx.stroke(); ctx.restore();
+      if (plaza){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x + w/2, y + w/2, w*.26, 0, 7); ctx.stroke(); ctx.restore(); }
+    }
+    rotulo(ctx, c, X(-.5), Y(-1) + 10, 'plaza', c.muted, 'center', 700, 10);
+    // rosa de los vientos
+    const rx = W - 22, ry = 26;
+    flecha(ctx, rx, ry + 12, rx, ry - 10, c.ink, 2.2); rotulo(ctx, c, rx - 13, ry - 8, 'N', c.ink, 'center', 800, 12);
+    const R = MT.recorrido(L.tramos), pts = R.puntos;
+    // catetos y recta
+    if (L.catetos){
+      ctx.save(); ctx.strokeStyle = c.x; ctx.globalAlpha = atenuar('x'); ctx.lineWidth = grosor('x', 3.5); ctx.setLineDash([8, 5]); linea(ctx, Q([0, 0]), Q([R.x, 0])); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.y; ctx.globalAlpha = atenuar('y'); ctx.lineWidth = grosor('y', 3.5); ctx.setLineDash([8, 5]); linea(ctx, Q([R.x, 0]), Q([R.x, R.y])); ctx.restore();
+      rotulo(ctx, c, X(R.x/2), Y(0) + (R.y >= 0 ? 13 : -13), `x = ${Math.abs(R.x)}`, c.x, 'center', 800, 12);
+      rotulo(ctx, c, X(R.x) + (R.x >= 0 ? 8 : -8), Y(R.y/2), `y = ${Math.abs(R.y)}`, c.y, R.x >= 0 ? 'left' : 'right', 800, 12);
+    }
+    if (L.recta){
+      ctx.save(); ctx.strokeStyle = c.d; ctx.globalAlpha = atenuar('d'); ctx.lineWidth = grosor('d', 3.5); linea(ctx, Q([0, 0]), Q([R.x, R.y])); ctx.restore();
+      // el rótulo, del lado contrario a la esquina de los catetos
+      const m = Q([R.x/2, R.y/2]), q = Q([R.x, 0]), ux = q.x - m.x, uy = q.y - m.y;
+      const a = Q([0, 0]), b = Q([R.x, R.y]), dx = b.x - a.x, dy = b.y - a.y, nn = Math.hypot(dx, dy) || 1;
+      let nx = -dy/nn, ny = dx/nn; if (nx*ux + ny*uy > 0){ nx = -nx; ny = -ny; }
+      rotulo(ctx, c, m.x + nx*16, m.y + ny*16, `d = ${R.exacto}`, c.d, 'center', 800, 12);
+    }
+    // el camino
+    const hechos = Math.floor(L.prog), f = L.prog - hechos;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath();
+    const p0 = Q(pts[0]); ctx.moveTo(p0.x, p0.y); let fin = p0;
+    for (let j = 1; j < pts.length; j++){
+      if (j - 1 >= L.prog) break;
+      const a = Q(pts[j - 1]), b = Q(pts[j]), g = j - 1 < hechos ? 1 : f;
+      fin = { x:a.x + (b.x - a.x)*g, y:a.y + (b.y - a.y)*g }; ctx.lineTo(fin.x, fin.y);
+    }
+    ctx.stroke(); ctx.restore();
+    if (L.rotulos) for (let j = 1; j <= Math.min(hechos, L.tramos.length); j++){
+      const a = pts[j - 1], b = pts[j], hor = a[1] === b[1], mx = (a[0] + b[0])/2, my = (a[1] + b[1])/2;
+      rotulo(ctx, c, X(mx) + (hor ? 0 : -12), Y(my) + (hor ? -11 : 0), String(L.tramos[j - 1][1]), c.muted, hor ? 'center' : 'right', 800, 11);
+    }
+    punto(ctx, p0.x, p0.y, 6, c.card, c.ink, 2.5);
+    rotulo(ctx, c, p0.x + 10, p0.y + 12, 'salida', c.ink, 'left', 800, 11);
+    if (L.prog > 0) punto(ctx, fin.x, fin.y, 6, c.ink);
+  }
+
+  // ----- el guardia y la brújula -----
+  function dibBrujula(c){
+    const B = E.bru, cx = W/2, cy = Hh/2, R = Math.min(W, Hh)/2 - 26;
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.stroke(); ctx.restore();
+    [['N', 0], ['E', 90], ['S', 180], ['O', 270]].forEach(([t, a]) => {
+      const r = a*Math.PI/180, x = cx + Math.sin(r)*(R + 14), y = cy - Math.cos(r)*(R + 14);
+      rotulo(ctx, c, x, y, t, c.ink, 'center', 800, 14);
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; linea(ctx, { x:cx + Math.sin(r)*(R - 8), y:cy - Math.cos(r)*(R - 8) }, { x:cx + Math.sin(r)*R, y:cy - Math.cos(r)*R }); ctx.restore();
+    });
+    const r = B.ang*Math.PI/180, g = R*.3;
+    punto(ctx, cx, cy, g, c.card, c.ink, 2.5);
+    flecha(ctx, cx, cy, cx + Math.sin(r)*(R - 16), cy - Math.cos(r)*(R - 16), c.ink, 3);
+    // hombros: una línea perpendicular a la mirada
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 5; ctx.lineCap = 'round';
+    linea(ctx, { x:cx - Math.cos(r)*g*1.5, y:cy - Math.sin(r)*g*1.5 }, { x:cx + Math.cos(r)*g*1.5, y:cy + Math.sin(r)*g*1.5 }); ctx.restore();
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, Hh); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, Hh);
+    geo = null;
+    if (E.modo === 'linea' && E.lin) dibLinea(c);
+    else if (E.modo === 'combis' && E.com) dibCombis(c);
+    else if (E.modo === 'calendario' && E.cal) dibCalendario(c);
+    else if (E.modo === 'monedas' && E.mon) dibMonedas(c);
+    else if (E.modo === 'plano' && E.pla) dibPlano(c);
+    else if (E.modo === 'brujula' && E.bru) dibBrujula(c);
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const vr = k => k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k;
+    const it = (k, t, f) => `<span style="--k:var(${vr(k)})"><i class="${f || ''}" style="background:var(${vr(k)})"></i>${t}</span>`;
+    document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t, f]) => it(k, t, f)).join('');
+  };
+  E.avisar = () => {
+    const filas = E.lect.map(f => f(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = { linea:'Una línea de tiempo del tratamiento.', combis:'Las salidas de las combis en una línea de tiempo.', calendario:'Un calendario por semanas, de lunes a domingo.',
+        monedas:'Monedas iguales sobre la mesa.', plano:'Un plano de cuadras con la plaza.', brujula:'Un guardia visto desde arriba sobre una brújula.' }[E.modo];
+      document.getElementById(idDesc).textContent = [E.desc || base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); E.avisar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.dibujar(); E.avisar(); if (fin) fin(); }, lineal);
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+
+  // ----- mover monedas: dedo, ratón o teclado -----
+  function monedaEn(p, rad){
+    if (!geo || E.modo !== 'monedas') return -1;
+    let mejor = -1, dm = Infinity;
+    E.mon.pos.forEach((q, i) => { const s = geo.P(q), d = Math.hypot(p.x - s.x, p.y - s.y); if (d < Math.max(geo.r, rad*.8) && d < dm){ dm = d; mejor = i; } });
+    return mejor;
+  }
+  function lugarEn(x, y){
+    if (!geo) return -1;
+    let mejor = -1, dm = Infinity;
+    geo.pts.forEach((q, k) => { const s = geo.P(q), d = Math.hypot(x - s.x, y - s.y); if (d < dm){ dm = d; mejor = k; } });
+    return dm < geo.r*1.3 ? mejor : -1;
+  }
+  E.mover = (i, p) => {       // la moneda i al punto p de la red (si está libre); cuenta una jugada
+    const M = E.mon; if (!M || igualP(M.pos[i], p) || M.pos.some(q => igualP(q, p))) return false;
+    M.pos[i] = p.slice(); M.jugadas++; if (!M.movidas.includes(i)) M.movidas.push(i);
+    if (E.alMover) E.alMover(); E.dibujar(); E.avisar(); return true;
+  };
+  Celular.arrastre(cv, {
+    activo: () => E.tocar && !E.anim && E.modo === 'monedas',
+    cerca: (p, r) => monedaEn(p, r) >= 0,
+    empezar: p => { const i = monedaEn(p, 40); drag = i >= 0 ? { i, x:p.x, y:p.y, x0:p.x, y0:p.y, movio:false } : null; },
+    mover: p => { if (!drag) return; drag.x = p.x; drag.y = p.y; if (Math.hypot(p.x - drag.x0, p.y - drag.y0) > 6) drag.movio = true; E.dibujar(); },
+    soltar: () => { const D = drag; drag = null; if (!D){ E.dibujar(); return; } if (D.movio){ const k = lugarEn(D.x, D.y); if (k >= 0) E.mover(D.i, geo.pts[k]); } E.dibujar(); }
+  });
+  cv.addEventListener('keydown', e => {
+    if (!E.tocar || E.anim || E.modo !== 'monedas' || !geo) return;
+    const pts = geo.pts, M = E.mon;
+    if (cursor < 0) cursor = pts.findIndex(p => igualP(p, M.pos[0]));
+    const p = pts[cursor], x = p[0] + p[1]/2;
+    const buscar = (dx, dv) => {
+      let mejor = -1, dm = Infinity;
+      pts.forEach((q, k) => { const qx = q[0] + q[1]/2, ok = dv ? q[1] === p[1] + dv : q[1] === p[1] && Math.sign(qx - x) === dx;
+        if (!ok) return; const d = Math.abs(qx - x); if (d < dm){ dm = d; mejor = k; } });
+      return mejor;
+    };
+    let k = -1;
+    if (e.key === 'ArrowLeft') k = buscar(-1, 0); else if (e.key === 'ArrowRight') k = buscar(1, 0);
+    else if (e.key === 'ArrowUp') k = buscar(0, 1); else if (e.key === 'ArrowDown') k = buscar(0, -1);
+    else if (e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      const aqui = M.pos.findIndex(q => igualP(q, p));
+      if (mano < 0 && aqui >= 0) mano = aqui;
+      else if (mano >= 0 && aqui < 0){ const i = mano; mano = -1; E.mover(i, p); }
+      else if (mano === aqui) mano = -1;
+      E.dibujar(); avisarCursor(); return;
+    } else if (e.key === 'Escape'){ mano = -1; E.dibujar(); avisarCursor(); return; }
+    else return;
+    e.preventDefault();
+    if (k >= 0) cursor = k;
+    E.dibujar(); avisarCursor();
+  });
+  cv.addEventListener('focus', () => { if (E.tocar && E.modo === 'monedas'){ if (cursor < 0 && geo) cursor = geo.pts.findIndex(p => igualP(p, E.mon.pos[0])); E.dibujar(); avisarCursor(); } });
+  cv.addEventListener('blur', () => E.dibujar());
+  function avisarCursor(){
+    if (!idDesc || !geo || cursor < 0) return;
+    const p = geo.pts[cursor], hay = E.mon.pos.some(q => igualP(q, p));
+    document.getElementById(idDesc).textContent = `Fila ${p[1] + 2} desde abajo, lugar ${Math.round((p[0] + p[1]/2 + 1)*2) + 1} desde la izquierda: ${hay ? 'hay una moneda' : 'libre'}.${mano >= 0 ? ' Llevas una moneda: Enter la deja en un lugar libre.' : hay ? ' Enter la levanta.' : ''}`;
+  }
+  return E;
+}
+
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const L = (k, nombre, valor) => () => [k, nombre, valor];
+const segHTML = (id, etiqueta, ops, val) => `<div class="seg" id="${id}" role="group" aria-label="${etiqueta}">${ops.map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${String(v) === String(val)}">${t}</button>`).join('')}</div>`;
+// los lugares de la red donde el motor pone el triángulo invertido, y el orden en que mueve las monedas
+function planMonedas(filas){
+  const R = MT.monedasTriangulo({ filas });
+  return { R, pasos: R.mover.map((p, j) => ({ i:R.inicio.findIndex(q => q[0] === p[0] && q[1] === p[1]), a:R.a[j] })) };
+}
+function animarPlan(E, plan, dur, fin){
+  const M = E.mon; let j = 0;
+  const sig = () => {
+    if (j >= plan.pasos.length){ M.anim = null; E.dibujar(); if (fin) fin(); return; }
+    const { i, a } = plan.pasos[j++], de = M.pos[i].slice();
+    if (!M.movidas.includes(i)) M.movidas.push(i);
+    M.anim = { i, de, a, f:0 };
+    E.animar(0, 1, dur, v => { M.anim.f = v; }, () => { M.pos[i] = a.slice(); M.jugadas++; M.anim = null; E.dibujar(); E.avisar(); sig(); });
+  };
+  sig();
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const { k:k_, t:t_, n:n_, a:a_, b:b_, M:M_, s:s_, D:D_, r:r_, m:m_, x:x_, y:y_, d:d_ } = W_;
+const S = { step:0, max:0, pred:{}, ocupado:false, k2:6, d2:2, f2:true, pos7:null, j7:0, mov7:[] };
+
+// Números de la escena: todos salen del motor
+const T1 = MT.tomas(ESC.pastillas), T1sin = MT.tomas(Object.assign({}, ESC.pastillas, { final:false }));
+const C3 = MT.proximaCoincidencia(ESC.combis), C4 = MT.vecesCoinciden(ESC.combis);
+const D5 = MT.descanso(ESC.turno), R5 = MT.recorrerDias(ESC.turno);
+const PL6 = planMonedas(ESC.monedas.filas), M6 = PL6.R;
+const R8 = MT.recorrido(ESC.plaza);
+const [IA, IB] = ESC.combis.intervalos;
+
+const G1 = { id:'traslados-paso1', ok:'b', unidad:U_FREC, opts:[
+  ['a', `${T1.errores.sinMasUno} pastillas`, 'pastillas-sin-mas-uno', 'hipotesis'],
+  ['b', `${T1.tomas} pastillas`],
+  ['c', `${T1.errores.menosUno} pastillas`, 'pastillas-menos-uno', 'hipotesis'],
+  ['d', `${T1.errores.deMas} pastillas`, 'pastillas-extremos-de-mas', 'hipotesis']],
+  fb:{ b:`¡Bien! En ${t_('48 h')} caben 48 ÷ 6 = ${T1.intervalos} intervalos de ${k_('6 h')}. Cada intervalo empieza con una toma, y al final del último hay una toma más: ${n_('n')} = ${T1.intervalos} + 1 = ${n_(String(T1.tomas))}.`,
+    a:`Elegiste la A. 48 ÷ 6 = ${T1.intervalos} cuenta los intervalos de 6 horas, no las tomas. La primera toma es al empezar y la última al cumplirse los 2 días: hay una toma más que intervalos. La correcta está marcada.`,
+    c:`Elegiste la C. ${T1.errores.menosUno} son solo las tomas de en medio: deja fuera las dos de los extremos (el lunes y el miércoles a las 8:00), y las dos se toman. La correcta está marcada.`,
+    d:`Elegiste la D. ${T1.errores.deMas} cuenta una toma de más: a los ${T1.intervalos} intervalos se les sumó una toma por cada extremo, pero la del inicio ya es la que abre el primer intervalo. La correcta está marcada.` } };
+const G3 = { id:'traslados-paso3', ok:'d', unidad:U_FREC, opts:[
+  ['a', C3.horas.mcd, 'AR13-mcd-en-vez-de-mcm', 'parcial'],
+  ['b', C3.horas.suma, 'coincidencia-suma-de-intervalos', 'hipotesis'],
+  ['c', C3.horas.producto, 'AR13-producto', 'parcial'],
+  ['d', C3.hora]],
+  fb:{ d:`¡Bien! La combi A sale a los 12, 24, ${M_(String(C3.mcm))}, … minutos y la B a los 18, ${M_(String(C3.mcm))}, …: el primer número que está en las dos listas es el menor múltiplo común de 12 y 18, ${M_('M')} = ${M_(String(C3.mcm))}. 6:00 + ${C3.mcm} min = ${C3.hora}.`,
+    a:`Elegiste la A. ${C3.mcd} es el mayor divisor común de 12 y 18 (el MCD). Pero a los ${C3.mcd} minutos todavía no sale ninguna combi: la primera A sale a las 6:12. Para que salgan juntas tiene que pasar un número de minutos que sea múltiplo de 12 y también de 18. La correcta está marcada.`,
+    b:`Elegiste la B. A los ${C3.suma} minutos (12 + 18) no sale ninguna: la A sale a las 6:24 y luego a las 6:36; la B, a las 6:18 y luego a las 6:36. La correcta está marcada.`,
+    c:`Elegiste la C. 12 · 18 = ${C3.producto} minutos (${C3.horas.producto}) es un momento en que sí salen juntas, pero no el primero: antes ya coincidieron varias veces. El producto es un múltiplo común, no el menor. La correcta está marcada.` } };
+const G4 = { id:'traslados-paso4', ok:'a', unidad:U_FREC, opts:[
+  ['a', `${C4.veces} veces`],
+  ['b', `${C4.errores.sinLaPrimera} veces`, 'coincidencias-sin-la-primera', 'hipotesis'],
+  ['c', `${C4.errores.conSuma} veces`, 'coincidencias-cada-suma', 'hipotesis'],
+  ['d', `${C4.errores.conMcd} veces`, 'AR13-mcd-en-vez-de-mcm', 'parcial']],
+  fb:{ a:`¡Bien! Salen juntas cada ${M_(String(C4.mcm))} min. En los ${C4.lapso} minutos de 6:00 a 9:00 caben ${C4.lapso} ÷ ${C4.mcm} = ${C4.veces - 1} intervalos, y hay una salida juntas más que intervalos: ${s_('s')} = ${C4.veces - 1} + 1 = ${s_(String(C4.veces))}, con la de las 6:00 y la de las 9:00.`,
+    b:`Elegiste la B. ${C4.lapso} ÷ ${C4.mcm} = ${C4.veces - 1} cuenta los intervalos; falta la salida de las 6:00, con la que empieza todo: ${C4.horas.join(', ')} son ${C4.veces}. La correcta está marcada.`,
+    c:`Elegiste la C. Juntas salen cada ${C4.mcm} minutos, no cada ${IA + IB} (12 + 18). Con ${IA + IB} saldrían ${C4.errores.conSuma} veces, pero a las 6:30 no sale ninguna. La correcta está marcada.`,
+    d:`Elegiste la D. ${C4.errores.conMcd} sería si salieran juntas cada 6 minutos (el MCD de 12 y 18), pero en 6 minutos ninguna combi vuelve a salir. La correcta está marcada.` } };
+const G5 = { id:'traslados-paso5', ok:'c', unidad:U_FREC, opts:[
+  ['a', 'El viernes', 'turno-un-ciclo-de-mas', 'hipotesis'],
+  ['b', 'El lunes', 'turno-siempre-el-mismo-dia', 'hipotesis'],
+  ['c', 'El sábado'],
+  ['d', 'El miércoles', 'turno-cuenta-hacia-atras', 'hipotesis']],
+  fb:{ c:`¡Bien! Del primer descanso al décimo hay 9 saltos de 6 días: ${D_('D')} = 9 · 6 = ${D_(String(D5.dias))} días. ${D5.dias} = 7 · ${D5.semanas} + ${r_(String(D5.resto))}: ${D5.semanas} semanas justas, que dejan el lunes como lunes, y ${r_(String(D5.resto))} días más: lunes + ${D5.resto} = ${D5.dia}.`,
+    a:`Elegiste la A. ${D5.errores.unCicloDeMas[0].toUpperCase() + D5.errores.unCicloDeMas.slice(1)} sale de contar 10 saltos de 6 días (60 días) en vez de 9: el primer descanso ya es el lunes, y del 1.º al 10.º hay 9 saltos. También sale viernes si, al avanzar los días que sobran, se cuenta el lunes como el primero. La correcta está marcada.`,
+    b:'Elegiste la B. Los descansos se repiten cada 6 días, pero la semana tiene 7: cada descanso cae un día antes en la semana que el anterior (lunes, domingo, sábado…). La correcta está marcada.',
+    d:'Elegiste la D. Miércoles sale de contar hacia atrás los días que sobran después de las semanas completas. Los días van hacia adelante desde el lunes. La correcta está marcada.' } };
+const G6 = { id:'traslados-paso6', ok:'b', opts:[
+  ['a', `${M6.errores.dosPuntas} jugadas`, 'monedas-dos-puntas', 'hipotesis'],
+  ['b', `${M6.minimo} jugadas`],
+  ['c', `${M6.errores.filaMasLarga} jugadas`, 'monedas-fila-larga', 'hipotesis'],
+  ['d', `${M6.errores.mitad} jugadas`, 'monedas-la-mitad', 'hipotesis']],
+  fb:{ b:`¡Bien! Basta con mover las tres puntas: las 7 monedas del medio ya forman parte del triángulo invertido. Cada moneda que no está en su lugar final se mueve al menos una vez, y el motor probó todos los lugares posibles del triángulo invertido: como mucho comparte 7 monedas con el de partida, así que hacen falta ${m_(`m = 10 − 7 = ${M6.minimo}`)} jugadas.`,
+    a:'Elegiste la A. Con 2 jugadas quedarían 8 monedas quietas, y en ningún lugar el triángulo invertido comparte 8 monedas con el de partida: como mucho comparte 7. La correcta está marcada.',
+    c:'Elegiste la C. Con 4 jugadas se puede, pero no es lo mínimo: 7 de las 10 monedas pueden quedarse quietas. La correcta está marcada.',
+    d:'Elegiste la D. Mover la mitad de las monedas es más de lo necesario: 7 de las 10 ya están donde las necesita el triángulo invertido. La correcta está marcada.' } };
+const G8 = { id:'traslados-paso8', ok:'d', opts:[
+  ['a', `${fmt(R8.errores.sinRestar)} cuadras`, 'cardinal-no-resta-el-sur', 'hipotesis'],
+  ['b', `${R8.errores.sumaTodo} cuadras`, 'cardinal-suma-todo-el-camino', 'hipotesis'],
+  ['c', `${R8.errores.sumaCatetos} cuadras`, 'cardinal-suma-los-catetos', 'hipotesis'],
+  ['d', `${R8.exacto} cuadras`]],
+  fb:{ d:`¡Bien! Hacia el este: ${x_('x')} = 4 + 8 = ${x_(String(R8.x))}. Hacia el norte: ${y_('y')} = 7 − 2 = ${y_(String(R8.y))}. La recta al punto de partida es la hipotenusa: ${d_('d')} = √(${R8.x}² + ${R8.y}²) = √${R8.d2} = ${d_(R8.exacto)} cuadras, hacia el ${R8.direccion}.`,
+    a:`Elegiste la A. ${fmt(R8.errores.sinRestar)} sale de sumar las 2 cuadras al sur a las 7 al norte: √(12² + 9²). Pero al ir al sur Lucía retrocede. La correcta está marcada.`,
+    b:`Elegiste la B. ${R8.errores.sumaTodo} es todo lo que caminó (7 + 4 + 2 + 8). La pregunta es la distancia en línea recta, y el camino da vueltas. La correcta está marcada.`,
+    c:`Elegiste la C. ${R8.x} + ${R8.y} = ${R8.errores.sumaCatetos} es lo que caminaría para volver por las calles. En línea recta se corta en diagonal: es la hipotenusa de un triángulo rectángulo. La correcta está marcada.` } };
+
+// ---- configuraciones ----
+const MARCAS1 = [{ h:0, texto:'lun 8:00' }, { h:24, texto:'mar 8:00' }, { h:48, texto:'mié 8:00' }];
+const linea1 = ya => ({ modo:'linea', lin:Object.assign({}, ESC.pastillas, { ver: ya ? T1.tomas : 0, marcas:MARCAS1, intervalos:ya }),
+  lect: [L('k', 'Cada k', '6 h'), L('t', 'Durante t', '48 h'), L('n', 'Tomas n', ya ? String(T1.tomas) : '?')],
+  ley: ya ? [['n', 'n · cada toma', 'pt'], ['k', 'k · entre dos tomas'], ['t', 't · todo el tratamiento']] : [['t', 't · todo el tratamiento']],
+  desc: ya ? `Una línea de tiempo del lunes a las 8:00 al miércoles a las 8:00 con ${T1.tomas} tomas, una cada 6 horas.` : 'Una línea de tiempo del lunes a las 8:00 al miércoles a las 8:00, sin tomas marcadas.' });
+function linea2(){
+  const t = 24*S.d2, R = MT.tomas({ k:S.k2, t, final:S.f2 });
+  const marcas = Array.from({ length:S.d2 + 1 }, (_, j) => ({ h:24*j, texto:['lun', 'mar', 'mié', 'jue'][j] + ' 8:00' }));
+  E.config({ modo:'linea', lin:{ k:S.k2, t, final:S.f2, ver:R.tomas, marcas, intervalos:true },
+    lect:[L('k', 'Cada k', `${S.k2} h`), L('t', 'Durante t', `${t} h`), L('n', 'Tomas n', String(R.tomas))],
+    ley:[['n', 'n · cada toma', 'pt'], ['k', 'k · entre dos tomas'], ['t', 't · todo el tratamiento']],
+    desc:`Una pastilla cada ${S.k2} horas durante ${S.d2} ${S.d2 === 1 ? 'día' : 'días'}${S.f2 ? ', también al terminar' : ', sin tomar al terminar'}.` });
+  const d = $('vivo2');
+  if (d) d.innerHTML = `<div class="eq">${fr(t_(String(t)), k_(String(S.k2)))} = ${R.intervalos}<span class="note">intervalos de ${S.k2} h</span></div>
+    <div class="eq">${n_('n')} = ${R.intervalos}${S.f2 ? ' + 1' : ''} = ${n_(String(R.tomas))}<span class="note">${S.f2 ? 'una toma al empezar cada intervalo y otra al final' : 'al cumplirse el tiempo ya no se toma'}</span></div>`;
+}
+const combis3 = ya => ({ modo:'combis', com:{ intervalos:ESC.combis.intervalos, inicio:360, fin:420, paso:10, ahora: ya ? 420 : 360, horas:ya },
+  lect:[L('a', 'A sale cada a', `${IA} min`), L('b', 'B sale cada b', `${IB} min`), L('M', 'Otra vez juntas', ya ? C3.hora : '?')],
+  ley: [['a', 'a · combi A'], ['b', 'b · combi B']].concat(ya ? [['M', 'M · salen juntas']] : []),
+  desc: ya ? `Las salidas de 6:00 a 7:00: la A cada 12 minutos y la B cada 18; salen juntas a las 6:00 y a las ${C3.hora}.` : 'Una línea de tiempo de 6:00 a 7:00 con las dos combis saliendo juntas a las 6:00.' });
+const combis4 = ya => ({ modo:'combis', com:{ intervalos:ESC.combis.intervalos, inicio:360, fin:540, paso:30, ahora: ya ? 540 : 360, horas:ya, contar:ya },
+  lect:[L('M', 'Juntas cada M', `${C3.mcm} min`), L('ink', 'Desde … hasta', '6:00 a 9:00'), L('s', 'Veces juntas s', ya ? String(C4.veces) : '?')],
+  ley: [['a', 'a · combi A'], ['b', 'b · combi B']].concat(ya ? [['M', 'M · salen juntas'], ['s', 's · cuenta de las veces', 'pt']] : []),
+  desc: ya ? `Las salidas de 6:00 a 9:00; salen juntas ${C4.veces} veces: ${C4.horas.join(', ')}.` : 'Una línea de tiempo de 6:00 a 9:00 con las dos combis saliendo juntas a las 6:00.' });
+const turno5 = ya => ({ modo:'calendario', cal:{ ciclo:6, n:10, filas:9, hasta: ya ? D5.dias + 1 : 1, marcas:ya },
+  lect: ya ? [L('D', 'Del 1.º al 10.º D', `${D5.dias} días`), L('r', 'Sobran r', `${D5.resto} días`), L('ink', 'Décimo descanso', D5.dia)]
+           : [L('ink', 'Primer descanso', 'lunes'), L('ink', 'Décimo descanso', '?')],
+  ley: ya ? [['D', `D · ${D5.semanas} semanas completas`], ['r', 'r · los días que sobran']] : [],
+  desc: ya ? `Un calendario de lunes a domingo con los diez descansos numerados; el décimo cae ${D5.dia}.` : 'Un calendario de lunes a domingo con el primer descanso marcado en un lunes.' });
+const monedas6 = ya => ({ modo:'monedas', mon:{ filas:4, pos: ya ? M6.inicio.map(p => { const j = M6.mover.findIndex(q => q[0] === p[0] && q[1] === p[1]); return j >= 0 ? M6.a[j] : p; }) : M6.inicio, movidas: ya ? PL6.pasos.map(q => q.i) : [], jugadas: ya ? M6.minimo : 0 },
+  lect:[L('ink', 'Monedas', '10'), E0 => ['m', 'Jugadas m', ya || E0.anim || E0.mon.jugadas > 0 ? String(E0.mon.jugadas) : '?']],
+  ley: ya ? [['m', 'm · las monedas que se mueven', 'pt']] : [],
+  desc: ya ? 'Las diez monedas forman ahora un triángulo que apunta hacia abajo; se movieron las tres puntas.' : 'Diez monedas forman un triángulo que apunta hacia arriba: 4 abajo, luego 3, 2 y 1.' });
+function monedas7(){
+  E.config({ modo:'monedas', tocar:true, mon:{ filas:4, pos:S.pos7, puntos:true, jugadas:S.j7, movidas:S.mov7 },
+    lect:[E0 => ['m', 'Jugadas m', String(E0.mon.jugadas)], E0 => ['ink', '¿Apunta hacia abajo?', MT.revisarMonedas(E0.mon.pos, 4).llego ? 'sí' : 'todavía no']],
+    ley:[['m', 'm · las que ya moviste', 'pt']],
+    alMover:() => { S.pos7 = E.mon.pos.map(p => p.slice()); S.j7 = E.mon.jugadas; S.mov7 = E.mon.movidas.slice(); vivo7(); },
+    desc:'Diez monedas sobre la mesa. Arrastra una a un punto libre, o usa las flechas y Enter.' });
+}
+function vivo7(){
+  const m = $('msg7'); if (!m) return;
+  const R = MT.revisarMonedas(S.pos7, 4);
+  if (R.llego){ m.textContent = S.j7 === M6.minimo ? `¡Lo lograste en ${S.j7} jugadas, el mínimo!` : `Apunta hacia abajo, en ${S.j7} jugadas. Se puede en ${M6.minimo}.`; m.className = 'msg ok'; }
+  else if (S.j7 > 0){ m.textContent = `Llevas ${S.j7} ${S.j7 === 1 ? 'jugada' : 'jugadas'}. Desde aquí te faltan al menos ${R.faltan}.`; m.className = 'msg'; }
+  else { m.textContent = ''; m.className = 'msg'; }
+}
+const plaza8 = ya => ({ modo:'plano', pla:{ tramos:ESC.plaza, prog: ya ? ESC.plaza.length : 0, catetos:ya, recta:ya, rotulos:ya },
+  lect: ya ? [L('x', 'Al este x', `${R8.x} cuadras`), L('y', 'Al norte y', `${R8.y} cuadras`), L('d', 'En línea recta d', `${R8.exacto} cuadras`)]
+           : [L('ink', 'Camina', '7N 4E 2S 8E'), L('d', 'En línea recta d', '?')],
+  ley: ya ? [['x', 'x · de oeste a este'], ['y', 'y · de sur a norte'], ['d', 'd · en línea recta']] : [],
+  desc: ya ? `El camino de Lucía en el plano: termina ${R8.x} cuadras al este y ${R8.y} al norte de la salida, a ${R8.exacto} cuadras en línea recta, hacia el ${R8.direccion}.` : 'Un plano de cuadras con la plaza y la esquina de salida marcada; el camino no está dibujado.' });
+
+const steps = [
+ { k:'Paso 1', t:'Predice: las pastillas de la posta', gate:G1,
+   prep:() => E.config(linea1(!!S.pred[G1.id])),
+   anima:fin => { const o = linea1(true); o.lin.ver = 0; E.config(o); const Lz = E.lin;
+     E.animar(0, T1.tomas, 2600, v => { Lz.ver = Math.floor(v + 1e-9); }, () => { E.config(linea1(true)); fin(); }, true); },
+   body:() => `<p class="problem">En la posta de salud, a Rosa le indican una pastilla cada ${k_('6 horas')} durante ${t_('2 días')}. Toma la primera el lunes a las 8:00, al empezar el tratamiento, y la última el miércoles a las 8:00, justo cuando se cumplen los 2 días.</p>
+   <p>¿Cuántas pastillas toma en total?</p>${opcionesHTML(G1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${fr(t_('48'), k_('6'))} = ${T1.intervalos}<span class="note">intervalos de 6 h</span></div>
+     <div class="eq">${n_('n')} = ${fr(t_('t'), k_('k'))} + 1 = ${T1.intervalos} + 1 = ${n_(String(T1.tomas))}<span class="note">la primera toma abre el primer intervalo y la última cierra el último</span></div></div>
+   <p>Es como poner postes en una línea: hay un poste más que tramos. Si la receta no pidiera la toma del final, serían ${T1sin.tomas}.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras: el informe de investigación anota el olvido del «+1» al contar los términos de una progresión, pero no encontró estudios que lo midan.</p></div>` },
+ { k:'Paso 2', t:'Cambia la receta', explora:'linea',
+   prep:() => linea2(),
+   body:() => `<p class="problem">Cambia cada cuántas horas se toma, cuántos días dura y si se toma también al terminar. Las tomas se cuentan solas en la línea.</p>
+   <div class="controles">
+   <p class="rotulo-chico">Una pastilla cada…</p>${segHTML('k2', 'Cada cuántas horas', [[4, '4 h'], [6, '6 h'], [8, '8 h'], [12, '12 h']], S.k2)}
+   <p class="rotulo-chico">Durante…</p>${segHTML('d2', 'Cuántos días', [[1, '1 día'], [2, '2 días'], [3, '3 días']], S.d2)}
+   <p class="rotulo-chico">¿Se toma también al cumplirse el tiempo?</p>${segHTML('f2', 'Toma final', [['si', 'Sí'], ['no', 'No']], S.f2 ? 'si' : 'no')}</div>
+   <div class="eqs" id="vivo2"></div>
+   <p>Con la toma del final, siempre hay una más que intervalos. Las campanadas de un reloj se cuentan igual: cada cierto tiempo, contando la primera.</p>` },
+ { k:'Paso 3', t:'Predice: las dos combis', gate:G3,
+   prep:() => E.config(combis3(!!S.pred[G3.id])),
+   anima:fin => { const o = combis3(true); o.com.ahora = 360; E.config(o); const C = E.com;
+     E.animar(360, 420, 3400, v => { C.ahora = v; }, () => { E.config(combis3(true)); fin(); }, true); },
+   body:() => `<p class="problem">En un paradero de Juliaca, las combis de la línea A salen cada ${a_('12 minutos')} y las de la línea B cada ${b_('18 minutos')}. A las 6:00 salen juntas una combi de cada línea.</p>
+   <p>¿A qué hora vuelven a salir juntas por primera vez?</p>${opcionesHTML(G3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">A: ${a_('12')}, 24, ${M_('36')}, 48, …<span class="note">múltiplos de 12</span></div>
+     <div class="eq">B: ${b_('18')}, ${M_('36')}, 54, …<span class="note">múltiplos de 18</span></div>
+     <div class="eq">${M_('M')} = MCM(${a_('12')}, ${b_('18')}) = ${M_(String(C3.mcm))} → 6:00 + ${C3.mcm} min = ${C3.hora}</div></div>
+   <p>Salir juntas otra vez pide un tiempo que sea múltiplo de los dos intervalos, y el primero de esos es el mínimo común múltiplo. El motor lo comprueba además recorriendo los minutos uno por uno.</p>
+   <p class="fuente">Usar el MCD donde va el MCM, o el producto, está descrito en estudios con escolares de primaria de Indonesia y de Taiwán, pero sin una cifra que se pueda comparar. Sumar los intervalos es hipótesis nuestra.</p></div>` },
+ { k:'Paso 4', t:'Predice: cuántas veces en la mañana', gate:G4,
+   prep:() => E.config(combis4(!!S.pred[G4.id])),
+   anima:fin => { const o = combis4(true); o.com.ahora = 360; E.config(o); const C = E.com;
+     E.animar(360, 540, 4600, v => { C.ahora = v; }, () => { E.config(combis4(true)); fin(); }, true); },
+   body:() => `<p class="problem">Las combis siguen saliendo así toda la mañana, la A cada ${a_('12')} minutos y la B cada ${b_('18')}.</p>
+   <p>¿Cuántas veces salen juntas una combi A y una combi B desde las 6:00 hasta las 9:00, contando la salida de las 6:00 y, si la hay, la de las 9:00?</p>${opcionesHTML(G4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${fr(String(C4.lapso), M_(String(C4.mcm)))} = ${C4.veces - 1}<span class="note">intervalos de ${C4.mcm} min en 3 horas</span></div>
+     <div class="eq">${s_('s')} = ${C4.veces - 1} + 1 = ${s_(String(C4.veces))}<span class="note">${C4.horas.join(', ')}</span></div></div>
+   <p>Es la misma cuenta que la de las pastillas: un suceso que se repite cada ${C4.mcm} minutos, contando el primero. El motor recorrió los ${C4.lapso + 1} minutos de 6:00 a 9:00 con un reloj para cada combi y encontró las mismas ${C4.veces} salidas juntas.</p>
+   <p class="fuente">Olvidar la primera y salir juntas cada 30 minutos son hipótesis nuestras; el MCD en lugar del MCM está descrito en estudios con escolares de primaria, sin cifra comparable.</p></div>` },
+ { k:'Paso 5', t:'Predice: el décimo descanso', gate:G5,
+   prep:() => E.config(turno5(!!S.pred[G5.id])),
+   anima:fin => { const o = turno5(true); o.cal.hasta = 1; o.cal.marcas = false; E.config(o); const C = E.cal;
+     E.animar(1, D5.dias + 1, 3600, v => { C.hasta = Math.floor(v); }, () => { E.config(turno5(true)); fin(); }, true); },
+   body:() => `<p class="problem">Don Julio es vigilante de una botica. Trabaja 5 días seguidos y descansa el sexto, siempre así, sin importar si es domingo o feriado. Su primer descanso fue un lunes.</p>
+   <p>¿Qué día de la semana cae su décimo descanso?</p>${opcionesHTML(G5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${D_('D')} = (10 − 1) · 6 = ${D_(String(D5.dias))} días<span class="note">del 1.º al 10.º descanso hay 9 saltos</span></div>
+     <div class="eq">${D_(String(D5.dias))} = 7 · ${D5.semanas} + ${r_(String(D5.resto))}<span class="note">las semanas completas no cambian el día</span></div>
+     <div class="eq">lunes + ${r_(String(D5.resto))} = ${D5.dia}</div></div>
+   <p>Como 6 es uno menos que 7, cada descanso cae un día antes en la semana: ${R5.descansos.map(q => q.nombre).join(', ')}. El motor lo contó también día por día, sin dividir.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras: no encontramos estudios con cifras sobre turnos ni calendarios.</p></div>` },
+ { k:'Paso 6', t:'Predice: las diez monedas', gate:G6,
+   prep:() => E.config(monedas6(!!S.pred[G6.id])),
+   anima:fin => { E.config(monedas6(false)); E.anim = false; animarPlan(E, PL6, 800, () => { E.config(monedas6(true)); fin(); }); },
+   body:() => `<p class="problem">Sobre la mesa hay 10 monedas de un sol que forman un triángulo que apunta hacia arriba: 4 en la fila de abajo, luego 3, 2 y 1. Una jugada es levantar una moneda y ponerla en otro lugar de la mesa, junto a las demás.</p>
+   <p>¿Cuántas jugadas hacen falta, como mínimo, para que el triángulo apunte hacia abajo?</p>${opcionesHTML(G6.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${m_('m')} = 10 − (las que pueden quedarse quietas)<span class="note">cada moneda fuera de su lugar se mueve una vez</span></div>
+     <div class="eq">${m_('m')} = 10 − 7 = ${m_(String(M6.minimo))}</div></div>
+   <p>El motor puso el triángulo invertido en todos los lugares de la mesa y contó cuántas monedas comparte con el de partida: como mucho, las 7 del medio. Las pruebas del motor lo confirman con una búsqueda: ninguna serie de 2 jugadas lo logra.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras: no encontramos estudios con cifras sobre traslado de monedas.</p></div>` },
+ { k:'Paso 7', t:'Mueve tú las monedas', explora:'monedas',
+   prep:() => { if (!S.pos7){ S.pos7 = M6.inicio.map(p => p.slice()); S.j7 = 0; S.mov7 = []; } monedas7(); },
+   body:() => `<p class="problem">Arrastra las monedas con el dedo o el ratón hasta un punto libre. Con el teclado: entra al dibujo con Tab, muévete con las flechas, levanta una moneda con Enter y déjala con otro Enter.</p>
+   <p class="msg" id="msg7" aria-live="polite"></p>
+   <div class="fila"><button type="button" class="btn chico" id="borrar7">Empezar de nuevo</button><button type="button" class="btn chico" id="motor7">Que lo haga el motor</button></div>
+   <p>Prueba también otro camino: deja quieta la fila de 4 y arma el triángulo invertido encima. ¿Cuántas jugadas te toma?</p>` },
+ { k:'Paso 8', t:'Predice: la caminata desde la plaza', gate:G8,
+   prep:() => E.config(plaza8(!!S.pred[G8.id])),
+   anima:fin => { const o = plaza8(true); Object.assign(o.pla, { prog:0, catetos:false, recta:false }); E.config(o); const P = E.pla;
+     E.animar(0, ESC.plaza.length, 3400, v => { P.prog = v; }, () => { P.catetos = true; E.dibujar(); E.animar(0, 1, 700, () => {}, () => { E.config(plaza8(true)); fin(); }); }, true); },
+   body:() => `<p class="problem">Lucía sale de la esquina de la catedral, en la Plaza de Armas, y camina 7 cuadras al norte, 4 al este, 2 al sur y 8 al este. Todas las cuadras miden lo mismo y las calles van de norte a sur y de este a oeste.</p>
+   <p>¿A cuántas cuadras queda, en línea recta, del punto de partida?</p>${opcionesHTML(G8.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${x_('x')} = 4 + 8 = ${x_(String(R8.x))}<span class="note">hacia el este</span></div>
+     <div class="eq">${y_('y')} = 7 − 2 = ${y_(String(R8.y))}<span class="note">el sur resta al norte</span></div>
+     <div class="eq">${d_('d')} = √(${x_(String(R8.x))}² + ${y_(String(R8.y))}²) = √${R8.d2} = ${d_(R8.exacto)}<span class="note">hacia el ${R8.direccion}</span></div></div>
+   <p>Lo que importa es dónde termina, no por dónde fue: se juntan los tramos de cada eje, con signo, y la recta es la hipotenusa del triángulo rectángulo que forman.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras: no encontramos estudios con cifras sobre puntos cardinales en problemas de admisión.</p></div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+const subir = () => { if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = false;
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.explora === 'linea') montar2();
+  if (s.explora === 'monedas') montar7();
+  nav();
+}
+function montar2(){
+  const enlazar = (id, fn) => $(id).querySelectorAll('button').forEach(b => b.onclick = () => { fn(b.dataset.v);
+    $(id).querySelectorAll('button').forEach(q => q.setAttribute('aria-pressed', String(q === b))); linea2(); });
+  enlazar('k2', v => { S.k2 = +v; }); enlazar('d2', v => { S.d2 = +v; }); enlazar('f2', v => { S.f2 = v === 'si'; });
+  linea2();
+}
+function montar7(){
+  vivo7();
+  $('borrar7').onclick = () => { if (E.anim) return; S.pos7 = M6.inicio.map(p => p.slice()); S.j7 = 0; S.mov7 = []; monedas7(); vivo7(); };
+  $('motor7').onclick = () => {
+    if (E.anim) return;
+    S.pos7 = M6.inicio.map(p => p.slice()); S.j7 = 0; S.mov7 = []; monedas7(); const paso = S.step;
+    subir();
+    Celular.alResponder($('cv'), () => animarPlan(E, PL6, 700, () => { S.pos7 = E.mon.pos.map(p => p.slice()); S.j7 = E.mon.jugadas; S.mov7 = E.mon.movidas.slice(); E.avisar(); vivo7(); }), () => S.step === paso);
+  };
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.innerHTML = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos: dos pastillas por toma, tres combis, el guardia que gira, seis monedas y la caminata con giros. La escena
+   cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const { k:k_, t:t_, n:n_, P:P_, a:a_, b:b_, c:c_, M:M_, m:m_, x:x_, y:y_, d:d_ } = W_;
+const Q1 = MT.tomas(ESC.dosPastillas), Q2 = MT.proximaCoincidencia(ESC.tresCombis), Q3 = MT.giros(ESC.guardia);
+const PL4 = planMonedas(ESC.seisMonedas.filas), Q4 = PL4.R, Q5 = MT.caminarConGiros(ESC.pileta);
+const [I1, I2, I3] = ESC.tresCombis.intervalos;
+const ANG = { N:0, E:90, S:180, O:270 };
+const mayus = t => t[0].toUpperCase() + t.slice(1);
+
+const EXPS = [
+  { id:'dos-pastillas', corto:'Dos por toma', unidad:U_FREC,
+    q:`En la posta le indican a un señor 2 pastillas juntas cada ${k_('8 horas')} durante ${t_('3 días')}, con la primera toma al empezar y la última justo al cumplirse los 3 días. ¿Cuántas pastillas necesita para todo el tratamiento?`,
+    opts:[['a', `${Q1.errores.sinMasUno} pastillas`, 'pastillas-sin-mas-uno', 'hipotesis'],
+          ['b', `${Q1.errores.sinMultiplicar} pastillas`, 'pastillas-sin-multiplicar', 'hipotesis'],
+          ['c', `${Q1.pastillas} pastillas`],
+          ['d', `${Q1.errores.deMas} pastillas`, 'pastillas-extremos-de-mas', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`${Q1.errores.sinMasUno} = 2 · ${Q1.intervalos} cuenta una toma por cada intervalo de 8 h (72 ÷ 8 = ${Q1.intervalos}). Falta la toma del final: son ${Q1.tomas} tomas de 2.`,
+         b:`${Q1.tomas} son las tomas, pero en cada una se toman 2 pastillas.`,
+         d:`Las dos tomas de los extremos no se suman aparte: la primera ya abre el primer intervalo. Son ${Q1.intervalos} + 1 = ${Q1.tomas} tomas de 2.` },
+    antes:ya => E.config({ modo:'linea', lin:Object.assign({}, ESC.dosPastillas, { ver: ya ? Q1.tomas : 0, intervalos:ya, marcas:[0, 24, 48, 72].map(h => ({ h, texto: h ? `${h} h` : 'inicio' })) }),
+      lect:[L('k', 'Cada k', '8 h'), L('t', 'Durante t', '72 h'), L('n', 'Tomas n', ya ? String(Q1.tomas) : '?'), L('P', 'Pastillas P', ya ? String(Q1.pastillas) : '?')],
+      ley: ya ? [['n', 'n · cada toma', 'pt'], ['P', 'P · cada pastilla'], ['k', 'k · entre dos tomas']] : [['t', 't · todo el tratamiento']],
+      desc: ya ? `Una línea de tiempo de 72 horas con ${Q1.tomas} tomas de 2 pastillas.` : 'Una línea de tiempo de 72 horas, sin tomas marcadas.' }),
+    despues:() => { const x = EXPS[0]; x.antes(true); const Lz = E.lin; Lz.ver = 0; E.animar(0, Q1.tomas, 2600, v => { Lz.ver = Math.floor(v + 1e-9); }, () => x.antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">${n_('n')} = ${fr(t_('72'), k_('8'))} + 1 = ${Q1.intervalos} + 1 = ${n_(String(Q1.tomas))}</div>
+      <div class="eq">${P_('P')} = 2 · ${n_(String(Q1.tomas))} = ${P_(String(Q1.pastillas))}</div></div>
+      <p>Primero se cuentan las tomas, con la del inicio y la del final; después se multiplica por las pastillas de cada toma.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'tres-combis', corto:'Tres combis', unidad:U_FREC,
+    q:`En otro paradero salen tres líneas: la A cada ${a_(`${I1} minutos`)}, la B cada ${b_(`${I2}`)} y la C cada ${c_(`${I3}`)}. A las 6:00 salen las tres juntas. ¿Cuántos minutos pasan hasta que vuelven a salir las tres juntas?`,
+    opts:[['a', `${Q2.errores.mcmDeDos} minutos`, 'coincidencia-mcm-de-dos', 'hipotesis'],
+          ['b', `${Q2.mcm} minutos`],
+          ['c', `${Q2.errores.suma} minutos`, 'coincidencia-suma-de-intervalos', 'hipotesis'],
+          ['d', `${Q2.errores.producto} minutos`, 'AR13-producto', 'parcial']],
+    ok:'b',
+    fb:{ a:`${Q2.errores.mcmDeDos} es cuando coinciden la A y la B, pero a los ${Q2.errores.mcmDeDos} minutos la C no sale: ${Q2.errores.mcmDeDos} no es múltiplo de ${I3}.`,
+         c:`${I1} + ${I2} + ${I3} = ${Q2.errores.suma}, pero ${Q2.errores.suma} no es múltiplo de ${I1} ni de ${I3}: a esa hora solo sale la B.`,
+         d:`${I1} · ${I2} · ${I3} = ${Q2.errores.producto} es un múltiplo común, pero no el menor: mucho antes ya salen las tres juntas.` },
+    antes:ya => E.config({ modo:'combis', com:{ intervalos:ESC.tresCombis.intervalos, inicio:360, fin:510, paso:30, ahora: ya ? 510 : 360, horas:ya },
+      lect:[L('a', 'A cada a', `${I1} min`), L('b', 'B cada b', `${I2} min`), L('c', 'C cada c', `${I3} min`), L('M', 'Las tres juntas cada M', ya ? `${Q2.mcm} min` : '?')],
+      ley:[['a', 'a · combi A'], ['b', 'b · combi B'], ['c', 'c · combi C']].concat(ya ? [['M', 'M · salen las tres']] : []),
+      desc: ya ? `Las salidas de 6:00 a 8:30; las tres salen juntas a las 6:00 y a las ${Q2.hora}.` : 'Una línea de tiempo de 6:00 a 8:30 con las tres combis saliendo juntas a las 6:00.' }),
+    despues:() => { const x = EXPS[1]; x.antes(true); const C = E.com; C.ahora = 360; E.animar(360, 510, 4200, v => { C.ahora = v; }, () => x.antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">${a_(String(I1))} = 2³<span class="note">;</span> ${b_(String(I2))} = 2 · 5<span class="note">;</span> ${c_(String(I3))} = 2² · 3</div>
+      <div class="eq">${M_('M')} = 2³ · 3 · 5 = ${M_(String(Q2.mcm))} min → ${Q2.hora}<span class="note">cada primo con su mayor exponente</span></div></div>
+      <p>Con tres o más sucesos la idea es la misma: el primer momento en que coinciden todos es el mínimo común múltiplo de todos los intervalos, no el de solo dos.</p>
+      <p class="fuente">Usar el producto en lugar del MCM está descrito en estudios con escolares de primaria, sin cifra comparable; las otras dos son hipótesis nuestras.</p>` },
+  { id:'guardia', corto:'El guardia que gira',
+    q:'Un guardia de la Plaza de Armas mira al norte. Gira 90° a la derecha, otra vez 90° a la derecha, una vez más 90° a la derecha y después da media vuelta (180°). ¿Hacia dónde mira al final?',
+    opts:[['a', 'Hacia el oeste', 'giro-derecha-por-izquierda', 'hipotesis'],
+          ['b', 'Hacia el norte', 'giro-media-como-cuarto', 'hipotesis'],
+          ['c', 'Hacia el sur', 'giro-media-desde-el-inicio', 'hipotesis'],
+          ['d', 'Hacia el este']],
+    ok:'d',
+    fb:{ a:'Oeste es hacia donde mira después de los tres giros a la derecha (norte, este, sur, oeste). Falta la media vuelta. (También sale oeste si se gira a la izquierda en vez de a la derecha.)',
+         b:'La media vuelta son 180°, dos cuartos de vuelta, no uno.',
+         c:'La media vuelta se da desde donde mira en ese momento, no desde donde empezó.' },
+    antes:ya => E.config({ modo:'brujula', bru:{ ang: ya ? ANG[Q3.final] : 0 },
+      lect:[L('ink', 'Empieza mirando', 'al norte'), L('ink', 'Al final mira', ya ? `al ${Q3.nombre}` : '?')],
+      desc: ya ? `El guardia terminó mirando al ${Q3.nombre}.` : 'El guardia mira al norte, en el centro de una brújula.' }),
+    despues:() => { const x = EXPS[2]; x.antes(false); const B = E.bru; let j = 0, ang = 0;
+      const sig = () => { if (j >= ESC.guardia.giros.length){ x.antes(true); return; } const [lado, g] = ESC.guardia.giros[j++], a1 = ang + (lado === 'D' ? g : -g);
+        E.animar(ang, a1, g === 180 ? 1100 : 650, v => { B.ang = v; }, () => { ang = a1; sig(); }); };
+      sig(); },
+    exp:() => `<div class="eqs"><div class="eq">${Q3.rumbos.map(r => ({ N:'norte', E:'este', S:'sur', O:'oeste' })[r]).join(' → ')}</div>
+      <div class="eq">3 · 90° + 180° = 450° = 360° + 90°<span class="note">una vuelta entera y un cuarto a la derecha</span></div></div>
+      <p>Cuatro cuartos de vuelta devuelven al rumbo de partida. Por eso basta con sumar los giros, quitar las vueltas enteras y aplicar lo que sobra.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'seis-monedas', corto:'Seis monedas',
+    q:'Ahora son 6 monedas que forman un triángulo que apunta hacia arriba: 3 en la fila de abajo, luego 2 y 1. Una jugada es levantar una moneda y ponerla en otro lugar. ¿Cuántas jugadas hacen falta, como mínimo, para que el triángulo apunte hacia abajo?',
+    opts:[['a', `${Q4.minimo} jugadas`],
+          ['b', `${Q4.errores.esquinas} jugadas`, 'monedas-tres-puntas', 'hipotesis'],
+          ['c', `${Q4.errores.filaYPunta} jugadas`, 'monedas-fila-y-punta', 'hipotesis'],
+          ['d', `${Q4.errores.todas} jugadas`, 'monedas-todas', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Mover las tres puntas funciona, pero sobra una jugada: si el triángulo invertido se arma un poco más a la derecha, 4 monedas pueden quedarse quietas.',
+         c:'Mover la fila de abajo y la punta es más de lo necesario: 4 monedas pueden quedarse quietas.',
+         d:'No hace falta rehacerlo todo: 4 monedas ya están donde las necesita el triángulo invertido.' },
+    antes:ya => E.config({ modo:'monedas', mon:{ filas:3, pos: ya ? Q4.inicio.map(p => { const j = Q4.mover.findIndex(q => q[0] === p[0] && q[1] === p[1]); return j >= 0 ? Q4.a[j] : p; }) : Q4.inicio, movidas: ya ? PL4.pasos.map(q => q.i) : [], jugadas: ya ? Q4.minimo : 0 },
+      lect:[L('ink', 'Monedas', '6'), E0 => ['m', 'Jugadas m', ya || E0.anim || E0.mon.jugadas > 0 ? String(E0.mon.jugadas) : '?']],
+      ley: ya ? [['m', 'm · las que se mueven', 'pt']] : [],
+      desc: ya ? 'Las seis monedas apuntan ahora hacia abajo; se movieron la punta de arriba y la de abajo a la izquierda.' : 'Seis monedas forman un triángulo que apunta hacia arriba: 3 abajo, luego 2 y 1.' }),
+    despues:() => { const x = EXPS[3]; x.antes(false); E.anim = false; animarPlan(E, PL4, 800, () => x.antes(true)); },
+    exp:() => `<div class="eqs"><div class="eq">${m_('m')} = 6 − 4 = ${m_(String(Q4.minimo))}<span class="note">4 monedas pueden quedarse quietas</span></div></div>
+      <p>Se mueven la punta de arriba y la punta de abajo a la izquierda. Con más filas la regla es la misma: se busca el lugar del triángulo invertido que deje quietas más monedas.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'pileta', corto:'Caminar y girar',
+    q:'Pedro sale de la pileta de la plaza mirando al norte y camina 4 cuadras. Gira a la derecha y camina 6. Vuelve a girar a la derecha y camina 12. ¿A cuántas cuadras de la pileta queda, en línea recta, y hacia dónde?',
+    opts:[['a', mayus(Q5.errores.sumaCatetos), 'cardinal-suma-los-catetos', 'hipotesis'],
+          ['b', mayus(Q5.respuesta)],
+          ['c', mayus(Q5.errores.izquierda), 'giro-derecha-por-izquierda', 'hipotesis'],
+          ['d', mayus(Q5.errores.sumaTodo), 'cardinal-suma-todo-el-camino', 'hipotesis']],
+    ok:'b',
+    fb:{ a:`${Math.abs(Q5.x)} + ${Math.abs(Q5.y)} = ${Math.abs(Q5.x) + Math.abs(Q5.y)} es lo que caminaría para volver por las calles. En línea recta es la hipotenusa.`,
+         c:'La distancia está bien, pero el lado no: mirando al norte, la derecha es el este.',
+         d:`${Q5.total} es todo lo que caminó (4 + 6 + 12); el camino da vueltas.` },
+    antes:ya => E.config({ modo:'plano', pla:{ tramos:Q5.tramos, prog: ya ? Q5.tramos.length : 0, catetos:ya, recta:ya, rotulos:ya },
+      lect: ya ? [L('x', 'Al este x', `${Q5.x} cuadras`), L('y', 'Al sur', `${-Q5.y} cuadras`), L('d', 'En línea recta d', `${Q5.exacto} cuadras`)] : [L('ink', 'Empieza mirando', 'al norte'), L('d', 'En línea recta d', '?')],
+      ley: ya ? [['x', 'x · de oeste a este'], ['y', 'y · de sur a norte'], ['d', 'd · en línea recta']] : [],
+      desc: ya ? `El camino de Pedro: termina ${Q5.x} cuadras al este y ${-Q5.y} al sur de la pileta, a ${Q5.exacto} cuadras en línea recta, hacia el ${Q5.direccion}.` : 'Un plano de cuadras con la plaza y el punto de salida; el camino no está dibujado.' }),
+    despues:() => { const x = EXPS[4]; x.antes(true); const P = E.pla; Object.assign(P, { prog:0, catetos:false, recta:false });
+      E.animar(0, Q5.tramos.length, 3000, v => { P.prog = v; }, () => x.antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">norte → (derecha) este → (derecha) sur<span class="note">cada giro a la derecha es un cuarto de vuelta</span></div>
+      <div class="eq">${x_('x')} = ${x_(String(Q5.x))} al este; ${y_('y')} = 12 − 4 = ${y_(String(-Q5.y))} al sur</div>
+      <div class="eq">${d_('d')} = √(${Q5.x}² + ${-Q5.y}²) = ${d_(Q5.exacto)} cuadras, hacia el ${Q5.direccion}</div></div>
+      <p>Primero se traducen los giros a puntos cardinales; después se juntan los tramos de cada eje, con signo, y se usa Pitágoras.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = false;
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => { x.despues(); E.avisar(); }, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

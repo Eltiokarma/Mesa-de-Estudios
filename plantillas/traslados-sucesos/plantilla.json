@@ -1,0 +1,16 @@
+{
+  "id": "traslados-sucesos",
+  "titulo": "La posta, el paradero y la plaza: sucesos que se repiten, monedas y puntos cardinales",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.traslados-y-puntos-cardinales",
+    "razonamiento-matematico.frecuencia-de-sucesos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
