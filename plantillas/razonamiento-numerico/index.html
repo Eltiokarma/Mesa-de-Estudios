@@ -1,0 +1,1198 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Las fichas que se cambian: razonamiento numérico</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de «Las fichas en los aros».
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), uno por papel en toda la
+   escena:
+     falsa suposición: gallinas g naranja #a05200 / #f0a04a; conejos c azul #1f5fbf / #7cb0ff; el total que se cuenta
+     (patas o puntaje) t verde #466d14 / #a3d65e; lo que falta o sobra para llegar al total f fucsia #a10fbf / #cf6bfa;
+     lo que mueve cada cambio d turquesa #0f766e / #5ed9c8; respuestas buenas b granate #77032c / #fdb4ce y malas
+     m pizarra #1f3f47 / celeste #22a5bf (antes café: quedaba a ΔE00 9,5 y 8,2 de g, que sale en el paso de al lado);
+     método regresivo: el número de partida x ocre #7d6a00 / #e3c84a y el resultado final y índigo #3328c4 / #9f9bff
+     (las operaciones y los valores de en medio, en tinta);
+     distribuciones: la suma de cada línea s magenta #b3246b / #ff86bd. Las casillas que están en más de una línea
+     (esquinas del triángulo, centro del cuadrado) no tienen color propio: borde grueso en tinta y la palabra en negrita.
+     Las fichas y su total, en tinta.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py). Entre los que salen juntos (corral: g c t f d; examen: b m t f d;
+   tira y barras: x y; tablero: s): mínimo 21,2 en claro (m–d) y 20,5 en oscuro (m–d). m queda a 38,9 / 45,9 de g y a
+   22,3 / 19,4 de c (c sale en otro paso, nunca junto a m). Contraste AA sobre el papel, la tarjeta y el chip (.v, fondo
+   al 8 %): mínimo 4,54 en claro (x con chip sobre el papel) y 4,64 en oscuro (f con chip sobre la tarjeta); m 9,2 / 4,7.
+   Las opciones van en tinta, sin chips; en el aviso del paso 8 el chip va sin fondo (.aviso .v).
+   Cercanías con «correcto» (--ok) y con el rojo de aviso (--warn), que siempre van con texto: d a 11,1 / 11,0 de «correcto»;
+   t a 15,6 / 17,3 de «correcto»; s a 18,6 / 15,4 del aviso; b en oscuro a 17,4 del aviso (20,6 en claro).
+   Los glifos × ÷ − → van con la letra de texto (.g) dentro de la letra monoespaciada. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-g:#a05200; --c-c:#1f5fbf; --c-t:#466d14; --c-f:#a10fbf; --c-d:#0f766e; --c-b:#77032c; --c-m:#1f3f47;
+  --c-x:#7d6a00; --c-y:#3328c4; --c-s:#b3246b;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-g:#f0a04a; --c-c:#7cb0ff; --c-t:#a3d65e; --c-f:#cf6bfa; --c-d:#5ed9c8; --c-b:#fdb4ce; --c-m:#22a5bf;
+  --c-x:#e3c84a; --c-y:#9f9bff; --c-s:#ff86bd;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-g:#f0a04a; --c-c:#7cb0ff; --c-t:#a3d65e; --c-f:#cf6bfa; --c-d:#5ed9c8; --c-b:#fdb4ce; --c-m:#22a5bf;
+  --c-x:#e3c84a; --c-y:#9f9bff; --c-s:#ff86bd;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){ .mode.pendiente .lecturas{gap:4px} .mode.pendiente .lectura{padding:2px 8px} }
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-g{color:var(--c-g); background:color-mix(in srgb, var(--c-g) 8%, transparent)}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
+.v-y{color:var(--c-y); background:color-mix(in srgb, var(--c-y) 8%, transparent)}
+.v-s{color:var(--c-s); background:color-mix(in srgb, var(--c-s) 8%, transparent)}
+.aviso .v{background:none}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+.eq .g, .lectura .g{font-family:var(--font); font-weight:inherit}
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.75; font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.eq .note{display:block; font-family:var(--font); font-size:.84rem; line-height:1.4; color:var(--muted); white-space:normal}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+.aviso:empty{display:none}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura > span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+/* Mover sin arrastrar: botones grandes para el dedo y el teclado */
+.mover{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.mover > div{display:inline-flex; flex-wrap:wrap; align-items:center; gap:6px; background:var(--paper); border:1px solid var(--line); border-radius:22px; padding:4px 6px 4px 12px}
+.mover button{font:800 .95rem var(--font); min-width:42px; height:40px; padding:0 10px; border-radius:999px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer}
+.mover button[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.mover button:disabled{opacity:.4; cursor:not-allowed}
+.mover .val{font:800 1rem var(--font); min-width:4.4em; text-align:center}
+.mover .que{font-size:.85rem; color:var(--muted); font-weight:700}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Aritmética · Razonamiento numérico · Problemas tipo admisión</p>
+      <h1>Las fichas que se cambian</h1>
+      <p class="sub">Animales en un corral, puntos de un examen, cadenas de operaciones y fichas numeradas en un tablero. Antes de cada respuesta, predice; después, la escena te muestra por qué.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: un corral, un examen, una tira de operaciones o un tablero">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos de razonamiento numérico">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/razonamiento-numerico">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'razonamiento-numerico', unidad: 'aritmetica.razonamiento-numerico', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (repartos, cambios, operaciones de ida y vuelta, sumas de las líneas, soluciones y dónde va cada
+   ficha) sale de MotorRazonamientoNumerico (motor.js); aquí solo se pinta y se anima. El celular va con nucleo/celular.js. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const M = MotorRazonamientoNumerico;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+// Texto plano para el lector de pantalla.
+const quitar = t => String(t).replace(/<[^>]+>/g, '')
+  .replace(/S\/[ \u00a0]?(\d+)/g, '$1 soles').replace(/ × /g, ' por ').replace(/ ÷ /g, ' entre ').replace(/ − /g, ' menos ').replace(/−(\d)/g, 'menos $1')
+  .replace(/ → /g, ', ').replace(/…/g, '').replace(/\s+/g, ' ').trim();
+// Los glifos de operación, con la letra de texto dentro de la monoespaciada. Solo fuera de las etiquetas.
+const glifos = h => String(h).replace(/(<[^>]*>)|([×÷−→])/g, (m, tag, g) => tag || `<span class="g">${g}</span>`);
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const nb = t => String(t).replace(/ /g, ' ');
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const pl = M.pl;
+const soles = n => `S/\u00a0${n}`;   // sin cortar «S/» del número
+// La retroalimentación: a la vista sin etiquetas y con «S/» pegado a su número; al lector de pantalla, con quitar() (el foco va ahí)
+function ponerFb(f, t){ f.textContent = String(t).replace(/<[^>]+>/g, '').replace(/S\/ (?=\d)/g, 'S/\u00a0'); f.setAttribute('aria-label', quitar(t)); }
+// Variables: g gallinas, c conejos, t el total (patas o puntaje), f lo que falta o sobra, d lo que mueve cada cambio,
+// b buenas, m malas, x el número de partida, y el resultado final, s la suma de cada línea, v casillas compartidas.
+const CLAVES = ['g', 'c', 't', 'f', 'd', 'b', 'm', 'x', 'y', 's'];
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    ok:css('--ok'), warn:css('--warn'), mono:css('--mono'), font:css('--font') };
+  for (const k of CLAVES) c[k] = css('--c-' + k);
+  return c;
+}
+const col = (c, k) => (c[k] || c.ink);
+const varCSS = k => (k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function redondeado(ctx, x, y, w, h, r){ r = Math.max(0, Math.min(r, w/2, h/2)); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
+const FUENTE = '<p class="fuente">Todavía no revisamos estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
+</script>
+<script>
+/* ================= La escena =================
+   Modos: 'corral' (gallinas y conejos en dos mitades, o fichas «?» en un solo corral), 'examen' (las preguntas como
+   fichas buenas, malas o «?»), 'tira' (la cadena de operaciones: ida arriba, vuelta abajo), 'barras' (lo que tenía,
+   lo que gastó y lo que le quedó, tramo por tramo) y 'tablero' (casillas, líneas y fichas numeradas que se arrastran). */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'corral', st:{}, lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:null, sel:0 };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastre = null, geo = null;
+  const PIE = 30;
+  const ALTO = { corral: () => 250, examen: () => 230, tira: () => 160, barras: () => 36 + 92*((E.st.tramos || []).length),
+    tablero: () => (E.st.tipo === 'cuadrado3' ? 340 : 330) - (E.st.sinBanca ? 56 : 0) };
+  const TOPE = { tablero: 290, barras: 260 };
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(ALTO[E.modo]() + (E.st.pie ? PIE : 0), E.compacto, { tope: TOPE[E.modo] })), dpr = Celular.dpr();
+    if (w === W && h === H) { E.acomodar(); E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.acomodar(); E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false; arrastre = null;
+    Object.assign(E, { modo:'corral', st:{}, lect:[], ley:null, alCambiar:null, desc:null }, o);
+    E.listo = true;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.redimensionar = () => { W = 0; resize(); };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const movible = () => !!E.st.mover && (E.modo === 'corral' || E.modo === 'tablero');
+  E.movible = movible;
+  E.etiquetar = () => {
+    const m = movible();
+    cv.tabIndex = m ? 0 : -1;
+    if (m && E.modo === 'corral'){ const f = E.st.fichas[E.sel];
+      cv.setAttribute('aria-label', `Corral con ${E.st.fichas.length} animales. Ficha elegida: la ${E.sel + 1}, ${f.tipo === 'g' ? 'gallina' : 'conejo'}. Flechas izquierda y derecha: elegir ficha; Enter o espacio: cambiarla por un animal del otro tipo.`); }
+    else if (m){ const t = M.tablero(E.st.tipo), x = E.st.col[E.sel];
+      cv.setAttribute('aria-label', `Tablero: ${t.nombre}. Casilla elegida: ${E.sel + 1} de ${t.casillas}, ${x == null ? 'vacía' : 'con la ficha ' + x}. Flechas: elegir casilla; un número: poner esa ficha; Retroceso: quitarla.`); }
+    else cv.setAttribute('aria-label', 'Dibujo de la escena');
+  };
+
+  // ----- geometría (del motor) -----
+  const pieAbajo = () => (E.st.pie ? PIE : 0);
+  E.acomodar = () => {
+    geo = null;
+    if (!W || !E.listo) return;
+    const s = E.st;
+    if (E.modo === 'corral') geo = M.corralGeo(s.fichas.map(f => f.tipo), W, H, { arriba:26, abajo:pieAbajo(), una:!!s.una, max:16 });
+    else if (E.modo === 'examen') geo = M.examenGeo(s.fichas.length, W, H, { arriba:6, abajo:pieAbajo(), max:14 });
+    else if (E.modo === 'tira') geo = M.tiraGeo(s.ops.length, W, H, { arriba:36, abajo:36 + pieAbajo() });
+    else if (E.modo === 'tablero') geo = M.tableroGeo(s.tipo, W, H, { banca: s.sinBanca ? 0 : 56, abajo:pieAbajo() });
+  };
+  E.geo = () => geo;
+
+  function rotulo(c, x, y, t, color, align, peso, tam){
+    ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+    ctx.fillStyle = color; ctx.fillText(t, x, y);
+    return w;
+  }
+  // Un rótulo hecho de pedazos: [['40', 't'], [' patas', 'ink']].
+  function partes(c, x, y, ps, align, tam, peso, maxW){
+    tam = tam || 14; ctx.font = `${peso || 800} ${tam}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const lim = maxW || W - 12;
+    let ws = ps.map(([t]) => ctx.measureText(String(t)).width), tot = ws.reduce((s, w) => s + w, 0);
+    if (tot > lim){ tam = Math.max(9, Math.floor(tam*lim/tot)); ctx.font = `${peso || 800} ${tam}px ${c.font}`; ws = ps.map(([t]) => ctx.measureText(String(t)).width); tot = ws.reduce((s, w) => s + w, 0); }
+    let x0 = align === 'left' ? x : align === 'right' ? x - tot : x - tot/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - tam*.75, tot + 6, tam*1.55); ctx.restore();
+    ps.forEach(([t, k], j) => { ctx.fillStyle = col(c, k || 'ink'); ctx.fillText(String(t), x0, y); x0 += ws[j]; });
+    return tot;
+  }
+  function linea(x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+  function punta(x, y, dir, color){ ctx.save(); ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 7*dir, y - 4.5); ctx.lineTo(x - 7*dir, y + 4.5); ctx.closePath(); ctx.fill(); ctx.restore(); }
+  const pieDibujo = c => { if (E.st.pie) partes(c, W/2, H - PIE/2, E.st.pie, 'center', 14, 800); };
+
+  // ----- el corral -----
+  // Una gallina (2 patas y pico) o un conejo (4 patas y orejas); «?» si todavía no se sabe qué es.
+  function animal(c, tipo, x, y, r, grande){
+    const R = grande ? r*1.15 : r, k = tipo === 'g' || tipo === 'c' ? tipo : null, color = k ? c[k] : c.muted;
+    const by = y - R*.16, br = R*.66;
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = Math.max(1.4, R*.13); ctx.lineCap = 'round';
+    const n = tipo === 'g' ? 2 : tipo === 'c' ? 4 : 0;
+    for (let i = 0; i < n; i++){ const dx = n === 2 ? (i ? .3 : -.3)*R : (-.48 + i*.32)*R; linea(x + dx, by + br*.7, x + dx, y + R*.9); }
+    if (tipo === 'c'){ linea(x - br*.4, by - br*.75, x - br*.55, y - R*.98); linea(x + br*.4, by - br*.75, x + br*.55, y - R*.98); }
+    ctx.restore();
+    ctx.save(); ctx.beginPath(); ctx.arc(x, by, br, 0, 7); ctx.fillStyle = c.card; ctx.fill(); ctx.fillStyle = color; ctx.globalAlpha = .22; ctx.fill();
+    ctx.globalAlpha = 1; ctx.strokeStyle = color; ctx.lineWidth = 1.8; ctx.stroke(); ctx.restore();
+    if (tipo === 'g'){ ctx.save(); ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(x + br*.95, by - br*.2); ctx.lineTo(x + br*1.45, by); ctx.lineTo(x + br*.95, by + br*.2); ctx.closePath(); ctx.fill(); ctx.restore(); }
+    if (!k){ ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(br*1.25)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', x, by + .5); }
+  }
+  function dibCorral(c){
+    if (!geo) return;
+    const s = E.st;
+    const caja = (b, color, t) => { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = E.hl && t === E.hl ? 3.5 : 1.6; ctx.fillStyle = color; ctx.globalAlpha = .04; redondeado(ctx, b.x, b.y, b.w, b.h, 12); ctx.fill(); ctx.globalAlpha = 1; ctx.stroke(); ctx.restore(); };
+    if (geo.una){ caja(geo.cajas.todo, c.ink); rotulo(c, geo.cajas.todo.x + 6, 13, s.rotulo || 'el corral', c.ink, 'left', 800, 13); }
+    else {
+      caja(geo.cajas.g, c.g, 'g'); caja(geo.cajas.c, c.c, 'c');
+      rotulo(c, geo.cajas.g.x + 4, 13, 'gallinas · 2 patas', c.g, 'left', 800, 12.5);
+      rotulo(c, geo.cajas.c.x + geo.cajas.c.w - 4, 13, 'conejos · 4 patas', c.c, 'right', 800, 12.5);
+      if (arrastre && arrastre.mitad){ const b = geo.cajas[arrastre.mitad]; ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .06; redondeado(ctx, b.x, b.y, b.w, b.h, 12); ctx.fill(); ctx.restore(); }
+    }
+    s.fichas.forEach((f, i) => {
+      if (arrastre && arrastre.i === i) return;
+      const p = geo.pos[i]; if (!p) return;
+      if (s.nuevo === i){ ctx.save(); ctx.strokeStyle = c.d; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(p.x, p.y, geo.r + 2, 0, 7); ctx.stroke(); ctx.restore(); }
+      animal(c, f.tipo, p.x, p.y, geo.r);
+    });
+    if (movible() && document.activeElement === cv){ const p = geo.pos[E.sel]; if (p && !(arrastre && arrastre.i === E.sel)){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([3, 2]); ctx.beginPath(); ctx.arc(p.x, p.y, geo.r + 4, 0, 7); ctx.stroke(); ctx.restore(); } }
+    if (movible()){ const p = geo.pos[E.sel]; if (p) cv.dataset.ficha = `${Math.round(p.x)},${Math.round(p.y)}`;
+      if (!geo.una) cv.dataset.mitades = JSON.stringify([['g', Math.round(geo.cajas.g.x + geo.cajas.g.w/2), Math.round(geo.cajas.g.y + geo.cajas.g.h/2)], ['c', Math.round(geo.cajas.c.x + geo.cajas.c.w/2), Math.round(geo.cajas.c.y + geo.cajas.c.h/2)]]); }
+    if (arrastre) animal(c, s.fichas[arrastre.i].tipo, arrastre.x, arrastre.y, geo.r, true);
+    pieDibujo(c);
+  }
+
+  // ----- el examen -----
+  function dibExamen(c){
+    if (!geo) return;
+    const s = E.st, r = geo.r;
+    s.fichas.forEach((f, i) => {
+      const p = geo.pos[i], k = f.tipo === 'b' || f.tipo === 'm' ? f.tipo : null, color = k ? c[k] : c.muted;
+      if (s.nuevo === i){ ctx.save(); ctx.strokeStyle = c.d; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(p.x, p.y, r + 2.5, 0, 7); ctx.stroke(); ctx.restore(); }
+      ctx.save(); ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, 7); ctx.fillStyle = c.card; ctx.fill(); ctx.fillStyle = color; ctx.globalAlpha = .18; ctx.fill();
+      ctx.globalAlpha = 1; ctx.strokeStyle = color; ctx.lineWidth = 1.6; ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = Math.max(1.8, r*.2); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      if (f.tipo === 'b'){ ctx.beginPath(); ctx.moveTo(p.x - r*.45, p.y); ctx.lineTo(p.x - r*.1, p.y + r*.38); ctx.lineTo(p.x + r*.5, p.y - r*.4); ctx.stroke(); }
+      else if (f.tipo === 'm'){ linea(p.x - r*.38, p.y - r*.38, p.x + r*.38, p.y + r*.38); linea(p.x - r*.38, p.y + r*.38, p.x + r*.38, p.y - r*.38); }
+      else { ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(r*1.1)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', p.x, p.y + .5); }
+      ctx.restore();
+    });
+    pieDibujo(c);
+  }
+
+  // ----- la tira de operaciones (ida arriba, vuelta abajo) -----
+  function dibTira(c){
+    if (!geo) return;
+    const s = E.st, n = s.ops.length, vk = s.vueltaK || 0;
+    geo.cajas.forEach((b, i) => {
+      const k = i === 0 ? 'x' : i === n ? 'y' : 'ink', color = col(c, k), v = s.valores[i];
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = color; ctx.lineWidth = s.resalta === i ? 3.4 : (k === 'ink' ? 1.6 : 2.4);
+      redondeado(ctx, b.x, b.y, b.w, b.h, 10); ctx.fill(); ctx.stroke(); ctx.restore();
+      const t = v == null ? '?' : (s.moneda ? 'S/ ' : '') + M.numTexto(v);
+      ctx.font = `800 ${b.w < 46 || t.length > 4 ? 14 : 17}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = v == null ? c.muted : color; ctx.fillText(t, b.x + b.w/2, b.y + b.h/2 + .5, b.w - 4);
+    });
+    // ida: flechas llenas con la operación arriba
+    geo.flechas.forEach((f, i) => {
+      const y = f.y + f.h/2;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; linea(f.x1 + 3, y, f.x2 - 5, y); ctx.restore(); punta(f.x2 - 2, y, 1, c.ink);
+      const lineas = s.ops[i];
+      lineas.forEach((t, j) => { ctx.font = `800 ${lineas.length > 1 ? 11.5 : 13}px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(t, f.cx, f.y - 10 - (lineas.length - 1 - j)*13, f.ancho + Math.min(geo.bw, 40)); });
+    });
+    // vuelta: flechas a trazos debajo, de derecha a izquierda, con la contraria
+    for (let j = 0; j < vk; j++){
+      const i = n - 1 - j, f = geo.flechas[i], y = f.y + f.h + 12;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.setLineDash([4, 3]);
+      linea(geo.cajas[i + 1].x + geo.bw*.5, f.y + f.h + 2, geo.cajas[i + 1].x + geo.bw*.5, y);
+      linea(geo.cajas[i + 1].x + geo.bw*.5, y, geo.cajas[i].x + geo.bw*.5 + 6, y);
+      ctx.setLineDash([]); linea(geo.cajas[i].x + geo.bw*.5, y, geo.cajas[i].x + geo.bw*.5, f.y + f.h + 8); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); const xa = geo.cajas[i].x + geo.bw*.5, ya = f.y + f.h + 2;
+      ctx.moveTo(xa, ya); ctx.lineTo(xa - 4.5, ya + 7); ctx.lineTo(xa + 4.5, ya + 7); ctx.closePath(); ctx.fill(); ctx.restore();
+      const t = s.vuelta[i];
+      ctx.font = `800 13px ${c.font}`; const w = ctx.measureText(t).width;
+      const cx = (geo.cajas[i].x + geo.cajas[i + 1].x + geo.bw)/2;
+      ctx.save(); ctx.fillStyle = c.paper; ctx.fillRect(cx - w/2 - 3, y + 4, w + 6, 16); ctx.restore();
+      ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, cx, y + 12);
+    }
+    pieDibujo(c);
+  }
+
+  // ----- las barras de lo que tenía, lo que gastó y lo que le quedó -----
+  // tramos: los de M.barras; vis[i]: 0 nada, 1 se conoce lo que le quedó, 2 y lo que gastó de más, 3 la barra entera
+  function dibBarras(c){
+    const s = E.st, T = s.tramos, maxA = Math.max(...T.map(t => t.antes)), x0 = 10, ancho = W - 20, top = 16;
+    T.forEach((t, i) => {
+      const y = top + i*92, h = 30, vis = s.vis[i] || 0, esc = ancho/maxA;
+      rotulo(c, x0, y + 6, s.nombres[i], c.ink, 'left', 800, 12.5);
+      const by = y + 18, wq = t.queda*esc, we = t.extra*esc, wp = t.parte*esc, wa = t.antes*esc;
+      const xp = x0, xe = x0 + wp, xq = xe + we;
+      // la barra de lo que tenía (contorno) y sus tres partes
+      ctx.save(); ctx.strokeStyle = vis >= 3 ? (i === 0 ? c.x : c.ink) : c.line; ctx.lineWidth = vis >= 3 && i === 0 ? 2.6 : 1.6; redondeado(ctx, xp, by, wa, h, 6); ctx.stroke(); ctx.restore();
+      const raya = (x, w, paso) => { ctx.save(); ctx.beginPath(); ctx.rect(x, by, w, h); ctx.clip(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .32; ctx.lineWidth = 1.2; for (let u = x - h; u < x + w; u += paso) linea(u, by + h, u + h, by); ctx.restore(); };
+      if (vis >= 3) raya(xp, wp, 8);
+      if (vis >= 2) raya(xe, we, 4);
+      if (vis >= 1){ ctx.save(); ctx.fillStyle = i === T.length - 1 ? c.y : c.ink; ctx.globalAlpha = .16; ctx.fillRect(xq, by, wq, h); ctx.restore(); }
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; if (vis >= 2) linea(xe, by, xe, by + h); if (vis >= 1) linea(xq, by, xq, by + h); ctx.restore();
+      const dentro = (x, w, txt, color) => { ctx.font = `800 12.5px ${c.font}`; const tw = ctx.measureText(txt).width; if (tw + 4 > w) return false; ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, x + w/2, by + h/2 + .5); return true; };
+      if (vis >= 1) dentro(xq, wq, soles(t.queda), i === T.length - 1 ? c.y : c.ink);
+      if (vis >= 2 && !dentro(xe, we, String(t.extra), c.ink)) rotulo(c, xe + we/2, by + h + 9, String(t.extra), c.ink, 'center', 800, 11.5);
+      if (vis >= 3) dentro(xp, wp, `${t.parteTexto}: ${soles(t.parte)}`, c.ink) || dentro(xp, wp, soles(t.parte), c.ink);
+      // la cuenta del tramo, debajo
+      const cuenta = vis === 1 ? [[soles(t.queda), i === T.length - 1 ? 'y' : 'ink'], [': le quedó', 'ink']]
+        : vis === 2 ? [[`${t.queda} + ${t.extra} = ${t.noGasto}`, 'ink'], [': lo que no gastó', 'ink']]
+        : vis >= 3 ? [[`${t.noGasto} × ${t.veces} = `, 'ink'], [soles(t.antes), i === 0 ? 'x' : 'ink'], [': lo que tenía', 'ink']] : null;
+      if (cuenta) partes(c, x0, by + h + 24, cuenta, 'left', 13, 800, W - 20);
+    });
+    pieDibujo(c);
+  }
+
+  // ----- el tablero de distribución -----
+  // La posición de cada ficha: en su casilla, o en su lugar de la banca.
+  const posFicha = (num) => { const s = E.st, i = s.col.indexOf(num); if (i >= 0) return geo.cas[i]; const j = s.nums.indexOf(num); return geo.banca[j]; };
+  function sumaEn(c, L, i, txt, color){
+    const s = E.st, t = M.tablero(s.tipo);
+    let x, y;
+    if (s.tipo === 'cuadrado3'){
+      const g = geo, ext = g.celda*.5 + 4;
+      if (i < 3){ x = g.x0 + g.lado + 4; y = g.cas[L[0]].y; return rotulo(c, x, y, txt, color, 'left', 800, 13); }
+      if (i < 6){ x = g.cas[L[0]].x; y = g.y0 + g.lado + 10; return rotulo(c, x, y, txt, color, 'center', 800, 13); }
+      // las diagonales, en las esquinas de abajo, con una flecha que dice hacia dónde va cada una
+      if (i === 6){ x = g.x0 + g.lado + 4; y = g.y0 + g.lado + 10; return rotulo(c, x, y, '↖ ' + txt, color, 'left', 800, 13); }
+      x = g.x0 - 4; y = g.y0 + g.lado + 10; return rotulo(c, x, y, txt + ' ↗', color, 'right', 800, 13);
+    }
+    // triángulo: afuera, en el medio del lado
+    const A = geo.cas[L[0]], B = geo.cas[L[L.length - 1]], mx = (A.x + B.x)/2, my = (A.y + B.y)/2;
+    const cx = (geo.vertices[0].x + geo.vertices[1].x + geo.vertices[2].x)/3, cy = (geo.vertices[0].y + geo.vertices[1].y + geo.vertices[2].y)/3;
+    const d = Math.hypot(mx - cx, my - cy) || 1, off = geo.r + 16;
+    x = mx + (mx - cx)/d*off; y = my + (my - cy)/d*off;
+    return rotulo(c, x, y, txt, color, 'center', 800, 13);
+  }
+  function dibTablero(c){
+    if (!geo) return;
+    const s = E.st, t = M.tablero(s.tipo), Ck = M.comprobar(s.tipo, s.col);
+    // líneas
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 2;
+    if (s.tipo === 'cuadrado3'){ for (let i = 0; i < 9; i++){ const p = geo.cas[i]; redondeado(ctx, p.x - geo.celda/2 + 3, p.y - geo.celda/2 + 3, geo.celda - 6, geo.celda - 6, 10); ctx.stroke(); } }
+    else { const V = geo.vertices; ctx.beginPath(); ctx.moveTo(V[0].x, V[0].y); ctx.lineTo(V[1].x, V[1].y); ctx.lineTo(V[2].x, V[2].y); ctx.closePath(); ctx.stroke(); }
+    ctx.restore();
+    (s.resaltar || []).forEach(i => { const L = geo.lineas[i]; ctx.save(); ctx.strokeStyle = c.s; ctx.globalAlpha = .45; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(L[0].x, L[0].y); L.slice(1).forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke(); ctx.restore(); });
+    // casillas
+    geo.cas.forEach((p, i) => {
+      const marcada = (s.marcar || []).includes(i);
+      ctx.save(); ctx.beginPath(); ctx.arc(p.x, p.y, geo.r, 0, 7); ctx.fillStyle = c.paper; ctx.fill();
+      ctx.strokeStyle = marcada ? c.ink : c.muted; ctx.lineWidth = marcada ? 4.2 : 1.4; if (!marcada) ctx.setLineDash([3, 3]); ctx.stroke(); ctx.restore();
+      if (s.pregunta && s.pregunta.includes(i) && s.col[i] == null){ ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(geo.r*1.05)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', p.x, p.y + .5); }
+    });
+    if (arrastre && arrastre.casilla != null){ const p = geo.cas[arrastre.casilla]; ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(p.x, p.y, geo.r + 4, 0, 7); ctx.stroke(); ctx.restore(); }
+    // banca
+    if (!s.sinBanca){ const b0 = geo.banca[0], bn = geo.banca[geo.banca.length - 1];
+      ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.4; ctx.setLineDash([4, 3]); redondeado(ctx, b0.x - b0.r - 6, b0.y - b0.r - 6, bn.x - b0.x + 2*b0.r + 12, 2*b0.r + 12, 14); ctx.stroke(); ctx.restore(); }
+    // fichas
+    const fr = Math.max(9, geo.r - 3);
+    s.nums.forEach(n => {
+      if (arrastre && arrastre.num === n) return;
+      const enCasilla = s.col.indexOf(n) >= 0;
+      if (!enCasilla && s.sinBanca) return;
+      const p = posFicha(n), r = enCasilla ? fr : Math.min(fr, p.r);
+      fichaNum(c, n, p.x, p.y, r);
+    });
+    if (movible() && document.activeElement === cv){ const p = geo.cas[E.sel]; ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([3, 2]); ctx.beginPath(); ctx.arc(p.x, p.y, geo.r + 5, 0, 7); ctx.stroke(); ctx.restore(); }
+    if (movible()){ cv.dataset.casillas = JSON.stringify(geo.cas.map(p => [Math.round(p.x), Math.round(p.y)])); cv.dataset.banca = JSON.stringify(geo.banca.map(p => [Math.round(p.x), Math.round(p.y)])); }
+    // sumas de las líneas completas
+    if (s.sumas) Ck.lineas.forEach((l, i) => { if (l.completa) sumaEn(c, l.casillas, i, String(l.suma), c.s); });
+    if (arrastre) fichaNum(c, arrastre.num, arrastre.x, arrastre.y, fr + 2);
+    pieDibujo(c);
+  }
+  function fichaNum(c, n, x, y, r){
+    ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.stroke(); ctx.restore();
+    ctx.fillStyle = c.ink; ctx.font = `800 ${Math.round(r*1.05)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(n), x, y + .5);
+  }
+
+  const DIB = { corral:dibCorral, examen:dibExamen, tira:dibTira, barras:dibBarras, tablero:dibTablero };
+  E.dibujar = () => { if (!W || !E.listo) return; const c = colores(); ctx.clearRect(0, 0, W, H); DIB[E.modo](c); };
+
+  // ----- arrastrar (dedo, ratón) y teclado -----
+  function cercana(p, r){
+    if (!geo) return null;
+    if (E.modo === 'corral') { const i = M.cercana(geo.pos, p, Math.min(r, geo.r + 12)); return i === null ? null : { i }; }
+    const s = E.st, pts = s.nums.map(n => (s.col.indexOf(n) >= 0 || !s.sinBanca ? posFicha(n) : null));
+    const j = M.cercana(pts, p, Math.min(r, geo.r + 12)); return j === null ? null : { num: s.nums[j] };
+  }
+  Celular.arrastre(cv, {
+    activo: () => !E.ocupado && !E.anim && movible(),
+    cerca: (p, r) => cercana(p, r) !== null,
+    empezar: p => { const q = cercana(p, 40); if (!q) return;
+      if (E.modo === 'corral'){ E.sel = q.i; arrastre = { i:q.i, x:p.x, y:p.y, mitad:E.st.fichas[q.i].tipo }; }
+      else { const k = E.st.col.indexOf(q.num); if (k >= 0) E.sel = k; arrastre = { num:q.num, x:p.x, y:p.y, casilla:null }; }
+      E.dibujar(); },
+    mover: p => { if (!arrastre) return; arrastre.x = clamp(p.x, 0, W); arrastre.y = clamp(p.y, 0, H);
+      if (E.modo === 'corral'){ const m = M.mitadDe(geo, arrastre); arrastre.mitad = m || arrastre.mitad; }
+      else arrastre.casilla = M.cercana(geo.cas, arrastre, geo.r*1.7);
+      E.dibujar(); },
+    soltar: () => { if (!arrastre) return; const a = arrastre; arrastre = null;
+      if (E.modo === 'corral'){ const f = E.st.fichas[a.i]; if (a.mitad && a.mitad !== f.tipo) E.cambiar(a.i); else { E.dibujar(); } return; }
+      if (a.casilla != null) E.poner(a.num, a.casilla);
+      else if (!E.st.sinBanca && a.y > geo.banca[0].y - geo.banca[0].r - 14) E.quitar(a.num);
+      else E.dibujar(); },
+  });
+  // Cambiar una ficha del corral por un animal del otro tipo
+  E.cambiar = i => { const f = E.st.fichas[i]; f.tipo = f.tipo === 'g' ? 'c' : 'g'; E.st.nuevo = null; E.acomodar(); E.dibujar(); E.avisar(); };
+  // Poner la ficha num en la casilla k (si había otra, se cambian de lugar)
+  E.poner = (num, k) => { const s = E.st, de = s.col.indexOf(num), otra = s.col[k];
+    if (de === k){ E.dibujar(); return; }
+    if (de >= 0) s.col[de] = otra == null ? null : otra; s.col[k] = num; E.sel = k; E.dibujar(); E.avisar(); };
+  E.quitar = num => { const s = E.st, k = s.col.indexOf(num); if (k >= 0) s.col[k] = null; E.dibujar(); E.avisar(); };
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !movible()) return;
+    const s = E.st, n = E.modo === 'corral' ? s.fichas.length : s.col.length;
+    if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)){ e.preventDefault(); E.sel = (E.sel + (e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : n - 1)) % n; E.dibujar(); E.avisar(); return; }
+    if (E.modo === 'corral'){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); E.cambiar(E.sel); } return; }
+    if (/^[0-9]$/.test(e.key) && s.nums.includes(+e.key)){ e.preventDefault(); E.poner(+e.key, E.sel); }
+    else if (e.key === 'Backspace' || e.key === 'Delete'){ e.preventDefault(); const x = s.col[E.sel]; if (x != null) E.quitar(x); }
+  });
+  cv.addEventListener('focus', () => E.dibujar()); cv.addEventListener('blur', () => E.dibujar());
+
+  E.leyenda = () => {
+    if (!idLey) return;
+    document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t, raya]) => `<span><i style="background:${raya ? `repeating-linear-gradient(135deg, var(--ink) 0 2px, transparent 2px 5px)` : `var(${varCSS(k)})`}"></i>${t}</span>`).join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (leen el estado del momento; antes de responder no adelantan nada).
+  E.pintarLect = () => { if (idLect) document.getElementById(idLect).innerHTML = glifos(E.lect.map(k => k(E)).map(([k, t, v]) => `<div class="lectura" style="--k:var(${varCSS(k)})"><span>${t}</span><b>${v}</b></div>`).join('')); };
+  E.avisar = () => {
+    E.pintarLect();
+    if (idDesc && !E.anim){
+      const filas = E.lect.map(k => k(E));
+      const d = typeof E.desc === 'function' ? E.desc(E) : (E.desc || 'Un dibujo.');
+      document.getElementById(idDesc).textContent = quitar([d, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' '));
+    }
+    E.etiquetar();
+    if (E.alCambiar) E.alCambiar();
+  };
+  // Una lista de estados, uno tras otro (cada uno se queda ms[j] milisegundos).
+  E.secuencia = (estados, ms, fin) => {
+    const tok = ++E.tok; E.anim = true; let j = 0;
+    const sig = () => { if (tok !== E.tok) return;
+      if (j >= estados.length){ E.anim = false; E.avisar(); if (fin) fin(); return; }
+      const e = estados[j]; if (typeof e === 'function') e(E.st); else Object.assign(E.st, e);
+      E.redimensionar(); E.pintarLect(); const espera = Array.isArray(ms) ? ms[j] : ms; j++; setTimeout(sig, RM ? 0 : espera); };
+    sig();
+  };
+  E.parar = () => { E.tok++; E.anim = false; arrastre = null; };
+  return E;
+}
+// Fichas del corral y del examen
+const animales = (n, tipo) => Array.from({ length: n }, () => ({ tipo }));
+const corralDe = (g, c) => animales(g, 'g').concat(animales(c, 'c'));
+// Botones para el corral sin arrastrar
+const moverCorralHTML = () => `<div class="mover" role="group" aria-label="Cambiar animales sin arrastrar">
+  <div><button type="button" data-cambio="g">Cambiar una gallina por un conejo</button></div>
+  <div><button type="button" data-cambio="c">Cambiar un conejo por una gallina</button></div></div>`;
+function enlazarCorral(E, raiz){
+  raiz.querySelectorAll('[data-cambio]').forEach(b => b.onclick = () => { if (E.ocupado || E.anim) return;
+    const fs = E.st.fichas, t = b.dataset.cambio; let i = -1;
+    for (let j = fs.length - 1; j >= 0; j--) if (fs[j].tipo === t){ i = j; break; }
+    if (i >= 0){ E.cambiar(i); E.sel = i; E.avisar(); } });
+}
+function pintarCorral(E, raiz){
+  const C = M.contarCorral(E.st.fichas);
+  const g = raiz.querySelector('[data-cambio="g"]'), c = raiz.querySelector('[data-cambio="c"]');
+  if (g) g.disabled = C.gallinas === 0; if (c) c.disabled = C.conejos === 0;
+}
+// Botones para el tablero sin arrastrar: elegir la casilla y la ficha que va en ella
+const moverTableroHTML = nums => `<div class="mover" role="group" aria-label="Poner fichas sin arrastrar">
+  <div><span class="que">casilla</span><button type="button" data-ca="-1" aria-label="Casilla anterior">◀</button><span class="val" id="casSel" aria-live="polite"></span><button type="button" data-ca="1" aria-label="Casilla siguiente">▶</button></div>
+  <div><span class="que">ficha</span>${nums.map(n => `<button type="button" data-pon="${n}">${n}</button>`).join('')}<button type="button" data-quita="1">Quitar</button></div></div>`;
+function enlazarTablero(E, raiz){
+  raiz.querySelectorAll('[data-ca]').forEach(b => b.onclick = () => { if (E.ocupado || E.anim) return; const n = E.st.col.length; E.sel = (E.sel + +b.dataset.ca + n) % n; E.dibujar(); E.avisar(); });
+  raiz.querySelectorAll('[data-pon]').forEach(b => b.onclick = () => { if (E.ocupado || E.anim) return; E.poner(+b.dataset.pon, E.sel); });
+  raiz.querySelectorAll('[data-quita]').forEach(b => b.onclick = () => { if (E.ocupado || E.anim) return; const x = E.st.col[E.sel]; if (x != null) E.quitar(x); });
+}
+function pintarTablero(E, raiz){
+  const v = raiz.querySelector('#casSel'); if (!v) return;
+  const x = E.st.col[E.sel];
+  v.textContent = `${E.sel + 1}: ${x == null ? 'vacía' : x}`;
+  raiz.querySelectorAll('[data-pon]').forEach(b => { const n = +b.dataset.pon, aqui = E.st.col[E.sel] === n;
+    b.setAttribute('aria-pressed', String(aqui)); b.setAttribute('aria-label', `Poner la ficha ${n} en la casilla ${E.sel + 1}`); });
+  const q = raiz.querySelector('[data-quita]'); if (q){ q.disabled = x == null; q.setAttribute('aria-label', `Quitar la ficha de la casilla ${E.sel + 1}`); }
+}
+// Nombres de las casillas para el lector de pantalla
+function textoTablero(tipo, col){
+  const t = M.tablero(tipo), C = M.comprobar(tipo, col);
+  const puestas = col.map((x, i) => (x == null ? null : `casilla ${i + 1}: ${x}`)).filter(Boolean);
+  const lin = C.lineas.map((l, i) => (l.completa ? `línea ${i + 1} suma ${l.suma}` : null)).filter(Boolean);
+  return `${t.nombre[0].toUpperCase() + t.nombre.slice(1)}. ${puestas.length ? puestas.join(', ') : 'Todas las casillas vacías'}.${lin.length ? ' ' + lin.join(', ') + '.' : ''}`;
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, f1:null, t8:'triangulo3', col8:{} };
+const g_ = t => V('g', t), c_ = t => V('c', t), t_ = t => V('t', t), f_ = t => V('f', t), d_ = t => V('d', t), b_ = t => V('b', t), m_ = t => V('m', t);
+const x_ = t => V('x', t), y_ = t => V('y', t), s_ = t => V('s', t), v_ = t => `<b>${t}</b>`;   // casillas compartidas: sin color propio, borde grueso en tinta y la palabra en negrita
+
+// Números de la escena: todos salen del motor
+const P2 = M.corral(20, 64);
+const P3 = M.examen(50, 140, 4, -1);
+const CAD4 = [{ op:'por', k:3 }, { op:'menos', k:8 }, { op:'entre', k:2 }, { op:'mas', k:10 }], P4 = M.regresivo(CAD4, 30);
+const CAD5 = [{ op:'gasta', parte:[1, 2], mas:5 }, { op:'gasta', parte:[1, 2], mas:3 }], P5 = M.mercado(CAD5, 12), B5 = M.barras(CAD5, P5.respuesta);
+const N6 = [1, 2, 3, 4, 5, 6], P6 = M.menorSuma('triangulo3', N6);
+const N7 = [1, 2, 3, 4, 5, 6, 7, 8, 9], P7 = M.centroMagico();
+const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+
+console.assert(P2.respuesta === 12 && Object.keys(P2.errores).length === 3, 'paso 2: revisar las opciones');
+console.assert(P3.respuesta === 38 && Object.keys(P3.errores).length === 3, 'paso 3: revisar las opciones');
+console.assert(P4.respuesta === 16 && Object.keys(P4.errores).length === 3, 'paso 4: revisar las opciones');
+console.assert(P5.respuesta === 70 && Object.keys(P5.errores).length === 3, 'paso 5: revisar las opciones');
+console.assert(P6.respuesta === 9 && Object.keys(P6.errores).length === 3, 'paso 6: revisar las opciones');
+console.assert(P7.respuesta.length === 1 && P7.respuesta[0] === 5 && Object.keys(P7.errores).length === 3, 'paso 7: revisar las opciones');
+
+const conejos = n => `${n} ${pl(n, 'conejo', 'conejos')}`;
+const P_2 = { id:'razonamiento-numerico-paso2', ok:'c', opts:[
+  ['a', conejos(P2.errores.daLosSupuestos), 'da-los-del-tipo-supuesto', 'hipotesis'],
+  ['b', conejos(P2.errores.faltanSinDividir), 'da-lo-que-falta-sin-dividir', 'hipotesis'],
+  ['c', conejos(P2.respuesta)],
+  ['d', conejos(P2.errores.divideEntreElOtro), 'divide-entre-el-valor-del-otro-tipo', 'hipotesis']],
+  fb:{ c:`¡Bien! Si los ${P2.animales} fueran gallinas habría ${P2.animales} × ${P2.vSupuesto} = ${P2.supuestoTotal} patas; faltan ${P2.patas} − ${P2.supuestoTotal} = ${P2.faltan}. Cada gallina que se cambia por un conejo agrega ${P2.vOtro} − ${P2.vSupuesto} = ${P2.diferencia} patas: ${P2.faltan} ÷ ${P2.diferencia} = ${P2.respuesta} conejos.`,
+    a:`${P2.gallinas} son las gallinas. Si se supone que todos son gallinas, cada cambio pone un conejo en lugar de una gallina: los ${P2.faltan} ÷ ${P2.diferencia} = ${P2.respuesta} cambios son los conejos, y quedan ${P2.animales} − ${P2.respuesta} = ${P2.gallinas} gallinas.`,
+    b:`${P2.faltan} son las patas que faltan si los ${P2.animales} fueran gallinas, no animales. Cada conejo que entra en lugar de una gallina agrega solo ${P2.diferencia} patas: ${P2.faltan} ÷ ${P2.diferencia} = ${P2.respuesta} conejos.`,
+    d:`${P2.faltan} ÷ ${P2.vOtro} = ${P2.errores.divideEntreElOtro} toma las ${P2.vOtro} patas del conejo, pero la gallina que sale ya tenía ${P2.vSupuesto}: cada cambio agrega ${P2.vOtro} − ${P2.vSupuesto} = ${P2.diferencia} patas. Son ${P2.faltan} ÷ ${P2.diferencia} = ${P2.respuesta} conejos.` } };
+
+const buenas = n => `${n} ${pl(n, 'buena', 'buenas')}`;
+const P_3 = { id:'razonamiento-numerico-paso3', ok:'d', opts:[
+  ['a', buenas(P3.errores.daLasIncorrectas), 'da-los-del-otro-tipo', 'hipotesis'],
+  ['b', buenas(P3.errores.sinDescuento), 'ignora-el-descuento', 'hipotesis'],
+  ['c', buenas(P3.errores.restaLosPuntos), 'diferencia-como-resta-de-puntos', 'hipotesis'],
+  ['d', buenas(P3.respuesta)]],
+  fb:{ d:`¡Bien! Con las ${P3.preguntas} buenas tendría ${P3.preguntas} × ${P3.buena} = ${P3.supuestoTotal} puntos; le sobran ${P3.supuestoTotal} − ${P3.puntaje} = ${P3.sobran}. Cada buena que pasa a mala pierde sus ${P3.buena} puntos y además resta ${P3.descuento}: baja ${P3.buena} + ${P3.descuento} = ${P3.quita}. ${P3.sobran} ÷ ${P3.quita} = ${P3.incorrectas} malas y ${P3.respuesta} buenas.`,
+    a:`${P3.incorrectas} son las malas: el cociente ${P3.sobran} ÷ ${P3.quita} cuenta las buenas que pasan a malas. Buenas: ${P3.preguntas} − ${P3.incorrectas} = ${P3.respuesta}.`,
+    b:`${P3.puntaje} ÷ ${P3.buena} = ${P3.errores.sinDescuento} reparte el puntaje como si las malas no restaran. Con ${P3.daria.sinDescuento.buenas} buenas y ${P3.daria.sinDescuento.malas} malas tendría ${P3.daria.sinDescuento.puntaje} puntos, no ${P3.puntaje}. Suponiendo todas buenas sobran ${P3.sobran}, y cada mala baja ${P3.quita}: ${P3.incorrectas} malas y ${P3.respuesta} buenas.`,
+    c:`${P3.sobran} ÷ ${P3.daria.restaLosPuntos.entre} = ${P3.daria.restaLosPuntos.malas} malas usa ${P3.buena} − ${P3.descuento} = ${P3.daria.restaLosPuntos.entre}, como si cada mala valiera ${P3.daria.restaLosPuntos.entre} puntos menos. Pero una buena que pasa a mala pierde sus ${P3.buena} puntos y además resta ${P3.descuento}: baja ${P3.buena} + ${P3.descuento} = ${P3.quita}. ${P3.sobran} ÷ ${P3.quita} = ${P3.incorrectas} malas y ${P3.respuesta} buenas.` } };
+
+const ultima4 = P4.vuelta[0];
+const P_4 = { id:'razonamiento-numerico-paso4', ok:'b', opts:[
+  ['a', String(P4.errores.ordenSinInvertir), 'recorre-hacia-atras-sin-invertir', 'hipotesis'],
+  ['b', String(P4.respuesta)],
+  ['c', String(P4.errores.haciaAdelante), 'aplica-las-operaciones-hacia-adelante', 'hipotesis'],
+  ['d', String(P4.errores.invierteSinOrden), 'invierte-sin-cambiar-el-orden', 'hipotesis']],
+  fb:{ b:`¡Bien! Se empieza por el ${P4.final} y se deshace cada operación, de la última a la primera: ${P4.vueltaTexto}.`,
+    c:`${P4.errores.haciaAdelante} sale de hacer las mismas operaciones con el ${P4.final}: ${P4.trazas.haciaAdelante}. Pero el ${P4.final} es lo que le salió al final: hay que deshacer cada operación, de la última a la primera. Sale ${P4.respuesta}.`,
+    a:`${P4.errores.ordenSinInvertir} sale de recorrer la cadena desde el final pero sin cambiar las operaciones: ${P4.trazas.ordenSinInvertir}. Cada una se deshace con su contraria: ${P4.vuelta.map(v => v.texto).join(', ')}. Sale ${P4.respuesta}.`,
+    d:`${P4.errores.invierteSinOrden} sale de deshacer las operaciones en el orden en que se hicieron: ${P4.trazas.invierteSinOrden}. Lo último que hizo Ana fue «${ultima4.ida}», y eso se deshace primero. Sale ${P4.respuesta}.` } };
+
+const P_5 = { id:'razonamiento-numerico-paso5', ok:'b', opts:[
+  ['a', soles(P5.errores.devuelveDespues), 'dobla-y-despues-devuelve', 'hipotesis'],
+  ['b', soles(P5.respuesta)],
+  ['c', soles(P5.errores.olvidaElExtra), 'olvida-lo-que-gasto-de-mas', 'hipotesis'],
+  ['d', soles(P5.errores.restaElExtra), 'resta-lo-que-gasto-de-mas', 'hipotesis']],
+  fb:{ b:`¡Bien! En la segunda tienda, antes de los ${soles(B5[1].extra)} de más tenía ${B5[1].queda} + ${B5[1].extra} = ${B5[1].noGasto}, que es la mitad que no gastó: entró con ${B5[1].noGasto} × ${B5[1].veces} = ${soles(B5[1].antes)}. En la primera, ${B5[0].queda} + ${B5[0].extra} = ${B5[0].noGasto} y ${B5[0].noGasto} × ${B5[0].veces} = ${soles(P5.respuesta)}.`,
+    a:`${soles(P5.errores.devuelveDespues)} sale de doblar primero y sumar después: ${P5.trazas.devuelveDespues}. Lo último que gastó fueron los ${soles(B5[1].extra)}: se devuelven primero. ${P5.vueltaTexto}.`,
+    c:`${soles(P5.errores.olvidaElExtra)} sale de deshacer solo las mitades (${P5.trazas.olvidaElExtra}) y olvida los ${soles(B5[1].extra)} y los ${soles(B5[0].extra)} que gastó de más. Con ellos: ${P5.vueltaTexto}.`,
+    d:`${soles(P5.errores.restaElExtra)} sale de restar los soles de más al volver: ${P5.trazas.restaElExtra}. Pero esos soles los gastó: al volver, se le devuelven. ${P5.vueltaTexto}.` } };
+
+const P_6 = { id:'razonamiento-numerico-paso6', ok:'b', opts:[
+  ['a', String(P6.errores.losMenores), 'suma-las-tres-menores', 'hipotesis'],
+  ['b', String(P6.respuesta)],
+  ['c', String(P6.errores.totalEntreLineas), 'reparte-el-total-sin-contar-las-esquinas-dos-veces', 'hipotesis'],
+  ['d', String(P6.errores.laMayor), 'da-la-mayor-suma', 'hipotesis']],
+  fb:{ b:`¡Bien! Al sumar los ${P6.lados} lados, cada ficha de una esquina se cuenta dos veces: ${P6.lados} × suma = ${P6.total} + (lo que suman las esquinas). Lo menos que pueden sumar las esquinas es ${P6.vertices.join(' + ')} = ${P6.sumaVertices}: ${P6.lados} × suma = ${P6.cuenta.izquierda} y la suma es ${P6.respuesta}.`,
+    a:`${P6.errores.losMenores} = ${P6.vertices.join(' + ')} son las tres fichas más chicas, pero no pueden estar a la vez en los ${P6.lados} lados: cada lado lleva tres fichas y se usan las seis. Con ${P6.vertices.join(', ')} en las esquinas, cada lado suma ${P6.respuesta}.`,
+    c:`${P6.total} ÷ ${P6.lados} = ${P6.errores.totalEntreLineas} reparte las seis fichas entre los ${P6.lados} lados, pero las de las esquinas están en dos lados y se cuentan dos veces: ${P6.lados} × suma = ${P6.total} + esquinas. Con las esquinas más chicas, ${P6.vertices.join(' + ')}: suma = ${P6.cuenta.izquierda} ÷ ${P6.lados} = ${P6.respuesta}.`,
+    d:`${P6.errores.laMayor} es la mayor suma posible, con ${P6.verticesMayor.join(', ')} en las esquinas. La menor sale con las esquinas más chicas: (${P6.total} + ${P6.sumaVertices}) ÷ ${P6.lados} = ${P6.respuesta}.` } };
+
+const K7 = P7.contraejemplos, C7 = `${P7.porElCentro} × ${P7.constante} = ${P7.cuenta.izquierda} = ${P7.total} + ${P7.cuenta.deMas} × centro`;
+const P_7 = { id:'razonamiento-numerico-paso7', ok:'a', opts:[
+  ['a', `Solo el ${P7.respuesta[0]}`],
+  ['b', `Solo el ${P7.errores.elMayor[0]}`, 'el-mayor-al-centro', 'hipotesis'],
+  ['c', `Cualquiera de las impares: ${P7.errores.losImpares.slice(0, -1).join(', ')} o ${P7.errores.losImpares.slice(-1)}`, 'cualquier-impar-al-centro', 'hipotesis'],
+  ['d', 'Cualquiera de las nueve, según cómo se armen las demás', 'cualquiera-al-centro', 'hipotesis']],
+  fb:{ a:`¡Bien! Las ${P7.filas} filas usan las nueve fichas una vez: cada línea suma ${P7.total} ÷ ${P7.filas} = ${P7.constante}. Por el centro pasan ${P7.porElCentro} líneas; en ellas, el centro se cuenta ${P7.porElCentro} veces y las demás fichas una: ${C7}, y el centro es ${P7.cuenta.centro}.`,
+    b:`Cada línea suma ${P7.total} ÷ ${P7.filas} = ${P7.constante}. Con el ${K7.elMayor.centro} en el centro, el ${K7.elMayor.otra} quedaría en una línea con el ${K7.elMayor.centro}, y esa línea sumaría al menos ${K7.elMayor.centro} + ${K7.elMayor.otra} + ${K7.elMayor.tercera} = ${K7.elMayor.suma}. Por el centro pasan ${P7.porElCentro} líneas: ${C7}, y el centro es ${P7.cuenta.centro}.`,
+    c:`El ${P7.cuenta.centro} es impar, pero no cualquier impar sirve. Con el ${K7.elMenor.centro} en el centro, el ${K7.elMenor.otra} quedaría en una línea con el ${K7.elMenor.centro}, y esa línea sumaría a lo más ${K7.elMenor.centro} + ${K7.elMenor.otra} + ${K7.elMenor.tercera} = ${K7.elMenor.suma}, menos que ${P7.constante}. Por el centro pasan ${P7.porElCentro} líneas: ${C7}, y el centro es ${P7.cuenta.centro}.`,
+    d:`La casilla del centro está en ${P7.porElCentro} líneas a la vez, más que cualquier otra: eso la fija. ${C7}, y el centro es ${P7.cuenta.centro}. El motor probó las ${M.milesTexto(P7.formas)} formas de poner las fichas: en los ${P7.soluciones} cuadrados que funcionan, el centro es ${P7.cuenta.centro}.` } };
+
+// ----- paso 1: el corral que se explora -----
+const META1 = 32;
+function prep1(){
+  if (!S.f1) S.f1 = corralDe(7, 3);
+  E.config({ modo:'corral', st:{ fichas:S.f1, mover:true }, alCambiar:vivo1,
+    ley:[['g', 'gallina: 2 patas'], ['c', 'conejo: 4 patas']],
+    lect:[() => ['ink', 'cabezas', String(M.contarCorral(S.f1).cabezas)], () => ['g', 'gallinas', String(M.contarCorral(S.f1).gallinas)],
+      () => ['c', 'conejos', String(M.contarCorral(S.f1).conejos)], () => ['t', 'patas', String(M.contarCorral(S.f1).patas)]],
+    desc: () => { const C = M.contarCorral(S.f1); return `El corral con ${C.gallinas} ${pl(C.gallinas, 'gallina', 'gallinas')} a la izquierda y ${C.conejos} ${pl(C.conejos, 'conejo', 'conejos')} a la derecha.`; } });
+}
+function vivo1(){
+  const raiz = $('stepBody'); pintarCorral(E, raiz);
+  const a = $('meta1'); if (!a) return;
+  const C = M.contarCorral(S.f1);
+  a.textContent = C.patas === META1 ? `¡Lo lograste! ${C.cabezas} cabezas y ${META1} patas.` : '';
+}
+
+// ----- paso 8: el tablero que se explora -----
+const T8 = { triangulo3:{ nombre:'Triángulo de 3 por lado', nums:[1, 2, 3, 4, 5, 6] }, triangulo4:{ nombre:'Triángulo de 4 por lado', nums:[1, 2, 3, 4, 5, 6, 7, 8, 9] }, cuadrado3:{ nombre:'Cuadrado de 3 × 3', nums:[1, 2, 3, 4, 5, 6, 7, 8, 9] } };
+const marcar8 = tipo => (tipo === 'cuadrado3' ? [4] : M.tablero(tipo).compartidas);
+function prep8(){
+  const tipo = S.t8, t = M.tablero(tipo);
+  if (!S.col8[tipo]) S.col8[tipo] = Array(t.casillas).fill(null);
+  if (E.sel >= t.casillas) E.sel = 0;
+  E.config({ modo:'tablero', st:{ tipo, col:S.col8[tipo], nums:T8[tipo].nums, mover:true, sumas:true, marcar:marcar8(tipo) }, alCambiar:vivo8,
+    ley:[['s', 'suma de la línea'], ['ink', tipo === 'cuadrado3' ? 'borde grueso: el centro, está en cuatro líneas' : 'borde grueso: esquinas, están en dos lados']],
+    lect:[() => { const C = M.comprobar(tipo, S.col8[tipo]); return ['ink', 'fichas puestas', `${C.puestas} de ${t.casillas}`]; },
+      () => { const C = M.comprobar(tipo, S.col8[tipo]); return ['s', 'líneas completas', `${C.lineas.filter(l => l.completa).length} de ${t.lineas.length}`]; }],
+    desc: () => textoTablero(tipo, S.col8[tipo]) });
+}
+function vivo8(){
+  const d = $('vivo8'); if (!d) return;
+  const raiz = $('stepBody'); pintarTablero(E, raiz);
+  raiz.querySelectorAll('[data-t8]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t8 === S.t8)));
+  const tipo = S.t8, C = M.comprobar(tipo, S.col8[tipo]), t = M.tablero(tipo);
+  const comp = C.lineas.filter(l => l.completa);
+  let msg = '';
+  if (C.valido){
+    const D = M.distribuir(tipo, T8[tipo].nums), det = D.detalle.find(x => x.suma === C.suma);
+    msg = `<p class="aviso">¡Todas las líneas suman ${s_(C.suma)}! El motor probó todas las formas de poner estas fichas: con suma ${C.suma} hay ${det.soluciones} ${pl(det.soluciones, 'forma', 'formas')}, y ${det.distintas} si no se cuentan como distintas las que son giros o reflejos de otra. Las sumas que se pueden lograr son ${D.sumas.join(', ')}.</p>`;
+  } else if (C.completo) msg = `<p class="aviso">Están todas las fichas, pero las líneas no suman lo mismo: ${comp.map(l => l.suma).join(', ')}.</p>`;
+  d.innerHTML = glifos(`${msg}${comp.length ? `<div class="eqs"><div class="eq">${comp.map(l => `${l.casillas.map(i => S.col8[tipo][i]).join(' + ')} = ${s_(l.suma)}`).join('<br>')}<span class="note">cada línea completa del ${t.nombre}, con su suma</span></div></div>` : '<p class="hint">Todavía no hay líneas completas.</p>'}`);
+}
+
+// ----- estados finales de cada predicción (los mismos al volver al paso) -----
+const LEY2 = [['g', `gallina: ${P2.vSupuesto} patas`], ['c', `conejo: ${P2.vOtro} patas`], ['t', 'patas en total']];
+function fin2(){ return { fichas:corralDe(P2.gallinas, P2.conejos), una:false, nuevo:null, pie:[[String(P2.faltan), 'f'], [' ÷ ', 'ink'], [String(P2.diferencia), 'd'], [' = ', 'ink'], [String(P2.respuesta), 'c'], [' cambios: ', 'ink'], [String(P2.patas) + ' patas', 't']] }; }
+const DESC2 = `El corral con ${P2.gallinas} gallinas y ${P2.conejos} conejos: ${P2.gallinas} × ${P2.vSupuesto} + ${P2.conejos} × ${P2.vOtro} = ${P2.patas} patas. Se empezó con las ${P2.animales} gallinas, ${P2.supuestoTotal} patas, y cada cambio de una gallina por un conejo sumó ${P2.diferencia} patas, hasta llegar a ${P2.patas} después de ${P2.conejos} cambios.`;
+const LECT2 = [() => ['ink', 'animales', String(P2.animales)], () => ['t', 'patas', String(P2.patas)]];
+const LECT2b = LECT2.concat([() => ['g', 'gallinas', String(P2.gallinas)], () => ['c', 'conejos', String(P2.conejos)]]);
+function fin3(){ return { fichas:animales(P3.correctas, 'b').concat(animales(P3.incorrectas, 'm')), nuevo:null, pie:[[String(P3.sobran), 'f'], [' ÷ ', 'ink'], [String(P3.quita), 'd'], [' = ', 'ink'], [String(P3.incorrectas) + ' malas', 'm'], [' y ', 'ink'], [String(P3.correctas) + ' buenas', 'b']] }; }
+const DESC3 = `Las ${P3.preguntas} preguntas: ${P3.correctas} buenas y ${P3.incorrectas} malas. Con todas buenas serían ${P3.supuestoTotal} puntos; cada buena que pasa a mala baja ${P3.quita}, y después de ${P3.incorrectas} cambios quedan ${P3.puntaje}.`;
+const LECT3 = [() => ['ink', 'preguntas', String(P3.preguntas)], () => ['t', 'puntaje', String(P3.puntaje)]];
+const LEY3 = [['b', `buena: + ${P3.buena}`], ['m', `mala: − ${P3.descuento}`], ['t', 'puntaje']];
+const ops4 = P4.cadena.map(t => [t]);
+const ida4 = P4.ida.map((v, i) => (i ? `${P4.cadena[i - 1]} → ${v}` : String(v))), vuelta4 = P4.vuelta.map(v => `${v.texto} → ${v.a}`);
+function fin4(){ return { ops:ops4, valores:P4.ida.slice(), vuelta:P4.vuelta.slice().reverse().map(v => v.texto), vueltaK:CAD4.length, resalta:0,
+  pie:[[String(P4.final), 'y'], [' → ' + vuelta4.slice(0, -1).join(' → ') + ' → ' + P4.vuelta[CAD4.length - 1].texto + ' → ', 'ink'], [String(P4.respuesta), 'x']] }; }
+const DESC4 = quitar(`La tira con el número de Ana, ${P4.respuesta}, y las cajas ${P4.ida.slice(1).join(', ')}. Arriba, la ida: ${P4.cadena.join(', ')}. Abajo, la vuelta de derecha a izquierda: ${P4.vuelta.map(v => v.texto).join(', ')}.`);
+const VAL4 = () => P4.ida.map((v, i) => (i === CAD4.length ? v : null));
+const LECT4 = [() => ['x', 'pensó', String(P4.respuesta)], () => ['y', 'le salió', String(P4.final)]];
+const LEY4 = [['x', 'número que pensó'], ['y', 'resultado final'], ['ink', 'arriba: ida · abajo: vuelta']];
+const nombres5 = B5.map((t, i) => `${i + 1}.ª tienda: gastó ${t.parteTexto} y ${soles(t.extra)} más`);
+function fin5(){ return { tramos:B5, vis:[3, 3], nombres:nombres5, pie:[['salió con ', 'ink'], [soles(P5.respuesta), 'x'], [' y volvió con ', 'ink'], [soles(P5.final), 'y']] }; }
+const DESC5 = `Dos barras. ${B5.map((t, i) => `${i ? 'Segunda' : 'Primera'} tienda: tenía ${t.antes} soles, gastó ${t.parteTexto}, ${t.parte}, y ${t.extra} más; le quedaron ${t.queda}.`).join(' ')} De vuelta: ${B5.slice().reverse().map(t => `${t.queda} más ${t.extra} es ${t.noGasto}, lo que no gastó, por ${t.veces} es ${t.antes}`).join('; ')}.`;
+const LECT5 = [() => ['x', 'salió con', soles(P5.respuesta)], () => ['y', 'volvió con', soles(P5.final)]];
+const LEY5 = [['x', 'con lo que salió'], ['y', 'con lo que volvió'], ['ink', 'lo que gastó', true]];
+function fin6(){ return { tipo:'triangulo3', col:P6.muestra.slice(), nums:N6, sumas:true, marcar:[0, 1, 2], pie:[[`${P6.lados} × `, 'ink'], [String(P6.respuesta), 's'], [` = ${P6.total} + (${P6.vertices.join(' + ')})`, 'ink']] }; }
+const DESC6 = `El triángulo con ${P6.vertices.join(', ')} en las esquinas y ${P6.muestra.slice(3).join(', ')} en el medio de los lados: cada lado suma ${P6.respuesta}. Las esquinas, con borde grueso, están en dos lados cada una.`;
+const LEY6 = [['s', 'suma de cada lado'], ['ink', 'borde grueso: esquinas, están en dos lados']];
+const LECT6 = [() => ['s', 'menor suma por lado', String(P6.respuesta)], () => ['ink', 'sumas posibles', P6.sumas.join(', ')]];
+function fin7(){ return { tipo:'cuadrado3', col:P7.muestra.slice(), nums:N7, sumas:true, sinBanca:true, marcar:[4], resaltar:[1, 4, 6, 7], pie:[[`${P7.porElCentro} × `, 'ink'], [String(P7.constante), 's'], [` = ${P7.total} + ${P7.cuenta.deMas} × ${P7.cuenta.centro}`, 'ink']] }; }
+const DESC7 = `Un cuadrado mágico: ${P7.muestra.slice(0, 3).join(', ')} arriba; ${P7.muestra.slice(3, 6).join(', ')} en el medio; ${P7.muestra.slice(6).join(', ')} abajo. Cada fila, columna y diagonal suma ${P7.constante}. Resaltadas, las ${P7.porElCentro} líneas que pasan por el centro, donde está el ${P7.cuenta.centro}.`;
+const LEY7 = [['s', 'suma de cada línea'], ['ink', `borde grueso: el centro, está en ${P7.porElCentro} líneas`]];
+const LECT7 = [() => ['s', 'cada línea', String(P7.constante)], () => ['ink', 'centro', String(P7.cuenta.centro)], () => ['ink', 'cuadrados', String(P7.soluciones)]];
+
+const steps = [
+ { k:'Paso 1', t:'Explora: el corral', explora:true,
+   prep:() => prep1(),
+   body:() => `<p class="problem">En este corral hay 10 animales, entre gallinas y conejos. Arrastra un animal de una mitad a la otra para cambiarlo por uno del otro tipo, o usa los botones. Las lecturas cuentan las cabezas y las patas.</p>
+   ${moverCorralHTML()}
+   <p>Un reto: deja las 10 cabezas y arma un corral con ${t_(META1 + ' patas')}.</p>
+   <p class="aviso" id="meta1" aria-live="polite"></p>
+   <p class="hint">Con el teclado: elige el dibujo con Tab, cambia de animal con las flechas y usa Enter para cambiarlo.</p>`,
+   luego:() => { enlazarCorral(E, $('stepBody')); vivo1(); } },
+ { k:'Paso 2', t:'Predice: ¿cuántos conejos?', gate:P_2,
+   prep:() => { const ya = !!S.pred[P_2.id];
+     E.config(ya ? { modo:'corral', st:fin2(), ley:LEY2, desc:DESC2, lect:LECT2b }
+       : { modo:'corral', st:{ fichas:animales(P2.animales, '?'), una:true }, ley:LEY2, desc:`Un corral con ${P2.animales} animales que todavía no se sabe qué son.`, lect:LECT2 }); },
+   anima:fin => { const fs = animales(P2.animales, 'g');
+     E.config({ modo:'corral', st:{ fichas:fs, una:false, pie:[[`${P2.animales} × ${P2.vSupuesto} = `, 'ink'], [String(P2.supuestoTotal), 't'], [' patas: faltan ', 'ink'], [String(P2.faltan), 'f']] }, ley:LEY2, desc:DESC2, lect:LECT2.concat([() => ['t', 'patas ahora', String(M.contarCorral(E.st.fichas).patas)]]) });
+     const cambios = Array.from({ length:P2.conejos }, (_, k) => st => { st.fichas[P2.gallinas + (P2.conejos - 1 - k)].tipo = 'c'; st.nuevo = P2.gallinas + (P2.conejos - 1 - k);
+       st.pie = [[`cambio ${k + 1}: `, 'ink'], [`+ ${P2.diferencia}`, 'd'], [' → ', 'ink'], [`${P2.cambios[k + 1]} patas`, 't']]; });
+     E.secuencia([{}].concat(cambios, [fin2()]), [1500].concat(cambios.map(() => 420), [0]), () => { E.lect = LECT2b; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">En un corral hay ${P2.animales} animales entre ${g_('gallinas')} y ${c_('conejos')}, y en total se cuentan ${t_(P2.patas + ' patas')}. ¿Cuántos conejos hay?</p>${opcionesHTML(P_2.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${P2.animales} × ${P2.vSupuesto} = ${t_(P2.supuestoTotal)}<span class="note">si los ${P2.animales} fueran gallinas</span></div>
+     <div class="eq">${P2.patas} − ${P2.supuestoTotal} = ${f_(P2.faltan)}<span class="note">las patas que faltan</span></div>
+     <div class="eq">${P2.vOtro} − ${P2.vSupuesto} = ${d_(P2.diferencia)}<span class="note">lo que agrega cada cambio de una gallina por un conejo</span></div>
+     <div class="eq">${f_(P2.faltan)} ÷ ${d_(P2.diferencia)} = ${c_(P2.respuesta)} conejos y ${P2.animales} − ${P2.respuesta} = ${g_(P2.gallinas)} gallinas<span class="note">comprobación: ${P2.conejos} × ${P2.vOtro} + ${P2.gallinas} × ${P2.vSupuesto} = ${P2.patas}</span></div></div>
+   <p>Este es el método de la <b>falsa suposición</b>: se supone que todos son de un tipo, se cuenta cuánto falta para llegar al total y se divide entre lo que cambia el total en cada cambio. El cociente cuenta los del otro tipo.</p>${FUENTE}</div>` },
+ { k:'Paso 3', t:'Predice: el examen con puntos en contra', gate:P_3,
+   prep:() => { const ya = !!S.pred[P_3.id];
+     E.config(ya ? { modo:'examen', st:fin3(), ley:LEY3, desc:DESC3, lect:LECT3.concat([() => ['b', 'buenas', String(P3.correctas)], () => ['m', 'malas', String(P3.incorrectas)]]) }
+       : { modo:'examen', st:{ fichas:animales(P3.preguntas, '?') }, ley:LEY3, desc:`Las ${P3.preguntas} preguntas del examen, todavía sin saber cuáles son buenas y cuáles malas.`, lect:LECT3 }); },
+   anima:fin => { const fs = animales(P3.preguntas, 'b');
+     E.config({ modo:'examen', st:{ fichas:fs, pie:[[`${P3.preguntas} × ${P3.buena} = `, 'ink'], [String(P3.supuestoTotal), 't'], [' puntos: sobran ', 'ink'], [String(P3.sobran), 'f']] }, ley:LEY3, desc:DESC3, lect:LECT3 });
+     const cambios = Array.from({ length:P3.incorrectas }, (_, k) => st => { const i = P3.preguntas - 1 - k; st.fichas[i].tipo = 'm'; st.nuevo = i;
+       st.pie = [[`mala ${k + 1}: `, 'ink'], [`− ${P3.quita}`, 'd'], [' → ', 'ink'], [`${P3.cambios[k + 1]} puntos`, 't']]; });
+     E.secuencia([{}].concat(cambios, [fin3()]), [1500].concat(cambios.map(() => 420), [0]), () => { E.lect = LECT3.concat([() => ['b', 'buenas', String(P3.correctas)], () => ['m', 'malas', String(P3.incorrectas)]]); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">En un examen de admisión de ${P3.preguntas} preguntas, cada ${b_(`respuesta buena suma ${P3.buena} puntos`)} y cada ${m_(`respuesta mala resta ${P3.descuento} ${pl(P3.descuento, 'punto', 'puntos')}`)}. Luis respondió todas y obtuvo ${t_(P3.puntaje + ' puntos')}. ¿Cuántas respondió bien?</p>${opcionesHTML(P_3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${P3.preguntas} × ${P3.buena} = ${t_(P3.supuestoTotal)}<span class="note">si las ${P3.preguntas} fueran buenas</span></div>
+     <div class="eq">${P3.supuestoTotal} − ${P3.puntaje} = ${f_(P3.sobran)}<span class="note">los puntos que sobran</span></div>
+     <div class="eq">${P3.buena} + ${P3.descuento} = ${d_(P3.quita)}<span class="note">una buena que pasa a mala pierde sus ${P3.buena} puntos y además resta ${P3.descuento}</span></div>
+     <div class="eq">${f_(P3.sobran)} ÷ ${d_(P3.quita)} = ${m_(P3.incorrectas)} malas y ${P3.preguntas} − ${P3.incorrectas} = ${b_(P3.correctas)} buenas<span class="note">comprobación: ${P3.correctas} × ${P3.buena} − ${P3.incorrectas} × ${P3.descuento} = ${P3.puntaje}</span></div></div>
+   <p>Es la misma idea del corral: cada cambio mueve el total siempre lo mismo. Aquí el cambio baja el puntaje, y lo que baja es la distancia entre lo que vale una buena y lo que vale una mala: de + ${P3.buena} a − ${P3.descuento} hay ${P3.quita} puntos.</p>${FUENTE}</div>` },
+ { k:'Paso 4', t:'Predice: el número que pensó Ana', gate:P_4,
+   prep:() => { const ya = !!S.pred[P_4.id];
+     E.config(ya ? { modo:'tira', st:fin4(), ley:LEY4, desc:DESC4, lect:LECT4 }
+       : { modo:'tira', st:{ ops:ops4, valores:VAL4(), vuelta:[], vueltaK:0 }, ley:LEY4.slice(0, 2), desc:quitar(`Una tira de cinco cajas. La primera, el número que pensó Ana, tiene un signo de pregunta; arriba, las operaciones: ${P4.cadena.join(', ')}. La última caja dice ${P4.final}.`), lect:[LECT4[1]] }); },
+   anima:fin => {
+     E.config({ modo:'tira', st:{ ops:ops4, valores:VAL4(), vuelta:P4.vuelta.slice().reverse().map(v => v.texto), vueltaK:0, resalta:CAD4.length }, ley:LEY4, desc:DESC4, lect:[LECT4[1]] });
+     const est = P4.vuelta.map((v, j) => st => { st.vueltaK = j + 1; st.valores[CAD4.length - 1 - j] = v.a; st.resalta = CAD4.length - 1 - j;
+       st.pie = [[`${v.de} `, 'ink'], [v.texto, 'ink'], [` = ${v.a}`, j === CAD4.length - 1 ? 'x' : 'ink'], [`: se deshace «${v.ida}»`, 'ink']]; });
+     E.secuencia([{}].concat(est, [fin4()]), [600].concat(est.map(() => 1300), [0]), () => { E.lect = LECT4; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Ana pensó un ${x_('número')}. Lo multiplicó por ${CAD4[0].k}, al resultado le restó ${CAD4[1].k}, lo que obtuvo lo dividió entre ${CAD4[2].k} y, por último, le sumó ${CAD4[3].k}. Le salió ${y_(P4.final)}. ¿Qué número pensó Ana?</p>${opcionesHTML(P_4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${x_(P4.respuesta)} → ${ida4.slice(1, -1).join(' → ')} → ${P4.cadena[CAD4.length - 1]} → ${y_(P4.final)}<span class="note">la ida, como la hizo Ana</span></div>
+     <div class="eq">${y_(P4.final)} → ${vuelta4.slice(0, -1).join(' → ')} → ${P4.vuelta[CAD4.length - 1].texto} → ${x_(P4.respuesta)}<span class="note">la vuelta: desde el final, cada operación con su contraria</span></div></div>
+   <p>Este es el <b>método regresivo</b> (o del cangrejo): se parte del resultado y se camina hacia atrás. Cambian dos cosas a la vez: el orden (la última operación se deshace primero) y cada operación (× con ÷, + con −).</p>${FUENTE}</div>` },
+ { k:'Paso 5', t:'Predice: ¿con cuánto salió al mercado?', gate:P_5,
+   prep:() => { const ya = !!S.pred[P_5.id];
+     E.config(ya ? { modo:'barras', st:fin5(), ley:LEY5, desc:DESC5, lect:LECT5 }
+       : { modo:'tira', st:{ ops:B5.map(t => [`gasta ${t.parteTexto}`, `y ${soles(t.extra)} más`]), valores:[null, null, P5.final], moneda:true, vuelta:[], vueltaK:0 }, ley:LEY5.slice(0, 2),
+           desc:quitar(`Una tira de tres cajas. La primera, con lo que salió Rosa, tiene un signo de pregunta; ${B5.map((t, i) => `en la ${i ? 'segunda' : 'primera'} tienda gasta ${t.parteTexto} y ${soles(t.extra)} más`).join(', y ')}. La última caja dice ${soles(P5.final)}.`), lect:[LECT5[1]] }); },
+   anima:fin => {
+     E.config({ modo:'barras', st:{ tramos:B5, vis:[0, 1], nombres:nombres5 }, ley:LEY5, desc:DESC5, lect:[LECT5[1]] });
+     E.secuencia([{}, { vis:[0, 2] }, { vis:[1, 3] }, { vis:[2, 3] }, { vis:[3, 3] }, fin5()], [900, 1500, 1500, 1500, 1500, 0],
+       () => { E.lect = LECT5; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Rosa salió al mercado con ${x_('cierta cantidad de dinero')}. En la primera tienda gastó ${B5[0].parteTexto} de lo que tenía y ${soles(B5[0].extra)} más; en la segunda, ${B5[1].parteTexto} de lo que le quedaba y ${soles(B5[1].extra)} más. Volvió a casa con ${y_(soles(P5.final))}. ¿Con cuánto dinero salió?</p>${opcionesHTML(P_5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${B5[1].queda} + ${B5[1].extra} = ${B5[1].noGasto} → ${B5[1].noGasto} × ${B5[1].veces} = ${B5[1].antes}<span class="note">2.ª tienda: primero se devuelven los ${soles(B5[1].extra)} que gastó al final; los ${B5[1].noGasto} son la mitad que no gastó</span></div>
+     <div class="eq">${B5[0].queda} + ${B5[0].extra} = ${B5[0].noGasto} → ${B5[0].noGasto} × ${B5[0].veces} = ${x_(B5[0].antes)}<span class="note">1.ª tienda: lo mismo, con los ${soles(B5[0].extra)}</span></div></div>
+   <p>«Gastó ${B5[0].parteTexto} y ${soles(B5[0].extra)} más» son dos operaciones seguidas: primero quita ${B5[0].parteTexto} y después quita ${B5[0].extra}. De vuelta, se deshacen al revés: primero se devuelven los ${B5[0].extra} y después se multiplica por ${B5[0].veces}. En la barra se ve: lo que le quedó más los ${B5[0].extra} es la mitad que no gastó.</p>${FUENTE}</div>` },
+ { k:'Paso 6', t:'Predice: el triángulo de fichas', gate:P_6,
+   prep:() => { const ya = !!S.pred[P_6.id];
+     E.config(ya ? { modo:'tablero', st:fin6(), ley:LEY6, desc:DESC6, lect:LECT6 }
+       : { modo:'tablero', st:{ tipo:'triangulo3', col:Array(6).fill(null), nums:N6 }, ley:[['s', 'suma de cada lado']], desc:`Un triángulo con seis círculos vacíos, tres en las esquinas y tres en el medio de los lados, y debajo las fichas del ${N6[0]} al ${N6[N6.length - 1]}.`, lect:[() => ['ink', 'fichas', '1 a 6']] }); },
+   anima:fin => {
+     E.config({ modo:'tablero', st:{ tipo:'triangulo3', col:Array(6).fill(null), nums:N6 }, ley:LEY6, desc:DESC6, lect:[() => ['ink', 'fichas', '1 a 6']] });
+     const orden = [0, 1, 2, 3, 4, 5], est = orden.map(i => st => { st.col[i] = P6.muestra[i]; });
+     E.secuencia(est.concat([{ sumas:true }, fin6()]), est.map(() => 380).concat([1300, 0]), () => { E.lect = LECT6; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Las fichas del ${N6[0]} al ${N6[N6.length - 1]} se colocan en los seis círculos del triángulo (tres en las esquinas y tres en el medio de los lados), una en cada uno, de modo que los tres números de cada lado sumen lo mismo. ¿Cuál es la menor ${s_('suma por lado')} que se puede lograr?</p>${opcionesHTML(P_6.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${P6.lados} × ${s_('suma')} = (${N6[0]} + ${N6[1]} + … + ${N6[N6.length - 1]}) + ${v_('esquinas')} = ${P6.total} + ${v_('esquinas')}<span class="note">al sumar los tres lados, cada esquina aparece dos veces</span></div>
+     <div class="eq">${P6.lados} × ${s_(P6.respuesta)} = ${P6.total} + ${v_(P6.vertices.join(' + '))}<span class="note">la menor suma: las tres fichas más chicas en las esquinas</span></div></div>
+   <p>El motor probó las ${M.milesTexto(P6.formas)} formas de poner las seis fichas: las sumas posibles son ${P6.sumas.join(', ')}. Con ${P6.respuesta} hay ${P6.soluciones} formas, que son giros y reflejos de una sola.</p>${FUENTE}</div>` },
+ { k:'Paso 7', t:'Predice: el centro del cuadrado', gate:P_7,
+   prep:() => { const ya = !!S.pred[P_7.id];
+     E.config(ya ? { modo:'tablero', st:fin7(), ley:LEY7, desc:DESC7, lect:LECT7 }
+       : { modo:'tablero', st:{ tipo:'cuadrado3', col:Array(9).fill(null), nums:N7, pregunta:[4] }, ley:[['s', 'suma de cada línea']], desc:`Un cuadrado de 3 por 3 con nueve casillas vacías; la del centro tiene un signo de pregunta. Debajo, las fichas del ${N7[0]} al ${N7[N7.length - 1]}.`, lect:[() => ['ink', 'fichas', '1 a 9']] }); },
+   anima:fin => {
+     E.config({ modo:'tablero', st:{ tipo:'cuadrado3', col:Array(9).fill(null), nums:N7 }, ley:LEY7, desc:DESC7, lect:[() => ['ink', 'fichas', '1 a 9']] });
+     const est = [0, 1, 2, 3, 5, 6, 7, 8, 4].map(i => st => { st.col[i] = P7.muestra[i]; });
+     E.secuencia(est.concat([{ sumas:true }, { marcar:[4], resaltar:[1, 4, 6, 7] }, fin7()]), est.map(() => 320).concat([1300, 1300, 0]), () => { E.lect = LECT7; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Las fichas del ${N7[0]} al ${N7[N7.length - 1]} se colocan en un cuadrado de 3 × 3, una en cada casilla, de modo que cada fila, cada columna y cada una de las dos diagonales sumen lo mismo. ¿Qué ficha puede ir en la casilla del centro?</p>${opcionesHTML(P_7.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${P7.filas} × ${s_('suma')} = ${N7[0]} + ${N7[1]} + … + ${N7[N7.length - 1]} = ${P7.total}, así que ${s_('suma')} = ${s_(P7.constante)}<span class="note">las tres filas usan las nueve fichas una vez</span></div>
+     <div class="eq">${P7.porElCentro} × ${s_(P7.constante)} = ${P7.total} + ${P7.cuenta.deMas} × ${v_('centro')}, así que ${v_('centro')} = ${v_(P7.cuenta.centro)}<span class="note">las cuatro líneas que pasan por el centro usan las nueve fichas, y el centro cuatro veces</span></div></div>
+   <p>El motor probó las ${M.milesTexto(P7.formas)} formas de poner las nueve fichas: hay ${P7.soluciones} cuadrados mágicos, y en todos el centro es ${P7.cuenta.centro}.</p>${FUENTE}</div>` },
+ { k:'Paso 8', t:'Explora: el tablero de fichas', explora:true,
+   prep:() => prep8(),
+   body:() => `<p class="problem">Arma tu propio tablero: arrastra las fichas a los círculos (o elige la casilla y la ficha con los botones). Cada línea completa muestra su suma; cuando todas sumen lo mismo, el motor te dice cuántas formas hay.</p>
+   <div class="seg" role="group" aria-label="Tablero">${Object.entries(T8).map(([k, x]) => `<button type="button" data-t8="${k}" aria-pressed="${k === S.t8}">${x.nombre}</button>`).join('')}</div>
+   <div id="mover8">${moverTableroHTML(T8[S.t8].nums)}</div>
+   <p><button type="button" class="btn" id="vaciar8">Vaciar el tablero</button></p>
+   <div id="vivo8"></div>
+   <p class="hint">Con el teclado: elige el dibujo con Tab, cambia de casilla con las flechas, escribe el número de la ficha y bórrala con Retroceso.</p>
+   <p><a class="btn primary" href="#que-pasa-si" style="display:inline-block; text-decoration:none">Seguir con ¿Qué pasa si…?</a></p>`,
+   luego:() => {
+     const sb = $('stepBody');
+     sb.querySelectorAll('[data-t8]').forEach(b => b.onclick = () => { if (S.ocupado || E.anim || b.dataset.t8 === S.t8) return; S.t8 = b.dataset.t8; E.sel = 0; go(S.step); });
+     $('vaciar8').onclick = () => { if (S.ocupado || E.anim) return; S.col8[S.t8].fill(null); E.dibujar(); E.avisar(); };
+     enlazarTablero(E, sb); vivo8(); } },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${quitar(s.t)}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = glifos(s.body());
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.luego) s.luego();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+  pintarDots();
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max || (S.ocupado && k !== S.step);
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb'); ponerFb(f, fb(p, P.ok, P.fb[p])); f.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('fb').focus({ preventScroll:true });
+    const paso = S.step, listo = () => { S.ocupado = false; E.avisar(); nav(); };
+    Celular.alResponder($('cv'), () => s.anima(listo), () => S.step === paso, { siNo:listo });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Suponer al revés, cambiar el orden de dos operaciones, patas impares, subir todas las fichas y girar el cuadrado.
+   La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const g_ = t => V('g', t), c_ = t => V('c', t), t_ = t => V('t', t), f_ = t => V('f', t), d_ = t => V('d', t), x_ = t => V('x', t), y_ = t => V('y', t), s_ = t => V('s', t);
+const S = { k:0, pred:{}, t0:Date.now() };
+
+const Q1 = M.corralAlReves(20, 56);
+const CQ2 = [{ op:'mas', k:6 }, { op:'por', k:2 }], Q2 = M.ordenCambiado(CQ2, 30, 0);
+const Q3 = M.corral(15, 45);
+const N4 = [1, 2, 3, 4, 5, 6], COL4 = M.distribuir('triangulo3', N4).detalle.find(d => d.suma === 10).muestra, Q4 = M.subirFichas('triangulo3', COL4, 1);
+const N4b = Q4.colocacion.slice().sort((a, b) => a - b);
+const N5 = [2, 3, 4, 5, 6, 7, 8, 9, 10], Q5 = M.cuadradosDistintos(N5);
+console.assert(Q1.respuesta === 8 && Object.keys(Q1.errores).length === 3 && Q2.respuesta === 12 && Q2.antes === 9 && Object.keys(Q2.errores).length === 3
+  && !Q3.posible && Q3.vecinos.length === 2 && Q3.cambios.length === 9 && Q4.respuesta === 13 && Object.keys(Q4.errores).length === 3
+  && Q5.respuesta === 1 && Q5.centro[0] === 6 && Object.keys(Q5.errores).length === 3, 'qué pasa si: revisar las opciones');
+
+const conejos = n => `${n} ${M.pl(n, 'conejo', 'conejos')}`;
+const LEYC = [['g', 'gallina: 2 patas'], ['c', 'conejo: 4 patas'], ['t', 'patas en total']];
+const patas = () => ['t', 'patas ahora', String(M.contarCorral(E.st.fichas).patas)];
+const [Q2a, Q2b] = Q2.vuelta, [V3a, V3b] = Q3.vecinos;
+const EXPS = [
+  { id:'suponer-al-reves', corto:'Suponer al revés',
+    q:`En un corral hay ${Q1.animales} animales entre ${g_('gallinas')} y ${c_('conejos')}, con ${t_(Q1.patas + ' patas')} en total. Sofía empieza suponiendo que los ${Q1.animales} son conejos. ¿Cuántos conejos le sale que hay?`,
+    opts:[['a', conejos(Q1.errores.leeElCocienteComoConejos), 'lee-el-cociente-como-el-tipo-supuesto', 'hipotesis'], ['b', conejos(Q1.errores.sobranSinDividir), 'da-lo-que-sobra-sin-dividir', 'hipotesis'],
+          ['c', conejos(Q1.respuesta)], ['d', conejos(Q1.errores.divideEntreElSupuesto), 'divide-entre-el-valor-del-tipo-supuesto', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`${Q1.gallinas} es el cociente ${Q1.sobran} ÷ ${Q1.diferencia}, pero cuenta los cambios de conejo por gallina: son las gallinas. Conejos: ${Q1.animales} − ${Q1.gallinas} = ${Q1.respuesta}.`,
+      b:`${Q1.sobran} son las patas que sobran si los ${Q1.animales} fueran conejos (${Q1.supuestoTotal} − ${Q1.patas}), no animales. Cada conejo que se cambia por una gallina quita ${Q1.diferencia} patas: ${Q1.sobran} ÷ ${Q1.diferencia} = ${Q1.gallinas} gallinas y ${Q1.respuesta} conejos.`,
+      d:`${Q1.sobran} ÷ ${Q1.vSupuesto} = ${Q1.errores.divideEntreElSupuesto} toma las ${Q1.vSupuesto} patas del conejo, pero en su lugar entra una gallina con ${Q1.vOtro}: cada cambio quita ${Q1.vSupuesto} − ${Q1.vOtro} = ${Q1.diferencia}. Son ${Q1.sobran} ÷ ${Q1.diferencia} = ${Q1.gallinas} gallinas y ${Q1.respuesta} conejos.` },
+    antes:ya => E.config(ya ? { modo:'corral', st:finQ1(), ley:LEYC, desc:DESCQ1, lect:LECTQ1 }
+      : { modo:'corral', st:{ fichas:animales(Q1.animales, '?'), una:true }, ley:LEYC, desc:`Un corral con ${Q1.animales} animales que todavía no se sabe qué son.`, lect:[() => ['ink', 'animales', String(Q1.animales)], () => ['t', 'patas', String(Q1.patas)]] }),
+    despues:() => { const fs = animales(Q1.animales, 'c');
+      E.config({ modo:'corral', st:{ fichas:fs, pie:[[`${Q1.animales} × ${Q1.vSupuesto} = `, 'ink'], [String(Q1.supuestoTotal), 't'], [' patas: sobran ', 'ink'], [String(Q1.sobran), 'f']] }, ley:LEYC, desc:DESCQ1, lect:[patas] });
+      const est = Array.from({ length:Q1.gallinas }, (_, k) => st => { st.fichas[k].tipo = 'g'; st.nuevo = k; st.pie = [[`cambio ${k + 1}: `, 'ink'], [`− ${Q1.diferencia}`, 'd'], [' → ', 'ink'], [`${Q1.cambios[k + 1]} patas`, 't']]; });
+      E.secuencia([{}].concat(est, [finQ1()]), [1500].concat(est.map(() => 450), [0]), () => { E.lect = LECTQ1; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${Q1.animales} × ${Q1.vSupuesto} = ${t_(Q1.supuestoTotal)} → sobran ${f_(Q1.sobran)} → ${f_(Q1.sobran)} ÷ ${d_(Q1.diferencia)} = ${g_(Q1.gallinas)} gallinas<span class="note">suponiendo que todos son conejos, el cociente da las gallinas</span></div>
+      <div class="eq">${Q1.animales} − ${Q1.gallinas} = ${c_(Q1.respuesta)} conejos<span class="note">lo mismo que sale suponiendo que todos son gallinas</span></div></div>
+      <p>Se puede suponer cualquiera de los dos tipos: si se supone el que tiene menos patas, faltan; si se supone el que tiene más, sobran. En los dos casos el cociente cuenta los animales del tipo que <b>no</b> se supuso.</p>` },
+
+  { id:'otro-orden', corto:'Otro orden',
+    q:`Pedro pensó un número, le sumó ${CQ2[0].k} y multiplicó el resultado por ${CQ2[1].k}. Lucía pensó otro ${x_('número')}: primero lo multiplicó por ${CQ2[1].k} y después le sumó ${CQ2[0].k}. A los dos les salió ${y_(Q2a.de)}. ¿Qué número pensó Lucía?`,
+    opts:[['a', String(Q2.errores.elDeAntes), 'el-orden-no-importa', 'hipotesis'], ['b', String(Q2.errores.haciaAdelante), 'aplica-las-operaciones-hacia-adelante', 'hipotesis'],
+          ['c', String(Q2.errores.ordenSinInvertir), 'recorre-hacia-atras-sin-invertir', 'hipotesis'], ['d', String(Q2.respuesta)]],
+    ok:'d',
+    fb:{ a:`${Q2.antes} es el número de Pedro, que sumó primero: ${Q2.vueltaAntesTexto}. Lucía sumó al final, y eso se deshace primero: ${Q2.vueltaTexto}.`,
+      b:`${Q2.errores.haciaAdelante} sale de hacer las operaciones de ida con el ${Q2a.de} (${Q2.trazas.haciaAdelante}), pero el ${Q2a.de} es el final. De vuelta: ${Q2.vueltaTexto}.`,
+      c:`${Q2.errores.ordenSinInvertir} sale de recorrer la cadena desde el final, pero sin cambiar las operaciones: ${Q2.trazas.ordenSinInvertir}. Cada una se deshace con su contraria: ${Q2.vueltaTexto}.` },
+    antes:ya => E.config(ya ? { modo:'tira', st:finQ2(), ley:LEYQ2, desc:DESCQ2, lect:LECTQ2 }
+      : { modo:'tira', st:{ ops:Q2.cadena.map(t => [t]), valores:[null, null, Q2a.de], vuelta:[], vueltaK:0 }, ley:LEYQ2.slice(0, 2), desc:quitar(`La tira de Lucía, de tres cajas: un signo de pregunta, ${Q2.cadena[0]}, otra caja vacía, ${Q2.cadena[1]}, y ${Q2a.de}.`), lect:[() => ['y', 'le salió', String(Q2a.de)]] }),
+    despues:() => { E.config({ modo:'tira', st:{ ops:Q2.cadena.map(t => [t]), valores:[null, null, Q2a.de], vuelta:Q2.vuelta.slice().reverse().map(v => v.texto), vueltaK:0, resalta:2 }, ley:LEYQ2, desc:DESCQ2, lect:[() => ['y', 'le salió', String(Q2a.de)]] });
+      const est = Q2.vuelta.map((v, j) => st => { st.vueltaK = j + 1; st.valores[1 - j] = v.a; st.resalta = 1 - j; st.pie = [[`${v.de} ${v.texto} = `, 'ink'], [String(v.a), j === 1 ? 'x' : 'ink']]; });
+      E.secuencia([{}].concat(est, [finQ2()]), [500].concat(est.map(() => 1300), [0]), () => { E.lect = LECTQ2; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">Pedro (${Q2.cadenaAntes.join(', ')}): ${Q2.vueltaAntesTexto}<span class="note">sumó primero</span></div>
+      <div class="eq">Lucía (${Q2.cadena.join(', ')}): ${Q2.vueltaTexto}<span class="note">sumó al final</span></div></div>
+      <p>Con las mismas operaciones en otro orden, el número de partida cambia: lo que se suma antes de multiplicar también queda multiplicado. Por eso, en el cangrejo, el orden de vuelta es justo el contrario del de ida.</p>` },
+
+  { id:'patas-impares', corto:'Las 45 patas',
+    q:`En un corral hay ${Q3.animales} animales entre ${g_('gallinas')} y ${c_('conejos')}, y alguien dice que contó ${t_(Q3.patas + ' patas')}. ¿Cuántos conejos hay?`,
+    opts:[['a', conejos(Q3.errores.trunca), 'redondea-hacia-abajo', 'hipotesis'], ['b', conejos(Q3.errores.redondea), 'redondea-hacia-arriba', 'hipotesis'],
+          ['c', `Ningún reparto da ${Q3.patas} patas`], ['d', 'Faltan datos para saberlo', 'cree-que-faltan-datos', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`Con ${V3a.conejos} conejos y ${V3a.gallinas} gallinas hay ${V3a.patas} patas, no ${Q3.patas}. Con ${Q3.animales} gallinas hay ${Q3.supuestoTotal} patas y cada cambio suma ${Q3.diferencia}: el total siempre es par. Ningún reparto da ${Q3.patas}.`,
+      b:`Con ${V3b.conejos} conejos y ${V3b.gallinas} gallinas hay ${V3b.patas} patas, no ${Q3.patas}. Con ${Q3.animales} gallinas hay ${Q3.supuestoTotal} patas y cada cambio suma ${Q3.diferencia}: el total siempre es par. Ningún reparto da ${Q3.patas}.`,
+      d:`No faltan datos: con las cabezas y las patas basta. Pero gallinas y conejos tienen un número par de patas, así que el total siempre es par: ${Q3.patas} no puede salir. Ningún reparto cumple.` },
+    antes:ya => E.config(ya ? { modo:'corral', st:finQ3(), ley:LEYC, desc:DESCQ3, lect:LECTQ3 }
+      : { modo:'corral', st:{ fichas:animales(Q3.animales, '?'), una:true }, ley:LEYC, desc:`Un corral con ${Q3.animales} animales que todavía no se sabe qué son.`, lect:[() => ['ink', 'animales', String(Q3.animales)], () => ['t', 'patas que dicen', String(Q3.patas)]] }),
+    despues:() => { const fs = animales(Q3.animales, 'g');
+      E.config({ modo:'corral', st:{ fichas:fs, pie:[[`${Q3.animales} × ${Q3.vSupuesto} = `, 'ink'], [String(Q3.supuestoTotal), 't'], [' patas: faltan ', 'ink'], [String(Q3.faltan), 'f']] }, ley:LEYC, desc:DESCQ3, lect:[patas] });
+      const est = Array.from({ length:V3b.conejos }, (_, k) => st => { const i = Q3.animales - 1 - k; st.fichas[i].tipo = 'c'; st.nuevo = i; st.pie = [[`cambio ${k + 1}: `, 'ink'], [`+ ${Q3.diferencia}`, 'd'], [' → ', 'ink'], [`${Q3.cambios[k + 1]} patas`, 't']]; });
+      E.secuencia([{}].concat(est, [finQ3()]), [1500].concat(est.map(() => 450), [0]), () => { E.lect = LECTQ3; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${Q3.patas} − ${Q3.supuestoTotal} = ${f_(Q3.faltan)} y ${f_(Q3.faltan)} ÷ ${d_(Q3.diferencia)} = ${Q3.cocienteDecimal}: no es entero, no hay reparto<span class="note">la falsa suposición pide un número de cambios que no existe</span></div></div>
+      <p>${Q3.razon} Con ${Q3.vSupuesto} y ${Q3.vOtro} patas, cualquier corral tiene un número par de patas.</p>` },
+
+  { id:'subir-las-fichas', corto:`Fichas del ${N4b[0]} al ${N4b[N4b.length - 1]}`,
+    q:`En el triángulo de la escena, las fichas del ${N4[0]} al ${N4[N4.length - 1]} están puestas de modo que cada lado suma ${s_(Q4.antes)}. Si a cada ficha se le suma ${Q4.delta} (quedan las fichas del ${N4b[0]} al ${N4b[N4b.length - 1]}, cada una en el lugar de la que reemplaza), ¿cuánto suma ahora cada lado?`,
+    opts:[['a', String(Q4.errores.sinCambio), 'la-suma-no-cambia', 'hipotesis'], ['b', String(Q4.errores.subeUnaVez), 'sube-una-vez-por-lado', 'hipotesis'],
+          ['c', String(Q4.respuesta)], ['d', String(Q4.errores.porCadaFicha), 'sube-por-cada-ficha-del-tablero', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`Cada ficha sube ${Q4.delta}, así que cada lado también cambia: tiene ${Q4.porLinea} fichas, y sube ${Q4.sube}. ${Q4.antes} + ${Q4.sube} = ${Q4.respuesta}.`,
+      b:`Cada lado tiene ${Q4.porLinea} fichas, y cada una subió ${Q4.delta}: el lado sube ${Array(Q4.porLinea).fill(Q4.delta).join(' + ')} = ${Q4.sube}, no ${Q4.delta}. ${Q4.antes} + ${Q4.sube} = ${Q4.respuesta}.`,
+      d:`${Q4.errores.porCadaFicha} sube ${Q4.delta} por cada una de las ${Q4.casillas} fichas del tablero, pero cada lado tiene solo ${Q4.porLinea}. ${Q4.antes} + ${Q4.sube} = ${Q4.respuesta}.` },
+    antes:ya => E.config(ya ? { modo:'tablero', st:finQ4(), ley:LEYQ4, desc:DESCQ4, lect:LECTQ4 }
+      : { modo:'tablero', st:{ tipo:'triangulo3', col:COL4.slice(), nums:N4, sumas:true, sinBanca:true }, ley:LEYQ4, desc:`${textoTablero('triangulo3', COL4)}`, lect:[() => ['s', 'cada lado', String(Q4.antes)]] }),
+    despues:() => { E.config({ modo:'tablero', st:{ tipo:'triangulo3', col:COL4.slice(), nums:N4, sumas:false, sinBanca:true }, ley:LEYQ4, desc:DESCQ4, lect:[] });
+      E.secuencia([{}, st => { st.col = Q4.colocacion.slice(); st.nums = N4b; st.pie = [[`cada ficha + ${Q4.delta}`, 'ink']]; }, finQ4()], [700, 1400, 0], () => { E.lect = LECTQ4; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${s_(Q4.antes)} + ${Array(Q4.porLinea).fill(Q4.delta).join(' + ')} = ${s_(Q4.respuesta)}<span class="note">cada lado tiene ${Q4.porLinea} fichas, y cada una subió ${Q4.delta}</span></div></div>
+      <p>Si a todas las fichas se les suma lo mismo, cada línea sube eso por cada ficha que tiene. Por eso con las fichas del ${N4b[0]} al ${N4b[N4b.length - 1]} todas las sumas posibles del triángulo son ${Q4.sube} más que con las del ${N4[0]} al ${N4[N4.length - 1]}.</p>` },
+
+  { id:'girar-el-cuadrado', corto:'Girar y reflejar',
+    q:`El motor probó las ${M.milesTexto(Q5.formas)} formas de poner las fichas del ${N5[0]} al ${N5[N5.length - 1]} en un cuadrado de 3 × 3 y encontró ${Q5.soluciones} cuadrados mágicos (filas, columnas y diagonales con la misma suma). Si dos cuadrados cuentan como el mismo cuando uno sale del otro al girar o reflejar el tablero, ¿cuántos cuadrados mágicos distintos hay?`,
+    opts:[['a', String(Q5.errores.cuentaTodos), 'cuenta-giros-y-reflejos-como-distintos', 'hipotesis'], ['b', String(Q5.respuesta)],
+          ['c', String(Q5.errores.soloGiros), 'solo-quita-los-giros', 'hipotesis'], ['d', String(Q5.errores.soloUnReflejo), 'solo-quita-un-reflejo', 'hipotesis']],
+    ok:'b',
+    fb:{ a:`Los ${Q5.soluciones} son el mismo cuadrado visto de ${Q5.simetrias} maneras: ${Q5.giros} giros (0°, 90°, 180° y 270°) y, de cada uno, su reflejo. Distintos hay ${Q5.respuesta}.`,
+      c:`Quitar solo los giros deja ${Q5.errores.soloGiros}: el cuadrado y su reflejo. Pero el reflejo también cuenta como el mismo: hay ${Q5.respuesta}.`,
+      d:`Quitar solo un reflejo deja ${Q5.errores.soloUnReflejo}, que todavía son giros unos de otros. Con giros y reflejos, los ${Q5.soluciones} son uno solo: ${Q5.respuesta}.` },
+    antes:ya => E.config(ya ? { modo:'tablero', st:finQ5(Q5.vistas.length - 1), ley:LEYQ5, desc:DESCQ5, lect:LECTQ5 }
+      : { modo:'tablero', st:{ tipo:'cuadrado3', col:Array(9).fill(null), nums:N5, sinBanca:true, pregunta:[0, 1, 2, 3, 4, 5, 6, 7, 8] }, ley:[['s', 'suma de cada línea']], desc:'Un cuadrado de 3 por 3 con signos de pregunta en las nueve casillas.', lect:[() => ['ink', 'cuadrados mágicos', String(Q5.soluciones)]] }),
+    despues:() => { E.config({ modo:'tablero', st:finQ5(0), ley:LEYQ5, desc:DESCQ5, lect:[] });
+      E.secuencia(Q5.vistas.map((_, j) => st => Object.assign(st, finQ5(j))), Q5.vistas.map(() => 900), () => { E.lect = LECTQ5; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${Q5.soluciones} ÷ ${Q5.simetrias} = ${Q5.respuesta}<span class="note">${Q5.giros} giros, y cada uno con reflejo o sin él: ${Q5.simetrias} maneras de mirar el mismo cuadrado</span></div></div>
+      <p>Un cuadrado tiene ${Q5.simetrias} simetrías: ${Q5.giros} giros y ${Q5.reflejos} reflejos. Ningún cuadrado mágico queda igual al girarlo, así que cada uno aparece ${Q5.simetrias} veces entre las soluciones. Con las fichas del ${N5[0]} al ${N5[N5.length - 1]} hay un solo cuadrado mágico, mirado de ${Q5.simetrias} maneras.</p>` },
+];
+function finQ1(){ return { fichas:corralDe(Q1.gallinas, Q1.conejos), nuevo:null, pie:[[String(Q1.sobran), 'f'], [' ÷ ', 'ink'], [String(Q1.diferencia), 'd'], [' = ', 'ink'], [`${Q1.gallinas} gallinas`, 'g'], [' y ', 'ink'], [`${Q1.conejos} conejos`, 'c']] }; }
+const DESCQ1 = `Se empezó con ${Q1.animales} conejos, ${Q1.supuestoTotal} patas; cada cambio de un conejo por una gallina quitó ${Q1.diferencia} patas. Después de ${Q1.gallinas} cambios quedan ${Q1.gallinas} gallinas y ${Q1.conejos} conejos, con ${Q1.patas} patas.`;
+const LECTQ1 = [() => ['g', 'gallinas', String(Q1.gallinas)], () => ['c', 'conejos', String(Q1.conejos)], () => ['t', 'patas', String(Q1.patas)]];
+function finQ2(){ return { ops:Q2.cadena.map(t => [t]), valores:Q2.ida.slice(), vuelta:Q2.vuelta.slice().reverse().map(v => v.texto), vueltaK:2, resalta:0, pie:[[`${Q2a.de} ${Q2a.texto} = ${Q2a.a} → ${Q2b.texto} = `, 'ink'], [String(Q2.respuesta), 'x']] }; }
+const LEYQ2 = [['x', 'número que pensó Lucía'], ['y', 'resultado final'], ['ink', 'arriba: ida · abajo: vuelta']];
+const DESCQ2 = quitar(`La tira de Lucía: ${Q2.ida[0]}, ${Q2.cadena[0]}, ${Q2.ida[1]}, ${Q2.cadena[1]}, ${Q2.ida[2]}. De vuelta: ${Q2.vueltaTexto}.`);
+const LECTQ2 = [() => ['x', 'pensó Lucía', String(Q2.respuesta)], () => ['ink', 'pensó Pedro', String(Q2.antes)]];
+function finQ3(){ return { fichas:corralDe(V3b.gallinas, V3b.conejos), nuevo:null, pie:[[String(V3a.patas), 't'], [', ', 'ink'], [String(V3b.patas), 't'], [`: el ${Q3.patas} nunca sale`, 'ink']] }; }
+const DESCQ3 = `Se empezó con ${Q3.animales} gallinas, ${Q3.supuestoTotal} patas, y cada cambio sumó ${Q3.diferencia}: ${Q3.cambios.slice(1, 3).join(', ')}, y así hasta ${V3a.patas} con ${V3a.conejos} conejos y ${V3b.patas} con ${V3b.conejos}. El ${Q3.patas} se salta: ningún reparto da ${Q3.patas} patas.`;
+const LECTQ3 = [() => ['t', `con ${V3a.conejos} conejos`, `${V3a.patas} patas`], () => ['t', `con ${V3b.conejos} conejos`, `${V3b.patas} patas`]];
+function finQ4(){ return { tipo:'triangulo3', col:Q4.colocacion.slice(), nums:N4b, sumas:true, sinBanca:true, pie:[[`${Q4.antes} + ${Q4.porLinea} × ${Q4.delta} = `, 'ink'], [String(Q4.respuesta), 's']] }; }
+const LEYQ4 = [['s', 'suma de cada lado']];
+const DESCQ4 = `${textoTablero('triangulo3', Q4.colocacion)} Cada ficha subió ${Q4.delta}, y cada lado, que tiene ${Q4.porLinea} fichas, subió ${Q4.sube}.`;
+const LECTQ4 = [() => ['ink', 'antes', String(Q4.antes)], () => ['s', 'ahora', String(Q4.respuesta)]];
+function finQ5(j){ return { tipo:'cuadrado3', col:Q5.vistas[j].slice(), nums:N5, sinBanca:true, sumas:true, pregunta:[], pie:[[`vista ${j + 1} de ${Q5.vistas.length}`, 'ink'], [j ? ': la primera, girada o reflejada' : ': la primera', 'ink']] }; }
+const LEYQ5 = [['s', 'suma de cada línea']];
+const DESCQ5 = `Las ${Q5.soluciones} soluciones, una tras otra: todas son el mismo cuadrado girado o reflejado. ${Q5.vistas[0].slice(0, 3).join(', ')} arriba; ${Q5.vistas[0].slice(3, 6).join(', ')} en el medio; ${Q5.vistas[0].slice(6).join(', ')} abajo, y sus giros y reflejos. Cada línea suma ${Q5.constante}.`;
+const LECTQ5 = [() => ['ink', 'soluciones', String(Q5.soluciones)], () => ['s', 'distintas', String(Q5.respuesta)]];
+
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = glifos(`<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`);
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb2');
+    ponerFb(f, p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`);
+    f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = glifos(x.exp()) + FUENTE + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false); $('fb2').focus({ preventScroll:true });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

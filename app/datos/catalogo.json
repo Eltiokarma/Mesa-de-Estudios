@@ -2328,7 +2328,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "razonamiento-numerico"
+     ]
     }
    ]
   },
@@ -3491,7 +3493,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "traslados-sucesos"
+     ]
     },
     {
      "id": "razonamiento-matematico.arreglos-numericos",
@@ -3619,7 +3623,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "traslados-sucesos"
+     ]
     },
     {
      "id": "razonamiento-matematico.ruedas-poleas-engranajes",
@@ -5266,7 +5272,7 @@
    "titulo": "Espejos esféricos",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.optica-geometrica"
    ],
@@ -5436,6 +5442,23 @@
     "/plantillas/quimica-ambiente/index.html",
     "/plantillas/quimica-ambiente/motor.js",
     "/plantillas/quimica-ambiente/papel.json"
+   ]
+  },
+  "razonamiento-numerico": {
+   "id": "razonamiento-numerico",
+   "titulo": "Las fichas que se cambian: razonamiento numérico",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.razonamiento-numerico"
+   ],
+   "url": "/plantillas/razonamiento-numerico/index.html",
+   "papel": "/plantillas/razonamiento-numerico/papel.json",
+   "archivos": [
+    "/plantillas/razonamiento-numerico/index.html",
+    "/plantillas/razonamiento-numerico/motor.js",
+    "/plantillas/razonamiento-numerico/papel.json"
    ]
   },
   "regla-de-tres": {
@@ -5631,6 +5654,24 @@
     "/plantillas/traductor-enunciados/index.html",
     "/plantillas/traductor-enunciados/motor.js",
     "/plantillas/traductor-enunciados/papel.json"
+   ]
+  },
+  "traslados-sucesos": {
+   "id": "traslados-sucesos",
+   "titulo": "La posta, el paradero y la plaza: sucesos que se repiten, monedas y puntos cardinales",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.traslados-y-puntos-cardinales",
+    "razonamiento-matematico.frecuencia-de-sucesos"
+   ],
+   "url": "/plantillas/traslados-sucesos/index.html",
+   "papel": "/plantillas/traslados-sucesos/papel.json",
+   "archivos": [
+    "/plantillas/traslados-sucesos/index.html",
+    "/plantillas/traslados-sucesos/motor.js",
+    "/plantillas/traslados-sucesos/papel.json"
    ]
   },
   "trazos-rutas": {

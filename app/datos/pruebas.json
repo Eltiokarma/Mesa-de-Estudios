@@ -653,12 +653,180 @@
      "describe": "Usa el MCD donde va el MCM (AR13)"
     },
     "AR13-producto": {
-     "respaldo": "parcial",
+     "respaldo": "hipotesis",
      "describe": "Multiplica los números en vez de buscar el MCM"
     },
     "suma": {
      "respaldo": "hipotesis",
      "describe": "Suma los dos periodos"
+    },
+    "potencias-corridas": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta los exponentes desde 1: la cifra de las unidades queda multiplicada por la base"
+    },
+    "suma-cifras-por-la-base": {
+     "respaldo": "hipotesis",
+     "describe": "Suma las cifras y multiplica por la base, como si todos los lugares valieran igual"
+    },
+    "lee-como-decimal": {
+     "respaldo": "hipotesis",
+     "describe": "Lee el numeral como si estuviera en base 10"
+    },
+    "base-minima-como-respuesta": {
+     "respaldo": "hipotesis",
+     "describe": "Da la base mínima (la cifra mayor más 1) en vez de la base en que vale lo pedido"
+    },
+    "resta-los-numerales": {
+     "respaldo": "hipotesis",
+     "describe": "Resta el numeral y su valor como si los dos fueran de base 10"
+    },
+    "resta-las-unidades-y-no-divide": {
+     "respaldo": "hipotesis",
+     "describe": "Resta las unidades al valor y no divide entre la cifra de los paquetes"
+    },
+    "resta-el-menor-del-mayor": {
+     "respaldo": "hipotesis",
+     "describe": "En cada columna resta el menor del mayor, sin pedir prestado"
+    },
+    "presta-sin-descontar": {
+     "respaldo": "hipotesis",
+     "describe": "Pide prestado pero no descuenta lo que prestó la columna de la izquierda"
+    },
+    "ceros-que-prestan-quedan-en-10": {
+     "respaldo": "hipotesis",
+     "describe": "Los ceros por los que pasa el préstamo quedan en 10 y no en 9"
+    },
+    "residuo-por-exceso-igual-al-por-defecto": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que el residuo por exceso es el mismo que el residuo por defecto"
+    },
+    "resta-desde-el-residuo-maximo": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta lo que falta desde el residuo máximo (d − 1 − r) y no desde el divisor"
+    },
+    "suma-el-divisor-al-residuo": {
+     "respaldo": "hipotesis",
+     "describe": "Suma el divisor y el residuo"
+    },
+    "lo-hace-cuadrado-no-cubo": {
+     "respaldo": "hipotesis",
+     "describe": "Completa los exponentes para un cuadrado y no para un cubo"
+    },
+    "multiplica-por-lo-que-sobra": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica por lo que sobra de cada exponente en vez de lo que le falta"
+    },
+    "multiplica-por-todos-los-primos": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica por todos los primos una vez, aunque alguno ya estaba completo"
+    },
+    "olvida-el-mas-uno": {
+     "respaldo": "hipotesis",
+     "describe": "Resta las raíces de los extremos y no suma 1"
+    },
+    "cuenta-desde-1": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta todos los cuadrados desde 1², también los de antes del primer número"
+    },
+    "raiz-de-la-diferencia": {
+     "respaldo": "hipotesis",
+     "describe": "Saca la raíz de la diferencia entre los dos números"
+    },
+    "AR15-promedio-simple": {
+     "respaldo": "parcial",
+     "describe": "Promedia los valores sin pesar cuánto hay de cada uno (AR15)"
+    },
+    "cruza-las-cantidades": {
+     "respaldo": "hipotesis",
+     "describe": "Cruza las cantidades: cada precio con los kilos del otro"
+    },
+    "suma-los-precios": {
+     "respaldo": "hipotesis",
+     "describe": "Suma los precios"
+    },
+    "aspa-al-reves": {
+     "respaldo": "hipotesis",
+     "describe": "Aplica la regla del aspa al revés: cruza mal las distancias"
+    },
+    "resta-grados-como-litros": {
+     "respaldo": "hipotesis",
+     "describe": "Toma la diferencia de grados como litros de agua"
+    },
+    "da-el-volumen-final": {
+     "respaldo": "hipotesis",
+     "describe": "Da el volumen final y no el agua que se agrega"
+    },
+    "olvida-a-los-que-no-estan-en-ninguno": {
+     "respaldo": "hipotesis",
+     "describe": "Resta el total sin quitar antes a los que no están en ningún grupo"
+    },
+    "da-los-que-estan-en-al-menos-uno": {
+     "respaldo": "hipotesis",
+     "describe": "Da los que están en al menos un grupo (la unión)"
+    },
+    "da-los-que-estan-solo-en-el-otro": {
+     "respaldo": "hipotesis",
+     "describe": "Da los que están solo en el otro grupo"
+    },
+    "dos-por-cada-elemento": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta dos subconjuntos por elemento (2n) en vez de multiplicar (2ⁿ)"
+    },
+    "olvida-el-vacio": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida el conjunto vacío"
+    },
+    "cuenta-ordenamientos": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta las formas de ordenar los elementos (n!)"
+    },
+    "niega-las-partes-sin-cambiar-el-conectivo": {
+     "respaldo": "hipotesis",
+     "describe": "Niega cada parte pero deja el mismo conectivo"
+    },
+    "niega-solo-la-primera-y-cambia": {
+     "respaldo": "hipotesis",
+     "describe": "Niega solo la primera parte y cambia el conectivo"
+    },
+    "niega-solo-la-primera": {
+     "respaldo": "hipotesis",
+     "describe": "Niega solo la primera parte y deja el conectivo"
+    },
+    "condicional-al-reves": {
+     "respaldo": "hipotesis",
+     "describe": "Lee el condicional al revés: lo cree falso con el antecedente falso y el consecuente verdadero"
+    },
+    "antecedente-falso-hace-falsa-la-promesa": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que el condicional es falso si no se cumple nada (las dos partes falsas)"
+    },
+    "condicional-como-bicondicional": {
+     "respaldo": "hipotesis",
+     "describe": "Lee el condicional como bicondicional («si y solo si»)"
+    },
+    "da-los-del-tipo-supuesto": {
+     "respaldo": "hipotesis",
+     "describe": "Da la cantidad del tipo que se supuso, no la del otro tipo"
+    },
+    "da-lo-que-falta-sin-dividir": {
+     "respaldo": "hipotesis",
+     "describe": "Da lo que falta para el total sin dividir entre lo que agrega cada cambio"
+    },
+    "divide-entre-el-valor-del-otro-tipo": {
+     "respaldo": "hipotesis",
+     "describe": "Divide lo que falta entre el valor del otro tipo y no entre la diferencia de valores"
+    },
+    "dobla-y-despues-devuelve": {
+     "respaldo": "hipotesis",
+     "describe": "Al ir hacia atrás, duplica primero y suma lo de más después"
+    },
+    "olvida-lo-que-gasto-de-mas": {
+     "respaldo": "hipotesis",
+     "describe": "Al ir hacia atrás, duplica pero olvida devolver lo que se gastó de más"
+    },
+    "resta-lo-que-gasto-de-mas": {
+     "respaldo": "hipotesis",
+     "describe": "Al ir hacia atrás, resta lo que se gastó de más en vez de devolverlo"
     }
    },
    "pares": [
@@ -1086,7 +1254,7 @@
   },
   "fisica": {
    "curso": "fisica",
-   "version": "1.1.0",
+   "version": "1.2.0",
    "minutos": 16,
    "errores": {
     "G2-altura-entre-tiempo": {
@@ -1208,6 +1376,66 @@
     "energia-v-igual-gh": {
      "respaldo": "hipotesis",
      "describe": "Multiplica g por h sin pasar por la energía"
+    },
+    "EL8-se-reparte-por-igual": {
+     "respaldo": "parcial",
+     "describe": "Cree que al tocarse dos esferas la carga se reparte en partes iguales, y no hasta igualar el potencial"
+    },
+    "EL8-la-chica-se-queda-con-mas": {
+     "respaldo": "hipotesis",
+     "describe": "Reparte la carga al revés: la esfera chica se queda con más"
+    },
+    "EL8-toda-pasa-a-la-grande": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que toda la carga pasa a la esfera más grande"
+    },
+    "MG5-opuestas-se-anulan": {
+     "respaldo": "documentado",
+     "describe": "Cree que entre dos corrientes opuestas los campos se anulan, cuando se suman"
+    },
+    "MG-usa-la-distancia-entre-cables": {
+     "respaldo": "hipotesis",
+     "describe": "Usa la distancia entre los cables y no la de cada cable al punto (da lo mismo que contar un solo cable)"
+    },
+    "MG-hilo-uno-sobre-d2": {
+     "respaldo": "hipotesis",
+     "describe": "Hace bajar el campo del hilo con 1/d², como la fuerza de Coulomb"
+    },
+    "MG8-MG9-contra-el-campo": {
+     "respaldo": "documentado",
+     "describe": "Pone el campo inducido siempre contra el del imán, y no contra el cambio del flujo"
+    },
+    "MG-mano-derecha-invertida": {
+     "respaldo": "parcial",
+     "describe": "Acierta una parte, pero no amarra bien el sentido de la corriente con su campo (mano derecha al revés)"
+    },
+    "MG8-sin-corriente-al-alejar": {
+     "respaldo": "parcial",
+     "describe": "Cree que si el flujo disminuye no se induce corriente"
+    },
+    "FM2-basta-subir-la-intensidad": {
+     "respaldo": "documentado",
+     "describe": "Cree que una luz muy intensa arranca electrones aunque su frecuencia esté bajo el umbral"
+    },
+    "FM2-intensidad-compensa-frecuencia": {
+     "respaldo": "parcial",
+     "describe": "Cree que la intensidad compensa la frecuencia: las dos luces arrancan electrones"
+    },
+    "FM-intensidad-minima": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que una luz tenue no arranca electrones aunque su frecuencia alcance"
+    },
+    "OE12-color-por-lambda-en-el-medio": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que en el medio el color lo pone la longitud de onda nueva"
+    },
+    "OE12-cambia-la-frecuencia": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que al entrar al medio cambia la frecuencia (y el color), y no la longitud de onda"
+    },
+    "OE-la-luz-siempre-va-a-c": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la luz va siempre a c, también dentro del vidrio"
     }
    },
    "pares": [

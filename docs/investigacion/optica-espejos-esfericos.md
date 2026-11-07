@@ -40,7 +40,9 @@ Se confirman igual que los de lentes: con hojas resueltas de postulantes en la p
 
 ## Propuesta para la plantilla
 
-**Hecho (5 nov 2026):** `plantillas/optica-espejo-esferico/` sigue esta propuesta. Tiene el motor con 34 pruebas, los 7 casos de abajo, 9 problemas de papel, el paso a paso y las 4 preguntas "¿qué pasa si…?". Cada predicción se registra con su id de error. Falta la animación del "doblez" del lado real; por ahora la cubre una nota en el paso 7.
+**Hecho (5 nov 2026):** `plantillas/optica-espejo-esferico/` sigue esta propuesta. Tiene el motor con 34 pruebas, los 7 casos de abajo, 9 problemas de papel, el paso a paso y las 4 preguntas "¿qué pasa si…?". Cada predicción se registra con su id de error. 
+
+**Hecho (7 nov 2026, 0.2.0):** el doblez está en la escena (paso 7, «La hoja que se dobla», presentado como truco de papel, y experimento 5 con el convexo); el paso a paso tiene 10 pasos, el papel 10 problemas y «¿qué pasa si…?» 5 experimentos; 22 casos en formato fn/args/espera. Siete respaldos que decían «documentado» pasaron a parcial, entre ellos las opciones a) y d) de la tabla de abajo; el 80 % de lentes es de John, Molepo y Chirwa (2017).
 
 **La física.** Se usa la misma ecuación que en lentes, con la convención que ya tiene el Banco Óptico:
 
@@ -56,10 +58,10 @@ Predicción del paso 3: *¿dónde se forma la imagen?*
 
 | Opción | Error que representa | Respaldo |
 | --- | --- | --- |
-| a) Sobre la superficie del espejo | S1 | Documentado |
+| a) Sobre la superficie del espejo | S1 | Parcial (lo documentado es del espejo plano; desde el 7 nov 2026) |
 | b) Detrás del espejo | Regla de lentes llevada al espejo (hipótesis); también S6 | Parcial |
 | c) Delante, más allá de C (a 30 cm), invertida y más grande | Correcta | — |
-| d) Delante, entre F y C, invertida y más pequeña | S5: confundir la zona "más allá de C" con "entre C y F" | Documentado como indicador; la opción concreta es nuestra |
+| d) Delante, entre F y C, invertida y más pequeña | S5: confundir la zona "más allá de C" con "entre C y F" | Parcial: documentado como indicador; la opción concreta es nuestra |
 
 **Explorador, preguntas "¿qué pasa si…?":**
 

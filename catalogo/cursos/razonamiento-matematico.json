@@ -65,8 +65,8 @@
       "universidades": {"unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["traslados-sucesos"],
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.arreglos-numericos",
@@ -131,7 +131,7 @@
       "universidades": {"unmsm": {"temas": [10]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["traslados-sucesos"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {

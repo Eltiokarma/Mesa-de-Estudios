@@ -4,6 +4,47 @@ Rama `rutina/fisica-b`, sacada de `claude/awesome-wozniak-5etl1n`. Unidades de 5
 
 **Ya resuelto:** la conversación principal le avisó a la rutina de física que la electricidad es de esta rama.
 
+## 7 nov 2026 · Banco de física: fis-11 a fis-15 en reserva (pedido de la principal)
+
+### Qué hice
+- 5 pares A/B nuevos en la `reserva` de `catalogo/pruebas/fisica.json`, uno por escena. Siguen en reserva porque el tope es de 10 ítems por forma.
+- Un verificador por par en `catalogo/pruebas/verificar.js`; cada uno saca la respuesta y los distractores del motor de su escena.
+- El banco pasa a la versión 1.2.0. Se agregaron el informe de ondas electromagnéticas y 15 códigos de error, con el mismo respaldo que tienen en su escena.
+- Toca `catalogo/`, que esta rutina no suele tocar. Lo hice porque la principal lo pidió explícitamente.
+
+### Pares y unidades
+
+| Par | Escena | Unidad | Qué pide | A / B | Códigos (respaldo) |
+| --- | --- | --- | --- | --- | --- |
+| fis-11 | electrostatica | `fisica.electrostatica` | Carga final de la esfera chica cuando toca a una grande y las dos ya tenían carga (reparto por radios) | 120 nC / 100 nC | EL8 se reparte por igual (parcial), la chica se queda con más y toda pasa a la grande (hipótesis) |
+| fis-12 | magnetismo | `fisica.magnetismo` | Campo en el punto medio de dos cables con corrientes opuestas (A: 30 cm y 45 A; B: batería de auto, 50 cm y 100 A) | 120 µT / 160 µT | MG5 opuestas se anulan (documentado), usa la distancia entre cables y 1/d² (hipótesis) |
+| fis-13 | induccion | `fisica.induccion-electromagnetica` | Un electroimán que se apaga frente a una espira: sentido de la corriente vista desde detrás de la espira, y el campo inducido. A: cara norte; B: cara sur | antihoraria, alejándose / horaria, hacia el electroimán | MG8–MG9 contra el campo (documentado), mano derecha invertida y no circula (parcial) |
+| fis-14 | fisica-moderna | `fisica.fisica-moderna` | ¿Cuál de dos luces arranca electrones: una intensa bajo el umbral u otra tenue sobre él? | solo la violeta / solo la verde | FM2 basta subir la intensidad (documentado), la intensidad compensa (parcial), intensidad mínima (hipótesis) |
+| fis-15 | ondas-electromagneticas | `fisica.ondas-electromagneticas` | Rapidez, λ y color de una luz dentro de un medio, dada su frecuencia (A: diamante, n = 2,5; B: líquido, n = 1,25) | 1,2 × 10⁸ m/s, 160 nm, sigue violeta / 2,4 × 10⁸ m/s, 400 nm, sigue verde | OE12 (dos variantes) y la luz siempre va a c (hipótesis) |
+
+### Revisiones
+- **Constructor:** al principio había dos parecidos y los rehízo. fis-11 calcaba palabras de la escena de las esferas, y fis-15 era casi el p8 del papel.
+- **Revisor a ciegas:** las 10 claves eran correctas y no había nada grave. Lo corregido:
+  - fis-11: las cargas pasaron de µC a nC, porque con µC el aire se rompería.
+  - fis-12: la lámpara de 9 A no era realista y el distractor 1/d² daba 500 mT, que se descarta solo por tamaño. Ahora son cables gruesos y los valores van en µT.
+  - fis-12: una variante del error de la distancia da siempre el mismo número que «contar un solo cable»; lo aclaré en su descripción.
+  - fis-13 A: copiaba la configuración y la respuesta del paso 5 de la escena. Ahora las dos formas se miran desde detrás de la espira.
+  - La letra de la correcta ya no coincide entre A y B en 4 de los 5 pares.
+- **Desvío en fis-12 A:** con 40 cm y 60 A, un distractor repetía la corriente del enunciado. Quedó en 30 cm y 45 A.
+
+### Notas para el análisis
+- fis-13: el código «no circula» se midió con un imán que se mueve. Aquí nada se mueve, así que puede atraer por otra idea: «sin movimiento no hay inducción».
+- fis-14 repite el patrón de la escena (la luz tenue es la que arranca electrones). Es transferencia cercana válida y cae igual en las dos formas.
+- fis-15 A: el distractor de color dice «pasa a ultravioleta» y suena más extremo que el de B.
+- La escena de electrostática usa µC en el contacto de esferas (12 µC en 1 cm), que físicamente es imposible. Es la convención de academia; queda como pendiente de la escena, sin cambio.
+
+### Pruebas
+- `node --test catalogo/pruebas/pruebas.test.js`: 61 de 62. Solo falla «app/datos/pruebas.json está al día», que se arregla con `npm run catalogo`.
+- `parecidos.js`: ningún parecido. Quedan 5 avisos de «comparte 3 códigos con la predicción que imita», que es lo esperado; revisé a mano que la situación es otra.
+
+### Pedidos
+- `npm run catalogo`. Los pares quedan en reserva hasta que se arme la forma del piloto.
+
 ## 7 nov 2026 · Ondas electromagnéticas: la antena y el arcoíris (`plantillas/ondas-electromagneticas/`)
 
 ### Qué hice
