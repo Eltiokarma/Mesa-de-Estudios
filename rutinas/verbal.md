@@ -417,3 +417,10 @@ En la eliminación, uno es impertinente, otro redundante y otro incompatible. En
 4. Correr `npm run catalogo`: el índice cambió.
 
 **Con esto la pieza 3 queda cerrada.** Las cuatro piezas de la rutina están hechas. Lo que sigue depende de Gerson: más textos, ejercicios de oraciones incompletas con palabra (RV23 con contenido y no solo con conector) o los ejercicios que falten cuando la integración agregue las unidades.
+
+**Actualización (7 nov 2026, tarde).** La integración hizo en la principal los pedidos 1 a 4:
+- las unidades de la ficha y el índice, con e001 a e015;
+- «produce» ahora se lee «fabrica o da»;
+- el paso previo «ordenar» da RV37 cuando la primera tarjeta es la conclusión.
+
+Hice merge de la principal en esta rama: `npm test` da 4003 de 4003. En e010 a e012, el motor da para cada orden del paso previo el mismo código que la alternativa (RV37, RV28 y RV29). Ya se pueden escribir analogías de causa.
