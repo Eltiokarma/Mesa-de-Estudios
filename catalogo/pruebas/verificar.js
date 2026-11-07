@@ -142,21 +142,19 @@ const V = {
   },
   // qui-11 a qui-17: escenas de química que no tenían ítems (en "reserva" del banco: las formas tienen un tope de 10).
   'qui-11': d => {
-    // Al revés: de los electrones y neutrones de un ion a su número de masa. Se busca con el motor el (Z, A) que da
-    // esas partículas; cada error es el (Z, A) cuyo error del motor da los mismos números.
+    // Al revés: de los electrones de un ion a su elemento. Se busca con el motor el Z cuyo ion da esos electrones
+    // y esos neutrones; cada error es el Z cuyo error del motor da los mismos electrones. La clave es el símbolo.
     const T = motor('atomo-y-tabla'), m = d.ion.match(/^X\^(\d?)([+-])$/), carga = (m[1] ? Number(m[1]) : 1) * (m[2] === '+' ? 1 : -1);
     const buscar = (que) => {
-      for (let Z = 1; Z <= 60; Z++) for (let A = Z; A <= 3 * Z + 10; A++) {
-        let r; try { r = T.particulas({ Z, A, carga }); } catch { continue; }
-        if (que(r)) return A;
+      for (let Z = 1; Z <= 36; Z++) {
+        let r; try { r = T.particulas({ Z, A: Z + d.neutrones, carga }); } catch { continue; }
+        if (que(r)) return T.SIMBOLOS[Z];
       }
       throw new Error('ningún ion da esas partículas');
     };
-    const A = buscar(r => r.electrones === d.electrones && r.neutrones === d.neutrones);
-    return { correcta: A, errores: {
-      'carga-al-reves': buscar(r => r.errores['suma-carga-a-electrones'] === d.electrones && r.neutrones === d.neutrones),
-      'ignora-la-carga': buscar(r => r.errores['ignora-la-carga'] === d.electrones && r.neutrones === d.neutrones),
-      'resta-carga-a-neutrones': buscar(r => r.electrones === d.electrones && r.errores['resta-carga-a-neutrones'] === d.neutrones) } };
+    return { correcta: buscar(r => r.electrones === d.electrones), errores: {
+      'carga-al-reves': buscar(r => r.errores['suma-carga-a-electrones'] === d.electrones),
+      'ignora-la-carga': buscar(r => r.errores['ignora-la-carga'] === d.electrones) } };
   },
   'qui-12': d => {
     // Al revés: de los electrones de valencia de un ion XOₙ^q al aporte de X. La cuenta usa la valencia del O del
@@ -190,14 +188,17 @@ const V = {
       'da-la-fraccion-del-otro-gas': 100 * seco / d.Ptotal, 'gas-agua-reparte-a-medias': 100 * r.errores['reparte-a-medias'] / d.Ptotal } };
   },
   'qui-15': d => {
-    // Pureza desconocida: el producto teórico si la muestra fuera pura sale del motor (masaAMasa); se comprueba con
-    // producir que esa pureza da el producto real del enunciado.
-    const R = motor('rendimiento-pureza'), rx = R.REACCIONES[d.reaccion];
+    // Pureza desconocida. El teórico si la muestra fuera pura sale de los coeficientes (motor de balance) y de las
+    // masas molares (motor de rendimiento); si la reacción está en el motor de rendimiento, se comprueba con producir.
+    const R = motor('rendimiento-pureza'), Bm = motor('balance-reacciones'), b = Bm.balancear(d.ecuacion), ec = Bm.ecuacion(d.ecuacion);
     for (const [f, M] of Object.entries(d.masas)) if (R.masaMolar(f) !== M) throw new Error(`la masa molar de ${f} del enunciado no es la del motor`);
-    const teoPuro = R.masaAMasa(d.reaccion, d.muestra, rx.reactivo, d.producto), eta = d.rendimiento / 100;
+    const fs = [...ec.reactivos, ...ec.productos].map(t => t.f), reactivo = fs[0], kP = fs.indexOf(d.producto);
+    const teoPuro = d.muestra / R.masaMolar(reactivo) * b.coefs[kP] / b.coefs[0] * R.masaMolar(d.producto), eta = d.rendimiento / 100;
     const p = 100 * d.real / (teoPuro * eta);
-    const chk = R.producir({ reaccion: d.reaccion, muestra: d.muestra, pureza: p, rendimiento: d.rendimiento, producto: d.producto });
-    if (Math.abs(chk.real - d.real) > 1e-9) throw new Error('la pureza no da el producto del enunciado');
+    if (d.reaccion) {
+      const chk = R.producir({ reaccion: d.reaccion, muestra: d.muestra, pureza: p, rendimiento: d.rendimiento, producto: d.producto });
+      if (Math.abs(chk.real - d.real) > 1e-9) throw new Error('la pureza no da el producto del enunciado');
+    }
     const sinEta = 100 * d.real / teoPuro;
     return { correcta: p, errores: { 'olvida-rendimiento': sinEta, 'multiplica-rendimiento': sinEta * eta, 'suma-porcentajes': sinEta + 100 - d.rendimiento } };
   },

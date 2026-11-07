@@ -125,10 +125,6 @@
       "respaldo": "hipotesis",
       "describe": "Aplica una sola vez la mitad"
     },
-    "resta-carga-a-neutrones": {
-      "respaldo": "hipotesis",
-      "describe": "Mete la carga del ion en la cuenta de los neutrones (n = A − Z − carga)"
-    },
     "ignora-la-carga": {
       "respaldo": "hipotesis",
       "describe": "Cuenta los electrones como si el ion fuera neutro, sin usar su carga"
@@ -964,9 +960,9 @@
       "plantilla": "atomo-y-tabla",
       "unidad": "quimica.estructura-atomica",
       "nombreUnidad": "Estructura atómica",
-      "mide": "Del ion a su número de masa: un anión tiene más electrones que protones, y la carga no toca a los neutrones",
+      "mide": "Del ion a su elemento: un anión tiene más electrones que protones, así que Z es menor que el número de electrones",
       "A": {
-        "enunciado": "Un ion X²⁻ tiene 18 electrones y 20 neutrones. ¿Cuál es el número de masa de X?",
+        "enunciado": "Un ion X²⁻ tiene 18 electrones y 20 neutrones. ¿Qué elemento es X?",
         "datos": {
           "electrones": 18,
           "neutrones": 20,
@@ -974,54 +970,44 @@
         },
         "opciones": [
           {
-            "texto": "38",
-            "valor": 38,
+            "texto": "Argón (Z = 18)",
+            "clave": "Ar",
             "error": "ignora-la-carga"
           },
           {
-            "texto": "36",
-            "valor": 36,
+            "texto": "Azufre (Z = 16)",
+            "clave": "S",
             "correcta": true
           },
           {
-            "texto": "40",
-            "valor": 40,
+            "texto": "Calcio (Z = 20)",
+            "clave": "Ca",
             "error": "carga-al-reves"
-          },
-          {
-            "texto": "34",
-            "valor": 34,
-            "error": "resta-carga-a-neutrones"
           }
         ]
       },
       "B": {
-        "enunciado": "Un ion X²⁻ tiene 36 electrones y 44 neutrones. ¿Cuál es el número de masa de X?",
+        "enunciado": "Un ion X²⁻ tiene 10 electrones y 8 neutrones. ¿Qué elemento es X?",
         "datos": {
-          "electrones": 36,
-          "neutrones": 44,
+          "electrones": 10,
+          "neutrones": 8,
           "ion": "X^2-"
         },
         "opciones": [
           {
-            "texto": "80",
-            "valor": 80,
+            "texto": "Neón (Z = 10)",
+            "clave": "Ne",
             "error": "ignora-la-carga"
           },
           {
-            "texto": "78",
-            "valor": 78,
+            "texto": "Oxígeno (Z = 8)",
+            "clave": "O",
             "correcta": true
           },
           {
-            "texto": "82",
-            "valor": 82,
+            "texto": "Magnesio (Z = 12)",
+            "clave": "Mg",
             "error": "carga-al-reves"
-          },
-          {
-            "texto": "76",
-            "valor": 76,
-            "error": "resta-carga-a-neutrones"
           }
         ]
       }
@@ -1151,16 +1137,16 @@
       "nombreUnidad": "Líquidos, sólidos y cambios de estado",
       "mide": "Gas recogido sobre agua: la fracción de moléculas de vapor es la presión de vapor entre la presión total",
       "A": {
-        "enunciado": "Un estudiante junta oxígeno en una probeta llena de agua, puesta boca abajo en una cubeta a 30 °C. Cuando el agua de la probeta queda a la misma altura que la de la cubeta, el gas de adentro está a 750 mmHg. A 30 °C, la presión de vapor del agua es 31,8 mmHg. ¿Qué porcentaje de las moléculas de gas de la probeta son de vapor de agua?",
+        "enunciado": "Un estudiante junta oxígeno en una probeta llena de agua, puesta boca abajo en una cubeta a 30 °C. Cuando el agua de la probeta queda a la misma altura que la de la cubeta, el gas de adentro está a 750 mmHg. A 30 °C, la presión de vapor del agua es 31,7 mmHg. ¿Qué porcentaje de las moléculas de gas de la probeta son de vapor de agua?",
         "datos": {
           "Ptotal": 750,
           "T": 30,
-          "Pv": 31.8
+          "Pv": 31.7
         },
         "opciones": [
           {
-            "texto": "4,43 %",
-            "valor": 4.427736006683375,
+            "texto": "4,41 %",
+            "valor": 4.413197828205486,
             "error": "fraccion-sobre-el-gas-seco"
           },
           {
@@ -1169,13 +1155,13 @@
             "error": "gas-agua-reparte-a-medias"
           },
           {
-            "texto": "4,24 %",
-            "valor": 4.24,
+            "texto": "4,23 %",
+            "valor": 4.226666666666667,
             "correcta": true
           },
           {
-            "texto": "95,76 %",
-            "valor": 95.76,
+            "texto": "95,77 %",
+            "valor": 95.77333333333333,
             "error": "da-la-fraccion-del-otro-gas"
           }
         ]
@@ -1228,7 +1214,8 @@
           "masas": {
             "Zn": 65,
             "H2": 2
-          }
+          },
+          "ecuacion": "Zn + HCl -> ZnCl2 + H2"
         },
         "opciones": [
           {
@@ -1254,16 +1241,16 @@
         ]
       },
       "B": {
-        "enunciado": "Se calientan 175 g de una mezcla de clorato de potasio con una impureza que no reacciona: 2KClO₃ → 2KCl + 3O₂. Con un rendimiento de 75 % se recogen 36 g de O₂. ¿Qué porcentaje de la mezcla es KClO₃? (Masas molares en g/mol: KClO₃ = 122,5; O₂ = 32)",
+        "enunciado": "Una muestra de 96 g de magnesio impuro reacciona con ácido clorhídrico en exceso: Mg + 2HCl → MgCl₂ + H₂. La impureza no reacciona. Con un rendimiento de 75 % se obtienen 4,2 g de H₂. ¿Qué porcentaje de la muestra es magnesio? (Masas molares en g/mol: Mg = 24; H₂ = 2)",
         "datos": {
-          "reaccion": "clorato",
-          "muestra": 175,
-          "real": 36,
+          "ecuacion": "Mg + HCl -> MgCl2 + H2",
+          "muestra": 96,
+          "real": 4.2,
           "rendimiento": 75,
-          "producto": "O2",
+          "producto": "H2",
           "masas": {
-            "KClO3": 122.5,
-            "O2": 32
+            "Mg": 24,
+            "H2": 2
           }
         },
         "opciones": [
