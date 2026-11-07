@@ -1,5 +1,5 @@
 /*
- * Motor de Soluciones: concentración, dilución y mezcla.
+ * Motor de Soluciones: concentración, dilución, mezcla y solubilidad.
  *
  * Aquí vive toda la química de la plantilla (regla 1 de CLAUDE.md). No toca el
  * DOM: funciona igual en el navegador (window.MotorSolucion) y en Node
@@ -28,6 +28,33 @@
  *   modelo(0.3, 50, { mLporCuadro:25, MporPunto:0.5 }) → 2 cuadros, 24 puntos, 12 puntos por cuadro.
  * repartir() decide cuántos puntos tocan a cada cuadro (todos iguales, o con uno de diferencia cuando
  * no da exacto) y ubicar() los acomoda dentro de su cuadro con una semilla: siempre igual.
+ *
+ * SOLUBILIDAD (hueco SO13 y SO6, 7 nov 2026). Tablas declaradas en SOLUBILIDAD; entre dos filas se interpola
+ * en línea recta y fuera de la tabla el motor no extrapola (da error). Son valores usuales de las tablas de los
+ * textos de química general, redondeados; por contrastar con el CRC Handbook antes de publicar.
+ *   KNO3 (g por 100 g de agua), T en °C: 0 13,3 · 10 20,9 · 20 31,6 · 30 45,8 · 40 63,9 · 50 85,5 · 60 110 · 70 138 · 80 169 · 90 202 · 100 246
+ *   NaCl (g por 100 g de agua):          0 35,7 · 10 35,8 · 20 36,0 · 30 36,3 · 40 36,6 · 50 37,0 · 60 37,3 · 70 37,8 · 80 38,4 · 90 39,0 · 100 39,8
+ *   CO2 (g por kg de agua con 1 atm de CO₂): 0 3,346 · 5 2,774 · 10 2,318 · 15 1,970 · 20 1,688 · 25 1,449 · 30 1,257 · 40 0,973 · 50 0,761 · 60 0,576
+ *   solubilidad('KNO3', 20)                                → 31,6 (número: g por 100 g de agua; en gases, g/kg a 1 atm)
+ *   curva('KNO3', 5)                                       → [[T, S], …] cada 5 °C de punta a punta de la tabla (para dibujar)
+ *   tipoSolucion({ sustancia, g, gAgua:100, T })           g de soluto TODO DISUELTO en gAgua: S, cabe = S·gAgua/100, porCien = 100·g/gAgua,
+ *       tipo 'insaturada' (g < cabe), 'saturada' (g = cabe, tolerancia 1e-9) o 'sobresaturada' (g > cabe), falta = cabe − g, exceso = g − cabe;
+ *       errores.porSolucion: el tipo si se compara S con los g de soluto por 100 g de SOLUCIÓN (100·g/(g + gAgua)) en vez de por 100 g de agua.
+ *   equilibrio({ sustancia, g, gAgua:100, T, sobresaturar })  g de soluto echados (disueltos o no) a T: cabe, disuelto = mín(g, cabe),
+ *       solido = g − disuelto, tipo ('saturada' si queda sólido). Con sobresaturar: true (sin sólido ni cristalito) no cristaliza: todo disuelto.
+ *   enfriar({ sustancia, g, gAgua:100, T1, T2, sinSemilla })  de T1 a T2 ≤ T1: cabe1, cabe2, solidoAntes = máx(0, g − cabe1),
+ *       solidoDespues = máx(0, g − cabe2) (0 con sinSemilla), cristaliza = solidoDespues − solidoAntes, disueltoDespues, tipoAntes, tipoDespues
+ *       (de la solución que queda: 'saturada' si hay sólido; con sinSemilla y g > cabe2, 'sobresaturada'), Tsat (T donde empieza a cristalizar,
+ *       o null si no cristaliza); errores: laSolubilidad = cabe2 (toma lo que cabe a T2 como lo que cristaliza), restaSolubilidades =
+ *       cabe1 − cabe2, nada = 0, tipoPorDiluida = 'insaturada' (SO13: "ya es diluida, entonces es insaturada").
+ *   temperaturaSaturacion('KNO3', 80)                      → T (°C) en que la curva vale 80 g por 100 g de agua (null si no la corta)
+ *   henry({ gas:'CO2', T, P, kgAgua:1 })                   ley de Henry con k declarada: k = S a 1 atm (tabla), S = k·P (g/kg), g = S·kgAgua;
+ *       P en atm (presión parcial del gas); errores.presionInversa = k/P·kgAgua (SO6: más presión, menos gas).
+ *   compararGasT({ gas, T1, T2, P, kgAgua })               g1 y g2 a la misma P; masEn = la T con más gas (o 'igual'); errores.masCaliente =
+ *       la T mayor (SO6), errores.igual = 'igual' (cree que con la misma P la temperatura no cuenta).
+ *   destapar({ gas, T, P1, P2, kgAgua })                   P2 por defecto P_AIRE.CO2 = 0,0004 atm (CO₂ del aire, aproximado): antes, despues
+ *       (g disueltos con P1 y con P2), escapa = antes − despues; errores.noSale = 0, errores.presionInversa = g con k/P2 (gana gas).
+ * CABECERA: líneas 1 a 58 (qué calcula, unidades, cuadros y puntos, tablas de solubilidad y las funciones del hueco SO13/SO6).
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -292,6 +319,124 @@
     return out;
   }
 
+  // ---------- Solubilidad: curvas, tipo de solución, cristalización y ley de Henry ----------
+  const tabla = (T, S, o) => Object.freeze(Object.assign({ T: Object.freeze(T), S: Object.freeze(S) }, o));
+  const SOLUBILIDAD = Object.freeze({
+    KNO3: tabla([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], [13.3, 20.9, 31.6, 45.8, 63.9, 85.5, 110, 138, 169, 202, 246],
+      { nombre: 'nitrato de potasio', formula: 'KNO₃', fase: 'solido', unidad: 'g por 100 g de agua' }),
+    NaCl: tabla([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], [35.7, 35.8, 36.0, 36.3, 36.6, 37.0, 37.3, 37.8, 38.4, 39.0, 39.8],
+      { nombre: 'cloruro de sodio', formula: 'NaCl', fase: 'solido', unidad: 'g por 100 g de agua' }),
+    CO2: tabla([0, 5, 10, 15, 20, 25, 30, 40, 50, 60], [3.346, 2.774, 2.318, 1.970, 1.688, 1.449, 1.257, 0.973, 0.761, 0.576],
+      { nombre: 'dióxido de carbono', formula: 'CO₂', fase: 'gas', unidad: 'g por kg de agua con 1 atm del gas' }),
+  });
+  const FUENTE_SOLUBILIDAD = 'Valores usuales de las tablas de los textos de química general, redondeados; por contrastar con el CRC Handbook.';
+  const P_AIRE = Object.freeze({ CO2: 0.0004 }); // presión parcial aproximada del CO₂ en el aire (atm)
+
+  function datosDe(sust, fase) {
+    const d = SOLUBILIDAD[sust];
+    if (!d) throw new Error(`sin tabla de solubilidad: ${sust}`);
+    if (fase && d.fase !== fase) throw new Error(`${sust} no es un ${fase === 'gas' ? 'gas' : 'sólido'} en la tabla`);
+    return d;
+  }
+  // Interpolación lineal entre dos filas de la tabla; fuera de la tabla, error.
+  function solubilidad(sust, T) {
+    const d = datosDe(sust); T = Number(T);
+    if (!Number.isFinite(T)) throw new Error('la temperatura: falta un número');
+    const t = d.T, n = t.length;
+    if (T < t[0] - EPS || T > t[n - 1] + EPS) throw new Error(`la tabla de ${sust} va de ${t[0]} a ${t[n - 1]} °C`);
+    for (let i = 0; i < n - 1; i++) {
+      if (T <= t[i + 1] + EPS) {
+        const f = (T - t[i]) / (t[i + 1] - t[i]);
+        return d.S[i] + (d.S[i + 1] - d.S[i]) * Math.min(1, Math.max(0, f));
+      }
+    }
+    return d.S[n - 1];
+  }
+  function curva(sust, paso) {
+    const d = datosDe(sust), p = paso === undefined ? 1 : numero(paso, 'el paso', { positivo: true }), out = [];
+    const t0 = d.T[0], t1 = d.T[d.T.length - 1];
+    for (let T = t0; T < t1 - EPS; T += p) out.push([T, solubilidad(sust, T)]);
+    out.push([t1, solubilidad(sust, t1)]);
+    return out;
+  }
+  function clasificar(g, cabe) {
+    if (Math.abs(g - cabe) <= EPS * Math.max(1, cabe)) return 'saturada';
+    return g < cabe ? 'insaturada' : 'sobresaturada';
+  }
+  function tipoSolucion(o) {
+    o = o || {};
+    datosDe(o.sustancia, 'solido');
+    const g = numero(o.g, 'la masa de soluto'), gAgua = numero(o.gAgua === undefined ? 100 : o.gAgua, 'la masa de agua', { positivo: true });
+    const S = solubilidad(o.sustancia, o.T), cabe = S * gAgua / 100, tipo = clasificar(g, cabe);
+    return { sustancia: o.sustancia, T: Number(o.T), S, gAgua, g, cabe, porCien: 100 * g / gAgua, tipo,
+      falta: Math.max(0, cabe - g), exceso: Math.max(0, g - cabe),
+      errores: { porSolucion: clasificar(100 * g / (g + gAgua), S) } };
+  }
+  function equilibrio(o) {
+    o = o || {};
+    datosDe(o.sustancia, 'solido');
+    const g = numero(o.g, 'la masa de soluto'), gAgua = numero(o.gAgua === undefined ? 100 : o.gAgua, 'la masa de agua', { positivo: true });
+    const S = solubilidad(o.sustancia, o.T), cabe = S * gAgua / 100;
+    const disuelto = o.sobresaturar ? g : Math.min(g, cabe), solido = g - disuelto;
+    return { T: Number(o.T), S, cabe, g, disuelto, solido, porCien: 100 * disuelto / gAgua,
+      tipo: solido > EPS ? 'saturada' : clasificar(disuelto, cabe) };
+  }
+  function enfriar(o) {
+    o = o || {};
+    datosDe(o.sustancia, 'solido');
+    const g = numero(o.g, 'la masa de soluto'), gAgua = numero(o.gAgua === undefined ? 100 : o.gAgua, 'la masa de agua', { positivo: true });
+    const T1 = Number(o.T1), T2 = Number(o.T2);
+    if (!(T2 <= T1 + EPS)) throw new Error('al enfriar, la temperatura final no puede ser mayor que la inicial');
+    const cabe1 = solubilidad(o.sustancia, T1) * gAgua / 100, cabe2 = solubilidad(o.sustancia, T2) * gAgua / 100;
+    const solidoAntes = Math.max(0, g - cabe1);
+    const solidoDespues = o.sinSemilla && solidoAntes <= EPS ? 0 : Math.max(0, g - cabe2);
+    const disueltoDespues = g - solidoDespues;
+    const cristaliza = solidoDespues - solidoAntes;
+    const tipoAntes = solidoAntes > EPS ? 'saturada' : clasificar(g, cabe1);
+    const tipoDespues = solidoDespues > EPS ? 'saturada' : clasificar(disueltoDespues, cabe2);
+    let Tsat = null;
+    if (cristaliza > EPS) Tsat = solidoAntes > EPS ? T1 : temperaturaSaturacion(o.sustancia, 100 * g / gAgua);
+    return { sustancia: o.sustancia, g, gAgua, T1, T2, cabe1, cabe2, solidoAntes, solidoDespues, cristaliza, disueltoDespues,
+      tipoAntes, tipoDespues, Tsat,
+      errores: { laSolubilidad: cabe2, restaSolubilidades: cabe1 - cabe2, nada: 0, tipoPorDiluida: 'insaturada' } };
+  }
+  // T en que la curva vale porCien (primer cruce de la tabla, de menor a mayor T); null si no la corta.
+  function temperaturaSaturacion(sust, porCien) {
+    const d = datosDe(sust), s = numero(porCien, 'la masa por 100 g de agua');
+    for (let i = 0; i < d.T.length - 1; i++) {
+      const a = d.S[i], b = d.S[i + 1];
+      if ((s - a) * (s - b) <= 0 && a !== b) return d.T[i] + (s - a) / (b - a) * (d.T[i + 1] - d.T[i]);
+      if (a === b && Math.abs(s - a) <= EPS) return d.T[i];
+    }
+    return null;
+  }
+  function henry(o) {
+    o = o || {};
+    datosDe(o.gas, 'gas');
+    const P = numero(o.P, 'la presión del gas'), kg = numero(o.kgAgua === undefined ? 1 : o.kgAgua, 'la masa de agua', { positivo: true });
+    const k = solubilidad(o.gas, o.T), S = k * P;
+    return { gas: o.gas, T: Number(o.T), P, kgAgua: kg, k, S, g: S * kg,
+      errores: { presionInversa: P > 0 ? k / P * kg : undefined } };
+  }
+  function compararGasT(o) {
+    o = o || {};
+    const a = henry({ gas: o.gas, T: o.T1, P: o.P, kgAgua: o.kgAgua }), b = henry({ gas: o.gas, T: o.T2, P: o.P, kgAgua: o.kgAgua });
+    const masEn = Math.abs(a.g - b.g) <= EPS * Math.max(1, a.g) ? 'igual' : (a.g > b.g ? a.T : b.T);
+    return { T1: a.T, T2: b.T, P: a.P, g1: a.g, g2: b.g, S1: a.S, S2: b.S, masEn,
+      errores: { masCaliente: Math.max(a.T, b.T), igual: 'igual' } };
+  }
+  function destapar(o) {
+    o = o || {};
+    const P2 = o.P2 === undefined ? P_AIRE[o.gas] : o.P2;
+    if (P2 === undefined) throw new Error(`falta la presión del ${o.gas} después de destapar`);
+    const a = henry({ gas: o.gas, T: o.T, P: o.P1, kgAgua: o.kgAgua }), b = henry({ gas: o.gas, T: o.T, P: P2, kgAgua: o.kgAgua });
+    if (b.P > a.P + EPS) throw new Error('al destapar, la presión del gas no sube');
+    return { T: a.T, P1: a.P, P2: b.P, k: a.k, antes: a.g, despues: b.g, escapa: a.g - b.g,
+      errores: { noSale: 0, presionInversa: b.errores.presionInversa } };
+  }
+
   return { MASAS, atomos, masaMolar, solucion, diluir, diluirConAgua, mezclar, sacar, agregarSoluto, volumenPara, aplicar,
-    modelo, lupa, repartir, ubicar, azar };
+    modelo, lupa, repartir, ubicar, azar,
+    SOLUBILIDAD, FUENTE_SOLUBILIDAD, P_AIRE, solubilidad, curva, tipoSolucion, equilibrio, enfriar, temperaturaSaturacion,
+    henry, compararGasT, destapar };
 });
