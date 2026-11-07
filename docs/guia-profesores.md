@@ -10,9 +10,9 @@ Su idea central es **predecir antes de ver**. En cada actividad, el alumno respo
 
 - **Escenas:** una simulación que se mueve con el dedo o el mouse. Por ejemplo, un auto en una pista con sus gráficas, o un circuito con sus focos. Cada dato tiene su color, el mismo en el enunciado, en el dibujo y en la fórmula.
 - **Prácticas:** preguntas rápidas en las que cada alternativa incorrecta es un error típico de los postulantes, con su explicación.
-- **Lectura** (razonamiento verbal): textos cortos con preguntas tipo examen. Antes de ver las alternativas, el alumno hace un paso previo; por ejemplo, tocar la oración que mejor resume el texto.
+- **Lectura** (razonamiento verbal): textos cortos con preguntas tipo examen. Antes de ver las alternativas, el alumno hace un paso previo; por ejemplo, tocar la oración que mejor resume el texto. Hay textos y ejercicios sueltos (analogías, conectores, plan de redacción y otros), y módulos aparte para tipología textual, resumen, textos con gráficos, texto y contexto, textos científicos y filosóficos, y lectura en inglés.
 
-Muchas unidades traen además un botón **✎ Papel**, con problemas para resolver en el cuaderno, sin la escena. Se pueden imprimir.
+Muchas unidades traen además un botón **✎ Papel**, con problemas para resolver en el cuaderno, sin la escena. Se pueden imprimir. En razonamiento verbal, el papel trae los textos con sus preguntas; el alumno tapa las alternativas mientras responde el paso previo.
 
 ## 2. Antes de la primera clase
 
@@ -25,7 +25,7 @@ Muchas unidades traen además un botón **✎ Papel**, con problemas para resolv
 
 La primera vez, la app pide el nombre (solo para saludar), la universidad a la que postula (por ahora, UNI o San Marcos) y el grado. El nombre **no se guarda en los datos de medición**: cada equipo recibe un código anónimo al azar, del tipo `a3f9c01b2e`.
 
-Desde **Inicio**, el alumno ve el reto del día y lo que le sigue. Desde **Cursos**, elige un curso y una unidad, y en ella abre la escena, la práctica o la lectura.
+Desde **Inicio**, el alumno ve el «Reto de hoy» y lo que le sigue. Desde **Cursos**, elige un curso y una unidad, y en ella abre la escena, la práctica o la lectura.
 
 ## 4. Pruebas de entrada y de salida
 

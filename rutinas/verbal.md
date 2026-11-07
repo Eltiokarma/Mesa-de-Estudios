@@ -424,3 +424,22 @@ En la eliminación, uno es impertinente, otro redundante y otro incompatible. En
 - el paso previo «ordenar» da RV37 cuando la primera tarjeta es la conclusión.
 
 Hice merge de la principal en esta rama: `npm test` da 4003 de 4003. En e010 a e012, el motor da para cada orden del paso previo el mismo código que la alternativa (RV37, RV28 y RV29). Ya se pueden escribir analogías de causa.
+
+---
+
+## 7 nov 2026 (noche) · Sin pieza pendiente
+
+Hice fetch y merge de `claude/awesome-wozniak-5etl1n` (trae verbal B y C, el rediseño de la app y matemática avanzada). `npm test` da 4414 de 4414.
+
+Las cuatro piezas de la lista están hechas, así que no empecé nada nuevo. Revisé lo que queda en mi alcance:
+- El diagnóstico de `nucleo/lectura.test.js` da 0 respuestas incorrectas de pasos previos sin explicación propia.
+- **Guía para profesores:** «reto del día» pasó a «Reto de hoy», como dice la app ahora. También agregué los módulos de lectura de verbal B y C y su botón «✎ Papel».
+- **Lo que sigue vigente en la guía**, porque lo comprobé en el código:
+  - verbal no tiene «Ahora no» en la entrada;
+  - `?soluciones=razonamiento-verbal` solo muestra el puntaje.
+
+**Para Gerson:** la rutina ya no tiene lista. Opciones, si quieres que siga:
+1. oraciones incompletas con palabra (RV23), que no tienen ejercicios todavía;
+2. analogías de causa, que ya se pueden escribir con el cambio del núcleo;
+3. más textos de dificultad 3 en las unidades de la rutina original;
+4. apagar la rutina.
