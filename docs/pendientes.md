@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 3532 pruebas.
+Deben pasar 3577 pruebas.
 
 ```bash
 npm run dev
@@ -56,7 +56,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización), `sucesiones`, `exponenciales-logaritmos` y `polinomios` (Ruffini, resto, raíces racionales) | Faltan números reales, lógica y conjuntos, matrices, complejos, binomio de Newton y programación lineal |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres`, `probabilidad-dados`, `sucesiones` y `fracciones` (fracciones, decimales, MCD y MCM, promedios) | Hechas también `interes` y `divisores` (7 nov). Hechas también `numeracion`, `cuatro-operaciones` y `potenciacion`. Hecha también `mezclas` (7 nov). Faltan conjuntos y lógica, y razonamiento numérico |
-| ra1 | Razonamiento matemático | Hechas: `maximos-minimos`, `tablas-graficos`, `cortes-pesadas` y `trazos-rutas` (7 nov; un solo trazo con Euler, cartero, perímetros escalonados con entrante, caminos en cuadrícula con obras y en el espacio, y la hormiga en la caja; 21 casos verificados aparte), `relojes-calendarios`, `probabilidad-dados`, `regla-de-tres` (engranajes), `traductor-enunciados` (planteo), `sucesiones` (patrones con palitos, Gauss, series) y `orden-informacion` (orden, verdades y mentiras, certezas) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
+| ra1 | Razonamiento matemático | Hechas: `maximos-minimos`, `tablas-graficos`, `cortes-pesadas`, `trazos-rutas` y `arreglos-giros` (7 nov; arreglos-giros: cuadrado mágico, números en polígonos, giro contra reflejo, ruedas que ruedan y vuelcos con el recorrido de un punto, 22 casos verificados aparte; falta en transformaciones: áreas sombreadas y región barrida al girar, y la semejanza la cubre `ampliadora`; trazos-rutas: un solo trazo con Euler, cartero, perímetros escalonados con entrante, caminos en cuadrícula con obras y en el espacio, y la hormiga en la caja; 21 casos verificados aparte), `relojes-calendarios`, `probabilidad-dados`, `regla-de-tres` (engranajes), `traductor-enunciados` (planteo), `sucesiones` (patrones con palitos, Gauss, series) y `orden-informacion` (orden, verdades y mentiras, certezas) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
 | ra2 y pl4 | Razonamiento verbal y formato lectura | `razonamiento-verbal-ideas-erroneas.md` (RV1 a RV34, ninguno documentado; hecho por la rutina) | Formato lectura hecho en la app (pl4, 6 nov); la rutina sigue con los 30 textos, los de entrada y salida, los ejercicios sueltos y la guía docente |
 
 ### 2. Detalles de las plantillas ya hechas
