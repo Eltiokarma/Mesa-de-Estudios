@@ -198,5 +198,85 @@
   "nombre": "En término excluido, se saca la palabra que no se conoce",
   "respaldo": "hipotesis",
   "por_verificar": false
+ },
+ "RV41": {
+  "nombre": "Se reconoce el tipo de texto por un rasgo de superficie",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV42": {
+  "nombre": "Se confunde la función de una parte del texto",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV43": {
+  "nombre": "El resumen como lista",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV44": {
+  "nombre": "La síntesis cambia la relación entre las ideas",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV45": {
+  "nombre": "Se lee el dato de otra fila, columna o barra",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV46": {
+  "nombre": "Se confunde la diferencia absoluta con la relativa",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV47": {
+  "nombre": "Se toma como causa lo que la figura solo muestra junto",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV48": {
+  "nombre": "Se responde con el título o el texto que acompaña a la figura y no con sus datos",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV49": {
+  "nombre": "Se lee el mensaje al pie de la letra, sin la situación",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV50": {
+  "nombre": "Se confunde al emisor con alguien que el texto cita o menciona",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV51": {
+  "nombre": "Se supone el destinatario por el tema y no por las marcas del texto",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV52": {
+  "nombre": "Se toma una hipótesis o una conjetura como un hecho comprobado",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV53": {
+  "nombre": "Se toma la objeción que el autor expone para responderla como si fuera su tesis",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV54": {
+  "nombre": "Falso amigo",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV55": {
+  "nombre": "Se lee mal el tiempo o el modo del verbo inglés",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV56": {
+  "nombre": "Una pregunta de concepto se responde con un ejemplo o un hecho",
+  "respaldo": "hipotesis",
+  "por_verificar": false
  }
 }
