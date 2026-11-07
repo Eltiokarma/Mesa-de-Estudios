@@ -314,7 +314,12 @@ function crearEscena(cv, idDesc, modoId, idLey){
     for (const P of v.paneles || []){
       if (comp && P.tipo === 'barras' && !P.siempre) continue;
       let h;
-      if (P.tipo === 'montones') h = comp ? Math.max(120, 232 - y) : clamp(w*0.34, 150, 200) + (P.recipiente ? 26 : 0);
+      if (P.tipo === 'montones'){
+        // Alto justo para el montón más grande que cabe a lo ancho (sin hueco encima).
+        const ancho = w/Math.max(3, P.items.length + (P.flechas ? P.flechas.length*0.5 : 0)) - 8, gas = P.items.some(s => s.gas);
+        const justo = ancho*(gas ? 0.8 : 0.6) + 58 + (P.recipiente ? 26 + 12 : 0);
+        h = comp ? Math.max(120, 232 - y) : Math.min(clamp(w*0.34, 150, 200) + (P.recipiente ? 26 : 0), Math.max(130, justo));
+      }
       else if (P.tipo === 'barras') h = P.filas.length*(P.alto || 34) + 6;
       else h = comp ? Math.max(110, 232 - y) : clamp(w*0.36, 150, 200);
       L.p.push({ ...P, y, h }); y += h + 6;
@@ -641,7 +646,7 @@ const P3 = { id:'rendimiento-paso6', ok:'a', opts:[
 const pieFe = 'La muestra es un solo montón: el Fe₂O₃ y la roca todavía no se separan. La caja del hierro se llena al responder.';
 const vFe = (r, f) => r ? { ...vistaMuestra({ reac:'hierro', muestra:200, p:80, eta:90, f }),
     pie:'Abajo, la muestra en casillas de 10 % de su masa: en la lupa, cada unidad Fe₂O₃ con sus 2 Fe y 3 O.',
-    desc:`La muestra de 200 gramos se separa en 40 gramos de roca y 160 gramos de óxido de hierro. Se forman ${g(FE.real)} gramos de hierro de ${g(FE.teorico)} posibles; la caja punteada muestra los ${g(FE.noFormado)} gramos que no se formaron.` }
+    desc:`La muestra de 200 gramos se separa en 40 gramos de roca y 160 gramos de óxido de hierro; reacciona el 90 por ciento y quedan 16 gramos sin reaccionar. Se forman ${g(FE.real)} gramos de hierro de ${g(FE.teorico)} posibles; la caja punteada muestra los ${g(FE.noFormado)} gramos que no se formaron.` }
   : { ...vistaMuestra({ reac:'hierro', muestra:200, p:80, eta:90, antes:true }), pie:pieFe, desc:'Un montón de 200 gramos de mineral y una caja vacía con signo de pregunta para el hierro.' };
 const ecCal = [['CaCO₃', 'pur', 800], [' → ', 'ink', 700], ['CaO', 'real', 800], [' + CO₂', 'ink', 700]];
 function vCal(r, f){
@@ -852,7 +857,7 @@ go(0);
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2');
-const CAD = MR.rendimientoCadena([90, 80]), CADe = CAD.errores;
+const CAD = MR.rendimientoCadena([80, 60]), CADe = CAD.errores;
 const MEJ = MR.compararMejoras({ reaccion:'hierro', muestra:200, pureza:80, rendimiento:90 });
 const T140 = MR.producir({ reaccion:'hierro', muestra:200, pureza:100 }).teorico;
 const GAS = MR.producir({ reaccion:'caliza', muestra:80, pureza:75, producto:'CO2' }), GASe = GAS.errores;
@@ -863,23 +868,23 @@ const fila = (etq, real, teo, max, tapa) => tapa ? { etq, tapa:true, tapaAncho:m
 
 const EXPS = [
   { id:'cadena', corto:'Dos pasos seguidos', ok:'b',
-    q:`Un laboratorio fabrica un producto en dos pasos seguidos: el primero rinde 90 % y el segundo, 80 % (de lo que le entrega el primero). ¿Qué rendimiento tiene el proceso completo?`,
-    opts:[['a', `${pct0(CADe['suma-porcentajes'])}: se pierden 10 puntos en el primer paso y otros 20 en el segundo.`, 'suma-porcentajes', RES('hipotesis', 'tabla de lo que no tiene respaldo: porcentajes sumados')],
-          ['b', `${pct0(CAD.total)}: el segundo paso se queda con el 80 % de lo que dejó el primero.`],
-          ['c', `${pct0(CADe['el-menor'])}: el paso que rinde menos es el que decide el total.`, 'el-menor', RES('hipotesis', 'hipótesis nuestra')],
-          ['d', `${pct0(CADe['promedio'])}: el proceso completo rinde el promedio de lo que rinden sus pasos.`, 'promedio', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:`Restar puntos funciona solo si los dos porcentajes son del mismo total, y no lo son: el 80 % es de lo que salió del primer paso (90), no del máximo (100). El 80 % de 90 es ${g(CAD.total)}. ${HIPO}`,
-      c:`El paso que rinde menos no basta: el primero ya perdió el 10 %, y el segundo pierde el 20 % de lo que quedó. Juntos dejan ${pct0(CAD.total)}, menos que cualquiera de los dos. ${HIPO}`,
-      d:`El promedio no sigue a la masa: cada paso trabaja con lo que le deja el anterior. 0,90 × 0,80 = 0,72. ${HIPO}` },
-    vista:(r, f) => { const t = r ? f : 0, fin = 90 - (90 - CAD.total)*t;
+    q:`Un laboratorio fabrica un producto en dos pasos seguidos: el primero rinde 80 % y el segundo, 60 % (de lo que le entrega el primero). ¿Qué rendimiento tiene el proceso completo?`,
+    opts:[['a', `${pct0(CADe['suma-porcentajes'])}: 80 + 60 − 100 = 40`, 'suma-porcentajes', RES('hipotesis', 'tabla de lo que no tiene respaldo: porcentajes sumados')],
+          ['b', `${pct0(CAD.total)}: 0,80 × 0,60 = 0,48`],
+          ['c', `${pct0(CADe['el-menor'])}: el menor de 80 y 60 es 60`, 'el-menor', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', `${pct0(CADe['promedio'])}: (80 + 60) ÷ 2 = 70`, 'promedio', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:`Restar puntos funciona solo si los dos porcentajes son del mismo total, y no lo son: el 60 % es de lo que salió del primer paso (80), no del máximo (100). El 60 % de 80 es ${g(CAD.total)}. ${HIPO}`,
+      c:`El paso que rinde menos no basta: el primero ya perdió el 20 %, y el segundo pierde el 40 % de lo que quedó. Juntos dejan ${pct0(CAD.total)}, menos que cualquiera de los dos. ${HIPO}`,
+      d:`El promedio no sigue a la masa: cada paso trabaja con lo que le deja el anterior. 0,80 × 0,60 = 0,48. ${HIPO}` },
+    vista:(r, f) => { const t = r ? f : 0, fin = 80 - (80 - CAD.total)*t;
       return { paneles:[{ tipo:'barras', siempre:true, alto:44, max:100, filas:[
         { etq:[['lo que da la ecuación: ', 'ink', 700], ['100 %', 'teo', 800]], segs:[{ k:'teo', masa:100, punteado:true }] },
-        fila([['tras el paso 1 (rinde 90 %): ', 'ink', 700], ['90 %', 'real', 800]], 90, 100, 100),
-        r ? fila([['tras el paso 2 (rinde 80 %): ', 'ink', 700], [pct0(fin), 'real', 800]], fin, 100, 100) : fila([['tras el paso 2 (rinde 80 %): ?', 'ink', 700]], 0, 0, 100, true)] }],
-        pie: r ? 'El segundo paso solo puede trabajar con el 90 % que le llegó: pierde el 20 % de eso, 18 puntos.' : 'Cada barra es lo que hay después de cada paso, como porcentaje del máximo.',
-        vars: ['teo', 'real'], desc: r ? `Tras el primer paso queda el 90 por ciento; tras el segundo, el ${g(CAD.total)} por ciento.` : 'Barras del máximo y del primer paso; la del segundo paso está oculta.' }; },
-    exp:() => `<div class="eqs"><div class="eq"><span class="ex">0,90 × 0,80 = 0,72 &nbsp;→&nbsp; ${Re_(pct0(CAD.total))} del ${Te_('máximo')}</span><span class="note">Con más pasos, se siguen multiplicando: 90 %, 80 % y 50 % dejan 36 %. Por eso las síntesis largas rinden poco aunque cada paso rinda bien.</span></div></div>
-      <p class="fuente">Las cuatro opciones son errores que suponemos (hipótesis nuestras); no hay estudios que los midan en este tipo de problema.</p>` },
+        fila([['tras el paso 1 (rinde 80 %): ', 'ink', 700], ['80 %', 'real', 800]], 80, 100, 100),
+        r ? fila([['tras el paso 2 (rinde 60 %): ', 'ink', 700], [pct0(fin), 'real', 800]], fin, 100, 100) : fila([['tras el paso 2 (rinde 60 %): ?', 'ink', 700]], 0, 0, 100, true)] }],
+        pie: r ? 'El segundo paso solo puede trabajar con el 80 % que le llegó: pierde el 40 % de eso, 32 puntos.' : 'Cada barra es lo que hay después de cada paso, como porcentaje del máximo.',
+        vars: ['teo', 'real'], desc: r ? `Tras el primer paso queda el 80 por ciento; tras el segundo, el ${g(CAD.total)} por ciento.` : 'Barras del máximo y del primer paso; la del segundo paso está oculta.' }; },
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">0,80 × 0,60 = 0,48 &nbsp;→&nbsp; ${Re_(pct0(CAD.total))} del ${Te_('máximo')}</span><span class="note">Con más pasos, se siguen multiplicando: 90 %, 80 % y 50 % dejan 36 %. Por eso las síntesis largas rinden poco aunque cada paso rinda bien.</span></div></div>
+      <p class="fuente">Las tres opciones incorrectas son errores que suponemos (hipótesis nuestras); no hay estudios que los midan en este tipo de problema.</p>` },
   { id:'mejora', corto:'Pureza o rendimiento', ok:'c',
     q:`Con 200 g de hematita al 80 % de Fe₂O₃ y 90 % de rendimiento se obtienen ${Re_(g(MEJ.real) + ' g de hierro')}. Una mina ofrece mineral puro (100 %); otra fábrica ofrece un horno que rinde 100 %. Con los mismos 200 g, ¿qué da más hierro?`,
     opts:[['a', `El horno al 100 %: el rendimiento actúa sobre el producto, y la pureza solo sobre el reactivo.`, 'rendimiento-pesa-mas', RES('hipotesis', 'hipótesis nuestra')],
@@ -909,8 +914,8 @@ const EXPS = [
     fb:{ b:`La caliza no es CaCO₃ puro: solo el 75 % de los 80 g, ${Pu_('60 g')}, se descompone; los ${Im_('20 g')} de impureza no dan gas. 60 g son 0,6 mol y dan ${Vo_(g(GAS.V) + ' L')}. ${HIPO}`,
       c:`${Re_(g(GAS.real) + ' g')} es la masa del CO₂, no su volumen. Para el volumen se pasa a moles: 26,4 ÷ 44 = 0,6 mol, y 0,6 × 22,4 = ${Vo_(g(GAS.V) + ' L')}. ${HIPO}`,
       d:`El coeficiente 1 dice la proporción (1 mol de CO₂ por cada mol de CaCO₃), no cuántos moles hay. Hay 0,6 mol de CaCO₃ puro: ${Vo_(g(GAS.V) + ' L')}. ${HIPO}` },
-    vista:(r, f) => r ? { ...vistaMuestra({ reac:'caliza', muestra:80, p:75, eta:100, producto:'CO2', f }),
-        pie:'Los gases van en globos, con la misma escala de masa que los montones. El CaO que también se forma no se dibuja.',
+    vista:(r, f) => r ? { ...vistaMuestra({ reac:'caliza', muestra:80, p:75, eta:100, producto:'CO2', reacciona:1, otro:'CaO', f }),
+        pie:'El CaCO₃ se descompone todo: 33,6 g de CaO (gris) y 26,4 g de CO₂ (globo); la impureza queda.',
         desc:`Los 80 gramos de caliza se separan en 20 de impureza y 60 de carbonato puro, que dan ${g(GAS.real)} gramos de dióxido de carbono: ${g(GAS.V)} litros en condiciones normales.` }
       : { ...vistaMuestra({ reac:'caliza', muestra:80, p:75, eta:100, producto:'CO2', antes:true }), pie:'Un montón de caliza sin separar. El gas se ve al responder.', desc:'Un montón de 80 gramos de caliza y una caja oculta para el gas.' },
     dur:2.4,
