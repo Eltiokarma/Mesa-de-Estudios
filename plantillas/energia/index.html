@@ -191,9 +191,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
         <span><i style="background:var(--c-h)"></i>h · altura</span>
         <span><i style="background:var(--c-v)"></i>v · rapidez</span>
         <span><i style="background:var(--c-x)"></i>x · compresión</span>
-        <span><i style="background:var(--c-Ep)"></i>E<sub>p</sub> · potencial</span>
-        <span><i style="background:var(--c-Ec)"></i>E<sub>c</sub> · cinética</span>
-        <span><i style="background:var(--c-Ee)"></i>E<sub>e</sub> · elástica</span>
+        <span><i style="background:var(--c-Ep)"></i><span>E<sub>p</sub> · potencial</span></span>
+        <span><i style="background:var(--c-Ec)"></i><span>E<sub>c</sub> · cinética</span></span>
+        <span><i style="background:var(--c-Ee)"></i><span>E<sub>e</sub> · elástica</span></span>
         <span><i style="background:var(--c-k)"></i>k · constante del resorte</span>
         <span><i style="background:var(--c-f)"></i>roce y calor</span>
       </div>
@@ -245,9 +245,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
         <span><i style="background:var(--c-x)"></i>x · posición (en el resorte, deformación)</span>
         <span><i style="background:var(--c-m)"></i>m · masa</span>
         <span><i style="background:var(--c-v)"></i>v · rapidez</span>
-        <span><i style="background:var(--c-Ec)"></i>E<sub>c</sub> · cinética</span>
+        <span><i style="background:var(--c-Ec)"></i><span>E<sub>c</sub> · cinética</span></span>
         <span><i style="background:var(--c-k)"></i>k · constante del resorte</span>
-        <span><i style="background:var(--c-Ee)"></i>E<sub>e</sub> · elástica</span>
+        <span><i style="background:var(--c-Ee)"></i><span>E<sub>e</sub> · elástica</span></span>
       </div>
     </section>
     <section class="guide">
@@ -541,7 +541,7 @@ function animar(t0, t1, listo){
 }
 const P1 = { id:'energia-paso3', ok:'a',
   opts:[['a','Es la misma', null, ''], ['b','Es mayor, porque su peso le da más aceleración','W9-mas-pesado-mas-rapido','documentado'],
-        ['c','Es menor, porque lo liviano se acelera más fácil','W9-al-reves','documentado'], ['d','Es mayor, porque tarda menos en bajar','W9-por-el-tiempo','documentado']],
+        ['c','Es menor, porque lo liviano se acelera más fácil','W9-al-reves','parcial'], ['d','Es mayor, porque tarda menos en bajar','W9-por-el-tiempo','parcial']],
   fb:{ a:'¡Bien! La masa se cancela: con el doble de masa, el peso es el doble, pero también hay el doble que mover. Ahora lo vemos con la energía.',
        b:'Elegiste la B, la idea más común (el 31 % de 336 universitarios después del curso, en el test EMCS). El peso es el doble, pero también hay el doble de masa que acelerar: la correcta está marcada.',
        c:'Elegiste la C. Lo liviano no se acelera más: sin roce, todo cae igual. La correcta está marcada.',
@@ -565,7 +565,7 @@ const steps = [
      <li><b>${V('Ec','E<sub>c</sub>')} = ½${V('m','m')}${V('v','v')}²</b><span>Energía cinética: depende de la ${V('v','rapidez')}.</span></li>
      <li><b>${V('Ee','E<sub>e</sub>')} = ½${V('k','k')}${V('x','x')}²</b><span>Energía elástica del resorte: depende de cuánto se ${V('x','comprime')}.</span></li>
    </ul>
-   <div class="eqs"><div class="eq">${V('Ep','E<sub>p</sub>')} = ${V('m','m')}·g·${V('h','h')} = ${V('m','2')}·10·${V('h','1')} = ${V('h','20 J')}<span class="note">Al inicio, toda la energía es potencial</span></div></div>
+   <div class="eqs"><div class="eq">${V('Ep','E<sub>p</sub>')} = ${V('m','m')}·g·${V('h','h')} = ${V('m','2')}·10·${V('h','1')} = ${V('Ep','20 J')}<span class="note">Al inicio, toda la energía es potencial</span></div></div>
    <p class="fuente">El 98,9 % de 320 escolares de Valencia dijo que la energía potencial "está en el cuerpo" (Solbes y Tarín, 1998). Sin elegir el sistema, el balance de energía se enreda.</p>` },
  { k:'Paso 3', t:'Antes de calcular, predice', sistema:true, gate:P1,
    body:() => `<p>Si en lugar del bloque de 2 kg se suelta uno de ${V('m','4 kg')} desde la misma altura, ¿qué pasa con su ${V('v','rapidez')} al pie de la rampa?</p>${opciones(P1)}` },
@@ -1068,12 +1068,12 @@ const P1 = { id:'energia-fx-area', ok:'b',
        c:`Elegiste la C. ${fmt(e1.pendiente, 1)} es la pendiente de la recta (cuántos newtons sube por cada metro), no el trabajo, y sus unidades son N/m, no J. El trabajo es el área. La correcta está marcada.`,
        d:'Elegiste la D. 10 N × 4 m deja fuera todo lo que la fuerza crece en el camino. La correcta está marcada.' } };
 const P2 = { id:'energia-fx-masas', ok:'c',
-  opts:[['a', 'El de 2 kg, porque va más rápido', 'W6-liviano-mas-Ec', 'documentado'], ['b', 'El de 8 kg, porque tiene más masa', 'W6-pesado-mas-Ec', 'documentado'],
-        ['c', 'Los dos tienen la misma, porque reciben el mismo trabajo', null, ''], ['d', 'No se puede saber, porque falta el tiempo que tarda cada uno', 'W6-faltan-datos', 'documentado']],
+  opts:[['a', 'El de 2 kg', 'W6-liviano-mas-Ec', 'documentado'], ['b', 'El de 8 kg', 'W6-pesado-mas-Ec', 'documentado'],
+        ['c', 'Los dos tienen la misma', null, ''], ['d', 'No se puede saber con estos datos', 'W6-faltan-datos', 'documentado']],
   fb:{ c:`¡Bien! El área es la misma para los dos: ${J(rA.W)}. Ese trabajo se vuelve la misma energía cinética, aunque uno vaya más rápido que el otro.`,
-       a:`Elegiste la A. El de 2 kg sí va más rápido, pero tiene menos masa: ½·2·${fmt(rA.v, 0)}² = ½·8·${fmt(rA8.v, 0)}² = ${J(rA.Ec)}. La correcta está marcada.`,
-       b:'Elegiste la B. Más masa no da más energía si el trabajo es el mismo: el de 8 kg va más lento y le toca la misma energía cinética. La correcta está marcada.',
-       d:'Elegiste la D. El tiempo cambia (el de 8 kg tarda el doble), pero el trabajo depende de la distancia, no del tiempo. Con la misma área, la misma energía. La correcta está marcada.' } };
+       a:`Elegiste la A. Quizá pensaste que el de 2 kg tiene más porque va más rápido; sí va más rápido, pero tiene menos masa: ½·2·${fmt(rA.v, 0)}² = ½·8·${fmt(rA8.v, 0)}² = ${J(rA.Ec)}. La correcta está marcada.`,
+       b:'Elegiste la B. Quizá pensaste en su masa, pero más masa no da más energía si el trabajo es el mismo: el de 8 kg va más lento y le toca la misma energía cinética. La correcta está marcada.',
+       d:'Elegiste la D. Sí alcanza: la fuerza y la distancia son las mismas, así que el área (el trabajo) es la misma. El tiempo cambia (el de 8 kg tarda el doble), pero el trabajo no depende del tiempo. La correcta está marcada.' } };
 const P3 = { id:'energia-fx-signo', ok:'d',
   opts:[['a', J(e3.sumaSinSigno), 'signo-suma-areas', 'hipotesis'], ['b', J(e3.soloPositiva), 'signo-ignora-negativa', 'hipotesis'],
         ['c', J(e3.FfinalPorD), 'G4-F-final-por-d', 'parcial'], ['d', J(rC.W), null, '']],
@@ -1104,7 +1104,7 @@ const steps = [
    </div>
    ${['a', 'd'].includes(S.pred[P1.id]) ? `<p>El rectángulo gris a trazos es tu cuenta (${S.pred[P1.id] === 'a' ? J(e1.FfinalPorD) : J(e1.FinicialPorD)}): mira lo que ${S.pred[P1.id] === 'a' ? 'le sobra' : 'le falta'} comparado con el trapecio.</p>` : ''}
    <p>Con una fuerza constante, el área es un rectángulo y sale F·d. Cuando la fuerza cambia, ya no hay un solo F que multiplicar: lo que no cambia es que el trabajo es el área bajo la gráfica F–x.</p>
-   <p class="fuente">En un test de gráficas con unos 500 escolares y universitarios, solo cerca de 1 de cada 4 sacó bien un cambio de velocidad a partir del área bajo una gráfica; muchos calcularon la pendiente o leyeron el eje (Beichner, 1994). Con la gráfica F–x pasa lo mismo; ese dato no está medido aquí: es nuestra hipótesis que el error se repite.</p>` },
+   <p class="fuente">En un test de gráficas con unos 500 escolares y universitarios, solo cerca de 1 de cada 4 sacó bien un cambio de velocidad a partir del área bajo una gráfica; muchos calcularon la pendiente o leyeron el eje (Beichner, 1994). En la gráfica F–x no está medido: suponemos que es el mismo error.</p>` },
  { k:'Paso 3', t:'Predice otra vez', esc:'B', gate:P2,
    body:() => `<p>La misma ${V('F','fuerza')}, la de la gráfica, jala desde el reposo a dos carritos: uno de ${V('m','2 kg')} y otro de ${V('m','8 kg')}, cada uno en su riel sin roce. Al llegar a ${V('x','x = 4 m')}, ¿cuál tiene más ${V('Ec','energía cinética')}?</p>${opciones(P2)}` },
  { k:'Paso 4', t:'Del área a la energía cinética', esc:'B', anim:true,
