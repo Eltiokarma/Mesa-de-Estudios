@@ -622,6 +622,12 @@ const V = {
   // ---------------- Reserva de geometría (rutina de matemática C) ----------------
 
   // ---------------- Reserva de trigonometría (rutina de matemática C) ----------------
+  // tt-01 y tt-02: transformaciones-trig (en "reserva" mientras la plantilla no entre al catálogo).
+  'tt-01': d => { const r = motor('transformaciones-trig').sumaAProducto({ fn: 'sen', op: '+', A: d.A, B: d.B }), e = r.errores;
+    if (!r.exacto) throw new Error('la suma debe salir exacta');
+    return { correcta: r.valor, errores: { 'TR16-suma-de-senos-lineal': e.lineal.valor, 'TT2-semidiferencia-por-semisuma': e.intercambia.valor, 'TT1-olvida-el-2': e.sinDos.valor } }; },
+  'tt-02': d => { const r = motor('transformaciones-trig').cociente({ p: d.p, q: d.q, num: '+', den: '+' }), e = r.errores;
+    return { correcta: r.texto, errores: { 'TT4-no-divide-entre-2': e.sinDividir.texto, 'TT2-semidiferencia-por-semisuma': e.intercambia.texto, 'TT3-cot-por-tan': e.funcion.texto } }; },
 
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);

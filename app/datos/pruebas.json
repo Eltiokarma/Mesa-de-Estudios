@@ -3838,6 +3838,26 @@
     "IN10-usa-la-reciproca": {
      "respaldo": "hipotesis",
      "describe": "Usa la recíproca (hipotenusa entre cateto)"
+    },
+    "TR16-suma-de-senos-lineal": {
+     "respaldo": "hipotesis",
+     "describe": "Reparte el seno en la suma: sen A + sen B = sen(A + B)"
+    },
+    "TT2-semidiferencia-por-semisuma": {
+     "respaldo": "hipotesis",
+     "describe": "Intercambia la semisuma y la semidiferencia en la fórmula"
+    },
+    "TT1-olvida-el-2": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida el 2 de la fórmula de suma a producto"
+    },
+    "TT4-no-divide-entre-2": {
+     "respaldo": "hipotesis",
+     "describe": "Usa A + B o A − B sin dividir entre 2"
+    },
+    "TT3-cot-por-tan": {
+     "respaldo": "hipotesis",
+     "describe": "Da la cotangente en vez de la tangente (avance entre altura)"
     }
    },
    "pares": [

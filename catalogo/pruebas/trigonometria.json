@@ -122,6 +122,26 @@
     "IN10-usa-la-reciproca": {
       "respaldo": "hipotesis",
       "describe": "Usa la recíproca (hipotenusa entre cateto)"
+    },
+    "TR16-suma-de-senos-lineal": {
+      "respaldo": "hipotesis",
+      "describe": "Reparte el seno en la suma: sen A + sen B = sen(A + B)"
+    },
+    "TT2-semidiferencia-por-semisuma": {
+      "respaldo": "hipotesis",
+      "describe": "Intercambia la semisuma y la semidiferencia en la fórmula"
+    },
+    "TT1-olvida-el-2": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida el 2 de la fórmula de suma a producto"
+    },
+    "TT4-no-divide-entre-2": {
+      "respaldo": "hipotesis",
+      "describe": "Usa A + B o A − B sin dividir entre 2"
+    },
+    "TT3-cot-por-tan": {
+      "respaldo": "hipotesis",
+      "describe": "Da la cotangente en vez de la tangente (avance entre altura)"
     }
   },
   "pares": [
@@ -761,6 +781,128 @@
             "texto": "8/17",
             "valor": 0.47058823529411764,
             "correcta": true
+          }
+        ]
+      }
+    }
+  ],
+  "reserva": [
+    {
+      "par": "tt-01",
+      "plantilla": "transformaciones-trig",
+      "unidad": "trigonometria.transformaciones-trigonometricas",
+      "mide": "Suma de senos a producto: sen A + sen B = 2 sen((A + B)/2) cos((A − B)/2), con la semisuma en el seno",
+      "A": {
+        "enunciado": "Sin usar tabla ni calculadora, ¿cuánto vale sen 165° + sen 105°?",
+        "datos": {
+          "A": 165,
+          "B": 105
+        },
+        "opciones": [
+          {
+            "texto": "−√2/2",
+            "valor": -0.7071067811865476,
+            "error": "TT2-semidiferencia-por-semisuma"
+          },
+          {
+            "texto": "√6/4",
+            "valor": 0.6123724356957945,
+            "error": "TT1-olvida-el-2"
+          },
+          {
+            "texto": "−1",
+            "valor": -1,
+            "error": "TR16-suma-de-senos-lineal"
+          },
+          {
+            "texto": "√6/2",
+            "valor": 1.224744871391589,
+            "correcta": true
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Sin usar tabla ni calculadora, ¿cuánto vale sen 195° + sen 105°?",
+        "datos": {
+          "A": 195,
+          "B": 105
+        },
+        "opciones": [
+          {
+            "texto": "√2/4",
+            "valor": 0.3535533905932738,
+            "error": "TT1-olvida-el-2"
+          },
+          {
+            "texto": "√2/2",
+            "valor": 0.7071067811865476,
+            "correcta": true
+          },
+          {
+            "texto": "−√6/2",
+            "valor": -1.224744871391589,
+            "error": "TT2-semidiferencia-por-semisuma"
+          },
+          {
+            "texto": "−√3/2",
+            "valor": -0.8660254037844386,
+            "error": "TR16-suma-de-senos-lineal"
+          }
+        ]
+      }
+    },
+    {
+      "par": "tt-02",
+      "plantilla": "transformaciones-trig",
+      "unidad": "trigonometria.transformaciones-trigonometricas",
+      "mide": "Cociente (sen px + sen qx)/(cos px + cos qx) = tan((p + q)x/2): se cancela el coseno de la semidiferencia",
+      "A": {
+        "enunciado": "Simplifica la expresión (sen 11x + sen 5x)/(cos 11x + cos 5x), para los valores de x en que está definida.",
+        "datos": {
+          "p": 11,
+          "q": 5
+        },
+        "opciones": [
+          {
+            "texto": "tan 8x",
+            "correcta": true
+          },
+          {
+            "texto": "tan 16x",
+            "error": "TT4-no-divide-entre-2"
+          },
+          {
+            "texto": "tan 3x",
+            "error": "TT2-semidiferencia-por-semisuma"
+          },
+          {
+            "texto": "cot 8x",
+            "error": "TT3-cot-por-tan"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Simplifica la expresión (sen 9x + sen 5x)/(cos 9x + cos 5x), para los valores de x en que está definida.",
+        "datos": {
+          "p": 9,
+          "q": 5
+        },
+        "opciones": [
+          {
+            "texto": "cot 7x",
+            "error": "TT3-cot-por-tan"
+          },
+          {
+            "texto": "tan 2x",
+            "error": "TT2-semidiferencia-por-semisuma"
+          },
+          {
+            "texto": "tan 7x",
+            "correcta": true
+          },
+          {
+            "texto": "tan 14x",
+            "error": "TT4-no-divide-entre-2"
           }
         ]
       }
