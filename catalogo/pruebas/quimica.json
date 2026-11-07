@@ -127,11 +127,7 @@
     },
     "resta-carga-a-neutrones": {
       "respaldo": "hipotesis",
-      "describe": "Resta la carga del ion al calcular los neutrones (A − Z − carga)"
-    },
-    "suma-carga-a-electrones": {
-      "respaldo": "hipotesis",
-      "describe": "Calcula los electrones como Z + carga: usa la carga del ion al revés"
+      "describe": "Mete la carga del ion en la cuenta de los neutrones (n = A − Z − carga)"
     },
     "ignora-la-carga": {
       "respaldo": "hipotesis",
@@ -139,71 +135,63 @@
     },
     "carga-al-reves": {
       "respaldo": "hipotesis",
-      "describe": "Usa la carga del ion al revés: a un anión le quita electrones en vez de sumárselos"
-    },
-    "EN4-valencia-del-O": {
-      "respaldo": "parcial",
-      "describe": "Cuenta el oxígeno con 2 electrones de valencia (los enlaces que forma) en vez de 6"
+      "describe": "Usa la carga del ion al revés: a un anión le quita electrones en vez de sumárselos (o a un catión se los suma)"
     },
     "ES12-olvida-el-oxigeno": {
-      "respaldo": "documentado",
+      "respaldo": "parcial",
       "describe": "Balancea los demás elementos y no vuelve a contar el oxígeno"
     },
     "suma-sin-contar-el-1": {
       "respaldo": "hipotesis",
       "describe": "Al sumar los coeficientes, no cuenta el 1 que no se escribe"
     },
-    "no-simplifica": {
-      "respaldo": "hipotesis",
-      "describe": "No lleva los coeficientes a los menores enteros (los deja al doble)"
-    },
-    "gas-agua-no-resta": {
-      "respaldo": "hipotesis",
-      "describe": "Toma la presión total como la del gas seco, sin restar la presión de vapor del agua"
-    },
-    "gas-agua-suma-el-vapor": {
-      "respaldo": "hipotesis",
-      "describe": "Suma la presión de vapor del agua a la total en vez de restarla"
-    },
     "gas-agua-reparte-a-medias": {
       "respaldo": "hipotesis",
-      "describe": "Reparte la presión total en partes iguales entre el gas y el vapor"
-    },
-    "muestra-pura": {
-      "respaldo": "hipotesis",
-      "describe": "Usa toda la muestra como si fuera pura"
+      "describe": "Reparte la presión total en partes iguales entre el gas y el vapor de agua"
     },
     "olvida-rendimiento": {
       "respaldo": "hipotesis",
-      "describe": "Da el producto teórico, sin aplicar el rendimiento"
+      "describe": "No toma en cuenta el rendimiento"
     },
     "suma-porcentajes": {
       "respaldo": "hipotesis",
       "describe": "Junta pureza y rendimiento en un solo porcentaje (pureza + rendimiento − 100)"
     },
-    "BMH5-no-resta-agua": {
-      "respaldo": "hipotesis",
-      "describe": "Suma las masas de las piezas sin restar el agua que sale al unirlas"
-    },
     "BMH6-n-aguas": {
       "respaldo": "hipotesis",
-      "describe": "Resta un agua por cada pieza y no por cada unión"
+      "describe": "Cuenta un agua por cada pieza de la cadena y no por cada unión"
     },
     "BMH7-un-agua": {
       "respaldo": "hipotesis",
-      "describe": "Resta una sola agua aunque la cadena tenga varias uniones"
+      "describe": "Cuenta una sola agua aunque la cadena tenga varias uniones"
     },
-    "QA9-masa-baja-cerrado": {
-      "respaldo": "documentado",
-      "describe": "Cree que al quemar algo en un recipiente cerrado la masa baja, porque los gases no pesan"
-    },
-    "QA10-se-vuelve-energia": {
-      "respaldo": "parcial",
-      "describe": "Cree que el combustible se convierte en energía y su masa desaparece"
-    },
-    "se-suma-oxigeno-cerrado": {
+    "olvida-el-O-del-combustible": {
       "respaldo": "hipotesis",
-      "describe": "Suma otra vez el oxígeno que se gastó, como si la masa subiera en el recipiente cerrado"
+      "describe": "Al contar los oxígenos, olvida el O que trae el propio combustible (un alcohol)"
+    },
+    "fraccion-sobre-el-gas-seco": {
+      "respaldo": "hipotesis",
+      "describe": "Divide la presión de vapor entre la del gas seco y no entre la presión total"
+    },
+    "da-la-fraccion-del-otro-gas": {
+      "respaldo": "hipotesis",
+      "describe": "Da la fracción del otro gas de la mezcla en vez de la que se pide"
+    },
+    "multiplica-rendimiento": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica por el rendimiento donde hay que dividir"
+    },
+    "BM9-hidrolisis-sin-agua": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que la hidrólisis no gasta agua: la cadena solo se separa"
+    },
+    "co2-no-supera-al-combustible": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que los productos de la combustión no pueden pesar más que el combustible"
+    },
+    "olvida-el-agua": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta solo el CO₂ y olvida el agua que también se forma"
     }
   },
   "pares": [
@@ -975,66 +963,65 @@
       "par": "qui-11",
       "plantilla": "atomo-y-tabla",
       "unidad": "quimica.estructura-atomica",
-      "mide": "Partículas de un anión: los neutrones no dependen de la carga y el anión tiene más electrones que protones",
+      "nombreUnidad": "Estructura atómica",
+      "mide": "Del ion a su número de masa: un anión tiene más electrones que protones, y la carga no toca a los neutrones",
       "A": {
-        "enunciado": "El cloro tiene número atómico Z = 17. ¿Cuántos neutrones y cuántos electrones tiene el ion cloruro ³⁷Cl⁻, cuyo número de masa es A = 37?",
+        "enunciado": "Un ion X²⁻ tiene 18 electrones y 20 neutrones. ¿Cuál es el número de masa de X?",
         "datos": {
-          "simbolo": "Cl",
-          "Z": 17,
-          "A": 37,
-          "carga": -1
+          "electrones": 18,
+          "neutrones": 20,
+          "ion": "X^2-"
         },
         "opciones": [
           {
-            "texto": "21 neutrones y 18 electrones",
-            "clave": "21n-18e",
-            "error": "resta-carga-a-neutrones"
+            "texto": "38",
+            "valor": 38,
+            "error": "ignora-la-carga"
           },
           {
-            "texto": "20 neutrones y 18 electrones",
-            "clave": "20n-18e",
+            "texto": "36",
+            "valor": 36,
             "correcta": true
           },
           {
-            "texto": "20 neutrones y 16 electrones",
-            "clave": "20n-16e",
-            "error": "suma-carga-a-electrones"
+            "texto": "40",
+            "valor": 40,
+            "error": "carga-al-reves"
           },
           {
-            "texto": "20 neutrones y 17 electrones",
-            "clave": "20n-17e",
-            "error": "ignora-la-carga"
+            "texto": "34",
+            "valor": 34,
+            "error": "resta-carga-a-neutrones"
           }
         ]
       },
       "B": {
-        "enunciado": "El bromo tiene número atómico Z = 35. ¿Cuántos neutrones y cuántos electrones tiene el ion bromuro ⁸¹Br⁻, cuyo número de masa es A = 81?",
+        "enunciado": "Un ion X²⁻ tiene 36 electrones y 44 neutrones. ¿Cuál es el número de masa de X?",
         "datos": {
-          "simbolo": "Br",
-          "Z": 35,
-          "A": 81,
-          "carga": -1
+          "electrones": 36,
+          "neutrones": 44,
+          "ion": "X^2-"
         },
         "opciones": [
           {
-            "texto": "47 neutrones y 36 electrones",
-            "clave": "47n-36e",
-            "error": "resta-carga-a-neutrones"
+            "texto": "80",
+            "valor": 80,
+            "error": "ignora-la-carga"
           },
           {
-            "texto": "46 neutrones y 36 electrones",
-            "clave": "46n-36e",
+            "texto": "78",
+            "valor": 78,
             "correcta": true
           },
           {
-            "texto": "46 neutrones y 34 electrones",
-            "clave": "46n-34e",
-            "error": "suma-carga-a-electrones"
+            "texto": "82",
+            "valor": 82,
+            "error": "carga-al-reves"
           },
           {
-            "texto": "46 neutrones y 35 electrones",
-            "clave": "46n-35e",
-            "error": "ignora-la-carga"
+            "texto": "76",
+            "valor": 76,
+            "error": "resta-carga-a-neutrones"
           }
         ]
       }
@@ -1043,59 +1030,52 @@
       "par": "qui-12",
       "plantilla": "enlace",
       "unidad": "quimica.enlace-quimico",
-      "mide": "Electrones de valencia de un anión poliatómico: se suman los de cada átomo y la carga del ion",
+      "nombreUnidad": "Enlace químico y fuerzas intermoleculares",
+      "mide": "Electrones de valencia de un anión poliatómico, al revés: la carga del ion entra en la cuenta del Lewis",
       "A": {
-        "enunciado": "Para dibujar la estructura de Lewis del ion sulfato, SO₄²⁻, primero hay que contar todos los electrones de valencia que se reparten entre sus átomos. ¿Cuántos son?",
+        "enunciado": "Al dibujar la estructura de Lewis del ion XO₃⁻ se reparten 24 electrones de valencia en total. ¿Cuántos electrones de valencia aporta el átomo X?",
         "datos": {
-          "formula": "SO4^2-"
+          "formula": "XO3^-",
+          "V": 24
         },
         "opciones": [
           {
-            "texto": "30",
-            "valor": 30,
+            "texto": "6",
+            "valor": 6,
             "error": "ignora-la-carga"
           },
           {
-            "texto": "28",
-            "valor": 28,
+            "texto": "7",
+            "valor": 7,
             "error": "carga-al-reves"
           },
           {
-            "texto": "16",
-            "valor": 16,
-            "error": "EN4-valencia-del-O"
-          },
-          {
-            "texto": "32",
-            "valor": 32,
+            "texto": "5",
+            "valor": 5,
             "correcta": true
           }
         ]
       },
       "B": {
-        "enunciado": "Para dibujar la estructura de Lewis del ion carbonato, CO₃²⁻, primero hay que contar todos los electrones de valencia que se reparten entre sus átomos. ¿Cuántos son?",
+        "enunciado": "Al dibujar la estructura de Lewis del ion XO₄²⁻ se reparten 32 electrones de valencia en total. ¿Cuántos electrones de valencia aporta el átomo X?",
         "datos": {
-          "formula": "CO3^2-"
+          "formula": "XO4^2-",
+          "V": 32
         },
         "opciones": [
           {
-            "texto": "22",
-            "valor": 22,
+            "texto": "8",
+            "valor": 8,
             "error": "ignora-la-carga"
           },
           {
-            "texto": "20",
-            "valor": 20,
+            "texto": "10",
+            "valor": 10,
             "error": "carga-al-reves"
           },
           {
-            "texto": "12",
-            "valor": 12,
-            "error": "EN4-valencia-del-O"
-          },
-          {
-            "texto": "24",
-            "valor": 24,
+            "texto": "6",
+            "valor": 6,
             "correcta": true
           }
         ]
@@ -1105,60 +1085,61 @@
       "par": "qui-13",
       "plantilla": "balance-reacciones",
       "unidad": "quimica.reacciones-y-balance",
-      "mide": "Balance por tanteo: contar cada elemento a los dos lados (el O al final) y sumar también el coeficiente 1",
+      "nombreUnidad": "Reacciones químicas y balance",
+      "mide": "Balance de la combustión de un alcohol: el O del combustible también se cuenta, y el coeficiente 1 se suma",
       "A": {
-        "enunciado": "Se balancea la combustión completa del pentano con los menores coeficientes enteros: C₅H₁₂ + O₂ → CO₂ + H₂O. ¿Cuánto suman todos los coeficientes de la ecuación balanceada?",
+        "enunciado": "El etanol del alcohol de farmacia arde por completo: C₂H₅OH + O₂ → CO₂ + H₂O. Con los menores coeficientes enteros, ¿cuánto suman todos los coeficientes de la ecuación balanceada?",
         "datos": {
-          "ecuacion": "C5H12 + O2 -> CO2 + H2O"
+          "ecuacion": "C2H5OH + O2 -> CO2 + H2O"
         },
         "opciones": [
           {
-            "texto": "20",
-            "valor": 20,
-            "correcta": true
+            "texto": "19",
+            "valor": 19,
+            "error": "olvida-el-O-del-combustible"
           },
           {
-            "texto": "13",
-            "valor": 13,
+            "texto": "7",
+            "valor": 7,
             "error": "ES12-olvida-el-oxigeno"
           },
           {
-            "texto": "19",
-            "valor": 19,
-            "error": "suma-sin-contar-el-1"
+            "texto": "9",
+            "valor": 9,
+            "correcta": true
           },
           {
-            "texto": "40",
-            "valor": 40,
-            "error": "no-simplifica"
+            "texto": "8",
+            "valor": 8,
+            "error": "suma-sin-contar-el-1"
           }
         ]
       },
       "B": {
-        "enunciado": "Se balancea la combustión completa del heptano con los menores coeficientes enteros: C₇H₁₆ + O₂ → CO₂ + H₂O. ¿Cuánto suman todos los coeficientes de la ecuación balanceada?",
+        "enunciado": "El butanol, un alcohol que se usa como solvente, arde por completo: C₄H₉OH + O₂ → CO₂ + H₂O. Con los menores coeficientes enteros, ¿cuánto suman todos los coeficientes de la ecuación balanceada?",
         "datos": {
-          "ecuacion": "C7H16 + O2 -> CO2 + H2O"
+          "ecuacion": "C4H9OH + O2 -> CO2 + H2O"
         },
         "opciones": [
           {
-            "texto": "27",
-            "valor": 27,
-            "correcta": true
+            "texto": "33",
+            "valor": 33,
+            "error": "olvida-el-O-del-combustible"
           },
           {
-            "texto": "17",
-            "valor": 17,
+            "texto": "11",
+            "valor": 11,
             "error": "ES12-olvida-el-oxigeno"
           },
           {
-            "texto": "26",
-            "valor": 26,
-            "error": "suma-sin-contar-el-1"
+            "texto": "16",
+            "valor": 16,
+            "correcta": true
           },
           {
-            "texto": "54",
-            "valor": 54,
-            "error": "no-simplifica"
+            "texto": "15",
+            "valor": 15,
+            "error": "suma-sin-contar-el-1"
           }
         ]
       }
@@ -1167,39 +1148,40 @@
       "par": "qui-14",
       "plantilla": "liquidos-y-solidos",
       "unidad": "quimica.liquidos-y-solidos",
-      "mide": "Gas recogido sobre agua: la presión del gas seco es la total menos la presión de vapor del agua",
+      "nombreUnidad": "Líquidos, sólidos y cambios de estado",
+      "mide": "Gas recogido sobre agua: la fracción de moléculas de vapor es la presión de vapor entre la presión total",
       "A": {
-        "enunciado": "Un estudiante junta oxígeno en una probeta llena de agua, puesta boca abajo en una cubeta a 30 °C. Cuando el agua de la probeta queda a la misma altura que la de la cubeta, la presión del gas húmedo es 750 mmHg. A 30 °C, la presión de vapor del agua es 31,7 mmHg. ¿Cuál es la presión parcial del oxígeno seco?",
+        "enunciado": "Un estudiante junta oxígeno en una probeta llena de agua, puesta boca abajo en una cubeta a 30 °C. Cuando el agua de la probeta queda a la misma altura que la de la cubeta, el gas de adentro está a 750 mmHg. A 30 °C, la presión de vapor del agua es 31,8 mmHg. ¿Qué porcentaje de las moléculas de gas de la probeta son de vapor de agua?",
         "datos": {
           "Ptotal": 750,
           "T": 30,
-          "Pv": 31.7
+          "Pv": 31.8
         },
         "opciones": [
           {
-            "texto": "750 mmHg",
-            "valor": 750,
-            "error": "gas-agua-no-resta"
+            "texto": "4,43 %",
+            "valor": 4.427736006683375,
+            "error": "fraccion-sobre-el-gas-seco"
           },
           {
-            "texto": "781,7 mmHg",
-            "valor": 781.74,
-            "error": "gas-agua-suma-el-vapor"
+            "texto": "50 %",
+            "valor": 50,
+            "error": "gas-agua-reparte-a-medias"
           },
           {
-            "texto": "718,3 mmHg",
-            "valor": 718.26,
+            "texto": "4,24 %",
+            "valor": 4.24,
             "correcta": true
           },
           {
-            "texto": "375 mmHg",
-            "valor": 375,
-            "error": "gas-agua-reparte-a-medias"
+            "texto": "95,76 %",
+            "valor": 95.76,
+            "error": "da-la-fraccion-del-otro-gas"
           }
         ]
       },
       "B": {
-        "enunciado": "Un estudiante junta nitrógeno en una probeta llena de agua, puesta boca abajo en una cubeta a 20 °C. Cuando el agua de la probeta queda a la misma altura que la de la cubeta, la presión del gas húmedo es 740 mmHg. A 20 °C, la presión de vapor del agua es 17,5 mmHg. ¿Cuál es la presión parcial del nitrógeno seco?",
+        "enunciado": "Un estudiante junta nitrógeno en una probeta llena de agua, puesta boca abajo en una cubeta a 20 °C. Cuando el agua de la probeta queda a la misma altura que la de la cubeta, el gas de adentro está a 740 mmHg. A 20 °C, la presión de vapor del agua es 17,5 mmHg. ¿Qué porcentaje de las moléculas de gas de la probeta son de vapor de agua?",
         "datos": {
           "Ptotal": 740,
           "T": 20,
@@ -1207,24 +1189,24 @@
         },
         "opciones": [
           {
-            "texto": "740 mmHg",
-            "valor": 740,
-            "error": "gas-agua-no-resta"
+            "texto": "2,42 %",
+            "valor": 2.422145328719723,
+            "error": "fraccion-sobre-el-gas-seco"
           },
           {
-            "texto": "757,5 mmHg",
-            "valor": 757.47,
-            "error": "gas-agua-suma-el-vapor"
+            "texto": "50 %",
+            "valor": 50,
+            "error": "gas-agua-reparte-a-medias"
           },
           {
-            "texto": "722,5 mmHg",
-            "valor": 722.53,
+            "texto": "2,36 %",
+            "valor": 2.364864864864865,
             "correcta": true
           },
           {
-            "texto": "370 mmHg",
-            "valor": 370,
-            "error": "gas-agua-reparte-a-medias"
+            "texto": "97,64 %",
+            "valor": 97.63513513513513,
+            "error": "da-la-fraccion-del-otro-gas"
           }
         ]
       }
@@ -1233,14 +1215,15 @@
       "par": "qui-15",
       "plantilla": "rendimiento-pureza",
       "unidad": "quimica.estequiometria",
-      "mide": "Pureza y rendimiento: la pureza actúa sobre la muestra y el rendimiento sobre el producto, cada uno por separado",
+      "nombreUnidad": "Estequiometría",
+      "mide": "Pureza desconocida: del producto real se vuelve al teórico (dividiendo por el rendimiento) y de ahí al reactivo puro",
       "A": {
-        "enunciado": "Se hacen reaccionar 260 g de zinc impuro, con 75 % de pureza, con ácido clorhídrico en exceso: Zn + 2HCl → ZnCl₂ + H₂. El rendimiento es 80 %. ¿Cuántos gramos de H₂ se obtienen? (Masas molares en g/mol: Zn = 65; H₂ = 2)",
+        "enunciado": "Una muestra de 260 g de zinc impuro reacciona con ácido clorhídrico en exceso: Zn + 2HCl → ZnCl₂ + H₂. La impureza no reacciona. Con un rendimiento de 75 % se obtienen 4,8 g de H₂. ¿Qué porcentaje de la muestra es zinc? (Masas molares en g/mol: Zn = 65; H₂ = 2)",
         "datos": {
           "reaccion": "zinc",
           "muestra": 260,
-          "pureza": 75,
-          "rendimiento": 80,
+          "real": 4.8,
+          "rendimiento": 75,
           "producto": "H2",
           "masas": {
             "Zn": 65,
@@ -1249,59 +1232,59 @@
         },
         "opciones": [
           {
-            "texto": "4,8 g",
-            "valor": 4.8,
-            "correcta": true
-          },
-          {
-            "texto": "6,4 g",
-            "valor": 6.4,
-            "error": "muestra-pura"
-          },
-          {
-            "texto": "6 g",
-            "valor": 6,
+            "texto": "60 %",
+            "valor": 60,
             "error": "olvida-rendimiento"
           },
           {
-            "texto": "4,4 g",
-            "valor": 4.4,
+            "texto": "80 %",
+            "valor": 80,
+            "correcta": true
+          },
+          {
+            "texto": "45 %",
+            "valor": 45,
+            "error": "multiplica-rendimiento"
+          },
+          {
+            "texto": "85 %",
+            "valor": 85,
             "error": "suma-porcentajes"
           }
         ]
       },
       "B": {
-        "enunciado": "Se calientan 250 g de caliza, con 80 % de CaCO₃, hasta que se descompone: CaCO₃ → CaO + CO₂. El rendimiento es 75 %. ¿Cuántos gramos de CO₂ se obtienen? (Masas molares en g/mol: CaCO₃ = 100; CO₂ = 44)",
+        "enunciado": "Se calientan 175 g de una mezcla de clorato de potasio con una impureza que no reacciona: 2KClO₃ → 2KCl + 3O₂. Con un rendimiento de 75 % se recogen 36 g de O₂. ¿Qué porcentaje de la mezcla es KClO₃? (Masas molares en g/mol: KClO₃ = 122,5; O₂ = 32)",
         "datos": {
-          "reaccion": "caliza",
-          "muestra": 250,
-          "pureza": 80,
+          "reaccion": "clorato",
+          "muestra": 175,
+          "real": 36,
           "rendimiento": 75,
-          "producto": "CO2",
+          "producto": "O2",
           "masas": {
-            "CaCO3": 100,
-            "CO2": 44
+            "KClO3": 122.5,
+            "O2": 32
           }
         },
         "opciones": [
           {
-            "texto": "66 g",
-            "valor": 66,
-            "correcta": true
-          },
-          {
-            "texto": "82,5 g",
-            "valor": 82.5,
-            "error": "muestra-pura"
-          },
-          {
-            "texto": "88 g",
-            "valor": 88,
+            "texto": "52,5 %",
+            "valor": 52.5,
             "error": "olvida-rendimiento"
           },
           {
-            "texto": "60,5 g",
-            "valor": 60.5,
+            "texto": "70 %",
+            "valor": 70,
+            "correcta": true
+          },
+          {
+            "texto": "39,4 %",
+            "valor": 39.375,
+            "error": "multiplica-rendimiento"
+          },
+          {
+            "texto": "77,5 %",
+            "valor": 77.5,
             "error": "suma-porcentajes"
           }
         ]
@@ -1311,81 +1294,75 @@
       "par": "qui-16",
       "plantilla": "biomoleculas",
       "unidad": "quimica.biomoleculas-y-productos-naturales",
-      "mide": "Masa de un péptido: una cadena lineal de n aminoácidos suelta n − 1 aguas al formarse",
+      "nombreUnidad": "Biomoléculas y productos naturales",
+      "mide": "Hidrólisis de un péptido: se gasta un agua por cada enlace que se rompe (n − 1 para n aminoácidos)",
       "A": {
-        "enunciado": "Cuatro aminoácidos se unen en una sola cadena, en este orden: glicina (Gly), alanina (Ala), cisteína (Cys) y leucina (Leu). ¿Cuál es la masa molar del tetrapéptido Gly-Ala-Cys-Leu? (Masas molares en g/mol: Gly = 75; Ala = 89; Cys = 121; Leu = 131; H₂O = 18)",
+        "enunciado": "Se hidroliza por completo 1 mol del pentapéptido Leu-Cys-Gly-Val-Ala, hasta dejar libres sus cinco aminoácidos. ¿Cuántos gramos de agua se consumen? (Masa molar del agua: 18 g/mol)",
         "datos": {
           "piezas": [
-            "Gly",
-            "Ala",
+            "Leu",
             "Cys",
-            "Leu"
+            "Gly",
+            "Val",
+            "Ala"
           ],
-          "masas": {
-            "Gly": 75,
-            "Ala": 89,
-            "Cys": 121,
-            "Leu": 131
-          }
+          "mol": 1
         },
         "opciones": [
           {
-            "texto": "416 g/mol",
-            "valor": 416,
-            "error": "BMH5-no-resta-agua"
-          },
-          {
-            "texto": "344 g/mol",
-            "valor": 344,
+            "texto": "90 g",
+            "valor": 90,
             "error": "BMH6-n-aguas"
           },
           {
-            "texto": "398 g/mol",
-            "valor": 398,
+            "texto": "18 g",
+            "valor": 18,
             "error": "BMH7-un-agua"
           },
           {
-            "texto": "362 g/mol",
-            "valor": 362,
+            "texto": "0 g",
+            "valor": 0,
+            "error": "BM9-hidrolisis-sin-agua"
+          },
+          {
+            "texto": "72 g",
+            "valor": 72,
             "correcta": true
           }
         ]
       },
       "B": {
-        "enunciado": "Cuatro aminoácidos se unen en una sola cadena, en este orden: alanina (Ala), serina (Ser), valina (Val) y glicina (Gly). ¿Cuál es la masa molar del tetrapéptido Ala-Ser-Val-Gly? (Masas molares en g/mol: Ala = 89; Ser = 105; Val = 117; Gly = 75; H₂O = 18)",
+        "enunciado": "Se hidroliza por completo 1 mol del hexapéptido Ser-Gly-Leu-Ala-Cys-Val, hasta dejar libres sus seis aminoácidos. ¿Cuántos gramos de agua se consumen? (Masa molar del agua: 18 g/mol)",
         "datos": {
           "piezas": [
-            "Ala",
             "Ser",
-            "Val",
-            "Gly"
+            "Gly",
+            "Leu",
+            "Ala",
+            "Cys",
+            "Val"
           ],
-          "masas": {
-            "Ala": 89,
-            "Ser": 105,
-            "Val": 117,
-            "Gly": 75
-          }
+          "mol": 1
         },
         "opciones": [
           {
-            "texto": "386 g/mol",
-            "valor": 386,
-            "error": "BMH5-no-resta-agua"
-          },
-          {
-            "texto": "314 g/mol",
-            "valor": 314,
+            "texto": "108 g",
+            "valor": 108,
             "error": "BMH6-n-aguas"
           },
           {
-            "texto": "368 g/mol",
-            "valor": 368,
+            "texto": "18 g",
+            "valor": 18,
             "error": "BMH7-un-agua"
           },
           {
-            "texto": "332 g/mol",
-            "valor": 332,
+            "texto": "0 g",
+            "valor": 0,
+            "error": "BM9-hidrolisis-sin-agua"
+          },
+          {
+            "texto": "90 g",
+            "valor": 90,
             "correcta": true
           }
         ]
@@ -1395,66 +1372,65 @@
       "par": "qui-17",
       "plantilla": "quimica-ambiente",
       "unidad": "quimica.recursos-naturales",
-      "mide": "Conservación de la masa en una combustión dentro de un recipiente cerrado",
+      "nombreUnidad": "Petróleo y recursos naturales",
+      "mide": "Conservación de la masa en una combustión con oxígeno de sobra: los productos pesan el combustible más el O₂ que se gasta",
       "A": {
-        "enunciado": "Un frasco de vidrio de 300 g contiene 22 g de propano (C₃H₈) y 80 g de oxígeno, y está bien tapado. Una chispa enciende el propano, que se quema por completo y forma dióxido de carbono y vapor de agua. Nada entra ni sale del frasco. ¿Cuánto marca la balanza al final, con el frasco y todo lo que hay dentro?",
+        "enunciado": "En un recipiente cerrado se queman por completo 0,44 g de propano (C₃H₈) con 3,2 g de oxígeno, que es más del que hace falta. Se forman dióxido de carbono y agua, y sobra oxígeno. ¿Cuántos gramos pesan, juntos, el dióxido de carbono y el agua que se forman? (Masas atómicas: H = 1; C = 12; O = 16)",
         "datos": {
           "hc": "propano",
-          "masaFrasco": 300,
-          "masaComb": 22,
-          "masaO2": 80
+          "masaComb": 0.44,
+          "masaO2": 3.2
         },
         "opciones": [
           {
-            "texto": "300 g",
-            "valor": 300,
-            "error": "QA9-masa-baja-cerrado"
+            "texto": "3,64 g",
+            "valor": 3.64,
+            "error": "ES15-suma-de-masas"
           },
           {
-            "texto": "402 g",
-            "valor": 402,
+            "texto": "0,44 g",
+            "valor": 0.44,
+            "error": "co2-no-supera-al-combustible"
+          },
+          {
+            "texto": "2,04 g",
+            "valor": 2.04,
             "correcta": true
           },
           {
-            "texto": "380 g",
-            "valor": 380,
-            "error": "QA10-se-vuelve-energia"
-          },
-          {
-            "texto": "482 g",
-            "valor": 482,
-            "error": "se-suma-oxigeno-cerrado"
+            "texto": "1,32 g",
+            "valor": 1.32,
+            "error": "olvida-el-agua"
           }
         ]
       },
       "B": {
-        "enunciado": "Un frasco de vidrio de 250 g contiene 29 g de butano (C₄H₁₀) y 104 g de oxígeno, y está bien tapado. Una chispa enciende el butano, que se quema por completo y forma dióxido de carbono y vapor de agua. Nada entra ni sale del frasco. ¿Cuánto marca la balanza al final, con el frasco y todo lo que hay dentro?",
+        "enunciado": "En un recipiente cerrado se queman por completo 0,58 g de butano (C₄H₁₀) con 4,8 g de oxígeno, que es más del que hace falta. Se forman dióxido de carbono y agua, y sobra oxígeno. ¿Cuántos gramos pesan, juntos, el dióxido de carbono y el agua que se forman? (Masas atómicas: H = 1; C = 12; O = 16)",
         "datos": {
           "hc": "butano",
-          "masaFrasco": 250,
-          "masaComb": 29,
-          "masaO2": 104
+          "masaComb": 0.58,
+          "masaO2": 4.8
         },
         "opciones": [
           {
-            "texto": "250 g",
-            "valor": 250,
-            "error": "QA9-masa-baja-cerrado"
+            "texto": "5,38 g",
+            "valor": 5.38,
+            "error": "ES15-suma-de-masas"
           },
           {
-            "texto": "383 g",
-            "valor": 383,
+            "texto": "0,58 g",
+            "valor": 0.58,
+            "error": "co2-no-supera-al-combustible"
+          },
+          {
+            "texto": "2,66 g",
+            "valor": 2.66,
             "correcta": true
           },
           {
-            "texto": "354 g",
-            "valor": 354,
-            "error": "QA10-se-vuelve-energia"
-          },
-          {
-            "texto": "487 g",
-            "valor": 487,
-            "error": "se-suma-oxigeno-cerrado"
+            "texto": "1,76 g",
+            "valor": 1.76,
+            "error": "olvida-el-agua"
           }
         ]
       }
