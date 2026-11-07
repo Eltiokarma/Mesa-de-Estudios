@@ -186,6 +186,14 @@ test('imán: las líneas siguen el campo y salen del norte', () => {
       assert.ok((B.x * t.x + B.y * t.y) / (B.modulo * Math.hypot(t.x, t.y)) > 0.98, 'tangente al campo');
     }
   }
+  // con desdeS, las líneas de más terminan junto al sur y también siguen el campo (del borde hacia el sur)
+  const todas = motor.lineasIman(im, 8, { x0: -1, x1: 1, y0: -1, y1: 1 }, { desdeS: true });
+  assert.ok(todas.length > ls.length, 'hay líneas que llegan al sur');
+  for (const l of todas.slice(ls.length)) {
+    const u = l[l.length - 1]; assert.ok(Math.hypot(u.x + 0.1, u.y) < 0.02, 'termina junto al sur');
+    const k = Math.floor(l.length / 2), B = motor.campoIman(im, l[k]), t = { x: l[k + 1].x - l[k].x, y: l[k + 1].y - l[k].y };
+    assert.ok((B.x * t.x + B.y * t.y) / (B.modulo * Math.hypot(t.x, t.y)) > 0.98, 'va con el campo');
+  }
   cerca(motor.campoIman({ ...im, B0: 0.2, a: 0.05 }, { x: 0.15, y: 0 }).modulo, 0.2, 'escala B0');
   const m = motor.mapaHilos([{ I: 5, x: 0, y: 0 }], { x0: -1, x1: 1, y0: -1, y1: 1 }, 8);
   assert.ok(m.puntos.length > 40 && m.puntos.every(p => p.nivel >= 0 && p.nivel <= 1));

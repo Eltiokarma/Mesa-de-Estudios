@@ -17,7 +17,9 @@
  *   cruz(a, b), punto(a, b), anguloEntre(a, b)   producto vectorial, escalar y ángulo entre vectores (grados, 0 a 180)
  *   vectorAngulo(modulo, grados)       vector en el plano xy a 'grados' del eje x, con los senos de academia
  *   fuerzaCarga(q, v, B)               F = q·v×B (N, vector 3D): módulo |q|vB sen θ, θ entre v y B, hacia dónde va;
- *                                      cero si la carga está quieta o si v es paralela (o contraria) a B
+ *                                      cero si la carga está quieta o si v es paralela (o contraria) a B.
+ *                                      'perpendicular' (booleano) dice que F es perpendicular a v Y a B, siempre,
+ *                                      formen v y B el ángulo que formen (no que v sea perpendicular a B)
  *   fuerzaModulo(q, v, B, theta)       el módulo |q|·v·B·sen θ con v (m/s), B (T) y θ (grados) sueltos
  *   movimientoCircular(q, m, v, B, theta)  carga con v ⊥ B (o a θ de B): radio r = m·v⊥/(|q|B) en m, periodo
  *                                      T = 2πm/(|q|B) en s (no depende de v), Tpi = T/π, f, ω, F, a centrípeta y,
@@ -45,7 +47,8 @@
  *                                      opuestos: se repelen. I con signo: el mismo signo es el mismo sentido
  *   campoIman(iman, punto)             campo de un imán de barra en el plano (modelo de dos polos), en T si se da
  *                                      iman.B0 = campo a una distancia iman.a del polo norte sobre su eje
- *   lineasIman(iman, n, caja)          líneas de campo del imán (salen del norte, entran al sur), para dibujarlas
+ *   lineasIman(iman, n, caja, o)       líneas de campo del imán (salen del norte, entran al sur), para dibujarlas;
+ *                                      con o.desdeS, también las que llegan al sur desde afuera de la caja
  *   mapaHilos(hilos, caja, n)          flechitas del campo de los hilos en una cuadrícula, con intensidad relativa
  *
  * Cada resultado que alimenta una predicción trae un campo 'errores' con lo que da cada error típico (códigos de
@@ -60,8 +63,9 @@
  *     imanEmpuja      MG1 y EL9: «el imán empuja a la carga aunque esté quieta» (verdadero si v = 0 y B ≠ 0).
  *   fuerzaModulo.errores: sinSeno = |q|vB; conCoseno = |q|vB·cos θ (MG3: el ángulo complementario).
  *   movimientoCircular.errores: radioSinMasa = v/(|q|B) (olvidar m); radioAlReves = |q|B/(m·v) (fórmula invertida).
- *   cambioVelocidad.errores: periodoCrece (T × f, «más rápido, vuelta más larga»), periodoBaja (T / f, «más rápido,
- *     vuelta más corta»), radioIgual (r sin cambio), radioCuadrado (r × f²).
+ *   cambioVelocidad.errores: periodoCrece (T × f, en s, «más rápido, vuelta más larga»), periodoBaja (T / f, en s,
+ *     «más rápido, vuelta más corta»), radioIgual (r sin cambio, en m), radioCuadrado (r × f², en m). Ojo: los
+ *     periodos van en segundos, no como coeficiente de π (eso es Tpi0 y Tpi1).
  *   campoHilo.errores: unoSobreD2 = 2 × 10⁻⁷·|I|/d² (1/d² como Coulomb), comoEspira = μ₀|I|/(2d) (la fórmula de la
  *     espira), sinDosPi = μ₀|I|/d (olvidar el 2π).
  *   cambioDistanciaHilo.errores: cuadrado (B/f²), sinCambio (B), alReves (B·f).
@@ -69,7 +73,8 @@
  *     usando d (y no d/2) para cada hilo; unoSobreD2 = con 1/d² en cada hilo; alReves = el resultado del otro caso
  *     (sumar si son iguales, restar si son opuestas).
  *   espira.errores: comoHilo = 2 × 10⁻⁷·N|I|/R; sinMedio = μ₀N|I|/R.
- *   cambioSolenoide.errores: sinCambio, mitad, cuadrado (B × f²).
+ *   cambioSolenoide.errores: sinCambio (Bpi0), mitad (Bpi0 / f), cuadrado (Bpi0 × f²): los tres como coeficiente de
+ *     π (en T/π, como Bpi0 y Bpi1), no en teslas.
  *   fuerzaConductor.errores: sinSeno = BIL; conCoseno = BIL·cos θ.
  *   cambioAnguloConductor.errores: sinCambio (F en t0), conCoseno (BIL cos t1), cero (0: «solo hay fuerza a 90°»).
  *   cablesParalelos.errores: masCorrienteMas (MG6: razón F sobre el de menor corriente / F sobre el de mayor que
@@ -402,26 +407,35 @@
     const x = c.x * k, y = c.y * k;
     return { x: limpio(x), y: limpio(y), z: 0, modulo: limpio(Math.hypot(x, y)) };
   }
-  function lineasIman(im, n, caja) {
+  // o.desdeS: además, líneas sembradas junto al sur e integradas hacia atrás (contra B), que se guardan dadas vuelta
+  // (terminan en el sur) solo si no llegan al norte: así el dibujo queda simétrico sin repetir líneas.
+  function lineasIman(im, n, caja, o) {
     const pl = polos(im), N = n || 10, lineas = [];
     const r0 = Math.max(0.004, pl.L * 0.04), h = pl.L * 0.012;
     const dentro = P => !caja || (P.x > caja.x0 && P.x < caja.x1 && P.y > caja.y0 && P.y < caja.y1);
-    for (let k = 0; k < N; k++) {
-      // salen del norte hacia afuera, repartidas en un abanico (sin la que va por dentro del imán)
-      const a = Math.atan2(pl.uy, pl.ux) + (k + 0.5) / N * 2 * Math.PI;
-      let P = { x: pl.N.x + r0 * Math.cos(a), y: pl.N.y + r0 * Math.sin(a) };
-      if ((P.x - pl.N.x) * pl.ux + (P.y - pl.N.y) * pl.uy < -r0 * 0.7) continue;
-      const pts = [P];
-      for (let j = 0; j < 900; j++) {
-        const f = c => { const b = campoImanCrudo(pl, c); if (!b) return null; const m = Math.hypot(b.x, b.y); return { x: b.x / m, y: b.y / m }; };
-        const d1 = f(P); if (!d1) break;
-        const M = { x: P.x + d1.x * h / 2, y: P.y + d1.y * h / 2 }, d2 = f(M); if (!d2) break;
-        P = { x: P.x + d2.x * h, y: P.y + d2.y * h };
-        pts.push(P);
-        if (Math.hypot(P.x - pl.S.x, P.y - pl.S.y) < r0 || !dentro(P)) break;
+    const f = (c, s) => { const b = campoImanCrudo(pl, c); if (!b) return null; const m = Math.hypot(b.x, b.y); return { x: s * b.x / m, y: s * b.y / m }; };
+    const trazar = (Q, ux, uy, s, fin) => {
+      let llega = false;
+      for (let k = 0; k < N; k++) {
+        // un abanico alrededor del polo (sin la que va por dentro del imán)
+        const a = Math.atan2(uy, ux) + (k + 0.5) / N * 2 * Math.PI;
+        let P = { x: Q.x + r0 * Math.cos(a), y: Q.y + r0 * Math.sin(a) };
+        if ((P.x - Q.x) * ux + (P.y - Q.y) * uy < -r0 * 0.7) continue;
+        const pts = [P]; llega = false;
+        for (let j = 0; j < 900; j++) {
+          const d1 = f(P, s); if (!d1) break;
+          const M = { x: P.x + d1.x * h / 2, y: P.y + d1.y * h / 2 }, d2 = f(M, s); if (!d2) break;
+          P = { x: P.x + d2.x * h, y: P.y + d2.y * h };
+          pts.push(P);
+          if (Math.hypot(P.x - fin.x, P.y - fin.y) < r0) { llega = true; break; }
+          if (!dentro(P)) break;
+        }
+        if (s > 0) lineas.push(pts.map(q => ({ x: limpio(q.x), y: limpio(q.y) })));
+        else if (!llega) lineas.push(pts.reverse().map(q => ({ x: limpio(q.x), y: limpio(q.y) })));
       }
-      lineas.push(pts.map(q => ({ x: limpio(q.x), y: limpio(q.y) })));
-    }
+    };
+    trazar(pl.N, pl.ux, pl.uy, 1, pl.S);
+    if (o && o.desdeS) trazar(pl.S, -pl.ux, -pl.uy, -1, pl.N);
     return lineas;
   }
   function mapaHilos(hilos, caja, n, o) {

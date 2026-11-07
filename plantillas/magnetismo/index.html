@@ -160,7 +160,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
     <header>
       <p class="eyebrow">Física · Magnetismo · Problemas tipo admisión</p>
       <h1>Imanes, cables y cargas</h1>
-      <p class="sub">¿Un imán empuja a una carga quieta? ¿Hacia dónde se va un protón que cruza un campo magnético? ¿Cómo es el campo alrededor de un cable? Predice frente al dibujo, gira la velocidad en tres dimensiones y mueve un punto alrededor de los cables.</p>
+      <p class="sub">¿Un imán empuja a una carga quieta? ¿Hacia dónde se va un protón que cruza un campo magnético? ¿Cómo es el campo alrededor de un cable? Predice frente al dibujo, gira la velocidad en una vista en tres dimensiones y mueve un punto alrededor de los cables.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -421,7 +421,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   // E.im = { x, y, largo, ang, B0, a } (motor.campoIman); E.carga = { q, x, y, n }; ver.F0: el rótulo de la fuerza.
   function dibujarIman(c){
     const s = escala(); cuadricula(c, s);
-    if (!cacheIman) cacheIman = MM.lineasIman(E.im, 14, E.caja);
+    if (!cacheIman) cacheIman = MM.lineasIman(E.im, 14, E.caja, { desdeS:true });
     ctx.save(); ctx.strokeStyle = c.B; ctx.lineWidth = grosor('B', 1.4); ctx.globalAlpha = .55;
     for (const l of cacheIman){ ctx.beginPath(); l.forEach((p, k) => { const P = aP(p, s); if (k) ctx.lineTo(P.x, P.y); else ctx.moveTo(P.x, P.y); }); ctx.stroke(); }
     ctx.restore();
@@ -582,9 +582,11 @@ function crearEscena(cv, idDesc, idLect, idLey){
       if (Qv){ const u = { x:Qv.x - O.x, y:Qv.y - O.y }, L = Math.hypot(u.x, u.y) || 1; rotulo(ctx, c, Qv.x + u.x/L*26, Qv.y + u.y/L*26, 'v', c.v, 'center', 800, 15); }
       disco(O, p.q, 9, c);
     } else {
-      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.globalAlpha = .8; linea(ctx, f({ x:-d.x*1.05, y:-d.y*1.05, z:0 }), f({ x:d.x*1.05, y:d.y*1.05, z:0 })); ctx.restore();
-      const QI = flecha(f({ x:d.x*.2, y:d.y*.2, z:0 }), f({ x:d.x*.68, y:d.y*.68, z:0 }), c.I, grosor('I', 3.4));
-      if (QI){ const A0 = f({ x:d.x*.2, y:d.y*.2, z:0 }), u = { x:QI.x - A0.x, y:QI.y - A0.y }, L = Math.hypot(u.x, u.y) || 1; rotulo(ctx, c, (A0.x + QI.x)/2 + u.y/L*16, (A0.y + QI.y)/2 - u.x/L*16, 'I', c.I, 'center', 800, 15); }
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.globalAlpha = .55; linea(ctx, f({ x:-d.x*1.05, y:-d.y*1.05, z:0 }), f({ x:d.x*1.05, y:d.y*1.05, z:0 })); ctx.restore();
+      // la flecha de I va al costado del cable (en el plano xy), no encima
+      const nI = { x:-d.y*.13, y:d.x*.13 }, A0 = f({ x:d.x*.2 + nI.x, y:d.y*.2 + nI.y, z:0 });
+      const QI = flecha(A0, f({ x:d.x*.68 + nI.x, y:d.y*.68 + nI.y, z:0 }), c.I, grosor('I', 3.4));
+      if (QI){ const u = { x:QI.x - A0.x, y:QI.y - A0.y }, L = Math.hypot(u.x, u.y) || 1; rotulo(ctx, c, (A0.x + QI.x)/2 + u.y/L*16, (A0.y + QI.y)/2 - u.x/L*16, 'I', c.I, 'center', 800, 15); }
       const L0 = f({ x:-d.x*1.05, y:-d.y*1.05, z:0 });
       rotulo(ctx, c, L0.x + 8, L0.y + 14, `L = ${fmt(p.L, 1)} m`, c.r, 'left', 800, 12);
     }
@@ -604,7 +606,9 @@ function crearEscena(cv, idDesc, idLect, idLey){
   function dibujarHilos(c){
     const s = escala(); cuadricula(c, s);
     const kB = E.kB*clamp(W/390, 1, 1.6);   // px por tesla, un poco más en pantalla grande
-    for (const ci of E.ver.circ || []){
+    const circs = [...(E.ver.circ || [])];
+    if (E.ver.circP && E.P && E.hilos.length){ const h = E.hilos[0]; circs.push({ x:h.x, y:h.y, r:Math.hypot(E.P.x - h.x, E.P.y - h.y) }); }
+    for (const ci of circs){
       const C = aP(ci, s), R = ci.r*s.k;
       ctx.save(); ctx.strokeStyle = c.B; ctx.globalAlpha = .55; ctx.lineWidth = grosor('B', 1.6); ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.arc(C.x, C.y, R, 0, 7); ctx.stroke(); ctx.restore();
       // sentido del campo arriba de la circunferencia (del motor)
@@ -726,11 +730,11 @@ function crearEscena(cv, idDesc, idLect, idLey){
       if (E.parts.some(p => p.traza)) l.push('<span>punteado: la trayectoria</span>');
     } else if (v === 'p3d'){
       l.push(it('B', 'B · campo magnético'));
-      l.push(E.p3.modo === 'carga' ? it('v', 'v · velocidad') : it('I', 'I · corriente (el cable, en tinta)'));
+      l.push(E.p3.modo === 'carga' ? it('v', 'v · velocidad') : it('I', 'I · corriente (el cable, en gris)'));
       if (E.p3.verF) l.push(it('F', 'F · fuerza magnética'));
       if (E.p3.theta) l.push(it('th', E.p3.modo === 'carga' ? 'θ · ángulo entre v y B' : 'θ · ángulo entre el cable y B'));
       if (E.p3.modo === 'conductor') l.push(it('r', 'L · largo del cable'));
-      l.push('<span>ejes a trazos: x, y, z</span>');
+      l.push('<span>ejes a trazos: x, y; z sale hacia ti</span>');
     } else if (v === 'hilos'){
       l.push(it('I', 'I · corriente: ⊙ sale, ⊗ entra', true));
       if (E.ver.BP || E.ver.BQ || (E.ver.circ || []).length || E.ver.Botro) l.push(it('B', 'B · campo magnético'));
@@ -745,7 +749,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   // Lecturas y descripción: solo lo que cada paso pide (no adelantan la respuesta).
   E.avisar = () => {
     const ls = E.lect() || [];
-    if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura${String(v).length > 16 ? ' ancha' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura${String(v).length > 14 ? ' ancha' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
     if (idDesc) document.getElementById(idDesc).textContent = (E.desc() || '') + (ls.length ? ' ' + ls.map(([, t, v]) => `${t}: ${v}`).join('. ') + '.' : '');
     if (E.alCambiar) E.alCambiar();
   };
@@ -836,12 +840,12 @@ const PM7 = MM.puntoMedio(10, -10, 0.2), PM7i = MM.puntoMedio(10, 10, 0.2);
 const CP8 = MM.cablesParalelos(10, -20, 0.1);
 
 const P1 = { id:'magnetismo-paso1', ok:'c', opts:[
-  ['a', 'Lo atrae hacia el polo N, porque el polo N actúa como una carga negativa', 'MG1-iman-atrae-carga-quieta', 'documentado'],
+  ['a', 'Lo atrae hacia el polo N: el imán atrae a las cargas', 'MG1-iman-atrae-carga-quieta', 'documentado'],
   ['b', 'Lo repele, porque el polo N actúa como una carga positiva', 'EL9-polo-como-carga', 'parcial'],
   ['c', 'No sufre fuerza magnética, porque está quieto'],
   ['d', 'Lo hace girar alrededor del imán, porque las líneas del campo son curvas', 'MG-quieta-gira-con-las-lineas', 'hipotesis']],
   fb:{ c:'¡Bien! La fuerza magnética necesita que la carga se mueva: con v = 0, F = 0, por fuerte que sea el campo.',
-    a:'Elegiste la A. Los polos de un imán no son cargas eléctricas. La fuerza magnética es |q|·v·B·sen θ, y con v = 0 vale cero. La correcta está marcada.',
+    a:'Elegiste la A. Un imán no atrae ni repele a una carga quieta: la fuerza magnética es |q|·v·B·sen θ, y con v = 0 vale cero. La correcta está marcada.',
     b:'Elegiste la B. El polo N no es una carga positiva: un imán no atrae ni repele a una carga quieta. La correcta está marcada.',
     d:'Elegiste la D. Las líneas dicen hacia dónde apunta B, pero sin velocidad no hay fuerza magnética: el protón no se mueve. La correcta está marcada.' } };
 const P2 = { id:'magnetismo-paso2', ok:'a', opts:[
@@ -867,7 +871,7 @@ const P4 = { id:'magnetismo-paso4', ok:'c', opts:[
   ['a', `F = ${sci13(F4.errores.sinSeno)}`, 'MG-olvida-el-seno', 'hipotesis'],
   ['b', `F = ${sci13(F4.errores.anguloConHorizontal)}`, 'MG3-angulo-con-la-horizontal', 'parcial'],
   ['c', `F = ${sci13(F4.modulo)}`],
-  ['d', 'F = 0 × 10⁻¹³ N', 'MG-fuerza-solo-a-90', 'hipotesis']],
+  ['d', 'F = 0', 'MG-fuerza-solo-a-90', 'hipotesis']],
   fb:{ c:'¡Bien! El ángulo entre v y B es 90° − 37° = 53°: F = |q|·v·B·sen 53°.',
     a:'Elegiste la A. Falta el sen θ: v y B no son perpendiculares. Entre ellas hay 53°, y F = |q|·v·B·sen 53°. La correcta está marcada.',
     b:'Elegiste la B. Los 37° se miden desde la horizontal, pero B es vertical: el ángulo entre v y B es 53°. La correcta está marcada.',
@@ -917,7 +921,7 @@ function lecturasCirculo(p){
 }
 function lecturas4(){
   const p = E.p3, v = MM.vectorAngulo(p.v, p.phi), r = MM.fuerzaCarga(p.q, v, { x:0, y:p.B, z:0 });
-  return [['th', 'Ángulo θ entre v y B', `${fmt(r.theta, 0)}°`], ['th', 'sen θ', fmt(r.sen, 2)], ['F', 'Fuerza F', `${sci(r.modulo)} N ${r.modulo ? (r.F.z > 0 ? '(sale)' : '(entra)') : ''}`]];
+  return [['th', 'Ángulo θ entre v y B', `${fmt(r.theta, 0)}°`], ['th', 'sen θ', fmt(r.sen, 2)], ['F', 'Fuerza F', `${sci(r.modulo)} N ${r.modulo ? (r.F.z > 0 ? '(hacia +z)' : '(hacia −z)') : ''}`]];
 }
 function lecturasP(){
   const r = MM.campoHilos(E.hilos, E.P), d = Math.hypot(E.P.x - E.hilos[0].x, E.P.y - E.hilos[0].y);
@@ -966,7 +970,7 @@ const steps = [
    <div class="eq">${r_('r')} = m · ${v_('v')} / (|${q_('q')}| · ${B_('B')}) = 1,6 × 10⁻²⁷ · ${v_('2 × 10⁶')} / (${q_('1,6 × 10⁻¹⁹')} · ${B_('0,2')}) = ${r_(fmt(M3.r, 2) + ' m')}</div>
    <div class="eq">T = 2π · m / (|${q_('q')}| · ${B_('B')}) = π × 10⁻⁷ s<span class="note">una vuelta</span></div></div>
    <p>Como ${F_('F')} es siempre perpendicular a ${v_('v')}, no la acelera ni la frena: solo le cambia la dirección. La rapidez se queda en 2 × 10⁶ m/s y el protón da vueltas en un círculo, con ${F_('F')} apuntando siempre hacia el centro.</p>
-   <p class="fuente">En otra pregunta sobre hacia dónde apunta la fuerza, acertó cerca de 1 de cada 4 universitarios antes del curso y menos de la mitad después; creer que la fuerza va en la dirección del campo fue el error más común en ese estudio, sin porcentaje del error (Singh, 2017): respaldo parcial para la opción C. Cambiar los papeles de los dedos y el pulgar (opción A) apareció en entrevistas con un alumno (Secrest y Novodvorsky, 2005): respaldo parcial. La opción D es una hipótesis nuestra.</p></div>` },
+   <p class="fuente">En otra pregunta sobre hacia dónde apunta la fuerza, acertó cerca de 1 de cada 4 universitarios antes del curso y menos de la mitad después; creer que la fuerza va en la dirección del campo fue el error más común en ese estudio, sin porcentaje del error (Singh, 2017): respaldo parcial para la opción C. Cambiar los papeles de los dedos y el pulgar (opción A) apareció en entrevistas con un alumno, al usar otra regla de la mano derecha, la del campo de un cable (Secrest y Novodvorsky, 2005): respaldo parcial. La opción D es una hipótesis nuestra.</p></div>` },
  { k:'Paso 4', t:'Predice: v y B en ángulo', gate:P4,
    prep:() => { const ya = !!S.pred[P4.id]; E.config({ vista:'p3d', p3:{ modo:'carga', q:QP, v:5e6, B:.5, phi: ya ? (S.phi4 === undefined ? 37 : S.phi4) : 37, alfa: !ya || S.phi4 === undefined || S.phi4 === 37, theta:ya, verF:ya, yaw: S.yaw4 === undefined ? -35 : S.yaw4 },
      arr: ya ? { giro:true } : {}, alCambiar:() => { if (S.pred[P4.id]) { S.phi4 = E.p3.phi; S.yaw4 = E.p3.yaw; } },
@@ -979,18 +983,18 @@ const steps = [
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${th_('θ')} = 90° − 37° = ${th_('53°')}<span class="note">el ángulo entre v y B, no con la horizontal</span></div>
    <div class="eq">${F_('F')} = |${q_('q')}| · ${v_('v')} · ${B_('B')} · sen ${th_('53°')} = ${q_('1,6 × 10⁻¹⁹')} · ${v_('5 × 10⁶')} · ${B_('0,5')} · 4/5 = ${F_(sci(F4m.F) + ' N')}</div></div>
-   <p>La fuerza sale del plano de ${v_('v')} y ${B_('B')}: forma 90° con las dos (las escuadras azules). Arrastra la punta de ${v_('v')} (o toca el dibujo y usa ← →): ${F_('F')} se hace más grande cuando ${v_('v')} se acerca a 90° de ${B_('B')}, se anula cuando son paralelas y cambia de lado si ${v_('v')} pasa al otro lado de ${B_('B')}.</p>
+   <p>El eje z sale del plano de ${v_('v')} y ${B_('B')} hacia ti. Con la mano derecha: pulgar en ${v_('v')}, dedos en ${B_('B')}; la palma mira hacia ti, hacia +z. La fuerza forma 90° con ${v_('v')} y con ${B_('B')} (las escuadras azules). Arrastra la punta de ${v_('v')} (o toca el dibujo y usa ← →): ${F_('F')} se hace más grande cuando ${v_('v')} se acerca a 90° de ${B_('B')}, se anula cuando son paralelas y cambia de lado si ${v_('v')} pasa al otro lado de ${B_('B')}.</p>
    <div class="acciones"><button type="button" class="btn" id="izq4">Girar la vista ◀</button><button type="button" class="btn" id="der4">Girar la vista ▶</button></div>
    <p class="fuente">Leer el ángulo con la horizontal como si fuera el ángulo con el campo fue el error más común en una pregunta así (Singh, 2017), sin porcentaje en el texto que leímos: respaldo parcial para la opción B. Las opciones A y D son hipótesis nuestras.</p></div>` },
  { k:'Paso 5', t:'Predice: ahora un electrón', gate:P5,
    prep:() => { const ya = !!S.pred[P5.id], k = M3.r/M5.r; E.config({ caja:{ x0:-.2, x1:.2, y0:-.15, y1:.15 }, campo:{ tipo:'entra', B:.2, etq:'B = 0,2 T, entra (⊗)' },
      parts:[{ q:-QP, m:ME_, v0:{ x:2e6, y:0 }, p0:{ x:0, y:.1 }, Bz:-.2, t: ya ? M5.T : 0, ampliar:k, traza:ya, tVuelta:M5.T, verF:ya, lv:46, lf:44, radio: ya ? 'r ≈ 5,7 × 10⁻⁵ m' : null, n:'' }],
-     ver:{ nota: ya ? 'el círculo se dibuja unas 1800 veces más grande' : '' },
-     lect: () => ya || S.p5 ? [...lecturasCirculo(E.parts[0]), ['r', 'Radio r', `${sci(M5.r)} m`]] : [['v', 'Rapidez', '2 × 10⁶ m/s'], ['B', 'Campo B', '0,2 T (entra)']],
+     ver:{ nota: ya ? 'el círculo del electrón se dibuja unas 1800 veces más grande que el real' : '' },
+     lect: () => ya || S.p5 ? [...lecturasCirculo(E.parts[0]), ['r', 'Radio r', `${sci(M5.r, 1)} m`]] : [['v', 'Rapidez', '2 × 10⁶ m/s'], ['B', 'Campo B', '0,2 T (entra)']],
      desc: () => 'El mismo campo que entra a la pantalla; ahora es un electrón el que avanza hacia la derecha.' }); },
    anima:fin => { S.p5 = true; const p = E.parts[0]; p.verF = true; E.leyenda();
-     E.crecer('F', 600, () => { p.traza = true; E.ver.nota = 'el círculo se dibuja unas 1800 veces más grande'; E.leyenda();
-       E.tween(2800, f => { p.t = f*M5.T; E.dibujar(); E.avisar(); }, () => { p.t = M5.T; p.radio = 'r ≈ 5,7 × 10⁻⁵ m'; E.lect = () => [...lecturasCirculo(p), ['r', 'Radio r', `${sci(M5.r)} m`]]; E.dibujar(); E.avisar(); fin(); }); }); },
+     E.crecer('F', 600, () => { p.traza = true; E.ver.nota = 'el círculo del electrón se dibuja unas 1800 veces más grande que el real'; E.leyenda();
+       E.tween(2800, f => { p.t = f*M5.T; E.dibujar(); E.avisar(); }, () => { p.t = M5.T; p.radio = 'r ≈ 5,7 × 10⁻⁵ m'; E.lect = () => [...lecturasCirculo(p), ['r', 'Radio r', `${sci(M5.r, 1)} m`]]; E.leyenda(); E.dibujar(); E.avisar(); fin(); }); }); },
    body:() => `<p>En el mismo campo (${B_('B = 0,2 T')}, entra) entra un electrón, con ${q_('q = −1,6 × 10⁻¹⁹ C')} y m = 9,1 × 10⁻³¹ kg, a la misma ${v_('v = 2 × 10⁶ m/s')} hacia la derecha. ¿Hacia dónde apunta la fuerza magnética sobre él?</p>${opcionesHTML(P5.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${F_('F')} = ${q_('q')} · ${v_('v')} × ${B_('B')}: con ${q_('q')} negativa, al revés que para el protón → hacia abajo, ${F_(sci(F5.modulo) + ' N')}</div>
@@ -1000,18 +1004,18 @@ const steps = [
  { k:'Paso 6', t:'Predice: el campo de un cable', gate:P6,
    prep:() => { const ya = !!S.pred[P6.id]; E.config({ vista:'hilos', caja:{ x0:-.1, x1:.5, y0:-.24, y1:.2 }, hilos:[{ I:10, x:0, y:0, n:'I = 10 A, sale', nDy:-26 }],
      P: ya && S.P6 ? S.P6 : { x:.2, y:0, n:'P', dx:-8, dy:-16 }, Q:{ x:.4, y:0, n:'Q', dx:10, dy:-16 }, kB:6e6,
-     ver:{ circ: ya ? [{ x:0, y:0, r:.2 }, { x:0, y:0, r:.4 }] : [{ x:0, y:0, r:.2 }], BP:true, BQ:ya, dist:'P' }, prog:{ B:1 }, arr: ya ? { P:true } : {},
+     ver:{ circ: ya ? [{ x:0, y:0, r:.4 }] : [], circP:true, BP:true, BQ:ya, dist:'P' }, prog:{ B:1 }, arr: ya ? { P:true } : {},
      alCambiar:() => { if (S.pred[P6.id]) S.P6 = { ...E.P }; },
      lect: () => (ya || S.p6) ? [...lecturasP(), ['B', 'Campo B en Q (a 0,4 m)', `${sci(H6.B1)} T`]] : [['r', 'Distancia d de P', '0,2 m'], ['B', 'Campo B en P', `${sci(H6.B0)} T`], ['r', 'Distancia d de Q', '0,4 m']],
      desc: () => 'Vista de frente: un cable perpendicular a la pantalla con la corriente saliendo. P está a 0,2 m y Q a 0,4 m, en la misma recta.' }); },
-   anima:fin => { S.p6 = true; E.ver.BQ = true; E.ver.circ = [{ x:0, y:0, r:.2 }, { x:0, y:0, r:.4 }]; E.leyenda();
+   anima:fin => { S.p6 = true; E.ver.BQ = true; E.ver.circ = [{ x:0, y:0, r:.4 }]; E.leyenda();
      E.crecer('B', 900, () => { E.permitir({ P:true }); E.lect = () => [...lecturasP(), ['B', 'Campo B en Q (a 0,4 m)', `${sci(H6.B1)} T`]]; E.avisar(); fin(); }); },
    body:() => `<p>Un cable recto y largo, perpendicular a la pantalla, lleva ${I_('I = 10 A')} que sale (⊙). En P, a ${r_('d = 0,2 m')}, el campo vale ${B_('B = 10⁻⁵ T')} y da vueltas alrededor del cable (la circunferencia a trazos). ¿Cuánto vale el campo en Q, al doble de distancia (${r_('0,4 m')})?</p>${opcionesHTML(P6.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${B_('B')} = μ₀ · ${I_('I')} / (2π · ${r_('d')}) = 2 × 10⁻⁷ · ${I_('I')} / ${r_('d')}</div>
    <div class="eq">${B_('B')}(Q) = 2 × 10⁻⁷ · ${I_('10')} / ${r_('0,4')} = ${B_(sci(H6.B1) + ' T')}<span class="note">la mitad que en P</span></div></div>
    <p>Las líneas del campo de un cable son circunferencias alrededor de él. Su sentido sale de otra regla de la mano derecha: el pulgar en el sentido de ${I_('I')} y los dedos se cierran como gira ${B_('B')}. Con la corriente saliendo, gira en sentido antihorario.</p>
-   <p class="problem">Arrastra P (o toca el dibujo y usa las flechas): ${B_('B')} siempre es tangente a la circunferencia que pasa por P, y baja con 1/${r_('d')}.</p>
+   <p class="problem">Arrastra P (o toca el dibujo y usa las flechas): ${B_('B')} siempre es tangente a la circunferencia centrada en el cable que pasa por P (a trazos), y baja con 1/${r_('d')}.</p>
    <p class="fuente">Usar 1/d² en vez de 1/d (opción A) y las demás opciones son hipótesis nuestras: no encontramos estudios que las midan.</p></div>` },
  { k:'Paso 7', t:'Predice: entre dos corrientes opuestas', gate:P7,
    prep:() => { const ya = !!S.pred[P7.id]; E.config({ vista:'hilos', caja:{ x0:-.25, x1:.25, y0:-.15, y1:.17 }, kB:2e6,
@@ -1128,11 +1132,12 @@ const C3 = MM.cablesParalelos(10, -20, 0.1), C3b = MM.cablesParalelos(10, 20, 0.
 const S4 = MM.cambioSolenoide(2, 1000, 2);
 const O5 = [0, 45, 90, 135, 180, 225, 270, 315].map(a => ({ x:.12*Math.cos(a*RAD), y:.12*Math.sin(a*RAD) }));
 const ang5 = I => O5.map(p => MM.brujula([{ I, x:0, y:0 }], p).angulo);
-const A5 = ang5(10), A5b = ang5(-10);
+const A5 = ang5(100), A5b = ang5(-100), B5 = MM.campoHilo(100, .12).B;
 const piT = (c, e) => piCon(c, e) + ' T';
 const proton = o => ({ q:QP, m:MP, Bz:-.2, lf:18, ...o });
+const chico = () => $('cv2').clientWidth < 560;
 
-function lect3d(){ const p = E.p3, r = MM.fuerzaConductorVector(p.I, MM.vectorAngulo(p.L, p.phi), { x:p.B, y:0, z:0 }); return [['th', 'Ángulo θ entre el cable y B', `${fmt(r.theta, 0)}°`], ['F', 'Fuerza F', `${fmt(r.modulo, 2)} N`]]; }
+function lect3d(){ const p = E.p3, r = MM.fuerzaConductorVector(p.I, MM.vectorAngulo(p.L, p.phi), { x:p.B, y:0, z:0 }); return [['th', 'θ entre cable y B', `${fmt(r.theta, 0)}°`], ['F', 'Fuerza F', `${fmt(r.modulo, 2)} N ${r.modulo ? (r.F.z > 0 ? '(hacia +z)' : '(hacia −z)') : ''}`]]; }
 
 const EXPS = [
   { id:'doble-rapidez', corto:'El doble de rapidez',
@@ -1143,9 +1148,10 @@ const EXPS = [
           ['d', `r = ${fmt(V1.errores.radioCuadrado, 1)} m y T = π × 10⁻⁷ s`, 'MG-radio-con-v-al-cuadrado', 'hipotesis']],
     ok:'b',
     fb:{ a:'El radio se duplica, pero el periodo no cambia: T = 2πm/(|q|B) no tiene v. La vuelta es el doble de larga y la recorre el doble de rápido.', c:'El radio sí cambia: r = m·v/(|q|B), con el doble de v, el doble de radio. Y el periodo no cambia.', d:'El radio va con v, no con v²: r = m·v/(|q|B) se duplica.' },
-    antes:ya => E.config({ caja:{ x0:-.24, x1:.24, y0:-.235, y1:.235 }, campo:{ tipo:'entra', B:.2, etq:'B = 0,2 T, entra (⊗)' },
-      parts:[proton({ v0:{ x:2e6, y:0 }, p0:{ x:0, y:-.1 }, lv:34, n:'1', nDx:-18, nDy:0, nAl:'right', t: ya ? V1.T0 : 0, traza:ya, tVuelta:V1.T0, verF:ya }),
-             proton({ v0:{ x:4e6, y:0 }, p0:{ x:0, y:-.2 }, lv:68, n:'2', nDx:-18, nDy:0, nAl:'right', lf:36, fLado:-1, t: ya ? V1.T0 : 0, traza:ya, tVuelta:V1.T0, verF:ya })],
+    antes:ya => E.config({ caja:{ x0:-.24, x1:.24, y0:-.24, y1:.29 }, campo:{ tipo:'entra', B:.2, etq:'B = 0,2 T, entra (⊗)' },
+      // el protón 2 arranca arriba de su círculo yendo a la izquierda (centro en el origen, como el 1): nada se pisa
+      parts:[proton({ v0:{ x:2e6, y:0 }, p0:{ x:0, y:-.1 }, lv:34, n:'1', nDx:-18, nDy:0, nAl:'right', lf: chico() ? 12 : 18, t: ya ? V1.T0 : 0, traza:ya, tVuelta:V1.T0, verF:ya }),
+             proton({ v0:{ x:-4e6, y:0 }, p0:{ x:0, y:.2 }, lv:68, n:'2', nDx:18, nDy:0, nAl:'left', lf: chico() ? 24 : 36, t: ya ? V1.T0 : 0, traza:ya, tVuelta:V1.T0, verF:ya })],
       lect: () => (ya ? [['r', 'Radios', `${fmt(V1.r0, 1)} m y ${fmt(V1.r1, 1)} m`], ['ink', 'Periodos', 'π × 10⁻⁷ s los dos']] : [['v', 'Rapideces', '2 × 10⁶ y 4 × 10⁶ m/s']]),
       desc: () => 'Dos protones en el mismo campo que entra a la pantalla, uno más rápido que el otro.' }),
     despues:() => { const [a, b] = E.parts; a.verF = b.verF = true; a.traza = b.traza = true; E.leyenda();
@@ -1156,7 +1162,7 @@ const EXPS = [
       <p>Los dos protones terminan la vuelta al mismo tiempo: el 2 recorre una circunferencia el doble de larga, pero va el doble de rápido. En eso se basa el ciclotrón, que acelera partículas que giran siempre con el mismo periodo.</p>
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'cable-girado', corto:'El cable girado',
-    q:`Un tramo de cable de ${r_('L = 0,5 m')} lleva ${I_('I = 4 A')} en un campo uniforme de ${B_('B = 0,3 T')}. Perpendicular al campo, siente ${F_('F = 0,6 N')}. Si se gira el cable, dentro del mismo plano, hasta que forme ${th_('θ = 30°')} con el campo, ¿qué fuerza siente?`,
+    q:`Un tramo de cable de ${r_('L = 0,5 m')} lleva ${I_('I = 4 A')} en un campo uniforme de ${B_('B = 0,3 T')}. Perpendicular al campo, siente ${F_('F = 0,6 N')}. Si se gira el cable, dentro del plano que forman el cable y el campo, hasta que forme ${th_('θ = 30°')} con el campo, ¿qué fuerza siente?`,
     opts:[['a', `F = ${fmt(A2.errores.sinCambio, 1)} N`, 'MG-conductor-sin-seno', 'hipotesis'],
           ['b', `F ≈ ${fmt(A2.errores.conCoseno, 2)} N`, 'MG-conductor-con-coseno', 'hipotesis'],
           ['c', `F = ${fmt(A2.F1, 1)} N`],
@@ -1164,7 +1170,7 @@ const EXPS = [
     ok:'c',
     fb:{ a:'El ángulo sí importa: F = B·I·L·sen θ. A 30°, sen 30° = 1/2.', b:'Es con el seno del ángulo entre el cable y B, no con el coseno: sen 30° = 1/2.', d:'Solo es cero si el cable queda paralelo al campo. A 30°, F = B·I·L·sen 30°.' },
     antes:ya => E.config({ vista:'p3d', p3:{ modo:'conductor', I:4, L:.5, B:.3, phi: ya ? 30 : 90, theta:true, verF:true, yaw:32 }, arr: ya ? { giro:{ lim:[0, 180] } } : {},
-      lect: () => (ya ? lect3d() : [['th', 'Ángulo θ entre el cable y B', '90°'], ['F', 'Fuerza F', '0,6 N']]),
+      lect: () => (ya ? lect3d() : [['th', 'θ entre cable y B', '90°'], ['F', 'Fuerza F', '0,6 N (hacia −z)']]),
       desc: () => 'Vista en perspectiva: el campo B va por el eje x; el cable está en el plano xy y la fuerza sobre él, a lo largo del eje z.' }),
     despues:() => { E.lect = lect3d; E.tween(1500, f => { E.p3.phi = Math.round(mix(90, 30, suave(f))); E.dibujar(); E.avisar(); }, () => { E.p3.phi = 30; E.permitir({ giro:{ lim:[0, 180] } }); E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq">${F_('F')} = ${B_('B')} · ${I_('I')} · ${r_('L')} · sen ${th_('θ')} = ${B_('0,3')} · ${I_('4')} · ${r_('0,5')} · sen ${th_('30°')} = ${F_('0,6')} · 1/2 = ${F_(fmt(A2.F1, 1) + ' N')}</div></div>
@@ -1185,7 +1191,7 @@ const EXPS = [
     despues:() => { const h = E.hilos[1]; E.tween(500, f => { E.prog.F = 1 - f; E.dibujar(); }, () => { h.I = 20; E.ver.Botro = true;
       E.lect = () => [['F', 'F/L sobre cada cable', `${sci(C3b.porLargo)} N/m`], ['ink', 'Se…', 'atraen']]; E.avisar(); E.leyenda(); E.crecer('F', 800); }); },
     exp:() => `<div class="eqs"><div class="eq">${F_('F')}/L = 2 × 10⁻⁷ · ${I_('10')} · ${I_('20')} / ${r_('0,1')} = ${F_(sci(C3b.porLargo) + ' N/m')}<span class="note">el mismo valor, ahora de atracción</span></div></div>
-      <p>El tamaño de la fuerza no cambia, porque las corrientes y la distancia son las mismas; solo cambia el sentido. Ahora el campo de cada cable donde está el otro apunta al revés para uno de los dos, y las fuerzas tiran hacia adentro.</p>
+      <p>El tamaño de la fuerza no cambia, porque las corrientes y la distancia son las mismas. Al invertir ${I_('I₂')}, se invierte el campo ${B_('B₂')} que siente el cable 1; el cable 2 sigue en el mismo ${B_('B₁')}, pero con su corriente al revés. Las dos fuerzas cambian de sentido y ahora tiran hacia adentro.</p>
       <p class="fuente">Que el cable con más corriente ejerce más fuerza (opción B) lo reporta Maloney y otros (2001), citado por Sağlam y Millar, sin porcentaje: respaldo parcial. Las opciones A y D son hipótesis nuestras.</p>` },
   { id:'solenoide-doble', corto:'Más espiras por metro',
     q:`Un solenoide largo tiene n = 1000 espiras por metro y lleva ${I_('I = 2 A')}: adentro, el campo vale ${B_('B = 8π × 10⁻⁴ T')}. Se enrolla otro con la misma corriente y el doble de espiras por metro (n = 2000). ¿Cuánto vale el campo adentro?`,
@@ -1204,18 +1210,18 @@ const EXPS = [
       <p>Cada espira aporta su campo y adentro se suman. Con las espiras más juntas hay más campo en el mismo largo. Lo que cuenta es n = N/L: 400 espiras en 20 cm dan lo mismo que 2000 espiras en 1 m.</p>
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'oersted', corto:'La brújula y el cable',
-    q:`Alrededor de un cable perpendicular a la pantalla hay ocho brújulas. Con ${I_('10 A')} saliendo (⊙), cada brújula se orienta con el campo ${B_('B')} del cable, que es mucho más fuerte que el de la Tierra. Si se invierte la corriente, ¿qué hacen las brújulas?`,
+    q:`Alrededor de un cable perpendicular a la pantalla hay ocho brújulas. Con ${I_('100 A')} saliendo (⊙), en cada brújula, a 12 cm, el campo del cable vale ${B_('B ≈ ' + sci(B5, 1) + ' T')}: varias veces el de la Tierra en el Perú (unos 2,5 a 3 × 10⁻⁵ T), así que cada brújula se orienta con el campo del cable. Si se invierte la corriente, ¿qué hacen las brújulas?`,
     opts:[['a', 'Giran media vuelta: cada una apunta al revés'],
           ['b', 'No cambian: el campo es el mismo con cualquier sentido de la corriente', 'MG-campo-no-depende-del-sentido', 'hipotesis'],
           ['c', 'Giran un cuarto de vuelta: apuntan hacia el cable', 'MG-brujula-apunta-al-cable', 'hipotesis'],
           ['d', 'Giran un cuarto de vuelta: apuntan hacia afuera del cable', 'MG-brujula-apunta-afuera', 'hipotesis']],
     ok:'a',
     fb:{ b:'El sentido del campo sale del sentido de la corriente (regla de la mano derecha): si la corriente se invierte, el campo también.', c:'El campo de un cable no apunta hacia el cable: da vueltas alrededor de él. Al invertir la corriente, gira al revés.', d:'El campo de un cable no apunta hacia afuera: es tangente a circunferencias alrededor del cable.' },
-    antes:ya => E.config({ vista:'hilos', caja:{ x0:-.2, x1:.2, y0:-.17, y1:.17 }, hilos:[{ I: ya ? -10 : 10, x:0, y:0, n:'', nDy:0 }],
+    antes:ya => E.config({ vista:'hilos', caja:{ x0:-.2, x1:.2, y0:-.17, y1:.17 }, hilos:[{ I: ya ? -100 : 100, x:0, y:0, n:'', nDy:0 }],
       brujulas:O5.map((p, k) => ({ ...p, a0: ya ? A5b[k] : A5[k], a1: ya ? A5b[k] : A5[k] })), ver:{},
-      lect: () => [['I', 'Corriente', ya ? '10 A, entra' : '10 A, sale']],
+      lect: () => [['I', 'Corriente', ya ? '100 A, entra' : '100 A, sale'], ['B', 'B en cada brújula', `${sci(B5, 1)} T`]],
       desc: () => 'Un cable perpendicular a la pantalla rodeado por ocho brújulas.' }),
-    despues:() => { E.hilos[0].I = -10; E.brujulas = O5.map((p, k) => ({ ...p, a0:A5[k], a1:A5[k] + 180 })); E.lect = () => [['I', 'Corriente', '10 A, entra']]; E.avisar();
+    despues:() => { E.hilos[0].I = -100; E.brujulas = O5.map((p, k) => ({ ...p, a0:A5[k], a1:A5[k] + 180 })); E.lect = () => [['I', 'Corriente', '100 A, entra'], ['B', 'B en cada brújula', `${sci(B5, 1)} T`]]; E.avisar();
       E.crecer('giro', 1400, () => { E.brujulas = O5.map((p, k) => ({ ...p, a0:A5b[k], a1:A5b[k] })); E.dibujar(); }); },
     exp:() => `<p>Es el experimento de Oersted (1820): una corriente desvía una brújula. Con la corriente saliendo, el campo da vueltas en sentido antihorario; al invertirla, en sentido horario, y cada aguja gira media vuelta. Ninguna apunta hacia el cable: todas quedan tangentes a una circunferencia alrededor de él.</p>
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
