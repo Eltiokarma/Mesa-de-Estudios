@@ -3501,7 +3501,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "relojes-calendarios"
+     ]
     },
     {
      "id": "razonamiento-matematico.certezas",
@@ -4815,6 +4817,23 @@
     "/plantillas/regla-de-tres/index.html",
     "/plantillas/regla-de-tres/motor.js",
     "/plantillas/regla-de-tres/papel.json"
+   ]
+  },
+  "relojes-calendarios": {
+   "id": "relojes-calendarios",
+   "titulo": "El reloj y el calendario: ángulo entre las agujas, adelantos, campanadas y días de la semana",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.cronometria-y-calendarios"
+   ],
+   "url": "/plantillas/relojes-calendarios/index.html",
+   "papel": "/plantillas/relojes-calendarios/papel.json",
+   "archivos": [
+    "/plantillas/relojes-calendarios/index.html",
+    "/plantillas/relojes-calendarios/motor.js",
+    "/plantillas/relojes-calendarios/papel.json"
    ]
   },
   "solidos": {

@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1805 pruebas.
+Deben pasar 1845 pruebas.
 
 ```bash
 npm run dev
@@ -73,6 +73,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 
+- **Relojes y calendarios** (`plantillas/relojes-calendarios/`, sesión de matemática B, 7 nov 2026): ángulo entre las agujas con minutero arrastrable, superposiciones en un día, adelantos y atrasos, campanadas, bisiestos y día de la semana; 20 casos verificados aparte; 10 de papel. Errores sin datos (hipótesis). Falta: lo transcurrido contra lo que falta del día, campanadas que dan la hora, desde cuándo se atrasa, «el ayer del pasado mañana», N días con N grande y el ángulo con segundos; algunas conversiones de horas a días están en el HTML. Sin ítems en el banco de razonamiento matemático (tiene 8 pares; caben 2 de esta plantilla).
 - **Vectores** (`plantillas/vectores/`, 7 nov 2026, subagentes de la conversación principal): flechas que se arrastran, polígono y paralelogramo, fórmula del paralelogramo y ley de cosenos, rango de R, componentes con el notable 3-4-5 (dicho como aproximación de academia), unitario, hexágono y la balanza de dimensiones con homogeneidad y exponentes; 19 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?». «Sumar módulos» es parcial (E8 de estática y M2 de choques); lo demás, hipótesis. Exponentes con α, β, γ en vez de x, y, z porque x e y son los ejes (**para Gerson:** ¿se queda así?). Falta en escena el producto escalar y vectorial (están en motor y papel). Sin ítems en el banco de física.
 - **Interés** (`plantillas/interes/`, sesión de matemática B, 7 nov 2026): la alcancía que gana interés (torre de monedas con la capa de interés sobre interés, recta contra curva, tasa efectiva y capitalización, capital desde el monto, descuento comercial y racional); 20 casos verificados aparte; 10 de papel; 5 predicciones y 6 «¿qué pasa si…?». AR16 pasó a «parcial (adultos)» en el informe. Falta en la escena: vencimiento común (está en p10) y la continua como paso propio; casos de capital a dos tasas. Sin ítems en el banco de aritmética (ya está en 10). **Para Gerson:** Dc cambia de tono entre claro y oscuro (granate y naranja rojizo); ¿se acepta o gris?
 - **Polinomios** (`plantillas/polinomios/`, sesión de matemática A, 7 nov 2026): la máquina de Ruffini (fichas con el 0 que falta, el resto es la altura P(a) en la curva, divisor ax + b con el cociente falso, grados, resto por sustitución y raíces racionales); 22 casos verificados aparte; 10 de papel; 7 predicciones y 5 «¿qué pasa si…?»; PO1 a PO34 son hipótesis. Unidades: polinomios, división de polinomios y ecuaciones polinomiales. Falta: Horner animado y la sustitución dibujada paso a paso (experimento 4); en PC, el lienzo del paso 1 queda bajo hasta tocar «Ordenar». Sin ítems en el banco de álgebra (ya está en 10, con 2 por plantilla).

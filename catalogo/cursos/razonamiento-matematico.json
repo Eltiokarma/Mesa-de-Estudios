@@ -111,7 +111,7 @@
       "universidades": {"unmsm": {"temas": [8, 9, 16]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["relojes-calendarios"],
       "investigacion": null
     },
     {
