@@ -2,7 +2,7 @@
  "plantilla": "ondas-electromagneticas",
  "unidades": "f en Hz, λ en m (lambdaNm en nm), rapideces c y v en m/s, distancias d en m, tiempos t en s, energía del fotón E en eV (EJ en J), campo eléctrico de la onda en V/m (electrico0, sin letra en la escena) y campo magnético B₀ en T, índice n sin unidades. Constantes: c = 3 × 10⁸ m/s, hc = 1240 eV·nm, e = 1,6 × 10⁻¹⁹ C. Bordes del espectro por λ en el vacío: gamma < 0,01 nm ≤ rayos X < 10 nm ≤ ultravioleta < 380 nm ≤ visible ≤ 750 nm < infrarrojo ≤ 1 mm < microondas ≤ 30 cm < radio.",
  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.multiplica); los textos y los booleanos, exactos; 'valor' es el resultado entero. 'tambien' repite la llamada con otros argumentos (y, si trae 'fn', con otra función). Los errores típicos van en 'errores': lo que da cada error (OE1 a OE20 de docs/investigacion/ondas-electromagneticas-ideas-erroneas.md, o hipótesis nuestras; están definidos en la cabecera de motor.js).",
- "verificacion": "",
+ "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer motor.js ni casos.json: recalculó los 124 campos en Python con fracciones exactas, por caminos distintos (λ = c·T con T = 1/f, E = h·f con h = 1240 eV·nm / c, eco con la mitad del tiempo, medio con f fija y λ' = (c/n)/f), con los bordes del espectro y la tabla de la cabecera. Coinciden los 124. Solo hubo dos nombres por corregir (600 nm es naranja, no roja; 1 mm cae todavía en infrarrojo), ya corregidos.",
  "tolerancia": 1e-09,
  "casos": [
   {
@@ -305,7 +305,7 @@
    }
   },
   {
-   "nombre": "Vidrio de n = 3/2: v = 2 × 10⁸ m/s; roja de 600 nm → 400 nm y azul de 450 nm → 300 nm, cada una con su frecuencia de antes",
+   "nombre": "Vidrio de n = 3/2: v = 2 × 10⁸ m/s; naranja de 600 nm → 400 nm y azul de 450 nm → 300 nm, cada una con su frecuencia de antes",
    "fn": "medio",
    "args": [
     600,
@@ -352,7 +352,7 @@
    }
   },
   {
-   "nombre": "Regiones por λ: 2 µm infrarrojo, 100 nm ultravioleta, 1 mm microondas (borde), 0,005 nm gamma, 30 m radio",
+   "nombre": "Regiones por λ: 2 µm infrarrojo, 100 nm ultravioleta, 1 mm todavía infrarrojo (borde; justo encima, microondas), 0,005 nm gamma, 30 m radio",
    "fn": "region",
    "args": [
     2e-06
