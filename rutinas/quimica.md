@@ -576,3 +576,9 @@ Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomol
   - que el-calor-sube depende de la lista que se pasa;
   - que invierte-la-regla no cuenta el horno.
 - El texto de verificación quedó agregado en `casos.json`.
+
+### 7 nov 2026, 09:37 · ejecución diaria
+
+- Junté la rama principal, que ya estaba en 8d435a9.
+- Los puntos 2 a 5 de la lista de huecos (cinética, equilibrio, soluciones y celda) siguen esperando el commit de rendimiento («dpr y bucles») que la conversación principal pidió esperar antes de editar esas escenas. Ese commit no está en la principal ni en ninguna rama del remoto.
+- Le pregunté a la conversación principal si arranco igual. Mientras no conteste, no toco esas cuatro carpetas, para no chocar.
