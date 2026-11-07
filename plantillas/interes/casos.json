@@ -1,0 +1,89 @@
+{
+  "plantilla": "interes",
+  "unidades": "Dinero en soles (S/), tasas en % (r = 10 es el 10 %), tiempo en la unidad que dice cada caso. Año comercial de 360 días y mes de 30 días.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.comoSimple, torre.2.sobreInteres); las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso.",
+  "verificacion": "Calculado aparte por el constructor con aritmética exacta en Python (fractions) y, para logaritmos, exponenciales y raíces, con math en coma flotante doble (6 nov 2026). Pendiente: verificación por un agente independiente que no lea el motor.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción del paso 1: S/ 2400 al 15 % anual durante 8 meses → I = S/ 240 (sin convertir los meses: 2880; da el monto: 2640; interés de un año: 360)",
+      "fn": "interesSimple", "args": [{ "C": 2400, "r": 15, "tasa": "anual", "t": 8, "tiempo": "meses" }],
+      "espera": { "I": 240, "M": 2640, "tAnios": 0.6666666666666666, "porPeriodo": 360, "errores.sinConvertir": 2880, "errores.daElMonto": 2640, "errores.unPeriodo": 360 } },
+
+    { "nombre": "Informe (AR16) y predicción del paso 3: S/ 1000 al 10 % anual durante 3 años → simple S/ 1300; compuesto S/ 1331 (como simple: 1300; factor por tiempo: 3300; un año menos: 1210)",
+      "fn": "compuesto", "args": [{ "C": 1000, "r": 10, "t": 3 }],
+      "espera": { "M": 1331, "I": 331, "factor": 1.331, "simple.M": 1300, "sobreInteres": 31, "errores.comoSimple": 1300, "errores.factorPorTiempo": 3300, "errores.unPeriodoMenos": 1210,
+        "torre.1.M": 1100, "torre.2.M": 1210, "torre.2.interesCapital": 200, "torre.2.sobreInteres": 10, "torre.3.interesDelPeriodo": 121, "torre.3.sobreInteres": 31 },
+      "tambien": [ { "fn": "interesSimple", "args": [{ "C": 1000, "r": 10, "t": 3 }], "espera": { "I": 300, "M": 1300 } } ] },
+
+    { "nombre": "Predicción del paso 5: 2 % mensual capitalizable cada mes equivale a 26,82 % anual efectiva (proporcional: 24 %; el factor como tasa: 126,82 %; no cambia: 2 %)",
+      "fn": "efectiva", "args": [{ "r": 2, "n": 12 }],
+      "espera": { "efectiva": 26.824179456254576, "factor": 1.2682417945625458, "errores.proporcional": 24, "errores.factorComoTasa": 126.82417945625458, "errores.sinCambio": 2 } },
+
+    { "nombre": "Tasa por periodo: 21 % efectiva en dos semestres equivale a 10 % semestral (proporcional: 10,5 %)",
+      "fn": "porPeriodo", "args": [{ "efectiva": 21, "n": 2 }],
+      "espera": { "r": 10, "errores.proporcional": 10.5 } },
+
+    { "nombre": "Paso 6: S/ 1000 al 24 % nominal anual capitalizable trimestralmente, un año → S/ 1262,48 (6 % trimestral; efectiva 26,25 %; como anual: 1240)",
+      "fn": "capitalizacion", "args": [{ "C": 1000, "j": 24, "m": 4 }],
+      "espera": { "M": 1262.47696, "porPeriodo": 6, "efectiva": 26.247696, "errores.comoAnual": 1240 } },
+
+    { "nombre": "Capitalización anual de una tasa anual: es lo mismo que el simple en un año; el error 'como anual' se aparta",
+      "fn": "capitalizacion", "args": [{ "C": 1000, "j": 24, "m": 1 }],
+      "espera": { "M": 1240, "efectiva": 24, "coinciden": ["comoAnual"] } },
+
+    { "nombre": "¿Qué pasa si…? 6: S/ 1000 al 100 % nominal anual, capitalización mensual → S/ 2613,04",
+      "fn": "capitalizacion", "args": [{ "C": 1000, "j": 100, "m": 12 }],
+      "espera": { "M": 2613.035290224678, "errores.comoAnual": 2000 } },
+
+    { "nombre": "¿Qué pasa si…? 6: capitalización continua al 100 % anual, un año → S/ 1000 · e = S/ 2718,28",
+      "fn": "capitalizacion", "args": [{ "C": 1000, "j": 100, "m": "continua" }],
+      "espera": { "M": 2718.2818284590453, "limite": 2718.2818284590453, "efectiva": 171.82818284590453 } },
+
+    { "nombre": "Predicción del paso 7: tras 18 meses al 10 % anual simple se retiran S/ 3450 → C = S/ 3000 (el 15 % del monto: 2932,50; sin el tiempo: 3136,36; resta el 10 %: 3105)",
+      "fn": "capitalDesdeMonto", "args": [{ "M": 3450, "r": 10, "tasa": "anual", "t": 18, "tiempo": "meses", "tipo": "simple" }],
+      "espera": { "C": 3000, "I": 450, "factor": 1.15, "errores.interesSobreMonto": 2932.5, "errores.sinTiempo": 3136.3636363636365, "errores.restaTasa": 3105 } },
+
+    { "nombre": "Valor presente compuesto: S/ 8640 dentro de 3 años al 20 % anual → hoy S/ 5000 (como simple: 5400; resta el porcentaje del monto: 2350,08)",
+      "fn": "capitalDesdeMonto", "args": [{ "M": 8640, "r": 20, "t": 3, "tipo": "compuesto" }],
+      "espera": { "C": 5000, "factor": 1.728, "errores.comoSimple": 5400, "errores.interesSobreMonto": 2350.08, "errores.sinTiempo": 7200, "errores.restaTasa": 6912 } },
+
+    { "nombre": "Tiempo en el simple: S/ 2000 llegan a S/ 2600 al 12 % anual en 2,5 años (como compuesto: 2,315)",
+      "fn": "tiempo", "args": [{ "C": 2000, "M": 2600, "r": 12, "tipo": "simple" }],
+      "espera": { "t": 2.5, "errores.comoCompuesto": 2.3150737499226772 } },
+
+    { "nombre": "¿Qué pasa si…? 3: al 10 % anual compuesto un capital se duplica en 7,27 años (como simple: 10; la mitad del simple: 5)",
+      "fn": "tiempo", "args": [{ "C": 1, "M": 2, "r": 10, "tipo": "compuesto" }],
+      "espera": { "t": 7.272540897341713, "errores.comoSimple": 10, "errores.mitadDelSimple": 5 } },
+
+    { "nombre": "Predicción del paso 8: letra de S/ 6300 que vence en 4 meses, al 15 % anual → Dc = S/ 315 y Dr = S/ 300 (Dr como comercial: 315; sin convertir: 2362,50; el valor actual: 6000)",
+      "fn": "descuento", "args": [{ "Vn": 6300, "r": 15, "tasa": "anual", "t": 4, "tiempo": "meses" }],
+      "espera": { "rt": 5, "comercial.D": 315, "comercial.Va": 5985, "racional.D": 300, "racional.Va": 6000, "diferencia": 15, "cociente": 1.05, "interesDelDr": 15, "fichas": 20,
+        "racional.errores.comoComercial": 315, "racional.errores.sinConvertir": 2362.5, "racional.errores.vaComoDescuento": 6000, "comercial.errores.sinConvertir": 3780 } },
+
+    { "nombre": "Descuento con días: letra de S/ 7200 que vence en 45 días, al 2 % mensual → r·t = 3 %; Dc = S/ 216; Dr = S/ 209,71",
+      "fn": "descuento", "args": [{ "Vn": 7200, "r": 2, "tasa": "mensual", "t": 45, "tiempo": "dias" }],
+      "espera": { "rt": 3, "comercial.D": 216, "comercial.Va": 6984, "racional.D": 209.70873786407768, "racional.Va": 6990.291262135922, "comercial.errores.sinConvertir": 6480, "racional.errores.sinConvertir": 3410.5263157894738 } },
+
+    { "nombre": "¿Qué pasa si…? 5: Dc = S/ 330 y Dr = S/ 300 → Vn = S/ 3300 y r·t = 10 % (suma: 630; diferencia: 30; promedio: 315)",
+      "fn": "nominalDesdeDescuentos", "args": [{ "Dc": 330, "Dr": 300 }],
+      "espera": { "Vn": 3300, "rt": 10, "errores.suma": 630, "errores.diferencia": 30, "errores.promedio": 315 } },
+
+    { "nombre": "¿Qué pasa si…? 4: S/ 3600 al 3 % mensual durante 45 días → I = S/ 162 (sin convertir: 4860; año de 365 días: 159,78; un solo mes: 108)",
+      "fn": "interesSimple", "args": [{ "C": 3600, "r": 3, "tasa": "mensual", "t": 45, "tiempo": "dias" }],
+      "espera": { "I": 162, "tEnPeriodos": 1.5, "rAnual": 36, "errores.sinConvertir": 4860, "errores.anio365": 159.78082191780823, "errores.unPeriodo": 108 } },
+
+    { "nombre": "¿Qué pasa si…? 1: S/ 1000 al 10 % anual compuesto: S/ 610,51 de interés en 5 años y S/ 1593,74 en 10 (el doble: 1221,02; el cuádruple: 2442,04)",
+      "fn": "dobleTiempo", "args": [{ "C": 1000, "r": 10, "t": 5 }],
+      "espera": { "I1": 610.51, "I2": 1593.7424601, "razon": 2.61051, "errores.doble": 1221.02, "errores.cuadruple": 2442.04 } },
+
+    { "nombre": "¿Qué pasa si…? 2: en medio año al 10 % anual gana más el simple (S/ 1050 contra S/ 1048,81); en un año empatan; en dos gana el compuesto",
+      "fn": "comparar", "args": [{ "C": 1000, "r": 10, "t": 0.5 }],
+      "espera": { "simple": 1050, "compuesto": 1048.8088481701516, "mayor": "simple", "errores.compuestoSiempre": "compuesto", "errores.iguales": "iguales" },
+      "tambien": [ { "args": [{ "C": 1000, "r": 10, "t": 1 }], "espera": { "mayor": "iguales", "simple": 1100, "compuesto": 1100 } },
+                   { "args": [{ "C": 1000, "r": 10, "t": 2 }], "espera": { "mayor": "compuesto", "simple": 1200, "compuesto": 1210 } } ] },
+
+    { "nombre": "Vencimiento común: letras de S/ 4000 a 30 días y S/ 6000 a 80 días → una de S/ 10 000 a 60 días (promedio simple: 55)",
+      "fn": "vencimientoComun", "args": [{ "letras": [{ "Vn": 4000, "t": 30 }, { "Vn": 6000, "t": 80 }] }],
+      "espera": { "Vn": 10000, "t": 60, "errores.promedioSimple": 55 } }
+  ]
+}
