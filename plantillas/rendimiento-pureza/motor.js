@@ -25,8 +25,8 @@
  *      'suma-porcentajes'      junta pureza y rendimiento en un solo porcentaje p + η − 100 (80 + 90 − 100 = 70 %);
  *      'divide-rendimiento'    divide el teórico entre el rendimiento en vez de multiplicar;
  *      'rendimiento-dos-veces' aplica el rendimiento al reactivo y otra vez al producto;
- *      'olvida-coeficiente'    pasa 1 mol de reactivo a 1 mol de producto, sin los coeficientes;
- *      'masa-se-conserva'      cree que toda la masa del reactivo puro pasa al producto pedido (ES15);
+ *      'olvida-coeficiente'    pasa 1 mol de reactivo a 1 mol de producto, sin los coeficientes (sí aplica η);
+ *      'masa-se-conserva'      cree que toda la masa del reactivo puro pasa al producto pedido (ES15); no aplica η;
  *    y si el producto es gas: 'masa-como-volumen' (los gramos leídos como litros) y 'coeficiente-como-moles'
  *    (22,4 L por cada unidad del coeficiente, sin mirar la masa).
  *  - rendimientoPorcentual({ reaccion, masa, real, pureza, producto }): { pura, teorico, porcentaje, noFormado,
@@ -54,7 +54,8 @@
  *    errores (g de base): { 'theta-1' (todo con θ = 1: mol a mol), 'masas-iguales', 'theta-multiplica' (Meq = M·θ) } }.
  *  - reparto(e, f): la animación de la escena, calculada aquí. e = { impureza, pura, teorico, real, reacciona (fracción
  *    del puro que reacciona; 1 si no se dice) }; f de 0 a 1. Hasta f = 0,35 se separa la impureza (separa de 0 a 1);
- *    después avanza la reacción (avance de 0 a 1, suave). { separa, avance, impureza, puroQueda, formado, teoricoVisible }.
+ *    después avanza la reacción (avance de 0 a 1, suave). { separa, avance, impureza, puroQueda, formado,
+ *    teoricoVisible (fracción de 0 a 1: cuánto se ve la caja punteada del teórico) }.
  *
  * Convenciones:
  *  - Pureza p: parte de la muestra que es la sustancia que reacciona. La impureza no reacciona.
@@ -64,7 +65,7 @@
  *
  * Errores típicos (campo 'errores'): todos son hipótesis nuestras (informe de estequiometría, «Lo que no tiene respaldo»),
  * salvo 'masa-se-conserva' (cercano a ES15) y 'sale-como-gas' (cercano a ES14), descritos sin cifra propia.
- * CABECERA: líneas 1 a 68 (funciones, unidades, datos y convenciones).
+ * CABECERA: líneas 1 a 69 (funciones, unidades, datos y convenciones).
  */
 (function (root, fabrica) {
   const motor = fabrica();

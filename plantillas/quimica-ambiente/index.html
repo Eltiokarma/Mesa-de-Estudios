@@ -504,10 +504,10 @@ function crearEscena(cv, idDesc, modoId, idLey){
     }
     ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, 0, yG, W, yG);
     // Lupa en una gota.
-    const R = Math.min(64, W*0.12), lx = W - R - 10, ly = P.y + P.h*0.5;
+    const R = Math.min(70, W*0.155), lx = W - R - 10, ly = P.y + P.h*0.48, ul = R*0.15;
     ctx.beginPath(); ctx.arc(lx, ly, R, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke();
     if (!K.ver){ dibujarPiezas(ctx, c, [['?', 'muted', 800]], lx, ly, 22, 'center'); }
-    else for (const l of K.lupa) molecula(ctx, c, l, lx - R*0.78, ly - R*0.52, R*0.13);
+    else for (const l of K.lupa) molecula(ctx, c, l, lx - 5*ul, ly - 3.5*ul, ul);
     dibujarPiezas(ctx, c, [['una gota, de cerca', 'muted', 700]], lx, ly + R + 9, 10, 'center', 110);
     chapa(ctx, c, K.pH, nx - 10, yG + 13, 12.5, 'center', W*0.6);
   }
@@ -712,8 +712,8 @@ const RE2 = Object.assign(MA.reacomodo([['CH4', 4], ['O2', 6]], listaProductos(I
 const LIT = MA.co2PorLitro(1, 0.7, 'octano'), OCT_T = MA.combustion('octano');
 const C0 = MA.cielo({ ozono:300, co2:420 }), C1 = MA.cielo({ ozono:150, co2:420 }), CC = MA.cambioCielo({ ozono:300, co2:420 }, { ozono:150, co2:420 });
 const LL = MA.lluvia({ SO2:2.5e-5 }), VECES = MA.compararPH(LL.pH, MA.LLUVIA_NORMAL).veces;
-const LUPA = MA.caja([['SO2', 2], ['H2O', 3]], 12, 8, 4);
-const OZONO = 'Según un resumen de 1997 (Boyes y Stanisstreet), cerca del 80 % de un grupo de escolares ingleses de 13 y 14 años creía que el agujero de ozono causa el efecto invernadero, y cerca del 60 % lo explicaba con «entra más energía del sol». Son cifras de un resumen, por verificar.';
+const LUPA = MA.caja([['SO2', 1], ['H2O', 2]], 10, 7, 4);
+const OZONO = 'Según un resumen de 1997, cerca del 80 % de un grupo de escolares ingleses de 13 y 14 años creía que el agujero de ozono causa el efecto invernadero, y cerca del 60 % lo explicaba con «entra más energía del sol». Son cifras de un resumen, por verificar.';
 
 const P0 = { id:'ambiente-paso2', unidad:RECURSOS, ok:'c', opts:[
   ['a', 'Menos: el CO₂ y el vapor de agua que se forman casi no pesan.', 'QA9-masa-baja-cerrado', RES('documentado', 'Basheer y otros 2018, tabla 3: 45 % de respuestas erróneas antes de enseñar, 195 escolares')],
@@ -743,8 +743,8 @@ const P2 = { id:'ambiente-paso4', unidad:RECURSOS, ok:'b', opts:[
     c:`Sí puede: al CO₂ se le suman los O que vienen del aire, que no estaban en la gasolina. Los 700 g de gasolina se juntan con ${gr(LIT.O2, 0)} de O₂. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
     d:`La gasolina flota en el agua: es más liviana. Con 0,70 g/mL, un litro pesa 700 g, no 1000 g. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
 const P3 = { id:'ambiente-paso5', ok:'d', opts:[
-  ['a', 'Sube mucho la temperatura: por el agujero entra más luz del Sol, ultravioleta incluido, y calienta.', 'QA2-entra-mas-sol', RES('documentado', 'Boyes y Stanisstreet 1997, resumen: cerca del 60 %, por verificar')],
-  ['b', 'Sube la temperatura: el calor queda atrapado debajo del agujero, como en un invernadero.', 'QA1-ozono-causa-invernadero', RES('documentado', 'resumen de 1997: cerca del 80 %, por verificar; Arslan y otros 2012: 56 % de 256')],
+  ['a', 'Sube mucho la temperatura: por el agujero entra más luz del Sol, ultravioleta incluido, y calienta.', 'QA2-entra-mas-sol', RES('documentado', 'resumen de 1997, autoría por aclarar (Boyes y Stanisstreet o White y otros): cerca del 60 %, por verificar')],
+  ['b', 'Sube la temperatura: el calor queda atrapado debajo del agujero, como en un invernadero.', 'QA1-ozono-causa-invernadero', RES('documentado', 'resumen de 1997, autoría por aclarar: cerca del 80 %, por verificar; Arslan y otros 2012: 56 % de 256')],
   ['c', 'Baja la temperatura: el calor de la Tierra se escapa al espacio por el agujero.', 'QA1-calor-se-escapa', RES('hipotesis', 'inversa de QA1')],
   ['d', 'Llega más ultravioleta, que el ozono frenaba, pero la temperatura media casi no cambia.']],
   fb:{ d:`¡Bien! El ozono frena el ${UV_('ultravioleta')}: por el agujero llega más, unas ${fmt(C1.uv, 1)} veces lo de antes en el modelo. Pero el calor que sale de la Tierra es ${IR_('infrarrojo')}, y lo retienen otros gases, como el CO₂, que siguen igual: la ${T_('temperatura media')} no cambia.`,
@@ -1110,7 +1110,7 @@ const EXPS = [
   { id:'smog', corto:'El ozono de la calle', ok:'b',
     q:'En una ciudad con mucho tráfico, el ozono del aire de la calle, que irrita los ojos y los pulmones, sube en las mañanas de sol, llega a lo más alto cerca del mediodía y baja de noche. ¿De dónde sale?',
     opts:[['a', 'Baja de la capa de ozono de arriba, sobre todo por el agujero.', 'smog-baja-de-la-capa', RES('hipotesis', 'hipótesis nuestra, cercana a QA1')],
-          ['b', 'Se forma en el aire: el sol hace reaccionar los NOₓ y otros gases de los autos.'],
+          ['b', 'Se forma en el aire, con el sol y los NOₓ de los autos.'],
           ['c', 'Sale directo del escape de los autos, junto con el humo.', 'smog-sale-del-escape', RES('hipotesis', 'hipótesis nuestra')],
           ['d', 'Lo forma el CO₂ del tráfico cuando el sol lo calienta.', 'smog-co2-forma-ozono', RES('hipotesis', 'hipótesis nuestra, cercana a QA3')]],
     fb:{ a:'La capa de ozono está a unos 25 km y no baja a la calle; además, el ozono de la calle sube y baja cada día, con el sol y el tráfico. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
