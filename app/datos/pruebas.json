@@ -1254,7 +1254,7 @@
   },
   "fisica": {
    "curso": "fisica",
-   "version": "1.1.0",
+   "version": "1.2.0",
    "minutos": 16,
    "errores": {
     "G2-altura-entre-tiempo": {
@@ -1376,6 +1376,66 @@
     "energia-v-igual-gh": {
      "respaldo": "hipotesis",
      "describe": "Multiplica g por h sin pasar por la energía"
+    },
+    "EL8-se-reparte-por-igual": {
+     "respaldo": "parcial",
+     "describe": "Cree que al tocarse dos esferas la carga se reparte en partes iguales, y no hasta igualar el potencial"
+    },
+    "EL8-la-chica-se-queda-con-mas": {
+     "respaldo": "hipotesis",
+     "describe": "Reparte la carga al revés: la esfera chica se queda con más"
+    },
+    "EL8-toda-pasa-a-la-grande": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que toda la carga pasa a la esfera más grande"
+    },
+    "MG5-opuestas-se-anulan": {
+     "respaldo": "documentado",
+     "describe": "Cree que entre dos corrientes opuestas los campos se anulan, cuando se suman"
+    },
+    "MG-usa-la-distancia-entre-cables": {
+     "respaldo": "hipotesis",
+     "describe": "Usa la distancia entre los cables y no la de cada cable al punto (da lo mismo que contar un solo cable)"
+    },
+    "MG-hilo-uno-sobre-d2": {
+     "respaldo": "hipotesis",
+     "describe": "Hace bajar el campo del hilo con 1/d², como la fuerza de Coulomb"
+    },
+    "MG8-MG9-contra-el-campo": {
+     "respaldo": "documentado",
+     "describe": "Pone el campo inducido siempre contra el del imán, y no contra el cambio del flujo"
+    },
+    "MG-mano-derecha-invertida": {
+     "respaldo": "parcial",
+     "describe": "Acierta una parte, pero no amarra bien el sentido de la corriente con su campo (mano derecha al revés)"
+    },
+    "MG8-sin-corriente-al-alejar": {
+     "respaldo": "parcial",
+     "describe": "Cree que si el flujo disminuye no se induce corriente"
+    },
+    "FM2-basta-subir-la-intensidad": {
+     "respaldo": "documentado",
+     "describe": "Cree que una luz muy intensa arranca electrones aunque su frecuencia esté bajo el umbral"
+    },
+    "FM2-intensidad-compensa-frecuencia": {
+     "respaldo": "parcial",
+     "describe": "Cree que la intensidad compensa la frecuencia: las dos luces arrancan electrones"
+    },
+    "FM-intensidad-minima": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que una luz tenue no arranca electrones aunque su frecuencia alcance"
+    },
+    "OE12-color-por-lambda-en-el-medio": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que en el medio el color lo pone la longitud de onda nueva"
+    },
+    "OE12-cambia-la-frecuencia": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que al entrar al medio cambia la frecuencia (y el color), y no la longitud de onda"
+    },
+    "OE-la-luz-siempre-va-a-c": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la luz va siempre a c, también dentro del vidrio"
     }
    },
    "pares": [

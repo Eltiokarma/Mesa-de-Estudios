@@ -1,7 +1,7 @@
 {
   "curso": "fisica",
-  "version": "1.1.0",
-  "fecha": "2026-11-06",
+  "version": "1.2.0",
+  "fecha": "2026-11-07",
   "minutos": 16,
   "informes": [
     "docs/investigacion/cinematica-ideas-erroneas.md",
@@ -10,7 +10,8 @@
     "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md",
     "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md",
     "docs/investigacion/optica-ideas-erroneas.md",
-    "docs/investigacion/optica-espejos-esfericos.md"
+    "docs/investigacion/optica-espejos-esfericos.md",
+    "docs/investigacion/ondas-electromagneticas-ideas-erroneas.md"
   ],
   "errores": {
     "G2-altura-entre-tiempo": {
@@ -132,6 +133,66 @@
     "energia-v-igual-gh": {
       "respaldo": "hipotesis",
       "describe": "Multiplica g por h sin pasar por la energía"
+    },
+    "EL8-se-reparte-por-igual": {
+      "respaldo": "parcial",
+      "describe": "Cree que al tocarse dos esferas la carga se reparte en partes iguales, y no hasta igualar el potencial"
+    },
+    "EL8-la-chica-se-queda-con-mas": {
+      "respaldo": "hipotesis",
+      "describe": "Reparte la carga al revés: la esfera chica se queda con más"
+    },
+    "EL8-toda-pasa-a-la-grande": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que toda la carga pasa a la esfera más grande"
+    },
+    "MG5-opuestas-se-anulan": {
+      "respaldo": "documentado",
+      "describe": "Cree que entre dos corrientes opuestas los campos se anulan, cuando se suman"
+    },
+    "MG-usa-la-distancia-entre-cables": {
+      "respaldo": "hipotesis",
+      "describe": "Usa la distancia entre los cables y no la de cada cable al punto (da lo mismo que contar un solo cable)"
+    },
+    "MG-hilo-uno-sobre-d2": {
+      "respaldo": "hipotesis",
+      "describe": "Hace bajar el campo del hilo con 1/d², como la fuerza de Coulomb"
+    },
+    "MG8-MG9-contra-el-campo": {
+      "respaldo": "documentado",
+      "describe": "Pone el campo inducido siempre contra el del imán, y no contra el cambio del flujo"
+    },
+    "MG-mano-derecha-invertida": {
+      "respaldo": "parcial",
+      "describe": "Acierta una parte, pero no amarra bien el sentido de la corriente con su campo (mano derecha al revés)"
+    },
+    "MG8-sin-corriente-al-alejar": {
+      "respaldo": "parcial",
+      "describe": "Cree que si el flujo disminuye no se induce corriente"
+    },
+    "FM2-basta-subir-la-intensidad": {
+      "respaldo": "documentado",
+      "describe": "Cree que una luz muy intensa arranca electrones aunque su frecuencia esté bajo el umbral"
+    },
+    "FM2-intensidad-compensa-frecuencia": {
+      "respaldo": "parcial",
+      "describe": "Cree que la intensidad compensa la frecuencia: las dos luces arrancan electrones"
+    },
+    "FM-intensidad-minima": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que una luz tenue no arranca electrones aunque su frecuencia alcance"
+    },
+    "OE12-color-por-lambda-en-el-medio": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que en el medio el color lo pone la longitud de onda nueva"
+    },
+    "OE12-cambia-la-frecuencia": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que al entrar al medio cambia la frecuencia (y el color), y no la longitud de onda"
+    },
+    "OE-la-luz-siempre-va-a-c": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que la luz va siempre a c, también dentro del vidrio"
     }
   },
   "pares": [
@@ -787,6 +848,349 @@
             "texto": "32 m/s",
             "valor": 32,
             "error": "energia-v-igual-gh"
+          }
+        ]
+      }
+    }
+  ],
+  "reserva": [
+    {
+      "par": "fis-11",
+      "plantilla": "electrostatica",
+      "unidad": "fisica.electrostatica",
+      "nombreUnidad": "Electrostática",
+      "mide": "Dos esferas conductoras que se tocan se reparten la carga hasta tener el mismo potencial: cada una en proporción a su radio, no en partes iguales",
+      "A": {
+        "enunciado": "La cúpula de un generador de Van de Graaff es una bola conductora de 15 cm de radio con +400 nC. Con un mango aislante se le arrima una pelotita conductora de 5 cm de radio que trae +80 nC; se juntan un instante y luego se apartan. ¿Qué carga le queda a la pelotita?",
+        "datos": {
+          "R1cm": 5,
+          "Q1": 80,
+          "R2cm": 15,
+          "Q2": 400
+        },
+        "opciones": [
+          {
+            "texto": "240 nC",
+            "valor": 240,
+            "error": "EL8-se-reparte-por-igual"
+          },
+          {
+            "texto": "120 nC",
+            "valor": 120,
+            "correcta": true
+          },
+          {
+            "texto": "0 nC",
+            "valor": 0,
+            "error": "EL8-toda-pasa-a-la-grande"
+          },
+          {
+            "texto": "360 nC",
+            "valor": 360,
+            "error": "EL8-la-chica-se-queda-con-mas"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una bola conductora grande, de 8 cm de radio, guarda +450 nC. Una bolita conductora de 2 cm de radio, con +50 nC, cuelga de un hilo aislante; se la arrima hasta que hace contacto con la bola grande y luego se la aparta. ¿Qué carga le queda a la bolita?",
+        "datos": {
+          "R1cm": 2,
+          "Q1": 50,
+          "R2cm": 8,
+          "Q2": 450
+        },
+        "opciones": [
+          {
+            "texto": "400 nC",
+            "valor": 400,
+            "error": "EL8-la-chica-se-queda-con-mas"
+          },
+          {
+            "texto": "0 nC",
+            "valor": 0,
+            "error": "EL8-toda-pasa-a-la-grande"
+          },
+          {
+            "texto": "250 nC",
+            "valor": 250,
+            "error": "EL8-se-reparte-por-igual"
+          },
+          {
+            "texto": "100 nC",
+            "valor": 100,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-12",
+      "plantilla": "magnetismo",
+      "unidad": "fisica.magnetismo",
+      "nombreUnidad": "Campo y fuerza magnética",
+      "mide": "Campo en el punto medio entre dos corrientes opuestas: los dos campos apuntan igual y se suman, cada uno con la mitad de la separación",
+      "A": {
+        "enunciado": "Una máquina de soldar tiene dos conductores rectos y muy largos, uno al lado del otro, a 30 cm de distancia; por uno van 45 A hacia la pinza y por el otro vuelven. Con μ₀/(2π) = 2 × 10⁻⁷ T·m/A, ¿qué intensidad tiene el campo magnético justo a mitad de camino entre ellos?",
+        "datos": {
+          "dcm": 30,
+          "I": 45
+        },
+        "opciones": [
+          {
+            "texto": "0 µT",
+            "valor": 0,
+            "error": "MG5-opuestas-se-anulan"
+          },
+          {
+            "texto": "60 µT",
+            "valor": 60,
+            "error": "MG-usa-la-distancia-entre-cables"
+          },
+          {
+            "texto": "120 µT",
+            "valor": 120,
+            "correcta": true
+          },
+          {
+            "texto": "800 µT",
+            "valor": 800,
+            "error": "MG-hilo-uno-sobre-d2"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Al arrancar un auto, los dos conductores rectos y muy largos de su batería quedan uno al lado del otro, a 50 cm de distancia; por uno van 100 A hacia el motor de arranque y por el otro vuelven. Con μ₀/(2π) = 2 × 10⁻⁷ T·m/A, ¿qué intensidad tiene el campo magnético justo a mitad de camino entre ellos?",
+        "datos": {
+          "dcm": 50,
+          "I": 100
+        },
+        "opciones": [
+          {
+            "texto": "160 µT",
+            "valor": 160,
+            "correcta": true
+          },
+          {
+            "texto": "0 µT",
+            "valor": 0,
+            "error": "MG5-opuestas-se-anulan"
+          },
+          {
+            "texto": "640 µT",
+            "valor": 640,
+            "error": "MG-hilo-uno-sobre-d2"
+          },
+          {
+            "texto": "80 µT",
+            "valor": 80,
+            "error": "MG-usa-la-distancia-entre-cables"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-13",
+      "plantilla": "induccion",
+      "unidad": "fisica.induccion-electromagnetica",
+      "nombreUnidad": "Inducción electromagnética",
+      "mide": "Ley de Lenz cuando el flujo disminuye: el campo inducido refuerza el campo que se va (no va siempre contra él), y la corriente sigue la mano derecha",
+      "A": {
+        "enunciado": "Un electroimán encendido está frente a una espira circular de alambre, sobre su eje, con su cara norte mirando a la espira; en la espira, su campo vale 0,3 T. Se apaga el electroimán y su campo baja hasta desaparecer. Mientras baja, ¿en qué sentido circula la corriente en la espira, vista desde el lado opuesto al electroimán (desde detrás de la espira), y hacia dónde apunta el campo inducido en el centro de la espira?",
+        "datos": {
+          "B0": 0.3,
+          "cara": "N",
+          "modelo": {
+            "A": 0.01
+          }
+        },
+        "opciones": [
+          {
+            "texto": "Antihoraria, con el campo inducido alejándose del electroimán",
+            "clave": "antihorario|alejándose del imán",
+            "correcta": true
+          },
+          {
+            "texto": "Horaria, con el campo inducido hacia el electroimán",
+            "clave": "horario|hacia el imán",
+            "error": "MG8-MG9-contra-el-campo"
+          },
+          {
+            "texto": "Antihoraria, con el campo inducido hacia el electroimán",
+            "clave": "antihorario|hacia el imán",
+            "error": "MG-mano-derecha-invertida"
+          },
+          {
+            "texto": "No circula corriente ni aparece campo inducido",
+            "clave": "ninguno|ninguno",
+            "error": "MG8-sin-corriente-al-alejar"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un anillo de aluminio está frente a un electroimán encendido, sobre su eje, con la cara sur del electroimán mirando al anillo; en el anillo, el campo vale 0,5 T. Se desconecta el electroimán y su campo se apaga poco a poco. Mientras se apaga, ¿en qué sentido circula la corriente en el anillo, vista desde el lado opuesto al electroimán (desde detrás del anillo), y hacia dónde apunta el campo inducido en el centro del anillo?",
+        "datos": {
+          "B0": 0.5,
+          "cara": "S",
+          "modelo": {
+            "A": 0.01
+          }
+        },
+        "opciones": [
+          {
+            "texto": "Antihoraria, con el campo inducido alejándose del electroimán",
+            "clave": "antihorario|alejándose del imán",
+            "error": "MG8-MG9-contra-el-campo"
+          },
+          {
+            "texto": "Horaria, con el campo inducido alejándose del electroimán",
+            "clave": "horario|alejándose del imán",
+            "error": "MG-mano-derecha-invertida"
+          },
+          {
+            "texto": "Horaria, con el campo inducido hacia el electroimán",
+            "clave": "horario|hacia el imán",
+            "correcta": true
+          },
+          {
+            "texto": "No circula corriente ni aparece campo inducido",
+            "clave": "ninguno|ninguno",
+            "error": "MG8-sin-corriente-al-alejar"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-14",
+      "plantilla": "fisica-moderna",
+      "unidad": "fisica.fisica-moderna",
+      "nombreUnidad": "Física moderna",
+      "mide": "Efecto fotoeléctrico: arranca electrones la luz cuyos fotones superan la función trabajo, aunque sea tenue; la intensidad no compensa la frecuencia",
+      "A": {
+        "enunciado": "El sensor de un contador de personas es una celda fotoeléctrica con un metal de función trabajo 2,2 eV. Se prueban dos luces: una naranja muy potente, de 600 nm y 40 mW, y una violeta tenue, de 400 nm y 0,1 mW. Con hc = 1240 eV·nm, ¿cuál de las dos arranca electrones del metal?",
+        "datos": {
+          "phi": 2.2,
+          "lIntensa": 600,
+          "PIntensa": 40,
+          "lTenue": 400,
+          "PTenue": 0.1
+        },
+        "opciones": [
+          {
+            "texto": "Solo la naranja",
+            "clave": "solo-naranja",
+            "error": "FM2-basta-subir-la-intensidad"
+          },
+          {
+            "texto": "Las dos, y la naranja da más corriente",
+            "clave": "las-dos",
+            "error": "FM2-intensidad-compensa-frecuencia"
+          },
+          {
+            "texto": "Ninguna de las dos",
+            "clave": "ninguna",
+            "error": "FM-intensidad-minima"
+          },
+          {
+            "texto": "Solo la violeta",
+            "clave": "solo-violeta",
+            "correcta": true
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una celda fotoeléctrica tiene un metal de función trabajo 1,9 eV. Se la ilumina por turnos con dos luces: una roja muy potente, de 700 nm y 80 mW, y una verde tenue, de 520 nm y 0,5 mW. Con hc = 1240 eV·nm, ¿cuál de las dos arranca electrones del metal?",
+        "datos": {
+          "phi": 1.9,
+          "lIntensa": 700,
+          "PIntensa": 80,
+          "lTenue": 520,
+          "PTenue": 0.5
+        },
+        "opciones": [
+          {
+            "texto": "Solo la verde",
+            "clave": "solo-verde",
+            "correcta": true
+          },
+          {
+            "texto": "Solo la roja",
+            "clave": "solo-rojo",
+            "error": "FM2-basta-subir-la-intensidad"
+          },
+          {
+            "texto": "Las dos, y la roja da más corriente",
+            "clave": "las-dos",
+            "error": "FM2-intensidad-compensa-frecuencia"
+          },
+          {
+            "texto": "Ninguna de las dos",
+            "clave": "ninguna",
+            "error": "FM-intensidad-minima"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-15",
+      "plantilla": "ondas-electromagneticas",
+      "unidad": "fisica.ondas-electromagneticas",
+      "nombreUnidad": "Ondas electromagnéticas",
+      "mide": "Luz que entra en un medio: bajan la rapidez y la longitud de onda (v = c/n, λ = λ₀/n), y la frecuencia y el color no cambian",
+      "A": {
+        "enunciado": "Un rayo de luz violeta, de 7,5 × 10¹⁴ Hz, pasa del aire a un diamante (toma n = 2,5). Con c = 3 × 10⁸ m/s, ¿a qué velocidad viaja dentro del diamante, qué longitud de onda tiene allí y de qué color se ve?",
+        "datos": {
+          "f14": 7.5,
+          "n": 2.5
+        },
+        "opciones": [
+          {
+            "texto": "v = 1,2 × 10⁸ m/s y λ = 160 nm; pasa a ultravioleta y no se ve",
+            "clave": "v1,2e8|l160|ultravioleta",
+            "error": "OE12-color-por-lambda-en-el-medio"
+          },
+          {
+            "texto": "v = 1,2 × 10⁸ m/s y λ = 160 nm; se sigue viendo violeta",
+            "clave": "v1,2e8|l160|violeta",
+            "correcta": true
+          },
+          {
+            "texto": "v = 1,2 × 10⁸ m/s y λ = 400 nm; cambia de color",
+            "clave": "v1,2e8|l400|cambia",
+            "error": "OE12-cambia-la-frecuencia"
+          },
+          {
+            "texto": "v = 3 × 10⁸ m/s y λ = 400 nm; se sigue viendo violeta",
+            "clave": "v3e8|l400|violeta",
+            "error": "OE-la-luz-siempre-va-a-c"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una luz verde, de 6 × 10¹⁴ Hz, pasa del aire a un líquido transparente de índice de refracción n = 1,25. Con c = 3 × 10⁸ m/s, ¿a qué velocidad viaja dentro del líquido, qué longitud de onda tiene allí y de qué color se ve?",
+        "datos": {
+          "f14": 6,
+          "n": 1.25
+        },
+        "opciones": [
+          {
+            "texto": "v = 2,4 × 10⁸ m/s y λ = 400 nm; se ve violeta",
+            "clave": "v2,4e8|l400|violeta",
+            "error": "OE12-color-por-lambda-en-el-medio"
+          },
+          {
+            "texto": "v = 2,4 × 10⁸ m/s y λ = 400 nm; se sigue viendo verde",
+            "clave": "v2,4e8|l400|verde",
+            "correcta": true
+          },
+          {
+            "texto": "v = 2,4 × 10⁸ m/s y λ = 500 nm; cambia de color",
+            "clave": "v2,4e8|l500|cambia",
+            "error": "OE12-cambia-la-frecuencia"
+          },
+          {
+            "texto": "v = 3 × 10⁸ m/s y λ = 500 nm; se sigue viendo verde",
+            "clave": "v3e8|l500|verde",
+            "error": "OE-la-luz-siempre-va-a-c"
           }
         ]
       }
