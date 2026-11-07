@@ -1,0 +1,168 @@
+{
+  "titulo": "Hidrocarburos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. Dibuja siempre el esqueleto de carbonos antes de contar: cada C tiene 4 enlaces y cada H, 1. En estos problemas se usa la regla de los libros escolares para la cadena principal: si hay dobles o triples enlaces, la cadena tiene que pasar por ellos; si no hay, es la más larga. Se numera para que el doble o triple enlace tenga el número más bajo y, después, las ramas.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Nombra el alcano CH₃–CH₂–CH(CH₃)–CH₂–CH₂–CH₃ y escribe su fórmula molecular.",
+      "respuesta": "3-metilhexano, C₇H₁₆.",
+      "pasos": [
+        "La cadena más larga tiene 6 carbonos en fila: hexano. El CH₃ entre paréntesis es una rama: metil.",
+        "Se numera desde el extremo más cercano a la rama: desde la izquierda, la rama queda en el carbono 3; desde la derecha, en el 4. Gana el 3.",
+        "Nombre: 3-metilhexano (no 4-metilhexano).",
+        "Carbonos: 6 + 1 = 7. Alcano: CₙH₂ₙ₊₂ = C₇H₁₆."
+      ],
+      "verificar": [
+        { "fn": "nombre", "args": ["CH3-CH2-CH(CH3)-CH2-CH2-CH3"], "espera": { "nombre": "3-metilhexano", "errores.numeracionContraria": "4-metilhexano" } },
+        { "fn": "formula", "args": ["CH3-CH2-CH(CH3)-CH2-CH2-CH3"], "espera": { "texto": "C7H16" } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Nombra (CH₃)₂CH–CH(CH₃)–CH₂–CH₃. Ojo: el primer grupo, (CH₃)₂CH–, tiene dos metilos colgando del mismo carbono.",
+      "respuesta": "2,3-dimetilpentano.",
+      "pasos": [
+        "Dibuja el esqueleto: uno de los dos CH₃ del (CH₃)₂CH– forma parte de la cadena más larga. La cadena tiene 5 carbonos: pentano.",
+        "Quedan dos ramas metil: una en el carbono que tenía los dos CH₃ y otra en el siguiente.",
+        "Numerando desde ese lado, las ramas quedan en 2 y 3; desde el otro, en 3 y 4. Gana 2,3.",
+        "Dos ramas iguales: di-. Nombre: 2,3-dimetilpentano, C₇H₁₆."
+      ],
+      "verificar": [
+        { "fn": "nombre", "args": ["(CH3)2CH-CH(CH3)-CH2-CH3"], "espera": { "nombre": "2,3-dimetilpentano", "errores.numeracionContraria": "3,4-dimetilpentano" } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántos alcanos distintos tienen la fórmula C₆H₁₄? Nómbralos.",
+      "respuesta": "5: hexano, 2-metilpentano, 3-metilpentano, 2,2-dimetilbutano y 2,3-dimetilbutano.",
+      "pasos": [
+        "Cadena de 6: hexano.",
+        "Cadena de 5 con un metil: en el C2 (2-metilpentano) o en el C3 (3-metilpentano). Un metil en el C1 o en el C4 solo alarga o repite la cadena: no es otro.",
+        "Cadena de 4 con dos metil: los dos en el C2 (2,2-dimetilbutano) o uno en el C2 y otro en el C3 (2,3-dimetilbutano). Un etil en el C2 de un butano es el 3-metilpentano dibujado de otra manera.",
+        "Con una cadena de 3 ya no caben 3 carbonos más. Total: 5. Cuidado con contar dos veces la misma cadena dibujada torcida."
+      ],
+      "verificar": [
+        { "fn": "contarIsomeros", "args": [6, "alcano"], "espera": { "n": 5, "nombres": ["hexano", "2-metilpentano", "3-metilpentano", "2,2-dimetilbutano", "2,3-dimetilbutano"] } },
+        { "fn": "nombre", "args": ["CH3-CH(C2H5)-CH2-CH3"], "espera": { "nombre": "3-metilpentano" } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "¿Cuáles de estos alquenos tienen isómeros cis y trans? pent-2-eno, 2-metilbut-2-eno, hex-3-eno y but-1-eno.",
+      "respuesta": "El pent-2-eno y el hex-3-eno.",
+      "pasos": [
+        "Hay cis-trans solo si cada carbono del doble enlace tiene dos grupos distintos.",
+        "Pent-2-eno, CH₃–CH=CH–CH₂–CH₃: un carbono tiene H y CH₃; el otro, H y CH₂CH₃. Sí.",
+        "2-metilbut-2-eno, CH₃–C(CH₃)=CH–CH₃: el C2 tiene dos CH₃ iguales. No.",
+        "Hex-3-eno, CH₃–CH₂–CH=CH–CH₂–CH₃: cada carbono tiene H y CH₂CH₃. Sí. But-1-eno, CH₂=CH–CH₂–CH₃: el C1 tiene dos H. No."
+      ],
+      "verificar": [
+        { "fn": "cisTrans", "args": ["CH3-CH=CH-CH2-CH3"], "espera": { "tiene": true } },
+        { "fn": "cisTrans", "args": ["CH3-C(CH3)=CH-CH3"], "espera": { "tiene": false } },
+        { "fn": "cisTrans", "args": ["CH3-CH2-CH=CH-CH2-CH3"], "espera": { "tiene": true } },
+        { "fn": "cisTrans", "args": ["CH2=CH-CH2-CH3"], "espera": { "tiene": false } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Nombra CH₂=C(CH₃)–CH₂–CH₃. ¿Por qué no se llama 3-metilbut-3-eno?",
+      "respuesta": "2-metilbut-1-eno (en la forma anterior, 2-metil-1-buteno). Se numera desde el lado del doble enlace.",
+      "pasos": [
+        "La cadena principal pasa por el doble enlace y tiene 4 carbonos: buteno.",
+        "Se numera para que el doble enlace tenga el número más bajo: desde la izquierda, queda entre C1 y C2; el localizador es 1.",
+        "La rama metil queda en el C2: 2-metilbut-1-eno.",
+        "Numerar desde la derecha daría 3-metilbut-3-eno: el doble enlace quedaría en 3 en vez de 1."
+      ],
+      "verificar": [
+        { "fn": "nombre", "args": ["CH2=C(CH3)-CH2-CH3"], "espera": { "nombre": "2-metilbut-1-eno", "antiguo": "2-metil-1-buteno", "errores.numeracionContraria": "3-metilbut-3-eno" } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En la molécula CH₂=CH–C≡CH, di la hibridación de cada carbono, de izquierda a derecha, y cuenta los enlaces sigma y pi.",
+      "respuesta": "sp², sp², sp, sp; 7 enlaces σ y 3 enlaces π.",
+      "pasos": [
+        "Los dos carbonos del doble enlace son sp² (ángulos de 120°); los dos del triple son sp (180°).",
+        "Cada enlace simple es un σ: los 4 C–H y el C–C del medio dan 5 σ.",
+        "El doble enlace tiene 1 σ y 1 π; el triple, 1 σ y 2 π.",
+        "Total: 5 + 1 + 1 = 7 σ y 1 + 2 = 3 π. Contar el triple como 3 σ es el error típico."
+      ],
+      "verificar": [
+        { "fn": "hibridacion", "args": ["CH2=CH-C≡CH"], "espera": { "hibs": ["sp2", "sp2", "sp", "sp"] } },
+        { "fn": "enlaces", "args": ["CH2=CH-C≡CH"], "espera": { "sigma": 7, "pi": 3 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "En CH₃–CH(CH₃)–CH(C₂H₅)–CH₂–CH₃, ¿cuántos carbonos primarios, secundarios, terciarios y cuaternarios hay? ¿Cómo se llama?",
+      "respuesta": "4 primarios, 2 secundarios, 2 terciarios y ningún cuaternario. Es el 3-etil-2-metilpentano.",
+      "pasos": [
+        "Un carbono es primario, secundario, terciario o cuaternario según cuántos carbonos tiene unidos: 1, 2, 3 o 4.",
+        "Los CH₃ están unidos a un solo carbono: hay 4 (los dos extremos, la rama metil y la punta del etilo). Primarios: 4.",
+        "Los CH₂ (el de la cadena y el del etilo) están unidos a dos carbonos: secundarios, 2. Los dos CH están unidos a tres: terciarios, 2.",
+        "Nombre: la cadena más larga tiene 5 C y lleva un etil en el C3 y un metil en el C2. Los sustituyentes van en orden alfabético: etil antes que metil."
+      ],
+      "verificar": [
+        { "fn": "tiposCarbono", "args": ["CH3-CH(CH3)-CH(C2H5)-CH2-CH3"], "espera": { "cuenta.primario": 4, "cuenta.secundario": 2, "cuenta.terciario": 2, "cuenta.cuaternario": 0 } },
+        { "fn": "nombre", "args": ["CH3-CH(CH3)-CH(C2H5)-CH2-CH3"], "espera": { "nombre": "3-etil-2-metilpentano" } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Ordena de mayor a menor punto de ebullición: 2,2-dimetilbutano, hexano y 2-metilpentano. Explica sin hacer cuentas.",
+      "respuesta": "Hexano (68,7 °C) > 2-metilpentano (60,3 °C) > 2,2-dimetilbutano (49,7 °C), según la tabla.",
+      "pasos": [
+        "Los tres son C₆H₁₄: tienen la misma masa. La diferencia está en la forma.",
+        "Las moléculas de alcano se atraen por fuerzas débiles que crecen con la superficie de contacto entre ellas.",
+        "La cadena recta (hexano) tiene más superficie; cada rama la hace más compacta y le quita contacto.",
+        "Por eso: hexano > 2-metilpentano (una rama) > 2,2-dimetilbutano (dos ramas en un mismo carbono, casi una bola). Los valores son de tabla (CRC Handbook)."
+      ],
+      "verificar": [
+        { "fn": "compararEbullicion", "args": ["CCCCCC", "CC(C)CCC"], "espera": { "mayor": "hexano", "a.teb": 68.7, "b.teb": 60.3 } },
+        { "fn": "compararEbullicion", "args": ["CC(C)CCC", "CC(C)(C)CC"], "espera": { "mayor": "2-metilpentano", "b.teb": 49.7 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un hidrocarburo tiene la fórmula C₆H₁₀. ¿Cuántas insaturaciones tiene? Da tres tipos de compuesto que podrían tener esa fórmula.",
+      "respuesta": "2 insaturaciones. Puede ser un alquino (hex-1-ino), un dieno (hexa-1,3-dieno) o un cicloalqueno (ciclohexeno).",
+      "pasos": [
+        "Insaturaciones = (2C + 2 − H) / 2 = (12 + 2 − 10) / 2 = 2.",
+        "Cada doble enlace y cada anillo cuentan 1; cada triple enlace cuenta 2.",
+        "Un triple: alquino, CₙH₂ₙ₋₂. Dos dobles: dieno. Un anillo con un doble: cicloalqueno.",
+        "Los tres tipos comparten la fórmula general CₙH₂ₙ₋₂: con la fórmula sola no se sabe cuál es."
+      ],
+      "verificar": [
+        { "fn": "insaturaciones", "args": ["CH≡C-CH2-CH2-CH2-CH3"], "espera": { "valor": 2, "triples": 1 } },
+        { "fn": "insaturaciones", "args": ["C1=CCCCC1"], "espera": { "valor": 2, "anillos": 1 } },
+        { "fn": "formula", "args": ["CH2=CH-CH=CH-CH2-CH3"], "espera": { "texto": "C6H10" } },
+        { "fn": "nombre", "args": ["CH2=CH-CH=CH-CH2-CH3"], "espera": { "nombre": "hexa-1,3-dieno" } },
+        { "fn": "formulaGeneral", "args": ["alquino", 6], "espera": { "texto": "C6H10" } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "¿Cuántos isómeros con la fórmula C₄H₈ hay, contando los cis-trans y los cíclicos? Nómbralos.",
+      "respuesta": "6: but-1-eno, cis-but-2-eno, trans-but-2-eno, 2-metilpropeno, ciclobutano y metilciclopropano.",
+      "pasos": [
+        "C₄H₈ es CₙH₂ₙ: un doble enlace o un anillo.",
+        "Con doble enlace y cadena de 4: but-1-eno y but-2-eno. El but-2-eno tiene cis y trans (cada carbono del doble tiene H y CH₃): son 2.",
+        "Con cadena de 3 y una rama: 2-metilpropeno. Su C2 tiene dos CH₃: no tiene cis-trans.",
+        "Con anillo: ciclobutano (anillo de 4) y metilciclopropano (anillo de 3 con una rama). Total: 4 alquenos + 2 cíclicos = 6."
+      ],
+      "verificar": [
+        { "fn": "contarIsomeros", "args": [4, "CnH2n", { "cisTrans": true }], "espera": { "n": 6, "errores.sinAnillos": 4 } }
+      ]
+    }
+  ]
+}

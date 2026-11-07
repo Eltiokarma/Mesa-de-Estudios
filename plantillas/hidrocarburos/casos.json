@@ -1,0 +1,104 @@
+{
+  "plantilla": "hidrocarburos",
+  "unidades": "Moléculas como texto: fórmula semidesarrollada sencilla (CH3-CH(CH3)-CH2-CH3, CH2=CH-CH3, CH≡C-CH3; el guion, el = y el ≡ son el enlace) o SMILES sencillo (CC(C)C, C/C=C\\C para cis, C1CCC1 para un anillo, c1ccccc1 para el benceno). Los índices de átomo cuentan desde 0 en el orden en que aparecen los C en el texto (una rama C2H5 aporta dos C seguidos). Temperaturas en °C; ángulos en grados.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'; 'tambien' agrega llamadas del mismo caso. Los campos anidados van con punto (errores.cadenaDibujada, a.teb); las listas se comparan completas; los textos, exactos. Nombres con la regla escolar de la cadena principal (la de más enlaces múltiples, después la más larga) y el localizador delante del sufijo (but-2-eno); 'antiguo' da la forma anterior (2-buteno). Las demás convenciones están en la cabecera de motor.js.",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso 2 y predicción 1: el pentano recto y el torcido son la misma molécula (mismo grafo); el 2-metilbutano, no",
+      "fn": "mismaMolecula", "args": ["CH3-CH2-CH2-CH2-CH3", "CCCCC"], "espera": { "valor": true },
+      "tambien": [ { "args": ["CH3(CH2)3CH3", "C(C)CCC"], "espera": { "valor": true } }, { "args": ["CCCCC", "CC(C)CC"], "espera": { "valor": false } } ] },
+
+    { "nombre": "Paso 3 y predicción 2: CH3–CH(C2H5)–CH2–CH3 es 3-metilpentano (C6H14). Errores: la cadena horizontal (2-etilbutano), la horizontal numerada al revés (3-etilbutano) y contar todos los C (hexano)",
+      "fn": "nombre", "args": ["CH3-CH(C2H5)-CH2-CH3", { "dibujada": [0, 1, 4, 5] }],
+      "espera": { "nombre": "3-metilpentano", "errores.cadenaDibujada": "2-etilbutano", "errores.cadenaDibujadaContraria": "3-etilbutano", "errores.todosLosC": "hexano", "localizadores.sustituyentes": [3] },
+      "tambien": [ { "fn": "formula", "args": ["CH3-CH(C2H5)-CH2-CH3"], "espera": { "texto": "C6H14" } } ] },
+
+    { "nombre": "Paso 4 y predicción 3: hay 3 alcanos C5H12. Errores: olvidar el que tiene un C cuaternario (2), contar dos veces una cadena torcida (4) y confundir con C6H14 (5)",
+      "fn": "contarIsomeros", "args": [5, "alcano"],
+      "espera": { "n": 3, "nombres": ["pentano", "2-metilbutano", "2,2-dimetilpropano"], "errores.sinCuaternario": 2, "errores.torcidaDosVeces": 4, "errores.deUnCarbonoMas": 5 } },
+
+    { "nombre": "Informe: isómeros de alcanos C1 a C8 = 1, 1, 1, 2, 3, 5, 9, 18",
+      "fn": "contarIsomeros", "args": [4, "alcano"], "espera": { "n": 2, "nombres": ["butano", "2-metilpropano"] },
+      "tambien": [ { "args": [1, "alcano"], "espera": { "n": 1 } }, { "args": [3, "alcano"], "espera": { "n": 1 } }, { "args": [7, "alcano"], "espera": { "n": 9 } }, { "args": [8, "alcano"], "espera": { "n": 18 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 2 e informe: los 5 isómeros de C6H14. Errores: sin el del C cuaternario (4), una torcida contada dos veces (6), los de C7H16 (9)",
+      "fn": "contarIsomeros", "args": [6, "alcano"],
+      "espera": { "n": 5, "nombres": ["hexano", "2-metilpentano", "3-metilpentano", "2,2-dimetilbutano", "2,3-dimetilbutano"], "errores.sinCuaternario": 4, "errores.torcidaDosVeces": 6, "errores.deUnCarbonoMas": 9 } },
+
+    { "nombre": "Paso 5 y predicción 4: el but-2-eno tiene cis y trans; el 2-metilpropeno no (su C2 tiene dos CH3). Error: «todo alqueno tiene cis-trans» (HC4)",
+      "fn": "cisTrans", "args": ["CH3-CH=CH-CH3"], "espera": { "tiene": true, "errores.todoAlqueno": true, "errores.soloConHalogenos": false },
+      "tambien": [ { "args": ["CH2=C(CH3)2"], "espera": { "tiene": false, "errores.todoAlqueno": true, "errores.porRamificado": true } } ] },
+
+    { "nombre": "Informe, cis-trans sí o no: propeno no; but-2-eno sí; 2-metilpropeno no; 2-metilbut-2-eno no; pent-2-eno sí; CHCl=CHCl sí; CH2=CCl2 no; but-2-ino no",
+      "fn": "cisTrans", "args": ["CH2=CH-CH3"], "espera": { "tiene": false },
+      "tambien": [ { "args": ["CH3-C(CH3)=CH-CH3"], "espera": { "tiene": false } }, { "args": ["CH3-CH=CH-CH2-CH3"], "espera": { "tiene": true } },
+        { "args": ["CHCl=CHCl"], "espera": { "tiene": true, "errores.soloConHalogenos": true } }, { "args": ["CH2=CCl2"], "espera": { "tiene": false } }, { "args": ["CH3-C≡C-CH3"], "espera": { "tiene": false } },
+        { "args": ["CC1CC1C"], "espera": { "tiene": true, "anillo": true } } ] },
+
+    { "nombre": "Paso 5 y ¿qué pasa si…? 3: intercambiar los dos grupos de un C del doble enlace da otra molécula en el but-2-eno (trans → cis) y la misma en el 2-metilpropeno",
+      "fn": "probarIntercambio", "args": ["CH3-CH=CH-CH3"], "espera": { "antes": "trans-but-2-eno", "despues": "cis-but-2-eno", "mismaMolecula": false },
+      "tambien": [ { "args": ["CH2=C(CH3)2"], "espera": { "antes": "2-metilpropeno", "despues": "2-metilpropeno", "mismaMolecula": true } } ] },
+
+    { "nombre": "Paso 6 y predicción 5: el pentano hierve a 36,1 °C y el 2,2-dimetilpropano a 9,5 °C (tabla). Error HC2: «iguales, los dos tienen 5 C»",
+      "fn": "compararEbullicion", "args": ["CH3-CH2-CH2-CH2-CH3", "C(CH3)4"],
+      "espera": { "mayor": "pentano", "a.teb": 36.1, "b.teb": 9.5, "b.nombre": "2,2-dimetilpropano", "errores.porCarbonos": "iguales", "errores.compacto": "2,2-dimetilpropano" } },
+
+    { "nombre": "Paso 7 y predicción 6: CH3–CH(CH3)–CH=CH–CH3 es 4-metilpent-2-eno (4-metil-2-penteno). Errores: numerar por la rama (2-metilpent-3-eno), el localizador del segundo C del doble (4-metilpent-3-eno), olvidar el doble enlace (2-metilpentano)",
+      "fn": "nombre", "args": ["CH3-CH(CH3)-CH=CH-CH3"],
+      "espera": { "nombre": "4-metilpent-2-eno", "antiguo": "4-metil-2-penteno", "errores.numeracionPorSustituyente": "2-metilpent-3-eno", "errores.localizadorMayor": "4-metilpent-3-eno", "errores.comoAlcano": "2-metilpentano", "difiereIUPAC2013": false, "cisTrans": "sin especificar" } },
+
+    { "nombre": "Paso 8 y predicción 7: en el propino CH≡C–CH3 los C son sp, sp y sp³ (180°, 180°, 109,5°). Errores: todo sp³, el exponente como el orden del enlace (sp³, sp³, sp) y todo sp",
+      "fn": "hibridacion", "args": ["CH≡C-CH3"],
+      "espera": { "hibs": ["sp", "sp", "sp3"], "angulos": [180, 180, 109.5], "errores.todoSp3": ["sp3", "sp3", "sp3"], "errores.exponenteEsOrden": ["sp3", "sp3", "sp"], "errores.todoSp": ["sp", "sp", "sp"] } },
+
+    { "nombre": "Informe, hibridación: CH4 sp³; C2H4 sp²; C2H2 sp; benceno sp²; CH2=CH–CH3 sp², sp², sp³",
+      "fn": "hibridacion", "args": ["CH4"], "espera": { "hibs": ["sp3"] },
+      "tambien": [ { "args": ["CH2=CH2"], "espera": { "hibs": ["sp2", "sp2"], "angulos": [120, 120] } }, { "args": ["CH≡CH"], "espera": { "hibs": ["sp", "sp"] } },
+        { "args": ["c1ccccc1"], "espera": { "hibs": ["sp2", "sp2", "sp2", "sp2", "sp2", "sp2"] } }, { "args": ["CH2=CH-CH3"], "espera": { "hibs": ["sp2", "sp2", "sp3"] } } ] },
+
+    { "nombre": "Informe, enlaces σ y π: C2H4 5σ 1π; C2H2 3σ 2π; propino 6σ 2π; buta-1,3-dieno 9σ 2π; benceno 12σ 3π",
+      "fn": "enlaces", "args": ["CH2=CH2"], "espera": { "sigma": 5, "pi": 1 },
+      "tambien": [ { "args": ["CH≡CH"], "espera": { "sigma": 3, "pi": 2 } }, { "args": ["CH≡C-CH3"], "espera": { "sigma": 6, "pi": 2, "errores.multipleTodoSigma.sigma": 8 } },
+        { "args": ["CH2=CH-CH=CH2"], "espera": { "sigma": 9, "pi": 2 } }, { "args": ["c1ccccc1"], "espera": { "sigma": 12, "pi": 3 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 4 e informe: los 6 isómeros de C4H8 con cis-trans y anillos (sin anillos 4; sin anillos ni cis-trans 3)",
+      "fn": "contarIsomeros", "args": [4, "CnH2n", { "cisTrans": true }],
+      "espera": { "n": 6, "nombres": ["but-1-eno", "cis-but-2-eno", "trans-but-2-eno", "2-metilpropeno", "ciclobutano", "metilciclopropano"], "errores.sinAnillos": 4, "errores.sinAnillosNiCisTrans": 3, "errores.sinCisTrans": 5 } },
+
+    { "nombre": "Informe: los 6 alquenos C5H10 con cis-trans, sin anillos",
+      "fn": "contarIsomeros", "args": [5, "alqueno", { "cisTrans": true }],
+      "espera": { "n": 6, "nombres": ["pent-1-eno", "cis-pent-2-eno", "trans-pent-2-eno", "2-metilbut-1-eno", "2-metilbut-2-eno", "3-metilbut-1-eno"] } },
+
+    { "nombre": "¿Qué pasa si…? 4: el ciclobutano y el but-1-eno son isómeros (C4H8 los dos, distinto grafo). Errores: «misma sustancia» y «isómeros solo si son de la misma clase» (HC1)",
+      "fn": "compararIsomeria", "args": ["C1CCC1", "CH2=CH-CH2-CH3"],
+      "espera": { "formulaA": "C4H8", "formulaB": "C4H8", "isomeros": true, "mismaMolecula": false, "tipoA": "cicloalcano", "tipoB": "alqueno", "errores.soloMismaClase.isomeros": false } },
+
+    { "nombre": "Informe, fórmula general con n = 5: alcano C5H12, alqueno C5H10, alquino C5H8",
+      "fn": "formulaGeneral", "args": ["alcano", 5], "espera": { "texto": "C5H12" },
+      "tambien": [ { "args": ["alqueno", 5], "espera": { "texto": "C5H10" } }, { "args": ["alquino", 5], "espera": { "texto": "C5H8" } } ] },
+
+    { "nombre": "Informe: CH3–CH(CH3)–CH2–CH3 es 2-metilbutano, no 3-metilbutano (numerar desde el otro extremo)",
+      "fn": "nombre", "args": ["CH3-CH(CH3)-CH2-CH3"], "espera": { "nombre": "2-metilbutano", "errores.numeracionContraria": "3-metilbutano", "errores.todosLosC": "pentano" } },
+
+    { "nombre": "Informe: (CH3)3C–CH2–CH(CH3)2 es 2,2,4-trimetilpentano, no 2,4,4-; carbonos: 5 primarios, 1 secundario, 1 terciario y 1 cuaternario",
+      "fn": "nombre", "args": ["(CH3)3C-CH2-CH(CH3)2"], "espera": { "nombre": "2,2,4-trimetilpentano", "errores.numeracionContraria": "2,4,4-trimetilpentano" },
+      "tambien": [ { "fn": "tiposCarbono", "args": ["(CH3)3C-CH2-CH(CH3)2"], "espera": { "cuenta.primario": 5, "cuenta.secundario": 1, "cuenta.terciario": 1, "cuenta.cuaternario": 1 } } ] },
+
+    { "nombre": "Orden alfabético: CH3–CH(CH3)–CH(C2H5)–CH2–CH3 es 3-etil-2-metilpentano (no 2-metil-3-etilpentano, ordenado por localizador)",
+      "fn": "nombre", "args": ["CH3-CH(CH3)-CH(C2H5)-CH2-CH3"], "espera": { "nombre": "3-etil-2-metilpentano", "errores.ordenPorLocalizador": "2-metil-3-etilpentano" } },
+
+    { "nombre": "¿Qué pasa si…? 1: al butano se le agrega un C en su segundo carbono (índice 1): 2-metilbutano, C5H12. Errores: «todo C nuevo alarga» (pentano) y la numeración contraria (3-metilbutano)",
+      "fn": "armar", "args": ["CH3-CH2-CH2-CH3", [["agregar", 1]]],
+      "espera": { "nombre": "2-metilbutano", "formula": "C5H12", "semidesarrollada": "CH3–CH(CH3)–CH2–CH3", "errores.todosLosC": "pentano", "errores.numeracionContraria": "3-metilbutano" } },
+
+    { "nombre": "Nombres de alquenos, alquinos y anillos: buta-1,3-dieno; but-2-ino; cis-but-2-eno; metilciclopropano; cis-1,2-dimetilciclopropano (por enumeración); tolueno",
+      "fn": "nombre", "args": ["CH2=CH-CH=CH2"], "espera": { "nombre": "buta-1,3-dieno", "antiguo": "1,3-butadieno" },
+      "tambien": [ { "args": ["CH3-C≡C-CH3"], "espera": { "nombre": "but-2-ino", "antiguo": "2-butino" } }, { "args": ["C/C=C\\C"], "espera": { "nombre": "cis-but-2-eno", "cisTrans": "cis" } },
+        { "args": ["CC1CC1"], "espera": { "nombre": "metilciclopropano" } }, { "args": ["Cc1ccccc1"], "espera": { "nombre": "metilbenceno", "comun": "tolueno" } } ] },
+
+    { "nombre": "Insaturaciones (2C + 2 − H)/2: benceno 4; ciclohexeno 2; propino 2; pent-1-eno 1. Error: contar el triple como una (propino: 1)",
+      "fn": "insaturaciones", "args": ["c1ccccc1"], "espera": { "valor": 4 },
+      "tambien": [ { "args": ["C1=CCCCC1"], "espera": { "valor": 2, "anillos": 1, "dobles": 1 } }, { "args": ["CH≡C-CH3"], "espera": { "valor": 2, "errores.tripleCuentaUno": 1 } }, { "args": ["CH2=CH-CH2-CH2-CH3"], "espera": { "valor": 1 } } ] }
+  ]
+}

@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bolitas y palitos: hidrocarburos</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 (docs/metodo/paleta.py) y contraste WCAG sobre
+   #fdf7f1 y #241c2e, también sobre el chip .v (fondo del 8 %): contraste mínimo 4,6 en los dos modos.
+     ELEMENTOS: paleta común de nucleo/elementos.js (C gris, H turquesa), en el bloque generado de abajo.
+     VARIABLES
+       cad  cadena principal                      azul      #1f5fbf / #7cb0ff
+       loc  localizadores (la numeración)         magenta   #b3246b / #ff86bd
+       sus  sustituyentes (las ramas)             naranja   #a05200 / #f0a04a
+       mul  enlace doble o triple                 violeta   #4d00b8 / #b27aff
+       T    temperatura de ebullición             verde     #255c1f / #5fe06a
+       ang  ángulo de enlace                      mostaza   #756300 / #e3c84a
+   Qué sale junto: C y H siempre; con ellos cad, loc, sus y mul (nombres); C, H y T (ebullición); C, H, mul y ang
+   (hibridación). Entre todos, y contra C, H y la tinta, ΔE00 ≥ 20 en claro y en oscuro (mínimo 21,5: C–H; entre
+   variables, 22,2: T–ang; contra C, H o tinta, 20,4: T–H). sus y ang (18,9) nunca comparten dibujo: en las vistas de
+   hibridación no hay ramas. Cada átomo lleva además su letra.
+   Los tonos de la «nube» de contacto y de la marca punteada son pálidos o neutros y no nombran variables. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  /* variables */
+  --c-cad:#1f5fbf; --c-loc:#b3246b; --c-sus:#a05200; --c-mul:#4d00b8; --c-T:#255c1f; --c-ang:#756300;
+  /* tonos del mundo (no son variables) */
+  --letra-atomo:#ffffff; --nube:#efe4f3; --palito:#8a7f93;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-cad:#7cb0ff; --c-loc:#ff86bd; --c-sus:#f0a04a; --c-mul:#b27aff; --c-T:#5fe06a; --c-ang:#e3c84a;
+  --letra-atomo:#1d1626; --nube:#3a3046; --palito:#8d8399; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-cad:#7cb0ff; --c-loc:#ff86bd; --c-sus:#f0a04a; --c-mul:#b27aff; --c-T:#5fe06a; --c-ang:#e3c84a;
+  --letra-atomo:#1d1626; --nube:#3a3046; --palito:#8d8399; color-scheme:dark }
+
+/* Bloque generado con Elementos.css(['C', 'H']); no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-C:#6b6b6b; --el-H:#0f766e }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-C:#9a9a9a; --el-H:#5ed9c8 } }
+:root[data-theme="dark"]{ --el-C:#9a9a9a; --el-H:#5ed9c8 }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* El dedo desplaza la página sobre el dibujo; solo un toque que empieza cerca de un enlace o de un átomo, cuando se
+   puede armar o girar, se queda con el gesto (nucleo/celular.js). */
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend svg{flex:none}
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+.v{font-weight:800; border-radius:6px; padding:0 2px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.f{white-space:nowrap}
+.f .v{padding:0; border-radius:3px; text-decoration:none}
+.f sub, .f sup{font-size:.72em; line-height:0}
+.v-cad{color:var(--c-cad); background:color-mix(in srgb, var(--c-cad) 8%, transparent)}
+.v-loc{color:var(--c-loc); background:color-mix(in srgb, var(--c-loc) 8%, transparent)}
+.v-sus{color:var(--c-sus); background:color-mix(in srgb, var(--c-sus) 8%, transparent)}
+.v-mul{color:var(--c-mul); background:color-mix(in srgb, var(--c-mul) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-ang{color:var(--c-ang); background:color-mix(in srgb, var(--c-ang) 8%, transparent)}
+.v-C{color:var(--el-C)} .v-H{color:var(--el-H)}
+.v.hl{background:none; outline:2px solid currentColor; outline-offset:1px}
+.nom{font-weight:800; white-space:nowrap}
+.nom .v{padding:0; text-decoration:none; border-radius:3px}
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-size:1.04rem; font-variant-numeric:tabular-nums; min-width:0}
+.eq .note{font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq .ex{white-space:normal; line-height:2}
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.opt.correct .v, .opt.wrong .v{background:none}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:20px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:40px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.estado{font-weight:700; margin:0}
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.fila{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.tabla{border-collapse:collapse; font-size:.95rem}
+.tabla td, .tabla th{padding:4px 10px; border-bottom:1px solid var(--line); text-align:left}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Hidrocarburos · Problemas tipo admisión</p>
+      <h1>Bolitas y palitos</h1>
+      <p class="sub">Moléculas de carbono e hidrógeno que se arman, se giran y se nombran. Predice y después mira.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Las moléculas">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Moléculas de bolitas y palitos: carbonos grises y hidrógenos turquesa"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con moléculas">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="El experimento: moléculas de bolitas y palitos"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/hidrocarburos">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'hidrocarburos', unidad: 'quimica.hidrocarburos', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorHidrocarburos (motor.js): el grafo, el nombre, la cadena principal, los isómeros,
+   cis y trans, la hibridación, las coordenadas y los giros. Aquí solo se pinta. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MH = MotorHidrocarburos;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const ease = p => p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2)/2;
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const SUBD = { '0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉' };
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+// Fórmula molecular o semidesarrollada en el texto: C y H con su color; los números como subíndices.
+function F(f){
+  let h = '';
+  String(f).replace(/([A-Z][a-z]?)(\d*)|([–=≡\-()])|(\d+)/g, (m, el, d, s, n) => {
+    if (el) h += `<span class="v v-${el === 'C' || el === 'H' ? el : 'x'}" data-var="${el}" tabindex="0">${el}${d ? `<sub>${d}</sub>` : ''}</span>`;
+    else if (s) h += s === '-' ? '–' : s;
+    else if (n) h += `<sub>${n}</sub>`;
+    return m;
+  });
+  return `<span class="f">${h}</span>`;
+}
+// Nombre IUPAC con sus partes de color: cadena, localizadores, ramas y enlace múltiple.
+const TIPOS = { cad:1, loc:1, sus:1, mul:1 };
+const N = r => `<span class="nom">${(r.partes || MH.nombre(r).partes).map(p => TIPOS[p.tipo] ? V(p.tipo, esc(p.t)) : esc(p.t)).join('')}</span>`;
+const sinTab = h => h.replace(/ tabindex="0"/g, '');
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), ok:g('--ok'), warn:g('--warn'),
+    cad:g('--c-cad'), loc:g('--c-loc'), sus:g('--c-sus'), mul:g('--c-mul'), T:g('--c-T'), ang:g('--c-ang'),
+    el:{ C:g('--el-C'), H:g('--el-H') }, letra:g('--letra-atomo'), nube:g('--nube'), palito:g('--palito'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function texto(ctx, c, t, x, y, tam, color, align, max, peso){
+  let s = tam; ctx.font = `${peso || 700} ${s}px ${c.font}`;
+  if (max) while (s > 9 && ctx.measureText(t).width > max){ s -= 0.5; ctx.font = `${peso || 700} ${s}px ${c.font}`; }
+  ctx.fillStyle = color; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, x, y);
+  return ctx.measureText(t).width;
+}
+// Un texto hecho de partes de colores (el nombre), centrado en x; se achica hasta caber en max.
+function partesTexto(ctx, c, partes, x, y, tam, max){
+  const col = p => ({ cad:c.cad, loc:c.loc, sus:c.sus, mul:c.mul }[p.tipo] || c.ink);
+  let s = tam, w;
+  const medir = () => { ctx.font = `800 ${s}px ${c.font}`; return partes.reduce((t, p) => t + ctx.measureText(p.t).width, 0); };
+  w = medir(); while (max && s > 9 && w > max){ s -= 0.5; w = medir(); }
+  let xx = x - w/2; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (const p of partes){ ctx.fillStyle = col(p); ctx.fillText(p.t, xx, y); xx += ctx.measureText(p.t).width; }
+}
+
+/* ----- Una molécula de bolitas y palitos -----
+   it = { m (molécula del motor), c (coordenadas del motor), rot (rótulo), partes (rótulo de colores), modo ('bolitas'
+   o 'esqueleto'), op: { cadena, nums, subs, hib, ang, nube, prueba, marca, foco }, teb: { valor, ver }, tachado }.
+   El dibujo es plano: z solo agranda un poco las bolitas que quedan adelante mientras se gira. */
+const RC = 0.27, RH = 0.17;
+function pintarMolecula(ctx, c, it, box, hl){
+  const A = it.c.atomos, op = it.op || {}, esq = it.modo === 'esqueleto';
+  const pts = esq ? A.filter(p => p.el !== 'H') : A;
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (const p of pts){ x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
+  const mg = esq ? 0.5 : 0.4 + (op.nums || op.hib ? 0.35 : 0);
+  const s = Math.min(box.w/(x1 - x0 + 2*mg), box.h/(y1 - y0 + 2*mg), it.max || 58);
+  const cx = box.x + box.w/2, cy = box.y + box.h/2, mx = (x0 + x1)/2, my = (y0 + y1)/2;
+  const P = p => ({ X: cx + (p.x - mx)*s, Y: cy - (p.y - my)*s });
+  it._tf = { s, P };
+  const heavy = it.m.en;
+  const lw = Math.max(1.6, s*0.07);
+  ctx.save(); ctx.lineCap = 'round';
+  // Nube de contacto (ebullición).
+  if (op.nube){ ctx.fillStyle = c.nube; for (const p of A){ const q = P(p); ctx.beginPath(); ctx.arc(q.X, q.Y, (p.el === 'H' ? 0.52 : 0.7)*s, 0, Math.PI*2); ctx.fill(); } }
+  // Cadena que se prueba (punteada, neutra) y cadena principal (banda azul).
+  const banda = (lista, color, dash, ancho) => {
+    if (!lista || lista.length < 1) return;
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho; ctx.lineJoin = 'round'; if (dash) ctx.setLineDash(dash);
+    ctx.globalAlpha = dash ? 0.9 : 0.32;
+    ctx.beginPath(); lista.forEach((i, k) => { const q = P(A[i]); if (k) ctx.lineTo(q.X, q.Y); else ctx.moveTo(q.X, q.Y); }); ctx.stroke();
+    if (lista.length === 1){ const q = P(A[lista[0]]); ctx.beginPath(); ctx.arc(q.X, q.Y, ancho/2, 0, Math.PI*2); ctx.fillStyle = color; ctx.fill(); }
+    ctx.restore();
+  };
+  if (op.prueba) banda(op.prueba, c.muted, null, Math.max(10, s*0.62));
+  if (op.cadena) banda(op.cadena, c.cad, null, Math.max(10, s*0.62));
+  // Palitos C–H.
+  if (!esq){ ctx.strokeStyle = c.palito; ctx.lineWidth = Math.max(1.2, s*0.05);
+    for (const p of A) if (p.padre !== null){ const a = P(A[p.padre]), b = P(p); linea(ctx, a.X, a.Y, b.X, b.Y); } }
+  // Enlaces C–C: el doble y el triple con el color del enlace múltiple.
+  heavy.forEach((e, k) => {
+    const a = P(A[e.a]), b = P(A[e.b]), dx = b.X - a.X, dy = b.Y - a.Y, L = Math.hypot(dx, dy) || 1, nx = -dy/L, ny = dx/L;
+    const mult = e.o === 2 || e.o === 3;
+    ctx.strokeStyle = mult ? c.mul : (esq ? c.ink : c.palito); ctx.lineWidth = mult ? lw*(hl === 'mul' ? 1.6 : 1.15) : lw*(esq ? 1 : 1.1);
+    const sep = Math.max(3, s*0.09);
+    if (e.o === 2){ linea(ctx, a.X + nx*sep/1.4, a.Y + ny*sep/1.4, b.X + nx*sep/1.4, b.Y + ny*sep/1.4); linea(ctx, a.X - nx*sep/1.4, a.Y - ny*sep/1.4, b.X - nx*sep/1.4, b.Y - ny*sep/1.4); }
+    else if (e.o === 3){ linea(ctx, a.X, a.Y, b.X, b.Y); linea(ctx, a.X + nx*sep*1.3, a.Y + ny*sep*1.3, b.X + nx*sep*1.3, b.Y + ny*sep*1.3); linea(ctx, a.X - nx*sep*1.3, a.Y - ny*sep*1.3, b.X - nx*sep*1.3, b.Y - ny*sep*1.3); }
+    else linea(ctx, a.X, a.Y, b.X, b.Y);
+    if (op.foco && op.foco.enlace === k){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.arc((a.X + b.X)/2, (a.Y + b.Y)/2, Math.max(11, s*0.3), 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+  });
+  // Benceno: el círculo de adentro.
+  if (it.m.en.some(e => e.o === 1.5)){ const an = MH.ciclos(it.m)[0]; let sx = 0, sy = 0; an.forEach(i => { const q = P(A[i]); sx += q.X; sy += q.Y; }); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = lw; ctx.beginPath(); ctx.arc(sx/an.length, sy/an.length, s*0.5, 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+  // Átomos (los de adelante, al final).
+  if (!esq){
+    const orden = [...A].sort((p, q) => p.z - q.z);
+    for (const p of orden){
+      const q = P(p), r = (p.el === 'H' ? RH : RC)*s*(1 + 0.12*clamp(p.z, -1.5, 1.5));
+      ctx.beginPath(); ctx.arc(q.X, q.Y, r, 0, Math.PI*2); ctx.fillStyle = c.el[p.el] || c.muted; ctx.fill();
+      ctx.strokeStyle = c.paper; ctx.lineWidth = 1.2; ctx.stroke();
+      if (hl && hl === p.el){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(q.X, q.Y, r + 2.2, 0, Math.PI*2); ctx.stroke(); }
+      if (r >= 6.5){ ctx.fillStyle = c.letra; ctx.font = `800 ${Math.round(r*1.05)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(p.el, q.X, q.Y + 0.5); }
+    }
+  }
+  const anillo = (i, color, ancho, dash) => { const q = P(A[i]); ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho; if (dash) ctx.setLineDash(dash); ctx.beginPath(); ctx.arc(q.X, q.Y, RC*s + (esq ? 6 : 3.5), 0, Math.PI*2); ctx.stroke(); ctx.restore(); };
+  if (op.subs) for (const i of op.subs) anillo(i, c.sus, hl === 'sus' ? 4 : 2.8);
+  if (op.cadena && hl === 'cad') for (const i of op.cadena) anillo(i, c.cad, 3);
+  if (op.marca !== undefined) anillo(op.marca, c.ink, 2, [4, 3]);
+  if (op.foco && op.foco.atomo !== undefined) anillo(op.foco.atomo, c.ink, 2.2, [3, 3]);
+  // Lugar libre para un rótulo junto al átomo i: el más alejado de los átomos y de los rótulos ya puestos.
+  const puestos = [];
+  const libre = (i, d) => {
+    const p = A[i]; let mejor = null, val = -Infinity;
+    for (let k = 0; k < 24; k++){
+      const t = k*Math.PI/12, x = p.x + Math.cos(t)*d, y = p.y + Math.sin(t)*d;
+      let mn = Infinity;
+      for (const z of (esq ? A.filter(w => w.el !== 'H') : A)) mn = Math.min(mn, Math.hypot(z.x - x, z.y - y) - (z.el === 'H' ? RH : RC));
+      for (const z of puestos) mn = Math.min(mn, Math.hypot(z.x - x, z.y - y) - 0.3);
+      // También lejos de los enlaces: el punto medio de cada uno cuenta como un átomo.
+      for (const e of heavy) mn = Math.min(mn, Math.hypot((A[e.a].x + A[e.b].x)/2 - x, (A[e.a].y + A[e.b].y)/2 - y) - 0.08);
+      if (mn > val + 1e-9){ val = mn; mejor = { x, y }; }
+    }
+    puestos.push(mejor);
+    return P(mejor);
+  };
+  // Localizadores sobre la cadena principal.
+  if (op.nums) op.nums.forEach((i, k) => {
+    const q = libre(i, esq ? 0.42 : 0.52), rr2 = Math.max(8, s*0.2);
+    ctx.beginPath(); ctx.arc(q.X, q.Y, rr2, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.loc; ctx.lineWidth = hl === 'loc' ? 2.6 : 1.6; ctx.stroke();
+    texto(ctx, c, String(k + 1), q.X, q.Y + 0.5, Math.max(10, rr2*1.2), c.loc, 'center', 0, 900);
+  });
+  // Hibridación y ángulo de enlace.
+  if (op.hib){
+    const hb = MH.hibridacion(it.m).lista;
+    hb.forEach(h => {
+      const i = h.atomo, p = A[i], q = P(p), vec = A.filter(z => z.padre === i).concat(heavy.filter(e => e.a === i || e.b === i).map(e => A[e.a === i ? e.b : e.a]));
+      if (op.ang && h.hib !== 'sp3' && vec.length >= 2){
+        // Arco entre dos enlaces: en sp y sp² el dibujo plano ya tiene el ángulo real.
+        const an = vec.map(z => Math.atan2(-(z.y - p.y), z.x - p.x)).sort((a, b) => a - b);
+        let a0 = an[0], a1 = an[1];
+        if (h.hib === 'sp'){ a0 = Math.PI; a1 = 2*Math.PI; const d = vec[0]; const t0 = Math.atan2(-(d.y - p.y), d.x - p.x); a0 = t0; a1 = t0 + Math.PI; if (Math.sin((a0 + a1)/2) > 0){ a0 += Math.PI; a1 += Math.PI; } }
+        ctx.save(); ctx.strokeStyle = c.ang; ctx.lineWidth = hl === 'ang' ? 3 : 2.2; ctx.beginPath(); ctx.arc(q.X, q.Y, s*0.46, a0, a1); ctx.stroke(); ctx.restore();
+        const am = (a0 + a1)/2;
+        texto(ctx, c, `${fmt(h.angulo)}°`, q.X + Math.cos(am)*s*0.72, q.Y + Math.sin(am)*s*0.72, Math.max(10, s*0.22), c.ang, 'center', 0, 900);
+      }
+      const lab = { sp3:'sp³', sp2:'sp²', sp:'sp' }[h.hib];
+      if (op.ang && h.hib !== 'sp3' && vec.length >= 2) puestos.push({ x: p.x, y: p.y + (h.hib === 'sp' ? 0.6 : 0.5) });
+      const t = libre(i, 0.62), tam = Math.max(10, s*0.22);
+      texto(ctx, c, lab, t.X, t.Y, tam, c.ink, 'center', 0, 900);
+    });
+  }
+  ctx.restore();
+}
+// Una fila o cuadrícula de moléculas, con su rótulo y, si hay, su termómetro.
+function celdas(W, n){
+  const cols = W < 560 ? (n <= 2 ? n : 2) : (n === 4 ? 2 : Math.min(n, 3));
+  return { cols, filas: Math.ceil(n/cols) };
+}
+function altoCelda(W, n, v){
+  const base = n === 1 ? (W < 560 ? 230 : 300) : (W < 560 ? (n <= 2 ? 170 : 140) : n <= 3 ? 250 : 190);
+  return base + 30 + (v.items.some(it => it.teb) ? 32 : 0) + (v.extra || 0);
+}
+const PINTA = {};
+PINTA.mols = {
+  alto: (w, v) => { const { filas } = celdas(w, v.items.length); return filas*altoCelda(w, v.items.length, v) + 8; },
+  llave: v => v.items.length + '|' + v.items.map(it => it.c.atomos.length).join(','),
+  pintar(ctx, c, W, v, hl){
+    const n = v.items.length, { cols } = celdas(W, n), ch = altoCelda(W, n, v), cw = (W - 8)/cols;
+    v.items.forEach((it, k) => {
+      const x = 4 + (k % cols)*cw, y = 4 + Math.floor(k/cols)*ch;
+      const conT = v.items.some(z => z.teb), pie = 30 + (conT ? 32 : 0);
+      if (n > 1){ rr(ctx, x + 3, y + 3, cw - 6, ch - 6, 14); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.stroke(); }
+      const box = { x: x + 10, y: y + 8, w: cw - 20, h: ch - pie - 14 };
+      pintarMolecula(ctx, c, it, box, hl);
+      const yR = y + ch - pie + 6;
+      if (it.partes) partesTexto(ctx, c, it.partes, x + cw/2, yR, W < 560 ? 13 : 15, cw - 16);
+      else if (it.rot) texto(ctx, c, it.rot, x + cw/2, yR, W < 560 ? 13 : 15, c.ink, 'center', cw - 16, 800);
+      if (it.rot2) texto(ctx, c, it.rot2, x + cw/2, yR + 17, 11.5, it.rot2Color ? c[it.rot2Color] : c.muted, 'center', cw - 16, 700);
+      if (it.tachado){ ctx.save(); ctx.strokeStyle = c.warn; ctx.lineWidth = 2.5; ctx.globalAlpha = 0.85; linea(ctx, x + 14, y + 14, x + cw - 14, y + ch - pie - 4); ctx.restore(); }
+      if (it.teb) termometro(ctx, c, it.teb, x + 14, yR + 34, cw - 28);
+    });
+  },
+  leyenda: v => {
+    const l = [leyAt('C', 'carbono'), leyAt('H', 'hidrógeno')];
+    const op = k => v.items.some(it => it.op && it.op[k]);
+    if (op('cadena')) l.push(leyVar('cad', 'cadena principal'));
+    if (op('nums')) l.push(leyVar('loc', 'localizadores'));
+    if (op('subs')) l.push(leyVar('sus', 'sustituyentes (ramas)'));
+    if (v.items.some(it => it.m.en.some(e => e.o === 2 || e.o === 3))) l.push(leyVar('mul', 'enlace doble o triple'));
+    if (v.items.some(it => it.teb && it.teb.ver)) l.push(leyVar('T', 'temperatura de ebullición'));
+    if (op('ang')) l.push(leyVar('ang', 'ángulo de enlace'));
+    if (op('nube')) l.push(`<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--nube)" stroke="var(--line)"/></svg>superficie de contacto</span>`);
+    if (op('prueba')) l.push(`<span><i style="background:var(--muted);opacity:.5"></i>cadena que se prueba</span>`);
+    return l;
+  },
+  describir: v => v.desc || v.items.map(it => it.desc || it.rot || '').join(' '),
+};
+const leyAt = (e, t) => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--el-${e})"/></svg>${e} · ${t}</span>`;
+const leyVar = (k, t) => `<span><i style="background:var(--c-${k})"></i>${t}</span>`;
+// Termómetro horizontal de −20 a 80 °C, con la marca del aula (20 °C).
+function termometro(ctx, c, t, x, y, w){
+  const a = -20, b = 80, X = T => x + (T - a)/(b - a)*w;
+  ctx.save(); rr(ctx, x, y - 4, w, 8, 4); ctx.fillStyle = c.grid; ctx.fill(); ctx.strokeStyle = c.line; ctx.stroke();
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.setLineDash([2, 3]); linea(ctx, X(20), y - 9, X(20), y + 9); ctx.setLineDash([]);
+  texto(ctx, c, 'aula 20 °C', X(20), y + 16, 10, c.muted, 'center', 0, 700);
+  if (t.ver){ const p = t.p === undefined ? 1 : t.p, v = a + (t.valor - a)*p; rr(ctx, x, y - 4, Math.max(8, X(v) - x), 8, 4); ctx.fillStyle = c.T; ctx.fill();
+    texto(ctx, c, `${fmt(t.valor)} °C`, clamp(X(v), x + 22, x + w - 22), y - 13, 12, c.T, 'center', 0, 900); }
+  else texto(ctx, c, '¿?', x + w/2, y - 13, 12, c.muted, 'center', 0, 900);
+  ctx.restore();
+}
+
+/* ----- La escena: un lienzo con su vista; en el celular, con una predicción pendiente, el dibujo se encoge a escala. ----- */
+const ESCENAS = [];
+function crearEscena(cv, idDesc, modoId, idLey){
+  const E = { vista:{ tipo:'mols', items:[] }, hl:null, modoId, anims:[], compacto:false, ctx: cv.getContext('2d'), cv };
+  ESCENAS.push(E);
+  let H = 0;
+  E.W = 0; E.esc = 1;
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    E.W = w; const Hn = PINTA[E.vista.tipo].alto(w, E.vista);
+    const h = Math.round(Celular.alto(Hn, E.compacto)); E.esc = h/Hn;
+    const dpr = window.devicePixelRatio || 1;
+    if (h !== H || cv.width !== Math.round(w*dpr)){ H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+  };
+  new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; E.resize(); E.dibujar(); };
+  let llave = '';
+  E.dibujar = () => {
+    const w = cv.clientWidth; if (!w) return;
+    const P = PINTA[E.vista.tipo], k = `${w}|${E.vista.tipo}|${P.llave ? P.llave(E.vista) : ''}|${E.compacto}|${E.vista.extra || 0}`;
+    if (k !== llave){ E.resize(); llave = k; }
+    const c = colores(), dpr = window.devicePixelRatio || 1, ctx = E.ctx;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, E.W, H);
+    // Escala: el punto (x, y) del dibujo va a (ox + x·esc, y·esc).
+    E.ox = (E.W - E.W*E.esc)/2;
+    ctx.setTransform(dpr*E.esc, 0, 0, dpr*E.esc, dpr*E.ox, 0);
+    P.pintar(ctx, c, E.W, E.vista, E.hl);
+    const ley = (P.leyenda ? P.leyenda(E.vista) : []).join(''), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+  };
+  E.describir = () => { const t = PINTA[E.vista.tipo].describir(E.vista), el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t; };
+  // Del punto del lienzo (CSS px) al del dibujo.
+  E.local = p => ({ x: (p.x - (E.ox || 0))/E.esc, y: p.y/E.esc });
+  return E;
+}
+
+/* ----- Resaltar en el dibujo lo que se toca en el texto (regla 4) ----- */
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un bucle que solo corre mientras algo se mueve.
+let RAF = 0, ULT = 0;
+function pedir(){ if (!RAF){ ULT = performance.now(); RAF = requestAnimationFrame(tick); } }
+function tick(now){
+  RAF = 0; const dt = Math.min(0.05, (now - ULT)/1000); ULT = now; let sigue = false;
+  for (const E of ESCENAS){
+    if (document.getElementById(E.modoId).hidden) continue;
+    for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(ease(Math.max(0, f))); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
+    E.dibujar();
+  }
+  if (sigue) pedir();
+}
+function animar(E, dur, paso, fin, retraso){
+  if (RM){ paso(1); if (fin) fin(); E.dibujar(); return; }
+  E.anims.push({ t:-(retraso || 0), dur, paso, fin }); pedir();
+}
+function cortar(E){ E.anims = []; }
+const LETRAS = 'abcd';
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${sinTab(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+
+/* ----- Moléculas de la escena (todas salen del motor) ----- */
+function mol(texto, o){
+  o = o || {};
+  const m = MH.molecula(texto);
+  return { m, c: MH.coordenadas(m, o.cadena ? { cadena: o.cadena } : undefined), op: {}, ...o };
+}
+// Opciones de dibujo con la cadena principal, la numeración y las ramas que da el motor.
+function conNombre(it, que){
+  const r = MH.nombre(it.m), op = {};
+  if (que.includes('cadena')) op.cadena = r.cadena;
+  if (que.includes('nums')) op.nums = r.cadena;
+  if (que.includes('subs')) op.subs = r.sustituyentes.flatMap(s => s.atomos);
+  it.op = { ...it.op, ...op }; it.partes = r.partes; it.rot = r.nombre;
+  return it;
+}
+// Descripción de una molécula para el lector de pantalla.
+function contar(it){ const f = MH.formula(it.m); return `${f.C} carbonos y ${f.H} hidrógenos`; }
+
+/* ----- Tocar y arrastrar sobre el dibujo: girar enlaces, agregar o quitar carbonos, cambiar un enlace -----
+   E.inter = { item, modo, alHacer(mensaje) }. Solo se activa después de responder (no regala la respuesta). */
+function interaccion(E){
+  const cv = E.cv;
+  const it = () => E.inter && E.vista.items[E.inter.item];
+  const objetivos = () => {
+    const x = it(); if (!x || !x._tf) return [];
+    const A = x.c.atomos, P = x._tf.P, modo = E.inter.modo, l = [];
+    if (modo === 'girar' || modo === 'enlace') x.m.en.forEach((e, k) => { const a = P(A[e.a]), b = P(A[e.b]); l.push({ enlace: k, X: (a.X + b.X)/2, Y: (a.Y + b.Y)/2 }); });
+    else x.m.at.forEach((a, i) => { if (a.el !== 'C') return; if (modo === 'agregar' && a.h < 1) return; if (modo === 'quitar' && x.m.en.filter(e => e.a === i || e.b === i).length > 1) return; const q = P(A[i]); l.push({ atomo: i, X: q.X, Y: q.Y }); });
+    return l;
+  };
+  const cercano = (p, r) => { const q = E.local(p); let mejor = null, d0 = r/E.esc; for (const o of objetivos()){ const d = Math.hypot(o.X - q.x, o.Y - q.y); if (d < d0){ d0 = d; mejor = o; } } return mejor; };
+  let blanco = null, ini = null, movido = 0, c0 = null;
+  Celular.arrastre(cv, {
+    activo: () => !!(E.inter && !E.ocupado),
+    cerca: (p, r) => !!cercano(p, r),
+    empezar: (p) => { blanco = cercano(p, Celular.RADIO_DEDO); ini = p; movido = 0; c0 = it().c; poner(blanco); },
+    mover: (p) => {
+      if (!blanco || !ini) return; movido = Math.max(movido, Math.hypot(p.x - ini.x, p.y - ini.y));
+      if (E.inter.modo !== 'girar' || blanco.enlace === undefined || movido < 6) return;
+      const x = it(), g = MH.girar(x.m, c0, blanco.enlace, clamp(movido/90, 0, 1)*Math.PI);
+      if (g.ok){ x.c = g.coords; E.dibujar(); }
+    },
+    soltar: () => {
+      if (!blanco) return;
+      const x = it();
+      if (movido < 6){ x.c = c0; hacer(blanco); }
+      else if (E.inter.modo === 'girar' && blanco.enlace !== undefined){
+        const g0 = MH.girar(x.m, c0, blanco.enlace, Math.PI);
+        if (!g0.ok){ aviso(g0.texto); }
+        else { const th = clamp(movido/90, 0, 1)*Math.PI, fin = th > Math.PI/2 ? Math.PI : 0;
+          E.ocupado = true; animar(E, 0.3, f => { x.c = MH.girar(x.m, c0, blanco.enlace, th + (fin - th)*f).coords; }, () => { x.c = MH.girar(x.m, c0, blanco.enlace, fin).coords; E.ocupado = false; listo(fin ? 'Giraste media vuelta un enlace simple.' : 'El enlace volvió a su lugar.'); }); }
+      }
+      blanco = null;
+    },
+  });
+  // Teclado: flechas para elegir un enlace o un átomo; Enter o espacio para actuar.
+  cv.addEventListener('keydown', e => {
+    if (!E.inter || E.ocupado) return;
+    const l = objetivos(); if (!l.length) return;
+    const k = { ArrowRight:1, ArrowDown:1, ArrowLeft:-1, ArrowUp:-1 }[e.key];
+    if (k){ e.preventDefault(); const i = l.findIndex(o => igual(o, E.foco)); E.foco = l[((i < 0 ? (k > 0 ? -1 : 0) : i) + k + l.length) % l.length]; poner(E.foco); decir(nombreObjetivo(E.foco)); return; }
+    if ((e.key === 'Enter' || e.key === ' ') && E.foco){ e.preventDefault(); hacer(E.foco); }
+  });
+  cv.addEventListener('blur', () => { E.foco = null; poner(null); });
+  const igual = (a, b) => a && b && a.enlace === b.enlace && a.atomo === b.atomo;
+  const poner = o => { const x = it(); if (!x) return; x.op.foco = o ? { enlace: o.enlace, atomo: o.atomo } : null; E.dibujar(); };
+  const decir = t => { if (E.inter.decir) E.inter.decir(t); };
+  const aviso = t => { decir(t); const x = it(); if (!x || RM) return; const c1 = x.c; E.ocupado = true;
+    // Un temblor corto: el doble enlace no se deja girar.
+    animar(E, 0.45, f => { const d = Math.sin(f*Math.PI*4)*0.06; x.c = { atomos: c1.atomos.map(p => ({ ...p, x: p.x + d })), enlaces: c1.enlaces }; }, () => { x.c = c1; E.ocupado = false; }); };
+  const listo = t => { if (E.inter.alHacer) E.inter.alHacer(t); else decir(t); };
+  function nombreObjetivo(o){
+    const x = it(), m = x.m;
+    if (o.enlace !== undefined){ const e = m.en[o.enlace], t = { 1:'simple', 2:'doble', 3:'triple', 1.5:'del benceno' }[e.o]; return `Enlace ${t} entre el carbono ${e.a + 1} y el ${e.b + 1} (números del dibujo, no del nombre).`; }
+    return `Carbono ${o.atomo + 1} (número del dibujo), con ${m.at[o.atomo].h} hidrógenos.`;
+  }
+  function hacer(o){
+    const x = it(), modo = E.inter.modo;
+    try {
+      if (modo === 'girar'){
+        const g = MH.girar(x.m, x.c, o.enlace, Math.PI);
+        if (!g.ok){ aviso(g.texto); return; }
+        const c1 = x.c; E.ocupado = true;
+        animar(E, 0.7, f => { x.c = MH.girar(x.m, c1, o.enlace, f*Math.PI, g.mueve).coords; }, () => { x.c = g.coords; E.ocupado = false; listo('Giraste media vuelta un enlace simple: cambió el dibujo.'); });
+        return;
+      }
+      const m2 = modo === 'agregar' ? MH.agregarC(x.m, o.atomo) : modo === 'quitar' ? MH.quitarC(x.m, o.atomo) : MH.cambiarEnlace(x.m, o.enlace);
+      x.m = m2; x.c = MH.coordenadas(m2); x.op.foco = null; E.foco = null;
+      if (E.inter.cambio) E.inter.cambio(x);
+      E.resize(); E.dibujar(); listo(modo === 'agregar' ? 'Agregaste un carbono.' : modo === 'quitar' ? 'Quitaste un carbono.' : 'Cambiaste el enlace.');
+    } catch (err){ decir(err.message.replace('hidrocarburos: ', '').replace(/^./, s => s.toUpperCase()) + '.'); }
+  }
+  E.hacer = hacer;
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Pasos 1 a 5 de «Propuesta para las plantillas → 3. Hidrocarburos: bolitas y palitos» de
+   docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md, más un alqueno que se numera por el
+   doble enlace y la hibridación con sus ángulos. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1');
+interaccion(E);
+const S = { step:0, max:0, pred:{} };
+
+// Datos de cada paso, todos del motor.
+const PENT = 'CH3-CH2-CH2-CH2-CH3', ESC = 'CH3-CH(C2H5)-CH2-CH3', DIB = [0, 1, 4, 5];
+const NESC = MH.nombre(ESC, { dibujada: DIB });
+const C5 = MH.contarIsomeros(5, 'alcano');
+const CT1 = MH.cisTrans('CH3-CH=CH-CH3'), CT2 = MH.cisTrans('CH2=C(CH3)2');
+const EB = MH.compararEbullicion(PENT, 'C(CH3)4');
+const ALQ = 'CH3-CH(CH3)-CH=CH-CH3', NALQ = MH.nombre(ALQ);
+const HIB = MH.hibridacion('CH≡C-CH3');
+const hibT = l => l.map(h => ({ sp3:'sp³', sp2:'sp²', sp:'sp' }[h])).join(', ').replace(/, ([^,]*)$/, ' y $1');
+const nomP = t => N({ partes: MH.nombre(t).partes });
+
+// El pentano «torcido»: el mismo grafo, con media vuelta en el enlace entre el C3 y el C4.
+function pentanos(r){
+  const a = mol(PENT, { rot:'dibujo A' }), b = mol(PENT, { rot:'dibujo B' });
+  b.c0 = b.c; b.c = MH.girar(b.m, b.c0, 2, Math.PI, 3).coords;
+  a.desc = 'Dibujo A: cinco carbonos en zigzag, cada uno con sus hidrógenos.'; b.desc = 'Dibujo B: cuatro carbonos en zigzag y el quinto hacia arriba, cada uno con sus hidrógenos.';
+  return { tipo:'mols', items:[a, b] };
+}
+
+const P1 = { id:'hc-pentano-torcido', ok:'b', opts:[
+  ['a', 'Sí: se dibujan distinto, así que son dos sustancias distintas', 'HC1-dibujo-distinto-es-otra', 'hipotesis'],
+  ['b', 'No: son la misma sustancia; girando enlaces simples, un dibujo se vuelve el otro'],
+  ['c', 'Sí: el dibujo B tiene una cadena de 4 C con una rama de 1 C, como el 2-metilbutano', 'HC3-torcida-es-rama', 'parcial'],
+  ['d', `Sí: tienen la misma fórmula, ${F('C5H12')}, y eso basta para ser isómeros`, 'HC1-misma-formula-basta', 'hipotesis']],
+  fb:{ b:'¡Bien! Los dos tienen los mismos átomos unidos de la misma forma: una fila de 5 carbonos. Mira cómo el dibujo B se endereza al girar un enlace simple.',
+    a:'Elegiste la 1. Un dibujo no es la molécula: lo que importa es quién está unido con quién. En los dos hay una fila de 5 C; el B solo tiene un enlace simple girado media vuelta. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    c:'Elegiste la 3. El quinto carbono del dibujo B está en la punta de la fila, no a un costado: sigue la cadena, que tiene 5 C. Una rama cuelga de un carbono del medio. No ver la cadena en un dibujo torcido es la dificultad documentada al nombrar (HC3), sin porcentaje en lo que leímos. La correcta está marcada.',
+    d:`Elegiste la 4. La misma fórmula es necesaria, pero no basta: los isómeros además tienen sus átomos unidos de otra forma. Aquí la unión es la misma: es una sola sustancia, el pentano. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P2 = { id:'hc-cadena-escondida', ok:'c', opts:[
+  ['a', N({ partes: NESC.erroresPartes.cadenaDibujada }), 'HC3-cadena-horizontal', 'parcial'],
+  ['b', N({ partes: NESC.erroresPartes.cadenaDibujadaContraria }), 'HC3-horizontal-y-numeracion', 'hipotesis'],
+  ['c', N(NESC)],
+  ['d', N({ partes: NESC.erroresPartes.todosLosC }), 'HC3-todos-los-C', 'hipotesis']],
+  fb:{ c:'¡Bien! La cadena más larga no es la horizontal: sube por el etilo y tiene 5 carbonos. Queda un metilo en el carbono 3. Mira la cadena principal en azul y la numeración.',
+    a:`Elegiste la 1 (${NESC.errores.cadenaDibujada}). Tomaste la cadena horizontal, de 4 C, como principal. Pero hay una más larga: entra por el etilo y tiene 5 C. Una rama «etil» en el carbono 2 siempre alarga la cadena. No hallar la cadena principal es la dificultad documentada en escolares de Ghana, sin porcentaje en lo que leímos (Adu-Gyamfi, Ampiah y Appiah, 2017, por la descripción de otro artículo). La correcta está marcada.`,
+    b:`Elegiste la 2 (${NESC.errores.cadenaDibujadaContraria}). Tomaste la cadena horizontal y, además, la numeraste desde el lado más lejano a la rama. La cadena más larga tiene 5 C y pasa por el etilo. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`Elegiste la 4 (${NESC.errores.todosLosC}). La molécula tiene 6 carbonos, pero no están todos en fila: uno queda como rama. El nombre sale de la cadena más larga, de 5. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P3 = { id:'hc-contar-c5h12', ok:'b', opts:[
+  ['a', `${C5.errores.sinCuaternario} alcanos`, 'HC1-olvida-cuaternario', 'hipotesis'],
+  ['b', `${C5.n} alcanos`],
+  ['c', `${C5.errores.torcidaDosVeces} alcanos`, 'HC1-torcida-dos-veces', 'hipotesis'],
+  ['d', `${C5.errores.deUnCarbonoMas} alcanos`, 'HC1-confunde-c6', 'hipotesis']],
+  fb:{ b:'¡Bien! Hay 3: la cadena recta, la de 4 con un metilo y la de 3 con dos metilos en el mismo carbono. Mira los tres y el que sobra, que se repite.',
+    a:`Elegiste la 1. Falta el que tiene un carbono unido a otros cuatro: el ${C5.nombres[2]}, una cruz de 5 C. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    c:'Elegiste la 3. Uno de tus 4 es repetido: una cadena de 5 dibujada torcida sigue siendo el pentano, y un metilo en la punta de un butano también. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    d:'Elegiste la 4. Con 6 carbonos (C₆H₁₄) hay 5 alcanos; con 5 carbonos hay menos. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P4 = { id:'hc-cis-trans', ok:'c', opts:[
+  ['a', 'Los dos: tienen un doble enlace, y todo doble enlace da cis y trans', 'HC4-todo-alqueno', 'parcial'],
+  ['b', 'Solo el 2-metilpropeno: es el ramificado', 'HC4-el-ramificado', 'hipotesis'],
+  ['c', 'Solo el but-2-eno: cada carbono de su doble enlace tiene dos grupos distintos'],
+  ['d', 'Ninguno: para cis y trans hacen falta halógenos en el doble enlace', 'HC4-solo-halogenos', 'parcial']],
+  fb:{ c:'¡Bien! En el but-2-eno cada carbono del doble enlace tiene un H y un CH₃: los CH₃ pueden quedar del mismo lado (cis) o en lados opuestos (trans). En el 2-metilpropeno un carbono tiene dos CH₃: al cambiarlos de lado sale la misma molécula. Mira el dibujo.',
+    a:'Elegiste la 1. El doble enlace es necesario, pero no basta: además, cada carbono del doble enlace tiene que tener dos grupos distintos. El carbono 2 del 2-metilpropeno tiene dos CH₃ iguales. Ver cis-trans en todo alqueno está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012, por la descripción de un buscador). La correcta está marcada.',
+    b:'Elegiste la 2. Ser ramificado no da cis-trans: lo que importa es qué tiene cada carbono del doble enlace. En el 2-metilpropeno, uno tiene dos CH₃ iguales. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    d:'Elegiste la 3. No hacen falta halógenos: basta que cada carbono del doble enlace tenga dos grupos distintos, como el H y el CH₃ del but-2-eno. Creer que hacen falta dos halógenos está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012, por la descripción de un buscador). La correcta está marcada.' } };
+const P5 = { id:'hc-ebullicion', ok:'b', opts:[
+  ['a', 'A la misma temperatura: los dos tienen 5 carbonos', 'HC2-numero-de-carbonos', 'documentado'],
+  ['b', 'El pentano: su cadena recta tiene más superficie de contacto con las moléculas vecinas'],
+  ['c', 'El 2,2-dimetilpropano: es más compacto y sus moléculas se juntan más', 'HC2-compacto-hierve-mas', 'hipotesis'],
+  ['d', 'El 2,2-dimetilpropano: tiene más ramas, y cada rama suma fuerza de atracción', 'HC2-ramas-suman', 'hipotesis']],
+  fb:{ b:`¡Bien! El pentano hierve a ${fmt(EB.a.teb)} °C y el 2,2-dimetilpropano a ${fmt(EB.b.teb)} °C (de tabla). La molécula recta toca más a sus vecinas; la ramificada es casi una bola y se toca poco.`,
+    a:`Elegiste la 1. La cantidad de carbonos cuenta, pero no lo es todo: con los mismos 5 C, la forma cambia cuánto se tocan las moléculas. En una pregunta parecida, con butano, cerca de 1 de cada 5 de 246 escolares alemanes de los últimos años eligió que el punto de ebullición lo decide el número de carbonos (Schmidt, 1996). La correcta está marcada.`,
+    c:'Elegiste la 3. Más compacto quiere decir menos superficie para tocar a las vecinas: las fuerzas entre moléculas son más débiles y hierve antes. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    d:'Elegiste la 4. Las ramas no suman atracción: la quitan, porque la molécula se hace más redonda y toca menos a sus vecinas. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P6 = { id:'hc-alqueno-numeracion', ok:'d', opts:[
+  ['a', N({ partes: NALQ.erroresPartes.numeracionPorSustituyente }), 'numerar-por-la-rama', 'hipotesis'],
+  ['b', N({ partes: NALQ.erroresPartes.localizadorMayor }), 'localizador-mayor', 'hipotesis'],
+  ['c', N({ partes: NALQ.erroresPartes.comoAlcano }), 'olvida-el-doble', 'hipotesis'],
+  ['d', N(NALQ)]],
+  fb:{ d:'¡Bien! Se numera desde el lado más cercano al doble enlace: queda entre el C2 y el C3, y se escribe el número más bajo, 2. El metilo queda en el C4.',
+    a:`Elegiste la 1 (${NALQ.errores.numeracionPorSustituyente}). Numeraste para que la rama tenga el número más bajo. En un alqueno manda el doble enlace: va primero. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    b:`Elegiste la 2 (${NALQ.errores.localizadorMayor}). La numeración es la buena, pero el doble enlace va entre el C2 y el C3, y se escribe el número más bajo de los dos: 2. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    c:`Elegiste la 3 (${NALQ.errores.comoAlcano}). Ese es el nombre del alcano con el mismo esqueleto: falta el doble enlace, que da el sufijo -eno y manda en la numeración. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P7 = { id:'hc-hibridacion', ok:'a', opts:[
+  ['a', `${hibT(HIB.hibs)}: los dos del triple enlace son sp; el CH₃, solo con enlaces simples, es sp³`],
+  ['b', `${hibT(HIB.errores.todoSp3)}: todo carbono es sp³, como en el metano`, 'hibridacion-todo-sp3', 'hipotesis'],
+  ['c', `${hibT(HIB.errores.exponenteEsOrden)}: el exponente es la cantidad de enlaces entre los dos carbonos`, 'hibridacion-exponente-orden', 'hipotesis'],
+  ['d', `${hibT(HIB.errores.todoSp)}: la molécula entera es una línea recta`, 'hibridacion-todo-sp', 'hipotesis']],
+  fb:{ a:'¡Bien! Un carbono con un triple enlace es sp: sus dos enlaces quedan en línea (180°). El CH₃ tiene cuatro enlaces simples: sp³, con ángulos de 109,5°. Mira los ángulos.',
+    b:'Elegiste la 2. El sp³ es el de los carbonos con cuatro enlaces simples. Con un triple enlace, el carbono es sp: solo dos «direcciones», en línea. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    c:'Elegiste la 3. El exponente no es el número de enlaces entre dos carbonos. Un triple enlace deja al carbono con dos direcciones (sp, 180°); un doble, con tres (sp², 120°); solo simples, con cuatro (sp³, 109,5°). Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    d:'Elegiste la 4. Los tres carbonos están en línea, pero el CH₃ no es sp: tiene cuatro enlaces simples hacia los vértices de un tetraedro. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+
+// Vistas de cada paso (r: ya respondió).
+function vPropano(){
+  const a = mol('CH3-CH2-CH3', { rot:'bolitas y palitos', desc:'Propano en bolitas y palitos: tres carbonos en zigzag con ocho hidrógenos.' });
+  const b = mol('CH3-CH2-CH3', { rot:'esqueleto', modo:'esqueleto', desc:'Propano en fórmula de esqueleto: una línea quebrada; cada punta y cada quiebre es un carbono.' });
+  return { tipo:'mols', items:[a, b] };
+}
+function vEscondida(r){
+  const it = mol(ESC, { cadena: DIB, rot: r ? NESC.nombre : '¿cómo se llama?' });
+  it.desc = 'Una cadena horizontal de cuatro carbonos; del segundo sale hacia arriba una rama de dos carbonos.';
+  if (r){ conNombre(it, ['cadena', 'nums', 'subs']); it.desc = `La cadena principal tiene 5 carbonos y sube por la rama de arriba; queda un metilo en el carbono 3: ${NESC.nombre}.`; }
+  return { tipo:'mols', items:[it] };
+}
+function vC5(r){
+  if (!r){ const it = mol(PENT, { rot:'uno de ellos: el pentano', desc:'El pentano, C5H12, en bolitas y palitos.' }); return { tipo:'mols', items:[it] }; }
+  const its = MH.isomeros(5, 'alcano').map(z => { const it = { m: z.molecula, c: MH.coordenadas(z.molecula), op:{} }; conNombre(it, []); it.desc = z.nombre + '.'; return it; });
+  const rep = mol(PENT, { rot:'repetido', rot2:'es el pentano, torcido', tachado:true, desc:'El cuarto dibujo, tachado, es el pentano torcido: repetido.' });
+  rep.c = MH.girar(rep.m, MH.girar(rep.m, rep.c, 2, Math.PI, 3).coords, 1, Math.PI, 0).coords;
+  return { tipo:'mols', items:[...its, rep] };
+}
+function vCisTrans(r, p){
+  const a = mol('CH3-CH=CH-CH3', { rot:'but-2-eno' }), b = mol('CH2=C(CH3)2', { rot:'2-metilpropeno' });
+  a.desc = 'But-2-eno: un doble enlace entre dos carbonos; cada uno tiene un hidrógeno y un CH3.'; b.desc = '2-metilpropeno: un doble enlace; un carbono tiene dos hidrógenos y el otro, dos CH3.';
+  if (r){
+    for (const [it, t] of [[a, 'CH3-CH=CH-CH3'], [b, 'CH2=C(CH3)2']]){
+      const q = MH.probarIntercambio(t); it.c0 = it.c;
+      it.c = MH.intercambiar(it.m, it.c0, q.enlace, q.mueve, (p === undefined ? 1 : p)*Math.PI).coords;
+      if (p === undefined || p >= 1){ it.rot = q.mismaMolecula ? `${q.antes} → ${q.despues}` : `${q.antes} → ${q.despues}`; it.rot2 = q.mismaMolecula ? 'la misma molécula' : 'otra molécula'; it.rot2Color = q.mismaMolecula ? 'muted' : 'ink'; it.op.marca = q.mueve; }
+    }
+    a.desc = 'Se cambian de lado los dos grupos de un carbono del doble enlace: en el but-2-eno, los CH3 pasan de lados opuestos (trans) al mismo lado (cis): otra molécula.';
+    b.desc = 'En el 2-metilpropeno, los dos CH3 cambian de lugar y queda la misma molécula.';
+  }
+  return { tipo:'mols', items:[a, b] };
+}
+function vEbullicion(r, p){
+  const a = mol(PENT, { rot:'pentano', teb:{ valor: EB.a.teb, ver: !!r, p } }), b = mol('C(CH3)4', { rot:'2,2-dimetilpropano', teb:{ valor: EB.b.teb, ver: !!r, p } });
+  a.desc = 'Pentano: cadena recta de 5 carbonos.'; b.desc = '2,2-dimetilpropano: un carbono central con cuatro CH3, como una cruz.';
+  if (r){ a.op.nube = b.op.nube = true; a.desc += ` Hierve a ${fmt(EB.a.teb)} °C.`; b.desc += ` Hierve a ${fmt(EB.b.teb)} °C: a 20 °C ya es gas.`; }
+  return { tipo:'mols', items:[a, b] };
+}
+function vAlqueno(r){
+  // Dibujada en el orden en que se lee la fórmula: la rama a la izquierda, el doble enlace a la derecha.
+  const it = mol(ALQ, { cadena:[0, 1, 3, 4, 5], rot: r ? NALQ.nombre : '¿cómo se llama?', desc:'Cinco carbonos en zigzag, en el orden de la fórmula: del segundo cuelga un CH3 y hay un doble enlace entre el tercero y el cuarto.' });
+  if (r){ conNombre(it, ['cadena', 'nums', 'subs']); it.desc = `Numerada desde la derecha, el lado del doble enlace: el doble enlace queda entre el C2 y el C3 y el metilo en el C4: ${NALQ.nombre}.`; }
+  return { tipo:'mols', items:[it] };
+}
+function vPropino(r){
+  const it = mol('CH≡C-CH3', { rot:'propino', desc:'Propino: tres carbonos en línea; un triple enlace entre los dos primeros.' });
+  if (r){ it.op.hib = it.op.ang = true; it.desc = 'Hibridación: sp, sp y sp3. Los dos primeros carbonos tienen enlaces a 180°; el CH3, a 109,5° en el espacio.'; }
+  return { tipo:'mols', items:[it] };
+}
+
+const steps = [
+ { k:'Paso 1', t:'Cuatro palitos por carbono', vista:() => vPropano(),
+   body:() => `<p class="problem">Una molécula orgánica es un grupo de átomos unidos. En esta escena cada ${F('C')} (carbono) es una bolita gris con 4 palitos, sus 4 enlaces; cada ${F('H')} (hidrógeno) es una bolita turquesa con 1 palito.</p>
+   <p>El propano tiene 3 carbonos en fila. Se puede escribir de cuatro maneras:</p>
+   <div class="eqs"><div class="eq"><span class="ex"><b>Molecular</b>: ${F('C3H8')}</span><span class="note">Solo cuántos átomos de cada elemento hay.</span></div>
+   <div class="eq"><span class="ex"><b>Semidesarrollada</b>: ${F('CH3–CH2–CH3')}</span><span class="note">Los carbonos en orden, cada uno con sus H; los guiones son los enlaces entre carbonos.</span></div>
+   <div class="eq"><span class="ex"><b>Desarrollada</b>: todos los enlaces dibujados, como las bolitas y palitos de la izquierda.</span></div>
+   <div class="eq"><span class="ex"><b>De esqueleto</b> (topológica): una línea quebrada. Cada punta y cada quiebre es un C; los H no se dibujan.</span></div></div>
+   <p class="hint">Cada elemento tiene su color en el texto y en el dibujo: ${F('C')} gris y ${F('H')} turquesa. Ese color es una clave, no el color real. Más adelante aparecen la cadena principal, los números, las ramas y los enlaces dobles con su propio color. Toca un color del texto para resaltarlo en el dibujo.</p>` },
+ { k:'Paso 2', t:'Dos dibujos', gate:P1, vista:r => pentanos(r),
+   body:() => `<p>Los dibujos A y B son de moléculas con la fórmula ${F('C5H12')}. En los dos, cada carbono tiene sus 4 enlaces.</p>
+   <p>¿Son isómeros, es decir, sustancias distintas con la misma fórmula?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div class="tras" hidden><p>Un enlace simple deja girar lo que está a un lado, como una rueda en su eje: el dibujo cambia, la molécula no. Lo que define a la sustancia es el <b>grafo</b>: qué átomo está unido con cuál. Los dos dibujos son el pentano.</p>
+   <p><b>Ahora tú:</b> toca un enlace del dibujo B (o arrástralo) para girarlo media vuelta. Con el teclado: enfoca el dibujo, elige un enlace con las flechas y pulsa Enter.</p>
+   <p class="estado" id="estado1" aria-live="polite"></p>
+   <div class="fila">${otraVez}</div>
+   <p class="fuente">Reducir la isomería a «mover una rama», o a lo que «se parece», aparece en un estudio con 7441 escolares alemanes (Schmidt, 1992, por su resumen), sin porcentaje en lo que leímos. Que un dibujo distinto sea otra sustancia, y que la misma fórmula baste, son hipótesis nuestras que salen de ahí.</p></div>` },
+ { k:'Paso 3', t:'Un nombre para esta molécula', gate:P2, vista:r => vEscondida(r),
+   body:() => `<p>Esta molécula es ${F('CH3–CH(C2H5)–CH2–CH3')}: una fila horizontal de 4 carbonos y, en el segundo, una rama de 2 carbonos hacia arriba.</p>
+   <p>¿Cuál es su nombre IUPAC?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">1. La ${V('cad', 'cadena principal')} es la más larga, aunque se doble: aquí, 5 C (${V('cad', 'pent')}-).</span></div>
+   <div class="eq"><span class="ex">2. Se numera desde la punta más cercana a una rama: los ${V('loc', 'localizadores')} más bajos.</span></div>
+   <div class="eq"><span class="ex">3. Las ${V('sus', 'ramas')} van delante, con su número: ${N(NESC)}.</span><span class="note">Fórmula: ${F('C6H14')}. Es un isómero del hexano.</span></div></div>
+   <div class="fila"><button type="button" class="btn" id="buscar">Buscar la cadena más larga</button></div>
+   <p class="estado" id="estado2" aria-live="polite"></p>
+   <p class="fuente">No hallar la cadena principal ni reconocer un sustituyente (HC3) es la dificultad documentada en escolares de Ghana, sin porcentaje en lo que leímos (Adu-Gyamfi, Ampiah y Appiah, 2017, por la descripción de otro artículo); con modelos de bolitas y palitos mejoró su desempeño (Sarkodie y Adu-Gyamfi, por su resumen). Las otras opciones son hipótesis nuestras.</p></div>` },
+ { k:'Paso 4', t:'¿Cuántos hay?', gate:P3, vista:r => vC5(r),
+   body:() => `<p>El pentano es uno de los alcanos con fórmula ${F('C5H12')}.</p>
+   <p>¿Cuántos alcanos distintos tienen esa fórmula (contando el pentano)?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">${MH.isomeros(5, 'alcano').map(z => N(MH.nombre(z.molecula))).join(' · ')}</span><span class="note">Cadena de 5; cadena de 4 con una rama; cadena de 3 con dos ramas en el mismo carbono.</span></div></div>
+   <p>El motor guarda cada molécula por su grafo y avisa cuando una «nueva» ya existía: un metilo en la punta de un butano, o una cadena torcida, es el pentano otra vez.</p>
+   <p>Los alcanos ${F('CnH2n+2')} tienen 1, 1, 1, 2, 3, 5, 9 y 18 isómeros de 1 a 8 carbonos: crecen rápido.</p>
+   <p class="fuente">Los errores de conteo (olvidar el de un carbono cuaternario, contar dos veces una cadena torcida) son hipótesis nuestras, de la tabla de lo que no tiene respaldo del informe.</p></div>` },
+ { k:'Paso 5', t:'Dos alquenos', gate:P4, vista:r => vCisTrans(r, r ? 1 : undefined),
+   body:() => `<p>El but-2-eno, ${F('CH3–CH=CH–CH3')}, y el 2-metilpropeno, ${F('CH2=C(CH3)2')}, tienen la misma fórmula, ${F('C4H8')}. Los dos tienen un ${V('mul', 'doble enlace')}, y un doble enlace no gira como uno simple.</p>
+   <p>¿Cuál tiene isómeros cis y trans?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div class="tras" hidden><p>Para pasar de una forma a la otra habría que girar media vuelta el doble enlace (romper su segundo enlace). El dibujo muestra ese cambio, hecho a mano: en el but-2-eno sale <b>otra</b> molécula (trans → cis); en el 2-metilpropeno sale <b>la misma</b>.</p>
+   <div class="eqs"><div class="eq"><span class="ex">Hay cis-trans si <b>cada</b> carbono del doble enlace tiene dos grupos distintos.</span><span class="note">Propeno y 2-metilpropeno: no. But-2-eno y pent-2-eno: sí. También en anillos, como el 1,2-dimetilciclopropano.</span></div></div>
+   <div class="fila">${otraVez}</div>
+   <p class="fuente">Ver cis-trans en todo alqueno, o creer que hacen falta halógenos, está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012, por la descripción de un buscador). «Solo el ramificado» es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 6', t:'¿Cuál hierve a más temperatura?', gate:P5, vista:r => vEbullicion(r, r ? 1 : undefined),
+   body:() => `<p>El pentano y el 2,2-dimetilpropano son isómeros: los dos son ${F('C5H12')}. Uno es una cadena recta; el otro, una cruz con un carbono en el centro.</p>
+   <p>¿Cuál tiene el ${V('T', 'punto de ebullición')} más alto?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">pentano: ${V('T', fmt(EB.a.teb) + ' °C')} · 2,2-dimetilpropano: ${V('T', fmt(EB.b.teb) + ' °C')}</span><span class="note">Datos de tabla (CRC Handbook), no salen de una fórmula. A 20 °C el pentano es líquido y el 2,2-dimetilpropano, gas.</span></div></div>
+   <p>Las moléculas de un alcano se atraen con fuerzas débiles que crecen con la superficie en que se tocan (la nube gris). Regla para el examen: más carbonos, más alto; con los mismos carbonos, más ramas, más bajo.</p>
+   <div class="fila">${otraVez}</div>
+   <p class="fuente">Que el punto de ebullición lo decide solo el número de carbonos (HC2): en una pregunta con butano, cerca de 1 de cada 5 de 246 escolares alemanes de 12.° y 13.° grado eligió esa razón, y acertó cerca de un tercio (Schmidt, 1996). Las otras opciones son hipótesis nuestras.</p></div>` },
+ { k:'Paso 7', t:'Un alqueno con rama', gate:P6, vista:r => vAlqueno(r),
+   body:() => `<p>Esta molécula es ${F('CH3–CH(CH3)–CH=CH–CH3')}: 5 carbonos en fila, con un ${V('mul', 'doble enlace')} y una rama.</p>
+   <p>¿Cuál es su nombre IUPAC?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">1. La ${V('cad', 'cadena principal')} pasa por el ${V('mul', 'doble enlace')}.</span></div>
+   <div class="eq"><span class="ex">2. Se numera para que el doble enlace tenga el ${V('loc', 'localizador')} más bajo; después, las ${V('sus', 'ramas')}.</span></div>
+   <div class="eq"><span class="ex">3. ${N(NALQ)}</span><span class="note">Forma anterior, que aún usan muchos libros: ${NALQ.antiguo}. Fórmula: ${F('C6H12')}, como un alqueno ${F('CnH2n')}.</span></div></div>
+   <p class="hint">Convención: usamos la regla de los libros escolares y las academias, en la que la cadena principal pasa por el doble enlace. Las recomendaciones IUPAC de 2013 eligen primero la cadena más larga; en esta molécula las dos reglas dan el mismo nombre.</p>
+   <p class="fuente">Numerar por la rama, escribir el número mayor del doble enlace u olvidarlo son hipótesis nuestras, de la tabla de lo que no tiene respaldo del informe.</p></div>` },
+ { k:'Paso 8', t:'El carbono y sus enlaces', gate:P7, vista:r => vPropino(r),
+   body:() => `<p>El propino es ${F('CH≡C–CH3')}: un ${V('mul', 'triple enlace')} entre los dos primeros carbonos.</p>
+   <p>¿Qué hibridación tiene cada carbono, de izquierda a derecha?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div class="tras" hidden><table class="tabla"><tr><th>Carbono con…</th><th>Hibridación</th><th>${V('ang', 'Ángulo')}</th></tr>
+   <tr><td>4 enlaces simples</td><td>sp³</td><td>${V('ang', '109,5°')} (tetraedro)</td></tr>
+   <tr><td>un doble enlace (o en el benceno)</td><td>sp²</td><td>${V('ang', '120°')} (plano)</td></tr>
+   <tr><td>un triple enlace (o dos dobles)</td><td>sp</td><td>${V('ang', '180°')} (lineal)</td></tr></table>
+   <p>El dibujo es plano: muestra bien los 180° y los 120°, pero el tetraedro del sp³ está en el espacio.</p>
+   <div class="eqs"><div class="eq"><span class="ex">Alcanos ${F('CnH2n+2')} · alquenos y cicloalcanos ${F('CnH2n')} · alquinos ${F('CnH2n−2')}</span><span class="note">Cada doble enlace o anillo quita 2 H; cada triple, 4. Insaturaciones = (2C + 2 − H) / 2.</span></div></div>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras, sin estudio que las mida.</p></div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+// Lo que pasa después de responder (o al pedir «Ver de nuevo»); todo lo calcula el motor.
+function mostrar(n){
+  cortar(E); E.inter = null;
+  if (n === 1){
+    E.vista = pentanos(true); const b = E.vista.items[1], c0 = b.c0;
+    animar(E, 1.1, f => { b.c = MH.girar(b.m, c0, 2, (1 - f)*Math.PI, 3).coords; }, () => { b.c = MH.girar(b.m, c0, 2, 0, 3).coords; b.rot = 'dibujo B, enderezado'; E.describir(); activarGiro(); }, 0.25);
+    E.vista.items[1].desc = 'El dibujo B se endereza al girar media vuelta un enlace simple: queda igual al A.';
+  } else if (n === 2){
+    E.vista = vEscondida(true); const it = E.vista.items[0], fin = { ...it.op }; it.op = { prueba: DIB }; it.rot = 'la cadena horizontal: 4 C'; it.partes = null;
+    animar(E, 0.9, () => {}, () => { it.op = fin; it.partes = MH.nombre(it.m).partes; E.describir(); }, 0.4);
+  } else if (n === 4){
+    E.vista = vCisTrans(true, 0);
+    animar(E, 1.2, f => { const v = vCisTrans(true, f); E.vista.items.forEach((it, k) => { it.c = v.items[k].c; }); }, () => { E.vista = vCisTrans(true, 1); E.describir(); }, 0.3);
+  } else if (n === 5){
+    E.vista = vEbullicion(true, 0);
+    animar(E, 1.2, f => { E.vista.items.forEach(it => { it.teb.p = f; }); }, () => E.describir(), 0.2);
+  } else E.vista = steps[n].vista(true);
+  E.dibujar(); pedir();
+}
+function activarGiro(){
+  E.inter = { item:1, modo:'girar', decir: t => { const el = $('estado1'); if (el) el.textContent = t; },
+    alHacer: t => { const el = $('estado1'); if (el) el.textContent = t + ' Sigue siendo el pentano: la misma molécula.'; const b = E.vista.items[1]; if (b) b.rot = 'dibujo B, girado'; E.dibujar(); E.describir(); } };
+  E.cv.tabIndex = 0;
+}
+let busca = -1;
+function enlazar(){
+  const body = $('stepBody');
+  const rep = body.querySelector('[data-repetir]'); if (rep) rep.onclick = () => { mostrar(S.step); E.describir(); subir(); };
+  const bu = $('buscar');
+  if (bu) bu.onclick = () => {
+    // Recorre las cadenas de punta a punta, de la más corta a la más larga, y termina en la principal.
+    const l = MH.cadenas(ESC).slice().reverse(), it = E.vista.items[0];
+    busca = (busca + 1) % (l.length + 1);
+    if (busca === l.length){ conNombre(it, ['cadena', 'nums', 'subs']); delete it.op.prueba; $('estado2').textContent = `La más larga tiene ${NESC.cadena.length} carbonos: es la cadena principal.`; }
+    else { it.op = { prueba: l[busca].atomos }; it.partes = null; it.rot = `una cadena de ${l[busca].largo} C`; $('estado2').textContent = `Cadena ${busca + 1} de ${l.length}: ${l[busca].largo} carbonos de punta a punta.`; }
+    E.dibujar(); subir();
+  };
+}
+const subir = () => { if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  const s = steps[n]; S.step = n; cortar(E); E.inter = null; E.cv.tabIndex = -1; busca = -1;
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  E.vista = s.vista(r);
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  enlazar(); pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (n === 1 && r){ const b = E.vista.items[1]; b.c = b.c0; b.rot = 'dibujo B, enderezado'; activarGiro(); }
+  nav(); E.dibujar(); pedir(); E.describir();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('stepBody').querySelectorAll('.tras').forEach(el => el.hidden = false);
+    enlazar();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots(); nav();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    // En el celular el dibujo sube a la vista y la animación arranca ~380 ms después (nucleo/celular.js).
+    const paso = S.step; E.compactar(false);
+    Celular.alResponder($('cv'), () => { mostrar(paso); E.describir(); }, () => S.step === paso);
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Cada experimento arranca con una predicción; lo que la respondería (los nombres, el conteo, los ángulos, el armado
+   libre) se muestra después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2');
+interaccion(E);
+const nomP = t => N({ partes: MH.nombre(t).partes });
+const BUT = 'CH3-CH2-CH2-CH3', ARM = MH.armar(BUT, [['agregar', 1]]), NARM = MH.nombre(ARM.molecula);
+const C6 = MH.contarIsomeros(6, 'alcano');
+const C4 = MH.contarIsomeros(4, 'CnH2n', { cisTrans: true });
+const ISO = MH.compararIsomeria('C1CCC1', 'CH2=CH-CH2-CH3');
+const INT = MH.probarIntercambio('CH2=C(CH3)2'), INT2 = MH.probarIntercambio('CH3-CH=CH-CH3');
+const HE = MH.hibridacion('CH≡CH');
+
+// El armado libre: la molécula de la mesa y lo que dice el motor de ella.
+const MESA = { modo:'agregar', esq:false };
+function resumen(it){
+  const r = MH.armar(it.m, []), t = MH.tiposCarbono(it.m).cuenta, ct = MH.cisTrans(it.m);
+  const cl = Object.entries(t).filter(([, k]) => k).map(([c, k]) => `${k} ${c}${k > 1 ? 's' : ''}`).join(', ');
+  return `<div class="eqs"><div class="eq"><span class="ex">${N(MH.nombre(it.m))} · ${F(r.formula)} · ${r.tipo}</span>${r.semidesarrollada ? `<span class="note">${F(r.semidesarrollada)}</span>` : ''}</div>
+    <div class="eq"><span class="ex">Carbonos: ${cl || 'uno solo (el del metano no se clasifica)'}.</span><span class="note">${ct.tiene ? 'Tiene isómeros cis y trans: ' + ct.razon + '.' : 'Sin cis-trans: ' + ct.razon + '.'}</span></div></div>`;
+}
+function vMesa(it){ it.modo = MESA.esq ? 'esqueleto' : 'bolitas'; conNombre(it, ['cadena', 'nums', 'subs']); it.desc = `${it.rot}: ${contar(it)}.`; return { tipo:'mols', items:[it] }; }
+
+const EXPS = [
+  { id:'agregar-carbono', corto:'Arma tu alcano',
+    q:`Al butano, ${F('CH3–CH2–CH2–CH3')}, se le agrega un carbono (con sus H) en el segundo carbono, el del anillo punteado. ¿Cómo se llama la molécula nueva?`,
+    opts:[['a', `${N({ partes: NARM.erroresPartes.todosLosC })}: el carbono nuevo alarga la cadena a 5`, 'todo-C-alarga', 'hipotesis'],
+          ['b', `${N(NARM)}: la cadena más larga sigue con 4 C y queda una rama en el C2`],
+          ['c', `${N({ partes: NARM.erroresPartes.numeracionContraria })}: la rama queda en el tercer carbono contando desde el otro lado`, 'numeracion-contraria', 'hipotesis'],
+          ['d', 'Un isómero del butano: solo se le agregó una rama', 'HC1-isomero-es-agregar-rama', 'parcial']],
+    ok:'b',
+    fb:{ a:'Un carbono en un extremo alarga la cadena; en el segundo carbono, queda como rama: la cadena más larga sigue teniendo 4. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'Se numera desde la punta más cercana a la rama: queda en el 2, no en el 3. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Al agregar un carbono cambia la fórmula (de C₄H₁₀ a C₅H₁₂): ya no es un isómero del butano. Reducir la isomería a «mover o poner una rama» aparece en escolares alemanes, sin porcentaje en lo que leímos (Schmidt, 1992, por su resumen).' },
+    antes:() => { const it = mol(BUT, { rot:'butano', desc:'Butano: cuatro carbonos en zigzag; el segundo está marcado con un anillo punteado.' }); it.op.marca = 1; return { tipo:'mols', items:[it] }; },
+    despues:() => { const it = { m: ARM.molecula, c: MH.coordenadas(ARM.molecula), op:{} }; return vMesa(it); },
+    mesa:true,
+    exp:() => `<p>Ahora arma lo que quieras. Elige qué hace el toque y toca un carbono o un enlace del dibujo (con el teclado: enfoca el dibujo, flechas y Enter). El nombre, la fórmula y la cadena principal se recalculan solos.</p>
+      <div class="seg" id="mesaModo" role="group" aria-label="Qué hace el toque">
+        <button type="button" data-m="agregar" aria-pressed="true">Agregar C</button><button type="button" data-m="quitar" aria-pressed="false">Quitar C</button>
+        <button type="button" data-m="enlace" aria-pressed="false">Cambiar enlace</button><button type="button" data-m="girar" aria-pressed="false">Girar</button></div>
+      <div class="fila"><button type="button" class="btn" id="mesaEsq" aria-pressed="false">Ver como esqueleto</button><button type="button" class="btn" id="mesaOtra">Empezar con el butano</button></div>
+      <p class="estado" id="mesaEst" aria-live="polite"></p>
+      <div id="mesaRes"></div>
+      <p class="fuente">El armado usa la regla escolar para la cadena principal (la que pasa por los enlaces dobles o triples). Si armas un alqueno donde la IUPAC de 2013 elegiría otra cadena, el motor lo avisa.</p>` },
+  { id:'isomeros-c6', corto:'Los isómeros del C₆H₁₄',
+    q:`¿Cuántos alcanos distintos tienen la fórmula ${F('C6H14')}?`,
+    opts:[['a', `${C6.errores.sinCuaternario} alcanos`, 'olvida-cuaternario', 'hipotesis'], ['b', `${C6.n} alcanos`], ['c', `${C6.errores.torcidaDosVeces} alcanos`, 'torcida-dos-veces', 'hipotesis'], ['d', `${C6.errores.deUnCarbonoMas} alcanos`, 'confunde-c7', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Falta el 2,2-dimetilbutano: dos metilos en un mismo carbono, que queda unido a otros cuatro. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'Uno de tus 6 es repetido: una cadena torcida, o un etilo en el C2 de un butano (que es el 3-metilpentano), no es una molécula nueva. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'9 son los de C₇H₁₆. Con 6 carbonos son 5. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ tipo:'mols', items:[mol('CCCCCC', { rot:'uno de ellos: el hexano', desc:'El hexano, C6H14, en bolitas y palitos.' })] }),
+    despues:() => ({ tipo:'mols', items: MH.isomeros(6, 'alcano').map(z => { const it = conNombre({ m: z.molecula, c: MH.coordenadas(z.molecula), op:{} }, []); const t = MH.ebullicion(z.molecula).teb; it.teb = { valor: t, ver: true }; it.desc = `${z.nombre}, hierve a ${fmt(t)} °C.`; return it; }) }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${MH.isomeros(6, 'alcano').map(z => N(MH.nombre(z.molecula))).join(' · ')}</span><span class="note">Cadena de 6; de 5 con un metilo (en el C2 o en el C3); de 4 con dos metilos (2,2 o 2,3).</span></div></div>
+      <p>Mira el ${V('T', 'punto de ebullición')} de cada uno (de tabla): todos tienen 6 C, y aun así el recto hierve más alto y el más ramificado, más bajo.</p>
+      <p class="fuente">Los errores de conteo son hipótesis nuestras, de la tabla de lo que no tiene respaldo del informe. Los puntos de ebullición son del CRC Handbook; conviene compararlos con la tabla de tu libro.</p>` },
+  { id:'intercambio-metilpropeno', corto:'El 2-metilpropeno que se gira',
+    q:`En el 2-metilpropeno, ${F('CH2=C(CH3)2')}, imagina que el doble enlace pudiera girar media vuelta: el carbono que tiene los dos ${F('CH3')} da la vuelta y sus grupos cambian de lado. ¿Qué molécula queda?`,
+    opts:[['a', 'Su isómero trans: todo alqueno tiene una forma cis y una trans', 'HC4-todo-alqueno', 'parcial'],
+          ['b', 'El but-2-eno: los metilos pasan a carbonos distintos', 'metilos-cambian-de-carbono', 'hipotesis'],
+          ['c', 'El but-1-eno: una rama cambió de lugar', 'HC1-rama-cambia', 'hipotesis'],
+          ['d', 'La misma molécula: los dos grupos de ese carbono son iguales']],
+    ok:'d',
+    fb:{ a:'Para que haya cis y trans, cada carbono del doble enlace necesita dos grupos distintos. Aquí uno tiene dos CH₃ y el otro dos H: al girar, todo queda igual. Ver cis-trans en todo alqueno está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012).',
+      b:'Girar no cambia qué átomo está unido con cuál: los dos CH₃ siguen en el mismo carbono. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'Girar no mueve ramas de un carbono a otro: solo las cambia de lado. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ tipo:'mols', items:[mol('CH2=C(CH3)2', { rot:'2-metilpropeno', desc:'2-metilpropeno: un doble enlace; el carbono de la izquierda tiene dos H y el de la derecha dos CH3.' })] }),
+    despues:p => { const a = mol('CH2=C(CH3)2'), b = mol('CH3-CH=CH-CH3'); const f = p === undefined ? 1 : p;
+      a.c = MH.intercambiar(a.m, a.c, INT.enlace, INT.mueve, f*Math.PI).coords; b.c = MH.intercambiar(b.m, b.c, INT2.enlace, INT2.mueve, f*Math.PI).coords;
+      a.rot = `${INT.antes} → ${INT.despues}`; a.rot2 = 'la misma molécula'; b.rot = `${INT2.antes} → ${INT2.despues}`; b.rot2 = 'otra molécula'; b.rot2Color = 'ink';
+      a.op.marca = INT.mueve; b.op.marca = INT2.mueve;
+      a.desc = 'En el 2-metilpropeno, los dos CH3 cambian de lado y queda la misma molécula.'; b.desc = 'En el but-2-eno, el mismo giro pasa de trans a cis: otra molécula.';
+      return { tipo:'mols', items:[a, b] }; },
+    anima:true,
+    exp:() => `<p>Al lado, para comparar, el mismo giro en el but-2-eno: ahí sí sale otra molécula (${INT2.antes} → ${INT2.despues}).</p>
+      <p>En la vida real el doble enlace no gira: hace falta romper su segundo enlace. Por eso el cis y el trans del but-2-eno son dos sustancias que se pueden guardar en frascos separados.</p>
+      <p class="fuente">El motor compara el grafo con su cis o trans: si sale la misma forma canónica, es la misma molécula.</p>` },
+  { id:'anillo-cadena', corto:'Un anillo y una cadena',
+    q:'El ciclobutano (un anillo de 4 carbonos) y el but-1-eno (una cadena de 4 con un doble enlace en la punta), ¿qué son entre sí?',
+    opts:[['a', `Isómeros: los dos son ${F('C4H8')}, pero sus carbonos están unidos de otra forma`],
+          ['b', `La misma sustancia: tienen los mismos átomos, ${F('C4H8')}`, 'misma-formula-misma-sustancia', 'hipotesis'],
+          ['c', 'No son isómeros: los isómeros tienen que ser de la misma clase, y uno es un anillo', 'HC1-misma-clase', 'parcial'],
+          ['d', 'No son isómeros: el anillo tiene dos H menos que la cadena', 'anillo-menos-H', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Tienen los mismos átomos, pero unidos de otra forma: uno es un anillo sin dobles enlaces y el otro, una cadena con uno. Son sustancias distintas. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'Los isómeros pueden ser de clases distintas: basta la misma fórmula y otro grafo. Limitar la isomería a compuestos de la misma clase aparece en escolares alemanes, sin porcentaje en lo que leímos (Schmidt, 1992, por su resumen).',
+      d:'Cerrar el anillo quita 2 H, igual que un doble enlace: por eso los dos quedan en C₄H₈. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ tipo:'mols', items:[mol('C1CCC1', { rot:'ciclobutano', desc:'Ciclobutano: cuatro carbonos en un cuadrado, cada uno con dos H.' }), mol('CH2=CH-CH2-CH3', { rot:'but-1-eno', desc:'But-1-eno: cuatro carbonos en zigzag con un doble enlace en la punta.' })] }),
+    despues:() => { const v = EXPS[3].antes(); v.items.forEach(it => { it.rot2 = MH.formula(it.m).texto.replace(/\d/g, d => SUBD[d]); it.rot2Color = 'ink'; }); return v; },
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${ISO.formulaA.replace(/\d/g, d => SUBD[d])} = ${ISO.formulaB.replace(/\d/g, d => SUBD[d])}, distinto grafo: isómeros (un ${ISO.tipoA} y un ${ISO.tipoB}).</span></div>
+      <div class="eq"><span class="ex">Todos los ${F('C4H8')}: ${C4.nombres.join(' · ')}</span><span class="note">${C4.n} en total: sin los anillos quedan ${C4.errores.sinAnillos}; sin anillos ni cis-trans, ${C4.errores.sinAnillosNiCisTrans}.</span></div></div>
+      <p>La fórmula ${F('CnH2n')} es la de los alquenos y también la de los cicloalcanos: con la fórmula sola no se sabe cuál es.</p>` },
+  { id:'angulos', corto:'sp³, sp² y sp',
+    q:`En el etino, ${F('H–C≡C–H')}, ¿qué ${V('ang', 'ángulo')} forman los dos enlaces de cada carbono?`,
+    opts:[['a', '120°: como en el eteno, porque hay un enlace múltiple', 'multiple-120', 'hipotesis'],
+          ['b', '109,5°: todo carbono es un tetraedro', 'todo-tetraedrico', 'hipotesis'],
+          ['c', '180°: el carbono es sp y sus dos enlaces quedan en línea'],
+          ['d', '90°: el triple enlace ocupa tres lugares en cruz', 'triple-en-cruz', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Los 120° son del carbono sp², el del doble enlace. Con un triple enlace, el carbono solo tiene dos direcciones, opuestas: 180°. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      b:'El tetraedro (109,5°) es del carbono con cuatro enlaces simples, sp³. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Los tres enlaces del triple van juntos, en la misma dirección: cuentan como una sola. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ tipo:'mols', items:[mol('CH≡CH', { rot:'etino', desc:'Etino: dos carbonos con un triple enlace y un H en cada punta.' })] }),
+    despues:() => ({ tipo:'mols', items:[['CH3-CH3', 'etano'], ['CH2=CH2', 'eteno'], ['CH≡CH', 'etino']].map(([t, n]) => { const it = mol(t, { rot:n }); it.op.hib = it.op.ang = true; const h = MH.hibridacion(it.m).lista[0]; it.desc = `${n}: carbonos ${h.hib}, ${fmt(h.angulo)} grados.`; return it; }) }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">etano: sp³, ${V('ang', '109,5°')} · eteno: sp², ${V('ang', '120°')} · etino: sp, ${V('ang', fmt(HE.angulos[0]) + '°')}</span><span class="note">El dibujo es plano: el tetraedro del etano está en el espacio, y por eso sus H se ven a 90° en el papel.</span></div></div>
+      <p>Enlaces del etino: ${MH.enlaces('CH≡CH').sigma} σ y ${MH.enlaces('CH≡CH').pi} π. El triple enlace tiene 1 σ y 2 π.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan.
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function despues(x){
+  cortar(E);
+  if (x.anima){ E.vista = x.despues(0); E.dibujar(); animar(E, 1.2, f => { const v = x.despues(f); E.vista.items.forEach((it, k) => { it.c = v.items[k].c; }); }, () => { E.vista = x.despues(1); E.describir(); }, 0.3); }
+  else E.vista = x.despues();
+  if (x.mesa) mesa();
+  E.dibujar(); pedir();
+}
+function mesa(){
+  E.inter = { item:0, modo: MESA.modo,
+    decir: t => { const el = $('mesaEst'); if (el) el.textContent = t; },
+    alHacer: t => { const el = $('mesaEst'); if (el) el.textContent = t; },
+    cambio: it => { E.vista = vMesa(it); const r = $('mesaRes'); if (r) r.innerHTML = resumen(it); E.describir(); } };
+  E.cv.tabIndex = 0;
+  const r = $('mesaRes'); if (r) r.innerHTML = resumen(E.vista.items[0]);
+}
+function enlazarMesa(){
+  const md = $('mesaModo'); if (!md) return;
+  md.querySelectorAll('button').forEach(b => b.onclick = () => { MESA.modo = b.dataset.m; md.querySelectorAll('button').forEach(z => z.setAttribute('aria-pressed', z === b)); if (E.inter) E.inter.modo = MESA.modo; E.foco = null; const it = E.vista.items[0]; if (it) it.op.foco = null; E.dibujar();
+    $('mesaEst').textContent = { agregar:'Toca un carbono que tenga algún H: se le agrega un CH₃.', quitar:'Toca un carbono de una punta para quitarlo.', enlace:'Toca un enlace entre dos carbonos: pasa de simple a doble, a triple y vuelve, si la valencia lo deja.', girar:'Toca un enlace simple para girarlo media vuelta; el doble enlace no gira.' }[MESA.modo]; });
+  $('mesaEsq').onclick = () => { MESA.esq = !MESA.esq; $('mesaEsq').setAttribute('aria-pressed', MESA.esq); $('mesaEsq').textContent = MESA.esq ? 'Ver bolitas y palitos' : 'Ver como esqueleto'; const it = E.vista.items[0]; E.vista = vMesa(it); E.dibujar(); };
+  $('mesaOtra').onclick = () => { const it = { m: MH.molecula(BUT), c: MH.coordenadas(BUT), op:{} }; E.vista = vMesa(it); mesa(); E.resize(); E.dibujar(); E.describir(); $('mesaEst').textContent = 'De vuelta al butano.'; };
+}
+function ir(k){
+  if (!abierto(k)) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  cortar(E); E.inter = null; E.cv.tabIndex = -1; E.vista = x.antes();
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const explicar = () => {
+    if (S.k !== k || !S.pred[x.id]) return;
+    $('res2').innerHTML = x.exp() + `<div class="nav">${x.anima ? otraVez : '<span></span>'}${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const rep = $('res2').querySelector('[data-repetir]'); if (rep) rep.onclick = () => { despues(x); E.describir(); if (innerWidth < 900) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+    enlazarMesa();
+  };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    explicar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones(); E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => { despues(x); E.describir(); if (x.mesa) mesa(); }, () => S.k === k);
+  });
+  if (S.pred[x.id]){ E.vista = x.anima ? x.despues(1) : x.despues(); if (x.mesa) mesa(); }
+  E.compactar(!S.pred[x.id]);
+  pintar(); E.dibujar(); pedir(); E.describir();
+}
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
