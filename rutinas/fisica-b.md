@@ -4,6 +4,17 @@ Rama `rutina/fisica-b`, sacada de `claude/awesome-wozniak-5etl1n`. Unidades de 5
 
 **Ya resuelto:** la conversación principal le avisó a la rutina de física que la electricidad es de esta rama.
 
+## 7 nov 2026 · Electrostática: esferas colgadas realistas (pedido de la principal)
+
+- **Paso 2 (EL3):** las esferas pasan de 1 µC y 2 µC en 20 g a bolitas de papel aluminio de 0,2 g con q = 100 nC y 2q = 200 nC, separadas 0,3 m.
+  - F = 2 × 10⁻³ N = m·g, así que θ sigue en 45° exactos.
+  - Las cuatro opciones, sus formas y sus códigos no cambiaron.
+  - En el dibujo, F y el peso tienen el mismo largo.
+- **casos.json:** cambiaron solo los casos 3 y 4, en args y en F, peso y tensión. El verificador los recalculó a ciegas, por equilibrio con la tensión y su propia bisección: coinciden los 18 campos.
+- **Papel, p7:** bolitas de 0,3 g con 200 nC cada una; la respuesta sigue siendo 53°.
+- **Sin tocar:** el paso 1, que son cargas puntuales con los números del informe, y el caso 5 del motor (2 µC en 30 y 40 g), que no está en ninguna predicción.
+- **Pruebas:** `npm test` da 3927 en verde y 0 fallas. `pasada-celular.py` no marca QUEDA.
+
 ## 7 nov 2026 · Electrostática 0.2.0: dieléctricos y contacto en nC (pedido de la principal)
 
 ### Qué hice
