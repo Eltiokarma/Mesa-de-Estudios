@@ -73,7 +73,7 @@
       "universidades": {"uni": {"semanas": [3]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["geometria-analitica"],
       "investigacion": null
     },
     {

@@ -7,6 +7,8 @@
 // 3. Lo que enseña la escena: la normal no es el peso; el roce estático se ajusta; en un plano sin roce
 //    la aceleración no depende de la masa; la tensión no es ningún peso; el par de acción y reacción es
 //    igual aunque las masas no lo sean; sin roce el empujón no "se gasta"; la balanza no ve la velocidad.
+//    Para las funciones nuevas (vertical, loma, curva, tren, apilados, poleaMovil): componentes escritas aquí,
+//    cada cuerpo por separado, la energía en la polea móvil y lo que enseña cada experimento.
 // 4. Errores de entrada.
 // 5. Cada problema de papel.json coincide con el motor.
 
@@ -159,8 +161,115 @@ test('los ángulos notables coinciden con el seno de verdad a menos de 0,4°', (
   }
 });
 
+// 2 y 3 (funciones nuevas): segunda ley por componentes, escrita aquí, y lo que enseña cada experimento.
+test('vertical: la cuerda más la parte radial del peso dan m·v²/r; abajo jala 2mg más que arriba (6mg con la energía)', () => {
+  for (const m of [0.5, 2, 30]) for (const r of [0.5, 1, 2.5]) for (const v of [1, 3, 6]) {
+    for (let theta = 0; theta < 360; theta += 15) {
+      const o = { m, v, r, theta }, x = motor.vertical(o), c = Math.cos(rad(theta));
+      assert.equal(x.floja, v * v < -g * r * c - 1e-9, `floja ${JSON.stringify(o)}`);
+      if (!x.floja) cerca(x.S - m * g * c, m * v * v / r, `radial ${JSON.stringify(o)}`, 1e-6);
+      assert.ok(x.S >= 0);
+    }
+    const abajo = motor.vertical({ m, v, r, theta: 0 }), arriba = motor.vertical({ m, v, r, theta: 180 });
+    if (!arriba.floja) cerca(abajo.S - arriba.S, 2 * m * g, `misma rapidez ${m},${r},${v}`);
+    const vb = Math.sqrt(v * v + 4 * g * r), conEnergia = motor.vertical({ m, v: vb, r, theta: 0 });
+    if (!arriba.floja) cerca(conEnergia.S - arriba.S, 6 * m * g, `con energía ${m},${r},${v}`, 1e-9);
+  }
+});
+test('columpio: con v > 0, en el punto más bajo las cadenas jalan más que el peso', () => {
+  for (const v of [0.5, 2, 5, 7]) { const x = motor.vertical({ m: 30, v, r: 2.5, theta: 0 }); assert.ok(x.T > x.P); }
+  cerca(motor.vertical({ m: 30, v: 0, r: 2.5, theta: 0 }).T, 300, 'quieta, T = P');
+});
+test('loma: N baja con la rapidez, llega a 0 justo en √(g·r); desde el reposo despega en arccos(2/3) con cualquier m y r', () => {
+  for (const r of [5, 40]) for (const phi of [0, 16, 37]) {
+    let antes = Infinity;
+    for (let v = 0; v <= 30; v += 0.5) { const N = motor.loma({ m: 800, r, phi, v }).N; assert.ok(N <= antes + 1e-9); antes = N; }
+  }
+  for (const r of [5, 40]) {
+    const vc = Math.sqrt(g * r);
+    cerca(motor.loma({ m: 3, r, phi: 0, v: vc }).N, 0, 'N = 0 en √(gr)', 1e-6);
+    assert.equal(motor.loma({ m: 3, r, phi: 0, v: vc * 1.01 }).despega, true);
+    assert.equal(motor.loma({ m: 3, r, phi: 0, v: vc * 0.99 }).despega, false);
+  }
+  for (const m of [1, 5, 70]) for (const r of [1, 5, 40]) {
+    for (let phi = 1; phi < 48.18; phi += 1) assert.ok(motor.loma({ m, r, phi, desdeReposo: true }).N > 0, `N > 0 en ${phi}°`);
+    for (let phi = 48.2; phi <= 90; phi += 1) assert.equal(motor.loma({ m, r, phi, desdeReposo: true }).despega, true, `despega en ${phi}°`);
+  }
+  for (const v of [1, 10, 19]) { const x = motor.loma({ m: 800, r: 40, phi: 0, v }); assert.ok(x.N < x.P, 'en la cima, N < P si v > 0'); }
+});
+test('loma: el auto que sale de la cima sigue la pista hasta que N = 0 y luego cae con g', () => {
+  const x = motor.loma({ m: 800, r: 40, phi: 0, v: 15 }), fd = Math.acos(225 / 400), td = fd * 40 / 15;
+  const p = x.desdeCima(td * 0.5); assert.equal(p.enPista, true); cerca(Math.hypot(p.x, p.y + 40), 40, 'sobre el círculo', 1e-9);
+  const q = x.desdeCima(td + 0.3), q2 = x.desdeCima(td + 0.31), q3 = x.desdeCima(td + 0.32);
+  assert.equal(q.enPista, false); cerca((q3.y - 2 * q2.y + q.y) / (0.01 * 0.01), -g, 'cae con g', 1e-6);
+  assert.equal(motor.loma({ m: 800, r: 40, phi: 0, v: 25 }).desdeCima(0.01).enPista, false, 'a 25 m/s vuela desde la cima');
+});
+test('curva: por componentes, N y f dan m·v²/r hacia el centro y equilibran el peso; vMax no depende de m', () => {
+  for (const m of [500, 1000]) for (const peralte of [0, 16, 37, 53]) for (const v of [5, 12, 20]) for (const r of [30, 50]) {
+    // Con los senos de academia (16° = 7/25, 37° = 3/5, …), que son los que usa el examen; trig ya se prueba aparte.
+    const x = motor.curva({ m, v, r, peralte, mus: 0.3 }), { sen, cos } = motor.trig(peralte);
+    cerca(x.N * sen + x.f * cos, m * v * v / r, `horizontal ${m},${peralte},${v},${r}`, 1e-6);
+    cerca(x.N * cos - x.f * sen, m * g, `vertical ${m},${peralte},${v},${r}`, 1e-6);
+  }
+  cerca(motor.curva({ m: 500, v: 1, r: 50, mus: 0.5 }).vMax, motor.curva({ m: 2000, v: 1, r: 50, mus: 0.5 }).vMax, 'vMax');
+  for (const peralte of [16, 37, 53]) { const vi = motor.curva({ m: 1, v: 1, r: 30, peralte }).vIdeal; cerca(motor.curva({ m: 1000, v: vi, r: 30, peralte }).f, 0, `f en vIdeal ${peralte}°`, 1e-6); }
+});
+test('tren: cada carrito cumple su segunda ley; las tensiones bajan hacia atrás y son F·(masa detrás)/M con cualquier μk', () => {
+  for (const masas of [[4, 4, 2], [2, 4, 4], [6, 4], [1, 2, 3, 4], [5, 1, 1, 3]]) for (const F of [12, 50, 90]) for (const muk of [0, 0.1, 0.2]) {
+    const x = motor.tren({ masas, F, muk }), M = masas.reduce((s, v) => s + v, 0);
+    if (x.sentido === 'quieto') { assert.equal(x.tensiones, null); continue; }
+    const T = [F, ...x.tensiones, 0];
+    masas.forEach((m, k) => cerca(T[k] - T[k + 1] - muk * m * g, m * x.a, `carrito ${k} ${masas},${F},${muk}`, 1e-9));
+    for (let k = 1; k < T.length; k++) assert.ok(T[k] < T[k - 1]);
+    x.tensiones.forEach((t, k) => cerca(t / F, masas.slice(k + 1).reduce((s, v) => s + v, 0) / M, 'proporción', 1e-9));
+    cerca(motor.tren({ masas: [...masas].reverse(), F, muk }).a, x.a, 'invertir no cambia a');
+    cerca(x.tensiones[x.tensiones.length - 1], masas[masas.length - 1] * (x.a + muk * g), 'la última cuerda jala solo al último');
+  }
+});
+test('apilados: cada bloque cumple su segunda ley con el par de roce; juntos si y solo si F ≤ Fmax', () => {
+  for (const en of ['abajo', 'arriba']) for (const [mus, muk] of [[0.4, 0.3], [0.5, 0.5], [0.6, 0.2]]) for (const muPiso of [0, 0.1, 0.5]) {
+    const mA = 2, mB = 3, M = 5;
+    for (let F = 0; F <= 50; F += 0.5) {
+      const o = { mA, mB, F, en, mus, muk, muPiso }, x = motor.apilados(o), FA = en === 'arriba' ? F : 0, FB = F - FA;
+      cerca(FA + x.roceA, mA * x.aA, `A ${JSON.stringify(o)}`, 1e-9);
+      cerca(FB + x.roceB + x.rocePiso, mB * x.aB, `B ${JSON.stringify(o)}`, 1e-9);
+      assert.equal(x.roceB, -x.roceA || 0);
+      assert.ok(Math.abs(x.rocePiso) <= muPiso * M * g + 1e-9, 'el piso no da más que su máximo');
+      if (x.juntos) assert.ok(Math.abs(x.roceA) <= x.fsMax + 1e-9); else cerca(Math.abs(x.roceA), muk * mA * g, 'cinético', 1e-9);
+      assert.equal(x.juntos, F <= x.Fmax + 1e-9, `juntos ⇔ F ≤ Fmax ${JSON.stringify(o)}`);
+      if (!x.juntos) assert.ok(en === 'abajo' ? x.aB > x.aA : x.aA > x.aB, 'al resbalar, el jalado se adelanta');
+    }
+  }
+  for (const en of ['abajo', 'arriba']) {
+    const o = { mA: 2, mB: 3, en, mus: 0.4, muk: 0.4 }, Fm = motor.apilados(Object.assign({ F: 1 }, o)).Fmax;
+    const a = motor.apilados(Object.assign({ F: Fm }, o)), b = motor.apilados(Object.assign({ F: Fm + 1e-7 }, o));
+    cerca(a.aA, b.aA, `aA continua en Fmax (${en})`, 1e-5); cerca(a.aB, b.aB, `aB continua en Fmax (${en})`, 1e-5);
+  }
+});
+test('polea móvil: cada cuerpo cumple su ecuación; equilibrio solo con m1 = 2·m2; T entre m2·g y m1·g/2; la energía cierra', () => {
+  for (const m1 of [1, 2, 4, 6, 10]) for (const m2 of [0.5, 1, 2, 3, 5, 10]) {
+    const x = motor.poleaMovil({ m1, m2 });
+    cerca(m2 * g - x.T, m2 * x.a2, `m2 ${m1},${m2}`, 1e-9);
+    cerca(2 * x.T - m1 * g, m1 * x.a1, `m1 ${m1},${m2}`, 1e-9);
+    cerca(x.a1, x.a2 / 2, 'ligadura');
+    assert.equal(x.equilibrio, m1 === 2 * m2); assert.equal(x.a2 === 0, m1 === 2 * m2);
+    if (!x.equilibrio) { const lo = Math.min(m2 * g, m1 * g / 2), hi = Math.max(m2 * g, m1 * g / 2); assert.ok(x.T > lo && x.T < hi, `${x.T} entre ${lo} y ${hi}`); }
+    const d = x.recorrido(1), v2 = x.a2, v1 = x.a1;
+    cerca(m2 * g * d.y2 - m1 * g * d.y1, m2 * v2 * v2 / 2 + m1 * v1 * v1 / 2, `energía ${m1},${m2}`, 1e-9);
+  }
+});
+
 // 4. Errores de entrada
 test('errores de entrada', () => {
+  assert.throws(() => motor.vertical({ m: 1, v: 2, r: 0, theta: 0 }), /mayor que cero/);
+  assert.throws(() => motor.vertical({ m: 1, v: 2, r: 1, theta: 360 }), /0° a menos de 360°/);
+  assert.throws(() => motor.vertical({ m: 1, v: 2, r: 1, theta: -10 }), /0° a menos de 360°/);
+  assert.throws(() => motor.loma({ m: 1, r: 5, phi: 95, v: 1 }), /0° a 90°/);
+  assert.throws(() => motor.tren({ masas: [4], F: 10 }), /al menos 2/);
+  assert.throws(() => motor.tren({ masas: [4, 0], F: 10 }), /mayor que cero/);
+  assert.throws(() => motor.apilados({ mA: 2, mB: 3, F: 5, en: 'medio' }), /'abajo' o 'arriba'/);
+  assert.throws(() => motor.apilados({ mA: 2, mB: 3, F: 5, mus: 0.2, muk: 0.3 }), /μk no puede/);
+  assert.throws(() => motor.poleaMovil({ m1: 4 }), /inválido|mayor que cero/);
   assert.throws(() => motor.plano({ m: 0, angulo: 30 }), /mayor que cero/);
   assert.throws(() => motor.plano({ m: 2, angulo: 120 }), /0° a 90°/);
   assert.throws(() => motor.plano({ m: 2, angulo: 30, mus: 0.2, muk: 0.5 }), /μk no puede/);

@@ -255,60 +255,60 @@
       "unidad": "geometria.relaciones-metricas",
       "mide": "Altura relativa a la hipotenusa: h = (cateto · cateto) / hipotenusa",
       "A": {
-        "enunciado": "Los catetos de un triángulo rectángulo miden 15 cm y 20 cm, y su hipotenusa, 25 cm. ¿Cuánto mide la altura trazada desde el ángulo recto hasta la hipotenusa?",
+        "enunciado": "Un terreno tiene forma de triángulo rectángulo: sus dos lados menores miden 30 m y 40 m, y el lado mayor, 50 m. Desde la esquina del ángulo recto se quiere abrir un camino recto hasta el lado mayor, lo más corto posible. ¿Cuánto mide ese camino?",
         "datos": {
-          "c1": 15,
-          "c2": 20
+          "c1": 30,
+          "c2": 40
         },
         "opciones": [
           {
-            "texto": "17,5 cm",
-            "valor": 17.5,
+            "texto": "35 m",
+            "valor": 35,
             "error": "GE18-promedio-catetos"
           },
           {
-            "texto": "12,5 cm",
-            "valor": 12.5,
+            "texto": "25 m",
+            "valor": 25,
             "error": "GE8-altura-como-mediana"
           },
           {
-            "texto": "12 cm",
-            "valor": 12,
+            "texto": "24 m",
+            "valor": 24,
             "correcta": true
           },
           {
-            "texto": "9 cm",
-            "valor": 9,
+            "texto": "18 m",
+            "valor": 18,
             "error": "proyeccion-como-altura"
           }
         ]
       },
       "B": {
-        "enunciado": "Los catetos de un triángulo rectángulo miden 9 cm y 12 cm, y su hipotenusa, 15 cm. ¿Cuánto mide la altura trazada desde el ángulo recto hasta la hipotenusa?",
+        "enunciado": "Una repisa esquinera es un tablero con forma de triángulo rectángulo: los bordes pegados a las paredes miden 18 cm y 24 cm, y el borde delantero, 30 cm. Una hormiga parte de la esquina de las paredes y quiere llegar al borde delantero por el camino más corto. ¿Cuánto camina?",
         "datos": {
-          "c1": 9,
-          "c2": 12
+          "c1": 18,
+          "c2": 24
         },
         "opciones": [
           {
-            "texto": "10,5 cm",
-            "valor": 10.5,
+            "texto": "21 cm",
+            "valor": 21,
             "error": "GE18-promedio-catetos"
           },
           {
-            "texto": "7,5 cm",
-            "valor": 7.5,
+            "texto": "15 cm",
+            "valor": 15,
             "error": "GE8-altura-como-mediana"
           },
           {
-            "texto": "7,2 cm",
-            "valor": 7.2,
-            "correcta": true
+            "texto": "10,8 cm",
+            "valor": 10.8,
+            "error": "proyeccion-como-altura"
           },
           {
-            "texto": "5,4 cm",
-            "valor": 5.4,
-            "error": "proyeccion-como-altura"
+            "texto": "14,4 cm",
+            "valor": 14.4,
+            "correcta": true
           }
         ]
       }
@@ -383,57 +383,57 @@
       "unidad": "geometria.poligonos-y-cuadrilateros",
       "mide": "Diagonales de un polígono: n(n − 3)/2",
       "A": {
-        "enunciado": "¿Cuántas diagonales tiene un polígono convexo de 10 lados?",
+        "enunciado": "En una reunión, 9 amigos se sientan alrededor de una mesa redonda. Cada pareja de amigos que no está sentada junta se da un apretón de manos. ¿Cuántos apretones de manos hay en total?",
         "datos": {
-          "n": 10
+          "n": 9
         },
         "opciones": [
           {
-            "texto": "45",
-            "valor": 45,
+            "texto": "36",
+            "valor": 36,
             "error": "GE23-diagonales-con-lados"
           },
           {
-            "texto": "35",
-            "valor": 35,
+            "texto": "27",
+            "valor": 27,
             "correcta": true
           },
           {
-            "texto": "70",
-            "valor": 70,
+            "texto": "54",
+            "valor": 54,
             "error": "diagonales-contadas-dos-veces"
           },
           {
-            "texto": "7",
-            "valor": 7,
+            "texto": "6",
+            "valor": 6,
             "error": "diagonales-de-un-vertice"
           }
         ]
       },
       "B": {
-        "enunciado": "¿Cuántas diagonales tiene un polígono convexo de 12 lados?",
+        "enunciado": "En un juego, 11 niños forman una ronda. Se tiende una cinta recta entre cada par de niños que no están uno al lado del otro. ¿Cuántas cintas se tienden en total?",
         "datos": {
-          "n": 12
+          "n": 11
         },
         "opciones": [
           {
-            "texto": "66",
-            "valor": 66,
+            "texto": "55",
+            "valor": 55,
             "error": "GE23-diagonales-con-lados"
           },
           {
-            "texto": "54",
-            "valor": 54,
-            "correcta": true
-          },
-          {
-            "texto": "108",
-            "valor": 108,
+            "texto": "88",
+            "valor": 88,
             "error": "diagonales-contadas-dos-veces"
           },
           {
-            "texto": "9",
-            "valor": 9,
+            "texto": "44",
+            "valor": 44,
+            "correcta": true
+          },
+          {
+            "texto": "8",
+            "valor": 8,
             "error": "diagonales-de-un-vertice"
           }
         ]

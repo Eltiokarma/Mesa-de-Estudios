@@ -576,3 +576,201 @@ Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomol
   - que el-calor-sube depende de la lista que se pasa;
   - que invierte-la-regla no cuenta el horno.
 - El texto de verificación quedó agregado en `casos.json`.
+
+### 7 nov 2026, 09:37 · ejecución diaria
+
+- Junté la rama principal, que ya estaba en 8d435a9.
+- Los puntos 2 a 5 de la lista de huecos (cinética, equilibrio, soluciones y celda) siguen esperando el commit de rendimiento («dpr y bucles») que la conversación principal pidió esperar antes de editar esas escenas. Ese commit no está en la principal ni en ninguna rama del remoto.
+- Le pregunté a la conversación principal si arranco igual. Mientras no conteste, no toco esas cuatro carpetas, para no chocar.
+- Ya está: e11c420 y 63b91db (dpr, variable, bucle y la grilla de choques) entraron a la rama y arranqué. No deshice nada de ese commit.
+
+### 2. Cinética: orden ≠ coeficiente y vida media (hecho)
+- Dos experimentos nuevos al final de «¿Qué pasa si…?», con 2 N₂O₅ → 4 NO₂ + O₂ y un lienzo propio. La caja y la película se esconden mientras están abiertos.
+  - **6. Una tabla de velocidades.** [N₂O₅] ×3 da v ×3, así que la ley es v = k·[N₂O₅] aunque el coeficiente sea 2. Los distractores son el coeficiente (CI9, parcial y sin cifra), el factor de la velocidad y la ley escrita como K. Las barras de v salen recién al responder, para que su alto no regale la proporción.
+  - **7. La vida media.** Pasa de 0,80 a 0,40 en 10 min; a los 30 min quedan 0,10. Al lado va la curva de segundo orden, con vidas medias de 10, 20 y 40 min. Los distractores (0,20, 0 y 0,13) son hipótesis.
+- Motor: `ordenes()` devuelve pares y errores; `vidasMedias()` y `primerOrdenQueda()` son nuevas.
+- Casos 13 a 16: un verificador aparte coincidió en los 32 campos.
+- El p10 de papel es nuevo: 0,6 → 0,3 M en 15 min.
+- El revisor encontró una leyenda que no coincidía con el dibujo, un p10 que repetía los números de la escena y una cita que era indirecta. Todo corregido.
+- Color nuevo: [N₂O₅] granate #652515 (oscuro #fa572e). En oscuro queda a 16,5 de B y a 18,7 de T, pero esos dos no salen en esos experimentos.
+
+### 3. Equilibrio: Kp y gas inerte (hecho)
+- Tres experimentos nuevos:
+  - **6. Caja rígida.** Entran 30 porciones de gas inerte: la presión sube 2,9 veces, Q sigue en 1/8 y no se corre.
+  - **7. Émbolo libre.** V pasa a 2,875 L, Q = 23/64 > K y se corre a la inversa hasta quedar en 12 X y 6 Y en 3 L.
+  - **8. Kp con Δn.** Kp = 1/328. Los distractores (41/8, 1/8 y 1681/8) son errores de Δn.
+- Motor: `inerte(ec, o, n, 'V'|'P')`, los errores de `kp()` y, en la caja, `presionFija()`.
+- Casos 18 a 23: verificados aparte, todos coinciden. La cabecera ahora aclara cómo funciona soloReactivos.
+- El p10 de papel (N₂O₄ con argón a 3 atm, α = 1/2) se resuelve por cuadrática, no por tanteo.
+- Sugerencias del revisor que apliqué: «Kc» en el eje, las presiones en el aria-live y V pintado en la caja rígida. No apliqué la escala del émbolo antes de responder.
+- Color nuevo: el gas inerte va en gris (#8a8a86 / #85857f), solo en el dibujo. Los 500 K van sin color, porque T y Y quedaban a 18,9.
+- Pendiente: los experimentos antiguos marcan EQ14 y Tagle Barrios como «documentado»; habría que mirar si llegan a eso. Además, las pastillas desbloqueadas tienen aria-label null.
+
+### 4. Soluciones: curva de solubilidad (SO13) y gases (SO6) (hecho)
+- Dos experimentos nuevos:
+  - **6. Enfriar el vaso.** 80 g de KNO₃ en 100 g de agua pasan de 60 a 20 °C: cristalizan 48,4 g y el líquido queda **saturado**. Si no hay cristalito, queda sobresaturado. El distractor «queda insaturada porque es diluida» lleva SO13, parcial.
+  - **7. Dos gaseosas a 10 y 30 °C.** Hay más CO₂ en la fría. El distractor «más en caliente, como el azúcar» lleva SO6, parcial (6 entrevistas). Después se explora la presión con S = k·P, hasta destapar la botella.
+- Motor: `solubilidad`, `curva`, `tipoSolucion`, `enfriar`, `temperaturaSaturacion`, `henry`, `compararGasT` y `destapar`, con errores. Las tablas de KNO₃, NaCl y CO₂ están en la cabecera, con interpolación lineal.
+- Casos 23 a 34: verificados aparte, todos coinciden. La cabecera decía «exceso = g − cabe» y la corregí a máx(0, …), como ya hacía el motor.
+- Papel: el p5 es nuevo (KNO₃). La nota de seguridad del ácido pasó al p9.
+- El revisor encontró una leyenda que descartaba «no cristaliza nada» antes de responder y dos rótulos encimados. Todo corregido.
+- Colores nuevos: la curva S en verde #476e0c (oscuro #9bd35a) y la presión P en azul petróleo #093f53 (oscuro #409dbf). T va en tinta.
+- Pendiente: contrastar las tablas de solubilidad con el CRC Handbook. Son valores usuales de textos, redondeados.
+
+### 5. Celda galvánica: electrólisis del agua (hecho)
+- Hay dos experimentos nuevos al final de «¿Qué pasa si…?». Cada uno tiene tubos invertidos que se llenan de gas. Los electrones van solo por el cable, y los iones derivan y se gastan.
+  - **6. Electrolizo agua (Hofmann con Na₂SO₄).** Con 19 300 C salen 2,24 L de H₂ en el cátodo (−) y 1,12 L de O₂ en el ánodo (+). Los distractores son:
+    - gases 1 : 1, hipótesis;
+    - polos al revés, parcial: es la cita de la UNAM «la reducción del hidrógeno ocurre en el polo positivo», que es EC3/EC6, no EC7;
+    - el doble de O₂, hipótesis.
+  - **7. Sal en agua o fundida.** En la salmuera sale H₂, y el Na⁺ se queda como NaOH. En la sal fundida sale sodio. Los distractores son:
+    - sodio en las dos, hipótesis;
+    - «la corriente solo separa los iones», EC7, parcial;
+    - H₂ en las dos, hipótesis.
+  - La salmuera va matizada: si está diluida, en el ánodo sale también O₂.
+- Motor: `electrolizar()` (con Q, o con I y tiempo) y `productos()`, con errores típicos (1 : 1, polos al revés, sale sodio, olvidar el 2 o el 4). Usa F = 96 500 C/mol y 22,4 L/mol.
+- Casos 21 a 26: verificados aparte, todos coinciden.
+- Papel: el p11 (3 A durante 1 h 4 min 20 s) reemplaza al p7, porque ya había 10 problemas.
+- El revisor encontró dos cosas, ya corregidas: la salmuera no estaba matizada, y los iones del dibujo no se gastaban.
+- Colores: H, O, Na y Cl de la paleta común. Al Na⁺ le puse un aro y el «+» más grande, porque el Na claro (#3f4948) queda a unos 19,5 de la tinta.
+
+**Pedidos para la integración.**
+1. Traer `plantillas/celda-galvanica/` y `nucleo/elementos-escenas.test.js` (la escena declara H, O, Na y Cl y tiene dos vistas nuevas). Luego subir la versión y correr `npm run catalogo`.
+2. En `nucleo/elementos.js`, VISTAS: agregar «celda-galvanica: agua con Na₂SO₄» ['H','O','Na'] y «celda-galvanica: salmuera y NaCl fundido» ['H','Na','Cl'].
+3. En `docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md`, la fila «Electrólisis en agua» de lo que no tiene respaldo dice EC7. Debe decir EC3 (y EC6): la cita de la UNAM es una confusión de polos.
+4. El Na claro de la paleta (#3f4948) queda a unos 19,5 de la tinta. Si hay un tono más separado, mejor.
+
+**Con esto queda cerrada la lista de huecos** (puntos 1 a 5).
+
+### Pendientes que quedaban (pedido de la principal)
+- **Respaldos de equilibrio.** Los antiguos marcaban como «documentado» dos errores que en el informe no tienen cifra. Los pasé a «parcial»:
+  - EQ10 con Tagle Barrios, sin porcentaje: tres opciones. Bilgin deja el cambio de concentración bajo el 20 % y no lo reporta.
+  - EQ14 con Quílez, sin porcentaje: dos opciones.
+- **Respaldos de cinética.** Al revisar encontré lo mismo: CI2 a CI7 estaban como «documentado» y el informe dice «sin cifra leída». Pasaron a «parcial»; son seis opciones.
+  - CI1 se queda como documentado: 33 %, por verificar.
+- **Aria-label null de las pastillas.** No es un error. Las pastillas desbloqueadas no llevan aria-label a propósito, y su nombre accesible es el texto del botón («6. Gas que no reacciona, caja rígida»), como se ve en Playwright. No cambié nada.
+- Revisé soluciones y la celda galvánica: no tienen respaldos «documentado» sin cifra.
+
+## 7 nov 2026 · banco de entrada y salida de química (pedido de la conversación principal)
+
+**Qué se hizo**
+- 7 pares A/B nuevos, qui-11 a qui-17, en la `reserva` de `catalogo/pruebas/quimica.json`.
+- Un verificador por par en `catalogo/pruebas/verificar.js`. Cada uno saca la correcta y cada distractor del motor de su escena.
+- Esto toca `catalogo/`, que la rutina no deja tocar. Lo hice porque la principal lo pidió explícitamente.
+- Siguen en reserva porque el tope de 8 a 10 ítems por forma se queda: la principal no quiere que la prueba se coma la hora de clase. Cuáles entran a `pares` se decidirá cuando se sepa el temario del colegio piloto.
+
+**Revisiones**
+- Pasaron por dos revisiones a ciegas. Las claves estuvieron bien desde el principio.
+- La primera versión repetía casi tal cual una predicción o un problema de papel de su escena. La segunda todavía calcaba la tarea en cinco pares.
+- La versión final pide transferencia: la misma idea aplicada a una situación que el alumno no practicó.
+- Además:
+  - A y B tienen respuestas distintas, para que no se mida memoria entre la entrada y la salida.
+  - Ningún distractor coincide con un número del enunciado.
+
+**Pares y unidades** (para armar la forma del piloto)
+
+| Par | Escena | Unidad | Qué pide |
+|---|---|---|---|
+| qui-11 | atomo-y-tabla | `quimica.estructura-atomica` | Qué elemento es un anión X³⁻ dados sus electrones y neutrones. A: P; B: ¹⁵N. |
+| qui-12 | enlace | `quimica.enlace-quimico` | Electrones de valencia que aporta X en XO₂⁻ (18 en total) o en XO₄²⁻ (32). Respuestas: 5 y 6. |
+| qui-13 | balance-reacciones | `quimica.reacciones-y-balance` | Moléculas de O₂ por cada molécula de etanol (3) o de butanol (6). Trampa: el O que ya trae el alcohol. |
+| qui-14 | liquidos-y-solidos | `quimica.liquidos-y-solidos` | Gas recogido sobre agua: moléculas de vapor por cada 100 del gas seco. Respuestas: 3,95 y 2,69. |
+| qui-15 | rendimiento-pureza | `quimica.estequiometria` | Rendimiento con la pureza dada. A: Fe al 70 %, 75 %. B: Mg al 75 %, 80 %. |
+| qui-16 | biomoleculas | `quimica.biomoleculas-y-productos-naturales` | Agua que gasta la hidrólisis de un péptido cíclico de 5 (90 g) o de 6 (108 g) aminoácidos. |
+| qui-17 | quimica-ambiente | `quimica.recursos-naturales` | Con O₂ de sobra, masa de CO₂ más agua. Etano: 1,42 g. Butano: 2,66 g. |
+
+**Códigos de error**
+- Quedaron «hipótesis» salvo ES15, que es «parcial».
+- Al rehacer los pares salieron los únicos códigos documentados que traían (ES12 y QA9).
+
+**Pruebas**
+- `node --test catalogo/pruebas/*.test.js`: 54 de 55.
+- `parecidos.js`: sin parecidos.
+- `npm test`: 3351 de 3352.
+- La que falla es «app/datos/pruebas.json está al día». Se arregla con `npm run catalogo`, que escribe en `app/` y lo corre la principal.
+- Ojo: `node --test catalogo/pruebas/`, con la carpeta, no corre en Node 22. Hay que pasarle los archivos.
+
+**Pedidos**
+1. Correr `npm run catalogo` para que `app/datos/pruebas.json` quede al día (versión 1.2.0 del banco).
+2. Mejorar `catalogo/pruebas/parecidos.js`. Hoy no lee `papel.json` y solo compara palabras y números, así que no ve «la misma tarea con otros números». Propuesta:
+   - que lea también `papel.json`;
+   - que avise cuando un ítem comparte dos o más códigos de error con una predicción de su escena.
+3. En la escena `balance-reacciones`, el respaldo de ES12 dice «documentado». El 21,9 % es de todo el subtema de balance, no de dejar el O₂ en 1, así que debería ser «parcial».
+4. En `catalogo/pruebas/pruebas.test.js`, los chequeos de atajos, largo de opciones y lugar de la correcta solo miran `pares`. Convendría correrlos también sobre `reserva`, para que un par de reserva no falle recién al pasarlo.
+
+## 7 nov 2026 · parecidos y reserva en las pruebas del banco (pedido de la principal)
+
+**Qué cambió**
+- **`catalogo/pruebas/parecidos.js`** tiene una función nueva, `avisos()`. Revisa dos cosas:
+  - si un ítem se parece a un problema del `papel.json` de su plantilla, con el mismo criterio de palabras y números que ya se usaba con las predicciones;
+  - si comparte dos o más códigos de error con una predicción de su escena. Para saber qué códigos tiene cada predicción, `codigosEscena()` junta las opciones `['a', 'texto', 'CÓDIGO', …]` que están seguidas en el `index.html`.
+  - Los avisos no tumban la prueba. `pruebas.test.js` los muestra como diagnóstico en un test aparte, y `node catalogo/pruebas/parecidos.js` también los lista.
+- **`catalogo/pruebas/pruebas.test.js`**: los chequeos de atajos, largo de las opciones y lugar de la correcta ahora también corren sobre `reserva`.
+- `npm test`: 3460 de 3460.
+
+**Avisos de hoy: 65 en total.** 37 son de códigos compartidos y 28 de parecido con el papel. Ninguno falla.
+
+| Curso | Códigos compartidos | Papel |
+|---|---|---|
+| Física | 5 | 5 |
+| Química | 8 | 6 |
+| Geometría (geo) | 5 | 6 |
+| Sólidos (sol) | 1 | 0 |
+| Aritmética (ari) | 3 | 3 |
+| Fracciones (fr) | 1 | 1 |
+| Álgebra | 3 | 0 |
+| Trigonometría (tri) | 3 | 2 |
+| Circunferencia trigonométrica (ct) | 1 | 0 |
+| Razonamiento matemático (rm) | 7 | 5 |
+
+**Cómo leerlos**
+- Casi todos los pares originales de los bancos (qui-01 a qui-08, fis-01 a fis-05, etc.) comparten los tres distractores con una predicción de su escena.
+  - Es lo esperado cuando el ítem mide la misma idea errónea.
+  - Lo que hay que mirar es si además repite la tarea: el aviso no lo distingue.
+  - En química, qui-15 (de la reserva) sale por compartir olvida-pureza y multiplica-pureza con la predicción del paso 6. El revisor a ciegas lo dio por transferencia, porque pide el rendimiento y no la pureza.
+- Los de papel con 100 % de palabras en común merecen una mirada: fis-08B, fis-10A, geo-05A/B, geo-10A/B, fr-02B y tri-10A/B. Lo mismo rm-08B y qui-01A/B, que tienen los mismos números.
+
+La lista completa se ve con `node catalogo/pruebas/parecidos.js`.
+
+## 7 nov 2026 · ítems de los bancos que copiaban el papel (pedido de la principal)
+
+- Rehíce 12 formas en seis bancos. Las de física, geometría, aritmética, trigonometría y razonamiento matemático las toqué a pedido explícito de la principal.
+
+  | Ítem | Ahora |
+  |---|---|
+  | fis-08B | Cámara de fuelle, f = 6 cm, flor a 18 cm → 9 cm |
+  | fis-10A | Columpio que baja 0,8 m → 4 m/s |
+  | geo-05A | Terreno de 30, 40 y 50 m → 24 m |
+  | geo-05B | Repisa esquinera de 18, 24 y 30 cm → 14,4 cm |
+  | geo-10A | Apretones en una mesa de 9, sin los vecinos → 27 |
+  | geo-10B | Cintas en una ronda de 11 → 44 |
+  | fr-02B | Jarabe cada 6 h y pastilla cada 9 h → 18 h |
+  | tri-10A | Lámpara con brazos de 15 y 7 cm a 60° → 13 cm |
+  | tri-10B | Brazo robótico de 16 y 10 cm a 60° → 14 cm |
+  | rm-08B | 5, 8, 13, 20, … → término 10 = 104 |
+  | qui-01A | 12 CO y 7 O₂ |
+  | qui-01B | 3 C₂H₄ y 8 O₂ |
+
+  Mismos códigos de error y misma dificultad que antes; las respuestas salen del motor. En verificar.js solo cambió fis-10, que ahora usa `energia.rapidez`.
+- Hubo una revisión a ciegas: las 16 claves estaban bien. Encontró defectos de redacción, todos corregidos:
+  - en geo-10A el 54 era defendible;
+  - en tri-10 no quedaba claro qué distancia ni qué ángulo se pedía;
+  - fis-10B decía «se lanza» y faltaban datos;
+  - qui-01 se acertaba por descarte;
+  - rm-08 no fijaba la sucesión;
+  - la posición de la correcta era la misma en A y B.
+- El revisor propuso además tareas inversas, porque todos estos pares calcan la tarea de una predicción. La principal decidió:
+  - el banco mide transferencia cercana: misma tarea y mismos errores, con otra situación y otros números;
+  - copiar el papel o la escena no vale;
+  - la tarea inversa no se usa porque cambia el error que se mide.
+
+  Quedó escrito en `docs/arquitectura.md`. La transferencia lejana quedó como idea en `docs/pendientes.md`, con las propuestas del revisor:
+  - fis-08: cuánto se mueve la pantalla si el objeto se aleja;
+  - fis-10: la rapidez en un punto intermedio;
+  - geo-05: el área a partir de la hipotenusa y la altura;
+  - geo-10: cuántos niños hay a partir de las cintas;
+  - fr-02: cuántas veces se encendió una luz hasta coincidir;
+  - tri-10: un lado adyacente con 120°;
+  - rm-08: qué lugar ocupa un término;
+  - qui-01: en cuál de cuatro mezclas el limitante es el O₂.
+- Pruebas: npm test da 3503 de 3504. Solo falla «pruebas.json al día»; hace falta `npm run catalogo`. Ninguno de estos ítems sale ya con aviso de papel.

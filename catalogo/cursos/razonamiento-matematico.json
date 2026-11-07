@@ -75,8 +75,8 @@
       "universidades": {"unmsm": {"temas": [6]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["arreglos-giros"],
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.razonamiento-inductivo",
@@ -198,8 +198,8 @@
       "universidades": {"unmsm": {"temas": [13, 14, 15]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["arreglos-giros", "ampliadora"],
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.rutas-y-visualizacion-espacial",

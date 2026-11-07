@@ -4,6 +4,7 @@
 // 2. Propiedades: la concentración es intensiva al sacar una parte (SO10); los moles se conservan al
 //    diluir (SO11); la mezcla queda entre las dos concentraciones; masa de solución = soluto + solvente
 //    (SO3, SO16); las fracciones molares suman 1; N = M·θ; los cuadros y puntos cuentan lo mismo que M.
+//    Solubilidad (SO13, SO6): la masa se conserva al cristalizar, lo que queda está saturado, Henry es lineal en P.
 // 3. Errores de entrada.
 // 4. Cada problema de papel.json coincide con el motor.
 
@@ -158,6 +159,59 @@ test('cuadros y puntos en el explorador: si el soluto no da puntos enteros, se r
   assert.equal(motor.modelo(0.2, 100, esc, { redondear: true }).exacto, true);
 });
 
+// 2b. Solubilidad (hueco SO13 y SO6)
+test('solubilidad: la curva pasa por cada fila de la tabla; KNO₃ y NaCl suben con T y el CO₂ baja (SO6)', () => {
+  for (const [k, d] of Object.entries(motor.SOLUBILIDAD)) {
+    d.T.forEach((T, i) => cerca(motor.solubilidad(k, T), d.S[i], `${k} a ${T} °C`));
+    const c = motor.curva(k, 2.5);
+    for (let i = 1; i < c.length; i++) {
+      if (d.fase === 'gas') assert.ok(c[i][1] < c[i - 1][1], `${k}: baja con T`);
+      else assert.ok(c[i][1] > c[i - 1][1], `${k}: sube con T`);
+    }
+  }
+  // el KNO₃ sube mucho más que el NaCl entre 0 y 100 °C
+  assert.ok(motor.solubilidad('KNO3', 100) - motor.solubilidad('KNO3', 0) > 50 * (motor.solubilidad('NaCl', 100) - motor.solubilidad('NaCl', 0)));
+});
+test('SO13: al enfriar con cristalito, lo que queda está saturado y disuelto + sólido = lo que se echó', () => {
+  for (let k = 0; k < 400; k++) {
+    const sus = rnd() < 0.5 ? 'KNO3' : 'NaCl', gAgua = al(20, 300), T1 = al(0, 100), T2 = al(0, T1), g = al(0, 1.3) * motor.solubilidad(sus, T1) * gAgua / 100;
+    const r = motor.enfriar({ sustancia: sus, g, gAgua, T1, T2 });
+    cerca(r.disueltoDespues + r.solidoDespues, g, 'se conserva la masa');
+    assert.ok(r.cristaliza >= -1e-9, 'al enfriar no se disuelve sólido');
+    if (r.solidoDespues > 1e-6) { cerca(r.disueltoDespues, r.cabe2, 'queda saturada'); assert.equal(r.tipoDespues, 'saturada'); }
+    else assert.notEqual(r.tipoDespues, 'sobresaturada');
+    if (r.cristaliza > 1e-6 && r.solidoAntes < 1e-9) { assert.ok(r.Tsat >= T2 - 1e-9 && r.Tsat <= T1 + 1e-9); cerca(motor.solubilidad(sus, r.Tsat), 100 * g / gAgua, 'Tsat'); }
+    const s = motor.enfriar({ sustancia: sus, g, gAgua, T1, T2, sinSemilla: true });
+    if (r.solidoAntes < 1e-9) { assert.equal(s.cristaliza, 0); cerca(s.disueltoDespues, g, 'sin cristalito'); if (g > r.cabe2 + 1e-6) assert.equal(s.tipoDespues, 'sobresaturada'); }
+    const e = motor.equilibrio({ sustancia: sus, g, gAgua, T: T2 });
+    cerca(e.disuelto, r.disueltoDespues, 'equilibrio = enfriar'); cerca(e.solido, r.solidoDespues, 'sólido');
+  }
+});
+test('SO13: el tipo depende de cuánto cabe a esa T, no de si hay mucho o poco soluto', () => {
+  // poco soluto y saturada (13,3 g a 0 °C); mucho soluto e insaturada (100 g a 60 °C)
+  assert.equal(motor.tipoSolucion({ sustancia: 'KNO3', g: 13.3, T: 0 }).tipo, 'saturada');
+  assert.equal(motor.tipoSolucion({ sustancia: 'KNO3', g: 100, T: 60 }).tipo, 'insaturada');
+  for (let k = 0; k < 300; k++) {
+    const T = al(0, 100), gAgua = al(10, 500), S = motor.solubilidad('KNO3', T), g = al(0, 2) * S * gAgua / 100;
+    const r = motor.tipoSolucion({ sustancia: 'KNO3', g, gAgua, T });
+    assert.equal(r.tipo, g < r.cabe ? 'insaturada' : 'sobresaturada');
+    cerca(r.porCien, 100 * g / gAgua, 'por 100 g de agua');
+    cerca(motor.temperaturaSaturacion('KNO3', S), T, 'la inversa de la curva');
+  }
+});
+test('SO6: Henry es lineal en la presión, el gas se disuelve menos en caliente y al destapar se va', () => {
+  for (let k = 0; k < 300; k++) {
+    const T = al(0, 60), P = al(0.1, 5), kg = al(0.1, 3), a = motor.henry({ gas: 'CO2', T, P, kgAgua: kg });
+    cerca(motor.henry({ gas: 'CO2', T, P: 2 * P, kgAgua: kg }).g, 2 * a.g, 'doble presión, doble gas');
+    cerca(a.g, a.k * P * kg, 'g = k·P·m');
+    const T2 = al(0, 60);
+    const c = motor.compararGasT({ gas: 'CO2', T1: T, T2, P, kgAgua: kg });
+    if (Math.abs(T - T2) > 1e-6) assert.equal(c.masEn, Math.min(T, T2));
+    const d = motor.destapar({ gas: 'CO2', T, P1: P, kgAgua: kg });
+    cerca(d.antes - d.despues, d.escapa, 'lo que escapa'); cerca(d.despues / d.antes, 0.0004 / P, 'queda la fracción P2/P1');
+  }
+});
+
 // 3. Errores de entrada
 test('errores de entrada', () => {
   assert.throws(() => motor.masaMolar('Xx2'), /inválida|sin masa/);
@@ -185,6 +239,17 @@ test('errores de entrada', () => {
   assert.throws(() => motor.modelo(0.3, 60, { mLporCuadro: 25, MporPunto: 0.5 }, { redondear: true }), /entero/);
   assert.throws(() => motor.modelo(0.3, 50), /escala/);
   assert.throws(() => motor.repartir(2.5, 4, 1), /enteros/);
+  assert.throws(() => motor.solubilidad('Ce2(SO4)3', 20), /sin tabla/);
+  assert.throws(() => motor.solubilidad('KNO3', 110), /va de 0 a 100/);
+  assert.throws(() => motor.solubilidad('CO2', 70), /va de 0 a 60/);
+  assert.throws(() => motor.solubilidad('KNO3', 'tibio'), /número/);
+  assert.throws(() => motor.tipoSolucion({ sustancia: 'CO2', g: 1, T: 20 }), /sólido/);
+  assert.throws(() => motor.tipoSolucion({ sustancia: 'KNO3', g: -1, T: 20 }), /negativo/);
+  assert.throws(() => motor.enfriar({ sustancia: 'KNO3', g: 80, T1: 20, T2: 60 }), /no puede ser mayor/);
+  assert.throws(() => motor.henry({ gas: 'KNO3', T: 20, P: 1 }), /gas/);
+  assert.throws(() => motor.henry({ gas: 'CO2', T: 20, P: -1 }), /negativo/);
+  assert.throws(() => motor.destapar({ gas: 'CO2', T: 20, P1: 1, P2: 3 }), /no sube/);
+  assert.throws(() => motor.curva('KNO3', 0), /mayor que cero/);
 });
 
 // 4. Problemas de papel (regla 6)

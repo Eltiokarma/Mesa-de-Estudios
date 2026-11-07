@@ -182,7 +182,8 @@ Para diseñar plantillas y escribir problemas propios, no para copiar (ver "Uso 
 | [ ] | B | Arons, *Teaching Introductory Physics* (1997), Wiley | Catálogo de dificultades por tema, escrito para profesores |
 | [ ] | C | Knight, *Five Easy Lessons: Strategies for Successful Physics Teaching* (2002), Addison-Wesley | Errores típicos por capítulo de un curso de mecánica |
 | [ ] | C | Un texto de química general con estequiometría y gases (Chang, Whitten o Brown) | Verificar fórmulas para las plantillas de química |
-| [ ] | C | Manuales de academia (Lumbreras, cepres, separatas) que tengas a mano | Saber qué y cómo se pregunta en Perú. Solo para mapear temas y errores, nunca para copiar |
+| [ ] | B | Estudios sobre cómo interpretan los escolares el condicional «si p, entonces q» (leído como conjunción o como bicondicional) | Pasar de hipótesis a datos las predicciones de `plantillas/logica/` (pedido de la rutina de aritmética, 7 nov 2026) |
+| [ ] | C | Manuales de academia (Lumbreras, cepres, separatas) que tengas a mano | Saber qué y cómo se pregunta en Perú. Solo para mapear temas y errores, nunca para copiar. También fija la jerarquía de Δ (disyunción exclusiva) en lógica |
 
 ## 4. Ya leídos completos (no hace falta conseguirlos)
 

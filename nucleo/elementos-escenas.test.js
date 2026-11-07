@@ -40,11 +40,13 @@ const ESCENAS = {
       [['N', 'O', 'H'], ['--c-coef', '--c-e']],
     ] },
   'celda-galvanica': {
-    elementos: ['K', 'Fe', 'Cu', 'Zn', 'Ag'],
+    elementos: ['K', 'Fe', 'Cu', 'Zn', 'Ag', 'H', 'O', 'Na', 'Cl'],
     ajenas: ['I'],   // --c-I es la corriente de Faraday, no el yodo
     vistas: [
       [['Zn', 'Fe', 'Cu', 'Ag', 'K'], ['--c-e', '--c-E', '--c-an']],
       [['Cu', 'Ag'], ['--c-e', '--c-E', '--c-I', '--c-t']],
+      [['H', 'O', 'Na'], ['--c-e', '--c-an']],   // el agua con Na₂SO₄ (el SO₄²⁻ va con --c-an)
+      [['H', 'Na', 'Cl'], ['--c-e']],            // la salmuera contra la sal fundida
     ] },
   'enlace': {
     elementos: ['Na', 'Cl'],   // los átomos de las moléculas de Lewis van en tinta
@@ -84,6 +86,13 @@ const ESCENAS = {
     elementos: ['H', 'O'],   // las piezas son bloques con nombre; solo el H y el OH que salen en cada unión llevan color
     vistas: [
       [['H', 'O'], ['--c-n', '--c-k', '--c-Mp', '--c-Ma', '--c-M']],   // el taller: la gota de agua con todas las variables
+    ] },
+  'funciones-organicas': {
+    elementos: ['C', 'H', 'O', 'N'],
+    vistas: [
+      [['C', 'H', 'O', 'N'], ['--c-cad', '--c-loc', '--c-gf', '--c-T']],
+      [['C', 'H', 'O', 'N'], ['--c-pu', '--c-T']],
+      [['C', 'H', 'O'], ['--c-ac', '--c-al']],
     ] },
   'hidrocarburos': {
     elementos: ['C', 'H'],

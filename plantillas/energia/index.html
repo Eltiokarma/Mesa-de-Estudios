@@ -7,13 +7,24 @@
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   h verde, v rojo, x turquesa, Ep índigo, Ec celeste, Ee fucsia, k morado, m naranja, F azul, roce ámbar, P magenta. El morado de marca no se usa aquí. */
+   h verde, v rojo, x turquesa, Ep índigo, Ec celeste, Ee fucsia, k morado, m naranja, F azul, roce ámbar, P magenta. El morado de marca no se usa aquí.
+   0.2.0 (7 nov 2026, modo «Fuerza variable»): F, x, Ec, k, Ee, m, Ep y h se reajustaron con CIEDE2000 (docs/metodo/paleta.py)
+   para que los que salen juntos queden a ΔE00 ≥ 20: en el modo 3, carrito (F, x, m, v, Ec) mín. 20,1 claro y 20,4 oscuro,
+   y resorte (F, x, k, Ee) mín. 20,1 y 20,5; en el modo 1 ningún par empeora (Ep–k 16,3 → 20,6; Ee–k 15,9 → 20,1; m–f 10,9 → 12,8
+   en claro). F no se pudo dejar igual: con el celeste de Ec y el chip al 8 %, ningún azul de F quedaba a 20. Todos pasan AA
+   sobre el papel, la tarjeta y el chip .v (fondo 8 %); en claro F–Ep queda en 12,2, pero nunca salen en el mismo modo.
+   Después, solo roce f y potencia P cambiaron de tono (m y v se comparten con otras escenas): f #8f5800 → #3d2e00 (café oscuro)
+   y P #b3246b → #520000 (granate) en claro; f #ffc04d → #ffdc14 (amarillo) y P #ff86bd → #7af2ff (celeste claro) en oscuro.
+   Así m–f (antes 12,8 / 10,5) y v–P (13,3 / 12,4) quedan sobre 20: f y P están a ΔE00 ≥ 24,7 (claro) y ≥ 21,5 (oscuro, f–h)
+   de todo lo que sale con ellos, también de ok y warn; modo 1 mín. 20,1 / 20,5 (Ee–k) y modo 2 mín. 21,0 (v–m) / 21,5 (f–h).
+   P cambia de tono entre claro y oscuro (como Dc en interés): ningún rosado o granate claro quedaba a 20 de v en oscuro.
+   AA mínimo: f 10,77 y P 12,3 en claro; f 9,37 y P 9,58 en oscuro. P oscuro queda a 12,4 de Ec, que nunca sale en el modo 2. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-m:#b85a06; --c-h:#4f7a17; --c-v:#c0364a; --c-x:#0f766e; --c-k:#6b3dbd; --c-F:#1f5fbf; --c-f:#8f5800; --c-P:#b3246b; --c-Ep:#0b0b8e; --c-Ec:#0979aa; --c-Ee:#c610c6;
+  --c-m:#ad4500; --c-h:#466d14; --c-v:#c0364a; --c-x:#097163; --c-k:#9500eb; --c-F:#0039a3; --c-f:#3d2e00; --c-P:#520000; --c-Ep:#030099; --c-Ec:#1c719c; --c-Ee:#850068;
   --metal:#545c6c; --suelo:#d9c8bb; --bloque:#f3e3d3;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -23,13 +34,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#5ed9c8; --c-k:#ab8cf2; --c-F:#7cb0ff; --c-f:#ffc04d; --c-P:#ff86bd; --c-Ep:#607ffb; --c-Ec:#25caf4; --c-Ee:#f91ff9;
+  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#52e0c9; --c-k:#e9adff; --c-F:#99b6ff; --c-f:#ffdc14; --c-P:#7af2ff; --c-Ep:#7a8aff; --c-Ec:#2fc8ee; --c-Ee:#fb1fff;
   --metal:#c9d0dc; --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#5ed9c8; --c-k:#ab8cf2; --c-F:#7cb0ff; --c-f:#ffc04d; --c-P:#ff86bd; --c-Ep:#607ffb; --c-Ec:#25caf4; --c-Ee:#f91ff9;
+  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#52e0c9; --c-k:#e9adff; --c-F:#99b6ff; --c-f:#ffdc14; --c-P:#7af2ff; --c-Ep:#7a8aff; --c-Ec:#2fc8ee; --c-Ee:#fb1fff;
   --metal:#c9d0dc; --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -46,6 +57,7 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
 .tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
 .tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
 .tabs a:hover:not([aria-current]){color:var(--ink)}
+@media (max-width:520px){ .tabs{gap:2px; padding:4px} .tabs a{padding:8px 10px; font-size:.84rem} }
 
 .mode{display:grid; gap:16px; min-width:0; align-items:start}
 .bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
@@ -77,18 +89,18 @@ canvas.sin-scroll{touch-action:none}
 .map b{font-family:var(--mono); min-width:4.6em; flex:none}
 
 .v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
-.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 12%, transparent)}
-.v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 12%, transparent)}
-.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 12%, transparent)}
-.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 12%, transparent)}
-.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 12%, transparent)}
-.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 12%, transparent)}
-.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 12%, transparent)}
-.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 12%, transparent)}
-.v-Ep{color:var(--c-Ep); background:color-mix(in srgb, var(--c-Ep) 12%, transparent)}
-.v-Ec{color:var(--c-Ec); background:color-mix(in srgb, var(--c-Ec) 12%, transparent)}
-.v-Ee{color:var(--c-Ee); background:color-mix(in srgb, var(--c-Ee) 12%, transparent)}
-.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
+.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 8%, transparent)}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
+.v-Ep{color:var(--c-Ep); background:color-mix(in srgb, var(--c-Ep) 8%, transparent)}
+.v-Ec{color:var(--c-Ec); background:color-mix(in srgb, var(--c-Ec) 8%, transparent)}
+.v-Ee{color:var(--c-Ee); background:color-mix(in srgb, var(--c-Ee) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
 .eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
@@ -118,8 +130,8 @@ canvas.sin-scroll{touch-action:none}
 .slider{display:grid; gap:4px}
 .slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 .slider output{font-family:var(--mono); color:var(--muted)}
-input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
-input.r-m{accent-color:var(--c-m)} input.r-h{accent-color:var(--c-h)} input.r-k{accent-color:var(--c-k)} input.r-F{accent-color:var(--c-F)} input.r-f{accent-color:var(--c-f)} input.r-P{accent-color:var(--c-P)}
+input[type=range]{width:100%; margin-inline:0; accent-color:var(--ink); min-height:28px}
+input.r-m{accent-color:var(--c-m)} input.r-v{accent-color:var(--c-v)} input.r-h{accent-color:var(--c-h)} input.r-k{accent-color:var(--c-k)} input.r-F{accent-color:var(--c-F)} input.r-f{accent-color:var(--c-f)} input.r-P{accent-color:var(--c-P)}
 .chips{display:flex; flex-wrap:wrap; gap:6px}
 .chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
 .chip.real{border-color:var(--c-v); color:var(--c-v)}
@@ -170,6 +182,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#fuerza-variable" id="tab3">Fuerza variable</a>
       <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
     </nav>
   </div>
@@ -184,9 +197,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
         <span><i style="background:var(--c-h)"></i>h · altura</span>
         <span><i style="background:var(--c-v)"></i>v · rapidez</span>
         <span><i style="background:var(--c-x)"></i>x · compresión</span>
-        <span><i style="background:var(--c-Ep)"></i>E<sub>p</sub> · potencial</span>
-        <span><i style="background:var(--c-Ec)"></i>E<sub>c</sub> · cinética</span>
-        <span><i style="background:var(--c-Ee)"></i>E<sub>e</sub> · elástica</span>
+        <span><i style="background:var(--c-Ep)"></i><span>E<sub>p</sub> · potencial</span></span>
+        <span><i style="background:var(--c-Ec)"></i><span>E<sub>c</sub> · cinética</span></span>
+        <span><i style="background:var(--c-Ee)"></i><span>E<sub>e</sub> · elástica</span></span>
         <span><i style="background:var(--c-k)"></i>k · constante del resorte</span>
         <span><i style="background:var(--c-f)"></i>roce y calor</span>
       </div>
@@ -228,6 +241,35 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     </section>
   </div>
 
+  <!-- ===== MODO 3: fuerza variable ===== -->
+  <div id="m3" class="mode" hidden>
+    <section class="bench" aria-label="Riel con el carrito, gráfica de la fuerza contra la posición y barras de energía">
+      <div class="lienzo"><canvas id="cv3" role="img" aria-label="Arriba, un riel con un carrito; abajo, la gráfica de la fuerza contra la posición, con la misma escala de posición que el riel"></canvas></div>
+      <p class="sr" id="desc3" aria-live="polite"></p>
+      <div class="legend">
+        <span><i style="background:var(--c-F)"></i>F · fuerza y su trabajo W</span>
+        <span><i style="background:var(--c-x)"></i>x · posición (en el resorte, deformación)</span>
+        <span><i style="background:var(--c-m)"></i>m · masa</span>
+        <span><i style="background:var(--c-v)"></i>v · rapidez</span>
+        <span><i style="background:var(--c-Ec)"></i><span>E<sub>c</sub> · cinética</span></span>
+        <span><i style="background:var(--c-k)"></i>k · constante del resorte</span>
+        <span><i style="background:var(--c-Ee)"></i><span>E<sub>e</sub> · elástica</span></span>
+      </div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots3"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK3"></p>
+        <h2 class="step-t" id="stepT3" tabindex="-1"></h2>
+      </div>
+      <div id="stepBody3" class="body"></div>
+      <div class="nav">
+        <button id="prev3" type="button" class="btn">Anterior</button>
+        <button id="next3" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
   <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/energia">Problemas para lápiz y papel</a></p>
 </main>
 
@@ -244,7 +286,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
-const PLANTILLA = { id: 'energia', unidad: 'fisica.trabajo-y-energia', version: '0.1.0' };
+const PLANTILLA = { id: 'energia', unidad: 'fisica.trabajo-y-energia', version: '0.2.0' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
   Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
@@ -267,12 +309,12 @@ const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</s
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const M = MotorEnergia;
 
-function crearLienzo(cv, alto, dibujar){
+function crearLienzo(cv, alto, dibujar, tope = 240){
   const ctx = cv.getContext('2d');
   const L = { cv, ctx, W:0, H:0 };
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:240 })), dpr = Celular.dpr();
+    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope })), dpr = Celular.dpr();
     L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     dibujar();
@@ -505,7 +547,7 @@ function animar(t0, t1, listo){
 }
 const P1 = { id:'energia-paso3', ok:'a',
   opts:[['a','Es la misma', null, ''], ['b','Es mayor, porque su peso le da más aceleración','W9-mas-pesado-mas-rapido','documentado'],
-        ['c','Es menor, porque lo liviano se acelera más fácil','W9-al-reves','documentado'], ['d','Es mayor, porque tarda menos en bajar','W9-por-el-tiempo','documentado']],
+        ['c','Es menor, porque lo liviano se acelera más fácil','W9-al-reves','parcial'], ['d','Es mayor, porque tarda menos en bajar','W9-por-el-tiempo','parcial']],
   fb:{ a:'¡Bien! La masa se cancela: con el doble de masa, el peso es el doble, pero también hay el doble que mover. Ahora lo vemos con la energía.',
        b:'Elegiste la B, la idea más común (el 31 % de 336 universitarios después del curso, en el test EMCS). El peso es el doble, pero también hay el doble de masa que acelerar: la correcta está marcada.',
        c:'Elegiste la C. Lo liviano no se acelera más: sin roce, todo cae igual. La correcta está marcada.',
@@ -529,7 +571,7 @@ const steps = [
      <li><b>${V('Ec','E<sub>c</sub>')} = ½${V('m','m')}${V('v','v')}²</b><span>Energía cinética: depende de la ${V('v','rapidez')}.</span></li>
      <li><b>${V('Ee','E<sub>e</sub>')} = ½${V('k','k')}${V('x','x')}²</b><span>Energía elástica del resorte: depende de cuánto se ${V('x','comprime')}.</span></li>
    </ul>
-   <div class="eqs"><div class="eq">${V('Ep','E<sub>p</sub>')} = ${V('m','m')}·g·${V('h','h')} = ${V('m','2')}·10·${V('h','1')} = ${V('h','20 J')}<span class="note">Al inicio, toda la energía es potencial</span></div></div>
+   <div class="eqs"><div class="eq">${V('Ep','E<sub>p</sub>')} = ${V('m','m')}·g·${V('h','h')} = ${V('m','2')}·10·${V('h','1')} = ${V('Ep','20 J')}<span class="note">Al inicio, toda la energía es potencial</span></div></div>
    <p class="fuente">El 98,9 % de 320 escolares de Valencia dijo que la energía potencial "está en el cuerpo" (Solbes y Tarín, 1998). Sin elegir el sistema, el balance de energía se enreda.</p>` },
  { k:'Paso 3', t:'Antes de calcular, predice', sistema:true, gate:P1,
    body:() => `<p>Si en lugar del bloque de 2 kg se suelta uno de ${V('m','4 kg')} desde la misma altura, ¿qué pasa con su ${V('v','rapidez')} al pie de la rampa?</p>${opciones(P1)}` },
@@ -545,7 +587,7 @@ const steps = [
      <div class="eq">½·${V('m','m')}·${V('v','v')}² = ½·${V('k','k')}·${V('x','x')}²<span class="note">En la compresión máxima, el bloque se detiene un instante</span></div>
      <div class="eq">20 = ½·${V('k','1000')}·${V('x','x')}² → ${V('x','x')}² = 0,04 → ${V('x','x = 0,2 m')}</div>
    </div>
-   <p>El ½ no es un adorno: mientras el resorte se comprime, su fuerza crece de 0 a k·x, y el trabajo es el área de ese triángulo, ½kx². Si usas kx² te sale 0,14 m.</p>` },
+   <p>El ½ no es un adorno: mientras el resorte se comprime, su fuerza crece de 0 a k·x, y el trabajo es el área de ese triángulo, ½kx². Si usas kx² te sale 0,14 m. En la pestaña <a href="#fuerza-variable">Fuerza variable</a> lo ves como área.</p>` },
  { k:'Paso 6', t:'Predice otra vez', sistema:true, gate:P2, fin:true,
    body:() => `<p>Ahora el bloque de 2 kg se suelta desde el <b>doble</b> de altura, ${V('h','2 m')}. ¿Cuánto más se ${V('x','comprime')} el resorte?</p>${opciones(P2)}` },
  { k:'Paso 7', t:'Doble altura', sistema:true, anim:'todo', est:{ h:2 },
@@ -574,7 +616,7 @@ const steps = [
 const dots = $('dots');
 steps.forEach((s, n) => {
   const li = document.createElement('li'), b = document.createElement('button');
-  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.type = 'button'; b.textContent = n + 1;
   b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
 });
 function go(n){
@@ -607,6 +649,8 @@ function nav(){
 function pintarDots(){
   [...dots.querySelectorAll('button')].forEach((b, k) => {
     b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // Un paso bloqueado no anuncia su título (podría adelantar la respuesta).
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
     if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
   });
 }
@@ -990,9 +1034,559 @@ L.resize(); ir(0);
 </script>
 
 <script>
+/* ================= MODO 3: fuerza variable =================
+   El trabajo de una fuerza que cambia es el área con signo bajo la gráfica F–x (G4 y W6 de
+   docs/investigacion/estatica-energia-ideas-erroneas.md y de cinematica-ideas-erroneas.md).
+   Todo lo que se dibuja y todos los números de las opciones salen de MotorEnergia; nada se pinta
+   (ni área, ni rayado, ni barras) antes de responder. La animación usa Celular.bucle, que se duerme
+   cuando nada se mueve o el lienzo no se ve. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv3');
+const GA = [[0, 10], [4, 40]], GC = [[0, -8], [4, 0], [8, 20]], K = 600, X1 = 0.1, X2 = 0.3, GD = [[0, 0], [0.35, K*0.35]];
+const XS = [0, 2, 4, 6, 8];
+// Resultados del motor para los problemas guiados.
+const rA = M.fuerzaVariable({ puntos:GA, m:2 }), rA8 = M.fuerzaVariable({ puntos:GA, m:8 });
+const recA = M.recorridoFuerza({ puntos:GA, m:2 }), recA8 = M.recorridoFuerza({ puntos:GA, m:8 });
+const rC = M.fuerzaVariable({ puntos:GC, m:2, v0:5 }), rC4 = M.fuerzaVariable({ puntos:GC, m:2, v0:5, x2:4 }), recC = M.recorridoFuerza({ puntos:GC, m:2, v0:5 });
+const rk = M.resorteArea(K, X1, X2);
+const J = v => `${fmt(v, Math.abs(v - Math.round(v)) < 1e-9 ? 0 : 1)} J`;
+const ESC = {
+  A:{ R:{ x0:0, x1:4.6, y0:0, y1:50 }, pasoX:1 },
+  B:{ R:{ x0:0, x1:4.6, y0:0, y1:50 }, pasoX:1 },
+  C:{ R:{ x0:0, x1:8.7, y0:-12, y1:24 }, pasoX:2 },
+  D:{ R:{ x0:0, x1:0.36, y0:0, y1:230 }, pasoX:0.1 },
+  X:{ R:{ x0:0, x1:8.7, y0:-45, y1:45 }, pasoX:2 },
+};
+const S = { step:0, max:0, pred:{}, hl:null, f:1, anim:null, explora:false, conFoco:false, sobre:false,
+  ex:{ F:[-10, -5, 0, 10, 20], m:2, v0:5, foco:2, rec:null, tAnim:0, preset:'sentido' } };
+let cual = -1, GEO = null;
+const L = crearLienzo(cv, W => W >= 560 ? clamp(W*0.5, 300, 420) : 430, draw, 300);
+const bucle = Celular.bucle(cv, paso);
+
+/* ---------- Predicciones (los números, del motor) ---------- */
+const e1 = rA.errores, e3 = rC.errores, e4 = rk.errores;
+const P1 = { id:'energia-fx-area', ok:'b',
+  opts:[['a', J(e1.FfinalPorD), 'G4-F-final-por-d', 'parcial'], ['b', J(rA.W), null, ''],
+        ['c', J(e1.pendiente), 'G4-pendiente', 'parcial'], ['d', J(e1.FinicialPorD), 'G4-F-inicial-por-d', 'parcial']],
+  fb:{ b:'¡Bien! La fuerza no vale 10 N ni 40 N todo el camino: el trabajo es el área bajo la gráfica, un trapecio. Mira cómo se pinta.',
+       a:`Elegiste la A. 40 N × 4 m supone que la fuerza vale 40 N desde el inicio, pero al inicio valía 10 N. Ese rectángulo se pasa justo en el triángulo de arriba. La correcta está marcada.`,
+       c:`Elegiste la C. ${fmt(e1.pendiente, 1)} es la pendiente de la recta (cuántos newtons sube por cada metro), no el trabajo, y sus unidades son N/m, no J. El trabajo es el área. La correcta está marcada.`,
+       d:'Elegiste la D. 10 N × 4 m deja fuera todo lo que la fuerza crece en el camino. La correcta está marcada.' } };
+const P2 = { id:'energia-fx-masas', ok:'c',
+  opts:[['a', 'El de 2 kg', 'W6-liviano-mas-Ec', 'documentado'], ['b', 'El de 8 kg', 'W6-pesado-mas-Ec', 'documentado'],
+        ['c', 'Los dos tienen la misma', null, ''], ['d', 'No se puede saber con estos datos', 'W6-faltan-datos', 'documentado']],
+  fb:{ c:`¡Bien! El área es la misma para los dos: ${J(rA.W)}. Ese trabajo se vuelve la misma energía cinética, aunque uno vaya más rápido que el otro.`,
+       a:`Elegiste la A. Quizá pensaste que el de 2 kg tiene más porque va más rápido; sí va más rápido, pero tiene menos masa: ½·2·${fmt(rA.v, 0)}² = ½·8·${fmt(rA8.v, 0)}² = ${J(rA.Ec)}. La correcta está marcada.`,
+       b:'Elegiste la B. Quizá pensaste en su masa, pero más masa no da más energía si el trabajo es el mismo: el de 8 kg va más lento y le toca la misma energía cinética. La correcta está marcada.',
+       d:'Elegiste la D. Sí alcanza: la fuerza y la distancia son las mismas, así que el área (el trabajo) es la misma. El tiempo cambia (el de 8 kg tarda el doble), pero el trabajo no depende del tiempo. La correcta está marcada.' } };
+const P3 = { id:'energia-fx-signo', ok:'d',
+  opts:[['a', J(e3.sumaSinSigno), 'signo-suma-areas', 'hipotesis'], ['b', J(e3.soloPositiva), 'signo-ignora-negativa', 'hipotesis'],
+        ['c', J(e3.FfinalPorD), 'G4-F-final-por-d', 'parcial'], ['d', J(rC.W), null, '']],
+  fb:{ d:`¡Bien! Bajo el eje la fuerza va contra el movimiento: esa parte del área resta. +${fmt(rC.positiva, 0)} − ${fmt(-rC.negativa, 0)} = ${J(rC.W)}.`,
+       a:`Elegiste la A. Sumaste las dos áreas como si fueran positivas. Mientras la fuerza empuja hacia atrás, su trabajo es negativo: le quita ${J(-rC.negativa)} al carrito. ${fmt(rC.positiva, 0)} − ${fmt(-rC.negativa, 0)} = ${J(rC.W)}. La correcta está marcada.`,
+       b:'Elegiste la B. La parte bajo el eje también cuenta, con signo menos: en los primeros 4 m la fuerza frena al carrito. La correcta está marcada.',
+       c:'Elegiste la C. 20 N × 8 m supone que la fuerza vale 20 N hacia adelante todo el camino; al inicio valía 8 N hacia atrás. La correcta está marcada.' } };
+const P4 = { id:'energia-fx-resorte', ok:'c',
+  opts:[['a', J(e4.mitadDeltaCuadrado), 'W13-mitad-delta-cuadrado', 'parcial'], ['b', J(e4.FfinalPorDelta), 'G4-F-final-por-d', 'parcial'],
+        ['c', J(rk.W), null, ''], ['d', J(e4.desdeCero), 'resorte-desde-cero', 'hipotesis']],
+  fb:{ c:`¡Bien! Es el área de un trapecio: el triángulo grande, de 0 a 0,3 m (${J(rk.grande)}), menos el chico, de 0 a 0,1 m (${J(rk.chico)}), que ya estaba hecho.`,
+       a:`Elegiste la A. ½·600·0,2² = ${J(e4.mitadDeltaCuadrado)} es lo que cuesta estirarlo 0,2 m desde su largo natural, donde la fuerza empieza en 0. Aquí la fuerza ya empezaba en ${fmt(rk.F1, 0)} N. La correcta está marcada.`,
+       b:`Elegiste la B. ${fmt(rk.F2, 0)} N × 0,2 m usa la fuerza del final todo el camino; al inicio solo hacías ${fmt(rk.F1, 0)} N. El rectángulo se pasa en el triángulo de arriba (${J(e4.FfinalPorDelta - rk.W)}). La correcta está marcada.`,
+       d:`Elegiste la D. ½·600·0,3² = ${J(e4.desdeCero)} es el trabajo desde el largo natural, pero los primeros 0,1 m ya estaban estirados: esos ${J(rk.chico)} no los hiciste tú. La correcta está marcada.` } };
+const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb3" tabindex="-1"></p>`;
+const W_ = V('F', 'W');
+const G = t => `<span>${t}</span>`; // agrupa un término de la ecuación (.eq es flex: sin esto, ² y los subíndices se separan)
+
+/* ---------- Pasos ---------- */
+const steps = [
+ { k:'Paso 1', t:'Antes de calcular, predice', esc:'A', gate:P1,
+   body:() => `<p class="problem">Un carrito de ${V('m','2 kg')} está en reposo sobre un riel horizontal sin roce. Un motorcito lo jala con una ${V('F','fuerza')} horizontal que empieza en ${V('F','10 N')} y crece de forma pareja hasta ${V('F','40 N')} cuando el carrito ha avanzado ${V('x','4 m')}. ¿Cuánto trabajo hace la fuerza en esos 4 m? ¿Con qué ${V('v','rapidez')} llega el carrito a ${V('x','x = 4 m')}?</p>
+   <p>Abajo está la gráfica de la ${V('F','fuerza')} contra la posición ${V('x','x')} del carrito. Antes de calcular: ¿cuánto trabajo hace la fuerza en los 4 m?</p>${opciones(P1)}` },
+ { k:'Paso 2', t:'¿Qué dice la gráfica?', esc:'A', anim:true,
+   body:() => `<div class="eqs">
+     <div class="eq">${W_} = área = ${G(`<span class="frac"><span>${V('F','10')} + ${V('F','40')}</span><span>2</span></span>·${V('x','4')}`)} = ${V('F', J(rA.W))}<span class="note">Un trapecio: bases de 10 N y 40 N, altura de 4 m</span></div>
+     <div class="eq">${G(`${V('F','F')}<sub>media</sub>`)} = <span class="frac"><span>${V('F','W')}</span><span>${V('x','d')}</span></span> = <span class="frac"><span>${fmt(rA.W, 0)}</span><span>4</span></span> = ${V('F', fmt(rA.Fmedia, 0) + ' N')}<span class="note">El rectángulo a trazos tiene la misma área</span></div>
+   </div>
+   ${['a', 'd'].includes(S.pred[P1.id]) ? `<p>El rectángulo gris a trazos es tu cuenta (${S.pred[P1.id] === 'a' ? J(e1.FfinalPorD) : J(e1.FinicialPorD)}): mira lo que ${S.pred[P1.id] === 'a' ? 'le sobra' : 'le falta'} comparado con el trapecio.</p>` : ''}
+   <p>Con una fuerza constante, el área es un rectángulo y sale F·d. Cuando la fuerza cambia, ya no hay un solo F que multiplicar: lo que no cambia es que el trabajo es el área bajo la gráfica F–x.</p>
+   <p class="fuente">En un test de gráficas con unos 500 escolares y universitarios, solo cerca de 1 de cada 4 sacó bien un cambio de velocidad a partir del área bajo una gráfica; muchos calcularon la pendiente o leyeron el eje (Beichner, 1994). En la gráfica F–x no está medido: suponemos que es el mismo error.</p>` },
+ { k:'Paso 3', t:'Predice otra vez', esc:'B', gate:P2,
+   body:() => `<p>La misma ${V('F','fuerza')}, la de la gráfica, jala desde el reposo a dos carritos: uno de ${V('m','2 kg')} y otro de ${V('m','8 kg')}, cada uno en su riel sin roce. Al llegar a ${V('x','x = 4 m')}, ¿cuál tiene más ${V('Ec','energía cinética')}?</p>${opciones(P2)}` },
+ { k:'Paso 4', t:'Del área a la energía cinética', esc:'B', anim:true,
+   body:() => `<div class="eqs">
+     <div class="eq">${G(`${W_}<sub>neto</sub>`)} = ${G(`Δ${V('Ec','E<sub>c</sub>')}`)} = ${G(`½·${V('m','m')}·${V('v','v')}²`)} − ${G(`½·${V('m','m')}·${V('v','v')}<sub>0</sub>²`)}<span class="note">Teorema trabajo-energía</span></div>
+     <div class="eq">${V('F', fmt(rA.W, 0))} = ${G(`½·${V('m','2')}·${V('v','v')}²`)} → ${V('v', 'v = ' + fmt(rA.v, 0) + ' m/s')}</div>
+     <div class="eq">${V('F', fmt(rA8.W, 0))} = ${G(`½·${V('m','8')}·${V('v','v')}²`)} → ${V('v', 'v = ' + fmt(rA8.v, 0) + ' m/s')}</div>
+   </div>
+   <p>Los dos reciben el mismo trabajo, ${J(rA.W)}, y terminan con la misma ${V('Ec','energía cinética')}. El liviano va más rápido y llega antes (${fmt(recA.tiempo, 2)} s contra ${fmt(recA8.tiempo, 2)} s), pero la masa más chica compensa su rapidez. ${S.pred[P2.id] === P2.ok ? 'Tu predicción era correcta.' : 'Compara con tu predicción del paso 3.'}</p>
+   <p class="answer">Respuesta: la fuerza hace ${J(rA.W)} y el carrito de 2 kg llega a x = 4 m con ${fmt(rA.v, 0)} m/s.</p>
+   <p class="hint">El teorema pide el trabajo de todas las fuerzas. Aquí el riel no tiene roce, y el peso y la normal no trabajan: el de la fuerza del motor es el neto.</p>
+   <p class="fuente">Es una de las preguntas más difíciles de un test de energía con más de 300 universitarios: después del curso acertó cerca de 3 de cada 10, y cerca de 1 de cada 4 eligió al liviano «porque va más rápido» (Singh y Rosengrant, 2003). Hasta en el tercer año de la carrera de física se repite (Brundage y otros, 2023).</p>` },
+ { k:'Paso 5', t:'La fuerza cambia de sentido', esc:'C', gate:P3,
+   body:() => `<p class="problem">Otro carrito, de ${V('m','2 kg')}, pasa por ${V('x','x = 0')} a ${V('v','5 m/s')} hacia la derecha. Un motorcito le aplica una ${V('F','fuerza')} horizontal que al inicio lo empuja hacia atrás (${V('F','−8 N')}), se anula en ${V('x','x = 4 m')} y luego lo empuja hacia adelante, hasta ${V('F','20 N')} en ${V('x','x = 8 m')}. ¿Cuánto trabajo hace la fuerza entre x = 0 y x = 8 m?</p>${opciones(P3)}` },
+ { k:'Paso 6', t:'Bajo el eje, el trabajo resta', esc:'C', anim:true,
+   body:() => `<div class="eqs">
+     <div class="eq">${W_} = ${V('F', fmt(rC.negativa, 0))} + ${V('F', fmt(rC.positiva, 0))} = ${V('F', J(rC.W))}<span class="note">Bajo el eje, con signo menos</span></div>
+     <div class="eq">${G(`½·${V('m','2')}·${V('v','v')}²`)} = ${G(`½·${V('m','2')}·${V('v','5')}²`)} + ${fmt(rC.W, 0)} = ${fmt(rC.Ec, 0)} → ${V('v', 'v = ' + fmt(rC.v, 0) + ' m/s')}<span class="note">En x = 8 m</span></div>
+     <div class="eq">${G(`½·${V('m','2')}·${V('v','v')}²`)} = ${fmt(rC.Ec0, 0)} − ${fmt(-rC4.W, 0)} = ${fmt(rC.Ecmin, 0)} → ${V('v', 'v = ' + fmt(rC.vmin, 0) + ' m/s')}<span class="note">En x = 4 m, donde F = 0: la rapidez más baja</span></div>
+   </div>
+   <p>Una fuerza que va contra el movimiento hace trabajo negativo y le quita energía cinética. El carrito no frena «porque se le acaba la fuerza»: frena mientras la fuerza va en contra, y vuelve a ganar rapidez cuando la fuerza empuja hacia adelante.</p>
+   <p>Si el carrito hubiera llegado con menos de ${J(-rC4.W)} de energía cinética, se habría detenido antes de x = 4 m y la fuerza lo habría regresado. En el último paso puedes probarlo.</p>
+   <p class="fuente">Las opciones A y B son hipótesis nuestras: no encontramos un estudio que mida estos errores de signo. La C es el error de la primera predicción. Una gráfica parecida, una recta que cruza el eje, salió en el examen de San Marcos de 2026.</p>` },
+ { k:'Paso 7', t:'Estira el resorte', esc:'D', gate:P4,
+   body:() => `<p class="problem">Un resorte de ${V('k','k = 600 N/m')} ya está estirado ${V('x','0,1 m')}. Lo estiras despacio con la mano hasta que queda estirado ${V('x','0,3 m')}. ¿Cuánto trabajo hace tu mano?</p>
+   <p>Como vas despacio, tu mano hace en cada momento una ${V('F','fuerza')} del mismo tamaño que la del resorte, F = ${V('k','k')}·${V('x','x')}, donde ${V('x','x')} es cuánto está estirado. Abajo está esa recta. ¿Cuánto trabajo hace tu mano?</p>${opciones(P4)}` },
+ { k:'Paso 8', t:'El resorte: triángulo, no rectángulo', esc:'D', anim:true,
+   body:() => `<div class="eqs">
+     <div class="eq">${W_} = ${G(`½·${V('k','k')}·(${V('x','x')}<sub>2</sub>² − ${V('x','x')}<sub>1</sub>²)`)} = ${G(`½·${V('k','600')}·(${V('x','0,09')} − ${V('x','0,01')})`)} = ${V('F', J(rk.W))}</div>
+     <div class="eq">${fmt(rk.grande, 0)} − ${fmt(rk.chico, 0)} = ${V('F', J(rk.W))}<span class="note">Triángulo grande menos el chico, que ya estaba</span></div>
+     <div class="eq">${G(`Δ${V('Ee','E<sub>e</sub>')}`)} = ${fmt(rk.grande, 0)} − ${fmt(rk.chico, 0)} = ${J(rk.W)}<span class="note">Lo que hace tu mano queda guardado en el resorte</span></div>
+   </div>
+   <p>Desde el largo natural, el área es un triángulo: ½·${V('k','k')}${V('x','x')}·${V('x','x')} = ½${V('k','k')}${V('x','x')}². Si usas F·x con la fuerza final (${V('k','k')}${V('x','x')}·${V('x','x')} = ${V('k','k')}${V('x','x')}²), te sale el doble: es el rectángulo, y el resorte no hace esa fuerza desde el inicio. Por eso en la rampa del «Paso a paso» la energía del resorte era ½kx².</p>
+   <p class="fuente">La opción A aparece descrita en un estudio con 148 alumnos de primer año de Ingeniería, sin porcentaje (Gutiérrez-Berraondo y otros, 2022). La B es el error de la primera predicción y la D es una hipótesis nuestra.</p>` },
+ { k:'Paso 9', t:'Ahora explora tú', esc:'X', explora:true,
+   body:() => `<p>Arrastra los cinco puntos de la gráfica hacia arriba o hacia abajo (o elige la gráfica y usa las flechas del teclado). El área se pinta sola; suelta el carrito para ver qué pasa con su rapidez.</p>
+   <div class="ctrls">
+     <div class="slider"><label for="xm"><span>Masa del carrito (${V('m','m')})</span><output id="xm-o"></output></label><input id="xm" class="r-m" type="range" min="1" max="8" step="1" value="${S.ex.m}"></div>
+     <div class="slider"><label for="xv"><span>Rapidez en x = 0 (${V('v','v')}<sub>0</sub>)</span><output id="xv-o"></output></label><input id="xv" class="r-v" type="range" min="0" max="8" step="0.5" value="${S.ex.v0}"></div>
+   </div>
+   <div class="seg" role="group" aria-label="Gráficas de partida">${PRESETS.map(([id, t]) => `<button type="button" data-pre="${id}" aria-pressed="${S.ex.preset === id}">${t}</button>`).join('')}</div>
+   <div class="nav" style="justify-content:flex-start"><button type="button" class="btn primary" id="soltar3">Soltar el carrito</button></div>
+   <div id="live3" class="body"></div>
+   <p class="hint">Prueba que el área de arriba y la de abajo se anulen: el carrito termina con la misma rapidez con que empezó. Si se detiene, cuenta solo el área hasta donde llega: el trabajo hasta ese punto es −E<sub>c0</sub>. Con «Baja a cero» la fuerza es la de un resorte que se suelta: el área es un triángulo.</p>` },
+];
+const PRESETS = [['constante', 'Constante', [20, 20, 20, 20, 20]], ['crece', 'Crece', [10, 15, 25, 30, 40]], ['sentido', 'Cambia de sentido', [-10, -5, 0, 10, 20]], ['baja', 'Baja a cero', [40, 30, 20, 10, 0]]];
+
+/* ---------- Dibujo ---------- */
+const revelado = () => { const s = steps[S.step]; return !s.gate || !!S.pred[s.gate.id]; };
+const conBarras = () => steps[S.step].esc !== 'A';
+function zonas(W, H){
+  const ancho = W >= 560, esc = steps[S.step].esc;
+  let barras = null, iw = W, abajo = H;
+  if (conBarras() && ancho){ const wb = Math.round(clamp(W*0.24, 150, 210)); barras = { x:W - wb - 6, y:8, w:wb, h:H - 16 }; iw = W - wb - 12; }
+  if (conBarras() && !ancho && !L.compacto){ const hb = 88; barras = { x:8, y:H - hb - 6, w:W - 16, h:hb }; abajo = H - hb - 12; }
+  const hr = esc === 'B' ? (ancho ? Math.round(clamp(H*0.34, 110, 140)) : 120) : (ancho ? Math.round(clamp(H*0.24, 78, 100)) : 78);
+  const riel = { x:6, y:4, w:iw - 12, h:hr };
+  const graf = { x:44, y:hr + 16, w:iw - 44 - 16, h:abajo - hr - 16 - 26 };
+  return { riel, graf, barras };
+}
+// Texto con fondo de papel, que no se sale de la caja b.
+function rotuloEn(ctx, c, b, x, y, t, color, peso){
+  ctx.font = `${peso || 700} 12px ${c.font}`; const w = ctx.measureText(t).width;
+  rotulo(ctx, c, clamp(x, b.x + 4, b.x + b.w - w - 4), y, t, color, 'left', peso);
+}
+function poligono(ctx, pts){ ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); }
+// Gráfica F–x: área (llena si F > 0, rayada si F < 0) solo si o.hasta no es null; curva, eje F = 0 en tinta, nodos.
+function graficaFx(ctx, c, B, o){
+  const R = o.R, ej = ejes(ctx, c, B, R, { x:o.ejeX || 'x (m)', colX:c.x, y:'F (N)', colY:c.F, pasoX:o.pasoX, fmtX:o.fmtX });
+  const { X, Y } = ej, hlF = S.hl === 'F';
+  ctx.save(); ctx.beginPath(); ctx.rect(B.x, B.y, B.w, B.h); ctx.clip();
+  if (o.hasta !== null && o.hasta !== undefined && o.hasta > (o.desde || o.puntos[0][0]) + 1e-9){
+    const P = M.areaPartes(o.puntos, o.desde, o.hasta);
+    for (const t of P.tramos){
+      const pol = [[X(t.xa), Y(0)], [X(t.xa), Y(t.Fa)], [X(t.xb), Y(t.Fb)], [X(t.xb), Y(0)]];
+      ctx.save(); poligono(ctx, pol); ctx.fillStyle = c.F; ctx.globalAlpha = .28; ctx.fill(); ctx.restore();
+      if (t.W < 0){
+        ctx.save(); poligono(ctx, pol); ctx.clip(); ctx.strokeStyle = c.F; ctx.lineWidth = 1.3; ctx.globalAlpha = .9;
+        for (let x = X(t.xa) - B.h; x < X(t.xb) + B.h; x += 7) linea(ctx, x, B.y + B.h, x + B.h, B.y);
+        ctx.restore();
+      }
+    }
+  }
+  if (o.chico){ // triángulo de lo que ya estaba (resorte)
+    ctx.save(); ctx.setLineDash([5, 4]); ctx.strokeStyle = c.F; ctx.lineWidth = 1.6;
+    poligono(ctx, [[X(0), Y(0)], [X(o.chico), Y(K*o.chico)], [X(o.chico), Y(0)]]); ctx.stroke(); ctx.restore();
+  }
+  if (o.error){ // el rectángulo del error elegido, en gris a trazos
+    ctx.save(); ctx.setLineDash([6, 4]); ctx.strokeStyle = c.muted; ctx.lineWidth = 2;
+    ctx.strokeRect(X(o.error.x0), Y(o.error.F), X(o.error.x1) - X(o.error.x0), Y(0) - Y(o.error.F)); ctx.restore();
+  }
+  if (o.media !== undefined && o.media !== null){
+    ctx.save(); ctx.setLineDash([5, 4]); ctx.strokeStyle = c.F; ctx.lineWidth = 1.6;
+    const xa = X(o.puntos[0][0]), xb = X(o.puntos[o.puntos.length - 1][0]);
+    if (o.mediaRect) ctx.strokeRect(xa, Y(o.media), xb - xa, Y(0) - Y(o.media)); else linea(ctx, xa, Y(o.media), xb, Y(o.media));
+    ctx.restore();
+  }
+  // Curva
+  ctx.save(); ctx.strokeStyle = c.F; ctx.lineWidth = hlF ? 3.6 : 2.6; ctx.lineJoin = 'round';
+  if (hlF){ ctx.shadowColor = c.F; ctx.shadowBlur = 8; }
+  ctx.beginPath(); o.puntos.forEach(([x, F], i) => i ? ctx.lineTo(X(x), Y(F)) : ctx.moveTo(X(x), Y(F))); ctx.stroke(); ctx.restore();
+  // Eje F = 0
+  if (R.y0 < 0){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, B.x, Y(0), B.x + B.w, Y(0)); }
+  // Marcas verticales (datos de posición)
+  for (const m of o.marcas || []){
+    ctx.save(); ctx.setLineDash([3, 4]); ctx.strokeStyle = c.x; ctx.lineWidth = 1.4; linea(ctx, X(m), B.y, X(m), B.y + B.h); ctx.restore();
+  }
+  if (o.cursor !== null && o.cursor !== undefined){
+    ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, X(o.cursor), B.y, X(o.cursor), B.y + B.h); ctx.restore();
+  }
+  ctx.restore();
+  // Nodos arrastrables
+  if (o.nodos){
+    o.puntos.forEach(([x, F], i) => {
+      const grande = i === S.ex.foco && (S.conFoco || cual === i || S.sobre);
+      punto(ctx, X(x), Y(F), grande ? 10 : 7, c.paper, c.F);
+      ctx.save(); ctx.strokeStyle = c.F; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(X(x), Y(F), grande ? 10 : 7, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+      if (i === S.ex.foco && S.conFoco){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(X(x), Y(F), 15, 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+      if (i === S.ex.foco && (cual === i || S.conFoco)) rotuloEn(ctx, c, B, X(x) + 14, Y(F) - 16, `F = ${fmt(F, 0)} N`, c.F, 800);
+    });
+  }
+  return ej;
+}
+// Rótulos de las áreas: el total de arriba y el de abajo, en el tramo más grande de cada signo.
+function rotulosArea(ctx, c, ej, puntos, desde, hasta, op){
+  const P = M.areaPartes(puntos, desde, hasta), B = ej.b;
+  for (const signo of [1, -1]){
+    const ts = P.tramos.filter(t => signo*t.W > 1e-9); if (!ts.length) continue;
+    const t = ts.reduce((p, q) => (Math.abs(q.W) > Math.abs(p.W) ? q : p)), xm = (t.xa + t.xb)/2, Fm = (t.Fa + t.Fb)/4;
+    const total = signo > 0 ? P.positiva : P.negativa, txt = (op && op.texto) ? op.texto(total, signo) : `${signo > 0 ? '+' : '−'}${J(Math.abs(total))}`;
+    ctx.font = `800 12px ${c.font}`; const w = ctx.measureText(txt).width;
+    rotulo(ctx, c, clamp(ej.X(xm) - w/2, B.x + 4, B.x + B.w - w - 4), clamp(ej.Y(Fm), B.y + 10, B.y + B.h - 10), txt, c.F, 'left', 800);
+  }
+}
+// Riel con uno o dos carritos. car = { x, m, F, v, etqF, etqV, verV }
+function riel(ctx, c, b, X, cars, op){
+  op = op || {};
+  const filas = cars.length, hf = b.h/filas;
+  cars.forEach((car, j) => {
+    const y0 = b.y + hf*(j + 1) - 8, sw = 34, sh = 20;
+    ctx.save(); ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(b.x, y0, b.w, 6); ctx.restore();
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, b.x, y0, b.x + b.w, y0);
+    const px = X(car.x), top = y0 - sh - 6;
+    rr(ctx, px - sw/2, top, sw, sh, 5); ctx.fillStyle = c.bloque; ctx.fill(); ctx.strokeStyle = c.m; ctx.lineWidth = S.hl === 'm' ? 3 : 2; ctx.stroke();
+    for (const dx of [-9, 9]) punto(ctx, px + dx, y0 - 3, 3, c.ink);
+    ctx.fillStyle = c.m; ctx.font = `800 10px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(`${fmt(car.m, 0)} kg`, px, top + sh/2);
+    // Fuerza del motor, en el frente o en la cola según su signo
+    if (Math.abs(car.F) > 1e-9){
+      const s = Math.sign(car.F), x1 = px + s*sw/2, ym = top + sh/2, cabe = s > 0 ? b.x + b.w - 2 - x1 : x1 - b.x - 2;
+      const l = Math.min(cabe, clamp(Math.abs(car.F)/op.Fmax*44, 10, 52));
+      flecha(ctx, x1, ym, x1 + s*l, ym, c.F, S.hl === 'F' ? 4 : 3);
+      if (car.etqF){ ctx.font = `800 12px ${c.font}`; const w = ctx.measureText(car.etqF).width; rotuloEn(ctx, c, b, s > 0 ? x1 + 4 : x1 - w - 4, top - 26, car.etqF, c.F, 800); }
+    }
+    if (car.verV && car.v > 0.05){
+      // Cerca del borde derecho, la flecha se corre a la izquierda (sigue apuntando hacia +x) y el rótulo va antes.
+      const l = clamp(car.v*op.kv, 10, 60), y = top - 6, x0 = Math.min(px, b.x + b.w - 4 - l);
+      flecha(ctx, x0, y, x0 + l, y, c.v, S.hl === 'v' ? 4 : 3);
+      if (car.etqV){
+        ctx.font = `800 12px ${c.font}`; const w = ctx.measureText(car.etqV).width;
+        rotuloEn(ctx, c, b, x0 + l + 6 + w > b.x + b.w - 4 ? x0 - w - 6 : x0 + l + 6, y, car.etqV, c.v, 800);
+      }
+    }
+    if (car.marca) rotuloEn(ctx, c, b, px + sw/2 + 6, top + 6, car.marca, c.ink, 700);
+  });
+}
+// Resorte que estira una mano: pared a la izquierda, largo natural punteado, deformación x en turquesa.
+function rielResorte(ctx, c, b, x, verF){
+  const y = b.y + b.h*0.62, xp = b.x + 10, Ln = b.w*0.42, sx = (b.w*0.44)/0.36, xe = xp + Ln + x*sx;
+  ctx.fillStyle = c.metal; ctx.fillRect(xp - 8, y - 26, 8, 52);
+  resorte(ctx, c, xe, xp, y, 16, S.hl === 'k');
+  // placa de la mano
+  rr(ctx, xe, y - 14, 22, 28, 8); ctx.fillStyle = c.bloque; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke();
+  ctx.save(); ctx.setLineDash([3, 4]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, xp + Ln, y - 30, xp + Ln, y + 30); ctx.restore();
+  rotuloEn(ctx, c, b, xp + Ln - 40, b.y + 10, 'largo natural', c.muted, 700);
+  cota(ctx, c, xp + Ln, y + 30, xe, y + 30, c.x, `x = ${fmt(x, 2)} m`, S.hl === 'x');
+  rotuloEn(ctx, c, b, xp + 6, y - 34, `k = ${K} N/m`, c.k, 800);
+  if (verF){ const l = clamp(K*x/230*50, 10, 54); flecha(ctx, xe + 22, y, xe + 22 + l, y, c.F, 3); rotuloEn(ctx, c, b, xe + 26, y - 22, `F = ${fmt(K*x, 0)} N · mano`, c.F, 800); }
+}
+// Barras de energía: [{ nombre, col, v (null: «?»), ini (marca a trazos) }]. Verticales en pantalla ancha, horizontales en el celular.
+function barras3(ctx, c, b, lista, tope, pie){
+  ctx.save(); ctx.fillStyle = c.paper; rr(ctx, b.x, b.y, b.w, b.h, 12); ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.stroke();
+  ctx.font = `800 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('Energía (J)', b.x + 8, b.y + 6);
+  const vertical = b.h > b.w;
+  lista.forEach((it, j) => {
+    const n = lista.length;
+    if (vertical){
+      const gap = 14, w = Math.min(46, (b.w - gap*(n + 1))/n), x = b.x + (b.w - n*w - (n - 1)*gap)/2 + j*(w + gap);
+      const base = b.y + b.h - (pie ? 52 : 34), alto = base - b.y - 40, Yv = v => base - clamp(v/tope, 0, 1.05)*alto;
+      ctx.fillStyle = c.grid; ctx.fillRect(x, base - alto, w, alto);
+      if (it.v === null){ ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = it.col; ctx.lineWidth = 1.5; ctx.strokeRect(x + 1, base - alto*0.5, w - 2, alto*0.5); ctx.restore();
+        ctx.fillStyle = it.col; ctx.font = `800 16px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', x + w/2, base - alto*0.25); }
+      else { ctx.fillStyle = it.col; if (S.hl === it.hl){ ctx.shadowColor = it.col; ctx.shadowBlur = 10; } ctx.fillRect(x, Yv(it.v), w, base - Yv(it.v)); ctx.shadowBlur = 0;
+        ctx.font = `800 11px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(fmt(it.v, it.v < 10 ? 1 : 0), x + w/2, Yv(it.v) - 3); }
+      if (it.ini !== undefined && it.v !== null){ ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, x - 4, Yv(it.ini), x + w + 4, Yv(it.ini)); ctx.restore(); }
+      ctx.fillStyle = c.ink; ctx.font = `800 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(it.nombre, x + w/2, base + 5);
+      if (it.sub){ ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.fillText(it.sub, x + w/2, base + 19); }
+    } else {
+      const top = b.y + 22, hh = Math.min(22, (b.h - 26 - (pie ? 16 : 0) - 6*(n - 1))/n), y = top + j*(hh + 6), x0 = b.x + 92, ancho = b.w - 92 - 46;
+      const Xv = v => x0 + clamp(v/tope, 0, 1.05)*ancho;
+      ctx.fillStyle = c.ink; ctx.font = `800 11px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(it.nombre + (it.sub ? ' · ' + it.sub : ''), b.x + 8, y + hh/2);
+      ctx.fillStyle = c.grid; ctx.fillRect(x0, y, ancho, hh);
+      if (it.v === null){ ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = it.col; ctx.lineWidth = 1.5; ctx.strokeRect(x0 + 1, y + 1, ancho*0.5, hh - 2); ctx.restore();
+        ctx.fillStyle = it.col; ctx.font = `800 14px ${c.font}`; ctx.textAlign = 'center'; ctx.fillText('?', x0 + ancho*0.25, y + hh/2); }
+      else { ctx.fillStyle = it.col; ctx.fillRect(x0, y, Xv(it.v) - x0, hh); ctx.font = `800 11px ${c.mono}`; ctx.textAlign = 'left'; ctx.fillText(fmt(it.v, it.v < 10 ? 1 : 0), Xv(it.v) + 4, y + hh/2); }
+      if (it.ini !== undefined && it.v !== null){ ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, Xv(it.ini), y - 3, Xv(it.ini), y + hh + 3); ctx.restore(); }
+    }
+  });
+  if (pie){ ctx.fillStyle = c.ink; ctx.font = `800 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(pie, b.x + b.w/2, b.y + b.h - 6); }
+  ctx.restore();
+}
+const ptsX = () => XS.map((x, i) => [x, S.ex.F[i]]);
+const rX = () => M.fuerzaVariable({ puntos:ptsX(), m:S.ex.m, v0:S.ex.v0 });
+function draw(){
+  if (!L.W) return;
+  const c = colores(), { ctx, W, H } = L, z = zonas(W, H), s = steps[S.step], esc = ESC[s.esc], rev = revelado(), f = S.f;
+  ctx.clearRect(0, 0, W, H);
+  const B = z.graf, X = x => B.x + (x - esc.R.x0)/(esc.R.x1 - esc.R.x0)*B.w;
+  GEO = null;
+  if (s.esc === 'A'){
+    const e = recA.en(f*recA.tiempo), aqui = rev ? e.x : 0, final = rev && f >= 1;
+    const err = S.step === 1 && final && ['a', 'd'].includes(S.pred[P1.id]) ? { x0:0, x1:4, F:S.pred[P1.id] === 'a' ? 40 : 10 } : null;
+    const ej = graficaFx(ctx, c, B, { puntos:GA, R:esc.R, pasoX:esc.pasoX, hasta:rev ? aqui : null, cursor:rev && !final ? aqui : null, media:S.step === 1 && final ? rA.Fmedia : null, mediaRect:true, error:err });
+    if (rev && aqui > 0.05) rotulosArea(ctx, c, ej, GA, 0, aqui, { texto:w => `área = W = ${J(w)}` });
+    if (!rev) rotuloEn(ctx, c, B, ej.X(2) - 20, ej.Y(18), 'W = ?', c.muted, 800);
+    if (S.step === 1 && final){
+      rotuloEn(ctx, c, B, ej.X(4) - 92, ej.Y(rA.Fmedia) - 12, `F media = ${fmt(rA.Fmedia, 0)} N`, c.F, 800);
+      if (err) rotuloEn(ctx, c, B, ej.X(0.2), ej.Y(err.F) - 12, `tu cuenta: ${J(err.F*4)}`, c.muted, 800);
+      ctx.save(); ctx.strokeStyle = c.x; ctx.lineWidth = 3; linea(ctx, ej.X(0), B.y + B.h - 1, ej.X(4), B.y + B.h - 1); ctx.restore();
+    }
+    riel(ctx, c, z.riel, X, [{ x:aqui, m:2, F:M.fuerzaEn(GA, aqui), etqF:`F = ${fmt(M.fuerzaEn(GA, aqui), 0)} N · motor` }], { Fmax:40 });
+  } else if (s.esc === 'B'){
+    const tA = Math.min(f*recA8.tiempo, recA.tiempo), eA = recA.en(rev ? tA : 0), eB = recA8.en(rev ? f*recA8.tiempo : 0);
+    const ej = graficaFx(ctx, c, B, { puntos:GA, R:esc.R, pasoX:esc.pasoX, hasta:4 });
+    rotulosArea(ctx, c, ej, GA, 0, 4, { texto:w => `área = W = ${J(w)}` });
+    riel(ctx, c, z.riel, X, [eA, eB].map((e, j) => ({ x:e.x, m:j ? 8 : 2, F:M.fuerzaEn(GA, e.x), v:e.v, verV:rev, etqV:rev ? `v = ${fmt(e.v, 1)} m/s` : '' })), { Fmax:40, kv:5 });
+    if (z.barras) barras3(ctx, c, z.barras, [{ nombre:'Ec', sub:'2 kg', col:c.Ec, hl:'Ec', v:rev ? eA.Ec : null }, { nombre:'Ec', sub:'8 kg', col:c.Ec, hl:'Ec', v:rev ? eB.Ec : null }], 110,
+      rev && f >= 1 ? `W = ΔEc = ${J(rA.W)}` : '');
+  } else if (s.esc === 'C'){
+    const e = recC.en(f*recC.tiempo), aqui = rev ? e.x : 0, final = rev && f >= 1;
+    const ej = graficaFx(ctx, c, B, { puntos:GC, R:esc.R, pasoX:esc.pasoX, hasta:rev ? aqui : null, cursor:rev && !final ? aqui : null });
+    if (rev && aqui > 0.05) rotulosArea(ctx, c, ej, GC, 0, aqui);
+    if (rev && aqui >= 4 - 1e-9) rotuloEn(ctx, c, B, ej.X(4) + 6, ej.Y(-6), `aquí F = 0: ${fmt(rC.vmin, 0)} m/s, la más lenta`, c.ink, 700);
+    if (!rev) rotuloEn(ctx, c, B, ej.X(5), ej.Y(18), 'W = ?', c.muted, 800);
+    const Fa = M.fuerzaEn(GC, aqui);
+    riel(ctx, c, z.riel, X, [{ x:aqui, m:2, F:Fa, etqF:`F = ${fmt(Fa, 0)} N · motor`, v:rev ? e.v : 5, verV:true, etqV:`v = ${fmt(rev ? e.v : 5, 1)} m/s` }], { Fmax:20, kv:7 });
+    if (z.barras) barras3(ctx, c, z.barras, [{ nombre:'Ec', sub:'carrito', col:c.Ec, hl:'Ec', v:rev ? e.Ec : null, ini:rC.Ec0 }], 55,
+      final ? `W = ΔEc = ${J(rC.W)}` : '');
+  } else if (s.esc === 'D'){
+    const x = rev ? X1 + (X2 - X1)*f : X1, final = rev && f >= 1;
+    const ej = graficaFx(ctx, c, B, { puntos:GD, R:esc.R, pasoX:esc.pasoX, fmtX:v => fmt(v, 1), hasta:rev ? x : null, desde:X1, marcas:[X1, X2], chico:rev ? X1 : 0, cursor:rev && !final ? x : null });
+    if (rev && final){
+      rotuloEn(ctx, c, B, ej.X(0.2) - 20, ej.Y(50), `W = ${J(rk.W)}`, c.F, 800);
+      rotuloEn(ctx, c, B, ej.X(0.005), ej.Y(K*X1) - 14, `ya estaba: ${J(rk.chico)}`, c.F, 700);
+    } else if (!rev) rotuloEn(ctx, c, B, ej.X(0.18), ej.Y(40), 'W = ?', c.muted, 800);
+    rotuloEn(ctx, c, B, ej.X(0.25) - 30, ej.Y(K*0.25) - 22, 'F = kx', c.F, 800);
+    rielResorte(ctx, c, z.riel, x, true);
+    if (z.barras) barras3(ctx, c, z.barras, [{ nombre:'Ee', sub:'resorte', col:c.Ee, hl:'Ee', v:rev ? 0.5*K*x*x : null, ini:rk.chico }], 30,
+      final ? `W = ΔEe = ${J(rk.W)}` : '');
+  } else {
+    const pts = ptsX(), r = rX(), Pg = M.areaPartes(pts), rec = S.ex.rec, e = rec ? rec.en(S.ex.tAnim) : null;
+    const aqui = e ? e.x : 0, v = e ? e.v : S.ex.v0, Ec = e ? e.Ec : r.Ec0;
+    // Si se detiene, solo cuenta (y se pinta) el área hasta donde llega; el resto de la gráfica queda solo con su contorno.
+    const hastaX = r.seDetiene ? r.xDetiene : 8;
+    const ej = graficaFx(ctx, c, B, { puntos:pts, R:esc.R, pasoX:esc.pasoX, hasta:hastaX, nodos:true, media:r.llega ? r.Fmedia : null, cursor:e ? aqui : null });
+    if (hastaX > 0.05) rotulosArea(ctx, c, ej, pts, 0, hastaX);
+    if (r.llega){ // rótulo de la línea a trazos, arriba a la izquierda (no tapa las áreas ni los puntos)
+      ctx.save(); ctx.setLineDash([5, 4]); ctx.strokeStyle = c.F; ctx.lineWidth = 1.6; linea(ctx, B.x + 52, B.y + 12, B.x + 70, B.y + 12); ctx.restore();
+      rotuloEn(ctx, c, B, B.x + 74, B.y + 12, `F media = ${fmt(r.Fmedia, 1)} N`, c.F, 800); }
+    if (r.seDetiene && r.arranca) { ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, ej.X(r.xDetiene), B.y, ej.X(r.xDetiene), B.y + B.h); ctx.restore();
+      rotuloEn(ctx, c, B, ej.X(r.xDetiene) + 6, B.y + 26, `se detiene en x = ${fmt(r.xDetiene, 1)} m`, c.ink, 800); }
+    GEO = { X:ej.X, Y:ej.Y, Finv: py => esc.R.y0 + (B.y + B.h - py)/B.h*(esc.R.y1 - esc.R.y0), nodos:pts.map(([x, F]) => ({ x:ej.X(x), y:ej.Y(F) })) };
+    const Fa = M.fuerzaEn(pts, aqui);
+    riel(ctx, c, z.riel, X, [{ x:aqui, m:S.ex.m, F:Fa, etqF:`F = ${fmt(Fa, 0)} N`, v, verV:true, etqV:`v = ${fmt(v, 1)} m/s`, marca:!r.arranca ? 'no arranca' : '' }], { Fmax:40, kv:6 });
+    if (z.barras){
+      const tope = Math.max(20, r.Ec0 + Pg.positiva)*1.08;
+      barras3(ctx, c, z.barras, [{ nombre:'Ec', sub:'carrito', col:c.Ec, hl:'Ec', v:e ? Ec : r.Ec0, ini:r.Ec0 }], tope, r.llega ? `W neto = ΔEc = ${J(r.W)}` : r.arranca ? `hasta detenerse: W = ${J(r.W)}` : 'no arranca');
+    }
+  }
+}
+
+/* ---------- Animación (Celular.bucle) ---------- */
+const DUR = { A:recA.tiempo*1.5, B:recA8.tiempo*1.5, C:recC.tiempo*1.5, D:2 };
+function paso(dt){
+  if (!S.anim) return false;
+  dt = Math.min(dt, 0.05);
+  if (S.anim.tipo === 'ex'){
+    S.ex.tAnim = Math.min(S.ex.rec.tiempo, S.ex.tAnim + dt*S.anim.escala);
+    if (S.ex.tAnim >= S.ex.rec.tiempo){ S.anim = null; describir(); }
+  } else {
+    S.f = Math.min(1, S.f + dt/S.anim.dur);
+    if (S.f >= 1){ S.anim = null; describir(); }
+  }
+  draw();
+  return !!S.anim;
+}
+function animar(){
+  const s = steps[S.step];
+  if (RM){ S.anim = null; S.f = 1; draw(); describir(); return; }
+  S.f = 0; S.anim = { tipo:'paso', dur:DUR[s.esc] }; bucle.despertar();
+}
+function parar(){ S.anim = null; }
+
+/* ---------- Navegación ---------- */
+const dots = $('dots3');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1;
+  b.addEventListener('click', () => { go(n); $('stepT3').focus({ preventScroll:true }); }); li.appendChild(b); dots.appendChild(li);
+});
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  parar();
+  const s = steps[n]; S.step = n; S.hl = null; S.explora = !!s.explora; S.ex.rec = null; S.ex.tAnim = 0;
+  S.f = 1;
+  $('stepK3').textContent = `${s.k} de ${steps.length}`;
+  $('stepT3').textContent = s.t;
+  $('stepBody3').innerHTML = s.body();
+  pintarDots();
+  if (s.explora){ cv.tabIndex = 0; cv.setAttribute('aria-label', 'Gráfica de fuerza contra posición con 5 puntos. Flechas izquierda y derecha: elegir el punto. Arriba y abajo: cambiar su fuerza en 5 N. Inicio: poner 0 N.'); }
+  else { cv.removeAttribute('tabindex'); cv.setAttribute('aria-label', 'Arriba, un riel con un carrito; abajo, la gráfica de la fuerza contra la posición, con la misma escala de posición que el riel'); }
+  cv.classList.toggle('arrastrable', !!s.explora);
+  if (s.gate) prediccion(s.gate);
+  L.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.explora) explorar();
+  nav(); draw(); describir();
+  if (s.anim) animar();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev3').disabled = S.step === 0;
+  $('next3').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next3').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(P){
+  const btns = [...$('stepBody3').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb3'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); nav(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('fb3').focus({ preventScroll:true });
+    const n = S.step; L.compactar(false); S.f = 0; draw();
+    Celular.alResponder(L.cv, animar, () => S.step === n);
+  }));
+  pintar();
+}
+$('next3').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); $('stepT3').focus({ preventScroll:true }); });
+$('prev3').addEventListener('click', () => { go(S.step - 1); $('stepT3').focus({ preventScroll:true }); });
+
+/* ---------- Lector de pantalla ---------- */
+let descPrevio = '';
+function describir(){
+  const s = steps[S.step], rev = revelado();
+  let t;
+  if (s.esc === 'A') t = rev ? `Gráfica: la fuerza crece de 10 N en x = 0 a 40 N en x = 4 m. El área bajo la gráfica, un trapecio, es el trabajo: ${J(rA.W)}; la fuerza media es ${fmt(rA.Fmedia, 0)} N.` : 'Gráfica: una recta que va de 10 N en x = 0 a 40 N en x = 4 m. El carrito está quieto en x = 0.';
+  else if (s.esc === 'B') t = rev ? `Los dos carritos reciben ${J(rA.W)}: el de 2 kg llega a ${fmt(rA.v, 0)} m/s en ${fmt(recA.tiempo, 2)} s y el de 8 kg a ${fmt(rA8.v, 0)} m/s en ${fmt(recA8.tiempo, 2)} s; los dos terminan con ${J(rA.Ec)} de energía cinética.` : 'Dos rieles con un carrito de 2 kg y otro de 8 kg, quietos en x = 0, y la misma gráfica de fuerza.';
+  else if (s.esc === 'C') t = rev ? `De 0 a 4 m la fuerza es negativa y su área, bajo el eje, vale ${J(rC.negativa)}; la energía cinética baja de ${J(rC.Ec0)} a ${J(rC.Ecmin)} y la rapidez a ${fmt(rC.vmin, 0)} m/s. De 4 a 8 m el área vale ${J(rC.positiva)}: termina con ${J(rC.Ec)} y ${fmt(rC.v, 0)} m/s.` : 'Gráfica: una recta de −8 N en x = 0 a 0 N en x = 4 m, y otra de 0 N a 20 N en x = 8 m. El carrito pasa por x = 0 a 5 m/s.';
+  else if (s.esc === 'D') t = rev ? `El área bajo F = kx entre 0,1 m y 0,3 m es un trapecio de ${J(rk.W)}: el triángulo de 0 a 0,3 m, ${J(rk.grande)}, menos el de 0 a 0,1 m, ${J(rk.chico)}. La energía elástica sube de ${J(rk.chico)} a ${J(rk.grande)}.` : 'Gráfica: la recta F = kx, con marcas en 0,1 m y 0,3 m. El resorte está estirado 0,1 m.';
+  else {
+    const r = rX(), i = S.ex.foco, P = M.areaPartes(ptsX());
+    t = `Punto en x = ${XS[i]} m: ${fmt(S.ex.F[i], 0)} N. Área de 0 a 8 m: ${J(P.positiva)} por encima del eje y ${J(P.negativa)} por debajo` + (r.llega ? `; trabajo neto ${J(P.W)}. ` : '. ') + finalX(r, true);
+  }
+  if (t !== descPrevio){ descPrevio = t; $('desc3').textContent = t; }
+}
+
+/* ---------- Explorador ---------- */
+// Cómo termina el carrito, en palabras (pastillas y lector de pantalla).
+function finalX(r, largo){
+  if (!r.arranca) return largo ? 'Con esa rapidez inicial y esa fuerza en x = 0, el carrito no arranca.' : 'no arranca: con v₀ = 0, la fuerza en x = 0 no lo empuja hacia adelante';
+  if (r.seDetiene){
+    const queda = Math.abs(M.fuerzaEn(ptsX(), r.xDetiene)) < 1e-9, x = fmt(r.xDetiene, 1);
+    if (!largo) return queda ? `llega justo a x = ${x} m con rapidez 0, donde la fuerza es cero: queda ahí` : `se detiene en x = ${x} m: la fuerza lo regresa`;
+    return `Con ${fmt(S.ex.m, 0)} kg y ${fmt(S.ex.v0, 1)} m/s, ` + (queda ? `llega justo a x = ${x} m con rapidez 0, donde la fuerza es cero: queda ahí.` : `se detiene en x = ${x} m y la fuerza lo regresa.`)
+      + ` Hasta ahí la fuerza hizo ${J(r.W)}, justo la energía cinética que traía; el resto de la gráfica no llega a actuar.`;
+  }
+  return largo ? `Con ${fmt(S.ex.m, 0)} kg y ${fmt(S.ex.v0, 1)} m/s, termina a ${fmt(r.v, 1)} m/s.` : `v final = ${fmt(r.v, 1)} m/s`;
+}
+function explorar(){
+  $('xm').addEventListener('input', () => { S.ex.m = +$('xm').value; quieto(); });
+  $('xv').addEventListener('input', () => { S.ex.v0 = +$('xv').value; quieto(); });
+  $('stepBody3').querySelectorAll('[data-pre]').forEach(b => b.addEventListener('click', () => {
+    const p = PRESETS.find(q => q[0] === b.dataset.pre); S.ex.F = p[2].slice(); S.ex.preset = p[0];
+    $('stepBody3').querySelectorAll('[data-pre]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); quieto();
+  }));
+  $('soltar3').addEventListener('click', soltar);
+  vivo();
+}
+function quieto(){ parar(); S.ex.rec = null; S.ex.tAnim = 0; vivo(); }
+function soltar(){
+  const rec = M.recorridoFuerza({ puntos:ptsX(), m:S.ex.m, v0:S.ex.v0 });
+  S.ex.rec = rec;
+  if (!rec.arranca || RM){ S.ex.tAnim = rec.tiempo; S.anim = null; draw(); describir(); return; }
+  S.ex.tAnim = 0; S.anim = { tipo:'ex', escala:rec.tiempo/clamp(rec.tiempo*1.2, 0.8, 6) }; bucle.despertar();
+}
+function vivo(){
+  if (!S.explora) return;
+  const r = rX(), P = M.areaPartes(ptsX());
+  $('xm-o').textContent = `${fmt(S.ex.m, 0)} kg`; $('xv-o').textContent = `${fmt(S.ex.v0, 1)} m/s`;
+  const chip = (k, t) => `<span class="chip" style="border-color:var(--c-${k});color:var(--c-${k})">${t}</span>`;
+  const neg = `${P.negativa < 0 ? '−' : ''}${J(Math.abs(P.negativa))}`;
+  $('live3').innerHTML = r.llega
+    ? `<div class="chips">${chip('F', `W⁺ = +${J(P.positiva)}`)}${chip('F', `W⁻ = ${neg}`)}${chip('F', `W neto = ${J(P.W)}`)}
+      ${chip('Ec', `E<sub>c0</sub> = ${J(r.Ec0)} → ${J(r.Ec)}`)}${chip('v', finalX(r))}</div>`
+    : `<div class="chips">${chip('F', `área de 0 a 8 m: +${J(P.positiva)} y ${neg}`)}${r.arranca ? chip('F', `W hasta detenerse = ${J(r.W)}`) : ''}
+      ${chip('Ec', `E<sub>c0</sub> = ${J(r.Ec0)} → 0 J`)}${chip('v', finalX(r))}</div>`;
+  draw(); describir();
+}
+function nodoMasCercano(p, rad){
+  if (!GEO) return -1;
+  let mejor = -1, dmin = rad;
+  GEO.nodos.forEach((q, i) => { const d = Math.hypot(p.x - q.x, p.y - q.y); if (d < dmin){ dmin = d; mejor = i; } });
+  return mejor;
+}
+function ponerF(i, F){
+  F = clamp(Math.round(F/5)*5, -40, 40);
+  if (F === S.ex.F[i]) return;
+  S.ex.F[i] = F; S.ex.preset = '';
+  $('stepBody3').querySelectorAll('[data-pre]').forEach(x => x.setAttribute('aria-pressed', 'false'));
+  quieto();
+}
+Celular.arrastre(cv, {
+  activo: () => S.explora,
+  cerca: (p, r) => nodoMasCercano(p, r) >= 0,
+  empezar: p => { cual = nodoMasCercano(p, Celular.RADIO_DEDO); if (cual >= 0){ S.ex.foco = cual; cv.classList.add('agarrando'); quieto(); } },
+  mover: p => { if (cual >= 0 && GEO) ponerF(cual, GEO.Finv(p.y)); },
+  soltar: () => { cual = -1; cv.classList.remove('agarrando'); draw(); describir(); },
+  sobre: s => { S.sobre = s; draw(); },
+});
+cv.addEventListener('keydown', e => {
+  if (!S.explora) return;
+  const i = S.ex.foco;
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ e.preventDefault(); S.ex.foco = clamp(i + (e.key === 'ArrowRight' ? 1 : -1), 0, XS.length - 1); draw(); describir(); }
+  else if (e.key === 'ArrowUp' || e.key === 'ArrowDown'){ e.preventDefault(); ponerF(i, S.ex.F[i] + (e.key === 'ArrowUp' ? 5 : -5)); }
+  else if (e.key === 'Home'){ e.preventDefault(); ponerF(i, 0); }
+});
+cv.addEventListener('focus', () => { S.conFoco = true; draw(); });
+cv.addEventListener('blur', () => { S.conFoco = false; draw(); });
+
+/* ---------- Colores de los datos ---------- */
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m3 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m3 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m3 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m3 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m3 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+// Al cambiar de pestaña, la animación salta a su final: nada queda a medias ni traba «Siguiente».
+addEventListener('modo', () => {
+  if ($('m3').hidden && S.anim){ if (S.anim.tipo === 'ex') S.ex.tAnim = S.ex.rec.tiempo; else S.f = 1; S.anim = null; describir(); }
+  L.resize();
+});
+L.resize(); go(0);
+})();
+</script>
+
+<script>
 /* ================= Pestañas ================= */
 (function(){
-  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#fuerza-variable', 'm3', 'tab3'], ['#que-pasa-si', 'm2', 'tab2']];
   function route(){
     const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
     modos.forEach(([, m, t], j) => {

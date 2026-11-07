@@ -502,7 +502,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["funciones-organicas"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {

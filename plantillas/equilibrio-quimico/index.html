@@ -17,6 +17,10 @@
      K (constante)      turquesa  #0f766e / #5ed9c8
      T (temperatura)    rojo      #c0364a / #f17384   (el de docs/diseno.md)
      V (volumen)        verde     #4f7a17 / #a3d65e   (el de docs/diseno.md)
+     gas que no reacciona  gris   #8a8a86 / #85857f   (cuadrados huecos; solo en el dibujo y la leyenda, nunca en texto:
+                        no es una variable de la ecuación. ΔE00 ≥ 23,5 en claro y ≥ 23,3 en oscuro con X, Y, Q, K, V y la
+                        tinta; contraste de gráfico 3,3 en claro y 4,4 en oscuro. Con el gris de los rótulos queda cerca
+                        (19,6 y 20,5), pero el cuadrado hueco no se confunde con texto.)
    Grupos que salen a la vez: {A, B, Q, K, T, tinta} en el paso a paso y {X, Y, Q, K, V, tinta} o {A, B, Q, K, V, tinta}
    en "¿Qué pasa si…?". ΔE00 mínimo entre los que salen juntos: 22,0 en claro (X–Q) y 21,5 en oscuro (Q–T).
    A y X, y B e Y, nunca salen juntos, pero igual se separan: ΔE00 ≥ 15,2 en claro y ≥ 12,1 en oscuro.
@@ -31,7 +35,7 @@
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
   --c-A:#1f5fbf; --c-B:#a05200; --c-X:#3328c4; --c-Y:#773922; --c-Q:#b0179a; --c-K:#0f766e; --c-T:#c0364a; --c-V:#4f7a17;
-  --vidrio:#8e97a8;
+  --c-I:#8a8a86; --vidrio:#8e97a8;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -41,13 +45,13 @@
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-A:#7cb0ff; --c-B:#f0a04a; --c-X:#9f9bff; --c-Y:#d9a68c; --c-Q:#fc72ea; --c-K:#5ed9c8; --c-T:#f17384; --c-V:#a3d65e;
-  --vidrio:#5e5670; color-scheme:dark } }
+  --c-I:#85857f; --vidrio:#5e5670; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-A:#7cb0ff; --c-B:#f0a04a; --c-X:#9f9bff; --c-Y:#d9a68c; --c-Q:#fc72ea; --c-K:#5ed9c8; --c-T:#f17384; --c-V:#a3d65e;
-  --vidrio:#5e5670; color-scheme:dark }
+  --c-I:#85857f; --vidrio:#5e5670; color-scheme:dark }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
@@ -271,7 +275,7 @@ function adelantar(sim, t){ for (let k = 0; k < Math.round(t/0.05); k++) sim.pas
 function colores(){
   const g = n => css(n);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
-    A:g('--c-A'), B:g('--c-B'), X:g('--c-X'), Y:g('--c-Y'), Q:g('--c-Q'), K:g('--c-K'), T:g('--c-T'), V:g('--c-V'),
+    A:g('--c-A'), B:g('--c-B'), X:g('--c-X'), Y:g('--c-Y'), Q:g('--c-Q'), K:g('--c-K'), T:g('--c-T'), V:g('--c-V'), I:g('--c-I'),
     metal:g('--vidrio'), mono:g('--mono'), font:g('--font') };
 }
 function alRedibujarTema(fn){
@@ -294,6 +298,8 @@ function pasoBonito(rango, n){
 // Figura de una porción. Rol 'A' = reactivo, 'B' = producto. En A ⇌ B: A círculo, B triángulo.
 // En 2 X ⇌ Y: X círculo pequeño, Y dos círculos unidos (una porción de Y se forma con dos de X).
 function figura(ctx, c, tipo, rol, x, y, R){
+  // Gas que no reacciona: cuadrado hueco gris, igual en las dos reacciones.
+  if (rol === 'I'){ const l = R*1.35; ctx.strokeStyle = c.I; ctx.lineWidth = 2.2; ctx.strokeRect(x - l/2, y - l/2, l, l); return; }
   if (tipo === 'AB'){
     ctx.fillStyle = rol === 'A' ? c.A : c.B; ctx.beginPath();
     if (rol === 'A') ctx.arc(x, y, R, 0, Math.PI*2);
@@ -354,7 +360,8 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
     if (v.cat){ x += 12; pieza('· catalizador', c.ink, 700, 12); }
   }
   function caja(c, b){
-    const s = E.sim, v = E.vista, w = b.w*(v.embolo ? E.Vdib : 1);
+    // Con escalaV, el ancho completo es escalaV litros (la caja que crece cabe entera).
+    const s = E.sim, v = E.vista, w = b.w*(v.embolo ? E.Vdib/(v.escalaV || 1) : 1);
     ctx.save();
     rr(ctx, b.x, b.y, w, b.h, 12); ctx.fillStyle = c.paper; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = c.metal; ctx.stroke();
     ctx.beginPath(); rr(ctx, b.x + 2, b.y + 2, w - 4, b.h - 4, 10); ctx.clip();
@@ -375,7 +382,7 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
       const px = b.x + 10 + q.x*(w - 20), py = b.y + 10 + q.y*(b.h - 20);
       const edad = s.t - p.cambio;
       if (corre && edad >= 0 && edad < (RM ? 0.4 : 0.7)){
-        const col = p.tipo === 'A' ? (s.tipo === 'AB' ? c.A : c.X) : (s.tipo === 'AB' ? c.B : c.Y);
+        const col = p.tipo === 'I' ? c.I : p.tipo === 'A' ? (s.tipo === 'AB' ? c.A : c.X) : (s.tipo === 'AB' ? c.B : c.Y);
         if (RM){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px, py, R*1.75, 0, Math.PI*2); ctx.stroke(); }
         else { ctx.globalAlpha = 0.45*(1 - edad/0.7); ctx.fillStyle = col; ctx.beginPath(); ctx.arc(px, py, R*(1.6 + edad*1.6), 0, Math.PI*2); ctx.fill(); ctx.globalAlpha = 1; }
       }
@@ -385,15 +392,18 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
     if (v.embolo){
       ctx.fillStyle = c.metal; ctx.fillRect(b.x + w - 3, b.y - 6, 9, b.h + 12);
       if (b.w - w > 8) ctx.fillRect(b.x + w + 6, b.y + b.h/2 - 4, b.w - w - 6, 8);
-      ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.V; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(`V = ${fmt(s.V, 1)} L`, b.x + b.w, b.y + b.h + 16);
-    } else { ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(`caja de ${fmt(s.V, 1)} L`, b.x + b.w, b.y + b.h + 16); }
+      ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.V; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(`V = ${fmt(s.V, v.escalaV ? 2 : 1)} L`, b.x + b.w, b.y + b.h + 16);
+    } else {
+      const tc = v.rigida ? `caja rígida de ${fmt(s.V, 0)} L` : `caja de ${fmt(s.V, 1)} L`;
+      ctx.font = `700 11px ${c.font}`; ctx.fillStyle = v.rigida ? c.V : c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(tc, b.x + b.w, b.y + b.h + 16);
+    }
     if (v.congelada && v.lupa && v.aviso){ ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(v.aviso, b.x + b.w, b.y - 6); }
   }
   function barras(c, b){
     const s = E.sim, v = E.vista, n = s.cuenta(), max = Math.max(20, ...Object.values(n));
     ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
     ctx.fillText('Lo que se mide (porciones)', b.x, b.y);
-    const der = v.conc ? 112 : 34, x0 = b.x + 34, x1 = b.x + b.w - der;
+    const der = v.pres ? 132 : v.conc ? 112 : 34, x0 = b.x + 34, x1 = b.x + b.w - der;
     ['A', 'B'].forEach((rol, k) => {
       const nom = nombre(s.tipo, rol), col = c[nom], y = b.y + 18 + k*25, cnt = n[nom];
       figura(ctx, c, s.tipo, rol, b.x + 9, y + 9, 6);
@@ -402,7 +412,8 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
       ctx.fillStyle = col; rr(ctx, x0, y + 1, Math.max(2, (x1 - x0)*cnt/max), 16, 5); ctx.fill();
       if (E.hl === nom){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; rr(ctx, x0, y + 1, x1 - x0, 16, 5); ctx.stroke(); }
       ctx.font = `800 13px ${c.mono}`; ctx.fillStyle = col; ctx.textAlign = 'left'; ctx.fillText(String(cnt), x1 + 6, y + 9);
-      if (v.conc){ ctx.font = `700 12px ${c.mono}`; ctx.fillText(`[${nom}] = ${fmt(cnt/s.V, 1)}/L`, x1 + 30, y + 9); }
+      if (v.pres){ ctx.font = `700 12px ${c.mono}`; ctx.fillText(`p(${nom}) = ${fmt(s.presiones()[nom], 0)} atm`, x1 + 30, y + 9); }
+      else if (v.conc){ ctx.font = `700 12px ${c.mono}`; ctx.fillText(`[${nom}] = ${fmt(cnt/s.V, 1)}/L`, x1 + 30, y + 9); }
     });
   }
   function placeholder(c, b, h, t){
@@ -436,7 +447,7 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
     // K: raya vertical; Q: triángulo. Escala logarítmica, de 1/50 a 50.
     ctx.strokeStyle = c.K; ctx.lineWidth = E.hl === 'K' ? 5 : 3; linea(ctx, X(K), y - 11, X(K), y + 11);
     ctx.font = `800 11px ${c.mono}`; ctx.fillStyle = c.K; ctx.textBaseline = 'bottom';
-    const xk = clamp(X(K), x0 + 22, x1 - 22); ctx.fillText(`K = ${fmtK(K)}`, xk, y - 12);
+    const xk = clamp(X(K), x0 + 22, x1 - 22); ctx.fillText(`Kc = ${fmtK(K)}`, xk, y - 12);
     const xq = X(Q === Infinity ? 1e9 : Q === 0 ? 1e-9 : Q), r = E.hl === 'Q' ? 8 : 6;
     ctx.fillStyle = c.Q; ctx.beginPath(); ctx.moveTo(xq, y - r); ctx.lineTo(xq + r*0.75, y); ctx.lineTo(xq, y + r); ctx.lineTo(xq - r*0.75, y); ctx.closePath(); ctx.fill();
     const tq = Q === Infinity ? 'Q muy grande' : `Q = ${fmtK(Q)}`;
@@ -492,7 +503,7 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
         if (m.t < x0 || m.t > x1 || (vistas[tipo] !== undefined && m.t - vistas[tipo] < 3)) continue;
         vistas[tipo] = m.t;
         linea(ctx, X(m.t), b.y, X(m.t), b.y + b.h);
-        const txt = { V:'cambia V', T:'cambia T', cat:'catalizador' }[m.que] || m.que;
+        const txt = { V:'cambia V', T:'cambia T', cat:'catalizador', P:'émbolo libre' }[m.que] || m.que;
         fila = X(m.t) - xPrev < 70 ? fila + 1 : 0; xPrev = X(m.t);
         if (fila < 4) ctx.fillText(txt, Math.min(X(m.t) + 3, b.x + b.w - ctx.measureText(txt).width - 2), b.y + 2 + fila*12);
       }
@@ -528,15 +539,18 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
     const now = performance.now(); if (!forzar && now - E.ultDesc < 3000) return; E.ultDesc = now;
     const s = E.sim, v = E.vista; if (!s) return;
     const n = s.cuenta(), a = nombre(s.tipo, 'A'), b = nombre(s.tipo, 'B');
+    const gris = s.nI ? ` Además hay ${s.nI} porciones de un gas que no reacciona${v.p0 ? `; la presión total es ${fmt(s.gasPorLitro()/v.p0, 1)} veces la de antes` : ''}.` : '';
     let t;
     if (!v.lupa) t = `Caja de ${fmt(s.V, 1)} L vista de lejos: ${n[a]} porciones de ${a} y ${n[b]} de ${b}. Las cantidades no cambian.`;
     else if (v.congelada) t = `Caja detenida en este instante: ${n[a]} porciones de ${a} y ${n[b]} de ${b}${v.K ? `; Kc = ${fmtK(s.K())}` : ''}${v.termo ? `, a ${fmt(s.T, 0)} K` : ''}.`;
     else {
       const k = s.cambios();
-      t = `Hay ${n[a]} porciones de ${a} y ${n[b]} de ${b}${v.embolo ? ` en ${fmt(s.V, 1)} L` : ''}. En el último segundo, ${k.directa} cambios de ${a} a ${b} y ${k.inversa} de ${b} a ${a}.`;
-      if (v.qk) t += ` Q = ${fmtK(s.Q())}, K = ${fmtK(s.K())}: ${sentidoTexto(s)}.`;
+      t = `Hay ${n[a]} porciones de ${a} y ${n[b]} de ${b}${v.embolo ? ` en ${fmt(s.V, v.escalaV ? 2 : 1)} L` : ''}. En el último segundo, ${k.directa} cambios de ${a} a ${b} y ${k.inversa} de ${b} a ${a}.`;
+      if (v.qk) t += ` Q = ${fmtK(s.Q())}, Kc = ${fmtK(s.K())}: ${sentidoTexto(s)}.`;
+      if (v.pres){ const pr = s.presiones(); t += ` Presiones: ${Object.keys(pr).map(k => `p(${k}) = ${fmt(pr[k], 0)} atm`).join(', ')}.`; }
       if (v.termo) t += ` Temperatura: ${fmt(s.T, 0)} K.`;
     }
+    t += gris;
     const el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t;
   };
   // Un bucle por caja (nucleo/celular.js): avanza la caja a la vista (si no está congelada) y la dibuja. Se detiene
@@ -549,6 +563,8 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
     if (!E.sim) return false;
     if (E.anima) E.anima(dt);
     if (!E.vista.congelada && dt > 0) E.sim.paso(dt);
+    // Émbolo libre: el dibujo sigue al volumen de la caja, que cambia con los moles de gas.
+    if (E.vista.sigueV) E.Vdib = RM ? E.sim.V : E.Vdib + (E.sim.V - E.Vdib)*Math.min(1, dt*4);
     pintar(); E.describir();
     return !!E.anima || !E.vista.congelada;
   });
@@ -564,10 +580,12 @@ function leyendaHTML(s, v){
     it.push(`<span>${sv(14, '<circle cx="7" cy="7" r="4" fill="var(--c-X)"/>')}X · cada círculo pequeño, una porción</span>`);
     it.push(`<span>${sv(22, '<circle cx="7" cy="7" r="4" fill="var(--c-Y)"/><circle cx="14" cy="7" r="4" fill="var(--c-Y)"/>')}Y · cada pareja, una porción de Y (no una molécula)</span>`);
   }
+  if (s.nI) it.push(`<span>${sv(14, '<rect x="2.5" y="2.5" width="9" height="9" fill="none" stroke="var(--c-I)" stroke-width="2.2"/>')}cada cuadrado, una porción de un gas que no reacciona (hay ${s.nI})</span>`);
+  if (s.nI && v.p0) it.push(`<span>presión total: ${fmt(s.gasPorLitro()/v.p0, 1)} veces la de antes</span>`);
   if (v.qk) it.push(`<span>${sv(14, '<path d="M7 1 L12 7 L7 13 L2 7 Z" fill="var(--c-Q)"/>')}Q · cociente</span>`);
   if (v.K || v.qk) it.push(`<span><i style="background:var(--c-K)"></i>K · constante</span>`);
   if (v.termo) it.push(`<span><i style="background:var(--c-T)"></i>T · temperatura</span>`);
-  if (v.embolo) it.push(`<span><i style="background:var(--c-V)"></i>V · volumen</span>`);
+  if (v.embolo || v.rigida) it.push(`<span><i style="background:var(--c-V)"></i>V · volumen</span>`);
   if (v.contadores || v.graf === 'rap'){ const a = s.tipo === 'AB' ? 'A' : '2 X', b = s.tipo === 'AB' ? 'B' : 'Y'; it.push(`<span>línea continua: ${a} → ${b} · a trazos: ${b} → ${a}</span>`); }
   if (v.graf === 'cat') it.push(`<span>gráfica: línea gruesa, con catalizador · fina y clara, sin</span>`);
   return it.join('');
@@ -644,7 +662,7 @@ const P2 = { id:'equilibrio-quimico-paso7', ok:'c', opts:[
   ['a','No cambia: K es constante','EQ9', RES('documentado','Bilgin y otros 2003, ítem 19: 44 % de 216')],
   ['b','Sube: con más temperatura todo reacciona más','EQ8', RES('documentado','Bilgin y otros 2003, ítem 18: 22 % de 216')],
   ['c','Baja: se favorece la reacción que absorbe calor'],
-  ['d','Depende: de cuánto A y B haya en la caja','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')]],
+  ['d','Depende: de cuánto A y B haya en la caja','EQ10', RES('parcial','Tagle Barrios 2024 (UNAM), sin porcentaje')]],
   fb:{ c:'¡Bien! La directa libera calor; al calentar se favorece la inversa, que lo absorbe. K baja.',
     a:'Elegiste la 1. K es constante solo mientras no cambie la temperatura. Según Bilgin y otros (2003), el 44 % de 216 cree que K no cambia al calentar. La correcta está marcada.',
     b:'Elegiste la 2. Al calentar, las dos reacciones se aceleran, pero la inversa (la que absorbe calor) se acelera más, y K baja. Según Bilgin y otros (2003), el 22 % de 216 cree que K sube. La correcta está marcada.',
@@ -822,7 +840,8 @@ go(0);
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
    Preguntas del mismo informe (EQ3, EQ10, EQ11, EQ12, EQ14). Cada una arranca desde su equilibrio dinámico,
-   congelado; la caja cambia y corre recién después de responder. */
+   congelado; la caja cambia y corre recién después de responder. Al final (7 nov 2026): el gas que no reacciona,
+   en la caja rígida y con el émbolo libre (EQ14), y Kp con el Δn de gases (errores de la tabla sin respaldo). */
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv2'), 'desc2', 'm2', false, 'ley2');
@@ -888,7 +907,7 @@ const EXPS = [
       <p class="fuente">Según Bilgin y otros (2003), el 27 % de 216 estudiantes cree que al comprimir las concentraciones bajan. Que A ⇌ B se corra al comprimir es un error que suponemos, sin estudio con porcentaje.</p>` },
   { id:'quitar-b', corto:'Quitar B', tipo:'AB',
     q:`En la caja de 1 L hay ${A_('4 A')} y ${B_('16 B')} en equilibrio (${K_('Kc = 4')}). Se sacan ${B_('10 porciones de B')}. ¿Qué pasa?`,
-    opts:[['a','K baja a 1,5: quedan 4 A y 6 B','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')],
+    opts:[['a','K baja a 1,5: quedan 4 A y 6 B','EQ10', RES('parcial','Tagle Barrios 2024 (UNAM), sin porcentaje')],
           ['b','Todo el A pasa a B: quedan 0 A y 10 B','consume-todo', RES('hipotesis','hipótesis nuestra')],
           ['c','Parte del A pasa a B: quedan 2 A y 8 B'],
           ['d','No pasa nada: quedan 4 A y 6 B','EQ3', RES('documentado','Riddle y Lo-Fan-Hin 2023: 6 % de 63 y 13 % de 16')]],
@@ -905,10 +924,10 @@ const EXPS = [
       <p class="fuente">Que K cambie al quitar una sustancia aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje. Que se gaste todo el A es un error que suponemos.</p>` },
   { id:'agregar-ab', corto:'Agregar A y B a la vez', tipo:'AB',
     q:`En la caja de 1 L hay ${A_('4 A')} y ${B_('16 B')} en equilibrio (${K_('Kc = 4')}). Se agregan a la vez ${A_('5 porciones de A')} y ${B_('20 de B')}. ¿Hacia dónde se corre?`,
-    opts:[['a','Hacia B: se agregó reactivo','EQ14-hacia-B', RES('documentado','Quílez 2017: la regla se aplica a ciegas; sin porcentaje')],
-          ['b','Hacia A: se agregó más producto que reactivo','EQ14-hacia-A', RES('documentado','Quílez 2017: la regla se aplica a ciegas; sin porcentaje')],
+    opts:[['a','Hacia B: se agregó reactivo','EQ14-hacia-B', RES('parcial','Quílez 2017: la regla se aplica a ciegas; sin porcentaje')],
+          ['b','Hacia A: se agregó más producto que reactivo','EQ14-hacia-A', RES('parcial','Quílez 2017: la regla se aplica a ciegas; sin porcentaje')],
           ['c','Hacia ningún lado: Q sigue igual a K'],
-          ['d','K sube: hay más de todo','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')]],
+          ['d','K sube: hay más de todo','EQ10', RES('parcial','Tagle Barrios 2024 (UNAM), sin porcentaje')]],
     ok:'c',
     fb:{ a:'Se agregó reactivo, pero también producto: la regla "se agregó reactivo, se corre hacia los productos" aquí falla. Lo seguro es comparar Q con K. Quílez (2017) describe que la regla se aplica a ciegas, sin porcentaje.',
       b:'Contar cuánto se agregó de cada uno no basta: lo seguro es comparar Q con K. Quílez (2017) describe que la regla de Le Chatelier se aplica a ciegas, sin porcentaje.',
@@ -918,7 +937,63 @@ const EXPS = [
     exp:() => `<p>Quedan ${A_('9 A')} y ${B_('36 B')}:</p>
       <div class="eqs"><div class="eq">${Q_('Q')} = ${fr(B_('36'), A_('9'))} = ${Q_(fmtK(ME.cociente('A(g) = B(g)', { A:9, B:36 })))} = ${K_('Kc')}</div></div>
       <p>Ya está en equilibrio: no se corre hacia ningún lado. Las cantidades no se mueven, aunque los contadores suben, porque hay más porciones que pueden cambiar.</p>
-      <p class="fuente">Quílez (2017) describe que alumnos y profesores aplican la regla de Le Chatelier "de forma ciega y mecánica"; no da porcentaje. Comparar Q con K no falla.</p>` },
+      <p class="fuente">Quílez (2017) describe que alumnos y profesores aplican la regla de Le Chatelier "de forma ciega y mecánica"; no da porcentaje. Comparar Q con K no falla.</p>` },  // EQ14 en el gas que no reacciona: a volumen fijo no corre el equilibrio; a presión total fija, sí.
+  { id:'inerte-rigida', corto:'Gas que no reacciona, caja rígida', tipo:'A2B',
+    q:`Otra vez 2 ${X_('X')} ⇌ ${Y_('Y')} (${K_('Kc = 1/8')}), con ${X_('8 X')} y ${Y_('8 Y')} en equilibrio en una caja rígida de ${V_('1 L')}: sus paredes no se mueven. Se meten 30 porciones de un gas que no reacciona con nada, un gas inerte (en el dibujo serán cuadrados grises). La presión total de la caja sube. ¿Qué pasa con el equilibrio?`,
+    opts:[['a','Más Y: subió la presión y gana el lado de menos porciones','inerte-V-como-comprimir', RES('hipotesis','hipótesis nuestra (tabla de errores sin respaldo del informe; sale de EQ11 y EQ14)')],
+          ['b','Nada: las concentraciones de X y de Y no cambian'],
+          ['c','Más X: ese gas diluye a X y a Y','inerte-V-diluye', RES('hipotesis','hipótesis nuestra')],
+          ['d','K sube: la constante cambia con la presión','EQ10', RES('parcial','Bilgin y otros 2003, ítem 26: 20 % de 216 cree que K sube al comprimir; aquí es una extensión')]],
+    ok:'b',
+    fb:{ a:'La presión total sube, pero el gas que entra no cambia ni los moles de X y de Y ni el volumen: sus concentraciones siguen iguales y Q sigue igual a K. "Más presión, gana el lado de menos porciones" vale al comprimir, no aquí. Es un error que suponemos, sin estudio que lo mida.',
+      c:'Con la caja rígida el volumen no cambia: [X] e [Y] siguen en 8 por litro. Ese gas no diluye nada si no hay más espacio. Es un error que suponemos, sin estudio que lo mida.',
+      d:'K no cambia con la presión: solo con la temperatura. Según Bilgin y otros (2003), el 20 % de 216 cree que K sube al comprimir; aquí ni siquiera se comprime.' },
+    arma:() => { const s = ME.caja({ tipo:'A2B', nA:8, nB:8, T:300, semilla:31 }); adelantar(s, 4); return s; },
+    vAntes:() => antes({ conc:true, rigida:true }),
+    alResponder:() => { E.vista = despues({ conc:true, rigida:true, p0:E.sim.gasPorLitro() }); E.sim.inerte(30); },
+    exp:() => { const r = ME.inerte('2 X(g) = Y(g)', { moles:{ X:8, Y:8 }, V:1, K:1/8 }, 30, 'V'); return `<p>Entran los 30 cuadrados y la presión total sube ${fmt(r.instante.factorP, 1)} veces: hay 46 porciones de gas donde había 16. Pero [${X_('X')}] y [${Y_('Y')}] siguen en ${fmt(r.instante.conc.X, 0)} porciones por litro: no cambiaron ni los moles de X y de Y ni el volumen.</p>
+      <div class="eqs"><div class="eq">${Q_('Q')} = ${fr(Y_('[Y]'), X_('[X]') + '²')} = ${fr(Y_('8'), X_('8') + '²')} = ${Q_(fmtK(r.instante.Q))} = ${K_('Kc')}</div></div>
+      <p>${Q_('Q')} sigue igual a ${K_('K')}: no se corre, y los contadores siguen iguales entre sí. El gas que no reacciona no aparece en Q.</p>
+      <p class="fuente">Que un gas que no reacciona, a volumen fijo, corra el equilibrio es un error que suponemos: no encontramos un estudio que lo mida. Quílez (2017) describe que la regla de Le Chatelier se aplica "de forma ciega y mecánica".</p>`; } },
+  { id:'inerte-embolo', corto:'Gas que no reacciona, émbolo libre', tipo:'A2B',
+    q:`La misma reacción, 2 ${X_('X')} ⇌ ${Y_('Y')} (${K_('Kc = 1/8')}), con ${X_('8 X')} y ${Y_('8 Y')} en equilibrio en ${V_('1 L')}. Ahora la pared de la derecha es un émbolo que se mueve libre: la presión total se queda igual a la de afuera. Se meten las mismas 30 porciones del gas que no reacciona. ¿Qué pasa con el equilibrio?`,
+    opts:[['a','Nada: ese gas no reacciona y Q no cambia','EQ14-inerte-nada', RES('parcial','Quílez 2017: el gas agregado a presión constante, entre los casos de la regla a ciegas; sin porcentaje')],
+          ['b','Más Y: entra gas, como al comprimir','EQ14-inerte-comprime', RES('parcial','Quílez 2017: el gas agregado a presión constante, entre los casos de la regla a ciegas; sin porcentaje')],
+          ['c','K baja: el gas que no reacciona la cambia','EQ10', RES('parcial','Tagle Barrios 2024 (UNAM), sin porcentaje')],
+          ['d','Más X: se diluye y gana el lado de 2 X']],
+    ok:'d',
+    fb:{ a:'El gas no reacciona, pero ocupa lugar: el émbolo se corre, el volumen crece y [X] e [Y] bajan a la vez. Q cambia porque [X] va al cuadrado. Quílez (2017) pone este caso, un gas agregado a presión constante, entre los que la regla memorizada resuelve mal; no da porcentaje.',
+      b:'No se comprime: con el émbolo libre, entra gas y la caja crece. Todo se diluye, al revés que al comprimir. Quílez (2017) pone este caso entre los que la regla memorizada resuelve mal; no da porcentaje.',
+      c:'K no cambia: solo con la temperatura. Lo que cambia es Q, porque las concentraciones bajan. La idea de que K cambia sin cambiar la temperatura aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje.' },
+    arma:() => { const s = ME.caja({ tipo:'A2B', nA:8, nB:8, T:300, semilla:37 }); adelantar(s, 4); return s; },
+    vAntes:() => antes({ embolo:true, conc:true, escalaV:3 }),
+    alResponder:() => { E.sim.presionFija(true); E.sim.inerte(30); E.vista = despues({ embolo:true, conc:true, escalaV:3, sigueV:true }); },
+    exp:() => { const r = ME.inerte('2 X(g) = Y(g)', { moles:{ X:8, Y:8 }, V:1, K:1/8 }, 30, 'P'), f = r.final; return `<p>Al entrar los 30 cuadrados, el émbolo se corre: el volumen pasa de ${V_('1 L')} a ${V_(fmt(r.instante.V, 3) + ' L')}, porque ahora hay 46 porciones de gas donde había 16. [${X_('X')}] e [${Y_('Y')}] bajan a la vez, a ${fmt(r.instante.conc.X, 2)} porciones por litro.</p>
+      <div class="eqs"><div class="eq">${Q_('Q')} = ${fr(Y_('[Y]'), X_('[X]') + '²')} = ${fr(Y_(fmt(r.instante.conc.Y, 2)), X_(fmt(r.instante.conc.X, 2)) + '²')} = ${Q_(fmt(r.instante.Q, 2))} &gt; ${K_('Kc')} = ${K_('1/8')}</div></div>
+      <p>Avanza la inversa, hacia ${X_('X')}: el lado con más porciones de gas (2 X contra 1 Y). Al formarse X hay más gas y la caja crece un poco más. Quedan ${X_(fmt(f.moles.X, 0) + ' X')} y ${Y_(fmt(f.moles.Y, 0) + ' Y')} en ${V_(fmt(f.V, 0) + ' L')}: [Y]/[X]² = ${fmt(f.conc.Y, 0)}/${fmt(f.conc.X, 0)}² = 1/8.</p>
+      <p>Es como descomprimir: el gas que no reacciona no entra en Q, pero deja a X y a Y repartidos en más volumen. En la caja rígida no pasaba nada porque el volumen no cambiaba.</p>
+      <p class="fuente">Quílez (2017) pone el gas agregado a presión constante entre los casos en que la regla de Le Chatelier, aplicada a ciegas, falla; no da porcentaje. Comparar Q con K no falla.</p>`; } },
+  { id:'kp', corto:'Kp de la caja', tipo:'A2B',
+    q:`La caja de 2 ${X_('X')} ⇌ ${Y_('Y')}, con ${X_('8 X')} y ${Y_('8 Y')} en equilibrio en ${V_('1 L')}, ahora a 500 K, donde también ${K_('Kc = 1/8')}. Cada porción es 1 mol. Con R = 0,082 atm·L/(mol·K), RT = 41 atm·L/mol. ¿Cuánto vale ${K_('Kp')}?`,
+    opts:[['a','Kp = 1/328: Δn = 1 − 2 = −1'],
+          ['b','Kp = 41/8: Δn = 2 − 1 = 1','Kp-signo', RES('hipotesis','hipótesis nuestra (tabla de errores sin respaldo del informe)')],
+          ['c','Kp = 1/8: Δn no cuenta, Kp = Kc','Kp-sin-dn', RES('hipotesis','hipótesis nuestra (tabla de errores sin respaldo del informe)')],
+          ['d','Kp = 1681/8: Δn = 2, los moles de X','Kp-un-lado', RES('hipotesis','hipótesis nuestra (tabla de errores sin respaldo del informe)')]],
+    ok:'a',
+    fb:{ b:'Δn es productos menos reactivos: 1 − 2 = −1, no 1. Con el signo al revés sale lo mismo que dividir entre (RT)^Δn en vez de multiplicar. Es un error que suponemos, sin estudio que lo mida.',
+      c:'Kp = Kc solo cuando Δn = 0. Aquí hay 2 moles de gas a la izquierda y 1 a la derecha: Δn = −1. Es un error que suponemos, sin estudio que lo mida.',
+      d:'Δn no son los moles de un solo lado: es la diferencia, 1 − 2 = −1. Es un error que suponemos, sin estudio que lo mida.' },
+    arma:() => { const s = ME.caja({ tipo:'A2B', nA:8, nB:8, T:500, semilla:41 }); adelantar(s, 4); return s; },
+    vAntes:() => antes({ conc:true }),
+    alResponder:() => { E.vista = despues({ pres:true }); },
+    exp:() => { const k = ME.kp('2 X(g) = Y(g)', 1/8, 500), p = ME.caja({ tipo:'A2B', nA:8, nB:8, T:500 }).presiones(); return `<p>Con 1 mol por porción en 1 L, [${X_('X')}] = [${Y_('Y')}] = 8 mol/L. Cada presión parcial es la concentración por RT: p(${X_('X')}) = p(${Y_('Y')}) = 8 · ${fmt(k.RT, 0)} = ${fmt(p.X, 0)} atm (las barras ya lo dicen).</p>
+      <div class="eqs">
+        <div class="eq">${K_('Kp')} = ${fr('p(' + Y_('Y') + ')', 'p(' + X_('X') + ')²')} = ${fr(fmt(p.Y, 0), fmt(p.X, 0) + '²')} = ${K_(fmtK(ME.cociente('2 X(g) = Y(g)', p)))}</div>
+        <div class="eq">Δn = 1 − 2 = ${fmt(k.deltaN, 0)}<span class="note">moles de gas de los productos menos moles de gas de los reactivos</span></div>
+        <div class="eq">${K_('Kp')} = ${K_('Kc')}·<span>(RT)<sup>Δn</sup></span> = ${K_('1/8')} · <span>${fmt(k.RT, 0)}<sup>−1</sup></span> = ${K_(fmtK(k.valor))}</div>
+      </div>
+      <p>Las dos cuentas dan lo mismo. ${K_('Kp')} sale menor que ${K_('Kc')} porque Δn es negativo: el lado de los productos tiene menos moles de gas. Si Δn fuera 0, como en A ⇌ B, Kp sería igual a Kc.</p>
+      <p class="fuente">Contar mal Δn (con el signo al revés, sin Δn o con un solo lado) es un error que suponemos: no encontramos estudios que lo midan. Es una caja muy llena; los números son para practicar la cuenta.</p>`; } },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
 // Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;

@@ -1046,7 +1046,7 @@
      "unidad": "aritmetica.mcd-y-mcm",
      "mide": "Coincidencias periódicas: el primer momento común es el MCM",
      "A": {
-      "enunciado": "Dos luces se encienden juntas. Una parpadea cada 8 segundos y la otra cada 12 segundos. ¿Cuántos segundos después vuelven a encenderse juntas por primera vez?",
+      "enunciado": "Dos luces se prenden a la vez. Una se enciende cada 8 segundos y la otra cada 12 segundos. ¿Cuántos segundos después vuelven a encenderse juntas por primera vez?",
       "opciones": [
        {
         "texto": "4 segundos"
@@ -1064,22 +1064,22 @@
       "k": "062974d3c8ee88aeeb4fbc9f2c6a5dd4048c91895187ba73e0509fa5e4552184f7ed8f5ebb6764e20360123ae4c5b8d1fae98b74ca9d4f2a"
      },
      "B": {
-      "enunciado": "Dos alarmas suenan juntas. Una suena cada 10 minutos y la otra cada 15 minutos. ¿Cuántos minutos después vuelven a sonar juntas por primera vez?",
+      "enunciado": "Un paciente toma un jarabe cada 6 horas y una pastilla cada 9 horas. Al mediodía tomó los dos a la vez. ¿Cuántas horas después le vuelve a tocar tomar los dos juntos por primera vez?",
       "opciones": [
        {
-        "texto": "5 minutos"
+        "texto": "3 horas"
        },
        {
-        "texto": "30 minutos"
+        "texto": "54 horas"
        },
        {
-        "texto": "150 minutos"
+        "texto": "18 horas"
        },
        {
-        "texto": "25 minutos"
+        "texto": "15 horas"
        }
       ],
-      "k": "fcf4e76bf82efa06db641ebf0ba30397513e540120475cc09c99567d2e1d18404404fa2c8904d7b0dda8f472dc402a86c26f691668956d74"
+      "k": "fcf7e76bf82efa06db641ebf0ba30397513e540120475cc09c99567d2e1d7b3e5776856dc846c3b7d1b8ee33840d2a86c26f691668956d74"
      }
     }
    ]
@@ -1529,22 +1529,22 @@
       "k": "b5240559cd538a9a8bc094d97c8577671648d8b4458986e814ae9e13ccb90ba3aa1d751f882b7685249738c64ba0afee7fb8e5222de617cd6bca1b8d6e0e5012f265bf78850e4f82df"
      },
      "B": {
-      "enunciado": "Una vela está a 40 cm de una lupa (lente convergente) de 8 cm de distancia focal. ¿A qué distancia de la lupa se forma su imagen?",
+      "enunciado": "En una cámara antigua de fuelle, la lente es convergente y tiene 6 cm de distancia focal. Se fotografía una flor que está a 18 cm de la lente. ¿A qué distancia detrás de la lente debe quedar la placa para que la foto salga nítida?",
       "opciones": [
        {
-        "texto": "6,7 cm"
+        "texto": "4,5 cm"
        },
        {
-        "texto": "8 cm"
+        "texto": "6 cm"
        },
        {
-        "texto": "10 cm"
+        "texto": "18 cm"
        },
        {
-        "texto": "40 cm"
+        "texto": "9 cm"
        }
       ],
-      "k": "84c68ba94d5c7fb403acde9e758768d63c9633ed9370707d3e1e07cc551c4c40a0af93c0d1cd376fd326dcca95123728678948886986f11ad8270214ccef492c255b7bfe413ddde295"
+      "k": "84c78ba94d5c7fb403acde9e758768d63c9633ed9370707d3e1e07cc551c4c40a0af93c0d1cd376fd326dcca95123728678948886986ba5b9b290a1b86ef5471254264b90770dde295"
      }
     },
     {
@@ -1595,40 +1595,40 @@
      "unidad": "fisica.trabajo-y-energia",
      "mide": "Conservación de la energía: m·g·h = m·v²/2, y la masa se simplifica",
      "A": {
-      "enunciado": "Un bloque de 2 kg se suelta desde 1,8 m de altura y baja por una rampa sin roce. ¿Con qué rapidez llega al pie de la rampa? (g = 10 m/s²)",
+      "enunciado": "Un niño de 25 kg se suelta desde el reposo en un columpio, con el asiento 0,8 m más alto que en el punto más bajo de su recorrido. Sin roce ni aire, ¿con qué rapidez pasa por el punto más bajo? (g = 10 m/s²)",
       "opciones": [
        {
-        "texto": "36 m/s"
+        "texto": "16 m/s"
        },
        {
-        "texto": "6 m/s"
+        "texto": "4 m/s"
        },
        {
-        "texto": "4,2 m/s"
+        "texto": "2,8 m/s"
        },
        {
-        "texto": "18 m/s"
+        "texto": "8 m/s"
        }
       ],
       "k": "aff33d213083397932d094bb3c0b72d34b4f635eb4795ee1e45c5992d347ea350592f9294546cd6c4e34aba1dc914a5227044ff076670dca54c035b13401a3aa720c3b07"
      },
      "B": {
-      "enunciado": "Un niño de 30 kg se lanza desde 3,2 m de altura por un tobogán sin roce. ¿Con qué rapidez llega abajo? (g = 10 m/s²)",
+      "enunciado": "Un niño de 30 kg se deja deslizar desde el reposo por un tobogán sin roce, desde 3,2 m de altura. ¿Con qué rapidez llega abajo? (g = 10 m/s²)",
       "opciones": [
        {
         "texto": "64 m/s"
        },
        {
-        "texto": "8 m/s"
+        "texto": "5,7 m/s"
        },
        {
-        "texto": "5,7 m/s"
+        "texto": "8 m/s"
        },
        {
         "texto": "32 m/s"
        }
       ],
-      "k": "c2f209bd8af0f9c1e5f383c39cfdb9b5a0de897ad9120cf54605423eea4fdc2d0b913e32ba567c7f1d0446ed68650bbfeb995ac797fad4abc3d2441eb8266fd014e07219"
+      "k": "c2f109bd8af0f9c1e5f383c39cfdb9b5a0de897ad9120cf501470529e343cf6711997d6cbe51257310520bab68650bbfeb995ac797fad4abc3d2441eb8266fd014e07219"
      }
     }
    ]
@@ -1840,40 +1840,40 @@
      "unidad": "geometria.relaciones-metricas",
      "mide": "Altura relativa a la hipotenusa: h = (cateto · cateto) / hipotenusa",
      "A": {
-      "enunciado": "Los catetos de un triángulo rectángulo miden 15 cm y 20 cm, y su hipotenusa, 25 cm. ¿Cuánto mide la altura trazada desde el ángulo recto hasta la hipotenusa?",
+      "enunciado": "Un terreno tiene forma de triángulo rectángulo: sus dos lados menores miden 30 m y 40 m, y el lado mayor, 50 m. Desde la esquina del ángulo recto se quiere abrir un camino recto hasta el lado mayor, lo más corto posible. ¿Cuánto mide ese camino?",
       "opciones": [
        {
-        "texto": "17,5 cm"
+        "texto": "35 m"
        },
        {
-        "texto": "12,5 cm"
+        "texto": "25 m"
        },
        {
-        "texto": "12 cm"
+        "texto": "24 m"
        },
        {
-        "texto": "9 cm"
+        "texto": "18 m"
        }
       ],
       "k": "c9d64bb5b7c0d5da31eea9d12f88e7d1fac410d70eb7fb8273916d589bfe644bfeb152495ef81b37ff61a27c7c979b8c93c6a493e321be2c7e75c65ab5796426a180b026b9a03f3f5d1518b6ae5022435d16f6"
      },
      "B": {
-      "enunciado": "Los catetos de un triángulo rectángulo miden 9 cm y 12 cm, y su hipotenusa, 15 cm. ¿Cuánto mide la altura trazada desde el ángulo recto hasta la hipotenusa?",
+      "enunciado": "Una repisa esquinera es un tablero con forma de triángulo rectángulo: los bordes pegados a las paredes miden 18 cm y 24 cm, y el borde delantero, 30 cm. Una hormiga parte de la esquina de las paredes y quiere llegar al borde delantero por el camino más corto. ¿Cuánto camina?",
       "opciones": [
        {
-        "texto": "10,5 cm"
+        "texto": "21 cm"
        },
        {
-        "texto": "7,5 cm"
+        "texto": "15 cm"
        },
        {
-        "texto": "7,2 cm"
+        "texto": "10,8 cm"
        },
        {
-        "texto": "5,4 cm"
+        "texto": "14,4 cm"
        }
       ],
-      "k": "22e82a49179a6beaa6539b2cbe297c328aaba1bd36277d9cceb7955bb86c23357aa35a9597eddf7b5db6a67b122beed2cc5ff48a7b88f613f7fbdb6dd6e2008ba673301a7091bc70683d323704533ea3af0f52"
+      "k": "22e92a49179a6beaa6539b2cbe297c328aaba1bd36277d9cceb7955bb86c23357aa35a9597eddf7b5db6a67b122beed2cc5ff48a7b88f641a9b6d27adaf80c87ab373c1b309dfe7c6b642629110460e0af0f52"
      }
     },
     {
@@ -1924,40 +1924,40 @@
      "unidad": "geometria.poligonos-y-cuadrilateros",
      "mide": "Diagonales de un polígono: n(n − 3)/2",
      "A": {
-      "enunciado": "¿Cuántas diagonales tiene un polígono convexo de 10 lados?",
+      "enunciado": "En una reunión, 9 amigos se sientan alrededor de una mesa redonda. Cada pareja de amigos que no está sentada junta se da un apretón de manos. ¿Cuántos apretones de manos hay en total?",
       "opciones": [
        {
-        "texto": "45"
+        "texto": "36"
        },
        {
-        "texto": "35"
-       },
-       {
-        "texto": "70"
-       },
-       {
-        "texto": "7"
-       }
-      ],
-      "k": "06aaa6a6340d87052f2d4e3222a978d880bdd39e56193d69c38a7e19264608ca264d6d010cf4a947d497c6d532eb95d28ca7098444b15da38e7611e23410b859585df519e412f34f0b83bf548ff26f2fac65844fbe9546385997179a370582"
-     },
-     "B": {
-      "enunciado": "¿Cuántas diagonales tiene un polígono convexo de 12 lados?",
-      "opciones": [
-       {
-        "texto": "66"
+        "texto": "27"
        },
        {
         "texto": "54"
        },
        {
-        "texto": "108"
-       },
-       {
-        "texto": "9"
+        "texto": "6"
        }
       ],
-      "k": "869a6e2ba24136e03888c3ada9d662fa25709a581be44391b2711ae98bb4e9b1cd9dae87cbd29fc4a4fc91474482493941aa45fd00d0e0809f5422d0fddb8ccfb2dc18caf62e2bf1e81b0b4997bed330bb2fd3ea6ac6bd92ab192b2fa56652"
+      "k": "06aaa6a6340d87052f2d4e3222a978d880bdd39e56193d69c38a7e19264608ca264d6d010cf4a947d497c6d532eb95d28ca7098444b15da38e7611e23410b859585df519e412f34f0b83bf548ff26f2fac65844fbe9546385997179a370582"
+     },
+     "B": {
+      "enunciado": "En un juego, 11 niños forman una ronda. Se tiende una cinta recta entre cada par de niños que no están uno al lado del otro. ¿Cuántas cintas se tienden en total?",
+      "opciones": [
+       {
+        "texto": "55"
+       },
+       {
+        "texto": "88"
+       },
+       {
+        "texto": "44"
+       },
+       {
+        "texto": "8"
+       }
+      ],
+      "k": "86996e2ba24136e03888c3ada9d662fa25709a581be44391b2711ae98bb4e9b1cddbebc4c8d490c2a7f78306429e0a2e4fa050ef49d5fcded64d349eeecdcd86e3dc18caf62e2bf1e81b0b4997bed330bb2fd3ea6ac6bd92ab192b2fa56652"
      }
     },
     {
@@ -2174,7 +2174,7 @@
   },
   "quimica": {
    "curso": "quimica",
-   "version": "1.1.0",
+   "version": "1.2.0",
    "minutos": 16,
    "errores": {
     "ES20-menor-cantidad": {
@@ -2288,6 +2288,70 @@
     "una-vida-media": {
      "respaldo": "hipotesis",
      "describe": "Aplica una sola vez la mitad"
+    },
+    "ignora-la-carga": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta los electrones como si el ion fuera neutro, sin usar su carga"
+    },
+    "carga-al-reves": {
+     "respaldo": "hipotesis",
+     "describe": "Usa la carga del ion al revés: a un anión le quita electrones en vez de sumárselos (o a un catión se los suma)"
+    },
+    "gas-agua-reparte-a-medias": {
+     "respaldo": "hipotesis",
+     "describe": "Reparte la presión total en partes iguales entre el gas y el vapor de agua"
+    },
+    "suma-porcentajes": {
+     "respaldo": "hipotesis",
+     "describe": "Junta pureza y rendimiento en un solo porcentaje (pureza + rendimiento − 100)"
+    },
+    "BMH7-un-agua": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta una sola agua aunque la cadena tenga varias uniones"
+    },
+    "olvida-el-O-del-combustible": {
+     "respaldo": "hipotesis",
+     "describe": "Al contar los oxígenos, olvida el O que trae el propio combustible (un alcohol)"
+    },
+    "da-la-fraccion-del-otro-gas": {
+     "respaldo": "hipotesis",
+     "describe": "Da la proporción del otro gas de la mezcla en vez de la que se pide"
+    },
+    "BM9-hidrolisis-sin-agua": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la hidrólisis no gasta agua: la cadena solo se separa"
+    },
+    "olvida-el-agua": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta solo el CO₂ y olvida el agua que también se forma"
+    },
+    "solo-el-O-del-CO2": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta solo los oxígenos del CO₂ y olvida los del agua"
+    },
+    "cuenta-atomos-no-moleculas": {
+     "respaldo": "hipotesis",
+     "describe": "Da los átomos de O que hacen falta en vez de las moléculas de O₂"
+    },
+    "fraccion-sobre-la-total": {
+     "respaldo": "hipotesis",
+     "describe": "Divide la presión de vapor entre la presión total y no entre la del gas seco"
+    },
+    "olvida-pureza": {
+     "respaldo": "hipotesis",
+     "describe": "No toma en cuenta la pureza: usa toda la muestra como si reaccionara"
+    },
+    "multiplica-pureza": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica por la pureza donde hay que dividir"
+    },
+    "cuenta-como-cadena-lineal": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta n − 1 uniones aunque la cadena esté cerrada en un anillo"
+    },
+    "productos-pesan-lo-del-combustible": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que los productos pesan lo mismo que el combustible: no cuenta el O₂ que se une"
     }
    },
    "pares": [
@@ -2297,7 +2361,7 @@
      "unidad": "quimica.estequiometria",
      "mide": "Reactivo limitante con partículas: comparar con la receta, no la cantidad ni el coeficiente",
      "A": {
-      "enunciado": "En un recipiente hay 6 moléculas de H₂ y 4 moléculas de O₂, que reaccionan según 2 H₂ + O₂ → 2 H₂O. ¿Cuál es el reactivo limitante?",
+      "enunciado": "En el convertidor catalítico de un auto hay, en un instante, 12 moléculas de CO y 7 moléculas de O₂, que reaccionan según 2 CO + O₂ → 2 CO₂. ¿Cuál es el reactivo limitante?",
       "opciones": [
        {
         "texto": "El O₂, porque hay menos moléculas"
@@ -2306,7 +2370,7 @@
         "texto": "El O₂, porque su coeficiente es el menor"
        },
        {
-        "texto": "El H₂, porque se acaba primero"
+        "texto": "El CO, porque para 7 O₂ harían falta 14 CO"
        },
        {
         "texto": "Los dos, porque se acaban a la vez"
@@ -2315,22 +2379,22 @@
       "k": "a6be004e0185671483dda68edc7a72cd2f8d4fca067fe4d492c942762ac2e89238c21da5cd358e29846040840938a14b044a3921529d469751cee3e7749eb9e37896b48b712323bed870a93758d8faa6"
      },
      "B": {
-      "enunciado": "En un recipiente hay 3 moléculas de N₂ y 6 moléculas de H₂, que reaccionan según N₂ + 3 H₂ → 2 NH₃. ¿Cuál es el reactivo limitante?",
+      "enunciado": "Una chispa enciende una mezcla de 3 moléculas de etileno (C₂H₄) y 8 moléculas de O₂, que reaccionan según C₂H₄ + 3 O₂ → 2 CO₂ + 2 H₂O. ¿Cuál es el reactivo limitante?",
       "opciones": [
        {
-        "texto": "El N₂, porque hay menos moléculas"
+        "texto": "El C₂H₄, porque hay menos moléculas"
        },
        {
-        "texto": "El N₂, porque su coeficiente es el menor"
-       },
-       {
-        "texto": "El H₂, porque se acaba primero"
+        "texto": "El C₂H₄, porque su coeficiente es el menor"
        },
        {
         "texto": "Los dos, porque se acaban a la vez"
+       },
+       {
+        "texto": "El O₂, porque para 3 C₂H₄ harían falta 9 O₂"
        }
       ],
-      "k": "97beea4cf9208be78151467efd72cff8eebc80321f1e91ef00e36120755d0d8e83d226af70f4aaacea1e5b2d6c4ff1e8c95275c389d185f8a782fb2a41a07875acbda710a27adb5376b8ea1547d4bb23"
+      "k": "97bfea4cf9208be78151467efd72cff8eebc80321f1e91ef00e36120755d0d8e83d226af70f4aaacea1e5b2d6c4ff1e8c95275c3eeae958fd9c3ac2a53a63476aeb2e81da3249a586ae6ac5616d4bb23"
      }
     },
     {
@@ -3112,7 +3176,7 @@
      "unidad": "razonamiento-matematico.razonamiento-inductivo",
      "mide": "Sucesión de segundo orden: la diferencia crece, no se repite",
      "A": {
-      "enunciado": "Observa la sucesión 2, 6, 12, 20, … ¿Cuál es el término que ocupa el lugar 10?",
+      "enunciado": "Observa la sucesión 2, 6, 12, 20, … Si las diferencias siguen creciendo de 2 en 2, ¿cuál es el término que ocupa el lugar 10?",
       "opciones": [
        {
         "texto": "38"
@@ -3130,22 +3194,22 @@
       "k": "dce5430d2b326e6b78cff60bfa573dbf2c3028e51425466378bb727a35018e72584d5bf98e7ee683303959088a08341b28751e2b8098db184ecc71349a5ac2c7d64f7eba17cbbeb58c575c7dc925944f79"
      },
      "B": {
-      "enunciado": "Observa la sucesión 3, 8, 15, 24, … ¿Cuál es el término que ocupa el lugar 10?",
+      "enunciado": "Observa la sucesión 5, 8, 13, 20, … Si las diferencias siguen creciendo de 2 en 2, ¿cuál es el término que ocupa el lugar 10?",
       "opciones": [
        {
-        "texto": "48"
+        "texto": "32"
        },
        {
-        "texto": "78"
+        "texto": "62"
        },
        {
-        "texto": "120"
+        "texto": "58"
        },
        {
-        "texto": "70"
+        "texto": "104"
        }
       ],
-      "k": "69f36d425930519d176094890506345e579799d7eb43b9af8051b27fa8d8fb2501c7cdbd811f0ce6cf0507b36973df2191b7d00b66447b9cffb380e4ef7e4128d3b72fb00f0de1784ae1f69c30cdcc4cb6"
+      "k": "69f26d425930519d176094890506345e579799d7eb43b9af8051b27fa8d8fb2501c7cdbd811f0ce6cf0507b36973df2191b7d00b66447b9cffb3f085ff01637894bd39b5471ce0214afdeddb6e80cc4cb6"
      }
     },
     {
@@ -3567,40 +3631,40 @@
      "unidad": "trigonometria.triangulos-oblicuangulos",
      "mide": "Ley de cosenos: a² = b² + c² − 2bc·cos A",
      "A": {
-      "enunciado": "En un triángulo, dos lados miden 5 cm y 8 cm, y el ángulo entre ellos mide 60°. ¿Cuánto mide el tercer lado? (cos 60° = 0,5)",
+      "enunciado": "Una lámpara de escritorio tiene dos brazos rectos unidos por una bisagra: el de abajo, fijo a la base, mide 15 cm y el de arriba, que lleva el foco, mide 7 cm. El ángulo entre los dos brazos, medido por dentro en la bisagra, es de 60°. ¿Cuál es la distancia en línea recta entre el punto donde el brazo de abajo se une a la base y el foco? (cos 60° = 0,5)",
       "opciones": [
        {
-        "texto": "11,4 cm"
+        "texto": "19,5 cm"
        },
        {
-        "texto": "9,4 cm"
-       },
-       {
-        "texto": "7 cm"
+        "texto": "16,6 cm"
        },
        {
         "texto": "13 cm"
+       },
+       {
+        "texto": "22 cm"
        }
       ],
       "k": "686d56f5bbfc28cd9691878cd2c847e833456ab8651cbcd76043d0c52125e4039946ac9dd48207481cc94ec34c07b3d270df525f40307a47"
      },
      "B": {
-      "enunciado": "En un triángulo, dos lados miden 15 cm y 8 cm, y el ángulo entre ellos mide 60°. ¿Cuánto mide el tercer lado? (cos 60° = 0,5)",
+      "enunciado": "Un brazo robótico de juguete tiene dos piezas rectas unidas por una articulación: la de abajo, fija a la base, mide 16 cm y la de arriba, que lleva la pinza, mide 10 cm. El ángulo entre las dos piezas, medido por dentro en la articulación, es de 60°. ¿Cuál es la distancia en línea recta entre el punto donde la pieza de abajo se une a la base y la pinza? (cos 60° = 0,5)",
       "opciones": [
        {
-        "texto": "20,2 cm"
+        "texto": "22,7 cm"
        },
        {
-        "texto": "17 cm"
+        "texto": "18,9 cm"
        },
        {
-        "texto": "13 cm"
+        "texto": "26 cm"
        },
        {
-        "texto": "23 cm"
+        "texto": "14 cm"
        }
       ],
-      "k": "cca1c09228fa1ae104b6b70b1407c4ce5b4d99382c0fba5d6d3d98814fb925c4b692cd54ad2f302bcb78eba4461725298693e4b7c7782b2e"
+      "k": "cca0c09228fa1ae104b6b70b1407c4ce5b4d99382c0fba5d6d3d98814fb925c4b692cd54ad7e6964d920e2a0461f21608581a2f496782b2e"
      }
     },
     {

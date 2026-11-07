@@ -21,9 +21,32 @@
  *   serie(9650, ['Cu', 'Ag'])            segunda ley: la misma carga por celdas en serie
  *   crearParticulas(...) y pasoParticulas(estado, dt)  modelo de partículas de la animación (con semilla)
  *
+ * Electrólisis con agua y con sal (hueco llenado el 7 nov 2026). Masas molares de academia: H₂ 2, O₂ 32,
+ * Na 23, Cl₂ 71. Volumen molar en condiciones normales: VM = 22,4 L/mol. Sistemas (SISTEMAS):
+ *   'agua-acida'    agua con un poco de H₂SO₄: cátodo (−) 2 H⁺ + 2 e⁻ → H₂; ánodo (+) 2 H₂O → O₂ + 4 H⁺ + 4 e⁻
+ *   'agua-sulfato'  agua con Na₂SO₄ (no se gasta): cátodo 2 H₂O + 2 e⁻ → H₂ + 2 OH⁻; ánodo igual que arriba
+ *                   en los dos: global 2 H₂O → 2 H₂ + O₂; 2 F por mol de H₂ y 4 F por mol de O₂; volúmenes 2 : 1
+ *   'nacl-acuoso'   salmuera concentrada: cátodo 2 H₂O + 2 e⁻ → H₂ + 2 OH⁻ (no sale sodio); ánodo 2 Cl⁻ → Cl₂ + 2 e⁻;
+ *                   global 2 NaCl + 2 H₂O → 2 NaOH + H₂ + Cl₂; queda NaOH en la disolución
+ *   'nacl-fundido'  sin agua: cátodo Na⁺ + e⁻ → Na (1 F por mol); ánodo 2 Cl⁻ → Cl₂ + 2 e⁻; global 2 NaCl → 2 Na + Cl₂
+ *   electrolizar('agua-sulfato', { Q:19300 } | { I, s | min | h } | nada)
+ *       { sistema, nombre, global, queda, Q, molE (null sin carga), razonVolumen (L cátodo / L ánodo, null si
+ *         un producto no es gas), catodo y anodo: { producto, id (símbolo del elemento), polo ('−' o '+'),
+ *         tipo ('reducción' u 'oxidación'), semirreaccion, z (e⁻ por unidad de producto), gas, M, mol, g, L
+ *         (null si no es gas o no hay carga) }, errores }
+ *       errores (agua): unoAUno (L de O₂ si los gases salieran 1 : 1, igual a los de H₂), razonUnoAUno (1),
+ *         catodoAlReves ('O₂' en el cátodo), anodoAlReves ('H₂'), oxigenoConDos (L de O₂ dividiendo entre 2
+ *         en vez de 4); (NaCl acuoso): saleSodio ('Na' en el cátodo), comoDisociacion ('Na⁺ y Cl⁻': cree que
+ *         la corriente solo separa los iones, EC7); (NaCl fundido): saleHidrogeno ('H₂'); en todos:
+ *         sinDividir.catodo y sinDividir.anodo (L, o g si no es gas, sin dividir los moles de e⁻ entre z)
+ *   productos('agua-sulfato', 24)  cuántas unidades se forman con un número entero de electrones (para el dibujo):
+ *       { catodo: { producto, unidades, sobran }, anodo: { producto, unidades, sobran } }
+ *
  * Cada resultado trae un campo 'errores' con los valores que dan los errores típicos de
  * docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md (sección "Lo que no tiene respaldo"):
  * son las opciones incorrectas de las predicciones.
+ *
+ * CABECERA: líneas 1 a 50 (qué calcula, datos, funciones y la electrólisis con agua y con sal del 7 nov 2026).
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -351,6 +374,67 @@
     return est;
   }
 
+  // ---------- Electrólisis con agua y con sal ----------
+  // La fuente decide los polos: cátodo (−) donde entran los electrones y ocurre la reducción; ánodo (+) donde
+  // salen y ocurre la oxidación. Los electrones van solo por el cable; en el líquido se mueven iones (EC2).
+  const VM = 22.4;
+  const H2 = { producto:'H₂', id:'H', z:2, gas:true, M:2 }, O2 = { producto:'O₂', id:'O', z:4, gas:true, M:32 };
+  const CL2 = { producto:'Cl₂', id:'Cl', z:2, gas:true, M:71, semirreaccion:'2 Cl⁻ → Cl₂ + 2 e⁻' };
+  const AGUA_ANODO = Object.assign({ semirreaccion:'2 H₂O → O₂ + 4 H⁺ + 4 e⁻' }, O2);
+  const SISTEMAS = Object.freeze({
+    'agua-acida': { nombre:'agua acidulada (un poco de H₂SO₄)', global:'2 H₂O → 2 H₂ + O₂', queda:'H₂SO₄ (no se gasta)',
+      catodo:Object.assign({ semirreaccion:'2 H⁺ + 2 e⁻ → H₂' }, H2), anodo:AGUA_ANODO },
+    'agua-sulfato': { nombre:'agua con Na₂SO₄', global:'2 H₂O → 2 H₂ + O₂', queda:'Na₂SO₄ (no se gasta)',
+      catodo:Object.assign({ semirreaccion:'2 H₂O + 2 e⁻ → H₂ + 2 OH⁻' }, H2), anodo:AGUA_ANODO },
+    'nacl-acuoso': { nombre:'NaCl acuoso concentrado (salmuera)', global:'2 NaCl + 2 H₂O → 2 NaOH + H₂ + Cl₂', queda:'NaOH',
+      catodo:Object.assign({ semirreaccion:'2 H₂O + 2 e⁻ → H₂ + 2 OH⁻' }, H2), anodo:CL2 },
+    'nacl-fundido': { nombre:'NaCl fundido (sin agua)', global:'2 NaCl → 2 Na + Cl₂', queda:'nada: no hay agua',
+      catodo:{ producto:'Na', id:'Na', z:1, gas:false, M:23, semirreaccion:'Na⁺ + e⁻ → Na' }, anodo:CL2 },
+  });
+  function sistemaDe(id) {
+    const s = SISTEMAS[id];
+    if (!s) throw new Error(`sistema de electrólisis desconocido: ${id} (usa ${Object.keys(SISTEMAS).join(', ')})`);
+    return s;
+  }
+  // Carga que pasa: Q directo, o I por el tiempo (s, min o h). Sin nada, null.
+  function cargaQ(o) {
+    if (!o || (o.Q === undefined && o.I === undefined)) return null;
+    if (o.Q !== undefined) return numero(o.Q, 'la carga', { positivo: true });
+    const I = numero(o.I, 'la corriente', { positivo: true });
+    if (o.s !== undefined) return I * numero(o.s, 'el tiempo', { positivo: true });
+    if (o.min !== undefined) return I * 60 * numero(o.min, 'el tiempo', { positivo: true });
+    if (o.h !== undefined) return I * 3600 * numero(o.h, 'el tiempo', { positivo: true });
+    throw new Error('falta el tiempo (s, min o h) o la carga Q');
+  }
+  function electrolizar(id, o) {
+    const S = sistemaDe(id), Q = cargaQ(o), molE = Q === null ? null : Q / F;
+    const lado = (p, polo, tipo) => {
+      const mol = molE === null ? null : molE / p.z;
+      return { producto:p.producto, id:p.id, polo, tipo, semirreaccion:p.semirreaccion, z:p.z, gas:p.gas, M:p.M,
+        mol, g: mol === null ? null : mol * p.M, L: mol === null || !p.gas ? null : mol * VM };
+    };
+    const catodo = lado(S.catodo, '−', 'reducción'), anodo = lado(S.anodo, '+', 'oxidación');
+    // sin dividir entre z: volumen (o masa) como si cada unidad tomara un solo electrón
+    const sinZ = p => (molE === null ? null : molE * (p.gas ? VM : p.M));
+    const errores = { sinDividir: { catodo: sinZ(S.catodo), anodo: sinZ(S.anodo) } };
+    if (id === 'agua-acida' || id === 'agua-sulfato') Object.assign(errores, {
+      unoAUno: catodo.L, razonUnoAUno: 1,                        // "salen iguales": tantos litros de O₂ como de H₂
+      catodoAlReves: 'O₂', anodoAlReves: 'H₂',                  // el oxígeno en el cátodo (polos al revés, EC3)
+      oxigenoConDos: molE === null ? null : molE / 2 * VM,      // usa 2 F por mol de O₂, como para el H₂
+    });
+    if (id === 'nacl-acuoso') Object.assign(errores, { saleSodio: 'Na', comoDisociacion: 'Na⁺ y Cl⁻' });
+    if (id === 'nacl-fundido') errores.saleHidrogeno = 'H₂';
+    return { sistema:id, nombre:S.nombre, global:S.global, queda:S.queda, Q, molE, catodo, anodo,
+      razonVolumen: S.catodo.gas && S.anodo.gas ? S.anodo.z / S.catodo.z : null, errores };
+  }
+  // Cuántas unidades de cada producto se forman con 'electrones' electrones (los mismos en los dos electrodos).
+  function productos(id, electrones) {
+    const S = sistemaDe(id), e = numero(electrones, 'los electrones');
+    if (!Number.isInteger(e)) throw new Error('los electrones se cuentan con enteros');
+    const uno = p => { const k = Math.floor(e / p.z); return { producto:p.producto, id:p.id, unidades:k, sobran:e - k * p.z }; };
+    return { sistema:id, electrones:e, catodo:uno(S.catodo), anodo:uno(S.anodo) };
+  }
+
   // Corre la animación 'segundos' segundos con pasos de dt y resume lo que pasó (para las pruebas y casos.json).
   function simular(o, segundos, dt) {
     const est = crearParticulas(o), h = dt || 1 / 30, pasos = Math.round(numero(segundos, 'el tiempo', { positivo: true }) / h);
@@ -361,5 +445,6 @@
   }
 
   return { F, POTENCIALES, FUENTE_POTENCIALES, ELECTRODO, par, semirreaccion, celda, pila, electrolisis, voltimetro,
-    faraday, tiempoFaraday, serie, deposito, crearParticulas, pasoParticulas, cargas, simular, azar };
+    faraday, tiempoFaraday, serie, deposito, crearParticulas, pasoParticulas, cargas, simular, azar,
+    VM, SISTEMAS, electrolizar, productos };
 });

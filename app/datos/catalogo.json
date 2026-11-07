@@ -602,7 +602,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "fisica-moderna"
+     ]
     }
    ]
   },
@@ -1124,7 +1126,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "funciones-organicas"
+     ]
     },
     {
      "id": "quimica.biomoleculas-y-productos-naturales",
@@ -1251,7 +1255,10 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "conjuntos",
+      "logica"
+     ]
     },
     {
      "id": "algebra.numeros-reales",
@@ -1794,7 +1801,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "logica"
+     ]
     },
     {
      "id": "aritmetica.conjuntos",
@@ -1818,7 +1827,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "conjuntos"
+     ]
     },
     {
      "id": "aritmetica.razones-y-proporciones",
@@ -2975,7 +2986,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "geometria-analitica"
+     ]
     },
     {
      "id": "trigonometria.angulos-en-posicion-normal",
@@ -3493,7 +3506,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "arreglos-giros"
+     ]
     },
     {
      "id": "razonamiento-matematico.razonamiento-inductivo",
@@ -3713,7 +3728,10 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "arreglos-giros",
+      "ampliadora"
+     ]
     },
     {
      "id": "razonamiento-matematico.rutas-y-visualizacion-espacial",
@@ -4241,7 +4259,8 @@
     "geometria.areas-poligonales",
     "geometria.prisma-y-piramide",
     "geometria.solidos-de-revolucion",
-    "geometria.longitud-y-areas-circulares"
+    "geometria.longitud-y-areas-circulares",
+    "razonamiento-matematico.transformaciones-de-figuras"
    ],
    "url": "/plantillas/ampliadora/index.html",
    "papel": "/plantillas/ampliadora/papel.json",
@@ -4267,6 +4286,24 @@
     "/plantillas/angulo-inscrito/index.html",
     "/plantillas/angulo-inscrito/motor.js",
     "/plantillas/angulo-inscrito/papel.json"
+   ]
+  },
+  "arreglos-giros": {
+   "id": "arreglos-giros",
+   "titulo": "Fichas, banderas y ruedas: arreglos y movimientos de figuras",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.arreglos-numericos",
+    "razonamiento-matematico.transformaciones-de-figuras"
+   ],
+   "url": "/plantillas/arreglos-giros/index.html",
+   "papel": "/plantillas/arreglos-giros/papel.json",
+   "archivos": [
+    "/plantillas/arreglos-giros/index.html",
+    "/plantillas/arreglos-giros/motor.js",
+    "/plantillas/arreglos-giros/papel.json"
    ]
   },
   "atomo-y-tabla": {
@@ -4361,7 +4398,7 @@
    "titulo": "Redox y celda galvánica: electrones por el alambre, iones por el puente",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.electroquimica"
    ],
@@ -4395,7 +4432,7 @@
    "titulo": "Cinética química",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.cinetica-quimica"
    ],
@@ -4482,6 +4519,24 @@
     "/plantillas/congruencia/papel.json"
    ]
   },
+  "conjuntos": {
+   "id": "conjuntos",
+   "titulo": "Las fichas en los aros: conjuntos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.conjuntos",
+    "algebra.logica-y-conjuntos"
+   ],
+   "url": "/plantillas/conjuntos/index.html",
+   "papel": "/plantillas/conjuntos/papel.json",
+   "archivos": [
+    "/plantillas/conjuntos/index.html",
+    "/plantillas/conjuntos/motor.js",
+    "/plantillas/conjuntos/papel.json"
+   ]
+  },
   "cortes-pesadas": {
    "id": "cortes-pesadas",
    "titulo": "La sierra y la balanza: cortes y pesadas",
@@ -4536,10 +4591,10 @@
   },
   "dinamica": {
    "id": "dinamica",
-   "titulo": "Dinámica: fuerzas, plano inclinado y poleas",
+   "titulo": "Dinámica: fuerzas, plano inclinado, poleas y movimiento circular",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.dinamica"
    ],
@@ -4591,7 +4646,7 @@
    "titulo": "Trabajo y energía",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.trabajo-y-energia"
    ],
@@ -4625,7 +4680,7 @@
    "titulo": "Equilibrio químico",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.equilibrio-quimico"
    ],
@@ -4687,6 +4742,23 @@
     "/plantillas/exponenciales-logaritmos/papel.json"
    ]
   },
+  "fisica-moderna": {
+   "id": "fisica-moderna",
+   "titulo": "La lámpara y la placa: fotones y efecto fotoeléctrico",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.fisica-moderna"
+   ],
+   "url": "/plantillas/fisica-moderna/index.html",
+   "papel": "/plantillas/fisica-moderna/papel.json",
+   "archivos": [
+    "/plantillas/fisica-moderna/index.html",
+    "/plantillas/fisica-moderna/motor.js",
+    "/plantillas/fisica-moderna/papel.json"
+   ]
+  },
   "fluidos": {
    "id": "fluidos",
    "titulo": "Fluidos: presión, Pascal y Arquímedes",
@@ -4721,6 +4793,23 @@
     "/plantillas/fracciones/index.html",
     "/plantillas/fracciones/motor.js",
     "/plantillas/fracciones/papel.json"
+   ]
+  },
+  "funciones-organicas": {
+   "id": "funciones-organicas",
+   "titulo": "El grupo que se cambia: funciones orgánicas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.funciones-organicas"
+   ],
+   "url": "/plantillas/funciones-organicas/index.html",
+   "papel": "/plantillas/funciones-organicas/papel.json",
+   "archivos": [
+    "/plantillas/funciones-organicas/index.html",
+    "/plantillas/funciones-organicas/motor.js",
+    "/plantillas/funciones-organicas/papel.json"
    ]
   },
   "funciones-trig-inversas": {
@@ -4764,7 +4853,8 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "geometria.geometria-analitica"
+    "geometria.geometria-analitica",
+    "trigonometria.recta-en-el-plano"
    ],
    "url": "/plantillas/geometria-analitica/index.html",
    "papel": "/plantillas/geometria-analitica/papel.json",
@@ -4960,6 +5050,24 @@
     "/plantillas/liquidos-y-solidos/index.html",
     "/plantillas/liquidos-y-solidos/motor.js",
     "/plantillas/liquidos-y-solidos/papel.json"
+   ]
+  },
+  "logica": {
+   "id": "logica",
+   "titulo": "Los interruptores de la lógica: lógica proposicional",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.logica-proposicional",
+    "algebra.logica-y-conjuntos"
+   ],
+   "url": "/plantillas/logica/index.html",
+   "papel": "/plantillas/logica/papel.json",
+   "archivos": [
+    "/plantillas/logica/index.html",
+    "/plantillas/logica/motor.js",
+    "/plantillas/logica/papel.json"
    ]
   },
   "magnetismo": {
@@ -5386,7 +5494,7 @@
    "titulo": "Soluciones: concentración, dilución y mezcla",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.soluciones"
    ],
@@ -5456,7 +5564,7 @@
    "titulo": "Tiro parabólico y movimiento circular",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.movimiento-parabolico-y-circular"
    ],
