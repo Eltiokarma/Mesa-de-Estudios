@@ -1,0 +1,283 @@
+{
+  "id": "t046",
+  "version": 1,
+  "titulo": "Lo que queda en el puesto",
+  "tema": "Selva · nota entre compañeros que cuidan nidos de taricaya",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Hermano Teo:"
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Cuando leas esto, yo ya estaré río abajo, así que te dejo todo por escrito."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "El motor del bote jala bien, pero hay que limpiarle el filtro cada dos días, como siempre."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Queda gasolina para tres recorridos largos, y la lancha que trae los víveres pasa el viernes."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "El río ya está dando playa: frente a la quebrada asomó la arena y ya hay taricayas poniendo sus huevos."
+      },
+      {
+        "id": "o6",
+        "rol": "cita",
+        "t": "Don Arquímedes, el de la comunidad, me dijo ayer: «Este año han salido más taricayas; que no se lleven los huevos como el año pasado»."
+      },
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Le prometí que pasaríamos por la playa todas las noches, así que esa promesa ahora es tuya también."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Los nidos que encontré están marcados con estacas y anotados en el cuaderno de ocurrencias, con la fecha y la hora."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "Si ves gente con linterna escarbando la arena, no te acerques solo: anota la hora, avisa por radio a la base y espera a la patrulla."
+      }
+    ],
+    [
+      {
+        "id": "o10",
+        "rol": "detalle",
+        "t": "En la olla dejé arroz y un poco de paiche salado; no es mucho, pero es de corazón."
+      },
+      {
+        "id": "o11",
+        "rol": "detalle",
+        "t": "Saluda a tu mamá cuando hables con ella por la radio el domingo."
+      },
+      {
+        "id": "o12",
+        "rol": "detalle",
+        "t": "Vuelvo en veinte días, cuando me toque subir otra vez."
+      },
+      {
+        "id": "o13",
+        "rol": "detalle",
+        "t": "Wílmer"
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "¿Quién escribe la nota, con mayor probabilidad?",
+      "alternativas": [
+        {
+          "t": "Alguien que vigila la playa por turnos y acaba de terminar el suyo.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o7",
+            "o9",
+            "o12"
+          ],
+          "explicacion": "Se va «río abajo», deja a Teo la promesa de pasar por la playa cada noche, sabe cómo avisar a la base y volverá cuando le «toque subir otra vez»: es un turno de vigilancia."
+        },
+        {
+          "t": "Un poblador de la comunidad, preocupado porque se roben los huevos de la playa.",
+          "codigo": "RV50",
+          "origen": "o6",
+          "explicacion": "Esa preocupación es de don Arquímedes, a quien la nota cita. Quien escribe le hizo una promesa a él: es otra persona."
+        },
+        {
+          "t": "El jefe de Teo, que le deja las órdenes desde la base.",
+          "codigo": "RV7",
+          "explicacion": "Nada lo autoriza: lo llama «hermano», le deja comida «de corazón» y le dice que avise «a la base», que es otro lugar. Le habla como un compañero, no como un jefe."
+        },
+        {
+          "t": "Un pescador que dejó paiche salado en el puesto para vender.",
+          "codigo": "RV5",
+          "origen": "o10",
+          "explicacion": "Repite palabras de la oración 10, pero el paiche está en la olla como comida para Teo, no para vender."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "¿Qué relación hay entre Wílmer y Teo?",
+      "alternativas": [
+        {
+          "t": "Son compañeros que se turnan en el mismo trabajo y se tienen confianza.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o7",
+            "o12"
+          ],
+          "explicacion": "Wílmer le pasa a Teo su promesa y sus tareas, lo trata con cariño y volverá cuando le toque: se relevan en el mismo puesto."
+        },
+        {
+          "t": "Son hermanos de sangre, hijos de la misma madre.",
+          "codigo": "RV49",
+          "origen": "o1",
+          "explicacion": "Toma «hermano» al pie de la letra. La oración 11 lo descarta: si fueran hijos de la misma madre, no diría «tu mamá»."
+        },
+        {
+          "t": "Teo es un visitante de la reserva al que le explican, paso a paso, cómo cuidar los nidos.",
+          "codigo": "RV51",
+          "explicacion": "El tema son las instrucciones, pero las marcas dicen otra cosa: «como siempre» (oración 3) muestra que Teo ya conoce el trabajo, y la promesa «ahora es tuya también»."
+        },
+        {
+          "t": "Teo es el nuevo jefe del puesto y Wílmer le rinde cuentas.",
+          "codigo": "RV7",
+          "explicacion": "Nada en la nota habla de jefes ni de rendir cuentas: es una conclusión sin base."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Wílmer y Teo se encuentran en el puesto el día del cambio de turno.",
+        "clase": "lo-contradice",
+        "codigos": {
+          "lo-dice": null,
+          "se-deduce": "RV7",
+          "no-se-sabe": "RV9"
+        },
+        "explicacion": "La nota lo contradice sin decirlo con esas palabras: «Cuando leas esto, yo ya estaré río abajo, así que te dejo todo por escrito» (oración 2).",
+        "explicaciones": {
+          "lo-dice": "Ninguna oración dice que se encuentren; al contrario, Wílmer ya se habrá ido cuando Teo lea.",
+          "se-deduce": "Que se conozcan bien no permite concluir que se vean ese día; la oración 2 dice que Wílmer ya se habrá ido.",
+          "no-se-sabe": "Sí se puede saber: si Wílmer ya está río abajo cuando Teo lee, no se encuentran."
+        }
+      },
+      "enunciado": "¿En qué situación se escribe la nota?",
+      "alternativas": [
+        {
+          "t": "Wílmer deja el puesto y Teo lo reemplaza después, sin que se crucen.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o12"
+          ],
+          "explicacion": "Wílmer ya se habrá ido cuando Teo lea (oración 2) y volverá en veinte días (oración 12): la nota reemplaza la conversación del relevo."
+        },
+        {
+          "t": "Esta semana robaron huevos en la playa y la comunidad pidió ayuda.",
+          "codigo": "RV5",
+          "origen": "o6",
+          "explicacion": "Repite palabras de don Arquímedes, pero el robo fue «el año pasado»; este año lo que se pide es evitarlo."
+        },
+        {
+          "t": "Wílmer se despide de Teo porque deja el trabajo para siempre.",
+          "codigo": "RV9",
+          "explicacion": "La nota lo contradice, aunque no con esas palabras: «vuelvo en veinte días, cuando me toque subir otra vez» (oración 12)."
+        },
+        {
+          "t": "Es temporada de turistas y la reserva espera recibir más visitas que de costumbre.",
+          "codigo": "RV8",
+          "explicacion": "La nota no habla de turistas: lo que hay más este año son taricayas. Lo que uno sepa de las reservas no cambia lo que dice el texto."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "En la nota, la expresión «el río ya está dando playa» quiere decir que",
+      "alternativas": [
+        {
+          "t": "el agua bajó y quedaron al descubierto orillas de arena.",
+          "correcta": true,
+          "evidencia": [
+            "o5"
+          ],
+          "explicacion": "La misma oración lo explica: frente a la quebrada «asomó la arena», donde las taricayas ponen sus huevos."
+        },
+        {
+          "t": "el río ofrece a la comunidad un lugar para bañarse y pasear.",
+          "codigo": "RV49",
+          "explicacion": "Lee «dar playa» como «regalar una playa para pasear». En esta nota, entre gente que cuida los nidos, quiere decir que el agua bajó y salió la arena."
+        },
+        {
+          "t": "el río se secó del todo y ahora solo queda arena.",
+          "codigo": "RV11",
+          "explicacion": "Exagera: asomó arena frente a la quebrada, pero el río sigue ahí; Wílmer se va río abajo en bote."
+        },
+        {
+          "t": "el río creció con las lluvias y llegó hasta el puesto.",
+          "codigo": "RV9",
+          "explicacion": "Es lo contrario de lo que dice la oración 5: si asoma la arena, el agua no subió, bajó."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "Se deduce que Wílmer quiere que Teo pase por la playa todas las noches porque",
+      "alternativas": [
+        {
+          "t": "así se evita que alguien se lleve los huevos de las taricayas.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7",
+            "o9"
+          ],
+          "explicacion": "Don Arquímedes pide que no se los lleven como el año pasado, Wílmer le prometió vigilar y explica qué hacer si alguien escarba la arena."
+        },
+        {
+          "t": "hay que contar cuántas crías de taricaya nacen cada noche.",
+          "codigo": "RV7",
+          "explicacion": "La nota no habla de contar crías: solo dice que los nidos están marcados y anotados. Es ir más allá del texto."
+        },
+        {
+          "t": "las taricayas ya salieron a la arena y hay que darles de comer.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Repite palabras de la oración 5, pero la nota no dice que haya que alimentarlas: las taricayas salen a poner huevos."
+        },
+        {
+          "t": "las taricayas están en peligro de desaparecer en todo el mundo.",
+          "codigo": "RV8",
+          "explicacion": "La nota no dice nada sobre el resto del mundo: la razón está en lo que pasó el año pasado en esa playa."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "La taricaya (Podocnemis unifilis) es una tortuga de río de la Amazonía que pone sus huevos en las playas de arena que quedan al descubierto cuando baja el río (época de vaciante), y la recolección ilegal de huevos es una de sus amenazas; en reservas como Pacaya Samiria, guardaparques y comunidades vigilan y manejan los nidos.",
+      "fuente": "SERNANP, notas sobre el manejo y repoblamiento de taricaya en la Reserva Nacional Pacaya Samiria (gob.pe/sernanp); Lista Roja de la UICN, ficha de Podocnemis unifilis."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: acertó 20 de 20 (los cuatro textos de la unidad). Cambios: oraciones 6 y 12 más claras (más taricayas este año; «vuelvo en veinte días»), con sus explicaciones; tipo de texto expositivo y dificultad 2, porque p4 y p5 salen casi literales; el previo de p3 cita la oración 2 completa."
+  }
+}

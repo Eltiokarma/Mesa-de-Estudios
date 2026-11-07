@@ -1,0 +1,249 @@
+{
+  "id": "t043",
+  "version": 1,
+  "titulo": "El sábado, el mercado se pone guapo",
+  "tema": "Sociedad · comunicado en un mercado de Huancayo (mercado inventado)",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Comunicado a los señores socios del mercado Los Capulíes, Huancayo."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "La junta directiva de la asociación saluda a cada uno de ustedes y les informa lo siguiente."
+      }
+    ],
+    [
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "En las últimas semanas hemos recibido varias quejas de los clientes."
+      },
+      {
+        "id": "o4",
+        "rol": "cita",
+        "t": "Una señora escribió en el cuaderno de reclamos: «Los pasillos están llenos de cajas y no se puede pasar con un niño en brazos»."
+      },
+      {
+        "id": "o5",
+        "rol": "cita",
+        "t": "Otro cliente anotó: «El techo gotea justo encima de los puestos de carne»."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Tienen razón, y no queremos que se vayan a comprar a otro lado."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Por eso, este sábado 14, el mercado se pone guapo: haremos una faena de limpieza y pintura desde las seis de la mañana."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Cada socio debe venir con una escoba, un balde y ropa de trabajo, y dejar su pasillo sin cajas antes de las ocho."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "La asociación pondrá la pintura, las brochas y el desayuno para todos."
+      },
+      {
+        "id": "o10",
+        "rol": "detalle",
+        "t": "El techo de la zona de carnes lo arreglará un maestro contratado, con el fondo que se juntó con la cuota de octubre."
+      }
+    ],
+    [
+      {
+        "id": "o11",
+        "rol": "detalle",
+        "t": "El socio que no asista ni envíe a un familiar en su lugar pagará una multa de veinte soles, como se acordó en la asamblea del mes pasado."
+      },
+      {
+        "id": "o12",
+        "rol": "apoyo",
+        "t": "Contamos con su puesto limpio y con su buen ánimo."
+      },
+      {
+        "id": "o13",
+        "rol": "detalle",
+        "t": "Atentamente, la Junta Directiva."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "El comunicado lo escribieron los clientes que se quejaron.",
+        "clase": "lo-contradice",
+        "codigos": {
+          "lo-dice": "RV50",
+          "se-deduce": "RV50",
+          "no-se-sabe": "RV9"
+        },
+        "explicacion": "Quien escribe dice que «hemos recibido» las quejas de los clientes (oración 3): los clientes se quejaron, pero el comunicado lo firma la Junta Directiva (oraciones 2 y 13).",
+        "explicaciones": {
+          "lo-dice": "El texto copia lo que escribieron dos clientes, pero eso no los vuelve autores del comunicado: quien escribe dice que recibió sus quejas.",
+          "se-deduce": "Que el comunicado cite a los clientes no permite concluir que ellos lo escribieron; al contrario, quien escribe habla de ellos como de otras personas.",
+          "no-se-sabe": "Sí se puede saber: quien escribe dice que recibió las quejas de los clientes, así que no es uno de ellos."
+        }
+      },
+      "enunciado": "¿Quién escribe el comunicado?",
+      "alternativas": [
+        {
+          "t": "La junta directiva de la asociación del mercado.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o13"
+          ],
+          "explicacion": "La oración 2 dice que la junta directiva saluda e informa, y el comunicado termina con su firma."
+        },
+        {
+          "t": "Una clienta que se quejó en el cuaderno de reclamos.",
+          "codigo": "RV50",
+          "origen": "o4",
+          "explicacion": "El comunicado copia lo que ella escribió, pero quien escribe es quien recibió esa queja, no quien la hizo."
+        },
+        {
+          "t": "Los señores socios que tienen un puesto en el mercado.",
+          "codigo": "RV5",
+          "origen": "o1",
+          "explicacion": "Repite las palabras del encabezado, pero ahí los socios aparecen como quienes reciben el comunicado, no como quienes lo escriben."
+        },
+        {
+          "t": "La municipalidad de Huancayo, que administra los mercados.",
+          "codigo": "RV8",
+          "explicacion": "El texto no menciona a la municipalidad: firma la junta directiva de la asociación. Lo que uno sabe de otros mercados no cambia lo que dice este texto."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "¿A quiénes se dirige el comunicado?",
+      "alternativas": [
+        {
+          "t": "A los comerciantes que tienen un puesto en el mercado.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o8",
+            "o12"
+          ],
+          "explicacion": "El encabezado se dirige a los socios, y el texto les pide traer su escoba, despejar su pasillo y dejar limpio su puesto."
+        },
+        {
+          "t": "A los clientes que dejaron quejas sobre el mercado.",
+          "codigo": "RV51",
+          "origen": "o3",
+          "explicacion": "El tema son las quejas de los clientes, pero a ellos se los nombra en tercera persona. A quienes se trata de «ustedes» es a los socios, que tienen puesto y pagan cuota."
+        },
+        {
+          "t": "A los vecinos de Huancayo, para invitarlos a la faena del sábado.",
+          "codigo": "RV7",
+          "explicacion": "El texto no invita a los vecinos: pide a cada socio que venga o que mande a un familiar."
+        },
+        {
+          "t": "A las autoridades de la ciudad, para pedir el arreglo del techo.",
+          "codigo": "RV8",
+          "explicacion": "Uno puede pensar que los arreglos se le piden a la municipalidad, pero el comunicado no pide nada a ninguna autoridad: el techo lo arreglará un maestro pagado con la cuota de octubre."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "En el comunicado, la frase «el mercado se pone guapo» quiere decir que",
+      "alternativas": [
+        {
+          "t": "el mercado quedará limpio y pintado con la faena.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "La misma oración lo explica después de los dos puntos: habrá una faena de limpieza y pintura."
+        },
+        {
+          "t": "los socios deben venir bien arreglados el sábado.",
+          "codigo": "RV49",
+          "origen": "o8",
+          "explicacion": "Toma «ponerse guapo» como arreglarse uno mismo. En este comunicado se habla del local, y la oración 8 pide justo lo contrario: ropa de trabajo."
+        },
+        {
+          "t": "la junta se ha enojado con los clientes quejosos.",
+          "codigo": "RV18",
+          "explicacion": "«Ponerse guapo» también se usa para decir que alguien se enoja, pero aquí lo que se pone guapo es el mercado, y los dos puntos de la oración 7 dicen cómo: con una faena de limpieza y pintura. Además, la junta dice que los clientes tienen razón."
+        },
+        {
+          "t": "el mercado subirá los precios para pagar la pintura.",
+          "codigo": "RV7",
+          "explicacion": "El texto no habla de precios: la pintura la pone la asociación."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "Del comunicado se deduce que los socios del mercado",
+      "alternativas": [
+        {
+          "t": "aportan una cuota a su asociación.",
+          "correcta": true,
+          "evidencia": [
+            "o10"
+          ],
+          "explicacion": "El techo se pagará «con el fondo que se juntó con la cuota de octubre»: hay una cuota que la asociación junta entre sus socios."
+        },
+        {
+          "t": "escribieron en el cuaderno que el techo gotea.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Repite palabras de la oración 5, pero esa queja la anotó un cliente, no un socio."
+        },
+        {
+          "t": "tendrán que cerrar sus puestos todo el sábado.",
+          "codigo": "RV7",
+          "explicacion": "El texto no dice eso: solo pide despejar los pasillos antes de las ocho. Es ir más allá de lo que dice."
+        },
+        {
+          "t": "venden más los sábados que los demás días de la semana.",
+          "codigo": "RV8",
+          "explicacion": "Puede pasar en muchos mercados, pero el comunicado no dice nada sobre las ventas de cada día."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El mercado Los Capulíes y su junta directiva son inventados.",
+      "fuente": "Texto propio"
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: acertó 20 de 20 (los cuatro textos de la unidad). Cambios: el mercado se declara inventado en tema y hechos; explicaciones del distractor del enojo, del de las autoridades y del previo de p1, que ahora cita la firma (oraciones 2 y 13)."
+  }
+}

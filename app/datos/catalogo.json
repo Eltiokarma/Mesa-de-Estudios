@@ -4217,7 +4217,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "texto-contexto"
+     ]
     },
     {
      "id": "razonamiento-verbal.textos-filosoficos-y-cientificos",
@@ -5746,6 +5748,30 @@
     "/plantillas/termodinamica/index.html",
     "/plantillas/termodinamica/motor.js",
     "/plantillas/termodinamica/papel.json"
+   ]
+  },
+  "texto-contexto": {
+   "id": "texto-contexto",
+   "titulo": "Quién habla, a quién y para qué",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.texto-y-contexto"
+   ],
+   "url": "#/lectura/texto-contexto",
+   "banco": "/contenido/razonamiento-verbal/indice-texto-contexto.json",
+   "papel": null,
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-texto-contexto.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t043.json",
+    "/contenido/razonamiento-verbal/textos/t044.json",
+    "/contenido/razonamiento-verbal/textos/t045.json",
+    "/contenido/razonamiento-verbal/textos/t046.json"
    ]
   },
   "textos-discontinuos": {

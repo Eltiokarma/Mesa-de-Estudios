@@ -204,7 +204,7 @@
       "universidades": {"uni": {"semanas": [16]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["texto-contexto"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
