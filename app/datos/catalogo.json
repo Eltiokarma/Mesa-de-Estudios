@@ -2717,7 +2717,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "geometria-espacio"
+     ]
     },
     {
      "id": "geometria.poliedros",
@@ -3193,7 +3195,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "transformaciones-trig"
+     ]
     },
     {
      "id": "trigonometria.funciones-trigonometricas",
@@ -4888,6 +4892,23 @@
     "/plantillas/geometria-analitica/papel.json"
    ]
   },
+  "geometria-espacio": {
+   "id": "geometria-espacio",
+   "titulo": "El cubo que gira: rectas y planos en el espacio",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.geometria-del-espacio"
+   ],
+   "url": "/plantillas/geometria-espacio/index.html",
+   "papel": "/plantillas/geometria-espacio/papel.json",
+   "archivos": [
+    "/plantillas/geometria-espacio/index.html",
+    "/plantillas/geometria-espacio/motor.js",
+    "/plantillas/geometria-espacio/papel.json"
+   ]
+  },
   "grafica-perillas": {
    "id": "grafica-perillas",
    "titulo": "La gráfica con perillas: funciones y sus transformaciones",
@@ -5750,6 +5771,23 @@
     "/plantillas/traductor-enunciados/index.html",
     "/plantillas/traductor-enunciados/motor.js",
     "/plantillas/traductor-enunciados/papel.json"
+   ]
+  },
+  "transformaciones-trig": {
+   "id": "transformaciones-trig",
+   "titulo": "Dos flechas en la circunferencia: transformaciones trigonométricas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.transformaciones-trigonometricas"
+   ],
+   "url": "/plantillas/transformaciones-trig/index.html",
+   "papel": "/plantillas/transformaciones-trig/papel.json",
+   "archivos": [
+    "/plantillas/transformaciones-trig/index.html",
+    "/plantillas/transformaciones-trig/motor.js",
+    "/plantillas/transformaciones-trig/papel.json"
    ]
   },
   "traslados-sucesos": {

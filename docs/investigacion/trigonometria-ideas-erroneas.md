@@ -199,3 +199,8 @@ Ninguna leída completa: en esta sesión solo funcionó el buscador. Lo que digo
 ## Anexo: funciones trigonométricas inversas (7 nov 2026)
 
 Este informe no cubre las inversas. Los errores IN1 a IN29 de `plantillas/funciones-trig-inversas/` (la ventana principal) son hipótesis nuestras: devolver todos los ángulos con ese seno en vez del de la ventana, arcsen(sen x) = x fuera de la ventana, arccos con la ventana del arcsen, sen⁻¹ tomado como 1/sen, dominio de arcsen fuera de [−1; 1] y los demás que lista la cabecera de su `motor.js`. Se confirman con los datos del colegio.
+
+
+## Transformaciones trigonométricas (TT1 a TT13, 7 nov 2026)
+
+Los errores TT1 a TT13 de `plantillas/transformaciones-trig/` (suma a producto, producto a suma, cocientes y pulsaciones) son **hipótesis nuestras**, sin dato publicado leído; la lista está en `rutinas/matematica-a.md` y en la cabecera del motor. Se confirman o descartan con los datos del colegio piloto.

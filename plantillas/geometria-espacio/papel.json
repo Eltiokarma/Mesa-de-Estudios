@@ -1,0 +1,134 @@
+{
+  "titulo": "Rectas y planos en el espacio: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja el cubo o el plano en perspectiva y marca los ángulos rectos que sabes que hay, aunque en el dibujo no se vean rectos. El cubo ABCD-EFGH tiene la base ABCD abajo y E, F, G, H encima de A, B, C, D.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un poste de 13 m está inclinado y su punta queda a 5 m del suelo. ¿Cuánto mide su sombra cuando el sol está justo encima? ¿Qué ángulo forma el poste con el suelo?",
+      "respuesta": "La sombra mide 12 m y el ángulo θ cumple sen θ = 5/13 (θ ≈ 22,6°).",
+      "pasos": [
+        "Con el sol encima, la sombra es la proyección ortogonal del poste sobre el suelo: el poste, la sombra y la altura de la punta forman un triángulo rectángulo.",
+        "Sombra = √(13² − 5²) = √144 = 12 m. No es 13 − 5 = 8: la resta no vale para los lados de un triángulo.",
+        "El ángulo con el suelo es el ángulo con su sombra: sen θ = 5/13, θ ≈ 22,6°."
+      ],
+      "verificar": [
+        { "fn": "proyeccion", "args": [{ "largo": 13, "h2": 5 }], "espera": { "proyeccion": 12, "angulo": 22.619864948040, "errores.proyeccion.resta": 8 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En un cubo de arista 4 cm, calcula la tangente del ángulo que forma la diagonal AG con la base ABCD.",
+      "respuesta": "tan θ = √2/2.",
+      "pasos": [
+        "La proyección de G sobre la base es C, así que la proyección de AG es AC. El ángulo pedido es GAC.",
+        "AC es la diagonal de un cuadrado de lado 4: AC = 4√2. GC = 4 es perpendicular a la base.",
+        "tan θ = GC/AC = 4/(4√2) = √2/2 (θ ≈ 35,3°). El ángulo GAB con la arista AB no es el ángulo con la base: AB no es la proyección de AG."
+      ],
+      "verificar": [
+        { "fn": "anguloDiagonal", "args": [{ "largo": 4, "ancho": 4, "alto": 4 }], "espera": { "tan": 0.707106781187, "sombra": 5.656854249492, "angulo": 35.264389682755 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una caja tiene base de 3 cm por 4 cm y altura de 12 cm. Calcula la diagonal de la caja y la tangente del ángulo que forma con la base.",
+      "respuesta": "La diagonal mide 13 cm y tan θ = 12/5.",
+      "pasos": [
+        "La proyección de la diagonal sobre la base es la diagonal de la base: √(3² + 4²) = 5 cm.",
+        "La diagonal de la caja es la hipotenusa del triángulo con catetos 5 y 12: √(25 + 144) = 13 cm.",
+        "tan θ = 12/5. Ojo: 12/13 es sen θ, no tan θ; la tangente usa los dos catetos, 12 y 5."
+      ],
+      "verificar": [
+        { "fn": "anguloDiagonal", "args": [{ "largo": 3, "ancho": 4, "alto": 12 }], "espera": { "diagonal": 13, "sombra": 5, "tan": 2.4 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Desde un punto P se traza PA perpendicular a un plano, con PA = 8 m. En el plano hay una recta L, y la distancia de A a L es 6 m. ¿Cuál es la distancia de P a la recta L?",
+      "respuesta": "10 m.",
+      "pasos": [
+        "Traza AB ⊥ L con B en L: AB = 6 m.",
+        "Por el teorema de las tres perpendiculares, PA ⊥ plano y AB ⊥ L dan PB ⊥ L. Entonces la distancia de P a L es PB.",
+        "PB = √(8² + 6²) = 10 m. No es PA = 8: esa es la distancia de P al plano, no a la recta."
+      ],
+      "verificar": [
+        { "fn": "tresPerpendiculares", "args": [{ "h": 8, "m": 6 }], "espera": { "distancia": 10, "errores.distancia.alPlano": 8 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En un cubo de arista 3 cm, calcula la distancia del vértice B a la diagonal AG.",
+      "respuesta": "√6 cm.",
+      "pasos": [
+        "AB es perpendicular a la cara BCGF, así que AB ⊥ BG: el triángulo ABG es rectángulo en B, con AB = 3, BG = 3√2 y AG = 3√3.",
+        "La distancia de B a AG es la altura relativa a la hipotenusa: AB · BG / AG = 3 · 3√2 / (3√3) = √6 cm.",
+        "No es la distancia de B al centro del cubo (3√3/2): el pie de la perpendicular está a un tercio de la diagonal, no en su punto medio."
+      ],
+      "verificar": [
+        { "fn": "distanciaVerticeRecta", "args": [{ "a": 3, "v": "B", "r": "AG" }], "espera": { "distancia": 2.449489742783, "pie": [1, 1, 1], "errores.distancia.alMedio": 2.598076211353 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En un cubo ABCD-EFGH, calcula la tangente del ángulo diedro que forman el plano BDE y la base ABCD.",
+      "respuesta": "tan φ = √2.",
+      "pasos": [
+        "La arista del diedro es BD. Sea O el centro de la base: AO ⊥ BD (diagonales del cuadrado) y, por las tres perpendiculares, EO ⊥ BD.",
+        "El diedro se mide con dos rectas perpendiculares a la arista: φ = ángulo EOA. Con AB y EB, que no son perpendiculares a BD, saldría 45°, que no es el diedro.",
+        "Con arista a: EA = a y AO = a√2/2, así que tan φ = a / (a√2/2) = √2 (φ ≈ 54,7°)."
+      ],
+      "verificar": [
+        { "fn": "diedro", "args": [[6, 0, 0], [0, 6, 0], [0, 0, 0], [0, 0, 6]], "espera": { "diedro": 54.735610317245, "pieC": [3, 3, 0], "errores.diedro.oblicuas": 45 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "En un cubo de arista 4 cm, ¿qué posición tienen la arista AE y la diagonal BD de la base? Calcula su ángulo y su distancia.",
+      "respuesta": "Son cruzadas, forman 90° y su distancia es 2√2 cm.",
+      "pasos": [
+        "AE corta la base solo en A, y A no está en BD: no se cortan. Tampoco son paralelas (AE es vertical y BD está en la base). Son rectas cruzadas (también llamadas alabeadas).",
+        "AE ⊥ base, así que AE es perpendicular a toda recta de la base, aunque no pase por A: el ángulo es 90°.",
+        "La perpendicular común es AO, con O el centro de la base: AO = 4√2/2 = 2√2 cm."
+      ],
+      "verificar": [
+        { "fn": "rectasCubo", "args": [4, "AE", "BD"], "espera": { "tipo": "cruzadas", "angulo": 90, "distancia": 2.828427124746 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En un cubo ABCD-EFGH, calcula el ángulo que forman las rectas cruzadas AF y BD.",
+      "respuesta": "60°.",
+      "pasos": [
+        "Para medir el ángulo entre rectas cruzadas, se traslada una de ellas paralela a sí misma hasta que corte a la otra. BD es paralela a FH.",
+        "El ángulo entre AF y BD es el ángulo AFH. AF, FH y AH son diagonales de caras: el triángulo AFH es equilátero.",
+        "El ángulo es 60°. Que se vea de otra medida en el dibujo no cambia nada."
+      ],
+      "verificar": [
+        { "fn": "rectasCubo", "args": [6, "AF", "BD"], "espera": { "tipo": "cruzadas", "angulo": 60 } },
+        { "fn": "anguloEnVertice", "args": [{ "a": 6, "v": "F", "p": "A", "q": "H" }], "espera": { "respuestas.angulo": 60 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "¿Existe un ángulo triedro cuyas caras midan 50°, 60° y 120°? ¿Y uno de caras 100°, 110° y 130°?",
+      "respuesta": "El primero no existe; el segundo sí.",
+      "pasos": [
+        "Un triedro existe si cada cara mide menos de 180°, la suma de las tres es menor que 360° y cada cara es menor que la suma de las otras dos.",
+        "50°, 60° y 120°: suman 230° < 360°, pero 120° no es menor que 50° + 60° = 110°. No existe.",
+        "100°, 110° y 130°: suman 340° < 360° y 130° < 210°. Existe, aunque sus tres caras sean obtusas."
+      ],
+      "verificar": [
+        { "fn": "triedro", "args": [{ "caras": [50, 60, 120] }], "espera": { "existe": false, "respuestas.razon": "desigualdad" } },
+        { "fn": "triedro", "args": [{ "caras": [100, 110, 130] }], "espera": { "existe": true, "suma": 340 } }
+      ]
+    }
+  ]
+}

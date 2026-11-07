@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 4084 pruebas.
+Deben pasar 4126 pruebas.
 
 ```bash
 npm run dev
@@ -51,8 +51,8 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito`, `poligonos`, `solidos`, `geometria-analitica` y `segmentos-angulos` | Hechas también `congruencia` y `simetria` (7 nov; el espejo en la cuadrícula: simetría axial con espejo arrastrable, P′ = 2H − P, central, ejes de figuras y letras, dos reflexiones como traslación o giro, planos del cubo y prismas y el simétrico en el espacio; 22 casos verificados aparte). Faltan geometría del espacio y razonamiento con figuras (sesión matematica-b) |
-| ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig`, `caso-ambiguo` e `identidades-trig` | Hecha también `funciones-trig-inversas` (7 nov). `geometria-analitica` cubre también la recta en el plano (sin baricentro con coordenadas). Faltan transformaciones, cónicas y polares (sesión matematica-a) |
+| ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito`, `poligonos`, `solidos`, `geometria-analitica` y `segmentos-angulos` | Hechas también `congruencia` y `simetria` (7 nov; el espejo en la cuadrícula: simetría axial con espejo arrastrable, P′ = 2H − P, central, ejes de figuras y letras, dos reflexiones como traslación o giro, planos del cubo y prismas y el simétrico en el espacio; 22 casos verificados aparte). Hecha `geometria-espacio` (7 nov; el cubo que gira: varilla perpendicular, proyección, recta-plano, tres perpendiculares, diedro, cruzadas y triedro; 20 casos verificados aparte). Falta razonamiento con figuras (sesión matematica-b) |
+| ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig`, `caso-ambiguo` e `identidades-trig` | Hecha también `funciones-trig-inversas` (7 nov). `geometria-analitica` cubre también la recta en el plano (sin baricentro con coordenadas). Hecha también `transformaciones-trig` (7 nov; dos flechas en la circunferencia: la suma es un rombo que apunta en la semisuma y mide 2 cos de la semidiferencia; suma a producto, producto a suma, cocientes y pulsaciones; 22 casos verificados aparte). Faltan cónicas y polares (sesión matematica-a) |
 | ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización), `sucesiones`, `exponenciales-logaritmos` y `polinomios` (Ruffini, resto, raíces racionales) | Lógica y conjuntos con `conjuntos` y `logica` (7 nov). Hechas `programacion-lineal`, `numeros-reales` y `numeros-complejos` (7 nov; la flecha en el plano: multiplicar por i gira 90°, módulo con cuadritos, conjugado como reflejo, producto que gira y estira, De Moivre; 19 casos verificados aparte; falta forma exponencial, raíces n-ésimas y regiones). Faltan matrices y binomio de Newton (sesión matematica-a) |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres`, `probabilidad-dados`, `sucesiones` y `fracciones` (fracciones, decimales, MCD y MCM, promedios) | Hechas también `interes` y `divisores` (7 nov). Hechas también `numeracion`, `cuatro-operaciones` y `potenciacion`. Hechas también `mezclas`, `conjuntos`, `logica` y `razonamiento-numerico` (7 nov). Banco: 14 pares en reserva |
@@ -167,6 +167,8 @@ Cinco conversaciones aparte trabajan solas, cada una en su rama y sin tocar cat�
 | Rutina de razonamiento verbal (diaria, 4:41 p. m.) | `rutina/verbal` | Correcciones de los textos, textos de entrada y salida (t000a, t000b), más textos hasta 30, guía para profesores |
 | Paralelo: álgebra y trigonometría | `rutina/matematica-a` | Exponenciales y logaritmos, identidades y polinomios (hechas); funciones trigonométricas inversas, transformaciones, complejos, matrices, binomio, reales, programación lineal y cónicas |
 | Paralelo: geometría | `rutina/matematica-b` | Sólidos, geometría analítica, interés, relojes y calendarios (hechas); congruencia, simetría, geometría del espacio, razonamiento con figuras |
+| Paralelo: razonamiento verbal B (7 nov) | `rutina/verbal-b` | Tipología textual, resumen y síntesis, textos discontinuos, texto y contexto, textos filosóficos y científicos, lectura en inglés |
+| Paralelo: matemática C (7 nov) | `rutina/matematica-c` | Coordenadas polares; pares de reserva del banco para álgebra, geometría y trigonometría |
 | Rutina de razonamiento matemático (7 nov) | `rutina/razonamiento-matematico` | Máximos y mínimos, tablas y suficiencia, cortes y pesadas, trazos y rutas, arreglos y transformaciones, traslados y frecuencia |
 | Rutina de aritmética (7 nov) | `rutina/aritmetica` | Numeración, cuatro operaciones, mezclas, conjuntos y lógica, razonamiento numérico |
 | Rutina de química B (7 nov) | `rutina/quimica-b` | Informe de materia, nomenclatura y orgánica; materia y energía, nomenclatura inorgánica, hidrocarburos, funciones orgánicas |

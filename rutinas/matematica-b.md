@@ -504,3 +504,90 @@ Segunda lista. Gerson confirmó que siga con simetría, geometría del espacio y
 2. En `docs/diseno.md`, los colores de arriba.
 3. Para `docs/pendientes.md` y CLAUDE.md: «El espejo en la cuadrícula (7 nov 2026): `plantillas/simetria/` (simetría axial con espejo arrastrable, P′ = 2H − P, simetría central, ejes de figuras y letras, dos reflexiones como traslación o giro, planos del cubo y de prismas, y el simétrico en el espacio; 22 casos verificados aparte; 10 de papel)».
 4. En `fuentes/por-conseguir.md`: estudios de simetría (Küchemann 1981, CSMS).
+
+## 7 nov 2026 · El cubo que gira (`plantillas/geometria-espacio/`)
+
+**Qué hice.**
+
+- **`motor.js`** (`MotorEspacio`, UMD; el cubo es ABCD-EFGH con A en el origen):
+  - posición de dos rectas con su perpendicular común: secantes, paralelas, cruzadas o coincidentes;
+  - distancias, proyección ortogonal, ángulo recta-plano, diedro y la puerta que se abre;
+  - el triedro con su desarrollo que se dobla;
+  - la cámara ortográfica y el ángulo «del dibujo».
+- **`casos.json`:** 20 casos con sus «tambien».
+- **`motor.test.js`:** 41 pruebas. Propiedades que comprueba:
+  - la varilla inclinada es perpendicular a una sola recta del piso por su pie;
+  - la perpendicular común es la distancia mínima;
+  - se cumplen las tres perpendiculares;
+  - el diedro no depende del punto de la arista;
+  - girar la vista no cambia el ángulo real.
+- **`papel.json`:** 9 problemas propios.
+- **`index.html`, paso a paso** (8 pasos, 5 predicciones):
+  1. la habitación;
+  2. ¿con cuántas rectas del piso forma 90° una varilla inclinada? (4 opciones);
+  3. la proyección ortogonal;
+  4. la diagonal AG contra el piso: 35,3°;
+  5. tres perpendiculares, la distancia de E a BC: 6√2;
+  6. el diedro de la puerta ABGH: 45°;
+  7. las rectas cruzadas AG y BF: 3√2;
+  8. el triedro.
+- **`index.html`, «¿qué pasa si…?»** (6 experimentos): la sombra, AE con BD, AF con AH, un ángulo en el dibujo (EBC), un triedro imposible y la distancia de B a AG.
+- **Respaldo:** todo es hipótesis, porque el informe deja fuera el espacio. El ángulo «del dibujo» se emparenta con GE13 y GE7 a GE10, sin cifra.
+- **Estilo:** ya lleva `nucleo/pegatina.css` y `data-curso="geometria"`, puesto a mano porque la plantilla todavía no está en el catálogo.
+
+**Pruebas.** `npm test`: 4206 en total, 4204 pasan y fallan solo las 2 del catálogo, como se esperaba. `pasada-celular.py` no dice QUEDA. Playwright revisó 1366 y 390, en claro y en oscuro, con y sin movimiento reducido: sin errores ni desbordes. Un script aparte comprobó que el cubo no gira mientras hay una predicción pendiente.
+
+**Subagentes.**
+
+- **Verificador independiente.** Leyó solo la cabecera. Calculó con fracciones:
+  - las distancias entre rectas, con el producto mixto y minimizando |P(s) − Q(t)|²;
+  - el ángulo recta-plano, con la normal y con la proyección;
+  - los diedros, con perpendiculares a la arista y con normales; los del triedro, también con la ley de cosenos esférica;
+  - los ángulos del dibujo, reproduciendo la cámara.
+
+  Cuadraron los 20 casos y los 9 de papel en las dos pasadas, también los bordes nuevos.
+- **Revisor de contenido.** Apliqué todo:
+  - **Grave:**
+    - antes de responder se podía girar el cubo hasta ver de frente la respuesta (la puerta, EBC, AE con BD); ahora el giro se bloquea hasta responder;
+    - la cuadrícula dejaba contar la sombra.
+  - **Medio:**
+    - «el ángulo del dibujo» bajó de parcial a hipótesis;
+    - el paso 1 adelantaba el método;
+    - la primera predicción tenía 3 opciones y ahora tiene 4;
+    - M nombraba dos cosas: el punto medio ahora es T;
+    - había rótulos encimados en el paso 6;
+    - agregué «alabeadas» y «ángulo rectilíneo».
+  - **Bajo:** lecturas cortadas en el celular, el gris contra φ en oscuro y el papel p3.
+
+**Colores** (claro / oscuro):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| h | #c0364a | #f17384 |
+| p | #0f766e | #5ed9c8 |
+| ℓ | #a10fbf | #cf6bfa |
+| L | #17451e | #40bf59 |
+| θ | #a05200 | #f0a04a |
+| α | #7d6a00 | #e3c84a |
+| φ | #6b3dbd | #ab8cf2 |
+| d | #1f5fbf | #7cb0ff |
+
+- **ΔE00 entre los que salen juntos:** mínimo 21,3.
+- **Gris en oscuro:** pasó a #9b9387.
+- **Contraste:** AA.
+
+**Pendiente.**
+
+- Casos que faltan:
+  - rectas coincidentes (AB con BA);
+  - la distancia de un vértice al plano diagonal (a√3/3);
+  - el tetraedro regular: diedro, aristas opuestas y su distancia;
+  - el triedro trirrectángulo;
+  - el recorrido mínimo sobre la superficie del cubo;
+  - el área proyectada con cos φ.
+
+**Pedidos para la integración.**
+
+1. En `catalogo/cursos/geometria.json`, unidad `geometria.geometria-del-espacio`: `"plantillas": ["geometria-espacio"]`. Después, `npm run catalogo`, y si se quiere, `pasada-pegatina.py`, que dará lo mismo.
+2. En `docs/diseno.md`, los colores de arriba.
+3. Para `docs/pendientes.md` y CLAUDE.md: «El cubo que gira (7 nov 2026): `plantillas/geometria-espacio/` (varilla perpendicular al piso, proyección, ángulo recta-plano, tres perpendiculares, diedro con la puerta, rectas cruzadas y triedro; el cubo gira solo después de responder; 20 casos verificados aparte; 9 de papel)».
