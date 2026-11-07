@@ -103,3 +103,121 @@ Playwright corrió con constructor y revisor, a 1366 × 768 y 390 × 844, en cla
 - **`docs/diseno.md`:** la tabla de colores de arriba, con la regla «un color por orden: unidades, b, b², b³, igual en cifra, pieza y término».
 - **`docs/pendientes.md`** (línea en «Detalles»): «**Numeración** (`plantillas/numeracion/`, rutina de aritmética, 7 nov 2026): las fichas que se agrupan (cambio de base con divisiones sucesivas como rondas de agrupar, descomposición polinómica como abrir piezas, cifras válidas, comparar bases, base desconocida, capicúas, conteo de cifras de páginas, la llevada en cadena y bases potencia); 19 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todos los errores son hipótesis. Notación 213₍₅₎. Sin ítems en el banco de aritmética.» En la fila ma4, quitar «numeración» de «Faltan».
 - **`CLAUDE.md`:** sumar «las fichas que se agrupan» a la lista de plantillas, y una línea en Historia: «Numeración (7 nov 2026, rutina de aritmética): `plantillas/numeracion/` (las fichas que se agrupan: cambio de base, descomposición polinómica, cifras válidas, base desconocida, capicúas y cifras de páginas; 19 casos verificados aparte).»
+
+### Numeración, segunda tanda (7 nov 2026, regla nueva del título y los pasos)
+
+El revisor de cuatro operaciones revisó numeración con la regla nueva y encontró un **grave**: la leyenda del paso 3 («cajas de 25 / paquetes de 5 / sueltas») ya daba 2·25 + 1·5 + 3. Corregido en feaa966:
+- **Leyendas neutras antes de responder** («cifra de la izquierda / del medio / de la derecha / la base») en los pasos 3, 5 y 7. La leyenda con las piezas aparece después de responder.
+- **Paso 3:** el enunciado quedó en «El numeral 213₍₅₎ está en base 5.».
+- **Paso 1:** salió «ninguna cifra llega a 5», que descartaba el error del paso 4.
+- **Experimento 5:** ya no dice «3 cifras de base 2 por cada una de base 8», que descartaba juntar de a dos.
+- **Papel:** la indicación ya no trae las reglas.
+
+**Pedido para la integración:** volver a hacer merge de `plantillas/numeracion/` (sin cambios de motor, casos ni colores).
+
+## 7 nov 2026 · El tablero de las llevadas (`plantillas/cuatro-operaciones/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, `window.MotorCuatroOperaciones`, sin DOM):
+  - suma, resta y multiplicación por una cifra en columnas y en cualquier base, con la llevada y el préstamo por columna, y los cuadros de animación (`cuadroColumnas`, `cuadroResta`);
+  - complemento aritmético con la regla «a 9 todas, a 10 la última significativa»;
+  - cifras que faltan y criptoaritmética por fuerza bruta, con unicidad;
+  - número menos su reverso (siempre 99·(a − c)) y división entera por defecto y por exceso (r + r′ = d);
+  - sumatorias de academia y cantidad de cifras de un producto.
+
+  Cada respuesta trae `errores`. La cabecera documenta cómo se forma cada error del reverso y las convenciones de la animación.
+- **`casos.json`:** 19 casos, verificados aparte.
+- **`motor.test.js`:** 41 pruebas, con miles de casos al azar con semilla fija:
+  - columnas contra la aritmética directa en bases 2 a 16;
+  - CA(N) + N = bᵏ;
+  - D = dq + r;
+  - unicidad de las criptos de la escena;
+  - ningún error da la correcta ni coincide con otro, y todos existen en su base.
+- **`papel.json`:** 10 problemas propios.
+- **Colores por orden:** los mismos de numeración, para que la llevada se lea como «un paquete que sube».
+- **Paso a paso** (8 pasos, 6 predicciones; todas hipótesis):
+
+  | Paso | Pregunta | Correcta | Distractores |
+  | --- | --- | --- | --- |
+  | 2 | CA(4073) | 5927 | 5926 `complemento-todas-a-nueve`, 5027 `complemento-deja-el-cero`, 95 927 `complemento-potencia-de-mas` |
+  | 3 | 5003 − 1478 | 3525 | 4475 `resta-el-menor-del-mayor`, 4635 `presta-sin-descontar`, 3635 `ceros-que-prestan-quedan-en-10` |
+  | 4 | ☐85 + 6☐☐ = 1282, suma de las que faltan | 21 | 13 `deduce-sin-llevadas`, 22 `olvida-la-segunda-llevada`, 15 `suma-la-llevada-al-deducir` |
+  | 5 | 2 + 4 + … + 60 | 930 | 899 `cuenta-terminos-sin-el-mas-uno`, 1830 `usa-el-ultimo-como-n`, 1860 `gauss-sin-dividir-entre-dos` |
+  | 6 | Residuo por exceso de 47 ÷ 9 | 7 | 2 `residuo-por-exceso-igual-al-por-defecto`, 6 `resta-desde-el-residuo-maximo`, 11 `suma-el-divisor-al-residuo` |
+  | 7 | XY + YX = 132: X + Y | 12 | 6 `suma-las-cifras-del-resultado`, 13 `olvida-la-llevada-de-las-unidades`, 66 `trata-la-suma-como-un-doble` |
+
+- **«¿Qué pasa si…?»** (5 experimentos con bloqueo):
+
+  | Experimento | Pregunta | Correcta | Distractores |
+  | --- | --- | --- | --- |
+  | Ceros | CA(5800) | 4200 | 4199, 4190, 42 |
+  | Reverso | Número menos su reverso que da una diferencia que empieza con 4 (la última cifra no es 0) | 495 | 404 `resta-el-menor-del-mayor`, 496 `descuenta-solo-el-primer-prestamo`, 406 `presta-sin-descontar` |
+  | Producto | Cifras de (4 cifras) × (3 cifras) | 6 o 7 | — |
+  | Residuos | El residuo por defecto y el por exceso con d = 14 | son iguales solo con r = 7 | — |
+  | Base 5 | 34₍₅₎ · 3 | 212₍₅₎ | 102₍₅₎, 142₍₅₎, 42₍₅₎ |
+
+- No hay nada que arrastrar: todo se maneja con botones y teclado, y el lienzo lleva `pan-y`.
+
+**Pruebas.** `npm test`: 2538 pruebas, pasan todas menos las 2 de catálogo, que se esperaban. Playwright corrió en las 8 combinaciones (1366 y 390, claro y oscuro, con y sin movimiento reducido): sin errores ni desbordes. En el celular, el dibujo queda arriba y visible al responder.
+
+**Subagentes.**
+
+- **Verificador independiente.** Recalculó con conversión de bases y columnas simuladas, y comprobó por fuerza bruta propia la unicidad de ?85 + 6?? = 1282, de las criptos y del p5. Coinciden todos los valores matemáticos.
+  - No pudo reconstruir los errores del reverso (404, 405, 406). Ahora la cabecera documenta cada uno con 551 − 155.
+  - El 405 no salía de ninguna resta concreta: pasó a 496 (descontar solo el primer préstamo), que comprobé a mano.
+  - Documenté las convenciones de animación.
+  - Corregí el nombre del caso 3 («el 4, en la posición 2»).
+- **Revisor de contenido:** nada grave. Corregido:
+  - el título del experimento 4, «Los dos residuos iguales», descartaba «Nunca»; ahora es «El residuo por defecto y el por exceso»;
+  - la indicación del papel regalaba la regla del préstamo y la de los ceros;
+  - la leyenda de las tarjetas del reverso pasó a unidades, decenas y centenas;
+  - el enunciado del paso 4 pinta las cifras por orden, igual que el dibujo;
+  - «la última cifra no es 0» en el reverso (antes faltaba 891 en la lista);
+  - «faltaban 5, 9 y 7» unificado;
+  - los chips de `.eq` ya no se parten;
+  - aria-label «102 en base 5»;
+  - nota «rₑ» en el paso 6.
+- **La misma cifra en dos colores** en las tarjetas: el revisor concluyó que **no** viola la regla 4. La variable es el orden, no el valor, y el color es el mismo en tablero, cuenta y ecuación.
+
+**Colores** (claro / oscuro):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| unidades / b / b² / b³ y base | los de numeración | |
+| X | #1430b8 | #8892fc |
+| Y | #76195f | #fdb9fd |
+| divisor d | #c70576 | #fb56b6 |
+| cociente q | #766619 | #f9d524 |
+| residuo por defecto r | #630b03 | #fdc3af |
+| residuo por exceso r′ | #194d2b | #c8f9d1 |
+| suma S | #5c330a | #fde7b9 |
+| cantidad de términos n | #1d5a87 | #06a6f9 |
+
+El dividendo D y la caja de 10 000 van en tinta.
+
+- **ΔE00 mínimo dentro de cada vista** (claro / oscuro):
+
+  | Vista | Claro | Oscuro |
+  | --- | --- | --- |
+  | Columnas | 23,6 | 25,3 |
+  | Letras X–Y | 23,0 | 24,4 |
+  | División | 25,1 | 28,7 |
+  | Sumatoria | 38,8 | 50,1 |
+
+- **Pares bajo 20 entre vistas que nunca comparten pantalla:** cajones–d 14,6, r–S 14,8, X–n 15,4. El revisor lo comprobó vista por vista.
+- **Contraste:** ≥ 4,53 en claro y ≥ 4,62 en oscuro.
+
+**Pendiente.**
+
+- **Arrastre:** CLAUDE.md pide arrastrar como interacción principal. Aquí y en numeración todo va con botones. Propuesta: en el explorador, arrastrar una pieza para abrirla o juntarla.
+- **En papel y no en la escena:** la suma de los números de 3 cifras (su error de contar 899 términos no da un entero).
+- **Banco:** sin ítems en el de aritmética.
+- **Para Gerson:** ¿r′ o rₑ? La escena usa r′ y lo aclara con una nota.
+
+**Pedidos para la integración.**
+
+- **Catálogo:** agregar `cuatro-operaciones` a `aritmetica.cuatro-operaciones`, correr `npm run catalogo` y subir `VERSION`.
+- **`docs/diseno.md`:** la tabla de colores de arriba (el orden se hereda de numeración).
+- **`docs/pendientes.md`** (Detalles): «**Cuatro operaciones** (`plantillas/cuatro-operaciones/`, rutina de aritmética, 7 nov 2026): el tablero de las llevadas (columnas con la llevada como paquete que sube y el préstamo como paquete que se abre, también en base b; complemento aritmético, resta con ceros, cifras que faltan, sumatorias, división por defecto y por exceso, criptoaritmética, número menos su reverso y cifras de un producto); 19 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todo hipótesis. Falta el arrastre. Sin ítems en el banco de aritmética.» En ma4, quitar «cuatro operaciones» de «Faltan».
+- **`CLAUDE.md`:** sumar «el tablero de las llevadas» a la lista y una línea en Historia: «Cuatro operaciones (7 nov 2026, rutina de aritmética): `plantillas/cuatro-operaciones/` (el tablero de las llevadas: complemento aritmético, préstamos, cifras que faltan, sumatorias, división por defecto y por exceso y criptoaritmética; 19 casos verificados aparte).»

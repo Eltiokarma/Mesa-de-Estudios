@@ -1,0 +1,148 @@
+{
+  "titulo": "Rendimiento, pureza y equivalentes: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Pureza: masa pura = masa de la muestra × pureza ÷ 100; la impureza no reacciona. Producto teórico: el que da la ecuación con el reactivo puro (masa → mol → mol → masa). Rendimiento = real ÷ teórico × 100. Masa equivalente = masa molar ÷ θ; en una neutralización, equivalentes del ácido = equivalentes de la base. Gas en condiciones normales: 22,4 L por mol. Masas atómicas: H 1, C 12, O 16, S 32, Cl 35,5, K 39, Ca 40, Fe 56, Zn 65.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se calientan 250 g de una caliza con 90 % de CaCO₃ hasta que todo el CaCO₃ se descompone: CaCO₃ → CaO + CO₂. La impureza no se descompone. ¿Cuántos gramos de CO₂ se liberan?",
+      "respuesta": "99 g de CO₂.",
+      "pasos": [
+        "CaCO₃ puro = 250 × 0,90 = 225 g. Los otros 25 g no reaccionan.",
+        "M(CaCO₃) = 40 + 12 + 3 × 16 = 100 g/mol: 225 g son 2,25 mol.",
+        "La ecuación es 1 a 1: 2,25 mol de CO₂ × 44 g/mol = 99 g. Con los 250 g como si fueran puros saldrían 110 g: 11 g de más."
+      ],
+      "verificar": [
+        { "fn": "producir", "args": [{ "reaccion": "caliza", "muestra": 250, "pureza": 90, "producto": "CO2" }], "espera": { "pura": 225, "real": 99, "errores.muestra-pura": 110 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Al calentar 49 g de KClO₃ puro (2KClO₃ → 2KCl + 3O₂) se recogen 14,4 g de O₂. ¿Cuál fue el rendimiento?",
+      "respuesta": "75 %.",
+      "pasos": [
+        "M(KClO₃) = 39 + 35,5 + 48 = 122,5 g/mol: 49 g son 0,4 mol.",
+        "Por cada 2 mol de KClO₃ salen 3 mol de O₂: 0,4 × 3/2 = 0,6 mol de O₂, es decir 0,6 × 32 = 19,2 g. Ese es el teórico.",
+        "Rendimiento = 14,4 ÷ 19,2 × 100 = 75 %. Se divide entre el teórico del O₂, no entre los 49 g del reactivo."
+      ],
+      "verificar": [
+        { "fn": "rendimientoPorcentual", "args": [{ "reaccion": "clorato", "masa": 49, "real": 14.4, "producto": "O2" }], "espera": { "teorico": 19.2, "porcentaje": 75 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "100 g de zinc con 65 % de pureza reaccionan con HCl en exceso: Zn + 2HCl → ZnCl₂ + H₂. El rendimiento es 80 %. ¿Cuántos gramos de H₂ se obtienen y qué volumen ocupan en condiciones normales?",
+      "respuesta": "1,6 g de H₂, que ocupan 17,92 L en CN.",
+      "pasos": [
+        "Zn puro = 100 × 0,65 = 65 g = 1 mol.",
+        "Teórico: 1 mol de H₂ = 2 g (22,4 L en CN).",
+        "Real = 2 × 0,80 = 1,6 g = 0,8 mol, y 0,8 × 22,4 = 17,92 L. Pureza y rendimiento se multiplican: 0,65 × 0,80 = 0,52 del máximo que darían 100 g de zinc puro."
+      ],
+      "verificar": [
+        { "fn": "producir", "args": [{ "reaccion": "zinc", "muestra": 100, "pureza": 65, "rendimiento": 80 }], "espera": { "teorico": 2, "real": 1.6, "V": 17.92 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un alto horno se quiere obtener 78,4 g de hierro (Fe₂O₃ + 3CO → 2Fe + 3CO₂) con un rendimiento de 70 %. El mineral tiene 80 % de Fe₂O₃. ¿Cuántos gramos de mineral hacen falta?",
+      "respuesta": "200 g de mineral.",
+      "pasos": [
+        "Se va del final al principio. Si 78,4 g son el 70 % del teórico, el teórico es 78,4 ÷ 0,70 = 112 g de Fe (2 mol). Se divide: el teórico es más grande que lo real.",
+        "2 mol de Fe salen de 1 mol de Fe₂O₃ = 160 g puros.",
+        "Si 160 g son el 80 % del mineral, el mineral pesa 160 ÷ 0,80 = 200 g. Comprobación: 200 × 0,80 = 160 g → 112 g teóricos → 112 × 0,70 = 78,4 g."
+      ],
+      "verificar": [
+        { "fn": "muestraNecesaria", "args": [{ "reaccion": "hierro", "real": 78.4, "pureza": 80, "rendimiento": 70 }], "espera": { "teorico": 112, "pura": 160, "muestra": 200 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un producto se fabrica en tres pasos seguidos, con rendimientos de 90 %, 80 % y 50 %. Si todo saliera perfecto, se obtendrían 250 g. ¿Qué rendimiento tiene el proceso completo y cuántos gramos se obtienen de verdad?",
+      "respuesta": "36 %: 90 g.",
+      "pasos": [
+        "Cada paso se queda con una parte de lo que le entra: 0,90 × 0,80 × 0,50 = 0,36.",
+        "Rendimiento total 36 %: 250 × 0,36 = 90 g.",
+        "Sumar y restar (90 + 80 + 50 − 200 = 20 %) o promediar (73 %) no sale de ninguna cuenta con la masa: solo el producto de los rendimientos sigue a la masa paso a paso."
+      ],
+      "verificar": [
+        { "fn": "rendimientoCadena", "args": [[90, 80, 50]], "espera": { "total": 36, "acumulado": [90, 72, 36] } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Se calientan 245 g de una muestra con 50 % de KClO₃ hasta que todo el KClO₃ se descompone (2KClO₃ → 2KCl + 3O₂). ¿Qué volumen de O₂ se obtiene en condiciones normales?",
+      "respuesta": "33,6 L de O₂.",
+      "pasos": [
+        "KClO₃ puro = 245 × 0,50 = 122,5 g = 1 mol.",
+        "2 mol de KClO₃ dan 3 mol de O₂: 1 mol da 1,5 mol.",
+        "1,5 × 22,4 = 33,6 L en CN. Con los 245 g como si fueran puros saldría el doble, 67,2 L."
+      ],
+      "verificar": [
+        { "fn": "producir", "args": [{ "reaccion": "clorato", "muestra": 245, "pureza": 50 }], "espera": { "pura": 122.5, "nProducto": 1.5, "V": 33.6 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Calcula la masa equivalente del H₂SO₄ (ácido con 2 H ácidos), del Ca(OH)₂ (base con 2 OH) y del Al₂(SO₄)₃ (sal con 2 iones Al³⁺). Masas molares: 98, 74 y 342 g/mol.",
+      "respuesta": "49 g/eq, 37 g/eq y 57 g/eq.",
+      "pasos": [
+        "Masa equivalente = masa molar ÷ θ.",
+        "H₂SO₄: θ = 2 → 98 ÷ 2 = 49. Ca(OH)₂: θ = 2 → 74 ÷ 2 = 37.",
+        "Al₂(SO₄)₃: θ es la carga total de los cationes, 2 × 3 = 6 → 342 ÷ 6 = 57. Con θ = 1 para todo, saldrían las masas molares."
+      ],
+      "verificar": [
+        { "fn": "masaEquivalente", "args": ["H2SO4"], "espera": { "Meq": 49 } },
+        { "fn": "masaEquivalente", "args": ["Ca(OH)2"], "espera": { "Meq": 37 } },
+        { "fn": "masaEquivalente", "args": ["Al2(SO4)3"], "espera": { "Meq": 57, "theta": 6 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántos gramos de Ca(OH)₂ neutralizan exactamente 73 g de HCl? Masas molares: HCl 36,5 y Ca(OH)₂ 74 g/mol.",
+      "respuesta": "74 g de Ca(OH)₂.",
+      "pasos": [
+        "HCl: θ = 1, masa equivalente 36,5: 73 g son 2 eq.",
+        "Ley de equivalentes: hacen falta 2 eq de Ca(OH)₂, y cada uno pesa 74 ÷ 2 = 37 g: 2 × 37 = 74 g.",
+        "Con moles y la ecuación da lo mismo: 2HCl + Ca(OH)₂ → CaCl₂ + 2H₂O; 2 mol de HCl con 1 mol de Ca(OH)₂ = 74 g. Con θ = 1 para el Ca(OH)₂ saldría el doble, 148 g."
+      ],
+      "verificar": [
+        { "fn": "neutralizar", "args": ["HCl", 73, "Ca(OH)2"], "espera": { "eq": 2, "masaBase": 74, "errores.theta-1": 148 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "En un recipiente cerrado se calientan 100 g de CaCO₃ puro, pero solo se descompone el 60 % (rendimiento de 60 % para el CaO). ¿Qué masas de CaO, de CO₂ y de CaCO₃ hay al final? ¿Cuánto suman?",
+      "respuesta": "33,6 g de CaO, 26,4 g de CO₂ y 40 g de CaCO₃ sin descomponer: 100 g.",
+      "pasos": [
+        "Se descomponen 60 g de CaCO₃ = 0,6 mol.",
+        "Salen 0,6 mol de CaO = 33,6 g y 0,6 mol de CO₂ = 26,4 g.",
+        "Quedan 100 − 60 = 40 g de CaCO₃. Total: 33,6 + 26,4 + 40 = 100 g. El CaO que no se formó (56 − 33,6 = 22,4 g) no desapareció: sus átomos siguen en el CaCO₃ que no reaccionó."
+      ],
+      "verificar": [
+        { "fn": "balanceMasa", "args": [{ "reaccion": "caliza", "masa": 100, "rendimiento": 60 }], "espera": { "formados.CaO": 33.6, "formados.CO2": 26.4, "quedan.CaCO3": 40, "total": 100, "falta": 22.4 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Se queman 12 g de carbón (C) con poco aire: el 75 % del carbono forma CO₂ (C + O₂ → CO₂) y el resto forma CO (2C + O₂ → 2CO). ¿Cuántos gramos de CO₂ y de CO se forman y cuánto O₂ se consume? ¿Cuál es el rendimiento del CO₂?",
+      "respuesta": "33 g de CO₂ y 7 g de CO, con 28 g de O₂. Rendimiento del CO₂: 75 % (el teórico es 44 g).",
+      "pasos": [
+        "12 g de C = 1 mol. A CO₂ van 0,75 mol: 0,75 × 44 = 33 g. A CO van 0,25 mol: 0,25 × 28 = 7 g.",
+        "O₂: 0,75 mol para el CO₂ y 0,25/2 = 0,125 mol para el CO; 0,875 × 32 = 28 g.",
+        "Teórico del CO₂: 1 mol = 44 g; 33 ÷ 44 = 75 %. Lo que falta de CO₂ salió como otro producto (CO): 12 + 28 = 33 + 7 = 40 g."
+      ],
+      "verificar": [
+        { "fn": "combustionIncompleta", "args": [12, 0.75], "espera": { "CO2": 33, "CO": 7, "O2": 28, "teoricoCO2": 44, "rendimientoCO2": 75 } }
+      ]
+    }
+  ]
+}

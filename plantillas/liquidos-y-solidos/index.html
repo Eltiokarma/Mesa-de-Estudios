@@ -1,0 +1,1361 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El frasco cerrado: presión de vapor, ebullición y fuerzas entre moléculas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 y contraste WCAG (docs/metodo/paleta.py):
+     Pv    presión de vapor del líquido (y la curva de vaporización)   azul      #1f5fbf / #7cb0ff
+     Pext  presión de afuera: la del aire, la de la olla o la total     naranja   #a05200 / #f0a04a
+     T     temperatura (también la de ebullición)                       verde     #377703 / #97f91f
+     pu    puente de hidrógeno (entre moléculas, punteado)              granate / rosa  #570011 / #fbb1e5
+     Pgas  presión del gas seco (gas recogido sobre agua)               fucsia    #a10fbf / #cf6bfa
+   Los átomos llevan la paleta común de elementos (nucleo/elementos.js: H, C, N, O, F y S; los grupos CH₃, CH₂ y CH de los
+   alcanos, con el color del C). Por eso T no es rojo (el O ya lo es) ni el puente verde (chocaba con el F): T y pu se
+   eligieron lejos de esos seis elementos, de Pv, Pext y Pgas y de la tinta. Los enlaces de adentro, la masa molar, los
+   volúmenes y los flujos de moléculas que salen y vuelven van en tinta o en grises: no son variables.
+   Qué sale junto (nucleo/elementos-escenas.test.js): agua (H, O) con Pv, Pext y T; agua con T y pu; H₂S (H, S) con T y
+   pu; NH₃, CH₃F y CH₃OCH₃ (N, H, C, F, O) con pu; el explorador (H, O, C) con Pv, Pext y T; el tubo (H, O) con Pext, Pv y
+   Pgas; los alcanos (C) con T. ΔE00 entre elementos y variables de una misma vista: mínimo 20,1 (pu–tinta en oscuro;
+   pu–O 23,2 / 20,5; Pv–C 25,5 / 23,2). Las cinco variables se separan todas entre sí: mínimo 20,4 (pu–Pgas en oscuro;
+   pu–Pext 30,4 / 41,9). Pares de variable y elemento parecidos que nunca salen juntos: Pv–N, Pv–S, Pext–F y Pgas–S.
+   T está a ΔE00 14,9 del verde de «correcto» (--ok): la respuesta siempre va con texto, y dentro de .fb.ok la T va en el
+   color del texto, subrayada en el suyo. Contraste: todos pasan AA sobre papel, tarjeta, chip (8 %) y el fondo de una
+   opción respondida (dentro de .opt la ficha va sin fondo); mínimo 4,57 en claro (T sobre la opción) y 4,63 en oscuro
+   (Pgas sobre la opción correcta). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-Pv:#1f5fbf; --c-Pext:#a05200; --c-T:#377703; --c-pu:#570011; --c-Pgas:#a10fbf;
+  --at-borde:#2d2340; --letra:#ffffff; --liq:rgba(120,110,150,.10); --zona1:rgba(80,70,110,.16); --zona2:rgba(80,70,110,.07);
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-Pv:#7cb0ff; --c-Pext:#f0a04a; --c-T:#97f91f; --c-pu:#fbb1e5; --c-Pgas:#cf6bfa;
+  --at-borde:#1d1626; --letra:#1d1626; --liq:rgba(190,175,220,.10); --zona1:rgba(200,185,230,.17); --zona2:rgba(200,185,230,.07);
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-Pv:#7cb0ff; --c-Pext:#f0a04a; --c-T:#97f91f; --c-pu:#fbb1e5; --c-Pgas:#cf6bfa;
+  --at-borde:#1d1626; --letra:#1d1626; --liq:rgba(190,175,220,.10); --zona1:rgba(200,185,230,.17); --zona2:rgba(200,185,230,.07);
+  color-scheme:dark }
+
+/* Paleta común de elementos de química: este bloque lo genera Elementos.css(['H', 'C', 'N', 'O', 'F', 'S']) y no se
+   edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-N:#136caa; --el-O:#c4284e; --el-F:#795f26; --el-S:#2d29c7 }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-F:#d8c27a; --el-S:#9386ff } }
+:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-F:#d8c27a; --el-S:#9386ff }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* El dedo desplaza la página sobre el dibujo; solo en el explorador, un toque que empieza sobre el punto de la curva o
+   sobre la manija de la presión de afuera se queda con el gesto (nucleo/celular.js). */
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.punt{height:0; border-top:3px dotted var(--c-pu); border-radius:0; background:none!important}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 2px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-Pv{color:var(--c-Pv); background:color-mix(in srgb, var(--c-Pv) 8%, transparent)}
+.v-Pext{color:var(--c-Pext); background:color-mix(in srgb, var(--c-Pext) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-pu{color:var(--c-pu); background:color-mix(in srgb, var(--c-pu) 8%, transparent)}
+.v-Pgas{color:var(--c-Pgas); background:color-mix(in srgb, var(--c-Pgas) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+/* Dentro de una opción (respondida o no) la ficha va sin fondo: así pasa AA sobre el verde y el rojo de la respuesta. */
+.opt .v{background:transparent}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1rem; font-variant-numeric:tabular-nums; min-width:0}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq .ex{white-space:normal; line-height:2}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+/* En la retroalimentación correcta (verde), la T verde se confundiría con el texto: va en el color del texto, subrayada en el de T. */
+.fb.ok .v-T{color:inherit; text-decoration-color:var(--c-T)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%}
+.campo{display:grid; gap:4px; font-weight:700}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); font-variant-numeric:tabular-nums}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:32px}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.lect{font-size:.92rem; font-variant-numeric:tabular-nums; display:grid; gap:4px}
+.lect .fila{display:flex; flex-wrap:wrap; gap:2px 14px}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible, canvas:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Líquidos y sólidos · Problemas tipo admisión</p>
+      <h1>El frasco cerrado: por qué hierve un líquido</h1>
+      <p class="sub">Frascos cerrados, ollas, moléculas y diagramas de fases, con los mismos colores. Predice y después mira.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Frascos, ollas y moléculas">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Frascos cerrados, una olla o moléculas, dibujados como moléculas enteras, con gráficas de presión según el paso"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con líquidos, gases y sólidos">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Moléculas, tubos, ollas y diagramas de fases que se completan al responder"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/liquidos-y-solidos">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'liquidos-y-solidos', unidad: 'quimica.liquidos-y-solidos', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorLiquidos (motor.js): presiones de vapor, ebulliciones, la caja de partículas, los puentes
+   de hidrógeno, los diagramas de fases y hasta las posiciones de las moléculas. Aquí solo se pinta lo que el motor dice.
+   Cada figura es una molécula entera (en los alcanos, cada bolita es un grupo CH₃, CH₂ o CH): sus enlaces de adentro no
+   se rompen nunca, ni al evaporar ni al hervir ni al condensar. Se dibujan muchas menos moléculas de las que hay. */
+const RM = Celular.movimientoReducido();
+const ML = MotorLiquidos;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 0 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  if (d && (f || '').length < d) f = (f || '').padEnd(d, '0');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const Pv_ = t => V('Pv', t), Pe_ = t => V('Pext', t), T_ = t => V('T', t), pu_ = t => V('pu', t), Pg_ = t => V('Pgas', t);
+const mm = (x, d) => `${fmt(x, d === undefined ? 1 : d)} mmHg`, gc = (x, d) => `${fmt(x, d === undefined ? 1 : d)} °C`;
+const SUB = { '0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉' };
+const txtS = s => ML.SUSTANCIAS[s].texto;
+
+function colores(){
+  const g = css;
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    Pv:g('--c-Pv'), Pext:g('--c-Pext'), T:g('--c-T'), pu:g('--c-pu'), Pgas:g('--c-Pgas'), warn:g('--warn'),
+    H:g('--el-H'), O:g('--el-O'), N:g('--el-N'), C:g('--el-C'), F:g('--el-F'), S:g('--el-S'), borde:g('--at-borde'), letra:g('--letra'), liq:g('--liq'), zona1:g('--zona1'), zona2:g('--zona2'), font:g('--font'), mono:g('--mono') };
+}
+const colVar = (c, k) => c[k] || c.ink;
+function alfa(hex, a){
+  const h = String(hex).replace('#', ''); if (h.length !== 6) return hex;
+  return `rgba(${parseInt(h.slice(0, 2), 16)},${parseInt(h.slice(2, 4), 16)},${parseInt(h.slice(4, 6), 16)},${a})`;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function flecha(ctx, x1, y1, x2, y2, col, w){
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w || 2; linea(ctx, x1, y1, x2, y2);
+  const a = Math.atan2(y2 - y1, x2 - x1), s = 6;
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - s*Math.cos(a - 0.45), y2 - s*Math.sin(a - 0.45)); ctx.lineTo(x2 - s*Math.cos(a + 0.45), y2 - s*Math.sin(a + 0.45)); ctx.closePath(); ctx.fill();
+}
+
+/* ----- Texto en el lienzo, por piezas de colores: [texto, clave de color, peso]. Baja la letra hasta 9 px si no entra. ----- */
+function anchoPiezas(ctx, c, ps, tam){ let w = 0; for (const [t, , peso] of ps){ ctx.font = `${peso || 700} ${tam}px ${c.font}`; w += ctx.measureText(t).width; } return w; }
+function dibujarPiezas(ctx, c, ps, x, y, tam, align, max){
+  let t = tam; if (max) while (t > 9 && anchoPiezas(ctx, c, ps, t) > max) t -= 0.5;
+  const w = anchoPiezas(ctx, c, ps, t);
+  let x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (const [txt, k, peso] of ps){ ctx.font = `${peso || 700} ${t}px ${c.font}`; ctx.fillStyle = colVar(c, k); ctx.fillText(txt, x0, y); x0 += ctx.measureText(txt).width; }
+  return w;
+}
+function envolver(ctx, c, txt, max, tam){
+  ctx.font = `700 ${tam}px ${c.font}`; const pal = String(txt).split(' '), lineas = []; let l = '';
+  for (const p of pal){ const t = l ? l + ' ' + p : p; if (ctx.measureText(t).width > max && l){ lineas.push(l); l = p; } else l = t; }
+  if (l) lineas.push(l); return lineas;
+}
+
+/* ----- Una molécula, con los átomos y enlaces que da el motor (SUSTANCIAS). u: píxeles por largo de enlace. ----- */
+// Colores de los átomos: la paleta común (--el-X); los grupos CH₃, CH₂ y CH de los alcanos llevan el color del C.
+// Elementos pintados en el último dibujo: la leyenda los nombra con su color.
+let DIBUJADOS = new Set();
+const RAD = { H:0.3, O:0.46, N:0.48, C:0.5, F:0.44, S:0.6, CH3:0.62, CH2:0.6, CH:0.58 };
+const colAt = (c, el) => /^CH/.test(el) ? c.C : (c[el] || c.C);
+function molecula(ctx, c, s, x, y, u, ang, o){
+  o = o || {};
+  const S = ML.SUSTANCIAS[s], co = Math.cos(ang || 0), si = Math.sin(ang || 0);
+  const pts = S.atomos.map(a => [x + u*(a.x*co - a.y*si), y + u*(a.x*si + a.y*co)]);
+  for (const a of S.atomos) DIBUJADOS.add(/^CH/.test(a.el) ? 'C' : a.el);
+  ctx.save(); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = Math.max(0.9, u*0.12); ctx.lineCap = 'round';
+  for (const [i, j] of S.enlaces) linea(ctx, pts[i][0], pts[i][1], pts[j][0], pts[j][1]);
+  const orden = S.atomos.map((a, i) => i).sort((i, j) => (S.atomos[i].el === 'H') - (S.atomos[j].el === 'H'));
+  for (const i of orden){
+    const el = S.atomos[i].el, r = u*(RAD[el] || 0.5);
+    ctx.beginPath(); ctx.arc(pts[i][0], pts[i][1], r, 0, Math.PI*2); ctx.fillStyle = colAt(c, el); ctx.fill();
+    ctx.lineWidth = Math.max(0.6, u*0.05); ctx.strokeStyle = alfa(c.borde, 0.5); ctx.stroke();
+    if (o.letras && u >= 15){
+      ctx.fillStyle = c.letra; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const t = el.replace(/\d/g, d => SUB[d]); let fs = Math.min(u*0.42, 14); ctx.font = `800 ${fs}px ${c.font}`;
+      while (fs > 7 && ctx.measureText(t).width > 2*r - 2){ fs -= 0.5; ctx.font = `800 ${fs}px ${c.font}`; }
+      ctx.fillText(t, pts[i][0], pts[i][1] + 0.5);
+    }
+  }
+  ctx.restore();
+  return pts;
+}
+function puntito(ctx, c, x1, y1, x2, y2, w){
+  ctx.save(); ctx.strokeStyle = c.pu; ctx.lineWidth = w || 2.2; ctx.setLineDash([1.5, 3.2]); ctx.lineCap = 'round'; linea(ctx, x1, y1, x2, y2); ctx.restore();
+}
+
+/* ----- La escena -----
+   E.vista dice qué se ve, en paneles (el primero es el principal: en el celular, con una predicción pendiente, es el
+   único que se muestra):
+     frascos:  { items:[{ caja, H, prof, sust, gas:[pos] | null, puentes, etq:[piezas], bajo:[[piezas]], lectura }] }
+               caja es una caja de MotorLiquidos: el bucle la hace avanzar mientras se ve.
+     olla:     { burbuja:{ p, ver }, aire:[piezas], tapa, rot:[[piezas]] }
+     curva:    { liq, Tmin, Tmax, Pmax, lineas:[{ P, etq, dash, cruce, p }], punto:T, oculto:P (sobre P va «?») }
+     barras:   { items:[{ etq:[piezas], valor, k, oculto, trazo }], max, u } | { pila:{ partes:[{ valor, k, etq, oculto }], total:{ valor, etq } } }
+     termos:   { items:[{ s, T, oculto }], Tmin, Tmax }
+     moleculas:{ filas:[{ s, puente:true|false|null, etq }] } | { contacto:[{ s, ver }] }
+     fases:    { s, Tmin, Tmax, Plo, Phi, recorrido:{ P, T1, T2, p }, oculto, linea1 }
+     condensa: { n, p, ver }
+     tubo:     { nGas, nVapor, ver }
+     pie: 'texto', vars:[claves de la leyenda], desc: 'texto para el lector de pantalla'
+   Nada regala la respuesta antes de responder: lo que la delataría queda tapado o fuera del dibujo. */
+const ESCENAS = [];
+let TT = 0; // reloj de las moléculas (s)
+function crearEscena(cv, idDesc, modoId, idLey){
+  const E = { vista:{ paneles:[] }, hl:null, modoId, anims:[], compacto:false, manijas:[], vel:3 };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, Lz = null;
+  const paneles = () => (E.vista.paneles || []).filter(k => E.vista[k]);
+  function altoFrascos(v, w, tope){
+    const it = v.frascos.items, n = it.length, colW = (w - 16)/n;
+    let k = Math.min(colW - 26, n === 1 ? 210 : 170);
+    const maxH = Math.max(...it.map(x => x.H + (x.prof || 0))), bajo = Math.max(...it.map(x => (x.bajo || []).length)), hTop = 20, hBot = bajo*15 + 8;
+    if (hTop + maxH*k + hBot > tope) k = Math.max(50, (tope - hTop - hBot)/maxH);
+    return { esc:k, colW, maxH, hTop, hBot, h: hTop + maxH*k + hBot };
+  }
+  function layout(w){
+    const v = E.vista, chico = innerWidth < 900, L = { p:[] };
+    let ks = paneles(); if (E.compacto && chico) ks = ks.slice(0, 1);
+    const tope = E.compacto && chico ? 236 : Infinity;
+    let y = 6;
+    for (const k of ks){
+      let h, extra = {};
+      const resta = tope - y;
+      if (k === 'frascos'){ extra = altoFrascos(v, w, Math.min(resta, chico ? 330 : 360)); h = extra.h; }
+      else if (k === 'olla') h = Math.min(186, resta);
+      else if (k === 'curva') h = Math.min(chico ? 220 : 250, resta);
+      else if (k === 'barras') h = Math.min(v.barras.pila ? 70 : 22 + v.barras.items.length*30, resta);
+      else if (k === 'termos') h = Math.min(170, resta);
+      else if (k === 'moleculas') h = Math.min(v.moleculas.contacto ? 210 : 30 + v.moleculas.filas.length*(chico ? 88 : 96), resta);
+      else if (k === 'fases') h = Math.min(chico ? 230 : 270, resta);
+      else if (k === 'condensa') h = Math.min(190, resta);
+      else if (k === 'tubo') h = Math.min(220, resta);
+      L.p.push({ k, y, h, ...extra }); y += h + 8;
+    }
+    if (v.pie && !(E.compacto && chico)){ const c = colores(); L.pie = envolver(ctx, c, v.pie, w - 24, 11.5); L.yPie = y; y += L.pie.length*15 + 2; }
+    L.H = Math.round(Celular.alto(Math.max(80, y + 2), E.compacto, { tope:240 }));
+    return L;
+  }
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    Lz = layout(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); E.compacto = on; E.resize(); E.dibujar(); };
+  new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+  E.vivo = () => paneles().some(k => k === 'frascos' || k === 'olla' || k === 'tubo');
+
+  // ----- Frascos cerrados: líquido abajo, vapor arriba -----
+  const D = 0.09; // separación de las moléculas del líquido, en unidades del ancho del frasco
+  function panelFrascos(c, P){
+    const it = E.vista.frascos.items;
+    it.forEach((f, i) => {
+      const k = P.esc, wf = k, cx = 8 + P.colW*(i + 0.5), x0 = cx - wf/2;
+      const fondo = P.y + P.hTop + P.maxH*k, yS = fondo - (f.prof || 0)*k, top = yS - f.H*k;
+      const u = D*k*0.4;
+      // Paredes y tapa.
+      ctx.save();
+      rr(ctx, x0, top, wf, fondo - top, 6); ctx.fillStyle = c.paper; ctx.fill();
+      ctx.save(); rr(ctx, x0, top, wf, fondo - top, 6); ctx.clip();
+      if (f.prof){
+        ctx.fillStyle = c.liq; ctx.fillRect(x0, yS, wf, fondo - yS);
+        ctx.strokeStyle = alfa(c.muted, 0.5); ctx.lineWidth = 1; linea(ctx, x0, yS, x0 + wf, yS);
+        const pos = ML.rejillaLiquido(1, f.prof, D, RM ? 0 : TT, 7 + i);
+        const px = pos.map(p => [x0 + p.x*wf, yS - p.y*k]);
+        const at = pos.map((p, j) => molecula(ctx, c, f.sust || 'H2O', px[j][0], px[j][1], u, p.ang));
+        if (f.puentes){
+          // Cada puente va del H más cercano de una molécula al O de su vecina (en H₂O, el átomo 0 es el O).
+          if (!f._pares) f._pares = ML.vecinosRejilla(ML.rejillaLiquido(1, f.prof, D, 0, 7 + i), D*1.12);
+          for (const [a, b] of f._pares){
+            let mejor = null;
+            for (const [h, o] of [[a, b], [b, a]]) for (const k of [1, 2]){
+              const d = Math.hypot(at[h][k][0] - at[o][0][0], at[h][k][1] - at[o][0][1]);
+              if (!mejor || d < mejor.d) mejor = { d, H:at[h][k], O:at[o][0] };
+            }
+            const ux = (mejor.O[0] - mejor.H[0])/(mejor.d || 1), uy = (mejor.O[1] - mejor.H[1])/(mejor.d || 1);
+            if (mejor.d > u*0.9) puntito(ctx, c, mejor.H[0] + ux*u*0.3, mejor.H[1] + uy*u*0.3, mejor.O[0] - ux*u*0.46, mejor.O[1] - uy*u*0.46, E.hl === 'pu' ? 2.6 : 1.8);
+          }
+        }
+      }
+      if (f.caja){
+        for (const p of f.caja.vapor) molecula(ctx, c, f.sust || 'H2O', x0 + p.x/f.caja.W*wf, yS - p.y/f.caja.H*(f.H*k), u, p.id*2.39 + (RM ? 0 : TT*0.9));
+      }
+      if (f.gas){
+        f.gas.forEach((p, j) => {
+          const dx = RM ? 0 : 0.012*Math.sin(TT*1.7 + j*1.3), dy = RM ? 0 : 0.012*Math.cos(TT*1.3 + j*2.1);
+          molecula(ctx, c, f.sust || 'H2O', x0 + (p.x + dx)*wf, top + (p.y + dy)*k, u, p.ang + (RM ? 0 : TT*0.7));
+        });
+      }
+      ctx.restore();
+      rr(ctx, x0, top, wf, fondo - top, 6); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke();
+      ctx.lineWidth = 4; linea(ctx, x0 - 3, top, x0 + wf + 3, top);
+      ctx.restore();
+      if (f.etq) dibujarPiezas(ctx, c, f.etq, cx, P.y + 9, 12, 'center', P.colW - 6);
+      (f.bajo || []).forEach((ps, j) => dibujarPiezas(ctx, c, typeof ps === 'function' ? ps() : ps, cx, fondo + 12 + j*15, 12, 'center', P.colW - 4));
+    });
+  }
+
+  // ----- Olla abierta con su burbuja -----
+  function panelOlla(c, P){
+    const O = E.vista.olla, w = Math.min(W - 60, 300), x0 = (W - w)/2, fondo = P.y + P.h - 26, prof = Math.min(92, P.h - 76), yS = fondo - prof;
+    const k = w, u = D*k*0.4*0.55;
+    // Aire que empuja (Pext).
+    const n = 5;
+    for (let i = 0; i < n; i++){ const x = x0 + w*(i + 0.5)/n; flecha(ctx, x, yS - 34, x, yS - 6, c.Pext, E.hl === 'Pext' ? 3 : 2); }
+    if (O.aire) dibujarPiezas(ctx, c, O.aire, W/2, P.y + 10, 12, 'center', W - 16);
+    ctx.save();
+    rr(ctx, x0, yS - 10, w, fondo - yS + 10, 10); ctx.clip();
+    ctx.fillStyle = c.liq; ctx.fillRect(x0, yS, w, fondo - yS);
+    const B = O.burbuja, R = B ? (B.p === undefined ? 1 : B.p)*Math.min(30, prof*0.33) + 4 : 0, bx = x0 + w*0.5, by = yS + prof*0.55;
+    const pos = ML.rejillaLiquido(1, prof/k, D*0.55, RM ? 0 : TT, 3);
+    for (const p of pos){
+      const x = x0 + p.x*w, y = yS - p.y*k;
+      if (B && Math.hypot(x - bx, y - by) < R + u*1.3) continue;
+      molecula(ctx, c, 'H2O', x, y, u, p.ang);
+    }
+    if (B){
+      ctx.beginPath(); ctx.arc(bx, by, R, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.stroke();
+      if (!B.ver){ ctx.fillStyle = c.muted; ctx.font = `800 ${Math.max(12, R*0.9)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', bx, by + 1); }
+      else ML.burbuja(1, 4, 5).forEach(q => molecula(ctx, c, 'H2O', bx + q.x*R, by + q.y*R, u, q.ang + (RM ? 0 : TT)));
+    }
+    ctx.restore();
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x0, yS - 12); ctx.lineTo(x0, fondo); ctx.lineTo(x0 + w, fondo); ctx.lineTo(x0 + w, yS - 12); ctx.stroke();
+    // Fuego (decoración, en gris).
+    ctx.fillStyle = alfa(c.muted, 0.5);
+    for (let i = 0; i < 4; i++){ const x = x0 + w*(i + 0.5)/4; ctx.beginPath(); ctx.moveTo(x - 7, fondo + 14); ctx.lineTo(x, fondo + 3); ctx.lineTo(x + 7, fondo + 14); ctx.fill(); }
+    (O.rot || []).forEach((ps, j) => dibujarPiezas(ctx, c, ps, W/2, fondo + 20 + j*14 - (O.rot.length - 1)*7, 12, 'center', W - 12));
+  }
+
+  // ----- Curva de presión de vapor contra temperatura -----
+  function panelCurva(c, P){
+    const K = E.vista.curva, x0 = 50, x1 = W - 16, y0 = P.y + P.h - 26, y1 = P.y + 12;
+    const tx = T => x0 + (T - K.Tmin)/(K.Tmax - K.Tmin)*(x1 - x0), py = p => y0 - p/K.Pmax*(y0 - y1);
+    E.ejes = { x0, x1, y0, y1, Tmin:K.Tmin, Tmax:K.Tmax, Pmax:K.Pmax };
+    ctx.save();
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    const pasoT = (K.Tmax - K.Tmin) > 100 ? 20 : 10, pasoP = K.Pmax > 1000 ? 400 : K.Pmax > 400 ? 200 : 50;
+    ctx.font = `700 10.5px ${c.font}`; ctx.fillStyle = c.muted;
+    for (let T = Math.ceil(K.Tmin/pasoT)*pasoT; T <= K.Tmax; T += pasoT){ linea(ctx, tx(T), y0, tx(T), y1); ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(fmt(T), tx(T), y0 + 3); }
+    for (let p = 0; p <= K.Pmax; p += pasoP){ linea(ctx, x0, py(p), x1, py(p)); ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText(fmt(p), x0 - 4, py(p)); }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, x0, y0, x1, y0); linea(ctx, x0, y0, x0, y1);
+    dibujarPiezas(ctx, c, [['T', 'T', 800], [' (°C)', 'muted', 700]], x1, y0 + 19, 10.5, 'right');
+    dibujarPiezas(ctx, c, [['P (mmHg)', 'muted', 700]], x0 + 4, y1 - 4, 10.5, 'left');
+    // Curva de Pv.
+    ctx.save(); ctx.beginPath(); ctx.rect(x0, y1, x1 - x0, y0 - y1); ctx.clip();
+    ctx.strokeStyle = c.Pv; ctx.lineWidth = E.hl === 'Pv' ? 3.6 : 2.6; ctx.beginPath();
+    let empezado = false;
+    for (let i = 0; i <= 160; i++){
+      const T = K.Tmin + (K.Tmax - K.Tmin)*i/160, p = ML.presionVapor(K.liq, T).mmHg;
+      if (K.oculto !== undefined && p > K.oculto) break;
+      if (!empezado){ ctx.moveTo(tx(T), py(p)); empezado = true; } else ctx.lineTo(tx(T), py(p));
+    }
+    ctx.stroke();
+    if (K.oculto !== undefined && K.oculto < K.Pmax){
+      ctx.fillStyle = alfa(c.muted, 0.12); ctx.fillRect(x0, y1, x1 - x0, py(K.oculto) - y1);
+      ctx.fillStyle = c.muted; ctx.font = `800 13px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('? Descúbrelo en «¿Qué pasa si…?»', (x0 + x1)/2, (y1 + py(K.oculto))/2);
+    }
+    ctx.restore();
+    { // El rótulo de la curva: arriba, a la izquierda de donde la curva sale del dibujo (lejos de los rótulos de las
+      // líneas de Pext, que van a la izquierda, y de los cruces, que van abajo).
+      let Ptope = Math.min(K.Pmax, K.oculto === undefined ? Infinity : K.oculto)*0.92;
+      const mmPx = K.Pmax/(y0 - y1); // si cae sobre una línea de Pext, baja bajo ella
+      for (const l of K.lineas || []) if (Math.abs(l.P - Ptope) < 16*mmPx) Ptope = l.P - 16*mmPx;
+      const Tt = ML.ebullicion(K.liq, Ptope).T;
+      const piezas = [['Pv', 'Pv', 800], [(K.liq === 'acetona' ? ' de la ' : ' del ') + ML.LIQUIDOS[K.liq].nombre, 'muted', 700]];
+      if (Tt > K.Tmin + (K.Tmax - K.Tmin)*0.35 && Tt <= K.Tmax) dibujarPiezas(ctx, c, piezas, tx(Tt) - 10, py(Ptope), 11, 'right');
+      else dibujarPiezas(ctx, c, piezas, x1 - 6, y0 - 34, 11, 'right'); }
+    // Líneas de presión de afuera y sus cruces.
+    E.manijas = E.manijas.filter(m => m.tipo !== 'Pext' && m.tipo !== 'T');
+    for (const l of K.lineas || []){
+      if (l.P > K.Pmax) continue;
+      ctx.save(); ctx.strokeStyle = c.Pext; ctx.lineWidth = E.hl === 'Pext' ? 3 : 2; if (l.dash) ctx.setLineDash([6, 4]); linea(ctx, x0, py(l.P), x1, py(l.P)); ctx.restore();
+      if (l.etq) dibujarPiezas(ctx, c, l.etq, x0 + 6, py(l.P) - 9, 11, 'left', (x1 - x0)*0.6);
+      if (l.manija){ ctx.beginPath(); ctx.arc(x1 - 2, py(l.P), 7, 0, Math.PI*2); ctx.fillStyle = c.Pext; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.stroke(); E.manijas.push({ tipo:'Pext', x:x1 - 2, y:py(l.P) }); }
+      if (l.cruce){
+        const Teb = ML.ebullicion(K.liq, l.P).T, p = l.p === undefined ? 1 : l.p, T = K.Tmin + (Teb - K.Tmin)*p, pp = ML.presionVapor(K.liq, T).mmHg;
+        ctx.beginPath(); ctx.arc(tx(T), py(pp), 5, 0, Math.PI*2); ctx.fillStyle = c.Pv; ctx.fill();
+        if (p >= 1){
+          ctx.save(); ctx.strokeStyle = c.T; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.6; linea(ctx, tx(Teb), py(l.P), tx(Teb), y0); ctx.restore();
+          dibujarPiezas(ctx, c, [[gc(Teb), 'T', 800]], tx(Teb) + (l.izq ? -4 : 4), y0 - 9 - (l.alto || 0), 11, l.izq ? 'right' : 'left');
+        }
+      }
+    }
+    if (K.punto !== undefined){
+      const T = K.punto, p = ML.presionVapor(K.liq, T).mmHg, vis = K.oculto === undefined || p <= K.oculto;
+      ctx.save(); ctx.strokeStyle = c.T; ctx.lineWidth = 1.6; ctx.setLineDash([3, 3]); linea(ctx, tx(T), y0, tx(T), vis ? py(Math.min(p, K.Pmax)) : y1); ctx.restore();
+      if (vis && p <= K.Pmax){ ctx.beginPath(); ctx.arc(tx(T), py(p), 8, 0, Math.PI*2); ctx.fillStyle = c.Pv; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.stroke(); }
+      ctx.beginPath(); ctx.arc(tx(T), y0, 7, 0, Math.PI*2); ctx.fillStyle = c.T; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.stroke();
+      E.manijas.push({ tipo:'T', x:tx(T), y:y0 }, { tipo:'T', x:tx(T), y:vis && p <= K.Pmax ? py(p) : y0 });
+    }
+    ctx.restore();
+  }
+
+  // ----- Barras de presión -----
+  function panelBarras(c, P){
+    const B = E.vista.barras, x0 = Math.min(150, W*0.38), x1 = W - 70;
+    if (B.pila){
+      const pl = B.pila, max = pl.total.valor*1.04, y = P.y + 22, h = 18, sx = v => (x1 - x0)*v/max;
+      dibujarPiezas(ctx, c, pl.total.etq, 8, y + h/2, 11.5, 'left', x0 - 12);
+      let x = x0;
+      for (const q of pl.partes){
+        const w = sx(q.valor);
+        if (q.oculto){ ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.strokeRect(x, y, w, h); ctx.restore(); dibujarPiezas(ctx, c, [['?', 'muted', 800]], x + w/2, y + h/2, 12, 'center'); }
+        else { ctx.fillStyle = colVar(c, q.k); ctx.fillRect(x, y, w, h); }
+        // La primera parte se rotula abajo; la segunda, arriba y alineada a su borde derecho: no se enciman.
+        if (q.etq){ const k = pl.partes.indexOf(q); if (k === 0) dibujarPiezas(ctx, c, q.etq, x0 + w/2, y + h + 12, 10.5, 'center', Math.max(60, w)); else dibujarPiezas(ctx, c, q.etq, Math.min(x + w + 2, W - 6), y - 10, 10.5, 'right', W/2); }
+        x += w;
+      }
+      ctx.strokeStyle = c.Pext; ctx.lineWidth = 2.4; ctx.strokeRect(x0 - 1, y - 2, sx(pl.total.valor) + 2, h + 4);
+      return;
+    }
+    B.items.forEach((q, i) => {
+      const y = P.y + 10 + i*30, h = 16, w = (x1 - x0)*clamp((q.valor || 0)/B.max, 0, 1);
+      dibujarPiezas(ctx, c, q.etq, 8, y + h/2, 11.5, 'left', x0 - 12);
+      ctx.fillStyle = c.grid; ctx.fillRect(x0, y, x1 - x0, h);
+      if (q.oculto){ dibujarPiezas(ctx, c, [['?', 'muted', 800]], x0 + 8, y + h/2, 12, 'left'); return; }
+      if (q.trazo){ ctx.save(); ctx.strokeStyle = colVar(c, q.k); ctx.lineWidth = 2; ctx.setLineDash([5, 3]); ctx.strokeRect(x0, y + 1, w, h - 2); ctx.restore(); }
+      else { ctx.fillStyle = colVar(c, q.k); ctx.fillRect(x0, y, w, h); }
+      dibujarPiezas(ctx, c, [[q.texto || fmt(q.valor, 1) + (B.u ? ' ' + B.u : ''), q.k, 800]], Math.min(x0 + w + 6, x1 + 4), y + h/2, 11, 'left', W - (x0 + w) - 8);
+    });
+  }
+
+  // ----- Termómetros con el punto de ebullición -----
+  function panelTermos(c, P){
+    const Tq = E.vista.termos, n = Tq.items.length, top = P.y + 22, bot = P.y + P.h - 32, ty = T => bot - (T - Tq.Tmin)/(Tq.Tmax - Tq.Tmin)*(bot - top);
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let T = Math.ceil(Tq.Tmin/50)*50; T <= Tq.Tmax; T += 50){ linea(ctx, 40, ty(T), W - 8, ty(T)); ctx.fillText(fmt(T) + ' °C', 38, ty(T)); }
+    ctx.restore();
+    Tq.items.forEach((q, i) => {
+      const cx = 44 + (W - 104)*(i + 0.5)/n, w = 12; // 52 px a la derecha para el rótulo de la última
+      rr(ctx, cx - w/2, top - 4, w, bot - top + 8, 6); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; ctx.stroke();
+      if (q.oculto) dibujarPiezas(ctx, c, [['?', 'muted', 800]], cx, (top + bot)/2, 13, 'center');
+      else {
+        ctx.fillStyle = c.T; const y = ty(q.T); rr(ctx, cx - w/2 + 2, y, w - 4, bot - y + 2, 4); ctx.fill();
+        const yl = clamp(y, top + 6, bot - 6);
+        const tw = anchoPiezas(ctx, c, [[gc(q.T), 'T', 800]], 11), der = cx + w/2 + 4 + tw <= W - 4; // si no cabe a la derecha, va a la izquierda
+        const lx = der ? cx + w/2 + 4 : cx - w/2 - 4 - tw;
+        ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = 0.85; ctx.fillRect(lx - 2, yl - 8, tw + 4, 16); ctx.restore();
+        dibujarPiezas(ctx, c, [[gc(q.T), 'T', 800]], lx, yl, 11, 'left');
+      }
+      dibujarPiezas(ctx, c, [[txtS(q.s), 'ink', 800]], cx, bot + 13, 12, 'center', (W - 52)/n - 2);
+      dibujarPiezas(ctx, c, [[fmt(ML.SUSTANCIAS[q.s].M, 0) + ' g/mol', 'muted', 700]], cx, bot + 26, 10, 'center', (W - 52)/n - 2);
+    });
+    dibujarPiezas(ctx, c, [['Punto de ebullición normal (', 'muted', 700], ['T', 'T', 800], [', a 1 atm)', 'muted', 700]], W/2, P.y + 8, 11, 'center', W - 12);
+  }
+
+  // ----- Moléculas lado a lado: puentes de hidrógeno o superficie de contacto -----
+  function orientar(S, desde, hacia){ const a = S.atomos[desde], b = S.atomos[hacia]; return -Math.atan2(b.y - a.y, b.x - a.x); }
+  function panelMoleculas(c, P){
+    const M = E.vista.moleculas;
+    if (M.contacto){
+      const n = M.contacto.length;
+      M.contacto.forEach((q, i) => {
+        const cx = W*(i + 0.5)/n, u = Math.min(W/n/7, (P.h - 70)/7, 22), S = ML.SUSTANCIAS[q.s], cy = P.y + 30 + (P.h - 60)/2;
+        // La cadena recta se acuesta junto a su vecina; la ramificada solo le acerca un grupo CH₃.
+        const recta = !S.ramificada, sep = !q.ver ? 4.2 : recta ? 2.0 : 3.8, giro = q.ver && !recta ? Math.PI : 0;
+        const a = molecula(ctx, c, q.s, cx, cy - sep*u/2, u, giro, { letras:false }), b = molecula(ctx, c, q.s, cx, cy + sep*u/2, u, 0, { letras:false });
+        if (q.ver){
+          // Contactos: pares de grupos cercanos de una molécula y la otra.
+          ctx.save(); ctx.strokeStyle = alfa(c.ink, 0.55); ctx.lineWidth = 1.2; ctx.setLineDash([2, 2.5]);
+          let cuenta = 0;
+          for (const p of a) for (const r of b) if (Math.hypot(p[0] - r[0], p[1] - r[1]) < u*2.1){ linea(ctx, p[0], p[1], r[0], r[1]); cuenta++; }
+          ctx.restore();
+          dibujarPiezas(ctx, c, [[`${cuenta} ${cuenta === 1 ? 'contacto cercano' : 'contactos cercanos'}`, 'ink', 700]], cx, P.y + P.h - 26, 11, 'center', W/n - 8);
+        }
+        dibujarPiezas(ctx, c, [[S.nombre, 'ink', 800]], cx, P.y + 12, 12, 'center', W/n - 8);
+        dibujarPiezas(ctx, c, [[S.texto, 'muted', 700]], cx, P.y + P.h - 10, 11, 'center', W/n - 8);
+      });
+      return;
+    }
+    const fh = (P.h - 24)/M.filas.length;
+    M.filas.forEach((q, i) => {
+      const S = ML.SUSTANCIAS[q.s], cy = P.y + 18 + fh*(i + 0.5), u = Math.min(fh/4.6, 19, W/13);
+      const pt = ML.puenteHEntre(q.s, q.s), Hs = S.atomos.map((a, j) => j).filter(j => S.atomos[j].el === 'H');
+      const hA = pt.hay ? pt.h : Hs[0], dueno = S.enlaces.find(e => e.includes(hA)), base = dueno[0] === hA ? dueno[1] : dueno[0];
+      const acc = pt.hay ? pt.aceptor : S.atomos.findIndex(a => ['F', 'O', 'N'].includes(a.el));
+      const iB = acc >= 0 ? acc : 0;
+      const angA = orientar(S, base, hA);
+      // B: que sus otros átomos queden lejos de A (a la derecha).
+      const otros = S.atomos.filter((a, j) => j !== iB), mx = otros.reduce((t, a) => t + a.x, 0)/otros.length - S.atomos[iB].x, my = otros.reduce((t, a) => t + a.y, 0)/otros.length - S.atomos[iB].y;
+      const angB = -Math.atan2(my, mx);
+      const rot = (a, ang) => [a.x*Math.cos(ang) - a.y*Math.sin(ang), a.x*Math.sin(ang) + a.y*Math.cos(ang)];
+      const pH = rot(S.atomos[hA], angA), pAcc = rot(S.atomos[iB], angB);
+      const ra = S.atomos.map(a => rot(a, angA)), rb = S.atomos.map(a => rot(a, angB)), rad = a => RAD[a.el] || 0.5;
+      let gap = 1.75;
+      const choca = g => ra.some((p, i) => rb.some((q, j) => Math.hypot((q[0] - pAcc[0] + g + pH[0]) - p[0], (q[1] - pAcc[1] + pH[1]) - p[1]) < rad(S.atomos[i]) + rad(S.atomos[j]) + 0.12));
+      while (gap < 4 && choca(gap)) gap += 0.05;
+      const xm = W*0.56, xA = xm - gap*u/2 - pH[0]*u, yA = cy - pH[1]*u, xB = xm + gap*u/2 - pAcc[0]*u, yB = cy - pAcc[1]*u;
+      molecula(ctx, c, q.s, xA, yA, u, angA, { letras:true });
+      molecula(ctx, c, q.s, xB, yB, u, angB, { letras:true });
+      if (q.puente === true) puntito(ctx, c, xm - gap*u/2 + u*0.32, cy, xm + gap*u/2 - u*0.5, cy, E.hl === 'pu' ? 3.2 : 2.6);
+      dibujarPiezas(ctx, c, q.etq || [[S.texto, 'ink', 800]], 8, cy - 8, 12.5, 'left', W*0.22);
+      if (q.puente === false) dibujarPiezas(ctx, c, [['sin puente', 'muted', 700]], 8, cy + 9, 11, 'left', W*0.22);
+      else if (q.puente === true) dibujarPiezas(ctx, c, [['puente', 'pu', 800]], 8, cy + 9, 11, 'left', W*0.22);
+    });
+  }
+
+  // ----- Diagrama de fases (presión en escala logarítmica) -----
+  function panelFases(c, P){
+    const F = E.vista.fases, d = ML.FASES[F.s], x0 = 46, x1 = W - 12, y0 = P.y + P.h - 26, y1 = P.y + 12;
+    const tx = T => x0 + (T - F.Tmin)/(F.Tmax - F.Tmin)*(x1 - x0), lp = Math.log10, py = p => y0 - (lp(p) - lp(F.Plo))/(lp(F.Phi) - lp(F.Plo))*(y0 - y1);
+    ctx.save();
+    if (F.oculto){
+      ctx.fillStyle = alfa(c.muted, 0.08); ctx.fillRect(x0, y1, x1 - x0, y0 - y1); ctx.strokeStyle = c.line; ctx.strokeRect(x0, y1, x1 - x0, y0 - y1);
+      dibujarPiezas(ctx, c, [['El diagrama de fases del ' + d.texto + ' se ve al responder', 'muted', 700]], (x0 + x1)/2, (y0 + y1)/2, 12, 'center', x1 - x0 - 10);
+      ctx.restore(); return;
+    }
+    // Zonas, por celdas (fase() del motor).
+    const nx = 48, ny = 30, clave = `${W}|${P.h}|${F.s}|${c.zona1}`;
+    if (!F._z || F._z.k !== clave){
+      F._z = { k:clave, celdas:[] };
+      for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++){
+        const T = F.Tmin + (F.Tmax - F.Tmin)*(i + 0.5)/nx, p = Math.pow(10, lp(F.Plo) + (lp(F.Phi) - lp(F.Plo))*(j + 0.5)/ny);
+        F._z.celdas.push([i, j, ML.fase(F.s, p, T)]);
+      }
+    }
+    const cw = (x1 - x0)/nx, ch = (y0 - y1)/ny;
+    for (const [i, j, f] of F._z.celdas){
+      ctx.fillStyle = f === 'sólido' ? c.zona1 : f === 'líquido' ? c.zona2 : 'transparent';
+      if (f !== 'gas' && f !== 'supercrítico') ctx.fillRect(x0 + i*cw, y0 - (j + 1)*ch, cw + 0.5, ch + 0.5);
+    }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, x0, y0, x1, y0); linea(ctx, x0, y0, x0, y1);
+    ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted;
+    for (let e = Math.ceil(lp(F.Plo)); e <= lp(F.Phi); e++){ const p = Math.pow(10, e); ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText(p >= 1 ? fmt(p) : fmt(p, -e), x0 - 4, py(p)); }
+    const pasoT = (F.Tmax - F.Tmin) > 200 ? 100 : 50;
+    for (let T = Math.ceil(F.Tmin/pasoT)*pasoT; T <= F.Tmax; T += pasoT){ ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(fmt(T), tx(T), y0 + 3); }
+    dibujarPiezas(ctx, c, [['T', 'T', 800], [' (°C)', 'muted', 700]], x1, y0 + 19, 10.5, 'right');
+    dibujarPiezas(ctx, c, [['P (atm, escala logarítmica)', 'muted', 700]], x0 + 4, y1 - 3, 10.5, 'left');
+    ctx.save(); ctx.beginPath(); ctx.rect(x0, y1, x1 - x0, y0 - y1); ctx.clip();
+    const t = d.triple, cr = d.critico;
+    const trazar = (curva, a, b, col, dash, w) => {
+      ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = w; if (dash) ctx.setLineDash(dash); ctx.beginPath();
+      let ok = false;
+      for (let i = 0; i <= 120; i++){ const T = a + (b - a)*i/120, p = ML.presionCurva(F.s, curva, T); if (!(p > 0)) continue; if (!ok){ ctx.moveTo(tx(T), py(p)); ok = true; } else ctx.lineTo(tx(T), py(p)); }
+      ctx.stroke(); ctx.restore();
+    };
+    const wPv = E.hl === 'Pv' ? 3.4 : 2.4;
+    trazar('sublimacion', F.Tmin, t.T, c.Pv, [6, 4], wPv);
+    trazar('vaporizacion', t.T, cr.T, c.Pv, null, wPv);
+    const Tfus = ML.temperaturaCurva(F.s, 'fusion', F.Phi);
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, tx(t.T), py(t.P), tx(Tfus), py(F.Phi));
+    if (F.linea1){ ctx.save(); ctx.strokeStyle = c.Pext; ctx.lineWidth = E.hl === 'Pext' ? 3 : 2; ctx.setLineDash([6, 4]); linea(ctx, x0, py(1), x1, py(1)); ctx.restore(); }
+    ctx.restore();
+    if (F.linea1) dibujarPiezas(ctx, c, [['1 atm', 'Pext', 800]], x1 - 4, py(1) + 10, 11, 'right');
+    for (const [p, T, etq, al] of [[t.P, t.T, 'punto triple', 'left'], [cr.P, cr.T, 'punto crítico', 'right']]){
+      if (T < F.Tmin || T > F.Tmax || p > F.Phi) continue;
+      ctx.beginPath(); ctx.arc(tx(T), py(p), 4, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill();
+      dibujarPiezas(ctx, c, [[etq, 'ink', 700]], tx(T) + (al === 'left' ? 7 : -7), py(p) + (al === 'left' ? 9 : -9), 10.5, al);
+    }
+    // Rótulos de zona.
+    const rot = (txt, T, p) => dibujarPiezas(ctx, c, [[txt, 'ink', 800]], tx(T), py(p), 12.5, 'center');
+    if (F.s === 'co2'){ rot('sólido', F.Tmin + (t.T - F.Tmin)*0.35, Math.sqrt(t.P*F.Phi)*2); rot('líquido', (t.T + cr.T)/2 - 8, Math.sqrt(t.P*cr.P)*2.2); rot('gas', (t.T + F.Tmax)/2 + 8, Math.max(F.Plo*2, 0.4)); }
+    else { rot('hielo', F.Tmin*0.55, 10); rot('líquido', 150, 20); rot('vapor', 220, F.Plo*8); }
+    if (F.recorrido){
+      const r = F.recorrido, p = r.p === undefined ? 1 : r.p, T = r.T1 + (r.T2 - r.T1)*p;
+      // El rastro va 6 px por encima de la línea de 1 atm, para no taparla.
+      ctx.save(); ctx.strokeStyle = alfa(c.ink, 0.55); ctx.lineWidth = 1.6; linea(ctx, tx(r.T1), py(r.P) - 6, tx(T), py(r.P) - 6); ctx.restore();
+      for (const cm of ML.calentarAPresion(F.s, r.P, r.T1, r.T2).cambios){
+        if (cm.T > T) continue;
+        ctx.beginPath(); ctx.arc(tx(cm.T), py(r.P), 4.5, 0, Math.PI*2); ctx.fillStyle = c.T; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 1.5; ctx.stroke();
+        dibujarPiezas(ctx, c, [[gc(cm.T), 'T', 800]], tx(cm.T) - 6, py(r.P) + 13, 11, 'right');
+      }
+      ctx.beginPath(); ctx.arc(tx(T), py(r.P) - 6, 5.5, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.stroke();
+      const f = ML.fase(F.s, r.P, T);
+      dibujarPiezas(ctx, c, [[f, 'ink', 800], ['  ', 'ink'], [gc(T), 'T', 800]], clamp(tx(T), x0 + 60, x1 - 60), py(r.P) - 20, 11.5, 'center');
+    }
+    ctx.restore();
+  }
+
+  // ----- Gas que se enfría y condensa: las moléculas no cambian de tamaño (GQ16) -----
+  function panelCondensa(c, P){
+    const C = E.vista.condensa, w = Math.min(W - 40, 280), h = P.h - 34, x0 = (W - w)/2, y0 = P.y + 18, kw = w, kh = h;
+    if (!C._g) C._g = ML.condensacion(C.n, 1, h/w, 0.09, 6);
+    const g = C._g, p = C.p === undefined ? 0 : C.p, e = p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2)/2, u = 0.09*kw*0.4;
+    rr(ctx, x0, y0, w, h, 6); ctx.fillStyle = c.paper; ctx.fill();
+    if (p >= 1){ ctx.fillStyle = c.liq; const top = y0 + Math.min(...g.liquido.map(q => q.y))*kw - u*1.4; ctx.fillRect(x0 + 1, top, w - 2, y0 + h - top - 1); }
+    g.gas.forEach((q, i) => {
+      const b = g.liquido[i], x = q.x + (b.x - q.x)*e, y = q.y + (b.y - q.y)*e;
+      molecula(ctx, c, 'H2O', x0 + x*kw, y0 + y*kw, u, q.ang + (b.ang - q.ang)*e);
+    });
+    rr(ctx, x0, y0, w, h, 6); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); ctx.lineWidth = 4; linea(ctx, x0 - 3, y0, x0 + w + 3, y0);
+    dibujarPiezas(ctx, c, C.rot || [], W/2, P.y + 8, 12, 'center', W - 12);
+    dibujarPiezas(ctx, c, [[`${C.n} moléculas de agua`, 'muted', 700]], W/2, y0 + h + 10, 11, 'center', W - 12);
+  }
+
+  // ----- Gas recogido sobre agua: tubo invertido en una cubeta -----
+  function panelTubo(c, P){
+    const T = E.vista.tubo, wc = Math.min(W - 40, 300), xc = (W - wc)/2, fondo = P.y + P.h - 10, nivel = fondo - 60;
+    const wt = 70, xt = W/2 - wt/2, topT = P.y + 22, nivelT = nivel, u = 5.2;
+    ctx.fillStyle = c.liq; ctx.fillRect(xc, nivel, wc, fondo - nivel);
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(xc, nivel - 16); ctx.lineTo(xc, fondo); ctx.lineTo(xc + wc, fondo); ctx.lineTo(xc + wc, nivel - 16); ctx.stroke();
+    // Moléculas del agua de la cubeta (pocas, para indicar líquido).
+    const pos = ML.rejillaLiquido(1, (fondo - nivel)/wc, 0.05, RM ? 0 : TT, 9);
+    for (const q of pos){ const x = xc + q.x*wc, y = nivel - q.y*wc; if (Math.abs(x - xt) < 4 || Math.abs(x - xt - wt) < 4) continue; molecula(ctx, c, 'H2O', x, y, u*0.6, q.ang); }
+    // El tubo.
+    ctx.fillStyle = c.paper; ctx.fillRect(xt, topT, wt, nivelT - topT);
+    const gas = ML.condensacion(T.nGas + T.nVapor, 1, (nivelT - topT)/wt, 0.18, 12).gas;
+    gas.forEach((q, i) => {
+      const dx = RM ? 0 : 0.03*Math.sin(TT*1.6 + i), dy = RM ? 0 : 0.03*Math.cos(TT*1.2 + 2*i);
+      const x = xt + (q.x + dx)*wt, y = topT + (q.y + dy)*wt;
+      if (i < T.nGas){ // H₂: dos átomos de H
+        const a = q.ang + (RM ? 0 : TT);
+        DIBUJADOS.add('H'); ctx.fillStyle = c.H; ctx.strokeStyle = alfa(c.borde, 0.5); ctx.lineWidth = 1;
+        for (const s of [-1, 1]){ ctx.beginPath(); ctx.arc(x + s*2.6*Math.cos(a), y + s*2.6*Math.sin(a), 3.2, 0, Math.PI*2); ctx.fill(); ctx.stroke(); }
+      } else molecula(ctx, c, 'H2O', x, y, u, q.ang + (RM ? 0 : TT));
+    });
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(xt, fondo - 12); ctx.lineTo(xt, topT); ctx.lineTo(xt + wt, topT); ctx.lineTo(xt + wt, fondo - 12); ctx.stroke();
+    ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, xc + 4, nivel, xc + wc - 4, nivel); ctx.restore();
+    dibujarPiezas(ctx, c, [['H₂ (dos H) y vapor de agua (H₂O)', 'ink', 700]], W/2, P.y + 10, 11.5, 'center', W - 12);
+  }
+
+  E.dibujar = () => {
+    E.resize(); if (!W || !Lz) return; // la vista pudo cambiar de paneles: se rearma cada vez (es barato)
+    const c = colores();
+    DIBUJADOS = new Set();
+    ctx.clearRect(0, 0, W, H);
+    for (const P of Lz.p){
+      if (P.k === 'frascos') panelFrascos(c, P);
+      else if (P.k === 'olla') panelOlla(c, P);
+      else if (P.k === 'curva') panelCurva(c, P);
+      else if (P.k === 'barras') panelBarras(c, P);
+      else if (P.k === 'termos') panelTermos(c, P);
+      else if (P.k === 'moleculas') panelMoleculas(c, P);
+      else if (P.k === 'fases') panelFases(c, P);
+      else if (P.k === 'condensa') panelCondensa(c, P);
+      else if (P.k === 'tubo') panelTubo(c, P);
+    }
+    if (Lz.pie){ ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 11.5px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; Lz.pie.forEach((l, k) => ctx.fillText(l, W/2, Lz.yPie + 6 + k*15)); ctx.restore(); }
+    const ley = leyendaHTML(E.vista), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+  };
+  E.rehacer = () => { E.resize(); E.dibujar(); };
+  E.describir = () => { const t = E.vista.desc || '', el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t; };
+  E.cv = cv;
+  return E;
+}
+const LEY = { Pv:'Pv · presión de vapor', Pext:'Pext · presión de afuera', T:'T · temperatura', pu:'puente de hidrógeno (entre moléculas)', Pgas:'presión del gas seco' };
+const NOMBRE_EL = { H:'hidrógeno', C:'carbono', N:'nitrógeno', O:'oxígeno', F:'flúor', S:'azufre' };
+function leyendaHTML(v){
+  const els = ['H', 'C', 'N', 'O', 'F', 'S'].filter(e => DIBUJADOS.has(e))
+    .map(e => `<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="var(--el-${e})"/></svg>${e} · ${NOMBRE_EL[e]}</span>`).join('');
+  return els + (v.vars || []).map(k => k === 'pu' ? `<span><i class="punt"></i>${LEY.pu}</span>` : `<span><i style="background:var(--c-${k})"></i>${LEY[k]}</span>`).join('');
+}
+// Resaltar en el dibujo lo que se toca en el texto (regla 4).
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un bucle: avanza las cajas de la escena visible (el motor hace la física) y las animaciones.
+let RAF = 0, ULT = 0;
+function pedir(){ if (!RAF){ ULT = performance.now(); RAF = requestAnimationFrame(tick); } }
+function tick(now){
+  RAF = 0; const dt = Math.min(0.05, (now - ULT)/1000); ULT = now; let sigue = false;
+  if (!RM) TT += dt;
+  for (const E of ESCENAS){
+    if (document.getElementById(E.modoId).hidden) continue;
+    for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(f); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
+    if (!RM && E.vista.frascos) for (const f of E.vista.frascos.items) if (f.caja) ML.pasoCaja(f.caja, dt*E.vel);
+    if (E.alAvanzar) E.alAvanzar();
+    E.dibujar();
+    if (!RM && E.vivo()) sigue = true;
+  }
+  if (sigue) pedir();
+}
+// Animación de dur segundos; con movimiento reducido, de una vez.
+function animar(E, dur, paso, fin, retraso){
+  if (RM){ paso(1); if (fin) fin(); E.dibujar(); return; }
+  E.anims.push({ t:-(retraso || 0), dur, paso:f => paso(Math.max(0, f)), fin }); pedir();
+}
+function cortar(E){ E.anims = []; }
+// Una caja de vapor del motor. Con movimiento reducido, ya en equilibrio (no se mueve).
+const caja = (o, llena) => ML.crearCaja(Object.assign({ W:1, liq:'agua' }, o, { llena: llena || RM }));
+const LETRAS = 'abcd';
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+// nuevo dice qué opción (por su letra de origen) va en cada lugar: 'acbd' pone la c de origen en el lugar b.
+function ordenar(x, nuevo){
+  const m = {}; [...nuevo].forEach((v, i) => { m[v] = LETRAS[i]; });
+  x.opts = x.opts.map(o => [m[o[0]], ...o.slice(1)]).sort((p, q) => (p[0] < q[0] ? -1 : 1));
+  x.ok = m[x.ok]; const fb = {}; for (const k in x.fb) fb[m[k]] = x.fb[k]; x.fb = fb;
+  return x;
+}
+// La fuente queda escrita aquí para quien lea el código; la medición guarda solo la categoría.
+const RES = (cat, fuente) => cat;
+// Respuestas de «¿Qué pasa si…?»: la misma variable que abre los experimentos en orden. El explorador del paso 8 la lee
+// para no regalar la olla a presión (experimento 3): sobre 760 mmHg, la curva y las lecturas quedan con «?».
+const PRED_EXP = {};
+const DESCUBRE = 'Descúbrelo en «¿Qué pasa si…?»';
+// Datos que usan los dos modos (todos del motor).
+const LIMA = ML.ebullicionAltitud('agua', 150), PUNO = ML.ebullicionAltitud('agua', 3827), PV25 = ML.presionVapor('agua', 25).mmHg;
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   docs/investigacion/gases-soluciones-ideas-erroneas.md (GQ18, GQ19), atomo-enlace-ideas-erroneas.md (EN13, EN14, EN15 y la
+   propuesta «Ebullición a nivel de moléculas») y fluidos-calor-termodinamica-ideas-erroneas.md (Q9). */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1');
+const S = { step:0, max:0, pred:{}, ocupado:false, cj:{} };
+const FR = ML.compararFrascos('agua', 25, [1, 2]), SERIE = ML.ordenEbullicion(['H2O', 'H2Se', 'H2S']), RZ = ML.razonEbullicion('H2O', 'H2S');
+const QP = ML.quienesFormanPuentes(['NH3', 'CH3F', 'CH3OCH3']), LUGAR = ML.ebullicionLugar(3827);
+const ESC = 300; // moléculas dibujadas por unidad de área por cada mmHg/K (pasos 2, 3 y 6)
+const SCHMIDT = 'un estudio con escolares alemanes de los dos últimos años del colegio (Schmidt, 1996)';
+
+const P0 = { id:'liquidos-paso2', ok:'c', opts:[
+  ['a', 'Mayor en B: tiene más espacio, así que se evapora más agua y el vapor empuja más.', 'GQ18-recipiente-grande-mas-presion', RES('parcial', 'Dindar, Bektaş y Çelik 2010: 4 de 6 entrevistados, casos y no porcentajes')],
+  ['b', 'Menor en B: el vapor se reparte en el doble de volumen, como un gas que se expande.', 'GQ18-se-reparte-como-gas', RES('hipotesis', 'hipótesis nuestra')],
+  ['c', 'Igual en los dos: se evapora hasta que vuelven tantas moléculas como salen.'],
+  ['d', 'Ninguna: en un frasco cerrado el agua no se evapora, porque el vapor no tiene adónde ir.', 'cerrado-no-evapora', RES('hipotesis', 'hipótesis nuestra')]],
+  fb:{ c:`¡Bien! Mira los dos frascos: en B se evapora el doble de moléculas, pero tiene el doble de espacio. El vapor queda igual de apretado y empuja lo mismo: ${Pv_(mm(FR.P[0]))} en los dos. Es la presión de vapor del agua a 25 °C.`,
+    a:`Es cierto que en B se evapora más agua, el doble; pero también tiene el doble de volumen, así que el vapor queda igual de apretado y empuja lo mismo. En un estudio con 6 futuros profesores de química de Turquía (Dindar, Bektaş y Çelik, 2010), 4 dijeron que en el recipiente más grande la presión de vapor es mayor. Es una muestra mínima: solo dice que el error existe. La correcta está marcada.`,
+    b:`Eso pasaría si B solo tuviera el vapor de A, sin líquido (la ley de Boyle). Pero queda líquido, y sigue evaporándose hasta que vuelven tantas moléculas como salen. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`En el frasco cerrado el agua sí se evapora: las moléculas más rápidas escapan del líquido. Lo que pasa es que también vuelven, y llega un momento en que vuelven tantas como salen. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P1 = ordenar({ id:'liquidos-paso4', ok:'c', opts:[
+  ['a', 'Hidrógeno y oxígeno: el calor rompió las moléculas de agua en sus átomos.', 'EN13-hervir-rompe-enlaces', RES('parcial', 'Schmidt, Kaufmann y Treagust 2009: «la más destacada», sin porcentaje')],
+  ['b', 'Aire: es el aire que estaba disuelto en el agua y el calor lo saca.', 'burbujas-de-aire-disuelto', RES('hipotesis', 'informe, propuesta de ebullición')],
+  ['c', 'Vapor de agua: moléculas de agua enteras, separadas unas de otras.'],
+  ['d', 'Nada: es un espacio vacío que deja el agua al calentarse.', 'burbuja-vacia', RES('hipotesis', 'informe, propuesta de ebullición')]],
+  fb:{ c:`¡Bien! En la burbuja hay moléculas de agua enteras, mucho más separadas que en el líquido: es vapor. Al hervir no se rompe ningún enlace O–H; lo que se separa son las moléculas, unas de otras.`,
+    a:`Al hervir, las moléculas de agua se separan unas de otras, pero cada una sigue entera: sus enlaces O–H no se rompen. Separar el agua en hidrógeno y oxígeno pide mucha más energía, como en la electrólisis. Un estudio con escolares alemanes de 16 a 19 años la describe como la idea errónea más destacada sobre la ebullición (Schmidt, Kaufmann y Treagust, 2009); en lo que leímos no hay porcentaje. La correcta está marcada.`,
+    b:`Las burbujitas que aparecen al principio, cuando el agua apenas se entibia, sí son de aire disuelto. Pero ese aire se acaba pronto; las burbujas grandes del hervor siguen saliendo mientras haya agua, y son de vapor. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`Una burbuja vacía la aplastaría al instante el agua de alrededor. La sostiene el vapor de adentro, que empuja tanto como el aire de afuera. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } }, 'abdc');
+const P2 = { id:'liquidos-paso5', ok:'b', opts:[
+  ['a', 'A 100 °C, como en Lima: el agua hierve cuando llega a 100 °C, esté donde esté.', 'Q9-siempre-hierve-a-100', RES('documentado', 'Georgiou y Sharma 2010: 44 % y 34 %')],
+  ['b', 'A menos de 100 °C: allí el aire empuja menos, y la presión de vapor del agua lo iguala antes.'],
+  ['c', 'A menos de 100 °C: en la altura hace más frío, y por eso la presión de vapor del agua es menor.', 'frio-baja-la-pv', RES('hipotesis', 'hipótesis nuestra')],
+  ['d', 'A más de 100 °C: el aire frío de la altura le quita calor y hay que calentarla más.', 'altura-hierve-mas', RES('hipotesis', 'hipótesis nuestra')]],
+  fb:{ b:`¡Bien! En Puno, el aire empuja unos ${Pe_(mm(PUNO.mmHg, 0))}. El agua hierve cuando su ${Pv_('presión de vapor')} llega a eso, y eso pasa cerca de ${T_(gc(PUNO.T))}. Mira la curva: la presión de vapor sube con la temperatura y corta antes la línea de Puno que la de Lima.`,
+    a:`100 °C es la temperatura a la que el agua hierve con 1 atm (760 mmHg) encima. Hervir es que se formen burbujas de vapor dentro del líquido, y una burbuja solo crece si su vapor empuja tanto como el aire de afuera. En Puno el aire empuja menos, así que basta menos temperatura: unos ${fmt(PUNO.T, 0)} °C. Que el agua siempre hierve a la misma temperatura lo eligió cerca del 44 % y del 34 % de dos grupos de universitarios de primer año en Sídney (Georgiou y Sharma, 2010). La correcta está marcada.`,
+    c:`La temperatura es la correcta, pero la razón no. La presión de vapor del agua depende solo de la temperatura del agua: a 87 °C es la misma en Lima y en Puno, y la curva no cambia. El frío del aire no la baja. Lo que baja en la altura es la presión de afuera, la que el vapor tiene que igualar para hervir. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`El aire frío hace que el agua tarde más en calentarse, pero no cambia a qué temperatura hierve: eso lo fija la presión de afuera, y en la altura es menor. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P3 = { id:'liquidos-paso6', ok:'b', opts:[
+  ['a', 'Porque el enlace O–H es más fuerte que el S–H, y cuesta más separar las moléculas.', 'EN14-enlace-interno', RES('documentado', 'Kumpha y otros 2014: 36 % de 102')],
+  ['b', 'Porque entre moléculas de agua hay puentes de hidrógeno, y entre las de H₂S casi no.'],
+  ['c', 'Porque la molécula de agua es polar y la de H₂S no.', 'H2S-apolar', RES('hipotesis', 'hipótesis nuestra')],
+  ['d', 'Porque el oxígeno tiene más electrones que el azufre, y atrae más a las otras moléculas.', 'O-mas-electrones', RES('hipotesis', 'informe, propuesta de ebullición')]],
+  fb:{ b:`¡Bien! Las líneas punteadas son los ${pu_('puentes de hidrógeno')}: el H de una molécula de agua atrae un par libre del O de otra. El H₂S casi no los forma, y sus moléculas se separan fácil. Al hervir se rompen esos puentes, no los enlaces O–H. En un estudio con 102 escolares tailandeses (Kumpha y otros, 2014), solo cerca del 11 % acertó la respuesta y la razón.`,
+    a:`El enlace O–H sí es más fuerte que el S–H, pero está dentro de cada molécula, y al hervir no se rompe. Lo que decide si es líquido o gas es la atracción entre moléculas. En un estudio con 102 escolares tailandeses (Kumpha y otros, 2014), cerca del 36 % eligió esta razón. La correcta está marcada.`,
+    c:`El H₂S también es polar: es angular, como el agua, y su momento dipolar es de unos 0,97 D (el del agua, unos 1,85 D). Esa diferencia no basta para que uno sea líquido y el otro gas: lo que tiene el agua y le falta al H₂S son los puentes de hidrógeno. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`Es al revés: el azufre tiene más electrones que el oxígeno (16 contra 8). Y aun así su compuesto es gas: lo que le falta al H₂S son los puentes de hidrógeno. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P4 = { id:'liquidos-paso7', ok:'a', opts:[
+  ['a', 'Solo el NH₃: tiene un H unido directamente al N.'],
+  ['b', 'Solo el CH₃OCH₃: es el único que tiene H y O.', 'EN15-tener-oxigeno', RES('documentado', 'Schmidt 1996, tabla 1: 34 % y 31 %')],
+  ['c', 'El NH₃ y el CH₃F: el N y el F son muy electronegativos.', 'EN15-tener-F-o-N', RES('documentado', 'Schmidt 1996, tabla 1: 22 % y 29 %')],
+  ['d', 'Los tres: los tres tienen H y un átomo muy electronegativo.', 'EN15-H-y-electronegativo', RES('hipotesis', 'hipótesis nuestra')]],
+  fb:{ a:`¡Bien! En el NH₃, cada H está unido al N, y el N tiene un par libre: una molécula presta el H y la otra pone el par. En el CH₃F y en el éter, los H están unidos al C. En ${SCHMIDT}, solo cerca del 27 % y del 20 % de dos grupos acertó.`,
+    b:`El éter tiene O, pero sus H están unidos a C, y un H unido a C casi no tiene carga positiva para atraer el par de otro O. Su O sí puede recibir un puente, pero de otra molécula que ponga el H, como el agua. En ${SCHMIDT}, cerca del 34 % y del 31 % de dos grupos eligió solo el éter. La correcta está marcada.`,
+    c:`El F del CH₃F es muy electronegativo, pero sus H están unidos al C, no al F: no hay H que prestar. Hace falta el H pegado al F, O o N. En ${SCHMIDT}, cerca del 22 % y del 29 % de dos grupos eligió el NH₃ y el CH₃F. La correcta está marcada.`,
+    d:`Tener H y un átomo electronegativo no basta: el H tiene que estar unido directamente a ese átomo. En el CH₃F y en el éter, los H están unidos al C. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+
+// ----- Vistas -----
+const lectP = (cj, d) => () => [['P ≈ ', 'ink', 700], [mm(ML.lecturaCaja(cj).presionMedia, d === undefined ? 1 : d), 'Pv', 800]];
+function vFrasco1(){
+  return { paneles:['frascos'], frascos:{ items:[{ H:0.6, prof:0.28, etq:[['Frasco cerrado, sin aire', 'ink', 800]], bajo:[[['agua a ', 'ink', 700], ['25 °C', 'T', 800]]] }] },
+    pie:'Cada figura es una molécula de agua: un O y dos H. Se dibujan muchas menos de las que hay.', vars:['T'],
+    desc:'Un frasco cerrado sin aire con agua líquida a 25 grados.' };
+}
+function vDos(r){
+  const a = S.cj.A, b = S.cj.B;
+  const item = (cj, H, nom, V) => ({ caja: r ? cj : null, H, prof:0.24, etq:[[nom + ' · ' + V, 'ink', 800]],
+    bajo: r ? [lectP(cj, 0), () => [[`${ML.lecturaCaja(cj).vapor} moléculas de vapor`, 'muted', 700]]] : [[['P = ?', 'muted', 700]], [['agua a ', 'ink', 700], ['25 °C', 'T', 800]]] });
+  return { paneles: r ? ['frascos', 'barras'] : ['frascos'],
+    frascos:{ items:[item(a, 0.45, 'A', '1 L'), item(b, 0.9, 'B', '2 L')] },
+    barras: r ? { items:[{ etq:[['A: ', 'ink', 800], ['Pv', 'Pv', 800]], k:'Pv', get valor(){ return ML.lecturaCaja(a).presionMedia; }, get texto(){ return '≈ ' + mm(ML.lecturaCaja(a).presionMedia, 0); } },
+      { etq:[['B: ', 'ink', 800], ['Pv', 'Pv', 800]], k:'Pv', get valor(){ return ML.lecturaCaja(b).presionMedia; }, get texto(){ return '≈ ' + mm(ML.lecturaCaja(b).presionMedia, 0); } }], max:40, u:'mmHg' } : null,
+    pie: r ? 'La presión que marca cada frasco es un promedio de los últimos segundos: sube y se queda en el mismo valor.' : 'Los dos frascos a 25 °C, sin aire, con el mismo poco de agua. Lo que pasa arriba del agua se ve al responder.',
+    vars: r ? ['Pv', 'T'] : ['T'],
+    desc: r ? `Dos frascos a 25 grados. En B se evapora el doble de moléculas, en el doble de volumen: los dos llegan a ${fmt(FR.P[0], 1)} milímetros de mercurio.` : 'Dos frascos cerrados, A de 1 litro y B de 2 litros, con agua líquida a 25 grados.' };
+}
+function vFlujos(){
+  const cj = S.cj.F;
+  // Con movimiento reducido la caja no avanza: las barras dan el ritmo de equilibrio del motor (o, recién vaciada,
+  // las que salen contra ninguna que vuelve).
+  if (RM){
+    const ritmo = ML.ritmoEquilibrio(cj), vacia = cj.vapor.length === 0;
+    return { paneles:['frascos', 'barras'],
+      frascos:{ items:[{ caja:cj, H:0.6, prof:0.26, etq:[['Frasco cerrado, sin aire', 'ink', 800]], bajo:[[['agua a ', 'ink', 700], [gc(cj.T, 0), 'T', 800]]] }] },
+      barras:{ items:[{ etq:[['salen por segundo', 'ink', 700]], k:'ink', valor:ritmo, texto:fmt(ritmo, 1) },
+        { etq:[['vuelven por segundo', 'ink', 700]], k:'ink', trazo:true, valor: vacia ? 0 : ritmo, texto:fmt(vacia ? 0 : ritmo, 1) }], max:Math.max(8, ritmo*1.4) },
+      pie: vacia ? 'Sin vapor: salen moléculas y casi ninguna vuelve. Toca «Ver el equilibrio».' : 'En equilibrio: salen tantas como vuelven (ritmo del modelo, por segundo).',
+      vars:['T'], desc: vacia ? 'Un frasco recién vaciado de vapor: salen moléculas y no vuelve ninguna.' : 'Un frasco en equilibrio: salen tantas moléculas como vuelven.' };
+  }
+  return { paneles:['frascos', 'barras'],
+    frascos:{ items:[{ caja:cj, H:0.6, prof:0.26, etq:[['Frasco cerrado, sin aire', 'ink', 800]], bajo:[lectP(cj), () => [['agua a ', 'ink', 700], [gc(cj.T, 0), 'T', 800]]] }] },
+    barras:{ items:[{ etq:[['salen por segundo', 'ink', 700]], k:'ink', get valor(){ return ML.lecturaCaja(cj).evaporan; }, get texto(){ return fmt(ML.lecturaCaja(cj).evaporan, 1); } },
+      { etq:[['vuelven por segundo', 'ink', 700]], k:'ink', trazo:true, get valor(){ return ML.lecturaCaja(cj).condensan; }, get texto(){ return fmt(ML.lecturaCaja(cj).condensan, 1); } }],
+      get max(){ return Math.max(8, ML.lecturaCaja(cj).evaporan*1.4); } },
+    pie:'Moléculas que salen del líquido y que vuelven a él, contadas en el dibujo (promedio de 2 s).', vars:['Pv', 'T'],
+    desc:`Un frasco cerrado con agua. Al principio salen más moléculas de las que vuelven; después, tantas como salen. La presión de vapor a 25 grados es ${fmt(PV25, 1)} milímetros de mercurio.` };
+}
+const vOlla = (r, p) => ({ paneles:['olla'], olla:{ burbuja:{ p: p === undefined ? 1 : p, ver: !!r }, aire:[['aire: ', 'ink', 700], ['Pext', 'Pext', 800]],
+    rot:[[['agua hirviendo', 'ink', 800]]] },
+  pie: r ? 'Dentro de la burbuja, moléculas de agua enteras y separadas: vapor. Ningún enlace O–H se rompió.' : 'Una burbuja del hervor, todavía tapada. Cada figura es una molécula de agua.',
+  vars:['Pext'], desc: r ? 'Una olla con agua hirviendo: dentro de la burbuja hay moléculas de agua enteras, separadas, es decir, vapor.' : 'Una olla con agua hirviendo y una burbuja tapada.' });
+function vPuno(r, p){
+  const pp = p === undefined ? 1 : p;
+  if (!r) return { paneles:['olla'], olla:{ burbuja:{ p:1, ver:false }, aire:[['aire de Puno (3827 m): ', 'ink', 700], ['Pext', 'Pext', 800]], rot:[[['hierve a ', 'ink', 700], ['T = ?', 'T', 800]]] },
+    pie:'La olla destapada en Puno. A qué temperatura hierve se ve al responder.', vars:['Pext', 'T'], desc:'Una olla con agua que hierve en Puno; la temperatura está tapada.' };
+  return { paneles:['curva', 'olla'],
+    curva:{ liq:'agua', Tmin:60, Tmax:105, Pmax:900, lineas:[
+      { P:LIMA.mmHg, etq:[['Lima: ', 'ink', 700], [mm(LIMA.mmHg, 0), 'Pext', 800]], cruce:true, p:pp, izq:true, alto:14 },
+      { P:PUNO.mmHg, etq:[['Puno: ', 'ink', 700], [mm(PUNO.mmHg, 0), 'Pext', 800]], dash:true, cruce:true, p:pp, izq:true }] },
+    olla:{ burbuja:{ p:1, ver:true }, aire:[['aire de Puno: ', 'ink', 700], [mm(PUNO.mmHg, 0), 'Pext', 800]], rot:[[['hierve a ', 'ink', 700], [gc(PUNO.T), 'T', 800]]] },
+    pie:'La curva azul es la presión de vapor del agua: la misma en Lima y en Puno. Hierve donde corta la presión de afuera.', vars:['Pv', 'Pext', 'T'],
+    desc:`Curva de presión de vapor del agua. Corta la presión de Lima, ${fmt(LIMA.mmHg, 0)} milímetros de mercurio, a ${fmt(LIMA.T, 1)} grados, y la de Puno, ${fmt(PUNO.mmHg, 0)}, a ${fmt(PUNO.T, 1)} grados.` };
+}
+const GAS_H2S = ML.condensacion(12, 1, 0.84, 0.09, 8).gas;
+function vH2S(r){
+  const cj = S.cj.W;
+  return { paneles: r ? ['frascos', 'termos'] : ['frascos'],
+    frascos:{ items:[
+      { caja:cj, H:0.4, prof:0.44, puentes:!!r, etq:[['H₂O a ', 'ink', 800], ['25 °C', 'T', 800]], bajo:[[['líquido', 'ink', 700]]] },
+      { H:0.84, prof:0, sust:'H2S', gas:GAS_H2S, etq:[['H₂S a ', 'ink', 800], ['25 °C', 'T', 800]], bajo:[[['gas', 'ink', 700]]] }] },
+    termos: r ? { items:SERIE.orden.map(s => ({ s, T:ML.SUSTANCIAS[s].Teb })), Tmin:-100, Tmax:110 } : null,
+    pie: r ? 'Punteado: los puentes de hidrógeno entre moléculas de agua. El H₂S pesa más que el agua y aun así hierve mucho más bajo.' : 'A la izquierda agua líquida; a la derecha, H₂S gaseoso. Cada figura es una molécula.',
+    vars: r ? ['pu', 'T'] : ['T'],
+    desc: r ? `El agua líquida con puentes de hidrógeno entre sus moléculas; el H2S es gas. Puntos de ebullición: agua 100, H2Se ${fmt(-41.3, 1)}, H2S ${fmt(-60.3, 1)} grados.` : 'Un frasco con agua líquida y otro con H2S gaseoso, a 25 grados.' };
+}
+function vPuentes(r){
+  return { paneles:['moleculas'], moleculas:{ filas:['NH3', 'CH3F', 'CH3OCH3'].map(s => ({ s, puente: r ? QP.forman.includes(s) : null })) },
+    pie: r ? 'Solo en el NH₃ hay un H unido al N. En el CH₃F y en el éter, los H están unidos al C.' : 'Dos moléculas de cada sustancia, una junto a otra. Los puentes se ven al responder.',
+    vars: r ? ['pu'] : [], desc: r ? 'Dos moléculas de amoniaco unidas por un puente de hidrógeno; el fluorometano y el dimetil éter, sin puente.' : 'Pares de moléculas de amoniaco, fluorometano y dimetil éter.' };
+}
+
+const steps = [
+ { k:'Paso 1', t:'El problema', vista:() => vFrasco1(),
+   body:() => `<p class="problem">En un frasco cerrado y sin aire hay un poco de agua a ${T_('25 °C')}. ¿Qué pasa arriba del líquido, y de qué depende? ¿A qué temperatura hierve el agua en Puno? ¿Y por qué el agua es líquida a 25 °C y el H₂S, que se le parece, es un gas?</p>
+   <p>En el dibujo, cada figura es una molécula de agua: un O y dos H, cada átomo con el color de su elemento. Se dibujan muchas menos moléculas de las que hay.</p>
+   <p class="hint">Cada variable tiene su color en el texto, en el dibujo y en las cuentas, como ${T_('la temperatura')}. Toca un color del texto para resaltarlo en el dibujo.</p>` },
+ { k:'Paso 2', t:'Dos frascos: predice', gate:P0, vista:r => vDos(r),
+   anima: fin => { nuevasDos(); E.vista = vDos(true); E.dibujar(); pedir(); animar(E, 1.5, () => {}, fin); }, // el vapor sigue llegando solo
+   body:() => `<p>Dos frascos cerrados y sin aire, A de 1 L y B de 2 L, tienen el mismo poco de agua líquida a ${T_('25 °C')}. Se espera un rato, y todavía queda líquido en los dos. ¿Cómo es la presión del vapor de agua en B, comparada con la de A?</p>${opcionesHTML(P0.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">${Pv_('Pv')}(${T_('25 °C')}) = ${Pv_(mm(FR.P[0]))} en A y en B</span><span class="note">Depende solo del líquido y de su temperatura, mientras quede líquido. El de 2 L guarda el doble de moléculas de vapor: ${fmt(FR.nVapor[0]*1000, 2)} contra ${fmt(FR.nVapor[1]*1000, 2)} milimoles (n = PV/RT).</span></div>
+   </div></div>` },
+ { k:'Paso 3', t:'Salen y vuelven', vista:() => vFlujos(),
+   body:() => `<p>Del líquido salen moléculas a un ritmo parejo: las que, en el choque con sus vecinas, quedan con energía para escapar. Al principio casi no vuelven, porque hay poco vapor. Mientras más vapor hay, más moléculas chocan con el líquido y se quedan en él. Cuando vuelven tantas como salen, el vapor ya no aumenta: es el equilibrio, y la presión que hace ese vapor es la ${Pv_('presión de vapor')}.</p>
+   <div class="seg" role="group" aria-label="Temperatura del frasco"><button type="button" data-t="25" aria-pressed="true">25 °C</button><button type="button" data-t="50" aria-pressed="false">50 °C</button></div>
+   <div class="eqs"><div class="eq"><span class="ex">${[10, 25, 50, 75, 100].map(T => { const p = ML.presionVapor('agua', T).mmHg; return `${T_(T + ' °C')}: ${Pv_(mm(p, p >= 100 ? 0 : 1))}`; }).join(' · ')}</span><span class="note">Presión de vapor del agua (ecuación de Antoine con constantes de tabla). Con más temperatura, más moléculas tienen energía para escapar, y el equilibrio llega con más vapor.</span></div></div>
+   <div class="nav"><span></span><button type="button" class="btn" id="vaciar">Empezar sin vapor</button></div>` },
+ { k:'Paso 4', t:'Las burbujas: predice', gate:P1, vista:r => vOlla(r, r ? 1 : 1),
+   anima: fin => { animar(E, 1.4, f => { E.vista = vOlla(true, f); }, () => { E.vista = vOlla(true, 1); fin(); }, 0.2); },
+   body:() => `<p>Ahora la olla está destapada y la calentamos hasta que hierve. Dentro del líquido se forman burbujas grandes que suben y revientan. ¿Qué hay dentro de esas burbujas?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq"><span class="ex">H₂O(l) → H₂O(g)</span><span class="note">Al hervir, la fórmula no cambia: el agua pasa de líquido a gas. Los enlaces O–H de cada molécula siguen iguales.</span></div></div></div>` },
+ { k:'Paso 5', t:'En Puno: predice', gate:P2, vista:r => vPuno(r, 1),
+   anima: fin => { E.vista = vPuno(true, 0); E.dibujar(); animar(E, 1.8, f => { E.vista = vPuno(true, f); }, () => { E.vista = vPuno(true, 1); fin(); }, 0.25); },
+   body:() => `<p>En Lima, el agua de una olla destapada hierve cerca de ${T_('100 °C')}. Llevamos la misma olla a Puno, a 3827 m de altura. ¿A qué temperatura hierve allí el agua, y por qué?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">hierve cuando ${Pv_('Pv')}(${T_('T')}) = ${Pe_('Pext')}</span><span class="note">Una burbuja de vapor dentro del líquido solo crece si su vapor empuja tanto como lo de afuera.</span></div>
+     <div class="eq"><span class="ex">Lima (150 m): ${Pe_(mm(LIMA.mmHg, 0))} → ${T_(gc(LIMA.T))} · Puno: ${Pe_(mm(PUNO.mmHg, 0))} → ${T_(gc(PUNO.T))}</span><span class="note">Presión del aire con la atmósfera estándar; un día de lluvia o de sol la cambia un poco.</span></div>
+   </div>
+   <p class="fuente">Que el agua siempre hierve a la misma temperatura lo eligió cerca del 44 % y del 34 % de dos grupos de universitarios de primer año en Sídney (Georgiou y Sharma, 2010). Las otras dos opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Agua y H₂S: predice', gate:P3, vista:r => vH2S(r),
+   anima: fin => { E.vista = vH2S(true); E.dibujar(); fin(); },
+   body:() => `<p>El H₂O y el H₂S tienen fórmulas parecidas: un átomo central con dos H. A ${T_('25 °C')}, el agua es líquida y el H₂S es un gas. ¿Por qué?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq"><span class="ex">${SERIE.orden.map(s => `${txtS(s)} ${T_(gc(ML.SUSTANCIAS[s].Teb))}`).join(' &nbsp;&gt;&nbsp; ')}</span><span class="note">Del H₂S al H₂Se sí sube con la masa: entre moléculas sin puentes de hidrógeno, una nube de electrones más grande atrae más. El agua se sale de la fila por sus puentes.</span></div></div>
+   <p class="fuente">«El enlace O–H es más fuerte»: cerca del 36 % de 102 escolares tailandeses (Kumpha y otros, 2014); en Singapur, cerca del 21 % de 119 (Tan y Treagust, 1999, citado por Kumpha y otros). Las otras dos opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 7', t:'¿Quién forma puentes? Predice', gate:P4, vista:r => vPuentes(r),
+   anima: fin => { E.vista = vPuentes(true); E.dibujar(); fin(); },
+   body:() => `<p>¿Cuáles de estas sustancias forman puentes de hidrógeno entre sus propias moléculas: amoniaco (NH₃), fluorometano (CH₃F) y dimetil éter (CH₃OCH₃)?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq"><span class="ex">${pu_('puente')}: X–H ··· :Y, con X e Y = F, O o N</span><span class="note">Una molécula presta un H unido directamente a F, O o N; la otra pone un F, O o N con par libre. El éter puede recibir un puente del agua (pone el O), pero no darlo.</span></div></div>
+   <p class="fuente">En ${SCHMIDT}: solo el éter, cerca del 34 % y del 31 % de dos grupos; el NH₃ y el CH₃F, cerca del 22 % y del 29 %; aciertan cerca del 27 % y del 20 %. «Los tres» es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true, vista:() => vistaExp(),
+   body:() => `<div class="ctrls">
+     <label class="campo" for="xLiq">Líquido<select id="xLiq">${Object.entries(ML.LIQUIDOS).map(([k, l]) => `<option value="${k}">${l.nombre} (${l.formula})</option>`).join('')}</select></label>
+     <div class="slider"><label for="xT"><span>Temperatura ${T_('T')}</span><output id="xTo"></output></label><input id="xT" type="range" min="0" max="130" step="1" value="25"></div>
+     <div class="slider"><label for="xP"><span>Presión de afuera ${Pe_('Pext')}</span><output id="xPo"></output></label><input id="xP" type="range" min="100" max="1600" step="5" value="747"></div>
+   </div>
+   <div class="seg" id="xLug" role="group" aria-label="Lugares">${[['Lima', 150], ['Cusco', 3400], ['Puno', 3827], ['La Rinconada', 5100]].map(([n, h]) => `<button type="button" data-h="${h}" aria-pressed="false">${n}</button>`).join('')}<button type="button" data-olla="1" aria-pressed="false">Olla a presión</button></div>
+   <div class="lect" id="live" aria-live="off"></div>
+   <p class="hint">Arrastra el punto de la curva para cambiar la temperatura, o la manija naranja para cambiar la presión de afuera. El frasco de abajo está cerrado: su vapor llega a la presión de vapor. Una olla abierta hierve cuando la presión de vapor alcanza la de afuera.</p>` },
+];
+
+function nuevasDos(){ S.cj.A = caja({ T:25, H:0.45, escala:ESC, semilla:3 }); S.cj.B = caja({ T:25, H:0.9, escala:ESC, semilla:5 }); }
+S.cj.F = caja({ T:25, H:0.6, escala:ESC, semilla:11 });
+S.cj.W = caja({ T:25, H:0.4, escala:ESC, semilla:13 }, true);
+nuevasDos();
+
+// ----- Explorador -----
+const X = { liq:'agua', T:25, P:747, cj:null };
+const ESC_X = 49;
+// Lo que regalaría la olla a presión (experimento 3): el agua sobre 760 mmHg. Etanol y acetona se ven completos.
+const ocultoX = () => !PRED_EXP['olla'] && X.liq === 'agua';
+function vistaExp(){
+  if (!X.cj || X.cj.liq !== X.liq) X.cj = caja({ liq:X.liq, T:X.T, H:0.6, escala:ESC_X, semilla:21 }, true);
+  const h = ML.hierve(X.liq, X.T, X.P), oc = ocultoX();
+  const tapPv = oc && h.Pv > 760, tapP = oc && X.P > 760;
+  return { paneles:['curva', 'barras', 'frascos'],
+    curva:{ liq:X.liq, Tmin:0, Tmax:130, Pmax: oc ? 900 : 1700, oculto: oc ? 760 : undefined, punto:X.T,
+      lineas: tapP ? [] : [{ P:X.P, etq:[['Pext', 'Pext', 800]], manija:true }] },
+    barras:{ items:[{ etq:[['Pv', 'Pv', 800], [` a ${fmt(X.T)} °C`, 'ink', 700]], k:'Pv', valor:h.Pv, oculto:tapPv },
+      { etq:[['Pext', 'Pext', 800]], k:'Pext', valor:X.P, oculto:tapP }], max:1700, u:'mmHg' },
+    frascos:{ items:[{ caja:X.cj, H:0.6, prof:0.25, sust:ML.LIQUIDOS[X.liq].sustancia, etq:[['Frasco cerrado con ' + ML.LIQUIDOS[X.liq].nombre, 'ink', 800]],
+      bajo:[[['P del vapor ≈ ', 'ink', 700], [tapPv ? '?' : mm(h.Pv), 'Pv', 800]]] }] },
+    pie: X.liq === 'agua' ? 'En el frasco, cada figura es una molécula de agua.' : `En el frasco, cada figura es una molécula de ${ML.LIQUIDOS[X.liq].nombre}, dibujada como una de agua.`,
+    vars:['Pv', 'Pext', 'T'], desc:'' };
+}
+function explorar(){
+  const vivo = () => {
+    const h = ML.hierve(X.liq, X.T, X.P), pv = ML.presionVapor(X.liq, X.T), oc = ocultoX(), tap = oc && (X.P > 760 || h.Pv > 760);
+    $('xLiq').value = X.liq; $('xT').value = X.T; $('xP').value = X.P;
+    $('xTo').textContent = gc(X.T, 0); $('xPo').textContent = mm(X.P, 0);
+    $('xLug').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.olla ? X.P === 1520 : Math.abs(ML.ebullicionAltitud('agua', +b.dataset.h).mmHg - X.P) < 3)));
+    const teb = tap && X.P > 760 ? `? (${DESCUBRE}, experimento 3)` : T_(gc(h.Teb));
+    $('live').innerHTML = `<div class="fila"><span>${Pv_('Pv')} a ${T_(gc(X.T, 0))}: ${oc && h.Pv > 760 ? '?' : Pv_(mm(h.Pv))}</span><span>${Pe_('Pext')}: ${Pe_(mm(X.P, 0))}</span></div>
+      <div class="fila"><span>Con esta ${Pe_('Pext')}, hierve a ${teb}</span>${pv.extrapolado ? '<span>(fuera del rango de la tabla: el motor extrapola)</span>' : ''}</div>
+      <div class="fila"><b>${tap ? 'Olla abierta: ?' : h.hierve ? `Olla abierta: hierve, y no pasa de ${gc(h.Teb)}` : 'Olla abierta: todavía no hierve'}</b></div>`;
+    if (X.cj) ML.cambiarT(X.cj, X.T);
+    E.vista = vistaExp(); E.dibujar(); pedir();
+  };
+  const TMAX = { agua:130, etanol:100, acetona:80 };
+  const tope = () => { $('xT').max = TMAX[X.liq]; X.T = Math.min(X.T, TMAX[X.liq]); };
+  $('xLiq').onchange = () => { X.liq = $('xLiq').value; X.cj = null; tope(); vivo(); };
+  $('xT').oninput = () => { X.T = +$('xT').value; vivo(); };
+  $('xP').oninput = () => { X.P = +$('xP').value; vivo(); };
+  $('xLug').querySelectorAll('button').forEach(b => b.onclick = () => { X.P = b.dataset.olla ? 1520 : Math.round(ML.ebullicionAltitud('agua', +b.dataset.h).mmHg); vivo(); });
+  E.arrastre = { activo:true, mover:(tipo, p) => {
+    const e = E.ejes; if (!e) return;
+    if (tipo === 'T') X.T = Math.round(clamp(e.Tmin + (p.x - e.x0)/(e.x1 - e.x0)*(e.Tmax - e.Tmin), 0, TMAX[X.liq]));
+    else X.P = Math.round(clamp((e.y0 - p.y)/(e.y0 - e.y1)*e.Pmax, 100, ocultoX() ? 760 : 1600)/5)*5;
+    vivo();
+  } };
+  tope(); vivo();
+}
+// Arrastre del explorador (nucleo/celular.js): solo cerca del punto de la curva o de la manija de Pext.
+let agarre = null;
+Celular.arrastre($('cv'), {
+  activo:() => !!(E.arrastre && steps[S.step].explora),
+  cerca:(p, r) => E.manijas.some(m => Math.hypot(m.x - p.x, m.y - p.y) <= r),
+  empezar:p => { let mejor = null, d = Infinity; for (const m of E.manijas){ const q = Math.hypot(m.x - p.x, m.y - p.y); if (q < d){ d = q; mejor = m; } } agarre = mejor && mejor.tipo; },
+  mover:p => { if (agarre) E.arrastre.mover(agarre, p); },
+  soltar:() => { agarre = null; },
+});
+
+// ----- Navegación -----
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function enlazarPaso3(){
+  const seg = $('stepBody').querySelector('.seg[aria-label="Temperatura del frasco"]');
+  if (seg) seg.querySelectorAll('button').forEach(b => b.onclick = () => {
+    ML.cambiarT(S.cj.F, +b.dataset.t); seg.querySelectorAll('button').forEach(q => q.setAttribute('aria-pressed', String(q === b)));
+    if (RM){ S.cj.F = caja({ T:+b.dataset.t, H:0.6, escala:ESC, semilla:11 }); if ($('vaciar')) $('vaciar').textContent = 'Empezar sin vapor'; } E.vista = vFlujos(); E.dibujar(); pedir();
+  });
+  const v = $('vaciar');
+  if (v) v.onclick = () => {
+    const T = S.cj.F.T;
+    if (RM){ // sin animación: alterna entre el frasco sin vapor y el de equilibrio
+      const vacia = S.cj.F.vapor.length === 0;
+      S.cj.F = vacia ? caja({ T, H:0.6, escala:ESC, semilla:11 }) : ML.crearCaja({ W:1, liq:'agua', T, H:0.6, escala:ESC, semilla:11 });
+      v.textContent = vacia ? 'Empezar sin vapor' : 'Ver el equilibrio';
+      E.vista = vFlujos(); E.dibujar(); E.describir(); return;
+    }
+    S.cj.F = caja({ T, H:0.6, escala:ESC, semilla:11 + Math.round(TT) });
+    Celular.alResponder($('cv'), () => { E.vista = vFlujos(); E.dibujar(); pedir(); }, () => S.step === 2);
+  };
+}
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max || S.ocupado) return;
+  const s = steps[n]; S.step = n; cortar(E); E.arrastre = null; E.manijas = [];
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  E.vista = s.vista(s.gate ? r : undefined);
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (n === 2) enlazarPaso3();
+  if (s.explora) explorar();
+  nav(); E.dibujar(); pedir(); E.describir();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  [...dots.querySelectorAll('button')].forEach(b => { if (S.ocupado) b.disabled = true; });
+  if (!S.ocupado) pintarDots();
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.innerHTML = (p === P.ok ? '' : `Elegiste la ${LETRAS.indexOf(p) + 1}. `) + P.fb[p].replace(/ tabindex="0"/g, ''); fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    const tras = $('tras'); if (tras) tras.hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    // En el celular, el dibujo sube a la vista y se anima después (nucleo/celular.js).
+    Celular.alResponder($('cv'), () => { s.anima(() => { S.ocupado = false; nav(); E.describir(); }); E.describir(); },
+      () => S.step === paso, { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { const s = steps[S.step]; if (S.ocupado || (s.gate && !S.pred[s.gate.id])) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => {
+  // Al volver de «¿Qué pasa si…?», el explorador se rehace: puede haber algo recién descubierto.
+  if (!document.getElementById('m1').hidden && steps[S.step].explora && !S.ocupado) go(S.step);
+  else { E.resize(); E.dibujar(); pedir(); }
+});
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   atomo-enlace-ideas-erroneas.md (EN16: butano contra isobutano), gases-soluciones-ideas-erroneas.md (gas recogido sobre
+   agua, de «Lo que no tiene respaldo»; GQ16: el gas que condensa) y fluidos-calor-termodinamica-ideas-erroneas.md (Q9 en
+   la olla a presión). El hielo seco y sus opciones incorrectas son hipótesis nuestras. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2');
+const BU = ML.razonEbullicion('butano', 'isobutano'), sB = ML.SUSTANCIAS;
+const GA = ML.gasSobreAgua(760, 25), OL = ML.ollaPresion(1520), CO = ML.calentarAPresion('co2', 1, -100, 20);
+const TRIP = ML.FASES.co2.triple;
+const EXPS = [
+  ordenar({ id:'butano', corto:'Butano e isobutano', ok:'b',
+    q:'El butano y el isobutano tienen la misma fórmula, C₄H₁₀, y los dos van en el gas de los balones de cocina. El butano es una cadena recta; el isobutano, ramificado. ¿Cuál hierve a mayor temperatura?',
+    opts:[['a', 'Iguales: los dos tienen 4 carbonos, y el punto de ebullición lo decide el número de carbonos.', 'EN16-por-carbonos', RES('parcial', 'Schmidt 1996, tabla 2: 20 % de 246, en otra pregunta')],
+          ['b', 'El butano: su cadena recta toca a sus vecinas a lo largo, y se atraen más.'],
+          ['c', 'El isobutano: sus ramas lo hacen más compacto, y sus moléculas quedan más unidas.', 'ramificada-mas-unida', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', 'El butano: los enlaces C–C de su cadena son más fuertes que los del isobutano.', 'enlace-interno-alcanos', RES('hipotesis', 'hipótesis nuestra, cercana a EN14')]],
+    fb:{ a:'El número de carbonos no los distingue: los dos tienen 4. Lo que cambia es la forma. En un estudio con escolares alemanes de los dos últimos años del colegio (Schmidt, 1996), cerca del 20 % de 246 eligió por el número de carbonos al buscar el compuesto de mayor punto de ebullición, en otra pregunta parecida.',
+      c:'Compacto no es más unido: una molécula casi esférica solo toca a sus vecinas en pocos puntos. La atracción entre moléculas sin puentes de hidrógeno crece con la superficie de contacto. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'El butano sí hierve más alto, pero no por sus enlaces de adentro: al hervir, ningún enlace C–C se rompe, y los de las dos moléculas son casi iguales. Lo que cambia es cuánto se tocan las moléculas vecinas. Esta opción es una hipótesis nuestra, cercana a confundir la fuerza del enlace de adentro con la atracción entre moléculas.' },
+    antes:() => ({ paneles:['moleculas'], moleculas:{ contacto:[{ s:'butano' }, { s:'isobutano' }] }, // separadas y sin orientar
+      pie:'Dos moléculas de cada uno. Cada bolita es un grupo CH₃, CH₂ o CH.', vars:[], desc:'Dos moléculas de butano y dos de isobutano, juntas.' }),
+    despues:() => ({ paneles:['moleculas', 'termos'], moleculas:{ contacto:[{ s:'butano', ver:true }, { s:'isobutano', ver:true }] },
+      termos:{ items:['butano', 'isobutano', 'pentano', 'neopentano'].map(s => ({ s, T:sB[s].Teb })), Tmin:-50, Tmax:50 },
+      pie:'Punteado: grupos de una molécula muy cerca de grupos de la otra. Ninguno de los cuatro forma puentes de hidrógeno.', vars:['T'],
+      desc:`El butano se toca con su vecino a lo largo; el isobutano, en pocos puntos. Butano ${fmt(sB.butano.Teb, 1)} grados, isobutano ${fmt(sB.isobutano.Teb, 1)}; pentano ${fmt(sB.pentano.Teb, 1)}, neopentano ${fmt(sB.neopentano.Teb, 1)}.` }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">butano ${T_(gc(sB.butano.Teb))} &gt; isobutano ${T_(gc(sB.isobutano.Teb))} · pentano ${T_(gc(sB.pentano.Teb))} &gt; neopentano ${T_(gc(sB.neopentano.Teb))}</span><span class="note">Misma fórmula, mismo número de carbonos y misma masa molar: gana la cadena recta, que tiene más superficie de contacto con sus vecinas. Con el C₅H₁₂ la diferencia es mayor.</span></div></div>
+      <p>El orden de los criterios: primero, ¿forma puentes de hidrógeno? Después, entre moléculas de tamaño parecido sin puentes, ¿cuánto se tocan? Y entre moléculas sin puentes de distinto tamaño, la más grande atrae más.</p>
+      <p class="fuente">Elegir por el número de carbonos: cerca del 20 % de 246 escolares alemanes en otra pregunta (Schmidt, 1996). Las otras dos opciones incorrectas son hipótesis nuestras.</p>` }, 'acbd'),
+  ordenar({ id:'gas-agua', corto:'Gas recogido sobre agua', ok:'b',
+    q:`Se recoge hidrógeno sobre agua a ${T_('25 °C')} en un tubo invertido. Con el agua de adentro al nivel de la de afuera, la presión total en el tubo es ${Pe_('760 mmHg')}. La ${Pv_('presión de vapor')} del agua a 25 °C es ${Pv_(mm(GA.Pv))}. ¿Qué presión hace el hidrógeno solo?`,
+    opts:[['a', `${mm(GA.errores['no-resta'], 0)}: es la presión que se midió en el tubo.`, 'gas-agua-no-resta', RES('hipotesis', 'informe, «Lo que no tiene respaldo»')],
+          ['b', `${mm(GA.Pgas)}: al total se le resta lo que empuja el vapor del agua.`],
+          ['c', `${mm(GA.errores['suma-el-vapor'])}: al total se le suma lo que empuja el vapor del agua.`, 'gas-agua-suma-el-vapor', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', `${mm(GA.errores['reparte-a-medias'], 0)}: la presión total se reparte por igual entre los dos gases.`, 'gas-agua-reparte-a-medias', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:'En el tubo no hay solo hidrógeno: el agua de abajo se evapora y su vapor también empuja. Los 760 mmHg son la suma de los dos. Que no restar la presión de vapor sea un error frecuente es una hipótesis nuestra: no encontramos un estudio que lo mida.',
+      c:'El vapor ya está dentro de los 760 mmHg: es parte del total, no algo que se agregue. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Cada gas empuja según cuántas moléculas tiene, no por partes iguales; y el vapor de agua, a 25 °C, solo llega a su presión de vapor. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ paneles:['tubo'], tubo:{ nGas:15, nVapor:1 },
+      pie:'Los dos gases del tubo: 15 moléculas de H₂ y 1 de agua, muchas menos de las que hay. La línea punteada marca los niveles iguales.', vars:['Pext'], desc:'Un tubo invertido con hidrógeno y vapor de agua sobre agua; la presión total es 760 milímetros de mercurio.' }),
+    despues:() => ({ paneles:['tubo', 'barras'], tubo:{ nGas:15, nVapor:1, ver:true },
+      barras:{ pila:{ total:{ valor:760, etq:[['total: ', 'ink', 700], ['760 mmHg', 'Pext', 800]] },
+        partes:[{ valor:GA.Pgas, k:'Pgas', etq:[['H₂: ', 'ink', 700], [mm(GA.Pgas), 'Pgas', 800]] }, { valor:GA.Pv, k:'Pv', etq:[[mm(GA.Pv), 'Pv', 800]] }] } },
+      pie:'Con el agua de adentro al nivel de la de afuera, el tubo tiene la presión de afuera. La barra entera es esa presión total: el vapor de agua pone su parte y el resto es del hidrógeno. Por cada molécula de vapor hay unas 31 de H₂; se dibujan 15 y 1.', vars:['Pext', 'Pgas', 'Pv'],
+      desc:`Presión total 760: hidrógeno ${fmt(GA.Pgas, 1)} y vapor de agua ${fmt(GA.Pv, 1)} milímetros de mercurio.` }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${Pe_('P total')} = ${Pg_('P del H₂')} + ${Pv_('Pv')} → ${Pg_('P del H₂')} = ${Pe_('760')} − ${Pv_(fmt(GA.Pv, 1))} = ${Pg_(mm(GA.Pgas))}</span><span class="note">Ley de Dalton: cada gas empuja como si estuviera solo. Para los moles del H₂ (n = PV/RT) se usa la presión del gas seco; con la total salen cerca de un 3 % de más.</span></div></div>
+      <p class="fuente">No encontramos estudios que midan este error de cálculo: las tres opciones incorrectas son hipótesis nuestras, para confirmar con los datos del colegio.</p>` }, 'bacd'),
+  ordenar({ id:'olla', corto:'La olla a presión', ok:'b',
+    q:`En una olla a presión, la tapa con su válvula mantiene adentro unas ${Pe_('2 atm (1520 mmHg)')}, el doble que afuera a nivel del mar. ¿A qué temperatura hierve el agua adentro?`,
+    opts:[['a', 'A unos 100 °C: la olla solo guarda el calor, y el agua sigue hirviendo a 100 °C.', 'olla-sigue-en-100', RES('parcial', 'Q9, Georgiou y Sharma 2010: 44 % y 34 %, en otra situación')],
+          ['b', `A unos ${fmt(OL.T, 0)} °C: su vapor tiene que llegar a empujar 2 atm.`],
+          ['c', `A unos ${fmt(OL.errores['doble-presion-doble-T'], 0)} °C: con el doble de presión, el agua hierve al doble de temperatura.`, 'olla-doble-presion-doble-T', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', 'A menos de 100 °C: la presión de adentro ayuda a que las moléculas escapen del líquido.', 'olla-presion-ayuda-a-escapar', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:'Si siguiera en 100 °C, la olla a presión no cocinaría más rápido. A 100 °C, la presión de vapor del agua es 760 mmHg: no alcanza para formar burbujas contra 1520 mmHg. Que el agua siempre hierve a la misma temperatura lo eligió cerca del 44 % y del 34 % de dos grupos de universitarios de primer año en Sídney (Georgiou y Sharma, 2010), en una pregunta sobre otra situación.',
+      c:'La presión de vapor no crece en proporción a la temperatura en °C: sube mucho más rápido. Para llegar a 2 atm basta pasar de 100 °C a unos 121 °C. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Es al revés: la presión de afuera aplasta las burbujas. Para que crezcan, el vapor tiene que empujar más, y eso pide más temperatura. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ paneles:['olla'], olla:{ burbuja:{ p:1, ver:true }, aire:[['dentro de la olla: ', 'ink', 700], ['1520 mmHg', 'Pext', 800]], rot:[[['hierve a ', 'ink', 700], ['T = ?', 'T', 800]]] },
+      pie:'La olla a presión por dentro. La temperatura se ve al responder.', vars:['Pext', 'T'], desc:'Una olla a presión con 1520 milímetros de mercurio adentro; la temperatura está tapada.' }),
+    anima:true,
+    despues:p => ({ paneles:['curva', 'olla'],
+      curva:{ liq:'agua', Tmin:60, Tmax:130, Pmax:1700, lineas:[
+        { P:1520, etq:[['olla: ', 'ink', 700], ['1520 mmHg', 'Pext', 800]], cruce:true, p: p === undefined ? 1 : p, izq:true },
+        { P:760, etq:[['nivel del mar: ', 'ink', 700], ['760 mmHg', 'Pext', 800]], dash:true, cruce:true, p: p === undefined ? 1 : p, izq:true, alto:14 }] },
+      olla:{ burbuja:{ p:1, ver:true }, aire:[['dentro de la olla: ', 'ink', 700], ['1520 mmHg', 'Pext', 800]], rot:[[['hierve a ', 'ink', 700], [gc(OL.T), 'T', 800]]] },
+      pie:'La presión de vapor del agua llega a 1520 mmHg recién cerca de 121 °C.', vars:['Pv', 'Pext', 'T'],
+      desc:`La curva de presión de vapor del agua corta 1520 milímetros de mercurio a ${fmt(OL.T, 1)} grados y 760 a 100 grados.` }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${Pv_('Pv')}(${T_('T')}) = ${Pe_('1520 mmHg')} → ${T_(gc(OL.T))}</span><span class="note">Ecuación de Antoine con constantes de tabla para el agua sobre 100 °C. Por eso la comida se cocina más rápido: el agua está unos 20 °C más caliente. En Puno, una olla a presión devuelve lo que la altura quita.</span></div></div>
+      <p class="fuente">«Siempre hierve a la misma temperatura»: cerca del 44 % y del 34 % en Sídney (Georgiou y Sharma, 2010), en otra situación. Las otras dos opciones incorrectas son hipótesis nuestras.</p>` }, 'acdb'),
+  { id:'hielo-seco', corto:'El hielo seco', ok:'b',
+    q:`El hielo seco es CO₂ sólido. Al aire, a ${Pe_('1 atm')}, está a ${T_(gc(CO.cambios[0].T))}. Si lo dejas sobre la mesa, recibe calor del aire y de la mesa. ¿Qué pasa con él?`,
+    opts:[['a', 'Se derrite: forma CO₂ líquido, como el hielo de agua forma agua líquida.', 'co2-se-derrite-como-el-agua', RES('hipotesis', 'hipótesis nuestra')],
+          ['b', 'Pasa directo a gas: a 1 atm, el CO₂ líquido no puede existir.'],
+          ['c', 'Se descompone: la nube blanca que sale es carbono y oxígeno que se separan.', 'co2-se-descompone', RES('hipotesis', 'hipótesis nuestra, cercana a EN13')],
+          ['d', 'Se derrite, pero el líquido hierve tan rápido que no alcanzamos a verlo.', 'co2-liquido-fugaz', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:`En el diagrama de fases del CO₂, la zona del líquido empieza en el punto triple, a ${fmt(TRIP.P, 1)} atm. A 1 atm no hay líquido: el sólido pasa directo a gas. Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
+      c:'Las moléculas de CO₂ salen enteras: sublimar no rompe enlaces. La nube blanca son gotitas del agua del aire, que se condensa al enfriarse junto al gas frío. Esta opción es una hipótesis nuestra, cercana a la idea de que al hervir se rompen los enlaces.',
+      d:'No es que el líquido dure poco: a 1 atm no se forma nunca. Haría falta más de 5,1 atm para verlo. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ paneles:['fases'], fases:{ s:'co2', Tmin:-120, Tmax:50, Plo:0.1, Phi:300, oculto:true }, pie:'', vars:[], desc:'El diagrama de fases del CO2, tapado hasta que respondas.' }),
+    anima:true,
+    despues:p => ({ paneles:['fases'], fases:{ s:'co2', Tmin:-120, Tmax:50, Plo:0.1, Phi:300, linea1:true, recorrido:{ P:1, T1:-110, T2:20, p: p === undefined ? 1 : p } },
+      pie:'Línea continua azul: presión de vapor del líquido; a trazos: la del sólido. A 1 atm, la línea naranja pasa debajo del punto triple.', vars:['Pv', 'Pext', 'T'],
+      desc:`Diagrama de fases del CO2. A 1 atmósfera, el sólido pasa directo a gas a ${fmt(CO.cambios[0].T, 1)} grados; el punto triple está a ${fmt(TRIP.P, 1)} atmósferas y ${fmt(TRIP.T, 1)} grados.` }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">CO₂(s) → CO₂(g) a ${T_(gc(CO.cambios[0].T))} con ${Pe_('1 atm')}</span><span class="note">Punto triple del CO₂: ${fmt(TRIP.P, 1)} atm y ${gc(TRIP.T)}. Bajo esa presión, el CO₂ sublima. El agua es al revés: su punto triple está a 0,006 atm, así que a 1 atm el hielo sí se funde.</span></div></div>
+      <p>Por eso se llama hielo seco: no moja. Los extintores de CO₂ lo guardan líquido porque adentro la presión pasa de 50 atm.</p>
+      <p class="fuente">No encontramos estudios con porcentaje sobre el hielo seco: las tres opciones incorrectas son hipótesis nuestras. Las curvas del diagrama son de un modelo que pasa por los puntos de tabla.</p>` },
+  ordenar({ id:'condensa', corto:'El vapor que se enfría', ok:'b',
+    q:'Una caja cerrada tiene vapor de agua caliente. La enfrías y el vapor se vuelve agua líquida en el fondo. ¿Qué les pasa a las moléculas de agua?',
+    opts:[['a', 'Se achican y se juntan: por eso el líquido ocupa mucho menos espacio.', 'GQ16-cambian-de-tamano', RES('parcial', 'Köksal 2018, ítem 17: 65 % según el texto, con reserva')],
+          ['b', 'Se juntan y se atraen, pero cada una sigue del mismo tamaño.'],
+          ['c', 'Se juntan y se quedan quietas: en el líquido, las moléculas ya no se mueven.', 'liquido-quieto', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', 'Se vuelven más pesadas: el agua líquida pesa más que el mismo vapor.', 'liquido-pesa-mas', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:'El líquido ocupa menos espacio porque las moléculas quedan juntas, no porque se achiquen: cada una tiene el mismo tamaño. En un estudio con 104 futuros profesores de primaria de Turquía (Köksal, 2018), el texto dice que cerca del 65 % eligió que en un cambio de estado cambian el tamaño, la energía y la distancia de las partículas; la tabla del artículo salió mal impresa, así que tomamos la cifra con reserva.',
+      c:'En el líquido las moléculas siguen moviéndose: se deslizan unas junto a otras, sin separarse. Por eso un líquido se evapora aunque no hierva. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Son las mismas moléculas: la masa no cambia al condensar. Lo que cambia es cuánto espacio ocupan. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ paneles:['condensa'], condensa:{ n:18, p:0, rot:[['vapor de agua caliente', 'ink', 800]] }, pie:'Cada figura es una molécula de agua.', vars:[], desc:'Una caja con 18 moléculas de agua en estado gaseoso.' }),
+    anima:true,
+    despues:p => ({ paneles:['condensa'], condensa:{ n:18, p: p === undefined ? 1 : p, rot:[[p >= 1 || p === undefined ? 'agua líquida: las mismas 18 moléculas, del mismo tamaño' : 'se enfría…', 'ink', 800]] },
+      pie:'Las moléculas se juntan y se atraen; ninguna se achica ni se rompe, y siguen moviéndose.', vars:[], desc:'Las 18 moléculas se juntan en el fondo como líquido; tienen el mismo tamaño que en el gas.' }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">H₂O(g) → H₂O(l): mismas moléculas, misma masa</span><span class="note">Al condensar se forman atracciones entre moléculas (en el agua, puentes de hidrógeno) y se libera calor. Cambia la distancia entre moléculas, no su tamaño.</span></div></div>
+      <p class="fuente">Que las partículas cambian de tamaño en un cambio de estado: cerca del 65 % de 104 futuros profesores de primaria de Turquía según el texto del artículo (Köksal, 2018), cifra que tomamos con reserva. Las otras dos opciones incorrectas son hipótesis nuestras.</p>` }, 'acbd'),
+];
+const S = { k:0, pred:PRED_EXP, t0:Date.now(), ocupado:false };
+// Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan.
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}"${S.ocupado ? ' disabled' : ''}>${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function despues(x, fin){
+  cortar(E);
+  if (x.anima){ E.vista = x.despues(0); E.dibujar(); animar(E, 1.6, f => { E.vista = x.despues(f); }, () => { E.vista = x.despues(1); if (fin) fin(); }, 0.3); }
+  else { E.vista = x.despues(); if (fin) fin(); }
+  E.dibujar(); pedir();
+}
+function ir(k){
+  if (!abierto(k) || S.ocupado) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  cortar(E); E.vista = ya ? (x.anima ? x.despues(1) : x.despues()) : x.antes();
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const explicar = () => {
+    if (S.k !== k || !S.pred[x.id]) return;
+    $('res2').innerHTML = x.exp() + `<div class="nav">${x.anima ? otraVez : '<span></span>'}${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { if (S.ocupado) return; ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const rep = $('res2').querySelector('[data-repetir]');
+    if (rep) rep.onclick = () => { if (S.ocupado) return; Celular.alResponder($('cv2'), () => despues(x, () => E.describir()), () => S.k === k); };
+  };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    explicar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id] || S.ocupado) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; S.ocupado = true; pintar(); botones();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    E.compactar(false);
+    Celular.alResponder($('cv2'), () => { despues(x, () => { S.ocupado = false; botones(); E.describir(); }); E.describir(); },
+      () => S.k === k, { siNo:() => { S.ocupado = false; botones(); } });
+  });
+  pintar(); E.dibujar(); pedir(); E.describir();
+}
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

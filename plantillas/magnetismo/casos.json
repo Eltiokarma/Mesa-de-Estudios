@@ -1,0 +1,111 @@
+{
+  "plantilla": "magnetismo",
+  "unidades": "Todo en SI: cargas en C con su signo (protón +1,6 × 10⁻¹⁹ C, electrón −1,6 × 10⁻¹⁹ C), masas en kg (protón redondeado a 1,6 × 10⁻²⁷ kg para que las cuentas salgan limpias; electrón 9,1 × 10⁻³¹ kg), velocidades en m/s, campo B en T, corrientes en A, distancias, radios y largos en m, fuerzas en N, fuerza por unidad de largo en N/m, tiempos en s, ángulos en grados. μ₀ = 4π × 10⁻⁷ T·m/A (μ₀/2π = 2 × 10⁻⁷). Ejes: x a la derecha, y arriba, z sale de la pantalla (⊙). Un vector es { x, y, z }; un hilo perpendicular a la pantalla es { I, x, y } con I > 0 si sale. sen 37° = 3/5, sen 53° = 4/5, sen 30° = 1/2. 'Bpi' y 'Tpi' son coeficientes de π.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (F.y, errores.comoElCampo.x); las listas se comparan completas; los textos y los booleanos, exactos. 'tambien' repite la llamada con otros argumentos (y, si trae 'fn', con otra función). Los errores típicos van en 'errores': lo que da cada error (MG1 a MG6 y EL9 del informe, o hipótesis nuestras; están definidos en la cabecera de motor.js).",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el código del motor: recalculó con python3 y fracciones exactas (μ₀/2π = 2×10⁻⁷, π como coeficiente, senos de academia). La fuerza sale del módulo |q|vB sen θ con el sentido por determinante, y la trayectoria por geometría (centro, sentido de giro y rotación de ωt). Coinciden los 21 casos y sus «tambien»; solo hubo diferencias de convención (nombres de sentido, 270° contra −90°).",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción 1 (paso 1): protón QUIETO junto a un imán, con B = 0,2 T donde está → F = 0. MG1 y EL9 dicen que el imán lo empuja (imanEmpuja = verdadero)",
+      "fn": "fuerzaCarga", "args": [1.6e-19, { "x": 0, "y": 0, "z": 0 }, { "x": 0.2, "y": 0, "z": 0 }],
+      "espera": { "modulo": 0, "F.x": 0, "F.y": 0, "F.z": 0, "quieta": true, "sentido": "ninguno", "errores.imanEmpuja": true } },
+
+    { "nombre": "Predicción 2 (paso 2): protón a 2 × 10⁶ m/s hacia la izquierda en B = 0,5 T hacia la derecha (paralela y contraria) → F = 0: sigue recto con la misma rapidez. MG2 (la fuerza va con el campo) da 1,6 × 10⁻¹³ N hacia la derecha, contra v: «se frena»",
+      "fn": "fuerzaCarga", "args": [1.6e-19, { "x": -2e6, "y": 0, "z": 0 }, { "x": 0.5, "y": 0, "z": 0 }],
+      "espera": { "modulo": 0, "paralela": true, "theta": 180, "sen": 0, "sentido": "ninguno", "errores.comoElCampo.x": 1.6e-13, "errores.sinSeno": 1.6e-13 } },
+
+    { "nombre": "Predicción 3 (paso 3): protón (q = 1,6 × 10⁻¹⁹ C) a 2 × 10⁶ m/s hacia la derecha en B = 0,2 T que entra (⊗) → F = 6,4 × 10⁻¹⁴ N hacia arriba, perpendicular a v y a B. Con la mano invertida, hacia abajo; con MG2, hacia adentro (en el sentido de B); «hacia donde va», a la derecha",
+      "fn": "fuerzaCarga", "args": [1.6e-19, { "x": 2e6, "y": 0, "z": 0 }, { "x": 0, "y": 0, "z": -0.2 }],
+      "espera": { "F": { "x": 0, "y": 6.4e-14, "z": 0 }, "modulo": 6.4e-14, "theta": 90, "sen": 1, "sentido": "arriba", "perpendicular": true,
+                  "errores.manoInvertida.y": -6.4e-14, "errores.comoElCampo.z": -6.4e-14, "errores.enDireccionDeV.x": 6.4e-14 } },
+
+    { "nombre": "Paso 3: el mismo protón (m = 1,6 × 10⁻²⁷ kg) gira en un círculo de r = m·v/(|q|·B) = 0,1 m, con periodo T = 2πm/(|q|B) = π × 10⁻⁷ s y ω = 2 × 10⁷ rad/s; olvidando m, r saldría 6,25 × 10²⁵ m; con la fórmula invertida, 10 m",
+      "fn": "movimientoCircular", "args": [1.6e-19, 1.6e-27, 2e6, 0.2],
+      "espera": { "r": 0.1, "Tpi": 1e-7, "T": 3.14159265359e-7, "omega": 2e7, "F": 6.4e-14, "a": 4e13, "errores.radioSinMasa": 6.25e25, "errores.radioAlReves": 10 } },
+
+    { "nombre": "Paso 3: la trayectoria exacta del protón que parte del origen: el centro está en (0; 0,1), gira en sentido antihorario y a un cuarto de vuelta (t = T/4) está en (0,1; 0,1) moviéndose hacia arriba con la misma rapidez",
+      "fn": "trayectoria", "args": [1.6e-19, 1.6e-27, { "x": 2e6, "y": 0 }, -0.2, 7.85398163397448e-8],
+      "espera": { "x": 0.1, "y": 0.1, "vy": 2e6, "centro": { "x": 0, "y": 0.1 }, "sentido": "antihorario" },
+      "tambien": [ { "args": [1.6e-19, 1.6e-27, { "x": 2e6, "y": 0 }, -0.2, 1.5707963267949e-7], "espera": { "x": 0, "y": 0.2, "vx": -2e6 } } ] },
+
+    { "nombre": "Predicción 5 (paso 5): un ELECTRÓN (q = −1,6 × 10⁻¹⁹ C) con la misma velocidad y el mismo campo → F = 6,4 × 10⁻¹⁴ N hacia ABAJO; olvidando el signo, hacia arriba como el protón",
+      "fn": "fuerzaCarga", "args": [-1.6e-19, { "x": 2e6, "y": 0, "z": 0 }, { "x": 0, "y": 0, "z": -0.2 }],
+      "espera": { "F": { "x": 0, "y": -6.4e-14, "z": 0 }, "modulo": 6.4e-14, "sentido": "abajo", "errores.sinSigno": { "x": 0, "y": 6.4e-14, "z": 0 } } },
+
+    { "nombre": "Paso 5: el electrón (m = 9,1 × 10⁻³¹ kg) gira en sentido horario con r = 5,6875 × 10⁻⁵ m y T = 2π · 9,1 × 10⁻³¹ / 3,2 × 10⁻²⁰ = 5,6875π × 10⁻¹¹ s",
+      "fn": "movimientoCircular", "args": [-1.6e-19, 9.1e-31, 2e6, 0.2],
+      "espera": { "r": 5.6875e-5, "Tpi": 5.6875e-11, "F": 6.4e-14 },
+      "tambien": [ { "fn": "trayectoria", "args": [-1.6e-19, 9.1e-31, { "x": 2e6, "y": 0 }, -0.2, 0], "espera": { "centro": { "x": 0, "y": -5.6875e-5 }, "sentido": "horario" } } ] },
+
+    { "nombre": "Predicción 4 (paso 4, MG3): protón a 5 × 10⁶ m/s a 37° sobre la horizontal en B = 0,5 T vertical (hacia arriba) → el ángulo entre v y B es 53°: F = |q|vB · sen 53° = 3,2 × 10⁻¹³ N, saliendo de la pantalla. Con el ángulo de la horizontal (sen 37°): 2,4 × 10⁻¹³ N; sin el seno: 4 × 10⁻¹³ N",
+      "fn": "fuerzaCarga", "args": [1.6e-19, { "x": 4e6, "y": 3e6, "z": 0 }, { "x": 0, "y": 0.5, "z": 0 }],
+      "espera": { "F": { "x": 0, "y": 0, "z": 3.2e-13 }, "modulo": 3.2e-13, "sen": 0.8, "sentido": "sale", "perpendicular": true,
+                  "errores.anguloConHorizontal": 2.4e-13, "errores.sinSeno": 4e-13 },
+      "tambien": [ { "fn": "vectorAngulo", "args": [5e6, 37], "espera": { "x": 4e6, "y": 3e6, "z": 0 } } ] },
+
+    { "nombre": "El mismo caso con los datos sueltos y el seno de academia: F = 1,6 × 10⁻¹⁹ · 5 × 10⁶ · 0,5 · 4/5 = 3,2 × 10⁻¹³ N; con el coseno (el ángulo complementario), 2,4 × 10⁻¹³ N. A 30°, la mitad de qvB: 2 × 10⁻¹³ N",
+      "fn": "fuerzaModulo", "args": [1.6e-19, 5e6, 0.5, 53],
+      "espera": { "F": 3.2e-13, "sen": 0.8, "errores.conCoseno": 2.4e-13, "errores.sinSeno": 4e-13 },
+      "tambien": [ { "args": [1.6e-19, 5e6, 0.5, 30], "espera": { "F": 2e-13, "sen": 0.5 } }, { "args": [1.6e-19, 5e6, 0.5, 0], "espera": { "F": 0 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 1: el mismo protón con el doble de rapidez → r = 0,2 m (el doble) y T = π × 10⁻⁷ s (igual). Errores: T × 2, T / 2, r sin cambio, r × 4",
+      "fn": "cambioVelocidad", "args": [1.6e-19, 1.6e-27, 2e6, 0.2, 2],
+      "espera": { "r0": 0.1, "r1": 0.2, "Tpi0": 1e-7, "Tpi1": 1e-7, "razonR": 2, "razonT": 1,
+                  "errores.periodoCrece": 6.28318530718e-7, "errores.periodoBaja": 1.5707963268e-7, "errores.radioIgual": 0.1, "errores.radioCuadrado": 0.4 } },
+
+    { "nombre": "Hélice: protón a 5 × 10⁶ m/s a 37° de B = 0,5 T → v⊥ = 3 × 10⁶ m/s, r = 0,06 m, T = 4π × 10⁻⁸ s (Tpi = 4 × 10⁻⁸) y paso = v∥ · T = 16π × 10⁻² m",
+      "fn": "movimientoCircular", "args": [1.6e-19, 1.6e-27, 5e6, 0.5, 37],
+      "espera": { "vPerp": 3e6, "vParalela": 4e6, "r": 0.06, "Tpi": 4e-8, "paso": 0.502654824574 } },
+
+    { "nombre": "Informe: hilo largo con I = 10 A, a d = 0,2 m → B = 2 × 10⁻⁷ · 10 / 0,2 = 10⁻⁵ T. Con 1/d²: 5 × 10⁻⁵ T; con la fórmula de la espira: π × 10⁻⁵ T; sin el 2π: 2π × 10⁻⁵ T",
+      "fn": "campoHilo", "args": [10, 0.2],
+      "espera": { "B": 1e-5, "errores.unoSobreD2": 5e-5, "errores.comoEspira": 3.14159265359e-5, "errores.sinDosPi": 6.28318530718e-5 } },
+
+    { "nombre": "Predicción 6 (paso 6): el mismo hilo al doble de distancia (0,4 m) → B = 5 × 10⁻⁶ T, la mitad (1/d). Con 1/d²: 2,5 × 10⁻⁶ T; sin cambio: 10⁻⁵ T; al revés: 2 × 10⁻⁵ T",
+      "fn": "cambioDistanciaHilo", "args": [10, 0.2, 2],
+      "espera": { "B0": 1e-5, "B1": 5e-6, "d1": 0.4, "razon": 0.5, "errores.cuadrado": 2.5e-6, "errores.sinCambio": 1e-5, "errores.alReves": 2e-5 } },
+
+    { "nombre": "Predicción 7 (paso 7, MG5): punto medio entre dos hilos de 10 A en sentidos OPUESTOS, separados 0,2 m → cada uno da 2 × 10⁻⁵ T y apuntan igual: B = 4 × 10⁻⁵ T. MG5 dice 0; usar d = 0,2 m en cada hilo da 2 × 10⁻⁵ T; con 1/d², 4 × 10⁻⁴ T. Con corrientes IGUALES, B = 0",
+      "fn": "puntoMedio", "args": [10, -10, 0.2],
+      "espera": { "B": 4e-5, "B1": 2e-5, "B2": 2e-5, "seSuman": true, "sentido": "arriba",
+                  "errores.seAnulan": 0, "errores.distanciaEntreCables": 2e-5, "errores.unoSobreD2": 4e-4, "errores.alReves": 0 },
+      "tambien": [ { "args": [10, 10, 0.2], "espera": { "B": 0, "seSuman": false, "sentido": "ninguno", "errores.alReves": 4e-5 } } ] },
+
+    { "nombre": "Superposición con vectores: hilo de 10 A que sale en (−0,1; 0) y otro de 10 A que entra en (0,1; 0); en el origen los dos campos apuntan hacia arriba (2 × 10⁻⁵ T cada uno) y suman 4 × 10⁻⁵ T a 90°",
+      "fn": "campoHilos", "args": [[{ "I": 10, "x": -0.1, "y": 0 }, { "I": -10, "x": 0.1, "y": 0 }], { "x": 0, "y": 0 }],
+      "espera": { "x": 0, "y": 4e-5, "modulo": 4e-5, "angulo": 90, "errores.sumaModulos": 4e-5, "errores.restaModulos": 0 },
+      "tambien": [ { "args": [[{ "I": 10, "x": 0, "y": 0 }], { "x": 0, "y": 0.2 }], "espera": { "x": -1e-5, "y": 0, "angulo": 180 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 5 (Oersted): brújula a 0,2 m a la derecha de un hilo de 10 A que sale → su norte apunta hacia arriba (90°, antihorario alrededor del hilo); con la corriente invertida, hacia abajo (270°)",
+      "fn": "brujula", "args": [[{ "I": 10, "x": 0, "y": 0 }], { "x": 0.2, "y": 0 }],
+      "espera": { "angulo": 90, "B": 1e-5 },
+      "tambien": [ { "args": [[{ "I": -10, "x": 0, "y": 0 }], { "x": 0.2, "y": 0 }], "espera": { "angulo": 270 } } ] },
+
+    { "nombre": "Espira: I = 10 A, R = 0,1 m → B = μ₀I/(2R) = 2π × 10⁻⁵ T en el centro (Bpi = 2 × 10⁻⁵). Con la fórmula del hilo: 2 × 10⁻⁵ T; sin el 2 del denominador: 4π × 10⁻⁵ T. Con 5 espiras juntas, 10π × 10⁻⁵ T",
+      "fn": "espira", "args": [10, 0.1],
+      "espera": { "B": 6.28318530718e-5, "Bpi": 2e-5, "sentido": "sale", "errores.comoHilo": 2e-5, "errores.sinMedio": 1.25663706144e-4 },
+      "tambien": [ { "args": [10, 0.1, 5], "espera": { "Bpi": 1e-4 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 4: solenoide con n = 1000 espiras/m e I = 2 A → B = μ₀nI = 8π × 10⁻⁴ T; con el doble de espiras por metro, 16π × 10⁻⁴ T. Errores: igual, la mitad, el cuádruple. Con N = 500 en 0,5 m es lo mismo",
+      "fn": "cambioSolenoide", "args": [2, 1000, 2],
+      "espera": { "Bpi0": 8e-4, "Bpi1": 1.6e-3, "B0": 2.51327412287e-3, "razon": 2, "errores.sinCambio": 8e-4, "errores.mitad": 4e-4, "errores.cuadrado": 3.2e-3 },
+      "tambien": [ { "fn": "solenoideNL", "args": [2, 500, 0.5], "espera": { "Bpi": 8e-4, "n": 1000 } } ] },
+
+    { "nombre": "Conductor de 0,5 m con 4 A en B = 0,3 T, perpendicular → F = BIL = 0,6 N; a 30° de B → 0,3 N (con el coseno, 0,3√3 ≈ 0,52 N; sin el seno, 0,6 N)",
+      "fn": "fuerzaConductor", "args": [4, 0.5, 0.3, 90],
+      "espera": { "F": 0.6, "sen": 1, "errores.sinSeno": 0.6 },
+      "tambien": [ { "args": [4, 0.5, 0.3, 30], "espera": { "F": 0.3, "sen": 0.5, "errores.conCoseno": 0.519615242271 } },
+                   { "fn": "cambioAnguloConductor", "args": [4, 0.5, 0.3, 90, 30], "espera": { "F0": 0.6, "F1": 0.3, "razon": 0.5, "errores.sinCambio": 0.6, "errores.cero": 0 } } ] },
+
+    { "nombre": "F = I·L×B como vector: 4 A por un tramo de 0,5 m hacia arriba en B = 0,3 T hacia la derecha → 0,6 N que ENTRA a la pantalla; con el tramo hacia la derecha y B que entra, 0,6 N hacia arriba",
+      "fn": "fuerzaConductorVector", "args": [4, { "x": 0, "y": 0.5, "z": 0 }, { "x": 0.3, "y": 0, "z": 0 }],
+      "espera": { "F": { "x": 0, "y": 0, "z": -0.6 }, "modulo": 0.6, "sentido": "entra", "theta": 90 },
+      "tambien": [ { "args": [4, { "x": 0.5, "y": 0, "z": 0 }, { "x": 0, "y": 0, "z": -0.3 }], "espera": { "F": { "x": 0, "y": 0.6, "z": 0 }, "sentido": "arriba" } } ] },
+
+    { "nombre": "Predicción 8 (paso 8, MG4 y MG6): cables paralelos de 10 A y 20 A en sentidos opuestos, a 0,1 m → 2 × 10⁻⁷ · 10 · 20 / 0,1 = 4 × 10⁻⁴ N/m sobre CADA uno, y se repelen. MG6 predice que el de 10 A recibe el doble; MG4, que se atraen. Los campos de cada uno donde está el otro sí son distintos (2 × 10⁻⁵ y 4 × 10⁻⁵ T). En el mismo sentido, se atraen con la misma fuerza",
+      "fn": "cablesParalelos", "args": [10, -20, 0.1],
+      "espera": { "porLargo": 4e-4, "sobre1": 4e-4, "sobre2": 4e-4, "razon": 1, "tipo": "repulsion", "B1en2": 2e-5, "B2en1": 4e-5,
+                  "errores.masCorrienteMas": 2, "errores.tipoAlReves": "atraccion", "errores.unoSobreD2": 4e-3 },
+      "tambien": [ { "args": [10, 20, 0.1], "espera": { "porLargo": 4e-4, "tipo": "atraccion", "errores.tipoAlReves": "repulsion" } },
+                   { "args": [10, 20, 0.1, 2], "espera": { "F": 8e-4, "sobre1": 8e-4, "sobre2": 8e-4 } } ] }
+  ]
+}

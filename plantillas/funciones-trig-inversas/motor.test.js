@@ -1,4 +1,4 @@
-// Pruebas del motor de «Una sola respuesta». Se corren desde la raíz con: node --test
+// Pruebas del motor de «La ventana principal». Se corren desde la raíz con: node --test
 //
 // 1. Cada caso de casos.json debe salir igual del motor (regla 2 de CLAUDE.md).
 // 2. Propiedades, con números al azar (semilla fija):

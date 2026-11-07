@@ -277,7 +277,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "mas"
+     ]
     },
     {
      "id": "fisica.ondas-mecanicas",
@@ -304,7 +306,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "ondas"
+     ]
     },
     {
      "id": "fisica.fluidos",
@@ -388,7 +392,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "termodinamica"
+     ]
     },
     {
      "id": "fisica.electrostatica",
@@ -480,7 +486,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "magnetismo"
+     ]
     },
     {
      "id": "fisica.induccion-electromagnetica",
@@ -626,7 +634,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "materia-energia"
+     ]
     },
     {
      "id": "quimica.estructura-atomica",
@@ -752,7 +762,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "nomenclatura-inorganica"
+     ]
     },
     {
      "id": "quimica.mol-y-composicion",
@@ -841,7 +853,8 @@
      "grado": 4,
      "plantillas": [
       "estequiometria-limitante",
-      "limitante-particulas"
+      "limitante-particulas",
+      "rendimiento-pureza"
      ]
     },
     {
@@ -902,7 +915,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "liquidos-y-solidos"
+     ]
     },
     {
      "id": "quimica.soluciones",
@@ -1133,7 +1148,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "biomoleculas"
+     ]
     },
     {
      "id": "quimica.recursos-naturales",
@@ -2083,7 +2100,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "cuatro-operaciones"
+     ]
     },
     {
      "id": "aritmetica.divisibilidad",
@@ -3715,7 +3734,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "tablas-graficos"
+     ]
     }
    ]
   },
@@ -4263,6 +4284,23 @@
     "/plantillas/balance-reacciones/papel.json"
    ]
   },
+  "biomoleculas": {
+   "id": "biomoleculas",
+   "titulo": "El taller de las piezas: azúcares, proteínas y grasas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.biomoleculas-y-productos-naturales"
+   ],
+   "url": "/plantillas/biomoleculas/index.html",
+   "papel": "/plantillas/biomoleculas/papel.json",
+   "archivos": [
+    "/plantillas/biomoleculas/index.html",
+    "/plantillas/biomoleculas/motor.js",
+    "/plantillas/biomoleculas/papel.json"
+   ]
+  },
   "calorimetria": {
    "id": "calorimetria",
    "titulo": "Calorimetría",
@@ -4440,6 +4478,23 @@
     "/plantillas/cuadrado-crece/index.html",
     "/plantillas/cuadrado-crece/motor.js",
     "/plantillas/cuadrado-crece/papel.json"
+   ]
+  },
+  "cuatro-operaciones": {
+   "id": "cuatro-operaciones",
+   "titulo": "El tablero de las llevadas: las cuatro operaciones",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.cuatro-operaciones"
+   ],
+   "url": "/plantillas/cuatro-operaciones/index.html",
+   "papel": "/plantillas/cuatro-operaciones/papel.json",
+   "archivos": [
+    "/plantillas/cuatro-operaciones/index.html",
+    "/plantillas/cuatro-operaciones/motor.js",
+    "/plantillas/cuatro-operaciones/papel.json"
    ]
   },
   "dinamica": {
@@ -4633,7 +4688,7 @@
   },
   "funciones-trig-inversas": {
    "id": "funciones-trig-inversas",
-   "titulo": "Una sola respuesta: funciones trigonométricas inversas",
+   "titulo": "La ventana principal: funciones trigonométricas inversas",
    "formato": "escena",
    "estado": "borrador",
    "version": "0.1.0",
@@ -4802,6 +4857,74 @@
     "/plantillas/limitante-particulas/papel.json"
    ]
   },
+  "liquidos-y-solidos": {
+   "id": "liquidos-y-solidos",
+   "titulo": "El frasco cerrado: presión de vapor, ebullición y fuerzas entre moléculas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.liquidos-y-solidos"
+   ],
+   "url": "/plantillas/liquidos-y-solidos/index.html",
+   "papel": "/plantillas/liquidos-y-solidos/papel.json",
+   "archivos": [
+    "/plantillas/liquidos-y-solidos/index.html",
+    "/plantillas/liquidos-y-solidos/motor.js",
+    "/plantillas/liquidos-y-solidos/papel.json"
+   ]
+  },
+  "magnetismo": {
+   "id": "magnetismo",
+   "titulo": "Imanes, cables y cargas: campo y fuerza magnética",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnetismo"
+   ],
+   "url": "/plantillas/magnetismo/index.html",
+   "papel": "/plantillas/magnetismo/papel.json",
+   "archivos": [
+    "/plantillas/magnetismo/index.html",
+    "/plantillas/magnetismo/motor.js",
+    "/plantillas/magnetismo/papel.json"
+   ]
+  },
+  "mas": {
+   "id": "mas",
+   "titulo": "Movimiento armónico simple: resorte, péndulo y la sombra que gira",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.oscilaciones"
+   ],
+   "url": "/plantillas/mas/index.html",
+   "papel": "/plantillas/mas/papel.json",
+   "archivos": [
+    "/plantillas/mas/index.html",
+    "/plantillas/mas/motor.js",
+    "/plantillas/mas/papel.json"
+   ]
+  },
+  "materia-energia": {
+   "id": "materia-energia",
+   "titulo": "La lupa y la balanza: materia y energía",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.materia-y-energia"
+   ],
+   "url": "/plantillas/materia-energia/index.html",
+   "papel": "/plantillas/materia-energia/papel.json",
+   "archivos": [
+    "/plantillas/materia-energia/index.html",
+    "/plantillas/materia-energia/motor.js",
+    "/plantillas/materia-energia/papel.json"
+   ]
+  },
   "maximos-minimos": {
    "id": "maximos-minimos",
    "titulo": "El cordel que encierra: máximos y mínimos",
@@ -4853,6 +4976,23 @@
     "/plantillas/mruv/papel.json"
    ]
   },
+  "nomenclatura-inorganica": {
+   "id": "nomenclatura-inorganica",
+   "titulo": "El árbol de las funciones: nomenclatura inorgánica",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.nomenclatura-inorganica"
+   ],
+   "url": "/plantillas/nomenclatura-inorganica/index.html",
+   "papel": "/plantillas/nomenclatura-inorganica/papel.json",
+   "archivos": [
+    "/plantillas/nomenclatura-inorganica/index.html",
+    "/plantillas/nomenclatura-inorganica/motor.js",
+    "/plantillas/nomenclatura-inorganica/papel.json"
+   ]
+  },
   "numeracion": {
    "id": "numeracion",
    "titulo": "Las fichas que se agrupan: sistemas de numeración",
@@ -4868,6 +5008,23 @@
     "/plantillas/numeracion/index.html",
     "/plantillas/numeracion/motor.js",
     "/plantillas/numeracion/papel.json"
+   ]
+  },
+  "ondas": {
+   "id": "ondas",
+   "titulo": "Ondas en una cuerda y sonido",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.ondas-mecanicas"
+   ],
+   "url": "/plantillas/ondas/index.html",
+   "papel": "/plantillas/ondas/papel.json",
+   "archivos": [
+    "/plantillas/ondas/index.html",
+    "/plantillas/ondas/motor.js",
+    "/plantillas/ondas/papel.json"
    ]
   },
   "optica-espejo-esferico": {
@@ -5031,6 +5188,23 @@
     "/plantillas/relojes-calendarios/papel.json"
    ]
   },
+  "rendimiento-pureza": {
+   "id": "rendimiento-pureza",
+   "titulo": "El montón y la caja punteada: pureza, rendimiento y equivalentes",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estequiometria"
+   ],
+   "url": "/plantillas/rendimiento-pureza/index.html",
+   "papel": "/plantillas/rendimiento-pureza/papel.json",
+   "archivos": [
+    "/plantillas/rendimiento-pureza/index.html",
+    "/plantillas/rendimiento-pureza/motor.js",
+    "/plantillas/rendimiento-pureza/papel.json"
+   ]
+  },
   "segmentos-angulos": {
    "id": "segmentos-angulos",
    "titulo": "La escuadra y las paralelas: segmentos y ángulos",
@@ -5101,6 +5275,40 @@
     "/plantillas/sucesiones/index.html",
     "/plantillas/sucesiones/motor.js",
     "/plantillas/sucesiones/papel.json"
+   ]
+  },
+  "tablas-graficos": {
+   "id": "tablas-graficos",
+   "titulo": "La bodega en gráficos: tablas, gráficos y suficiencia de datos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.tablas-graficos-y-suficiencia"
+   ],
+   "url": "/plantillas/tablas-graficos/index.html",
+   "papel": "/plantillas/tablas-graficos/papel.json",
+   "archivos": [
+    "/plantillas/tablas-graficos/index.html",
+    "/plantillas/tablas-graficos/motor.js",
+    "/plantillas/tablas-graficos/papel.json"
+   ]
+  },
+  "termodinamica": {
+   "id": "termodinamica",
+   "titulo": "Termodinámica: primera ley, diagrama P-V y máquinas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.termodinamica"
+   ],
+   "url": "/plantillas/termodinamica/index.html",
+   "papel": "/plantillas/termodinamica/papel.json",
+   "archivos": [
+    "/plantillas/termodinamica/index.html",
+    "/plantillas/termodinamica/motor.js",
+    "/plantillas/termodinamica/papel.json"
    ]
   },
   "tiro-parabolico": {

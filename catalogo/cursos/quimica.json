@@ -30,7 +30,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["materia-energia"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {
@@ -154,8 +154,8 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["nomenclatura-inorganica"],
+      "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {
       "id": "quimica.mol-y-composicion",
@@ -242,7 +242,8 @@
       "grado": 4,
       "plantillas": [
         "estequiometria-limitante",
-        "limitante-particulas"
+        "limitante-particulas",
+        "rendimiento-pureza"
       ],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },
@@ -303,7 +304,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["liquidos-y-solidos"],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
     },
     {
@@ -471,7 +472,7 @@
       "potencial_visual": "bajo",
       "grado": 4,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {
       "id": "quimica.funciones-organicas",
@@ -502,7 +503,7 @@
       "potencial_visual": "bajo",
       "grado": 4,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {
       "id": "quimica.biomoleculas-y-productos-naturales",
@@ -532,8 +533,8 @@
       },
       "potencial_visual": "bajo",
       "grado": 5,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["biomoleculas"],
+      "investigacion": "docs/investigacion/biomoleculas-ideas-erroneas.md"
     },
     {
       "id": "quimica.recursos-naturales",

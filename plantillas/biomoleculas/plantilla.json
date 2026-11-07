@@ -1,0 +1,15 @@
+{
+  "id": "biomoleculas",
+  "titulo": "El taller de las piezas: azúcares, proteínas y grasas",
+  "formato": "escena",
+  "unidades": [
+    "quimica.biomoleculas-y-productos-naturales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

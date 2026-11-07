@@ -339,3 +339,173 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
    - ΔE00 mínimo 20,7 en claro y 25,2 en oscuro;
    - el rojo de los avisos queda a 17,4 del Na⁺ en oscuro, y el aviso siempre va con texto.
 3. En `docs/pendientes.md` y `CLAUDE.md`, una línea como las demás.
+
+## 7 nov 2026 · liquidos-y-solidos (la última de la cola)
+
+**Contexto.** Enlace quedó integrado. La conversación principal trajo la paleta común de elementos (`nucleo/elementos.js`): esta escena la usa, con `Elementos.css([...])`, y se sumó a `nucleo/elementos-escenas.test.js`. Ese test es la única excepción fuera de mi carpeta, y la pidió la conversación principal. Al juntar la rama principal hubo un conflicto en `plantillas/enlace/index.html`: tomé su versión, que es la mía con el Na⁺ de la paleta común. El contenedor se reinició a mitad de camino y retomé a los constructores desde el disco.
+
+**Qué se hizo.** `plantillas/liquidos-y-solidos/` (unidad `quimica.liquidos-y-solidos`). Usa los informes de gases y soluciones (GQ16 a GQ19), de átomo y enlace (EN13 a EN16) y de física (Q9).
+
+- **`motor.js`** (`window.MotorLiquidos`):
+  - presión de vapor de agua, etanol y acetona con Antoine (rangos declarados);
+  - punto de ebullición según la presión y según la altitud, con la misma atmósfera estándar de calorimetría: una prueba comprueba que Juliaca da igual en las dos;
+  - olla a presión;
+  - puentes de hidrógeno (EN15) y orden de puntos de ebullición, con datos del CRC;
+  - gas recogido sobre agua, humedad relativa y punto de rocío;
+  - frasco cerrado (GQ18) con una caja de partículas que se evaporan y condensan hasta igualar los dos flujos;
+  - diagramas de fases del agua y del CO₂.
+- **Números:** 52 casos, 10 problemas de papel y 80 pruebas.
+- **`index.html`:**
+  - **Paso a paso:** 8 pasos con 5 predicciones:
+    - el frasco grande contra el chico (GQ18);
+    - qué hay en las burbujas (EN13);
+    - por qué en Puno hierve antes (Q9);
+    - H₂O contra H₂S (EN14);
+    - quién forma puentes de hidrógeno (EN15).
+  - **¿Qué pasa si…?:** 5 experimentos bloqueados en orden: butano contra isobutano (EN16), gas sobre agua, olla a presión, hielo seco y el vapor que se enfría (GQ16).
+  - **Explorador:** líquido, temperatura y presión externa.
+
+**Subagentes.**
+- **Verificador:** con `entradas.py` y sin leer el motor. 48 de 52 casos coinciden exactos; los otros 4 coinciden una vez declaradas las constantes que faltaban en la cabecera (R, los puntos del CO₂ en Pa).
+- **Revisor:** encontró dos graves:
+  - la correcta caía siempre en b en «¿Qué pasa si…?»;
+  - la barra del gas sobre agua regalaba la respuesta.
+  
+  Y estos medios:
+  - dos opciones con la misma respuesta (Puno, butano);
+  - el dibujo del butano insinuaba la respuesta;
+  - moléculas encimadas;
+  - con movimiento reducido, el paso 3 no mostraba el equilibrio;
+  - lecturas con ruido;
+  - la T verde dentro del texto verde de «correcto»;
+  - el puente de hidrógeno contra la presión externa en oscuro.
+  
+  Además, 10 bajos.
+- **Estado:** todo corregido. Decidí bajar GQ18 y GQ16 a 'parcial', que es lo prudente. Lo que se arregló:
+  - las correctas ahora caen en posiciones variadas, y en ninguna predicción la correcta es la más larga;
+  - la barra del gas sobre agua solo aparece después de responder;
+  - opciones nuevas para Puno y para el butano;
+  - el butano sin orientar antes de responder;
+  - el paso 3 con el ritmo de equilibrio del motor también con movimiento reducido;
+  - el color del puente de hidrógeno pasó a granate/rosa (#570011 / #fbb1e5), porque el propuesto no pasaba AA en oscuro;
+  - la cabecera del motor ya declara R y el CO₂ en Pa;
+  - con la regla nueva de la conversación principal, el subtítulo y el paso 1 ya no regalan nada.
+
+  Volvió a correr Playwright en las 8 combinaciones, sin errores.
+
+**Pendiente.**
+- La humedad relativa solo está en el motor y en el papel; no tiene escena.
+- Hay que cotejar con la tabla del colegio:
+  - las constantes de Antoine;
+  - los puntos de ebullición del CRC;
+  - los puntos triples;
+  - los momentos dipolares que cita el paso 6 (H₂O 1,85 D y H₂S 0,97 D, de memoria; no salen de un informe).
+- El agua tiene dos tramos de Antoine que difieren 0,55 % a 100 °C; el motor deja la ebullición en 100,0 °C entre 760,1 y 764,3 mmHg.
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/quimica.json`, unidad `quimica.liquidos-y-solidos`, poner `"plantillas": ["liquidos-y-solidos"]`. Después, `npm run catalogo` y, si hace falta, rebalancear el banco de química.
+2. En `docs/diseno.md`, las variables de líquidos y sólidos (`plantillas/liquidos-y-solidos/`):
+   - presión de vapor Pv: azul (#1f5fbf, oscuro #7cb0ff);
+   - presión externa Pext: naranja (#a05200, oscuro #f0a04a);
+   - temperatura T: verde (#377703, oscuro #97f91f), no rojo, porque el O de la paleta común es rojo;
+   - puente de hidrógeno: granate (#570011, oscuro #fbb1e5);
+   - presión del gas seco Pgas: fucsia (#a10fbf, oscuro #cf6bfa);
+   - los elementos, con la paleta común.
+
+   El ΔE00 mínimo entre variables es 20,4 (puente de hidrógeno contra Pgas).
+3. En `docs/pendientes.md` y en `CLAUDE.md`, una línea como las demás.
+
+**Con esto se termina la cola de esta rutina** (equilibrio químico, cinética, mol y composición, átomo y tabla, enlace, líquidos y sólidos). Si Gerson quiere más química A, hay que darle una lista nueva. La química B (materia, nomenclatura y orgánica) va en su propia rutina.
+
+## 7 nov 2026 · lista nueva de la conversación principal (a pedido de Gerson): rendimiento y pureza, biomoléculas, química ambiental
+
+Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomoléculas y de ambiente no tenían informe de ideas erróneas, así que dos investigadores los escribieron dentro de sus plantillas. La red volvió a bloquear los PDF: las cifras nuevas salen de resúmenes y van «por verificar».
+
+### biomoleculas (terminada)
+
+**Qué se hizo.** `plantillas/biomoleculas/` (unidad `quimica.biomoleculas-y-productos-naturales`).
+- **`investigacion.md`.** BM1 a BM10 y BMH1 a BMH14. Lo que más se pregunta en academia no tiene ningún estudio con cifra: la desnaturalización que rompe enlaces peptídicos, el almidón igual a la celulosa y los errores de cálculo. Todo eso va como hipótesis.
+- **Motor (`window.MotorBiomoleculas`).**
+  - Condensación e hidrólisis, restando o sumando un H₂O por unión.
+  - Sacáridos, péptidos (n − 1 enlaces) y polisacáridos (162n + 18 exacto, o (C₆H₁₀O₅)ₙ).
+  - Triglicéridos con índices de saponificación y de yodo, e hidrogenación.
+  - Desnaturalización y plegado, digestión con enlace α o β, y energía con los factores de Atwater.
+- **Pruebas.** 30 casos, 10 problemas de papel y 51 pruebas.
+- **Escena.** Un taller de bloques: cada bloque es una molécula entera y suelta una gota de agua al unirse.
+  - **Paso a paso:** 4 predicciones (sacarosa, Gly-Ala-Ser, clara cocida, almidón contra celulosa).
+  - **¿Qué pasa si…?:** 5 experimentos (hidrólisis de la sacarosa, 1000 glucosas, jabón con dos grasas, aceite que gana hidrógeno, vitaminas y energía). El 1 y el 2 se abren recién al responder los pasos 2 y 4, porque si no regalaban sus respuestas. La pestaña sigue abierta.
+
+**Subagentes.**
+- **Verificador:** armó cada molécula átomo por átomo y contó por enumeración. Coinciden los 30 casos con sus variantes; las diferencias son solo de forma.
+- **Revisor:** ninguna grave. Medias:
+  - «¿Qué pasa si…?» regalaba los pasos 2 y 4;
+  - el vaso de E1 delataba la respuesta;
+  - la forma de las opciones de E5 delataba la correcta;
+  - respaldos BM1, BM6 y BM7 bajados a 'parcial';
+  - la clara cocida, donde el punteado de las atracciones débiles casi no se veía (ahora hay dos estados fijos y un botón «Ver de nuevo»);
+  - las notas sobre los puentes S–S y sobre α y β-glucosa;
+  - títulos y botones que anticipaban respuestas.
+  
+  Todo corregido. Volvió a probar las 8 combinaciones con Playwright y el bloqueo por pasos de punta a punta.
+
+**Pendiente.**
+- Las cifras de BM1 a BM10 están por verificar contra los textos completos. La red bloqueó core.ac.uk, files.eric.ed.gov, pmc.ncbi.nlm.nih.gov, lifescied.org y otros.
+- Alcaloides, polifenoles y colorantes no tienen escena: el informe no encontró nada.
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/quimica.json`, unidad `quimica.biomoleculas-y-productos-naturales`: `"plantillas": ["biomoleculas"]` e `"investigacion": "docs/investigacion/biomoleculas-ideas-erroneas.md"`. Mover `plantillas/biomoleculas/investigacion.md` ahí. Después, `npm run catalogo`.
+2. En `docs/diseno.md`, variables de biomoléculas:
+   - n, piezas: granate #570011 / #fbb1e5;
+   - k, uniones: naranja #a05200 / #f0a04a;
+   - Mp, masa de las piezas: verde #377703 / #97f91f;
+   - Ma, 18 del agua: azul #1f5fbf / #7cb0ff;
+   - M, masa de la molécula: fucsia #a10fbf / #cf6bfa.
+   
+   Son los mismos de líquidos y sólidos, con otro significado, y H y O vienen de la paleta común. Ojo: el O queda cerca de `--warn` y el H del verde de `--ok`; los dos siempre van con texto.
+3. Una línea en `docs/pendientes.md` y otra en `CLAUDE.md`.
+
+### rendimiento-pureza (terminada)
+
+**Qué se hizo.** `plantillas/rendimiento-pureza/` (unidad `quimica.estequiometria`). Es la escena que faltaba según `docs/pendientes.md`; el informe es `estequiometria-ideas-erroneas.md`. En la sección «Rendimiento y reactivos impuros» todo es hipótesis.
+- **Motor (`window.MotorRendimiento`):**
+  - pureza;
+  - rendimiento teórico, real, porcentual y en cadena;
+  - problema inverso;
+  - balance de masa en recipiente cerrado (lo que no se formó queda como reactivo sin reaccionar);
+  - combustión incompleta;
+  - volumen en condiciones normales;
+  - equivalentes con θ declarado y la ley de equivalentes;
+  - errores típicos: muestra como pura, olvidar el rendimiento, sumar porcentajes, dividir por η.
+- **Números:** 29 casos, 10 problemas de papel y 53 pruebas.
+- **Escena:**
+  - montones de impureza, de puro y de producto, más la caja punteada del teórico;
+  - 4 predicciones: el mineral de Fe₂O₃ (100,8 g), el rendimiento porcentual, el recipiente cerrado y el problema inverso;
+  - 4 experimentos: rendimiento en cadena con 80 % y 60 %, mejorar la pureza contra mejorar el horno, gas en condiciones normales y equivalentes.
+
+**Subagentes.**
+- **Verificador:** recalculó por factores de conversión y por moles. Coinciden 142 de 145 campos; las 3 diferencias eran de interpretación de la cabecera, que ya está aclarada.
+- **Revisor:** sin hallazgos graves. Los medios, ya corregidos:
+  - la tapa del explorador para el experimento 2 era débil;
+  - el experimento 1 ya estaba resuelto en el paso a paso, así que se cambiaron sus números;
+  - el dibujo del gas contradecía el enunciado;
+  - el reactivo puro no bajaba al reaccionar;
+  - el celular en el paso 7;
+  - la definición de pureza;
+  - el par de colores teo y vol: vol pasó a vino #730030 / magenta #ff47c8;
+  - la caja punteada «guardaba» masa.
+  
+  Además, 10 bajos. Se volvió a probar con Playwright en las 8 combinaciones.
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/quimica.json`, sumar `"rendimiento-pureza"` a las plantillas de `quimica.estequiometria`. Después, `npm run catalogo` y rebalancear el banco si hace falta.
+2. En `docs/diseno.md`, los colores de rendimiento y pureza:
+   - impureza: café #7a4a1e (oscuro #d9a877);
+   - reactivo puro: turquesa #0d6f6b (#4fd1c5);
+   - teórico: violeta #6a3fc0 (#b49cff), en la caja punteada;
+   - real: verde #36700c (#8fd14f);
+   - volumen en condiciones normales: vino #730030 (#ff47c8);
+   - equivalentes: naranja #a04f00 (#ffa64d);
+   - Fe y O, de la paleta común, solo en la lupa de la hematita.
+   
+   El ΔE00 mínimo entre los que salen juntos es 20,1. Ojo: el puro y el real quedan cerca del verde de `--ok`, que siempre va con texto.
+3. Una línea en `docs/pendientes.md` y otra en `CLAUDE.md`.

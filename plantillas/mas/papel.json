@@ -1,0 +1,410 @@
+{
+  "titulo": "Movimiento armónico simple: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa x = A·sen(ωt + φ), ω = √(k/m) en el resorte y ω = √(g/L) en el péndulo, y T = 2π/ω. La rapidez máxima es Aω (en el centro) y la aceleración máxima Aω² (en los extremos). La energía total es ½·k·A² y no cambia. Toma g = 10 m/s², salvo que el problema diga otra cosa.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un bloque de 0,5 kg está unido a un resorte de constante 50 N/m sobre una mesa sin roce. Se lo aparta de su posición de equilibrio y se lo suelta. ¿Cuánto tarda una oscilación completa y cuántas oscilaciones da en un segundo?",
+      "respuesta": "T = π/5 s ≈ 0,63 s; f = 5/π ≈ 1,6 oscilaciones por segundo.",
+      "pasos": [
+        "La rapidez angular del MAS es ω = √(k/m) = √(50/0,5) = √100 = 10 rad/s.",
+        "El período es T = 2π/ω = 2π/10 = π/5 s, cerca de 0,63 s.",
+        "La frecuencia es la inversa: f = 1/T = 5/π, cerca de 1,6 oscilaciones por segundo.",
+        "No hizo falta saber cuánto se apartó el bloque: el período no depende de la amplitud."
+      ],
+      "verificar": [
+        {
+          "fn": "resorte",
+          "args": [
+            {
+              "m": 0.5,
+              "k": 50,
+              "A": 0.1
+            }
+          ],
+          "espera": {
+            "omega": 10,
+            "T": 0.6283185307179586,
+            "f": 1.5915494309189535
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "La posición de un oscilador es x = 0,2·sen(5t + π/2), con x en metros y t en segundos. Halla la amplitud, el período, la rapidez máxima y la aceleración máxima. ¿Dónde está el oscilador en t = 0?",
+      "respuesta": "A = 0,2 m; T = 2π/5 s ≈ 1,26 s; v máx = 1 m/s; a máx = 5 m/s². En t = 0 está en el extremo x = +0,2 m, quieto.",
+      "pasos": [
+        "Se compara con x = A·sen(ωt + φ): A = 0,2 m, ω = 5 rad/s y φ = π/2 (90°).",
+        "El período es T = 2π/ω = 2π/5 s, cerca de 1,26 s.",
+        "La rapidez máxima es A·ω = 0,2 · 5 = 1 m/s, y se alcanza al pasar por el centro.",
+        "La aceleración máxima es A·ω² = 0,2 · 25 = 5 m/s², en los extremos.",
+        "En t = 0: x = 0,2·sen 90° = 0,2 m. Es el extremo: ahí la velocidad es cero y la aceleración es máxima, hacia el centro."
+      ],
+      "verificar": [
+        {
+          "fn": "resorte",
+          "args": [
+            {
+              "m": 1,
+              "k": 25,
+              "A": 0.2,
+              "phi": 90
+            }
+          ],
+          "espera": {
+            "omega": 5,
+            "T": 1.2566370614359172,
+            "vmax": 1,
+            "amax": 5
+          }
+        },
+        {
+          "fn": "estadoResorte",
+          "args": [
+            {
+              "m": 1,
+              "k": 25,
+              "A": 0.2,
+              "phi": 90
+            },
+            0
+          ],
+          "espera": {
+            "x": 0.2,
+            "v": 0,
+            "a": -5
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un resorte de constante 200 N/m oscila con un bloque y una amplitud de 10 cm, sin roce. ¿Cuál es su energía total? ¿Cuánta energía cinética tiene el bloque cuando pasa a 5 cm del equilibrio? ¿A qué distancia del equilibrio la energía cinética y la potencial son iguales?",
+      "respuesta": "E = 1 J; a 5 cm, la cinética es 0,75 J; son iguales a 10/√2 ≈ 7,1 cm del equilibrio.",
+      "pasos": [
+        "La energía total es la potencial en el extremo, donde el bloque está quieto: E = ½·k·A² = ½ · 200 · 0,1² = 1 J.",
+        "A 5 cm, la potencial es ½ · 200 · 0,05² = 0,25 J. La cinética es lo que falta: 1 − 0,25 = 0,75 J.",
+        "Ojo: a la mitad de la amplitud la cinética no es la mitad de la energía, sino tres cuartos. La potencial crece con x², no con x.",
+        "Para que sean iguales, cada una vale 0,5 J: ½ · 200 · x² = 0,5, así que x² = 0,005 y x = 0,1/√2, cerca de 7,1 cm."
+      ],
+      "verificar": [
+        {
+          "fn": "enPosicionResorte",
+          "args": [
+            {
+              "m": 2,
+              "k": 200,
+              "A": 0.1
+            },
+            0.05
+          ],
+          "espera": {
+            "E": 1,
+            "Ec": 0.75,
+            "Ep": 0.25
+          }
+        },
+        {
+          "fn": "enPosicionResorte",
+          "args": [
+            {
+              "m": 2,
+              "k": 200,
+              "A": 0.1
+            },
+            0.07071067811865475
+          ],
+          "espera": {
+            "Ec": 0.5,
+            "Ep": 0.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "En un reloj antiguo, el péndulo tarda 2 s en una oscilación completa. Toma g = π² m/s². ¿Cuánto mide el péndulo, desde el punto de suspensión hasta el centro de la pesa? Si se cambia la pesa por otra del doble de masa, ¿cuánto tarda ahora?",
+      "respuesta": "L = 1 m. Con la pesa del doble de masa sigue tardando 2 s.",
+      "pasos": [
+        "Para ángulos pequeños, T = 2π·√(L/g). Con T = 2 s: 2 = 2π·√(L/π²) = 2π·√L/π = 2·√L. (Es lo mismo que tomar g = 10 y π² ≈ 10, como en muchos exámenes.)",
+        "Entonces √L = 1 y L = 1 m.",
+        "La masa no aparece en la fórmula: una pesa más pesada sufre más fuerza de gravedad, pero también cuesta más acelerarla. Las dos cosas se compensan y el período sigue siendo 2 s."
+      ],
+      "verificar": [
+        {
+          "fn": "pendulo",
+          "args": [
+            {
+              "L": 1,
+              "g": 9.869604401089358,
+              "m": 0.2
+            }
+          ],
+          "espera": {
+            "T": 2
+          }
+        },
+        {
+          "fn": "comparar",
+          "args": [
+            "pendulo",
+            {
+              "L": 1,
+              "g": 9.869604401089358,
+              "m": 0.2
+            },
+            {
+              "L": 1,
+              "g": 9.869604401089358,
+              "m": 0.4
+            }
+          ],
+          "espera": {
+            "razonT": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un péndulo de 3 m cuelga del techo de un ascensor. El ascensor baja y está frenando, de modo que su aceleración es de 2 m/s² hacia arriba. ¿Cuál es el período del péndulo? ¿Y con el ascensor quieto?",
+      "respuesta": "Frenando al bajar: T = π s ≈ 3,14 s. Quieto: T = 2π·√0,3 ≈ 3,44 s.",
+      "pasos": [
+        "Si el ascensor baja frenando, su aceleración apunta hacia arriba, igual que si subiera arrancando. Para el péndulo, la gravedad efectiva es g + a = 10 + 2 = 12 m/s².",
+        "T = 2π·√(L/gef) = 2π·√(3/12) = 2π·√(1/4) = π s, cerca de 3,14 s.",
+        "Con el ascensor quieto, gef = 10 m/s² y T = 2π·√0,3, cerca de 3,44 s.",
+        "Mira el sentido de la aceleración, no el de la velocidad: un ascensor que baja frenando aumenta la gravedad efectiva."
+      ],
+      "verificar": [
+        {
+          "fn": "pendulo",
+          "args": [
+            {
+              "L": 3,
+              "ay": 2
+            }
+          ],
+          "espera": {
+            "gef": 12,
+            "T": 3.141592653589793
+          }
+        },
+        {
+          "fn": "pendulo",
+          "args": [
+            {
+              "L": 3
+            }
+          ],
+          "espera": {
+            "T": 3.4414423257272855
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se tienen dos resortes de constantes 30 N/m y 60 N/m y un bloque de 0,2 kg. ¿Cuál es el período si el bloque cuelga de los dos resortes unidos uno a continuación del otro? ¿Y si cuelga de los dos a la vez, uno al lado del otro?",
+      "respuesta": "Uno a continuación del otro (serie): k = 20 N/m y T = π/5 s ≈ 0,63 s. Uno al lado del otro (paralelo): k = 90 N/m y T = π√2/15 s ≈ 0,30 s.",
+      "pasos": [
+        "En serie, cada resorte aguanta la fuerza entera y los estiramientos se suman: 1/k = 1/30 + 1/60 = 3/60, así que k = 20 N/m. Es menor que cada uno: el conjunto es más blando.",
+        "T = 2π·√(m/k) = 2π·√(0,2/20) = 2π · 0,1 = π/5 s, cerca de 0,63 s.",
+        "En paralelo, los dos se estiran lo mismo y las fuerzas se suman: k = 30 + 60 = 90 N/m. Es más duro que cada uno.",
+        "T = 2π·√(0,2/90) = 2π/(15√2) = π√2/15 s, cerca de 0,30 s."
+      ],
+      "verificar": [
+        {
+          "fn": "resortes",
+          "args": [
+            {
+              "k": [
+                30,
+                60
+              ],
+              "modo": "serie",
+              "m": 0.2
+            }
+          ],
+          "espera": {
+            "keq": 20,
+            "T": 0.6283185307179586
+          }
+        },
+        {
+          "fn": "resortes",
+          "args": [
+            {
+              "k": [
+                30,
+                60
+              ],
+              "modo": "paralelo",
+              "m": 0.2
+            }
+          ],
+          "espera": {
+            "keq": 90,
+            "T": 0.2961921958772244
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Al colgar un bloque de 2 kg de un resorte, este se estira 5 cm y el bloque queda en equilibrio. Luego se jala el bloque 3 cm más hacia abajo y se lo suelta. Halla la constante del resorte, el período y la rapidez máxima del bloque.",
+      "respuesta": "k = 400 N/m; T = π√2/10 s ≈ 0,44 s; v máx = 0,3√2 m/s ≈ 0,42 m/s.",
+      "pasos": [
+        "En el equilibrio, la fuerza del resorte iguala al peso: k · 0,05 = 2 · 10, así que k = 400 N/m.",
+        "La oscilación es alrededor de ese equilibrio, y la amplitud es lo que se jaló desde ahí: A = 3 cm (no 8 cm).",
+        "ω = √(k/m) = √200 = 10√2 rad/s y T = 2π/ω = π√2/10 s, cerca de 0,44 s. Es el mismo período que tendría en horizontal: la gravedad solo corre el centro.",
+        "v máx = A·ω = 0,03 · 10√2 = 0,3√2 m/s, cerca de 0,42 m/s."
+      ],
+      "verificar": [
+        {
+          "fn": "resorte",
+          "args": [
+            {
+              "m": 2,
+              "k": 400,
+              "A": 0.03,
+              "orientacion": "vertical"
+            }
+          ],
+          "espera": {
+            "deq": 0.05,
+            "T": 0.4442882938158366,
+            "vmax": 0.42426406871192857
+          }
+        },
+        {
+          "fn": "resorte",
+          "args": [
+            {
+              "m": 2,
+              "k": 400,
+              "A": 0.03
+            }
+          ],
+          "espera": {
+            "T": 0.4442882938158366
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "Un bloque unido a un resorte oscila con una amplitud de 4 cm y tarda 0,5 s en cada oscilación. Si se lo suelta ahora desde 8 cm, ¿cuánto tarda cada oscilación? ¿Cómo cambian su rapidez máxima y su energía?",
+      "respuesta": "Sigue tardando 0,5 s. La rapidez máxima se duplica y la energía se cuadruplica.",
+      "pasos": [
+        "El período depende solo de la masa y del resorte: T = 2π·√(m/k). No cambiaron, así que T sigue siendo 0,5 s.",
+        "Recorre el doble de camino, pero también va más rápido: la rapidez máxima es A·ω, y con el doble de A es el doble.",
+        "La energía es ½·k·A²: con el doble de amplitud es 2² = 4 veces mayor."
+      ],
+      "verificar": [
+        {
+          "fn": "comparar",
+          "args": [
+            "resorte",
+            {
+              "m": 1,
+              "k": 157.91367041742973,
+              "A": 0.04
+            },
+            {
+              "m": 1,
+              "k": 157.91367041742973,
+              "A": 0.08
+            }
+          ],
+          "espera": {
+            "T1": 0.5,
+            "T2": 0.5,
+            "razonVmax": 2,
+            "razonE": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un oscilador con ω = 10 rad/s pasa en t = 0 por x = +3 cm moviéndose hacia +x a 40 cm/s. Halla su amplitud y su fase inicial, y escribe su ecuación de posición. Usa sen 37° = 3/5.",
+      "respuesta": "A = 5 cm y φ = 37°: x = 0,05·sen(10t + 37°), en metros.",
+      "pasos": [
+        "En t = 0: x₀ = A·sen φ = 0,03 y v₀ = A·ω·cos φ = 0,4, así que A·cos φ = 0,4/10 = 0,04.",
+        "Por Pitágoras, A = √(0,03² + 0,04²) = 0,05 m = 5 cm.",
+        "sen φ = 0,03/0,05 = 3/5 y cos φ = 4/5 (positivo, porque se mueve hacia +x): φ = 37°.",
+        "La ecuación es x = 0,05·sen(10t + 37°). La rapidez máxima es A·ω = 0,5 m/s."
+      ],
+      "verificar": [
+        {
+          "fn": "resorte",
+          "args": [
+            {
+              "m": 0.1,
+              "k": 10,
+              "x0": 0.03,
+              "v0": 0.4
+            }
+          ],
+          "espera": {
+            "A": 0.05,
+            "vmax": 0.5
+          }
+        },
+        {
+          "fn": "estadoResorte",
+          "args": [
+            {
+              "m": 0.1,
+              "k": 10,
+              "A": 0.05,
+              "phi": 37
+            },
+            0
+          ],
+          "espera": {
+            "x": 0.03,
+            "v": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Un péndulo está hecho con un hilo de 2,4 m y una esfera de 10 cm de radio. ¿Cuál es su período para ángulos pequeños? ¿Cuánto saldría si se midiera el largo solo hasta donde termina el hilo?",
+      "respuesta": "Con L = 2,5 m hasta el centro de la esfera, T = π s ≈ 3,14 s. Solo con el hilo saldría 2π·√0,24 ≈ 3,08 s.",
+      "pasos": [
+        "El largo del péndulo va del punto de suspensión al centro de la esfera: L = 2,4 + 0,1 = 2,5 m.",
+        "T = 2π·√(L/g) = 2π·√(2,5/10) = 2π · 0,5 = π s, cerca de 3,14 s.",
+        "Si se toma solo el hilo, L = 2,4 m y T = 2π·√0,24, cerca de 3,08 s: la diferencia es pequeña, pero en una alternativa de examen cambia la respuesta."
+      ],
+      "verificar": [
+        {
+          "fn": "pendulo",
+          "args": [
+            {
+              "hilo": 2.4,
+              "radio": 0.1
+            }
+          ],
+          "espera": {
+            "L": 2.5,
+            "T": 3.141592653589793,
+            "errores.soloHilo": 3.0781195923884734
+          }
+        }
+      ]
+    }
+  ]
+}

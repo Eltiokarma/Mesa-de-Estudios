@@ -1,0 +1,15 @@
+{
+  "id": "mas",
+  "titulo": "Movimiento armónico simple: resorte, péndulo y la sombra que gira",
+  "formato": "escena",
+  "unidades": [
+    "fisica.oscilaciones"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
