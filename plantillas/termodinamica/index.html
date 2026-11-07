@@ -749,7 +749,7 @@ const steps = [
      const iso2 = [{ T:car.Tc, nR:carC.nR, txt: ya ? '500 K' : '227 °C' }, { T:car.Tf, nR:carC.nR, txt: ya ? '300 K' : '27 °C' }];
      const foco = tr === 0 ? { txt:'foco', txtT: ya ? '500 K' : '227 °C' } : tr === 2 ? { txt:'foco', txtT: ya ? '300 K' : '27 °C' } : null;
      return { cil:[{ V:ya ? e.V : 5, Vmax:25, foco: ya ? foco : { txt:'foco', txtT:'227 °C' }, aislado: ya && (tr === 1 || tr === 3), q: ya ? (tr === 0 ? +1 : tr === 2 ? -1 : 0) : 0, w: ya ? (tr < 2 ? +1 : -1) : 0, hl:S.hl }],
-       diag:{ R:{ V:[0, 28], P:[0, 360] }, iso:iso2, curvas:[{ pts:pts(carC), flechas:flechasDe(4, k), w: ya && f < 1 ? 1.4 : 2.6, alfa: ya && f < 1 ? 0.5 : 1 }, ...(ya && f < 1 ? [{ pts:pts(carC, f) }] : [])],
+       diag:{ R:{ V:[0, 32], P:[0, 360] }, iso:iso2, curvas:[{ pts:pts(carC), flechas:flechasDe(4, k), w: ya && f < 1 ? 1.4 : 2.6, alfa: ya && f < 1 ? 0.5 : 1 }, ...(ya && f < 1 ? [{ pts:pts(carC, f) }] : [])],
          areas: ya && f >= 1 ? [{ pts:pts(carC), signo:1, encerrada:true }] : [], estados:carC.vertices.map((q, i) => ({ P:q.P, V:q.V, txt:'1234'[i], lado:['e','ne','sw','sw'][i] })),
          actual: ya ? { P:e.P, V:e.V } : null, proy:false, hl:S.hl },
        barras:{ filas: ya ? [{ k:'Q', txt:'Qc', valor:Qc }, { k:'Q', txt:'Qf', valor:Qf }, { k:'W', txt:'W neto', valor:e.W }]
@@ -1061,9 +1061,9 @@ function vistaE(){
   if (E.tipo === 'adiab'){
     const r = M.proceso({ tipo:'adiabatico', P1:100, V1:27, V2:E.V2, T1:300 }), e = r.en(ya ? f : 0), p = pts(r, ya ? f : 0);
     return { cil:[{ V:e.V, Vmax:30, aislado:true, mano:true, w: ya && f > 0 ? -1 : 0 }],
-      diag:{ R:{ V:[0, 30], P:[0, 800] }, iso: ya && f >= 1 ? [{ T:300, nR:r.nR, txt:'300 K' }, { T:r.final.T, nR:r.nR, txt:`${fmt(r.final.T, 0)} K` }] : [],
+      diag:{ R:{ V:[0, 35], P:[0, 900] }, iso: ya && f >= 1 ? [{ T:300, nR:r.nR, txt:'300 K' }, { T:r.final.T, nR:r.nR, txt:`${fmt(r.final.T, 0)} K` }] : [],
         curvas: ya ? [{ pts:p, flechas: f > 0.6 ? [Math.round(p.length/2)] : [] }] : [], areas: ya ? [{ pts:p, signo:-1 }] : [],
-        estados:[{ P:100, V:27, txt:'inicio', lado:'nw' }], actual:{ P:e.P, V:e.V }, proy:true },
+        estados:[{ P:100, V:27, txt:'inicio', lado:'sw' }], actual:{ P:e.P, V:e.V }, proy:true },
       barras:{ filas: ya ? filas(0, e.W, e.dU) : filas(0, null, null), max:8000 } };
   }
   if (E.tipo === 'iso'){
