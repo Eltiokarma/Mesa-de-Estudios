@@ -1,0 +1,310 @@
+{
+  "id": "t050",
+  "version": 1,
+  "titulo": "Un centímetro de arcilla",
+  "tema": "Ciencia · la extinción de los dinosaurios",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En las rocas de Gubbio, en Italia, hay una capa de arcilla de un centímetro que separa las rocas de la época de los dinosaurios de las que se formaron después."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "A fines de la década de 1970, el geólogo Walter Álvarez y su padre, el físico Luis Álvarez, quisieron calcular cuánto tiempo había tardado en formarse."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Para eso midieron el iridio, un metal muy escaso en la corteza terrestre, que en los sedimentos llega sobre todo con el polvo del espacio, y encontraron en la capa muchísimo más del que esperaban."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Propusieron entonces una hipótesis atrevida: un asteroide de unos diez kilómetros chocó contra la Tierra, esparció su iridio por todo el planeta y provocó la extinción de los dinosaurios."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Una hipótesis así obliga a predecir: si el choque ocurrió, la misma capa rica en iridio debería aparecer en otros lugares del mundo, y en alguna parte tendría que existir un cráter enorme de esa edad."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "La capa fue apareciendo en cada vez más sitios del mundo, y en 1991 se identificó el cráter de Chicxulub, de unos 180 kilómetros, enterrado bajo la península de Yucatán, en México."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Hoy casi nadie duda de que el choque ocurrió, hace unos 66 millones de años."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Lo que sigue en discusión es cuánto pesó en la extinción: en esa misma época, enormes erupciones en la India llevaban mucho tiempo echando gases a la atmósfera, y algunos investigadores creen que ya habían debilitado a muchas especies."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "El caso muestra cómo avanza la ciencia: una medición inesperada sugiere una hipótesis, la hipótesis se pone a prueba con lo que predice, y aun lo comprobado deja preguntas abiertas."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o9"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4",
+          "o4": "RV52"
+        },
+        "explicacion": "La oración 9 dice para qué se cuenta el caso: una medición sugiere una hipótesis, la hipótesis se prueba con lo que predice y aun así quedan preguntas.",
+        "explicaciones": {
+          "o1": "La primera oración presenta la capa de arcilla: es el punto de partida.",
+          "o2": "Cuenta qué querían medir los Álvarez al comienzo.",
+          "o3": "Es la observación inesperada, el iridio; el texto sigue mucho más allá.",
+          "o4": "Es la hipótesis, todavía sin probar; el texto cuenta después cómo se puso a prueba.",
+          "o5": "Dice qué predice la hipótesis: es un paso del caso.",
+          "o6": "Cuenta las pruebas que se encontraron.",
+          "o7": "Dice qué quedó comprobado, pero no lo que sigue en discusión ni la idea general.",
+          "o8": "Dice qué sigue en discusión: es la parte abierta del caso, no su resumen.",
+          "ninguna": "La oración 9 sí lo resume: es la idea que el caso sirve para mostrar."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "El caso del iridio muestra que una hipótesis se prueba con lo que predice y que lo comprobado deja preguntas abiertas.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "Es la oración 9, que dice para qué se cuenta todo el caso: cómo avanza la ciencia."
+        },
+        {
+          "t": "En 1991 se identificó bajo la península de Yucatán un cráter de unos 180 kilómetros de diámetro.",
+          "codigo": "RV1",
+          "origen": "o6",
+          "explicacion": "Es un dato del caso: la prueba que se encontró, no la idea que lo junta todo."
+        },
+        {
+          "t": "Se demostró que el choque de un asteroide fue la causa única de que se extinguieran los dinosaurios y muchas otras especies.",
+          "codigo": "RV52",
+          "origen": "o8",
+          "explicacion": "El texto dice que el choque está comprobado, pero que su peso en la extinción «sigue en discusión» (oración 8)."
+        },
+        {
+          "t": "Una capa de arcilla con mucho iridio llevó a dos científicos a proponer que un asteroide chocó contra la Tierra.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Cuenta el comienzo, pero deja fuera la prueba de la hipótesis y lo que todavía se discute."
+        },
+        {
+          "t": "La ciencia estudia el pasado de la Tierra con métodos muy variados.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto sigue un solo caso para mostrar cómo se prueba una hipótesis."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Las erupciones de la India ya habían debilitado a muchas especies cuando cayó el asteroide.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV52",
+          "se-deduce": "RV7",
+          "lo-contradice": "RV36"
+        },
+        "explicacion": "El texto dice que algunos investigadores lo creen y que sigue en discusión: no lo da por cierto ni por falso.",
+        "explicaciones": {
+          "lo-dice": "El texto lo menciona, pero no lo afirma: dice que «algunos investigadores creen» eso.",
+          "se-deduce": "Que hubiera erupciones en esa época no basta para concluir que debilitaron a las especies: eso es justo lo que se discute.",
+          "lo-contradice": "El texto tampoco lo niega: lo presenta como una posibilidad que todavía se discute."
+        }
+      },
+      "enunciado": "Se infiere del texto que",
+      "alternativas": [
+        {
+          "t": "el cráter de Chicxulub sirvió para poner a prueba la hipótesis, y no fue lo que llevó a proponerla.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4",
+            "o5",
+            "o6"
+          ],
+          "explicacion": "La hipótesis nació del iridio (oraciones 3 y 4); el cráter se buscó porque la hipótesis lo predecía, y se halló después, en 1991 (oraciones 5 y 6)."
+        },
+        {
+          "t": "el iridio es un metal muy escaso en la corteza terrestre y llega sobre todo del espacio.",
+          "codigo": "RV6",
+          "origen": "o3",
+          "explicacion": "Es lo que dice la oración 3 casi con las mismas palabras; la pregunta pide lo que se deduce."
+        },
+        {
+          "t": "los Álvarez estaban buscando desde el principio la causa de la extinción de los dinosaurios y de otras especies.",
+          "codigo": "RV7",
+          "origen": "o2",
+          "explicacion": "El texto no autoriza eso: al principio querían calcular cuánto había tardado en formarse la capa (oración 2)."
+        },
+        {
+          "t": "todas las especies que vivían en esa época desaparecieron el mismo día del choque.",
+          "codigo": "RV11",
+          "explicacion": "Es una afirmación absoluta que el texto no autoriza; ni siquiera dice cuántas especies se extinguieron."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "enunciado": "¿Qué entiende el texto por PREDECIR en la oración 5?",
+      "alternativas": [
+        {
+          "t": "Deducir de una hipótesis qué debería encontrarse si fuera cierta.",
+          "correcta": true,
+          "evidencia": [
+            "o5"
+          ],
+          "explicacion": "La oración 5 lo muestra: si hubo choque, debería haber la misma capa en otros lugares y un cráter de esa edad."
+        },
+        {
+          "t": "Encontrar el cráter de Chicxulub enterrado bajo la península de Yucatán.",
+          "codigo": "RV56",
+          "origen": "o6",
+          "explicacion": "Es lo que se encontró al cumplirse una predicción (oración 6), no lo que significa predecir."
+        },
+        {
+          "t": "Adivinar lo que va a pasar en el futuro, antes de que ocurra cualquier cosa.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de la palabra; aquí se predice algo del pasado que todavía no se ha encontrado."
+        },
+        {
+          "t": "Medir cuánto iridio hay en una capa de roca muy antigua.",
+          "codigo": "RV19",
+          "origen": "o3",
+          "explicacion": "Es del mismo campo, el trabajo de los científicos, pero medir es observar, no predecir."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "enunciado": "Es compatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "la capa de Gubbio se habría estudiado igual aunque nadie sospechara de un asteroide.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o3"
+          ],
+          "explicacion": "Los Álvarez empezaron a estudiarla para calcular cuánto había tardado en formarse (oración 2); el asteroide vino después, como hipótesis para explicar el iridio (oraciones 3 y 4)."
+        },
+        {
+          "t": "los Álvarez midieron el iridio de la capa porque ya sospechaban de un asteroide.",
+          "codigo": "RV7",
+          "origen": "o2",
+          "explicacion": "Lleva el texto más allá de lo que dice: midieron el iridio para calcular el tiempo de formación de la capa (oraciones 2 y 3), y la idea del asteroide surgió después."
+        },
+        {
+          "t": "la capa rica en iridio solo se ha encontrado hasta hoy en las rocas de Gubbio, en Italia.",
+          "codigo": "RV10",
+          "origen": "o6",
+          "explicacion": "Fíjate en el «solo»: la oración 6 dice que la capa fue apareciendo en cada vez más sitios del mundo."
+        },
+        {
+          "t": "el cráter de Chicxulub se formó mucho después de que se extinguieran los dinosaurios.",
+          "codigo": "RV9",
+          "explicacion": "No usa las mismas palabras, pero choca con el texto: el cráter que se halló es el que predecía la hipótesis, uno de la misma edad que la capa (oraciones 5 y 6)."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "enunciado": "Si se encontrara una capa con mucho iridio, de hace unos 66 millones de años, en las rocas de la costa peruana, según el texto, ese hallazgo",
+      "alternativas": [
+        {
+          "t": "sería otra prueba del choque, sin resolver cuánto pesó en la extinción.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o8"
+          ],
+          "explicacion": "Es otra capa como la que predecía la hipótesis (oración 5); lo que se discute (oración 8) es otra cosa, y una capa más no lo decide."
+        },
+        {
+          "t": "demostraría que el asteroide fue la causa de toda la extinción, sin ayuda de las erupciones.",
+          "codigo": "RV52",
+          "explicacion": "Una capa más confirma el choque, que ya casi nadie discute; no decide cuánto pesó en la extinción."
+        },
+        {
+          "t": "indicaría que el asteroide cayó en el Perú y no en la península de Yucatán.",
+          "codigo": "RV7",
+          "origen": "o4",
+          "explicacion": "No se sigue: según la hipótesis, el iridio se esparció por todo el planeta (oración 4), así que la capa puede estar lejos del cráter."
+        },
+        {
+          "t": "probaría que ningún dinosaurio sobrevivió en ningún lugar de la costa del Pacífico.",
+          "codigo": "RV11",
+          "explicacion": "Es una conclusión absoluta que el texto no da: una capa de iridio no dice qué animales vivieron o murieron allí."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "Luis y Walter Álvarez, con Frank Asaro y Helen Michel, hallaron una concentración anómala de iridio en la arcilla del límite Cretácico-Paleógeno en Gubbio (Italia), capa de alrededor de un centímetro, y propusieron el impacto de un asteroide de unos 10 km como causa de la extinción. El iridio es escaso en la corteza y más abundante en meteoritos.",
+      "fuente": "L. W. Álvarez, W. Álvarez, F. Asaro y H. V. Michel, «Extraterrestrial cause for the Cretaceous-Tertiary extinction», Science 208 (1980): 1095-1108."
+    },
+    {
+      "afirmacion": "Los Álvarez buscaban al principio usar el iridio del polvo cósmico para estimar cuánto tardó en depositarse la capa.",
+      "fuente": "Walter Álvarez, T. rex and the Crater of Doom, Princeton University Press, 1997."
+    },
+    {
+      "afirmacion": "El cráter de Chicxulub, de unos 180 km, enterrado bajo la península de Yucatán, se identificó como cráter de impacto del límite K-Pg en 1991.",
+      "fuente": "A. R. Hildebrand y otros, «Chicxulub crater: a possible Cretaceous/Tertiary boundary impact crater on the Yucatán Peninsula, Mexico», Geology 19 (1991): 867-871."
+    },
+    {
+      "afirmacion": "El impacto ocurrió hace unos 66 millones de años, y hay amplio acuerdo en que ocurrió.",
+      "fuente": "P. R. Renne y otros, «Time scales of critical events around the Cretaceous-Paleogene boundary», Science 339 (2013): 684-687; P. Schulte y otros, «The Chicxulub asteroid impact and mass extinction at the Cretaceous-Paleogene boundary», Science 327 (2010): 1214-1218."
+    },
+    {
+      "afirmacion": "Las erupciones de los Traps del Decán (India) ocurrieron desde antes y después del límite K-Pg, y se discute su papel en la extinción.",
+      "fuente": "B. Schoene y otros, «U-Pb constraints on pulsed eruption of the Deccan Traps across the end-Cretaceous mass extinction», Science 363 (2019): 862-866; C. J. Sprain y otros, Science 363 (2019): 866-870."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 5 de 5 preguntas y los dos previos. Cambios: compatibilidad rehecha sobre el propósito inicial de los Álvarez (distractor RV7); explicaciones del previo de inferencia y del distractor de los Álvarez; oraciones 3 y 6 precisadas (iridio en los sedimentos, la capa apareciendo en más sitios); se quitó el capítulo de la cita de Álvarez 1997; longitudes ajustadas."
+  }
+}

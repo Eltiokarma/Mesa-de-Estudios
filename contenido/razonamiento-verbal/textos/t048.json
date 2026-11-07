@@ -1,0 +1,309 @@
+{
+  "id": "t048",
+  "version": 1,
+  "titulo": "¿Justa porque la votamos?",
+  "tema": "Filosofía · la justicia de las reglas",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En un salón de quinto de secundaria se votó una regla: los que se sientan en la última fila barrerán el aula todos los viernes."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Ganó por veintiocho votos contra seis, y los seis eran, claro, los de la última fila."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "¿Es justa esa regla?"
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "contraste",
+        "t": "Se dirá que sí, porque una regla es justa cuando la aprueba la mayoría."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "La votación es, sin duda, una buena manera de decidir; pero decidir quién gana no es lo mismo que decidir qué es justo."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Si bastara con contar votos, una mayoría podría declarar justo cualquier abuso contra unos pocos, y nadie podría reclamarle nada."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Propongo otra prueba: una regla es justa si la aceptarías sin saber de antemano qué lugar te tocará ocupar cuando se aplique."
+      },
+      {
+        "id": "o8",
+        "rol": "ejemplo",
+        "t": "Es la vieja receta para repartir una torta entre dos: uno la corta y el otro elige, y quien corta, como no sabe qué pedazo le quedará, procura que sean iguales."
+      },
+      {
+        "id": "o9",
+        "rol": "cita",
+        "t": "El filósofo John Rawls llevó esta idea a la sociedad entera: imaginó que elegimos los principios de justicia de una sociedad detrás de un «velo de ignorancia», sin saber si seremos ricos o pobres, fuertes o débiles."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "Aplicada al salón, la prueba es clara: nadie que ignorara dónde se iba a sentar votaría por que la última fila barra siempre."
+      },
+      {
+        "id": "o11",
+        "rol": "principal",
+        "t": "Por eso, una regla es justa si pasa esa prueba, y la mayoría sirve para elegir entre reglas justas, no para volver justa una regla que no lo es."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor dice la tesis del autor.",
+        "aceptadas": [
+          "o7",
+          "o11"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4",
+          "o4": "RV53"
+        },
+        "explicacion": "La oración 7 propone la prueba de la justicia, y la 11 junta las dos mitades: una regla es justa si pasa esa prueba, y ganar una votación no basta para volverla justa.",
+        "explicaciones": {
+          "o1": "La primera oración cuenta el caso del salón: es el punto de partida.",
+          "o2": "Da el resultado de la votación; es parte del caso.",
+          "o3": "Es la pregunta que el texto va a responder, no la respuesta.",
+          "o4": "Empieza con «Se dirá que…»: es la opinión que el autor va a rebatir, no la suya.",
+          "o5": "Concede que votar sirve, pero es un paso del argumento.",
+          "o6": "Muestra a qué llevaría la opinión contraria: es un argumento.",
+          "o8": "Es un ejemplo de la prueba, el de la torta.",
+          "o9": "Trae la idea de Rawls como apoyo.",
+          "o10": "Aplica la prueba al caso del salón; la idea general está en las oraciones 7 y 11.",
+          "ninguna": "La oración 11 sí la dice completa: una regla es justa si pasa la prueba de la oración 7, y la mayoría no vuelve justa una regla que no lo es."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Una regla es justa si uno la aceptaría sin saber qué lugar le tocará, y ganar la votación no basta para hacerla justa.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o11"
+          ],
+          "explicacion": "Junta la prueba que propone el autor (oración 7) con su conclusión sobre la mayoría (oración 11)."
+        },
+        {
+          "t": "Una regla es justa cuando la aprueba la mayoría de quienes tienen que cumplirla.",
+          "codigo": "RV53",
+          "origen": "o4",
+          "explicacion": "Es la opinión que el autor presenta con «Se dirá que…» para rebatirla; su tesis es la contraria."
+        },
+        {
+          "t": "En un salón de quinto se votó que la última fila barra el aula todos los viernes, y la regla ganó por veintiocho votos contra seis.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Es el caso con el que abre el texto; sirve para plantear la pregunta, no para responderla."
+        },
+        {
+          "t": "Para repartir una torta entre dos, conviene que uno la corte y que el otro elija su pedazo.",
+          "codigo": "RV1",
+          "origen": "o8",
+          "explicacion": "Es un ejemplo que ilustra la prueba del autor, no la tesis."
+        },
+        {
+          "t": "Toda comunidad necesita reglas para que sus miembros puedan convivir en paz.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto no discute si hacen falta reglas, sino qué hace justa a una."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Para el autor, los seis alumnos de la última fila tienen razón en reclamar contra la regla.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV5",
+          "no-se-sabe": "RV34",
+          "lo-contradice": "RV53"
+        },
+        "explicacion": "Se deduce: la regla no pasa la prueba de la oración 7, porque nadie que ignorara dónde se iba a sentar votaría por ella (oración 10), y la oración 6 muestra que, si bastara con contar votos, nadie podría reclamar contra un abuso.",
+        "explicaciones": {
+          "lo-dice": "El texto nunca dice con esas palabras que los seis tengan razón; se llega a eso juntando las oraciones 6, 7 y 10.",
+          "no-se-sabe": "No está dicho, pero se deduce: la regla no pasa la prueba de la oración 7 (oración 10), y la oración 6 dice que si bastara con contar votos nadie podría reclamar contra un abuso.",
+          "lo-contradice": "Eso sería pensar que la votación cerró el asunto, que es la opinión de la oración 4, la que el autor rebate."
+        }
+      },
+      "enunciado": "Se infiere del texto que, para el autor,",
+      "alternativas": [
+        {
+          "t": "una votación bien contada puede dar una regla injusta.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o6",
+            "o11"
+          ],
+          "explicacion": "El problema no está en cómo se cuenta: decidir quién gana no es decidir qué es justo (oraciones 5 y 11)."
+        },
+        {
+          "t": "decidir quién gana no es lo mismo que decidir qué es justo.",
+          "codigo": "RV6",
+          "origen": "o5",
+          "explicacion": "Es lo que dice la oración 5 casi con las mismas palabras; la pregunta pide lo que se deduce."
+        },
+        {
+          "t": "en el salón habría que dejar de votar las reglas y que el profesor sea quien las decida.",
+          "codigo": "RV33",
+          "origen": "o5",
+          "explicacion": "El autor dice que votar es una buena manera de decidir (oración 5); no propone quitar la votación."
+        },
+        {
+          "t": "la regla del salón habría sido justa si la hubieran aprobado todos, incluidos los seis de la última fila.",
+          "codigo": "RV7",
+          "explicacion": "Aun así se habría decidido contando votos: para el autor, ganar una votación, aunque sea por unanimidad, no es lo mismo que pasar la prueba de la oración 7."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "enunciado": "Si el salón votara de nuevo antes de saber quién se sentará en la última fila, según la lógica del texto,",
+      "alternativas": [
+        {
+          "t": "probablemente no ganaría la regla de que esa fila barra siempre.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o10"
+          ],
+          "explicacion": "Es la prueba del autor aplicada al salón: sin saber dónde le tocará sentarse, nadie votaría por esa regla (oración 10)."
+        },
+        {
+          "t": "la regla volvería a ganar por veintiocho votos contra seis, como en la primera votación.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual el resultado: justo lo que cambia es que nadie sabe si le tocará barrer."
+        },
+        {
+          "t": "la regla sería justa de todos modos, siempre que la apruebe la mayoría del salón.",
+          "codigo": "RV53",
+          "explicacion": "Aplica la opinión de la oración 4, que el autor rechaza."
+        },
+        {
+          "t": "ningún alumno aceptaría barrer el aula nunca, ni siquiera por turnos.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá del texto: la prueba descarta que barra siempre la misma fila, no cualquier forma de repartir la limpieza."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "enunciado": "Es compatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "una regla de turnos en la que cada fila barre una semana podría pasar la prueba del autor.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o10"
+          ],
+          "explicacion": "Uno podría aceptar los turnos sin saber dónde se sentará, porque a todos les toca igual: es lo que pide la oración 7."
+        },
+        {
+          "t": "para el autor, votar no es una buena manera de tomar decisiones en un grupo como un salón.",
+          "codigo": "RV10",
+          "origen": "o5",
+          "explicacion": "Fíjate en el «no»: la oración 5 dice que la votación «sin duda» es una buena manera de decidir, así que esto la contradice."
+        },
+        {
+          "t": "una regla queda justificada cuando gana la votación por un margen muy amplio.",
+          "codigo": "RV53",
+          "explicacion": "Es la opinión que el autor rebate: ganar, aunque sea por mucho, no vuelve justa una regla."
+        },
+        {
+          "t": "cualquier regla aprobada por una mayoría es injusta para los alumnos que perdieron la votación.",
+          "codigo": "RV11",
+          "origen": "o11",
+          "explicacion": "Exagera: el autor dice que la mayoría sirve para elegir entre reglas justas, así que no toda regla votada es injusta."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "enunciado": "¿Qué entiende el texto por VELO DE IGNORANCIA?",
+      "alternativas": [
+        {
+          "t": "No saber qué lugar ocupará uno cuando se apliquen las reglas que elige.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o9"
+          ],
+          "explicacion": "La oración 9 lo explica: elegir las reglas sin saber si uno será rico o pobre, fuerte o débil."
+        },
+        {
+          "t": "Repartir una torta de modo que uno la corte y el otro elija su pedazo.",
+          "codigo": "RV56",
+          "origen": "o8",
+          "explicacion": "Es un ejemplo de la misma idea (oración 8), no lo que significa la expresión."
+        },
+        {
+          "t": "La falta de estudios o de información que tiene una persona sobre algún tema.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido común de «ignorancia»; aquí es no saber, a propósito, qué lugar le tocará a uno."
+        },
+        {
+          "t": "El secreto con que cada uno marca su voto en una elección.",
+          "codigo": "RV19",
+          "explicacion": "Es del mismo campo (votar sin que otros sepan), pero el velo oculta el lugar propio, no el voto."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "John Rawls propuso que los principios de justicia se eligen en una «posición original», detrás de un «velo de ignorancia», sin que nadie sepa su lugar en la sociedad, su clase social ni su suerte en dotes naturales como la inteligencia o la fuerza.",
+      "fuente": "John Rawls, A Theory of Justice, Harvard University Press, 1971, § 24 «The Veil of Ignorance» (trad. Teoría de la justicia, Fondo de Cultura Económica, 1979)."
+    },
+    {
+      "afirmacion": "«Uno corta y el otro elige» es el procedimiento clásico de reparto justo entre dos personas.",
+      "fuente": "Steven J. Brams y Alan D. Taylor, Fair Division: From Cake-Cutting to Dispute Resolution, Cambridge University Press, 1996, capítulo 1."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 5 de 5 preguntas; dudó en el previo de idea principal. Cambios: la oración 11 junta la prueba y la conclusión sobre la mayoría (explicaciones del previo rehechas); sonda nueva en el previo de inferencia (se deduce); distractor RV11 cambiado por uno RV7 sobre la unanimidad; Rawls elige «los principios de justicia de una sociedad»; correcta de inferencia acortada."
+  }
+}

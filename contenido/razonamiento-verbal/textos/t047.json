@@ -1,0 +1,295 @@
+{
+  "id": "t047",
+  "version": 1,
+  "titulo": "¿Qué es un amigo?",
+  "tema": "Filosofía · la amistad",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Cuando alguien dice que tiene doscientos amigos en una red social, casi nadie le cree del todo."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Intuimos que la palabra «amigo» pide algo más que aparecer en una lista, aunque cuesta decir qué."
+      },
+      {
+        "id": "o3",
+        "rol": "principal",
+        "t": "Mi respuesta es esta: el amigo de verdad, el que dura, es quien quiere tu bien por ti mismo, y no por lo que tú le das."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "contraste",
+        "t": "Se dirá que un amigo es, sencillamente, alguien con quien uno la pasa bien o alguien que te ayuda cuando lo necesitas."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Es cierto que la mayoría de las amistades empiezan así: jugamos en el mismo equipo de fútbol, nos pasamos las tareas o nos reímos de las mismas cosas."
+      },
+      {
+        "id": "o6",
+        "rol": "ejemplo",
+        "t": "Pero pensemos en el compañero que solo te busca la semana de exámenes porque eres bueno en matemática y que, cuando terminan las clases, desaparece."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Lo que buscaba no eras tú, sino tus resoluciones."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "cita",
+        "t": "Hace más de dos mil años, Aristóteles ya distinguía la amistad por utilidad y la amistad por placer de una tercera, la de quienes se quieren por lo que el otro es, y sostenía que esta última es la que dura."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Las dos primeras no son falsas, pero sí frágiles: se acaban cuando se acaba el provecho o la diversión."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Por eso la prueba de un amigo no es cuánto te ayuda en las buenas, sino si sigue queriendo tu bien cuando ya no tienes nada que darle."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor dice la tesis del autor.",
+        "aceptadas": [
+          "o3",
+          "o10"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4",
+          "o4": "RV53"
+        },
+        "explicacion": "La oración 3 anuncia la tesis y la 10 la completa: amigo es quien quiere tu bien por ti, y eso se prueba cuando ya no tienes nada que darle.",
+        "explicaciones": {
+          "o1": "La primera oración abre el tema con un caso conocido, pero no responde qué es un amigo.",
+          "o2": "Plantea la pregunta, pero todavía no la responde.",
+          "o4": "Empieza con «Se dirá que…»: es la opinión que el autor va a discutir, no la suya.",
+          "o5": "El autor concede que muchas amistades empiezan así, pero lo dice para luego mostrar que eso no basta.",
+          "o6": "Es un ejemplo de amistad que se acaba con el provecho.",
+          "o7": "Saca la conclusión del ejemplo, pero no la idea general.",
+          "o8": "Trae la idea de Aristóteles como apoyo; no es la tesis con palabras del autor.",
+          "o9": "Explica por qué las dos primeras amistades son frágiles: es un argumento.",
+          "ninguna": "Las oraciones 3 y 10 sí la dicen: amigo es quien quiere tu bien por ti mismo."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Amigo es quien quiere tu bien por ti, y eso se ve cuando ya no tienes nada que darle.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o10"
+          ],
+          "explicacion": "Junta las oraciones 3 y 10: el amigo quiere tu bien por ti, y la prueba llega cuando no tienes nada que darle."
+        },
+        {
+          "t": "Un amigo es alguien con quien uno la pasa bien o alguien que te ayuda cuando lo necesitas.",
+          "codigo": "RV53",
+          "origen": "o4",
+          "explicacion": "Es la idea que el autor presenta con «Se dirá que…» para discutirla. Él responde que eso no basta."
+        },
+        {
+          "t": "Cuando alguien dice que tiene doscientos amigos en una red social, casi nadie le cree del todo.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Es la primera oración: abre el tema con un caso conocido, pero no dice qué es un amigo."
+        },
+        {
+          "t": "El compañero que solo te busca en la semana de exámenes desaparece cuando terminan las clases.",
+          "codigo": "RV1",
+          "origen": "o6",
+          "explicacion": "Es un ejemplo que el autor usa para mostrar una amistad frágil; no es la tesis."
+        },
+        {
+          "t": "Las relaciones entre las personas son difíciles de definir, y por eso cada quien entiende la amistad a su manera.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general, y además el autor no se queda en que cada uno la entienda a su manera: da una respuesta propia."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "enunciado": "¿Qué entiende el autor por amistad POR UTILIDAD?",
+      "alternativas": [
+        {
+          "t": "La que se sostiene mientras uno obtiene algún provecho del otro.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9"
+          ],
+          "explicacion": "Las oraciones 8 y 9 la presentan como una amistad que se acaba cuando se acaba el provecho."
+        },
+        {
+          "t": "La del compañero que solo te busca en la semana de exámenes porque eres bueno.",
+          "codigo": "RV56",
+          "origen": "o6",
+          "explicacion": "Es un ejemplo de esa amistad (oración 6), no lo que significa."
+        },
+        {
+          "t": "La que resulta útil para toda la sociedad y para el país.",
+          "codigo": "RV18",
+          "explicacion": "Toma «utilidad» en un sentido común, el de servir a todos; en el texto es el provecho que uno saca del otro."
+        },
+        {
+          "t": "La que se basa en el gusto de pasarla bien juntos.",
+          "codigo": "RV19",
+          "origen": "o8",
+          "explicacion": "Es otra de las amistades que menciona Aristóteles, la de placer, no la de utilidad."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "enunciado": "Es incompatible con lo que sostiene el autor afirmar que",
+      "alternativas": [
+        {
+          "t": "las amistades por utilidad o por placer son, en el fondo, amistades falsas.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "La oración 9 dice lo contrario: «no son falsas, pero sí frágiles»."
+        },
+        {
+          "t": "muchas amistades verdaderas empezaron porque dos compañeros se pasaban las tareas.",
+          "codigo": "RV33",
+          "explicacion": "Suena contra el autor, pero él mismo concede que la mayoría de las amistades empiezan así (oración 5). No condena ese comienzo."
+        },
+        {
+          "t": "no todo el que te ayuda en los exámenes te quiere por lo que eres.",
+          "codigo": "RV10",
+          "explicacion": "Tiene un «no», pero es compatible: es justo lo que muestra el ejemplo del compañero de las oraciones 6 y 7."
+        },
+        {
+          "t": "Aristóteles escribió también sobre la política y sobre la naturaleza.",
+          "codigo": "RV36",
+          "explicacion": "El texto no habla de eso, pero tampoco dice nada en contra: que algo no se mencione no lo vuelve incompatible."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "enunciado": "Si dos amigos de la infancia viven ahora en ciudades distintas y ya no pueden jugar juntos ni ayudarse, según el autor,",
+      "alternativas": [
+        {
+          "t": "la amistad seguiría en pie si cada uno sigue queriendo el bien del otro.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o10"
+          ],
+          "explicacion": "Para el autor, lo que hace amigo a alguien es querer tu bien por ti, y eso no depende de la diversión ni de la ayuda (oraciones 3 y 10)."
+        },
+        {
+          "t": "la amistad se acabaría, porque un amigo es aquel con quien uno se divierte y se ayuda.",
+          "codigo": "RV53",
+          "explicacion": "Aplica la definición de la oración 4, que el autor presenta para discutirla, no la suya."
+        },
+        {
+          "t": "ninguna amistad puede sobrevivir a la distancia ni a los años, por más que lo intenten.",
+          "codigo": "RV11",
+          "explicacion": "Es una conclusión absoluta que el texto no autoriza; al contrario, la amistad verdadera es la que dura."
+        },
+        {
+          "t": "el compañero de los exámenes seguiría desapareciendo cuando terminan las clases.",
+          "codigo": "RV12",
+          "origen": "o6",
+          "explicacion": "Repite el ejemplo del texto y no responde a la situación nueva, la de los dos amigos que viven lejos."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El autor dice «Mi respuesta es esta», discute una opinión contraria y la responde: defiende una postura.",
+        "explicaciones": {
+          "explicar": "Explica qué decía Aristóteles, pero lo usa para defender su propia respuesta sobre qué es un amigo.",
+          "narrar": "El ejemplo del compañero es breve; el texto no cuenta una historia, discute una idea."
+        }
+      },
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Defender una idea de lo que es un amigo frente a la definición más común.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4",
+            "o10"
+          ],
+          "explicacion": "El autor da su respuesta (oración 3), discute la opinión común (oración 4) y la sostiene con un ejemplo y con Aristóteles: busca convencer."
+        },
+        {
+          "t": "Explicar las tres clases de amistad que distinguía Aristóteles hace más de dos mil años.",
+          "codigo": "RV14",
+          "origen": "o8",
+          "explicacion": "Aristóteles aparece como apoyo (oración 8), pero el autor no se limita a explicarlo: defiende una idea propia."
+        },
+        {
+          "t": "Contar la historia de un compañero que solo aparecía en la semana de exámenes.",
+          "codigo": "RV13",
+          "origen": "o6",
+          "explicacion": "Ese compañero es un ejemplo breve; el texto no cuenta su historia."
+        },
+        {
+          "t": "Advertir al lector que desconfíe de quienes le piden ayuda.",
+          "codigo": "RV33",
+          "explicacion": "El autor no pide desconfiar de nadie; dice que muchas amistades empiezan ayudándose."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "Aristóteles distingue tres clases de amistad: por utilidad, por placer y la de los buenos, que se quieren por lo que son; las dos primeras se disuelven fácilmente cuando cesa el provecho o el placer, y solo la tercera es duradera. Vivió en el siglo IV a. C.",
+      "fuente": "Aristóteles, Ética a Nicómaco, libro VIII, capítulos 3 y 4 (ed. Gredos, trad. Julio Pallí Bonet, 1985)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 5 de 5 preguntas y los dos previos. Cambios: la oración 3 dice «el amigo de verdad, el que dura» para que la incompatibilidad quede indiscutible; Aristóteles «sostenía que esta última es la que dura»; «fulbito» por «fútbol»; correcta de la tesis acortada."
+  }
+}
