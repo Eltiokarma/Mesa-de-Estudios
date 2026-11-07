@@ -2,7 +2,7 @@
   "plantilla": "materia-energia",
   "unidades": "Masas en gramos (g) salvo donde dice kg; masas atómicas de academia (H = 1, C = 12, O = 16, Na = 23, Si = 28, S = 32, Cl = 35,5, Fe = 56). Energía en joules (J) y kWh (1 kWh = 3,6 × 10⁶ J); c = 3 × 10⁸ m/s; masas nucleares en u, con 1 u = 931,5 MeV y 1 u = 1,66054 × 10⁻²⁷ kg. Temperaturas en °C; calor en calorías con c = 1 cal/(g °C) y Lv = 540 cal/g para el agua.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.vaporNoPesa); un número en el camino es el índice de una lista (fracciones.0). Las listas se comparan completas y en orden, y los textos, exactos. Una partícula es { formula, n, fase?, estado?, sustancia? }: 'sustancia' agrupa los iones de una sal disuelta (Na^+ y Cl^- son NaCl). Una parte de un sistema es { nombre, sustancia, formula?, fase, estado, disuelto? }: cada valor distinto de 'fase' es una fase y cada valor distinto de 'sustancia', un componente. En cambio(), el tipo es 'nuclear' si cambian los elementos, 'físico' si quedan las mismas sustancias y 'químico' si aparecen otras con los mismos átomos.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el código del motor ni casos.json: recalculó con fracciones exactas (python3, c = 3 × 10⁸ m/s, 1 u = 931,5 MeV, masas de academia) los átomos, la estequiometría del Fe₂O₃, las balanzas, E = mc² y el defecto de masa, y clasificó con la química de academia. Todos los valores numéricos coinciden. Encontró dos discrepancias, ya corregidas: el granito tiene 3 fases (cuarzo, feldespato y mica) y el error de c en km/s ahora va en gramos, como la masa que baja.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Paso 2 y predicción 1 (MA9): la caja 2 (6 moléculas de H2O) es la del compuesto: una sola sustancia con dos clases de átomos unidos; 18 átomos",
@@ -30,7 +30,7 @@
                    { "args": ["sal de mesa (NaCl)"], "espera": { "nombre": "sustancia pura (compuesto)" } },
                    { "args": ["diamante"], "espera": { "nombre": "sustancia pura (elemento)" } },
                    { "args": ["bronce"], "espera": { "nombre": "mezcla homogénea" } },
-                   { "args": ["granito"], "espera": { "nombre": "mezcla heterogénea", "nFases": 2 } } ] },
+                   { "args": ["granito"], "espera": { "nombre": "mezcla heterogénea", "nFases": 3, "fases": ["cuarzo", "feldespato", "mica"] } } ] },
 
     { "nombre": "Agua con hielo: una sola sustancia (sustancia pura, compuesto) en dos fases: sistema heterogéneo",
       "fn": "material", "args": ["agua con hielo"],
@@ -57,10 +57,10 @@
         { "nombre": "oxígeno del aire", "sustancia": "O2", "formula": "O2", "fase": "aire", "estado": "g" } ]],
       "espera": { "nFases": 4, "nComponentes": 5, "nElementos": 5, "elementos": ["H", "O", "C", "Fe", "N"], "nombre": "tetrafásico y quinario", "atomosPorUnidad.C12H22O11": 45 } },
 
-    { "nombre": "Informe, caso «Fenómeno»: fundir hielo y disolver sal son físicos; oxidar hierro y quemar metano, químicos; la fisión del uranio-235, nuclear (cambian los elementos)",
+    { "nombre": "Informe, caso «Fenómeno» (el clavo como en la lupa: 4 Fe y 3 O2 → 2 Fe2O3; 2 H2O que no cambian): fundir hielo y disolver sal son físicos; oxidar hierro y quemar metano, químicos; la fisión del uranio-235, nuclear (cambian los elementos)",
       "fn": "fenomeno", "args": ["fundir-hielo"], "espera": { "tipo": "físico", "nuevas": [], "conservaAtomos": true, "cambiaEstado": true, "errores.cambioDeEstadoEsQuimico": "químico", "errores.reversibleEsFisico": "físico" },
       "tambien": [ { "args": ["disolver-sal"], "espera": { "tipo": "físico", "nuevas": [], "sustanciasDespues": ["NaCl", "H2O"] } },
-                   { "args": ["oxidar-hierro"], "espera": { "tipo": "químico", "nuevas": ["Fe2O3"], "seVan": ["Fe", "O2"], "conservaAtomos": true, "atomosDespues.Fe": 4, "atomosDespues.O": 10, "errores.sigueSiendoElMismo": "físico", "errores.colorEsQuimico": "químico" } },
+                   { "args": ["oxidar-hierro"], "espera": { "tipo": "químico", "nuevas": ["Fe2O3"], "seVan": ["Fe", "O2"], "conservaAtomos": true, "atomosAntes.O": 8, "atomosDespues.Fe": 4, "atomosDespues.O": 8, "sustanciasDespues": ["Fe2O3", "H2O"], "errores.sigueSiendoElMismo": "físico", "errores.colorEsQuimico": "químico" } },
                    { "args": ["quemar-metano"], "espera": { "tipo": "químico", "nuevas": ["CO2", "H2O"], "conservaAtomos": true } },
                    { "args": ["fision-uranio"], "espera": { "tipo": "nuclear", "elementosAntes": ["U"], "elementosDespues": ["Ba", "Kr"], "conservaAtomos": false, "errores.nuclearEsQuimico": "químico" } },
                    { "args": ["electrolisis-agua"], "espera": { "tipo": "químico", "nuevas": ["H2", "O2"], "errores.reversibleEsFisico": "físico" } } ] },
@@ -117,9 +117,9 @@
     { "nombre": "Informe, E = mc² inverso: E = 4,5 × 10¹³ J corresponde a m = 5 × 10⁻⁴ kg = 0,5 g",
       "fn": "masaDeEnergia", "args": [4.5e13], "espera": { "kg": 5e-4, "g": 0.5, "errores.conservaMasa": 0 } },
 
-    { "nombre": "Experimento 5 e informe «Defecto de masa»: si se liberan 1,8 × 10¹⁴ J, la masa baja 2 × 10⁻³ kg = 2 g. Errores: la masa se conserva (0 g); dejarlo en kg y leerlo como gramos (0,002 g); c en km/s (2000 kg)",
+    { "nombre": "Experimento 5 e informe «Defecto de masa»: si se liberan 1,8 × 10¹⁴ J, la masa baja 2 × 10⁻³ kg = 2 g. Errores: la masa se conserva (0 g); dejarlo en kg y leerlo como gramos (0,002 g); c en km/s (2 × 10⁶ g = 2000 kg). Todo en gramos",
       "fn": "balanzaNuclear", "args": [1.8e14],
-      "espera": { "baja": 2, "bajaKg": 0.002, "errores.conservaMasa": 0, "errores.kgComoGramos": 0.002, "errores.cEnKmPorS": 2000 },
+      "espera": { "baja": 2, "bajaKg": 0.002, "errores.conservaMasa": 0, "errores.kgComoGramos": 0.002, "errores.cEnKmPorS": 2000000 },
       "tambien": [ { "fn": "masaDeEnergia", "args": [1.8e14], "espera": { "kg": 0.002, "g": 2, "errores.sinCuadrado": 600000 } } ] },
 
     { "nombre": "Experimento 5, comparación química: arder 1 mol de metano libera unos 890 000 J; la masa que «se pierde» es 890 000 / (9 × 10¹⁶) kg ≈ 9,9 × 10⁻⁹ g: ninguna balanza lo nota",

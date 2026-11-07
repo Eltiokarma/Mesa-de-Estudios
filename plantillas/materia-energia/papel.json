@@ -13,7 +13,7 @@
         "Aire: moléculas de N₂ y de O₂ (y otras) sin unirse, repartidas por igual: mezcla homogénea.",
         "Bronce: átomos de cobre y de estaño repartidos en un solo sólido: mezcla homogénea (una aleación), no compuesto.",
         "Sal de mesa: Na y Cl unidos en proporción fija: compuesto.",
-        "Granito: se ven granos de distintos minerales (cuarzo, feldespato…): mezcla heterogénea.",
+        "Granito: se ven granos de tres minerales distintos (cuarzo, feldespato y mica): mezcla heterogénea.",
         "Diamante: solo átomos de carbono: elemento."
       ],
       "verificar": [
@@ -102,7 +102,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Sobre una balanza abierta se quema por completo 11,2 g de lana de acero (hierro) y se forma óxido férrico, Fe₂O₃. Masas atómicas: Fe = 56, O = 16. ¿Cuánto marca la balanza al final? ¿Por qué cambia?",
+      "enunciado": "Sobre una balanza abierta se queman por completo 11,2 g de lana de acero (hierro) y se forma óxido férrico, Fe₂O₃. Masas atómicas: Fe = 56, O = 16. ¿Cuánto marca la balanza al final? ¿Por qué cambia?",
       "respuesta": "16 g: sube 4,8 g, que es el oxígeno del aire que se unió al hierro.",
       "pasos": [
         "Moles de Fe: 11,2 ÷ 56 = 0,2 mol.",
@@ -142,8 +142,8 @@
       "respuesta": "1,8 × 10¹⁷ J, que son 5 × 10¹⁰ kWh.",
       "pasos": [
         "E = mc² = 2 × (3 × 10⁸)² = 2 × 9 × 10¹⁶ = 1,8 × 10¹⁷ J.",
-        "En kWh: 1,8 × 10¹⁷ ÷ 3,6 × 10⁶ = 5 × 10¹⁰ kWh.",
-        "Cuidado: c va al cuadrado. Sin elevarlo saldría 6 × 10⁸ J, cien millones de veces menos."
+        "En kWh: 1,8 × 10¹⁷ ÷ (3,6 × 10⁶) = 5 × 10¹⁰ kWh.",
+        "Cuidado: c va al cuadrado. Sin elevarlo saldría 6 × 10⁸ J, 300 millones de veces menos (c veces)."
       ],
       "verificar": [
         { "fn": "energia", "args": [2, "kg"], "espera": { "E": 1.8e17, "kWh": 5e10, "errores.sinCuadrado": 6e8 } }
@@ -155,7 +155,7 @@
       "enunciado": "En una reacción nuclear se liberan 4,5 × 10¹³ J. ¿Qué masa se transformó en energía? Da la respuesta en kg y en g.",
       "respuesta": "5 × 10⁻⁴ kg, es decir, 0,5 g.",
       "pasos": [
-        "m = E ÷ c² = 4,5 × 10¹³ ÷ 9 × 10¹⁶ = 0,5 × 10⁻³ = 5 × 10⁻⁴ kg.",
+        "m = E ÷ c² = 4,5 × 10¹³ ÷ (9 × 10¹⁶) = 0,5 × 10⁻³ = 5 × 10⁻⁴ kg.",
         "En gramos: 5 × 10⁻⁴ × 1000 = 0,5 g.",
         "La fórmula da kg porque E está en J y c en m/s. Si escribes «5 × 10⁻⁴ g», te equivocas por mil."
       ],

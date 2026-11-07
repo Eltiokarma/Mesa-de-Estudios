@@ -14,6 +14,8 @@
  *   - contarSistema(partes): el conteo de academia de un sistema descrito por sus partes (agua, hielo, sal disuelta…):
  *     fases (zonas con propiedades distintas; la sal disuelta está en la fase del agua), componentes (sustancias:
  *     el hielo y el agua son una sola), elementos (especies atómicas) y átomos por unidad de cada componente.
+ *     El aceite va sin fórmula (es una mezcla de grasas que la academia cuenta como un componente): un sistema con aceite
+ *     da nElementos = null, y la escena no pregunta por sus elementos.
  *   - cambio(antes, despues): físico (las mismas sustancias, reacomodadas o en otro estado), químico (aparecen sustancias
  *     nuevas con los mismos átomos) o nuclear (cambian los elementos). FENOMENOS trae los de examen.
  *   - burbujas(f): qué hay en las burbujas de un líquido que hierve (su propio vapor).
@@ -22,8 +24,10 @@
  *   - separar(mezcla, metodo) y metodoPara(mezcla): qué hace cada método (filtración, decantación, destilación,
  *     imantación, evaporación) según la propiedad que difiere, también con el método equivocado. MEZCLAS trae las de la escena.
  *   - energia(m, unidad), masaDeEnergia(E), defectoMasa(antes, despues) y balanzaNuclear(E): E = mc² con c = 3 × 10⁸ m/s.
+ *     En balanzaNuclear todo va en gramos (baja y cada error), salvo bajaKg.
  *   - propiedad(nombre) y clasificarPropiedades(lista): intensivas o extensivas, físicas o químicas, y si una sola
- *     partícula las tiene (AT1/MA11).
+ *     partícula las tiene (AT1/MA11). Convención de academia: las propiedades químicas (combustibilidad, oxidabilidad…)
+ *     se cuentan también como intensivas, porque no dependen de cuánta sustancia hay.
  *   - hervir(...): la meseta de la ebullición (MA6/MA7), corta; la escena completa es plantillas/calorimetria/.
  *   - material(nombre): sustancias y mezclas de examen (aire, acero, agua de mar, diamante…), clasificadas con su lupa.
  * Cada función que alimenta una predicción devuelve además `errores`: lo que da cada error típico (MA1 a MA11 y la tabla
@@ -207,8 +211,8 @@
                          despues: [{ formula: 'Na^+', n: 2, sustancia: 'NaCl', estado: 'disuelto' }, { formula: 'Cl^-', n: 2, sustancia: 'NaCl', estado: 'disuelto' }, { formula: 'H2O', n: 8, estado: 'l' }], pistas: { reversible: true } },
     'disolver-azucar': { nombre: 'Disolver azúcar en agua', antes: [{ formula: 'C12H22O11', n: 3, estado: 's' }, { formula: 'H2O', n: 12, estado: 'l' }],
                          despues: [{ formula: 'C12H22O11', n: 3, estado: 'disuelto' }, { formula: 'H2O', n: 12, estado: 'l' }], pistas: { reversible: true } },
-    'oxidar-hierro':   { nombre: 'Un clavo de hierro que se oxida', antes: [{ formula: 'Fe', n: 4, estado: 's' }, { formula: 'O2', n: 3, estado: 'g' }, { formula: 'H2O', n: 4, estado: 'l' }],
-                         despues: [{ formula: 'Fe2O3', n: 2, estado: 's' }, { formula: 'H2O', n: 4, estado: 'l' }], pistas: { reversible: false, cambiaColor: true } },
+    'oxidar-hierro':   { nombre: 'Un clavo de hierro que se oxida', antes: [{ formula: 'Fe', n: 4, estado: 's' }, { formula: 'O2', n: 3, estado: 'g' }, { formula: 'H2O', n: 2, estado: 'l' }],
+                         despues: [{ formula: 'Fe2O3', n: 2, estado: 's' }, { formula: 'H2O', n: 2, estado: 'l' }], pistas: { reversible: false, cambiaColor: true } },
     'quemar-metano':   { nombre: 'Quemar metano (gas natural)', antes: [{ formula: 'CH4', n: 1, estado: 'g' }, { formula: 'O2', n: 2, estado: 'g' }],
                          despues: [{ formula: 'CO2', n: 1, estado: 'g' }, { formula: 'H2O', n: 2, estado: 'g' }], pistas: { reversible: false, saleGas: true } },
     'electrolisis-agua': { nombre: 'Electrólisis del agua', antes: [{ formula: 'H2O', n: 2, estado: 'l' }], despues: [{ formula: 'H2', n: 2, estado: 'g' }, { formula: 'O2', n: 1, estado: 'g' }], pistas: { reversible: true, saleGas: true } },
@@ -355,7 +359,8 @@
   // La balanza de un reactor (si se pudiera pesar todo junto, cerrado): baja en E/c².
   function balanzaNuclear(E) {
     const m = masaDeEnergia(E);
-    return { baja: m.g, bajaKg: m.kg, errores: { conservaMasa: 0, kgComoGramos: m.kg, cEnKmPorS: m.errores.cEnKmPorS } };
+    // Errores en gramos, como `baja`: la masa se conserva (0 g); dejar el resultado en kg y leerlo como gramos; c en km/s.
+    return { baja: m.g, bajaKg: m.kg, errores: { conservaMasa: 0, kgComoGramos: m.kg, cEnKmPorS: m.errores.cEnKmPorS * 1000 } };
   }
 
   // ---------- Propiedades ----------
@@ -419,7 +424,7 @@
     'acero': [{ formula: 'Fe', n: 9 }, { formula: 'C', n: 1 }],
     'bronce': [{ formula: 'Cu', n: 8 }, { formula: 'Sn', n: 2 }],
     'agua con aceite': [{ formula: 'H2O', n: 6, fase: 'agua' }, { formula: 'C18H34O2', n: 2, sustancia: 'aceite', fase: 'aceite' }],
-    'granito': [{ formula: 'SiO2', n: 4, fase: 'cuarzo' }, { formula: 'KAlSi3O8', n: 3, fase: 'feldespato' }],
+    'granito': [{ formula: 'SiO2', n: 4, fase: 'cuarzo' }, { formula: 'KAlSi3O8', n: 3, fase: 'feldespato' }, { formula: 'KAl3Si3O10(OH)2', n: 1, sustancia: 'mica', fase: 'mica' }],
     'agua con hielo': [{ formula: 'H2O', n: 6, fase: 'líquida' }, { formula: 'H2O', n: 6, fase: 'hielo' }],
   });
   function material(nombre) {
