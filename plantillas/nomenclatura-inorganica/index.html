@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El árbol de las funciones: nomenclatura inorgánica</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de los nombres solo mandan los colores de los elementos (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 (docs/metodo/paleta.py) y contraste WCAG sobre
+   #fdf7f1 y #241c2e, también sobre el chip .v (fondo del 8 %):
+     Elementos: la paleta común de química (nucleo/elementos.js), en el bloque generado más abajo. Cada ficha (un ion)
+       lleva el color de su elemento central; en la fórmula y en los nombres, cada parte va del color de su elemento
+       («trióxido» del O, «dihierro» del Fe, «sulfato» del S). El subíndice va en el color de su elemento.
+     Variables: no hay colores propios. La carga de un ion, el estado de oxidación, el número romano de la stock y
+       los coeficientes van en tinta, con su signo o su lugar. Se buscó un color para el coeficiente y ninguno queda a
+       ΔE00 ≥ 20 de todos los elementos de la escena (el fucsia de balance-reacciones cae a 13 del S y a 11 del K).
+   Qué sale junto: Fe, O y H; Al, S y O; Pb y O; Na y O; S, O, H y Na; H, Cl y O; Na, Cl, H y O; K, H, C y O; Fe, S, O y H.
+   En la mesa y el árbol libres, el alumno elige; la escena apaga las combinaciones que juntarían dos colores
+   parecidos de Elementos.CERCANOS (C–Na, Zn–C, K–S, Ca–S, Al–N, Fe–N, Pb–P). Cu no entra: está cerca del O. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --caja:#f6ece4;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --caja:#211a2a; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --caja:#211a2a; color-scheme:dark }
+/* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
+   Elementos.css(['H', 'C', 'N', 'O', 'Na', 'Al', 'P', 'S', 'Cl', 'K', 'Ca', 'Fe', 'Zn', 'Pb']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-N:#136caa; --el-O:#c4284e; --el-Na:#3f4948; --el-Al:#056ea3; --el-P:#a05200; --el-S:#2d29c7; --el-Cl:#466d14; --el-K:#7843e9; --el-Ca:#6a5b8f; --el-Fe:#1768be; --el-Zn:#6a676d; --el-Pb:#744430 }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Na:#8a9a90; --el-Al:#38b6e8; --el-P:#f0a04a; --el-S:#9386ff; --el-Cl:#a3d65e; --el-K:#a788d3; --el-Ca:#deb0f5; --el-Fe:#209cf2; --el-Zn:#9e9ea4; --el-Pb:#eab695 } }
+:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Na:#8a9a90; --el-Al:#38b6e8; --el-P:#f0a04a; --el-S:#9386ff; --el-Cl:#a3d65e; --el-K:#a788d3; --el-Ca:#deb0f5; --el-Fe:#209cf2; --el-Zn:#9e9ea4; --el-Pb:#eab695 }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* El dedo desplaza la página sobre el dibujo; solo un toque cerca de una ficha (en la mesa libre) la arrastra. */
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend svg{flex:none}
+.nombres{display:grid; grid-template-columns:auto minmax(0, 1fr); gap:3px 10px; align-items:baseline; padding:8px 12px; border-radius:14px; background:var(--paper); border:1px solid var(--line); font-size:.95rem; min-width:0}
+.nombres .fila{display:contents}
+.nombres .q{color:var(--muted); font-size:.74rem; font-weight:800; text-transform:uppercase; letter-spacing:.03em}
+.nombres .v{padding:0; text-decoration:none}
+.nombres .n{font-weight:800; overflow-wrap:anywhere}
+.nombres .cab{font-weight:800}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 2px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.f{white-space:nowrap}
+.f .v{padding:0; border-radius:3px; text-decoration:none}
+.f sub, .f sup{font-size:.72em; line-height:0}
+.v-H{color:var(--el-H)} .v-C{color:var(--el-C)} .v-N{color:var(--el-N)} .v-O{color:var(--el-O)} .v-Na{color:var(--el-Na)}
+.v-Al{color:var(--el-Al)} .v-P{color:var(--el-P)} .v-S{color:var(--el-S)} .v-Cl{color:var(--el-Cl)} .v-K{color:var(--el-K)}
+.v-Ca{color:var(--el-Ca)} .v-Fe{color:var(--el-Fe)} .v-Zn{color:var(--el-Zn)} .v-Pb{color:var(--el-Pb)}
+.v.hl{background:none; outline:2px solid currentColor; outline-offset:1px}
+.carga{color:var(--ink); font-weight:800}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-size:1.04rem; font-variant-numeric:tabular-nums; min-width:0}
+.eq .note{font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq .ex{white-space:normal; line-height:2}
+.tabla{border-collapse:collapse; font-size:.93rem}
+.tabla th, .tabla td{padding:4px 8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top}
+.tabla th{color:var(--muted); font-size:.8rem; text-transform:uppercase; letter-spacing:.04em}
+.scroll{overflow-x:auto; max-width:100%}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%}
+.campo{display:grid; gap:4px; font-weight:700}
+.campos{display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px}
+.campo select{width:100%}
+.focos{display:flex; flex-wrap:wrap; gap:6px}
+.focos button{font:800 1rem var(--font); padding:8px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.focos button[aria-pressed="true"]{border-color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink)}
+.focos .v{cursor:inherit}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.exps{border-radius:20px}
+.cuenta{display:flex; flex-wrap:wrap; gap:8px}
+.cnt{display:flex; align-items:center; gap:6px; padding:6px 8px; border-radius:14px; border:1.5px solid var(--line); background:var(--paper)}
+.cnt .nom{font-weight:800; min-width:5.5em; text-align:center}
+.cnt button{width:44px; height:44px; border-radius:50%; border:1.5px solid var(--line); background:var(--card); color:var(--ink); font:800 1.2rem var(--font); cursor:pointer}
+.cnt button:disabled{opacity:.4; cursor:not-allowed}
+.estado{font-weight:700; margin:0}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, select:focus-visible, a:focus-visible, canvas:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+@media (max-width:899px){ .mode.pendiente .nombres{display:none} }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Nomenclatura inorgánica · Problemas tipo admisión</p>
+      <h1>El árbol de las funciones</h1>
+      <p class="sub">Arriba, un árbol donde cada elemento se combina y forma una familia de compuestos. Abajo, una mesa de fichas con carga que se juntan hasta formar una sustancia. Predice y después mira.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="El árbol y la mesa de fichas">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="El árbol de las funciones o la mesa de fichas, según el paso"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="nombres" id="nom1" hidden></div>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con el árbol y la mesa">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="El árbol de las funciones o la mesa de fichas, según el experimento" tabindex="-1"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="nombres" id="nom2" hidden></div>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/nomenclatura-inorganica">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/elementos.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'nomenclatura-inorganica', unidad: 'quimica.nomenclatura-inorganica', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorNomenclatura (motor.js): estados de oxidación, fórmula desde fichas, el árbol, la
+   neutralización y los nombres en las tres nomenclaturas. Aquí solo se pinta lo que el motor dice. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MN = MotorNomenclatura;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const EL = ['H', 'C', 'N', 'O', 'Na', 'Al', 'P', 'S', 'Cl', 'K', 'Ca', 'Fe', 'Zn', 'Pb'];
+const NOMBRE = Object.fromEntries(EL.map(e => [e, MN.ESTADOS[e].nombre]));
+const SUBD = { '0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉' };
+const SUPD = { '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹', '+':'⁺', '-':'⁻' };
+// "SO4^2-" → "SO₄²⁻"; "FeSO4·7H2O" → "FeSO₄·7H₂O" (el 7 del agua es coeficiente: no baja).
+function txt(f){
+  const [c, q] = String(f).split('^');
+  const cuerpo = c.split('·').map((p, i) => i ? p.replace(/^(\d*)(.*)$/, (m, n, r) => n + r.replace(/\d/g, d => SUBD[d])) : p.replace(/\d/g, d => SUBD[d])).join('·');
+  return cuerpo + (q ? q.split('').map(ch => SUPD[ch] || ch).join('') : '');
+}
+const cargaTxt = q => q === 0 ? '' : (Math.abs(q) === 1 ? '' : Math.abs(q)) + (q > 0 ? '+' : '−');
+const conSigno = n => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n);
+// Piezas de una fórmula: [{ t, k, mod }], k el elemento (o 'ink'), mod 'sub' o 'sup'.
+function piezasF(f){
+  const r = []; let s = String(f), carga = 0, ac = false;
+  if (/\(ac\)$/.test(s)){ ac = true; s = s.slice(0, -4); }
+  const m = s.match(/^(.*?)\^(\d*)([+-])$/); if (m){ s = m[1]; carga = (m[3] === '+' ? 1 : -1)*(m[2] ? +m[2] : 1); }
+  s.split('·').forEach((parte, i) => {
+    if (i){ r.push({ t:'·', k:'ink' }); const c = parte.match(/^(\d+)/); if (c){ r.push({ t:c[1], k:'ink' }); parte = parte.slice(c[1].length); } }
+    parte.replace(/([A-Z][a-z]?)|(\d+)|([()])/g, (x, el, d, par) => {
+      if (el) r.push({ t:el, k:el });
+      else if (d){ const prev = r[r.length - 1]; r.push({ t:d, k:prev && prev.k !== 'paren' ? prev.k : 'ink', mod:'sub' }); }
+      else r.push({ t:par, k:'paren' });
+      return x;
+    });
+  });
+  if (carga) r.push({ t:cargaTxt(carga), k:'ink', mod:'sup' });
+  if (ac) r.push({ t:'(ac)', k:'ink', mod:'sub' });
+  return r.map(p => p.k === 'paren' ? { ...p, k:'ink' } : p);
+}
+// En el texto: cada elemento con su color; al tocarlo se resalta en el dibujo.
+const Fh = f => {
+  let h = '', abierto = false;
+  const cerrar = () => { if (abierto){ h += '</span>'; abierto = false; } };
+  for (const p of piezasF(f)){
+    if (p.mod === 'sub' && p.k !== 'ink'){ h += `<sub>${p.t}</sub>`; continue; }
+    cerrar();
+    if (p.mod === 'sup') h += `<sup class="carga">${p.t}</sup>`;
+    else if (p.mod === 'sub') h += `<sub>${p.t}</sub>`;
+    else if (p.k === 'ink') h += p.t;
+    else { h += `<span class="v v-${p.k}" data-var="${p.k}" tabindex="0">${p.t}`; abierto = true; }
+  }
+  cerrar();
+  return `<span class="f">${h}</span>`;
+};
+// Ecuación del motor ("SO3 + H2O -> H2SO4") en HTML; los coeficientes, en tinta.
+function EQ(e){ return String(e).split(' -> ').map(l => l.split(' + ').map(t => { const m = t.match(/^(\d*)(.+)$/); return (m[1] ? `<b>${m[1]}</b>` : '') + Fh(m[2]); }).join(' + ')).join(' → '); }
+// Un nombre por partes (del motor) en HTML: cada parte del color de su elemento.
+const NomH = partes => partes ? partes.map(p => p.k === 'ink' ? p.t.replace(/ /g, ' ') : `<span class="v v-${p.k}" data-var="${p.k}" tabindex="0">${p.t}</span>`).join('') : '—';
+const Nh = (f, k) => NomH(MN.nombrar(f).partes[k]);
+// Nombre con error (texto del motor) coloreado con las partes del nombre correcto que comparte. Las opciones van en texto.
+function nombresHTML(f, idCab){
+  const n = MN.nombrar(f), fila = (q, k) => n[k] ? `<div class="fila"><span class="q">${q}</span><span class="n">${NomH(n.partes[k])}</span></div>` : '';
+  return `<div class="fila"><span class="q">Fórmula</span><span class="n"><span class="cab">${Fh(f)}</span> <span class="hint">· ${n.funcion}${n.base ? ' (' + n.base + ')' : ''}</span></span></div>`
+    + fila('Sistemática', 'sistematica') + fila('Stock', 'stock') + fila('Tradicional', 'tradicional')
+    + (n.comun && ![n.sistematica, n.stock, n.tradicional].includes(n.comun) ? `<div class="fila"><span class="q">Común</span><span class="n">${n.comun}</span></div>` : '');
+}
+
+function colores(){
+  const g = n => css(n), el = {};
+  for (const e of EL) el[e] = g('--el-' + e);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), ok:g('--ok'), warn:g('--warn'),
+    el, caja:g('--caja'), font:g('--font') };
+}
+const colK = (c, k) => k === 'muted' ? c.muted : k === 'ok' ? c.ok : k === 'warn' ? c.warn : (c.el[k] || c.ink);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function flecha(ctx, c, x1, y1, x2, y2){ ctx.save(); ctx.strokeStyle = c.muted; ctx.fillStyle = c.muted; ctx.lineWidth = 1.6; linea(ctx, x1, y1, x2, y2);
+  const a = Math.atan2(y2 - y1, x2 - x1); ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - 7*Math.cos(a - .45), y2 - 7*Math.sin(a - .45)); ctx.lineTo(x2 - 7*Math.cos(a + .45), y2 - 7*Math.sin(a + .45)); ctx.closePath(); ctx.fill(); ctx.restore(); }
+const ease = p => p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2)/2;
+
+/* ----- Texto en el lienzo por piezas: { t, k, mod, peso } ----- Si no entra, baja la letra hasta 10 px. */
+function anchoP(ctx, c, ps, tam){ let w = 0; for (const p of ps){ ctx.font = `${p.peso || 800} ${p.mod ? tam*0.68 : tam}px ${c.font}`; w += ctx.measureText(p.t).width; } return w; }
+function pintarP(ctx, c, ps, x, y, tam, align, max, hl){
+  let t = tam; if (max) while (t > 10 && anchoP(ctx, c, ps, t) > max) t -= 0.5;
+  const w = anchoP(ctx, c, ps, t); let x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (const p of ps){
+    const tt = p.mod ? t*0.68 : t, dy = p.mod === 'sub' ? t*0.3 : p.mod === 'sup' ? -t*0.36 : 0;
+    ctx.font = `${p.peso || 800} ${tt}px ${c.font}`; const ww = ctx.measureText(p.t).width;
+    if (hl && hl === p.k){ ctx.save(); ctx.strokeStyle = colK(c, p.k); ctx.lineWidth = 1.5; rr(ctx, x0 - 1.5, y + dy - tt*0.62, ww + 3, tt*1.24, 3); ctx.stroke(); ctx.restore(); }
+    ctx.fillStyle = colK(c, p.k); ctx.fillText(p.t, x0, y + dy); x0 += ww;
+  }
+  return w;
+}
+const pF = f => piezasF(f);
+const pT = (t, k, peso) => ({ t, k: k || 'ink', peso: peso || 700 });
+
+/* ----- La escena -----
+   E.vista.tipo dice qué se dibuja:
+     'mesa':  { grupos:[{ ion, n, tapa }], agua, formula, suma:'si'|'tapa'|'no', bandeja:[iones], cruce:{ de, a }, p }
+              Fichas de cationes arriba y de aniones abajo; la carga total debajo; la fórmula al final.
+     'arbol': { metal:{ el, v }, nm:{ el, v, hidruro, sal }, ver:[nodos], tapa:nodo, p }  nodos: m, mo, mh, n, no, na, sal
+     'cloro': { ver:bool }  el cloro con sus cuatro estados.
+   Nada regala la respuesta antes de responder: lo que es la respuesta va tapado con «?». */
+const ESCENAS = [];
+function crearEscena(cv, idDesc, modoId, idLey, idNom){
+  const E = { vista:{ tipo:'arbol', ver:[] }, hl:null, modoId, anims:[], compacto:false, hits:[], arr:null, nombres:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, Hn = 0, esc = 1, L = null;
+  const chico = () => W < 560;
+  // Medidas de la mesa: fichas de ~64 px; en el celular, más angostas si no caben.
+  function medMesa(w){
+    const v = E.vista, filas = v.grupos ? [v.grupos.filter(g => MN.ion(g.ion).carga > 0), v.grupos.filter(g => MN.ion(g.ion).carga < 0)] : [[], []];
+    const maxN = Math.max(1, ...filas.map(f => f.reduce((s, g) => s + g.n, 0)));
+    const fw = clamp((w - 24 - (maxN - 1)*8)/maxN, 40, 72), fh = clamp(fw*0.66, 34, 46);
+    return { filas, fw, fh };
+  }
+  function layout(w){
+    const v = E.vista, r = {};
+    if (v.tipo === 'mesa'){
+      const m = medMesa(w); Object.assign(r, m);
+      r.yBand = 8; r.hBand = v.bandeja ? m.fh + 30 : 0;
+      r.yMesa = r.yBand + r.hBand + (v.bandeja ? 8 : 0); r.yFila1 = r.yMesa + 22; r.yFila2 = r.yFila1 + m.fh + 22;
+      r.yAgua = r.yFila2 + m.fh + 14; r.hAgua = v.agua ? 34 : 0;
+      r.ySuma = r.yAgua + r.hAgua + 14; r.yForm = r.ySuma + 30; r.yCruce = r.yForm + 30;
+      r.H = r.yCruce + (v.cruce ? 34 : 6) + 6;
+    } else if (v.tipo === 'arbol'){
+      r.nh = 54; r.gap = 30; r.y0 = 12; r.H = r.y0 + 3*r.nh + 2*r.gap + 44 + r.nh + 12;
+    } else { r.H = w < 560 ? 300 : 280; }
+    return r;
+  }
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    W = w; L = layout(w); Hn = L.H;
+    const h = Math.round(Celular.alto(Hn, E.compacto, { tope:300 })); esc = h/Hn;
+    const dpr = window.devicePixelRatio || 1;
+    if (h !== H || cv.width !== Math.round(w*dpr)){ H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+  };
+  new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; E.resize(); E.dibujar(); };
+  let llave = '';
+  const llaveDe = () => { const v = E.vista; return `${W}|${v.tipo}|${JSON.stringify(v.grupos || [])}|${!!v.bandeja}|${v.agua || 0}|${!!v.cruce}|${E.compacto}`; };
+
+  // ----- Una ficha: el ion, con su carga en tinta (o «?») -----
+  function ficha(c, ion, x, y, w, h, op){
+    op = op || {};
+    const I = MN.ion(ion), k = I.central, col = c.el[k] || c.ink;
+    ctx.save(); ctx.globalAlpha = op.alpha === undefined ? 1 : op.alpha;
+    rr(ctx, x, y, w, h, 10); ctx.fillStyle = c.paper; ctx.fill();
+    ctx.globalAlpha *= 0.14; ctx.fillStyle = col; ctx.fill(); ctx.globalAlpha = op.alpha === undefined ? 1 : op.alpha;
+    ctx.strokeStyle = col; ctx.lineWidth = E.hl && I.atomos[E.hl] ? 3 : 1.8; ctx.stroke();
+    pintarP(ctx, c, pF(I.cuerpo), x + w/2 - (op.sinCarga ? 0 : 6), y + h/2 + 1, clamp(h*0.42, 13, 18), 'center', w - 24);
+    if (!op.sinCarga){
+      ctx.font = `900 ${clamp(h*0.3, 10, 13)}px ${c.font}`; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillStyle = op.tapa ? c.muted : c.ink;
+      ctx.fillText(op.tapa ? '?' : cargaTxt(I.carga), x + w - 5, y + 3);
+    }
+    ctx.restore();
+  }
+  function aguita(c, x, y, w, h, alpha){
+    ctx.save(); ctx.globalAlpha = alpha === undefined ? 1 : alpha; rr(ctx, x, y, w, h, 8); ctx.fillStyle = c.paper; ctx.fill(); ctx.setLineDash([3, 3]); ctx.strokeStyle = c.el.H; ctx.lineWidth = 1.4; ctx.stroke();
+    pintarP(ctx, c, pF('H2O'), x + w/2, y + h/2 + 1, clamp(h*0.42, 11, 14), 'center', w - 4); ctx.restore();
+  }
+  // ----- La mesa -----
+  function mesa(c){
+    const v = E.vista; E.hits = [];
+    const fw = L.fw, fh = L.fh, p = v.p === undefined ? 1 : v.p;
+    if (v.bandeja){
+      rr(ctx, 8, L.yBand, W - 16, L.hBand, 14); ctx.fillStyle = c.caja; ctx.fill();
+      pintarP(ctx, c, [pT(v.bandejaEt || 'bandeja: toca o arrastra una ficha a la mesa', 'muted', 700)], 16, L.yBand + 11, 11, 'left', W - 32);
+      const n = v.bandeja.length, tot = n*fw + (n - 1)*12, x0 = W/2 - tot/2;
+      v.bandeja.forEach((ion, i) => { const x = x0 + i*(fw + 12), y = L.yBand + 22; ficha(c, ion, x, y, fw, fh - 4, { sinCarga: MN.ion(ion).carga === 0 }); E.hits.push({ x, y, w:fw, h:fh - 4, kind:'bandeja', ion }); });
+    }
+    rr(ctx, 8, L.yMesa, W - 16, L.ySuma - L.yMesa - 4, 14); ctx.fillStyle = c.caja; ctx.fill();
+    pintarP(ctx, c, [pT('la mesa', 'muted', 700)], 16, L.yMesa + 11, 11, 'left');
+    const fila = (gs, y) => {
+      const n = gs.reduce((s, g) => s + g.n, 0); if (!n) return;
+      const tot = n*fw + (n - 1)*8; let x = W/2 - tot/2, k = 0;
+      for (const g of gs) for (let i = 0; i < g.n; i++, k++){
+        // Las fichas recién agregadas aparecen de a poco (v.nuevas: cuántas de cada ion son nuevas).
+        const nueva = v.nuevas && v.nuevas[g.ion] && i >= g.n - v.nuevas[g.ion], a = nueva ? ease(clamp(p*1.4, 0, 1)) : 1;
+        ficha(c, g.ion, x, y - (1 - a)*16, fw, fh, { tapa: g.tapa, alpha: a }); E.hits.push({ x, y, w:fw, h:fh, kind:'mesa', ion:g.ion }); x += fw + 8;
+      }
+    };
+    fila(L.filas[0], L.yFila1); fila(L.filas[1], L.yFila2);
+    if (v.agua){ const n = v.agua, aw = clamp((W - 30 - (n - 1)*4)/n, 26, 46), tot = n*aw + (n - 1)*4; for (let i = 0; i < n; i++) aguita(c, W/2 - tot/2 + i*(aw + 4), L.yAgua, aw, 26, ease(clamp(p*1.3 - i*0.06, 0, 1))); }
+    // La carga total.
+    const gs = v.grupos || [];
+    if (v.suma === 'tapa') pintarP(ctx, c, [pT('carga total: responde para verla', 'muted', 700)], W/2, L.ySuma, 13, 'center', W - 20);
+    else if (v.suma !== 'no' && gs.length){
+      const pos = gs.filter(g => MN.ion(g.ion).carga > 0).reduce((s, g) => s + g.n*MN.ion(g.ion).carga, 0), neg = gs.filter(g => MN.ion(g.ion).carga < 0).reduce((s, g) => s + g.n*MN.ion(g.ion).carga, 0);
+      const t = pos + neg;
+      pintarP(ctx, c, [pT('carga: ', 'muted', 700), pT(`${conSigno(pos)} ${neg < 0 ? '−' : '+'} ${Math.abs(neg)} = ${conSigno(t) || '0'}`, 'ink', 900), pT(t === 0 ? '  · suma cero' : '  · no suma cero', t === 0 ? 'ok' : 'muted', 800)], W/2, L.ySuma, 15, 'center', W - 20);
+    }
+    if (v.formula) pintarP(ctx, c, [pT(v.formulaEt !== undefined ? v.formulaEt : 'fórmula: ', 'muted', 700), ...pF(v.formula)], W/2, L.yForm, chico() ? 22 : 24, 'center', W - 20, E.hl);
+    else if (v.formulaTapa) pintarP(ctx, c, [pT('fórmula: ', 'muted', 700), pT('?', 'muted', 900)], W/2, L.yForm, 22, 'center');
+    if (v.cruce){
+      const ps = [...pF(v.cruce.de), pT(v.cruce.sep || '  →  ', 'muted', 800), ...pF(v.cruce.a), pT(v.cruce.nota ? '   ' + v.cruce.nota : '', 'muted', 700)];
+      pintarP(ctx, c, ps, W/2, L.yCruce + 6, 15, 'center', W - 20, E.hl);
+    }
+    if (E.arr && E.arr.mov){ const a = E.arr; ficha(c, a.ion, a.x - fw/2, a.y - fh/2, fw, fh, { alpha:0.85, sinCarga: MN.ion(a.ion).carga === 0 }); }
+  }
+  // ----- El árbol -----
+  function nodosArbol(){
+    const v = E.vista, cols = [W*0.27, W*0.73], nw = Math.min(W*0.42, 190), y = k => L.y0 + k*(L.nh + L.gap), N = {};
+    if (v.metal){
+      const { el, v:vv } = v.metal;
+      N.m = { x:cols[0], y:y(0), f:el, et:'metal', k:el };
+      N.mo = { x:cols[0], y:y(1), f:MN.formar('oxido', el, vv).formula, et:'óxido básico' };
+      N.mh = { x:cols[0], y:y(2), f:MN.formar('hidroxido', el, vv).formula, et:'hidróxido' };
+    }
+    if (v.nm){
+      const { el, v:vv } = v.nm;
+      N.n = { x:cols[1], y:y(0), f:el, et:'no metal' };
+      if (v.nm.hidruro){ N.no = { x:cols[1], y:y(1), f:MN.formar('hidruro', el).formula, et:'hidruro (gas)' }; N.na = { x:cols[1], y:y(2), f:MN.formar('hidracido', el).formula, et:'hidrácido (en agua)' }; }
+      else { N.no = { x:cols[1], y:y(1), f:MN.oxido(el, vv).formula, et:'óxido ácido' }; N.na = { x:cols[1], y:y(2), f:MN.formar('oxacido', el, vv).formula, et:'oxácido' }; }
+    }
+    if (v.metal && v.nm){
+      const ac = N.na.f.replace('(ac)', ''), r = MN.neutralizar(ac, N.mh.f, v.nm.quitar ? { quitar:v.nm.quitar } : undefined);
+      N.sal = { x:W/2, y:y(3) + 14, f:r.sal, et: v.nm.hidruro ? 'sal haloidea + agua' : (v.nm.quitar ? 'sal ácida + agua' : 'oxisal + agua'), agua:true, ec:r.ecuacion };
+    }
+    for (const k in N) N[k].w = k === 'sal' ? Math.min(W - 40, 240) : nw;
+    return N;
+  }
+  function arbol(c){
+    const v = E.vista, N = nodosArbol(), ver = new Set(v.ver || []), p = v.p === undefined ? 1 : v.p; E.hits = [];
+    const nh = L.nh;
+    // Flechas con su rótulo (+ O₂, + H₂O, + H₂, en agua).
+    const rot = (a, b, t) => { if (!N[a] || !N[b]) return; const A = N[a], B = N[b]; flecha(ctx, c, A.x, A.y + nh + 2, B.x, B.y - 3);
+      pintarP(ctx, c, t, A.x + 8, (A.y + nh + B.y)/2, 12, 'left', A.w/2); };
+    rot('m', 'mo', [pT('+ ', 'muted', 800), ...pF('O2')]); rot('mo', 'mh', [pT('+ ', 'muted', 800), ...pF('H2O')]);
+    if (v.nm && v.nm.hidruro){ rot('n', 'no', [pT('+ ', 'muted', 800), ...pF('H2')]); rot('no', 'na', [pT('en agua', 'muted', 800)]); }
+    else { rot('n', 'no', [pT('+ ', 'muted', 800), ...pF('O2')]); rot('no', 'na', [pT('+ ', 'muted', 800), ...pF('H2O')]); }
+    if (N.sal){ flecha(ctx, c, N.mh.x, N.mh.y + nh + 2, N.sal.x - 30, N.sal.y - 3); flecha(ctx, c, N.na.x, N.na.y + nh + 2, N.sal.x + 30, N.sal.y - 3); }
+    for (const [k, n] of Object.entries(N)){
+      const vis = ver.has(k), tapa = v.tapa === k, x = n.x - n.w/2;
+      const a = vis && v.crece === k ? ease(clamp(p, 0, 1)) : 1;
+      ctx.save(); rr(ctx, x, n.y, n.w, nh, 14);
+      if (vis){ ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = (E.foco === k ? c.ink : c.line); ctx.lineWidth = E.foco === k ? 2.4 : 1.4; ctx.stroke(); }
+      else { ctx.setLineDash([5, 4]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.stroke(); }
+      ctx.restore();
+      pintarP(ctx, c, [pT(n.et, 'muted', 700)], n.x, n.y + 12, 11, 'center', n.w - 10);
+      if (vis){
+        ctx.save(); ctx.globalAlpha = a;
+        const ps = tapa ? [pT('?', 'muted', 900)] : [...pF(n.f), ...(n.agua ? [pT(' + ', 'ink', 700), ...pF('H2O')] : [])];
+        pintarP(ctx, c, ps, n.x, n.y + 35 + (1 - a)*8, 19, 'center', n.w - 12, E.hl);
+        ctx.restore();
+        if (!tapa) E.hits.push({ x, y:n.y, w:n.w, h:nh, kind:'nodo', nodo:k, f:n.f });
+      }
+    }
+  }
+  // ----- El cloro con sus cuatro estados -----
+  function cloro(c){
+    const v = E.vista, est = [1, 3, 5, 7], cw = (W - 20)/4, y0 = 16; E.hits = [];
+    const cx = W/2;
+    rr(ctx, cx - 60, y0, 120, 44, 14); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.4; ctx.stroke();
+    pintarP(ctx, c, [pT('no metal', 'muted', 700)], cx, y0 + 11, 11, 'center'); pintarP(ctx, c, pF('Cl'), cx, y0 + 30, 19, 'center', 100, E.hl);
+    est.forEach((e, i) => {
+      const x = 10 + cw*(i + 0.5), yA = y0 + 92, yB = yA + 82;
+      flecha(ctx, c, cx, y0 + 46, x, yA - 22);
+      pintarP(ctx, c, [pT(conSigno(e), 'ink', 900)], x, yA - 10, 14, 'center');
+      const box = (y, f, et) => { rr(ctx, x - cw/2 + 4, y, cw - 8, 48, 12); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.2; ctx.stroke();
+        pintarP(ctx, c, [pT(et, 'muted', 700)], x, y + 11, 10, 'center', cw - 14); pintarP(ctx, c, f ? pF(f) : [pT('?', 'muted', 900)], x, y + 32, chico() ? 14 : 17, 'center', cw - 14, E.hl); };
+      box(yA, MN.oxido('Cl', e).formula, 'óxido');
+      flecha(ctx, c, x, yA + 50, x, yB - 3);
+      pintarP(ctx, c, [pT('+ ', 'muted', 800), ...pF('H2O')], x + 6, yA + 64, 10, 'left', cw/2);
+      box(yB, v.ver ? MN.formar('oxacido', 'Cl', e).formula : null, 'oxácido');
+      if (v.ver){ const t = MN.formar('oxacido', 'Cl', e).nombres.tradicional.replace('ácido ', ''); pintarP(ctx, c, [pT(t, 'Cl', 800)], x, yB + 64, chico() ? 11 : 13, 'center', cw - 4, E.hl); }
+    });
+  }
+
+  E.dibujar = () => {
+    const w = cv.clientWidth; if (!w) return;
+    if (!L || llave !== llaveDe() || w !== W){ E.resize(); llave = llaveDe(); }
+    const c = colores(), dpr = window.devicePixelRatio || 1;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    ctx.setTransform(dpr*esc, 0, 0, dpr*esc, dpr*(W - W*esc)/2, 0);
+    const v = E.vista;
+    if (v.tipo === 'mesa') mesa(c); else if (v.tipo === 'arbol') arbol(c); else cloro(c);
+    const ley = leyendaHTML(v), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+    const nom = document.getElementById(idNom), nf = E.nombres;
+    const k = nf || '';
+    if (nom.dataset.k !== k){ nom.dataset.k = k; nom.hidden = !nf; nom.innerHTML = nf ? nombresHTML(nf) : ''; }
+  };
+  // Posición en coordenadas del dibujo (con la escala del modo compacto).
+  E.local = p => ({ x: (p.x - (W - W*esc)/2)/esc, y: p.y/esc });
+  E.golpe = p => { const q = E.local(p); return E.hits.find(h => q.x >= h.x - 6 && q.x <= h.x + h.w + 6 && q.y >= h.y - 6 && q.y <= h.y + h.h + 6); };
+  E.cerca = (p, r) => { const q = E.local(p); return E.hits.some(h => h.kind !== 'nodo' && q.x >= h.x - r/2 && q.x <= h.x + h.w + r/2 && q.y >= h.y - r/2 && q.y <= h.y + h.h + r/2); };
+  E.enMesaQ = q => !!L && L.yMesa !== undefined && q.y >= L.yMesa && q.y <= L.ySuma;
+  E.describir = () => {
+    const v = E.vista; let t = '';
+    if (!L || llave !== llaveDe()){ W = cv.clientWidth || W || 360; L = layout(W); }
+    if (v.tipo === 'mesa'){
+      const gs = v.grupos || [];
+      t = gs.length ? 'En la mesa: ' + gs.map(g => `${g.n} ${g.n === 1 ? 'ficha' : 'fichas'} de ${txt(MN.ion(g.ion).cuerpo)}${g.tapa ? ', con la carga tapada' : ` (${cargaTxt(MN.ion(g.ion).carga)})`}`).join('; ') + '. ' : 'La mesa está vacía. ';
+      if (v.agua) t += `${v.agua} moléculas de agua aparte. `;
+      if (v.formula) t += `Fórmula: ${txt(v.formula)}. `;
+    } else if (v.tipo === 'arbol'){
+      const N = nodosArbol(), ver = new Set(v.ver || []);
+      t = 'Árbol: ' + Object.entries(N).map(([k, n]) => `${n.et}, ${ver.has(k) ? (v.tapa === k ? 'por responder' : txt(n.f)) : 'vacío'}`).join('; ') + '. ';
+    } else t = v.ver ? 'Cloro con +1, +3, +5 y +7: HClO hipocloroso, HClO₂ cloroso, HClO₃ clórico y HClO₄ perclórico.' : 'Cloro con +1, +3, +5 y +7: cada uno forma su óxido; los ácidos están por responder.';
+    const el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t;
+  };
+  return E;
+}
+function elementosVistos(v){
+  const s = new Set(), agregar = f => { for (const e of Object.keys(MN.atomos(String(f).replace('(ac)', '').replace(/\^.*$/, '')))) if (EL.includes(e)) s.add(e); };
+  if (v.tipo === 'mesa'){ (v.grupos || []).forEach(g => agregar(MN.ion(g.ion).cuerpo)); (v.bandeja || []).forEach(i => agregar(MN.ion(i).cuerpo)); if (v.agua) agregar('H2O'); }
+  else if (v.tipo === 'arbol'){ if (v.metal){ agregar(v.metal.el); agregar('O'); agregar('H'); } if (v.nm){ agregar(v.nm.el); agregar('H'); if (!v.nm.hidruro) agregar('O'); } }
+  else ['Cl', 'O', 'H'].forEach(e => s.add(e));
+  return EL.filter(e => s.has(e));
+}
+function leyendaHTML(v){
+  const it = elementosVistos(v).map(e => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--el-${e})"/></svg>${e} · ${NOMBRE[e]}</span>`);
+  if (v.tipo === 'mesa') it.push(`<span>2+ · carga de la ficha (un ion), en tinta</span>`);
+  return it.join('');
+}
+// Resaltar en el dibujo lo que se toca en el texto (regla 4).
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un bucle que solo corre mientras algo se mueve.
+let RAF = 0, ULT = 0;
+function pedir(){ if (!RAF){ ULT = performance.now(); RAF = requestAnimationFrame(tick); } }
+function tick(now){
+  RAF = 0; const dt = Math.min(0.05, (now - ULT)/1000); ULT = now; let sigue = false;
+  for (const E of ESCENAS){
+    if (document.getElementById(E.modoId).hidden) continue;
+    for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(Math.max(0, f)); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
+    E.dibujar();
+  }
+  if (sigue) pedir();
+}
+function animar(E, dur, paso, fin, retraso){
+  if (RM){ paso(1); if (fin) fin(); E.dibujar(); return; }
+  E.anims.push({ t:-(retraso || 0), dur, paso, fin }); pedir();
+}
+function cortar(E){ E.anims = []; }
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${'abcd'.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${'abcd'.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+const mesa = (grupos, extra) => ({ tipo:'mesa', grupos, suma:'si', ...(extra || {}) });
+const arbolV = (metal, nm, ver, extra) => ({ tipo:'arbol', metal, nm, ver, ...(extra || {}) });
+// Fichas para una fórmula: los grupos que da formulaDeIones.
+const gruposDe = (cat, an) => { const r = MN.formulaDeIones(cat, an); return [{ ion:cat, n:r.nCation }, { ion:an, n:r.nAnion }]; };
+// Combinaciones que juntarían dos colores parecidos (Elementos.CERCANOS): se apagan en la mesa y el árbol libres.
+const PAR_CERCA = new Set(Elementos.CERCANOS.map(([a, b]) => a + '|' + b).concat(Elementos.CERCANOS.map(([a, b]) => b + '|' + a)));
+const chocan = (fs) => { const els = [...new Set(fs.flatMap(f => Object.keys(MN.atomos(String(f).replace(/\^.*$/, '')))))]; return els.some(a => els.some(b => PAR_CERCA.has(a + '|' + b))); };
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Pasos 1 a 5 de «Propuesta → 2. Nomenclatura» de docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md
+   (bloque NO y la tabla «Lo que no tiene respaldo»), más la sal con su cambio de terminación y el mapa completo. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1', 'nom1');
+const S = { step:0, max:0, pred:{} };
+// Todo sale del motor.
+const FE = MN.estado('Fe2O3', 'Fe'), NFE = MN.nombrar('Fe2O3'), AL = MN.formulaDeIones('Al^3+', 'SO4^2-'), PB = MN.formulaDeIones('Pb^4+', 'O^2-'), PER = MN.formulaDeIones('Na^+', 'O2^2-');
+const SO = MN.formar('oxacido', 'S', 6), NEU = MN.neutralizar('H2SO4', 'NaOH'), NNA = MN.nombrar('Na2SO4');
+const ERR_SAL = NNA.errores;
+const CONS = 'Si dudas, primero lee la tabla del paso que viene; no hay apuro.';
+const NO1 = 'Leer el subíndice como si fuera otra cosa sale de un error documentado: en un estudio con 79 escolares argentinos, cerca del 40 % juntó 3 átomos de X y 8 de Y en «X₃Y₈», como si subíndice y coeficiente fueran lo mismo (Casado y Raviolo, 2005). Este error en particular no tiene un dato propio: es una hipótesis nuestra.';
+const NO2 = 'Las reglas de los nombres iónicos se aplican mal y con seguridad: un estudio en Indonesia (solo leímos su resumen) encontró ideas erróneas sostenidas con seguridad alta en cerca del 37 % de las respuestas de nomenclatura iónica. Este error en particular no tiene un dato propio.';
+
+const P1 = { id:'nomenclatura-paso2', ok:'b', opts:[
+  ['a', `${FE.errores.subindice}: hay 2 átomos de hierro en ${Fh('Fe2O3')}`, 'NO-subindice-como-estado', 'hipotesis'],
+  ['b', `${FE.texto}: los 3 ${Fh('O')} dan −6, y los 2 ${Fh('Fe')} juntos tienen que dar +6`],
+  ['c', `${FE.errores.sinDividir}: el hierro tiene que compensar los −6 de los 3 ${Fh('O')}`, 'NO-sin-dividir-entre-atomos', 'hipotesis'],
+  ['d', `${FE.errores.signo}: el hierro lleva un 3, con el mismo signo que el oxígeno`, 'NO-signo-al-reves', 'hipotesis']],
+  fb:{ b:'¡Bien! La sustancia es neutra: las cargas suman cero. Tres O²⁻ dan −6, así que los dos hierros dan +6 y cada uno tiene +3. Mira las fichas: ya muestran su carga.',
+    a:`Elegiste la 1. El 2 del Fe₂O₃ dice cuántos átomos de hierro hay, no su estado. Con +2 cada uno, los dos hierros darían +4 y los tres oxígenos −6: no suma cero. ${NO1} La correcta está marcada.`,
+    c:'Elegiste la 3. +6 es lo que dan los dos hierros juntos; cada uno tiene la mitad, +3. Este error es una hipótesis nuestra, sin estudio que lo mida. La correcta está marcada.',
+    d:'Elegiste la 4. El oxígeno es negativo, así que el hierro tiene que ser positivo para que la suma dé cero: +3. Este error es una hipótesis nuestra, sin estudio que lo mida. La correcta está marcada.' } };
+const P2 = { id:'nomenclatura-paso3', ok:'b', opts:[
+  ['a', `${NFE.errores.stockSubindice}: por los 2 átomos de hierro`, 'NO-stock-subindice-como-romano', 'parcial'],
+  ['b', `${NFE.stock}: por el estado de oxidación de cada hierro`],
+  ['c', `${NFE.errores.stockSinDividir}: por la carga de los dos hierros juntos`, 'NO-stock-sin-dividir', 'hipotesis'],
+  ['d', `${NFE.errores.stockSinNumero}: con el metal y el oxígeno basta, sin número`, 'NO-stock-sin-romano', 'parcial']],
+  fb:{ b:'¡Bien! En la stock va el estado de oxidación del metal en número romano: (III). Abajo del dibujo aparecen sus tres nombres, cada parte del color de su elemento.',
+    a:`Elegiste la 1. El número romano de la stock es el estado de oxidación de cada hierro (+3), no cuántos átomos hay. «Óxido de hierro (II)» es otro compuesto, el FeO. ${NO2} La correcta está marcada.`,
+    c:'Elegiste la 3. El romano es el estado de un solo átomo de hierro: +3. El hierro no llega a +6. Este error es una hipótesis nuestra, sin estudio que lo mida. La correcta está marcada.',
+    d:`Elegiste la 4. El hierro tiene dos estados (+2 y +3) y forma dos óxidos: FeO y Fe₂O₃. Sin el número, el nombre no dice cuál es. Solo se omite cuando el metal tiene un estado, como el sodio. ${NO2} La correcta está marcada.` } };
+const P3 = { id:'nomenclatura-paso4', ok:'b', opts:[
+  ['a', `${Fh(AL.errores.sinParentesis)}: 2 Al y 3 sulfatos, escritos en fila`, 'NO-sin-parentesis', 'hipotesis'],
+  ['b', `${Fh(AL.formula)}: 2 Al (+6) y 3 sulfatos (−6), con el sulfato entre paréntesis`],
+  ['c', `${Fh(AL.errores.cruceInvertido)}: 3 Al por el 3+ y 2 sulfatos por el 2−`, 'NO-cruce-invertido', 'hipotesis'],
+  ['d', `${Fh(AL.errores.unoAUno)}: una ficha de cada una, porque se juntan de a una`, 'NO-uno-a-uno-sin-cargas', 'hipotesis']],
+  fb:{ b:'¡Bien! Se agregan fichas hasta que la carga sume cero: 2 Al³⁺ dan +6 y 3 SO₄²⁻ dan −6. Como el sulfato es un grupo de átomos que se repite, va entre paréntesis. Mira la mesa.',
+    a:`Elegiste la 1. Las cantidades son las correctas, pero sin paréntesis «SO₄₃» se lee como un S con 43 oxígenos. El sulfato es un grupo que se repite tres veces: (SO₄)₃. ${NO1.replace('Leer el subíndice como si fuera otra cosa', 'Leer la fórmula como una etiqueta, sin ver qué dice cada número')} La correcta está marcada.`,
+    c:'Elegiste la 3. Con 3 Al³⁺ (+9) y 2 SO₄²⁻ (−4) la carga no suma cero. En el cruce, la carga de cada ion se vuelve el subíndice del otro: el 2 del sulfato va al aluminio. Este error es una hipótesis nuestra. La correcta está marcada.',
+    d:'Elegiste la 4. Un Al³⁺ (+3) y un SO₄²⁻ (−2) dejan +1: sobra carga. Las fichas se juntan hasta que la suma dé cero. Este error es una hipótesis nuestra. La correcta está marcada.' } };
+const P4 = { id:'nomenclatura-paso5', ok:'a', opts:[
+  ['a', `${Fh(PB.formula)}: 1 Pb (+4) y 2 O (−4), la proporción más simple`],
+  ['b', `${Fh(PB.errores.sinSimplificar)}: el 4 del plomo pasa al O y el 2 del O pasa al Pb`, 'NO-cruza-sin-simplificar', 'hipotesis'],
+  ['c', `${Fh(PB.errores.cruceInvertido)}: el 4 y el 2 se simplifican a 2 y 1, y quedan en ese orden`, 'NO-cruce-invertido', 'hipotesis'],
+  ['d', `${Fh(PB.errores.unoAUno)}: una ficha de cada una, porque se juntan de a una`, 'NO-uno-a-uno-sin-cargas', 'hipotesis']],
+  fb:{ a:'¡Bien! El cruce da Pb₂O₄, pero una fórmula iónica dice la proporción: 2 a 4 es lo mismo que 1 a 2. Mira la mesa: con un Pb⁴⁺ y dos O²⁻ la carga ya suma cero.',
+    b:'Elegiste la 2. Pb₂O₄ tiene la carga en cero, pero se simplifica: 2 a 4 es la misma proporción que 1 a 2. Cruzar sin simplificar es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    c:'Elegiste la 3. Con 2 Pb⁴⁺ (+8) y un O²⁻ (−2) la carga no suma cero: los números quedaron al revés. Este error es una hipótesis nuestra. La correcta está marcada.',
+    d:'Elegiste la 4. Un Pb⁴⁺ (+4) y un O²⁻ (−2) dejan +2: falta otro O²⁻. Este error es una hipótesis nuestra. La correcta está marcada.' } };
+const P5 = { id:'nomenclatura-paso6', ok:'c', opts:[
+  ['a', `${Fh(SO.errores.unSoloH)}: el agua le pasa un solo H al óxido`, 'NO-oxacido-un-solo-H', 'hipotesis'],
+  ['b', `${Fh(SO.errores.otroEstado)}: se juntan los 2 H del agua con el SO₃`, 'NO-oxacido-olvida-O-del-agua', 'hipotesis'],
+  ['c', `${Fh(SO.formula)}: se suman los átomos, 2 H, 1 S y 4 O`],
+  ['d', `${EQ(SO.errores.hidracidoYOxigeno)}: el agua y el óxido se reparten en un hidrácido y oxígeno`, 'NO-oxacido-se-separa', 'hipotesis']],
+  fb:{ c:'¡Bien! El oxácido tiene todos los átomos del óxido y del agua: 2 H, 1 S y 4 O. Mira cómo crece la rama del no metal.',
+    a:'Elegiste la 1. El agua trae 2 H y los dos se quedan. Con un solo H y 4 O, el azufre tendría +7, que no es un estado del azufre. Este error es una hipótesis nuestra, sin estudio que lo mida. La correcta está marcada.',
+    b:'Elegiste la 2. El agua trae también su oxígeno: SO₃ + H₂O suman 4 O. H₂SO₃ es otro ácido, el del azufre con +4 (sulfuroso). Este error es una hipótesis nuestra. La correcta está marcada.',
+    d:'Elegiste la 4. El óxido ácido y el agua se juntan en una sola sustancia: no se separan. El azufre sigue con +6, como en el SO₃. Este error es una hipótesis nuestra. La correcta está marcada.' } };
+const P6 = { id:'nomenclatura-paso7', ok:'c', opts:[
+  ['a', `${ERR_SAL.terminacionAlReves}: el -ico del ácido pasa a -ito`, 'NO-sal-ico-a-ito', 'parcial'],
+  ['b', `${ERR_SAL.terminacionUro}: toda sal del azufre termina en -uro`, 'NO-sal-uro-sin-oxigeno', 'parcial'],
+  ['c', `${NNA.tradicional}: el ácido es sulfúrico (-ico) y la sal cambia -ico por -ato`],
+  ['d', `${ERR_SAL.sinCambiar}: la sal guarda el nombre de su ácido`, 'NO-sal-sin-cambiar-terminacion', 'parcial']],
+  fb:{ c:'¡Bien! -oso pasa a -ito e -ico pasa a -ato. El ácido sulfúrico da sulfatos. Mira el nombre abajo del dibujo, en las tres nomenclaturas.',
+    a:`Elegiste la 1. Es al revés: -ico pasa a -ato y -oso a -ito. El sulfito viene del ácido sulfuroso (S con +4). ${NO2} La correcta está marcada.`,
+    b:`Elegiste la 2. -uro es para las sales sin oxígeno, las que vienen de un hidrácido: el sulfuro de sodio es Na₂S. Aquí hay 4 O. ${NO2} La correcta está marcada.`,
+    d:`Elegiste la 4. La sal cambia la terminación de su ácido: sulfúrico → sulfato. «Sulfúrico de sodio» no es el nombre de nada. ${NO2} La correcta está marcada.` } };
+
+// Vistas.
+const vFe = (r, tapaFe) => mesa([{ ion:'Fe^3+', n:2, tapa:tapaFe }, { ion:'O^2-', n:3 }], { suma: tapaFe ? 'tapa' : 'si', formula:'Fe2O3', formulaEt:'' });
+const vAl = (nA, nS, p, nuevas, sinSuma) => mesa([{ ion:'Al^3+', n:nA }, { ion:'SO4^2-', n:nS }], { suma: sinSuma ? 'no' : 'si', formula: nA === AL.nCation && nS === AL.nAnion ? AL.formula : null, formulaTapa: !(nA === AL.nCation && nS === AL.nAnion), p, nuevas });
+const vPb = (nP, nO, p, nuevas, cruce, sinSuma) => mesa([{ ion:'Pb^4+', n:nP }, { ion:'O^2-', n:nO }], { suma: sinSuma ? 'no' : 'si', formula: nP === 1 && nO === 2 ? PB.formula : null, formulaTapa: !(nP === 1 && nO === 2), p, nuevas, cruce });
+const vPer = () => mesa([{ ion:'Na^+', n:2 }, { ion:'O2^2-', n:1 }], { formula:PER.formula, cruce:{ de:PER.formula, a:PER.errores.simplificaTodo, sep:'  no es  ', nota:'(el O₂²⁻ no se parte)' } });
+const NA = { el:'Na', v:1 }, S6 = { el:'S', v:6 };
+const vArbolS = (r, p) => arbolV(NA, S6, ['m', 'mo', 'mh', 'n', 'no', 'na'], { tapa: r ? null : 'na', crece: r ? 'na' : null, p });
+const vSal = (r, p) => arbolV(NA, S6, ['m', 'mo', 'mh', 'n', 'no', 'na', 'sal'], { crece: r ? null : null, p });
+
+const steps = [
+ { k:'Paso 1', t:'El problema', vista:() => arbolV({ el:'Fe', v:3 }, null, ['m', 'mo']), nombres:null,
+   body:() => `<p class="problem">Un clavo que se deja al aire húmedo se cubre de un polvo rojizo. Una parte de ese polvo es ${Fh('Fe2O3')}, un óxido de hierro. ¿Qué estado de oxidación tiene el hierro y cómo se llama el compuesto?</p>
+   <p>Los compuestos inorgánicos se ordenan en <b>funciones</b>, como las ramas de un árbol. Un metal con oxígeno forma un óxido básico; ese óxido con agua forma un hidróxido. Un no metal tiene su propia rama, y las dos ramas se juntan al final en una sal. Arriba ves la rama del hierro; las demás se van llenando.</p>
+   <p>Para nombrar un compuesto hace falta el <b>estado de oxidación</b> de cada elemento: la carga que tendría cada átomo si todos sus enlaces fueran iónicos. En una sustancia neutra, la suma de los estados de oxidación de todos sus átomos es cero. El oxígeno casi siempre tiene −2.</p>
+   <p class="hint">Cada elemento tiene su color en el texto, en el dibujo y en los nombres: ${Fh('Fe')} el hierro y ${Fh('O')} el oxígeno. La carga y el estado de oxidación van en tinta, con su signo. Toca un color del texto para resaltarlo en el dibujo.</p>` },
+ { k:'Paso 2', t:'Antes de mirar, predice', gate:P1, vista:r => vFe(r, !r), nombres:null,
+   body:() => `<p>En la mesa, ${Fh('Fe2O3')} está armado con fichas: cada ficha es un ion. Los tres ${Fh('O')} son iones óxido, O²⁻. La carga de los dos hierros está tapada.</p><p>¿Qué estado de oxidación tiene cada átomo de hierro en ${Fh('Fe2O3')}?</p>${opcionesHTML(P1.opts, 'fb')}` },
+ { k:'Paso 3', t:'Su nombre en la stock', gate:P2, vista:() => vFe(true, false), nombres:r => r ? 'Fe2O3' : null,
+   body:() => `<p>Hay tres maneras de nombrar un compuesto: la <b>sistemática</b> cuenta los átomos con prefijos (mono-, di-, tri-…), la <b>stock</b> pone un número romano entre paréntesis después del metal y la <b>tradicional</b> usa terminaciones (-oso, -ico).</p>
+   <p>¿Cómo se llama ${Fh('Fe2O3')} en la nomenclatura stock?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras3" hidden><div class="eqs"><div class="eq"><span class="ex">Sistemática: ${Nh('Fe2O3', 'sistematica')} &nbsp;·&nbsp; stock: ${Nh('Fe2O3', 'stock')} &nbsp;·&nbsp; tradicional: ${Nh('Fe2O3', 'tradicional')}</span><span class="note">«Trióxido» porque hay 3 O; «dihierro» porque hay 2 Fe. Los tres nombres son correctos: cada uno en su nomenclatura.</span></div>
+   <div class="eq"><span class="ex">${Fh('FeO')}: ${Nh('FeO', 'stock')} &nbsp;·&nbsp; ${Nh('FeO', 'tradicional')}</span><span class="note">El hierro tiene dos estados, +2 y +3. En la tradicional, el menor termina en -oso y el mayor en -ico: ferroso (+2) y férrico (+3).</span></div></div></div>` },
+ { k:'Paso 4', t:'Fichas que se cruzan', gate:P3, vista:r => r ? vAl(AL.nCation, AL.nAnion) : vAl(1, 1, 1, null, true), nombres:r => r ? AL.formula : null,
+   body:() => `<p>Ahora juntamos un ion de aluminio, ${Fh('Al^3+')}, con un ion sulfato, ${Fh('SO4^2-')}. El sulfato es una ficha de varios átomos que va siempre junta. En la mesa hay una ficha de cada uno; se pueden poner las que hagan falta.</p>
+   <p>¿Cuál es la fórmula del compuesto?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras4" hidden><div class="eqs"><div class="eq"><span class="ex">${Fh('Al^3+')} y ${Fh('SO4^2-')} &nbsp;→&nbsp; la carga de uno es el subíndice del otro &nbsp;→&nbsp; ${Fh(AL.formula)}</span><span class="note">Carga: 2 × (+3) + 3 × (−2) = 0. Átomos: 2 Al, 3 S y 12 O, en total 17. Su nombre: sulfato de aluminio.</span></div></div>
+   <div class="nav"><span></span>${otraVez}</div></div>` },
+ { k:'Paso 5', t:'El óxido del plomo', gate:P4, vista:r => r ? vPb(1, 2, 1, null, { de:PB.cruce.formula, a:PB.formula, nota:'÷ 2' }) : vPb(1, 1, 1, null, null, true), nombres:r => r ? PB.formula : null,
+   body:() => `<p>El plomo tiene dos estados, +2 y +4. Con ${Fh('Pb^4+')} y el ion óxido ${Fh('O^2-')} se forma un óxido.</p>
+   <p>¿Qué fórmula se escribe?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras5" hidden><div class="eqs"><div class="eq"><span class="ex">Cruce: ${Fh(PB.cruce.formula)} &nbsp;→&nbsp; ÷ 2 &nbsp;→&nbsp; ${Fh(PB.formula)}, ${Nh(PB.formula, 'stock')}</span><span class="note">En un compuesto iónico la fórmula dice la proporción más simple entre los iones.</span></div>
+   <div class="eq"><span class="ex">La excepción: el <b>peróxido</b> ${Fh('O2^2-')} es una sola ficha de dos oxígenos. ${Fh('Na^+')} con ${Fh('O2^2-')} da ${Fh(PER.formula)}, y ese 2 no se simplifica: ${Fh(PER.errores.simplificaTodo)} sería otra cosa.</span><span class="note">En el peróxido cada O tiene −1: ${Fh('Na2O2')} (peróxido de sodio) y ${Fh('H2O2')} (agua oxigenada).</span></div></div>
+   <div class="nav"><button type="button" class="btn" id="verPer">Ver el peróxido en la mesa</button>${otraVez}</div></div>` },
+ { k:'Paso 6', t:'La rama del no metal', gate:P5, vista:r => vArbolS(r, 1), nombres:r => r ? SO.formula : null,
+   body:() => `<p>El azufre es un no metal. Con oxígeno forma un óxido ácido, ${Fh('SO3')}, con el azufre en +6. En la tradicional, a los óxidos de no metal se les dice «anhídrido»: el ${Fh('SO3')} es el anhídrido sulfúrico.</p>
+   <p>El óxido ácido reacciona con agua: ${EQ('SO3 + H2O -> ?')}. ¿Qué se forma?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras6" hidden><div class="eqs"><div class="eq"><span class="ex">${EQ(SO.reaccion)}</span><span class="note">Un oxácido: hidrógeno, el no metal y oxígeno. El azufre sigue con +6: 2 × (+1) + 6 + 4 × (−2) = 0. Su nombre tradicional: ácido sulfúrico.</span></div>
+   <div class="eq"><span class="ex">Del otro lado, el metal: ${EQ('Na2O + H2O -> 2NaOH')}</span><span class="note">Un óxido básico con agua da un hidróxido: el ion OH⁻ con el metal.</span></div></div>
+   <div class="nav"><span></span>${otraVez}</div></div>` },
+ { k:'Paso 7', t:'Las ramas se juntan: la sal', gate:P6, vista:r => vSal(r), nombres:r => r ? NEU.sal : null,
+   body:() => `<p>El ácido y el hidróxido se neutralizan: ${EQ(NEU.ecuacion)}. Cada H⁺ del ácido se junta con un OH⁻ y forma agua; lo que queda es una sal, con el ion ${Fh('Na^+')} y el ion ${Fh('SO4^2-')}.</p>
+   <p>¿Cómo se llama ${Fh(NEU.sal)} en la nomenclatura tradicional?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras7" hidden><div class="scroll"><table class="tabla"><thead><tr><th>El ácido termina en</th><th>La sal termina en</th><th>Ejemplo</th></tr></thead><tbody>
+     <tr><td>-oso</td><td>-ito</td><td>ácido sulfuroso → ${Nh('Na2SO3', 'tradicional')}</td></tr>
+     <tr><td>-ico</td><td>-ato</td><td>ácido sulfúrico → ${Nh('Na2SO4', 'tradicional')}</td></tr>
+     <tr><td>-hídrico</td><td>-uro</td><td>ácido clorhídrico → ${Nh('NaCl', 'tradicional')}</td></tr></tbody></table></div></div>` },
+ { k:'Paso 8', t:'El mapa completo', vista:() => arbolV(NA, { el:'Cl', v:7, hidruro:true }, ['m', 'mo', 'mh', 'n', 'no', 'na', 'sal']), nombres:() => 'NaCl',
+   body:() => `<p>El no metal tiene otra rama: con hidrógeno forma un hidruro. El ${Fh('HCl')} es un gas, el cloruro de hidrógeno; disuelto en agua es el ácido clorhídrico, ${Fh('HCl(ac)')}, un hidrácido. Con el hidróxido da una sal sin oxígeno: ${EQ('HCl + NaOH -> NaCl + H2O')}, cloruro de sodio, la sal de mesa.</p>
+   <div class="scroll"><table class="tabla"><thead><tr><th>Función</th><th>Se forma con</th><th>Ejemplo</th></tr></thead><tbody>
+     <tr><td>óxido básico</td><td>metal + O₂</td><td>${Fh('Fe2O3')} ${Nh('Fe2O3', 'tradicional')}</td></tr>
+     <tr><td>óxido ácido</td><td>no metal + O₂</td><td>${Fh('SO3')} ${Nh('SO3', 'tradicional')}</td></tr>
+     <tr><td>peróxido</td><td>O₂²⁻ con un metal o con H</td><td>${Fh('Na2O2')} ${Nh('Na2O2', 'stock')}</td></tr>
+     <tr><td>hidruro metálico</td><td>metal + H₂ (H con −1)</td><td>${Fh('NaH')} ${Nh('NaH', 'stock')}</td></tr>
+     <tr><td>hidrácido</td><td>hidruro de S o de un halógeno, en agua</td><td>${Fh('HCl(ac)')} ${Nh('HCl(ac)', 'tradicional')}</td></tr>
+     <tr><td>hidróxido</td><td>óxido básico + H₂O</td><td>${Fh('NaOH')} ${Nh('NaOH', 'stock')}</td></tr>
+     <tr><td>oxácido</td><td>óxido ácido + H₂O</td><td>${Fh('H2SO4')} ${Nh('H2SO4', 'tradicional')}</td></tr>
+     <tr><td>sal</td><td>ácido + hidróxido</td><td>${Fh('Na2SO4')} ${Nh('Na2SO4', 'tradicional')}, ${Fh('NaCl')} ${Nh('NaCl', 'tradicional')}</td></tr></tbody></table></div>
+   <p>En la tradicional, con un solo estado se usa -ico o «de» y el metal (óxido de sodio); con dos, -oso e -ico; con cuatro (Cl, Br, I), hipo-…-oso, -oso, -ico y per-…-ico. En «¿Qué pasa si…?» pruebas el cloro con sus cuatro estados y una mesa libre.</p>
+   <p class="fuente">Casi todos los errores de esta escena son hipótesis nuestras: la nomenclatura casi no está estudiada como idea errónea. Confundir subíndice y coeficiente (NO1): cerca del 40 % de 79 escolares argentinos juntó 3 X y 8 Y en «X₃Y₈» (Casado y Raviolo, 2005). Errores de nombres iónicos sostenidos con seguridad alta (NO2): cerca del 37 % en un estudio en Indonesia, del que solo leímos el resumen. La fórmula leída como una etiqueta y no como una cuenta (NO3): una revisión de 38 estudios, sin porcentaje (Taskin y Bernholt, 2014). Los estados de oxidación y los nombres siguen la tabla de academia que se declara en motor.js.</p>` },
+];
+
+// ----- Navegación -----
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+const nombresDe = (s, r) => (s.nombres ? s.nombres(r) : null);
+function mostrar(n){
+  cortar(E);
+  const s = steps[n]; E.nombres = nombresDe(s, true);
+  if (n === 3){
+    // De 1 y 1 a 2 y 3: las fichas se agregan hasta que la carga suma cero.
+    const seq = [[1, 1], [2, 1], [2, 2], [2, 3]];
+    E.vista = vAl(1, 1); E.dibujar();
+    animar(E, 2.0, f => { const k = Math.min(seq.length - 1, Math.floor(f*seq.length)); E.vista = vAl(seq[k][0], seq[k][1], (f*seq.length) % 1, { 'Al^3+':seq[k][0] - (k ? seq[k - 1][0] : 1), 'SO4^2-':seq[k][1] - (k ? seq[k - 1][1] : 1) }); },
+      () => { E.vista = vAl(AL.nCation, AL.nAnion); E.describir(); }, 0.3);
+  } else if (n === 4){
+    E.vista = vPb(1, 1); E.dibujar();
+    animar(E, 1.0, f => { E.vista = vPb(1, 2, f, { 'O^2-':1 }); }, () => { E.vista = vPb(1, 2, 1, null, { de:PB.cruce.formula, a:PB.formula, nota:'÷ 2' }); E.describir(); }, 0.3);
+  } else if (n === 5){
+    E.vista = vArbolS(true, 0); E.dibujar();
+    animar(E, 0.9, f => { E.vista = vArbolS(true, f); }, () => { E.vista = vArbolS(true, 1); E.describir(); }, 0.3);
+  } else E.vista = s.vista(true);
+  pedir();
+}
+function enlazar(){
+  const rep = $('stepBody').querySelector('[data-repetir]'); if (rep) rep.onclick = () => { mostrar(S.step); E.describir(); };
+  const vp = $('verPer'); if (vp) vp.onclick = () => { cortar(E); E.vista = vPer(); E.nombres = PER.formula; E.dibujar(); E.describir(); if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+}
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  const s = steps[n]; S.step = n; cortar(E);
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  E.vista = s.vista(r); E.nombres = nombresDe(s, r);
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  enlazar(); pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  nav(); E.dibujar(); pedir(); E.describir();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    for (const id of ['tras3', 'tras4', 'tras5', 'tras6', 'tras7']){ const el = $(id); if (el) el.hidden = false; }
+    enlazar();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots(); nav();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step; E.compactar(false);
+    Celular.alResponder($('cv'), () => { mostrar(paso); E.dibujar(); E.describir(); }, () => S.step === paso);
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Cada experimento arranca con una predicción; lo que la respondería (los nombres, la carga, el ácido) se muestra
+   después de responder. El primero deja una mesa libre; el segundo, un árbol libre. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2', 'nom2');
+const S4 = MN.neutralizar('H2SO3', 'NaOH'), N4 = MN.nombrar('Na2SO3');
+const CL = MN.formar('oxacido', 'Cl', 7);
+const F3 = MN.estado('Fe3O4', 'Fe');
+const KH = MN.neutralizar('H2CO3', 'KOH', { quitar:1 });
+const HI = MN.hidratoDe('FeSO4', 7);
+const NO2 = 'Un estudio en Indonesia (solo leímos su resumen) encontró ideas erróneas sostenidas con seguridad alta en cerca del 37 % de las respuestas de nomenclatura iónica; este error en particular no tiene un dato propio.';
+const NA = { el:'Na', v:1 };
+const todo = ['m', 'mo', 'mh', 'n', 'no', 'na', 'sal'];
+
+// ----- Mesa libre (experimento 1, después de responder) -----
+const CATS = ['Na^+', 'K^+', 'Ca^2+', 'Al^3+', 'Fe^2+', 'Fe^3+', 'Zn^2+', 'Pb^2+', 'Pb^4+', 'NH4^+'];
+const ANS = ['O^2-', 'O2^2-', 'OH^-', 'Cl^-', 'S^2-', 'SO4^2-', 'SO3^2-', 'NO3^-', 'NO2^-', 'CO3^2-', 'HCO3^-', 'PO4^3-', 'ClO^-', 'ClO4^-'];
+const X = { cat:'Fe^3+', an:'SO4^2-', nC:1, nA:1 };
+// ----- Árbol libre (experimento 2, después de responder) -----
+const METALES = ['Na', 'K', 'Ca', 'Al', 'Fe', 'Zn', 'Pb'], NOMETALES = ['C', 'N', 'P', 'S', 'Cl'];
+const A = { m:'Fe', vm:3, n:'S', vn:6, hid:false, foco:'sal' };
+
+const EXPS = [
+  { id:'azufre-mas-4', corto:'El azufre con +4',
+    q:`El azufre también tiene el estado +4. Su óxido es ${Fh('SO2')}, que con agua da ${Fh('H2SO3')}, el ácido sulfuroso. Con ${Fh('NaOH')} se forma la sal ${Fh(S4.sal)}. ¿Cómo se llama en la tradicional?`,
+    opts:[['a', `${N4.errores.terminacionAlReves}: la sal de un ácido del azufre termina en -ato`, 'NO-sal-oso-a-ato', 'parcial'],
+          ['b', `${N4.tradicional}: el ácido es sulfuroso (-oso) y la sal cambia -oso por -ito`],
+          ['c', `${N4.errores.hipoConDos}: el +4 es el menor, y el menor lleva hipo-`, 'NO-hipo-con-dos-estados', 'hipotesis'],
+          ['d', `${N4.errores.terminacionUro}: el azufre está con su estado más bajo`, 'NO-sal-uro-sin-oxigeno', 'parcial']],
+    ok:'b',
+    fb:{ a:`-ato es para las sales de un ácido -ico: el sulfato (S con +6). Con +4 el ácido es sulfuroso, y su sal, sulfito. ${NO2}`,
+      c:'El azufre forma oxácidos con dos estados en esta tabla, +4 y +6: -oso e -ico. Hipo- y per- se usan cuando hay cuatro, como en el cloro. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:`-uro es para las sales sin oxígeno, como el sulfuro de sodio, Na₂S (S con −2). Aquí hay 3 O. ${NO2}` },
+    antes:() => arbolV(NA, { el:'S', v:4 }, todo), nombres:() => null, despues:() => mesaLibre(), nombresR:() => S4.sal,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ(S4.ecuacion)}</span><span class="note">${Nh('Na2SO3', 'tradicional')} (S con +4) y ${Nh('Na2SO4', 'tradicional')} (S con +6): el mismo azufre, dos estados, dos sales.</span></div></div>
+      <p>Ahora la mesa es tuya. Elige un catión y un anión, y junta fichas (tócalas o arrástralas desde la bandeja; también con los botones) hasta que la carga sume cero. Toca una ficha de la mesa para quitarla.</p>
+      <div class="campos"><label class="campo" for="xCat">Catión<select id="xCat"></select></label><label class="campo" for="xAn">Anión<select id="xAn"></select></label></div>
+      <div class="cuenta" id="xCnt" role="group" aria-label="Fichas en la mesa"></div>
+      <p class="estado" id="xEst" aria-live="polite"></p>
+      <p class="hint">Algunas parejas están apagadas: sus elementos tienen colores parecidos y no se distinguirían en el dibujo.</p>
+      <p class="fuente">Cambiar -oso por -ato, o usar -uro en una sal con oxígeno: errores de nombres iónicos (NO2), sin dato propio. Hipo- con dos estados: hipótesis nuestra.</p>` },
+  { id:'cloro-cuatro', corto:'El cloro y sus cuatro',
+    q:`El cloro forma oxácidos con cuatro estados: +1, +3, +5 y +7. Cada uno sale de su óxido más agua. ¿Cuál es la fórmula del ácido perclórico?`,
+    opts:[['a', `${Fh(CL.errores.otroEstado)}: per- va con el +5, el que sigue al -oso`, 'NO-per-con-el-cinco', 'hipotesis'],
+          ['b', `${Fh('HClO')}: per- va con el estado más bajo, el +1`, 'NO-hipo-per-al-reves', 'hipotesis'],
+          ['c', `${Fh(CL.errores.dosH)}: con 2 H, como el ácido sulfúrico, para tener 4 O`, 'NO-oxacido-cuenta-mal-los-H', 'hipotesis'],
+          ['d', `${Fh(CL.formula)}: per-…-ico es el mayor de los cuatro, el +7`]],
+    ok:'d',
+    fb:{ a:'Con cuatro estados: hipo-…-oso (+1), -oso (+3), -ico (+5) y per-…-ico (+7). El HClO₃ es el ácido clórico. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      b:'Es al revés: hipo- («por debajo») va con el menor y per- («por encima») con el mayor. El HClO es el ácido hipocloroso. Esta opción es una hipótesis nuestra.',
+      c:'Con 2 H y 4 O, el cloro tendría +6, que no es uno de sus estados. Cl₂O₇ + H₂O da H₂Cl₂O₈, que se simplifica a HClO₄: un solo H. Esta opción es una hipótesis nuestra.' },
+    antes:() => ({ tipo:'cloro', ver:false }), despues:() => arbolLibre(), nombresR:() => CL.formula,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ(CL.reaccion)}</span><span class="note">Valencia impar: el óxido con agua da H₂Cl₂O₈ y se divide entre 2. Con +1: HClO (hipocloroso); +3: HClO₂ (cloroso); +5: HClO₃ (clórico); +7: HClO₄ (perclórico). Sus sales: hipoclorito, clorito, clorato y perclorato.</span></div></div>
+      <p>Ahora el árbol es tuyo: elige un metal, un no metal y sus estados, y toca un compuesto del árbol para ver sus tres nombres.</p>
+      <div class="campos"><label class="campo" for="aM">Metal<select id="aM"></select></label><label class="campo" for="aN">No metal<select id="aN"></select></label></div>
+      <div class="focos" id="aFoco" role="group" aria-label="Compuesto del que ves los nombres"></div>
+      <p class="estado" id="aEst" aria-live="polite"></p>
+      <p class="fuente">Confundir hipo- y per-, o contar mal los H del oxácido: hipótesis nuestras, de la tabla de lo que no tiene respaldo del informe.</p>` },
+  { id:'magnetita', corto:'La magnetita',
+    q:`La magnetita, el mineral que atrae al imán, es ${Fh('Fe3O4')}. En la mesa, sus 4 ${Fh('O')} son iones O²⁻; la carga de los 3 hierros está tapada. ¿Qué estado de oxidación tiene el hierro?`,
+    opts:[['a', `${F3.errores.subindice}: hay 3 átomos de hierro`, 'NO-subindice-como-estado', 'hipotesis'],
+          ['b', `${F3.errores.sinDividir}: el hierro compensa los −8 de los 4 ${Fh('O')}`, 'NO-sin-dividir-entre-atomos', 'hipotesis'],
+          ['c', `${F3.texto}: los −8 de los 4 ${Fh('O')} se reparten entre 3 ${Fh('Fe')}, en promedio`],
+          ['d', `${F3.errores.signo}: el reparto lleva el signo del oxígeno`, 'NO-signo-al-reves', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`El 3 dice cuántos átomos hay. Con +3 cada uno, los hierros darían +9 contra −8: no suma cero. Leer el subíndice como estado es una hipótesis nuestra, que sale de confundir subíndice y coeficiente: cerca del 40 % de 79 escolares argentinos juntó 3 X y 8 Y en «X₃Y₈» (Casado y Raviolo, 2005).`,
+      b:'+8 es lo que dan los tres hierros juntos. Cada uno, en promedio, tiene +8/3. Esta opción es una hipótesis nuestra.',
+      d:'El hierro compensa al oxígeno: tiene que ser positivo. Esta opción es una hipótesis nuestra.' },
+    antes:() => mesa([{ ion:'Fe^3+', n:3, tapa:true }, { ion:'O^2-', n:4 }], { suma:'tapa', formula:'Fe3O4', formulaEt:'' }),
+    despues:() => mesa([{ ion:'Fe^2+', n:1 }, { ion:'Fe^3+', n:2 }, { ion:'O^2-', n:4 }], { formula:'Fe3O4', formulaEt:'' }), nombresR:() => 'Fe3O4',
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">3 ${Fh('Fe')} × (+8/3) + 4 × (−2) = +8 − 8 = 0</span><span class="note">En el cristal no hay hierros con +8/3: hay un Fe²⁺ y dos Fe³⁺ (mira las fichas): (+2) + 2 × (+3) = +8. El estado de oxidación «fraccionario» es el promedio. Por eso se le dice óxido doble u óxido ferroso-férrico.</span></div></div>
+      <p class="fuente">Estado de oxidación igual al subíndice, o sin dividir entre los átomos: hipótesis nuestras (salen de NO1 y NO3 del informe).</p>` },
+  { id:'bicarbonato', corto:'Quitar un solo H',
+    q:`El ácido carbónico, ${Fh('H2CO3')}, tiene 2 H. Si con ${Fh('KOH')} se le quita uno solo a cada molécula, se forma una sal ácida: el bicarbonato de potasio, que se usa en los extintores. ¿Cuál es su fórmula?`,
+    opts:[['a', `${Fh(KH.errores.quitaTodos)}: el ácido pierde sus 2 H y entran 2 K`, 'NO-sal-acida-quita-todos', 'hipotesis'],
+          ['b', `${Fh(KH.sal)}: queda el ion ${Fh('HCO3^-')}, con carga −1, y un K⁺`],
+          ['c', `${Fh(KH.errores.sinQuitar)}: el K se suma al ácido entero`, 'NO-sal-acida-sin-quitar', 'hipotesis'],
+          ['d', `${Fh(KH.errores.cargaSinH)}: el ${Fh('HCO3')} conserva la carga −2 del carbonato`, 'NO-sal-acida-carga-del-carbonato', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Esa es la sal neutra, el carbonato de potasio: ahí se quitaron los dos H. Con uno solo queda HCO₃⁻. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'Si no se quita ningún H, no hay reacción: el H⁺ que sale del ácido es el que forma agua con el OH⁻. KH₂CO₃ tendría carga +1. Esta opción es una hipótesis nuestra.',
+      d:'Al quitar un solo H, el ion queda con una sola carga negativa: HCO₃⁻. Con dos K⁺, K₂HCO₃ tendría carga +1. Esta opción es una hipótesis nuestra.' },
+    antes:() => arbolV({ el:'K', v:1 }, { el:'C', v:4, quitar:1 }, todo, { tapa:'sal' }), despues:() => arbolV({ el:'K', v:1 }, { el:'C', v:4, quitar:1 }, todo), nombresR:() => KH.sal,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ(KH.ecuacion)}</span><span class="note">El H que queda se nombra: hidrogenocarbonato (stock) o carbonato ácido (tradicional). Con un H de un ácido de dos, también se le dice bicarbonato.</span></div>
+      <div class="eq"><span class="ex">${EQ('H2CO3 + 2KOH -> K2CO3 + 2H2O')}</span><span class="note">Quitando los dos H: la sal neutra, ${Nh('K2CO3', 'tradicional')}.</span></div></div>
+      <p class="fuente">Confundir la sal ácida con la neutra o no ajustar la carga del ion con H: hipótesis nuestras. El informe solo cita que la sal ácida se toma por «sal doble», sin dato.</p>` },
+  { id:'hidrato', corto:'La sal con agua',
+    q:`Hay sales que forman cristales con moléculas de agua adentro. La caparrosa, que se usa como abono, es el sulfato de hierro (II) heptahidratado. ¿Cuál es su fórmula?`,
+    opts:[['a', `${Fh(HI.errores.romanoComoSubindice)}: el (II) dice que hay 2 hierros`, 'NO-romano-como-subindice', 'hipotesis'],
+          ['b', `${Fh(HI.errores.juntaElAgua)}: los 7 H₂O se suman dentro de la fórmula`, 'NO1-junta-el-agua-en-la-formula', 'parcial'],
+          ['c', `${Fh(HI.formula)}: un Fe²⁺ con un SO₄²⁻, y el agua aparte con su número delante`],
+          ['d', `${Fh(HI.errores.sinSimplificar)}: se cruzan las cargas 2+ y 2−`, 'NO-cruza-sin-simplificar', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'El (II) es el estado de oxidación del hierro, +2, no cuántos hay. Fe²⁺ y SO₄²⁻ suman cero con uno de cada uno. Esta opción es una hipótesis nuestra.',
+      b:'Las moléculas de agua están en el cristal, pero no son parte del ion: se escriben aparte, con un punto y su número delante, como un coeficiente. Juntarlas en una sola fórmula se parece a un error documentado: cerca del 40 % de 79 escolares argentinos juntó 3 X y 8 Y en «X₃Y₈» (Casado y Raviolo, 2005).',
+      d:'El cruce da Fe₂(SO₄)₂, pero se simplifica: 2 a 2 es 1 a 1. Esta opción es una hipótesis nuestra.' },
+    antes:() => mesa([], { suma:'no', bandeja:['Fe^2+', 'SO4^2-'], bandejaEt:'las fichas del sulfato de hierro (II)', formulaTapa:true }), despues:p => mesa([{ ion:'Fe^2+', n:1 }, { ion:'SO4^2-', n:1 }], { agua:7, formula:HI.formula, p }), anima:true, nombresR:() => HI.formula,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${Fh(HI.formula)}: ${HI.masaMolar} g/mol, de los que ${HI.masaAgua} g son agua (7 × 18)</span><span class="note">Porcentaje de agua: ${HI.masaAgua} ÷ ${HI.masaMolar} × 100 ≈ ${String(Math.round(HI.porcentajeAgua*10)/10).replace('.', ',')} %. Al calentarlo, el agua se va y queda FeSO₄, la sal anhidra.</span></div></div>
+      <p class="fuente">El romano leído como subíndice y el cruce sin simplificar son hipótesis nuestras; juntar el agua en la fórmula se parece a confundir subíndice y coeficiente (NO1).</p>` },
+];
+
+function mesaLibre(){ return mesa([{ ion:X.cat, n:X.nC }, { ion:X.an, n:X.nA }].filter(g => g.n > 0), { bandeja:[X.cat, X.an], formula: libreFormula(), formulaTapa: !libreFormula() }); }
+function libreFormula(){ const r = MN.formulaDeIones(X.cat, X.an); return X.nC === r.nCation && X.nA === r.nAnion ? r.formula : null; }
+function arbolLibre(){ return arbolV({ el:A.m, v:A.vm }, { el:A.n, v:A.vn, hidruro:A.hid }, todo); }
+
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function despues(x){
+  cortar(E); E.nombres = x.nombresR ? x.nombresR() : null;
+  if (x.id === 'azufre-mas-4'){ libre(); return; }
+  if (x.id === 'cloro-cuatro'){ E.vista = { tipo:'cloro', ver:true }; E.dibujar(); arbol(); return; }
+  if (x.anima){ E.vista = x.despues(0); E.dibujar(); animar(E, 1.2, f => { E.vista = x.despues(f); }, () => { E.vista = x.despues(1); E.describir(); }, 0.3); }
+  else E.vista = x.despues();
+  E.dibujar(); pedir();
+}
+// ----- Mesa libre -----
+function libre(){
+  const sc = $('xCat'), sa = $('xAn'); if (!sc) return;
+  const nomIon = i => `${txt(i)}`;
+  sc.innerHTML = CATS.map(c => `<option value="${c}">${nomIon(c)}</option>`).join('');
+  const pintarAn = () => { sa.innerHTML = ANS.map(a => `<option value="${a}"${chocan([MN.ion(X.cat).cuerpo, MN.ion(a).cuerpo]) ? ' disabled' : ''}>${nomIon(a)}${chocan([MN.ion(X.cat).cuerpo, MN.ion(a).cuerpo]) ? ' (colores parecidos)' : ''}</option>`).join(''); sa.value = X.an; };
+  const pintar = () => {
+    const I = MN.ion(X.cat), J = MN.ion(X.an), r = MN.formulaDeIones(X.cat, X.an), q = X.nC*I.carga + X.nA*J.carga;
+    $('xCnt').innerHTML = [[X.cat, 'nC'], [X.an, 'nA']].map(([i, k]) => `<div class="cnt"><button type="button" data-k="${k}" data-d="-1" aria-label="Una ficha menos de ${txt(i)}"${X[k] <= 0 ? ' disabled' : ''}>−</button><span class="nom">${X[k]} × ${Fh(i)}</span><button type="button" data-k="${k}" data-d="1" aria-label="Una ficha más de ${txt(i)}"${X[k] >= 6 ? ' disabled' : ''}>+</button></div>`).join('');
+    $('xCnt').querySelectorAll('button').forEach(b => b.onclick = () => { X[b.dataset.k] = clamp(X[b.dataset.k] + +b.dataset.d, 0, 6); pintar(); });
+    const f = libreFormula(), g = MN.mcd(X.nC, X.nA);
+    $('xEst').textContent = q !== 0 ? `La carga suma ${conSigno(q)}: ${q > 0 ? 'faltan aniones o sobran cationes' : 'faltan cationes o sobran aniones'}.`
+      : f ? `¡Carga cero! ${txt(f)}: ${MN.nombrar(f).stock || MN.nombrar(f).tradicional}.` : `La carga suma cero, pero ${X.nC} a ${X.nA} se simplifica (÷ ${g}).`;
+    E.vista = mesaLibre(); E.nombres = f; E.dibujar(); E.describir();
+  };
+  sc.value = X.cat; pintarAn();
+  sc.onchange = () => { X.cat = sc.value; if (chocan([MN.ion(X.cat).cuerpo, MN.ion(X.an).cuerpo])) X.an = ANS.find(a => !chocan([MN.ion(X.cat).cuerpo, MN.ion(a).cuerpo])); X.nC = 1; X.nA = 1; pintarAn(); pintar(); };
+  sa.onchange = () => { X.an = sa.value; X.nC = 1; X.nA = 1; pintar(); };
+  E.libre = pintar; E.agregar = (ion, d) => { const k = ion === X.cat ? 'nC' : 'nA'; X[k] = clamp(X[k] + d, 0, 6); pintar(); };
+  pintar();
+}
+// ----- Árbol libre -----
+function arbol(){
+  const sm = $('aM'), sn = $('aN'); if (!sm) return;
+  const opsM = METALES.flatMap(e => MN.ESTADOS[e].m.map(v => [`${e}|${v}`, `${e} (${conSigno(v)})`]));
+  const opsN = NOMETALES.flatMap(e => [...MN.ESTADOS[e].nm.filter(v => !(MN.ESTADOS[e].neutros || []).includes(v)).map(v => [`${e}|${v}`, `${e} (${conSigno(v)})`]), ...(MN.ESTADOS[e].hidr ? [[`${e}|h`, `${e} con H₂ (hidrácido)`]] : [])]);
+  const pintarN = () => { sn.innerHTML = opsN.map(([k, t]) => { const c = chocan([A.m, k.split('|')[0]]); return `<option value="${k}"${c ? ' disabled' : ''}>${t}${c ? ' (colores parecidos)' : ''}</option>`; }).join(''); sn.value = A.hid ? `${A.n}|h` : `${A.n}|${A.vn}`; };
+  sm.innerHTML = opsM.map(([k, t]) => `<option value="${k}">${t}</option>`).join(''); sm.value = `${A.m}|${A.vm}`;
+  const pintar = () => {
+    E.vista = arbolLibre();
+    const fs = { mo:MN.formar('oxido', A.m, A.vm).formula, mh:MN.formar('hidroxido', A.m, A.vm).formula,
+      no: A.hid ? MN.formar('hidruro', A.n).formula : MN.oxido(A.n, A.vn).formula, na: A.hid ? MN.formar('hidracido', A.n).formula : MN.formar('oxacido', A.n, A.vn).formula };
+    fs.sal = MN.neutralizar(fs.na.replace('(ac)', ''), fs.mh).sal;
+    if (!fs[A.foco]) A.foco = 'sal';
+    E.foco = A.foco; E.nombres = fs[A.foco];
+    $('aFoco').innerHTML = Object.entries(fs).map(([k, f]) => `<button type="button" aria-pressed="${k === A.foco}" data-k="${k}" aria-label="Ver los nombres de ${txt(f)}">${Fh(f).replace(/ tabindex="0"/g, '')}</button>`).join('');
+    $('aFoco').querySelectorAll('button').forEach(b => b.onclick = () => { A.foco = b.dataset.k; pintar(); });
+    $('aEst').textContent = `Ves los nombres de ${txt(fs[A.foco])}.`;
+    E.dibujar(); E.describir();
+  };
+  pintarN();
+  sm.onchange = () => { const [e, v] = sm.value.split('|'); A.m = e; A.vm = +v; if (chocan([A.m, A.n])){ const ok = opsN.find(([k]) => !chocan([A.m, k.split('|')[0]])); const [n, w] = ok[0].split('|'); A.n = n; A.hid = w === 'h'; if (!A.hid) A.vn = +w; } pintarN(); pintar(); };
+  sn.onchange = () => { const [e, v] = sn.value.split('|'); A.n = e; A.hid = v === 'h'; if (!A.hid) A.vn = +v; pintar(); };
+  E.tocarNodo = k => { A.foco = k; pintar(); };
+  E.libreArbol = pintar;
+  pintar();
+}
+function ir(k){
+  if (!abierto(k)) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  cortar(E); E.vista = x.antes(); E.nombres = null; E.foco = null; E.libre = null; E.libreArbol = null; E.tocarNodo = null;
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const explicar = () => {
+    if (S.k !== k || !S.pred[x.id]) return;
+    $('res2').innerHTML = x.exp() + `<div class="nav">${x.anima ? otraVez : '<span></span>'}${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const rep = $('res2').querySelector('[data-repetir]'); if (rep) rep.onclick = () => { despues(x); E.describir(); };
+  };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y los nombres para ver por qué.' : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    explicar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones(); E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => { despues(x); E.describir(); }, () => S.k === k);
+  });
+  E.compactar(!S.pred[x.id]);
+  pintar();
+  if (S.pred[x.id]) despues(x);
+  E.dibujar(); pedir(); E.describir();
+}
+// Arrastre y toques sobre el lienzo: solo en la mesa libre (fichas) y en el árbol libre (nodos).
+const cv = $('cv2');
+let inicio = null;
+Celular.arrastre(cv, {
+  activo: () => !!E.libre && E.vista.tipo === 'mesa',
+  cerca: (p, r) => E.cerca(p, r),
+  empezar: (p) => { const h = E.golpe(p); if (!h) return; inicio = { ...p, h }; const q = E.local(p); E.arr = { ion:h.ion, x:q.x, y:q.y, mov:false, desde:h.kind }; },
+  mover: (p) => { if (!E.arr) return; const q = E.local(p); E.arr.x = q.x; E.arr.y = q.y; if (Math.hypot(p.x - inicio.x, p.y - inicio.y) > 8) E.arr.mov = true; E.dibujar(); },
+  soltar: () => {
+    const a = E.arr; E.arr = null; if (!a) return;
+    // Un toque (sin moverse): de la bandeja agrega, de la mesa quita. Un arrastre: de la bandeja a la mesa agrega;
+    // de la mesa hacia afuera, quita.
+    const dentro = E.enMesaQ(a);
+    if (!a.mov) E.agregar(a.ion, a.desde === 'bandeja' ? 1 : -1);
+    else if (a.desde === 'bandeja' && dentro) E.agregar(a.ion, 1);
+    else if (a.desde === 'mesa' && !dentro) E.agregar(a.ion, -1);
+    else E.dibujar();
+  },
+});
+// Toque en un nodo del árbol libre.
+cv.addEventListener('click', e => {
+  if (!E.tocarNodo || E.vista.tipo !== 'arbol') return;
+  const r = cv.getBoundingClientRect(), h = E.golpe({ x:e.clientX - r.left, y:e.clientY - r.top });
+  if (h && h.kind === 'nodo') E.tocarNodo(h.nodo);
+});
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

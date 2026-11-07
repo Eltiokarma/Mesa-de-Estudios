@@ -280,8 +280,9 @@
   // { porElemento: { Fe:[8,3] }, valor: { Fe:2.67 }, texto: { Fe:'+8/3' }, porIon }.
   function oxidacion(f) {
     const s = especie(f), at = s.base, els = Object.keys(at);
-    let r = null, porIon = null;
-    if (els.length >= 3 && s.carga === 0) {
+    let r = null, porIon = null, reglas = null;
+    if (els.length < 3 || s.carga !== 0) { try { reglas = porReglas(at, s.carga, f); } catch (e) { reglas = null; } }
+    if (!reglas && s.carga === 0) {
       const d = descomponer(s.cuerpo);
       if (d) {
         const lista = [[d._c, d.nCation], [d._a, d.nAnion]]; if (d.hidroxidos) lista.push([HIDROXIDO, d.hidroxidos]);
@@ -291,7 +292,7 @@
         r = {}; for (const e of els) r[e] = fdiv(tot[e], at[e]);
       }
     }
-    if (!r) r = porReglas(at, s.carga, f);
+    if (!r) r = reglas || porReglas(at, s.carga, f);
     const valor = {}, texto = {};
     for (const e of els) { valor[e] = r[e][0] / r[e][1]; texto[e] = ftexto(r[e]); }
     if (s.agua) for (const [e, v] of [['H', 1], ['O', -2]]) if (valor[e] === undefined) { r[e] = fr(v); valor[e] = v; texto[e] = ftexto(fr(v)); }
@@ -306,13 +307,12 @@
     let resto = fr(s.carga); for (const [k, v] of Object.entries(o.porElemento)) if (k !== e) resto = fsum(resto, fr(-v[0] * s.base[k], v[1]));
     const total = resto;                         // estado × átomos
     const sinCarga = s.carga ? ftexto(fdiv(fsum(total, fr(-s.carga)), n)) : null;
-    return { valor: x[0] / x[1], texto: ftexto(x), fraccion: x, atomos: n, total: ftexto(total),
+    return { numero: x[0] / x[1], texto: ftexto(x), fraccion: x, atomos: n, total: ftexto(total),
       errores: {
         subindice: n > 1 ? ftexto(fr(Math.sign(x[0]) * n)) : null,     // "hay 2 Fe → +2"
         sinDividir: n > 1 ? ftexto(total) : null,                      // la carga de todos los átomos, sin dividir
         signo: ftexto(fr(-x[0], x[1])),
         sumaCero: sinCarga,                                            // en un ion, igualar a 0 y no a la carga
-        oxigenoMenos2: null,
       } };
   }
 
@@ -568,7 +568,7 @@
         if (h) {
           // Sal ácida: el anión con sus H. Tradicional "carbonato ácido de potasio"; stock "hidrogenocarbonato de potasio".
           const base = { ...A, h: 0 }, bT = anTrad(base);
-          tra = [...bT, P(h === 1 ? ' ácido' : ' diácido'), ...(C.tipo === 'metal' && ESTADOS[C.central].m.length === 1 ? [P(' de '), P(ESTADOS[C.central].nombre, C.central)] : catTrad(C))];
+          tra = [...bT, P(' ' + (h > 1 ? PREF[h] : '') + 'ácido'), ...(C.tipo === 'metal' && ESTADOS[C.central].m.length === 1 ? [P(' de '), P(ESTADOS[C.central].nombre, C.central)] : catTrad(C))];
           sto = [...conH(h, bT), ...catStock(C)];
           sis = [...conH(h, anSist(base)), ...catStock(C)];
           if (h === 1 && A.hAcido === 2) comun = 'bi' + texto(bT) + ' ' + texto(catStock(C));
@@ -595,7 +595,7 @@
     const cat = texto(catTrad(C)), e = A.central, r = {};
     if (A.tipo === 'oxoanion') {
       const t = terminacion(e, A.estado, 'nm'), an = ESTADOS[e].an, forma = A.forma === 'meta' || A.forma === 'piro' || A.forma === 'di' ? A.forma : '';
-      const hTxt = A.h ? (A.h === 1 ? ' ácido' : ' diácido') : '';
+      const hTxt = A.h ? ' ' + (A.h > 1 ? PREF[A.h] : '') + 'ácido' : '';
       r.terminacionAlReves = forma + t.prefijo + an + (t.sufijo === 'oso' ? 'ato' : 'ito') + hTxt + ' ' + cat.trim();
       if (ESTADOS[e].uro) r.terminacionUro = ESTADOS[e].uro + 'uro' + hTxt + ' ' + cat.trim();
       r.sinCambiar = forma + t.prefijo + ESTADOS[e][t.sufijo] + t.sufijo + hTxt + ' ' + cat.trim();
@@ -627,9 +627,10 @@
     }
     fs.add('H2O'); fs.add('H2O2'); fs.add('HPO3'); fs.add('H4P2O7'); fs.add('H2Cr2O7'); fs.add('H2S2O7');
     for (const e of ['Li', 'Na', 'K', 'Mg', 'Ca', 'Ba', 'Zn']) fs.add(formulaDeIones(cation(e, ESTADOS[e].m[0]), PEROXIDO).formula);
-    const ans = aniones().filter(a => a.tipo === 'oxoanion' || a.tipo === 'haloideo');
+    const ans = aniones().filter(a => a.tipo === 'oxoanion' || (a.tipo === 'haloideo' && ['F', 'Cl', 'Br', 'I', 'S', 'Se'].includes(a.central)));
     const cats = cationes().filter(c => c.tipo !== 'proton');
-    for (const C of cats) for (const A of ans) fs.add(formulaDeIones(C, A).formula);
+    // Sin sales de Cr o Mn con aniones de Cr o Mn (CrMnO₄ y MnCrO₄ no se distinguen por sus átomos).
+    for (const C of cats) for (const A of ans) if (!(['Cr', 'Mn'].includes(C.central) && ['Cr', 'Mn'].includes(A.central))) fs.add(formulaDeIones(C, A).formula);
     // Sales básicas comunes (un OH).
     for (const e of ['Mg', 'Ca', 'Ba', 'Zn']) for (const x of ['Cl', 'Br', 'I']) fs.add(`${e}(OH)${x}`);
     for (const e of ['Mg', 'Ca']) fs.add(`${e}(OH)NO3`);

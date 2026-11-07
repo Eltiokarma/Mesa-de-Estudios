@@ -7,7 +7,7 @@
   "casos": [
     { "nombre": "Paso 2 y predicción 1: en Fe2O3 el Fe tiene +3 (tres O dan −6; dos Fe dan +6). Errores: el subíndice como estado (+2), sin dividir entre los 2 Fe (+6) y el signo al revés (−3)",
       "fn": "estado", "args": ["Fe2O3", "Fe"],
-      "espera": { "texto": "+3", "valor": 3, "atomos": 2, "total": "+6", "errores.subindice": "+2", "errores.sinDividir": "+6", "errores.signo": "−3" } },
+      "espera": { "texto": "+3", "numero": 3, "atomos": 2, "total": "+6", "errores.subindice": "+2", "errores.sinDividir": "+6", "errores.signo": "−3" } },
 
     { "nombre": "Informe: FeO → Fe +2; Fe3O4 → Fe +8/3 (promedio de un Fe²⁺ y dos Fe³⁺)",
       "fn": "oxidacion", "args": ["FeO"],
