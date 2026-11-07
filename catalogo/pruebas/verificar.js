@@ -439,6 +439,80 @@ const V = {
   'rm-10': d => { const r = motor('relojes-calendarios').vuelveHoraCorrecta({ a: d.a, cada: d.cada }), e = r.erroresDias;
     return { correcta: r.dias, errores: { 'adelanto-hasta-24-horas': e.dia24, 'adelanto-por-hora-sin-el-cada': e.sinCada, 'adelanto-hasta-una-hora': e.unaHora } }; },
 
+  // rm-11 a rm-19: escenas de razonamiento matemático que no tenían ítems (en "reserva": las formas tienen un tope de 10).
+  'rm-11': d => {
+    // Cerco con dos precios: 2·reja·x + 2·malla·y = presupuesto; el motor da el mayor producto x·y y el cuadrado que
+    // reparte los metros por igual. Los otros dos errores salen del mismo motor con otros datos: un solo lado de cada
+    // precio (reja·x + malla·y) y todo el cerco al precio caro (el cuadrado de ese perímetro).
+    const M = motor('maximos-minimos'), r = M.productoMaximo({ a: 2 * d.reja, b: 2 * d.malla, total: d.presupuesto });
+    const P = d.presupuesto / d.reja;
+    return { correcta: r.producto, errores: { 'cuadrado-con-costos-distintos': r.errores.factoresIguales.producto,
+      'costo-un-lado-de-cada-par': M.productoMaximo({ a: d.reja, b: d.malla, total: d.presupuesto }).producto,
+      'costo-todo-al-precio-mayor': M.rectangulo({ perimetro: P, ancho: P / 4 }).area } };
+  },
+  'rm-12': d => {
+    // Eje que no empieza en 0: el porcentaje sale de los valores; los errores, de las alturas dibujadas, de la base
+    // equivocada (el mayor) y de tomar la diferencia como porcentaje.
+    const r = motor('tablas-graficos').razonBarras({ a: d.a, b: d.b, inicio: d.inicio });
+    return { correcta: r.porcentajeMas, errores: { 'eje-truncado-sobrante-dibujado': 100 * r.errores.sobranteDibujado,
+      'AR3-porcentaje-sobre-el-mayor': 100 * (1 - r.errores.invertida), 'variacion-absoluta-por-porcentual': r.diferencia } };
+  },
+  'rm-13': d => {
+    // Masas que se pesan con pesas en los dos platillos (el motor recorre los 3ⁿ acomodos).
+    const r = motor('cortes-pesadas').masasMedibles({ pesas: [d.p1, d.p2, d.p3] });
+    if (r.completo) throw new Error('el ítem supone pesas que dejan huecos');
+    return { correcta: r.cuantas, errores: { 'balanza-sin-huecos': r.suma, 'balanza-un-solo-platillo': r.errores.unPlatillo, 'balanza-cuenta-acomodos': r.errores.cadaAcomodo } };
+  },
+  'rm-14': d => {
+    // Rectángulo con dos entrantes: el perímetro del motor sale de los vértices; se comprueba que esos vértices son la
+    // figura del enunciado (caja y área). Un solo entrante (el de arriba) sale de motor.muesca.
+    const M = motor('trazos-rutas'), P = M.perimetro({ vertices: d.vertices });
+    if (P.ancho !== d.ancho || P.alto !== d.alto || Math.abs(P.area - (d.ancho * d.alto - d.a1 * d.h1 - d.a2 * d.h2)) > 1e-9) throw new Error('los vértices no son la figura del enunciado');
+    const una = M.perimetro(M.muesca({ ancho: d.ancho, alto: d.alto, desde: d.desde, hasta: d.desde + d.a1, profundidad: d.h1 }));
+    return { correcta: P.perimetro, errores: { 'perimetro-entrante-como-rectangulo': P.errores.comoRectangulo, 'perimetro-un-solo-entrante': una.perimetro, 'GE4-area-por-perimetro': P.errores.area } };
+  },
+  'rm-15': d => {
+    // Pasar por una esquina obligada: caminos hasta ella por caminos desde ella (porElCruce del motor).
+    const r = motor('trazos-rutas').cerrarCruce({ m: d.m, n: d.n, x: d.x, y: d.y });
+    return { correcta: r.porElCruce, errores: { 'parada-ignorada': r.total, 'parada-suma-los-tramos': r.hasta + r.desde, 'parada-como-cruce-cerrado': r.quedan } };
+  },
+  'rm-16': d => {
+    // Pentágono con un número en cada vértice y en el medio de cada lado: el motor prueba todas las distribuciones.
+    // La menor suma por borde; los números no empiezan en 1 (de paso en paso, desde..hasta).
+    const numeros = []; for (let x = d.desde; x <= d.hasta; x += d.paso) numeros.push(x);
+    const r = motor('arreglos-giros').sumaLado({ lados: d.lados, porLado: 3, numeros, extremo: 'minimo' });
+    return { correcta: r.respuesta, errores: { 'arreglo-vertices-una-vez': r.errores.unaVez, 'arreglo-grandes-en-vertices': r.errores.alReves, 'arreglo-suma-de-vertices': r.errores.sumaVertices } };
+  },
+  'rm-17': d => {
+    // Al revés: de las vueltas por dentro al radio del aro. Se busca con el motor el radio R (en pasos de r) que da esas
+    // vueltas; cada error es el R cuyo error del motor da las mismas vueltas, y el diámetro del aro correcto.
+    const A = motor('arreglos-giros');
+    const buscar = que => {
+      for (let k = 2; k <= 60; k++) { const R = k * d.r, x = A.rodarCirculo({ R, r: d.r, lado: 'dentro' }); if (Math.abs(que(x) - d.vueltas) < 1e-9) return R; }
+      throw new Error('ningún aro da esas vueltas');
+    };
+    const R = buscar(x => x.vueltas);
+    return { correcta: R, errores: { 'rueda-solo-el-borde-que-toca': buscar(x => x.contacto), 'rueda-por-dentro-como-por-fuera': buscar(x => x.errores.otroLado), 'GE19-diametro-como-radio': 2 * R } };
+  },
+  'rm-18': d => {
+    // Regreso en línea recta: el motor sigue los giros; el regreso es el recorrido con cada tramo al revés.
+    const T = motor('traslados-sucesos');
+    const pasos = [['avanza', d.d1], [d.g1], ['avanza', d.d2], [d.g2], ['avanza', d.d3], [d.g3], ['avanza', d.d4]];
+    const ida = T.caminarConGiros({ inicio: d.inicio, pasos }), vuelta = T.recorrido(ida.tramos.map(([r, c]) => [T.girar(r, 'D', 180), c]));
+    const txt = (n, dir) => `${n} m hacia el ${dir}`, catetos = Math.abs(vuelta.x) + Math.abs(vuelta.y);
+    return { correcta: txt(vuelta.exacto, vuelta.direccion), errores: { 'vuelta-da-la-ida': txt(ida.exacto, ida.direccion),
+      'cardinal-suma-los-catetos': txt(catetos, vuelta.direccion), 'catetos-y-vuelta-da-la-ida': txt(catetos, ida.direccion) } };
+  },
+  'rm-19': d => {
+    // Tres sucesos en un lapso: coinciden cada MCM; el motor lo comprueba minuto a minuto (comprobado). El error de
+    // usar solo dos de los tres sale del mismo motor con dos intervalos.
+    const T = motor('traslados-sucesos'), I = [d.a, d.b, d.c], fin = 60 * d.minutos;
+    const r = T.vecesCoinciden({ intervalos: I, inicio: 0, fin });
+    if (!r.comprobado || fin % r.mcm !== 0) throw new Error('el lapso debe terminar en una coincidencia');
+    return { correcta: r.veces, errores: { 'coincidencias-sin-la-primera': r.errores.sinLaPrimera,
+      'coincidencia-mcm-de-dos': T.vecesCoinciden({ intervalos: I.slice(0, 2), inicio: 0, fin }).veces, 'coincidencia-suma-de-intervalos': r.errores.conSuma } };
+  },
+
   // ari-15 a ari-26: plantillas de aritmética sin ítems en las formas (en "reserva": las formas tienen un tope de 10).
   'ari-15': d => { const r = motor('numeracion').aDecimal(d.numeral, d.b), e = r.errores;
     return { correcta: r.valor, errores: { 'potencias-corridas': e.potenciasCorridas, 'suma-cifras-por-la-base': e.sumaCifrasPorBase, 'lee-como-decimal': e.comoDecimal } }; },
