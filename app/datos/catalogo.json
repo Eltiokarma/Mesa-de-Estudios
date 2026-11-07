@@ -4212,7 +4212,7 @@
   },
   "angulo-inscrito": {
    "id": "angulo-inscrito",
-   "titulo": "El ángulo que no cambia: ángulos en la circunferencia",
+   "titulo": "¿Cambia el ángulo? ángulos en la circunferencia",
    "formato": "escena",
    "estado": "borrador",
    "version": "0.1.0",
@@ -4704,7 +4704,7 @@
   },
   "identidades-trig": {
    "id": "identidades-trig",
-   "titulo": "Alturas que no se suman: identidades y arcos compuestos",
+   "titulo": "¿Se suman las alturas? identidades y arcos compuestos",
    "formato": "escena",
    "estado": "borrador",
    "version": "0.1.0",

@@ -148,6 +148,8 @@ Desde el 7 nov 2026 (plan más amplio de Gerson) son nueve sesiones paralelas, c
 
 **Cómo integrar:** `git fetch origin rutina/<nombre>`, leer su reporte, ver qué plantillas están terminadas y revisadas, hacer merge a esta rama (si una plantilla está a medias, merge del commit anterior), agregar al catálogo, `npm run catalogo`, subir `VERSION`, colores en `docs/diseno.md`, rebalancear el banco si el curso llega a 4 plantillas, documentar y `npm test` en verde. El método completo está en `docs/metodo/LEEME.md`.
 
+- **Auditoría de cabeceras (7 nov 2026):** se revisaron las 52 escenas. En 20 el título, el subtítulo o el paso 1 regalaban una respuesta o descartaban de antemano el error documentado de una predicción (celda, choques, ángulo inscrito, identidades, circunferencia, calorimetría, relojes, gases, caso ambiguo, mol, energía, estática, balance, dinámica, enlace, pH, electrostática, fluidos, entre otras); quedaron neutras. En 7, los botones de pasos anunciaban al lector de pantalla los títulos de los pasos bloqueados; ahora dicen «Paso N, bloqueado». «El ángulo que no cambia» pasó a «¿Cambia el ángulo?» y «Alturas que no se suman» a «¿Se suman las alturas?». Dudoso, sin cambiar: el h1 «Una sola respuesta» de funciones inversas empuja hacia el error TR22 del paso 1.
+
 ### 3. Plataforma
 
 - **pl6, pulido visual (65 %):**

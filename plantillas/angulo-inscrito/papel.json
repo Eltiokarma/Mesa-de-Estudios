@@ -1,5 +1,5 @@
 {
-  "titulo": "El ángulo que no cambia: problemas para lápiz y papel",
+  "titulo": "¿Cambia el ángulo? problemas para lápiz y papel",
   "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja siempre la circunferencia y marca el arco que queda entre los lados del ángulo. Si el vértice está en el centro, el ángulo mide lo mismo que su arco; si está en la circunferencia (inscrito o entre tangente y cuerda), la mitad; si está dentro, la semisuma de los dos arcos; si está fuera, la semidiferencia. Para la longitud de arco y el área del sector, usa la fracción θ/360 y fíjate si te dan el radio o el diámetro.",
   "problemas": [
     {
