@@ -264,3 +264,8 @@ dos toques medidos (paso a paso y explorador). Lienzo = el tamaño del mapa de b
 | divisores | 287 | 60.3 | 0 | 45 |
 
 Ninguna escena pasa de 3 s de carga, en ningún perfil, si la sirve el SW. Por 3G en frío, sin SW, la lente (5,4 s de load), identidades-trig y cinética pasan de 3 s.
+
+
+## Seguimiento: ácidos y bases, y líquidos y sólidos (7 nov 2026, rutina de química B)
+
+Con el código ya mejorado por `Celular.dpr()` y `Celular.bucle()` como punto de partida: en ácidos, el fondo se dibuja una vez en un lienzo fuera de pantalla (peor ventana animada de 50,6 a 58,4 FPS, JS máximo por cuadro de 3,48 a 2,36 ms, toque de 239 a 175 ms; 160 de 160 capturas idénticas). En líquidos, una hoja precalculada de moléculas chicas, anchos de texto en caché y redibujo solo si algo se mueve (paso a paso de 53,4 a 58,9 FPS; capturas iguales salvo antialiasado, 0,5 % de píxeles). El explorador de líquidos da unos 28 FPS con la fórmula de este informe porque, quieto, solo dibuja 2 cuadros (el reacomodo de la página al responder): no es animación. Datos crudos y scripts en `rutinas/quimica-b-medicion/`.
