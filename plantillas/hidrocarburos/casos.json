@@ -2,7 +2,7 @@
   "plantilla": "hidrocarburos",
   "unidades": "Moléculas como texto: fórmula semidesarrollada sencilla (CH3-CH(CH3)-CH2-CH3, CH2=CH-CH3, CH≡C-CH3; el guion, el = y el ≡ son el enlace) o SMILES sencillo (CC(C)C, C/C=C\\C para cis, C1CCC1 para un anillo, c1ccccc1 para el benceno). Los índices de átomo cuentan desde 0 en el orden en que aparecen los C en el texto (una rama C2H5 aporta dos C seguidos). Temperaturas en °C; ángulos en grados.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'; 'tambien' agrega llamadas del mismo caso. Los campos anidados van con punto (errores.cadenaDibujada, a.teb); las listas se comparan completas; los textos, exactos. Nombres con la regla escolar de la cadena principal (la de más enlaces múltiples, después la más larga) y el localizador delante del sufijo (but-2-eno); 'antiguo' da la forma anterior (2-buteno). Las demás convenciones están en la cabecera de motor.js.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni los casos: grafos escritos a mano; isómeros por crecimiento de árboles libres con forma canónica AHU (de C1 a C10 = A000602: 1, 1, 1, 2, 3, 5, 9, 18, 35, 75) y alquenos como árbol con enlace marcado, con cis-trans contado por grupos distintos; nombres de alcanos con un nombrador propio por fuerza bruta (IUPAC 1979/93); σ, π e insaturaciones por conteo de H. Los 23 casos coinciden; los puntos de ebullición (36,1 y 9,5 °C) difieren menos de 0,1 °C del CRC.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Paso 2 y predicción 1: el pentano recto y el torcido son la misma molécula (mismo grafo); el 2-metilbutano, no",

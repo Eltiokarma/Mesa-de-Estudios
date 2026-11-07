@@ -293,13 +293,29 @@ function partesTexto(ctx, c, partes, x, y, tam, max){
    o 'esqueleto'), op: { cadena, nums, subs, hib, ang, nube, prueba, marca, foco }, teb: { valor, ver }, tachado }.
    El dibujo es plano: z solo agranda un poco las bolitas que quedan adelante mientras se gira. */
 const RC = 0.27, RH = 0.17;
-function pintarMolecula(ctx, c, it, box, hl){
+// Escala que hace caber la molécula en su caja (px por largo de enlace C–C).
+function ajuste(it, box){
   const A = it.c.atomos, op = it.op || {}, esq = it.modo === 'esqueleto';
   const pts = esq ? A.filter(p => p.el !== 'H') : A;
   let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
   for (const p of pts){ x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
-  const mg = esq ? 0.5 : 0.4 + (op.nums || op.hib ? 0.35 : 0);
-  const s = Math.min(box.w/(x1 - x0 + 2*mg), box.h/(y1 - y0 + 2*mg), it.max || 58);
+  const mg = esq ? 0.5 : 0.4 + (op.nums || op.hib ? 0.35 : 0) + (op.nube ? 0.3 : 0);
+  return { s: Math.min(box.w/(x1 - x0 + 2*mg), box.h/(y1 - y0 + 2*mg), it.max || 58), x0, x1, y0, y1 };
+}
+// La fórmula escrita en lugar del dibujo (cuando el dibujo respondería la pregunta): C y H con su color.
+function pintarTapada(ctx, c, it, box){
+  const t = it.oculto, tam = Math.min(30, box.w/(t.length*0.62));
+  ctx.font = `800 ${tam}px ${c.font}`; let w = 0; for (const ch of t) w += ctx.measureText(ch).width;
+  let x = box.x + box.w/2 - w/2; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (const ch of t){ ctx.fillStyle = ch === 'C' ? c.el.C : ch === 'H' ? c.el.H : ch === '≡' || ch === '=' ? c.mul : c.ink; ctx.fillText(ch, x, box.y + box.h/2); x += ctx.measureText(ch).width; }
+  texto(ctx, c, 'el modelo se arma al responder', box.x + box.w/2, box.y + box.h/2 + tam*1.1, 12, c.muted, 'center', box.w, 700);
+}
+function pintarMolecula(ctx, c, it, box, hl){
+  if (it.oculto){ pintarTapada(ctx, c, it, box); return; }
+  const A = it.c.atomos, op = it.op || {}, esq = it.modo === 'esqueleto';
+  const aj = ajuste(it, box), { x0, x1, y0, y1 } = aj;
+  // En una vista que compara tamaños (ebullición), todas las moléculas van con la misma escala.
+  const s = it._sFija || aj.s;
   const cx = box.x + box.w/2, cy = box.y + box.h/2, mx = (x0 + x1)/2, my = (y0 + y1)/2;
   const P = p => ({ X: cx + (p.x - mx)*s, Y: cy - (p.y - my)*s });
   it._tf = { s, P };
@@ -410,6 +426,9 @@ PINTA.mols = {
   llave: v => v.items.length + '|' + v.items.map(it => it.c.atomos.length).join(','),
   pintar(ctx, c, W, v, hl){
     const n = v.items.length, { cols } = celdas(W, n), ch = altoCelda(W, n, v), cw = (W - 8)/cols;
+    const pieV = 30 + (v.items.some(z => z.teb) ? 32 : 0);
+    const sComun = v.mismaEscala ? Math.min(...v.items.map(it => ajuste(it, { w: cw - 20, h: ch - pieV - 14 }).s)) : 0;
+    v.items.forEach(it => { it._sFija = sComun || 0; });
     v.items.forEach((it, k) => {
       const x = 4 + (k % cols)*cw, y = 4 + Math.floor(k/cols)*ch;
       const conT = v.items.some(z => z.teb), pie = 30 + (conT ? 32 : 0);
@@ -445,7 +464,7 @@ const leyVar = (k, t) => `<span><i style="background:var(--c-${k})"></i>${t}</sp
 function termometro(ctx, c, t, x, y, w){
   const a = -20, b = 80, X = T => x + (T - a)/(b - a)*w;
   ctx.save(); rr(ctx, x, y - 4, w, 8, 4); ctx.fillStyle = c.grid; ctx.fill(); ctx.strokeStyle = c.line; ctx.stroke();
-  ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.setLineDash([2, 3]); linea(ctx, X(20), y - 9, X(20), y + 9); ctx.setLineDash([]);
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.setLineDash([2, 3]); linea(ctx, X(20), y - 4, X(20), y + 9); ctx.setLineDash([]);
   texto(ctx, c, 'aula 20 °C', X(20), y + 16, 10, c.muted, 'center', 0, 700);
   if (t.ver){ const p = t.p === undefined ? 1 : t.p, v = a + (t.valor - a)*p; rr(ctx, x, y - 4, Math.max(8, X(v) - x), 8, 4); ctx.fillStyle = c.T; ctx.fill();
     texto(ctx, c, `${fmt(t.valor)} °C`, clamp(X(v), x + 22, x + w - 22), y - 13, 12, c.T, 'center', 0, 900); }
@@ -565,8 +584,8 @@ function interaccion(E){
       else if (E.inter.modo === 'girar' && blanco.enlace !== undefined){
         const g0 = MH.girar(x.m, c0, blanco.enlace, Math.PI);
         if (!g0.ok){ aviso(g0.texto); }
-        else { const th = clamp(movido/90, 0, 1)*Math.PI, fin = th > Math.PI/2 ? Math.PI : 0;
-          E.ocupado = true; animar(E, 0.3, f => { x.c = MH.girar(x.m, c0, blanco.enlace, th + (fin - th)*f).coords; }, () => { x.c = MH.girar(x.m, c0, blanco.enlace, fin).coords; E.ocupado = false; listo(fin ? 'Giraste media vuelta un enlace simple.' : 'El enlace volvió a su lugar.'); }); }
+        else { const th = clamp(movido/90, 0, 1)*Math.PI, fin = th > Math.PI/2 ? Math.PI : 0, k = blanco.enlace, cIni = c0;
+          E.ocupado = true; animar(E, 0.3, f => { x.c = MH.girar(x.m, cIni, k, th + (fin - th)*f).coords; }, () => { x.c = MH.girar(x.m, cIni, k, fin).coords; E.ocupado = false; listo(fin ? 'Giraste media vuelta un enlace simple.' : 'El enlace volvió a su lugar.'); }); }
       }
       blanco = null;
     },
@@ -677,14 +696,14 @@ const P4 = { id:'hc-cis-trans', ok:'c', opts:[
   fb:{ c:'¡Bien! En el but-2-eno cada carbono del doble enlace tiene un H y un CH₃: los CH₃ pueden quedar del mismo lado (cis) o en lados opuestos (trans). En el 2-metilpropeno un carbono tiene dos CH₃: al cambiarlos de lado sale la misma molécula. Mira el dibujo.',
     a:'Elegiste la 1. El doble enlace es necesario, pero no basta: además, cada carbono del doble enlace tiene que tener dos grupos distintos. El carbono 2 del 2-metilpropeno tiene dos CH₃ iguales. Ver cis-trans en todo alqueno está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012, por la descripción de un buscador). La correcta está marcada.',
     b:'Elegiste la 2. Ser ramificado no da cis-trans: lo que importa es qué tiene cada carbono del doble enlace. En el 2-metilpropeno, uno tiene dos CH₃ iguales. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
-    d:'Elegiste la 3. No hacen falta halógenos: basta que cada carbono del doble enlace tenga dos grupos distintos, como el H y el CH₃ del but-2-eno. Creer que hacen falta dos halógenos está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012, por la descripción de un buscador). La correcta está marcada.' } };
+    d:'Elegiste la 4. No hacen falta halógenos: basta que cada carbono del doble enlace tenga dos grupos distintos, como el H y el CH₃ del but-2-eno. Creer que hacen falta dos halógenos está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012, por la descripción de un buscador). La correcta está marcada.' } };
 const P5 = { id:'hc-ebullicion', ok:'b', opts:[
   ['a', 'A la misma temperatura: los dos tienen 5 carbonos', 'HC2-numero-de-carbonos', 'documentado'],
   ['b', 'El pentano: su cadena recta tiene más superficie de contacto con las moléculas vecinas'],
   ['c', 'El 2,2-dimetilpropano: es más compacto y sus moléculas se juntan más', 'HC2-compacto-hierve-mas', 'hipotesis'],
   ['d', 'El 2,2-dimetilpropano: tiene más ramas, y cada rama suma fuerza de atracción', 'HC2-ramas-suman', 'hipotesis']],
   fb:{ b:`¡Bien! El pentano hierve a ${fmt(EB.a.teb)} °C y el 2,2-dimetilpropano a ${fmt(EB.b.teb)} °C (de tabla). La molécula recta toca más a sus vecinas; la ramificada es casi una bola y se toca poco.`,
-    a:`Elegiste la 1. La cantidad de carbonos cuenta, pero no lo es todo: con los mismos 5 C, la forma cambia cuánto se tocan las moléculas. En una pregunta parecida, con butano, cerca de 1 de cada 5 de 246 escolares alemanes de los últimos años eligió que el punto de ebullición lo decide el número de carbonos (Schmidt, 1996). La correcta está marcada.`,
+    a:`Elegiste la 1. La cantidad de carbonos cuenta, pero no lo es todo: con los mismos 5 C, la forma cambia cuánto se tocan las moléculas. En otra pregunta, con el butano, cerca de 1 de cada 5 de 246 escolares alemanes de 12.° y 13.° grado eligió su respuesta porque «el punto de ebullición depende del número de C» (Schmidt, 1996). La correcta está marcada.`,
     c:'Elegiste la 3. Más compacto quiere decir menos superficie para tocar a las vecinas: las fuerzas entre moléculas son más débiles y hierve antes. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
     d:'Elegiste la 4. Las ramas no suman atracción: la quitan, porque la molécula se hace más redonda y toca menos a sus vecinas. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
 const P6 = { id:'hc-alqueno-numeracion', ok:'d', opts:[
@@ -713,7 +732,8 @@ function vPropano(){
   return { tipo:'mols', items:[a, b] };
 }
 function vEscondida(r){
-  const it = mol(ESC, { cadena: DIB, rot: r ? NESC.nombre : '¿cómo se llama?' });
+  // Antes de responder, con la cadena horizontal de 4 C; después, con la cadena principal en zigzag y la rama colgando.
+  const it = r ? mol(ESC, { rot: NESC.nombre }) : mol(ESC, { cadena: DIB, rot: '¿cómo se llama?' });
   it.desc = 'Una cadena horizontal de cuatro carbonos; del segundo sale hacia arriba una rama de dos carbonos.';
   if (r){ conNombre(it, ['cadena', 'nums', 'subs']); it.desc = `La cadena principal tiene 5 carbonos y sube por la rama de arriba; queda un metilo en el carbono 3: ${NESC.nombre}.`; }
   return { tipo:'mols', items:[it] };
@@ -743,7 +763,7 @@ function vEbullicion(r, p){
   const a = mol(PENT, { rot:'pentano', teb:{ valor: EB.a.teb, ver: !!r, p } }), b = mol('C(CH3)4', { rot:'2,2-dimetilpropano', teb:{ valor: EB.b.teb, ver: !!r, p } });
   a.desc = 'Pentano: cadena recta de 5 carbonos.'; b.desc = '2,2-dimetilpropano: un carbono central con cuatro CH3, como una cruz.';
   if (r){ a.op.nube = b.op.nube = true; a.desc += ` Hierve a ${fmt(EB.a.teb)} °C.`; b.desc += ` Hierve a ${fmt(EB.b.teb)} °C: a 20 °C ya es gas.`; }
-  return { tipo:'mols', items:[a, b] };
+  return { tipo:'mols', items:[a, b], mismaEscala:true };
 }
 function vAlqueno(r){
   // Dibujada en el orden en que se lee la fórmula: la rama a la izquierda, el doble enlace a la derecha.
@@ -752,7 +772,8 @@ function vAlqueno(r){
   return { tipo:'mols', items:[it] };
 }
 function vPropino(r){
-  const it = mol('CH≡C-CH3', { rot:'propino', desc:'Propino: tres carbonos en línea; un triple enlace entre los dos primeros.' });
+  const it = mol('CH≡C-CH3', { rot:'propino', desc:'Propino: la fórmula H–C≡C–CH3; el modelo se arma al responder.' });
+  if (!r) it.oculto = 'H–C≡C–CH₃';
   if (r){ it.op.hib = it.op.ang = true; it.desc = 'Hibridación: sp, sp y sp3. Los dos primeros carbonos tienen enlaces a 180°; el CH3, a 109,5° en el espacio.'; }
   return { tipo:'mols', items:[it] };
 }
@@ -791,7 +812,7 @@ const steps = [
    <p>Los alcanos ${F('CnH2n+2')} tienen 1, 1, 1, 2, 3, 5, 9 y 18 isómeros de 1 a 8 carbonos: crecen rápido.</p>
    <p class="fuente">Los errores de conteo (olvidar el de un carbono cuaternario, contar dos veces una cadena torcida) son hipótesis nuestras, de la tabla de lo que no tiene respaldo del informe.</p></div>` },
  { k:'Paso 5', t:'Dos alquenos', gate:P4, vista:r => vCisTrans(r, r ? 1 : undefined),
-   body:() => `<p>El but-2-eno, ${F('CH3–CH=CH–CH3')}, y el 2-metilpropeno, ${F('CH2=C(CH3)2')}, tienen la misma fórmula, ${F('C4H8')}. Los dos tienen un ${V('mul', 'doble enlace')}, y un doble enlace no gira como uno simple.</p>
+   body:() => `<p>El but-2-eno (en muchos libros, 2-buteno), ${F('CH3–CH=CH–CH3')}, y el 2-metilpropeno, ${F('CH2=C(CH3)2')}, tienen la misma fórmula, ${F('C4H8')}. Los dos tienen un ${V('mul', 'doble enlace')}, y un doble enlace no gira como uno simple.</p>
    <p>¿Cuál tiene isómeros cis y trans?</p>${opcionesHTML(P4.opts, 'fb')}
    <div class="tras" hidden><p>Para pasar de una forma a la otra habría que girar media vuelta el doble enlace (romper su segundo enlace). El dibujo muestra ese cambio, hecho a mano: en el but-2-eno sale <b>otra</b> molécula (trans → cis); en el 2-metilpropeno sale <b>la misma</b>.</p>
    <div class="eqs"><div class="eq"><span class="ex">Hay cis-trans si <b>cada</b> carbono del doble enlace tiene dos grupos distintos.</span><span class="note">Propeno y 2-metilpropeno: no. But-2-eno y pent-2-eno: sí. También en anillos, como el 1,2-dimetilciclopropano.</span></div></div>
@@ -801,9 +822,9 @@ const steps = [
    body:() => `<p>El pentano y el 2,2-dimetilpropano son isómeros: los dos son ${F('C5H12')}. Uno es una cadena recta; el otro, una cruz con un carbono en el centro.</p>
    <p>¿Cuál tiene el ${V('T', 'punto de ebullición')} más alto?</p>${opcionesHTML(P5.opts, 'fb')}
    <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">pentano: ${V('T', fmt(EB.a.teb) + ' °C')} · 2,2-dimetilpropano: ${V('T', fmt(EB.b.teb) + ' °C')}</span><span class="note">Datos de tabla (CRC Handbook), no salen de una fórmula. A 20 °C el pentano es líquido y el 2,2-dimetilpropano, gas.</span></div></div>
-   <p>Las moléculas de un alcano se atraen con fuerzas débiles que crecen con la superficie en que se tocan (la nube gris). Regla para el examen: más carbonos, más alto; con los mismos carbonos, más ramas, más bajo.</p>
+   <p>Las moléculas de un alcano se atraen con fuerzas débiles que crecen con la superficie en que se tocan (la nube pálida alrededor de cada molécula). Regla para el examen: más carbonos, más alto; con los mismos carbonos, cuanto más compacta (más ramas, o ramas en un mismo carbono), más bajo.</p>
    <div class="fila">${otraVez}</div>
-   <p class="fuente">Que el punto de ebullición lo decide solo el número de carbonos (HC2): en una pregunta con butano, cerca de 1 de cada 5 de 246 escolares alemanes de 12.° y 13.° grado eligió esa razón, y acertó cerca de un tercio (Schmidt, 1996). Las otras opciones son hipótesis nuestras.</p></div>` },
+   <p class="fuente">Que el punto de ebullición lo decide solo el número de carbonos (HC2): en una pregunta con butano, cerca de 1 de cada 5 de 246 escolares alemanes de 12.° y 13.° grado eligió esa razón, y acertó 3 de cada 10 (Schmidt, 1996). Las otras opciones son hipótesis nuestras.</p></div>` },
  { k:'Paso 7', t:'Un alqueno con rama', gate:P6, vista:r => vAlqueno(r),
    body:() => `<p>Esta molécula es ${F('CH3–CH(CH3)–CH=CH–CH3')}: 5 carbonos en fila, con un ${V('mul', 'doble enlace')} y una rama.</p>
    <p>¿Cuál es su nombre IUPAC?</p>${opcionesHTML(P6.opts, 'fb')}
@@ -817,7 +838,7 @@ const steps = [
    <p>¿Qué hibridación tiene cada carbono, de izquierda a derecha?</p>${opcionesHTML(P7.opts, 'fb')}
    <div class="tras" hidden><table class="tabla"><tr><th>Carbono con…</th><th>Hibridación</th><th>${V('ang', 'Ángulo')}</th></tr>
    <tr><td>4 enlaces simples</td><td>sp³</td><td>${V('ang', '109,5°')} (tetraedro)</td></tr>
-   <tr><td>un doble enlace (o en el benceno)</td><td>sp²</td><td>${V('ang', '120°')} (plano)</td></tr>
+   <tr><td>un doble enlace (o en el benceno)</td><td>sp²</td><td>${V('ang', 'unos 120°')} (plano)</td></tr>
    <tr><td>un triple enlace (o dos dobles)</td><td>sp</td><td>${V('ang', '180°')} (lineal)</td></tr></table>
    <p>El dibujo es plano: muestra bien los 180° y los 120°, pero el tetraedro del sp³ está en el espacio.</p>
    <div class="eqs"><div class="eq"><span class="ex">Alcanos ${F('CnH2n+2')} · alquenos y cicloalcanos ${F('CnH2n')} · alquinos ${F('CnH2n−2')}</span><span class="note">Cada doble enlace o anillo quita 2 H; cada triple, 4. Insaturaciones = (2C + 2 − H) / 2.</span></div></div>
@@ -837,8 +858,9 @@ function mostrar(n){
     animar(E, 1.1, f => { b.c = MH.girar(b.m, c0, 2, (1 - f)*Math.PI, 3).coords; }, () => { b.c = MH.girar(b.m, c0, 2, 0, 3).coords; b.rot = 'dibujo B, enderezado'; E.describir(); activarGiro(); }, 0.25);
     E.vista.items[1].desc = 'El dibujo B se endereza al girar media vuelta un enlace simple: queda igual al A.';
   } else if (n === 2){
-    E.vista = vEscondida(true); const it = E.vista.items[0], fin = { ...it.op }; it.op = { prueba: DIB }; it.rot = 'la cadena horizontal: 4 C'; it.partes = null;
-    animar(E, 0.9, () => {}, () => { it.op = fin; it.partes = MH.nombre(it.m).partes; E.describir(); }, 0.4);
+    // Primero la cadena horizontal (4 C) en el dibujo original; después, la principal (5 C) redibujada en zigzag.
+    E.vista = vEscondida(false); const it = E.vista.items[0]; it.op = { prueba: DIB }; it.rot = 'la cadena horizontal: 4 C';
+    animar(E, 0.9, () => {}, () => { E.vista = vEscondida(true); E.resize(); E.dibujar(); E.describir(); }, 0.4);
   } else if (n === 4){
     E.vista = vCisTrans(true, 0);
     animar(E, 1.2, f => { const v = vCisTrans(true, f); E.vista.items.forEach((it, k) => { it.c = v.items[k].c; }); }, () => { E.vista = vCisTrans(true, 1); E.describir(); }, 0.3);
@@ -949,7 +971,8 @@ function resumen(it){
   const r = MH.armar(it.m, []), t = MH.tiposCarbono(it.m).cuenta, ct = MH.cisTrans(it.m);
   const cl = Object.entries(t).filter(([, k]) => k).map(([c, k]) => `${k} ${c}${k > 1 ? 's' : ''}`).join(', ');
   return `<div class="eqs"><div class="eq"><span class="ex">${N(MH.nombre(it.m))} · ${F(r.formula)} · ${r.tipo}</span>${r.semidesarrollada ? `<span class="note">${F(r.semidesarrollada)}</span>` : ''}</div>
-    <div class="eq"><span class="ex">Carbonos: ${cl || 'uno solo (el del metano no se clasifica)'}.</span><span class="note">${ct.tiene ? 'Tiene isómeros cis y trans: ' + ct.razon + '.' : 'Sin cis-trans: ' + ct.razon + '.'}</span></div></div>`;
+    <div class="eq"><span class="ex">Carbonos: ${cl || 'uno solo (el del metano no se clasifica)'}.</span><span class="note">${ct.tiene ? 'Tiene isómeros cis y trans: ' + ct.razon + '.' : 'Sin cis-trans: ' + ct.razon + '.'}</span></div>
+    ${MH.nombre(it.m).difiereIUPAC2013 ? '<div class="eq"><span class="note">Con la regla IUPAC de 2013 se elegiría la cadena más larga, aunque no pase por el doble enlace: el nombre cambia.</span></div>' : ''}</div>`;
 }
 function vMesa(it){ it.modo = MESA.esq ? 'esqueleto' : 'bolitas'; conNombre(it, ['cadena', 'nums', 'subs']); it.desc = `${it.rot}: ${contar(it)}.`; return { tipo:'mols', items:[it] }; }
 
@@ -983,7 +1006,7 @@ const EXPS = [
       c:'Uno de tus 6 es repetido: una cadena torcida, o un etilo en el C2 de un butano (que es el 3-metilpentano), no es una molécula nueva. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
       d:'9 son los de C₇H₁₆. Con 6 carbonos son 5. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
     antes:() => ({ tipo:'mols', items:[mol('CCCCCC', { rot:'uno de ellos: el hexano', desc:'El hexano, C6H14, en bolitas y palitos.' })] }),
-    despues:() => ({ tipo:'mols', items: MH.isomeros(6, 'alcano').map(z => { const it = conNombre({ m: z.molecula, c: MH.coordenadas(z.molecula), op:{} }, []); const t = MH.ebullicion(z.molecula).teb; it.teb = { valor: t, ver: true }; it.desc = `${z.nombre}, hierve a ${fmt(t)} °C.`; return it; }) }),
+    despues:() => ({ tipo:'mols', items: MH.isomeros(6, 'alcano').map(z => { const it = conNombre({ m: z.molecula, c: MH.coordenadas(z.molecula), op:{} }, []); const t = MH.ebullicion(z.molecula).teb; it.teb = { valor: t, ver: true }; it.desc = `${z.nombre}, hierve a ${fmt(t)} °C.`; return it; }), mismaEscala:true }),
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${MH.isomeros(6, 'alcano').map(z => N(MH.nombre(z.molecula))).join(' · ')}</span><span class="note">Cadena de 6; de 5 con un metilo (en el C2 o en el C3); de 4 con dos metilos (2,2 o 2,3).</span></div></div>
       <p>Mira el ${V('T', 'punto de ebullición')} de cada uno (de tabla): todos tienen 6 C, y aun así el recto hierve más alto y el más ramificado, más bajo.</p>
       <p class="fuente">Los errores de conteo son hipótesis nuestras, de la tabla de lo que no tiene respaldo del informe. Los puntos de ebullición son del CRC Handbook; conviene compararlos con la tabla de tu libro.</p>` },
@@ -994,7 +1017,7 @@ const EXPS = [
           ['c', 'El but-1-eno: una rama cambió de lugar', 'HC1-rama-cambia', 'hipotesis'],
           ['d', 'La misma molécula: los dos grupos de ese carbono son iguales']],
     ok:'d',
-    fb:{ a:'Para que haya cis y trans, cada carbono del doble enlace necesita dos grupos distintos. Aquí uno tiene dos CH₃ y el otro dos H: al girar, todo queda igual. Ver cis-trans en todo alqueno está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012).',
+    fb:{ a:'Para que haya cis y trans, cada carbono del doble enlace necesita dos grupos distintos. Aquí uno tiene dos CH₃ y el otro dos H: al girar, todo queda igual. Ver cis-trans en todo alqueno está descrito en futuros profesores de ciencias, sin porcentaje en lo que leímos (Şendur, 2012, por la descripción de un buscador).',
       b:'Girar no cambia qué átomo está unido con cuál: los dos CH₃ siguen en el mismo carbono. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
       c:'Girar no mueve ramas de un carbono a otro: solo las cambia de lado. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
     antes:() => ({ tipo:'mols', items:[mol('CH2=C(CH3)2', { rot:'2-metilpropeno', desc:'2-metilpropeno: un doble enlace; el carbono de la izquierda tiene dos H y el de la derecha dos CH3.' })] }),
@@ -1033,9 +1056,9 @@ const EXPS = [
     fb:{ a:'Los 120° son del carbono sp², el del doble enlace. Con un triple enlace, el carbono solo tiene dos direcciones, opuestas: 180°. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
       b:'El tetraedro (109,5°) es del carbono con cuatro enlaces simples, sp³. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
       d:'Los tres enlaces del triple van juntos, en la misma dirección: cuentan como una sola. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
-    antes:() => ({ tipo:'mols', items:[mol('CH≡CH', { rot:'etino', desc:'Etino: dos carbonos con un triple enlace y un H en cada punta.' })] }),
+    antes:() => ({ tipo:'mols', items:[mol('CH≡CH', { rot:'etino', oculto:'H–C≡C–H', desc:'Etino: la fórmula H–C≡C–H; el modelo se arma al responder.' })] }),
     despues:() => ({ tipo:'mols', items:[['CH3-CH3', 'etano'], ['CH2=CH2', 'eteno'], ['CH≡CH', 'etino']].map(([t, n]) => { const it = mol(t, { rot:n }); it.op.hib = it.op.ang = true; const h = MH.hibridacion(it.m).lista[0]; it.desc = `${n}: carbonos ${h.hib}, ${fmt(h.angulo)} grados.`; return it; }) }),
-    exp:() => `<div class="eqs"><div class="eq"><span class="ex">etano: sp³, ${V('ang', '109,5°')} · eteno: sp², ${V('ang', '120°')} · etino: sp, ${V('ang', fmt(HE.angulos[0]) + '°')}</span><span class="note">El dibujo es plano: el tetraedro del etano está en el espacio, y por eso sus H se ven a 90° en el papel.</span></div></div>
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">etano: sp³, ${V('ang', '109,5°')} · eteno: sp², ${V('ang', 'unos 120°')} · etino: sp, ${V('ang', fmt(HE.angulos[0]) + '°')}</span><span class="note">El dibujo es plano: el tetraedro del etano está en el espacio, En el papel los H del etano se dibujan separados, pero en el espacio forman 109,5°.</span></div></div>
       <p>Enlaces del etino: ${MH.enlaces('CH≡CH').sigma} σ y ${MH.enlaces('CH≡CH').pi} π. El triple enlace tiene 1 σ y 2 π.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
@@ -1064,7 +1087,8 @@ function mesa(){
 }
 function enlazarMesa(){
   const md = $('mesaModo'); if (!md) return;
-  md.querySelectorAll('button').forEach(b => b.onclick = () => { MESA.modo = b.dataset.m; md.querySelectorAll('button').forEach(z => z.setAttribute('aria-pressed', z === b)); if (E.inter) E.inter.modo = MESA.modo; E.foco = null; const it = E.vista.items[0]; if (it) it.op.foco = null; E.dibujar();
+  // En el celular los botones quedan lejos del dibujo: al cambiar de modo, el lienzo vuelve a la vista.
+  md.querySelectorAll('button').forEach(b => b.onclick = () => { if (innerWidth < 900) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); MESA.modo = b.dataset.m; md.querySelectorAll('button').forEach(z => z.setAttribute('aria-pressed', z === b)); if (E.inter) E.inter.modo = MESA.modo; E.foco = null; const it = E.vista.items[0]; if (it) it.op.foco = null; E.dibujar();
     $('mesaEst').textContent = { agregar:'Toca un carbono que tenga algún H: se le agrega un CH₃.', quitar:'Toca un carbono de una punta para quitarlo.', enlace:'Toca un enlace entre dos carbonos: pasa de simple a doble, a triple y vuelve, si la valencia lo deja.', girar:'Toca un enlace simple para girarlo media vuelta; el doble enlace no gira.' }[MESA.modo]; });
   $('mesaEsq').onclick = () => { MESA.esq = !MESA.esq; $('mesaEsq').setAttribute('aria-pressed', MESA.esq); $('mesaEsq').textContent = MESA.esq ? 'Ver bolitas y palitos' : 'Ver como esqueleto'; const it = E.vista.items[0]; E.vista = vMesa(it); E.dibujar(); };
   $('mesaOtra').onclick = () => { const it = { m: MH.molecula(BUT), c: MH.coordenadas(BUT), op:{} }; E.vista = vMesa(it); mesa(); E.resize(); E.dibujar(); E.describir(); $('mesaEst').textContent = 'De vuelta al butano.'; };

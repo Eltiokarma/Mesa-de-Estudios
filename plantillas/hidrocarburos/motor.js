@@ -841,19 +841,19 @@
       else {
         const huecos = ang.map((t, q) => { const sig = q + 1 < ang.length ? ang[q + 1] : ang[0] + 2 * Math.PI; return { ini: t, ancho: sig - t, k: 0 }; });
         for (let q = 0; q < a.h; q++) huecos.sort((s, t) => t.ancho / (t.k + 1) - s.ancho / (s.k + 1))[0].k++;
-        // Repartidos en el hueco, sin abrirse más de 72° entre sí (un CH₃ de punta queda como tridente).
-        for (const hq of huecos) { const pasoH = Math.min(hq.ancho / (hq.k + 1), 1.25), mid = hq.ini + hq.ancho / 2; for (let q = 0; q < hq.k; q++) dirs.push(mid + (q - (hq.k - 1) / 2) * pasoH); }
+        // Repartidos en el hueco, sin abrirse más de 60° entre sí (un CH₃ de punta queda como tridente).
+        for (const hq of huecos) { const pasoH = Math.min(hq.ancho / (hq.k + 1), 1.05), mid = hq.ini + hq.ancho / 2; for (let q = 0; q < hq.k; q++) dirs.push(mid + (q - (hq.k - 1) / 2) * pasoH); }
       }
       dirs.forEach(d => c.atomos.push({ i: c.atomos.length, el: 'H', x: p.x + LCH * Math.cos(d), y: p.y + LCH * Math.sin(d), z: p.z, padre: i, ang: d }));
     });
-    // Los H se acomodan un poco (hasta ±40°) para no encimarse con otros átomos.
+    // Los H se acomodan un poco (hasta ±10°) para no encimarse con otros átomos; un CH₃ de punta no llega a abrirse en cruz.
     const otros = h => c.atomos.filter(q => q.i !== h.i && q.i !== h.padre);
     for (let pasada = 0; pasada < 3; pasada++) for (const h of c.atomos) {
       if (h.padre === null) continue;
       const p = c.atomos[h.padre], vec = otros(h);
       const lejos = d => { const x = p.x + LCH * Math.cos(d), y = p.y + LCH * Math.sin(d); return Math.min(...vec.map(q => Math.hypot(q.x - x, q.y - y, q.z - p.z) - (q.el === 'H' ? 0 : 0.25))); };
       let mejor = h.ang, val = lejos(h.ang);
-      for (let dd = -0.7; dd <= 0.7001; dd += 0.0875) { const t = lejos(h.ang + dd) - Math.abs(dd) * 0.05; if (t > val + 1e-9) { val = t; mejor = h.ang + dd; } }
+      for (let dd = -0.175; dd <= 0.1751; dd += 0.0875) { const t = lejos(h.ang + dd) - Math.abs(dd) * 0.05; if (t > val + 1e-9) { val = t; mejor = h.ang + dd; } }
       h.x = p.x + LCH * Math.cos(mejor); h.y = p.y + LCH * Math.sin(mejor);
     }
     c.atomos.forEach(q => { delete q.ang; });
