@@ -1,6 +1,6 @@
 {
   "id": "t005",
-  "version": 1,
+  "version": 2,
   "titulo": "Dos lenguas no se estorban",
   "tema": "Sociedad · lenguas originarias",
   "grado": 3,
@@ -57,6 +57,61 @@
   "preguntas": [
     {
       "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El autor discute una idea (\"parte de una idea equivocada\") y defiende otra: quiere convencer.",
+        "explicaciones": {
+          "explicar": "El texto explica algo, pero lo hace para discutir una idea (\"parte de una idea equivocada\") y defender otra: busca convencer.",
+          "narrar": "El texto no cuenta una historia: presenta una situación frecuente para discutirla."
+        }
+      },
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Persuadir a los padres de que cambien una decisión sobre la crianza de sus hijos.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o3"
+          ],
+          "explicacion": "El autor responde al temor de los padres que dejan de enseñar su lengua (oraciones 2 y 3) y les da razones para no hacerlo."
+        },
+        {
+          "t": "Explicar cómo aprende un niño una segunda lengua en el colegio y en su casa.",
+          "codigo": "RV14",
+          "origen": "o5",
+          "explicacion": "El texto menciona cómo aprende un niño bilingüe, pero lo hace para defender una postura, y esta alternativa la deja fuera."
+        },
+        {
+          "t": "Contar la historia de una familia que migró del campo a la ciudad.",
+          "codigo": "RV13",
+          "origen": "o1",
+          "explicacion": "El texto no sigue a una familia ni cuenta hechos en orden: presenta una situación frecuente para discutirla."
+        },
+        {
+          "t": "Criticar a los padres que migraron del campo a la ciudad y abandonaron sus costumbres.",
+          "codigo": "RV33",
+          "origen": "o3",
+          "explicacion": "El autor dice que el temor de los padres \"se entiende\"; no los critica por migrar ni habla de abandonar costumbres."
+        },
+        {
+          "t": "Informar sobre las lenguas que se hablan en distintos países del mundo.",
+          "codigo": "RV2",
+          "origen": "o4",
+          "explicacion": "El texto menciona el mundo solo como argumento (oración 4); no es un informe sobre lenguas."
+        }
+      ]
+    },
+    {
+      "id": "p2",
       "tipo": "idea-principal",
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "previo": {
@@ -73,7 +128,13 @@
         },
         "explicacion": "La oración 3 dice que el temor de los padres parte de una idea equivocada, y la 7 saca la conclusión: conservar la lengua es una riqueza. Las demás dan el contexto o los argumentos.",
         "explicaciones": {
-          "o2": "Esa oración cuenta el temor de los padres, que el autor va a discutir; no es su tesis."
+          "o1": "La primera oración presenta la situación de muchas familias: es el punto de partida, no la tesis.",
+          "o2": "Esa oración cuenta el temor de los padres, que el autor va a discutir; no es su tesis.",
+          "o4": "Es un argumento: lo que pasa en el mundo apoya la tesis, pero no la dice.",
+          "o5": "Es un argumento sobre cómo aprende un niño bilingüe; apoya la tesis.",
+          "o6": "Es un argumento sobre dónde aparecen los problemas; apoya la tesis.",
+          "o8": "Es un cierre que agrega una idea (la lengua se recupera hablándola), pero la tesis está antes.",
+          "ninguna": "La oración 7 sí la dice completa: conservar la lengua de los abuelos no es un obstáculo, sino una riqueza."
         }
       },
       "enunciado": "¿Cuál es la tesis del autor?",
@@ -112,64 +173,13 @@
       ]
     },
     {
-      "id": "p2",
-      "tipo": "intencion",
-      "unidad": "razonamiento-verbal.inferencias",
-      "previo": {
-        "tipo": "proposito",
-        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
-        "aceptada": "convencer",
-        "codigos": {
-          "explicar": "RV14",
-          "narrar": "RV13"
-        },
-        "explicacion": "El autor discute una idea (\"parte de una idea equivocada\") y defiende otra: quiere convencer."
-      },
-      "enunciado": "¿Cuál es la intención principal del autor?",
-      "alternativas": [
-        {
-          "t": "Persuadir a los padres de que enseñar su lengua a los hijos no los perjudica.",
-          "correcta": true,
-          "evidencia": [
-            "o3",
-            "o7"
-          ],
-          "explicacion": "El autor responde a un temor de los padres y les da razones para transmitir su lengua."
-        },
-        {
-          "t": "Explicar cómo aprende un niño una segunda lengua en el colegio y en su casa.",
-          "codigo": "RV14",
-          "origen": "o5",
-          "explicacion": "El texto menciona cómo aprende un niño bilingüe, pero lo hace para defender una postura, y esta alternativa la deja fuera."
-        },
-        {
-          "t": "Contar la historia de una familia que migró del campo a la ciudad.",
-          "codigo": "RV13",
-          "origen": "o1",
-          "explicacion": "El texto no sigue a una familia ni cuenta hechos en orden: presenta una situación frecuente para discutirla."
-        },
-        {
-          "t": "Criticar a los padres que migraron del campo a la ciudad y abandonaron sus costumbres.",
-          "codigo": "RV33",
-          "origen": "o3",
-          "explicacion": "El autor dice que el temor de los padres \"se entiende\"; no los critica por migrar ni habla de abandonar costumbres."
-        },
-        {
-          "t": "Informar sobre las lenguas que se hablan en distintos países del mundo.",
-          "codigo": "RV2",
-          "origen": "o4",
-          "explicacion": "El texto menciona el mundo solo como argumento (oración 4); no es un informe sobre lenguas."
-        }
-      ]
-    },
-    {
       "id": "p3",
       "tipo": "referente",
       "unidad": "razonamiento-verbal.cohesion-y-coherencia",
-      "enunciado": "En la oración 6, la expresión LO QUE SABE (en \"aprende a avergonzarse de lo que sabe\") se refiere a",
+      "enunciado": "En la oración 6, ¿a qué se refiere la expresión LO QUE SABE (en \"aprende a avergonzarse de lo que sabe\")?",
       "alternativas": [
         {
-          "t": "a su lengua materna.",
+          "t": "A su lengua materna.",
           "correcta": true,
           "evidencia": [
             "o6"
@@ -177,19 +187,19 @@
           "explicacion": "Lo que el niño ya sabe y la escuela trata como un defecto es su lengua materna, que se nombra antes en la misma oración."
         },
         {
-          "t": "al defecto que hay que borrar.",
+          "t": "Al defecto que hay que borrar.",
           "codigo": "RV27",
           "origen": "o6",
           "explicacion": "Es lo último que se nombra antes de \"lo que sabe\", pero no es lo que el niño sabe: es cómo la escuela ve su lengua."
         },
         {
-          "t": "al castellano que aprende en el colegio.",
+          "t": "Al castellano que aprende en el colegio.",
           "codigo": "RV5",
           "origen": "o5",
           "explicacion": "Repite palabras de la oración 5, pero en la 6 el niño se avergüenza de su lengua materna, no del castellano."
         },
         {
-          "t": "a lo que le enseñan los profesores en clase.",
+          "t": "A lo que le enseñan los profesores en clase.",
           "codigo": "RV7",
           "explicacion": "El texto no dice que el niño se avergüence de lo que aprende en clase; esa lectura va más allá de lo escrito."
         }
@@ -221,9 +231,9 @@
         },
         {
           "t": "un obstáculo para progresar.",
-          "codigo": "RV5",
+          "codigo": "RV10",
           "origen": "o7",
-          "explicacion": "Repite palabras de la misma oración, pero es lo contrario: el autor dice que la lengua \"no es un obstáculo\"."
+          "explicacion": "Pasa por alto el \"no\": la oración 7 dice que la lengua \"no es un obstáculo para progresar\", sino una riqueza."
         }
       ]
     }
@@ -248,6 +258,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 6 de 6. Cambios: código RV33 en \"Criticar…\", afirmaciones sobre bilingüismo suavizadas (\"no se queda a medias\", \"muchos problemas\"), fuente de Cummins (2000) y concordancia de p3 con \"se refiere a\"."
+    "notas": "A ciegas: 6 de 6. Cambios: código RV33 en \"Criticar…\", afirmaciones sobre bilingüismo suavizadas (\"no se queda a medias\", \"muchos problemas\"), fuente de Cummins (2000) y concordancia de p3 con \"se refiere a\". Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Intención antes y sin regalar la tesis; RV10 en «un obstáculo»; enunciado de p3 como pregunta."
   }
 }
