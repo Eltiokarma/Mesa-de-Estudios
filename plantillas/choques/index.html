@@ -528,21 +528,21 @@ const SG = escenario(ESC.guiado), SE = escenario(ESC.elastico);
 const RG = M.choque(ESC.guiado), RE = M.choque(ESC.elastico);
 
 const P1 = { id:'choques-paso2', ok:'c',
-  opts:[['a','La de A no cambia y B gana la suya aparte','M1-p-de-cada-cuerpo','parcial'],
-        ['b','La de A pasa entera a B y A se queda quieto','intercambian-velocidades','hipotesis'],
-        ['c','La de A baja y la de B sube lo mismo',null,''],
-        ['d','La de A baja y la de B sube menos','p-total-baja','hipotesis']],
-  fb:{ c:'¡Bien! B empuja a A hacia atrás y A empuja a B hacia adelante con fuerzas iguales, durante el mismo tiempo. Lo que A pierde de cantidad de movimiento, B lo gana: el total no cambia.',
-       a:'Elegiste la A. Si B gana cantidad de movimiento, alguien tiene que perderla: la fuerza de B sobre A frena a A. Cada carrito por separado cambia; lo que se conserva es el total del sistema. La correcta está marcada.',
-       b:'Elegiste la B. Eso pasaría en un choque con resorte entre carritos de la misma masa. Aquí B tiene la mitad de la masa de A y quedan enganchados: A no se detiene. La correcta está marcada.',
-       d:'Elegiste la D. Las fuerzas entre A y B son iguales y opuestas y duran lo mismo: lo que A pierde, B lo gana entero. El total no baja. La correcta está marcada.' } };
+  opts:[['a','La del 1 no cambia y B gana la suya aparte','M1-p-de-cada-cuerpo','parcial'],
+        ['b','La del 1 pasa entera al 2 y A se queda quieto','intercambian-velocidades','hipotesis'],
+        ['c','La del 1 baja y la del 2 sube lo mismo',null,''],
+        ['d','La del 1 baja y la del 2 sube menos','p-total-baja','hipotesis']],
+  fb:{ c:'¡Bien! B empuja al 1 hacia atrás y A empuja al 2 hacia adelante con fuerzas iguales, durante el mismo tiempo. Lo que A pierde de cantidad de movimiento, B lo gana: el total no cambia.',
+       a:'Elegiste la A. Si B gana cantidad de movimiento, alguien tiene que perderla: la fuerza del 2 sobre el 1 frena al 1. Cada carrito por separado cambia; lo que se conserva es el total del sistema. La correcta está marcada.',
+       b:'Elegiste la B. Eso pasaría en un choque con resorte entre carritos de la misma masa. Aquí B tiene la mitad de la masa del 1 y quedan enganchados: A no se detiene. La correcta está marcada.',
+       d:'Elegiste la D. Las fuerzas entre el 1 y el 2 son iguales y opuestas y duran lo mismo: lo que A pierde, B lo gana entero. El total no baja. La correcta está marcada.' } };
 const P2 = { id:'choques-paso3', ok:'a',
   opts:[['a',`${N(RG.v1f)} m/s`,null,''],
         ['b',`${N(RG.errores.sigueIgual)} m/s`,'M1-sigue-igual','parcial'],
         ['c',`${N(RG.errores.promedioSinMasas)} m/s`,'promedio-sin-masas','hipotesis'],
         ['d',`${fmt(RG.errores.conservaEc, 1)} m/s`,'M5-conserva-ec-plastico','parcial']],
   fb:{ a:`¡Bien! La cantidad de movimiento del sistema es ${N(RG.pAntes)} kg·m/s antes y después. Juntos tienen 3 kg: 12/3 = 4 m/s.`,
-       b:'Elegiste la B. Si A siguiera a 6 m/s arrastrando a B, el total sería 3·6 = 18 kg·m/s: aparecería cantidad de movimiento de la nada. La correcta está marcada.',
+       b:'Elegiste la B. Si A siguiera a 6 m/s arrastrando al 2, el total sería 3·6 = 18 kg·m/s: aparecería cantidad de movimiento de la nada. La correcta está marcada.',
        c:'Elegiste la C. 3 m/s es el promedio de 6 y 0, como si los dos carritos tuvieran la misma masa. A tiene el doble de masa que B y cuenta el doble. La correcta está marcada.',
        d:`Elegiste la D. ${fmt(RG.errores.conservaEc, 1)} m/s sale de conservar la energía cinética (½·3·v'² = 36 J) en vez de la cantidad de movimiento. Con esa velocidad, el total sería 3·${fmt(RG.errores.conservaEc, 1)} ≈ ${fmt(RG.errores.pSiConservaEc, 1)} kg·m/s, más de los 12 que había. La correcta está marcada.` } };
 const P3 = { id:'choques-paso4', ok:'d',
@@ -552,7 +552,7 @@ const P3 = { id:'choques-paso4', ok:'d',
         ['d',`${N(RG.EcDespues)} J`,null,'']],
   fb:{ d:`¡Bien! Ec después = ½·3·4² = ${N(RG.EcDespues)} J. Había ${N(RG.EcAntes)} J: se pierden ${N(RG.EcPerdida)} J en el choque.`,
        a:`Elegiste la A. Con 3 kg a 4 m/s, la energía cinética es ½·3·4² = ${N(RG.EcDespues)} J, no 36 J. Cuando quedan enganchados, parte de la energía cinética se va en deformar el enganche, en calor y en ruido. La correcta está marcada.`,
-       b:`Elegiste la B. ${N(RG.Ec1f)} J es la energía cinética de A solo (½·2·4²). B también se mueve a 4 m/s y tiene ${N(RG.Ec2f)} J. La correcta está marcada.`,
+       b:`Elegiste la B. ${N(RG.Ec1f)} J es la energía cinética del 1 solo (½·2·4²). B también se mueve a 4 m/s y tiene ${N(RG.Ec2f)} J. La correcta está marcada.`,
        c:`Elegiste la C. ${N(RG.EcPerdida)} J es lo que se pierde, no lo que queda: 36 − 24 = 12. La correcta está marcada.` } };
 const P4 = { id:'choques-paso6', ok:'c',
   opts:[['a',`A se queda quieto y B sale a ${N(RE.errores.intercambian2)} m/s`,'intercambian-velocidades','hipotesis'],
@@ -568,21 +568,21 @@ const P4 = { id:'choques-paso6', ok:'c',
    y después de responder (antes/despues). ver = { pDesp, eDesp, vFin, fuerzas, sistema, cm } */
 const steps = [
  { k:'Paso 1', t:'El problema', esc:'guiado', cuando:'inicio', ver:{}, ley:['v','p','E','AB'],
-   body:() => `<p class="problem">El carrito A, de ${V('m','2 kg')}, va a ${V('v','6 m/s')} por un riel sin roce hacia el carrito B, de ${V('m','1 kg')}, que está quieto. Al chocar quedan enganchados. ¿Con qué ${V('v','velocidad')} siguen juntos? ¿Cuánta ${V('E','energía cinética')} se pierde en el choque?</p>
+   body:() => `<p class="problem">El carrito 1, de ${V('m','2 kg')}, va a ${V('v','6 m/s')} por un riel sin roce hacia el carrito 2, de ${V('m','1 kg')}, que está quieto. Al chocar quedan enganchados. ¿Con qué ${V('v','velocidad')} siguen juntos? ¿Cuánta ${V('E','energía cinética')} se pierde en el choque?</p>
      <ul class="map">
        <li><b>${V('p','p')} = m·${V('v','v')}</b><span>La cantidad de movimiento. Tiene sentido, como la velocidad: abajo la ves como una flecha. A: 2·6 = ${V('p','12 kg·m/s')}; B, quieto: ${V('p','0')}.</span></li>
        <li><b>${V('E','Ec')} = ½·m·${V('v','v')}²</b><span>La energía cinética. No tiene sentido: es una barra. A: ½·2·6² = ${V('E','36 J')}; B: ${V('E','0')}.</span></li>
      </ul>
      <p>Las filas de «después» tienen signos de pregunta: las vas a llenar tú. Toca o pasa el puntero sobre un dato para ver dónde está.</p>`,
-   desc:() => 'Carrito A de 2 kilogramos a 6 metros por segundo hacia el carrito B de 1 kilogramo, quieto. Cantidad de movimiento antes: 12 kilogramos metro por segundo. Energía cinética antes: 36 joules. Lo de después todavía no se muestra.' },
+   desc:() => 'Carrito A de 2 kilogramos a 6 metros por segundo hacia el carrito 2 de 1 kilogramo, quieto. Cantidad de movimiento antes: 12 kilogramos metro por segundo. Energía cinética antes: 36 joules. Lo de después todavía no se muestra.' },
  { k:'Paso 2', t:'Antes de ver el choque, predice', esc:'guiado', cuando:'contacto', gate:P1, ver:{}, despues:{ fuerzas:true, sistema:true }, ley:['v','p','E','AB'], leyDespues:['v','F','p','E','AB'],
-   body:() => `<p>En el choque, B empuja a A hacia atrás y A empuja a B hacia adelante. ¿Qué pasa con la ${V('p','cantidad de movimiento')} de los carritos?</p>${opcionesHTML(P1.opts, 'fb')}<div id="res" class="body"></div>`,
+   body:() => `<p>En el choque, B empuja al 1 hacia atrás y A empuja al 2 hacia adelante. ¿Qué pasa con la ${V('p','cantidad de movimiento')} de los carritos?</p>${opcionesHTML(P1.opts, 'fb')}<div id="res" class="body"></div>`,
    exp:() => `<p>Las dos ${V('F','fuerzas')} forman un par de acción y reacción: son iguales, opuestas y duran lo mismo, el tiempo que los carritos están en contacto. Por eso cambian la cantidad de movimiento de cada uno en lo mismo, con signos opuestos:</p>
-     <div class="eqs"><div class="eq">${V('p','Δp')}<sub>A</sub> = −${V('p','Δp')}<sub>B</sub><span class="note">lo que pierde A lo gana B</span></div>
-     <div class="eq">${V('p','p')}<sub>A</sub> + ${V('p','p')}<sub>B</sub> = constante<span class="note">la del sistema A + B, la caja a trazos</span></div></div>
+     <div class="eqs"><div class="eq">${V('p','Δp')}<sub>1</sub> = −${V('p','Δp')}<sub>2</sub><span class="note">lo que pierdel 1 lo gana B</span></div>
+     <div class="eq">${V('p','p')}<sub>1</sub> + ${V('p','p')}<sub>2</sub> = constante<span class="note">la del sistema 1 + 2, la caja a trazos</span></div></div>
      <p>Fuera de la caja nada empuja a lo largo del riel: el peso y la normal son verticales y no hay roce. Con esa condición, la cantidad de movimiento del <b>sistema</b> se conserva. La de cada carrito, no.</p>
      <p class="fuente">Creer que cada cuerpo conserva lo suyo es una idea documentada: en un test con 336 universitarios de Estados Unidos, después del curso, cerca del 39 % eligió una opción que decía que en un choque se conserva la energía cinética de uno de los discos (Singh y Rosengrant, 2003). Las otras dos opciones incorrectas son hipótesis nuestras.</p>`,
-   desc:() => S.pred[P1.id] ? 'Los carritos en contacto. Dos fuerzas iguales y opuestas: la de B sobre A, hacia atrás, y la de A sobre B, hacia adelante. Una caja a trazos marca el sistema A más B.' : 'Los carritos A y B en el instante en que se tocan.' },
+   desc:() => S.pred[P1.id] ? 'Los carritos en contacto. Dos fuerzas iguales y opuestas: la del 2 sobre el 1, hacia atrás, y la del 1 sobre el 2, hacia adelante. Una caja a trazos marca el sistema 1 más 2.' : 'Los carritos A y B en el instante en que se tocan.' },
  { k:'Paso 3', t:'¿Con qué velocidad siguen?', esc:'guiado', cuando:'inicio', cuandoDespues:'final', gate:P2, anima:true, ver:{ sistema:true, vFin:'oculta' }, despues:{ sistema:true, pDesp:true, vFin:true, cm:true },
    ley:['v','p','E','AB'], leyDespues:['v','p','E','AB','cm'],
    body:() => `<p>Quedan enganchados y siguen juntos. ¿Con qué ${V('v','velocidad')} v' se mueven?</p>${opcionesHTML(P2.opts, 'fb')}<div id="res" class="body"></div>`,
@@ -590,23 +590,23 @@ const steps = [
        <div class="eq">${V('p','p')} antes = ${V('m','2')}·${V('v','6')} + ${V('m','1')}·${V('v','0')} = ${V('p','12 kg·m/s')}</div>
        <div class="eq">${V('p','p')} después = (${V('m','2')} + ${V('m','1')})·${V('v',"v'")}</div>
        <div class="eq">12 = 3·${V('v',"v'")} → ${V('v',"v' = 4 m/s")}</div></div>
-     <p>Mira las flechas de abajo: antes, toda la cantidad de movimiento era de A (12). Después, A tiene ${V('p','8')} y B tiene ${V('p','4')}: la suma sigue en ${V('p','12')}. La marca ⊕ es el centro de masa de los dos carritos: avanza siempre a 4 m/s, antes y después del choque.</p>
+     <p>Mira las flechas de abajo: antes, toda la cantidad de movimiento era del 1 (12). Después, A tiene ${V('p','8')} y B tiene ${V('p','4')}: la suma sigue en ${V('p','12')}. La marca ⊕ es el centro de masa de los dos carritos: avanza siempre a 4 m/s, antes y después del choque.</p>
      <p><button type="button" class="btn" id="otra">Ver el choque otra vez</button></p>
      <p class="fuente">Promediar las velocidades sin pesar las masas es una hipótesis nuestra. Resolver con la energía en vez de con la cantidad de movimiento sale de un error documentado (lo verás en el paso 4).</p>`,
-   desc:() => S.pred[P2.id] ? 'Los carritos chocan y siguen juntos a 4 metros por segundo. Cantidad de movimiento después: 8 de A más 4 de B, 12 en total, igual que antes. El centro de masa avanza a velocidad constante.' : 'Carrito A a 6 metros por segundo hacia B, quieto. La velocidad después del choque todavía no se muestra.' },
+   desc:() => S.pred[P2.id] ? 'Los carritos chocan y siguen juntos a 4 metros por segundo. Cantidad de movimiento después: 8 del 1 más 4 del 2, 12 en total, igual que antes. El centro de masa avanza a velocidad constante.' : 'Carrito A a 6 metros por segundo hacia B, quieto. La velocidad después del choque todavía no se muestra.' },
  { k:'Paso 4', t:'¿Y la energía cinética?', esc:'guiado', cuando:'final', gate:P3, ver:{ sistema:true, pDesp:true, vFin:true }, despues:{ sistema:true, pDesp:true, vFin:true, eDesp:true },
    ley:['v','p','E','AB'], leyDespues:['v','p','E','AB','perdida'],
    body:() => `<p>Ya sabes que siguen juntos a ${V('v','4 m/s')}. ¿Cuánta ${V('E','energía cinética')} tiene el sistema después del choque?</p>${opcionesHTML(P3.opts, 'fb')}<div id="res" class="body"></div>`,
    exp:() => `<div class="eqs">
        <div class="eq">${V('E','Ec')} antes = ½·${V('m','2')}·${V('v','6')}² = ${V('E','36 J')}</div>
-       <div class="eq">${V('E','Ec')} después = ½·${V('m','3')}·${V('v','4')}² = ${V('E','24 J')}<span class="note">16 J de A y 8 J de B</span></div>
+       <div class="eq">${V('E','Ec')} después = ½·${V('m','3')}·${V('v','4')}² = ${V('E','24 J')}<span class="note">16 J del 1 y 8 J del 2</span></div>
        <div class="eq">perdida = 36 − 24 = ${V('E','12 J')}<span class="note">un tercio</span></div></div>
      <p>La cantidad de movimiento se conservó (12 = 12) y la energía cinética no: la barra de abajo es más corta y el trozo rayado son los 12 J que se fueron en deformar el enganche, en calor y en ruido. La energía total no desaparece; lo que baja es la cinética.</p>
      <p class="fuente">Creer que la energía cinética se conserva igual que la cantidad de movimiento es una idea documentada: en el mismo test, ante una bomba que explota, cerca del 46 % antes del curso y del 33 % después eligió una opción que decía que la energía cinética se conserva (Singh y Rosengrant, 2003). Las otras dos opciones son hipótesis nuestras.</p>`,
-   desc:() => S.pred[P3.id] ? 'Energía cinética antes: 36 joules. Después: 24 joules, 16 de A y 8 de B. Se perdieron 12 joules.' : 'Los carritos siguen juntos a 4 metros por segundo. La energía cinética después todavía no se muestra.' },
+   desc:() => S.pred[P3.id] ? 'Energía cinética antes: 36 joules. Después: 24 joules, 16 del 1 y 8 del 2. Se perdieron 12 joules.' : 'Los carritos siguen juntos a 4 metros por segundo. La energía cinética después todavía no se muestra.' },
  { k:'Paso 5', t:'El coeficiente de restitución', esc:'guiado', cuando:'final', ver:{ sistema:true, pDesp:true, vFin:true, eDesp:true, cm:true }, ley:['v','p','E','AB','perdida','cm'],
    body:() => `<p>Para saber qué tipo de choque es, se compara la ${V('v','velocidad')} con que se alejan después con la que se acercaban antes:</p>
-     <div class="eqs"><div class="eq">e = ${fr('velocidad de alejamiento', 'velocidad de acercamiento')} = ${fr(V('v',"v'<sub>B</sub>") + ' − ' + V('v',"v'<sub>A</sub>"), V('v','v<sub>A</sub>') + ' − ' + V('v','v<sub>B</sub>'))} = ${fr('4 − 4', '6 − 0')} = 0</div></div>
+     <div class="eqs"><div class="eq">e = ${fr('velocidad de alejamiento', 'velocidad de acercamiento')} = ${fr(V('v',"v'<sub>2</sub>") + ' − ' + V('v',"v'<sub>1</sub>"), V('v','v<sub>1</sub>') + ' − ' + V('v','v<sub>2</sub>'))} = ${fr('4 − 4', '6 − 0')} = 0</div></div>
      <table class="tabla"><thead><tr><th>e</th><th>Choque</th><th>¿Se conserva ${V('p','p')}?</th><th>¿Se conserva ${V('E','Ec')}?</th></tr></thead>
        <tbody><tr><td>1</td><td>elástico: rebotan sin perder</td><td>sí</td><td>sí</td></tr>
        <tr><td>entre 0 y 1</td><td>inelástico</td><td>sí</td><td>no, se pierde una parte</td></tr>
@@ -618,28 +618,28 @@ const steps = [
    ley:['v','p','E','AB'], leyDespues:['v','p','E','AB','cm'],
    body:() => `<p>Ahora es otro par: A, de ${V('m','1 kg')}, va a ${V('v','6 m/s')}, y B, de ${V('m','2 kg')}, está quieto. Entre los dos hay un resorte, así que el choque es elástico (e = 1). ¿Qué pasa después del choque?</p>${opcionesHTML(P4.opts, 'fb')}<div id="res" class="body"></div>`,
    exp:() => `<div class="eqs">
-       <div class="eq">${V('p','p')}: ${V('m','1')}·${V('v','6')} = ${V('m','1')}·${V('v',"v'<sub>A</sub>")} + ${V('m','2')}·${V('v',"v'<sub>B</sub>")}</div>
-       <div class="eq">e = 1: ${V('v',"v'<sub>B</sub>")} − ${V('v',"v'<sub>A</sub>")} = 6 − 0 = 6</div>
-       <div class="eq">→ ${V('v',"v'<sub>A</sub> = −2 m/s")} y ${V('v',"v'<sub>B</sub> = 4 m/s")}</div></div>
-     <p>Las flechas de ${V('p','p')} lo muestran: después, la de A apunta hacia atrás (−2) y la de B hacia adelante (+8); sumadas con su sentido dan 6, lo mismo que antes. Restarlas sin signo no sirve. La ${V('E','Ec')} no tiene sentido: 2 J + 16 J = 18 J, sin pérdida, porque el resorte devuelve todo lo que guarda.</p>
+       <div class="eq">${V('p','p')}: ${V('m','1')}·${V('v','6')} = ${V('m','1')}·${V('v',"v'<sub>1</sub>")} + ${V('m','2')}·${V('v',"v'<sub>2</sub>")}</div>
+       <div class="eq">e = 1: ${V('v',"v'<sub>2</sub>")} − ${V('v',"v'<sub>1</sub>")} = 6 − 0 = 6</div>
+       <div class="eq">→ ${V('v',"v'<sub>1</sub> = −2 m/s")} y ${V('v',"v'<sub>2</sub> = 4 m/s")}</div></div>
+     <p>Las flechas de ${V('p','p')} lo muestran: después, la del 1 apunta hacia atrás (−2) y la del 2 hacia adelante (+8); sumadas con su sentido dan 6, lo mismo que antes. Restarlas sin signo no sirve. La ${V('E','Ec')} no tiene sentido: 2 J + 16 J = 18 J, sin pérdida, porque el resorte devuelve todo lo que guarda.</p>
      <p>Solo con masas iguales intercambian velocidades. Con A más liviano que B, A rebota; con A más pesado, A sigue hacia adelante más lento. Pruébalo en el último paso.</p>
      <p class="fuente">«Intercambian velocidades» con masas distintas y resolverlo como si quedaran pegados son errores que suponemos, sin un estudio con porcentaje.</p>`,
-   desc:() => S.pred[P4.id] ? 'El carrito A de 1 kilogramo rebota a 2 metros por segundo y B de 2 kilogramos sale a 4. Cantidad de movimiento: 6 antes y 6 después. Energía cinética: 18 joules antes y después.' : 'Carrito A de 1 kilogramo a 6 metros por segundo hacia B, de 2 kilogramos, quieto, con un resorte entre ellos. Lo de después todavía no se muestra.' },
+   desc:() => S.pred[P4.id] ? 'El carrito 1 de 1 kilogramo rebota a 2 metros por segundo y B de 2 kilogramos sale a 4. Cantidad de movimiento: 6 antes y 6 después. Energía cinética: 18 joules antes y después.' : 'Carrito A de 1 kilogramo a 6 metros por segundo hacia B, de 2 kilogramos, quieto, con un resorte entre ellos. Lo de después todavía no se muestra.' },
  { k:'Paso 7', t:'La respuesta', esc:'guiado', cuando:'final', ver:{ sistema:true, pDesp:true, vFin:true, eDesp:true, cm:true }, ley:['v','p','E','AB','perdida','cm'],
    body:() => `<p class="answer">Respuesta: siguen juntos a ${V('v','4 m/s')} y se pierden ${V('E','12 J')} de energía cinética (de 36 J a 24 J).</p>
      <p>En todo choque se conserva la ${V('p','cantidad de movimiento')} del sistema, sumada con su sentido. La ${V('E','energía cinética')} solo se conserva si el choque es elástico. Para resolver: primero el sentido positivo y los signos; después, p antes = p después; si falta una ecuación, el coeficiente e.</p>`,
    desc:() => 'Respuesta: siguen juntos a 4 metros por segundo y se pierden 12 joules de energía cinética, de 36 a 24.' },
  { k:'Paso 8', t:'Ahora explora tú', explora:true, ley:['v','p','E','AB','perdida','cm'],
    body:() => `<div class="ctrls">
-       <div class="slider"><label for="e-m1"><span>Masa de A</span><output id="e-m1-o"></output></label><input id="e-m1" type="range" min="0.5" max="5" step="0.5" value="${S.ex.m1}"></div>
-       <div class="slider"><label for="e-v1"><span>Velocidad de A (${V('v','v<sub>A</sub>')})</span><output id="e-v1-o"></output></label><input id="e-v1" class="r-v" type="range" min="-10" max="10" step="0.5" value="${S.ex.v1}"></div>
-       <div class="slider"><label for="e-m2"><span>Masa de B</span><output id="e-m2-o"></output></label><input id="e-m2" type="range" min="0.5" max="5" step="0.5" value="${S.ex.m2}"></div>
-       <div class="slider"><label for="e-v2"><span>Velocidad de B (${V('v','v<sub>B</sub>')})</span><output id="e-v2-o"></output></label><input id="e-v2" class="r-v" type="range" min="-10" max="10" step="0.5" value="${S.ex.v2}"></div>
+       <div class="slider"><label for="e-m1"><span>Masa del 1</span><output id="e-m1-o"></output></label><input id="e-m1" type="range" min="0.5" max="5" step="0.5" value="${S.ex.m1}"></div>
+       <div class="slider"><label for="e-v1"><span>Velocidad del 1 (${V('v','v<sub>1</sub>')})</span><output id="e-v1-o"></output></label><input id="e-v1" class="r-v" type="range" min="-10" max="10" step="0.5" value="${S.ex.v1}"></div>
+       <div class="slider"><label for="e-m2"><span>Masa del 2</span><output id="e-m2-o"></output></label><input id="e-m2" type="range" min="0.5" max="5" step="0.5" value="${S.ex.m2}"></div>
+       <div class="slider"><label for="e-v2"><span>Velocidad del 2 (${V('v','v<sub>2</sub>')})</span><output id="e-v2-o"></output></label><input id="e-v2" class="r-v" type="range" min="-10" max="10" step="0.5" value="${S.ex.v2}"></div>
        <div class="slider"><label for="e-e"><span>Coeficiente de restitución e</span><output id="e-e-o"></output></label><input id="e-e" type="range" min="0" max="1" step="0.1" value="${S.ex.e}"></div>
      </div>
      <p><button type="button" class="btn primary" id="chocar">Chocar</button></p>
      <div id="live" class="body"></div>
-     <p class="hint">También puedes arrastrar la punta de la flecha roja de A (o enfocar el dibujo y usar las flechas del teclado). Prueba masas iguales con e = 1, un A muy pesado contra un B liviano, y dos carritos que van en sentidos opuestos.</p>` },
+     <p class="hint">También puedes arrastrar la punta de la flecha roja del 1 (o enfocar el dibujo y usar las flechas del teclado). Prueba masas iguales con e = 1, un A muy pesado contra un B liviano, y dos carritos que van en sentidos opuestos.</p>` },
 ];
 
 function vistaActual(){
@@ -662,25 +662,25 @@ function draw(){
   const ocultaFin = choco && ver.vFin === 'oculta';
   const vtxt = (v, prima) => `v${prima ? "'" : ''} = ${N(v)} m/s`;
   const carros = [
-    { x:est.x1, m:o.m1, letra:'A', v:est.v1, vTxt: ocultaFin ? "v' = ?" : vtxt(est.v1, choco), vOculta: ocultaFin },
-    { x:est.x2, m:o.m2, letra:'B', v:est.v2, vTxt: ocultaFin ? "v' = ?" : vtxt(est.v2, choco), vOculta: ocultaFin }];
+    { x:est.x1, m:o.m1, letra:'1', v:est.v1, vTxt: ocultaFin ? "v' = ?" : vtxt(est.v1, choco), vOculta: ocultaFin },
+    { x:est.x2, m:o.m2, letra:'2', v:est.v2, vTxt: ocultaFin ? "v' = ?" : vtxt(est.v2, choco), vOculta: ocultaFin }];
   const juntos = choco && r.juntos && !ocultaFin;
   if (juntos) carros[0].vTxt = `v' = ${N(est.v1)} m/s (juntos)`;
   riel(ctx, c, { x:14, y:6, w:W - 28, h:altoRiel }, RIEL, { carros, juntos, kv: clamp(W/60, 5, 9), sistema:ver.sistema, fuerzas:ver.fuerzas,
     cm: ver.cm ? est.xcm : undefined, cmRot: ver.cm ? 'cm' : '' });
   // Filas: p y Ec antes y después
   const fl = [
-    { et:'p antes', tipo:'p', partes:[{ v:r.p1, letra:'A' }, { v:r.p2, letra:'B' }], unidad:'kg·m/s' },
-    { et:'p después', tipo:'p', partes:[{ v:r.p1f, letra:'A' }, { v:r.p2f, letra:'B' }], unidad:'kg·m/s', oculta: !ver.pDesp },
-    { et:'Ec antes', tipo:'E', partes:[{ v:r.Ec1, letra:'A' }, { v:r.Ec2, letra:'B' }], unidad:'J' },
-    { et:'Ec después', tipo:'E', partes:[{ v:r.Ec1f, letra:'A' }, { v:r.Ec2f, letra:'B' }], perdida:r.EcPerdida, unidad:'J', oculta: !ver.eDesp }];
+    { et:'p antes', tipo:'p', partes:[{ v:r.p1, letra:'1' }, { v:r.p2, letra:'2' }], unidad:'kg·m/s' },
+    { et:'p después', tipo:'p', partes:[{ v:r.p1f, letra:'1' }, { v:r.p2f, letra:'2' }], unidad:'kg·m/s', oculta: !ver.pDesp },
+    { et:'Ec antes', tipo:'E', partes:[{ v:r.Ec1, letra:'1' }, { v:r.Ec2, letra:'2' }], unidad:'J' },
+    { et:'Ec después', tipo:'E', partes:[{ v:r.Ec1f, letra:'1' }, { v:r.Ec2f, letra:'2' }], perdida:r.EcPerdida, unidad:'J', oculta: !ver.eDesp }];
   if (!r.chocan){ fl[1].txt = 'no chocan'; fl[3].txt = 'no chocan'; }
   const yF = altoRiel + 30;
   filas(ctx, c, { x:14, y:yF, w:W - 28, h:H - yF - 6 }, fl);
   decir($('desc1'), S.explora ? resumen(r) : steps[S.step].desc());
 }
 function resumen(r){
-  if (!r.chocan) return 'Con esas velocidades, A no alcanza a B: no chocan.';
+  if (!r.chocan) return 'Con esas velocidades, A no alcanza al 2: no chocan.';
   return `Choque ${r.tipo}. Después: A a ${N(r.v1f)} y B a ${N(r.v2f)} metros por segundo. Cantidad de movimiento ${N(r.pAntes)} antes y después. Energía cinética de ${N(r.EcAntes)} a ${N(r.EcDespues)} joules.`;
 }
 function correr(listo){
@@ -700,7 +700,7 @@ function go(n){
   parar();
   const s = steps[n]; S.step = n; S.hl = null; S.explora = !!s.explora; S.cuando = 'inicio';
   cv.tabIndex = S.explora ? 0 : -1;
-  cv.setAttribute('aria-label', S.explora ? 'Riel del explorador: con las flechas del teclado cambias la velocidad de A' : 'Un riel visto de costado con dos carritos y sus flechas de velocidad; debajo, las flechas de cantidad de movimiento y las barras de energía cinética, antes y después del choque');
+  cv.setAttribute('aria-label', S.explora ? 'Riel del explorador: con las flechas del teclado cambias la velocidad del 1' : 'Un riel visto de costado con dos carritos y sus flechas de velocidad; debajo, las flechas de cantidad de movimiento y las barras de energía cinética, antes y después del choque');
   const v = vistaActual(); S.t = tiempoDe(v.cuando, datos(v.esc).sc);
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
@@ -771,16 +771,16 @@ function vivo(){
   $('e-v1-o').textContent = `${N(ex.v1)} m/s`; $('e-v2-o').textContent = `${N(ex.v2)} m/s`; $('e-e-o').textContent = fmt(ex.e, 1);
   if (+$('e-v1').value !== ex.v1) $('e-v1').value = ex.v1;
   const r = M.choque(ex);
-  $('live').innerHTML = !r.chocan ? `<p class="aviso">Con esas velocidades, A no alcanza a B (A tiene que ir más rápido hacia la derecha que B): no chocan.</p>` :
+  $('live').innerHTML = !r.chocan ? `<p class="aviso">Con esas velocidades, A no alcanza al 2 (A tiene que ir más rápido hacia la derecha que B): no chocan.</p>` :
     `<div class="eqs">
-      <div class="eq">${V('v',"v'<sub>A</sub>")} = ${N(r.v1f)} m/s · ${V('v',"v'<sub>B</sub>")} = ${N(r.v2f)} m/s<span class="note">choque ${r.tipo}</span></div>
+      <div class="eq">${V('v',"v'<sub>1</sub>")} = ${N(r.v1f)} m/s · ${V('v',"v'<sub>2</sub>")} = ${N(r.v2f)} m/s<span class="note">choque ${r.tipo}</span></div>
       <div class="eq">${V('p','p')}: ${N(r.pAntes)} → ${N(r.pDespues)} kg·m/s<span class="note">siempre igual</span></div>
       <div class="eq">${V('E','Ec')}: ${N(r.EcAntes)} → ${N(r.EcDespues)} J<span class="note">${r.EcPerdida > 1e-9 ? 'se pierden ' + N(r.EcPerdida) + ' J (' + fmt(100*r.fraccionPerdida, 0) + ' %)' : 'sin pérdida'}</span></div>
       <div class="eq">${V('v','v')}<sub>cm</sub> = ${N(r.vcm)} m/s<span class="note">el centro de masa no cambia de velocidad</span></div>
     </div>`;
   draw();
 }
-// Arrastre de la punta de la flecha de A (solo cerca de la punta: el resto del dibujo deja desplazar la página).
+// Arrastre de la punta de la flecha del 1 (solo cerca de la punta: el resto del dibujo deja desplazar la página).
 function puntaA(){
   const { W } = L;
   const altoRiel = clamp(L.H*0.44, 118, 190), B = { x:14, w:W - 28 }, esc = B.w/(RIEL[1] - RIEL[0]);
