@@ -1,0 +1,15 @@
+{
+  "id": "tablas-graficos",
+  "titulo": "El gráfico que no miente: tablas, gráficos y suficiencia de datos",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.tablas-graficos-y-suficiencia"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
