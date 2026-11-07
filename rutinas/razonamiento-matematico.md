@@ -63,3 +63,65 @@ Sesión paralela a la conversación principal, en la rama `rutina/razonamiento-m
 - `docs/diseno.md`: la tabla de colores de arriba.
 - `docs/pendientes.md` (fila ra1): «Hecha `maximos-minimos` (perímetro fijo, pared, reflejo en el río, precio que maximiza el ingreso y colores mínimos de un mapa; 22 casos verificados aparte)».
 - `CLAUDE.md`, historia: «Máximos y mínimos (7 nov 2026, rutina de razonamiento matemático): `plantillas/maximos-minimos/` (el cordel que encierra: perímetro fijo y suma fija, corral contra la pared, recorrido mínimo con reflejo, precio que maximiza el ingreso y menor número de colores de un mapa; 22 casos verificados aparte).»
+
+## 7 nov 2026 · La bodega en gráficos (`plantillas/tablas-graficos/`)
+
+**Qué hice.** Unidad `razonamiento-matematico.tablas-graficos-y-suficiencia`. Título neutro (regla nueva del brief: no adelanta el eje truncado).
+
+- **`motor.js`** (UMD, `MotorGraficos`, sin DOM; cabecera hasta la línea 121): barras con eje que no empieza en 0 (razón real contra dibujada), crecimientos absoluto y porcentual, sectores (grados ↔ porcentaje ↔ cantidad), pictograma (área con el doble de alto y ancho), campeonato (partidos de n equipos en una o dos ruedas, empates desde los puntos, tabla desde resultados, revisión y `deducirTabla` que prueba los 3^m resultados) y `suficiencia`, que enumera las soluciones con I, con II y con ambas y da la clave A–E con `porClave` (qué error lleva a cada alternativa).
+- **`casos.json`:** 21 casos. **`motor.test.js`:** 41 pruebas (sectores suman 360°, tablas al azar coherentes, puntos = 3·partidos − empates, `deducirTabla` recupera una fila borrada, la clave de suficiencia no cambia al reordenar condiciones y coincide con un conteo aparte, ningún error coincide con la respuesta).
+- **`papel.json`:** 10 problemas propios (barras, gaseosas, circular, latas, campeonato de Totoras, Uros, Suris y Kantutas, suficiencia de edades y de una cifra…).
+- **Paso a paso** (8 pasos, 6 predicciones que bloquean; todo hipótesis nuestra):
+  1. Rosita 50 y El Sol 40 con el eje desde 35: 1,25 veces (3 por las alturas, 2 por lo que sobra, 0,8 invertida);
+  2. explorar el inicio del eje;
+  3. gaseosas: el tramo de mayor crecimiento porcentual es febrero–marzo, 25 % (el más empinado, la base final, el punto más alto);
+  4. sector de 72° con 200 alumnos: 40 (144, 72, 20);
+  5. explorar el circular;
+  6. campeonato de 4 con 7, 4, 4 y 1 puntos: 2 empates (4, 1, «faltan resultados»);
+  7. suficiencia, la edad de Ana: la I sola (C «juntas por si acaso»);
+  8. suficiencia, cuadernos y lapiceros: juntas (A «parece bastar», la I deja 1 o 4).
+- **¿Qué pasa si…?** (5, con bloqueo): latas del afiche al doble (4 veces el área), talleres 40→50 y 80→90, el 25 % del 40 % en el circular (36°), cinco colegios en dos ruedas (20) y la edad de Luis (cada una por separado).
+
+**Pruebas.** `npm test`: 2410, pasan 2407; fallan solo los 2 del catálogo. Playwright a 1366×768 y 390×844, claro y oscuro, con y sin movimiento reducido: sin errores ni desbordes, lienzo arriba al responder en el celular, el dedo lejos de la manija desplaza la página.
+
+**Subagentes.**
+
+- **Verificador independiente** (solo la cabecera): 167 campos con fracciones, suficiencia con condiciones escritas por él y el dominio enumerado, `deducirTabla` enumerando 729 y 59 049 resultados: 0 discrepancias; papel sin errores de número. Pidió arreglar dos textos del papel (p10: quedarse con el primer valor lleva a A, no a C; p2: el «empate» no salía). Los datos nuevos del paso 7 (edad de 3 a 30) y de p8 los recalculé yo a mano: coinciden.
+- **Revisor de contenido** (nada grave). Se aplicó todo:
+  - AR3 y AR1 pasan de parcial a hipótesis (el informe pone esos errores concretos en «Lo que no tiene respaldo»);
+  - misma forma en las opciones del paso 1 (la correcta era la única que leía el eje), del paso 6 y de los exp. 2 y 3;
+  - la lectura «lee el eje» del paso 1 soplaba el error: ahora «Mes: octubre»;
+  - explicación del 5 × 5 en el exp. 4 corregida;
+  - p8 del papel repetía la tabla del paso 6: datos nuevos;
+  - rótulos encimados en los exp. 2 y 4, redacción literal de las cinco alternativas de suficiencia, edad de 3 a 30 años en el paso 7 y retoques.
+
+**Colores** (claro / oscuro):
+
+| Escena | Variable | Claro | Oscuro |
+| --- | --- | --- | --- |
+| Barras | Rosita | #1f5fbf | #7cb0ff |
+| Barras | El Sol | #a05200 | #f0a04a |
+| Barras | y₀ (inicio del eje) | #a10fbf | #cf6bfa |
+| Líneas | b (base) | #0f766e | #5ed9c8 |
+| Líneas | Δ | #7d6a00 | #e3c84a |
+| Líneas | Δ% | #c0364a | #f17384 |
+| Circular | θ | #3328c4 | #9f9bff |
+| Circular | p | #466d14 | #a3d65e |
+| Circular | c | #77032c | #fdb4ce |
+| Campeonato | Pts | #1c5f3a | #5fe0a8 |
+| Campeonato | E | #bf2280 | #fb56b9 |
+| Suficiencia | información I | #065e74 | #8fd6ec |
+| Suficiencia | información II | #9b1e08 | #f56b3d |
+
+- ΔE00 mínimo dentro de cada escena: 27,1 en claro y 26,2 en oscuro (el revisor lo confirmó). Los pares cercanos (13,6 y 10,8) nunca salen juntos.
+- Contraste ≥ 4,54:1 sobre papel, tarjeta y chip.
+- Los sectores de deportes van en pastel con su nombre (objetos, no variables).
+
+**Pendiente.** No hay promedio ponderado (AR15); podría entrar como tabla de frecuencias en otra plantilla.
+
+**Pedidos para la integración.**
+
+- Catálogo: `"tablas-graficos"` en `razonamiento-matematico.tablas-graficos-y-suficiencia` (con `investigacion` en el informe de aritmética y razonamiento); `npm run catalogo`; `VERSION` de `app/sw.js`; rebalanceo del banco de RM si hace falta.
+- `docs/diseno.md`: la tabla de colores de arriba.
+- `docs/pendientes.md` (ra1): «Hecha `tablas-graficos` (barras con eje truncado, crecimiento porcentual, circular, tabla de campeonato y suficiencia de datos; 21 casos verificados aparte)».
+- `CLAUDE.md`, historia: «Tablas y gráficos (7 nov 2026, rutina de razonamiento matemático): `plantillas/tablas-graficos/` (la bodega en gráficos: eje que no empieza en cero, variación absoluta contra porcentual, sectores, tabla de un campeonato deducida por el motor y suficiencia de datos con las soluciones enumeradas; 21 casos verificados aparte).»
