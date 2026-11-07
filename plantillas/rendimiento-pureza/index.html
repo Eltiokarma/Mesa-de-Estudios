@@ -301,6 +301,8 @@ function flecha(ctx, x1, y, x2, col){
         lupa 'Fe2O3': casillas de 10 % de la masa con una unidad Fe₂O₃ dibujada (Fe y O con la paleta común).
      { tipo:'fichas', grupos:[{ x, etq:[piezas], bajo:[piezas], n, tapa }], unir (0 a 1) }   equivalentes
    Nada regala la respuesta antes de responder: lo que la delataría queda tapado con «?». */
+// Lugares a lo ancho: un montón por lugar (la muestra sin separar ocupa el lugar de la impureza y del puro) y media por flecha.
+const lugares = P => P.items.filter(s => s.k !== 'mezcla').length + (P.items.some(s => s.k === 'mezcla') && !P.items.some(s => s.k === 'imp') ? 2 : 0) + (P.flechas ? P.flechas.length*0.5 : 0);
 const ESCENAS = [];
 function crearEscena(cv, idDesc, modoId, idLey){
   const E = { vista:{ paneles:[] }, hl:null, modoId, anims:[], compacto:false };
@@ -316,7 +318,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
       let h;
       if (P.tipo === 'montones'){
         // Alto justo para el montón más grande que cabe a lo ancho (sin hueco encima).
-        const ancho = w/Math.max(3, P.items.length + (P.flechas ? P.flechas.length*0.5 : 0)) - 8, gas = P.items.some(s => s.gas);
+        const ancho = w/Math.max(3, lugares(P)) - 8, gas = P.items.some(s => s.gas);
         const justo = ancho*(gas ? 0.8 : 0.6) + 58 + (P.recipiente ? 26 + 12 : 0);
         h = comp ? Math.max(120, 232 - y) : Math.min(clamp(w*0.34, 150, 200) + (P.recipiente ? 26 : 0), Math.max(130, justo));
       }
@@ -367,7 +369,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
   }
   function panelMontones(c, P){
     const top = P.y + (P.recipiente ? 16 : 4), yb = P.y + P.h - 40 - (P.recipiente ? 26 : 0), alto = yb - top - 4;
-    const ancho = W/Math.max(3, P.items.length + (P.flechas ? P.flechas.length*0.5 : 0)) - 8;
+    const ancho = W/Math.max(3, lugares(P)) - 8;
     // Escala común: el montón de masa mmax llena el ancho de su lugar o el alto, lo que llegue antes.
     const wMax = Math.min(ancho, alto/0.55), k = wMax*wMax/P.mmax;
     const wDe = m => Math.sqrt(Math.max(0, m)*k), rDe = m => Math.sqrt(Math.max(0, m)*k*0.55*Math.PI/4/Math.PI);
@@ -554,17 +556,18 @@ function vistaMuestra(o){
   const r = MR.reparto({ impureza:d.impureza, pura:d.pura, teorico:d.teorico, real:d.real, reacciona }, o.f === undefined ? 1 : o.f);
   const s = r.separa, av = r.avance;
   const otro = o.otro ? { f:o.otro, masa:MR.masaAMasa(o.reac, d.pura*reacciona, R.reactivo, o.otro) } : null;
-  if (otro) Object.assign(xs, { pur:0.37, otro:0.66, prod:0.88 });
+  if (otro) Object.assign(xs, { imp:0.11, pur:0.36, otro:0.63, prod:0.87 });
   const completo = d.noFormado < 1e-9, vTxt = gas && o.V !== false ? (o.tapaV ? [[' · ', 'muted', 700], ['? L', 'muted', 800]] : [[' · ', 'muted', 700], [`${g(d.nProducto*MR.VM*av)} L en CN`, 'vol', 800]]) : [];
   const prodEtq = tapaR ? [[[nomP + ': ?', 'ink', 800]], [[o.tapaTxt || '', 'muted', 700]]]
+    : completo && vTxt.length ? [[[`${g(r.formado)} g de ${nomP}`, 'real', 800]], vTxt.slice(1)]
     : [[[`${g(r.formado)} g de ${nomP}`, 'real', 800], ...vTxt], completo ? [['rendimiento 100 %', 'muted', 700]] : [[`teórico: `, 'muted', 700], [`${g(d.teorico)} g`, 'teo', 800]]];
-  const anchoE = otro ? 0.26 : 0.38;
+  const anchoE = otro ? 0.22 : 0.38;
   const items = [
     { x:xs.mez, k:'mezcla', masa:o.muestra, alfa:1 - s },
     { x:xs.mez + (xs.imp - xs.mez)*s, k:'imp', masa:d.impureza, alfa:s, etqMax:0.24, etq:[[[`${g(d.impureza)} g`, 'imp', 800]], [['impureza', 'imp', 700]]] },
     { x:xs.mez + (xs.pur - xs.mez)*s, k:'pur', masa:r.puroQueda, alfa:s, etqMax: otro ? 0.26 : 0.3,
-      etq:[[[`${g(r.puroQueda, 1)} g de ${nomR}`, 'pur', 800]], [[av > 0.5 ? 'sin reaccionar' : 'puro', 'pur', 700]]] },
-    ...(otro ? [{ x:xs.otro, k:'otro', masa:otro.masa*av, alfa:Math.min(1, av*3), etqAlfa:Math.min(1, av*3), etqMax:0.24, etq:[[[`${g(otro.masa*av, 1)} g de ${fx(otro.f)}`, 'ink', 800]], [['otro producto', 'muted', 700]]] }] : []),
+      etq:[[[`${g(r.puroQueda, 1)} g de ${nomR}`, 'pur', 800]], [[av > 0.5 && reacciona > 0 ? 'sin reaccionar' : 'puro', 'pur', 700]]] },
+    ...(otro ? [{ x:xs.otro, k:'otro', masa:otro.masa*av, alfa:Math.min(1, av*3), etqAlfa:Math.min(1, av*3), etqMax:0.22, etq:[[[`${g(otro.masa*av, 1)} g de ${fx(otro.f)}`, 'ink', 800]], [['otro producto', 'muted', 700]]] }] : []),
     tapaR ? { x:xs.prod, tapa:true, etq:prodEtq, etqAlfa:1, etqMax:anchoE }
       : { x:xs.prod, k:'real', masa:r.formado, teo: completo ? 0 : d.teorico, teoAlfa:r.teoricoVisible, gas, relleno: gas ? 0.3 : 0.85, etq:prodEtq, etqAlfa:1, etqMax:anchoE },
   ];
@@ -765,7 +768,7 @@ function explorar(){
       ${gas ? `<div class="fila"><span>${tapaV ? `Volumen en CN: ? (${DESCUBRE}, experimento 3)` : tapaM ? 'Volumen en CN: ?' : `Volumen en CN: ${Vo_(g(d.V, 2) + ' L')} (22,4 L por mol)`}</span></div>` : ''}
       <div class="fila"><span>${R.exceso ? `El ${fx(R.exceso)} está en exceso: no limita.` : 'Un solo reactivo: se descompone con el calor.'}</span></div>`;
     const mmax = Math.max(400, 400*MR.masaAMasa(X.reac, 1, R.reactivo, R.producto));
-    E.vista = { ...vistaMuestra({ reac:X.reac, muestra:X.m, p:X.p, eta:X.eta, f:1, mmax, tapaReal:tapaM, tapaTxt:'responde primero el experimento 2', tapaV }),
+    E.vista = { ...vistaMuestra({ reac:X.reac, muestra:X.m, p:X.p, eta:X.eta, f:1, mmax, tapaReal:tapaM, tapaTxt:'primero, el experimento 2', tapaV }),
       pie: X.reac === 'hierro' ? 'Abajo, la muestra en casillas de 10 % de su masa; en la lupa, unidades Fe₂O₃.' : 'Abajo, la muestra en casillas de 10 % de su masa. Los gases van en globos (misma escala de masa).',
       desc:'' };
     E.dibujar();
