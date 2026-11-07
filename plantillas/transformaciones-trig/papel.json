@@ -1,0 +1,137 @@
+{
+  "titulo": "Dos flechas en la circunferencia: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de transformar, escribe aparte la semisuma (A + B)/2 y la semidiferencia (A − B)/2. Tres controles antes de marcar: la fórmula lleva un 2 delante; cos A − cos B lleva un signo menos delante; y sen A + sen B no es sen(A + B).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Calcula E = cos 165° + cos 75°.",
+      "respuesta": "E = −√2/2.",
+      "pasos": [
+        "Semisuma: (165° + 75°)/2 = 120°. Semidiferencia: (165° − 75°)/2 = 45°.",
+        "cos A + cos B = 2 cos((A + B)/2) cos((A − B)/2) = 2 cos 120° cos 45°.",
+        "cos 120° = −1/2 (segundo cuadrante) y cos 45° = √2/2: E = 2 · (−1/2) · (√2/2) = −√2/2.",
+        "Control: cos 165° ≈ −0,966 y cos 75° ≈ 0,259; su suma ≈ −0,707. No es cos 240° = −1/2: la suma de cosenos no es el coseno de la suma."
+      ],
+      "verificar": [ { "fn": "sumaAProducto", "args": [{ "fn": "cos", "op": "+", "A": 165, "B": 75 }], "espera": { "texto": "−√2/2", "expresion": "2 cos 120° cos 45°", "errores.lineal.texto": "−1/2" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Calcula F = cos 15° − cos 75°. ¿Es positivo o negativo?",
+      "respuesta": "F = √2/2, positivo.",
+      "pasos": [
+        "cos A − cos B = −2 sen((A + B)/2) sen((A − B)/2), con el signo menos delante.",
+        "Con A = 15° y B = 75°: semisuma 45° y semidiferencia −30°. F = −2 sen 45° sen(−30°).",
+        "sen(−30°) = −1/2, así que F = −2 · (√2/2) · (−1/2) = √2/2: los dos signos menos se cancelan.",
+        "Control: el ángulo menor tiene el coseno mayor (cos 15° ≈ 0,966 y cos 75° ≈ 0,259), así que la resta tiene que ser positiva."
+      ],
+      "verificar": [ { "fn": "sumaAProducto", "args": [{ "fn": "cos", "op": "−", "A": 15, "B": 75 }], "espera": { "texto": "√2/2", "expresion": "−2 sen 45° sen(−30°)", "errores.signo.texto": "−√2/2" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Calcula G = sen 105° · cos 15° sin usar tablas.",
+      "respuesta": "G = (2 + √3)/4.",
+      "pasos": [
+        "La fórmula de producto a suma lleva un 2: 2 sen x cos y = sen(x + y) + sen(x − y).",
+        "Con x = 105° e y = 15°: 2 sen 105° cos 15° = sen 120° + sen 90° = √3/2 + 1 = (2 + √3)/2.",
+        "G es la mitad de eso: G = (2 + √3)/4.",
+        "Control: sen 105° ≈ 0,966 y cos 15° ≈ 0,966; su producto ≈ 0,933, y (2 + √3)/4 ≈ 0,933."
+      ],
+      "verificar": [ { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 105, "y": 15 }], "espera": { "texto": "(2 + √3)/2", "expresion": "sen 120° + sen 90°" } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Simplifica H = (sen 9x + sen 3x) / (cos 9x + cos 3x).",
+      "respuesta": "H = tan 6x.",
+      "pasos": [
+        "Arriba: sen 9x + sen 3x = 2 sen 6x cos 3x (semisuma 6x, semidiferencia 3x).",
+        "Abajo: cos 9x + cos 3x = 2 cos 6x cos 3x.",
+        "Se cancelan el 2 y cos 3x: H = sen 6x / cos 6x = tan 6x.",
+        "Control: no es tan 12x (eso sale si no se divide entre 2) ni tan 3x (eso sale si se cambia la semisuma por la semidiferencia)."
+      ],
+      "verificar": [ { "fn": "cociente", "args": [{ "p": 9, "q": 3 }], "espera": { "texto": "tan 6x", "errores.sinDividir.texto": "tan 12x", "errores.intercambia.texto": "tan 3x" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Simplifica J = (sen 8x − sen 2x) / (cos 8x + cos 2x).",
+      "respuesta": "J = tan 3x.",
+      "pasos": [
+        "Arriba: sen A − sen B = 2 cos((A + B)/2) sen((A − B)/2) = 2 cos 5x sen 3x.",
+        "Abajo: cos 8x + cos 2x = 2 cos 5x cos 3x.",
+        "Se cancelan el 2 y cos 5x: J = sen 3x / cos 3x = tan 3x.",
+        "Control con x = 15°: (sen 120° − sen 30°)/(cos 120° + cos 30°) = ((√3 − 1)/2)/((√3 − 1)/2) = 1 = tan 45°."
+      ],
+      "verificar": [ { "fn": "cociente", "args": [{ "p": 8, "q": 2, "num": "−", "den": "+" }], "espera": { "texto": "tan 3x" } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Simplifica K = (cos x − cos 5x) / (sen 5x + sen x).",
+      "respuesta": "K = tan 2x.",
+      "pasos": [
+        "Arriba: cos x − cos 5x = −2 sen 3x sen(−2x) = 2 sen 3x sen 2x (sen(−2x) = −sen 2x y los signos menos se cancelan).",
+        "Abajo: sen 5x + sen x = 2 sen 3x cos 2x.",
+        "Se cancelan el 2 y sen 3x: K = sen 2x / cos 2x = tan 2x.",
+        "Control: si se olvida el signo menos de la fórmula, sale −tan 2x; con x = 10°, K = (cos 10° − cos 50°)/(sen 50° + sen 10°) ≈ 0,342/0,940 ≈ 0,364, que es positivo, como tan 20°."
+      ],
+      "verificar": [ { "fn": "simplificar", "args": [{ "arriba": { "fn": "cos", "op": "−", "p": 1, "q": 5 }, "abajo": { "fn": "sen", "op": "+", "p": 5, "q": 1 }, "x": 10 }], "espera": { "texto": "tan 2x", "comun": "sen 3x", "en.original": 0.36397023426620234, "en.simplificada": 0.36397023426620234 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Calcula L = cos 10° + cos 110° + cos 130°.",
+      "respuesta": "L = 0.",
+      "pasos": [
+        "Se agrupan los dos ángulos grandes: cos 110° + cos 130° = 2 cos 120° cos(−10°).",
+        "cos 120° = −1/2 y cos(−10°) = cos 10°: el par vale 2 · (−1/2) · cos 10° = −cos 10°.",
+        "L = cos 10° − cos 10° = 0.",
+        "Control con la circunferencia: los ángulos 10°, 130° y 250° están separados por 120° (sus flechas forman un triángulo equilátero y suman cero), y cos 250° = cos 110°."
+      ],
+      "verificar": [ { "fn": "agrupar", "args": [{ "solo": 10, "par": [110, 130] }], "espera": { "texto": "0", "kPar.texto": "−1", "errores.sinDos.texto": "1/2" } },
+                     { "fn": "serie", "args": [{ "fn": "cos", "a": 10, "r": 120, "n": 3 }], "espera": { "texto": "0" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Expresa 4 sen 3x cos x como una suma de senos y calcula su valor para x = 15°.",
+      "respuesta": "4 sen 3x cos x = 2 sen 4x + 2 sen 2x; con x = 15° vale 1 + √3.",
+      "pasos": [
+        "Se separa el 2: 4 sen 3x cos x = 2 · (2 sen 3x cos x), y 2 sen 3x cos x = sen(3x + x) + sen(3x − x) = sen 4x + sen 2x.",
+        "Entonces 4 sen 3x cos x = 2 sen 4x + 2 sen 2x.",
+        "Con x = 15°: 2 sen 60° + 2 sen 30° = 1 + √3.",
+        "Control: 4 sen 45° cos 15° ≈ 4 · 0,707 · 0,966 ≈ 2,732, y 1 + √3 ≈ 2,732."
+      ],
+      "verificar": [ { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 45, "y": 15, "veces": 2 }], "espera": { "texto": "1 + √3", "expresion": "2 sen 60° + 2 sen 30°" } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Calcula N = cos 15° + cos 45° + cos 75°.",
+      "respuesta": "N = (√6 + √2)/2.",
+      "pasos": [
+        "Se agrupan los extremos: cos 15° + cos 75° = 2 cos 45° cos(−30°) = 2 · (√2/2) · (√3/2) = √6/2.",
+        "Se suma el del centro: N = √6/2 + √2/2 = (√6 + √2)/2.",
+        "Con la fórmula de la serie (senos y cosenos de ángulos en progresión aritmética; aquí tres ángulos que avanzan de 30° en 30°): N = [sen 45° / sen 15°] · cos 45°, que da lo mismo.",
+        "Control: no es 3 cos 45° ≈ 2,12 (tres veces el del centro); N ≈ 0,966 + 0,707 + 0,259 ≈ 1,932."
+      ],
+      "verificar": [ { "fn": "serie", "args": [{ "fn": "cos", "a": 15, "r": 30, "n": 3 }], "espera": { "texto": "(√6 + √2)/2", "errores.nVeces.texto": "3√2/2" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Dos sonidos se describen con y = sen 12t e y = sen 8t (t en grados). Su suma es una onda rápida dentro de una envolvente. ¿Cuántas veces se anula la envolvente entre t = 0° y t = 360°, y en qué valores de t?",
+      "respuesta": "4 veces: en t = 45°, 135°, 225° y 315°.",
+      "pasos": [
+        "sen 12t + sen 8t = 2 sen 10t cos 2t: la onda rápida es sen 10t y la envolvente es 2 cos 2t.",
+        "La envolvente se anula cuando 2t = 90°, 270°, 450° o 630° (todos los que caben con 2t ≤ 720°).",
+        "Eso da t = 45°, 135°, 225° y 315°: 4 veces.",
+        "Control: no son 20: esos son los ceros de cos 10t, que sale de usar la semisuma (la de la onda rápida) en lugar de la semidiferencia."
+      ],
+      "verificar": [ { "fn": "pulsos", "args": [{ "p": 12, "q": 8, "n": 2 }], "espera": { "valor": 4, "ceros": [45, 135, 225, 315], "errores.intercambia.texto": "20" } } ]
+    }
+  ]
+}

@@ -3193,7 +3193,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "transformaciones-trig"
+     ]
     },
     {
      "id": "trigonometria.funciones-trigonometricas",
@@ -5750,6 +5752,23 @@
     "/plantillas/traductor-enunciados/index.html",
     "/plantillas/traductor-enunciados/motor.js",
     "/plantillas/traductor-enunciados/papel.json"
+   ]
+  },
+  "transformaciones-trig": {
+   "id": "transformaciones-trig",
+   "titulo": "Dos flechas en la circunferencia: transformaciones trigonométricas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.transformaciones-trigonometricas"
+   ],
+   "url": "/plantillas/transformaciones-trig/index.html",
+   "papel": "/plantillas/transformaciones-trig/papel.json",
+   "archivos": [
+    "/plantillas/transformaciones-trig/index.html",
+    "/plantillas/transformaciones-trig/motor.js",
+    "/plantillas/transformaciones-trig/papel.json"
    ]
   },
   "traslados-sucesos": {
