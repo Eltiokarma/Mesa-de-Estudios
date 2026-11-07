@@ -3,8 +3,8 @@
   "unidades": "Masas molares en g/mol; masas en g; índice de saponificación en mg de KOH por g; índice de yodo en g de I₂ por 100 g; energía en kcal.",
   "constantes": "Masas atómicas de academia: H 1, C 12, N 14, O 16, Na 23, S 32, K 39, I 127 (H₂O 18, KOH 56, NaOH 40, I₂ 254). Factores de Atwater: 4 kcal/g carbohidratos y proteínas, 9 kcal/g grasas; las vitaminas no se cuentan.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (productos.0.gramos es el primer producto; errores.x es lo que da el error típico x). Si fn es masa, el resultado es un número y se compara con espera.valor. Los textos, booleanos y listas se comparan exactos; los números, con la tolerancia. Las piezas se unen en cadena lineal: n piezas, n − 1 uniones, un H₂O por unión; el triglicérido es glicerol + 3 ácidos grasos (3 uniones).",
-  "verificacion": "",
-  "tolerancia": 1e-9,
+  "verificacion": "Verificado por un subagente independiente el 7 nov 2026. Antes de calcular no leyó el motor (solo su cabecera) ni casos.json. Usó Python con fracciones exactas y las masas de academia, y armó cada molécula átomo por átomo desde su estructura: hexosa, esqueleto del aminoácido más R, CₙH₂ₙ₋₂ₐO₂ y glicerol, restando un H₂O por unión. Las secuencias y el plegado los sacó por enumeración. Los 30 casos y sus variantes coinciden; las únicas diferencias son de forma ('a'/'b' contra nombres, y coordenadas centradas en el plegado).",
+  "tolerancia": 1e-09,
   "casos": [
     {
       "nombre": "Glucosa C₆H₁₂O₆: 6·12 + 12·1 + 6·16 = 180",

@@ -408,7 +408,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
     if (p <= 0) for (const l of re.antes) molecula(ctx, c, l, x0, y0, k);
     else if (p >= 1){
       for (const l of re.despues){
-        const gas = F.abierto && l.s !== 'C';
+        const gas = F.abierto && l.s !== 'C' && l.s !== 'O2'; // el O₂ que sobra es aire: se queda
         if (gas && s >= 1) continue;
         molecula(ctx, c, gas ? Object.assign({}, l, { y: l.y - s*(F.H + 2) }) : l, x0, y0, k, gas ? 1 - s*0.9 : 1);
       }
@@ -797,7 +797,7 @@ const lectCielo = (cie, ver) => [[['UV en el suelo: ', 'ink', 700], [ver ? '×' 
 function vCielo(r, p){
   const a = r ? (p === undefined ? 1 : p) : 0;
   return { paneles:['cielo'], cielo:{ agujero:a, co2:420, flechas:!!r, lect: r ? lectCielo(a >= 1 ? C1 : C0, true) : [[['con agujero, UV: ', 'ink', 700], ['?', 'UV', 800]], [['con agujero, T: ', 'ink', 700], ['?', 'T', 800]]] },
-    pie: r ? 'Violeta: el ultravioleta que el ozono frena y que pasa por el agujero. Rojizo: el calor que emite la Tierra; el CO₂ devuelve una parte. Las flechas son un esquema.' : `Hoy, sin agujero: UV ×1,0 y una temperatura media de ${gc(C0.T)} en el modelo.`,
+    pie: r ? 'Flechas que bajan: el ultravioleta, que el ozono frena y que pasa por el agujero. Flechas que suben: el calor que emite la Tierra; el CO₂ devuelve una parte. Es un esquema.' : `Hoy, sin agujero: UV ×1,0 y una temperatura media de ${gc(C0.T)} en el modelo.`,
     vars: r ? ['UV', 'IR', 'T'] : ['UV', 'T'],
     desc: r ? `Con el agujero, el ultravioleta en el suelo sube a ${fmt(C1.uv, 1)} veces; la temperatura media sigue en ${fmt(C1.T, 1)} grados.` : 'El cielo: la capa de ozono arriba, el CO2 en el medio y el suelo abajo. Lo que pasa con un agujero está tapado.' };
 }
