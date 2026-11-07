@@ -1287,7 +1287,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "numeros-reales"
+     ]
     },
     {
      "id": "algebra.exponentes-y-productos-notables",
@@ -5231,6 +5233,23 @@
     "/plantillas/numeracion/index.html",
     "/plantillas/numeracion/motor.js",
     "/plantillas/numeracion/papel.json"
+   ]
+  },
+  "numeros-reales": {
+   "id": "numeros-reales",
+   "titulo": "La recta en trozos: números reales",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.numeros-reales"
+   ],
+   "url": "/plantillas/numeros-reales/index.html",
+   "papel": "/plantillas/numeros-reales/papel.json",
+   "archivos": [
+    "/plantillas/numeros-reales/index.html",
+    "/plantillas/numeros-reales/motor.js",
+    "/plantillas/numeros-reales/papel.json"
    ]
   },
   "ondas": {
