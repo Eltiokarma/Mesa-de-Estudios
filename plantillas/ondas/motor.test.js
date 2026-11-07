@@ -42,7 +42,17 @@ function comprobar(fn, args, espera, que, llamar) {
 }
 
 // 1. casos.json
-for (const c of datos.casos) test(c.nombre, () => comprobar(c.fn, c.args, c.espera, c.nombre));
+for (const c of datos.casos) test(c.nombre, () => {
+  comprobar(c.fn, c.args, c.espera, c.nombre);
+  for (const x of c.tambien || []) comprobar(x.fn || c.fn, x.args, x.espera, c.nombre + ' (también)');
+});
+test('ON2: el error «λ se queda» nunca coincide con la λ correcta cuando f cambia', () => {
+  for (const [fAntes, f] of [[50, 100], [100, 200], [200, 100], [30, 75]]) {
+    const o = motor.onda({ f, fAntes, v: 100 }), m = motor.mano({ A: 0.01, f, fAntes, v: 100 });
+    assert.ok(Math.abs(o.errores.lambdaFija - o.lambda) > 1e-9); assert.ok(Math.abs(o.errores.vConFrecuencia - o.v) > 1e-9);
+    assert.ok(Math.abs(m.errores.lambdaFija - m.lambda) > 1e-9);
+  }
+});
 
 // 2. Propiedades
 const segunda = (f, z, h) => (f(z + h) - 2 * f(z) + f(z - h)) / (h * h);

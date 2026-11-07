@@ -1,6 +1,6 @@
 {
   "titulo": "Ondas y sonido: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, pregúntate qué pone el medio y qué pone la fuente: la rapidez de la onda la pone el medio (en una cuerda, v = √(T/μ), con T la tensión y μ la masa por metro); la frecuencia la pone lo que agita, y no cambia al pasar a otro medio. Con eso, λ = v/f. En una cuerda fija en los dos extremos caben medias longitudes de onda: f = n·v/(2L), con n el número de vientres. Para el sonido, β = 10·log(I/I0) con I0 = 10⁻¹² W/m²; toma log 2 = 0,3. El periodo se escribe 1/f (aquí T es la tensión).",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, pregúntate qué pone el medio y qué pone la fuente: la rapidez de la onda la pone el medio (en una cuerda, v = √(T/μ), con T la tensión y μ la masa por metro); la frecuencia la pone lo que agita. Con eso, λ = v/f. En una cuerda fija en los dos extremos caben medias longitudes de onda: f = n·v/(2L), con n el número de vientres. Para el sonido, β = 10·log(I/I0) con I0 = 10⁻¹² W/m²; toma log 2 = 0,3. El periodo se escribe 1/f (aquí T es la tensión).",
   "problemas": [
     {
       "id": "p1",
@@ -59,7 +59,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Una cuerda de charango de 0,6 m da su sonido más grave con 150 Hz. ¿Con qué rapidez viajan las ondas en ella? Si el músico la tensa hasta que la tensión sea cuatro veces mayor, ¿qué frecuencia da ahora?",
+      "enunciado": "Una cuerda de guitarra de 0,6 m da su sonido más grave con 150 Hz. ¿Con qué rapidez viajan las ondas en ella? Si el músico la tensa hasta que la tensión sea cuatro veces mayor, ¿qué frecuencia da ahora?",
       "respuesta": "v = 180 m/s. Con cuatro veces la tensión, 300 Hz.",
       "pasos": [
         "En el modo más bajo, λ = 2L = 1,2 m. v = λ·f = 1,2 · 150 = 180 m/s.",

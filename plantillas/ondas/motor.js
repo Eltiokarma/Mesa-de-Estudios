@@ -57,6 +57,15 @@
  *
  * Cada resultado trae 'errores': los números que salen de las ideas erróneas del informe
  * (docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md, ON1 a ON10 y los errores de cálculo que suponemos).
+ * Cómo se calculan los que no salen de una fórmula a la vista:
+ *   onda y mano: la frecuencia pasa de fAntes (por defecto f/2) a f. errores.vConFrecuencia = v·f/fAntes (ON2: «v crece
+ *     con f» como si λ se quedara) y errores.lambdaFija = v/fAntes (la λ de antes, que el error cree que no cambia).
+ *   carrera: errores.manoRapida = errores.manoAlta = la mitad del tiempo de llegada de la base (ON1 y ON3: «agitar más
+ *     rápido o más alto lo hace llegar antes»; la mitad es el número que suponemos para ese error).
+ *   dosPulsos: errores.seAnulan = 0 (la cuerda queda plana para siempre); errores.salenMasChicos = la mitad de cada amplitud;
+ *     errores.rebotan intercambia las amplitudes (cada pulso vuelve por donde vino).
+ *   longitudinal: errores.subeYBaja = |A|, el mismo desplazamiento máximo pero de arriba abajo (perpendicular a la
+ *     dirección del sonido); errores.seVa(x0, t) = x0 + v·t (la capa viajaría con la onda).
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -92,12 +101,13 @@
     else if (o.lambda !== undefined) { lambda = pos(o.lambda, 'λ'); v = rapidez(o); f = v / lambda; }
     else throw new Error('falta f o λ');
     const k = PI2 / lambda, w = PI2 * f;
+    const fAntes = o.fAntes === undefined ? f / 2 : pos(o.fAntes, 'fAntes');
     return { A, f, lambda, v, k, w, phi, periodo: 1 / f, uMax: Math.abs(A) * w,
       y: (x, t) => A * Math.sin(k * x - w * t + phi),
       u: (x, t) => -A * w * Math.cos(k * x - w * t + phi),
       errores: {
-        // ON2: v = f·λ leído con λ fija: al doblar f «se dobla v».
-        vConFrecuencia: v * 2, lambdaFija: lambda,
+        // ON2: v = f·λ leído con λ fija: al pasar de fAntes a f, «v crece con f» y λ se queda en la de antes.
+        vConFrecuencia: v * f / fAntes, lambdaFija: v / fAntes,
         // λ = v·f (despejar mal).
         lambdaPorProducto: v * f,
         // Confundir la rapidez del punto que sube y baja con la de la onda.
@@ -119,13 +129,14 @@
   function mano(o) {
     const A = num(o.A, 'A'), f = pos(o.f, 'f'), v = rapidez(o), w = PI2 * f, k = w / v;
     const h = t => (t < 0 ? 0 : -A * Math.sin(w * t));
+    const fAntes = o.fAntes === undefined ? f / 2 : pos(o.fAntes, 'fAntes');
     return { A, f, v, lambda: v / f, k, w, periodo: 1 / f, uMax: Math.abs(A) * w,
       h,
       y: (x, t) => h(t - x / v),
       u: (x, t) => (t - x / v < 0 ? 0 : -A * w * Math.cos(w * (t - x / v))),
       frente: t => Math.max(0, v * t),
       llegada: d => pos(d, 'd') / v,
-      errores: { vConFrecuencia: 2 * v, lambdaFija: v / f } };
+      errores: { vConFrecuencia: v * f / fAntes, lambdaFija: v / fAntes } };
   }
 
   function pulso(o) {
