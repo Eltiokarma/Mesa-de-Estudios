@@ -1,0 +1,266 @@
+{
+  "id": "t042",
+  "version": 1,
+  "titulo": "Más luz en los parques",
+  "tema": "Ciudad · seguridad y alumbrado público (datos inventados)",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "discontinuo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Hace un año, casi nadie quería cruzar de noche el parque Los Pinos, en un distrito ficticio de la ciudad."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "En enero de 2026, la municipalidad cambió sus viejos faroles por luces nuevas, igual que en el parque Las Retamas."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Hoy los vecinos vuelven a pasear por ahí después de las ocho, y las denuncias de robo en Los Pinos bajaron a la mitad."
+      },
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Las cifras hablan solas: la luz espanta a los ladrones."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Por eso, la municipalidad debería iluminar todos los parques del distrito antes de fin de año, empezando por los que todavía tienen faroles viejos."
+      }
+    ]
+  ],
+  "figuras": [
+    {
+      "id": "f1",
+      "tipo": "tabla",
+      "despues": 1,
+      "titulo": "Robos denunciados de enero a junio en cuatro parques del distrito",
+      "columnas": [
+        "Parque",
+        "Luces nuevas en 2026",
+        "2025",
+        "2026"
+      ],
+      "filas": [
+        {
+          "id": "f1a",
+          "celdas": [
+            "Los Pinos",
+            "Sí",
+            "24",
+            "12"
+          ]
+        },
+        {
+          "id": "f1b",
+          "celdas": [
+            "Las Retamas",
+            "Sí",
+            "18",
+            "15"
+          ]
+        },
+        {
+          "id": "f1c",
+          "celdas": [
+            "La Alameda",
+            "No",
+            "20",
+            "14"
+          ]
+        },
+        {
+          "id": "f1d",
+          "celdas": [
+            "Las Palmeras",
+            "No",
+            "10",
+            "11"
+          ]
+        }
+      ],
+      "nota": "Datos inventados para el ejercicio. En 2026, el serenazgo empezó además a patrullar de noche Los Pinos y La Alameda; los otros dos parques no tuvieron patrullajes."
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "Si se junta lo que dice el autor con la tabla y su nota, ¿qué se puede afirmar sobre la idea de que «la luz espanta a los ladrones»?",
+      "alternativas": [
+        {
+          "t": "La tabla la apoya solo en parte: los robos también bajaron en un parque sin luces nuevas y, en Los Pinos, hubo además patrullajes.",
+          "correcta": true,
+          "evidencia": [
+            "f1b",
+            "f1c",
+            "f1"
+          ],
+          "explicacion": "En los dos parques con luces nuevas bajaron los robos, lo que va a favor del autor. Pero también bajaron en La Alameda, que no tuvo luces nuevas (de 20 a 14), y Los Pinos tuvo además patrullajes. La tabla no basta para probar que fue la luz."
+        },
+        {
+          "t": "La tabla la prueba: en Los Pinos, las luces nuevas hicieron que los robos denunciados bajaran a la mitad en un solo año, de 24 a 12.",
+          "codigo": "RV47",
+          "origen": "f1a",
+          "explicacion": "En Los Pinos hubo a la vez luces nuevas y patrullajes del serenazgo (nota). La tabla muestra que los robos bajaron junto con esos cambios, no cuál de ellos los hizo bajar."
+        },
+        {
+          "t": "La tabla la prueba: en todos los parques con luces nuevas, los robos bajaron a la mitad.",
+          "codigo": "RV11",
+          "origen": "f1b",
+          "explicacion": "Solo en Los Pinos bajaron a la mitad. En Las Retamas, el otro parque con luces nuevas, pasaron de 18 a 15: bajaron muy poco."
+        },
+        {
+          "t": "La tabla la confirma, porque, como escribe el autor, las cifras hablan solas.",
+          "codigo": "RV48",
+          "origen": "o4",
+          "explicacion": "Que el autor diga que las cifras hablan solas no las hace decir lo que él quiere. Hay que mirar la tabla, y la tabla tiene datos que no encajan con su idea."
+        },
+        {
+          "t": "La tabla la contradice: los robos subieron en los dos parques con luces nuevas.",
+          "codigo": "RV45",
+          "origen": "f1d",
+          "explicacion": "El único parque donde subieron los robos es Las Palmeras (de 10 a 11), que no tuvo luces nuevas. En Los Pinos y Las Retamas bajaron."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto y la tabla.",
+        "sonda": "En el parque Las Palmeras hubo menos robos denunciados en 2026 que en 2025.",
+        "clase": "lo-contradice",
+        "codigos": {
+          "lo-dice": "RV45",
+          "se-deduce": "RV7",
+          "no-se-sabe": null
+        },
+        "explicacion": "La fila de Las Palmeras dice 10 robos en 2025 y 11 en 2026: subieron. La afirmación dice lo contrario.",
+        "explicaciones": {
+          "lo-dice": "Revisa la fila de Las Palmeras: 10 en 2025 y 11 en 2026. Los robos bajaron en los otros tres parques, no en este.",
+          "se-deduce": "Que los robos bajaran en tres parques no permite concluir que bajaron en el cuarto; la fila de Las Palmeras muestra que subieron.",
+          "no-se-sabe": "Sí se sabe: la tabla da las dos cifras de Las Palmeras, y la de 2026 (11) es mayor que la de 2025 (10)."
+        }
+      },
+      "enunciado": "Es incompatible con la tabla y su nota afirmar que",
+      "alternativas": [
+        {
+          "t": "en La Alameda, los robos bajaron gracias a las luces nuevas de 2026.",
+          "correcta": true,
+          "evidencia": [
+            "f1c"
+          ],
+          "explicacion": "La Alameda no recibió luces nuevas (dice \"No\" en su fila). Sus robos bajaron, pero no pudo ser por unas luces que no tuvo."
+        },
+        {
+          "t": "Los Pinos fue el único parque que tuvo a la vez luces nuevas y patrullajes.",
+          "codigo": "RV10",
+          "origen": "f1a",
+          "explicacion": "Es verdad, aunque diga \"único\": Las Retamas tuvo luces sin patrullaje y La Alameda, patrullaje sin luces. Solo Los Pinos tuvo las dos cosas."
+        },
+        {
+          "t": "en Las Retamas se denunciaron menos robos en 2026 que en el año anterior.",
+          "codigo": "RV45",
+          "origen": "f1b",
+          "explicacion": "Es verdad: en Las Retamas pasaron de 18 a 15. Si se lee la fila de Las Palmeras, parece falsa."
+        },
+        {
+          "t": "los vecinos de Las Palmeras también le han pedido a la municipalidad luces nuevas para su parque.",
+          "codigo": "RV36",
+          "explicacion": "Ni el texto ni la tabla dicen qué piden esos vecinos. Que no se mencione no lo vuelve incompatible."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "¿En qué parque se puede ver qué pasó con los robos cuando hubo luces nuevas, pero no patrullajes?",
+      "alternativas": [
+        {
+          "t": "En Las Retamas, donde bajaron de 18 a 15.",
+          "correcta": true,
+          "evidencia": [
+            "f1b",
+            "f1"
+          ],
+          "explicacion": "Las Retamas tuvo luces nuevas (su fila) y, según la nota, no tuvo patrullajes. Es el único caso de luz sin serenazgo, y ahí los robos bajaron poco."
+        },
+        {
+          "t": "En Los Pinos, donde bajaron a la mitad.",
+          "codigo": "RV45",
+          "origen": "f1a",
+          "explicacion": "Los Pinos tiene «Sí» en la columna de luces, pero la nota dice que también tuvo patrullajes: no se cruzó la columna de luces con la nota. Ahí no se puede separar el efecto de la luz del del serenazgo."
+        },
+        {
+          "t": "En La Alameda, donde bajaron de 20 a 14.",
+          "codigo": "RV10",
+          "origen": "f1c",
+          "explicacion": "La fila de La Alameda dice «No» en la columna de luces nuevas. Si se pasa por alto ese «No», parece el caso buscado, pero es el caso al revés: tuvo patrullajes y no luces."
+        },
+        {
+          "t": "En ninguno, porque la tabla no dice qué parques tuvieron patrullajes.",
+          "codigo": "RV34",
+          "explicacion": "Las columnas no lo dicen, pero la nota de la tabla sí: patrullaron Los Pinos y La Alameda. La nota también es parte de la figura."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "Si el próximo año el serenazgo dejara de patrullar Los Pinos y allí los robos volvieran a subir, aunque las luces nuevas siguieran prendidas, eso indicaría que",
+      "alternativas": [
+        {
+          "t": "en ese parque, las luces solas no bastaban para mantener bajos los robos.",
+          "correcta": true,
+          "evidencia": [
+            "f1a",
+            "f1"
+          ],
+          "explicacion": "Si se quita el patrullaje, se quedan las luces y los robos suben, la luz por sí sola no los mantuvo bajos. Sería una razón más para dudar de que la luz explicara toda la caída."
+        },
+        {
+          "t": "la luz espanta a los ladrones, como afirma el autor del texto.",
+          "codigo": "RV12",
+          "origen": "o4",
+          "explicacion": "Repite lo que el texto ya dice sin tomar en cuenta la nueva situación: con las mismas luces, los robos habrían vuelto a subir."
+        },
+        {
+          "t": "los patrullajes son lo único que reduce los robos en cualquier parque.",
+          "codigo": "RV11",
+          "explicacion": "Un solo parque no permite hablar de \"lo único\" ni de \"cualquier parque\". Además, en Las Retamas los robos bajaron un poco sin patrullajes."
+        },
+        {
+          "t": "las luces nuevas atraen a los ladrones en lugar de alejarlos de los parques.",
+          "codigo": "RV7",
+          "explicacion": "Que los robos suban sin patrullaje no muestra que la luz atraiga ladrones: solo que no basta. Va más allá de lo que el caso permite."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El distrito (sin nombre), sus parques, el autor y todas las cifras de la tabla son inventados.",
+      "fuente": "Inventado para el ejercicio; no hay datos del mundo que verificar."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en todos los ítems de este texto (17 de 18 en los cuatro textos). Cambios: el distrito ya no se nombra y El Olivar pasa a Las Retamas (evitar lugares reales); correcta de p1 más completa (menciona los patrullajes); en p3, Los Pinos pasa a RV45 y La Alameda a RV10 (pasar por alto el «No» de su fila); previo de p2 con no-se-sabe en null."
+  }
+}

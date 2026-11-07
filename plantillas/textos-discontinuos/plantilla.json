@@ -1,0 +1,13 @@
+{
+  "id": "textos-discontinuos",
+  "titulo": "Tablas, gráficos e infografías",
+  "formato": "lectura",
+  "unidades": [
+    "razonamiento-verbal.textos-discontinuos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "banco": "../../contenido/razonamiento-verbal/indice-textos-discontinuos.json",
+  "pruebas": "../../contenido/razonamiento-verbal/banco.test.js",
+  "papel": null
+}

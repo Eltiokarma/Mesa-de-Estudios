@@ -140,7 +140,7 @@
       "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [1, 9, 15]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["textos-discontinuos"],
       "investigacion": null
     },
     {

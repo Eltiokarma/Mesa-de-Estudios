@@ -4082,7 +4082,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "textos-discontinuos"
+     ]
     },
     {
      "id": "razonamiento-verbal.inferencias",
@@ -5744,6 +5746,30 @@
     "/plantillas/termodinamica/index.html",
     "/plantillas/termodinamica/motor.js",
     "/plantillas/termodinamica/papel.json"
+   ]
+  },
+  "textos-discontinuos": {
+   "id": "textos-discontinuos",
+   "titulo": "Tablas, gráficos e infografías",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.textos-discontinuos"
+   ],
+   "url": "#/lectura/textos-discontinuos",
+   "banco": "/contenido/razonamiento-verbal/indice-textos-discontinuos.json",
+   "papel": null,
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-textos-discontinuos.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t039.json",
+    "/contenido/razonamiento-verbal/textos/t040.json",
+    "/contenido/razonamiento-verbal/textos/t041.json",
+    "/contenido/razonamiento-verbal/textos/t042.json"
    ]
   },
   "tipologia-textual": {
