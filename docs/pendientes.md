@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 3975 pruebas.
+Deben pasar 4046 pruebas.
 
 ```bash
 npm run dev
@@ -51,7 +51,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito`, `poligonos`, `solidos`, `geometria-analitica` y `segmentos-angulos` | Hecha también `congruencia`. Faltan simetría, geometría del espacio y razonamiento con figuras (sesión matematica-b) |
+| ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito`, `poligonos`, `solidos`, `geometria-analitica` y `segmentos-angulos` | Hechas también `congruencia` y `simetria` (7 nov; el espejo en la cuadrícula: simetría axial con espejo arrastrable, P′ = 2H − P, central, ejes de figuras y letras, dos reflexiones como traslación o giro, planos del cubo y prismas y el simétrico en el espacio; 22 casos verificados aparte). Faltan geometría del espacio y razonamiento con figuras (sesión matematica-b) |
 | ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig`, `caso-ambiguo` e `identidades-trig` | Hecha también `funciones-trig-inversas` (7 nov). `geometria-analitica` cubre también la recta en el plano (sin baricentro con coordenadas). Faltan transformaciones, cónicas y polares (sesión matematica-a) |
 | ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización), `sucesiones`, `exponenciales-logaritmos` y `polinomios` (Ruffini, resto, raíces racionales) | Lógica y conjuntos con `conjuntos` y `logica` (7 nov). Hechas `programacion-lineal` y `numeros-reales` (7 nov). Faltan matrices, complejos y binomio de Newton |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |

@@ -2622,7 +2622,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "simetria"
+     ]
     },
     {
      "id": "geometria.areas-poligonales",
@@ -5587,6 +5589,23 @@
     "/plantillas/segmentos-angulos/index.html",
     "/plantillas/segmentos-angulos/motor.js",
     "/plantillas/segmentos-angulos/papel.json"
+   ]
+  },
+  "simetria": {
+   "id": "simetria",
+   "titulo": "El espejo en la cuadrícula: simetría",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.simetria"
+   ],
+   "url": "/plantillas/simetria/index.html",
+   "papel": "/plantillas/simetria/papel.json",
+   "archivos": [
+    "/plantillas/simetria/index.html",
+    "/plantillas/simetria/motor.js",
+    "/plantillas/simetria/papel.json"
    ]
   },
   "solidos": {

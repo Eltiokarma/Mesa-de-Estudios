@@ -427,3 +427,80 @@ Desde esta plantilla uso los encargos oficiales de `docs/metodo/`. El verificado
 ## Cierre de la lista (7 nov 2026)
 
 Las cinco plantillas pedidas están hechas, verificadas, revisadas y subidas: sólidos, geometría analítica, interés, relojes y calendarios, y congruencia. La conversación principal pidió seguir con simetría, geometría del espacio y razonamiento con figuras. Espero la confirmación de Gerson antes de empezarlas.
+
+## 7 nov 2026 · El espejo en la cuadrícula (`plantillas/simetria/`)
+
+Segunda lista. Gerson confirmó que siga con simetría, geometría del espacio y razonamiento con figuras, que propuso la conversación principal.
+
+**Qué hice.**
+
+- **`motor.js`** (`MotorSimetria`, UMD; la cabecera describe los segmentos de cada letra y de la F):
+  - reflejo en una recta (P′ = 2H − P) y el pliegue animado;
+  - simetría central, giros y el sentido de un triángulo;
+  - dos reflexiones seguidas: dan una traslación de 2d o un giro de 2θ;
+  - ejes y centro por fuerza bruta: cuadriláteros, triángulos, polígono regular de n lados, circunferencia y letras;
+  - planos de simetría de poliedros por fuerza bruta: cubo 9, caja 3, prisma cuadrado 5, prismas regulares de 3 y 6 lados (4 y 7), tetraedro 6 y pirámide 4;
+  - simétrico de un punto respecto de un plano.
+- **`casos.json`:** 22 casos con sus «tambien».
+- **`motor.test.js`:** 43 pruebas.
+- **`papel.json`:** 10 problemas propios.
+- **`index.html`, paso a paso** (8 pasos, 7 predicciones):
+  1. la letra F frente al espejo (simetría axial);
+  2. mover el espejo;
+  3. P(5; 1) respecto de y = x + 2;
+  4. simetría central;
+  5. los ejes del rectángulo;
+  6. el cuadrado girado 45°;
+  7. dos espejos paralelos;
+  8. los 9 planos del cubo.
+- **`index.html`, «¿qué pasa si…?»** (5 experimentos): espejos a 40°, el romboide, la caja de 4 × 3 × 2, un punto y un plano, y el heptágono.
+- **Respaldo:** todo es hipótesis. El informe de geometría deja la simetría fuera, y la escena lo dice.
+
+**Pruebas.** `npm test`: 4059 en total, 4057 pasan y fallan solo las 2 del catálogo, como se esperaba. `pasada-celular.py` no dice QUEDA. Playwright revisó 1366 y 390, en claro y en oscuro, con y sin movimiento reducido: sin errores ni desbordes.
+
+**Subagentes.**
+
+- **Verificador independiente** (no leyó el motor). Usó proyección y matriz de reflexión con fracciones, siguió puntos de prueba por las dos reflexiones y buscó ejes y planos por fuerza bruta propia con Householder.
+  - **Primera pasada:** 22 de 22 casos y 10 de 10 de papel. Dos campos no se podían recalcular porque dependían de dibujos internos del motor. También avisó que la X en caja cuadrada tendría 4 ejes, no 2.
+  - **Segunda pasada:** con la cabecera completa y los casos de borde, coinciden los 22 casos.
+- **Revisor de contenido.** Apliqué todo:
+  - **Grave:** el paso 7 tenía mal un número de su retroalimentación.
+  - **Medio:**
+    - GE9 pasó de parcial a hipótesis: el informe no lo respalda para contar ejes.
+    - Ajusté opciones que no tenían la misma forma.
+    - Cambié la vista del cubo: dos de los 9 planos salían de canto.
+    - Ahora se usan los nombres de academia, simetría axial y central.
+    - El color O se confundía con el de L₂.
+    - La bandera y la mano repetían `arreglos-giros`. Ahora el paso 1 usa una letra F, y el experimento de la mano se cambió por el simétrico de un punto respecto de un plano.
+  - **Bajo:**
+    - la caja tenía el distractor 12; ahora es 5, «como un prisma cuadrado»;
+    - unifiqué las unidades;
+    - cada distractor de «¿qué pasa si…?» tiene ahora su propia retroalimentación.
+
+**Colores** (claro / oscuro):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| Figura | #1f5fbf | #7cb0ff |
+| Imagen | #a10fbf | #cf6bfa |
+| Espejo, ejes y plano | #a05200 | #f0a04a |
+| H y d | #0f766e | #5ed9c8 |
+| Centro O | #1b7530 | #6fdc8c |
+| L₂ | #5f6f00 | #c8dc3c |
+| Imagen final y el movimiento | #77032c | #ff8fa3 |
+
+- **ΔE00 entre los que salen juntos:** mínimo 25,9.
+- **Pares cercanos que nunca salen juntos:** O y H.
+- **Contraste:** AA también sobre el chip, mínimo 4,63.
+
+**Pendiente.**
+
+- Temas que faltan: la recta simétrica de otra recta, la circunferencia simétrica, las funciones pares e impares y el área del triángulo PP′Q.
+- No hay informe de ideas erróneas de simetría: los errores se confirman con los datos del colegio.
+
+**Pedidos para la integración.**
+
+1. En `catalogo/cursos/geometria.json`, unidad `geometria.simetria`: `"plantillas": ["simetria"]`. Si se quiere, `"investigacion": "docs/investigacion/geometria-ideas-erroneas.md"`. Después, `npm run catalogo`.
+2. En `docs/diseno.md`, los colores de arriba.
+3. Para `docs/pendientes.md` y CLAUDE.md: «El espejo en la cuadrícula (7 nov 2026): `plantillas/simetria/` (simetría axial con espejo arrastrable, P′ = 2H − P, simetría central, ejes de figuras y letras, dos reflexiones como traslación o giro, planos del cubo y de prismas, y el simétrico en el espacio; 22 casos verificados aparte; 10 de papel)».
+4. En `fuentes/por-conseguir.md`: estudios de simetría (Küchemann 1981, CSMS).
