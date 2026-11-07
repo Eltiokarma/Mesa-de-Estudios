@@ -5,7 +5,8 @@
 // 2. Coherencia: K de vuelta desde el equilibrio, Kp y Kc ida y vuelta, invertir y escalar.
 // 3. Las partículas: en equilibrio las dos reacciones siguen y van a la par (EQ2 a EQ4); al agregar A solo sube la
 //    directa en el instante (EQ6); el catalizador no mueve las cantidades (EQ12); comprimir 2 X ⇌ Y corre hacia Y
-//    y A ⇌ B no se corre (EQ11); calentar baja K y las dos rapideces suben (EQ8 y EQ9).
+//    y A ⇌ B no se corre (EQ11); calentar baja K y las dos rapideces suben (EQ8 y EQ9); un gas que no reacciona no
+//    mueve la caja rígida y, con el émbolo libre, la agranda y la corre hacia X (EQ14); los errores de Δn en Kp.
 // 4. Errores de entrada.
 // 5. Cada problema de papel.json coincide con el motor.
 
@@ -139,6 +140,44 @@ test('la caja calcula su equilibrio con el mismo motor de cálculo', () => {
   cerca(e.A, 4, 'A'); cerca(e.B, 16, 'B');
 });
 
+test('EQ14: gas que no reacciona en la caja; rígida no se corre, con émbolo libre crece y se corre hacia X (12 X y 6 Y en 3 L)', () => {
+  const r = correr(motor.caja({ tipo: 'A2B', nA: 8, nB: 8, semilla: 4 }), 3);
+  r.inerte(30); cerca(r.V, 1, 'rígida: el volumen no cambia'); cerca(r.Q(), 1 / 8, 'Q sigue igual a K'); correr(r, 12);
+  assert.deepEqual(r.cuenta(), { X: 8, Y: 8 }); assert.equal(r.parts.filter(p => p.tipo === 'I').length, 30);
+  const c = correr(motor.caja({ tipo: 'A2B', nA: 8, nB: 8, semilla: 4 }), 3);
+  c.presionFija(true); c.inerte(30);
+  cerca(c.V, 46 / 16, 'el volumen crece en el acto'); cerca(c.Q(), 23 / 64, 'Q al instante'); assert.equal(motor.sentido(c.Q(), c.K()), 'inversa');
+  correr(c, 15);
+  assert.deepEqual(c.cuenta(), { X: 12, Y: 6 }); cerca(c.V, 3, 'volumen final', 1e-6); cerca(c.Q(), 1 / 8, 'Q = K', 1e-6);
+  const e = c.equilibrio(); cerca(e.X, 12, 'equilibrio de la caja a presión fija'); cerca(e.Y, 6, 'Y');
+  cerca(c.gasPorLitro(), 16, 'la presión total no cambió', 1e-6); cerca(r.gasPorLitro(), 46, 'en la rígida subió 46/16 veces');
+  for (const p of c.parts) assert.ok(p.x >= 0 && p.x <= 1 && p.y >= 0 && p.y <= 1);
+});
+test('gas que no reacciona: a presión fija con Δn = 0 no se corre; la caja con émbolo libre tampoco', () => {
+  const c = correr(motor.caja({ tipo: 'AB', nA: 4, nB: 16, semilla: 4 }), 2); c.presionFija(true); c.inerte(20); correr(c, 10);
+  assert.deepEqual(c.cuenta(), { A: 4, B: 16 }); cerca(c.V, 2, 'el volumen se duplica', 1e-6);
+});
+test('inerte: a presión fija coincide con equilibrioP (Kc y moles por litro en el lugar de Kp y P), y el resultado cumple Q = K', () => {
+  const ec = 'N2(g) + 3 H2(g) = 2 NH3(g)', base = motor.equilibrio(ec, { moles: { N2: 1, H2: 3 }, V: 2, K: 0.5 });
+  const r = motor.inerte(ec, { moles: base.moles, V: 2, K: 0.5 }, 3, 'P');
+  assert.equal(r.sentido, 'inversa'); assert.equal(r.errores.comoComprimir, 'directa');
+  cerca(motor.cociente(ec, r.final.conc), 0.5, 'Q = K al final');
+  const nt = Object.values(r.final.moles).reduce((a, b) => a + b, 0) + 3, nt0 = Object.values(base.moles).reduce((a, b) => a + b, 0);
+  cerca(r.final.V, nt / (nt0 / 2), 'el volumen sigue a los moles de gas');
+  const v = motor.inerte(ec, { moles: base.moles, V: 2, K: 0.5 }, 3, 'V');
+  assert.equal(v.sentido, 'equilibrio'); assert.equal(v.errores.otraCondicion, 'inversa');
+  for (const k of Object.keys(base.moles)) cerca(v.final.moles[k], base.moles[k], k);
+});
+test('presiones parciales de la caja: 8 X y 8 Y en 1 L a 500 K dan 328 atm cada una y pY/pX² = Kp = 1/328', () => {
+  const c = motor.caja({ tipo: 'A2B', nA: 8, nB: 8, T: 500 }), p = c.presiones();
+  cerca(p.X, 328, 'pX'); cerca(p.Y, 328, 'pY'); cerca(motor.cociente('2 X(g) = Y(g)', p), motor.kp('2 X(g) = Y(g)', c.K(), 500).valor, 'Kp');
+});
+test('kp: los errores de Δn dan valores distintos del correcto cuando Δn ≠ 0', () => {
+  const r = motor.kp('2 X(g) = Y(g)', 1 / 8, 500);
+  for (const [k, x] of Object.entries(r.errores)) if (k !== 'soloProductos') assert.ok(Math.abs(x - r.valor) > 1e-6, k);
+  cerca(r.errores.signo, r.dividido, 'el signo al revés es lo mismo que dividir');
+});
+
 // 4. Errores de entrada
 test('errores de entrada', () => {
   assert.throws(() => motor.leer('A + B'), /=/);
@@ -148,6 +187,9 @@ test('errores de entrada', () => {
   assert.throws(() => motor.kp('A(g) = B(g)', -1, 300), /mayor que cero/);
   assert.throws(() => motor.caja({ tipo: 'ZZ' }), /desconocida/);
   assert.throws(() => motor.caja({ tipo: 'AB', nA: 1 }).agregar('Q', 1), /desconocida/);
+  assert.throws(() => motor.inerte('A(g) = B(g)', { moles: { A: 1, B: 4 }, V: 1, K: 4 }, 2, 'T'), /condición/);
+  assert.throws(() => motor.inerte('A(g) = B(g)', { moles: { A: 1, B: 4 }, V: 1, K: 4 }, -2, 'P'), /negativo/);
+  assert.throws(() => motor.inerte('A(g) = B(g)', { moles: {}, V: 1, K: 4 }, 2, 'P'), /no hay gas/);
 });
 
 // 5. Problemas de papel (regla 6)

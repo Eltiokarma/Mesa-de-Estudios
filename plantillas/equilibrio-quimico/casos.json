@@ -436,6 +436,141 @@
         "moles.I2": 0.2,
         "grado": 0.2
       }
+    },
+    {
+      "nombre": "Gas que no reacciona a volumen fijo: a 2 X ⇌ Y (Kc = 1/8) con 8 X y 8 Y en 1 L se meten 30 mol; la presión total sube 46/16 = 2,875 veces y Q sigue en 1/8: no se corre",
+      "fn": "inerte",
+      "args": [
+        "2 X(g) = Y(g)",
+        {
+          "moles": {
+            "X": 8,
+            "Y": 8
+          },
+          "V": 1,
+          "K": 0.125
+        },
+        30,
+        "V"
+      ],
+      "espera": {
+        "instante.Q": 0.125,
+        "instante.V": 1,
+        "instante.factorP": 2.875,
+        "sentido": "equilibrio",
+        "final.moles.X": 8,
+        "final.moles.Y": 8,
+        "errores.comoComprimir": "directa",
+        "errores.otraCondicion": "inversa"
+      }
+    },
+    {
+      "nombre": "Gas que no reacciona a presión total fija: los mismos 30 mol; el volumen pasa a 46/16 L, Q = 23/64 > 1/8 y se corre hacia X; quedan 12 X y 6 Y en 3 L",
+      "fn": "inerte",
+      "args": [
+        "2 X(g) = Y(g)",
+        {
+          "moles": {
+            "X": 8,
+            "Y": 8
+          },
+          "V": 1,
+          "K": 0.125
+        },
+        30,
+        "P"
+      ],
+      "espera": {
+        "instante.V": 2.875,
+        "instante.Q": 0.359375,
+        "instante.factorP": 1,
+        "sentido": "inversa",
+        "final.xi": -2,
+        "final.moles.X": 12,
+        "final.moles.Y": 6,
+        "final.V": 3,
+        "final.conc.X": 4,
+        "final.conc.Y": 2,
+        "errores.comoComprimir": "directa",
+        "errores.sinEfecto": "equilibrio"
+      }
+    },
+    {
+      "nombre": "Gas que no reacciona a presión fija con Δn = 0: A ⇌ B (Kc = 4), 4 A y 16 B en 1 L, 20 mol más; el volumen se duplica y Q sigue en 4",
+      "fn": "inerte",
+      "args": [
+        "A(g) = B(g)",
+        {
+          "moles": {
+            "A": 4,
+            "B": 16
+          },
+          "V": 1,
+          "K": 4
+        },
+        20,
+        "P"
+      ],
+      "espera": {
+        "instante.V": 2,
+        "instante.Q": 4,
+        "sentido": "equilibrio",
+        "final.moles.A": 4,
+        "final.moles.B": 16,
+        "final.V": 2
+      }
+    },
+    {
+      "nombre": "Kp con Δn = −1: 2 X ⇌ Y, Kc = 1/8 a 500 K; RT = 41 y Kp = 1/328 (sin Δn: 1/8; con el signo al revés: 41/8; con los 2 mol de X: 1681/8)",
+      "fn": "kp",
+      "args": [
+        "2 X(g) = Y(g)",
+        0.125,
+        500
+      ],
+      "espera": {
+        "valor": 0.003048780487804878,
+        "deltaN": -1,
+        "errores.sinDeltaN": 0.125,
+        "errores.signo": 5.125,
+        "errores.soloReactivos": 210.125
+      }
+    },
+    {
+      "nombre": "Kp mal contado en N₂O₄ ⇌ 2 NO₂ (Kc = 1/2, RT = 41): sin Δn 1/2; con el signo al revés 1/82; con Δn = 2 (solo productos) 840,5",
+      "fn": "kp",
+      "args": [
+        "N2O4(g) = 2 NO2(g)",
+        0.5,
+        500
+      ],
+      "espera": {
+        "valor": 20.5,
+        "errores.sinDeltaN": 0.5,
+        "errores.signo": 0.012195121951219513,
+        "errores.soloProductos": 840.5
+      }
+    },
+    {
+      "nombre": "A presión total fija con argón: 1 mol de N₂O₄ y 4,5 mol de argón a 3 atm, Kp = 1; α = 1/2 (sin argón sería 1/√13)",
+      "fn": "equilibrioP",
+      "args": [
+        "N2O4(g) = 2 NO2(g)",
+        {
+          "moles": {
+            "N2O4": 1
+          },
+          "P": 3,
+          "K": 1,
+          "inerte": 4.5
+        }
+      ],
+      "espera": {
+        "grado": 0.5,
+        "nTotal": 6,
+        "presiones.NO2": 0.5,
+        "presiones.N2O4": 0.25
+      }
     }
   ]
 }
