@@ -1,0 +1,16 @@
+{
+  "id": "numeros-reales",
+  "titulo": "La recta que no tiene huecos: números reales",
+  "formato": "escena",
+  "unidades": [
+    "algebra.numeros-reales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json",
+  "fuera": "Cubre intervalos abiertos, cerrados e infinitos; unión, intersección, diferencia, complemento y diferencia simétrica; valor absoluto como distancia (|x − a| op r y |ax + b| op c); dónde cae kx + t, x², |x| o 1/x si x está en un intervalo; cadenas de desigualdades; densidad (racionales e irracionales entre dos reales, sin número siguiente; 0,999… = 1); cotas, supremo, ínfimo, máximo y mínimo; operaciones binarias por tabla o por fórmula (conmutativa, asociativa, neutro e inverso). Quedan fuera la construcción axiomática completa de ℝ, las inecuaciones polinomiales de grado mayor y con radicales, y los grupos y anillos en general."
+}

@@ -1,0 +1,142 @@
+{
+  "plantilla": "numeros-reales",
+  "unidades": "Números sin unidad. Los conjuntos se escriben en notación peruana: ⟨ ⟩ abierto, [ ] cerrado, «;» entre los extremos, −∞ y +∞ siempre abiertos, ∅, ℝ, ℝ − {2} y {1; 3}; fracciones con barra (1/2), menos tipográfico (−) y coma decimal (0,95).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.comoUnion.texto); las listas se comparan completas; los textos se comparan exactos. 'tambien' trae otras llamadas que comprueban lo mismo (con su propia 'fn' si cambia). Un error que con esos números da lo mismo que la respuesta correcta no va en 'errores' sino en 'coinciden'; uno que no tiene sentido con esos números va en 'noAplica'; si dos errores dan lo mismo, el segundo va en 'repetidos'. Conjuntos de la escena: A = [−2; 3⟩ y B = [1; 5].",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso a paso, predicción 1: en A = [−2; 3⟩ el −2 entra (corchete [) y el 3 no (⟩). Leer los corchetes al revés da «−2 no, 3 sí» (NR1); que los extremos siempre entren, «−2 sí, 3 sí», o nunca, «−2 no, 3 no» (NR2)",
+      "fn": "extremos", "args": [{ "A": "[−2; 3⟩" }],
+      "espera": { "texto": "−2 sí, 3 no", "errores.alReves.texto": "−2 no, 3 sí", "errores.todos.texto": "−2 sí, 3 sí", "errores.ninguno.texto": "−2 no, 3 no", "coinciden": [] },
+      "tambien": [
+        { "fn": "pertenece", "args": [{ "A": "[−2; 3⟩", "x": 3 }], "espera": { "pertenece": false, "texto": "3 ∉ [−2; 3⟩" } },
+        { "fn": "pertenece", "args": [{ "A": "[−2; 3⟩", "x": 2.99 }], "espera": { "pertenece": true, "texto": "299/100 ∈ [−2; 3⟩" } },
+        { "args": [{ "A": "[0; 1]" }], "espera": { "texto": "0 sí, 1 sí", "coinciden": ["todos"] } } ] },
+
+    { "nombre": "Paso a paso, predicción 2: [−2; 3⟩ ∩ [1; 5] = [1; 3⟩. Como unión da [−2; 5] (NR3); cerrar el 3, que solo está en B, da [1; 3] (NR4); abrir los dos extremos, ⟨1; 3⟩",
+      "fn": "operar", "args": [{ "A": "[−2; 3⟩", "B": "[1; 5]", "op": "interseccion" }],
+      "espera": { "texto": "[1; 3⟩", "errores.comoUnion.texto": "[−2; 5]", "errores.corchetes.texto": "[1; 3]", "errores.abiertos.texto": "⟨1; 3⟩", "coinciden": [], "noAplica": ["vaciaSiSeTocan"] } },
+
+    { "nombre": "Unión de los mismos trozos: [−2; 3⟩ ∪ [1; 5] = [−2; 5]; como intersección, [1; 3⟩. Dos trozos separados no se rellenan: ⟨−3; −1] ∪ [2; 4] queda así (rellenar el hueco da ⟨−3; 4], NR21)",
+      "fn": "operar", "args": [{ "A": "[−2; 3⟩", "B": "[1; 5]", "op": "union" }],
+      "espera": { "texto": "[−2; 5]", "errores.comoInterseccion.texto": "[1; 3⟩", "noAplica": ["rellenar"] },
+      "tambien": [ { "args": [{ "A": "⟨−3; −1]", "B": "[2; 4]", "op": "union" }], "espera": { "texto": "⟨−3; −1] ∪ [2; 4]", "errores.rellenar.texto": "⟨−3; 4]", "errores.comoInterseccion.texto": "∅" } } ] },
+
+    { "nombre": "Diferencia: [−2; 3⟩ − [1; 5] = [−2; 1⟩ (el 1 está en B y se va). Al revés, B − A = [3; 5] (NR3); dejar el 1 cerrado, [−2; 1] (NR4)",
+      "fn": "operar", "args": [{ "A": "[−2; 3⟩", "B": "[1; 5]", "op": "diferencia" }],
+      "espera": { "texto": "[−2; 1⟩", "errores.alReves.texto": "[3; 5]", "errores.corchetes.texto": "[−2; 1]", "errores.comoInterseccion.texto": "[1; 3⟩" } },
+
+    { "nombre": "Complemento de [−2; 3⟩: ⟨−∞; −2⟩ ∪ [3; +∞⟩, los corchetes se dan vuelta. Copiar los de A da ⟨−∞; −2] ∪ ⟨3; +∞⟩ (NR4); quedarse con un lado, [3; +∞⟩",
+      "fn": "operar", "args": [{ "A": "[−2; 3⟩", "op": "complemento" }],
+      "espera": { "texto": "⟨−∞; −2⟩ ∪ [3; +∞⟩", "errores.mismosCorchetes.texto": "⟨−∞; −2] ∪ ⟨3; +∞⟩", "errores.unLado.texto": "[3; +∞⟩" },
+      "tambien": [ { "args": [{ "A": "[−2; 3⟩", "B": "[1; 5]", "op": "simetrica" }], "espera": { "texto": "[−2; 1⟩ ∪ [3; 5]" } } ] },
+
+    { "nombre": "¿Qué pasa si…?, experimento 3: ⟨−3; 1] ∩ [1; 4⟩ = {1}, los dos trozos comparten solo el 1. Creer que si solo se tocan no se cortan da ∅ (NR18), que es también lo que da abrir los extremos; como unión, ⟨−3; 4⟩",
+      "fn": "operar", "args": [{ "A": "⟨−3; 1]", "B": "[1; 4⟩", "op": "interseccion" }],
+      "espera": { "texto": "{1}", "errores.comoUnion.texto": "⟨−3; 4⟩", "errores.abiertos.texto": "∅", "repetidos.vaciaSiSeTocan": "abiertos", "coinciden": ["corchetes"] },
+      "tambien": [ { "args": [{ "A": "⟨−3; 1⟩", "B": "[1; 4⟩", "op": "interseccion" }], "espera": { "texto": "∅", "vacio": true } } ] },
+
+    { "nombre": "Paso a paso, predicción 3: |x − 2| ≤ 3, los x a lo más 3 de 2: [−1; 5]. Quitar las barras da ⟨−∞; 5] (AL22); dos rayos, ⟨−∞; −1] ∪ [5; +∞⟩ (NR5); medir desde −2, [−5; 1] (NR6)",
+      "fn": "absoluto", "args": [{ "a": 2, "op": "<=", "r": 3 }],
+      "espera": { "texto": "[−1; 5]", "tipo": "trozo", "inecuacion": "|x − 2| ≤ 3", "lectura": "los x que están a lo más 3 de 2",
+        "errores.sinBarras.texto": "⟨−∞; 5]", "errores.alReves.texto": "⟨−∞; −1] ∪ [5; +∞⟩", "errores.otroCentro.texto": "[−5; 1]", "errores.corchetes.texto": "⟨−1; 5⟩" } },
+
+    { "nombre": "¿Qué pasa si…?, experimento 2: |x + 1| > 2, los x a más de 2 de −1: dos rayos ⟨−∞; −3⟩ ∪ ⟨1; +∞⟩. Sin barras, ⟨1; +∞⟩ (AL22); un solo trozo, ⟨−3; 1⟩ (NR5); medir desde 1, ⟨−∞; −1⟩ ∪ ⟨3; +∞⟩ (NR6)",
+      "fn": "absoluto", "args": [{ "a": -1, "op": ">", "r": 2 }],
+      "espera": { "texto": "⟨−∞; −3⟩ ∪ ⟨1; +∞⟩", "tipo": "dos rayos", "inecuacion": "|x + 1| > 2",
+        "errores.sinBarras.texto": "⟨1; +∞⟩", "errores.alReves.texto": "⟨−3; 1⟩", "errores.otroCentro.texto": "⟨−∞; −1⟩ ∪ ⟨3; +∞⟩" } },
+
+    { "nombre": "Bordes del valor absoluto: |x − 2| < 0 es vacío, ≤ 0 es {2}, > 0 es ℝ − {2}, y |x − 2| ≥ −1 es ℝ; ahí no hay cinta y los errores de radio no aplican",
+      "fn": "absoluto", "args": [{ "a": 2, "op": "<", "r": 0 }],
+      "espera": { "texto": "∅", "tipo": "vacio", "lectura": null, "noAplica": ["alReves", "corchetes"] },
+      "tambien": [
+        { "args": [{ "a": 2, "op": "<=", "r": 0 }], "espera": { "texto": "{2}" } },
+        { "args": [{ "a": 2, "op": ">", "r": 0 }], "espera": { "texto": "ℝ − {2}" } },
+        { "args": [{ "a": 2, "op": ">=", "r": -1 }], "espera": { "texto": "ℝ" } } ] },
+
+    { "nombre": "|−2x + 1| < 5: centro 1/2 y radio 5/2, ⟨−2; 3⟩. Sin barras (despejando bien), −2x + 1 < 5 da ⟨−2; +∞⟩; dividir entre −2 sin dar vuelta deja los extremos al revés, ⟨3; −2⟩ (AL20)",
+      "fn": "absolutoLineal", "args": [{ "a": -2, "b": 1, "op": "<", "c": 5 }],
+      "espera": { "texto": "⟨−2; 3⟩", "inecuacion": "|−2x + 1| < 5", "centroTexto": "1/2", "radioTexto": "5/2", "errores.sinBarras.texto": "⟨−2; +∞⟩", "errores.noInvertir.texto": "⟨3; −2⟩" } },
+
+    { "nombre": "Distancia entre −3 y 5: |−3 − 5| = 8. Sin el valor absoluto, −8; restar los valores absolutos, 2",
+      "fn": "distancia", "args": [{ "p": -3, "q": 5 }],
+      "espera": { "valor": 8, "cuenta": "|−3 − 5| = |−8| = 8", "errores.sinAbsoluto.texto": "−8", "errores.restaDeAbsolutos.texto": "2" },
+      "tambien": [ { "args": [{ "p": 7, "q": 2 }], "espera": { "valor": 5, "coinciden": ["sinAbsoluto", "restaDeAbsolutos"] } } ] },
+
+    { "nombre": "Paso a paso, predicción 4: si x ∈ [−2; 3⟩, −2x + 1 ∈ ⟨−5; 5] (multiplicar por −2 da vuelta todo, también los corchetes). Sin voltear, [5; −5⟩ (AL20); ordenar los números sin cambiar los corchetes, [−5; 5⟩ (NR20); olvidar el + 1, ⟨−6; 4] (NR22)",
+      "fn": "imagen", "args": [{ "A": "[−2; 3⟩", "f": { "tipo": "afin", "k": -2, "t": 1 } }],
+      "espera": { "texto": "⟨−5; 5]", "expresion": "−2x + 1", "errores.sinVoltear.texto": "[5; −5⟩", "errores.corchetesSinVoltear.texto": "[−5; 5⟩", "errores.sinSumar.texto": "⟨−6; 4]" },
+      "tambien": [ { "args": [{ "A": "[−2; 3⟩", "f": { "tipo": "afin", "k": 2, "t": -1 } }], "espera": { "texto": "[−5; 5⟩", "expresion": "2x − 1", "noAplica": ["sinVoltear", "corchetesSinVoltear"] } } ] },
+
+    { "nombre": "Paso a paso, predicción 5: si x ∈ [−2; 3⟩, x² ∈ [0; 9⟩ (pasa por 0, y el 9 no se alcanza). Elevar solo los extremos da [4; 9⟩ (NR7); dejar el signo, (−2)² = −4, da [−4; 9⟩ (NR8); cerrar el 9, que no se alcanza, [0; 9] (NR4)",
+      "fn": "imagen", "args": [{ "A": "[−2; 3⟩", "f": "cuadrado" }],
+      "espera": { "texto": "[0; 9⟩", "expresion": "x²", "errores.extremos.texto": "[4; 9⟩", "errores.signo.texto": "[−4; 9⟩", "errores.cerrados.texto": "[0; 9]" },
+      "tambien": [
+        { "args": [{ "A": "[−2; 3]", "f": "cuadrado" }], "espera": { "texto": "[0; 9]", "errores.extremos.texto": "[4; 9]" } },
+        { "args": [{ "A": "[1; 3]", "f": "cuadrado" }], "espera": { "texto": "[1; 9]", "coinciden": ["extremos", "signo", "cerrados"] } },
+        { "args": [{ "A": "[−3; 1⟩", "f": "absoluto" }], "espera": { "texto": "[0; 3]", "errores.extremos.texto": "⟨1; 3]" } } ] },
+
+    { "nombre": "¿Qué pasa si…?, experimento 1: si x ∈ [−1; 2], 1/x ∈ ⟨−∞; −1] ∪ [1/2; +∞⟩: el 0 parte el trozo en dos rayos. Sin partir, [−1; 1/2] (NR17); solo el trozo positivo, [1/2; +∞⟩ (NR17)",
+      "fn": "imagen", "args": [{ "A": "[−1; 2]", "f": "inverso" }],
+      "espera": { "texto": "⟨−∞; −1] ∪ [1/2; +∞⟩", "errores.sinPartir.texto": "[−1; 1/2]", "errores.soloPositivos.texto": "[1/2; +∞⟩", "noAplica": ["sinVoltear"] },
+      "tambien": [
+        { "args": [{ "A": "[2; 4]", "f": "inverso" }], "espera": { "texto": "[1/4; 1/2]", "errores.sinVoltear.texto": "[1/2; 1/4]" } },
+        { "args": [{ "A": "⟨0; 2]", "f": "inverso" }], "espera": { "texto": "[1/2; +∞⟩" } } ] },
+
+    { "nombre": "Inecuaciones: 1/x < 2 da ⟨−∞; 0⟩ ∪ ⟨1/2; +∞⟩ (por x², que es positivo); multiplicar por x como si fuera positivo pierde los negativos, ⟨1/2; +∞⟩ (AL21). x² < 9 da ⟨−3; 3⟩; como ecuación, ⟨−∞; 3⟩ (AL19)",
+      "fn": "inversa", "args": [{ "op": "<", "c": 2 }],
+      "espera": { "texto": "⟨−∞; 0⟩ ∪ ⟨1/2; +∞⟩", "criticos": ["0", "1/2"], "errores.porX.texto": "⟨1/2; +∞⟩", "errores.sinVoltear.texto": "⟨−∞; 1/2⟩" },
+      "tambien": [
+        { "fn": "cuadradoDesigualdad", "args": [{ "op": "<", "c": 9 }], "espera": { "texto": "⟨−3; 3⟩", "errores.comoEcuacion.texto": "⟨−∞; 3⟩" } },
+        { "fn": "cuadradoDesigualdad", "args": [{ "op": ">=", "c": 4 }], "espera": { "texto": "⟨−∞; −2] ∪ [2; +∞⟩" } },
+        { "fn": "signos", "args": [{ "num": [[1, -1]], "den": [[1, 2]], "op": ">=" }], "espera": { "texto": "⟨−∞; −2⟩ ∪ [1; +∞⟩", "criticos": ["−2", "1"] } } ] },
+
+    { "nombre": "Cadena de desigualdades: −1 < 2x + 3 ≤ 7 da ⟨−2; 2]; con −2x, −1 < −2x + 3 ≤ 7 da [−2; 2⟩ (se invierten los dos signos). Sin invertir, «2 < x ≤ −2» (AL20); restar el 3 solo al medio, [−7/2; 1/2⟩",
+      "fn": "cadena", "args": [{ "lo": -1, "opLo": "<", "a": -2, "b": 3, "opHi": "<=", "hi": 7 }],
+      "espera": { "texto": "[−2; 2⟩", "pasos": ["−1 < −2x + 3 ≤ 7", "−4 < −2x ≤ 4", "−2 ≤ x < 2"], "errores.sinInvertir.texto": "2 < x ≤ −2", "errores.soloAlMedio.texto": "[−7/2; 1/2⟩" },
+      "tambien": [
+        { "args": [{ "lo": -1, "opLo": "<", "a": 2, "b": 3, "opHi": "<=", "hi": 7 }], "espera": { "texto": "⟨−2; 2]", "noAplica": ["sinInvertir"] } },
+        { "fn": "multiplicar", "args": [{ "op": "<", "k": -3 }], "espera": { "simbolo": ">", "invierte": true, "errores.sinInvertir.texto": "<" } } ] },
+
+    { "nombre": "Paso a paso, predicción 6: no hay «número que sigue» a 0,9. Para 0,91 (NR9) el promedio 0,905 queda en medio; para 1 (NR9), 0,95. Entre 0,9 y 1 están 0,925, 0,95 y 0,975, y el irracional 0,9 + √2/20 ≈ 0,9707…",
+      "fn": "siguiente", "args": [{ "x": 0.9 }],
+      "espera": { "existe": false, "texto": "no hay", "errores.unaCifraMas.texto": "0,91", "errores.unaCifraMas.contraejemplo": "0,905", "errores.siguienteEntero.texto": "1", "errores.siguienteEntero.contraejemplo": "0,95", "errores.infinitosCeros.texto": "0,9000…1" },
+      "tambien": [ { "fn": "entre", "args": [{ "p": 0.9, "q": 1 }], "espera": { "promedioTexto": "0,95", "racionales": ["0,925", "0,95", "0,975"], "irracional.texto": "0,9 + √2/20", "irracional.valor": 0.97071067811865475, "irracional.aproximado": "0,9707…" } } ] },
+
+    { "nombre": "¿Qué pasa si…?, experimento 4: 0,999… = 1. Creer que es «el número justo antes de 1» o que «le falta 0,000…1» es NR10. Con 3 nueves el hueco es 0,001; con 6, 0,000001. 0,1666… = 1/6 no tiene esa trampa",
+      "fn": "generatriz", "args": [{ "entero": 0, "periodo": "9" }],
+      "espera": { "valor": 1, "decimal": "0,999…", "igualdad": "0,999… = 1", "errores.justoAntes.texto": "0,999… < 1: es el número justo antes de 1", "errores.porPoco.texto": "0,999… < 1: le falta 0,000…1" },
+      "tambien": [
+        { "fn": "aproximar", "args": [{ "entero": 0, "periodo": "9", "n": 3 }], "espera": { "truncadoTexto": "0,999", "huecoTexto": "0,001" } },
+        { "fn": "aproximar", "args": [{ "entero": 0, "periodo": "9", "n": 6 }], "espera": { "huecoTexto": "0,000001" } },
+        { "fn": "generatriz", "args": [{ "entero": 0, "antes": "1", "periodo": "6" }], "espera": { "texto": "1/6", "noAplica": ["justoAntes", "porPoco"] } } ] },
+
+    { "nombre": "Paso a paso, predicción 7: ⟨0; 1⟩ no tiene máximo; su supremo es 1 (la menor cota superior; las cotas superiores son [1; +∞⟩). Dar el supremo como máximo, 1, es NR11; «no tiene ni supremo» y «el número justo antes de 1» son NR12. En [0; 1] el máximo sí es 1",
+      "fn": "cotas", "args": [{ "A": "⟨0; 1⟩" }],
+      "espera": { "texto": "no tiene máximo; supremo 1", "supremo": 1, "maximo": null, "infimo": 0, "minimo": null, "cotasSuperiores": "[1; +∞⟩", "minimoTexto": "no tiene mínimo; ínfimo 0",
+        "errores.supremoComoMaximo.texto": "1", "errores.sinSupremo.texto": "no tiene máximo ni supremo", "errores.ultimoAntes.texto": "el número justo antes de 1" },
+      "tambien": [
+        { "args": [{ "A": "[0; 1]" }], "espera": { "texto": "1", "maximo": 1, "coinciden": ["supremoComoMaximo"], "noAplica": ["ultimoAntes"] } },
+        { "args": [{ "A": "[2; +∞⟩" }], "espera": { "texto": "no tiene máximo ni supremo", "minimoTexto": "2", "acotado": false } } ] },
+
+    { "nombre": "Paso a paso, predicción 8: en {1; 2; 3; 4} con la tabla de la escena el neutro es 2 (su fila y su columna repiten la cabecera). Lo que más se repite en la diagonal es 4 (NR13); el primer elemento, 1 (NR14). Es conmutativa y asociativa; el inverso de 3 es 1 (la diagonal da 4 y el neutro 2: NR16)",
+      "fn": "operacionTabla", "args": [{ "elementos": [1, 2, 3, 4], "tabla": [[4, 1, 2, 3], [1, 2, 3, 4], [2, 3, 4, 1], [3, 4, 1, 2]] }],
+      "espera": { "neutro": "2", "texto": "2", "conmutativa": true, "asociativa": true, "cerrada": true, "inversos.1": "3", "inversos.3": "1", "inversos.4": "4", "diagonal": ["4", "2", "4", "2"],
+        "errores.diagonal.texto": "4", "errores.primero.texto": "1", "errores.noTiene.texto": "no tiene", "noAplica": ["unLado"] },
+      "tambien": [ { "fn": "inversoTabla", "args": [{ "elementos": [1, 2, 3, 4], "tabla": [[4, 1, 2, 3], [1, 2, 3, 4], [2, 3, 4, 1], [3, 4, 1, 2]], "x": 3 }],
+        "espera": { "inverso": "1", "cuenta": "3 ∗ 1 = 2", "errores.diagonal.texto": "4", "errores.neutro.texto": "2", "errores.elMismo.texto": "3" } } ] },
+
+    { "nombre": "¿Qué pasa si…?, experimento 5: en {0; 1; 2}, a ∗ b = resto de (2a + b) entre 3. No es conmutativa (0 ∗ 1 = 1 pero 1 ∗ 0 = 2) ni asociativa, y no tiene neutro: 0 lo es solo por la izquierda (su fila repite la cabecera; NR15)",
+      "fn": "operacionTabla", "args": [{ "elementos": [0, 1, 2], "tabla": [[0, 1, 2], [2, 0, 1], [1, 2, 0]] }],
+      "espera": { "neutro": null, "texto": "no tiene", "conmutativa": false, "testigoNoConmutativa.ab": "1", "testigoNoConmutativa.ba": "2", "asociativa": false, "neutroIzquierda": ["0"], "neutroDerecha": [],
+        "errores.diagonal.texto": "0", "repetidos.unLado": "diagonal", "repetidos.primero": "diagonal" } },
+
+    { "nombre": "Operación por fórmula: a ∗ b = a + b − 3 es conmutativa y asociativa, con neutro 3; el inverso de 5 es 1 (5 + 1 − 3 = 3). El opuesto −5, el recíproco 1/5 y «neutro menos a», −2, son errores. a ∗ b = 2a + b no es conmutativa, ni asociativa, ni tiene neutro",
+      "fn": "operacionFormula", "args": [{ "alfa": 1, "beta": 1, "delta": -3, "x": 5 }],
+      "espera": { "texto": "a ∗ b = a + b − 3", "conmutativa": true, "asociativa": true, "neutro": 3, "inverso": 1, "cuenta": "5 ∗ 1 = 3",
+        "errores.opuesto.texto": "−5", "errores.reciproco.texto": "1/5", "errores.neutroMenos.texto": "−2" },
+      "tambien": [
+        { "args": [{ "alfa": 2, "beta": 1 }], "espera": { "texto": "a ∗ b = 2a + b", "conmutativa": false, "asociativa": false, "neutro": null, "neutroTexto": "no tiene" } },
+        { "args": [{ "alfa": 1, "beta": 1, "gamma": 1, "x": 2 }], "espera": { "texto": "a ∗ b = a + b + ab", "asociativa": true, "neutro": 0, "inversoTexto": "−2/3" } } ] }
+  ]
+}
