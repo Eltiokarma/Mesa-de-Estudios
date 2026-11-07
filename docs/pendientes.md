@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 3497 pruebas.
+Deben pasar 3504 pruebas.
 
 ```bash
 npm run dev
@@ -129,7 +129,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - El vapor de la olla destapada se va: en "Sigo calentando" la animación termina a los 300 s, mientras todavía hierve.
 - **Energía** (`plantillas/energia/`, hecha el 6 nov 2026):
   - Hecho (7 nov, 0.2.0): modo «Fuerza variable», gráfica F–x de 5 puntos que se arrastra con el área con signo y «W hasta detenerse = −Ec0»; W9 bajó a parcial.
-  - Pendiente de color: m–roce (12,8 y 10,5) y v–P (13,3 y 12,4) siguen bajo ΔE00 20 en los modos 1 y 2, y salen juntos.
+  - Hecho (7 nov): roce y P cambiaron de color; ningún par que sale junto queda bajo ΔE00 20.
   - Las opciones incorrectas de "Cambio la rampa" y de la grúa son hipótesis; las demás salen del test EMCS.
   - La pregunta del paso 6 (doble altura, √2) tiene respaldo solo parcial (Brundage y otros, 2023).
 - **MRUV** (`plantillas/mruv/`, hecha el 6 nov 2026):

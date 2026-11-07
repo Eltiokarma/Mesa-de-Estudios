@@ -12,13 +12,19 @@
    para que los que salen juntos queden a ΔE00 ≥ 20: en el modo 3, carrito (F, x, m, v, Ec) mín. 20,1 claro y 20,4 oscuro,
    y resorte (F, x, k, Ee) mín. 20,1 y 20,5; en el modo 1 ningún par empeora (Ep–k 16,3 → 20,6; Ee–k 15,9 → 20,1; m–f 10,9 → 12,8
    en claro). F no se pudo dejar igual: con el celeste de Ec y el chip al 8 %, ningún azul de F quedaba a 20. Todos pasan AA
-   sobre el papel, la tarjeta y el chip .v (fondo 8 %); en claro F–Ep queda en 12,2, pero nunca salen en el mismo modo. */
+   sobre el papel, la tarjeta y el chip .v (fondo 8 %); en claro F–Ep queda en 12,2, pero nunca salen en el mismo modo.
+   Después, solo roce f y potencia P cambiaron de tono (m y v se comparten con otras escenas): f #8f5800 → #3d2e00 (café oscuro)
+   y P #b3246b → #520000 (granate) en claro; f #ffc04d → #ffdc14 (amarillo) y P #ff86bd → #7af2ff (celeste claro) en oscuro.
+   Así m–f (antes 12,8 / 10,5) y v–P (13,3 / 12,4) quedan sobre 20: f y P están a ΔE00 ≥ 24,7 (claro) y ≥ 21,5 (oscuro, f–h)
+   de todo lo que sale con ellos, también de ok y warn; modo 1 mín. 20,1 / 20,5 (Ee–k) y modo 2 mín. 21,0 (v–m) / 21,5 (f–h).
+   P cambia de tono entre claro y oscuro (como Dc en interés): ningún rosado o granate claro quedaba a 20 de v en oscuro.
+   AA mínimo: f 10,77 y P 12,3 en claro; f 9,37 y P 9,58 en oscuro. P oscuro queda a 12,4 de Ec, que nunca sale en el modo 2. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-m:#ad4500; --c-h:#466d14; --c-v:#c0364a; --c-x:#097163; --c-k:#9500eb; --c-F:#0039a3; --c-f:#8f5800; --c-P:#b3246b; --c-Ep:#030099; --c-Ec:#1c719c; --c-Ee:#850068;
+  --c-m:#ad4500; --c-h:#466d14; --c-v:#c0364a; --c-x:#097163; --c-k:#9500eb; --c-F:#0039a3; --c-f:#3d2e00; --c-P:#520000; --c-Ep:#030099; --c-Ec:#1c719c; --c-Ee:#850068;
   --metal:#545c6c; --suelo:#d9c8bb; --bloque:#f3e3d3;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -28,13 +34,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#52e0c9; --c-k:#e9adff; --c-F:#99b6ff; --c-f:#ffc04d; --c-P:#ff86bd; --c-Ep:#7a8aff; --c-Ec:#2fc8ee; --c-Ee:#fb1fff;
+  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#52e0c9; --c-k:#e9adff; --c-F:#99b6ff; --c-f:#ffdc14; --c-P:#7af2ff; --c-Ep:#7a8aff; --c-Ec:#2fc8ee; --c-Ee:#fb1fff;
   --metal:#c9d0dc; --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#52e0c9; --c-k:#e9adff; --c-F:#99b6ff; --c-f:#ffc04d; --c-P:#ff86bd; --c-Ep:#7a8aff; --c-Ec:#2fc8ee; --c-Ee:#fb1fff;
+  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#52e0c9; --c-k:#e9adff; --c-F:#99b6ff; --c-f:#ffdc14; --c-P:#7af2ff; --c-Ep:#7a8aff; --c-Ec:#2fc8ee; --c-Ee:#fb1fff;
   --metal:#c9d0dc; --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark }
 
 *{box-sizing:border-box}

@@ -89,10 +89,25 @@ F no pudo quedarse igual. Con el celeste de Ec ningún azul llegaba a ΔE00 ≥ 
 - Siguen bajo 20, y ya estaban así: m–roce en los modos 1 y 2 (12,8 y 10,5) y v–P en el modo 2 (13,3 y 12,4). Hace falta un ajuste aparte.
 - F–Ep queda en 12,2, pero nunca salen en el mismo modo.
 
+**Arreglo de color posterior (7 nov 2026).** Lo pidió la conversación principal. m–roce y v–P salían juntos con ΔE00 de 10,5 a 13,3, lo que rompía la regla 4. Se movieron solo el roce y P, porque m y v comparten color con otras escenas:
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| f (roce) | #8f5800 → #3d2e00 | #ffc04d → #ffdc14 |
+| P (potencia) | #b3246b → #520000 | #ff86bd → #7af2ff |
+
+- Ahora ningún par que sale junto queda bajo 20:
+  - modo 1: 20,1 en claro y 20,5 en oscuro (Ee–k);
+  - modo 2: 21,0 en claro (v–m) y 21,5 en oscuro (f–h).
+- Contra la tinta: f 33,8 y P 25,5 en claro; f 37,8 y P 32,1 en oscuro (medido por la conversación principal).
+- AA mínimo: 9,4.
+- Los dos cambian de tono entre modos:
+  - el roce es café muy oscuro en claro y amarillo en oscuro;
+  - P es granate en claro y celeste en oscuro, como Dc en interés.
+
 **Pedidos para la integración.**
 1. `npm run catalogo` (versión 0.2.0).
-2. En `docs/diseno.md`: la tabla de colores de energía.
-3. Pendientes: anotar m–roce y v–P bajo 20 en los modos 1 y 2.
+2. En `docs/diseno.md`: la tabla de colores de energía, con estos f y P nuevos. Además, cambiar «roce y calor ámbar» y «potencia P magenta».
 
 ## 7 nov 2026 · Dinámica 0.2.0: varios cuerpos y movimiento circular (`plantillas/dinamica/`)
 
