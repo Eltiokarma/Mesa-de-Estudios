@@ -1,0 +1,1144 @@
+<!doctype html>
+<html lang="es" data-curso="trigonometria">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El radar: coordenadas polares</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de numeros-complejos.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4): la distancia r (y su
+   flecha desde el polo), fucsia; el ángulo θ, azul; la coordenada x, naranja; la coordenada y, verde; el coeficiente a
+   de las curvas, petróleo; el número n de la rosa, café (en oscuro, amarillo). Las curvas y los resultados van en
+   tinta; los anillos, los rayos y lo que es solo referencia, en gris.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py): ΔE00 mínimo 23,4 en claro (x contra n) y 21,9 en oscuro (y contra n),
+   también contra la tinta, el gris, el «correcto» y el «incorrecto»; salvo a contra «correcto» (ΔE00 11, como en
+   numeros-complejos) e y contra «correcto» (ΔE00 15,6 en claro y 17,3 en oscuro): el «correcto» siempre va con texto
+   y borde, nunca solo con color. Contraste AA sobre el papel, la tarjeta y su chip
+   (.v, fondo al 8 %): el más bajo es a en claro, 4,63, y r en oscuro, 4,64. */
+[hidden]{display:none!important}
+.nw{white-space:nowrap}
+.ca{color:var(--c-a)}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-x:#a05200; --c-y:#466d14; --c-r:#a10fbf; --c-th:#1f5fbf; --c-a:#0f766e; --c-n:#453717;
+  --relleno:.13;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-x:#f0a04a; --c-y:#a3d65e; --c-r:#cf6bfa; --c-th:#7cb0ff; --c-a:#5ed9c8; --c-n:#ffda0a;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-x:#f0a04a; --c-y:#a3d65e; --c-r:#cf6bfa; --c-th:#7cb0ff; --c-a:#5ed9c8; --c-n:#ffda0a;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:12px; height:12px; border-radius:3px; display:inline-block; border:2px solid; opacity:.9}
+.legend i.linea{width:16px; height:0; border-width:3px 0 0; border-radius:0}
+.legend i.trazos{width:16px; height:0; border-width:2px 0 0; border-style:dashed; border-radius:0}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-th{color:var(--c-th); background:color-mix(in srgb, var(--c-th) 8%, transparent)}
+.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
+.v-y{color:var(--c-y); background:color-mix(in srgb, var(--c-y) 8%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); min-width:0}
+.eq{font-family:var(--mono); font-size:1rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .tramo{white-space:nowrap}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.opt .m.frase{font-family:var(--font)}
+@media (hover:hover){ .opt:hover:not(:disabled){border-color:var(--ink)} }
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.control{display:grid; gap:4px; max-width:420px}
+.control label{font-size:.9rem; color:var(--muted); font-weight:700}
+input[type=range]{width:100%; margin:0; accent-color:var(--ink); min-height:32px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .92rem var(--mono); font-variant-numeric:tabular-nums; white-space:normal; overflow-wrap:anywhere}
+.lectura > span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+
+</style>
+<link rel="stylesheet" href="../../nucleo/pegatina.css">
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Trigonometría · Coordenadas polares · Problemas tipo admisión</p>
+      <h1>El radar</h1>
+      <p class="sub">Un punto también se puede ubicar con una distancia y un ángulo, como un barco en la pantalla de un radar. Arrastra el punto, cambia de coordenadas y dibuja curvas.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena: el radar"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/coordenadas-polares">Problemas para lápiz y papel</a></p>
+</main>
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'coordenadas-polares', unidad: 'trigonometria.coordenadas-polares-y-complejos', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+/* ================= Piezas compartidas =================
+   Toda la matemática (ubicar, r negativo, conversiones, curvas, rosas, forma polar y los errores típicos) sale de
+   MotorPolares (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MP = MotorPolares;
+const GR = Math.PI/180;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+const fmt = (n, d) => MP.decimal(n, d === undefined ? 2 : d);
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const r_ = t => V('r', t), th_ = t => V('th', t), x_ = t => V('x', t), y_ = t => V('y', t), a_ = t => V('a', t), n_ = t => V('n', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, f) => a + (b - a)*f;
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+// Una ecuación larga se parte solo entre tramos (después de ⟹, de = o de ;), nunca a media expresión.
+function tramos(raiz){ raiz.querySelectorAll('.eq').forEach(q => { if (q.dataset.tr) return; q.dataset.tr = '1';
+  const nota = q.querySelector('.note'), html = nota ? q.innerHTML.replace(nota.outerHTML, '') : q.innerHTML;
+  q.innerHTML = html.split(/(⟹|;  | = )/).reduce((a, p, i, l) => (i % 2 ? a : a + `<span class="tramo">${p}${l[i + 1] || ''}</span> `), '') + (nota ? ' ' + nota.outerHTML : ''); }); }
+const opcionesHTML = (opts, idFb, frase) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m${frase ? ' frase' : ''}">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" aria-live="polite"></p>`;
+const KS = ['r', 'th', 'x', 'y', 'a', 'n'];
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    relleno:Number(css('--relleno')) || .13, font:css('--font') };
+  for (const k of KS) c[k] = css('--c-' + k);
+  return c;
+}
+const col = (c, k) => (c[k] || k);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+const pt = (x, y) => ({ x, y });
+const O = pt(0, 0);
+const P_ = (r, g) => pt(r*Math.cos(g*GR), r*Math.sin(g*GR));
+const ang = p => Math.atan2(p.y, p.x)/GR;
+// Ángulos notables (los que el motor escribe exactos): el punto arrastrado se pega a ellos.
+const NOT = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
+function pegarAng(g){ g = MP.normal(g); let mejor = 0, dm = 1e9; for (const t of NOT.concat([360])){ const d = Math.abs(g - t); if (d < dm){ dm = d; mejor = t % 360; } } return mejor; }
+const vecinoAng = (g, s) => NOT[(NOT.indexOf(pegarAng(g)) + s + NOT.length) % NOT.length];
+const tG = g => `${fmt(g)}°`;
+const ex = v => MP.texto(v);                                   // texto exacto (fracciones y radicales) del motor
+const nw = t => `<span class="nw">${t}</span>`;                // un par o una expresión que no se corta
+const fig = t => t.replace(/\([^)]*\)/, m => nw(m));             // 'centro (2; 0) y radio 2' sin cortar el par
+// En una ecuación cartesiana 'x² + y² = 4x', el coeficiente a va en su color
+const ecA = t => t.replace(/= (−?[\d√/]+)/, '= <span class="ca">$1</span>');
+/* ================= La escena =================
+   Un plano en coordenadas del mundo con piezas: el radar (anillos y rayos), cuadrícula y ejes cartesianos,
+   circunferencias, curvas, arcos de ángulo, segmentos y flechas, puntos, textos y manijas que se arrastran.
+   Cada paso arma sus piezas con L.rehacer(L) a partir de L.estado. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { L:null, lect:[], ley:[], hl:null, ocupado:false, tok:0, cad:0, anim:false, compacto:false, desc:'' };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = null;
+  E.angosto = () => (cv.clientWidth || W) < 520;
+  function alto(w){
+    const L = E.L; if (!L) return 300;
+    const B = L.caja, g = innerWidth >= 900 ? Math.max(300, Math.min(540, innerHeight - 200)) : 420;
+    const h = Math.round(clamp(w*(B.y1 - B.y0)/(B.x1 - B.x0), 220, g));
+    return Celular.alto(h, E.compacto, { tope:250 });
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = Celular.dpr();
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const VACIO = () => ({ radar:null, rejilla:null, ejes:null, circs:[], curvas:[], arcos:[], segs:[], puntos:[], textos:[], manijas:[] });
+  E.config = o => {
+    E.tok++; E.cad++; E.anim = false;
+    E.L = Object.assign({ caja:{ x0:-5, x1:5, y0:-5, y1:5 }, estado:{}, rehacer:null, mover:null, tecla:null }, VACIO(), o.L);
+    E.lect = o.lect || []; E.ley = o.ley || []; E.desc = o.desc || ''; E.trasAvisar = null;
+    E.rehacer();
+    cv.tabIndex = E.L.manijas.length ? 0 : -1;
+    cv.setAttribute('aria-label', E.L.manijas.length ? `Dibujo de la escena. ${E.L.ayuda || 'Usa las flechas del teclado para mover el punto.'}` : 'Dibujo de la escena');
+    W = 0; resize(); E.leyenda(); E.avisar();
+  };
+  E.rehacer = () => { const L = E.L; if (!L || !L.rehacer) return; Object.assign(L, VACIO()); L.rehacer(L, E); };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.redimensionar = () => { W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  function escala(){
+    const L = E.L, B = L.caja, pad = 12;
+    const k = Math.min((W - 2*pad)/(B.x1 - B.x0), (H - 2*pad)/(B.y1 - B.y0));
+    const ox = (W - k*(B.x1 - B.x0))/2 - k*B.x0, oy = (H - k*(B.y1 - B.y0))/2 + k*B.y1;
+    return { k, P: p => ({ x: ox + k*p.x, y: oy - k*p.y }), mundo: q => ({ x:(q.x - ox)/k, y:(oy - q.y)/k }) };
+  }
+  function linea(p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+  // Los rótulos se pintan al final, encima de todo, con fondo de papel. partes: [[texto, color], …]
+  let cola = null;
+  function rotulo(...a){ if (cola) cola.push(() => rotuloYa(...a)); else rotuloYa(...a); }
+  function rotuloYa(c, x, y, partes, align, tam, peso){
+    if (typeof partes === 'string') partes = [[partes, 'ink']];
+    ctx.font = `${peso || 800} ${tam || 12}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const ws = partes.map(([t]) => ctx.measureText(t).width), w = ws.reduce((s, v) => s + v, 0);
+    let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    x0 = clamp(x0, 3, W - w - 3); y = clamp(y, 10, H - 10);
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .92; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+    let xx = x0; partes.forEach(([t, k], i) => { ctx.fillStyle = col(c, k); ctx.fillText(t, xx, y); xx += ws[i]; });
+  }
+  function flecha(p, q, color, s){
+    const a = Math.atan2(q.y - p.y, q.x - p.x);
+    ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(q.x, q.y);
+    ctx.lineTo(q.x - s*Math.cos(a - .42), q.y - s*Math.sin(a - .42)); ctx.lineTo(q.x - s*Math.cos(a + .42), q.y - s*Math.sin(a + .42)); ctx.fill();
+  }
+  const alfa = o => (o.f === undefined ? 1 : o.f);
+  const partes = (t, k) => (typeof t === 'string' ? [[t, k || 'ink']] : t);
+  E.dibujar = () => {
+    if (!W || !E.L) return;
+    const c = colores(), L = E.L, e = escala(), B = L.caja;
+    ctx.clearRect(0, 0, W, H); cola = [];
+    // cuadrícula cartesiana (un cuadrito por unidad)
+    if (L.rejilla){ const R = L.rejilla; ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+      for (let x = Math.ceil(R.x0); x <= R.x1; x++) linea(e.P(pt(x, R.y0)), e.P(pt(x, R.y1)));
+      for (let y = Math.ceil(R.y0); y <= R.y1; y++) linea(e.P(pt(R.x0, y)), e.P(pt(R.x1, y))); }
+    // radar: anillos cada 'paso', rayos cada 'rayos' grados, números en el eje polar
+    if (L.radar){ const A = L.radar, o = e.P(O), ang8 = E.angosto();
+      ctx.strokeStyle = c.grid; ctx.lineWidth = 1.2;
+      for (let r = A.paso; r <= A.R + 1e-9; r += A.paso){ ctx.beginPath(); ctx.arc(o.x, o.y, e.k*r, 0, 7); ctx.stroke(); }
+      for (let g = 0; g < 360; g += A.rayos){ if (g % 90 === 0 && L.ejes) continue; linea(o, e.P(P_(A.R, g))); }
+      if (A.numeros !== false) for (let r = A.paso, j = 1; r <= A.R + 1e-9; r += A.paso, j++){ if (ang8 && A.R/A.paso > 5 && j % 2) continue;
+        const p = e.P(pt(r, 0)); rotulo(c, p.x, p.y + 11, [[fmt(r), 'muted']], 'center', 10, 700); }
+      if (A.etiquetas) for (let g = 0; g < 360; g += A.etiquetas){ if ((ang8 && g % 90 && A.etiquetas < 45) || (g === 0 && L.ejes) || (g === 90 && L.ejes && !L.ejes.polar)) continue;
+        const p = e.P(P_(A.R + .55*(B.x1 - B.x0)/12, g)); rotulo(c, p.x, p.y, [[`${g}°`, 'muted']], 'center', 10, 700); }
+      if (A.cuadrantes){ const d = A.R*.78; [['I', 45], ['II', 135], ['III', 225], ['IV', 315]].forEach(([t, g]) => { const p = e.P(P_(d, g)); rotulo(c, p.x, p.y, [[t, 'muted']], 'center', 12, 800); }); } }
+    // ejes x e y (o el eje polar solo)
+    if (L.ejes){ const A = L.ejes; ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3;
+      const x0 = B.x0 + .1, x1 = B.x1 - .1, y0 = B.y0 + .1, y1 = B.y1 - .1;
+      if (A.polar){ linea(e.P(O), e.P(pt(x1, 0))); flecha(e.P(O), e.P(pt(x1, 0)), c.muted, 7); }
+      else { linea(e.P(pt(x0, 0)), e.P(pt(x1, 0))); flecha(e.P(pt(x0, 0)), e.P(pt(x1, 0)), c.muted, 7);
+        linea(e.P(pt(0, y0)), e.P(pt(0, y1))); flecha(e.P(pt(0, y0)), e.P(pt(0, y1)), c.muted, 7); }
+      for (const [v, t] of A.tx || []){ const p = e.P(pt(v, 0)); linea({ x:p.x, y:p.y - 4 }, { x:p.x, y:p.y + 4 }); if (t) rotulo(c, p.x, p.y + 13, [[t, 'muted']], 'center', 10, 700); }
+      for (const [v, t] of A.ty || []){ const p = e.P(pt(0, v)); linea({ x:p.x - 4, y:p.y }, { x:p.x + 4, y:p.y }); if (t) rotulo(c, p.x - 7, p.y, [[t, 'muted']], 'right', 10, 700); }
+      const px = e.P(pt(x1, 0)), py = e.P(pt(0, y1));
+      if (A.polar) rotulo(c, px.x - 4, px.y - 12, [['eje polar', 'muted']], 'right', 11);
+      else { rotulo(c, px.x - 4, px.y - 12, [[A.nx || 'x', 'muted']], 'right', 12); rotulo(c, py.x + 8, py.y + 6, [[A.ny || 'y', 'muted']], 'left', 12); } }
+    // circunferencias
+    for (const K of L.circs){ if (!(alfa(K) > 0)) continue; const p = e.P(K.c || O);
+      ctx.save(); ctx.globalAlpha = alfa(K); ctx.strokeStyle = col(c, K.color || 'muted'); ctx.lineWidth = grosor(K.color, K.ancho || 1.6); ctx.setLineDash(K.dash ? [5, 5] : []);
+      ctx.beginPath(); ctx.arc(p.x, p.y, e.k*K.r, 0, 7); ctx.stroke(); ctx.restore(); }
+    // curvas (listas de puntos del mundo)
+    for (const K of L.curvas){ if (!(alfa(K) > 0) || K.pts.length < 2) continue;
+      ctx.save(); ctx.globalAlpha = alfa(K); ctx.strokeStyle = col(c, K.color || 'ink'); ctx.lineWidth = grosor(K.color, K.ancho || 2.6); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.setLineDash(K.dash ? [6, 5] : []); ctx.beginPath(); K.pts.forEach((q, i) => { const p = e.P(q); if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); }); ctx.stroke(); ctx.restore(); }
+    // arcos de ángulo (centro, radio en unidades del mundo, de y a en grados)
+    for (const A of L.arcos){ if (!(alfa(A) > 0)) continue;
+      const cc = e.P(A.c || O), r = e.k*(A.r || .5), a1 = lerp(A.de, A.a, A.p === undefined ? 1 : A.p), color = col(c, A.color);
+      ctx.save(); ctx.globalAlpha = alfa(A); ctx.strokeStyle = color; ctx.lineWidth = grosor(A.color, A.ancho || 2.6); ctx.setLineDash(A.dash ? [4, 4] : []);
+      ctx.beginPath(); ctx.arc(cc.x, cc.y, r, -A.de*GR, -a1*GR, a1 > A.de); ctx.stroke(); ctx.setLineDash([]);
+      if (A.flecha !== false && Math.abs(a1 - A.de) > 8){ const s = Math.sign(a1 - A.de), q = { x:cc.x + r*Math.cos(a1*GR), y:cc.y - r*Math.sin(a1*GR) },
+        p = { x:cc.x + r*Math.cos((a1 - s*5)*GR), y:cc.y - r*Math.sin((a1 - s*5)*GR) }; flecha(p, q, color, 8); }
+      ctx.restore();
+      if (A.texto && alfa(A) >= 1){ const mg = A.en === undefined ? (A.de + a1)/2 : A.en, rr = r + (A.sep || 16);
+        rotulo(c, cc.x + rr*Math.cos(mg*GR) + (A.dx || 0), cc.y - rr*Math.sin(mg*GR) + (A.dy || 0), partes(A.texto, A.color), A.align || 'center', 12); } }
+    // segmentos y flechas
+    for (const S of L.segs){ if (!(alfa(S) > 0)) continue;
+      const p = e.P(S.p), q = e.P(S.q); ctx.save(); ctx.globalAlpha = alfa(S); ctx.strokeStyle = col(c, S.color); ctx.lineWidth = grosor(S.color, S.ancho || 2.5);
+      ctx.lineCap = 'round'; ctx.setLineDash(S.dash ? [6, 5] : []);
+      const largo = Math.hypot(q.x - p.x, q.y - p.y), s = S.flecha ? Math.min(11, largo*.45) : 0;
+      if (S.flecha && largo > 1){ const u = { x:(q.x - p.x)/largo, y:(q.y - p.y)/largo }; linea(p, { x:q.x - u.x*s*.7, y:q.y - u.y*s*.7 }); ctx.setLineDash([]); flecha(p, q, col(c, S.color), s); }
+      else if (largo > .5) linea(p, q);
+      ctx.restore();
+      if (S.texto && alfa(S) >= 1){ const m = S.en ? e.P(S.en) : { x:(p.x + q.x)/2, y:(p.y + q.y)/2 };
+        rotulo(c, m.x + (S.dx || 0), m.y + (S.dy || 0), partes(S.texto, S.color), S.align || 'center', 12); } }
+    // puntos (llenos o huecos)
+    for (const Q of L.puntos){ if (!(alfa(Q) > 0)) continue;
+      const p = e.P(Q.p), color = col(c, Q.color); ctx.save(); ctx.globalAlpha = alfa(Q);
+      ctx.beginPath(); ctx.arc(p.x, p.y, Q.r || 5, 0, 7);
+      if (Q.hueco){ ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = color; ctx.lineWidth = 2.2; ctx.stroke(); }
+      else { ctx.fillStyle = color; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.stroke(); }
+      ctx.restore();
+      if (Q.texto && alfa(Q) >= 1) rotulo(c, p.x + (Q.dx || 0), p.y + (Q.dy === undefined ? -15 : Q.dy), partes(Q.texto, Q.hueco ? 'muted' : Q.color), Q.align || 'center', 12); }
+    // textos sueltos
+    for (const T of L.textos){ if (!(alfa(T) > 0)) continue; const p = e.P(T.p);
+      ctx.save(); ctx.globalAlpha = alfa(T); rotulo(c, p.x + (T.dx || 0), p.y + (T.dy || 0), partes(T.t, T.color), T.align || 'center', T.tam || 12, T.peso); ctx.restore(); }
+    // manijas
+    for (const M of L.manijas){
+      const p = e.P(M.p), on = arrastrando === M.id || sobre === M.id;
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = on ? .18 : .09; ctx.beginPath(); ctx.arc(p.x, p.y, 20, 0, 7); ctx.fill(); ctx.restore();
+      ctx.fillStyle = c.card; ctx.strokeStyle = col(c, M.color); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(p.x, p.y, 9, 0, 7); ctx.fill(); ctx.stroke();
+    }
+    const q = cola; cola = null; q.forEach(f => f());
+  };
+  const vcol = k => (k === 'ink' || k === 'muted' ? '--' + k : '--c-' + k);
+  const it = (k, t, tipo) => `<span><i class="${tipo || ''}" style="border-color:var(${vcol(k)});${tipo ? '' : `background:color-mix(in srgb, var(${vcol(k)}) 25%, transparent)`}"></i>${t}</span>`;
+  E.leyenda = () => { document.getElementById(idLey).innerHTML = E.ley.map(([k, t, tipo]) => it(k, t, tipo)).join(''); };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  // La descripción (aria-live) se actualiza con un retardo: al arrastrar se lee una vez, al detenerse, no en cada paso.
+  let tAviso = 0;
+  E.avisar = () => {
+    const filas = E.lect.map(f => f(E));
+    document.getElementById(idLect).innerHTML = filas.map(([k, t, v, ancha]) => `<div class="lectura" style="--k:var(${vcol(k)})${ancha === 2 ? ';grid-column:span 2' : ancha ? ';grid-column:1/-1' : ''}"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (E.trasAvisar) E.trasAvisar();
+    if (E.anim) return;
+    const txt = [E.desc, ...filas.map(([, t, v]) => `${t}: ${String(v).replace(/<[^>]+>/g, '')}.`)].join(' ');
+    clearTimeout(tAviso); tAviso = setTimeout(() => { document.getElementById(idDesc).textContent = txt; }, 600);
+  };
+  E.animar = (dur, paso, fin) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(f); E.rehacer(); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); });
+  };
+  // Varias animaciones en fila (un E.config nuevo o E.parar corta la cadena)
+  E.cadena = (fs, fin) => { const id = ++E.cad; let i = 0; const sig = () => { if (id !== E.cad) return; if (i >= fs.length){ if (fin) fin(); return; } fs[i++](sig); }; sig(); };
+  E.parar = () => { E.tok++; E.cad++; E.anim = false; };
+  // ---------- arrastrar (táctil, ratón y teclado) ----------
+  function cerca(p, radio){ if (E.ocupado || E.anim || !E.L) return null; const e = escala(); let mejor = null, dm = radio;
+    for (const M of E.L.manijas){ const q = e.P(M.p), d = Math.hypot(p.x - q.x, p.y - q.y); if (d < dm){ dm = d; mejor = M.id; } } return mejor; }
+  Celular.arrastre(cv, {
+    activo: () => !!(E.L && E.L.manijas.length) && !E.ocupado && !E.anim,
+    cerca: (p, r) => cerca(p, r),
+    empezar: p => { arrastrando = cerca(p, 40); E.dibujar(); },
+    mover: p => { if (!arrastrando || !E.L.mover) return; E.L.mover(arrastrando, escala().mundo(p), E.L); E.rehacer(); E.dibujar(); E.avisar(); },
+    soltar: () => { arrastrando = null; E.dibujar(); },
+    sobre: s => { sobre = s ? (E.L && E.L.manijas[0] ? E.L.manijas[0].id : null) : null; E.dibujar(); }
+  });
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !E.L || !E.L.manijas.length || !E.L.tecla) return;
+    const k = { ArrowRight:[1, 0], ArrowLeft:[-1, 0], ArrowUp:[0, 1], ArrowDown:[0, -1] }[e.key];
+    if (!k) return;
+    e.preventDefault();
+    E.L.tecla(E.L.manijas[0].id, k[0], k[1], E.L); E.rehacer(); E.dibujar(); E.avisar();
+  });
+  return E;
+}
+// Radar: anillos y rayos
+const radar = (R, paso, o) => Object.assign({ R, paso: paso || 1, rayos: 30 }, o || {});
+// Marcas enteras de los ejes cartesianos
+function marcas(B, paso, angosto){
+  const tx = [], ty = [], s = paso || 1;
+  for (let x = Math.ceil(B.x0 + .4); x <= B.x1 - .4; x++) if (x && x % s === 0) tx.push([x, angosto && Math.abs(x) % (2*s) ? '' : fmt(x)]);
+  for (let y = Math.ceil(B.y0 + .4); y <= B.y1 - .4; y++) if (y && y % s === 0) ty.push([y, angosto && Math.abs(y) % (2*s) ? '' : fmt(y)]);
+  return { tx, ty };
+}
+// El punto (r; θ): la flecha r desde el polo y el arco θ. Con r < 0, un rayo gris punteado muestra hacia dónde mira θ.
+function puntoPolar(L, r, g, o){
+  o = o || {};
+  const p = P_(r, g), Rr = o.R || 4;
+  if (o.arco !== false) L.arcos.push({ de:0, a:g, r:o.ra || .7, color:'th', texto:o.ta, sep:12, en:o.en });
+  if (r < 0) L.segs.push({ p:O, q:P_(Rr, g), color:'muted', ancho:1.4, dash:true });
+  L.segs.push({ p:O, q:p, color:'r', ancho:3, flecha:Math.abs(r) > .05 });
+  L.puntos.push({ p, color:'ink', r:5, texto:o.texto, dx:o.dx || 0, dy:o.dy, align:o.align });
+  return p;
+}
+// Proyecciones x (horizontal, sobre el eje) e y (vertical)
+function proyecciones(L, p, tx, ty){
+  L.segs.push({ p:O, q:pt(p.x, 0), color:'x', ancho:4, texto:tx, dy: p.y >= 0 ? 12 : -12 },
+    { p:pt(p.x, 0), q:p, color:'y', ancho:4, texto:ty, dx: p.x >= 0 ? 10 : -10, align: p.x >= 0 ? 'left' : 'right' });
+}
+const ultimo = a => a[a.length - 1];
+const tramo = (pts, f) => pts.slice(0, Math.max(2, Math.round(f*(pts.length - 1)) + 1));
+// Curva polar dibujada con el signo de r: los tramos con r ≥ 0, en tinta continua; los de r < 0, a trazos.
+// o = { tipo, a, n } (como MP.radio); se dibuja de θ = 0° hasta f·vuelta.
+function curvaSigno(L, o, vuelta, f, pasos){
+  pasos = pasos || 360; const hasta = Math.max(1, Math.round(f*pasos)), q = [];
+  const rad = t => MP.radio(Object.assign({}, o, { theta:t }));
+  for (let j = 0; j <= hasta; j++){ const t = vuelta*j/pasos; q.push(MP.punto({ r:rad(t), theta:t })); }
+  let ini = 0, neg = null;
+  const cierra = j => { if (j > ini) L.curvas.push({ pts:q.slice(ini, j + 1), color:'ink', ancho: neg ? 2.4 : 3, dash:neg }); };
+  for (let j = 1; j <= hasta; j++){ const n = rad(vuelta*(j - .5)/pasos) < 0;
+    if (neg === null) neg = n; else if (n !== neg){ cierra(j - 1); ini = j - 1; neg = n; } }
+  cierra(hasta);
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+// Todo lo que se pregunta sale del motor, con sus errores típicos
+const C1 = MP.cuadrante({ r:4, theta:210 });
+const N2 = MP.positivo({ r:-2, theta:30 });
+const Q3 = MP.conRNegativo({ r:3, theta:60 }), EQ3 = MP.equivalentes({ r:3, theta:60 });
+const K4 = MP.aCartesianas({ r:4, theta:150 });
+const P5 = MP.aPolares({ x:-2, y:-2 });
+const T6 = MP.rectaTheta({ k:60 });
+const C7 = MP.circuloEje({ a:4, f:'cos' }), CE7 = MP.cartesianaEje({ a:4, f:'cos' });
+const hipT = 'No hay un informe de ideas erróneas sobre coordenadas polares: estas opciones son hipótesis nuestras, armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.';
+const hip = `<p class="fuente">${hipT}</p>`;
+const G1 = { id:'coordenadas-polares-paso1', ok:'c', opts:[
+  ['a', C1.errores.cociente.texto, 'CP1-cuadrante-por-cociente', 'hipotesis'],
+  ['b', C1.errores.desdeVertical.texto, 'CP9-mide-desde-la-vertical', 'hipotesis'],
+  ['c', C1.texto],
+  ['d', C1.errores.referencia.texto, 'CP2-reduce-al-primero', 'hipotesis']],
+  fb:{ c:'¡Bien! 210° pasa los 180° y no llega a 270°: el barco está abajo a la izquierda, en el III cuadrante.',
+    a:'Elegiste la A. 210 ÷ 90 da 2 y algo: ya se pasaron dos cuadrantes completos y el barco está en el tercero. La correcta está marcada.',
+    b:'Elegiste la B. El ángulo se gira desde el eje polar, la semirrecta horizontal hacia la derecha, no desde la vertical. La correcta está marcada.',
+    d:'Elegiste la D. 30° es el ángulo con el eje horizontal, pero el barco no está en el I cuadrante: se giraron 210° completos. La correcta está marcada.' } };
+const G2 = { id:'coordenadas-polares-paso2', ok:'b', opts:[
+  ['a', N2.errores.reflejaY.texto, 'CP5-refleja-en-el-eje-y', 'hipotesis'],
+  ['b', N2.texto],
+  ['c', N2.errores.ignoraSigno.texto, 'CP3-ignora-el-signo-de-r', 'hipotesis'],
+  ['d', N2.errores.reflejaX.texto, 'CP4-refleja-en-el-eje-x', 'hipotesis']],
+  fb:{ b:'¡Bien! Se mira hacia 30° y se caminan 2 hacia atrás: se cruza el polo y se llega al lado opuesto, a 30° + 180° = 210°.',
+    a:'Elegiste la A. (2; 150°) es el reflejo de (2; 30°) en el eje vertical. Con r negativo no se refleja: se camina hacia atrás, pasando por el polo. La correcta está marcada.',
+    c:'Elegiste la C. (2; 30°) deja el signo de lado. El signo de r dice hacia qué lado se camina: con −2 se camina hacia atrás. La correcta está marcada.',
+    d:'Elegiste la D. (2; 330°) es el reflejo de (2; 30°) en el eje horizontal. Con r negativo no se refleja: se camina hacia atrás, pasando por el polo. La correcta está marcada.' } };
+const G3 = { id:'coordenadas-polares-paso3', ok:'d', opts:[
+  ['a', Q3.errores.mismoAngulo.texto, 'CP7-deja-el-angulo', 'hipotesis'],
+  ['b', Q3.errores.anguloOpuesto.texto, 'CP8-cambia-el-signo-del-angulo', 'hipotesis'],
+  ['c', Q3.errores.suma90.texto, 'CP6-suma-90', 'hipotesis'],
+  ['d', Q3.texto]],
+  fb:{ d:'¡Bien! Para llegar al punto caminando hacia atrás hay que mirar al lado contrario: 60° + 180° = 240°.',
+    a:'Elegiste la A. Desde 60°, caminar 3 hacia atrás lleva al punto opuesto, en el III cuadrante. Hay que mirar al lado contrario. La correcta está marcada.',
+    b:'Elegiste la B. 300° = −60°. Mirando hacia 300° y caminando hacia atrás se llega a (3; 120°), no a (3; 60°). La correcta está marcada.',
+    c:'Elegiste la C. Sumar 90° es girar un cuarto de vuelta: el lado contrario está a media vuelta, 180°. La correcta está marcada.' } };
+const G4 = { id:'coordenadas-polares-paso4', ok:'a', opts:[
+  ['a', K4.texto],
+  ['b', K4.errores.cruza.texto, 'TR11-cruza-seno-y-coseno', 'parcial'],
+  ['c', K4.errores.sinR.texto, 'CP14-olvida-r', 'hipotesis'],
+  ['d', K4.errores.sinSigno.texto, 'TR12-sin-signo', 'parcial']],
+  fb:{ a:'¡Bien! x = 4 cos 150° = 4 · (−√3/2) = −2√3 e y = 4 sen 150° = 4 · 1/2 = 2.',
+    b:'Elegiste la B. (2; −2√3) usa el seno para x y el coseno para y. La x es la sombra horizontal: x = r cos θ. La correcta está marcada.',
+    c:'Elegiste la C. (−√3/2; 1/2) son cos 150° y sen 150°: es el punto a distancia 1. El barco está a distancia 4. La correcta está marcada.',
+    d:'Elegiste la D. (2√3; 2) está en el I cuadrante, pero 150° está en el II, a la izquierda: ahí la x es negativa. La correcta está marcada.' } };
+const G5 = { id:'coordenadas-polares-paso5', ok:'c', opts:[
+  ['a', P5.errores.arctanDirecto.texto, 'CP10-arctan-de-la-calculadora', 'hipotesis'],
+  ['b', P5.errores.sumaPartes.texto, 'AL9-r-suma-partes', 'parcial'],
+  ['c', P5.texto],
+  ['d', P5.errores.sinRaiz.texto, 'CP13-sin-raiz', 'hipotesis']],
+  fb:{ c:'¡Bien! r = √(4 + 4) = 2√2, y el punto (−2; −2) está en el III cuadrante: θ = 180° + 45° = 225°.',
+    a:'Elegiste la A. arctan((−2)/(−2)) = arctan 1 = 45° es lo que da la calculadora, pero 45° apunta al I cuadrante. El punto (−2; −2) está abajo a la izquierda. La correcta está marcada.',
+    b:'Elegiste la B. 4 = 2 + 2 sería ir por los dos catetos. La distancia en línea recta es la hipotenusa, más corta: √(4 + 4). La correcta está marcada.',
+    d:'Elegiste la D. 8 = 4 + 4 es r². La distancia es su raíz, 2√2. La correcta está marcada.' } };
+const G6 = { id:'coordenadas-polares-paso6', ok:'a', frase:true, opts:[
+  ['a', T6.texto],
+  ['b', T6.errores.semirrecta.texto, 'CP25-semirrecta', 'hipotesis'],
+  ['c', T6.errores.horizontal.texto, 'CP27-recta-horizontal', 'hipotesis'],
+  ['d', T6.errores.circunferencia.texto, 'CP26-circunferencia', 'hipotesis']],
+  fb:{ a:'¡Bien! Con r positivo se dibuja la mitad que mira hacia 60°; con r negativo, la otra mitad, hacia 240°. Juntas forman la recta completa.',
+    b:'Elegiste la B. La semirrecta sale solo con r ≥ 0. Aquí r también es negativo: esos puntos quedan del otro lado del polo. La correcta está marcada.',
+    c:'Elegiste la C. Todos los puntos están en la dirección de 60° o en la contraria, así que la figura pasa por el polo y está inclinada. La correcta está marcada.',
+    d:'Elegiste la D. Una circunferencia con centro en el polo es r = constante. Aquí lo constante es el ángulo. La correcta está marcada.' } };
+const G7 = { id:'coordenadas-polares-paso7', ok:'b', opts:[
+  ['a', C7.errores.centroPolo.texto, 'CP15-centro-en-el-polo', 'hipotesis'],
+  ['b', C7.texto],
+  ['c', C7.errores.ejeCruzado.texto, 'CP17-cruza-coseno-y-seno', 'hipotesis'],
+  ['d', C7.errores.centroEnA.texto, 'CP16-centro-en-a', 'hipotesis']],
+  fb:{ b:'¡Bien! En θ = 0°, r = 4: el punto (4; 0). En θ = 90°, r = 0: el polo. Es la circunferencia de diámetro 4 entre el polo y (4; 0).',
+    a:'Elegiste la A. Con centro en el polo, r valdría siempre 4. Pero en θ = 90° r = 4 cos 90° = 0: la curva pasa por el polo. La correcta está marcada.',
+    c:'Elegiste la C. Con coseno, el punto más lejano está en θ = 0°, sobre el eje horizontal: (4; 0). El centro queda en ese eje. La correcta está marcada.',
+    d:'Elegiste la D. Si el radio fuera 4 y el centro (4; 0), la curva llegaría hasta x = 8. Pero r nunca pasa de 4. La correcta está marcada.' } };
+
+/* ----- configuraciones del dibujo ----- */
+const BOXR = R => ({ x0:-R - .9, x1:R + .9, y0:-R - .9, y1:R + .9 });
+// Arrastrar el punto del radar. Con 'neg', r puede ser negativo: el arrastre conserva el signo (con r < 0 el punto
+// está en θ + 180°) y las flechas ↑ ↓ pasan de positivo a negativo saltando el 0.
+function arrastreRadar(R, neg){
+  return {
+    mover:(id, q, L) => { const s = L.estado, d = clamp(Math.round(Math.hypot(q.x, q.y)*2)/2, .5, R);
+      if (neg && s.r < 0){ s.r = -d; s.g = pegarAng(ang(q) + 180); } else { s.r = d; s.g = pegarAng(ang(q)); } },
+    tecla:(id, dx, dy, L) => { const s = L.estado; if (dx) s.g = vecinoAng(s.g, dx);
+      if (dy){ let r = clamp(s.r + dy*.5, neg ? -R : .5, R); if (r === 0) r = dy*.5; s.r = r; } },
+    ayuda:'Usa las flechas del teclado: izquierda y derecha cambian el ángulo; arriba y abajo, la distancia.' };
+}
+const pr = (r, g) => `(${ex(r)}; ${tG(g)})`;
+// Lo que muestra un r negativo: el rayo opuesto θ + 180°, su arco y, a trazos, adónde llegaría r positivo.
+function opuesto(L, r, g, R){
+  if (r >= 0) return;
+  const g2 = MP.normal(g + 180);
+  L.segs.push({ p:O, q:P_(-r, g), color:'muted', ancho:2, dash:true }, { p:O, q:P_(R, g2), color:'muted', ancho:1.2, dash:true });
+  L.arcos.push({ de:0, a:g2, r:1.2, color:'th', dash:true, texto:tG(g2), sep:12, en: g2 > 60 ? g2 - 30 : g2/2 });
+}
+
+// Paso 1: el barco en (4; 210°)
+function config1(ya){
+  const B = BOXR(4);
+  E.config({ L:Object.assign({ caja:B, estado:{ g: ya ? 210 : 0, r: ya ? 4 : 0, libre:ya },
+    rehacer:L => { const s = L.estado;
+      L.radar = radar(4, 1, { etiquetas: s.libre || s.g > 0 ? 30 : 0, cuadrantes:true }); L.ejes = { polar:true };
+      if (s.g > 0 || s.r > 0){ if (s.r <= 0) L.segs.push({ p:O, q:P_(4, s.g), color:'th', ancho:1.6, dash:true }); else puntoPolar(L, s.r, s.g, { ta: tG(s.g), texto: s.libre ? null : [['(4; 210°)', 'ink']], dy:16 });
+        if (s.r <= 0) L.arcos.push({ de:0, a:s.g, r:.7, color:'th', texto:tG(Math.round(s.g)), sep:12 }); }
+      if (s.libre) L.manijas = [{ id:'p', p:P_(s.r, s.g), color:'r' }]; } }, arrastreRadar(4)),
+    lect: ya ? [E => ['r', 'r', ex(E.L.estado.r)], E => ['th', 'θ', tG(E.L.estado.g)], E => ['ink', 'dónde está', MP.cuadrante({ r:E.L.estado.r, theta:E.L.estado.g }).lugar]] : [],
+    ley: ya ? [['r', 'la distancia r al polo'], ['th', 'el ángulo θ'], ['muted', 'anillos cada 1 y rayos cada 30°', 'trazos']] : [['muted', 'anillos cada 1 y rayos cada 30°', 'trazos']],
+    desc:'El radar: anillos de radio 1, 2, 3 y 4 alrededor del polo, rayos cada 30° y los cuatro cuadrantes. El eje polar sale del polo hacia la derecha.' });
+}
+// Paso 2: r negativo
+function config2(ya){
+  const B = BOXR(4);
+  E.config({ L:Object.assign({ caja:B, estado:{ r: ya ? -2 : 0, g:30, f: ya ? 2 : 0, libre:ya },
+    rehacer:L => { const s = L.estado;
+      L.radar = radar(4, 1, { etiquetas: s.f > 0 ? 30 : 0 }); L.ejes = { polar:true };
+      if (s.libre){ opuesto(L, s.r, s.g, 4); puntoPolar(L, s.r, s.g, { ta:tG(s.g), R:4 }); L.manijas = [{ id:'p', p:P_(s.r, s.g), color:'r' }]; return; }
+      L.arcos.push({ de:0, a:30, r:.7, color:'th', texto:'30°', sep:12 });
+      L.segs.push({ p:O, q:P_(4, 30), color:'muted', ancho:1.4, dash:true });
+      if (s.f > 0){ const rr = s.f <= 1 ? 2*s.f : 2 - 4*(s.f - 1);   // primero +2 (fantasma), después hasta −2
+        if (s.f > 1) L.segs.push({ p:O, q:P_(2, 30), color:'muted', ancho:2, dash:true }, { p:O, q:P_(4, 210), color:'muted', ancho:1.2, dash:true });
+        L.segs.push({ p:O, q:P_(rr, 30), color:'r', ancho:3, flecha:Math.abs(rr) > .05 });
+        if (s.f >= 2){ L.puntos.push({ p:P_(-2, 30), color:'ink', r:5, texto:[['(−2; 30°) = ', 'ink'], [N2.texto, 'ink']], dy:16 });
+          L.arcos.push({ de:0, a:210, r:1.2, color:'th', dash:true, texto:'210°', sep:12, en:160 }); } } } }, arrastreRadar(4, true)),
+    lect: ya ? [E => ['r', 'r', ex(E.L.estado.r)], E => ['th', 'θ', tG(E.L.estado.g)], E => ['ink', 'con r ≥ 0', MP.positivo({ r:E.L.estado.r, theta:E.L.estado.g }).texto]] : [],
+    ley: ya ? [['r', 'la flecha r (hacia atrás si r < 0)'], ['th', 'θ y, si r < 0, θ + 180°'], ['muted', 'hacia dónde mira θ y adónde llegaría r positivo', 'trazos']] : [['th', 'el ángulo de 30°'], ['muted', 'el rayo de 30°', 'trazos']],
+    desc:'El radar con el rayo de 30° marcado.' });
+}
+// Paso 3: otra escritura del mismo punto
+function config3(ya){
+  const B = BOXR(4);
+  E.config({ L:Object.assign({ caja:B, estado:{ r:3, g:60, f: ya ? 1 : 0, libre:ya },
+    rehacer:L => { const s = L.estado;
+      L.radar = radar(4, 1, { etiquetas: ya ? 30 : 0 }); L.ejes = { polar:true };
+      if (s.libre){ puntoPolar(L, s.r, s.g, { ta:tG(s.g) });
+        const g2 = MP.normal(s.g + 180); L.segs.push({ p:O, q:P_(4, g2), color:'muted', ancho:1.4, dash:true });
+        L.arcos.push({ de:0, a:g2, r:1.25, color:'th', dash:true, texto:tG(g2), sep:12, en: g2 > 200 ? g2 - 25 : g2 + 20 });
+        L.segs.push({ p:O, q:P_(-s.r, g2), color:'ink', ancho:2.4, flecha:true, dash:true });
+        L.manijas = [{ id:'p', p:P_(s.r, s.g), color:'r' }]; return; }
+      puntoPolar(L, 3, 60, { ta:'60°', texto:[['(3; 60°)', 'ink']], dx:14, dy:-10, align:'left' });
+      if (s.f > 0){ L.segs.push({ p:O, q:P_(4, 240), color:'muted', ancho:1.4, dash:true });
+        L.arcos.push({ de:0, a:lerp(0, 240, Math.min(1, s.f*2)), r:1.25, color:'th', dash:true, texto: s.f >= 1 ? '240°' : null, sep:12, en:215 });
+        if (s.f > .5) L.segs.push({ p:O, q:P_(-3*(s.f - .5)*2, 240), color:'ink', ancho:2.4, flecha:true, dash:true });
+        if (s.f >= 1) L.textos.push({ p:P_(1.7, 240), t:[[Q3.texto, 'ink']], dx:-8, align:'right' }); } } }, arrastreRadar(4)),
+    lect: ya ? [E => ['ink', 'el punto', pr(E.L.estado.r, E.L.estado.g)], E => ['ink', 'con −r', MP.conRNegativo({ r:E.L.estado.r, theta:E.L.estado.g }).texto],
+      E => ['muted', 'otras', MP.equivalentes({ r:E.L.estado.r, theta:E.L.estado.g }).lista.filter(q => !(q.r === E.L.estado.r && q.theta === E.L.estado.g)).map(q => nw(q.texto)).join(' · '), true]] : [],
+    ley: ya ? [['r', 'la distancia r'], ['th', 'el ángulo θ y su opuesto, θ + 180°'], ['ink', 'el camino con r negativo', 'trazos']] : [['r', 'la distancia r = 3'], ['th', 'el ángulo de 60°']],
+    desc:'El radar con el punto (3; 60°).' });
+}
+// Paso 4: polares a cartesianas (r de −4 a 4)
+function config4(ya){
+  const B = BOXR(4);
+  E.config({ L:Object.assign({ caja:B, estado:{ r:4, g:150, f: ya ? 1 : 0, libre:ya },
+    rehacer:L => { const s = L.estado;
+      L.radar = radar(4, 1, { etiquetas: ya ? 30 : 0, numeros:false }); L.ejes = marcas(B, 1, E.angosto());
+      if (s.f <= 0) return;
+      const K = MP.aCartesianas({ r:s.r, theta:s.g }), p = pt(K.x, K.y);
+      if (s.libre) opuesto(L, s.r, s.g, 4);
+      puntoPolar(L, s.r, s.g, { ta:tG(s.g), texto:[[`(${K.xTexto}; ${K.yTexto})`, 'ink']], dy: p.y >= 0 ? -16 : 16, f:s.f });
+      if (s.f >= 1) proyecciones(L, p, [[`x = ${K.xTexto}`, 'x']], [[`y = ${K.yTexto}`, 'y']]);
+      if (s.libre) L.manijas = [{ id:'p', p, color:'r' }]; } }, arrastreRadar(4, true)),
+    lect: ya ? [E => ['r', 'r', ex(E.L.estado.r)], E => ['th', 'θ', tG(E.L.estado.g)],
+      E => ['x', 'x = r cos θ', MP.aCartesianas({ r:E.L.estado.r, theta:E.L.estado.g }).xTexto], E => ['y', 'y = r sen θ', MP.aCartesianas({ r:E.L.estado.r, theta:E.L.estado.g }).yTexto]] : [],
+    ley: ya ? [['r', 'r'], ['th', 'θ'], ['x', 'x (la sombra en el eje horizontal)', 'linea'], ['y', 'y (la altura)', 'linea']] : [['muted', 'el radar con los ejes x e y', 'trazos']],
+    desc: ya ? 'El radar con los ejes x e y, el punto, su flecha r, su ángulo θ y sus coordenadas x e y.' : 'El radar con los ejes x e y. Todavía no hay ningún punto.' });
+}
+// Paso 5: cartesianas a polares
+function config5(ya){
+  const B = { x0:-3.7, x1:3.7, y0:-3.7, y1:3.7 };
+  E.config({ L:{ caja:B, estado:{ p:pt(-2, -2), f: ya ? 1 : 0, libre:ya },
+    rehacer:L => { const s = L.estado, p = s.p;
+      L.rejilla = { x0:-3, x1:3, y0:-3, y1:3 }; L.ejes = marcas(B, 1, E.angosto());
+      if (s.f <= 0) return;
+      const P = MP.aPolares({ x:p.x, y:p.y });
+      proyecciones(L, p, [[`x = ${fmt(p.x)}`, 'x']], [[`y = ${fmt(p.y)}`, 'y']]);
+      if (!P.polo){ L.segs.push({ p:O, q:p, color:'r', ancho:3, flecha:true, f:s.f, texto: s.f >= 1 ? [[`r = ${P.r}`, 'r']] : null, dx: p.x > 0 ? -12 : 12, dy: p.y > 0 ? -10 : 10, align: p.x > 0 ? 'right' : 'left' });
+        L.arcos.push({ de:0, a:P.theta, p:s.f, r:.6, color:'th', texto:tG(P.theta), sep:12 });
+        // lo que da la calculadora, si apunta a otro lado
+        if (s.f >= 1 && P.errores.arctanDirecto){ const gc = Math.atan(p.y/p.x)/GR, q = P_(P.rNum, gc);
+          L.segs.push({ p:O, q, color:'muted', ancho:1.6, dash:true });
+          L.puntos.push({ p:q, color:'muted', hueco:true, texto:[[`la calculadora: ${tG(gc)}`, 'muted']], dy: q.y >= 0 ? -14 : 15 }); } }
+      L.puntos.push({ p, color:'ink', r:5, texto:[[`(${fmt(p.x)}; ${fmt(p.y)})`, 'ink']], dy: p.y >= 0 ? -16 : 17 });
+      if (s.libre) L.manijas = [{ id:'p', p, color:'ink' }]; },
+    mover:(id, q, L) => { const p = pt(clamp(Math.round(q.x), -3, 3), clamp(Math.round(q.y), -3, 3)); if (p.x || p.y) L.estado.p = p; },
+    tecla:(id, dx, dy, L) => { const s = L.estado, p = pt(clamp(s.p.x + dx, -3, 3), clamp(s.p.y + dy, -3, 3)); if (p.x || p.y) s.p = p; },
+    ayuda:'Usa las flechas del teclado para mover el punto por la cuadrícula.' },
+    lect: ya ? [E => { const p = E.L.estado.p; return ['ink', 'el punto', `(${fmt(p.x)}; ${fmt(p.y)})`]; },
+      E => { const p = E.L.estado.p; return ['r', 'r', MP.aPolares({ x:p.x, y:p.y }).r]; },
+      E => { const p = E.L.estado.p; return ['th', 'θ', tG(MP.aPolares({ x:p.x, y:p.y }).theta)]; },
+      E => { const p = E.L.estado.p; return ['muted', 'arctan(y/x)', p.x ? tG(Math.atan(p.y/p.x)/GR) : 'no existe']; }] : [],
+    ley: ya ? [['x', 'x', 'linea'], ['y', 'y', 'linea'], ['r', 'r'], ['th', 'θ'], ['muted', 'lo que da arctan(y/x)', 'trazos']] : [['muted', 'la cuadrícula: un cuadrito por unidad', 'trazos']],
+    desc: ya ? 'Una cuadrícula con el punto, sus coordenadas x e y, su distancia r al origen y su ángulo θ.' : 'Una cuadrícula con los ejes x e y. Todavía no hay ningún punto.' });
+}
+// Paso 6: θ = k (la mitad con r < 0, a trazos)
+function config6(ya){
+  const B = BOXR(4);
+  E.config({ L:{ caja:B, estado:{ k:60, f: ya ? 2 : 0, libre:ya },
+    rehacer:L => { const s = L.estado;
+      L.radar = radar(4, 1, { etiquetas: ya ? 30 : 0 }); L.ejes = { polar:true };
+      L.arcos.push({ de:0, a:s.k, r:.7, color:'th', texto:tG(s.k), sep:12 });
+      if (s.f <= 0) return;
+      const pos = Math.min(1, s.f)*4, negv = Math.max(0, s.f - 1)*4;
+      L.curvas.push({ pts:[O, P_(pos, s.k)], color:'ink', ancho:3 });
+      if (negv > 0) L.curvas.push({ pts:[O, P_(-negv, s.k)], color:'ink', ancho:2.4, dash:true });
+      const rr = s.f <= 1 ? pos : -negv;
+      if (!s.libre && s.f < 2) L.segs.push({ p:O, q:P_(rr, s.k), color:'r', ancho:3, flecha:true });
+      if (s.f >= 2) L.textos.push({ p:P_(3.3, s.k), t:[[`θ = ${tG(s.k)}`, 'ink']], dx: 14, align:'left' }); } },
+    lect: ya ? [E => ['th', 'θ', tG(E.L.estado.k)], E => ['ink', 'cartesiana', nw(MP.rectaTheta({ k:E.L.estado.k }).cartesiana)]] : [],
+    ley: ya ? [['th', 'el ángulo fijo θ'], ['ink', 'los puntos con r de 0 a 4', 'linea'], ['ink', 'tramos con r negativo', 'trazos']] : [['th', 'el ángulo de 60°']],
+    desc:'El radar con el ángulo de 60° marcado.' });
+}
+// Paso 7: r = a cos θ
+function config7(ya){
+  const B = BOXR(6);
+  E.config({ L:{ caja:B, estado:{ a:4, fn:'cos', f: ya ? 1 : 0, libre:ya },
+    rehacer:L => { const s = L.estado;
+      L.radar = radar(6, 1, { etiquetas: ya ? 30 : 0 }); L.ejes = { polar:true };
+      if (s.f <= 0) return;
+      curvaSigno(L, { tipo:s.fn, a:s.a }, 180, s.f, 180);
+      if (s.f < 1){ const g = 180*s.f, rr = MP.radio({ tipo:s.fn, a:s.a, theta:g }); puntoPolar(L, rr, g, { R:6, ra:.9 }); }
+      else { const C = MP.circuloEje({ a:s.a, f:s.fn }), c0 = pt(C.centro.x, C.centro.y);
+        L.puntos.push({ p:c0, color:'a', r:4, texto:[[`centro (${ex(c0.x)}; ${ex(c0.y)})`, 'a']], dy: c0.y > 0 ? -14 : 16 });
+        L.segs.push({ p:O, q:pt(2*c0.x, 2*c0.y), color:'a', ancho:2, dash:true }); } } },
+    lect: ya ? [E => ['a', 'a', ex(E.L.estado.a)], E => ['ink', 'curva', nw(`r = ${ex(E.L.estado.a)} ${E.L.estado.fn} θ`), 2],
+      E => ['ink', 'cartesiana', nw(ecA(MP.cartesianaEje({ a:E.L.estado.a, f:E.L.estado.fn }).texto)), true], E => ['a', 'la figura', fig(MP.circuloEje({ a:E.L.estado.a, f:E.L.estado.fn }).texto), true]] : [],
+    ley: ya ? [['ink', 'la curva con r ≥ 0', 'linea'], ['ink', 'tramos con r negativo', 'trazos'], ['a', 'el diámetro, de largo |a|', 'trazos'], ['r', 'r mientras se dibuja']] : [['muted', 'el radar: anillos cada 1', 'trazos']],
+    desc: ya ? 'El radar con la curva dibujada y su centro.' : 'El radar con anillos de radio 1 a 6. Todavía no hay ninguna curva.' });
+}
+// Paso 8: un complejo es un punto
+function config8(){
+  const B = { x0:-3.8, x1:3.8, y0:-3.8, y1:3.8 };
+  const F_ = E => MP.formaPolar({ re:E.L.estado.p.x, im:E.L.estado.p.y });
+  E.config({ L:{ caja:B, estado:{ p:pt(-2, -2) },
+    rehacer:L => { const p = L.estado.p, F = MP.formaPolar({ re:p.x, im:p.y });
+      L.rejilla = { x0:-3, x1:3, y0:-3, y1:3 }; L.ejes = Object.assign(marcas(B, 1, E.angosto()), { nx:'Re', ny:'Im' });
+      proyecciones(L, p, [[`x = ${fmt(p.x)}`, 'x']], [[`y = ${fmt(p.y)}`, 'y']]);
+      L.segs.push({ p:O, q:p, color:'r', ancho:3, flecha:true });
+      L.arcos.push({ de:0, a:F.theta, r:.6, color:'th', texto:tG(F.theta), sep:12 });
+      L.puntos.push({ p, color:'ink', r:5, texto:[[`z = ${F.polar}`, 'ink']], dy: p.y >= 0 ? -16 : 17 });
+      L.manijas = [{ id:'p', p, color:'ink' }]; },
+    mover:(id, q, L) => { const p = pt(clamp(Math.round(q.x), -3, 3), clamp(Math.round(q.y), -3, 3)); if (p.x || p.y) L.estado.p = p; },
+    tecla:(id, dx, dy, L) => { const s = L.estado, p = pt(clamp(s.p.x + dx, -3, 3), clamp(s.p.y + dy, -3, 3)); if (p.x || p.y) s.p = p; },
+    ayuda:'Usa las flechas del teclado para mover el punto z por la cuadrícula.' },
+    lect:[E => ['ink', 'z = x + yi', nw(F_(E).binomica)], E => ['ink', 'par (r; θ)', nw(F_(E).par), 2],
+      E => ['ink', 'r cis θ', nw(F_(E).polar), 2], E => ['ink', 'r e^(iθ)', nw(F_(E).exponencial), 2]],
+    ley:[['x', 'parte real x', 'linea'], ['y', 'parte imaginaria y', 'linea'], ['r', 'el módulo r'], ['th', 'el argumento θ']],
+    desc:'El plano complejo con el punto z = −2 − 2i, su módulo y su argumento.' });
+}
+
+// Deslizadores de r (−4 a 4) y θ (ángulos notables), sincronizados con el arrastre y el teclado
+const deslizadores = id => `<div class="control"><label for="r${id}">Distancia r: <span id="r${id}v"></span></label><input type="range" id="r${id}" min="-4" max="4" step="0.5"></div>
+   <div class="control"><label for="g${id}">Ángulo θ: <span id="g${id}v"></span></label><input type="range" id="g${id}" min="0" max="${NOT.length - 1}" step="1"></div>`;
+function enlazarRG(id){
+  const r = $('r' + id), g = $('g' + id); if (!r) return; const s = E.L.estado;
+  const sinc = () => { r.value = s.r; g.value = NOT.indexOf(s.g); $('r' + id + 'v').textContent = ex(s.r); $('g' + id + 'v').textContent = tG(s.g); };
+  const pinta = () => { E.rehacer(); E.dibujar(); E.avisar(); };
+  r.oninput = () => { s.r = +r.value || (s.r < 0 ? .5 : -.5); pinta(); }; g.oninput = () => { s.g = NOT[+g.value]; pinta(); };
+  E.trasAvisar = sinc; sinc();
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: el barco en el radar', gate:G1,
+   prep:() => config1(!!S.pred[G1.id]),
+   anima:fin => { config1(false); const s = E.L.estado; E.cadena([n => E.animar(1300, f => { s.g = 210*f; }, n), n => E.animar(700, f => { s.r = 4*f; }, n)], () => esperar(500, () => { config1(true); fin(); })); },
+   body:() => `<p class="problem">Un radar ubica cada barco con dos datos: su distancia ${r_('r')} al centro (el <b>polo</b>) y el ángulo ${th_('θ')} que se gira desde el <b>eje polar</b>, la semirrecta horizontal que sale del polo hacia la derecha, en sentido antihorario. (En matemática el ángulo se mide así, desde el eje polar y contra el reloj; los radares de los barcos lo miden desde el norte.) El par se escribe (${r_('r')}; ${th_('θ')}). ¿Dónde está un barco en (${r_('4')}; ${th_('210°')})?</p>${opcionesHTML(G1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">180° &lt; ${th_('210°')} &lt; 270°  ⟹  III cuadrante</div></div>
+   <p>Primero se gira el ángulo ${th_('θ')} desde el eje polar; después se caminan ${r_('r')} unidades en esa dirección. Los rayos del radar van cada 30° y los anillos, cada 1.</p>
+   <p>Arrastra el barco por el radar (o usa las flechas del teclado en el dibujo): se pega a los ángulos de 30° y de 45°, y a distancias de media unidad.</p>
+   ${hip}</div>` },
+ { k:'Paso 2', t:'Predice: una distancia negativa', gate:G2,
+   prep:() => config2(!!S.pred[G2.id]),
+   anima:fin => { config2(false); const s = E.L.estado; E.cadena([n => E.animar(700, f => { s.f = f; }, n), n => esperar(300, n), n => E.animar(1200, f => { s.f = 1 + f; }, n)], () => esperar(900, () => { config2(true); fin(); })); },
+   body:() => `<p class="problem">En matemática, ${r_('r')} también puede ser negativo. ¿Qué par, con ${r_('r')} positivo y ${th_('θ')} entre 0° y 360°, es el mismo punto que (${r_('−2')}; ${th_('30°')})?</p>${opcionesHTML(G2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(${r_('−r')}; ${th_('θ')}) = (${r_('r')}; ${th_('θ')} + 180°)  ⟹  (${r_('−2')}; ${th_('30°')}) = (${r_('2')}; ${th_('210°')})</div></div>
+   <p>Con ${r_('r')} negativo se mira hacia ${th_('θ')} y se camina hacia atrás: se cruza el polo y se llega al lado opuesto. No es un reflejo en un eje: el punto queda «al otro lado del polo», a media vuelta.</p>
+   <p>Mueve r y θ, o arrastra el punto (con las flechas del teclado, ↑ ↓ cambian r y pasan a los negativos).</p>
+   ${deslizadores(2)}
+   ${hip}</div>`,
+   entrar:() => enlazarRG(2) },
+ { k:'Paso 3', t:'Predice: otro nombre para el mismo punto', gate:G3,
+   prep:() => config3(!!S.pred[G3.id]),
+   anima:fin => { config3(false); const s = E.L.estado; E.animar(1700, f => { s.f = f; }, () => esperar(900, () => { config3(true); fin(); })); },
+   body:() => `<p class="problem">Un mismo punto tiene muchos nombres. ¿Cuál de estos pares, con ${r_('r')} = ${r_('−3')} y ${th_('θ')} entre 0° y 360°, nombra el punto (${r_('3')}; ${th_('60°')})?</p>${opcionesHTML(G3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(${r_('r')}; ${th_('θ')}) = (${r_('r')}; ${th_('θ')} + 360°k) = (${r_('−r')}; ${th_('θ')} + 180° + 360°k) <span class="note">(con k entero)</span></div>
+   <div class="eq">(${r_('3')}; ${th_('60°')}) = (${r_('3')}; ${th_('420°')}) = (${r_('3')}; ${th_('−300°')}) = (${r_('−3')}; ${th_('240°')}) = (${r_('−3')}; ${th_('−120°')})</div></div>
+   <p>Una vuelta completa más o menos no mueve el punto; media vuelta más, con el signo de ${r_('r')} cambiado, tampoco. El <b>polo</b> es el caso extremo: (0; ${th_('θ')}) es el polo con cualquier ${th_('θ')}.</p>
+   <p>Arrastra el punto: las lecturas muestran sus otras escrituras con ${th_('θ')} entre −360° y 360°. Por eso, al dar una respuesta se usa una escritura acordada: aquí, ${r_('r')} ≥ 0 y ${th_('θ')} entre 0° y 360° (sin llegar a 360°).</p>
+   ${hip}</div>` },
+ { k:'Paso 4', t:'Predice: de polares a cartesianas', gate:G4,
+   prep:() => config4(!!S.pred[G4.id]),
+   anima:fin => { config4(false); const s = E.L.estado; E.animar(900, f => { s.f = f; }, () => esperar(500, () => { config4(true); fin(); })); },
+   body:() => `<p class="problem">Encima del radar se ponen los ejes ${x_('x')} e ${y_('y')}, con el polo en el origen y el eje polar sobre el eje ${x_('x')} positivo. ¿Cuáles son las coordenadas cartesianas (${x_('x')}; ${y_('y')}) del punto (${r_('4')}; ${th_('150°')})?</p>${opcionesHTML(G4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${x_('x')} = ${r_('r')} cos ${th_('θ')} = 4 · (−√3/2) = ${x_('−2√3')};  ${y_('y')} = ${r_('r')} sen ${th_('θ')} = 4 · (1/2) = ${y_('2')}</div></div>
+   <p>${x_('x')} es la sombra del punto sobre el eje horizontal y ${y_('y')} su altura. En el II cuadrante la sombra cae a la izquierda: ${x_('x')} es negativa. Las mismas fórmulas valen con ${r_('r')} negativo.</p>
+   <p>Arrastra el punto por los cuatro cuadrantes, o mueve r y θ (también con r negativo), y mira los signos de ${x_('x')} e ${y_('y')}.</p>
+   ${deslizadores(4)}
+   <p class="fuente">El informe de trigonometría recoge, con respaldo parcial y sin porcentajes, que algunos alumnos leen el seno en el eje horizontal (TR11; Williams, s. f., trabajo de estudiante) y que otros lo tratan como una distancia sin signo, idea que falla justo fuera del primer cuadrante (TR12; Brown, 2005, citado por otros). Las opciones B y D son esas dos ideas aplicadas a las coordenadas; la C es una hipótesis nuestra.</p></div>`,
+   entrar:() => enlazarRG(4) },
+ { k:'Paso 5', t:'Predice: de cartesianas a polares', gate:G5,
+   prep:() => config5(!!S.pred[G5.id]),
+   anima:fin => { config5(false); const s = E.L.estado; E.animar(1100, f => { s.f = f; }, () => esperar(800, () => { config5(true); fin(); })); },
+   body:() => `<p class="problem">Ahora al revés. ¿Cuáles son las coordenadas polares (${r_('r')}; ${th_('θ')}) del punto (${x_('−2')}; ${y_('−2')}), con ${r_('r')} ≥ 0 y ${th_('θ')} entre 0° y 360°?</p>${opcionesHTML(G5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${r_('r')} = √(${x_('x')}² + ${y_('y')}²) = √(4 + 4) = 2√2;  tan ${th_('θ')} = ${y_('y')}/${x_('x')} = 1</div><div class="eq">${th_('θ')} = 180° + 45° = 225° <span class="note">(el punto está en el III cuadrante)</span></div></div>
+   <p>arctan(${y_('y')}/${x_('x')}) solo devuelve ángulos entre −90° y 90°: no distingue (−2; −2) de (2; 2), porque los dos cocientes valen 1. Primero se mira en qué cuadrante está el punto; después se corrige el ángulo. Si ${x_('x')} = 0, el cociente ni siquiera existe: se mira hacia dónde apunta el punto.</p>
+   <p>Arrastra el punto por la cuadrícula y compara ${th_('θ')} con lo que da la calculadora.</p>
+   <p class="fuente">El informe de álgebra recoge √(x² + y²) = x + y entre los errores de linealidad de ingresantes chilenos a pedagogía (AL9; Aguerrea y otros, 2022, según resúmenes y sin cifra del ítem): aplicada aquí da r = 2 + 2 = 4. Quedarse con el ángulo de la calculadora es una hipótesis nuestra, vecina de TR22 del informe de trigonometría (en una ecuación, quedarse con la única solución que da la calculadora), que tampoco tiene datos. La D es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 6', t:'Predice: un ángulo fijo', gate:G6,
+   prep:() => config6(!!S.pred[G6.id]),
+   anima:fin => { config6(false); const s = E.L.estado; E.cadena([n => E.animar(900, f => { s.f = f; }, n), n => E.animar(900, f => { s.f = 1 + f; }, n)], () => esperar(500, () => { config6(true); fin(); })); },
+   body:() => `<p class="problem">Una ecuación polar junta todos los puntos (${r_('r')}; ${th_('θ')}) que la cumplen. En la ecuación ${th_('θ')} = ${th_('60°')}, ${r_('r')} puede tomar cualquier valor real: positivo, cero o negativo. ¿Qué figura forman esos puntos?</p>${opcionesHTML(G6.opts, 'fb', true)}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${th_('θ')} = ${th_('60°')}  ⟹  ${y_('y')}/${x_('x')} = tan 60° = √3  ⟹  ${y_('y')} = √3${x_('x')}</div>
+   <div class="eq">${r_('r')} = 3  ⟹  ${x_('x')}² + ${y_('y')}² = 9</div></div>
+   <p>Lo contrario también sirve: en la ecuación ${r_('r')} = 3 lo fijo es la distancia y ${th_('θ')} recorre todos los ángulos: es la circunferencia de radio 3 con centro en el polo. Un ángulo fijo da una recta por el polo; una distancia fija, una circunferencia alrededor del polo.</p>
+   <div class="control"><label for="k6">Ángulo fijo θ: <span id="k6v"></span></label><input type="range" id="k6" min="0" max="7" step="1" value="3"></div>
+   ${hip}</div>`,
+   entrar:() => { const k = $('k6'); if (!k) return; const s = E.L.estado, KS6 = NOT.filter(g => g < 180);
+     const pinta = () => { $('k6v').textContent = tG(s.k); E.rehacer(); E.dibujar(); E.avisar(); };
+     k.value = KS6.indexOf(s.k); k.oninput = () => { s.k = KS6[+k.value]; pinta(); }; pinta(); } },
+ { k:'Paso 7', t:'Predice: la curva r = a cos θ', gate:G7,
+   prep:() => config7(!!S.pred[G7.id]),
+   anima:fin => { config7(false); const s = E.L.estado; E.animar(RM ? 0 : 2400, f => { s.f = f; }, () => esperar(500, () => { config7(true); fin(); })); },
+   body:() => `<p class="problem">En la ecuación ${r_('r')} = ${a_('4')} cos ${th_('θ')}, la distancia cambia con el ángulo. Al recorrer ${th_('θ')} de 0° a 180°, el punto dibuja una circunferencia. ¿Cuáles son su centro (en cartesianas) y su radio?</p>${opcionesHTML(G7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${r_('r')} = ${a_('4')} cos ${th_('θ')}  ⟹  ${r_('r')}² = ${a_('4')}${r_('r')} cos ${th_('θ')}  ⟹  ${x_('x')}² + ${y_('y')}² = ${a_('4')}${x_('x')}  ⟹  (${x_('x')} − 2)² + ${y_('y')}² = 4</div></div>
+   <p>Para pasar a cartesianas se multiplica por ${r_('r')}: así aparecen ${r_('r')}² = ${x_('x')}² + ${y_('y')}² y ${r_('r')} cos ${th_('θ')} = ${x_('x')}. La curva ${r_('r')} = ${a_('a')} cos ${th_('θ')} es la circunferencia de diámetro |${a_('a')}| que pasa por el polo, con centro (${a_('a')}/2; 0). Con seno, ${r_('r')} = ${a_('a')} sen ${th_('θ')}, el centro está en (0; ${a_('a')}/2).</p>
+   <div class="control"><label for="a7">Coeficiente a: <span id="a7v"></span></label><input type="range" id="a7" min="-6" max="6" step="1" value="4"></div>
+   <div class="seg" role="group" aria-label="Función"><button type="button" id="f7c" aria-pressed="true">r = a cos θ</button><button type="button" id="f7s" aria-pressed="false">r = a sen θ</button></div>
+   <p>Mueve ${a_('a')} (también a negativos) y cambia de coseno a seno: el diámetro siempre mide |${a_('a')}|.</p>
+   ${hip}</div>`,
+   entrar:() => { const a = $('a7'); if (!a) return; const s = E.L.estado;
+     const pinta = () => { $('a7v').textContent = ex(s.a); $('f7c').setAttribute('aria-pressed', s.fn === 'cos'); $('f7s').setAttribute('aria-pressed', s.fn === 'sen'); E.rehacer(); E.dibujar(); E.avisar(); };
+     a.value = s.a; a.oninput = () => { const v = +a.value; s.a = v || (s.a > 0 ? -1 : 1); a.value = s.a; pinta(); };
+     $('f7c').onclick = () => { s.fn = 'cos'; pinta(); }; $('f7s').onclick = () => { s.fn = 'sen'; pinta(); }; pinta(); } },
+ { k:'Paso 8', t:'Un complejo es un punto',
+   prep:() => config8(),
+   body:() => `<p>El complejo z = ${x_('x')} + ${y_('y')}i se dibuja como el punto (${x_('x')}; ${y_('y')}) del plano. Su <b>forma polar</b> es exactamente su par polar: el módulo es ${r_('r')} = √(${x_('x')}² + ${y_('y')}²) y el argumento ${th_('θ')} se halla con el mismo cuidado del cuadrante que en el paso 5.</p>
+   <div class="eqs"><div class="eq">z = ${x_('x')} + ${y_('y')}i = ${r_('r')}(cos ${th_('θ')} + i sen ${th_('θ')}) = ${r_('r')} cis ${th_('θ')} = ${r_('r')}e<sup>i${th_('θ')}</sup></div>
+   <div class="eq">−2 − 2i: (${r_('2√2')}; ${th_('225°')})  ⟹  z = ${r_('2√2')} cis ${th_('225°')} = ${r_('2√2')}e<sup>i·5π/4</sup></div></div>
+   <p>La forma exponencial ${r_('r')}e<sup>i${th_('θ')}</sup> es otra manera de escribir lo mismo; en ella ${th_('θ')} va en radianes: 225° = 5π/4.</p>
+   <p>Arrastra z por la cuadrícula y mira sus cuatro escrituras. Aquí ${th_('θ')} va entre 0° y 360°; en la escena de los números complejos el argumento principal se toma entre −180° y 180° (225° y −135° son la misma dirección).</p>
+   <p>Para multiplicar, dividir y elevar complejos en forma polar (los módulos se multiplican, los argumentos se suman y la fórmula de De Moivre), sigue en <a href="../numeros-complejos/index.html${new URLSearchParams(location.search).get('desde') === 'app' ? '?desde=app' : ''}#paso-a-paso">«La flecha en el plano»</a>.</p>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  tramos($('stepBody'));
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.entrar && (!s.gate || S.pred[s.gate.id])) s.entrar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+  $('stepBody').querySelectorAll('input, .seg button').forEach(i => { i.disabled = S.ocupado; });
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+// Se pasa al siguiente solo si el paso actual no tiene una predicción pendiente.
+function desbloquear(k){ const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; s.prep(); E.avisar(); nav(); if (s.entrar) s.entrar(); }),
+      () => S.step === paso, { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+addEventListener('modo', () => { if (!$('m1').hidden) E.redimensionar(); });
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos con errores típicos: todos son hipótesis nuestras (CP), porque no hay informe de polares. La escena
+   cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const P1 = MP.aPolares({ x:0, y:-3 });
+const C2 = MP.circuloEje({ a:-6, f:'sen' });
+const K3 = MP.cartesianaEje({ a:10, f:'cos' });
+const R4 = MP.petalos({ a:2, n:3, f:'sen' });
+const R5 = MP.petalos({ a:3, n:2, f:'cos' });
+const hip = 'No hay un informe de ideas erróneas sobre coordenadas polares; estas opciones son hipótesis nuestras que se confirman con lo que marquen los alumnos.';
+const BOXR = R => ({ x0:-R - .9, x1:R + .9, y0:-R - .9, y1:R + .9 });
+
+// 1. Un punto sobre un eje
+function cfg1(ya){
+  const B = { x0:-3.8, x1:3.8, y0:-3.8, y1:3.8 };
+  E.config({ L:{ caja:B, estado:{ f: ya ? 1 : 0 },
+    rehacer:L => { const s = L.estado, p = pt(0, -3);
+      L.rejilla = { x0:-3, x1:3, y0:-3, y1:3 }; L.ejes = marcas(B, 1, E.angosto());
+      L.puntos.push({ p, color:'ink', r:5, texto:[['(0; −3)', 'ink']], dx:12, dy:14, align:'left' });
+      if (s.f > 0){ L.segs.push({ p:O, q:pt(0, -3*s.f), color:'r', ancho:3, flecha:true, texto: s.f >= 1 ? [['r = 3', 'r']] : null, dx:10, align:'left' });
+        L.arcos.push({ de:0, a:270, p:s.f, r:.7, color:'th', texto:'270°', sep:12, en:135 });
+        if (s.f >= 1){ L.segs.push({ p:O, q:pt(3, 0), color:'muted', ancho:1.6, dash:true }); L.puntos.push({ p:pt(3, 0), color:'muted', hueco:true, texto:[['arctan(x/y) = 0°', 'muted']], dy:-14, align:'right', dx:6 }); } } } },
+    lect: ya ? [() => ['r', 'r', P1.r], () => ['th', 'θ', tG(P1.theta)], () => ['muted', 'y/x', 'no existe (x = 0)']] : [],
+    ley: ya ? [['r', 'r'], ['th', 'θ'], ['muted', 'el ángulo de arctan(x/y)', 'trazos']] : [['muted', 'la cuadrícula: un cuadrito por unidad', 'trazos']],
+    desc:'Una cuadrícula con los ejes x e y y el punto (0; −3).' });
+}
+// Curva trazada con el punto que la dibuja (r con signo)
+function trazo(L, tipo, a, n, f, R, vuelta){
+  const impar = /rosa/.test(tipo) && n % 2 && vuelta === 360;
+  if (!impar) curvaSigno(L, { tipo, a, n }, vuelta, f, 720);
+  else {   // rosa de n impar: la primera media vuelta con el signo de r; la segunda, que repasa los mismos pétalos, a trazos grises encima
+    curvaSigno(L, { tipo, a, n }, 180, Math.min(1, 2*f), 360);
+    if (f > .5){ const q = []; for (let j = 0; j <= Math.round((f - .5)*720); j++){ const t = 180 + j/4; q.push(MP.punto({ r:MP.radio({ tipo, a, n, theta:t }), theta:t })); }
+      L.curvas.push({ pts:q, color:'muted', ancho:1.8, dash:true }); } }
+  if (f < 1){ const g = vuelta*f, rr = MP.radio({ tipo, a, n, theta:g }); puntoPolar(L, rr, g, { R, ra:.6 }); }
+}
+// 2. r = a sen θ con a negativo
+function cfg2(ya){
+  const B = BOXR(6);
+  E.config({ L:{ caja:B, estado:{ f: ya ? 1 : 0 },
+    rehacer:L => { const s = L.estado;
+      L.radar = radar(6, 1, { etiquetas: ya ? 30 : 0 }); L.ejes = { polar:true };
+      if (s.f > 0) trazo(L, 'sen', -6, 1, s.f, 6, 180);
+      if (s.f >= 1){ const c0 = pt(C2.centro.x, C2.centro.y);
+        L.puntos.push({ p:c0, color:'a', r:4, texto:[['centro (0; −3)', 'a']], dx:12, align:'left', dy:0 });
+        L.segs.push({ p:O, q:pt(0, -6), color:'a', ancho:2, dash:true }); } } },
+    lect: ya ? [() => ['a', 'a', '−6'], () => ['ink', 'cartesiana', nw(ecA(MP.cartesianaEje({ a:-6, f:'sen' }).texto)), true], () => ['a', 'la figura', fig(C2.texto), true]] : [],
+    ley: ya ? [['ink', 'r = −6 sen θ con r ≥ 0', 'linea'], ['ink', 'tramos con r negativo', 'trazos'], ['a', 'el diámetro, de largo 6', 'trazos']] : [['muted', 'el radar: anillos cada 1', 'trazos']],
+    desc: ya ? 'El radar con la curva r = −6 sen θ dibujada y su centro.' : 'El radar con anillos de radio 1 a 6. Todavía no hay ninguna curva.' });
+}
+// 3. Pasar a cartesianas
+function cfg3(ya){
+  const B = BOXR(10);
+  E.config({ L:{ caja:B, estado:{ f: ya ? 1 : 0 },
+    rehacer:L => { const s = L.estado;
+      L.radar = radar(10, 2, { etiquetas: ya ? 30 : 0 }); L.ejes = marcas(B, 2, true);
+      if (s.f > 0) trazo(L, 'cos', 10, 1, s.f, 10, 180);
+      if (s.f >= 1){ L.puntos.push({ p:pt(5, 0), color:'a', r:4, texto:[['(5; 0)', 'a']], dy:-14 });
+        L.textos.push({ p:pt(5, 5.4), t:[[K3.texto, 'ink']], dy:-12 }); } } },
+    lect: ya ? [() => ['ink', 'ecuación', nw(ecA(K3.texto)), true], () => ['ink', 'ordinaria', nw(MP.circuloEje({ a:10, f:'cos' }).canonica), true]] : [],
+    ley: ya ? [['ink', 'r = 10 cos θ con r ≥ 0', 'linea'], ['ink', 'tramos con r negativo', 'trazos'], ['a', 'el centro']] : [['muted', 'el radar con los ejes x e y: anillos cada 2', 'trazos']],
+    desc: ya ? 'El radar con la curva r = 10 cos θ dibujada y su centro.' : 'El radar con los ejes x e y y anillos cada 2. Todavía no hay ninguna curva.' });
+}
+// 4 y 5. Rosas, con perillas para a y n después de responder
+function cfgRosa(ini, ya){
+  const B = BOXR(4);
+  E.config({ L:{ caja:B, estado:{ a:ini.a, n:ini.n, fn:ini.fn, f: ya ? 1 : 0, libre:ya },
+    rehacer:L => { const s = L.estado, tipo = s.fn === 'cos' ? 'rosaCos' : 'rosaSen';
+      L.radar = radar(4, 1, { etiquetas: ya ? 30 : 0 }); L.ejes = { polar:true };
+      if (s.f > 0) trazo(L, tipo, s.a, s.n, s.f, 4, 360);   // una vuelta entera: con n impar se ve el retrazo
+      if (s.f >= 1) L.circs.push({ r:Math.abs(s.a), color:'a', dash:true, ancho:1.4 }); } },
+    lect: ya ? [E => ['a', 'a', fmt(E.L.estado.a)], E => ['n', 'n', fmt(E.L.estado.n)],
+      E => ['n', 'pétalos', String(MP.petalos({ a:E.L.estado.a, n:E.L.estado.n, f:E.L.estado.fn }).petalos)],
+      E => ['th', 'basta θ de', `0° a ${MP.petalos({ a:E.L.estado.a, n:E.L.estado.n, f:E.L.estado.fn }).vuelta}°`]] : [],
+    ley: ya ? [['ink', 'la rosa con r ≥ 0', 'linea'], ['ink', 'tramos con r negativo', 'trazos'], ['muted', 'con n impar, el repaso de θ = 180° a 360°', 'trazos'], ['a', 'circunferencia de radio |a|: el largo de los pétalos', 'trazos'], ['r', 'r mientras se dibuja']] : [['muted', 'el radar: anillos cada 1', 'trazos']],
+    desc: ya ? 'El radar con la rosa dibujada.' : 'El radar con anillos de radio 1 a 4. Todavía no hay ninguna curva.' });
+}
+const perillas = (ini) => `<div class="control"><label for="ra">Coeficiente a: <span id="rav"></span></label><input type="range" id="ra" min="-4" max="4" step="1" value="${ini.a}"></div>
+  <div class="control"><label for="rn">Número n: <span id="rnv"></span></label><input type="range" id="rn" min="2" max="8" step="1" value="${ini.n}"></div>
+  <div class="seg" role="group" aria-label="Función"><button type="button" id="rfc">cos nθ</button><button type="button" id="rfs">sen nθ</button></div>`;
+function enlazarPerillas(){
+  const a = $('ra'); if (!a) return; const s = E.L.estado;
+  const pinta = () => { $('rav').textContent = fmt(s.a); $('rnv').textContent = fmt(s.n); $('rfc').setAttribute('aria-pressed', s.fn === 'cos'); $('rfs').setAttribute('aria-pressed', s.fn === 'sen');
+    E.parar(); s.f = 1; E.rehacer(); E.dibujar(); E.avisar(); };
+  a.oninput = () => { const v = +a.value; s.a = v || (s.a > 0 ? -1 : 1); a.value = s.a; pinta(); };
+  $('rn').oninput = () => { s.n = +$('rn').value; pinta(); };
+  $('rfc').onclick = () => { s.fn = 'cos'; pinta(); }; $('rfs').onclick = () => { s.fn = 'sen'; pinta(); };
+  pinta();
+}
+const ROSA4 = { a:2, n:3, fn:'sen' }, ROSA5 = { a:3, n:2, fn:'cos' };
+
+const EXPS = [
+  { id:'eje', corto:'Un punto sobre un eje',
+    q:`¿Cuáles son las coordenadas polares (${r_('r')}; ${th_('θ')}) del punto (${x_('0')}; ${y_('−3')}), con ${r_('r')} ≥ 0 y ${th_('θ')} entre 0° y 360°?`,
+    opts:[['a', P1.errores.arctanInvertido.texto, 'CP11-arctan-invertido', 'hipotesis'], ['b', P1.errores.sinRaiz.texto, 'CP13-sin-raiz', 'hipotesis'],
+      ['c', P1.texto], ['d', P1.errores.referencia.texto, 'CP12-angulo-de-referencia', 'hipotesis']], ok:'c',
+    fb:{ a:'0° sale de arctan(x/y) = arctan(0) = 0°, con el cociente al revés. 0° apunta a la derecha, y el punto está abajo.',
+      b:'9 = 0² + (−3)² es r². La distancia al origen es su raíz, 3: el punto está a 3 cuadritos.',
+      d:'90° apunta hacia arriba. El punto (0; −3) está abajo, sobre el eje y negativo.' },
+    antes:ya => cfg1(ya), despues:() => { cfg1(false); const s = E.L.estado; E.animar(1100, f => { s.f = f; }, () => esperar(400, () => cfg1(true))); },
+    exp:() => `<div class="eqs"><div class="eq">${r_('r')} = √(0 + 9) = 3</div><div class="eq">${th_('θ')} = 270° <span class="note">(sobre el eje ${y_('y')}, hacia abajo)</span></div></div>
+      <p>Sobre los ejes no hace falta la calculadora: y/x ni siquiera existe cuando x = 0. Basta mirar hacia dónde apunta el punto: derecha 0°, arriba 90°, izquierda 180°, abajo 270°.</p><p class="fuente">${hip}</p>` },
+  { id:'a-negativo', corto:'Un coeficiente negativo',
+    q:`¿Cuáles son el centro (en cartesianas) y el radio de la circunferencia ${r_('r')} = ${a_('−6')} sen ${th_('θ')}?`,
+    opts:[['a', C2.errores.ignoraSignoA.texto, 'CP18-ignora-el-signo-de-a', 'hipotesis'], ['b', C2.errores.centroPolo.texto, 'CP15-centro-en-el-polo', 'hipotesis'],
+      ['c', C2.errores.ejeCruzado.texto, 'CP17-cruza-coseno-y-seno', 'hipotesis'], ['d', C2.texto]], ok:'d',
+    fb:{ a:'Con θ entre 0° y 180°, sen θ es positivo y r = −6 sen θ es negativo: cada punto se dibuja hacia atrás, debajo del polo.',
+      b:'En θ = 0° vale r = 0: la curva pasa por el polo. No puede tener centro en el polo con radio 6.',
+      c:'Con seno, el punto más lejano está en θ = 90°, sobre el eje vertical: el centro queda en ese eje.' },
+    antes:ya => cfg2(ya), despues:() => { cfg2(false); const s = E.L.estado; E.animar(RM ? 0 : 2400, f => { s.f = f; }, () => esperar(400, () => cfg2(true))); },
+    exp:() => `<div class="eqs"><div class="eq">${r_('r')}² = ${a_('−6')}${r_('r')} sen ${th_('θ')}  ⟹  ${x_('x')}² + ${y_('y')}² = ${a_('−6')}${y_('y')}  ⟹  ${x_('x')}² + (${y_('y')} + 3)² = 9</div></div>
+      <p>Mientras ${th_('θ')} recorre la mitad de arriba, ${r_('r')} es negativo y el punto se dibuja abajo, al otro lado del polo. El signo de ${a_('a')} decide hacia qué lado queda la circunferencia; el diámetro siempre mide |${a_('a')}| = 6.</p><p class="fuente">${hip}</p>` },
+  { id:'cartesiana', corto:'A cartesianas',
+    q:`¿Cuál es la ecuación cartesiana de ${r_('r')} = ${a_('10')} cos ${th_('θ')}?`,
+    opts:[['a', K3.errores.cuadradoMal.texto, 'CP20-eleva-mal', 'hipotesis'], ['b', K3.texto], ['c', K3.errores.sinX.texto, 'CP19-olvida-la-x', 'hipotesis'],
+      ['d', K3.errores.centroEnA.texto, 'CP16-centro-en-a', 'hipotesis']], ok:'b',
+    fb:{ a:'Sale de cambiar cos θ por x, pero cos θ = x/r. Mejor multiplicar por r: r² = 10r cos θ, y r cos θ = x.',
+      c:'x² + y² = 10 sería una circunferencia con centro en el polo. Al multiplicar por r, a la derecha queda 10r cos θ = 10x.',
+      d:'20x sale de pensar en una circunferencia de radio 10 con centro (10; 0). Pero r nunca pasa de 10: el diámetro es 10.' },
+    antes:ya => cfg3(ya), despues:() => { cfg3(false); const s = E.L.estado; E.animar(RM ? 0 : 2200, f => { s.f = f; }, () => esperar(400, () => cfg3(true))); },
+    exp:() => `<div class="eqs"><div class="eq">${K3.pasos.join('  ⟹  ')}</div><div class="eq">${MP.circuloEje({ a:10, f:'cos' }).canonica}: centro (5; 0) y radio 5</div></div>
+      <p>El truco es multiplicar por ${r_('r')}: aparecen ${r_('r')}² = ${x_('x')}² + ${y_('y')}² y ${r_('r')} cos ${th_('θ')} = ${x_('x')}, que se cambian sin raíces.</p><p class="fuente">${hip}</p>` },
+  { id:'rosa-impar', corto:'Una rosa', perillas:ROSA4,
+    q:`La curva ${r_('r')} = ${a_('2')} sen(${n_('3')}${th_('θ')}) es una <b>rosa</b>: se dibuja con pétalos que salen del polo. ¿Cuántos pétalos tiene y cuánto mide cada uno?`,
+    opts:[['a', R4.texto], ['b', R4.errores.siempre2n.texto, 'CP22-siempre-2n', 'hipotesis'], ['c', R4.errores.cruzaAyN.texto, 'CP24-cruza-a-y-n', 'hipotesis'],
+      ['d', R4.errores.largoMitad.texto, 'CP23-largo-a-medias', 'hipotesis']], ok:'a',
+    fb:{ b:'Con n impar, la segunda media vuelta (θ de 180° a 360°) vuelve a pasar por los mismos pétalos: no salen pétalos nuevos.',
+      c:'El número de pétalos lo decide n (el número que multiplica a θ), y el largo lo decide a.',
+      d:'El largo del pétalo es el mayor valor de |r|, que es |a| = 2: sen(3θ) llega a 1.' },
+    antes:ya => cfgRosa(ROSA4, ya), despues:() => { cfgRosa(ROSA4, false); const s = E.L.estado; E.animar(RM ? 0 : 3600, f => { s.f = f; }, () => esperar(400, () => { cfgRosa(ROSA4, true); if (libres()) enlazarPerillas(); })); },
+    exp:() => `<div class="eqs"><div class="eq">${n_('n')} = 3 impar  ⟹  3 pétalos de largo |${a_('a')}| = 2</div></div>
+      <p>Los tramos con ${r_('r')} negativo (a trazos) se dibujan al otro lado del polo. De 0° a 180° ya salen los tres pétalos; de 180° a 360° el punto vuelve a pasar por encima de ellos (trazos grises): con ${n_('n')} impar no aparecen pétalos nuevos. El largo de cada pétalo es el mayor valor de |${r_('r')}|, o sea |${a_('a')}|.</p>
+      ${libres() ? `<p>Mueve ${a_('a')} y ${n_('n')} y cuenta los pétalos.</p>${perillas(ROSA4)}` : ''}<p class="fuente">${hip}</p>` },
+  { id:'rosa-par', corto:'Otra rosa', perillas:ROSA5,
+    q:`¿Cuántos pétalos tiene la rosa ${r_('r')} = ${a_('3')} cos(${n_('2')}${th_('θ')}) y cuánto mide cada uno?`,
+    opts:[['a', R5.errores.cruzaAyN.texto, 'CP24-cruza-a-y-n', 'hipotesis'], ['b', R5.errores.largoMitad.texto, 'CP23-largo-a-medias', 'hipotesis'],
+      ['c', R5.errores.siempreN.texto, 'CP21-siempre-n', 'hipotesis'], ['d', R5.texto]], ok:'d',
+    fb:{ a:'El número de pétalos lo decide n (el número que multiplica a θ), y el largo lo decide a.',
+      b:'El largo del pétalo es el mayor valor de |r|, que es |a| = 3: cos(2θ) llega a 1.',
+      c:'Con n par, los tramos con r negativo no caen sobre los pétalos que ya estaban: dibujan pétalos nuevos, entre los otros.' },
+    antes:ya => cfgRosa(ROSA5, ya), despues:() => { cfgRosa(ROSA5, false); const s = E.L.estado; E.animar(RM ? 0 : 3600, f => { s.f = f; }, () => esperar(400, () => { cfgRosa(ROSA5, true); enlazarPerillas(); })); },
+    exp:() => `<div class="eqs"><div class="eq">${n_('n')} = 2 par  ⟹  2 · 2 = 4 pétalos de largo |${a_('a')}| = 3</div>
+      <div class="eq">${r_('r')} = ${a_('a')} sen(${n_('n')}${th_('θ')}) o ${r_('r')} = ${a_('a')} cos(${n_('n')}${th_('θ')}):</div><div class="eq">${n_('n')} impar  ⟹  ${n_('n')} pétalos</div><div class="eq">${n_('n')} par  ⟹  2${n_('n')} pétalos</div><div class="eq">largo de cada pétalo: |${a_('a')}|</div></div>
+      <p>Para dibujarla entera, ${th_('θ')} tiene que ir de 0° a 360°: los pétalos de ${r_('r')} negativo aparecen entre los de ${r_('r')} positivo. Con ${n_('n')} impar basta de 0° a 180°.</p>
+      <p>Mueve ${a_('a')} y ${n_('n')} y compara las rosas de ${n_('n')} par e impar.</p>${perillas(ROSA5)}<p class="fuente">${hip}</p>` },
+];
+
+const S = { k:0, pred:{}, t0:Date.now() };
+// Las perillas de las rosas se abren recién cuando el experimento 5 tiene respuesta (si no, el 4 regalaría el 5).
+function libres(){ return !!S.pred['rosa-par']; }
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2', x.frase)}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    tramos($('res2'));
+    if (x.perillas && ya && libres()) enlazarPerillas();
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k);
+  });
+  pintar();
+}
+addEventListener('modo', () => { if (!$('m2').hidden) E.redimensionar(); });
+ir(0);
+})();
+</script>
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
