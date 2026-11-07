@@ -46,7 +46,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "vectores"
+     ]
     },
     {
      "id": "fisica.movimiento-rectilineo",
@@ -4924,6 +4926,23 @@
     "/plantillas/triangulo-estira/index.html",
     "/plantillas/triangulo-estira/motor.js",
     "/plantillas/triangulo-estira/papel.json"
+   ]
+  },
+  "vectores": {
+   "id": "vectores",
+   "titulo": "Flechas que se suman: vectores y análisis dimensional",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "/plantillas/vectores/index.html",
+   "papel": "/plantillas/vectores/papel.json",
+   "archivos": [
+    "/plantillas/vectores/index.html",
+    "/plantillas/vectores/motor.js",
+    "/plantillas/vectores/papel.json"
    ]
   }
  }
