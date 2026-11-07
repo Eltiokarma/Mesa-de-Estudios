@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 3342 pruebas.
+Deben pasar 3352 pruebas.
 
 ```bash
 npm run dev
@@ -143,7 +143,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - Hecho (7 nov, 0.2.0): curva de solubilidad con saturada, insaturada y sobresaturada (SO13) y Henry con las dos gaseosas (SO6), experimentos 6 y 7. No cubre volúmenes que no se suman (SO5) ni coloides.
   - El modelo supone que agregar soluto no cambia el volumen; la escena lo dice. En el explorador, sacar una parte a veces no da puntos enteros: el dibujo redondea y lo avisa.
 - **pH** (`plantillas/acidos-bases/`, hecha el 6 nov 2026 por un subagente): el H₂SO₄ se toma como diprótico fuerte (convención de academia; su segunda ionización real es parcial). No cubre pares conjugados, Lewis, indicadores ni curvas de titulación dibujadas (hay tabla).
-- **Celda galvánica** (`plantillas/celda-galvanica/`, hecha el 6 nov 2026 por un subagente): puente de KNO₃ con nitratos en los vasos (con Ag⁺, el KCl precipitaría AgCl). No cubre la electrólisis del agua ni Nernst; el explorador dibuja Zn, Fe, Cu y Ag (el motor tiene más metales).
+- **Celda galvánica** (`plantillas/celda-galvanica/`, hecha el 6 nov 2026 por un subagente): puente de KNO₃ con nitratos en los vasos (con Ag⁺, el KCl precipitaría AgCl). Hecho (7 nov, 0.2.0): electrólisis del agua con Na₂SO₄ (H₂ y O₂ en razón 2 : 1) y NaCl en agua contra fundido (casos 21 a 26 verificados aparte). No cubre Nernst; el explorador dibuja Zn, Fe, Cu y Ag (el motor tiene más metales).
 - **Todas:** el estado es `borrador`. Pasan a `probada` con los datos del colegio.
 
 ### Rutinas y sesiones paralelas (6 nov 2026)
