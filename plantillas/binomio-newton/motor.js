@@ -40,7 +40,8 @@
  *   desarrollo({ A, B, n })   → (A + B)ⁿ término por término. { terminos: [{ k, lugar, texto, coef: texto,
  *                               combinatorio: texto C(n, k), exponentes: { letra: exponente } }, …] (de k = 0 a n),
  *                               texto: 'a⁴ + 4a³b + 6a²b² + 4ab³ + b⁴' (sin juntar términos de igual parte literal) }.
- *   monomio({ c, v })         → texto del monomio: monomio({ c: −80, v: { x: 2 } }) = '−80x²'; { c: 1 } → '1'.
+ *   monomio({ c, v })         → { texto } del monomio: monomio({ c: −80, v: { x: 2 } }).texto = '−80x²'; { c: 1 } → '1';
+ *                               { c: '−1/2', v: { x: 1, a: 2 } } → '−(1/2)a²x' (letras en orden alfabético).
  *   termino({ A, B, n, lugar }) → t_lugar (1 ≤ lugar ≤ n + 1). { k, lugar, texto (monomio), coef: texto del
  *                               coeficiente, combinatorio: texto C(n, k), num: coeficiente (Number), errores (texto =
  *                               monomio): desfase (BN2: C(n, k + 1) con las mismas potencias; noAplica si k = n),
@@ -239,13 +240,13 @@
     if (c.n === -1n) return MENOS + lit;
     return bTexto(c.n) + lit;
   }
-  function monomio(m) { const M = leerMono(m, 'monomio'); return monoTexto(M.c, M.v); }
+  function monomio(m) { const M = leerMono(m, 'monomio'); return { texto: monoTexto(M.c, M.v) }; }
   // A^p · B^q · coef
   function potencias(A, B, p, q) {
     const v = {};
     for (const [l, e] of Object.entries(A.v)) v[l] = (v[l] || 0) + e * p;
     for (const [l, e] of Object.entries(B.v)) v[l] = (v[l] || 0) + e * q;
-    for (const l of Object.keys(v)) if (!v[l]) delete v[l];
+    for (const l of Object.keys(v)) if (!v[l]) delete v[l]; else v[l] += 0;
     return v;
   }
   function binomio(o) {
@@ -306,7 +307,7 @@
     if (!Number.isInteger(o.m)) throw new Error('m debe ser un entero');
     const m = o.m, [eA, eB] = unaLetra(A, B, letra);
     if (eA === eB) throw new Error('coeficiente: los dos términos tienen la misma potencia de la letra');
-    const exponentes = []; for (let k = 0; k <= n; k++) exponentes.push(eA * (n - k) + eB * k);
+    const exponentes = []; for (let k = 0; k <= n; k++) exponentes.push(eA * (n - k) + eB * k || 0);
     const k = buscarK(eA, eB, n, m);
     const err = {}, noAplica = [];
     if (k === null) {
