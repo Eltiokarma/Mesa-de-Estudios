@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La balanza de las mezclas: mezclas y aleaciones</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de «El cuadrado de fichas».
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), uno por papel en toda la
+   escena (los mismos hex que «La barra que se parte» para el primer dato, el segundo y el resultado): el primer
+   ingrediente A (saco, vaso o aleación, con su cantidad, su valor en la regla y su distancia al apoyo) azul
+   #1f5fbf / #7cb0ff; el segundo ingrediente B (también el agua o el oro de 24 quilates que se agregan) naranja
+   #a05200 / #f0a04a; el valor de la mezcla (precio medio, grado o quilates de la mezcla; el apoyo cuando la barra está
+   derecha o es el valor buscado) fucsia #a10fbf / #cf6bfa; el alcohol puro verde #466d14 / #a3d65e, y el oro puro de
+   una pieza turquesa #0f766e / #5ed9c8. El apoyo arrastrado, la barra y lo que no es variable van en tinta; el otro
+   metal y lo que se saca, en gris.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py): A–B 48,9 / 47,7; A–pm 27,1 / 29,3; B–pm 51,1 / 54,4; A–al 56,1 / 57,1;
+   B–al 37,2 / 36,0; pm–al 78,3 / 82,6; f con los demás ≥ 23,6 / 25,3 (f–al, que nunca salen juntos). Contraste AA sobre el
+   papel, la tarjeta, el chip (.v, fondo al 8 %) y las opciones ya marcadas (correcta y elegida), donde el color va sin
+   chip (.t-*): mínimo 4,53 en claro (f en la opción marcada) y 4,63 en oscuro (pm en la opción correcta). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-A:#1f5fbf; --c-B:#a05200; --c-pm:#a10fbf; --c-al:#466d14; --c-f:#0f766e;
+  --relleno:.12;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-pm:#cf6bfa; --c-al:#a3d65e; --c-f:#5ed9c8;
+  --relleno:.16; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-pm:#cf6bfa; --c-al:#a3d65e; --c-f:#5ed9c8;
+  --relleno:.16; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo pegado arriba lo pone nucleo/celular.js; aquí solo se apretan las lecturas. */
+@media (max-width:899px){ .mode.pendiente .lecturas{gap:4px} .mode.pendiente .lectura{padding:2px 8px} }
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 8%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
+.v-pm{color:var(--c-pm); background:color-mix(in srgb, var(--c-pm) 8%, transparent)}
+.v-al{color:var(--c-al); background:color-mix(in srgb, var(--c-al) 8%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+/* En las opciones, el color va solo en la letra (sin el fondo del chip): así pasa AA sobre la opción marcada. */
+.t-A{color:var(--c-A); font-weight:800}
+.t-B{color:var(--c-B); font-weight:800}
+.t-pm{color:var(--c-pm); font-weight:800}
+.t-al{color:var(--c-al); font-weight:800}
+.t-f{color:var(--c-f); font-weight:800}
+.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.75; font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.eq .num{font-family:var(--mono)}
+.eq .note{display:block; font-family:var(--font); font-size:.84rem; line-height:1.4; color:var(--muted); white-space:normal}
+.eq sup{font-size:.75em; vertical-align:.6em; line-height:0}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura > span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura b .num{font-family:var(--mono)}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+.stepper{display:flex; flex-wrap:wrap; gap:8px}
+.stepper > div{display:inline-flex; align-items:center; gap:6px; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 6px 4px 12px}
+.stepper button{font:800 .95rem var(--font); min-width:38px; height:38px; padding:0 6px; border-radius:999px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer}
+.stepper button:disabled{opacity:.4; cursor:not-allowed}
+.stepper .val{font:800 1rem var(--mono); min-width:2.4em; text-align:center}
+.stepper .que{font-size:.85rem; color:var(--muted); font-weight:700}
+.lado{display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap}
+.aspa{display:grid; grid-template-columns:auto auto auto; gap:2px 14px; align-items:center; justify-content:start; font-family:var(--mono)}
+.aspa .x{grid-row:1 / span 2; grid-column:2; font-size:1.6rem; color:var(--muted); line-height:1}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Aritmética · Mezclas y aleaciones · Problemas tipo admisión</p>
+      <h1>La balanza de las mezclas</h1>
+      <p class="sub">Mezclas de arroz, de alcohol y de oro sobre una balanza. Antes de cada respuesta, predice; después, la escena te muestra por qué.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: una balanza con sacos, vasos o una barra de oro">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con mezclas">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/mezclas">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'mezclas', unidad: 'aritmetica.mezclas-y-aleaciones', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (precios medios, grados, leyes, el aspa, los momentos y la inclinación de la barra, y hasta el
+   redondeo del apoyo que se arrastra) sale de MotorMezclas (motor.js); aquí solo se pinta y se anima.
+   El celular (dibujo fijo arriba con una predicción pendiente, subir el lienzo al responder, arrastre sin robarle el
+   desplazamiento a la página) va con nucleo/celular.js. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const M = MotorMezclas;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+// Texto plano para el lector de pantalla: «S/ 4,80» se dice «4,80 soles», «60°» «60 grados», «3 : 2» «3 a 2».
+const quitar = t => String(t).replace(/<[^>]+>/g, '').replace(/≈\s*S\/\s?([\d\s,]+)/g, 'aproximadamente $1 soles').replace(/S\/\s?([\d,]+(?:\s\d{3})*)/g, '$1 soles')
+  .replace(/(\d)°/g, '$1 grados').replace(/ × /g, ' por ').replace(/ ÷ /g, ' entre ').replace(/ − /g, ' menos ').replace(/(\d) : (\d)/g, '$1 a $2')
+  .replace(/≈/g, 'aproximadamente').replace(/…/g, '').replace(/\s+/g, ' ').trim();
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const T = (k, t) => `<span class="t-${k}">${t}</span>`;
+const nb = t => String(t).replace(/ /g, ' ');   // sin cortar «S/ 4,80» ni «1 050»
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const pl = (n, uno, varios) => (n === 1 ? uno : varios);
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+// Variables: A el primer ingrediente (azul), B el segundo (naranja), pm el precio, grado o ley de la mezcla (fucsia),
+// al el alcohol puro (verde) y f el oro puro de una pieza (turquesa).
+const CLAVES = ['A', 'B', 'pm', 'al', 'f'];
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    ok:css('--ok'), warn:css('--warn'), relleno:Number(css('--relleno')) || .12, mono:css('--mono'), font:css('--font') };
+  for (const k of CLAVES) c[k] = css('--c-' + k);
+  return c;
+}
+const col = (c, k) => (c[k] || c.ink);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function redondeado(ctx, x, y, w, h, r){ r = Math.max(0, Math.min(r, w/2, h/2)); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+// Cómo se escribe un valor sobre la regla, según lo que se mezcla.
+const UNI = {
+  soles: { valor: v => M.soles(v).replace(',00', ''), regla: 'precio por kilo (S/)', cant: 'kg' },
+  grados: { valor: v => M.grados(v), regla: 'grados de alcohol', cant: 'L' },
+  quilates: { valor: v => M.texto(v) + ' quilates', corto: v => M.texto(v), regla: 'quilates', cant: 'g' },
+};
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
+// Los productos «cantidad × distancia» de una mezcla en equilibrio, del motor, como pedazos de rótulo.
+function pieMomentos(mez, ks){
+  const p = mez.partes, out = [];
+  p.forEach((x, i) => { if (i) out.push([' = ', 'ink']); out.push([x.cantidadTexto, ks[i]], [' × ', 'ink'], [x.brazoTexto, ks[i]]); if (!i) out.push([' = ' + x.momentoTexto, 'ink']); });
+  return out;
+}
+</script>
+<script>
+/* ================= La escena =================
+   Modos: 'balanza' (una barra con la regla de precios, grados o quilates; cada ingrediente es un saco que se apoya en su
+   valor, con altura proporcional a su cantidad; el apoyo se arrastra), 'vasos' (vasos con alcohol: mezclado, o con el
+   alcohol puro separado arriba) y 'barra' (una pieza de oro partida en 24 partes). */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'balanza', st:{}, lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, sobre = false, arrastrando = false;
+  const ALTO = { balanza: w => (E.st.pie ? 300 : 276), vasos: w => (w >= 560 ? 300 : 290), barra: () => 230 };
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(ALTO[E.modo](w), E.compacto)), dpr = Celular.dpr();
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const grosor = (k, base) => (E.hl === k ? base + 2 : base);
+
+  E.config = o => {
+    E.tok++; E.anim = false;
+    Object.assign(E, { modo:'balanza', st:{}, lect:[], ley:null, alCambiar:null, desc:null }, o);
+    E.listo = true; E.etiquetar();
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.redimensionar = () => { W = 0; resize(); };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.etiquetar = () => {
+    const m = E.modo === 'balanza' && E.st.manija && E.st.apoyo != null;
+    cv.tabIndex = m ? 0 : -1;
+    cv.setAttribute('aria-label', m ? quitar(`Balanza con el punto de apoyo en ${UNI[E.st.unidad].valor(E.st.apoyo)}. Usa las flechas para moverlo.`) : 'Dibujo de la escena');
+  };
+
+  function rotulo(c, x, y, t, color, align, peso, tam){
+    ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+    ctx.fillStyle = color; ctx.fillText(t, x, y);
+    return w;
+  }
+  // Un rótulo hecho de pedazos: [['30', 'A'], [' × ', 'ink'], ['0,8', 'A']].
+  function partes(c, x, y, ps, align, tam, peso){
+    tam = tam || 14; ctx.font = `${peso || 800} ${tam}px ${c.font}`;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    let ws = ps.map(([t]) => ctx.measureText(String(t)).width), tot = ws.reduce((s, w) => s + w, 0);
+    if (tot > W - 12){ tam = Math.max(10, Math.floor(tam*(W - 12)/tot)); ctx.font = `${peso || 800} ${tam}px ${c.font}`; ws = ps.map(([t]) => ctx.measureText(String(t)).width); tot = ws.reduce((s, w) => s + w, 0); }
+    let x0 = align === 'left' ? x : align === 'right' ? x - tot : x - tot/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - tam*.75, tot + 6, tam*1.55); ctx.restore();
+    ps.forEach(([t, k], j) => { ctx.fillStyle = col(c, k || 'ink'); ctx.fillText(String(t), x0, y); x0 += ws[j]; });
+    return tot;
+  }
+  function linea(x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+
+  // ----- la balanza -----
+  function geoBal(){
+    const s = E.st, x0 = 34, x1 = W - 34, abajo = 24 + 32 + 24 + (s.pie ? 30 : 6);
+    const yB = H - abajo, hmax = Math.max(30, yB - 42);
+    return { x0, x1, yB, yG: yB + 24, yR: yB + 56, hmax, X: v => x0 + (v - s.desde)/(s.hasta - s.desde)*(x1 - x0) };
+  }
+  E.geo = geoBal;
+  const inclinacion = () => {
+    const s = E.st;
+    if (s.soportes || s.apoyo == null) return 0;
+    if (s.angulo !== undefined) return s.angulo;
+    const L = s.pesas.map(p => ({ cantidad: p.cantidad || 0, valor: p.valor }));
+    return M.balanza(L, s.apoyoQ || s.apoyo).angulo;
+  };
+  E.manija = () => { const s = E.st; if (E.modo !== 'balanza' || !s.manija || s.apoyo == null || !W) return null; const g = geoBal(); return { x: g.X(s.apoyo), y: g.yB + 15 }; };
+  function dibBalanza(c){
+    const s = E.st, g = geoBal();
+    const piv = { x: s.apoyo == null ? (g.x0 + g.x1)/2 : g.X(s.apoyo), y: g.yB };
+    // la barra se inclina hasta tocar el suelo, no más (cuando el apoyo queda cerca de un extremo, el otro baja mucho)
+    const brazo = Math.max(Math.abs(g.X(s.desde) - piv.x), Math.abs(g.X(s.hasta) - piv.x), 1), tope = Math.asin(Math.min(1, (g.yG - g.yB - 5)/brazo));
+    const th = clamp(inclinacion(), -tope, tope);
+    const P = (v, up) => { const dx = g.X(v) - piv.x, dy = -(up || 0); return { x: piv.x + dx*Math.cos(th) - dy*Math.sin(th), y: piv.y + dx*Math.sin(th) + dy*Math.cos(th) }; };
+    const colApoyo = s.apoyoPm || s.equilibrio ? c.pm : c.ink;
+    // suelo y regla fija
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 2; linea(g.x0 - 24, g.yG, g.x1 + 24, g.yG); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(g.x0, g.yR, g.x1, g.yR); ctx.restore();
+    const especiales = s.pesas.map(p => g.X(p.valor)).concat(s.apoyo != null && s.marcaApoyo !== false ? [g.X(s.apoyo)] : []);
+    (s.marcas || []).forEach((m, i) => {
+      const x = g.X(m.valor);
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(x, g.yR - 3, x, g.yR + 3); ctx.restore();
+      if (i % (s.cada || 1) === 0 && especiales.every(e => Math.abs(e - x) > 30)) rotulo(c, x, g.yR + 14, m.texto, c.muted, 'center', 700, 11);
+    });
+    s.pesas.forEach(p => {
+      const x = g.X(p.valor);
+      ctx.save(); ctx.fillStyle = c[p.k]; ctx.beginPath(); ctx.moveTo(x, g.yR - 1); ctx.lineTo(x - 5, g.yR + 6); ctx.lineTo(x + 5, g.yR + 6); ctx.closePath(); ctx.fill(); ctx.restore();
+      rotulo(c, x, g.yR + 16, (UNI[s.unidad].corto || UNI[s.unidad].valor)(p.valor), c[p.k], 'center', 800, 12);
+    });
+    // brazos: la distancia de cada saco al apoyo
+    (s.brazos || []).forEach(b => {
+      const xa = g.X(s.apoyo), xb = g.X(b.valor), y = g.yR - 10;
+      ctx.save(); ctx.strokeStyle = c[b.k]; ctx.lineWidth = grosor(b.k, 2.4); linea(xa, y, xb, y); linea(xb, y - 4, xb, y + 4); ctx.restore();
+      rotulo(c, (xa + xb)/2, y - 9, b.texto, c[b.k], 'center', 800, 11);
+    });
+    // soportes (antes de responder: la barra está sostenida en los dos extremos)
+    if (s.soportes){
+      ctx.save(); ctx.fillStyle = c.muted; ctx.globalAlpha = .55;
+      [s.desde, s.hasta].forEach(v => { const p = P(v); ctx.fillRect(p.x - 3, p.y + 3, 6, g.yG - p.y - 3); });
+      ctx.restore();
+    }
+    // el apoyo
+    if (s.apoyo != null){
+      const x = piv.x;
+      if (s.marcaApoyo !== false){
+        ctx.save(); ctx.strokeStyle = colApoyo; ctx.lineWidth = 1.4; ctx.setLineDash([3, 3]); linea(x, g.yG, x, g.yR - 2); ctx.restore();
+        rotulo(c, x, g.yR + 16, (UNI[s.unidad].corto || UNI[s.unidad].valor)(s.apoyo), colApoyo, 'center', 800, 12);
+      }
+      ctx.save(); ctx.fillStyle = colApoyo; ctx.globalAlpha = s.equilibrio || s.apoyoPm ? 1 : .85;
+      ctx.beginPath(); ctx.moveTo(x, g.yB + 3); ctx.lineTo(x - 14, g.yG); ctx.lineTo(x + 14, g.yG); ctx.closePath(); ctx.fill(); ctx.restore();
+      if (s.manija){
+        const act = sobre || arrastrando;
+        cv.dataset.manija = `${Math.round(x)},${Math.round(g.yB + 15)}`;
+        ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = colApoyo; ctx.lineWidth = act ? 3.5 : 2.5;
+        ctx.beginPath(); ctx.arc(x, g.yB + 15, act ? 8 : 6.5, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+      }
+    }
+    // la barra
+    const a = P(s.desde), b = P(s.hasta);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 6; ctx.lineCap = 'round'; linea(a.x, a.y, b.x, b.y); ctx.restore();
+    // los sacos, de pie sobre la barra
+    const sw = clamp(W*.085, 26, 44), cmax = s.cmax || 1;
+    s.pesas.forEach(p => {
+      const q = P(p.valor, 3), desconocida = p.cantidad == null;
+      const h = desconocida ? g.hmax*.42 : (p.cantidad > 0 ? Math.max(4, g.hmax*p.cantidad/cmax) : 0);
+      ctx.save();
+      if (desconocida){ ctx.setLineDash([4, 3]); ctx.strokeStyle = c[p.k]; ctx.lineWidth = grosor(p.k, 1.8); redondeado(ctx, q.x - sw/2, q.y - h, sw, h, 6); ctx.stroke(); }
+      else if (h > 0){ ctx.fillStyle = c[p.k]; ctx.globalAlpha = .26; redondeado(ctx, q.x - sw/2, q.y - h, sw, h, Math.min(8, h/2)); ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = c[p.k]; ctx.lineWidth = grosor(p.k, 2); ctx.stroke(); }
+      ctx.restore();
+      if (desconocida) rotulo(c, q.x, q.y - h/2, '?', c[p.k], 'center', 800, 16);
+      if (p.rot) rotulo(c, q.x, q.y - h - 11, p.rot, c[p.k], 'center', 800, 12);
+    });
+    if (s.pie) partes(c, W/2, H - 15, s.pie, 'center', 14, 800);
+  }
+
+  // ----- vasos -----
+  function dibVasos(c){
+    const s = E.st, n = s.vasos.length, base = H - (s.pie ? 74 : 48), hmax = base - 30, vmax = s.vmax || 1;
+    const vw = Math.min(78, W/(n*1.9)), paso = W/n;
+    s.vasos.forEach((v, i) => {
+      const cx = paso*(i + .5), h = Math.max(6, hmax*v.volumen/vmax), x = cx - vw/2, y = base - h, k = v.k;
+      const color = col(c, k);
+      if (s.flecha && i === n - 1){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 2; const xa = cx - paso/2 - 6, ya = base - 26; linea(xa - 10, ya, xa + 10, ya); linea(xa + 4, ya - 5, xa + 10, ya); linea(xa + 4, ya + 5, xa + 10, ya); ctx.restore(); }
+      // el líquido
+      ctx.save();
+      if (!v.separado){ ctx.fillStyle = color; ctx.globalAlpha = .2; ctx.fillRect(x, y, vw, h); }
+      else {
+        const ha = h*v.alcohol/v.volumen;
+        ctx.fillStyle = c.muted; ctx.globalAlpha = .13; ctx.fillRect(x, y + ha, vw, h - ha);
+        ctx.globalAlpha = .4; ctx.fillStyle = c.al; ctx.fillRect(x, y, vw, ha);
+        ctx.globalAlpha = 1; ctx.strokeStyle = c.al; ctx.lineWidth = grosor('al', 1.6); if (ha > 0) linea(x, y + ha, x + vw, y + ha);
+      }
+      ctx.restore();
+      // el vaso (sin tapa)
+      ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = grosor(k, 2.4); ctx.beginPath(); ctx.moveTo(x - 3, y - 12); ctx.lineTo(x - 3, base + 2); ctx.lineTo(x + vw + 3, base + 2); ctx.lineTo(x + vw + 3, y - 12); ctx.stroke(); ctx.restore();
+      if (v.separado && v.alcohol > 0) rotulo(c, cx, y + Math.max(9, h*v.alcohol/v.volumen/2), v.alcoholTexto + ' L', c.al, 'center', 800, 11);
+      if (v.rot) rotulo(c, cx, base + 16, v.rot, color, 'center', 800, 12);
+      if (v.sub) rotulo(c, cx, base + 33, v.sub, col(c, v.subK || k), 'center', 800, 12);
+    });
+    if (s.pie) partes(c, W/2, H - 14, s.pie, 'center', 13, 800);
+  }
+
+  // ----- la pieza de oro en 24 partes -----
+  function dibBarra(c){
+    const s = E.st, O = s.O, bx = 16, bw = W - 32, by = 46, bh = 50;
+    if (!s.fase){
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .07; redondeado(ctx, bx, by, bw, bh, 10); ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+      rotulo(c, W/2, by + bh/2, s.rot, c.ink, 'center', 800, 14);
+    } else {
+      const cw = bw/24;
+      O.partes.forEach((p, i) => {
+        const fino = s.fase >= 2 && p.tipo === 'fino', k = fino ? 'f' : 'muted', x = bx + i*cw;
+        ctx.save(); ctx.fillStyle = fino ? c.f : c.muted; ctx.globalAlpha = s.fase >= 2 ? (fino ? .38 : .14) : .06; ctx.fillRect(x + 1, by, cw - 2, bh); ctx.globalAlpha = 1;
+        ctx.strokeStyle = s.fase >= 2 ? (fino ? c.f : c.muted) : c.ink; ctx.lineWidth = fino ? grosor('f', 1.3) : 1; ctx.strokeRect(x + 1, by, cw - 2, bh); ctx.restore();
+      });
+      rotulo(c, W/2, by - 16, s.arriba, c.ink, 'center', 700, 12);
+      if (s.fase >= 2){
+        const xf = bx + O.partesFino*cw, y = by + bh + 14;
+        ctx.save(); ctx.strokeStyle = c.f; ctx.lineWidth = grosor('f', 2); linea(bx + 1, y - 6, xf - 1, y - 6); ctx.strokeStyle = c.muted; ctx.lineWidth = 2; linea(xf + 1, y - 6, bx + bw - 1, y - 6); ctx.restore();
+        rotulo(c, (bx + xf)/2, y + 8, s.rotFino, c.f, 'center', 800, 12);
+        rotulo(c, bx + bw, y + 30, s.rotLiga, c.muted, 'right', 800, 12);
+      }
+    }
+    if (s.pie) partes(c, W/2, H - 18, s.pie, 'center', 14, 800);
+  }
+
+  const DIB = { balanza:dibBalanza, vasos:dibVasos, barra:dibBarra };
+  E.dibujar = () => { if (!W || !E.listo) return; const c = colores(); ctx.clearRect(0, 0, W, H); DIB[E.modo](c); };
+
+  // ----- lo que se arrastra: el apoyo de la balanza (táctil, ratón y teclado) -----
+  const valorDe = p => { const g = geoBal(), s = E.st; return M.ajustar(s.desde + (p.x - g.x0)/(g.x1 - g.x0)*(s.hasta - s.desde), s.res, s.min != null ? s.min : s.desde, s.max != null ? s.max : s.hasta); };
+  Celular.arrastre(cv, {
+    activo: () => !E.ocupado && !E.anim && !!E.manija(),
+    cerca: (p, r) => { const m = E.manija(); return !!m && Math.hypot(p.x - m.x, p.y - m.y) < r; },
+    empezar: () => { arrastrando = true; E.dibujar(); },
+    mover: p => { if (!arrastrando || !E.st.alMover) return; E.st.alMover(valorDe(p)); },
+    soltar: () => { arrastrando = false; E.dibujar(); },
+    sobre: v => { sobre = v; E.dibujar(); },
+  });
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !E.manija() || !E.st.alMover) return;
+    const d = (e.key === 'ArrowRight' || e.key === 'ArrowUp') ? 1 : (e.key === 'ArrowLeft' || e.key === 'ArrowDown') ? -1 : 0;
+    const s = E.st;
+    if (d){ e.preventDefault(); s.alMover(M.mover(s.apoyo, d, s.res, s.min != null ? s.min : s.desde, s.max != null ? s.max : s.hasta)); }
+  });
+
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t) => `<span><i style="background:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k})"></i>${t}</span>`;
+    document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t]) => it(k, t)).join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (leen el estado del momento; antes de responder no adelantan nada).
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const d = typeof E.desc === 'function' ? E.desc(E) : (E.desc || 'Una balanza.');
+      document.getElementById(idDesc).textContent = quitar([d, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' '));
+    }
+    E.etiquetar();
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  // Una lista de estados, uno tras otro (cada uno se queda ms[j] milisegundos).
+  E.secuencia = (estados, ms, fin) => {
+    const tok = ++E.tok; E.anim = true; let j = 0;
+    const sig = () => { if (tok !== E.tok) return;
+      if (j >= estados.length){ E.anim = false; E.avisar(); if (fin) fin(); return; }
+      Object.assign(E.st, estados[j]); E.redimensionar(); const espera = Array.isArray(ms) ? ms[j] : ms; j++; setTimeout(sig, RM ? 0 : espera); };
+    sig();
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+  return E;
+}
+// Un saco o una pesa: { k, cantidad (null si no se sabe), valor, rot }.
+const pesa = (k, cantidad, valor, unidadCant) => ({ k, cantidad, valor, rot: cantidad == null ? '' : `${M.texto(cantidad)} ${unidadCant}` });
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false,
+  e1:{ qa:10, qb:10, apoyo:3 },
+  e8:{ ctx:'soles', qa:20, qb:30, va:3, vb:8, apoyo:5 } };
+const A_ = t => V('A', t), B_ = t => V('B', t), m_ = t => V('pm', t), al_ = t => V('al', t), f_ = t => V('f', t);
+
+// Números de la escena: todos salen del motor
+const P2 = M.precioMedio([{ cantidad:30, precio:4 }, { cantidad:20, precio:6 }]);
+const B2s = M.balanza([{ cantidad:30, valor:4 }, { cantidad:20, valor:6 }], P2.errores.promedioSimple);
+const P3 = M.aspa(3, 8, 5), MZ3 = M.mezcla([{ cantidad:P3.q1, valor:3 }, { cantidad:P3.q2, valor:8 }]);
+const G4 = M.gradoMezcla([{ volumen:10, grado:60 }, { volumen:30, grado:20 }]);
+const W5 = M.aguaPara(12, 75, 45), MZ5 = M.mezcla([{ cantidad:12, valor:75 }, { cantidad:W5.agua, valor:0 }]);
+const O6 = M.oroFino(48, 18), L6 = M.leyDeQuilates(18);
+const O7 = M.oroPara(60, 18, 22), MZ7 = M.mezcla([{ cantidad:60, valor:18 }, { cantidad:O7.agregar, valor:24 }]), FI7 = M.oroFino(60, 18), K7 = M.ley(O7.finoFinal, O7.total);
+const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+const FUENTE_AR15 = '<p class="fuente">Sobre la opción del promedio simple: un estudio con universitarios encontró que, aun sabiendo calcular un promedio, al juntar dos grupos de distinto tamaño promediaban sin pesar cuántos había en cada grupo (Pollatsek, Lima y Well, 1981; no tenemos su cifra). Las demás opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
+const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
+const kg = (q, p) => `${q} kg a ${p}`;
+
+console.assert(P2.precioMedio === 4.8 && Object.keys(P2.errores).length === 3, 'paso 2: revisar las opciones');
+console.assert(P3.texto === '3 : 2' && Object.keys(P3.errores).length === 3, 'paso 3: revisar las opciones');
+console.assert(G4.grado === 30 && Object.keys(G4.errores).length === 3, 'paso 4: revisar las opciones');
+console.assert(W5.agua === 8 && W5.errores.aspaAlReves && W5.errores.restaGrados && W5.errores.volumenFinal, 'paso 5: revisar las opciones');
+console.assert(O6.fino === 36 && Object.keys(O6.errores).length === 3, 'paso 6: revisar las opciones');
+console.assert(O7.agregar === 120 && Object.keys(O7.errores).length === 3, 'paso 7: revisar las opciones');
+
+const porKilo = t => `${nb(t)} por kilo`;
+const P_2 = { id:'mezclas-paso2', ok:'b', opts:[
+  ['a', T('pm', porKilo(P2.erroresSoles.promedioSimple)), 'AR15-promedio-simple', 'parcial'],
+  ['b', T('pm', porKilo(P2.soles))],
+  ['c', T('pm', porKilo(P2.erroresSoles.cantidadesCruzadas)), 'cruza-las-cantidades', 'hipotesis'],
+  ['d', T('pm', porKilo(P2.erroresSoles.sumaValores)), 'suma-los-precios', 'hipotesis']],
+  fb:{ b:`¡Bien! Los ${P2.totalTexto} kg cuestan 30 × 4 + 20 × 6 = ${P2.partes[0].productoTexto} + ${P2.partes[1].productoTexto} = S/ ${P2.costoTexto}, y ${P2.costoTexto} ÷ ${P2.totalTexto} = ${P2.soles} el kilo. Hay más kilos del arroz barato, así que el precio medio queda más cerca de S/ 4.`,
+    a:`${P2.erroresSoles.promedioSimple} es el punto medio entre S/ 4 y S/ 6, como si hubiera los mismos kilos de cada arroz. Pero hay 30 kg del barato y solo 20 del caro: apoyada en ${P2.erroresSoles.promedioSimple}, la barra baja hacia el saco de S/ 4. Los ${P2.totalTexto} kg cuestan S/ ${P2.costoTexto}: ${P2.soles} el kilo.`,
+    c:`${P2.erroresSoles.cantidadesCruzadas} sale de cruzar los kilos: 20 kg con el precio de S/ 4 y 30 kg con el de S/ 6. Cada saco va con sus propios kilos: 30 × 4 + 20 × 6 = ${P2.costoTexto}, y ${P2.costoTexto} ÷ ${P2.totalTexto} = ${P2.soles} el kilo.`,
+    d:`S/ 4 + S/ 6 = ${P2.erroresSoles.sumaValores} es lo que cuestan dos kilos, uno de cada arroz, no un kilo de la mezcla. Los ${P2.totalTexto} kg cuestan S/ ${P2.costoTexto}: ${P2.soles} el kilo.` } };
+
+const prop = ([x, y]) => `${x} kg del de S/ 3 por cada ${y} kg del de S/ 8`;
+const P_3 = { id:'mezclas-paso3', ok:'d', opts:[
+  ['a', prop(P3.errores.alReves), 'aspa-al-reves', 'hipotesis'],
+  ['b', prop(P3.errores.mitades), 'mitad-y-mitad', 'hipotesis'],
+  ['c', prop(P3.errores.conLosValores), 'proporcion-con-los-precios', 'hipotesis'],
+  ['d', prop(P3.proporcion)]],
+  fb:{ d:`¡Bien! El de S/ 3 está a ${P3.d1Texto} del precio medio y el de S/ 8, a ${P3.d2Texto}. Para que la barra quede derecha, el que está más lejos lleva menos kilos: ${MZ3.partes[0].cantidadTexto} × ${MZ3.partes[0].brazoTexto} = ${MZ3.partes[0].momentoTexto} y ${MZ3.partes[1].cantidadTexto} × ${MZ3.partes[1].brazoTexto} = ${MZ3.partes[1].momentoTexto}.`,
+    a:`Esa es la proporción al revés: con ${P3.erroresTexto.alReves} la mezcla sale a S/ ${P3.dariaTexto.alReves} el kilo. Al de S/ 3 le toca la distancia del de S/ 8 (${P3.d2Texto}) y al de S/ 8, la del de S/ 3 (${P3.d1Texto}): ${P3.texto}.`,
+    b:`Mitad y mitad da S/ ${P3.dariaTexto.mitades}, el punto medio entre S/ 3 y S/ 8. Para bajar hasta S/ 5 hace falta más del barato: ${P3.texto}.`,
+    c:`${P3.erroresTexto.conLosValores} copia los precios: con esos kilos la mezcla sale a ${P3.dariaTexto.conLosValores.replace('≈ ', '≈ S/ ')} el kilo, y hay más del caro. Las cantidades van con las distancias al precio medio, cruzadas: ${P3.texto}.` } };
+
+const grado = t => `${t} de alcohol`;
+const P_4 = { id:'mezclas-paso4', ok:'c', opts:[
+  ['a', T('pm', grado(G4.erroresGrados.promedioSimple)), 'AR15-promedio-simple', 'parcial'],
+  ['b', T('pm', grado(G4.erroresGrados.sumaValores)), 'suma-los-grados', 'hipotesis'],
+  ['c', T('pm', grado(G4.gradoTexto))],
+  ['d', T('pm', grado(G4.erroresGrados.cantidadesCruzadas)), 'cruza-los-litros', 'hipotesis']],
+  fb:{ c:`¡Bien! El primer vaso tiene 10 × 60 ÷ 100 = ${G4.vasos[0].alcoholTexto} L de alcohol puro y el segundo, 30 × 20 ÷ 100 = ${G4.vasos[1].alcoholTexto} L. Juntos, ${G4.alcoholTexto} L de alcohol puro en ${G4.volumenTexto} L: ${G4.gradoTexto}.`,
+    a:`${G4.erroresGrados.promedioSimple} es el punto medio entre 60° y 20°, como si hubiera los mismos litros de cada uno. Pero hay 30 L del de 20° y solo 10 L del de 60°: la mezcla queda más cerca de 20°. Son ${G4.alcoholTexto} L de alcohol puro en ${G4.volumenTexto} L: ${G4.gradoTexto}.`,
+    b:`60° + 20° = ${G4.erroresGrados.sumaValores} suma los grados. Al mezclar, el alcohol puro de los dos vasos se reparte en todo el volumen: ${G4.alcoholTexto} L en ${G4.volumenTexto} L dan ${G4.gradoTexto}.`,
+    d:`${G4.erroresGrados.cantidadesCruzadas} sale de cruzar los litros: 30 L con 60° y 10 L con 20°. Cada vaso va con sus propios litros: ${G4.vasos[0].alcoholTexto} L + ${G4.vasos[1].alcoholTexto} L de alcohol puro en ${G4.volumenTexto} L, ${G4.gradoTexto}.` } };
+
+const litros = t => `${t} L de agua`;
+const P_5 = { id:'mezclas-paso5', ok:'c', opts:[
+  ['a', T('B', litros(W5.erroresTexto.aspaAlReves)), 'aspa-al-reves', 'hipotesis'],
+  ['b', T('B', litros(W5.erroresTexto.restaGrados)), 'resta-grados-como-litros', 'hipotesis'],
+  ['c', T('B', litros(W5.aguaTexto))],
+  ['d', T('B', litros(W5.erroresTexto.volumenFinal)), 'da-el-volumen-final', 'hipotesis']],
+  fb:{ c:`¡Bien! El alcohol puro no cambia: 12 × 75 ÷ 100 = ${W5.alcoholTexto} L. Para que esos ${W5.alcoholTexto} L sean el 45 %, el total debe ser ${W5.alcoholTexto} × 100 ÷ 45 = ${W5.volumenFinalTexto} L: hay que agregar ${W5.volumenFinalTexto} − 12 = ${W5.aguaTexto} L de agua.`,
+    a:`${W5.erroresTexto.aspaAlReves} L es la proporción al revés: con ${W5.erroresTexto.aspaAlReves} L de agua el frasco baja hasta ${W5.dariaTexto.aspaAlReves}. Al alcohol de 75° le toca la distancia del agua (${W5.d2Texto}) y al agua, la del alcohol (${W5.d1Texto}): 12 L de alcohol por cada ${W5.aguaTexto} L de agua.`,
+    b:`75 − 45 = ${W5.erroresTexto.restaGrados} es una diferencia de grados, no de litros. Con ${W5.erroresTexto.restaGrados} L de agua quedarían ${W5.alcoholTexto} L de alcohol puro en 42 L: ${W5.dariaTexto.restaGrados}.`,
+    d:`${W5.erroresTexto.volumenFinal} L es cuánto debe haber al final, contando los 12 L que ya están. El agua que se agrega es ${W5.volumenFinalTexto} − 12 = ${W5.aguaTexto} L.` } };
+
+const gr = t => `${t} g de oro puro`;
+const P_6 = { id:'mezclas-paso6', ok:'b', opts:[
+  ['a', T('f', gr(O6.erroresTexto.quilatesComoGramos)), 'quilates-como-gramos', 'hipotesis'],
+  ['b', T('f', gr(O6.finoTexto))],
+  ['c', T('f', gr(O6.erroresTexto.quilatesComoPorcentaje)), 'quilates-como-porcentaje', 'hipotesis'],
+  ['d', T('f', gr(O6.erroresTexto.daLaLiga)), 'da-el-otro-metal', 'hipotesis']],
+  fb:{ b:`¡Bien! El oro de 18 quilates tiene 18 partes de oro puro de cada 24: cada parte de la joya pesa 48 ÷ 24 = ${O6.parteTexto} g, y 18 partes pesan ${O6.finoTexto} g.`,
+    a:`18 son los quilates, no los gramos: dicen cuántas partes de cada 24 son oro puro. Cada parte pesa 48 ÷ 24 = ${O6.parteTexto} g, y 18 partes, ${O6.finoTexto} g.`,
+    c:`48 × 18 ÷ 100 = ${O6.erroresTexto.quilatesComoPorcentaje} toma los quilates como un porcentaje. Los quilates se cuentan sobre 24 partes, no sobre 100: 48 × 18 ÷ 24 = ${O6.finoTexto} g.`,
+    d:`${O6.erroresTexto.daLaLiga} g son las ${O6.partesLiga} partes de cada 24 que no son oro: el otro metal de la joya. El oro puro son las otras ${O6.partesFino} partes: ${O6.finoTexto} g.` } };
+
+const gr7 = t => `${t} g de oro de 24 quilates`;
+const P_7 = { id:'mezclas-paso7', ok:'d', opts:[
+  ['a', T('B', gr7(O7.erroresTexto.aspaAlReves)), 'aspa-al-reves', 'hipotesis'],
+  ['b', T('B', gr7(O7.erroresTexto.diferenciaPorMasa)), 'cambio-de-ley-por-la-masa', 'hipotesis'],
+  ['c', T('B', gr7(O7.erroresTexto.total)), 'da-la-masa-final', 'hipotesis'],
+  ['d', T('B', gr7(O7.agregarTexto))]],
+  fb:{ d:`¡Bien! Sobre la regla de los quilates, el de 18 está a ${O7.d1Texto} del 22 y el de 24, a ${O7.d2Texto}: de un lado van 60 × ${O7.d1Texto} = ${O7.momentoTexto}, y del otro hacen falta ${O7.agregarTexto} × ${O7.d2Texto} = ${O7.momentoTexto}.`,
+    a:`${O7.erroresTexto.aspaAlReves} g es la proporción al revés: con ${O7.erroresTexto.aspaAlReves} g la mezcla llega solo a ${O7.dariaQuilatesTexto.aspaAlReves} quilates. Los gramos van cruzados con las distancias: 60 g con la distancia del de 24 (${O7.d2Texto}) y el de 24 con la del de 18 (${O7.d1Texto}).`,
+    b:`${O7.erroresTexto.diferenciaPorMasa} g = 60 × 4 ÷ 24 es la parte de 60 g que corresponde a los 4 quilates que se quieren subir, pero el oro que se agrega también suma peso: con ${O7.erroresTexto.diferenciaPorMasa} g la mezcla queda en ${O7.dariaQuilatesTexto.diferenciaPorMasa} quilates.`,
+    c:`${O7.erroresTexto.total} g es el peso final, contando los 60 g que ya están. Lo que se agrega es ${O7.totalTexto} − 60 = ${O7.agregarTexto} g.` } };
+
+// ----- paso 1 y paso 8: la balanza que se explora -----
+const CTX = {
+  soles: { uni:'soles', desde:0, hasta:12, paso:1, cada:2, res:0.1, vmin:0, vmax:12, nombre:'arroz', cosa:'saco', cosas:'sacos' },
+  grados: { uni:'grados', desde:0, hasta:100, paso:10, cada:2, res:1, vmin:0, vmax:100, nombre:'alcohol', cosa:'vaso', cosas:'vasos' },
+  quilates: { uni:'quilates', desde:0, hasta:24, paso:2, cada:2, res:0.5, vmin:0, vmax:24, nombre:'oro', cosa:'pieza', cosas:'piezas' },
+};
+const DEF8 = { soles:{ qa:20, qb:30, va:3, vb:8, apoyo:5 }, grados:{ qa:10, qb:15, va:70, vb:20, apoyo:50 }, quilates:{ qa:30, qb:10, va:14, vb:24, apoyo:18 } };
+const lista = e => [{ cantidad:e.qa, valor:e.va }, { cantidad:e.qb, valor:e.vb }];
+// El apoyo para el motor: la fracción exacta si se llevó al equilibrio con el botón; si no, el valor arrastrado.
+const ap = e => (e.exacto ? M.Q(e.exacto) : e.apoyo);
+const ESTADO = { 'equilibrio':'derecha', 'casi':'casi derecha', 'baja-izquierda':'baja a la izquierda', 'baja-derecha':'baja a la derecha' };
+function prepExplora(e, cfg, vivo, conMedia){
+  const u = UNI[cfg.uni];
+  const st = () => {
+    const B = M.balanza(lista(e), ap(e), cfg.res);
+    return { unidad:cfg.uni, desde:cfg.desde, hasta:cfg.hasta, marcas:M.regla(cfg.desde, cfg.hasta, cfg.paso), cada:cfg.cada, res:cfg.res,
+      pesas:[pesa('A', e.qa, e.va, u.cant), pesa('B', e.qb, e.vb, u.cant)], cmax: 40, apoyo:e.apoyo, apoyoQ:e.exacto ? M.Q(e.exacto) : null, equilibrio: B.estado === 'equilibrio', manija:true,
+      alMover: v => { if (S.ocupado || E.anim) return; e.apoyo = v; e.exacto = null; refrescar(); } };
+  };
+  const refrescar = () => { Object.assign(E.st, st()); E.dibujar(); E.avisar(); };
+  E.config({ modo:'balanza', st:st(), alCambiar:vivo,
+    ley:[['A', `${cfg.cosa} A`], ['B', `${cfg.cosa} B`], ['ink', 'apoyo'], ['pm', 'apoyo con la barra derecha'], ['muted', 'regla: ' + u.regla]],
+    lect:[() => ['ink', 'apoyo', u.valor(ap(e))],
+      () => { const B = M.balanza(lista(e), ap(e), cfg.res); return [B.estado === 'equilibrio' ? 'pm' : 'ink', 'la barra', ESTADO[B.estado]]; }],
+    desc: () => { const B = M.balanza(lista(e), ap(e), cfg.res);
+      return `${cfg.cosa[0].toUpperCase() + cfg.cosa.slice(1)} A: ${M.texto(e.qa)} ${u.cant} en ${u.valor(e.va)}. ${cfg.cosa[0].toUpperCase() + cfg.cosa.slice(1)} B: ${M.texto(e.qb)} ${u.cant} en ${u.valor(e.vb)}.`
+        + (B.estado === 'casi' ? ` El punto de equilibrio está entre ${B.entre[0]} y ${B.entre[1]}.` : ''); } });
+  return refrescar;
+}
+let refrescar1 = null, refrescar8 = null;
+function vivo1(){
+  const d = $('vivo1'); if (!d) return;
+  const e = S.e1;
+  $('qa1').textContent = `${e.qa} kg`; $('qb1').textContent = `${e.qb} kg`;
+  $('stepBody').querySelectorAll('[data-q]').forEach(b => { const [k, dq] = [b.dataset.q, +b.dataset.d], x = e[k] + dq, otro = e[k === 'qa' ? 'qb' : 'qa'];
+    b.disabled = S.ocupado || x < 0 || x > 40 || (x === 0 && otro === 0); });
+  const B = M.balanza(lista({ qa:e.qa, qb:e.qb, va:2, vb:7 }), e.apoyo, 0.1);
+  d.innerHTML = `<p class="hint" style="margin:0">${B.estado === 'equilibrio' ? `La barra está derecha con el apoyo en ${m_(nb(M.soles(e.apoyo)))}: ese es el ${m_('precio medio')} de esta mezcla.`
+    : B.estado === 'casi' ? `Casi: el punto donde la barra queda derecha está entre ${nb('S/ ' + B.entre[0])} y ${nb('S/ ' + B.entre[1])}.` : 'Mueve el apoyo hasta que la barra quede derecha.'}</p>`;
+}
+function prep1(){ const e = S.e1; e.va = 2; e.vb = 7; refrescar1 = prepExplora(e, Object.assign({}, CTX.soles, { desde:1, hasta:8, cada:1 }), vivo1); }
+function cambiar1(k, d){ if (S.ocupado || E.anim) return; const e = S.e1, x = e[k] + d, otro = e[k === 'qa' ? 'qb' : 'qa']; if (x < 0 || x > 40 || (x === 0 && otro === 0)) return; e[k] = x; refrescar1(); }
+
+function vivo8(){
+  const d = $('vivo8'); if (!d) return;
+  const e = S.e8, cfg = CTX[e.ctx], u = UNI[cfg.uni];
+  $('stepBody').querySelectorAll('[data-q8]').forEach(b => { const k = b.dataset.q8, x = e[k] + +b.dataset.d, otro = e[k === 'qa' ? 'qb' : 'qa']; b.disabled = S.ocupado || x < 0 || x > 40 || (x === 0 && otro === 0); });
+  $('stepBody').querySelectorAll('[data-v8]').forEach(b => { const x = e[b.dataset.v8] + +b.dataset.d; b.disabled = S.ocupado || x < cfg.vmin || x > cfg.vmax; });
+  ['qa', 'qb'].forEach(k => { $(k + '8').textContent = `${e[k]} ${u.cant}`; });
+  ['va', 'vb'].forEach(k => { $(k + '8').textContent = u.valor(e[k]); });
+  $('stepBody').querySelectorAll('[data-ctx]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ctx === e.ctx)));
+  const Mz = M.mezcla(lista(e)), B = M.balanza(lista(e), ap(e), cfg.res), pm = M.Q(Mz.mediaFraccion), med = u.valor(pm);
+  const A = e.va === e.vb ? null : M.aspa(e.va, e.vb, pm);
+  const extra = cfg.uni === 'grados' ? M.gradoMezcla(lista(e).map(x => ({ volumen:x.cantidad, grado:x.valor })))
+    : cfg.uni === 'quilates' ? M.leyDeQuilates(pm) : null;
+  const pa = Mz.partes;
+  d.innerHTML = `<div class="eqs">
+    <div class="eq">${m_('valor medio')} = (${A_(M.texto(e.qa))} × ${A_(M.texto(e.va))} + ${B_(M.texto(e.qb))} × ${B_(M.texto(e.vb))}) ÷ (${M.texto(e.qa)} + ${M.texto(e.qb)}) = ${nb(Mz.sumaTexto)} ÷ ${Mz.totalTexto} = ${m_(nb(med))}<span class="note">${cfg.uni === 'soles' ? 'el costo total entre los kilos totales' : cfg.uni === 'grados' ? `${extra.alcoholTexto} L de alcohol puro en ${extra.volumenTexto} L` : `ley ${extra.leyTexto}: oro puro ÷ peso total`}</span></div>
+    <div class="eq">${A_(pa[0].cantidadTexto)} × ${A_(pa[0].brazoTexto)} = ${pa[0].momentoTexto} y ${B_(pa[1].cantidadTexto)} × ${B_(pa[1].brazoTexto)} = ${pa[1].momentoTexto}<span class="note">cantidad × distancia al valor medio: iguales a los dos lados</span></div>
+    ${A && A.posible && !A.extremo ? `<div class="eq">${A_(cfg.cosa + ' A')} : ${B_(cfg.cosa + ' B')} = ${A.texto}<span class="note">regla del aspa: cada uno con la distancia del otro (${B_(A.d2Texto)} y ${A_(A.d1Texto)})</span></div>` : ''}
+    <div class="eq" style="font-family:var(--font)">con el apoyo en ${nb(u.valor(ap(e)))}, la barra ${ESTADO[B.estado]}${B.estado === 'casi' ? ` (el equilibrio está entre ${B.entre[0]} y ${B.entre[1]})` : ''}<span class="note">izquierda: ${B.izquierdaTexto}; derecha: ${B.derechaTexto}</span></div></div>`;
+}
+function prep8(){ const e = S.e8; refrescar8 = prepExplora(e, CTX[e.ctx], vivo8); }
+function cambiar8(k, d, esValor){ if (S.ocupado || E.anim) return; const e = S.e8, cfg = CTX[e.ctx], x = e[k] + d;
+  if (esValor ? (x < cfg.vmin || x > cfg.vmax) : (x < 0 || x > 40 || (x === 0 && e[k === 'qa' ? 'qb' : 'qa'] === 0))) return;
+  e[k] = x; refrescar8(); }
+function equilibrio8(){ if (S.ocupado || E.anim) return; const e = S.e8, Mz = M.mezcla(lista(e)), de = e.apoyo, a = Mz.media;
+  e.exacto = null; E.st.apoyoQ = null; E.animar(0, 1, 700, t => { e.apoyo = t < 1 ? de + (a - de)*t : a; E.st.apoyo = e.apoyo; }, () => { e.exacto = Mz.mediaFraccion; refrescar8(); }); }
+
+const stepperQ = (id, k, attr, que) => `<div><span class="que">${que}</span>${[-5, -1].map(d => `<button type="button" ${attr}="${k}" data-d="${d}" aria-label="Quitar ${-d} a la cantidad de ${que}">${d}</button>`).join('')}<span class="val" id="${id}" aria-live="polite"></span>${[1, 5].map(d => `<button type="button" ${attr}="${k}" data-d="${d}" aria-label="Agregar ${d} a la cantidad de ${que}">+${d}</button>`).join('')}</div>`;
+const stepperV = (id, k, que) => `<div><span class="que">${que}</span><button type="button" data-v8="${k}" data-d="-1" aria-label="Bajar ${que}">−</button><span class="val" id="${id}" aria-live="polite"></span><button type="button" data-v8="${k}" data-d="1" aria-label="Subir ${que}">+</button></div>`;
+const apoyoBotones = () => `<div><span class="que">apoyo</span><button type="button" data-ap="-1" aria-label="Mover el apoyo a la izquierda">◀</button><button type="button" data-ap="1" aria-label="Mover el apoyo a la derecha">▶</button></div>`;
+const enlazarApoyo = e => $('stepBody').querySelectorAll('[data-ap]').forEach(b => b.onclick = () => { const s = E.st; if (S.ocupado || E.anim || !s.alMover) return; s.alMover(M.mover(s.apoyo, +b.dataset.ap, s.res, s.desde, s.hasta)); });
+
+// ----- estados del dibujo de cada predicción (antes y después de responder) -----
+const R2 = M.regla(3, 7, 0.5), R3 = M.regla(2, 9, 1), R5 = M.regla(0, 80, 10), R7 = M.regla(16, 25, 1);
+const bal2 = ya => ({ unidad:'soles', desde:3, hasta:7, marcas:R2, cada:2, pesas:[pesa('A', 30, 4, 'kg'), pesa('B', 20, 6, 'kg')], cmax:30,
+  apoyo: ya ? P2.precioMedio : null, soportes:!ya, equilibrio:ya, pie: ya ? pieMomentos(P2, ['A', 'B']) : null,
+  brazos: ya ? [{ k:'A', valor:4, texto:P2.partes[0].brazoTexto }, { k:'B', valor:6, texto:P2.partes[1].brazoTexto }] : null });
+const LECT2 = [() => ['A', 'arroz de S/ 4', '30 kg'], () => ['B', 'arroz de S/ 6', '20 kg']];
+const LECT2Y = LECT2.concat([() => ['pm', 'precio medio', P2.soles]]);
+const DESC2 = `La barra queda derecha con el apoyo en ${P2.soles}: 30 kg por 0,8 de distancia da ${P2.partes[0].momentoTexto}, igual que 20 kg por 1,2. Apoyada en ${P2.erroresSoles.promedioSimple}, bajaba hacia el saco de S/ 4.`;
+const bal3 = ya => ({ unidad:'soles', desde:2, hasta:9, marcas:R3, cada:1, pesas: ya ? [pesa('A', P3.q1, 3, 'kg'), pesa('B', P3.q2, 8, 'kg')] : [pesa('A', null, 3, 'kg'), pesa('B', null, 8, 'kg')], cmax:P3.q1,
+  apoyo:5, apoyoPm:true, soportes:!ya, equilibrio:ya, pie: ya ? pieMomentos(MZ3, ['A', 'B']) : null,
+  brazos: ya ? [{ k:'A', valor:3, texto:P3.d1Texto }, { k:'B', valor:8, texto:P3.d2Texto }] : null });
+const DESC3 = `Con ${P3.q1} kg del de S/ 3 y ${P3.q2} kg del de S/ 8, la barra queda derecha apoyada en S/ 5: ${P3.q1} por ${P3.d1Texto} da ${MZ3.partes[0].momentoTexto}, igual que ${P3.q2} por ${P3.d2Texto}.`;
+const vasos4 = (sep, mezcla) => [
+  { k:'A', volumen:10, alcohol:G4.vasos[0].alcohol, alcoholTexto:G4.vasos[0].alcoholTexto, separado:sep, rot:'10 L, 60°' },
+  { k:'B', volumen:30, alcohol:G4.vasos[1].alcohol, alcoholTexto:G4.vasos[1].alcoholTexto, separado:sep, rot:'30 L, 20°' }]
+  .concat(mezcla ? [{ k:'pm', volumen:G4.volumen, alcohol:G4.alcohol, alcoholTexto:G4.alcoholTexto, separado:true, rot:`${G4.volumenTexto} L`, sub:G4.gradoTexto }] : []);
+const PIE4 = [[G4.alcoholTexto + ' L', 'al'], [' de alcohol puro en ' + G4.volumenTexto + ' L: ', 'ink'], [G4.gradoTexto, 'pm']];
+const DESC4 = `Si se separara el alcohol puro, el vaso de 10 litros tendría ${G4.vasos[0].alcoholTexto} litros y el de 30, ${G4.vasos[1].alcoholTexto}. Juntos: ${G4.alcoholTexto} litros de alcohol puro en ${G4.volumenTexto} litros, ${G4.gradoTexto}.`;
+const bal5 = ya => ({ unidad:'grados', desde:0, hasta:80, marcas:R5, cada:2, pesas:[pesa('A', 12, 75, 'L'), ya ? pesa('B', W5.agua, 0, 'L') : pesa('B', null, 0, 'L')], cmax:12,
+  apoyo:45, apoyoPm:true, soportes:!ya, equilibrio:ya, pie: ya ? pieMomentos(MZ5, ['A', 'B']) : null,
+  brazos: ya ? [{ k:'A', valor:75, texto:W5.d1Texto }, { k:'B', valor:0, texto:W5.d2Texto }] : null });
+const DESC5 = `Con ${W5.aguaTexto} litros de agua en el 0 y los 12 litros de 75°, la barra queda derecha apoyada en 45°: 12 por ${W5.d1Texto} da ${W5.momentoTexto}, igual que ${W5.aguaTexto} por ${W5.d2Texto}.`;
+const barra6 = fase => ({ O:O6, fase, rot:'48 g, 18 quilates', arriba:`cada parte: 48 g ÷ 24 = ${O6.parteTexto} g`,
+  rotFino:`${O6.partesFino} partes de oro puro: ${O6.finoTexto} g`, rotLiga:`${O6.partesLiga} partes de otro metal: ${O6.ligaTexto} g`,
+  pie: fase >= 2 ? [['18 × ' + O6.parteTexto + ' = ', 'ink'], [O6.finoTexto + ' g', 'f'], [' de oro puro', 'ink']] : null });
+const DESC6 = `La joya de 48 gramos, partida en 24 partes iguales de ${O6.parteTexto} gramos: ${O6.partesFino} partes son oro puro, ${O6.finoTexto} gramos, y ${O6.partesLiga} son otro metal, ${O6.ligaTexto} gramos.`;
+const bal7 = ya => ({ unidad:'quilates', desde:16, hasta:25, marcas:R7, cada:2, pesas:[pesa('A', 60, 18, 'g'), ya ? pesa('B', O7.agregar, 24, 'g') : pesa('B', null, 24, 'g')], cmax:O7.agregar,
+  apoyo:22, apoyoPm:true, soportes:!ya, equilibrio:ya, pie: ya ? pieMomentos(MZ7, ['A', 'B']) : null,
+  brazos: ya ? [{ k:'A', valor:18, texto:O7.d1Texto }, { k:'B', valor:24, texto:O7.d2Texto }] : null });
+const DESC7 = `Con ${O7.agregarTexto} gramos de oro de 24 quilates y los 60 de 18, la barra queda derecha apoyada en 22 quilates: 60 por ${O7.d1Texto} da ${O7.momentoTexto}, igual que ${O7.agregarTexto} por ${O7.d2Texto}.`;
+const LEY_BAL = (a, b, pm, regla) => [['A', a], ['B', b], ['pm', pm], ['muted', 'regla: ' + regla]];
+
+const steps = [
+ { k:'Paso 1', t:'Explora: los sacos en la balanza', explora:true,
+   prep:() => prep1(),
+   body:() => `<p class="problem">Dos sacos de arroz: uno de ${A_('S/ 2 el kilo')} y otro de ${B_('S/ 7 el kilo')}. En la balanza, cada saco se apoya sobre su precio en la regla; un saco con más kilos pesa más. Arrastra el triángulo de apoyo (o usa las flechas o los botones) y cambia los kilos de cada saco.</p>
+   <div class="stepper">${stepperQ('qa1', 'qa', 'data-q', 'saco A')}${stepperQ('qb1', 'qb', 'data-q', 'saco B')}${apoyoBotones()}</div>
+   <div id="vivo1"></div>
+   <p>Si se mezclan los dos sacos y cada kilo de la mezcla se vende a un mismo precio, sin ganar ni perder, ese precio por kilo es el ${m_('precio medio')} de la mezcla. En esta balanza, el ${m_('precio medio')} es el punto de apoyo donde la barra queda derecha.</p>
+   <p class="hint">Prueba con sacos iguales y con sacos distintos.</p>`,
+   luego:() => { $('stepBody').querySelectorAll('[data-q]').forEach(b => b.onclick = () => cambiar1(b.dataset.q, +b.dataset.d)); enlazarApoyo(); vivo1(); } },
+ { k:'Paso 2', t:'Predice: el kilo de la mezcla', gate:P_2,
+   prep:() => { const ya = !!S.pred[P_2.id];
+     E.config({ modo:'balanza', st:bal2(ya), ley: ya ? LEY_BAL('arroz de S/ 4', 'arroz de S/ 6', 'precio medio', 'S/ por kilo') : LEY_BAL('arroz de S/ 4', 'arroz de S/ 6', 'precio medio', 'S/ por kilo').filter(x => x[0] !== 'pm'),
+       desc: ya ? DESC2 : 'Una balanza sostenida en sus dos extremos, con un saco de 30 kilos en S/ 4 y uno de 20 kilos en S/ 6.', lect: ya ? LECT2Y : LECT2 }); },
+   anima:fin => { const s = E.st; E.ley = LEY_BAL('arroz de S/ 4', 'arroz de S/ 6', 'precio medio', 'S/ por kilo'); E.leyenda();
+     const vigente = () => E.st === s;
+     Object.assign(s, { soportes:false, apoyo:P2.errores.promedioSimple, angulo:0 }); E.dibujar();
+     E.animar(0, B2s.angulo, 700, a => { s.angulo = a; }, () => esperar(700, () => { if (!vigente()) return;
+       const de = P2.errores.promedioSimple, a = P2.precioMedio; delete s.angulo;
+       E.animar(0, 1, 1300, t => { s.apoyo = de + (a - de)*t; }, () => { s.apoyo = a; Object.assign(s, bal2(true)); E.lect = LECT2Y; E.desc = DESC2; E.redimensionar(); E.avisar(); fin(); }); })); },
+   body:() => `<p class="problem">Se mezclan ${A_('30 kg de arroz de S/ 4 el kilo')} con ${B_('20 kg de arroz de S/ 6 el kilo')}. ¿Cuál es el ${m_('precio medio')} de un kilo de la mezcla?</p>${opcionesHTML(P_2.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">costo: ${A_('30')} × ${A_('4')} + ${B_('20')} × ${B_('6')} = ${P2.partes[0].productoTexto} + ${P2.partes[1].productoTexto} = ${P2.costoTexto}<span class="note">soles que cuestan los ${P2.totalTexto} kg</span></div>
+     <div class="eq">${m_('precio medio')} = ${P2.costoTexto} ÷ ${P2.totalTexto} = ${m_(nb(P2.soles))}<span class="note">el costo total entre los kilos totales</span></div>
+     <div class="eq">${A_('30')} × ${A_(P2.partes[0].brazoTexto)} = ${P2.partes[0].momentoTexto} = ${B_('20')} × ${B_(P2.partes[1].brazoTexto)}<span class="note">en la balanza: kilos × distancia al apoyo, iguales a los dos lados</span></div></div>
+   <p>Apoyada en ${nb(P2.erroresSoles.promedioSimple)}, el punto medio entre los dos precios, la barra baja hacia el saco de S/ 4, que tiene más kilos; queda derecha recién en ${nb(P2.soles)}. El precio medio es el costo total entre los kilos totales: cada precio pesa según sus kilos.</p>${FUENTE_AR15}</div>` },
+ { k:'Paso 3', t:'Predice: ¿cuánto de cada uno?', gate:P_3,
+   prep:() => { const ya = !!S.pred[P_3.id];
+     E.config({ modo:'balanza', st:bal3(ya), ley:LEY_BAL('arroz de S/ 3', 'arroz de S/ 8', 'precio medio buscado', 'S/ por kilo'),
+       desc: ya ? DESC3 : 'Una balanza sostenida en sus dos extremos, con el apoyo en S/ 5 y dos sacos sin cantidad: uno en S/ 3 y otro en S/ 8.',
+       lect: ya ? [() => ['A', 'arroz de S/ 3', `${P3.q1} kg`], () => ['B', 'arroz de S/ 8', `${P3.q2} kg`]] : [() => ['pm', 'precio medio buscado', 'S/ 5,00']] }); },
+   anima:fin => { const s = E.st, fin3 = bal3(true);
+     s.pesas = [pesa('A', 0, 3, 'kg'), pesa('B', 0, 8, 'kg')]; s.cmax = P3.q1;
+     E.animar(0, 1, 1200, t => { s.pesas[0].cantidad = P3.q1*t; s.pesas[1].cantidad = P3.q2*t; }, () => {
+       Object.assign(s, fin3); E.lect = [() => ['A', 'arroz de S/ 3', `${P3.q1} kg`], () => ['B', 'arroz de S/ 8', `${P3.q2} kg`]]; E.desc = DESC3; E.redimensionar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Se quiere arroz de ${m_('S/ 5 el kilo')} mezclando arroz de ${A_('S/ 3 el kilo')} con arroz de ${B_('S/ 8 el kilo')}. ¿En qué proporción hay que mezclarlos?</p>${opcionesHTML(P_3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq aspa"><span>${A_('S/ 3')}</span><span class="x">╳</span><span>8 − 5 = ${A_(P3.d2Texto)} partes</span><span>${B_('S/ 8')}</span><span>5 − 3 = ${B_(P3.d1Texto)} partes</span></div>
+     <div class="eq">${A_(P3.q1)} × ${A_(P3.d1Texto)} = ${MZ3.partes[0].momentoTexto} = ${B_(P3.q2)} × ${B_(P3.d2Texto)}<span class="note">kilos × distancia a ${m_('S/ 5')}: iguales a los dos lados</span></div></div>
+   <p><b>Regla del aspa:</b> a cada ingrediente le toca tantas partes como la distancia del <b>otro</b> al ${m_('precio medio')}. Las cantidades son inversamente proporcionales a las distancias: el que está más lejos lleva menos.</p>${FUENTE}</div>` },
+ { k:'Paso 4', t:'Predice: el grado de la mezcla', gate:P_4,
+   prep:() => { const ya = !!S.pred[P_4.id];
+     E.config({ modo:'vasos', st:{ vasos:vasos4(ya, ya), vmax:G4.volumen, flecha:ya, pie: ya ? PIE4 : null },
+       ley: ya ? [['A', 'alcohol de 60°'], ['B', 'alcohol de 20°'], ['pm', 'la mezcla'], ['al', 'alcohol puro (si se separara)']] : [['A', 'alcohol de 60°'], ['B', 'alcohol de 20°']],
+       desc: ya ? DESC4 : 'Dos vasos: 10 litros de alcohol de 60° y 30 litros de alcohol de 20°.', lect: ya ? [() => ['pm', 'grado de la mezcla', G4.gradoTexto]] : [] }); },
+   anima:fin => { E.ley = [['A', 'alcohol de 60°'], ['B', 'alcohol de 20°'], ['pm', 'la mezcla'], ['al', 'alcohol puro (si se separara)']]; E.leyenda();
+     E.secuencia([{ vasos:vasos4(true, false) }, { vasos:vasos4(true, true), flecha:true }, { pie:PIE4 }], [1000, 900, 0], () => { E.lect = [() => ['pm', 'grado de la mezcla', G4.gradoTexto]]; E.desc = DESC4; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Se mezclan ${A_('10 L de alcohol de 60°')} con ${B_('30 L de alcohol de 20°')}. El grado es el porcentaje de alcohol puro en volumen: 60° quiere decir que 60 de cada 100 litros son alcohol puro. ¿De cuántos ${m_('grados')} es la mezcla?</p>${opcionesHTML(P_4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${A_('10')} × 60 ÷ 100 = ${al_(G4.vasos[0].alcoholTexto)} L y ${B_('30')} × 20 ÷ 100 = ${al_(G4.vasos[1].alcoholTexto)} L<span class="note">alcohol puro de cada vaso</span></div>
+     <div class="eq">${al_(G4.alcoholTexto)} L de alcohol puro en ${G4.volumenTexto} L → ${m_(G4.gradoTexto)}<span class="note">${G4.alcoholTexto} de cada ${G4.volumenTexto} litros: ${G4.gradoTexto.replace('°', '')} de cada 100</span></div></div>
+   <p>Es el mismo equilibrio que el del arroz: el grado de la mezcla pesa cada grado según sus litros, y queda más cerca del vaso que tiene más litros.</p>${FUENTE_AR15}</div>` },
+ { k:'Paso 5', t:'Predice: ¿cuánta agua?', gate:P_5,
+   prep:() => { const ya = !!S.pred[P_5.id];
+     E.config({ modo:'balanza', st:bal5(ya), ley:LEY_BAL('alcohol de 75°', 'agua (0°)', 'grado buscado', 'grados'),
+       desc: ya ? DESC5 : 'Una balanza de grados sostenida en sus dos extremos, con el apoyo en 45°: 12 litros de alcohol en 75° y el agua, sin cantidad, en 0°.',
+       lect: ya ? [() => ['A', 'alcohol de 75°', '12 L'], () => ['B', 'agua', `${W5.aguaTexto} L`]] : [() => ['A', 'alcohol de 75°', '12 L'], () => ['pm', 'grado buscado', '45°']] }); },
+   anima:fin => { const s = E.st; s.pesas[1] = pesa('B', 0, 0, 'L');
+     E.animar(0, 1, 1200, t => { s.pesas[1].cantidad = W5.agua*t; }, () => {
+       Object.assign(s, bal5(true)); E.lect = [() => ['A', 'alcohol de 75°', '12 L'], () => ['B', 'agua', `${W5.aguaTexto} L`]]; E.desc = DESC5; E.redimensionar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Un frasco tiene ${A_('12 L de alcohol de 75°')}. ¿Cuántos litros de ${B_('agua')} hay que agregarle para que quede de ${m_('45°')}? (El agua no tiene alcohol: es como alcohol de 0°.)</p>${opcionesHTML(P_5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${A_('12')} × 75 ÷ 100 = ${al_(W5.alcoholTexto)} L<span class="note">el alcohol puro: el agua no lo cambia</span></div>
+     <div class="eq">${al_(W5.alcoholTexto)} × 100 ÷ ${m_('45')} = ${W5.volumenFinalTexto} L y ${W5.volumenFinalTexto} − 12 = ${B_(W5.aguaTexto)} L<span class="note">el volumen final, y el agua que se agrega</span></div>
+     <div class="eq">${A_('12')} × ${A_(W5.d1Texto)} = ${W5.momentoTexto} = ${B_(W5.aguaTexto)} × ${B_(W5.d2Texto)}<span class="note">en la balanza: el agua en 0°, el apoyo en ${m_('45°')}</span></div></div>
+   <p>El agua es un ingrediente más, de 0°: la regla del aspa también sirve. Al alcohol le toca la distancia del agua (45) y al agua, la del alcohol (${W5.d1Texto}): ${W5.d2Texto} : ${W5.d1Texto} = 12 : ${W5.aguaTexto}.</p>${FUENTE}</div>` },
+ { k:'Paso 6', t:'Predice: el oro de una joya', gate:P_6,
+   prep:() => { const ya = !!S.pred[P_6.id];
+     E.config({ modo:'barra', st:barra6(ya ? 2 : 0), ley: ya ? [['f', 'oro puro'], ['muted', 'otro metal']] : [['ink', 'la joya']],
+       desc: ya ? DESC6 : 'Una joya de 48 gramos de oro de 18 quilates.', lect: ya ? [() => ['f', 'oro puro', `${O6.finoTexto} g`], () => ['ink', 'ley', O6.leyTexto]] : [] }); },
+   anima:fin => { E.ley = [['f', 'oro puro'], ['muted', 'otro metal']]; E.leyenda();
+     E.secuencia([barra6(1), barra6(2)], [1000, 0], () => { E.lect = [() => ['f', 'oro puro', `${O6.finoTexto} g`], () => ['ink', 'ley', O6.leyTexto]]; E.desc = DESC6; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Una joya de oro de 18 quilates pesa 48 g; lo que no es oro es otro metal. ¿Cuántos gramos de ${f_('oro puro')} tiene?</p>${opcionesHTML(P_6.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">48 ÷ 24 = ${O6.parteTexto} g y 18 × ${O6.parteTexto} = ${f_(O6.finoTexto)} g<span class="note">18 quilates: 18 partes de oro puro de cada 24</span></div>
+     <div class="eq">ley = ${f_(O6.finoTexto)} ÷ 48 = 18 ÷ 24 = ${L6.leyTexto}<span class="note">oro puro ÷ peso total, en milésimas</span></div></div>
+   <p>La <b>ley</b> de una aleación es la fracción de metal fino: metal fino ÷ peso total, escrita en milésimas (${L6.leyTexto}). Los <b>quilates</b> son la misma ley contada sobre 24 partes: quilates = ley × 24.</p>${FUENTE}</div>` },
+ { k:'Paso 7', t:'Predice: subir los quilates', gate:P_7,
+   prep:() => { const ya = !!S.pred[P_7.id];
+     E.config({ modo:'balanza', st:bal7(ya), ley:LEY_BAL('oro de 18 quilates', 'oro de 24 quilates', 'quilates buscados', 'quilates'),
+       desc: ya ? DESC7 : 'Una balanza de quilates sostenida en sus dos extremos, con el apoyo en 22: 60 gramos en 18 y el oro de 24 quilates, sin cantidad, en 24.',
+       lect: ya ? [() => ['A', 'oro de 18 quilates', '60 g'], () => ['B', 'oro de 24 quilates', `${O7.agregarTexto} g`]] : [() => ['A', 'oro de 18 quilates', '60 g'], () => ['pm', 'quilates buscados', '22']] }); },
+   anima:fin => { const s = E.st; s.pesas[1] = pesa('B', 0, 24, 'g');
+     E.animar(0, 1, 1200, t => { s.pesas[1].cantidad = O7.agregar*t; }, () => {
+       Object.assign(s, bal7(true)); E.lect = [() => ['A', 'oro de 18 quilates', '60 g'], () => ['B', 'oro de 24 quilates', `${O7.agregarTexto} g`]]; E.desc = DESC7; E.redimensionar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Se tienen ${A_('60 g de oro de 18 quilates')}. ¿Cuántos gramos de ${B_('oro de 24 quilates')} hay que fundir con ellos para obtener oro de ${m_('22 quilates')}?</p>${opcionesHTML(P_7.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq aspa"><span>${A_('18')}</span><span class="x">╳</span><span>24 − 22 = ${A_(O7.d2Texto)} partes</span><span>${B_('24')}</span><span>22 − 18 = ${B_(O7.d1Texto)} partes</span></div>
+     <div class="eq">${A_('60')} × ${A_(O7.d1Texto)} = ${O7.momentoTexto} = ${B_(O7.agregarTexto)} × ${B_(O7.d2Texto)}<span class="note">gramos × distancia a ${m_('22')}: iguales a los dos lados</span></div>
+     <div class="eq">${f_(FI7.finoTexto)} + ${f_(O7.finoAgregadoTexto)} = ${f_(O7.finoFinalTexto)} g de oro puro en ${O7.totalTexto} g → ${m_(K7.quilatesTexto)} quilates<span class="note">comprobación: ${O7.finoFinalTexto} × 24 ÷ ${O7.totalTexto}</span></div></div>
+   <p>Una aleación también es una mezcla: los quilates (o la ley) van en la regla, los gramos son el peso. Con la regla del aspa, 60 g llevan la distancia del 24 (${O7.d2Texto}) y el oro de 24, la del 18 (${O7.d1Texto}): 2 : 4, es decir 60 : ${O7.agregarTexto}.</p>${FUENTE}</div>` },
+ { k:'Paso 8', t:'Explora: cualquier mezcla', explora:true,
+   prep:() => prep8(),
+   body:() => `<p class="problem">Elige qué se mezcla, cambia las cantidades y los valores de ${A_('A')} y de ${B_('B')}, y mueve el apoyo (arrástralo o usa las flechas). Abajo, el ${m_('valor medio')}, los momentos y el aspa.</p>
+   <div class="seg" role="group" aria-label="Qué se mezcla">${Object.entries({ soles:'Arroz (S/ por kilo)', grados:'Alcohol (grados)', quilates:'Oro (quilates)' }).map(([k, t]) => `<button type="button" data-ctx="${k}" aria-pressed="${k === S.e8.ctx}">${t}</button>`).join('')}</div>
+   <div class="stepper">${stepperQ('qa8', 'qa', 'data-q8', 'cantidad A')}${stepperV('va8', 'va', 'valor A')}${stepperQ('qb8', 'qb', 'data-q8', 'cantidad B')}${stepperV('vb8', 'vb', 'valor B')}${apoyoBotones()}</div>
+   <p><button type="button" class="btn" id="eq8">Llevar el apoyo al equilibrio</button></p>
+   <div id="vivo8"></div>
+   <p><a class="btn primary" href="#que-pasa-si" style="display:inline-block; text-decoration:none">Seguir con ¿Qué pasa si…?</a></p>`,
+   luego:() => {
+     $('stepBody').querySelectorAll('[data-q8]').forEach(b => b.onclick = () => cambiar8(b.dataset.q8, +b.dataset.d, false));
+     $('stepBody').querySelectorAll('[data-v8]').forEach(b => b.onclick = () => cambiar8(b.dataset.v8, +b.dataset.d, true));
+     $('stepBody').querySelectorAll('[data-ctx]').forEach(b => b.onclick = () => { if (S.ocupado || E.anim) return; S.e8 = Object.assign({ ctx:b.dataset.ctx }, DEF8[b.dataset.ctx]); prep8(); vivo8(); });
+     $('eq8').onclick = equilibrio8; enlazarApoyo(); vivo8(); } },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${quitar(s.t)}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.luego) s.luego();
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+  pintarDots();
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max || (S.ocupado && k !== S.step);
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb'); f.textContent = fb(p, P.ok, P.fb[p]); f.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('fb').focus({ preventScroll:true });
+    const paso = S.step, listo = () => { S.ocupado = false; E.avisar(); nav(); };
+    Celular.alResponder($('cv'), () => s.anima(listo), () => S.step === paso, { siNo:listo });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   El doble de cada café (el valor medio no cambia), arroz de S/ 9 con arroz de S/ 3 y de S/ 8 (no se puede), qué vaso tiene
+   más alcohol puro y sacar y reponer con agua. La escena cambia recién después de responder. Un experimento se abre
+   solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const A_ = t => V('A', t), B_ = t => V('B', t), m_ = t => V('pm', t), al_ = t => V('al', t);
+const ES = M.escalar([{ cantidad:3, valor:20 }, { cantidad:1, valor:28 }], 2);
+const A9 = M.aspa(3, 8, 9), MA = M.masAlcohol({ volumen:10, grado:30 }, { volumen:6, grado:50 }), SR = M.sacarYReponer(40, 80, 10);
+const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>';
+const FUENTE_AR15 = '<p class="fuente">Sobre la opción del promedio simple: un estudio con universitarios encontró que, aun sabiendo calcular un promedio, al juntar grupos de distinto tamaño promediaban sin pesar cuántos había en cada uno (Pollatsek, Lima y Well, 1981; no tenemos su cifra). Las demás opciones incorrectas son hipótesis nuestras.</p>';
+const S = { k:0, pred:{}, t0:Date.now() };
+console.assert(ES.media === 22 && Object.keys(ES.errores).length === 3 && !A9.posible && MA.respuesta === 'igual' && SR.grado === 60 && Object.keys(SR.errores).length === 3, 'qué pasa si: revisar las opciones');
+
+const R1 = M.regla(18, 30, 1), R2 = M.regla(2, 10, 1);
+const balCafe = (q1, q2, pie) => ({ unidad:'soles', desde:18, hasta:30, marcas:R1, cada:2, pesas:[pesa('A', q1, 20, 'kg'), pesa('B', q2, 28, 'kg')], cmax:6,
+  apoyo:22, equilibrio:true, pie, brazos:[{ k:'A', valor:20, texto:ES.antes.partes[0].brazoTexto }, { k:'B', valor:28, texto:ES.antes.partes[1].brazoTexto }] });
+const PIE_CAFE = pieMomentos(ES.despues, ['A', 'B']);
+const bal9 = (qb, ya) => ({ unidad:'soles', desde:2, hasta:10, marcas:R2, cada:1, pesas:[pesa('A', 1, 3, 'kg'), pesa('B', qb, 8, 'kg')], cmax:20,
+  apoyo:9, apoyoPm:true, soportes:!ya, pie: ya ? [['los dos sacos quedan a la izquierda de ', 'ink'], ['S/ 9', 'pm']] : null });
+const vasosMA = sep => [
+  { k:'A', volumen:10, alcohol:MA.alcoholA, alcoholTexto:MA.alcoholATexto, separado:sep, rot:'A: 10 L, 30°' },
+  { k:'B', volumen:6, alcohol:MA.alcoholB, alcoholTexto:MA.alcoholBTexto, separado:sep, rot:'B: 6 L, 50°' }];
+const SR0 = [{ k:'A', volumen:40, alcohol:SR.alcoholInicial, alcoholTexto:SR.alcoholInicialTexto, separado:false, rot:'40 L, 80°' }, { k:'B', volumen:10, alcohol:0, alcoholTexto:'0', separado:false, rot:'10 L de agua' }];
+const SR1 = [{ k:'A', volumen:40, alcohol:SR.alcoholInicial, alcoholTexto:SR.alcoholInicialTexto, separado:true, rot:'40 L, 80°' }, { k:'B', volumen:10, alcohol:0, alcoholTexto:'0', separado:true, rot:'10 L de agua' }];
+const SR2 = [{ k:'A', volumen:SR.quedan, alcohol:SR.alcoholQueda, alcoholTexto:SR.alcoholQuedaTexto, separado:true, rot:`quedan ${SR.quedanTexto} L` },
+  { k:'muted', volumen:10, alcohol:SR.alcoholSale, alcoholTexto:SR.alcoholSaleTexto, separado:true, rot:'se sacan 10 L' }, { k:'B', volumen:10, alcohol:0, alcoholTexto:'0', separado:true, rot:'10 L de agua' }];
+const SR3 = [{ k:'muted', volumen:10, alcohol:SR.alcoholSale, alcoholTexto:SR.alcoholSaleTexto, separado:true, rot:'se sacaron 10 L' },
+  { k:'pm', volumen:40, alcohol:SR.alcoholQueda, alcoholTexto:SR.alcoholQuedaTexto, separado:true, rot:'40 L', sub:SR.gradoTexto }];
+const PIE_SR = [[SR.alcoholQuedaTexto + ' L', 'al'], [' de alcohol puro en 40 L: ', 'ink'], [SR.gradoTexto, 'pm']];
+
+const EXPS = [
+  { id:'doble', corto:'El doble de cada café',
+    q:`Una mezcla de ${A_('3 kg de café de S/ 20 el kilo')} con ${B_('1 kg de café de S/ 28 el kilo')} sale a ${m_('S/ 22 el kilo')}. Si se mezclan 6 kg del primero con 2 kg del segundo, ¿a cuánto sale el kilo?`,
+    opts:[['a', T('pm', nb(M.soles(ES.errores.seMultiplica)) + ' el kilo'), 'se-multiplica-por-el-factor', 'hipotesis'], ['b', T('pm', nb(M.soles(ES.errores.promedioSimple)) + ' el kilo'), 'AR15-promedio-simple', 'parcial'],
+          ['c', T('pm', nb(M.soles(ES.mediaEscalada)) + ' el kilo')], ['d', T('pm', nb(M.soles(ES.errores.seDivide)) + ' el kilo'), 'se-divide-entre-el-factor', 'hipotesis']],
+    ok:'c', fuente:FUENTE_AR15,
+    fb:{ a:`Con el doble de kilos se duplica el costo (S/ ${ES.despues.sumaTexto} en vez de S/ ${ES.antes.sumaTexto}), pero también los kilos (${ES.despues.totalTexto} en vez de ${ES.antes.totalTexto}): cada kilo sigue costando ${M.soles(ES.media)}.`,
+      b:`${M.soles(ES.errores.promedioSimple)} es el punto medio entre S/ 20 y S/ 28, como si hubiera lo mismo de cada café. Con 6 kg y 2 kg sigue habiendo el triple del de S/ 20 que del de S/ 28, igual que con 3 kg y 1 kg.`,
+      d:`Más kilos no abaratan el kilo: el costo también crece. S/ ${ES.despues.sumaTexto} ÷ ${ES.despues.totalTexto} kg = ${M.soles(ES.media)}.` },
+    antes:ya => E.config({ modo:'balanza', st: ya ? balCafe(6, 2, PIE_CAFE) : balCafe(3, 1, null), ley:[['A', 'café de S/ 20'], ['B', 'café de S/ 28'], ['pm', 'precio medio'], ['muted', 'regla: S/ por kilo']],
+      desc: ya ? `Con 6 y 2 kilos la barra sigue derecha en S/ 22: 6 por ${ES.despues.partes[0].brazoTexto} da ${ES.despues.partes[0].momentoTexto}, igual que 2 por ${ES.despues.partes[1].brazoTexto}.` : 'Una balanza derecha apoyada en S/ 22, con 3 kilos de café en S/ 20 y 1 kilo en S/ 28.',
+      lect: ya ? [() => ['pm', 'precio medio', M.soles(ES.mediaEscalada)]] : [] }),
+    despues:() => { const s = E.st; E.animar(0, 1, 1200, t => { s.pesas[0] = pesa('A', 3 + 3*t, 20, 'kg'); s.pesas[1] = pesa('B', 1 + t, 28, 'kg'); },
+      () => { Object.assign(s, balCafe(6, 2, PIE_CAFE)); E.lect = [() => ['pm', 'precio medio', M.soles(ES.mediaEscalada)]];
+        E.desc = `Con 6 y 2 kilos la barra sigue derecha en S/ 22: 6 por ${ES.despues.partes[0].brazoTexto} da ${ES.despues.partes[0].momentoTexto}, igual que 2 por ${ES.despues.partes[1].brazoTexto}.`; E.redimensionar(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">3 : 1 = 6 : 2<span class="note">la proporción entre los kilos no cambia</span></div>
+      <div class="eq">${A_('6')} × ${A_(ES.despues.partes[0].brazoTexto)} = ${ES.despues.partes[0].momentoTexto} = ${B_('2')} × ${B_(ES.despues.partes[1].brazoTexto)}<span class="note">los dos momentos se duplican: siguen iguales</span></div></div>
+      <p>El precio medio depende de la <b>proporción</b> entre las cantidades, no de las cantidades sueltas. Por eso la regla del aspa da una proporción: 3 kg y 1 kg, 30 kg y 10 kg o 300 kg y 100 kg dan el mismo precio por kilo.</p>` },
+
+  { id:'precio-9', corto:'¿Arroz de S/ 9?',
+    q:`¿Se puede obtener arroz de ${m_('S/ 9 el kilo')} mezclando arroz de ${A_('S/ 3 el kilo')} con arroz de ${B_('S/ 8 el kilo')}?`,
+    opts:[['a', `Sí: ${A9.errores.sinSigno[0]} kg del de S/ 3 por cada ${A9.errores.sinSigno[1]} kg del de S/ 8`, 'aspa-sin-mirar-el-rango', 'hipotesis'],
+          ['b', `Sí: ${A9.errores.sinSignoAlReves[0]} kg del de S/ 3 por cada ${A9.errores.sinSignoAlReves[1]} kg del de S/ 8`, 'aspa-sin-mirar-el-rango-al-reves', 'hipotesis'],
+          ['c', 'No: un kilo de la mezcla nunca cuesta más que un kilo del arroz más caro'],
+          ['d', 'Sí: con muchísimo más del de S/ 8 que del de S/ 3', 'mas-cantidad-sube-sin-tope', 'hipotesis']],
+    ok:'c', fuente:FUENTE,
+    fb:{ a:`Con ${A9.erroresTexto.sinSigno} la mezcla sale a ${M.soles(A9.daria.sinSigno)} el kilo, no a S/ 9: el aspa con las distancias sin mirar de qué lado quedan da una proporción, pero no una que funcione.`,
+      b:`Con ${A9.erroresTexto.sinSignoAlReves} la mezcla sale a ${M.soles(A9.daria.sinSignoAlReves)} el kilo. Ninguna proporción llega a S/ 9.`,
+      d:'Con mucho más del de S/ 8, la mezcla se acerca a S/ 8, pero nunca lo pasa: cada kilo del de S/ 3 la baja un poco.' },
+    antes:ya => E.config({ modo:'balanza', st:bal9(ya ? 20 : 1, ya), ley:[['A', 'arroz de S/ 3'], ['B', 'arroz de S/ 8'], ['pm', 'el precio buscado'], ['muted', 'regla: S/ por kilo']],
+      desc: ya ? 'Apoyada en S/ 9, la barra baja siempre a la izquierda: los dos sacos quedan a la izquierda del apoyo, tenga los kilos que tenga el de S/ 8.' : 'Una balanza sostenida en sus extremos, con el apoyo en S/ 9 y un saco en S/ 3 y otro en S/ 8.',
+      lect: ya ? [() => ['ink', 'la barra', 'baja a la izquierda']] : [] }),
+    despues:() => { E.st.soportes = false; E.dibujar();
+      E.secuencia([{ pesas:[pesa('A', 1, 3, 'kg'), pesa('B', 4, 8, 'kg')] }, { pesas:[pesa('A', 1, 3, 'kg'), pesa('B', 10, 8, 'kg')] }, Object.assign(bal9(20, true))], [800, 800, 0],
+        () => { E.lect = [() => ['ink', 'la barra', 'baja a la izquierda']]; E.desc = 'Apoyada en S/ 9, la barra baja siempre a la izquierda: los dos sacos quedan a la izquierda del apoyo, tenga los kilos que tenga el de S/ 8.'; E.avisar(); }); },
+    exp:() => `<p>En la balanza, si el apoyo queda fuera de los dos sacos, los dos tiran hacia el mismo lado y la barra nunca queda derecha. El precio medio siempre queda entre el menor y el mayor precio: con S/ 3 y S/ 8, entre S/ 3 y S/ 8. Por lo mismo, el agua (0°) solo puede bajar el grado de un alcohol, y para subirlo hace falta un alcohol más fuerte que el que se quiere obtener.</p>` },
+
+  { id:'mas-alcohol', corto:'¿Qué vaso tiene más alcohol?',
+    q:`Vaso A: ${A_('10 L de alcohol de 30°')}. Vaso B: ${B_('6 L de alcohol de 50°')}. ¿Cuál tiene más ${al_('alcohol puro')}?`,
+    opts:[['a', 'El vaso A', 'mas-litros-mas-alcohol', 'hipotesis'], ['b', 'El vaso B', 'mas-grados-mas-alcohol', 'hipotesis'], ['c', 'Los dos tienen lo mismo'], ['d', 'No se puede saber', 'no-se-puede-saber', 'hipotesis']],
+    ok:'c', fuente:FUENTE,
+    fb:{ a:`El vaso A tiene más litros, pero menos de cada litro es alcohol: 10 × 30 ÷ 100 = ${MA.alcoholATexto} L. El B: 6 × 50 ÷ 100 = ${MA.alcoholBTexto} L. Empatan.`,
+      b:`El vaso B es más fuerte, pero es más chico: 6 × 50 ÷ 100 = ${MA.alcoholBTexto} L, lo mismo que los 10 × 30 ÷ 100 = ${MA.alcoholATexto} L del A.`,
+      d:`Sí se puede: el grado dice qué parte de cada vaso es alcohol puro. 10 × 30 ÷ 100 = ${MA.alcoholATexto} L y 6 × 50 ÷ 100 = ${MA.alcoholBTexto} L.` },
+    antes:ya => E.config({ modo:'vasos', st:{ vasos:vasosMA(ya), vmax:10 }, ley: ya ? [['A', 'vaso A'], ['B', 'vaso B'], ['al', 'alcohol puro (si se separara)']] : [['A', 'vaso A'], ['B', 'vaso B']],
+      desc: ya ? `Si se separara el alcohol puro, los dos vasos tendrían ${MA.alcoholATexto} litros.` : 'Dos vasos: 10 litros de alcohol de 30° y 6 litros de alcohol de 50°.',
+      lect: ya ? [() => ['al', 'alcohol puro en A', `${MA.alcoholATexto} L`], () => ['al', 'alcohol puro en B', `${MA.alcoholBTexto} L`]] : [] }),
+    despues:() => { E.ley = [['A', 'vaso A'], ['B', 'vaso B'], ['al', 'alcohol puro (si se separara)']]; E.leyenda();
+      E.secuencia([{ vasos:vasosMA(true) }], [0], () => { E.lect = [() => ['al', 'alcohol puro en A', `${MA.alcoholATexto} L`], () => ['al', 'alcohol puro en B', `${MA.alcoholBTexto} L`]]; E.desc = `Si se separara el alcohol puro, los dos vasos tendrían ${MA.alcoholATexto} litros.`; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${A_('10')} × 30 ÷ 100 = ${al_(MA.alcoholATexto)} L y ${B_('6')} × 50 ÷ 100 = ${al_(MA.alcoholBTexto)} L</div></div>
+      <p>El grado dice qué <b>parte</b> del vaso es alcohol; los litros de alcohol puro dependen también del tamaño del vaso: litros × grados ÷ 100. Si se mezclaran, los ${M.gradoMezcla([{ volumen:10, grado:30 }, { volumen:6, grado:50 }]).alcoholTexto} L de alcohol puro quedarían en ${M.gradoMezcla([{ volumen:10, grado:30 }, { volumen:6, grado:50 }]).volumenTexto} L.</p>` },
+
+  { id:'sacar-reponer', corto:'Sacar y reponer con agua',
+    q:`De un bidón con ${A_('40 L de alcohol de 80°')} se sacan 10 L y se reponen con 10 L de ${B_('agua')}. ¿De cuántos ${m_('grados')} queda?`,
+    opts:[['a', T('pm', SR.erroresTexto.restaLitros), 'resta-los-litros-a-los-grados', 'hipotesis'], ['b', T('pm', SR.gradoTexto)],
+          ['c', T('pm', SR.erroresTexto.promedioSimple), 'AR15-promedio-simple', 'parcial'], ['d', T('pm', SR.erroresTexto.soloLaBaja), 'da-solo-lo-que-baja', 'hipotesis']],
+    ok:'b', fuente:FUENTE_AR15,
+    fb:{ a:`80 − 10 = ${SR.erroresTexto.restaLitros} resta litros a grados. Al sacar 10 L de 40 se van ${SR.alcoholSaleTexto} L de alcohol puro y quedan ${SR.alcoholQuedaTexto} L; el agua no trae alcohol: ${SR.alcoholQuedaTexto} L en 40 L, ${SR.gradoTexto}.`,
+      c:`${SR.erroresTexto.promedioSimple} es el punto medio entre 80° y el agua (0°), como si hubiera lo mismo de cada uno. Pero quedan 30 L de 80° y solo 10 L de agua: ${SR.alcoholQuedaTexto} L de alcohol puro en 40 L, ${SR.gradoTexto}.`,
+      d:`${SR.erroresTexto.soloLaBaja} es cuánto baja el grado, no cuánto queda: 80° − ${SR.erroresTexto.soloLaBaja} = ${SR.gradoTexto}.` },
+    antes:ya => E.config({ modo:'vasos', st:{ vasos: ya ? SR3 : SR0, vmax:40, flecha:ya, pie: ya ? PIE_SR : null },
+      ley: ya ? [['A', 'alcohol de 80°'], ['B', 'agua'], ['pm', 'lo que queda'], ['al', 'alcohol puro (si se separara)'], ['muted', 'lo que se saca']] : [['A', 'alcohol de 80°'], ['B', 'agua']],
+      desc: ya ? `Se sacan 10 litros, con ${SR.alcoholSaleTexto} de alcohol puro; quedan ${SR.alcoholQuedaTexto} litros de alcohol puro, y con el agua el bidón vuelve a 40 litros: ${SR.gradoTexto}.` : 'Un bidón de 40 litros de alcohol de 80° y 10 litros de agua.',
+      lect: ya ? [() => ['pm', 'grado final', SR.gradoTexto]] : [] }),
+    despues:() => { E.ley = [['A', 'alcohol de 80°'], ['B', 'agua'], ['pm', 'lo que queda'], ['al', 'alcohol puro (si se separara)'], ['muted', 'lo que se saca']]; E.leyenda();
+      E.secuencia([{ vasos:SR1 }, { vasos:SR2 }, { vasos:SR3, flecha:true }, { pie:PIE_SR }], [900, 1100, 900, 0], () => { E.lect = [() => ['pm', 'grado final', SR.gradoTexto]];
+        E.desc = `Se sacan 10 litros, con ${SR.alcoholSaleTexto} de alcohol puro; quedan ${SR.alcoholQuedaTexto} litros de alcohol puro, y con el agua el bidón vuelve a 40 litros: ${SR.gradoTexto}.`; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${A_('40')} × 80 ÷ 100 = ${al_(SR.alcoholInicialTexto)} L y 10 × 80 ÷ 100 = ${SR.alcoholSaleTexto} L<span class="note">el alcohol puro del bidón y el que se va con los 10 L</span></div>
+      <div class="eq">${al_(SR.alcoholInicialTexto)} − ${SR.alcoholSaleTexto} = ${al_(SR.alcoholQuedaTexto)} L en 40 L → ${m_(SR.gradoTexto)}</div></div>
+      <p>Lo que se saca lleva alcohol del mismo grado que el bidón. El agua repone el volumen, pero no el alcohol.</p>` },
+];
+
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb2');
+    f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + x.fuente + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); x.antes(false); Celular.alResponder($('cv2'), () => { x.despues(); E.avisar(); }, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false); $('fb2').focus({ preventScroll:true });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

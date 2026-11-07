@@ -126,7 +126,8 @@
     return '≈ ' + conDecimales(q, Math.max(2, min));
   }
   const exacto = x => decimalExacto(Q(x), 4) !== null;
-  const soles = x => { const t = texto(x, { min: 2 }); return t.startsWith('≈ ') ? '≈ S/ ' + t.slice(2) : 'S/ ' + t; };
+  // Soles: siempre con dos decimales; si el valor exacto tiene más, «≈» y redondeado a céntimos.
+  const soles = x => { const q = Q(x), ex = decimalExacto(q, 2); return ex !== null ? 'S/ ' + conDecimales(q, 2) : '≈ S/ ' + conDecimales(q, 2); };
   const grados = x => texto(x) + '°';
   const milesimas = x => texto(x, { min: 3 });
   const fraccion = q => (q.d === 1n ? String(q.n) : `${q.n}/${q.d}`);

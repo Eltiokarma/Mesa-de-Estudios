@@ -83,7 +83,7 @@
     { "nombre": "Tres ingredientes: 10 kg a S/ 12, 20 kg a S/ 15 y 15 kg a S/ 20 → S/ 720 ÷ 45 = S/ 16; momentos 40 + 20 = 60 a la izquierda y 60 a la derecha",
       "fn": "precioMedio", "args": [[{ "cantidad": 10, "precio": 12 }, { "cantidad": 20, "precio": 15 }, { "cantidad": 15, "precio": 20 }]],
       "espera": { "precioMedio": 16, "costo": 720, "momentoIzquierda": 60, "momentoDerecha": 60, "partes.0.momento": 40, "partes.1.momento": 20, "partes.2.momento": 60,
-        "errores.promedioSimple": 47, "erroresSoles.promedioSimple": "≈ S/ 15,67" } },
+        "errores.promedioSimple": 15.666666666666666, "erroresSoles.promedioSimple": "≈ S/ 15,67" } },
 
     { "nombre": "¿Qué pasa si…? 1: 3 kg de café de S/ 20 y 1 kg de S/ 28 salen a S/ 22; con el doble de cada uno, igual (no 44, ni 11, ni el promedio simple 24)",
       "fn": "escalar", "args": [[{ "cantidad": 3, "valor": 20 }, { "cantidad": 1, "valor": 28 }], 2],
