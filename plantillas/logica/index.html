@@ -827,7 +827,7 @@ const steps = [
      campo.addEventListener('input', leer);
      $('stepBody').querySelectorAll('[data-tecla]').forEach(b => b.onclick = () => {
        const t = b.dataset.tecla, v = campo.value.replace(/\s+$/, '');
-       campo.value = t === '⌫' ? v.slice(0, -1) : (['∧', '∨', 'Δ', '→', '↔'].includes(t) ? `${v} ${t} ` : v + t);
+       campo.value = t === '⌫' ? v.slice(0, -1) : (['∧', '∨', 'Δ', '→', '↔'].includes(t) ? `${v} ${t} ` : campo.value + t);
        S.e8.texto = campo.value; prep8(); });
      $('stepBody').querySelectorAll('[data-int8]').forEach(b => b.onclick = () => E.cambiar(b.dataset.int8));
      vivo8(); } },
