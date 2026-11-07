@@ -26,7 +26,7 @@
  *                           'AAA'. Devuelve { criterio, n, cuantos, determina, triangulos: [t…], motivo, errores } y,
  *                           en LLA, además { angulo, opuesto, adyacente, altura (h = adyacente·sen del ángulo),
  *                           terceros (las medidas posibles del tercer lado, de menor a mayor), detras (cortes del
- *                           compás con la recta que caen detrás del vértice del ángulo, ≤ 0), frenteAlMayor
+ *                           compás con la recta que caen detrás del vértice del ángulo, < 0; un corte justo en el vértice no cuenta ni sirve), frenteAlMayor
  *                           (opuesto > adyacente), recto (el ángulo es 90°) }.
  *                           Cada t = { lados: {a,b,c}, angulos: {A,B,C} (reales), academia: {A,B,C}, vertices: {A,B,C} }.
  *                           En AAA con suma 180°, triangulos queda vacío (hay infinitos, todos semejantes).
