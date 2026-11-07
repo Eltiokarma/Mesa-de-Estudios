@@ -6,7 +6,7 @@
  "tolerancia": 1e-09,
  "casos": [
   {
-   "nombre": "Radio FM de 100 MHz (predicción del paso 3): λ = c/f = 3 × 10⁸ / 10⁸ = 3 m, región radio. Errores: c·f = 3 × 10¹⁶ m, sin el prefijo 3 × 10⁶ m (OE20), exponente corrido 0,3 m (OE20)",
+   "nombre": "Radio FM de 100 MHz (predicción del paso 4): λ = c/f = 3 × 10⁸ / 10⁸ = 3 m, región radio. Errores: c·f = 3 × 10¹⁶ m, sin el prefijo 3 × 10⁶ m (OE20), exponente corrido 0,3 m (OE20)",
    "fn": "onda",
    "args": [
     100,
@@ -425,7 +425,7 @@
    ]
   },
   {
-   "nombre": "Qué atraviesa qué: la radio cruza la pared y la luz no; los rayos X cruzan la piel y no el hueso; el ultravioleta no cruza el vidrio; las microondas rebotan en la rejilla del horno y la luz pasa",
+   "nombre": "Qué atraviesa qué: la radio cruza la pared y la luz no; los rayos X cruzan la piel y el hueso los absorbe mucho más (pasa una parte); el vidrio frena buena parte del ultravioleta (pasa una parte); las microondas rebotan en la rejilla del horno y la luz pasa",
    "fn": "atraviesa",
    "args": [
     "pared",
@@ -459,7 +459,7 @@
       "rayosX"
      ],
      "espera": {
-      "valor": "no"
+      "valor": "parcial"
      }
     },
     {
@@ -468,7 +468,7 @@
       "ultravioleta"
      ],
      "espera": {
-      "valor": "no"
+      "valor": "parcial"
      }
     },
     {
@@ -600,6 +600,94 @@
      }
     }
    ]
+  },
+  {
+   "nombre": "Leer la onda (predicción del paso 7): campo eléctrico = 60 sen(2π × 10⁶ x − 6π × 10¹⁴ t) V/m a lo largo de y. λ = 2π/k = 10⁻⁶ m = 1 µm (infrarrojo), f = ω/(2π) = 3 × 10¹⁴ Hz, v = ω/k = 3 × 10⁸ m/s, avance +x, B a lo largo de +z con B₀ = 60/(3 × 10⁸) = 2 × 10⁻⁷ T, I = c·ε₀·E₀²/2 = 4,779 W/m². Errores: λ = k ≈ 6,28 × 10⁶ m (radio); λ = 1/k ≈ 1,59 × 10⁻⁷ m (ultravioleta); λ = k/(2π) = 10⁶ m (radio); f = ω ≈ 1,88 × 10¹⁵ Hz; B paralelo al campo eléctrico; signo al revés: avance −x y B a lo largo de −z; B₀ = E₀ = 60 T",
+   "fn": "leerOnda",
+   "args": [
+    {
+     "E0": 60,
+     "k": 6283185.307179586,
+     "w": 1884955592153876,
+     "signo": "-"
+    }
+   ],
+   "espera": {
+    "lambda": 1e-06,
+    "f": 300000000000000.0,
+    "v": 300000000.0,
+    "region": "infrarrojo",
+    "B0": 2e-07,
+    "avance": [
+     1,
+     0,
+     0
+    ],
+    "dirB": [
+     0,
+     0,
+     1
+    ],
+    "I": 4.779,
+    "errores.lambdaEsK.lambda": 6283185.30718,
+    "errores.lambdaEsK.region": "radio",
+    "errores.unoSobreK.lambda": 1.59154943092e-07,
+    "errores.unoSobreK.region": "ultravioleta",
+    "errores.kSobreDosPi.lambda": 1000000.0,
+    "errores.fEsW": 1884955592150000.0,
+    "errores.BParalelo.dirB": [
+     0,
+     1,
+     0
+    ],
+    "errores.avanceAlReves.avance": [
+     -1,
+     0,
+     0
+    ],
+    "errores.avanceAlReves.dirB": [
+     0,
+     0,
+     -1
+    ],
+    "errores.BIgual.B0": 60
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "E0": 60,
+       "k": 6283185.307179586,
+       "w": 1884955592153876,
+       "signo": "+"
+      }
+     ],
+     "espera": {
+      "avance": [
+       -1,
+       0,
+       0
+      ],
+      "dirB": [
+       0,
+       0,
+       -1
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Intensidad media: con un campo eléctrico máximo de 100 V/m, I = c·ε₀·E₀²/2 = 3 × 10⁸ · 8,85 × 10⁻¹² · 10⁴ / 2 = 13,275 W/m². Errores: sin la mitad 26,55 W/m²; sin el cuadrado 0,13275 W/m²",
+   "fn": "intensidad",
+   "args": [
+    100
+   ],
+   "espera": {
+    "I": 13.275,
+    "errores.sinMitad": 26.55,
+    "errores.sinCuadrado": 0.13275
+   }
   }
  ]
 }

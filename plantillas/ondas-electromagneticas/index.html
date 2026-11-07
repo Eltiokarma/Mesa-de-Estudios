@@ -173,7 +173,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
     <header>
       <p class="eyebrow">Física · Ondas electromagnéticas · Problemas tipo admisión</p>
       <h1>La antena y el arcoíris</h1>
-      <p class="sub">¿Qué tienen en común una emisora de radio, un foco y una radiografía, y en qué se diferencian? Predice frente al dibujo; después recorre el espectro con la frecuencia y mira la onda, su longitud de onda y qué materiales cruza.</p>
+      <p class="sub">Una emisora de radio, un foco y una radiografía: ¿en qué se parecen y en qué no? Predice frente al dibujo; después recorre el espectro con la frecuencia y mira la onda, su longitud de onda y qué materiales cruza.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -443,7 +443,7 @@ function crearEscena(cv, idDesc, idLect, idLey, idCtl){
   function dibujarOnda(c){
     const chico = W < 560, Ho = E.ver.regla ? H - Math.min(altoRegla(chico), H*.56) : H;
     const t = E.t, xA = 26, xa = xA + 16, xb = W - (chico ? 50 : 64), y = Ho*.5;
-    const A = Ho*.27*clamp(t.amp, 0, 2.2)/ (E.ver.ampMax || 1), z = { x:-.55, y:.42 };   // dirección «hacia el que mira»
+    const A = Ho*.27*clamp(t.amp, 0, 2.2)/ (E.ver.ampMax || 1), z = { x:-.2, y:.42 };   // dirección «hacia ti» (sale de la pantalla), en perspectiva
     const L = largoVisual(t.f, chico ? 18 : 22, chico ? 150 : 190), Bv = E.ver.B === undefined ? 1 : E.ver.B;
     // planos de guía: vertical (del campo eléctrico) y horizontal (de B), muy tenues
     const Ab = Ho*.27;
@@ -472,9 +472,21 @@ function crearEscena(cv, idDesc, idLect, idLey, idCtl){
     ctx.lineWidth = resaltado('el') ? 3.6 : 2.4; ctx.beginPath();
     for (let x = xa; x <= xb; x += 2){ const Y = y - A*s(x); if (x === xa) ctx.moveTo(x, Y); else ctx.lineTo(x, Y); }
     ctx.stroke(); ctx.restore();
+    // una cresta marcada: las dos flechas salen del mismo punto del eje, máximas a la vez
+    {
+      const ph = tiempo*VPX, mid = xa + (xb - xa)*.5;
+      let xc = xa + L*.25 + (ph % L); while (xc < mid - L*.5) xc += L; while (xc > mid + L*.5) xc -= L;
+      if (xc > xa + 4 && xc < xb - 4){
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.setLineDash([2, 3]); linea(ctx, { x:xc, y:y - Ab - 2 }, { x:xc, y:y + Ab*.5 }); ctx.restore();
+        flecha({ x:xc, y }, { x:xc, y:y - A }, c.el, 2.6);
+        if (Bv > 0) flecha({ x:xc, y }, { x:xc + z.x*A*.85, y:y + z.y*A*.85 }, c.B, 2.6, { alfa:Bv });
+        ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(xc, y, 2.6, 0, 7); ctx.fill(); ctx.restore();
+      }
+    }
     // avance
     flecha({ x:xb + 4, y }, { x:xb + (chico ? 34 : 46), y }, c.v, resaltado('v') ? 3.4 : 2.4);
-    rotulo(xb + (chico ? 20 : 26), y + 14, E.ver.rotV || 'avance', c.v, 'center', 11, 'v');
+    { const tv = E.ver.rotV || 'avance'; ctx.font = `800 11px ${c.font}`; const tw = ctx.measureText(tv).width;
+      rotulo(Math.min(xb + (chico ? 20 : 26), W - 5 - tw/2), y + 14, tv, c.v, 'center', 11, 'v'); }
     // λ: entre dos crestas del campo eléctrico (se mueve con la onda)
     if (E.ver.lam !== 'no' && L < (xb - xa)*.9){
       // corchete fijo, del largo de λ (no sigue a las crestas para que no parpadee)
@@ -487,9 +499,11 @@ function crearEscena(cv, idDesc, idLect, idLey, idCtl){
       }
     }
     // rótulos de los campos (a la izquierda, junto a la antena, para no pisar λ)
-    rotulo(xa + 4, Math.max(9, y - Ab - 8), E.ver.rotE || 'campo eléctrico', c.el, 'left', 11, 'el');
-    if (Bv > 0) rotulo(xa + 10 + z.x*Ab*.6, Math.min(Ho - 8, y + z.y*Ab*.9 + 12), E.ver.rotB || 'B', c.B, 'left', 11, 'B');
-    else if (E.ver.Bq) rotulo(xa + 14, Math.min(Ho - 8, y + Ab*.45 + 12), 'B: ?', c.B, 'left', 11, 'B');
+    rotulo(xa + 4, Math.max(9, y - Ab - 8), (E.ver.rotE || 'campo eléctrico') + (E.ver.ejes ? ' (eje y)' : ''), c.el, 'left', 11, 'el');
+    const yPie = Math.min(Ho - 8, y + Ab*.5 + 12);
+    rotulo(xa + z.x*Ab*.8 + 2, yPie, E.ver.ejes ? 'hacia ti ↙ (+z)' : 'hacia ti ↙', c.muted, 'left', 10);
+    if (Bv > 0) rotulo(xb + z.x*Ab*.8 - 4, yPie, E.ver.rotB || 'B', c.B, 'right', 11, 'B');
+    else if (E.ver.Bq) rotulo(xb + z.x*Ab*.8 - 4, yPie, 'B: ?', c.B, 'right', 11, 'B');
     if (E.ver.regla) dibujarRegla(c, { x:8, y:Ho, w:W - 16, h:H - Ho - 4 });
   }
 
@@ -649,8 +663,9 @@ function crearEscena(cv, idDesc, idLect, idLey, idCtl){
     rotulo(xi + (chico ? 40 : 46), 12, `n = ${n === 4/3 ? '4/3' : fmt(n, 2)}`, c.n, 'left', 11, 'n');
     const xf = mix(xi, x1, clamp(E.t.frente, 0, 1));
     const fx = x => (x <= xi ? (x - x0)/La : (xi - x0)/La + (x - xi)/Lw);
-    banda(x0, xi, y, A*2.6, lnm, .34);
-    if (xf > xi + 1) banda(xi, xf, y, A*2.6, lnm, .34);
+    const oscuro = String(c.paper).trim().toLowerCase() === '#241c2e';
+    banda(x0, xi, y, A*2.6, lnm, oscuro ? .25 : .34);
+    if (xf > xi + 1) banda(xi, xf, y, A*2.6, lnm, oscuro ? .25 : .34);
     ondaTinta(x0, xi, y, A, La, { L0:La, fx });
     if (xf > xi + 1) ondaTinta(xi, xf, y, A, Lw, { L0:La, fx });
     // λ en el aire y en el agua (corchetes fijos)
@@ -658,8 +673,9 @@ function crearEscena(cv, idDesc, idLect, idLey, idCtl){
     br(x0 + 8, La, `λ = ${fmt(lnm, 0)} nm`);
     br(xi + 14, Lw, E.ver.agua ? `λ' = ${fmt(MO.medio(lnm, n).lambdaNm, 0)} nm` : "λ' = ?");
     flecha({ x:x0 + 10, y:y - A - 16 }, { x:x0 + 46, y:y - A - 16 }, c.v, 2.2); rotulo(x0 + 52, y - A - 16, 'c', c.v, 'left', 12, 'v');
-    flecha({ x:xi + 14, y:y - A - 16 }, { x:xi + 14 + 36/(E.ver.agua ? n : 1), y:y - A - 16 }, c.v, 2.2, { alfa: E.ver.agua ? 1 : .35 });
-    rotulo(xi + 20 + 36/(E.ver.agua ? n : 1), y - A - 16, E.ver.agua ? 'v' : 'v = ?', c.v, 'left', 12, 'v');
+    // en el agua, la flecha de v aparece recién al responder (con su largo, c/n)
+    if (E.ver.agua){ flecha({ x:xi + 14, y:y - A - 16 }, { x:xi + 14 + 36/n, y:y - A - 16 }, c.v, 2.2); rotulo(xi + 20 + 36/n, y - A - 16, 'v', c.v, 'left', 12, 'v'); }
+    else rotulo(xi + 14, y - A - 16, 'v = ?', c.v, 'left', 12, 'v');
   }
 
   // ----- el Sol se apaga -----
@@ -685,16 +701,16 @@ function crearEscena(cv, idDesc, idLect, idLey, idCtl){
       l.push(it('el', 'campo eléctrico de la onda'));
       if (E.ver.B === undefined || E.ver.B > 0) l.push(it('B', 'B · campo magnético'));
       l.push(it('v', 'avance de la onda')); if (E.ver.lam !== 'no') l.push(it('lam', 'λ · longitud de onda'));
-      l.push('<span>a la izquierda, la antena; el dibujo no está a escala</span>');
+      l.push('<span>el dibujo no está a escala</span>');
     }
     if (r || v === 'regla'){
       const q = r || {};
-      l.push(it('f', 'f · frecuencia (escala que salta de 10 en 10)'));
+      l.push(it('f', 'f · frecuencia (escala logarítmica: de una marca a la siguiente, f se multiplica por 10 000)'));
       if (q.lam && v === 'regla') l.push(it('lam', 'λ · longitud de onda'));
       if (q.E) l.push(it('E', 'E · energía de un fotón'));
-      l.push('<span>bandas: regiones del espectro; la línea de tinta marca la frecuencia elegida</span>');
-      if (q.nombres) l.push('<span>la franja de colores es la luz visible (solo color de la luz, no de variable)</span>');
-      if (q.refs) l.push('<span>dibujos: cosas del tamaño de la λ que tienen encima</span>');
+      l.push('<span>bandas: regiones; línea de tinta: la f elegida</span>');
+      if (q.nombres) l.push('<span>franja de colores: la luz visible (color de la luz, no de una variable)</span>');
+      if (q.refs) l.push('<span>dibujos: cosas del tamaño de su λ</span>');
       if (q.ioniza) l.push('<span>línea a trazos: desde ahí, un fotón puede arrancar electrones (ionizante)</span>');
     }
     if (v === 'carrera') l.push('<span>onditas de tinta: la señal de radio y la luz del foco; la banda de color es la luz que se vería</span>');
@@ -782,10 +798,10 @@ const P1 = { id:'ondas-electromagneticas-paso1', ok:'c', opts:[
     b:'Elegiste la B. Las ondas electromagnéticas no necesitan un medio: así nos llega la luz del Sol a través del espacio. Las dos llegan. La correcta está marcada.',
     d:'Elegiste la D. En el vacío la rapidez es fija, c. Si la longitud de onda es más larga, la frecuencia es menor en la misma proporción, y λ·f da lo mismo. La correcta está marcada.' } };
 const P2 = { id:'ondas-electromagneticas-paso2', ok:'a', opts:[
-  ['a', 'De lado a lado (hacia dentro y hacia fuera del dibujo), máximo a la vez que el campo eléctrico'],
-  ['b', 'De arriba abajo, en la misma dirección que el campo eléctrico y a la vez que él', 'OE13-B-paralelo-al-campo-electrico', 'hipotesis'],
-  ['c', 'Hacia adelante y hacia atrás, en la dirección en que avanza la onda', 'OE13-B-en-la-direccion-de-avance', 'hipotesis'],
-  ['d', 'De lado a lado, pero máximo cuando el campo eléctrico es cero', 'OE14-campos-desfasados', 'hipotesis']],
+  ['a', 'Perpendicular a la pantalla (hacia ti y alejándose de ti), máximo a la vez que el campo eléctrico'],
+  ['b', 'En la pantalla, de arriba abajo (en la misma dirección que el campo eléctrico), máximo a la vez que él', 'OE13-B-paralelo-al-campo-electrico', 'hipotesis'],
+  ['c', 'En la pantalla, de izquierda a derecha (en la dirección en que avanza la onda), máximo a la vez que el campo eléctrico', 'OE13-B-en-la-direccion-de-avance', 'hipotesis'],
+  ['d', 'Perpendicular a la pantalla (hacia ti y alejándose de ti), pero máximo cuando el campo eléctrico es cero', 'OE14-campos-desfasados', 'hipotesis']],
   fb:{ a:'¡Bien! B es perpendicular al campo eléctrico y a la dirección de avance: la onda es transversal. Y los dos están en fase: crecen y se anulan juntos.',
     b:'Elegiste la B. Si los dos campos apuntaran igual, no habría onda electromagnética: B oscila perpendicular al campo eléctrico. La correcta está marcada.',
     c:'Elegiste la C. Ningún campo oscila a lo largo del avance: la onda electromagnética es transversal, no longitudinal como el sonido. La correcta está marcada.',
@@ -813,30 +829,42 @@ const P5 = { id:'ondas-electromagneticas-paso5', ok:'b', opts:[
   ['b', 'Porque lo que cruza un material depende de la frecuencia: la pared deja pasar la radio y frena la luz'],
   ['c', 'Porque la onda de radio viaja más rápido que la luz y alcanza a atravesarla', 'OE2-cada-onda-su-rapidez', 'parcial'],
   ['d', 'Porque la luz necesita aire para viajar, y dentro de la pared no hay aire', 'OE5-la-luz-necesita-medio', 'parcial']],
-  fb:{ b:'¡Bien! La radio y la luz son la misma clase de onda, pero cada material responde distinto según la frecuencia. El ladrillo deja pasar la radio y absorbe la luz.',
+  fb:{ b:'¡Bien! La radio y la luz son la misma clase de onda, pero cada material responde distinto según la frecuencia. El ladrillo deja pasar la radio y absorbe o refleja la luz.',
     a:'Elegiste la A. Lo que cruza la pared es una onda electromagnética, no sonido: se vuelve sonido recién en el parlante de la radio. La correcta está marcada.',
     c:'Elegiste la C. La radio y la luz viajan igual de rápido (en el aire, casi a c). Lo que cambia es la frecuencia, y con ella lo que cada material deja pasar. La correcta está marcada.',
-    d:'Elegiste la D. La luz no necesita aire: cruza el vacío del espacio. Si la pared la frena es porque la absorbe. La correcta está marcada.' } };
+    d:'Elegiste la D. La luz no necesita aire: cruza el vacío del espacio. Si la pared la frena es porque la absorbe o la refleja. La correcta está marcada.' } };
 const P6 = { id:'ondas-electromagneticas-paso6', ok:'a', opts:[
   ['a', `v = ${sci(AG.v, 2)} m/s, λ = ${fmt(AG.lambdaNm, 0)} nm, f = ${sci(AG.f, 0)} Hz; el color no cambia`],
-  ['b', `v = ${sci(AG.errores.cambiaColor.v, 2)} m/s, λ = ${fmt(AG.errores.cambiaColor.lambdaNm, 0)} nm, f = ${sci(AG.f, 0)} Hz; se ve ${AG.errores.cambiaColor.color}`, 'OE12-color-por-lambda-en-el-medio', 'hipotesis'],
+  ['b', `v = ${sci(AG.errores.cambiaColor.v, 2)} m/s, λ = ${fmt(AG.errores.cambiaColor.lambdaNm, 0)} nm, f = ${sci(AG.f, 0)} Hz; se ve azul violáceo`, 'OE12-color-por-lambda-en-el-medio', 'hipotesis'],
   ['c', `v = ${sci(AG.errores.cambiaF.v, 2)} m/s, λ = ${fmt(AG.errores.cambiaF.lambdaNm, 0)} nm, f = ${sci(AG.errores.cambiaF.f, 2)} Hz; el color cambia`, 'OE12-cambia-la-frecuencia', 'hipotesis'],
   ['d', `v = ${sci(AG.errores.nadaCambia.v, 0)} m/s, λ = ${fmt(AG.errores.nadaCambia.lambdaNm, 0)} nm, f = ${sci(AG.f, 0)} Hz; el color no cambia`, 'OE-la-luz-siempre-va-a-c', 'hipotesis']],
-  fb:{ a:'¡Bien! La frecuencia la pone la fuente y no cambia; como la luz va más lenta, cada onda se acorta: λ\' = 600/(4/3) = 450 nm. El color lo pone la frecuencia: sigue naranja.',
-    b:'Elegiste la B. Los números están bien, pero el color no lo pone λ sino la frecuencia, y la frecuencia no cambió: dentro del agua la luz sigue naranja. La correcta está marcada.',
+  fb:{ a:'¡Bien! La frecuencia la pone la fuente y no cambia; como la luz va más lenta, cada onda se acorta: λ\' = 600/(4/3) = 450 nm. El ojo responde a la energía de cada fotón, h·f, que no cambió: sigue naranja.',
+    b:'Elegiste la B. Los números están bien, pero el ojo responde a la energía de cada fotón, h·f, y la frecuencia no cambió: dentro del agua la luz sigue naranja. La correcta está marcada.',
     c:'Elegiste la C. La frecuencia no puede cambiar: cada cresta que llega a la superficie sigue de largo, ni se pierde ni se crea. Lo que se acorta es λ. La correcta está marcada.',
     d:'Elegiste la D. c = 3 × 10⁸ m/s es la rapidez en el vacío (y casi en el aire). En el agua la luz va más lento, a c/n. La correcta está marcada.' } };
 
+const OL = MO.leerOnda({ E0:60, k:2*Math.PI*1e6, w:6*Math.PI*1e14, signo:'-' });
+const P7 = { id:'ondas-electromagneticas-paso7', ok:'c', opts:[
+  ['a', `λ = ${sci(OL.errores.kSobreDosPi.lambda, 0)} m: ${OL.errores.kSobreDosPi.nombre}`, 'OE-lambda-k-sobre-2pi', 'hipotesis'],
+  ['b', `λ ≈ ${fmt(OL.errores.unoSobreK.lambda*1e6, 2)} µm: ${OL.errores.unoSobreK.nombre}`, 'OE-lambda-1-sobre-k', 'hipotesis'],
+  ['c', `λ = ${fmt(OL.lambda*1e6, 0)} µm: ${OL.nombre}`],
+  ['d', `λ ≈ ${sci(OL.errores.lambdaEsK.lambda, 1)} m: ${OL.errores.lambdaEsK.nombre}`, 'OE-lambda-es-k', 'hipotesis']],
+  fb:{ c:'¡Bien! El número que multiplica a x es k = 2π/λ: λ = 2π/(2π × 10⁶) = 10⁻⁶ m = 1 µm, más largo que el rojo (750 nm): infrarrojo.',
+    a:'Elegiste la A. Dividiste k entre 2π, pero es al revés: k = 2π/λ, así que λ = 2π/k = 10⁻⁶ m. La correcta está marcada.',
+    b:'Elegiste la B. Faltó el 2π: k = 2π/λ, así que λ = 2π/k, no 1/k. Con el 2π da 1 µm, infrarrojo. La correcta está marcada.',
+    d:'Elegiste la D. El número que multiplica a x no es λ sino k = 2π/λ (radianes por metro). λ = 2π/k = 1 µm. La correcta está marcada.' } };
 const LECT_ONDA = ['f', 'lam', 'E', 'reg'];
 const filaLuz = { mat:'pared', f:F_LUZ, rot:'luz (550 nm)' }, filaFM = { mat:'pared', f:F_FM, rot:'radio FM' };
 const todas = () => MO.materiales().map(m => ({ mat:m.id }));
 const lectAgua = ya => () => [['v', 'Rapidez en el aire', '3 × 10⁸ m/s'], ['lam', 'λ en el aire', '600 nm'], ['f', 'f en el aire', sci(AG.f, 0) + ' Hz'],
-  ['v', 'Rapidez en el agua v', ya ? sci(AG.v, 2) + ' m/s' : '?'], ['lam', "λ' en el agua", ya ? fmt(AG.lambdaNm, 0) + ' nm' : '?'], ['f', 'f en el agua', ya ? sci(AG.f, 0) + ' Hz' : '?']];
+  ['v', 'v en el agua', ya ? sci(AG.v, 2) + ' m/s' : '?'], ['lam', "λ' en el agua", ya ? fmt(AG.lambdaNm, 0) + ' nm' : '?'], ['f', 'f en el agua', ya ? sci(AG.f, 0) + ' Hz' : '?']];
 const lectCarrera = ya => () => [['ink', 'Distancia d', '3,84 × 10⁸ m']].concat(ya ? [['v', 'Rapidez de la radio', '3 × 10⁸ m/s'], ['v', 'Rapidez de la luz', '3 × 10⁸ m/s']] : [])
   .concat([['ink', 'Tiempo t', ya ? `${fmt(T1.t, 2)} s` : '?']]);
-const descOnda = () => 'Una antena a la izquierda emite una onda que avanza hacia la derecha. El campo eléctrico de la onda oscila de arriba abajo.' + (E.ver.B ? ' El campo magnético B oscila de lado a lado, hacia dentro y hacia fuera del dibujo, en fase con el campo eléctrico.' : '');
+const descOnda = () => 'Una antena a la izquierda emite una onda que avanza hacia la derecha. El campo eléctrico de la onda oscila de arriba abajo, en el plano de la pantalla.' + (E.ver.B ? ' El campo magnético B oscila perpendicular a la pantalla, hacia ti y alejándose de ti, en fase con el campo eléctrico: una línea punteada marca una cresta donde los dos son máximos a la vez.' : '');
+const lectOnda7 = ya => () => (ya ? [['lam', 'Longitud de onda λ', metros(OL.lambda)], ['f', 'Frecuencia f', hz(OL.f)], ['v', 'Rapidez v', '3 × 10⁸ m/s'],
+  ['ink', 'Región', OL.nombre], ['B', 'B máximo, B₀', sci(OL.B0, 0) + ' T'], ['ink', 'Intensidad media I', `${fmt(OL.I, 1)} W/m²`]] : [['lam', 'λ', '?'], ['ink', 'Región', '?']]);
 const descRegla = () => 'Una regla de frecuencias de 10⁴ a 10²² hertz, con las regiones del espectro como bandas' + ((E.ver.regla || {}).nombres ? ': radio, microondas, infrarrojo, luz visible, ultravioleta, rayos X y gamma.' : ', todavía sin nombre.');
-function saltos(){ return `<div class="acciones">${[['radio FM', F_FM], ['microondas', 2.4e9], ['luz', F_LUZ], ['ultravioleta', 1.5e16], ['rayos X', 3e18]].map(([t, f]) => `<button type="button" class="btn" data-f="${f}">${t}</button>`).join('')}</div>`; }
+function saltos(){ return `<div class="acciones">${[['radio FM', F_FM], ['microondas', 2.4e9], ['rojo', C/650e-9], ['verde', C/530e-9], ['violeta', C/410e-9], ['ultravioleta', 1.5e16], ['rayos X', 3e18]].map(([t, f]) => `<button type="button" class="btn" data-f="${f}">${t}</button>`).join('')}</div>`; }
 function conectarSaltos(){
   $('stepBody').querySelectorAll('[data-f]').forEach(b => b.onclick = () => { if (S.ocupado) return; E.t.f = +b.dataset.f; E.sincronizar(); E.cambio(); E.avisar(); });
 }
@@ -845,36 +873,38 @@ const steps = [
  { k:'Paso 1', t:'Predice: ¿cuál llega primero?', gate:P1,
    prep:() => { const ya = !!S.pred[P1.id];
      E.config({ vista:'carrera', mueve:false, t:{ p: ya ? 1 : 0 }, ver:{ tiempo: ya }, lect: lectCarrera(ya),
-       desc: () => 'A la izquierda, la Tierra; a la derecha, la Luna, con una emisora de radio y un foco encendidos al mismo tiempo. Las dos señales salen hacia la Tierra.' }); },
+       desc: () => 'A la izquierda, la Tierra; a la derecha, la Luna, con un transmisor de radio y un foco encendidos al mismo tiempo. Las dos señales salen hacia la Tierra.' }); },
    anima:fin => { E.ver.tiempo = true; E.lect = lectCarrera(true); E.llevar({ p:1 }, 2600, fin, true); },
-   body:() => `<p>En la Luna hay una emisora de radio y un foco. Se encienden en el mismo instante y sus señales viajan hacia la Tierra, a una distancia d = 3,84 × 10⁸ m. Entre la Luna y la Tierra no hay aire: es vacío. ¿Cuál de las dos señales llega antes a la Tierra?</p>${opcionesHTML(P1.opts, 'fb')}
+   body:() => `<p>En la Luna hay un transmisor de radio y un foco. Se encienden en el mismo instante y sus señales viajan hacia la Tierra, a una distancia d = 3,84 × 10⁸ m. Entre la Luna y la Tierra no hay aire: es vacío. ¿Cuál de las dos señales llega antes a la Tierra?</p>${opcionesHTML(P1.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">en el vacío: ${v_('c = 3 × 10⁸ m/s')}<span class="note">la misma para la radio, la luz y los rayos X</span></div>
    <div class="eq">t = d / ${v_('c')} = 3,84 × 10⁸ / ${v_('3 × 10⁸')} = ${fmt(T1.t, 2)} s</div></div>
    <p>La radio, la luz, las microondas y los rayos X son ondas electromagnéticas: un campo eléctrico y uno magnético que oscilan juntos y se regeneran uno al otro, sin necesitar un medio. En el vacío todas avanzan a ${v_('c')}. Lo que las distingue es la frecuencia.</p>
-   <p class="fuente">Las tres ideas incorrectas aparecen en el informe de esta unidad, sin cifras propias: que la radio es más lenta que la luz (A) se registró en universitarios de astronomía (Lee y Schneider, 2015); que la rapidez crece con λ (D), en un estudio de Filipinas que dice que la mayoría la usa (Carambas y otros, 2004); y que la luz necesita un medio (B), en grupos focales donde cerca de 3 de cada 10 lo dijo, con una muestra que no vimos. Son datos de resúmenes, por verificar.</p></div>` },
+   <p class="fuente">Las tres ideas incorrectas aparecen en el informe de esta unidad, casi sin cifras: que la radio es más lenta que la luz (A) se registró en universitarios de astronomía (Lee y Schneider, 2015); que la rapidez crece con λ (D), en un estudio de Filipinas que dice que la mayoría la usa (Carambas y otros, 2004); y que la luz necesita un medio (B), en grupos focales donde cerca de 3 de cada 10 lo dijo, con una muestra que no vimos. Son datos de resúmenes, por verificar.</p></div>` },
  { k:'Paso 2', t:'Predice: el otro campo de la onda', gate:P2,
    prep:() => { const ya = !!S.pred[P2.id];
      E.config({ vista:'onda', t:{ f:2e8 }, ver:{ B: ya ? 1 : 0, Bq: !ya, lam:'no' }, lect: () => [], desc: descOnda }); },
    anima:fin => { E.ver.Bq = false; E.ver.B = .01; E.leyenda(); E.progreso('B', 1400, () => { E.avisar(); fin(); }); },
-   body:() => `<p>Una antena emite una onda que avanza hacia la derecha (flecha de ${v_('avance')}). En el dibujo, el ${e_('campo eléctrico')} de la onda oscila de arriba abajo, en el plano vertical. Una onda electromagnética lleva también un campo magnético ${B_('B')}. ¿Cómo oscila ${B_('B')}?</p>${opcionesHTML(P2.opts, 'fb')}
+   body:() => `<p>Una antena emite una onda que avanza hacia la derecha (flecha de ${v_('avance')}). En el dibujo, el ${e_('campo eléctrico')} de la onda oscila de arriba abajo, en el plano de la pantalla. Una onda electromagnética lleva también un campo magnético ${B_('B')}. ¿Cómo oscila ${B_('B')}?</p>${opcionesHTML(P2.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${e_('campo eléctrico')} ⊥ ${B_('B')}, y los dos ⊥ al ${v_('avance')}<span class="note">onda transversal</span></div>
    <div class="eq">${e_('campo eléctrico')} × ${B_('B')} → apunta hacia donde ${v_('avanza')} la onda</div>
    <div class="eq">en fase: los dos son máximos a la vez y se anulan a la vez</div></div>
-   <p>Los dos campos son perpendiculares entre sí y a la dirección de avance. La regla de la mano derecha del producto vectorial (campo eléctrico × B) da hacia dónde va la onda. Mira el dibujo: las dos curvas suben y bajan juntas.</p>
+   <p>Los dos campos son perpendiculares entre sí y a la dirección de avance. La regla de la mano derecha del producto vectorial (campo eléctrico × B) da hacia dónde va la onda. Mira la cresta marcada con la línea punteada: las dos flechas salen del mismo punto y son máximas a la vez.</p>
    <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (OE13 y OE14 del informe, sin estudio).</p></div>` },
  { k:'Paso 3', t:'Predice: el orden del espectro', gate:P3,
    prep:() => { const ya = !!S.pred[P3.id];
      E.config({ vista:'regla', mueve:false, t:{ f:5e14 }, ver:{ regla:{ nombres: ya ? 1 : 0, E: ya, zoom: ya, cursor: ya } },
-       lect: () => (ya ? lecturaOnda(E, ['f', 'reg', 'E']) : []), desc: descRegla, ctl: ya ? { f:true } : {} }); },
+       lect: () => (ya ? lecturaOnda(E, ['f', 'reg', 'E']) : []), desc: descRegla, ctl: ya ? { f:true } : {} });
+     if (ya) conectarSaltos(); },
    anima:fin => { const g = E.ver.regla; g.E = true; g.zoom = true; g.cursor = true; E.redimensionar(); E.leyenda();
-     E.tween(1400, f => { g.nombres = suave(f); E.dibujar(); }, () => { g.nombres = 1; E.lect = () => lecturaOnda(E, ['f', 'reg', 'E']); E.libre(true); E.leyenda(); E.avisar(); fin(); }); },
+     E.tween(1400, f => { g.nombres = suave(f); E.dibujar(); }, () => { g.nombres = 1; E.lect = () => lecturaOnda(E, ['f', 'reg', 'E']); E.libre(true); conectarSaltos(); E.leyenda(); E.avisar(); fin(); }); },
    body:() => `<p>La radio, las microondas, la luz visible, el ultravioleta y los rayos X son ondas electromagnéticas. En el dibujo está la regla de ${f_('frecuencias')}, de 10⁴ Hz a 10²² Hz, con cada región del espectro como una banda sin nombre. ¿Cómo quedan ordenadas de menor a mayor ${f_('frecuencia')}?</p>${opcionesHTML(P3.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${E_('E')} = h · ${f_('f')}<span class="note">h ≈ 4,13 × 10⁻¹⁵ eV·s: más frecuencia, más energía por fotón</span></div>
    <div class="eq">luz visible: de ${f_('4 × 10¹⁴ Hz')} (rojo) a ${f_('7,9 × 10¹⁴ Hz')} (violeta)</div></div>
-   <p>Es un solo espectro. La luz que vemos es una franja tan angosta que en la regla casi no se nota (abajo está ampliada). Mueve la ${f_('frecuencia')}: cada salto de la escala multiplica ${f_('f')} por 10, y la energía de cada fotón crece igual.</p>
+   <p>Es un solo espectro. La luz que vemos es una franja tan angosta que en la regla casi no se nota (abajo está ampliada). Mueve la ${f_('frecuencia')}: cada marca de la escala multiplica ${f_('f')} por 10 000, y la energía de cada fotón crece igual.</p>
+   ${saltos()}
    <p class="fuente">Las opciones incorrectas son hipótesis nuestras; el espectro al revés es OE19 del informe, sin estudio.</p></div>` },
  { k:'Paso 4', t:'Predice: la longitud de onda de una radio', gate:P4,
    prep:() => { const ya = !!S.pred[P4.id];
@@ -896,35 +926,53 @@ const steps = [
        desc: () => (ya ? 'Una onda de la frecuencia elegida llega a cinco materiales: pared de ladrillo, vidrio, piel y músculo, hueso y la rejilla metálica de la puerta de un horno de microondas.' : 'Dos ondas llegan a una pared de ladrillo: la de una radio FM la cruza; la luz no.') });
      if (ya) conectarSaltos(); },
    anima:fin => { E.ver.filas = todas(); E.lect = () => lecturaOnda(E, ['f', 'lam', 'reg', 'E', 'ion']); E.redimensionar(); E.libre(true); conectarSaltos(); E.avisar(); fin(); },
-   body:() => `<p>Dentro de una casa de ladrillo, con puertas y ventanas cerradas, una radio portátil recibe bien una emisora de ${f_('100 MHz')}. Desde afuera, en cambio, no se ve nada de lo que hay dentro: la luz, de unos ${l_('550 nm')}, no cruza la pared. ¿Por qué una cruza y la otra no?</p>${opcionesHTML(P5.opts, 'fb')}
+   body:() => `<p>Dentro de un cuarto de ladrillo sin ventanas y con la puerta cerrada, una radio portátil recibe bien una emisora de ${f_('100 MHz')}. Desde afuera no se ve nada de lo que hay dentro: la luz, de unos ${l_('550 nm')}, no cruza la pared. ¿Por qué una cruza y la otra no?</p>${opcionesHTML(P5.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <p>No hay una regla de «más energía, más penetra». Mueve la ${f_('frecuencia')} y mira cada material: la radio cruza la pared y la luz no; los rayos X, con fotones mucho más energéticos que la luz, cruzan la piel pero no el hueso (por eso se ven en una radiografía); el ultravioleta no cruza el vidrio de una ventana, aunque la luz sí; y la rejilla metálica del horno deja pasar la luz y frena las microondas.</p>
-   <p>Desde el ultravioleta alto hacia arriba, un solo fotón trae energía para arrancar un electrón de un átomo (radiación ionizante). La radio, las microondas del celular y del wifi y la luz visible no ionizan, por fuertes que sean.</p>
+   <p>No hay una regla de «más energía, más penetra». Mueve la ${f_('frecuencia')} y mira cada material: la radio cruza la pared y la luz no; los rayos X, con fotones mucho más energéticos que la luz, cruzan la piel casi sin frenarse y el hueso los absorbe mucho más (por eso el hueso sale blanco en la radiografía); el vidrio de una ventana frena buena parte del ultravioleta (casi todo el que quema la piel), aunque la luz sí pasa; y la rejilla metálica del horno deja pasar la luz y frena las microondas.</p>
+   <p>Desde el ultravioleta alto hacia arriba, un solo fotón trae energía para arrancar un electrón de un átomo (radiación ionizante). La radio, las microondas del celular y del wifi y la luz visible no ionizan: un solo fotón de ellas no ioniza, y subir la potencia da más fotones, no fotones más energéticos.</p>
    ${saltos()}
-   <p class="hint">La tabla del dibujo es una simplificación: el grosor del material y la frecuencia exacta cambian cuánto pasa.</p>
-   <p class="fuente">Que las ondas de radio son sonido (A) lo sostenía la mayoría de 225 escolares de Nueva Jersey justo después del tema (Tabor-Morris y otros), sin porcentaje en el resumen que vimos. La C (cada onda con su rapidez) y la D (la luz necesita un medio) también están en el informe, sin cifra propia. Datos de resúmenes, por verificar.</p></div>` },
+   <p class="hint">La tabla del dibujo es una simplificación: el grosor del material y la frecuencia exacta cambian cuánto pasa. Por ejemplo, la luz roja atraviesa unos milímetros de piel: un dedo frente a una linterna se ve rojo.</p>
+   <p class="fuente">Que las ondas de radio son sonido (A) lo sostenía la mayoría de 225 escolares de Nueva Jersey justo después del tema (Tabor-Morris y otros), sin porcentaje en el resumen que vimos. La C (cada onda con su rapidez) también está en el informe, sin cifra propia. Que la luz necesita un medio (D) apareció en grupos focales donde cerca de 3 de cada 10 lo dijo, con una muestra que no vimos. Datos de resúmenes, por verificar.</p></div>` },
  { k:'Paso 6', t:'Predice: la luz entra al agua', gate:P6,
    prep:() => { const ya = !!S.pred[P6.id];
      E.config({ vista:'agua', t:{ lambdaNm:600, n:4/3, frente: ya ? 1 : 0 }, ver:{ agua: ya }, lect: lectAgua(ya),
        desc: () => 'Una luz naranja viaja por el aire, a la izquierda, y llega a la superficie del agua, a la derecha.' }); },
    anima:fin => { E.ver.agua = true; E.lect = lectAgua(true); E.llevar({ frente:1 }, 2400, fin, true); },
-   body:() => `<p>Una luz naranja de ${l_('λ = 600 nm')} (medida en el aire) entra al agua, de índice ${n_('n = 4/3')}. En el aire viaja a ${v_('c = 3 × 10⁸ m/s')}, y en un medio de índice ${n_('n')} su rapidez es ${v_('v')} = ${v_('c')}/${n_('n')}. ¿Cuánto valen dentro del agua su rapidez, su longitud de onda y su frecuencia, y qué pasa con el color?</p>${opcionesHTML(P6.opts, 'fb')}
+   body:() => `<p>Una luz naranja de ${l_('λ = 600 nm')} (medida en el aire) entra al agua, de índice de refracción ${n_('n = 4/3')}. En el aire viaja a ${v_('c = 3 × 10⁸ m/s')}. ¿Cuánto valen dentro del agua su rapidez, su longitud de onda y su frecuencia, y qué pasa con el color?</p>${opcionesHTML(P6.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${v_('v')} = ${v_('c')} / ${n_('n')} = ${v_('3 × 10⁸')} / ${n_('(4/3)')} = ${v_(sci(AG.v, 2) + ' m/s')}</div>
    <div class="eq">${f_('f')} = ${v_('c')} / ${l_('λ')} = ${f_(sci(AG.f, 0) + ' Hz')}<span class="note">la misma afuera y adentro</span></div>
    <div class="eq">${l_("λ'")} = ${v_('v')} / ${f_('f')} = ${l_('600')} / ${n_('(4/3)')} = ${l_(fmt(AG.lambdaNm, 0) + ' nm')}</div></div>
-   <p>La fuente decide cuántas crestas llegan por segundo, y cada una sigue de largo al entrar: la frecuencia no cambia. Como la luz va más lenta, las crestas se juntan y ${l_('λ')} se acorta. El color lo pone la frecuencia, y por eso un objeto naranja se ve naranja también bajo el agua, aunque 450 nm en el aire sería azul.</p>
-   <p>¿Quieres ver más? En «¿Qué pasa si…?» hay una emisora que sube su potencia, el Sol que se apaga, la puerta del horno y los campos de la onda en números.</p>
+   <p>La fuente decide cuántas crestas llegan por segundo, y cada una sigue de largo al entrar: la frecuencia no cambia. Como la luz va más lenta, las crestas se juntan y ${l_('λ')} se acorta. El ojo responde a la energía de cada fotón, h·${f_('f')}, y esa no cambió: la luz de 600 nm sigue siendo naranja dentro del agua, aunque 450 nm en el aire sería azul violáceo. (Que a mucha profundidad todo se vea azulado es otra cosa: el agua absorbe más el rojo y el naranja; no cambia la frecuencia de lo que llega.)</p>
    <p class="fuente">Las opciones incorrectas son hipótesis nuestras (OE12 del informe, que el material docente describe sin datos de alumnos).</p></div>` },
+ { k:'Paso 7', t:'Predice: leer la expresión de una onda', gate:P7,
+   prep:() => { const ya = !!S.pred[P7.id];
+     E.config({ vista:'onda', t:{ f:OL.f }, ver:{ B:1, ejes:true, lam: ya, rotE:'60 V/m', rotB: ya ? `B₀ = ${sci(OL.B0, 0)} T` : 'B', rotV:'avance (+x)',
+       regla: ya ? { nombres:1, lam:true, E:true } : null }, lect: lectOnda7(ya), desc: descOnda }); },
+   anima:fin => { Object.assign(E.ver, { lam:true, rotB:`B₀ = ${sci(OL.B0, 0)} T`, regla:{ nombres:1, lam:true, E:true } }); E.lect = lectOnda7(true); E.redimensionar(); E.leyenda(); E.avisar(); fin(); },
+   body:() => `<p>El ${e_('campo eléctrico')} de una onda electromagnética que viaja en el vacío oscila a lo largo del eje y, y su expresión es</p>
+   <div class="eqs"><div class="eq">${e_('campo eléctrico')} = ${e_('60')} sen(2π × 10⁶ x − 6π × 10¹⁴ t)</div></div>
+   <p>en V/m, con x en metros y t en segundos. ¿Cuál es su longitud de onda ${l_('λ')} y en qué región del espectro está?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">k = 2π/${l_('λ')} → ${l_('λ')} = 2π / (2π × 10⁶) = ${l_('10⁻⁶ m = 1 µm')}<span class="note">infrarrojo</span></div>
+   <div class="eq">ω = 2π·${f_('f')} → ${f_('f')} = 6π × 10¹⁴ / 2π = ${f_('3 × 10¹⁴ Hz')}</div>
+   <div class="eq">${v_('v')} = ω/k = ${l_('λ')}·${f_('f')} = ${v_('3 × 10⁸ m/s')}</div>
+   <div class="eq">k·x − ω·t → avanza hacia +x; ${B_('B')} ⊥ eje y y ⊥ eje x → a lo largo de +z</div>
+   <div class="eq">${B_('B₀')} = ${e_('60')} / ${v_('3 × 10⁸')} = ${B_(sci(OL.B0, 0) + ' T')}</div>
+   <div class="eq">I = ${v_('c')}·ε₀·(${e_('60')})²/2 = 3 × 10⁸ · 8,85 × 10⁻¹² · 3600 / 2 ≈ ${fmt(OL.I, 1)} W/m²<span class="note">intensidad media, con ε₀ = 8,85 × 10⁻¹² C²/(N·m²)</span></div></div>
+   <p>Del número que multiplica a x sale ${l_('λ')}; del que multiplica a t sale ${f_('f')}; su cociente es la rapidez. El signo menos entre los dos términos dice que la onda avanza hacia +x (con un más, avanzaría hacia −x, y ${B_('B')} apuntaría al revés). Es infrarrojo, como la luz del control remoto de un televisor.</p>
+   <p class="hint">En los libros y en el examen verás E = E₀ sen(kx − ωt) y E₀ = c·B₀, con E el campo eléctrico; aquí lo escribimos con palabras porque E ya es la energía del fotón.</p>
+   <p>¿Quieres ver más? En «¿Qué pasa si…?» hay una emisora que sube su potencia, el Sol que se apaga, la puerta del horno y los campos de la onda en números.</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras: errores al despejar λ de k, sin estudio.</p></div>` },
 ];
 
 const dots = $('dots');
 steps.forEach((s, k) => {
   const li = document.createElement('li'), b = document.createElement('button');
   b.type = 'button'; b.textContent = k + 1;
-  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+  b.addEventListener('click', () => go(k, true)); li.appendChild(b); dots.appendChild(li);
 });
-function go(k){
+function go(k, mover){
   if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
   const s = steps[k]; S.step = k;
   $('stepK').textContent = `${s.k} de ${steps.length}`;
@@ -932,6 +980,11 @@ function go(k){
   $('stepBody').innerHTML = sinCorte(s.body());
   E.compacto = !!(s.gate && !S.pred[s.gate.id]); Celular.compactar($('m1'), E.compacto);
   if (s.prep) s.prep();
+  // en el celular, el enunciado queda justo debajo del dibujo fijo (no tapado por él)
+  if (mover && innerWidth < 900){
+    const g = document.querySelector('#m1 .guide'), b = document.querySelector('#m1 .bench');
+    scrollTo({ top: Math.max(0, g.getBoundingClientRect().top + scrollY - (E.compacto ? b.offsetHeight : 0) - 8), behavior:'auto' });
+  }
   pintarDots();
   if (s.gate) prediccion(s);
   nav();
@@ -979,8 +1032,8 @@ function prediccion(s){
   pintar();
 }
 
-$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
-$('prev').addEventListener('click', () => go(S.step - 1));
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1, true); });
+$('prev').addEventListener('click', () => go(S.step - 1, true));
 go(0);
 })();
 </script>
@@ -1006,7 +1059,7 @@ const filasHorno = (ya, mas) => [{ mat:'rejilla', f:MW.f, rot:'microondas' }, { 
 
 const EXPS = [
   { id:'emisora-potente', corto:'Más potencia',
-    q:`Una emisora de radio AM transmite en ${f_('600 kHz')} con 1 kW de potencia. Se cambia su transmisor por uno de 4 kW, en la misma frecuencia. Dato: hc = 1240 eV·nm. ¿Qué cambia en las ondas que emite?`,
+    q:`Una emisora de radio AM transmite en ${f_('600 kHz')} con 1 kW de potencia. Se cambia su transmisor por uno de 4 kW, en la misma frecuencia. ¿Qué cambia en las ondas que emite?`,
     opts:[['a', 'Cada fotón trae más energía, porque una onda más fuerte lleva más energía en cada fotón', 'OE4-energia-con-la-amplitud', 'parcial'],
           ['b', 'Sus fotones ya pueden ionizar átomos, como los rayos X, porque la antena es más potente', 'OE18-antena-potente-ioniza', 'hipotesis'],
           ['c', 'Su longitud de onda se acorta, porque la onda sale más apretada', 'OE-potencia-acorta-lambda', 'hipotesis'],
@@ -1040,21 +1093,21 @@ const EXPS = [
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras (los errores de unidades son OE20 del informe, sin estudio).</p>` },
   { id:'puerta-horno', corto:'La puerta del horno',
     q:`La puerta de un horno de microondas tiene un vidrio con una rejilla de metal con agujeros de unos 2 mm. Por ella se ve la comida, pero las microondas de unos ${l_("12 cm")} (${f_('2,45 GHz')}) no salen. ¿Por qué?`,
-    opts:[['a', 'Porque la rejilla las refleja: 12 cm no caben por agujeros de 2 mm, y la luz, con λ de menos de una milésima de milímetro, sí pasa'],
+    opts:[['a', 'Porque la rejilla de metal las refleja: para una onda de 12 cm, agujeros de 2 mm son tan chicos que la rejilla actúa como una lámina entera; la luz, con λ de menos de una milésima de milímetro, sí pasa por los agujeros'],
           ['b', 'Porque las detiene el vidrio de la puerta, y la rejilla está solo de adorno', 'OE17-la-rejilla-es-adorno', 'hipotesis'],
           ['c', 'Porque la rejilla frena lo que trae más energía, y las microondas traen más que la luz', 'OE16-mas-energia-mas-penetra', 'hipotesis'],
           ['d', 'Sí salen, pero no importa, porque las microondas no son radiación', 'OE9-no-son-radiacion', 'parcial']],
     ok:'a',
     fb:{ b:'El vidrio deja pasar las microondas (por eso calientan la comida dentro de un recipiente de vidrio). Las frena la rejilla de metal.',
       c:'Es al revés: un fotón de microondas trae unas doscientas mil veces menos energía que uno de luz. Y lo que cruza un material no sigue el orden de la energía.',
-      d:'Toda onda electromagnética es radiación. Las microondas no ionizan, pero calientan: por eso el horno las encierra.' },
+      d:'Toda onda electromagnética es radiación. Las microondas no ionizan, pero calientan: por eso el horno las encierra. Además, no salen: la rejilla las refleja.' },
     antes:ya => E.config({ vista:'muros', mueve:ya, t:{ f:MW.f }, ver:{ filas: filasHorno(ya, ya) }, lect: () => [['lam', 'λ de las microondas', metros(MW.lambda)], ['lam', 'λ de la luz', `${L_LUZ} nm`], ['ink', 'Agujeros de la rejilla', '2 mm']],
       desc: () => 'Microondas y luz llegan a la rejilla metálica de la puerta: la luz pasa y las microondas no.' + (ya ? ' Abajo, las microondas contra un vidrio solo: pasan.' : '') }),
     despues:() => { E.ver.filas = filasHorno(true, true); E.mueve = true; E.redimensionar(); E.avisar(); },
     exp:() => `<div class="eqs"><div class="eq">${l_('λ')} de las microondas = ${v_('c')}/${f_('f')} = ${v_('3 × 10⁸')} / ${f_('2,45 × 10⁹')} ≈ ${l_(metros(MW.lambda))} ≫ 2 mm</div>
       <div class="eq">${l_('λ')} de la luz ≈ ${l_('0,00055 mm')} ≪ 2 mm</div></div>
       <p>Para una onda mucho más larga que sus agujeros, la rejilla es como una lámina de metal entera, y el metal refleja las microondas. La luz, mucho más corta, pasa por los agujeros. En la fila de abajo, las microondas cruzan un vidrio solo: el vidrio no es lo que las detiene.</p>
-      <p class="fuente">Que la luz y la radio «no son radiación» (D) lo pensó la mayoría de 141 alumnos de 15 a 17 años en un estudio citado por material docente (Plotz y Fitzgerald, 2021), sin porcentaje a la vista; dato por verificar. La B y la C son hipótesis nuestras (OE17 y OE16).</p>` },
+      <p class="fuente">En un estudio citado por material docente, la mayoría de 141 alumnos de 15 a 17 años vio la luz y la radio como seguras y el UV y los rayos X como peligrosos (Plotz y Fitzgerald, 2021); que las microondas «no son radiación» (D) no tiene dato propio. Datos de resúmenes, por verificar. La B y la C son hipótesis nuestras (OE17 y OE16).</p>` },
   { id:'campos-numeros', corto:'Los campos en números',
     q:`En una onda electromagnética que viaja en el vacío, el ${e_('campo eléctrico')} oscila con un máximo de ${e_('300 V/m')}. Los dos campos cumplen (${e_('campo eléctrico')}) = ${v_('c')} · ${B_('B')}, con ${v_('c = 3 × 10⁸ m/s')}. ¿Cuál es el máximo ${B_('B₀')} del campo magnético?`,
     opts:[['a', `B₀ = ${fmt(CB.errores.igual, 0)} T`, 'OE15-B-igual-al-campo-electrico', 'hipotesis'],
@@ -1068,7 +1121,8 @@ const EXPS = [
     antes:ya => E.config({ vista:'onda', mueve:ya, t:{ f:F_CAMPOS }, ver:{ B:1, lam:true, rotE:'300 V/m', rotB: ya ? `B₀ = ${sci(CB.B0, 0)} T` : 'B₀ = ?' }, lect: lectCampos(ya), desc: descOnda }),
     despues:() => { E.ver.rotB = `B₀ = ${sci(CB.B0, 0)} T`; E.lect = lectCampos(true); E.mueve = true; E.avisar(); E.despertar(); },
     exp:() => `<div class="eqs"><div class="eq">${B_('B₀')} = ${e_('300')} / ${v_('3 × 10⁸')} = ${B_(sci(CB.B0, 0) + ' T')}</div></div>
-      <p>Un microtesla es unas cincuenta veces menos que el campo magnético de la Tierra. En el dibujo, los dos campos se ven del mismo tamaño solo para que se noten: sus números, en sus unidades, son muy distintos, y van siempre en la proporción ${v_('c')}.</p>
+      <p>Un microtesla es unas treinta a cincuenta veces menos que el campo magnético de la Tierra. En el dibujo, los dos campos se ven del mismo tamaño solo para que se noten: sus números, en sus unidades, son muy distintos, y van siempre en la proporción ${v_('c')}.</p>
+      <p class="hint">En los libros y en el examen verás E₀ = c·B₀, con E el campo eléctrico; aquí lo escribimos con palabras porque E ya es la energía del fotón.</p>
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras (OE15 y OE20 del informe, sin estudio).</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };

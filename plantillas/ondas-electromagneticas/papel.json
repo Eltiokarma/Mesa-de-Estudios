@@ -1,6 +1,6 @@
 {
   "titulo": "La antena y el arcoíris: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa c = 3 × 10⁸ m/s, hc = 1240 eV·nm y 1 eV = 1,6 × 10⁻¹⁹ J. Onda: c = λ·f. Fotón: E = h·f = hc/λ. Recorrido: d = v·t. En un medio: v = c/n y λ' = λ/n. Campos de la onda: (campo eléctrico) = c·B.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa c = 3 × 10⁸ m/s, hc = 1240 eV·nm, 1 eV = 1,6 × 10⁻¹⁹ J y ε₀ = 8,85 × 10⁻¹² C²/(N·m²). Onda: c = λ·f; en la expresión sen(k·x − ω·t), k = 2π/λ y ω = 2π·f. Fotón: E = h·f = hc/λ. Recorrido: d = v·t. En un medio: v = c/n y λ' = λ/n. Campos de la onda: (campo eléctrico) = c·B. Intensidad media: I = c·ε₀·(campo eléctrico máximo)²/2. En los libros y en el examen verás E₀ = c·B₀, con E el campo eléctrico; aquí lo escribimos con palabras porque E ya es la energía del fotón.",
   "problemas": [
     {
       "id": "p1",
@@ -12,7 +12,28 @@
         "λ = c/f = 3 × 10⁸ / (7,5 × 10⁵) = 400 m.",
         "λ = 3 × 10⁸ / (9 × 10⁷) = 10/3 m ≈ 3,33 m. Más frecuencia, menos longitud de onda; la rapidez es la misma."
       ],
-      "verificar": [ { "fn": "onda", "args": [750, "kHz"], "espera": { "lambda": 400 } }, { "fn": "onda", "args": [90, "MHz"], "espera": { "lambda": 3.33333333333 } } ]
+      "verificar": [
+        {
+          "fn": "onda",
+          "args": [
+            750,
+            "kHz"
+          ],
+          "espera": {
+            "lambda": 400
+          }
+        },
+        {
+          "fn": "onda",
+          "args": [
+            90,
+            "MHz"
+          ],
+          "espera": {
+            "lambda": 3.33333333333
+          }
+        }
+      ]
     },
     {
       "id": "p2",
@@ -24,7 +45,19 @@
         "f = c/λ = 3 × 10⁸ / 0,12 = 2,5 × 10⁹ Hz.",
         "1 GHz = 10⁹ Hz: f = 2,5 GHz."
       ],
-      "verificar": [ { "fn": "ondaDeLambda", "args": [12, "cm"], "espera": { "f": 2.5e9, "region": "microondas" } } ]
+      "verificar": [
+        {
+          "fn": "ondaDeLambda",
+          "args": [
+            12,
+            "cm"
+          ],
+          "espera": {
+            "f": 2500000000.0,
+            "region": "microondas"
+          }
+        }
+      ]
     },
     {
       "id": "p3",
@@ -36,19 +69,52 @@
         "E = hc/λ = 1240/500 = 2,48 eV.",
         "En joules: 2,48 · 1,6 × 10⁻¹⁹ ≈ 3,97 × 10⁻¹⁹ J."
       ],
-      "verificar": [ { "fn": "ondaDeLambda", "args": [500, "nm"], "espera": { "f": 6e14, "E": 2.48, "EJ": 3.968e-19, "color": "verde" } } ]
+      "verificar": [
+        {
+          "fn": "ondaDeLambda",
+          "args": [
+            500,
+            "nm"
+          ],
+          "espera": {
+            "f": 600000000000000.0,
+            "E": 2.48,
+            "EJ": 3.968e-19,
+            "color": "verde"
+          }
+        }
+      ]
     },
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Ordena de menor a mayor frecuencia: la luz roja de un semáforo, los rayos X de una radiografía, la señal de una radio FM, el ultravioleta que broncea y las microondas de un horno. ¿Cuál de ellas tiene la mayor longitud de onda?",
-      "respuesta": "Radio FM < microondas < luz roja < ultravioleta < rayos X. La mayor longitud de onda es la de la radio FM.",
+      "enunciado": "La luz de un láser llega a una pantalla con un campo eléctrico máximo de 100 V/m. Con c = 3 × 10⁸ m/s y ε₀ = 8,85 × 10⁻¹² C²/(N·m²), ¿cuál es la intensidad media de esa luz? ¿Cuánto vale el campo magnético máximo?",
+      "respuesta": "I = 13,275 W/m² (unos 13,3 W/m²); B₀ = 1/3 × 10⁻⁶ T ≈ 3,33 × 10⁻⁷ T.",
       "pasos": [
-        "El espectro es uno solo, ordenado por la frecuencia: radio, microondas, infrarrojo, visible, ultravioleta, rayos X y gamma.",
-        "Como todas viajan a c, λ = c/f: la de menor frecuencia tiene la mayor longitud de onda.",
-        "La radio FM, con f de unos 10⁸ Hz, tiene λ de unos 3 m."
+        "I = c·ε₀·(campo eléctrico máximo)²/2 = 3 × 10⁸ · 8,85 × 10⁻¹² · 100² / 2, como sigue:",
+        "3 × 10⁸ · 8,85 × 10⁻¹² = 2,655 × 10⁻³; por 10⁴ da 26,55; entre 2: I = 13,275 W/m².",
+        "B₀ = (campo eléctrico máximo)/c = 100 / (3 × 10⁸) ≈ 3,33 × 10⁻⁷ T."
       ],
-      "verificar": [ { "fn": "regiones", "args": [], "espera": { "0.region": "radio", "1.region": "microondas", "3.region": "visible", "4.region": "ultravioleta", "5.region": "rayosX" } } ]
+      "verificar": [
+        {
+          "fn": "intensidad",
+          "args": [
+            100
+          ],
+          "espera": {
+            "I": 13.275
+          }
+        },
+        {
+          "fn": "campos",
+          "args": [
+            100
+          ],
+          "espera": {
+            "B0": 3.33333333333e-07
+          }
+        }
+      ]
     },
     {
       "id": "p5",
@@ -59,7 +125,19 @@
         "t = d/c = 1,5 × 10¹¹ / (3 × 10⁸) = 500 s.",
         "500 s = 8 · 60 s + 20 s = 8 min 20 s."
       ],
-      "verificar": [ { "fn": "viaje", "args": [1.5e11], "espera": { "t": 500, "min": 8, "s": 20 } } ]
+      "verificar": [
+        {
+          "fn": "viaje",
+          "args": [
+            150000000000.0
+          ],
+          "espera": {
+            "t": 500,
+            "min": 8,
+            "s": 20
+          }
+        }
+      ]
     },
     {
       "id": "p6",
@@ -70,7 +148,17 @@
         "En 3 × 10⁻⁴ s el pulso va y vuelve: recorre 3 × 10⁸ · 3 × 10⁻⁴ = 9 × 10⁴ m.",
         "El avión está a la mitad: 4,5 × 10⁴ m = 45 km."
       ],
-      "verificar": [ { "fn": "eco", "args": [3e-4], "espera": { "d": 45000 } } ]
+      "verificar": [
+        {
+          "fn": "eco",
+          "args": [
+            0.0003
+          ],
+          "espera": {
+            "d": 45000
+          }
+        }
+      ]
     },
     {
       "id": "p7",
@@ -82,7 +170,39 @@
         "Los dos campos son perpendiculares entre sí y a la dirección de avance (la onda es transversal).",
         "Perpendicular a la vertical y al este queda la dirección norte-sur."
       ],
-      "verificar": [ { "fn": "campoDeB", "args": [2e-8], "espera": { "electrico0": 6 } }, { "fn": "direccionB", "args": [[0, 0, 1], [1, 0, 0]], "espera": { "valor": [0, -1, 0] } } ]
+      "verificar": [
+        {
+          "fn": "campoDeB",
+          "args": [
+            2e-08
+          ],
+          "espera": {
+            "electrico0": 6
+          }
+        },
+        {
+          "fn": "direccionB",
+          "args": [
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              1,
+              0,
+              0
+            ]
+          ],
+          "espera": {
+            "valor": [
+              0,
+              -1,
+              0
+            ]
+          }
+        }
+      ]
     },
     {
       "id": "p8",
@@ -94,19 +214,59 @@
         "La frecuencia no cambia al pasar de un medio a otro: f = c/λ = 3 × 10⁸ / (6,6 × 10⁻⁷) ≈ 4,55 × 10¹⁴ Hz.",
         "λ' = v/f = λ/n = 660/1,5 = 440 nm. Sigue siendo roja, aunque 440 nm en el aire sería violeta."
       ],
-      "verificar": [ { "fn": "medio", "args": [660, 1.5], "espera": { "v": 2e8, "lambdaNm": 440, "f": 4.54545454545e14, "color": "rojo" } } ]
+      "verificar": [
+        {
+          "fn": "medio",
+          "args": [
+            660,
+            1.5
+          ],
+          "espera": {
+            "v": 200000000.0,
+            "lambdaNm": 440,
+            "f": 454545454545000.0,
+            "color": "rojo"
+          }
+        }
+      ]
     },
     {
       "id": "p9",
       "nivel": "avanzado",
-      "enunciado": "Una señal de radio va de la Tierra a la Luna, a 3,84 × 10⁸ m, rebota y vuelve. Con c = 3 × 10⁸ m/s, ¿cuánto tarda en total? ¿Llegaría antes una luz de láser lanzada al mismo tiempo?",
-      "respuesta": "2,56 s; no: el láser y la radio viajan a la misma rapidez y llegan a la vez.",
+      "enunciado": "El campo eléctrico de una onda electromagnética en el vacío, que oscila a lo largo del eje y, es: campo eléctrico = 30 sen(4π × 10⁶ x − 12π × 10¹⁴ t), en V/m, con x en m y t en s. Halla su longitud de onda, su frecuencia y su rapidez, di en qué región del espectro está y en qué dirección oscila el campo magnético y con qué valor máximo (c = 3 × 10⁸ m/s).",
+      "respuesta": "λ = 0,5 µm = 500 nm (luz visible, verde); f = 6 × 10¹⁴ Hz; v = 3 × 10⁸ m/s; avanza hacia +x, así que B oscila a lo largo del eje z, con B₀ = 10⁻⁷ T.",
       "pasos": [
-        "Ida: t = 3,84 × 10⁸ / (3 × 10⁸) = 1,28 s.",
-        "Ida y vuelta: 2 · 1,28 = 2,56 s.",
-        "En el vacío todas las ondas electromagnéticas viajan a c, sea radio, luz o rayos X."
+        "k = 4π × 10⁶ rad/m: λ = 2π/k = 2π / (4π × 10⁶) = 5 × 10⁻⁷ m = 500 nm.",
+        "ω = 12π × 10¹⁴ rad/s: f = ω/(2π) = 6 × 10¹⁴ Hz; v = ω/k = 3 × 10⁸ m/s.",
+        "El signo menos (k·x − ω·t) dice que la onda avanza hacia +x. B es perpendicular al campo eléctrico (eje y) y al avance (eje x): oscila a lo largo del eje z.",
+        "B₀ = 30 / (3 × 10⁸) = 10⁻⁷ T."
       ],
-      "verificar": [ { "fn": "viaje", "args": [7.68e8], "espera": { "t": 2.56 } }, { "fn": "viaje", "args": [3.84e8], "espera": { "t": 1.28 } } ]
+      "verificar": [
+        {
+          "fn": "leerOnda",
+          "args": [
+            {
+              "E0": 30,
+              "k": 12566370.614359172,
+              "w": 3769911184307752,
+              "signo": "-"
+            }
+          ],
+          "espera": {
+            "lambda": 5e-07,
+            "f": 600000000000000.0,
+            "v": 300000000.0,
+            "region": "visible",
+            "color": "verde",
+            "B0": 1e-07,
+            "dirB": [
+              0,
+              0,
+              1
+            ]
+          }
+        }
+      ]
     },
     {
       "id": "p10",
@@ -118,7 +278,29 @@
         "E = hc/λ = 1240 / (2 × 10⁸) = 6,2 × 10⁻⁶ eV, más de un millón de veces menos que 10 eV.",
         "Para 10 eV: λ = 1240/10 = 124 nm, en el ultravioleta."
       ],
-      "verificar": [ { "fn": "onda", "args": [1.5, "GHz"], "espera": { "lambda": 0.2, "E": 6.2e-6 } }, { "fn": "ionizante", "args": [1.5e9], "espera": { "ioniza": false, "lambdaBordeNm": 124 } } ]
+      "verificar": [
+        {
+          "fn": "onda",
+          "args": [
+            1.5,
+            "GHz"
+          ],
+          "espera": {
+            "lambda": 0.2,
+            "E": 6.2e-06
+          }
+        },
+        {
+          "fn": "ionizante",
+          "args": [
+            1500000000.0
+          ],
+          "espera": {
+            "ioniza": false,
+            "lambdaBordeNm": 124
+          }
+        }
+      ]
     }
   ]
 }

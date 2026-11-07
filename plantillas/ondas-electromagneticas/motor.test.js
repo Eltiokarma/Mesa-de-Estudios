@@ -42,7 +42,7 @@ test('casos.json: formato y casos pedidos', () => {
   assert.ok(datos.casos.length >= 16, 'al menos 16 casos');
   for (const c of datos.casos) assert.ok(c.nombre && c.fn && Array.isArray(c.args) && c.espera, JSON.stringify(c).slice(0, 80));
   const nombres = datos.casos.map(c => c.nombre).join(' ');
-  for (const t of ['100 MHz', '1000 kHz', '2,4 GHz', '600 nm', '0,1 nm', 'Sol', 'Luna', 'Radar', '300 V/m', 'n = 4/3', 'n = 3/2', 'Orden', 'Regiones', 'atraviesa', 'a la vez', 'ionizante'])
+  for (const t of ['100 MHz', '1000 kHz', '2,4 GHz', '600 nm', '0,1 nm', 'Sol', 'Luna', 'Radar', '300 V/m', 'n = 4/3', 'n = 3/2', 'Orden', 'Regiones', 'atraviesa', 'a la vez', 'ionizante', 'Leer la onda', 'Intensidad'])
     assert.ok(nombres.includes(t), `falta el caso pedido: ${t}`);
 });
 for (const c of datos.casos) test(c.nombre, () => {
@@ -122,6 +122,20 @@ test('color de la luz (solo dibujo): nada fuera del visible; rojo a 650 nm, azul
   assert.equal(motor.colorLuz(300), null); assert.equal(motor.colorLuz(800), null);
   const r = motor.colorLuz(650), b = motor.colorLuz(460), g = motor.colorLuz(530);
   assert.ok(r.r > r.g && r.r > r.b); assert.ok(b.b > b.r && b.b > b.g); assert.ok(g.g > g.r && g.g > g.b);
+});
+
+test('leerOnda: λ·f = v = ω/k; B₀ = E₀/v; B ⊥ campo eléctrico y avance; el signo decide el sentido; I = c·ε₀·E₀²/2', () => {
+  for (let k = 0; k < N_; k++) {
+    const kk = logAl(1e-3, 1e12), w = kk * motor.C, E0 = al(0.1, 1e3), sg = k % 2 ? '+' : '-', r = motor.leerOnda({ E0, k: kk, w, signo: sg });
+    cerca(r.lambda * r.f, r.v, 'λ·f = v'); cerca(r.v, motor.C, 'en el vacío, c'); cerca(r.B0 * r.v, E0, 'B₀·v = E₀');
+    assert.equal(r.avance[0], sg === '-' ? 1 : -1, 'sentido del avance');
+    assert.equal(motor.punto(r.dirB, [0, 1, 0]), 0); assert.equal(motor.punto(r.dirB, r.avance), 0);
+    assert.ok(motor.punto(motor.producto([0, 1, 0], r.dirB), r.avance) > 0, 'campo eléctrico × B hacia el avance');
+    cerca(r.I, motor.C * motor.EPS0 * E0 * E0 / 2, 'intensidad');
+    cerca(r.errores.unoSobreK.lambda * 2 * Math.PI, r.lambda, 'el error 1/k es 2π veces menor');
+  }
+  assert.throws(() => motor.leerOnda({ E0: 1, k: 1, w: 1, signo: '*' }), /signo/);
+  assert.throws(() => motor.intensidad(0), /mayor que cero/);
 });
 
 // 3. Errores de entrada

@@ -8,7 +8,8 @@
  * en m/s; distancias d en m; tiempos t en s; energía del fotón E en eV (y en J donde el nombre termina en J); campo
  * eléctrico de la onda en V/m y campo magnético B en T; índice de refracción n sin unidades.
  *
- * Constantes de academia: c = 3 × 10⁸ m/s, hc = 1240 eV·nm, e = 1,6 × 10⁻¹⁹ C (1 eV = 1,6 × 10⁻¹⁹ J).
+ * Constantes de academia: c = 3 × 10⁸ m/s, hc = 1240 eV·nm, e = 1,6 × 10⁻¹⁹ C (1 eV = 1,6 × 10⁻¹⁹ J),
+ *   ε₀ = 8,85 × 10⁻¹² C²/(N·m²).
  *   De ahí h = hc/c = 4,1333… × 10⁻¹⁵ eV·s = 6,6133… × 10⁻³⁴ J·s (el 6,6 × 10⁻³⁴ J·s de los problemas da casi lo
  *   mismo; aquí se usa un solo juego para que E en J = E en eV · e siempre).
  *
@@ -58,17 +59,26 @@
  *                                   (copiado de plantillas/fisica-moderna/motor.js). Solo para pintar la banda de luz:
  *                                   no es un color de variable
  *   ionizante(f)                    E (eV) del fotón, si ioniza (E ≥ 10 eV) y el error OE18 (abajo)
+ *   leerOnda(o)                     lee la expresión (campo eléctrico) = E0·sen(k·x ∓ ω·t) de una onda en el vacío:
+ *                                   o = { E0 (V/m), k (rad/m), w (rad/s), signo ('-' si es k·x − ω·t, avanza hacia
+ *                                   +eje; '+' si es k·x + ω·t, avanza hacia −eje), eje ([1, 0, 0] si se omite), dirE
+ *                                   ([0, 1, 0] si se omite) }. Da lambda = 2π/k (m), f = ω/(2π) (Hz), v = ω/k (m/s),
+ *                                   la región, B0 = E0/v (T), avance y dirB (vectores) e I (W/m²), con errores
+ *   intensidad(E0)                  intensidad media I = c·ε₀·E0²/2 (W/m²), con ε₀ = 8,85 × 10⁻¹² C²/(N·m²)
  *   azar(semilla)                   números al azar con semilla
  *
  * Tabla de «qué atraviesa qué» (simplificada, de lo que se ve en la vida diaria; 'parcial' = pasa una parte):
  *                     radio  microondas  infrarrojo  visible  ultravioleta  rayosX   gamma
- *   pared (ladrillo)  si     parcial     no          no       no            parcial  parcial
- *   vidrio (ventana)  si     si          parcial     si       no            parcial  si
- *   piel y músculo    si     parcial     no          no       no            si       si
- *   hueso             si     parcial     no          no       no            no       parcial
- *   rejilla metálica  no     no          no          si       si            si       si
+ *   pared (ladrillo)  si     parcial     no          no       no            no       parcial
+ *   vidrio (ventana)  si     si          parcial     si       parcial       parcial  si
+ *   piel y músculo    si     parcial     parcial     parcial  no            si       si
+ *   hueso             si     parcial     no          no       no            parcial  parcial
+ *   rejilla metálica  no     no          si          si       si            si       si
  *   (la rejilla de la puerta del horno: agujeros de unos 2 mm, mucho menores que los 12,5 cm de las microondas y
- *    mucho mayores que la λ de la luz. Las microondas y la radio rebotan en el metal; la luz pasa por los agujeros.)
+ *    mucho mayores que la λ del infrarrojo y de la luz. Las microondas y la radio rebotan en el metal; la luz pasa por
+ *    los agujeros. El vidrio común frena buena parte del ultravioleta, casi todo el que quema la piel. La luz roja y el
+ *    infrarrojo cercano cruzan unos milímetros de piel: un dedo frente a una linterna se ve rojo. Los rayos X cruzan
+ *    la piel casi sin frenarse y el hueso los absorbe mucho más: por eso el hueso sale blanco en la radiografía.)
  *
  * Cada resultado que alimenta una predicción trae un campo 'errores' con lo que da cada error típico. Los códigos son
  * los de docs/investigacion/ondas-electromagneticas-ideas-erroneas.md (OE1 a OE20; todas sus cifras salen de
@@ -90,6 +100,14 @@
  *                        cambiaColor  λ' manda el color (variante de OE12): { v, lambdaNm: λ/n, color: el de λ/n }.
  *                        alReves      el medio acelera la luz: { v: c·n, lambdaNm: λ·n, f } (hipótesis nuestra).
  *                        nadaCambia   la luz siempre va a c: { v: c, lambdaNm: λ, f } (hipótesis nuestra).
+ *   leerOnda.errores:    lambdaEsK      OE-lambda-es-k: λ = k (m), con su región.
+ *                        unoSobreK      OE-lambda-1-sobre-k: λ = 1/k, sin el 2π, con su región.
+ *                        kSobreDosPi    OE-lambda-k-sobre-2pi: λ = k/(2π), con su región.
+ *                        fEsW           f = ω, sin el 2π (Hz).
+ *                        BParalelo      OE13: B en la dirección del campo eléctrico.
+ *                        avanceAlReves  el signo leído al revés: avance −avance y B −dirB.
+ *                        BIgual         OE15: B0 = E0.
+ *   intensidad.errores (W/m²): sinMitad c·ε₀·E0²; sinCuadrado c·ε₀·E0/2.
  *   ionizante(f)         si un fotón de frecuencia f ioniza (E ≥ 10 eV, borde de academia: λ ≤ 124 nm, en el
  *                        ultravioleta alto) y lo que espera OE18: { potente: { ioniza: true } } (con la potencia basta).
  */
@@ -248,11 +266,11 @@
   // ---------- Qué atraviesa qué ----------
   const ORD = ['radio', 'microondas', 'infrarrojo', 'visible', 'ultravioleta', 'rayosX', 'gamma'];
   const TABLA = {
-    pared:   { nombre: 'pared de ladrillo', fila: ['si', 'parcial', 'no', 'no', 'no', 'parcial', 'parcial'] },
-    vidrio:  { nombre: 'vidrio de ventana', fila: ['si', 'si', 'parcial', 'si', 'no', 'parcial', 'si'] },
-    piel:    { nombre: 'piel y músculo', fila: ['si', 'parcial', 'no', 'no', 'no', 'si', 'si'] },
-    hueso:   { nombre: 'hueso', fila: ['si', 'parcial', 'no', 'no', 'no', 'no', 'parcial'] },
-    rejilla: { nombre: 'rejilla metálica del horno', fila: ['no', 'no', 'no', 'si', 'si', 'si', 'si'] },
+    pared:   { nombre: 'pared de ladrillo', fila: ['si', 'parcial', 'no', 'no', 'no', 'no', 'parcial'] },
+    vidrio:  { nombre: 'vidrio de ventana', fila: ['si', 'si', 'parcial', 'si', 'parcial', 'parcial', 'si'] },
+    piel:    { nombre: 'piel y músculo', fila: ['si', 'parcial', 'parcial', 'parcial', 'no', 'si', 'si'] },
+    hueso:   { nombre: 'hueso', fila: ['si', 'parcial', 'no', 'no', 'no', 'parcial', 'parcial'] },
+    rejilla: { nombre: 'rejilla metálica del horno', fila: ['no', 'no', 'si', 'si', 'si', 'si', 'si'] },
   };
   function atraviesa(material, reg) {
     if (!(material in TABLA)) throw new Error(`material desconocido: ${material}`);
@@ -313,11 +331,34 @@
     return { E: F.E, ioniza: F.E >= E_IONIZA, lambdaBordeNm: limpio(HC_EV_NM / E_IONIZA), errores: { potente: { ioniza: true } } };
   }
 
+  // ---------- La expresión de la onda y su intensidad ----------
+  const EPS0 = 8.85e-12;
+  function intensidad(E0) {
+    positivo(E0, 'el campo eléctrico máximo E0');
+    return { I: limpio(C * EPS0 * E0 * E0 / 2), errores: { sinMitad: limpio(C * EPS0 * E0 * E0), sinCuadrado: limpio(C * EPS0 * E0 / 2) } };
+  }
+  function leerOnda(o) {
+    if (!o || typeof o !== 'object') throw new Error('falta la onda { E0, k, w, signo }');
+    positivo(o.E0, 'el campo eléctrico máximo E0'); positivo(o.k, 'el número de onda k'); positivo(o.w, 'la frecuencia angular ω');
+    const signo = o.signo === undefined ? '-' : o.signo;
+    if (signo !== '-' && signo !== '+') throw new Error("el signo debe ser '-' (k·x − ω·t) o '+' (k·x + ω·t)");
+    const eje = vec(o.eje || [1, 0, 0], 'el eje'), dirE = vec(o.dirE || [0, 1, 0], 'la dirección del campo eléctrico');
+    const avance = eje.map(x => (signo === '-' ? x : -x) + 0);
+    const lambda = 2 * Math.PI / o.k, f = o.w / (2 * Math.PI), v = o.w / o.k;
+    const dirB = direccionB(dirE, avance);
+    const reg = l => Object.assign({ lambda: limpio(l) }, region(l));
+    return Object.assign({ lambda: limpio(lambda), f: limpio(f), v: limpio(v), B0: limpio(o.E0 / v), avance, dirB, I: intensidad(o.E0).I }, region(lambda), {
+      errores: {
+        lambdaEsK: reg(o.k), unoSobreK: reg(1 / o.k), kSobreDosPi: reg(o.k / (2 * Math.PI)), fEsW: limpio(o.w),
+        BParalelo: { dirB: dirE.slice() }, avanceAlReves: { avance: avance.map(x => -x + 0), dirB: dirB.map(x => -x + 0) }, BIgual: { B0: o.E0 },
+      } });
+  }
+
   function azar(sem) { let s = (sem >>> 0) || 1; return () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296; }
 
   return {
-    C, HC_EV_NM, E_CARGA, H_EV, V_SONIDO, E_IONIZA,
+    C, HC_EV_NM, E_CARGA, H_EV, V_SONIDO, E_IONIZA, EPS0,
     aHz, aMetros, region, regiones, onda, ondaDeLambda, foton, campos, campoDeB, direccionB, producto, punto, instante,
-    viaje, eco, medio, atraviesa, materiales, posicion, frecuenciaEn, referencias, carrera, colorLuz, ionizante, azar,
+    viaje, eco, medio, atraviesa, materiales, posicion, frecuenciaEn, referencias, carrera, colorLuz, ionizante, intensidad, leerOnda, azar,
   };
 });
