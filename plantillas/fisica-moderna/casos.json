@@ -1,0 +1,129 @@
+{
+  "plantilla": "fisica-moderna",
+  "unidades": "λ en nm, f en Hz, energías E, φ y Kmax en eV (EJ y KmaxJ en J), voltajes V y potencial de frenado V₀ en V, potencias P en W, corrientes I en A, fotones por segundo N en 1/s, T en K, Δx en m y Δp en kg·m/s. Juego de constantes 'eV' (por omisión): hc = 1240 eV·nm, c = 3 × 10⁸ m/s, e = 1,6 × 10⁻¹⁹ C; juego 'SI': h = 6,6 × 10⁻³⁴ J·s, c = 3 × 10⁸ m/s, e = 1,6 × 10⁻¹⁹ C. Hidrógeno: En = −13,6/n² eV. Wien: 2,9 × 10⁻³ m·K. En el fototubo, V > 0 acelera los electrones hacia el colector y V < 0 los frena; eta = 0,01 electrones por fotón.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.sumaPhi.Kmax); los textos y los booleanos, exactos. 'tambien' repite la llamada con otros argumentos (y, si trae 'fn', con otra función). Los errores típicos van en 'errores': lo que da cada error (FM1 a FM4 del informe, o hipótesis nuestras; están definidos en la cabecera de motor.js). La corriente del fototubo sale del modelo simple de la cabecera: energías de salida repartidas de modo uniforme entre 0 y Kmax, saturación desde V = 0.",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el código del motor: recalculó los 21 casos con fracciones exactas en Python, por un camino distinto (E = h·f con f = c/λ, Bohr con Rydberg R = 13,6/1240 nm⁻¹, N por energía total en 1 s, máximo de Kramers analítico, electrón por v² = K + V·x). Coinciden 178 de 180 campos con tolerancia 1e-9. Las 2 diferencias son convenciones del electrón (xMax null si llega al colector, x = 0 después de volver al cátodo), no errores de física.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Caso del informe «sin emisión» (predicción 1, paso 1): λ = 620 nm, φ = 2,5 eV → E = 1240/620 = 2 eV < φ: no sale ningún electrón (Kmax = 0, V₀ = 0). Corriente cero con 1 mW, con 2 mW (el DOBLE de intensidad) y con la pila a 6 V. FM2 («la energía crece con la intensidad») espera E = 4 eV y corriente",
+      "fn": "fotoelectrico", "args": [620, 2.5],
+      "espera": { "E": 2, "EJ": 3.2e-19, "emite": false, "Kmax": 0, "V0": 0, "lambda0": 496 },
+      "tambien": [ { "fn": "fototubo", "args": [{ "lambda": 620, "phi": 2.5, "P": 0.001, "V": 0 }], "espera": { "I": 0, "Isat": 0, "N": 3.125e15 } },
+                   { "fn": "fototubo", "args": [{ "lambda": 620, "phi": 2.5, "P": 0.002, "V": 0 }], "espera": { "I": 0, "N": 6.25e15 } },
+                   { "fn": "fototubo", "args": [{ "lambda": 620, "phi": 2.5, "P": 0.1, "V": 6 }], "espera": { "I": 0 } },
+                   { "fn": "cambioFototubo", "args": [{ "lambda": 620, "phi": 2.5, "P": 0.001, "V": 0 }, { "lambda": 620, "phi": 2.5, "P": 0.002, "V": 0 }],
+                     "espera": { "despues.I": 0, "razonIsat": null, "errores.intensidadEsEnergia.E": 4, "errores.intensidadEsEnergia.emite": true, "errores.intensidadEsEnergia.hayCorriente": true,
+                                 "errores.intensidadEsEnergia.V0": 1.5, "errores.conPilaSiSube.conMasVoltaje": true } } ] },
+
+    { "nombre": "Predicción 2 (paso 2): la misma luz de 620 nm y se sube la pila de 0 V a 6 V (a favor): la corriente sigue en CERO; la pila no arranca electrones. FM1 («la pila hace pasar corriente») espera corriente, y su variante «la pila ayuda a vencer φ» (pone los 0,5 eV que le faltan a cada fotón de 2 eV), corriente desde 0,5 V",
+      "fn": "cambioFototubo", "args": [{ "lambda": 620, "phi": 2.5, "P": 0.001, "V": 0 }, { "lambda": 620, "phi": 2.5, "P": 0.001, "V": 6 }],
+      "espera": { "antes.I": 0, "despues.I": 0, "despues.emite": false, "errores.pilaArranca.hayCorriente": true, "errores.pilaVencePhi.hayCorriente": true,
+                  "errores.pilaVencePhi.Vminimo": 0.5, "errores.pilaFrena.hayCorriente": false } },
+
+    { "nombre": "Caso del informe «con emisión» (predicción 3, paso 3): λ = 310 nm, φ = 2,5 eV → E = 4 eV; Kmax = 3/2 eV (2,4 × 10⁻¹⁹ J); V₀ = 1,5 V. Sin restar φ: 4 eV y 4 V; sumando φ: 6,5 eV; con V₀ igual al número de Kmax en joules: 2,4 × 10⁻¹⁹",
+      "fn": "fotoelectrico", "args": [310, 2.5],
+      "espera": { "E": 4, "EJ": 6.4e-19, "emite": true, "Kmax": 1.5, "KmaxJ": 2.4e-19, "V0": 1.5,
+                  "errores.sinRestarPhi.Kmax": 4, "errores.sinRestarPhi.V0": 4, "errores.sumaPhi.Kmax": 6.5, "errores.sumaPhi.V0": 6.5,
+                  "errores.mezclaJeV.Kmax": 1.5, "errores.mezclaJeV.V0": 2.4e-19 } },
+
+    { "nombre": "Caso del informe «umbral»: φ = 2,5 eV → λ umbral = 1240/2,5 = 496 nm y f₀ = φ/h = 2,5/(4,1333 × 10⁻¹⁵) ≈ 6,05 × 10¹⁴ Hz. Justo en el umbral (496 nm) no sale ninguno (Kmax = 0); con 400 nm, sí",
+      "fn": "fotoelectrico", "args": [496, 2.5],
+      "espera": { "lambda0": 496, "f0": 6.04838709677e14, "emite": false, "Kmax": 0 },
+      "tambien": [ { "args": [400, 2.5], "espera": { "emite": true, "Kmax": 0.6, "E": 3.1 } } ] },
+
+    { "nombre": "Caso del informe «en joules»: λ = 300 nm con h = 6,6 × 10⁻³⁴ J·s, c = 3 × 10⁸ m/s y e = 1,6 × 10⁻¹⁹ C (juego 'SI') → f = 10¹⁵ Hz; E = 6,6 × 10⁻¹⁹ J = 33/8 eV = 4,125 eV. Con hc = 1240 eV·nm (juego 'eV') daría 1240/300 ≈ 4,13 eV",
+      "fn": "foton", "args": [300, "SI"],
+      "espera": { "f": 1e15, "EJ": 6.6e-19, "E": 4.125, "region": "ultravioleta" },
+      "tambien": [ { "args": [300], "espera": { "E": 4.13333333333 } }, { "fn": "constantes", "args": ["SI"], "espera": { "hc": 1237.5 } } ] },
+
+    { "nombre": "Predicción 4 (paso 4): con 310 nm se DUPLICA la intensidad (1 mW → 2 mW): V₀ sigue en 1,5 V y la corriente de saturación se duplica (2,5 µA → 5 µA). FM2 con E ∝ intensidad: V₀ = 8 − 2,5 = 5,5 V y la misma Isat; «más intensidad, más rápidos»: V₀ = 3 V; FM4: nada cambia",
+      "fn": "cambioFototubo", "args": [{ "lambda": 310, "phi": 2.5, "P": 0.001, "V": 0 }, { "lambda": 310, "phi": 2.5, "P": 0.002, "V": 0 }],
+      "espera": { "antes.Isat": 2.5e-6, "despues.Isat": 5e-6, "razonIsat": 2, "cambioV0": 0, "antes.V0": 1.5, "despues.V0": 1.5, "antes.N": 1.5625e15,
+                  "errores.intensidadEsEnergia.V0": 5.5, "errores.intensidadEsEnergia.Isat": 2.5e-6, "errores.intensidadSubeV0.V0": 3, "errores.intensidadSubeV0.Isat": 5e-6,
+                  "errores.corrientePorRapidez.V0": 1.5, "errores.corrientePorRapidez.Isat": 2.5e-6 } },
+
+    { "nombre": "Curva I–V con 310 nm y 1 mW (modelo simple): con la pila a favor llegan todos (I = Isat = 2,5 µA, aunque V sea 3 V); al revés con 1 V llega 1/3 (los que salen con más de 1 eV de 1,5 eV): I = 5/6 µA; con V = −1,5 V = −V₀, cero; con −2 V, cero",
+      "fn": "fototubo", "args": [{ "lambda": 310, "phi": 2.5, "P": 0.001, "V": 3 }],
+      "espera": { "I": 2.5e-6, "fraccion": 1 },
+      "tambien": [ { "args": [{ "lambda": 310, "phi": 2.5, "P": 0.001, "V": -1 }], "espera": { "I": 8.33333333333e-7, "fraccion": 0.333333333333 } },
+                   { "args": [{ "lambda": 310, "phi": 2.5, "P": 0.001, "V": -1.5 }], "espera": { "I": 0, "fraccion": 0 } },
+                   { "args": [{ "lambda": 310, "phi": 2.5, "P": 0.001, "V": -2 }], "espera": { "I": 0 } } ] },
+
+    { "nombre": "Electrón que sale con K = 1,5 eV contra una pila de frenado de 1,5 V (justo V₀): llega JUSTO al colector con rapidez cero (x = 1, v = 0 en t = 2√1,5/1,5). Con K = 1 eV y 2 V de frenado da la vuelta a la mitad (xMax = 1/2) y vuelve al cátodo en t = 2. Sin pila sale a rapidez constante √K",
+      "fn": "electron", "args": [1.5, -1.5, 1.63299316186],
+      "espera": { "x": 1, "llega": true, "tLlega": 1.63299316186, "xMax": null },
+      "tambien": [ { "args": [1, -2, 1], "espera": { "x": 0.5, "v": 0, "llega": false, "xMax": 0.5, "tVuelve": 2 } },
+                   { "args": [1, -2, 2.5], "espera": { "x": 0 } },
+                   { "args": [4, 0, 0.25], "espera": { "x": 0.5, "v": 2, "tLlega": 0.5 } },
+                   { "args": [0, 6, 0.5], "espera": { "x": 0.375, "v": 1.5, "llega": true } } ] },
+
+    { "nombre": "Predicción 5 (paso 5): la gráfica Kmax–f del metal de φ = 2,5 eV es una recta con pendiente h = 4,1333 × 10⁻¹⁵ eV·s que SALE de f₀ ≈ 6,05 × 10¹⁴ Hz; prolongada, cortaría el eje de Kmax en −φ = −2,5 eV. Se arma con los puntos de 310 nm (Kmax = 1,5 eV) y 248 nm (Kmax = 2,5 eV)",
+      "fn": "rectaKf", "args": [9.67741935484e14, 1.5, 1.20967741935e15, 2.5],
+      "espera": { "h": 4.13333333333e-15, "phi": 2.5, "f0": 6.04838709677e14, "corteK": -2.5 },
+      "tambien": [ { "fn": "fotoelectrico", "args": [248, 2.5], "espera": { "E": 5, "Kmax": 2.5, "f": 1.20967741935e15 } },
+                   { "fn": "constantes", "args": [], "espera": { "hEv": 4.13333333333e-15, "h": 6.61333333333e-34 } } ] },
+
+    { "nombre": "Predicción 6 (paso 6): láser rojo de 620 nm y P = 1 mW: cada fotón trae 2 eV = 3,2 × 10⁻¹⁹ J → N = 10⁻³/(3,2 × 10⁻¹⁹) = 25/8 × 10¹⁵ ≈ 3,1 × 10¹⁵ fotones por segundo. Como si cada fotón trajera 1 eV: 6,25 × 10¹⁵; con E en eV: 5 × 10⁻⁴; multiplicando: 3,2 × 10⁻²²",
+      "fn": "fotonesPorSegundo", "args": [0.001, 620],
+      "espera": { "N": 3.125e15, "E": 2, "EJ": 3.2e-19, "errores.porCargaE": 6.25e15, "errores.enEv": 0.0005, "errores.multiplica": 3.2e-22 },
+      "tambien": [ { "fn": "region", "args": [620], "espera": { "region": "visible", "color": "rojo" } } ] },
+
+    { "nombre": "Predicción 7 (paso 7): hidrógeno de 3 a 2: E3 = −13,6/9 eV, E2 = −3,4 eV → ΔE = 13,6·(1/4 − 1/9) = 17/9 ≈ 1,89 eV; λ = 1240/(17/9) = 11 160/17 ≈ 656 nm, rojo (serie de Balmer). Con 1/n: 2,27 eV y 547 nm (verde); con un solo nivel: 1,51 eV y 821 nm (infrarrojo); sumando: 4,91 eV y 252 nm (ultravioleta)",
+      "fn": "transicion", "args": [3, 2],
+      "espera": { "Ei": -1.51111111111, "Ef": -3.4, "E": 1.88888888889, "lambda": 656.470588235, "region": "visible", "color": "rojo", "serie": "Balmer", "emite": true,
+                  "errores.unoSobreN.E": 2.26666666667, "errores.unoSobreN.lambda": 547.058823529, "errores.unoSobreN.color": "verde",
+                  "errores.unNivel.lambda": 820.588235295, "errores.unNivel.region": "infrarrojo",
+                  "errores.sumaNiveles.E": 4.91111111111, "errores.sumaNiveles.lambda": 252.488687783, "errores.sumaNiveles.region": "ultravioleta" } },
+
+    { "nombre": "Hidrógeno de 2 a 1 (serie de Lyman): ΔE = 13,6·3/4 = 10,2 eV; λ = 1240/10,2 ≈ 121,6 nm, ultravioleta. Al revés (de 1 a 2) el átomo ABSORBE el mismo fotón. Las otras líneas visibles de Balmer: 4→2 ≈ 486 nm (azul), 5→2 ≈ 434 nm y 6→2 ≈ 410 nm (violeta)",
+      "fn": "transicion", "args": [2, 1],
+      "espera": { "E": 10.2, "lambda": 121.568627451, "region": "ultravioleta", "serie": "Lyman", "emite": true },
+      "tambien": [ { "args": [1, 2], "espera": { "E": 10.2, "emite": false } },
+                   { "args": [4, 2], "espera": { "lambda": 486.274509804, "color": "azul" } },
+                   { "args": [5, 2], "espera": { "lambda": 434.173669468, "color": "violeta" } },
+                   { "args": [6, 2], "espera": { "lambda": 410.294117647, "color": "violeta" } },
+                   { "fn": "bohr", "args": [1], "espera": { "valor": -13.6 } } ] },
+
+    { "nombre": "Predicción 8 (paso 8): tubo de rayos X a 31 kV: Emax = 31 000 eV (4,96 × 10⁻¹⁵ J) y λmin = 1240/31 000 = 0,04 nm. Sin el kilo: 40 nm; sin la carga e (h·c entre 31 000): 6,4 × 10⁻²¹ nm; con hc en eV·nm y la energía en joules: 2,5 × 10¹⁷ nm",
+      "fn": "rayosX", "args": [31000],
+      "espera": { "Emax": 31000, "EmaxJ": 4.96e-15, "lambdaMin": 0.04, "fMax": 7.5e18, "errores.sinKilo": 40, "errores.sinE": 6.4e-21, "errores.joulesConEv": 2.5e17 },
+      "tambien": [ { "args": [31000, "SI"], "espera": { "lambdaMin": 0.0399193548387 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 5: el tubo de rayos X pasa de 31 kV a 62 kV: λmin baja a la MITAD, 0,02 nm. Proporcional al voltaje: 0,08 nm; igual: 0,04 nm; con el cuadrado: 0,01 nm",
+      "fn": "cambioRayosX", "args": [31000, 62000],
+      "espera": { "lambdaMin0": 0.04, "lambdaMin1": 0.02, "razon": 0.5, "errores.proporcional": 0.08, "errores.igual": 0.04, "errores.cuadrado": 0.01 } },
+
+    { "nombre": "¿Qué pasa si…? 1: la luz de 310 nm (4 eV) sobre zinc (φ ≈ 4,3 eV): NO sale ninguno (λ umbral ≈ 288 nm); con cualquier potencia, la corriente es cero. Sin restar φ: 4 eV; sumando: 8,3 eV",
+      "fn": "fotoelectrico", "args": [310, 4.3],
+      "espera": { "E": 4, "emite": false, "Kmax": 0, "lambda0": 288.372093023, "errores.sinRestarPhi.Kmax": 4, "errores.sumaPhi.Kmax": 8.3 },
+      "tambien": [ { "fn": "fototubo", "args": [{ "lambda": 310, "phi": 4.3, "P": 0.5, "V": 6 }], "espera": { "I": 0 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 2: luz ROJA de 620 nm muy intensa (100 mW) contra luz AZUL de 460 nm tenue (0,2 mW, 500 veces menos) sobre el metal de φ = 2,5 eV: la roja no da corriente; la azul (E = 1240/460 ≈ 2,70 eV, Kmax ≈ 0,20 eV) sí: Isat = 0,01·(2 × 10⁻⁴)/2,6957 ≈ 7,4 × 10⁻⁷ A",
+      "fn": "fototubo", "args": [{ "lambda": 620, "phi": 2.5, "P": 0.1, "V": 0 }],
+      "espera": { "emite": false, "I": 0 },
+      "tambien": [ { "args": [{ "lambda": 460, "phi": 2.5, "P": 0.0002, "V": 0 }], "espera": { "emite": true, "E": 2.69565217391, "Kmax": 0.19565217391, "I": 7.41935483871e-7 } },
+                   { "fn": "region", "args": [460], "espera": { "color": "azul" } } ] },
+
+    { "nombre": "¿Qué pasa si…? 3: con 310 nm se invierte la pila hasta 1 V de frenado: la corriente BAJA a un tercio (llegan los que salen con más de 1 eV), sin llegar a cero; sería cero desde 1,5 V",
+      "fn": "cambioFototubo", "args": [{ "lambda": 310, "phi": 2.5, "P": 0.001, "V": 0 }, { "lambda": 310, "phi": 2.5, "P": 0.001, "V": -1 }],
+      "espera": { "antes.I": 2.5e-6, "despues.I": 8.33333333333e-7, "despues.fraccion": 0.333333333333, "cambioV0": 0 } },
+
+    { "nombre": "¿Qué pasa si…? 4: la MITAD de la longitud de onda (310 nm → 155 nm): E pasa de 4 eV a 8 eV y Kmax de 1,5 eV a 5,5 eV (no se duplica: φ se resta igual). Duplicando Kmax: 3 eV; con E proporcional a λ (λ y f al revés): 2 − 2,5 < 0, nada; sin restar φ: 8 eV",
+      "fn": "cambioLambda", "args": [310, 155, 2.5],
+      "espera": { "E0": 4, "E1": 8, "Kmax0": 1.5, "Kmax1": 5.5, "errores.doble": 3, "errores.alReves": 0, "errores.sinPhi": 8 } },
+
+    { "nombre": "Cuerpo negro (Wien): λmax·T = 2,9 × 10⁻³ m·K → una estrella a 5800 K brilla más en 500 nm; a 2900 K, en 1000 nm (infrarrojo)",
+      "fn": "wien", "args": [5800],
+      "espera": { "lambdaMax": 5e-7, "lambdaMaxNm": 500 },
+      "tambien": [ { "args": [2900], "espera": { "lambdaMaxNm": 1000 } } ] },
+
+    { "nombre": "Incertidumbre: un electrón confinado en Δx = 10⁻¹⁰ m con h = 6,6 × 10⁻³⁴ J·s → Δp ≥ h/(4π·Δx) ≈ 5,25 × 10⁻²⁵ kg·m/s",
+      "fn": "incertidumbre", "args": [1e-10, "SI"],
+      "espera": { "dpMin": 5.25211312203e-25 } },
+
+    { "nombre": "Rayos X: espectro continuo (Kramers, solo dibujo): cero por debajo de λmin = 0,04 nm y máximo (1) en 1,5·λmin = 0,06 nm",
+      "fn": "espectroRayosX", "args": [31000, 0.06],
+      "espera": { "valor": 1 },
+      "tambien": [ { "args": [31000, 0.039], "espera": { "valor": 0 } }, { "args": [31000, 0.04], "espera": { "valor": 0 } } ] }
+  ]
+}
