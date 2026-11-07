@@ -357,30 +357,33 @@ function riel(ctx, c, B, R, cfg){
     ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     const txt = `${g.k.letra} · ${N(g.k.m)} kg`;
     ctx.font = `800 ${c.chico ? 10 : 11}px ${c.font}`;
-    ctx.fillText(ctx.measureText(txt).width < g.w - 4 ? txt : g.k.letra, g.cx, g.top + g.h/2);
+    ctx.fillText(ctx.measureText(txt).width < g.w - 4 ? txt : g.k.letra, g.cx, cfg.fuerzas ? g.top + 11 : g.top + g.h/2);
     ctx.restore();
   });
   // Flechas de velocidad sobre cada carrito (o una sola si van juntos).
   const kv = cfg.kv || 7, yv = Math.min(...geo.map(g => g.top)) - 16;
   const flechaV = (x, v, txt, oculta, yy) => {
     if (oculta){ rotulo(ctx, c, x, yy, txt, c.v, 'center', 800); return; }
-    if (Math.abs(v) > 0.05) flecha(ctx, x, yy, x + v*kv, yy, c.v, 3);
-    const lx = Math.abs(v) > 0.05 ? x + v*kv/2 : x;
+    // Más de 12 m/s: la flecha se corta en 12 (el rótulo dice el valor).
+    const lv = clamp(v, -12, 12)*kv;
+    if (Math.abs(v) > 0.05) flecha(ctx, x, yy, x + lv, yy, c.v, 3);
+    const lx = Math.abs(v) > 0.05 ? x + lv/2 : x;
     rotulo(ctx, c, lx, yy - 13, txt, c.v, 'center', 800);
   };
   if (cfg.juntos && geo.length === 2){
     const x = (geo[0].der + geo[1].izq)/2, k = geo[0].k; flechaV(x, k.v, k.vTxt, k.vOculta, yv);
-  } else geo.forEach(g => flechaV(g.cx, g.k.v, g.k.vTxt, g.k.vOculta, yv));
+  } else geo.forEach((g, j) => flechaV(g.cx, g.k.v, g.k.vTxt, g.k.vOculta, yv - (j && Math.abs(g.cx - geo[0].cx) < 110 ? 26 : 0)));
   if (cfg.sistema && geo.length === 2){
     const x0 = Math.min(...geo.map(g => g.izq)) - 8, x1 = Math.max(...geo.map(g => g.der)) + 8, y0 = Math.min(...geo.map(g => g.top)) - 6;
     ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.setLineDash([6, 4]); rr(ctx, x0, y0, x1 - x0, yR + 10 - y0, 10); ctx.stroke(); ctx.restore();
-    rotulo(ctx, c, x0, yR + 25, 'sistema A + B', c.muted, 'left', 700, 11);
+    if (!cfg.fuerzas) rotulo(ctx, c, x0, yR + 25, 'sistema A + B', c.muted, 'left', 700, 11);
   }
   if (cfg.fuerzas && geo.length === 2){
-    const xc = (geo[0].der + geo[1].izq)/2, yf = yR - Math.min(geo[0].h, geo[1].h)/2 - 2, l = 30;
+    // El par de fuerzas, a la altura de las ruedas; sus rótulos, debajo del riel.
+    const xc = (geo[0].der + geo[1].izq)/2, yf = yR - 9, l = 30;
     flecha(ctx, xc, yf, xc - l, yf, c.F, 3); flecha(ctx, xc, yf, xc + l, yf, c.F, 3);
-    rotulo(ctx, c, xc - l - 4, yf - 14, 'F · B', c.F, 'right', 800, 11);
-    rotulo(ctx, c, xc + l + 4, yf - 14, 'F · A', c.F, 'left', 800, 11);
+    rotulo(ctx, c, xc - 6, yR + 25, 'F · B', c.F, 'right', 800, 11);
+    rotulo(ctx, c, xc + 6, yR + 25, 'F · A', c.F, 'left', 800, 11);
   }
   if (cfg.medio !== undefined){
     const x = X(cfg.medio); ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]); linea(ctx, x, yR - 4, x, yR + 14); ctx.restore();
@@ -416,7 +419,7 @@ function filas(ctx, c, B, lista){
     linea(ctx, Xp(0), B.y + alto*fp[0] + 4, Xp(0), B.y + alto*(fp[fp.length - 1] + 1) - 4); ctx.restore();
   }
   lista.forEach((f, j) => {
-    const yc = B.y + alto*j + alto/2, col = f.tipo === 'E' ? c.E : c.p, X = f.tipo === 'E' ? Xe : Xp;
+    let yc = B.y + alto*j + alto/2; const col = f.tipo === 'E' ? c.E : c.p, X = f.tipo === 'E' ? Xe : Xp;
     ctx.font = `800 ${c.chico ? 11 : 12}px ${c.font}`; ctx.fillStyle = col; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
     ctx.fillText(f.et, B.x + 2, yc);
     if (f.oculta){
@@ -426,13 +429,16 @@ function filas(ctx, c, B, lista){
       return;
     }
     let s = f.desde || 0;
+    // Si las partes tienen sentidos opuestos, cada flecha va en su renglón para que no se encimen.
+    const mixto = f.tipo === 'p' && (f.partes || []).some(q => q.v > 1e-9) && (f.partes || []).some(q => q.v < -1e-9);
     (f.partes || []).forEach((p, k) => {
-      const a = X(s), b = X(s + p.v);
+      const a = X(s), b = X(s + p.v), yc0 = yc;
+      if (mixto) yc = yc0 + (k ? 6 : -6);
       if (f.tipo === 'E'){
         if (b - a > 0.5){ ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = k ? .5 : 1; ctx.fillRect(a, yc - 7, b - a, 14); ctx.restore(); }
       } else if (Math.abs(b - a) > 1.5){ ctx.save(); ctx.globalAlpha = k ? .55 : 1; flecha(ctx, a, yc, b, yc, col, f.tipo === 'dp' ? 4 : 6, f.tipo === 'dp' ? [5, 3] : null); ctx.restore(); }
-      if (p.letra && Math.abs(b - a) > 14){ ctx.font = `800 10px ${c.font}`; ctx.textAlign = 'center'; ctx.fillStyle = c.muted; ctx.fillText(p.letra, (a + b)/2, yc - 12); }
-      s += p.v;
+      if (p.letra && Math.abs(b - a) > 14){ ctx.font = `800 10px ${c.font}`; ctx.textAlign = 'center'; ctx.fillStyle = c.muted; ctx.fillText(p.letra, (a + b)/2, mixto && k ? yc + 11 : yc - 12); }
+      s += p.v; yc = yc0;
     });
     if (f.perdida > 1e-9){ const a = X(s), b = X(s + f.perdida); rayado(ctx, a, yc - 7, Math.max(2, b - a), 14, col);
       if (b - a > 48){ ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'center'; ctx.fillStyle = col; ctx.fillText('perdida', (a + b)/2, yc - 13); } }
@@ -995,7 +1001,7 @@ function dCostal(ctx, c, W, H, resp, f){
   [['pared', PPA], ['costal', PCO]].forEach(([n, P], j) => graficaFt(ctx, c, { x:44, y:g0 + j*(gh + 20), w:W - 60, h:gh }, { tmax:0.6, Fmax:450, pulso: resp ? P : null, frac: golpe, oculta: !resp, titulo:n, media:true }));
 }
 function dHilo(ctx, c, W, H, resp, f){
-  const R = [0, 10], alto = clamp(H*0.5, 140, 220), t = resp ? 0.55*f : 0;
+  const R = [0, 10], alto = clamp(H*0.5, 140, 220), t = resp ? 0.42*f : 0;
   const e = EXP.estado(t, X1, X2);
   const carros = [
     { x:e.x1, m:1, letra:'1', v: resp && t > 0 ? EXP.v1 : 0, vTxt: resp && t > 0 ? `v = ${N(EXP.v1)} m/s` : 'v = 0', vOculta: false },
@@ -1054,7 +1060,7 @@ function dRebota(ctx, c, W, H, resp, f){
   filas(ctx, c, { x:14, y:yF, w:W - 28, h:fh }, [
     { et:'p antes', tipo:'p', partes:[{ v:REB.p1 }], unidad:'kg·m/s' },
     { et:'p después', tipo:'p', partes:[{ v:REB.p2 }], unidad:'kg·m/s' },
-    { et:'Δp', tipo:'dp', desde:REB.p1, partes:[{ v:REB.dp }], unidad:'N·s', oculta: !resp }]);
+    { et:'Δp', tipo:'dp', desde:REB.p1, partes:[{ v:REB.dp }], total:REB.dp, unidad:'N·s', oculta: !resp }]);
   const g0 = yF + fh + 16;
   graficaFt(ctx, c, { x:44, y:g0, w:W - 60, h:H - g0 - 22 }, { tmax:0.03, Fmax:900, pulso: resp ? PRB : null, frac: golpe, oculta: !resp, titulo:'tope sobre el carrito', media:true });
 }
