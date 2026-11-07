@@ -45,13 +45,41 @@
  *   'nodo-flotante' (un nodo unido al resto solo por ramas que no conducen: su
  *   potencial no está determinado, y un voltímetro que lo toca marca NaN).
  *
- * Medidores (0.2.0): conectarMedidor y conectarMedidores los ponen en serie con una
- * rama o en paralelo sin escribir los nodos a mano; efectoMedidor dice qué le hizo
- * el medidor al circuito; medidoresMixto arma los puestos de la escena (PUESTOS_MIXTO)
- * y prediccionesMedidores da los números de las cinco predicciones, con `errores`.
- * El medidor ideal es exacto (R = 0, o no conduce), no 1e-9 ni 1e12 Ω: así un
- * amperímetro en paralelo con la pila da corto en vez de un número enorme. El
- * real tiende al ideal cuando Rint → 0 (amperímetro) o Rint → ∞ (voltímetro).
+ * Medidores (0.2.0).
+ *   conectarMedidor(circuito, m), con m = { id, tipo:'amperimetro'|'voltimetro',
+ *   modo:'serie'|'paralelo', rama?, lado?:'a'|'b', entre?:[n1, n2], Rint? }: en serie
+ *   corta la rama `rama` del lado `lado` (un nodo nuevo `${id}@${rama}`) y lo
+ *   intercala; en paralelo lo une a los nodos de `rama` o a los nodos `entre`.
+ *   Trabaja sobre una copia. conectarMedidores pone primero los de serie (y cada
+ *   grupo por id). La rama del medidor lleva `medido` con su puesto.
+ *   El medidor ideal es exacto (R = 0, o no conduce), no 1e-9 ni 1e12 Ω; el real
+ *   tiende al ideal cuando Rint → 0 (amperímetro) o Rint → ∞ (voltímetro).
+ * PUESTOS_MIXTO: los diez lugares de la pestaña «Medir» sobre mixto() (pila n→p;
+ *   B1 p→x; Rv x→y; B2 y B3 de y a z; retorno z→n):
+ *   'B1-a' y 'B1-b': en serie con B1, del lado de la pila (p) o del lado de x;
+ *   'B1-p': en paralelo con B1 (sus dos extremos);
+ *   'B2-a', 'B2-b', 'B3-a', 'B3-b': en serie con B2 o B3, arriba (y) o abajo (z);
+ *   'G-p': en paralelo con el grupo B2 ∥ B3 (entre y y z);
+ *   'ret': en serie en el cable de regreso, del lado de z;
+ *   'pila-p': en paralelo con la pila (entre p y n).
+ *   Ninguno en paralelo con un cable (su lectura sería indeterminada).
+ * efectoMedidor(base, con, id) → { lectura, magnitud, sinMedidor, diagnostico,
+ *   apaga, cambioMax, error, errorRel }. La referencia es `con` sin ese medidor.
+ *   sinMedidor solo trae la magnitud que el medidor mide bien conectado: I para un
+ *   amperímetro en serie, V para un voltímetro en paralelo; lo demás es null.
+ *   diagnostico:
+ *     corto-pila: un amperímetro une los bornes de una pila (con Rint = 0, corto:
+ *       lectura infinita; con Rint > 0, lectura finita y enorme);
+ *     indeterminada: la física ideal no decide la lectura (NaN), o hay otro corto;
+ *     corto-elemento: un amperímetro en paralelo con otra cosa (la deja en corto si
+ *       es ideal, o le desvía la corriente si es real); nunca da bien ni carga;
+ *     abre-circuito: un voltímetro ideal en serie deja sin corriente a la pila;
+ *     abre-rama: un voltímetro ideal en serie apaga solo una parte (`apaga`);
+ *     carga: un medidor real bien puesto que cambia un poco el circuito
+ *       (cambioMax = mayor |ΔP|/P de las resistencias);
+ *     bien: el circuito no cambió.
+ * medidoresMixto(colocados, op) arma los puestos y resuelve; prediccionesMedidores()
+ *   da los números de las cinco predicciones de «Medir», con `errores`.
  *
  * Método: análisis nodal con "supernodos". Primero se juntan los nodos unidos
  * por ramas de resistencia cero (cables y pilas ideales): dentro de cada grupo,
@@ -450,11 +478,13 @@
       // En serie: la corriente que pasa por donde va el medidor (el cable que lo reemplaza); en paralelo: el voltaje
       // entre sus puntas y, si está sobre una rama, la corriente de esa rama.
       const Vab = sr.V[m.a] - sr.V[m.b];
-      if (info.modo === 'serie') sinMedidor = { I: sr.ramas[id].I, V: sr.ramas[info.rama].V };
-      else if (info.rama) sinMedidor = { I: sr.ramas[info.rama].I, V: Vab };
-      else sinMedidor = { I: null, V: Vab };
+      // Solo la magnitud que el medidor mide bien conectado; si está mal puesto, no mide nada de ese lugar.
+      if (m.tipo === 'amperimetro' && info.modo === 'serie') sinMedidor = { I: sr.ramas[id].I, V: null };
+      else if (m.tipo === 'voltimetro' && info.modo === 'paralelo') sinMedidor = { I: null, V: Vab };
+      else sinMedidor = { I: null, V: null };
     }
     const ideal = magnitud === 'I' ? sinMedidor.I : sinMedidor.V;
+    const unePila = con.ramas.some(r => r.tipo === 'pila' && ((r.a === m.a && r.b === m.b) || (r.a === m.b && r.b === m.a)));
     const salida = (lectura, diagnostico, apaga, cambioMax) => {
       const error = typeof ideal === 'number' && Number.isFinite(lectura) ? lectura - ideal : NaN;
       return { lectura, magnitud, sinMedidor, diagnostico, apaga, cambioMax, error, errorRel: ideal ? error / ideal : NaN };
@@ -472,6 +502,9 @@
     }
     if (Number.isNaN(lectura)) return salida(lectura, 'indeterminada', apaga, cambioMax);
     if (!sr.ok) return salida(lectura, 'indeterminada', apaga, NaN);
+    // Un amperímetro en paralelo nunca está bien puesto: con una pila es un cortocircuito (finito si Rint > 0),
+    // y con cualquier otra cosa la deja en corto o le desvía la corriente.
+    if (m.tipo === 'amperimetro' && info.modo === 'paralelo') return salida(lectura, unePila ? 'corto-pila' : 'corto-elemento', apaga, cambioMax);
     const enCorto = s => new Set(s.avisos.filter(a => a.tipo === 'en-corto').map(a => a.rama));
     const antes = enCorto(sr), ahora = enCorto(sol);
     const pilas = con.ramas.filter(r => r.tipo === 'pila');

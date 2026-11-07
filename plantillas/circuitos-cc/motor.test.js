@@ -326,11 +326,13 @@ test('medidores 2: amperímetro ideal en paralelo con una resistencia que tenía
         assert.equal(motor.efectoMedidor(base, con, 'Am').diagnostico, 'corto-pila', q);
         continue;
       }
+      // Si la resistencia está justo entre los bornes de una pila (con r), el amperímetro pone en corto a la pila.
+      const unePila = base.ramas.some(x => x.tipo === 'pila' && [x.a, x.b].sort().join() === [r.a, r.b].sort().join());
       assert.equal(s.ramas[r.id].I, 0, `${q}: sin corriente`); assert.equal(s.ramas[r.id].V, 0, `${q}: sin voltaje`);
       const entrega = x => pila0.reduce((a, p) => a + x.ramas[p.id].entrega, 0);
       assert.ok(entrega(s) >= entrega(s0) - 1e-12, `${q}: la pila entrega igual o más (la resistencia equivalente no sube)`);
       const ef = motor.efectoMedidor(base, con, 'Am');
-      assert.equal(ef.diagnostico, 'corto-elemento', q);
+      assert.equal(ef.diagnostico, unePila ? 'corto-pila' : 'corto-elemento', q);
       assert.ok(ef.apaga.includes(r.id), q);
       conserva(con, s, q);
     }
@@ -464,6 +466,29 @@ test('medidores 9: prediccionesMedidores coincide con los casos y trae los núme
     const letras = ['a', 'b', 'c', 'd'].filter(l => l !== m.ok);
     assert.deepEqual(Object.keys(m.errores).sort(), letras, `${k}: cada opción incorrecta trae su número`);
     for (const e of Object.values(m.errores)) assert.ok(Object.values(e).some(v => typeof v === 'number'), `${k}: errores con número`);
+  }
+});
+
+test('medidores 11: mal conectado no tiene «sin el medidor»; un amperímetro en paralelo nunca está «bien»', () => {
+  // Corrección de la revisión: con el amperímetro en paralelo o el voltímetro en serie, no hay un valor de ese lugar
+  // con el que comparar la lectura (si no, la tabla diría «Diferencia: 200 %» y reforzaría el error).
+  for (const [id, puesto] of [['A', 'B1-p'], ['A', 'G-p'], ['A', 'pila-p'], ['V', 'B1-a'], ['V', 'B2-a'], ['V', 'ret']])
+    for (const Rint of id === 'A' ? [undefined, 2] : [undefined, 60]) {
+      const e = motor.medidoresMixto({ [id]: Rint === undefined ? { puesto } : { puesto, Rint } }).efecto[id];
+      assert.equal(e.sinMedidor.I, null, `${id} en ${puesto}`); assert.equal(e.sinMedidor.V, null, `${id} en ${puesto}`);
+      assert.ok(Number.isNaN(e.error) && Number.isNaN(e.errorRel), `${id} en ${puesto}: sin error relativo`);
+      if (id === 'A') assert.ok(!['bien', 'carga'].includes(e.diagnostico), `${id} (${Rint}) en ${puesto}: ${e.diagnostico}`);
+      else assert.notEqual(e.diagnostico, 'bien', `${id} (${Rint}) en ${puesto}`);
+    }
+  // Bien conectados, sí: I para el amperímetro en serie, V para el voltímetro en paralelo.
+  const a = motor.medidoresMixto({ A: { puesto: 'B2-a' } }).efecto.A, v = motor.medidoresMixto({ V: { puesto: 'G-p' } }).efecto.V;
+  cerca(a.sinMedidor.I, 1 / 6, 'A en serie con B2'); assert.equal(a.sinMedidor.V, null);
+  cerca(v.sinMedidor.V, 2, 'V en paralelo con B2 y B3'); assert.equal(v.sinMedidor.I, null);
+  // El amperímetro real en paralelo con la pila: corto-pila con lectura finita, para cada r_A de la escena.
+  for (const Rint of [0.1, 0.5, 2, 6]) {
+    const e = motor.medidoresMixto({ A: { puesto: 'pila-p', Rint } }).efecto.A;
+    assert.equal(e.diagnostico, 'corto-pila', `r_A = ${Rint}`);
+    cerca(e.lectura, 6 / Rint, `r_A = ${Rint}: I = ε / r_A`);
   }
 });
 
