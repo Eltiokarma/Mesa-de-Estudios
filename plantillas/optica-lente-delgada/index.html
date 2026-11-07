@@ -627,8 +627,8 @@ const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const YL = 10, HO = 2, LH = 7.5;
 const PROBP = { n:2, o1:15, d:[50,30], f:[10,10,-10] };
 const EXP   = { n:2, o1:15, d:[50,30], f:[10,10,-10] };
-const S = { step:0, max:0, pred:null, hl:null, reveal:-1e9, imgs:0, dims:[], explore:false };
-let W = 0, H = 0, sx = 1, sy = 1, XMIN = -22, XMAX = 78, anim = null;
+const S = { step:0, max:0, pred:null, hl:null, reveal:-1e9, imgs:0, dims:[], explore:false, sobre:false };
+let W = 0, H = 0, sx = 1, sy = 1, XMIN = -22, XMAX = 78, rev = null, agarra = false;
 // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
 let compacto = false;
 function compactar(on){ on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === compacto) return; compacto = on; resize(); }
@@ -756,7 +756,7 @@ function draw(){
   }));
   ctx.restore(); ctx.lineCap = 'butt';
 
-  const onO = hl === 'h' || hl === 'o1';
+  const onO = hl === 'h' || hl === 'o1' || (S.explore && (S.sobre || agarra));
   glow(onO, c.h); arrow(sys.x0, sys.h, c.h, onO ? 3.4 : 2.4, false, 'O'); glow(false);
 
   ch.forEach((ck, k) => {
@@ -771,17 +771,25 @@ function draw(){
   });
 }
 
-function animReveal(a, b, done){
-  cancelAnimationFrame(anim);
-  if (RM){ S.reveal = b; done(); draw(); return; }
-  const t0 = performance.now(), dur = 1700;
-  const tick = now => {
-    const t = Math.min(1, (now - t0)/dur);
-    S.reveal = a + (b - a)*(1 - Math.pow(1 - t, 2)); draw();
-    if (t < 1) anim = requestAnimationFrame(tick); else { done(); draw(); }
-  };
-  anim = requestAnimationFrame(tick);
+// Los rayos avanzan con Celular.bucle: se duerme cuando nada se mueve o el lienzo no se ve.
+function paso(dt){
+  if (rev){
+    rev.t += Math.min(dt, 0.05);
+    const u = Math.min(1, rev.t/rev.dur);
+    S.reveal = rev.a + (rev.b - rev.a)*(1 - Math.pow(1 - u, 2));
+    if (u >= 1){ const l = rev.listo; rev = null; l(); }
+  }
+  draw();
+  return !!rev;
 }
+const bucle = Celular.bucle(cv, paso);
+function animReveal(a, b, done){
+  if (RM){ S.reveal = b; rev = null; done(); draw(); return; }
+  rev = { a, b, t:0, dur:1.7, listo:done }; bucle.despertar();
+}
+// Al cambiar de paso o de pestaña, la animación termina de golpe: nada queda a medias.
+function pararTodo(){ if (rev){ const l = rev.listo; S.reveal = rev.b; rev = null; l(); } }
+addEventListener('modo', () => { if (cv.offsetParent === null){ pararTodo(); draw(); } });
 
 const L1 = 'L<sub>1</sub>', L2 = 'L<sub>2</sub>', I1 = 'I<sub>1</sub>', I2 = 'I<sub>2</sub>';
 const sub = (b, n) => `${b}<sub>${n}</sub>`;
@@ -804,7 +812,7 @@ const steps = [
      <button class="opt" type="button" data-k="b">Derecha y más grande</button>
      <button class="opt" type="button" data-k="c">Invertida y más pequeña</button>
      <button class="opt" type="button" data-k="d">Derecha y del mismo tamaño</button>
-   </div><p class="fb" id="fb2"></p>` },
+   </div><p class="fb" id="fb2" tabindex="-1"></p>` },
  { k:'Paso 4', t:'Lente 1: la primera imagen', imgs:0, dims:['o1','i1'], anim:{from:-16, to:50, imgs:1, end:50},
    body:() => `<div class="eqs">
      <div class="eq">${fr('1',V('f1','f',sub('f',1)))} = ${fr('1',V('o1','o',sub('o',1)))} + ${fr('1',V('i1','i',sub('i',1)))}<span class="note">Descartes para ${L1}</span></div>
@@ -846,7 +854,7 @@ function explorerHTML(){
     <button type="button" data-n="3" aria-pressed="${EXP.n === 3}">3 lentes</button></div>
   <div class="ctrls">
     <div class="slider lensbox" style="align-content:start"><label for="e-o1"><span>Objeto a L<sub>1</sub> (${V('o1','o','o<sub>1</sub>')})</span><output id="e-o1-out"></output></label>
-    <input id="e-o1" type="range" min="4" max="40" step="0.5" value="${EXP.o1}"></div>`;
+    <input id="e-o1" class="r-o" type="range" min="4" max="40" step="0.5" value="${EXP.o1}"></div>`;
   for (let k = 0; k < EXP.n; k++){
     const conv = EXP.f[k] > 0;
     h += `<fieldset class="lensbox"><legend>L${SUB[k+1]}</legend>
@@ -854,13 +862,13 @@ function explorerHTML(){
         <button type="button" data-k="${k}" data-t="1" aria-pressed="${conv}">Convergente</button>
         <button type="button" data-k="${k}" data-t="-1" aria-pressed="${!conv}">Divergente</button></div>
       <div class="slider"><label for="e-f${k}"><span>Focal ${V('f'+(k+1),'f','f<sub>'+(k+1)+'</sub>')}</span><output id="e-f${k}-out"></output></label>
-      <input id="e-f${k}" type="range" min="4" max="25" step="0.5" value="${Math.abs(EXP.f[k])}"></div>`;
-    if (k > 0) h += `<div class="slider"><label for="e-d${k}"><span>Distancia desde L${SUB[k]}</span><output id="e-d${k}-out"></output></label>
-      <input id="e-d${k}" type="range" min="2" max="70" step="0.5" value="${EXP.d[k-1]}"></div>`;
+      <input id="e-f${k}" class="r-f" type="range" min="4" max="25" step="0.5" value="${Math.abs(EXP.f[k])}"></div>`;
+    if (k > 0) h += `<div class="slider"><label for="e-d${k}"><span>Distancia ${V('d','d','d')} desde L${SUB[k]}</span><output id="e-d${k}-out"></output></label>
+      <input id="e-d${k}" class="r-d" type="range" min="2" max="70" step="0.5" value="${EXP.d[k-1]}"></div>`;
     h += `</fieldset>`;
   }
   h += `</div><div id="live2" style="display:grid;gap:12px;min-width:0"></div>
-  <p class="hint">Prueba a acercar las lentes hasta que I<sub>1</sub> caiga detrás de L<sub>2</sub> (objeto virtual), o cambia una lente a divergente.</p>`;
+  <p class="hint">También puedes arrastrar el objeto O en el dibujo. Prueba a acercar las lentes hasta que I<sub>1</sub> caiga detrás de L<sub>2</sub> (objeto virtual), o cambia una lente a divergente.</p>`;
   return h;
 }
 function setupExplore(){
@@ -918,17 +926,27 @@ function renderLive(){
 const dots = $('dots2');
 steps.forEach((s, n) => {
   const li = document.createElement('li'), b = document.createElement('button');
-  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
-  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+  b.type = 'button'; b.textContent = n + 1;
+  b.addEventListener('click', () => { go(n); $('stepT2').focus({ preventScroll:true }); }); li.appendChild(b); dots.appendChild(li);
 });
-function refreshDots(){ [...dots.querySelectorAll('button')].forEach((b,k) => { b.disabled = k > S.max; b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); }); }
+// Un paso bloqueado no anuncia su título: se lee «Paso N, bloqueado».
+function refreshDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.disabled = k > S.max; b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : '');
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
 function unlock(n){ if (n > S.max) S.max = n; }
 
 function go(n){
   if (n < 0 || n >= steps.length || n > S.max) return;
-  cancelAnimationFrame(anim);
-  const s = steps[n]; S.step = n; S.hl = null;
+  pararTodo();
+  const s = steps[n]; S.step = n; S.hl = null; S.sobre = false;
   S.explore = !!s.explore; S.dims = s.dims || []; S.imgs = s.imgs || 0;
+  cv.classList.toggle('arrastrable', S.explore);
+  cv.setAttribute('aria-label', S.explore ? 'Tu sistema de lentes con sus rayos e imágenes. Arrastra el objeto O o usa los deslizadores de abajo.' : 'Dos o tres lentes en fila con sus rayos e imágenes intermedias');
   S.reveal = s.reveal !== undefined ? s.reveal : Infinity;
   $('stepK2').textContent = `${s.k} de ${steps.length}`;
   $('stepT2').textContent = s.t;
@@ -946,23 +964,57 @@ function updateNav(){
   $('next2').disabled = S.step === steps.length - 1 || (s.gate && !S.pred);
   $('next2').textContent = s.gate && !S.pred ? 'Elige una opción' : (S.step === 6 ? 'Armar el mío' : 'Siguiente');
 }
+// Una retroalimentación por opción. Ninguna de las incorrectas tiene datos de cuántos la eligen
+// (docs/investigacion/optica-ideas-erroneas.md): son hipótesis nuestras.
+const FB2 = {
+  a: 'No es esa. Es pensar que «la lente voltea la imagen» y quedarse con una sola vuelta. Aquí la luz pasa por dos lentes que forman imagen real, y cada una la invierte: dos inversiones se cancelan y la imagen final queda derecha. (Hipótesis nuestra, a partir de una idea errónea descrita sin cifras: la imagen como algo que la lente voltea.)',
+  b: 'Bien. Cada lente invierte la imagen y dos inversiones se cancelan. Veamos el tamaño con los números.',
+  c: 'No es esa. Invertida y más pequeña es lo que da una sola lente con el objeto lejos, más allá de 2F. Aquí el objeto está entre F y 2F de la primera lente, así que I₁ sale más grande, y la segunda lente la vuelve a voltear: la imagen final queda derecha. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)',
+  d: 'No es esa. Que salga derecha es correcto: dos inversiones se cancelan. Pero el tamaño no vuelve al del objeto: los aumentos se multiplican, y con el primero de −2 y el segundo de −1, la imagen final mide el doble. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)'
+};
 function setupPred(){
   const btns = [...$('body2').querySelectorAll('.opt')];
   const paint = () => {
     if (!S.pred) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === 'b') b.classList.add('correct'); else if (b.dataset.k === S.pred) b.classList.add('wrong'); });
-    $('fb2').textContent = S.pred === 'b'
-      ? 'Bien. Cada lente invierte la imagen y dos inversiones se cancelan. Veamos el tamaño con los números.'
-      : 'No es esa. La correcta está en verde; los rayos te van a mostrar por qué.';
+    $('fb2').textContent = FB2[S.pred];
   };
   const t0 = Date.now();
-  btns.forEach(b => b.addEventListener('click', () => { S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots();
+  btns.forEach(b => b.addEventListener('click', () => { if (S.pred) return; S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots();
+    $('fb2').focus({ preventScroll:true });
     registrarPrediccion('sistema-paso3', S.pred, S.pred === 'b', ERR_PASO3.m2[S.pred], 'hipotesis', t0);
     const paso = S.step; compactar(false); Celular.alResponder(cv, draw, () => S.step === paso); }));
   paint();
 }
-$('next2').addEventListener('click', () => { unlock(S.step + 1); go(S.step + 1); });
-$('prev2').addEventListener('click', () => go(S.step - 1));
+$('next2').addEventListener('click', () => { unlock(S.step + 1); go(S.step + 1); if ($('next2').disabled) $('stepT2').focus({ preventScroll:true }); });
+$('prev2').addEventListener('click', () => { go(S.step - 1); if ($('prev2').disabled) $('stepT2').focus({ preventScroll:true }); });
+
+// Arrastre del objeto O en el paso 8 (nucleo/celular.js): solo captura cerca de la flecha; lejos, el dedo desplaza la página.
+function cercaObjeto(p, r){
+  const x = X(-EXP.o1), y1 = Math.min(Y(HO), Y(0)), y2 = Math.max(Y(HO), Y(0));
+  const dy = p.y < y1 ? y1 - p.y : p.y > y2 ? p.y - y2 : 0;
+  return Math.hypot(p.x - x, dy) < r;
+}
+// Mientras se arrastra, la escala del banco queda fija (si no, el banco se movería bajo el dedo).
+let marco = null;
+Celular.arrastre(cv, {
+  activo: () => S.explore,
+  cerca: cercaObjeto,
+  empezar: () => { agarra = true; marco = { xmin: XMIN, sx }; cv.classList.add('agarrando'); draw(); },
+  mover: p => {
+    const sl = $('e-o1'); if (!sl) return;
+    const x = marco.xmin + p.x/marco.sx;
+    sl.value = String(Math.max(4, Math.min(40, Math.round(-x*2)/2)));
+    sl.dispatchEvent(new Event('input'));
+  },
+  soltar: () => {
+    agarra = false; marco = null; cv.classList.remove('agarrando'); draw();
+    const ch = chain(build(EXP)), last = ch[ch.length - 1];
+    decir('vivo2', last.inf || ch.length < EXP.n ? `Objeto a ${fmt(EXP.o1)} cm de L₁: no se forma imagen final.`
+      : `Objeto a ${fmt(EXP.o1)} cm de L₁. Imagen final ${last.i > 0 ? 'real' : 'virtual'}, a ${fmt(Math.abs(last.i))} cm de la última lente.`);
+  },
+  sobre: on => { S.sobre = on; draw(); },
+});
 
 function setHL(k){
   S.hl = k;
