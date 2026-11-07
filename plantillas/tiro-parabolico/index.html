@@ -373,7 +373,7 @@ function vistaTiro(L, c, P){
   if (P.plataforma && y0 > 0){
     ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4;
     rr(ctx, X(0) - 26, Y(y0), 26, Y(0) - Y(y0), 3); ctx.fill(); ctx.stroke();
-    if (P.altoTxt) rotulo(ctx, c, X(0) - 13, (Y(y0) + Y(0))/2, `${N1(y0)} m`, c.ink, 'center', 800, W);
+    if (P.altoTxt) rotulo(ctx, c, X(0) - 13, Y(y0) - 12, `azotea ${N1(y0)} m`, c.ink, 'left', 800, W);
   }
   // Números del eje vertical, encima de la plataforma y con fondo, para que se lean
   ctx.save(); ctx.font = `600 10px ${c.mono}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
@@ -472,27 +472,32 @@ function vistaTiro(L, c, P){
   if (ver.mira){
     ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.setLineDash([6, 5]);
     linea(ctx, X(q.p.x0), Y(q.p.y0), X(q.p.x0 + ver.mira), Y(q.p.y0 + ver.mira*q.p.vy/q.p.vx)); ctx.restore();
-    rotulo(ctx, c, X(q.p.x0 + ver.mira) + 6, Y(q.p.y0 + ver.mira*q.p.vy/q.p.vx), 'línea de mira', c.muted, 'left', 700, W);
+    rotulo(ctx, c, X(q.p.x0 + ver.mira*0.45) - 6, Y(q.p.y0 + ver.mira*0.45*q.p.vy/q.p.vx) - 4, 'línea de mira', c.muted, 'right', 700, W);
   }
-  if (ver.triangulo && Math.abs(e.vy) > 0.05){
+  // Triángulo rectángulo de vx, vy y v (a trazos, en tinta); el ángulo del golpe sale del motor (ver.triangulo, en grados)
+  const triangulo = () => {
+    if (!ver.triangulo || Math.abs(e.vy) < 0.05) return;
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; ctx.setLineDash([4, 4]);
     linea(ctx, bx + e.vx*kv, by, bx + e.vx*kv, by - e.vy*kv); ctx.restore();
-    const ang = Math.atan2(-e.vy, e.vx); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(bx, by, 22, 0, ang, ang < 0); ctx.stroke(); ctx.restore();
-    rotulo(ctx, c, bx + 26*Math.cos(ang/2) + 4, by + 26*Math.sin(ang/2) + 4, `${fmt(Math.abs(Math.atan2(e.vy, e.vx))*180/Math.PI, 0)}°`, c.ink, 'left', 800, W);
-  }
-  if (ver.vx) lista.push({ x:bx, y:by, dx:e.vx*kv*sh(ver.vx), dy:0, col:c.vx, txt:`vx = ${N1(e.vx)} m/s`, oy:12, al:'left', hl:P.hl === 'vx' });
-  if (ver.vy && Math.abs(e.vy) > 0.05 && !enSuelo) lista.push({ x:bx, y:by, dx:0, dy:-e.vy*kv*sh(ver.vy), col:c.vy, txt:`vy = ${N1(e.vy)} m/s`, al:'right', ox:-6, hl:P.hl === 'vy' });
-  if (ver.v) lista.push({ x:bx, y:by, dx:e.vx*kv*sh(ver.v), dy:-e.vy*kv*sh(ver.v), col:c.v, txt:`v = ${N1(e.v)} m/s`, oy:-10, hl:P.hl === 'v' });
+    const ang = Math.atan2(-e.vy, e.vx); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(bx, by, 24, 0, ang, ang < 0); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, bx + 34*Math.cos(ang/2), by + 34*Math.sin(ang/2), `${fmt(ver.triangulo, 0)}°`, c.ink, 'left', 800, W);
+  };
+  // Con ver.cortas los rótulos dicen solo la letra (los valores van en los chips): en el impacto contra la pared no caben
+  const tx = (letra, val, u) => (ver.cortas ? letra : `${letra} = ${N1(val)} ${u}`);
+  if (ver.vx) lista.push({ x:bx, y:by, dx:e.vx*kv*sh(ver.vx), dy:0, col:c.vx, txt:tx('vx', e.vx, 'm/s'), oy: ver.cortas ? -10 : 12, al:'left', hl:P.hl === 'vx' });
+  if (ver.vy && Math.abs(e.vy) > 0.05 && !enSuelo) lista.push({ x:bx, y:by, dx:0, dy:-e.vy*kv*sh(ver.vy), col:c.vy, txt:tx('vy', e.vy, 'm/s'), al:'right', ox:-6, hl:P.hl === 'vy' });
+  if (ver.v) lista.push({ x:bx, y:by, dx:e.vx*kv*sh(ver.v), dy:-e.vy*kv*sh(ver.v), col:c.v, txt:tx('v', e.v, 'm/s'), oy: ver.cortas ? 10 : -10, hl:P.hl === 'v' });
   const ka = Math.min(W, H)*0.11/10;
   if (ver.gTodos && ver.estrobo){
     for (let t = 0; t <= tCl(q) + 1e-9; t += ver.estrobo){ const s = q.p.estado(t); flecha(ctx, X(s.x), Y(s.y) + 7, X(s.x), Y(s.y) + 7 + 10*ka*sh(ver.gTodos), c.a, 2); }
   }
   if (ver.a && !enSuelo) lista.push({ x:bx, y:by + 8, dx:0, dy:10*ka*sh(ver.a), col:c.a, txt:'a = g = 10 m/s²', al:'left', ox:6, oy:-4, hl:P.hl === 'a' });
   lista.forEach(f => vector(ctx, c, f, W, H));
+  triangulo();
   // Estrella en el punto donde golpea la pared
   if (pa && pa.estrella){ const ex = X(pa.estrella.x), ey = Y(pa.estrella.y); estrella(ctx, ex, ey, 9, c.ink, c.card); }
   // Marcas: altura máxima y alcance
-  if (ver.cima && q.p.vy > 0 && (q.p.H - q.p.y0)*m.sy > 20){
+  if (ver.cima && q.p.vy > 0 && (q.p.H - q.p.y0)*m.sy > 20 && !(pa && pa.estrella && q.p.vx*q.p.tSubida > pa.d)){
     const xc = X(q.p.x0 + q.p.vx*q.p.tSubida), yc = Y(q.p.H);
     ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .5; ctx.setLineDash([4, 4]); linea(ctx, xc, yc, xc, Y(0)); ctx.restore();
     rotulo(ctx, c, xc + 6, (yc + Y(0))/2, `H = ${N1(q.p.H)} m`, c.ink, 'left', 800, W);
@@ -555,8 +560,8 @@ function vistaCirculo(L, c, P){
 }
 
 /* ---------- Arco de giro (ω) con su punta ---------- sentido horario en pantalla si horario */
-function arcoGiro(ctx, c, cx, cy, rad, color, horario, txt, W, tx, ty){
-  const a0 = -2.3, a1 = horario ? a0 + 1.5 : a0 - 1.5;
+function arcoGiro(ctx, c, cx, cy, rad, color, horario, txt, W, tx, ty, desde){
+  const a0 = desde === undefined ? -2.3 : desde, a1 = horario ? a0 + 1.5 : a0 - 1.5;
   ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(cx, cy, rad, a0, a1, !horario); ctx.stroke(); ctx.restore();
   const a2 = horario ? a1 - 0.5 : a1 + 0.5;
   flecha(ctx, cx + rad*Math.cos(a2), cy + rad*Math.sin(a2), cx + rad*Math.cos(a1), cy + rad*Math.sin(a1), color, 2.6);
@@ -598,20 +603,20 @@ function vistaTransmision(L, c, P){
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 4; ctx.lineCap = 'round'; const bx = x1 - R1*1.15*Math.cos(P.th1), by = y + R1*1.15*Math.sin(P.th1);
     linea(ctx, x1, y, bx, by); ctx.fillStyle = c.ink; ctx.fillRect(bx - 9, by - 3, 18, 6); ctx.restore();
     // Eslabones: rayitas que avanzan a la rapidez de la cadena
-    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.globalAlpha = .75;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.lineCap = 'round';
     const paso = 11, off = ((P.avance || 0)*k) % paso;
     for (let u = off; u < tot + off - 1; u += paso){ const a = pt(u), b = pt(u + 6); linea(ctx, a[0], a[1], b[0], b[1]); }
     ctx.restore();
-    if (ver.w1) arcoGiro(ctx, c, x1, y, R1 + 16, c.w, true, P.txtW1, W, x1, y - R1 - 34);
-    if (ver.w2) arcoGiro(ctx, c, x2, y, R2 + 14, c.w, true, P.txtW2, W, x2, y + R2 + 36);
+    if (ver.w1) arcoGiro(ctx, c, x1, y, R1 + 16, c.w, true, P.txtW1, W, x1 - R1*0.55, y - R1 - 26);
+    if (ver.w2) arcoGiro(ctx, c, x2, y, R2 + 14, c.w, true, P.txtW2, W, x2, y + R2 + 38, 0.5);
     if (ver.v){
-      const kv = Math.min(W*0.16, 70)/Math.max(P.v1, 1e-9);
-      vector(ctx, c, { x:x1, y:y - R1, dx:P.v1*kv, dy:0, col:c.v, txt:'' }, W, H);
-      vector(ctx, c, { x:x2, y:y - R2, dx:P.v1*kv, dy:0, col:c.v, txt:'' }, W, H);
-      if (P.txtV) rotulo(ctx, c, (x1 + x2)/2, Math.min(y - R1, y - R2) - 14, P.txtV, c.v, 'center', 800, W);
+      const kv = Math.min(W*0.12, 48)/Math.max(P.v1, 1e-9);
+      vector(ctx, c, { x:x1, y:y - R1, dx:P.v1*kv, dy:0, col:c.v, txt:'v', al:'left' }, W, H);
+      vector(ctx, c, { x:x2, y:y - R2, dx:P.v1*kv, dy:0, col:c.v, txt:'v', al:'left' }, W, H);
+      if (P.txtV) rotulo(ctx, c, W/2, H - 14, P.txtV, c.v, 'center', 800, W);
     }
     rotulo(ctx, c, x1, y + R1 + 16, `catalina · ${fmt(P.r1*100, 0)} cm`, c.ink, 'center', 700, W);
-    rotulo(ctx, c, x2, y + R2 + 16, `piñón · ${fmt(P.r2*100, 0)} cm`, c.ink, 'center', 700, W);
+    rotulo(ctx, c, x2, y - R2 - 30, `piñón · ${fmt(P.r2*100, 0)} cm`, c.ink, 'center', 700, W);
   } else {
     const cx = W/2, cy = H/2 + 10, k = (Math.min(W*0.9, H) / 2 - 30)/0.35, R1 = P.r1*k, R2 = P.r2*k;
     rueda(ctx, c, cx, cy, R2, P.th1, { llanta:true, rayos:12, desde:R1 });
@@ -624,7 +629,7 @@ function vistaTransmision(L, c, P){
       ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(cx, yy, 2.6, 0, Math.PI*2); ctx.fill(); ctx.restore();
       if (q.rtxt) rotulo(ctx, c, cx - 8, yy, q.rtxt, c.ink, 'right', 700, W);
     });
-    if (ver.w) arcoGiro(ctx, c, cx, cy, Math.max(R1 + 18, R2*0.5), c.w, true, P.txtW1, W, cx, cy + Math.max(R1 + 18, R2*0.5) + 14);
+    if (ver.w) arcoGiro(ctx, c, cx, cy, Math.max(R1 + 18, R2*0.5), c.w, true, P.txtW1, W, cx, cy + R2*0.62, 0.3);
   }
   if (P.contador) rotulo(ctx, c, 10, 16, P.contador, c.ink, 'left', 800, W);
   if (P.pie) rotulo(ctx, c, W/2, H - 12, P.pie, c.muted, 'center', 700, W);
@@ -639,7 +644,7 @@ function vistaGiroW(L, c, P){
   const giro = M.mcuv({ r, omega0:w0, alfa:d.alfa, t:P.t || 0, frena:!P.seguir });
   const ancho = W >= 560;
   const tAx = Math.ceil(P.seguir ? P.tp*1.5 : P.tp + 1), fTop = Math.ceil(P.f0 + 0.5), fBot = P.seguir ? -Math.ceil(P.f0*0.5) : 0;
-  const gx0 = ancho ? W*0.4 : 46, gx1 = W - 16, gy0 = ancho ? 30 : 30, gy1 = H - 42;
+  const gx0 = ancho ? W*0.4 : 46, gx1 = W - 16, gy0 = ancho ? 30 : Math.min(96, H*0.3), gy1 = H - (P.pie ? 46 : 32);
   const Xg = t => gx0 + t/tAx*(gx1 - gx0), Yg = f => gy0 + (fTop - f)/(fTop - fBot)*(gy1 - gy0);
   // Cuadrícula de 1 s por 1 vuelta/s
   ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
@@ -668,7 +673,7 @@ function vistaGiroW(L, c, P){
   for (let f = fBot; f <= fTop; f++) if (f) ctx.fillText(String(f).replace('-', '−'), Xg(0) - 5, Yg(f));
   ctx.restore();
   ctx.save(); ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
-  ctx.fillText('t (s)', Xg(tAx), Yg(Math.min(0, fBot)) + 30); ctx.textAlign = 'left'; ctx.fillText('ω (vueltas por segundo)', Xg(0) + 4, gy0 - 8); ctx.restore();
+  ctx.fillText('t (s)', Xg(tAx), Yg(0) - 4); ctx.textAlign = 'left'; ctx.fillText('ω (vueltas por segundo)', Xg(0) + 4, gy0 - 8); ctx.restore();
   // La recta de ω
   ctx.save(); ctx.strokeStyle = c.w; ctx.lineWidth = 3; linea(ctx, Xg(0), Yg(P.f0), Xg(P.tp), Yg(0));
   if (P.seguir){ ctx.setLineDash([6, 5]); linea(ctx, Xg(P.tp), Yg(0), Xg(tAx), Yg(P.f0*(1 - tAx/P.tp))); }
@@ -679,10 +684,10 @@ function vistaGiroW(L, c, P){
     rotulo(ctx, c, xt, Yg(fBot) - 10, `t = ${fmt(P.t, 1)} s`, c.t, 'center', 800, W);
   }
   // La rueda (arriba a la izquierda en pantalla grande; en la esquina libre del gráfico en el celular)
-  const Rw = ancho ? Math.min(W*0.13, H*0.26) : 30, wx = ancho ? W*0.2 : W - 52, wy = ancho ? H*0.42 : gy0 + 46;
+  const Rw = ancho ? Math.min(W*0.13, H*0.26) : Math.min(30, gy0*0.3), wx = ancho ? W*0.2 : W - 60, wy = ancho ? H*0.42 : gy0/2;
   const th = Math.PI/2 - giro.theta;
   rueda(ctx, c, wx, wy, Rw, th, { llanta:true, rayos:8 });
-  if (ver.cursor) rotulo(ctx, c, ancho ? wx : W - 14, ancho ? wy + Rw + 22 : wy + Rw + 16, `vueltas: ${fmt(giro.vueltas, 1)}`, c.ink, ancho ? 'center' : 'right', 800, W);
+  if (ver.cursor) rotulo(ctx, c, ancho ? wx : wx - Rw - 44, ancho ? wy + Rw + 22 : wy, `vueltas: ${fmt(giro.vueltas, 1)}`, c.ink, ancho ? 'center' : 'right', 800, W);
   if (ver.flechas && Math.abs(giro.omega) > 1e-9){
     const px = wx + Rw*Math.cos(th), py = wy - Rw*Math.sin(th), acMax = w0*w0*r, Lm = ancho ? Rw*0.9 : 34;
     const lac = giro.ac/acMax*Lm, lat = Math.max(14, Math.abs(giro.at)/acMax*Lm), sg = Math.sign(giro.omega);
@@ -709,7 +714,7 @@ function vistaPista(L, c, P){
   ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, R - 13, 0, Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.arc(cx, cy, R + 13, 0, Math.PI*2); ctx.stroke(); ctx.restore();
   // Salida
   ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, cx, cy - R - 14, cx, cy - R + 14); ctx.restore();
-  rotulo(ctx, c, cx + 8, cy - R - 24, `salida · pista de ${N1(P.L)} m`, c.ink, 'left', 700, W);
+  rotulo(ctx, c, cx - 10, cy - R - 26, `salida · pista de ${N1(P.L)} m`, c.ink, 'right', 700, W);
   const mismo = P.sentido === 'mismo';
   // Lo que falta cerrar para el primer encuentro: desde el que persigue, en el sentido de A
   if (ver.arco && !e.nunca){
@@ -724,8 +729,10 @@ function vistaPista(L, c, P){
   const kv = R*0.07, pa = at(st.a, R - 6), pb = at(st.b, R + 6);
   const tang = (s, sg) => { const a = ang(s); return [Math.sin(a)*sg, Math.cos(a)*sg]; };
   const ta = tang(st.a, 1), tb = tang(st.b, mismo ? 1 : -1);
-  vector(ctx, c, { x:pa[0], y:pa[1], dx:ta[0]*P.v1*kv, dy:ta[1]*P.v1*kv, col:c.v, txt:`v₁ = ${N1(P.v1)} m/s` }, W, H);
-  vector(ctx, c, { x:pb[0], y:pb[1], dx:tb[0]*P.v2*kv, dy:tb[1]*P.v2*kv, col:c.v, txt:`v₂ = ${N1(P.v2)} m/s` }, W, H);
+  // Rótulos: el de A hacia adentro del anillo y el de B hacia afuera, para que no se encimen cuando van juntos
+  const na = [-Math.cos(ang(st.a)), Math.sin(ang(st.a))], nb = [Math.cos(ang(st.b)), -Math.sin(ang(st.b))];
+  vector(ctx, c, { x:pa[0], y:pa[1], dx:ta[0]*P.v1*kv, dy:ta[1]*P.v1*kv, col:c.v, txt:`v₁ = ${N1(P.v1)} m/s`, ox:na[0]*12, oy:na[1]*12 }, W, H);
+  vector(ctx, c, { x:pb[0], y:pb[1], dx:tb[0]*P.v2*kv, dy:tb[1]*P.v2*kv, col:c.v, txt:`v₂ = ${N1(P.v2)} m/s`, ox:nb[0]*12, oy:nb[1]*12 }, W, H);
   ctx.save(); ctx.lineWidth = 2; ctx.strokeStyle = c.ink;
   ctx.beginPath(); ctx.arc(pa[0], pa[1], 8, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill();
   ctx.beginPath(); ctx.arc(pb[0], pb[1], 8, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.stroke(); ctx.restore();
@@ -1087,6 +1094,8 @@ function modoExperimentos(cfg){
     draw(); return !!sigue;
   });
   function parar(){ E.mover = null; }
+  // Lleva una animación que no es un giro sin fin a su último cuadro (al volver a un experimento o al cambiar de pestaña).
+  function terminar(x){ if (E.mover && !x.continuo){ let n = 0; while (E.mover && E.mover(1e3) && n++ < 1e4); } E.mover = null; }
   // mover(dt) avanza el estado y devuelve true mientras siga. Con movimiento reducido, se salta al final
   // (o, si es un giro sin fin, se dibuja quieto).
   function animar(mover, continuo){
@@ -1129,7 +1138,7 @@ function modoExperimentos(cfg){
     if (resp){
       x.despues(true);
       // Al volver a un experimento respondido, su animación ya terminó (salvo los giros sin fin).
-      if (E.mover && !x.continuo){ let n = 0; while (E.mover && E.mover(1e3) && n++ < 1e4); E.mover = null; }
+      if (!x.continuo) terminar(x);
     }
     L.compactar(!resp);
     botones(); L.resize();
@@ -1161,7 +1170,9 @@ function modoExperimentos(cfg){
       pintar(); botones(); leyenda($(cfg.ley), x.ley, cfg.nombres);
       $(ids.fb).focus({ preventScroll:true });
       L.compactar(false);
-      Celular.alResponder(cv, () => { x.despues(false); draw(); }, () => S.k === k && !modo.hidden);
+      // Si en esos ~380 ms el alumno cambió de pestaña, la escena queda en su estado final (sin animar).
+      Celular.alResponder(cv, () => { x.despues(false); draw(); }, () => S.k === k && !modo.hidden,
+        { siNo: () => { if (S.k === k){ x.despues(true); terminar(x); parar(); draw(); } } });
     });
     pintar(); draw();
   }
@@ -1177,7 +1188,7 @@ function modoExperimentos(cfg){
   EXPS = cfg.crear(api);
   alRedibujarTema(draw);
   addEventListener('modo', () => {
-    if (modo.hidden) parar();
+    if (modo.hidden){ terminar(EXPS[S.k]); parar(); }
     else { L.resize(); if (E.reanudar && S.pred[EXPS[S.k].id]) E.reanudar(); }
   });
   L.resize(); ir(0);
@@ -1278,7 +1289,7 @@ modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2',
     alResponder: o => { const w = pared(); E.marcaElegida = { a:w.errores.yEnLaCima, b:w.errores.yRecta, d:w.errores.yConTv0 }[o]; },
     despues:() => {
       if (E.marcaElegida === undefined){ const m = { a:'yEnLaCima', b:'yRecta', d:'yConTv0' }[api2.pred('pared')]; E.marcaElegida = m ? M.impactoPared({ v0:50, angulo:37, d:160 }).errores[m] : null; }
-      E.cfg.ver = { tray:'hasta', estrobo:0.5, vx:true, vy:true, v:true, cima:true }; E.T = pared().t; E.t = 0; volar();
+      E.cfg.ver = { tray:'hasta', estrobo:0.5, vx:true, vy:true, v:true, cima:true, cortas:true }; E.T = pared().t; E.t = 0; volar();
     },
     dibujar:(L, c) => {
       const w = pared(), hit = w.choca && E.t >= w.t - 1e-9, resp = api2.pred('pared');
@@ -1319,10 +1330,10 @@ modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2',
          b:'Elegiste la B. 15 + 20 sería si las dos apuntaran hacia el mismo lado. Una va en horizontal y la otra en vertical, así que se suman como flechas: 25 m/s. La correcta está marcada.',
          d:'Elegiste la D. La parte horizontal no desaparece al chocar: la pelota sigue avanzando a 15 m/s cuando llega. La rapidez combina las dos: 25 m/s. La correcta está marcada.' },
     antes:() => Object.assign(E, { d:30, t:0, T:0, cfg:{ tiros:[{ o:{ vx:15, y0:45 } }], xmin:-14, Xmax:60, Ymax:70, plataforma:true, altoTxt:true, ver:{ vx:true } } }),
-    despues:() => { E.cfg.ver = { tray:'hasta', vx:true, vy:true, v:true }; const w = golpe(); E.T = w.choca ? w.t : w.tVuelo; E.t = 0; volar(); },
+    despues:() => { E.cfg.ver = { tray:'hasta', vx:true, vy:true, v:true, cortas:true }; const w = golpe(); E.T = w.choca ? w.t : w.tVuelo; E.t = 0; volar(); },
     dibujar:(L, c) => {
       const w = golpe(), hit = w.choca && E.t >= w.t - 1e-9;
-      const ver = Object.assign({}, E.cfg.ver, hit ? { triangulo:true } : {});
+      const ver = Object.assign({}, E.cfg.ver, hit ? { triangulo:Math.abs(w.angulo) } : {});
       vistaTiro(L, c, Object.assign({}, E.cfg, { ver, t:E.t, tFin: w.choca ? w.t : null,
         pared:{ d:E.d, alto:60, edificio:true, cota:true, estrella: hit ? { x:E.d, y:w.y } : null } }));
     },
