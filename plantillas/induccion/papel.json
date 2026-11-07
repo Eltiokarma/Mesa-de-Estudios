@@ -1,0 +1,126 @@
+{
+  "titulo": "El imán, la espira y el foquito: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa cos 60° = 1/2, cos 37° = 4/5, cos 53° = 3/5 y √2 ≈ 1,41. Flujo por espira: Φ = B·A·cos θ, con θ el ángulo entre B y la normal a la espira (1 Wb = 1 T·m²). Ley de Faraday: ε = −N·ΔΦ/Δt e I = ε/R. Barra sobre rieles: ε = B·L·v y F = B·I·L. Generador: εmax = N·B·A·ω y ε eficaz = εmax/√2. Transformador ideal: Vs/Vp = Ns/Np = Ip/Is.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una espira cuadrada de 10 cm de lado está en un campo magnético uniforme de 0,6 T perpendicular a su plano. ¿Cuánto vale el flujo magnético a través de la espira?",
+      "respuesta": "0,006 Wb (6 × 10⁻³ Wb).",
+      "pasos": [
+        "El área es A = 0,1 m · 0,1 m = 0,01 m².",
+        "Si B es perpendicular al plano, va a lo largo de la normal: θ = 0° y cos 0° = 1.",
+        "Φ = B·A·cos θ = 0,6 · 0,01 · 1 = 0,006 Wb."
+      ],
+      "verificar": [ { "fn": "flujo", "args": [0.6, 0.01, 0], "espera": { "Phi": 0.006 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se gira la espira del problema anterior hasta que el campo forma 60° con la normal a la espira. ¿Cuánto vale ahora el flujo? ¿Y si el campo quedara paralelo al plano de la espira?",
+      "respuesta": "0,003 Wb; paralelo al plano, 0 Wb.",
+      "pasos": [
+        "Φ = B·A·cos 60° = 0,6 · 0,01 · 1/2 = 0,003 Wb.",
+        "Si B es paralelo al plano, forma 90° con la normal: cos 90° = 0 y Φ = 0. Ninguna línea de campo atraviesa la espira."
+      ],
+      "verificar": [ { "fn": "flujo", "args": [0.6, 0.01, 60], "espera": { "Phi": 0.003 } }, { "fn": "flujo", "args": [0.6, 0.01, 90], "espera": { "Phi": 0 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una espira de 0,04 m² está en un campo de 0,5 T que forma 37° con el PLANO de la espira. ¿Cuánto vale el flujo?",
+      "respuesta": "0,012 Wb.",
+      "pasos": [
+        "El ángulo de la fórmula se mide desde la normal, no desde el plano: θ = 90° − 37° = 53°.",
+        "Φ = B·A·cos 53° = 0,5 · 0,04 · 3/5 = 0,012 Wb.",
+        "Si se usara cos 37° con el ángulo dado, saldría 0,016 Wb: ese es el error que hay que evitar."
+      ],
+      "verificar": [ { "fn": "flujoPlano", "args": [0.5, 0.04, 37], "espera": { "Phi": 0.012, "theta": 53, "errores.conCoseno": 0.016 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una bobina de 200 vueltas, cada una de 0,01 m², está en un campo perpendicular a sus espiras que sube de 0,1 T a 0,4 T en 0,05 s. La bobina tiene una resistencia de 12 Ω. ¿Qué fem se induce y qué corriente circula?",
+      "respuesta": "ε = 12 V e I = 1 A.",
+      "pasos": [
+        "El flujo por espira pasa de 0,1 · 0,01 = 0,001 Wb a 0,4 · 0,01 = 0,004 Wb: ΔΦ = 0,003 Wb.",
+        "Con N vueltas: |ε| = N·|ΔΦ|/Δt = 200 · 0,003 / 0,05 = 12 V.",
+        "I = ε/R = 12/12 = 1 A."
+      ],
+      "verificar": [ { "fn": "faradayCampo", "args": [200, 0.01, 0.1, 0.4, 0.05, 12], "espera": { "dPhi": 0.003, "femModulo": 12, "I": 1 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Un imán está quieto, pegado a una bobina de 500 vueltas, y en la bobina el campo vale 0,3 T. La bobina está conectada a un amperímetro. ¿Qué corriente marca?",
+      "respuesta": "Cero.",
+      "pasos": [
+        "La fem depende de cuánto cambia el flujo en cada segundo, no de cuánto flujo hay.",
+        "Con el imán quieto, el flujo no cambia: ΔΦ = 0, así que ε = −N·ΔΦ/Δt = 0 e I = 0, por fuerte que sea el campo.",
+        "Solo hay corriente mientras el imán (o la bobina) se mueve."
+      ],
+      "verificar": [ { "fn": "faraday", "args": [500, 0.0006, 0.0006, 1, 10], "espera": { "fem": 0, "I": 0 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una barra de 0,5 m se desliza a 5 m/s sobre dos rieles unidos por una resistencia de 2 Ω, en un campo de 0,8 T perpendicular al plano de los rieles. ¿Qué fem se induce, qué corriente circula y qué fuerza magnética actúa sobre la barra? ¿Qué potencia hace falta para mantener la barra a esa rapidez?",
+      "respuesta": "ε = 2 V, I = 1 A, F = 0,4 N contra el movimiento y P = 2 W.",
+      "pasos": [
+        "ε = B·L·v = 0,8 · 0,5 · 5 = 2 V.",
+        "I = ε/R = 2/2 = 1 A.",
+        "F = B·I·L = 0,8 · 1 · 0,5 = 0,4 N. Por la ley de Lenz va contra la velocidad: frena la barra.",
+        "Para que siga a 5 m/s hay que empujarla con 0,4 N: P = F·v = 0,4 · 5 = 2 W, lo mismo que ε·I = 2 · 1 = 2 W."
+      ],
+      "verificar": [ { "fn": "femMovimiento", "args": [0.8, 0.5, 5, 2], "espera": { "fem": 2, "I": 1, "F": 0.4, "P": 2, "Pelectrica": 2, "fuerza": "frena" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El polo sur de un imán apunta hacia un anillo de cobre, y el imán se aleja del anillo a lo largo de su eje. Mirando el anillo desde el imán, ¿en qué sentido circula la corriente inducida? ¿El anillo atrae o repele al imán?",
+      "respuesta": "En sentido antihorario, visto desde el imán; el anillo lo atrae.",
+      "pasos": [
+        "Frente al polo sur, el campo del imán cruza el anillo hacia el imán.",
+        "Al alejarse el imán, ese flujo disminuye. La corriente inducida crea un campo que se opone al cambio: refuerza el que se va, así que también apunta hacia el imán.",
+        "Un campo que apunta hacia quien mira lo crea una corriente que, vista desde ahí, gira en sentido antihorario.",
+        "La cara del anillo que mira al imán se comporta como un polo norte, y el polo sur del imán queda atraído: el anillo se opone a que el imán se aleje."
+      ],
+      "verificar": [ { "fn": "lenz", "args": [-7e-5, -1e-5], "espera": { "sentido": "antihorario", "campoInducido": "hacia el imán", "refuerza": true, "cara": "N", "fuerza": "atrae" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Un generador tiene una bobina de 40 vueltas de 0,03 m² cada una, que gira a 200 rad/s en un campo de 0,5 T. ¿Cuál es la fem máxima? ¿Y su valor eficaz?",
+      "respuesta": "εmax = 120 V; eficaz = 60√2 ≈ 85 V.",
+      "pasos": [
+        "εmax = N·B·A·ω = 40 · 0,5 · 0,03 · 200 = 120 V.",
+        "El valor eficaz de una fem senoidal es εmax/√2 = 120/√2 = 60√2 ≈ 85 V (no 120/2 = 60 V)."
+      ],
+      "verificar": [ { "fn": "generador", "args": [40, 0.5, 0.03, 200], "espera": { "femMax": 120, "eficaz": 84.8528137424, "errores.eficazMitad": 60 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Un cargador tiene un transformador ideal que baja los 220 V de la red a 12 V. Su bobina primaria tiene 1100 vueltas. ¿Cuántas vueltas tiene la secundaria? Si por la secundaria salen 2,2 A, ¿qué corriente toma de la red?",
+      "respuesta": "60 vueltas; 0,12 A.",
+      "pasos": [
+        "Vs/Vp = Ns/Np: Ns = 1100 · 12/220 = 60 vueltas.",
+        "En un transformador ideal la potencia se conserva: Vp·Ip = Vs·Is, así que Ip = 12 · 2,2/220 = 0,12 A.",
+        "Baja el voltaje y sube la corriente en la misma razón: 220/12 ≈ 18 veces."
+      ],
+      "verificar": [ { "fn": "transformador", "args": [1100, 60, 220, 0.12], "espera": { "Vs": 12, "Is": 2.2, "tipo": "reductor" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Una bobina de 50 vueltas de 0,05 m² está en un campo de 0,4 T perpendicular a sus espiras. En 0,02 s se la gira un cuarto de vuelta, hasta que el campo queda paralelo a las espiras. ¿Qué fem media se induce?",
+      "respuesta": "50 V.",
+      "pasos": [
+        "Al principio θ = 0° y el flujo por espira es 0,4 · 0,05 · 1 = 0,02 Wb; al final θ = 90° y vale 0.",
+        "El campo no cambió, pero el flujo sí: ΔΦ = −0,02 Wb.",
+        "|ε| = N·|ΔΦ|/Δt = 50 · 0,02 / 0,02 = 50 V."
+      ],
+      "verificar": [ { "fn": "faradayAngulo", "args": [50, 0.4, 0.05, 0, 90, 0.02], "espera": { "dPhi": -0.02, "femModulo": 50 } } ]
+    }
+  ]
+}

@@ -329,3 +329,100 @@ El dividendo D y la caja de 10 000 van en tinta.
 - **`docs/diseno.md`:** la tabla de colores de arriba.
 - **`docs/pendientes.md`** (Detalles): «**Potenciación** (`plantillas/potenciacion/`, rutina de aritmética, 7 nov 2026): el cuadrado de fichas (raíz entera por defecto y por exceso con su residuo y la esquina que se arrastra, la L de 2k + 1, criterios de exclusión por última cifra, ceros y restos, menor multiplicador o divisor para cuadrado o cubo con cubitos, cuadrados entre a y b, suma de impares, cuadrado de n5 y la cáscara del cubo); 19 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todo hipótesis. Sin ítems en el banco de aritmética.» En ma4, quitar «potenciación» de «Faltan». En numeración y cuatro operaciones: «arrastre en el explorador (7 nov 2026)».
 - **`CLAUDE.md`:** sumar «el cuadrado de fichas» a la lista y una línea en Historia: «Potenciación (7 nov 2026, rutina de aritmética): `plantillas/potenciacion/` (el cuadrado de fichas: raíz entera con residuo, la L de 2k + 1, criterios de exclusión, multiplicador mínimo para cuadrado o cubo y cuadrados entre a y b; 19 casos verificados aparte).»
+
+## 7 nov 2026 · La balanza de las mezclas (`plantillas/mezclas/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, `window.MotorMezclas`): fracciones exactas con BigInt; los textos salen con coma decimal («S/ 4,80», «0,750», «≈ 6,64»). Tiene:
+  - `precioMedio`, `gradoMezcla` y `leyMedia`;
+  - `aspa` (proporción irreducible) y `cantidadPara`;
+  - `aguaPara`, `ley`, `quilates`, `leyDeQuilates` y `oroFino`;
+  - `aleacionPara`, `oroPara`, `masAlcohol` y `sacarYReponer`;
+  - `balanza`: el momento neto, el estado («equilibrio», «casi» con el intervalo, «baja-izquierda» o «baja-derecha») y el ángulo.
+
+  Si el valor pedido queda fuera del rango, el motor devuelve «sin solución» con la razón.
+- **`casos.json`:** 19 casos, verificados aparte.
+- **`motor.test.js`:** 40 pruebas de propiedades:
+  - el valor medio queda entre el mínimo y el máximo;
+  - los momentos son iguales a los dos lados;
+  - escalar las cantidades no cambia el valor medio;
+  - el aspa reproduce el valor medio;
+  - el agua nunca sube el grado;
+  - quilates y ley van y vuelven;
+  - los errores son distintos entre sí;
+  - bordes: un ingrediente, cantidad 0 y valor medio en un extremo.
+- **`papel.json`:** 10 problemas propios: precio, aspa, grados, agua, quilates, ley, cobre y tres ingredientes. Una prueba revisa que la indicación no traiga «aspa», «ponderado» ni «promedio».
+- **Escena:** tres dibujos:
+  - la balanza, con la regla fija, la barra que se inclina y los sacos con altura según la cantidad;
+  - los vasos, con el alcohol puro separado arriba;
+  - la barra de oro en 24 partes.
+
+  El apoyo se arrastra con `Celular.arrastre`, con las flechas y con botones. Usa `Celular.dpr()` y `Celular.variable`; no hay animación continua.
+- **Paso a paso** (8 pasos, 6 predicciones):
+
+  | Paso | Pregunta | Correcta | Distractores |
+  | --- | --- | --- | --- |
+  | 1 | Explorar: sacos fijos de 10 y 10 kg; solo se mueve el apoyo | — | — |
+  | 2 | 30 kg a S/ 4 y 20 kg a S/ 6 | S/ 4,80 | S/ 5,00 `AR15-promedio-simple` (parcial), S/ 5,20 `cruza-las-cantidades`, S/ 10,00 `suma-los-precios` |
+  | 3 | S/ 3 y S/ 8 para S/ 5 | 3 kg del de S/ 3 por cada 2 kg del de S/ 8 | 2 : 3 `aspa-al-reves`, 1 : 1 `mitad-y-mitad`, 8 : 3 `proporcion-con-los-precios-cruzados` (≈ S/ 4,36) |
+  | 4 | 10 L de 60° y 30 L de 20° | 30° | 40° `AR15-promedio-simple` (parcial), 80° `suma-los-grados`, 50° `cruza-los-litros` |
+  | 5 | Agua para bajar 12 L de 75° a 45° | 8 L | 18 L `aspa-al-reves`, 30 L `resta-grados-como-litros`, 20 L `da-el-volumen-final` |
+  | 6 | Oro puro en 48 g de 18 quilates | 36 g | 18 g `quilates-como-gramos`, 8,64 g `quilates-como-porcentaje`, 12 g `da-el-otro-metal` |
+  | 7 | 60 g de 18 quilates a 22 quilates con oro de 24 quilates (oro puro) | 120 g | 30 g `aspa-al-reves`, 10 g `cambio-de-ley-por-la-masa`, 180 g `da-la-masa-final` |
+
+- **«¿Qué pasa si…?»** (4):
+
+  | Experimento | Pregunta | Correcta | Distractores |
+  | --- | --- | --- | --- |
+  | 1 | Duplicar las cantidades del café | sigue en S/ 22 | S/ 24 (AR15, parcial), entre otros |
+  | 2 | ¿Se puede S/ 9 con S/ 3 y S/ 8? | no | — |
+  | 3 | 10 L de 30° contra 6 L de 50° | tienen lo mismo de alcohol | — |
+  | 4 | Sacar 10 L de 40 L de 80° y reponer con agua | 60° | 40° (AR15, parcial), entre otros |
+
+- **Respaldo:** las cuatro opciones AR15 van como «parcial» y citan con cautela a Pollatsek, Lima y Well (1981), sin cifras. Todo lo demás es hipótesis.
+
+**Pruebas.** `npm test`: 3167 de 3169; fallan solo las 2 de catálogo. `pasada-celular.py` no marca nada para mezclas. Playwright corrió en las 8 combinaciones, con el arrastre del apoyo con ratón, toque y teclado: sin errores ni desbordes; en el celular, el lienzo queda a la vista al responder y el dedo lejos del apoyo desplaza la página.
+
+**Subagentes.**
+
+- **El constructor** lo cortó el límite de uso a medias: dejé un commit de respaldo y siguió desde ahí.
+- **Verificador independiente.** Con fracciones, sacó el valor medio de los momentos que se anulan, el aspa buscando el par entero más chico y el agua, el oro y el cobre por búsqueda, conservando el alcohol o el metal fino. **0 discrepancias** en 19 casos y 10 de papel.
+
+  El error 8 : 3 del paso 3, que entró después de la revisión, lo comprobé a mano: (8·3 + 3·8)/11 = 48/11.
+- **Revisor de contenido.**
+  - **Grave:** el paso 1, con kilos que se cambiaban, enseñaba que el equilibrio se va hacia el saco con más kilos. Con eso, en el paso 2 la única opción menor que 5 era la correcta y AR15 quedaba contaminado. Ahora el paso 1 tiene sacos fijos de 10 y 10, y el selector de kilos solo está en el paso 8.
+  - **Medios:**
+    - regla 4: en el aspa, cada distancia va ahora en el color de su ingrediente, como en el dibujo;
+    - los 120 g de oro de 24 salían en naranja y turquesa;
+    - lo que enseñaba el paso 2 dejaba el paso 3 con una sola opción plausible: el 3 : 8 pasó a 8 : 3, con los precios cruzados;
+    - el lector de pantalla se comía la coma después de los soles.
+  - **Bajos:** ley en milésimas (≈ 0,688), soles siempre con dos decimales, la escala del paso 7 que insinuaba la respuesta y la unidad en el intervalo «casi».
+  - **Respaldo:** confirmó que las cuatro AR15 son de verdad «no ponderar». La del experimento 4 (80° con agua) es la más lejana al ejemplo del informe.
+
+**Colores** (claro / oscuro; los mismos hex de fracciones):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| A (primer ingrediente) | #1f5fbf | #7cb0ff |
+| B (segundo ingrediente, también el agua o el oro que se agrega) | #a05200 | #f0a04a |
+| pm (valor de la mezcla y apoyo) | #a10fbf | #cf6bfa |
+| al (alcohol puro) | #466d14 | #a3d65e |
+| f (oro puro de una pieza) | #0f766e | #5ed9c8 |
+
+- **ΔE00 mínimo entre los que salen juntos:** 27,1 en claro y 29,3 en oscuro (A–pm). f contra el gris del otro metal: 33,3 / 35,2.
+- **Contraste:** ≥ 4,53 en claro y ≥ 4,63 en oscuro.
+
+**Pendiente.**
+
+- La pestaña «¿Qué pasa si…?» no se bloquea, como en las hermanas, así que sus explicaciones (rango y alcohol puro) se pueden leer antes de los pasos.
+- El cobre que se agrega para bajar la ley está solo en papel (p7).
+- Sin ítems en el banco de aritmética.
+
+**Pedidos para la integración.**
+
+- **Catálogo:** agregar `mezclas` a `aritmetica.mezclas-y-aleaciones`, correr `npm run catalogo` y subir `VERSION`.
+- **`docs/diseno.md`:** la tabla de colores de arriba.
+- **Informe** (si se quiere): anotar que el promedio simple en mezclas se mide como AR15 (parcial) en esta plantilla.
+- **`docs/pendientes.md`** (Detalles): «**Mezclas** (`plantillas/mezclas/`, rutina de aritmética, 7 nov 2026): la balanza de las mezclas (el precio medio es el punto de equilibrio y el apoyo se arrastra; regla del aspa como momentos, grados de alcohol con el alcohol puro aparte, agua que baja el grado, ley y quilates con la barra de 24 partes, oro que se agrega, rango imposible, sacar y reponer); 19 casos verificados aparte; 10 de papel; 6 predicciones y 4 «¿qué pasa si…?»; AR15 parcial, lo demás hipótesis. Sin ítems en el banco de aritmética.» En ma4, quitar «mezclas» de «Faltan».
+- **`CLAUDE.md`:** sumar «la balanza de las mezclas» a la lista y una línea en Historia: «Mezclas (7 nov 2026, rutina de aritmética): `plantillas/mezclas/` (la balanza de las mezclas: precio medio como equilibrio, aspa, grados de alcohol, agua, ley y quilates; 19 casos verificados aparte).»
