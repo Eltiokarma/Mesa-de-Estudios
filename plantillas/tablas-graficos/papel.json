@@ -1,5 +1,5 @@
 {
-  "titulo": "El gráfico que no miente: problemas para lápiz y papel",
+  "titulo": "La bodega en gráficos: problemas para lápiz y papel",
   "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. Antes de comparar barras, mira dónde empieza el eje: compara los valores, no las alturas dibujadas. Una variación porcentual es el cambio dividido entre el valor de PARTIDA. En un gráfico circular, la vuelta entera (360°) es el total: grados/360 = porcentaje/100 = cantidad/total. En un campeonato todos contra todos de n equipos a una rueda se juegan n(n − 1)/2 partidos; cada partido reparte 3 puntos si alguien gana y 2 si empatan. En suficiencia de datos, una información basta si deja UN solo valor posible: búscalos todos, no te quedes con el primero que encuentres.",
   "problemas": [
     {

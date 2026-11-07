@@ -1,5 +1,5 @@
 /*
- * Motor de «El gráfico que no miente: tablas, gráficos y suficiencia de datos» (razonamiento matemático):
+ * Motor de «La bodega en gráficos: tablas, gráficos y suficiencia de datos» (razonamiento matemático):
  * barras con el eje vertical que no empieza en cero, variación absoluta y porcentual en un gráfico de líneas,
  * sectores circulares (grados, porcentaje y cantidad), pictogramas, tablas de un campeonato todos contra todos y
  * problemas de suficiencia de datos con el formato de admisión.
