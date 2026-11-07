@@ -1,0 +1,105 @@
+{
+  "plantilla": "polinomios",
+  "unidades": "Cantidades sin unidad. Un polinomio en x es la lista de sus coeficientes del grado mayor al término independiente, con los ceros de los términos que faltan ([2, 0, -7, 4] es 2x³ − 7x + 4). Un divisor a·x + b se escribe [a, b]. Las fracciones de entrada van como texto '1/2'. Los textos usan el signo menos tipográfico (−) y superíndices.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.signo.valor); las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o no aplica.",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Escribir un polinomio: el 0 del término que falta no se escribe; coeficientes 1 y −1 sin el 1",
+      "fn": "texto", "args": [[2, 0, -7, 4]],
+      "espera": "2x³ − 7x + 4",
+      "tambien": [ { "args": [[-1, 1, 0, -1]], "espera": "−x³ + x² − 1" },
+                   { "args": [[0, 0, 5]], "espera": "5" } ] },
+
+    { "nombre": "Valor numérico: P(x) = x³ − 2x² − 5x + 6 vale 0 en x = 1, 3 y −2, y P(2) = −4",
+      "fn": "evaluar", "args": [{ "coefs": [1, -2, -5, 6], "x": 2 }],
+      "espera": { "valor": -4, "texto": "−4" },
+      "tambien": [ { "args": [{ "coefs": [1, -2, -5, 6], "x": -2 }], "espera": { "valor": 0 } },
+                   { "args": [{ "coefs": [1, -2, -5, 6], "x": 3 }], "espera": { "valor": 0 } },
+                   { "args": [{ "coefs": [1, -2, -5, 6], "x": "1/2" }], "espera": { "valor": 3.125, "texto": "25/8" } } ] },
+
+    { "nombre": "Predicción del paso 2: Q(x) = 3x⁴ − 5x² + 4x − 6, Q(0) = −6 (PO7 suma de coeficientes −4; PO19 principal 3; PO34 cero)",
+      "fn": "pDeCero", "args": [{ "coefs": [3, 0, -5, 4, -6] }],
+      "espera": { "valor": -6, "texto": "−6", "errores.sumaCoef.valor": -4, "errores.principal.valor": 3, "errores.cero.valor": 0 } },
+
+    { "nombre": "Experimento P(1): P(x) = 2x³ − 5x² + x + 7, P(1) = 5 (PO12 independiente 7; PO20 principal 2; PO21 sin signos 15)",
+      "fn": "pDeUno", "args": [{ "coefs": [2, -5, 1, 7] }],
+      "espera": { "valor": 5, "errores.independiente.valor": 7, "errores.principal.valor": 2, "errores.sinSignos.valor": 15 } },
+
+    { "nombre": "Predicción del paso 3: M = 4x³y² − 7x⁵y + 2xy⁴ tiene GA = 6, GR(x) = 5, GR(y) = 4 (PO10: 5; PO11: 16; PO28: 9)",
+      "fn": "grado", "args": [{ "terminos": [{ "c": 4, "x": 3, "y": 2 }, { "c": -7, "x": 5, "y": 1 }, { "c": 2, "x": 1, "y": 4 }] }],
+      "espera": { "valor": 6, "GR.x": 5, "GR.y": 4, "gradosTerminos": [5, 6, 5], "errores.relativo.valor": 5, "errores.sumaTodos.valor": 16, "errores.sumaRelativos.valor": 9 } },
+
+    { "nombre": "Grado en una sola letra y monomio: 5x²y³ tiene GA 5; con y ausente, GR(y) = 0",
+      "fn": "grado", "args": [{ "terminos": [{ "c": 5, "x": 2, "y": 3 }] }],
+      "espera": { "valor": 5, "GR.x": 2, "GR.y": 3, "errores.relativo.valor": 3, "coinciden": ["sumaTodos", "sumaRelativos"] },
+      "tambien": [ { "args": [{ "terminos": [{ "c": 1, "x": 4 }, { "c": -2, "x": 1 }] }], "espera": { "valor": 4, "GR.y": 0, "errores.sumaTodos.valor": 5 } } ] },
+
+    { "nombre": "Predicción del paso 4: grado de P·Q con grados 3 y 4 es 7 (PO5: 12; PO23: 4)",
+      "fn": "gradoProducto", "args": [{ "m": 3, "n": 4 }],
+      "espera": { "valor": 7, "errores.producto.valor": 12, "errores.mayor.valor": 4 } },
+
+    { "nombre": "Experimento de la suma: grados 5 y 3, P + Q es de grado 5 (PO6: 8; PO5: 15; PO22: 3); con 2 y 2 el producto coincide con la suma y no va en errores",
+      "fn": "gradoSuma", "args": [{ "m": 5, "n": 3 }],
+      "espera": { "valor": 5, "errores.suma.valor": 8, "errores.producto.valor": 15, "errores.menor.valor": 3 },
+      "tambien": [ { "fn": "gradoProducto", "args": [{ "m": 2, "n": 2 }], "espera": { "valor": 4, "coinciden": ["producto"] } } ] },
+
+    { "nombre": "Grado de una potencia: [P]⁴ con P de grado 3 es de grado 12 (PO13: 7; PO14: 81; PO30: 3)",
+      "fn": "gradoPotencia", "args": [{ "m": 3, "k": 4 }],
+      "espera": { "valor": 12, "errores.suma.valor": 7, "errores.potencia.valor": 81, "errores.igual.valor": 3 } },
+
+    { "nombre": "Completo: 13 términos son grado 12 (PO9: 13; PO29: 14); un completo de grado 4 tiene 5 términos, exponentes 4 a 0",
+      "fn": "gradoDeCompleto", "args": [{ "terminos": 13 }],
+      "espera": { "valor": 12, "errores.igual.valor": 13, "errores.masUno.valor": 14 },
+      "tambien": [ { "fn": "completo", "args": [{ "grado": 4 }], "espera": { "valor": 5, "exponentes": [4, 3, 2, 1, 0], "errores.igual.valor": 4 } } ] },
+
+    { "nombre": "Predicción del paso 5: (2x³ − 7x + 4) ÷ (x − 2) por Ruffini con el 0 del x²: Q = 2x² + 4x + 1, R = 6 (PO1 sin el 0: 2x − 3 y −2; PO2 con −2: 2x² − 4x + 1 y 2; PO18 toda la fila)",
+      "fn": "ruffini", "args": [{ "coefs": [2, 0, -7, 4], "divisor": [1, -2] }],
+      "espera": { "raiz": 2, "productos": [null, 4, 8, 2], "sumas": [2, 4, 1, 6], "cociente": [2, 4, 1], "resto": 6, "texto": "2x² + 4x + 1",
+        "errores.sinCero.texto": "2x − 3", "errores.sinCero.resto": -2, "errores.signo.texto": "2x² − 4x + 1", "errores.signo.resto": 2,
+        "errores.todaLaFila.texto": "2x³ + 4x² + x + 6" } },
+
+    { "nombre": "Predicción del paso 7: (4x³ − 2x² + 6x + 1) ÷ (2x − 1): raíz 1/2, fila 4, 0, 6 | 4; Q = 2x² + 3, R = 4 (PO3: 4x² + 6; PO4: R = 2; PO2 con −1/2: 2x² − 2x + 4 y −3)",
+      "fn": "ruffini", "args": [{ "coefs": [4, -2, 6, 1], "divisor": [2, -1] }],
+      "espera": { "raiz": 0.5, "raizTexto": "1/2", "sumas": [4, 0, 6, 4], "cocienteProvisional": [4, 0, 6], "cociente": [2, 0, 3], "resto": 4, "par": "Q = 2x² + 3; R = 4",
+        "errores.sinDividir.par": "Q = 4x² + 6; R = 4", "errores.restoDividido.par": "Q = 2x² + 3; R = 2", "errores.signo.par": "Q = 2x² − 2x + 4; R = −3" } },
+
+    { "nombre": "Ruffini con divisor x + 3 y dos ceros: (x⁴ − 2x + 1) ÷ (x + 3) = x³ − 3x² + 9x − 29, resto 88",
+      "fn": "ruffini", "args": [{ "coefs": [1, 0, 0, -2, 1], "divisor": [1, 3] }],
+      "espera": { "raiz": -3, "sumas": [1, -3, 9, -29, 88], "texto": "x³ − 3x² + 9x − 29", "resto": 88, "errores.sinCero.texto": "x − 5", "errores.sinCero.resto": 16 } },
+
+    { "nombre": "División clásica: (x⁴ + 3x³ − 2x + 5) ÷ (x² + 1) = x² + 3x − 1, resto −5x + 6; y (x³ − 1) ÷ (x − 1) es exacta",
+      "fn": "dividir", "args": [{ "dividendo": [1, 3, 0, -2, 5], "divisor": [1, 0, 1] }],
+      "espera": { "cociente": [1, 3, -1], "resto": [-5, 6], "texto": "x² + 3x − 1", "restoTexto": "−5x + 6", "exacta": false },
+      "tambien": [ { "args": [{ "dividendo": [1, 0, 0, -1], "divisor": [1, -1] }], "espera": { "cociente": [1, 1, 1], "resto": [0], "exacta": true } },
+                   { "args": [{ "dividendo": [6, -1, 4], "divisor": [2, 1] }], "espera": { "cociente": [3, -2], "resto": [6] } } ] },
+
+    { "nombre": "Experimento del resto con x² + 1: x² → −1 da −5x + 6 (PO16 x² → 1: x + 6; PO31 una sola vez: −5x + 4; PO32 pierde la x: −2x + 3)",
+      "fn": "restoSustitucion", "args": [{ "dividendo": [1, 3, 0, -2, 5], "k": 1 }],
+      "espera": { "resto": [-5, 6], "texto": "−5x + 6", "cociente": [1, 3, -1], "errores.signo.texto": "x + 6", "errores.unaVez.texto": "−5x + 4", "errores.pierdeX.texto": "−2x + 3" },
+      "tambien": [ { "args": [{ "dividendo": [1, 0, 0, 0, 0, 1], "k": -2 }], "espera": { "resto": [4, 1], "texto": "4x + 1" } } ] },
+
+    { "nombre": "La tabla de área de (x⁴ + 3x³ − 2x + 5) ÷ (x² + 1): filas x², 3x, −1; columnas x², 1; divisor · cociente + resto = dividendo",
+      "fn": "cajaDivision", "args": [{ "dividendo": [1, 3, 0, -2, 5], "divisor": [1, 0, 1] }],
+      "espera": { "filas.0.texto": "x²", "filas.1.texto": "3x", "filas.2.texto": "−1", "columnas.1.texto": "1", "celdas.1.0.texto": "3x³", "celdas.2.0.texto": "−x²", "restoTexto": "−5x + 6", "comprobacion": [1, 3, 0, -2, 5] } },
+
+    { "nombre": "Predicción del paso 6: resto de (x³ − 3x² + x + 4) ÷ (x + 2) = P(−2) = −18 (PO8 P(2) = 2; PO15 (−2)² como −4: 6; PO27 independiente 4)",
+      "fn": "teoremaResto", "args": [{ "coefs": [1, -3, 1, 4], "divisor": [1, 2] }],
+      "espera": { "valor": -18, "texto": "−18", "raiz": -2, "errores.signo.valor": 2, "errores.parNegativo.valor": 6, "errores.independiente.valor": 4 },
+      "tambien": [ { "args": [{ "coefs": [6, -1, 4], "divisor": [2, 1] }], "espera": { "valor": 6, "raizTexto": "−1/2" } } ] },
+
+    { "nombre": "Predicción del paso 8: (x − 2) es factor de x³ − 3x² + kx + 6 si k = −1 (PO17 P(−2) = 0: −7; PO33 P(1) = 0: −4; AL16 despeje: 1); cociente x² − x − 3",
+      "fn": "factorK", "args": [{ "coefs": [1, -3, "k", 6], "raiz": 2 }],
+      "espera": { "valor": -1, "texto": "k = −1", "cociente": [1, -1, -3], "errores.signo.texto": "k = −7", "errores.sumaCoef.texto": "k = −4", "errores.despeje.texto": "k = 1" } },
+
+    { "nombre": "Experimento de candidatos: 2x³ − 3x² − 11x + 6 tiene 12 candidatos ±p/q y raíces −2, 1/2 y 3 (PO24: 6; PO25: 8; PO26: 16)",
+      "fn": "raicesRacionales", "args": [{ "coefs": [2, -3, -11, 6] }],
+      "espera": { "valor": 12, "raices": [-2, 0.5, 3], "candidatosTexto": ["−6", "−3", "−2", "−3/2", "−1", "−1/2", "1/2", "1", "3/2", "2", "3", "6"],
+        "errores.soloPositivos.valor": 6, "errores.soloIndependiente.valor": 8, "errores.sinSimplificar.valor": 16 } },
+
+    { "nombre": "Bordes: raíz 0 en teorema del resto (resto = término independiente, así que PO27 coincide) y P(0) con independiente 0",
+      "fn": "teoremaResto", "args": [{ "coefs": [3, -1, 5], "divisor": [1, 0] }],
+      "espera": { "valor": 5, "coinciden": ["signo", "independiente"] },
+      "tambien": [ { "fn": "pDeCero", "args": [{ "coefs": [2, 3, 0] }], "espera": { "valor": 0, "coinciden": ["cero"] } } ] }
+  ]
+}

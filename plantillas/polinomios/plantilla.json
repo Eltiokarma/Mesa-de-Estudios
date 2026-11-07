@@ -1,0 +1,17 @@
+{
+  "id": "polinomios",
+  "titulo": "La máquina de Ruffini: polinomios y división",
+  "formato": "escena",
+  "unidades": [
+    "algebra.polinomios",
+    "algebra.division-de-polinomios",
+    "algebra.ecuaciones-polinomiales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

@@ -1,0 +1,135 @@
+{
+  "titulo": "La máquina de Ruffini: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Tres controles antes de marcar: en Ruffini, cada grado tiene su casilla y la que falta lleva un 0; la raíz que se baja es la que anula el divisor (para x + 1 es −1); y si el divisor es ax + b con a distinto de 1, el cociente se divide entre a pero el resto no.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Si P(x) = 4x³ − x² + 2x − 9, calcula P(0), P(1) y P(−1).",
+      "respuesta": "P(0) = −9, P(1) = −4 y P(−1) = −16.",
+      "pasos": [
+        "P(0): todos los términos con x se anulan; queda el término independiente, −9.",
+        "P(1): cada potencia de 1 vale 1, así que queda la suma de coeficientes: 4 − 1 + 2 − 9 = −4.",
+        "P(−1): (−1)³ = −1 y (−1)² = 1 (la potencia par de un negativo es positiva): 4(−1) − 1 + 2(−1) − 9 = −16."
+      ],
+      "verificar": [ { "fn": "pDeCero", "args": [{ "coefs": [4, -1, 2, -9] }], "espera": { "valor": -9 } },
+                     { "fn": "pDeUno", "args": [{ "coefs": [4, -1, 2, -9] }], "espera": { "valor": -4 } },
+                     { "fn": "evaluar", "args": [{ "coefs": [4, -1, 2, -9], "x": -1 }], "espera": { "valor": -16 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Halla el grado absoluto y los grados relativos de N(x; y) = 6x⁴y − 2x²y⁵ + x³y³.",
+      "respuesta": "GA = 7, GR(x) = 4 y GR(y) = 5.",
+      "pasos": [
+        "Grado de cada término (suma de sus exponentes): 6x⁴y tiene 4 + 1 = 5; −2x²y⁵ tiene 2 + 5 = 7; x³y³ tiene 3 + 3 = 6.",
+        "El grado absoluto es el mayor de esos: 7. No es la suma de todos los exponentes (18) ni la suma de los relativos (9).",
+        "Grado relativo a x: el mayor exponente de x, 4. Relativo a y: el mayor exponente de y, 5."
+      ],
+      "verificar": [ { "fn": "grado", "args": [{ "terminos": [{ "c": 6, "x": 4, "y": 1 }, { "c": -2, "x": 2, "y": 5 }, { "c": 1, "x": 3, "y": 3 }] }], "espera": { "valor": 7, "GR.x": 4, "GR.y": 5 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "P(x) es de grado 4 y Q(x) es de grado 6. Halla el grado de P · Q, de P + Q y de [P(x)]³.",
+      "respuesta": "P · Q es de grado 10, P + Q de grado 6 y [P(x)]³ de grado 12.",
+      "pasos": [
+        "Al multiplicar, los términos principales dan x⁴ · x⁶ = x¹⁰: los grados se suman, 4 + 6 = 10.",
+        "Al sumar, no se multiplica nada: el término de mayor grado, el x⁶ de Q, no tiene con quién anularse. Grado 6.",
+        "[P(x)]³ = P · P · P: los grados se suman tres veces, 4 + 4 + 4 = 12 = 4 · 3."
+      ],
+      "verificar": [ { "fn": "gradoProducto", "args": [{ "m": 4, "n": 6 }], "espera": { "valor": 10 } },
+                     { "fn": "gradoSuma", "args": [{ "m": 4, "n": 6 }], "espera": { "valor": 6 } },
+                     { "fn": "gradoPotencia", "args": [{ "m": 4, "k": 3 }], "espera": { "valor": 12 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "¿Cuántos términos tiene un polinomio completo y ordenado de grado 9? Y si un polinomio completo tiene 21 términos, ¿de qué grado es?",
+      "respuesta": "Tiene 10 términos. El de 21 términos es de grado 20.",
+      "pasos": [
+        "Completo quiere decir que están todos los exponentes, del 9 al 0: x⁹, x⁸, …, x, y el término independiente (x⁰).",
+        "Del 9 al 0 hay 10 números: 10 términos.",
+        "Al revés, con 21 términos los exponentes van del 20 al 0: grado 20."
+      ],
+      "verificar": [ { "fn": "completo", "args": [{ "grado": 9 }], "espera": { "valor": 10 } },
+                     { "fn": "gradoDeCompleto", "args": [{ "terminos": 21 }], "espera": { "valor": 20 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Divide 3x⁴ − 5x² + 2x − 1 entre x + 1 por Ruffini. Da el cociente y el resto.",
+      "respuesta": "Cociente 3x³ − 3x² − 2x + 4 y resto −5.",
+      "pasos": [
+        "Coeficientes con el 0 del x³ que falta: 3, 0, −5, 2, −1.",
+        "x + 1 = 0 da x = −1: ese es el número que se usa.",
+        "Se baja el 3; 3 · (−1) = −3 y 0 − 3 = −3; (−3)(−1) = 3 y −5 + 3 = −2; (−2)(−1) = 2 y 2 + 2 = 4; 4 · (−1) = −4 y −1 − 4 = −5.",
+        "Cociente de grado 3: 3x³ − 3x² − 2x + 4. Resto −5. Control: P(−1) = 3 − 5 − 2 − 1 = −5."
+      ],
+      "verificar": [ { "fn": "ruffini", "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }], "espera": { "texto": "3x³ − 3x² − 2x + 4", "resto": -5 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Divide 6x³ + x² − 4x + 5 entre 3x − 1. Da el cociente y el resto.",
+      "respuesta": "Cociente 2x² + x − 1 y resto 4.",
+      "pasos": [
+        "Se iguala el divisor a cero: 3x − 1 = 0 da x = 1/3. Ruffini con 1/3: se baja el 6; 6 · 1/3 = 2 y 1 + 2 = 3; 3 · 1/3 = 1 y −4 + 1 = −3; (−3) · 1/3 = −1 y 5 − 1 = 4.",
+        "La fila 6, 3, −3 es el cociente de dividir entre x − 1/3. Como 3x − 1 = 3(x − 1/3), el cociente se divide entre 3: 2x² + x − 1.",
+        "El resto no se divide: queda 4. Control: (3x − 1)(2x² + x − 1) + 4 = 6x³ + x² − 4x + 5."
+      ],
+      "verificar": [ { "fn": "ruffini", "args": [{ "coefs": [6, 1, -4, 5], "divisor": [3, -1] }], "espera": { "texto": "2x² + x − 1", "resto": 4 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Halla el resto de dividir 2x⁵ − x³ + 3x − 4 entre x² − 2, sin hacer la división.",
+      "respuesta": "El resto es 9x − 4.",
+      "pasos": [
+        "Teorema del resto: si x² − 2 = 0, entonces x² = 2. Se cambia cada x² por 2 en el dividendo.",
+        "x⁵ = (x²)² · x = 4x, así que 2x⁵ = 8x. x³ = x² · x = 2x, así que −x³ = −2x.",
+        "Resto: 8x − 2x + 3x − 4 = 9x − 4. Es de primer grado, menor que el grado del divisor, como debe ser."
+      ],
+      "verificar": [ { "fn": "restoSustitucion", "args": [{ "dividendo": [2, 0, -1, 0, 3, -4], "k": -2 }], "espera": { "texto": "9x − 4" } },
+                     { "fn": "dividir", "args": [{ "dividendo": [2, 0, -1, 0, 3, -4], "divisor": [1, 0, -2] }], "espera": { "restoTexto": "9x − 4" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "¿Para qué valor de k el binomio x + 1 es factor de 2x³ + kx² − 5x + 1?",
+      "respuesta": "k = −4.",
+      "pasos": [
+        "Teorema del factor: x + 1 es factor si P(−1) = 0 (x + 1 se anula en x = −1).",
+        "P(−1) = 2(−1) + k(1) − 5(−1) + 1 = −2 + k + 5 + 1 = k + 4.",
+        "k + 4 = 0 da k = −4. Control: 2x³ − 4x² − 5x + 1 = (x + 1)(2x² − 6x + 1)."
+      ],
+      "verificar": [ { "fn": "factorK", "args": [{ "coefs": [2, "k", -5, 1], "raiz": -1 }], "espera": { "valor": -4, "cociente": [2, -6, 1] } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Escribe los posibles ceros racionales de P(x) = 3x³ − 4x² − 5x + 2 y factoriza P(x).",
+      "respuesta": "Candidatos ±1, ±2, ±1/3, ±2/3 (ocho). P(x) = (x − 2)(x + 1)(3x − 1).",
+      "pasos": [
+        "Candidatos p/q: p divide al término independiente 2 (1 y 2) y q divide al coeficiente principal 3 (1 y 3). Con los dos signos: ±1, ±2, ±1/3, ±2/3.",
+        "Se prueban: P(2) = 24 − 16 − 10 + 2 = 0 y P(−1) = −3 − 4 + 5 + 2 = 0.",
+        "Ruffini con 2 y luego con −1 deja 3x − 1, que se anula en x = 1/3. Así, P(x) = (x − 2)(x + 1)(3x − 1)."
+      ],
+      "verificar": [ { "fn": "raicesRacionales", "args": [{ "coefs": [3, -4, -5, 2] }], "espera": { "valor": 8, "raices": [-1, 0.3333333333333333, 2] } },
+                     { "fn": "ruffini", "args": [{ "coefs": [3, -4, -5, 2], "divisor": [1, -2] }], "espera": { "cociente": [3, 2, -1], "resto": 0 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Divide x⁴ − 2x³ + 4x − 3 entre x² − x + 2 con la división clásica (o con Horner).",
+      "respuesta": "Cociente x² − x − 3 y resto 3x + 3.",
+      "pasos": [
+        "Dividendo completo: x⁴ − 2x³ + 0x² + 4x − 3. Primer término del cociente: x⁴ ÷ x² = x². Se resta x²(x² − x + 2) = x⁴ − x³ + 2x² y queda −x³ − 2x² + 4x − 3.",
+        "Siguiente: −x³ ÷ x² = −x. Se resta −x(x² − x + 2) = −x³ + x² − 2x y queda −3x² + 6x − 3.",
+        "Siguiente: −3x² ÷ x² = −3. Se resta −3(x² − x + 2) = −3x² + 3x − 6 y queda 3x + 3, de grado menor que el divisor: es el resto.",
+        "Control: (x² − x + 2)(x² − x − 3) + 3x + 3 = x⁴ − 2x³ + 4x − 3."
+      ],
+      "verificar": [ { "fn": "dividir", "args": [{ "dividendo": [1, -2, 0, 4, -3], "divisor": [1, -1, 2] }], "espera": { "texto": "x² − x − 3", "restoTexto": "3x + 3" } } ]
+    }
+  ]
+}
