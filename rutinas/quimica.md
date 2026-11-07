@@ -339,3 +339,46 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
    - ΔE00 mínimo 20,7 en claro y 25,2 en oscuro;
    - el rojo de los avisos queda a 17,4 del Na⁺ en oscuro, y el aviso siempre va con texto.
 3. En `docs/pendientes.md` y `CLAUDE.md`, una línea como las demás.
+
+## 7 nov 2026 · liquidos-y-solidos (la última de la cola)
+
+**Contexto.** Enlace quedó integrado. La conversación principal trajo la paleta común de elementos (`nucleo/elementos.js`): esta escena la usa, con `Elementos.css([...])`, y se sumó a `nucleo/elementos-escenas.test.js`. Ese test es la única excepción fuera de mi carpeta, y la pidió la conversación principal. Al juntar la rama principal hubo un conflicto en `plantillas/enlace/index.html`: tomé su versión, que es la mía con el Na⁺ de la paleta común. El contenedor se reinició a mitad de camino y retomé a los constructores desde el disco.
+
+**Qué se hizo.** `plantillas/liquidos-y-solidos/` (unidad `quimica.liquidos-y-solidos`). Usa los informes de gases y soluciones (GQ16 a GQ19), de átomo y enlace (EN13 a EN16) y de física (Q9).
+
+- **`motor.js`** (`window.MotorLiquidos`):
+  - presión de vapor de agua, etanol y acetona con Antoine (rangos declarados);
+  - punto de ebullición según la presión y según la altitud, con la misma atmósfera estándar de calorimetría: una prueba comprueba que Juliaca da igual en las dos;
+  - olla a presión;
+  - puentes de hidrógeno (EN15) y orden de puntos de ebullición, con datos del CRC;
+  - gas recogido sobre agua, humedad relativa y punto de rocío;
+  - frasco cerrado (GQ18) con una caja de partículas que se evaporan y condensan hasta igualar los dos flujos;
+  - diagramas de fases del agua y del CO₂.
+- **Números:** 52 casos, 10 problemas de papel y 80 pruebas.
+- **`index.html`:**
+  - **Paso a paso:** 8 pasos con 5 predicciones:
+    - el frasco grande contra el chico (GQ18);
+    - qué hay en las burbujas (EN13);
+    - por qué en Puno hierve antes (Q9);
+    - H₂O contra H₂S (EN14);
+    - quién forma puentes de hidrógeno (EN15).
+  - **¿Qué pasa si…?:** 5 experimentos bloqueados en orden: butano contra isobutano (EN16), gas sobre agua, olla a presión, hielo seco y el vapor que se enfría (GQ16).
+  - **Explorador:** líquido, temperatura y presión externa.
+
+**Subagentes.**
+- **Verificador:** con `entradas.py` y sin leer el motor. 48 de 52 casos coinciden exactos; los otros 4 coinciden una vez declaradas las constantes que faltaban en la cabecera (R, los puntos del CO₂ en Pa).
+- **Revisor:** encontró dos graves:
+  - la correcta caía siempre en b en «¿Qué pasa si…?»;
+  - la barra del gas sobre agua regalaba la respuesta.
+  
+  Y estos medios:
+  - dos opciones con la misma respuesta (Puno, butano);
+  - el dibujo del butano insinuaba la respuesta;
+  - moléculas encimadas;
+  - con movimiento reducido, el paso 3 no mostraba el equilibrio;
+  - lecturas con ruido;
+  - la T verde dentro del texto verde de «correcto»;
+  - el puente de hidrógeno contra la presión externa en oscuro.
+  
+  Además, 10 bajos.
+- **Estado:** las correcciones están EN CURSO. Mis decisiones: GQ18 y GQ16 pasan a 'parcial', que es lo prudente.
