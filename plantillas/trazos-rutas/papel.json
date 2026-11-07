@@ -1,6 +1,6 @@
 {
   "titulo": "El lápiz y la hormiga: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. Para saber si una figura sale de un solo trazo, cuenta en cada punto cuántas líneas llegan: si son pares en todos, se puede y se vuelve al inicio; si hay exactamente dos impares, se empieza en uno y se termina en el otro; con más impares hacen falta tantos trazos como la mitad de los impares. Para recorrer todas las líneas con lo mínimo, repite los caminos más cortos que unen impares de dos en dos. En una figura escalonada sin entrantes, los lados se corren hasta el rectángulo que la encierra. Para contar caminos más cortos en una cuadrícula, escribe en cada cruce la suma del de la izquierda y el de abajo. En una caja, abre dos caras sobre el plano y une los puntos con una recta.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen.",
   "problemas": [
     {
       "id": "p1",

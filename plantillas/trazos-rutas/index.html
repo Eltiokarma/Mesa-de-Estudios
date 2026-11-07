@@ -113,6 +113,8 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
 .frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
 .frac > span:last-child{padding:0 .25em}
+.frac > span:first-child{align-self:stretch; text-align:center}
+.frac > span{white-space:nowrap}
 .aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
 .msg{margin:0; font-weight:700; min-height:1.5em}
 .msg.mal{color:var(--warn)} .msg.ok{color:var(--ok)}
@@ -329,7 +331,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (E.modo === 'figura' && E.fig) return E.fig.figs.length > 1 ? (ancho ? 290 : 230) : (ancho ? 360 : 320);
     if (E.modo === 'escalera' && E.esc){ const P = MT.perimetro({ vertices:E.esc.vertices }), s = Math.min((w - 90)/P.ancho, 34); return entre(P.alto*s + 84, 220, 380); }
     if (E.modo === 'calles' && E.cal){ const C = E.cal, s = Math.min((w - 96)/C.m, 76); return entre(C.n*s + 92, 220, 380); }
-    if (E.modo === 'caja') return ancho ? 340 : 320;
+    if (E.modo === 'caja' && E.caja){ const X = extCaja(); return entre(X.h/X.w*(w - margenCaja(w).tot) + 76, 200, ancho ? 360 : 340); }
     if (E.modo === 'arcos') return ancho ? 280 : 240;
     if (E.modo === 'reja') return ancho ? 340 : 320;
     return 300;
@@ -426,7 +428,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
         else punto(ctx, p.x, p.y, 5, c.ink);
         if (F.grados){
           let dx = p.x - C.cen.x, dy = p.y - C.cen.y; const d = Math.hypot(dx, dy);
-          if (d < 4){ dx = 0.7; dy = -0.7; } else { dx /= d; dy /= d; }
+          if (d < 4){ dx = 0; dy = -1; } else { dx /= d; dy /= d; }   // el del centro, derecho hacia arriba: ahí no pasa ninguna línea
           const off = solo ? 20 : 15;
           rotulo(ctx, c, p.x + dx*off, p.y + dy*off, String(GR.grados[v]), imp ? c.i : c.ink, 'center', 800, solo ? 13 : 11);
         }
@@ -558,7 +560,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     rotulo(ctx, c, ca.x, ca.y + 22, 'casa', c.ink, 'center', 800, 12);
     rotulo(ctx, c, co.x, co.y - 22, 'colegio', c.ink, 'center', 800, 12);
     rotulo(ctx, c, (ca.x + g.T(C.m, 0).x)/2, ca.y + 22, `${C.m} cuadras →`, c.m, 'center', 800, 11);
-    rotulo(ctx, c, ca.x - 14, (ca.y + g.T(0, C.n).y)/2, `${C.n} ↑`, c.n, 'right', 800, 11);
+    rotulo(ctx, c, ca.x - 14, (ca.y + g.T(0, C.n).y)/2, `${C.n} cuadras ↑`, c.n, 'right', 800, 11);
   }
   function cruceEn(p){
     if (E.modo !== 'calles' || !geo || !geo.T) return null;
@@ -576,14 +578,18 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (des === 1) return [B.x + q[1]*Math.sin(a), q[1]*Math.cos(a), q[2]];
     return [B.x + q[2]*Math.sin(a), q[1], q[2]*Math.cos(a)];
   }
-  function geoCaja(){
+  function extCaja(){
     const B = E.caja, pts = [];
     for (const x of [0, B.x]) for (const y of [0, B.y]) for (const z of [0, B.z]) pts.push([x, y, z]);
     // el desarrollo abierto también tiene que caber
     if (B.des >= 0) for (const q of pts.slice()) pts.push(abrirPunto(B.des, q, Math.PI/2, B));
     const g0 = { ox:0, oy:0, s:1 }, pp = pts.map(p => pr(p, g0));
-    const xs = pp.map(p => p.x), ys = pp.map(p => p.y), w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
-    const iz = W < 560 ? 62 : 100, tot = W < 560 ? 116 : 180;
+    const xs = pp.map(p => p.x), ys = pp.map(p => p.y);
+    return { w:Math.max(...xs) - Math.min(...xs), h:Math.max(...ys) - Math.min(...ys), x0:Math.min(...xs), y0:Math.min(...ys) };
+  }
+  const margenCaja = w => (w < 560 ? { iz:62, tot:116 } : { iz:100, tot:180 });
+  function geoCaja(){
+    const X = extCaja(), w = X.w, h = X.h, xs = [X.x0], ys = [X.y0], { iz, tot } = margenCaja(W);
     const s = Math.min((W - tot)/w, (Hh - 64)/h);
     const ox = iz + (W - tot - w*s)/2 - Math.min(...xs)*s, oy = (Hh - h*s)/2 - Math.min(...ys)*s + 4;
     return { s, ox, oy };
@@ -625,6 +631,11 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (B.diagonal){
       ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 4]); ctx.lineWidth = 2; linea(ctx, P([0, 0, 0]), P([X, Y, Z])); ctx.restore();
       const m = P([X/2, Y/2, Z/2]); rotulo(ctx, c, m.x, m.y - 10, 'por dentro', c.muted, 'center', 700, 11);
+      if (B.des >= 0 && B.abrir > .05){
+        // donde estaba el azúcar antes de abrir la caja: ahí termina la recta por dentro
+        const g0 = P([X, Y, Z]); ctx.save(); ctx.globalAlpha = .6*B.abrir; punto(ctx, g0.x, g0.y, 4, c.muted); ctx.restore();
+        ctx.save(); ctx.globalAlpha = B.abrir; rotulo(ctx, c, g0.x - 8, g0.y - 12, 'el azúcar, con la caja cerrada', c.muted, 'right', 700, 10); ctx.restore();
+      }
     }
     // la ruta de la hormiga
     let G = [X, Y, Z];
@@ -792,7 +803,7 @@ const G1 = { id:'trazos-paso1', ok:'c', opts:[
   ['c', `${nom(P1.correcta)[0].toUpperCase() + nom(P1.correcta).slice(1)}: sus líneas se encadenan de una esquina de abajo a la otra`],
   ['d', 'Las tres: cualquiera sale si se empieza en el punto justo', 'trazo-todas-si-se-empieza-bien', 'hipotesis']],
   fb:{ c:`¡Bien! Cuenta cuántas líneas llegan a cada punto. En la casita solo hay ${i_('2')} puntos impares, las dos esquinas de abajo: se empieza en una y se termina en la otra. El sobre y las ventanas tienen ${i_('4')} impares cada uno: con un solo trazo no se puede.`,
-    a:`Elegiste la A. El sobre tiene menos líneas (${P1.lineas[0]}), pero sus cuatro esquinas tienen 3 líneas cada una. Cada vez que el lápiz pasa por un punto, entra por una línea y sale por otra: un punto con número impar de líneas tiene que ser el inicio o el final. Cuatro puntos así no caben en un solo trazo. La correcta está marcada.`,
+    a:`Elegiste la A. El sobre tiene menos líneas (4 lados y 2 diagonales), pero sus cuatro esquinas tienen 3 líneas cada una. Cada vez que el lápiz pasa por un punto, entra por una línea y sale por otra: un punto con número impar de líneas tiene que ser el inicio o el final. Cuatro puntos así no caben en un solo trazo. La correcta está marcada.`,
     b:'Elegiste la B. Los cruces no estorban: el lápiz pasa por un cruce entrando por una línea y saliendo por otra. Lo que estorba son los puntos con un número impar de líneas: las tres ventanas tienen cuatro (las uniones en forma de T). La correcta está marcada.',
     d:`Elegiste la D. Empezar bien ayuda, pero no siempre alcanza. El motor probó todos los caminos en el sobre y en las ventanas: el lápiz quedó trabado ${U1[0].probados} y ${U1[2].probados} veces, y nunca pasó por todas las líneas. La correcta está marcada.` } };
 const G3 = { id:'trazos-paso3', ok:'b', opts:[
@@ -808,7 +819,7 @@ const G4 = { id:'trazos-paso4', ok:'d', opts:[
   ['a', `${P4.errores.soloConNumero} m: 8 + 6, los dos lados que tienen medida`, 'perimetro-solo-lados-con-numero', 'hipotesis'],
   ['b', `${P4.errores.diagonal} m: 8 + 6 y los escalones, que van como la diagonal de 10 m`, 'perimetro-escalera-como-diagonal', 'hipotesis'],
   ['c', `${P4.errores.area} m: los cuadraditos de 1 m que hay adentro`, 'GE4-area-por-perimetro', 'parcial'],
-  ['d', `${P4.perimetro} m: los escalones suman lo mismo que la base y la altura`]],
+  ['d', `${P4.perimetro} m: los escalones suman lo mismo que la base y el lado izquierdo`]],
   fb:{ d:`¡Bien! Corre los tramos horizontales de los escalones hacia arriba: juntos cubren justo ${b_('8 m')}, como la base. Corre los verticales hacia la derecha: cubren ${h_('6 m')}. El perímetro es el del rectángulo: 2(8 + 6) = ${P4.perimetro} m.`,
     a:'Elegiste la A. 8 + 6 son solo dos lados. Los escalones también son borde: sus tramos horizontales suman otros 8 m y los verticales otros 6 m. Total: 28 m. La correcta está marcada.',
     b:'Elegiste la B. Los escalones van cerca de la diagonal, pero no la siguen: van en zigzag, horizontal y vertical. Ese zigzag mide 8 + 6 = 14 m, más que los 10 m de la diagonal, por pequeños que sean los escalones. Total: 28 m. La correcta está marcada.',
@@ -830,7 +841,7 @@ const G8 = { id:'trazos-paso8', ok:'c', unidad:U_RUTAS, opts:[
   fb:{ c:`¡Bien! Abre la caja: el frente (8 × 2) y la tapa (8 × 4) quedan juntos en un rectángulo de ${x_('8')} por ${y_('4')} + ${z_('2')} = 6. La ruta más corta es su diagonal: √(8² + 6²) = ${d_('10 cm')}.`,
     a:`Elegiste la A. Esa recta (${H8.diagonalExacta} ≈ ${fmt(H8.diagonal, 1)} cm) atraviesa la caja por dentro, y la hormiga camina por la superficie. Abriendo el frente y la tapa sobre el plano, la ruta es una recta de 10 cm. La correcta está marcada.`,
     b:'Elegiste la B. Por las aristas mide 14 cm, pero cortar en diagonal por las caras ahorra mucho. Abriendo el frente y la tapa, la ruta es una recta de 10 cm. La correcta está marcada.',
-    d:`Elegiste la D. Ir en diagonal por la base y después subir es mejor que las aristas (${fmt(H8.errores.caraYArista, 1)} cm), pero no es una sola recta: dobla en la esquina. Abriendo el frente y la tapa, la ruta es una recta de 10 cm. La correcta está marcada.` } };
+    d:`Elegiste la D. Ir en diagonal por la base y después subir (${H8.exactos.caraYArista} ≈ ${fmt(H8.errores.caraYArista, 1)} cm) es mejor que las aristas (${H8.errores.porAristas} cm), pero no es una sola recta: dobla en la esquina. Abriendo el frente y la tapa, la ruta es una recta de 10 cm. La correcta está marcada.` } };
 
 // ---- configuraciones ----
 const leyFig = conImp => conImp ? [['i', 'i · punto impar (llega un número impar de líneas)', 'pt'], ['t', 't · el trazo']] : [['t', 't · el trazo']];
@@ -894,8 +905,8 @@ function forma5(){
 function vivo5(){
   const d = $('vivo5'); if (!d) return;
   const P = MT.perimetro({ vertices:E.esc.vertices });
-  d.innerHTML = `<div class="eq">${b_('b')}: ${fmt(P.horizontales)} = 2 · ${fmt(P.ancho)}<span class="note">los lados horizontales</span></div>
-    <div class="eq">${h_('h')}: ${fmt(P.verticales)} = 2 · ${fmt(P.alto)}${S.esc5 === 'entrante' ? ` + 2 · ${e_(fmt(E.esc.muesca.profundidad))}` : ''}<span class="note">los lados verticales</span></div>
+  d.innerHTML = `<div class="eq">horizontales: ${fmt(P.horizontales)} = 2 · ${b_(fmt(P.ancho))}<span class="note">${b_('b')} = ${fmt(P.ancho)}, el ancho</span></div>
+    <div class="eq">verticales: ${fmt(P.verticales)} = 2 · ${h_(fmt(P.alto))}${S.esc5 === 'entrante' ? ` + 2 · ${e_(fmt(E.esc.muesca.profundidad))}` : ''}<span class="note">${h_('h')} = ${fmt(P.alto)}, el alto</span></div>
     <div class="eq">perímetro = ${fmt(P.perimetro)} m<span class="note">${P.sinEntrantes ? 'igual que el rectángulo que la encierra' : `el rectángulo mide ${fmt(P.caja)}: sobran las dos paredes del entrante`}</span></div>`;
 }
 const lectCalles = ya => [L('m', 'A la derecha m', '4 cuadras'), L('n', 'Hacia arriba n', '3 cuadras'), L('N', 'Caminos N', ya ? String(C6.caminos) : '?')];
@@ -913,7 +924,7 @@ function tocar7(q){
   const [x, y] = q, k = x + ',' + y, msg = $('msg7');
   if (S.llenos7.has(k)) return;
   if ((x > 0 && !S.llenos7.has((x - 1) + ',' + y)) || (y > 0 && !S.llenos7.has(x + ',' + (y - 1)))){ if (msg){ msg.textContent = 'Primero llena el cruce de su izquierda y el de abajo.'; msg.className = 'msg mal'; } return; }
-  S.llenos7.add(k); if (msg){ msg.textContent = `Al cruce llegan ${C6.tabla[y][x]} caminos.`; msg.className = 'msg ok'; }
+  S.llenos7.add(k); if (msg){ { const nn = C6.tabla[y][x]; msg.textContent = nn === 1 ? 'Al cruce llega 1 camino.' : `Al cruce llegan ${nn} caminos.`; } msg.className = 'msg ok'; }
   E.cal.llenos = S.llenos7; E.dibujar(); E.avisar();
 }
 function vivo7(){
@@ -970,7 +981,8 @@ const steps = [
    <p>¿Cuántos metros camina como mínimo?</p>${opcionesHTML(G3.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">senderos: 8 + 8 + 6 + 6 + 4 · 5 = ${C3.suma} m</div>
-     <div class="eq">${i_('i')} = ${i_('4')} esquinas: 2 son el inicio y el final, 2 se unen con ${R_('R')} = ${R_(C3.repetido + ' m')}</div>
+     <div class="eq">${i_('i')} = ${i_('4')}<span class="note">dos esquinas son el inicio y el final; las otras dos se unen repitiendo</span></div>
+     <div class="eq">${R_('R')} = ${R_(C3.repetido + ' m')}</div>
      <div class="eq">${C3.suma} + ${R_(String(C3.repetido))} = ${t_(C3.minimo + ' m')}</div></div>
    <p>Repetir un tramo es como dibujarle una línea más: las dos esquinas que une dejan de ser impares. Lo mínimo es unir dos esquinas impares por el camino más corto entre ellas, un lado de 6 m. Si tuviera que volver al punto de partida, tendría que unir las cuatro: ${C3c.minimo} m.</p>
    <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras. El motor prueba todas las formas de emparejar las esquinas impares y se queda con la más corta.</p></div>` },
@@ -981,8 +993,8 @@ const steps = [
    body:() => `<p class="problem">El dibujo muestra una figura en forma de escalera, con todos sus ángulos rectos. Su base mide 8 m y su lado de la izquierda, 6 m. La cuadrícula es de 1 m.</p>
    <p>¿Cuál es el perímetro de la figura?</p>${opcionesHTML(G4.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${b_('b')}: 3 + 3 + 2 = 8, igual que la base</div>
-     <div class="eq">${h_('h')}: 2 + 2 + 2 = 6, igual que el lado izquierdo</div>
+     <div class="eq">${b_('b')} = 3 + 3 + 2 = 8<span class="note">los escalones horizontales: igual que la base</span></div>
+     <div class="eq">${h_('h')} = 2 + 2 + 2 = 6<span class="note">los escalones verticales: igual que el lado izquierdo</span></div>
      <div class="eq">perímetro = 2(${b_('8')} + ${h_('6')}) = ${P4.perimetro} m</div></div>
    <p>Mira cómo los tramos de los escalones se corren hasta el rectángulo que encierra la figura: los horizontales hacia arriba, los verticales hacia la derecha. No sobra ni falta nada.</p>
    <p class="fuente">Dar el área (los cuadraditos) cuando se pide el perímetro es la confusión entre área y perímetro (GE4 del informe de geometría). En TIMSS 1999, cerca de 3 de cada 10 alumnos de 8.º grado eligieron el perímetro cuando se pedía el área; aquí es al revés, por eso lo tomamos como respaldo parcial. Contar solo los lados con número y usar la diagonal son hipótesis nuestras.</p></div>` },
@@ -1001,7 +1013,7 @@ const steps = [
    body:() => `<p class="problem">En un barrio de Juliaca, las calles forman una cuadrícula. Diego va de su casa al colegio, que está 4 cuadras a la ${m_('derecha')} y 3 cuadras hacia ${n_('arriba')}, por el camino más corto: nunca va hacia la izquierda ni hacia abajo.</p>
    <p>¿Cuántos caminos distintos puede seguir?</p>${opcionesHTML(G6.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${N_('N')}(cruce) = ${N_('N')}(el de la izquierda) + ${N_('N')}(el de abajo)</div>
+     <div class="eq">${N_('N')} = ${N_('N')}<sub>izquierda</sub> + ${N_('N')}<sub>abajo</sub><span class="note">en cada cruce</span></div>
      <div class="eq">fila de arriba: 1, 4, 10, 20, ${N_(String(C6.caminos))}</div></div>
    <p>Los cruces de la primera calle de abajo y de la primera de la izquierda tienen 1: hasta ellos se llega de una sola forma. Desde ahí, cada número es la suma del de su izquierda y el de abajo.</p>
    <p class="fuente">Hacer la lista a mano, sin un orden, y olvidar caminos es la enumeración sin sistema (AR18 del informe de aritmética y razonamiento). Un estudio con 720 alumnos españoles de 14 y 15 años (Navarro-Pelayo, Batanero y Godino, 1996) encontró que fue el error más frecuente entre los que no habían estudiado combinatoria; la cifra está por confirmar en el original. Que la lista se quede en los caminos de pocos giros es una hipótesis nuestra, igual que 4 · 3 y 2⁷.</p></div>` },
@@ -1233,7 +1245,7 @@ const EXPS = [
          c:'Por las aristas mide 6 cm; cortar en diagonal por dos caras es más corto: 2√5 ≈ 4,5 cm.',
          d:'La diagonal de una cara y después una arista dobla en una esquina. Abriendo dos caras, la ruta es una sola recta: 2√5 ≈ 4,5 cm.' },
     antes:ya => E.config({ modo:'caja', caja:{ x:2, y:2, z:2, H:E4, des: ya ? 0 : -1, abrir: ya ? 1 : 0, ruta: ya ? 1 : 0, diagonal:ya },
-      lect:[L('x', 'Arista', '2 cm'), L('d', 'Ruta d', ya ? `${E4.exacto} cm` : '?')],
+      lect:[L('ink', 'Aristas x = y = z', '2 cm'), L('d', 'Ruta d', ya ? `${E4.exacto} cm` : '?')],
       ley:[['x', 'x · largo'], ['y', 'y · ancho'], ['z', 'z · alto']].concat(ya ? [['d', 'd · ruta de la hormiga']] : []), desc:'Un dado de 2 cm de arista con la hormiga en una esquina y el azúcar en la opuesta.' }),
     despues:() => { const x = EXPS[3]; x.antes(true); const B = E.caja; B.abrir = 0; B.ruta = 0;
       E.animar(0, 1, 1400, v => { B.abrir = v; }, () => E.animar(0, 1, 1000, v => { B.ruta = v; }, () => x.antes(true))); },
@@ -1245,22 +1257,22 @@ const EXPS = [
     q:`Una araña camina por las aristas de una reja hecha con 4 cubitos: ${x_('2 de largo')}, ${y_('2 de ancho')} y ${z_('1 de alto')}. Va de una esquina a la opuesta, siempre alejándose: solo a lo largo, a lo ancho o hacia arriba. ¿Cuántos caminos distintos puede seguir?`,
     opts:[['a', `${E5.errores.producto}: uno por cada esquina de la reja`, 'reja-producto', 'hipotesis'],
           ['b', `${E5.caminos}: las formas de ordenar 2 pasos de largo, 2 de ancho y 1 de alto`],
-          ['c', `${E5.errores.conOrden}: las formas de ordenar los 5 pasos`, 'AR17-error-de-orden', 'documentado'],
-          ['d', `${E5.errores.potencia}: en cada uno de los 5 pasos hay 2 opciones`, 'reja-dos-a-la-n', 'hipotesis']],
+          ['c', `${E5.errores.conOrden}: las formas de ordenar los 5 pasos`, 'AR17-error-de-orden', 'parcial'],
+          ['d', `${E5.errores.potencia}: en cada uno de los 5 pasos hay 3 direcciones`, 'reja-tres-a-la-n', 'hipotesis']],
     ok:'b',
     fb:{ a:'Las esquinas de la reja son 18, pero por cada una pasan varios caminos. Contando con la suma de los tres vecinos de atrás, llegan 30.',
          c:'5 · 4 · 3 · 2 · 1 = 120 trata los 5 pasos como si fueran distintos. Los 2 de largo son iguales entre sí, y los 2 de ancho también: 120 ÷ (2 · 2) = 30.',
-         d:'No siempre hay dos opciones, y a veces hay tres. Cada camino tiene justo 2 pasos de largo, 2 de ancho y 1 de alto: son 30.' },
+         d:'No siempre hay tres opciones: al llegar a un borde quedan menos. Cada camino tiene justo 2 pasos de largo, 2 de ancho y 1 de alto: son 30.' },
     antes:ya => E.config({ modo:'reja', reja:{ a:2, b:2, c:1, tabla:E5.tabla, prog: ya ? 9 : -1 },
       lect:[L('x', 'Largo x', '2'), L('y', 'Ancho y', '2'), L('z', 'Alto z', '1'), L('N', 'Caminos N', ya ? String(E5.caminos) : '?')],
       ley:[['x', 'x · arista a lo largo'], ['y', 'y · arista a lo ancho'], ['z', 'z · arista hacia arriba']].concat(ya ? [['N', 'N · caminos hasta la esquina', 'pt']] : []),
       desc:'Una reja de 2 por 2 por 1 cubitos con la araña en una esquina de abajo.' }),
     despues:() => { const x = EXPS[4]; x.antes(true); const R = E.reja; R.prog = -1;
       E.animar(0, 5.999, 2400, v => { R.prog = Math.floor(v); }, () => x.antes(true), true); },
-    exp:() => `<div class="eqs"><div class="eq">${N_('N')}(esquina) = suma de sus tres vecinos de atrás</div>
+    exp:() => `<div class="eqs"><div class="eq">${N_('N')} = ${N_('N')}<sub>${x_('x')}</sub> + ${N_('N')}<sub>${y_('y')}</sub> + ${N_('N')}<sub>${z_('z')}</sub><span class="note">en cada esquina: lo que traen sus tres vecinos de atrás</span></div>
       <div class="eq">${fr('5!', '2! · 2! · 1!')} = ${fr('120', '4')} = ${N_(String(E5.caminos))}</div></div>
       <p>Es la cuadrícula de calles con un piso más: cada esquina suma lo que traen la de atrás a lo largo, la de atrás a lo ancho y la de abajo.</p>
-      <p class="fuente">Ordenar los pasos como si todos fueran distintos es un error de orden (AR17 del informe de aritmética y razonamiento): en el estudio de Navarro-Pelayo y otros (1996), con 720 alumnos españoles de 14 y 15 años, fue el error más frecuente entre los que ya habían estudiado combinatoria (cifra por confirmar en el original). Las otras dos opciones son hipótesis nuestras.</p>` },
+      <p class="fuente">Contar como distintos los pasos que van en la misma dirección se parece al error de orden (AR17 del informe de aritmética y razonamiento): en el estudio de Navarro-Pelayo y otros (1996), con 720 alumnos españoles de 14 y 15 años, el error de orden fue el más frecuente entre los que ya habían estudiado combinatoria (cifra por confirmar en el original). Ese estudio lo midió al elegir grupos, no al ordenar pasos repetidos; por eso lo tomamos como respaldo parcial. Las otras dos opciones son hipótesis nuestras.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
 const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);

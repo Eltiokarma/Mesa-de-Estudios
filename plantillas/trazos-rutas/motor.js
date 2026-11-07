@@ -98,7 +98,7 @@
  *                               (total − hasta), restarDesde (total − desde) }.
  *   caminosEspacio({ a, b, c }) caminos más cortos por las aristas de una reja de a × b × c cubos, de una esquina a la
  *                               opuesta: cada nodo suma los de sus tres vecinos de atrás. { caminos ((a + b + c)!/(a!·b!·c!)),
- *                               tabla[z][y][x], errores: producto ((a + 1)(b + 1)(c + 1): los nodos), potencia (2^(a + b + c)),
+ *                               tabla[z][y][x], errores: producto ((a + 1)(b + 1)(c + 1): los nodos), potencia (3^(a + b + c): tres direcciones en cada paso),
  *                               conOrden ((a + b + c)!: ordena los pasos como si todos fueran distintos), sumaCaras
  *                               (C(a + b, a) + C(a + c, a) + C(b + c, b)) }.
  *   hormiga({ x, y, z })        la ruta más corta por la superficie de la caja, de (0, 0, 0) a (x, y, z), probando los tres
@@ -109,8 +109,9 @@
  *                               z = z: √(x² + (y + z)²)), 'frente-costado' (frente y costado x = x: √((x + y)² + z²)),
  *                               'base-costado' (base z = 0 y costado x = x: √((x + z)² + y²)), diagonal (la recta por dentro
  *                               de la caja: √(x² + y² + z²)), diagonalExacta, errores: diagonalInterior, porAristas
- *                               (x + y + z), caraYArista (la menor diagonal de una cara más la arista que falta),
- *                               otroDesarrollo (el segundo mejor desarrollo), exactos: el texto de cada error }.
+ *                               (x + y + z), caraYArista (la menor suma de la diagonal de una cara más la arista que falta),
+ *                               otroDesarrollo (el segundo desarrollo más corto; si empata con el mejor, como en un cubo,
+ *                               va a 'coinciden'), exactos: el texto de cada error }.
  *   figuras                     las figuras de la escena (solo datos): sobre (un cuadrado de lado 2 con sus dos diagonales;
  *                               nodos 0 a 3 las esquinas desde abajo a la izquierda, contra las agujas, y 4 el centro),
  *                               casita (el sobre con un techo: nodo 5 en (1; 3,2) unido a las esquinas de arriba), ventanas
@@ -584,7 +585,7 @@
       T[z][y][x] = x + y + z === 0 ? 1 : (x ? T[z][y][x - 1] : 0) + (y ? T[z][y - 1][x] : 0) + (z ? T[z - 1][y][x] : 0);
     }
     const N = T[c][b][a];
-    const { errores, coinciden, repetidos } = apartar({ producto: (a + 1) * (b + 1) * (c + 1), potencia: Math.pow(2, a + b + c), conOrden: factorial(a + b + c),
+    const { errores, coinciden, repetidos } = apartar({ producto: (a + 1) * (b + 1) * (c + 1), potencia: Math.pow(3, a + b + c), conOrden: factorial(a + b + c),
       sumaCaras: combinatorio(a + b, a) + combinatorio(a + c, a) + combinatorio(b + c, b) }, N);
     return { caminos: N, tabla: T, errores, coinciden, repetidos };
   }
@@ -603,13 +604,13 @@
         cruce: { x: limpio(d.cruce.x), y: limpio(d.cruce.y), z: limpio(d.cruce.z) } };
     });
     const orden = des.slice().sort((p, q) => p.longitud - q.longitud);
-    const mejor = orden[0], segundo = orden.find(d => !casi(d.longitud, mejor.longitud));
+    const mejor = orden[0];
     const d2 = x * x + y * y + z * z, diagonal = Math.sqrt(d2), rd = radical(d2);
     const caras = [[x, y, z], [x, z, y], [y, z, x]].map(([p, q, r]) => ({ v: Math.sqrt(p * p + q * q) + r, t: sumaExacta([r * r, p * p + q * q]) }));
     const cya = caras.reduce((m, c) => (c.v < m.v - EPS ? c : m), caras[0]);
-    const crudos = { diagonalInterior: diagonal, porAristas: x + y + z, caraYArista: cya.v, otroDesarrollo: segundo ? segundo.longitud : null };
+    const crudos = { diagonalInterior: diagonal, porAristas: x + y + z, caraYArista: cya.v, otroDesarrollo: orden[1].longitud };
     const { errores, coinciden, repetidos } = apartar(crudos, mejor.longitud);
-    const txt = { diagonalInterior: rd ? rd.texto : null, porAristas: exactoNum(x + y + z), caraYArista: cya.t, otroDesarrollo: segundo ? segundo.exacto : null };
+    const txt = { diagonalInterior: rd ? rd.texto : null, porAristas: exactoNum(x + y + z), caraYArista: cya.t, otroDesarrollo: orden[1].exacto };
     const exactos = {};
     for (const k of Object.keys(errores)) exactos[k] = txt[k];
     return { minimo: mejor.longitud, exacto: mejor.exacto, mejor: mejor.id, desarrollos: des, diagonal: limpio(diagonal), diagonalExacta: rd ? rd.texto : null,

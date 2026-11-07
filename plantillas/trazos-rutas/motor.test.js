@@ -256,6 +256,8 @@ test('hormiga: no baja de la recta por dentro, no supera las aristas y coincide 
     assert.ok(m >= H.minimo - 1e-9, 'nadie baja del mínimo');
     assert.ok(m <= H.minimo + 1e-3, 'la barrida llega al mínimo');
     for (const D of H.desarrollos) { const c = [D.cruce.x, D.cruce.y, D.cruce.z]; cerca(d(A, c) + d(c, G), D.longitud, `cruce de ${D.id}`); }
+    const lon = H.desarrollos.map(D => D.longitud).sort((p, q) => p - q);
+    assert.equal(H.coinciden.includes('otroDesarrollo'), Math.abs(lon[0] - lon[1]) < 1e-9, 'un empate de desarrollos va a coinciden');
     sinChoques(H, H.minimo, 'hormiga');
   }
 });
