@@ -293,7 +293,7 @@ const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
 const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
 const opcionesHTML = (opts, idFb, texto) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m${texto ? ' t' : ''}">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
-const fuenteHip = que => `<p class="fuente">${que}: el informe de geometría no trae estudios sobre rectas y planos en el espacio, así que son hipótesis nuestras, tomadas de errores frecuentes en problemas de academia. El lanzamiento en el colegio dirá cuáles aparecen.</p>`;
+const fuenteHip = que => `<p class="fuente">${que}: buscamos estos errores con rectas y planos en el espacio en estudios publicados y no encontramos datos, así que son hipótesis nuestras, tomadas de errores frecuentes en problemas de academia. Lo que marquen los alumnos dirá cuáles aparecen.</p>`;
 const fuenteDibujo = `<p class="fuente">Leer el ángulo en el dibujo en perspectiva es hipótesis nuestra. Se parece a dos errores descritos: leer las propiedades de una figura en su dibujo y no en su definición (descrito con los niveles de Van Hiele, sin cifras para el espacio) y tratar un sólido dibujado como si fuera plano, que fue el error más común al contar cubitos (Ben-Chaim, Lappan y Houang, 1985, según autores que lo citan).</p>`;
 
 function colores(){
@@ -1001,7 +1001,7 @@ const EXPS = [
 
  { id:'diagonales-caras', corto:'Dos diagonales de caras vecinas', ok:'d',
    q:'Las diagonales AF y AH de dos caras vecinas del cubo salen del mismo vértice A. ¿Qué ángulo α forman?',
-   opts:[['a', gr0(FH.errores.angulo.recto), 'ESP-caras-perpendiculares', 'hipotesis'], ['b', gr0(FH.errores.angulo.medio), 'ESP-diagonal-45', 'hipotesis'],
+   opts:[['a', gr0(FH.errores.angulo.recto), 'ESP-caras-perpendiculares', 'parcial'], ['b', gr0(FH.errores.angulo.medio), 'ESP-diagonal-45', 'hipotesis'],
      ['c', gr0(FH.errores.angulo.dibujo), 'ESP-angulo-del-dibujo', 'hipotesis'], ['d', gr0(FH.respuestas.angulo)]],
    fb:{ a:'Las dos caras son perpendiculares entre sí, pero sus diagonales no: cada una está inclinada 45° respecto de la arista común.',
      b:'45° es el ángulo de cada diagonal con una arista de su cara, no el ángulo entre las dos diagonales.',
@@ -1020,7 +1020,7 @@ const EXPS = [
      E.cfg.lect = [['al', 'α', '60°'], ['ink', 'AF = FH = AH', '6√2']]; E.lecturas();
      E.avisar('Se dibujó FH: AF, FH y AH son diagonales de caras, todas de 6√2. El cubo giró hasta mirar el triángulo AFH de frente: es equilátero.'); fin(); }),
    exp:() => `<p>AF, FH y AH son diagonales de tres caras: miden lo mismo (6√2). El triángulo AFH es <b>equilátero</b>, así que ${al_('α = 60°')}. Visto de frente, el triángulo se ve con su forma real.</p>
-     <p class="aviso">Un ángulo en el espacio se ve con su medida real solo si se mira de frente el plano que lo contiene.</p>${fuenteHip('Creer que las diagonales de caras perpendiculares son perpendiculares, o usar 45°')}${fuenteDibujo}` },
+     <p class="aviso">Un ángulo en el espacio se ve con su medida real solo si se mira de frente el plano que lo contiene.</p><p class="fuente">La opción A (90°, porque las caras son perpendiculares) tiene respaldo parcial: en esta misma tarea del cubo, Kondo y otros (2013 y 2014) vieron que alumnos japoneses de secundaria con menos práctica en el espacio dibujan el desarrollo del cubo y responden 90°; solo leímos resúmenes, sin el total de respuestas. Usar 45° es una hipótesis nuestra.</p>${fuenteDibujo}` },
 
  { id:'angulo-dibujo', corto:'Un ángulo en el dibujo', ok:'b',
    q:'En este dibujo del cubo, mira el ángulo α entre EB y BC. ¿Cuánto mide de verdad?',

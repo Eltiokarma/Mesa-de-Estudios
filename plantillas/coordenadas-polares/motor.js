@@ -31,7 +31,8 @@
  *     calcular con esos datos va en 'noAplica'.
  *
  * IDS DE ERROR
- *   CP1…CP27 son hipótesis nuestras (no hay informe de polares). TR11 (cruza seno y coseno) y TR12 (el seno como
+ *   CP1…CP27 son hipótesis nuestras, salvo CP3, que es parcial (Habre, 2017); ver
+ *   docs/investigacion/matematica-avanzada-ideas-erroneas.md. TR11 (cruza seno y coseno) y TR12 (el seno como
  *   distancia sin signo) son de docs/investigacion/trigonometria-ideas-erroneas.md, con respaldo parcial; AL9
  *   (√(a² + b²) = a + b) es de docs/investigacion/algebra-funciones-ideas-erroneas.md, parcial.
  *   CP1 cociente: el cuadrante es ⌊θ/90°⌋ (sin sumar 1).       CP2 referencia: reduce al primer cuadrante.

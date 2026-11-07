@@ -17,7 +17,8 @@
  *   - Cada función que es la respuesta de una predicción trae 'respuestas' (lo correcto), 'errores' (lo que da cada
  *     idea errónea, agrupado con la misma clave que 'respuestas') y 'coinciden' (los errores que con esos datos dan lo
  *     mismo que la respuesta: se apartan para que la escena no ofrezca dos opciones iguales). Las ideas erróneas de este
- *     tema no tienen datos en docs/investigacion/geometria-ideas-erroneas.md: todas son hipótesis nuestras; 'dibujo'
+ *     tema están revisadas en docs/investigacion/matematica-avanzada-ideas-erroneas.md: son hipótesis nuestras, salvo
+ *     anguloEnVertice.angulo.recto (90° en el ángulo AFH del cubo), que es parcial por Kondo y otros (2013, 2014); 'dibujo'
  *     (leer el ángulo del dibujo en perspectiva) se emparenta con GE13 y GE7–GE10 (leer las propiedades del dibujo).
  *
  * CÁMARA (la misma que dibuja la escena; sirve para calcular el ángulo «que se ve» en el dibujo)

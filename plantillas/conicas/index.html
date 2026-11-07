@@ -531,7 +531,7 @@ const G8 = MC.general({ A:-4, C:-9, D:8, E:-36, F:-4 }), E8 = G8.conica;
 const O = pt(0, 0);
 const foco = (C, i) => deLista(C.num.focos[i]);
 
-const FUENTE = `<p class="fuente">Los informes de ideas erróneas del proyecto no tratan las cónicas (el de trigonometría las deja fuera; el de geometría, la analítica), así que estas opciones son hipótesis nuestras: se confirmarán con los datos del colegio.</p>`;
+const FUENTE = `<p class="fuente">Buscamos estos errores con cónicas en estudios publicados y no encontramos datos, así que estas opciones son hipótesis nuestras: se confirmarán con lo que marquen los alumnos.</p>`;
 const T = r => r.texto, ER = (r, k) => r.errores[k].texto;
 
 const P2 = { id:'conicas-paso2', ok:'b', opts:[
@@ -912,7 +912,7 @@ go(0);
 </script>
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
-   Experimentos con errores que son hipótesis nuestras (CO, los informes no tratan las cónicas): las estacas que se
+   Experimentos con errores que son hipótesis nuestras (CO, sin datos en la literatura que se buscó): las estacas que se
    juntan, una circunferencia por su ecuación general, la antena parabólica, las asíntotas de una hipérbola vertical
    y el cono que se corta. La escena cambia recién después de responder. Un experimento se abre solo si los
    anteriores ya tienen respuesta. */
@@ -925,7 +925,7 @@ const PL = MC.plato({ ancho:120, hondo:20 }), PLc = PL.conica;
 const HV = MC.hiperbola({ h:-2, k:1, a2:4, b2:9, eje:'y' });
 const CO = MC.cono({ inclinacion:60, generatriz:60 });
 const O = pt(0, 0);
-const FUENTE = `<p class="fuente">Los informes de ideas erróneas del proyecto no tratan las cónicas, así que estas opciones son hipótesis nuestras: se confirmarán con los datos del colegio.</p>`;
+const FUENTE = `<p class="fuente">Buscamos estos errores con cónicas en estudios publicados y no encontramos datos, así que estas opciones son hipótesis nuestras: se confirmarán con lo que marquen los alumnos.</p>`;
 const T = r => r.texto, ER = (r, k) => r.errores[k].texto;
 const S = { k:0, pred:{}, t0:Date.now(), fi:60 };
 

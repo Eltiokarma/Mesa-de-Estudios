@@ -20,7 +20,8 @@
  *   1 omitido ('a⁶b³'), coeficiente fraccionario entre paréntesis ('(1/2)x³') y lugares como 't₄'.
  *   Cada función que responde una predicción devuelve { …, texto, num, errores, coinciden, noAplica }: num es el
  *   valor numérico (Number) para comparar; 'errores' es un objeto cuyas claves son errores típicos y cada uno trae
- *   { texto, num, id, regla }. 'id' es BN1…BN27 (hipótesis nuestras) o AL8 / AL11 (docs/investigacion/
+ *   { texto, num, id, regla }. 'id' es BN1…BN27 (hipótesis nuestras, salvo BN12 y BN21, que son parciales;
+ *   ver docs/investigacion/matematica-avanzada-ideas-erroneas.md) o AL8 / AL11 (docs/investigacion/
  *   algebra-funciones-ideas-erroneas.md). Un error que con esos datos da lo mismo que la respuesta correcta NO va
  *   en 'errores': su clave va en 'coinciden'. Uno que no se puede calcular con esos datos va en 'noAplica'.
  *

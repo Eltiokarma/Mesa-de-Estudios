@@ -17,8 +17,9 @@
  *   El argumento principal va en ⟨−180°; 180°].
  *   Cada función que responde una predicción devuelve { …, texto, num, errores, coinciden }: num es el valor
  *   numérico { re, im } (para comparar), y 'errores' es un objeto cuyas claves son errores típicos; cada uno trae
- *   { texto, num, id, regla }. 'id' es CX1…CX34 (hipótesis nuestras), AL9 o AL11 (docs/investigacion/
- *   algebra-funciones-ideas-erroneas.md). Un error que con esos números da el mismo valor que la respuesta correcta
+ *   { texto, num, id, regla }. 'id' es CX1…CX7 o CX10…CX35 (CX8 y CX9 no existen; hipótesis nuestras,
+ *   salvo CX17 y CX18, que son parciales: ver docs/investigacion/matematica-avanzada-ideas-erroneas.md), AL9 o
+ *   AL11 (docs/investigacion/algebra-funciones-ideas-erroneas.md). Un error que con esos números da el mismo valor que la respuesta correcta
  *   NO va en 'errores': su clave va en la lista 'coinciden'. Un error que no se puede calcular con esos datos (por
  *   ejemplo, dividir parte por parte entre una parte 0) va en 'noAplica'.
  *

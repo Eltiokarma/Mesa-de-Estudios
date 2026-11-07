@@ -503,7 +503,7 @@ function crearTablero(cv, idDesc, idLect, idLey){
 </script>
 <script>
 // Textos de respaldo compartidos por los dos modos
-const HIP = `<p class="fuente">El informe de ideas erróneas de álgebra solo trata el binomio al cuadrado y el reparto del exponente (AL8 y AL11); del desarrollo de Newton no trae datos: estas opciones son hipótesis nuestras (BN), armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.</p>`;
+const HIP = `<p class="fuente">El informe de ideas erróneas de álgebra solo trata el binomio al cuadrado y el reparto del exponente (AL8 y AL11); del desarrollo de Newton buscamos en estudios publicados y no encontramos datos: estas opciones son hipótesis nuestras (BN), armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.</p>`;
 const FUENTE_AL = `<p class="fuente">El informe de ideas erróneas de álgebra documenta de forma parcial el caso del cuadrado, (a + b)² = a² + b² (AL8: el SIMCE de Chile lo señala como el error típico del binomio, sin un porcentaje legible), y trata el caso general, (a + b)ⁿ = aⁿ + bⁿ, como hipótesis con base en Matz (1982), sin dato propio (AL11). Las otras opciones son hipótesis nuestras.</p>`;
 const LEY = [['a', 'paso a la izquierda: primer término', 'linea'], ['b', 'paso a la derecha: segundo término', 'linea'], ['n', 'fila n (exponente)'], ['k', 'casillero k (veces que se elige el segundo)']];
 const sub = MB.sub;
@@ -528,7 +528,7 @@ const B8 = { A:{ c:1, v:{ x:2 } }, B:{ c:1, v:{ x:-1 } } }, K8 = MB.coeficiente(
 const may = t => t.charAt(0).toUpperCase() + t.slice(1);
 
 const P1 = { id:'binomio-newton-paso1', ok:'c', opts:[
-  ['a', C1.errores.variacion.texto, 'BN12-variacion-ordena-las-b', 'hipotesis'],
+  ['a', C1.errores.variacion.texto, 'BN12-variacion-ordena-las-b', 'parcial'],
   ['b', C1.errores.soloK.texto, 'BN13-olvida-dividir-entre-(n-k)!', 'hipotesis'],
   ['c', C1.texto],
   ['d', C1.errores.todas.texto, 'BN14-cuenta-todos-los-caminos', 'hipotesis']],
@@ -710,7 +710,7 @@ const steps = [
    <p class="palabras" id="pal1"></p>
    <div class="control"><label for="n1">Filas, n</label><input type="range" id="n1" min="1" max="10" step="1" value="${s1.n}"></div>
    <p>Arrastra el casillero marcado por la última fila (o usa las flechas del teclado en el dibujo) y mueve n: el número de cada casillero cuenta los caminos que llegan a él. Fíjate en los bordes: C(${n_('n')}, 0) = C(${n_('n')}, ${n_('n')}) = 1, y en la simetría C(${n_('n')}, ${k_('k')}) = C(${n_('n')}, ${n_('n')} − ${k_('k')}).</p>
-   ${HIP}</div>` },
+   <p class="fuente">La opción A (contar como si importara el orden de las b) tiene respaldo parcial: es el «error de orden» que Batanero, Navarro-Pelayo y Godino (1997) describen en 720 alumnos españoles de 14 y 15 años; solo leímos resúmenes, sin el porcentaje. Las demás opciones son hipótesis nuestras.</p></div>` },
  { k:'Paso 2', t:'Predice: la fila de abajo', gate:P2, prep:() => cfg2(!!S.pred[P2.id]), anima:anima2,
    body:() => `<p class="problem">Para llegar a un casillero, la bolita pasa antes por uno de los dos que tiene arriba: el de arriba a la izquierda (y luego va a la derecha) o el de arriba a la derecha (y luego va a la izquierda). ¿Qué número va en el casillero marcado de la fila ${n_('8')}?</p>${opcionesHTML(P2.opts, 'fb')}
    <div id="tras" class="body" hidden>
@@ -844,8 +844,8 @@ go(0);
 </script>
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
-   Experimentos con errores típicos: casi todos son hipótesis nuestras (BN), porque el informe de álgebra no trata
-   el binomio de Newton; el reparto del exponente es AL11. La escena cambia recién después de responder. Un
+   Experimentos con errores típicos: casi todos son hipótesis nuestras (BN), sin datos en la literatura que se buscó
+   (BN21 es parcial); el reparto del exponente es AL11. La escena cambia recién después de responder. Un
    experimento se abre solo si los anteriores ya tienen respuesta. */
 (function(){
 const $ = id => document.getElementById(id);
@@ -961,14 +961,14 @@ const EXPS = [
       <p>Los dos centrales tienen el mismo coeficiente porque el triángulo es simétrico: C(7, 3) = C(7, 4) = 35. En general, con ${n_('n')} impar son t<sub>(${n_('n')}+1)/2</sub> y t<sub>(${n_('n')}+3)/2</sub>.</p>${HIP}` },
   { id:'galton', corto:'Bolitas que caen',
     q:`Se sueltan 128 bolitas en un tablero de ${n_('7')} filas; en cada clavo, cada bolita va a la izquierda o a la derecha con la misma probabilidad. ¿Cuántas caen, en promedio, en el casillero marcado, el de ${k_('k = 3')}?`,
-    opts:[['a', G4.errores.uniforme.texto, 'BN21-casilleros-iguales', 'hipotesis'], ['b', G4.texto],
+    opts:[['a', G4.errores.uniforme.texto, 'BN21-casilleros-iguales', 'parcial'], ['b', G4.texto],
       ['c', G4.errores.mitad.texto, 'BN22-mitad-al-centro', 'hipotesis'], ['d', G4.errores.desfase.texto, 'BN2-desfase-del-indice', 'hipotesis']], ok:'b',
     fb:{ a:'16 = 128/8 supone que todos los casilleros reciben lo mismo. Pero a los del medio llegan muchos más caminos que a los bordes: al de k = 0 llega uno solo.',
       c:'El medio tiene dos casilleros, k = 3 y k = 4, y entre los dos reciben en promedio 70 de 128, no 64 cada uno.',
       d:'21 = C(7, 2) son los caminos del casillero de al lado. Al de k = 3 llegan C(7, 3) = 35 de los 2⁷ = 128 caminos.' },
     antes:ya => cfg4(ya), despues:anim4,
     exp:() => `<div class="eqs"><div class="eq">promedio = 128 · C(7, 3)/2⁷ = 128 · 35/128 = 35</div></div>
-      <p>Los 2⁷ = 128 caminos son igual de probables, y 35 de ellos terminan en ${k_('k = 3')}. En cada tanda caen unas más o unas menos (mira la altura de la barra contra la línea punteada); con muchas bolitas, la forma se parece cada vez más a la fila 7 del triángulo. Es una simulación con azar: con «Ver otra vez» cae otra tanda y los números cambian.</p>${HIP}` },
+      <p>Los 2⁷ = 128 caminos son igual de probables, y 35 de ellos terminan en ${k_('k = 3')}. En cada tanda caen unas más o unas menos (mira la altura de la barra contra la línea punteada); con muchas bolitas, la forma se parece cada vez más a la fila 7 del triángulo. Es una simulación con azar: con «Ver otra vez» cae otra tanda y los números cambian.</p><p class="fuente">La opción A (todos los casilleros reciben lo mismo) tiene respaldo parcial: es el sesgo de equiprobabilidad, la idea de que todos los resultados del azar son igual de probables, que describen Lecoutre (1992) y Begué y otros (2020); solo leímos resúmenes, sin cifras de ese sesgo, y ninguno usa un tablero como este. Las demás opciones son hipótesis nuestras.</p>` },
   { id:'signos', corto:'Coeficientes con signo',
     q:`¿Cuánto suman los coeficientes del desarrollo de (${a_('x')} − 2)⁷, cuyo segundo término es ${b_('−2')}?`,
     opts:[['a', S5.errores.reparte.texto, 'AL11-reparte-el-exponente', 'hipotesis'], ['b', S5.errores.sinSigno.texto, 'BN8-olvida-el-signo', 'hipotesis'],

@@ -478,7 +478,7 @@ const Z5 = { re:-3, im:2 }, C5 = MC.conjugado({ z:Z5 });
 const Z6 = { re:5, im:1 }, W6 = { re:1, im:-1 }, Q6 = MC.dividir({ z:Z6, w:W6 }), WB6 = MC.conjugado({ z:W6 });
 const Z7 = { re:-1, im:'√3' }, PO7 = MC.polar({ z:Z7 }), A7 = MC.argumento({ z:Z7 });
 const Z8 = { r:2, theta:10 }, W8 = { r:3, theta:30 }, M8 = MC.productoPolar({ z:Z8, w:W8 });
-const hip = `<p class="fuente">El informe de ideas erróneas de álgebra no trata los números complejos: estas opciones son hipótesis nuestras, armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.`;
+const hip = `<p class="fuente">Buscamos estos errores con números complejos en estudios publicados y no encontramos datos: estas opciones son hipótesis nuestras, armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.`;
 const P1 = { id:'numeros-complejos-paso1', ok:'b', opts:[
   ['a', I2.errores.cuadradoPositivo.texto, 'CX1-i-cuadrado-es-1', 'hipotesis'],
   ['b', I2.texto],
@@ -534,9 +534,9 @@ const P6 = { id:'numeros-complejos-paso6', ok:'c', opts:[
     b:'Elegiste la B. 3 − 2i sale de multiplicar arriba por w = 1 − i en vez de por su conjugado w̄ = 1 + i. La correcta está marcada.',
     d:'Elegiste la D. 4 + 6i es el numerador: falta dividir entre (1 − i)(1 + i) = 2. La correcta está marcada.' } };
 const P7 = { id:'numeros-complejos-paso7', ok:'d', opts:[
-  ['a', PO7.errores.arctanDirecto.texto, 'CX17-arctan-sin-cuadrante', 'hipotesis'],
+  ['a', PO7.errores.arctanDirecto.texto, 'CX17-arctan-sin-cuadrante', 'parcial'],
   ['b', PO7.errores.sinRaiz.texto, 'CX11-sin-raiz', 'hipotesis'],
-  ['c', PO7.errores.referencia.texto, 'CX18-angulo-de-referencia', 'hipotesis'],
+  ['c', PO7.errores.referencia.texto, 'CX18-angulo-de-referencia', 'parcial'],
   ['d', PO7.texto]],
   fb:{ d:'¡Bien! r = √(1 + 3) = 2, y el punto (−1; √3) está en el segundo cuadrante: θ = 180° − 60° = 120°.',
     a:'Elegiste la A. arctan(√3/(−1)) = −60° apunta al cuarto cuadrante. El punto (−1; √3) está arriba a la izquierda, en el segundo. La correcta está marcada.',
@@ -821,7 +821,7 @@ const steps = [
    <div class="eq">z = 2 cis 120° = 2(cos 120° + i sen 120°) = 2(−1/2 + (√3/2)i) = −1 + √3 i</div></div>
    <p>arctan(b/a) solo devuelve ángulos entre −90° y 90°: no distingue (−1; √3) de (1; −√3). Primero se mira en qué cuadrante está el punto; después se corrige el ángulo.</p>
    <p>Arrastra la punta de ${r_('z')} por los cuatro cuadrantes: el argumento principal cumple −180° &lt; θ ≤ 180° (algunos libros toman 0° ≤ θ &lt; 360°).</p>
-   ${hip}</p></div>` },
+   <p class="fuente">Las opciones A (arctan sin mirar el cuadrante) y C (el ángulo agudo con el eje) tienen respaldo parcial: Smith, Zwolak y Manogue (2019) vieron que estudiantes universitarios de física fallan al sacar el ángulo cuando usan la trigonometría del triángulo en lugar de la de la circunferencia; solo leímos el resumen, sin cifras, y la forma exacta de estos dos errores la inferimos nosotros. La B es una hipótesis nuestra.</p></div>` },
  { k:'Paso 8', t:'Predice: multiplicar flechas', gate:P8,
    prep:() => config8(!!S.pred[P8.id]),
    anima:fin => { config8(false); const s = E.L.estado; E.animar(1400, f => { s.f = f; }, () => esperar(500, () => { config8(true); fin(); })); },
@@ -905,8 +905,8 @@ go(0);
 </script>
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
-   Experimentos con errores típicos: casi todos son hipótesis nuestras (CX), porque el informe de álgebra no trata
-   los números complejos. La escena cambia recién después de responder. Un experimento se abre solo si los
+   Experimentos con errores típicos: casi todos son hipótesis nuestras (CX), sin datos en la literatura que se
+   buscó. La escena cambia recién después de responder. Un experimento se abre solo si los
    anteriores ya tienen respuesta. */
 (function(){
 const $ = id => document.getElementById(id);
@@ -916,7 +916,7 @@ const R2 = MC.raizNegativa({ a:4, b:9 });
 const Z3 = { r:6, theta:100 }, W3 = { r:2, theta:40 }, Q3 = MC.cocientePolar({ z:Z3, w:W3 });
 const D4 = MC.deMoivre({ z:{ re:1, im:1 }, n:8 });
 const C5 = MC.cuadratica({ a:1, b:-4, c:13 });
-const hip = 'El informe de álgebra no trata este error; es una hipótesis nuestra que se confirma con lo que marquen los alumnos.';
+const hip = 'Buscamos este error en estudios publicados y no encontramos datos; es una hipótesis nuestra que se confirma con lo que marquen los alumnos.';
 const may = t => t.charAt(0).toUpperCase() + t.slice(1);
 const rej = B => ({ x0:Math.ceil(B.x0), x1:Math.floor(B.x1), y0:Math.ceil(B.y0), y1:Math.floor(B.y1) });
 function base(L, B, paso){ L.rejilla = rej(B); L.ejes = marcas(B, paso, E.angosto()); }

@@ -11,8 +11,9 @@
  *   por «; », signo menos tipográfico −, fracciones 'p/q'). Los índices i, j de los textos empiezan en 1; los de las
  *   listas internas (celdas, diagonales) empiezan en 0. Un vector o punto del plano es [x, y].
  *   Cada función que responde una predicción devuelve { …, texto, errores, coinciden }: 'errores' es un objeto cuyas
- *   claves son errores típicos y cada uno trae { valor o matriz, texto, id, regla }; 'id' es MT1…MT32 (hipótesis
- *   nuestras: docs/investigacion/ no trae datos sobre matrices) o AL16. Un error que con esos números daría lo mismo
+ *   claves son errores típicos y cada uno trae { valor o matriz, texto, id, regla }; 'id' es MT1…MT34 (hipótesis
+ *   nuestras, salvo MT4, que es parcial por Aygör y Özdağ, 2012; ver
+ *   docs/investigacion/matematica-avanzada-ideas-erroneas.md) o AL16. Un error que con esos números daría lo mismo
  *   que la respuesta correcta (mismo texto) o que no aplica NO va en 'errores': su clave va en la lista 'coinciden'.
  *
  * FUNCIONES EXPORTADAS

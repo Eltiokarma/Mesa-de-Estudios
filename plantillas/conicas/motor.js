@@ -93,8 +93,8 @@
  *   texto(v), fraccion(x)
  *       Texto exacto de una fracción o radical; fraccion convierte la entrada a { n, d }.
  *   ERRORES
- *       id → descripción. CO1 a CO35 y CO37 son hipótesis nuestras: los informes de docs/investigacion/ no tratan las cónicas
- *       (el de trigonometría las deja fuera; el de geometría deja fuera la analítica).
+ *       id → descripción. CO1 a CO35 y CO37 son hipótesis nuestras: se buscaron en la literatura y no hay estudios con
+ *       datos sobre ellos (ver docs/investigacion/matematica-avanzada-ideas-erroneas.md).
  *
  * Cada pregunta trae 'errores': nombre → { id, valor, texto }, lo que da cada error típico. Un error que con esos
  * números da lo mismo que la respuesta correcta se quita y su nombre queda en 'coinciden'; uno que no tiene sentido

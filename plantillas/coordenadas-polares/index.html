@@ -517,7 +517,7 @@ const K4 = MP.aCartesianas({ r:4, theta:150 });
 const P5 = MP.aPolares({ x:-2, y:-2 });
 const T6 = MP.rectaTheta({ k:60 });
 const C7 = MP.circuloEje({ a:4, f:'cos' }), CE7 = MP.cartesianaEje({ a:4, f:'cos' });
-const hipT = 'No hay un informe de ideas erróneas sobre coordenadas polares: estas opciones son hipótesis nuestras, armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.';
+const hipT = 'Buscamos estos errores en estudios publicados sobre coordenadas polares y no encontramos datos: estas opciones son hipótesis nuestras, armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.';
 const hip = `<p class="fuente">${hipT}</p>`;
 const G1 = { id:'coordenadas-polares-paso1', ok:'c', opts:[
   ['a', C1.errores.cociente.texto, 'CP1-cuadrante-por-cociente', 'hipotesis'],
@@ -531,7 +531,7 @@ const G1 = { id:'coordenadas-polares-paso1', ok:'c', opts:[
 const G2 = { id:'coordenadas-polares-paso2', ok:'b', opts:[
   ['a', N2.errores.reflejaY.texto, 'CP5-refleja-en-el-eje-y', 'hipotesis'],
   ['b', N2.texto],
-  ['c', N2.errores.ignoraSigno.texto, 'CP3-ignora-el-signo-de-r', 'hipotesis'],
+  ['c', N2.errores.ignoraSigno.texto, 'CP3-ignora-el-signo-de-r', 'parcial'],
   ['d', N2.errores.reflejaX.texto, 'CP4-refleja-en-el-eje-x', 'hipotesis']],
   fb:{ b:'¡Bien! Se mira hacia 30° y se caminan 2 hacia atrás: se cruza el polo y se llega al lado opuesto, a 30° + 180° = 210°.',
     a:'Elegiste la A. (2; 150°) es el reflejo de (2; 30°) en el eje vertical. Con r negativo no se refleja: se camina hacia atrás, pasando por el polo. La correcta está marcada.',
@@ -786,7 +786,7 @@ const steps = [
    <p>Con ${r_('r')} negativo se mira hacia ${th_('θ')} y se camina hacia atrás: se cruza el polo y se llega al lado opuesto. No es un reflejo en un eje: el punto queda «al otro lado del polo», a media vuelta.</p>
    <p>Mueve r y θ, o arrastra el punto (con las flechas del teclado, ↑ ↓ cambian r y pasan a los negativos).</p>
    ${deslizadores(2)}
-   ${hip}</div>`,
+   <p class="fuente">La opción C (ignorar el signo de r) tiene respaldo parcial: Habre (2017) observó, en un curso universitario de cálculo, que seguir hacia dónde se mueve el punto cuesta más cuando r es negativo; solo leímos el resumen, sin cifras. Las demás opciones son hipótesis nuestras.</p></div>`,
    entrar:() => enlazarRG(2) },
  { k:'Paso 3', t:'Predice: otro nombre para el mismo punto', gate:G3,
    prep:() => config3(!!S.pred[G3.id]),
@@ -928,7 +928,7 @@ go(0);
 </script>
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
-   Experimentos con errores típicos: todos son hipótesis nuestras (CP), porque no hay informe de polares. La escena
+   Experimentos con errores típicos: todos son hipótesis nuestras (CP): se buscaron en estudios publicados y no hay datos. La escena
    cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
 (function(){
 const $ = id => document.getElementById(id);
@@ -938,7 +938,7 @@ const C2 = MP.circuloEje({ a:-6, f:'sen' });
 const K3 = MP.cartesianaEje({ a:10, f:'cos' });
 const R4 = MP.petalos({ a:2, n:3, f:'sen' });
 const R5 = MP.petalos({ a:3, n:2, f:'cos' });
-const hip = 'No hay un informe de ideas erróneas sobre coordenadas polares; estas opciones son hipótesis nuestras que se confirman con lo que marquen los alumnos.';
+const hip = 'Buscamos estos errores en estudios publicados sobre coordenadas polares y no encontramos datos; estas opciones son hipótesis nuestras que se confirman con lo que marquen los alumnos.';
 const BOXR = R => ({ x0:-R - .9, x1:R + .9, y0:-R - .9, y1:R + .9 });
 
 // 1. Un punto sobre un eje
