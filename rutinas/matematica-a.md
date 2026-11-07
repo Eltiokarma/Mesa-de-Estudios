@@ -258,3 +258,109 @@ Un reinicio del contenedor borró el primer avance, y después el límite de uso
 3. `docs/investigacion/algebra-funciones-ideas-erroneas.md`: registrar PO1 a PO34 como hipótesis nuestras, porque el informe no cubre polinomios.
 4. `docs/metodo/entradas.py` se cae cuando `espera` es un valor suelto y no un objeto. Usé una copia corregida en el scratchpad: `pide` = ["valor"].
 5. Líneas para `docs/pendientes.md` y `CLAUDE.md`: «Polinomios (7 nov 2026, rutina de matemática A): `plantillas/polinomios/` (la máquina de Ruffini: fichas con el 0 que falta, el resto es la altura P(a) en la curva, divisor ax + b con el cociente falso, grados, resto por sustitución y raíces racionales; 22 casos verificados aparte)».
+
+## 7 nov 2026 · Funciones trigonométricas inversas: la ventana principal (`plantillas/funciones-trig-inversas/`)
+
+Hubo dos cortes por el límite de uso; los avances quedaron en commits parciales.
+
+**Qué hice.**
+
+- **`motor.js`** (UMD; la cabecera para el verificador va hasta la línea 60).
+  - Cubre arcsen, arccos, arctan y arccot con los rangos principales de academia: arccot va en ⟨0; π⟩. arcsec y arccsc están en `arco`, pero solo se usan en el papel.
+  - Funciones:
+    - los cortes de y = k con la onda;
+    - la ventana, que sirve solo si es un tramo monótono completo;
+    - compuestas con el triángulo;
+    - dominio de arcsen(ax + b), que invierte el sentido si a < 0;
+    - arcsen x + arccos x;
+    - sen⁻¹ y su notación;
+    - arctan a + arctan b, con la corrección de ±π cuando ab > 1.
+  - La convención de academia («37°», que en realidad mide 36,87°) se marca con `academia` y `gradosReal`.
+  - Cada resultado trae `errores` y `repetidos`. Cuando dos errores dan lo mismo, el segundo se descarta y la escena no muestra opciones iguales.
+- **Casos y papel.**
+  - `casos.json`: 19 casos con sus `tambien`.
+  - `motor.test.js`: 40 pruebas. Incluye propiedades contra Math (imparidad, π − arccos, la suma π/2, que los cortes cumplen la ecuación), la prueba de propiedades y que las 12 predicciones tengan la misma forma y no digan «solo».
+  - `papel.json`: 10 problemas propios. p10 es arcsec(−2) + arccsc 2 = 5π/6.
+- **`plantilla.json`**: unidad `trigonometria.funciones-trigonometricas-inversas`.
+- **`index.html`**: la onda del seno con la recta y = k que se arrastra. Se pinta la ventana principal, solo un corte queda adentro y el tramo se refleja en y = x. Además están la circunferencia («arcsen lee la altura y devuelve el ángulo de la derecha; arccos lee la abscisa y devuelve el de arriba») y el triángulo de las compuestas.
+- **Paso a paso:** 8 pasos con 8 predicciones:
+  1. los ángulos de seno 1/2 en una vuelta (TR22);
+  2. arcsen(−1/2);
+  3. arcsen(sen 150°);
+  4. arccos(−1/2);
+  5. cos(arcsen 3/5);
+  6. arccot(−1);
+  7. arcsen 0,3 + arccos 0,3;
+  8. el dominio de arcsen(2x − 1).
+- **¿Qué pasa si…?:** 5 experimentos:
+  1. una ventana del seno que se arrastra;
+  2. arccos(cos(−60°));
+  3. arctan 1000;
+  4. sen⁻¹(0,5) en radianes;
+  5. arctan(1/2) + arctan(1/3), con la flecha que cae en la diagonal.
+- **Respaldo.** Ninguno es 'documentado', porque el informe no trata las inversas.
+  - TR12 es 'parcial' solo en el paso 1 (Brown 2005, sin cifra). En los pasos 2, 4 y 6 va como extensión nuestra, hipótesis.
+  - TR22 y TR14 son hipótesis. TR17 se cita solo como parecido.
+  - IN1 a IN29 son hipótesis nuestras.
+
+**Pruebas.** `npm test`: 1653; pasan 1651 y solo fallan las 2 esperadas. Playwright en las 8 combinaciones:
+- sin errores de consola, desbordes ni ecuaciones con scroll lateral;
+- el bloqueo no se salta con clic forzado, hash ni pastillas;
+- en el celular el lienzo queda fijo arriba mientras la predicción está pendiente;
+- el dedo lejos de la manija desplaza la página (lo probó también el revisor en todas las combinaciones).
+
+**Subagentes.**
+
+- **Verificador independiente.** Recibió solo las entradas y la cabecera. Usó métodos distintos: cortes grado a grado, Fraction, Pitágoras exacto y el argumento de (1 + ai)(1 + bi). Coincidieron todos los valores de los 19 casos y los 9 de papel de entonces. Señaló tres distractores dudosos, y los tres se corrigieron:
+  - «π/6 y π/3» en el paso 1, ahora «π/3 y 5π/3», que es resolver cos θ = 1/2;
+  - el rango cerrado con |k| chico, que ahora solo se genera con |k| ≥ 10;
+  - dos errores iguales en arccot(−1).
+
+  Entraron todos sus bordes:
+  - k = ±1 y 0;
+  - arccos 2, que no existe;
+  - arccos(3 − x);
+  - arcsen(sen θ) en los cuatro cuadrantes y con más de una vuelta;
+  - arccos(cos θ) con θ negativo;
+  - sumas de arctan con ab = 1 y con ab > 1 en negativos;
+  - arccot(−1/√3);
+  - compuestas con signo.
+
+  Un dato del verificador estaba mal: arctan(−2) + arctan(−3) «sin corregir» da π/4, no −π/4, porque (−5)/(1 − 6) = 1. El motor queda con π/4.
+- **Revisor de contenido.** Sin graves. Corregí:
+  - el paso 6: el punto (−1; 1) delataba el rayo a 135° y ahora sale en la animación;
+  - el título del paso 1, que descartaba la opción TR22, y el subtítulo de la página;
+  - el paso 5: el color de k también nombraba el cateto, y ahora los lados van en tinta;
+  - lecturas cortadas a 390 px;
+  - el experimento 5 y p7, que usaban la regla del producto de complejos sin explicarla;
+  - la falta de arcsec y arccsc, que la unidad pide: ahora están en p10;
+  - textos imprecisos (k = ±1, «la manija de abajo», el semieje);
+  - rótulos que se pisaban, que ahora se pintan al final con fondo;
+  - el `:hover` que quedaba pegado en el celular;
+  - el aria-live al responder.
+
+**Pendiente.**
+
+- arcsec y arccsc solo están en el papel.
+- φ cambia de papel entre pasos: es el ángulo de partida en el paso 3 y el segundo ángulo en el paso 7, con leyenda.
+- En la gráfica ancha del celular, algunas marcas del eje quedan cerca de los rótulos de los cortes.
+
+**Pedidos para la integración.**
+
+1. Catálogo: `funciones-trig-inversas` en `trigonometria.funciones-trigonometricas-inversas`, y luego `npm run catalogo`. Sumar ítems a la prueba de trigonometría y rebalancear si toca (la prueba avisa).
+2. `docs/diseno.md`, colores de la ventana principal:
+
+   | Variable | Claro | Oscuro |
+   | --- | --- | --- |
+   | θ (ángulo devuelto y ventana) | #a10fbf | #cf6bfa |
+   | k (número que recibe) | #0f766e | #5ed9c8 |
+   | φ (ángulo de partida o segundo arco) | #a05200 | #f0a04a |
+   | Lado o razón buscada en la compuesta | #466d14 | #a3d65e |
+
+   - ΔE00 mínimo: 23,6 en claro y 25,3 en oscuro.
+   - Contraste mínimo: 4,63.
+   - k queda a ΔE00 11 del verde de «correcto», que siempre lleva texto y borde.
+3. `docs/investigacion/trigonometria-ideas-erroneas.md`: registrar IN1 a IN29 como hipótesis nuestras, porque el informe no cubre las inversas.
+4. Líneas para `docs/pendientes.md` y `CLAUDE.md`: «Funciones trigonométricas inversas (7 nov 2026, rutina de matemática A): `plantillas/funciones-trig-inversas/` (la ventana principal: la recta y = k corta la onda muchas veces y solo un corte cae en la ventana; reflejo en y = x, arcsen y arccos en la circunferencia, compuestas con el triángulo, dominio y suma de arcotangentes; 19 casos verificados aparte)». Con esto, en la fila ma1 de pendientes solo faltan las transformaciones.
+
+**Fin de la lista.** Las cuatro plantillas pedidas están hechas. La conversación principal mandó por mensaje una lista nueva (transformaciones trigonométricas, complejos, matrices, binomio de Newton, números reales, programación lineal y cónicas). Queda en espera hasta que Gerson confirme.
