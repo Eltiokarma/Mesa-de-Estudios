@@ -392,7 +392,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "termodinamica"
+     ]
     },
     {
      "id": "fisica.electrostatica",
@@ -5290,6 +5292,23 @@
     "/plantillas/tablas-graficos/index.html",
     "/plantillas/tablas-graficos/motor.js",
     "/plantillas/tablas-graficos/papel.json"
+   ]
+  },
+  "termodinamica": {
+   "id": "termodinamica",
+   "titulo": "Termodinámica: primera ley, diagrama P-V y máquinas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.termodinamica"
+   ],
+   "url": "/plantillas/termodinamica/index.html",
+   "papel": "/plantillas/termodinamica/papel.json",
+   "archivos": [
+    "/plantillas/termodinamica/index.html",
+    "/plantillas/termodinamica/motor.js",
+    "/plantillas/termodinamica/papel.json"
    ]
   },
   "tiro-parabolico": {

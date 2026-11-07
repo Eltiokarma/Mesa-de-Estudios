@@ -1,0 +1,1210 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Termodinámica: primera ley, diagrama P-V y máquinas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   P presión azul y V volumen verde, como en gases (plantillas/gases/); T temperatura rojo, un poco más oscuro que en
+   gases (#b02c41) para pasar AA también en los chips sobre las opciones ya respondidas. Q calor naranja: en
+   calorimetría el calor es azul, pero aquí el azul es la presión y salen juntos; el naranja de los moles de gases queda
+   libre porque aquí n va en tinta. W trabajo fucsia (también el área bajo la curva P-V) y ΔU energía interna turquesa.
+   Tc y Tf son la temperatura del gas en sus dos focos: van en el rojo de T; Qc y Qf son calor: van en el naranja de Q.
+   La eficiencia η, el COP, n y R van en tinta. W es siempre trabajo (en esta escena no hay ningún peso) y T, siempre
+   temperatura (no hay periodo).
+   ΔE00 mínimo 23,0 en claro (V–ΔU) y 23,6 en oscuro (T–W); contraste ≥ 4,5 sobre el papel, sobre el chip (8 %) y sobre
+   las opciones ya respondidas, en claro y en oscuro (docs/metodo/paleta.py). ΔU queda a 11 del verde de «correcto» y
+   T a 7,6 (claro) y 6,7 (oscuro) del rojo de los avisos: los dos estados siempre llevan texto y borde. El morado de marca no se usa aquí. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-P:#1f5fbf; --c-V:#466d14; --c-T:#b02c41; --c-Q:#924a00; --c-W:#a10fbf; --c-U:#0c6b63;
+  --gas:#efe6f2; --bloque:#f3e3d3; --metal:#d9c8bb; --puntos:#9a8aa6;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-P:#7cb0ff; --c-V:#a3d65e; --c-T:#f5899a; --c-Q:#f0a04a; --c-W:#d888fb; --c-U:#5ed9c8;
+  --gas:#33293f; --bloque:#5a4868; --metal:#4a3d55; --puntos:#8d7f9c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-P:#7cb0ff; --c-V:#a3d65e; --c-T:#f5899a; --c-Q:#f0a04a; --c-W:#d888fb; --c-U:#5ed9c8;
+  --gas:#33293f; --bloque:#5a4868; --metal:#4a3d55; --puntos:#8d7f9c; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block; flex:none}
+.legend i.area{height:10px; opacity:.45}
+.legend i.iso{height:0; border-top:2px dashed var(--muted); background:none!important}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.step-t:focus{outline:none}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+/* Datos con color: fondo del 8 %; resaltado con contorno y sin fondo. */
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
+.v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-Q{color:var(--c-Q); background:color-mix(in srgb, var(--c-Q) 8%, transparent)}
+.v-W{color:var(--c-W); background:color-mix(in srgb, var(--c-W) 8%, transparent)}
+.v-U{color:var(--c-U); background:color-mix(in srgb, var(--c-U) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+table.tramos{border-collapse:collapse; font-family:var(--mono); font-size:.9rem; font-variant-numeric:tabular-nums}
+table.tramos th, table.tramos td{padding:4px 10px; border-bottom:1px solid var(--line); text-align:right}
+table.tramos th:first-child, table.tramos td:first-child{text-align:left; font-family:var(--font)}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb:focus{outline:none}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+input.r-V{accent-color:var(--c-V)} input.r-Q{accent-color:var(--c-Q)} input.r-W{accent-color:var(--c-W)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Termodinámica · Problemas tipo admisión</p>
+      <h1>Primera ley y diagrama P-V</h1>
+      <p class="sub">Un gas en un cilindro con émbolo y su diagrama P-V, que se mueven juntos. El calor, el trabajo y el cambio de energía interna, cada uno con su color y su signo.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Cilindro con émbolo, diagrama P-V y barras de calor, trabajo y energía interna">
+      <div class="lienzo"><canvas id="cv" tabindex="-1" role="img" aria-label="A la izquierda, el cilindro con el gas y su émbolo; a la derecha, el diagrama P-V; abajo, las barras de Q, W y ΔU"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT" tabindex="-1"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimento elegido, con el cilindro, el diagrama P-V y las barras">
+      <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2" tabindex="-1"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/termodinamica">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'termodinamica', unidad: 'fisica.termodinamica', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas de dibujo compartidas =================
+   Toda la física sale de MotorTermodinamica (motor.js); aquí solo se pinta. P en kPa y V en L: 1 kPa·L = 1 J. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length >= 5) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Entero si lo es (a 0,05), si no con un decimal.
+const N1 = n => fmt(n, Math.abs(n - Math.round(n)) < 0.05 ? 0 : 1);
+const J = n => (n > 0.05 ? '+' : '') + N1(n) + ' J';
+const pct = x => fmt(100*x, Math.abs(100*x - Math.round(100*x)) < 0.05 ? 0 : 1) + ' %';
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const M = MotorTermodinamica;
+// Escribe en una región aria-live solo si el texto cambia (si no, el lector de pantalla repite en cada cuadro).
+function decir(el, t){ if (el.textContent !== t) el.textContent = t; }
+
+const altoLienzo = W => W >= 560 ? clamp(W*0.62, 360, 470) : clamp(W*1.06, 350, 410);
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0, compacto:false };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:250 })), dpr = window.devicePixelRatio || 1;
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === L.compacto) return; L.compacto = on; L.resize(); };
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas. No se sale de [x0, x1] × [y0, y1].
+function rotulo(ctx, c, x, y, t, color, align, peso, caja){
+  ctx.font = `${peso || 700} ${c.chico ? 11 : 12}px ${c.font}`; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width;
+  let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  if (caja){ x0 = clamp(x0, caja.x0 + 2, caja.x1 - w - 2); y = clamp(y, caja.y0 + 9, caja.y1 - 9); }
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
+  return { x0, x1: x0 + w, y };
+}
+function colores(W){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    P:g('--c-P'), V:g('--c-V'), T:g('--c-T'), Q:g('--c-Q'), W:g('--c-W'), U:g('--c-U'),
+    gas:g('--gas'), bloque:g('--bloque'), metal:g('--metal'), puntos:g('--puntos'), mono:g('--mono'), font:g('--font'), chico: W < 480,
+    oscuro: matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.dataset.theme !== 'light' || document.documentElement.dataset.theme === 'dark' };
+}
+function flecha(ctx, x1, y1, x2, y2, color, w, dash){
+  const ang = Math.atan2(y2 - y1, x2 - x1), l = Math.hypot(x2 - x1, y2 - y1); if (l < 2) return;
+  const p = Math.min(8 + w, l*0.6);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round';
+  if (dash) ctx.setLineDash(dash);
+  linea(ctx, x1, y1, x2 - Math.cos(ang)*p*0.7, y2 - Math.sin(ang)*p*0.7);
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - Math.cos(ang - .45)*p, y2 - Math.sin(ang - .45)*p); ctx.lineTo(x2 - Math.cos(ang + .45)*p, y2 - Math.sin(ang + .45)*p);
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+function pasoBonito(rango, n){
+  const crudo = rango/n, p = Math.pow(10, Math.floor(Math.log10(crudo))), r = crudo/p;
+  return (r < 1.5 ? 1 : r < 3 ? 2 : r < 7 ? 5 : 10)*p;
+}
+// Puntos de un recorrido (proceso o camino del motor) desde s = 0 hasta s = hasta.
+function recorrido(obj, hasta, k){
+  k = k || 60; const n = Math.max(2, Math.ceil(k*hasta)), out = [];
+  for (let i = 0; i <= n; i++) out.push(obj.en(hasta*i/n));
+  return out;
+}
+
+/* ---------- El cilindro ----------
+   o = { V, Vmax, aislado, trabado, foco: { txt, txtT } | null (debajo), q: +1 entra / −1 sale / 0, w: +1 el gas empuja / −1 lo empujan,
+         mano: bool, etiqueta, hl } */
+const azar = x => { const t = Math.sin(x)*43758.5453; return t - Math.floor(t); };
+const PUNTOS_GAS = Array.from({ length: 30 }, (_, i) => [azar(i*12.9898 + 1.3), azar(i*78.233 + 0.7)]);
+function cilindro(ctx, c, b, o){
+  const conFoco = !!o.foco, hs = conFoco ? 40 : 6;
+  const wi = Math.min(b.w - 18, 96), cx = b.x + b.w/2, x0 = cx - wi/2, x1 = cx + wi/2;
+  const top = b.y + 40, fondo = b.y + b.h - hs;
+  const util = fondo - top - 14, gh = clamp(o.V/o.Vmax, 0.04, 1)*util, yp = fondo - gh;
+  // Gas
+  ctx.save(); ctx.fillStyle = c.gas; ctx.fillRect(x0, yp, wi, gh);
+  ctx.fillStyle = c.puntos;
+  PUNTOS_GAS.forEach(([u, v]) => { ctx.beginPath(); ctx.arc(x0 + 5 + u*(wi - 10), yp + 12 + v*Math.max(0, gh - 18), 2.1, 0, Math.PI*2); ctx.fill(); });
+  ctx.restore();
+  // Paredes (y aislante rayado si está aislado)
+  if (o.aislado){
+    ctx.save(); ctx.fillStyle = c.metal; ctx.globalAlpha = .7;
+    ctx.fillRect(x0 - 9, top - 6, 7, fondo - top + 15); ctx.fillRect(x1 + 2, top - 6, 7, fondo - top + 15); ctx.fillRect(x0 - 9, fondo + 2, wi + 18, 7);
+    ctx.globalAlpha = 1; ctx.strokeStyle = c.muted; ctx.lineWidth = 1;
+    for (let y = top - 4; y < fondo + 8; y += 6){ linea(ctx, x0 - 9, y + 4, x0 - 2, y); linea(ctx, x1 + 2, y + 4, x1 + 9, y); }
+    for (let x = x0 - 7; x < x1 + 8; x += 6) linea(ctx, x, fondo + 9, x + 4, fondo + 2);
+    ctx.restore();
+  }
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x0, top - 6); ctx.lineTo(x0, fondo); ctx.lineTo(x1, fondo); ctx.lineTo(x1, top - 6); ctx.stroke(); ctx.restore();
+  // Émbolo y su vástago
+  ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+  rr(ctx, x0 + 1, yp - 10, wi - 2, 10, 2); ctx.fill(); ctx.stroke();
+  ctx.lineWidth = 4; linea(ctx, cx, yp - 10, cx, yp - 30); ctx.restore();
+  const marco = { x0: b.x, x1: b.x + b.w, y0: b.y, y1: b.y + b.h };
+  if (o.trabado){
+    ctx.save(); ctx.fillStyle = c.ink;
+    [[x0 - 4, yp - 15], [x1 - 8, yp - 15]].forEach(([x, y]) => { rr(ctx, x, y, 12, 5, 2); ctx.fill(); });
+    ctx.restore();
+    if (!o.etiqueta) rotulo(ctx, c, cx, yp - 40, 'trabado', c.muted, 'center', 700, marco);
+  }
+  // La mano que empuja, sobre el vástago; la flecha de W va a su lado.
+  const xw = o.mano ? cx + 24 : cx + 12;
+  if (o.mano){
+    ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; rr(ctx, cx - 14, yp - 46, 28, 16, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, cx - 18, yp - 38, 'mano', c.muted, 'right', 700, marco);
+  }
+  // W: flecha junto al vástago (sube si el gas empuja el émbolo; baja si lo empujan)
+  if (o.w){
+    const y1 = yp - 30, y2 = o.w > 0 ? y1 - 24 : y1, ya = o.w > 0 ? y1 : y1 - 24;
+    flecha(ctx, xw, ya, xw, y2, c.W, o.hl === 'W' ? 4.4 : 3);
+    rotulo(ctx, c, xw + 8, y1 - 12, 'W', c.W, 'left', 800, marco);
+  }
+  // Foco o mechero debajo, con el calor Q
+  if (conFoco){
+    const fy = fondo + 8, fh = hs - 12;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; rr(ctx, x0 - 6, fy, wi + 12, fh, 6); ctx.fill(); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.font = `800 ${c.chico ? 10 : 11}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const t1 = o.foco.txt, t2 = o.foco.txtT || '';
+    const w1 = ctx.measureText(t1 + (t2 ? ' ' : '')).width, w2 = t2 ? ctx.measureText(t2).width : 0, xs = cx - (w1 + w2)/2;
+    ctx.textAlign = 'left'; ctx.fillStyle = c.ink; ctx.fillText(t1 + (t2 ? ' ' : ''), xs, fy + fh/2);
+    if (t2){ ctx.fillStyle = c.T; ctx.fillText(t2, xs + w1, fy + fh/2); }
+    ctx.restore();
+  }
+  if (o.q){
+    const ya = fondo + 4, yb = fondo - 22;
+    [-0.3, 0, 0.3].forEach(f => o.q > 0 ? flecha(ctx, cx + f*wi, ya, cx + f*wi, yb, c.Q, o.hl === 'Q' ? 3.8 : 2.6)
+                                        : flecha(ctx, cx + f*wi, yb, cx + f*wi, ya, c.Q, o.hl === 'Q' ? 3.8 : 2.6));
+    if (o.etiqueta) rotulo(ctx, c, x1 - 4, fondo - 32, 'Q', c.Q, 'right', 800, marco);   // dos cilindros juntos: dentro, para no tapar al vecino
+    else rotulo(ctx, c, x1 + (o.aislado ? 12 : 5), fondo - 12, 'Q', c.Q, 'left', 800, { x0: b.x, x1: b.x + b.w + 14, y0: b.y, y1: b.y + b.h });
+  }
+  if (o.etiqueta) rotulo(ctx, c, cx, b.y + 10, o.etiqueta, c.ink, 'center', 800, { x0: b.x, x1: b.x + b.w, y0: b.y, y1: b.y + b.h });
+}
+
+/* ---------- El diagrama P-V ----------
+   D = { R: { V:[a, b], P:[a, b] }, curvas: [{ pts, col, w, dash, flechas: [índices] }], areas: [{ pts, signo, encerrada, borde }],
+         iso: [{ T, nR, txt }], estados: [{ P, V, txt, lado }], actual: { P, V }, proy, asa, sobre, hl } */
+function diagrama(ctx, c, b, D){
+  const X = v => b.x + (v - D.R.V[0])/(D.R.V[1] - D.R.V[0])*b.w, Y = p => b.y + b.h - (p - D.R.P[0])/(D.R.P[1] - D.R.P[0])*b.h;
+  const caja = { x0: b.x - 40, x1: b.x + b.w + 10, y0: b.y - 10, y1: b.y + b.h + 24 };
+  const px = pasoBonito(D.R.V[1] - D.R.V[0], b.w < 230 ? 3 : 5), py = pasoBonito(D.R.P[1] - D.R.P[0], b.h < 170 ? 3 : 5);
+  ctx.save(); ctx.fillStyle = c.paper; ctx.fillRect(b.x, b.y, b.w, b.h);
+  ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  // Los números del eje que quedan debajo del rótulo de la proyección del estado actual no se escriben.
+  const ap = D.actual && D.proy ? D.actual : null;
+  for (let v = Math.ceil(D.R.V[0]/px)*px; v <= D.R.V[1] + 1e-9; v += px){ linea(ctx, X(v), b.y, X(v), b.y + b.h); if (!ap || Math.abs(X(v) - X(ap.V)) > 22) ctx.fillText(fmt(v, 0), X(v), b.y + b.h + 4); }
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let p = Math.ceil(D.R.P[0]/py)*py; p <= D.R.P[1] + 1e-9; p += py){ linea(ctx, b.x, Y(p), b.x + b.w, Y(p)); if (!ap || Math.abs(Y(p) - Y(ap.P)) > 13) ctx.fillText(fmt(p, 0), b.x - 5, Y(p)); }
+  ctx.restore();
+  // Dónde van los rótulos de las isotermas (en el color de T), donde la curva sale por la derecha o por arriba.
+  // Una isoterma 'opcional' (la del estado B en el explorador) no se dibuja si su rótulo quedaría a menos de 17 px de otro;
+  // entonces su temperatura se escribe junto al punto.
+  const rotIso = [], marcoIso = { x0: b.x, x1: b.x + b.w, y0: b.y, y1: b.y + b.h - 18 };
+  let tJunto = null;
+  [...(D.iso || [])].sort((p, q) => (p.opcional ? 1 : 0) - (q.opcional ? 1 : 0) || p.T - q.T).forEach(t => {
+    const k = t.nR*t.T; let v = D.R.V[1]*0.985, p = k/v;
+    if (p > D.R.P[1]*0.93){ p = D.R.P[1]*0.93; v = k/p; }
+    if (p < D.R.P[0] + (D.R.P[1] - D.R.P[0])*0.04) p = D.R.P[0] + (D.R.P[1] - D.R.P[0])*0.04;
+    let y = clamp(Y(p) - 10, marcoIso.y0 + 9, marcoIso.y1 - 9);
+    const choca = yy => rotIso.some(q => Math.abs(q.x - X(v)) < 70 && Math.abs(q.y - yy) < 17);
+    if (t.opcional){ if (choca(y)){ tJunto = t.txt; return; } }
+    else { let paso = -17; while (choca(y)){ y += paso; if (y < marcoIso.y0 + 9){ paso = 17; y = Math.max(...rotIso.map(q => q.y)) + 17; } } }   // la más caliente sube
+    rotIso.push({ x: X(v), y, t });
+  });
+  const isoVisibles = rotIso.map(q => q.t);
+  ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip();
+  // Isotermas
+  isoVisibles.forEach(t => {
+    const k = t.nR*t.T;
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = D.hl === 'T' ? 2.4 : 1.3; ctx.setLineDash([5, 4]); ctx.globalAlpha = .8; ctx.beginPath();
+    for (let i = 0; i <= 80; i++){ const v = D.R.V[0] + (D.R.V[1] - D.R.V[0])*Math.max(i, 0.5)/80, p = k/v; const x = X(v), y = Y(p); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.stroke(); ctx.restore();
+  });
+  // Áreas: bajo la curva (hasta P = 0) o encerrada
+  (D.areas || []).forEach(a => {
+    if (!a.pts || a.pts.length < 2) return;
+    ctx.save(); ctx.beginPath();
+    a.pts.forEach((q, i) => i ? ctx.lineTo(X(q.V), Y(q.P)) : ctx.moveTo(X(q.V), Y(q.P)));
+    if (!a.encerrada){ ctx.lineTo(X(a.pts[a.pts.length - 1].V), Y(0)); ctx.lineTo(X(a.pts[0].V), Y(0)); }
+    ctx.closePath();
+    if (a.borde){ ctx.strokeStyle = c.W; ctx.lineWidth = 1.6; ctx.setLineDash([4, 4]); ctx.stroke(); ctx.restore(); return; }
+    const fuerte = D.hl === 'W';
+    if (a.signo >= 0){ ctx.fillStyle = c.W; ctx.globalAlpha = (a.encerrada ? 0.32 : 0.2)*(fuerte ? 1.6 : 1)*(c.oscuro ? 1.15 : 1); ctx.fill(); }
+    else {
+      // Trabajo negativo: rayado, sin relleno parejo.
+      ctx.clip(); ctx.strokeStyle = c.W; ctx.globalAlpha = fuerte ? 0.85 : 0.55; ctx.lineWidth = 1.3;
+      for (let x = b.x - b.h; x < b.x + b.w; x += 7) linea(ctx, x, b.y + b.h, x + b.h, b.y);
+    }
+    ctx.restore();
+  });
+  // Curvas del proceso
+  (D.curvas || []).forEach(cu => {
+    if (!cu.pts || cu.pts.length < 2) return;
+    ctx.save(); ctx.strokeStyle = cu.col || c.ink; ctx.lineWidth = cu.w || 2.6; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    if (cu.dash) ctx.setLineDash(cu.dash); ctx.globalAlpha = cu.alfa || 1;
+    ctx.beginPath(); cu.pts.forEach((q, i) => i ? ctx.lineTo(X(q.V), Y(q.P)) : ctx.moveTo(X(q.V), Y(q.P))); ctx.stroke(); ctx.restore();
+    (cu.flechas || []).forEach(i => {
+      const a = cu.pts[Math.max(0, i - 1)], z = cu.pts[Math.min(cu.pts.length - 1, i + 1)];
+      const dx = X(z.V) - X(a.V), dy = Y(z.P) - Y(a.P), l = Math.hypot(dx, dy); if (l < 1e-6) return;
+      const m = cu.pts[i], ux = dx/l, uy = dy/l, x = X(m.V) + ux*5, y = Y(m.P) + uy*5;
+      flecha(ctx, x - ux*12, y - uy*12, x, y, cu.col || c.ink, 2.6);
+    });
+  });
+  ctx.restore();
+  // Ejes y títulos
+  ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h); linea(ctx, b.x, b.y, b.x, b.y + b.h); ctx.restore();
+  ctx.save(); ctx.font = `800 11px ${c.mono}`;
+  const enEsquina = D.actual && Math.hypot(X(D.actual.V) - (b.x + b.w), Y(D.actual.P) - (b.y + b.h)) < 30;
+  ctx.fillStyle = c.V; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; if (!enEsquina) ctx.fillText('V (L)', b.x + b.w - 2, b.y + b.h - 3);
+  // El título de P se esconde si el estado actual (o su asa) cae encima de él.
+  const tapaP = D.actual && X(D.actual.V) < b.x + 72 && Y(D.actual.P) < b.y + 30;
+  ctx.fillStyle = c.P; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; if (!tapaP) ctx.fillText('P (kPa)', b.x + 4, b.y + 3);
+  ctx.restore();
+  // Rótulos de las isotermas, en el color de T, donde la curva sale de la caja por la derecha o por arriba
+  rotIso.forEach(q => rotulo(ctx, c, q.x - 4, q.y, q.t.txt, c.T, 'right', 800, marcoIso));
+  // Proyecciones del estado actual sobre los ejes
+  const a = D.actual;
+  if (a && D.proy){
+    ctx.save(); ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = c.P; ctx.lineWidth = D.hl === 'P' ? 2.6 : 1.4; linea(ctx, b.x, Y(a.P), X(a.V), Y(a.P));
+    ctx.strokeStyle = c.V; ctx.lineWidth = D.hl === 'V' ? 2.6 : 1.4; linea(ctx, X(a.V), Y(a.P), X(a.V), b.y + b.h);
+    ctx.restore();
+    rotulo(ctx, c, b.x - 5, Y(a.P), fmt(a.P, a.P < 100 ? 1 : 0), c.P, 'right', 800, caja);
+    rotulo(ctx, c, X(a.V), b.y + b.h + 10, fmt(a.V, Math.abs(a.V - Math.round(a.V)) < 0.05 ? 0 : 1), c.V, 'center', 800, caja);
+  }
+  // Estados con nombre
+  (D.estados || []).forEach(e => {
+    const x = X(e.V), y = Y(e.P);
+    ctx.save(); ctx.beginPath(); ctx.arc(x, y, 4.5, 0, Math.PI*2); ctx.fillStyle = e.hueco ? c.paper : c.ink; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); ctx.restore();
+    const lado = e.lado || 'ne', dx = lado.includes('e') ? 8 : lado.includes('w') ? -8 : 0, dy = lado.includes('n') ? -12 : lado.includes('s') ? 13 : 0;
+    rotulo(ctx, c, x + dx, y + dy, e.txt, c.ink, dx > 0 ? 'left' : dx < 0 ? 'right' : 'center', 800, { x0: b.x, x1: b.x + b.w, y0: b.y, y1: b.y + b.h });
+  });
+  if (a){
+    const x = X(a.V), y = Y(a.P);
+    if (D.asa){
+      ctx.save(); ctx.beginPath(); ctx.arc(x, y, D.sobre ? 13 : 11, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.globalAlpha = .85; ctx.fill(); ctx.globalAlpha = 1;
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash(D.foco ? [] : [3, 2]); ctx.stroke(); ctx.restore();
+    }
+    ctx.save(); ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+    if (tJunto){ const der = x < b.x + b.w*0.7; rotulo(ctx, c, x + (der ? 16 : -16), der ? y - 16 : y, tJunto, c.T, der ? 'left' : 'right', 800, { x0: b.x, x1: b.x + b.w, y0: b.y, y1: b.y + b.h }); }
+  }
+  return { X, Y };
+}
+
+/* ---------- Las barras de Q, W y ΔU ----------
+   filas: [{ k: 'Q' | 'W' | 'U', txt, valor, oculto, ref, refTxt }]; max: valor que llena media barra. Cero al centro. */
+function barras(ctx, c, b, filas, max, hl){
+  const lw = c.chico ? 70 : 96, vw = c.chico ? 70 : 84, x0 = b.x + lw, x1 = b.x + b.w - vw, cx = (x0 + x1)/2, medio = (x1 - x0)/2 - 4;
+  const fh = Math.min(24, b.h/filas.length);
+  ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, cx, b.y, cx, b.y + fh*filas.length); ctx.restore();
+  ctx.save(); ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.fillText('−', x0 + 6, b.y + 1); ctx.fillText('0', cx, b.y + 1); ctx.fillText('+', x1 - 6, b.y + 1); ctx.restore();
+  filas.forEach((f, i) => {
+    const y = b.y + i*fh + fh/2, col = c[f.k], alto = Math.min(12, fh - 8);
+    ctx.save(); ctx.font = `800 ${c.chico ? 11 : 12}px ${c.font}`; ctx.fillStyle = col; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(f.txt, b.x + 2, y); ctx.restore();
+    if (f.oculto){
+      ctx.save(); ctx.strokeStyle = col; ctx.setLineDash([4, 3]); ctx.lineWidth = 1.4; rr(ctx, cx - 26, y - alto/2, 52, alto, 4); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.font = `800 12px ${c.mono}`; ctx.fillStyle = col; ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText('?', b.x + b.w - 4, y); ctx.restore();
+      return;
+    }
+    const l = clamp(f.valor/max, -1.05, 1.05)*medio;
+    ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = .9; if (Math.abs(l) > 0.5){ rr(ctx, Math.min(cx, cx + l), y - alto/2, Math.abs(l), alto, 3); ctx.fill(); }
+    if (hl === f.k){ ctx.globalAlpha = 1; ctx.strokeStyle = c.ink; ctx.lineWidth = 2; rr(ctx, Math.min(cx, cx + l) - 2, y - alto/2 - 2, Math.abs(l) + 4, alto + 4, 4); ctx.stroke(); }
+    ctx.restore();
+    if (f.ref !== undefined){
+      const xr = cx + clamp(f.ref/max, -1.05, 1.05)*medio;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([2, 2]); linea(ctx, xr, y - alto/2 - 3, xr, y + alto/2 + 3); ctx.restore();
+    }
+    ctx.save(); ctx.font = `800 ${c.chico ? 11 : 12}px ${c.mono}`; ctx.fillStyle = col; ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText(J(f.valor), b.x + b.w - 2, y); ctx.restore();
+  });
+}
+
+/* ---------- Focos y máquina (diagrama de flujos de energía) ----------
+   F = { Tc, Tf (textos), Qc, W, Qf (números), ver: bool (valores), medidor: { eta, lim } | null } */
+function focos(ctx, c, b, F){
+  const cx = b.x + b.w*0.42, wF = Math.min(b.w*0.7, 260), hF = 40;
+  const yC = b.y + 6, yF = b.y + b.h - hF - 6, ym = (yC + hF + yF)/2, r = Math.min(30, (yF - yC - hF)/4);
+  const caja = (y, t1, t2) => {
+    ctx.save(); ctx.fillStyle = c.paper; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, cx - wF/2, y, wF, hF, 10); ctx.fill(); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.font = `800 ${c.chico ? 11 : 12}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const w1 = ctx.measureText(t1 + ' ').width, w2 = ctx.measureText(t2).width, xs = cx - (w1 + w2)/2;
+    ctx.fillStyle = c.ink; ctx.fillText(t1 + ' ', xs, y + hF/2); ctx.fillStyle = c.T; ctx.fillText(t2, xs + w1, y + hF/2); ctx.restore();
+  };
+  caja(yC, 'foco caliente', F.Tc); caja(yF, 'foco frío', F.Tf);
+  const k = (r*1.6)/Math.max(F.Qc, 1);
+  const grosor = q => clamp(q*k/6, 2, 10);
+  flecha(ctx, cx, yC + hF + 2, cx, ym - r - 2, c.Q, grosor(F.Qc));
+  flecha(ctx, cx, ym + r + 2, cx, yF - 2, c.Q, grosor(Math.max(F.Qf, 0)));
+  flecha(ctx, cx + r + 2, ym, Math.min(b.x + b.w - 8, cx + r + 2 + Math.max(40, b.w*0.22)), ym, c.W, grosor(Math.max(F.W, 0)));
+  ctx.save(); ctx.beginPath(); ctx.arc(cx, ym, r, 0, Math.PI*2); ctx.fillStyle = c.gas; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.font = `800 ${c.chico ? 10 : 11}px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('máquina', cx, ym); ctx.restore();
+  const bx = { x0: b.x, x1: b.x + b.w, y0: b.y, y1: b.y + b.h };
+  rotulo(ctx, c, cx - 10, (yC + hF + ym - r)/2, `Qc = ${N1(F.Qc)} J`, c.Q, 'right', 800, bx);
+  rotulo(ctx, c, cx - 10, (ym + r + yF)/2, `Qf = ${F.ver ? N1(F.Qf) + ' J' : '?'}`, c.Q, 'right', 800, bx);
+  rotulo(ctx, c, cx + r + 8, ym - 14, `W = ${N1(F.W)} J`, c.W, 'left', 800, bx);
+  if (F.medidor){
+    const mx = b.x + b.w - (c.chico ? 50 : 64), mw = c.chico ? 16 : 20, my0 = yC + 8, mh = yF + hF - 8 - my0;
+    const Y = f => my0 + mh*(1 - f);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; rr(ctx, mx, my0, mw, mh, 4); ctx.stroke();
+    ctx.fillStyle = c.ink; ctx.globalAlpha = .2; rr(ctx, mx, Y(F.medidor.eta), mw, mh*F.medidor.eta, 3); ctx.fill(); ctx.globalAlpha = 1;
+    ctx.lineWidth = 2.6; linea(ctx, mx - 4, Y(F.medidor.eta), mx + mw + 4, Y(F.medidor.eta));
+    ctx.setLineDash([4, 3]); ctx.lineWidth = 2; linea(ctx, mx - 6, Y(F.medidor.lim), mx + mw + 6, Y(F.medidor.lim));
+    ctx.restore();
+    rotulo(ctx, c, mx + mw/2, my0 - 2, 'η', c.ink, 'center', 800, bx);
+    const t1 = { y: Y(F.medidor.eta) }, t2 = { y: Y(F.medidor.lim) }, sep = 16;
+    if (Math.abs(t1.y - t2.y) < sep){ const m = (t1.y + t2.y)/2, s = t1.y <= t2.y ? -1 : 1; t1.y = m + s*sep/2; t2.y = m - s*sep/2; }
+    rotulo(ctx, c, mx - 6, t1.y, `${pct(F.medidor.eta)}`, c.ink, 'right', 800, bx);
+    rotulo(ctx, c, mx - 6, t2.y, `Carnot ${pct(F.medidor.lim)}`, c.ink, 'right', 700, bx);
+  }
+}
+
+/* ---------- La vista completa ----------
+   E = { cil: [o, o?], diag: D, barras: { filas, max }, focos: F } */
+function vista(L, c, E){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  if (E.focos){ focos(ctx, c, { x: 10, y: 8, w: W - 20, h: H - 16 }, E.focos); return; }
+  const filas = E.barras && !(L.compacto && innerWidth < 900) ? E.barras.filas : [];
+  const hb = filas.length ? 16 + filas.length*Math.min(24, 22) : 0;
+  const dos = E.cil && E.cil.length > 1;
+  const cw = E.cil ? (dos ? clamp(W*0.36, 130, 230) : clamp(W*(c.chico ? 0.27 : 0.22), 92, 160)) : 0;
+  const top = 8, bajo = H - hb - 4;
+  if (E.cil) E.cil.forEach((o, i) => cilindro(ctx, c, { x: 6 + i*cw/E.cil.length, y: top, w: cw/E.cil.length - 4, h: bajo - top }, o));
+  if (E.diag){
+    const x = 6 + cw + (c.chico ? 36 : 46), b = { x, y: top + 8, w: W - x - (c.chico ? 10 : 16), h: bajo - top - 8 - 30 };
+    diagrama(ctx, c, b, E.diag);
+  }
+  if (filas.length){
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; linea(ctx, 8, H - hb - 2, W - 8, H - hb - 2); ctx.restore();
+    barras(ctx, c, { x: 10, y: H - hb + 12, w: W - 20, h: hb - 14 }, filas, E.barras.max, E.hl);
+  }
+}
+// Geometría del diagrama en el lienzo, para el arrastre (la misma cuenta que en vista).
+function cajaDiagrama(L, c, E){
+  const filas = E.barras && !(L.compacto && innerWidth < 900) ? E.barras.filas : [];
+  const hb = filas.length ? 16 + filas.length*22 : 0, dos = E.cil && E.cil.length > 1;
+  const cw = E.cil ? (dos ? clamp(L.W*0.36, 130, 230) : clamp(L.W*(c.chico ? 0.27 : 0.22), 92, 160)) : 0;
+  const top = 8, bajo = L.H - hb - 4, x = 6 + cw + (c.chico ? 36 : 46);
+  return { x, y: top + 8, w: L.W - x - (c.chico ? 10 : 16), h: bajo - top - 8 - 30 };
+}
+
+const NOMBRES = { P:'P · presión', V:'V · volumen', T:'T · temperatura', iso:'isoterma: estados con la misma T', Q:'Q · calor (+ si entra al gas)',
+  W:'W · trabajo del gas (+ si se expande)', Wp:'W · trabajo que hace el gas', area:'área bajo la curva = W (rayada si W < 0)', U:'ΔU · cambio de energía interna',
+  Qcf:'Qc y Qf · calor del foco caliente y al foco frío', nota:'W es siempre trabajo: aquí no hay ningún peso' };
+// Con una predicción pendiente, W no dice su signo (la convención está en el paso 1).
+function leyenda(el, claves, pendiente){
+  el.innerHTML = claves.map(k => {
+    if (k === 'W' && pendiente) return `<span><i style="background:var(--c-W)"></i>${NOMBRES.Wp}</span>`;
+    if (k === 'iso') return `<span><i class="iso"></i>${NOMBRES.iso}</span>`;
+    if (k === 'area') return `<span><i class="area" style="background:var(--c-W)"></i>${NOMBRES.area}</span>`;
+    if (k === 'nota') return `<span>${NOMBRES.nota}</span>`;
+    const col = k === 'Qcf' ? 'Q' : k;
+    return `<span><i style="background:var(--c-${col})"></i>${NOMBRES[k]}</span>`;
+  }).join('');
+}
+function animarValor(dur, paso, listo){
+  if (RM){ paso(1); listo && listo(); return () => {}; }
+  let id, ini = performance.now(), vivo = true;
+  const tick = now => { if (!vivo) return; const f = Math.min(1, (now - ini)/dur); paso(f); if (f < 1) id = requestAnimationFrame(tick); else { vivo = false; listo && listo(); } };
+  id = requestAnimationFrame(tick);
+  // Parar: cancela; con terminar = true salta al final y llama a listo.
+  return terminar => { if (!vivo) return; vivo = false; cancelAnimationFrame(id); if (terminar){ paso(1); listo && listo(); } };
+}
+const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}" tabindex="-1"></p>`;
+const fuente = t => `<p class="fuente">${t}</p>`;
+</script>
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problema guiado de docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md (primera ley en un proceso
+   isobárico): 2 × 10⁵ Pa, de 0,01 m³ a 0,03 m³, Q = 10 000 J. En la escena, P en kPa y V en L. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const A = { P1:200, V1:10, T1:300 };
+const iso = M.proceso(Object.assign({ tipo:'isobarico', Q:10000 }, A));            // A → B a 200 kPa
+const nR = iso.nR;
+const otro = M.camino(Object.assign({ tramos:[{ tipo:'isocorico', P2:400 }, { tipo:'isobarico', V2:30 }, { tipo:'isocorico', P2:200 }] }, A));
+const ciclo = M.rectangulo({ Pa:200, Pb:400, Va:10, Vb:30, T1:300 });
+const CAR = { Tc:227, Tf:27, Qc:1000, unidad:'C' }, car = M.carnot(CAR);
+const carC = M.carnotCiclo({ Tc:car.Tc, Tf:car.Tf, V1:5, V2:10, Qc:1000 });
+const RNG = { V:[0, 40], P:[0, 500] };
+const S = { step:0, max:0, pred:{}, hl:null, f:1, ocupado:false, ex:{ tipo:'isobarico', x:30 }, sobre:false };
+let parar = () => {};
+const L = crearLienzo(cv, altoLienzo, draw);
+
+const P1 = { id:'termo-trabajo-isobarico', ok:'b',
+  opts:[['a','6000 J','trabajo-P-por-V-final','hipotesis'], ['b','4000 J',null,''],
+        ['c','−4000 J','T9-signo-del-trabajo','parcial'], ['d','0 J','trabajo-cero-a-presion-constante','hipotesis']],
+  fb:{ b:'¡Bien! El trabajo es el área bajo la curva: 200 kPa por un cambio de volumen de 20 L, 4000 J. Es positivo porque el gas se expande.',
+       a:'Elegiste la A. 6000 J es la presión por el volumen final, P·V. El trabajo usa el cambio de volumen, P·ΔV: el área bajo la curva va de 10 L a 30 L, no de 0 a 30 L. La correcta está marcada.',
+       c:'Elegiste la C. Ese es el valor con el signo cambiado: −4000 J sería el trabajo que hace el émbolo sobre el gas. El gas se expande y empuja el émbolo, así que el trabajo que hace el gas es positivo. La correcta está marcada.',
+       d:'Elegiste la D. Que la presión no cambie no quiere decir que no haya trabajo: el gas empuja el émbolo con una fuerza constante mientras lo mueve. Lo que hace falta para que haya trabajo es que el volumen cambie. La correcta está marcada.' } };
+const P2 = { id:'termo-energia-interna', ok:'d',
+  opts:[['a','14 000 J','T9-suma-el-trabajo','parcial'], ['b','10 000 J','T8-todo-el-calor-a-energia-interna','documentado'],
+        ['c','0 J','dU-cero-a-presion-constante','hipotesis'], ['d','6000 J',null,'']],
+  fb:{ d:'¡Bien! De los 10 000 J que entran, 4000 J salen como trabajo sobre el émbolo: en el gas se quedan 6000 J.',
+       a:'Elegiste la A. 14 000 J suma el trabajo al calor, como si el gas hubiera recibido el trabajo. Pero el gas lo entregó: lo que sale se resta. La correcta está marcada.',
+       b:'Elegiste la B. No todo el calor se queda en el gas: mientras se expande, entrega 4000 J al émbolo como trabajo. La correcta está marcada.',
+       c:'Elegiste la C. La presión no cambia, pero la temperatura sí: el gas se calienta, y la energía interna de un gas ideal crece con su temperatura. La correcta está marcada.' } };
+const P3 = { id:'termo-otro-camino', ok:'c',
+  opts:[['a','W y Q son los mismos que antes: los dos caminos empiezan y terminan en los mismos estados.','T5-trabajo-no-depende-del-camino','documentado'],
+        ['b','W es mayor, pero Q es el mismo: los dos caminos empiezan y terminan en los mismos estados.','T6-calor-no-depende-del-camino','documentado'],
+        ['c','W y Q son mayores: el área bajo el camino nuevo es mayor y ΔU es la misma.',null,''],
+        ['d','W es el mismo y Q es mayor: el camino nuevo pasa por presiones más altas.','T5-y-T7-mas-presion-mas-calor','parcial']],
+  fb:{ c:'¡Bien! El camino nuevo tiene más área debajo: 8000 J de trabajo. Como ΔU es la misma, hace falta más calor: 14 000 J.',
+       a:'Elegiste la A. Lo que solo depende de los estados es ΔU. El trabajo es el área bajo la curva, y el camino nuevo, que va a 400 kPa, tiene más área debajo. La correcta está marcada.',
+       b:'Elegiste la B. El trabajo sí es mayor, pero el calor también cambia: Q = ΔU + W, con la misma ΔU y más trabajo. El calor no es una propiedad del estado. La correcta está marcada.',
+       d:'Elegiste la D. El trabajo no es el mismo: es el área bajo la curva, y a 400 kPa el rectángulo es el doble de alto. La correcta está marcada.' } };
+const P4 = { id:'termo-ciclo-trabajo-neto', ok:'c',
+  opts:[['a','0 J','T10-trabajo-neto-cero','documentado'], ['b','8000 J','solo-el-tramo-de-arriba','hipotesis'],
+        ['c','4000 J',null,''], ['d','12 000 J','suma-las-areas-sin-signo','hipotesis']],
+  fb:{ c:'¡Bien! A 400 kPa el gas hace 8000 J al expandirse; a 200 kPa recibe 4000 J al comprimirse. Queda el área encerrada: 4000 J.',
+       a:'Elegiste la A. El gas vuelve al estado inicial, así que ΔU = 0 en la vuelta. Pero el trabajo no es cero: se expande a presión alta y se comprime a presión baja. La correcta está marcada.',
+       b:'Elegiste la B. 8000 J es el trabajo de la expansión a 400 kPa. Al volver, el gas se comprime a 200 kPa y recibe 4000 J: hay que restarlos. La correcta está marcada.',
+       d:'Elegiste la D. 12 000 J suma las dos áreas, pero el trabajo de la compresión es negativo: se resta. La correcta está marcada.' } };
+const P5 = { id:'termo-carnot', ok:'a',
+  opts:[['a','40 %',null,''], ['b','88 %','carnot-con-celsius','hipotesis'], ['c','60 %','carnot-invertida','hipotesis'], ['d','100 %','T14-sin-rozamiento-cien','parcial']],
+  fb:{ a:'¡Bien! En kelvin: 500 K y 300 K. η = 1 − 300/500 = 0,4.',
+       b:'Elegiste la B. Ese número sale de 1 − 27/227, con grados Celsius. La fórmula de Carnot pide kelvin: 1 − 300/500 = 40 %. La correcta está marcada.',
+       c:'Elegiste la C. 60 % es Tf/Tc = 300/500: la fracción del calor que va al foco frío. La eficiencia es lo que queda: 1 − 0,6. La correcta está marcada.',
+       d:'Elegiste la D. Aun sin rozamiento, una máquina que da vueltas tiene que entregar calor al foco frío para volver a empezar: es la segunda ley. Entre estos focos, el máximo es 40 %. La correcta está marcada.' } };
+
+// Lo que se dibuja: dibujo() da la configuración del paso; antes y después de responder cambia.
+const flechasDe = (n, k) => Array.from({ length: n }, (_, i) => Math.round(k*(i + 0.5)));
+function pts(obj, s){ return recorrido(obj, s === undefined ? 1 : s, 60); }
+const estA = { P:200, V:10, txt:'A', lado:'nw' }, estB = { P:200, V:30, txt:'B', lado:'ne' };
+const filas = (q, w, u) => [{ k:'Q', txt:'Q', valor:q === null ? 0 : q, oculto:q === null }, { k:'W', txt:'W', valor:w === null ? 0 : w, oculto:w === null }, { k:'U', txt:'ΔU', valor:u === null ? 0 : u, oculto:u === null }];
+function vistaIsobarica(conArea, f, verW, verU){
+  const e = iso.en(f), p = pts(iso, f);
+  return { cil:[{ V:e.V, Vmax:40, foco:{ txt:'mechero' }, q:+1, w: verW && f > 0 ? +1 : 0, hl:S.hl }],
+    diag:{ R:RNG, curvas:[{ pts:pts(iso), dash:[5, 4], col:css('--muted'), w:1.6 }, { pts:p, flechas: f > 0.6 ? [Math.round(p.length/2)] : [] }],
+      areas: conArea ? [{ pts:p, signo:1 }] : [], estados:[estA, estB], actual:{ P:e.P, V:e.V }, proy:true, hl:S.hl },
+    barras:{ filas:filas(10000, verW ? e.W : null, verU ? e.dU : null), max:14000 }, hl:S.hl };
+}
+const steps = [
+ { k:'Paso 1', t:'El problema', ley:['P','V','Q','W','U','nota'],
+   vista:() => vistaIsobarica(false, 0, false, false),
+   body:() => `<p class="problem">Un gas ideal monoatómico está en un cilindro con un émbolo que se mueve libre, a una presión de ${V('P','2 × 10⁵ Pa')} (200 kPa). Un mechero le da ${V('Q','Q = 10 000 J')} de calor y el gas se expande a presión constante, de ${V('V','0,01 m³')} (10 L) a ${V('V','0,03 m³')} (30 L). Al inicio está a ${V('T','300 K')}.</p>
+   <p>En el diagrama P-V, cada punto es un estado del gas: su ${V('V','volumen')} en el eje horizontal y su ${V('P','presión')} en el vertical. El estado inicial es A y el final, B. Abajo, tres barras: el ${V('Q','calor Q')}, el ${V('W','trabajo W')} que hace el gas y el ${V('U','cambio de energía interna ΔU')}. Las que tienen «?» todavía no se saben.</p>
+   <p>Signos, como en las academias: Q es positivo si el gas recibe calor, y W es positivo si el gas hace trabajo, es decir, si se expande y empuja el émbolo. Aquí W es siempre trabajo: en este problema no hay ningún peso.</p>
+   <p class="hint">Toca o pasa el puntero sobre un dato para ver dónde está. Con P en kPa y V en L, P·V sale en joules: 1 kPa·L = 1 J.</p>`,
+   desc:() => 'Un cilindro con un émbolo y un mechero debajo. En el diagrama P-V, el estado A está en 10 litros y 200 kilopascales, y el B en 30 litros y la misma presión. El calor es de 10 000 joules; el trabajo y el cambio de energía interna todavía no se saben.' },
+ { k:'Paso 2', t:'¿Cuánto trabajo hace el gas?', gate:P1, ley:['P','V','Q','W'], leyDespues:['P','V','Q','W','area'],
+   vista:() => S.pred[P1.id] ? vistaIsobarica(true, S.f, true, false) : vistaIsobarica(false, 0, false, false),
+   body:() => `<p>Mientras el gas pasa de A a B, ¿cuánto trabajo ${V('W','W')} hace?</p>${opcionesHTML(P1.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('W','W')} = ${V('P','P')} · Δ${V('V','V')} = ${V('P','200 kPa')} · (${V('V','30')} − ${V('V','10')}) L = ${V('W','4000 J')}</div>
+       <div class="eq">en el SI: ${V('P','2 × 10⁵ Pa')} · ${V('V','0,02 m³')} = ${V('W','4000 J')}</div></div>
+     <p>El trabajo es el <b>área bajo la curva</b> en el diagrama P-V, pintada en el color de ${V('W','W')}: aquí, un rectángulo de 200 kPa de alto y 20 L de ancho. Mientras el émbolo sube, el área crece con él. El gas se expande, así que su trabajo es positivo.</p>
+     ${fuente('Cambiar el signo del trabajo fue la opción de entre el 35 % y el 41 % en otra pregunta sobre el trabajo de una encuesta en Australia y Tailandia (Wattanakasiwich y otros, 2013); aquí la tomamos como su cara en este problema. Usar P·V en vez de P·ΔV y el 0 J son hipótesis nuestras.')}`,
+   desc:() => S.pred[P1.id] ? 'El émbolo sube de 10 a 30 litros. El área bajo la recta de 200 kilopascales, de 10 a 30 litros, es el trabajo: 4000 joules.' : 'El estado A y el B en el diagrama P-V, unidos por una recta horizontal a 200 kilopascales. El trabajo todavía no se muestra.' },
+ { k:'Paso 3', t:'¿Cuánto cambia la energía interna?', gate:P2, ley:['P','V','Q','W','U','area'],
+   vista:() => { const v = vistaIsobarica(true, 1, true, false); if (S.pred[P2.id]) v.barras.filas = filas(10000, 4000, 6000*S.f); return v; },
+   body:() => `<p>El gas recibió ${V('Q','10 000 J')} de calor e hizo ${V('W','4000 J')} de trabajo. ¿Cuánto cambió su energía interna?</p>${opcionesHTML(P2.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">primera ley: ${V('Q','Q')} = ${V('U','ΔU')} + ${V('W','W')}</div>
+       <div class="eq">${V('U','ΔU')} = ${V('Q','10 000')} − ${V('W','4000')} = ${V('U','6000 J')}</div></div>
+     <p>El calor que entra se reparte: una parte sale como trabajo sobre el émbolo y el resto se queda en el gas como energía interna. Mira las barras: ${V('Q','Q')} es la suma de ${V('W','W')} y ${V('U','ΔU')}.</p>
+     ${fuente('Ante un gas que recibe calor a presión constante, cerca del 42 % de un grupo de universitarios australianos, después del tema, dijo que la energía de sus moléculas sube exactamente lo mismo que el calor recibido; en un grupo tailandés, antes del tema, cerca del 29 % (Wattanakasiwich y otros, 2013). El 14 000 J es la cara numérica de otro error medido en esa encuesta, el signo del trabajo. El 0 J es una hipótesis nuestra.')}`,
+   desc:() => S.pred[P2.id] ? 'Barras: calor más 10 000 joules, trabajo más 4000, cambio de energía interna más 6000.' : 'Barras: calor más 10 000 joules, trabajo más 4000 joules; el cambio de energía interna todavía no se sabe.' },
+ { k:'Paso 4', t:'La energía interna y la temperatura', ley:['P','V','T','iso','U','area'],
+   vista:() => { const v = vistaIsobarica(true, 1, true, true); v.diag.iso = [{ T:300, nR, txt:'300 K' }, { T:900, nR, txt:'900 K' }]; v.barras.filas = filas(10000, 4000, 6000); return v; },
+   body:() => { const n = M.estado({ P:200, V:10, T:300 }).n;
+     return `<p>En un gas ideal, la energía interna U solo depende de la temperatura. Como el volumen se triplicó a presión constante, la temperatura también: de ${V('T','300 K')} a ${V('T','900 K')}.</p>
+     <div class="eqs">
+       <div class="eq">${V('U','ΔU')} = (3/2)·n·R·Δ${V('T','T')}<span class="note">gas monoatómico</span></div>
+       <div class="eq">n·R·${V('T','T')} = ${V('P','P')}·${V('V','V')} → ${V('U','ΔU')} = (3/2)·(${V('P','P')}·${V('V','V')})<sub>B</sub> − (3/2)·(${V('P','P')}·${V('V','V')})<sub>A</sub></div>
+       <div class="eq">${V('U','ΔU')} = 1,5 · (200·30 − 200·10) = 1,5 · 4000 = ${V('U','6000 J')}</div>
+       <div class="eq">n = ${V('P','P')}·${V('V','V')}/(R·${V('T','T')}) = 2000/(8,31·300) ≈ ${fmt(n, 2)} mol<span class="note">R = 8,31 J/(mol·K)</span></div></div>
+     <p>Las curvas grises a trazos son <b>isotermas</b>: todos los estados de una isoterma tienen la misma ${V('T','temperatura')} y, por eso, la misma energía interna. El estado A está en la de 300 K y el B, en la de 900 K.</p>
+     <p>Sale lo mismo que con la primera ley del paso anterior. Y no depende de que el gas haya llegado a B a presión constante: ΔU solo mira dónde empieza y dónde termina.</p>`; },
+   desc:() => 'Dos isotermas a trazos: la de 300 kelvin pasa por A y la de 900 kelvin, por B. El cambio de energía interna es de 6000 joules.' },
+ { k:'Paso 5', t:'Otro camino, los mismos extremos', gate:P3, ley:['P','V','Q','W','U'], leyDespues:['P','V','Q','W','U','area'],
+   vista:() => {
+     const ya = S.pred[P3.id], f = ya ? S.f : 0, e = otro.en(f), p = pts(otro, f);
+     const k = Math.round(pts(otro).length/3);
+     return { cil:[{ V:ya ? e.V : 10, Vmax:40, foco:{ txt: ya && e.tramo === 2 ? 'agua fría' : 'mechero' }, q: ya ? (e.tramo === 2 ? -1 : +1) : 0, w: ya && e.tramo === 1 ? +1 : 0, trabado: ya && e.tramo !== 1, hl:S.hl }],
+       diag:{ R:RNG, curvas:[{ pts:pts(iso), dash:[5, 4], col:css('--muted'), w:1.6 }, { pts:pts(otro), w: ya ? 1.4 : 2.6, alfa: ya ? 0.5 : 1, flechas: ya ? [] : flechasDe(3, k) }, ...(ya ? [{ pts:p, flechas: f > 0.99 ? flechasDe(3, k) : [] }] : [])],
+         areas: ya ? [{ pts:pts(iso), borde:true }, { pts:p, signo:1 }] : [], estados:[estA, estB, { P:400, V:10, txt:'C', lado:'nw' }, { P:400, V:30, txt:'D', lado:'ne' }],
+         actual: ya ? { P:e.P, V:e.V } : null, proy:ya, hl:S.hl },
+       barras:{ filas: ya ? [{ k:'Q', txt:'Q', valor:e.Q, ref:10000 }, { k:'W', txt:'W', valor:e.W, ref:4000 }, { k:'U', txt:'ΔU', valor:e.dU, ref:6000 }]
+                         : [{ k:'Q', txt:'Q', oculto:true }, { k:'W', txt:'W', oculto:true }, { k:'U', txt:'ΔU', oculto:true }], max:14000 }, hl:S.hl }; },
+   body:() => `<p>Ahora el gas va de A a B por otro camino. De A a C se calienta con el émbolo trabado hasta ${V('P','400 kPa')}; de C a D se expande a ${V('P','400 kPa')} hasta ${V('V','30 L')}; y de D a B se enfría con el émbolo trabado hasta ${V('P','200 kPa')}. Llega al mismo estado B que antes.</p>
+     <p>Comparados con el camino de antes (A → B a 200 kPa, a trazos), ¿cómo son el trabajo ${V('W','W')} y el calor ${V('Q','Q')} del camino nuevo?</p>${opcionesHTML(P3.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => { const t = otro.tramos;
+     return `<div class="eqs">
+       <div class="eq">${V('W','W')} = ${V('P','400')} · (${V('V','30')} − ${V('V','10')}) = ${V('W','8000 J')}<span class="note">los tramos con el émbolo trabado no tienen área debajo</span></div>
+       <div class="eq">${V('U','ΔU')} = ${V('U','6000 J')}<span class="note">la misma: depende solo de A y de B</span></div>
+       <div class="eq">${V('Q','Q')} = ${V('U','ΔU')} + ${V('W','W')} = 6000 + 8000 = ${V('Q','14 000 J')}</div>
+       <table class="tramos"><tr><th>tramo</th><th>Q</th><th>W</th><th>ΔU</th></tr>
+         ${['A → C', 'C → D', 'D → B'].map((n, i) => `<tr><td>${n}</td><td>${J(t[i].Q)}</td><td>${J(t[i].W)}</td><td>${J(t[i].dU)}</td></tr>`).join('')}</table></div>
+     <p>La línea punteada de cada barra marca el valor del camino de antes. ${V('U','ΔU')} llega justo ahí; ${V('W','W')} y ${V('Q','Q')}, no. El trabajo y el calor dependen del camino; la energía interna, no. En el diagrama, el contorno a trazos es el área del camino de antes.</p>
+     ${fuente('En Iowa, entre el 25 % y el 35 % de los alumnos de física con cálculo dijo que el trabajo era el mismo por dos caminos entre los mismos estados, y entre el 31 % y el 43 % dijo lo mismo del calor (Meltzer, 2001). En ese estudio, entre el 7 % y el 12 % razonó que «más presión, más calor»; la opción D lo junta con el trabajo igual.')}`; },
+   desc:() => S.pred[P3.id] ? 'El camino nuevo sube de A a C, va a 400 kilopascales hasta D y baja a B. Trabajo 8000 joules, calor 14 000, cambio de energía interna 6000, el mismo de antes.' : 'El camino nuevo: de A sube a C a 10 litros, va a 400 kilopascales hasta D a 30 litros y baja a B. Las barras todavía no se muestran.' },
+ { k:'Paso 6', t:'La vuelta completa', gate:P4, ley:['P','V','Q','W','U'], leyDespues:['P','V','Q','W','U','area'],
+   vista:() => {
+     const ya = S.pred[P4.id], f = ya ? S.f : 0, e = ciclo.en(f), k = Math.round(pts(ciclo).length/4);
+     const tramo = e.tramo, partes = ciclo.tramos.map((t, i) => i < tramo ? pts(t) : i === tramo ? recorrido(t, f*4 - i, 30) : null);
+     const areas = !ya ? [] : f >= 1 ? [{ pts:pts(ciclo), signo:1, encerrada:true }] : partes.map((p, i) => p && Math.abs(ciclo.tramos[i].W) > 1 ? { pts:p, signo:Math.sign(ciclo.tramos[i].W) } : null).filter(Boolean);
+     return { cil:[{ V:ya ? e.V : 10, Vmax:40, foco:{ txt: ya && tramo >= 2 ? 'agua fría' : 'mechero' }, q: ya ? (tramo < 2 ? +1 : -1) : 0, w: ya ? (tramo === 1 ? +1 : tramo === 3 ? -1 : 0) : 0, trabado: ya && (tramo === 0 || tramo === 2), hl:S.hl }],
+       diag:{ R:RNG, curvas:[{ pts:pts(ciclo), flechas:flechasDe(4, k), w: ya && f < 1 ? 1.4 : 2.6, alfa: ya && f < 1 ? 0.5 : 1 }, ...(ya && f < 1 ? [{ pts:pts(ciclo, f) }] : [])],
+         areas, estados:[estA, estB, { P:400, V:10, txt:'C', lado:'nw' }, { P:400, V:30, txt:'D', lado:'ne' }], actual: ya ? { P:e.P, V:e.V } : null, proy:ya, hl:S.hl },
+       barras:{ filas: ya ? filas(e.Q, e.W, e.dU) : filas(null, null, null), max:14000 }, hl:S.hl }; },
+   body:() => `<p>Ahora el gas va de A a B por el camino de arriba (A → C → D → B) y vuelve de B a A por el de abajo: se comprime a ${V('P','200 kPa')} mientras cede calor. Da una vuelta completa en sentido horario y queda como empezó.</p>
+     <p>En esa vuelta, ¿cuánto vale el trabajo neto ${V('W','W')} que hace el gas?</p>${opcionesHTML(P4.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('W','W')} neto = ${V('W','8000')} + ${V('W','(−4000)')} = ${V('W','4000 J')}<span class="note">el área encerrada: 200 kPa · 20 L</span></div>
+       <div class="eq">${V('U','ΔU')} = 0<span class="note">vuelve al mismo estado</span></div>
+       <div class="eq">${V('Q','Q')} neto = ${V('U','ΔU')} + ${V('W','W')} = ${V('Q','4000 J')}</div>
+       <div class="eq">entra: 3000 + 20 000 = ${V('Q','23 000 J')}; sale: 9000 + 10 000 = ${V('Q','19 000 J')}</div>
+       <div class="eq">η = ${V('W','W')}/${V('Q','Qc')} = 4000/23 000 ≈ ${pct(ciclo.eficiencia)}<span class="note">Qc: el calor que entra al gas</span></div></div>
+     <p>Al expandirse a 400 kPa, el área debajo es positiva; al comprimirse a 200 kPa, es negativa (rayada). Lo que queda es el área encerrada. En sentido horario el gas hace más trabajo del que recibe: es una <b>máquina térmica</b>. De cada 23 000 J que entran, solo 4000 J salen como trabajo.</p>
+     ${fuente('Cerca del 47 % de un grupo de universitarios australianos, después del tema, dijo que el trabajo neto de un ciclo es cero; en otro ciclo, cerca del 49 % dijo lo mismo del calor neto (Wattanakasiwich y otros, 2013). Las opciones de 8000 J y de 12 000 J son hipótesis nuestras.')}`,
+   desc:() => S.pred[P4.id] ? 'El ciclo rectangular A, C, D, B, en sentido horario. El área encerrada es el trabajo neto: 4000 joules. El cambio de energía interna en la vuelta es cero.' : 'Un ciclo rectangular en el diagrama P-V, de A a C, D, B y de vuelta a A, en sentido horario. Las barras todavía no se muestran.' },
+ { k:'Paso 7', t:'La mejor máquina posible', gate:P5, ley:['P','V','T','iso','Qcf','W'], leyDespues:['P','V','T','iso','Qcf','W','area'],
+   vista:() => {
+     const ya = S.pred[P5.id], f = ya ? S.f : 0, e = carC.en(f), k = Math.round(pts(carC).length/4), tr = e.tramo;
+     const Qc = carC.tramos[0].en(clamp(f*4, 0, 1)).Q, Qf = tr >= 2 ? carC.tramos[2].en(clamp(f*4 - 2, 0, 1)).Q : 0;
+     const iso2 = [{ T:car.Tc, nR:carC.nR, txt: ya ? '227 °C = 500 K' : '227 °C' }, { T:car.Tf, nR:carC.nR, txt: ya ? '27 °C = 300 K' : '27 °C' }];
+     const foco = tr === 0 ? { txt:'foco', txtT: ya ? '500 K' : '227 °C' } : tr === 2 ? { txt:'foco', txtT: ya ? '300 K' : '27 °C' } : null;
+     return { cil:[{ V:ya ? e.V : 5, Vmax:25, foco: ya ? foco : { txt:'foco', txtT:'227 °C' }, aislado: ya && (tr === 1 || tr === 3), q: ya ? (tr === 0 ? +1 : tr === 2 ? -1 : 0) : 0, w: ya ? (tr < 2 ? +1 : -1) : 0, hl:S.hl }],
+       diag:{ R:{ V:[0, 40], P:[0, 360] }, iso:iso2, curvas:[{ pts:pts(carC), flechas:flechasDe(4, k), w: ya && f < 1 ? 1.4 : 2.6, alfa: ya && f < 1 ? 0.5 : 1 }, ...(ya && f < 1 ? [{ pts:pts(carC, f) }] : [])],
+         areas: ya && f >= 1 ? [{ pts:pts(carC), signo:1, encerrada:true }] : [], estados:carC.vertices.map((q, i) => ({ P:q.P, V:q.V, txt:'1234'[i], lado:['e','ne','sw','sw'][i] })),
+         actual: ya ? { P:e.P, V:e.V } : null, proy:false, hl:S.hl },
+       barras:{ filas: ya ? [{ k:'Q', txt:'Qc', valor:Qc }, { k:'Q', txt:'Qf (sale)', valor:Qf }, { k:'W', txt:'W neto', valor:e.W }]
+                         : [{ k:'Q', txt:'Qc', valor:1000 }, { k:'Q', txt:'Qf (sale)', oculto:true }, { k:'W', txt:'W neto', oculto:true }], max:1100 }, hl:S.hl }; },
+   body:() => `<p>Una máquina térmica trabaja entre un foco a ${V('T','227 °C')} y otro a ${V('T','27 °C')}, y recibe ${V('Q','Qc = 1000 J')} del foco caliente en cada ciclo. La mejor máquina posible entre esos dos focos sigue el ciclo de Carnot, dibujado en el diagrama: dos isotermas (1 → 2 y 3 → 4) y dos adiabáticas, sin calor (2 → 3 y 4 → 1).</p>
+     <p>¿Cuál es la eficiencia máxima posible, η = ${V('W','W')}/${V('Q','Qc')}?</p>${opcionesHTML(P5.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('T','Tc')} = 227 + 273 = ${V('T','500 K')}; ${V('T','Tf')} = 27 + 273 = ${V('T','300 K')}</div>
+       <div class="eq">η = 1 − ${V('T','Tf')}/${V('T','Tc')} = 1 − 300/500 = 0,4 = 40 %</div>
+       <div class="eq">${V('W','W')} = 0,4 · ${V('Q','1000')} = ${V('W','400 J')}; ${V('Q','Qf')} = 1000 − 400 = ${V('Q','600 J')}</div></div>
+     <p>El área encerrada por el ciclo de Carnot es el trabajo neto: 400 J. En la isoterma caliente entra ${V('Q','Qc')}; en la fría sale ${V('Q','Qf')} (su barra es negativa: el gas lo cede). Las temperaturas van siempre en kelvin: con grados Celsius, 1 − 27/227 daría cerca del 88 %, un número sin sentido.</p>
+     <p>Ninguna máquina entre estos dos focos pasa del 40 %, aunque no tenga rozamiento: para repetir el ciclo, el gas tiene que deshacerse de calor en el foco frío. Esa es la segunda ley.</p>
+     ${fuente('Usar grados Celsius e invertir la fórmula son errores que suponemos: hipótesis nuestras, sin estudios con porcentaje. En estudiantes de los últimos años de la carrera de física, menos del 20 % reconoció que ninguna máquina entre dos focos supera a la de Carnot (Smith y otros, 2015); el 100 % «sin rozamiento» es su cara en este problema.')}`,
+   desc:() => S.pred[P5.id] ? 'El ciclo de Carnot entre 500 y 300 kelvin. Entra calor de 1000 joules, sale 600 al foco frío y el trabajo neto, el área encerrada, es de 400 joules.' : 'Un ciclo de Carnot en el diagrama P-V entre dos isotermas, de 227 y de 27 grados Celsius. Entran 1000 joules por ciclo; el trabajo todavía no se muestra.' },
+ { k:'Paso 8', t:'Explora los procesos', explora:true, ley:['P','V','T','iso','Q','W','U','area'],
+   vista:() => vistaExplorador(),
+   body:() => `<div class="seg" id="tipos" role="group" aria-label="Proceso">${[['isobarico','isobárico'],['isocorico','isocórico'],['isotermico','isotérmico'],['adiabatico','adiabático']].map(([k, t]) => `<button type="button" data-t="${k}">${t}</button>`).join('')}</div>
+     <p class="hint">Arrastra el punto B por la curva del proceso, o enfoca el dibujo y usa las flechas del teclado. El estado inicial es siempre A: 200 kPa, 10 L y 300 K. El cilindro se mueve con el diagrama.</p>
+     <div id="live" class="body"></div>`,
+   desc:() => '' },
+];
+
+function procExplorador(){
+  const t = S.ex.tipo;
+  return M.proceso(Object.assign({ tipo:t }, A, t === 'isocorico' ? { P2:S.ex.x } : { V2:S.ex.x }));
+}
+function limitesEx(t){ return M.limites({ tipo:t, P1:200, V1:10, Pmin:20, Pmax:460, Vmin:2, Vmax:40 }); }
+function vistaExplorador(){
+  const r = procExplorador(), p = pts(r), t = S.ex.tipo;
+  return { cil:[{ V:r.final.V, Vmax:40, foco: t === 'adiabatico' ? null : { txt: t === 'isotermico' ? 'baño' : (r.Q < 0 ? 'agua fría' : 'mechero'), txtT: t === 'isotermico' ? '300 K' : '' }, aislado: t === 'adiabatico',
+      q: Math.abs(r.Q) > 1 ? Math.sign(r.Q) : 0, w: Math.abs(r.W) > 1 ? Math.sign(r.W) : 0, trabado: t === 'isocorico', hl:S.hl }],
+    diag:{ R:RNG, iso:[{ T:300, nR, txt:'300 K' }, ...(Math.abs(r.final.T - 300) > 0.5 ? [{ T:r.final.T, nR, txt:`${fmt(r.final.T, 0)} K`, opcional:true }] : [])],
+      curvas:[{ pts:p, flechas: p.length > 4 && Math.hypot(r.final.V - 10, (r.final.P - 200)/12) > 3 ? [Math.round(p.length/2)] : [] }],
+      areas: Math.abs(r.W) > 1 ? [{ pts:p, signo:Math.sign(r.W) }] : [], estados:[estA], actual:{ P:r.final.P, V:r.final.V }, proy:true, asa:true, sobre:S.sobre, foco:document.activeElement === cv, hl:S.hl },
+    barras:{ filas:filas(r.Q, r.W, r.dU), max:14000 }, hl:S.hl };
+}
+function verActual(){ return steps[S.step].vista(); }
+function draw(){
+  if (!L.W) return;
+  const s = steps[S.step];
+  vista(L, colores(L.W), verActual());
+  decir($('desc1'), s.explora ? resumen() : s.desc());
+}
+function resumen(){
+  const r = procExplorador();
+  return `Proceso ${S.ex.tipo}. Estado B: ${fmt(r.final.V, 1)} litros, ${fmt(r.final.P, 0)} kilopascales, ${fmt(r.final.T, 0)} kelvin. Calor ${N1(r.Q)} joules, trabajo ${N1(r.W)}, cambio de energía interna ${N1(r.dU)}.`;
+}
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1;
+  b.addEventListener('click', () => { go(n); $('stepT').focus({ preventScroll:true }); }); li.appendChild(b); dots.appendChild(li);
+});
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  parar(); parar = () => {}; S.ocupado = false;
+  const s = steps[n]; S.step = n; S.hl = null; S.f = 1; S.sobre = false;
+  cv.tabIndex = s.explora ? 0 : -1;
+  cv.setAttribute('aria-label', s.explora ? 'Diagrama P-V del explorador: con las flechas del teclado mueves el estado B por la curva del proceso' : 'A la izquierda, el cilindro con el gas y su émbolo; a la derecha, el diagrama P-V; abajo, las barras');
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  ponerLeyenda();
+  pintarDots();
+  L.compactar(!!(s.gate && !S.pred[s.gate.id]));
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar();
+  nav(); draw();
+}
+function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley, !!(s.gate && !S.pred[s.gate.id])); }
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  const falta = s.gate && !S.pred[s.gate.id];
+  $('next').disabled = S.step === steps.length - 1 || falta || S.ocupado;
+  $('next').textContent = falta ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+const DUR = { [P1.id]:1400, [P2.id]:800, [P3.id]:2400, [P4.id]:3200, [P5.id]:3200 };
+function animarRespuesta(s){
+  S.f = 0;
+  parar = animarValor(DUR[s.gate.id] || 1000, f => { S.f = f; draw(); }, () => { S.ocupado = false; nav(); draw(); });
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('res').innerHTML = s.exp();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1);
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; S.f = 0;
+    pintar(); pintarDots(); nav(); ponerLeyenda();
+    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+    $('fb').focus({ preventScroll:true });
+    const paso = S.step;
+    L.compactar(false); draw();
+    // En el celular, el lienzo sube a la vista y la animación arranca un momento después (nucleo/celular.js).
+    Celular.alResponder(L.cv, () => animarRespuesta(s), () => S.step === paso && !$('m1').hidden,
+      { siNo: () => { if (S.step === paso){ S.f = 1; draw(); } S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+// ----- paso 8: explorador -----
+function marcarTipo(){ $('tipos').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t === S.ex.tipo))); }
+function explorar(){
+  $('tipos').querySelectorAll('button').forEach(b => b.onclick = () => {
+    S.ex.tipo = b.dataset.t; const l = limitesEx(S.ex.tipo);
+    S.ex.x = S.ex.tipo === 'isocorico' ? 400 : S.ex.tipo === 'isobarico' ? 30 : clamp(20, l.min, l.max);
+    marcarTipo(); vivo();
+  });
+  marcarTipo(); vivo();
+}
+function vivo(){
+  const r = procExplorador(), t = S.ex.tipo;
+  const nota = { isobarico:'P fija: el área es un rectángulo y parte del calor sale como trabajo.',
+    isocorico:'V fijo: no hay área, W = 0 y todo el calor cambia la energía interna.',
+    isotermico:'T fija: ΔU = 0, pero sí hay calor. Todo el calor que entra sale como trabajo; si lo comprimes, todo el trabajo que recibe sale como calor.',
+    adiabatico:'Aislado: Q = 0 y, aun así, la temperatura cambia. Si lo comprimes, se calienta; si se expande, se enfría.' }[t];
+  $('live').innerHTML = `<div class="eqs">
+      <div class="eq">B: ${V('V', fmt(r.final.V, 1) + ' L')}, ${V('P', fmt(r.final.P, 0) + ' kPa')}, ${V('T', fmt(r.final.T, 0) + ' K')}</div>
+      <div class="eq">${V('W','W')} = área = ${V('W', J(r.W))}</div>
+      <div class="eq">${V('U','ΔU')} = 1,5·Δ(${V('P','P')}${V('V','V')}) = ${V('U', J(r.dU))}</div>
+      <div class="eq">${V('Q','Q')} = ${V('U','ΔU')} + ${V('W','W')} = ${V('Q', J(r.Q))}</div></div>
+    <p class="hint">${nota}</p>`;
+  draw();
+}
+// Arrastre del punto B (nucleo/celular.js): solo cerca del punto; el resto del dibujo deja desplazar la página.
+function puntoB(){ const r = procExplorador(), b = cajaDiagrama(L, colores(L.W), verActual());
+  return { x: b.x + (r.final.V - RNG.V[0])/(RNG.V[1] - RNG.V[0])*b.w, y: b.y + b.h - (r.final.P - RNG.P[0])/(RNG.P[1] - RNG.P[0])*b.h, b }; }
+function moverA(p){
+  const q = puntoB(), b = q.b, t = S.ex.tipo, l = limitesEx(t);
+  const v = t === 'isocorico' ? RNG.P[0] + (b.y + b.h - p.y)/b.h*(RNG.P[1] - RNG.P[0]) : RNG.V[0] + (p.x - b.x)/b.w*(RNG.V[1] - RNG.V[0]);
+  const paso = t === 'isocorico' ? 10 : 0.5, x = clamp(Math.round(v/paso)*paso, l.min, l.max);
+  if (x !== S.ex.x){ S.ex.x = x; vivo(); }
+}
+Celular.arrastre(cv, {
+  activo: () => !!steps[S.step].explora,
+  cerca: (p, r) => { const q = puntoB(); return Math.hypot(p.x - q.x, p.y - q.y) < r; },
+  mover: p => moverA(p),
+  sobre: on => { S.sobre = on; draw(); }
+});
+cv.addEventListener('keydown', e => {
+  if (!steps[S.step].explora) return;
+  const d = { ArrowRight:1, ArrowUp:1, ArrowLeft:-1, ArrowDown:-1 }[e.key]; if (!d) return;
+  e.preventDefault();
+  const t = S.ex.tipo, l = limitesEx(t), paso = t === 'isocorico' ? 10 : 1;
+  S.ex.x = clamp(Math.round((S.ex.x + d*paso)/paso)*paso, l.min, l.max); vivo();
+});
+cv.addEventListener('focus', draw); cv.addEventListener('blur', draw);
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); $('stepT').focus({ preventScroll:true }); });
+$('prev').addEventListener('click', () => { go(S.step - 1); $('stepT').focus({ preventScroll:true }); });
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+// Al cambiar de pestaña a mitad de una animación, salta al final: así «Siguiente» no queda trabado.
+addEventListener('modo', () => { if ($('m1').hidden) parar(true); else L.resize(); });
+L.resize(); go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Preguntas de docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md (T4, T11, T10, T15 y T8 con cv y cp).
+   La escena cambia recién después de responder. Lo que se dibuja sale de MotorTermodinamica. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const L = crearLienzo(cv, altoLienzo, draw);
+let parar = () => {};
+const E = {};
+const pts = (obj, s) => recorrido(obj, s === undefined ? 1 : s, 60);
+const filas = (q, w, u) => [{ k:'Q', txt:'Q', valor:q === null ? 0 : q, oculto:q === null }, { k:'W', txt:'W', valor:w === null ? 0 : w, oculto:w === null }, { k:'U', txt:'ΔU', valor:u === null ? 0 : u, oculto:u === null }];
+const flechasDe = (n, k) => Array.from({ length: n }, (_, i) => Math.round(k*(i + 0.5)));
+const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
+function correr(dur){ parar(); E.f = 0; parar = animarValor(dur, f => { E.f = f; draw(); }); }
+
+const EXPS = [
+  { id:'aislado', corto:'Cilindro aislado', ley:['P','V','T','iso','Q','W','U','area','nota'],
+    q:`Un gas ideal monoatómico está en un cilindro aislado, a ${V('P','100 kPa')}, ${V('V','27 L')} y ${V('T','300 K')}. Una mano empuja el émbolo hasta que el gas ocupa ${V('V','8 L')}. ¿Qué pasa con su temperatura?`,
+    opts:[['a','No cambia: el cilindro está aislado y no entra ni sale calor.','T4-aislado-T-no-cambia','documentado'],
+          ['b','Sube: el trabajo que hace la mano sobre el gas aumenta su energía interna.',null],
+          ['c','Baja: como no entra calor, el gas pierde energía al comprimirse.','baja-sin-calor','hipotesis'],
+          ['d','Sube en la misma proporción que la presión, como si el volumen no cambiara.','T3-una-sola-variable','parcial']],
+    ok:'b',
+    antes:() => Object.assign(E, { tipo:'adiab', V2:8, f:0 }),
+    despues:() => correr(1600),
+    fb:{ a:'Elegiste la A. Aislado quiere decir Q = 0, no que la temperatura se quede igual. La mano hace trabajo sobre el gas y esa energía se queda adentro. La correcta está marcada.',
+         c:'Elegiste la C. Al comprimirlo, el gas no pierde energía: la recibe, como trabajo de la mano. Sin calor que salga, toda se queda en el gas. La correcta está marcada.',
+         d:'Elegiste la D. La temperatura sí sube, pero no como la presión: el volumen también cambia, y P·V = nRT obliga a mirar las tres. Aquí P se multiplica por casi 7,6 y T, por 2,25. La correcta está marcada.' },
+    ctrl:() => `<div class="ctrls"><div class="slider"><label for="q-v"><span>Volumen final (${V('V','V')})</span><output id="q-v-o"></output></label><input id="q-v" class="r-V" type="range" min="6" max="27" step="0.5" value="${E.V2}"></div></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
+    vivo:() => { const r = M.proceso({ tipo:'adiabatico', P1:100, V1:27, V2:E.V2, T1:300 });
+      $('q-v-o').textContent = `${fmt(E.V2, 1)} L`;
+      $('chips2').innerHTML = `<span class="chip">T = ${fmt(r.final.T, 0)} K</span><span class="chip">P = ${fmt(r.final.P, 0)} kPa</span><span class="chip">Q = 0</span><span class="chip">W = ${J(r.W)}</span><span class="chip">ΔU = ${J(r.dU)}</span>`; },
+    exp:`<div class="eqs"><div class="eq">${V('Q','Q')} = 0<span class="note">aislado</span></div>
+      <div class="eq">${V('W','W')} = −5062,5 J<span class="note">el gas se comprime: la mano hace el trabajo</span></div>
+      <div class="eq">${V('U','ΔU')} = ${V('Q','Q')} − ${V('W','W')} = +5062,5 J → ${V('T','T')} sube de 300 K a 675 K</div></div>
+      <p>El área bajo la curva va rayada: el trabajo del gas es negativo. Como no sale calor, toda esa energía se queda en el gas y su temperatura sube. La curva adiabática corta las isotermas: sale de la isoterma de 300 K y llega a la de 675 K.</p>
+      <p>Así se calienta el inflador de una bicicleta cuando bombeas rápido. Mueve el volumen final: cuanto más comprimes, más sube la temperatura.</p>
+      ${fuente('En una compresión adiabática, solo cerca del 10 % de 179 universitarios predijo que la temperatura sube; en otro grupo, cerca del 40 % razonó que el aislante mantiene la temperatura (Loverude, 1999). Razonar con PV = nRT moviendo dos variables y fijando la tercera sin motivo fue el razonamiento de entre el 10 % y el 70 %, según el curso (Loverude, 1999); la opción D es su cara en este problema. La C es una hipótesis nuestra.')}` },
+  { id:'bano', corto:'Baño a 300 K', ley:['P','V','T','iso','Q','W','U','area'],
+    q:`Un gas ideal está a ${V('P','200 kPa')}, ${V('V','10 L')} y ${V('T','300 K')}, en contacto con un baño de agua a 300 K. Se expande despacio hasta ${V('V','20 L')} y su temperatura se queda en 300 K todo el tiempo. Durante la expansión, ¿el gas recibe calor?`,
+    opts:[['a','No recibe calor: su temperatura no cambia.','T11-isoterma-sin-calor','documentado'],
+          ['b','Sí recibe calor, y todo se queda como energía interna.','T8-todo-el-calor-a-energia-interna','parcial'],
+          ['c','Sí recibe calor, y lo entrega entero como trabajo.',null],
+          ['d','No: cede calor al baño, porque al expandirse suelta energía.','isoterma-cede-calor','hipotesis']],
+    ok:'c',
+    antes:() => Object.assign(E, { tipo:'iso', V2:20, f:0 }),
+    despues:() => correr(1500),
+    fb:{ a:'Elegiste la A. Que la temperatura no cambie quiere decir ΔU = 0, no Q = 0. El gas hace trabajo al expandirse y esa energía tiene que venir de algún lado: del baño, como calor. La correcta está marcada.',
+         b:'Elegiste la B. Si el calor se quedara como energía interna, la temperatura subiría. Pero no cambia: el calor sale entero como trabajo sobre el émbolo. La correcta está marcada.',
+         d:'Elegiste la D. Al expandirse, el gas entrega energía como trabajo y, si nadie se la repusiera, se enfriaría. El baño se la repone: el calor va del baño al gas. La correcta está marcada.' },
+    ctrl:() => `<div class="ctrls"><div class="slider"><label for="q-v"><span>Volumen final (${V('V','V')})</span><output id="q-v-o"></output></label><input id="q-v" class="r-V" type="range" min="5" max="30" step="0.5" value="${E.V2}"></div></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
+    vivo:() => { const r = M.proceso({ tipo:'isotermico', P1:200, V1:10, V2:E.V2, T1:300 });
+      $('q-v-o').textContent = `${fmt(E.V2, 1)} L`;
+      $('chips2').innerHTML = `<span class="chip">Q = ${J(r.Q)}</span><span class="chip">W = ${J(r.W)}</span><span class="chip">ΔU = 0</span>`; },
+    exp:`<div class="eqs"><div class="eq">${V('U','ΔU')} = 0<span class="note">T fija</span></div>
+      <div class="eq">${V('W','W')} = ${V('P','P')}₁·${V('V','V')}₁·ln(${V('V','V')}₂/${V('V','V')}₁) = 2000·ln 2 ≈ 1386 J</div>
+      <div class="eq">${V('Q','Q')} = ${V('U','ΔU')} + ${V('W','W')} ≈ ${V('Q','1386 J')}</div></div>
+      <p>El área bajo la isoterma es el trabajo. Para hacerlo sin enfriarse, el gas recibe del baño justo esa cantidad de calor: las barras de ${V('Q','Q')} y de ${V('W','W')} son iguales y la de ${V('U','ΔU')} se queda en cero. Mueve el volumen final: si lo comprimes, el signo se invierte y el gas cede calor al baño.</p>
+      ${fuente('Que en una expansión isotérmica no haya calor lo dijo cerca del 51 % de un grupo de universitarios australianos, después del tema, y cerca del 40 % de uno tailandés, antes (Wattanakasiwich y otros, 2013). La opción B es la cara aquí del error de que todo el calor se vuelve energía interna, medido en otra pregunta de esa encuesta; la D es una hipótesis nuestra.')}` },
+  { id:'reves', corto:'La vuelta al revés', ley:['P','V','Q','W','U','area'],
+    q:`El gas da la misma vuelta del paso 6 (200 y 400 kPa, 10 y 30 L), pero en sentido antihorario: A → B → D → C → A. ¿Cuánto vale el trabajo neto ${V('W','W')} del gas en una vuelta?`,
+    opts:[['a','−4000 J: el área encerrada es la misma, pero ahora el gas recibe más trabajo del que hace.',null],
+          ['b','0 J: el gas vuelve a su estado inicial y no le queda nada.','T10-trabajo-neto-cero','documentado'],
+          ['c','+4000 J: el área encerrada es la misma que en sentido horario.','sentido-no-importa','hipotesis'],
+          ['d','−12 000 J: las dos áreas se suman, ahora con signo menos.','suma-las-areas-sin-signo','hipotesis']],
+    ok:'a',
+    antes:() => Object.assign(E, { tipo:'reves', f:0 }),
+    despues:() => correr(3000),
+    fb:{ b:'Elegiste la B. Al volver al inicio, solo ΔU es cero. El trabajo neto es el área encerrada, con un signo que depende del sentido. La correcta está marcada.',
+         c:'Elegiste la C. El área es la misma, pero el sentido cambia el signo: ahora el gas se expande a la presión baja y se comprime a la alta. Recibe más trabajo del que hace. La correcta está marcada.',
+         d:'Elegiste la D. Las dos áreas no se suman: una es positiva (la expansión) y la otra negativa (la compresión). Queda la diferencia. La correcta está marcada.' },
+    ctrl:() => `<p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
+    vivo:() => {},
+    exp:(() => { const r = M.rectangulo({ Pa:200, Pb:400, Va:10, Vb:30, T1:300, sentido:'antihorario' });
+      return `<div class="eqs"><div class="eq">${V('W','W')} neto = ${V('W','+4000')} + ${V('W','(−8000)')} = ${V('W','−4000 J')}</div>
+      <div class="eq">${V('Q','Q')} neto = ${V('W','W')} neto = ${V('Q','−4000 J')}; ${V('U','ΔU')} = 0</div>
+      <div class="eq">el gas recibe ${V('Q', fmt(r.Qabs, 0) + ' J')} y entrega ${V('Q', fmt(r.Qced, 0) + ' J')}</div></div>
+      <p>En sentido antihorario, el gas se expande a 200 kPa (área positiva, de 4000 J) y se comprime a 400 kPa (área rayada, de −8000 J). El entorno le da 4000 J netos de trabajo, y el gas entrega más calor del que recibe: es un <b>refrigerador</b>. En las academias, al ciclo antihorario se le llama refrigerador: el entorno hace trabajo neto sobre el gas y el gas entrega más calor del que recibe.</p>
+      ${fuente('Que el trabajo neto de un ciclo sea cero porque el gas vuelve al inicio lo dijo cerca del 47 % de un grupo de universitarios australianos (Wattanakasiwich y otros, 2013). Las opciones C y D son hipótesis nuestras.')}`; })() },
+  { id:'inventor', corto:'El inventor', ley:['T','Qcf','W'],
+    q:`Un inventor dice que su máquina trabaja entre un foco a ${V('T','127 °C')} y otro a ${V('T','27 °C')}, recibe ${V('Q','1000 J')} del foco caliente y da ${V('W','300 J')} de trabajo en cada ciclo. ¿Es posible? ¿Por qué?`,
+    opts:[['a','Sí: da menos trabajo que el calor que recibe, así que no pasa del 100 %.','T15-no-aplica-la-segunda-ley','parcial'],
+          ['b','Sí: el límite es 1 − 27/127, cerca del 79 %, y la máquina da 30 %.','carnot-con-celsius','hipotesis'],
+          ['c','No: ninguna máquina convierte en trabajo más de la mitad del calor que recibe.','limite-del-cincuenta','hipotesis'],
+          ['d','No: el límite es 1 − 300/400 = 25 %, y la máquina dice dar 30 %.',null]],
+    ok:'d',
+    antes:() => Object.assign(E, { tipo:'focos', W:300 }),
+    despues:() => {},
+    fb:{ a:'Elegiste la A. Cumplir la primera ley no basta: entre dos focos, la segunda ley pone un tope más bajo, el de Carnot. La correcta está marcada.',
+         b:'Elegiste la B. La fórmula de Carnot pide kelvin: 400 K y 300 K dan un límite del 25 %, y la máquina dice dar 30 %. La correcta está marcada.',
+         c:'Elegiste la C. No hay un tope fijo del 50 %: el límite depende de las temperaturas de los focos. Entre 1000 K y 300 K sería del 70 %. Aquí es del 25 %. La correcta está marcada.' },
+    ctrl:() => `<div class="ctrls"><div class="slider"><label for="q-w"><span>Trabajo que promete (${V('W','W')})</span><output id="q-w-o"></output></label><input id="q-w" class="r-W" type="range" min="0" max="600" step="10" value="${E.W}"></div></div><div class="chips" id="chips2"></div>`,
+    vivo:() => { const r = M.juzgar({ Tc:127, Tf:27, Qc:1000, W:E.W, unidad:'C' });
+      $('q-w-o').textContent = `${fmt(E.W, 0)} J`;
+      $('chips2').innerHTML = `<span class="chip">η = ${pct(r.eta)}</span><span class="chip">Carnot: ${pct(r.etaCarnot)}</span><span class="chip">${r.posible ? 'posible' : 'imposible: viola la segunda ley'}</span>`; },
+    exp:`<div class="eqs"><div class="eq">${V('T','Tc')} = 127 + 273 = ${V('T','400 K')}; ${V('T','Tf')} = ${V('T','300 K')}</div>
+      <div class="eq">η de Carnot = 1 − 300/400 = 25 %</div>
+      <div class="eq">η que promete = ${V('W','300')}/${V('Q','1000')} = 30 % &gt; 25 % → imposible</div></div>
+      <p>La máquina cumple la primera ley (1000 = 300 + 700), pero no la segunda: ninguna máquina entre esos dos focos pasa de la eficiencia de Carnot. En la regla de la derecha, la línea entera es lo que promete el inventor y la de trazos, el límite. Mueve el trabajo prometido: hasta 250 J es posible.</p>
+      ${fuente('No usar la segunda ley para juzgar si una máquina propuesta es posible lo describen Cochran y Heron (2006, citados por Smith y otros, 2015) en «muchos estudiantes», sin porcentaje. Usar grados Celsius y el tope del 50 % son hipótesis nuestras.')}` },
+  { id:'trabado', corto:'Trabado o libre', ley:['P','V','T','iso','Q','W','U'],
+    q:`Le das ${V('Q','3000 J')} de calor al mismo gas monoatómico (${V('P','200 kPa')}, ${V('V','10 L')}, ${V('T','300 K')}) de dos maneras: con el émbolo trabado, a volumen fijo, o con el émbolo libre, a presión fija. ¿En cuál sube más su temperatura?`,
+    opts:[['a','Con el émbolo trabado: todo el calor se queda como energía interna.',null],
+          ['b','Igual en los dos: reciben el mismo calor.','T8-todo-el-calor-a-energia-interna','parcial'],
+          ['c','Con el émbolo libre: el gas se mueve más y se agita más.','libre-se-agita-mas','hipotesis'],
+          ['d','No se puede saber sin conocer la masa del gas.','falta-la-masa','hipotesis']],
+    ok:'a',
+    antes:() => Object.assign(E, { tipo:'dos', Q:3000, f:0 }),
+    despues:() => correr(1400),
+    fb:{ b:'Elegiste la B. El calor es el mismo, pero con el émbolo libre parte de él sale como trabajo: queda menos para la energía interna. La correcta está marcada.',
+         c:'Elegiste la C. Con el émbolo libre, el gas gasta parte del calor en empujar el émbolo. Le queda menos energía interna y su temperatura sube menos. La correcta está marcada.',
+         d:'Elegiste la D. Para saber cuánto sube haría falta más, pero para comparar basta la primera ley: con el émbolo libre, parte del calor sale como trabajo. La correcta está marcada.' },
+    ctrl:() => `<div class="ctrls"><div class="slider"><label for="q-q"><span>Calor (${V('Q','Q')})</span><output id="q-q-o"></output></label><input id="q-q" class="r-Q" type="range" min="500" max="5000" step="100" value="${E.Q}"></div></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
+    vivo:() => { const a = M.proceso({ tipo:'isocorico', P1:200, V1:10, Q:E.Q, T1:300 }), b = M.proceso({ tipo:'isobarico', P1:200, V1:10, Q:E.Q, T1:300 });
+      $('q-q-o').textContent = `${fmt(E.Q, 0)} J`;
+      $('chips2').innerHTML = `<span class="chip">trabado: T = ${fmt(a.final.T, 0)} K</span><span class="chip">libre: T = ${fmt(b.final.T, 0)} K</span><span class="chip">ΔT trabado / ΔT libre = 5/3</span>`; },
+    exp:`<div class="eqs"><div class="eq">trabado: ${V('W','W')} = 0 → ${V('U','ΔU')} = ${V('Q','3000 J')}; ${V('T','T')} sube a 600 K</div>
+      <div class="eq">libre: ${V('Q','Q')} = (5/2)·${V('P','P')}·Δ${V('V','V')} → Δ${V('V','V')} = 6 L; ${V('W','W')} = 1200 J; ${V('U','ΔU')} = 1800 J; ${V('T','T')} sube a 480 K</div></div>
+      <p>Con el émbolo libre, el gas empuja el émbolo mientras se calienta: de cada 5 J de calor, 2 J salen como trabajo y 3 J se quedan. Por eso hace falta más calor para subir un grado a presión fija que a volumen fijo: el calor molar a presión constante, Cp, es mayor que el calor molar a volumen constante, Cv. Para un gas monoatómico, Cp/Cv = 5/3.</p>
+      ${fuente('Pensar que todo el calor se vuelve energía interna aunque el gas se expanda lo dijo cerca del 42 % de un grupo de universitarios australianos (Wattanakasiwich y otros, 2013); la opción B es su cara en esta comparación. Las opciones C y D son hipótesis nuestras.')}` },
+];
+
+function vistaE(){
+  const x = EXPS[S.k], ya = !!S.pred[x.id], f = E.f === undefined ? 1 : E.f;
+  if (E.tipo === 'adiab'){
+    const r = M.proceso({ tipo:'adiabatico', P1:100, V1:27, V2:E.V2, T1:300 }), e = r.en(ya ? f : 0), p = pts(r, ya ? f : 0);
+    return { cil:[{ V:e.V, Vmax:30, aislado:true, mano:true, w: ya && f > 0 ? -1 : 0 }],
+      diag:{ R:{ V:[0, 35], P:[0, 900] }, iso: ya && f >= 1 ? [{ T:300, nR:r.nR, txt:'300 K' }, { T:r.final.T, nR:r.nR, txt:`${fmt(r.final.T, 0)} K` }] : [],
+        curvas: ya ? [{ pts:p, flechas: f > 0.6 ? [Math.round(p.length/2)] : [] }] : [], areas: ya ? [{ pts:p, signo:-1 }] : [],
+        estados:[{ P:100, V:27, txt:'inicio', lado:'sw' }], actual:{ P:e.P, V:e.V }, proy:true },
+      barras:{ filas: ya ? filas(0, e.W, e.dU) : filas(0, null, null), max:8000 } };
+  }
+  if (E.tipo === 'iso'){
+    const r = M.proceso({ tipo:'isotermico', P1:200, V1:10, V2:E.V2, T1:300 }), e = r.en(ya ? f : 0), p = pts(r, ya ? f : 0);
+    return { cil:[{ V:e.V, Vmax:30, foco:{ txt:'baño', txtT:'300 K' }, q: ya && f > 0 ? Math.sign(r.Q) : 0, w: ya && f > 0 ? Math.sign(r.W) : 0 }],
+      diag:{ R:{ V:[0, 30], P:[0, 450] }, iso:[{ T:300, nR:r.nR, txt:'300 K' }], curvas: ya ? [{ pts:p, flechas: f > 0.6 ? [Math.round(p.length/2)] : [] }] : [],
+        areas: ya ? [{ pts:p, signo:Math.sign(r.W) }] : [], estados:[{ P:200, V:10, txt:'inicio', lado:'ne' }], actual:{ P:e.P, V:e.V }, proy:true },
+      barras:{ filas: ya ? filas(e.Q, e.W, e.dU) : filas(null, null, null), max:2500 } };
+  }
+  if (E.tipo === 'reves'){
+    const r = M.rectangulo({ Pa:200, Pb:400, Va:10, Vb:30, T1:300, sentido:'antihorario' }), e = r.en(ya ? f : 0), tr = e.tramo, k = Math.round(pts(r).length/4);
+    const partes = r.tramos.map((t, i) => i < tr ? pts(t) : i === tr ? recorrido(t, f*4 - i, 30) : null);
+    const areas = !ya ? [] : f >= 1 ? [{ pts:pts(r), signo:-1, encerrada:true }] : partes.map((p, i) => p && Math.abs(r.tramos[i].W) > 1 ? { pts:p, signo:Math.sign(r.tramos[i].W) } : null).filter(Boolean);
+    return { cil:[{ V:ya ? e.V : 10, Vmax:40, foco:{ txt: ya && tr >= 2 ? 'agua fría' : 'mechero' }, q: ya ? (tr < 2 ? +1 : -1) : 0, w: ya ? (tr === 0 ? +1 : tr === 2 ? -1 : 0) : 0, trabado: ya && (tr === 1 || tr === 3) }],
+      diag:{ R:{ V:[0, 40], P:[0, 500] }, curvas:[{ pts:pts(r), flechas:flechasDe(4, k), w: ya && f < 1 ? 1.4 : 2.6, alfa: ya && f < 1 ? 0.5 : 1 }, ...(ya && f < 1 ? [{ pts:pts(r, f) }] : [])],
+        areas, estados:[{ P:200, V:10, txt:'A', lado:'sw' }, { P:200, V:30, txt:'B', lado:'se' }, { P:400, V:30, txt:'D', lado:'ne' }, { P:400, V:10, txt:'C', lado:'nw' }],
+        actual: ya ? { P:e.P, V:e.V } : null, proy:ya },
+      barras:{ filas: ya ? filas(e.Q, e.W, e.dU) : filas(null, null, null), max:14000 } };
+  }
+  if (E.tipo === 'focos'){
+    const r = M.juzgar({ Tc:127, Tf:27, Qc:1000, W:E.W, unidad:'C' });
+    return { focos:{ Tc: ya ? '127 °C = 400 K' : '127 °C', Tf: ya ? '27 °C = 300 K' : '27 °C', Qc:1000, W:E.W, Qf:r.Qf, ver:ya, medidor: ya ? { eta:r.eta, lim:r.etaCarnot } : null } };
+  }
+  // dos cilindros: trabado (volumen fijo) y libre (presión fija)
+  const a = M.proceso({ tipo:'isocorico', P1:200, V1:10, Q:E.Q, T1:300 }), b = M.proceso({ tipo:'isobarico', P1:200, V1:10, Q:E.Q, T1:300 });
+  const fa = ya ? f : 0, ea = a.en(fa), eb = b.en(fa);
+  return { cil:[{ V:10, Vmax:28, foco:{ txt:'mechero' }, q: ya && f > 0 ? 1 : 0, trabado:true, etiqueta:'trabado' }, { V:eb.V, Vmax:28, foco:{ txt:'mechero' }, q: ya && f > 0 ? 1 : 0, w: ya && f > 0 ? 1 : 0, etiqueta:'libre' }],
+    diag:{ R:{ V:[0, 28], P:[0, 650] }, iso: ya && f >= 1 ? [{ T:300, nR:a.nR, txt:'300 K' }, { T:a.final.T, nR:a.nR, txt:`${fmt(a.final.T, 0)} K` }, { T:b.final.T, nR:a.nR, txt:`${fmt(b.final.T, 0)} K` }] : [{ T:300, nR:a.nR, txt:'300 K' }],
+      curvas: ya ? [{ pts:pts(a, fa) }, { pts:pts(b, fa) }] : [], areas: ya ? [{ pts:pts(b, fa), signo:1 }] : [],
+      estados:[{ P:200, V:10, txt:'inicio', lado:'sw' }, ...(ya && f >= 1 ? [{ P:a.final.P, V:10, txt:'trabado', lado:'e' }, { P:200, V:b.final.V, txt:'libre', lado:'ne' }] : [])] },
+    barras:{ filas: ya ? [{ k:'U', txt:'ΔU trabado', valor:ea.dU }, { k:'U', txt:'ΔU libre', valor:eb.dU }, { k:'W', txt:'W libre', valor:eb.W }]
+                      : [{ k:'U', txt:'ΔU trabado', oculto:true }, { k:'U', txt:'ΔU libre', oculto:true }, { k:'W', txt:'W libre', oculto:true }], max:5600 } };
+}
+function draw(){
+  if (!L.W || !E.tipo) return;
+  vista(L, colores(L.W), vistaE());
+  decir($('desc2'), descE());
+}
+function descE(){
+  const x = EXPS[S.k], ya = !!S.pred[x.id];
+  if (E.tipo === 'adiab') return ya ? 'El gas se comprime sin calor por una curva adiabática que cruza las isotermas: la temperatura sube de 300 a 675 kelvin. El trabajo del gas es negativo y el cambio de energía interna, positivo.' : 'Un cilindro aislado con el gas a 27 litros y 100 kilopascales. Una mano va a empujar el émbolo hasta 8 litros. El calor es cero; el trabajo y el cambio de energía interna todavía no se muestran.';
+  if (E.tipo === 'iso') return ya ? 'El gas se expande por la isoterma de 300 kelvin. El calor que recibe del baño es igual al trabajo que hace; el cambio de energía interna es cero.' : 'Un cilindro sobre un baño a 300 kelvin, con el gas a 10 litros y 200 kilopascales. Las barras todavía no se muestran.';
+  if (E.tipo === 'reves') return ya ? 'El ciclo rectangular en sentido antihorario. El trabajo neto es de menos 4000 joules: el entorno hace trabajo neto sobre el gas.' : 'El ciclo rectangular de 200 y 400 kilopascales y 10 y 30 litros, en sentido antihorario. Las barras todavía no se muestran.';
+  if (E.tipo === 'focos') return ya ? `Foco caliente a 400 kelvin y frío a 300. La máquina promete una eficiencia de ${pct(E.W/1000)}; el límite de Carnot es 25 %.` : 'Un foco caliente a 127 grados Celsius arriba, la máquina al centro y un foco frío a 27 grados abajo. Entran 1000 joules y salen 300 de trabajo.';
+  return ya ? 'Con el émbolo trabado, la temperatura sube a 600 kelvin; con el émbolo libre, solo a 480, porque parte del calor sale como trabajo.' : 'Dos cilindros iguales con un mechero cada uno: uno con el émbolo trabado y otro con el émbolo libre. Las barras todavía no se muestran.';
+}
+const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  if (!$('exps').children.length){
+    $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+    $('exps').querySelectorAll('button').forEach(b => b.onclick = () => { ir(+b.dataset.k); $('t2').focus({ preventScroll:true }); });
+  }
+  const libre = primeraLibre();
+  [...$('exps').children].forEach((b, k) => {
+    const cerrado = k > libre; b.disabled = cerrado; b.setAttribute('aria-pressed', String(!cerrado && k === S.k));
+    if (cerrado){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Experimento ${k+1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.removeAttribute('aria-label'); }
+  });
+}
+function reiniciar(x){ for (const k of Object.keys(E)) delete E[k]; x.antes(); }
+function ir(k){
+  if (k > primeraLibre()) return;
+  parar(); parar = () => {};
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  reiniciar(x);
+  E.f = ya ? 1 : 0;
+  botones();
+  leyenda($('ley2'), x.ley, !ya);
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  sinParada($('body2'));
+  L.compactar(!ya);
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const inp = $('res2').querySelector('input[type=range]');
+    if (inp) inp.addEventListener('input', () => { parar(); E.f = 1; const v = +inp.value; if (E.tipo === 'focos') E.W = v; else if (E.tipo === 'dos') E.Q = v; else E.V2 = v; x.vivo(); draw(); });
+    const rep = $('repetir'); if (rep) rep.onclick = () => x.despues();
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); $('t2').focus({ preventScroll:true }); };
+    sinParada($('res2')); x.vivo();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); leyenda($('ley2'), x.ley, false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    E.f = 0;
+    pintar();
+    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+    $('fb2').focus({ preventScroll:true });
+    L.compactar(false); draw();
+    Celular.alResponder(L.cv, () => { x.despues(); draw(); }, () => S.k === k && !$('m2').hidden, { siNo: () => { if (S.k === k){ E.f = 1; draw(); } } });
+  });
+  pintar(); draw();
+}
+alRedibujarTema(draw);
+// Al cambiar de pestaña a mitad de una animación, salta al final.
+addEventListener('modo', () => { if ($('m2').hidden) parar(true); else L.resize(); });
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
