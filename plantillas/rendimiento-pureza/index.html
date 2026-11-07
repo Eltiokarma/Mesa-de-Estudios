@@ -750,7 +750,7 @@ function explorar(){
   const vivo = () => {
     const R = MR.REACCIONES[X.reac], d = MR.producir({ reaccion:X.reac, muestra:X.m, pureza:X.p, rendimiento:X.eta });
     const gas = R.gases.includes(R.producto);
-    // Lo que regalaría el experimento 2 (pureza o rendimiento al 100 %) y el 3 (volumen de gas en CN).
+    // Mientras el experimento 2 no tenga respuesta, el real, el teórico y la caja quedan tapados; el volumen, hasta el 3.
     const tapaM = !PRED_EXP['mejora'], tapaV = !PRED_EXP['gas'];
     $('xR').value = X.reac; $('xM').value = X.m; $('xP').value = X.p; $('xE').value = X.eta;
     $('xMo').textContent = g(X.m) + ' g'; $('xPo').textContent = X.p + ' %'; $('xEo').textContent = X.eta + ' %';
