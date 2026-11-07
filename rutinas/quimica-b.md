@@ -243,3 +243,69 @@ En cada vista, ΔE00 ≥ 20 entre los que salen juntos. El mínimo de una variab
 - **`docs/diseno.md`:** «Variables del grupo que se cambia (`plantillas/funciones-organicas/`): C, H, O y N de la paleta común; cadena principal verde (#187a00, oscuro #59ce3b), localizador marrón rojizo (#81310e, oscuro #ff621f), grupo funcional índigo (#2c18dc, oscuro #958de2), temperatura de ebullición T ocre (#665200, oscuro #ceb13b), puente de hidrógeno magenta (#8f0081, oscuro #ff33eb), y en el éster la parte del ácido naranja (#a35200, oscuro #e98f35) y la del alcohol violeta (#9d00e0, oscuro #e099ff). ΔE00 mínimo 21,2 dentro de cada vista y contraste mínimo 4,59. Los colores de cadena y localizador no son los de hidrocarburos, porque aquel azul choca con el N y aquel magenta con el O. Los pares cercanos (localizador–ácido, grupo–alcohol, puente–alcohol) nunca comparten dibujo: el nombre del éster va en tinta en la caja y en la tabla de prioridad. Los lugares para el grupo van en punteado grueso de tinta.»
 - **`docs/pendientes.md`:** «**El grupo que se cambia** (`plantillas/funciones-organicas/`, rutina de química B, 7 nov 2026): el mismo esqueleto con el grupo que se mueve o se cambia (familia, nombre IUPAC y común, fórmula, ebullición y puentes de hidrógeno), isomería de función, posición y cadena, clases de alcohol y amina, el éster con sus dos partes y la esterificación; caja de grupos libre; 24 casos verificados aparte; 10 de papel; 7 predicciones y 5 «¿qué pasa si…?»; documentado solo FO2 (Schmidt 1996). Falta: amidas en el conteo de isómeros y compuestos con varios grupos. Sin ítems en el banco de química.»
 - **`CLAUDE.md`, historia:** «Funciones orgánicas (7 nov 2026, rutina de química B): `plantillas/funciones-organicas/` (el grupo que se cambia: grupos funcionales, nombres, isomería de función, clases de alcohol y amina, puentes de hidrógeno y el éster con sus dos partes; 24 casos verificados aparte). Con esto la rutina de química B terminó su lista.»
+
+## 7 nov 2026 · Segundo encargo de la principal
+
+Química quedó con módulo en sus 20 unidades. La principal pidió en esta misma rama: (1) el rendimiento de pH y líquidos y sólidos en gama baja y (2) dos plantillas de álgebra, programación lineal y números reales.
+
+## 7 nov 2026 · La región que se arma (`plantillas/programacion-lineal/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, `window.MotorProgLineal`, sin DOM, fracciones exactas; cabecera hasta la línea 65, con los códigos PL1 a PL23 y su respaldo).
+  - Restricciones y traducción del enunciado, prueba de un punto, y semiplano con trazo continuo o punteado, el lado que se sombrea, la prueba del origen y el despeje con el sentido invertido al dividir entre un negativo.
+  - Intersección de dos rectas y vértices de la región, que dicen si es acotada o vacía. Polígono recortado a una ventana.
+  - Evaluación de la función objetivo y óptimo: único, múltiple en un lado, sin óptimo si no es acotada o si es vacía, con el rango de z.
+  - Recta de nivel (pendiente, gradiente y manija), su desplazamiento y restricciones redundantes.
+  - Cada resultado trae `errores`, `coinciden` y `repetidos`, con desempates explícitos.
+- **`casos.json`:** 20 casos. **`motor.test.js`:** 40 pruebas. **`papel.json`:** 10 problemas propios: una panadería de Arequipa, una región no acotada al minimizar, óptimos múltiples con puntos enteros, el valor de k para que la región no sea vacía y una restricción redundante.
+- **`index.html`, paso a paso** (7 pasos, 6 predicciones que bloquean). Es un taller de Juliaca: máquina de tejer 3x + y ≤ 21, feria x + y ≤ 11, flecos y ≤ 9 y ganancia z = 40x + 20y. Los pasos:
+  1. traducir las horas a símbolos (PL14 y PL12, parciales, por los mecanismos de AL1 y AL19; PL15 es hipótesis);
+  2. qué puntos cumplen y cómo va la recta;
+  3. la región se arma tocando las condiciones;
+  4. el cruce (5; 6);
+  5. la recta de nivel con pendiente −2;
+  6. dónde sale la recta: (5; 6);
+  7. la tabla de vértices con z = 20x + 30y: S/ 310 en (2; 9).
+- **¿Qué pasa si…?** (5): mismo precio con óptimo en todo un lado, minimizar en una chacra de Ilave, región no acotada con cuyes, región vacía y una restricción redundante.
+
+**Subagentes y lo que corrigieron.**
+
+- **Verificador:** recalculó con fracciones los 20 casos y todos coinciden. Comprobó los vértices enumerando todos los pares de fronteras, los óptimos con fuerza bruta en una rejilla de paso 1/8 y las regiones no acotadas con la dirección de recesión. Pidió un desempate explícito para mayorY.
+- **Revisor:** encontró tres graves:
+  - el título y la pregunta del paso 1 decían «desigualdad», lo que descartaba la opción del =;
+  - el paso 2 decía de antemano que la recta parte el plano en dos lados;
+  - en el experimento del mismo precio, una opción decía que los vértices «empatan».
+
+  Medias: horas de máquina en vez de tejido a mano, flecos en vez de lana, la leyenda que apuntaba a la feria, contraste del chip activo, ejes con los colores que se leían cruzados y rótulos encimados en el celular. Bajas: la redacción del respaldo, papa y quinua intercambiadas, fibra en vez de energía, espacio duro en «S/», el gris de la restricción nueva y el relleno en oscuro. Todo aplicado.
+
+**Colores.** Paleta propia: con la familia de las escenas de matemática no se llegaba a ΔE00 ≥ 20 con nueve colores juntos.
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| x (y x ≥ 0) | #a14d0c | #ff9e54 |
+| y (y y ≥ 0) | #54690c | #68f21a |
+| r1 (máquina de tejer) | #1c6ea4 | #88d2ff |
+| r2 (feria) | #ba09af | #f03dff |
+| r3 (flecos) | #004b3e | #2cebca |
+| región | #322916 | #f9dc51 |
+| función objetivo z | #62010c | #f3687f |
+| óptimo | #0001cf | #868cea |
+| restricción nueva | #b83d56 | #929b78 |
+
+Los vértices van en tinta. ΔE00 mínimo 23,7 en claro y 22,0 en oscuro (r1 contra óptimo); contraste mínimo 4,51. Las rectas quedan a ≥ 3,2:1 sobre el relleno de la región, cuyo relleno oscuro bajó a 0,12. r1, r2 y r3 nombran restricciones distintas en cada experimento, pero dentro de cada uno no chocan. La restricción nueva cambia de tono entre modos: rosa en claro y gris oliva en oscuro.
+
+**Pruebas.** `motor.test.js` 40 de 40. `npm test`: solo fallan `catalogo.json` y «está en el catálogo». `pasada-celular.py` no cambió nada ni dijo QUEDA. Playwright a 390×844 y 1366×768, claro y oscuro, con y sin movimiento reducido: sin errores de consola ni desbordes.
+
+**Pendiente.**
+
+- No hay ningún dato publicado sobre errores de programación lineal: todo es hipótesis, salvo PL12 y PL14, que son parciales por analogía.
+- El símplex queda fuera (`fuera` en la ficha).
+- Sin ítems en el banco de álgebra.
+
+### Pedidos para la integración
+
+- **Catálogo:** `programacion-lineal` en `algebra.programacion-lineal`; `npm run catalogo`; subir `VERSION`. Álgebra pasa de 6 plantillas: revisar el banco si hace falta.
+- **`docs/diseno.md`:** «Variables de la región que se arma (`plantillas/programacion-lineal/`), paleta propia porque son nueve colores juntos: x y x ≥ 0 naranja (#a14d0c, oscuro #ff9e54), y e y ≥ 0 verde (#54690c, oscuro #68f21a), restricciones r1 azul (#1c6ea4, oscuro #88d2ff), r2 fucsia (#ba09af, oscuro #f03dff) y r3 verde petróleo (#004b3e, oscuro #2cebca), región sepia (#322916, oscuro #f9dc51), función objetivo z granate (#62010c, oscuro #f3687f), óptimo índigo (#0001cf, oscuro #868cea) y restricción nueva (#b83d56, oscuro #929b78); vértices en tinta; ΔE00 mínimo 22,0; contraste mínimo 4,51. r1, r2 y r3 nombran restricciones distintas en cada experimento, pero nunca dos a la vez.»
+- **`docs/pendientes.md`:** «**La región que se arma** (`plantillas/programacion-lineal/`, rutina de química B, 7 nov 2026): semiplanos con prueba del origen, región factible que se arma condición por condición, vértices, recta de nivel que se arrastra hasta salir por un vértice, método de los vértices, óptimos múltiples, región no acotada, vacía y restricción redundante; 20 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todo hipótesis salvo PL12 y PL14 (parciales por AL19 y AL1). Sin ítems en el banco de álgebra.»
+- **`CLAUDE.md`, historia:** «Programación lineal (7 nov 2026, rutina de química B): `plantillas/programacion-lineal/` (la región que se arma: semiplanos, región factible, recta de nivel que sale por un vértice, óptimos múltiples, no acotada y vacía; 20 casos verificados aparte).»

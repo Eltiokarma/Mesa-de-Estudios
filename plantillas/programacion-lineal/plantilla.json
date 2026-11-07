@@ -1,0 +1,16 @@
+{
+  "id": "programacion-lineal",
+  "titulo": "La región que se arma: programación lineal",
+  "formato": "escena",
+  "unidades": [
+    "algebra.programacion-lineal"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json",
+  "fuera": "Cubre inecuaciones lineales con dos variables (semiplano, recta continua o punteada), sistemas de inecuaciones, región factible acotada, no acotada o vacía, función objetivo, método gráfico con la recta de nivel y método de los vértices, con óptimos múltiples y restricciones redundantes. Quedan fuera el método símplex y los problemas con tres o más variables."
+}

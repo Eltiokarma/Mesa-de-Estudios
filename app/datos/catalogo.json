@@ -1720,7 +1720,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "programacion-lineal"
+     ]
     },
     {
      "id": "algebra.sucesiones-y-series",
@@ -5380,6 +5382,23 @@
     "/plantillas/probabilidad-dados/index.html",
     "/plantillas/probabilidad-dados/motor.js",
     "/plantillas/probabilidad-dados/papel.json"
+   ]
+  },
+  "programacion-lineal": {
+   "id": "programacion-lineal",
+   "titulo": "La región que se arma: programación lineal",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.programacion-lineal"
+   ],
+   "url": "/plantillas/programacion-lineal/index.html",
+   "papel": "/plantillas/programacion-lineal/papel.json",
+   "archivos": [
+    "/plantillas/programacion-lineal/index.html",
+    "/plantillas/programacion-lineal/motor.js",
+    "/plantillas/programacion-lineal/papel.json"
    ]
   },
   "quimica-ambiente": {
