@@ -2864,7 +2864,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "razonamiento-figuras"
+     ]
     }
    ]
   },
@@ -5563,6 +5565,23 @@
     "/plantillas/quimica-ambiente/index.html",
     "/plantillas/quimica-ambiente/motor.js",
     "/plantillas/quimica-ambiente/papel.json"
+   ]
+  },
+  "razonamiento-figuras": {
+   "id": "razonamiento-figuras",
+   "titulo": "El reflector de figuras: conteo de figuras y de cubos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.razonamiento-con-figuras"
+   ],
+   "url": "/plantillas/razonamiento-figuras/index.html",
+   "papel": "/plantillas/razonamiento-figuras/papel.json",
+   "archivos": [
+    "/plantillas/razonamiento-figuras/index.html",
+    "/plantillas/razonamiento-figuras/motor.js",
+    "/plantillas/razonamiento-figuras/papel.json"
    ]
   },
   "razonamiento-numerico": {

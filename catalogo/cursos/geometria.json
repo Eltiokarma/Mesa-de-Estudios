@@ -281,7 +281,7 @@
       "universidades": {"uni": {"semanas": [6, 10, 12, 20]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["razonamiento-figuras"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     }
   ]
