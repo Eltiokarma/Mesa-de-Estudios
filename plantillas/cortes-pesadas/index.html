@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La sierra y la balanza: cortes y pesadas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de maximos-minimos/.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   cortes c rojo, piezas n azul, tiempo T verde, postes de la avenida e_A turquesa, estacas del corral e_C oliva,
+   tramo d naranja, largo o contorno L fucsia,
+   masa M índigo y pesadas k granate. Las varillas, sogas, pesas, monedas y sacos son objetos, no variables: van en
+   tonos neutros (--o-*) con su número escrito encima.
+   Elegidos con CIEDE2000; mínimos entre los que salen juntos (claro / oscuro): varilla (c, n, T, d, L) 25,9 / 26,9;
+   estacas (e_A, e_C, d, L) 26,1 / 27,4; soga (c, n, L) 27,1 / 26,9. Pares por debajo de 20 que nunca comparten vista:
+   L–M (16,2 / 16,2), n–M (17,0 / 12,1), c–k (17,6 / 16,8) y e_C–T (11,0 / 11,0). Contraste AA sobre el papel, la tarjeta y su chip
+   (.v, fondo al 8 %), en claro y en oscuro (mínimo 4,56: c en el chip claro); el número de cada pesa, moneda o saco
+   contra su relleno, mínimo 10,4 en claro y 4,9 en oscuro. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-c:#c0364a; --c-n:#1f5fbf; --c-T:#466d14; --c-eA:#0f766e; --c-eC:#6b6b00; --c-d:#a05200; --c-L:#a10fbf; --c-M:#3328c4; --c-k:#77032c;
+  --o-fierro:#9aa1ad; --o-madera:#c99a68; --o-soga:#c9a46a; --o-pesa:#e6dcf2; --o-moneda:#f3d98b; --o-saco:#ead7b4; --o-calle:#d9cfc7;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-c:#f17384; --c-n:#7cb0ff; --c-T:#a3d65e; --c-eA:#5ed9c8; --c-eC:#d4d84a; --c-d:#f0a04a; --c-L:#cf6bfa; --c-M:#9f9bff; --c-k:#fdb4ce;
+  --o-fierro:#6f7480; --o-madera:#8a6440; --o-soga:#9c7c48; --o-pesa:#4a3f5c; --o-moneda:#7a6420; --o-saco:#6e5a3a; --o-calle:#463b52;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-c:#f17384; --c-n:#7cb0ff; --c-T:#a3d65e; --c-eA:#5ed9c8; --c-eC:#d4d84a; --c-d:#f0a04a; --c-L:#cf6bfa; --c-M:#9f9bff; --c-k:#fdb4ce;
+  --o-fierro:#6f7480; --o-madera:#8a6440; --o-soga:#9c7c48; --o-pesa:#4a3f5c; --o-moneda:#7a6420; --o-saco:#6e5a3a; --o-calle:#463b52;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.8}
+.legend i.dash{background:none!important; border-top:2px dashed var(--k); height:0}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-eA{color:var(--c-eA); background:color-mix(in srgb, var(--c-eA) 8%, transparent)}
+.v-eC{color:var(--c-eC); background:color-mix(in srgb, var(--c-eC) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v-L{color:var(--c-L); background:color-mix(in srgb, var(--c-L) 8%, transparent)}
+.v-M{color:var(--c-M); background:color-mix(in srgb, var(--c-M) 8%, transparent)}
+.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:center; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn.chico{padding:8px 14px; min-height:40px; font-size:.9rem}
+.btn[aria-pressed="true"]{border-color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.fila{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+
+.objs{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font:700 .85rem var(--mono); padding:4px 8px; border-radius:10px; background:var(--paper); border:1px solid var(--line)}
+.pesa-ctl{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.pesa-ctl b{min-width:52px}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Cortes, pesadas y balanzas · Problemas tipo admisión</p>
+      <h1>La sierra y la balanza</h1>
+      <p class="sub">Parte una varilla de fierro y una soga, clava postes y estacas, equilibra sacos de papa con tres pesas y busca una moneda falsa. Primero predices; después, el motor corta, cuenta y pesa.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: varilla, estacas, soga, balanza o monedas">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos de cortes y pesadas">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/cortes-pesadas">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'cortes-pesadas', unidad: 'razonamiento-matematico.cortes-y-pesadas', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (piezas, cortes, estacas, la soga doblada, los acomodos de pesas y las pesadas) sale de
+   MotorCortes (motor.js); aquí solo se pinta, se toca y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MC = MotorCortes;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  d = d === undefined ? 2 : d;
+  const p = Math.pow(10, d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const c_ = t => V('c', t), n_ = t => V('n', t), T_ = t => V('T', t), eA_ = t => V('eA', t), eC_ = t => V('eC', t), d_ = t => V('d', t),
+  L_ = t => V('L', t), M_ = t => V('M', t), k_ = t => V('k', t);
+const VARS = ['c', 'n', 'T', 'eA', 'eC', 'd', 'L', 'M', 'k'];
+const eA = 'e<sub>A</sub>', eC = 'e<sub>C</sub>';
+const OBJS = ['fierro', 'madera', 'soga', 'pesa', 'moneda', 'saco', 'calle'];
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const y_o = (a, b) => a.length === 2 ? `${a[0]} y ${a[1]}` : a.length ? a.slice(0, -1).join(', ') + ' y ' + a[a.length - 1] : '—';
+const kgs = a => a.length ? y_o(a.map(v => `${v} kg`)) : 'ninguna';
+
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'), font:css('--font') };
+  for (const k of VARS) c[k] = css('--c-' + k);
+  for (const k of OBJS) c['o' + k] = css('--o-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+// rótulo con subíndice («e» + «A» + « = 13»), sobre una cajita del color del papel
+function rotuloSub(ctx, c, x, y, base, sub, resto, color, align){
+  ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  const f1 = `800 12px ${c.font}`, f2 = `800 9px ${c.font}`;
+  ctx.font = f1; const w1 = ctx.measureText(base).width, w3 = ctx.measureText(resto).width; ctx.font = f2; const w2 = ctx.measureText(sub).width;
+  const w = w1 + w2 + w3, x0 = align === 'right' ? x - w : align === 'center' ? x - w/2 : x;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 20); ctx.restore();
+  ctx.fillStyle = color; ctx.font = f1; ctx.fillText(base, x0, y); ctx.font = f2; ctx.fillText(sub, x0 + w1, y + 4); ctx.font = f1; ctx.fillText(resto, x0 + w1 + w2, y);
+}
+function texto(ctx, c, x, y, t, color, tam, peso){ ctx.font = `${peso || 800} ${tam || 11}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(t, x, y); }
+function caja(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Modos:
+   'barras'   una o más varillas (o troncos) con regla de 1 m. barras = { lista: [{ largo, cortes (posiciones), sep (0 a 1:
+              cuánto se separan las piezas), verN (numera las piezas), sierra (posición del corte que se está haciendo),
+              tipo ('fierro' | 'madera'), titulo }], muestra: tramo de la pieza de ejemplo (o null) }. Con E.tocar, tocar la
+              primera varilla pone o quita un corte en el metro más cercano.
+   'aro'      un aro cerrado. aro = { largo, cortes, sep, verN, muestra }.
+   'lineas'   la avenida con postes y el corral redondo con estacas. lin = { largo, sep, verA, verC, progA, progC }.
+   'soga'     la soga doblada en capas y, abajo, la soga estirada. soga = { largo, capas, pos, ver, prog, sep, verN }.
+   'balanza'  balanza de dos platillos. bal = { pesas, lugar ('fuera' | 'otro' | 'junto' por pesa), masa (null: «?») }.
+              Con E.tocar, tocar una pesa la cambia de lugar.
+   'monedas'  la balanza con monedas y la fila de monedas. mon = { n, sosp (sospechosas), izq, der, resultado, falsa,
+              verFalsa }. Con E.tocar, tocar una moneda la elige.
+   'pila'     los pedazos después de cada corte apilando. pila = { plan, largo, prog }.
+   Antes de responder, lo que se pregunta se dibuja como «?» y nada adelanta la respuesta. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'barras', lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:'',
+    tocar:false, alTocar:null, barras:null, aro:null, lin:null, soga:null, bal:null, mon:null, pila:null, ang:0, gen:0, inc:0 };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, Hh = 0, geo = {};
+  function altoBase(w){
+    const ancho = w >= 560;
+    if (E.modo === 'barras' && E.barras) return 30 + (E.barras.muestra ? 40 : 0) + 84*E.barras.lista.length;
+    if (E.modo === 'lineas') return ancho ? 270 : 360;
+    if (E.modo === 'soga') return 300;
+    if (E.modo === 'balanza') return 260;
+    if (E.modo === 'monedas') return (E.mon && E.mon.n > 9 ? 330 : 260);
+    if (E.modo === 'pila' && E.pila) return 40 + 42*(E.pila.plan.length + 1);
+    if (E.modo === 'aro') return ancho ? 300 : 320;
+    return 300;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const tope = E.modo === 'lineas' ? (w >= 560 ? 270 : 340) : E.modo === 'monedas' ? 260 : E.modo === 'balanza' ? 250 : undefined;
+    const h = Math.round(Celular.alto(altoBase(w), E.compacto, { tope })), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === Hh) { E.dibujar(); return; }
+    W = w; Hh = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.gen++; E.anim = false;
+    Object.assign(E, { modo:'barras', lect:[], ley:null, alCambiar:null, desc:'', tocar:false, alTocar:null, barras:null, aro:null, lin:null,
+      soga:null, bal:null, mon:null, pila:null }, o);
+    if (E.barras) E.barras.lista = E.barras.lista.map(b => Object.assign({ cortes:[], sep:0, verN:false, sierra:null, tipo:'fierro', titulo:'' }, b));
+    if (E.aro) E.aro = Object.assign({ cortes:[], sep:0, verN:false, muestra:null, sierra:null }, E.aro);
+    if (E.lin) E.lin = Object.assign({ verA:false, verC:false, progA:0, progC:0 }, E.lin);
+    if (E.soga) E.soga = Object.assign({ ver:false, prog:0, sep:0, verN:false }, E.soga);
+    if (E.mon) E.mon = Object.assign({ izq:[], der:[], resultado:null, falsa:null, verFalsa:false }, E.mon);
+    if (E.bal || E.mon) E.ang = angulo();
+    cv.tabIndex = -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  const atenuar = k => (E.hl && E.hl !== k ? .4 : 1);
+
+  // ----- varillas -----
+  function piezaRect(c, x, y, w, h, tipo, tono){
+    ctx.save();
+    caja(ctx, x, y, Math.max(2, w), h, tipo === 'madera' ? 5 : 3);
+    ctx.fillStyle = tipo === 'madera' ? c.omadera : c.ofierro; ctx.globalAlpha = tono ? .78 : 1; ctx.fill();
+    ctx.globalAlpha = .55; ctx.strokeStyle = c.ink; ctx.lineWidth = 1; ctx.stroke();
+    if (tipo !== 'madera'){ ctx.globalAlpha = .25; ctx.beginPath(); for (let xx = x + 4; xx < x + w - 2; xx += 7){ ctx.moveTo(xx, y + h); ctx.lineTo(xx + 4, y); } ctx.stroke(); }
+    else { ctx.globalAlpha = .3; ctx.beginPath(); ctx.moveTo(x + 4, y + h*.35); ctx.lineTo(x + w - 4, y + h*.35); ctx.moveTo(x + 6, y + h*.7); ctx.lineTo(x + w - 6, y + h*.7); ctx.stroke(); }
+    ctx.restore();
+  }
+  function dibBarras(c){
+    const B = E.barras, x0 = 22, maxL = Math.max(...B.lista.map(b => b.largo)), reserva = 50;
+    const s = (W - 2*x0 - reserva)/maxL;
+    let y = 18;
+    if (B.muestra){
+      const w = B.muestra*s;
+      piezaRect(c, x0, y, w, 12, B.lista[0].tipo, false);
+      rotulo(ctx, c, x0 + w + 10, y + 6, `d = ${fmt(B.muestra)} m: cada pieza`, c.d, 'left', 800, 12);
+      ctx.save(); ctx.strokeStyle = c.d; ctx.globalAlpha = atenuar('d'); ctx.lineWidth = grosor('d', 2); linea(ctx, { x:x0, y:y + 18 }, { x:x0 + w, y:y + 18 });
+      linea(ctx, { x:x0, y:y + 14 }, { x:x0, y:y + 22 }); linea(ctx, { x:x0 + w, y:y + 14 }, { x:x0 + w, y:y + 22 }); ctx.restore();
+      y += 40;
+    }
+    geo.barras = [];
+    B.lista.forEach(b => {
+      const h = b.tipo === 'madera' ? 22 : 16, by = y + 30;
+      const R = MC.contarPiezas({ forma:'abierta', largo:b.largo, cortes:b.cortes });
+      const n = R.piezas, gap = b.sep*Math.min(8, reserva/Math.max(1, n - 1));
+      if (b.titulo) rotulo(ctx, c, x0, y + 6, b.titulo, b.tk === 'L' ? c.L : c.muted, 'left', 800, 12);
+      let pos = 0;
+      R.largos.forEach((l, i) => {
+        const x = x0 + pos*s + i*gap;
+        ctx.save(); ctx.globalAlpha = atenuar('n'); piezaRect(c, x, by, l*s, h, b.tipo, i % 2 === 1 && b.cortes.length > 0); ctx.restore();
+        if (b.verN) rotulo(ctx, c, x + l*s/2, y + 20, String(i + 1), c.n, 'center', 800, 11);
+        pos += l;
+      });
+      // cortes
+      const xs = b.cortes.slice().sort((p, q) => p - q);
+      ctx.save(); ctx.strokeStyle = c.c; ctx.globalAlpha = atenuar('c'); ctx.lineWidth = grosor('c', 2.5);
+      xs.forEach((p, k) => { const x = x0 + p*s + k*gap + gap/2; linea(ctx, { x, y:by - 6 }, { x, y:by + h + 6 }); });
+      ctx.restore();
+      if (b.sierra !== null && b.sierra !== undefined){
+        const k = xs.filter(p => p < b.sierra).length, x = x0 + b.sierra*s + k*gap;
+        ctx.save(); ctx.fillStyle = c.c; ctx.beginPath(); ctx.moveTo(x - 7, by - 16); ctx.lineTo(x + 7, by - 16); ctx.lineTo(x, by - 6); ctx.closePath(); ctx.fill(); ctx.restore();
+      }
+      // regla de 1 m (solo con las piezas juntas)
+      if (b.sep < .01){
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.fillStyle = c.muted; ctx.lineWidth = 1; ctx.font = `600 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        const cada = s >= 18 ? 1 : s >= 8 ? 2 : 5;
+        for (let m = 0; m <= b.largo + 1e-9; m++){
+          const x = x0 + m*s, larga = m % cada === 0;
+          linea(ctx, { x, y:by + h + 3 }, { x, y:by + h + (larga ? 9 : 6) });
+          if (larga && (s*cada >= 16 || m === b.largo)) ctx.fillText(m === b.largo ? `${m} m` : String(m), x, by + h + 11);
+        }
+        ctx.restore();
+      }
+      geo.barras.push({ x0, s, by, h, largo:b.largo });
+      y += 84;
+    });
+  }
+
+  // ----- aro -----
+  function dibAro(c){
+    const A = E.aro, cx = W/2, cy = Hh/2 + 10, R = Math.min(W*.3, Hh*.32);
+    if (A.muestra){
+      const w = A.muestra/A.largo*2*Math.PI*R;
+      piezaRect(c, 18, 14, w, 12, 'fierro', false);
+      rotulo(ctx, c, 18 + w + 10, 20, `d = ${fmt(A.muestra)} m: cada pieza`, c.d, 'left', 800, 12);
+    }
+    const ang = p => -Math.PI/2 + 2*Math.PI*p/A.largo;
+    const xs = A.cortes.slice().sort((p, q) => p - q);
+    const R0 = MC.contarPiezas({ forma:'cerrada', largo:A.largo, cortes:xs });
+    ctx.save(); ctx.lineCap = 'butt'; ctx.lineWidth = 12; ctx.strokeStyle = c.ofierro;
+    if (!xs.length){ ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.stroke(); }
+    else {
+      let p = xs[0];
+      R0.largos.forEach((l, i) => {
+        const a0 = ang(p) + .03, a1 = ang(p + l) - .03, am = (a0 + a1)/2, dx = Math.cos(am)*A.sep*14, dy = Math.sin(am)*A.sep*14;
+        ctx.globalAlpha = (i % 2 ? .78 : 1)*atenuar('n'); ctx.beginPath(); ctx.arc(cx + dx, cy + dy, R, a0, a1); ctx.stroke();
+        if (A.verN) rotulo(ctx, c, cx + dx + Math.cos(am)*(R + 22), cy + dy + Math.sin(am)*(R + 22), String(i + 1), c.n, 'center', 800, 11);
+        p += l;
+      });
+    }
+    ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.c; ctx.globalAlpha = atenuar('c'); ctx.lineWidth = grosor('c', 2.5);
+    xs.forEach(p => { const a = ang(p); linea(ctx, { x:cx + Math.cos(a)*(R - 12), y:cy + Math.sin(a)*(R - 12) }, { x:cx + Math.cos(a)*(R + 12 + A.sep*14), y:cy + Math.sin(a)*(R + 12 + A.sep*14) }); });
+    ctx.restore();
+    if (A.sierra !== null){ const a = ang(A.sierra), x = cx + Math.cos(a)*(R + 22), y = cy + Math.sin(a)*(R + 22);
+      ctx.save(); ctx.fillStyle = c.c; ctx.beginPath(); ctx.arc(x, y, 6, 0, 7); ctx.fill(); ctx.restore(); }
+    rotulo(ctx, c, cx, cy, `L = ${fmt(A.largo)} m`, c.L, 'center', 800, 13);
+    rotulo(ctx, c, cx, cy + 18, 'aro cerrado', c.muted, 'center', 700, 11);
+  }
+
+  // ----- avenida y corral -----
+  function poste(c, x, y, alto){ ctx.save(); ctx.strokeStyle = c.eA; ctx.fillStyle = c.eA; ctx.globalAlpha = atenuar('eA'); ctx.lineWidth = grosor('eA', 3); linea(ctx, { x, y }, { x, y:y - alto }); ctx.beginPath(); ctx.arc(x, y - alto, 3.5, 0, 7); ctx.fill(); ctx.restore(); }
+  function cota(c, x1, x2, y, t, color, k){
+    ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha = atenuar(k); ctx.lineWidth = grosor(k, 1.6);
+    linea(ctx, { x:x1, y }, { x:x2, y }); linea(ctx, { x:x1, y:y - 4 }, { x:x1, y:y + 4 }); linea(ctx, { x:x2, y:y - 4 }, { x:x2, y:y + 4 }); ctx.restore();
+    rotulo(ctx, c, (x1 + x2)/2, y + 12, t, color, 'center', 800, 12);
+  }
+  function dibLineas(c){
+    const Li = E.lin, ancho = W >= 560;
+    const bA = ancho ? { x:0, y:0, w:W*.58, h:Hh } : { x:0, y:0, w:W, h:150 }, bC = ancho ? { x:W*.58, y:0, w:W*.42, h:Hh } : { x:0, y:150, w:W, h:Hh - 150 };
+    // avenida
+    const ax0 = bA.x + 22, ax1 = bA.x + bA.w - 22, ay = bA.y + (ancho ? bA.h*.55 : 82), X = p => ax0 + (ax1 - ax0)*p/Li.largo;
+    rotulo(ctx, c, bA.x + 12, bA.y + 16, 'Avenida: poste en los dos extremos', c.muted, 'left', 700, 12);
+    ctx.save(); ctx.fillStyle = c.ocalle; ctx.fillRect(ax0 - 6, ay, ax1 - ax0 + 12, 12); ctx.restore();
+    const tramos = Li.largo/Li.sep;
+    if (Li.verA){ for (let i = 0; i <= tramos && i < Li.progA; i++) poste(c, X(i*Li.sep), ay, 26); if (Li.progA >= tramos + 1) rotuloSub(ctx, c, X(Li.largo), ay - 40, 'e', 'A', ` = ${tramos + 1}`, c.eA, 'right'); }
+    else { poste(c, X(0), ay, 26); poste(c, X(Li.sep), ay, 26); poste(c, X(Li.largo), ay, 26); rotulo(ctx, c, (X(Li.sep) + X(Li.largo))/2, ay - 14, '…', c.muted, 'center', 800, 16); }
+    cota(c, X(0), X(Li.sep), ay + 22, `d = ${Li.sep} m`, c.d, 'd');
+    cota(c, X(0), X(Li.largo), ay + 48, `L = ${Li.largo} m`, c.L, 'L');
+    // corral
+    const cx = bC.x + bC.w/2, cy = bC.y + bC.h/2 + 12, R = Math.min(bC.w*.3, bC.h*.3), a = p => -Math.PI/2 + 2*Math.PI*p/Li.largo;
+    rotulo(ctx, c, bC.x + 12, bC.y + 16, 'Corral redondo: cerrado', c.muted, 'left', 700, 12);
+    ctx.save(); ctx.strokeStyle = c.ocalle; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.stroke(); ctx.restore();
+    const estaca = p => { const t = a(p), x = cx + Math.cos(t)*R, y = cy + Math.sin(t)*R; ctx.save(); ctx.fillStyle = c.eC; ctx.globalAlpha = atenuar('eC'); ctx.beginPath(); ctx.arc(x, y, E.hl === 'eC' ? 6.5 : 5, 0, 7); ctx.fill(); ctx.restore(); };
+    if (Li.verC){ for (let i = 0; i < tramos && i < Li.progC; i++) estaca(i*Li.sep); if (Li.progC >= tramos) rotuloSub(ctx, c, cx, cy + 18, 'e', 'C', ` = ${tramos}`, c.eC, 'center'); }
+    else { estaca(0); estaca(Li.sep); }
+    ctx.save(); ctx.strokeStyle = c.d; ctx.globalAlpha = atenuar('d'); ctx.lineWidth = grosor('d', 1.8); ctx.beginPath(); ctx.arc(cx, cy, R + 12, a(0), a(Li.sep)); ctx.stroke(); ctx.restore();
+    const am = a(Li.sep/2); rotulo(ctx, c, cx + Math.cos(am)*(R + 22) + 22, cy + Math.sin(am)*(R + 22) - 4, `d = ${Li.sep} m`, c.d, 'left', 800, 12);
+    rotulo(ctx, c, cx, cy - 4, `L = ${Li.largo} m`, c.L, 'center', 800, 12);
+  }
+
+  // ----- soga doblada -----
+  function dibSoga(c){
+    const So = E.soga, s = So.largo/So.capas, bl = Math.min(W*.55, 250), bx = 48, by = 46, esp = 16;
+    rotulo(ctx, c, bx - 4, by - 26, `doblada en ${So.capas} capas`, c.muted, 'left', 700, 12);
+    ctx.save(); ctx.strokeStyle = c.osoga; ctx.lineWidth = 6; ctx.lineCap = 'round';
+    for (let j = 0; j < So.capas; j++){
+      const y = by + j*esp; linea(ctx, { x:bx, y }, { x:bx + bl, y });
+      if (j < So.capas - 1){ ctx.beginPath(); const xr = j % 2 === 0 ? bx + bl : bx; ctx.arc(xr, y + esp/2, esp/2, j % 2 === 0 ? -Math.PI/2 : Math.PI/2, j % 2 === 0 ? Math.PI/2 : 3*Math.PI/2); ctx.stroke(); }
+    }
+    ctx.restore();
+    ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(bx, by, 4, 0, 7); ctx.fill(); ctx.restore();
+    rotulo(ctx, c, bx - 8, by, 'inicio', c.muted, 'right', 700, 10);
+    So.pos.forEach((x, i) => {
+      const X = bx + x/s*bl;
+      ctx.save(); ctx.strokeStyle = c.c; ctx.globalAlpha = atenuar('c'); ctx.lineWidth = grosor('c', 2); ctx.setLineDash([5, 4]); linea(ctx, { x:X, y:by - 12 }, { x:X, y:by + (So.capas - 1)*esp + 12 }); ctx.restore();
+      rotulo(ctx, c, X, by + (So.capas - 1)*esp + 24, `corte ${i + 1}`, c.c, 'center', 800, 11);
+      if (So.ver) for (let j = 0; j < So.capas; j++){ ctx.save(); ctx.fillStyle = c.c; ctx.beginPath(); ctx.arc(X, by + j*esp, 3.5, 0, 7); ctx.fill(); ctx.restore(); }
+    });
+    // la soga estirada
+    const R = MC.sogaDoblada({ largo:So.largo, capas:So.capas, posiciones:So.pos });
+    const x0 = 22, x1 = W - 22, gy = Hh - 70, mostrados = R.puntos.slice(0, So.prog);
+    const C = MC.contarPiezas({ forma:'abierta', largo:So.largo, cortes:mostrados });
+    const reserva = 40, sc = (x1 - x0 - reserva)/So.largo, gap = So.sep*Math.min(8, reserva/Math.max(1, C.piezas - 1));
+    rotulo(ctx, c, x0, gy - 34, 'la misma soga, estirada', c.muted, 'left', 700, 12);
+    let p = 0;
+    ctx.save(); ctx.strokeStyle = c.osoga; ctx.lineWidth = 6; ctx.lineCap = 'round';
+    C.largos.forEach((l, i) => { const xa = x0 + p*sc + i*gap + (i ? 3 : 0), xb = x0 + (p + l)*sc + i*gap - (i < C.piezas - 1 && mostrados.length ? 3 : 0); ctx.globalAlpha = atenuar('n'); linea(ctx, { x:xa, y:gy }, { x:xb, y:gy });
+      if (So.verN){ ctx.restore(); rotulo(ctx, c, (xa + xb)/2, gy - 16, String(i + 1), c.n, 'center', 800, 11); ctx.save(); ctx.strokeStyle = c.osoga; ctx.lineWidth = 6; ctx.lineCap = 'round'; }
+      p += l; });
+    ctx.restore();
+    if (So.ver){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([2, 3]); ctx.lineWidth = 1;
+      for (let j = 1; j < So.capas; j++){ const x = x0 + j*s*sc; linea(ctx, { x, y:gy + 8 }, { x, y:gy + 16 }); }
+      ctx.restore();
+      if (So.sep < .01) for (let j = 1; j < So.capas; j++) rotulo(ctx, c, x0 + j*s*sc, gy + 24, 'doblez', c.muted, 'center', 700, 10);
+    }
+    ctx.save(); ctx.strokeStyle = c.c; ctx.globalAlpha = atenuar('c'); ctx.lineWidth = grosor('c', 2.5);
+    mostrados.forEach((q, k) => { const x = x0 + q*sc + k*gap + gap/2; linea(ctx, { x, y:gy - 9 }, { x, y:gy + 9 }); });
+    ctx.restore();
+    cota(c, x0, x1 - reserva, gy + 36, `L = ${fmt(So.largo)} m`, c.L, 'L');
+  }
+
+  // ----- balanza (con pesas o con monedas) -----
+  function angulo(){
+    if (E.modo === 'balanza' && E.bal){
+      const Bl = E.bal;
+      if (Bl.masa === null) return -.09;
+      const R = MC.equilibrio({ pesas:Bl.pesas, masa:Bl.masa, junto:Bl.pesas.filter((_, i) => Bl.lugar[i] === 'junto'), otro:Bl.pesas.filter((_, i) => Bl.lugar[i] === 'otro') });
+      return clamp(R.diferencia/4, -1, 1)*.09;
+    }
+    if (E.modo === 'monedas' && E.mon){ const r = E.mon.resultado; return r === 'izquierda-liviana' ? .09 : r === 'derecha-liviana' ? -.09 : 0; }
+    return 0;
+  }
+  const anchoPesa = v => 30 + 4*Math.round(Math.log(v)/Math.log(3));
+  function pesa(c, x, y, v){ // x centro, y base
+    const w = anchoPesa(v), h = 20;
+    ctx.save(); ctx.beginPath(); ctx.moveTo(x - w/2, y); ctx.lineTo(x + w/2, y); ctx.lineTo(x + w/2 - 4, y - h); ctx.lineTo(x - w/2 + 4, y - h); ctx.closePath();
+    ctx.fillStyle = c.opesa; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y - h - 3, 4, Math.PI, 0); ctx.stroke(); ctx.restore();
+    texto(ctx, c, x, y - h/2 + 1, `${v} kg`, c.ink, 10);
+    return { x:x - w/2, y:y - h - 7, w, h:h + 7 };
+  }
+  function saco(c, x, y, t){
+    const w = 60, h = 42;
+    ctx.save(); ctx.beginPath(); ctx.moveTo(x - w/2 + 4, y); ctx.quadraticCurveTo(x - w/2 - 4, y - h*.6, x - 9, y - h); ctx.lineTo(x + 9, y - h); ctx.quadraticCurveTo(x + w/2 + 4, y - h*.6, x + w/2 - 4, y); ctx.closePath();
+    ctx.fillStyle = c.osaco; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - 10, y - h + 4); ctx.lineTo(x + 10, y - h + 4); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.globalAlpha = atenuar('M'); rotulo(ctx, c, x, y - h*.42, t, c.M, 'center', 800, 10); ctx.restore();
+  }
+  function moneda(c, x, y, r, id, o){
+    o = o || {};
+    ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, 7);
+    if (o.fantasma){ ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.stroke(); }
+    else if (o.fuera){ ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.stroke(); }
+    else { ctx.fillStyle = c.omoneda; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = o.falsa ? 3 : 1; ctx.stroke(); }
+    ctx.restore();
+    if (!o.fantasma && r >= 8) texto(ctx, c, x, y + .5, String(id), o.fuera ? c.muted : c.ink, r >= 12 ? 11 : 9);
+  }
+  function dibBalanza(c, izq, der, tope, rotulos){
+    // izq y der: listas de { tipo:'pesa'|'saco'|'moneda', v } que se dibujan sobre cada platillo
+    const px = W/2, py = 40, bh = Math.min(W*.3, 190), a = E.ang;
+    const HL = { x:px - bh*Math.cos(a), y:py - bh*Math.sin(a) }, HR = { x:px + bh*Math.cos(a), y:py + bh*Math.sin(a) };
+    const pw = Math.min(130, W*.3), cuerda = 72;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, { x:px, y:py }, { x:px, y:tope }); linea(ctx, { x:px - 28, y:tope }, { x:px + 28, y:tope });
+    ctx.lineWidth = 4; ctx.lineCap = 'round'; linea(ctx, HL, HR); ctx.beginPath(); ctx.fillStyle = c.ink; ctx.arc(px, py, 5, 0, 7); ctx.fill();
+    ctx.lineWidth = 1.2; ctx.globalAlpha = .7;
+    for (const H of [HL, HR]){ linea(ctx, H, { x:H.x - pw/2, y:H.y + cuerda }); linea(ctx, H, { x:H.x + pw/2, y:H.y + cuerda }); }
+    ctx.globalAlpha = 1; ctx.lineWidth = 3;
+    for (const H of [HL, HR]){ ctx.beginPath(); ctx.moveTo(H.x - pw/2, H.y + cuerda); ctx.quadraticCurveTo(H.x, H.y + cuerda + 10, H.x + pw/2, H.y + cuerda); ctx.stroke(); }
+    ctx.restore();
+    if (rotulos){ rotulo(ctx, c, HL.x, HL.y + cuerda + 20, rotulos[0], c.muted, 'center', 700, 10); rotulo(ctx, c, HR.x, HR.y + cuerda + 20, rotulos[1], c.muted, 'center', 700, 10); }
+    const hits = [];
+    const poner = (H, items) => {
+      const base = H.y + cuerda + 3, sacos = items.filter(t => t.tipo === 'saco'), pesas = items.filter(t => t.tipo === 'pesa'), mons = items.filter(t => t.tipo === 'moneda');
+      // fila de abajo: el saco y las pesas que quepan; las demás, encima de las pesas
+      const anchoS = sacos.length ? 62 : 0, filas = [[]];
+      let usado = anchoS;
+      pesas.forEach(t => { const w = anchoPesa(t.v) + 4; if (usado + w > pw + 8 && filas[filas.length - 1].length){ filas.push([]); usado = anchoS; } filas[filas.length - 1].push(t); usado += w; });
+      const anchoF = f => f.reduce((s, t) => s + anchoPesa(t.v) + 4, 0) - (f.length ? 4 : 0);
+      const total = anchoS + (sacos.length && pesas.length ? 6 : 0) + Math.max(...filas.map(anchoF));
+      let x = H.x - total/2;
+      if (sacos.length){ saco(c, x + 31, base, sacos[0].t); x += 68; }
+      filas.forEach((f, k) => {
+        let xx = x + (Math.max(...filas.map(anchoF)) - anchoF(f))/2;
+        f.forEach(t => { const w = anchoPesa(t.v), r = pesa(c, xx + w/2, base - k*27, t.v); hits.push(Object.assign({ i:t.i }, r)); xx += w + 4; });
+      });
+      if (mons.length){
+        const r = mons.length > 9 ? 6 : mons.length > 3 ? 8 : 10, cols = Math.min(mons.length, mons.length > 9 ? 5 : 3);
+        mons.forEach((t, k) => { const col = k % cols, fila = Math.floor(k/cols); moneda(c, H.x + (col - (cols - 1)/2)*(2*r + 2), base - r - fila*(2*r + 1), r, t.v); });
+      }
+    };
+    poner(HL, izq); poner(HR, der);
+    return hits;
+  }
+  function dibPesas(c){
+    const Bl = E.bal, tope = Hh - 52;
+    const izq = [{ tipo:'saco', t: Bl.masa === null ? 'M = ?' : `M = ${fmt(Bl.masa)} kg` }].concat(Bl.pesas.map((v, i) => ({ tipo:'pesa', v, i })).filter(t => Bl.lugar[t.i] === 'junto'));
+    const der = Bl.pesas.map((v, i) => ({ tipo:'pesa', v, i })).filter(t => Bl.lugar[t.i] === 'otro');
+    geo.pesas = dibBalanza(c, izq, der, tope, ['lado de la papa', 'enfrente']);
+    // bandeja de las que no se usan
+    const fuera = Bl.pesas.map((v, i) => ({ v, i })).filter(t => Bl.lugar[t.i] === 'fuera');
+    const ty = Hh - 10;
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 2; linea(ctx, { x:14, y:ty }, { x:W - 14, y:ty }); ctx.restore();
+    rotulo(ctx, c, 16, ty - 12, 'sin usar:', c.muted, 'left', 700, 11);
+    let x = 80;
+    fuera.forEach(t => { const w = anchoPesa(t.v); const r = pesa(c, x + w/2, ty - 2, t.v); geo.pesas.push(Object.assign({ i:t.i }, r)); x += w + 12; });
+  }
+  function dibMonedas(c){
+    const Mo = E.mon, sobre = new Set(Mo.izq.concat(Mo.der)), sosp = new Set(Mo.sosp);
+    const filas = Mo.n > 9 ? 3 : 1, porFila = Math.ceil(Mo.n/filas), r = Math.min(15, (W - 30)/(porFila*2.5)), dy = 2*r + 8;
+    const y0 = Hh - 16 - r - (filas - 1)*dy, tope = y0 - r - 12;
+    dibBalanza(c, Mo.izq.map(v => ({ tipo:'moneda', v })), Mo.der.map(v => ({ tipo:'moneda', v })), tope);
+    geo.monedas = [];
+    for (let id = 1; id <= Mo.n; id++){
+      const f = Math.floor((id - 1)/porFila), col = (id - 1) % porFila, x = W/2 + (col - (porFila - 1)/2)*2.5*r, y = y0 + f*dy;
+      moneda(c, x, y, r, id, { fantasma:sobre.has(id), fuera:!sosp.has(id), falsa: Mo.verFalsa && Mo.falsa === id });
+      geo.monedas.push({ id, x, y, r });
+    }
+  }
+
+  // ----- pedazos al apilar -----
+  function dibPila(c){
+    const Pi = E.pila, x0 = 92, s = (W - x0 - 20 - 7*6)/Pi.largo;
+    const filas = [[Pi.largo]].concat(Pi.plan);
+    filas.forEach((f, r) => {
+      const y = 26 + r*42;
+      if (r > Pi.prog){ if (r === Pi.prog + 1 && !Pi.ver) rotulo(ctx, c, x0, y + 7, '¿cuántos cortes hasta que todo mida 1 m?', c.muted, 'left', 700, 12); return; }
+      rotulo(ctx, c, 12, y + 7, `c = ${r}`, c.c, 'left', 800, 12);
+      let x = x0;
+      f.forEach((l, i) => { piezaRect(c, x, y, l*s, 14, 'fierro', i % 2 === 1); x += l*s + 6; });
+      rotulo(ctx, c, x0, y + 26, f.length === 1 ? '1 pedazo' : `${f.length} pedazos`, c.muted, 'left', 700, 10);
+    });
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, Hh); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, Hh);
+    if (E.modo === 'barras' && E.barras) dibBarras(c);
+    else if (E.modo === 'aro' && E.aro) dibAro(c);
+    else if (E.modo === 'lineas' && E.lin) dibLineas(c);
+    else if (E.modo === 'soga' && E.soga) dibSoga(c);
+    else if (E.modo === 'balanza' && E.bal) dibPesas(c);
+    else if (E.modo === 'monedas' && E.mon) dibMonedas(c);
+    else if (E.modo === 'pila' && E.pila) dibPila(c);
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const vr = k => k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : k.startsWith('o-') ? '--' + k : '--c-' + k;
+    const it = (k, t, f) => `<span style="--k:var(${vr(k)})"><i class="${f || ''}" style="background:var(${vr(k)})"></i><bdi>${t}</bdi></span>`;
+    let l = E.ley;
+    if (!l){
+      if (E.modo === 'barras' || E.modo === 'aro') l = [['c', 'c · cortes'], ['n', 'n · piezas (numeradas)'], ['d', 'd · largo de cada pieza'], ['L', 'L · largo total']];
+      else if (E.modo === 'lineas') l = [['eA', `${eA} · postes`], ['eC', `${eC} · estacas`], ['d', 'd · separación'], ['L', 'L · largo o contorno']];
+      else if (E.modo === 'soga') l = [['c', 'c · cortes'], ['n', 'n · pedazos (numerados)'], ['L', 'L · largo de la soga']];
+      else if (E.modo === 'balanza') l = [['M', 'M · masa de la papa'], ['o-pesa', 'pesas', 'sq']];
+      else if (E.modo === 'monedas') l = [['o-moneda', 'monedas (las vacías ya se descartaron)', 'sq']];
+      else l = [['c', 'c · cortes'], ['o-fierro', 'pedazos de varilla', 'sq']];
+    }
+    document.getElementById(idLey).innerHTML = l.map(([k, t, f]) => it(k, t, f)).join('');
+  };
+  E.avisar = () => {
+    const filas = E.lect.map(f => f(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = { barras:'Una varilla sobre una regla de 1 m.', aro:'Un aro cerrado de fierro.', lineas:'Una avenida con postes y un corral redondo con estacas.',
+        soga:'Una soga doblada en capas y la misma soga estirada.', balanza:'Una balanza de dos platillos con un saco de papa y pesas.', monedas:'Una balanza de dos platillos y una fila de monedas.',
+        pila:'Los pedazos de una varilla después de cada corte.' }[E.modo];
+      document.getElementById(idDesc).textContent = [E.desc || base, ...filas.map(([, t, v]) => `${t.replace(/<[^>]+>/g, '')}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); E.avisar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  E.parar = () => { E.tok++; E.gen++; E.anim = false; };
+  // la balanza se inclina sola (no cuenta como animación de la escena); la corta un cambio de configuración
+  E.inclinar = () => { const meta = angulo(), de = E.ang; if (RM){ E.ang = meta; E.dibujar(); return; }
+    const t0 = performance.now(), gen = E.gen, mio = ++E.inc; const tick = now => { if (gen !== E.gen || mio !== E.inc) return; const f = Math.min(1, (now - t0)/450); E.ang = de + (meta - de)*suave(f); E.dibujar(); if (f < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); };
+
+  // ----- tocar (un toque no le quita el desplazamiento a la página) -----
+  cv.addEventListener('click', e => {
+    if (!E.tocar || E.ocupado || E.anim || !E.alTocar) return;
+    const r = cv.getBoundingClientRect(), p = { x:e.clientX - r.left, y:e.clientY - r.top };
+    if (E.modo === 'barras' && geo.barras && geo.barras[0]){
+      const g = geo.barras[0], m = Math.round((p.x - g.x0)/g.s);
+      if (m >= 1 && m < g.largo && Math.abs(p.x - (g.x0 + m*g.s)) <= Math.max(14, g.s/2) && p.y > g.by - 30 && p.y < g.by + g.h + 30) E.alTocar(m);
+    } else if (E.modo === 'balanza' && geo.pesas){
+      const h = geo.pesas.find(q => p.x >= q.x - 6 && p.x <= q.x + q.w + 6 && p.y >= q.y - 6 && p.y <= q.y + q.h + 6);
+      if (h) E.alTocar(h.i);
+    } else if (E.modo === 'monedas' && geo.monedas){
+      const h = geo.monedas.find(q => Math.hypot(p.x - q.x, p.y - q.y) <= q.r + 5);
+      if (h) E.alTocar(h.id);
+    }
+  });
+  return E;
+}
+
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const L = (k, nombre, valor) => () => [k, nombre, valor];
+const LUGARES = ['fuera', 'otro', 'junto'], NOMBRE_LUGAR = { fuera:'sin usar', otro:'enfrente', junto:'junto a la papa' };
+// Controles de las pesas (teclado y lector de pantalla), además de tocarlas en el dibujo.
+function controlesPesas(cont, B, alCambiar){
+  const html = () => B.pesas.map((v, i) => `<div class="pesa-ctl" role="group" aria-label="Pesa de ${v} kg"><b>${v} kg</b>${LUGARES.map(l => `<button type="button" class="btn chico" data-i="${i}" data-l="${l}" aria-pressed="${B.lugar[i] === l}">${NOMBRE_LUGAR[l]}</button>`).join('')}</div>`).join('');
+  function poner(){
+    cont.innerHTML = html();
+    cont.querySelectorAll('[data-i]').forEach(b => b.onclick = () => { B.lugar[+b.dataset.i] = b.dataset.l; alCambiar(); poner(); });
+  }
+  poner();
+  return poner;
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, cortes2:[], masa6:5, lugar6:['fuera', 'fuera', 'fuera'], n8:9, falsa8:5, est8:'tercios', i8:0 };
+
+// Números de la escena: todos salen del motor
+const P1 = MC.cortar({ largo:12, tramo:2, minutos:3 });
+const P3 = MC.compararEstacas({ largo:60, separacion:5 });
+const P4 = MC.sogaDoblada({ largo:6, capas:3, posiciones:[.5, 1.5] });
+const P5 = MC.masasMedibles({ pesas:[1, 3, 9] });
+const P7 = MC.minimoPesadas({ monedas:9 });
+const S7 = MC.simularPesadas({ monedas:9, falsa:8 });
+const min = v => `${fmt(v)} min`;
+
+const G1 = { id:'cortes-paso1', ok:'b', opts:[
+  ['a', `${min(P1.erroresTiempo.unoPorPieza)}: un corte por cada pieza de 2 m`, 'cuenta-piezas-no-cortes', 'hipotesis'],
+  ['b', `${min(P1.tiempo)}: un corte entre cada dos piezas vecinas`],
+  ['c', `${min(P1.erroresTiempo.masUno)}: un corte en cada marca de 2 m, de 0 a 12`, 'corta-tambien-los-extremos', 'hipotesis'],
+  ['d', `${min(P1.erroresTiempo.dosPorCorte)}: cada corte suelta dos piezas`, 'dos-piezas-por-corte', 'hipotesis']],
+  fb:{ b:`¡Bien! Salen 12 ÷ 2 = 6 piezas, pero la última queda sola sin cortarla: entre 6 piezas en fila hay 5 uniones, y cada unión es un corte. 5 × 3 = ${min(P1.tiempo)}.`,
+    a:`Elegiste la A. Son 6 piezas, pero no 6 cortes: el último corte ya suelta dos piezas a la vez, la quinta y la sexta. 5 cortes × 3 min = ${min(P1.tiempo)}. La correcta está marcada.`,
+    c:`Elegiste la C. Las marcas de 0 m y de 12 m son los extremos de la varilla: ahí no hay nada que cortar. Quedan 5 cortes: ${min(P1.tiempo)}. La correcta está marcada.`,
+    d:`Elegiste la D. Cada corte suelta una sola pieza nueva: 1 corte da 2 piezas, 2 cortes dan 3, 3 cortes dan 4… Para 6 piezas hacen falta 5 cortes: ${min(P1.tiempo)}. La correcta está marcada.` } };
+const par = (a, b) => `${a} postes y ${b} estacas`;
+const G3 = { id:'cortes-paso3', ok:'b', opts:[
+  ['a', `${par(...P3.errores.sinMasUno)}: 60 ÷ 5 en los dos`, 'estacas-sin-mas-uno-en-linea', 'hipotesis'],
+  ['b', `${par(...P3.respuesta)}: la avenida tiene dos puntas; el corral, ninguna`],
+  ['c', `${par(...P3.errores.cerradaMasUno)}: 60 ÷ 5 + 1 en los dos`, 'estacas-mas-uno-en-cerrada', 'hipotesis'],
+  ['d', `${par(...P3.errores.alReves)}: el corral da la vuelta y suma una`, 'estacas-al-reves', 'hipotesis']],
+  fb:{ b:'¡Bien! En los dos hay 60 ÷ 5 = 12 tramos. En la avenida, cada tramo tiene un poste al inicio y sobra el de la punta final: 13. En el corral, la estaca del final es la misma del inicio: 12.',
+    a:'Elegiste la A. En el corral, 12 está bien. En la avenida hay 12 tramos, pero los postes van en las dos puntas de cada tramo: el último tramo deja un poste más al final. Son 13. La correcta está marcada.',
+    c:'Elegiste la C. En la avenida, 13 está bien. En el corral, si das la vuelta clavando una estaca cada 5 m, la número 13 caería encima de la primera: son 12. La correcta está marcada.',
+    d:'Elegiste la D. Es al revés: la línea abierta es la que lleva una más (13), porque tiene dos puntas; el contorno cerrado lleva una por tramo (12). La correcta está marcada.' } };
+const ped = v => `${v} pedazos`;
+const G4 = { id:'cortes-paso4', ok:'c', opts:[
+  ['a', `${ped(P4.errores.sinCapas)}: 2 cortes, como en una soga estirada`, 'soga-sin-contar-capas', 'hipotesis'],
+  ['b', `${ped(P4.errores.sinMasUno)}: 3 capas por 2 cortes`, 'soga-sin-mas-uno', 'hipotesis'],
+  ['c', `${ped(P4.piezas)}: se cuentan los cortes en la soga estirada`],
+  ['d', `${ped(P4.errores.cadaCapaAparte)}: cada capa queda en 3 pedazos`, 'soga-cada-capa-aparte', 'hipotesis']],
+  fb:{ c:`¡Bien! Cada corte atraviesa las 3 capas, así que corta la soga en 3 lugares. Con 2 cortes, la soga estirada tiene ${P4.puntos.length} cortes, y una soga abierta con ${P4.puntos.length} cortes queda en ${P4.piezas} pedazos.`,
+    a:`Elegiste la A. Con la soga estirada, 2 cortes darían 3 pedazos. Pero doblada, cada corte pasa por las 3 capas: son ${P4.puntos.length} cortes en la soga y ${P4.piezas} pedazos. La correcta está marcada.`,
+    b:`Elegiste la B. Los cortes sí son 3 × 2 = ${P4.puntos.length}. Pero en una soga abierta, ${P4.puntos.length} cortes dan un pedazo más: ${P4.piezas}. La correcta está marcada.`,
+    d:`Elegiste la D. Las capas no son sogas sueltas: siguen unidas por los dobleces. Los pedazos de una capa que tocan un doblez se juntan con los de la capa vecina. Quedan ${P4.piezas}. La correcta está marcada.` } };
+const mas = (v, t) => `${v} masas distintas: ${t}`;
+const G5 = { id:'cortes-paso5', ok:'c', opts:[
+  ['a', mas(P5.errores.unaPorPesa, 'una por cada pesa'), 'balanza-una-por-pesa', 'hipotesis'],
+  ['b', mas(P5.errores.unPlatillo, 'las sumas de las pesas, enfrente de la papa'), 'balanza-solo-un-platillo', 'hipotesis'],
+  ['c', mas(P5.cuantas, 'todas las de 1 kg a 13 kg')],
+  ['d', mas(P5.errores.cadaAcomodo, 'cada pesa tiene 3 lugares: 3 × 3 × 3 − 1'), 'balanza-cuenta-acomodos', 'hipotesis']],
+  fb:{ c:'¡Bien! Una pesa junto a la papa resta: 2 = 3 − 1, 5 = 9 − 3 − 1, 6 = 9 − 3, 7 = 9 + 1 − 3… Así se llenan los huecos entre las sumas, y sale todo de 1 a 13 kg.',
+    a:'Elegiste la A. Cada pesa sola pesa una masa, pero juntas pesan más: 1 + 3 = 4, 9 + 3 + 1 = 13. Y una pesa junto a la papa resta: 3 − 1 = 2. Salen 13 masas. La correcta está marcada.',
+    b:`Elegiste la B. Con las pesas solo enfrente salen ${P5.unPlatillo.join(', ')}: ${P5.unPlatillo.length} masas. Pero una pesa también puede ir junto a la papa y restar: 3 − 1 = 2, 9 − 3 − 1 = 5… Salen las 13 de 1 a 13 kg. La correcta está marcada.`,
+    d:'Elegiste la D. Hay 27 acomodos, pero uno no pesa nada (todas fuera) y, de los otros 26, la mitad pondría más pesas junto a la papa que enfrente: pedirían una masa negativa. Quedan 13. La correcta está marcada.' } };
+const pes = (v, t) => `${v} pesadas: ${t}`;
+const G7 = { id:'cortes-paso7', ok:'a', opts:[
+  ['a', pes(P7.pesadas, 'en tres grupos de 3')],
+  ['b', pes(P7.errores.mitades, 'en mitades, 4 contra 4 y luego de nuevo'), 'pesadas-en-mitades', 'hipotesis'],
+  ['c', pes(P7.errores.parejas, 'de dos en dos, 1 con 2, 3 con 4…'), 'pesadas-de-dos-en-dos', 'hipotesis'],
+  ['d', pes(P7.errores.unaPorUna, 'la moneda 1 contra cada una de las demás'), 'pesadas-una-por-una', 'hipotesis']],
+  fb:{ a:'¡Bien! Pon 3 en cada platillo y deja 3 fuera. Si un platillo sube, la falsa está ahí; si se equilibran, está entre las de fuera. Quedan 3, y con otra pesada (1 contra 1, una fuera) la encuentras.',
+    b:'Elegiste la B. Partir en mitades solo usa dos de los tres resultados posibles de la balanza. Con tres grupos, el equilibrio también dice algo: señala el grupo de fuera. Bastan 2 pesadas. La correcta está marcada.',
+    c:'Elegiste la C. De dos en dos, con mala suerte la falsa sale en la cuarta pesada. Con tres grupos de 3 se descartan 6 monedas de una vez: bastan 2. La correcta está marcada.',
+    d:'Elegiste la D. Comparar una por una puede tomar 7 pesadas. Con tres grupos, cada pesada deja solo la tercera parte de las sospechosas: 9 → 3 → 1. La correcta está marcada.' } };
+
+// ---- configuraciones ----
+const lectVarilla = ya => [L('L', 'Largo L', '12 m'), L('d', 'Cada pieza d', '2 m')]
+  .concat(ya ? [E0 => ['c', 'Cortes c', String(E0.barras.lista[0].cortes.length)], E0 => ['T', 'Tiempo T', min(3*E0.barras.lista[0].cortes.length)]] : [L('c', 'Cortes c', '?'), L('T', 'Tiempo T', '?')]);
+const varilla1 = ya => ({ modo:'barras', barras:{ muestra:2, lista:[{ largo:12, titulo:'varilla de fierro: L = 12 m', tk:'L', cortes: ya ? P1.posiciones.slice() : [], sep: ya ? 1 : 0, verN:ya }] },
+  lect:lectVarilla(ya), ley:[['c', 'c · cortes'], ['n', 'n · piezas (numeradas)'], ['d', 'd · largo de cada pieza'], ['L', 'L · largo total'], ['T', 'T · tiempo']], desc:'Una varilla de fierro de 12 m sobre una regla de 1 m, y una pieza de ejemplo de 2 m.' });
+function varilla2(){
+  E.config({ modo:'barras', tocar:true, barras:{ muestra:null, lista:[{ largo:12, titulo:'varilla de fierro: L = 12 m', tk:'L', cortes:S.cortes2, verN:true }] },
+    lect:[E0 => ['c', 'Cortes c', String(E0.barras.lista[0].cortes.length)], E0 => ['n', 'Piezas n', String(MC.contarPiezas({ forma:'abierta', largo:12, cortes:E0.barras.lista[0].cortes }).piezas)]],
+    alTocar:m => { const i = S.cortes2.indexOf(m); if (i >= 0) S.cortes2.splice(i, 1); else S.cortes2.push(m); E.dibujar(); E.avisar(); botonesCortes(); },
+    alCambiar:vivoVarilla, desc:'Varilla de 12 m: toca la varilla para poner o quitar un corte.' });
+}
+function vivoVarilla(){
+  const d = $('vivoV'); if (!d) return;
+  const R = MC.contarPiezas({ forma:'abierta', largo:12, cortes:S.cortes2 });
+  d.innerHTML = `<div class="eq">${n_('n')} = ${c_('c')} + 1 → ${n_(R.piezas)} = ${c_(R.cortes)} + 1</div>
+    <div class="eq">piezas: ${R.largos.map(v => fmt(v) + ' m').join(' + ')} = 12 m</div>`;
+}
+function botonesCortes(){
+  const cont = $('cortesV'); if (!cont) return;
+  cont.innerHTML = Array.from({ length:11 }, (_, k) => k + 1).map(m => `<button type="button" class="btn chico" data-m="${m}" aria-pressed="${S.cortes2.includes(m)}" aria-label="Corte a ${m} m">${m} m</button>`).join('')
+    + '<button type="button" class="btn chico" data-m="0">Quitar todos</button>';
+  cont.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { const m = +b.dataset.m; if (!m) S.cortes2.length = 0; else E.alTocar(m); E.dibujar(); E.avisar(); botonesCortes(); });
+}
+const lineas3 = ya => ({ modo:'lineas', lin:{ largo:60, sep:5, verA:ya, verC:ya, progA: ya ? 99 : 0, progC: ya ? 99 : 0 },
+  lect: ya ? [L('eA', `Postes de la avenida ${eA}`, String(P3.abierta)), L('eC', `Estacas del corral ${eC}`, String(P3.cerrada))] : [L('L', 'Largo L', '60 m'), L('d', 'Separación d', '5 m'), L('eA', `Postes ${eA}`, '?'), L('eC', `Estacas ${eC}`, '?')],
+  desc:'Una avenida recta de 60 m con un poste cada 5 m, con poste en las dos puntas, y un corral redondo de 60 m de contorno con una estaca cada 5 m.' });
+const soga4 = ya => ({ modo:'soga', soga:{ largo:6, capas:3, pos:[.5, 1.5], ver:ya, prog: ya ? 99 : 0, sep: ya ? 1 : 0, verN:ya },
+  lect: ya ? [L('c', 'Cortes en la soga c', String(P4.puntos.length)), L('n', 'Pedazos n', String(P4.piezas))] : [L('L', 'Soga L', '6 m'), L('ink', 'Capas', '3'), L('c', 'Cortes al atado', '2'), L('n', 'Pedazos n', '?')],
+  desc:'Una soga de 6 m doblada en zigzag en 3 capas de 2 m, con 2 cortes que atraviesan las 3 capas. Abajo, la misma soga estirada.' });
+const bal5 = ya => ({ modo:'balanza', bal:{ pesas:[1, 3, 9], lugar:['fuera', 'fuera', 'fuera'], masa:null },
+  lect:[L('ink', 'Pesas', '1, 3 y 9 kg'), L('ink', 'Masas que se pesan', ya ? String(P5.cuantas) : '?')], desc:'Una balanza de dos platillos, un saco de papa de masa desconocida y pesas de 1, 3 y 9 kg sin usar.' });
+const lugarDe = (pesas, P) => { const j = P.junto.slice(), o = P.otro.slice(); return pesas.map(v => { let i = o.indexOf(v); if (i >= 0){ o.splice(i, 1); return 'otro'; } i = j.indexOf(v); if (i >= 0){ j.splice(i, 1); return 'junto'; } return 'fuera'; }); };
+let ponerCtl = null;
+function bal6(){
+  E.config({ modo:'balanza', tocar:true, bal:{ pesas:[1, 3, 9], lugar:S.lugar6, masa:S.masa6 },
+    lect:[E0 => ['M', 'Masa de la papa M', `${S.masa6} kg`], E0 => ['ink', 'Platillo de la papa', `${MC.equilibrio(acomodo6()).izquierdo} kg`], E0 => ['ink', 'Platillo de enfrente', `${MC.equilibrio(acomodo6()).derecho} kg`]],
+    alTocar:i => { S.lugar6[i] = LUGARES[(LUGARES.indexOf(S.lugar6[i]) + 1) % 3]; cambio6(); if (ponerCtl) ponerCtl(); },
+    alCambiar:vivoBal, desc:'Una balanza con un saco de papa: toca una pesa para cambiarla de lugar.' });
+}
+const acomodo6 = () => ({ pesas:[1, 3, 9], masa:S.masa6, junto:[1, 3, 9].filter((_, i) => S.lugar6[i] === 'junto'), otro:[1, 3, 9].filter((_, i) => S.lugar6[i] === 'otro') });
+function cambio6(){ E.bal.lugar = S.lugar6; E.bal.masa = S.masa6; E.inclinar(); E.avisar(); }
+function vivoBal(){
+  const d = $('vivoB'); if (!d) return;
+  const A = acomodo6(), R = MC.equilibrio(A);
+  const dm = a => a.slice().sort((x, y) => y - x);
+  const izq = [M_(S.masa6)].concat(dm(A.junto).map(String)).join(' + '), der = A.otro.length ? dm(A.otro).join(' + ') : '0';
+  d.innerHTML = `<div class="eq">${izq} = ${R.izquierdo}<span class="note">platillo de la papa</span></div><div class="eq">${der} = ${R.derecho}<span class="note">platillo de enfrente</span></div>
+    <p class="fb ${R.estado === 'equilibrio' ? 'ok' : ''}">${R.estado === 'equilibrio' ? `En equilibrio: ${M_(S.masa6 + ' kg')} = ${der}${A.junto.length ? ' − ' + dm(A.junto).join(' − ') : ''}.` : R.estado === 'baja-masa' ? 'Baja el platillo de la papa: falta masa enfrente.' : 'Baja el platillo de enfrente: sobra masa enfrente.'}</p>`;
+}
+const mon7 = ya => ({ modo:'monedas', mon:{ n:9, sosp: ya ? [S7.encontrada] : [1, 2, 3, 4, 5, 6, 7, 8, 9], falsa:S7.encontrada, verFalsa:ya },
+  lect:[L('ink', 'Monedas', '9, una más liviana'), L('k', 'Pesadas k', ya ? String(P7.pesadas) : '?')].concat(ya ? [L('ink', 'La falsa', `la ${S7.encontrada}`)] : []), desc:'Una balanza de dos platillos vacía y una fila de 9 monedas iguales a la vista; una es más liviana.' });
+function mon8(){
+  const Sm = MC.simularPesadas({ monedas:S.n8, falsa:S.falsa8, estrategia:S.est8 }), i = S.i8, pa = Sm.pasos[i - 1];
+  const todas = Array.from({ length:S.n8 }, (_, k) => k + 1);
+  E.config({ modo:'monedas', tocar: i === 0, mon:{ n:S.n8, sosp: i === 0 ? todas : pa.quedan, izq: i === 0 ? [] : pa.izquierda, der: i === 0 ? [] : pa.derecha, resultado: i === 0 ? null : pa.resultado, falsa:S.falsa8, verFalsa: true },
+    lect:[L('ink', 'Falsa escondida', `la ${S.falsa8}`), L('k', 'Pesadas k', String(i)), L('ink', 'Sospechosas', String(i === 0 ? S.n8 : pa.quedan.length))],
+    alTocar:id => { S.falsa8 = id; S.i8 = 0; mon8(); pintar8(); }, desc:`${S.n8} monedas; la falsa está escondida en la ${S.falsa8}.` });
+}
+function pintar8(){
+  const cont = $('ctl8'); if (!cont) return;
+  const Sm = MC.simularPesadas({ monedas:S.n8, falsa:S.falsa8, estrategia:S.est8 }), peor8 = MC.minimoPesadas({ monedas:S.n8 })[S.est8];
+  const nom = { 'equilibrio':'se equilibran: la falsa está fuera', 'izquierda-liviana':'sube el platillo de la izquierda: la falsa está ahí', 'derecha-liviana':'sube el platillo de la derecha: la falsa está ahí' };
+  cont.innerHTML = `<div class="seg" role="group" aria-label="Cuántas monedas">${[9, 27].map(n => `<button type="button" data-n="${n}" aria-pressed="${S.n8 === n}">${n} monedas</button>`).join('')}</div>
+    <div class="seg" role="group" aria-label="Estrategia">${[['tercios', 'En tres grupos'], ['mitades', 'En mitades']].map(([e, t]) => `<button type="button" data-e="${e}" aria-pressed="${S.est8 === e}">${t}</button>`).join('')}</div>
+    <label class="fila">Esconder la falsa en la moneda <select id="sel8">${Array.from({ length:S.n8 }, (_, k) => `<option value="${k + 1}"${k + 1 === S.falsa8 ? ' selected' : ''}>${k + 1}</option>`).join('')}</select></label>
+    <div class="fila"><button type="button" class="btn chico primary" id="sig8"${S.i8 >= Sm.cuantas ? ' disabled' : ''}>Siguiente pesada</button><button type="button" class="btn chico" id="rein8">Empezar de nuevo</button></div>
+    <div class="eqs">${Sm.pasos.slice(0, S.i8).map((p, j) => `<div class="eq"><span>${k_('pesada ' + (j + 1))}: ${p.izquierda.length} contra ${p.derecha.length}, ${p.fuera.length} fuera → ${nom[p.resultado]}</span></div>`).join('') || '<div class="eq">Todavía no pesas nada.</div>'}
+    ${S.i8 >= Sm.cuantas ? `<div class="eq"><span>Encontrada: la moneda ${Sm.encontrada}, en ${k_(Sm.cuantas)} ${Sm.cuantas === 1 ? 'pesada' : 'pesadas'}.</span></div>` : ''}</div>
+    <p>En el peor caso, esta estrategia necesita ${k_(peor8)} ${peor8 === 1 ? 'pesada' : 'pesadas'}.</p>`;
+  cont.querySelectorAll('[data-n]').forEach(b => b.onclick = () => { S.n8 = +b.dataset.n; S.falsa8 = Math.min(S.falsa8, S.n8); S.i8 = 0; mon8(); pintar8(); });
+  cont.querySelectorAll('[data-e]').forEach(b => b.onclick = () => { S.est8 = b.dataset.e; S.i8 = 0; mon8(); pintar8(); });
+  $('sel8').onchange = e => { S.falsa8 = +e.target.value; S.i8 = 0; mon8(); pintar8(); };
+  $('sig8').onclick = () => { S.i8++; mon8(); E.ang = 0; E.inclinar(); pintar8(); $('sig8') && $('sig8').focus({ preventScroll:true }); if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+  $('rein8').onclick = () => { S.i8 = 0; mon8(); pintar8(); };
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: la varilla de 12 m', gate:G1,
+   prep:() => E.config(varilla1(!!S.pred[G1.id])),
+   anima:fin => { const o = varilla1(false); o.lect = lectVarilla(true); E.config(o); const b = E.barras.lista[0];
+     E.animar(0, P1.cortes, 2600, v => { const k = Math.min(P1.cortes, Math.floor(v + 1e-9)); b.cortes = P1.posiciones.slice(0, k); b.sierra = k < P1.cortes ? P1.posiciones[k] : null; }, () => {
+       b.sierra = null; E.animar(0, 1, 700, v => { b.sep = v; b.verN = v > .4; }, () => { E.config(varilla1(true)); fin(); }); }, true); },
+   body:() => `<p class="problem">En la obra hay una varilla de fierro de ${L_('12 m')} y se necesitan piezas de ${d_('2 m')}. Con la amoladora se corta una pieza a la vez, sin juntar pedazos, y cada corte toma 3 minutos.</p>
+   <p>¿Cuánto ${T_('tiempo T')} toma dejar toda la varilla en piezas de 2 m?</p>${opcionesHTML(G1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${n_('n')} = ${L_('L')} ÷ ${d_('d')} = ${L_('12')} ÷ ${d_('2')} = ${n_(P1.piezas)}<span class="note">piezas</span></div>
+     <div class="eq">${c_('c')} = ${n_('n')} − 1 = ${c_(P1.cortes)}<span class="note">cortes</span></div>
+     <div class="eq">${T_('T')} = 3 · ${c_('c')} = ${T_(min(P1.tiempo))}</div></div>
+   <p>Mira el dibujo: cada corte va entre dos piezas vecinas, nunca en las puntas. Por eso, en una varilla con dos extremos siempre hay un corte menos que piezas.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras: no encontramos estudios con cifras sobre problemas de cortes.</p></div>` },
+ { k:'Paso 2', t:'Explora: marca tú los cortes',
+   prep:() => varilla2(),
+   body:() => `<p>Toca la varilla para poner o quitar un corte en un metro (o usa los botones). Prueba con cortes juntos, separados o en desorden: las piezas pueden ser de distinto largo.</p>
+   <div class="objs" id="cortesV"></div><div class="eqs" id="vivoV"></div>
+   <p>Sin importar dónde cortes, cada corte nuevo parte una pieza en dos: suma una pieza. Se empieza con 1 pieza (la varilla entera), así que ${n_('n')} = ${c_('c')} + 1.</p>
+   <p class="aviso">En una forma abierta (varilla, soga, tronco), las piezas son una más que los cortes.</p>`,
+   explora:'varilla' },
+ { k:'Paso 3', t:'Predice: postes y estacas', gate:G3,
+   prep:() => E.config(lineas3(!!S.pred[G3.id])),
+   anima:fin => { const o = lineas3(true); o.lin.progA = 0; o.lin.progC = 0; E.config(o); const Li = E.lin;
+     E.animar(0, P3.abierta, 2200, v => { Li.progA = Math.floor(v + 1e-9); }, () => E.animar(0, P3.cerrada, 2000, v => { Li.progC = Math.floor(v + 1e-9); }, () => { E.config(lineas3(true)); fin(); }, true), true); },
+   body:() => `<p class="problem">En una avenida recta de Juliaca de ${L_('60 m')} se pone un poste cada ${d_('5 m')}, con un poste en cada punta. En el campo, un corral redondo tiene ${L_('60 m')} de contorno y se le clava una estaca cada ${d_('5 m')}, todo alrededor.</p>
+   <p>¿Cuántos ${eA_('postes ' + eA)} lleva la avenida y cuántas ${eC_('estacas ' + eC)} lleva el corral?</p>${opcionesHTML(G3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">tramos = ${L_('L')} ÷ ${d_('d')} = ${L_('60')} ÷ ${d_('5')} = ${P3.tramos}</div>
+     <div class="eq">avenida (abierta): ${eA_(eA)} = tramos + 1 = ${eA_(P3.abierta)}</div>
+     <div class="eq">corral (cerrado): ${eC_(eC)} = tramos = ${eC_(P3.cerrada)}</div></div>
+   <p>Es lo mismo que con los cortes, al revés: en la línea abierta los postes son las puntas de los tramos y sobra uno; en el contorno cerrado la última estaca coincidiría con la primera.</p>
+   <p class="fuente">El informe de aritmética anota «contar los términos de una progresión sin el +1» como un error que suponemos, sin estudios que lo midan; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 4', t:'Predice: la soga doblada', gate:G4,
+   prep:() => E.config(soga4(!!S.pred[G4.id])),
+   anima:fin => { const o = soga4(true); o.soga.prog = 0; o.soga.sep = 0; o.soga.verN = false; E.config(o); const So = E.soga;
+     E.animar(0, P4.puntos.length, 2400, v => { So.prog = Math.floor(v + 1e-9); }, () => E.animar(0, 1, 700, v => { So.sep = v; So.verN = v > .4; }, () => { E.config(soga4(true)); fin(); }), true); },
+   body:() => `<p class="problem">Una soga de ${L_('6 m')} se dobla en zigzag en 3 partes iguales, así que quedan 3 capas de 2 m una sobre otra. Con un cuchillo se dan 2 cortes que atraviesan las 3 capas, ninguno en un doblez, como en el dibujo.</p>
+   <p>Al estirar la soga, ¿en cuántos ${n_('pedazos n')} quedó?</p>${opcionesHTML(G4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${c_('c')} = 3 capas · 2 cortes = ${c_(P4.puntos.length)}<span class="note">cortes en la soga estirada</span></div>
+     <div class="eq">${n_('n')} = ${c_('c')} + 1 = ${n_(P4.piezas)}</div>
+     <div class="eq">pedazos (m): ${P4.largos.map(v => fmt(v)).join(' + ')} = ${L_('6')}</div></div>
+   <p>Cuenta los puntos rojos del atado: son los cortes de la soga estirada. Los pedazos que tocan un doblez no se sueltan: quedan de 1 m, con el doblez al medio.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 5', t:'Predice: tres pesas', gate:G5,
+   prep:() => E.config(bal5(!!S.pred[G5.id])),
+   anima:fin => { const o = bal5(true); E.config(o); const Bl = E.bal;
+     E.animar(1, P5.alcance + .999, 4200, v => { const m = Math.floor(v); if (m === Bl.masa) return; Bl.masa = m; Bl.lugar = lugarDe([1, 3, 9], MC.pesar({ pesas:[1, 3, 9], masa:m })); E.ang = 0; }, () => fin(), true); },
+   body:() => `<p class="problem">Un comerciante tiene una balanza de dos platillos y solo tres pesas: de 1 kg, de 3 kg y de 9 kg. Pone un saco de papa en un platillo y puede poner cada pesa enfrente, junto a la papa o no usarla.</p>
+   <p>¿Cuántas masas enteras distintas de papa (en kg) puede pesar con exactitud?</p>${opcionesHTML(G5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${M_('M')} + (pesas junto a la papa) = (pesas enfrente)</div>
+     <div class="eq">${M_('M')} = (enfrente) − (junto a la papa)</div></div>
+   <div class="chips">${P5.masas.map(m => { const P = MC.pesar({ pesas:[1, 3, 9], masa:m }); const dm = a => a.slice().sort((x, y) => y - x); return `<span class="chip">${m} = ${dm(P.otro).join(' + ')}${P.junto.length ? ' − ' + dm(P.junto).join(' − ') : ''}</span>`; }).join('')}</div>
+   <p>El motor probó las 27 formas de poner las tres pesas. Cada masa de 1 a 13 kg sale de una sola forma; pasar de 13 no se puede, porque es la suma de las tres.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Explora: equilibra la balanza',
+   prep:() => bal6(),
+   body:() => `<p>Elige el saco y pon las pesas: toca una pesa en el dibujo para cambiarla de lugar, o usa los botones. La balanza se queda quieta solo si los dos platillos pesan lo mismo.</p>
+   <div class="seg" id="masa6" role="group" aria-label="Masa del saco">${[2, 5, 7, 8, 11, 13].map(m => `<button type="button" data-m="${m}" aria-pressed="${S.masa6 === m}">${m} kg</button>`).join('')}</div>
+   <div id="pesas6" class="body"></div><div class="eqs" id="vivoB"></div>
+   <div class="fila"><button type="button" class="btn chico" id="motor6">Ver el acomodo del motor</button></div>
+   <p class="aviso">Una pesa enfrente suma; una pesa junto al objeto resta. Con 1, 3 y 9 kg, cada pesa tiene tres lugares, y eso alcanza para todo de 1 a 13 kg.</p>`,
+   explora:'balanza' },
+ { k:'Paso 7', t:'Predice: la moneda falsa', gate:G7,
+   prep:() => E.config(mon7(!!S.pred[G7.id])),
+   anima:fin => { const o = mon7(false); let i = 0; o.lect = [L('ink', 'Monedas', '9, una más liviana'), () => ['k', 'Pesadas k', String(i)]]; E.config(o); const Mo = E.mon;
+     const paso = () => { if (i >= S7.pasos.length){ E.config(mon7(true)); fin(); return; }
+       const p = S7.pasos[i++]; Mo.izq = p.izquierda; Mo.der = p.derecha; Mo.resultado = null; E.ang = 0; E.dibujar();
+       E.animar(0, 1, 700, () => {}, () => { Mo.resultado = p.resultado; E.inclinar(); E.animar(0, 1, 900, () => {}, () => { Mo.sosp = p.quedan; E.dibujar(); paso(); }); }); };
+     paso(); },
+   body:() => `<p class="problem">Hay 9 monedas que se ven iguales, pero una es falsa y pesa un poco menos. Tienes una balanza de dos platillos sin pesas.</p>
+   <p>¿Cuál es el menor número de ${k_('pesadas k')} que asegura encontrar la falsa, aunque tengas mala suerte?</p>${opcionesHTML(G7.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">pesada 1: 3 contra 3, 3 fuera → quedan 3</div>
+     <div class="eq">pesada 2: 1 contra 1, 1 fuera → queda 1</div>
+     <div class="eq"><span>${k_('k')} pesadas distinguen hasta 3<sup>${k_('k')}</sup> casos: 3<sup>2</sup> = 9 ≥ 9 monedas</span></div></div>
+   <p>Cada pesada tiene tres resultados: sube la izquierda, sube la derecha o se equilibran. Con una sola pesada solo se distinguen 3 casos, y hay 9 monedas que pueden ser la falsa: una pesada no alcanza. El motor revisó todos los árboles de pesadas posibles: ninguno baja de ${k_(P7.pesadas)}.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 8', t:'Explora: esconde la moneda falsa',
+   prep:() => { S.i8 = 0; mon8(); },
+   body:() => `<p>Esconde la falsa donde quieras (toca una moneda o usa la lista) y pesa paso a paso. Cambia a 27 monedas o a la estrategia de mitades y compara cuántas ${k_('pesadas k')} hacen falta.</p>
+   <div id="ctl8" class="body"></div>
+   <p class="aviso">Con tres grupos, cada pesada deja la tercera parte de las sospechosas: 9 piden 2 pesadas, 27 piden 3 y 81 piden 4. Partir en mitades solo deja la mitad.</p>`,
+   explora:'monedas' },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = false;
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.explora === 'varilla') botonesCortes();
+  if (s.explora === 'balanza'){
+    ponerCtl = controlesPesas($('pesas6'), { pesas:[1, 3, 9], lugar:S.lugar6 }, () => cambio6());
+    $('masa6').querySelectorAll('[data-m]').forEach(b => b.onclick = () => { S.masa6 = +b.dataset.m; $('masa6').querySelectorAll('[data-m]').forEach(x => x.setAttribute('aria-pressed', String(+x.dataset.m === S.masa6))); cambio6(); });
+    $('motor6').onclick = () => { const P = MC.pesar({ pesas:[1, 3, 9], masa:S.masa6 }); lugarDe([1, 3, 9], P).forEach((l, i) => { S.lugar6[i] = l; }); cambio6(); ponerCtl(); if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+  }
+  if (s.explora === 'monedas') pintar8();
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos: el tronco en más trozos, el aro de fierro, apilar los pedazos, una pesa de 27 kg y 27 monedas.
+   La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const X1 = MC.tiempoCortes({ piezas:3, minutos:6, piezasNuevas:6 });
+const X1b = MC.cortar({ largo:6, tramo:1 });
+const X2 = MC.cortar({ forma:'cerrada', largo:12, tramo:2, minutos:3 });
+const X3 = MC.cortesApilando({ piezas:8 });
+const X4 = MC.agregarPesa({ pesas:[1, 3, 9], nueva:27 });
+const X5 = MC.minimoPesadas({ monedas:27 }), S5 = MC.simularPesadas({ monedas:27, falsa:20 });
+const min = v => `${fmt(v)} min`;
+const lugarDe = (pesas, P) => { const j = P.junto.slice(), o = P.otro.slice(); return pesas.map(v => { let i = o.indexOf(v); if (i >= 0){ o.splice(i, 1); return 'otro'; } i = j.indexOf(v); if (i >= 0){ j.splice(i, 1); return 'junto'; } return 'fuera'; }); };
+
+const EXPS = [
+  { id:'tronco', corto:'El tronco en más trozos',
+    q:`Partir un tronco de eucalipto en 3 trozos iguales, cortando un trozo a la vez, le toma a un leñador ${T_('6 minutos')}. ¿Cuánto ${T_('tiempo')} le toma partir otro tronco igual en 6 trozos iguales, si cada corte toma lo mismo?`,
+    opts:[['a', `${min(X1.errores.lineal)}: el doble de trozos, el doble de tiempo`, 'AR7-cortes-proporcionales', 'hipotesis'],
+          ['b', `${min(X1.errores.porPieza)}: 6 trozos de 3 minutos`, 'cuenta-piezas-no-cortes', 'hipotesis'],
+          ['c', `${min(X1.tiempo)}: 5 cortes de 3 minutos`]],
+    ok:'c',
+    fb:{ a:`El tiempo no va con los trozos sino con los cortes: 3 trozos son 2 cortes (3 min cada uno) y 6 trozos son 5 cortes: ${min(X1.tiempo)}.`,
+         b:`Los 3 minutos son por corte, y 6 trozos piden 5 cortes, no 6: ${min(X1.tiempo)}.` },
+    antes:ya => E.config({ modo:'barras', barras:{ muestra:null, lista:[{ largo:6, tipo:'madera', titulo:'tronco 1: 3 trozos en 6 min', cortes: ya ? [2, 4] : [], sep: ya ? .6 : 0, verN:ya },
+      { largo:6, tipo:'madera', titulo:'tronco 2: 6 trozos', cortes: ya ? X1b.posiciones.slice() : [], sep: ya ? .6 : 0, verN:ya }] },
+      lect:[ya ? L('c', 'Cortes del tronco 1', '2') : L('n', 'Trozos del tronco 1', '3'), L('T', 'Tiempo del tronco 1', '6 min'), L('c', 'Cortes del tronco 2', ya ? String(X1.cortes) : '?'), L('T', 'Tiempo del tronco 2', ya ? min(X1.tiempo) : '?')],
+      ley:[['c', 'c · cortes'], ['n', 'n · trozos (numerados)'], ['T', 'T · tiempo']], desc:'Dos troncos de eucalipto iguales: el primero ya está en 3 trozos; el segundo, entero.' }),
+    despues:() => { EXPS[0].antes(false); const b0 = E.barras.lista[0], b = E.barras.lista[1]; b0.cortes = [2, 4]; b0.sep = .6; b0.verN = true; E.lect[0] = L('c', 'Cortes del tronco 1', '2'); E.lect[2] = E0 => ['c', 'Cortes del tronco 2', String(E0.barras.lista[1].cortes.length)]; E.lect[3] = E0 => ['T', 'Tiempo del tronco 2', min(3*E0.barras.lista[1].cortes.length)];
+      E.animar(0, X1.cortes, 2200, v => { b.cortes = X1b.posiciones.slice(0, Math.floor(v + 1e-9)); }, () => E.animar(0, .6, 500, v => { b.sep = v; b.verN = v > .3; }, () => EXPS[0].antes(true)), true); },
+    exp:() => `<div class="eqs"><div class="eq">tronco 1: 3 trozos → ${c_('2 cortes')} → 6 ÷ 2 = 3 min por corte</div>
+      <div class="eq">tronco 2: 6 trozos → ${c_(X1.cortes + ' cortes')} → ${T_('T')} = ${X1.cortes} · 3 = ${T_(min(X1.tiempo))}</div></div>
+      <p>El doble de trozos no es el doble de cortes: 2 cortes contra 5. Por eso la regla de tres con los trozos falla.</p>
+      <p class="fuente">La regla de tres donde no va se llama ilusión de linealidad (AR7 en el informe de aritmética): estudios con escolares la encontraron en problemas que no son proporcionales, pero no hay cifras para los cortes. Las dos opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'aro', corto:'El aro de fierro',
+    q:`Una varilla recta de ${L_('12 m')} se partió en piezas de ${d_('2 m')}. Ahora es un aro de fierro soldado, también de ${L_('12 m')} de contorno, que se parte en piezas de ${d_('2 m')}, cortando una pieza a la vez, con 3 minutos por corte. ¿Cuánto ${T_('tiempo')} toma?`,
+    opts:[['a', `${min(X2.tiempo)}: 6 cortes, uno por pieza`],
+          ['b', `${min(X2.erroresTiempo.comoAbierta)}: 5 cortes, como la varilla`, 'cerrada-como-abierta', 'hipotesis'],
+          ['c', `${min(X2.erroresTiempo.masUno)}: 7 cortes, uno más que las piezas`, 'cortes-mas-uno', 'hipotesis']],
+    ok:'a',
+    fb:{ b:`El aro no tiene puntas: el primer corte solo lo abre y no suelta ninguna pieza. Después queda una tira de 6 piezas, que pide 5 cortes más: 6 cortes, ${min(X2.tiempo)}.`,
+         c:`Con 7 cortes saldrían 7 piezas: en un aro, cada corte termina una pieza. Para 6 piezas, 6 cortes: ${min(X2.tiempo)}.` },
+    antes:ya => E.config({ modo:'aro', aro:{ largo:12, muestra:2, cortes: ya ? X2.posiciones.slice() : [], sep: ya ? 1 : 0, verN:ya },
+      lect:[L('L', 'Contorno L', '12 m'), L('d', 'Cada pieza d', '2 m'), L('c', 'Cortes c', ya ? String(X2.cortes) : '?'), L('T', 'Tiempo T', ya ? min(X2.tiempo) : '?')],
+      ley:[['c', 'c · cortes'], ['n', 'n · piezas (numeradas)'], ['d', 'd · largo de cada pieza'], ['L', 'L · contorno']], desc:'Un aro de fierro soldado de 12 m de contorno y una pieza de ejemplo de 2 m.' }),
+    despues:() => { EXPS[1].antes(false); const A = E.aro; E.lect[2] = E0 => ['c', 'Cortes c', String(E0.aro.cortes.length)]; E.lect[3] = E0 => ['T', 'Tiempo T', min(3*E0.aro.cortes.length)];
+      E.animar(0, X2.cortes, 2400, v => { const k = Math.floor(v + 1e-9); A.cortes = X2.posiciones.slice(0, k); A.sierra = k < X2.cortes ? X2.posiciones[k] : null; }, () => { A.sierra = null; E.animar(0, 1, 600, v => { A.sep = v; A.verN = v > .4; }, () => EXPS[1].antes(true)); }, true); },
+    exp:() => `<div class="eqs"><div class="eq">varilla (abierta): ${c_('c')} = ${n_('n')} − 1 = 5</div>
+      <div class="eq">aro (cerrado): ${c_('c')} = ${n_('n')} = ${c_(X2.cortes)} → ${T_('T')} = 3 · ${X2.cortes} = ${T_(min(X2.tiempo))}</div></div>
+      <p>Mira el primer corte: el aro se abre pero sigue de una pieza. En una forma cerrada, cortes = piezas.</p>
+      <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'apilar', corto:'Apilar los pedazos',
+    q:`Una varilla de 8 m se parte en piezas de 1 m. Ahora, después de cada corte, se pueden juntar los pedazos uno sobre otro y cortarlos todos con un solo corte recto. ¿Cuál es el menor número de ${c_('cortes')}?`,
+    opts:[['a', `${X3.errores.sinApilar} cortes: uno entre cada dos piezas`, 'apilar-como-sin-apilar', 'hipotesis'],
+          ['b', `${X3.errores.mitad} cortes: la mitad de las piezas`, 'apilar-la-mitad', 'hipotesis'],
+          ['c', `${X3.errores.unoPorPieza} cortes: uno por cada pieza`, 'cuenta-piezas-no-cortes', 'hipotesis'],
+          ['d', `${X3.minimo} cortes: cada corte duplica los pedazos`]],
+    ok:'d',
+    fb:{ a:'Sin apilar serían 7. Pero si juntas los pedazos, un corte los parte a todos a la vez: 1 → 2 → 4 → 8 pedazos en 3 cortes.',
+         b:'Con 4 cortes alcanza, pero se puede con menos: 8 → 4 + 4; apilas los dos de 4 y cortas: cuatro de 2; apilas los cuatro y cortas: ocho de 1. Son 3.',
+         c:'En una varilla abierta nunca hace falta un corte por pieza, y apilando menos aún: 3 cortes bastan.' },
+    antes:ya => E.config({ modo:'pila', pila:{ plan:X3.plan, largo:8, prog: ya ? X3.plan.length : 0, ver:ya },
+      lect:[L('ink', 'Varilla', '8 m → piezas de 1 m'), L('c', 'Cortes c', ya ? String(X3.minimo) : '?')], desc:'Una varilla de 8 m que se quiere partir en piezas de 1 m, apilando los pedazos.' }),
+    despues:() => { EXPS[2].antes(false); const Pi = E.pila; Pi.ver = true; E.lect[1] = E0 => ['c', 'Cortes c', String(E0.pila.prog)];
+      E.animar(0, X3.plan.length, 2400, v => { Pi.prog = Math.floor(v + 1e-9); }, () => EXPS[2].antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">${X3.plan.map((f, i) => `${c_(i + 1)}: ${f.length} pedazos`).join(' → ')}</div>
+      <div class="eq"><span>${c_('c')} cortes dan a lo más 2<sup>${c_('c')}</sup> pedazos: 2<sup>2</sup> = 4 &lt; 8 ≤ 2<sup>3</sup></span></div></div>
+      <p>El motor buscó todos los montones posibles: con 2 cortes no se llega a 8 pedazos, porque cada corte, aun con todo apilado, a lo más duplica los pedazos.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'pesa27', corto:'Una pesa de 27 kg',
+    q:`El comerciante tenía pesas de 1, 3 y 9 kg y compra una más, de 27 kg. Con la balanza de dos platillos, ¿hasta cuántos kg puede pesar todas las ${M_('masas')} enteras, sin saltarse ninguna?`,
+    opts:[['a', `Hasta ${X4.errores.laMayor} kg: lo que pesa la pesa nueva`, 'balanza-hasta-la-mayor', 'hipotesis'],
+          ['b', `Hasta ${X4.despues} kg: la suma de las cuatro pesas`],
+          ['c', `Hasta ${X4.errores.doble} kg: el doble que con tres pesas`, 'AR7-balanza-doble-alcance', 'hipotesis'],
+          ['d', `Hasta ${X4.errores.siguiente} kg: la pesa que seguiría en la serie`, 'balanza-siguiente-pesa', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'La pesa de 27 enfrente, con las otras sumando o restando hasta 13, alcanza de 27 − 13 = 14 a 27 + 13 = 40. Y de 1 a 13 ya se tenía: todo hasta 40.',
+         c:'Una pesa más no duplica: la de 27 junto con las otras llega de 14 a 40, y de 1 a 13 ya se tenía. Todo hasta 40, la suma de las cuatro.',
+         d:'Para pesar 81 kg harían falta 81 kg de pesas enfrente, y en total solo hay 1 + 3 + 9 + 27 = 40. Se llega hasta 40.' },
+    antes:ya => E.config({ modo:'balanza', bal:{ pesas:[1, 3, 9, 27], lugar: ya ? ['otro', 'otro', 'otro', 'otro'] : ['fuera', 'fuera', 'fuera', 'fuera'], masa: ya ? X4.despues : null },
+      lect:[L('ink', 'Pesas', '1, 3, 9 y 27 kg'), L('M', 'Hasta M', ya ? `${X4.despues} kg` : '?')], desc:'Una balanza con un saco de papa y cuatro pesas sin usar: 1, 3, 9 y 27 kg.' }),
+    despues:() => { EXPS[3].antes(false); const Bl = E.bal; E.lect[1] = E0 => ['M', 'Masa M', E0.bal.masa === null ? '?' : `${E0.bal.masa} kg`];
+      E.animar(1, X4.despues + .999, 5200, v => { const m = Math.floor(v); if (m === Bl.masa) return; Bl.masa = m; Bl.lugar = lugarDe(Bl.pesas, MC.pesar({ pesas:Bl.pesas, masa:m })); E.ang = 0; }, () => EXPS[3].antes(true), true); },
+    exp:() => { const p14 = MC.pesar({ pesas:[1, 3, 9, 27], masa:14 }), p40 = MC.pesar({ pesas:[1, 3, 9, 27], masa:40 });
+      return `<div class="eqs"><div class="eq">${M_('14')} = ${p14.otro.join(' + ')} − ${p14.junto.join(' − ')}</div><div class="eq">${M_('40')} = ${p40.otro.join(' + ')}</div>
+      <div class="eq"><span>1 + 3 + 9 + 27 = 40 = (3<sup>4</sup> − 1) ÷ 2</span></div></div>
+      <p>El motor recorrió las 81 formas de poner las cuatro pesas: salen todas las masas de 1 a 40 kg, cada una de una sola forma.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras; «el doble» se liga a la ilusión de linealidad (AR7 del informe), sin cifras para este problema.</p>`; } },
+  { id:'monedas27', corto:'27 monedas',
+    q:`Ahora hay 27 monedas iguales a la vista y una es falsa, más liviana. ¿Cuál es el menor número de ${k_('pesadas')} que asegura encontrarla?`,
+    opts:[['a', `${X5.errores.mitades} pesadas: en mitades, 13 contra 13`, 'pesadas-en-mitades', 'hipotesis'],
+          ['b', `${X5.errores.parejas} pesadas: de dos en dos`, 'pesadas-de-dos-en-dos', 'hipotesis'],
+          ['c', `${X5.pesadas} pesadas: en tres grupos de 9`],
+          ['d', `${X5.errores.unaPorUna} pesadas: la moneda 1 contra cada una`, 'pesadas-una-por-una', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Las mitades dejan 13, luego 6, luego 3, luego 1: 4 pesadas. Con tres grupos, 27 → 9 → 3 → 1: bastan 3.',
+         b:'De dos en dos, con mala suerte hacen falta 13. Con tres grupos de 9, la primera pesada ya descarta 18 monedas: bastan 3.',
+         d:'Una por una pueden ser 25. Con tres grupos, cada pesada deja la tercera parte: 27 → 9 → 3 → 1, 3 pesadas.' },
+    antes:ya => E.config({ modo:'monedas', mon:{ n:27, sosp: ya ? [S5.encontrada] : Array.from({ length:27 }, (_, k) => k + 1), falsa:S5.encontrada, verFalsa:ya },
+      lect:[L('ink', 'Monedas', '27, una más liviana'), L('k', 'Pesadas k', ya ? String(X5.pesadas) : '?')].concat(ya ? [L('ink', 'La falsa', `la ${S5.encontrada}`)] : []), desc:'Una balanza de dos platillos vacía y 27 monedas iguales a la vista; una es más liviana.' }),
+    despues:() => { EXPS[4].antes(false); const Mo = E.mon; let i = 0; E.lect[1] = () => ['k', 'Pesadas k', String(i)];
+      const paso = () => { if (i >= S5.pasos.length){ Mo.izq = []; Mo.der = []; Mo.verFalsa = true; Mo.resultado = null; E.inclinar(); EXPS[4].antes(true); return; }
+        const p = S5.pasos[i++]; Mo.izq = p.izquierda; Mo.der = p.derecha; Mo.resultado = null; E.ang = 0; E.dibujar(); E.avisar();
+        E.animar(0, 1, 600, () => {}, () => { Mo.resultado = p.resultado; E.inclinar(); E.animar(0, 1, 800, () => {}, () => { Mo.sosp = p.quedan; E.dibujar(); paso(); }); }); };
+      paso(); },
+    exp:() => `<div class="eqs">${S5.pasos.map((p, j) => `<div class="eq"><span>${k_('pesada ' + (j + 1))}: ${p.izquierda.length} contra ${p.derecha.length}, ${p.fuera.length} fuera → quedan ${p.quedan.length}</span></div>`).join('')}
+      <div class="eq"><span>3<sup>2</sup> = 9 &lt; 27 ≤ 3<sup>3</sup> → ${k_('k')} = ${k_(X5.pesadas)}</span></div></div>
+      <p>En la animación, la falsa estaba en la moneda ${S5.encontrada}. Con 2 pesadas solo se distinguen 9 casos, y aquí hay 27: no alcanzan.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = false;
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => { x.despues(); E.avisar(); }, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
