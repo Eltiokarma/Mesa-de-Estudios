@@ -1,0 +1,146 @@
+{
+  "titulo": "Las fichas que se cambian: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Si te ayuda, haz un dibujo y anota lo que ya sabes en cada parte.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una granja de Ayacucho hay patos y cuyes. Entre todos tienen 30 cabezas y 96 patas. ¿Cuántos cuyes hay?",
+      "respuesta": "18 cuyes (y 12 patos).",
+      "pasos": [
+        "Si los 30 fueran patos, habría 30 × 2 = 60 patas.",
+        "Faltan 96 − 60 = 36 patas.",
+        "Cada vez que un pato se cambia por un cuy, aparecen 4 − 2 = 2 patas más.",
+        "Hacen falta 36 ÷ 2 = 18 cambios: hay 18 cuyes y 30 − 18 = 12 patos.",
+        "Comprobación: 18 × 4 + 12 × 2 = 72 + 24 = 96."
+      ],
+      "verificar": [ { "fn": "corral", "args": [30, 96], "espera": { "respuesta": 18, "gallinas": 12, "supuestoTotal": 60, "faltan": 36 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Rosa juntó S/ 340 en 25 billetes, unos de S/ 10 y otros de S/ 20. ¿Cuántos billetes de S/ 20 tiene?",
+      "respuesta": "9 billetes de S/ 20 (y 16 de S/ 10).",
+      "pasos": [
+        "Si los 25 billetes fueran de S/ 10, juntaría 25 × 10 = S/ 250.",
+        "Faltan 340 − 250 = S/ 90.",
+        "Cambiar un billete de S/ 10 por uno de S/ 20 agrega S/ 10.",
+        "90 ÷ 10 = 9 cambios: 9 billetes de S/ 20 y 16 de S/ 10.",
+        "Comprobación: 9 × 20 + 16 × 10 = 180 + 160 = 340."
+      ],
+      "verificar": [ { "fn": "falsaSuposicion", "args": [25, 340, 10, 20], "espera": { "otros": 9, "supuestos": 16, "falta": 90 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un examen tiene 60 preguntas. Cada respuesta correcta vale 5 puntos y cada incorrecta resta 2 puntos. Mariela respondió todas las preguntas y obtuvo 202 puntos. ¿Cuántas respondió correctamente?",
+      "respuesta": "46 correctas (y 14 incorrectas).",
+      "pasos": [
+        "Si las 60 fueran correctas, tendría 60 × 5 = 300 puntos.",
+        "Le sobran 300 − 202 = 98 puntos.",
+        "Cada correcta que pasa a incorrecta pierde sus 5 puntos y además resta 2: baja 5 + 2 = 7 puntos.",
+        "98 ÷ 7 = 14 incorrectas, así que respondió bien 60 − 14 = 46.",
+        "Comprobación: 46 × 5 − 14 × 2 = 230 − 28 = 202."
+      ],
+      "verificar": [ { "fn": "examen", "args": [60, 202, 5, -2], "espera": { "respuesta": 46, "incorrectas": 14, "sobran": 98, "quita": 7 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En una obra, a un albañil le pagan S/ 60 por cada día que trabaja y le descuentan S/ 15 por cada día que falta. Al cabo de 30 días recibió S/ 1 350. ¿Cuántos días faltó?",
+      "respuesta": "6 días.",
+      "pasos": [
+        "Si hubiera trabajado los 30 días, recibiría 30 × 60 = S/ 1 800.",
+        "Recibió 1 800 − 1 350 = S/ 450 menos.",
+        "Cada día que falta deja de ganar S/ 60 y además le descuentan S/ 15: pierde 60 + 15 = S/ 75.",
+        "450 ÷ 75 = 6 días que faltó (trabajó 24).",
+        "Comprobación: 24 × 60 − 6 × 15 = 1 440 − 90 = 1 350."
+      ],
+      "verificar": [ { "fn": "examen", "args": [30, 1350, 60, -15], "espera": { "incorrectas": 6, "correctas": 24, "sobran": 450, "quita": 75 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Jorge pensó un número. Lo duplicó, al resultado le sumó 9, lo que obtuvo lo dividió entre 5 y al final le restó 4. Le salió 3. ¿Qué número pensó?",
+      "respuesta": "13.",
+      "pasos": [
+        "Se empieza por el final, 3, y se deshace cada operación, de la última a la primera.",
+        "Restó 4: se suma 4. 3 + 4 = 7.",
+        "Dividió entre 5: se multiplica por 5. 7 × 5 = 35.",
+        "Sumó 9: se resta 9. 35 − 9 = 26.",
+        "Duplicó: se divide entre 2. 26 ÷ 2 = 13.",
+        "Comprobación: 13 × 2 = 26; 26 + 9 = 35; 35 ÷ 5 = 7; 7 − 4 = 3."
+      ],
+      "verificar": [ { "fn": "regresivo", "args": [[{ "op": "por", "k": 2 }, { "op": "mas", "k": 9 }, { "op": "entre", "k": 5 }, { "op": "menos", "k": 4 }], 3], "espera": { "respuesta": 13, "ida": [13, 26, 35, 7, 3] } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Carla salió de compras. En la librería gastó la tercera parte de su dinero y S/ 6 más; en la farmacia, la mitad de lo que le quedaba y S/ 4 más. Volvió a casa con S/ 20. ¿Cuánto dinero tenía al salir?",
+      "respuesta": "S/ 81.",
+      "pasos": [
+        "En la farmacia: si le quedaron 20 después de gastar la mitad y 4 más, antes de esos 4 tenía 20 + 4 = 24, que es la mitad que no gastó.",
+        "Al entrar a la farmacia tenía 24 × 2 = S/ 48.",
+        "En la librería: antes de los 6 de más tenía 48 + 6 = 54, que son las dos terceras partes que no gastó.",
+        "Una tercera parte es 54 ÷ 2 = 27, así que al salir tenía 27 × 3 = S/ 81.",
+        "Comprobación: 81 − 27 − 6 = 48; 48 − 24 − 4 = 20."
+      ],
+      "verificar": [ { "fn": "regresivo", "args": [[{ "op": "gasta", "parte": [1, 3], "mas": 6 }, { "op": "gasta", "parte": [1, 2], "mas": 4 }], 20], "espera": { "respuesta": 81, "ida": [81, 48, 20] } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En un juego de mesa, en cada ronda el dinero de Pedro se duplica y luego él paga S/ 8. Después de tres rondas, Pedro se quedó sin dinero. ¿Con cuánto empezó?",
+      "respuesta": "S/ 7.",
+      "pasos": [
+        "Al final de la tercera ronda tiene 0. Antes de pagar tenía 0 + 8 = 8, y antes de duplicarse, 8 ÷ 2 = 4.",
+        "Segunda ronda: 4 + 8 = 12 y 12 ÷ 2 = 6.",
+        "Primera ronda: 6 + 8 = 14 y 14 ÷ 2 = 7.",
+        "Comprobación: 7 → 14 → 6 → 12 → 4 → 8 → 0."
+      ],
+      "verificar": [ { "fn": "regresivo", "args": [[{ "op": "por", "k": 2 }, { "op": "menos", "k": 8 }, { "op": "por", "k": 2 }, { "op": "menos", "k": 8 }, { "op": "por", "k": 2 }, { "op": "menos", "k": 8 }], 0], "espera": { "respuesta": 7, "ida": [7, 14, 6, 12, 4, 8, 0] } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Las fichas del 1 al 6 se colocan en seis círculos: tres en las esquinas de un triángulo y tres en el medio de sus lados, una ficha en cada círculo. Se quiere que los tres números de cada lado sumen lo mismo. ¿Cuál es la mayor suma por lado que se puede lograr y qué fichas van en las esquinas?",
+      "respuesta": "12, con el 4, el 5 y el 6 en las esquinas.",
+      "pasos": [
+        "Al sumar los tres lados, cada ficha de una esquina se cuenta dos veces (está en dos lados) y cada ficha del medio, una vez.",
+        "La suma de los tres lados es 1 + 2 + 3 + 4 + 5 + 6 = 21 más lo que suman las esquinas.",
+        "Para que la suma sea la mayor posible, en las esquinas van las fichas más grandes: 4 + 5 + 6 = 15.",
+        "Los tres lados suman 21 + 15 = 36, así que cada lado suma 36 ÷ 3 = 12.",
+        "Una forma: esquinas 4, 5 y 6; entre el 4 y el 5, el 3; entre el 5 y el 6, el 1; entre el 6 y el 4, el 2."
+      ],
+      "verificar": [
+        { "fn": "distribuir", "args": ["triangulo3", [1, 2, 3, 4, 5, 6]], "espera": { "mayor": 12, "detalle.3.compartidas": [4, 5, 6] } },
+        { "fn": "comprobar", "args": ["triangulo3", [4, 5, 6, 3, 1, 2]], "espera": { "valido": true, "suma": 12 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Los números del 1 al 9 se colocan en nueve círculos que forman un triángulo con cuatro círculos por lado (las tres esquinas y dos círculos en medio de cada lado). Cada lado debe sumar 17. ¿Cuánto suman los números de las tres esquinas?",
+      "respuesta": "6 (son el 1, el 2 y el 3).",
+      "pasos": [
+        "Al sumar los tres lados se obtiene 3 × 17 = 51.",
+        "En esa suma, los números del medio se cuentan una vez y los de las esquinas, dos veces.",
+        "La suma de los nueve números es 1 + 2 + … + 9 = 45, así que las esquinas aportan 51 − 45 = 6 de más.",
+        "Las esquinas suman 6, y la única forma con números distintos del 1 al 9 es 1 + 2 + 3."
+      ],
+      "verificar": [ { "fn": "distribuir", "args": ["triangulo4", [1, 2, 3, 4, 5, 6, 7, 8, 9]], "espera": { "detalle.0.suma": 17, "detalle.0.sumaCompartidas": 6, "detalle.0.compartidas": [1, 2, 3] } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Los números del 2 al 10 se colocan en un cuadrado de 3 × 3 de modo que cada fila, cada columna y cada diagonal sumen lo mismo. ¿Cuánto suma cada fila y qué número va en la casilla del centro?",
+      "respuesta": "Cada fila suma 18 y en el centro va el 6.",
+      "pasos": [
+        "Los nueve números suman 2 + 3 + … + 10 = 54. Las tres filas juntas usan cada número una vez: cada fila suma 54 ÷ 3 = 18.",
+        "Por la casilla del centro pasan cuatro líneas: la fila del medio, la columna del medio y las dos diagonales. Juntas suman 4 × 18 = 72.",
+        "Esas cuatro líneas usan los nueve números una vez, salvo el del centro, que aparece cuatro veces: 72 = 54 + 3 × centro.",
+        "El centro es (72 − 54) ÷ 3 = 6."
+      ],
+      "verificar": [ { "fn": "distribuir", "args": ["cuadrado3", [2, 3, 4, 5, 6, 7, 8, 9, 10]], "espera": { "sumas": [18], "posibles.4": [6] } } ]
+    }
+  ]
+}

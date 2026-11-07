@@ -309,3 +309,67 @@ Sesión paralela a la conversación principal, en la rama `rutina/razonamiento-m
 - `docs/diseno.md`: la tabla de colores de arriba.
 - `docs/pendientes.md` (ra1): «Hecha `arreglos-giros` (cuadrado mágico, números en polígonos, giro contra reflejo, ruedas que ruedan y vuelcos con el recorrido de un punto; 22 casos verificados aparte). Falta en transformaciones: áreas sombreadas y región barrida al girar».
 - `CLAUDE.md`, historia: «Arreglos y giros (7 nov 2026, rutina de razonamiento matemático): `plantillas/arreglos-giros/` (fichas, banderas y ruedas: el centro del cuadrado mágico, la suma por lado con los vértices contados dos veces, la bandera girada contra la volteada, la moneda que da 2 vueltas alrededor de otra y el vértice que vuelca; 22 casos verificados aparte).»
+
+## 7 nov 2026 · La posta, el paradero y la plaza (`plantillas/traslados-sucesos/`)
+
+**Qué hice.** Unidades `razonamiento-matematico.traslados-y-puntos-cardinales` y `razonamiento-matematico.frecuencia-de-sucesos`. Las campanadas ya están en `relojes-calendarios`: aquí solo un problema de papel («cada k, contando la primera»).
+
+- **`motor.js`** (UMD, `MotorTraslados`, sin DOM; cabecera hasta la línea 125, con las configuraciones de `motor.escena`): tomas de pastillas (con o sin la final, varias por toma), sucesos que coinciden (MCM, próxima hora, veces en un lapso, comprobado recorriendo minutos), turnos con ciclo (día de la semana del n-ésimo descanso, comprobado día a día), monedas en triángulo (el mínimo de jugadas para invertirlo por la mayor superposición, revisión de una jugada), recorridos por cuadras (distancia por Pitágoras y rumbo) y giros de brújula.
+- **`casos.json`:** 22 casos. **`motor.test.js`:** 41 pruebas (tomas contra una simulación hora a hora, coincidencias por MCM contra un reloj por combi, descansos contra un calendario, mínimo de jugadas contra BFS completa en 3 y 6 monedas y ⌊N/3⌋ hasta 7 filas, distancia contra coordenadas, cuatro giros devuelven el rumbo, errores que no coinciden).
+- **`papel.json`:** 10 problemas propios (pastillas, campanadas cada 15 min, combis, turnos de pescado en el menú, caminatas, brújula y triángulo de 15 monedas).
+- **Paso a paso** (8 pasos, 6 predicciones que bloquean):
+  1. pastillas cada 6 h durante 48 h, con la del inicio y la del final: 9 (8, 7, 10; hipótesis);
+  2. la línea de tiempo;
+  3. combis cada 16 y 24 min desde las 6:00: juntas otra vez a las 6:48 (6:08 MCD, `AR13-mcd-en-vez-de-mcm` parcial; 6:40 suma y 12:24 producto, hipótesis);
+  4. veces juntas de 6:00 a 10:00 contando las puntas: 6 (5, 4, 31);
+  5. décimo descanso, primer descanso un lunes, trabaja 5 y descansa el sexto: sábado (viernes, lunes, miércoles);
+  6. triángulo de 10 monedas invertido: 3 jugadas (2, 4, 5), arrastrando con el dedo;
+  7. el reto de otro camino (4 jugadas);
+  8. caminata 7 N, 4 E, 2 S, 8 E: 13 cuadras (15, 21, 17).
+- **¿Qué pasa si…?** (5, con bloqueo): 2 pastillas cada 8 h durante 3 días (20), tres combis 8, 10 y 12 (120 min), el guardia que gira (este), triángulo de 6 monedas (2) y caminar y girar (10 cuadras hacia el sureste, opciones 2 × 2).
+
+**Pruebas.** `npm test`: 3700, pasan 3698; fallan solo los 2 del catálogo. `pasada-celular.py` sin QUEDA. Playwright a 1366×768 y 390×844, claro y oscuro, con y sin movimiento reducido: sin errores ni desbordes, lienzo arriba al responder; con toques CDP, arrastrar las monedas funciona y el dedo lejos de ellas desplaza la página; también con teclado.
+
+**Subagentes.**
+
+- **Verificador independiente** (solo la cabecera): tomas hora a hora, coincidencias minuto a minuto, descansos con calendario, monedas por BFS bidireccional (con 10, 2 jugadas no alcanzan y 3 sí) y barrido de traslaciones, recorridos por coordenadas: todos los valores coinciden; pidió precisar la cabecera (`sinMultiplicar` sin toma final, `faltan = null` con repetidas, desempate). Señaló que «cada 6 días desde un lunes» admitía tres lecturas más; el enunciado de la escena ya decía «trabaja 5 y descansa el sexto; su primer descanso fue un lunes» (lo confirmó el revisor). Los casos rehechos (combis 16 y 24, opciones 2 × 2) los recalculé yo: coinciden.
+- **Revisor de contenido** (nada grave). Se aplicó todo:
+  - el paso de las combis repetía los buses de `fracciones` (12 y 18 a las 6:00) y el ejemplo del informe: ahora 16 y 24 min, de 6:00 a 10:00;
+  - el eje de horas descartaba el producto antes de responder: ahora solo «6:00 →» hasta responder;
+  - la cuadrícula del plano delataba el giro (y el ancho): caja simétrica antes de responder;
+  - las opciones de «caminar y girar» delataban la correcta por mayoría (10 dos veces, sureste tres): ahora 2 × 2;
+  - `AR13-producto` no tiene respaldo en el informe: pasa a `coincidencia-producto`, hipótesis (ojo: `fracciones` arrastra el mismo código como parcial);
+  - el reto del paso 7 era imposible: reescrito (4 jugadas); retoques de teclado, leyendas y textos.
+
+**Colores** (claro / oscuro):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| k (cada cuántas horas) | #a05200 | #f0a04a |
+| t (duración) | #1f5fbf | #7cb0ff |
+| n (tomas) | #a10fbf | #cf6bfa |
+| P (pastillas) | #77032c | #fdb4ce |
+| a (combi A) | #0f766e | #5ed9c8 |
+| b (combi B) | #882107 | #fb6a40 |
+| c (combi C) | #1d3372 | #becbef |
+| M (salen juntas) | #466d14 | #a3d65e |
+| s (veces juntas) | #3328c4 | #9f9bff |
+| D (días hasta el n-ésimo descanso) | #6a3fc0 | #b49cff |
+| r (resto) | #7a4a1e | #d9a877 |
+| m (jugadas) | #255c1f | #5fe06a |
+| x (este) | #086a96 | #25caf4 |
+| y (norte o sur) | #b3246b | #ff86bd |
+| d (distancia) | #8f5800 | #ffc04d |
+
+- ΔE00 mínimo entre los que salen juntos: 23,6 en claro y 25,3 en oscuro (el revisor lo confirmó). M y m quedan a unos 9, pero nunca salen juntos; b queda a unos 16 de `--warn` (el aviso siempre lleva texto) y c a unos 13 de la tinta (solo en un experimento).
+- Contraste ≥ 4,63:1 en claro y 4,64:1 en oscuro, chips incluidos.
+
+**Pendiente.** Traslado de números (tema de la unidad) no tiene escena propia; las ranas y sapos no entraron.
+
+**Pedidos para la integración.**
+
+- Catálogo: `"traslados-sucesos"` en `razonamiento-matematico.traslados-y-puntos-cardinales` y `razonamiento-matematico.frecuencia-de-sucesos` (con `investigacion` en el informe de aritmética y razonamiento); `npm run catalogo`; `VERSION` de `app/sw.js`.
+- `docs/diseno.md`: la tabla de colores de arriba.
+- `docs/pendientes.md` (ra1): «Hecha `traslados-sucesos` (pastillas con el +1, sucesos que coinciden por MCM contando la primera, turnos con ciclo, el triángulo de monedas invertido y caminatas con brújula; 22 casos verificados aparte)».
+- `CLAUDE.md`, historia: «Traslados y sucesos (7 nov 2026, rutina de razonamiento matemático): `plantillas/traslados-sucesos/` (la posta, el paradero y la plaza: pastillas cada k horas, combis que vuelven a salir juntas, el día del décimo descanso, el triángulo de monedas que se invierte con el mínimo de jugadas y la caminata por cuadras con brújula; 22 casos verificados aparte).»
+- En `plantillas/fracciones/` (línea ~769), `AR13-producto` va como parcial y el informe no lo respalda: debería ser hipótesis.
