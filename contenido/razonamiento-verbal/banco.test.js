@@ -7,6 +7,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const aqui = __dirname;
+const Lectura = require(path.join(__dirname, '..', '..', 'nucleo/lectura.js'));
 const raiz = path.join(aqui, '..', '..');
 const leer = p => JSON.parse(fs.readFileSync(p, 'utf8'));
 
@@ -15,7 +16,12 @@ const CODIGOS = new Set([...informe.matchAll(/^\| (RV\d+) \|/gm)].map(m => m[1])
 const curso = leer(path.join(raiz, 'catalogo/cursos/razonamiento-verbal.json'));
 const UNIDADES = new Set(curso.unidades.map(u => u.id));
 const FRASES = leer(path.join(aqui, 'frases.json'));
+const CODIGOS_JSON = leer(path.join(aqui, 'codigos.json'));
 const INDICE = leer(path.join(aqui, 'indice.json'));
+// Cada módulo de lectura tiene su índice: indice.json (lectura-verbal, con la entrada y la salida) e
+// indice-<módulo>.json para los demás (plantillas/<módulo>/plantilla.json apunta a él con "banco").
+const INDICES = fs.readdirSync(aqui).filter(f => /^indice(-[a-z0-9-]+)?\.json$/.test(f)).sort()
+  .map(f => ({ archivo: f, i: leer(path.join(aqui, f)) }));
 const dirTextos = path.join(aqui, 'textos');
 const TEXTOS = fs.readdirSync(dirTextos).filter(f => f.endsWith('.json')).sort()
   .map(f => ({ archivo: f, t: leer(path.join(dirTextos, f)) }));
@@ -23,7 +29,14 @@ const TEXTOS = fs.readdirSync(dirTextos).filter(f => f.endsWith('.json')).sort()
 const ROLES = ['principal', 'apoyo', 'detalle', 'ejemplo', 'general', 'contraste', 'cita'];
 const TIPOS_TEXTO = ['expositivo', 'argumentativo', 'narrativo', 'descriptivo', 'discontinuo'];
 const TIPOS_PREGUNTA = ['idea-principal', 'inferencia', 'compatibilidad', 'incompatibilidad', 'extrapolacion',
-  'intencion', 'sentido-contextual', 'referente', 'conector'];
+  'intencion', 'sentido-contextual', 'referente', 'conector',
+  // Unidades de la rutina verbal B (7 nov 2026): tipología, resumen, discontinuos, contexto.
+  'tipo-de-texto', 'estructura', 'resumen', 'titulo', 'dato', 'contexto'];
+// En estas preguntas, el previo marcar-oracion pide la oración que resume (las de rol principal).
+const TIPOS_MARCAR = ['idea-principal', 'resumen', 'titulo'];
+const IDIOMAS = ['en'];
+// Largo mínimo: un discontinuo cuenta también las palabras de sus figuras; uno en inglés es más corto (examen de San Marcos).
+const MINIMO = t => t.tipo_texto === 'discontinuo' ? 120 : t.idioma === 'en' ? 100 : 150;
 const CLASES = ['lo-dice', 'se-deduce', 'no-se-sabe', 'lo-contradice'];
 const PROPOSITOS = ['explicar', 'convencer', 'narrar'];
 // Sin \b al final: en JavaScript, \b toma las letras con tilde como separadores ("la década" daría falso positivo).
@@ -31,7 +44,10 @@ const LETRA = /(^|[^\p{L}])(la|alternativa|opción) [A-E](?![\p{L}\p{N}])/iu;
 const ROL_CODIGO = { detalle: 'RV1', ejemplo: 'RV1', cita: 'RV1', general: 'RV2', apoyo: 'RV3', contraste: 'RV3' };
 
 const oraciones = t => t.parrafos.flat();
-const palabras = t => oraciones(t).reduce((n, o) => n + o.t.trim().split(/\s+/).length, 0);
+const cuenta = x => String(x || '').trim().split(/\s+/).filter(Boolean).length;
+const palabras = t => oraciones(t).reduce((n, o) => n + cuenta(o.t), 0)
+  + Lectura.elementos(t).filter(e => e.parte).reduce((n, e) => n + cuenta(e.t), 0)
+  + Lectura.figuras(t).reduce((n, f) => n + cuenta(f.titulo) + cuenta(f.nota), 0);
 const codigoValido = c => CODIGOS.has(c);
 const usados = new Set();
 
@@ -52,9 +68,9 @@ function validarPrevio(q, t, donde) {
       if (c) usados.add(c);
     }
   };
-  const ids = new Set(oraciones(t).map(o => o.id));
+  const ids = Lectura.referencias(t);
   if (p.tipo === 'marcar-oracion') {
-    assert.equal(q.tipo, 'idea-principal', `${donde}: en un texto, marcar-oracion es para idea principal`);
+    assert.ok(TIPOS_MARCAR.includes(q.tipo), `${donde}: en un texto, marcar-oracion es para ${TIPOS_MARCAR.join(', ')}`);
     const principales = oraciones(t).filter(o => o.rol === 'principal').map(o => o.id).sort();
     assert.deepEqual([...p.aceptadas].sort(), principales, `${donde}: "aceptadas" debe ser justo las oraciones de rol principal`);
     assert.ok(p.ninguna === 'correcta' || codigoValido(p.ninguna), `${donde}: "ninguna" debe ser "correcta" o un código`);
@@ -87,15 +103,21 @@ function validarPrevio(q, t, donde) {
   for (const r of Object.keys(p.explicaciones || {})) assert.ok(incorrectas.includes(r), `${donde}: sobra la explicación del previo para "${r}"`);
 }
 
-test('el índice apunta a textos que existen y están aprobados (reglas 9 y 7)', () => {
+test('cada índice apunta a textos que existen y están aprobados (reglas 9 y 7)', () => {
   const ids = new Set(TEXTOS.map(x => x.t.id));
-  for (const id of INDICE.textos) {
-    assert.ok(ids.has(id), `indice.json: falta textos/${id}.json`);
-    const t = TEXTOS.find(x => x.t.id === id).t;
-    assert.equal(t.revision && t.revision.veredicto, 'aprobado', `${id}: está en el índice sin revisión aprobada`);
-    assert.ok(t.preguntas.some(q => q.previo), `${id}: un texto de práctica necesita al menos un paso previo`);
+  const visto = {};
+  for (const { archivo, i } of INDICES) {
+    assert.ok(Array.isArray(i.textos), `${archivo}: falta la lista "textos"`);
+    if (archivo !== 'indice.json') assert.ok(!i.entrada && !i.salida, `${archivo}: la entrada y la salida van solo en indice.json`);
+    for (const id of i.textos) {
+      assert.ok(ids.has(id), `${archivo}: falta textos/${id}.json`);
+      assert.ok(!visto[id], `${id}: está en ${visto[id]} y en ${archivo} (un texto va en un solo módulo)`); visto[id] = archivo;
+      const t = TEXTOS.find(x => x.t.id === id).t;
+      assert.equal(t.revision && t.revision.veredicto, 'aprobado', `${id}: está en ${archivo} sin revisión aprobada`);
+      assert.ok(t.preguntas.some(q => q.previo), `${id}: un texto de práctica necesita al menos un paso previo`);
+    }
+    assert.equal(new Set(i.textos).size, i.textos.length, `${archivo}: hay textos repetidos`);
   }
-  assert.equal(new Set(INDICE.textos).size, INDICE.textos.length, 'indice.json: hay textos repetidos');
   for (const f of ['entrada', 'salida']) {
     if (INDICE[f] === null) continue; // todavía no se escriben (ver rutinas/verbal.md)
     assert.ok(ids.has(INDICE[f]), `indice.json: falta el texto de ${f}`);
@@ -129,11 +151,14 @@ for (const { archivo, t } of TEXTOS) {
     assert.ok(Array.isArray(t.hechos) && t.hechos.every(h => h.afirmacion && h.fuente), `${t.id}: cada hecho necesita afirmación y fuente`);
     // Regla 1: largo y cantidad.
     const n = palabras(t);
-    assert.ok(n >= 150 && n <= 350, `${t.id}: tiene ${n} palabras (de 150 a 350)`);
+    assert.ok(n >= MINIMO(t) && n <= 350, `${t.id}: tiene ${n} palabras (de ${MINIMO(t)} a 350)`);
+    assert.ok(t.idioma === undefined || IDIOMAS.includes(t.idioma), `${t.id}: idioma "${t.idioma}" no válido (${IDIOMAS})`);
+    assert.equal(t.tipo_texto === 'discontinuo', Lectura.figuras(t).length > 0, `${t.id}: un texto discontinuo, y solo él, lleva figuras`);
+    assert.deepEqual(Lectura.validar(t, { codigos: CODIGOS_JSON, unidades: UNIDADES }), []);
     assert.ok(t.preguntas.length >= 3 && t.preguntas.length <= 5, `${t.id}: de 3 a 5 preguntas`);
     // Regla 5: oraciones con id único y rol válido.
-    const ors = oraciones(t), ids = new Set(ors.map(o => o.id));
-    assert.equal(ids.size, ors.length, `${t.id}: hay ids de oración repetidos`);
+    const ors = oraciones(t), ids = Lectura.referencias(t);
+    assert.equal(ids.size, ors.length + Lectura.elementos(t).length, `${t.id}: hay ids de oración o de figura repetidos`);
     for (const o of ors) assert.ok(ROLES.includes(o.rol) && o.t, `${t.id}.${o.id}: rol o texto inválido`);
     const idsP = new Set();
     for (const q of t.preguntas) {
@@ -170,8 +195,6 @@ for (const { archivo, t } of TEXTOS) {
 }
 
 // ---------- Ejercicios sueltos (ejercicios/eNNN.json: una sola pregunta con su "cuerpo") ----------
-const Lectura = require(path.join(raiz, 'nucleo/lectura.js'));
-const CODIGOS_JSON = leer(path.join(aqui, 'codigos.json'));
 const dirEj = path.join(aqui, 'ejercicios');
 const EJERCICIOS = fs.existsSync(dirEj) ? fs.readdirSync(dirEj).filter(f => f.endsWith('.json')).sort()
   .map(f => ({ archivo: f, e: leer(path.join(dirEj, f)) })) : [];

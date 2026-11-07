@@ -73,14 +73,36 @@ async function vista(ctx, id, unidad) {
   function textoHTML(it, modo, pint, sel) {
     const ors = L().oraciones(it);
     const pars = [...new Set(ors.map(o => o.parrafo))];
-    return pars.map(k => `<p class="lec-par${modo === 'marcar' ? ' marcar' : ''}"><span class="lec-np" aria-hidden="true">${CIRC[k - 1] || k}</span> ${ors.filter(o => o.parrafo === k).map(o => oracionHTML(o, modo, pint, sel)).join(' ')}</p>`).join('');
+    const figs = k => L().figuras(it).filter(f => f.despues === k).map(f => figuraHTML(f, pint)).join('');
+    return figs(0) + pars.map(k => `<p class="lec-par${modo === 'marcar' ? ' marcar' : ''}"><span class="lec-np" aria-hidden="true">${CIRC[k - 1] || k}</span> ${ors.filter(o => o.parrafo === k).map(o => oracionHTML(o, modo, pint, sel)).join(' ')}</p>${figs(k)}`).join('');
   }
-  // Fragmento citado en la explicación, con el color de su rol (una línea por oración).
+  // Textos discontinuos: tabla, barras horizontales (desde 0) o recuadros. Cada parte se pinta como una oración.
+  function figuraHTML(f, pint) {
+    const cl = id => {
+      const c = ['fig-el'];
+      if (pint) for (const [rol, k] of [['evidencia', 'pinta-ev'], ['distractor', 'pinta-di'], ['idea', 'pinta-idea']]) if ((pint[rol] || []).includes(id)) c.push(k);
+      return c.join(' ');
+    };
+    let cuerpo = '';
+    if (f.tipo === 'tabla') {
+      cuerpo = `<div class="fig-tabla"><table><thead><tr>${f.columnas.map(c => `<th scope="col">${esc(c)}</th>`).join('')}</tr></thead><tbody>${f.filas.map(x =>
+        `<tr class="${cl(x.id)}" data-o="${esc(x.id)}">${x.celdas.map((c, k) => k ? `<td>${esc(c)}</td>` : `<th scope="row">${esc(c)}</th>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    } else if (f.tipo === 'barras') {
+      const max = Math.max(...f.barras.map(x => x.valor)) || 1;
+      cuerpo = `<ul class="fig-barras">${f.barras.map(x => `<li class="${cl(x.id)}" data-o="${esc(x.id)}"><span class="et">${esc(x.etiqueta)}</span>
+        <span class="pista" aria-hidden="true"><span class="relleno" style="width:${(100 * x.valor / max).toFixed(1)}%"></span></span><span class="val">${esc(String(x.valor).replace('.', ','))}${f.unidad ? ` ${esc(f.unidad)}` : ''}</span></li>`).join('')}</ul>`;
+    } else {
+      cuerpo = `<div class="fig-recuadros">${f.recuadros.map(x => `<div class="${cl(x.id)}" data-o="${esc(x.id)}">${x.titulo ? `<b>${esc(x.titulo)}</b>` : ''}<p>${esc(x.t)}</p></div>`).join('')}</div>`;
+    }
+    return `<figure class="lec-fig ${cl(f.id)}" data-o="${esc(f.id)}"><figcaption>${esc(f.titulo)}</figcaption>${cuerpo}${f.nota ? `<p class="fig-nota">${esc(f.nota)}</p>` : ''}</figure>`;
+  }
+  // Fragmento citado en la explicación, con el color de su rol (una línea por oración o parte de figura).
   function citaHTML(it, ids, rol) {
-    const ors = L().oraciones(it).filter(o => ids.includes(o.id));
-    if (!ors.length) return '';
-    return `<div class="cita">${ors.map(o => `<p><span class="o ${rol}"><sup class="n">${esc(it.ejercicio ? o.id : o.n)}</sup>${esc(o.t)}</span></p>`).join('')}</div>`;
+    const cs = L().citas(it, ids);
+    if (!cs.length) return '';
+    return `<div class="cita"${it.idioma ? ` lang="${esc(it.idioma)}"` : ''}>${cs.map(o => `<p><span class="o ${rol}"><sup class="n">${esc(o.marca)}</sup>${esc(o.t)}</span></p>`).join('')}</div>`;
   }
+  const mayuscula = t => { const x = String(t || ''); return x.charAt(0).toUpperCase() + x.slice(1); };
   function cuerpoEjercicioHTML(it) {
     const c = it.cuerpo || {};
     const t = it.preguntas[0].tipo;
@@ -102,7 +124,7 @@ async function vista(ctx, id, unidad) {
       <div class="lec-cols">
         ${conTexto ? `<aside class="lec-texto" id="lecTexto" aria-label="Texto: ${esc(it.titulo)}">
           <div class="lec-hoja-barra"><span class="asa" aria-hidden="true"></span><button type="button" class="btn borde" id="cerrarHoja">Volver a la pregunta</button></div>
-          <div class="lec-cuerpo" id="lecCuerpo">${textoHTML(it)}</div><div id="lecExtra"></div></aside>` : ''}
+          <div class="lec-cuerpo" id="lecCuerpo"${it.idioma ? ` lang="${esc(it.idioma)}"` : ''}>${textoHTML(it)}</div><div id="lecExtra"></div></aside>` : ''}
         <section class="lec-panel" id="lecPanel"></section>
       </div>
       <div class="lec-velo" hidden></div></div>`;
@@ -469,7 +491,7 @@ async function vista(ctx, id, unidad) {
         h += `<p>${a.origen ? marca('di') : ''}${esc(a.explicacion)}</p>${fraseAlt ? `<p class="frase">${esc(fraseAlt)}</p>` : ''}`;
         if (a.origen && !it.ejercicio) {
           h += mixto
-            ? `<p class="sub">${marca('di')}La oración ${esc(L().numero(it, a.origen))} prueba la correcta, y de ella misma sale lo que elegiste: leíste bien la oración, pero sacaste otra conclusión.</p>${citaHTML(it, [a.origen], 'pinta-ev pinta-di')}`
+            ? `<p class="sub">${marca('di')}${esc(mayuscula(L().etiquetaRef(it, a.origen)))} prueba la correcta, y de ella misma sale lo que elegiste: leíste bien la oración, pero sacaste otra conclusión.</p>${citaHTML(it, [a.origen], 'pinta-ev pinta-di')}`
             : `<p class="sub">${marca('di')}De aquí sale lo que elegiste:</p>${citaHTML(it, [a.origen], 'pinta-di')}`;
         }
       }
