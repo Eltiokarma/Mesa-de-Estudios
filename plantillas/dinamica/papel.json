@@ -73,28 +73,51 @@
     },
     {
       "id": "p3",
-      "nivel": "básico",
-      "enunciado": "Una caja de 4 kg resbala por una rampa lisa (sin roce) inclinada 37° sobre la horizontal. ¿Cuánto vale la fuerza normal de la rampa sobre la caja y con qué aceleración baja?",
-      "respuesta": "La normal vale 32 N y la caja baja con 6 m/s².",
+      "nivel": "intermedio",
+      "enunciado": "Sobre un carrito de 5 kg que rueda sin roce por el piso hay una caja de 3 kg. Entre la caja y el carrito, μs = 0,5 y μk = 0,4. Jalas el carrito con una fuerza horizontal. a) Con 24 N, ¿la caja se mueve junto con el carrito? ¿Cuánto vale el roce sobre la caja? b) ¿Cuál es la mayor fuerza con la que la caja todavía no resbala? c) Con 60 N, ¿qué aceleración tiene cada uno?",
+      "respuesta": "a) Sí, van juntos con 3 m/s²; el roce sobre la caja vale 9 N, hacia adelante. b) 40 N. c) La caja, 4 m/s²; el carrito, 9,6 m/s².",
       "pasos": [
-        "Fuerzas: el peso, 40 N hacia abajo (vertical), y la normal, perpendicular a la rampa. No hay roce.",
-        "Descompón el peso: a lo largo de la rampa, 40·sen 37° = 40·3/5 = 24 N; perpendicular a ella, 40·cos 37° = 40·4/5 = 32 N.",
-        "La caja no se hunde en la rampa ni se despega: N = 32 N. La normal no es el peso: es menor, porque la rampa solo sostiene la parte del peso que la aprieta.",
-        "A lo largo de la rampa: 24 = 4·a, así que a = 6 m/s². Fíjate que a = g·sen 37° no depende de la masa."
+        "Juntos: a = 24/8 = 3 m/s². A la caja solo la empuja el roce del carrito: 3·3 = 9 N, hacia adelante. Es menos que μs·N = 0,5·30 = 15 N, así que no resbala.",
+        "La caja puede acelerar como máximo 15/3 = 5 m/s². Para que los dos juntos lleguen a eso hace falta F = 8·5 = 40 N.",
+        "Con 60 N la caja resbala y su roce pasa a ser cinético: 0,4·30 = 12 N. Caja: 12/3 = 4 m/s². Carrito: (60 − 12)/5 = 9,6 m/s². La caja también avanza, pero se queda atrás sobre el carrito.",
+        "Ojo: el roce sobre la caja no vale siempre μs·N (15 N). Vale lo que haga falta, hasta ese máximo. Y es el roce el que la empuja hacia adelante: se opone a que las superficies resbalen entre sí, no al movimiento."
       ],
       "verificar": [
         {
-          "fn": "plano",
+          "fn": "apilados",
           "args": [
             {
-              "m": 4,
-              "angulo": 37
+              "mA": 3,
+              "mB": 5,
+              "F": 24,
+              "en": "abajo",
+              "mus": 0.5,
+              "muk": 0.4
             }
           ],
           "espera": {
-            "N": 32,
-            "Ppar": 24,
-            "a": 6
+            "juntos": true,
+            "a": 3,
+            "roceA": 9,
+            "Fmax": 40
+          }
+        },
+        {
+          "fn": "apilados",
+          "args": [
+            {
+              "mA": 3,
+              "mB": 5,
+              "F": 60,
+              "en": "abajo",
+              "mus": 0.5,
+              "muk": 0.4
+            }
+          ],
+          "espera": {
+            "juntos": false,
+            "aA": 4,
+            "aB": 9.6
           }
         }
       ]
@@ -169,29 +192,44 @@
     },
     {
       "id": "p5",
-      "nivel": "intermedio",
-      "enunciado": "Por una polea ligera, sin roce, pasa una cuerda con un balde de 6 kg en un extremo y otro de 4 kg en el otro. Se sueltan desde el reposo. ¿Con qué aceleración se mueven y cuánto vale la tensión de la cuerda?",
-      "respuesta": "Se mueven con 2 m/s² (baja el de 6 kg) y la tensión es 48 N.",
+      "nivel": "avanzado",
+      "enunciado": "Un balde de 2 kg cuelga de una polea móvil. La cuerda está atada al techo, pasa por la polea móvil, sube a una polea fija y en el otro extremo cuelga otro balde, también de 2 kg. Poleas y cuerda ligeras, sin roce. Se sueltan desde el reposo. ¿Qué balde baja? ¿Con qué aceleración se mueve cada uno y cuánto vale la tensión? ¿Qué masa debería tener el balde del extremo para que todo quede quieto?",
+      "respuesta": "Baja el del extremo, con 4 m/s²; el de la polea sube con 2 m/s²; la tensión es 12 N. Para que todo quede quieto, el del extremo debería tener 1 kg.",
       "pasos": [
-        "Pesos: 60 N y 40 N. Baja el de 6 kg. La cuerda tira de los dos con la misma tensión T, hacia arriba.",
-        "Balde de 6 kg (baja): 60 − T = 6·a. Balde de 4 kg (sube): T − 40 = 4·a.",
-        "Suma las dos ecuaciones: 20 = 10·a, así que a = 2 m/s².",
-        "T = 40 + 4·2 = 48 N. Comprueba con el otro: 60 − 48 = 12 = 6·2.",
-        "T no es 40 N ni 60 N: si la tensión fuera igual al peso de un balde, ese balde no aceleraría. Y tampoco es la suma, 100 N."
+        "Ligadura: si el extremo baja x, cada uno de los dos tramos que sostienen la polea se acorta x/2, así que la polea sube x/2. Por eso a₁ = a₂/2.",
+        "Balde del extremo (baja): 20 − T = 2·a₂. Polea con su balde (sube): 2T − 20 = 2·(a₂/2).",
+        "De la primera, T = 20 − 2·a₂. En la segunda: 40 − 4·a₂ − 20 = a₂, así que a₂ = 4 m/s², a₁ = 2 m/s² y T = 12 N.",
+        "Comprueba: la polea recibe 2T = 24 N hacia arriba contra 20 N de peso; sobran 4 N = 2·2. Con masas iguales no hay equilibrio: la polea móvil necesita el doble.",
+        "Equilibrio: 2T = 20 N, así que T = 10 N, que debe ser el peso del balde del extremo: 1 kg."
       ],
       "verificar": [
         {
-          "fn": "atwood",
+          "fn": "poleaMovil",
           "args": [
             {
-              "m1": 6,
-              "m2": 4
+              "m1": 2,
+              "m2": 2
             }
           ],
           "espera": {
-            "a": 2,
-            "T": 48,
-            "baja": "m1"
+            "a2": 4,
+            "a1": 2,
+            "T": 12,
+            "sentido": "m2 baja"
+          }
+        },
+        {
+          "fn": "poleaMovil",
+          "args": [
+            {
+              "m1": 2,
+              "m2": 1
+            }
+          ],
+          "espera": {
+            "a2": 0,
+            "sentido": "quieto",
+            "equilibrio": true
           }
         }
       ]
@@ -342,27 +380,43 @@
     {
       "id": "p10",
       "nivel": "intermedio",
-      "enunciado": "Una piedra de 0,5 kg, atada a una cuerda de 1 m, gira sobre una mesa lisa en un círculo horizontal, con una rapidez constante de 4 m/s. ¿Cuánto vale la tensión de la cuerda y hacia dónde apunta la fuerza neta sobre la piedra? Si la cuerda se rompe, ¿qué camino sigue la piedra?",
-      "respuesta": "La tensión es 8 N y la fuerza neta apunta hacia el centro del círculo. Si la cuerda se rompe, la piedra sigue en línea recta, tangente al círculo.",
+      "enunciado": "Haces girar un balde con agua, de 2 kg en total, en un círculo vertical de 0,9 m de radio. a) Si en lo más alto va a 6 m/s, ¿con qué fuerza jala la cuerda (tu brazo)? b) ¿Y si en lo más bajo también va a 6 m/s? c) ¿Cuál es la menor rapidez arriba para que la cuerda no se afloje y el agua no se caiga?",
+      "respuesta": "a) 60 N. b) 100 N. c) 3 m/s.",
       "pasos": [
-        "Sobre la piedra actúan el peso y la normal de la mesa, que se cancelan, y la tensión de la cuerda, que tira hacia el centro.",
-        "Aunque la rapidez es constante, la dirección de la velocidad cambia todo el tiempo: hay aceleración, y apunta hacia el centro. Vale v²/r = 16/1 = 16 m/s².",
-        "Segunda ley hacia el centro: T = m·v²/r = 0,5·16 = 8 N.",
-        "No hay una «fuerza centrífuga» sobre la piedra: nadie la ejerce. Si la cuerda se rompe, ninguna fuerza horizontal actúa y la piedra sigue en línea recta, en la dirección que llevaba en ese instante; no sigue curvándose ni sale disparada en la dirección opuesta al centro."
+        "Fuerza neta hacia el centro: m·v²/r = 2·36/0,9 = 80 N. No depende de dónde esté el balde, solo de su rapidez.",
+        "Arriba, el peso (20 N) y la cuerda apuntan los dos hacia el centro, que está abajo: T + 20 = 80, así que T = 60 N.",
+        "Abajo, el peso apunta hacia afuera del círculo: T − 20 = 80, así que T = 100 N.",
+        "La menor rapidez arriba es cuando T = 0: el peso solo da la fuerza neta, m·g = m·v²/r, así que v = √(g·r) = √9 = 3 m/s.",
+        "La «fuerza centrífuga» no aparece en ningún paso: nadie la ejerce."
       ],
       "verificar": [
         {
-          "fn": "centripeta",
+          "fn": "vertical",
           "args": [
             {
-              "m": 0.5,
-              "v": 4,
-              "r": 1
+              "m": 2,
+              "v": 6,
+              "r": 0.9,
+              "theta": 180
             }
           ],
           "espera": {
-            "ac": 16,
-            "F": 8
+            "T": 60,
+            "vMinArriba": 3
+          }
+        },
+        {
+          "fn": "vertical",
+          "args": [
+            {
+              "m": 2,
+              "v": 6,
+              "r": 0.9,
+              "theta": 0
+            }
+          ],
+          "espera": {
+            "T": 100
           }
         }
       ]
