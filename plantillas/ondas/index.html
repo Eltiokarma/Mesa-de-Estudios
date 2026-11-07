@@ -697,7 +697,7 @@ function vistaExplorador(){
 function explorar(){
   const e = S.ex;
   const pintarModo = () => { $('ex-modo').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.a === '1') === e.auto)));
-    $('ex-f-box').hidden = !e.auto; $('ex-A-box').hidden = !e.auto; cv.setAttribute('aria-label', e.auto ? 'Cuerda con la mano automática' : 'Cuerda: arrastra la mano hacia arriba y abajo, o usa las flechas del teclado'); };
+    $('ex-f-box').hidden = !e.auto; $('ex-A-box').hidden = !e.auto; leyenda($('ley1'), e.auto ? ['cuerda', 'cinta', 'A', 'lam', 'v', 't'] : ['cuerda', 'cinta', 'v', 't']); cv.setAttribute('aria-label', e.auto ? 'Cuerda con la mano automática' : 'Cuerda: arrastra la mano hacia arriba y abajo, o usa las flechas del teclado'); };
   const reiniciar = () => { e.hist = []; e.tf = 0; e.manoY = 0; };
   $('ex-modo').querySelectorAll('button').forEach(b => b.onclick = () => { e.auto = b.dataset.a === '1'; reiniciar(); pintarModo(); vivo(); });
   $('ex-f').oninput = () => { e.f = +$('ex-f').value; reiniciar(); vivo(); };
@@ -1066,7 +1066,7 @@ function draw(){
       ctx.save(); ctx.strokeStyle = c.muted; ctx.globalAlpha = .7; ctx.setLineDash([6, 5]); ctx.lineWidth = 2; ctx.beginPath();
       for (let j = 0; j <= 300; j++){ const xx = g.largo*j/300, px = mx0 + xx/g.largo*w, py = yc - PUL.y2(xx, t)/g.yMax*aPx; j ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
       ctx.stroke(); ctx.restore();
-      rotulo(ctx, c, 8, H - 30, `t = ${N2(t)} s`, c.t, 'left', 800, W);
+      rotulo(ctx, c, 8, 16, `t = ${N2(t)} s`, c.t, "left", 800, W);
     }
   }
   decir($('desc2'), x.desc());
@@ -1135,8 +1135,8 @@ function ir(k, enfocar){
 function controles(x){
   const tens = $('tens');
   if (tens) tens.querySelectorAll('button').forEach(b => b.onclick = () => { E.T = +b.dataset.ten; tens.querySelectorAll('button').forEach(q => q.setAttribute('aria-pressed', String(q === b))); arrancar(); });
-  const rep = $('repetir'); if (rep) rep.onclick = () => { if (E.tipo === 'medio') E.forma = 'onda'; arrancar(); };
-  const gol = $('golpe'); if (gol) gol.onclick = () => { E.forma = 'pulso'; arrancar(); };
+  const rep = $('repetir'); if (rep) rep.onclick = () => { if (E.tipo === 'medio'){ E.forma = 'onda'; leyenda($('ley2'), x.leyDespues); } arrancar(); };
+  const gol = $('golpe'); if (gol) gol.onclick = () => { E.forma = 'pulso'; leyenda($('ley2'), ['cuerda', 'union', 'cinta', 'v', 't']); arrancar(); };
   const tq = $('tq'); if (tq){ tq.oninput = () => { parar(); parar = () => {}; E.t = +tq.value; sincronizar(); }; sincronizar(); }
   const np = $('npar');
   const vivoDb = () => { const r = M.sumarNiveles({ niveles:Array(E.n).fill(80) });
