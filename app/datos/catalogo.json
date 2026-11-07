@@ -1893,7 +1893,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "interes"
+     ]
     },
     {
      "id": "aritmetica.mezclas-y-aleaciones",
@@ -4552,6 +4554,23 @@
     "/plantillas/identidades-trig/index.html",
     "/plantillas/identidades-trig/motor.js",
     "/plantillas/identidades-trig/papel.json"
+   ]
+  },
+  "interes": {
+   "id": "interes",
+   "titulo": "La alcancía que gana interés: interés simple y compuesto, tasas y descuento",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.interes-y-descuento"
+   ],
+   "url": "/plantillas/interes/index.html",
+   "papel": "/plantillas/interes/papel.json",
+   "archivos": [
+    "/plantillas/interes/index.html",
+    "/plantillas/interes/motor.js",
+    "/plantillas/interes/papel.json"
    ]
   },
   "lectura-verbal": {
