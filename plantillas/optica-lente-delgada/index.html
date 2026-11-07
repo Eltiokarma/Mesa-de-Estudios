@@ -266,8 +266,10 @@ let W = 0, H = 0, sx = 1, sy = 1, rayo = null, agarra = false;
 let compacto = false;
 function compactar(on){ on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === compacto) return; compacto = on; resize(); }
 
-const fmt = n => n.toLocaleString('es-PE', {maximumFractionDigits:1});
-const fmt2 = n => n.toLocaleString('es-PE', {maximumFractionDigits:2});
+// Signo menos tipográfico (−) y sin «−0»; par() pone entre paréntesis un negativo que va después de un signo.
+const fmt = n => (Math.round(n*10)/10 + 0).toLocaleString('es-PE', {maximumFractionDigits:1}).replace('-','−');
+const fmt2 = n => (Math.round(n*100)/100 + 0).toLocaleString('es-PE', {maximumFractionDigits:2}).replace('-','−');
+const par = n => Math.round(n*10)/10 < 0 ? `(${fmt(n)})` : fmt(n);
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
 const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
 const X = x => W/2 + x*sx, Y = y => H/2 - y*sy;
@@ -473,7 +475,7 @@ const steps = [
      <label for="do-slider"><span>Distancia del objeto (${V('o','o')})</span><output id="do-out"></output></label>
      <input id="do-slider" class="r-o" type="range" min="4" max="40" step="0.5" value="${S.d}">
    </div>
-   <div id="live"></div>
+   <div id="live" style="min-width:0"></div>
    <p class="hint">También puedes arrastrar el objeto en el dibujo. Prueba tres zonas: más allá de 2F, entre 2F y F, y más cerca que F. Fíjate qué pasa justo en o = 10 cm.</p>` }
 ];
 
@@ -588,7 +590,7 @@ function renderLive(){
   const size = Math.abs(am - 1) < 0.02 ? 'Del mismo tamaño' : (am > 1 ? 'Más grande' : 'Más pequeña');
   live.innerHTML = `<div class="eqs">
     <div class="eq">${fr('1',V('f','10'))} = ${fr('1',V('o',fmt(S.d)))} + ${fr('1',V('i','i'))} → ${V('i','i')} = ${fmt(g.di)} cm</div>
-    <div class="eq">${V('A','A')} = −${fr(V('i',fmt(g.di)),V('o',fmt(S.d)))} = ${fmt2(g.m)} → ${V('h','h<sub>i</sub>')} = ${fmt(g.hi)} cm</div>
+    <div class="eq">${V('A','A')} = −${fr(V('i',par(g.di)),V('o',fmt(S.d)))} = ${fmt2(g.m)} → ${V('h','h<sub>i</sub>')} = ${fmt(g.hi)} cm</div>
   </div>
   <div class="chips">
     <span class="chip ${real ? 'real' : 'virt'}">${real ? 'Real' : 'Virtual'}</span>
@@ -876,7 +878,10 @@ function explorerHTML(){
 }
 function setupExplore(){
   const body = $('body2');
-  body.querySelectorAll('[data-n]').forEach(b => b.addEventListener('click', () => { EXP.n = +b.dataset.n; go(S.step); }));
+  body.querySelectorAll('[data-n]').forEach(b => b.addEventListener('click', () => {
+    EXP.n = +b.dataset.n; go(S.step);
+    const nb = $('body2').querySelector(`[data-n="${EXP.n}"]`); if (nb) nb.focus({ preventScroll:true });
+  }));
   body.querySelectorAll('[data-t]').forEach(b => b.addEventListener('click', () => {
     const k = +b.dataset.k; EXP.f[k] = Math.abs(EXP.f[k]) * +b.dataset.t;
     body.querySelectorAll(`[data-k="${k}"]`).forEach(x => x.setAttribute('aria-pressed', x === b));
@@ -1054,45 +1059,62 @@ const fmt = n => n.toLocaleString('es-PE', {maximumFractionDigits:1});
 
 // Estado de la escena: lo cambia cada experimento después de la predicción.
 const E = { tapa:null, pantalla:true, xp:IMG.i, D:D0 };
+// Cada opción: [letra, texto, código del error, respaldo, retroalimentación]. La retroalimentación dice qué error
+// refleja la opción y por qué falla. Respaldo según docs/metodo/LEEME.md (7 nov 2026): «documentado» solo si el
+// informe trae una cifra para ESE error con esa pregunta; E5 está descrita sin cifra (parcial).
 const EXPS = [
   { id:'tapar', corto:'Tapar media lente',
     q:'La imagen se ve nítida en la pantalla. Tapas la <b>mitad de arriba</b> de la lente con un cartón. ¿Qué pasa con la imagen?',
-    opts:[['a','Desaparece la mitad de arriba de la imagen','E1-mitad-arriba','documentado'],
-          ['b','Desaparece la mitad de abajo de la imagen','E1-mitad-abajo','documentado'],
-          ['c','Se sigue viendo entera, pero más tenue',null],
-          ['d','Ya no se forma ninguna imagen','E1-sin-imagen','hipotesis']],
+    opts:[['a','Desaparece la mitad de arriba de la imagen','E1-mitad-arriba','documentado',
+            'No. Es pensar que cada parte de la lente lleva una parte de la imagen, como si la imagen viajara entera y el cartón le cortara un pedazo. Pero a cada punto de la imagen le llega luz de toda la lente: los rayos que pasan por la mitad de abajo llegan al mismo punto. La imagen queda entera, con la mitad de la luz.'],
+          ['b','Desaparece la mitad de abajo de la imagen','E1-mitad-abajo','documentado',
+            'No. Es la misma idea que «se pierde la mitad de arriba», con la vuelta que da la imagen invertida: si la lente voltea, la parte tapada sería la de abajo. Pero ninguna parte se pierde: cada punto de la imagen recibe luz de toda la lente, y la mitad que queda libre basta para formarla entera. Solo se ve más tenue.'],
+          ['c','Se sigue viendo entera, pero más tenue',null,'',
+            'Bien. A cada punto de la imagen le llega luz de toda la lente. Con media lente tapada llega la mitad de la luz, pero a los mismos puntos: la imagen queda entera y más tenue.'],
+          ['d','Ya no se forma ninguna imagen','E1-sin-imagen','hipotesis',
+            'No. Es pensar que la lente solo funciona entera. La mitad que queda libre sigue desviando los rayos hacia los mismos puntos: la imagen se forma completa, con la mitad de la luz. (Que alguien elija esta opción es una hipótesis nuestra: no tenemos datos.)']],
     ok:'c', aplicar:() => { E.tapa = 'arriba'; },
     ctrl:() => `<div class="seg" role="group" aria-label="Cartón"><button type="button" data-tapa="arriba">Lente tapada a medias</button><button type="button" data-tapa="">Lente destapada</button></div>`,
     exp:`<p>Fíjate en los rayos: salen de la punta del objeto hacia <b>toda</b> la lente. Los que chocan con el cartón se pierden, pero los que pasan por la mitad de abajo llegan exactamente al mismo punto de la imagen. Lo mismo pasa con cada punto del objeto, así que la imagen queda <b>entera</b>. Solo llega la mitad de la luz: se ve <b>más tenue</b>.</p>
-      <p class="hint">Es la idea errónea más común sobre lentes. En un estudio con 70 escolares, 46 dijeron que desaparece la mitad de arriba y 10, la de abajo; solo 1 acertó (John, Molepo y Chirwa, 2017; Goldberg y McDermott, 1987).</p>` },
+      <p class="hint">Es una idea errónea muy frecuente, descrita por Goldberg y McDermott (1987). En un estudio con 70 escolares de Sudáfrica (John, Molepo y Chirwa, 2017), cerca de dos de cada tres (46) dijeron que desaparece la mitad de arriba y 10, la de abajo; solo 1 acertó.</p>` },
   { id:'pantalla', corto:'Quitar la pantalla',
     q:'La imagen se ve nítida en la pantalla. Si <b>quitas la pantalla</b>, ¿qué pasa con la imagen?',
-    opts:[['a','Desaparece: sin pantalla no hay imagen','E2-sin-pantalla','documentado'],
-          ['b','Sigue ahí, en el aire, donde se cruzan los rayos',null],
-          ['c','Se forma más brillante','E2-mas-brillante','hipotesis']],
+    opts:[['a','Desaparece','E2-sin-pantalla','documentado',
+            'No. Es pensar que la pantalla «atrapa» la imagen o la fabrica. Los rayos se cruzan en el mismo punto haya o no pantalla: la imagen real sigue ahí, en el aire. La pantalla solo esparce esa luz para que la veas desde cualquier lugar.'],
+          ['b','Sigue ahí, en el mismo lugar',null,'',
+            'Bien. Los rayos se siguen cruzando en el mismo punto: la imagen real está ahí, en el aire. La pantalla solo esparce la luz para que la veas desde cualquier lado.'],
+          ['c','Se vuelve más brillante','E2-mas-brillante','hipotesis',
+            'No. Es pensar que la pantalla le quita luz a la imagen. La lente manda la misma luz al mismo punto, con pantalla o sin ella; lo que cambia es que, sin pantalla, la luz no se esparce y solo la ves si pones el ojo donde llegan esos rayos. (Que alguien elija esta opción es una hipótesis nuestra: no tenemos datos.)']],
     ok:'b', aplicar:() => { E.pantalla = false; },
     ctrl:() => `<div class="seg" role="group" aria-label="Pantalla"><button type="button" data-pant="0">Sin pantalla</button><button type="button" data-pant="1">Con pantalla</button></div>`,
     exp:`<p>Los rayos se cruzan en el mismo punto haya o no pantalla: la imagen real está ahí, en el aire. La pantalla no la "atrapa"; solo desvía la luz hacia todos lados para que la veas desde cualquier lugar. Sin pantalla, la ves si pones el ojo más allá de la imagen, mirando hacia la lente, donde llegan esos rayos.</p>
-      <p class="hint">En el mismo estudio con 70 escolares, 56 dijeron que la imagen desaparece; solo 2 acertaron (John, Molepo y Chirwa, 2017; Galili, Bendall y Goldberg, 1993).</p>` },
+      <p class="hint">En el mismo estudio con 70 escolares (John, Molepo y Chirwa, 2017), cerca de cuatro de cada cinco (56) dijeron que la imagen desaparece; solo 2 acertaron. La idea ya la habían descrito Galili, Bendall y Goldberg (1993).</p>` },
   { id:'correr', corto:'Correr la pantalla',
     q:'La imagen se ve nítida con la pantalla a 15 cm de la lente. Si <b>alejas la pantalla</b> hasta 25 cm, ¿qué ves en ella?',
-    opts:[['a','La misma imagen, más grande y todavía nítida','E5-pantalla-cualquier-lado','documentado'],
-          ['b','Nada cambia','E5-no-cambia','hipotesis'],
-          ['c','Una mancha borrosa',null]],
+    opts:[['a','La misma imagen, más grande y nítida','E5-pantalla-cualquier-lado','parcial',
+            'No. Es pensar que la imagen «viaja» con la pantalla y solo crece al alejarla, como la de un proyector. Pero hay una sola distancia donde los rayos de cada punto se juntan: i = 15 cm. A 25 cm ya se separaron, y cada punto deja una mancha: la imagen se ve borrosa.'],
+          ['b','La misma imagen, sin ningún cambio','E5-no-cambia','hipotesis',
+            'No. Es pensar que la imagen no depende de dónde esté la pantalla. Los rayos de cada punto se juntan solo a 15 cm; a 25 cm llegan separados y dejan manchas que se enciman: la imagen se ve borrosa. (Que alguien elija esta opción es una hipótesis nuestra: no tenemos datos.)'],
+          ['c','Una mancha borrosa',null,'',
+            'Bien. Los rayos de cada punto se juntan solo a 15 cm. A 25 cm ya se separaron: cada punto deja una mancha y la imagen se ve borrosa.']],
     ok:'c', aplicar:() => { E.xp = 25; },
     ctrl:() => `<div class="slider"><label for="xp3"><span>Pantalla a</span><output id="xp3-out"></output></label><input id="xp3" type="range" min="6" max="36" step="0.5" value="${E.xp}"></div><p id="xp3-info" class="hint"></p>`,
-    exp:`<p>Hay una sola distancia donde todos los rayos de un punto se juntan: la que da la ecuación (i = 15 cm). Antes o después, los rayos de cada punto llegan separados y dejan una mancha; las manchas de todos los puntos se enciman y la imagen se ve <b>borrosa</b>. Mueve la pantalla y busca el punto nítido.</p>
-      <p class="hint">Idea documentada en Galili, Bendall y Goldberg (1993) y en Galili y Hazan (2000), sin porcentaje en las fuentes leídas.</p>` },
+    exp:`<p>Hay una sola distancia donde todos los rayos de un punto se juntan: la que da la ecuación (i = 15 cm). Antes o después, los rayos de cada punto llegan separados y dejan una mancha; las manchas de todos los puntos se enciman y la imagen se ve <b>borrosa</b>. Mueve la pantalla (con el deslizador o arrastrándola en el dibujo) y busca el punto nítido.</p>
+      <p class="hint">La idea de que la pantalla puede ir en cualquier lado la describen Galili, Bendall y Goldberg (1993) y Galili y Hazan (2000), pero sin decir cuántos alumnos la tienen.</p>` },
   { id:'ancha', corto:'Lente más ancha',
     q:'Cambias la lente por otra con la <b>misma distancia focal</b> pero el <b>doble de ancha</b>. ¿Qué pasa con la imagen?',
-    opts:[['a','Sale más grande','E4-mas-grande','documentado'],
-          ['b','Sale más pequeña','E4-mas-pequena','documentado'],
-          ['c','No cambia nada','E4-nada','documentado'],
-          ['d','Mismo tamaño y mismo lugar, pero más brillante',null]],
+    opts:[['a','Sale más grande','E4-mas-grande','documentado',
+            'No. Es pensar que la lente decide el tamaño de la imagen por su tamaño. Pero el tamaño y el lugar de la imagen dependen solo de f y de o; en la ecuación no aparece el ancho. La imagen sigue a 15 cm y mide 2 cm, y se ve más brillante.'],
+          ['b','Sale más pequeña','E4-mas-pequena','documentado',
+            'No. Es la misma idea de que el ancho de la lente cambia el tamaño de la imagen, al revés. En la ecuación no aparece el ancho: la imagen sigue a 15 cm y mide 2 cm. Lo que cambia es la luz: la lente más ancha recoge más y la imagen se ve más brillante.'],
+          ['c','Sale igual que antes','E4-nada','documentado',
+            'Casi. El tamaño y el lugar no cambian, porque solo dependen de f y de o. Pero la lente más ancha recoge más rayos de cada punto del objeto y los manda al mismo punto imagen: la imagen se ve más brillante.'],
+          ['d','Sale más brillante',null,'',
+            'Bien. El tamaño y el lugar dependen solo de f y de o, así que no cambian. La lente más ancha recoge más rayos de cada punto y los manda al mismo punto imagen: la imagen sale más brillante.']],
     ok:'d', aplicar:() => { E.D = 2*D0; },
     ctrl:() => `<div class="slider"><label for="d3"><span>Ancho de la lente</span><output id="d3-out"></output></label><input id="d3" type="range" min="4" max="18" step="0.5" value="${E.D}"></div><p id="d3-info" class="hint"></p>`,
     exp:`<p>El tamaño y el lugar de la imagen dependen solo de f y de o (la ecuación no tiene el ancho de la lente). Una lente más ancha recoge más rayos de cada punto del objeto y los manda al mismo punto imagen: la imagen sale <b>más brillante</b>. Si la lente es redonda, el doble de ancho junta 4 veces más luz.</p>
-      <p class="hint">De 70 escolares, 25 dijeron "más grande", 6 "más pequeña" y 12 "no cambia nada"; solo 18 dijeron "más brillante" (John, Molepo y Chirwa, 2017).</p>` },
+      <p class="hint">De 70 escolares (John, Molepo y Chirwa, 2017), cerca de un tercio (25) dijo «más grande», 6 «más pequeña» y 12 «no cambia nada»; solo 18 dijeron «más brillante».</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now(), sobre:false };
 let agarra = false;
