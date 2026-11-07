@@ -1,8 +1,8 @@
 {
   "plantilla": "circuitos-cc",
   "unidades": "SI: V, A, Ω, W",
-  "convencion": "Cada rama va de a hacia b. La corriente I se cuenta de a hacia b; V es la caída V(a) − V(b); P = I·V es la potencia que recibe la rama (negativa en una pila que entrega energía). En una pila, a es el borne − y b el borne +. Un caso con helper usa la función del mismo nombre de motor.js con esos argumentos.",
-  "verificacion": "Los casos 1 a 5 son las filas 'Circuitos' de docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md. Los nueve se recalcularon el 5 de noviembre de 2026 con fracciones exactas en Python (fractions.Fraction), sin pasar por el motor y con otro método: los casos 1 a 5 y 8 por reducción serie-paralelo (Req, I = ε/Req, divisor de corriente, P = I²R; en el 8, el cable deja a B2 sin voltaje y queda B1 sola); el caso 6 con la ecuación de una sola malla (ε1 − ε2 = I·(r1 + r2 + R)); el caso 7 es un corto: la fem neta del lazo pila-cable no es cero, así que no hay solución finita; el caso 9 con corrientes de malla y la regla de Cramer (6·J1 − 4·J2 = 12; −4·J1 + 8·J2 = −4, que da J1 = 5/2 A y J2 = 3/4 A). El motor, en cambio, usa análisis nodal. Todos los valores salieron exactos (por ejemplo, 8/3 W y −3/4 A); el caso 6 se comprobó también con la potencia: 12 W entregados = 4 W que recibe la pila de 4 V + 1 W + 1 W en las resistencias internas + 6 W en la bombilla.",
+  "convencion": "Cada rama va de a hacia b. La corriente I se cuenta de a hacia b; V es la caída V(a) − V(b); P = I·V es la potencia que recibe la rama (negativa en una pila que entrega energía). En una pila, a es el borne − y b el borne +. Un caso con helper usa la función del mismo nombre de motor.js con esos argumentos. Los casos con medidores (10 a 28) usan medidoresMixto(colocados, op) o conectarMedidores(circuito, medidores); una lectura \"indeterminada\" es NaN y una \"infinita\" es Infinity; en \"efecto\" van la lectura y el diagnóstico de efectoMedidor; \"variantes\" junta varias entradas del mismo caso.",
+  "verificacion": "Los casos 1 a 5 son las filas 'Circuitos' de docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md. Los nueve se recalcularon el 5 de noviembre de 2026 con fracciones exactas en Python (fractions.Fraction), sin pasar por el motor y con otro método: los casos 1 a 5 y 8 por reducción serie-paralelo (Req, I = ε/Req, divisor de corriente, P = I²R; en el 8, el cable deja a B2 sin voltaje y queda B1 sola); el caso 6 con la ecuación de una sola malla (ε1 − ε2 = I·(r1 + r2 + R)); el caso 7 es un corto: la fem neta del lazo pila-cable no es cero, así que no hay solución finita; el caso 9 con corrientes de malla y la regla de Cramer (6·J1 − 4·J2 = 12; −4·J1 + 8·J2 = −4, que da J1 = 5/2 A y J2 = 3/4 A). El motor, en cambio, usa análisis nodal. Todos los valores salieron exactos (por ejemplo, 8/3 W y −3/4 A); el caso 6 se comprobó también con la potencia: 12 W entregados = 4 W que recibe la pila de 4 V + 1 W + 1 W en las resistencias internas + 6 W en la bombilla. Los casos 10 a 28 (medidores, 0.2.0) los verificó aparte un agente independiente el 7 nov 2026, sin leer el motor, con reducción serie-paralelo y fracciones exactas; ver el campo \"verificacion\" de cada uno. El caso 29 está pendiente de verificación. Después de esa verificación cambió la regla del amperímetro en paralelo (nunca da bien ni carga; con los bornes de una pila, corto-pila): el diagnóstico del caso 23 pasó de carga a corto-elemento y el del 26 de corto-elemento a corto-pila; sus números no cambiaron.",
   "tolerancia": 1e-9,
   "casos": [
     {
@@ -101,6 +101,144 @@
         "ramas": { "R1": { "I": 2.5, "P": 12.5 }, "R3": { "I": 1.75, "V": 7 }, "R2": { "I": -0.75, "V": -3 }, "E2": { "I": -0.75, "entrega": -3 } },
         "V": { "t": 7, "m1": 12, "m2": 4 }
       }
+    },
+    {
+      "nombre": "10. Amperímetro ideal en serie con B2 (arriba): marca la corriente de B2 y no cambia nada",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"A": {"puesto": "B2-a"}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"A": {"lectura": 0.16666666666666666, "I": 0.16666666666666666}, "B1": {"P": 1.3333333333333333}, "B2": {"P": 0.3333333333333333}, "B3": {"P": 0.3333333333333333}, "pila": {"I": 0.3333333333333333}}, "efecto": {"A": {"lectura": 0.16666666666666666, "diagnostico": "bien", "apaga": []}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "11. Amperímetro ideal en paralelo con B1: B1 queda en corto y la pila da 1 A",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"A": {"puesto": "B1-p"}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"A": {"lectura": 1}, "pila": {"I": 1}, "B1": {"I": 0, "V": 0, "P": 0}, "B2": {"V": 6, "P": 3}, "B3": {"V": 6, "P": 3}}, "avisos": ["en-corto"], "efecto": {"A": {"lectura": 1, "diagnostico": "corto-elemento", "apaga": ["B1"]}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "12. Amperímetro ideal en paralelo con B2 y B3: las dos quedan en corto",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"A": {"puesto": "G-p"}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"A": {"lectura": 0.5}, "B1": {"V": 6, "P": 3}, "B2": {"P": 0}, "B3": {"P": 0}}, "efecto": {"A": {"lectura": 0.5, "diagnostico": "corto-elemento", "apaga": ["B2", "B3"]}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "13. Amperímetro ideal en paralelo con la pila: cortocircuito",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"A": {"puesto": "pila-p"}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"corto": true, "pilas": ["pila"], "lazoIncluye": ["A", "pila"], "efecto": {"A": {"lectura": "infinita", "diagnostico": "corto-pila"}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "14. Voltímetro ideal en paralelo con B1: marca 4 V y no pasa corriente por él",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"V": {"puesto": "B1-p"}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"V": {"lectura": 4, "I": 0}, "B1": {"P": 1.3333333333333333}}, "efecto": {"V": {"lectura": 4, "diagnostico": "bien", "apaga": []}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "15. Voltímetro ideal en serie con todo: abre el circuito y marca la fem",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"V": {"puesto": "B1-a"}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"V": {"lectura": 6, "I": 0}, "pila": {"I": 0}, "B1": {"I": 0}, "B2": {"I": 0}, "B3": {"I": 0}}, "efecto": {"V": {"lectura": 6, "diagnostico": "abre-circuito", "apaga": ["B1", "B2", "B3"]}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "16. Voltímetro ideal en serie con B2: apaga B2 y marca el voltaje del hueco",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"V": {"puesto": "B2-a"}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"V": {"lectura": 3, "I": 0}, "B1": {"I": 0.25, "P": 0.75}, "B3": {"I": 0.25, "P": 0.75}, "B2": {"I": 0}}, "efecto": {"V": {"lectura": 3, "diagnostico": "abre-rama", "apaga": ["B2"]}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "17. Voltímetro real de 60 Ω en paralelo con B1: marca menos de 4 V",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"V": {"puesto": "B1-p", "Rint": 60}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"V": {"lectura": 3.75, "I": 0.0625}, "pila": {"I": 0.375}, "B1": {"I": 0.3125, "P": 1.171875}, "B2": {"V": 2.25, "P": 0.421875}}, "efecto": {"V": {"lectura": 3.75, "diagnostico": "carga", "errorRel": -0.0625}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "18. Voltímetro real de 60 Ω en serie con todo: deja pasar un poco de corriente",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"V": {"puesto": "B1-a", "Rint": 60}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"V": {"lectura": 4.615384615384615, "I": 0.07692307692307693}, "pila": {"I": 0.07692307692307693}}, "efecto": {"V": {"lectura": 4.615384615384615, "diagnostico": "carga"}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "19. Voltímetro real en paralelo con B1, de 600, 6000 y 60 000 Ω: se acerca a 4 V",
+      "helper": "medidoresMixto",
+      "variantes": [{"args": {"colocados": {"V": {"puesto": "B1-p", "Rint": 600}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}}, "esperado": {"ramas": {"V": {"lectura": 3.9735099337748343}}}}, {"args": {"colocados": {"V": {"puesto": "B1-p", "Rint": 6000}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}}, "esperado": {"ramas": {"V": {"lectura": 3.9973351099267154}}}}, {"args": {"colocados": {"V": {"puesto": "B1-p", "Rint": 60000}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}}, "esperado": {"ramas": {"V": {"lectura": 3.999733351109926}}}}],
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "20. Voltímetro real en serie con todo, de 600, 6000 y 60 000 Ω: se acerca a 6 V",
+      "helper": "medidoresMixto",
+      "variantes": [{"args": {"colocados": {"V": {"puesto": "B1-a", "Rint": 600}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}}, "esperado": {"ramas": {"V": {"lectura": 5.825242718446602}}}}, {"args": {"colocados": {"V": {"puesto": "B1-a", "Rint": 6000}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}}, "esperado": {"ramas": {"V": {"lectura": 5.982053838484546}}}}, {"args": {"colocados": {"V": {"puesto": "B1-a", "Rint": 60000}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}}, "esperado": {"ramas": {"V": {"lectura": 5.998200539838049}}}}],
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "21. Amperímetro real de 2 Ω en serie con B1: marca 10 % menos",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"A": {"puesto": "B1-a", "Rint": 2}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"A": {"lectura": 0.3, "V": 0.6}}, "efecto": {"A": {"lectura": 0.3, "diagnostico": "carga", "errorRel": -0.1}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "22. Amperímetro real en serie con B1, de 0,5, 0,1 y 0,01 Ω: se acerca a 1/3 A",
+      "helper": "medidoresMixto",
+      "variantes": [{"args": {"colocados": {"A": {"puesto": "B1-a", "Rint": 0.5}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}}, "esperado": {"ramas": {"A": {"lectura": 0.32432432432432434}}}}, {"args": {"colocados": {"A": {"puesto": "B1-a", "Rint": 0.1}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}}, "esperado": {"ramas": {"A": {"lectura": 0.3314917127071823}}}}, {"args": {"colocados": {"A": {"puesto": "B1-a", "Rint": 0.01}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}}, "esperado": {"ramas": {"A": {"lectura": 0.3331482509716824}}}}],
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "23. Amperímetro real de 2 Ω en paralelo con B1: no la apaga del todo",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"A": {"puesto": "B1-p", "Rint": 2}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"A": {"lectura": 0.6666666666666666}, "pila": {"I": 0.7777777777777778}, "B1": {"I": 0.1111111111111111}, "B2": {"V": 4.666666666666667, "P": 1.8148148148148149}}, "efecto": {"A": {"lectura": 0.6666666666666666, "diagnostico": "corto-elemento"}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "24. Amperímetro ideal en serie con B2 y voltímetro ideal en paralelo con B2 y B3: los dos bien",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"A": {"puesto": "B2-a"}, "V": {"puesto": "G-p"}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"A": {"lectura": 0.16666666666666666}, "V": {"lectura": 2}}, "efecto": {"A": {"lectura": 0.16666666666666666, "diagnostico": "bien"}, "V": {"lectura": 2, "diagnostico": "bien"}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "25. Amperímetro real de 2 Ω en serie con B2 y voltímetro real de 60 Ω en paralelo con B2 y B3 (afuera del amperímetro)",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"A": {"puesto": "B2-a", "Rint": 2}, "V": {"puesto": "G-p", "Rint": 60}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"A": {"lectura": 0.14018691588785046}, "V": {"lectura": 1.9626168224299065}, "pila": {"I": 0.3364485981308411}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "26. Pila de 6 V con r = 0,5 Ω y una bombilla de 12 Ω; amperímetro ideal en paralelo con la bombilla (y con los bornes de la pila)",
+      "circuito": {"tierra": "n", "ramas": [{"id": "pila", "tipo": "pila", "a": "n", "b": "p", "fem": 6, "r": 0.5}, {"id": "B", "tipo": "resistencia", "a": "p", "b": "n", "R": 12}]},
+      "medidores": [{"id": "A", "tipo": "amperimetro", "modo": "paralelo", "rama": "B"}],
+      "esperado": {"ramas": {"A": {"lectura": 12}, "pila": {"interna": 72, "bornes": 0}, "B": {"P": 0}}, "efecto": {"A": {"lectura": 12, "diagnostico": "corto-pila", "apaga": ["B"]}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "27. El mismo lazo con el amperímetro ideal en serie con la bombilla",
+      "circuito": {"tierra": "n", "ramas": [{"id": "pila", "tipo": "pila", "a": "n", "b": "p", "fem": 6, "r": 0.5}, {"id": "B", "tipo": "resistencia", "a": "p", "b": "n", "R": 12}]},
+      "medidores": [{"id": "A", "tipo": "amperimetro", "modo": "serie", "rama": "B", "lado": "a"}],
+      "esperado": {"ramas": {"A": {"lectura": 0.48}}, "efecto": {"A": {"lectura": 0.48, "diagnostico": "bien"}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "28. Amperímetro ideal en paralelo con el cable de regreso del mixto: lectura indeterminada",
+      "helper": "mixto",
+      "args": {"fem": 6, "R1": 12, "R2": 12, "R3": 12},
+      "medidores": [{"id": "A", "tipo": "amperimetro", "modo": "paralelo", "rama": "retorno"}],
+      "esperado": {"ramas": {"A": {"lectura": "indeterminada"}}, "avisos": ["lectura-indeterminada"], "efecto": {"A": {"lectura": "indeterminada", "diagnostico": "indeterminada"}}},
+      "verificacion": "Casos 10 a 28 (medidores): verificados por un agente independiente (7 nov 2026) sin leer el código del motor. Usó reducción serie-paralelo con fracciones exactas, divisores de tensión y de corriente, y los medidores reales como una resistencia más (python3 con fractions). Coinciden los 19 casos, con todas sus variantes, lecturas, avisos, diagnósticos y listas de elementos apagados."
+    },
+    {
+      "nombre": "29. Amperímetro real de 0,1 Ω en paralelo con la pila: cortocircuito con corriente finita (60 A)",
+      "helper": "medidoresMixto",
+      "args": {"colocados": {"A": {"puesto": "pila-p", "Rint": 0.1}}, "op": {"fem": 6, "R1": 12, "R2": 12, "R3": 12}},
+      "esperado": {"ramas": {"A": {"lectura": 60, "V": 6}, "pila": {"I": 60.333333333333336}, "B1": {"P": 1.3333333333333333}, "B2": {"P": 0.3333333333333333}, "B3": {"P": 0.3333333333333333}}, "efecto": {"A": {"lectura": 60, "diagnostico": "corto-pila", "apaga": []}}},
+      "verificacion": "Verificado por la conversación principal (7 nov 2026) con fracciones exactas: serie 12 + (12 ∥ 12) = 18 Ω da 1/3 A con la pila ideal; el amperímetro de 0,1 Ω entre los bornes lleva 6/0,1 = 60 A; pila 181/3 A; P1 = 4/3 W y P2 = P3 = 1/3 W. Los diagnósticos nuevos de los casos 23 y 26 (corto-elemento y corto-pila) siguen la regla de que un amperímetro en paralelo nunca da bien ni carga; sus números, verificados antes, no cambiaron."
     }
   ]
 }

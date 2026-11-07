@@ -4,6 +4,213 @@ Rama `rutina/fisica-b`, sacada de `claude/awesome-wozniak-5etl1n`. Unidades de 5
 
 **Ya resuelto:** la conversación principal le avisó a la rutina de física que la electricidad es de esta rama.
 
+## 7 nov 2026 · Electrostática: esferas colgadas realistas (pedido de la principal)
+
+- **Paso 2 (EL3):** las esferas pasan de 1 µC y 2 µC en 20 g a bolitas de papel aluminio de 0,2 g con q = 100 nC y 2q = 200 nC, separadas 0,3 m.
+  - F = 2 × 10⁻³ N = m·g, así que θ sigue en 45° exactos.
+  - Las cuatro opciones, sus formas y sus códigos no cambiaron.
+  - En el dibujo, F y el peso tienen el mismo largo.
+- **casos.json:** cambiaron solo los casos 3 y 4, en args y en F, peso y tensión. El verificador los recalculó a ciegas, por equilibrio con la tensión y su propia bisección: coinciden los 18 campos.
+- **Papel, p7:** bolitas de 0,3 g con 200 nC cada una; la respuesta sigue siendo 53°.
+- **Sin tocar:** el paso 1, que son cargas puntuales con los números del informe, y el caso 5 del motor (2 µC en 30 y 40 g), que no está en ninguna predicción.
+- **Pruebas:** `npm test` da 3927 en verde y 0 fallas. `pasada-celular.py` no marca QUEDA.
+
+## 7 nov 2026 · Electrostática 0.2.0: dieléctricos y contacto en nC (pedido de la principal)
+
+### Qué hice
+- **Experimento 6 nuevo, «Una lámina entre las placas».**
+  - Pregunta: un condensador de 10 µF, cargado a 12 V y desconectado, con las placas a 1 mm. Entra una lámina de un aislante (un dieléctrico) con κ = 3. ¿Cuánto valen V y Q?
+  - Correcta: D, 4 V y 120 µC.
+  - Distractores:
+    - A: EL6, «el aislante no hace nada», parcial (≈50 %, pero el dato es sobre polarización, no sobre condensadores).
+    - B: V sube con C (hipótesis).
+    - C: confundir desconectado con conectado (hipótesis).
+  - Al responder, la lámina entra animada, aparecen las cargas ligadas en gris y las flechas del campo bajan de 9 a 3.
+  - Un botón la muestra con la pila conectada.
+  - Un párrafo explica a dónde va la energía en los dos casos.
+- **Motor:** `dielectrico()` nuevo, para lámina entera o a medias. Da C, Q, V, E, U, la energía y el trabajo, y los errores típicos. La cabecera termina en la línea 59.
+- **Casos:** 22 y 23 nuevos. 49 pruebas del motor.
+- **Papel:** el p2, que repetía el paso 3, ahora es de dieléctrico. La indicación agrega los nC.
+- **Contacto de esferas en nC** (el experimento 5 y el p10): antes eran 12 µC en esferas de 1 cm, que romperían el aire.
+  - Solo cambió la unidad: ningún número de una predicción se movió.
+  - El potencial pasa de 2,7 × 10⁶ V a 2700 V.
+  - En `casos.json` solo cambió el nombre del caso 21.
+- **Versión:** `plantilla.json` sube a 0.2.0.
+
+### Revisiones
+- **Verificador independiente:** recalculó a ciegas los casos 22 y 23, por carga y energía, con la lámina a medias como dos condensadores en paralelo. Coinciden los 28 campos. Pidió corregir una frase de la cabecera («C × κ siempre»), ya corregida.
+- **Revisor:** nada grave. Lo corregido:
+  - Faltaba la distancia d = 1 mm en el enunciado y en el dibujo.
+  - El lector de pantalla recibía un aviso por cada cuadro de la animación.
+  - El párrafo de la energía, los rótulos que se pisaban, la palabra «dieléctrico» y los nC en la indicación.
+
+### Pendiente
+- Las esferas colgadas del paso 2 tienen 1 µC y 2 µC en esferas de 20 g, que tampoco es realista. Para arreglarlo habría que cambiar los números de una predicción medida, así que no lo toqué. **Lo decides tú.**
+- La frase de dieléctricos de la indicación del papel da la respuesta del experimento 6 si el alumno abre el papel antes que la escena. Ya pasa igual con serie y paralelo.
+
+### Pedidos para la integración
+- `npm run catalogo` (la plantilla sube a 0.2.0) y subir `VERSION`.
+- `docs/pendientes.md`: en electrostática, «0.2.0 (7 nov 2026): dieléctricos como experimento 6 (desconectado: V baja κ veces; con un botón, conectado) y el contacto de esferas en nC».
+
+## 7 nov 2026 · Banco de física: fis-11 a fis-15 en reserva (pedido de la principal)
+
+### Qué hice
+- 5 pares A/B nuevos en la `reserva` de `catalogo/pruebas/fisica.json`, uno por escena. Siguen en reserva porque el tope es de 10 ítems por forma.
+- Un verificador por par en `catalogo/pruebas/verificar.js`; cada uno saca la respuesta y los distractores del motor de su escena.
+- El banco pasa a la versión 1.2.0. Se agregaron el informe de ondas electromagnéticas y 15 códigos de error, con el mismo respaldo que tienen en su escena.
+- Toca `catalogo/`, que esta rutina no suele tocar. Lo hice porque la principal lo pidió explícitamente.
+
+### Pares y unidades
+
+| Par | Escena | Unidad | Qué pide | A / B | Códigos (respaldo) |
+| --- | --- | --- | --- | --- | --- |
+| fis-11 | electrostatica | `fisica.electrostatica` | Carga final de la esfera chica cuando toca a una grande y las dos ya tenían carga (reparto por radios) | 120 nC / 100 nC | EL8 se reparte por igual (parcial), la chica se queda con más y toda pasa a la grande (hipótesis) |
+| fis-12 | magnetismo | `fisica.magnetismo` | Campo en el punto medio de dos cables con corrientes opuestas (A: 30 cm y 45 A; B: batería de auto, 50 cm y 100 A) | 120 µT / 160 µT | MG5 opuestas se anulan (documentado), usa la distancia entre cables y 1/d² (hipótesis) |
+| fis-13 | induccion | `fisica.induccion-electromagnetica` | Un electroimán que se apaga frente a una espira: sentido de la corriente vista desde detrás de la espira, y el campo inducido. A: cara norte; B: cara sur | antihoraria, alejándose / horaria, hacia el electroimán | MG8–MG9 contra el campo (documentado), mano derecha invertida y no circula (parcial) |
+| fis-14 | fisica-moderna | `fisica.fisica-moderna` | ¿Cuál de dos luces arranca electrones: una intensa bajo el umbral u otra tenue sobre él? | solo la violeta / solo la verde | FM2 basta subir la intensidad (documentado), la intensidad compensa (parcial), intensidad mínima (hipótesis) |
+| fis-15 | ondas-electromagneticas | `fisica.ondas-electromagneticas` | Rapidez, λ y color de una luz dentro de un medio, dada su frecuencia (A: diamante, n = 2,5; B: líquido, n = 1,25) | 1,2 × 10⁸ m/s, 160 nm, sigue violeta / 2,4 × 10⁸ m/s, 400 nm, sigue verde | OE12 (dos variantes) y la luz siempre va a c (hipótesis) |
+
+### Revisiones
+- **Constructor:** al principio había dos parecidos y los rehízo. fis-11 calcaba palabras de la escena de las esferas, y fis-15 era casi el p8 del papel.
+- **Revisor a ciegas:** las 10 claves eran correctas y no había nada grave. Lo corregido:
+  - fis-11: las cargas pasaron de µC a nC, porque con µC el aire se rompería.
+  - fis-12: la lámpara de 9 A no era realista y el distractor 1/d² daba 500 mT, que se descarta solo por tamaño. Ahora son cables gruesos y los valores van en µT.
+  - fis-12: una variante del error de la distancia da siempre el mismo número que «contar un solo cable»; lo aclaré en su descripción.
+  - fis-13 A: copiaba la configuración y la respuesta del paso 5 de la escena. Ahora las dos formas se miran desde detrás de la espira.
+  - La letra de la correcta ya no coincide entre A y B en 4 de los 5 pares.
+- **Desvío en fis-12 A:** con 40 cm y 60 A, un distractor repetía la corriente del enunciado. Quedó en 30 cm y 45 A.
+
+### Notas para el análisis
+- fis-13: el código «no circula» se midió con un imán que se mueve. Aquí nada se mueve, así que puede atraer por otra idea: «sin movimiento no hay inducción».
+- fis-14 repite el patrón de la escena (la luz tenue es la que arranca electrones). Es transferencia cercana válida y cae igual en las dos formas.
+- fis-15 A: el distractor de color dice «pasa a ultravioleta» y suena más extremo que el de B.
+- La escena de electrostática usa µC en el contacto de esferas (12 µC en 1 cm), que físicamente es imposible. Es la convención de academia; queda como pendiente de la escena, sin cambio.
+
+### Pruebas
+- `node --test catalogo/pruebas/pruebas.test.js`: 61 de 62. Solo falla «app/datos/pruebas.json está al día», que se arregla con `npm run catalogo`.
+- `parecidos.js`: ningún parecido. Quedan 5 avisos de «comparte 3 códigos con la predicción que imita», que es lo esperado; revisé a mano que la situación es otra.
+
+### Pedidos
+- `npm run catalogo`. Los pares quedan en reserva hasta que se arme la forma del piloto.
+
+## 7 nov 2026 · Ondas electromagnéticas: la antena y el arcoíris (`plantillas/ondas-electromagneticas/`)
+
+### Qué hice
+
+La principal pidió dos cosas: primero un informe y después una escena corta. Las dos están hechas.
+
+**Informe nuevo:** `docs/investigacion/ondas-electromagneticas-ideas-erroneas.md`, con los errores OE1 a OE20.
+- La red no dejó abrir ningún artículo completo. Todo sale de resúmenes, fragmentos o notas docentes, y el informe lo avisa arriba.
+- Solo OE6 tiene cifra («se ven objetos solo con UV»: cerca de 8 de cada 10 de 283 escolares).
+- OE1 a OE5 y OE7 a OE11 son parciales. Bajé OE5 a parcial porque su 30 % no trae muestra.
+- OE12 a OE20 son hipótesis nuestras.
+
+**Escena:** «La antena y el arcoíris: ondas electromagnéticas», unidad `fisica.ondas-electromagneticas`. La idea central:
+- Una onda electromagnética es un campo eléctrico y un campo magnético que oscilan juntos, en fase, perpendiculares entre sí y al avance.
+- En el vacío todas viajan a c.
+- Lo que cambia de una a otra es f, y con ella λ y la energía del fotón: en el espectro las tres van en una sola regla, como en física moderna.
+- En un medio cambian v y λ, pero no f.
+- Qué atraviesa qué depende de la frecuencia y del material.
+
+**Motor** (`MotorOndasEM`, cabecera hasta la línea 113):
+- conversión entre frecuencia y longitud de onda, y las regiones del espectro;
+- fotón;
+- campos y la dirección de B;
+- tiempo de viaje y eco;
+- medio con índice n;
+- tabla de qué atraviesa qué (simplificada, y la escena lo dice);
+- lectura de la expresión de la onda (`leerOnda`) e intensidad;
+- si una radiación ioniza.
+
+**Notación:** el campo eléctrico va sin letra (escrito «campo eléctrico», en azul), porque la E es la energía del fotón, como en física moderna. Una nota dice que en los libros y en el examen se escribe E₀ = c·B₀.
+
+**Paso a paso** (7 pasos, todos con predicción; las correctas van C A B D B A C):
+1. La radio y el foco hacia la Luna.
+2. ¿Cómo oscila B?
+3. El espectro ordenado por frecuencia.
+4. λ de una emisora de FM.
+5. La radio cruza una pared y la luz no.
+6. Luz de 600 nm al entrar al agua.
+7. Leer la expresión de la onda.
+
+**¿Qué pasa si…?** (4): la emisora más potente, el Sol que se apaga, la puerta del horno y B₀ a partir del campo eléctrico.
+
+**Papel:** 10 problemas propios, entre ellos uno de intensidad y uno de leer la onda.
+
+**Celular:** botones para saltar a radio FM, microondas, rojo, verde, violeta, ultravioleta y rayos X.
+
+### Pruebas
+
+- 23 casos y 42 pruebas del motor.
+- `npm test`: 3539 en verde; fallan solo las 2 de catálogo, como se espera.
+- `pasada-celular.py`: no marca nada pendiente (QUEDA).
+- Playwright a 390×844 y 1366×768, en claro y oscuro, con y sin movimiento reducido, revisado por el constructor y el revisor:
+  - sin errores de consola ni desbordes;
+  - con la predicción pendiente, el banco del celular mide 330 px o menos;
+  - el dedo sobre el dibujo desplaza la página (probado con toque real).
+
+### Subagentes y lo que corrigieron
+
+- **Informe:** lo escribió un subagente de investigación; yo bajé OE5 a parcial.
+- **Verificador independiente**, dos vueltas:
+  - Primera: 124 de 124 campos coinciden. Dos nombres de caso estaban mal (600 nm es naranja; 1 mm todavía es infrarrojo) y ya están corregidos.
+  - Segunda, tras la revisión: la tabla nueva, `leerOnda` e intensidad. Coinciden los 31 campos.
+- **Revisor, graves:**
+  - La tabla de qué atraviesa qué afirmaba de más. Ahora la rejilla deja pasar el infrarrojo; el vidrio frena parte del ultravioleta; el hueso absorbe mucho más los rayos X, pero no todos; la piel deja pasar algo de luz roja.
+  - En el paso 6, «se ve naranja bajo el agua» chocaba con que en lo hondo todo se ve azulado; ahora se explica.
+  - En el paso 2, la perspectiva hacía ver B desfasado (justo el error OE14). Bajó el sesgo, se marca una cresta y hay un rótulo «hacia ti».
+- **Revisor, medios:**
+  - El enunciado del paso 5 tenía una salida defendible por las ventanas; ahora es un cuarto sin ventanas.
+  - La escala decía «de 10 en 10»; en realidad es ×10 000 por marca.
+  - Citas sin cifras de más, y la rejilla del horno explicada como onda, no como objeto.
+  - Nota de E₀ = c·B₀.
+  - En el celular, el enunciado ya no queda tapado.
+- **Veredicto del revisor:** así como estaba era delgada y repetía física moderna. Por eso se agregó el paso 7, lo que el examen sí pregunta: leer E₀ sen(kx − ωt) para sacar λ, f, la región y la dirección de B, más la intensidad en el motor y el papel. Con eso se queda como plantilla propia.
+
+### Predicciones y respaldo
+
+- No hay ninguna documentada: OE6 no entró en ninguna predicción.
+- **Parcial:** OE1 a OE5 (la radio no es luz, rapideces distintas, v crece con f, energía con la amplitud, necesita un medio), OE4 en la emisora potente y OE9 en el horno.
+- **Hipótesis:** OE12 a OE20 y los errores de la lectura de la onda (λ = k, λ = 1/k, λ = k/2π).
+- Todas las citas llevan «por verificar».
+
+### Colores
+
+| Variable | Claro | Oscuro | Nota |
+| --- | --- | --- | --- |
+| λ | #0d6b78 | #24e4f9 | como en física moderna |
+| f | #5c531f | #fdf2b4 | como en física moderna |
+| E energía del fotón | #a55412 | #ffa64d | como en física moderna |
+| campo eléctrico (sin letra) | #1f5fbf | #7cb0ff | el azul de F; el turquesa de E en electrostática quedaba a ΔE00 ≈ 10 de λ |
+| B | #2a7638 | #7fd67f | como en magnetismo |
+| c y v rapidez | #c0364a | #f17384 | el rojo de v |
+| n índice | #7614b8 | #aa74fb | el violeta de P en física moderna (nunca salen juntos) |
+
+- ΔE00 mínimo: 21,1 en claro y 21,9 en oscuro, entre f y B.
+- Contraste AA en todos. El más justo es c/v en claro: 4,56 sobre su chip.
+- El color de la luz va solo en banda translúcida (alfa 0,34; 0,25 en oscuro). Las ondas van en tinta.
+
+### Pendiente
+
+- En el paso 2, la perspectiva todavía corre un poco las crestas de B respecto de las del campo eléctrico. La cresta marcada muestra que salen juntas.
+- La tabla de qué atraviesa qué es simplificada.
+- Las cifras del informe salen de resúmenes. Para leer los artículos completos habría que permitir esos dominios en la red de la sesión.
+- No hay datos peruanos ni latinoamericanos.
+
+### Pedidos para la integración
+
+- `catalogo/cursos/fisica.json`: en `fisica.ondas-electromagneticas`, poner `"plantillas": ["ondas-electromagneticas"]` y `"investigacion": "docs/investigacion/ondas-electromagneticas-ideas-erroneas.md"`. Luego `npm run catalogo` y subir `VERSION` en `app/sw.js`.
+- `docs/diseno.md`: variables de ondas electromagnéticas (`plantillas/ondas-electromagneticas/`).
+  - λ, f y la energía del fotón E como en física moderna.
+  - El campo eléctrico sin letra, en el azul de F (#1f5fbf, oscuro #7cb0ff), porque E es la energía del fotón.
+  - B como en magnetismo.
+  - c y v en el rojo de v.
+  - El índice n en el violeta de P (#7614b8, oscuro #aa74fb).
+- `docs/pendientes.md`, línea propuesta: «**Ondas electromagnéticas** (`plantillas/ondas-electromagneticas/`, rutina de física B, 7 nov 2026): la antena y el arcoíris (todas a c en el vacío, campo eléctrico y B en fase y perpendiculares, espectro en una sola regla con λ, f y energía del fotón, FM de 100 MHz, qué atraviesa qué, luz que entra al agua, leer E₀ sen(kx − ωt) e intensidad); 23 casos verificados aparte en dos vueltas; 10 de papel; 7 predicciones y 4 «¿qué pasa si…?». Informe nuevo `docs/investigacion/ondas-electromagneticas-ideas-erroneas.md` (OE1 a OE20, desde resúmenes, por verificar). Nada documentado. Sin ítems en el banco de física.»
+- `CLAUDE.md`:
+  - Agregar «la antena y el arcoíris» a la lista de plantillas.
+  - Historia: «Ondas electromagnéticas (7 nov 2026, rutina de física B): `plantillas/ondas-electromagneticas/` (la antena y el arcoíris: todas a c, campos en fase y perpendiculares, espectro, qué atraviesa qué, cambio de medio y lectura de la onda; 23 casos verificados aparte) e informe `docs/investigacion/ondas-electromagneticas-ideas-erroneas.md`.»
+
 ## 7 nov 2026 · Física moderna: la lámpara y la placa (`plantillas/fisica-moderna/`)
 
 ### Qué hice

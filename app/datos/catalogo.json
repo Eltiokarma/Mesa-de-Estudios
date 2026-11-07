@@ -544,7 +544,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "ondas-electromagneticas"
+     ]
     },
     {
      "id": "fisica.optica-geometrica",
@@ -1285,7 +1287,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "numeros-reales"
+     ]
     },
     {
      "id": "algebra.exponentes-y-productos-notables",
@@ -2326,7 +2330,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "razonamiento-numerico"
+     ]
     }
    ]
   },
@@ -3489,7 +3495,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "traslados-sucesos"
+     ]
     },
     {
      "id": "razonamiento-matematico.arreglos-numericos",
@@ -3617,7 +3625,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "traslados-sucesos"
+     ]
     },
     {
      "id": "razonamiento-matematico.ruedas-poleas-engranajes",
@@ -4362,10 +4372,10 @@
   },
   "calorimetria": {
    "id": "calorimetria",
-   "titulo": "Calorimetría",
+   "titulo": "Temperatura y calor",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.temperatura-y-calor"
    ],
@@ -4469,7 +4479,7 @@
    "titulo": "Circuitos",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.corriente-y-circuitos"
    ],
@@ -4631,7 +4641,7 @@
    "titulo": "Cargas que se empujan: Coulomb, campo y potencial",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.electrostatica"
    ],
@@ -5225,6 +5235,23 @@
     "/plantillas/numeracion/papel.json"
    ]
   },
+  "numeros-reales": {
+   "id": "numeros-reales",
+   "titulo": "La recta en trozos: números reales",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.numeros-reales"
+   ],
+   "url": "/plantillas/numeros-reales/index.html",
+   "papel": "/plantillas/numeros-reales/papel.json",
+   "archivos": [
+    "/plantillas/numeros-reales/index.html",
+    "/plantillas/numeros-reales/motor.js",
+    "/plantillas/numeros-reales/papel.json"
+   ]
+  },
   "ondas": {
    "id": "ondas",
    "titulo": "Ondas en una cuerda y sonido",
@@ -5242,12 +5269,29 @@
     "/plantillas/ondas/papel.json"
    ]
   },
+  "ondas-electromagneticas": {
+   "id": "ondas-electromagneticas",
+   "titulo": "La antena y el arcoíris: ondas electromagnéticas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.ondas-electromagneticas"
+   ],
+   "url": "/plantillas/ondas-electromagneticas/index.html",
+   "papel": "/plantillas/ondas-electromagneticas/papel.json",
+   "archivos": [
+    "/plantillas/ondas-electromagneticas/index.html",
+    "/plantillas/ondas-electromagneticas/motor.js",
+    "/plantillas/ondas-electromagneticas/papel.json"
+   ]
+  },
   "optica-espejo-esferico": {
    "id": "optica-espejo-esferico",
    "titulo": "Espejos esféricos",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.optica-geometrica"
    ],
@@ -5417,6 +5461,23 @@
     "/plantillas/quimica-ambiente/index.html",
     "/plantillas/quimica-ambiente/motor.js",
     "/plantillas/quimica-ambiente/papel.json"
+   ]
+  },
+  "razonamiento-numerico": {
+   "id": "razonamiento-numerico",
+   "titulo": "Las fichas que se cambian: razonamiento numérico",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.razonamiento-numerico"
+   ],
+   "url": "/plantillas/razonamiento-numerico/index.html",
+   "papel": "/plantillas/razonamiento-numerico/papel.json",
+   "archivos": [
+    "/plantillas/razonamiento-numerico/index.html",
+    "/plantillas/razonamiento-numerico/motor.js",
+    "/plantillas/razonamiento-numerico/papel.json"
    ]
   },
   "regla-de-tres": {
@@ -5612,6 +5673,24 @@
     "/plantillas/traductor-enunciados/index.html",
     "/plantillas/traductor-enunciados/motor.js",
     "/plantillas/traductor-enunciados/papel.json"
+   ]
+  },
+  "traslados-sucesos": {
+   "id": "traslados-sucesos",
+   "titulo": "La posta, el paradero y la plaza: sucesos que se repiten, monedas y puntos cardinales",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.traslados-y-puntos-cardinales",
+    "razonamiento-matematico.frecuencia-de-sucesos"
+   ],
+   "url": "/plantillas/traslados-sucesos/index.html",
+   "papel": "/plantillas/traslados-sucesos/papel.json",
+   "archivos": [
+    "/plantillas/traslados-sucesos/index.html",
+    "/plantillas/traslados-sucesos/motor.js",
+    "/plantillas/traslados-sucesos/papel.json"
    ]
   },
   "trazos-rutas": {

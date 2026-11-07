@@ -3,17 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Calorimetría y cambios de fase</title>
+<title>Temperatura y calor</title>
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   T rojo, Q azul, m naranja, c verde y L morado. El morado de marca no se usa aquí. */
+   T rojo, Q (y el flujo Q/t) azul, m naranja, c verde, L fucsia, α índigo (también 2α y 3α), ℓ turquesa
+   (longitud y espesor), A ocre (área), V tostado (volumen) y k verde oscuro (conductividad).
+   Medidos con CIEDE2000 (docs/metodo/paleta.py; 0.2.0, 7 nov 2026): ΔE00 mínimo por pestaña, claro / oscuro:
+   paso a paso y «¿Qué pasa si…?» (T, Q, m, c, L) 25,9 / 26,9; Dilatación (T, α, ℓ, A, V) 24,5 / 26,9;
+   Transferencia (T, Q, k, A, ℓ) 20,4 / 21,2. AA ≥ 4,5 sobre el papel y sobre el chip al 8 %.
+   Pares bajo 20 que nunca salen en la misma pestaña: c–k 8,8 / 9,5 (c solo en las dos primeras pestañas;
+   k solo en Transferencia), L–α 16,2, Q–α 17,0 / 12,1, c–A 17,3 / 18,1, m–A 19,8 / 18,9 y m–V (11,1 en oscuro).
+   El morado de marca no se usa aquí. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-T:#c0364a; --c-Q:#1f5fbf; --c-m:#b85a06; --c-c:#4f7a17; --c-L:#6b3dbd;
+  --c-T:#c0364a; --c-Q:#1f5fbf; --c-m:#a05200; --c-c:#466d14; --c-L:#a10fbf;
+  --c-al:#3328c4; --c-l:#0f766e; --c-A:#7d6a00; --c-V:#5a1f08; --c-k:#255c1f;
+  --acero:#9aa3b0; --laton:#d9c9a3; --cobre:#e2a990; --aluminio:#c5ccd6; --noche:#2b3152;
   --agua:#cfe7f7; --agua-borde:#5b93bd; --hielo:#f6fbff; --hielo-borde:#86b6d6; --vidrio:#8e97a8; --olla:#545c6c; --fuego:#e8782a; --madera:#a8703c; --lana:#d98cb0;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -23,13 +32,17 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-T:#f17384; --c-Q:#7cb0ff; --c-m:#f0a04a; --c-c:#a3d65e; --c-L:#ab8cf2;
+  --c-T:#f17384; --c-Q:#7cb0ff; --c-m:#f0a04a; --c-c:#a3d65e; --c-L:#cf6bfa;
+  --c-al:#9f9bff; --c-l:#5ed9c8; --c-A:#e3c84a; --c-V:#f57a1f; --c-k:#5fe06a;
+  --acero:#7b8494; --laton:#8a7a55; --cobre:#9c6a55; --aluminio:#6b7382; --noche:#0d0b18;
   --agua:#21445e; --agua-borde:#6fb0dd; --hielo:#e8f4fc; --hielo-borde:#9fcbe8; --vidrio:#a99cb8; --olla:#c9d0dc; --fuego:#ff9a4d; --madera:#c98d55; --lana:#e7a3c3; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-T:#f17384; --c-Q:#7cb0ff; --c-m:#f0a04a; --c-c:#a3d65e; --c-L:#ab8cf2;
+  --c-T:#f17384; --c-Q:#7cb0ff; --c-m:#f0a04a; --c-c:#a3d65e; --c-L:#cf6bfa;
+  --c-al:#9f9bff; --c-l:#5ed9c8; --c-A:#e3c84a; --c-V:#f57a1f; --c-k:#5fe06a;
+  --acero:#7b8494; --laton:#8a7a55; --cobre:#9c6a55; --aluminio:#6b7382; --noche:#0d0b18;
   --agua:#21445e; --agua-borde:#6fb0dd; --hielo:#e8f4fc; --hielo-borde:#9fcbe8; --vidrio:#a99cb8; --olla:#c9d0dc; --fuego:#ff9a4d; --madera:#c98d55; --lana:#e7a3c3; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -42,15 +55,21 @@ body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font
 h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
 .sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
 
-.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs{display:flex; flex-wrap:wrap; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
 .tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+/* Cuatro pestañas: en el celular, grilla de 2 columnas (en una fila desbordaban: scrollWidth 549 a 390 px). */
+@media (max-width:559px){
+  .tabs{display:grid; grid-template-columns:1fr 1fr; justify-self:stretch; border-radius:22px}
+  .tabs a{text-align:center; padding:9px 8px}
+}
 .tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
 .tabs a:hover:not([aria-current]){color:var(--ink)}
 
 .mode{display:grid; gap:16px; min-width:0; align-items:start}
 .bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
 .lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
-canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 canvas.arrastrable{cursor:grab}
 canvas.agarrando{cursor:grabbing}
 canvas.sin-scroll{touch-action:none}
@@ -66,6 +85,8 @@ canvas.sin-scroll{touch-action:none}
 .dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .dots button:disabled{opacity:.45; cursor:not-allowed}
 #exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-t:focus{outline:none} .fb:focus{outline:none}
+.step-t:focus-visible, .fb:focus-visible{outline:3px solid var(--ink); outline-offset:3px; border-radius:6px}
 .step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
   color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
 .step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
@@ -77,12 +98,20 @@ canvas.sin-scroll{touch-action:none}
 .map b{font-family:var(--mono); min-width:4.6em; flex:none}
 
 .v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
-.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 12%, transparent)}
-.v-Q{color:var(--c-Q); background:color-mix(in srgb, var(--c-Q) 12%, transparent)}
-.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 12%, transparent)}
-.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 12%, transparent)}
-.v-L{color:var(--c-L); background:color-mix(in srgb, var(--c-L) 12%, transparent)}
-.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+/* Chips al 8 % (AA ≥ 4,5 con el texto encima); el resaltado es un contorno, sin fondo. */
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-Q{color:var(--c-Q); background:color-mix(in srgb, var(--c-Q) 8%, transparent)}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v-L{color:var(--c-L); background:color-mix(in srgb, var(--c-L) 8%, transparent)}
+.v-al{color:var(--c-al); background:color-mix(in srgb, var(--c-al) 8%, transparent)}
+.v-l{color:var(--c-l); background:color-mix(in srgb, var(--c-l) 8%, transparent)}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 8%, transparent)}
+.v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 8%, transparent)}
+.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 8%, transparent)}
+.v.hl{outline:2px solid currentColor; outline-offset:1px}
+.uni{display:inline-block; margin-left:6px; font-size:.72rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+  border:1.5px solid var(--acento-ink); color:var(--acento-ink); border-radius:999px; padding:1px 8px; vertical-align:middle}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
 .eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
@@ -113,7 +142,7 @@ canvas.sin-scroll{touch-action:none}
 .slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 .slider output{font-family:var(--mono); color:var(--muted)}
 input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
-input.r-m{accent-color:var(--c-m)} input.r-T{accent-color:var(--c-T)}
+input.r-m{accent-color:var(--c-m)} input.r-T{accent-color:var(--c-T)} input.r-l{accent-color:var(--c-l)}
 .chips{display:flex; flex-wrap:wrap; gap:6px}
 .chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
 .chip.real{border-color:var(--c-T); color:var(--c-T)}
@@ -160,19 +189,21 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <div class="top">
     <header>
       <p class="eyebrow">Física · Temperatura y calor · Problemas tipo admisión</p>
-      <h1>Calorimetría y cambios de fase</h1>
-      <p class="sub">Hielo, agua y vapor: a dónde va el calor y qué hace la temperatura mientras tanto.</p>
+      <h1>Temperatura y calor</h1>
+      <p class="sub">Hielo, agua y vapor; rieles, placas y lagos; y cómo viaja el calor.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
       <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+      <a href="#dilatacion" id="tab3">Dilatación</a>
+      <a href="#transferencia" id="tab4">Transferencia</a>
     </nav>
   </div>
 
   <!-- ===== MODO 1: paso a paso ===== -->
   <div id="m1" class="mode">
     <section class="bench" aria-label="Vaso con hielo y agua, y gráfica de temperatura contra calor">
-      <div class="lienzo"><canvas id="cv" role="img" aria-label="A un lado, un vaso con cubos de hielo y agua, con un termómetro para cada uno. Al otro, la gráfica de la temperatura de cada uno contra el calor que pasa del agua al hielo"></canvas></div>
+      <div class="lienzo"><canvas id="cv" tabindex="-1" role="img" aria-label="A un lado, un vaso con cubos de hielo y agua, con un termómetro para cada uno. Al otro, la gráfica de la temperatura de cada uno contra el calor que pasa del agua al hielo"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend">
         <span><i style="background:var(--c-T)"></i>T · temperatura</span>
@@ -200,14 +231,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
   <div id="m2" class="mode" hidden>
     <section class="bench" aria-label="Experimentos con calor">
-      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
-      <div class="legend">
-        <span><i style="background:var(--c-T)"></i>T · temperatura</span>
-        <span><i style="background:var(--c-Q)"></i>Q · calor</span>
-        <span><i style="background:var(--c-c)"></i>rampa: sube o baja T</span>
-        <span><i style="background:var(--c-L)"></i>meseta: cambia de fase, T fija</span>
-      </div>
+      <div class="legend" id="ley2"></div>
     </section>
     <section class="guide">
       <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
@@ -216,6 +242,60 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
         <h2 class="step-t" id="t2"></h2>
       </div>
       <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 3: dilatación ===== -->
+  <div id="m3" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo de la dilatación">
+      <div class="lienzo"><canvas id="cv3" tabindex="-1" role="img" aria-label="Dibujo del paso"></canvas></div>
+      <p class="sr" id="desc3" aria-live="polite"></p>
+      <div class="legend">
+        <span><i style="background:var(--c-T)"></i>T · temperatura</span>
+        <span><i style="background:var(--c-al)"></i>α · coeficiente de dilatación</span>
+        <span><i style="background:var(--c-l)"></i>ℓ · longitud</span>
+        <span><i style="background:var(--c-A)"></i>A · área</span>
+        <span><i style="background:var(--c-V)"></i>V · volumen</span>
+      </div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots3"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="k3"></p>
+        <h2 class="step-t" id="t3"></h2>
+      </div>
+      <div id="body3" class="body"></div>
+      <div class="nav">
+        <button id="prev3" type="button" class="btn">Anterior</button>
+        <button id="next3" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 4: transferencia de calor ===== -->
+  <div id="m4" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo de la transferencia de calor">
+      <div class="lienzo"><canvas id="cv4" tabindex="-1" role="img" aria-label="Dibujo del paso"></canvas></div>
+      <p class="sr" id="desc4" aria-live="polite"></p>
+      <div class="legend">
+        <span><i style="background:var(--c-T)"></i>T · temperatura</span>
+        <span><i style="background:var(--c-Q)"></i>Q/t · calor por segundo</span>
+        <span><i style="background:var(--c-k)"></i>k · conductividad</span>
+        <span><i style="background:var(--c-A)"></i>A · área</span>
+        <span><i style="background:var(--c-l)"></i>ℓ · largo o espesor</span>
+      </div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots4"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="k4"></p>
+        <h2 class="step-t" id="t4"></h2>
+      </div>
+      <div id="body4" class="body"></div>
+      <div class="nav">
+        <button id="prev4" type="button" class="btn">Anterior</button>
+        <button id="next4" type="button" class="btn primary">Siguiente</button>
+      </div>
     </section>
   </div>
 
@@ -235,7 +315,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
-const PLANTILLA = { id: 'calorimetria', unidad: 'fisica.temperatura-y-calor', version: '0.1.0' };
+const PLANTILLA = { id: 'calorimetria', unidad: 'fisica.temperatura-y-calor', version: '0.2.0' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
   Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
@@ -262,6 +342,8 @@ function colores(){
   const g = n => css(n);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
     T:g('--c-T'), Q:g('--c-Q'), m:g('--c-m'), c:g('--c-c'), L:g('--c-L'),
+    al:g('--c-al'), l:g('--c-l'), A:g('--c-A'), V:g('--c-V'), k:g('--c-k'),
+    acero:g('--acero'), laton:g('--laton'), cobre:g('--cobre'), aluminio:g('--aluminio'), ok:g('--ok'),
     agua:g('--agua'), aguaB:g('--agua-borde'), hielo:g('--hielo'), hieloB:g('--hielo-borde'), vidrio:g('--vidrio'), olla:g('--olla'),
     fuego:g('--fuego'), madera:g('--madera'), lana:g('--lana'), mono:g('--mono'), font:g('--font') };
 }
@@ -301,7 +383,7 @@ function pasoBonito(rango, n){
 // tit = { x:'Q (cal)', colX, y:'T (°C)', colY }. Devuelve las funciones X(valor) e Y(valor).
 function ejes(ctx, c, b, R, tit, hl){
   const X = v => b.x + (v - R.x0)/(R.x1 - R.x0)*b.w, Y = v => b.y + b.h - (v - R.y0)/(R.y1 - R.y0)*b.h;
-  const px = tit.pasoX || pasoBonito(R.x1 - R.x0, b.w < 260 ? 3 : 5), py = pasoBonito(R.y1 - R.y0, 5);
+  const px = tit.pasoX || pasoBonito(R.x1 - R.x0, b.w < 260 ? 3 : 5), py = tit.pasoY || pasoBonito(R.y1 - R.y0, b.h < 140 ? 3 : 5);
   ctx.save();
   ctx.fillStyle = c.paper; ctx.fillRect(b.x, b.y, b.w, b.h);
   ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
@@ -312,7 +394,7 @@ function ejes(ctx, c, b, R, tit, hl){
   }
   ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillStyle = tit.colY || c.muted;
   for (let v = Math.ceil(R.y0/py)*py; v <= R.y1 + 1e-9; v += py){
-    linea(ctx, b.x, Y(v), b.x + b.w, Y(v)); ctx.fillText(fmt(v, 0), b.x - 5, Y(v));
+    linea(ctx, b.x, Y(v), b.x + b.w, Y(v)); ctx.fillText(tit.fmtY ? tit.fmtY(v) : fmt(v, 0), b.x - (tit.margenY || 5), Y(v));
   }
   // 0 °C y 100 °C, temperaturas de cambio de fase del agua
   ctx.setLineDash([4, 4]); ctx.strokeStyle = c.muted; ctx.globalAlpha = .55;
@@ -321,7 +403,7 @@ function ejes(ctx, c, b, R, tit, hl){
   ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h); linea(ctx, b.x, b.y, b.x, b.y + b.h);
   if (hl === 'Q' && tit.colX){ ctx.save(); ctx.strokeStyle = tit.colX; ctx.lineWidth = 3; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h); ctx.restore(); }
   ctx.font = `800 11px ${c.mono}`;
-  ctx.fillStyle = tit.colX || c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(tit.x, b.x + b.w, b.y + b.h - 3);
+  ctx.fillStyle = tit.colX || c.muted; ctx.textAlign = 'right'; ctx.textBaseline = tit.xFuera ? 'top' : 'bottom'; ctx.fillText(tit.x, b.x + b.w, tit.xFuera ? b.y + b.h + 17 : b.y + b.h - 3);
   ctx.fillStyle = tit.colY || c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(tit.y, b.x + 4, b.y + 3);
   return { X, Y, b, R };
 }
@@ -513,6 +595,164 @@ function describirMezcla(sol, hielo){
   if (sol.T < 0) return `Todo se congela y la mezcla queda a ${fmt(sol.T)} °C.`;
   return `Todo el hielo se derrite y la mezcla queda a ${fmt(sol.T)} °C.`;
 }
+function decir(el, t){ if (el && el.textContent !== t) el.textContent = t; }
+// Flecha recta de (x1, y1) a (x2, y2) con punta, en el color dado y del grosor w.
+function flecha(ctx, x1, y1, x2, y2, color, w){
+  const a = Math.atan2(y2 - y1, x2 - x1), L = Math.hypot(x2 - x1, y2 - y1), p = Math.min(L*0.6, 6 + w*1.6);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.lineCap = 'butt';
+  linea(ctx, x1, y1, x2 - Math.cos(a)*p*0.8, y2 - Math.sin(a)*p*0.8);
+  ctx.beginPath(); ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - Math.cos(a)*p - Math.sin(a)*(p*0.55 + w/2), y2 - Math.sin(a)*p + Math.cos(a)*(p*0.55 + w/2));
+  ctx.lineTo(x2 - Math.cos(a)*p + Math.sin(a)*(p*0.55 + w/2), y2 - Math.sin(a)*p - Math.cos(a)*(p*0.55 + w/2));
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+const suave = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2;
+// Animaciones de un lienzo sobre Celular.bucle (nucleo/celular.js): se duermen si el lienzo no se ve.
+// anim(ms, paso(f), listo) corre f de 0 a 1; terminar() salta al final (y encadena lo que siga); continuo(fn)
+// deja una animación sin fin (burbujas, partículas) que corre mientras fn(dt) devuelva true. Con movimiento
+// reducido, anim salta al final de inmediato y continuo no corre.
+function crearAnimador(cv){
+  let actual = null, continuo = null;
+  const b = Celular.bucle(cv, (dt, now) => {
+    let sigue = false;
+    if (actual){
+      const a = actual;
+      if (a.ini === null) a.ini = now;
+      const f = Math.min(1, (now - a.ini)/a.dur);
+      a.paso(f);
+      if (f >= 1){ if (actual === a) actual = null; if (a.listo) a.listo(); }
+      sigue = !!actual;
+    }
+    if (continuo && !RM && continuo(Math.min(dt, 0.1), now)) sigue = true;
+    return sigue;
+  });
+  const A = {
+    anim(dur, paso, listo){
+      A.parar();
+      if (RM || !dur){ paso(1); if (listo) listo(); return; }
+      actual = { dur, paso, listo, ini:null }; b.despertar();
+    },
+    parar(){ actual = null; },
+    terminar(){ for (let n = 0; actual && n < 12; n++){ const a = actual; actual = null; a.paso(1); if (a.listo) a.listo(); } },
+    continuo(fn){ continuo = fn; b.despertar(); },
+    despertar: () => b.despertar(),
+    activo: () => !!actual
+  };
+  return A;
+}
+// Lleva a la vista el título de un paso o experimento recién abierto y le pasa el foco (sin perderlo al avanzar).
+function mostrarTitulo(t, modo){
+  t.tabIndex = -1; t.focus({ preventScroll:true });
+  const r = t.getBoundingClientRect();
+  const arriba = Celular.chico() && modo.classList.contains('pendiente') ? modo.querySelector('.bench').getBoundingClientRect().bottom : 0;
+  if (r.top < arriba + 4 || r.bottom > innerHeight - 8) scrollBy({ top: r.top - arriba - 56, behavior: RM ? 'auto' : 'smooth' });
+}
+const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}"></p>`;
+// Retroalimentación por opción: la correcta empieza con «¡Bien!»; cada incorrecta dice cuál eligió y cuál es la correcta.
+const textoFb = (g, p) => p === g.ok ? `¡Bien! ${g.fb[p]}` : `Elegiste la ${p.toUpperCase()}. ${g.fb[p]} La correcta es la ${g.ok.toUpperCase()}.`;
+// En las pestañas nuevas los datos de color no resaltan nada en el dibujo: no son paradas del tabulador.
+const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
+
+/* Pestaña con pasos que se abren en orden y predicciones que bloquean el avance (Dilatación y Transferencia).
+   o = { modo, suf, pasos, E, alto(W), dibujar(L, c, X) }. Cada paso: { k, t, uni?, gate?:{ id, opts:[[letra, texto,
+   código, respaldo]], ok, fb:{ letra: texto } }, body(), antes(E), despues?(E, X) (al responder o, si no hay
+   predicción, al entrar), exp?() (html tras responder), montar?(X), decir?(E, respondido), lienzo?:{ cerca(p, r),
+   mover(p), tecla(e), aria } }. */
+function montarPasos(o){
+  const $ = id => document.getElementById(id), suf = o.suf, modo = $(o.modo), cv = $('cv' + suf);
+  const E = o.E, P = o.pasos, S = { step:0, max:0, pred:{} };
+  const L = crearLienzo(cv, o.alto, draw), A = crearAnimador(cv);
+  const X = { E, S, A, L, cv, draw, modo, decir: () => describir() };
+  function draw(){ if (!L.W || !E.tipo) return; o.dibujar(L, colores(), X); }
+  const dots = $('dots' + suf);
+  P.forEach((s, n) => {
+    const li = document.createElement('li'), b = document.createElement('button');
+    b.type = 'button'; b.textContent = n + 1;
+    b.addEventListener('click', () => go(n, true)); li.appendChild(b); dots.appendChild(li);
+  });
+  function pintarDots(){
+    [...dots.querySelectorAll('button')].forEach((b, k) => {
+      b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+      b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al paso ${k + 1}: ${P[k].t}`);
+      if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    });
+  }
+  function nav(){
+    const s = P[S.step], falta = s.gate && !S.pred[s.gate.id];
+    $('prev' + suf).disabled = S.step === 0;
+    $('next' + suf).disabled = S.step === P.length - 1 || !!falta;
+    $('next' + suf).textContent = falta ? 'Elige una opción' : 'Siguiente';
+  }
+  function lienzoActivo(){
+    const s = P[S.step], a = !!s.lienzo;
+    cv.tabIndex = a ? 0 : -1;
+    cv.setAttribute('aria-label', a ? s.lienzo.aria : (s.aria || 'Dibujo del paso'));
+  }
+  function describir(){ const s = P[S.step]; decir($('desc' + suf), s.decir ? s.decir(E, !s.gate || !!S.pred[s.gate.id]) : ''); }
+  function go(n, foco){
+    if (n < 0 || n >= P.length || n > S.max) return;
+    A.parar(); A.continuo(null);
+    const s = P[n]; S.step = n;
+    for (const q of Object.keys(E)) delete E[q];
+    s.antes(E);
+    const g = s.gate, resp = g && S.pred[g.id];
+    $('k' + suf).innerHTML = `${s.k} de ${P.length}${s.uni ? ' <span class="uni">Para la UNI</span>' : ''}`;
+    $('t' + suf).textContent = s.t;
+    $('body' + suf).innerHTML = s.body() + (g ? opcionesHTML(g.opts, 'fb' + suf) + `<div id="res${suf}" class="body"></div>` : '');
+    sinParada($('body' + suf));
+    pintarDots(); lienzoActivo();
+    L.compactar(!!g && !resp);
+    if (g) prediccion(s, n);
+    if (s.despues && (!g || resp)){ s.despues(E, X); if (g) A.terminar(); }
+    if (s.montar) s.montar(X);
+    nav(); draw(); describir();
+    if (foco) mostrarTitulo($('t' + suf), modo);
+  }
+  function prediccion(s, n){
+    const g = s.gate, btns = [...$('body' + suf).querySelectorAll('.opt')];
+    const pintar = () => {
+      const p = S.pred[g.id]; if (!p) return;
+      btns.forEach(b => { b.disabled = true; if (b.dataset.k === g.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+      const fb = $('fb' + suf); fb.textContent = textoFb(g, p); fb.className = 'fb ' + (p === g.ok ? 'ok' : 'mal');
+      const res = $('res' + suf); res.innerHTML = s.exp ? s.exp() : ''; sinParada(res); if (s.alExp) s.alExp(X);
+    };
+    const t0 = Date.now();
+    btns.forEach(b => b.addEventListener('click', () => {
+      if (S.pred[g.id]) return;
+      const op = g.opts.find(q => q[0] === b.dataset.k);
+      S.pred[g.id] = op[0]; if (n + 1 > S.max) S.max = n + 1;
+      registrarPrediccion(g.id, op[0], op[0] === g.ok, op[2] || '', op[3] || '', t0);
+      pintar(); pintarDots(); nav(); L.compactar(false);
+      // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+      const fb = $('fb' + suf); fb.tabIndex = -1; fb.focus({ preventScroll:true });
+      const seguir = () => { if (s.despues) s.despues(E, X); draw(); if (!A.activo()) describir(); };
+      // En el celular, el dibujo sube a la vista y cambia un momento después (nucleo/celular.js).
+      Celular.alResponder(cv, seguir, () => S.step === n && !modo.hidden, { siNo: () => { if (S.step === n){ seguir(); A.terminar(); } } });
+    }));
+    pintar();
+  }
+  $('next' + suf).addEventListener('click', () => { if (S.step + 1 > S.max) S.max = S.step + 1; go(S.step + 1, true); });
+  $('prev' + suf).addEventListener('click', () => go(S.step - 1, true));
+  // Arrastre en los exploradores: solo cerca del asa (el resto del dibujo deja desplazar la página).
+  let agarrado = null;
+  Celular.arrastre(cv, {
+    activo: () => !!P[S.step].lienzo,
+    cerca: (p, r) => !!P[S.step].lienzo.cerca(p, r, E),
+    empezar: p => { A.terminar(); agarrado = P[S.step].lienzo.cerca(p, 40, E); },
+    mover: p => { P[S.step].lienzo.mover(p, agarrado, E, X); draw(); describir(); },
+    soltar: () => { agarrado = null; draw(); }
+  });
+  cv.addEventListener('keydown', e => {
+    const lz = P[S.step].lienzo; if (!lz) return;
+    if (lz.tecla(e, E, X)){ e.preventDefault(); A.terminar(); draw(); describir(); }
+  });
+  alRedibujarTema(draw);
+  // Al cambiar de pestaña, lo que se estaba animando salta a su final: nada queda a medias ni corriendo escondido.
+  addEventListener('modo', () => { if (modo.hidden){ A.terminar(); describir(); } else { L.resize(); A.despertar(); } });
+  X.go = go;
+  L.resize(); go(0);
+  return X;
+}
 </script>
 <script>
 /* ================= MODO 1: paso a paso =================
@@ -523,8 +763,7 @@ const $ = id => document.getElementById(id);
 const cv = $('cv');
 const INI = { mh:50, Th:-10, ma:200, Ta:50 };
 const S = Object.assign({ step:0, max:0, pred:null, hl:null, q:0, h:null, a:null, cruce:false, completo:false, fantasma:false, verL:false, explora:false }, INI);
-let anim = null;
-const L = crearLienzo(cv, altoMezcla, draw);
+const L = crearLienzo(cv, altoMezcla, draw), A1 = crearAnimador(cv);
 const cuerpos = () => ({
   hielo: { id:'hielo', sustancia:'agua', m:S.mh, T:S.Th, fase: S.Th === 0 ? 'hielo' : undefined },
   agua:  { id:'agua',  sustancia:'agua', m:S.ma, T:S.Ta } });
@@ -541,27 +780,22 @@ function draw(){
   dibujarMezcla(L, colores(), { hielo, agua, xmax:r.xmax, y0:r.y0, y1:r.y1, q:S.q, verH:S.h, verA:S.a,
     cruce:S.cruce, completo:S.completo, fantasma:S.fantasma || S.verL, marcas:true, hl:S.hl });
 }
-// Anima q (y las curvas que siguen a q) de un valor a otro.
+// Anima q (y las curvas que siguen a q) de un valor a otro (sobre Celular.bucle: se duerme fuera de la vista).
 function animar(desde, hasta, sigue, listo){
-  cancelAnimationFrame(anim);
   const fija = v => { S.q = v; if (sigue.h) S.h = v; if (sigue.a) S.a = v; };
-  if (RM){ fija(hasta); draw(); listo && listo(); return; }
-  const t0 = performance.now(), dur = 1700;
-  const tick = now => {
-    const t = Math.min(1, (now - t0)/dur), s = t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2;
-    fija(desde + (hasta - desde)*s); draw();
-    if (t < 1) anim = requestAnimationFrame(tick); else listo && listo();
-  };
-  anim = requestAnimationFrame(tick);
+  A1.anim(1700, f => { fija(desde + (hasta - desde)*suave(f)); draw(); }, listo);
 }
-const OPS = [['a', '39 °C'], ['b', '23 °C'], ['c', '20 °C, el promedio de −10 y 50'], ['d', '0 °C, porque queda hielo sin derretir']];
-// Error que representa cada opción incorrecta (tabla del informe).
-const ERR = { a:['Q7-olvida-calor-latente', 'hipotesis'], c:['Q4-promedio-simple', 'hipotesis'], d:['Q8-no-revisa-si-alcanza', 'hipotesis'] };
+// Opciones del paso 3: la correcta y lo que da cada error típico salen del motor (prediccionMezcla).
+// Las cuatro con la misma forma (solo la temperatura); la razón de cada una va en la retroalimentación.
+const PM = M.prediccionMezcla({ id:'hielo', sustancia:'agua', m:INI.mh, T:INI.Th }, { id:'agua', sustancia:'agua', m:INI.ma, T:INI.Ta });
+const OPS = [['a', `${fmt(PM.errores['Q7-olvida-calor-latente'])} °C`], ['b', `${fmt(PM.T)} °C`], ['c', `${fmt(PM.errores['Q4-promedio-simple'])} °C`], ['d', `${fmt(PM.errores['Q8-no-revisa-si-alcanza'])} °C`]];
+// Error que representa cada opción incorrecta (tabla del informe). A es la cara numérica de Q7, que está medido.
+const ERR = { a:['Q7-olvida-calor-latente', 'parcial'], c:['Q4-promedio-simple', 'hipotesis'], d:['Q8-no-revisa-si-alcanza', 'hipotesis'] };
 const FB = {
   b: '¡Bien! Sale 23 °C. Ahora veamos de dónde sale, tramo por tramo.',
-  a: 'Elegiste la A. 39 °C es lo que sale si olvidas que derretir el hielo cuesta calor (el calor latente). La correcta está marcada; mira la meseta que aparece en la gráfica.',
-  c: 'Elegiste la C. El promedio no sirve: hay cuatro veces más agua que hielo, y además derretir el hielo cuesta calor. La correcta está marcada.',
-  d: 'Elegiste la D. Quedaría hielo si al agua no le alcanzara el calor para derretirlo, pero aquí sí le alcanza; lo revisamos en el paso 6. La correcta está marcada.',
+  a: 'Elegiste la A. 39 °C es lo que sale si olvidas que derretir el hielo cuesta calor (el calor latente): 4000 cal que entran sin que el hielo cambie de temperatura. La correcta es la B; mira la meseta que aparece en la gráfica.',
+  c: 'Elegiste la C. 20 °C es el promedio de −10 y 50, y el promedio no sirve: hay cuatro veces más agua que hielo, y además derretir el hielo cuesta calor. La correcta es la B.',
+  d: 'Elegiste la D. Quedaría hielo a 0 °C si al agua no le alcanzara el calor para derretirlo, pero aquí sí le alcanza; lo revisamos en el paso 6. La correcta es la B.',
 };
 const steps = [
  { k:'Paso 1', t:'El problema', est:{ q:0 },
@@ -580,7 +814,8 @@ const steps = [
  { k:'Paso 3', t:'Antes de calcular, predice', est:{ q:0 }, gate:true,
    body:() => `<p>¿A qué temperatura crees que queda la mezcla?</p>
    <div class="opts">${OPS.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
-   <p class="fb" id="fb"></p>` },
+   <p class="fb" id="fb"></p>
+   <p class="fuente" id="fuente3" hidden>Olvidar el calor latente es la cara numérica de una idea medida: en Sídney, entre cerca de un tercio y la mitad de los universitarios de primer año cree que agregar calor siempre sube la temperatura (Georgiou y Sharma, 2010). Las opciones C y D son hipótesis nuestras.</p>` },
  { k:'Paso 4', t:'Tramo 1: el hielo sube hasta 0 °C', est:{ q:0, h:0 }, anim:{ a:0, b:250, sigue:{ h:true } },
    body:() => `<div class="eqs"><div class="eq">${V('Q','Q₁')} = ${V('m','m')}·${V('c','c<sub>hielo</sub>')}·Δ${V('T','T')} = ${V('m','50')}·${V('c','0,5')}·(0 − (${V('T','−10')})) = ${V('Q','250 cal')}</div></div>
    <p>Mientras sigue siendo hielo, cada caloría lo calienta: en la gráfica es una ${V('c','rampa')}. Con estas 250 cal llega justo a 0 °C, pero todavía es hielo.</p>
@@ -588,7 +823,7 @@ const steps = [
  { k:'Paso 5', t:'Tramo 2: el hielo se derrite, y su temperatura no cambia', est:{ q:250, h:250 }, anim:{ a:250, b:4250, sigue:{ h:true } },
    body:() => `<div class="eqs"><div class="eq">${V('Q','Q₂')} = ${V('m','m')}·${V('L','L<sub>f</sub>')} = ${V('m','50')}·${V('L','80')} = ${V('Q','4000 cal')}<span class="note">El tramo más caro, por lejos</span></div></div>
    <p>Mira el termómetro del hielo: entran 4000 cal y se queda en 0 °C. Ese calor no sube la temperatura; rompe el orden del hielo para volverlo líquido. En la gráfica es la ${V('L','meseta')}.</p>
-   <p class="aviso">Entre el 20 % y el 48 % de los universitarios de distintos grupos cree que agregar calor siempre sube la temperatura (Georgiou y Sharma, 2010, con 858 estudiantes en Sídney). En el examen, ese error es olvidar el término m·L.</p>` },
+   <p class="aviso">Entre cerca de un tercio y la mitad de los universitarios de primer año cree que agregar calor siempre sube la temperatura (Georgiou y Sharma, 2010, con 858 estudiantes en Sídney). En el examen, ese error es olvidar el término m·L.</p>` },
  { k:'Paso 6', t:'¿Le alcanza el calor al agua?', est:{ q:4250, h:4250, a:0 }, anim:{ a:0, b:10000, sigue:{ a:true }, q:false },
    body:() => `<div class="eqs">
      <div class="eq">Lo que pide el hielo para ser agua a 0 °C: ${V('Q','250 + 4000 = 4250 cal')}</div>
@@ -629,12 +864,12 @@ const steps = [
 const dots = $('dots');
 steps.forEach((s, n) => {
   const li = document.createElement('li'), b = document.createElement('button');
-  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
-  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+  b.type = 'button'; b.textContent = n + 1;
+  b.addEventListener('click', () => go(n, true)); li.appendChild(b); dots.appendChild(li);
 });
-function go(n){
+function go(n, foco){
   if (n < 0 || n >= steps.length || n > S.max) return;
-  cancelAnimationFrame(anim);
+  A1.parar();
   const s = steps[n]; S.step = n; S.hl = null; S.explora = !!s.explora;
   if (!s.explora) Object.assign(S, INI);
   Object.assign(S, { q:0, h:null, a:null, cruce:false, completo:false, fantasma:false }, s.est || {});
@@ -646,16 +881,15 @@ function go(n){
     const a = s.anim;
     if (a.q === false){
       // Solo se dibuja la curva del agua; el vaso se queda donde estaba.
-      cancelAnimationFrame(anim);
-      const t0 = performance.now(), dur = RM ? 0 : 1700, q0 = S.q;
-      const tick = now => { const t = dur ? Math.min(1, (now - t0)/dur) : 1; S.a = a.a + (a.b - a.a)*t; S.q = q0; draw(); if (t < 1) anim = requestAnimationFrame(tick); };
-      anim = requestAnimationFrame(tick);
+      const q0 = S.q;
+      A1.anim(1700, f => { S.a = a.a + (a.b - a.a)*f; S.q = q0; draw(); });
     } else animar(a.a, a.b, a.sigue, () => { if (s.despues) Object.assign(S, s.despues); draw(); describir(); });
   }
   if (s.gate) prediccion();
   L.compactar(s.gate && !S.pred);
   if (s.explora){ const sol = estadoFinal(); S.q = sol.intercambiado; Object.assign(S, { h:1e9, a:1e9, cruce:true, completo:false }); explorar(); }
   nav(); draw(); describir();
+  if (foco) mostrarTitulo($('stepT'), $('m1'));
 }
 function estadoFinal(){ const { hielo, agua } = cuerpos(); return M.equilibrio([hielo, agua]); }
 function describir(){
@@ -681,6 +915,7 @@ function prediccion(){
     if (!S.pred) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === 'b') b.classList.add('correct'); else if (b.dataset.k === S.pred) b.classList.add('wrong'); });
     const fb = $('fb'); fb.textContent = FB[S.pred]; fb.className = 'fb ' + (S.pred === 'b' ? 'ok' : 'mal');
+    $('fuente3').hidden = false;
   };
   const t0 = Date.now();
   btns.forEach(b => b.addEventListener('click', () => {
@@ -688,7 +923,8 @@ function prediccion(){
     S.pred = b.dataset.k; desbloquear(S.step + 1); pintar(); nav(); pintarDots();
     const e = ERR[S.pred] || ['', ''];
     registrarPrediccion('calor-paso3', S.pred, S.pred === 'b', e[0], e[1], t0);
-    $('next').focus({ preventScroll:Celular.chico() });
+    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+    const fb = $('fb'); fb.tabIndex = -1; fb.focus({ preventScroll:true });
     const paso = S.step; L.compactar(false); Celular.alResponder(L.cv, draw, () => S.step === paso);
   }));
   pintar();
@@ -696,7 +932,7 @@ function prediccion(){
 function explorar(){
   const body = $('stepBody');
   [['mh', 'mh'], ['th', 'Th'], ['ma', 'ma'], ['ta', 'Ta']].forEach(([id, k]) => {
-    $(id).addEventListener('input', () => { cancelAnimationFrame(anim); S[k] = +$(id).value; vivo(); });
+    $(id).addEventListener('input', () => { A1.parar(); S[k] = +$(id).value; vivo(); });
   });
   $('sinL').addEventListener('change', () => { S.verL = $('sinL').checked; draw(); });
   $('mezclar').addEventListener('click', () => {
@@ -737,8 +973,8 @@ function vivo(){
     <p class="hint">Sin el calor latente saldría ${fmt(sinL.T)} °C.</p>`;
   draw(); describir();
 }
-$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
-$('prev').addEventListener('click', () => go(S.step - 1));
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1, true); });
+$('prev').addEventListener('click', () => go(S.step - 1, true));
 function marcar(k){
   S.hl = k;
   document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
@@ -749,28 +985,37 @@ document.addEventListener('pointerout', e => { const t = e.target.closest && e.t
 document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
 document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
 alRedibujarTema(draw);
-addEventListener('modo', () => L.resize());
+// Al cambiar de pestaña, la animación salta a su final (nada queda corriendo escondido).
+addEventListener('modo', () => { if ($('m1').hidden) A1.terminar(); else L.resize(); });
 L.resize(); go(0);
 })();
 </script>
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
-   Las preguntas salen de docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md (Q7, Q9, Q4, Q8 y Q1).
-   La escena cambia recién después de responder. Lo que se dibuja sale de MotorCalor. */
+   Las preguntas salen de docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md (Q7, Q9, Q4, Q8, Q1 y Q10).
+   La escena cambia recién después de responder. Lo que se dibuja, y los distractores numéricos, salen de MotorCalor.
+   Las animaciones corren sobre Celular.bucle (se duermen fuera de la vista); el hervor sigue mientras se vea. */
 (function(){
 const $ = id => document.getElementById(id);
 const cv = $('cv2');
-const L = crearLienzo(cv, W => W >= 560 ? clamp(W*0.56, 300, 440) : 450, draw);
-let anim = null;
+const L = crearLienzo(cv, W => W >= 560 ? clamp(W*0.56, 300, 440) : 450, draw), A = crearAnimador(cv);
 const E = {};
 const CIUDADES = [['Lima', 150], ['Arequipa', 2335], ['Cusco', 3400], ['Juliaca', 3825], ['La Rinconada', 5100]];
+const HIELO_MAS = { id:'hielo', sustancia:'agua', m:160, T:-10 }, AGUA_MAS = { id:'agua', sustancia:'agua', m:200, T:50 };
+const PMH = M.prediccionMezcla(HIELO_MAS, AGUA_MAS);
+const TAZAS = { T1:90, T2:50, Tamb:20, tau:10, tmax:40 };
+const TZ = M.enfriamiento({ T0:TAZAS.T1, Tamb:TAZAS.Tamb, tau:TAZAS.tau, t:0, otra:TAZAS.T2 });
+const fuente = t => `<p class="fuente">${t}</p>`;
 const EXPS = [
   { id:'meseta', corto:'Sigo calentando',
     q:'Una olla con 100 g de hielo a −20 °C está sobre una hornilla que le da calor parejo, 200 cal cada segundo. Cuando el hielo ya está a 0 °C y empieza a derretirse, ¿qué hace el termómetro mientras queda hielo?',
-    opts:[['a','Sigue subiendo, despacio, porque sigue entrando calor','Q7-calor-siempre-sube-T','documentado'],
-          ['b','Se queda en 0 °C hasta que se derrite todo',null],
-          ['c','Baja, porque el hielo que se derrite enfría','derretir-enfria','hipotesis']],
+    opts:[['a','Sigue subiendo, despacio','Q7-calor-siempre-sube-T','documentado'],
+          ['b','Se queda en 0 °C',null],
+          ['c','Baja','derretir-enfria','hipotesis']],
     ok:'b',
+    fb:{ b:'Mientras queda hielo, el termómetro marca 0 °C: el calor que entra se usa en derretir, no en calentar.',
+         a:'Sigue entrando calor, sí, pero mientras queda hielo ese calor solo derrite: la temperatura no se mueve de 0 °C hasta que se derrite todo.',
+         c:'El hielo que se derrite no enfría la olla: la hornilla sigue dando calor y la mezcla de hielo y agua se queda en 0 °C.' },
     antes:() => Object.assign(E, { tipo:'ollas', ollas:[{ id:'o1', sustancia:'agua', m:100, T:-20, nombre:'100 g' }], P:200, unidad:'s', tmax:300, t:0, y0:-30, y1:110, ver:false }),
     despues:() => { E.ver = true; correr(0, E.tmax, 9000); },
     ctrl:() => `<div class="slider"><label for="tt"><span>Tiempo en la hornilla</span><output id="tt-o"></output></label><input id="tt" type="range" min="0" max="${E.tmax}" step="1" value="${E.t}"></div>
@@ -778,13 +1023,16 @@ const EXPS = [
       <p><button type="button" class="btn" id="repetir">Repetir desde el inicio</button></p>`,
     exp:`<p>Hay dos mesetas. En 0 °C, durante 40 s, entra calor y el termómetro no se mueve: ese calor derrite el hielo. En 100 °C pasa lo mismo mientras el agua hierve, y esa meseta es mucho más larga: convertir 1 g de agua en vapor cuesta 540 cal, casi siete veces lo que cuesta derretirlo.</p>
       <p>Las rampas tienen distinta pendiente: el hielo y el vapor se calientan el doble de rápido que el agua líquida, porque su calor específico es la mitad.</p>
-      <p class="fuente">Entre el 20 % y el 48 % de los universitarios de distintos grupos cree que agregar energía siempre sube la temperatura (Georgiou y Sharma, 2010, 858 estudiantes en Sídney). En México, ninguno de 113 escolares mencionó que la temperatura se mantiene al hervir o al congelarse (Jara Guerrero, 1991). Que el termómetro siga subiendo después de hervir lo cree entre el 19 % y el 25 % (Georgiou y Sharma, 2010).</p>` },
+      ${fuente('En Sídney, entre cerca de un tercio y la mitad de los universitarios de primer año cree que agregar energía siempre sube la temperatura (Georgiou y Sharma, 2010, 858 estudiantes). En México, ninguno de 113 escolares mencionó que la temperatura se mantiene al hervir o al congelarse (Jara Guerrero, 1991). Que el termómetro siga subiendo después de hervir lo cree entre el 19 % y el 25 % (Georgiou y Sharma, 2010). Que el hielo que se derrite enfríe la olla es hipótesis nuestra.')}` },
   { id:'juliaca', corto:'Hiervo en Juliaca',
     q:'En Lima, el agua de una olla destapada hierve a unos 100 °C. Si pones la misma olla a hervir en Juliaca, a 3825 m de altura, ¿a qué temperatura hierve?',
-    opts:[['a','A 100 °C: el agua siempre hierve a 100 °C','Q9-siempre-hierve-a-100','documentado'],
+    opts:[['a','A 100 °C','Q9-siempre-hierve-a-100','documentado'],
           ['b','A menos de 100 °C',null],
-          ['c','A más de 100 °C, porque en la altura hace más frío','altura-hierve-mas','hipotesis']],
+          ['c','A más de 100 °C','altura-hierve-mas','hipotesis']],
     ok:'b',
+    fb:{ b:'En la altura hay menos aire encima: al agua le basta menos temperatura para hervir. En Juliaca, unos 87 °C.',
+         a:'100 °C es a nivel del mar. Con menos aire encima, el agua hierve antes: en Juliaca, a unos 87 °C.',
+         c:'El frío del aire no cambia a qué temperatura hierve el agua; lo que la cambia es la presión, que en la altura es menor. Por eso hierve a menos de 100 °C.' },
     antes:() => Object.assign(E, { tipo:'altura', alt:150, ver:false }),
     despues:() => { E.ver = true; correrAlt(150, 3825); },
     ctrl:() => `<div class="slider"><label for="al"><span>Altitud</span><output id="al-o"></output></label><input id="al" type="range" min="0" max="5200" step="25" value="${E.alt}"></div>
@@ -792,13 +1040,16 @@ const EXPS = [
       <p id="al-info" class="hint"></p>`,
     exp:`<p>El agua hierve cuando su vapor empuja tan fuerte como el aire que tiene encima. En la altura hay menos aire encima, así que le basta con menos temperatura: en Juliaca hierve a unos 87 °C.</p>
       <p>Por eso en la sierra la papa y los frejoles tardan más: el agua hirviendo está más fría. Subir el fuego no ayuda, porque mientras hierve la temperatura no sube. La olla a presión sí ayuda: sube la presión y el agua hierve a más de 100 °C.</p>
-      <p class="fuente">Que el agua siempre hierve a la misma temperatura lo cree el 44 % y el 34 % de dos grupos de primer año en Sídney (Georgiou y Sharma, 2010). La curva sale de un modelo aproximado (atmósfera estándar y ecuación de Antoine para el agua); en Juliaca da 87 °C, cerca de lo que se mide.</p>` },
+      ${fuente('Que el agua siempre hierve a la misma temperatura lo cree el 44 % y el 34 % de dos grupos de primer año en Sídney (Georgiou y Sharma, 2010). Que hierva a más de 100 °C en la altura es hipótesis nuestra. La curva sale de un modelo aproximado (atmósfera estándar y ecuación de Antoine para el agua); en Juliaca da 87 °C, cerca de lo que se mide.')}` },
   { id:'cantidad', corto:'Más agua en la olla',
     q:'Dos ollas iguales, una con 1 litro de agua y otra con 2 litros, se ponen en dos hornillas iguales a nivel del mar. Un rato después, las dos ya están hirviendo. ¿Cuál marca más en el termómetro?',
     opts:[['a','La de 2 litros','Q4-mas-cantidad-mas-T','documentado'],
           ['b','Las dos marcan lo mismo',null],
           ['c','La de 1 litro','Q4-mas-cantidad-menos-T','documentado']],
     ok:'b',
+    fb:{ b:'Las dos están a 100 °C. La de 2 litros necesitó el doble de calor para llegar, pero hierve a la misma temperatura.',
+         a:'Más agua necesita más calor para llegar a hervir, pero no hierve más caliente: las dos marcan 100 °C.',
+         c:'La de 1 litro llega antes a hervir, pero una vez que las dos hierven, marcan lo mismo: 100 °C.' },
     antes:() => Object.assign(E, { tipo:'ollas', ollas:[{ id:'o1', sustancia:'agua', m:1000, T:20, nombre:'1 L' }, { id:'o2', sustancia:'agua', m:2000, T:20, nombre:'2 L' }],
       P:12000, unidad:'min', tmax:20, t:0, y0:0, y1:110, ver:false }),
     despues:() => { E.ver = true; correr(0, E.tmax, 7000); },
@@ -808,61 +1059,86 @@ const EXPS = [
       <p><button type="button" class="btn" id="repetir">Repetir desde el inicio</button></p>`,
     exp:`<p>Las dos llegan a 100 °C y ahí se quedan. La cantidad no cambia a qué temperatura hierve el agua; cambia <b>cuánto calor</b> hace falta para llegar: la de 2 litros necesita el doble, así que con la misma hornilla tarda el doble.</p>
       <p>La temperatura dice qué tan caliente está algo; el calor es la energía que pasa. Un vaso y una olla de agua hirviendo están a la misma temperatura, aunque la olla guarde mucha más energía.</p>
-      <p class="fuente">En Panamá, ante dos ollas hirviendo, una con el doble de agua, solo el 26 % de 241 futuros profesores dijo que marcan igual; el 34 % dijo que marca más la de más agua y el 26 %, que marca menos (Rodríguez y Díaz-Higson, 2012).</p>` },
+      ${fuente('En Panamá, ante dos ollas hirviendo, una con el doble de agua, solo el 26 % de 241 futuros profesores dijo que marcan igual; el 34 % dijo que marca más la de más agua y el 26 %, que marca menos (Rodríguez y Díaz-Higson, 2012).')}` },
   { id:'mas-hielo', corto:'Echo más hielo',
     q:'En el problema del paso a paso, 50 g de hielo a −10 °C en 200 g de agua a 50 °C daban 23 °C. Si en lugar de 50 g echas 160 g de hielo (también a −10 °C), ¿cómo queda la mezcla?',
-    opts:[['a','A −10 °C: es lo que da la ecuación de siempre','Q8-no-revisa-si-alcanza','hipotesis'],
-          ['b','A 0 °C, con hielo y agua juntos',null],
-          ['c','A 0 °C, con todo el hielo derretido justo','funde-todo-justo','hipotesis'],
-          ['d','Sobre 0 °C, pero más fría que 23 °C','mas-hielo-sobre-cero','hipotesis']],
+    opts:[['a',`A ${fmt(PMH.errores['Q8-no-revisa-si-alcanza'])} °C, todo líquido`,'Q8-no-revisa-si-alcanza','hipotesis'],
+          ['b',`A ${fmt(PMH.T)} °C, con hielo y agua`,null],
+          ['c',`A ${fmt(PMH.errores['funde-todo-justo'])} °C, todo líquido`,'funde-todo-justo','hipotesis'],
+          ['d','Entre 0 °C y 23 °C, todo líquido','mas-hielo-sobre-cero','hipotesis']],
     ok:'b',
+    fb:{ b:`Al agua no le alcanza el calor para derretir 160 g de hielo: baja a 0 °C y se queda ahí, con ${fmt(PMH.hielo, 0)} g de hielo flotando.`,
+         a:'−10 °C es lo que da la ecuación de siempre, pero es imposible: supone que todo el hielo se derritió y que el agua líquida quedó bajo cero. El calor no alcanzó.',
+         c:`Para que se derrita todo justo, el calor del agua tendría que alcanzar exacto. Aquí falta: quedan ${fmt(PMH.hielo, 0)} g de hielo.`,
+         d:'Para quedar sobre 0 °C tendría que derretirse todo el hielo, y no alcanza: el agua da como máximo 10 000 cal y el hielo pide 13 600.' },
     antes:() => Object.assign(E, { tipo:'mezcla', mh:160, ver:false, q:0 }),
     despues:() => { E.ver = true; const s = solMezcla(); correrQ(0, s.intercambiado); },
     ctrl:() => `<div class="slider"><label for="mh2"><span>Masa del hielo</span><output id="mh2-o"></output></label><input id="mh2" class="r-m" type="range" min="10" max="300" step="5" value="${E.mh}"></div>
       <div id="mh2-info" class="body"></div>`,
     exp:`<p>El agua solo puede dar 10 000 cal hasta llegar a 0 °C. Para derretir 160 g de hielo hacen falta 800 + 12 800 = 13 600 cal: no alcanza. El agua baja a 0 °C y ahí se detiene, con 45 g de hielo flotando.</p>
       <p>La ecuación de siempre (calor ganado = calor cedido, con todo líquido al final) da −10 °C: imposible, porque supone que el hielo se derritió entero y que el agua quedó bajo cero. Antes de plantearla, compara lo que pide el hielo con lo que puede dar el agua.</p>
-      <p class="fuente">No revisar si alcanza el calor es un error que suponemos: no hay un estudio con porcentaje. Se apoya en otra idea medida: que el agua líquida no puede estar a 0 °C (entre el 25 % y el 32 % en primer año; Georgiou y Sharma, 2010).</p>` },
+      ${fuente('No revisar si alcanza el calor es un error que suponemos: no hay un estudio con porcentaje; las tres opciones incorrectas son hipótesis nuestras. Se apoyan en otra idea medida: que el agua líquida no puede estar a 0 °C (entre el 25 % y el 32 % en primer año; Georgiou y Sharma, 2010).')}` },
   { id:'tocar', corto:'Toco el metal',
     q:'Una placa de aluminio, una tabla de madera y una chompa de lana pasaron toda la noche en la misma aula, a 20 °C. Les pegas un termómetro a cada una. ¿Qué marcan?',
     opts:[['a','El aluminio, menos de 20 °C; la lana, más de 20 °C','Q1-cada-material-su-T','documentado'],
           ['b','Los tres, 20 °C',null],
-          ['c','El aluminio, menos; los otros dos, 20 °C','Q1-parcial','documentado'],
-          ['d','Depende del tamaño de cada objeto','Q4-depende-del-tamano','documentado']],
+          ['c','El aluminio, menos; los otros dos, 20 °C','Q1-parcial','parcial'],
+          ['d','Depende del tamaño de cada objeto','Q4-depende-del-tamano','parcial']],
     ok:'b',
+    fb:{ b:'Después de horas en la misma aula, los tres están a 20 °C: el termómetro marca lo mismo aunque la mano los sienta distinto.',
+         a:'Así los siente la mano, pero el termómetro marca 20 °C en los tres: después de horas, están en equilibrio con el aula.',
+         c:'El aluminio se siente más frío porque se lleva rápido el calor de la mano, pero está a 20 °C, como los otros dos.',
+         d:'El tamaño cambia cuánto calor hace falta para calentar o enfriar algo, no su temperatura: después de horas, todos están a 20 °C.' },
     antes:() => Object.assign(E, { tipo:'tocar', Ta:20, ver:false }),
     despues:() => { E.ver = true; },
     ctrl:() => `<div class="slider"><label for="aula"><span>Temperatura del aula</span><output id="aula-o"></output></label><input id="aula" class="r-T" type="range" min="0" max="45" step="1" value="${E.Ta}"></div>
       <p id="tocar-info" class="hint"></p>`,
     exp:`<p>Después de horas en la misma aula, todo está a la misma temperatura: equilibrio térmico. Lo que cambia es qué tan rápido cada material saca calor de tu mano, que está a unos 34 °C. El aluminio conduce muy bien: se lleva el calor de la piel y la piel se enfría, por eso lo sientes frío. La lana casi no se lo lleva.</p>
       <p>Sube el aula a 43 °C: ahora el aluminio se siente el más caliente, porque es el que más calor le pasa a la mano. Tu mano mide cuánto calor entra o sale, no la temperatura.</p>
-      <p class="fuente">Con placas de madera y aluminio en la misma aula, solo el 5 % de 241 futuros profesores dijo que marcan igual; el 77 % dijo que marcan distinto (Rodríguez y Díaz-Higson, 2012). En Sídney, entre el 41 % y el 44 % de primer año dijo que las mayólicas del baño están más frías que el tapete (Georgiou y Sharma, 2010). Lo que "siente" la mano sale de un modelo aproximado (temperatura de contacto con la efusividad de cada material).</p>` },
+      ${fuente('Con placas de madera y aluminio en la misma aula, solo el 5 % de 241 futuros profesores dijo que marcan igual; el 77 % dijo que marcan distinto, una cifra que junta a quienes piensan como en la A y como en la C (Rodríguez y Díaz-Higson, 2012). En Sídney, entre el 41 % y el 44 % de primer año dijo que las mayólicas del baño están más frías que el tapete (Georgiou y Sharma, 2010). La C es una forma de esa misma idea, sin cifra propia; la D sale de otra pregunta: el 15 % dijo que dos cubitos del congelador, uno el doble del otro, están a distinta temperatura (Rodríguez y Díaz-Higson, 2012). Lo que "siente" la mano sale de un modelo aproximado (temperatura de contacto con la efusividad de cada material).')}` },
+  { id:'tazas', corto:'Dos tazas',
+    q:`Dos tazas iguales con la misma cantidad de té, una a ${TAZAS.T1} °C y otra a ${TAZAS.T2} °C, en un aula a ${TAZAS.Tamb} °C. Justo al empezar, ¿cuál se enfría más rápido, en grados por minuto?`,
+    opts:[['a',`La de ${TAZAS.T1} °C, porque está más lejos de la temperatura del aula`,null],
+          ['b','Las dos al mismo ritmo, porque las tazas son iguales','Q10-mismo-ritmo','parcial'],
+          ['c',`La de ${fmt(TZ.errores['TC4-la-tibia-primero'], 0)} °C, porque le falta menos para llegar a ${TAZAS.Tamb} °C`,'TC4-la-tibia-primero','hipotesis'],
+          ['d','Ninguna al principio, porque primero calientan la taza','TC4-primero-calienta-la-taza','hipotesis']],
+    ok:'a',
+    fb:{ a:`El calor sale más rápido mientras más grande es la diferencia con el aula: ${fmt(TZ.ritmo, 0)} °C por minuto contra ${fmt(TZ.errores['Q10-mismo-ritmo'], 0)} °C por minuto al inicio. Por eso la curva de la caliente empieza más empinada y se va aplanando.`,
+         b:`Las tazas son iguales, pero no la diferencia de temperatura con el aula: ${TAZAS.T1 - TAZAS.Tamb} °C contra ${TAZAS.T2 - TAZAS.Tamb} °C. Esa diferencia empuja el calor.`,
+         c:'Le falta menos, sí, pero va más lento: con poca diferencia de temperatura, sale poco calor por minuto.',
+         d:`La taza ya estaba caliente por el té: el enfriamiento empieza de una vez, y más rápido en la de ${TAZAS.T1} °C.` },
+    antes:() => Object.assign(E, { tipo:'tazas', T2:TAZAS.T2, t:0, ver:false }),
+    despues:() => { E.ver = true; correrTazas(); },
+    ctrl:() => `<div class="slider"><label for="tz2"><span>Temperatura inicial de la segunda taza</span><output id="tz2-o"></output></label><input id="tz2" class="r-T" type="range" min="25" max="95" step="1" value="${E.T2}"></div>
+      <div class="chips" id="tz-chips"></div>
+      <p><button type="button" class="btn" id="repetir">Repetir desde el inicio</button></p>`,
+    exp:`<p>Cada minuto, una taza pierde más calor mientras más caliente está respecto del aula (ley de enfriamiento de Newton): el ritmo es proporcional a la diferencia de temperatura. Al inicio, la de 90 °C baja 7 °C por minuto y la de 50 °C, 3 °C por minuto. Las dos curvas se van aplanando a medida que se acercan a 20 °C, y ninguna baja de 20 °C.</p>
+      <p>Mueve la segunda taza: con la misma temperatura inicial, las dos curvas coinciden.</p>
+      ${fuente('En Sídney, cerca de un tercio de dos grupos de primer año (32 % de 248 y 29 % de 479) eligió que todo se enfría al mismo ritmo (Georgiou y Sharma, 2010). El informe no detalla el enunciado de esa pregunta, así que no sabemos si compara dos cuerpos a distinta temperatura: por eso la tomamos como un dato vecino. Las opciones C y D son hipótesis nuestras. El modelo usa una constante de tiempo de 10 minutos, igual para las dos tazas.')}` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
 function reiniciar(x){ for (const k of Object.keys(E)) delete E[k]; x.antes(); }
 function solMezcla(){ return M.equilibrio(cuerposMezcla()); }
-function cuerposMezcla(){ return [{ id:'hielo', sustancia:'agua', m:E.mh, T:-10 }, { id:'agua', sustancia:'agua', m:200, T:50 }]; }
+function cuerposMezcla(){ return [Object.assign({}, HIELO_MAS, { m:E.mh }), Object.assign({}, AGUA_MAS)]; }
 
-function correr(desde, hasta, dur){
-  cancelAnimationFrame(anim);
-  if (RM){ E.t = hasta; sincronizar(); return; }
-  const t0 = performance.now();
-  const tick = now => { const t = Math.min(1, (now - t0)/dur); E.t = desde + (hasta - desde)*t; E.reloj = now/1000; sincronizar(); if (t < 1) anim = requestAnimationFrame(tick); };
-  anim = requestAnimationFrame(tick);
+function correr(desde, hasta, dur){ A.anim(dur, f => { E.t = desde + (hasta - desde)*f; sincronizar(); }); }
+function correrAlt(desde, hasta){ A.anim(2200, f => { E.alt = Math.round(desde + (hasta - desde)*suave(f)); sincronizar(); }); }
+function correrQ(desde, hasta){ A.anim(2000, f => { E.q = desde + (hasta - desde)*suave(f); sincronizar(); }); }
+function correrTazas(){ A.anim(5000, f => { E.t = TAZAS.tmax*f; sincronizar(); }); }
+// Burbujas, vapor y llama: siguen mientras se vean (Celular.bucle se duerme fuera de la vista).
+function hierveAlgo(){
+  if (E.tipo === 'altura') return true;
+  if (E.tipo !== 'ollas' || !E.ver) return false;
+  return E.ollas.some(o => { const st = M.agregarCalor(o, E.P*E.t); return Math.abs(st.T - 100) < 1e-6 && st.vapor > 1e-6; }) || (E.t > 0 && E.t < E.tmax);
 }
-function correrAlt(desde, hasta){
-  cancelAnimationFrame(anim);
-  if (RM){ E.alt = hasta; sincronizar(); return; }
-  const t0 = performance.now(), dur = 2200;
-  const tick = now => { const t = Math.min(1, (now - t0)/dur), s = t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2; E.alt = Math.round(desde + (hasta - desde)*s); E.reloj = now/1000; sincronizar(); if (t < 1) anim = requestAnimationFrame(tick); };
-  anim = requestAnimationFrame(tick);
-}
-function correrQ(desde, hasta){
-  cancelAnimationFrame(anim);
-  if (RM){ E.q = hasta; sincronizar(); return; }
-  const t0 = performance.now(), dur = 2000;
-  const tick = now => { const t = Math.min(1, (now - t0)/dur), s = t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2; E.q = desde + (hasta - desde)*s; sincronizar(); if (t < 1) anim = requestAnimationFrame(tick); };
-  anim = requestAnimationFrame(tick);
+A.continuo(dt => { if (!hierveAlgo()) return false; E.reloj = (E.reloj || 0) + dt; if (!A.activo()) draw(); return true; });
+
+// Leyenda: hasta responder «Sigo calentando», no dice qué hace la temperatura en una meseta.
+function leyenda(){
+  const visto = !!S.pred.meseta, tz = EXPS[S.k].id === 'tazas';
+  $('ley2').innerHTML = `<span><i style="background:var(--c-T)"></i>T · temperatura</span>` + (tz ? '' : `<span><i style="background:var(--c-Q)"></i>Q · calor</span>`
+    + (visto ? `<span><i style="background:var(--c-c)"></i>rampa: sube o baja T</span><span><i style="background:var(--c-L)"></i>meseta: cambia de fase, T fija</span>`
+             : `<span><i style="background:var(--c-c)"></i>c · calor específico</span><span><i style="background:var(--c-L)"></i>L · calor latente</span>`));
 }
 
 function zonas(W, H){
@@ -877,7 +1153,7 @@ function draw(){
     const pide = M.calorNecesario(hielo, 0, 'liquido');
     dibujarMezcla(L, c, { hielo, agua, xmax: Math.max(16000, Math.ceil(Math.max(pide, s.intercambiado)*1.2/2000)*2000), y0:-15, y1:55, q:E.q,
       verH: E.ver ? 1e9 : null, verA: E.ver ? 1e9 : null, cruce: E.ver && E.q >= s.intercambiado - 1e-6, marcas:true });
-    $('desc2').textContent = E.ver ? describirMezcla(s, hielo) : '';
+    decir($('desc2'), E.ver ? describirMezcla(s, hielo) : '160 g de hielo a −10 °C se echan en 200 g de agua a 50 °C.');
     return;
   }
   const { ctx, W, H } = L, z = zonas(W, H);
@@ -885,6 +1161,7 @@ function draw(){
   if (E.tipo === 'ollas') drawOllas(ctx, c, z);
   else if (E.tipo === 'altura') drawAltura(ctx, c, z);
   else if (E.tipo === 'tocar') drawTocar(ctx, c);
+  else if (E.tipo === 'tazas') drawTazas(ctx, c, z);
 }
 function drawOllas(ctx, c, z){
   const n = E.ollas.length, iz = z.izq, ancho = iz.w/n, R = { min:E.y0, max:E.y1 };
@@ -896,7 +1173,7 @@ function drawOllas(ctx, c, z){
     const cx = iz.x + ancho*(j + .5) - 12, gw = Math.min(ancho*0.6, 170), gh = Math.min(iz.h - 90, gw*1.05), by = iz.y + iz.h - 40;
     const hierve = E.ver && Math.abs(s.T - 100) < 1e-6 && s.vapor > 1e-6;
     recipiente(ctx, c, cx, by, gw, gh, { liquido:s.liquido, hielo:s.hielo, hielo0:o.m, cap:Math.max(...E.ollas.map(x => x.m))*1.2, cubos:5,
-      olla:true, fuego: E.ver && E.t > 0 && E.t < E.tmax, hierve, t:E.reloj || 0 });
+      olla:true, fuego: E.ver && E.t > 0, hierve, t:E.reloj || 0 });
     termometro(ctx, c, cx + gw/2 + 24, by - gh - 4, gh + 4, E.ver || E.t === 0 ? s.T : NaN, R, '', false);
     ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(o.nombre, cx, by + 22);
     if (!E.ver) return;
@@ -907,7 +1184,7 @@ function drawOllas(ctx, c, z){
     textos.push([x, y, o.nombre]);
   });
   textos.forEach(([x, y, t], j) => rotulo(ctx, c, Math.min(x + 8, z.graf.x + z.graf.w - 30), y + (j ? 14 : -14), t, c.ink, 'left'));
-  $('desc2').textContent = E.ollas.map(o => { const s = M.agregarCalor(o, E.P*E.t); return `${o.nombre}: ${fmt(s.T)} °C`; }).join('; ');
+  decir($('desc2'), E.ver ? E.ollas.map(o => { const s = M.agregarCalor(o, E.P*E.t); return `${o.nombre}: ${fmt(s.T, 0)} °C`; }).join('; ') : 'Ollas sobre la hornilla, todavía sin calentar.');
 }
 function drawAltura(ctx, c, z){
   const r = M.ebullicion(E.alt), iz = z.izq;
@@ -919,7 +1196,7 @@ function drawAltura(ctx, c, z){
   ctx.fillText(lugar ? `${lugar[0]} · ${fmt(E.alt, 0)} m` : `${fmt(E.alt, 0)} m`, cx, by + 22);
   const ej = ejes(ctx, c, z.graf, { x0:0, x1:5200, y0:80, y1:102 },
     { x:'altitud (m)', colX:c.muted, y:'T de ebullición (°C)', colY:c.T, pasoX:1000, marcas:[100] });
-  if (!E.ver){ rotulo(ctx, c, z.graf.x + z.graf.w/2, z.graf.y + z.graf.h/2, 'Responde para ver la curva', c.muted); return; }
+  if (!E.ver){ rotulo(ctx, c, z.graf.x + z.graf.w/2, z.graf.y + z.graf.h/2, 'Responde para ver la curva', c.muted); decir($('desc2'), 'Una olla hirviendo en Lima, a 150 m de altura.'); return; }
   ctx.save(); ctx.strokeStyle = c.T; ctx.lineWidth = 3; ctx.beginPath();
   for (let h = 0; h <= 5200; h += 100){ const T = M.ebullicion(h).T; h ? ctx.lineTo(ej.X(h), ej.Y(T)) : ctx.moveTo(ej.X(h), ej.Y(T)); }
   ctx.stroke(); ctx.restore();
@@ -929,7 +1206,7 @@ function drawAltura(ctx, c, z){
     if (z.graf.w > 300 || j % 2 === 1){ const al = x > z.graf.x + z.graf.w - 60 ? 'right' : j === 0 ? 'left' : 'center'; rotulo(ctx, c, al === 'right' ? x - 4 : al === 'left' ? x + 6 : x, y + (j % 2 ? -14 : 16), n, c.muted, al, 600); }
   });
   punto(ctx, ej.X(E.alt), ej.Y(r.T), 6, c.T, c.card);
-  $('desc2').textContent = `A ${fmt(E.alt, 0)} m de altura, el agua hierve a ${fmt(r.T)} °C.`;
+  decir($('desc2'), `A ${fmt(E.alt, 0)} m de altura, el agua hierve a ${fmt(r.T, 0)} °C.`);
 }
 function drawTocar(ctx, c){
   const { W, H } = L, mats = [['aluminio', 'placa de aluminio'], ['madera', 'tabla de madera'], ['lana', 'chompa de lana']];
@@ -974,7 +1251,40 @@ function drawTocar(ctx, c){
     ctx.font = `800 12px ${c.mono}`; ctx.fillStyle = c.T; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
     ctx.fillText(`${col < 170 ? 'siente' : 'la mano siente'} ${fmt(Tc, 0)} °C`, cx, oy + oh + 26);
   });
-  $('desc2').textContent = E.ver ? `Los tres marcan ${fmt(E.Ta, 0)} °C. ` + mats.map(([k, n]) => `${n}: la mano siente ${fmt(M.contacto(Tm, E2.piel, E.Ta, E2[k]), 0)} °C`).join('; ') + '.' : '';
+  decir($('desc2'), E.ver ? `Los tres marcan ${fmt(E.Ta, 0)} °C. ` + mats.map(([k, n]) => `${n}: la mano siente ${fmt(M.contacto(Tm, E2.piel, E.Ta, E2[k]), 0)} °C`).join('; ') + '.' : 'Una placa de aluminio, una tabla de madera y una chompa de lana, cada una con su termómetro, todavía sin lectura.');
+}
+// Dos tazas: los termómetros y la gráfica T–t, vacía hasta responder; después, las curvas de Newton y sus tangentes en t = 0.
+function drawTazas(ctx, c, z){
+  const iz = z.izq, R = { min:0, max:100 }, tazas = [[TAZAS.T1, 'taza 1'], [E.T2, 'taza 2']];
+  tazas.forEach(([T0, nombre], j) => {
+    const cx = iz.x + iz.w*(j ? 0.72 : 0.3), by = iz.y + iz.h - 30, w = Math.min(iz.w*0.22, 80), h = Math.min(iz.h*0.4, 70);
+    const T = E.ver ? M.enfriamiento({ T0, Tamb:TAZAS.Tamb, tau:TAZAS.tau, t:E.t }).T : T0;
+    ctx.save();
+    rr(ctx, cx - w/2, by - h, w, h, [3, 3, 14, 14]); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.olla; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = c.madera; ctx.globalAlpha = .55; ctx.fillRect(cx - w/2 + 3, by - h + 8, w - 6, h - 12); ctx.globalAlpha = 1;
+    ctx.beginPath(); ctx.arc(cx + w/2 + 4, by - h/2, h*0.22, -Math.PI/2, Math.PI/2); ctx.strokeStyle = c.olla; ctx.lineWidth = 3; ctx.stroke();
+    ctx.restore();
+    termometro(ctx, c, cx - w/2 - 14, by - h - 60, h + 60, T, R, '', false);
+    ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(nombre, cx, by + 6);
+  });
+  rotulo(ctx, c, iz.x + iz.w - 6, iz.y + 12, `aula a ${TAZAS.Tamb} °C`, c.T, 'right', 700);
+  const ej = ejes(ctx, c, z.graf, { x0:0, x1:TAZAS.tmax, y0:0, y1:100 }, { x:'t (min)', colX:c.muted, y:'T (°C)', colY:c.T, marcas:[TAZAS.Tamb] });
+  if (!E.ver){
+    rotulo(ctx, c, z.graf.x + z.graf.w/2, z.graf.y + z.graf.h/2, 'Responde para ver las curvas', c.muted);
+    decir($('desc2'), `Dos tazas de té, a ${TAZAS.T1} °C y a ${fmt(E.T2, 0)} °C, en un aula a ${TAZAS.Tamb} °C. La gráfica todavía está vacía.`); return;
+  }
+  tazas.forEach(([T0], j) => {
+    const pts = M.curvaEnfriamiento(T0, TAZAS.Tamb, TAZAS.tau, Math.max(E.t, 1e-6), 80);
+    ctx.save(); ctx.strokeStyle = c.T; ctx.lineWidth = 3; ctx.setLineDash(j ? [8, 5] : []); ctx.beginPath();
+    pts.forEach(([t, T], n) => n ? ctx.lineTo(ej.X(t), ej.Y(T)) : ctx.moveTo(ej.X(t), ej.Y(T))); ctx.stroke(); ctx.restore();
+    // Tangente en t = 0: su pendiente es el ritmo inicial que da el motor.
+    const r0 = M.enfriamiento({ T0, Tamb:TAZAS.Tamb, tau:TAZAS.tau, t:0 }), dt = TAZAS.tau*0.6;
+    ctx.save(); ctx.strokeStyle = c.T; ctx.globalAlpha = .65; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]); linea(ctx, ej.X(0), ej.Y(T0), ej.X(dt), ej.Y(T0 - r0.ritmo*dt)); ctx.restore();
+    rotulo(ctx, c, ej.X(dt) + 4, ej.Y(T0 - r0.ritmo*dt), `${fmt(r0.ritmo, 1)} °C/min`, c.T, 'left', 800);
+    const st = M.enfriamiento({ T0, Tamb:TAZAS.Tamb, tau:TAZAS.tau, t:E.t });
+    punto(ctx, ej.X(E.t), ej.Y(st.T), 4.5, c.T, c.card);
+  });
+  decir($('desc2'), `A los ${fmt(E.t, 0)} minutos: ${tazas.map(([T0, n]) => `${n}, ${fmt(M.enfriamiento({ T0, Tamb:TAZAS.Tamb, tau:TAZAS.tau, t:E.t }).T, 0)} °C`).join('; ')}. Al empezar, la de ${TAZAS.T1} °C bajaba ${fmt(TZ.ritmo, 0)} °C por minuto.`);
 }
 function sincronizar(){
   const tt = $('tt');
@@ -1000,6 +1310,12 @@ function sincronizar(){
     const [hielo, agua] = cuerposMezcla(), s = M.equilibrio([hielo, agua]), pide = M.calorNecesario(hielo, 0, 'liquido'), puede = -M.calorNecesario(agua, 0, 'liquido');
     $('mh2-info').innerHTML = `<div class="chips"><span class="chip">El hielo pide ${fmt(pide, 0)} cal</span><span class="chip">El agua da hasta ${fmt(puede, 0)} cal</span><span class="chip real">${describirMezcla(s, hielo)}</span></div>`;
   }
+  const tz2 = $('tz2');
+  if (tz2){
+    tz2.value = E.T2; $('tz2-o').textContent = `${fmt(E.T2, 0)} °C`;
+    const r1 = M.enfriamiento({ T0:TAZAS.T1, Tamb:TAZAS.Tamb, tau:TAZAS.tau, t:E.t }), r2 = M.enfriamiento({ T0:E.T2, Tamb:TAZAS.Tamb, tau:TAZAS.tau, t:E.t });
+    $('tz-chips').innerHTML = `<span class="chip">t = ${fmt(E.t, 1)} min</span><span class="chip real">taza 1: ${fmt(r1.T, 1)} °C, baja ${fmt(r1.ritmo, 1)} °C/min</span><span class="chip real">taza 2: ${fmt(r2.T, 1)} °C, baja ${fmt(r2.ritmo, 1)} °C/min</span>`;
+  }
   const aula = $('aula');
   if (aula){
     aula.value = E.Ta; $('aula-o').textContent = `${fmt(E.Ta, 0)} °C`;
@@ -1011,73 +1327,851 @@ function sincronizar(){
 // Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
 // las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
 function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+// Los botones se crean una vez; luego solo cambia su estado (así el foco no se pierde).
 function botones(){
+  const caja = $('exps');
+  if (!caja.children.length){
+    caja.innerHTML = EXPS.map((x, k) => `<button type="button" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+    caja.querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k, true));
+  }
   const libre = primeraLibre();
-  $('exps').innerHTML = EXPS.map((x, k) => k > libre
-    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
-    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
-  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+  [...caja.children].forEach((b, k) => {
+    const cerrado = k > libre; b.disabled = cerrado; b.setAttribute('aria-pressed', String(!cerrado && k === S.k));
+    if (cerrado){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Experimento ${k+1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.removeAttribute('aria-label'); }
+  });
 }
-function ir(k){
+function ir(k, foco){
   if (k > primeraLibre()) return;
-  cancelAnimationFrame(anim);
+  A.parar();
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k];
   reiniciar(x);
   const resp = S.pred[x.id];
-  if (resp){ x.despues(); cancelAnimationFrame(anim); terminar(x); }
+  if (resp){ x.despues(); A.terminar(); terminar(x); }
   L.compactar(!S.pred[x.id]);
-  botones();
+  botones(); leyenda();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
-  $('body2').innerHTML = `<p>${x.q}</p>
-    <div class="opts">${x.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
-    <p class="fb" id="fb2"></p><div id="res2" class="body"></div>`;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
   const btns = [...$('body2').querySelectorAll('.opt')];
   const pintar = () => {
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = textoFb(x, p);
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     controles(x);
-    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const sig = $('sig2'); if (sig) sig.onclick = () => ir(k + 1, true);
   };
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; botones(); pintar(); L.compactar(false);
-    Celular.alResponder(L.cv, () => { x.despues(); sincronizar(); }, () => S.k === k);
+    S.pred[x.id] = o[0]; botones(); leyenda(); pintar(); L.compactar(false);
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+    const fb = $('fb2'); fb.tabIndex = -1; fb.focus({ preventScroll:true });
+    const seguir = () => { x.despues(); sincronizar(); };
+    Celular.alResponder(L.cv, seguir, () => S.k === k && !$('m2').hidden, { siNo: () => { if (S.k === k){ seguir(); A.terminar(); terminar(x); sincronizar(); } } });
   });
   pintar(); sincronizar();
+  if (foco) mostrarTitulo($('t2'), $('m2'));
 }
 // Al volver a un experimento ya respondido, se muestra su estado final sin animar.
 function terminar(x){
   if (x.id === 'meseta' || x.id === 'cantidad') E.t = E.tmax;
   if (x.id === 'juliaca') E.alt = 3825;
   if (x.id === 'mas-hielo') E.q = solMezcla().intercambiado;
+  if (x.id === 'tazas') E.t = TAZAS.tmax;
 }
 function controles(x){
-  const tt = $('tt'); if (tt) tt.oninput = () => { cancelAnimationFrame(anim); E.t = +tt.value; sincronizar(); };
+  const tt = $('tt'); if (tt) tt.oninput = () => { A.parar(); E.t = +tt.value; sincronizar(); };
   const rep = $('repetir'); if (rep) rep.onclick = () => x.despues();
+  const tz2 = $('tz2'); if (tz2) tz2.oninput = () => { E.T2 = +tz2.value; sincronizar(); };
   const m2 = $("masa2"); if (m2) m2.oninput = () => { E.ollas[1].m = +m2.value*1000; E.ollas[1].nombre = `${fmt(+m2.value, 2)} L`; sincronizar(); };
-  const al = $('al'); if (al) al.oninput = () => { cancelAnimationFrame(anim); E.alt = +al.value; sincronizar(); };
+  const al = $('al'); if (al) al.oninput = () => { A.parar(); E.alt = +al.value; sincronizar(); };
   $('res2').querySelectorAll('[data-alt]').forEach(b => b.onclick = () => correrAlt(E.alt, +b.dataset.alt));
-  const mh2 = $('mh2'); if (mh2) mh2.oninput = () => { cancelAnimationFrame(anim); E.mh = +mh2.value; E.q = solMezcla().intercambiado; sincronizar(); };
+  const mh2 = $('mh2'); if (mh2) mh2.oninput = () => { A.parar(); E.mh = +mh2.value; E.q = solMezcla().intercambiado; sincronizar(); };
   const aula = $('aula'); if (aula) aula.oninput = () => { E.Ta = +aula.value; sincronizar(); };
 }
 alRedibujarTema(draw);
-addEventListener('modo', () => L.resize());
+// Al cambiar de pestaña, lo que se estaba animando salta a su final.
+addEventListener('modo', () => { if ($('m2').hidden) A.terminar(); else { L.resize(); A.despertar(); } });
 L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 3: dilatación =================
+   Rieles, placa, arandela, tira bimetálica y el frasco de agua fría; al final, un explorador. Las predicciones
+   salen del informe (Q11) y de hipótesis nuestras (dilatación casi no tiene datos). Lo que crece se dibuja
+   exagerado, siempre con su factor rotulado. Toda la física sale de MotorCalor. */
+(function(){
+const MA = M.MATERIALES, E = {};
+const T_RIEL = [10, 45], X_RIEL = 200, X_PLACA = 50, X_ARANDELA = 100, X_TIRA = 10, PX_CM3 = 260;
+const riel = (l0, T) => M.dilatacion({ tipo:'lineal', inicial:l0, alfa:MA.acero.alfa, dT:T - T_RIEL[0] });
+const placa = f => M.dilatacion({ tipo:'superficial', inicial:2000, alfa:MA.aluminio.alfa, dT:100*f, lados:[50, 40] });
+const tira = T => M.bimetalica({ alfaA:MA.laton.alfa, alfaB:MA.acero.alfa, ell:0.1, espesor:0.001, dT:T - 20 });
+const frasco = T => M.nivelFrasco({ m:1000, liquido:'agua', alfaFrasco:MA.cuarzo.alfa, T0:0, T });
+const D1 = riel(24, 45), D1ref = riel(12, 45);
+const D2 = placa(1), D3 = M.agujero({ D0:5, alfa:MA.aluminio.alfa, dT:50 }), D4 = tira(120);
+const D5min = M.minimoFrasco({ m:1000, liquido:'agua', alfaFrasco:MA.cuarzo.alfa, T0:0, Tmax:10 });
+const mm = x => fmt(x*1000, 2);
+const hip = 'Las opciones incorrectas son hipótesis nuestras: no encontramos un estudio que mida estos errores.';
+
+const pasos = [
+ { k:'Paso 1', t:'El riel y su junta',
+   antes:E => Object.assign(E, { tipo:'rieles', largos:[12], T:10, junta:true }),
+   decir:() => 'Un riel de acero de 12 metros, a 10 grados, con una junta antes del siguiente riel.',
+   body:() => `<p class="problem">Un riel de acero mide ${V('l','ℓ₀ = 12 m')} de madrugada, a ${V('T','10 °C')}. Al mediodía llega a ${V('T','45 °C')}. ¿Cuánto se alarga?</p>
+   <p>El dato del material es su coeficiente de dilatación lineal: ${V('al','α = 1,2 × 10⁻⁵ °C⁻¹')} para el acero. Quiere decir que cada metro de acero se alarga 0,000012 m por cada grado que sube.</p>
+   <p>Entre riel y riel se deja una junta de unos milímetros. En el dibujo todo lo que se alarga va exagerado, con su factor escrito.</p>` },
+ { k:'Paso 2', t:'Dos rieles, uno el doble de largo',
+   antes:E => Object.assign(E, { tipo:'rieles', largos:[12, 24], T:10, delta:false }),
+   gate:{ id:'dilat-p2', ok:'b',
+     opts:[['a','Lo mismo que el de 12 m','DL1-no-depende-de-l0','hipotesis'], ['b','El doble que el de 12 m',null],
+           ['c','Cuatro veces lo del de 12 m','DL1-cuadrado','hipotesis'], ['d','Depende del grosor de cada riel','DL1-depende-del-grosor','hipotesis']],
+     fb:{ b:`Cada metro de acero se alarga lo mismo; el de 24 m tiene el doble de metros: ${mm(D1.delta)} mm contra ${mm(D1ref.delta)} mm.`,
+          a:'Lo que es igual es cuánto crece cada metro; el riel largo tiene el doble de metros.',
+          c:'Cuatro veces sería si creciera un área; aquí solo crece el largo, y en proporción al largo.',
+          d:'El grosor no entra: solo importan el largo, el material (α) y cuánto sube la temperatura.' } },
+   body:() => `<p class="problem">Dos rieles de acero, uno de ${V('l','12 m')} y otro de ${V('l','24 m')}, están a ${V('T','10 °C')}. Al mediodía llegan a ${V('T','45 °C')}. ¿Cuánto se alarga el de 24 m?</p>`,
+   despues:(E, X) => { E.delta = true; E.metros = true; X.A.anim(2200, f => { E.T = 10 + 35*suave(f); X.draw(); }, () => X.decir()); },
+   decir:(E, r) => r ? `A ${fmt(E.T, 0)} grados, el riel de 12 metros se alargó ${mm(riel(12, E.T).delta)} milímetros y el de 24 metros, ${mm(riel(24, E.T).delta)}.` : 'Dos rieles de acero, de 12 y 24 metros, a 10 grados.',
+   exp:() => `<p>Divide cada riel en metros: todos los metros son iguales y se alargan lo mismo. El de 24 m tiene el doble de metros, así que se alarga el doble. Por eso el alargamiento es proporcional al largo inicial.</p><p class="fuente">${hip}</p>` },
+ { k:'Paso 3', t:'La fórmula',
+   antes:E => Object.assign(E, { tipo:'rieles', largos:[12], T:10, junta:true, delta:true }),
+   despues:(E, X) => X.A.anim(2200, f => { E.T = 10 + 35*suave(f); X.draw(); }, () => X.decir()),
+   decir:E => `A ${fmt(E.T, 0)} grados, el riel se alargó ${mm(riel(12, E.T).delta)} milímetros${E.T > 44.9 ? ' y la junta se cerró' : ''}.`,
+   body:() => `<div class="eqs">
+     <div class="eq">Δ${V('l','ℓ')} = ${V('l','ℓ₀')}·${V('al','α')}·Δ${V('T','T')}</div>
+     <div class="eq">Δ${V('l','ℓ')} = ${V('l','12')}·${V('al','1,2 × 10⁻⁵')}·(${V('T','45')} − ${V('T','10')}) = ${V('l','5,04 × 10⁻³ m')} = ${V('l','5,04 mm')}</div>
+   </div>
+   <p>En la fórmula va cuánto <b>cambió</b> la temperatura: Δ${V('T','T')} = 35 °C. Si pones 45 °C, te sale 6,48 mm, que no es.</p>
+   <p>La junta del riel mide justo lo que crece el acero entre la madrugada y el mediodía: a 45 °C se cierra. Sin junta, los rieles se empujarían y se torcerían.</p>` },
+ { k:'Paso 4', t:'Una placa que se calienta',
+   antes:E => Object.assign(E, { tipo:'placa', f:0, tiras:false }),
+   gate:{ id:'dilat-p4', ok:'b',
+     opts:[['a',`${fmt(D2.errores['D2-alfa-para-area'], 1)} cm²`,'D2-alfa-para-area','hipotesis'], ['b',`${fmt(D2.delta, 1)} cm²`,null],
+           ['c',`${fmt(D2.errores['D2-tres-alfa-para-area'], 1)} cm²`,'D2-tres-alfa-para-area','hipotesis'], ['d',`${fmt(D2.errores['D2-producto-de-estiramientos'], 3)} cm²`,'D2-producto-de-estiramientos','hipotesis']],
+     fb:{ b:'Crecen el largo y el ancho: dos tiras de 4,8 cm² cada una. La esquina que falta (0,012 cm²) es tan chica que se desprecia. Por eso el área usa 2α.',
+          a:'Con α cuentas solo una tira: creció el largo, pero también el ancho.',
+          c:'3α es para un volumen, donde crecen tres medidas; la placa tiene dos.',
+          d:'Multiplicaste los dos estiramientos: eso es solo la esquinita. Lo grande son las dos tiras.' } },
+   body:() => `<p class="problem">Una placa de aluminio de ${V('l','50 cm')} × ${V('l','40 cm')} (${V('A','A₀ = 2000 cm²')}) se calienta ${V('T','100 °C')}. ${V('al','α = 2,4 × 10⁻⁵ °C⁻¹')}. ¿Cuánto aumenta su área?</p>`,
+   despues:(E, X) => { E.tiras = true; X.A.anim(1800, f => { E.f = suave(f); X.draw(); }, () => X.decir()); },
+   decir:(E, r) => r ? 'La placa creció a lo largo y a lo ancho: dos tiras de 4,8 centímetros cuadrados y una esquina de 0,012.' : 'Una placa de aluminio de 50 por 40 centímetros, cuadriculada, a 20 grados.',
+   exp:() => `<div class="eqs">
+     <div class="eq">Δ${V('A','A')} = ${V('A','A₀')}·2${V('al','α')}·Δ${V('T','T')} = ${V('A','2000')}·2·${V('al','2,4 × 10⁻⁵')}·${V('T','100')} = ${V('A','9,6 cm²')}</div>
+     <div class="eq">Δ${V('V','V')} = ${V('V','V₀')}·3${V('al','α')}·Δ${V('T','T')}<span class="note">un volumen: crecen tres medidas</span></div>
+   </div>
+   <p>Un cubo de acero de 1000 cm³ que se calienta 100 °C crece 1000·3·1,2 × 10⁻⁵·100 = 3,6 cm³: tres «tapas» de 1,2 cm³, y las esquinas y aristas, que son mucho más chicas, se desprecian.</p>
+   <p class="hint">Algunos libros llaman β al 2α del área y γ al 3α del volumen.</p>
+   <p class="fuente">Usar α para un área es un error que suponemos: el informe lo anota sin un estudio que lo mida. ${hip}</p>` },
+ { k:'Paso 5', t:'Una arandela que se calienta',
+   antes:E => Object.assign(E, { tipo:'arandela', f:0, eje:0, disco:false }),
+   gate:{ id:'dilat-p5', ok:'a',
+     opts:[['a','Se agranda, como si toda la arandela se viera con lupa',null],
+           ['b','Se achica, porque el metal se dilata hacia adentro y lo va cerrando','Q11-agujero-se-achica','parcial'],
+           ['c','No cambia, porque el agujero no es metal y no tiene qué dilatarse','DL3-no-cambia','hipotesis'],
+           ['d','Se vuelve ovalado, porque el metal empuja más en una dirección','DL3-ovalado','hipotesis']],
+     fb:{ a:`Todas las distancias crecen en la misma proporción, también las del borde del agujero: ${fmt(D3.D, 3)} cm. Por eso, para meter un eje, se calienta la arandela.`,
+          b:'Si el metal empujara hacia adentro, un disco del mismo aluminio que llene el agujero tendría que achicarse al calentarse. Mira: el disco crece, y el agujero crece igual.',
+          c:'El agujero no se dilata solo; lo agranda el borde de metal, que se alarga como todo lo demás.',
+          d:'Todo el aluminio se dilata igual en todas las direcciones; el agujero sigue redondo, solo más grande.' } },
+   body:() => `<p class="problem">Una arandela de aluminio tiene, a ${V('T','20 °C')}, un agujero de ${V('l','5,000 cm')}. Se calienta ${V('T','50 °C')}. ¿Qué pasa con el agujero?</p>`,
+   despues:(E, X) => { E.disco = true; E.ver = true; X.A.anim(2000, f => { E.f = suave(f); X.draw(); }, () => X.A.anim(1200, f => { E.eje = suave(f); X.draw(); }, () => X.decir())); },
+   decir:(E, r) => r ? `A ${fmt(20 + 50*E.f, 0)} grados, el agujero mide ${fmt(M.agujero({ D0:5, alfa:MA.aluminio.alfa, dT:50*E.f }).D, 3)} centímetros${E.eje > 0.99 ? ' y el eje entra' : ''}.` : 'Una arandela de aluminio con un agujero de 5 centímetros, a 20 grados.',
+   exp:() => `<p>Al lado hay un eje de 5,006 cm que en frío no entraba: a 70 °C ya entra.</p>
+   <p>La arandela crece como una foto ampliada: su borde de afuera, su borde de adentro y el agujero. A 70 °C el agujero mide ${fmt(D3.D, 3)} cm, lo mismo que un disco del mismo aluminio que se calentó igual. Ahí entra el eje; al enfriarse, la arandela lo aprieta.</p>
+   <div class="eqs"><div class="eq">D = ${V('l','5,000')}·(1 + ${V('al','2,4 × 10⁻⁵')}·${V('T','50')}) = ${V('l','5,006 cm')}</div></div>
+   <p class="fuente">Que el agujero se achica es una idea que la investigación describe como muy conocida, sin un porcentaje que podamos citar (Vidak, Odžak y Mešić, 2018; solo leímos el resumen). Las opciones C y D son hipótesis nuestras.</p>` },
+ { k:'Paso 6', t:'Dos metales pegados',
+   antes:E => Object.assign(E, { tipo:'bimetal', T:20, llama:false, ver:false }),
+   gate:{ id:'dilat-p6', ok:'a',
+     opts:[['a','Se curva hacia abajo, hacia el acero',null], ['b','Se curva hacia arriba, hacia el latón','DL4-hacia-mayor-alfa','hipotesis'],
+           ['c','Se alarga, pero sigue recta','DL4-sigue-recta','hipotesis'], ['d','Se curva hacia donde le llegue la llama','DL4-depende-del-fuego','hipotesis']],
+     fb:{ a:'El latón queda más largo y no puede separarse del acero: la única forma es quedar por fuera de la curva. Al enfriarla bajo 20 °C, se curva al revés. Así funciona el termostato de una plancha.',
+          b:'Para curvarse hacia el latón, el latón tendría que quedar por dentro, más corto. Pero es el que más se alarga.',
+          c:'Sola, cada tira seguiría recta; pegadas, una se alarga más que la otra, y eso obliga a curvarse.',
+          d:'La llama solo calienta. Hacia dónde se curva lo decide cuál metal se dilata más.' } },
+   body:() => `<p class="problem">Una tira de latón (arriba) y una de acero (abajo), pegadas, están rectas a ${V('T','20 °C')}, sujetas por la izquierda. El latón se dilata más que el acero (${V('al','α = 2,0 × 10⁻⁵')} contra ${V('al','1,2 × 10⁻⁵ °C⁻¹')}). Se calientan a ${V('T','120 °C')}. ¿Qué pasa con la tira?</p>`,
+   despues:(E, X) => { E.ver = true; E.llama = true;
+     X.A.anim(2200, f => { E.T = 20 + 100*suave(f); X.draw(); }, () => { E.llama = false; X.draw(); X.decir(); }); },
+   alExp:X => { const b = document.getElementById('enfriar3'); if (!b) return;
+     // En el celular, el dibujo sube a la vista antes de animar (si no se ve, Celular.bucle no avanza).
+     b.onclick = () => { const E = X.E, de = E.T, a = de > 0 ? -20 : 120, paso = X.S.step;
+       Celular.alResponder(X.cv, () => { E.llama = a > de;
+         X.A.anim(2400, f => { E.T = de + (a - de)*suave(f); X.draw(); }, () => { E.llama = false; X.draw(); X.decir();
+           b.textContent = a < 0 ? 'Calentar a 120 °C' : 'Enfriar a −20 °C'; }); }, () => X.S.step === paso); }; },
+   decir:(E, r) => { if (!r) return 'Una tira de latón sobre una de acero, recta, a 20 grados, sujeta por la izquierda.';
+     const t = tira(E.T); return `A ${fmt(E.T, 0)} grados la tira ${t.kappa > 1e-9 ? 'se curva hacia abajo, hacia el acero' : t.kappa < -1e-9 ? 'se curva hacia arriba, hacia el latón' : 'está recta'}.`; },
+   exp:() => `<p>A 120 °C, una tira de latón de 10 cm se alargaría ${mm(M.dilatacion({ inicial:0.1, alfa:MA.laton.alfa, dT:100 }).delta)} mm y una de acero, ${mm(M.dilatacion({ inicial:0.1, alfa:MA.acero.alfa, dT:100 }).delta)} mm. Pegadas, el latón queda por fuera: la punta baja unos ${fmt(D4.flecha*1000, 0)} mm (en el dibujo, exagerado × ${X_TIRA}).</p>
+   <p>Bajo 20 °C es al revés: el latón se encoge más y queda por dentro, así que la tira se curva hacia el latón. El contacto de arriba se abre al calentar: así una plancha corta la corriente cuando ya está caliente.</p>
+   <p><button type="button" class="btn" id="enfriar3">Enfriar a −20 °C</button></p>
+   <p class="fuente">${hip}</p>` },
+ { k:'Paso 7', t:'El frasco de agua fría',
+   antes:E => Object.assign(E, { tipo:'frasco', T:0, graf:false, lago:false }),
+   gate:{ id:'dilat-p7', ok:'b',
+     opts:[['a','Sube todo el tiempo','DL5-sube-siempre','hipotesis'], ['b','Primero baja y después sube',null],
+           ['c','Primero sube y después baja','DL5-al-reves','hipotesis'], ['d','Se queda igual','DL5-no-cambia','hipotesis']],
+     fb:{ b:'Entre 0 °C y 4 °C el agua se contrae al calentarse; desde 4 °C se dilata como los demás líquidos. Cerca de 4 °C es más densa. Por eso una laguna de la puna se congela por arriba y en el fondo el agua queda a unos 4 °C: los peces sobreviven.',
+          a:'Casi todo se dilata al calentarse, pero el agua entre 0 °C y 4 °C es la excepción.',
+          c:'Es al revés: primero baja (hasta unos 4 °C) y luego sube.',
+          d:`El cambio es chico (unos ${fmt(-D5min.nivel, 2)} cm³ en un litro), pero el tubito fino lo hace visible.` } },
+   body:() => `<p class="problem">Un frasco de cuarzo (casi no se dilata) está lleno de agua líquida a ${V('T','0 °C')}, recién sacada de entre el hielo, hasta una marca en un tubito. Se calienta poco a poco hasta ${V('T','10 °C')}. ¿Qué hace el nivel del tubito?</p>`,
+   despues:(E, X) => { E.graf = true; X.A.anim(4200, f => { E.T = 10*f; X.draw(); }, () => { E.lago = true; X.draw(); X.decir(); }); },
+   decir:(E, r) => { if (!r) return 'Un frasco de cuarzo con agua a 0 grados, lleno hasta una marca en un tubito.';
+     const n = frasco(E.T).nivel; return `A ${fmt(E.T, 1)} grados, el nivel está ${fmt(Math.abs(n), 3)} centímetros cúbicos ${n < 0 ? 'bajo' : 'sobre'} la marca.`; },
+   exp:() => `<p>La curva tostada es el volumen de 1000 g de agua: baja de 0 °C a ${fmt(M.TEMPERATURA_MAXIMA_DENSIDAD, 2)} °C y desde ahí sube. El nivel más bajo del tubito cae en ${fmt(D5min.T, 1)} °C, apenas corrido porque el cuarzo también se dilata un poquito.</p>
+   <p>El hielo es aún menos denso (${fmt(M.DENSIDAD_HIELO, 0)} kg/m³ contra ${fmt(M.densidadAgua(0), 1)} kg/m³ del agua a 0 °C): flota. En una laguna que se enfría, el agua de unos 4 °C, la más densa, se va al fondo; arriba queda la más fría, que se congela primero.</p>
+   <p class="fuente">${hip} La densidad del agua sale de la fórmula de Kell (1975).</p>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true,
+   antes:E => Object.assign(E, { tipo:'explora', obj:E3.obj, mat:E3.mat, T:E3.T }),
+   body:() => `<div class="seg" role="group" aria-label="Objeto">${OBJ.map(([k, n]) => `<button type="button" data-obj="${k}" aria-pressed="${E3.obj === k}">${n}</button>`).join('')}</div>
+     <div class="seg" role="group" aria-label="Material">${MATS.map(([k, n]) => `<button type="button" data-mat="${k}" aria-pressed="${E3.mat === k}">${n}</button>`).join('')}</div>
+     <div class="slider"><label for="dT3"><span>Temperatura (${V('T','T')})</span><output id="dT3-o"></output></label><input id="dT3" class="r-T" type="range" min="-40" max="200" step="1" value="${E3.T}"></div>
+     <div id="live3" class="body"></div>
+     <p class="hint">Arrastra el asa del termómetro (o usa las flechas ↑ y ↓ con el dibujo seleccionado). Todo empieza a 20 °C.</p>`,
+   montar:X => {
+     const $ = id => document.getElementById(id);
+     document.querySelectorAll('#body3 [data-obj]').forEach(b => b.onclick = () => { E3.obj = b.dataset.obj; X.E.obj = E3.obj; marcarSeg('obj', E3.obj); vivo(X); });
+     document.querySelectorAll('#body3 [data-mat]').forEach(b => b.onclick = () => { E3.mat = b.dataset.mat; X.E.mat = E3.mat; marcarSeg('mat', E3.mat); vivo(X); });
+     $('dT3').oninput = () => { X.E.T = E3.T = +$('dT3').value; vivo(X); };
+     vivo(X);
+   },
+   lienzo:{ aria:'Termómetro del explorador: con las flechas arriba y abajo del teclado cambias la temperatura',
+     cerca:(p, r, E) => E.asa && Math.hypot(p.x - E.asa.x, p.y - E.asa.y) < r ? 'asa' : null,
+     mover:(p, q, E, X) => { if (!E.escalaT) return; E.T = E3.T = clamp(Math.round(E.escalaT(p.y)), TMIN3(E), 200); vivo(X, true); },
+     tecla:(e, E, X) => { const d = { ArrowUp:5, ArrowRight:5, ArrowDown:-5, ArrowLeft:-5 }[e.key]; if (!d) return false; E.T = E3.T = clamp(E.T + d, TMIN3(E), 200); vivo(X, true); return true; } },
+   decir:E => textoExplora(E) },
+];
+const OBJ = [['varilla','Varilla'], ['placa','Placa'], ['cubo','Cubo'], ['arandela','Arandela'], ['frasco','Frasco con mercurio']];
+const MATS = [['acero','Acero'], ['aluminio','Aluminio'], ['cobre','Cobre'], ['laton','Latón'], ['vidrio','Vidrio'], ['pyrex','Pyrex'], ['invar','Invar']];
+const E3 = { obj:'varilla', mat:'acero', T:20 };
+const INI3 = { varilla:['lineal', 100, 'ℓ₀ = 100 cm'], placa:['superficial', 400, 'A₀ = 400 cm²'], cubo:['volumetrica', 1000, 'V₀ = 1000 cm³'] };
+function marcarSeg(attr, v){ document.querySelectorAll(`#body3 [data-${attr}]`).forEach(b => b.setAttribute('aria-pressed', String(b.dataset[attr] === v))); }
+function calcExplora(E){
+  const a = MA[E.mat].alfa, dT = E.T - 20;
+  if (E.obj === 'arandela') return { r:M.agujero({ D0:5, alfa:a, dT }), a, dT };
+  if (E.obj === 'frasco') return { r:M.derrame({ V0:500, gamma:M.LIQUIDOS.mercurio.gamma, alfaRecipiente:a, dT }), a, dT };
+  const [tipo, ini] = INI3[E.obj]; return { r:M.dilatacion({ tipo, inicial:ini, alfa:a, dT }), a, dT };
+}
+function textoExplora(E){
+  const { r } = calcExplora(E), nom = MATS.find(m => m[0] === E.mat)[1].toLowerCase();
+  if (E.obj === 'arandela') return `Arandela de ${nom} a ${fmt(E.T, 0)} grados: el agujero mide ${fmt(r.D, 4)} centímetros.`;
+  if (E.obj === 'frasco') return `Frasco de ${nom} con 500 centímetros cúbicos de mercurio a ${fmt(E.T, 0)} grados: ${r.derrame >= 0 ? 'se derraman' : 'el nivel baja'} ${fmt(Math.abs(r.derrame), 2)} centímetros cúbicos.`;
+  return `${OBJ.find(o => o[0] === E.obj)[1]} de ${nom} a ${fmt(E.T, 0)} grados: cambia ${fmt(r.delta, 3)} ${E.obj === 'varilla' ? 'centímetros' : E.obj === 'placa' ? 'centímetros cuadrados' : 'centímetros cúbicos'}.`;
+}
+const TMIN3 = E => E.obj === 'frasco' ? -30 : -40;   // el mercurio se congela a −39 °C
+const SUP = { '-':'⁻', '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹' };
+function fmtAlfa(a){ const e = Math.floor(Math.log10(a) + 1e-9), m = a/Math.pow(10, e); return `${fmt(m, 1)} × 10${String(e).replace(/./g, ch => SUP[ch])}`; }
+function vivo(X, desdeLienzo){
+  const $ = id => document.getElementById(id), E = X.E;
+  if (!$('dT3')) return;
+  E.T = E3.T = Math.max(E.T, TMIN3(E)); $('dT3').min = TMIN3(E);
+  $('dT3').value = E.T; $('dT3-o').textContent = `${fmt(E.T, 0)} °C`;
+  const { r, a, dT } = calcExplora(E), aS = fmtAlfa(a);
+  let h;
+  if (E.obj === 'arandela') h = `<div class="eq">D = ${V('l','5')}·(1 + ${V('al',aS)}·${V('T',fmt(dT, 0))}) = ${V('l',fmt(r.D, 4) + ' cm')}</div><div class="eq"><span class="note" style="margin:0">El agujero crece igual que un disco del mismo metal.</span></div>`;
+  else if (E.obj === 'frasco') h = `<div class="eq">derrame = ${V('V','500')}·(γ − 3·${V('al',aS)})·${V('T',fmt(dT, 0))} = ${V('V',fmt(r.derrame, 2) + ' cm³')}</div><div class="eq"><span class="note" style="margin:0">γ del mercurio = 1,8 × 10⁻⁴ °C⁻¹: crece más que el frasco${r.derrame < 0 ? '; al enfriar, el nivel baja' : ''}.</span></div>`;
+  else {
+    const [tipo, ini] = INI3[E.obj], n = { lineal:1, superficial:2, volumetrica:3 }[tipo], v = { lineal:'l', superficial:'A', volumetrica:'V' }[tipo];
+    const let1 = { lineal:'ℓ', superficial:'A', volumetrica:'V' }[tipo], u = { lineal:'cm', superficial:'cm²', volumetrica:'cm³' }[tipo];
+    h = `<div class="eq">Δ${V(v, let1)} = ${V(v, fmt(ini, 0))}·${n > 1 ? n + '·' : ''}${V('al',aS)}·${V('T',fmt(dT, 0))} = ${V(v, fmt(r.delta, 3) + ' ' + u)}</div>`
+      + (n > 1 ? `<div class="eq"><span class="note" style="margin:0">Con ${n}α: se desprecian ${n === 2 ? 'las esquinas' : 'las aristas y las esquinas'} (términos con α², muy chicos).</span></div>` : '');
+  }
+  $('live3').innerHTML = `<div class="eqs">${h}</div>`; sinParada($('live3'));
+  X.draw(); X.decir();
+}
+
+/* ---------- dibujos ---------- */
+function dibujar(L, c, X){
+  const { ctx, W, H } = L;
+  ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+  ({ rieles:dRieles, placa:dPlaca, arandela:dArandela, bimetal:dBimetal, frasco:dFrasco, explora:dExplora })[E.tipo](ctx, c, W, H);
+}
+function exagerado(ctx, c, W, t){ rotulo(ctx, c, W - 8, 12, t, c.muted, 'right', 600); }
+function dRieles(ctx, c, W, H){
+  termometro(ctx, c, 22, 26, H - 60, E.T, { min:0, max:50 }, '', false);
+  const x0 = 50, x1 = W - 14, maxL = Math.max(...E.largos), s = (x1 - x0)/(maxL*1.12);
+  const gap = riel(12, 45).delta*X_RIEL;
+  const ys = E.largos.length === 1 ? [H*0.52] : [H*0.36, H*0.7];
+  E.largos.forEach((l0, j) => {
+    const y = ys[j], d = riel(l0, E.T).delta, Lx = (l0 + d*X_RIEL)*s;
+    // durmientes
+    ctx.fillStyle = c.madera; ctx.globalAlpha = .45;
+    for (let m = 0.5; m < l0 + 0.5; m += 1.5) ctx.fillRect(x0 + m*s - 2, y - 3, 5, 20);
+    ctx.globalAlpha = 1;
+    rr(ctx, x0, y, Lx, 12, 2); ctx.fillStyle = c.acero; ctx.fill(); ctx.strokeStyle = c.olla; ctx.lineWidth = 1.2; ctx.stroke();
+    if (E.metros){ ctx.strokeStyle = c.card; ctx.lineWidth = 1; for (let m = 1; m < l0; m++){ const x = x0 + m*(1 + d/l0*X_RIEL)*s; linea(ctx, x, y + 2, x, y + 10); } }
+    rotulo(ctx, c, x0 + 2, y - 12, `ℓ₀ = ${l0} m`, c.l, 'left', 800);
+    if (E.junta){
+      const xs = x0 + (l0 + gap)*s;
+      rr(ctx, xs, y, x1 - xs, 12, 2); ctx.fillStyle = c.acero; ctx.fill(); ctx.strokeStyle = c.olla; ctx.stroke();
+      const g = xs - (x0 + Lx);
+      rotulo(ctx, c, xs - Math.max(g, 0)/2, y + 30, g > 1 ? 'junta' : 'junta cerrada', c.muted, 'center', 600);
+    }
+    if (E.delta && d > 1e-9){
+      const xa = x0 + l0*s;
+      ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted; linea(ctx, xa, y - 6, xa, y + 18); ctx.restore();
+      flecha(ctx, xa, y + 22, x0 + Lx, y + 22, c.l, 2.5);
+      rotulo(ctx, c, Math.min(xa, x1 - 70), y + (E.junta ? 46 : 38), `Δℓ = ${mm(d)} mm`, c.l, 'center', 800);
+    }
+  });
+  exagerado(ctx, c, W, `alargamiento exagerado × ${X_RIEL}`);
+}
+function dPlaca(ctx, c, W, H){
+  const f = E.f, lin = l => M.dilatacion({ inicial:l, alfa:MA.aluminio.alfa, dT:100*f }).delta*X_PLACA, da = lin(50), db = lin(40);
+  const s = Math.min((W - 110)/(50*1.16), (H - 80)/(40*1.16)), x0 = 46, y0 = H - 40;
+  termometro(ctx, c, W - 26, 30, H - 80, 20 + 100*f, { min:0, max:130 }, '', false);
+  const a = (50 + da)*s, b = (40 + db)*s;
+  ctx.fillStyle = c.aluminio; ctx.fillRect(x0, y0 - b, a, b);
+  if (E.tiras && f > 0){
+    ctx.save(); ctx.globalAlpha = .45; ctx.fillStyle = c.A;
+    ctx.fillRect(x0 + 50*s, y0 - 40*s, a - 50*s, 40*s); ctx.fillRect(x0, y0 - b, 50*s, b - 40*s);
+    ctx.globalAlpha = .9; ctx.fillStyle = c.muted; ctx.fillRect(x0 + 50*s, y0 - b, a - 50*s, b - 40*s); ctx.restore();
+  }
+  ctx.strokeStyle = c.card; ctx.lineWidth = 1;
+  for (let k = 1; k < 5; k++){ const x = x0 + k*10*s*(1 + da/50); linea(ctx, x, y0 - b, x, y0); }
+  for (let k = 1; k < 4; k++){ const y = y0 - k*10*s*(1 + db/40); linea(ctx, x0, y, x0 + a, y); }
+  ctx.strokeStyle = c.olla; ctx.lineWidth = 1.4; ctx.strokeRect(x0, y0 - b, a, b);
+  if (f > 0){ ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = c.ink; ctx.strokeRect(x0, y0 - 40*s, 50*s, 40*s); ctx.restore(); }
+  rotulo(ctx, c, x0 + 25*s, y0 + 14, '50 cm', c.l, 'center', 800);
+  rotulo(ctx, c, x0 - 6, y0 - 20*s, '40 cm', c.l, 'right', 800);
+  rotulo(ctx, c, x0 + 25*s, y0 - 20*s, 'A₀ = 2000 cm²', c.A, 'center', 800);
+  if (E.tiras && f > 0.5){
+    rotulo(ctx, c, x0 + 50*s + (a - 50*s)/2, y0 - 20*s - 18, fmt(D2.errores['D2-alfa-para-area'], 1) + ' cm²', c.A, 'center', 800);
+    rotulo(ctx, c, x0 + 25*s, y0 - 40*s - (b - 40*s)/2 - 2, fmt(D2.errores['D2-alfa-para-area'], 1) + ' cm²', c.A, 'center', 800);
+    // Lupa sobre la esquina
+    const cx = x0 + 50*s + (a - 50*s)/2, cy = y0 - 40*s - (b - 40*s)/2;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, 13, 0, Math.PI*2); ctx.stroke(); linea(ctx, cx + 9, cy - 9, cx + 18, cy - 18); ctx.restore();
+    rotulo(ctx, c, cx - 16, Math.max(cy - 28, 30), `esquina: ${fmt(D2.errores['D2-producto-de-estiramientos'], 3)} cm²`, c.ink, 'right', 700);
+  }
+  exagerado(ctx, c, W - 70, `crecimiento exagerado × ${X_PLACA}`);
+}
+function dArandela(ctx, c, W, H){
+  const f = E.f, T = 20 + 50*f, k = 1 + (M.agujero({ D0:5, alfa:MA.aluminio.alfa, dT:50*f }).D/5 - 1)*X_ARANDELA;
+  const r0 = Math.min(W*0.1, H*0.12), R0 = r0*1.9, cx = W*0.36 + 6, cy = H*0.44;
+  const ke = 1 + (5.006/5 - 1)*X_ARANDELA;
+  termometro(ctx, c, 22, 26, H - 60, T, { min:0, max:90 }, '', false);
+  // Arandela
+  ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R0*k, 0, Math.PI*2); ctx.moveTo(cx + r0*k, cy); ctx.arc(cx, cy, r0*k, 0, Math.PI*2, true);
+  ctx.fillStyle = c.aluminio; ctx.fill('evenodd'); ctx.strokeStyle = c.olla; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
+  if (f > 0){ ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.arc(cx, cy, R0, 0, Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.arc(cx, cy, r0, 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+  rotulo(ctx, c, cx, cy + R0*k + 14, f > 0 ? `agujero: ${fmt(M.agujero({ D0:5, alfa:MA.aluminio.alfa, dT:50*f }).D, 3)} cm` : 'agujero: 5,000 cm', c.l, 'center', 800);
+  // Eje (visto desde arriba), que se mueve hasta el agujero
+  const ex0 = W*0.8, ey0 = H*0.3, ex = ex0 + (cx - ex0)*E.eje, ey = ey0 + (cy - ey0)*E.eje;
+  if (!E.ver){ exagerado(ctx, c, W, `crecimiento exagerado × ${X_ARANDELA}`); return; }
+  ctx.save(); ctx.beginPath(); ctx.arc(ex, ey, r0*ke, 0, Math.PI*2); ctx.fillStyle = c.acero; ctx.globalAlpha = .9; ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = c.olla; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
+  if (E.eje < 0.05) rotulo(ctx, c, ex, ey - r0*ke - 12, 'eje: 5,006 cm', c.l, 'center', 800);
+  if (E.eje < 0.05) rotulo(ctx, c, ex, ey + r0*ke + 12, f < 0.999 ? 'no entra' : 'ya entra', c.muted, 'center', 700);
+  if (E.disco){
+    const dx = W*0.8, dy = H*0.76;
+    ctx.save(); ctx.beginPath(); ctx.arc(dx, dy, r0*k, 0, Math.PI*2); ctx.fillStyle = c.aluminio; ctx.fill(); ctx.strokeStyle = c.olla; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.setLineDash([4, 3]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(dx, dy, r0, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, dx, dy + r0*k + 12, 'disco de aluminio', c.muted, 'center', 700);
+  }
+  exagerado(ctx, c, W, `crecimiento exagerado × ${X_ARANDELA}`);
+}
+function dBimetal(ctx, c, W, H){
+  const t = tira(E.T), x0 = 76, y0 = H*0.4, Lpx = Math.min(W - 136, 320), k = Lpx/0.1, n = 48;
+  termometro(ctx, c, 22, 26, H - 60, E.T, { min:-30, max:130 }, '', false);
+  // Mordaza
+  ctx.fillStyle = c.olla; ctx.fillRect(x0 - 22, y0 - 22, 22, 44);
+  const capa = off => { const pts = []; for (let j = 0; j <= n; j++){ const p = t.punto(0.1*j/n, X_TIRA), a = p.angulo; pts.push([x0 + p.x*k + Math.sin(a)*off, y0 + p.y*k - Math.cos(a)*off]); } return pts; };
+  const trazo = (pts, col) => { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 7; ctx.lineCap = 'butt'; ctx.beginPath(); pts.forEach(([x, y], j) => j ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.stroke(); ctx.restore(); };
+  const sup = capa(3.6), inf = capa(-3.6);
+  trazo(sup, c.laton); trazo(inf, c.acero);
+  rotulo(ctx, c, x0 + 30, y0 - 18, 'latón', c.ink, 'left', 700);
+  rotulo(ctx, c, x0 + 30, y0 + 20, 'acero', c.ink, 'left', 700);
+  // Contacto del termostato, arriba de la punta: una lámina flexible que la punta empuja si sube.
+  const tipX = x0 + Lpx, restY = y0 - 7.2, top = sup[n];
+  const yC = Math.min(restY, top[1] - 3.6);
+  const cerrado = top[1] - 3.6 <= restY + 1.5;
+  // Solo después de responder (antes, la lámina de arriba insinuaría hacia dónde se mueve la punta).
+  if (E.ver){
+    ctx.save(); ctx.strokeStyle = c.olla; ctx.lineWidth = 2.5; linea(ctx, tipX + 34, Math.min(y0 - 40, yC - 30), tipX + 34, yC - 2); linea(ctx, tipX + 34, yC - 2, tipX - 4, yC - 2); ctx.restore();
+    rotulo(ctx, c, tipX + 36, Math.min(y0 - 40, yC - 30) - 12, cerrado ? 'contacto cerrado' : 'contacto abierto', c.muted, 'right', 700);
+  }
+  if (E.llama){
+    ctx.fillStyle = c.fuego;
+    for (let j = 0; j < 4; j++){ const x = x0 + Lpx*(0.2 + 0.2*j), yb = H - 34; ctx.beginPath(); ctx.moveTo(x - 7, yb); ctx.quadraticCurveTo(x - 4, yb - 12, x, yb - 22); ctx.quadraticCurveTo(x + 4, yb - 12, x + 7, yb); ctx.fill(); }
+  }
+  if (E.ver && Math.abs(t.flecha) > 1e-7){
+    const yt = y0 + t.flecha*X_TIRA*k;
+    ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted; linea(ctx, x0, y0, tipX + 10, y0); ctx.restore();
+    rotulo(ctx, c, x0, H - 20, `la punta ${t.flecha > 0 ? 'baja' : 'sube'} ${fmt(Math.abs(t.flecha)*1000, 1)} mm`, c.l, 'left', 800);
+  }
+  exagerado(ctx, c, W, `curvatura exagerada × ${X_TIRA}`);
+}
+function dFrasco(ctx, c, W, H){
+  const ancho = W >= 560, zw = ancho ? W*0.38 : W*0.44;
+  const rb = Math.min(zw*0.3, H*0.2), fx = zw*0.5 + 10, fy = H - rb - 26, cuello = 8, yMarca = H*0.34;
+  const n = frasco(E.T).nivel, yNivel = yMarca - n*PX_CM3;
+  termometro(ctx, c, 20, 26, H - 60, E.T, { min:-2, max:12 }, '', false);
+  // Agua: bulbo lleno y columna en el tubito
+  ctx.save(); ctx.fillStyle = c.agua; ctx.beginPath(); ctx.arc(fx, fy, rb - 2, 0, Math.PI*2); ctx.fill();
+  ctx.fillRect(fx - cuello/2 + 1, yNivel, cuello - 2, fy - rb + 4 - yNivel); ctx.restore();
+  ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2.2;
+  ctx.beginPath(); ctx.arc(fx, fy, rb, -Math.PI/2 + 0.12, 3*Math.PI/2 - 0.12); ctx.stroke();
+  linea(ctx, fx - cuello/2, fy - rb + 1, fx - cuello/2, 22); linea(ctx, fx + cuello/2, fy - rb + 1, fx + cuello/2, 22);
+  ctx.strokeStyle = c.aguaB; ctx.lineWidth = 2; linea(ctx, fx - cuello/2 + 1, yNivel, fx + cuello/2 - 1, yNivel);
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, fx - cuello/2 - 8, yMarca, fx + cuello/2 + 8, yMarca);
+  rotulo(ctx, c, fx + cuello/2 + 12, yMarca, 'marca', c.muted, 'left', 700);
+  rotulo(ctx, c, fx, fy + rb + 12, 'cuarzo', c.muted, 'center', 600);
+  if (!E.graf) return;
+  const g = ancho ? { x:zw + 46, y:18, w:W - zw - 60, h:H*0.5 } : { x:zw + 40, y:18, w:W - zw - 50, h:H*0.46 };
+  const ej = ejes(ctx, c, g, { x0:0, x1:10, y0:0, y1:0.35 }, { x:'T (°C)', colX:c.T, y:'V − 1000 (cm³)', colY:c.V, pasoX:5, pasoY:0.1, fmtY:v => fmt(v, 1) });
+  ctx.save(); ctx.strokeStyle = c.V; ctx.lineWidth = 3; ctx.beginPath();
+  for (let j = 0; j <= 100; j++){ const T = E.T*j/100, v = M.volumenAgua(1000, T) - 1000; j ? ctx.lineTo(ej.X(T), ej.Y(v)) : ctx.moveTo(ej.X(T), ej.Y(v)); }
+  ctx.stroke(); ctx.restore();
+  if (E.T > M.TEMPERATURA_MAXIMA_DENSIDAD){
+    const xm = ej.X(M.TEMPERATURA_MAXIMA_DENSIDAD), ym = ej.Y(M.volumenAgua(1000, M.TEMPERATURA_MAXIMA_DENSIDAD) - 1000);
+    ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = c.T; linea(ctx, xm, ym, xm, g.y + g.h); ctx.restore();
+    punto(ctx, xm, ym, 4, c.V, c.card); rotulo(ctx, c, xm, ym - 14, `mínimo en ${fmt(M.TEMPERATURA_MAXIMA_DENSIDAD, 2)} °C`, c.ink, 'center', 700);
+  }
+  if (!E.lago) return;
+  // Corte de una laguna en invierno: hielo arriba y el agua más densa, a unos 4 °C, en el fondo.
+  const lx = g.x - 10, ly = g.y + g.h + 34, lw = g.w + 10, lh = H - ly - 8;
+  if (lh < 50) return;
+  const gr = ctx.createLinearGradient(0, ly, 0, ly + lh); gr.addColorStop(0, c.hielo); gr.addColorStop(0.2, c.agua); gr.addColorStop(1, c.aguaB);
+  rr(ctx, lx, ly, lw, lh, 10); ctx.fillStyle = gr; ctx.fill(); ctx.strokeStyle = c.line; ctx.stroke();
+  ctx.fillStyle = c.hielo; ctx.fillRect(lx + 2, ly + 2, lw - 4, lh*0.16); ctx.strokeStyle = c.hieloB; ctx.strokeRect(lx + 2, ly + 2, lw - 4, lh*0.16);
+  rotulo(ctx, c, lx + 8, ly + lh*0.1, 'hielo', c.ink, 'left', 700);
+  rotulo(ctx, c, lx + lw - 8, ly + lh*0.3, '0 °C', c.T, 'right', 800);
+  rotulo(ctx, c, lx + lw - 8, ly + lh - 14, 'unos 4 °C', c.T, 'right', 800);
+  ctx.fillStyle = c.ink; ctx.beginPath(); ctx.ellipse(lx + lw*0.35, ly + lh*0.75, 10, 5, 0, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(lx + lw*0.35 + 9, ly + lh*0.75); ctx.lineTo(lx + lw*0.35 + 16, ly + lh*0.75 - 5); ctx.lineTo(lx + lw*0.35 + 16, ly + lh*0.75 + 5); ctx.fill();
+}
+function dExplora(ctx, c, W, H){
+  // Termómetro grande con asa
+  const yTop = 30, h = H - 70, x = 34, R = { min:-40, max:200 }, r = 7, yB = yTop + h;
+  const yDe = v => yB - r - (v - R.min)/(R.max - R.min)*(h - 2*r - 4);
+  termometro(ctx, c, x, yTop, h, E.T, R, '', false);
+  E.escalaT = y => R.min + (yB - r - y)/(h - 2*r - 4)*(R.max - R.min);
+  const ya = clamp(yDe(E.T), yTop + 3, yB - r); E.asa = { x, y:ya };
+  ctx.save(); ctx.beginPath(); ctx.arc(x, ya, 11, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.T; ctx.lineWidth = 3; ctx.stroke();
+  ctx.beginPath(); ctx.arc(x, ya, 4, 0, Math.PI*2); ctx.fillStyle = c.T; ctx.fill(); ctx.restore();
+  const { r:res, a, dT } = calcExplora(E), X = 50, f = 1 + M.dilatacion({ inicial:1, alfa:a, dT }).delta*X;
+  const ox = 90, ow = W - ox - 16, cy = H*0.5;
+  const metal = E.mat === 'cobre' ? c.cobre : E.mat === 'laton' ? c.laton : E.mat === 'aluminio' ? c.aluminio : ['vidrio', 'pyrex'].includes(E.mat) ? c.hielo : c.acero;
+  ctx.save(); ctx.strokeStyle = c.olla; ctx.lineWidth = 1.4;
+  if (E.obj === 'varilla'){
+    const L0 = ow*0.8; rr(ctx, ox, cy - 8, L0*f, 16, 3); ctx.fillStyle = metal; ctx.fill(); ctx.stroke();
+    ctx.setLineDash([4, 3]); ctx.strokeStyle = c.ink; linea(ctx, ox + L0, cy - 18, ox + L0, cy + 18); ctx.setLineDash([]);
+    rotulo(ctx, c, ox + L0/2, cy - 26, 'ℓ₀ = 100 cm', c.l, 'center', 800);
+  } else if (E.obj === 'placa' || E.obj === 'cubo'){
+    const s0 = Math.min(ow*0.55, H*0.42), s = s0*f, x0 = ox + 10, y0 = cy + s0/2;
+    if (E.obj === 'cubo'){ const d = s*0.35; ctx.beginPath(); ctx.moveTo(x0, y0 - s); ctx.lineTo(x0 + d, y0 - s - d); ctx.lineTo(x0 + s + d, y0 - s - d); ctx.lineTo(x0 + s + d, y0 - d); ctx.lineTo(x0 + s, y0); ctx.lineTo(x0 + s, y0 - s); ctx.closePath(); ctx.fillStyle = c.line; ctx.fill(); ctx.stroke(); }
+    ctx.fillStyle = metal; ctx.fillRect(x0, y0 - s, s, s); ctx.strokeRect(x0, y0 - s, s, s);
+    ctx.setLineDash([4, 3]); ctx.strokeStyle = c.ink; ctx.strokeRect(x0, y0 - s0, s0, s0); ctx.setLineDash([]);
+    rotulo(ctx, c, x0 + s0/2, y0 - s0/2, E.obj === 'placa' ? 'A₀ = 400 cm²' : 'V₀ = 1000 cm³', E.obj === 'placa' ? c.A : c.V, 'center', 800);
+  } else if (E.obj === 'arandela'){
+    const r0 = Math.min(ow*0.14, H*0.13), cx = ox + ow*0.4;
+    ctx.beginPath(); ctx.arc(cx, cy, r0*1.9*f, 0, Math.PI*2); ctx.moveTo(cx + r0*f, cy); ctx.arc(cx, cy, r0*f, 0, Math.PI*2, true); ctx.fillStyle = metal; ctx.fill('evenodd'); ctx.stroke();
+    ctx.setLineDash([4, 3]); ctx.strokeStyle = c.ink; ctx.beginPath(); ctx.arc(cx, cy, r0, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+    rotulo(ctx, c, cx, cy + r0*1.9*f + 14, `agujero: ${fmt(res.D, 4)} cm`, c.l, 'center', 800);
+  } else {
+    // Frasco del material lleno de mercurio hasta el borde: lo que sobra (o falta) se dibuja en el cuello.
+    const fw = Math.min(ow*0.45, 130), fh = Math.min(H*0.5, 160), x0 = ox + ow*0.2, y0 = cy + fh/2;
+    const sobra = res.derrame*X*0.4;
+    ctx.fillStyle = c.vidrio; ctx.globalAlpha = .35; ctx.fillRect(x0, y0 - fh, fw, fh); ctx.globalAlpha = 1;
+    ctx.fillStyle = c.muted; ctx.fillRect(x0 + 3, y0 - fh + 3 + Math.max(0, -sobra), fw - 6, fh - 6 - Math.max(0, -sobra));
+    ctx.strokeStyle = metal === c.hielo ? c.vidrio : c.olla; ctx.lineWidth = 3; ctx.strokeRect(x0, y0 - fh, fw, fh);
+    if (sobra > 0){ ctx.fillStyle = c.muted; ctx.beginPath(); ctx.ellipse(x0 + fw/2, y0 - fh - Math.min(sobra, 40)/2, fw/2, Math.min(sobra, 40)/2 + 2, 0, 0, Math.PI*2); ctx.fill();
+      rotulo(ctx, c, x0 + fw/2, y0 - fh - Math.min(sobra, 40) - 12, `se derraman ${fmt(res.derrame, 2)} cm³`, c.V, 'center', 800); }
+    else if (sobra < 0) rotulo(ctx, c, x0 + fw/2, y0 - fh - 12, `el nivel baja ${fmt(-res.derrame, 2)} cm³`, c.V, 'center', 800);
+    rotulo(ctx, c, x0 + fw/2, y0 + 14, 'mercurio', c.muted, 'center', 700);
+  }
+  ctx.restore();
+  rotulo(ctx, c, W - 8, H - 12, `${MATS.find(m => m[0] === E.mat)[1]} · exagerado × ${X}`, c.muted, 'right', 600);
+}
+
+montarPasos({ modo:'m3', suf:'3', pasos, E, alto: W => W >= 560 ? clamp(W*0.56, 300, 440) : 400, dibujar });
+})();
+</script>
+<script>
+/* ================= MODO 4: transferencia de calor =================
+   Conducción (el hielo sobre dos placas, Fourier, barras en serie), convección (la olla) y radiación (la noche en
+   Puno y, para la UNI, la ley de Stefan); al final, un explorador de dos barras en serie. Toda la física sale de
+   MotorCalor; las partículas de la olla siguen el campo de velocidades del motor. */
+(function(){
+const MA = M.MATERIALES, E = {};
+const HS = { aluminio:M.hieloSobre('aluminio', 20), madera:M.hieloSobre('madera', 20) };
+const BARRA = { k:MA.cobre.k, A:2e-4, T1:100, T2:0 };
+const T2c = M.conduccion(Object.assign({ ell:1, ref:{ ell:0.5 } }, BARRA)), T2ref = M.conduccion(Object.assign({ ell:0.5 }, BARRA));
+const SERIE = { capas:[{ k:MA.cobre.k, ell:0.2 }, { k:MA.aluminio.k, ell:0.2 }], A:2e-4, T1:90, T2:0 };
+const T3 = M.serie(SERIE);
+const NOCHE = { desp:M.perdidaNocturna({ Tsuelo:283, Tcielo:233, e:1 }), nub:M.perdidaNocturna({ Tsuelo:283, Tcielo:263, e:1 }) };
+const T6 = M.razonRadiacion(27, 327);
+const VENTANA = M.conduccion({ k:MA.vidrio.k, A:1.5, ell:0.005, T1:20, T2:5 });
+const hip = 'Las opciones incorrectas son hipótesis nuestras: no encontramos un estudio que mida estos errores.';
+const MATS = [['cobre','Cobre'], ['aluminio','Aluminio'], ['laton','Latón'], ['acero','Acero'], ['vidrio','Vidrio']];
+const E4 = { m1:'cobre', m2:'acero', l1:0.2, T1:100, T2:0 };
+const LARGO = 0.4, A_EX = 1e-4;
+const serieEx = E => M.serie({ capas:[{ k:MA[E.m1].k, ell:E.l1 }, { k:MA[E.m2].k, ell:LARGO - E.l1 }], A:A_EX, T1:E.T1, T2:E.T2 });
+function azar(semilla){ let s = semilla; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+function particulas(){ const r = azar(5), p = []; for (let j = 0; j < 110; j++) p.push({ x:0.04 + 0.92*r(), y:0.05 + 0.9*r() }); return p; }
+
+const pasos = [
+ { k:'Paso 1', t:'Dos cubos de hielo',
+   antes:E => Object.assign(E, { tipo:'hielo', t:0, ver:false }),
+   gate:{ id:'transf-p1', ok:'a',
+     opts:[['a','El del aluminio, porque el aluminio le lleva el calor al hielo más rápido',null],
+           ['b','El de la madera, porque el aluminio está más frío','Q2-madera-primero','documentado'],
+           ['c','Los dos a la vez, porque las dos placas están a 20 °C','TC1-al-mismo-tiempo','hipotesis'],
+           ['d','El de la madera, porque la madera guarda más calor','Q6-calor-guardado','parcial']],
+     fb:{ a:`Las dos están a 20 °C, como todo lo que pasó la noche en el aula. El aluminio conduce mucho mejor: le lleva calor al hielo varias veces más rápido que la madera.`,
+          b:'El termómetro marca 20 °C en las dos. El aluminio no está más frío: se siente frío porque se lleva rápido el calor de tu mano. Con el hielo pasa lo mismo, pero al revés: el aluminio le da calor rápido.',
+          c:'Están a la misma temperatura, sí, pero no conducen igual: lo que decide es qué tan rápido llega el calor al hielo.',
+          d:'La madera no guarda más calor a 20 °C. El calor no es algo que el cuerpo tenga; es energía que pasa, y por la madera pasa lento.' } },
+   body:() => `<p class="problem">Dos cubos de hielo iguales: uno sobre una placa de aluminio y otro sobre una tabla de madera, del mismo tamaño. Las dos pasaron la noche en el aula, a ${V('T','20 °C')}. ¿Cuál se derrite primero?</p>`,
+   despues:(E, X) => { E.ver = true; X.A.anim(6000, f => { E.t = 1.15*f; X.draw(); }, () => X.decir()); },
+   decir:(E, r) => r ? `Las dos placas marcan 20 grados. Al aluminio le llega más calor por segundo hacia el hielo: ${E.t >= 1 ? 'el hielo del aluminio ya se derritió; el de la madera sigue casi entero' : 'el hielo del aluminio se achica más rápido'}.` : 'Un cubo de hielo sobre una placa de aluminio y otro sobre una tabla de madera, las dos a 20 grados.',
+   exp:() => `<p>El hielo está a 0 °C y las placas a 20 °C: el calor pasa de la placa al hielo. En el aluminio, el calor del resto de la placa llega rápido a reponer lo que se lleva el hielo; en la madera llega lento, y la madera se enfría justo debajo del hielo.</p>
+     <p>Es la misma razón por la que el aluminio se siente frío en la mano: también se lleva rápido el calor de la piel.</p>
+     <p class="hint">El grosor de las flechas compara cuánto calor por segundo llega al hielo en un modelo aproximado: sirve para comparar, no para medir.</p>
+     <p class="fuente">En México, cerca de la mitad de 113 escolares (48 %) dijo que el hielo se derrite antes sobre la madera; la B y la D dan esa respuesta, con razones distintas; el 40 % eligió el metal, pero solo el 5 % habló de conducción (Jara Guerrero, 1991). La D es la cara de otra idea medida: en Panamá, cerca de un tercio de 241 futuros profesores trató el calor como algo que el cuerpo tiene (Rodríguez y Díaz-Higson, 2012). La C es hipótesis nuestra.</p>` },
+ { k:'Paso 2', t:'Una barra entre lo caliente y lo frío',
+   antes:E => Object.assign(E, { tipo:'barras', barras:[0.5], ver:true, f:1, conocido:[true] }),
+   decir:() => `Una barra de cobre de 50 centímetros entre agua que hierve, a 100 grados, y hielo con agua, a 0 grados. Pasan ${fmt(T2ref.flujo, 0)} watts.`,
+   body:() => `<p class="problem">Una barra de cobre de ${V('l','50 cm')} y ${V('A','2 cm²')} de sección, forrada por los costados, une agua que hierve (${V('T','100 °C')}) con hielo y agua (${V('T','0 °C')}).</p>
+   <p>El calor entra por el extremo caliente y sale por el frío, por dentro del cobre. Un medidor marca ${V('Q',`Q/t = ${fmt(T2ref.flujo, 0)} W`)}: ${fmt(T2ref.flujo, 0)} joules cada segundo, que van derritiendo el hielo del otro lado.</p>
+   <p>El color de la barra es su temperatura: baja parejo de 100 °C a 0 °C a lo largo del cobre. Mientras los extremos se mantengan, el calor por segundo no cambia.</p>` },
+ { k:'Paso 3', t:'Una barra más larga',
+   antes:E => Object.assign(E, { tipo:'barras', barras:[0.5, 1], ver:false, f:0, conocido:[true, false], graf:false }),
+   gate:{ id:'transf-p3', ok:'c',
+     opts:[['a',`${fmt(T2c.errores['TC2-mas-largo-mas-calor'], 0)} W`,'TC2-mas-largo-mas-calor','hipotesis'], ['b',`${fmt(T2c.errores['TC2-no-depende-de-l'], 0)} W`,'TC2-no-depende-de-l','hipotesis'],
+           ['c',`${fmt(T2c.flujo, 0)} W`,null], ['d',`${fmt(T2c.errores['TC2-cuadrado'], 0)} W`,'TC2-cuadrado','hipotesis']],
+     fb:{ c:'La misma caída de 100 °C se reparte en el doble de cobre: la temperatura baja la mitad por cada centímetro, y pasa la mitad de calor por segundo.',
+          a:'Más barra no es más calor: es más camino. El calor tiene que atravesar el doble de cobre.',
+          b:'Los extremos son los mismos, pero el camino es el doble de largo: la «pendiente» de temperatura es la mitad.',
+          d:'El largo entra una vez, no al cuadrado: doble largo, la mitad de calor por segundo.' } },
+   body:() => `<p class="problem">Cambias la barra por una de cobre de ${V('l','100 cm')}, con la misma sección y los mismos extremos (${V('T','100 °C')} y ${V('T','0 °C')}). ¿Cuánto calor pasa por segundo?</p>`,
+   despues:(E, X) => { E.ver = true; E.graf = true; E.conocido = [true, true]; X.A.anim(1400, f => { E.f = suave(f); X.draw(); }); },
+   decir:(E, r) => r ? `Por la barra de 50 centímetros pasan ${fmt(T2ref.flujo, 0)} watts y por la de 100, ${fmt(T2c.flujo, 0)}. En la gráfica, la temperatura de la barra larga baja con la mitad de pendiente.` : 'Dos barras de cobre, de 50 y de 100 centímetros, entre 100 y 0 grados. El medidor de la larga todavía no tiene lectura.',
+   exp:() => `<p>La «pendiente» de temperatura es la caída dividida entre el largo: 100 °C en 0,5 m son 200 °C por metro; en 1 m, 100 °C por metro. El calor por segundo es proporcional a esa pendiente: la mitad.</p><p class="fuente">${hip}</p>` },
+ { k:'Paso 4', t:'La ley de Fourier',
+   antes:E => Object.assign(E, { tipo:'ventana' }),
+   decir:() => `Una ventana de vidrio de 5 milímetros y 1,5 metros cuadrados, con su cara interior a 20 grados y la exterior a 5: pasan ${fmt(VENTANA.flujo, 0)} watts.`,
+   body:() => `<div class="eqs">
+     <div class="eq">${V('Q','Q/t')} = ${V('k','k')}·${V('A','A')}·Δ${V('T','T')}/${V('l','ℓ')}</div>
+     <div class="eq">${V('Q','Q/t')} = ${V('k','400')}·${V('A','2 × 10⁻⁴')}·${V('T','100')}/${V('l','0,5')} = ${V('Q',`${fmt(T2ref.flujo, 0)} W`)}<span class="note">la barra del paso 2</span></div>
+   </div>
+   <p>${V('k','k')} es la conductividad del material: cobre 400, aluminio 200, acero 50, vidrio 0,8 y madera 0,12 W/(m·K). Más ${V('A','área')}, más calor; más ${V('l','largo')} (o espesor), menos.</p>
+   <p>¿Cuánto calor pasa por una ventana de vidrio de ${V('l','5 mm')} y ${V('A','1,5 m²')}, con su cara interior a ${V('T','20 °C')} y la exterior a ${V('T','5 °C')}?</p>
+   <div class="eqs"><div class="eq">${V('Q','Q/t')} = ${V('k','0,8')}·${V('A','1,5')}·${V('T','15')}/${V('l','0,005')} = ${V('Q',`${fmt(VENTANA.flujo, 0)} W`)}</div></div>
+   <p>El vidrio conduce poco, pero es muy delgado y tiene mucha área: por eso una ventana enfría tanto una casa en Puno. En una ventana de verdad, el aire pegado a cada cara frena bastante más que el vidrio: la pérdida real es mucho menor, pero la ventana sigue siendo por donde más se escapa el calor. Una doble ventana atrapa aire, que conduce todavía menos.</p>` },
+ { k:'Paso 5', t:'Dos tramos en fila',
+   antes:E => Object.assign(E, { tipo:'serie', ver:false, f:0 }),
+   gate:{ id:'transf-p5', ok:'b',
+     opts:[['a',`${fmt(T3.errores['TC3-union-en-el-promedio'], 0)} °C`,'TC3-union-en-el-promedio','hipotesis'], ['b',`${fmt(T3.uniones[0], 0)} °C`,null],
+           ['c',`${fmt(T3.errores['TC3-al-reves'], 0)} °C`,'TC3-al-reves','hipotesis'], ['d',`${fmt(T3.errores['TC3-toda-la-caida-en-el-peor'], 0)} °C`,'TC3-toda-la-caida-en-el-peor','hipotesis']],
+     fb:{ b:`Por los dos tramos pasa el mismo calor por segundo (${fmt(T3.flujo, 0)} W): si no, la unión se calentaría o se enfriaría. El aluminio conduce la mitad, así que necesita el doble de caída: ${fmt(T3.caidas[1], 0)} °C en el aluminio y ${fmt(T3.caidas[0], 0)} °C en el cobre.`,
+          a:'45 °C sería si los dos condujeran igual. El aluminio conduce la mitad: se lleva más caída.',
+          c:'Lo pusiste al revés: la caída grande va en el que conduce peor.',
+          d:`Sin caída en el cobre no pasaría calor por él; los dos tramos llevan los mismos ${fmt(T3.flujo, 0)} W.` } },
+   body:() => `<p class="problem">Dos tramos de ${V('l','20 cm')} y ${V('A','2 cm²')} de sección: cobre (${V('k','k = 400 W/(m·K)')}) del lado del baño a ${V('T','90 °C')} y aluminio (${V('k','k = 200')}) del lado del hielo a ${V('T','0 °C')}. ¿Qué marca el termómetro de la unión?</p>`,
+   despues:(E, X) => { E.ver = true; X.A.anim(1600, f => { E.f = suave(f); X.draw(); }); },
+   decir:(E, r) => r ? `La unión marca ${fmt(T3.uniones[0], 0)} grados. Pasan ${fmt(T3.flujo, 0)} watts por los dos tramos: el cobre baja ${fmt(T3.caidas[0], 0)} grados y el aluminio, ${fmt(T3.caidas[1], 0)}.` : 'Una barra de dos tramos, cobre y aluminio, entre 90 y 0 grados. El termómetro de la unión todavía no tiene lectura.',
+   exp:() => `<div class="eqs"><div class="eq">${V('k','400')}·${V('A','A')}·(${V('T','90')} − ${V('T','T')})/${V('l','0,2')} = ${V('k','200')}·${V('A','A')}·(${V('T','T')} − ${V('T','0')})/${V('l','0,2')} → ${V('T','T = 60 °C')}</div></div>
+     <p>Es como una fila de dos puertas: la más angosta (la que conduce peor) es la que más frena, y ahí se va la mayor parte de la caída de temperatura.</p><p class="fuente">${hip}</p>` },
+ { k:'Paso 6', t:'La olla en la hornilla',
+   antes:E => Object.assign(E, { tipo:'olla', mueve:false, parts:particulas() }),
+   gate:{ id:'transf-p6', ok:'a',
+     opts:[['a','Sube por el centro, sobre la llama, y baja por los costados',null],
+           ['b','No se mueve: el calor pasa de una capa de agua a la siguiente','TC5-sin-movimiento','hipotesis'],
+           ['c','Baja por el centro y sube por los costados','TC5-al-reves','hipotesis'],
+           ['d','Sube toda a la vez y se queda arriba','TC5-sube-y-queda','hipotesis']],
+     fb:{ a:'El agua de abajo se calienta, se dilata, queda menos densa y sube; la de arriba, más fría, baja por los costados a ocupar su lugar. Esa rueda es la convección. Por eso el congelador va arriba en la refrigeradora.',
+          b:'Eso es conducción, y en el agua es lenta. Lo que domina es que el agua misma se mueve y lleva el calor.',
+          c:'El agua más caliente queda sobre la llama, y es la menos densa: sube por el centro.',
+          d:'Si toda subiera, ¿quién ocupa el fondo? El agua tiene que bajar por algún lado: da vueltas.' } },
+   body:() => `<p class="problem">Una olla con agua se calienta con una llama en el centro del fondo. Por un rato, antes de que hierva, ¿cómo se mueve el agua?</p>`,
+   despues:(E, X) => { E.mueve = true;
+     X.A.continuo(dt => { if (E.tipo !== 'olla' || !E.mueve) return false;
+       for (const p of E.parts){ const v1 = M.conveccion(p.x, p.y, 1, 1), xm = p.x + v1.vx*dt*0.0175, ym = p.y + v1.vy*dt*0.0175, v2 = M.conveccion(xm, ym, 1, 1);
+         p.x = clamp(p.x + v2.vx*dt*0.035, 0.01, 0.99); p.y = clamp(p.y + v2.vy*dt*0.035, 0.01, 0.99); }
+       X.draw(); return true; }); },
+   decir:(E, r) => r ? 'El agua sube por el centro, sobre la llama, se abre por arriba hacia los costados y baja junto a las paredes: dos ruedas de convección.' : 'Corte de una olla con agua, con la llama en el centro del fondo. Las gotitas de agua están quietas.',
+   exp:() => `<p>Las gotitas siguen el movimiento que calcula el motor: dos ruedas, una a cada lado de la llama. La más caliente (más roja) sube por el centro y se enfría arriba; la más fría baja por las paredes y vuelve a pasar sobre la llama. Así el calor llega a toda la olla mucho más rápido que por conducción.</p><p class="fuente">${hip}</p>` },
+ { k:'Paso 7', t:'Noche despejada y noche nublada',
+   antes:E => Object.assign(E, { tipo:'noche', ver:false, fase:0 }),
+   gate:{ id:'transf-p7', ok:'a',
+     opts:[['a','Las nubes devuelven hacia el suelo parte del calor que el suelo emite como radiación infrarroja',null],
+           ['b','Las nubes tapan el aire caliente como una tapa y no lo dejan salir','Q12-nubes-tapan','parcial'],
+           ['c','Las nubes guardan el calor del sol de la tarde y lo sueltan de noche','TR6-nube-guarda-calor','hipotesis'],
+           ['d','De noche no hay radiación: el suelo solo pierde calor por el aire','TR6-sin-radiacion','hipotesis']],
+     fb:{ a:`Todo cuerpo emite radiación, también el suelo de noche. Al cielo despejado se va casi toda; la nube la absorbe y devuelve una parte. En el modelo, el suelo pierde unos ${fmt(Math.round(NOCHE.desp.perdida/10)*10, 0)} W/m² con cielo despejado y unos ${fmt(Math.round(NOCHE.nub.perdida/10)*10, 0)} con nubes. Por eso las heladas fuertes del altiplano caen en noches despejadas.`,
+          b:'La nube está a cientos de metros: no tapa el aire del suelo. Lo que hace es devolver radiación.',
+          c:'La nube está fría, bajo cero. No suelta calor guardado: devuelve parte del que le llega del suelo.',
+          d:'La radiación no necesita sol ni luz visible: el suelo a 10 °C emite infrarrojo todo el tiempo.' } },
+   body:() => `<p class="problem">En Puno, dos noches de invierno empiezan con el suelo a ${V('T','10 °C')}. Una está despejada; la otra, nublada. La nublada amanece menos fría. ¿Por qué?</p>`,
+   despues:(E, X) => { E.ver = true; X.A.continuo(dt => { if (E.tipo !== 'noche' || !E.ver) return false; E.fase = (E.fase + dt*14) % 24; X.draw(); return true; }); },
+   decir:(E, r) => r ? `El suelo emite radiación infrarroja. Con cielo despejado pierde unos ${fmt(NOCHE.desp.perdida, 0)} watts por metro cuadrado; con nubes, que devuelven una parte, unos ${fmt(NOCHE.nub.perdida, 0)}.` : 'Dos paisajes de noche, uno despejado y otro nublado, con el suelo a 10 grados.',
+   exp:() => `<p>El suelo a 10 °C (283 K) emite unos ${fmt(NOCHE.desp.emite, 0)} W/m². El cielo despejado del altiplano le devuelve muy poco: en el modelo, lo que emitiría un cuerpo a −40 °C. Una nube baja, a unos −10 °C, le devuelve bastante más. La diferencia es lo que pierde el suelo: ${fmt(NOCHE.desp.perdida, 0)} contra ${fmt(NOCHE.nub.perdida, 0)} W/m². Esa pérdida dura toda la noche: cada segundo, el suelo despejado pierde más del doble de energía que el nublado (${fmt(NOCHE.desp.perdida/NOCHE.nub.perdida, 1)} veces). Por eso amanece mucho más frío y puede helar.</p>
+     <p class="hint">Las temperaturas del cielo (−40 °C despejado y −10 °C la base de la nube) son suposiciones del modelo, para comparar.</p>
+     <p class="fuente">En Sídney, solo entre el 9 % y el 23 % de cuatro grupos de universitarios explicó bien por qué las noches nubladas son más templadas, sin una opción errónea dominante (Georgiou y Sharma, 2010): por eso la B va como un dato vecino, sin cifra propia. Las opciones C y D son hipótesis nuestras.</p>` },
+ { k:'Paso 8', t:'La placa que brilla', uni:true,
+   antes:E => Object.assign(E, { tipo:'stefan', T:27, ver:false }),
+   gate:{ id:'transf-p8', ok:'c',
+     opts:[['a',`${fmt(T6.errores['TR7-lineal-kelvin'], 0)} veces`,'TR7-lineal-kelvin','hipotesis'], ['b',`Unas ${fmt(T6.errores['TR7-lineal-celsius'], 0)} veces`,'TR7-lineal-celsius','hipotesis'],
+           ['c',`${fmt(T6.razon, 0)} veces`,null], ['d',`Unas ${fmt(Math.round(T6.errores['TR7-cuarta-celsius']/100)*100, 0)} veces`,'TR7-cuarta-celsius','hipotesis']],
+     fb:{ c:`En kelvin, la temperatura pasa de ${T6.T1K} K a ${T6.T2K} K: el doble. La ley de Stefan dice Q/t = e·σ·A·T⁴, así que la potencia sube 2⁴ = 16 veces.`,
+          a:'El doble es la temperatura en kelvin; la potencia va con la cuarta potencia.',
+          b:'327/27 usa °C: en la ley de Stefan la temperatura va en kelvin.',
+          d:'Elevaste a la cuarta, bien, pero con °C: (327/27)⁴. Con kelvin, (600/300)⁴ = 16.' } },
+   body:() => `<p class="problem">Una placa negra a ${V('T','27 °C')} emite cierta potencia por radiación. Se calienta hasta ${V('T','327 °C')}. ¿Cuántas veces más potencia emite?</p>`,
+   despues:(E, X) => { E.ver = true; X.A.anim(2600, f => { E.T = 27 + 300*suave(f); X.draw(); }, () => X.decir()); },
+   decir:(E, r) => r ? `A ${fmt(E.T, 0)} grados Celsius, ${fmt(E.T + 273, 0)} kelvin, la placa emite ${fmt(M.razonRadiacion(27, E.T).razon, 1)} veces lo que emitía a 27 grados.` : 'Una placa negra a 27 grados y una barra que mide cuánto emite.',
+   exp:() => `<div class="eqs"><div class="eq">${V('Q','Q/t')} = e·σ·${V('A','A')}·${V('T','T')}⁴<span class="note">T en kelvin; σ = 5,67 × 10⁻⁸ W/(m²·K⁴); e es la emisividad (1 para un cuerpo negro)</span></div>
+     <div class="eq">(${V('T','600')}/${V('T','300')})⁴ = 2⁴ = 16</div></div>
+     <p>Por ejemplo, una placa de ${V('A','0,5 m²')} con e = 0,8 emite ${fmt(M.radiacion({ e:0.8, A:0.5, Tc:27, k:{ Kelvin:273 } }).P, 0)} W a 27 °C y ${fmt(M.radiacion({ e:0.8, A:0.5, Tc:327, k:{ Kelvin:273 } }).P, 0)} W a 327 °C.</p>
+     <p class="fuente">Usar °C donde va kelvin es un error que suponemos, frecuente en el material de academia, sin un estudio que lo mida. ${hip}</p>` },
+ { k:'Paso 9', t:'Ahora explora tú', explora:true,
+   antes:E => Object.assign(E, { tipo:'serie', ver:true, f:1, explora:true }, E4),
+   body:() => `<div class="seg" role="group" aria-label="Material del tramo 1">${MATS.map(([k, n]) => `<button type="button" data-m1="${k}" aria-pressed="${E4.m1 === k}">${n}</button>`).join('')}</div>
+     <div class="seg" role="group" aria-label="Material del tramo 2">${MATS.map(([k, n]) => `<button type="button" data-m2="${k}" aria-pressed="${E4.m2 === k}">${n}</button>`).join('')}</div>
+     <div class="ctrls">
+       <div class="slider"><label for="l14"><span>Largo del tramo 1 (${V('l','ℓ₁')})</span><output id="l14-o"></output></label><input id="l14" class="r-l" type="range" min="0.02" max="0.38" step="0.01" value="${E4.l1}"></div>
+       <div class="slider"><label for="T14"><span>Extremo caliente (${V('T','T₁')})</span><output id="T14-o"></output></label><input id="T14" class="r-T" type="range" min="0" max="150" step="1" value="${E4.T1}"></div>
+       <div class="slider"><label for="T24"><span>Extremo frío (${V('T','T₂')})</span><output id="T24-o"></output></label><input id="T24" class="r-T" type="range" min="0" max="150" step="1" value="${E4.T2}"></div>
+     </div>
+     <div id="live4" class="body"></div>
+     <p class="hint">En el dibujo puedes arrastrar la unión a lo largo de la barra y los dos extremos de la gráfica. Con el dibujo seleccionado, ← y → mueven la unión. El largo total es de 40 cm y la sección, de 1 cm².</p>`,
+   montar:X => {
+     const $ = id => document.getElementById(id);
+     document.querySelectorAll('#body4 [data-m1]').forEach(b => b.onclick = () => { X.E.m1 = E4.m1 = b.dataset.m1; marcar('m1', E4.m1); vivo(X); });
+     document.querySelectorAll('#body4 [data-m2]').forEach(b => b.onclick = () => { X.E.m2 = E4.m2 = b.dataset.m2; marcar('m2', E4.m2); vivo(X); });
+     $('l14').oninput = () => { X.E.l1 = E4.l1 = +$('l14').value; vivo(X); };
+     $('T14').oninput = () => { X.E.T1 = E4.T1 = Math.max(+$('T14').value, X.E.T2 + 1); vivo(X); };
+     $('T24').oninput = () => { X.E.T2 = E4.T2 = Math.min(+$('T24').value, X.E.T1 - 1); vivo(X); };
+     vivo(X);
+   },
+   lienzo:{ aria:'Barra de dos tramos del explorador: con las flechas izquierda y derecha del teclado mueves la unión',
+     cerca:(p, r, E) => { if (!E.asas) return null; let mejor = null, d0 = r; for (const [k, q] of Object.entries(E.asas)){ const d = Math.hypot(p.x - q.x, p.y - q.y); if (d < d0){ d0 = d; mejor = k; } } return mejor; },
+     mover:(p, q, E, X) => {
+       if (q === 'union') E.l1 = E4.l1 = clamp(Math.round(E.xInv(p.x)*100)/100, 0.02, 0.38);
+       else if (q === 'T1') E.T1 = E4.T1 = clamp(Math.round(E.yInv(p.y)), E.T2 + 1, 150);
+       else if (q === 'T2') E.T2 = E4.T2 = clamp(Math.round(E.yInv(p.y)), 0, E.T1 - 1);
+       vivo(X, true); },
+     tecla:(e, E, X) => { const d = { ArrowRight:0.01, ArrowLeft:-0.01 }[e.key]; if (!d) return false; E.l1 = E4.l1 = clamp(Math.round((E.l1 + d)*100)/100, 0.02, 0.38); vivo(X, true); return true; } },
+   decir:E => { const s = serieEx(E); return `Tramo 1 de ${MATS.find(m => m[0] === E.m1)[1].toLowerCase()}, ${fmt(E.l1*100, 0)} centímetros; tramo 2 de ${MATS.find(m => m[0] === E.m2)[1].toLowerCase()}. Pasan ${fmt(s.flujo, 2)} watts y la unión está a ${fmt(s.uniones[0], 1)} grados.`; } },
+];
+function marcar(attr, v){ document.querySelectorAll(`#body4 [data-${attr}]`).forEach(b => b.setAttribute('aria-pressed', String(b.dataset[attr] === v))); }
+function vivo(X, desdeLienzo){
+  const $ = id => document.getElementById(id), E = X.E; if (!$('l14')) return;
+  $('l14').value = E.l1; $('T14').value = E.T1; $('T24').value = E.T2;
+  $('l14-o').textContent = `${fmt(E.l1*100, 0)} cm`; $('T14-o').textContent = `${fmt(E.T1, 0)} °C`; $('T24-o').textContent = `${fmt(E.T2, 0)} °C`;
+  const s = serieEx(E), k1 = MA[E.m1].k, k2 = MA[E.m2].k;
+  $('live4').innerHTML = `<div class="eqs">
+    <div class="eq">${V('Q','Q/t')} = ${V('k',fmt(k1, 1))}·${V('A','10⁻⁴')}·${V('T',fmt(s.caidas[0], 1))}/${V('l',fmt(E.l1, 2))} = ${V('k',fmt(k2, 1))}·${V('A','10⁻⁴')}·${V('T',fmt(s.caidas[1], 1))}/${V('l',fmt(LARGO - E.l1, 2))} = ${V('Q',fmt(s.flujo, 2) + ' W')}</div>
+    <div class="eq"><span class="note" style="margin:0">Unión a ${V('T',fmt(s.uniones[0], 1) + ' °C')}: la caída mayor va en el tramo que frena más (más largo o peor conductor).</span></div></div>`;
+  sinParada($('live4')); X.draw(); X.decir();
+}
+
+/* ---------- dibujos ---------- */
+function dibujar(L, c){
+  const { ctx, W, H } = L;
+  ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+  ({ hielo:dHielo, barras:dBarras, ventana:dVentana, serie:dSerie, olla:dOlla, noche:dNoche, stefan:dStefan })[E.tipo](ctx, c, W, H);
+}
+const colMat = (c, m) => ({ cobre:c.cobre, aluminio:c.aluminio, laton:c.laton, acero:c.acero, vidrio:c.hielo, madera:c.madera })[m];
+function dHielo(ctx, c, W, H){
+  const fmax = HS.aluminio.flujo;
+  [['aluminio', 'placa de aluminio'], ['madera', 'tabla de madera']].forEach(([m, nombre], j) => {
+    const cx = W*(j ? 0.74 : 0.26), pw = Math.min(W*0.4, 230), py = H*0.6, hs = HS[m];
+    rr(ctx, cx - pw/2, py, pw, 16, 3); ctx.fillStyle = colMat(c, m); ctx.fill(); ctx.strokeStyle = c.olla; ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.font = `700 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(nombre, cx, py + 22);
+    termometro(ctx, c, cx + pw/2 - 12, py - 62, 64, 20, { min:0, max:40 }, '', false);
+    const fr = E.ver ? clamp(E.t/hs.tiempoRelativo, 0, 1) : 0, s0 = Math.min(pw*0.36, 58), s = s0*Math.cbrt(1 - fr);
+    if (fr > 0){ ctx.fillStyle = c.agua; ctx.beginPath(); ctx.ellipse(cx - 8, py - 1, s0*0.3 + s0*0.7*fr, 4, 0, 0, Math.PI*2); ctx.fill(); }
+    if (s > 1){ rr(ctx, cx - 8 - s/2, py - s, s, s, Math.max(2, s*0.15)); ctx.fillStyle = c.hielo; ctx.fill(); ctx.strokeStyle = c.hieloB; ctx.lineWidth = 1.5; ctx.stroke(); }
+    else rotulo(ctx, c, cx - 20, py - 16, 'se derritió', c.muted, 'left', 700);
+    if (!E.ver) return;
+    // El grosor de la flecha compara el calor por segundo hacia el hielo; queda dibujada sobre el charco.
+    const g = 2 + 12*hs.flujo/fmax, ax = cx - 8 - Math.max(s, s0*0.4)/2 - 14;
+    flecha(ctx, ax, py + 6, ax, py - Math.max(s, 22) + 4, c.Q, g);
+    rotulo(ctx, c, ax - g/2 - 6, py - 30, 'Q/t', c.Q, 'right', 800);
+  });
+  // Reloj
+  const rx = W/2, ry = 26, rr0 = 14;
+  ctx.save(); ctx.beginPath(); ctx.arc(rx, ry, rr0, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.stroke();
+  const a = -Math.PI/2 + (E.t || 0)*Math.PI*2*1.5; ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, rx, ry, rx + Math.cos(a)*rr0*0.8, ry + Math.sin(a)*rr0*0.8); ctx.restore();
+  rotulo(ctx, c, W/2, H - 12, 'modelo para comparar, no para medir', c.muted, 'center', 600);
+}
+function olla(ctx, c, x, y, w, h, texto){
+  ctx.fillStyle = c.agua; ctx.fillRect(x + 3, y + h*0.25, w - 6, h*0.75 - 3);
+  ctx.strokeStyle = c.olla; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w, y); ctx.stroke();
+  rotulo(ctx, c, x + w/2, y - 9, texto, c.T, 'center', 800);
+}
+function vaso(ctx, c, x, y, w, h, texto){
+  ctx.fillStyle = c.agua; ctx.fillRect(x + 2, y + h*0.2, w - 4, h*0.8 - 2);
+  ctx.fillStyle = c.hielo; ctx.strokeStyle = c.hieloB; ctx.lineWidth = 1; for (let j = 0; j < 2; j++){ ctx.fillRect(x + 4 + j*(w/2 - 2), y + h*0.22, w/2 - 6, w/2 - 6); ctx.strokeRect(x + 4 + j*(w/2 - 2), y + h*0.22, w/2 - 6, w/2 - 6); }
+  ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w, y); ctx.stroke();
+  rotulo(ctx, c, x + w/2, y - 9, texto || '0 °C', c.T, 'center', 800);
+}
+function barra(ctx, c, x, y, Lpx, grosor, ver, f, col){
+  if (ver && f > 0){
+    const g = ctx.createLinearGradient(x, 0, x + Lpx, 0); g.addColorStop(0, c.T); g.addColorStop(1, c.hieloB);
+    ctx.fillStyle = col; ctx.fillRect(x, y - grosor/2, Lpx, grosor);
+    ctx.save(); ctx.globalAlpha = f; ctx.fillStyle = g; ctx.fillRect(x, y - grosor/2, Lpx, grosor); ctx.restore();
+  } else { ctx.fillStyle = col; ctx.fillRect(x, y - grosor/2, Lpx, grosor); }
+  ctx.strokeStyle = c.olla; ctx.lineWidth = 1; ctx.strokeRect(x, y - grosor/2, Lpx, grosor);
+}
+function dBarras(ctx, c, W, H){
+  const esc = (W - 140)/1.0, x0 = 60, uno = E.barras.length === 1;
+  const ys = uno ? [H*0.42] : [H*0.14, H*0.36];
+  E.barras.forEach((ell, j) => {
+    const y = ys[j], Lpx = ell*esc, r = M.conduccion(Object.assign({ ell }, BARRA));
+    olla(ctx, c, 10, y - 18, 46, 40, '100 °C');
+    barra(ctx, c, x0 - 4, y, Lpx + 8, 12, E.ver, E.f, c.cobre);
+    vaso(ctx, c, x0 + Lpx + 4, y - 18, 40, 40);
+    rotulo(ctx, c, x0 + Lpx/2, y + 18, `${fmt(ell*100, 0)} cm`, c.l, 'center', 800);
+    const conocido = E.conocido[j];
+    if (E.ver && conocido && E.f > 0) flecha(ctx, x0 + 6, y - 15, x0 + Lpx - 6, y - 15, c.Q, 2 + 3*r.flujo/16);
+    rotulo(ctx, c, x0 + Lpx/2, y - 28, conocido ? `Q/t = ${fmt(r.flujo, 0)} W` : 'Q/t = ¿?', c.Q, 'center', 800);
+  });
+  if (!E.graf) return;
+  const g = { x:x0, y:H*0.55, w:esc, h:H*0.45 - 46 };
+  const ej = ejes(ctx, c, g, { x0:0, x1:1, y0:0, y1:115 }, { x:'posición a lo largo de la barra (m)', colX:c.muted, y:'T (°C)', colY:c.T, pasoX:0.25, pasoY:50, fmtX:v => fmt(v, 2), xFuera:true });
+  E.barras.forEach((ell, j) => {
+    ctx.save(); ctx.strokeStyle = c.T; ctx.lineWidth = 3; ctx.setLineDash(j ? [8, 5] : []); ctx.globalAlpha = E.f;
+    linea(ctx, ej.X(0), ej.Y(100), ej.X(ell), ej.Y(0)); ctx.restore();
+    if (E.f > 0.5){ if (j) rotulo(ctx, c, ej.X(ell*0.6) + 8, ej.Y(40) - 4, `${fmt(ell*100, 0)} cm`, c.T, 'left', 800);
+      else rotulo(ctx, c, ej.X(ell*0.6) + 8, ej.Y(40), `${fmt(ell*100, 0)} cm`, c.T, 'left', 800); }
+  });
+}
+function dVentana(ctx, c, W, H){
+  const gx = W*0.5, gw = 16, gy = H*0.14, gh = H*0.6;
+  ctx.fillStyle = c.madera; ctx.globalAlpha = .5; ctx.fillRect(gx - gw/2 - 10, gy - 10, gw + 20, gh + 20); ctx.globalAlpha = 1;
+  ctx.fillStyle = c.hielo; ctx.fillRect(gx - gw/2, gy, gw, gh); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 1.5; ctx.strokeRect(gx - gw/2, gy, gw, gh);
+  rotulo(ctx, c, W*0.25, gy + 10, 'cara interior: 20 °C', c.T, 'center', 800);
+  rotulo(ctx, c, W*0.75, gy + 30, 'cara exterior: 5 °C', c.T, 'center', 800);
+  flecha(ctx, W*0.12, gy + gh*0.5, W*0.88, gy + gh*0.5, c.Q, 6);
+  rotulo(ctx, c, W*0.25, gy + gh*0.5 - 20, `Q/t = ${fmt(VENTANA.flujo, 0)} W`, c.Q, 'center', 800);
+  rotulo(ctx, c, gx, gy + gh + 22, 'ℓ = 5 mm (espesor)', c.l, 'center', 800);
+  rotulo(ctx, c, W*0.78, gy + gh*0.78, 'A = 1,5 m²', c.A, 'center', 800);
+  rotulo(ctx, c, W*0.22, gy + gh*0.78, 'vidrio: k = 0,8', c.k, 'center', 800);
+  rotulo(ctx, c, W - 8, H - 12, 'espesor exagerado', c.muted, 'right', 600);
+}
+function dSerie(ctx, c, W, H){
+  const sx = E.explora ? serieEx(E) : T3, capas = E.explora ? [E.m1, E.m2] : ['cobre', 'aluminio'];
+  const largos = E.explora ? [E.l1, LARGO - E.l1] : [0.2, 0.2], T1 = E.explora ? E.T1 : 90, T2 = E.explora ? E.T2 : 0;
+  const xa = 66, xb = W - 66, y = H*0.2, tot = largos[0] + largos[1], xu = xa + largos[0]/tot*(xb - xa);
+  olla(ctx, c, xa - 58, y - 18, 46, 40, `${fmt(T1, 0)} °C`);
+  vaso(ctx, c, xb + 10, y - 18, 44, 40, `${fmt(T2, 0)} °C`);
+  ctx.fillStyle = colMat(c, capas[0]); ctx.fillRect(xa, y - 7, xu - xa, 14);
+  ctx.fillStyle = colMat(c, capas[1]); ctx.fillRect(xu, y - 7, xb - xu, 14);
+  ctx.strokeStyle = c.olla; ctx.lineWidth = 1; ctx.strokeRect(xa, y - 7, xb - xa, 14); linea(ctx, xu, y - 7, xu, y + 7);
+  const nombre = m => MATS.find(q => q[0] === m)[1].toLowerCase();
+  rotulo(ctx, c, (xa + xu)/2, y + 20, `${nombre(capas[0])}, ${fmt(largos[0]*100, 0)} cm`, c.ink, 'center', 700);
+  rotulo(ctx, c, (xu + xb)/2, y + 20, `${nombre(capas[1])}, ${fmt(largos[1]*100, 0)} cm`, c.ink, 'center', 700);
+  const u = sx.uniones[0];
+  rotulo(ctx, c, clamp(xu, xa + 40, xb - 40), y - 50, E.ver ? `unión: ${fmt(u, E.explora ? 1 : 0)} °C` : 'unión: ¿?', c.T, 'center', 800);
+  ctx.strokeStyle = c.T; ctx.lineWidth = 1.5; linea(ctx, xu, y - 41, xu, y - 8);
+  if (E.ver && E.f > 0){
+    flecha(ctx, xa + 4, y - 16, xb - 4, y - 16, c.Q, 3);
+    rotulo(ctx, c, xu < (xa + xb)/2 ? xb : xa, y - 30, `Q/t = ${fmt(sx.flujo, E.explora ? 2 : 0)} W`, c.Q, xu < (xa + xb)/2 ? 'right' : 'left', 800);
+  }
+  if (!E.ver) return;
+  // En el explorador el eje empieza bajo 0 °C, para que el asa de T₂ = 0 no tape los rótulos del eje x.
+  const g = { x:xa, y:H*0.42, w:xb - xa, h:H*0.58 - 46 }, Tmax = (E.explora ? 150 : 100)*1.12, T0g = E.explora ? -22 : 0;
+  const ej = ejes(ctx, c, g, { x0:0, x1:tot, y0:T0g, y1:Tmax }, { x:'posición a lo largo de la barra (m)', colX:c.muted, y:'T (°C)', colY:c.T, pasoX:0.1, pasoY:E.explora ? 50 : 20, fmtX:v => fmt(v, 1), xFuera:true, margenY:E.explora ? 13 : 5 });
+  ctx.save(); ctx.globalAlpha = E.f; ctx.strokeStyle = c.T; ctx.lineWidth = 3; ctx.beginPath();
+  for (let j = 0; j <= 60; j++){ const x = tot*j/60, T = sx.perfil(x); j ? ctx.lineTo(ej.X(x), ej.Y(T)) : ctx.moveTo(ej.X(x), ej.Y(T)); }
+  ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted; linea(ctx, ej.X(largos[0]), g.y, ej.X(largos[0]), g.y + g.h); ctx.restore();
+  if (E.f > 0.5) punto(ctx, ej.X(largos[0]), ej.Y(u), 5, c.T, c.card);
+  if (!E.explora && E.f > 0.5){
+    rotulo(ctx, c, ej.X(largos[0]/2) + 8, ej.Y((T1 + u)/2) - 12, `cae ${fmt(sx.caidas[0], 0)} °C`, c.T, 'left', 700);
+    rotulo(ctx, c, ej.X(largos[0] + largos[1]/2) + 8, ej.Y((u + T2)/2) - 12, `cae ${fmt(sx.caidas[1], 0)} °C`, c.T, 'left', 700);
+  }
+  if (E.explora){
+    E.asas = { union:{ x:xu, y }, T1:{ x:ej.X(0), y:ej.Y(T1) }, T2:{ x:ej.X(tot), y:ej.Y(T2) } };
+    E.xInv = px => (px - xa)/(xb - xa)*tot; E.yInv = py => T0g + (g.y + g.h - py)/g.h*(Tmax - T0g);
+    for (const [k, q] of Object.entries(E.asas)){ ctx.beginPath(); ctx.arc(q.x, q.y, 9, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = k === 'union' ? c.l : c.T; ctx.lineWidth = 3; ctx.stroke(); }
+  }
+}
+function dOlla(ctx, c, W, H){
+  const px = W*0.12, pw = W*0.76, py = H*0.1, ph = H*0.68;
+  ctx.fillStyle = c.agua; ctx.fillRect(px, py, pw, ph);
+  ctx.strokeStyle = c.olla; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(px, py - 8); ctx.lineTo(px, py + ph); ctx.lineTo(px + pw, py + ph); ctx.lineTo(px + pw, py - 8); ctx.stroke();
+  ctx.fillStyle = c.fuego;
+  for (let j = 0; j < 5; j++){ const x = px + pw*(0.4 + 0.05*j), yb = py + ph + 26; ctx.beginPath(); ctx.moveTo(x - 6, yb); ctx.quadraticCurveTo(x - 3, yb - 9, x, yb - 18); ctx.quadraticCurveTo(x + 3, yb - 9, x + 6, yb); ctx.fill(); }
+  const X = x => px + x*pw, Y = y => py + ph - y*ph;
+  for (const p of E.parts){
+    const cal = E.mueve ? Math.exp(-Math.pow((p.x - 0.5)/0.2, 2))*(0.35 + 0.65*(1 - p.y)) : 0;
+    ctx.globalAlpha = E.mueve ? 0.3 + 0.7*cal : 0.55; ctx.fillStyle = E.mueve ? c.T : c.muted;
+    ctx.beginPath(); ctx.arc(X(p.x), Y(p.y), 2.6, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  if (!E.mueve) return;
+  // Con movimiento reducido, flechas del campo de velocidades; si no, las gotitas ya se mueven.
+  if (RM){ for (let i = 1; i < 8; i++) for (let j = 1; j < 5; j++){ const x = i/8, y = j/5, v = M.conveccion(x, y, 1, 1), n = Math.hypot(v.vx, v.vy) || 1;
+    flecha(ctx, X(x) - v.vx/n*7, Y(y) + v.vy/n*7, X(x) + v.vx/n*7, Y(y) - v.vy/n*7, c.ink, 1.3); } }
+  [0.25, 0.75].forEach(cx => {
+    const r = Math.min(pw*0.16, ph*0.32), x = X(cx), y = Y(0.5), dir = cx < 0.5 ? 1 : -1;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .55; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+    // Punta arriba del círculo, apuntando hacia la pared (sube por el centro, se abre arriba).
+    const tx = x, ty = y - r; ctx.fillStyle = c.ink; ctx.beginPath(); ctx.moveTo(tx - dir*8, ty); ctx.lineTo(tx + dir*3, ty - 6); ctx.lineTo(tx + dir*3, ty + 6); ctx.closePath(); ctx.fill();
+  });
+  rotulo(ctx, c, W/2, py + 14, 'convección', c.ink, 'center', 800);
+}
+function dNoche(ctx, c, W, H){
+  const cielo = css('--noche'), mitad = W/2, sueloY = H*0.74;
+  [['despejado', 0], ['nublado', 1]].forEach(([nombre, j]) => {
+    const x0 = j ? mitad + 3 : 0, w = mitad - 3, p = j ? NOCHE.nub : NOCHE.desp;
+    ctx.fillStyle = cielo; ctx.fillRect(x0, 0, w, sueloY);
+    ctx.fillStyle = c.hielo; const r = azar(11 + j); for (let k = 0; k < 16; k++){ const sx = x0 + 6 + r()*(w - 12), sy = 6 + r()*sueloY*0.6; ctx.fillRect(sx, sy, 2, 2); }
+    if (j){ ctx.fillStyle = c.vidrio; for (let k = 0; k < 5; k++){ ctx.beginPath(); ctx.ellipse(x0 + w*(0.15 + 0.17*k), H*0.2 + (k % 2)*6, w*0.16, 18, 0, 0, Math.PI*2); ctx.fill(); } }
+    ctx.fillStyle = c.madera; ctx.fillRect(x0, sueloY, w, H - sueloY);
+    const hx = x0 + w*0.62, hy = sueloY; ctx.fillStyle = c.card; ctx.fillRect(hx, hy - 22, 28, 22); ctx.fillStyle = c.olla; ctx.beginPath(); ctx.moveTo(hx - 4, hy - 22); ctx.lineTo(hx + 14, hy - 36); ctx.lineTo(hx + 32, hy - 22); ctx.fill();
+    rotulo(ctx, c, x0 + w/2, 14, nombre, c.ink, 'center', 800);
+    termometro(ctx, c, x0 + 22, sueloY - 56, 70, 10, { min:-10, max:20 }, '', false);
+    rotulo(ctx, c, x0 + 6, sueloY + 38, 'termómetro: al anochecer', c.ink, 'left', 700);
+    if (!E.ver) return;
+    // Infrarrojo que sube del suelo; en el nublado, parte vuelve.
+    // Cada flecha lleva un halo claro debajo, para que el azul de Q se lea sobre el cielo oscuro.
+    const tope = j ? H*0.2 + 22 : 22;
+    const rayo = (ax, y1, y2, off) => {
+      ctx.save(); ctx.strokeStyle = c.hielo; ctx.globalAlpha = .7; ctx.lineWidth = 6; linea(ctx, ax, y1, ax, y2); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.Q; ctx.lineWidth = 2.5; ctx.setLineDash([8, 4]); ctx.lineDashOffset = off; linea(ctx, ax, y1, ax, y2); ctx.restore();
+      flecha(ctx, ax, y2 + (y2 < y1 ? 10 : -10), ax, y2, c.Q, 2.5);
+    };
+    for (let k = 0; k < 3; k++) rayo(x0 + w*(0.3 + 0.17*k), sueloY - 4, tope, -E.fase);
+    if (j) for (let k = 0; k < 2; k++) rayo(x0 + w*(0.38 + 0.17*k), tope + 4, sueloY - 10, E.fase);
+    rotulo(ctx, c, x0 + w/2, sueloY + 16, `pierde ${fmt(p.perdida, 0)} W/m²`, c.Q, 'center', 800);
+  });
+}
+function dStefan(ctx, c, W, H){
+  const px = W*0.08, pw = W*0.2, py = H*0.22, ph = H*0.5, s = clamp((E.T - 27)/300, 0, 1);
+  ctx.fillStyle = c.olla; ctx.fillRect(px, py, pw, ph);
+  ctx.save(); ctx.globalAlpha = 0.85*s; ctx.fillStyle = c.fuego; ctx.fillRect(px, py, pw, ph); ctx.restore();
+  rotulo(ctx, c, px + pw/2, py - 14, E.ver ? `${fmt(E.T, 0)} °C = ${fmt(E.T + 273, 0)} K` : '27 °C', c.T, E.ver ? 'left' : 'center', 800);
+  for (let k = 0; k < 3; k++){ const y = py + ph*(0.25 + 0.25*k); flecha(ctx, px + pw + 6, y, px + pw + 34, y, c.Q, 2); }
+  const bx = W*0.56, bw = Math.min(46, W*0.12), base = H - 34, hu = (H - 80)/16.5, razon = M.razonRadiacion(27, E.T).razon;
+  ctx.fillStyle = c.Q; ctx.fillRect(bx, base - hu*razon, bw, hu*razon);
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.strokeRect(bx, base - hu, bw, hu);
+  rotulo(ctx, c, bx + bw/2, base + 12, 'Q/t', c.Q, 'center', 800);
+  rotulo(ctx, c, bx + bw + 6, base - hu/2, E.ver ? '× 1 (a 27 °C)' : 'a 27 °C', c.muted, 'left', 700);
+  if (!E.ver) return;
+  rotulo(ctx, c, bx + bw + 6, base - hu*razon, `× ${fmt(razon, 1)}`, c.Q, 'left', 800);
+  if (s > 0.99){ rr(ctx, W*0.3, 10, W*0.66, 26, 8); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.line; ctx.stroke();
+    rotulo(ctx, c, W*0.63, 23, 'Q/t = e·σ·A·T⁴ (T en kelvin)', c.ink, 'center', 800); }
+}
+
+montarPasos({ modo:'m4', suf:'4', pasos, E, alto: W => W >= 560 ? clamp(W*0.56, 300, 440) : 400, dibujar });
 })();
 </script>
 
 <script>
 /* ================= Pestañas ================= */
 (function(){
-  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2'], ['#dilatacion', 'm3', 'tab3'], ['#transferencia', 'm4', 'tab4']];
   function route(){
     const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
     modos.forEach(([, m, t], j) => {

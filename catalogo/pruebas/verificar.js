@@ -84,6 +84,51 @@ const V = {
       errores: { 'S1-en-la-superficie': 'superficie', 'S6-detras-como-lente': 'detras', 'S5-zona': 'entre-F-y-C|invertida|menor' } };
   },
 
+  // fis-11 a fis-15: escenas de electricidad, magnetismo y física moderna (en "reserva": las formas tienen un tope de 10).
+  'fis-11': d => {
+    // Dos esferas que se tocan: la carga se reparte hasta igualar el potencial (motor contacto). Se pide la de la chica (1).
+    // Las cargas van en nC: el reparto es proporcional, así que el motor (en µC) da la misma cuenta con los números en nC.
+    const r = motor('electrostatica').contacto(d.Q1, d.R1cm / 100, d.Q2, d.R2cm / 100);
+    if (!(d.R1cm < d.R2cm)) throw new Error('la esfera 1 debe ser la chica');
+    return { correcta: r.Q1f, errores: { 'EL8-se-reparte-por-igual': r.errores.mitades, 'EL8-la-chica-se-queda-con-mas': r.errores.alReves.Q1f,
+      'EL8-toda-pasa-a-la-grande': r.errores.todaPasa.Q1f } };
+  },
+  'fis-12': d => {
+    // Punto medio entre dos cables con corrientes opuestas e iguales (ida y vuelta), separados d cm; en µT.
+    const r = motor('magnetismo').puntoMedio(d.I, -d.I, d.dcm / 100), uT = x => x * 1e6;
+    if (!r.seSuman) throw new Error('las corrientes deben ser opuestas');
+    return { correcta: uT(r.B), errores: { 'MG5-opuestas-se-anulan': uT(r.errores.seAnulan),
+      'MG-usa-la-distancia-entre-cables': uT(r.errores.distanciaEntreCables), 'MG-hilo-uno-sobre-d2': uT(r.errores.unoSobreD2) } };
+  },
+  'fis-13': d => {
+    // Electroimán que se apaga: el flujo va de B·A a 0 (cara N: Φ > 0; cara S: Φ < 0) y Lenz da el sentido visto desde
+    // él y el campo inducido. El enunciado pide el sentido visto desde detrás de la espira: el del motor, al revés.
+    // La mano derecha invertida deja el sentido y da vuelta el campo (como en el paso 5 de la escena).
+    const I = motor('induccion'), s = d.cara === 'N' ? 1 : -1, r = I.lenz(s * I.flujo(d.B0, d.A).Phi, 0);
+    if (!r.refuerza) throw new Error('el flujo debe disminuir en valor absoluto (el campo inducido refuerza al del electroimán)');
+    const atras = s => ({ horario: 'antihorario', antihorario: 'horario' }[s] || s), k = x => `${atras(x.sentido)}|${x.campoInducido}`;
+    return { correcta: k(r), errores: { 'MG8-MG9-contra-el-campo': k(r.errores.contraElCampo),
+      'MG-mano-derecha-invertida': `${atras(r.sentido)}|${r.errores.alReves.campoInducido}`, 'MG8-sin-corriente-al-alejar': k(r.errores.sinCorriente) } };
+  },
+  'fis-14': d => {
+    // Dos luces sobre el mismo metal: la intensa bajo el umbral y la tenue sobre él (motor fotoelectrico, juego eV).
+    const F = motor('fisica-moderna'), intensa = F.fotoelectrico(d.lIntensa, d.phi), tenue = F.fotoelectrico(d.lTenue, d.phi);
+    if (intensa.emite || !tenue.emite || !(d.PIntensa > d.PTenue)) throw new Error('la luz intensa no debe arrancar electrones y la tenue sí');
+    return { correcta: `solo-${F.region(d.lTenue).color}`, errores: { 'FM2-basta-subir-la-intensidad': `solo-${F.region(d.lIntensa).color}`,
+      'FM2-intensidad-compensa-frecuencia': 'las-dos', 'FM-intensidad-minima': 'ninguna' } };
+  },
+  'fis-15': d => {
+    // Luz de frecuencia f (en 10¹⁴ Hz) que entra a un medio de índice n: clave «rapidez|λ en nm redondeada|color» (la
+    // región si λ/n cae fuera de lo visible; «cambia» si el error cambia la frecuencia y con ella el color).
+    const O = motor('ondas-electromagneticas'), l0 = O.onda(d.f14 * 1e14, 'Hz').lambdaNm, r = O.medio(l0, d.n), e = r.errores;
+    const v = x => `v${num(x / 1e8)}e8`, l = x => `l${Math.round(x)}`;
+    const colorF = f => O.region(O.C / f).color;
+    return { correcta: `${v(r.v)}|${l(r.lambdaNm)}|${r.color}`, errores: {
+      'OE12-color-por-lambda-en-el-medio': `${v(e.cambiaColor.v)}|${l(e.cambiaColor.lambdaNm)}|${e.cambiaColor.color || O.region(e.cambiaColor.lambdaNm * 1e-9).region}`,
+      'OE12-cambia-la-frecuencia': `${v(e.cambiaF.v)}|${l(e.cambiaF.lambdaNm)}|${colorF(e.cambiaF.f) === r.color ? r.color : 'cambia'}`,
+      'OE-la-luz-siempre-va-a-c': `${v(e.nadaCambia.v)}|${l(e.nadaCambia.lambdaNm)}|${colorF(e.nadaCambia.f)}` } };
+  },
+
   // ---------------- Química ----------------
   'qui-01': d => {
     const L = motor('limitante-particulas'), r = L.reaccion(d.reaccion);
@@ -393,6 +438,123 @@ const V = {
     return { correcta: r.menor, errores: { 'AR7-horario-quieto': e.horarioQuieto, 'formula-signo-cambiado': e.signoCambiado, 'no-toma-el-menor-angulo': e.noMenor } }; },
   'rm-10': d => { const r = motor('relojes-calendarios').vuelveHoraCorrecta({ a: d.a, cada: d.cada }), e = r.erroresDias;
     return { correcta: r.dias, errores: { 'adelanto-hasta-24-horas': e.dia24, 'adelanto-por-hora-sin-el-cada': e.sinCada, 'adelanto-hasta-una-hora': e.unaHora } }; },
+
+  // rm-11 a rm-19: escenas de razonamiento matemático que no tenían ítems (en "reserva": las formas tienen un tope de 10).
+  'rm-11': d => {
+    // Cerco con dos precios: 2·reja·x + 2·malla·y = presupuesto; el motor da el mayor producto x·y y el cuadrado que
+    // reparte los metros por igual. Los otros dos errores salen del mismo motor con otros datos: un solo lado de cada
+    // precio (reja·x + malla·y) y todo el cerco al precio caro (el cuadrado de ese perímetro).
+    const M = motor('maximos-minimos'), r = M.productoMaximo({ a: 2 * d.reja, b: 2 * d.malla, total: d.presupuesto });
+    const P = d.presupuesto / d.reja;
+    return { correcta: r.producto, errores: { 'cuadrado-con-costos-distintos': r.errores.factoresIguales.producto,
+      'costo-un-lado-de-cada-par': M.productoMaximo({ a: d.reja, b: d.malla, total: d.presupuesto }).producto,
+      'costo-todo-al-precio-mayor': M.rectangulo({ perimetro: P, ancho: P / 4 }).area } };
+  },
+  'rm-12': d => {
+    // Eje que no empieza en 0: el porcentaje sale de los valores; los errores, de las alturas dibujadas, de la base
+    // equivocada (el mayor) y de tomar la diferencia como porcentaje.
+    const r = motor('tablas-graficos').razonBarras({ a: d.a, b: d.b, inicio: d.inicio });
+    return { correcta: r.porcentajeMas, errores: { 'eje-truncado-sobrante-dibujado': 100 * r.errores.sobranteDibujado,
+      'AR3-porcentaje-sobre-el-mayor': 100 * (1 - r.errores.invertida), 'variacion-absoluta-por-porcentual': r.diferencia } };
+  },
+  'rm-13': d => {
+    // Masas que se pesan con pesas en los dos platillos (el motor recorre los 3ⁿ acomodos).
+    const r = motor('cortes-pesadas').masasMedibles({ pesas: [d.p1, d.p2, d.p3] });
+    if (r.completo) throw new Error('el ítem supone pesas que dejan huecos');
+    return { correcta: r.cuantas, errores: { 'balanza-sin-huecos': r.suma, 'balanza-un-solo-platillo': r.errores.unPlatillo, 'balanza-cuenta-acomodos': r.errores.cadaAcomodo } };
+  },
+  'rm-14': d => {
+    // Rectángulo con dos entrantes: el perímetro del motor sale de los vértices; se comprueba que esos vértices son la
+    // figura del enunciado (caja y área). Un solo entrante (el de arriba) sale de motor.muesca.
+    const M = motor('trazos-rutas'), P = M.perimetro({ vertices: d.vertices });
+    if (P.ancho !== d.ancho || P.alto !== d.alto || Math.abs(P.area - (d.ancho * d.alto - d.a1 * d.h1 - d.a2 * d.h2)) > 1e-9) throw new Error('los vértices no son la figura del enunciado');
+    const una = M.perimetro(M.muesca({ ancho: d.ancho, alto: d.alto, desde: d.desde, hasta: d.desde + d.a1, profundidad: d.h1 }));
+    return { correcta: P.perimetro, errores: { 'perimetro-entrante-como-rectangulo': P.errores.comoRectangulo, 'perimetro-un-solo-entrante': una.perimetro, 'GE4-area-por-perimetro': P.errores.area } };
+  },
+  'rm-15': d => {
+    // Pasar por una esquina obligada: caminos hasta ella por caminos desde ella (porElCruce del motor).
+    const r = motor('trazos-rutas').cerrarCruce({ m: d.m, n: d.n, x: d.x, y: d.y });
+    return { correcta: r.porElCruce, errores: { 'parada-ignorada': r.total, 'parada-suma-los-tramos': r.hasta + r.desde, 'parada-como-cruce-cerrado': r.quedan } };
+  },
+  'rm-16': d => {
+    // Pentágono con un número en cada vértice y en el medio de cada lado: el motor prueba todas las distribuciones.
+    // La menor suma por borde; los números no empiezan en 1 (de paso en paso, desde..hasta).
+    const numeros = []; for (let x = d.desde; x <= d.hasta; x += d.paso) numeros.push(x);
+    const r = motor('arreglos-giros').sumaLado({ lados: d.lados, porLado: 3, numeros, extremo: 'minimo' });
+    return { correcta: r.respuesta, errores: { 'arreglo-vertices-una-vez': r.errores.unaVez, 'arreglo-grandes-en-vertices': r.errores.alReves, 'arreglo-suma-de-vertices': r.errores.sumaVertices } };
+  },
+  'rm-17': d => {
+    // Al revés: de las vueltas por dentro al radio del aro. Se busca con el motor el radio R (en pasos de r) que da esas
+    // vueltas; cada error es el R cuyo error del motor da las mismas vueltas, y el diámetro del aro correcto.
+    const A = motor('arreglos-giros');
+    const buscar = que => {
+      for (let k = 2; k <= 60; k++) { const R = k * d.r, x = A.rodarCirculo({ R, r: d.r, lado: 'dentro' }); if (Math.abs(que(x) - d.vueltas) < 1e-9) return R; }
+      throw new Error('ningún aro da esas vueltas');
+    };
+    const R = buscar(x => x.vueltas);
+    return { correcta: R, errores: { 'rueda-solo-el-borde-que-toca': buscar(x => x.contacto), 'rueda-por-dentro-como-por-fuera': buscar(x => x.errores.otroLado), 'GE19-diametro-como-radio': 2 * R } };
+  },
+  'rm-18': d => {
+    // Regreso en línea recta: el motor sigue los giros; el regreso es el recorrido con cada tramo al revés.
+    const T = motor('traslados-sucesos');
+    const pasos = [['avanza', d.d1], [d.g1], ['avanza', d.d2], [d.g2], ['avanza', d.d3], [d.g3], ['avanza', d.d4]];
+    const ida = T.caminarConGiros({ inicio: d.inicio, pasos }), vuelta = T.recorrido(ida.tramos.map(([r, c]) => [T.girar(r, 'D', 180), c]));
+    const txt = (n, dir) => `${n} m hacia el ${dir}`, catetos = Math.abs(vuelta.x) + Math.abs(vuelta.y);
+    return { correcta: txt(vuelta.exacto, vuelta.direccion), errores: { 'vuelta-da-la-ida': txt(ida.exacto, ida.direccion),
+      'cardinal-suma-los-catetos': txt(catetos, vuelta.direccion), 'catetos-y-vuelta-da-la-ida': txt(catetos, ida.direccion) } };
+  },
+  'rm-19': d => {
+    // Tres sucesos en un lapso: coinciden cada MCM; el motor lo comprueba minuto a minuto (comprobado). El error de
+    // usar solo dos de los tres sale del mismo motor con dos intervalos.
+    const T = motor('traslados-sucesos'), I = [d.a, d.b, d.c], fin = 60 * d.minutos;
+    const r = T.vecesCoinciden({ intervalos: I, inicio: 0, fin });
+    if (!r.comprobado || fin % r.mcm !== 0) throw new Error('el lapso debe terminar en una coincidencia');
+    return { correcta: r.veces, errores: { 'coincidencias-sin-la-primera': r.errores.sinLaPrimera,
+      'coincidencia-mcm-de-dos': T.vecesCoinciden({ intervalos: I.slice(0, 2), inicio: 0, fin }).veces, 'coincidencia-suma-de-intervalos': r.errores.conSuma } };
+  },
+
+  // ari-15 a ari-26: plantillas de aritmética sin ítems en las formas (en "reserva": las formas tienen un tope de 10).
+  'ari-15': d => { const r = motor('numeracion').aDecimal(d.numeral, d.b), e = r.errores;
+    return { correcta: r.valor, errores: { 'potencias-corridas': e.potenciasCorridas, 'suma-cifras-por-la-base': e.sumaCifrasPorBase, 'lee-como-decimal': e.comoDecimal } }; },
+  'ari-16': d => { const r = motor('numeracion').baseDesconocida(d.numeral, d.v), e = r.errores;
+    if (!r.existe) throw new Error('el numeral no vale eso en ninguna base');
+    return { correcta: r.base, errores: { 'base-minima-como-respuesta': e.baseMinima, 'resta-los-numerales': e.restaNumerales, 'resta-las-unidades-y-no-divide': e.sinDividir } }; },
+  'ari-17': d => { const r = motor('cuatro-operaciones').restaColumnas(String(d.minuendo), String(d.sustraendo), 10), e = r.errores;
+    return { correcta: Number(r.texto), errores: { 'resta-el-menor-del-mayor': Number(e.menorDelMayor), 'presta-sin-descontar': Number(e.sinDescontar), 'ceros-que-prestan-quedan-en-10': Number(e.cerosComoB) } }; },
+  'ari-18': d => { const r = motor('cuatro-operaciones').division(d.D, d.d), e = r.errores;
+    if (r.exacta) throw new Error('la división debe ser inexacta');
+    return { correcta: r.rExceso, errores: { 'residuo-por-exceso-igual-al-por-defecto': e.igualAlDefecto, 'resta-desde-el-residuo-maximo': e.divisorMenosUnoMenosR, 'suma-el-divisor-al-residuo': e.sumaElDivisor } }; },
+  'ari-19': d => { const r = motor('potenciacion').menorMultiplicador(d.N, 3), e = r.errores;
+    return { correcta: r.m, errores: { 'lo-hace-cuadrado-no-cubo': e.loHaceCuadrado, 'multiplica-por-lo-que-sobra': e.copiaExponente, 'multiplica-por-todos-los-primos': e.todosLosPrimos } }; },
+  'ari-20': d => { const r = motor('potenciacion').cuadradosEntre(d.a, d.b), e = r.errores;
+    return { correcta: r.cantidad, errores: { 'olvida-el-mas-uno': e.sinMasUno, 'cuenta-desde-1': e.desdeUno, 'raiz-de-la-diferencia': e.raizDiferencia } }; },
+  'ari-21': d => { const r = motor('mezclas').precioMedio([{ cantidad: d.q1, precio: d.p1 }, { cantidad: d.q2, precio: d.p2 }]), e = r.errores;
+    return { correcta: r.precioMedio, errores: { 'AR15-promedio-simple': e.promedioSimple, 'cruza-las-cantidades': e.cantidadesCruzadas, 'suma-los-precios': e.sumaValores } }; },
+  'ari-22': d => { const r = motor('mezclas').aguaPara(d.V, d.g0, d.gf), e = r.errores;
+    if (!r.posible) throw new Error(r.razon);
+    return { correcta: r.agua, errores: { 'aspa-al-reves': e.aspaAlReves, 'resta-grados-como-litros': e.restaGrados, 'da-el-volumen-final': e.volumenFinal } }; },
+  'ari-23': d => { const r = motor('conjuntos').interseccionPorComplemento(d.U, d.nA, d.nB, d.ninguno), e = r.errores;
+    return { correcta: r.respuesta, errores: { 'olvida-a-los-que-no-estan-en-ninguno': e.olvidaLosDeFuera, 'da-los-que-estan-en-al-menos-uno': e.daLaUnion, 'da-los-que-estan-solo-en-el-otro': e.daSoloElOtro } }; },
+  'ari-24': d => { const S = motor('conjuntos'), n = S.conjunto(d.elementos).length, r = S.cuantosSubconjuntos(n), e = r.errores;
+    if (n !== d.elementos.length) throw new Error('el conjunto tiene elementos repetidos');
+    return { correcta: r.subconjuntos, errores: { 'dos-por-cada-elemento': e.dosPorElemento[0], 'olvida-el-vacio': e.sinElVacio[0], 'cuenta-ordenamientos': e.permutaciones[0] } }; },
+  'ari-25': d => { const r = motor('logica').negar(d.formula), e = r.errores;
+    return { correcta: r.texto, errores: { 'niega-las-partes-sin-cambiar-el-conectivo': e.negaPartes, 'niega-solo-la-primera-y-cambia': e.niegaSoloPrimera, 'niega-solo-la-primera': e.niegaPrimeraSinCambiar } }; },
+  'ari-26': d => {
+    // Las filas en que el condicional es falso, como «V F» (p, q) y separadas por «|»; cada error, las filas que da su lectura errada.
+    const r = motor('logica').filasFalsas(d.formula), e = r.errores, k = x => x.join('|');
+    return { correcta: k(r.falsas), errores: { 'condicional-al-reves': k(e.alReves), 'antecedente-falso-hace-falsa-la-promesa': k(e.ambasFalsas), 'condicional-como-bicondicional': k(e.comoBicondicional) } };
+  },
+
+  // ari-27 y ari-28: razonamiento-numerico (en "reserva" mientras la plantilla no entre al catálogo).
+  'ari-27': d => { const r = motor('razonamiento-numerico').corral(d.total, d.patas), e = r.errores;
+    if (!r.posible) throw new Error(r.razon);
+    return { correcta: r.respuesta, errores: { 'da-los-del-tipo-supuesto': e.daLosSupuestos, 'da-lo-que-falta-sin-dividir': e.faltanSinDividir, 'divide-entre-el-valor-del-otro-tipo': e.divideEntreElOtro } }; },
+  'ari-28': d => {
+    // Dos etapas de «la mitad y k más»; la vuelta y cada error salen del motor (mercado).
+    const r = motor('razonamiento-numerico').mercado([{ op: 'gasta', parte: [1, 2], mas: d.k1 }, { op: 'gasta', parte: [1, 2], mas: d.k2 }], d.final), e = r.errores;
+    return { correcta: r.respuesta, errores: { 'dobla-y-despues-devuelve': e.devuelveDespues, 'olvida-lo-que-gasto-de-mas': e.olvidaElExtra, 'resta-lo-que-gasto-de-mas': e.restaElExtra } };
+  },
 
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);

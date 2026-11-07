@@ -1,44 +1,603 @@
 {
   "plantilla": "optica-espejo-esferico",
   "unidades": "cm",
-  "convencion": "1/f = 1/o + 1/i; A = -i/o; f = R/2. f > 0 cóncavo, f < 0 convexo. o > 0 objeto real; i > 0 imagen real, delante del espejo; i < 0 virtual, detrás.",
-  "verificacion": "Los siete casos son los de docs/investigacion/optica-espejos-esfericos.md. Se recalcularon el 5 de noviembre de 2026 con fracciones exactas en Python (fractions.Fraction): i = 1/(1/f - 1/o), A = -i/o, h_i = A·h, sin pasar por el motor. Todos dieron valores exactos (por ejemplo, i = -15/2 y A = 1/4 en el convexo con o = 30), y el caso del foco da o - f = 0: no hay imagen.",
-  "tolerancia": 1e-9,
+  "convencion": "1/f = 1/o + 1/i; A = -i/o; f = R/2. f > 0 cóncavo, f < 0 convexo. o > 0 objeto real; i > 0 imagen real, delante del espejo; i < 0 virtual, detrás. Cada caso llama a la función 'fn' de motor.js con 'args' (una lista) y compara 'espera'; los campos anidados van con punto (imagen.x, regla.2.x: la tercera marca de la regla). imagen() devuelve i, el aumento m (= A), la altura h de la imagen (A·h del objeto) y su posición x = −i en el dibujo. El doblez: la hoja de la luz que sale está en el marco de una lente de la misma f (la luz sale hacia x > 0, imagen en x = +i) y se dobla una fracción s (0 = lente, 1 = espejo) sobre la línea x = 0; plegar lleva (x, y) a x′ = x·cos πs + kx·x·sen πs, y′ = y + ky·x·sen πs, z = x·sen πs, con k = (kx, ky) = (−1/4; −7/20). En hojaDeSalida, la regla por omisión tiene las marcas [10, 20, 30] sobre y = 0, focoPrima es el punto (f, 0) de la hoja y dobleFoco (2f, 0); sentido es el signo del ancho visto de la hoja (cos πs + kx·sen πs); rayos es la lista de los rayos principales en el orden paralelo, foco, vértice (el del foco falta si la vela está en F), uSale la pendiente con que salen de la lente y pendPantalla la pendiente de su recta ya plegada.",
+  "verificacion": "Los siete casos son los de docs/investigacion/optica-espejos-esfericos.md. Se recalcularon el 5 de noviembre de 2026 con fracciones exactas en Python (fractions.Fraction): i = 1/(1/f - 1/o), A = -i/o, h_i = A·h, sin pasar por el motor. Todos dieron valores exactos (por ejemplo, i = -15/2 y A = 1/4 en el convexo con o = 30), y el caso del foco da o - f = 0: no hay imagen. Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s.",
+  "tolerancia": 1e-09,
   "casos": [
     {
       "nombre": "Cóncavo, objeto entre C y F (problema guiado)",
-      "entrada": { "R": 20, "tipo": "concavo", "o": 15, "h": 4 },
-      "esperado": { "f": 10, "i": 30, "A": -2, "h_imagen": -8, "real": true, "derecha": false, "tamano": "mayor", "zona": "entre-C-y-F" }
+      "fn": "imagen",
+      "args": [
+        15,
+        10,
+        4
+      ],
+      "espera": {
+        "i": 30,
+        "m": -2,
+        "h": -8,
+        "x": -30,
+        "real": true,
+        "inf": false
+      },
+      "tambien": [
+        {
+          "fn": "focal",
+          "args": [
+            20,
+            "concavo"
+          ],
+          "espera": 10
+        },
+        {
+          "fn": "zona",
+          "args": [
+            15,
+            10
+          ],
+          "espera": "entre-C-y-F"
+        },
+        {
+          "fn": "describir",
+          "args": [
+            {
+              "i": 30,
+              "m": -2
+            }
+          ],
+          "espera": {
+            "real": true,
+            "derecha": false,
+            "tamano": "mayor"
+          }
+        }
+      ]
     },
     {
       "nombre": "Cóncavo, objeto más allá de C",
-      "entrada": { "f": 10, "o": 30, "h": 4 },
-      "esperado": { "i": 15, "A": -0.5, "h_imagen": -2, "real": true, "derecha": false, "tamano": "menor", "zona": "mas-alla-de-C" }
+      "fn": "imagen",
+      "args": [
+        30,
+        10,
+        4
+      ],
+      "espera": {
+        "i": 15,
+        "m": -0.5,
+        "h": -2,
+        "x": -15,
+        "real": true,
+        "inf": false
+      },
+      "tambien": [
+        {
+          "fn": "zona",
+          "args": [
+            30,
+            10
+          ],
+          "espera": "mas-alla-de-C"
+        },
+        {
+          "fn": "describir",
+          "args": [
+            {
+              "i": 15,
+              "m": -0.5
+            }
+          ],
+          "espera": {
+            "real": true,
+            "derecha": false,
+            "tamano": "menor"
+          }
+        }
+      ]
     },
     {
       "nombre": "Cóncavo, objeto en C",
-      "entrada": { "f": 10, "o": 20, "h": 4 },
-      "esperado": { "i": 20, "A": -1, "h_imagen": -4, "real": true, "derecha": false, "tamano": "igual", "zona": "en-C" }
+      "fn": "imagen",
+      "args": [
+        20,
+        10,
+        4
+      ],
+      "espera": {
+        "i": 20,
+        "m": -1,
+        "h": -4,
+        "x": -20,
+        "real": true,
+        "inf": false
+      },
+      "tambien": [
+        {
+          "fn": "zona",
+          "args": [
+            20,
+            10
+          ],
+          "espera": "en-C"
+        },
+        {
+          "fn": "describir",
+          "args": [
+            {
+              "i": 20,
+              "m": -1
+            }
+          ],
+          "espera": {
+            "real": true,
+            "derecha": false,
+            "tamano": "igual"
+          }
+        }
+      ]
     },
     {
       "nombre": "Cóncavo, objeto en F",
-      "entrada": { "f": 10, "o": 10, "h": 4 },
-      "esperado": { "sin_imagen": true, "zona": "en-F" }
+      "fn": "imagen",
+      "args": [
+        10,
+        10,
+        4
+      ],
+      "espera": {
+        "inf": true
+      },
+      "tambien": [
+        {
+          "fn": "zona",
+          "args": [
+            10,
+            10
+          ],
+          "espera": "en-F"
+        }
+      ]
     },
     {
       "nombre": "Cóncavo, espejo de maquillaje",
-      "entrada": { "f": 10, "o": 5, "h": 4 },
-      "esperado": { "i": -10, "A": 2, "h_imagen": 8, "real": false, "derecha": true, "tamano": "mayor", "zona": "entre-F-y-espejo" }
+      "fn": "imagen",
+      "args": [
+        5,
+        10,
+        4
+      ],
+      "espera": {
+        "i": -10,
+        "m": 2,
+        "h": 8,
+        "x": 10,
+        "real": false,
+        "inf": false
+      },
+      "tambien": [
+        {
+          "fn": "zona",
+          "args": [
+            5,
+            10
+          ],
+          "espera": "entre-F-y-espejo"
+        },
+        {
+          "fn": "describir",
+          "args": [
+            {
+              "i": -10,
+              "m": 2
+            }
+          ],
+          "espera": {
+            "real": false,
+            "derecha": true,
+            "tamano": "mayor"
+          }
+        }
+      ]
     },
     {
       "nombre": "Convexo, objeto cerca",
-      "entrada": { "R": 20, "tipo": "convexo", "o": 10, "h": 4 },
-      "esperado": { "f": -10, "i": -5, "A": 0.5, "h_imagen": 2, "real": false, "derecha": true, "tamano": "menor", "zona": "convexo" }
+      "fn": "imagen",
+      "args": [
+        10,
+        -10,
+        4
+      ],
+      "espera": {
+        "i": -5,
+        "m": 0.5,
+        "h": 2,
+        "x": 5,
+        "real": false,
+        "inf": false
+      },
+      "tambien": [
+        {
+          "fn": "focal",
+          "args": [
+            20,
+            "convexo"
+          ],
+          "espera": -10
+        },
+        {
+          "fn": "zona",
+          "args": [
+            10,
+            -10
+          ],
+          "espera": "convexo"
+        },
+        {
+          "fn": "describir",
+          "args": [
+            {
+              "i": -5,
+              "m": 0.5
+            }
+          ],
+          "espera": {
+            "real": false,
+            "derecha": true,
+            "tamano": "menor"
+          }
+        }
+      ]
     },
     {
       "nombre": "Convexo, objeto lejos",
-      "entrada": { "f": -10, "o": 30, "h": 4 },
-      "esperado": { "i": -7.5, "A": 0.25, "h_imagen": 1, "real": false, "derecha": true, "tamano": "menor", "zona": "convexo" }
+      "fn": "imagen",
+      "args": [
+        30,
+        -10,
+        4
+      ],
+      "espera": {
+        "i": -7.5,
+        "m": 0.25,
+        "h": 1,
+        "x": 7.5,
+        "real": false,
+        "inf": false
+      },
+      "tambien": [
+        {
+          "fn": "zona",
+          "args": [
+            30,
+            -10
+          ],
+          "espera": "convexo"
+        },
+        {
+          "fn": "describir",
+          "args": [
+            {
+              "i": -7.5,
+              "m": 0.25
+            }
+          ],
+          "espera": {
+            "real": false,
+            "derecha": true,
+            "tamano": "menor"
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "D1 · plegar, hoja abierta (s = 0) → queda donde estaba",
+      "fn": "plegar",
+      "args": [
+        30,
+        -8,
+        0
+      ],
+      "espera": {
+        "x": 30,
+        "y": -8,
+        "z": 0
+      },
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D2 · plegar, hoja a medio doblar (s = 1/2), con k = (−1/4; −7/20) → x −15/2, y −37/2, z 30",
+      "fn": "plegar",
+      "args": [
+        30,
+        -8,
+        0.5
+      ],
+      "espera": {
+        "x": -7.5,
+        "y": -18.5,
+        "z": 30
+      },
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D3 · plegar, hoja doblada (s = 1) → x −30, y −8",
+      "fn": "plegar",
+      "args": [
+        30,
+        -8,
+        1
+      ],
+      "espera": {
+        "x": -30,
+        "y": -8,
+        "z": 0
+      },
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D4 · hojaDeSalida, problema guiado (o = 15, f = 10, h = 4), hoja doblada (s = 1) → la imagen de la lente cae delante del espejo",
+      "fn": "hojaDeSalida",
+      "args": [
+        15,
+        10,
+        4,
+        1
+      ],
+      "espera": {
+        "imagen.x": -30,
+        "imagen.y": -8,
+        "imagen.i": 30,
+        "imagen.A": -2,
+        "imagen.real": true,
+        "focoPrima.x": -10,
+        "focoPrima.y": 0,
+        "dobleFoco.x": -20,
+        "regla.2.v": 30,
+        "regla.2.x": -30,
+        "sentido": -1,
+        "distanciaBisagra": 30
+      },
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D5 · hojaDeSalida, problema guiado, hoja abierta (s = 0, la lente) → imagen al otro lado",
+      "fn": "hojaDeSalida",
+      "args": [
+        15,
+        10,
+        4,
+        0
+      ],
+      "espera": {
+        "imagen.x": 30,
+        "imagen.y": -8,
+        "focoPrima.x": 10,
+        "sentido": 1
+      },
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D6 · hojaDeSalida, problema guiado, a medio doblar (s = 1/2)",
+      "fn": "hojaDeSalida",
+      "args": [
+        15,
+        10,
+        4,
+        0.5
+      ],
+      "espera": {
+        "imagen.x": -7.5,
+        "imagen.y": -18.5,
+        "imagen.z": 30,
+        "focoPrima.x": -2.5,
+        "focoPrima.y": -3.5,
+        "focoPrima.z": 10,
+        "regla.1.v": 20,
+        "regla.1.x": -5,
+        "regla.1.y": -7
+      },
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D7 · hojaDeSalida, cóncavo con la vela más allá de C (o = 30, f = 10, h = 4), doblada",
+      "fn": "hojaDeSalida",
+      "args": [
+        30,
+        10,
+        4,
+        1
+      ],
+      "espera": {
+        "imagen.x": -15,
+        "imagen.y": -2,
+        "imagen.i": 15,
+        "imagen.A": -0.5
+      },
+      "tambien": [
+        {
+          "args": [
+            30,
+            10,
+            4,
+            0.5
+          ],
+          "espera": {
+            "imagen.x": -3.75,
+            "imagen.y": -7.25
+          }
+        }
+      ],
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D8 · hojaDeSalida, lente divergente (o = 10, f = −10, h = 4), abierta (experimento 5)",
+      "fn": "hojaDeSalida",
+      "args": [
+        10,
+        -10,
+        4,
+        0
+      ],
+      "espera": {
+        "imagen.x": -5,
+        "imagen.y": 2,
+        "imagen.i": -5,
+        "imagen.A": 0.5,
+        "imagen.real": false,
+        "focoPrima.x": -10
+      },
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D9 · hojaDeSalida, la misma lente divergente doblada: el convexo",
+      "fn": "hojaDeSalida",
+      "args": [
+        10,
+        -10,
+        4,
+        1
+      ],
+      "espera": {
+        "imagen.x": 5,
+        "imagen.y": 2,
+        "focoPrima.x": 10
+      },
+      "tambien": [
+        {
+          "args": [
+            10,
+            -10,
+            4,
+            0.5
+          ],
+          "espera": {
+            "imagen.x": 1.25,
+            "imagen.y": 3.75,
+            "imagen.z": -5
+          }
+        }
+      ],
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D10 · hojaDeSalida, cóncavo con la vela entre F y el espejo (o = 5, f = 10, h = 4), doblada",
+      "fn": "hojaDeSalida",
+      "args": [
+        5,
+        10,
+        4,
+        1
+      ],
+      "espera": {
+        "imagen.x": 10,
+        "imagen.y": 8,
+        "imagen.i": -10,
+        "imagen.A": 2
+      },
+      "tambien": [
+        {
+          "args": [
+            5,
+            10,
+            4,
+            0.5
+          ],
+          "espera": {
+            "imagen.x": 2.5,
+            "imagen.y": 11.5
+          }
+        }
+      ],
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D11 · hojaDeSalida, convexo con la vela lejos (o = 30, f = −10, h = 4), doblada",
+      "fn": "hojaDeSalida",
+      "args": [
+        30,
+        -10,
+        4,
+        1
+      ],
+      "espera": {
+        "imagen.x": 7.5,
+        "imagen.y": 1,
+        "imagen.i": -7.5,
+        "imagen.A": 0.25
+      },
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D12 · hojaDeSalida, vela en F (o = 10, f = 10, h = 4) y su rayo paralelo (rayos.0)",
+      "fn": "hojaDeSalida",
+      "args": [
+        10,
+        10,
+        4,
+        0
+      ],
+      "espera": {
+        "imagen.inf": true,
+        "rayos.0.nombre": "paralelo",
+        "rayos.0.uSale": -0.4
+      },
+      "tambien": [
+        {
+          "args": [
+            10,
+            10,
+            4,
+            1
+          ],
+          "espera": {
+            "rayos.0.pendPantalla": 0.4
+          }
+        }
+      ],
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D13 · sDeCanto con k = (−1/4; −7/20): el s en que la hoja se ve de canto",
+      "fn": "sDeCanto",
+      "args": [],
+      "espera": 0.422020869622631,
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D14 · sMasCercano: la pestaña en (34, 14) vista en el punto de pantalla (−8,5; 2,1)",
+      "fn": "sMasCercano",
+      "args": [
+        {
+          "x": -8.5,
+          "y": 2.1
+        },
+        34,
+        14
+      ],
+      "espera": 0.5,
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
+    },
+    {
+      "nombre": "D15 · pendienteLente: rayo que llega paralelo a 4 cm del eje a una lente de f = 10; y el mismo rayo en el espejo (reflejar)",
+      "fn": "pendienteLente",
+      "args": [
+        4,
+        0,
+        10
+      ],
+      "espera": -0.4,
+      "tambien": [
+        {
+          "fn": "reflejar",
+          "args": [
+            4,
+            0,
+            10
+          ],
+          "espera": 0.4
+        }
+      ],
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     }
   ]
 }

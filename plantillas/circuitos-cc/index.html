@@ -12,12 +12,17 @@
      --c-R  resistencia (Ω)        turquesa #0f766e claro / #5ed9c8 oscuro   5,2 / 9,6
      --c-P  potencia, brillo (W)   ámbar    #8f5800 claro / #ffc04d oscuro   5,5 / 10,1
      --luz  halo de las bombillas: la versión luminosa del ámbar de P (no es texto).
-   Contraste medido contra --paper (#fdf7f1 claro, #241c2e oscuro); todos pasan AA (4,5 a 1) también sobre --card y --bg.
+     --corto  estado «cortocircuito» SOLO en el dibujo (el lazo, «¡Cortocircuito!», «en corto»): #b81c0c claro / #ff6b33 oscuro,
+              6,2 / 5,8 sobre el papel; ΔE00 con V 25,8 / 31,8 y con P 22,6 / 28,2 (--warn queda para las opciones mal respondidas:
+              junto a V daba 18,6 / 15,4). El corto nunca se dice solo con color: cable a trazos, rayo, rótulo y texto vivo.
+   Contraste medido contra --paper (#fdf7f1 claro, #241c2e oscuro); todos pasan AA (4,5 a 1) también sobre --card y --bg,
+   y sobre el chip .v (fondo al 8 %). .v.hl resalta con contorno, sin cambiar el fondo (al 26 % no pasaba AA).
+   Pestaña «Medir»: la lectura del amperímetro va en el color de I y la del voltímetro en el de V; la resistencia interna, en el de R.
    El lavanda de la marca (#7f5ae0) no se usa aquí. El resto (cable, vidrio, metal, pila, suelo) son colores neutros del dibujo. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f1e5dc;
-  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b; --corto:#b81c0c;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
   --c-I:#1f5fbf; --c-V:#b3246b; --c-R:#0f766e; --c-P:#8f5800; --luz:#ffc53d;
   --cable:#4b3f5c; --vidrio:#f3eee8; --vidrio-borde:#9b8fa6; --filamento:#6b5f78; --metal-1:#eceef2; --metal-2:#9aa1ad;
@@ -28,14 +33,14 @@
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2c2337;
-  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f; --corto:#ff6b33;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-I:#7cb0ff; --c-V:#ff86bd; --c-R:#5ed9c8; --c-P:#ffc04d; --luz:#ffd36b;
   --cable:#cfc4dc; --vidrio:#3a3046; --vidrio-borde:#8d80a0; --filamento:#a99cb8; --metal-1:#d3d7df; --metal-2:#6d7584;
   --pila-1:#16111d; --pila-2:#4a3d5c; --cobre:#d48a48; --suelo:#2a2234; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2c2337;
-  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f; --corto:#ff6b33;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-I:#7cb0ff; --c-V:#ff86bd; --c-R:#5ed9c8; --c-P:#ffc04d; --luz:#ffd36b;
   --cable:#cfc4dc; --vidrio:#3a3046; --vidrio-borde:#8d80a0; --filamento:#a99cb8; --metal-1:#d3d7df; --metal-2:#6d7584;
@@ -51,15 +56,16 @@ body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font
 h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
 .sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
 
-.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
-.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs{display:flex; gap:2px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 12px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+@media (max-width:379px){ .tabs a{padding:8px 9px; font-size:.88rem} }
 .tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
 .tabs a:hover:not([aria-current]){color:var(--ink)}
 
 .mode{display:grid; gap:16px; min-width:0; align-items:start}
 .bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
 .lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
-canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
 canvas.tocable{cursor:pointer}
 .legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
 .legend span{display:inline-flex; align-items:center; gap:6px}
@@ -86,11 +92,11 @@ canvas.tocable{cursor:pointer}
 .map b{font-family:var(--mono); min-width:3.2em; flex:none}
 
 .v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
-.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 11%, transparent)}
-.v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 11%, transparent)}
-.v-R{color:var(--c-R); background:color-mix(in srgb, var(--c-R) 11%, transparent)}
-.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 12%, transparent)}
-.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 8%, transparent)}
+.v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 8%, transparent)}
+.v-R{color:var(--c-R); background:color-mix(in srgb, var(--c-R) 8%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
+.v.hl{outline:2px solid currentColor; outline-offset:1px}
 b.v-I{color:var(--c-I)} b.v-V{color:var(--c-V)} b.v-R{color:var(--c-R)} b.v-P{color:var(--c-P)}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
@@ -152,6 +158,24 @@ input.r-R{accent-color:var(--c-R)}
 .btn:disabled{opacity:.45; cursor:not-allowed}
 button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
 .hint{font-size:.88rem; color:var(--muted)}
+/* Pestaña «Medir»: los dos medidores como botones reales (teclado y lector de pantalla). */
+.medidores{display:flex; flex-wrap:wrap; gap:8px; padding:2px 4px}
+.med{display:inline-flex; align-items:center; gap:8px; font:700 .9rem var(--font); padding:8px 14px 8px 8px; border-radius:16px; min-height:44px;
+  border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; text-align:left; flex:1 1 220px; max-width:100%}
+.med .ic{flex:none; width:26px; height:26px; border-radius:50%; border:2px solid var(--ink); display:grid; place-items:center; font-weight:900; font-size:.85rem; background:var(--card)}
+.med[aria-pressed="true"]{border-color:var(--ink); box-shadow:0 0 0 2px var(--ink)}
+.med:disabled{opacity:.5; cursor:not-allowed}
+.med .lec-I{color:var(--c-I)} .med .lec-V{color:var(--c-V)}
+.fb:focus{outline:none}
+.body > *{min-width:0}
+.slider{margin-inline:0}
+/* Celular con predicción pendiente en «Medir»: el bloque fijo queda solo con el dibujo (los botones de los medidores no
+   sirven todavía, y el texto vivo sigue disponible para el lector de pantalla). */
+@media (max-width:899px){
+  #m3.pendiente .medidores{display:none}
+  #m3.pendiente .estado{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; padding:0; margin:0}
+}
+.step-t:focus{outline:none}
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
 .pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
 .pie a{color:var(--ink); font-weight:700}
@@ -180,6 +204,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
       <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+      <a href="#medir" id="tab3">Medir</a>
     </nav>
   </div>
 
@@ -199,7 +224,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <ol class="dots" id="dots"></ol>
       <div aria-live="polite" id="vivo1">
         <p class="step-k" id="stepK"></p>
-        <h2 class="step-t" id="stepT"></h2>
+        <h2 class="step-t" id="stepT" tabindex="-1"></h2>
       </div>
       <div id="stepBody" class="body"></div>
       <div class="nav">
@@ -225,9 +250,40 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
       <div aria-live="polite">
         <p class="step-k" id="k2"></p>
-        <h2 class="step-t" id="t2"></h2>
+        <h2 class="step-t" id="t2" tabindex="-1"></h2>
       </div>
       <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 3: medir ===== -->
+  <div id="m3" class="mode" hidden>
+    <section class="bench" aria-label="Circuito con una pila, tres bombillas y dos medidores">
+      <div class="lienzo"><canvas id="cv3" role="img" aria-label="Circuito: una pila, la bombilla B1 en serie con B2 y B3 en paralelo; debajo, una bandeja con un amperímetro y un voltímetro" aria-describedby="desc3"></canvas></div>
+      <p class="estado" id="desc3" aria-live="polite"></p>
+      <div class="medidores" role="group" aria-label="Medidores">
+        <button type="button" class="med" id="medA" data-id="A" aria-pressed="false"><span class="ic" aria-hidden="true">A</span><span class="t"></span></button>
+        <button type="button" class="med" id="medV" data-id="V" aria-pressed="false"><span class="ic" aria-hidden="true">V</span><span class="t"></span></button>
+      </div>
+      <div class="legend">
+        <span style="display:inline">Ⓐ amperímetro · Ⓥ voltímetro: cada uno muestra su lectura en el color de lo que mide</span>
+        <span><i class="dot" style="background:var(--c-I)"></i>I · corriente</span>
+        <span><i style="background:var(--c-V)"></i>V · voltaje</span>
+        <span><i style="background:var(--c-R)"></i>R · resistencia</span>
+        <span><i class="halo"></i><b style="color:var(--c-P)">P</b> · potencia (brillo)</span>
+      </div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots3"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK3"></p>
+        <h2 class="step-t" id="stepT3" tabindex="-1"></h2>
+      </div>
+      <div id="stepBody3" class="body"></div>
+      <div class="nav">
+        <button id="prev3" type="button" class="btn">Anterior</button>
+        <button id="next3" type="button" class="btn primary">Siguiente</button>
+      </div>
     </section>
   </div>
 
@@ -247,7 +303,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
-const PLANTILLA = { id: 'circuitos-cc', unidad: 'fisica.corriente-y-circuitos', version: '0.1.0' };
+const PLANTILLA = { id: 'circuitos-cc', unidad: 'fisica.corriente-y-circuitos', version: '0.2.0' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
   Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
@@ -259,7 +315,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    Un "panel" es un circuito del motor + su dibujo (layout) en unidades de cuadrícula.
    Cada rama del layout tiene un camino que va del nodo a al nodo b de la rama del motor,
    y el componente (bombilla, pila, reóstato, interruptor) se dibuja en uno de sus tramos. */
-const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const RM = Celular.movimientoReducido();
 const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 // Coma decimal y signo menos tipográfico.
@@ -271,10 +327,12 @@ function fmt(n, d){
 const vr = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
 const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
 const ESP = 0.62;             // separación entre puntos de corriente (unidades)
-const HALF = { bombilla:0.5, pila:0.74, reostato:0.56, interruptor:0.5 };
+const HALF = { bombilla:0.5, pila:0.74, reostato:0.56, interruptor:0.5, amperimetro:0.42, voltimetro:0.42 };
+const NOMBRE_TIPO = { amperimetro:'A', voltimetro:'V' };
+function decir(el, t){ if (el.textContent !== t) el.textContent = t; }
 
 function colores(){
-  const k = ['ink','muted','grid','paper','card','line','warn','c-I','c-V','c-R','c-P','luz','cable','vidrio','vidrio-borde','filamento','metal-1','metal-2','pila-1','pila-2','cobre','suelo','font','mono'];
+  const k = ['ink','muted','grid','paper','card','line','warn','corto','c-I','c-V','c-R','c-P','luz','cable','vidrio','vidrio-borde','filamento','metal-1','metal-2','pila-1','pila-2','cobre','suelo','font','mono'];
   const c = {}; k.forEach(n => c[n] = css('--' + n)); return c;
 }
 function alRedibujarTema(fn){
@@ -314,6 +372,7 @@ function cable(ctx, c, pts, s, op){
   ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   const w = clamp(s*0.13, 3.5, 6);
   const trazo = () => op.plano ? linea(ctx, pts) : redondeado(ctx, pts, clamp(s*0.32, 6, 16));
+  if (op.trazos) ctx.setLineDash([w*2.2, w*1.4]);
   trazo(); ctx.strokeStyle = op.color || c.cable; ctx.lineWidth = w; ctx.stroke();
   trazo(); ctx.strokeStyle = 'rgba(255,255,255,.28)'; ctx.lineWidth = Math.max(1, w*0.3); ctx.stroke();
   ctx.restore();
@@ -337,7 +396,9 @@ function rotulos(ctx, c, x, y, lado, dist, lineas, tam){
   ctx.save(); ctx.textBaseline = 'middle';
   const lh = tam + 3, n = lineas.length;
   let x0 = x, y0 = y, align = 'center';
-  if (lado === 'izq'){ x0 = x - dist; align = 'right'; y0 = y - (n - 1)*lh/2; }
+  if (lado === 'ai'){ x0 = x + dist*0.7; align = 'right'; y0 = y - dist - (n - 1)*lh - lh/2 + 4; }
+  else if (lado === 'ad'){ x0 = x - dist*0.2; align = 'left'; y0 = y + dist + lh/2 - 2; }
+  else if (lado === 'izq'){ x0 = x - dist; align = 'right'; y0 = y - (n - 1)*lh/2; }
   else if (lado === 'der'){ x0 = x + dist; align = 'left'; y0 = y - (n - 1)*lh/2; }
   else if (lado === 'arr'){ y0 = y - dist - (n - 1)*lh - lh/2 + 4; }
   else { y0 = y + dist + lh/2 - 2; }
@@ -345,9 +406,11 @@ function rotulos(ctx, c, x, y, lado, dist, lineas, tam){
   lineas.forEach(([t, col, peso], k) => {
     ctx.font = `${peso || 700} ${tam}px ${peso === 900 ? c.font : c.mono}`;
     const yy = y0 + k*lh, w = ctx.measureText(t).width;
-    const xl = align === 'center' ? x0 - w/2 : align === 'right' ? x0 - w : x0;
+    // Que ningún rótulo quede cortado en los bordes del lienzo.
+    let xl = align === 'center' ? x0 - w/2 : align === 'right' ? x0 - w : x0;
+    xl = clamp(xl, 3, ctx.canvas.clientWidth - w - 3);
     ctx.fillStyle = c.paper; ctx.globalAlpha = .82; ctx.fillRect(xl - 2, yy - lh/2 + 1, w + 4, lh - 1); ctx.globalAlpha = 1;
-    ctx.fillStyle = col; ctx.fillText(t, x0, yy);
+    ctx.textAlign = 'left'; ctx.fillStyle = col; ctx.fillText(t, xl, yy);
   });
   ctx.restore();
 }
@@ -447,6 +510,33 @@ function interruptor(ctx, c, A, B, op){
   ctx.restore();
 }
 
+// Medidor (amperímetro o voltímetro): cara de papel, borde y letra en tinta, + y − en gris del lado a y del lado b.
+// op = { ang (dirección de a hacia b), tomado, fantasma }.
+const radioMedidor = s => clamp(0.42*s, 11, 18);
+function medidor(ctx, c, X, Y, r, tipo, op){
+  op = op || {};
+  ctx.save(); ctx.translate(X, Y);
+  if (op.fantasma){ ctx.globalAlpha = .7; ctx.setLineDash([3, 3]); }
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2);
+  ctx.fillStyle = c.paper; ctx.fill();
+  ctx.strokeStyle = c.ink; ctx.lineWidth = op.tomado ? 3.6 : 2; ctx.stroke(); ctx.setLineDash([]);
+  if (op.tomado){ ctx.beginPath(); ctx.arc(0, 0, r + 4, 0, Math.PI*2); ctx.lineWidth = 1.2; ctx.globalAlpha = .55; ctx.stroke(); ctx.globalAlpha = op.fantasma ? .7 : 1; }
+  ctx.fillStyle = c.ink; ctx.font = `900 ${Math.round(r*1.05)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(NOMBRE_TIPO[tipo] || '?', 0, 1);
+  if (r >= 12 && op.ang !== undefined){
+    ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(r*0.5)}px ${c.font}`;
+    const ux = Math.cos(op.ang), uy = Math.sin(op.ang), d = r*0.7, nx = -uy*r*0.45, ny = ux*r*0.45;
+    ctx.fillText('+', -ux*d + nx, -uy*d + ny); ctx.fillText('−', ux*d + nx, uy*d + ny);
+  }
+  ctx.restore();
+}
+// Rayo chico del cortocircuito (para que no se diga solo con el color).
+function rayo(ctx, X, Y, h, color){
+  ctx.save(); ctx.translate(X, Y); ctx.beginPath();
+  ctx.moveTo(0.15*h, -0.5*h); ctx.lineTo(-0.25*h, 0.05*h); ctx.lineTo(0.02*h, 0.05*h); ctx.lineTo(-0.15*h, 0.5*h); ctx.lineTo(0.25*h, -0.08*h); ctx.lineTo(-0.02*h, -0.08*h); ctx.closePath();
+  ctx.fillStyle = color; ctx.fill(); ctx.restore();
+}
+
 /* ---------- La escena: dibuja paneles y mueve los puntos de corriente ---------- */
 function crearEscena(cv, opciones){
   opciones = opciones || {};
@@ -463,7 +553,7 @@ function crearEscena(cv, opciones){
   }
   E.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(Celular.alto(altoDeseado(W), E.compacto, { tope:240 })), dpr = Celular.dpr();
+    const H = Math.round(Celular.alto(altoDeseado(W), E.compacto, { tope: opciones.tope || 240 })), dpr = Celular.dpr();
     if (W !== E.W || H !== E.H){
       E.W = W; E.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -483,7 +573,8 @@ function crearEscena(cv, opciones){
       const r = porId[id]; if (!r) continue;
       const g = prepararCamino(l.path);
       let sc = 0, half = 0;
-      if (l.comp && l.comp !== 'cable'){
+      if (l.comp && l.comp !== 'cable' && l.sc !== undefined){ sc = l.sc; half = HALF[l.comp] || 0.5; }
+      else if (l.comp && l.comp !== 'cable'){
         let en = l.en;
         if (en === undefined){ en = 0; for (let k = 1; k < l.path.length - 1; k++) if (g.cum[k+1] - g.cum[k] > g.cum[en+1] - g.cum[en]) en = k; }
         sc = (g.cum[en] + g.cum[en+1])/2; half = HALF[l.comp] || 0.5;
@@ -552,8 +643,9 @@ function crearEscena(cv, opciones){
     const paso = 18;
     for (let y = paso/2; y < E.H; y += paso) for (let x = paso/2; x < E.W; x += paso){ ctx.fillRect(x - 1, y - 1, 2, 2); }
     E.hits = [];
-    const pr = proyecciones();
+    const pr = E.pr = proyecciones();
     E.paneles.forEach((p, ip) => (E.vista === 'altura' ? dibujarAltura : dibujarPlano)(p, ip, pr[ip], c));
+    if (opciones.encima && E.vista !== 'altura') opciones.encima(ctx, c, pr[0], E.paneles[0]);
   }
 
   function puntosCorriente(p, ip, x, P, c, T){
@@ -608,6 +700,7 @@ function crearEscena(cv, opciones){
       E.hits.push({ id: x.id, x: M[0], y: M[1], r: r + 8 });
       const lin = [];
       if (x.l.nombre) lin.push([x.l.nombre, c.ink, 900]);
+      if (!quitada && p.encendido && p.sol.ok && p.sol.avisos.some(q => q.tipo === 'en-corto' && q.rama === x.id)) lin.push(['en corto', c.corto, 800]);
       if (quitada) lin.push(['quitada', c.muted]);
       else {
         if (p.mostrar.R) lin.push([fmt(x.r.R, 1) + ' Ω', c['c-R'], E.hl === 'R' ? 800 : 700]);
@@ -629,9 +722,21 @@ function crearEscena(cv, opciones){
       rotulos(ctx, c, M[0], M[1], enAltura ? 'arr' : (x.l.et || 'arr'), t*0.7 + 4, [['Rv = ' + fmt(x.r.R, 1) + ' Ω', c['c-R'], 800]], tam);
     } else if (x.l.comp === 'interruptor'){
       const enLazo = p.sol.corto && p.sol.lazo.includes(x.id);
-      interruptor(ctx, c, A, B, { cerrado: !!x.r.cerrado, color: enLazo ? c.warn : null });
+      interruptor(ctx, c, A, B, { cerrado: !!x.r.cerrado, color: enLazo ? c.corto : null });
       E.hits.push({ id: x.id, x: M[0], y: M[1], r: 22 });
-      if (x.l.nombre) rotulos(ctx, c, M[0], M[1], x.l.et || 'der', 14, [[x.l.nombre, enLazo ? c.warn : c.muted, 700]], tam - 1);
+      if (x.l.nombre) rotulos(ctx, c, M[0], M[1], x.l.et || 'der', 14, [[x.l.nombre, enLazo ? c.corto : c.muted, 700]], tam - 1);
+    } else if (x.l.comp === 'amperimetro' || x.l.comp === 'voltimetro'){
+      if (typeof x.l.oculto === 'function' ? x.l.oculto() : x.l.oculto) return;
+      const r = radioMedidor(P.s);
+      medidor(ctx, c, M[0], M[1], r, x.l.comp, { ang: Math.atan2(B[1] - A[1], B[0] - A[0]), tomado: typeof x.l.tomado === 'function' ? x.l.tomado() : x.l.tomado });
+      const lin = [], esA = x.l.comp === 'amperimetro';
+      if (p.sol.ok){
+        const m = p.sol.ramas[x.id];
+        lin.push([Number.isNaN(m.lectura) ? '¿?' : fmt(m.lectura) + (esA ? ' A' : ' V'), c[esA ? 'c-I' : 'c-V'], 800]);
+        // En el celular (lienzo angosto) la resistencia interna va en el botón del medidor y en el deslizador, no aquí.
+        if (P.s >= 30 && Number.isFinite(m.Rint) && m.Rint > 0) lin.push([(esA ? 'rₐ = ' : 'Rᵥ = ') + fmt(m.Rint, 2) + ' Ω', c['c-R'], 700]);
+      }
+      rotulos(ctx, c, M[0], M[1], x.l.et || 'arr', r + 6, lin, tam);
     }
   }
 
@@ -644,7 +749,7 @@ function crearEscena(cv, opciones){
     // Cables (sin el tramo del componente).
     for (const x of xs){
       const enLazo = p.sol.corto && x.r && p.sol.lazo.includes(x.id);
-      const op = { color: enLazo ? c.warn : null };
+      const op = { color: enLazo ? c.corto : null, trazos: enLazo };
       const partes = x.half ? [[0, x.sc - x.half], [x.sc + x.half, x.g.L]] : [[0, x.g.L]];
       for (const [s0, s1] of partes){
         if (s1 - s0 < 1e-6) continue;
@@ -657,10 +762,11 @@ function crearEscena(cv, opciones){
     for (const x of xs) if (x.half) componente(p, ip, x, P, c, T, false);
     for (const x of xs) pastillasI(p, x, P, c, T);
     if (p.sol.corto){
-      const msg = '¡Cortocircuito!', y = P.oy + 0.2*P.s, cx = P.x0 + p.layout.w*P.s/2;
-      ctx.save(); ctx.font = `800 13px ${c.font}`; const w = ctx.measureText(msg).width + 24;
-      rrect(ctx, cx - w/2, y - 13, w, 26, 13); ctx.fillStyle = c.warn; ctx.fill();
-      ctx.fillStyle = c.paper; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(msg, cx, y + .5); ctx.restore();
+      const msg = '¡Cortocircuito!', y = Math.max(15, P.oy + (p.layout.cortoY !== undefined ? p.layout.cortoY : 0.2)*P.s), cx = P.x0 + (p.layout.cortoX !== undefined ? p.layout.cortoX : p.layout.w/2)*P.s;
+      ctx.save(); ctx.font = `800 13px ${c.font}`; const w = ctx.measureText(msg).width + 40;
+      rrect(ctx, cx - w/2, y - 13, w, 26, 13); ctx.fillStyle = c.corto; ctx.fill();
+      rayo(ctx, cx - w/2 + 14, y, 16, c.paper);
+      ctx.fillStyle = c.paper; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(msg, cx + 8, y + .5); ctx.restore();
     }
   }
 
@@ -715,11 +821,12 @@ function crearEscena(cv, opciones){
 
   // Bucle que se duerme (nucleo/celular.js): corre mientras la corriente se mueve y el lienzo se ve (pestaña
   // visible, modo mostrado y en pantalla); con el circuito abierto y quieto, deja de dibujar hasta el próximo cambio.
-  const B = RM ? null : Celular.bucle(cv, dt => { const sigue = avanzar(Math.min(0.05, Math.max(0, dt))); dibujar(); return sigue; });
+  const B = RM ? null : Celular.bucle(cv, dt => { const sigue = avanzar(Math.min(0.05, Math.max(0, dt))); dibujar(); return sigue || !!(opciones.sigue && opciones.sigue()); });
   E.arrancar = () => {
     if (RM){ avanzar(1); dibujar(); return; }
     B.despertar();
   };
+  E.despertar = () => { if (B) B.despertar(); else dibujar(); };
   E.set = (paneles, vista) => {
     const cambio = (vista || 'plano') !== E.vista || paneles.length !== E.paneles.length || (paneles[0] && E.paneles[0] && paneles[0].layout !== E.paneles[0].layout);
     E.paneles = paneles; E.vista = vista || 'plano';
@@ -840,11 +947,12 @@ function pintar(){
 }
 
 const OPS1 = [['a', 'B1, la que está sola en su tramo'], ['b', 'Las tres igual, porque son iguales'], ['c', 'B2 y B3, porque están juntas en paralelo']];
-const ERR1 = { b:['C1-iguales-brillan-igual', 'hipotesis'], c:['C11-paralelo-brilla-mas', 'hipotesis'] };
+// CIR-…: hipótesis sin número en el catálogo del informe (C11 es otra idea: el reparto por mitades).
+const ERR1 = { b:['C1-iguales-brillan-igual', 'hipotesis'], c:['CIR-paralelo-brilla-mas', 'hipotesis'] };
 const FB1 = {
   a: '¡Bien! Toda la corriente pasa por B1; después se divide entre B2 y B3. Mira el brillo.',
-  b: 'Elegiste la B. Son iguales, pero no reciben la misma corriente: toda pasa por B1 y luego se divide entre B2 y B3. La correcta está marcada.',
-  c: 'Elegiste la C. Estar en paralelo no da más brillo: B2 y B3 se reparten la corriente que ya pasó por B1. La correcta está marcada.',
+  b: 'Elegiste la B. Son iguales, pero no reciben la misma corriente: toda pasa por B1 y luego se divide entre B2 y B3. La correcta está marcada. Hipótesis nuestra: pensar que bombillas iguales brillan igual en cualquier lugar del circuito.',
+  c: 'Elegiste la C. Estar en paralelo no da más brillo: B2 y B3 se reparten la corriente que ya pasó por B1. La correcta está marcada. Hipótesis nuestra: pensar que el paralelo brilla más porque tiene dos bombillas.',
 };
 // Tabla del informe: opción, error y respaldo (Periago y Bohigas, 2005, 184 estudiantes).
 const OPS2 = [['a', 'B2 brilla más y B1 sigue igual'], ['b', 'B1 y B2 siguen igual'], ['c', 'B1 y B2 brillan más'], ['d', 'B2 brilla más y B1 brilla menos']];
@@ -878,7 +986,7 @@ const steps = [
      <div class="eq">${vr('I','0,33')} = ${vr('I','0,17')} + ${vr('I','0,17')}<span class="note">En el nudo, la corriente se divide entre B2 y B3</span></div>
    </div>
    <p>Mira los números del dibujo: a la entrada y a la salida de B1 dice lo mismo, ${vr('I','0,33 A')}. Los puntos avanzan igual de rápido antes y después de B1. La corriente no se gasta en la bombilla; lo que se convierte en luz es <b>energía</b>.</p>
-   <p class="fuente">El 58 % de 184 estudiantes de ingeniería en Barcelona creía que, de dos bombillas iguales en serie, brilla más la primera, como si la corriente se gastara (Periago y Bohigas, 2005).</p>` },
+   <p class="fuente">Cerca del 58 % de 184 estudiantes de ingeniería en Barcelona dijo que, de dos bombillas iguales en serie, brilla más una de ellas, como si la corriente se gastara (Periago y Bohigas, 2005).</p>` },
  { k:'Paso 4', t:'El brillo es la potencia', estado:{ encendido:true, mostrar:{ I:true, P:true, V:true } },
    body:() => `<div class="eqs">
      <div class="eq">${vr('P','P')} = ${vr('I','I')}² · ${vr('R','R')}<span class="note">Potencia de cada bombilla</span></div>
@@ -932,13 +1040,16 @@ const steps = [
 const dots = $('dots');
 steps.forEach((s, n) => {
   const li = document.createElement('li'), b = document.createElement('button');
-  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.type = 'button'; b.textContent = n + 1;
   b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
 });
 
+// El explorador conserva lo que el alumno cambió DENTRO del paso 9; al entrar desde otro paso, empieza con las tres
+// bombillas puestas y el reóstato en 0 (la B3 quitada en el paso 8 no pasa al explorador).
 function aplicarEstado(){
   const s = steps[S.step], e = typeof s.estado === 'function' ? s.estado() : s.estado;
-  if (!s.explora){ S.b = { b1:true, b2:true, b3: e.b3 === undefined ? true : e.b3 }; S.Rv = 0; }
+  if (!s.explora || S.dePaso !== S.step){ S.b = { b1:true, b2:true, b3: e.b3 === undefined ? true : e.b3 }; S.Rv = 0; }
+  S.dePaso = S.step;
   S.encendido = e.encendido; S.vista = e.vista || 'plano'; S.conRv = !!e.conRv;
   S.mostrar = Object.assign({ I:false, P:false, R:false, V:false }, e.mostrar);
 }
@@ -984,7 +1095,8 @@ function prediccion(cual){
     S[cual] = b.dataset.k; desbloquear(S.step + 1); marcar(); nav(); pintarDots();
     const e = ERR[S[cual]] || ['', ''];
     registrarPrediccion(cual === 'pred1' ? 'circuitos-cual-brilla-mas' : 'circuitos-quitar-B3', S[cual], S[cual] === ok, e[0], e[1], t0);
-    $('next').focus({ preventScroll:Celular.chico() });
+    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+    const fb = $('fb'); fb.tabIndex = -1; fb.focus({ preventScroll:true });
     const paso = S.step; esc.compactar(false);
     Celular.alResponder(esc.cv, () => { if (cual === 'pred1'){ aplicarEstado(); pintar(); } }, () => S.step === paso);
   }));
@@ -1029,8 +1141,9 @@ function vivo(){
     <p class="hint">${sol.ramas.pila.I === 0 ? 'Circuito abierto: no pasa corriente por ninguna parte.' : `Resistencia que ve la pila: ${vr('R', fmt(MotorCircuito.resistenciaVista(sol, 'pila')) + ' Ω')}.`}</p>`;
 }
 
-$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
-$('prev').addEventListener('click', () => go(S.step - 1));
+// Al avanzar o retroceder, el foco va al título del paso nuevo (el botón puede quedar desactivado).
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); $('stepT').focus({ preventScroll:true }); });
+$('prev').addEventListener('click', () => { go(S.step - 1); $('stepT').focus({ preventScroll:true }); });
 
 function marcar(k){
   esc.hl = k;
@@ -1064,11 +1177,16 @@ const panel = (layout, circuito, extra) => Object.assign({ layout, circuito, sol
 const EXPS = [
   { id:'mcdermott', corto:'Tres circuitos',
     q:'Tres pilas iguales, de 6 V cada una. En el primer circuito hay una bombilla sola (A); en el segundo, dos en serie (B y C); en el tercero, dos en paralelo (D y E). Todas las bombillas son iguales. ¿Cómo ordenas su brillo?',
-    opts:[['a','Las cinco brillan igual','C1-pila-corriente-constante','documentado'],
-          ['b','A brilla más que D y E, que se reparten la corriente','C1-reparto-paralelo','documentado'],
+    // a y b: el informe dice que C1 explica la mayoría de las respuestas (83,7 %), sin el porcentaje de cada opción: parcial.
+    opts:[['a','Las cinco brillan igual','C1-pila-corriente-constante','parcial'],
+          ['b','A brilla más que D y E, que se reparten la corriente','C1-reparto-paralelo','parcial'],
           ['c','En serie, B brilla más que C','C2-corriente-se-gasta','documentado'],
           ['d','A, D y E brillan igual; B y C, menos',null]],
     ok:'d',
+    fb:{ d:'¡Bien pensado! Cada pila mantiene sus 6 V: mira cómo brillan las cinco.',
+      a:'Elegiste la A. Cada pila no da siempre la misma corriente: mantiene su voltaje. Mira la escena: las de serie brillan menos. En Barcelona, según los autores, la mayoría de las respuestas a esta pregunta se explican con la idea de que la pila da una corriente fija.',
+      b:'Elegiste la B. D y E no se reparten una corriente fija: cada una tiene los 6 V completos y la pila da el doble de corriente. Mira la escena. Es la misma idea de la pila de corriente fija, que explica la mayoría de las respuestas en Barcelona.',
+      c:'Elegiste la C. En serie, B y C brillan igual: la corriente no se gasta en B. Cerca del 58 % de 184 estudiantes de ingeniería dijo que, de dos bombillas iguales en serie, brilla más una.' },
     antes:() => {},
     paneles:(resp) => {
       const m = M.mcdermott({ fem:6, R:12 }), x = { encendido: !!resp, mostrar:{ I:false, P: !!resp } };
@@ -1081,15 +1199,18 @@ const EXPS = [
       return `<div class="tabla-wrap"><table class="tabla"><thead><tr><th>Bombilla</th><th>I</th><th>V</th><th>P</th></tr></thead><tbody>
         ${fila('A (sola)', 'sola', 'A')}${fila('B (serie)', 'serie', 'B')}${fila('C (serie)', 'serie', 'C')}${fila('D (paralelo)', 'paralelo', 'D')}${fila('E (paralelo)', 'paralelo', 'E')}</tbody></table></div>`;
     },
-    exp:`<p>Cada pila mantiene sus 6 V. En paralelo, D y E tienen cada una los 6 V completos, igual que A: brillan igual que A, y la pila da el doble de corriente (1 A). En serie, B y C se reparten los 6 V: pasa la cuarta parte de la potencia por cada una. Y B y C brillan igual: la corriente no se gasta en B.</p>
+    exp:`<p>Cada pila mantiene sus 6 V. En paralelo, D y E tienen cada una los 6 V completos, igual que A: brillan igual que A, y la pila da el doble de corriente (1 A). En serie, B y C se reparten los 6 V: cada una recibe la cuarta parte de la potencia de A. Y B y C brillan igual: la corriente no se gasta en B.</p>
       <p class="fuente">Solo el 4,3 % de 184 estudiantes de ingeniería en Barcelona ordenó bien el brillo en estos tres circuitos (Periago y Bohigas, 2005). En Estados Unidos, cerca del 15 % de más de 1000 universitarios, antes o después del curso (McDermott y Shaffer, 1992).</p>` },
 
   { id:'serie', corto:'Dos en serie',
     q:'Dos bombillas iguales, B1 y B2, están en serie con una pila de 6 V. La corriente sale de la pila y pasa primero por B1. ¿Cuál brilla más?',
     opts:[['a','B1, porque la corriente llega primero a ella','C2-corriente-se-gasta','documentado'],
           ['b','B2, porque a ella llega la corriente que sobra','C2-segunda-brilla-mas','hipotesis'],
-          ['c','Brillan igual',null]],
+          ['c','Brillan igual, porque por las dos pasa la misma corriente',null]],
     ok:'c',
+    fb:{ c:'¡Bien pensado! Mira los números de corriente antes, entre y después de las bombillas.',
+      a:'Elegiste la A. La corriente no se gasta en B1: es la misma en todo el circuito en serie. Cerca del 58 % de 184 estudiantes de ingeniería dijo que, de dos bombillas iguales en serie, brilla más una de ellas.',
+      b:'Elegiste la B. No sobra corriente: la que pasa por B1 es la misma que pasa por B2, y brillan igual. Hipótesis nuestra: pensar que la segunda recibe lo que la primera no usó.' },
     antes:() => Object.assign(E, { inv:false }),
     paneles:(resp) => {
       const c = M.mcdermott({ fem:6, R:12 }).serie;
@@ -1106,9 +1227,12 @@ const EXPS = [
   { id:'pilas-paralelo', corto:'Pilas en paralelo',
     q:'Una bombilla de 3 Ω está encendida con una pila de 1,5 V. Conectas una segunda pila igual en paralelo con la primera (+ con + y − con −). Comparada con una sola pila, ¿cómo brilla la bombilla?',
     opts:[['a','Más: dos pilas dan más voltaje','C6-paralelo-suma-voltaje','documentado'],
-          ['b','Igual',null],
+          ['b','Igual: la bombilla sigue con el voltaje de una pila',null],
           ['c','Menos: las dos pilas se reparten la bombilla','C6-paralelo-reparte','hipotesis']],
     ok:'b',
+    fb:{ b:'¡Bien pensado! Mira la escena y prueba también dos pilas en serie.',
+      a:'Elegiste la A. En paralelo, el voltaje de la bombilla es el de una sola pila: brilla igual. En un test con 692 alumnos, el 21 % creyó que dos pilas en paralelo dan más voltaje.',
+      c:'Elegiste la C. Las pilas no se reparten la bombilla: cada una da la mitad de la corriente y la bombilla sigue con 1,5 V, así que brilla igual. Hipótesis nuestra: pensar que dos pilas en paralelo se dividen el trabajo y la bombilla recibe menos.' },
     antes:() => Object.assign(E, { modo:'una' }),
     despues:() => Object.assign(E, { modo:'paralelo' }),
     paneles:() => [panel(LAY.pilasDe[E.modo], M.pilas({ modo:E.modo, fem1:1.5, fem2:1.5, R:3 }), { Pref:0.75, iRef:0.5, mostrar:{ I:true, P:true } })],
@@ -1125,6 +1249,10 @@ const EXPS = [
           ['c','Pasa corriente, como con una sola pila de 6 V',null],
           ['d','Pasa corriente, como con una pila de 12 V','C10-suma-siempre','hipotesis']],
     ok:'c',
+    fb:{ c:'¡Bien pensado! Mira la escena: las fem se restan.',
+      a:'Elegiste la A. Las pilas no se anulan: sus fem se restan y quedan 6 V netos. El 21 % de 184 estudiantes de ingeniería dio esta respuesta.',
+      b:'Elegiste la B. Si hay voltaje en un circuito cerrado, pasa corriente: 0,5 A por la bombilla. Cerca de un tercio de 184 estudiantes de ingeniería (31,5 %) dio esta respuesta.',
+      d:'Elegiste la D. Al revés, las fem se restan: 9 − 3 = 6 V, no 12 V. Hipótesis nuestra: sumar las pilas sin mirar hacia dónde apuntan.' },
     antes:() => Object.assign(E, { modo:'oposicion' }),
     paneles:(resp) => [panel(LAY.pilasDe[E.modo], M.pilas({ modo:E.modo, fem1:9, fem2:3, R:12 }), { encendido: !!resp, Pref:3, iRef:0.5, mostrar:{ I:true, P:true } })],
     nombres:[['B','Bombilla']],
@@ -1135,11 +1263,16 @@ const EXPS = [
 
   { id:'fuente-voltaje', corto:'La pila y la corriente',
     q:'Una pila de 6 V enciende una bombilla de 12 Ω y por ella pasan 0,5 A. Cambias la bombilla por otra de 24 Ω. ¿Qué pasa con la corriente que sale de la pila y con el voltaje de la pila?',
-    opts:[['a','La corriente sigue en 0,5 A: la pila siempre da la misma','C1-pila-corriente-constante','documentado'],
-          ['b','La corriente baja a 0,25 A y el voltaje sigue en 6 V',null],
-          ['c','Bajan la corriente y también el voltaje, porque V = I·R','C7-voltaje-sigue-corriente','documentado'],
+    // a: C1 aparece en entrevistas, sin cifra para esta pregunta; c: el 47 % es de «duplicar la corriente», otro ítem. Parciales.
+    opts:[['a','La corriente sigue en 0,5 A: la pila siempre da la misma','C1-pila-corriente-constante','parcial'],
+          ['b','La corriente baja a 0,25 A y el voltaje sigue en 6 V, porque la pila mantiene su voltaje',null],
+          ['c','Bajan la corriente y también el voltaje, porque V = I·R','C7-voltaje-sigue-corriente','parcial'],
           ['d','La corriente sube, porque la bombilla pide más','C1-mas-resistencia-mas-corriente','hipotesis']],
     ok:'b',
+    fb:{ b:'¡Bien pensado! Mueve el deslizador y mira qué cambia y qué no.',
+      a:'Elegiste la A. La pila no da una corriente fija: mantiene su voltaje, y con el doble de resistencia pasa la mitad de la corriente. Es la idea que más aparece en las entrevistas del test DIRECT.',
+      c:'Elegiste la C. V = I·R vale para la bombilla, no decide el voltaje de la pila: sigue en 6 V. En el test DIRECT, cerca de la mitad de 1135 alumnos creyó que, si se duplica la corriente por una pila, se duplica su voltaje.',
+      d:'Elegiste la D. Con más resistencia pasa menos corriente, no más: 6 / 24 = 0,25 A. Hipótesis nuestra: pensar que la bombilla de más ohmios pide más corriente.' },
     antes:() => Object.assign(E, { R:12 }),
     despues:() => Object.assign(E, { R:24 }),
     paneles:() => [panel(LAY.pilasDe.una, M.pilas({ modo:'una', fem1:6, R:E.R }), { Pref:3, iRef:0.5, mostrar:{ I:true, P:true, R:true } })],
@@ -1154,11 +1287,16 @@ const EXPS = [
 
   { id:'corto', corto:'El cortocircuito',
     q:'Dos bombillas iguales de 12 Ω están en serie con una pila de 6 V. Un cable con interruptor une los dos extremos de B2. Si cierras el interruptor, ¿qué pasa?',
-    opts:[['a','Nada cambia: la corriente sigue pasando por las dos','C12-no-ve-corto','documentado'],
+    // a: el 17 % es de no ver una PILA en corto; aquí el corto es de una bombilla. Parcial.
+    opts:[['a','Nada cambia: la corriente sigue pasando por las dos','C12-no-ve-corto','parcial'],
           ['b','B2 se apaga y B1 brilla más',null],
           ['c','B2 se apaga y B1 sigue igual','C5-resto-igual','hipotesis'],
           ['d','Se apagan las dos','C12-corto-apaga-todo','hipotesis']],
     ok:'b',
+    fb:{ b:'¡Bien pensado! Mira cuánto sube la corriente de B1.',
+      a:'Elegiste la A. El cable no tiene resistencia: la corriente se va por él y B2 se apaga. En el test DIRECT, cerca de 1 de cada 6 alumnos no identificó un corto de la pila; aquí el corto es de una bombilla.',
+      c:'Elegiste la C. Al quedar B2 en corto, la resistencia total baja y pasa más corriente: B1 brilla más. Hipótesis nuestra: pensar que lo que no se tocó sigue igual.',
+      d:'Elegiste la D. El cable solo deja sin voltaje a B2; B1 sigue en el circuito y brilla más. Hipótesis nuestra: pensar que un corto apaga todo.' },
     antes:() => Object.assign(E, { k:false, kp:false }),
     despues:() => Object.assign(E, { k:true }),
     paneles:() => [panel(LAY.dosCorto, { tierra:'n', ramas:[
@@ -1229,11 +1367,11 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = x.fb[p] + (p === x.ok ? '' : ' La correcta está marcada.');
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     if (x.conectar) x.conectar();
-    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); $('t2').focus({ preventScroll:true }); };
   };
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
@@ -1241,6 +1379,7 @@ function ir(k){
     S.pred[x.id] = o[0]; botones();
     if (x.despues) x.despues();
     pintar(); esc.compactar(false);
+    const fb = $('fb2'); fb.tabIndex = -1; fb.focus({ preventScroll:true });
     Celular.alResponder(esc.cv, actualizar, () => S.k === k);
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
   });
@@ -1253,9 +1392,651 @@ botones(); ir(0);
 </script>
 
 <script>
+/* ================= MODO 3: medir =================
+   Un amperímetro y un voltímetro que se arrastran sobre el circuito mixto del paso a paso (6 V; B1 en serie con
+   B2 ∥ B3; 12 Ω cada una). El motor resuelve cada puesto (MotorCircuito.medidoresMixto) y dice qué hizo el medidor
+   (efectoMedidor); aquí solo se dibuja. Cinco predicciones bloquean el avance (MotorCircuito.prediccionesMedidores).
+   Respaldos (docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md): «el amperímetro consume corriente» (C15)
+   es parcial, porque un estudio lo describe sin cifra; conectar el amperímetro en paralelo o el voltímetro en serie
+   está en «Lo que no tiene respaldo»: son hipótesis (código C15v, vecino de C15).
+   Arrastre (nucleo/celular.js): imán al puesto permitido más cercano (48 px), el medidor 28 px sobre el dedo, modo de
+   dos toques, y el circuito se recalcula al soltar. Con teclado: los botones de debajo del lienzo (Enter, flechas, Escape). */
+(function(){
+const $ = id => document.getElementById(id);
+const M = MotorCircuito, PR = M.prediccionesMedidores();
+const OP = { fem:6, R1:12, R2:12, R3:12 };
+const IDS = ['A', 'V'];
+const NOMBRE = { A:'amperímetro', V:'voltímetro' };
+const Nom = id => NOMBRE[id][0].toUpperCase() + NOMBRE[id].slice(1);
+const UNI = { A:' A', V:' V' }, VAR = { A:'I', V:'V' };
+const otro = id => (id === 'A' ? 'V' : 'A');
+const R_IMAN = 48, SOBRE_DEDO = 28, ARRASTRE_MIN = 8, TWEEN = 200;
+const RVS = [60, 600, 6000, 60000, Infinity], RAS = [0, 0.1, 0.5, 2, 6];
+// Dato de color sin parada del tabulador (en este modo no resalta nada en el dibujo).
+const w = (k, t) => `<span class="v v-${k}" style="cursor:default; text-decoration:none">${t}</span>`;
+
+// Dibujo (unidades de cuadrícula). Las pinzas del puesto en paralelo con la pila (y = 2,6 y 5,8) caen sobre el cable,
+// fuera de la pila (que ocupa de y = 3,66 a 5,14); su lectura va debajo del medidor, por debajo de la pila.
+LAY.med = { w:12.8, h:8.9, uniones:[[6.9,2.0],[6.9,6.4]], cortoX:6.4, cortoY:0.62,
+  ramas:{
+    pila:{ comp:'pila', path:[[1.6,6.4],[1.6,2.0]], sc:2.0, et:'der', etI:false },
+    B1:{ comp:'bombilla', nombre:'B1', path:[[1.6,2.0],[5.3,2.0]], sc:1.85, et:'aba', etI:false },
+    Rv:{ comp:'cable', path:[[5.3,2.0],[6.9,2.0]], etI:false },
+    B2:{ comp:'bombilla', nombre:'B2', path:[[6.9,2.0],[6.9,6.4]], sc:2.2, et:'izq', etI:false },
+    B3:{ comp:'bombilla', nombre:'B3', path:[[6.9,2.0],[10.1,2.0],[10.1,6.4],[6.9,6.4]], sc:5.4, et:'der', etI:false },
+    retorno:{ comp:'cable', path:[[6.9,6.4],[1.6,6.4]], etI:false } } };
+const BANDEJA = { A:[2.6, 8.0], V:[4.4, 8.0] }, Y_BANDEJA = 7.2;
+// Geometría de los puestos de MotorCircuito.PUESTOS_MIXTO: ancla = centro del medidor; pinzas = cable de los de paralelo.
+const PUESTO = {
+  'B1-a':  { ancla:[2.35,2.0], et:'ai',  nombre:'en serie con B1, del lado de la pila' },
+  'B1-b':  { ancla:[4.65,2.0], et:'ad',  nombre:'en serie con B1, del lado de B2 y B3' },
+  'B1-p':  { ancla:[3.45,1.0], et:'der', nombre:'en paralelo con B1', pinzas:[[2.95,2.0],[2.95,1.0],[3.95,1.0],[3.95,2.0]] },
+  'B2-a':  { ancla:[6.9,2.85], et:'izq', nombre:'en serie con B2, arriba' },
+  'B2-b':  { ancla:[6.9,5.55], et:'izq', nombre:'en serie con B2, abajo' },
+  'G-p':   { ancla:[8.5,4.2],  et:'aba', nombre:'en paralelo con B2 y B3', pinzas:[[8.5,2.0],[8.5,6.4]] },
+  'B3-a':  { ancla:[10.1,2.85], et:'der', nombre:'en serie con B3, arriba' },
+  'B3-b':  { ancla:[10.1,5.55], et:'der', nombre:'en serie con B3, abajo' },
+  'ret':   { ancla:[4.6,6.4],  et:'arr', nombre:'en el cable de regreso a la pila' },
+  'pila-p':{ ancla:[0.55,4.6], et:'aba', nombre:'en paralelo con la pila', pinzas:[[1.6,2.6],[0.55,2.6],[0.55,5.8],[1.6,5.8]] },
+};
+const ORDEN = ['B1-p','B1-a','B1-b','B2-a','B2-b','G-p','B3-a','B3-b','ret','pila-p'];
+const SERIE = ORDEN.filter(p => M.PUESTOS_MIXTO[p].modo === 'serie');
+const TODOS = ORDEN.slice();
+const DONDE_M1 = { a:'B2-a', b:'G-p', c:'ret', d:'B1-a' };
+
+/* ---------- Layout con los medidores puestos ---------- */
+// Largo de arco del punto Q sobre la polilínea, o null si no está sobre ella.
+function arcoDe(path, Q){
+  let acc = 0;
+  for (let k = 1; k < path.length; k++){
+    const [ax, ay] = path[k-1], [bx, by] = path[k], L = Math.hypot(bx - ax, by - ay);
+    const t = L ? ((Q[0] - ax)*(bx - ax) + (Q[1] - ay)*(by - ay))/(L*L) : 0;
+    if (t >= -1e-9 && t <= 1 + 1e-9 && Math.hypot(ax + t*(bx - ax) - Q[0], ay + t*(by - ay) - Q[1]) < 1e-6) return acc + clamp(t, 0, 1)*L;
+    acc += L;
+  }
+  return null;
+}
+function subCamino(path, s0, s1){
+  const g = prepararCamino(path), pts = [];
+  for (const s of muestras(g, s0, s1, false)){ const q = puntoEn(g, s); const p = [q[0], q[1]]; const u = pts[pts.length - 1]; if (!u || Math.hypot(u[0] - p[0], u[1] - p[1]) > 1e-9) pts.push(p); }
+  if (pts.length === 1) pts.push(pts[0].slice());
+  return pts;
+}
+// Una punta de un medidor en paralelo cae sobre el cable de otra rama: el trozo entre el extremo de esa rama y la punta
+// lleva también la corriente del medidor, y se dibuja como un tramo aparte (así los puntos de corriente no mienten).
+function enganchar(L, Q, mid, extremo){
+  for (const [rid, l] of Object.entries(L.ramas)){
+    if (rid === mid || !l.comp || l.comp === 'cable' || l.sc === undefined) continue;
+    const s = arcoDe(l.path, Q); if (s === null) continue;
+    const g = prepararCamino(l.path), half = HALF[l.comp], sc = l.sc;
+    let sg, path;
+    if (s <= sc - half + 1e-9){ sg = extremo === 'a' ? 1 : -1; path = subCamino(l.path, 0, s); l.path = subCamino(l.path, s, g.L); l.sc = sc - s; }
+    else if (s >= sc + half - 1e-9){ sg = extremo === 'a' ? -1 : 1; path = subCamino(l.path, s, g.L); l.path = subCamino(l.path, 0, s); }
+    else continue;
+    if (prepararCamino(path).L > 1e-6) L.tramos.push({ path, nodo:'n', etI:false, I: sol => sol.ramas[rid].I + sg*sol.ramas[mid].I });
+    return;
+  }
+}
+function armarLayout(col){
+  const B = LAY.med, L = { w:B.w, h:B.h, uniones:B.uniones.slice(), cortoX:B.cortoX, cortoY:B.cortoY, ramas:{}, tramos:[] };
+  for (const [id, l] of Object.entries(B.ramas)) L.ramas[id] = Object.assign({}, l, { path: l.path.map(q => q.slice()) });
+  const puestos = IDS.filter(id => col[id]).map(id => [id, col[id]]);
+  const tipo = id => (id === 'A' ? 'amperimetro' : 'voltimetro');
+  const base = id => ({ comp: tipo(id), etI:false, oculto: () => !!(S.tween && S.tween.id === id), tomado: () => S.tomado === id || !!(S.teclado && S.teclado.id === id) });
+  // Primero los de serie, después los de paralelo (como conectarMedidores del motor).
+  for (const [id, pu] of puestos.filter(([, p]) => M.PUESTOS_MIXTO[p].modo === 'serie')){
+    const d = M.PUESTOS_MIXTO[pu], l = L.ramas[d.rama], g = prepararCamino(l.path), sA = arcoDe(l.path, PUESTO[pu].ancla), h = HALF.amperimetro;
+    const m = Object.assign(base(id), { et: PUESTO[pu].et });
+    if (d.lado === 'a'){ m.path = subCamino(l.path, 0, sA + h); m.sc = sA; l.path = subCamino(l.path, sA + h, g.L); if (l.sc !== undefined) l.sc -= sA + h; }
+    else { m.path = subCamino(l.path, sA - h, g.L); m.sc = h; l.path = subCamino(l.path, 0, sA - h); }
+    L.ramas[id] = m;
+  }
+  for (const [id, pu] of puestos.filter(([, p]) => M.PUESTOS_MIXTO[p].modo === 'paralelo')){
+    const P = PUESTO[pu], pin = P.pinzas;
+    L.ramas[id] = Object.assign(base(id), { et:P.et, path: pin.map(q => q.slice()), sc: arcoDe(pin, P.ancla) });
+    enganchar(L, pin[0], id, 'a'); enganchar(L, pin[pin.length - 1], id, 'b');
+    L.uniones.push(pin[0], pin[pin.length - 1]);
+  }
+  return L;
+}
+
+/* ---------- Estado ---------- */
+const S = { step:0, max:0, pred:{}, col:{ A:null, V:null }, fantasma:null, tomado:null, teclado:null, drag:null, tween:null,
+  reales:false, iRV7:0, iRA:3, iRV8:0, r:null };
+const pendiente = () => { const s = steps[S.step]; return !!(s.gate && !S.pred[s.gate]); };
+const val = x => (typeof x === 'function' ? x() : x) || {};
+function permitidos(id){ if (pendiente()) return []; return (val(steps[S.step].perm)[id] || []).slice().sort((p, q) => ORDEN.indexOf(p) - ORDEN.indexOf(q)); }
+function rintDe(id){
+  const s = steps[S.step];
+  if (s.rint === 7 && id === 'V') return RVS[S.iRV7];
+  if (s.rint === 8 && S.reales) return id === 'A' ? RAS[S.iRA] : RVS[S.iRV8];
+  return undefined;
+}
+const comoRint = R => (R === undefined || R === Infinity || R === 0 ? {} : { Rint:R });
+function colocados(sin){
+  const o = {};
+  for (const id of IDS) if (S.col[id] && id !== sin) o[id] = Object.assign({ puesto:S.col[id] }, comoRint(rintDe(id)));
+  return o;
+}
+
+const esc = crearEscena($('cv3'), { tope:260, encima, sigue: () => !!S.tween });
+const cv = esc.cv;
+
+function pintar(){
+  S.r = M.medidoresMixto(colocados(), OP);
+  esc.set([{ layout: armarLayout(S.col), circuito:S.r.circuito, sol:S.r.sol, encendido:true, mostrar:{ R:true }, Pref:3, iRef:1/3 }], 'plano');
+  botones();
+  const s = steps[S.step]; if (s.vivo && !pendiente()) s.vivo();
+}
+
+/* ---------- Textos ---------- */
+const lista = xs => (xs.length < 2 ? xs.join('') : xs.slice(0, -1).join(', ') + ' y ' + xs[xs.length - 1]);
+function lectura(id, ef, d){
+  ef = ef || (S.r && S.r.efecto[id]);
+  if (!ef) return '—';
+  if (ef.lectura === Infinity) return 'sin límite (cortocircuito)';
+  if (!Number.isFinite(ef.lectura)) return 'no se puede saber';
+  return fmt(ef.lectura, d === undefined ? 2 : d) + UNI[id];
+}
+// Qué bombillas cambiaron de brillo entre ref (sin el medidor) y sol (con él).
+function cambios(ref, sol){
+  const out = { apaga:[], casi:[], suben:[], bajan:[] };
+  if (!ref.ok || !sol.ok) return out;
+  for (const b of ['B1', 'B2', 'B3']){
+    const P0 = ref.ramas[b].P, P1 = sol.ramas[b].P;
+    if (P0 > 1e-12 && P1 <= 1e-12) out.apaga.push(b);
+    else if (P0 > 1e-12 && P1 < 0.01*P0) out.casi.push(b);          // bajo el 1 % de su potencia
+    else if (P1 > P0*(1 + 1e-6)) out.suben.push(b);
+    else if (P1 < P0*(1 - 1e-6)) out.bajan.push(b);
+  }
+  return out;
+}
+const verbo = (xs, uno, varios) => (xs.length > 1 ? varios : uno);
+// Cuánto cambió el circuito, según el mayor cambio relativo de potencia (cambioMax del motor).
+const cuanto = k => (k < 0.05 ? 'Cambió un poco el circuito' : k <= 0.5 ? 'Cambió el circuito' : 'Cambió mucho el circuito');
+function describir(id){
+  const pu = S.col[id];
+  if (!pu) return `${Nom(id)} en la bandeja.`;
+  const ef = S.r.efecto[id], t = `${Nom(id)} ${PUESTO[pu].nombre}: `;
+  if (ef.diagnostico === 'corto-pila'){
+    if (!Number.isFinite(ef.lectura)) return t + '¡cortocircuito! El amperímetro une los bornes de la pila sin resistencia: con una pila ideal, la corriente no tendría límite. Las bombillas se apagan.';
+    return t + `¡Cortocircuito! El amperímetro une los bornes de la pila: pasan ${lectura(id)} por él. Las bombillas siguen igual solo porque la pila es ideal; una real se descargaría y el fusible del amperímetro se quemaría.`;
+  }
+  if (ef.diagnostico === 'indeterminada') return t + 'no se puede saber qué marca.';
+  const ref = M.medidoresMixto(colocados(id), OP).sol;
+  // Sin este medidor ya no pasaba corriente (el otro, un voltímetro ideal en serie, abrió el circuito).
+  if (id === 'A' && ref.ok && Math.abs(ref.ramas.pila.I) <= 1e-12) return t + `No pasa corriente (el voltímetro abrió el circuito): marca ${lectura(id)}.`;
+  const c = cambios(ref, S.r.sol);
+  const mas = c.suben.length ? `${lista(c.suben)} ${verbo(c.suben, 'brilla', 'brillan')} más` : '';
+  const menos = c.bajan.length ? `${lista(c.bajan)} ${verbo(c.bajan, 'brilla', 'brillan')} menos` : '';
+  const casi = c.casi.length ? `${lista(c.casi)} prácticamente se ${verbo(c.casi, 'apagó', 'apagaron')}` : '';
+  const resto = [casi, mas, menos].filter(Boolean).join('; ');
+  const x = t + `marca ${lectura(id)}.`;
+  if (ef.diagnostico === 'bien') return x + ' El circuito no cambió: las bombillas brillan igual.';
+  if (ef.diagnostico === 'corto-elemento'){
+    if (ef.apaga.length) return x + ` ${lista(ef.apaga)} ${verbo(ef.apaga, 'quedó en corto y se apagó', 'quedaron en corto y se apagaron')}${resto ? '; ' + resto : ''}.`;
+    return x + ` El amperímetro en paralelo desvía la corriente${resto ? ': ' + resto : ''}.`;
+  }
+  if (ef.diagnostico === 'abre-circuito') return x + ' No deja pasar corriente: se apagaron las tres bombillas.';
+  if (ef.diagnostico === 'abre-rama') return x + ` No deja pasar corriente: ${lista(ef.apaga)} se ${verbo(ef.apaga, 'apagó', 'apagaron')}${resto ? '; ' + resto : ''}.`;
+  return x + ' ' + cuanto(ef.cambioMax) + (resto ? `: ${resto}` : '') + '.';
+}
+const QUE = { bien:'nada: no se nota', 'corto-elemento':'dejó en corto', 'abre-circuito':'abrió el circuito', 'abre-rama':'apagó', carga:'cambió un poco el circuito', 'corto-pila':'cortocircuito de la pila', indeterminada:'—' };
+const queHizo = ef => {
+  if (ef.diagnostico === 'carga') return cuanto(ef.cambioMax).toLowerCase();
+  if (ef.diagnostico === 'corto-elemento' && !ef.apaga.length) return 'desvió la corriente (está en paralelo)';
+  return ef.diagnostico === 'corto-elemento' || ef.diagnostico === 'abre-rama' ? `${QUE[ef.diagnostico]} ${lista(ef.apaga)}` : QUE[ef.diagnostico];
+};
+function estadoBase(){
+  const s0 = S.r.sol, pend = pendiente();
+  const pues = IDS.filter(id => S.col[id]).map(describir);
+  if (pues.length) return pues.join(' ');
+  return (pend && S.fantasma ? 'Antes de responder, el medidor a trazos todavía no está conectado. ' : '') +
+    `Circuito encendido: B1 con ${fmt(s0.ramas.B1.P)} W; B2 y B3 con ${fmt(s0.ramas.B2.P)} W cada una. Medidores en la bandeja.`;
+}
+
+/* ---------- Botones de los medidores (teclado y lector de pantalla) ---------- */
+function botones(){
+  const pend = pendiente();
+  for (const id of IDS){
+    const b = $('med' + id), perm = permitidos(id), dis = pend || !perm.length;
+    b.disabled = dis; b.setAttribute('aria-disabled', String(dis));
+    if (pend) b.setAttribute('aria-label', `${Nom(id)}: se usa después de responder`);
+    else if (!perm.length) b.setAttribute('aria-label', `${Nom(id)}: no se usa en este paso`);
+    else b.removeAttribute('aria-label');
+    b.setAttribute('aria-pressed', String(S.tomado === id || !!(S.teclado && S.teclado.id === id)));
+    const pu = S.col[id], ef = S.r && S.r.efecto[id];
+    const R = rintDe(id), rint = R !== undefined && R !== 0 && R !== Infinity ? ` · <span style="color:var(--c-R)">${id === 'A' ? 'rₐ' : 'Rᵥ'} = ${fmt(R, 2)} Ω</span>` : '';
+    b.querySelector('.t').innerHTML = `${Nom(id)}${rint} · ${pu ? PUESTO[pu].nombre : 'en la bandeja'}` + (pu && ef ? ` · marca <span class="lec-${VAR[id]}">${lectura(id, ef)}</span>` : '');
+  }
+}
+const desc = t => decir($('desc3'), t);
+function listaTeclado(id){ return permitidos(id).concat(['bandeja']); }
+for (const id of IDS){
+  const b = $('med' + id);
+  b.addEventListener('keydown', e => {
+    if (b.disabled) return;
+    const enter = e.key === 'Enter' || e.key === ' ';
+    if (!(S.teclado && S.teclado.id === id)){
+      if (!enter) return;
+      e.preventDefault();
+      const ls = listaTeclado(id), i = Math.max(0, ls.indexOf(S.col[id] || 'bandeja'));
+      S.tomado = null; S.teclado = { id, i, sel: ls[i] };
+      botones(); esc.dibujar();
+      desc(`${Nom(id)} tomado. Flechas para elegir dónde, Enter para conectarlo, Escape para cancelar.`);
+      return;
+    }
+    const ls = listaTeclado(id), d = { ArrowRight:1, ArrowDown:1, ArrowLeft:-1, ArrowUp:-1 }[e.key];
+    if (d){
+      e.preventDefault();
+      S.teclado.i = (S.teclado.i + d + ls.length) % ls.length; S.teclado.sel = ls[S.teclado.i];
+      esc.dibujar(); desc(S.teclado.sel === 'bandeja' ? 'En la bandeja.' : PUESTO[S.teclado.sel].nombre[0].toUpperCase() + PUESTO[S.teclado.sel].nombre.slice(1) + '.');
+    } else if (enter){
+      e.preventDefault();
+      const sel = S.teclado.sel; S.teclado = null;
+      intentar(id, sel === 'bandeja' ? null : sel);
+    } else if (e.key === 'Escape'){
+      e.preventDefault(); S.teclado = null; botones(); esc.dibujar();
+      desc(`${Nom(id)} sin cambios: sigue ${S.col[id] ? PUESTO[S.col[id]].nombre : 'en la bandeja'}.`);
+    } else if (e.key === 'Delete' || e.key === 'Backspace'){
+      e.preventDefault(); S.teclado = null; colocar(id, null);
+    }
+  });
+  // Con el ratón o el dedo: un clic en el botón lo toma y un toque en el dibujo lo conecta (dos toques).
+  b.addEventListener('click', e => {
+    if (e.detail === 0 || b.disabled) return;
+    S.teclado = null; S.tomado = S.tomado === id ? null : id; botones(); esc.dibujar();
+    desc(S.tomado ? `${Nom(id)} tomado: toca en el dibujo el lugar donde quieres conectarlo, o la bandeja para dejarlo.` : `${Nom(id)} suelto.`);
+  });
+}
+
+/* ---------- Poner y quitar medidores ---------- */
+function centro(id){
+  const P = esc.pr && esc.pr[0]; if (!P) return null;
+  if (S.drag && S.drag.movido && S.drag.id === id) return S.drag.p;
+  const q = S.col[id] ? PUESTO[S.col[id]].ancla : BANDEJA[id], [X, Y] = P.T(q[0], q[1]);
+  return { x:X, y:Y };
+}
+function intentar(id, pu, desde){
+  if (pu && S.col[otro(id)] === pu){ botones(); esc.dibujar(); desc(`Ese lugar ya tiene el ${NOMBRE[otro(id)]}.`); return false; }
+  colocar(id, pu, desde); return true;
+}
+function colocar(id, pu, desde){
+  const de = desde || centro(id);
+  S.col[id] = pu; S.tomado = null; S.teclado = null;
+  if (de && !RM && esc.pr){ const q = pu ? PUESTO[pu].ancla : BANDEJA[id], [X, Y] = esc.pr[0].T(q[0], q[1]);
+    if (Math.hypot(X - de.x, Y - de.y) > 2) S.tween = { id, de:{ x:de.x, y:de.y }, a:{ x:X, y:Y }, t0: performance.now() }; }
+  pintar(); desc(describir(id)); esc.despertar();
+}
+function medidorCerca(p, rad){
+  let best = null;
+  const r = esc.pr ? radioMedidor(esc.pr[0].s) : 12;
+  for (const id of IDS){
+    if (!permitidos(id).length) continue;
+    const c = centro(id); if (!c) continue;
+    const d = Math.hypot(c.x - p.x, c.y - p.y);
+    if (d <= Math.max(rad, r + 4) && (!best || d < best.d)) best = { id, d };
+  }
+  return best && best.id;
+}
+function candidato(pt, id){
+  const P = esc.pr && esc.pr[0]; if (!P) return null;
+  let best = null;
+  for (const pu of permitidos(id)){
+    const q = PUESTO[pu].ancla, [X, Y] = P.T(q[0], q[1]), d = Math.hypot(X - pt.x, Y - pt.y);
+    if (d < R_IMAN && (!best || d < best.d)) best = { puesto:pu, d };
+  }
+  if (best) best.ocupado = S.col[otro(id)] === best.puesto;
+  return best;
+}
+const enBandeja = pt => { const P = esc.pr && esc.pr[0]; return !!P && pt.y > P.T(0, Y_BANDEJA)[1]; };
+Celular.arrastre(cv, {
+  activo: () => !$('m3').hidden && !pendiente(),
+  cerca: (p, rad) => !!medidorCerca(p, rad) || !!(S.tomado && (candidato(p, S.tomado) || enBandeja(p))),
+  empezar: (p, e) => {
+    const id = medidorCerca(p, e && e.pointerType === 'mouse' ? Celular.RADIO_RATON : Celular.RADIO_DEDO);
+    S.drag = id ? { id, p0:p, p, dedo: !e || e.pointerType !== 'mouse', movido:false, origen:S.col[id] } : { id:null, p0:p };
+  },
+  mover: p => {
+    const d = S.drag; if (!d || !d.id) return;
+    if (!d.movido && Math.hypot(p.x - d.p0.x, p.y - d.p0.y) > ARRASTRE_MIN){
+      d.movido = true; S.tomado = null; S.teclado = null;
+      // Al levantarlo se desconecta: el circuito vuelve a resolverse sin él mientras está en el aire.
+      if (S.col[d.id]){ S.col[d.id] = null; pintar(); }
+    }
+    if (!d.movido) return;
+    d.p = d.dedo ? { x:p.x, y:p.y - SOBRE_DEDO } : { x:p.x, y:p.y };
+    d.cand = candidato(d.p, d.id) || (enBandeja(d.p) ? { puesto:null } : null);
+    esc.dibujar();
+  },
+  soltar: () => {
+    const d = S.drag; S.drag = null; if (!d) return;
+    if (!d.id){   // segundo toque, con un medidor ya tomado
+      const id = S.tomado; if (!id) return;
+      const c = candidato(d.p0, id);
+      if (c) intentar(id, c.puesto); else if (enBandeja(d.p0)) colocar(id, null);
+      return;
+    }
+    if (!d.movido){   // toque sobre un medidor: lo toma (o lo suelta)
+      S.tomado = S.tomado === d.id ? null : d.id; S.teclado = null; botones(); esc.dibujar();
+      desc(S.tomado ? `${Nom(d.id)} tomado: toca el lugar donde quieres conectarlo.` : `${Nom(d.id)} suelto.`);
+      return;
+    }
+    const c = d.cand;
+    if (c && c.puesto && c.ocupado){ S.col[d.id] = d.origen; pintar(); desc(`Ese lugar ya tiene el ${NOMBRE[otro(d.id)]}.`); return; }
+    colocar(d.id, c ? c.puesto : d.origen, d.p);
+    if (!c && d.origen) desc(`Ahí no hay dónde conectarlo: el ${NOMBRE[d.id]} volvió a su lugar. ` + describir(d.id));
+  },
+  sobre: () => esc.dibujar(),
+});
+
+/* ---------- Lo que se dibuja encima del circuito: bandeja, puestos, fantasma y el medidor en el aire ---------- */
+function pinzasPrevia(ctx, c, P, pu, alfa){
+  const pin = PUESTO[pu].pinzas; if (!pin) return;
+  ctx.save(); ctx.setLineDash([5, 4]); ctx.globalAlpha = alfa; ctx.strokeStyle = c.cable; ctx.lineWidth = clamp(P.s*0.09, 2, 4); ctx.lineCap = 'round';
+  linea(ctx, pin.map(q => P.T(q[0], q[1]))); ctx.stroke(); ctx.restore();
+}
+function anillo(ctx, c, X, Y, r, solido){
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = solido ? 1 : .45; ctx.lineWidth = solido ? 2.4 : 1.5;
+  if (!solido) ctx.setLineDash([4, 3]);
+  ctx.beginPath(); ctx.arc(X, Y, r, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+}
+function encima(ctx, c, P){
+  const T = P.T, r = radioMedidor(P.s), tipo = id => (id === 'A' ? 'amperimetro' : 'voltimetro');
+  // Bandeja.
+  const [xa, yb] = T(0.25, Y_BANDEJA), [xb] = T(LAY.med.w - 0.25, Y_BANDEJA);
+  ctx.save(); ctx.setLineDash([5, 4]); ctx.strokeStyle = c.muted; ctx.globalAlpha = .6; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(xa, yb); ctx.lineTo(xb, yb); ctx.stroke(); ctx.restore();
+  const [xt, yt] = T(5.3, 8.0);
+  ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 ${clamp(Math.round(P.s*0.42), 11, 14)}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.fillText('Medidores', xt, yt); ctx.restore();
+  // Puestos que se pueden usar, todos con el mismo estilo (no distingue los buenos de los malos).
+  const quien = S.drag && S.drag.movido ? S.drag.id : (S.tomado || (S.teclado && S.teclado.id));
+  if (quien) for (const pu of permitidos(quien)){ const q = PUESTO[pu].ancla, [X, Y] = T(q[0], q[1]); anillo(ctx, c, X, Y, r + 5, false); }
+  // Candidato: anillo sólido, cables en vista previa y el nombre del puesto (sin lectura).
+  const cand = S.drag && S.drag.movido ? S.drag.cand : (S.teclado ? { puesto: S.teclado.sel === 'bandeja' ? null : S.teclado.sel } : null);
+  if (cand && cand.puesto){
+    const q = PUESTO[cand.puesto].ancla, [X, Y] = T(q[0], q[1]);
+    pinzasPrevia(ctx, c, P, cand.puesto, .6); anillo(ctx, c, X, Y, r + 5, true);
+    if (S.teclado) medidor(ctx, c, X, Y, r, tipo(S.teclado.id), { fantasma:true, tomado:true });
+    pastilla(ctx, c, X, Y - r - 16 < 10 ? Y + r + 16 : Y - r - 16, PUESTO[cand.puesto].nombre + (cand.ocupado ? ' (ocupado)' : ''), c.ink, { tam:11 });
+  } else if (S.teclado && S.teclado.sel === 'bandeja'){
+    const q = BANDEJA[S.teclado.id], [X, Y] = T(q[0], q[1]); anillo(ctx, c, X, Y, r + 5, true);
+  }
+  // Fantasma de la predicción: a trazos, con «?» (o con el dato que da el enunciado).
+  if (S.fantasma){
+    const f = S.fantasma, q = PUESTO[f.puesto].ancla, [X, Y] = T(q[0], q[1]);
+    pinzasPrevia(ctx, c, P, f.puesto, .55);
+    medidor(ctx, c, X, Y, r, tipo(f.id), { fantasma:true });
+    const yP = f.puesto === 'B1-p' ? Y : Y - r - 13, xP = f.puesto === 'B1-p' ? X + r + 26 : X;
+    pastilla(ctx, c, xP, yP, f.rot || '?', f.rot ? c['c-R'] : c.muted, { tam:12, bold: !!f.rot });
+  }
+  // En la bandeja.
+  for (const id of IDS){
+    if (S.col[id] || (S.drag && S.drag.movido && S.drag.id === id) || (S.tween && S.tween.id === id)) continue;
+    if (S.fantasma && S.fantasma.id === id) continue;
+    const q = BANDEJA[id], [X, Y] = T(q[0], q[1]);
+    ctx.save(); if (!permitidos(id).length) ctx.globalAlpha = .55;
+    medidor(ctx, c, X, Y, r, tipo(id), { tomado: S.tomado === id || !!(S.teclado && S.teclado.id === id) }); ctx.restore();
+  }
+  // El que vuela a su lugar (200 ms) y el que está en el aire.
+  if (S.tween){
+    const tw = S.tween, k = clamp((performance.now() - tw.t0)/TWEEN, 0, 1), e = 1 - Math.pow(1 - k, 3);
+    medidor(ctx, c, tw.de.x + (tw.a.x - tw.de.x)*e, tw.de.y + (tw.a.y - tw.de.y)*e, r, tipo(tw.id), {});
+    if (k >= 1){ S.tween = null; esc.despertar(); }
+  }
+  if (S.drag && S.drag.movido){
+    const p = S.drag.p;
+    ctx.save(); ctx.shadowColor = 'rgba(40,20,60,.3)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
+    medidor(ctx, c, p.x, p.y, r, tipo(S.drag.id), { tomado:true }); ctx.restore();
+  }
+}
+function terminarTween(){ S.tween = null; }
+
+/* ---------- Predicciones ---------- */
+const I1 = PR.M0.correcta.lectura, I2 = PR.M1.correcta.lectura, V1 = PR.M3.errores.a.lectura;
+const A = n => fmt(n) + ' A', Vv = n => fmt(n, 2) + ' V', W = n => fmt(n) + ' W';
+const fuente = t => `<p class="fuente">${t}</p>`;
+const F_C2 = 'Cerca de 4 de cada 10 estudiantes de ingeniería de un estudio en Barcelona (44 % de 184) dijeron que la corriente se gasta al pasar por una bombilla (Periago y Bohigas, 2005).';
+const PREDS = {
+  M0: { q:`Pones un amperímetro ideal en el camino de la corriente, entre la pila y B1 (el círculo a trazos). ¿Qué pasa con B1 y qué marca el amperímetro?`,
+    opts:[['a', `B1 brilla igual y marca ${A(I1)}, porque un amperímetro ideal deja pasar la corriente sin quitarle nada`, null],
+          ['b', 'B1 brilla menos, porque el amperímetro se queda con una parte de la corriente, como otra bombilla', 'C15-amperimetro-consume', 'parcial'],
+          ['c', `B1 brilla igual y marca más de ${A(I1)}, porque mide la corriente antes de que B1 la gaste`, 'C2-corriente-se-gasta', 'parcial'],
+          ['d', 'Se apagan las tres, porque para ponerlo hay que cortar el cable', 'MED-cortar-abre', 'hipotesis']],
+    fb:{ a:`Bien. Por dentro del amperímetro pasa la misma corriente que por B1: ${A(I1)}. Un amperímetro ideal no tiene resistencia, así que no cambia nada.`,
+      b:`Un amperímetro no gasta corriente: la que entra es la que sale. Uno ideal no tiene resistencia y no cambia nada: B1 brilla igual y marca ${A(I1)}. Si consumiera como otra bombilla de 12 Ω, la corriente bajaría a ${A(PR.M0.errores.b.lectura)}. Esta idea aparece en un estudio con escolares, sin un porcentaje medido.`,
+      c:`La corriente no se gasta en B1: antes y después de B1 hay ${A(I1)}. Arrástralo al otro lado y compruébalo. Cerca de 4 de cada 10 estudiantes de ingeniería de un estudio en Barcelona dijeron que la corriente se gasta al pasar por una bombilla.`,
+      d:`Se corta el cable, pero el amperímetro cierra el camino: la corriente pasa por dentro de él y marca ${A(I1)}. Hipótesis nuestra: pensar que, al cortar el cable para ponerlo, el circuito queda abierto.` },
+    exp: () => `<p>El amperímetro quedó en el camino y marca ${w('I', A(I1))}, lo mismo que pasa por B1 sin él.</p>
+      <p class="hint">Arrástralo al otro lado de B1 o al cable de regreso: marca lo mismo, porque la corriente no se gasta.</p>
+      ${fuente('La idea de que el amperímetro gasta corriente, como una bombilla, aparece en un estudio con escolares griegos de 14 y 15 años, sin un porcentaje medido (Psillos, Koumaras y Valassiades, 1987, citado por Engelhardt y Beichner, 2004). ' + F_C2)}` },
+  M1: { q:'Quieres medir la corriente que pasa por B2. ¿Dónde conectas el amperímetro ideal?',
+    opts:[['a', 'En serie con B2, para que la corriente de B2 pase por dentro del amperímetro', null],
+          ['b', 'En paralelo con B2, con una punta a cada lado, porque así se mide lo que pasa en B2', 'C15v-amperimetro-en-paralelo', 'hipotesis'],
+          ['c', 'En el cable de regreso a la pila, porque por ahí vuelve toda la corriente', 'MED-linea-principal', 'hipotesis'],
+          ['d', 'Antes de B1, porque ahí la corriente todavía no se gastó', 'C2-corriente-se-gasta', 'parcial']],
+    fb:{ a:`Bien: marca ${A(I2)} y el circuito no cambia.`,
+      b:`Mira lo que pasó: sin resistencia, el amperímetro se volvió un atajo. B2 y B3 se apagan, B1 brilla más y marca ${A(PR.M1.errores.b.lectura)}, que no es la corriente de B2. Hipótesis nuestra: conectarlo como si fuera un voltímetro.`,
+      c:`Marca ${A(PR.M1.errores.c.lectura)}: es toda la corriente de la pila. En el nudo se divide entre B2 y B3, y por B2 pasa la mitad, ${A(I2)}. Hipótesis nuestra: medir en la línea principal lo que pasa por una rama.`,
+      d:`Antes de B1 marca ${A(PR.M1.errores.d.lectura)}, igual que después: la corriente no se gasta, y ese valor es el total. Por B2 pasa la mitad, ${A(I2)}. ${F_C2.replace(/ \(Periago.*$/, '.')}` },
+    exp: k => `<p>Pusimos el amperímetro donde elegiste: ${PUESTO[DONDE_M1[k]].nombre}.</p>
+      ${k === 'a' ? '' : '<div class="nav"><button type="button" class="btn chico" id="aB2">Ponerlo en serie con B2</button></div>'}
+      ${fuente('No encontramos estudios que midan cuántos estudiantes conectan el amperímetro en paralelo o en la línea principal: por eso esas opciones son hipótesis nuestras. Sobre la d: ' + F_C2)}`,
+    extras: () => { const b = $('aB2'); if (b) b.onclick = () => colocar('A', 'B2-a'); } },
+  M2: { q:'El amperímetro ideal queda con una punta a cada lado de B1, en paralelo con ella (a trazos). ¿Qué pasa?',
+    opts:[['a', `Todo sigue igual y marca ${A(I1)}, porque mide la corriente de la bombilla que tiene al lado`, 'MED-mide-lo-de-al-lado', 'hipotesis'],
+          ['b', 'Todo sigue igual y marca casi 0 A, porque la corriente prefiere seguir por B1', 'MED-amperimetro-como-voltimetro', 'hipotesis'],
+          ['c', `B1 se apaga, B2 y B3 brillan más y marca ${A(PR.M2.correcta.lectura)}, porque la corriente se va por el amperímetro`, null],
+          ['d', 'Se apagan las tres y marca 0 A, porque un corto apaga todo el circuito', 'C12-corto-apaga-todo', 'hipotesis']],
+    fb:{ c:`Bien. Sin resistencia, el amperímetro es un atajo: B1 queda en corto, con 0 V. Ahora solo B2 y B3 frenan la corriente (6 Ω): la pila da ${A(PR.M2.correcta.pila)}, y B2 y B3 tienen los 6 V completos; cada una pasa de ${W(PR.M2.errores.a.P2)} a ${W(PR.M2.correcta.P2)}.`,
+      a:`Mira el dibujo: no siguió todo igual. Sin resistencia, el amperímetro es un atajo: B1 quedó en corto y se apagó, B2 y B3 brillan más, y marca ${A(PR.M2.correcta.lectura)}, no ${A(I1)}. Un amperímetro mide lo que pasa por dentro de él. Hipótesis nuestra: pensar que mide la bombilla que tiene al lado.`,
+      b:`Al revés: la corriente prefiere el camino sin resistencia. Pasa toda por el amperímetro (${A(PR.M2.correcta.lectura)}) y nada por B1, que se apaga. Hipótesis nuestra: tratarlo como un voltímetro, que no deja pasar corriente.`,
+      d:`No se apagan todas: el amperímetro no corta nada, es como un cable. B1 queda en corto y se apaga, pero B2 y B3 siguen en el circuito y brillan más; marca ${A(PR.M2.correcta.lectura)}. Hipótesis nuestra: pensar que un corto apaga todo.` },
+    exp: () => `<p>Un amperímetro en paralelo no mide lo que pasa por la bombilla: la deja sin corriente y cambia todo el circuito.</p>
+      <div class="nav"><button type="button" class="btn chico" id="aPila">¿Y en paralelo con la pila?</button></div><div id="extra3"></div>
+      ${fuente('No encontramos estudios que midan cuántos estudiantes creen que un amperímetro en paralelo no cambia nada: las opciones incorrectas de esta pregunta son hipótesis nuestras.')}`,
+    extras: () => { const b = $('aPila'); if (b) b.onclick = () => { colocar('A', 'pila-p');
+      $('extra3').innerHTML = `<p class="aviso">¡Cortocircuito! Con una pila ideal, la corriente no tendría límite. Un amperímetro real tiene un fusible que se quema, y la pila se calienta.</p>
+        ${fuente('Cerca de 1 de cada 6 alumnos de secundaria y universidad de Estados Unidos (17 % de 1135) no identificó un cortocircuito o su efecto (Engelhardt y Beichner, 2004). Es un dato vecino: no se midió con un amperímetro.')}`; }; } },
+  M3: { q:'Ahora pones el voltímetro ideal en el camino de la corriente, entre la pila y B1, en serie con todo (a trazos). ¿Qué pasa?',
+    opts:[['a', `Todo sigue igual y marca ${Vv(V1)}, porque mide el voltaje de la bombilla que tiene al lado`, 'MED-mide-lo-de-al-lado', 'hipotesis'],
+          ['b', 'Todo sigue igual y marca 0 V, porque la corriente pasa por el voltímetro como por un cable', 'C15v-voltimetro-deja-pasar', 'hipotesis'],
+          ['c', 'Se apagan las tres y marca 0 V, porque sin corriente no hay voltaje', 'C7-sin-corriente-sin-voltaje', 'parcial'],
+          ['d', `Se apagan las tres y marca ${Vv(PR.M3.correcta.lectura)}, porque el voltímetro no deja pasar corriente y sus puntas quedan a los dos lados de la pila`, null]],
+    fb:{ d:`Bien. Sin corriente, ninguna bombilla baja el potencial: una punta queda a 6 V y la otra a 0 V. Con un voltímetro real pasa una corriente pequeñísima y marca casi 6 V: lo puedes probar en el paso 8 con uno de 60 000 Ω.`,
+      c:'No pasa corriente, es cierto, pero sí hay voltaje: la pila sigue teniendo sus 6 V, y el voltímetro queda entre sus dos lados. En un test con más de 1000 alumnos, más de la mitad dijo que entre dos puntos de un tramo sin corriente hay 0 V.',
+      a:`No sigue todo igual: el voltímetro ideal no deja pasar corriente, así que, puesto en el camino, abre el circuito y se apagan las tres. Marca ${Vv(PR.M3.correcta.lectura)}, el voltaje de la pila, no los ${Vv(V1)} de B1. Hipótesis nuestra: pensar que mide la bombilla que tiene al lado.`,
+      b:`Un voltímetro ideal no deja pasar corriente: no es un cable. En el camino abre el circuito: se apagan las tres y marca ${Vv(PR.M3.correcta.lectura)}. Hipótesis nuestra: creer que el voltímetro deja pasar la corriente.` },
+    exp: () => `<p class="hint">Pásalo en serie con B2: B1 y B3 siguen encendidas y marca ${w('V', Vv(PR.M3.enB2))}. Marca el voltaje del hueco que deja, no siempre la fem.</p>
+      <div class="nav"><button type="button" class="btn chico" id="vB2">Ponerlo en serie con B2</button></div>
+      ${fuente('En el test DIRECT, con 1135 alumnos de secundaria y universidad de Estados Unidos, el 56 % dijo que entre dos puntos de un tramo sin corriente hay 0 V (Engelhardt y Beichner, 2004). La pregunta no era con un voltímetro en serie: lo contamos como un dato vecino.')}`,
+    extras: () => { const b = $('vB2'); if (b) b.onclick = () => colocar('V', 'B2-a'); } },
+  M4: { q:`Un voltímetro real tiene resistencia interna. Conectas uno de ${w('R','60 Ω')} en paralelo con B1 (${w('R','12 Ω')}), donde el voltímetro ideal marcaba ${w('V', Vv(V1))}. ¿Qué marca este?`,
+    opts:[['a', `${Vv(V1)}, porque un voltímetro solo mira y no cambia el circuito`, 'MED-no-perturba', 'hipotesis'],
+          ['b', `Menos de ${Vv(V1)}, porque deja pasar algo de corriente y baja la resistencia de ese tramo`, null],
+          ['c', `Más de ${Vv(V1)}, porque su resistencia se suma a la de B1`, 'DIRECT-paralelo-como-serie', 'parcial'],
+          ['d', `${Vv(PR.M4.errores.d.lectura)}, porque B1 y el voltímetro se reparten el voltaje en partes iguales`, 'C11v-reparto-mitades', 'hipotesis']],
+    fb:{ b:`Bien: marca ${Vv(PR.M4.correcta.lectura)}. B1 y el voltímetro forman un tramo de ${fmt(PR.M4.correcta.Rtramo)} Ω: la resistencia total baja de 18 a ${fmt(6/PR.M4.correcta.pila)} Ω, la pila da ${A(PR.M4.correcta.pila)} y a ese tramo le toca menos voltaje. Un voltímetro es mejor cuanto más resistencia tiene: con 60 000 Ω marcaría ${fmt(PR.M4.tablaRV[3].lectura, 4)} V.`,
+      a:`Marcaría ${Vv(V1)} solo si no dejara pasar corriente. Este deja pasar un poco (${A(PR.M4.correcta.I)}) y baja la resistencia del tramo: marca ${Vv(PR.M4.correcta.lectura)}. Un voltímetro real sí cambia algo el circuito. Hipótesis nuestra: pensar que medir no cambia nada.`,
+      c:`Si su resistencia se sumara a la de B1 (12 + 60 = 72 Ω), marcaría unos ${Vv(PR.M4.errores.c.lectura)}. Pero está en paralelo: el tramo queda con 12 · 60 / (12 + 60) = ${fmt(PR.M4.correcta.Rtramo)} Ω, menos que B1 sola, y marca ${Vv(PR.M4.correcta.lectura)}. Sumar en paralelo como si fuera en serie aparece en entrevistas del test DIRECT, sin un porcentaje medido.`,
+      d:`B1 y el voltímetro están en paralelo: tienen el mismo voltaje, no se lo reparten. Marca ${Vv(PR.M4.correcta.lectura)}, lo mismo que tiene B1. Hipótesis nuestra: repartir el voltaje por mitades, como si estuvieran en serie.` },
+    exp: () => `<div class="slider"><label for="rv3"><span>${w('R','Rᵥ')}, resistencia interna del voltímetro</span><output id="rv3-out"></output></label>
+        <input id="rv3" class="r-R" type="range" min="0" max="${RVS.length - 1}" step="1" value="${S.iRV7}"></div>
+      <div class="tabla-wrap"><table class="tabla"><thead><tr><th>Voltímetro</th><th>Marca</th><th>Diferencia con 4 V</th></tr></thead><tbody>
+        ${PR.M4.tablaRV.map(x => `<tr><td>${x.Rint === Infinity ? 'ideal' : w('R', fmt(x.Rint, 0) + ' Ω')}</td><td>${w('V', fmt(x.lectura, 4) + ' V')}</td><td>${fmt((x.lectura/V1 - 1)*100, 3)} %</td></tr>`).join('')}
+      </tbody></table></div>
+      <p class="hint">Cuanta más resistencia interna, menos corriente se desvía por el voltímetro y más se acerca a lo que había sin él.</p>
+      ${fuente('Sumar resistencias en paralelo como si estuvieran en serie aparece en las entrevistas del test DIRECT, sin un porcentaje medido (Engelhardt y Beichner, 2004).')}`,
+    extras: () => { const rv = $('rv3'); if (!rv) return; const out = () => { $('rv3-out').textContent = RVS[S.iRV7] === Infinity ? 'ideal' : `${fmt(RVS[S.iRV7], 0)} Ω`; };
+      rv.oninput = () => { S.iRV7 = +rv.value; out(); pintar(); if (S.col.V) desc(describir('V')); }; out(); } },
+};
+
+/* ---------- Pasos ---------- */
+const s0 = M.resolver(M.mixto(OP));
+const fila0 = (n, id, conV) => `<tr><td>${n}</td><td>${w('I', A(s0.ramas[id].I))}</td><td>${conV ? w('V', Vv(s0.ramas[id].V)) : '—'}</td></tr>`;
+function tablaConexiones(){
+  const casos = [['Amperímetro en serie con B2', { A:{ puesto:'B2-a' } }, 'A'], ['Amperímetro en paralelo con B1', { A:{ puesto:'B1-p' } }, 'A'],
+    ['Voltímetro en paralelo con B1', { V:{ puesto:'B1-p' } }, 'V'], ['Voltímetro en serie con todo', { V:{ puesto:'B1-a' } }, 'V']];
+  return `<div class="tabla-wrap"><table class="tabla"><thead><tr><th>Conexión</th><th>Marca</th><th>Qué le pasa al circuito</th></tr></thead><tbody>
+    ${casos.map(([n, col, id]) => { const ef = M.medidoresMixto(col, OP).efecto[id]; return `<tr><td>${n}</td><td>${w(VAR[id], lectura(id, ef))}</td><td>${ef.diagnostico === 'bien' ? 'nada' : queHizo(ef)}</td></tr>`; }).join('')}
+  </tbody></table></div>`;
+}
+function vivo8(){
+  const live = $('live3'); if (!live) return;
+  const celdas = IDS.map(id => {
+    const pu = S.col[id], ef = S.r.efecto[id];
+    if (!pu || !ef) return { donde:'en la bandeja', marca:'—', sin:'—', dif:'—', que:'—' };
+    const ideal = ef.magnitud === 'I' ? ef.sinMedidor.I : ef.sinMedidor.V;
+    // Mal conectado no mide nada de ese lugar: no hay con qué comparar (una «diferencia» reforzaría el error).
+    const mal = (ef.diagnostico !== 'bien' && ef.diagnostico !== 'carga') || !(typeof ideal === 'number' && Number.isFinite(ideal)), nada = '— (mal conectado: no mide nada de ese lugar)';
+    return { donde: PUESTO[pu].nombre, marca: w(VAR[id], lectura(id, ef, 4)),
+      sin: mal ? nada : typeof ideal === 'number' && Number.isFinite(ideal) ? w(VAR[id], fmt(ideal, 4) + UNI[id]) : '—',
+      dif: mal ? nada : Number.isFinite(ef.errorRel) ? fmt(ef.errorRel*100, Math.abs(ef.errorRel) < 0.01 ? 3 : 1) + ' %' : '—', que: queHizo(ef) };
+  });
+  const fila = (n, k) => `<tr><td>${n}</td><td>${celdas[0][k]}</td><td>${celdas[1][k]}</td></tr>`;
+  const dos = IDS.every(id => S.col[id]);
+  live.innerHTML = `<div class="tabla-wrap"><table class="tabla"><thead><tr><th></th><th>Amperímetro</th><th>Voltímetro</th></tr></thead><tbody>
+    ${fila('Dónde', 'donde')}${fila('Marca', 'marca')}${fila(dos ? 'Sin este medidor (con el otro puesto)' : 'Sin el medidor', 'sin')}${fila('Diferencia', 'dif')}${fila('Qué hizo', 'que')}</tbody></table></div>`;
+}
+function conectar8(){
+  const t = $('reales3'), ctr = $('ctr3'), ra = $('ra3'), rv = $('rv8');
+  const sync = () => {
+    t.setAttribute('aria-pressed', String(S.reales)); ctr.hidden = !S.reales;
+    $('ra3-out').textContent = RAS[S.iRA] === 0 ? '0 Ω (ideal)' : `${fmt(RAS[S.iRA], 1)} Ω`;
+    $('rv8-out').textContent = RVS[S.iRV8] === Infinity ? 'ideal' : `${fmt(RVS[S.iRV8], 0)} Ω`;
+  };
+  const cambio = () => { sync(); pintar(); const ult = IDS.filter(id => S.col[id]).map(describir).join(' '); if (ult) desc(ult); };
+  t.onclick = () => { S.reales = !S.reales; cambio(); };
+  ra.oninput = () => { S.iRA = +ra.value; cambio(); };
+  rv.oninput = () => { S.iRV8 = +rv.value; cambio(); };
+  sync();
+}
+
+const steps = [
+  { k:'Paso 1', t:'Dos medidores', est:{ col:{} }, perm:{},
+    body:() => `<p class="problem">El circuito del paso a paso: una pila ideal de ${w('V','ε = 6 V')}; la bombilla B1 en serie con B2 y B3, que están en paralelo; las tres de ${w('R','R = 12 Ω')}.</p>
+      <p>Debajo del circuito hay dos medidores. El <b>amperímetro</b> (Ⓐ) mide ${w('I','corriente')}, en amperios. El <b>voltímetro</b> (Ⓥ) mide ${w('V','voltaje')}, en voltios. Hasta el paso 7 los dos son <b>ideales</b>.</p>
+      <div class="tabla-wrap"><table class="tabla"><thead><tr><th>Sin medidores</th><th>I</th><th>V</th></tr></thead><tbody>
+        ${fila0('Pila', 'pila', false)}${fila0('B1', 'B1', true)}${fila0('B2', 'B2', true)}${fila0('B3', 'B3', true)}</tbody></table></div>
+      <p class="hint">Son los valores que calculaste en el paso a paso. Ahora vas a ver qué marca cada medidor según dónde lo conectes, y qué le hace al circuito.</p>` },
+  { k:'Paso 2', t:'Predice: el amperímetro en el camino', gate:'M0', antes:{ col:{}, fantasma:{ id:'A', puesto:'B1-a' } }, despues:{ col:{ A:'B1-a' } }, perm:{ A:['B1-a', 'B1-b', 'ret'] } },
+  { k:'Paso 3', t:'Predice: ¿dónde va para medir B2?', gate:'M1', antes:{ col:{} }, despues:() => ({ col:{ A: DONDE_M1[S.pred.M1] } }),
+    perm:() => ({ A: SERIE.concat(S.pred.M1 === 'b' ? ['G-p'] : []) }) },
+  { k:'Paso 4', t:'Predice: una punta a cada lado', gate:'M2', antes:{ col:{}, fantasma:{ id:'A', puesto:'B1-p' } }, despues:{ col:{ A:'B1-p' } }, perm:{ A:TODOS } },
+  { k:'Paso 5', t:'Predice: el voltímetro en el camino', gate:'M3', antes:{ col:{}, fantasma:{ id:'V', puesto:'B1-a' } }, despues:{ col:{ V:'B1-a' } }, perm:{ A:TODOS, V:TODOS } },
+  { k:'Paso 6', t:'Cómo se conectan', est:{ col:{ A:'B2-a', V:'G-p' } }, perm:{ A:TODOS, V:TODOS },
+    body:() => `<p>El amperímetro ideal no tiene resistencia: va <b>en serie</b>, para que la corriente que quieres medir pase por dentro de él. El voltímetro ideal no deja pasar corriente: va <b>en paralelo</b>, con una punta a cada lado de lo que quieres medir.</p>
+      ${tablaConexiones()}
+      <p class="aviso">Un buen medidor es el que no se nota: bien conectado, el circuito queda igual que sin él.</p>
+      <p class="hint">En el dibujo, el amperímetro mide B2 y el voltímetro mide B2 y B3 a la vez (están en paralelo). Muévelos y compruébalo.</p>` },
+  { k:'Paso 7', t:'Predice: un voltímetro real', gate:'M4', rint:7, antes:{ col:{}, fantasma:{ id:'V', puesto:'B1-p', rot:'60 Ω' } }, despues:{ col:{ V:'B1-p' } }, perm:{ A:TODOS, V:TODOS } },
+  { k:'Paso 8', t:'Explora: ideales y reales', rint:8, est:{ col:{ A:'B1-a', V:'B1-p' } }, perm:{ A:TODOS, V:TODOS }, vivo: vivo8,
+    body:() => `<div class="toggles"><button type="button" class="tog" id="reales3" aria-pressed="${S.reales}"><span class="sw" aria-hidden="true"></span>Medidores reales</button></div>
+      <div class="ctrls" id="ctr3" ${S.reales ? '' : 'hidden'}>
+        <div class="slider"><label for="ra3"><span>${w('R','rₐ')} del amperímetro</span><output id="ra3-out"></output></label>
+          <input id="ra3" class="r-R" type="range" min="0" max="${RAS.length - 1}" step="1" value="${S.iRA}"></div>
+        <div class="slider"><label for="rv8"><span>${w('R','Rᵥ')} del voltímetro</span><output id="rv8-out"></output></label>
+          <input id="rv8" class="r-R" type="range" min="0" max="${RVS.length - 1}" step="1" value="${S.iRV8}"></div>
+      </div>
+      <div id="live3"></div>
+      <p class="hint">Arrastra los medidores a cualquier lugar del circuito. Con medidores reales, un amperímetro de más resistencia y un voltímetro de menos resistencia se notan más.</p>`,
+    conectar: conectar8 },
+];
+// Paso con predicción: enunciado, opciones y lugar para la retroalimentación.
+for (const s of steps) if (s.gate){
+  const P = PREDS[s.gate];
+  s.body = () => `<p>${P.q}</p><div class="opts">${P.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
+    <p class="fb" id="fb3"></p><div id="res3" class="body"></div>`;
+}
+
+const dots = $('dots3');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1;
+  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function nav(){
+  const bloqueado = pendiente();
+  $('prev3').disabled = S.step === 0;
+  $('next3').disabled = S.step === steps.length - 1 || bloqueado;
+  $('next3').textContent = bloqueado ? 'Elige una opción' : 'Siguiente';
+}
+function estadoDe(s){ return s.gate ? (S.pred[s.gate] ? val(s.despues) : val(s.antes)) : val(s.est); }
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  terminarTween(); S.drag = null; S.tomado = null; S.teclado = null;
+  S.step = n; const s = steps[n], e = estadoDe(s);
+  S.col = Object.assign({ A:null, V:null }, e.col); S.fantasma = pendiente() ? (e.fantasma || null) : null;
+  $('stepK3').textContent = `${s.k} de ${steps.length}`;
+  $('stepT3').textContent = s.t;
+  $('stepBody3').innerHTML = s.body();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  pintar();
+  if (s.conectar) s.conectar();
+  if (s.vivo) s.vivo();
+  nav();
+  esc.compactar(pendiente());
+  desc(estadoBase());
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const g = s.gate, P = PREDS[g], ok = PR[g].ok, btns = [...$('stepBody3').querySelectorAll('.opt')];
+  const marcar = () => {
+    const p = S.pred[g]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb3'); fb.textContent = P.fb[p] + (p === ok ? '' : ' La correcta está marcada.'); fb.className = 'fb ' + (p === ok ? 'ok' : 'mal');
+    $('res3').innerHTML = P.exp(p);
+    if (P.extras) P.extras();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[g]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[g] = o[0]; desbloquear(S.step + 1);
+    registrarPrediccion(PR[g].problema, o[0], o[0] === ok, o[2] || '', o[3] || '', t0);
+    marcar(); pintarDots(); nav(); botones();
+    const fb = $('fb3'); fb.tabIndex = -1; fb.focus({ preventScroll:true });
+    esc.compactar(false);
+    // En el celular, el lienzo sube a la vista y el medidor se conecta ~380 ms después (nucleo/celular.js).
+    const paso = S.step;
+    const aplicar = () => {
+      if (S.step !== paso) return;
+      const e = val(s.despues), de = {};
+      // El medidor sale de donde estaba a trazos (o de la bandeja) y se asienta en su puesto.
+      for (const id of IDS){
+        if (S.fantasma && S.fantasma.id === id && esc.pr){ const q = PUESTO[S.fantasma.puesto].ancla, [X, Y] = esc.pr[0].T(q[0], q[1]); de[id] = { x:X, y:Y }; }
+        else de[id] = centro(id);
+      }
+      S.fantasma = null;
+      const cambia = IDS.filter(id => (e.col[id] || null) !== S.col[id]);
+      if (!cambia.length){ pintar(); desc(estadoBase()); return; }
+      cambia.forEach(id => colocar(id, e.col[id] || null, de[id]));
+    };
+    Celular.alResponder(cv, aplicar, () => S.step === paso && !$('m3').hidden, { siNo: aplicar });
+  }));
+  marcar();
+}
+// Al avanzar o retroceder, el foco va al título del paso nuevo.
+$('next3').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); $('stepT3').focus({ preventScroll:true }); });
+$('prev3').addEventListener('click', () => { go(S.step - 1); $('stepT3').focus({ preventScroll:true }); });
+// Si se cambia de pestaña a mitad de un arrastre o de una animación, se termina: nada queda trabado.
+addEventListener('modo', () => { if ($('m3').hidden){ if (S.drag && S.drag.movido){ S.col[S.drag.id] = S.drag.origen; } S.drag = null; S.teclado = null; S.tomado = null; terminarTween(); botones(); } });
+go(0);
+})();
+</script>
+
+<script>
 /* ================= Pestañas ================= */
 (function(){
-  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2'], ['#medir', 'm3', 'tab3']];
   function route(){
     const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
     modos.forEach(([, m, t], j) => {

@@ -35,7 +35,7 @@
       "universidades": {"uni": {"semanas": [2, 3]}, "unmsm": {"temas": [1]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["numeros-reales"],
       "investigacion": null
     },
     {
