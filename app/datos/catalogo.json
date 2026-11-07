@@ -517,7 +517,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "induccion"
+     ]
     },
     {
      "id": "fisica.ondas-electromagneticas",
@@ -4818,6 +4820,23 @@
     "/plantillas/identidades-trig/index.html",
     "/plantillas/identidades-trig/motor.js",
     "/plantillas/identidades-trig/papel.json"
+   ]
+  },
+  "induccion": {
+   "id": "induccion",
+   "titulo": "El imán, la espira y el foquito: inducción electromagnética",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.induccion-electromagnetica"
+   ],
+   "url": "/plantillas/induccion/index.html",
+   "papel": "/plantillas/induccion/papel.json",
+   "archivos": [
+    "/plantillas/induccion/index.html",
+    "/plantillas/induccion/motor.js",
+    "/plantillas/induccion/papel.json"
    ]
   },
   "interes": {
