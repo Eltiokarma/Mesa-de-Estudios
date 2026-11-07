@@ -1,0 +1,132 @@
+{
+  "titulo": "Cargas que se empujan: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa k = 9 × 10⁹ N·m²/C² y pasa siempre los µC a C (1 µC = 10⁻⁶ C). Dos cargas se empujan (o se atraen) con la misma fuerza, sea cual sea la mayor. La fuerza baja con el cuadrado de la distancia. Las fuerzas y los campos son flechas: se suman por componentes, cada una con su sentido. El potencial es un número con signo: se suma sin mirar direcciones. El trabajo del campo al llevar q de A a B es q(V_A − V_B). En serie, los condensadores tienen la misma carga; en paralelo, el mismo voltaje. Usa sen 37° = 3/5 y cos 37° = 4/5.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos cargas de +3 µC y +4 µC están a 20 cm una de la otra. ¿Cuánto vale la fuerza sobre cada una? ¿Cuál recibe más?",
+      "respuesta": "2,7 N sobre cada una; las dos reciben la misma fuerza, en sentidos opuestos.",
+      "pasos": [
+        "F = k · q1 · q2 / r² = 9 × 10⁹ · (3 × 10⁻⁶) · (4 × 10⁻⁶) / (0,2)².",
+        "F = 9 × 10⁹ · 12 × 10⁻¹² / 0,04 = 0,108 / 0,04 = 2,7 N.",
+        "La fórmula usa el producto de las dos cargas: es la misma para las dos. Cada una empuja a la otra con 2,7 N (tercera ley de Newton)."
+      ],
+      "verificar": [ { "fn": "coulomb", "args": [3, 4, 0.2], "espera": { "F": 2.7, "sobre1": 2.7, "sobre2": 2.7, "tipo": "repulsion" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Dos cargas puntuales se repelen con 18 N cuando están a 10 cm. Si se separan hasta 30 cm, ¿con qué fuerza se repelen?",
+      "respuesta": "2 N.",
+      "pasos": [
+        "La distancia se multiplica por 3. Como F depende de 1/r², la fuerza se divide entre 3² = 9.",
+        "F = 18 / 9 = 2 N.",
+        "No es 6 N: eso sería dividir entre 3, como si la fuerza dependiera de 1/r."
+      ],
+      "verificar": [ { "fn": "cambioDistancia", "args": [5, 4, 0.1, 3], "espera": { "F0": 18, "F1": 2, "errores.lineal": 6 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Sobre una recta hay tres cargas: +2 µC en x = 0, +1 µC en x = 30 cm y −4 µC en x = 60 cm. Halla la fuerza neta sobre la carga del medio.",
+      "respuesta": "0,6 N hacia la derecha (hacia la carga negativa).",
+      "pasos": [
+        "La de +2 µC la empuja hacia la derecha: F1 = 9 × 10⁹ · 2 × 10⁻⁶ · 1 × 10⁻⁶ / (0,3)² = 0,2 N.",
+        "La de −4 µC la atrae, también hacia la derecha: F2 = 9 × 10⁹ · 4 × 10⁻⁶ · 1 × 10⁻⁶ / (0,3)² = 0,4 N.",
+        "Las dos apuntan hacia el mismo lado, así que se suman: 0,2 + 0,4 = 0,6 N hacia la derecha. Dibuja siempre el sentido antes de sumar o restar."
+      ],
+      "verificar": [ { "fn": "fuerzaSobre", "args": [[{ "q": 2, "x": 0, "y": 0 }, { "q": 1, "x": 0.3, "y": 0 }, { "q": -4, "x": 0.6, "y": 0 }], 1], "espera": { "x": 0.6, "y": 0, "modulo": 0.6 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En el punto P hay un ángulo recto: una carga de +4 µC está a 30 cm a la izquierda de P y otra de +3 µC está a 30 cm debajo de P. Halla el campo eléctrico en P.",
+      "respuesta": "5 × 10⁵ N/C, a 37° sobre la horizontal, hacia arriba y a la derecha.",
+      "pasos": [
+        "Campo de la de +4 µC: E1 = 9 × 10⁹ · 4 × 10⁻⁶ / 0,09 = 4 × 10⁵ N/C, alejándose de ella: hacia la derecha.",
+        "Campo de la de +3 µC: E2 = 9 × 10⁹ · 3 × 10⁻⁶ / 0,09 = 3 × 10⁵ N/C, hacia arriba.",
+        "Son perpendiculares: E = √((4 × 10⁵)² + (3 × 10⁵)²) = 5 × 10⁵ N/C. El ángulo con la horizontal cumple tan α = 3/4: α = 37°.",
+        "No es 7 × 10⁵ N/C: los campos son flechas y no se suman como números."
+      ],
+      "verificar": [ { "fn": "campo", "args": [[{ "q": 4, "x": -0.3, "y": 0 }, { "q": 3, "x": 0, "y": -0.3 }], { "x": 0, "y": 0 }], "espera": { "x": 400000, "y": 300000, "modulo": 500000, "angulo": 36.86989764584402, "errores.sumaModulos": 700000 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Dos cargas de +1 µC y +4 µC están separadas 90 cm. ¿A qué distancia de la carga de +1 µC el campo eléctrico es cero? ¿Cuánto vale el potencial en ese punto?",
+      "respuesta": "A 30 cm de la de +1 µC, entre las dos. Ahí el potencial vale 9 × 10⁴ V: no es cero.",
+      "pasos": [
+        "Entre dos cargas positivas los campos apuntan en sentidos opuestos: se pueden anular entre ellas.",
+        "k · 1 / x² = k · 4 / (0,9 − x)² → (0,9 − x)² = 4x² → 0,9 − x = 2x → x = 0,3 m.",
+        "El potencial es un número con signo, y las dos cargas son positivas: V = 9 × 10⁹ · (1 × 10⁻⁶ / 0,3 + 4 × 10⁻⁶ / 0,6) = 3 × 10⁴ + 6 × 10⁴ = 9 × 10⁴ V.",
+        "Que el campo sea cero no obliga a que el potencial sea cero."
+      ],
+      "verificar": [ { "fn": "campoYPotencial", "args": [[{ "q": 1, "x": 0, "y": 0 }, { "q": 4, "x": 0.9, "y": 0 }], { "x": 0.3, "y": 0 }], "espera": { "E.modulo": 0, "V": 90000, "Ecero": true, "Vcero": false } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una carga fija de +6 µC crea un campo. Una carga de −2 µC se lleva desde A, a 20 cm de la fija, hasta B, a 60 cm. ¿Cuánto trabajo hace el campo? ¿Y la persona que la lleva despacio?",
+      "respuesta": "El campo hace −0,36 J; la persona hace +0,36 J.",
+      "pasos": [
+        "V_A = 9 × 10⁹ · 6 × 10⁻⁶ / 0,2 = 2,7 × 10⁵ V y V_B = 9 × 10⁹ · 6 × 10⁻⁶ / 0,6 = 9 × 10⁴ V.",
+        "Trabajo del campo: W = q(V_A − V_B) = (−2 × 10⁻⁶) · (2,7 × 10⁵ − 9 × 10⁴) = (−2 × 10⁻⁶) · (1,8 × 10⁵) = −0,36 J.",
+        "Es negativo porque la carga negativa es atraída por la fija y la estamos alejando: el campo se opone. La persona hace el trabajo contrario, +0,36 J."
+      ],
+      "verificar": [ { "fn": "trabajo", "args": [[{ "q": 6, "x": 0, "y": 0 }], { "x": 0.2, "y": 0 }, { "x": 0.6, "y": 0 }, -2], "espera": { "VA": 270000, "VB": 90000, "Wcampo": -0.36, "Wagente": 0.36 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Dos esferitas de 30 g cada una, con +2 µC cada una, cuelgan de hilos atados al mismo punto y quedan en equilibrio separadas 30 cm. ¿Qué ángulo forma cada hilo con la vertical? (g = 10 m/s²)",
+      "respuesta": "53° cada uno.",
+      "pasos": [
+        "Fuerza eléctrica: F = 9 × 10⁹ · (2 × 10⁻⁶)² / (0,3)² = 0,036 / 0,09 = 0,4 N. Peso: mg = 0,03 · 10 = 0,3 N.",
+        "En cada esferita, la tensión equilibra a F (horizontal) y al peso (vertical): tan θ = F / (mg) = 0,4 / 0,3 = 4/3.",
+        "θ = 53°. Si una tuviera el doble de carga, el ángulo seguiría siendo el mismo para las dos: la fuerza es la misma sobre cada una."
+      ],
+      "verificar": [ { "fn": "esferas", "args": [2, 2, 0.3, 0.03, 0.03], "espera": { "F": 0.4, "tan1": 1.3333333333333333, "theta1": 53.13010235415598, "mismoAngulo": true } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Una partícula de 4 × 10⁻⁶ kg con +2 µC entra horizontal, a 50 m/s, entre dos placas de 10 cm de largo donde el campo es de 2000 N/C, perpendicular a las placas. Sin contar la gravedad, ¿cuánto se desvía al salir?",
+      "respuesta": "2 mm, hacia la placa negativa.",
+      "pasos": [
+        "Fuerza: F = qE = 2 × 10⁻⁶ · 2000 = 4 × 10⁻³ N. Aceleración: a = F / m = 4 × 10⁻³ / 4 × 10⁻⁶ = 1000 m/s².",
+        "Tiempo entre las placas: t = L / v = 0,1 / 50 = 0,002 s. Horizontalmente no hay fuerza: la rapidez de 50 m/s no cambia.",
+        "Desvío: y = a·t² / 2 = 1000 · (0,002)² / 2 = 0,002 m = 2 mm. Es positiva, así que va con el campo, hacia la placa negativa."
+      ],
+      "verificar": [ { "fn": "campoUniforme", "args": [{ "E": 2000, "q": 2, "m": 4e-6, "v0": 50, "L": 0.1 }], "espera": { "F": 0.004, "a": 1000, "t": 0.002, "desvio": 0.002, "hacia": "negativa" } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Dos condensadores de 2 µF y 3 µF están en paralelo, y ese grupo está en serie con uno de 5 µF. Todo se conecta a 20 V. Halla la capacidad equivalente, la carga del de 5 µF y la del de 3 µF.",
+      "respuesta": "Ceq = 2,5 µF; el de 5 µF tiene 50 µC y el de 3 µF, 30 µC.",
+      "pasos": [
+        "El paralelo se suma: 2 + 3 = 5 µF.",
+        "Ese 5 µF en serie con el de 5 µF: 1/Ceq = 1/5 + 1/5, así que Ceq = 2,5 µF. En serie no se suman.",
+        "Carga total: Q = Ceq · V = 2,5 · 20 = 50 µC. En serie la carga es la misma: el de 5 µF tiene 50 µC, y el grupo en paralelo también.",
+        "Voltaje del grupo: 50 / 5 = 10 V. El de 3 µF tiene Q = 3 · 10 = 30 µC (y el de 2 µF, 20 µC: suman 50)."
+      ],
+      "verificar": [
+        { "fn": "paralelo", "args": [[2, 3], 10], "espera": { "Ceq": 5, "cargas": [20, 30], "Q": 50 } },
+        { "fn": "serie", "args": [[5, 5], 20], "espera": { "Ceq": 2.5, "Q": 50, "voltajes": [10, 10], "U": 500 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Una esfera conductora de 2 cm de radio tiene +10 µC y otra de 3 cm tiene −4 µC. Se tocan y se separan. ¿Con cuánta carga queda cada una?",
+      "respuesta": "La de 2 cm con +2,4 µC y la de 3 cm con +3,6 µC.",
+      "pasos": [
+        "La carga total se conserva: 10 + (−4) = +6 µC.",
+        "Al tocarse, la carga pasa hasta que las dos tienen el mismo potencial: kQ1/R1 = kQ2/R2. La carga se reparte en proporción a los radios, 2 : 3.",
+        "Q1 = 6 · 2/5 = 2,4 µC y Q2 = 6 · 3/5 = 3,6 µC. No quedan 3 y 3: la esfera más grande se queda con más carga."
+      ],
+      "verificar": [ { "fn": "contacto", "args": [10, 0.02, -4, 0.03], "espera": { "total": 6, "Q1f": 2.4, "Q2f": 3.6, "errores.mitades": 3 } } ]
+    }
+  ]
+}

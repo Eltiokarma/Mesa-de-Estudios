@@ -1,0 +1,119 @@
+{
+  "plantilla": "segmentos-angulos",
+  "unidades": "Longitudes en las unidades del problema (cm); ángulos en grados. En la recta, cada punto es su coordenada. En el plano, los puntos van como { x, y } con el eje y hacia arriba, y las direcciones en grados desde el eje x, en sentido antihorario. Los ocho ángulos de dos rectas y una secante se numeran así: en L1 (arriba), 1 arriba a la izquierda, 2 arriba a la derecha, 3 abajo a la izquierda y 4 abajo a la derecha; en L2 (abajo), 5 a 8 en el mismo orden. «Arriba a la derecha» es el ángulo entre el rayo de la recta que va a la derecha y el rayo de la secante que sube.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.sinMitad, coordenadas.R.x, porNumero.6); un número suelto, como 'valor'; las listas se comparan completas; los textos (clase, lado, hacia dónde abre) se comparan exactos; null quiere decir que la medida no existe (el complemento de 120°). En cadena, la lista de operaciones se lee como en castellano: ['suplemento', 'complemento'] es «el suplemento del complemento de…».",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer motor.js ni casos.json: segmentos con coordenadas sobre la recta y fracciones exactas; ángulos y ocho ángulos con vectores; serrucho midiendo con vectores cada vértice; el corte de las casi paralelas por intersección de rectas en coordenadas, comprobado con la ley de senos. Todos los valores numéricos coinciden; las diferencias fueron de convención (complemento de 90° y suplemento de 180° no existen) y de cómo se modela cada error típico. vueltas no se pudo verificar.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción 1 (paso 1): A, B, C y D consecutivos con AC = 14, BD = 18 y AD = 24 → BC = 8, la parte común (errores: 32 si suma los dos como si no se pisaran, 16 si promedia, 10 si resta AD − AC, que es CD)",
+      "fn": "solapados", "args": [{ "AC": 14, "BD": 18, "AD": 24 }],
+      "espera": { "BC": 8, "AB": 6, "CD": 10, "puntos.A": 0, "puntos.B": 6, "puntos.C": 14, "puntos.D": 24,
+                  "errores.sumaSolapados": 32, "errores.promedio": 16, "errores.restaConAD": 10 } },
+
+    { "nombre": "La misma recta con coordenadas A = 0, B = 6, C = 14 y D = 24: AC = 14, BD = 18, AD = 24 y BC = 8 (AC + BD = AD + BC = 32)",
+      "fn": "recta", "args": [{ "C": 14, "A": 0, "D": 24, "B": 6 }],
+      "espera": { "consecutivos": "ABCD", "segmentos.AB": 6, "segmentos.AC": 14, "segmentos.AD": 24, "segmentos.BC": 8, "segmentos.BD": 18, "segmentos.CD": 10 } },
+
+    { "nombre": "Predicción 2 (paso 3): M medio de AB y N medio de CD, con AC + BD = 30 (AC = 12 y BD = 18) → MN = 15 (errores: 30 sin dividir, 7,5 si divide entre 4)",
+      "fn": "puntosMedios", "args": [{ "AC": 12, "BD": 18 }],
+      "espera": { "MN": 15, "suma": 30, "errores.sinMitad": 30, "errores.cuarto": 7.5 } },
+
+    { "nombre": "Predicción 2 con coordenadas: A = 0, B = 4, C = 12, D = 22 → M = 2, N = 17, MN = 15 = (AC + BD)/2 = (12 + 18)/2",
+      "fn": "mediosEnRecta", "args": [{ "A": 0, "B": 4, "C": 12, "D": 22 }],
+      "espera": { "M": 2, "N": 17, "MN": 15, "AC": 12, "BD": 18, "AD": 22, "BC": 8 },
+      "tambien": [ { "args": [{ "A": -3, "B": 1, "C": 2, "D": 15 }], "espera": { "M": -1, "N": 8.5, "MN": 9.5, "AC": 5, "BD": 14 } } ] },
+
+    { "nombre": "Papel p3: los mismos puntos medios con AD = 26 y BC = 8 → MN = (AD + BC)/2 = 17",
+      "fn": "puntosMedios", "args": [{ "AD": 26, "BC": 8 }],
+      "espera": { "MN": 17, "suma": 34 } },
+
+    { "nombre": "Papel p2: A, B y C consecutivos, M medio de AC, AB = 20 y BC = 8 → BM = (AB − BC)/2 = 6; AM = 14; M cae dentro de AB (errores: 12 sin dividir, 3 si divide entre 4)",
+      "fn": "medioYDiferencia", "args": [{ "AB": 20, "BC": 8 }],
+      "espera": { "BM": 6, "AC": 28, "AM": 14, "mEnLado": "AB", "errores.sinMitad": 12, "errores.cuarto": 3 },
+      "tambien": [ { "args": [{ "diferencia": 12 }], "espera": { "BM": 6 } } ] },
+
+    { "nombre": "Ángulo de 30°: agudo, complemento 60°, suplemento 150° (errores: complemento con 180 da 150; suplemento con 90 da 60)",
+      "fn": "angulo", "args": [30],
+      "espera": { "medida": 30, "clase": "agudo", "complemento": 60, "suplemento": 150, "errores.complementoCon180": 150, "errores.suplementoCon90": 60 },
+      "tambien": [ { "args": [120], "espera": { "clase": "obtuso", "complemento": null, "suplemento": 60 } },
+                   { "args": [90], "espera": { "clase": "recto", "complemento": null, "suplemento": 90 } },
+                   { "args": [180], "espera": { "clase": "llano", "complemento": null, "suplemento": null } } ] },
+
+    { "nombre": "Predicción 3 (paso 4): el suplemento del complemento de 30° → complemento 60°, suplemento de 60° = 120° = 90° + 30° (errores: 150 si hace solo el suplemento, 30 si cree que se cancelan, no existe si invierte el orden: complemento de 150°)",
+      "fn": "cadena", "args": [["suplemento", "complemento"], 30],
+      "espera": { "valor": 120, "existe": true, "formula.a": 1, "formula.b": 90,
+                  "errores.soloElPrimero": 150, "errores.seCancelan": 30, "errores.ordenInvertido": null, "errores.constantesCambiadas": null } },
+
+    { "nombre": "El complemento del suplemento de 120°: suplemento 60°, complemento de 60° = 30° = 120° − 90°; con 60° no existe (el suplemento, 120°, no tiene complemento)",
+      "fn": "cadena", "args": [["complemento", "suplemento"], 120],
+      "espera": { "valor": 30, "existe": true, "formula.a": 1, "formula.b": -90 },
+      "tambien": [ { "args": [["complemento", "suplemento"], 60], "espera": { "valor": null, "existe": false } },
+                   { "args": [["suplemento", "suplemento", "complemento"], 25], "espera": { "valor": 65, "formula.a": -1, "formula.b": 90 } } ] },
+
+    { "nombre": "Papel p4: el suplemento del complemento de x es el triple de x → 90 + x = 3x → x = 45",
+      "fn": "resolverAngulo", "args": [[{ "ops": ["suplemento", "complemento"] }], [{ "k": 3, "ops": [] }]],
+      "espera": { "x": 45, "existe": true, "izquierda": 135, "derecha": 135 } },
+
+    { "nombre": "Papel p5: el complemento más el suplemento de x suman 210° → (90 − x) + (180 − x) = 210 → x = 30",
+      "fn": "resolverAngulo", "args": [[{ "ops": ["complemento"] }, { "ops": ["suplemento"] }], [{ "valor": 210 }]],
+      "espera": { "x": 30, "existe": true, "izquierda": 210 } },
+
+    { "nombre": "Paso 7: L1 ∥ L2 y la secante a 70° → 2, 3, 6 y 7 miden 70°; 1, 4, 5 y 8 miden 110°",
+      "fn": "paralelas", "args": [70],
+      "espera": { "angulos": [110, 70, 70, 110, 110, 70, 70, 110], "paralelas": true, "theta": 70, "suplemento": 110,
+                  "iguales": [2, 3, 6, 7], "suplementos": [1, 4, 5, 8] } },
+
+    { "nombre": "Los ocho ángulos con vectores no dependen de cómo se gire el dibujo: rectas a 25° y secante a 95° (70° respecto de ellas) dan lo mismo que el caso anterior",
+      "fn": "ochoAngulos", "args": [25, 205, 95],
+      "espera": { "angulos": [110, 70, 70, 110, 110, 70, 70, 110], "paralelas": true } },
+
+    { "nombre": "Predicción 4 (paso 6), informe GE17: alternos internos 3x + 10 y 5x − 30 con L1 ∥ L2 → iguales: x = 20, 70° (GE17: si los suma a 180, x = 25 con 85° y 95°; despeje con el signo cambiado: 10; la medida en vez de x: 70)",
+      "fn": "ecuacionPar", "args": ["alternos internos", [3, 10], [5, -30]],
+      "espera": { "relacion": "iguales", "necesitaParalelas": true, "x": 20, "angulos": [70, 70],
+                  "errores.otraRelacion.x": 25, "errores.otraRelacion.angulos": [85, 95], "errores.despejeSigno": 10, "errores.xEsElAngulo": 70 } },
+
+    { "nombre": "Experimento 1: opuestos por el vértice 2x + 40 y 3x + 10 → iguales: x = 30, 100° (errores: 26 si los toma como suplementarios, 50 con el signo cambiado, 8 si suman 90)",
+      "fn": "ecuacionPar", "args": ["opuestos por el vértice", [2, 40], [3, 10]],
+      "espera": { "relacion": "iguales", "necesitaParalelas": false, "x": 30, "angulos": [100, 100],
+                  "errores.otraRelacion.x": 26, "errores.despejeSigno": 50, "errores.complementarios.x": 8 } },
+
+    { "nombre": "Experimento 5: conjugados internos 3x + 15 y x + 45 → suman 180: x = 30, 105° y 75° (GE17: si los iguala, x = 15; si suman 90, 7,5; con el signo cambiado, 4x = 240 y x = 60)",
+      "fn": "ecuacionPar", "args": ["conjugados internos", [3, 15], [1, 45]],
+      "espera": { "relacion": "suplementarios", "x": 30, "angulos": [105, 75],
+                  "errores.otraRelacion.x": 15, "errores.otraRelacion.angulos": [60, 60], "errores.complementarios.x": 7.5, "errores.despejeSigno": 60 } },
+
+    { "nombre": "Experimento 3: alternos internos de 72° (en P) y 70° (en Q) con PQ = 4 → no son paralelas: se cortan a la derecha de la secante, formando 2°; PR = 4·sen 70°/sen 2° ≈ 107,7",
+      "fn": "noParalelas", "args": [72, 70, 4],
+      "espera": { "paralelas": false, "entre": 2, "lado": "derecha", "conjugados": [182, 178], "enP": 108, "enQ": 70, "sumaTriangulo": 180,
+                  "PR": 107.70271317048169, "coordenadas.R.x": 107.70271317048169, "coordenadas.R.y": 0, "coordenadas.dirL2": 2,
+                  "coordenadas.Q.x": -1.2360679774997898, "coordenadas.Q.y": -3.804226065180614 },
+      "tambien": [ { "fn": "ochoAngulos", "args": [0, 2, 72], "espera": { "porNumero.3": 72, "porNumero.6": 70, "paralelas": false } } ] },
+
+    { "nombre": "Experimento 2: ángulos consecutivos AOB = 70° y BOC = 50° → sus bisectrices forman 35° + 25° = 60° (errores: 120 sin dividir, 10 la semidiferencia, 35 solo una mitad); si suman 180°, 90°",
+      "fn": "bisectrices", "args": [70, 50],
+      "espera": { "entre": 60, "porRayos": 60, "total": 120, "mitades": [35, 25], "recto": false, "rayos.bisectriz1": 35, "rayos.bisectriz2": 95,
+                  "errores.sinMitad": 120, "errores.semidiferencia": 10, "errores.soloUnaMitad": 35 },
+      "tambien": [ { "args": [110, 70], "espera": { "entre": 90, "porRayos": 90, "recto": true } } ] },
+
+    { "nombre": "Predicción 5 (paso 8): el quiebre entre paralelas con 35° en A y 50° en B → APB = 85° (errores: 95 si suplementa, 15 si resta, 42,5 si promedia); con coordenadas, A(0; 10), P(5,88…; 5,88…) y B(0,94…; 0) dan 35°, 85° y 50°",
+      "fn": "quiebre", "args": [35, 50],
+      "espera": { "angulo": 85, "errores.suplementa": 95, "errores.resta": 15, "errores.promedio": 42.5 },
+      "tambien": [ { "fn": "serrucho", "args": [[{ "x": 0, "y": 10 }, { "x": 5.880609439526354, "y": 5.882352941176471 }, { "x": 0.9447292561305884, "y": 0 }]],
+                     "espera": { "sumaDerecha": 85, "sumaIzquierda": 85, "cumple": true, "vueltas": 0,
+                                 "angulos.0.medida": 35, "angulos.0.abre": "derecha", "angulos.1.medida": 85, "angulos.1.abre": "izquierda", "angulos.2.medida": 50, "angulos.2.abre": "derecha" } },
+                   { "fn": "serrucho", "args": [[{ "x": 0, "y": 6 }, { "x": 3, "y": 3 }, { "x": 0, "y": 0 }]],
+                     "espera": { "angulos.0.medida": 45, "angulos.1.medida": 90, "angulos.2.medida": 45, "cumple": true } } ] },
+
+    { "nombre": "Experimento 4: serrucho con tres quiebres. A(0; 10), P1, P2, P3 y B(4,45…; 0) dan 30° en A, 60° en P1, 40° en P2, 45° en P3 y 35° en B: a la derecha abren A, P2 y B (105°) y a la izquierda P1 y P3 (105°)",
+      "fn": "serrucho", "args": [[{ "x": 0, "y": 10 }, { "x": 5.196152422706632, "y": 7 }, { "x": 1.7320508075688772, "y": 5 }, { "x": 9.610512831666542, "y": 3.6108145786645576 }, { "x": 4.453735188431384, "y": 0 }], { "arriba": 10, "abajo": 0 }],
+      "espera": { "sumaDerecha": 105, "sumaIzquierda": 105, "diferencia": 0, "cumple": true,
+                  "angulos.0.medida": 30, "angulos.1.medida": 60, "angulos.2.medida": 40, "angulos.3.medida": 45, "angulos.4.medida": 35,
+                  "angulos.1.abre": "izquierda", "angulos.2.abre": "derecha", "angulos.3.abre": "izquierda" },
+      "tambien": [ { "fn": "reglaSerrucho", "args": [{ "derecha": [30, 40, 35], "izquierda": [60], "incognita": "izquierda", "vecinos": [40, 35] }],
+                     "espera": { "x": 45, "sumaDerecha": 105, "sumaIzquierda": 105, "errores.suma180": 15, "errores.olvidaUno": 105, "errores.soloVecinos": 75 } } ] },
+
+    { "nombre": "Dos rectas que se cortan con 100° entre ellas (experimento 1): los opuestos por el vértice 2 y 3 miden 100°; 1 y 4, 80°",
+      "fn": "cruce", "args": [0, 100],
+      "espera": { "angulos": [80, 100, 100, 80] } }
+  ]
+}

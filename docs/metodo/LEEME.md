@@ -12,3 +12,9 @@ Después, la conversación principal integra: agrega la plantilla a las unidades
 Si al entrar una plantilla un curso llega a 4 plantillas o más, la prueba del banco exige máximo 2 ítems de entrada y salida por plantilla: hay que rebalancear `catalogo/pruebas/<curso>.json`.
 
 `paleta.py` tiene las funciones para medir colores (CIEDE2000 y contraste).
+
+**Respaldo de cada opción incorrecta** (`registrarPrediccion`, campo `respaldo`; fijado el 7 nov 2026):
+- `documentado`: el informe trae un dato cuantitativo para **ese** error, medido con esa pregunta o una equivalente.
+- `parcial`: hay un dato para un error vecino y la opción es su cara en este problema: la versión numérica de un error conceptual documentado (p. ej. M5), el mismo error medido en otra población (adultos, universitarios) o en otro ítem, o un estudio sin cifra que lo describe.
+- `hipotesis`: no hay fuente; es un error que suponemos. Se dice «hipótesis nuestra» en pantalla.
+En la duda, se baja un escalón. Las cifras se citan con cautela («cerca de…», sin decimales de más).

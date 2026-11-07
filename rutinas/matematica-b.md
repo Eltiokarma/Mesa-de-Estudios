@@ -343,4 +343,87 @@ Desde esta plantilla uso los encargos oficiales de `docs/metodo/`. El verificado
 3. En el informe de aritmética, agregar la fila «Campanadas tratadas como proporción | AR7» a la tabla de mapeo.
 4. Para `docs/pendientes.md` y CLAUDE.md: «Relojes y calendarios (7 nov 2026): `plantillas/relojes-calendarios/` (ángulo entre las agujas con minutero arrastrable, superposiciones en un día, adelantos y atrasos, campanadas, bisiestos y día de la semana; 20 casos verificados aparte; 10 de papel)».
 5. Banco de razonamiento matemático: sumar ítems cuando entre al catálogo.
-6. En el motor de `interes/` hay un riesgo con la animación compartida (`tween`) cuando recibe un instante negativo. Aquí ya se arregló; en interés lo arreglo yo en una pasada aparte.
+6. En el motor de `interes/` hay un riesgo con la animación compartida (`tween`) cuando recibe un instante negativo. Aquí ya se arregló; en interés quedó arreglado en un commit aparte (7 nov 2026).
+
+## 7 nov 2026 · El armador de triángulos (`plantillas/congruencia/`)
+
+**Qué hice.**
+
+- **`motor.js`** (`MotorCongruencia`, UMD; 37° y 53° de academia con seno y coseno exactos):
+  - `construir` clasifica LLL, LAL, ALA, LAA, LLA y AAA, y dice cuántos triángulos salen: ninguno, uno, dos o infinitos;
+  - `armador`, `mover` y `avanzar` manejan las piezas que se arrastran y el teclado;
+  - para comparar triángulos: `correspondencia` (las 6 permutaciones), `superponer`, `congruentes` y `compararDatos`, que empareja cada lado con su ángulo opuesto;
+  - de la unidad: `mediatriz`, `bisectriz`, `baseMedia`, `medianaHipotenusa` y `notable`.
+
+  Cada resultado trae `errores`.
+- **`casos.json`:** 20 casos con sus «tambien».
+- **`motor.test.js`:** 45 pruebas, con propiedades al azar con semilla. LLA da 0, 1 o 2 según la altura; el ángulo frente al lado mayor determina; AAA nunca determina; el armador cierra solo donde lo dice `construir`; ningún error coincide con la respuesta.
+- **`papel.json`:** 10 problemas propios.
+- **`index.html`, paso a paso** (8 pasos, 6 predicciones):
+  1. tres varillas (LLL);
+  2. el armador con LLL, LAL y ALA;
+  3. la trampa LLA con el compás;
+  4. hipotenusa y cateto;
+  5. AAA, que da semejantes;
+  6. correspondencia de vértices: ΔABC ≅ ΔQRP con PQR dado vuelta;
+  7. la mediana relativa a la hipotenusa en el 5-12-13;
+  8. el armador con todas las piezas.
+- **`index.html`, «¿qué pasa si…?»** (5 experimentos): mediatriz, bisectriz de 74°, base media, «dos ángulos y un lado» (LAA mal emparejado) y el notable de 30° y 60°.
+- **Respaldo:** ninguna predicción va como documentada. GE8 y GE11 se usan con el sentido del informe (parcial). GE9 y GE22 se citan como «la misma idea», con respaldo hipótesis. Lo demás es hipótesis nuestra.
+
+**Pruebas.** `npm test`: 1890 en total, 1888 pasan y fallan solo las 2 del catálogo, como se esperaba. Playwright revisó 1366 y 390, en claro y en oscuro, con y sin movimiento reducido: sin errores ni desbordes. El dedo desplaza la página lejos de la punta y arrastra cerca de ella.
+
+**Subagentes.**
+
+- **Verificador independiente** (no leyó el motor ni `casos.json`). Usó coordenadas: corte de circunferencias, la cuadrática del compás, corte de rayos, fuerza bruta de las correspondencias y Kabsch, con control por Herón y la ley de cosenos.
+  - **Primera pasada:** 153 de 157 campos. Las 4 diferencias eran de formato. Además detectó que en el papel p1, con 70°, la segunda parte no daba ningún triángulo; ahora usa 37° y da dos.
+  - **Segunda pasada:** 188 campos. La única diferencia era de definición: si el corte justo en A (cuando AC = BC) cuenta como «detrás». No cuenta. Lo dejé escrito en la cabecera y pegué su texto en `verificacion`.
+- **Revisor de contenido.** Apliqué todo:
+  - **Grave:** el paso 7 repetía el 6-8-10 de `triangulo-estira` con las mismas cuatro cifras. Ahora usa el 5-12-13.
+  - **Medio:**
+    - El experimento del ángulo obtuso y un distractor repetían `caso-ambiguo`. Lo reemplacé por «dos ángulos y un lado», que es LAA mal emparejado y el motor resuelve con `compararDatos`.
+    - En el paso 4, una cruz caía sobre el reflejo, que sí es válido.
+    - En la mediatriz, el dibujo dejaba medir PB antes de responder.
+    - La prueba del paso 7 no se seguía: ahora va por las diagonales del rectángulo.
+    - El teclado quedaba atrapado en un cierre por el imán.
+    - Había rótulos encimados a 390 px.
+    - La correcta del paso 1 adelantaba la refutación de otra opción.
+  - **Bajo:** el papel p1, las opciones con la misma forma (todas exactas), «cuña» en vez de «bisagra» para un ángulo fijo, el lector de pantalla después de responder y las leyendas «PA = PB» y «PH = PK».
+
+**Colores** (claro / oscuro), los mismos de `caso-ambiguo` para lados y ángulos:
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| a | #a05200 | #f0a04a |
+| b | #1f5fbf | #7cb0ff |
+| c | #0f766e | #5ed9c8 |
+| ∠A | #a10fbf | #cf6bfa |
+| ∠B | #466d14 | #a3d65e |
+| ∠C | #77032c | #fdb4ce |
+| mediana | #c0364a | #f17384 |
+| d (la distancia que se iguala) | #7d6a00 | #e3c84a |
+| base media | #3328c4 | #9f9bff |
+
+- **ΔE00 entre los que salen juntos:** mínimo 23,6 en claro. En oscuro, ∠C queda a 18 del gris del compás.
+- **Contraste:** AA, mínimo 4,54.
+- **d:** la mediatriz y la bisectriz nunca comparten dibujo, así que d nombra en cada una «la distancia que se repite».
+
+**Pendiente.**
+
+- Temas de examen que faltan:
+  - mediana del trapecio, y «hallar x» con puntos medios;
+  - en el isósceles, la altura es también mediana y bisectriz;
+  - bisectriz con una incógnita (PH = 2x − 3 = PK = x + 5);
+  - notables de 15° y 75°, y de 37°/2 y 53°/2;
+  - congruencia de rectángulos por cateto y ángulo agudo.
+
+**Pedidos para la integración.**
+
+1. En `catalogo/cursos/geometria.json`, unidad `geometria.congruencia`: `"plantillas": ["congruencia"]`. Después, `npm run catalogo`.
+2. En `docs/diseno.md`, los colores de arriba.
+3. Para `docs/pendientes.md` y CLAUDE.md: «El armador de triángulos (7 nov 2026): `plantillas/congruencia/` (criterios LLL, LAL, ALA y LAA con piezas que se arman, la trampa LLA con el compás, hipotenusa y cateto, AAA semejantes, correspondencia de vértices, mediatriz, bisectriz, base media, mediana a la hipotenusa y notables; 20 casos verificados aparte; 10 de papel)».
+4. Banco de geometría: sumar ítems cuando entre al catálogo, y rebalancear porque geometría ya pasa de 4 plantillas.
+
+## Cierre de la lista (7 nov 2026)
+
+Las cinco plantillas pedidas están hechas, verificadas, revisadas y subidas: sólidos, geometría analítica, interés, relojes y calendarios, y congruencia. La conversación principal pidió seguir con simetría, geometría del espacio y razonamiento con figuras. Espero la confirmación de Gerson antes de empezarlas.

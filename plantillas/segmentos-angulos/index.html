@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La escuadra y las paralelas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   en la recta, AC azul, BD verde, AD naranja, BC fucsia y MN turquesa; en los ángulos, θ celeste, el complemento ámbar
+   y el suplemento morado (también las dos familias de los ocho ángulos entre paralelas); en el serrucho, los ángulos que
+   abren a la derecha magenta y los que abren a la izquierda oliva; en las bisectrices, α mostaza y β petróleo.
+   Pares de colores cercanos que nunca comparten vista (por eso se permiten): AD–complemento, BD–izquierda, AC–θ y
+   BC–suplemento. Entre los que salen juntos, ΔE00 ≥ 23. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-AC:#1f5fbf; --c-BD:#466d14; --c-AD:#a05200; --c-BC:#a10fbf; --c-MN:#0f766e;
+  --c-t:#086a96; --c-co:#8f5800; --c-su:#6b3dbd; --c-de:#b3246b; --c-iz:#5f6f00; --c-al:#7d6a00; --c-be:#1c4954;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-AC:#7cb0ff; --c-BD:#a3d65e; --c-AD:#f0a04a; --c-BC:#cf6bfa; --c-MN:#5ed9c8;
+  --c-t:#25caf4; --c-co:#ffc04d; --c-su:#ab8cf2; --c-de:#ff86bd; --c-iz:#c8dc3c; --c-al:#e3c84a; --c-be:#6a9daf;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-AC:#7cb0ff; --c-BD:#a3d65e; --c-AD:#f0a04a; --c-BC:#cf6bfa; --c-MN:#5ed9c8;
+  --c-t:#25caf4; --c-co:#ffc04d; --c-su:#ab8cf2; --c-de:#ff86bd; --c-iz:#c8dc3c; --c-al:#e3c84a; --c-be:#6a9daf;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-AC{color:var(--c-AC); background:color-mix(in srgb, var(--c-AC) 8%, transparent)}
+.v-BD{color:var(--c-BD); background:color-mix(in srgb, var(--c-BD) 8%, transparent)}
+.v-AD{color:var(--c-AD); background:color-mix(in srgb, var(--c-AD) 8%, transparent)}
+.v-BC{color:var(--c-BC); background:color-mix(in srgb, var(--c-BC) 8%, transparent)}
+.v-MN{color:var(--c-MN); background:color-mix(in srgb, var(--c-MN) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-co{color:var(--c-co); background:color-mix(in srgb, var(--c-co) 8%, transparent)}
+.v-su{color:var(--c-su); background:color-mix(in srgb, var(--c-su) 8%, transparent)}
+.v-de{color:var(--c-de); background:color-mix(in srgb, var(--c-de) 8%, transparent)}
+.v-iz{color:var(--c-iz); background:color-mix(in srgb, var(--c-iz) 8%, transparent)}
+.v-al{color:var(--c-al); background:color-mix(in srgb, var(--c-al) 8%, transparent)}
+.v-be{color:var(--c-be); background:color-mix(in srgb, var(--c-be) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.exps{border-radius:20px}
+.check{display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:.92rem; cursor:pointer; min-height:44px}
+.check input{width:20px; height:20px; accent-color:var(--ink)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Geometría · Segmentos y ángulos · Problemas tipo admisión</p>
+      <h1>La escuadra y las paralelas</h1>
+      <p class="sub">Segmentos que se pisan, ángulos que completan la escuadra y la recta, y los ocho ángulos de dos paralelas.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del paso">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del paso"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="leg1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="leg2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/segmentos-angulos">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'segmentos-angulos', unidad: 'geometria.segmentos-y-angulos', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas de dibujo compartidas =================
+   Toda la geometría sale de MotorSegmentosAngulos (motor.js): medidas, ángulos, cortes y la regla del serrucho.
+   Aquí solo se pinta y se pasa de coordenadas del problema a píxeles. */
+const M = MotorSegmentosAngulos;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (n === null || n === undefined || !Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const gr = (n, d) => fmt(n, d === undefined ? 0 : d) + '°';
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const RAD = Math.PI/180;
+const CLAVES = ['AC','BD','AD','BC','MN','t','co','su','de','iz','al','be'];
+function colores(hl){
+  const o = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    font:css('--font'), mono:css('--mono'), hl };
+  CLAVES.forEach(k => o[k] = css('--c-' + k));
+  return o;
+}
+const LEYENDA = { AC:'AC', BD:'BD', AD:'AD', BC:'BC', MN:'MN y los puntos medios', t:'θ, el ángulo', co:'complemento (hasta 90°)',
+  su:'suplemento (hasta 180°)', de:'abren hacia la derecha', iz:'abren hacia la izquierda', al:'α, mitad de AOB', be:'β, mitad de BOC' };
+// En las paralelas, θ es el ángulo 2 (arriba a la derecha) y los iguales a él; el morado, su suplemento.
+const LEY_PARALELAS = { t:'θ y los ángulos iguales a θ', su:'180° − θ, su suplemento' };
+function leyenda(el, claves, textos){ el.innerHTML = claves.map(k => `<span><i style="background:var(--c-${k})"></i>${(textos && textos[k]) || LEYENDA[k]}</span>`).join(''); }
+
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0, compacto:false };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(Celular.alto(alto(W), L.compacto)), dpr = window.devicePixelRatio || 1;
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === L.compacto) return; L.compacto = on; L.resize(); };
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, tam){
+  ctx.font = `800 ${tam || 12}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function punto(ctx, x, y, r, color, borde){
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = color; ctx.fill();
+  if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = 2; ctx.stroke(); }
+}
+// Sector (o anillo si r0 > 0) desde la dirección 'desde' hasta 'hasta' en sentido antihorario, en grados matemáticos
+// (eje y hacia arriba): en el lienzo el eje y baja, por eso los ángulos cambian de signo.
+function sector(ctx, x, y, r, desde, hasta, color, o){
+  o = o || {};
+  const r0 = o.r0 || 0, a0 = -desde*RAD, a1 = -hasta*RAD;
+  ctx.save(); ctx.beginPath();
+  if (r0 > 0){ ctx.arc(x, y, r, a0, a1, true); ctx.arc(x, y, r0, a1, a0, false); ctx.closePath(); }
+  else { ctx.moveTo(x, y); ctx.arc(x, y, r, a0, a1, true); ctx.closePath(); }
+  if (color){ ctx.fillStyle = color; ctx.globalAlpha = o.alpha === undefined ? .26 : o.alpha; ctx.fill(); }
+  ctx.globalAlpha = 1;
+  if (o.borde){ ctx.beginPath(); ctx.arc(x, y, r, a0, a1, true); ctx.strokeStyle = o.borde; ctx.lineWidth = o.ancho || 2.2; if (o.dash) ctx.setLineDash(o.dash); ctx.stroke(); }
+  ctx.restore();
+}
+const enDir = (x, y, r, d) => [x + r*Math.cos(d*RAD), y - r*Math.sin(d*RAD)];
+// El barrido más corto entre dos direcciones, como sector antihorario { desde, hasta }.
+function corto(d1, d2){ const s = ((d2 - d1) % 360 + 540) % 360 - 180; return s >= 0 ? { desde:d1, hasta:d1 + s } : { desde:d2, hasta:d2 - s }; }
+function mango(ctx, c, x, y, color, activo){
+  ctx.save(); ctx.globalAlpha = .18; punto(ctx, x, y, activo ? 17 : 14, color); ctx.restore();
+  punto(ctx, x, y, 8, c.card, color); punto(ctx, x, y, 3.5, color);
+}
+
+/* ---------- Vista 1: la recta con puntos ----------
+   V = { tipo:'recta', puntos:{A:0,…}, rango:[x0,x1], llaves:[{ p, q, k, texto, lado:'arriba'|'abajo', nivel }],
+         tramo:{ p, q, k, texto } | null, medios:[{ n, x, k }], arrastrables:[…], activo, regla } */
+function vistaRecta(L, c, V){
+  const { ctx, W, H } = L, m = 24, [x0, x1] = V.rango;
+  const X = x => m + (x - x0)/(x1 - x0)*(W - 2*m), Yc = Math.round(H*0.52);
+  V._X = X; V._Y = Yc; V._xDe = px => x0 + (px - m)/(W - 2*m)*(x1 - x0);
+  // la recta, con flechas en los extremos
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, 6, Yc, W - 6, Yc);
+  ctx.fillStyle = c.ink;
+  [[6, 1], [W - 6, -1]].forEach(([x, s]) => { ctx.beginPath(); ctx.moveTo(x, Yc); ctx.lineTo(x + 9*s, Yc - 5); ctx.lineTo(x + 9*s, Yc + 5); ctx.closePath(); ctx.fill(); });
+  if (V.regla){ ctx.strokeStyle = c.muted; ctx.lineWidth = 1; for (let x = Math.ceil(x0); x <= x1; x++) linea(ctx, X(x), Yc - 3, X(x), Yc + 3); }
+  const grueso = k => (c.hl === k ? 4.5 : 3);
+  if (V.tramo){ const t = V.tramo; ctx.save(); ctx.strokeStyle = c[t.k]; ctx.lineWidth = c.hl === t.k ? 9 : 7; ctx.globalAlpha = .8; ctx.lineCap = 'round';
+    linea(ctx, X(V.puntos[t.p]), Yc, X(V.puntos[t.q]), Yc); ctx.restore(); }
+  if (V.mn){ const t = V.mn; ctx.save(); ctx.strokeStyle = c.MN; ctx.lineWidth = c.hl === 'MN' ? 9 : 7; ctx.globalAlpha = .75; ctx.lineCap = 'round';
+    linea(ctx, X(t.a), Yc, X(t.b), Yc); ctx.restore(); }
+  for (const l of V.llaves || []){
+    const xa = X(l.xa !== undefined ? l.xa : V.puntos[l.p]), xb = X(l.xb !== undefined ? l.xb : V.puntos[l.q]), arriba = l.lado !== 'abajo', n = l.nivel || 1;
+    const y = arriba ? Yc - 30 - 28*(n - 1) : Yc + 22 + 28*(n - 1), s = arriba ? 1 : -1;
+    ctx.save(); ctx.strokeStyle = c[l.k]; ctx.lineWidth = grueso(l.k); ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(xa, y + 7*s); ctx.lineTo(xa, y); ctx.lineTo(xb, y); ctx.lineTo(xb, y + 7*s); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, (xa + xb)/2, arriba ? y - 9 : y + 10, l.texto, c[l.k]);
+  }
+  if (V.tramo && V.tramo.texto){
+    const xa = X(V.puntos[V.tramo.p]), xb = X(V.puntos[V.tramo.q]);
+    ctx.font = `800 12px ${c.font}`;
+    if (xb - xa > ctx.measureText(V.tramo.texto).width + 30) rotulo(ctx, c, (xa + xb)/2, Yc - 16, V.tramo.texto, c[V.tramo.k]);
+  }
+  for (const md of V.medios || []){
+    const col = md.k ? c[md.k] : c.ink;
+    ctx.strokeStyle = col; ctx.lineWidth = 2; linea(ctx, X(md.x), Yc - 6, X(md.x), Yc + 6);
+    ctx.font = `800 12px ${c.font}`; ctx.fillStyle = col; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(md.n, X(md.x), Yc - 16);
+  }
+  for (const n of Object.keys(V.puntos)){
+    const x = X(V.puntos[n]), arr = (V.arrastrables || []).includes(n);
+    if (arr) mango(ctx, c, x, Yc, c.ink, V.activo === n); else punto(ctx, x, Yc, 5, c.ink);
+    ctx.font = `800 13px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(n, x, Yc - (arr ? 24 : 16));
+  }
+}
+
+/* ---------- Vista 2: ángulos con vértice O ----------
+   V = { tipo:'angulo', recta:true (la base completa), sectores:[{ desde, hasta, k|null, texto, r (fracción), r0, borde, dash }],
+         rayos:[{ dir, k|null, dash, mango:true }], escuadra:true, centro:'abajo'|'medio' } */
+function vistaAngulo(L, c, V){
+  const { ctx, W, H } = L, medio = V.centro === 'medio';
+  const O = medio ? { x:W/2, y:H/2 } : { x:W/2, y:H - 30 }, R = medio ? Math.min(W/2 - 24, H/2 - 18) : Math.min(W/2 - 26, H - 52);
+  V._O = O; V._R = R;
+  if (V.recta !== false){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, O.x - R - 14, O.y, O.x + R + 14, O.y); }
+  for (const s of V.sectores || []){
+    const col = s.k ? c[s.k] : null, r = R*(s.r || .55);
+    sector(ctx, O.x, O.y, r, s.desde, s.hasta, col, { r0: s.r0 ? R*s.r0 : 0, borde: s.k ? c[s.k] : c.ink, ancho: c.hl && c.hl === s.k ? 4 : 2.2, dash: s.dash, alpha: c.hl && c.hl === s.k ? .42 : .26 });
+  }
+  if (V.escuadra){ const q = 14; ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(O.x + q, O.y); ctx.lineTo(O.x + q, O.y - q); ctx.lineTo(O.x, O.y - q); ctx.stroke();
+    ctx.save(); ctx.setLineDash([5, 4]); linea(ctx, O.x, O.y, O.x, O.y - R - 8); ctx.restore(); }
+  for (const r of V.rayos || []){
+    const [x, y] = enDir(O.x, O.y, R + 6, r.dir), col = r.k ? c[r.k] : c.ink;
+    ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = r.k ? 2.6 : 2; if (r.dash) ctx.setLineDash(r.dash); linea(ctx, O.x, O.y, x, y); ctx.restore();
+    if (r.mango) { const [mx, my] = enDir(O.x, O.y, R - 4, r.dir); mango(ctx, c, mx, my, col, V.activo === r.id); r._px = { x:mx, y:my }; }
+    if (r.letra){ const [lx, ly] = enDir(O.x, O.y, R + 16, r.dir); ctx.font = `800 13px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(r.letra, clamp(lx, 10, W - 10), clamp(ly, 10, H - 10)); }
+  }
+  for (const s of V.sectores || []) if (s.texto){
+    const mid = s.ta !== undefined ? s.ta : (s.desde + s.hasta)/2, rr = R*(s.rt || (s.r || .55)*0.66);
+    const [x, y] = enDir(O.x, O.y, rr, mid);
+    rotulo(ctx, c, clamp(x, 26, W - 26), clamp(y, 12, H - 12), s.texto, s.k ? c[s.k] : c.ink, 'center', 12);
+  }
+  punto(ctx, O.x, O.y, 4, c.ink);
+  ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText('O', O.x, O.y + 6);
+}
+
+/* ---------- Vista 3: dos rectas y una secante ----------
+   V = { tipo:'paralelas', phi, tilt (dirección de L₂; 0 si es paralela), colores, valores, etiquetas:{ n:'3x + 10' },
+         indices, ver:[…] (qué ángulos dibujar), mango, una:true (solo un cruce: dos rectas que se cortan) } */
+const DIRS4 = (dL, dS) => [[dS, dL + 180], [dL, dS], [dL + 180, dS + 180], [dS + 180, dL + 360]];   // 1, 2, 3, 4
+function vistaParalelas(L, c, V){
+  const { ctx, W, H } = L, una = !!V.una;
+  const cx = W/2, cy = una ? H/2 : H/2, y1 = una ? H/2 : Math.round(H*0.3), y2 = Math.round(H*0.72);
+  const phi = V.phi, tilt = V.tilt || 0;
+  const cruceY = y => ({ x: cx + (cy - y)/Math.tan(phi*RAD), y });
+  const P1 = una ? { x:cx, y:cy } : cruceY(y1), P2 = una ? null : cruceY(y2);
+  V._c = { x:cx, y:cy };
+  const ang = una ? M.cruce(0, phi).angulos.concat([0,0,0,0]) : M.ochoAngulos(0, tilt, phi).angulos;
+  const clase = n => ([2,3,6,7].includes(n) ? 't' : 'su');
+  // rectas
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2;
+  linea(ctx, 4, y1, W - 4, y1);
+  if (!una){ const t = Math.tan(tilt*RAD); linea(ctx, 4, P2.y + (P2.x - 4)*t, W - 4, P2.y - (W - 4 - P2.x)*t); }
+  ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+  if (!una){ ctx.fillText('L₁', 8, y1 - 4); ctx.fillText('L₂', 8, P2.y + (P2.x - 8)*Math.tan(tilt*RAD) - 4); }
+  // secante
+  const largo = Math.hypot(W, H);
+  const [sa, sb] = [enDir(cx, cy, largo, phi), enDir(cx, cy, largo, phi + 180)];
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; linea(ctx, sa[0], sa[1], sb[0], sb[1]);
+  const r = Math.min(30, (y2 - y1)*0.3), rt = r + 20;
+  const cruces = una ? [[P1, 0, 0]] : [[P1, 0, 0], [P2, tilt, 4]];
+  for (const [P, dL, base] of cruces){
+    const dS = una ? phi : phi;   // la secante sube con dirección phi respecto de la horizontal
+    DIRS4(dL, dS).forEach(([a, b], j) => {
+      const n = base + j + 1;
+      if (V.ver && !V.ver.includes(n)) return;
+      const paralela = una || Math.abs(tilt) < 1e-9 || n <= 4;
+      const k = V.colores && paralela ? clase(n) : null;
+      const col = k ? c[k] : null;
+      sector(ctx, P.x, P.y, r, a, b, col, { borde: col || c.muted, ancho: c.hl && c.hl === k ? 3.6 : 2, alpha: c.hl && c.hl === k ? .45 : .28 });
+      const mid = (a + b)/2, [tx, ty] = enDir(P.x, P.y, rt, mid);
+      const txt = V.etiquetas && V.etiquetas[n] ? V.etiquetas[n] : V.valores ? gr(ang[n - 1]) : null;
+      if (txt) rotulo(ctx, c, clamp(tx, 30, W - 30), ty, txt, col || c.ink, 'center', 12);
+      if (V.indices){ const [ix, iy] = enDir(P.x, P.y, r*0.55, mid); ctx.font = `800 10px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(n), ix, iy); }
+    });
+  }
+  if (V.mango){ const d = una ? Math.min(W, H)*0.42 : (cy - y1) / Math.sin(phi*RAD) + 34; const [mx, my] = enDir(cx, cy, d, phi); V._m = { x:mx, y:my }; mango(ctx, c, mx, my, c.ink, V.activo); }
+}
+
+/* ---------- Vista 4: quebrada entre dos paralelas horizontales (y = 10 arriba, y = 0 abajo) ----------
+   V = { tipo:'quebrada', puntos:[A, …, B], clases, valores:{ A:'35°', P1:'?' } | true, auxiliares, partes, mango:i } */
+function vistaQuebrada(L, c, V){
+  const { ctx, W, H } = L, m = 30;
+  const xs = V.puntos.map(p => p.x), xa = Math.min(...xs, V.xmin === undefined ? Infinity : V.xmin), xb = Math.max(...xs, V.xmax === undefined ? -Infinity : V.xmax);
+  const s = Math.min((W - 2*m)/Math.max(1, xb - xa), (H - 2*m)/10), ox = (W - (xb - xa)*s)/2 - xa*s, oy = H/2 + 5*s;
+  const X = x => ox + x*s, Y = y => oy - y*s;
+  V._X = X; V._Y = Y; V._de = (px, py) => ({ x:(px - ox)/s, y:(oy - py)/s });
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; linea(ctx, 4, Y(10), W - 4, Y(10)); linea(ctx, 4, Y(0), W - 4, Y(0));
+  ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+  ctx.fillText('L₁', 8, Y(10) - 4); ctx.fillText('L₂', 8, Y(0) - 4);
+  const S = M.serrucho(V.puntos, { arriba:10, abajo:0 }); V._s = S;
+  if (V.auxiliares){ ctx.save(); ctx.setLineDash([5, 5]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4;
+    V.puntos.slice(1, -1).forEach(p => linea(ctx, 4, Y(p.y), W - 4, Y(p.y))); ctx.restore(); }
+  const r = clamp(s*1.3, 18, 30);
+  S.angulos.forEach((a, i) => {
+    const P = V.puntos[i], k = V.clases ? (a.abre === 'derecha' ? 'de' : 'iz') : null, col = k ? c[k] : null;
+    const { desde, hasta } = corto(a.dirs[0], a.dirs[1]);
+    const quiebre = i > 0 && i < S.angulos.length - 1, partes = V.partes && quiebre, rT = r*1.8;
+    const bis = Math.atan2(Math.sin(a.dirs[0]*RAD) + Math.sin(a.dirs[1]*RAD), Math.cos(a.dirs[0]*RAD) + Math.cos(a.dirs[1]*RAD))/RAD;
+    if (partes){
+      // con la paralela auxiliar, el ángulo del quiebre se parte en dos pedazos (adentro, de radio r); el total va como un
+      // arco más grande por fuera (r·1,8), con su medida en el punto medio del arco, del lado hacia donde abre.
+      const h = a.abre === 'derecha' ? 0 : 180, kk = a.abre === 'derecha' ? 'iz' : 'de';
+      [a.dirs[0], a.dirs[1]].forEach(d => {
+        const cc = corto(h, d), sub = M.entreRayos(h, d);
+        sector(ctx, X(P.x), Y(P.y), r, cc.desde, cc.hasta, c[kk], { borde:c[kk], ancho:1.6, alpha:.42 });
+        // la medida va entre el pedazo y el arco del total, lejos de la manija; el de arriba sube y el de abajo baja
+        const [tx, ty] = enDir(X(P.x), Y(P.y), r + 11, (cc.desde + cc.hasta)/2), arriba = Math.sin(d*RAD) > 0;
+        if (V.partesTexto) rotulo(ctx, c, clamp(tx, 18, W - 18), ty + (arriba ? -7 : 7), gr(sub), c[kk], 'center', 10);
+      });
+      sector(ctx, X(P.x), Y(P.y), rT, desde, hasta, null, { borde: col || c.muted, ancho: c.hl && c.hl === k ? 4 : 2.6 });
+    } else sector(ctx, X(P.x), Y(P.y), r, desde, hasta, col, { borde: col || c.muted, ancho: c.hl && c.hl === k ? 3.6 : 2, alpha: c.hl && c.hl === k ? .45 : .28 });
+    const txt = V.valores === true ? gr(a.medida) : V.valores && V.valores[a.vertice] !== undefined ? V.valores[a.vertice] : null;
+    if (txt){
+      const [tx, ty] = enDir(X(P.x), Y(P.y), partes ? rT + 15 : r + 18, bis);
+      rotulo(ctx, c, clamp(tx, 22, W - 22), clamp(ty, 10, H - 10), txt, col || c.ink, 'center', 12);
+    }
+  });
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.lineJoin = 'round'; ctx.beginPath();
+  V.puntos.forEach((p, i) => (i ? ctx.lineTo(X(p.x), Y(p.y)) : ctx.moveTo(X(p.x), Y(p.y)))); ctx.stroke();
+  S.angulos.forEach((a, i) => {
+    const P = V.puntos[i];
+    if (V.mango === i) mango(ctx, c, X(P.x), Y(P.y), c.ink, V.activo); else punto(ctx, X(P.x), Y(P.y), 4, c.ink);
+    const nombre = a.vertice === 'P1' && V.puntos.length === 3 ? 'P' : a.vertice;
+    ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center';
+    ctx.textBaseline = i === 0 ? 'bottom' : i === S.angulos.length - 1 ? 'top' : 'middle';
+    const extremo = i === 0 || i === S.angulos.length - 1, dx = extremo ? 0 : (a.abre === 'izquierda' ? 18 : -18);
+    ctx.fillText(nombre, clamp(X(P.x) + dx, 8, W - 8), Y(P.y) + (i === 0 ? -6 : extremo ? 6 : -20));
+  });
+}
+
+/* ---------- Vista 5: dos rectas que casi son paralelas (sale de MotorSegmentosAngulos.noParalelas) ----------
+   V = { tipo:'casi', datos: noParalelas(...), ventana:[x0, x1], corte:true, inclina: 0 a 1 }
+   Antes de responder, la figura es referencial: L₂ se dibuja paralela (inclina = 0) con las medidas del enunciado;
+   después se inclina hasta su dirección real y se aleja para mostrar el corte. */
+function vistaCasi(L, c, V){
+  const { ctx, W, H } = L, d = V.datos.coordenadas, [x0, x1] = V.ventana;
+  const s = (W - 40)/(x1 - x0), ox = 20 - x0*s, oy = H/2 + d.Q.y*s/2;
+  const X = x => ox + x*s, Y = y => oy - y*s;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2;
+  linea(ctx, 0, Y(0), W, Y(0));
+  const dL2 = d.dirL2*(V.inclina === undefined ? 1 : V.inclina);
+  const t = Math.tan(dL2*RAD), yL2 = x => d.Q.y + (x - d.Q.x)*t;
+  const xIni = (0 - ox)/s, xFin = (W - ox)/s;
+  linea(ctx, 0, Y(yL2(xIni)), W, Y(yL2(xFin)));
+  // secante por P y Q
+  const big = 4*(x1 - x0), cs = Math.cos(d.dirSecante*RAD), sn = Math.sin(d.dirSecante*RAD);
+  linea(ctx, X(-big*cs), Y(-big*sn), X(big*cs), Y(big*sn));
+  ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+  ctx.fillText('L₁', 8, Y(0) - 4); ctx.fillText('L₂', 8, Y(yL2(xIni + 8/s)) + 18);
+  const r = clamp(s*1.6, 10, 30);
+  // ángulo 3 en P (abajo a la izquierda) y 6 en Q (arriba a la derecha)
+  const [a3, a6] = [DIRS4(0, d.dirSecante)[2], DIRS4(dL2, d.dirSecante)[1]];
+  sector(ctx, X(0), Y(0), r, a3[0], a3[1], c.muted, { borde:c.ink });
+  sector(ctx, X(d.Q.x), Y(d.Q.y), r, a6[0], a6[1], c.muted, { borde:c.muted });
+  if (s > 6){
+    rotulo(ctx, c, X(0) - r - 22, Y(0) + 12, gr(d.dirSecante), c.ink, 'center', 12);
+    rotulo(ctx, c, X(d.Q.x) + r + 22, Y(d.Q.y) - 12, gr(d.dirSecante - d.dirL2), c.ink, 'center', 12);
+    punto(ctx, X(0), Y(0), 3.5, c.ink); punto(ctx, X(d.Q.x), Y(d.Q.y), 3.5, c.ink);
+    ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('P', X(0) + 8, Y(0) - 6);
+    ctx.textBaseline = 'top'; ctx.fillText('Q', X(d.Q.x) - 8, Y(d.Q.y) + 6);
+  }
+  if (V.corte && (V.inclina === undefined || V.inclina >= 1) && X(d.R.x) < W){
+    punto(ctx, X(d.R.x), Y(d.R.y), 5, c.ink);
+    rotulo(ctx, c, X(d.R.x) - 6, Y(0) - 16, `R: se cortan a ${fmt(V.datos.PR, 1)} cm de P`, c.ink, 'right', 12);
+  }
+}
+
+function dibujarVista(L, c, V){
+  L.ctx.clearRect(0, 0, L.W, L.H);
+  if (!V) return;
+  ({ recta: vistaRecta, angulo: vistaAngulo, paralelas: vistaParalelas, quebrada: vistaQuebrada, casi: vistaCasi })[V.tipo](L, c, V);
+}
+const ALTOS = { recta: W => (W >= 560 ? 230 : 200), angulo: W => (W >= 560 ? clamp(W*0.55, 300, 400) : 270), paralelas: W => (W >= 560 ? clamp(W*0.6, 320, 430) : 320),
+  quebrada: W => (W >= 560 ? clamp(W*0.6, 320, 430) : 320), casi: W => (W >= 560 ? 320 : 280) };
+
+// Arrastre y teclado comunes: la vista actual dice qué se agarra (puntos de la recta, rayos con mango, la secante, un quiebre).
+function manijas(V){
+  if (!V) return [];
+  if (V.tipo === 'recta') return (V.arrastrables || []).map(n => ({ id:n, x:V._X(V.puntos[n]), y:V._Y }));
+  if (V.tipo === 'angulo') return (V.rayos || []).filter(r => r.mango && r._px).map(r => ({ id:r.id, x:r._px.x, y:r._px.y }));
+  if (V.tipo === 'paralelas') return V.mango && V._m ? [{ id:'s', x:V._m.x, y:V._m.y }] : [];
+  if (V.tipo === 'quebrada') return V.mango !== undefined ? [{ id:V.mango, x:V._X(V.puntos[V.mango].x), y:V._Y(V.puntos[V.mango].y) }] : [];
+  return [];
+}
+function conectarArrastre(L, vista, mover, redibujar){
+  let agarrado = null;
+  const cerca = (p, r) => { const hs = manijas(vista()); let mejor = null, dm = r; for (const h of hs){ const d = Math.hypot(h.x - p.x, h.y - p.y); if (d <= dm){ dm = d; mejor = h; } } return mejor; };
+  Celular.arrastre(L.cv, {
+    activo: () => manijas(vista()).length > 0,
+    cerca: (p, r) => !!cerca(p, r),
+    empezar: p => { agarrado = cerca(p, 40); if (agarrado){ vista().activo = agarrado.id; redibujar(); } },
+    mover: p => { if (agarrado) mover(agarrado.id, p); },
+    soltar: () => { agarrado = null; const v = vista(); if (v) v.activo = null; redibujar(); }
+  });
+  L.cv.addEventListener('keydown', e => {
+    const hs = manijas(vista()); if (!hs.length) return;
+    const v = vista();
+    if (!hs.some(h => h.id === v.activo)) v.activo = hs[0].id;
+    if (e.key === 'Enter' || e.key === ' '){ const i = hs.findIndex(h => h.id === v.activo); v.activo = hs[(i + 1) % hs.length].id; redibujar(); e.preventDefault(); return; }
+    const dx = { ArrowLeft:-1, ArrowRight:1 }[e.key] || 0, dy = { ArrowUp:-1, ArrowDown:1 }[e.key] || 0;
+    if (!dx && !dy) return;
+    e.preventDefault();
+    const h = hs.find(q => q.id === v.activo);
+    mover(h.id, { x:h.x, y:h.y }, { dx, dy });
+  });
+}
+// Movimiento de cada manija, en coordenadas del problema (la geometría la valida el motor).
+function moverManija(V, id, p, tecla){
+  if (V.tipo === 'recta'){
+    const x = tecla ? V.puntos[id] + tecla.dx : V._xDe(p.x);
+    V.puntos = M.moverEnRecta(V.puntos, id, x, { sep:V.sep || 1, min:V.rango[0] + 0.5, max:V.rango[1] - 0.5, paso:1 });
+    return true;
+  }
+  if (V.tipo === 'angulo'){
+    const r = V.rayos.find(q => q.id === id); let d;
+    if (tecla) d = r.dir - tecla.dx - tecla.dy;
+    else { try { d = M.direccion({ x:V._O.x, y:-V._O.y }, { x:p.x, y:-p.y }); } catch (e) { return false; } if (d > 270) d = 0; else if (d > 180) d = 180; }
+    d = Math.round(d);
+    return V.limitar ? V.limitar(id, d) : false;
+  }
+  if (V.tipo === 'paralelas'){
+    let d;
+    if (tecla) d = V.phi - tecla.dx - tecla.dy;
+    else { try { d = M.direccion({ x:V._c.x, y:-V._c.y }, { x:p.x, y:-p.y }); } catch (e) { return false; } if (d > 180) d -= 180; }
+    V.phi = clamp(Math.round(d), V.min || 35, V.max || 145);
+    return true;
+  }
+  if (V.tipo === 'quebrada'){
+    const i = id, P = V.puntos[i], q = tecla ? { x:P.x + tecla.dx*0.25, y:P.y - tecla.dy*0.25 } : V._de(p.x, p.y);
+    const nuevo = V.puntos.slice(); nuevo[i] = { x:Math.round(q.x*20)/20, y:Math.round(q.y*20)/20 };
+    if (V.limitar && !V.limitar(nuevo[i])) return false;
+    let s; try { s = M.serrucho(nuevo, { arriba:10, abajo:0 }); } catch (e) { return false; }
+    if (!s.cumple || s.angulos.some(a => a.medida < 4)) return false;   // la regla del serrucho, tal como se enseña aquí
+    V.puntos = nuevo; return true;
+  }
+  return false;
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const S = { step:0, max:0, pred:{}, hl:null, vista:null, anim:0 };
+let anim = null;
+const L = crearLienzo(cv, W => ALTOS[(S.vista && S.vista.tipo) || 'recta'](W), draw);
+function draw(){ if (!L.W) return; dibujarVista(L, colores(S.hl), S.vista); }
+function animar(dur, cada, fin){
+  cancelAnimationFrame(anim);
+  if (RM){ cada(1); draw(); fin && fin(); return; }
+  const ini = performance.now();
+  const tick = now => { const f = Math.min(1, (now - ini)/dur); cada(f); draw(); if (f < 1) anim = requestAnimationFrame(tick); else fin && fin(); };
+  anim = requestAnimationFrame(tick);
+}
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+
+// ---- Datos de los pasos (todo sale del motor) ----
+const D1 = M.solapados({ AC:14, BD:18, AD:24 });
+const P_REC = { A:0, B:4, C:12, D:22 };
+const D3 = M.puntosMedios({ AC:12, BD:18 });
+const D4 = M.cadena(['suplemento', 'complemento'], 30);
+const D6 = M.ecuacionPar('alternos internos', [3, 10], [5, -30]);
+const D8 = M.quiebre(35, 50), Q8 = M.construirQuiebre(35, 50, { alto:10 });
+
+function opciones(P){ return `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`; }
+const FUENTE_H = '<p class="fuente">Las opciones incorrectas son errores que suponemos (hipótesis nuestra): no encontramos un estudio con porcentajes para este tipo de pregunta. El lanzamiento en el colegio dirá cuáles aparecen.</p>';
+
+const P1 = { id:'sa-paso1-solapados', ok:'b',
+  opts:[['a', `${V('BC','BC')} = ${fmt(D1.errores.sumaSolapados)} cm`, 'suma-segmentos-solapados', 'hipotesis'], ['b', `${V('BC','BC')} = ${fmt(D1.BC)} cm`],
+        ['c', `${V('BC','BC')} = ${fmt(D1.errores.restaConAD)} cm`, 'resta-da-otro-segmento', 'hipotesis'], ['d', `${V('BC','BC')} = ${fmt(D1.errores.promedio)} cm`, 'promedia-los-datos', 'hipotesis']],
+  fb:{ b:`¡Bien! AC y BD se pisan justo en BC. Al sumarlos, BC se cuenta dos veces: AC + BD = AD + BC, así que BC = 14 + 18 − 24 = ${fmt(D1.BC)} cm.`,
+       a:`Elegiste la A. 14 + 18 = 32 sería la suma si AC y BD no se tocaran. Pero se pisan en BC, y al sumar ese tramo se cuenta dos veces. Además, BC no puede medir más que AD (24 cm), que va de punta a punta. La correcta está marcada.`,
+       c:`Elegiste la C. 24 − 14 = 10 es CD: lo que le falta a AC para llegar a D. BC es el tramo que AC y BD tienen en común. La correcta está marcada.`,
+       d:`Elegiste la D. 16 es el promedio de 14 y 18, pero un promedio no corresponde a ningún tramo del dibujo. La correcta está marcada.` } };
+const P2 = { id:'sa-paso3-medios', ok:'a',
+  opts:[['a', `${V('MN','MN')} = ${fmt(D3.MN)} cm`], ['b', `${V('MN','MN')} = ${fmt(D3.errores.sinMitad)} cm`, 'medios-sin-dividir', 'hipotesis'],
+        ['c', `${V('MN','MN')} = ${fmt(D3.errores.cuarto)} cm`, 'medios-divide-entre-4', 'hipotesis'], ['d', 'No se puede saber', 'cree-que-falta-un-dato', 'hipotesis']],
+  fb:{ a:`¡Bien! MN es la mitad de AB, más BC, más la mitad de CD. Y AC + BD es AB + 2·BC + CD: justo el doble. Por eso MN = 30/2 = ${fmt(D3.MN)} cm, estén donde estén B y C.`,
+       b:`Elegiste la B. AC + BD tiene a BC dos veces y a AB y CD enteros; MN tiene a BC una vez y solo las mitades de AB y CD. Es justo la mitad: ${fmt(D3.MN)} cm. La correcta está marcada.`,
+       c:`Elegiste la C. Dividir entre 4 sería sacar la mitad dos veces. AC + BD ya es exactamente el doble de MN: basta dividir entre 2. La correcta está marcada.`,
+       d:`Elegiste la D. Parece que hace falta saber AC y BD por separado, pero no: MN siempre es la mitad de AC + BD. Arrastra B o C y compruébalo. La correcta está marcada.` } };
+const P3 = { id:'sa-paso4-cadena', ok:'a',
+  opts:[['a', gr(D4.valor)], ['b', gr(D4.errores.soloElPrimero), 'hace-solo-una-operacion', 'hipotesis'],
+        ['c', gr(D4.errores.seCancelan), 'complemento-y-suplemento-se-cancelan', 'hipotesis'], ['d', 'No existe', 'orden-invertido', 'hipotesis']],
+  fb:{ a:'¡Bien! Se empieza por lo de adentro: el complemento de 30° es 60°, y el suplemento de 60° es 120°.',
+       b:'Elegiste la B. 150° es el suplemento de 30°: hiciste solo la primera palabra. Primero va lo de adentro, el complemento de 30° (60°), y después su suplemento. La correcta está marcada.',
+       c:'Elegiste la C. Parece que el suplemento «deshace» al complemento, pero usan números distintos (180 y 90): no se cancelan. 180 − (90 − 30) = 120. La correcta está marcada.',
+       d:'Elegiste la D. Saldría «no existe» si haces primero el suplemento (150°) y después buscas el complemento de 150°. Pero se lee de adentro hacia afuera: complemento de 30° = 60°; suplemento de 60° = 120°. La correcta está marcada.' } };
+const P4 = { id:'sa-paso6-alternos', ok:'b',
+  opts:[['a', `x = ${fmt(D6.errores.otraRelacion.x)}`, 'GE17-suplementa-alternos', 'hipotesis'], ['b', `x = ${fmt(D6.x)}`],
+        ['c', `x = ${fmt(D6.errores.despejeSigno)}`, 'despeje-signo', 'hipotesis'], ['d', `x = ${fmt(D6.errores.xEsElAngulo)}`, 'da-el-angulo-y-no-x', 'hipotesis']],
+  fb:{ b:`¡Bien! Entre paralelas, los alternos internos son iguales: 3x + 10 = 5x − 30, de donde 40 = 2x y x = ${fmt(D6.x)}. Cada uno mide ${gr(D6.angulos[0])}.`,
+       a:`Elegiste la A. Los sumaste a 180°: eso vale para los conjugados internos, que están del mismo lado de la secante. Los alternos internos, en lados opuestos, son iguales. Con x = 25 medirían 85° y 95°, y no serían iguales. La correcta está marcada.`,
+       c:`Elegiste la C. Al pasar un término al otro lado cambia de signo: el +10 pasa como −10 y el −30 como +30, y queda 2x = 40. La correcta está marcada.`,
+       d:`Elegiste la D. ${gr(D6.angulos[0])} es lo que mide cada ángulo, pero la pregunta es x: 3·20 + 10 = 70. La correcta está marcada.` } };
+const P5 = { id:'sa-paso8-quiebre', ok:'a',
+  opts:[['a', gr(D8.angulo)], ['b', gr(D8.errores.suplementa), 'quiebre-suplementa', 'hipotesis'], ['c', gr(D8.errores.resta), 'quiebre-resta', 'hipotesis'], ['d', gr(D8.errores.promedio, 1), 'quiebre-promedia', 'hipotesis']],
+  fb:{ a:'¡Bien! Traza por P una paralela a L₁ y L₂: parte el ángulo APB en dos. Arriba queda un alterno interno del ángulo en A (35°) y abajo uno del ángulo en B (50°): m∠APB = 35° + 50° = 85°.',
+       b:'Elegiste la B. 95° es lo que le falta a 85° para 180°, pero el quiebre no es un suplemento. Con una paralela por P, el ángulo APB se parte en 35° y 50°, que se suman. La correcta está marcada.',
+       c:'Elegiste la C. Restar daría la diferencia entre las dos inclinaciones, pero el quiebre junta las dos: con una paralela por P, el ángulo APB se parte en 35° y 50°. La correcta está marcada.',
+       d:'Elegiste la D. El promedio no aparece en el dibujo: con una paralela por P, el ángulo APB tiene adentro un ángulo de 35° y otro de 50°, completos. La correcta está marcada.' } };
+
+// ---- Vistas de cada paso ----
+const rec1 = () => ({ tipo:'recta', puntos:Object.assign({}, D1.puntos), rango:[-1, 25] });
+function llaves1(V, conTexto){
+  const r = M.recta(V.puntos);
+  V.llaves = [{ p:'A', q:'C', k:'AC', texto:`AC = ${fmt(r.seg('A','C'))}`, lado:'arriba', nivel:1 }, { p:'A', q:'D', k:'AD', texto:`AD = ${fmt(r.seg('A','D'))}`, lado:'arriba', nivel:2 },
+    { p:'B', q:'D', k:'BD', texto:`BD = ${fmt(r.seg('B','D'))}`, lado:'abajo', nivel:1 }];
+  V.tramo = conTexto ? { p:'B', q:'C', k:'BC' } : null;
+  if (conTexto) V.llaves.push({ p:'B', q:'C', k:'BC', texto:`BC = ${fmt(r.seg('B','C'))}`, lado:'abajo', nivel:2 });
+  return V;
+}
+function vista3(V, resuelto){
+  const m = M.mediosEnRecta(V.puntos);
+  V.llaves = [{ p:'A', q:'C', k:'AC', texto: resuelto ? `AC = ${fmt(m.AC)}` : 'AC', lado:'arriba', nivel:1 }, { p:'B', q:'D', k:'BD', texto: resuelto ? `BD = ${fmt(m.BD)}` : 'BD', lado:'abajo', nivel:1 }];
+  V.medios = [{ n:'M', x:m.M, k: resuelto ? 'MN' : null }, { n:'N', x:m.N, k: resuelto ? 'MN' : null }];
+  V.mn = resuelto ? { a:m.M, b:m.N } : null;
+  if (resuelto) V.llaves.push({ xa:m.M, xb:m.N, k:'MN', texto:`MN = ${fmt(m.MN, 1)}`, lado:'abajo', nivel:2 });
+  V.sep = 4;
+  return V;
+}
+function vistaTheta(theta, extra){
+  return Object.assign({ tipo:'angulo', recta:true, sectores:[{ desde:0, hasta:theta, k:'t', texto:gr(theta), r:.42 }], rayos:[{ dir:theta, k:'t' }] }, extra || {});
+}
+function vista5(V){
+  const th = V.theta, g = M.angulo(th);
+  V.sectores = [{ desde:0, hasta:th, k:'t', texto:gr(th), r:.4 }];
+  if (g.complemento !== null) V.sectores.push({ desde:th, hasta:90, k:'co', texto:gr(g.complemento), r:.4 });
+  if (g.suplemento !== null) V.sectores.push({ desde:th, hasta:180, k:'su', texto:gr(g.suplemento), r:.86, r0:.6, rt:.73 });
+  V.rayos = [{ dir:th, k:'t', mango:true, id:'th' }]; V.escuadra = true;
+  return V;
+}
+const steps = [
+ { k:'Paso 1', t:'Segmentos que se pisan', gate:P1, leg:['AC','BD','AD','BC'], legAntes:['AC','BD','AD'],
+   vista:() => llaves1(rec1(), !!S.pred[P1.id]),
+   desc:() => 'Una recta con los puntos A, B, C y D en ese orden. Arriba, las llaves de AC y de AD; abajo, la de BD.' + (S.pred[P1.id] ? ` El tramo BC, que comparten AC y BD, mide ${fmt(D1.BC)} cm.` : ''),
+   body:() => `<p class="problem">Sobre una recta están los puntos A, B, C y D, en ese orden. Se sabe que ${V('AC','AC = 14 cm')}, ${V('BD','BD = 18 cm')} y ${V('AD','AD = 24 cm')}. ¿Cuánto mide ${V('BC','BC')}? (figura referencial)</p>
+     <p>Mira el dibujo: las llaves marcan cada dato. Antes de calcular, elige.</p>${opciones(P1)}`,
+   tras:() => `<div class="eqs"><div class="eq">${V('AC','AC')} + ${V('BD','BD')} = ${V('AD','AD')} + ${V('BC','BC')}<span class="note">BC se cuenta dos veces</span></div>
+     <div class="eq">14 + 18 = 24 + ${V('BC','BC')} → ${V('BC','BC = 8 cm')}</div></div>` },
+ { k:'Paso 2', t:'Arrastra los puntos', leg:['AC','BD','AD','BC'], arrastre:true,
+   vista:() => { const V = llaves1(rec1(), true); V.arrastrables = ['B', 'C', 'D']; V.regla = true; return V; },
+   desc:() => { const r = M.recta(S.vista.puntos); return `B, C y D se pueden mover. AC = ${fmt(r.seg('A','C'))}, BD = ${fmt(r.seg('B','D'))}, AD = ${fmt(r.seg('A','D'))} y BC = ${fmt(r.seg('B','C'))}.`; },
+   body:() => `<p>Arrastra B, C o D (o tócalos y usa las flechas del teclado). Las rayitas de la recta marcan cada centímetro.</p><div id="vivo" class="body"></div>
+     <p>Muevas lo que muevas, la suma de los dos segmentos que se pisan es igual a todo el segmento más la parte común: ${V('AC','AC')} + ${V('BD','BD')} = ${V('AD','AD')} + ${V('BC','BC')}. Es la idea que más se usa en los problemas de segmentos.</p>`,
+   vivo:() => { const r = M.recta(S.vista.puntos), s = r.segmentos; return `<div class="eqs"><div class="eq">${V('AC','AC')} + ${V('BD','BD')} = ${fmt(s.AC)} + ${fmt(s.BD)} = ${fmt(s.AC + s.BD)}</div><div class="eq">${V('AD','AD')} + ${V('BC','BC')} = ${fmt(s.AD)} + ${fmt(s.BC)} = ${fmt(s.AD + s.BC)}</div></div>`; },
+   tras:null },
+ { k:'Paso 3', t:'Dos puntos medios: predice', gate:P2, leg:['AC','BD','MN'], legAntes:['AC','BD'],
+   vista:() => { const V = vista3({ tipo:'recta', puntos:Object.assign({}, P_REC), rango:[-1, 23] }, !!S.pred[P2.id]); if (S.pred[P2.id]){ V.arrastrables = ['B', 'C']; V.regla = true; } return V; },
+   desc:() => 'Una recta con A, B, C y D. M es el punto medio de AB y N el de CD. Arriba la llave de AC, abajo la de BD.' + (S.pred[P2.id] ? ' Ahora B y C se pueden mover.' : ''),
+   body:() => `<p class="problem">Otra vez A, B, C y D están en ese orden. M es el punto medio de AB y N, el de CD. Si ${V('AC','AC')} + ${V('BD','BD')} = 30 cm, ¿cuánto mide ${V('MN','MN')}?</p>${opciones(P2)}`,
+   tras:() => `<div id="vivo" class="body"></div><p>Arrastra B o C: cambian AC y BD, pero ${V('MN','MN')} siempre es la mitad de su suma. ${V('MN','MN')} = AB/2 + BC + CD/2, y ${V('AC','AC')} + ${V('BD','BD')} = AB + 2·BC + CD: el doble exacto.</p>`,
+   vivo:() => { const m = M.mediosEnRecta(S.vista.puntos); return `<div class="eqs"><div class="eq">${V('AC','AC')} + ${V('BD','BD')} = ${fmt(m.AC)} + ${fmt(m.BD)} = ${fmt(m.AC + m.BD)}</div><div class="eq">${V('MN','MN')} = ${fr(fmt(m.AC + m.BD), '2')} = ${V('MN', fmt(m.MN, 1) + ' cm')}</div></div>`; } },
+ { k:'Paso 4', t:'La escuadra y la recta: predice', gate:P3, leg:['t','co','su'], legAntes:['t'],
+   vista:() => vistaTheta(30, { escuadra:true }),
+   desc:() => 'Un ángulo θ de 30° con vértice O, sobre una recta. La línea punteada vertical marca la esquina de 90°.' + (S.pred[P3.id] ? ' El complemento (60°) completa la escuadra; el suplemento de ese complemento (120°) completa la recta.' : ''),
+   body:() => `<p>El ${V('co','complemento')} de un ángulo es lo que le falta para 90° (la esquina de una escuadra). El ${V('su','suplemento')} es lo que le falta para 180° (media vuelta: la recta).</p>
+     <p class="problem">¿Cuánto mide el ${V('su','suplemento')} del ${V('co','complemento')} de ${V('t','θ = 30°')}?</p>${opciones(P3)}`,
+   tras:() => `<div class="eqs"><div class="eq">${V('co','complemento de 30°')} = 90 − 30 = ${V('co','60°')}<span class="note">completa la escuadra</span></div>
+     <div class="eq">${V('su','suplemento de 60°')} = 180 − 60 = ${V('su','120°')}<span class="note">completa la recta</span></div>
+     <div class="eq">180 − (90 − ${V('t','θ')}) = 90 + ${V('t','θ')}<span class="note">con cualquier θ agudo</span></div></div>
+     <p>Se lee de afuera hacia adentro, pero se calcula de adentro hacia afuera. Y el resultado es siempre 90° más que el ángulo: 90 + 30 = 120.</p>`,
+   animar:() => {
+     const V = S.vista;
+     animar(1600, f => {
+       const a = suave(Math.min(1, f*2)), b = suave(Math.max(0, f*2 - 1));
+       V.sectores = [{ desde:0, hasta:30, k:'t', texto:gr(30), r:.42 }];
+       V.rayos = [{ dir:30, k:'t' }];
+       if (b === 0) V.sectores.push({ desde:30, hasta:30 + 60*a, k:'co', texto: a > .6 ? gr(60) : '', r:.42 });
+       else {
+         // el complemento baja a la base y el suplemento llena lo que falta de la recta
+         V.sectores = [{ desde:0, hasta:30, k:'t', texto:'', r:.24 }, { desde:30*(1 - b), hasta:30*(1 - b) + 60, k:'co', texto:gr(60), r:.42 },
+           { desde:60, hasta:60 + 120*b, k:'su', texto: b > .6 ? gr(120) : '', r:.86, r0:.6, rt:.73 }];
+         V.rayos = [{ dir:30*(1 - b) + 60, k:'co' }];
+       }
+     });
+   },
+   final:V => { V.sectores = [{ desde:0, hasta:30, k:'t', texto:'', r:.24 }, { desde:0, hasta:60, k:'co', texto:gr(60), r:.42 }, { desde:60, hasta:180, k:'su', texto:gr(120), r:.86, r0:.6, rt:.73 }]; V.rayos = [{ dir:60, k:'co' }]; } },
+ { k:'Paso 5', t:'Mueve el rayo', leg:['t','co','su'], arrastre:true,
+   vista:() => vista5({ tipo:'angulo', recta:true, theta:40, limitar(id, d){ this.theta = clamp(d, 1, 179); vista5(this); return true; } }),
+   desc:() => { const g = M.angulo(S.vista.theta); return `θ mide ${gr(g.medida)}, es ${g.clase}. ${g.complemento === null ? 'No tiene complemento.' : 'Su complemento mide ' + gr(g.complemento) + '.'} Su suplemento mide ${gr(g.suplemento)}.`; },
+   body:() => `<p>Arrastra el rayo de ${V('t','θ')} (o toca el dibujo y usa las flechas). Adentro, el ${V('co','complemento')} completa la escuadra; afuera, el ${V('su','suplemento')} completa la recta.</p><div id="vivo" class="body"></div>
+     <p class="hint">Un ángulo de 90° o más no tiene complemento: ya llenó la escuadra. Y a uno de 180° ya no le queda suplemento.</p>`,
+   vivo:() => { const g = M.angulo(S.vista.theta); return `<div class="chips"><span class="chip">${V('t', 'θ = ' + gr(g.medida))} · ${g.clase}</span><span class="chip">${V('co', 'complemento: ' + (g.complemento === null ? 'no tiene' : gr(g.complemento)))}</span><span class="chip">${V('su', 'suplemento: ' + gr(g.suplemento))}</span>${g.complemento === null ? '' : `<span class="chip">suplemento del complemento: ${gr(M.cadena(['suplemento','complemento'], g.medida).valor)} = 90° + ${gr(g.medida)}</span>`}</div>`; } },
+ { k:'Paso 6', t:'Dos paralelas y una secante: predice', gate:P4, leg:['t','su'], paralelas:true,
+   vista:() => S.pred[P4.id] ? { tipo:'paralelas', phi:D6.angulos[0], colores:true, valores:true }
+                             : { tipo:'paralelas', phi:D6.angulos[0], ver:[3, 6], etiquetas:{ 3:'3x + 10', 6:'5x − 30' } },
+   desc:() => S.pred[P4.id] ? 'Las paralelas L₁ y L₂ y la secante. Los ángulos 2, 3, 6 y 7 miden 70°; los otros cuatro, 110°.' : 'Las rectas L₁ y L₂, paralelas, cortadas por una secante. Están marcados dos ángulos alternos internos: 3x + 10 abajo a la izquierda en L₁ y 5x − 30 arriba a la derecha en L₂.',
+   body:() => `<p class="problem">L₁ ∥ L₂: el enunciado dice que son paralelas. Una secante las corta y forma los ángulos alternos internos 3x + 10 y 5x − 30. ¿Cuánto vale x?</p>
+     <p class="hint">Alternos internos: entre las dos paralelas y a lados opuestos de la secante.</p>${opciones(P4)}`,
+   tras:() => `<div class="eqs"><div class="eq">3x + 10 = 5x − 30 → 40 = 2x → x = 20</div><div class="eq">3·20 + 10 = 5·20 − 30 = ${V('t','70°')}</div></div>
+     <p>Ahora el dibujo pinta los ocho ángulos: cuatro miden ${V('t','70°')} y los otros cuatro, su ${V('su','suplemento')}, ${V('su','110°')}. Solo hay dos medidas.</p>` },
+ { k:'Paso 7', t:'Gira la secante', leg:['t','su'], paralelas:true, arrastre:true,
+   vista:() => ({ tipo:'paralelas', phi:70, colores:true, valores:true, indices:true, mango:true, tilt:0 }),
+   desc:() => { const o = M.ochoAngulos(0, S.vista.tilt, S.vista.phi).angulos; return S.vista.tilt ? `L₂ ya no es paralela. En L₁ los ángulos miden ${gr(o[1])} y ${gr(o[0])}; en L₂, ${gr(o[5])} y ${gr(o[4])}.` : `La secante forma ${gr(o[1])} y ${gr(o[0])}. Los ángulos 2, 3, 6 y 7 miden ${gr(o[1])}; 1, 4, 5 y 8 miden ${gr(o[0])}.`; },
+   body:() => `<p>Arrastra la manija de la secante (o usa las flechas). Los ángulos 2, 3, 6 y 7 miden ${V('t','θ')}; los otros cuatro, ${V('su','180° − θ')}. Al girar, los de un color siguen iguales entre sí, y uno de cada color suman 180°.</p><div id="vivo" class="body"></div>
+     <label class="check"><input type="checkbox" id="incl"> Inclinar L₂: que ya no sea paralela</label>
+     <div class="eqs"><div class="eq"><span class="note" style="margin:0">Iguales: alternos internos (3 y 6, 4 y 5), alternos externos (1 y 8, 2 y 7), correspondientes (1 y 5, 2 y 6, 3 y 7, 4 y 8) y opuestos por el vértice (1 y 4, 2 y 3…).</span></div>
+     <div class="eq"><span class="note" style="margin:0">Suman 180°: conjugados internos (3 y 5, 4 y 6) y conjugados externos (1 y 7, 2 y 8).</span></div></div>`,
+   vivo:() => {
+     const v = S.vista, o = M.ochoAngulos(0, v.tilt, v.phi);
+     if (!v.tilt) return `<div class="chips"><span class="chip">${V('t', 'θ = ' + gr(o.angulos[1]) + ': 2, 3, 6 y 7')}</span><span class="chip">${V('su', '180° − θ = ' + gr(o.angulos[0]) + ': 1, 4, 5 y 8')}</span></div>`;
+     return `<div class="chips"><span class="chip">alternos internos: 3 = ${gr(o.angulos[2])}, 6 = ${gr(o.angulos[5])}</span><span class="chip">opuestos en L₂: 5 = 8 = ${gr(o.angulos[4])}</span></div>
+       <p class="aviso">Con L₂ inclinada, los ángulos de L₂ quedan en gris: ya no copian a los de L₁. Las reglas de los ocho ángulos valen solo si el enunciado dice que las rectas son paralelas. Lo que sí sigue valiendo son los opuestos por el vértice (iguales) y los vecinos de un mismo cruce (suman 180°).</p>`;
+   } },
+ { k:'Paso 8', t:'El quiebre entre paralelas: predice', gate:P5, leg:['de','iz'],
+   vista:() => S.pred[P5.id] ? { tipo:'quebrada', puntos:[Q8.A, Q8.P, Q8.B], clases:true, valores:true, auxiliares:true, partes:true, partesTexto:true, mango:1, xmin:-1, xmax:14,
+       limitar: q => q.x > Math.max(Q8.A.x, Q8.B.x) + 0.6 && q.x < 14 && q.y > 1 && q.y < 9 }
+     : { tipo:'quebrada', puntos:[Q8.A, Q8.P, Q8.B], valores:{ A:'35°', B:'50°', P1:'?' }, xmin:-1, xmax:14 },
+   desc:() => { const s = M.serrucho(S.vista.puntos); return S.pred[P5.id] ? `El camino baja de A a P y de P a B. En A mide ${gr(s.angulos[0].medida)}, en P ${gr(s.angulos[1].medida)} y en B ${gr(s.angulos[2].medida)}. Una paralela punteada pasa por P.` : 'Dos paralelas L₁ y L₂. Un camino baja de A, en L₁, a un quiebre P cuya punta mira hacia la derecha, y de P a B, en L₂. En A forma 35° con L₁ y en B forma 50° con L₂.'; },
+   body:() => `<p class="problem">L₁ ∥ L₂. Un camino baja de A a B con un quiebre en P, cuya punta mira hacia la derecha (el ángulo APB abre hacia la izquierda), como la punta de una flecha. En A forma 35° con L₁ y en B, 50° con L₂. ¿Cuánto vale m∠APB? (figura referencial)</p>${opciones(P5)}`,
+   tras:() => `<div id="vivo" class="body"></div><p>Arrastra P. La paralela punteada parte el ángulo del quiebre en dos alternos internos, uno de cada paralela. Por eso los ángulos que ${V('de','abren hacia la derecha')} (A y B) suman lo mismo que los que ${V('iz','abren hacia la izquierda')} (P). Es la regla del «serrucho», y vale también con más quiebres: pruébala en «¿Qué pasa si…?».</p>
+     <p class="aviso">Ojo: vale cuando cada quiebre es una punta, es decir, el camino va hacia un lado y regresa. Si en un quiebre el camino dobla pero sigue hacia el mismo lado, la regla no sale así.</p>`,
+   vivo:() => { const s = M.serrucho(S.vista.puntos); return `<div class="eqs"><div class="eq">${V('de', gr(s.angulos[0].medida))} + ${V('de', gr(s.angulos[2].medida))} = ${V('iz', gr(s.angulos[1].medida))}<span class="note">m∠A + m∠B = m∠P</span></div></div>`; } },
+];
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function describir(){ const s = steps[S.step]; $('desc1').textContent = s.desc ? s.desc() : ''; }
+// La leyenda dice solo lo que el dibujo pinta: antes de responder, sin los colores que aún no aparecen.
+function ponerLeyenda(){ const s = steps[S.step], antes = s.gate && !S.pred[s.gate.id]; leyenda($('leg1'), antes ? (s.legAntes || []) : s.leg, s.paralelas ? LEY_PARALELAS : null); }
+function vivo(){ const s = steps[S.step], el = $('vivo'); if (el && s.vivo) el.innerHTML = s.vivo(); describir(); }
+function armarVista(){
+  const s = steps[S.step];
+  const tipoAntes = S.vista && S.vista.tipo;
+  S.vista = s.vista();
+  if (s.final && s.gate && S.pred[s.gate.id]) s.final(S.vista);
+  cv.tabIndex = manijasPosibles() ? 0 : -1;
+  cv.setAttribute('aria-label', s.desc ? s.desc() : 'Dibujo del paso');
+  if (S.vista.tipo !== tipoAntes) L.resize(); else draw();
+}
+function manijasPosibles(){ const v = S.vista; return !!(v && ((v.arrastrables && v.arrastrables.length) || (v.rayos || []).some(r => r.mango) || v.mango !== undefined && v.mango !== false)); }
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  cancelAnimationFrame(anim);
+  const s = steps[n]; S.step = n; S.hl = null;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body() + (s.gate ? '<div id="tras" class="body"></div>' : '');
+  ponerLeyenda();
+  pintarDots();
+  armarVista();
+  if (s.gate) prediccion(s.gate);
+  if (s.vivo && !s.gate) vivo();
+  const inc = $('incl'); if (inc) inc.addEventListener('change', () => { S.vista.tilt = inc.checked ? 7 : 0; vivo(); draw(); });
+  L.compactar(s.gate && !S.pred[s.gate.id]);
+  nav(); describir(); draw();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(P){
+  const btns = [...$('stepBody').querySelectorAll('.opt')], s = steps[S.step];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').innerHTML = (s.tras ? s.tras() : '') + FUENTE_H;
+    if (s.vivo) vivo();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); nav(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    L.compactar(false);
+    // La vista cambia recién al responder: en el celular, primero sube el lienzo y después se anima.
+    Celular.alResponder(L.cv, () => {
+      if (s.animar){ S.vista = s.vista(); cv.tabIndex = manijasPosibles() ? 0 : -1; s.animar(); }
+      else armarVista();
+      describir(); ponerLeyenda();
+    }, () => S.step === paso);
+  }));
+  pintar();
+}
+conectarArrastre(L, () => S.vista, (id, p, tecla) => { if (moverManija(S.vista, id, p, tecla)){ const s = steps[S.step]; if (S.vista.tipo === 'recta'){ if (S.step === 1) llaves1(S.vista, true); else vista3(S.vista, true); } vivo(); draw(); } }, draw);
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Cada experimento pide una predicción; el dibujo cambia recién después de responder. Todo sale del motor. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const S = { k:0, pred:{}, t0:Date.now(), vista:null };
+let anim = null;
+const L = crearLienzo(cv, W => ALTOS[(S.vista && S.vista.tipo) || 'paralelas'](W), draw);
+function draw(){ if (!L.W) return; dibujarVista(L, colores(null), S.vista); }
+function animar(dur, cada, fin){
+  cancelAnimationFrame(anim);
+  if (RM){ cada(1); draw(); fin && fin(); return; }
+  const ini = performance.now();
+  const tick = now => { const f = Math.min(1, (now - ini)/dur); cada(f); draw(); if (f < 1) anim = requestAnimationFrame(tick); else fin && fin(); };
+  anim = requestAnimationFrame(tick);
+}
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const E1 = M.ecuacionPar('opuestos por el vértice', [2, 40], [3, 10]);
+const E2 = M.bisectrices(70, 50);
+const E3 = M.noParalelas(72, 70, 4);
+const Q4 = M.construirQuebrada({ x:0, y:10 }, [{ dir:-30, largo:6 }, { dir:-150, largo:4 }, { dir:-10, largo:8 }, { dir:-145 }], 0);
+const R4 = M.reglaSerrucho({ derecha:[30, 40, 35], izquierda:[60], incognita:'izquierda', vecinos:[40, 35] });
+const E5 = M.ecuacionPar('conjugados internos', [3, 15], [1, 45]);
+const NOHAY = '<p class="fuente">Hipótesis nuestra: las opciones incorrectas son errores que suponemos; no encontramos un estudio con porcentajes. El informe de geometría deja los errores entre paralelas (GE17) como hipótesis.</p>';
+const NOHAY_SIN = '<p class="fuente">Hipótesis nuestra: las opciones incorrectas son errores que suponemos; no encontramos un estudio con porcentajes.</p>';
+
+function vistaBis(a, b, resuelto){
+  const r = M.bisectrices(a, b), x = r.rayos;
+  const V = { tipo:'angulo', recta:true, a, b, sectores:[], rayos:[{ dir:0, letra:'A' }, { dir:x.B, letra:'B', mango:resuelto, id:'B' }, { dir:a + b, letra:'C', mango:resuelto, id:'C' }] };
+  if (resuelto){
+    V.sectores.push({ desde:0, hasta:x.bisectriz1, k:'al', r:.5 }, { desde:x.bisectriz1, hasta:a, k:'al', texto:gr(r.mitades[0], 1), r:.5 },
+      { desde:a, hasta:x.bisectriz2, k:'be', texto:gr(r.mitades[1], 1), r:.5 }, { desde:x.bisectriz2, hasta:a + b, k:'be', r:.5 },
+      { desde:x.bisectriz1, hasta:x.bisectriz2, k:null, texto:gr(r.entre, 1), r:.85, rt:.95, dash:[6, 4], ta: r.mitades[0] >= r.mitades[1] ? (x.bisectriz1 + a)/2 : (a + x.bisectriz2)/2 });
+  } else {
+    V.sectores.push({ desde:0, hasta:a, k:null, texto:gr(a), r:.36, rt:.26 }, { desde:a, hasta:a + b, k:null, texto:gr(b), r:.36, rt:.26 },
+      { desde:x.bisectriz1, hasta:x.bisectriz2, k:null, texto:'?', r:.8, rt:.9, dash:[6, 4], ta:(x.bisectriz1 + a)/2 });
+  }
+  V.rayos.push({ dir:x.bisectriz1, dash:[6, 5] }, { dir:x.bisectriz2, dash:[6, 5] });
+  V.limitar = function(id, d){
+    let A = this.a, B = this.b;
+    if (id === 'B'){ const tot = A + B; A = clamp(d, 10, tot - 10); B = tot - A; }
+    else { B = clamp(d - A, 10, 180 - A); }
+    Object.assign(this, vistaBis(A, B, true)); return true;
+  };
+  return V;
+}
+const EXPS = [
+  { id:'opuestos', corto:'Las tijeras', leg:['t','su'], leyTextos:{ t:'los dos opuestos (2 y 3)', su:'los otros dos, su suplemento' },
+    q:'Dos rectas se cortan como las hojas de unas tijeras. Dos ángulos opuestos por el vértice miden 2x + 40 y 3x + 10. ¿Cuánto vale x?',
+    opts:[['a', `x = ${fmt(E1.errores.otraRelacion.x)}`, 'opuestos-como-suplementarios', 'hipotesis'], ['b', `x = ${fmt(E1.x)}`],
+          ['c', `x = ${fmt(E1.errores.despejeSigno)}`, 'despeje-signo', 'hipotesis'], ['d', `x = ${fmt(E1.errores.complementarios.x)}`, 'opuestos-suman-90', 'hipotesis']],
+    ok:'b',
+    antes:() => ({ tipo:'paralelas', una:true, phi:E1.angulos[0], etiquetas:{ 2:'2x + 40', 3:'3x + 10' }, ver:[2, 3] }),
+    despues:() => ({ tipo:'paralelas', una:true, phi:E1.angulos[0], colores:true, valores:true, mango:true, min:20, max:160 }),
+    desc:v => v.colores ? `Dos rectas que se cortan. Los opuestos por el vértice miden ${gr(v.phi)} y los otros dos, ${gr(180 - v.phi)}.` : 'Dos rectas que se cortan; marcados dos ángulos opuestos por el vértice: 2x + 40 arriba a la derecha y 3x + 10 abajo a la izquierda.',
+    vivo:v => `<div class="chips"><span class="chip">${V('t', 'opuestos: ' + gr(v.phi) + ' y ' + gr(v.phi))}</span><span class="chip">${V('su', 'los otros dos: ' + gr(180 - v.phi))}</span></div>`,
+    exp:`<p>Los opuestos por el vértice son iguales: cada uno es el ${V('su','suplemento')} del mismo vecino. 2x + 40 = 3x + 10 da x = 30, y cada uno mide ${V('t','100°')}. Los vecinos (adyacentes) suman 180°: los otros dos miden ${V('su','80°')}.</p>
+      <p>Gira una de las rectas con la manija: los de un color siguen iguales. Aquí no hace falta ninguna paralela; esto vale siempre que dos rectas se corten.</p>` + NOHAY_SIN },
+  { id:'bisectrices', corto:'Dos bisectrices', leg:['al','be'],
+    q:'Los ángulos AOB y BOC, con m∠AOB = 70° y m∠BOC = 50°, son consecutivos: comparten el lado OB. Se trazan las bisectrices de los dos (las líneas punteadas). ¿Qué ángulo forman entre ellas?',
+    opts:[['a', gr(E2.errores.sinMitad), 'bisectrices-sin-dividir', 'hipotesis'], ['b', gr(E2.entre)], ['c', gr(E2.errores.semidiferencia), 'bisectrices-semidiferencia', 'hipotesis'], ['d', gr(E2.errores.soloUnaMitad), 'bisectrices-solo-una-mitad', 'hipotesis']],
+    ok:'b',
+    antes:() => vistaBis(70, 50, false),
+    despues:() => vistaBis(70, 50, true),
+    desc:v => v.rayos[1].mango ? `m∠AOB = ${gr(v.a)} y m∠BOC = ${gr(v.b)}. Entre las bisectrices hay ${gr(M.bisectrices(v.a, v.b).entre, 1)}.` : 'Tres rayos desde O: OA sobre la recta, OB a 70° y OC a 120°. Las bisectrices de AOB y BOC están punteadas.',
+    vivo:v => { const r = M.bisectrices(v.a, v.b); return `<div class="chips"><span class="chip">${V('al', 'α = ' + gr(r.mitades[0], 1))}</span><span class="chip">${V('be', 'β = ' + gr(r.mitades[1], 1))}</span><span class="chip">entre bisectrices: ${V('al','α')} + ${V('be','β')} = ${gr(r.entre, 1)}</span>${r.recto ? '<span class="chip">m∠AOC = 180°: ¡perpendiculares!</span>' : ''}</div>`; },
+    exp:`<p>Cada bisectriz parte su ángulo en dos mitades iguales: ${V('al','α = 35°')} y ${V('be','β = 25°')}. Entre las dos bisectrices quedan una mitad de cada uno: ${V('al','35°')} + ${V('be','25°')} = 60°, la mitad de 120°.</p>
+      <p>Arrastra B o C. Cuando A, O y C quedan en línea recta (m∠AOC = 180°), las bisectrices forman 90°: la mitad de 180°.</p>` + NOHAY_SIN },
+  { id:'casi', corto:'¿Son paralelas?', leg:[],
+    q:'L₁ y L₂ se ven paralelas (figura referencial), pero el enunciado no lo dice. Una secante forma con ellas los alternos internos de 72° (en P) y 70° (en Q). ¿Son paralelas?',
+    opts:[['a', 'Sí, porque en el dibujo se ven paralelas', 'GE17-asume-paralelas', 'hipotesis'], ['b', 'No, porque si lo fueran, los alternos internos serían iguales'],
+          ['c', 'Sí, porque los dos ángulos son agudos', 'agudos-entonces-paralelas', 'hipotesis'], ['d', 'No se puede saber, porque falta la distancia entre ellas', 'cree-que-falta-un-dato', 'hipotesis']],
+    ok:'b',
+    antes:() => ({ tipo:'casi', datos:E3, ventana:[-7, 7], inclina:0 }),
+    despues:() => ({ tipo:'casi', datos:E3, ventana:[-7 - 3, E3.coordenadas.R.x + 8], corte:true, inclina:1 }),
+    // primero L₂ toma su inclinación real (2°) y después el dibujo se aleja hasta el corte R
+    anima:v => animar(2600, f => { const a = suave(Math.min(1, f*2.5)), g = suave(Math.max(0, (f - .4)/.6)); v.inclina = a; v.ventana = [-7 - 3*g, 7 + (E3.coordenadas.R.x + 8 - 7)*g]; }),
+    desc:v => v.corte ? `Al alejarse, las rectas se cortan en R, a ${fmt(E3.PR, 1)} cm de P si PQ mide 4 cm: forman un ángulo de ${gr(E3.entre)}.` : 'Figura referencial: dos rectas horizontales, L₁ arriba y L₂ abajo, y una secante que las corta en P y Q. En P, abajo a la izquierda, 72°; en Q, arriba a la derecha, 70°.',
+    vivo:() => `<div class="chips"><span class="chip">ángulo entre L₁ y L₂: ${gr(E3.entre)}</span><span class="chip">PR ≈ ${fmt(E3.PR, 1)} cm (con PQ = 4 cm)</span><span class="chip">triángulo PQR: ${gr(E3.enP)} + ${gr(E3.enQ)} + ${gr(E3.entre)} = 180°</span></div>`,
+    exp:`<p>Si L₁ y L₂ fueran paralelas, los alternos internos serían iguales. Son 72° y 70°: no lo son. Al alejar el dibujo se ve que se cortan, a la derecha, formando un ángulo de 2° (la diferencia). Si PQ mide 4 cm, se cortan a más de un metro.</p>
+      <p>También vale al revés: si los alternos internos son iguales, las rectas son paralelas. Pero si el enunciado no dice «paralelas» ni da ángulos iguales, no lo asumas porque «se ven» así.</p>
+      <p class="fuente">El informe de geometría (GE17) lo deja como hipótesis: asumir que dos rectas son paralelas porque se ven paralelas. No encontramos un estudio con porcentajes.</p>` },
+  { id:'serrucho', corto:'El serrucho', leg:['de','iz'],
+    q:'L₁ ∥ L₂. Un serrucho baja de A (en L₁) a B (en L₂) con tres quiebres (figura referencial). En A mide 30° y en B, 35°; en P1, 60° y en P2, 40°. ¿Cuánto mide el ángulo en P3?',
+    opts:[['a', gr(R4.x)], ['b', gr(R4.errores.suma180), 'serrucho-suma-180', 'hipotesis'], ['c', gr(R4.errores.soloVecinos), 'serrucho-solo-vecinos', 'hipotesis'], ['d', gr(R4.errores.olvidaUno), 'serrucho-olvida-un-angulo', 'hipotesis']],
+    ok:'a',
+    antes:() => ({ tipo:'quebrada', puntos:Q4, valores:{ A:'30°', P1:'60°', P2:'40°', P3:'?', B:'35°' }, xmin:-1, xmax:11 }),
+    despues:() => ({ tipo:'quebrada', puntos:Q4.slice(), clases:true, valores:true, auxiliares:true, partes:true, partesTexto:true, mango:2, xmin:-1, xmax:11,
+      limitar: q => q.y < Q4[1].y - 0.4 && q.y > Q4[3].y + 0.4 && q.x > -1 && q.x < Math.min(Q4[1].x, Q4[3].x) - 0.4 }),
+    desc:v => { const s = M.serrucho(v.puntos); return v.clases ? `Abren a la derecha A, P2 y B: suman ${gr(s.sumaDerecha, 1)}. Abren a la izquierda P1 y P3: suman ${gr(s.sumaIzquierda, 1)}.` : 'Dos paralelas y un serrucho que baja de A a B. P1 y P3 tienen la punta hacia la derecha y P2 hacia la izquierda.'; },
+    vivo:v => { const s = M.serrucho(v.puntos), a = s.angulos; return `<div class="eqs"><div class="eq">${V('de', gr(a[0].medida, 1))} + ${V('de', gr(a[2].medida, 1))} + ${V('de', gr(a[4].medida, 1))} = ${V('de', gr(s.sumaDerecha, 1))}<span class="note">A + P2 + B</span></div><div class="eq">${V('iz', gr(a[1].medida, 1))} + ${V('iz', gr(a[3].medida, 1))} = ${V('iz', gr(s.sumaIzquierda, 1))}<span class="note">P1 + P3</span></div></div>`; },
+    exp:`<p>Los que ${V('de','abren hacia la derecha')} (A, P2 y B) suman lo mismo que los que ${V('iz','abren hacia la izquierda')} (P1 y P3): 30 + 40 + 35 = 60 + x, así que x = 45°.</p>
+      <p>¿Por qué? Por cada quiebre pasa una paralela punteada, que parte su ángulo en dos pedazos: cada pedazo es alterno interno de un pedazo del quiebre vecino (o del ángulo en A o en B). Arrastra P2 y mira que las dos sumas siguen iguales.</p>
+      <p>La regla pide que cada quiebre sea una punta; por eso P2 solo se mueve sin dejar de serlo.</p>` + NOHAY },
+  { id:'conjugados', corto:'Del mismo lado', leg:['t','su'], paralelas:true,
+    q:'L₁ ∥ L₂. Una secante forma los conjugados internos 3x + 15 y x + 45: los dos entre las paralelas y del mismo lado de la secante (figura referencial). ¿Cuánto vale x?',
+    opts:[['a', `x = ${fmt(E5.errores.otraRelacion.x)}`, 'GE17-iguala-conjugados', 'hipotesis'], ['b', `x = ${fmt(E5.x)}`], ['c', `x = ${fmt(E5.errores.complementarios.x, 1)}`, 'conjugados-suman-90', 'hipotesis'], ['d', `x = ${fmt(E5.errores.despejeSigno)}`, 'despeje-signo', 'hipotesis']],
+    ok:'b',
+    antes:() => ({ tipo:'paralelas', phi:E5.angulos[0], ver:[3, 5], etiquetas:{ 3:'3x + 15', 5:'x + 45' } }),
+    despues:() => ({ tipo:'paralelas', phi:E5.angulos[0], ver:[3, 5], colores:true, valores:true, mango:true }),
+    desc:v => v.colores ? `Los conjugados internos 3 y 5 miden ${gr(v.phi)} y ${gr(180 - v.phi)}: suman 180°.` : 'Dos paralelas y una secante. Marcados los conjugados internos: 3x + 15 abajo a la izquierda en L₁ y x + 45 arriba a la izquierda en L₂.',
+    vivo:v => `<div class="chips"><span class="chip">${V('t', '3: ' + gr(v.phi))}</span><span class="chip">${V('su', '5: ' + gr(180 - v.phi))}</span><span class="chip">${gr(v.phi)} + ${gr(180 - v.phi)} = 180°</span></div>`,
+    exp:`<p>Los conjugados internos están del mismo lado de la secante: uno es de un color y el otro, del otro. Por eso suman 180°: (3x + 15) + (x + 45) = 180, 4x = 120 y x = 30. Miden ${V('t','105°')} y ${V('su','75°')}.</p>
+      <p>Gira la secante: siempre hay uno de cada color. Igualarlos solo sería posible si los dos midieran 90°.</p>` + NOHAY },
+];
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ponerVista(v){
+  const antes = S.vista && S.vista.tipo; S.vista = v;
+  cv.tabIndex = v.mango !== undefined && v.mango !== false || (v.rayos || []).some(r => r.mango) ? 0 : -1;
+  if (v.tipo !== antes) L.resize(); else draw();
+}
+function describir(){ const x = EXPS[S.k]; if (S.vista) { const t = x.desc(S.vista); $('desc2').textContent = t; cv.setAttribute('aria-label', t); } }
+function vivo(){ const x = EXPS[S.k], el = $('vivo2'); if (el && x.vivo) el.innerHTML = x.vivo(S.vista); describir(); }
+function ir(k){
+  if (k > primeraLibre()) return;
+  cancelAnimationFrame(anim);
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], hecho = !!S.pred[x.id];
+  ponerVista(hecho ? x.despues() : x.antes());
+  L.compactar(!hecho);
+  botones();
+  leyenda($('leg2'), hecho ? x.leg : [], x.leyTextos || (x.paralelas ? LEY_PARALELAS : null));
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>
+    <div class="opts">${x.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
+    <p class="fb" id="fb2"></p><div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira el dibujo para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = `<div id="vivo2" class="body"></div>` + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    vivo();
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); pintar(); L.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder(L.cv, () => { ponerVista(x.despues()); leyenda($('leg2'), x.leg, x.leyTextos || (x.paralelas ? LEY_PARALELAS : null)); if (x.anima) x.anima(S.vista); vivo(); }, () => S.k === k);
+  });
+  pintar(); describir();
+}
+conectarArrastre(L, () => S.vista, (id, p, tecla) => { if (moverManija(S.vista, id, p, tecla)){ vivo(); draw(); } }, draw);
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

@@ -4,9 +4,172 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 
 ## Reglas vigentes para las próximas plantillas
 
+- **Orden vigente** (aviso de la conversación principal, 7 nov 2026): choques, fluidos, MAS, ondas mecánicas, termodinámica y, después, gravitación. Electrostática, magnetismo, inducción, física moderna y ondas electromagnéticas pasaron a la rutina de física B (rama `rutina/fisica-b`): ya no son de esta lista.
+- **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
+
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov) y estática (7 nov) quedaron hechos (abajo). La próxima ejecución sigue con **choques (impulso y cantidad de movimiento)**.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques y fluidos (7 nov) quedaron hechos (abajo); MAS está en curso.
+- Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Fluidos: presión, Pascal y Arquímedes (`plantillas/fluidos/`)
+
+Se construyó en paralelo con choques, con el mismo método.
+
+**Qué hay.**
+- `motor.js` (MotorFluidos):
+  - presión manométrica y absoluta a una profundidad;
+  - recipientes de cuatro formas (ancho, estrecho, botella con techo y embudo), con la paradoja hidrostática: en la botella, el techo empuja hacia abajo y el fondo recibe 20 000 N aunque el agua pese 11 000 N;
+  - presión en cualquier punto;
+  - vasos comunicantes, tubo en U con dos líquidos y barómetro;
+  - prensa hidráulica con trabajo igual en los dos émbolos;
+  - empuje: fracción sumergida, peso aparente, bloque atado al fondo y cinco bloques del mismo tamaño soltados bajo el agua;
+  - el bloque en el dinamómetro que baja a un vaso sobre la balanza;
+  - continuidad y Bernoulli.
+
+  La cabecera documenta la geometría de cada recipiente.
+- `casos.json`: 18 casos. Incluye los nueve que propone el informe.
+- `motor.test.js`: 39 pruebas. Comprueba:
+  - fuerza en el fondo = peso del agua + fuerza de las paredes, sumada por franjas;
+  - presiones iguales en la interfaz del tubo en U;
+  - el volumen que baja en la prensa es igual al que sube;
+  - las ideas F1, F2, F3, F4, F10, F11, F12 y F13;
+  - dinamómetro + balanza = peso total siempre.
+- `papel.json`: 9 problemas propios: cisterna, tanque con tubo, tubo en U, barómetro en Juliaca, gata, tronco de eucalipto, piedra en el dinamómetro, vaso en la balanza y manguera. El de Bernoulli es para San Marcos.
+- `index.html`:
+  - **Paso a paso:** 8 pasos con 6 predicciones:
+    - el fondo de los tres recipientes;
+    - el sensor bajo el techo;
+    - el dinamómetro;
+    - la balanza;
+    - el bloque 5 cm más hondo;
+    - otro bloque del mismo tamaño.
+
+    El sensor se arrastra. El explorador tiene bloque, líquido y profundidad.
+  - **«¿Qué pasa si…?»:** 5 experimentos con pastillas bloqueadas: las dos ramas, la prensa, agua sobre mercurio, cinco bloques y un cubo en dos líquidos.
+  - Usa `nucleo/celular.js`. El peso se rotula W, para que P sea la presión.
+
+**Verificador independiente.** Leyó solo la cabecera y usó otros caminos:
+- prensa por trabajo;
+- balanza por el balance de fuerzas del sistema;
+- tubo en U igualando presiones;
+- paradoja con el peso del agua más la fuerza del techo.
+
+Coincidieron 131 campos. Las 3 diferencias fueron de nombre o de interpretación. Pidió documentar la geometría y los errores en la cabecera, y ya está.
+
+**Revisor de contenido.** Recalculó todo y estaba bien. Lo que se corrigió:
+- **Grave:**
+  - «Un cubo en dos líquidos» mostraba «E = 12 N» antes de responder.
+  - «el más liviano recibe más empuje» iba como documentado sin dato; ahora es hipótesis.
+- **Medio:**
+  - Los cinco bloques ya no se colorean (madera o metal) antes de responder.
+  - La flecha de E ya no se dibuja antes de responder en los pasos 4 y 7, porque descartaba opciones.
+  - El código de «agua de encima» pasó a uno propio.
+  - Agua sobre mercurio, opción C: pasó a hipótesis.
+  - Prensa:
+    - «P en todo el aceite» se cambió por «la mano agrega», con los émbolos a la misma altura;
+    - quedan «trabajo de la mano» y «trabajo sobre la carga».
+  - Rótulos que se encimaban con valores extremos.
+- **Bajo:**
+  - redondeos que no cuadraban;
+  - el paso 6 ahora muestra la diferencia de presiones antes y después;
+  - la cita de Loverude (el 10 % es de segundo año).
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Color | Claro | Oscuro |
+| --- | --- | --- | --- |
+| W peso | azul | #1f5fbf | #7cb0ff |
+| N (balanza, techo, fondo) | verde | #4f7a17 | #a3d65e |
+| T tensión, dinamómetro | rojo | #c0364a | #f17384 |
+| F mano | fucsia | #a10fbf | #cf6bfa |
+| E empuje | turquesa | #0f766e | #5ed9c8 |
+| P presión | ámbar | #a35700 | #ef6f06 |
+| h profundidad | sepia | #392f0e | #f9bd0b |
+
+- Dentro de la escena:
+  - el ΔE00 mínimo es 24,4 en claro y 25,3 en oscuro (el par N–E);
+  - todos los colores pasan AA; el chip de N va con fondo al 4 %.
+- Entre escenas (lo detectó el revisor; buscó reemplazos y ninguno quedó mejor, así que se dejan y se documentan):
+  - P claro queda a ΔE00 5,9 del ámbar del roce y a 1,9 del naranja de t;
+  - h oscuro queda a 5,0 del roce oscuro;
+  - h claro casi parece tinta;
+  - en gases la presión es azul, y aquí el azul es el peso.
+
+**Pedidos para la integración.**
+1. Unidad `fisica.fluidos` → `"plantillas": ["fluidos"]`, y luego `npm run catalogo`.
+2. Los colores y sus cercanías en `docs/diseno.md`.
+3. En el informe de fluidos, la línea 183 da 15–25 % para «el más liviano recibe más empuje», pero la fila F10 no tiene ese dato (parece mezclar el 15 % de segundo año con el 25 % de aciertos). Conviene corregirla, y separar «agua de encima» (30–50 %, Loverude) en su propia fila.
+4. Pendientes y `CLAUDE.md`.
+
+**Pendiente.** Continuidad, Bernoulli y el barómetro están en el motor y en el papel, pero no en la escena. Tensión superficial no se cubre.
+
+## 7 nov 2026 · Choques: impulso y cantidad de movimiento (`plantillas/choques/`)
+
+Gerson pasó a un plan más amplio: ya no hay límite de una plantilla por ejecución, y se permiten hasta 3 subagentes a la vez (aviso de la conversación principal). Choques y fluidos se construyeron en paralelo. A mitad de camino el contenedor se reinició; los constructores se retomaron desde su transcripción y no se perdió nada.
+
+**Qué hay.**
+- `motor.js` (MotorChoques):
+  - choque en una recta con coeficiente de restitución e: elástico, inelástico y plástico; velocidades finales, p y Ec de cada carrito, Ec perdida, impulsos y v_cm;
+  - `escenario`, con el estado en cada instante;
+  - choque en el plano;
+  - pared y rebote en el piso;
+  - impulso y pulsos F-t (triangular, rectangular, seno) con su área;
+  - centro de masa y explosión (retroceso);
+  - péndulo balístico y su inverso.
+
+  Cada resultado trae `errores`.
+- `casos.json`: 21 casos. Incluye los 5 que propone el informe.
+- `motor.test.js`: 47 pruebas. Comprueba que p se conserva y la Ec nunca crece, e = alejamiento/acercamiento, J₁ = −J₂, el centro de masa a velocidad constante, que el área de cualquier pulso es J, que solo con masas iguales se intercambian las velocidades, y la pérdida M/(m + M) del péndulo.
+- `papel.json`: 10 problemas propios.
+- `index.html`:
+  - **El riel:** visto de costado, con flechas de v. Debajo, filas de antes y después: p como flechas que se suman con su sentido y Ec como barras (la Ec perdida, rayada). También muestra la caja del sistema, el par de fuerzas y el centro de masa ⊕.
+  - **Paso a paso:** 8 pasos con 4 predicciones (p de cada carrito, v', la Ec después y el choque elástico de 1 kg contra 2 kg). Tiene un explorador con la flecha del carrito 1 arrastrable.
+  - **«¿Qué pasa si…?»:** 5 experimentos con pastillas bloqueadas y gráficas F-t con el área pintada: dos pelotas y una pared (M3), pared o costal (M7), se quema el hilo, el bloque colgado (M6) y el carrito que rebota (M2).
+  - **Celular:** usa `nucleo/celular.js`.
+
+**Verificador independiente.** Trabajó sin el motor ni los casos, con fracciones. Usó el sistema del centro de masa (u' = −e·u), la Ec perdida como (1 − e²)·½μ·v_rel², las áreas F-t por figuras y el triángulo de p en el plano. No hubo discrepancias de física; las diferencias fueron de convención. El distractor `FmaxPorDt` (20 N·s) no lo usa ninguna predicción; en el papel aparece con su unidad.
+
+**Revisor de contenido.** Los números estaban bien, y los cuatro «documentado» tienen dato para ese error en esa pregunta: M3 50 %, M7 19 %, M6 37 % y M2 26 %. Lo que se corrigió:
+- **Lo grave:**
+  - la letra A nombraba a la vez un carrito y una alternativa; ahora los carritos son 1 y 2 en todo el paso a paso;
+  - «El carrito que rebota» mostraba «p después» antes de responder;
+  - el chip de p en oscuro no pasaba AA.
+- **Lo medio y lo menor:**
+  - el subtítulo inexacto;
+  - el resaltado al pasar sobre un dato, que se prometía y no existía;
+  - los rótulos con «·», que se leían como multiplicación;
+  - la forma de las opciones de las pelotas y la tercera ley;
+  - «la Ec aparece de la nada»;
+  - el Δt pasó al naranja de t de las otras escenas;
+  - rótulos encimados.
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Color | Claro | Oscuro |
+| --- | --- | --- | --- |
+| v | rojo, como en MRUV | #c0364a | #f17384 |
+| p, también Δp y el área F-t | índigo | #0b0b8e | #7b95ff |
+| Ec | celeste | #08709e | #25caf4 |
+| F | fucsia, como en dinámica | #a10fbf | #cf6bfa |
+| Δt | naranja de t | #a05200 | #f0a04a |
+| h | verde | #4b7416 | #a3d65e |
+
+- Masas, e y el centro de masa en tinta.
+- ΔE00 mínimo: 22,0 en claro y 21,3 en oscuro (el par p–F).
+- AA: el mínimo es 4,56.
+- Notas para `diseno.md`:
+  - el índigo de p es el mismo de Ep en energía (son cosas distintas en escenas distintas);
+  - el celeste de Ec es un poco más oscuro que el de energía, para pasar AA en el chip.
+
+**Pedidos para la integración.**
+1. Unidad `fisica.impulso-y-choques` → `"plantillas": ["choques"]`, y luego `npm run catalogo`.
+2. Los colores de arriba en `docs/diseno.md`.
+3. Pendientes y `CLAUDE.md`.
+4. Si toca, rebalancear `catalogo/pruebas/fisica.json`.
+5. Fijar en `docs/metodo/` qué significa «parcial». Aquí se usó como «la cara numérica de un error documentado» (por ejemplo, M5).
+
+**Pendiente.** El choque en dos dimensiones está en el motor y en el papel (p10), pero no en la escena.
 
 ## 7 nov 2026 · Estática: equilibrio y torque (`plantillas/estatica/`)
 

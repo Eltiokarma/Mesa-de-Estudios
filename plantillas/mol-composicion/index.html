@@ -11,7 +11,7 @@
    Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 y contraste WCAG sobre --paper y --card:
      Elementos (cada átomo y cada montón de un elemento lleva su color; el texto dice "átomos de H" o "moléculas de H₂O"):
        la paleta común de química (nucleo/elementos.js), en el bloque generado más abajo: H turquesa, C gris, O rojo,
-       N azul, Ca lavanda, Mg azul pizarra, Fe gris acero, S añil y Cu cobre (definido, pero no sale en esta escena).
+       N azul, Ca lavanda, Mg azul pizarra, Fe azul, S añil y Cu cobre (definido, pero no sale en esta escena).
      Variables
        m  masa (g o u)            siena     #773922 / #e0a07a   (la de limitante-particulas)
        n  moles                   mostaza   #7d6a00 / #e3c84a   (la de limitante-particulas)
@@ -24,7 +24,7 @@
    (Ca–tinta). Contraste mínimo 4,54 (AA). Un color propio para % no entra: con M, N y % nuevos, lo mejor que encontramos
    (búsqueda exhaustiva por familias de tono) da ΔE00 20,4, pero con dos verdes casi iguales; por eso el porcentaje va en
    tinta, como el tiempo en cinética. Con la paleta común quedan resueltos C–tinta, C–Ca y m–O. Parecidos que nunca salen
-   juntos: Fe–C y Mg–N (Elementos.CERCANOS); Cu–m 16 si se agrega un hidrato de cobre, hay que revisarlo. */
+   juntos: Fe–N y Mg–N (Elementos.CERCANOS); Cu–m 16 si se agrega un hidrato de cobre, hay que revisarlo. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
@@ -50,9 +50,9 @@
   --vidrio:#5e5670; --monton:#4a3d58; --letra-atomo:#1d1626; color-scheme:dark }
 /* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
    Elementos.css(['H', 'C', 'N', 'O', 'Mg', 'S', 'Ca', 'Fe', 'Cu']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
-:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-N:#136caa; --el-O:#c4284e; --el-Mg:#425697; --el-S:#3328c4; --el-Ca:#6a5b8f; --el-Fe:#6a676d; --el-Cu:#c52e03 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Mg:#8db7ff; --el-S:#9f9bff; --el-Ca:#deb0f5; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d } }
-:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Mg:#8db7ff; --el-S:#9f9bff; --el-Ca:#deb0f5; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d }
+:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-N:#136caa; --el-O:#c4284e; --el-Mg:#425697; --el-S:#2d29c7; --el-Ca:#6a5b8f; --el-Fe:#1768be; --el-Cu:#c52e03 }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Mg:#8db7ff; --el-S:#9386ff; --el-Ca:#deb0f5; --el-Fe:#209cf2; --el-Cu:#ff8a3d } }
+:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Mg:#8db7ff; --el-S:#9386ff; --el-Ca:#deb0f5; --el-Fe:#209cf2; --el-Cu:#ff8a3d }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
@@ -181,7 +181,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visibl
   <div class="top">
     <header>
       <p class="eyebrow">Química · Mol y composición · Problemas tipo admisión</p>
-      <h1>El mol: contar partículas pesando</h1>
+      <h1>El mol: la balanza, la lupa y la cuenta</h1>
       <p class="sub">Una balanza, una lupa y la cuenta, con los mismos colores. Predice y después mira.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
@@ -839,14 +839,14 @@ const vGlu = (r, k) => ({
 const steps = [
  { k:'Paso 1', t:'El problema', vista:() => vMol(undefined),
    body:() => `<p class="problem">En un platillo hay 1 mol de ${Fh('O2')}, que pesa ${m_('32 g')}. En el otro, 1 mol de ${Fh('H2O')}, que pesa ${m_('18 g')}. ¿Dónde hay más moléculas?</p>
-   <p>El mol sirve para contar partículas pesando. Es un paquete, como la docena: una docena son 12 cosas y un mol son ${N_(NA_TXT)} partículas. Son tantas que no se cuentan de una en una: se pesan.</p>
+   <p>El mol es la unidad con la que la química mide cuánta sustancia hay. Primero predice; después, la lupa muestra qué hay en cada platillo.</p>
    <p>Arriba, la balanza muestra lo que se pesa (la ${m_('masa m')}). Al centro, la lupa mostrará las partículas, pero todavía está tapada. Abajo está la cuenta: la ${M_('masa molar M')}, que es cuánto pesa 1 mol, y los ${n_('moles n')}.</p>
    <p class="hint">Cada elemento tiene su color en el texto, en la lupa y en la cuenta: ${Fh('O')} el oxígeno y ${Fh('H')} el hidrógeno. Toca un color del texto para resaltarlo en el dibujo.</p>` },
  { k:'Paso 2', t:'Antes de mirar, predice', gate:P0, vista:r => vMol(r ? true : false),
    body:() => `<p>1 mol de ${Fh('O2')} (${m_('32 g')}) y 1 mol de ${Fh('H2O')} (${m_('18 g')}). ¿Dónde hay más moléculas?</p>${opcionesHTML(P0.opts, 'fb')}
    <p class="hint" id="tras" hidden>Ahora la lupa está abierta. Debajo del dibujo puedes cambiar la cuenta entre moléculas y átomos.</p>` },
  { k:'Paso 3', t:'Lo mismo de moléculas, distinto peso', vista:() => vMol(true),
-   body:() => `<p>En la lupa hay el mismo número de figuras a cada lado: 1 mol de cualquier sustancia tiene ${N_(NA_TXT)} partículas. La balanza se inclina hacia el ${Fh('O2')} porque cada molécula de ${Fh('O2')} pesa 32 u y cada una de ${Fh('H2O')}, 18 u.</p>
+   body:() => `<p>En la lupa hay el mismo número de figuras a cada lado: 1 mol de cualquier sustancia tiene ${N_(NA_TXT)} partículas. El mol es un paquete, como la docena: una docena son 12 cosas y un mol son ${N_(NA_TXT)} partículas. Son tantas que no se cuentan de una en una: se pesan. La balanza se inclina hacia el ${Fh('O2')} porque cada molécula de ${Fh('O2')} pesa 32 u y cada una de ${Fh('H2O')}, 18 u.</p>
    <div class="eqs">
      <div class="eq"><span class="ex">${n_('n')} = ${fr(m_('m'), M_('M'))}: &nbsp; ${fr(m_('32 g'), M_('32 g/mol'))} = ${n_('1 mol')} de ${Fh('O2')} &nbsp; y &nbsp; ${fr(m_('18 g'), M_('18 g/mol'))} = ${n_('1 mol')} de ${Fh('H2O')}</span></div>
      <div class="eq"><span class="ex">${N_('partículas')} = ${n_('n')} × 6,02 × 10²³ = ${n_('1')} × 6,02 × 10²³ = ${N_(NA_TXT + ' moléculas')}, en los dos</span><span class="note">6,02 × 10²³ por mol es el número de Avogadro (Nₐ): cuántas partículas hay en un paquete.</span></div>

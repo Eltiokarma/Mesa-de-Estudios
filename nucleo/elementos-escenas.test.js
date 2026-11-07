@@ -64,6 +64,20 @@ const ESCENAS = {
       [['C'], ['--c-T']],                                      // butano, isobutano, pentano y neopentano
       [['H', 'O'], ['--c-T']],                                 // el vapor que se enfría
     ] },
+  // Viene de la rutina de química B; la prueba la cuida en cuanto la escena llegue a esta rama.
+  'materia-energia': {
+    elementos: ['H', 'C', 'O', 'Na', 'Si', 'S', 'Cl', 'Fe'],
+    vistas: [
+      [['H', 'O', 'Fe'], []],
+      [['H', 'O', 'Na', 'Cl'], ['--c-fa', '--c-co']],
+      [['C', 'H', 'O'], ['--c-m']],
+      [['C', 'H', 'O', 'Fe'], []],
+      [['H', 'O', 'Si'], []],
+      [['H', 'O', 'C'], []],
+      [['H', 'O', 'Fe', 'S'], []],
+      [['Fe', 'O'], ['--c-m']],
+      [['H', 'O'], ['--c-T']],
+    ] },
 };
 
 const leer = d => fs.readFileSync(path.join(raiz, d, 'index.html'), 'utf8');
@@ -74,6 +88,7 @@ function variables(html, selector) {
 }
 
 for (const [dir, cfg] of Object.entries(ESCENAS)) {
+  if (!fs.existsSync(path.join(raiz, dir, 'index.html'))) { test(`${dir}: todavía no está en esta rama`, { skip: true }, () => {}); continue; }
   test(`${dir}: el bloque de elementos es el de Elementos.css()`, () => {
     const html = leer(dir);
     assert.ok(html.includes(E.css(cfg.elementos)), 'falta el bloque generado o no coincide con nucleo/elementos.js');
