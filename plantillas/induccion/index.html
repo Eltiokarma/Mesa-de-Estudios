@@ -1,0 +1,1382 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El imán, la espira y el foquito: inducción electromagnética</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de magnetismo.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), con la convención de
+   electrostática y magnetismo para lo que se repite: campo magnético B verde (⊙ y ⊗ en ese color), velocidad v
+   rojo, fuerza F azul, medidas (A, L, d) oliva, ángulo θ fucsia y voltaje V magenta. Nuevos: flujo Φ petróleo, fem ε
+   naranja y el campo INDUCIDO por la corriente de la espira, Bᵢ, índigo (el informe pide dibujarlo con otro color
+   que B). La corriente I es el granate de magnetismo, apenas corrido (claro #6e110c en vez de #7a1010, ΔE00 = 2,4;
+   oscuro #f95a24 en vez de #ff5e4d, ΔE00 = 8,3): aquí I y v salen juntas en la barra y el imán, y con los valores
+   de magnetismo quedaban a 18,0 y 12,9 (en magnetismo nunca comparten pantalla).
+   El número de vueltas N, la resistencia R, ω, el tiempo t, los polos N y S del imán, el núcleo y los ejes van en
+   tinta o gris.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py): entre los que salen juntos, ΔE00 mínimo 20,1 en claro (I con v) y
+   20,6 en oscuro (I con ε). Pares parecidos que nunca comparten pantalla: v–V (13,3 y 12,4), Bᵢ–θ (14,6 y 16,8),
+   θ–V (17,8 y 19,0) y Bᵢ–F (oscuro 14,0: en la barra no se dibuja Bᵢ). Todos pasan AA (≥ 4,5) sobre el papel y
+   sobre su chip (.v, fondo al 8 %), en claro y en oscuro; el más justo es v claro #c0364a, 4,56 sobre su chip. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-B:#2a7638; --c-Bi:#4a13ae; --c-I:#6e110c; --c-v:#c0364a; --c-F:#1f5fbf; --c-L:#5c531f; --c-th:#a10fbf;
+  --c-V:#b3246b; --c-phi:#0d6b78; --c-e:#a55412; --foco:#f2b600;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-B:#7fd67f; --c-Bi:#7e84fc; --c-I:#f95a24; --c-v:#f17384; --c-F:#7cb0ff; --c-L:#fdf2b4; --c-th:#cf6bfa;
+  --c-V:#ff86bd; --c-phi:#24e4f9; --c-e:#ffa64d; --foco:#ffd84a;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-B:#7fd67f; --c-Bi:#7e84fc; --c-I:#f95a24; --c-v:#f17384; --c-F:#7cb0ff; --c-L:#fdf2b4; --c-th:#cf6bfa;
+  --c-V:#ff86bd; --c-phi:#24e4f9; --c-e:#ffa64d; --foco:#ffd84a;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend span span{display:inline}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:50%}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
+.v-Bi{color:var(--c-Bi); background:color-mix(in srgb, var(--c-Bi) 8%, transparent)}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 8%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-L{color:var(--c-L); background:color-mix(in srgb, var(--c-L) 8%, transparent)}
+.v-th{color:var(--c-th); background:color-mix(in srgb, var(--c-th) 8%, transparent)}
+.v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 8%, transparent)}
+.v-phi{color:var(--c-phi); background:color-mix(in srgb, var(--c-phi) 8%, transparent)}
+.v-e{color:var(--c-e); background:color-mix(in srgb, var(--c-e) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:block; line-height:1.9; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal; line-height:1.4}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.acciones .btn{min-height:40px; padding:9px 16px}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(128px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura.ancha{grid-column:1/-1}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.35fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Inducción electromagnética · Problemas tipo admisión</p>
+      <h1>El imán, la espira y el foquito</h1>
+      <p class="sub">¿Cuándo aparece corriente en una bobina que tiene un imán cerca? ¿Hacia dónde circula? ¿Cómo prende un foquito una barra que se desliza, un generador o un transformador? Predice frente al dibujo, mueve el imán y la barra, y mira cómo responde el amperímetro.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del paso">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del paso"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/induccion">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'induccion', unidad: 'fisica.induccion-electromagnetica', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la física (flujo, Faraday, Lenz, la barra, el imán que se acerca y sus gráficas, el generador y el
+   transformador) sale de MotorInduccion (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MI = MotorInduccion;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V_ = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const B_ = t => V_('B', t), Bi_ = t => V_('Bi', t), I_ = t => V_('I', t), v_ = t => V_('v', t), F_ = t => V_('F', t),
+  L_ = t => V_('L', t), th_ = t => V_('th', t), V2_ = t => V_('V', t), P_ = t => V_('phi', t), e_ = t => V_('e', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const mix = (a, b, f) => a + (b - a)*f;
+const RAD = Math.PI/180;
+
+// Datos comunes de la bobina frente al imán (los del enunciado de los pasos 1, 2, 4 y 5)
+const BOB = { N:200, R:20 };
+const B6P = MI.femMovimiento(0.5, 0.4, 10, 4).Pelectrica;   // potencia del foquito a 10 m/s: brillo 1
+const ESC_mA = 2;   // fondo de escala del amperímetro, en mA (a cada lado del cero)
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    B:g('--c-B'), Bi:g('--c-Bi'), I:g('--c-I'), v:g('--c-v'), F:g('--c-F'), L:g('--c-L'), th:g('--c-th'), V:g('--c-V'),
+    phi:g('--c-phi'), e:g('--c-e'), foco:g('--foco'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con fondo del color del papel, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  const T = tam || 13;
+  ctx.textBaseline = 'middle'; ctx.font = `${peso || 700} ${T}px ${c.font}`;
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - T*.7, w + 6, T*1.4); ctx.restore();
+  ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
+  return w;
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Vistas: 'iman' (de costado: un imán sobre el eje de una bobina conectada a un amperímetro de cero central; con ver.graf, las
+   gráficas Φ(t) y ε(t) debajo, con el mismo eje de tiempo), 'campo' (de frente: una bobina cuadrada en un campo
+   uniforme que entra, ⊗, con un amperímetro o, si está cortada, un voltímetro), 'barra' (de frente: dos rieles, un
+   foquito y una barra que se desliza en un campo que entra), 'gen' (en perspectiva: una bobina que gira en un campo
+   horizontal, con la normal y el ángulo θ; con ver.graf, ε(t) debajo) y 'trafo' (un núcleo de hierro con dos bobinas). */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { vista:'iman', hl:null, tok:0, ocupado:false, compacto:false, lect:() => [], desc:() => '', arr:{}, ver:{}, prog:{} };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = false, cacheLineas = null, cacheClave = '';
+  function altoVista(w){
+    const chico = w < 560, g = E.ver.graf;
+    if (E.vista === 'iman') return (chico ? 210 : 260) + (g ? (g.fem ? 2 : 1)*(chico ? 104 : 124) : 0);
+    if (E.vista === 'campo') return chico ? 250 : 300;
+    if (E.vista === 'barra') return chico ? 215 : 300;
+    if (E.vista === 'gen') return (chico ? 250 : 300) + (g ? (chico ? 120 : 140) : 0);
+    return chico ? 250 : 300;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(altoVista(w), E.compacto, { tope: E.tope || 250 }));
+    const dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0); cacheLineas = null;
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.ocupado = false; arrastrando = null;
+    Object.assign(E, { vista:'iman', arr:{}, lect:() => [], desc:() => '', alCambiar:null, im:null, campo:null, barra:null, gen:null, tr:null,
+      leyendaExtra:null, tope:250, continuo:null, tQuieto:0 }, o);
+    E.ver = Object.assign({}, o.ver);
+    E.prog = Object.assign({}, o.prog);
+    if (o.im) E.im = { polo:'N', vel:0, ...o.im };
+    E.vivo = { v:0, obj:0, t:0 };
+    cacheLineas = null;
+    cv.tabIndex = Object.values(E.arr).some(Boolean) ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+    if (o.continuo) bucle();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === !!E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.permitir = o => { E.arr = Object.assign({}, o); cv.tabIndex = Object.values(E.arr).some(Boolean) ? 0 : -1; E.dibujar(); };
+  E.cambio = () => { E.dibujar(); E.avisar(); };
+  E.redimensionar = () => { W = 0; resize(); };
+  E.tween = (dur, paso, fin) => {
+    const tok = E.tok;
+    if (RM || !dur){ paso(1); if (fin) setTimeout(() => { if (E.tok === tok) fin(); }, 0); return; }
+    const t0 = performance.now();
+    const tick = now => {
+      if (E.tok !== tok) return;
+      const f = Math.min(1, (now - t0)/dur); paso(f);
+      if (f < 1) requestAnimationFrame(tick); else if (fin) fin();
+    };
+    requestAnimationFrame(tick);
+  };
+  E.crecer = (k, dur, fin) => { E.prog[k] = 0; E.tween(dur, f => { E.prog[k] = suave(f); E.dibujar(); }, fin); };
+  // Un movimiento continuo (el generador que gira, el flujo alterno del núcleo): E.continuo(t en s) en cada cuadro.
+  function bucle(){
+    const tok = E.tok, t0 = performance.now();
+    if (RM){ E.continuo(E.tQuieto || 0); E.dibujar(); return; }
+    const tick = now => { if (E.tok !== tok || !E.continuo) return; E.continuo((now - t0)/1000); E.dibujar(); requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }
+
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  function flecha(P, Q, color, ancho, o){
+    o = o || {};
+    let L = Math.hypot(Q.x - P.x, Q.y - P.y); if (L < 2) return null;
+    const u = { x:(Q.x - P.x)/L, y:(Q.y - P.y)/L }, n = { x:-u.y, y:u.x };
+    const cab = Math.min(L*.55, 7 + ancho*1.5), base = { x:Q.x - u.x*cab, y:Q.y - u.y*cab };
+    ctx.save(); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa; ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round';
+    if (o.trazos) ctx.setLineDash([6, 4]);
+    linea(ctx, P, base); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(Q.x, Q.y); ctx.lineTo(base.x + n.x*cab*.5, base.y + n.y*cab*.5); ctx.lineTo(base.x - n.x*cab*.5, base.y - n.y*cab*.5); ctx.closePath(); ctx.fill();
+    ctx.restore();
+    return Q;
+  }
+  // ⊙ (sale de la pantalla) y ⊗ (entra), en el color de la variable.
+  function simbolo(P, sale, rad, color, ancho, alfa, fondo){
+    ctx.save(); ctx.globalAlpha = alfa === undefined ? 1 : alfa; ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho || 1.6;
+    if (fondo){ ctx.save(); ctx.fillStyle = fondo; ctx.beginPath(); ctx.arc(P.x, P.y, rad, 0, 7); ctx.fill(); ctx.restore(); }
+    ctx.beginPath(); ctx.arc(P.x, P.y, rad, 0, 7); ctx.stroke();
+    if (sale){ ctx.beginPath(); ctx.arc(P.x, P.y, Math.max(1.6, rad*.28), 0, 7); ctx.fill(); }
+    else { const d = rad*.62; linea(ctx, { x:P.x - d, y:P.y - d }, { x:P.x + d, y:P.y + d }); linea(ctx, { x:P.x - d, y:P.y + d }, { x:P.x + d, y:P.y - d }); }
+    ctx.restore();
+  }
+  // Arco con punta de flecha (para el sentido de una corriente que da vueltas), de a0 a a1 en radianes de pantalla.
+  function arcoFlecha(C, r, a0, a1, color, ancho, ry){
+    const R2 = ry || r, n = 40;
+    ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round'; ctx.beginPath();
+    for (let k = 0; k <= n; k++){ const a = a0 + (a1 - a0)*k/n, X = C.x + r*Math.cos(a), Y = C.y + R2*Math.sin(a); if (k) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); }
+    ctx.stroke(); ctx.restore();
+    const a = a1, d = a1 > a0 ? 1 : -1, P = { x:C.x + r*Math.cos(a), y:C.y + R2*Math.sin(a) };
+    const t = { x:-r*Math.sin(a)*d, y:R2*Math.cos(a)*d }, L = Math.hypot(t.x, t.y) || 1;
+    flecha({ x:P.x - t.x/L*10, y:P.y - t.y/L*10 }, { x:P.x + t.x/L*2, y:P.y + t.y/L*2 }, color, ancho);
+  }
+  function manija(P, rx, ry, c){
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arrastrando || sobre) ? .16 : .07; ctx.beginPath(); ctx.ellipse(P.x, P.y, rx + 6, ry + 6, 0, 0, 7); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.ellipse(P.x, P.y, rx + 6, ry + 6, 0, 0, 7); ctx.stroke(); ctx.restore();
+  }
+  // Galvanómetro (o amperímetro) de aguja con el cero al centro. I en A; null: aguja tapada con «?».
+  function galvanometro(C, r, I, c, etq){
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.arc(C.x, C.y, r, Math.PI, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1;
+    for (let k = -4; k <= 4; k++){ const a = -Math.PI/2 + k*Math.PI/12; linea(ctx, { x:C.x + Math.cos(a)*r*.78, y:C.y + Math.sin(a)*r*.78 }, { x:C.x + Math.cos(a)*r*(k ? .9 : .96), y:C.y + Math.sin(a)*r*(k ? .9 : .96) }); }
+    ctx.fillStyle = c.muted; ctx.font = `700 9px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(etq || 'mA', C.x, C.y - r*.32);
+    if (I === null || I === undefined){
+      ctx.fillStyle = c.ink; ctx.font = `800 ${Math.round(r*.6)}px ${c.font}`; ctx.fillText('?', C.x, C.y - r*.62);
+    } else {
+      const a = -Math.PI/2 + clamp(I*1000/ESC_mA, -1.08, 1.08)*Math.PI/3;
+      ctx.strokeStyle = c.I; ctx.lineWidth = grosor('I', 2.2); ctx.lineCap = 'round'; linea(ctx, C, { x:C.x + Math.cos(a)*r*.86, y:C.y + Math.sin(a)*r*.86 });
+    }
+    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(C.x, C.y, 2.6, 0, 7); ctx.fill();
+    ctx.restore();
+  }
+  // Foquito: brillo de 0 a 1 (de la potencia, del motor).
+  function foquito(C, r, brillo, c){
+    ctx.save();
+    if (brillo > 0.01){
+      const g = ctx.createRadialGradient(C.x, C.y, r*.3, C.x, C.y, r*(1.4 + 1.8*brillo));
+      g.addColorStop(0, c.foco); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.globalAlpha = clamp(brillo, 0, 1)*.85; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(C.x, C.y, r*(1.4 + 1.8*brillo), 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+    }
+    ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(C.x, C.y, r, 0, 7); ctx.fill(); ctx.stroke();
+    if (brillo > 0.01){ ctx.globalAlpha = clamp(brillo*1.2, 0, 1); ctx.fillStyle = c.foco; ctx.beginPath(); ctx.arc(C.x, C.y, r - 2, 0, 7); ctx.fill(); ctx.globalAlpha = 1; }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(C.x - r*.5, C.y + r*.3);
+    for (let k = 0; k <= 6; k++) ctx.lineTo(C.x - r*.5 + k*r/6, C.y - r*.15 + (k % 2 ? -r*.2 : r*.05));
+    ctx.lineTo(C.x + r*.5, C.y + r*.3); ctx.stroke();
+    ctx.restore();
+  }
+  function caja(x, y, w, h, c, txt, color){
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, 6) : ctx.rect(x, y, w, h); ctx.fill(); ctx.stroke(); ctx.restore();
+    if (txt){ ctx.save(); ctx.fillStyle = color || c.ink; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, x + w/2, y + h/2 + 1); ctx.restore(); }
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = E.c = colores();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    ({ iman:dibujarIman, campo:dibujarCampo, barra:dibujarBarra, gen:dibujarGen, trafo:dibujarTrafo })[E.vista](c);
+  };
+
+  // ----- gráficas Φ(t) y ε(t) -----
+  // g = { tFin, series:[{ puntos, alfa, trazos, hasta }], fem:bool, marcas:[{ t, n }], cursor, phiMax, femMax, femProg }
+  function panel(r, c, k, color, titulo, escala, g, ultimo){
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.strokeRect(r.x + .5, r.y + .5, r.w - 1, r.h - 1); ctx.restore();
+    const X = t => r.x + 8 + (r.w - 16)*t/g.tFin, sim = k === 'fem';
+    const y0 = sim ? r.y + r.h/2 : r.y + r.h - 10, Y = v => y0 - v/escala*(sim ? r.h/2 - 14 : r.h - 28);
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let t = 0; t <= g.tFin + 1e-9; t += .5) linea(ctx, { x:X(t), y:r.y + 4 }, { x:X(t), y:r.y + r.h - 4 });
+    ctx.strokeStyle = c.muted; linea(ctx, { x:r.x + 6, y:y0 }, { x:r.x + r.w - 6, y:y0 }); ctx.restore();
+    for (const s of g.series){
+      const hasta = s.hasta === undefined ? g.tFin : s.hasta;
+      ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha = s.alfa || 1; ctx.lineWidth = grosor(k === 'fem' ? 'e' : 'phi', 2.6); ctx.lineJoin = 'round';
+      if (s.trazos) ctx.setLineDash([5, 4]);
+      ctx.beginPath(); let prim = true;
+      for (const p of s.puntos){ if (p.t > hasta + 1e-9) break; const P = { x:X(p.t), y:Y(sim ? p.fem : p.Phi) }; if (prim){ ctx.moveTo(P.x, P.y); prim = false; } else ctx.lineTo(P.x, P.y); }
+      ctx.stroke(); ctx.restore();
+    }
+    if (g.lineas && sim) for (const l of g.lineas){ ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha = .7; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.4; linea(ctx, { x:r.x + 8, y:Y(l.v) }, { x:r.x + r.w - 8, y:Y(l.v) }); ctx.restore(); if (l.n) rotulo(ctx, c, r.x + r.w - 10, Y(l.v) - 9, l.n, color, 'right', 700, 11); }
+    rotulo(ctx, c, r.x + 10, r.y + 11, titulo, color, 'left', 800, 12);
+    if (sim && g.picos) for (const l of g.picos){ ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha = .7; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.2; linea(ctx, { x:X(l.t) - 30, y:Y(l.v) }, { x:X(l.t) + 30, y:Y(l.v) }); ctx.restore(); rotulo(ctx, c, X(l.t) + 34, Y(l.v), l.n, color, 'left', 700, 11); }
+    if (!sim && g.marcas) for (const m of g.marcas){
+      const p = g.series[0].puntos.reduce((a, b) => Math.abs(b.t - m.t) < Math.abs(a.t - m.t) ? b : a), P = { x:X(p.t), y:Y(p.Phi) };
+      ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(P.x, P.y, 4, 0, 7); ctx.fill(); ctx.restore();
+      rotulo(ctx, c, P.x + (m.dx || 0), P.y + (m.dy || -13), m.n, c.ink, 'center', 800, 12);
+    }
+    if (g.cursor !== undefined && g.cursor !== null){ ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .5; ctx.lineWidth = 1.2; linea(ctx, { x:X(g.cursor), y:r.y + 4 }, { x:X(g.cursor), y:r.y + r.h - 4 }); ctx.restore(); }
+    if (ultimo){
+      ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let t = 0; t <= g.tFin + 1e-9; t += .5) if (X(t) < r.x + r.w - 40) ctx.fillText(fmt(t, 1), X(t), r.y + r.h + 2);
+      ctx.textAlign = 'right'; ctx.fillText('t (s)', r.x + r.w - 4, r.y + r.h + 2); ctx.restore();
+    }
+  }
+
+  // ----- el imán y la bobina, de costado -----
+  // E.im = { d (m), polo que mira a la bobina, vel: −1 (se acerca), 1 (se aleja) o 0 }; ver = { I (A) o null, Bi
+  // (−1 hacia el imán, 1 alejándose, 0), sentido ('horario'|'antihorario' visto desde el imán), cara, inset, d, v,
+  // vista: texto del recuadro; Bfondo: ⊗/⊙ del imán en el recuadro }
+  function dibujarIman(c){
+    const g = E.ver.graf, chico = W < 560;
+    const nG = g ? (g.fem ? 2 : 1) : 0, hg = nG ? Math.min(chico ? 104 : 124, (H - 120)/ (nG + 1.3)) : 0;
+    const Hs = H - nG*hg - (nG ? 14 : 0);
+    const k = Math.min((W - 24)/0.27, Hs/0.12), xe = W - 0.075*k, ya = Hs*.42;
+    const aP = p => ({ x:xe + p.x*k, y:ya - p.y*k });
+    const Lm = 0.05, hm = 0.016, Rb = 0.025;
+    const im = E.im, s = im.polo === 'N' ? 1 : -1, cx = -im.d - Lm/2;
+    // líneas del campo del imán (del motor, cacheadas por posición)
+    const clave = `${Math.round(im.d*1000)}|${im.polo}|${W}|${Hs}`;
+    if (clave !== cacheClave || !cacheLineas){
+      cacheClave = clave;
+      cacheLineas = MI.lineasIman({ x:cx, y:0, largo:Lm, ang: s > 0 ? 0 : 180 }, 12, { x0:-(xe - 4)/k, x1:(W - xe - 4)/k, y0:-(Hs - ya - 4)/k, y1:(ya - 4)/k });
+    }
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, Hs); ctx.clip();
+    ctx.save(); ctx.strokeStyle = c.B; ctx.lineWidth = grosor('B', 1.3); ctx.globalAlpha = .5;
+    for (const l of cacheLineas){ ctx.beginPath(); l.forEach((p, j) => { const P = aP(p); if (j) ctx.lineTo(P.x, P.y); else ctx.moveTo(P.x, P.y); }); ctx.stroke(); }
+    ctx.restore();
+    for (const l of cacheLineas){
+      const j = Math.floor(l.length*.22); if (j < 2) continue;
+      const A = aP(l[j - 1]), Bq = aP(l[j + 1]); if (A.x < 6 || A.x > W - 6 || A.y < 6 || A.y > Hs - 6) continue;
+      const u = { x:Bq.x - A.x, y:Bq.y - A.y }, L = Math.hypot(u.x, u.y) || 1;
+      flecha({ x:A.x - u.x/L*5, y:A.y - u.y/L*5 }, { x:A.x + u.x/L*5, y:A.y + u.y/L*5 }, c.B, 1.3, { alfa:.7 });
+    }
+    // eje
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.setLineDash([3, 5]); linea(ctx, { x:6, y:ya }, { x:W - 6, y:ya }); ctx.restore();
+    // la bobina: mitad de atrás punteada, de adelante llena (adelante = hacia ti, a la derecha en la perspectiva)
+    const Cb = aP({ x:0, y:0 }), ry = Rb*k, rx = Math.max(6, ry*.3);
+    for (let j = -1; j <= 1; j++){
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.setLineDash([3, 3]); ctx.globalAlpha = .55; ctx.beginPath(); ctx.ellipse(Cb.x + j*3, Cb.y, rx, ry, 0, Math.PI/2, 3*Math.PI/2); ctx.stroke(); ctx.restore();
+    }
+    // el campo inducido (dentro de la bobina), antes de la mitad de adelante
+    const Bi = E.ver.Bi || 0, aBi = E.ver.BiAlfa === undefined ? 1 : E.ver.BiAlfa;
+    if (Bi && aBi > .02){
+      for (const yy of [-.45, 0, .45]){
+        const P = { x:Cb.x - Bi*0.018*k, y:Cb.y + yy*ry }, Q = { x:Cb.x + Bi*0.018*k, y:Cb.y + yy*ry };
+        flecha(P, Q, c.Bi, grosor('Bi', yy ? 2.2 : 3.2), { alfa:aBi });
+      }
+      if (aBi > .5) rotulo(ctx, c, Cb.x + Bi*(0.018*k + 12), Cb.y + ry*.45 + 13, 'Bᵢ', c.Bi, 'center', 800, 13);
+      if (E.ver.cara && aBi > .5) rotulo(ctx, c, Cb.x - rx - 6, Cb.y - ry - 12, `cara ${Bi < 0 ? 'norte' : 'sur'}`, c.Bi, 'right', 800, 12);
+    }
+    for (let j = -1; j <= 1; j++){
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(Cb.x + j*3, Cb.y, rx, ry, 0, -Math.PI/2, Math.PI/2); ctx.stroke(); ctx.restore();
+    }
+    // la corriente, en la mitad de adelante: antihorario visto desde el imán = sube por adelante
+    if (E.ver.sentido && E.ver.sentido !== 'ninguno' && aBi > .02){
+      ctx.save(); ctx.globalAlpha = aBi;
+      const sube = E.ver.sentido === 'antihorario';
+      arcoFlecha({ x:Cb.x + 3, y:Cb.y }, rx + 5, sube ? Math.PI*.4 : -Math.PI*.4, sube ? -Math.PI*.4 : Math.PI*.4, c.I, grosor('I', 2.6), ry + 5);
+      ctx.restore();
+      if (aBi > .5) rotulo(ctx, c, Cb.x + rx + 12, Cb.y + ry*.9 + 4, 'I', c.I, 'center', 800, 13);
+    }
+    // cables hasta el amperímetro
+    const G = { x:W - 34, y:Hs - 10 }, rg = 24;
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(Cb.x - 3, Cb.y + ry); ctx.lineTo(Cb.x - 3, G.y); ctx.lineTo(G.x - rg, G.y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(Cb.x + 3, Cb.y + ry); ctx.lineTo(Cb.x + 3, G.y - 5); ctx.lineTo(G.x - rg - 2, G.y - 5); ctx.stroke();
+    ctx.restore();
+    galvanometro(G, rg, E.ver.I, c);
+    // el imán: el polo que mira a la bobina, a la derecha
+    const A = aP({ x:-im.d - Lm, y:hm/2 }), Bm = aP({ x:-im.d, y:-hm/2 }), xm = (A.x + Bm.x)/2;
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
+    ctx.fillRect(A.x, A.y, Bm.x - A.x, Bm.y - A.y); ctx.globalAlpha = .14; ctx.fillStyle = c.ink;
+    if (s > 0) ctx.fillRect(xm, A.y, Bm.x - xm, Bm.y - A.y); else ctx.fillRect(A.x, A.y, xm - A.x, Bm.y - A.y);
+    ctx.globalAlpha = 1; ctx.strokeRect(A.x, A.y, Bm.x - A.x, Bm.y - A.y); linea(ctx, { x:xm, y:A.y }, { x:xm, y:Bm.y });
+    ctx.fillStyle = c.ink; ctx.font = `800 ${Math.round(clamp((Bm.y - A.y)*.75, 11, 18))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(s > 0 ? 'S' : 'N', (A.x + xm)/2, (A.y + Bm.y)/2 + 1); ctx.fillText(s > 0 ? 'N' : 'S', (xm + Bm.x)/2, (A.y + Bm.y)/2 + 1); ctx.restore();
+    if (E.arr.iman) manija({ x:(A.x + Bm.x)/2, y:(A.y + Bm.y)/2 }, (Bm.x - A.x)/2, (Bm.y - A.y)/2, c);
+    // v del imán
+    if (E.ver.v && im.vel){
+      // vel < 0: d baja, el imán va hacia la bobina (a la derecha)
+      const y = A.y - 14, L = 36, dir = im.vel < 0 ? 1 : -1;
+      const Q = flecha({ x:xm - dir*L/2, y }, { x:xm + dir*L/2, y }, c.v, grosor('v', 3));
+      if (Q) rotulo(ctx, c, Q.x + dir*12, y, 'v', c.v, 'center', 800, 14);
+    }
+    // la distancia d, del polo al plano de la bobina
+    if (E.ver.d){
+      const yd = Cb.y + ry + 14, P0 = aP({ x:-im.d, y:0 }).x, P1 = Cb.x;
+      ctx.save(); ctx.strokeStyle = c.L; ctx.lineWidth = grosor('L', 1.6); linea(ctx, { x:P0, y:yd }, { x:P1, y:yd });
+      linea(ctx, { x:P0, y:yd - 5 }, { x:P0, y:yd + 5 }); linea(ctx, { x:P1, y:yd - 5 }, { x:P1, y:yd + 5 }); ctx.restore();
+      rotulo(ctx, c, P0 - 6, yd, `d = ${fmt(im.d*100, im.d*100 % 1 ? 1 : 0)} cm`, c.L, 'right', 800, 12);
+    }
+    if (E.ver.congelado) rotulo(ctx, c, 10, 14, E.ver.congelado, c.muted, 'left', 700, 12);
+    // recuadro: la bobina vista desde el imán
+    if (E.ver.inset){
+      const r = W < 560 ? 17 : 24, C = { x:W - r - 17, y:r + 13 }, bw = 2*r + 26;
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(C.x - bw/2, C.y - r - 9, bw, 2*r + 32, 10) : ctx.rect(C.x - bw/2, C.y - r - 9, bw, 2*r + 32); ctx.fill(); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(C.x, C.y, r, 0, 7); ctx.stroke(); ctx.restore();
+      // el campo del imán en el centro: con el N hacia la bobina, se aleja de quien mira desde el imán (⊗)
+      const rs = r > 20 ? 7 : 5;
+      simbolo({ x:C.x - ((Bi || E.ver.inset === 'pregunta') ? rs + 1 : 0), y:C.y }, s < 0, rs, c.B, grosor('B', 1.5));
+      if (Bi && aBi > .02){ ctx.save(); ctx.globalAlpha = aBi; simbolo({ x:C.x + rs + 2, y:C.y }, Bi < 0, rs, c.Bi, grosor('Bi', 1.6)); ctx.restore(); }
+      if (E.ver.sentido && E.ver.sentido !== 'ninguno' && aBi > .02){
+        ctx.save(); ctx.globalAlpha = aBi;
+        const anti = E.ver.sentido === 'antihorario';   // en la pantalla, antihorario = ángulo que baja
+        arcoFlecha(C, r + 5, anti ? Math.PI*.15 : -Math.PI*1.15, anti ? -Math.PI*1.15 : Math.PI*.15, c.I, grosor('I', 2.2));
+        ctx.restore();
+      } else if (E.ver.inset === 'pregunta'){ ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 13px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', C.x + rs + 2, C.y + 1); ctx.restore(); }
+      ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 9px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('visto desde', C.x, C.y + r + 10); ctx.fillText('el imán', C.x, C.y + r + 20); ctx.restore();
+    }
+    ctx.restore();
+    // gráficas debajo
+    if (g){
+      const r1 = { x:8, y:Hs + 2, w:W - 16, h:hg - 6 };
+      panel(r1, c, 'phi', c.phi, 'Φ por espira', g.phiMax, g, !g.fem);
+      if (g.fem) panel({ x:8, y:Hs + hg, w:W - 16, h:hg - 6 }, c, 'fem', c.e, 'ε (fem)', g.femMax, g, true);
+    }
+  }
+
+  // ----- bobina cuadrada de frente en un campo que entra -----
+  // E.campo = { B, B0, corte:bool, lectura: texto o null, instr:'A'|'V' }
+  function dibujarCampo(c){
+    const C = E.campo, lado = Math.min(W*.46, H*.62), x0 = W*.36 - lado/2, y0 = H*.47 - lado/2;
+    const f = clamp(C.B/C.B0, 0, 1), paso = lado/4;
+    for (let y = y0 - paso*.5; y < H - 8; y += paso)
+      for (let x = 14; x < W - 100; x += paso){
+        if (x < 10 || y < 26) continue;
+        simbolo({ x, y }, false, 4 + 3*f, c.B, grosor('B', 1.4), .25 + .6*f);
+      }
+    rotulo(ctx, c, 10, 14, `B = ${fmt(C.B, 2)} T, entra (⊗)`, c.B, 'left', 800, 12);
+    // la bobina (varias vueltas juntas)
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
+    for (let j = 0; j < 3; j++){
+      const d = j*3;
+      if (C.corte){
+        ctx.beginPath(); ctx.moveTo(x0 + lado - d, y0 + lado*.58 + d); ctx.lineTo(x0 + lado - d, y0 + lado - d); ctx.lineTo(x0 + d, y0 + lado - d); ctx.lineTo(x0 + d, y0 + d); ctx.lineTo(x0 + lado - d, y0 + d); ctx.lineTo(x0 + lado - d, y0 + lado*.42 - d); ctx.stroke();
+      } else ctx.strokeRect(x0 + d, y0 + d, lado - 2*d, lado - 2*d);
+    }
+    ctx.restore();
+    rotulo(ctx, c, x0 + lado/2, y0 + lado + 14, 'A = 0,02 m² cada vuelta', c.L, 'center', 800, 12);
+    rotulo(ctx, c, x0 + lado/2, y0 + lado/2, 'N = 100 vueltas', c.ink, 'center', 800, 12);
+    // instrumento a la derecha
+    const ix = W - 50, iy = H*.47;
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5;
+    if (C.corte){ linea(ctx, { x:x0 + lado, y:y0 + lado*.42 }, { x:ix - 38, y:y0 + lado*.42 }); linea(ctx, { x:x0 + lado, y:y0 + lado*.58 }, { x:ix - 38, y:y0 + lado*.58 }); }
+    else { linea(ctx, { x:x0 + lado, y:y0 + lado*.3 }, { x:ix - 38, y:y0 + lado*.3 }); linea(ctx, { x:x0 + lado, y:y0 + lado*.7 }, { x:ix - 38, y:y0 + lado*.7 }); }
+    ctx.restore();
+    caja(ix - 38, iy - 26, 76, 52, c, null);
+    ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `700 9px ${c.font}`; ctx.fillText(C.instr === 'V' ? 'voltímetro' : 'amperímetro', ix, iy - 14); ctx.restore();
+    ctx.save(); ctx.fillStyle = C.instr === 'V' ? c.e : c.I; ctx.font = `800 14px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(C.lectura === null || C.lectura === undefined ? '?' : C.lectura, ix, iy + 8); ctx.restore();
+    if (C.corte) rotulo(ctx, c, x0 + lado + 6, y0 + lado*.5, 'corte', c.muted, 'left', 700, 11);
+  }
+
+  // ----- barra sobre dos rieles -----
+  // E.barra = { x (m), L, v (flecha), I: corriente en A o null, F: bool, brillo }
+  function dibujarBarra(c){
+    const b = E.barra, X0 = -0.14, X1 = 1.02, Y0 = -0.08, Y1 = 0.5;
+    const k = Math.min((W - 16)/(X1 - X0), (H - 16)/(Y1 - Y0)), ox = (W - k*(X1 + X0))/2, oy = (H + k*(Y1 + Y0))/2;
+    const aP = p => ({ x:ox + k*p.x, y:oy - k*p.y });
+    // zonas de rótulos y flechas: ahí no se dibujan ⊗ (para que nada se pise)
+    const Pb0 = aP({ x:b.x, y:0 }), Ya0 = Pb0.y, Yb0 = aP({ x:b.x, y:b.L }).y, ym = (Ya0 + Yb0)/2, Am = (aP({ x:0, y:0 }).x + Pb0.x)/2;
+    ctx.font = `800 12px ${c.font}`; const wL = ctx.measureText('L = 0,4 m').width;
+    const zonas = [[Pb0.x - 22 - wL - 4, Ya0 - 26, Pb0.x - 18, Ya0 - 6]];
+    if (b.v){ const x2 = Pb0.x + 6 + 66*b.v; zonas.push([Math.min(Pb0.x, x2), ym - 32, Math.max(Pb0.x, x2), ym]); }
+    if (b.F && b.I){ const x2 = Pb0.x - 72*(b.vSigno || 1); zonas.push([Math.min(Pb0.x, x2), ym - 14, Math.max(Pb0.x, x2), ym + 16]); }
+    if (b.I){ zonas.push([Pb0.x + 4, Yb0, Pb0.x + 24, Yb0 + 40], [Am - 42, aP({ x:0, y:b.L }).y - 22, Am + 26, aP({ x:0, y:b.L }).y], [Am - 26, Ya0, Am + 26, Ya0 + 20]); }
+    const libre = P => !zonas.some(([x1, y1, x2, y2]) => P.x > x1 - 7 && P.x < x2 + 7 && P.y > y1 - 7 && P.y < y2 + 7);
+    const paso = 0.1;
+    for (let x = -0.1; x <= 1.0 + 1e-9; x += paso) for (let y = -0.05; y <= 0.47; y += paso){
+      const P = aP({ x, y }); if (P.x < 8 || P.x > W - 8 || P.y < 22 || P.y > H - 8) continue;
+      if (Math.abs(x - b.x) < .05 || !libre(P)) continue;
+      simbolo(P, false, 5, c.B, grosor('B', 1.3), .5);
+    }
+    rotulo(ctx, c, 10, 12, 'B = 0,5 T, entra (⊗)', c.B, 'left', 800, 12);
+    const L = b.L, A0 = aP({ x:0, y:0 }), A1 = aP({ x:0, y:L }), R0 = aP({ x:1.0, y:0 }), R1 = aP({ x:1.0, y:L });
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 4; ctx.lineCap = 'round'; linea(ctx, A0, R0); linea(ctx, A1, R1);
+    ctx.lineWidth = 2.4; linea(ctx, A0, A1); ctx.restore();
+    foquito({ x:A0.x, y:(A0.y + A1.y)/2 }, 11, b.brillo || 0, c);
+    // la barra
+    const P0 = aP({ x:b.x, y:-0.025 }), P1 = aP({ x:b.x, y:L + 0.025 });
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 7; ctx.lineCap = 'round'; linea(ctx, P0, P1); ctx.restore();
+    if (E.arr.barra) manija({ x:P0.x, y:(P0.y + P1.y)/2 }, 8, (P0.y - P1.y)/2, c);
+    // L junto a la barra, del lado del foquito
+    const xl = P0.x - 16, Ya = aP({ x:b.x, y:0 }).y, Yb = aP({ x:b.x, y:L }).y;
+    ctx.save(); ctx.strokeStyle = c.L; ctx.lineWidth = grosor('L', 1.6); linea(ctx, { x:xl, y:Ya }, { x:xl, y:Yb }); linea(ctx, { x:xl - 4, y:Ya }, { x:xl + 4, y:Ya }); linea(ctx, { x:xl - 4, y:Yb }, { x:xl + 4, y:Yb }); ctx.restore();
+    rotulo(ctx, c, xl - 6, Ya - 16, 'L = 0,4 m', c.L, 'right', 800, 12);
+    // v
+    if (b.v){ const y = (Ya + Yb)/2 - 10, Q = flecha({ x:P0.x + 6, y }, { x:P0.x + 6 + 46*b.v, y }, c.v, grosor('v', 3.4)); if (Q) rotulo(ctx, c, Q.x + 10*b.v, y - 12, 'v', c.v, 'center', 800, 14); }
+    // F (frena: contra v)
+    if (b.F && b.I){ const y = (Ya + Yb)/2 + 8, dF = -(b.vSigno || 1), Q = flecha({ x:P0.x + dF*8, y }, { x:P0.x + dF*52, y }, c.F, grosor('F', 3.6)); if (Q) rotulo(ctx, c, Q.x + dF*10, y - 12, 'F', c.F, 'center', 800, 14); }
+    // I: antihorario visto de frente (sube por la barra) si la barra va a la derecha
+    if (b.I){
+      const sube = b.sube, mid = (A0.x + P0.x)/2;
+      const al = Math.min(1, Math.abs(b.I)/0.5);
+      ctx.save(); ctx.globalAlpha = .45 + .55*al;
+      flecha({ x:P0.x + 13, y:sube ? Yb + 34 : Yb + 8 }, { x:P0.x + 13, y:sube ? Yb + 8 : Yb + 34 }, c.I, grosor('I', 2.6));
+      flecha({ x:mid + (sube ? 18 : -18), y:A1.y - 10 }, { x:mid + (sube ? -18 : 18), y:A1.y - 10 }, c.I, grosor('I', 2.6));
+      flecha({ x:mid + (sube ? -18 : 18), y:A0.y + 10 }, { x:mid + (sube ? 18 : -18), y:A0.y + 10 }, c.I, grosor('I', 2.6));
+      ctx.restore();
+      rotulo(ctx, c, mid - 30, A1.y - 10, 'I', c.I, 'center', 800, 13);
+    }
+  }
+
+  // ----- generador: bobina que gira en un campo horizontal -----
+  // E.gen = { theta (grados, entre B y la normal), verTh, brillo, graf }
+  function dibujarGen(c){
+    const g = E.gen, G = E.ver.graf, hg = G ? Math.min(W < 560 ? 120 : 140, H*.4) : 0, Hs = H - hg;
+    // cámara girada −20° alrededor del eje vertical y levantada 30°: B (eje x) se ve casi horizontal
+    const cx = W*.44, cy = Hs*.52, S = Math.min(W*.3, Hs*.32), ya = -20*RAD, pa = 30*RAD;
+    const pr = v => { const x1 = v.x*Math.cos(ya) + v.z*Math.sin(ya), z1 = -v.x*Math.sin(ya) + v.z*Math.cos(ya), y2 = v.y*Math.cos(pa) - z1*Math.sin(pa); return { x:cx + S*x1, y:cy - S*y2 }; };
+    // campo: líneas a lo largo del eje x
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 20, W, Hs - 20); ctx.clip();
+    for (const yy of [-1.05, -.5, .05, .6, 1.15]) flecha(pr({ x:-1.9, y:yy, z:0 }), pr({ x:1.75, y:yy, z:0 }), c.B, grosor('B', 1.6), { alfa:.55 });
+    ctx.restore();
+    rotulo(ctx, c, 10, 12, E.gen.etqB || 'B', c.B, 'left', 800, 12);
+    // eje de giro (vertical)
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([4, 4]); linea(ctx, pr({ x:0, y:-1.15, z:0 }), pr({ x:0, y:1.15, z:0 })); ctx.restore();
+    // la bobina: rectángulo de ancho 1,2 (girando alrededor de y) y alto 1,4; su normal forma θ con B (eje x)
+    const t = g.theta*RAD, n = { x:Math.cos(t), y:0, z:Math.sin(t) }, u = { x:-Math.sin(t), y:0, z:Math.cos(t) };
+    const w = .6, h = .7, esq = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => pr({ x:u.x*w*a, y:h*b, z:u.z*w*a }));
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .06; ctx.beginPath(); esq.forEach((P, j) => j ? ctx.lineTo(P.x, P.y) : ctx.moveTo(P.x, P.y)); ctx.closePath(); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.lineJoin = 'round'; ctx.beginPath(); esq.forEach((P, j) => j ? ctx.lineTo(P.x, P.y) : ctx.moveTo(P.x, P.y)); ctx.closePath(); ctx.stroke(); ctx.restore();
+    // normal y θ
+    const O = pr({ x:0, y:0, z:0 });
+    if (g.verN !== false){ const Q = flecha(O, pr({ x:n.x*.95, y:0, z:n.z*.95 }), c.ink, 2, { trazos:true }); if (Q) rotulo(ctx, c, Q.x + 12, Q.y + 2, 'normal', c.muted, 'left', 700, 11); }
+    if (g.verTh !== false){
+      ctx.save(); ctx.strokeStyle = c.th; ctx.lineWidth = grosor('th', 2.2); ctx.beginPath();
+      const a1 = ((g.theta % 360) + 360) % 360, m = 24;
+      for (let j = 0; j <= m; j++){ const a = a1*RAD*j/m, P = pr({ x:.42*Math.cos(a), y:0, z:.42*Math.sin(a) }); if (j) ctx.lineTo(P.x, P.y); else ctx.moveTo(P.x, P.y); }
+      ctx.stroke(); ctx.restore();
+      const am = a1*RAD/2, P = pr({ x:.6*Math.cos(am), y:0, z:.6*Math.sin(am) });
+      if (a1 > 8) rotulo(ctx, c, P.x, P.y + 10, `θ = ${fmt(Math.round(a1), 0)}°`, c.th, 'center', 800, 12);
+    }
+    rotulo(ctx, c, esq[3].x, esq[3].y - 12, g.etqA || 'A', c.L, 'center', 800, 12);
+    // cables al foquito
+    const F0 = { x:W - 30, y:Hs*.78 };
+    if (g.foco !== false){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; const Pb = pr({ x:0, y:-1.05, z:0 }); ctx.beginPath(); ctx.moveTo(Pb.x, Pb.y); ctx.lineTo(Pb.x, F0.y + 18); ctx.lineTo(F0.x, F0.y + 18); ctx.lineTo(F0.x, F0.y + 11); ctx.stroke(); ctx.restore(); }
+    if (g.foco !== false) foquito(F0, 11, g.brillo || 0, c);
+    if (G){
+      const r = { x:8, y:Hs + 2, w:W - 16, h:hg - 18 };
+      ctx.save(); ctx.strokeStyle = c.line; ctx.strokeRect(r.x + .5, r.y + .5, r.w - 1, r.h - 1); ctx.restore();
+      const X = tt => r.x + 8 + (r.w - 16)*tt/G.tFin, y0 = r.y + r.h/2, Y = v => y0 - v/G.max*(r.h/2 - 14);
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, { x:r.x + 6, y:y0 }, { x:r.x + r.w - 6, y:y0 }); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.e; ctx.lineWidth = grosor('e', 2.6); ctx.beginPath();
+      const hasta = Math.min(G.tFin, G.hasta === undefined ? G.tFin : G.hasta);
+      for (let j = 0; j <= 200; j++){ const tt = hasta*j/200, P = { x:X(tt), y:Y(G.f(tt)) }; if (j) ctx.lineTo(P.x, P.y); else ctx.moveTo(P.x, P.y); }
+      ctx.stroke(); ctx.restore();
+      for (const l of G.lineas || []){ ctx.save(); ctx.strokeStyle = c.e; ctx.globalAlpha = .75; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.4; linea(ctx, { x:r.x + 8, y:Y(l.v) }, { x:r.x + r.w - 8, y:Y(l.v) }); ctx.restore(); if (l.n) rotulo(ctx, c, l.izq ? X(G.tFin*3/8) : r.x + r.w - 10, Y(l.v) + (l.izq ? 9 : -9), l.n, c.e, l.izq ? 'center' : 'right', 700, 11); }
+      rotulo(ctx, c, r.x + 10, r.y + 11, 'ε (V)', c.e, 'left', 800, 12);
+      ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(G.etqT || 't', r.x + r.w - 4, r.y + r.h + 2); ctx.restore();
+    }
+  }
+
+  // ----- transformador -----
+  // E.tr = { Np, Ns, fuente:'alterna'|'pila', Vp, fase (0..1 del flujo alterno), Vs: texto o null, Is: texto o null, brillo }
+  function dibujarTrafo(c){
+    const T = E.tr, w = Math.min(W*.5, 260), h = Math.min(H*.62, 170), x0 = W/2 - w/2, y0 = H*.47 - h/2, e = Math.max(16, w*.11);
+    // núcleo
+    ctx.save(); ctx.fillStyle = c.muted; ctx.globalAlpha = .28; ctx.fillRect(x0, y0, w, h); ctx.globalAlpha = 1; ctx.fillStyle = c.paper; ctx.fillRect(x0 + e, y0 + e, w - 2*e, h - 2*e); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.strokeRect(x0, y0, w, h); ctx.strokeRect(x0 + e, y0 + e, w - 2*e, h - 2*e); ctx.restore();
+    // flujo en el núcleo: flechas que siguen el anillo (sentido y largo según la fase; con pila, quietas)
+    const amp = T.fuente === 'pila' ? (T.phiPila || 0) : Math.sin(2*Math.PI*(T.fase || 0));
+    if (Math.abs(amp) > .05){
+      const m = e/2, L = 22*Math.abs(amp), sg = Math.sign(amp);
+      const pts = [[x0 + w/2, y0 + m, 1, 0], [x0 + w - m, y0 + h/2, 0, -1], [x0 + w/2, y0 + h - m, -1, 0], [x0 + m, y0 + h/2, 0, 1]];
+      for (const [x, y, dx, dy] of pts) flecha({ x:x - dx*sg*L/2, y:y + dy*sg*L/2 }, { x:x + dx*sg*L/2, y:y - dy*sg*L/2 }, c.phi, grosor('phi', 2.6));
+      rotulo(ctx, c, x0 + w/2, y0 + m + 15, 'Φ', c.phi, 'center', 800, 12);
+    }
+    // bobinas
+    const bob = (xc, n, etq) => {
+      const vueltas = Math.max(2, Math.min(12, Math.round(n/25)));   // 200 y 50 vueltas: 8 y 2 dibujadas (4:1)
+      for (let j = 0; j < vueltas; j++){ const y = y0 + e + 10 + j*(h - 2*e - 20)/(vueltas - 1); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(xc, y, e*.95, 4, 0, 0, 7); ctx.stroke(); ctx.restore(); }
+      rotulo(ctx, c, xc, y0 + h + 13, etq, c.ink, 'center', 800, 12);
+    };
+    bob(x0 + e/2, T.Np, `Np = ${T.Np}`); bob(x0 + w - e/2, T.Ns, `Ns = ${T.Ns}`);
+    // fuente a la izquierda
+    const fx = Math.max(26, x0 - 46), fy = H*.47;
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5;
+    linea(ctx, { x:x0 - e*.2, y:y0 + e + 8 }, { x:fx, y:y0 + e + 8 }); linea(ctx, { x:fx, y:y0 + e + 8 }, { x:fx, y:fy - 16 });
+    linea(ctx, { x:x0 - e*.2, y:y0 + h - e - 8 }, { x:fx, y:y0 + h - e - 8 }); linea(ctx, { x:fx, y:y0 + h - e - 8 }, { x:fx, y:fy + 16 }); ctx.restore();
+    if (T.fuente === 'pila'){ caja(fx - 15, fy - 16, 30, 32, c, null); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:fx - 9, y:fy - 4 }, { x:fx + 9, y:fy - 4 }); ctx.lineWidth = 4; linea(ctx, { x:fx - 5, y:fy + 4 }, { x:fx + 5, y:fy + 4 }); ctx.restore(); }
+    else { ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(fx, fy, 16, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); for (let j = 0; j <= 20; j++){ const x = fx - 9 + j*.9, y = fy - 5*Math.sin(j/20*2*Math.PI); if (j) ctx.lineTo(x, y); else ctx.moveTo(x, y); } ctx.stroke(); ctx.restore(); }
+    rotulo(ctx, c, fx, fy + 30, T.fuente === 'pila' ? `pila ${T.Vp} V` : `${T.Vp} V ~`, c.V, 'center', 800, 12);
+    // foquito a la derecha
+    const gx = Math.min(W - 26, x0 + w + 46);
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5;
+    linea(ctx, { x:x0 + w + e*.2, y:y0 + e + 8 }, { x:gx, y:y0 + e + 8 }); linea(ctx, { x:gx, y:y0 + e + 8 }, { x:gx, y:fy - 11 });
+    linea(ctx, { x:x0 + w + e*.2, y:y0 + h - e - 8 }, { x:gx, y:y0 + h - e - 8 }); linea(ctx, { x:gx, y:y0 + h - e - 8 }, { x:gx, y:fy + 11 }); ctx.restore();
+    foquito({ x:gx, y:fy }, 11, T.brillo || 0, c);
+    // rótulos debajo del foquito, corridos a la izquierda si no caben
+    const txV = T.Vs === null || T.Vs === undefined ? 'Vs = ?' : (/^≠/.test(T.Vs) ? `Vs ${T.Vs}` : `Vs = ${T.Vs}`);
+    ctx.font = `800 12px ${c.font}`; const wV = ctx.measureText(txV).width;
+    rotulo(ctx, c, Math.min(gx, W - 8 - wV/2), fy + 30, txV, c.V, 'center', 800, 12);
+    if (T.Is !== null && T.Is !== undefined){ ctx.font = `800 12px ${c.font}`; const wI = ctx.measureText(`Is = ${T.Is}`).width; rotulo(ctx, c, Math.min(gx, W - 8 - wI/2), fy + 46, `Is = ${T.Is}`, c.I, 'center', 800, 12); }
+  }
+
+  function leyenda(){
+    const it = (k, t, sq) => `<span><i class="${sq ? 'sq' : ''}" style="background:var(--c-${k})"></i><span>${t}</span></span>`;
+    const l = [], v = E.vista;
+    if (v === 'iman'){
+      l.push(it('B', 'B · campo del imán (sus líneas)'));
+      if (E.ver.Bi) l.push(it('Bi', 'Bᵢ · campo inducido por la corriente'));
+      if (E.ver.sentido) l.push(it('I', 'I · corriente inducida'));
+      if (E.ver.v) l.push(it('v', 'v · velocidad del imán'));
+      if (E.ver.d) l.push(it('L', 'd · distancia del polo a la bobina'));
+      if (E.ver.graf){ l.push(it('phi', 'Φ · flujo')); if (E.ver.graf.fem) l.push(it('e', 'ε · fem inducida')); }
+      l.push('<span>N y S pintados en el imán: sus polos norte y sur</span>');
+    } else if (v === 'campo'){
+      l.push(it('B', 'B · campo: ⊗ entra a la pantalla')); l.push(it('L', 'A · área de cada vuelta'));
+      if (E.campo.instr === 'V') l.push(it('e', 'ε · lo que marca el voltímetro')); else l.push(it('I', 'I · corriente (la marca el amperímetro)'));
+    } else if (v === 'barra'){
+      l.push(it('B', 'B · campo: ⊗ entra')); l.push(it('v', 'v · velocidad de la barra')); l.push(it('L', 'L · largo de la barra'));
+      if (E.barra.I) l.push(it('I', 'I · corriente inducida'));
+      if (E.barra.F) l.push(it('F', 'F · fuerza magnética sobre la barra'));
+    } else if (v === 'gen'){
+      l.push(it('B', 'B · campo uniforme')); l.push(it('L', 'A · área de cada vuelta'));
+      if (E.gen.verTh !== false) l.push(it('th', 'θ · ángulo entre B y la normal'));
+      if (E.ver.graf) l.push(it('e', 'ε · fem del generador'));
+      l.push('<span>a trazos: el eje de giro y la normal</span>');
+    } else if (v === 'trafo'){
+      l.push(it('V', 'V · voltajes')); l.push(it('phi', 'Φ · flujo en el núcleo de hierro'));
+      if (E.tr.fuente === 'alterna' || (E.tr.Is !== null && E.tr.Is !== undefined)) l.push(it('I', 'I · corriente'));
+    }
+    if (E.leyendaExtra) l.push(E.leyendaExtra);
+    return l.join('');
+  }
+  E.leyenda = () => { if (idLey) document.getElementById(idLey).innerHTML = leyenda(); };
+  // Lecturas y descripción: solo lo que cada paso pide (no adelantan la respuesta).
+  E.avisar = () => {
+    const ls = E.lect() || [];
+    if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura${String(v).length > 14 ? ' ancha' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc) document.getElementById(idDesc).textContent = (E.desc() || '') + (ls.length ? ' ' + ls.map(([, t, v]) => `${t}: ${v}`).join('. ') + '.' : '');
+    if (E.alCambiar) E.alCambiar();
+  };
+
+  // ----- arrastrar el imán o la barra (táctil, ratón y teclado; nucleo/celular.js) -----
+  // La corriente en vivo sale del motor: femEntre (imán) y barraEntre (barra) entre la posición anterior y la nueva.
+  function geomIman(){
+    const g = E.ver.graf, chico = W < 560, nG = g ? (g.fem ? 2 : 1) : 0, hg = nG ? Math.min(chico ? 104 : 124, (H - 120)/(nG + 1.3)) : 0;
+    const Hs = H - nG*hg - (nG ? 14 : 0), k = Math.min((W - 24)/0.27, Hs/0.12), xe = W - 0.075*k, ya = Hs*.42;
+    return { k, xe, ya };
+  }
+  function geomBarra(){
+    const X0 = -0.14, X1 = 1.02, Y0 = -0.08, Y1 = 0.5, k = Math.min((W - 16)/(X1 - X0), (H - 16)/(Y1 - Y0));
+    return { k, ox:(W - k*(X1 + X0))/2, oy:(H + k*(Y1 + Y0))/2 };
+  }
+  function cual(p, r){
+    if (E.ocupado) return null;
+    if (E.vista === 'iman' && E.arr.iman){ const g = geomIman(), x = g.xe + (-E.im.d - 0.025)*g.k; return Math.abs(p.x - x) < 0.025*g.k + r*.6 && Math.abs(p.y - g.ya) < r ? 'iman' : null; }
+    if (E.vista === 'barra' && E.arr.barra){ const g = geomBarra(), x = g.ox + g.k*E.barra.x; return Math.abs(p.x - x) < r*.8 && p.y > g.oy - g.k*0.45 && p.y < g.oy + 10 ? 'barra' : null; }
+    return null;
+  }
+  let ultimo = 0;
+  // Del arrastre sale solo la rapidez (lo que se movió entre dos eventos); la fem, la corriente, el sentido, la fuerza
+  // y la potencia salen del motor con esa rapidez, suavizada para que la aguja no salte.
+  function moverA(nuevo){
+    const ahora = performance.now(), dt = Math.max(0.016, (ahora - (ultimo || ahora - 50))/1000); ultimo = ahora;
+    if (E.vista === 'iman'){
+      const d1 = clamp(Math.round(nuevo*1000)/1000, 0.02, 0.15), d0 = E.im.d; if (d1 === d0) return;
+      // antes del paso 5 solo se acerca: alejarlo mostraría la corriente al revés, que es lo que pregunta el paso 5
+      if (E.arr.iman && E.arr.iman.soloAcercar && d1 > d0) return;
+      E.ver.congelado = null;
+      E.im.d = d1; E.vivo.obj = (d1 - d0)/dt;
+    } else {
+      const x1 = clamp(Math.round(nuevo*1000)/1000, 0.12, 0.9), x0 = E.barra.x; if (x1 === x0) return;
+      E.barra.x = x1; E.vivo.obj = MI.barraEntre(0.5, 0.4, x0, x1, dt, 4).v;
+    }
+    E.vivo.t = ahora; arrancarVivo();
+  }
+  let vivoCorre = false;
+  function arrancarVivo(){
+    if (vivoCorre) return; vivoCorre = true; const tok = E.tok;
+    const tick = () => {
+      if (E.tok !== tok){ vivoCorre = false; return; }
+      const ahora = performance.now(), V = E.vivo;
+      if (ahora - V.t > 70) V.obj = 0;
+      V.v += (V.obj - V.v)*(RM ? 1 : .25);
+      if (Math.abs(V.v) < 1e-4 && V.obj === 0) V.v = 0;
+      if (E.vista === 'iman'){
+        const o = { polo:E.im.polo }, r = MI.femIman(E.im.d, V.v, o, BOB.N, BOB.R);
+        E.ver.I = r.I; E.im.vel = 0;
+        if (E.ver.lenzVivo && V.v){ const lz = MI.lenz(MI.flujoIman(E.im.d, o), MI.flujoIman(Math.max(0, E.im.d + V.v*1e-3), o)); E.ver.Bi = lz.Binducido; E.ver.sentido = lz.sentido; }
+        if (E.ver.lenzVivo) E.ver.BiAlfa = clamp(Math.abs(r.I)*1000/0.15, 0, 1);
+      } else {
+        const b = E.barra, r = MI.femMovimiento(0.5, 0.4, Math.abs(V.v), 4, { campo:'entra', haciaDerecha: V.v >= 0 });
+        b.vel = V.v; b.I = r.I > 1e-4 ? r.I : 0; b.sube = r.enLaBarra === 'sube'; b.vSigno = Math.sign(V.v) || 1; b.v = V.v ? Math.sign(V.v) : 0;
+        b.brillo = clamp(r.Pelectrica/B6P, 0, 1); b.F = true;
+      }
+      E.dibujar(); E.avisar();
+      if (V.v === 0 && V.obj === 0){ vivoCorre = false; return; }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+  Celular.arrastre(cv, {
+    activo: () => (E.arr.iman || E.arr.barra) && !E.ocupado,
+    cerca: (p, r) => !!cual(p, r),
+    empezar: p => { arrastrando = cual(p, 40); ultimo = performance.now(); E.dibujar(); },
+    mover: p => {
+      if (!arrastrando) return;
+      if (arrastrando === 'iman'){ const g = geomIman(); moverA(-((p.x - g.xe)/g.k + 0.025)); }
+      else { const g = geomBarra(); moverA((p.x - g.ox)/g.k); }
+    },
+    soltar: () => { arrastrando = null; E.dibujar(); },
+    sobre: on => { sobre = on; E.dibujar(); },
+  });
+  // Teclado: ← → mueven el imán (o la barra) de a 5 mm (con mayúsculas, de a 2 cm).
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado) return;
+    const d = { ArrowLeft:-1, ArrowRight:1 }[e.key]; if (!d) return;
+    if (E.vista === 'iman' && E.arr.iman){ e.preventDefault(); ultimo = performance.now() - 60; moverA(E.im.d - d*(e.shiftKey ? 0.02 : 0.005)); }
+    else if (E.vista === 'barra' && E.arr.barra){ e.preventDefault(); ultimo = performance.now() - 60; moverA(E.barra.x + d*(e.shiftKey ? 0.1 : 0.03)); }
+  });
+  // Anima el imán con un movimiento del motor (movimientoIman) y la aguja con femIman; fin al terminar.
+  // Lleva el imán a d sin corriente (no es un movimiento: se recoloca)
+  E.recolocar = d => { E.vivo = { v:0, obj:0, t:0 }; E.im.d = d; E.im.vel = 0; E.ver.I = 0; E.ver.BiAlfa = 0; E.ver.congelado = null; E.dibujar(); E.avisar(); };
+  E.recorrido = (mov, tFin, dur, fin, o) => {
+    o = o || {};
+    E.ver.congelado = null;
+    const cuadro = t => {
+      const m = MI.movimientoIman(t, mov), r = MI.femIman(m.d, m.vd, { polo:E.im.polo }, BOB.N, BOB.R);
+      E.im.d = m.d; E.im.vel = m.vd ? Math.sign(m.vd) : 0; E.ver.I = r.I;
+      if (o.lenz && m.vd){ const lz = MI.lenz(MI.flujoIman(m.d, { polo:E.im.polo }), MI.flujoIman(Math.max(0, m.d + m.vd*1e-3), { polo:E.im.polo })); E.ver.Bi = lz.Binducido; E.ver.sentido = lz.sentido; E.ver.BiAlfa = clamp(Math.abs(r.I)*1000/0.15, 0, 1); }
+      else if (o.lenz) E.ver.BiAlfa = clamp(Math.abs(r.I)*1000/0.15, 0, 1);
+      if (E.ver.graf){ E.ver.graf.cursor = t; E.ver.graf.series.forEach(s => { if (s.animar) s.hasta = RM ? tFin : t; }); }
+      E.dibujar(); E.avisar();
+    };
+    // con o.congelar (s), al terminar (o de entrada, con movimiento reducido) la escena queda quieta en ese instante,
+    // con la corriente y el campo inducido de ese momento y el rótulo o.rotulo («mientras se acerca»)
+    const fijo = o.congelar !== undefined;
+    E.tween(dur, f => cuadro(RM && fijo ? o.congelar : f*tFin), () => { if (fijo){ cuadro(o.congelar); E.ver.congelado = o.rotulo || null; E.dibujar(); } if (fin) fin(); });
+  };
+  return E;
+}
+
+// Opciones de predicción (las mismas en los dos modos)
+const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;');
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${sinCorte(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// Lecturas comunes
+const mA = I => `${fmt(Math.abs(I)*1000, 2)} mA`;
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Respaldos (docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md): 'documentado' solo MG7 (paso 1: cerca de
+   3 de cada 4 falla antes del curso) y MG8 (paso 5: menos de la mitad acierta el sentido y más de un tercio elige el
+   contrario; cerca de 8 de cada 10 sabe que hay corriente); 'parcial' MG10 (lista de dificultades sin porcentaje),
+   MG9 (sin porcentaje), MG8 en el paso 4 (la pregunta medida es la del imán que se aleja) y la mano derecha
+   invertida (un alumno en entrevistas); lo demás, hipótesis nuestras. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+
+// Números de la escena (todos del motor)
+const MOV = { d0:0.15, d1:0.03, t0:0.2, T:1.5 }, TFIN = 2.6;
+const MOVsale = { d0:0.03, d1:0.15, t0:0.2, T:1.5 };
+const SER = MI.serieIman(MOV, {}, BOB.N, BOB.R, TFIN, 260);
+const PHI_MAX = MI.flujoIman(0.03, {});
+const quieto = MI.femIman(0.03, 0, {}, BOB.N, BOB.R);
+const INST = [0.95, 1.5, 1.7, 2.4].map(t => { const m = MI.movimientoIman(t, MOV); return { t, ...m, I:MI.femIman(m.d, m.vd, {}, BOB.N, BOB.R).I }; });
+const F3 = MI.faradayCampo(100, 0.02, 0.5, 0.1, 0.2, 8);
+const L4 = MI.lenz(MI.flujoIman(0.15, {}), MI.flujoIman(0.03, {})), L5 = MI.lenz(MI.flujoIman(0.03, {}), MI.flujoIman(0.15, {}));
+const B6 = MI.femMovimiento(0.5, 0.4, 10, 4, { campo:'entra', haciaDerecha:true });
+const G7 = MI.generador(50, 0.4, 0.05, 100);
+const T8 = MI.transformador(200, 50, 220, 0.5);
+const V = t => fmt(t, 2);
+
+const P1 = { id:'induccion-paso1', ok:'c', opts:[
+  ['a', 'Marca corriente, porque el imán está cerca y su campo ahí es fuerte', 'MG7-iman-quieto-induce', 'documentado'],
+  ['b', 'Marca corriente, pero más pequeña que mientras el imán se movía', 'MG10-flujo-por-cambio-de-flujo', 'parcial'],
+  ['c', 'Marca cero, porque el campo en la bobina ya no cambia'],
+  ['d', 'Marca cero, porque a esa distancia el imán no es lo bastante fuerte', 'MG-cero-solo-si-esta-lejos', 'parcial']],
+  fb:{ c:'¡Bien! La corriente aparece solo mientras el campo que atraviesa la bobina cambia. Con el imán quieto, nada cambia: cero.',
+    a:'Elegiste la A. El campo es fuerte, pero ya no cambia: con el imán quieto no hay corriente. La correcta está marcada.',
+    b:'Elegiste la B. No queda «un poco» de corriente: con el imán quieto el campo no cambia nada y la corriente es cero. La correcta está marcada.',
+    d:'Elegiste la D. Sí marca cero, pero no por la distancia: aunque el imán estuviera pegado a la bobina, quieto no induce corriente. La correcta está marcada.' } };
+const P2 = { id:'induccion-paso2', ok:'b', opts:[
+  ['a', 'En t₁ = 0,95 s', 'MG-fem-con-la-rapidez-del-iman', 'hipotesis'],
+  ['b', 'En t₂ = 1,5 s'],
+  ['c', 'En t₃ = 1,7 s', 'MG10-fem-en-la-altura-del-flujo', 'parcial'],
+  ['d', 'En t₄ = 2,4 s', 'MG10-fem-con-el-flujo-mayor-quieto', 'parcial']],
+  fb:{ b:'¡Bien! La corriente sigue a la PENDIENTE de la curva del flujo: en t₂ el flujo sube más rápido que en cualquier otro momento.',
+    a:'Elegiste la A. En t₁ el imán va más rápido, pero está lejos: el flujo casi no cambia. Lo que cuenta es lo rápido que cambia el flujo. La correcta está marcada.',
+    c:'Elegiste la C. En t₃ el imán acaba de detenerse: el flujo ya es el mayor, pero dejó de cambiar y la corriente es cero. La correcta está marcada.',
+    d:'Elegiste la D. En t₄ el flujo es el mayor, pero no cambia: la curva es horizontal y la corriente es cero. La correcta está marcada.' } };
+const P3 = { id:'induccion-paso3', ok:'d', opts:[
+  ['a', `ε = ${V(F3.errores.sinN)} V e I = ${fmt(F3.errores.IsinN, 3)} A`, 'MG-faraday-olvida-N', 'hipotesis'],
+  ['b', `ε = ${V(F3.femModulo)} V e I = ${V(F3.errores.IporR)} A`, 'MG-ohm-multiplica-por-R', 'hipotesis'],
+  ['c', `ε = ${V(F3.errores.conFlujoInicial)} V e I = ${fmt(F3.errores.conFlujoInicial/8, 3)} A`, 'MG10-faraday-flujo-en-vez-de-cambio', 'parcial'],
+  ['d', `ε = ${V(F3.femModulo)} V e I = ${V(F3.I)} A`]],
+  fb:{ d:'¡Bien! ε = N·|ΔΦ|/Δt con el CAMBIO del flujo de cada vuelta, multiplicado por las 100 vueltas; después, I = ε/R.',
+    a:'Elegiste la A. Falta multiplicar por N: cada una de las 100 vueltas aporta su fem, y se suman. La correcta está marcada.',
+    b:'Elegiste la B. La fem está bien, pero la corriente es ε/R, no ε·R: 4/8 = 0,5 A. La correcta está marcada.',
+    c:'Elegiste la C. Usaste el flujo del principio, 0,01 Wb, en lugar de su cambio, 0,008 Wb. La fem depende de cuánto cambia el flujo. La correcta está marcada.' } };
+const P4 = { id:'induccion-paso4', ok:'c', opts:[
+  ['a', 'Horaria, y la bobina atrae al imán', 'MG8-lenz-sentido-contrario', 'parcial'],
+  ['b', 'Antihoraria, y la bobina atrae al imán', 'MG-bobina-atrae-como-al-hierro', 'hipotesis'],
+  ['c', 'Antihoraria, y la bobina repele al imán'],
+  ['d', 'Horaria, y la bobina repele al imán', 'MG-mano-derecha-invertida', 'parcial']],
+  fb:{ c:'¡Bien! El flujo aumenta, así que el campo inducido apunta hacia el imán, contra ese aumento: la corriente es antihoraria vista desde el imán y la cara que lo mira se comporta como un polo norte, que lo repele.',
+    a:'Elegiste la A. Al revés: el campo inducido se opone al aumento del flujo, así que apunta hacia el imán. Esa corriente es antihoraria vista desde el imán y repele. La correcta está marcada.',
+    b:'Elegiste la B. El sentido está bien, pero esa corriente hace que la cara que mira al imán se comporte como un polo norte, y dos polos norte se repelen. La bobina frena el acercamiento. La correcta está marcada.',
+    d:'Elegiste la D. Sí repele, pero una corriente horaria vista desde el imán crearía un campo que se aleja del imán, y eso lo atraería. Repeler pide una corriente antihoraria. La correcta está marcada.' } };
+const P5 = { id:'induccion-paso5', ok:'b', opts:[
+  ['a', 'Antihoraria, y su campo inducido apunta hacia el imán, contra el del imán', 'MG8-MG9-contra-el-campo', 'documentado'],
+  ['b', 'Horaria, y su campo inducido apunta alejándose del imán, como el del imán'],
+  ['c', 'Horaria, y su campo inducido apunta hacia el imán, contra el del imán', 'MG-mano-derecha-invertida', 'parcial'],
+  ['d', 'No circula, y no hay campo inducido: el imán se está alejando', 'MG8-sin-corriente-al-alejar', 'parcial']],
+  fb:{ b:'¡Bien! Ahora el flujo disminuye. El campo inducido se opone a esa disminución: refuerza el campo que se va. Por eso la bobina atrae al imán.',
+    a:'Elegiste la A. La corriente inducida no va contra el campo: va contra el CAMBIO del flujo. Aquí el flujo disminuye, así que el campo inducido lo refuerza. La correcta está marcada.',
+    c:'Elegiste la C. Una corriente horaria vista desde el imán crea un campo que se aleja del imán, no que apunta hacia él. La correcta está marcada.',
+    d:'Elegiste la D. Alejarse también cambia el flujo: hay corriente mientras el imán se mueve, ahora en el otro sentido. La correcta está marcada.' } };
+const P6 = { id:'induccion-paso6', ok:'a', opts:[
+  ['a', `ε = ${V(B6.fem)} V, y la fuerza magnética frena la barra`],
+  ['b', `ε = ${V(B6.fem)} V, y la fuerza magnética empuja la barra hacia adelante`, 'MG-la-corriente-ayuda-a-la-barra', 'hipotesis'],
+  ['c', `ε = ${V(B6.errores.sinL)} V, y la fuerza magnética frena la barra`, 'MG-barra-olvida-L', 'hipotesis'],
+  ['d', 'ε = 0 V, y no hay fuerza magnética sobre la barra', 'MG10-campo-constante-sin-fem', 'parcial']],
+  fb:{ a:'¡Bien! B no cambia, pero el área del circuito crece: el flujo aumenta y ε = B·L·v. La corriente inducida hace que el campo frene a la barra.',
+    b:'Elegiste la B. Si la fuerza empujara hacia adelante, la barra se aceleraría sola y prendería el foquito gratis. Lenz dice lo contrario: la fuerza se opone al movimiento. La correcta está marcada.',
+    c:'Elegiste la C. Falta el largo de la barra: ε = B·L·v = 0,5 · 0,4 · 10. La correcta está marcada.',
+    d:'Elegiste la D. B es constante, pero el área encerrada crece al avanzar la barra, y con ella el flujo. Cambiar el área también induce. La correcta está marcada.' } };
+const P7 = { id:'induccion-paso7', ok:'d', opts:[
+  ['a', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz = ${fmt(G7.errores.eficazMitad, 0)} V`, 'MG-eficaz-entre-2', 'hipotesis'],
+  ['b', `εmax = ${fmt(G7.errores.sinN, 0)} V y ε eficaz ≈ ${fmt(G7.errores.sinNEficaz, 1)} V`, 'MG-generador-olvida-N', 'hipotesis'],
+  ['c', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz ≈ ${fmt(G7.errores.eficazPorRaiz, 0)} V`, 'MG-eficaz-por-raiz-de-2', 'hipotesis'],
+  ['d', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz ≈ ${fmt(G7.eficaz, 0)} V`]],
+  fb:{ d:'¡Bien! εmax = N·B·A·ω y, para una fem senoidal, el valor eficaz es εmax/√2.',
+    a:'Elegiste la A. El valor eficaz no es la mitad del máximo: es εmax/√2 ≈ 0,71·εmax. La correcta está marcada.',
+    b:'Elegiste la B. Falta multiplicar por las 50 vueltas: εmax = N·B·A·ω. La correcta está marcada.',
+    c:'Elegiste la C. El eficaz es menor que el máximo: se divide entre √2, no se multiplica. La correcta está marcada.' } };
+const P8 = { id:'induccion-paso8', ok:'a', opts:[
+  ['a', `Vs = ${fmt(T8.Vs, 0)} V e Is = ${fmt(T8.Is, 0)} A`],
+  ['b', `Vs = ${fmt(T8.errores.razonInvertida.Vs, 0)} V e Is = ${fmt(T8.errores.razonInvertida.Is, 3)} A`, 'MG-trafo-razon-invertida', 'hipotesis'],
+  ['c', `Vs = ${fmt(T8.Vs, 0)} V e Is = ${fmt(T8.errores.corrienteComoVoltaje.Is, 3)} A`, 'MG-trafo-corriente-como-voltaje', 'hipotesis'],
+  ['d', `Vs = ${fmt(T8.errores.sinCambio.Vs, 0)} V e Is = ${fmt(T8.errores.sinCambio.Is, 1)} A`, 'MG-trafo-no-cambia-nada', 'hipotesis']],
+  fb:{ a:'¡Bien! Vs/Vp = Ns/Np = 50/200: el voltaje baja a la cuarta parte. La potencia se conserva, así que la corriente sube 4 veces.',
+    b:'Elegiste la B. Invertiste la razón: con menos vueltas en la secundaria, el voltaje BAJA. Vs = 220 · 50/200. La correcta está marcada.',
+    c:'Elegiste la C. El voltaje está bien, pero la corriente cambia al revés: Vp·Ip = Vs·Is, así que si el voltaje baja 4 veces, la corriente sube 4 veces. La correcta está marcada.',
+    d:'Elegiste la D. El transformador sí cambia el voltaje: en la razón de las vueltas, Ns/Np. La correcta está marcada.' } };
+
+// ----- configuraciones -----
+const graf = o => ({ tFin:TFIN, phiMax:PHI_MAX*1.15, femMax:SER.femMax*1.25, series:[{ puntos:SER.puntos }], picos:[{ t:SER.tMax, v:-SER.femMax, n:`pico ≈ ${fmt(SER.femMax*1000, 0)} mV` }], ...o });
+const lectImanVivo = () => [['L', 'Distancia d', `${fmt(E.im.d*100, 1)} cm`], ['I', 'Corriente I', mA(E.ver.I || 0)]];
+const steps = [
+ { k:'Paso 1', t:'Predice: el imán quieto', gate:P1,
+   prep:() => { const ya = !!S.pred[P1.id]; E.config({ vista:'iman', im:{ d:0.03 }, ver:{ I: ya ? 0 : null, d:true },
+     lect: () => ya ? lectImanVivo() : [['L', 'Distancia d', '3 cm'], ['v', 'El imán', 'quieto']], arr: ya ? { iman:{ soloAcercar:true } } : {},
+     desc: () => 'De costado: un imán de barra sobre el eje de una bobina, con el polo norte hacia la bobina y quieto a 3 cm. La bobina está conectada a un amperímetro con el cero al centro.' }); },
+   anima:fin => { E.im.d = 0.15; E.ver.I = 0; E.ver.v = true; E.lect = lectImanVivo;
+     E.recorrido(MOV, TFIN, RM ? 0 : 2600, () => { E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.permitir({ iman:{ soloAcercar:true } }); E.avisar(); fin(); }); },
+   body:() => `<p>Una bobina de N = 200 vueltas está conectada a un amperímetro sensible, con el cero al centro. Se acerca un imán por el eje de la bobina, con el polo norte por delante: mientras se acerca, la aguja se mueve. El imán se detiene a ${L_('d = 3 cm')} y se queda quieto. ¿Qué marca ahora el amperímetro?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${e_('ε')} = −N · Δ${P_('Φ')} / Δt<span class="note">ley de Faraday</span></div>
+   <div class="eq">imán quieto → Δ${P_('Φ')} = 0 → ${e_('ε')} = ${e_('0')} → ${I_('I')} = ${I_('0')}</div></div>
+   <p>Usa «Ver otra vez»: la aguja se mueve mientras el imán viaja y vuelve a cero apenas se detiene, aunque el imán quede pegado y su campo ahí sea fuerte. El flujo ${P_('Φ')} es la cantidad de campo que atraviesa la bobina, y la corriente no depende de cuánto flujo hay, sino de cuánto cambia en cada segundo. También puedes acercar el imán con el dedo (o con →): rápido mueve mucho la aguja, lento la mueve poco y quieto no la mueve. Para empezar de nuevo, llévalo a 15 cm con el botón.</p>
+   <div class="acciones"><button type="button" class="btn" id="otraVez">Ver otra vez</button><button type="button" class="btn" id="aQuince">Llevar el imán a 15 cm</button></div>
+   <p class="fuente">En un estudio con 47 alumnos de un laboratorio universitario, antes del curso solo cerca de 1 de cada 4 acertó que con el imán quieto no hay corriente; después del curso, cerca de 7 de cada 10 (Secrest y Novodvorsky, 2005). El texto que leímos no separa las respuestas incorrectas: el respaldo de la opción A es ese fallo en conjunto. Confundir el flujo con su cambio (opción B) está en una lista de dificultades documentadas, sin porcentaje (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021). La opción D la mencionaron pocos alumnos en entrevistas, sin porcentaje: respaldo parcial.</p></div>` },
+ { k:'Paso 2', t:'Predice: ¿cuándo marca más?', gate:P2,
+   prep:() => { const ya = !!S.pred[P2.id];
+     E.config({ vista:'iman', im:{ d: ya ? 0.03 : 0.15 }, tope:300, arr: ya ? { iman:{ soloAcercar:true } } : {},
+       ver:{ I: ya ? 0 : null, graf: graf({ fem:ya, marcas:INST.map((m, j) => ({ t:m.t, n:`t${'₁₂₃₄'[j]}`, dy: j === 3 ? 13 : -13, dx: j === 2 ? -6 : j === 3 ? 6 : 0 })), series: ya ? [{ puntos:SER.puntos }] : [{ puntos:SER.puntos }] }) },
+       lect: () => ya ? lectImanVivo() : [['L', 'Recorrido', '15 cm → 3 cm'], ['ink', 'Se detiene en', 't = 1,7 s']],
+       desc: () => 'Arriba, el mismo imán y la bobina. Abajo, la gráfica del flujo Φ que atraviesa cada vuelta mientras el imán se acerca, con cuatro instantes marcados: t₁, t₂, t₃ y t₄.' }); },
+   anima:fin => { E.ver.graf.fem = true; E.ver.graf.series = [{ puntos:SER.puntos, animar:true, hasta:0 }]; E.redimensionar(); E.leyenda();
+     E.im.d = 0.15; E.ver.I = 0; E.ver.v = true; E.lect = lectImanVivo;
+     E.recorrido(MOV, TFIN, RM ? 0 : 2600, () => { E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.ver.graf.cursor = null; E.ver.graf.series = [{ puntos:SER.puntos }]; E.permitir({ iman:{ soloAcercar:true } }); E.avisar(); fin(); }); },
+   body:() => `<p>El imán del paso 1 sale a ${L_('15 cm')} de la bobina en t = 0,2 s, va más rápido a la mitad del recorrido (t = 0,95 s) y frena hasta detenerse a ${L_('3 cm')} en t = 1,7 s. La gráfica muestra el flujo ${P_('Φ')} que atraviesa cada vuelta. ¿En cuál de los cuatro instantes marcados marca más corriente el amperímetro?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${e_('ε')} = −N · Δ${P_('Φ')} / Δt<span class="note">la pendiente de la curva de Φ, no su altura</span></div>
+   <div class="eq">${I_('I')}(t₁) ≈ ${I_(mA(INST[0].I))} · ${I_('I')}(t₂) ≈ ${I_(mA(INST[1].I))} · ${I_('I')}(t₃) = ${I_('I')}(t₄) = ${I_('0')}</div></div>
+   <p>Abajo apareció la gráfica de la fem ${e_('ε')}: tiene su pico donde la curva del flujo es más empinada, cerca de t₂, y vale cero donde la curva es plana, aunque el flujo sea el mayor (t₃ y t₄). Es el mismo error que confundir la pendiente con la altura en una gráfica de posición contra tiempo. La fem es negativa porque el flujo aumenta: el signo menos de la ley es la ley de Lenz, que viene en el paso 4.</p>
+   <div class="acciones"><button type="button" class="btn" id="otraVez">Ver otra vez</button><button type="button" class="btn" id="aQuince">Llevar el imán a 15 cm</button></div>
+   <p class="fuente">Confundir el flujo con su cambio está en una lista de dificultades documentadas, sin porcentaje en lo que leímos (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021): por eso las opciones C y D tienen un respaldo parcial. La opción A es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 3', t:'Predice: la ley de Faraday', gate:P3,
+   prep:() => { const ya = !!S.pred[P3.id]; E.config({ vista:'campo', campo:{ B: ya ? 0.1 : 0.5, B0:0.5, instr:'A', lectura: ya ? '0 A' : null },
+     lect: () => ya || S.p3 ? [['B', 'Campo B', `${fmt(E.campo.B, 2)} T`], ['e', 'Fem ε', '4 V mientras baja B'], ['I', 'Corriente I', '0,5 A mientras baja B']] : [['B', 'Campo B', 'de 0,5 T a 0,1 T'], ['ink', 'Tiempo Δt', '0,2 s'], ['ink', 'Resistencia R', '8 Ω']],
+     desc: () => 'De frente: una bobina cuadrada en un campo uniforme que entra a la pantalla, conectada a un amperímetro.' }); },
+   anima:fin => { S.p3 = true; const C = E.campo; C.lectura = '0,5 A'; E.avisar();
+     E.tween(RM ? 0 : 2200, f => { C.B = mix(0.5, 0.1, f); E.dibujar(); E.avisar(); }, () => { C.lectura = '0 A'; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p>Una bobina cuadrada de N = 100 vueltas, cada una de ${L_('A = 0,02 m²')}, está entre los polos de un electroimán, con el campo perpendicular a las vueltas. Al bajar la corriente del electroimán, el campo baja de ${B_('B = 0,5 T')} a ${B_('0,1 T')} en Δt = 0,2 s. La bobina y el amperímetro tienen en total R = 8 Ω. ¿Qué fem se induce y qué corriente circula mientras el campo baja?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${P_('Φ')} = ${B_('B')} · ${L_('A')}: de ${B_('0,5')} · ${L_('0,02')} = ${P_('0,01 Wb')} a ${B_('0,1')} · ${L_('0,02')} = ${P_('0,002 Wb')}</div>
+   <div class="eq">Δ${P_('Φ')} = ${P_('0,002')} − ${P_('0,01')} = ${P_('−0,008 Wb')} = ${P_('−1/125 Wb')}</div>
+   <div class="eq">|${e_('ε')}| = N · |Δ${P_('Φ')}| / Δt = 100 · ${P_('0,008')} / 0,2 = ${e_('4 V')}</div>
+   <div class="eq">${I_('I')} = ${e_('ε')} / R = ${e_('4')} / 8 = ${I_('0,5 A')}<span class="note">solo mientras el campo baja</span></div></div>
+   <p>El amperímetro marca 0,5 A durante los 0,2 s en que el campo baja (la escena lo pasa en cámara lenta) y vuelve a cero cuando el campo deja de cambiar, aunque quede en 0,1 T. Aquí no se mueve nada: basta con que cambie ${B_('B')}.</p>
+   <p class="fuente">Usar el flujo en vez de su cambio (opción C) sale de confundir flujo con cambio de flujo, documentado sin porcentaje (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021): respaldo parcial. Olvidar N (opción A) y multiplicar por R (opción B) son hipótesis nuestras.</p></div>` },
+ { k:'Paso 4', t:'Predice: el imán se acerca', gate:P4,
+   // sin arrastre: alejar el imán aquí regalaría el paso 5
+   prep:() => { const ya = !!S.pred[P4.id]; E.config({ vista:'iman', im:{ d: ya ? 0.03 : 0.12, vel: ya ? 0 : -1 },
+     ver:{ I: ya ? 0 : null, inset: ya ? true : 'pregunta', v:!ya, lenzVivo:ya, cara:ya, Bi: ya ? L4.Binducido : 0, BiAlfa:0, sentido: ya ? L4.sentido : null },
+     lect: () => ya ? lectImanVivo() : [['v', 'El imán', 'se acerca'], ['ink', 'Polo hacia la bobina', 'norte']],
+     desc: () => 'De costado: el imán se acerca a la bobina con el polo norte por delante. Arriba a la derecha, la bobina vista desde el imán, con el campo del imán que se aleja de quien mira (⊗).' }); },
+   anima:fin => { E.ver.inset = true; E.ver.Bi = L4.Binducido; E.ver.sentido = L4.sentido; E.ver.cara = true; E.ver.lenzVivo = true; E.leyenda();
+     E.im.d = 0.15; E.ver.I = 0; E.ver.v = true; E.lect = lectImanVivo;
+     E.recorrido(MOV, TFIN, RM ? 0 : 5200, () => { E.avisar(); fin(); }, { lenz:true, congelar:1.5, rotulo:'mientras se acerca' }); },
+   body:() => `<p>La misma bobina, ahora mirada desde el lado del imán. El imán se acerca con su polo norte por delante: su campo ${B_('B')} atraviesa la bobina alejándose del imán, y el flujo aumenta. ¿En qué sentido circula la corriente inducida, vista desde el imán, y qué hace la bobina con el imán?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${P_('Φ')} aumenta → ${Bi_('Bᵢ')} apunta hacia el imán, contra el aumento</div>
+   <div class="eq">${Bi_('Bᵢ')} hacia quien mira → ${I_('I')} antihoraria vista desde el imán</div>
+   <div class="eq">cara que mira al imán: ${Bi_('polo norte')} → norte frente a norte: se repelen</div></div>
+   <p>Esta es la ley de Lenz: la corriente inducida crea un campo ${Bi_('Bᵢ')} que se opone al CAMBIO del flujo. Para empujar el imán contra la bobina hay que hacer trabajo, y esa energía es la que se lleva la corriente. ¿Y si el imán se aleja? Es el paso siguiente.</p>
+   <div class="acciones"><button type="button" class="btn" id="otraVez">Ver otra vez</button></div>
+   <p class="fuente">En un estudio con 47 universitarios, después del curso, menos de la mitad acertó el sentido de la corriente en una pregunta parecida (con el imán que se aleja) y más de un tercio eligió el contrario (Secrest y Novodvorsky, 2005): la opción A tiene un respaldo parcial porque la pregunta medida no es esta. La D sale de invertir la regla de la mano derecha: un alumno la invirtió en las entrevistas de ese estudio, sin porcentaje. La B es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 5', t:'Predice: el imán se aleja', gate:P5,
+   prep:() => { const ya = !!S.pred[P5.id]; E.config({ vista:'iman', im:{ d: ya ? 0.15 : 0.04, vel: ya ? 0 : 1 }, arr: ya ? { iman:true } : {},
+     ver:{ I: ya ? 0 : null, inset: ya ? true : 'pregunta', v:!ya, lenzVivo:ya, cara:ya, Bi: ya ? L5.Binducido : 0, BiAlfa:0, sentido: ya ? L5.sentido : null },
+     lect: () => ya ? lectImanVivo() : [['v', 'El imán', 'se aleja'], ['ink', 'Polo hacia la bobina', 'norte']],
+     desc: () => 'De costado: el imán, con el polo norte hacia la bobina, se aleja de ella. Arriba a la derecha, la bobina vista desde el imán.' }); },
+   anima:fin => { E.ver.inset = true; E.ver.Bi = L5.Binducido; E.ver.sentido = L5.sentido; E.ver.cara = true; E.ver.lenzVivo = true; E.leyenda();
+     E.im.d = 0.03; E.ver.I = 0; E.ver.v = true; E.lect = lectImanVivo;
+     E.recorrido(MOVsale, TFIN, RM ? 0 : 5200, () => { E.permitir({ iman:true }); E.avisar(); fin(); }, { lenz:true, congelar:0.45, rotulo:'mientras se aleja' }); },
+   body:() => `<p>Ahora el imán está cerca de la bobina, con el polo norte hacia ella, y se aleja. Su campo ${B_('B')} sigue atravesando la bobina alejándose del imán, pero cada vez menos: el flujo disminuye. ¿Cómo circula la corriente inducida, vista desde el imán, y hacia dónde apunta el campo inducido en el centro de la bobina?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${P_('Φ')} disminuye → ${Bi_('Bᵢ')} apunta como ${B_('B')}: lo refuerza</div>
+   <div class="eq">${Bi_('Bᵢ')} se aleja de quien mira → ${I_('I')} horaria vista desde el imán</div>
+   <div class="eq">cara que mira al imán: ${Bi_('polo sur')} → norte frente a sur: se atraen</div></div>
+   <p>La corriente inducida no va «contra el campo»: va contra el CAMBIO del flujo. Si el flujo aumenta, ${Bi_('Bᵢ')} apunta contra ${B_('B')} y la bobina repele al imán; si disminuye, ${Bi_('Bᵢ')} apunta como ${B_('B')} y lo atrae. En los dos casos la bobina se opone al movimiento del imán. Arrastra el imán (o usa ← →) hacia la bobina y lejos de ella: el campo inducido y la corriente cambian de sentido.</p>
+   <div class="acciones"><button type="button" class="btn" id="otraVez">Ver otra vez</button></div>
+   <p class="fuente">Con un anillo y el polo norte que se aleja, un estudio con 47 universitarios encontró, después del curso, que cerca de 8 de cada 10 sabía que hay corriente; el estudio que leímos no dice qué eligieron los demás (opción D, respaldo parcial). Menos de la mitad acertó el sentido y más de un tercio eligió el contrario (Secrest y Novodvorsky, 2005). Ese contrario, la opción A, es también lo que da leer la ley de Lenz como «la corriente va contra el campo» (Bagno y Eylon, 1997, citados por Sağlam y Millar, sin porcentaje). La C sale de invertir la regla de la mano derecha: un alumno la invirtió en las entrevistas de ese estudio (respaldo parcial).</p></div>` },
+ { k:'Paso 6', t:'Predice: la barra que se desliza', gate:P6,
+   prep:() => { const ya = !!S.pred[P6.id]; E.config({ vista:'barra', barra:{ x: ya ? 0.8 : 0.3, L:0.4, v: ya ? 0 : 1, I: ya ? 0 : null, F:ya, brillo:0 }, arr: ya ? { barra:true } : {},
+     lect: () => ya || S.p6 ? lectBarra() : [['B', 'Campo B', '0,5 T, constante'], ['v', 'Rapidez v', '10 m/s'], ['ink', 'Foquito', 'R = 4 Ω']],
+     desc: () => 'De frente: dos rieles horizontales unidos a la izquierda por un foquito, y una barra vertical que se desliza sobre ellos, en un campo uniforme que entra a la pantalla.' }); },
+   anima:fin => { S.p6 = true; const b = E.barra; b.I = B6.I; b.sube = B6.enLaBarra === 'sube'; b.F = true; b.vSigno = 1; b.brillo = 1; E.leyenda();
+     E.lect = () => [['e', 'Fem ε', `${V(B6.fem)} V`], ['I', 'Corriente I', `${V(B6.I)} A`], ['F', 'Fuerza F', `${V(B6.F)} N, contra v`], ['ink', 'Potencia del foquito', `${V(B6.Pelectrica)} W`]]; E.avisar();
+     // cámara lenta: 0,05 s de movimiento (de 0,3 m a 0,8 m a 10 m/s) en 2,2 s
+     E.tween(RM ? 0 : 2200, f => { b.x = mix(0.3, 0.8, f); E.dibujar(); }, () => { b.v = 0; b.I = 0; b.brillo = 0; E.permitir({ barra:true }); E.lect = lectBarra; E.avisar(); fin(); }); },
+   body:() => `<p>Una barra metálica de ${L_('L = 0,4 m')} se desliza a ${v_('v = 10 m/s')} hacia la derecha sobre dos rieles. A la izquierda, los rieles están unidos por un foquito de R = 4 Ω, y todo está en un campo uniforme ${B_('B = 0,5 T')} que entra a la pantalla. El campo no cambia. ¿Qué fem se induce y qué hace la fuerza magnética sobre la barra?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${P_('Φ')} = ${B_('B')} · ${L_('L')} · x: crece porque x crece</div>
+   <div class="eq">${e_('ε')} = ${B_('B')} · ${L_('L')} · ${v_('v')} = ${B_('0,5')} · ${L_('0,4')} · ${v_('10')} = ${e_('2 V')}</div>
+   <div class="eq">${I_('I')} = ${e_('ε')} / R = ${e_('2')} / 4 = ${I_('0,5 A')} · ${F_('F')} = ${B_('B')} · ${I_('I')} · ${L_('L')} = ${F_('0,1 N')}, contra ${v_('v')}</div>
+   <div class="eq">${F_('F')} · ${v_('v')} = ${F_('0,1')} · ${v_('10')} = 1 W = ${e_('ε')} · ${I_('I')}<span class="note">la potencia que hay que dar empujando es la que prende el foquito</span></div></div>
+   <p>Aunque ${B_('B')} no cambie, al avanzar la barra crece el área encerrada por el circuito, y con ella el flujo. La corriente sube por la barra (antihoraria vista de frente) y el campo la empuja hacia atrás: para que la barra siga a 10 m/s hay que empujarla. Arrastra la barra (o usa ← →): el foquito brilla más cuanto más rápido la mueves, y si la sueltas, se apaga.</p>
+   <p class="fuente">No ver que cambiar el área también induce está en la lista de dificultades documentadas (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021); en un estudio con 47 universitarios, casi todos aceptaban que cambiar el área induce corriente, pero pocos lo explicaban por el área (Secrest y Novodvorsky, 2005). Por eso la opción D tiene respaldo parcial. B y C son hipótesis nuestras.</p></div>` },
+ { k:'Paso 7', t:'Predice: el generador', gate:P7,
+   prep:() => { const ya = !!S.pred[P7.id]; E.config({ vista:'gen', gen:{ theta:30, brillo:0, etqB:'B = 0,4 T', etqA:'A = 0,05 m²', foco:true }, tQuieto:0.5,
+     ver: ya ? { graf:grafGen() } : {}, continuo: t => { const th = (t*60) % 360; E.gen.theta = th; const r = MI.femGenerador(50, 0.4, 0.05, 100, th*RAD/100); E.gen.brillo = Math.pow(r.fem/G7.femMax, 2); },
+     lect: () => ya ? [['e', 'Fem máxima', '100 V'], ['e', 'Fem eficaz', `≈ ${fmt(G7.eficaz, 1)} V`]] : [['B', 'Campo B', '0,4 T'], ['L', 'Área A', '0,05 m²'], ['ink', 'N y ω', '50 vueltas, 100 rad/s']],
+     desc: () => 'En perspectiva: una bobina rectangular que gira alrededor de un eje vertical en un campo horizontal uniforme. La flecha punteada es la normal a la bobina y el arco, el ángulo θ entre B y la normal. La bobina está conectada a un foquito.' }); },
+   anima:fin => { E.ver.graf = grafGen(); E.ver.graf.hasta = 0; E.redimensionar(); E.leyenda();
+     E.lect = () => [['e', 'Fem máxima', '100 V'], ['e', 'Fem eficaz', `≈ ${fmt(G7.eficaz, 1)} V`]]; E.avisar();
+     E.tween(RM ? 0 : 1400, f => { E.ver.graf.hasta = f*E.ver.graf.tFin; E.dibujar(); }, fin); },
+   body:() => `<p>Un generador tiene una bobina de N = 50 vueltas, cada una de ${L_('A = 0,05 m²')}, que gira con ω = 100 rad/s en un campo uniforme ${B_('B = 0,4 T')}. El ángulo ${th_('θ')} entre ${B_('B')} y la normal a la bobina crece como ωt, así que el flujo de cada vuelta es ${B_('B')}·${L_('A')}·cos ωt. ¿Cuál es la fem máxima y cuál es su valor eficaz?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${e_('εmax')} = N · ${B_('B')} · ${L_('A')} · ω = 50 · ${B_('0,4')} · ${L_('0,05')} · 100 = ${e_('100 V')}</div>
+   <div class="eq">${e_('ε eficaz')} = ${e_('εmax')} / √2 = ${e_('50√2 V')} ≈ ${e_(fmt(G7.eficaz, 1) + ' V')}<span class="note">no 100/2</span></div></div>
+   <p>La gráfica muestra ${e_('ε')}(t) en dos vueltas. El valor eficaz es el voltaje continuo que daría al foquito la misma potencia media: como la potencia va con ${e_('ε')}², se promedia ${e_('ε')}² y sale ${e_('εmax')}/√2, no la mitad. La fem es máxima cuando la bobina queda paralela al campo (${th_('θ = 90°')}), justo cuando su flujo es cero: ahí es donde el flujo cambia más rápido. Así funcionan las centrales hidroeléctricas del Mantaro o de San Gabán.</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras: no encontramos estudios con porcentaje sobre el valor eficaz.</p></div>` },
+ { k:'Paso 8', t:'Predice: el transformador', gate:P8,
+   prep:() => { const ya = !!S.pred[P8.id]; E.config({ vista:'trafo', tr:{ Np:200, Ns:50, fuente:'alterna', Vp:220, fase:.25, Vs: ya ? '55 V' : null, Is: ya ? '2 A' : null, brillo:1 },
+     tQuieto:.25, continuo: t => { E.tr.fase = t*.8; },
+     lect: () => ya ? [['V', 'Vs', '55 V'], ['I', 'Is', '2 A'], ['ink', 'Potencia', '110 W de cada lado']] : [['V', 'Vp (alterna)', '220 V'], ['I', 'Ip', '0,5 A'], ['ink', 'Vueltas', 'Np = 200, Ns = 50']],
+     desc: () => 'Un núcleo de hierro en forma de anillo cuadrado con dos bobinas: la primaria a la izquierda, conectada a la red, y la secundaria a la derecha, conectada a un foquito. Las flechas del núcleo muestran el flujo, que cambia de sentido con la corriente alterna.' }); },
+   anima:fin => { const T = E.tr; T.Vs = '55 V'; T.Is = '2 A'; E.leyenda(); E.lect = () => [['V', 'Vs', '55 V'], ['I', 'Is', '2 A'], ['ink', 'Potencia', '110 W de cada lado']]; E.avisar();
+     fin(); },
+   body:() => `<p>Un transformador tiene Np = 200 vueltas en la bobina primaria y Ns = 50 en la secundaria. La primaria se conecta a la red, ${V2_('Vp = 220 V')} de corriente alterna, y toma ${I_('Ip = 0,5 A')}. Si el transformador es ideal (no pierde energía), ¿qué voltaje ${V2_('Vs')} y qué corriente ${I_('Is')} da la secundaria?</p>${opcionesHTML(P8.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${V2_('Vs')} / ${V2_('Vp')} = Ns / Np → ${V2_('Vs')} = ${V2_('220')} · 50/200 = ${V2_('55 V')}</div>
+   <div class="eq">${V2_('Vp')} · ${I_('Ip')} = ${V2_('Vs')} · ${I_('Is')} → ${I_('Is')} = ${V2_('220')} · ${I_('0,5')} / ${V2_('55')} = ${I_('2 A')}</div></div>
+   <p>La corriente alterna de la primaria hace que el flujo ${P_('Φ')} del núcleo cambie todo el tiempo; ese flujo atraviesa también la secundaria, y cada una de sus vueltas da la misma fem que una vuelta de la primaria. Con menos vueltas, menos voltaje; y como la potencia se conserva, más corriente. Por eso un cargador de celular baja los 220 V de la casa a unos pocos voltios.</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras: no encontramos estudios con porcentaje sobre transformadores.</p></div>` },
+];
+function lectBarra(){ const r = MI.femMovimiento(0.5, 0.4, Math.abs(E.barra.vel || 0), 4); return [['v', 'Rapidez v', `${fmt(Math.abs(E.barra.vel || 0), 1)} m/s`], ['e', 'Fem ε', `${fmt(r.fem, 2)} V`], ['I', 'Corriente I', `${fmt(r.I, 2)} A`], ['F', 'Fuerza F', `${fmt(r.F, 3)} N`]]; }
+function grafGen(){ return { tFin:4*Math.PI/100, max:120, f:t => MI.femGenerador(50, 0.4, 0.05, 100, t).fem, lineas:[{ v:G7.eficaz, n:'eficaz ≈ 71 V', izq:true }, { v:-G7.eficaz }, { v:G7.femMax, n:'100 V' }], etqT:'dos vueltas' }; }
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = !!(s.gate && !S.pred[s.gate.id]); Celular.compactar($('m1'), E.compacto);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  const otra = $('otraVez');
+  const quince = $('aQuince');
+  if (quince) quince.onclick = () => { if (!S.ocupado) E.recolocar(0.15); };
+  if (otra) otra.onclick = () => { if (S.ocupado) return; S.ocupado = true; E.ocupado = true; nav(); E.permitir({}); s.anima(() => { S.ocupado = false; E.ocupado = false; E.avisar(); nav(); }); };
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  [...dots.querySelectorAll('button')].forEach((b, j) => { b.disabled = j > S.max || S.ocupado; });
+  const otra = $('otraVez'); if (otra) otra.disabled = S.ocupado;
+  const quince = $('aQuince'); if (quince) quince.disabled = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // un paso bloqueado no anuncia su título
+    if (k > S.max){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Paso ${k + 1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.setAttribute('aria-label', `Ir al paso ${k + 1}: ${steps[k].t}`); }
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; E.ocupado = true; nav();
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    E.compactar(false);
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo: () => { S.ocupado = false; E.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Respaldos: MG8 (parcial: «algunos deciden solo por el polo; otros, solo por si se acerca o se aleja», sin
+   porcentaje) en el experimento 2; MG10 (parcial) en el 3; el transformador con pila sale de MG7 (parcial: no ver
+   que hace falta un cambio de flujo; no está medido en transformadores); lo demás, hipótesis nuestras
+   (docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md). La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const MOV = { d0:0.15, d1:0.03, t0:0.2, T:1.5 }, MOV2 = { d0:0.15, d1:0.03, t0:0.2, T:0.75 }, TFIN = 2.6;
+const R1 = MI.cambioRapidez(MOV, {}, BOB.N, 2);
+const S1 = MI.serieIman(MOV, {}, BOB.N, BOB.R, TFIN, 260), S1b = MI.serieIman(MOV2, {}, BOB.N, BOB.R, TFIN, 260);
+const L2 = MI.lenz(MI.flujoIman(0.15, { polo:'S' }), MI.flujoIman(0.03, { polo:'S' }));
+const G3 = MI.faradayAngulo(100, 0.5, 0.02, 0, 60, 0.1);
+const T4 = MI.transformador(200, 50, 12, 0.5, { continua:true });
+const C5 = MI.faradayCampo(100, 0.02, 0.5, 0.1, 0.2, 'abierta');
+const PHI_MAX = MI.flujoIman(0.03, {});
+const mVv = x => `${fmt(x*1000, 0)} mV`;
+
+const EXPS = [
+  { id:'doble-rapidez', corto:'El doble de rápido',
+    q:`En el paso 2, el imán fue de ${L_('15 cm')} a ${L_('3 cm')} de la bobina en 1,5 s, y el pico de la fem fue de unos ${e_(mVv(R1.femMax0))}. Ahora hace el mismo recorrido en 0,75 s: en cada punto va el doble de rápido. ¿Qué pasa con el pico de la fem y con el cambio total del flujo Δ${P_('Φ')}?`,
+    opts:[['a', 'El pico es el mismo y ΔΦ es el mismo: solo dura la mitad', 'MG-pico-igual-dura-menos', 'hipotesis'],
+          ['b', 'El pico se duplica y ΔΦ también se duplica', 'MG-delta-phi-crece-con-v', 'hipotesis'],
+          ['c', 'El pico se duplica y ΔΦ es el mismo'],
+          ['d', 'El pico se cuadruplica y ΔΦ es el mismo', 'MG-pico-con-v-al-cuadrado', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'El flujo cambia lo mismo, pero en la mitad del tiempo: ΔΦ/Δt es el doble, y la fem también.', b:'ΔΦ depende solo de dónde empieza y dónde termina el imán, y eso no cambió. Lo que se duplica es la rapidez del cambio.', d:'La fem va con ΔΦ/Δt: la mitad del tiempo da el doble, no el cuádruple.' },
+    antes:ya => E.config({ vista:'iman', im:{ d:0.03 }, tope:300, ver:{ I:0, graf: ya ? grafDoble(false) : null },
+      lect: () => ya ? [['e', 'Pico de ε', `${mVv(R1.femMax0)} → ${mVv(R1.femMax1)}`], ['phi', 'ΔΦ por espira', 'el mismo']] : [['L', 'Recorrido', 'de 15 cm a 3 cm'], ['ink', 'Tiempo', '1,5 s → 0,75 s']],
+      desc: () => 'De costado: el imán y la bobina del paso 2.' }),
+    despues:() => { E.ver.graf = grafDoble(true); E.leyendaExtra = '<span>a trazos: en 1,5 s · llena: en 0,75 s</span>'; E.redimensionar(); E.leyenda(); E.im.d = 0.15; E.ver.v = true;
+      E.lect = () => [['e', 'Pico de ε', `${mVv(R1.femMax0)} → ${mVv(R1.femMax1)}`], ['phi', 'ΔΦ por espira', 'el mismo']]; E.avisar();
+      E.recorrido(MOV2, TFIN, RM ? 0 : 2600, () => { E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.ver.graf.cursor = null; E.permitir({ iman:{ soloAcercar:true } }); E.dibujar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${e_('ε')} = −N · Δ${P_('Φ')} / Δt → con Δt / 2, ${e_('2ε')}</div>
+      <div class="eq">pico: ${e_(mVv(R1.femMax0))} → ${e_(mVv(R1.femMax1))} · Δ${P_('Φ')}: igual en los dos</div></div>
+      <p>En la gráfica, la curva del flujo rápido (llena) sube en la mitad del tiempo hasta la misma altura que la lenta (a trazos): es el doble de empinada y su fem tiene el doble de pico, durante la mitad del tiempo. El área bajo la curva de ${e_('ε')} es la misma en los dos casos, porque es N·Δ${P_('Φ')}. Por eso un generador que gira más rápido da más voltaje.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'polo-sur', corto:'El imán al revés',
+    q:`Se da vuelta el imán del paso 4: ahora se acerca a la bobina con el polo sur por delante. Su campo ${B_('B')} atraviesa la bobina hacia el imán, y el flujo crece. ¿Cómo circula la corriente inducida, vista desde el imán, y qué hace la bobina con el imán?`,
+    opts:[['a', 'Antihoraria, como con el polo norte, y la bobina repele al imán', 'MG8-decide-solo-por-el-movimiento', 'parcial'],
+          ['b', 'Horaria, y la bobina repele al imán'],
+          ['c', 'Horaria, y la bobina atrae al imán', 'MG8-decide-solo-por-el-polo', 'parcial'],
+          ['d', 'Antihoraria, y la bobina atrae al imán', 'MG-lenz-todo-al-reves', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'El sentido depende también del polo: con el sur, el campo del imán apunta hacia el imán y el campo inducido tiene que apuntar al revés que con el norte.', c:'Sí es horaria, pero la cara que mira al imán queda como polo sur, y dos polos sur se repelen: la bobina se opone a que el imán se acerque.', d:'Al acercarse cualquier polo, la bobina lo repele. Y con el polo sur, la corriente es horaria vista desde el imán.' },
+    antes:ya => E.config({ vista:'iman', im:{ d: ya ? 0.03 : 0.12, polo:'S', vel: ya ? 0 : -1 },
+      ver:{ I: ya ? 0 : null, inset: ya ? true : 'pregunta', v:!ya, lenzVivo:ya, cara:ya, Bi: ya ? L2.Binducido : 0, BiAlfa:0, sentido: ya ? L2.sentido : null },
+      lect: () => [['ink', 'Polo hacia la bobina', 'sur'], ['v', 'El imán', 'se acerca']],
+      desc: () => 'De costado: el imán se acerca a la bobina con el polo sur por delante. Arriba a la derecha, la bobina vista desde el imán.' }),
+    despues:() => { E.ver.inset = true; E.ver.Bi = L2.Binducido; E.ver.sentido = L2.sentido; E.ver.cara = true; E.ver.lenzVivo = true; E.ver.I = 0; E.ver.v = true; E.im.d = 0.15; E.leyenda();
+      E.recorrido(MOV, TFIN, RM ? 0 : 5200, () => { E.dibujar(); }, { lenz:true, congelar:1.5, rotulo:'mientras se acerca' }); },
+    exp:() => `<div class="eqs"><div class="eq">|${P_('Φ')}| aumenta → ${Bi_('Bᵢ')} contra ${B_('B')}: ahora se aleja del imán</div>
+      <div class="eq">${Bi_('Bᵢ')} se aleja de quien mira → ${I_('I')} horaria · cara ${Bi_('sur')} frente al polo sur: se repelen</div></div>
+      <p>Con el polo sur todo se da vuelta: el campo del imán, el campo inducido y el sentido de la corriente. Lo que no cambia es la idea de Lenz: si el imán se acerca, la bobina lo repele, y si se aleja, lo atrae, sea cual sea el polo. Para decidir el sentido hacen falta las dos cosas: qué polo es y si el flujo aumenta o disminuye.</p>
+      <p class="fuente">Que algunos alumnos deciden el sentido solo por el polo y otros solo por si el imán se acerca o se aleja lo describen Secrest y Novodvorsky (2005), sin porcentaje: las opciones A y C tienen respaldo parcial. La D es una hipótesis nuestra.</p>` },
+  { id:'espira-gira', corto:'La bobina que gira',
+    q:`Una bobina de N = 100 vueltas, cada una de ${L_('A = 0,02 m²')}, está en un campo uniforme ${B_('B = 0,5 T')} que no cambia. Al principio el campo es perpendicular a las vueltas (${th_('θ = 0°')} entre ${B_('B')} y la normal). En 0,1 s se la gira hasta ${th_('θ = 60°')}. ¿Qué fem media se induce?`,
+    opts:[['a', 'ε = 0 V', 'MG10-campo-constante-sin-fem', 'parcial'],
+          ['b', `ε = ${fmt(G3.femModulo, 0)} V`],
+          ['c', `ε ≈ ${fmt(G3.errores.anguloConPlano, 1)} V`, 'MG-flujo-angulo-con-el-plano', 'hipotesis'],
+          ['d', `ε = ${fmt(G3.errores.conFlujoInicial, 0)} V`, 'MG10-faraday-flujo-en-vez-de-cambio', 'parcial']],
+    ok:'b',
+    fb:{ a:'B no cambia, pero el flujo sí: Φ = B·A·cos θ baja al girar la bobina.', c:'θ es el ángulo entre B y la normal, así que va con coseno: cos 60° = 1/2. Con seno estarías midiendo el ángulo desde el plano de la bobina.', d:'Ese es el flujo del principio, no su cambio: Φ pasa de 0,01 Wb a 0,005 Wb, así que ΔΦ = −0,005 Wb.' },
+    antes:ya => E.config({ vista:'gen', gen:{ theta: ya ? 60 : 0, foco:false, etqB:'B = 0,5 T', etqA:'A = 0,02 m²' },
+      lect: () => ya ? [['th', 'Ángulo θ', '60°'], ['phi', 'Φ por espira', '0,005 Wb'], ['e', 'Fem media', '5 V']] : [['th', 'Ángulo θ', '0° → 60°'], ['ink', 'Tiempo Δt', '0,1 s']],
+      desc: () => 'En perspectiva: una bobina en un campo horizontal uniforme, con su normal y el ángulo θ entre B y la normal.' }),
+    despues:() => { E.lect = () => [['th', 'Ángulo θ', `${fmt(Math.round(E.gen.theta), 0)}°`], ['phi', 'Φ por espira', `${fmt(MI.flujo(0.5, 0.02, Math.round(E.gen.theta)).Phi, 4)} Wb`], ['e', 'Fem media', '5 V']];
+      E.tween(RM ? 0 : 1500, f => { E.gen.theta = 60*suave(f); E.dibujar(); E.avisar(); }, () => { E.gen.theta = 60; E.dibujar(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${P_('Φ')} = ${B_('B')} · ${L_('A')} · cos ${th_('θ')}: de ${B_('0,5')} · ${L_('0,02')} · 1 = ${P_('0,01 Wb')} a ${B_('0,5')} · ${L_('0,02')} · cos ${th_('60°')} = ${P_('0,005 Wb')}</div>
+      <div class="eq">|${e_('ε')}| = N · |Δ${P_('Φ')}| / Δt = 100 · ${P_('0,005')} / 0,1 = ${e_('5 V')}</div></div>
+      <p>Para cambiar el flujo hay tres caminos: cambiar ${B_('B')}, cambiar el área ${L_('A')} o cambiar el ángulo ${th_('θ')}. Aquí cambió solo el ángulo, y basta. Es lo que hace un generador, que gira la bobina sin parar.</p>
+      <p class="fuente">No ver que cambiar el área también induce (aquí cambia la orientación), y poner el flujo en vez de su cambio, están en la lista de dificultades documentadas, sin porcentaje (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021): respaldo parcial para A y D. La C es una hipótesis nuestra.</p>` },
+  { id:'trafo-pila', corto:'El transformador con pila',
+    q:`El transformador del paso 8 (Np = 200, Ns = 50) se conecta ahora a una pila de ${V2_('12 V')}, de corriente continua, en lugar de la red (como todo transformador real, su primaria tiene algo de resistencia). ¿Qué voltaje ${V2_('Vs')} da la secundaria?`,
+    opts:[['a', `Vs = ${fmt(T4.errores.continuaPasa.Vs, 0)} V todo el tiempo, como con alterna`, 'MG7-trafo-funciona-con-continua', 'hipotesis'],
+          ['b', `Vs = ${fmt(T4.errores.sinCambio.Vs, 0)} V todo el tiempo, lo mismo que la pila`, 'MG-trafo-deja-pasar-la-continua', 'hipotesis'],
+          ['c', `Vs = ${fmt(T4.errores.razonInvertida.Vs, 0)} V todo el tiempo, con la razón de vueltas`, 'MG-trafo-razon-invertida', 'hipotesis'],
+          ['d', 'Vs = 0 V, salvo un instante al conectar o desconectar la pila']],
+    ok:'d',
+    fb:{ a:'Con una pila, la corriente de la primaria no cambia y el flujo del núcleo tampoco: sin cambio de flujo, la secundaria no tiene fem.', b:'Las dos bobinas no están conectadas entre sí: lo único que las une es el flujo del núcleo, y con continua ese flujo no cambia.', c:'Sin cambio de flujo no hay fem, sea cual sea la razón de vueltas. Y con menos vueltas, el voltaje bajaría, no subiría.' },
+    antes:ya => E.config({ vista:'trafo', tr:{ Np:200, Ns:50, fuente:'pila', Vp:12, phiPila: ya ? 1 : 0, Vs: ya ? '0 V' : null, Is:null, brillo:0 },
+      lect: () => [['V', 'Vp (continua)', '12 V'], ['V', 'Vs', ya ? '0 V' : '?']],
+      desc: () => 'El transformador del paso 8, con una pila conectada a la primaria y un foquito en la secundaria.' }),
+    despues:() => { const T = E.tr; T.Vs = '0 V'; E.lect = () => [['V', 'Vp (continua)', '12 V'], ['V', 'Vs', '0 V (salvo al conectar)']];
+      // al conectar, el flujo sube de 0 a su valor fijo: solo en ese instante hay fem en la secundaria
+      E.tween(RM ? 0 : 1200, f => { T.phiPila = suave(Math.min(1, f*3)); T.brillo = f < .33 ? .7*Math.sin(f*3*Math.PI) : 0; T.Vs = f < .33 ? '≠ 0 un instante' : '0 V'; E.dibujar(); }, () => { T.phiPila = 1; T.brillo = 0; T.Vs = '0 V'; E.dibujar(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">continua → ${P_('Φ')} del núcleo constante → Δ${P_('Φ')} = 0 → ${V2_('Vs')} = ${V2_('0')}</div></div>
+      <p>Al conectar la pila, la corriente de la primaria sube de cero a su valor en un instante: en ese instante el flujo cambia y el foquito da un destello. Después el flujo queda fijo y la secundaria no da nada. Por eso la red eléctrica es de corriente alterna: se puede subir y bajar el voltaje con transformadores. (Además, la primaria de un transformador real conectada a continua se calienta mucho: sin la fem que se opone, solo la frena la resistencia del alambre.)</p>
+      <p class="fuente">La opción A sale de la misma idea que MG7 (no ver que hace falta un cambio de flujo), pero no encontramos estudios que lo midan en transformadores: es una hipótesis nuestra, como B y C.</p>` },
+  { id:'espira-cortada', corto:'La bobina cortada',
+    q:`Se corta la bobina del paso 3 (N = 100, ${L_('A = 0,02 m²')}) y se conecta un voltímetro entre los dos extremos del corte. El campo vuelve a bajar de ${B_('0,5 T')} a ${B_('0,1 T')} en 0,2 s. Mientras baja, ¿qué hay en la bobina?`,
+    opts:[['a', 'Una fem de 4 V entre los extremos, pero ninguna corriente'],
+          ['b', 'Ni fem ni corriente: la bobina cortada ya no es un circuito', 'MG-sin-circuito-sin-fem', 'hipotesis'],
+          ['c', 'Una fem de 4 V y la misma corriente de antes, 0,5 A', 'MG-corriente-sin-circuito', 'hipotesis'],
+          ['d', 'Una fem de 0,4 V, más chica porque no hay corriente', 'MG-fem-depende-de-la-corriente', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'La fem no necesita que el circuito esté cerrado: sale del cambio del flujo. Lo que necesita un circuito cerrado es la corriente.', c:'Sin un camino cerrado, las cargas no pueden dar la vuelta: se acumulan en los extremos y la corriente es cero.', d:'La fem depende solo de N, de ΔΦ y de Δt: es la misma con o sin corriente.' },
+    antes:ya => E.config({ vista:'campo', campo:{ B: ya ? 0.1 : 0.5, B0:0.5, corte:true, instr:'V', lectura: ya ? '0 V' : null },
+      lect: () => [['B', 'Campo B', ya ? '0,1 T' : 'de 0,5 T a 0,1 T'], ['ink', 'Tiempo Δt', '0,2 s']],
+      desc: () => 'De frente: la bobina cuadrada del paso 3, cortada en su lado derecho, con un voltímetro entre los extremos del corte.' }),
+    despues:() => { const C = E.campo; C.lectura = '4 V'; E.lect = () => [['B', 'Campo B', `${fmt(C.B, 2)} T`], ['e', 'Voltímetro', `${fmt(C5.voltajeExtremos, 0)} V mientras baja B`], ['I', 'Corriente I', `${fmt(C5.I, 0)} A`]]; E.avisar();
+      E.tween(RM ? 0 : 2200, f => { C.B = mix(0.5, 0.1, f); E.dibujar(); E.avisar(); }, () => { C.lectura = '0 V'; E.dibujar(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">|${e_('ε')}| = N · |Δ${P_('Φ')}| / Δt = 100 · ${P_('0,008')} / 0,2 = ${e_('4 V')}<span class="note">igual que con la bobina entera</span></div>
+      <div class="eq">${I_('I')} = 0: sin un camino cerrado no hay corriente</div></div>
+      <p>La fem es como la de una pila: está aunque no se use. Mientras el campo baja, el voltímetro marca 4 V; cuando el campo deja de cambiar, vuelve a 0. Si se uniera el corte con un alambre, circularía la corriente del paso 3.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+];
+function grafDoble(animar){
+  return { tFin:TFIN, phiMax:PHI_MAX*1.15, femMax:R1.femMax1*1.15, fem:true,
+    series:[{ puntos:S1.puntos, trazos:true, alfa:.75 }, { puntos:S1b.puntos, animar, hasta: animar ? 0 : undefined }],
+    picos:[{ t:S1.tMax, v:-S1.femMax, n:`≈ ${fmt(S1.femMax*1000, 0)} mV` }, { t:S1b.tMax, v:-S1b.femMax, n:`≈ ${fmt(S1b.femMax*1000, 0)} mV` }] };
+}
+const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta; las respondidas se revisitan.
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k > primeraLibre()) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = !ya; Celular.compactar($('m2'), !ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la opción ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); pintar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    E.compactar(false);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

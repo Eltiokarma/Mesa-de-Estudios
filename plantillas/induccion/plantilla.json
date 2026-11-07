@@ -1,0 +1,15 @@
+{
+  "id": "induccion",
+  "titulo": "El imán, la espira y el foquito: inducción electromagnética",
+  "formato": "escena",
+  "unidades": [
+    "fisica.induccion-electromagnetica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
