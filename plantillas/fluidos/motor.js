@@ -20,10 +20,23 @@
  *                                         del agua, la presión y la fuerza en el fondo y la fuerza vertical de las
  *                                         paredes (paradoja hidrostática). presionEn(x, y) da la presión en un punto
  *                                         (x desde el eje, y desde el fondo), con su techo y los errores F2, F4, F7.
+ *                                         Geometría de las formas (alto total 2,4 m; con H = 2 m de agua):
+ *                                           'ancho'    un tramo de 1 m de ancho (área 1 m²).
+ *                                           'estrecho' un tramo de 0,25 m de ancho (área 0,25 m²).
+ *                                           'botella'  de y = 0 a 0,8 m, 1 m de ancho; de 0,8 a 2,4 m, cuello de 0,25 m.
+ *                                                      El escalón en y = 0,8 m es un techo de 0,75 m² (a cada lado del
+ *                                                      cuello, de |x| = 0,125 a 0,5 m) que empuja el agua hacia abajo.
+ *                                           'embudo'   de y = 0 a 0,8 m, 0,25 m de ancho; de 0,8 a 2,4 m, 1 m: el
+ *                                                      escalón en y = 0,8 m es una repisa que sostiene agua (fuerza < 0).
+ *                                         errores.pesoEncima = peso del agua / área del fondo; errores.hHastaTecho usa
+ *                                         la distancia vertical del punto al primer techo que tenga encima.
  *   presionEn(o, x, y)                    recipiente(o).presionEn(x, y), para casos.json.
  *   vasosComunicantes({ areas, volumen })  un líquido en dos ramas de distinta sección unidas abajo: el mismo nivel.
  *   tuboU({ rho1, h1, rho2 })             tubo en U parejo con el líquido 2 (más denso) abajo y una columna h1 del
- *                                         líquido 1 en la rama izquierda: desnivel x del líquido 2 = ρ1·h1/ρ2.
+ *                                         líquido 1 en la rama izquierda: desnivel x del líquido 2 = ρ1·h1/ρ2 (cuánto
+ *                                         sube el líquido 2 de la derecha sobre la frontera de la izquierda).
+ *                                         errores.mismaSuperficie = h1: el x que saldría si las dos superficies libres
+ *                                         quedaran parejas, como con un solo líquido. densidadesInvertidas = ρ2·h1/ρ1.
  *   barometro({ rho, h })                 presión atmosférica que sostiene una columna h (Torricelli).
  *   prensa({ A1, A2 | D1, D2, F1, d1 })   prensa de Pascal: F2 = F1·A2/A1, el émbolo grande sube d2 = d1·A1/A2 y el
  *                                         trabajo es el mismo en los dos lados.
@@ -34,10 +47,17 @@
  *                                         que su empuje, amarrado al fondo si pesa menos. Con mRef, los errores de F10
  *                                         contra otro cuerpo del mismo volumen y masa mRef.
  *   bloques({ masas, V, rhoF })           varios cuerpos del mismo volumen soltados bajo el líquido: el destino de cada uno.
+ *                                         errores.escalonado (F11) da, para cada bloque en el orden de 'masas', su
+ *                                         puesto de arriba hacia abajo si cada uno "buscara su profundidad": 0 para el
+ *                                         más liviano, n − 1 para el más pesado (rango por masa, empates por orden).
  *   balanza({ m, V, rhoF, mVaso, Avaso, hLiq, bajada })  un bloque cúbico colgado de un dinamómetro se baja dentro de
  *                                         un vaso con líquido que está sobre una balanza. 'bajada' es cuánto está el
  *                                         fondo del bloque bajo la superficie inicial (negativo: fuera). El nivel sube
  *                                         al hundirlo. Da lo que marcan el dinamómetro (T) y la balanza (N).
+ *                                         El bloque es un cubo de lado a = ∛V; el vaso tiene sección Avaso y hLiq de
+ *                                         líquido. Wvaso = (mVaso + ρF·Avaso·hLiq)·g es el peso del vaso más el del
+ *                                         líquido (lo que marca la balanza sin el bloque). N = Wvaso + E y T = W − E
+ *                                         (0 si el hilo queda flojo y el bloque flota).
  *   continuidad({ A1, v1, A2 | D1, D2 })  caudal Q = A·v y la rapidez en la otra sección.
  *   bernoulli({ P1, v1, h1, v2 | A1, A2, h2, rho })  presión en el punto 2 de un tubo con líquido ideal.
  *

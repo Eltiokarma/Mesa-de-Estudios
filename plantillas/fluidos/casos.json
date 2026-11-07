@@ -2,7 +2,7 @@
   "plantilla": "fluidos",
   "unidades": "SI: kg, m, m², m³, N, Pa, J; g = 10 m/s², agua 1000 kg/m³ y P₀ = 100 000 Pa salvo que se diga otra cosa",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' (una lista) y compara 'espera'. Los campos anidados van con punto (errores.sinP0, niveles.0); los números se comparan con la tolerancia relativa; los textos y los booleanos, exactos. 'presionEn' es recipiente(o).presionEn(x, y), con x medido desde el eje del recipiente e y desde el fondo. La profundidad h se mide en vertical hacia abajo desde la superficie libre. Las presiones 'Pman' (o 'P' en presionEn) son manométricas; 'Pabs', absolutas. Los recipientes tienen 1 m de fondo hacia dentro: el área de cada tramo vale su ancho. En 'balanza', 'bajada' es cuánto está el fondo del bloque cúbico bajo la superficie inicial del líquido; T es lo que marca el dinamómetro y N lo que marca la balanza.",
-  "verificacion": "",
+  "verificacion": "Verificado por un subagente independiente (7 nov 2026), sin leer el motor, casos.json ni las pruebas (solo la cabecera de motor.js): fracciones exactas en Python por otros caminos (prensa por trabajo, balanza por balance de fuerzas del sistema, tubo en U igualando presiones y paradoja con fuerza en el fondo = peso del agua + fuerza del techo). Coinciden 131 campos; las diferencias fueron de nombre o interpretación (mismaSuperficie, hilo, Wvaso). Los recipientes y presionEn se comprobaron por consistencia con la geometría que se deduce de los números.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Informe, presión hidrostática: agua, h = 2 m, P₀ = 10⁵ Pa → manométrica 20 000 Pa, absoluta 120 000 Pa (F8 al revés: 80 000 Pa)",
