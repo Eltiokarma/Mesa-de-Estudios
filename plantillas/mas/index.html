@@ -756,7 +756,7 @@ function correr(){ parar(); const s = steps[S.step]; if (RM){ S.t = s.vista().ve
 const dots = $('dots');
 steps.forEach((s, n) => {
   const li = document.createElement('li'), b = document.createElement('button');
-  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.type = 'button'; b.textContent = n + 1;
   b.addEventListener('click', () => { go(n); $('stepT').focus({ preventScroll:true }); }); li.appendChild(b); dots.appendChild(li);
 });
 function go(n){
@@ -787,6 +787,9 @@ function nav(){
 function pintarDots(){
   [...dots.querySelectorAll('button')].forEach((b, k) => {
     b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // Un paso bloqueado no anuncia su título (podría adelantar la respuesta).
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k+1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
     if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
   });
 }
