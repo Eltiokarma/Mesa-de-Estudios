@@ -1669,7 +1669,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "matrices"
+     ]
     },
     {
      "id": "algebra.sistemas-de-ecuaciones",
@@ -1698,7 +1700,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "traductor-enunciados"
+      "traductor-enunciados",
+      "matrices"
      ]
     },
     {
@@ -5195,6 +5198,24 @@
     "/plantillas/materia-energia/index.html",
     "/plantillas/materia-energia/motor.js",
     "/plantillas/materia-energia/papel.json"
+   ]
+  },
+  "matrices": {
+   "id": "matrices",
+   "titulo": "El plano que se deforma: matrices y determinantes",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.matrices-y-determinantes",
+    "algebra.sistemas-de-ecuaciones"
+   ],
+   "url": "/plantillas/matrices/index.html",
+   "papel": "/plantillas/matrices/papel.json",
+   "archivos": [
+    "/plantillas/matrices/index.html",
+    "/plantillas/matrices/motor.js",
+    "/plantillas/matrices/papel.json"
    ]
   },
   "maximos-minimos": {
