@@ -123,6 +123,174 @@
     "suma": {
       "respaldo": "hipotesis",
       "describe": "Suma los dos periodos"
+    },
+    "potencias-corridas": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta los exponentes desde 1: la cifra de las unidades queda multiplicada por la base"
+    },
+    "suma-cifras-por-la-base": {
+      "respaldo": "hipotesis",
+      "describe": "Suma las cifras y multiplica por la base, como si todos los lugares valieran igual"
+    },
+    "lee-como-decimal": {
+      "respaldo": "hipotesis",
+      "describe": "Lee el numeral como si estuviera en base 10"
+    },
+    "base-minima-como-respuesta": {
+      "respaldo": "hipotesis",
+      "describe": "Da la base mínima (la cifra mayor más 1) en vez de la base en que vale lo pedido"
+    },
+    "resta-los-numerales": {
+      "respaldo": "hipotesis",
+      "describe": "Resta el numeral y su valor como si los dos fueran de base 10"
+    },
+    "resta-las-unidades-y-no-divide": {
+      "respaldo": "hipotesis",
+      "describe": "Resta las unidades al valor y no divide entre la cifra de los paquetes"
+    },
+    "resta-el-menor-del-mayor": {
+      "respaldo": "hipotesis",
+      "describe": "En cada columna resta el menor del mayor, sin pedir prestado"
+    },
+    "presta-sin-descontar": {
+      "respaldo": "hipotesis",
+      "describe": "Pide prestado pero no descuenta lo que prestó la columna de la izquierda"
+    },
+    "ceros-que-prestan-quedan-en-10": {
+      "respaldo": "hipotesis",
+      "describe": "Los ceros por los que pasa el préstamo quedan en 10 y no en 9"
+    },
+    "residuo-por-exceso-igual-al-por-defecto": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que el residuo por exceso es el mismo que el residuo por defecto"
+    },
+    "resta-desde-el-residuo-maximo": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta lo que falta desde el residuo máximo (d − 1 − r) y no desde el divisor"
+    },
+    "suma-el-divisor-al-residuo": {
+      "respaldo": "hipotesis",
+      "describe": "Suma el divisor y el residuo"
+    },
+    "lo-hace-cuadrado-no-cubo": {
+      "respaldo": "hipotesis",
+      "describe": "Completa los exponentes para un cuadrado y no para un cubo"
+    },
+    "multiplica-por-lo-que-sobra": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica por lo que sobra de cada exponente en vez de lo que le falta"
+    },
+    "multiplica-por-todos-los-primos": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica por todos los primos una vez, aunque alguno ya estaba completo"
+    },
+    "olvida-el-mas-uno": {
+      "respaldo": "hipotesis",
+      "describe": "Resta las raíces de los extremos y no suma 1"
+    },
+    "cuenta-desde-1": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta todos los cuadrados desde 1², también los de antes del primer número"
+    },
+    "raiz-de-la-diferencia": {
+      "respaldo": "hipotesis",
+      "describe": "Saca la raíz de la diferencia entre los dos números"
+    },
+    "AR15-promedio-simple": {
+      "respaldo": "parcial",
+      "describe": "Promedia los valores sin pesar cuánto hay de cada uno (AR15)"
+    },
+    "cruza-las-cantidades": {
+      "respaldo": "hipotesis",
+      "describe": "Cruza las cantidades: cada precio con los kilos del otro"
+    },
+    "suma-los-precios": {
+      "respaldo": "hipotesis",
+      "describe": "Suma los precios"
+    },
+    "aspa-al-reves": {
+      "respaldo": "hipotesis",
+      "describe": "Aplica la regla del aspa al revés: cruza mal las distancias"
+    },
+    "resta-grados-como-litros": {
+      "respaldo": "hipotesis",
+      "describe": "Toma la diferencia de grados como litros de agua"
+    },
+    "da-el-volumen-final": {
+      "respaldo": "hipotesis",
+      "describe": "Da el volumen final y no el agua que se agrega"
+    },
+    "olvida-a-los-que-no-estan-en-ninguno": {
+      "respaldo": "hipotesis",
+      "describe": "Resta el total sin quitar antes a los que no están en ningún grupo"
+    },
+    "da-los-que-estan-en-al-menos-uno": {
+      "respaldo": "hipotesis",
+      "describe": "Da los que están en al menos un grupo (la unión)"
+    },
+    "da-los-que-estan-solo-en-el-otro": {
+      "respaldo": "hipotesis",
+      "describe": "Da los que están solo en el otro grupo"
+    },
+    "dos-por-cada-elemento": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta dos subconjuntos por elemento (2n) en vez de multiplicar (2ⁿ)"
+    },
+    "olvida-el-vacio": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida el conjunto vacío"
+    },
+    "cuenta-ordenamientos": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta las formas de ordenar los elementos (n!)"
+    },
+    "niega-las-partes-sin-cambiar-el-conectivo": {
+      "respaldo": "hipotesis",
+      "describe": "Niega cada parte pero deja el mismo conectivo"
+    },
+    "niega-solo-la-primera-y-cambia": {
+      "respaldo": "hipotesis",
+      "describe": "Niega solo la primera parte y cambia el conectivo"
+    },
+    "niega-solo-la-primera": {
+      "respaldo": "hipotesis",
+      "describe": "Niega solo la primera parte y deja el conectivo"
+    },
+    "condicional-al-reves": {
+      "respaldo": "hipotesis",
+      "describe": "Lee el condicional al revés: lo cree falso con el antecedente falso y el consecuente verdadero"
+    },
+    "antecedente-falso-hace-falsa-la-promesa": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que el condicional es falso si no se cumple nada (las dos partes falsas)"
+    },
+    "condicional-como-bicondicional": {
+      "respaldo": "hipotesis",
+      "describe": "Lee el condicional como bicondicional («si y solo si»)"
+    },
+    "da-los-del-tipo-supuesto": {
+      "respaldo": "hipotesis",
+      "describe": "Da la cantidad del tipo que se supuso, no la del otro tipo"
+    },
+    "da-lo-que-falta-sin-dividir": {
+      "respaldo": "hipotesis",
+      "describe": "Da lo que falta para el total sin dividir entre lo que agrega cada cambio"
+    },
+    "divide-entre-el-valor-del-otro-tipo": {
+      "respaldo": "hipotesis",
+      "describe": "Divide lo que falta entre el valor del otro tipo y no entre la diferencia de valores"
+    },
+    "dobla-y-despues-devuelve": {
+      "respaldo": "hipotesis",
+      "describe": "Al ir hacia atrás, duplica primero y suma lo de más después"
+    },
+    "olvida-lo-que-gasto-de-mas": {
+      "respaldo": "hipotesis",
+      "describe": "Al ir hacia atrás, duplica pero olvida devolver lo que se gastó de más"
+    },
+    "resta-lo-que-gasto-de-mas": {
+      "respaldo": "hipotesis",
+      "describe": "Al ir hacia atrás, resta lo que se gastó de más en vez de devolverlo"
     }
   },
   "pares": [
@@ -790,6 +958,935 @@
             "texto": "15 horas",
             "valor": 15,
             "error": "suma"
+          }
+        ]
+      }
+    }
+  ],
+  "reserva": [
+    {
+      "par": "ari-15",
+      "plantilla": "numeracion",
+      "unidad": "aritmetica.numeracion",
+      "nombreUnidad": "Sistemas de numeración",
+      "mide": "Pasar un numeral de base b a base 10: cada cifra por la potencia de su lugar, con las unidades en el orden 0",
+      "A": {
+        "enunciado": "Un comerciante cuenta sus naranjas en grupos de 6 y anota el total en base 6: 342₍₆₎. ¿Cuántas naranjas tiene, contadas en base 10?",
+        "datos": {
+          "numeral": "342",
+          "b": 6
+        },
+        "opciones": [
+          {
+            "texto": "54",
+            "valor": 54,
+            "error": "suma-cifras-por-la-base"
+          },
+          {
+            "texto": "134",
+            "valor": 134,
+            "correcta": true
+          },
+          {
+            "texto": "342",
+            "valor": 342,
+            "error": "lee-como-decimal"
+          },
+          {
+            "texto": "804",
+            "valor": 804,
+            "error": "potencias-corridas"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En un juego, los puntos se anotan en base 7. Rosa tiene 413₍₇₎ puntos. ¿Cuántos puntos son en base 10?",
+        "datos": {
+          "numeral": "413",
+          "b": 7
+        },
+        "opciones": [
+          {
+            "texto": "413",
+            "valor": 413,
+            "error": "lee-como-decimal"
+          },
+          {
+            "texto": "56",
+            "valor": 56,
+            "error": "suma-cifras-por-la-base"
+          },
+          {
+            "texto": "206",
+            "valor": 206,
+            "correcta": true
+          },
+          {
+            "texto": "1442",
+            "valor": 1442,
+            "error": "potencias-corridas"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-16",
+      "plantilla": "numeracion",
+      "unidad": "aritmetica.numeracion",
+      "nombreUnidad": "Sistemas de numeración",
+      "mide": "Hallar la base desconocida: plantear la descomposición polinómica igual al valor y despejar la base",
+      "A": {
+        "enunciado": "En una base desconocida b, el numeral 32₍b₎ vale 23 en base 10. ¿Cuánto vale b?",
+        "datos": {
+          "numeral": "32",
+          "v": 23
+        },
+        "opciones": [
+          {
+            "texto": "4",
+            "valor": 4,
+            "error": "base-minima-como-respuesta"
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "correcta": true
+          },
+          {
+            "texto": "21",
+            "valor": 21,
+            "error": "resta-las-unidades-y-no-divide"
+          },
+          {
+            "texto": "9",
+            "valor": 9,
+            "error": "resta-los-numerales"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En una base desconocida b, el numeral 45₍b₎ vale 41 en base 10. ¿Cuánto vale b?",
+        "datos": {
+          "numeral": "45",
+          "v": 41
+        },
+        "opciones": [
+          {
+            "texto": "4",
+            "valor": 4,
+            "error": "resta-los-numerales"
+          },
+          {
+            "texto": "36",
+            "valor": 36,
+            "error": "resta-las-unidades-y-no-divide"
+          },
+          {
+            "texto": "9",
+            "valor": 9,
+            "correcta": true
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "base-minima-como-respuesta"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-17",
+      "plantilla": "cuatro-operaciones",
+      "unidad": "aritmetica.cuatro-operaciones",
+      "nombreUnidad": "Las cuatro operaciones",
+      "mide": "Restar cuando el minuendo tiene ceros: el préstamo pasa por los ceros, que quedan en 9",
+      "A": {
+        "enunciado": "Una cooperativa tenía 7002 sacos de papa en su almacén y vendió 2586. Haz la resta en columnas: ¿cuántos sacos le quedan?",
+        "datos": {
+          "minuendo": 7002,
+          "sustraendo": 2586
+        },
+        "opciones": [
+          {
+            "texto": "5584",
+            "valor": 5584,
+            "error": "resta-el-menor-del-mayor"
+          },
+          {
+            "texto": "4416",
+            "valor": 4416,
+            "correcta": true
+          },
+          {
+            "texto": "4526",
+            "valor": 4526,
+            "error": "ceros-que-prestan-quedan-en-10"
+          },
+          {
+            "texto": "5526",
+            "valor": 5526,
+            "error": "presta-sin-descontar"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una biblioteca tenía 6004 libros y prestó 3257 durante el año. Haz la resta en columnas: ¿cuántos libros quedaron en los estantes?",
+        "datos": {
+          "minuendo": 6004,
+          "sustraendo": 3257
+        },
+        "opciones": [
+          {
+            "texto": "3857",
+            "valor": 3857,
+            "error": "presta-sin-descontar"
+          },
+          {
+            "texto": "2857",
+            "valor": 2857,
+            "error": "ceros-que-prestan-quedan-en-10"
+          },
+          {
+            "texto": "2747",
+            "valor": 2747,
+            "correcta": true
+          },
+          {
+            "texto": "3253",
+            "valor": 3253,
+            "error": "resta-el-menor-del-mayor"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-18",
+      "plantilla": "cuatro-operaciones",
+      "unidad": "aritmetica.cuatro-operaciones",
+      "nombreUnidad": "Las cuatro operaciones",
+      "mide": "Residuo por exceso: lo que falta para completar otro grupo es el divisor menos el residuo por defecto",
+      "A": {
+        "enunciado": "Se empacan 89 panes en bolsas de 12. Se llenan todas las bolsas que se pueda y sobran algunos panes. ¿Cuántos panes faltan para que esos panes sobrantes completen otra bolsa?",
+        "datos": {
+          "D": 89,
+          "d": 12
+        },
+        "opciones": [
+          {
+            "texto": "17",
+            "valor": 17,
+            "error": "suma-el-divisor-al-residuo"
+          },
+          {
+            "texto": "5",
+            "valor": 5,
+            "error": "residuo-por-exceso-igual-al-por-defecto"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "resta-desde-el-residuo-maximo"
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "correcta": true
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Se acomodan 74 sillas en filas de 11. Se completan todas las filas que se pueda y sobran algunas sillas. ¿Cuántas sillas faltan para que esas sillas sobrantes completen otra fila?",
+        "datos": {
+          "D": 74,
+          "d": 11
+        },
+        "opciones": [
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "residuo-por-exceso-igual-al-por-defecto"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "resta-desde-el-residuo-maximo"
+          },
+          {
+            "texto": "3",
+            "valor": 3,
+            "correcta": true
+          },
+          {
+            "texto": "19",
+            "valor": 19,
+            "error": "suma-el-divisor-al-residuo"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-19",
+      "plantilla": "potenciacion",
+      "unidad": "aritmetica.potenciacion-y-radicacion",
+      "nombreUnidad": "Potenciación y radicación",
+      "mide": "Menor multiplicador que vuelve cubo perfecto a un número: completar cada exponente hasta un múltiplo de 3",
+      "A": {
+        "enunciado": "Cada caja trae 200 cubitos iguales. Se juntan varias cajas completas para armar, con todos sus cubitos, un cubo macizo. ¿Cuántas cajas como mínimo hay que juntar?",
+        "datos": {
+          "N": 200
+        },
+        "opciones": [
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "lo-hace-cuadrado-no-cubo"
+          },
+          {
+            "texto": "10",
+            "valor": 10,
+            "error": "multiplica-por-todos-los-primos"
+          },
+          {
+            "texto": "5",
+            "valor": 5,
+            "correcta": true
+          },
+          {
+            "texto": "25",
+            "valor": 25,
+            "error": "multiplica-por-lo-que-sobra"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Cada bolsa trae 392 cubitos iguales. Se juntan varias bolsas completas para armar, con todos sus cubitos, un cubo macizo. ¿Cuántas bolsas como mínimo hay que juntar?",
+        "datos": {
+          "N": 392
+        },
+        "opciones": [
+          {
+            "texto": "14",
+            "valor": 14,
+            "error": "multiplica-por-todos-los-primos"
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "correcta": true
+          },
+          {
+            "texto": "49",
+            "valor": 49,
+            "error": "multiplica-por-lo-que-sobra"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "lo-hace-cuadrado-no-cubo"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-20",
+      "plantilla": "potenciacion",
+      "unidad": "aritmetica.potenciacion-y-radicacion",
+      "nombreUnidad": "Potenciación y radicación",
+      "mide": "Contar cuadrados perfectos entre dos números: contar sus raíces de la primera a la última, más uno",
+      "A": {
+        "enunciado": "¿Cuántos cuadrados perfectos hay entre 30 y 300?",
+        "datos": {
+          "a": 30,
+          "b": 300
+        },
+        "opciones": [
+          {
+            "texto": "11",
+            "valor": 11,
+            "error": "olvida-el-mas-uno"
+          },
+          {
+            "texto": "12",
+            "valor": 12,
+            "correcta": true
+          },
+          {
+            "texto": "16",
+            "valor": 16,
+            "error": "raiz-de-la-diferencia"
+          },
+          {
+            "texto": "17",
+            "valor": 17,
+            "error": "cuenta-desde-1"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuántos cuadrados perfectos hay entre 80 y 700?",
+        "datos": {
+          "a": 80,
+          "b": 700
+        },
+        "opciones": [
+          {
+            "texto": "26",
+            "valor": 26,
+            "error": "cuenta-desde-1"
+          },
+          {
+            "texto": "17",
+            "valor": 17,
+            "error": "olvida-el-mas-uno"
+          },
+          {
+            "texto": "18",
+            "valor": 18,
+            "correcta": true
+          },
+          {
+            "texto": "24",
+            "valor": 24,
+            "error": "raiz-de-la-diferencia"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-21",
+      "plantilla": "mezclas",
+      "unidad": "aritmetica.mezclas-y-aleaciones",
+      "nombreUnidad": "Mezclas y aleaciones",
+      "mide": "Precio medio de una mezcla: costo total entre kilos totales, cada precio pesado por sus kilos",
+      "A": {
+        "enunciado": "Una cafetería mezcla 10 kg de café de S/ 12 el kilo con 40 kg de café de S/ 22 el kilo. ¿A cuánto le sale el kilo de la mezcla?",
+        "datos": {
+          "q1": 10,
+          "p1": 12,
+          "q2": 40,
+          "p2": 22
+        },
+        "opciones": [
+          {
+            "texto": "S/ 14 el kilo",
+            "valor": 14,
+            "error": "cruza-las-cantidades"
+          },
+          {
+            "texto": "S/ 20 el kilo",
+            "valor": 20,
+            "correcta": true
+          },
+          {
+            "texto": "S/ 34 el kilo",
+            "valor": 34,
+            "error": "suma-los-precios"
+          },
+          {
+            "texto": "S/ 17 el kilo",
+            "valor": 17,
+            "error": "AR15-promedio-simple"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una tienda mezcla 20 kg de quinua de S/ 6 el kilo con 60 kg de quinua de S/ 10 el kilo. ¿A cuánto le sale el kilo de la mezcla?",
+        "datos": {
+          "q1": 20,
+          "p1": 6,
+          "q2": 60,
+          "p2": 10
+        },
+        "opciones": [
+          {
+            "texto": "S/ 16 el kilo",
+            "valor": 16,
+            "error": "suma-los-precios"
+          },
+          {
+            "texto": "S/ 7 el kilo",
+            "valor": 7,
+            "error": "cruza-las-cantidades"
+          },
+          {
+            "texto": "S/ 9 el kilo",
+            "valor": 9,
+            "correcta": true
+          },
+          {
+            "texto": "S/ 8 el kilo",
+            "valor": 8,
+            "error": "AR15-promedio-simple"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-22",
+      "plantilla": "mezclas",
+      "unidad": "aritmetica.mezclas-y-aleaciones",
+      "nombreUnidad": "Mezclas y aleaciones",
+      "mide": "Agua para bajar el grado de un alcohol: el alcohol puro no cambia y se reparte en el volumen final",
+      "A": {
+        "enunciado": "En una farmacia hay 14 L de alcohol de 60° (es decir, 60 % de alcohol puro). ¿Cuántos litros de agua hay que agregarle para que quede de 20° (20 % de alcohol puro)?",
+        "datos": {
+          "V": 14,
+          "g0": 60,
+          "gf": 20
+        },
+        "opciones": [
+          {
+            "texto": "7 L",
+            "valor": 7,
+            "error": "aspa-al-reves"
+          },
+          {
+            "texto": "28 L",
+            "valor": 28,
+            "correcta": true
+          },
+          {
+            "texto": "42 L",
+            "valor": 42,
+            "error": "da-el-volumen-final"
+          },
+          {
+            "texto": "40 L",
+            "valor": 40,
+            "error": "resta-grados-como-litros"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En un laboratorio hay 9 L de alcohol de 80° (es decir, 80 % de alcohol puro). ¿Cuántos litros de agua hay que agregarle para que quede de 20° (20 % de alcohol puro)?",
+        "datos": {
+          "V": 9,
+          "g0": 80,
+          "gf": 20
+        },
+        "opciones": [
+          {
+            "texto": "36 L",
+            "valor": 36,
+            "error": "da-el-volumen-final"
+          },
+          {
+            "texto": "3 L",
+            "valor": 3,
+            "error": "aspa-al-reves"
+          },
+          {
+            "texto": "27 L",
+            "valor": 27,
+            "correcta": true
+          },
+          {
+            "texto": "60 L",
+            "valor": 60,
+            "error": "resta-grados-como-litros"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-23",
+      "plantilla": "conjuntos",
+      "unidad": "aritmetica.conjuntos",
+      "nombreUnidad": "Conjuntos",
+      "mide": "Intersección a partir del total y de los que no están en ningún grupo: n(A) + n(B) − n(A ∪ B), con la unión sin los de afuera",
+      "A": {
+        "enunciado": "En un aula de 40 estudiantes, 25 tienen perro, 18 tienen gato y 7 no tienen ninguna de las dos mascotas. ¿Cuántos tienen perro y gato?",
+        "datos": {
+          "U": 40,
+          "nA": 25,
+          "nB": 18,
+          "ninguno": 7
+        },
+        "opciones": [
+          {
+            "texto": "3 estudiantes",
+            "valor": 3,
+            "error": "olvida-a-los-que-no-estan-en-ninguno"
+          },
+          {
+            "texto": "8 estudiantes",
+            "valor": 8,
+            "error": "da-los-que-estan-solo-en-el-otro"
+          },
+          {
+            "texto": "10 estudiantes",
+            "valor": 10,
+            "correcta": true
+          },
+          {
+            "texto": "33 estudiantes",
+            "valor": 33,
+            "error": "da-los-que-estan-en-al-menos-uno"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En una reunión de 50 vecinos, 32 leen el periódico, 26 escuchan la radio y 4 no hacen ninguna de las dos cosas. ¿Cuántos leen el periódico y escuchan la radio?",
+        "datos": {
+          "U": 50,
+          "nA": 32,
+          "nB": 26,
+          "ninguno": 4
+        },
+        "opciones": [
+          {
+            "texto": "14 personas",
+            "valor": 14,
+            "error": "da-los-que-estan-solo-en-el-otro"
+          },
+          {
+            "texto": "12 personas",
+            "valor": 12,
+            "correcta": true
+          },
+          {
+            "texto": "46 personas",
+            "valor": 46,
+            "error": "da-los-que-estan-en-al-menos-uno"
+          },
+          {
+            "texto": "8 personas",
+            "valor": 8,
+            "error": "olvida-a-los-que-no-estan-en-ninguno"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-24",
+      "plantilla": "conjuntos",
+      "unidad": "aritmetica.conjuntos",
+      "nombreUnidad": "Conjuntos",
+      "mide": "Número de subconjuntos: cada elemento entra o no entra, 2ⁿ, contando el vacío",
+      "A": {
+        "enunciado": "Sea V = {a, e, i, o, u}, el conjunto de las vocales. ¿Cuántos subconjuntos tiene V?",
+        "datos": {
+          "elementos": [
+            "a",
+            "e",
+            "i",
+            "o",
+            "u"
+          ]
+        },
+        "opciones": [
+          {
+            "texto": "31 subconjuntos",
+            "valor": 31,
+            "error": "olvida-el-vacio"
+          },
+          {
+            "texto": "10 subconjuntos",
+            "valor": 10,
+            "error": "dos-por-cada-elemento"
+          },
+          {
+            "texto": "32 subconjuntos",
+            "valor": 32,
+            "correcta": true
+          },
+          {
+            "texto": "120 subconjuntos",
+            "valor": 120,
+            "error": "cuenta-ordenamientos"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Sea K = {rojo, azul, verde, blanco, negro, amarillo}. ¿Cuántos subconjuntos tiene K?",
+        "datos": {
+          "elementos": [
+            "rojo",
+            "azul",
+            "verde",
+            "blanco",
+            "negro",
+            "amarillo"
+          ]
+        },
+        "opciones": [
+          {
+            "texto": "12 subconjuntos",
+            "valor": 12,
+            "error": "dos-por-cada-elemento"
+          },
+          {
+            "texto": "64 subconjuntos",
+            "valor": 64,
+            "correcta": true
+          },
+          {
+            "texto": "720 subconjuntos",
+            "valor": 720,
+            "error": "cuenta-ordenamientos"
+          },
+          {
+            "texto": "63 subconjuntos",
+            "valor": 63,
+            "error": "olvida-el-vacio"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-25",
+      "plantilla": "logica",
+      "unidad": "aritmetica.logica-proposicional",
+      "nombreUnidad": "Lógica proposicional",
+      "mide": "Negar una proposición compuesta (De Morgan): se niega cada parte y el conectivo cambia",
+      "A": {
+        "enunciado": "¿Cuál es la negación de «Luis estudia o trabaja»?",
+        "datos": {
+          "formula": "p ∨ q"
+        },
+        "opciones": [
+          {
+            "texto": "«Luis no estudia o no trabaja»",
+            "clave": "~p ∨ ~q",
+            "error": "niega-las-partes-sin-cambiar-el-conectivo"
+          },
+          {
+            "texto": "«Luis no estudia y no trabaja»",
+            "clave": "~p ∧ ~q",
+            "correcta": true
+          },
+          {
+            "texto": "«Luis no estudia o trabaja»",
+            "clave": "~p ∨ q",
+            "error": "niega-solo-la-primera"
+          },
+          {
+            "texto": "«Luis no estudia y trabaja»",
+            "clave": "~p ∧ q",
+            "error": "niega-solo-la-primera-y-cambia"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuál es la negación de «Carla juega vóley o va a natación»?",
+        "datos": {
+          "formula": "p ∨ q"
+        },
+        "opciones": [
+          {
+            "texto": "«Carla no juega vóley o va a natación»",
+            "clave": "~p ∨ q",
+            "error": "niega-solo-la-primera"
+          },
+          {
+            "texto": "«Carla no juega vóley o no va a natación»",
+            "clave": "~p ∨ ~q",
+            "error": "niega-las-partes-sin-cambiar-el-conectivo"
+          },
+          {
+            "texto": "«Carla no juega vóley y no va a natación»",
+            "clave": "~p ∧ ~q",
+            "correcta": true
+          },
+          {
+            "texto": "«Carla no juega vóley y va a natación»",
+            "clave": "~p ∧ q",
+            "error": "niega-solo-la-primera-y-cambia"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-26",
+      "plantilla": "logica",
+      "unidad": "aritmetica.logica-proposicional",
+      "nombreUnidad": "Lógica proposicional",
+      "mide": "Un condicional solo es falso cuando el antecedente es verdadero y el consecuente falso",
+      "A": {
+        "enunciado": "Un profesor promete: «Si apruebas el examen, te pongo un punto extra en tu nota». ¿En qué caso el profesor no cumplió su promesa?",
+        "datos": {
+          "formula": "p → q"
+        },
+        "opciones": [
+          {
+            "texto": "Cuando no apruebas y no te pone el punto extra",
+            "clave": "F F",
+            "error": "antecedente-falso-hace-falsa-la-promesa"
+          },
+          {
+            "texto": "Cuando apruebas y no te pone el punto extra",
+            "clave": "V F",
+            "correcta": true
+          },
+          {
+            "texto": "Cuando no apruebas y te pone el punto extra",
+            "clave": "F V",
+            "error": "condicional-al-reves"
+          },
+          {
+            "texto": "Cuando apruebas y no te lo pone, y también cuando no apruebas y te lo pone",
+            "clave": "V F|F V",
+            "error": "condicional-como-bicondicional"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una tienda anuncia: «Si compras dos polos, te regalamos una gorra». ¿En qué caso la tienda no cumplió su anuncio?",
+        "datos": {
+          "formula": "p → q"
+        },
+        "opciones": [
+          {
+            "texto": "Cuando no compras dos polos y te regalan la gorra",
+            "clave": "F V",
+            "error": "condicional-al-reves"
+          },
+          {
+            "texto": "Cuando no compras dos polos y no te regalan la gorra",
+            "clave": "F F",
+            "error": "antecedente-falso-hace-falsa-la-promesa"
+          },
+          {
+            "texto": "Cuando compras dos polos y no te regalan la gorra",
+            "clave": "V F",
+            "correcta": true
+          },
+          {
+            "texto": "Cuando compras dos polos y no te la regalan, y también cuando no los compras y te la regalan",
+            "clave": "V F|F V",
+            "error": "condicional-como-bicondicional"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-27",
+      "plantilla": "razonamiento-numerico",
+      "unidad": "aritmetica.razonamiento-numerico",
+      "nombreUnidad": "Problemas de razonamiento numérico",
+      "mide": "Falsa suposición: se supone todo de un tipo y lo que falta, dividido entre lo que agrega cada cambio, da los del otro tipo",
+      "A": {
+        "enunciado": "En un estacionamiento hay 26 vehículos: solo bicicletas y autos. Entre todos tienen 80 ruedas. ¿Cuántos autos hay?",
+        "datos": {
+          "total": 26,
+          "patas": 80
+        },
+        "opciones": [
+          {
+            "texto": "28 autos",
+            "valor": 28,
+            "error": "da-lo-que-falta-sin-dividir"
+          },
+          {
+            "texto": "14 autos",
+            "valor": 14,
+            "correcta": true
+          },
+          {
+            "texto": "7 autos",
+            "valor": 7,
+            "error": "divide-entre-el-valor-del-otro-tipo"
+          },
+          {
+            "texto": "12 autos",
+            "valor": 12,
+            "error": "da-los-del-tipo-supuesto"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En una chacra hay 35 animales: solo pavos y carneros. Entre todos tienen 110 patas. ¿Cuántos carneros hay?",
+        "datos": {
+          "total": 35,
+          "patas": 110
+        },
+        "opciones": [
+          {
+            "texto": "15 carneros",
+            "valor": 15,
+            "error": "da-los-del-tipo-supuesto"
+          },
+          {
+            "texto": "10 carneros",
+            "valor": 10,
+            "error": "divide-entre-el-valor-del-otro-tipo"
+          },
+          {
+            "texto": "20 carneros",
+            "valor": 20,
+            "correcta": true
+          },
+          {
+            "texto": "40 carneros",
+            "valor": 40,
+            "error": "da-lo-que-falta-sin-dividir"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-28",
+      "plantilla": "razonamiento-numerico",
+      "unidad": "aritmetica.razonamiento-numerico",
+      "nombreUnidad": "Problemas de razonamiento numérico",
+      "mide": "Método regresivo con «la mitad y k más»: se devuelve primero lo de más y después se duplica, de la última etapa a la primera",
+      "A": {
+        "enunciado": "En el primer paradero bajó la mitad de los pasajeros de un bus y 3 más. En el segundo paradero bajó la mitad de los que quedaban y 2 más. Al final quedaron 8 pasajeros y no subió nadie. ¿Cuántos pasajeros había al principio?",
+        "datos": {
+          "k1": 3,
+          "k2": 2,
+          "final": 8
+        },
+        "opciones": [
+          {
+            "texto": "18 pasajeros",
+            "valor": 18,
+            "error": "resta-lo-que-gasto-de-mas"
+          },
+          {
+            "texto": "46 pasajeros",
+            "valor": 46,
+            "correcta": true
+          },
+          {
+            "texto": "32 pasajeros",
+            "valor": 32,
+            "error": "olvida-lo-que-gasto-de-mas"
+          },
+          {
+            "texto": "39 pasajeros",
+            "valor": 39,
+            "error": "dobla-y-despues-devuelve"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una panadera vendió en la mañana la mitad de sus panes y 4 más. En la tarde vendió la mitad de los que le quedaban y 3 más. Al final del día le quedaron 7 panes. ¿Cuántos panes tenía al empezar el día?",
+        "datos": {
+          "k1": 4,
+          "k2": 3,
+          "final": 7
+        },
+        "opciones": [
+          {
+            "texto": "38 panes",
+            "valor": 38,
+            "error": "dobla-y-despues-devuelve"
+          },
+          {
+            "texto": "8 panes",
+            "valor": 8,
+            "error": "resta-lo-que-gasto-de-mas"
+          },
+          {
+            "texto": "48 panes",
+            "valor": 48,
+            "correcta": true
+          },
+          {
+            "texto": "28 panes",
+            "valor": 28,
+            "error": "olvida-lo-que-gasto-de-mas"
           }
         ]
       }

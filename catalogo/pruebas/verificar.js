@@ -394,6 +394,49 @@ const V = {
   'rm-10': d => { const r = motor('relojes-calendarios').vuelveHoraCorrecta({ a: d.a, cada: d.cada }), e = r.erroresDias;
     return { correcta: r.dias, errores: { 'adelanto-hasta-24-horas': e.dia24, 'adelanto-por-hora-sin-el-cada': e.sinCada, 'adelanto-hasta-una-hora': e.unaHora } }; },
 
+  // ari-15 a ari-26: plantillas de aritmética sin ítems en las formas (en "reserva": las formas tienen un tope de 10).
+  'ari-15': d => { const r = motor('numeracion').aDecimal(d.numeral, d.b), e = r.errores;
+    return { correcta: r.valor, errores: { 'potencias-corridas': e.potenciasCorridas, 'suma-cifras-por-la-base': e.sumaCifrasPorBase, 'lee-como-decimal': e.comoDecimal } }; },
+  'ari-16': d => { const r = motor('numeracion').baseDesconocida(d.numeral, d.v), e = r.errores;
+    if (!r.existe) throw new Error('el numeral no vale eso en ninguna base');
+    return { correcta: r.base, errores: { 'base-minima-como-respuesta': e.baseMinima, 'resta-los-numerales': e.restaNumerales, 'resta-las-unidades-y-no-divide': e.sinDividir } }; },
+  'ari-17': d => { const r = motor('cuatro-operaciones').restaColumnas(String(d.minuendo), String(d.sustraendo), 10), e = r.errores;
+    return { correcta: Number(r.texto), errores: { 'resta-el-menor-del-mayor': Number(e.menorDelMayor), 'presta-sin-descontar': Number(e.sinDescontar), 'ceros-que-prestan-quedan-en-10': Number(e.cerosComoB) } }; },
+  'ari-18': d => { const r = motor('cuatro-operaciones').division(d.D, d.d), e = r.errores;
+    if (r.exacta) throw new Error('la división debe ser inexacta');
+    return { correcta: r.rExceso, errores: { 'residuo-por-exceso-igual-al-por-defecto': e.igualAlDefecto, 'resta-desde-el-residuo-maximo': e.divisorMenosUnoMenosR, 'suma-el-divisor-al-residuo': e.sumaElDivisor } }; },
+  'ari-19': d => { const r = motor('potenciacion').menorMultiplicador(d.N, 3), e = r.errores;
+    return { correcta: r.m, errores: { 'lo-hace-cuadrado-no-cubo': e.loHaceCuadrado, 'multiplica-por-lo-que-sobra': e.copiaExponente, 'multiplica-por-todos-los-primos': e.todosLosPrimos } }; },
+  'ari-20': d => { const r = motor('potenciacion').cuadradosEntre(d.a, d.b), e = r.errores;
+    return { correcta: r.cantidad, errores: { 'olvida-el-mas-uno': e.sinMasUno, 'cuenta-desde-1': e.desdeUno, 'raiz-de-la-diferencia': e.raizDiferencia } }; },
+  'ari-21': d => { const r = motor('mezclas').precioMedio([{ cantidad: d.q1, precio: d.p1 }, { cantidad: d.q2, precio: d.p2 }]), e = r.errores;
+    return { correcta: r.precioMedio, errores: { 'AR15-promedio-simple': e.promedioSimple, 'cruza-las-cantidades': e.cantidadesCruzadas, 'suma-los-precios': e.sumaValores } }; },
+  'ari-22': d => { const r = motor('mezclas').aguaPara(d.V, d.g0, d.gf), e = r.errores;
+    if (!r.posible) throw new Error(r.razon);
+    return { correcta: r.agua, errores: { 'aspa-al-reves': e.aspaAlReves, 'resta-grados-como-litros': e.restaGrados, 'da-el-volumen-final': e.volumenFinal } }; },
+  'ari-23': d => { const r = motor('conjuntos').interseccionPorComplemento(d.U, d.nA, d.nB, d.ninguno), e = r.errores;
+    return { correcta: r.respuesta, errores: { 'olvida-a-los-que-no-estan-en-ninguno': e.olvidaLosDeFuera, 'da-los-que-estan-en-al-menos-uno': e.daLaUnion, 'da-los-que-estan-solo-en-el-otro': e.daSoloElOtro } }; },
+  'ari-24': d => { const S = motor('conjuntos'), n = S.conjunto(d.elementos).length, r = S.cuantosSubconjuntos(n), e = r.errores;
+    if (n !== d.elementos.length) throw new Error('el conjunto tiene elementos repetidos');
+    return { correcta: r.subconjuntos, errores: { 'dos-por-cada-elemento': e.dosPorElemento[0], 'olvida-el-vacio': e.sinElVacio[0], 'cuenta-ordenamientos': e.permutaciones[0] } }; },
+  'ari-25': d => { const r = motor('logica').negar(d.formula), e = r.errores;
+    return { correcta: r.texto, errores: { 'niega-las-partes-sin-cambiar-el-conectivo': e.negaPartes, 'niega-solo-la-primera-y-cambia': e.niegaSoloPrimera, 'niega-solo-la-primera': e.niegaPrimeraSinCambiar } }; },
+  'ari-26': d => {
+    // Las filas en que el condicional es falso, como «V F» (p, q) y separadas por «|»; cada error, las filas que da su lectura errada.
+    const r = motor('logica').filasFalsas(d.formula), e = r.errores, k = x => x.join('|');
+    return { correcta: k(r.falsas), errores: { 'condicional-al-reves': k(e.alReves), 'antecedente-falso-hace-falsa-la-promesa': k(e.ambasFalsas), 'condicional-como-bicondicional': k(e.comoBicondicional) } };
+  },
+
+  // ari-27 y ari-28: razonamiento-numerico (en "reserva" mientras la plantilla no entre al catálogo).
+  'ari-27': d => { const r = motor('razonamiento-numerico').corral(d.total, d.patas), e = r.errores;
+    if (!r.posible) throw new Error(r.razon);
+    return { correcta: r.respuesta, errores: { 'da-los-del-tipo-supuesto': e.daLosSupuestos, 'da-lo-que-falta-sin-dividir': e.faltanSinDividir, 'divide-entre-el-valor-del-otro-tipo': e.divideEntreElOtro } }; },
+  'ari-28': d => {
+    // Dos etapas de «la mitad y k más»; la vuelta y cada error salen del motor (mercado).
+    const r = motor('razonamiento-numerico').mercado([{ op: 'gasta', parte: [1, 2], mas: d.k1 }, { op: 'gasta', parte: [1, 2], mas: d.k2 }], d.final), e = r.errores;
+    return { correcta: r.respuesta, errores: { 'dobla-y-despues-devuelve': e.devuelveDespues, 'olvida-lo-que-gasto-de-mas': e.olvidaElExtra, 'resta-lo-que-gasto-de-mas': e.restaElExtra } };
+  },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },
