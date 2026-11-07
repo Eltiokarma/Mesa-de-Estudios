@@ -2375,7 +2375,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "congruencia"
+     ]
     },
     {
      "id": "geometria.poligonos-y-cuadrilateros",
@@ -4403,6 +4405,23 @@
     "/plantillas/circunferencia-trig/index.html",
     "/plantillas/circunferencia-trig/motor.js",
     "/plantillas/circunferencia-trig/papel.json"
+   ]
+  },
+  "congruencia": {
+   "id": "congruencia",
+   "titulo": "El armador de triángulos: congruencia",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.congruencia"
+   ],
+   "url": "/plantillas/congruencia/index.html",
+   "papel": "/plantillas/congruencia/papel.json",
+   "archivos": [
+    "/plantillas/congruencia/index.html",
+    "/plantillas/congruencia/motor.js",
+    "/plantillas/congruencia/papel.json"
    ]
   },
   "cuadrado-crece": {
