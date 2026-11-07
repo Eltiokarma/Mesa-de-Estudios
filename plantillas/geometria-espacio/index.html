@@ -14,7 +14,8 @@
    Elegidos con CIEDE2000 (script en el scratchpad del constructor): ΔE00 ≥ 21,3 entre los que salen juntos en el
    mismo dibujo, en claro y en oscuro (el par más cercano es L y p). φ y ℓ quedan a ΔE00 ≈ 10, φ y d a ≈ 17, y θ y α a
    ≈ 19, pero nunca salen juntos: φ solo sale con la tinta (la puerta) y θ nunca con α. Contraste AA ≥ 4,5:1 sobre el
-   papel, la tarjeta y el chip .v (fondo al 8 %) en los dos temas. */
+   papel, la tarjeta y el chip .v (fondo al 8 %) en los dos temas. El gris de las rectas oblicuas y de los rayos de sol
+   (#716579 claro, #9b9387 oscuro) queda a ΔE00 ≥ 22 de φ, con la que sale en la puerta. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
@@ -30,13 +31,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-h:#f17384; --c-p:#5ed9c8; --c-l:#cf6bfa; --c-L:#40bf59; --c-t:#f0a04a; --c-al:#e3c84a; --c-f:#ab8cf2; --c-d:#7cb0ff; --gris:#a99cb8;
+  --c-h:#f17384; --c-p:#5ed9c8; --c-l:#cf6bfa; --c-L:#40bf59; --c-t:#f0a04a; --c-al:#e3c84a; --c-f:#ab8cf2; --c-d:#7cb0ff; --gris:#9b9387;
   --relleno:.28; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-h:#f17384; --c-p:#5ed9c8; --c-l:#cf6bfa; --c-L:#40bf59; --c-t:#f0a04a; --c-al:#e3c84a; --c-f:#ab8cf2; --c-d:#7cb0ff; --gris:#a99cb8;
+  --c-h:#f17384; --c-p:#5ed9c8; --c-l:#cf6bfa; --c-L:#40bf59; --c-t:#f0a04a; --c-al:#e3c84a; --c-f:#ab8cf2; --c-d:#7cb0ff; --gris:#9b9387;
   --relleno:.28; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -58,7 +59,7 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
 /* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
 @media (max-width:899px){
   .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
-  .mode.pendiente .legend, .mode.pendiente .control, .mode.pendiente .giro{display:none}
+  .mode.pendiente .legend, .mode.pendiente .control{display:none}
   .mode.pendiente .lecturas{gap:4px}
   .mode.pendiente .lectura{padding:2px 8px}
 }
@@ -170,6 +171,8 @@ button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{out
   .bench{position:sticky; top:12px}
 }
 .control output{min-width:3.4em}
+.mode.pendiente .giro .libre, .mode:not(.pendiente) .giro .espera{display:none}
+.opt .m.t{font-family:inherit}
 .mode.pendiente .control{display:none}
 .dibujar-nota{margin:0; padding:0 8px; font-size:.8rem; color:var(--muted)}
 </style>
@@ -198,7 +201,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{out
         <input type="range" id="r1" min="0" max="100" step="1" value="0">
         <output id="ro1" for="r1"></output>
       </div>
-      <p class="giro">Arrastra el dibujo hacia los lados para girarlo (con teclado: tócalo y usa las flechas).</p>
+      <p class="giro"><span class="libre">Arrastra el dibujo hacia los lados para girarlo (con teclado: tócalo y usa las flechas).</span><span class="espera">Responde primero; luego podrás girar el cubo.</span></p>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="lecturas" id="lect1"></div>
       <div class="legend" id="leyenda1"></div>
@@ -226,7 +229,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{out
         <input type="range" id="r2" min="0" max="100" step="1" value="0">
         <output id="ro2" for="r2"></output>
       </div>
-      <p class="giro">Arrastra el dibujo hacia los lados para girarlo.</p>
+      <p class="giro"><span class="libre">Arrastra el dibujo hacia los lados para girarlo.</span><span class="espera">Responde primero; luego podrás girar el dibujo.</span></p>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="lecturas" id="lect2"></div>
       <div class="legend" id="leyenda2"></div>
@@ -288,7 +291,7 @@ const h_ = t => V_('h', t), p_ = t => V_('p', t), l_ = t => V_('l', t), L_ = t =
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
 const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
-const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const opcionesHTML = (opts, idFb, texto) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m${texto ? ' t' : ''}">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const fuenteHip = que => `<p class="fuente">${que}: el informe de geometría no trae estudios sobre rectas y planos en el espacio, así que son hipótesis nuestras, tomadas de errores frecuentes en problemas de academia. El lanzamiento en el colegio dirá cuáles aparecen.</p>`;
 const fuenteDibujo = `<p class="fuente">Leer el ángulo en el dibujo en perspectiva es hipótesis nuestra. Se parece a dos errores descritos: leer las propiedades de una figura en su dibujo y no en su definición (descrito con los niveles de Van Hiele, sin cifras para el espacio) y tratar un sólido dibujado como si fuera plano, que fue el error más común al contar cubitos (Ben-Chaim, Lappan y Houang, 1985, según autores que lo citan).</p>`;
 
@@ -423,7 +426,7 @@ function crearEscena(cv, idDesc, idLect, idLey, idCtl){
   let giro = null;
   cv.addEventListener('pointerdown', e => { if (drag.arrastrando()) return; giro = { x:e.clientX, y:e.clientY, az:E.az, el:E.el, id:e.pointerId, raton:e.pointerType === 'mouse' }; });
   cv.addEventListener('pointermove', e => {
-    if (!giro || e.pointerId !== giro.id || drag.arrastrando()) return;
+    if (!giro || e.pointerId !== giro.id || drag.arrastrando() || E.compacto) return;   // con predicción pendiente no se gira
     const dx = e.clientX - giro.x, dy = e.clientY - giro.y;
     if (Math.abs(dx) < 3 && Math.abs(dy) < 3) return;
     E.az = giro.az + dx*.45;
@@ -435,7 +438,7 @@ function crearEscena(cv, idDesc, idLect, idLey, idCtl){
   cv.tabIndex = 0;
   cv.addEventListener('keydown', e => {
     const k = { ArrowLeft:[-6, 0], ArrowRight:[6, 0], ArrowUp:[0, 4], ArrowDown:[0, -4] }[e.key];
-    if (!k) return;
+    if (!k || E.compacto) return;
     e.preventDefault(); E.az += k[0]; E.el = clamp(E.el + k[1], 5, 88); E.dibujar();
   });
 
@@ -498,8 +501,8 @@ function pintar(ctx, c, E, P, V, L, W, H){
     const esq = [[pz.min, y0, 0], [pz.max, y0, 0], [pz.max, y1, 0], [pz.min, y1, 0]];
     ctx.save(); camino(esq); ctx.closePath(); ctx.fillStyle = c.ink; ctx.globalAlpha = .045; ctx.fill(); ctx.globalAlpha = 1;
     ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.beginPath();
-    for (let x = Math.ceil(pz.min); x <= pz.max; x += 1){ const a = P([x, y0, 0]), b = P([x, y1, 0]); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); }
-    for (let y = Math.ceil(y0); y <= y1; y += 1){ const a = P([pz.min, y, 0]), b = P([pz.max, y, 0]); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); }
+    if (cf.cuadricula !== false) for (let x = Math.ceil(pz.min); x <= pz.max; x += 1){ const a = P([x, y0, 0]), b = P([x, y1, 0]); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); }
+    if (cf.cuadricula !== false) for (let y = Math.ceil(y0); y <= y1; y += 1){ const a = P([pz.min, y, 0]), b = P([pz.max, y, 0]); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); }
     ctx.stroke(); ctx.globalAlpha = .55; ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; camino(esq); ctx.closePath(); ctx.stroke(); ctx.restore();
     const q = P([pz.min + .5, y0 + .5, 0]); rotulo(ctx, c, q[0], q[1], 'plano P', c.muted, 'center', 12);
   }
@@ -588,12 +591,14 @@ const CR = ME.distanciaCruzadas({ a:6, r1:'AG', r2:'BF' });
 const ANCHO_PUERTA = 6*Math.SQRT2;
 
 const P1 = { id:'espacio-varilla', ok:'b', opts:[
-  ['a', 'Con todas', 'ESP-basta-una-recta', 'hipotesis'],
-  ['b', 'Solo con L'],
-  ['c', 'Con 2: L y la perpendicular a L', 'ESP-dos-rectas', 'hipotesis']],
-  fb:{ b:'¡Bien! Inclinada, la varilla forma 90° con una sola recta del piso que pasa por O. Mira la recta que gira: el ángulo cambia.',
-    a:'Elegiste la A. Que forme 90° con L no basta: mira la recta que gira en el piso. Solo con L el ángulo es 90°. La correcta está marcada.',
-    c:`Elegiste la C. La recta del piso perpendicular a L es justo la de la sombra de la varilla, y con ella forma ${gr0(VAR.respuestas.conM)}, no 90°. La correcta está marcada.` } };
+  ['a', 'Con ninguna: si está inclinada, no es perpendicular a ninguna recta del piso', 'ESP-inclinada-ninguna', 'hipotesis'],
+  ['b', 'Con una sola'],
+  ['c', 'Con dos, perpendiculares entre sí', 'ESP-dos-rectas', 'hipotesis'],
+  ['d', 'Con todas', 'ESP-basta-una-recta', 'hipotesis']],
+  fb:{ b:'¡Bien! Inclinada, la varilla forma 90° con una sola recta del piso que pasa por O: la recta L, perpendicular a su sombra. Mira la recta que gira: el ángulo cambia.',
+    a:'Elegiste la A. Aunque esté inclinada, hay una recta del piso con la que forma 90°: la recta L, perpendicular a su sombra. Mira la recta que gira. La correcta está marcada.',
+    c:`Elegiste la C. Forma 90° con L, pero la recta del piso perpendicular a L es la de su sombra, y con ella forma ${gr0(VAR.respuestas.conM)}. Mira la recta que gira. La correcta está marcada.`,
+    d:'Elegiste la D. Con todas solo si estuviera vertical. Inclinada, el ángulo cambia al girar la recta del piso, y es 90° una sola vez. La correcta está marcada.' } };
 const P2 = { id:'espacio-diagonal-piso', ok:'c', opts:[
   ['a', gr1(DG.errores.angulo.conArista), 'ESP-angulo-con-otra-recta', 'hipotesis'],
   ['b', gr1(DG.errores.angulo.diagonalCara), 'ESP-diagonal-de-cara', 'hipotesis'],
@@ -634,7 +639,7 @@ const P5 = { id:'espacio-cruzadas', ok:'b', opts:[
 // ----- piezas de dibujo de cada paso -----
 function dibVarilla(L, E){
   const V = ME.varilla({ incl:E.prog.incl, dir:90, largo:4, O });
-  L.linea([-1.5, 3, 0], [7.5, 3, 0], 'L', { ancho:2.4, et:'L', etT:.04, dy:-10 });
+  if (E.prog.Lv) L.linea([-1.5, 3, 0], [7.5, 3, 0], 'L', { ancho:2.4, alfa:E.prog.Lv, et:'L', etT:.04, dy:-10 });
   if (E.prog.M) L.linea([3, -1.5, 0], [3, 7.5, 0], 'L', { ancho:2.4, alfa:E.prog.M, et:'M', etT:.96, dx:12 });
   if (E.prog.sombra) L.linea(O, V.pieSombra, 'p', { ancho:4, alfa:E.prog.sombra });
   if (E.prog.sombra && V.sombra > .05) rayosSol(L, [V.punta], E.prog.sombra, 0);
@@ -645,15 +650,15 @@ function dibVarilla(L, E){
     const r = UT.dot(d, V.direccion) >= 0 ? d : UT.mul(d, -1), g = ME.anguloConRecta({ incl:E.prog.incl, dir:90, phi:E.prog.barre });
     L.angulo(O, V.punta, UT.add(O, r), 1.3, 'al', `α = ${gr0(g)}`, { centro:O });
   }
-  L.marca(O, V.punta, [7, 3, 0], .75, 'ink');
+  if (E.prog.Lv) L.marca(O, V.punta, [7, 3, 0], .75, 'ink', { alfa:E.prog.Lv });
   L.linea(O, V.punta, 'l', { ancho:4.5 });
   L.punto(O, 'ink', 'O', { dx:-12, dy:12 });
   L.punto(V.punta, 'l', 'Q', { etCol:'l' });
   return V;
 }
-const leyVarilla = r => [['l', 'varilla OQ', 'linea'], ['L', 'rectas del piso por O', 'linea']].concat(r ? [['al', 'ángulo α entre la varilla y una recta']] : []);
+const leyVarilla = r => [['l', 'varilla OQ', 'linea']].concat(r ? [['L', 'rectas del piso por O', 'linea'], ['al', 'ángulo α entre la varilla y una recta']] : []);
 const lectVarilla = E => [['al', 'α con L', gr0(ME.anguloConRecta({ incl:E.prog.incl, dir:90, phi:0 }))], ['al', 'α con M', gr0(ME.anguloConRecta({ incl:E.prog.incl, dir:90, phi:90 }))],
-  ['l', '¿perpendicular al piso?', E.prog.incl >= 89.5 ? 'sí' : 'no']];
+  ['l', '¿⊥ al piso?', E.prog.incl >= 89.5 ? 'sí' : 'no']];
 const manijaVarilla = { etiqueta:'Inclinar', min:10, max:90, paso:1, fmt:v => gr0(v), leer:E => E.prog.incl, poner:(E, v) => { E.prog.incl = v; },
   punto:v => ME.varilla({ incl:v, dir:90, largo:4, O }).punta };
 
@@ -664,27 +669,28 @@ const steps = [
      ley:[['ink', 'cubo ABCD-EFGH, arista a = 6', 'linea'], ['muted', 'plano P (el piso)']] }),
    body:() => `<p class="problem">Este cubo es una habitación de arista a = 6. Su piso ABCD está en el <b>plano P</b>, que sigue más allá de las paredes. Las letras son las de academia: ABCD abajo y E, F, G, H encima de A, B, C, D.</p>
    <p>Arrastra el dibujo hacia los lados para girarlo y míralo desde varios lados. Las aristas que quedan detrás se dibujan a trazos.</p>
-   <p class="hint">En los pasos que siguen vas a clavar una varilla en el piso, mirar la sombra de una diagonal, abrir una puerta y medir distancias entre rectas.</p>` },
+   <p class="hint">En los pasos que siguen vas a clavar una varilla en el piso, medir una diagonal del cubo, abrir una puerta y buscar distancias entre rectas.</p>` },
 
  { k:'Paso 2', t:'Una varilla clavada en el piso', gate:P1,
    prep:() => { const r = !!S.pred[P1.id];
-     E.config({ prog:{ incl:60, M:r ? 1 : 0, barre:null, sombra:0 }, letras:false, cuboAlfa:.35,
-       desc:'En el centro O del piso hay una varilla OQ inclinada. Por O pasa la recta L del piso, y entre la varilla y L hay una marca de ángulo recto.',
+     E.config({ prog:{ incl:60, Lv:r ? 1 : 0, M:r ? 1 : 0, barre:null, sombra:0 }, letras:false, cuboAlfa:.35,
+       desc:'En el centro O del piso hay una varilla OQ inclinada 60° respecto del piso.',
        dibujo:(L, E) => dibVarilla(L, E), ley:leyVarilla(r), lect:r ? lectVarilla : null, manija:r ? manijaVarilla : null }); },
    anima:fin => { E.cfg.ley = leyVarilla(true); E.leyenda();
-     E.cadena([n => { E.prog.barre = 0; E.animar('barre', 180, 3600, n); }, n => { E.prog.barre = 90; E.dibujar(); E.animar('M', 1, 500, n); }, E.pausa(900),
+     E.cadena([n => { E.prog.barre = 20; E.animar('barre', 200, 3600, n); }, n => { E.prog.barre = 180; E.dibujar(); E.animar('Lv', 1, 500, n); }, E.pausa(700),
+       n => { E.prog.barre = 90; E.dibujar(); E.animar('M', 1, 500, n); }, E.pausa(900),
        n => E.animar('incl', 90, 1300, n), n => { E.prog.barre = 90; E.animar('barre', 270, 3000, n); }, E.pausa(500), n => { E.prog.barre = null; E.animar('incl', 60, 1000, n); }], () => {
        E.cfg.lect = lectVarilla; E.cfg.manija = manijaVarilla; E.lecturas(); E.control(); E.dibujar();
-       E.avisar('Una recta del piso giró alrededor de O: el ángulo α con la varilla inclinada fue 90° solo al pasar por L. Con la varilla vertical, fue 90° con todas. Ahora puedes inclinar la varilla con la manija de la punta.'); fin(); }); },
-   body:() => `<p class="problem">En el centro O del piso se clava una ${l_('varilla OQ')} inclinada. La ${L_('recta L')} del piso pasa por O, y la varilla forma 90° con ${L_('L')} (mira la marca). ¿Con cuántas de las rectas del piso que pasan por O forma la varilla un ángulo de 90°?</p>${opcionesHTML(P1.opts, 'fb')}
+       E.avisar('Una recta del piso giró alrededor de O: el ángulo α con la varilla inclinada fue 90° una sola vez, al pasar por la recta L, perpendicular a la sombra. Con la varilla vertical, fue 90° con todas. Ahora puedes inclinar la varilla con la manija de la punta.'); fin(); }); },
+   body:() => `<p class="problem">En el centro O del piso se clava una ${l_('varilla OQ')} inclinada 60°. ¿Con cuántas rectas del piso que pasan por O forma 90°?</p>${opcionesHTML(P1.opts, 'fb', true)}
    <div id="tras" class="body" hidden>
-   <p>Una recta del piso giró alrededor de O. El ángulo ${al_('α')} con la varilla inclinada fue 90° una sola vez: al pasar por ${L_('L')}. Con la ${L_('recta M')}, la de la sombra, es ${al_(gr0(VAR.respuestas.conM))}. Cuando la varilla quedó vertical, ${al_('α')} fue 90° con todas.</p>
+   <p>Una recta del piso giró alrededor de O. El ángulo ${al_('α')} con la varilla inclinada fue 90° una sola vez: al pasar por la ${L_('recta L')}, perpendicular a la sombra. Con la ${L_('recta M')}, la de la sombra, es ${al_(gr0(VAR.respuestas.conM))}. Cuando la varilla quedó vertical, ${al_('α')} fue 90° con todas.</p>
    <p class="aviso">Ser perpendicular a una sola recta del plano no basta para ser perpendicular al plano.</p>
    <p class="hint">Inclina la varilla con la manija de su punta (o con el control) y mira las lecturas.</p>
-   ${fuenteHip('Creer que basta una recta, o que bastan L y su perpendicular')}</div>` },
+   ${fuenteHip('Creer que una varilla inclinada no es perpendicular a ninguna recta del piso, que lo es a dos o que lo es a todas')}</div>` },
 
  { k:'Paso 3', t:'¿Cuándo es perpendicular al piso?',
-   prep:() => E.config({ prog:{ incl:60, M:1, barre:null, sombra:1 }, letras:'ABDE',
+   prep:() => E.config({ prog:{ incl:60, Lv:1, M:1, barre:null, sombra:1 }, letras:'ABDE',
      desc:'La varilla OQ con su sombra en el piso, las rectas L y M por O, y la arista AE del cubo con sus marcas de ángulo recto con AB y AD.',
      dibujo:(L, E) => {
        L.linea(X.A, X.C, 'L', { ancho:2, trazos:[6, 5], alfa:.8 });
@@ -693,7 +699,7 @@ const steps = [
        dibVarilla(L, E);
      },
      ley:[['h', 'AE ⊥ P', 'linea'], ['l', 'varilla OQ', 'linea'], ['p', 'su sombra', 'linea'], ['L', 'rectas del piso', 'linea']],
-     lect:E => lectVarilla(E).concat([['p', 'sombra de OQ', fmt(ME.varilla({ incl:E.prog.incl, dir:90, largo:4 }).sombra, 2)]]), manija:manijaVarilla }),
+     lect:E => lectVarilla(E).concat([['p', 'sombra', fmt(ME.varilla({ incl:E.prog.incl, dir:90, largo:4 }).sombra, 2)]]), manija:manijaVarilla }),
    body:() => `<p class="problem">Una recta es <b>perpendicular a un plano</b> si es perpendicular a <b>dos rectas secantes</b> del plano que pasan por su pie. Entonces es perpendicular a <b>todas</b> las rectas del plano.</p>
    <div class="eqs"><div class="eq">${h_('AE')} ⊥ AB y ${h_('AE')} ⊥ AD → ${h_('AE')} ⊥ plano P</div>
    <div class="eq">${h_('AE')} ⊥ P → ${h_('AE')} ⊥ ${L_('AC')}<span class="note">y ⊥ cualquier recta del piso</span></div></div>
@@ -712,10 +718,10 @@ const steps = [
          L.linea(X.A, X.G, 'l', { ancho:4.5, et:'AG', etT:.62, dx:-14, dy:-8 });
        },
        ley:r ? [['l', 'diagonal AG', 'linea'], ['h', 'GC ⊥ piso', 'linea'], ['p', 'sombra AC', 'linea'], ['t', 'θ con el piso']] : [['l', 'diagonal AG', 'linea']],
-       lect:r ? [['t', 'θ', gr1(DG.respuestas.angulo)], ['t', 'tan θ = GC/AC', '√2/2'], ['p', 'AC', '6√2']] : null }); },
+       lect:r ? [['t', 'θ', gr1(DG.respuestas.angulo)], ['t', 'tan θ', '√2/2'], ['p', 'AC', '6√2']] : null }); },
    anima:fin => { E.cfg.ley = [['l', 'diagonal AG', 'linea'], ['h', 'GC ⊥ piso', 'linea'], ['p', 'sombra AC', 'linea'], ['t', 'θ con el piso']]; E.leyenda();
      E.cadena([n => E.animar('sol', 1, 1100, n), n => E.animar('sombra', 1, 1000, n), n => E.animar('marcas', 1, 600, n)], () => {
-       E.cfg.lect = [['t', 'θ', gr1(DG.respuestas.angulo)], ['t', 'tan θ = GC/AC', '√2/2'], ['p', 'AC', '6√2']]; E.lecturas();
+       E.cfg.lect = [['t', 'θ', gr1(DG.respuestas.angulo)], ['t', 'tan θ', '√2/2'], ['p', 'AC', '6√2']]; E.lecturas();
        E.avisar('El sol cenital proyecta G sobre C: la sombra de AG es la diagonal AC del piso. El ángulo θ con el piso está entre AG y AC.'); fin(); }); },
    body:() => `<p class="problem">La ${l_('diagonal AG')} del cubo de arista 6 va de la esquina A del piso a la esquina G del techo. ¿Qué ángulo θ forma AG con el piso?</p>${opcionesHTML(P2.opts, 'fb')}
    <div id="tras" class="body" hidden>
@@ -740,10 +746,10 @@ const steps = [
          L.punto(X.E, 'ink');
        },
        ley:r ? [['h', 'EA ⊥ piso', 'linea'], ['L', 'recta L (contiene a BC)', 'linea'], ['p', 'AB ⊥ L', 'linea'], ['d', 'distancia d = EB', 'linea']] : [['h', 'EA ⊥ piso', 'linea'], ['L', 'recta L (contiene a BC)', 'linea']],
-       lect:r ? [['d', 'd = EB', `6√2 ≈ ${fmt(TP.respuestas.distancia, 2)}`], ['h', 'EA', '6'], ['p', 'AB', '6']] : null }); },
+       lect:r ? [['d', 'd = EB = 6√2', `≈ ${fmt(TP.respuestas.distancia, 2)}`], ['h', 'EA', '6'], ['p', 'AB', '6']] : null }); },
    anima:fin => { E.cfg.ley = [['h', 'EA ⊥ piso', 'linea'], ['L', 'recta L (contiene a BC)', 'linea'], ['p', 'AB ⊥ L', 'linea'], ['d', 'distancia d = EB', 'linea']]; E.leyenda();
      E.cadena([n => E.animar('ab', 1, 800, n), E.pausa(400), n => E.animar('eb', 1, 1000, n), E.pausa(400), n => E.animar('otras', 1, 600, n)], () => {
-       E.cfg.lect = [['d', 'd = EB', `6√2 ≈ ${fmt(TP.respuestas.distancia, 2)}`], ['h', 'EA', '6'], ['p', 'AB', '6']]; E.lecturas();
+       E.cfg.lect = [['d', 'd = EB = 6√2', `≈ ${fmt(TP.respuestas.distancia, 2)}`], ['h', 'EA', '6'], ['p', 'AB', '6']]; E.lecturas();
        E.avisar('Desde A se traza AB, perpendicular a L. Entonces EB también es perpendicular a L: la distancia de E a L es EB. Los segmentos hasta el punto medio de BC y hasta C, a trazos, son más largos.'); fin(); }); },
    body:() => `<p class="problem">En el cubo de arista 6, la ${h_('arista EA')} es perpendicular al piso. La ${L_('recta L')} del piso contiene a la arista BC. ¿Cuál es la distancia del vértice E a la recta L?</p>${opcionesHTML(P3.opts, 'fb')}
    <div id="tras" class="body" hidden>
@@ -757,7 +763,7 @@ const steps = [
    prep:() => { const r = !!S.pred[P4.id];
      E.config({ prog:{ abre:45, mide:r ? 1 : 0, obl:r ? 1 : 0 }, letras:'ABCDGH',
        caja:CAJA0.concat([[0, 0, 8.5], [6, 0, 8.5], [0, -1.5, 8.4], [6, -1.5, 8.4]]),
-       desc:'El cubo de arista 6 cortado por el plano ABGH, que sube en diagonal desde la arista AB del piso hasta la arista GH del techo, como una puerta con bisagra en AB.',
+       desc:'El cubo de arista 6 cortado por el plano ABGH, que sube desde la arista AB del piso hasta la arista GH del techo, como una puerta con bisagra en AB.',
        dibujo:(L, E) => {
          const pr = E.prog, Pt = ME.puerta({ a:6, ancho:ANCHO_PUERTA, abre:pr.abre }), [A, B, B2, A2] = Pt.esquinas;
          L.poligono(Pt.esquinas, 'f', { alfa:.14, borde:'f', bordeAlfa:.7 });
@@ -765,29 +771,29 @@ const steps = [
          if (pr.obl){
            const g = ME.anguloVectores(UT.sub(X.C, A), UT.sub(B2, A));
            L.linea(A, X.C, 'gris', { ancho:1.8, trazos:[5, 5], alfa:pr.obl }); L.linea(A, B2, 'gris', { ancho:1.8, trazos:[5, 5], alfa:pr.obl });
-           L.angulo(A, X.C, B2, 4.2, 'gris', gr1(g), { alfa:pr.obl, centro:A });
+           L.angulo(A, X.C, B2, 1.6, 'gris', '', { alfa:pr.obl });
          }
          if (pr.mide){
            // el ángulo plano, medido en el punto medio M de la arista: MN en el piso y MK en la puerta, las dos ⊥ AB
-           const M = UT.lerp(A, B, .5), N = [3, 6, 0], K = UT.lerp(A2, B2, .5);
-           L.linea(M, UT.lerp(M, N, pr.mide), 'f', { ancho:4 }); L.linea(M, UT.lerp(M, K, pr.mide), 'f', { ancho:4 });
-           if (pr.mide > .9){ L.marca(M, B, N, .55, 'f'); L.marca(M, B, K, .55, 'f'); L.angulo(M, N, K, 2.2, 'f', `φ = ${gr0(pr.abre)}`, { centro:M }); L.punto(M, 'f', 'M', { dx:-6, dy:16, etCol:'f' }); }
+           const T = UT.lerp(A, B, .5), N = [3, 6, 0], K = UT.lerp(A2, B2, .5);
+           L.linea(T, UT.lerp(T, N, pr.mide), 'f', { ancho:4 }); L.linea(T, UT.lerp(T, K, pr.mide), 'f', { ancho:4 });
+           if (pr.mide > .9){ L.marca(T, B, N, .55, 'f'); L.marca(T, B, K, .55, 'f'); L.angulo(T, N, K, 2.6, 'f', `φ = ${gr0(pr.abre)}`, { centro:T }); L.punto(T, 'f', 'T', { dx:-6, dy:16, etCol:'f' }); }
          }
          L.punto(B2, 'f'); L.punto(A2, 'f');
        },
        ley:r ? [['f', 'plano ABGH (la puerta)'], ['f', 'φ: medido con rectas ⊥ a la arista', 'linea'], ['gris', 'AC y AG, oblicuas a la arista', 'trazos']] : [['f', 'plano ABGH (la puerta)'], ['ink', 'arista AB', 'linea']],
-       lect:r ? E => [['f', 'diedro φ', gr0(E.prog.abre)]] : null,
+       lect:r ? lectPuerta : null,
        manija:r ? manijaPuerta : null }); },
    anima:fin => { E.cfg.ley = [['f', 'plano ABGH (la puerta)'], ['f', 'φ: medido con rectas ⊥ a la arista', 'linea'], ['gris', 'AC y AG, oblicuas a la arista', 'trazos']]; E.leyenda();
-     E.cfg.lect = E => [['f', 'diedro φ', gr0(E.prog.abre)]];
+     E.cfg.lect = lectPuerta;
      E.cadena([n => E.animar('mide', 1, 800, n), E.pausa(300), n => E.animar('abre', 90, 1300, n), E.pausa(500), n => E.animar('abre', 15, 1500, n), n => E.animar('abre', 45, 1000, n), E.pausa(300), n => E.animar('obl', 1, 700, n)], () => {
        E.cfg.manija = manijaPuerta; E.control(); E.dibujar();
        E.avisar('La puerta se abrió hasta quedar vertical y se cerró hasta casi el piso; el diedro φ, medido con AD y AH, siguió a la puerta. Las oblicuas AC y AG dan otro ángulo. Puedes mover la puerta con la manija de su borde.'); fin(); }); },
    body:() => `<p class="problem">El ${f_('plano ABGH')} corta el cubo en diagonal, como una puerta con bisagra en la arista AB. ¿Cuánto mide el ángulo diedro entre el piso y ese plano?</p>${opcionesHTML(P4.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <div class="eqs"><div class="eq">AD ⊥ AB (en el piso) y AH ⊥ AB (en la puerta) → ${f_('φ')} = ∠DAH<span class="note">en el dibujo se mide en M, el punto medio de AB: da lo mismo</span></div>
+   <div class="eqs"><div class="eq">AD ⊥ AB (en el piso) y AH ⊥ AB (en la puerta) → ${f_('φ')} = ∠DAH<span class="note">en el dibujo se mide en T, el punto medio de AB: da lo mismo</span></div>
    <div class="eq">tan ${f_('φ')} = HD / AD = 6/6 = 1 → ${f_('φ = 45°')}</div></div>
-   <p>Un <b>ángulo diedro</b> se mide con su <b>ángulo plano</b>: desde un mismo punto de la arista se traza una recta perpendicular a la arista en cada cara. Así el ángulo no depende de dónde se mida y crece justo lo que se abre la puerta.</p>
+   <p>Un <b>ángulo diedro</b> se mide con su <b>ángulo plano</b> (o ángulo rectilíneo): desde un mismo punto de la arista se traza una recta perpendicular a la arista en cada cara. Así el ángulo no depende de dónde se mida y crece justo lo que se abre la puerta.</p>
    <p>Con rectas oblicuas a la arista, como AC y AG, el ángulo cambia según cuáles se elijan: no sirve para medir el diedro.</p>
    <p class="hint">Mueve la puerta con la manija de su borde o con el control.</p>
    ${fuenteHip('Medir con rectas oblicuas a la arista, o tomar el plano como una pared')}</div>` },
@@ -807,12 +813,12 @@ const steps = [
          }
        },
        ley:r ? [['l', 'diagonal AG', 'linea'], ['h', 'arista BF', 'linea'], ['d', 'perpendicular común d', 'linea']] : [['l', 'diagonal AG', 'linea'], ['h', 'arista BF', 'linea']],
-       lect:r ? [['d', 'd', `3√2 ≈ ${fmt(CR.respuestas.distancia, 2)}`], ['al', 'ángulo entre AG y BF', gr1(CR.respuestas.angulo)]] : null }); },
+       lect:r ? [['d', 'd = 3√2', `≈ ${fmt(CR.respuestas.distancia, 2)}`], ['al', 'α entre AG y BF', gr1(CR.respuestas.angulo)]] : null }); },
    anima:fin => { E.cfg.ley = [['l', 'diagonal AG', 'linea'], ['h', 'arista BF', 'linea'], ['d', 'perpendicular común d', 'linea']]; E.leyenda();
      E.cadena([n => E.animar('perp', 1, 1000, n), E.pausa(500), n => E.animar('el', 86, 1500, n), E.pausa(1600), n => E.animar('el', 34, 1300, n)], () => {
-       E.cfg.lect = [['d', 'd', `3√2 ≈ ${fmt(CR.respuestas.distancia, 2)}`], ['al', 'ángulo entre AG y BF', gr1(CR.respuestas.angulo)]]; E.lecturas();
+       E.cfg.lect = [['d', 'd = 3√2', `≈ ${fmt(CR.respuestas.distancia, 2)}`], ['al', 'α entre AG y BF', gr1(CR.respuestas.angulo)]]; E.lecturas();
        E.avisar('La perpendicular común va del centro del cubo al punto medio de BF. Visto desde arriba, BF se ve como el punto B y AG como la diagonal AC: d es la distancia de B a AC.'); fin(); }); },
-   body:() => `<p class="problem">La ${l_('diagonal AG')} y la ${h_('arista BF')} del cubo de arista 6 no se cortan y no son paralelas: son <b>rectas cruzadas</b>. ¿Cuál es la distancia entre ellas?</p>${opcionesHTML(P5.opts, 'fb')}
+   body:() => `<p class="problem">La ${l_('diagonal AG')} y la ${h_('arista BF')} del cubo de arista 6 no se cortan y no son paralelas: son <b>rectas cruzadas</b> (también llamadas alabeadas). ¿Cuál es la distancia entre ellas?</p>${opcionesHTML(P5.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${d_('d')} = distancia de B a la diagonal AC del piso = (6√2)/2 = ${d_('3√2')}<span class="note">visto desde arriba</span></div></div>
    <p>La <b>distancia entre dos rectas cruzadas</b> es el largo de su <b>perpendicular común</b>: el único segmento que es perpendicular a las dos a la vez. Aquí va del centro del cubo (3; 3; 3) al punto medio de ${h_('BF')}.</p>
@@ -830,7 +836,7 @@ const steps = [
        L.texto(UT.mul(D.caras[1].puntos[11], .6), '90°', 'ink'); L.texto(UT.mul(D.caras[2].puntos[11], .6), '90°', 'ink');
      },
      ley:[['ink', 'las tres caras del triedro de vértice A']],
-     lect:E => [['ink', 'suma de las caras', '270°'], ['ink', 'la esquina', E.prog.f < .02 ? 'abierta: falta 90°' : E.prog.f > .98 ? 'cerrada' : 'a medio cerrar']],
+     lect:E => [['ink', 'suma de las caras', '270°'], ['ink', 'la esquina', E.prog.f < .02 ? 'falta 90°' : E.prog.f > .98 ? 'cerrada' : 'a medio cerrar']],
      manija:{ etiqueta:'Cerrar', min:0, max:100, paso:1, fmt:v => `${Math.round(v)} %`, leer:E => Math.round(E.prog.f*100), poner:(E, v) => { E.prog.f = v/100; },
        punto:v => ME.desarrolloTriedro({ caras:[90, 90, 90], f:v/100, R:4.2 }).libres[0] } }),
    entrar:() => { E.cadena([E.pausa(600), n => E.animar('f', 0, 1800, n), E.pausa(700), n => E.animar('f', 1, 1800, n)], () => { E.control(); E.avisar('Las tres caras de la esquina se abrieron hasta quedar en el piso, dejando un hueco de 90°, y se volvieron a cerrar.'); }); },
@@ -846,6 +852,8 @@ const steps = [
    <tr><td>triedro</td><td>0° &lt; suma de caras &lt; 360°</td></tr></table></div>
    <p class="hint">Sigue con «¿Qué pasa si…?» para poner a prueba lo que viste.</p>` },
 ];
+function lectPuerta(E){ const P = ME.puerta({ a:6, ancho:ANCHO_PUERTA, abre:E.prog.abre }).esquinas;
+  return [['f', 'diedro φ', gr0(E.prog.abre)], ['gris', 'con AC y AG (oblicuas)', gr1(ME.anguloVectores(X.C, P[2]))]]; }
 function manijaPuertaPunto(v){ const P = ME.puerta({ a:6, ancho:ANCHO_PUERTA, abre:v }).esquinas; return UT.lerp(P[2], P[3], .5); }
 var manijaPuerta = { etiqueta:'Abrir', min:5, max:100, paso:1, fmt:v => gr0(v), leer:E => Math.round(E.prog.abre), poner:(E, v) => { E.prog.abre = v; }, punto:manijaPuertaPunto };
 
@@ -946,7 +954,7 @@ const EXPS = [
    fb:{ a:'La sombra de una varilla inclinada es más corta que la varilla; solo una varilla echada en el piso da una sombra igual a ella.',
      b:'10 − 6 resta largos que no están en la misma recta. La varilla, su sombra y la altura forman un triángulo rectángulo.',
      d:'6 es la altura de la punta, el lado vertical del triángulo; la sombra es el lado que queda en el piso.' },
-   antes:r => E.config({ prog:{ incl:SO.respuestas.angulo, sol:r ? 1 : 0 }, cubo:false, piso:PISO_VAR,
+   antes:r => E.config({ prog:{ incl:SO.respuestas.angulo, sol:r ? 1 : 0 }, cubo:false, piso:PISO_VAR, cuadricula:r,
      caja:cajaDe(PISO_VAR, [[0, 0, 10.5], [10, 0, 6.5]]), vista:{ az:-18, el:20 },
      desc:'Una varilla de 10 apoyada en el piso, con la punta a 6 de altura; una línea a trazos baja de la punta al piso.',
      dibujo:(L, E) => {
@@ -960,7 +968,7 @@ const EXPS = [
      lect:r ? E => { const V = varillaDe(E.prog.incl); return [['p', 'sombra', fmt(V.sombra, 2)], ['h', 'altura h', fmt(V.altura, 2)], ['t', 'θ con el piso', gr1(E.prog.incl)]]; } : null,
      manija:r ? manijaSombra : null }),
    despues:fin => { E.cfg.ley = [['l', 'varilla (10)', 'linea'], ['h', 'altura de la punta', 'trazos'], ['p', 'sombra', 'linea']]; E.leyenda();
-     E.animar('sol', 1, 1300, () => { E.cfg.lect = E => { const V = varillaDe(E.prog.incl); return [['p', 'sombra', fmt(V.sombra, 2)], ['h', 'altura h', fmt(V.altura, 2)], ['t', 'θ con el piso', gr1(E.prog.incl)]]; };
+     E.cfg.cuadricula = true; E.animar('sol', 1, 1300, () => { E.cfg.lect = E => { const V = varillaDe(E.prog.incl); return [['p', 'sombra', fmt(V.sombra, 2)], ['h', 'altura h', fmt(V.altura, 2)], ['t', 'θ con el piso', gr1(E.prog.incl)]]; };
        E.cfg.manija = manijaSombra; E.lecturas(); E.control(); E.dibujar(); E.avisar('Los rayos del sol bajan verticales: la sombra va del pie de la varilla al pie de la altura, y mide 8. Puedes inclinar la varilla con la manija.'); fin(); }); },
    exp:() => `<div class="eqs"><div class="eq">${p_('sombra')} = √(${l_('10')}² − ${h_('6')}²) = √64 = ${p_('8')}</div><div class="eq">sen ${t_('θ')} = ${h_('6')}/${l_('10')} → ${t_('θ ≈ ' + gr1(SO.respuestas.angulo))}</div></div>
      <p>La sombra con sol cenital es la <b>proyección ortogonal</b>: la varilla, su sombra y la altura forman un triángulo rectángulo. La proyección de un segmento nunca es más larga que él, y solo es igual si el segmento está paralelo al plano.</p>
@@ -969,7 +977,7 @@ const EXPS = [
  { id:'cruzadas-angulo', corto:'Una arista y una diagonal del piso', ok:'a',
    q:`La ${h_('arista AE')} y la ${L_('diagonal BD')} del piso no se cortan. ¿Qué ángulo forman?`,
    opts:[['a', gr0(AB.respuestas.angulo)], ['b', gr0(AB.errores.angulo.paralelas), 'ESP-cruzadas-paralelas', 'hipotesis'],
-     ['c', gr0(AB.errores.angulo.medio), 'ESP-diagonal-45', 'hipotesis'], ['d', gr0(AB.errores.angulo.dibujo), 'ESP-angulo-del-dibujo', 'parcial']],
+     ['c', gr0(AB.errores.angulo.medio), 'ESP-diagonal-45', 'hipotesis'], ['d', gr0(AB.errores.angulo.dibujo), 'ESP-angulo-del-dibujo', 'hipotesis']],
    fb:{ b:'Que no se corten no las vuelve paralelas: AE sube y BD está en el piso. Son rectas cruzadas, y entre ellas sí hay ángulo.',
      c:'BD forma 45° con las aristas del piso, pero AE no está en el piso: es perpendicular a él.',
      d:`${gr0(AB.errores.angulo.dibujo)} es lo que mide el ángulo en el dibujo, en perspectiva. Gira el cubo: ese número cambia, el ángulo de verdad no.` },
@@ -983,9 +991,9 @@ const EXPS = [
        if (pr.marca){ L.marca(O, [3, 3, 6], X.D, .6, 'al', { alfa:pr.marca }); L.marca(O, [3, 3, 6], X.B, .6, 'al', { alfa:pr.marca }); L.texto([3.4, 3, 1.4], 'α = 90°', 'al', { alfa:pr.marca, dx:24 }); }
      },
      ley:r ? [['h', 'AE y su paralela por O', 'linea'], ['L', 'diagonal BD', 'linea'], ['al', 'α']] : [['h', 'arista AE', 'linea'], ['L', 'diagonal BD', 'linea']],
-     lect:r ? [['al', 'α', '90°'], ['d', 'distancia entre AE y BD', `3√2 ≈ ${fmt(AB.distancia, 2)}`]] : null }),
+     lect:r ? [['al', 'α', '90°'], ['d', 'd(AE, BD) = 3√2', `≈ ${fmt(AB.distancia, 2)}`]] : null }),
    despues:fin => { E.cfg.ley = [['h', 'AE y su paralela por O', 'linea'], ['L', 'diagonal BD', 'linea'], ['al', 'α']]; E.leyenda();
-     E.cadena([n => E.animar('mueve', 1, 1400, n), n => E.animar('marca', 1, 500, n)], () => { E.cfg.lect = [['al', 'α', '90°'], ['d', 'distancia entre AE y BD', `3√2 ≈ ${fmt(AB.distancia, 2)}`]]; E.lecturas();
+     E.cadena([n => E.animar('mueve', 1, 1400, n), n => E.animar('marca', 1, 500, n)], () => { E.cfg.lect = [['al', 'α', '90°'], ['d', 'd(AE, BD) = 3√2', `≈ ${fmt(AB.distancia, 2)}`]]; E.lecturas();
        E.avisar('Una copia de AE se deslizó, paralela a sí misma, hasta el centro O del piso, que está en BD. Ahí se ve el ángulo recto con BD.'); fin(); }); },
    exp:() => `<p>El ángulo entre dos <b>rectas cruzadas</b> se mide trasladando una de ellas, paralela a sí misma, hasta que corte a la otra. La copia de ${h_('AE')} por O sigue siendo perpendicular al piso, así que forma ${al_('90°')} con ${L_('BD')}.</p>
      <p>Una recta perpendicular a un plano es perpendicular a <b>todas</b> las rectas del plano, también a las que no pasan por su pie.</p>${fuenteHip('Creer que dos rectas que no se cortan son paralelas, o usar los 45° de la diagonal')}${fuenteDibujo}` },
@@ -993,7 +1001,7 @@ const EXPS = [
  { id:'diagonales-caras', corto:'Dos diagonales de caras vecinas', ok:'d',
    q:'Las diagonales AF y AH de dos caras vecinas del cubo salen del mismo vértice A. ¿Qué ángulo α forman?',
    opts:[['a', gr0(FH.errores.angulo.recto), 'ESP-caras-perpendiculares', 'hipotesis'], ['b', gr0(FH.errores.angulo.medio), 'ESP-diagonal-45', 'hipotesis'],
-     ['c', gr0(FH.errores.angulo.dibujo), 'ESP-angulo-del-dibujo', 'parcial'], ['d', gr0(FH.respuestas.angulo)]],
+     ['c', gr0(FH.errores.angulo.dibujo), 'ESP-angulo-del-dibujo', 'hipotesis'], ['d', gr0(FH.respuestas.angulo)]],
    fb:{ a:'Las dos caras son perpendiculares entre sí, pero sus diagonales no: cada una está inclinada 45° respecto de la arista común.',
      b:'45° es el ángulo de cada diagonal con una arista de su cara, no el ángulo entre las dos diagonales.',
      c:`${gr0(FH.errores.angulo.dibujo)} es lo que mide el ángulo en el dibujo, en perspectiva. Gira el cubo: ese número cambia, el ángulo de verdad no.` },
@@ -1015,7 +1023,7 @@ const EXPS = [
 
  { id:'angulo-dibujo', corto:'Un ángulo en el dibujo', ok:'b',
    q:'En este dibujo del cubo, mira el ángulo α entre EB y BC. ¿Cuánto mide de verdad?',
-   opts:[['a', gr0(EB.errores.angulo.dibujo), 'ESP-angulo-del-dibujo', 'parcial'], ['b', gr0(EB.respuestas.angulo)],
+   opts:[['a', gr0(EB.errores.angulo.dibujo), 'ESP-angulo-del-dibujo', 'hipotesis'], ['b', gr0(EB.respuestas.angulo)],
      ['c', gr0(EB.errores.angulo.medio), 'ESP-diagonal-45', 'hipotesis'], ['d', gr0(EB.errores.angulo.equilatero), 'ESP-triangulo-equilatero', 'hipotesis']],
    fb:{ a:`${gr0(EB.errores.angulo.dibujo)} es lo que mide en el dibujo. En perspectiva, un ángulo recto puede verse muy cerrado o muy abierto.`,
      c:'45° es el ángulo EBA, en la cara del frente. El ángulo EBC sale de esa cara hacia el fondo.',
@@ -1038,6 +1046,7 @@ const EXPS = [
      <p class="aviso">En un dibujo en perspectiva, los ángulos y largos no se leen: se deducen de las perpendiculares que sabes que hay.</p>${fuenteDibujo}${fuenteHip('Usar 45° o creer que el triángulo es equilátero')}` },
 
  { id:'triedro', corto:'Tres caras para una esquina', ok:'c',
+   texto:true,
    q:'Se quiere doblar tres caras de 100°, 120° y 150° para formar la esquina de un sólido (un ángulo triedro). ¿Se puede?',
    opts:[['a', 'Sí: cada cara mide menos de 180°', 'ESP-triedro-solo-cada-cara', 'hipotesis'], ['b', 'Sí: la mayor es menor que la suma de las otras dos', 'ESP-triedro-solo-desigualdad', 'hipotesis'],
      ['c', 'No: las tres suman más de 360°'], ['d', 'No: un triedro no puede tener caras obtusas', 'ESP-triedro-obtusa', 'hipotesis']],
@@ -1070,9 +1079,9 @@ const EXPS = [
        }
      },
      ley:[['ink', 'caras del triedro']],
-     lect:r ? [['ink', 'suma de las caras', `${TR.suma}°`], ['ink', 'con 100°, 110° y 130°', `${TR2.suma}°: se cierra`]] : null }),
+     lect:r ? [['ink', 'suma de las caras', `${TR.suma}°`], ['ink', '100° + 110° + 130°: se cierra', `${TR2.suma}°`]] : null }),
    despues:fin => E.cadena([n => E.animar('sep', 0, 1400, n), E.pausa(2200), n => { E.prog.dos = 0.02; E.animar('dos', 1, 500, n); }, n => E.animar('f2', 1, 1800, n)], () => {
-     E.cfg.lect = [['ink', 'suma de las caras', `${TR.suma}°`], ['ink', 'con 100°, 110° y 130°', `${TR2.suma}°: se cierra`]]; E.lecturas();
+     E.cfg.lect = [['ink', 'suma de las caras', `${TR.suma}°`], ['ink', '100° + 110° + 130°: se cierra', `${TR2.suma}°`]]; E.lecturas();
      E.avisar(`Las tres caras se juntaron alrededor del vértice y se enciman ${TR.traslape}°: no se pueden doblar. Después, caras de 100°, 110° y 130° (suma 340°) sí se cerraron en una esquina.`); fin(); }),
    exp:() => `<div class="eqs"><div class="eq">100° + 120° + 150° = ${TR.suma}° &gt; 360°</div><div class="eq">100° + 110° + 130° = ${TR2.suma}° &lt; 360°</div></div>
      <p>Las caras de un triedro, abiertas en el piso alrededor del vértice, <b>no pueden cubrir toda la vuelta</b>: si suman 360° o más, se enciman y no hay esquina. Además, cada cara tiene que ser menor que la suma de las otras dos. Las caras obtusas sí se pueden usar.</p>${fuenteHip('Mirar un solo criterio o creer que no puede haber caras obtusas')}` },
@@ -1094,10 +1103,10 @@ const EXPS = [
        L.punto(X.B, 'ink', '', { r:5 });
      },
      ley:r ? [['l', 'diagonal AG', 'linea'], ['ink', 'triángulo ABG, recto en B', 'linea'], ['d', 'distancia d', 'linea']] : [['l', 'diagonal AG', 'linea']],
-     lect:r ? [['d', 'd = 6 · 6√2 / 6√3', `2√6 ≈ ${fmt(BG.respuestas.distancia, 2)}`]] : null }),
+     lect:r ? [['d', 'd = 2√6', `≈ ${fmt(BG.respuestas.distancia, 2)}`]] : null }),
    despues:fin => { E.cfg.ley = [['l', 'diagonal AG', 'linea'], ['ink', 'triángulo ABG, recto en B', 'linea'], ['d', 'distancia d', 'linea']]; E.leyenda();
      E.cadena([n => E.animar('tri', 1, 1000, n), E.pausa(300), n => { E.animar('az', 0, 1500); E.animar('el', 45, 1500, n); }], () => {
-       E.cfg.lect = [['d', 'd = 6 · 6√2 / 6√3', `2√6 ≈ ${fmt(BG.respuestas.distancia, 2)}`]]; E.lecturas();
+       E.cfg.lect = [['d', 'd = 2√6', `≈ ${fmt(BG.respuestas.distancia, 2)}`]]; E.lecturas();
        E.avisar('Se dibujó el triángulo ABG, recto en B, y la perpendicular de B a AG. El cubo giró hasta mirar ese triángulo de frente.'); fin(); }); },
    exp:() => `<div class="eqs"><div class="eq">${d_('d')} = AB · BG / ${l_('AG')} = 6 · 6√2 / ${l_('6√3')} = ${d_('2√6')}</div></div>
      <p>AB es perpendicular a la cara BCGF, así que AB ⊥ BG: el triángulo ABG es <b>rectángulo en B</b>. La distancia de B a ${l_('AG')} es la altura relativa a la hipotenusa. Su pie está a un tercio de la diagonal, no en el medio.</p>${fuenteHip('Ir al punto medio, a un extremo o a la sombra de la diagonal')}` },
@@ -1125,7 +1134,7 @@ function ir(k){
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
-  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2', x.texto)}<div id="res2" class="body"></div>`;
   const btns = [...$('body2').querySelectorAll('.opt')];
   const pintar = () => {
     const p = S.pred[x.id]; if (!p) return;

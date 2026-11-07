@@ -17,8 +17,8 @@
  *   - Cada función que es la respuesta de una predicción trae 'respuestas' (lo correcto), 'errores' (lo que da cada
  *     idea errónea, agrupado con la misma clave que 'respuestas') y 'coinciden' (los errores que con esos datos dan lo
  *     mismo que la respuesta: se apartan para que la escena no ofrezca dos opciones iguales). Las ideas erróneas de este
- *     tema no tienen datos en docs/investigacion/geometria-ideas-erroneas.md: son hipótesis nuestras, salvo 'dibujo'
- *     (leer el ángulo del dibujo en perspectiva), emparentada con GE13 y con leer las propiedades del dibujo (GE7-GE10).
+ *     tema no tienen datos en docs/investigacion/geometria-ideas-erroneas.md: todas son hipótesis nuestras; 'dibujo'
+ *     (leer el ángulo del dibujo en perspectiva) se emparenta con GE13 y GE7–GE10 (leer las propiedades del dibujo).
  *
  * CÁMARA (la misma que dibuja la escena; sirve para calcular el ángulo «que se ve» en el dibujo)
  *   vista(az, el)                 ejes de la pantalla { u, up, v }: el que mira está del lado de y negativo, girado az
@@ -56,9 +56,9 @@
  *       grados sobre el piso (0 < incl ≤ 90) y con su sombra hacia el azimut dir (grados desde el eje x, en el piso).
  *       Da la punta Q, la sombra (proyección) y su largo, la altura de Q, el ángulo con el piso (= incl) y las rectas del
  *       piso por O a las que es perpendicular: 'perpendicularA' es 'todas' si incl = 90 y, si no, la única dirección
- *       (dir + 90) mod 180. respuestas.cuantas = 1 o 'todas' (con cuántas rectas del piso que pasan por O forma 90°);
- *       errores.cuantas = { bastaUna: 'todas' (si es perpendicular a una recta del piso, lo es al piso), dos: 2 (a L y a
- *       la perpendicular a L) }. respuestas.conM y errores.conM: el ángulo con la recta M del piso por O de azimut M
+ *       (dir + 90) mod 180 (en [0, 180)). respuestas.cuantas = 1 o 'todas' (con cuántas rectas del piso que pasan por O
+ *       forma 90°); errores.cuantas = { ninguna: 0 (inclinada, no es perpendicular a ninguna), bastaUna: 'todas' (si es
+ *       perpendicular a una recta del piso, lo es al piso), dos: 2 (a una recta y a su perpendicular) }. respuestas.conM y errores.conM: el ángulo con la recta M del piso por O de azimut M
  *       (por defecto, dir: la sombra) frente a { bastaUna: 90, complemento: 90 − conM, dibujo: el que se ve en la vista,
  *       redondeado a grados }.
  *   anguloConRecta({ incl, dir, phi })   ángulo entre esa varilla y la recta del piso por O de azimut phi
@@ -74,7 +74,9 @@
  *       respuestas.distancia; errores.distancia = { alPlano: h, alPie: m, alMedio: hasta el punto medio del tramo,
  *       alExtremo: hasta el otro extremo del tramo }.
  *   distanciaCruzadas({ a, r1, r2 })
- *       Distancia entre dos rectas del cubo (cruzadas, en la escena AG y BF). respuestas = { distancia, angulo, tipo };
+ *       Distancia entre dos rectas del cubo (cruzadas, en la escena AG y BF). respuestas = { distancia, angulo, tipo }.
+ *       Si las rectas no son cruzadas, no da error: 'tipo' lo dice ('secantes': distancia 0; 'paralelas': la distancia
+ *       entre ellas; 'coincidentes': 0) y los errores se calculan igual (los que dan lo mismo van a 'coinciden');
  *       errores.distancia = { entreExtremos: la menor distancia entre extremos nombrados, mitadDeR1: la mitad del largo de
  *       r1, perpendicularAUna: la menor distancia de un extremo de una recta a la otra recta (perpendicular a una sola) }.
  *   proyeccion({ largo, h1, h2 })
@@ -339,7 +341,7 @@
       perpendicularAlPlano: vertical, perpendicularA: perp,
     };
     return Object.assign(r, separar({ cuantas: vertical ? 'todas' : 1, conM }, {
-      cuantas: { bastaUna: 'todas', dos: 2 },
+      cuantas: { ninguna: 0, bastaUna: 'todas', dos: 2 },
       conM: { bastaUna: 90, complemento: 90 - conM, dibujo: enDibujo },
     }));
   }

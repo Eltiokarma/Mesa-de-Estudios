@@ -38,7 +38,7 @@
       "pasos": [
         "La proyección de la diagonal sobre la base es la diagonal de la base: √(3² + 4²) = 5 cm.",
         "La diagonal de la caja es la hipotenusa del triángulo con catetos 5 y 12: √(25 + 144) = 13 cm.",
-        "tan θ = 12/5. Si usas la diagonal como cateto (12/13), mides otro ángulo."
+        "tan θ = 12/5. Ojo: 12/13 es sen θ, no tan θ; la tangente usa los dos catetos, 12 y 5."
       ],
       "verificar": [
         { "fn": "anguloDiagonal", "args": [{ "largo": 3, "ancho": 4, "alto": 12 }], "espera": { "diagonal": 13, "sombra": 5, "tan": 2.4 } }
@@ -92,7 +92,7 @@
       "enunciado": "En un cubo de arista 4 cm, ¿qué posición tienen la arista AE y la diagonal BD de la base? Calcula su ángulo y su distancia.",
       "respuesta": "Son cruzadas, forman 90° y su distancia es 2√2 cm.",
       "pasos": [
-        "AE corta la base solo en A, y A no está en BD: no se cortan. Tampoco son paralelas (AE es vertical y BD está en la base). Son rectas cruzadas.",
+        "AE corta la base solo en A, y A no está en BD: no se cortan. Tampoco son paralelas (AE es vertical y BD está en la base). Son rectas cruzadas (también llamadas alabeadas).",
         "AE ⊥ base, así que AE es perpendicular a toda recta de la base, aunque no pase por A: el ángulo es 90°.",
         "La perpendicular común es AO, con O el centro de la base: AO = 4√2/2 = 2√2 cm."
       ],
