@@ -229,6 +229,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'mruv', unidad: 'fisica.movimiento-rectilineo', version: '0.1.0' };
@@ -260,12 +261,14 @@ function crearLienzo(cv, alto, dibujar){
   const L = { cv, ctx, W:0, H:0 };
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(alto(W)), dpr = window.devicePixelRatio || 1;
+    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:340 })), dpr = window.devicePixelRatio || 1;
     L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     dibujar();
   };
   new ResizeObserver(L.resize).observe(cv);
+  // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === !!L.compacto) return; L.compacto = on; L.resize(); };
   return L;
 }
 function alRedibujarTema(fn){
@@ -579,6 +582,7 @@ function go(n){
   if (s.anim) animar(s.anim[0], s.anim[1]);
   if (s.gate) prediccion(s.gate);
   if (s.explora) explorar();
+  L.compactar(s.gate && !S.pred[s.gate.id]);
   nav(); draw();
 }
 function nav(){
@@ -607,7 +611,8 @@ function prediccion(P){
     const o = P.opts.find(q => q[0] === b.dataset.k);
     S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); nav(); pintarDots();
     registrarPrediccion(P.id, o[0], o[0] === P.ok, o[3] || '', o[4] || '', t0);
-    $('next').focus();
+    $('next').focus({ preventScroll:true });
+    L.compactar(false); Celular.alResponder(L.cv, draw);
   }));
   pintar();
 }
@@ -789,6 +794,7 @@ function ir(k){
   const x = EXPS[k];
   reiniciar(x);
   if (S.pred[x.id]){ x.despues(); cancelAnimationFrame(anim); E.t = E.T; }
+  L.compactar(!S.pred[x.id]);
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -810,7 +816,8 @@ function ir(k){
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; botones(); pintar(); x.despues(); sincronizar();
+    S.pred[x.id] = o[0]; botones(); pintar(); L.compactar(false);
+    Celular.alResponder(L.cv, () => { x.despues(); sincronizar(); }, () => S.k === k);
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
   });
   pintar(); sincronizar();
