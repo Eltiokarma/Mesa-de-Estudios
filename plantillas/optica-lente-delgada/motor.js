@@ -89,6 +89,24 @@
   }
 
   /*
+   * Un problema completo, como lo piden los casos de casos.json:
+   * problema(o1, h, [{ f }, { f, d }, ...]). Devuelve las listas o e i (una
+   * entrada por lente), el aumento total A y la altura de la imagen final
+   * h_final. Si una imagen cae en el foco de la lente siguiente (o la única
+   * lente tiene el objeto en su foco), devuelve { sin_imagen: true } y las
+   * listas hasta donde llegó la cadena. Sin el "enganche" al foco del
+   * deslizador: tolerancia 1e-9.
+   */
+  function problema(o1, h, lentes) {
+    const pasos = cadena(sistema(o1, h, lentes), 1e-9);
+    const fin = pasos[pasos.length - 1];
+    const listos = pasos.filter(p => !p.inf);
+    const r = { o: pasos.map(p => p.o), i: listos.map(p => p.i), sin_imagen: !!fin.inf || pasos.length < lentes.length };
+    if (!r.sin_imagen) { r.A = aumentoTotal(pasos); r.h_final = fin.h; }
+    return r;
+  }
+
+  /*
    * Abanico: n rayos que salen de un punto del objeto (altura y0, a una
    * distancia o de la lente) y atraviesan la lente en alturas repartidas
    * de manera pareja entre -D/2 y D/2 (D = diámetro de la lente).
@@ -122,5 +140,5 @@
     return { centro: (y1 + y2) / 2, min: Math.min(y1, y2), max: Math.max(y1, y2), ancho: Math.abs(y2 - y1), luz: tapa ? 0.5 : 1 };
   }
 
-  return { imagen, sistema, cadena, trazar, aumentoTotal, abanico, mancha };
+  return { imagen, sistema, cadena, trazar, aumentoTotal, problema, abanico, mancha };
 });

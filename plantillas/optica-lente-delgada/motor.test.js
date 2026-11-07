@@ -27,28 +27,47 @@ function resolver(entrada) {
   return { sis, pasos: motor.cadena(sis, 1e-9) };
 }
 
+// Cada caso llama a motor[fn](...args) y compara 'espera': números con la tolerancia, listas elemento por
+// elemento y lo demás (booleanos) igual. Campos anidados con punto, como en las otras plantillas.
+const leer = (o, k) => k.split('.').reduce((x, p) => (x === null || x === undefined ? undefined : x[p]), o);
+function ver(x, v, que) {
+  if (Array.isArray(v)) {
+    assert.ok(Array.isArray(x) && x.length === v.length, `${que}: el motor da ${JSON.stringify(x)}, se esperaba ${JSON.stringify(v)}`);
+    v.forEach((y, k) => ver(x[k], y, `${que}[${k}]`));
+  } else if (typeof v === 'number') {
+    assert.ok(typeof x === 'number', `${que}: el motor da ${x}, se esperaba ${v}`);
+    cerca(x, v, que);
+  } else assert.equal(x, v, `${que}: el motor da ${x}, se esperaba ${v}`);
+}
+function comprobar(fn, args, espera, que) {
+  assert.equal(typeof motor[fn], 'function', `motor.${fn} no existe`);
+  const r = motor[fn](...args);
+  if (espera !== null && typeof espera === 'object' && !Array.isArray(espera)) for (const [k, v] of Object.entries(espera)) ver(leer(r, k), v, `${que} · ${k}`);
+  else ver(r, espera, `${que} · valor`);
+  return r;
+}
+// problema(o1, h, lentes) como entrada para el trazado de rayos.
+const entradaDe = caso => ({ o1: caso.args[0], h: caso.args[1], lentes: caso.args[2] });
+
 for (const caso of datos.casos) {
   test(`casos.json: ${caso.nombre}`, () => {
-    const { pasos } = resolver(caso.entrada);
-    const e = caso.esperado;
-
-    if (e.sin_imagen) {
-      assert.ok(pasos[pasos.length - 1].inf, 'se esperaba que no hubiera imagen (objeto en el foco)');
-      return;
-    }
-
-    assert.equal(pasos.length, caso.entrada.lentes.length, 'la cadena se cortó antes de la última lente');
-    assert.ok(pasos.every(p => !p.inf), 'una imagen intermedia se fue al infinito');
-    if (e.o) e.o.forEach((o, k) => cerca(pasos[k].o, o, `o${k + 1}`));
-    if (e.i) e.i.forEach((i, k) => cerca(pasos[k].i, i, `i${k + 1}`));
-    if (e.A !== undefined) cerca(motor.aumentoTotal(pasos), e.A, 'A');
-    if (e.h_final !== undefined) cerca(pasos[pasos.length - 1].h, e.h_final, 'h final');
+    comprobar(caso.fn, caso.args, caso.espera, caso.nombre);
+    for (const t of caso.tambien || []) comprobar(t.fn || caso.fn, t.args, t.espera, caso.nombre);
   });
 }
 
-for (const caso of datos.casos.filter(c => !c.esperado.sin_imagen)) {
+// La migración al formato fn/args/espera (7 nov 2026) no cambió ningún valor.
+test('casos.json: los siete casos de la 0.1.0, en el formato fn/args/espera', () => {
+  assert.equal(datos.casos.length, 7);
+  assert.ok(datos.casos.every(c => c.fn === 'problema' && Array.isArray(c.args) && c.espera));
+  assert.deepEqual(datos.casos.map(c => c.args[0]), [30, 10, 5, 15, 15, 10, 15]);
+  assert.deepEqual(datos.casos.map(c => c.espera.i || null), [[15], null, [-10], [30, 20], [30, 3.3333], [-5], [30, 20, -5]]);
+  assert.deepEqual(datos.casos.map(c => c.espera.A === undefined ? null : c.espera.A), [-0.5, null, 2, 2, -1.3333, 0.5, 1]);
+});
+
+for (const caso of datos.casos.filter(c => c.fn === 'problema' && !c.espera.sin_imagen)) {
   test(`el dibujo coincide con la ecuación: ${caso.nombre}`, () => {
-    const { sis, pasos } = resolver(caso.entrada);
+    const { sis, pasos } = resolver(entradaDe(caso));
     const fin = pasos[pasos.length - 1];
     const xFin = fin.x + 100;
 

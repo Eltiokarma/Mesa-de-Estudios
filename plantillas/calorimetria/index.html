@@ -1498,7 +1498,7 @@ const pasos = [
           d:'La llama solo calienta. Hacia dónde se curva lo decide cuál metal se dilata más.' } },
    body:() => `<p class="problem">Una tira de latón (arriba) y una de acero (abajo), pegadas, están rectas a ${V('T','20 °C')}, sujetas por la izquierda. El latón se dilata más que el acero (${V('al','α = 2,0 × 10⁻⁵')} contra ${V('al','1,2 × 10⁻⁵ °C⁻¹')}). Se calientan a ${V('T','120 °C')}. ¿Qué pasa con la tira?</p>`,
    despues:(E, X) => { E.ver = true; E.llama = true;
-     X.A.anim(2200, f => { E.T = 20 + 100*suave(f); X.draw(); }, () => { E.llama = false; X.decir(); }); },
+     X.A.anim(2200, f => { E.T = 20 + 100*suave(f); X.draw(); }, () => { E.llama = false; X.draw(); X.decir(); }); },
    alExp:X => { const b = document.getElementById('enfriar3'); if (!b) return;
      // En el celular, el dibujo sube a la vista antes de animar (si no se ve, Celular.bucle no avanza).
      b.onclick = () => { const E = X.E, de = E.T, a = de > 0 ? -20 : 120, paso = X.S.step;
@@ -1703,7 +1703,7 @@ function dBimetal(ctx, c, W, H){
   if (E.ver && Math.abs(t.flecha) > 1e-7){
     const yt = y0 + t.flecha*X_TIRA*k;
     ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted; linea(ctx, x0, y0, tipX + 10, y0); ctx.restore();
-    rotulo(ctx, c, x0, H - 20, `la punta ${t.flecha > 0 ? 'baja' : 'sube'} ${mm(Math.abs(t.flecha))} mm`, c.l, 'left', 800);
+    rotulo(ctx, c, x0, H - 20, `la punta ${t.flecha > 0 ? 'baja' : 'sube'} ${fmt(Math.abs(t.flecha)*1000, 1)} mm`, c.l, 'left', 800);
   }
   exagerado(ctx, c, W, `curvatura exagerada × ${X_TIRA}`);
 }
