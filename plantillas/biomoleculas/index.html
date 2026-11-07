@@ -368,7 +368,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
     for (const k of ks){
       let h;
       if (k === 'taller'){ const s = tamTaller(w); h = 28 + (v.taller.ho ? 20 : 0) + s + 78 + (v.taller.suelta ? s + 22 : 0); }
-      else if (k === 'proteina'){ const u = clamp((w - 30)/(v.proteina.secuencia.length + 0.5), 20, 44); h = 36 + 3*u + 50; }
+      else if (k === 'proteina'){ const u = clamp((w - 30)/(v.proteina.secuencia.length + 0.5), 20, 44); h = (v.proteina.dos ? 24 + 3*u + 8 + 26 + 3*u + 6 : 36 + 3*u) + 50; }
       else if (k === 'polis'){ h = v.polis.filas.length*(chico ? 92 : 136) + 18; }
       else if (k === 'grasa'){ h = v.grasa.items.length*(v.grasa.items.length > 1 ? 96 : 150) + 16; }
       else if (k === 'barras') h = 30 + v.barras.items.length*30;
@@ -468,24 +468,37 @@ function crearEscena(cv, idDesc, modoId, idLey){
 
   // ----- La proteína que se pliega o se despliega -----
   function panelProteina(c, P){
-    const T = E.vista.proteina, n = T.secuencia.length, g = MB.plegado(n, T.p);
-    const u = clamp((W - 30)/(n + 0.5), 20, 44), cx = W/2, cy = P.y + 24 + 1.5*u;
-    const pt = q => [cx + q.x*u, cy + q.y*u];
-    if (T.debiles && T.p === 0){
-      ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([1.5, 3]); ctx.lineWidth = 2; ctx.lineCap = 'round';
-      for (const [i, j] of g.contactos){ const a = pt(g.pos[i]), b = pt(g.pos[j]); linea(ctx, a[0], a[1] + (b[1] > a[1] ? u*0.3 : -u*0.3), b[0], b[1] + (b[1] > a[1] ? -u*0.3 : u*0.3)); }
-      ctx.restore();
+    const T = E.vista.proteina, n = T.secuencia.length, u = clamp((W - 30)/(n + 0.5), 20, 44);
+    // Una cadena: plegada (p = 0) o desplegada (p = 1), con el punteado de las atracciones débiles si se pide.
+    const cadena = (p, debiles, cy, conK) => {
+      const g = MB.plegado(n, p), pt = q => [W/2 + q.x*u, cy + q.y*u];
+      if (debiles && p === 0){
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([1.5, 3]); ctx.lineWidth = 2; ctx.lineCap = 'round';
+        for (const [i, j] of g.contactos){ const a = pt(g.pos[i]), b = pt(g.pos[j]); linea(ctx, a[0], a[1] + (b[1] > a[1] ? u*0.3 : -u*0.3), b[0], b[1] + (b[1] > a[1] ? -u*0.3 : u*0.3)); }
+        ctx.restore();
+      }
+      ctx.strokeStyle = conK ? c.k : c.ink; ctx.lineWidth = E.hl === 'k' ? 5.5 : 3.6; ctx.lineCap = 'round';
+      for (const [i, j] of g.enlaces){ const a = pt(g.pos[i]), b = pt(g.pos[j]); linea(ctx, a[0], a[1], b[0], b[1]); }
+      T.secuencia.forEach((id, i) => {
+        const [x, y] = pt(g.pos[i]), s = u*0.74;
+        rr(ctx, x - s/2, y - s/2, s, s, 6); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.stroke();
+        textoEn(ctx, c, id, x, y, s*0.9, Math.min(12, s*0.36));
+      });
+    };
+    if (T.dos){
+      // Después de responder: arriba la cadena plegada (antes), abajo la cocida, que se despliega.
+      const h1 = 24 + 3*u + 8;
+      dibujarPiezas(ctx, c, [['antes: plegada', 'ink', 800]], W/2, P.y + 10, 12, 'center', W - 16);
+      cadena(0, true, P.y + 24 + 1.5*u, true);
+      ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = c.line; ctx.lineWidth = 1.2; linea(ctx, 8, P.y + h1, W - 8, P.y + h1); ctx.restore();
+      dibujarPiezas(ctx, c, [[T.p >= 1 ? 'cocida: la cadena desplegada' : 'calentando…', 'ink', 800]], W/2, P.y + h1 + 12, 12, 'center', W - 16);
+      cadena(T.p, false, P.y + h1 + 26 + 1.5*u, true);
+    } else {
+      cadena(T.p, T.debiles, P.y + 24 + 1.5*u, T.cuenta);
+      if (T.rotulo) dibujarPiezas(ctx, c, T.rotulo, W/2, P.y + 10, 12, 'center', W - 16);
     }
-    ctx.strokeStyle = T.cuenta ? c.k : c.ink; ctx.lineWidth = E.hl === 'k' ? 5.5 : 3.6; ctx.lineCap = 'round';
-    for (const [i, j] of g.enlaces){ const a = pt(g.pos[i]), b = pt(g.pos[j]); linea(ctx, a[0], a[1], b[0], b[1]); }
-    T.secuencia.forEach((id, i) => {
-      const [x, y] = pt(g.pos[i]), s = u*0.74;
-      rr(ctx, x - s/2, y - s/2, s, s, 6); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.stroke();
-      textoEn(ctx, c, id, x, y, s*0.9, Math.min(12, s*0.36));
-    });
     if (T.calor){ ctx.fillStyle = alfa(c.muted, 0.5); for (let i = 0; i < 5; i++){ const x = W*(i + 0.5)/5; ctx.beginPath(); ctx.moveTo(x - 7, P.y + P.h - 4); ctx.lineTo(x, P.y + P.h - 16); ctx.lineTo(x + 7, P.y + P.h - 4); ctx.fill(); } }
-    if (T.rotulo) dibujarPiezas(ctx, c, T.rotulo, W/2, P.y + 10, 12, 'center', W - 16);
-    if (T.cuenta) dibujarPiezas(ctx, c, [['enlaces peptídicos: ', 'ink', 700], [fmt(n - 1), 'k', 800], ['   atracciones débiles: ', 'ink', 700], [T.p === 0 ? fmt(g.contactos.length) : `${fmt(MB.desnaturalizar(n).antes.debiles)} → 0`, 'ink', 800]], W/2, P.y + P.h - 26, 11.5, 'center', W - 16);
+    if (T.cuenta) dibujarPiezas(ctx, c, [['enlaces peptídicos: ', 'ink', 700], [fmt(n - 1), 'k', 800], ['   atracciones débiles del plegado: ', 'ink', 700], [T.p === 0 ? fmt(MB.plegado(n, 0).contactos.length) : `${fmt(MB.desnaturalizar(n).antes.debiles)} → 0`, 'ink', 800]], W/2, P.y + P.h - 26, 11.5, 'center', W - 16);
   }
 
   // ----- Almidón contra celulosa -----
@@ -510,7 +523,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
       }
       pos.forEach(([x, y, giro]) => bloque(ctx, c, f.oculto ? null : 'glucosa', x, y, u*0.66, { oculta: f.oculto, tab: f.oculto ? undefined : giro }));
       dibujarPiezas(ctx, c, f.etq, 10, y0 + 2, 12, 'left', W/2);
-      if (F.enlaces && !f.oculto) dibujarPiezas(ctx, c, [['enlace ', 'ink', 700], [MB.POLISACARIDOS[f.tipo].enlace, 'k', 800]], W - 10, y0 + 2, 12, 'right', W/2 - 10);
+      if (F.enlaces && !f.oculto) dibujarPiezas(ctx, c, [['enlace ', 'ink', 700], [MB.POLISACARIDOS[f.tipo].enlace, 'ink', 800]], W - 10, y0 + 2, 12, 'right', W/2 - 10);
       if (f.tijera !== undefined){
         const xt = corta ? x0 + clamp(corte, 0, nU - 1)*u : x0 + 0.5*u*clamp(f.tijera*4, 0, 1), yt = cy - u*0.62;
         dibujarPiezas(ctx, c, [['✂', 'ink', 800]], xt, yt, 15, 'center');
@@ -535,7 +548,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
         if (e >= 0.9){ ctx.strokeStyle = c.k; ctx.lineWidth = E.hl === 'k' ? 5 : 3.4; linea(ctx, gx + 9, y, xa + 2, y); }
         // Zigzag de A.C carbonos (un vértice por carbono); cada doble enlace es un codo que dobla la cadena hacia abajo
         // (se endereza con codo = 0). Todas doblan hacia el mismo lado: las cadenas no se cruzan.
-        const codo = it.codo === undefined ? 1 : it.codo, dobles = A.dobles, kinks = [9, 12, 15].slice(0, dobles);
+        const codo = it.codo === undefined ? 1 : it.codo, dobles = A.dobles, kinks = [8, 11, 14].slice(0, dobles);
         let bx = xa, by = y, ang = 0; const v = [[xa, y]];
         for (let i = 0; i < A.C - 1; i++){
           if (kinks.includes(i)) ang += 0.32*codo;
@@ -640,8 +653,12 @@ const RES = (cat, fuente) => cat;
 // Respuestas de «¿Qué pasa si…?»: la misma variable que abre los experimentos en orden. El explorador del paso 8 la lee
 // para no regalar la hidrólisis (experimento 1): mientras no se responda, lo que sale al separar queda con «?».
 const PRED_EXP = {};
+// Respuestas del paso a paso (las comparten los dos modos): el experimento 1 pide la sacarosa (paso 2) y el 2, el
+// tripéptido (paso 4). La pestaña «¿Qué pasa si…?» nunca se bloquea; se bloquean sus experimentos.
+const PRED_PASO = {};
 const DESCUBRE = 'Descúbrelo en «¿Qué pasa si…?», experimento 1';
 const g_ = (x, d) => `${fmt(x, d || 0)} g`;
+const pl = (x, uno, varios) => (x === 1 ? uno : varios);
 const masasDe = ids => ids.map(id => [[fmt(MB.PIEZAS[id].M), 'Mp', 800]]);
 </script>
 
@@ -653,7 +670,7 @@ const masasDe = ids => ids.map(id => [[fmt(MB.PIEZAS[id].M), 'Mp', 800]]);
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1');
-const S = { step:0, max:0, pred:{}, ocupado:false };
+const S = { step:0, max:0, pred:PRED_PASO, ocupado:false };
 const SAC = MB.sacarido(['glucosa', 'fructosa']), TRI = MB.peptido(['Gly', 'Ala', 'Ser']);
 const SEQ = ['Gly', 'Ala', 'Ser', 'Val', 'Cys', 'Leu', 'Phe', 'Gly', 'Ser', 'Ala', 'Val', 'Leu'], DES = MB.desnaturalizar(SEQ.length);
 const TE = MB.trigliceridoDe('estearico'), TP = MB.trigliceridoDe('palmitico');
@@ -680,8 +697,8 @@ const P1 = { id:'biomoleculas-paso4', ok:'d', opts:[
 const P2 = { id:'biomoleculas-paso5', ok:'a', opts:[
   ['a', 'Las atracciones débiles que la pliegan; la cadena sigue entera.'],
   ['b', 'Los enlaces peptídicos: el calor corta la cadena en pedazos más cortos.', 'BMH1-rompe-peptidicos', RES('hipotesis', 'BMH1: solo guías de repaso')],
-  ['c', 'Todo: el calor separa la proteína en los aminoácidos que la forman.', 'BMH1-separa-aminoacidos', RES('hipotesis', 'BMH1 con BM6, cualitativo')],
-  ['d', 'Nada: la proteína es una cadena rígida; con el calor solo cambia de color.', 'BM7-proteina-rigida', RES('hipotesis', 'BM7 y BM8, cualitativos')]],
+  ['c', 'Todo: el calor separa la proteína en los aminoácidos que la forman.', 'BMH1-separa-aminoacidos', RES('parcial', 'BM6: Fisher 1985, cualitativo')],
+  ['d', 'Nada: la proteína es una cadena rígida; con el calor solo cambia de color.', 'BM7-proteina-rigida', RES('parcial', 'BM7 y BM8: Owusu y otros 2025, Robic 2010, cualitativos')]],
   fb:{ a:`¡Bien! El calor sacude la cadena y rompe las atracciones débiles (puentes de hidrógeno y otras) que la mantenían doblada: la proteína se despliega y se enreda con sus vecinas, y por eso la clara se vuelve blanca y firme. Los ${k_(fmt(DES.despues.peptidicos))} enlaces peptídicos siguen ahí, y la masa no cambia.`,
     b:`Para cortar enlaces peptídicos hace falta una hidrólisis: las enzimas de la digestión, o un ácido fuerte y caliente durante horas. Al cocer, la cadena sigue entera; lo que se rompe son las atracciones débiles que la doblaban. Esta opción es una hipótesis nuestra: la vimos como «error frecuente» en guías de repaso, sin estudio que la mida. La correcta está marcada.`,
     c:`Si la proteína se separara en sus aminoácidos, un huevo cocido sería una sopa de piezas sueltas. Separarla así es lo que hace la digestión, con agua y enzimas. Que se confunda la proteína con el aminoácido lo describe un estudio con universitarios de biología (Fisher, 1985), sin porcentaje; esta opción es una hipótesis nuestra. La correcta está marcada.`,
@@ -694,7 +711,7 @@ const P3 = { id:'biomoleculas-paso6', ok:'c', opts:[
   fb:{ c:`¡Bien! Las dos son cadenas de glucosa. En el almidón, cada glucosa se une a la siguiente con un enlace α y todas miran al mismo lado; en la celulosa el enlace es β, y cada glucosa va girada media vuelta. Nuestra amilasa corta el enlace α y no el β. La vaca sí aprovecha el pasto: los microbios de su estómago tienen celulasa.`,
     a:`Las dos son cadenas de glucosa, pero unidas de otra forma: en el almidón con enlaces α y en la celulosa con enlaces β, con cada glucosa girada. Nuestras enzimas, las amilasas, solo cortan el α. Por eso comer papel no alimenta. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
     b:`La celulosa también es glucosa: la misma pieza que el almidón, unida con otro enlace. Según la descripción de un estudio con 35 futuros profesores de ciencias de Turquía (Koç y Sönmez, 2018), solo 10 pusieron la celulosa junto al almidón y el glucógeno entre los polisacáridos; es un error cercano, y la cifra está por verificar. Esta opción, tal como está, es una hipótesis nuestra. La correcta está marcada.`,
-    d:`El tamaño no es la razón: hay almidones con muchas más glucosas que una celulosa, y los digerimos. Lo que cambia es el enlace entre glucosas, que nuestras enzimas no saben cortar. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+    d:`El tamaño no es la razón: la amilopectina del almidón puede tener muchas más glucosas que una celulosa, y la digerimos. Lo que cambia es el enlace entre glucosas, que nuestras enzimas no saben cortar. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
 
 // ----- Vistas -----
 const balM = (r, v) => r ? [['M = ', 'ink', 700], [`${fmt(v)} g/mol`, 'M', 800]] : [['M = ?', 'muted', 800]];
@@ -733,14 +750,13 @@ function vTripeptido(r, p){
 }
 function vClara(r, p){
   const pp = p === undefined ? 1 : p;
-  // Antes de responder: la cadena doblada, sin rótulos de enlaces ni de atracciones. Al responder: aparecen las
-  // atracciones débiles (punteado) y el calor despliega la cadena; los enlaces peptídicos siguen.
-  const fase = r ? clamp((pp - 0.3)/0.7, 0, 1) : 0;
-  return { paneles:['proteina'], proteina:{ secuencia:SEQ, p: r ? fase : 0, debiles: r && pp < 0.3 + 1e-9, cuenta:!!r, calor: !!r,
-      rotulo: r ? [[fase >= 1 ? 'cocida: la cadena desplegada' : 'calentando…', 'ink', 800]] : [['una proteína de la clara (dibujo simplificado)', 'ink', 800]] },
+  // Antes de responder: la cadena doblada, sin rótulos de enlaces ni de atracciones. Al responder: dos estados fijos,
+  // la cadena plegada con sus atracciones débiles (punteado) y la cocida, que el calor despliega; los enlaces peptídicos siguen.
+  return { paneles:['proteina'], proteina:{ secuencia:SEQ, dos:!!r, p: r ? pp : 0, cuenta:!!r, calor:!!r,
+      rotulo: r ? null : [['una proteína de la clara (dibujo simplificado)', 'ink', 800]] },
     pie: r ? 'Punteado gris: las atracciones débiles que doblaban la cadena. El calor las rompe; los enlaces peptídicos (naranja) siguen todos.' : 'Una cadena de 12 aminoácidos, doblada sobre sí misma. Las proteínas reales tienen cientos.',
     vars: r ? ['k', 'debil'] : [],
-    desc: r ? `La proteína se despliega con el calor. Siguen sus ${DES.despues.peptidicos} enlaces peptídicos; se pierden sus ${DES.antes.debiles} atracciones débiles.` : 'Una cadena de doce aminoácidos doblada sobre sí misma.' };
+    desc: r ? `Antes, la cadena plegada con ${DES.antes.debiles} atracciones débiles; cocida, desplegada. Siguen sus ${DES.despues.peptidicos} enlaces peptídicos.` : 'Una cadena de doce aminoácidos doblada sobre sí misma.' };
 }
 function vPolis(r, p){
   const pp = p === undefined ? 1 : p;
@@ -764,7 +780,7 @@ function vGrasa(){
 const steps = [
  { k:'Paso 1', t:'El taller', vista:() => vInicio(),
    body:() => `<p class="problem">Los azúcares, las proteínas y las grasas de la comida se arman con piezas más chicas. ¿Cuánto pesa lo que se arma? ¿Qué le pasa a una proteína cuando se cocina un huevo? ¿Cómo se arman el almidón y las grasas?</p>
-   <p>En este taller, cada pieza es una molécula entera (una glucosa, una fructosa, un aminoácido) dibujada como un bloque con su nombre, no como átomos sueltos. Debajo de cada pieza va su ${Mp_('masa molar')}, en gramos por mol.</p>
+   <p>En este taller, cada pieza es una molécula entera (una glucosa, una fructosa, un aminoácido) dibujada como un bloque con su nombre, no como átomos sueltos (Gly es glicina; Ala, alanina). Debajo de cada pieza va su ${Mp_('masa molar')}, en gramos por mol.</p>
    <p class="hint">Cada variable tiene su color en el texto, en el dibujo y en las cuentas, como ${Mp_('la masa de las piezas')}. Toca un color del texto para resaltarlo en el dibujo.</p>` },
  { k:'Paso 2', t:'La sacarosa: predice', gate:P0, vista:r => vSacarosa(r),
    anima: fin => { animar(E, 1.9, f => { E.vista = vSacarosa(true, f); }, () => { E.vista = vSacarosa(true, 1); fin(); }, 0.15); },
@@ -785,18 +801,19 @@ const steps = [
      <div class="eq"><span class="ex">${M_('M')} = ${Mp_('75 + 89 + 105')} − ${Ma_('18')} · ${k_('2')} = ${Mp_('269')} − 36 = ${M_(fmt(TRI.M))}</span><span class="note">Fórmula ${TRI.texto}. Ser-Ala-Gly tiene la misma masa, pero es otra molécula: la cadena tiene un principio (el extremo con NH₂) y un final (con COOH).</span></div>
    </div></div>` },
  { k:'Paso 5', t:'La clara cocida: predice', gate:P2, vista:r => vClara(r),
-   anima: fin => { animar(E, 2.6, f => { E.vista = vClara(true, f); }, () => { E.vista = vClara(true, 1); fin(); }, 0.1); },
+   anima: fin => { animar(E, 2.0, f => { E.vista = vClara(true, f); }, () => { E.vista = vClara(true, 1); fin(); }, 0.1); },
    body:() => `<p>La clara de huevo es casi toda agua y proteína. Cada proteína es una cadena larga de aminoácidos, doblada sobre sí misma. Al cocer el huevo, la clara pasa de transparente a blanca y firme. ¿Qué se rompe en la proteína?</p>${opcionesHTML(P2.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq"><span class="ex">cocer: enlaces peptídicos ${k_(fmt(DES.antes.peptidicos))} → ${k_(fmt(DES.despues.peptidicos))} · atracciones débiles ${fmt(DES.antes.debiles)} → 0</span><span class="note">Se llama desnaturalización: cambia la forma, no la cadena. La masa y el orden de los aminoácidos quedan iguales.</span></div>
+     <div class="eq"><span class="ex">cocer: enlaces peptídicos ${k_(fmt(DES.antes.peptidicos))} → ${k_(fmt(DES.despues.peptidicos))} · atracciones débiles del plegado ${fmt(DES.antes.debiles)} → 0</span><span class="note">Se llama desnaturalización: se pierden las estructuras secundaria, terciaria y cuaternaria y se conserva la primaria (la secuencia). En algunas proteínas también se rompen o se reordenan puentes disulfuro (S–S entre dos cisteínas), pero los enlaces peptídicos siguen. La masa y el orden de los aminoácidos quedan iguales.</span></div>
      <div class="eq"><span class="ex">digerir: proteína + ${k_(fmt(DES.antes.peptidicos))} ${AGUA_HTML} → ${fmt(SEQ.length)} aminoácidos</span><span class="note">Eso sí corta los enlaces peptídicos: es una hidrólisis, con enzimas del estómago y del intestino.</span></div>
    </div>
-   <p class="fuente">No encontramos estudios con porcentaje sobre la desnaturalización: las tres opciones incorrectas son hipótesis nuestras. Las ideas de que la proteína es una cadena quieta, o lo mismo que un aminoácido, aparecen descritas sin cifras (Fisher, 1985; Robic, 2010; Owusu y otros, 2025, según sus resúmenes).</p></div>` },
+   <div class="nav"><span></span><button type="button" class="btn" id="otraClara">Ver de nuevo</button></div>
+   <p class="fuente">No encontramos estudios con porcentaje sobre la desnaturalización. Que la cadena se rompa con el calor es hipótesis nuestra; las ideas de que la proteína es una cadena quieta, o lo mismo que un aminoácido, aparecen descritas sin cifras (Fisher, 1985; Robic, 2010; Owusu y otros, 2025, según sus resúmenes).</p></div>` },
  { k:'Paso 6', t:'Almidón y celulosa: predice', gate:P3, vista:r => vPolis(r),
    anima: fin => { animar(E, 2.4, f => { E.vista = vPolis(true, f); }, () => { E.vista = vPolis(true, 1); fin(); }, 0.2); },
    body:() => `<p>El almidón de la papa y la celulosa del papel son cadenas largas, cada una hecha de una sola pieza repetida cientos o miles de veces. ¿Digerimos la celulosa como el almidón?</p>${opcionesHTML(P3.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq"><span class="ex">almidón: glucosa–glucosa con ${k_('α(1→4)')} · celulosa: glucosa–glucosa con ${k_('β(1→4)')}</span><span class="note">Misma pieza, otra unión. Con el enlace β cada glucosa va girada media vuelta: la cadena sale recta y se pega a sus vecinas en fibras firmes (la madera, el algodón). Con el α se enrosca.</span></div>
+     <div class="eq"><span class="ex">almidón: glucosa–glucosa con ${k_('α(1→4)')} · celulosa: glucosa–glucosa con ${k_('β(1→4)')}</span><span class="note">Misma pieza, otra unión. Con el enlace β cada glucosa va girada media vuelta: la cadena sale recta y se pega a sus vecinas en fibras firmes (la madera, el algodón). Con el α se enrosca. En la academia se dice que el almidón es un polímero de α-glucosa y la celulosa de β-glucosa: es la misma glucosa, con el OH del carbono 1 hacia abajo (α) o hacia arriba (β), y eso fija el tipo de enlace.</span></div>
    </div>
    <p class="fuente">No encontramos estudios con porcentaje sobre almidón y celulosa: las tres opciones incorrectas son hipótesis nuestras. Un error cercano, dejar la celulosa fuera de los polisacáridos, aparece en un estudio con 35 futuros profesores de Turquía (Koç y Sönmez, 2018, cifra por verificar).</p></div>` },
  { k:'Paso 7', t:'Las grasas', vista:() => vGrasa(),
@@ -808,7 +825,7 @@ const steps = [
    body:() => `<div class="ctrls">
      <div class="seg" id="xFam" role="group" aria-label="Tipo de piezas"><button type="button" data-f="azucar" aria-pressed="true">Azúcares</button><button type="button" data-f="aminoacido" aria-pressed="false">Aminoácidos</button></div>
      <div class="seg" id="xPza" role="group" aria-label="Pieza por unir"></div>
-     <div class="btns"><button type="button" class="btn primary" id="xUnir">Unir</button><button type="button" class="btn" id="xQuitar">Quitar la última</button><button type="button" class="btn" id="xSep">Separar con agua</button></div>
+     <div class="btns"><button type="button" class="btn primary" id="xUnir">Unir</button><button type="button" class="btn" id="xQuitar">Quitar la última</button><button type="button" class="btn" id="xSep">Separar</button></div>
    </div>
    <div class="lect" id="live" aria-live="polite"></div>
    <p class="hint">Elige una pieza y arrástrala hasta el final de la cadena, o toca «Unir». Caben hasta 10 piezas.</p>` },
@@ -838,11 +855,11 @@ function explorar(){
     $('xPza').innerHTML = PZ[X.fam].map(id => `<button type="button" data-p="${id}" aria-pressed="${id === X.suelta}">${X.fam === 'azucar' ? nombre(id) : id}</button>`).join('');
     $('xPza').querySelectorAll('button').forEach(b => b.onclick = () => { X.suelta = b.dataset.p; vivo(); });
     $('xUnir').disabled = n >= MAX || X.sep || !!X.anim; $('xQuitar').disabled = n <= 1 || X.sep || !!X.anim; $('xSep').disabled = n <= 1 || !!X.anim;
-    $('xSep').textContent = X.sep ? 'Volver a unir' : 'Separar con agua';
+    $('xSep').textContent = X.sep ? 'Volver a unir' : 'Separar';
     const tipo = X.fam === 'azucar' ? (r.nombre ? `${r.tipo} (${r.nombre})` : r.tipo) : `${r.tipo} ${r.nombre}`;
-    const sepTxt = tap ? `? (${DESCUBRE})` : `entran ${k_(fmt(r.aguas))} aguas y quedan ${n_(fmt(n))} piezas sueltas: ${Mp_(fmt(r.masaPiezas))} en total`;
+    const sepTxt = tap ? `? (${DESCUBRE})` : `${pl(r.aguas, 'entra', 'entran')} ${k_(fmt(r.aguas))} ${pl(r.aguas, 'agua', 'aguas')} y quedan ${n_(fmt(n))} piezas sueltas: ${Mp_(fmt(r.masaPiezas))} en total`;
     $('live').innerHTML = `<div class="fila"><span>${tipo}, ${r.texto}</span></div>
-      <div class="fila"><span>${n_('n')} = ${n_(fmt(n))} piezas</span><span>${k_('k')} = ${k_(fmt(n - 1))} ${X.fam === 'azucar' ? 'enlaces glucosídicos' : 'enlaces peptídicos'} y ${k_(fmt(n - 1))} aguas</span></div>
+      <div class="fila"><span>${n_('n')} = ${n_(fmt(n))} ${pl(n, 'pieza', 'piezas')}</span><span>${k_('k')} = ${k_(fmt(n - 1))} ${pl(n - 1, X.fam === 'azucar' ? 'enlace glucosídico' : 'enlace peptídico', X.fam === 'azucar' ? 'enlaces glucosídicos' : 'enlaces peptídicos')} y ${k_(fmt(n - 1))} ${pl(n - 1, 'agua', 'aguas')}</span></div>
       <div class="fila"><span>${M_('M')} = ${Mp_(fmt(r.masaPiezas))} − ${Ma_('18')} · ${k_(fmt(n - 1))} = ${M_(fmt(r.M) + ' g/mol')}</span></div>
       ${X.sep ? `<div class="fila"><b>Separada con agua: ${sepTxt}</b></div>` : ''}`;
     E.vista = vistaExp(); E.dibujar(); pedir();
@@ -912,6 +929,7 @@ function go(n){
   if (s.gate) prediccion(s);
   if (n === 2) enlazarPaso3();
   if (n === 6) enlazarPaso7();
+  if (n === 4 && $('otraClara')) $('otraClara').onclick = () => { if (S.ocupado) return; cortar(E); Celular.alResponder($('cv'), () => steps[4].anima(() => E.describir()), () => S.step === 4); };
   if (s.explora) explorar();
   nav(); E.dibujar(); E.describir();
 }
@@ -989,8 +1007,8 @@ const EXPS = [
       b:'Al unir piezas sale agua; al separarlas, entra. Es el camino de vuelta: se llama hidrólisis («romper con agua»). Esta opción es una hipótesis nuestra, sin estudio que la mida.',
       d:'La sacarosa trae dos piezas distintas: al separarse sale una glucosa y una fructosa, 180 g de cada una. Y la masa total sube a 360 g por el agua que entra. Que se confunda «azúcar» con «glucosa» es una hipótesis nuestra, cercana a lo que se describe sin porcentaje en universitarios.' },
     antes:() => ({ paneles:['taller'], taller:{ piezas:['glucosa', 'fructosa'], u:unidas(2), masas:[[['?', 'muted', 800]], [['?', 'muted', 800]]],
-        balanza:[['sacarosa: ', 'ink', 700], ['342 g', 'M', 800]], vaso:{ n:1, max:4, etq:[['vaso de agua', 'muted', 700]] }, cuenta:[['1 mol de sacarosa', 'ink', 800]] },
-      pie:'La sacarosa, a punto de separarse. Lo que pesa cada pieza se ve al responder.', vars:['M'], desc:'Un mol de sacarosa, 342 gramos, a punto de separarse en sus dos piezas.' }),
+        balanza:[['sacarosa: ', 'ink', 700], ['342 g', 'M', 800]], vaso:{ n:'?', max:4, etq:[['vaso de agua', 'muted', 700]] }, cuenta:[['1 mol de sacarosa', 'ink', 800]] },
+      pie:'La sacarosa, a punto de separarse. Lo que pesa cada pieza se ve al responder.', vars:['k', 'M'], desc:'Un mol de sacarosa, 342 gramos, a punto de separarse en sus dos piezas.' }),
     anima:true,
     despues:p => { const pp = p === undefined ? 1 : p, fin = pp >= 1;
       return { paneles:['taller'], taller:{ piezas:['glucosa', 'fructosa'], u:separarTodas(2, pp), masas: fin ? HI.productos.map(x => [[g_(x.gramos), 'Mp', 800]]) : [[['…', 'muted', 800]], [['…', 'muted', 800]]],
@@ -1058,35 +1076,47 @@ const EXPS = [
       return { paneles:['grasa', 'barras'], grasa:{ items:[{ acidos:['oleico', 'oleico', 'oleico'], codo:1 - suave(pp), H2: fin ? undefined : pp, etq:[[fin ? 'triestearina (antes trioleína)' : 'trioleína + 3 H₂', 'ink', 800]],
           balanza:[['M = ', 'ink', 700], [`${fmt(fin ? HG.Mdespues : HG.Mantes)} g/mol`, 'M', 800]] }] },
         barras:{ titulo:[['índice de yodo (g de I₂ por 100 g)', 'muted', 700]], max:100, items:[{ etq:[['antes', 'ink', 700]], valor:HG.yodoAntes, texto:fmt(HG.yodoAntes, 1) }, { etq:[['después', 'ink', 700]], valor: fin ? HG.yodoDespues : 0, texto: fin ? fmt(HG.yodoDespues) : '…' }] },
-        pie:'Cada doble enlace gana un H₂ y la cadena se endereza: el aceite se vuelve una grasa sólida, como la margarina.', vars:['M'],
+        pie:'Cada doble enlace gana un H₂ y la cadena se endereza: el aceite se vuelve una grasa sólida, (así, hidrogenando en parte, se hace la margarina).', vars:['M'],
         desc:`La trioleína gana tres moléculas de hidrógeno y queda como triestearina, de ${fmt(HG.Mdespues)} gramos por mol; el índice de yodo baja a cero.` }; },
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">trioleína + 3 H₂ → triestearina · ${M_(fmt(HG.Mantes))} + 6 = ${M_(fmt(HG.Mdespues))}</span><span class="note">Índice de yodo = (dobles enlaces) · 254 · 100 / ${M_('M')}: trioleína ${fmt(HG.yodoAntes, 1)}; triestearina 0. Mide cuán insaturada es una grasa. Las grasas insaturadas no son líquidas por pesar menos (la masa baja apenas 2 por doble enlace), sino porque el codo no deja que las cadenas se acomoden.</span></div></div>
       <p class="fuente">No encontramos estudios que midan estos errores: las tres opciones incorrectas son hipótesis nuestras. Índices con las masas atómicas de academia (I = 127).</p>` },
-  { id:'vitaminas', corto:'Vitaminas «para la energía»', ok:'b',
+  { id:'vitaminas', corto:'Vitaminas y energía', ok:'b',
     q:'Un frasco de vitaminas del complejo B dice «para tener más energía». ¿Una tableta te da energía como una cucharadita de azúcar?',
-    opts:[['a', 'Sí: las vitaminas se queman en el cuerpo como el azúcar y dan energía.', 'BM1-vitaminas-dan-energia', RES('documentado', 'dos Santos y Barros Filho 2002: 72,5 % de 894, por verificar')],
+    opts:[['a', 'Sí: las vitaminas se queman en el cuerpo como el azúcar y dan energía.', 'BM1-vitaminas-dan-energia', RES('parcial', 'dos Santos y Barros Filho 2002: 72,5 % de 894, por verificar; mide creencias de salud')],
           ['b', 'No: no son combustible; ayudan a sacar la energía de los alimentos.'],
-          ['c', 'Sí, y más: una tableta tan chica trae la energía concentrada.', 'energia-concentrada', RES('hipotesis', 'hipótesis nuestra')],
+          ['c', 'No: una tableta es muy chica; con unas 50 tabletas sí tendrías la energía de la cucharadita de azúcar.', 'energia-por-masa', RES('hipotesis', 'hipótesis nuestra')],
           ['d', 'Sí: son proteínas, y las proteínas dan 4 kcal por cada gramo.', 'vitaminas-son-proteinas', RES('hipotesis', 'hipótesis nuestra, cercana a BM4')]],
     fb:{ a:'Las vitaminas no se usan como combustible: el cuerpo saca energía de los carbohidratos, las grasas y las proteínas. Muchas vitaminas del complejo B son coenzimas, ayudantes de las enzimas que sacan esa energía; por eso la etiqueta confunde. Según el resumen de un estudio con 894 ingresantes a una universidad de São Paulo (dos Santos y Barros Filho, 2002), cerca de 7 de cada 10 creía que las vitaminas son una fuente de energía (cifra por verificar; el estudio mide creencias de salud, no química).',
-      c:'Una tableta trae apenas una fracción de gramo de vitaminas, y no se usan como combustible: no hay energía concentrada. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'Aunque tomaras muchas, las vitaminas no se usan como combustible: el cuerpo no saca energía de ellas, se tome una o cincuenta. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
       d:'Las vitaminas no son proteínas: son moléculas pequeñas de formas muy distintas, y el cuerpo las necesita en miligramos. No se cuentan como fuente de energía. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
     antes:() => ({ paneles:['barras'], barras:{ titulo:[['energía que da al cuerpo (kcal)', 'muted', 700]], max:24, items:[{ etq:[['cucharadita de azúcar (5 g)', 'ink', 700]], valor:AZU.kcal, texto:`${fmt(AZU.kcal)} kcal` }, { etq:[['tableta de complejo B', 'ink', 700]], oculto:true }] },
       pie:'Lo que aporta la tableta se ve al responder.', vars:[], desc:'Una cucharadita de azúcar da 20 kilocalorías; lo que da la tableta está tapado.' }),
     despues:() => ({ paneles:['barras'], barras:{ titulo:[['energía que da al cuerpo (kcal)', 'muted', 700]], max:24, items:[{ etq:[['cucharadita de azúcar (5 g)', 'ink', 700]], valor:AZU.kcal, texto:`${fmt(AZU.kcal)} kcal` }, { etq:[['tableta de complejo B', 'ink', 700]], valor:VIT.kcal, texto:'casi 0 kcal' }] },
       pie:'Las vitaminas no se cuentan como fuente de energía: ayudan a las enzimas que sacan la energía del azúcar, la grasa y la proteína.', vars:[],
       desc:'La cucharadita de azúcar da 20 kilocalorías; la tableta de vitaminas, casi cero.' }),
-    exp:() => `<div class="eqs"><div class="eq"><span class="ex">azúcar: 5 g × 4 kcal/g = ${fmt(AZU.kcal)} kcal · tableta: casi 0 kcal</span><span class="note">Factores de Atwater: carbohidratos y proteínas, 4 kcal por gramo; grasas, 9. A las vitaminas no se les asigna energía. Faltar vitaminas sí cansa, pero porque las enzimas no trabajan bien, no porque falte combustible.</span></div></div>
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">azúcar: 5 g × 4 kcal/g = ${fmt(AZU.kcal)} kcal · tableta: casi 0 kcal</span><span class="note">Factores de Atwater: carbohidratos y proteínas, 4 kcal por gramo; grasas, 9. A las vitaminas no se les asigna energía. Faltar vitaminas sí cansa, pero porque las enzimas no trabajan bien, no porque falte combustible. Si la vitamina viene en gomita o gragea con azúcar, sus calorías son del azúcar, no de la vitamina.</span></div></div>
       <p class="fuente">«Las vitaminas dan energía»: según el resumen de un estudio con 894 ingresantes de São Paulo (dos Santos y Barros Filho, 2002), cerca de 7 de cada 10 (por verificar). Las otras dos opciones incorrectas son hipótesis nuestras.</p>` },
 ];
 const S = { k:0, pred:PRED_EXP, t0:Date.now(), ocupado:false };
 // Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan.
-const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+// Además del orden, el experimento 1 espera al paso 2 y el 2 al paso 4 (lo que se aplica ahí se aprende allá).
+const REQUIERE = { 0:['biomoleculas-paso2', 2], 1:['biomoleculas-paso4', 4] };
+const faltaPaso = k => (REQUIERE[k] && !PRED_PASO[REQUIERE[k][0]] ? REQUIERE[k][1] : 0);
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]) && !faltaPaso(k);
+const motivo = k => (faltaPaso(k) ? `Experimento ${k+1}, bloqueado: responde antes el paso ${faltaPaso(k)}` : `Experimento ${k+1}, bloqueado`);
 function botones(){
   $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
     ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}"${S.ocupado ? ' disabled' : ''}>${k+1}. ${x.corto}</button>`
-    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="${motivo(k)}" title="${motivo(k)}">${k+1}. ${x.corto}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+// Cuando el experimento que toca todavía no se abre: un aviso, sin dibujo ni opciones.
+function bloqueado(k){
+  S.k = k; cortar(E); E.vista = { paneles:[], pie:'', vars:[], desc:'' }; E.compactar(false); botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = EXPS[k].corto;
+  $('body2').innerHTML = `<p>${faltaPaso(k) ? `Este experimento usa lo del paso ${faltaPaso(k)}. Respóndelo antes en <a href="#paso-a-paso">Paso a paso</a> y vuelve.` : 'Responde antes los experimentos anteriores.'}</p>`;
+  E.dibujar(); E.describir();
 }
 function despues(x, fin){
   cortar(E);
@@ -1107,7 +1137,8 @@ function ir(k){
   const btns = [...$('body2').querySelectorAll('.opt')];
   const explicar = () => {
     if (S.k !== k || !S.pred[x.id]) return;
-    $('res2').innerHTML = x.exp() + `<div class="nav">${x.anima ? otraVez : '<span></span>'}${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sigHTML = k >= EXPS.length - 1 ? '' : faltaPaso(k + 1) ? `<button type="button" class="btn primary" id="sig2" disabled aria-label="${motivo(k + 1)}" title="${motivo(k + 1)}">Siguiente: ${EXPS[k+1].corto}</button>` : `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>`;
+    $('res2').innerHTML = x.exp() + `<div class="nav">${x.anima ? otraVez : '<span></span>'}${sigHTML}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { if (S.ocupado) return; ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
     const rep = $('res2').querySelector('[data-repetir]');
     if (rep) rep.onclick = () => { if (S.ocupado) return; Celular.alResponder($('cv2'), () => despues(x, () => E.describir()), () => S.k === k); };
@@ -1132,8 +1163,13 @@ function ir(k){
   pintar(); E.dibujar(); pedir(); E.describir();
 }
 alRedibujarTema(() => E.dibujar());
-addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
-ir(0);
+addEventListener('modo', () => {
+  if (document.getElementById('m2').hidden) return;
+  // Al entrar, lo respondido en el paso a paso puede abrir experimentos.
+  if (!S.ocupado){ if (abierto(S.k)) ir(S.k); else bloqueado(S.k); }
+  E.resize(); E.dibujar(); pedir();
+});
+if (abierto(0)) ir(0); else bloqueado(0);
 })();
 </script>
 

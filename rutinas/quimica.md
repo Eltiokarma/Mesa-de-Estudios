@@ -416,3 +416,50 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
 3. En `docs/pendientes.md` y en `CLAUDE.md`, una línea como las demás.
 
 **Con esto se termina la cola de esta rutina** (equilibrio químico, cinética, mol y composición, átomo y tabla, enlace, líquidos y sólidos). Si Gerson quiere más química A, hay que darle una lista nueva. La química B (materia, nomenclatura y orgánica) va en su propia rutina.
+
+## 7 nov 2026 · lista nueva de la conversación principal (a pedido de Gerson): rendimiento y pureza, biomoléculas, química ambiental
+
+Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomoléculas y de ambiente no tenían informe de ideas erróneas, así que dos investigadores los escribieron dentro de sus plantillas. La red volvió a bloquear los PDF: las cifras nuevas salen de resúmenes y van «por verificar».
+
+### biomoleculas (terminada)
+
+**Qué se hizo.** `plantillas/biomoleculas/` (unidad `quimica.biomoleculas-y-productos-naturales`).
+- **`investigacion.md`.** BM1 a BM10 y BMH1 a BMH14. Lo que más se pregunta en academia no tiene ningún estudio con cifra: la desnaturalización que rompe enlaces peptídicos, el almidón igual a la celulosa y los errores de cálculo. Todo eso va como hipótesis.
+- **Motor (`window.MotorBiomoleculas`).**
+  - Condensación e hidrólisis, restando o sumando un H₂O por unión.
+  - Sacáridos, péptidos (n − 1 enlaces) y polisacáridos (162n + 18 exacto, o (C₆H₁₀O₅)ₙ).
+  - Triglicéridos con índices de saponificación y de yodo, e hidrogenación.
+  - Desnaturalización y plegado, digestión con enlace α o β, y energía con los factores de Atwater.
+- **Pruebas.** 30 casos, 10 problemas de papel y 51 pruebas.
+- **Escena.** Un taller de bloques: cada bloque es una molécula entera y suelta una gota de agua al unirse.
+  - **Paso a paso:** 4 predicciones (sacarosa, Gly-Ala-Ser, clara cocida, almidón contra celulosa).
+  - **¿Qué pasa si…?:** 5 experimentos (hidrólisis de la sacarosa, 1000 glucosas, jabón con dos grasas, aceite que gana hidrógeno, vitaminas y energía). El 1 y el 2 se abren recién al responder los pasos 2 y 4, porque si no regalaban sus respuestas. La pestaña sigue abierta.
+
+**Subagentes.**
+- **Verificador:** armó cada molécula átomo por átomo y contó por enumeración. Coinciden los 30 casos con sus variantes; las diferencias son solo de forma.
+- **Revisor:** ninguna grave. Medias:
+  - «¿Qué pasa si…?» regalaba los pasos 2 y 4;
+  - el vaso de E1 delataba la respuesta;
+  - la forma de las opciones de E5 delataba la correcta;
+  - respaldos BM1, BM6 y BM7 bajados a 'parcial';
+  - la clara cocida, donde el punteado de las atracciones débiles casi no se veía (ahora hay dos estados fijos y un botón «Ver de nuevo»);
+  - las notas sobre los puentes S–S y sobre α y β-glucosa;
+  - títulos y botones que anticipaban respuestas.
+  
+  Todo corregido. Volvió a probar las 8 combinaciones con Playwright y el bloqueo por pasos de punta a punta.
+
+**Pendiente.**
+- Las cifras de BM1 a BM10 están por verificar contra los textos completos. La red bloqueó core.ac.uk, files.eric.ed.gov, pmc.ncbi.nlm.nih.gov, lifescied.org y otros.
+- Alcaloides, polifenoles y colorantes no tienen escena: el informe no encontró nada.
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/quimica.json`, unidad `quimica.biomoleculas-y-productos-naturales`: `"plantillas": ["biomoleculas"]` e `"investigacion": "docs/investigacion/biomoleculas-ideas-erroneas.md"`. Mover `plantillas/biomoleculas/investigacion.md` ahí. Después, `npm run catalogo`.
+2. En `docs/diseno.md`, variables de biomoléculas:
+   - n, piezas: granate #570011 / #fbb1e5;
+   - k, uniones: naranja #a05200 / #f0a04a;
+   - Mp, masa de las piezas: verde #377703 / #97f91f;
+   - Ma, 18 del agua: azul #1f5fbf / #7cb0ff;
+   - M, masa de la molécula: fucsia #a10fbf / #cf6bfa.
+   
+   Son los mismos de líquidos y sólidos, con otro significado, y H y O vienen de la paleta común. Ojo: el O queda cerca de `--warn` y el H del verde de `--ok`; los dos siempre van con texto.
+3. Una línea en `docs/pendientes.md` y otra en `CLAUDE.md`.
