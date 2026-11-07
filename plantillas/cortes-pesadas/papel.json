@@ -1,0 +1,129 @@
+{
+  "titulo": "La sierra y la balanza: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. Antes de usar una fórmula, dibuja el caso chico (una varilla de 3 piezas, un cerco de 4 estacas) y cuenta con el dedo. En la balanza, una pesa puede ir en el platillo de enfrente o junto al objeto. Para la moneda falsa, piensa cuántos resultados distintos puede dar cada pesada.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un maestro de obra tiene una varilla de fierro de 18 m y necesita piezas de 3 m. Cada corte con la amoladora le toma 4 minutos. ¿Cuánto tiempo tarda en dejar lista toda la varilla?",
+      "respuesta": "20 minutos.",
+      "pasos": [
+        "Salen 18 ÷ 3 = 6 piezas.",
+        "En una varilla con dos extremos, la última pieza queda sola sin cortarla: 6 piezas piden 6 − 1 = 5 cortes.",
+        "El tiempo es 5 × 4 = 20 minutos. Si contaras un corte por pieza, te saldrían 24 minutos."
+      ],
+      "verificar": [ { "fn": "cortar", "args": [{ "largo": 18, "tramo": 3, "minutos": 4 }], "espera": { "piezas": 6, "cortes": 5, "tiempo": 20, "erroresTiempo.unoPorPieza": 24 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En una avenida recta de Juliaca de 240 m se van a poner postes de luz cada 20 m, con un poste en cada extremo. ¿Cuántos postes se necesitan?",
+      "respuesta": "13 postes.",
+      "pasos": [
+        "Entre poste y poste hay un tramo de 20 m: son 240 ÷ 20 = 12 tramos.",
+        "En una línea abierta hay un poste al inicio de cada tramo y uno más al final: 12 + 1 = 13.",
+        "Compruébalo con algo chico: 40 m con postes cada 20 m son 2 tramos y 3 postes."
+      ],
+      "verificar": [ { "fn": "estacas", "args": [{ "forma": "abierta", "largo": 240, "separacion": 20 }], "espera": { "tramos": 12, "estacas": 13 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un corral circular para alpacas tiene 72 m de contorno. Se clavan estacas cada 4 m alrededor de todo el corral. ¿Cuántas estacas se clavan?",
+      "respuesta": "18 estacas.",
+      "pasos": [
+        "El contorno se divide en 72 ÷ 4 = 18 tramos.",
+        "En un contorno cerrado, la estaca del final es la misma del inicio: hay una estaca por tramo.",
+        "Son 18 estacas, no 19."
+      ],
+      "verificar": [ { "fn": "estacas", "args": [{ "forma": "cerrada", "largo": 72, "separacion": 4 }], "espera": { "tramos": 18, "estacas": 18, "errores.masUno": 19 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una artesana tiene un collar cerrado de 90 cm y lo quiere partir en pedazos de 15 cm para hacer pulseras. ¿Cuántos cortes debe hacer?",
+      "respuesta": "6 cortes.",
+      "pasos": [
+        "Salen 90 ÷ 15 = 6 pedazos.",
+        "El primer corte no suelta ningún pedazo: solo abre el collar y lo deja como una tira de 90 cm.",
+        "Esa tira de 6 pedazos pide 5 cortes más: 1 + 5 = 6. En una forma cerrada, cortes = pedazos."
+      ],
+      "verificar": [ { "fn": "cortar", "args": [{ "forma": "cerrada", "largo": 90, "tramo": 15 }], "espera": { "piezas": 6, "cortes": 6 } },
+                     { "fn": "contarPiezas", "args": [{ "forma": "cerrada", "largo": 90, "cortes": [0] }], "espera": { "piezas": 1 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Partir un tronco de eucalipto en 5 trozos le toma a un leñador 12 minutos. ¿Cuánto tardará en partir otro tronco igual en 9 trozos, si cada corte toma lo mismo?",
+      "respuesta": "24 minutos.",
+      "pasos": [
+        "5 trozos piden 4 cortes: cada corte toma 12 ÷ 4 = 3 minutos.",
+        "9 trozos piden 8 cortes: 8 × 3 = 24 minutos.",
+        "La regla de tres con los trozos (12 × 9 ÷ 5 = 21,6 minutos) falla, porque el tiempo depende de los cortes, no de los trozos."
+      ],
+      "verificar": [ { "fn": "tiempoCortes", "args": [{ "piezas": 5, "minutos": 12, "piezasNuevas": 9 }], "espera": { "porCorte": 3, "cortes": 8, "tiempo": 24, "errores.lineal": 21.6 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una soga de 12 m se dobla en zigzag en 4 partes iguales, de modo que quedan 4 capas de 3 m. Con un cuchillo se dan 3 cortes que atraviesan todas las capas, ninguno en un doblez. ¿En cuántos pedazos queda la soga?",
+      "respuesta": "13 pedazos.",
+      "pasos": [
+        "Cada corte atraviesa las 4 capas: corta la soga en 4 lugares distintos.",
+        "Con 3 cortes, la soga estirada tiene 4 × 3 = 12 puntos de corte.",
+        "La soga estirada es una línea abierta: 12 cortes dan 12 + 1 = 13 pedazos."
+      ],
+      "verificar": [ { "fn": "sogaDoblada", "args": [{ "largo": 12, "capas": 4, "posiciones": [0.5, 1.5, 2.5] }], "espera": { "cortes": 3, "piezas": 13 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un comerciante tiene una balanza de dos platillos y solo tres pesas: de 1 kg, de 3 kg y de 9 kg. ¿Cómo puede pesar exactamente 11 kg de papa?",
+      "respuesta": "La papa y la pesa de 1 kg en un platillo; las de 3 kg y 9 kg en el otro.",
+      "pasos": [
+        "Con las pesas en un solo platillo se logra 9 + 3 = 12 o 9 + 1 = 10, pero no 11.",
+        "Una pesa junto a la papa resta: 9 + 3 − 1 = 11.",
+        "Compruébalo: un platillo tiene 11 + 1 = 12 kg y el otro 3 + 9 = 12 kg. La balanza queda en equilibrio."
+      ],
+      "verificar": [ { "fn": "pesar", "args": [{ "pesas": [1, 3, 9], "masa": 11 }], "espera": { "posible": true, "junto": [1], "otro": [3, 9] } },
+                     { "fn": "equilibrio", "args": [{ "pesas": [1, 3, 9], "masa": 11, "junto": [1], "otro": [3, 9] }], "espera": { "estado": "equilibrio" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Con una balanza de dos platillos y las pesas de 1 kg, 3 kg, 9 kg y 27 kg, ¿hasta cuántos kilogramos se pueden pesar todas las masas enteras, sin saltarse ninguna?",
+      "respuesta": "Hasta 40 kg: todas las masas enteras de 1 kg a 40 kg.",
+      "pasos": [
+        "Con 1, 3 y 9 se pesa todo de 1 a 13 (13 es la suma de las tres).",
+        "La pesa de 27 en el platillo de enfrente, con las otras sumando o restando, alcanza de 27 − 13 = 14 a 27 + 13 = 40.",
+        "No se puede pasar de la suma de todas: 1 + 3 + 9 + 27 = 40."
+      ],
+      "verificar": [ { "fn": "masasMedibles", "args": [{ "pesas": [1, 3, 9, 27] }], "espera": { "alcance": 40, "suma": 40, "completo": true } },
+                     { "fn": "agregarPesa", "args": [{ "pesas": [1, 3, 9], "nueva": 27 }], "espera": { "antes": 13, "despues": 40 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Entre 81 monedas que se ven iguales hay una falsa, más liviana que las demás. Con una balanza de dos platillos y sin pesas, ¿cuál es el menor número de pesadas que asegura encontrarla?",
+      "respuesta": "4 pesadas.",
+      "pasos": [
+        "Cada pesada tiene tres resultados: baja la izquierda, baja la derecha o queda en equilibrio.",
+        "Pon 27 en cada platillo y deja 27 fuera: sea cual sea el resultado, quedan 27 sospechosas. Luego 9, luego 3, luego 1.",
+        "Son 4 pesadas, porque 3 × 3 × 3 × 3 = 81. Con 3 pesadas solo se distinguen 27 casos, y aquí hay 81."
+      ],
+      "verificar": [ { "fn": "minimoPesadas", "args": [{ "monedas": 81 }], "espera": { "pesadas": 4, "grupos": [27, 27, 27] } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Una varilla de 6 m se quiere partir en 6 piezas de 1 m. Después de cada corte se pueden juntar los pedazos y cortarlos a la vez con un solo corte recto. ¿Cuál es el menor número de cortes?",
+      "respuesta": "3 cortes.",
+      "pasos": [
+        "Un corte, aun con un montón de pedazos, a lo más duplica cuántos pedazos hay: 1, 2, 4, 8…",
+        "Con 2 cortes hay como mucho 4 pedazos: no alcanza para 6.",
+        "Con 3 sí: 6 = 3 + 3; se juntan los dos de 3 m y se cortan en 2 + 1; se juntan los dos de 2 m y se cortan en 1 + 1."
+      ],
+      "verificar": [ { "fn": "cortesApilando", "args": [{ "piezas": 6 }], "espera": { "minimo": 3, "cota": 3, "sinApilar": 5 } } ]
+    }
+  ]
+}
