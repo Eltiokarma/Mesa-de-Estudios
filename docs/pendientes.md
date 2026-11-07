@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1684 pruebas.
+Deben pasar 1725 pruebas.
 
 ```bash
 npm run dev
@@ -53,7 +53,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | --- | --- | --- | --- |
 | ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito`, `poligonos`, `solidos` y `geometria-analitica` | Falta congruencia (sesión matematica-b) |
 | ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig`, `caso-ambiguo` e `identidades-trig` | Faltan funciones trigonométricas inversas (sesión matematica-a) |
-| ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización) y `sucesiones` | Faltan polinomios y división, exponenciales y logaritmos (con escena propia), matrices y complejos |
+| ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización), `sucesiones`, `exponenciales-logaritmos` y `polinomios` (Ruffini, resto, raíces racionales) | Faltan números reales, lógica y conjuntos, matrices, complejos, binomio de Newton y programación lineal |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres`, `probabilidad-dados`, `sucesiones` y `fracciones` (fracciones, decimales, MCD y MCM, promedios) | Falta interés (la hace la sesión paralela matematica-b); fracciones sin ítems en el banco todavía |
 | ra1 | Razonamiento matemático | Hechas: `probabilidad-dados`, `regla-de-tres` (engranajes), `traductor-enunciados` (planteo), `sucesiones` (patrones con palitos, Gauss, series) y `orden-informacion` (orden, verdades y mentiras, certezas) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
@@ -73,6 +73,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 
+- **Polinomios** (`plantillas/polinomios/`, sesión de matemática A, 7 nov 2026): la máquina de Ruffini (fichas con el 0 que falta, el resto es la altura P(a) en la curva, divisor ax + b con el cociente falso, grados, resto por sustitución y raíces racionales); 22 casos verificados aparte; 10 de papel; 7 predicciones y 5 «¿qué pasa si…?»; PO1 a PO34 son hipótesis. Unidades: polinomios, división de polinomios y ecuaciones polinomiales. Falta: Horner animado y la sustitución dibujada paso a paso (experimento 4); en PC, el lienzo del paso 1 queda bajo hasta tocar «Ordenar». Sin ítems en el banco de álgebra (ya está en 10, con 2 por plantilla).
 - **Átomo y tabla** (`plantillas/atomo-y-tabla/`, rutina de química, 7 nov 2026): partículas de átomos e iones, configuración con cajas (Hund y Pauli, excepciones Cr y Cu), números cuánticos, ubicación en la tabla, energía de ionización, radio y electronegatividad para Z = 1 a 36, series isoelectrónicas; tabla tocable como mapa; 29 casos verificados aparte; 10 de papel; 5 predicciones y 5 «¿qué pasa si…?». **Falta contrastar con la fuente** las energías de ionización (NIST), los radios (Clementi 1967 y Shannon) y las electronegatividades (Pauling): se escribieron y cotejaron de memoria; hacerlo antes del colegio, con el libro que use el colegio o un subagente con acceso a la web. La escala de radios es la teórica de Clementi y la escena avisa que el libro usa radios medidos. Falta lo de enlace (va en su plantilla).
 - **Estática** (`plantillas/estatica/`, rutina de física, 7 nov 2026): barra con peso propio, momentos respecto a cualquier punto, bate cortado, nudo, polea y roce estático; 21 casos verificados aparte; 10 de papel; 5 predicciones y 5 «¿qué pasa si…?» (Ortiz y otros 2005, Fischer y otros 2014, Flores-García y otros 2009). Falta en la escena alargar una sola cuerda del nudo sin cambiar su ángulo (E7); sin ítems en el banco de física todavía. Las opciones del momento inclinado, la reacción y la caja son hipótesis.
 - **Dinámica** (`plantillas/dinamica/`, rutina de física, 6 nov 2026): plano inclinado con roce estático que se ajusta, poleas, ascensor, tercera ley y empujón; 21 casos verificados aparte; 10 de papel; 3 predicciones y 6 «¿qué pasa si…?» (Halloun y Hestenes 1985, Bao y otros 2002, Castillo y otros 2013). Falta: dinámica circular en escena (va con tiro parabólico), tren de bloques, bloque sobre bloque, polea móvil y péndulo en un vagón. Para Gerson: en «¿qué pasa si…?» las pastillas dejan saltar sin responder (como en MRUV).

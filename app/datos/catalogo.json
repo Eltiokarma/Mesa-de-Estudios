@@ -1381,7 +1381,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "polinomios"
+     ]
     },
     {
      "id": "algebra.division-de-polinomios",
@@ -1408,7 +1410,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "polinomios"
+     ]
     },
     {
      "id": "algebra.factorizacion",
@@ -1465,7 +1469,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "polinomios"
+     ]
     },
     {
      "id": "algebra.funciones",
@@ -4716,6 +4722,25 @@
     "/plantillas/poligonos/index.html",
     "/plantillas/poligonos/motor.js",
     "/plantillas/poligonos/papel.json"
+   ]
+  },
+  "polinomios": {
+   "id": "polinomios",
+   "titulo": "La máquina de Ruffini: polinomios y división",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.polinomios",
+    "algebra.division-de-polinomios",
+    "algebra.ecuaciones-polinomiales"
+   ],
+   "url": "/plantillas/polinomios/index.html",
+   "papel": "/plantillas/polinomios/papel.json",
+   "archivos": [
+    "/plantillas/polinomios/index.html",
+    "/plantillas/polinomios/motor.js",
+    "/plantillas/polinomios/papel.json"
    ]
   },
   "porcentajes-sucesivos": {
