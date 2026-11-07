@@ -52,11 +52,12 @@
  *   materiales()                    la lista de materiales de la tabla
  *   posicion(f, fmin, fmax)         lugar de f en una regla logarítmica entre fmin y fmax (0 a 1)
  *   frecuenciaEn(u, fmin, fmax)     el inverso: la f del lugar u
- *   referencias()                   objetos de referencia con su tamaño (m) para comparar con λ
+ *   referencias()                   objetos de referencia { id, objeto, tam (m), f = c/tam, y la región de esa λ }
  *   carrera(d, t, ondas)            dónde va cada onda (m) a los t s en el vacío, hasta llegar a d: todas a c
  *   colorLuz(lambdaNm)              color aproximado de la luz visible { r, g, b } o null fuera de 380 a 750 nm
  *                                   (copiado de plantillas/fisica-moderna/motor.js). Solo para pintar la banda de luz:
  *                                   no es un color de variable
+ *   ionizante(f)                    E (eV) del fotón, si ioniza (E ≥ 10 eV) y el error OE18 (abajo)
  *   azar(semilla)                   números al azar con semilla
  *
  * Tabla de «qué atraviesa qué» (simplificada, de lo que se ve en la vida diaria; 'parcial' = pasa una parte):
@@ -69,25 +70,28 @@
  *   (la rejilla de la puerta del horno: agujeros de unos 2 mm, mucho menores que los 12,5 cm de las microondas y
  *    mucho mayores que la λ de la luz. Las microondas y la radio rebotan en el metal; la luz pasa por los agujeros.)
  *
- * Cada resultado que alimenta una predicción trae un campo 'errores' con lo que da cada error típico. Códigos
- * provisionales; ON2, ON6 y ON9 son de ondas mecánicas (docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md)
- * y aquí cuentan como parciales; lo demás son hipótesis nuestras:
- *   onda.errores (m):    multiplica   λ = c·f.
- *                        sinPrefijo   λ = c/valor, sin pasar el prefijo a Hz (100 MHz como si fueran 100 Hz).
- *                        exponente    λ/10: diez veces menos, por sumar mal los exponentes (100 × 10⁶ como 10⁹).
- *   ondaDeLambda.errores (Hz): multiplica f = c·λ; sinPrefijo f = c/valor (600 nm como si fueran 600 m).
- *   campos.errores (T):  igual       B₀ = campo eléctrico (sin c).
- *                        multiplica  B₀ = campo eléctrico · c.
- *                        kms         B₀ = campo eléctrico / 300 000 (c en km/s).
- *   viaje.errores (s):   instantaneo  0 (la luz no tarda).
- *                        minutos      el número de t leído como minutos: t·60 s (500 s tomados como 500 min).
- *                        exponente    t/10 (c como 3 × 10⁹ m/s).
- *   eco.errores (m):     sinMitad     d = c·t (la ida y la vuelta como si fuera solo la ida).
- *                        conSonido    d = 340·t/2 (la rapidez del sonido en el aire, 340 m/s).
- *   medio.errores:       cambiaF      ON2 (parcial): v = f·λ leído con λ fija: { v: c/n, f: f/n, lambdaNm: λ }.
- *                        cambiaColor  la λ' manda el color: { v, lambdaNm: λ/n, color: el de λ/n }.
- *                        alReves      el medio acelera la luz: { v: c·n, lambdaNm: λ·n, f }.
- *                        nadaCambia   la luz siempre va a c: { v: c, lambdaNm: λ, f }.
+ * Cada resultado que alimenta una predicción trae un campo 'errores' con lo que da cada error típico. Los códigos son
+ * los de docs/investigacion/ondas-electromagneticas-ideas-erroneas.md (OE1 a OE20; todas sus cifras salen de
+ * resúmenes y están por verificar); los que llevan un nombre sin número son hipótesis nuestras:
+ *   onda.errores (m):    multiplica   λ = c·f (despejar mal c = λ·f; hipótesis nuestra).
+ *                        sinPrefijo   OE20: λ = c/valor, sin pasar el prefijo a Hz (100 MHz como si fueran 100 Hz).
+ *                        exponente    OE20: λ/10, diez veces menos, por sumar mal los exponentes (100 × 10⁶ como 10⁹).
+ *   ondaDeLambda.errores (Hz): multiplica f = c·λ; sinPrefijo f = c/valor (OE20: 600 nm como si fueran 600 m).
+ *   campos.errores (T):  igual       OE15: B₀ = campo eléctrico máximo (sin c).
+ *                        multiplica  OE15: B₀ = campo eléctrico máximo · c.
+ *                        kms         OE20: B₀ = campo eléctrico máximo / 300 000 (c en km/s).
+ *   viaje.errores (s):   instantaneo  0 (la luz no tarda; hipótesis nuestra).
+ *                        minutos      OE20: el número de t leído como minutos, t·60 s (500 s tomados como 500 min).
+ *                        exponente    OE20: t/10 (c como 3 × 10⁹ m/s).
+ *   eco.errores (m):     sinMitad     d = c·t (la ida y la vuelta como si fuera solo la ida; hipótesis nuestra).
+ *                        conSonido    d = 340·t/2 (el eco con la rapidez del sonido en el aire, 340 m/s; OE1).
+ *   medio.errores:       cambiaF      OE12: cambia la frecuencia y no λ (v = f·λ leído con λ fija, como ON2):
+ *                                     { v: c/n, f: f/n, lambdaNm: λ }.
+ *                        cambiaColor  λ' manda el color (variante de OE12): { v, lambdaNm: λ/n, color: el de λ/n }.
+ *                        alReves      el medio acelera la luz: { v: c·n, lambdaNm: λ·n, f } (hipótesis nuestra).
+ *                        nadaCambia   la luz siempre va a c: { v: c, lambdaNm: λ, f } (hipótesis nuestra).
+ *   ionizante(f)         si un fotón de frecuencia f ioniza (E ≥ 10 eV, borde de academia: λ ≤ 124 nm, en el
+ *                        ultravioleta alto) y lo que espera OE18: { potente: { ioniza: true } } (con la potencia basta).
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -270,12 +274,12 @@
   }
   function referencias() {
     return [
-      { id: 'edificio', nombre: 'un edificio', tam: 30 },
-      { id: 'persona', nombre: 'una persona', tam: 1.7 },
-      { id: 'moneda', nombre: 'una moneda', tam: 0.02 },
-      { id: 'bacteria', nombre: 'una bacteria', tam: 2e-6 },
-      { id: 'virus', nombre: 'un virus', tam: 1e-7 },
-      { id: 'atomo', nombre: 'un átomo', tam: 1e-10 },
+      { id: 'edificio', objeto: 'un edificio', tam: 30 },
+      { id: 'persona', objeto: 'una persona', tam: 1.7 },
+      { id: 'moneda', objeto: 'una moneda', tam: 0.02 },
+      { id: 'bacteria', objeto: 'una bacteria', tam: 2e-6 },
+      { id: 'virus', objeto: 'un virus', tam: 1e-7 },
+      { id: 'atomo', objeto: 'un átomo', tam: 1e-10 },
     ].map(r => Object.assign(r, { f: limpio(C / r.tam) }, region(r.tam)));
   }
 
@@ -302,11 +306,18 @@
     return { r: q(r), g: q(g), b: q(b) };
   }
 
+  // Un fotón ioniza si trae al menos unos 10 eV (borde de academia): del ultravioleta alto hacia arriba.
+  const E_IONIZA = 10;
+  function ionizante(f) {
+    const F = foton(f);
+    return { E: F.E, ioniza: F.E >= E_IONIZA, lambdaBordeNm: limpio(HC_EV_NM / E_IONIZA), errores: { potente: { ioniza: true } } };
+  }
+
   function azar(sem) { let s = (sem >>> 0) || 1; return () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296; }
 
   return {
-    C, HC_EV_NM, E_CARGA, H_EV, V_SONIDO,
+    C, HC_EV_NM, E_CARGA, H_EV, V_SONIDO, E_IONIZA,
     aHz, aMetros, region, regiones, onda, ondaDeLambda, foton, campos, campoDeB, direccionB, producto, punto, instante,
-    viaje, eco, medio, atraviesa, materiales, posicion, frecuenciaEn, referencias, carrera, colorLuz, azar,
+    viaje, eco, medio, atraviesa, materiales, posicion, frecuenciaEn, referencias, carrera, colorLuz, ionizante, azar,
   };
 });

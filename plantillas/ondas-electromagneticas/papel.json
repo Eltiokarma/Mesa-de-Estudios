@@ -1,0 +1,124 @@
+{
+  "titulo": "La antena y el arcoíris: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa c = 3 × 10⁸ m/s, hc = 1240 eV·nm y 1 eV = 1,6 × 10⁻¹⁹ J. Onda: c = λ·f. Fotón: E = h·f = hc/λ. Recorrido: d = v·t. En un medio: v = c/n y λ' = λ/n. Campos de la onda: (campo eléctrico) = c·B.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una emisora de radio AM transmite en 750 kHz y una de FM en 90 MHz. Con c = 3 × 10⁸ m/s, ¿cuál es la longitud de onda de cada una?",
+      "respuesta": "AM: 400 m; FM: 10/3 m ≈ 3,33 m.",
+      "pasos": [
+        "750 kHz = 7,5 × 10⁵ Hz y 90 MHz = 9 × 10⁷ Hz.",
+        "λ = c/f = 3 × 10⁸ / (7,5 × 10⁵) = 400 m.",
+        "λ = 3 × 10⁸ / (9 × 10⁷) = 10/3 m ≈ 3,33 m. Más frecuencia, menos longitud de onda; la rapidez es la misma."
+      ],
+      "verificar": [ { "fn": "onda", "args": [750, "kHz"], "espera": { "lambda": 400 } }, { "fn": "onda", "args": [90, "MHz"], "espera": { "lambda": 3.33333333333 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un horno de microondas trabaja con ondas de 12 cm de longitud de onda. Con c = 3 × 10⁸ m/s, ¿cuál es su frecuencia, en GHz?",
+      "respuesta": "f = 2,5 × 10⁹ Hz = 2,5 GHz.",
+      "pasos": [
+        "12 cm = 0,12 m.",
+        "f = c/λ = 3 × 10⁸ / 0,12 = 2,5 × 10⁹ Hz.",
+        "1 GHz = 10⁹ Hz: f = 2,5 GHz."
+      ],
+      "verificar": [ { "fn": "ondaDeLambda", "args": [12, "cm"], "espera": { "f": 2.5e9, "region": "microondas" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una luz verde tiene una longitud de onda de 500 nm. Con c = 3 × 10⁸ m/s y hc = 1240 eV·nm, halla su frecuencia y la energía de cada fotón, en eV y en joules (1 eV = 1,6 × 10⁻¹⁹ J).",
+      "respuesta": "f = 6 × 10¹⁴ Hz; E = 2,48 eV ≈ 3,97 × 10⁻¹⁹ J.",
+      "pasos": [
+        "500 nm = 5 × 10⁻⁷ m; f = 3 × 10⁸ / (5 × 10⁻⁷) = 6 × 10¹⁴ Hz.",
+        "E = hc/λ = 1240/500 = 2,48 eV.",
+        "En joules: 2,48 · 1,6 × 10⁻¹⁹ ≈ 3,97 × 10⁻¹⁹ J."
+      ],
+      "verificar": [ { "fn": "ondaDeLambda", "args": [500, "nm"], "espera": { "f": 6e14, "E": 2.48, "EJ": 3.968e-19, "color": "verde" } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Ordena de menor a mayor frecuencia: la luz roja de un semáforo, los rayos X de una radiografía, la señal de una radio FM, el ultravioleta que broncea y las microondas de un horno. ¿Cuál de ellas tiene la mayor longitud de onda?",
+      "respuesta": "Radio FM < microondas < luz roja < ultravioleta < rayos X. La mayor longitud de onda es la de la radio FM.",
+      "pasos": [
+        "El espectro es uno solo, ordenado por la frecuencia: radio, microondas, infrarrojo, visible, ultravioleta, rayos X y gamma.",
+        "Como todas viajan a c, λ = c/f: la de menor frecuencia tiene la mayor longitud de onda.",
+        "La radio FM, con f de unos 10⁸ Hz, tiene λ de unos 3 m."
+      ],
+      "verificar": [ { "fn": "regiones", "args": [], "espera": { "0.region": "radio", "1.region": "microondas", "3.region": "visible", "4.region": "ultravioleta", "5.region": "rayosX" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "La luz del Sol recorre 1,5 × 10¹¹ m hasta la Tierra a 3 × 10⁸ m/s. ¿Cuánto tarda, en minutos y segundos?",
+      "respuesta": "500 s = 8 min 20 s.",
+      "pasos": [
+        "t = d/c = 1,5 × 10¹¹ / (3 × 10⁸) = 500 s.",
+        "500 s = 8 · 60 s + 20 s = 8 min 20 s."
+      ],
+      "verificar": [ { "fn": "viaje", "args": [1.5e11], "espera": { "t": 500, "min": 8, "s": 20 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un radar manda un pulso hacia un avión y recibe el eco 3 × 10⁻⁴ s después. Las ondas viajan a 3 × 10⁸ m/s. ¿A qué distancia está el avión?",
+      "respuesta": "45 km.",
+      "pasos": [
+        "En 3 × 10⁻⁴ s el pulso va y vuelve: recorre 3 × 10⁸ · 3 × 10⁻⁴ = 9 × 10⁴ m.",
+        "El avión está a la mitad: 4,5 × 10⁴ m = 45 km."
+      ],
+      "verificar": [ { "fn": "eco", "args": [3e-4], "espera": { "d": 45000 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "En una onda electromagnética que viaja en el vacío, el campo magnético máximo es 2 × 10⁻⁸ T. Con c = 3 × 10⁸ m/s, ¿cuál es el campo eléctrico máximo? Si el campo eléctrico oscila de arriba abajo y la onda avanza hacia el este, ¿en qué dirección oscila el campo magnético?",
+      "respuesta": "6 V/m; el campo magnético oscila en la horizontal norte-sur, perpendicular al campo eléctrico y al avance.",
+      "pasos": [
+        "(campo eléctrico) = c·B = 3 × 10⁸ · 2 × 10⁻⁸ = 6 V/m.",
+        "Los dos campos son perpendiculares entre sí y a la dirección de avance (la onda es transversal).",
+        "Perpendicular a la vertical y al este queda la dirección norte-sur."
+      ],
+      "verificar": [ { "fn": "campoDeB", "args": [2e-8], "espera": { "electrico0": 6 } }, { "fn": "direccionB", "args": [[0, 0, 1], [1, 0, 0]], "espera": { "valor": [0, -1, 0] } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Una luz roja de 660 nm (medida en el aire) entra a un vidrio de índice n = 3/2. Con c = 3 × 10⁸ m/s, ¿cuánto valen su rapidez, su longitud de onda y su frecuencia dentro del vidrio? ¿Cambia el color?",
+      "respuesta": "v = 2 × 10⁸ m/s; λ' = 440 nm; f = 5/11 × 10¹⁵ ≈ 4,55 × 10¹⁴ Hz, la misma de afuera. El color no cambia: lo pone la frecuencia.",
+      "pasos": [
+        "v = c/n = 3 × 10⁸ / 1,5 = 2 × 10⁸ m/s.",
+        "La frecuencia no cambia al pasar de un medio a otro: f = c/λ = 3 × 10⁸ / (6,6 × 10⁻⁷) ≈ 4,55 × 10¹⁴ Hz.",
+        "λ' = v/f = λ/n = 660/1,5 = 440 nm. Sigue siendo roja, aunque 440 nm en el aire sería violeta."
+      ],
+      "verificar": [ { "fn": "medio", "args": [660, 1.5], "espera": { "v": 2e8, "lambdaNm": 440, "f": 4.54545454545e14, "color": "rojo" } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Una señal de radio va de la Tierra a la Luna, a 3,84 × 10⁸ m, rebota y vuelve. Con c = 3 × 10⁸ m/s, ¿cuánto tarda en total? ¿Llegaría antes una luz de láser lanzada al mismo tiempo?",
+      "respuesta": "2,56 s; no: el láser y la radio viajan a la misma rapidez y llegan a la vez.",
+      "pasos": [
+        "Ida: t = 3,84 × 10⁸ / (3 × 10⁸) = 1,28 s.",
+        "Ida y vuelta: 2 · 1,28 = 2,56 s.",
+        "En el vacío todas las ondas electromagnéticas viajan a c, sea radio, luz o rayos X."
+      ],
+      "verificar": [ { "fn": "viaje", "args": [7.68e8], "espera": { "t": 2.56 } }, { "fn": "viaje", "args": [3.84e8], "espera": { "t": 1.28 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Una antena de celular emite a 1,5 GHz con mucha potencia. Con hc = 1240 eV·nm y c = 3 × 10⁸ m/s, ¿cuánta energía trae cada fotón? Para arrancar un electrón de un átomo hacen falta unos 10 eV. ¿Puede ionizar si se sube su potencia? ¿Qué longitud de onda, como máximo, tiene una luz que sí ioniza?",
+      "respuesta": "λ = 0,2 m = 2 × 10⁸ nm y E = 6,2 × 10⁻⁶ eV: no ioniza con ninguna potencia, porque la potencia cambia cuántos fotones salen, no la energía de cada uno. Ioniza la luz de 124 nm o menos.",
+      "pasos": [
+        "λ = c/f = 3 × 10⁸ / (1,5 × 10⁹) = 0,2 m = 2 × 10⁸ nm.",
+        "E = hc/λ = 1240 / (2 × 10⁸) = 6,2 × 10⁻⁶ eV, más de un millón de veces menos que 10 eV.",
+        "Para 10 eV: λ = 1240/10 = 124 nm, en el ultravioleta."
+      ],
+      "verificar": [ { "fn": "onda", "args": [1.5, "GHz"], "espera": { "lambda": 0.2, "E": 6.2e-6 } }, { "fn": "ionizante", "args": [1.5e9], "espera": { "ioniza": false, "lambdaBordeNm": 124 } } ]
+    }
+  ]
+}

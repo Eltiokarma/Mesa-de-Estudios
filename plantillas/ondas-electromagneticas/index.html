@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La antena y el arcoíris: ondas electromagnéticas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de física moderna.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4). Se repiten de física
+   moderna la longitud de onda λ petróleo, la frecuencia f oliva y la energía del fotón E ocre (la misma regla de
+   λ, f y E); de magnetismo, el campo magnético B verde y la rapidez (aquí c en el vacío y v en un medio) roja.
+   El campo eléctrico de la onda NO lleva letra (la E ya es la energía del fotón): se escribe «campo eléctrico» y va
+   en azul. No se usa el turquesa de electrostática porque queda a ΔE00 ≈ 10 de λ, que sale siempre a su lado.
+   Nuevo: el índice de refracción n, violeta. Distancias d, tiempos t, potencias y materiales van en tinta o gris.
+   El color de la luz visible (motor.colorLuz) aparece solo como banda translúcida detrás de las ondas, que son de
+   tinta: nunca en un trazo sólido junto a las variables, y la leyenda lo dice.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py); salen juntos casi siempre (la onda con la regla: λ, f, E,
+   campo eléctrico, B y c; el agua: λ, f, v y n). ΔE00 mínimo entre todos los pares: 21,1 en claro (f con B) y 21,9 en
+   oscuro (f con B). Todos pasan AA (≥ 4,5) sobre el papel y sobre su chip (.v, fondo al 8 %), en claro y en oscuro;
+   el más justo es c/v claro #c0364a, 4,56 sobre su chip. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-lam:#0d6b78; --c-f:#5c531f; --c-E:#a55412; --c-el:#1f5fbf; --c-B:#2a7638; --c-v:#c0364a;
+  --c-n:#7614b8;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-lam:#24e4f9; --c-f:#fdf2b4; --c-E:#ffa64d; --c-el:#7cb0ff; --c-B:#7fd67f; --c-v:#f17384;
+  --c-n:#aa74fb;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-lam:#24e4f9; --c-f:#fdf2b4; --c-E:#ffa64d; --c-el:#7cb0ff; --c-B:#7fd67f; --c-v:#f17384;
+  --c-n:#aa74fb;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+  .mode.pendiente .lectura:not(.q){display:none}
+  .mode.pendiente .lecturas{grid-template-columns:repeat(3, minmax(0,1fr))}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend span span{display:inline}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:50%}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-lam{color:var(--c-lam); background:color-mix(in srgb, var(--c-lam) 8%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-E{color:var(--c-E); background:color-mix(in srgb, var(--c-E) 8%, transparent)}
+.v-el{color:var(--c-el); background:color-mix(in srgb, var(--c-el) 8%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:block; line-height:1.9; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal; line-height:1.4}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.acciones .btn{min-height:40px; padding:9px 16px}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(128px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura.ancha{grid-column:1/-1}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.35fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px; max-height:calc(100vh - 24px); overflow:auto}
+}
+
+/* Deslizadores del experimento (teclado y toque: input range nativo) */
+.controles{display:grid; gap:6px; padding:2px 6px}
+.controles:empty{display:none}
+.ctl{display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:2px 10px; font-size:.86rem; color:var(--muted)}
+.ctl output{font:800 .9rem var(--mono); color:var(--k); font-variant-numeric:tabular-nums}
+.ctl input{grid-column:1/-1; width:100%; margin:0; accent-color:var(--k); height:44px; min-height:44px}
+@media (min-width:900px){ .controles{grid-template-columns:repeat(3, minmax(0,1fr)); gap:4px 12px} }
+.ctl .v{cursor:default; text-decoration:none}@media (min-width:900px){ .controles{grid-template-columns:1fr} }
+</style>
+
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Ondas electromagnéticas · Problemas tipo admisión</p>
+      <h1>La antena y el arcoíris</h1>
+      <p class="sub">¿Qué tienen en común una emisora de radio, un foco y una radiografía, y en qué se diferencian? Predice frente al dibujo; después recorre el espectro con la frecuencia y mira la onda, su longitud de onda y qué materiales cruza.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del paso">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del paso"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="controles" id="ctl1"></div>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="controles" id="ctl2"></div>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/ondas-electromagneticas">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'ondas-electromagneticas', unidad: 'fisica.ondas-electromagneticas', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la física (λ = c/f, la energía del fotón, la región del espectro, los campos de la onda, el tiempo de viaje,
+   el cambio de medio, qué atraviesa qué, la regla logarítmica y hasta el color de la luz) sale de MotorOndasEM
+   (motor.js); aquí solo se pinta, se anima y se lee el deslizador. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MO = MotorOndasEM;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const SUP = { '-':'⁻', '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹' };
+const pot = k => '10' + String(k).split('').map(c => SUP[c]).join('');
+function sci(x, d){
+  if (x === 0) return '0';
+  let k = Math.floor(Math.log10(Math.abs(x)) + 1e-12), m = x/Math.pow(10, k);
+  const p = Math.pow(10, d === undefined ? 1 : d);
+  if (Math.round(Math.abs(m)*p)/p >= 10){ m /= 10; k++; }
+  return Math.abs(Math.round(m*p)/p - 1) < 1e-12 ? pot(k) : `${fmt(m, d === undefined ? 1 : d)} × ${pot(k)}`;
+}
+// Tres cifras significativas, con coma decimal
+function sig(x, n){ if (x === 0) return '0'; const d = Math.max(0, (n || 3) - 1 - Math.floor(Math.log10(Math.abs(x)) + 1e-12)); return fmt(x, d); }
+function hz(f){
+  if (f < 1e3) return `${sig(f)} Hz`; if (f < 1e6) return `${sig(f/1e3)} kHz`; if (f < 1e9) return `${sig(f/1e6)} MHz`;
+  if (f < 1e12) return `${sig(f/1e9)} GHz`; return `${sci(f, 1)} Hz`;
+}
+function metros(l){
+  if (l >= 1e3) return `${sig(l/1e3)} km`; if (l >= 1) return `${sig(l)} m`; if (l >= 1e-2) return `${sig(l*100)} cm`;
+  if (l >= 1e-3) return `${sig(l*1e3)} mm`; if (l >= 1e-6) return `${sig(l*1e6)} µm`; if (l >= 1e-11) return `${sig(l*1e9)} nm`;
+  return `${sci(l, 1)} m`;
+}
+const ev = E => (E >= 0.01 && E < 1e5 ? `${sig(E)} eV` : `${sci(E, 1)} eV`);
+const V_ = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const l_ = t => V_('lam', t), f_ = t => V_('f', t), E_ = t => V_('E', t), e_ = t => V_('el', t), B_ = t => V_('B', t),
+  v_ = t => V_('v', t), n_ = t => V_('n', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const mix = (a, b, f) => a + (b - a)*f;
+const FMIN = 1e4, FMAX = 1e22;          // la regla del espectro, en Hz
+const F_FM = MO.aHz(100, 'MHz'), L_LUZ = 550;   // la radio FM y la luz «de unos 550 nm» de la escena
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    lam:g('--c-lam'), f:g('--c-f'), E:g('--c-E'), el:g('--c-el'), B:g('--c-B'), v:g('--c-v'), n:g('--c-n'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+// El color de la luz que se vería (del motor), solo para bandas translúcidas; null si no es visible.
+function luzRGBA(lambdaNm, alfa){ const q = MO.colorLuz(lambdaNm); return q ? `rgba(${q.r},${q.g},${q.b},${alfa})` : null; }
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v[tabindex]'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v[tabindex]')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v[tabindex]'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Vistas: 'onda' (la antena y la onda en perspectiva, con el campo eléctrico de arriba abajo y B de lado a lado; con
+   ver.regla, la regla del espectro debajo), 'regla' (solo la regla), 'carrera' (la Luna y la Tierra), 'muros' (una
+   onda contra cada material), 'agua' (la luz pasa del aire al agua) y 'sol' (el Sol se apaga). */
+function crearEscena(cv, idDesc, idLect, idLey, idCtl){
+  const E = { vista:'onda', hl:null, tok:0, compacto:false, lect:() => [], desc:() => '', ver:{}, ctl:{}, t:{} };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, fase = 0, tiempo = 0;
+  function altoVista(w){
+    const chico = w < 560, v = E.vista;
+    if (v === 'onda') return (chico ? 190 : 230) + (E.ver.regla ? altoRegla(chico) : 0);
+    if (v === 'regla') return altoRegla(chico) + 10;
+    if (v === 'carrera') return chico ? 200 : 230;
+    if (v === 'muros') return 22 + (E.ver.filas || []).length*(chico ? 42 : 48);
+    if (v === 'agua') return chico ? 220 : 260;
+    if (v === 'sol') return chico ? 200 : 230;
+    return 240;
+  }
+  function altoRegla(chico){ const r = E.ver.regla || {}; return 18 + 34 + 18 + (r.lam ? 18 : 0) + (r.E ? 18 : 0) + (r.zoom ? 46 : 0) + (r.refs ? (chico ? 44 : 40) : 0) + 8; }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(altoVista(w), E.compacto, { tope: E.tope || 240 }));
+    const dpr = Celular.dpr();
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  // La onda se mueve sin parar (si no hay movimiento reducido) con un bucle que se duerme (nucleo/celular.js).
+  const VPX = 46;   // rapidez del dibujo (px/s): la misma para cualquier frecuencia, como c
+  const bucle = Celular.bucle(cv, dt => {
+    if (!W) return false;
+    dt = Math.min(dt, 0.05);
+    const mueve = !RM && E.mueve && (E.vista === 'onda' || E.vista === 'muros' || E.vista === 'agua');
+    if (mueve) { tiempo += dt; }
+    E.dibujar();
+    return mueve;
+  });
+  E.despertar = () => bucle.despertar();
+
+  E.config = o => {
+    E.tok++;
+    Object.assign(E, { vista:'onda', lect:() => [], desc:() => '', tope:240, mueve:true, leyendaExtra:null }, o);
+    E.t = Object.assign({ f:F_FM, amp:1, frente:0, p:0 }, o.t);
+    E.ver = Object.assign({}, o.ver);
+    E.ctl = Object.assign({}, o.ctl);
+    W = 0; resize(); E.controles(); E.leyenda(); E.avisar(); E.despertar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === !!E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.redimensionar = () => { W = 0; resize(); };
+  E.cambio = () => { E.lecturas(); E.dibujar(); E.despertar(); };
+  E.tween = (dur, paso, fin) => {
+    const tok = E.tok;
+    if (RM || !dur){ paso(1); if (fin) setTimeout(() => { if (E.tok === tok) fin(); }, 0); return; }
+    const t0 = performance.now();
+    const tick = now => {
+      if (E.tok !== tok) return;
+      const f = Math.min(1, (now - t0)/dur); paso(f);
+      if (f < 1) requestAnimationFrame(tick); else if (fin) fin();
+    };
+    requestAnimationFrame(tick);
+  };
+  E.llevar = (hacia, dur, fin, lineal) => {
+    const de = {}; for (const k in hacia) de[k] = E.t[k];
+    E.tween(dur, f => { const s = lineal ? f : suave(f); for (const k in hacia) E.t[k] = mix(de[k], hacia[k], s); E.sincronizar(); E.cambio(); }, () => { E.avisar(); if (fin) fin(); });
+  };
+  E.progreso = (k, dur, fin) => { E.ver[k] = 0; E.tween(dur, f => { E.ver[k] = suave(f); E.dibujar(); }, () => { E.ver[k] = 1; E.dibujar(); if (fin) fin(); }); };
+
+  // ----- piezas de dibujo -----
+  const resaltado = k => E.hl === k;
+  function rotulo(x, y, t, color, align, tam, k){
+    const c = E.c, T = tam || 13;
+    ctx.textBaseline = 'middle'; ctx.font = `800 ${T}px ${c.font}`;
+    const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - T*.7, w + 6, T*1.4); ctx.restore();
+    if (k && resaltado(k)){ ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.strokeRect(x0 - 4, y - T*.75, w + 8, T*1.5); ctx.restore(); }
+    ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
+    return w;
+  }
+  function flecha(P, Q, color, ancho, o){
+    o = o || {};
+    const L = Math.hypot(Q.x - P.x, Q.y - P.y); if (L < 2) return;
+    const u = { x:(Q.x - P.x)/L, y:(Q.y - P.y)/L }, n = { x:-u.y, y:u.x };
+    const cab = Math.min(L*.5, o.cab || (5 + ancho*1.4)), base = { x:Q.x - u.x*cab, y:Q.y - u.y*cab };
+    ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round'; ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa;
+    linea(ctx, P, base);
+    ctx.beginPath(); ctx.moveTo(Q.x, Q.y); ctx.lineTo(base.x + n.x*cab*.5, base.y + n.y*cab*.5); ctx.lineTo(base.x - n.x*cab*.5, base.y - n.y*cab*.5); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+  function marco(x, y, w, h, r, fondo, borde, ancho){
+    ctx.save(); ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h);
+    if (fondo){ ctx.fillStyle = fondo; ctx.fill(); }
+    if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = ancho || 1.5; ctx.stroke(); }
+    ctx.restore();
+  }
+  // Una onda de tinta a lo largo de y, de x0 a x1, con longitud de onda L (px) y la fase del reloj del dibujo.
+  // fx(x) devuelve la fase en x (para el agua, donde λ cambia); por omisión (x − x0)/L.
+  function ondaTinta(x0, x1, y, A, L, o){
+    o = o || {};
+    const ph = fx => fx - tiempo*VPX/L0;
+    const L0 = o.L0 || L;
+    ctx.save(); ctx.strokeStyle = o.color || E.c.ink; ctx.lineWidth = o.ancho || 2; ctx.lineCap = 'round'; ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa;
+    if (o.trazos) ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    const paso = Math.max(1, Math.min(3, L/12));
+    for (let x = x0; x <= x1 + .01; x += paso){
+      const fx = o.fx ? o.fx(x) : (x - x0)/L;
+      const Y = y - A*Math.sin(2*Math.PI*ph(fx));
+      if (x === x0) ctx.moveTo(x, Y); else ctx.lineTo(x, Y);
+    }
+    ctx.stroke(); ctx.restore();
+  }
+  function banda(x0, x1, y, h, lambdaNm, alfa){
+    const col = luzRGBA(lambdaNm, alfa || .32); if (!col) return;
+    ctx.save(); ctx.fillStyle = col; ctx.fillRect(x0, y - h/2, x1 - x0, h); ctx.restore();
+  }
+  // Longitud de onda del dibujo: más corta cuanto más alta la frecuencia (de la regla logarítmica del motor).
+  const largoVisual = (f, a, b) => mix(b || 200, a || 22, clamp(MO.posicion(f, FMIN, FMAX), 0, 1));
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = E.c = colores();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    ({ onda:dibujarOnda, regla:() => dibujarRegla(c, { x:8, y:6, w:W - 16, h:H - 12 }), carrera:dibujarCarrera, muros:dibujarMuros, agua:dibujarAgua, sol:dibujarSol })[E.vista](c);
+  };
+
+  // ----- la onda en perspectiva -----
+  // ver = { B: 0..1 (el campo magnético se ve), lam: muestra λ (si no, «λ = ?»), rotE / rotB: rótulos con números de
+  // los campos (texto), regla: { lam, E, zoom, refs, nombres, ioniza } }
+  function dibujarOnda(c){
+    const chico = W < 560, Ho = E.ver.regla ? H - Math.min(altoRegla(chico), H*.56) : H;
+    const t = E.t, xA = 26, xa = xA + 16, xb = W - (chico ? 50 : 64), y = Ho*.5;
+    const A = Ho*.27*clamp(t.amp, 0, 2.2)/ (E.ver.ampMax || 1), z = { x:-.55, y:.42 };   // dirección «hacia el que mira»
+    const L = largoVisual(t.f, chico ? 18 : 22, chico ? 150 : 190), Bv = E.ver.B === undefined ? 1 : E.ver.B;
+    // planos de guía: vertical (del campo eléctrico) y horizontal (de B), muy tenues
+    const Ab = Ho*.27;
+    ctx.save(); ctx.fillStyle = c.grid; ctx.globalAlpha = .55; ctx.fillRect(xa, y - Ab, xb - xa, 2*Ab); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.beginPath();
+    ctx.moveTo(xa - z.x*Ab*.8, y - z.y*Ab*.8); ctx.lineTo(xb - z.x*Ab*.8, y - z.y*Ab*.8); ctx.lineTo(xb + z.x*Ab*.8, y + z.y*Ab*.8); ctx.lineTo(xa + z.x*Ab*.8, y + z.y*Ab*.8); ctx.closePath(); ctx.stroke(); ctx.restore();
+    // la antena
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; linea(ctx, { x:xA, y:y - Ho*.32 }, { x:xA, y:y + Ho*.36 });
+    ctx.lineWidth = 1.6; linea(ctx, { x:xA - 9, y:y + Ho*.36 }, { x:xA + 9, y:y + Ho*.36 }); ctx.restore();
+    rotulo(xA - 4, y + Ho*.36 + 10, 'antena', c.muted, 'left', 10);
+    // eje de avance
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, { x:xa, y }, { x:xb, y }); ctx.restore();
+    const s = x => Math.sin(2*Math.PI*((x - xa)/L - tiempo*VPX/L));
+    const paso = clamp(L/9, 4, 16);
+    // B: de lado a lado (en perspectiva), en fase con el campo eléctrico
+    if (Bv > 0){
+      ctx.save(); ctx.globalAlpha = Bv; ctx.strokeStyle = c.B; ctx.lineWidth = resaltado('B') ? 2.4 : 1.4;
+      for (let x = xa; x <= xb; x += paso){ const k = A*.85*s(x); linea(ctx, { x, y }, { x:x + z.x*k, y:y + z.y*k }); }
+      ctx.lineWidth = resaltado('B') ? 3.6 : 2.4; ctx.beginPath();
+      for (let x = xa; x <= xb; x += 2){ const k = A*.85*s(x), X = x + z.x*k, Y = y + z.y*k; if (x === xa) ctx.moveTo(X, Y); else ctx.lineTo(X, Y); }
+      ctx.stroke(); ctx.restore();
+    }
+    // campo eléctrico: de arriba abajo
+    ctx.save(); ctx.strokeStyle = c.el; ctx.lineWidth = resaltado('el') ? 2.4 : 1.4;
+    for (let x = xa; x <= xb; x += paso){ const k = A*s(x); linea(ctx, { x, y }, { x, y:y - k }); }
+    ctx.lineWidth = resaltado('el') ? 3.6 : 2.4; ctx.beginPath();
+    for (let x = xa; x <= xb; x += 2){ const Y = y - A*s(x); if (x === xa) ctx.moveTo(x, Y); else ctx.lineTo(x, Y); }
+    ctx.stroke(); ctx.restore();
+    // avance
+    flecha({ x:xb + 4, y }, { x:xb + (chico ? 34 : 46), y }, c.v, resaltado('v') ? 3.4 : 2.4);
+    rotulo(xb + (chico ? 20 : 26), y + 14, E.ver.rotV || 'avance', c.v, 'center', 11, 'v');
+    // λ: entre dos crestas del campo eléctrico (se mueve con la onda)
+    if (E.ver.lam !== 'no' && L < (xb - xa)*.9){
+      // corchete fijo, del largo de λ (no sigue a las crestas para que no parpadee)
+      const xmin = xa + Math.max((xb - xa)*.25, chico ? 104 : 120), xc = xmin + L <= xb ? xmin : xb - L;
+      {
+        const yb = Math.max(22, y - Ab - 8);
+        ctx.save(); ctx.strokeStyle = c.lam; ctx.lineWidth = resaltado('lam') ? 2.6 : 1.6;
+        linea(ctx, { x:xc, y:yb }, { x:xc + L, y:yb }); linea(ctx, { x:xc, y:yb - 4 }, { x:xc, y:yb + 4 }); linea(ctx, { x:xc + L, y:yb - 4 }, { x:xc + L, y:yb + 4 }); ctx.restore();
+        rotulo(xc + L/2, Math.max(9, yb - 10), E.ver.lam ? `λ = ${metros(MO.onda(t.f).lambda)}` : 'λ = ?', c.lam, 'center', 12, 'lam');
+      }
+    }
+    // rótulos de los campos (a la izquierda, junto a la antena, para no pisar λ)
+    rotulo(xa + 4, Math.max(9, y - Ab - 8), E.ver.rotE || 'campo eléctrico', c.el, 'left', 11, 'el');
+    if (Bv > 0) rotulo(xa + 10 + z.x*Ab*.6, Math.min(Ho - 8, y + z.y*Ab*.9 + 12), E.ver.rotB || 'B', c.B, 'left', 11, 'B');
+    else if (E.ver.Bq) rotulo(xa + 14, Math.min(Ho - 8, y + Ab*.45 + 12), 'B: ?', c.B, 'left', 11, 'B');
+    if (E.ver.regla) dibujarRegla(c, { x:8, y:Ho, w:W - 16, h:H - Ho - 4 });
+  }
+
+  // ----- la regla del espectro (logarítmica en f) -----
+  // regla = { nombres: 0..1, lam, E, zoom, refs, ioniza, cursor (false para no dibujarlo) }
+  const CORTO = { radio:['radio', 'radio'], microondas:['microondas', 'micro'], infrarrojo:['infrarrojo', 'IR'], visible:['', ''],
+    ultravioleta:['ultravioleta', 'UV'], rayosX:['rayos X', 'X'], gamma:['gamma', 'γ'] };
+  function dibujarRegla(c, R){
+    const r = E.ver.regla || {}, chico = W < 560, f = E.t.f;
+    const X = q => R.x + 6 + (R.w - 12)*clamp(MO.posicion(q, FMIN, FMAX), 0, 1);
+    let y = R.y + 4;
+    const filas = {};
+    if (r.lam){ filas.lam = y + 8; y += 18; }
+    filas.tira = y; y += 34; filas.f = y + 8; y += 18;
+    if (r.E){ filas.E = y + 8; y += 18; }
+    if (r.zoom && y + 46 <= R.y + R.h + 2){ filas.zoom = y + 4; y += 46; }
+    if (r.refs && y + 36 <= R.y + R.h + 2){ filas.refs = y + 4; y += 40; }
+    // bandas de las regiones
+    const REG = MO.regiones(), nom = r.nombres || 0;
+    REG.forEach((g, k) => {
+      const x0 = X(Math.max(FMIN, g.fMin || FMIN)), x1 = X(Math.min(FMAX, g.fMax === Infinity ? FMAX : g.fMax));
+      ctx.save(); ctx.fillStyle = k % 2 ? c.grid : c.card; ctx.fillRect(x0, filas.tira, x1 - x0, 30); ctx.strokeStyle = c.line; ctx.strokeRect(x0, filas.tira, x1 - x0, 30); ctx.restore();
+      if (g.region === 'visible' && nom > 0){
+        for (let l = 380; l <= 750; l += 5){ const q = luzRGBA(l, .55*nom); const xa = X(3e17/l), xb2 = X(3e17/(l + 5)); ctx.fillStyle = q; ctx.fillRect(Math.min(xa, xb2), filas.tira, Math.abs(xb2 - xa) + .6, 30); }
+      }
+      if (nom > 0 && g.region !== 'visible'){
+        ctx.save(); ctx.globalAlpha = nom; ctx.font = `800 ${chico ? 10 : 11}px ${c.font}`;
+        let t = CORTO[g.region][0]; if (ctx.measureText(t).width > x1 - x0 - 4) t = CORTO[g.region][1];
+        ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, (x0 + x1)/2, filas.tira + 15); ctx.restore();
+      }
+    });
+    // ionizante
+    if (r.ioniza){
+      const xi = X(MO.C/(MO.ionizante(1e16).lambdaBordeNm*1e-9));
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.4; linea(ctx, { x:xi, y:filas.tira - 2 }, { x:xi, y:filas.tira + 32 }); ctx.restore();
+    }
+    // ejes: λ (arriba), f y E (abajo); décadas cada cuatro
+    const ejes = [];
+    // marcas en valores redondos de cada magnitud, puestas en la frecuencia que les toca (f = c/λ, f = E/h)
+    if (r.lam) ejes.push(['lam', filas.lam, [1e3, 1, 1e-3, 1e-6, 1e-9, 1e-12].map(l => MO.ondaDeLambda(l, 'm').f), q => metros(MO.C/q), 'λ']);
+    ejes.push(['f', filas.f, [1e4, 1e8, 1e12, 1e16, 1e20], q => `${pot(Math.round(Math.log10(q)))} Hz`, 'f']);
+    if (r.E) ejes.push(['E', filas.E, [1e-9, 1e-6, 1e-3, 1, 1e3, 1e6].map(e => e/MO.H_EV), q => { const k = Math.round(Math.log10(MO.foton(q).E)); return `${k === 0 ? '1' : pot(k)} eV`; }, 'E']);
+    for (const [k, yy, marcas, txt, s] of ejes){
+      ctx.save(); ctx.fillStyle = c[k]; ctx.font = `800 ${chico ? 9.5 : 10.5}px ${c.font}`; ctx.textBaseline = 'middle';
+      marcas.forEach(q => { const t = txt(q), w = ctx.measureText(t).width, x = clamp(X(q), R.x + w/2 + 1, R.x + R.w - 14 - w/2); ctx.textAlign = 'center'; ctx.fillText(t, x, yy); });
+      ctx.textAlign = 'right'; ctx.fillText(s, R.x + R.w - 2, yy); ctx.restore();
+      if (resaltado(k)){ ctx.save(); ctx.strokeStyle = c[k]; ctx.lineWidth = 1.5; ctx.strokeRect(R.x + 2, yy - 8, R.w - 4, 16); ctx.restore(); }
+    }
+    // la franja visible, ampliada
+    if (filas.zoom){
+      const xv0 = X(MO.C/750e-9), xv1 = X(MO.C/380e-9), z0 = R.x + R.w*.18, z1 = R.x + R.w*.82, yz = filas.zoom + 6;
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; const ya0 = (filas.E || filas.f) + 8; linea(ctx, { x:xv0, y:ya0 }, { x:z0, y:yz }); linea(ctx, { x:xv1, y:ya0 }, { x:z1, y:yz }); ctx.restore();
+      const Zx = l => mix(z0, z1, (750 - l)/370);   // de rojo (izquierda, menos frecuencia) a violeta
+      for (let l = 380; l < 750; l += 2){ ctx.fillStyle = luzRGBA(l, .5); ctx.fillRect(Zx(l + 2), yz, Zx(l) - Zx(l + 2) + .6, 16); }
+      ctx.save(); ctx.font = `800 ${chico ? 9.5 : 10.5}px ${c.font}`; ctx.textBaseline = 'middle';
+      if (r.lam){ ctx.fillStyle = c.lam; ctx.textAlign = 'left'; ctx.fillText('750 nm', z0, yz + 27); ctx.textAlign = 'right'; ctx.fillText('380 nm', z1, yz + 27); }
+      else { ctx.fillStyle = c.f; ctx.textAlign = 'left'; ctx.fillText(sci(4e14, 1) + ' Hz', z0, yz + 27); ctx.textAlign = 'right'; ctx.fillText(sci(MO.C/380e-9, 1) + ' Hz', z1, yz + 27); }
+      ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.fillText('luz visible', (z0 + z1)/2, yz + 27); ctx.restore();
+      const ln = MO.C/f*1e9;
+      if (ln >= 380 && ln <= 750 && r.cursor !== false){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:Zx(ln), y:yz - 3 }, { x:Zx(ln), y:yz + 19 }); ctx.restore(); }
+    }
+    // objetos de referencia: del tamaño de la λ de su frecuencia
+    if (filas.refs){
+      MO.referencias().forEach((o, j) => icono(o.id, X(o.f), filas.refs + 8, c, o.objeto.replace(/^una? /, ''), j % 2));
+    }
+    // cursor
+    if (r.cursor !== false){
+      const x = X(f);
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x, y:filas.tira - 3 }, { x, y:filas.tira + 33 });
+      ctx.fillStyle = c.ink; ctx.beginPath(); ctx.moveTo(x - 5, filas.tira - 8); ctx.lineTo(x + 5, filas.tira - 8); ctx.lineTo(x, filas.tira - 2); ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+  }
+  function icono(id, x, y, c, nombre, fila){
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.fillStyle = c.ink; ctx.lineWidth = 1.3;
+    if (id === 'edificio'){ ctx.strokeRect(x - 4, y - 7, 8, 14); for (let k = 0; k < 3; k++) ctx.fillRect(x - 2, y - 5 + k*4, 1.6, 1.6), ctx.fillRect(x + .6, y - 5 + k*4, 1.6, 1.6); }
+    else if (id === 'persona'){ ctx.beginPath(); ctx.arc(x, y - 5, 2.2, 0, 7); ctx.stroke(); linea(ctx, { x, y:y - 3 }, { x, y:y + 3 }); linea(ctx, { x, y:y + 3 }, { x:x - 3, y:y + 7 }); linea(ctx, { x, y:y + 3 }, { x:x + 3, y:y + 7 }); linea(ctx, { x:x - 3.5, y:y - 1 }, { x:x + 3.5, y:y - 1 }); }
+    else if (id === 'moneda'){ ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.stroke(); ctx.beginPath(); ctx.arc(x, y, 2.5, 0, 7); ctx.stroke(); }
+    else if (id === 'bacteria'){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x - 6, y - 3, 12, 6, 3); else ctx.rect(x - 6, y - 3, 12, 6); ctx.stroke(); linea(ctx, { x:x + 6, y }, { x:x + 9, y:y + 2 }); }
+    else if (id === 'virus'){ ctx.beginPath(); ctx.arc(x, y, 3.5, 0, 7); ctx.stroke(); for (let k = 0; k < 8; k++){ const a = k*Math.PI/4; linea(ctx, { x:x + 3.5*Math.cos(a), y:y + 3.5*Math.sin(a) }, { x:x + 6*Math.cos(a), y:y + 6*Math.sin(a) }); } }
+    else { ctx.beginPath(); ctx.arc(x, y, 1.8, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(x, y, 7, 3, .4, 0, 7); ctx.stroke(); }
+    ctx.restore();
+    ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 ${W < 560 ? 9.5 : 10}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(nombre, x, y + 15 + fila*11); ctx.restore();
+  }
+
+  // ----- la carrera Luna–Tierra -----
+  // t.p de 0 a 1 (fracción del camino); ver = { tiempo: muestra t }
+  function dibujarCarrera(c){
+    const xT = 30, xL = W - 26, rT = 18, rL = 10, y1 = H*.32, y2 = H*.66, p = E.t.p;
+    ctx.save(); ctx.fillStyle = c.grid; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(xT, H*.48, rT, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(xL, H*.48, rL, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    rotulo(xT + rT + 6, H*.48, 'Tierra', c.muted, 'left', 11); rotulo(xL - rL - 6, H*.48, 'Luna', c.muted, 'right', 11);
+    ctx.save(); ctx.strokeStyle = c.line; ctx.setLineDash([4, 4]); linea(ctx, { x:xT + rT + 4, y:y1 }, { x:xL - 14, y:y1 }); linea(ctx, { x:xT + rT + 4, y:y2 }, { x:xL - 14, y:y2 }); ctx.restore();
+    const xs = xL - 46, xe = xT + rT + 18, x = mix(xs, xe, p);
+    // pulso de radio (onda de tinta) y pulso de luz (onda de tinta con su banda de color)
+    const pulso = (yy, conLuz) => {
+      if (conLuz) banda(x - 2, x + 30, yy, 16, 580, .4);
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath();
+      for (let j = 0; j <= 28; j++){ const X = x + j, Y = yy - 6*Math.sin(j/28*Math.PI)*Math.sin(j/(conLuz ? 3 : 7)*Math.PI); if (j) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); }
+      ctx.stroke(); ctx.restore();
+      flecha({ x:x - 2, y:yy }, { x:x - 14, y:yy }, c.ink, 1.6);
+    };
+    pulso(y1, false); pulso(y2, true);
+    rotulo(xL - 18, y1 - 15, 'radio', c.muted, 'right', 11); rotulo(xL - 18, y2 + 16, 'luz del foco', c.muted, 'right', 11);
+    rotulo(W/2, 12, `t = ${E.ver.tiempo ? fmt(E.t.p*MO.viaje(3.84e8).t, 2) + ' s' : '?'}`, c.ink, 'center', 12);
+    rotulo(W/2, H - 12, 'd = 3,84 × 10⁸ m (vacío)', c.ink, 'center', 11);
+  }
+
+  // ----- cada material contra la onda -----
+  // ver.filas = [{ mat, f, oculto }]; si f falta, la del deslizador
+  function dibujarMuros(c){
+    const filas = E.ver.filas || [], chico = W < 560, rh = (H - 16)/Math.max(1, filas.length);
+    const xl = 6, wl = chico ? 104 : 140, xs = xl + wl, xm = xs + (W - xs)*.42, xe = W - (chico ? 54 : 70);
+    filas.forEach((r, k) => {
+      const y = 8 + rh*(k + .5), f = r.f || E.t.f, o = MO.onda(f), pasa = MO.atraviesa(r.mat, o.region), lnm = o.lambdaNm;
+      const L = clamp(largoVisual(f, 7, 70), 7, 70), A = Math.min(9, rh*.22);
+      ctx.save(); ctx.fillStyle = c.ink; ctx.font = `700 ${chico ? 10.5 : 11.5}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+      const nombre = { pared:'pared', vidrio:'vidrio', piel:'piel y músculo', hueso:'hueso', rejilla:'rejilla del horno' }[r.mat];
+      ctx.fillText(nombre, xl, y - 6); ctx.fillStyle = c.muted; ctx.font = `700 ${chico ? 9.5 : 10.5}px ${c.font}`; ctx.fillText(r.rot || o.nombre, xl, y + 8); ctx.restore();
+      banda(xs, xm, y, A*2.6, lnm, .32);
+      ondaTinta(xs, xm, y, A, L);
+      // el material
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.fillStyle = c.card; ctx.lineWidth = 1.4;
+      const mw = 12, my0 = y - rh*.38, mh = rh*.76;
+      if (r.mat === 'rejilla'){ for (let q = 0; q <= mh; q += 4) linea(ctx, { x:xm, y:my0 + q }, { x:xm + mw, y:my0 + q }); linea(ctx, { x:xm, y:my0 }, { x:xm, y:my0 + mh }); linea(ctx, { x:xm + mw, y:my0 }, { x:xm + mw, y:my0 + mh }); }
+      else {
+        ctx.fillRect(xm, my0, mw, mh); ctx.strokeRect(xm, my0, mw, mh);
+        if (r.mat === 'pared') for (let q = 6; q < mh; q += 6) linea(ctx, { x:xm, y:my0 + q }, { x:xm + mw, y:my0 + q });
+        if (r.mat === 'piel'){ ctx.setLineDash([2, 2]); linea(ctx, { x:xm + mw/2, y:my0 }, { x:xm + mw/2, y:my0 + mh }); }
+        if (r.mat === 'hueso'){ ctx.fillStyle = c.muted; ctx.fillRect(xm + 3, my0 + 2, mw - 6, mh - 4); }
+      }
+      ctx.restore();
+      const x2 = xm + 14;
+      if (r.oculto){ rotulo((x2 + xe)/2, y, '?', c.ink, 'center', 14); return; }
+      if (pasa === 'si' || pasa === 'parcial'){
+        const fin = pasa === 'si' ? xe : x2 + (xe - x2)*.55;
+        banda(x2, fin, y, A*(pasa === 'si' ? 2.6 : 1.4), lnm, pasa === 'si' ? .32 : .2);
+        ondaTinta(x2, fin, y, pasa === 'si' ? A : A*.45, L, { trazos: pasa === 'parcial', fx: x => (x - xs)/L });
+        if (pasa === 'si') flecha({ x:xe - 2, y }, { x:xe + 8, y }, c.ink, 1.6);
+      } else {
+        ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; const q = x2 + 10;
+        linea(ctx, { x:q - 5, y:y - 5 }, { x:q + 5, y:y + 5 }); linea(ctx, { x:q - 5, y:y + 5 }, { x:q + 5, y:y - 5 }); ctx.restore();
+      }
+      ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 ${chico ? 10 : 11}px ${c.font}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText(pasa === 'si' ? 'pasa' : pasa === 'parcial' ? 'una parte' : 'no pasa', W - 6, y + (pasa === 'si' ? 12 : 0)); ctx.restore();
+    });
+  }
+
+  // ----- del aire al agua -----
+  // t.frente: 0 (la onda llega a la superficie) a 1 (cruzó el agua); ver = { agua: muestra λ' y v }
+  function dibujarAgua(c){
+    const chico = W < 560, xi = W*.44, x0 = 14, x1 = W - 14, y = H*.52, A = H*.16, n = E.t.n || 4/3;
+    const La = chico ? 52 : 70, Lw = La/n, lnm = E.t.lambdaNm || 600;
+    ctx.save(); ctx.fillStyle = c.grid; ctx.globalAlpha = .7; ctx.fillRect(xi, 0, W - xi, H); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, { x:xi, y:0 }, { x:xi, y:H }); ctx.restore();
+    rotulo(x0, 12, 'aire', c.muted, 'left', 11); rotulo(xi + 6, 12, 'agua', c.muted, 'left', 11);
+    rotulo(xi + (chico ? 40 : 46), 12, `n = ${n === 4/3 ? '4/3' : fmt(n, 2)}`, c.n, 'left', 11, 'n');
+    const xf = mix(xi, x1, clamp(E.t.frente, 0, 1));
+    const fx = x => (x <= xi ? (x - x0)/La : (xi - x0)/La + (x - xi)/Lw);
+    banda(x0, xi, y, A*2.6, lnm, .34);
+    if (xf > xi + 1) banda(xi, xf, y, A*2.6, lnm, .34);
+    ondaTinta(x0, xi, y, A, La, { L0:La, fx });
+    if (xf > xi + 1) ondaTinta(xi, xf, y, A, Lw, { L0:La, fx });
+    // λ en el aire y en el agua (corchetes fijos)
+    const br = (xa, L, txt) => { const yb = y + A + 14; ctx.save(); ctx.strokeStyle = c.lam; ctx.lineWidth = resaltado('lam') ? 2.6 : 1.6; linea(ctx, { x:xa, y:yb }, { x:xa + L, y:yb }); linea(ctx, { x:xa, y:yb - 4 }, { x:xa, y:yb + 4 }); linea(ctx, { x:xa + L, y:yb - 4 }, { x:xa + L, y:yb + 4 }); ctx.restore(); rotulo(xa + L/2, yb + 13, txt, c.lam, 'center', 11, 'lam'); };
+    br(x0 + 8, La, `λ = ${fmt(lnm, 0)} nm`);
+    br(xi + 14, Lw, E.ver.agua ? `λ' = ${fmt(MO.medio(lnm, n).lambdaNm, 0)} nm` : "λ' = ?");
+    flecha({ x:x0 + 10, y:y - A - 16 }, { x:x0 + 46, y:y - A - 16 }, c.v, 2.2); rotulo(x0 + 52, y - A - 16, 'c', c.v, 'left', 12, 'v');
+    flecha({ x:xi + 14, y:y - A - 16 }, { x:xi + 14 + 36/(E.ver.agua ? n : 1), y:y - A - 16 }, c.v, 2.2, { alfa: E.ver.agua ? 1 : .35 });
+    rotulo(xi + 20 + 36/(E.ver.agua ? n : 1), y - A - 16, E.ver.agua ? 'v' : 'v = ?', c.v, 'left', 12, 'v');
+  }
+
+  // ----- el Sol se apaga -----
+  // t.p de 0 a 1: dónde va el final de la luz (0, en el Sol; 1, en la Tierra); ver = { apagado, tiempo }
+  function dibujarSol(c){
+    const xS = 30, xT = W - 26, y = H*.48, p = E.t.p, apag = !!E.ver.apagado;
+    const xc = mix(xS + 20, xT - 12, p);
+    banda(apag ? xc : xS + 20, xT - 12, y, 26, 575, .38);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.fillStyle = apag ? c.grid : c.card; ctx.beginPath(); ctx.arc(xS, y, 18, 0, 7); ctx.fill(); ctx.stroke();
+    if (!apag){ for (let k = 0; k < 8; k++){ const a = k*Math.PI/4; linea(ctx, { x:xS + 21*Math.cos(a), y:y + 21*Math.sin(a) }, { x:xS + 26*Math.cos(a), y:y + 26*Math.sin(a) }); } }
+    ctx.fillStyle = c.grid; ctx.beginPath(); ctx.arc(xT, y, 10, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    rotulo(xS, y + 34, apag ? 'Sol (apagado)' : 'Sol', c.muted, 'left', 11); rotulo(xT, y + 22, 'Tierra', c.muted, 'right', 11);
+    if (apag && p < 1){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:xc, y:y - 16 }, { x:xc, y:y + 16 }); ctx.restore(); rotulo(xc, y - 24, 'la última luz', c.muted, 'center', 10); }
+    const tt = MO.viaje(1.5e11).t*p;
+    rotulo(W/2, 12, `t = ${E.ver.tiempo ? fmt(tt, 0) + ' s' : '?'}`, c.ink, 'center', 12);
+    rotulo(W/2, H - 12, 'd = 1,5 × 10¹¹ m', c.ink, 'center', 11);
+  }
+
+  function leyenda(){
+    const it = (k, t) => `<span><i style="background:var(--c-${k})"></i><span>${t}</span></span>`;
+    const l = [], v = E.vista, r = E.ver.regla;
+    if (v === 'onda'){
+      l.push(it('el', 'campo eléctrico de la onda'));
+      if (E.ver.B === undefined || E.ver.B > 0) l.push(it('B', 'B · campo magnético'));
+      l.push(it('v', 'avance de la onda')); if (E.ver.lam !== 'no') l.push(it('lam', 'λ · longitud de onda'));
+      l.push('<span>a la izquierda, la antena; el dibujo no está a escala</span>');
+    }
+    if (r || v === 'regla'){
+      const q = r || {};
+      l.push(it('f', 'f · frecuencia (escala que salta de 10 en 10)'));
+      if (q.lam && v === 'regla') l.push(it('lam', 'λ · longitud de onda'));
+      if (q.E) l.push(it('E', 'E · energía de un fotón'));
+      l.push('<span>bandas: regiones del espectro; la línea de tinta marca la frecuencia elegida</span>');
+      if (q.nombres) l.push('<span>la franja de colores es la luz visible (solo color de la luz, no de variable)</span>');
+      if (q.refs) l.push('<span>dibujos: cosas del tamaño de la λ que tienen encima</span>');
+      if (q.ioniza) l.push('<span>línea a trazos: desde ahí, un fotón puede arrancar electrones (ionizante)</span>');
+    }
+    if (v === 'carrera') l.push('<span>onditas de tinta: la señal de radio y la luz del foco; la banda de color es la luz que se vería</span>');
+    if (v === 'muros') l.push('<span>onda de tinta: la que llega; banda de color, solo si es luz visible</span>', '<span>a trazos: pasa una parte; ✕: no pasa</span>');
+    if (v === 'agua'){ l.push(it('lam', 'λ · longitud de onda')); l.push(it('f', 'f · frecuencia')); l.push(it('v', 'rapidez de la luz')); l.push(it('n', 'n · índice de refracción')); l.push('<span>banda: el color de la luz que se vería</span>'); }
+    if (v === 'sol') l.push('<span>la banda es la luz que viene del Sol; el dibujo no está a escala</span>');
+    if (E.leyendaExtra) l.push(E.leyendaExtra);
+    return l.join('');
+  }
+  E.leyenda = () => { if (idLey) document.getElementById(idLey).innerHTML = leyenda(); };
+  E.lecturas = () => {
+    const ls = E.lect() || [];
+    if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura${String(v).length > 15 ? ' ancha' : ''}${v === '?' ? ' q' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idCtl){ const o = document.getElementById(idCtl).querySelector('[data-o="f"]'); if (o) o.textContent = hz(E.t.f); }
+    return ls;
+  };
+  E.avisar = () => {
+    const ls = E.lecturas();
+    if (idDesc) document.getElementById(idDesc).textContent = (E.desc() || '') + (ls.length ? ' ' + ls.map(([, t, v]) => `${t}: ${v}`).join('. ') + '.' : '');
+  };
+  // El deslizador de frecuencia (input range: teclado, ratón y toque), en escala logarítmica de 10⁴ a 10²² Hz.
+  const PASOS = 1800;
+  E.controles = () => {
+    if (!idCtl) return;
+    const box = document.getElementById(idCtl);
+    if (!E.ctl.f){ box.innerHTML = ''; E.lecturas(); return; }
+    const id = `${idCtl}-f`, u = MO.posicion(E.t.f, FMIN, FMAX)*PASOS;
+    box.innerHTML = `<label class="ctl" style="--k:var(--c-f)" for="${id}"><span>Frecuencia <b class="v v-f" data-var="f">f</b></span><output data-o="f"></output>
+      <input id="${id}" type="range" min="0" max="${PASOS}" step="1" value="${Math.round(u)}" aria-valuetext="${hz(E.t.f)}"></label>`;
+    const inp = box.querySelector('input');
+    inp.addEventListener('input', () => {
+      E.t.f = MO.frecuenciaEn(+inp.value/PASOS, FMIN, FMAX); inp.setAttribute('aria-valuetext', hz(E.t.f));
+      if (E.alMover) E.alMover();
+      E.cambio(); clearTimeout(E.tAvisar); E.tAvisar = setTimeout(() => E.avisar(), 400);
+    });
+    E.lecturas();
+  };
+  E.sincronizar = () => {
+    if (!idCtl) return;
+    const inp = document.getElementById(idCtl).querySelector('input'); if (inp){ inp.value = Math.round(MO.posicion(E.t.f, FMIN, FMAX)*PASOS); inp.setAttribute('aria-valuetext', hz(E.t.f)); }
+  };
+  E.libre = on => { E.ctl = on ? { f:true } : {}; E.controles(); };
+  return E;
+}
+
+const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;').replace(/ × /g, '&nbsp;×&nbsp;').replace(/ ≈ /g, '&nbsp;≈&nbsp;').replace(/ &lt; /g, '&nbsp;&lt;&nbsp;')
+  .replace(/([\d⁰¹²³⁴⁵⁶⁷⁸⁹]) (eV|V\/m|T|nm|Hz|kHz|MHz|GHz|m\/s|m|cm|km|s|min|kW)(?![\wáéíóú])/g, '$1&nbsp;$2');
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${sinCorte(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// Lecturas de una onda en el vacío (con «?» las que el paso todavía no muestra)
+function lecturaOnda(E, claves){
+  const o = MO.onda(E.t.f), q = k => claves.includes(k), L = [];
+  if (q('f')) L.push(['f', 'Frecuencia f', hz(o.f)]);
+  if (q('lam')) L.push(['lam', 'Longitud de onda λ', metros(o.lambda)]); else if (q('lam?')) L.push(['lam', 'λ', '?']);
+  if (q('E')) L.push(['E', 'Energía de un fotón E', ev(o.E)]);
+  if (q('reg')) L.push(['ink', 'Región', o.nombre + (o.color ? ` (${o.color})` : '')]);
+  if (q('c')) L.push(['v', 'Rapidez en el vacío c', '3 × 10⁸ m/s']);
+  if (q('ion')) L.push(['ink', '¿Un fotón ioniza?', MO.ionizante(o.f).ioniza ? 'sí' : 'no']);
+  return L;
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Respaldos (docs/investigacion/ondas-electromagneticas-ideas-erroneas.md; todas sus cifras salen de resúmenes y
+   están por verificar): 'parcial' OE1 (paso 5), OE2 (pasos 1 y 5), OE3 (paso 1) y OE5 (pasos 1 y 5), que el informe
+   registra sin cifra o con una cifra de muestra no vista; 'hipotesis' OE12, OE13, OE14, OE19 y OE20, y los errores
+   con nombre sin número (despejar mal c = λ·f, órdenes del espectro, «la luz siempre va a c»). Ninguna opción de
+   este modo tiene respaldo 'documentado'. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1', 'ctl1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+
+// Números de la escena (todos del motor)
+const T1 = MO.viaje(3.84e8), FM = MO.onda(100, 'MHz'), F_LUZ = MO.ondaDeLambda(L_LUZ, 'nm').f, AG = MO.medio(600, 4/3), C = MO.C;
+const l3 = x => metros(x);
+
+const P1 = { id:'ondas-electromagneticas-paso1', ok:'c', opts:[
+  ['a', 'La luz del foco, porque la radio viaja más lento que la luz', 'OE2-cada-onda-su-rapidez', 'parcial'],
+  ['b', 'Ninguna llega, porque en el vacío no hay un medio que las lleve', 'OE5-la-luz-necesita-medio', 'parcial'],
+  ['c', 'Llegan a la vez, porque en el vacío las dos viajan con la misma rapidez'],
+  ['d', 'La radio, porque su longitud de onda es más larga y v = λ·f', 'OE3-rapidez-crece-con-lambda', 'parcial']],
+  fb:{ c:`¡Bien! La radio y la luz son el mismo tipo de onda, electromagnética, y en el vacío las dos viajan a c = 3 × 10⁸ m/s. Llegan juntas, a los ${fmt(T1.t, 2)} s.`,
+    a:'Elegiste la A. La radio no es más lenta: es una onda electromagnética, como la luz, y en el vacío viaja igual de rápido. La correcta está marcada.',
+    b:'Elegiste la B. Las ondas electromagnéticas no necesitan un medio: así nos llega la luz del Sol a través del espacio. Las dos llegan. La correcta está marcada.',
+    d:'Elegiste la D. En el vacío la rapidez es fija, c. Si la longitud de onda es más larga, la frecuencia es menor en la misma proporción, y λ·f da lo mismo. La correcta está marcada.' } };
+const P2 = { id:'ondas-electromagneticas-paso2', ok:'a', opts:[
+  ['a', 'De lado a lado (hacia dentro y hacia fuera del dibujo), máximo a la vez que el campo eléctrico'],
+  ['b', 'De arriba abajo, en la misma dirección que el campo eléctrico y a la vez que él', 'OE13-B-paralelo-al-campo-electrico', 'hipotesis'],
+  ['c', 'Hacia adelante y hacia atrás, en la dirección en que avanza la onda', 'OE13-B-en-la-direccion-de-avance', 'hipotesis'],
+  ['d', 'De lado a lado, pero máximo cuando el campo eléctrico es cero', 'OE14-campos-desfasados', 'hipotesis']],
+  fb:{ a:'¡Bien! B es perpendicular al campo eléctrico y a la dirección de avance: la onda es transversal. Y los dos están en fase: crecen y se anulan juntos.',
+    b:'Elegiste la B. Si los dos campos apuntaran igual, no habría onda electromagnética: B oscila perpendicular al campo eléctrico. La correcta está marcada.',
+    c:'Elegiste la C. Ningún campo oscila a lo largo del avance: la onda electromagnética es transversal, no longitudinal como el sonido. La correcta está marcada.',
+    d:'Elegiste la D. La dirección está bien, pero en una onda que avanza en el vacío los dos campos están en fase: son máximos a la vez y se anulan a la vez. La correcta está marcada.' } };
+const P3 = { id:'ondas-electromagneticas-paso3', ok:'b', opts:[
+  ['a', 'rayos X < ultravioleta < visible < microondas < radio', 'OE19-espectro-al-reves', 'hipotesis'],
+  ['b', 'radio < microondas < visible < ultravioleta < rayos X'],
+  ['c', 'radio < visible < microondas < ultravioleta < rayos X', 'OE-microondas-sobre-visible', 'hipotesis'],
+  ['d', 'radio < microondas < visible < rayos X < ultravioleta', 'OE-ultravioleta-sobre-rayos-X', 'hipotesis']],
+  fb:{ b:'¡Bien! Es un solo espectro ordenado por la frecuencia: radio, microondas, infrarrojo, visible, ultravioleta, rayos X y gamma. La luz visible es una franja angosta en el medio.',
+    a:'Elegiste la A. Ese orden es el de la longitud de onda (de la más corta a la más larga). Por frecuencia va al revés: la radio tiene la menor. La correcta está marcada.',
+    c:'Elegiste la C. Las microondas calientan la comida, pero su frecuencia es menor que la de la luz: van entre la radio y el infrarrojo. La correcta está marcada.',
+    d:'Elegiste la D. El ultravioleta va antes que los rayos X: sus frecuencias son menores. La correcta está marcada.' } };
+const P4 = { id:'ondas-electromagneticas-paso4', ok:'d', opts:[
+  ['a', `λ = ${sci(FM.errores.multiplica, 0)} m`, 'OE-lambda-igual-c-por-f', 'hipotesis'],
+  ['b', `λ = ${sci(FM.errores.sinPrefijo, 0)} m`, 'OE20-MHz-sin-pasar-a-Hz', 'hipotesis'],
+  ['c', `λ = ${fmt(FM.errores.exponente, 1)} m`, 'OE20-exponente-corrido', 'hipotesis'],
+  ['d', `λ = ${fmt(FM.lambda, 0)} m`]],
+  fb:{ d:'¡Bien! 100 MHz = 10⁸ Hz, y λ = c/f = 3 × 10⁸ / 10⁸ = 3 m: cada onda de la radio mide casi dos personas.',
+    a:'Elegiste la A. Multiplicaste c por f. De c = λ·f sale λ = c/f: hay que dividir. La correcta está marcada.',
+    b:'Elegiste la B. Faltó pasar los megahertz a hertz: 100 MHz = 100 × 10⁶ Hz = 10⁸ Hz. La correcta está marcada.',
+    c:'Elegiste la C. Revisa los exponentes: 100 × 10⁶ = 10⁸, no 10⁹. λ = 3 × 10⁸ / 10⁸ = 3 m. La correcta está marcada.' } };
+const P5 = { id:'ondas-electromagneticas-paso5', ok:'b', opts:[
+  ['a', 'Porque lo que cruza es sonido, y el sonido sí atraviesa la pared', 'OE1-la-radio-es-sonido', 'parcial'],
+  ['b', 'Porque lo que cruza un material depende de la frecuencia: la pared deja pasar la radio y frena la luz'],
+  ['c', 'Porque la onda de radio viaja más rápido que la luz y alcanza a atravesarla', 'OE2-cada-onda-su-rapidez', 'parcial'],
+  ['d', 'Porque la luz necesita aire para viajar, y dentro de la pared no hay aire', 'OE5-la-luz-necesita-medio', 'parcial']],
+  fb:{ b:'¡Bien! La radio y la luz son la misma clase de onda, pero cada material responde distinto según la frecuencia. El ladrillo deja pasar la radio y absorbe la luz.',
+    a:'Elegiste la A. Lo que cruza la pared es una onda electromagnética, no sonido: se vuelve sonido recién en el parlante de la radio. La correcta está marcada.',
+    c:'Elegiste la C. La radio y la luz viajan igual de rápido (en el aire, casi a c). Lo que cambia es la frecuencia, y con ella lo que cada material deja pasar. La correcta está marcada.',
+    d:'Elegiste la D. La luz no necesita aire: cruza el vacío del espacio. Si la pared la frena es porque la absorbe. La correcta está marcada.' } };
+const P6 = { id:'ondas-electromagneticas-paso6', ok:'a', opts:[
+  ['a', `v = ${sci(AG.v, 2)} m/s, λ = ${fmt(AG.lambdaNm, 0)} nm, f = ${sci(AG.f, 0)} Hz; el color no cambia`],
+  ['b', `v = ${sci(AG.errores.cambiaColor.v, 2)} m/s, λ = ${fmt(AG.errores.cambiaColor.lambdaNm, 0)} nm, f = ${sci(AG.f, 0)} Hz; se ve ${AG.errores.cambiaColor.color}`, 'OE12-color-por-lambda-en-el-medio', 'hipotesis'],
+  ['c', `v = ${sci(AG.errores.cambiaF.v, 2)} m/s, λ = ${fmt(AG.errores.cambiaF.lambdaNm, 0)} nm, f = ${sci(AG.errores.cambiaF.f, 2)} Hz; el color cambia`, 'OE12-cambia-la-frecuencia', 'hipotesis'],
+  ['d', `v = ${sci(AG.errores.nadaCambia.v, 0)} m/s, λ = ${fmt(AG.errores.nadaCambia.lambdaNm, 0)} nm, f = ${sci(AG.f, 0)} Hz; el color no cambia`, 'OE-la-luz-siempre-va-a-c', 'hipotesis']],
+  fb:{ a:'¡Bien! La frecuencia la pone la fuente y no cambia; como la luz va más lenta, cada onda se acorta: λ\' = 600/(4/3) = 450 nm. El color lo pone la frecuencia: sigue naranja.',
+    b:'Elegiste la B. Los números están bien, pero el color no lo pone λ sino la frecuencia, y la frecuencia no cambió: dentro del agua la luz sigue naranja. La correcta está marcada.',
+    c:'Elegiste la C. La frecuencia no puede cambiar: cada cresta que llega a la superficie sigue de largo, ni se pierde ni se crea. Lo que se acorta es λ. La correcta está marcada.',
+    d:'Elegiste la D. c = 3 × 10⁸ m/s es la rapidez en el vacío (y casi en el aire). En el agua la luz va más lento, a c/n. La correcta está marcada.' } };
+
+const LECT_ONDA = ['f', 'lam', 'E', 'reg'];
+const filaLuz = { mat:'pared', f:F_LUZ, rot:'luz (550 nm)' }, filaFM = { mat:'pared', f:F_FM, rot:'radio FM' };
+const todas = () => MO.materiales().map(m => ({ mat:m.id }));
+const lectAgua = ya => () => [['v', 'Rapidez en el aire', '3 × 10⁸ m/s'], ['lam', 'λ en el aire', '600 nm'], ['f', 'f en el aire', sci(AG.f, 0) + ' Hz'],
+  ['v', 'Rapidez en el agua v', ya ? sci(AG.v, 2) + ' m/s' : '?'], ['lam', "λ' en el agua", ya ? fmt(AG.lambdaNm, 0) + ' nm' : '?'], ['f', 'f en el agua', ya ? sci(AG.f, 0) + ' Hz' : '?']];
+const lectCarrera = ya => () => [['ink', 'Distancia d', '3,84 × 10⁸ m']].concat(ya ? [['v', 'Rapidez de la radio', '3 × 10⁸ m/s'], ['v', 'Rapidez de la luz', '3 × 10⁸ m/s']] : [])
+  .concat([['ink', 'Tiempo t', ya ? `${fmt(T1.t, 2)} s` : '?']]);
+const descOnda = () => 'Una antena a la izquierda emite una onda que avanza hacia la derecha. El campo eléctrico de la onda oscila de arriba abajo.' + (E.ver.B ? ' El campo magnético B oscila de lado a lado, hacia dentro y hacia fuera del dibujo, en fase con el campo eléctrico.' : '');
+const descRegla = () => 'Una regla de frecuencias de 10⁴ a 10²² hertz, con las regiones del espectro como bandas' + ((E.ver.regla || {}).nombres ? ': radio, microondas, infrarrojo, luz visible, ultravioleta, rayos X y gamma.' : ', todavía sin nombre.');
+function saltos(){ return `<div class="acciones">${[['radio FM', F_FM], ['microondas', 2.4e9], ['luz', F_LUZ], ['ultravioleta', 1.5e16], ['rayos X', 3e18]].map(([t, f]) => `<button type="button" class="btn" data-f="${f}">${t}</button>`).join('')}</div>`; }
+function conectarSaltos(){
+  $('stepBody').querySelectorAll('[data-f]').forEach(b => b.onclick = () => { if (S.ocupado) return; E.t.f = +b.dataset.f; E.sincronizar(); E.cambio(); E.avisar(); });
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: ¿cuál llega primero?', gate:P1,
+   prep:() => { const ya = !!S.pred[P1.id];
+     E.config({ vista:'carrera', mueve:false, t:{ p: ya ? 1 : 0 }, ver:{ tiempo: ya }, lect: lectCarrera(ya),
+       desc: () => 'A la izquierda, la Tierra; a la derecha, la Luna, con una emisora de radio y un foco encendidos al mismo tiempo. Las dos señales salen hacia la Tierra.' }); },
+   anima:fin => { E.ver.tiempo = true; E.lect = lectCarrera(true); E.llevar({ p:1 }, 2600, fin, true); },
+   body:() => `<p>En la Luna hay una emisora de radio y un foco. Se encienden en el mismo instante y sus señales viajan hacia la Tierra, a una distancia d = 3,84 × 10⁸ m. Entre la Luna y la Tierra no hay aire: es vacío. ¿Cuál de las dos señales llega antes a la Tierra?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">en el vacío: ${v_('c = 3 × 10⁸ m/s')}<span class="note">la misma para la radio, la luz y los rayos X</span></div>
+   <div class="eq">t = d / ${v_('c')} = 3,84 × 10⁸ / ${v_('3 × 10⁸')} = ${fmt(T1.t, 2)} s</div></div>
+   <p>La radio, la luz, las microondas y los rayos X son ondas electromagnéticas: un campo eléctrico y uno magnético que oscilan juntos y se regeneran uno al otro, sin necesitar un medio. En el vacío todas avanzan a ${v_('c')}. Lo que las distingue es la frecuencia.</p>
+   <p class="fuente">Las tres ideas incorrectas aparecen en el informe de esta unidad, sin cifras propias: que la radio es más lenta que la luz (A) se registró en universitarios de astronomía (Lee y Schneider, 2015); que la rapidez crece con λ (D), en un estudio de Filipinas que dice que la mayoría la usa (Carambas y otros, 2004); y que la luz necesita un medio (B), en grupos focales donde cerca de 3 de cada 10 lo dijo, con una muestra que no vimos. Son datos de resúmenes, por verificar.</p></div>` },
+ { k:'Paso 2', t:'Predice: el otro campo de la onda', gate:P2,
+   prep:() => { const ya = !!S.pred[P2.id];
+     E.config({ vista:'onda', t:{ f:2e8 }, ver:{ B: ya ? 1 : 0, Bq: !ya, lam:'no' }, lect: () => [], desc: descOnda }); },
+   anima:fin => { E.ver.Bq = false; E.ver.B = .01; E.leyenda(); E.progreso('B', 1400, () => { E.avisar(); fin(); }); },
+   body:() => `<p>Una antena emite una onda que avanza hacia la derecha (flecha de ${v_('avance')}). En el dibujo, el ${e_('campo eléctrico')} de la onda oscila de arriba abajo, en el plano vertical. Una onda electromagnética lleva también un campo magnético ${B_('B')}. ¿Cómo oscila ${B_('B')}?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${e_('campo eléctrico')} ⊥ ${B_('B')}, y los dos ⊥ al ${v_('avance')}<span class="note">onda transversal</span></div>
+   <div class="eq">${e_('campo eléctrico')} × ${B_('B')} → apunta hacia donde ${v_('avanza')} la onda</div>
+   <div class="eq">en fase: los dos son máximos a la vez y se anulan a la vez</div></div>
+   <p>Los dos campos son perpendiculares entre sí y a la dirección de avance. La regla de la mano derecha del producto vectorial (campo eléctrico × B) da hacia dónde va la onda. Mira el dibujo: las dos curvas suben y bajan juntas.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (OE13 y OE14 del informe, sin estudio).</p></div>` },
+ { k:'Paso 3', t:'Predice: el orden del espectro', gate:P3,
+   prep:() => { const ya = !!S.pred[P3.id];
+     E.config({ vista:'regla', mueve:false, t:{ f:5e14 }, ver:{ regla:{ nombres: ya ? 1 : 0, E: ya, zoom: ya, cursor: ya } },
+       lect: () => (ya ? lecturaOnda(E, ['f', 'reg', 'E']) : []), desc: descRegla, ctl: ya ? { f:true } : {} }); },
+   anima:fin => { const g = E.ver.regla; g.E = true; g.zoom = true; g.cursor = true; E.redimensionar(); E.leyenda();
+     E.tween(1400, f => { g.nombres = suave(f); E.dibujar(); }, () => { g.nombres = 1; E.lect = () => lecturaOnda(E, ['f', 'reg', 'E']); E.libre(true); E.leyenda(); E.avisar(); fin(); }); },
+   body:() => `<p>La radio, las microondas, la luz visible, el ultravioleta y los rayos X son ondas electromagnéticas. En el dibujo está la regla de ${f_('frecuencias')}, de 10⁴ Hz a 10²² Hz, con cada región del espectro como una banda sin nombre. ¿Cómo quedan ordenadas de menor a mayor ${f_('frecuencia')}?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${E_('E')} = h · ${f_('f')}<span class="note">h ≈ 4,13 × 10⁻¹⁵ eV·s: más frecuencia, más energía por fotón</span></div>
+   <div class="eq">luz visible: de ${f_('4 × 10¹⁴ Hz')} (rojo) a ${f_('7,9 × 10¹⁴ Hz')} (violeta)</div></div>
+   <p>Es un solo espectro. La luz que vemos es una franja tan angosta que en la regla casi no se nota (abajo está ampliada). Mueve la ${f_('frecuencia')}: cada salto de la escala multiplica ${f_('f')} por 10, y la energía de cada fotón crece igual.</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras; el espectro al revés es OE19 del informe, sin estudio.</p></div>` },
+ { k:'Paso 4', t:'Predice: la longitud de onda de una radio', gate:P4,
+   prep:() => { const ya = !!S.pred[P4.id];
+     E.config({ vista:'onda', t:{ f:F_FM }, ver:{ B:1, lam: ya, regla:{ nombres:1, E:1, lam: ya, refs: ya } },
+       lect: () => lecturaOnda(E, ya ? LECT_ONDA : ['f', 'lam?']), desc: descOnda, ctl: ya ? { f:true } : {} });
+     if (ya) conectarSaltos(); },
+   anima:fin => { E.ver.lam = true; Object.assign(E.ver.regla, { lam:true, refs:true }); E.lect = () => lecturaOnda(E, LECT_ONDA); E.redimensionar(); E.leyenda(); E.libre(true); conectarSaltos(); E.avisar(); fin(); },
+   body:() => `<p>Una radio FM transmite en ${f_('f = 100 MHz')}. Sus ondas viajan por el aire a ${v_('c = 3 × 10⁸ m/s')} (casi lo mismo que en el vacío). ¿Cuál es su longitud de onda ${l_('λ')}?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${v_('c')} = ${l_('λ')} · ${f_('f')} → ${l_('λ')} = ${v_('c')} / ${f_('f')}</div>
+   <div class="eq">${l_('λ')} = ${v_('3 × 10⁸')} / (${f_('100 × 10⁶')}) = ${v_('3 × 10⁸')} / ${f_('10⁸')} = ${l_('3 m')}</div></div>
+   <p>Mueve la ${f_('frecuencia')} o salta a otra onda: ${l_('λ')} se acorta en la misma proporción en que ${f_('f')} sube, porque su producto es siempre ${v_('c')}. Fíjate en la flecha de avance: el dibujo de la onda avanza igual con cualquier frecuencia. Los dibujos de la regla son cosas del tamaño de cada ${l_('λ')}: un edificio o una persona en la radio, una moneda en las microondas, un átomo en los rayos X.</p>
+   ${saltos()}
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras (los errores de unidades son OE20 del informe, sin estudio).</p></div>` },
+ { k:'Paso 5', t:'Predice: qué cruza una pared', gate:P5,
+   prep:() => { const ya = !!S.pred[P5.id];
+     E.config({ vista:'muros', t:{ f:F_FM }, ver:{ filas: ya ? todas() : [filaFM, filaLuz] },
+       lect: () => (ya ? lecturaOnda(E, ['f', 'lam', 'reg', 'E', 'ion']) : []), ctl: ya ? { f:true } : {},
+       desc: () => (ya ? 'Una onda de la frecuencia elegida llega a cinco materiales: pared de ladrillo, vidrio, piel y músculo, hueso y la rejilla metálica de la puerta de un horno de microondas.' : 'Dos ondas llegan a una pared de ladrillo: la de una radio FM la cruza; la luz no.') });
+     if (ya) conectarSaltos(); },
+   anima:fin => { E.ver.filas = todas(); E.lect = () => lecturaOnda(E, ['f', 'lam', 'reg', 'E', 'ion']); E.redimensionar(); E.libre(true); conectarSaltos(); E.avisar(); fin(); },
+   body:() => `<p>Dentro de una casa de ladrillo, con puertas y ventanas cerradas, una radio portátil recibe bien una emisora de ${f_('100 MHz')}. Desde afuera, en cambio, no se ve nada de lo que hay dentro: la luz, de unos ${l_('550 nm')}, no cruza la pared. ¿Por qué una cruza y la otra no?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>No hay una regla de «más energía, más penetra». Mueve la ${f_('frecuencia')} y mira cada material: la radio cruza la pared y la luz no; los rayos X, con fotones mucho más energéticos que la luz, cruzan la piel pero no el hueso (por eso se ven en una radiografía); el ultravioleta no cruza el vidrio de una ventana, aunque la luz sí; y la rejilla metálica del horno deja pasar la luz y frena las microondas.</p>
+   <p>Desde el ultravioleta alto hacia arriba, un solo fotón trae energía para arrancar un electrón de un átomo (radiación ionizante). La radio, las microondas del celular y del wifi y la luz visible no ionizan, por fuertes que sean.</p>
+   ${saltos()}
+   <p class="hint">La tabla del dibujo es una simplificación: el grosor del material y la frecuencia exacta cambian cuánto pasa.</p>
+   <p class="fuente">Que las ondas de radio son sonido (A) lo sostenía la mayoría de 225 escolares de Nueva Jersey justo después del tema (Tabor-Morris y otros), sin porcentaje en el resumen que vimos. La C (cada onda con su rapidez) y la D (la luz necesita un medio) también están en el informe, sin cifra propia. Datos de resúmenes, por verificar.</p></div>` },
+ { k:'Paso 6', t:'Predice: la luz entra al agua', gate:P6,
+   prep:() => { const ya = !!S.pred[P6.id];
+     E.config({ vista:'agua', t:{ lambdaNm:600, n:4/3, frente: ya ? 1 : 0 }, ver:{ agua: ya }, lect: lectAgua(ya),
+       desc: () => 'Una luz naranja viaja por el aire, a la izquierda, y llega a la superficie del agua, a la derecha.' }); },
+   anima:fin => { E.ver.agua = true; E.lect = lectAgua(true); E.llevar({ frente:1 }, 2400, fin, true); },
+   body:() => `<p>Una luz naranja de ${l_('λ = 600 nm')} (medida en el aire) entra al agua, de índice ${n_('n = 4/3')}. En el aire viaja a ${v_('c = 3 × 10⁸ m/s')}, y en un medio de índice ${n_('n')} su rapidez es ${v_('v')} = ${v_('c')}/${n_('n')}. ¿Cuánto valen dentro del agua su rapidez, su longitud de onda y su frecuencia, y qué pasa con el color?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${v_('v')} = ${v_('c')} / ${n_('n')} = ${v_('3 × 10⁸')} / ${n_('(4/3)')} = ${v_(sci(AG.v, 2) + ' m/s')}</div>
+   <div class="eq">${f_('f')} = ${v_('c')} / ${l_('λ')} = ${f_(sci(AG.f, 0) + ' Hz')}<span class="note">la misma afuera y adentro</span></div>
+   <div class="eq">${l_("λ'")} = ${v_('v')} / ${f_('f')} = ${l_('600')} / ${n_('(4/3)')} = ${l_(fmt(AG.lambdaNm, 0) + ' nm')}</div></div>
+   <p>La fuente decide cuántas crestas llegan por segundo, y cada una sigue de largo al entrar: la frecuencia no cambia. Como la luz va más lenta, las crestas se juntan y ${l_('λ')} se acorta. El color lo pone la frecuencia, y por eso un objeto naranja se ve naranja también bajo el agua, aunque 450 nm en el aire sería azul.</p>
+   <p>¿Quieres ver más? En «¿Qué pasa si…?» hay una emisora que sube su potencia, el Sol que se apaga, la puerta del horno y los campos de la onda en números.</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras (OE12 del informe, que el material docente describe sin datos de alumnos).</p></div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = sinCorte(s.body());
+  E.compacto = !!(s.gate && !S.pred[s.gate.id]); Celular.compactar($('m1'), E.compacto);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  [...dots.querySelectorAll('button')].forEach((b, j) => { b.disabled = j > S.max || S.ocupado; });
+  document.querySelectorAll('#ctl1 input').forEach(i => { i.disabled = S.ocupado; });
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // un paso bloqueado no anuncia su título
+    if (k > S.max){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Paso ${k + 1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.setAttribute('aria-label', `Ir al paso ${k + 1}: ${steps[k].t}`); }
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    E.compactar(false);
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo: () => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Respaldos (docs/investigacion/ondas-electromagneticas-ideas-erroneas.md; cifras de resúmenes, por verificar):
+   'parcial' OE4 (experimento 1: la energía va con la amplitud; «la mayoría», sin muestra vista) y OE9 (experimento 3:
+   la radio y las microondas «no son radiación»; «la mayoría» de 141 alumnos de 15 a 17 años, sin porcentaje);
+   'hipotesis' OE15, OE16, OE17, OE18 y OE20 y los errores con nombre sin número. La escena cambia recién después de
+   responder: mientras tanto queda quieta y las lecturas que darían la respuesta van con «?». */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', null);
+const AM = MO.onda(600, 'kHz'), SOL = MO.viaje(1.5e11), CB = MO.campos(300), MW = MO.onda(2.45, 'GHz'), F_LUZ = MO.ondaDeLambda(L_LUZ, 'nm').f;
+const F_CAMPOS = MO.aHz(1, 'GHz');
+const descOnda = () => 'Una antena a la izquierda emite una onda que avanza hacia la derecha: el campo eléctrico oscila de arriba abajo y el campo magnético B de lado a lado, en fase.';
+const lectPot = ya => () => [['ink', 'Potencia de la emisora', ya ? '1 kW → 4 kW' : '1 kW'], ['f', 'Frecuencia f', hz(AM.f)], ['lam', 'Longitud de onda λ', metros(AM.lambda)],
+  ['E', 'Energía de un fotón E', ev(AM.E)]].concat(ya ? [['el', 'Campo eléctrico', 'máximo × 2']] : []);
+const lectSol = ya => () => [['ink', 'Distancia d', '1,5 × 10¹¹ m'], ['v', 'Rapidez de la luz c', '3 × 10⁸ m/s'], ['ink', 'Tiempo t', ya ? `${fmt(SOL.t, 0)} s = ${SOL.min} min ${fmt(SOL.s, 0)} s` : '?']];
+const lectCampos = ya => () => [['el', 'Campo eléctrico máx.', '300 V/m'], ['B', 'B máximo, B₀', ya ? sci(CB.B0, 0) + ' T' : '?'], ['v', 'Rapidez c', '3 × 10⁸ m/s']];
+const filasHorno = (ya, mas) => [{ mat:'rejilla', f:MW.f, rot:'microondas' }, { mat:'rejilla', f:F_LUZ, rot:'luz' }].concat(mas ? [{ mat:'vidrio', f:MW.f, rot:'microondas' }] : []);
+
+const EXPS = [
+  { id:'emisora-potente', corto:'Más potencia',
+    q:`Una emisora de radio AM transmite en ${f_('600 kHz')} con 1 kW de potencia. Se cambia su transmisor por uno de 4 kW, en la misma frecuencia. Dato: hc = 1240 eV·nm. ¿Qué cambia en las ondas que emite?`,
+    opts:[['a', 'Cada fotón trae más energía, porque una onda más fuerte lleva más energía en cada fotón', 'OE4-energia-con-la-amplitud', 'parcial'],
+          ['b', 'Sus fotones ya pueden ionizar átomos, como los rayos X, porque la antena es más potente', 'OE18-antena-potente-ioniza', 'hipotesis'],
+          ['c', 'Su longitud de onda se acorta, porque la onda sale más apretada', 'OE-potencia-acorta-lambda', 'hipotesis'],
+          ['d', 'Crecen los campos de la onda, porque sale más energía cada segundo, pero f, λ y la energía de cada fotón quedan igual']],
+    ok:'d',
+    fb:{ a:'La energía de cada fotón es h·f, y f no cambió. Con más potencia salen más fotones por segundo, no fotones más energéticos.',
+      b:'Un fotón de 600 kHz trae unos 2,5 × 10⁻⁹ eV, muchísimo menos que los ~10 eV que hacen falta para ionizar. Más potencia es más fotones iguales: siguen sin ionizar.',
+      c:'λ = c/f y la frecuencia no cambió: λ sigue en 500 m.' },
+    antes:ya => E.config({ vista:'onda', mueve:ya, t:{ f:AM.f, amp: ya ? 2 : 1 }, ver:{ B:1, lam:true, ampMax:2 }, lect: lectPot(ya), desc: descOnda }),
+    despues:() => { E.mueve = true; E.lect = lectPot(true); E.llevar({ amp:2 }, 1800); E.despertar(); },
+    exp:() => `<div class="eqs"><div class="eq">potencia × 4 → ${e_('campo eléctrico')} y ${B_('B')} × 2<span class="note">la potencia va con el cuadrado de la amplitud</span></div>
+      <div class="eq">${f_('f')} y ${l_('λ')} = ${v_('c')}/${f_('f')} = ${l_(metros(AM.lambda))}: igual</div>
+      <div class="eq">${E_('E')} = h · ${f_('f')} ≈ ${E_(ev(AM.E))}: igual; salen 4 veces más fotones por segundo</div></div>
+      <p>Una onda más fuerte es una onda de campos más grandes, como un sonido más fuerte es uno de mayor amplitud, no más agudo. La frecuencia, y con ella el color en la luz o el «tipo» de onda, no cambia.</p>
+      <p class="fuente">La idea de la A (la energía va con la amplitud y el brillo) aparece en el informe como lo que pensó la mayoría en un estudio de Filipinas (Carambas y otros, 2004), sin la muestra a la vista; dato por verificar. La B y la C son hipótesis nuestras.</p>` },
+  { id:'sol-apagado', corto:'El Sol se apaga',
+    q:`Imagina que el Sol se apagara de golpe. Está a d = 1,5 × 10¹¹ m de la Tierra y la luz viaja a ${v_('c = 3 × 10⁸ m/s')}. ¿Cuánto tiempo después lo notaríamos en la Tierra?`,
+    opts:[['a', 'Al instante (0 s)', 'OE-la-luz-no-tarda', 'hipotesis'],
+          ['b', `Unos ${fmt(SOL.errores.exponente, 0)} s`, 'OE20-exponente-corrido', 'hipotesis'],
+          ['c', `Unos ${SOL.min} min ${fmt(SOL.s, 0)} s`],
+          ['d', `Unos ${fmt(SOL.t, 0)} min (8 h 20 min)`, 'OE20-segundos-como-minutos', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'La luz es rapidísima, pero no instantánea: 1,5 × 10¹¹ m es mucho camino.',
+      b:'Revisa los exponentes: 1,5 × 10¹¹ / (3 × 10⁸) = 0,5 × 10³ = 500 s.',
+      d:'El cálculo da 500 segundos, no minutos: 500 s = 8 min 20 s.' },
+    antes:ya => E.config({ vista:'sol', mueve:false, t:{ p: ya ? 1 : 0 }, ver:{ apagado: ya, tiempo: ya }, lect: lectSol(ya),
+      desc: () => 'A la izquierda el Sol y a la derecha la Tierra; entre los dos, la luz que viaja.' }),
+    despues:() => { E.ver.apagado = true; E.ver.tiempo = true; E.lect = lectSol(true); E.llevar({ p:1 }, 4200, null, true); },
+    exp:() => `<div class="eqs"><div class="eq">t = d / ${v_('c')} = 1,5 × 10¹¹ / ${v_('3 × 10⁸')} = 500 s = 8 min 20 s</div></div>
+      <p>La luz que vemos del Sol salió de él hace unos ocho minutos. Durante ese tiempo, la última luz seguiría en camino y el cielo seguiría iluminado. A la Luna, en cambio, la luz llega en ${fmt(MO.viaje(3.84e8).t, 2)} s.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras (los errores de unidades son OE20 del informe, sin estudio).</p>` },
+  { id:'puerta-horno', corto:'La puerta del horno',
+    q:`La puerta de un horno de microondas tiene un vidrio con una rejilla de metal con agujeros de unos 2 mm. Por ella se ve la comida, pero las microondas de unos ${l_("12 cm")} (${f_('2,45 GHz')}) no salen. ¿Por qué?`,
+    opts:[['a', 'Porque la rejilla las refleja: 12 cm no caben por agujeros de 2 mm, y la luz, con λ de menos de una milésima de milímetro, sí pasa'],
+          ['b', 'Porque las detiene el vidrio de la puerta, y la rejilla está solo de adorno', 'OE17-la-rejilla-es-adorno', 'hipotesis'],
+          ['c', 'Porque la rejilla frena lo que trae más energía, y las microondas traen más que la luz', 'OE16-mas-energia-mas-penetra', 'hipotesis'],
+          ['d', 'Sí salen, pero no importa, porque las microondas no son radiación', 'OE9-no-son-radiacion', 'parcial']],
+    ok:'a',
+    fb:{ b:'El vidrio deja pasar las microondas (por eso calientan la comida dentro de un recipiente de vidrio). Las frena la rejilla de metal.',
+      c:'Es al revés: un fotón de microondas trae unas doscientas mil veces menos energía que uno de luz. Y lo que cruza un material no sigue el orden de la energía.',
+      d:'Toda onda electromagnética es radiación. Las microondas no ionizan, pero calientan: por eso el horno las encierra.' },
+    antes:ya => E.config({ vista:'muros', mueve:ya, t:{ f:MW.f }, ver:{ filas: filasHorno(ya, ya) }, lect: () => [['lam', 'λ de las microondas', metros(MW.lambda)], ['lam', 'λ de la luz', `${L_LUZ} nm`], ['ink', 'Agujeros de la rejilla', '2 mm']],
+      desc: () => 'Microondas y luz llegan a la rejilla metálica de la puerta: la luz pasa y las microondas no.' + (ya ? ' Abajo, las microondas contra un vidrio solo: pasan.' : '') }),
+    despues:() => { E.ver.filas = filasHorno(true, true); E.mueve = true; E.redimensionar(); E.avisar(); },
+    exp:() => `<div class="eqs"><div class="eq">${l_('λ')} de las microondas = ${v_('c')}/${f_('f')} = ${v_('3 × 10⁸')} / ${f_('2,45 × 10⁹')} ≈ ${l_(metros(MW.lambda))} ≫ 2 mm</div>
+      <div class="eq">${l_('λ')} de la luz ≈ ${l_('0,00055 mm')} ≪ 2 mm</div></div>
+      <p>Para una onda mucho más larga que sus agujeros, la rejilla es como una lámina de metal entera, y el metal refleja las microondas. La luz, mucho más corta, pasa por los agujeros. En la fila de abajo, las microondas cruzan un vidrio solo: el vidrio no es lo que las detiene.</p>
+      <p class="fuente">Que la luz y la radio «no son radiación» (D) lo pensó la mayoría de 141 alumnos de 15 a 17 años en un estudio citado por material docente (Plotz y Fitzgerald, 2021), sin porcentaje a la vista; dato por verificar. La B y la C son hipótesis nuestras (OE17 y OE16).</p>` },
+  { id:'campos-numeros', corto:'Los campos en números',
+    q:`En una onda electromagnética que viaja en el vacío, el ${e_('campo eléctrico')} oscila con un máximo de ${e_('300 V/m')}. Los dos campos cumplen (${e_('campo eléctrico')}) = ${v_('c')} · ${B_('B')}, con ${v_('c = 3 × 10⁸ m/s')}. ¿Cuál es el máximo ${B_('B₀')} del campo magnético?`,
+    opts:[['a', `B₀ = ${fmt(CB.errores.igual, 0)} T`, 'OE15-B-igual-al-campo-electrico', 'hipotesis'],
+          ['b', `B₀ = ${sci(CB.B0, 0)} T`],
+          ['c', `B₀ = ${sci(CB.errores.multiplica, 0)} T`, 'OE15-B-por-c', 'hipotesis'],
+          ['d', `B₀ = ${sci(CB.errores.kms, 0)} T`, 'OE20-c-en-km-por-s', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Los dos números no son iguales: B₀ es el campo eléctrico dividido entre c, y c es enorme.',
+      c:'De (campo eléctrico) = c·B sale B = (campo eléctrico)/c: hay que dividir.',
+      d:'c va en m/s: 3 × 10⁸ m/s, no 3 × 10⁵ (que son km/s).' },
+    antes:ya => E.config({ vista:'onda', mueve:ya, t:{ f:F_CAMPOS }, ver:{ B:1, lam:true, rotE:'300 V/m', rotB: ya ? `B₀ = ${sci(CB.B0, 0)} T` : 'B₀ = ?' }, lect: lectCampos(ya), desc: descOnda }),
+    despues:() => { E.ver.rotB = `B₀ = ${sci(CB.B0, 0)} T`; E.lect = lectCampos(true); E.mueve = true; E.avisar(); E.despertar(); },
+    exp:() => `<div class="eqs"><div class="eq">${B_('B₀')} = ${e_('300')} / ${v_('3 × 10⁸')} = ${B_(sci(CB.B0, 0) + ' T')}</div></div>
+      <p>Un microtesla es unas cincuenta veces menos que el campo magnético de la Tierra. En el dibujo, los dos campos se ven del mismo tamaño solo para que se noten: sus números, en sus unidades, son muy distintos, y van siempre en la proporción ${v_('c')}.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras (OE15 y OE20 del informe, sin estudio).</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta; las respondidas se revisitan.
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k > primeraLibre()) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = !ya; Celular.compactar($('m2'), !ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${sinCorte(x.q)}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la opción ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = sinCorte(x.exp()) + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); pintar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    E.compactar(false);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

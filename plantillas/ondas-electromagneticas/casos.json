@@ -1,0 +1,605 @@
+{
+ "plantilla": "ondas-electromagneticas",
+ "unidades": "f en Hz, λ en m (lambdaNm en nm), rapideces c y v en m/s, distancias d en m, tiempos t en s, energía del fotón E en eV (EJ en J), campo eléctrico de la onda en V/m (electrico0, sin letra en la escena) y campo magnético B₀ en T, índice n sin unidades. Constantes: c = 3 × 10⁸ m/s, hc = 1240 eV·nm, e = 1,6 × 10⁻¹⁹ C. Bordes del espectro por λ en el vacío: gamma < 0,01 nm ≤ rayos X < 10 nm ≤ ultravioleta < 380 nm ≤ visible ≤ 750 nm < infrarrojo ≤ 1 mm < microondas ≤ 30 cm < radio.",
+ "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.multiplica); los textos y los booleanos, exactos; 'valor' es el resultado entero. 'tambien' repite la llamada con otros argumentos (y, si trae 'fn', con otra función). Los errores típicos van en 'errores': lo que da cada error (OE1 a OE20 de docs/investigacion/ondas-electromagneticas-ideas-erroneas.md, o hipótesis nuestras; están definidos en la cabecera de motor.js).",
+ "verificacion": "",
+ "tolerancia": 1e-09,
+ "casos": [
+  {
+   "nombre": "Radio FM de 100 MHz (predicción del paso 3): λ = c/f = 3 × 10⁸ / 10⁸ = 3 m, región radio. Errores: c·f = 3 × 10¹⁶ m, sin el prefijo 3 × 10⁶ m (OE20), exponente corrido 0,3 m (OE20)",
+   "fn": "onda",
+   "args": [
+    100,
+    "MHz"
+   ],
+   "espera": {
+    "f": 100000000.0,
+    "lambda": 3,
+    "region": "radio",
+    "orden": 0,
+    "errores.multiplica": 3e+16,
+    "errores.sinPrefijo": 3000000.0,
+    "errores.exponente": 0.3
+   }
+  },
+  {
+   "nombre": "Radio AM de 1000 kHz: λ = 3 × 10⁸ / 10⁶ = 300 m",
+   "fn": "onda",
+   "args": [
+    1000,
+    "kHz"
+   ],
+   "espera": {
+    "f": 1000000.0,
+    "lambda": 300,
+    "region": "radio"
+   }
+  },
+  {
+   "nombre": "Microondas del horno y del wifi de 2,4 GHz: λ = 3 × 10⁸ / (2,4 × 10⁹) = 0,125 m = 12,5 cm",
+   "fn": "onda",
+   "args": [
+    2.4,
+    "GHz"
+   ],
+   "espera": {
+    "f": 2400000000.0,
+    "lambda": 0.125,
+    "region": "microondas"
+   },
+   "tambien": [
+    {
+     "fn": "aMetros",
+     "args": [
+      12.5,
+      "cm"
+     ],
+     "espera": {
+      "valor": 0.125
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Celular de 1,8 GHz contra wifi de 5 GHz: λ = 1/6 m ≈ 16,7 cm y 6 cm; los dos microondas, a la misma rapidez c",
+   "fn": "onda",
+   "args": [
+    1.8,
+    "GHz"
+   ],
+   "espera": {
+    "lambda": 0.166666666667,
+    "region": "microondas",
+    "c": 300000000.0
+   },
+   "tambien": [
+    {
+     "args": [
+      5,
+      "GHz"
+     ],
+     "espera": {
+      "lambda": 0.06,
+      "region": "microondas",
+      "c": 300000000.0
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Luz de 600 nm: f = 3 × 10⁸ / (6 × 10⁻⁷) = 5 × 10¹⁴ Hz; E = 1240/600 = 31/15 ≈ 2,07 eV ≈ 3,31 × 10⁻¹⁹ J; visible, naranja. Errores: c·λ = 180 Hz; sin el nano 5 × 10⁵ Hz",
+   "fn": "ondaDeLambda",
+   "args": [
+    600,
+    "nm"
+   ],
+   "espera": {
+    "f": 500000000000000.0,
+    "lambdaNm": 600,
+    "E": 2.06666666667,
+    "EJ": 3.30666666667e-19,
+    "region": "visible",
+    "visible": true,
+    "color": "naranja",
+    "errores.multiplica": 180,
+    "errores.sinPrefijo": 500000.0
+   }
+  },
+  {
+   "nombre": "Rayos X de 0,1 nm: f = 3 × 10⁸ / 10⁻¹⁰ = 3 × 10¹⁸ Hz; E = 1240/0,1 = 12 400 eV",
+   "fn": "ondaDeLambda",
+   "args": [
+    0.1,
+    "nm"
+   ],
+   "espera": {
+    "f": 3e+18,
+    "E": 12400,
+    "region": "rayosX",
+    "orden": 5
+   }
+  },
+  {
+   "nombre": "Duplicar la frecuencia: de 100 MHz a 200 MHz, λ pasa de 3 m a 1,5 m y la rapidez sigue en c (contra OE3: c no cambia)",
+   "fn": "onda",
+   "args": [
+    200,
+    "MHz"
+   ],
+   "espera": {
+    "lambda": 1.5,
+    "c": 300000000.0
+   },
+   "tambien": [
+    {
+     "args": [
+      100,
+      "MHz"
+     ],
+     "espera": {
+      "lambda": 3,
+      "c": 300000000.0
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Sol a 1,5 × 10¹¹ m (qué pasa si 2): t = 1,5 × 10¹¹ / (3 × 10⁸) = 500 s = 8 min 20 s. Errores: instantáneo 0; 500 min = 30 000 s; exponente 50 s",
+   "fn": "viaje",
+   "args": [
+    150000000000.0
+   ],
+   "espera": {
+    "t": 500,
+    "min": 8,
+    "s": 20,
+    "v": 300000000.0,
+    "errores.instantaneo": 0,
+    "errores.minutos": 30000,
+    "errores.exponente": 50
+   }
+  },
+  {
+   "nombre": "Luna a 3,84 × 10⁸ m: t = 1,28 s; la ida y vuelta de una señal de radio, 2,56 s",
+   "fn": "viaje",
+   "args": [
+    384000000.0
+   ],
+   "espera": {
+    "t": 1.28
+   },
+   "tambien": [
+    {
+     "args": [
+      768000000.0
+     ],
+     "espera": {
+      "t": 2.56
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Radar con eco a los 2 × 10⁻⁴ s: d = c·t/2 = 3 × 10⁸ · 2 × 10⁻⁴ / 2 = 3 × 10⁴ m = 30 km. Errores: sin la mitad 60 km; con la rapidez del sonido 0,034 m",
+   "fn": "eco",
+   "args": [
+    0.0002
+   ],
+   "espera": {
+    "d": 30000,
+    "errores.sinMitad": 60000,
+    "errores.conSonido": 0.034
+   }
+  },
+  {
+   "nombre": "Campo eléctrico máximo de 300 V/m (qué pasa si 4): B₀ = 300 / (3 × 10⁸) = 10⁻⁶ T. Errores: igual 300 T (OE15); multiplica 9 × 10¹⁰ T (OE15); c en km/s 10⁻³ T (OE20)",
+   "fn": "campos",
+   "args": [
+    300
+   ],
+   "espera": {
+    "B0": 1e-06,
+    "errores.igual": 300,
+    "errores.multiplica": 90000000000.0,
+    "errores.kms": 0.001
+   },
+   "tambien": [
+    {
+     "fn": "campoDeB",
+     "args": [
+      2e-08
+     ],
+     "espera": {
+      "electrico0": 6
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Campo eléctrico a lo largo de y y avance a lo largo de x: B a lo largo de z (perpendicular a los dos), y campo eléctrico × B apunta hacia el avance",
+   "fn": "direccionB",
+   "args": [
+    [
+     0,
+     1,
+     0
+    ],
+    [
+     1,
+     0,
+     0
+    ]
+   ],
+   "espera": {
+    "valor": [
+     0,
+     0,
+     1
+    ]
+   },
+   "tambien": [
+    {
+     "args": [
+      [
+       0,
+       -1,
+       0
+      ],
+      [
+       1,
+       0,
+       0
+      ]
+     ],
+     "espera": {
+      "valor": [
+       0,
+       0,
+       -1
+      ]
+     }
+    },
+    {
+     "fn": "producto",
+     "args": [
+      [
+       0,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1
+      ]
+     ],
+     "espera": {
+      "valor": [
+       1,
+       0,
+       0
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Luz de 600 nm en agua de n = 4/3 (predicción del paso 6): v = 2,25 × 10⁸ m/s, λ' = 450 nm, f = 5 × 10¹⁴ Hz igual y el color igual (naranja). Errores: cambia f (OE12) 3,75 × 10¹⁴ Hz con λ = 600 nm; cambia el color: azul con 450 nm; al revés 4 × 10⁸ m/s y 800 nm; nada cambia",
+   "fn": "medio",
+   "args": [
+    600,
+    1.3333333333333333
+   ],
+   "espera": {
+    "v": 225000000.0,
+    "lambdaNm": 450,
+    "f": 500000000000000.0,
+    "color": "naranja",
+    "errores.cambiaF.f": 375000000000000.0,
+    "errores.cambiaF.lambdaNm": 600,
+    "errores.cambiaColor.color": "azul",
+    "errores.cambiaColor.lambdaNm": 450,
+    "errores.alReves.v": 400000000.0,
+    "errores.alReves.lambdaNm": 800,
+    "errores.nadaCambia.v": 300000000.0
+   }
+  },
+  {
+   "nombre": "Vidrio de n = 3/2: v = 2 × 10⁸ m/s; roja de 600 nm → 400 nm y azul de 450 nm → 300 nm, cada una con su frecuencia de antes",
+   "fn": "medio",
+   "args": [
+    600,
+    1.5
+   ],
+   "espera": {
+    "v": 200000000.0,
+    "lambdaNm": 400,
+    "f": 500000000000000.0,
+    "color": "naranja"
+   },
+   "tambien": [
+    {
+     "args": [
+      450,
+      1.5
+     ],
+     "espera": {
+      "v": 200000000.0,
+      "lambdaNm": 300,
+      "f": 666666666667000.0,
+      "color": "azul"
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Orden del espectro de menor a mayor frecuencia: radio, microondas, infrarrojo, visible, ultravioleta, rayos X, gamma (y de mayor a menor λ)",
+   "fn": "regiones",
+   "args": [],
+   "espera": {
+    "0.region": "radio",
+    "1.region": "microondas",
+    "2.region": "infrarrojo",
+    "3.region": "visible",
+    "4.region": "ultravioleta",
+    "5.region": "rayosX",
+    "6.region": "gamma",
+    "1.fMin": 1000000000.0,
+    "1.fMax": 300000000000.0,
+    "3.fMin": 400000000000000.0,
+    "5.fMin": 3e+16,
+    "5.fMax": 3e+19
+   }
+  },
+  {
+   "nombre": "Regiones por λ: 2 µm infrarrojo, 100 nm ultravioleta, 1 mm microondas (borde), 0,005 nm gamma, 30 m radio",
+   "fn": "region",
+   "args": [
+    2e-06
+   ],
+   "espera": {
+    "region": "infrarrojo",
+    "visible": false,
+    "color": null
+   },
+   "tambien": [
+    {
+     "args": [
+      1e-07
+     ],
+     "espera": {
+      "region": "ultravioleta"
+     }
+    },
+    {
+     "args": [
+      0.001
+     ],
+     "espera": {
+      "region": "infrarrojo"
+     }
+    },
+    {
+     "args": [
+      0.0010001
+     ],
+     "espera": {
+      "region": "microondas"
+     }
+    },
+    {
+     "args": [
+      5e-12
+     ],
+     "espera": {
+      "region": "gamma",
+      "orden": 6
+     }
+    },
+    {
+     "args": [
+      30
+     ],
+     "espera": {
+      "region": "radio"
+     }
+    },
+    {
+     "args": [
+      6.5e-07
+     ],
+     "espera": {
+      "region": "visible",
+      "color": "rojo"
+     }
+    },
+    {
+     "args": [
+      4.7e-07
+     ],
+     "espera": {
+      "region": "visible",
+      "color": "azul"
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Qué atraviesa qué: la radio cruza la pared y la luz no; los rayos X cruzan la piel y no el hueso; el ultravioleta no cruza el vidrio; las microondas rebotan en la rejilla del horno y la luz pasa",
+   "fn": "atraviesa",
+   "args": [
+    "pared",
+    "radio"
+   ],
+   "espera": {
+    "valor": "si"
+   },
+   "tambien": [
+    {
+     "args": [
+      "pared",
+      "visible"
+     ],
+     "espera": {
+      "valor": "no"
+     }
+    },
+    {
+     "args": [
+      "piel",
+      "rayosX"
+     ],
+     "espera": {
+      "valor": "si"
+     }
+    },
+    {
+     "args": [
+      "hueso",
+      "rayosX"
+     ],
+     "espera": {
+      "valor": "no"
+     }
+    },
+    {
+     "args": [
+      "vidrio",
+      "ultravioleta"
+     ],
+     "espera": {
+      "valor": "no"
+     }
+    },
+    {
+     "args": [
+      "vidrio",
+      "visible"
+     ],
+     "espera": {
+      "valor": "si"
+     }
+    },
+    {
+     "args": [
+      "rejilla",
+      "microondas"
+     ],
+     "espera": {
+      "valor": "no"
+     }
+    },
+    {
+     "args": [
+      "rejilla",
+      "visible"
+     ],
+     "espera": {
+      "valor": "si"
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "En el vacío todas llegan a la vez (predicción del paso 1): 1 km en 1/300 000 s ≈ 3,33 µs; a los 2 µs las tres van en 600 m",
+   "fn": "carrera",
+   "args": [
+    1000,
+    2e-06
+   ],
+   "espera": {
+    "tLlega": 3.33333333333e-06,
+    "pos.0.x": 600,
+    "pos.1.x": 600,
+    "pos.2.x": 600
+   },
+   "tambien": [
+    {
+     "fn": "viaje",
+     "args": [
+      1000
+     ],
+     "espera": {
+      "t": 3.33333333333e-06
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Regla logarítmica de 10⁴ Hz a 10²² Hz: 10¹³ Hz cae en la mitad; de vuelta, la mitad es 10¹³ Hz",
+   "fn": "posicion",
+   "args": [
+    10000000000000.0,
+    10000.0,
+    1e+22
+   ],
+   "espera": {
+    "valor": 0.5
+   },
+   "tambien": [
+    {
+     "fn": "frecuenciaEn",
+     "args": [
+      0.5,
+      10000.0,
+      1e+22
+     ],
+     "espera": {
+      "valor": 10000000000000.0
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Energía del fotón de la radio FM (100 MHz): E = h·f ≈ 4,13 × 10⁻⁷ eV; la de rayos X de 3 × 10¹⁸ Hz es 3 × 10¹⁰ veces mayor",
+   "fn": "foton",
+   "args": [
+    100000000.0
+   ],
+   "espera": {
+    "E": 4.13333333333e-07
+   },
+   "tambien": [
+    {
+     "args": [
+      3e+18
+     ],
+     "espera": {
+      "E": 12400
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Radiación ionizante (OE11, OE18): un fotón de radio FM de 100 MHz trae unos 4 × 10⁻⁷ eV y no ioniza, por potente que sea la antena; uno de 3 × 10¹⁶ Hz (10 nm) trae 124 eV y sí. El borde de academia, 10 eV, cae en 124 nm",
+   "fn": "ionizante",
+   "args": [
+    100000000.0
+   ],
+   "espera": {
+    "ioniza": false,
+    "lambdaBordeNm": 124,
+    "errores.potente.ioniza": true
+   },
+   "tambien": [
+    {
+     "args": [
+      3e+16
+     ],
+     "espera": {
+      "ioniza": true,
+      "E": 124
+     }
+    },
+    {
+     "args": [
+      2400000000.0
+     ],
+     "espera": {
+      "ioniza": false
+     }
+    }
+   ]
+  }
+ ]
+}
