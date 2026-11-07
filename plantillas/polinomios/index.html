@@ -130,7 +130,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
 .lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
 .lecturas:empty{display:none}
 .lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
-.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
 .lectura span{display:block; font-size:.76rem; color:var(--muted)}
 @media (min-width:900px){
   .top{grid-template-columns:1fr auto; align-items:end}
@@ -378,7 +378,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
 
   // ----- Ruffini -----
   function dibRuf(c, Z){
-    const R = E.ruf; if (!R.res) { dibMarco(c, Z, R.n || 4); return; }
+    const R = E.ruf; if (!R.res) { dibMarco(c, Z, 5); return; }
     const res = R.res, n = res.arriba.length, rc = 58, cw = Math.min(58, (Z.w - rc - 24)/n), x0 = (Z.w - rc - n*cw)/2 + rc;
     const filas = R.dividir ? 4 : 3, rh = Math.min(38, (Z.h - 40)/filas), y0 = Z.y + 26;
     const X = i => x0 + i*cw + cw/2, Y = j => y0 + j*rh + rh/2 + (j >= 2 ? 6 : 0);
@@ -534,7 +534,6 @@ function crearEscena(cv, idDesc, idLect, idLey){
     // candidatos (marcas naranjas finas) y raíces
     for (const x of G.marcas || []){ ctx.strokeStyle = c.a; ctx.lineWidth = 2; linea(ctx, { x:g.X(x), y:g.Y(0) - 6 }, { x:g.X(x), y:g.Y(0) + 6 }); }
     for (const p of G.puntos || []) if (p.texto) rotulo(ctx, c, g.X(p.x) + 9, g.Y(p.y) - 13, p.texto, c.ink, 'left', 800, 12);
-    if (G.nombre) rotulo(ctx, c, g.x1 - 4, g.y0 + 10, G.nombre, c.ink, 'right', 800, 13, c.mono);
     // el número a: triángulo bajo el eje
     if (G.a !== null && G.a !== undefined){
       const X = g.X(G.a), y = clamp(g.Y(0) + 16, g.y0 + 10, g.y1 + 12);
@@ -562,7 +561,10 @@ function crearEscena(cv, idDesc, idLect, idLey){
       l = [];
       if (E.fichas || E.ruf) l.push(['c', 'coeficientes'], ['g', 'exponentes']);
       if (E.ruf && E.ruf.res) l.push(['a', 'a (el número que se pone en x)'], ['q', 'cociente Q'], ['r', 'resto R']);
-      if (E.graf) l.push(['ink', 'y = P(x)', 'linea']);
+      if (E.rect || E.caja || (E.ruf && E.ruf.dividir)) l.push(['d', 'divisor']);
+      if (E.caja) l.push(['q', 'cociente Q'], ['r', 'resto R']);
+      if (E.bloques) l.push(['g', 'un bloque, un factor x o y']);
+      if (E.graf) l.push(['ink', E.graf.nombre || 'y = P(x)', 'linea']);
       if (E.graf && E.graf.altura) l.push(['r', 'altura P(a)', 'linea']);
     }
     document.getElementById(idLey).innerHTML = l.map(([k, t, tipo]) => it(k, t, tipo)).join('');
@@ -625,6 +627,449 @@ function control(id, nombre, valor, k){ return `<span class="paso">${V(k, nombre
 const rufA = (coefs, a) => ME.ruffini({ coefs, divisor:[1, -a] });
 const divisorTx = a => (a === 0 ? 'x' : a > 0 ? `x − ${fq(a)}` : `x + ${fq(-a)}`);
 </script>
-<!--MODOS-->
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, orden:false, a2:1, a6:-2, k8:null };
+
+// Todo lo que se pregunta sale del motor, con sus errores típicos
+const P1 = [1, -2, -5, 6];
+const T2 = [3, 0, -5, 4, -6], PC = ME.pDeCero({ coefs:T2 });
+const M3 = [{ c:4, x:3, y:2 }, { c:-7, x:5, y:1 }, { c:2, x:1, y:4 }], GM = ME.grado({ terminos:M3 });
+const GP = ME.gradoProducto({ m:3, n:4 });
+const D5 = [2, 0, -7, 4], R5 = ME.ruffini({ coefs:D5, divisor:[1, -2] });
+const P6 = [1, -3, 1, 4], TR = ME.teoremaResto({ coefs:P6, divisor:[1, 2] });
+const D7 = [4, -2, 6, 1], R7 = ME.ruffini({ coefs:D7, divisor:[2, -1] });
+const FK = ME.factorK({ coefs:[1, -3, 'k', 6], raiz:2 });
+S.k8 = FK.valor;
+const conK = k => [1, -3, k, 6];
+
+const fuenteHip = `<p class="fuente">El informe de álgebra que usamos casi no trae datos sobre polinomios: una prueba diagnóstica con ingresantes de Costa Rica y México describe errores con polinomios en general (Gamboa y otros, 2019, según resúmenes), sin una cifra para cada error. Estas opciones incorrectas son hipótesis nuestras, que la medición en el colegio va a confirmar o descartar.</p>`;
+
+const P2 = { id:'polinomios-paso2', ok:'c', opts:[
+  ['a', PC.errores.sumaCoef.texto, 'PO7-p0-suma-de-coeficientes', 'hipotesis'],
+  ['b', PC.errores.principal.texto, 'PO19-p0-coeficiente-principal', 'hipotesis'],
+  ['c', PC.texto],
+  ['d', PC.errores.cero.texto, 'PO34-p0-es-cero', 'hipotesis']],
+  fb:{ c:`¡Bien! Con x = 0 todos los términos que llevan x valen 0: solo queda el término independiente, −6.`,
+    a:`Elegiste la A. −4 es la suma de coeficientes: eso es T(1), porque con x = 1 cada potencia vale 1. Con x = 0, cada término con x se anula. La correcta está marcada.`,
+    b:`Elegiste la B. 3 es el coeficiente principal, el del término de mayor grado. Pero 3 · 0⁴ = 0. La correcta está marcada.`,
+    d:`Elegiste la D. Los términos con x sí se anulan, pero el término independiente, −6, no lleva x: queda. La correcta está marcada.` } };
+const P3 = { id:'polinomios-paso3', ok:'b', opts:[
+  ['a', GM.errores.sumaTodos.texto, 'PO11-ga-suma-todos-los-exponentes', 'hipotesis'],
+  ['b', GM.texto],
+  ['c', GM.errores.relativo.texto, 'PO10-ga-como-grado-relativo', 'hipotesis'],
+  ['d', GM.errores.sumaRelativos.texto, 'PO28-ga-suma-de-relativos', 'hipotesis']],
+  fb:{ b:`¡Bien! Cada término tiene su grado (la suma de sus exponentes): 5, 6 y 5. El grado absoluto es el mayor: 6.`,
+    a:`Elegiste la A. 16 suma los exponentes de todos los términos. El grado se mide término por término: cada fila de bloques por separado. La correcta está marcada.`,
+    c:`Elegiste la C. 5 es el mayor exponente de x: el grado relativo a x. El absoluto cuenta x e y juntos en cada término. La correcta está marcada.`,
+    d:`Elegiste la D. 9 = 5 + 4 suma los dos grados relativos, pero el 5 de x y el 4 de y están en términos distintos: ningún término tiene 9 factores. La correcta está marcada.` } };
+const P4 = { id:'polinomios-paso4', ok:'c', opts:[
+  ['a', GP.errores.producto.texto, 'PO5-grado-producto-multiplica', 'hipotesis'],
+  ['b', GP.errores.mayor.texto, 'PO23-grado-producto-el-mayor', 'hipotesis'],
+  ['c', GP.texto]],
+  fb:{ c:`¡Bien! x³ · x⁴ = x⁷: al multiplicar se juntan los factores, así que los exponentes se suman.`,
+    a:`Elegiste la A. 12 = 3 · 4 multiplica los grados. Pero x³ · x⁴ es poner 3 factores x y luego 4 más: 7. La correcta está marcada.`,
+    b:`Elegiste la B. 4 es el grado de la suma F + G, no del producto: al multiplicar, los factores x se juntan. La correcta está marcada.` } };
+const P5 = { id:'polinomios-paso5', ok:'d', unidad:U_DIV, opts:[
+  ['a', R5.errores.sinCero.texto, 'PO1-ruffini-sin-el-cero', 'hipotesis'],
+  ['b', R5.errores.signo.texto, 'PO2-ruffini-signo-del-divisor', 'hipotesis'],
+  ['c', R5.errores.todaLaFila.texto, 'PO18-cociente-con-el-resto', 'hipotesis'],
+  ['d', R5.texto]],
+  fb:{ d:`¡Bien! Con el 0 en la casilla del x², la fila de abajo da 2, 4, 1 y el resto 6: el cociente es de grado 2.`,
+    a:`Elegiste la A. Esa cuenta usa solo 2, −7 y 4: falta la ficha del x², que es 0. Sin ella, cada número cae en la casilla de otro grado. La correcta está marcada.`,
+    b:`Elegiste la B. Esa cuenta baja −2. Pero el número que va en la máquina es el que anula el divisor: x − 2 = 0 da x = 2. La correcta está marcada.`,
+    c:`Elegiste la C. El último número de la fila, 6, es el resto, no un coeficiente: el cociente tiene un grado menos que el dividendo. La correcta está marcada.` } };
+const P6b = { id:'polinomios-paso6', ok:'b', unidad:U_DIV, opts:[
+  ['a', TR.errores.signo.texto, 'PO8-resto-con-el-signo-del-divisor', 'hipotesis'],
+  ['b', TR.texto],
+  ['c', TR.errores.independiente.texto, 'PO27-resto-es-el-independiente', 'hipotesis'],
+  ['d', TR.errores.parNegativo.texto, 'PO15-potencia-par-de-negativo', 'parcial']],
+  fb:{ b:`¡Bien! x + 2 = 0 da x = −2, y P(−2) = −8 − 12 − 2 + 4 = −18. El resto es el valor de P en ese número.`,
+    a:`Elegiste la A. 2 es P(2). Pero x + 2 se anula en x = −2: el resto es P(−2). La correcta está marcada.`,
+    c:`Elegiste la C. 4 es el término independiente: eso sería el resto de dividir entre x, que se anula en 0. La correcta está marcada.`,
+    d:`Elegiste la D. Esa cuenta usa (−2)² = −4. Pero (−2)² = (−2)(−2) = 4: una potencia par de un negativo es positiva. La correcta está marcada.` } };
+const P7 = { id:'polinomios-paso7', ok:'c', unidad:U_DIV, opts:[
+  ['a', R7.errores.sinDividir.par, 'PO3-no-divide-el-cociente-entre-a', 'hipotesis'],
+  ['b', R7.errores.signo.par, 'PO2-ruffini-signo-del-divisor', 'hipotesis'],
+  ['c', R7.par],
+  ['d', R7.errores.restoDividido.par, 'PO4-divide-tambien-el-resto', 'hipotesis']],
+  fb:{ c:`¡Bien! Con 1/2 la fila da 4, 0, 6 y el resto 4. Como 2x − 1 = 2(x − 1/2), el cociente se divide entre 2; el resto no.`,
+    a:`Elegiste la A. 4x² + 6 es el cociente de dividir entre x − 1/2. El divisor es 2x − 1, el doble: el cociente tiene que ser la mitad. La correcta está marcada.`,
+    b:`Elegiste la B. Esa cuenta usa −1/2. Pero 2x − 1 = 0 da x = 1/2. La correcta está marcada.`,
+    d:`Elegiste la D. El cociente sí se divide entre 2, pero el resto no: es lo que sobra, y sobra lo mismo. Mira el rectángulo: cambia de forma, la tira del resto no. La correcta está marcada.` } };
+const P8 = { id:'polinomios-paso8', ok:'d', unidad:U_DIV, opts:[
+  ['a', FK.errores.signo.texto, 'PO17-factor-con-el-signo-cambiado', 'hipotesis'],
+  ['b', FK.errores.despeje.texto, 'AL16-despeje-con-signo-cambiado', 'hipotesis'],
+  ['c', FK.errores.sumaCoef.texto, 'PO33-factor-con-suma-de-coeficientes', 'hipotesis'],
+  ['d', FK.texto]],
+  fb:{ d:`¡Bien! x − 2 es factor si el resto es 0, o sea P(2) = 0: 8 − 12 + 2k + 6 = 0 da 2k = −2 y k = −1.`,
+    a:`Elegiste la A. Esa cuenta iguala a 0 P(−2): sería para el factor x + 2. El factor x − 2 se anula en x = 2. La correcta está marcada.`,
+    b:`Elegiste la B. 2k + 2 = 0 da 2k = −2: al pasar el 2 al otro lado cambia de signo. Con k = 1 el resto sale 4. La correcta está marcada.`,
+    c:`Elegiste la C. Esa cuenta iguala a 0 la suma de coeficientes, P(1): eso diría que x − 1 es factor, no x − 2. La correcta está marcada.` } };
+
+// Lecturas
+const lectA = (coefs, nombre) => [() => ['a', 'a', fq(E.graf.a)], () => ['r', `${nombre}(a)`, fq(ME.evaluar({ coefs, x:E.graf.a }).valor)]];
+const lectRuf = (coefs, extra) => [() => ['d', 'divisor', divisorTx(E.graf.a)], () => ['q', 'cociente Q', ME.texto(E.ruf.res.cociente)], () => ['r', 'resto R', E.ruf.res.restoTexto]].concat(extra || []);
+// Fila de fichas con lo que vale cada término en a y el total
+function filaValores(coefs, a, nombre){
+  const v = ME.evaluar({ coefs, x:a });
+  return { coefs, prod: v.terminos.map(t => fq(t.valor)), total:`= ${fq(v.valor)}`, nombre };
+}
+
+const steps = [
+ { k:'Paso 1', t:'Una casilla por grado',
+   prep:() => config1(),
+   body:() => `<p class="problem">P(x) = −5x + x³ + 6 − 2x². Sus coeficientes son ${c_('fichas azules')}. Toca «Ordenar» y mira dónde cae cada una.</p>
+   <div class="pasos"><button type="button" class="btn" id="ordenar" aria-pressed="false">Ordenar</button></div>
+   <p>Ordenado, P(x) = x³ − 2x² − 5x + 6: los ${g_('exponentes')} bajan de uno en uno, del mayor al término independiente, que es el término con x⁰ (x⁰ = 1). Cada grado tiene su casilla.</p>
+   <p>El <b>grado</b> de P es su mayor exponente: ${g_('3')}. Un polinomio de grado 3 que tiene todas sus casillas ocupadas se llama <b>completo</b>. Si falta un término, su casilla queda vacía: un hueco.</p>
+   <p>Lo que va en cada casilla es el coeficiente con su signo: −2 en la del x² y −5 en la del x.</p>`,
+   entrar:() => { const b = $('ordenar'); if (!b) return; b.setAttribute('aria-pressed', String(S.orden)); b.textContent = S.orden ? 'Desordenar' : 'Ordenar';
+     b.onclick = () => { S.orden = !S.orden; config1(); steps[0].entrar(); }; } },
+ { k:'Paso 2', t:'Predice: T(0)', gate:P2,
+   prep:() => { if (S.pred[P2.id]) return config2(); E.config({ fichas:{ sinProd:true, filas:[{ coefs:[3, null, -5, 4, -6] }] }, desc:'Las fichas de T(x).' }); },
+   anima:fin => { E.config({ fichas:{ filas:[{ coefs:[3, null, -5, 4, -6], apaga:[1, 1, 1, 1, 1], prod:['3 · 0⁴', '', '−5 · 0²', '4 · 0', ''] }] } });
+     const F = E.fichas.filas[0];
+     E.animar(0, 1, 1400, v => { F.apaga = [1 - v, 1, 1 - v, 1 - v, 1]; }, () => { config2(); E.graf.fAlt = 0; E.animar(0, 1, 900, v => { E.graf.fAlt = v; }, fin); }); },
+   body:() => `<p class="problem">T(x) = ${c_('3')}x${g_('⁴')} ${c_('− 5')}x${g_('²')} ${c_('+ 4')}x ${c_('− 6')}. ¿Cuánto vale ${r_('T(0)')}?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${r_('T(0)')} = 3 · 0⁴ − 5 · 0² + 4 · 0 − 6 = ${r_(PC.texto)}</div>
+   <div class="eq">T(1) = 3 − 5 + 4 − 6 = ${PC.errores.sumaCoef.texto}<span class="note">la suma de coeficientes es T(1), no T(0)</span></div></div>
+   <p>El <b>valor numérico</b> es lo que da el polinomio cuando se pone un número en lugar de x. Con 0, cada término con x se anula: T(0) es el término independiente. En la gráfica, es donde la curva corta el eje y.</p>
+   <p>Ahora arrastra el ${a_('triángulo naranja')} (o usa ← y → en el dibujo): elige el número ${a_('a')} que se pone en lugar de x. Encima de cada ficha está lo que vale su término y a la derecha el total ${r_('T(a)')}: la altura de la curva en ${a_('a')}.</p>
+   <p class="hint">La casilla vacía es la del x³: T no tiene término de grado 3, así que vale 0.</p>
+   ${fuenteHip}</div>`,
+   entrar:() => {} },
+ { k:'Paso 3', t:'Predice: el grado absoluto', gate:P3,
+   prep:() => { const r = !!S.pred[P3.id]; E.config({ bloques:{ filas:M3.map((t, i) => ({ texto:['4x³y²', '−7x⁵y', '2xy⁴'][i], x:t.x, y:t.y })), f: r ? 1 : 0, cuenta:r, mayor: r ? 1 : undefined },
+     desc:'Los tres términos de M, cada uno como una fila de bloques.', lect: r ? lect3() : [] }); },
+   anima:fin => { const B = E.bloques; E.animar(0, 1, 1800, v => { B.f = v; }, () => { B.cuenta = true; B.mayor = 1; E.lect = lect3(); E.dibujar(); E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">M(x; y) = 4x${g_('³')}y${g_('²')} − 7x${g_('⁵')}y + 2xy${g_('⁴')}. ¿Cuál es su <b>grado absoluto</b>?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">grados de los términos: 3 + 2 = ${g_('5')};  5 + 1 = ${g_('6')};  1 + 4 = ${g_('5')}  ⟹  GA = ${g_(GM.texto)}</div>
+   <div class="eq">GR(x) = ${g_(String(GM.GR.x))};  GR(y) = ${g_(String(GM.GR.y))}<span class="note">el mayor exponente de cada letra</span></div></div>
+   <p>Cada bloque es un factor: x³y² es x · x · x · y · y, cinco bloques. El grado de un término es cuántos factores tiene; el grado absoluto del polinomio es el del término más largo (la fila marcada). El grado relativo mira una sola letra: el mayor exponente de x es 5 y el de y, 4.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 4', t:'Predice: el grado de un producto', gate:P4,
+   prep:() => { const r = !!S.pred[P4.id]; E.config({ bloques:{ filas:[{ texto:'2x³', x:3 }, { texto:'5x⁴', x:4 }, { texto:'10x⁷', x:7, f: r ? 1 : 0 }], cuenta:true },
+     desc:'Los términos principales de F y G como filas de bloques.', lect: r ? [() => ['g', 'grado de F · G', GP.texto]] : [] }); },
+   anima:fin => { const fl = E.bloques.filas[2]; fl.f = 0.001; E.animar(0, 1, 1500, v => { fl.f = Math.max(.001, v); }, () => { E.lect = [() => ['g', 'grado de F · G', GP.texto]]; E.dibujar(); E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">F(x) es de grado ${g_('3')} y empieza con 2x³; G(x) es de grado ${g_('4')} y empieza con 5x⁴. ¿De qué grado es F(x) · G(x)?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(2x${g_('³')} + …)(5x${g_('⁴')} + …) = 10x${g_('⁷')} + …  ⟹  grado ${g_('3')} + ${g_('4')} = ${g_(GP.texto)}</div></div>
+   <p>El término de mayor grado del producto sale de multiplicar los dos términos principales: sus bloques se ponen uno tras otro. Por eso en un producto los grados se suman, y en una potencia [F(x)]ⁿ se suman n veces: el grado se multiplica por n.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 5', t:'Predice: un cociente por Ruffini', gate:P5,
+   prep:() => { if (S.pred[P5.id]) return E.config({ ruf:{ res:R5, huecos:[1], fHueco:1 }, lect:lect5(), desc:'La tabla de Ruffini llena.' }); E.config({ ruf:{ n:4 }, desc:'La tabla de Ruffini, vacía.' }); },
+   anima:fin => { E.config({ ruf:{ res:R5, huecos:[1], fHueco:0, prog:-1 }, desc:'La tabla de Ruffini.' }); const R = E.ruf;
+     E.cadena([n => esperar(700, () => { R.fHueco = 1; E.dibujar(); esperar(500, n); }), n => E.animar(-1, 6, 3600, v => { R.prog = v; }, n, true)], () => { E.lect = lect5(); E.leyenda(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Divide ${c_('2')}x³ ${c_('− 7')}x ${c_('+ 4')} entre ${d_('x − 2')} por Ruffini. ¿Cuál es el ${q_('cociente')}?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">coeficientes con el hueco lleno: ${c_('2')}, ${c_('0')}, ${c_('−7')}, ${c_('4')};  ${d_('x − 2')} = 0 ⟹ ${a_('a = 2')}</div>
+   <div class="eq">${q_('Q(x) = ' + R5.texto)};  ${r_('R = ' + R5.restoTexto)}</div></div>
+   <p>La máquina: se baja el primer coeficiente; se multiplica por ${a_('a')} y el producto se escribe en la columna siguiente; se suma, y otra vez. La fila de abajo es el ${q_('cociente')}, con un grado menos, y el último número, separado, es el ${r_('resto')}.</p>
+   <p>El x² no aparece, así que su ficha es 0: si se salta, el −7 cae en la casilla del x² y toda la cuenta se corre.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 6', t:'Predice: el resto entre x + 2', gate:P6b,
+   prep:() => { if (S.pred[P6b.id]) return config6(); E.config({ ruf:{ n:4 }, desc:'La tabla de Ruffini, vacía.' }); },
+   anima:fin => { E.config({ ruf:{ res:rufA(P6, -2), prog:-1 } }); const R = E.ruf;
+     E.animar(-1, 6, 3200, v => { R.prog = v; }, () => { config6(); E.graf.fAlt = 0; E.animar(0, 1, 900, v => { E.graf.fAlt = v; }, fin); }, true); },
+   body:() => `<p class="problem">¿Cuál es el ${r_('resto')} de dividir P(x) = x³ − 3x² + x + 4 entre ${d_('x + 2')}?</p>${opcionesHTML(P6b.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${d_('x + 2')} = 0 ⟹ ${a_('a = −2')};  ${r_('R')} = P(${a_('−2')}) = −8 − 12 − 2 + 4 = ${r_(TR.texto)}</div></div>
+   <p><b>Teorema del resto:</b> el resto de dividir P(x) entre ${d_('x − a')} es ${r_('P(a)')}. Como P(x) = (x − a) · Q(x) + R, al poner x = a el primer sumando se anula y queda R.</p>
+   <p>Arrastra el ${a_('triángulo')} (o usa ← y →): la máquina divide entre ${d_('x − a')} con cada ${a_('a')}, y el ${r_('resto')} es siempre la altura de la curva en ${a_('a')}. Busca un ${a_('a')} donde la curva toque el eje: ahí el resto es 0.</p>
+   <p class="fuente">Errores con potencias de negativos, como (−2)² = −4, se describen entre los de jerarquía de operaciones y paréntesis en una prueba diagnóstica con ingresantes de Costa Rica y México (Gamboa y otros, 2019, según resúmenes), sin una cifra para este error. Las otras dos opciones son hipótesis nuestras.</p></div>`,
+   entrar:() => {} },
+ { k:'Paso 7', t:'Predice: un divisor 2x − 1', gate:P7,
+   prep:() => { if (S.pred[P7.id]) return config7(1); E.config({ ruf:{ n:4 }, desc:'La tabla de Ruffini, vacía.' }); },
+   anima:fin => { config7(0); const R = E.ruf; R.prog = -1;
+     E.cadena([n => E.animar(-1, 7, 3800, v => { R.prog = v; }, n, true), n => esperar(400, n), n => E.animar(0, 1, 1600, v => { E.rect.f = v; }, n)], () => { E.lect = lect7(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Divide ${c_('4')}x³ ${c_('− 2')}x² ${c_('+ 6')}x ${c_('+ 1')} entre ${d_('2x − 1')}. ¿Cuánto valen el ${q_('cociente Q')} y el ${r_('resto R')}?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${d_('2x − 1')} = 0 ⟹ ${a_('a = 1/2')};  Ruffini da 4, 0, 6 y ${r_('4')}</div>
+   <div class="eq">P(x) = (x − 1/2)(4x² + 6) + 4 = ${d_('(2x − 1)')}${q_('(2x² + 3)')} + ${r_('4')}</div></div>
+   <p>Ruffini divide entre x − 1/2. El divisor de verdad, ${d_('2x − 1')}, es el doble: el rectángulo se estira al doble de ancho y queda a la mitad de alto, con la misma área. Por eso el ${q_('cociente')} se divide entre 2. El ${r_('resto')} es lo que sobra fuera del rectángulo y no cambia.</p>
+   ${fuenteHip}</div>` },
+ { k:'Paso 8', t:'Predice: un factor', gate:P8,
+   prep:() => { if (S.pred[P8.id]) return config8(); E.config({ fichas:{ sinProd:true, filas:[{ coefs:[1, -3, 'k', 6] }] }, desc:'Las fichas de P(x), una con k.' }); },
+   anima:fin => { S.k8 = FK.valor; config8(); E.graf.fAlt = 0; E.ruf.prog = -1; const R = E.ruf;
+     E.cadena([n => E.animar(-1, 6, 2600, v => { R.prog = v; }, n, true), n => E.animar(0, 1, 800, v => { E.graf.fAlt = v; }, n)], fin); },
+   body:() => `<p class="problem">¿Para qué valor de ${c_('k')} el binomio ${d_('x − 2')} es factor de P(x) = x³ − 3x² + ${c_('k')}x + 6?</p>${opcionesHTML(P8.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${d_('x − 2')} es factor ⟺ ${r_('P(2) = 0')}:  8 − 12 + 2${c_('k')} + 6 = 0 ⟹ ${c_(FK.texto)}</div>
+   <div class="eq">P(x) = ${d_('(x − 2)')}${q_('(' + ME.texto(FK.cociente) + ')')}</div></div>
+   <p><b>Teorema del factor:</b> ${d_('x − a')} es factor de P(x) exactamente cuando ${r_('P(a) = 0')}, porque entonces el resto es 0. En la gráfica, a es un punto donde la curva corta el eje x: una <b>raíz</b>.</p>
+   <p>Cambia ${c_('k')} y mira: la curva deja de pasar por (2; 0) y la máquina da un resto distinto de 0.</p>
+   <div class="pasos">${control('k8', 'k', fq(S.k8), 'c')}</div>
+   <p class="fuente">Despejar con el signo cambiado al «pasar al otro lado» se describe como una regla sin significado, sin porcentaje (Kieran, 1992; AL16, hipótesis del informe). Las otras dos opciones son hipótesis nuestras.</p></div>`,
+   entrar:() => { if (S.pred[P8.id]) enlazar('k8', d => { S.k8 = clamp(S.k8 + d, -8, 6); config8(); pintarK(); }); pintarK(); } },
+];
+
+function config1(){
+  E.config({ fichas: S.orden ? { sinProd:true, filas:[{ coefs:P1 }] } : { sinProd:true, filas:[{ coefs:[1], exps:false, sueltos:['−5x', 'x³', '6', '−2x²'] }] },
+    desc: S.orden ? 'Las fichas de P ordenadas: 1, −2, −5 y 6 sobre x³, x², x y x⁰.' : 'Cuatro términos sueltos: −5x, x³, 6 y −2x².' });
+}
+function config2(){
+  const coefs = T2, mov = a => { E.fichas.filas[0] = Object.assign(filaValores(coefs, a), { coefs:[3, null, -5, 4, -6] }); S.a2 = a; };
+  E.config({ fichas:{ filas:[Object.assign(filaValores(coefs, S.a2), { coefs:[3, null, -5, 4, -6] })] },
+    graf:{ coefs, xr:[-2, 2], yr:[-12, 12], a:S.a2, altura:true, arrastre:true, paso:.5, min:-2, max:2, alMover:mov, nombre:'y = T(x)', puntos:[{ x:0, y:-6, color:'ink', texto:'(0; −6)' }] },
+    lect: lectA(coefs, 'T'), desc:'Las fichas de T con el valor de cada término en a, y la curva y = T(x).' });
+}
+function lect3(){ return [() => ['g', 'grado absoluto', GM.texto], () => ['g', 'GR(x)', String(GM.GR.x)], () => ['g', 'GR(y)', String(GM.GR.y)]]; }
+function lect5(){ return [() => ['q', 'cociente Q', R5.texto], () => ['r', 'resto R', R5.restoTexto]]; }
+function config6(){
+  E.config({ ruf:{ res:rufA(P6, S.a6) },
+    graf:{ coefs:P6, xr:[-2.5, 4.5], yr:[-22, 26], a:S.a6, altura:true, arrastre:true, paso:1, min:-2, max:4, nombre:'y = P(x)',
+      alMover:a => { S.a6 = a; E.ruf.res = rufA(P6, a); } },
+    lect: lectRuf(P6, [() => ['r', 'P(a)', fq(ME.evaluar({ coefs:P6, x:E.graf.a }).valor)]]), desc:'La máquina de Ruffini con a y la curva y = P(x) con la altura P(a).' });
+}
+function config7(f){
+  E.config({ ruf:{ res:R7, dividir:'2', etiquetaRaiz:'a' },
+    rect:{ a:2, f, divIni:'x − 1/2', divFin:'2x − 1', cocIni:'4x² + 6', cocFin:'2x² + 3', resto:R7.restoTexto },
+    lect: f >= 1 ? lect7() : [], desc:'La tabla de Ruffini con 1/2 y el rectángulo divisor por cociente, con la tira del resto.' });
+}
+function lect7(){ return [() => ['q', 'cociente Q', R7.texto], () => ['r', 'resto R', R7.restoTexto]]; }
+function config8(){
+  const coefs = conK(S.k8);
+  E.config({ ruf:{ res:rufA(coefs, 2) }, graf:{ coefs, xr:[-2.5, 4], yr:[-14, 14], a:2, altura:true, nombre:'y = P(x)' },
+    lect:[() => ['c', 'k', fq(S.k8)], () => ['r', 'resto R = P(2)', E.ruf.res.restoTexto], () => ['q', 'cociente Q', ME.texto(E.ruf.res.cociente)]],
+    desc:'La máquina de Ruffini con a = 2 y la curva y = P(x).' });
+}
+function pintarK(){ const o = $('o-k8'); if (!o) return; o.textContent = fq(S.k8);
+  $('stepBody').querySelector('[data-c="k8"][data-d="-1"]').disabled = S.k8 <= -8; $('stepBody').querySelector('[data-c="k8"][data-d="1"]').disabled = S.k8 >= 6; }
+function enlazar(id, fn){ $('stepBody').querySelectorAll(`[data-c="${id}"]`).forEach(b => b.onclick = () => { if (E.ocupado || S.ocupado || E.anim) return; fn(Number(b.dataset.d)); }); }
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  tramos($('stepBody'));
+  E.compacto = false; E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.entrar) s.entrar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    alDibujo($('cv'), () => true, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); if (s.entrar) s.entrar(); });
+    });
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   P(1), un completo de 13 términos, el grado de una suma, el resto entre x² + 1 (tabla de área) y los candidatos a raíz
+   racional. La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const C1 = [2, -5, 1, 7], D1 = ME.pDeUno({ coefs:C1 });
+const D2 = ME.gradoDeCompleto({ terminos:13 });
+const D3 = ME.gradoSuma({ m:5, n:3 }), F3 = [2, 0, 0, 1, 0, -3], G3 = [4, 0, -1, 1];
+const DV = [1, 3, 0, -2, 5], D4 = ME.restoSustitucion({ dividendo:DV, k:1 }), K4 = ME.cajaDivision({ dividendo:DV, divisor:[1, 0, 1] });
+const C5 = [2, -3, -11, 6], D5 = ME.raicesRacionales({ coefs:C5 });
+const huecos = p => p.map(c => (c === 0 ? null : c));
+const sumaF = ME.sumar({ p:F3, q:G3 }).coefs;
+const fuente = t => `<p class="fuente">${t}</p>`;
+const HIP = 'No encontramos estudios con cifras sobre este error; las opciones incorrectas son hipótesis nuestras.';
+
+const EXPS = [
+  { id:'p-de-uno', corto:'P(1)',
+    q:`P(x) = ${c_('2')}x³ ${c_('− 5')}x² ${c_('+ 1')}x ${c_('+ 7')}. ¿Cuánto vale ${r_('P(1)')}?`,
+    opts:[['a', D1.errores.independiente.texto, 'PO12-p1-termino-independiente', 'hipotesis'],
+          ['b', D1.texto],
+          ['c', D1.errores.sinSignos.texto, 'PO21-p1-suma-sin-signos', 'hipotesis'],
+          ['d', D1.errores.principal.texto, 'PO20-p1-coeficiente-principal', 'hipotesis']], ok:'b',
+    fb:{ a:'7 es el término independiente: eso es P(0). Con x = 1 ningún término se anula.',
+         c:'15 suma los coeficientes sin sus signos. El −5 resta: 2 − 5 + 1 + 7 = 5.',
+         d:'2 es el coeficiente principal. Con x = 1, cada potencia de 1 vale 1 y quedan todos los coeficientes.' },
+    antes:ya => E.config(ya ? conf1() : { fichas:{ sinProd:true, filas:[{ coefs:C1 }] }, desc:'Las fichas de P(x).' }),
+    despues:() => { E.config(conf1()); E.graf.fAlt = 0; E.animar(0, 1, 1000, v => { E.graf.fAlt = v; }); },
+    exp:() => `<div class="eqs"><div class="eq">${r_('P(1)')} = 2 · 1³ − 5 · 1² + 1 · 1 + 7 = 2 − 5 + 1 + 7 = ${r_(D1.texto)}</div></div>
+      <p>Toda potencia de 1 vale 1, así que P(1) es la <b>suma de coeficientes</b>, con sus signos. Y P(0) es el término independiente. Son los dos valores numéricos más preguntados.</p>${fuente(HIP)}` },
+  { id:'trece-terminos', corto:'Trece términos',
+    q:`Un polinomio en x completo y ordenado tiene 13 términos. ¿De qué ${g_('grado')} es?`,
+    opts:[['a', D2.errores.igual.texto, 'PO9-completo-n-terminos', 'hipotesis'],
+          ['b', D2.errores.masUno.texto, 'PO29-completo-suma-uno', 'hipotesis'],
+          ['c', D2.texto]], ok:'c',
+    fb:{ a:'13 cuenta los términos, pero uno de ellos es el independiente, el de x⁰: los exponentes van del 12 al 0.',
+         b:'14 suma 1 en vez de restarlo. Con grado n hay n + 1 casillas: 13 casillas son grado 12.' },
+    antes:ya => E.config({ fichas:{ sinProd:true, filas:[{ coefs:Array(13).fill(null), exps:ya }] }, lect: ya ? [() => ['g', 'grado', D2.texto]] : [], desc:'Trece casillas en fila.' }),
+    despues:() => { E.fichas.filas[0].exps = true; E.lect = [() => ['g', 'grado', D2.texto]]; E.dibujar(); E.avisar(); },
+    exp:() => `<div class="eqs"><div class="eq">exponentes: ${g_('12')}, 11, …, 1, ${g_('0')}  ⟹  13 términos, grado ${g_(D2.texto)}</div></div>
+      <p>Un polinomio completo de grado n tiene <b>n + 1</b> términos: uno por cada exponente de n a 0. La casilla del final, x⁰, es el término independiente, y también cuenta.</p>${fuente(HIP)}` },
+  { id:'grado-de-la-suma', corto:'Grado de una suma',
+    q:`F(x) es de grado ${g_('5')} y G(x) es de grado ${g_('3')}. ¿De qué grado es F(x) + G(x)?`,
+    opts:[['a', D3.errores.suma.texto, 'PO6-grado-suma-suma-grados', 'hipotesis'],
+          ['b', D3.texto],
+          ['c', D3.errores.producto.texto, 'PO5-grado-suma-multiplica', 'hipotesis'],
+          ['d', D3.errores.menor.texto, 'PO22-grado-suma-el-menor', 'hipotesis']], ok:'b',
+    fb:{ a:'8 = 5 + 3 es el grado del producto F · G. Al sumar no se juntan factores: se suman fichas de la misma casilla.',
+         c:'15 multiplica los grados; ni siquiera el producto F · G llega ahí (es de grado 8).',
+         d:'3 es el grado de G. Pero el x⁵ de F no tiene con quién anularse: sigue en la suma.' },
+    antes:ya => E.config(ya ? conf3(1) : { mensaje:'Responde para ver dos ejemplos.', desc:'Sin dibujo hasta responder.' }),
+    despues:() => { E.config(conf3(0)); const fl = E.fichas.filas[2]; E.animar(0, 1, 1200, v => { fl.alfa = v; }, () => { E.lect = [() => ['g', 'grado de F + G', D3.texto]]; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">(${ME.texto(F3)}) + (${ME.texto(G3)}) = ${ME.sumar({ p:F3, q:G3 }).texto}</div></div>
+      <p>Al sumar, cada casilla suma con la de su mismo grado. Con grados distintos, el término de mayor grado queda solo: la suma tiene el grado del mayor, ${g_('5')}. Con grados iguales puede bajar, si los términos principales se anulan (x³ + (−x³ + 2) = 2).</p>${fuente(HIP)}` },
+  { id:'entre-x2-mas-1', corto:'Entre x² + 1', unidad:U_DIV,
+    q:`¿Cuál es el ${r_('resto')} de dividir x⁴ + 3x³ − 2x + 5 entre ${d_('x² + 1')}?`,
+    opts:[['a', D4.errores.signo.texto, 'PO16-sustituye-x2-con-signo-cambiado', 'hipotesis'],
+          ['b', D4.errores.unaVez.texto, 'PO31-sustituye-una-sola-vez', 'hipotesis'],
+          ['c', D4.texto],
+          ['d', D4.errores.pierdeX.texto, 'PO32-pierde-la-x-sobrante', 'hipotesis']], ok:'c',
+    fb:{ a:'x + 6 sale de cambiar x² por 1. Pero x² + 1 = 0 da x² = −1: así x⁴ = 1 y x³ = −x.',
+         b:'−5x + 4 cambia x⁴ por −1. Pero x⁴ = (x²)² = (−1)² = 1.',
+         d:'−2x + 3 cambia x³ por −1 y pierde una x: x³ = x² · x = −x.' },
+    antes:ya => E.config(ya ? conf4(1) : { fichas:{ sinProd:true, filas:[{ coefs:huecos(DV) }] }, desc:'Las fichas del dividendo.' }),
+    despues:() => { E.config(conf4(0)); E.animar(0, 1, 1800, v => { E.caja.f = v; }, () => { E.lect = lect4(); E.avisar(); }, true); },
+    exp:() => `<div class="eqs"><div class="eq">${d_('x² + 1')} = 0 ⟹ x² = −1:  x⁴ = (x²)² = 1;  3x³ = 3x² · x = −3x</div>
+      <div class="eq">${r_('R')} = 1 − 3x − 2x + 5 = ${r_(D4.texto)}</div>
+      <div class="eq">x⁴ + 3x³ − 2x + 5 = ${d_('(x² + 1)')}${q_('(' + ME.texto(D4.cociente) + ')')} + ${r_('(' + D4.texto + ')')}</div></div>
+      <p>La tabla es la división clásica como un rectángulo de área: arriba los términos del ${d_('divisor')}, a la izquierda los del ${q_('cociente')} y dentro sus productos; x² y −x² se anulan. Lo que falta para llegar al dividendo es el ${r_('resto')}, de grado menor que el divisor. Con coeficientes negativos, el «área» se cuenta con signo: es un modelo, no una medida. Con divisores de segundo grado también sirve el método de Horner, que es esta misma cuenta en tabla.</p>${fuente(HIP)}` },
+  { id:'candidatos', corto:'Candidatos a raíz', unidad:U_ECU,
+    q:`P(x) = ${c_('2')}x³ − 3x² − 11x ${c_('+ 6')}. Las raíces racionales posibles son ± (divisor de ${c_('6')}) / (divisor de ${c_('2')}). ¿Cuántos candidatos distintos hay?`,
+    opts:[['a', D5.errores.soloPositivos.texto, 'PO24-candidatos-solo-positivos', 'hipotesis'],
+          ['b', D5.errores.sinSimplificar.texto, 'PO26-candidatos-sin-simplificar', 'hipotesis'],
+          ['c', D5.errores.soloIndependiente.texto, 'PO25-candidatos-solo-del-independiente', 'hipotesis'],
+          ['d', D5.texto]], ok:'d',
+    fb:{ a:'6 cuenta solo los positivos. Cada candidato tiene también su negativo.',
+         b:'16 cuenta 2/2, 6/2 y otras fracciones que se simplifican a un número que ya estaba (1, 3).',
+         c:'8 son ±1, ±2, ±3 y ±6: faltan los que salen de dividir entre 2, como 1/2 y 3/2.' },
+    antes:ya => E.config(ya ? conf5() : { fichas:{ sinProd:true, filas:[{ coefs:C5 }] }, desc:'Las fichas de P(x).' }),
+    despues:() => { E.config(conf5()); E.graf.fAlt = 0; E.animar(0, 1, 900, v => { E.graf.fAlt = v; }); },
+    exp:() => `<p>Los ${D5.texto} candidatos: ${D5.candidatosTexto.join('; ')}.</p>
+      <div class="eqs"><div class="eq">raíces: ${D5.raices.map(fq).join('; ')}</div></div>
+      <p>Las marcas ${a_('naranjas')} del eje son los 12 candidatos. Arrastra el ${a_('triángulo')}: salta de candidato en candidato y la máquina divide entre x − a. Donde el ${r_('resto')} da 0, la curva corta el eje: es una raíz y x − a es factor. Ser candidato no garantiza ser raíz: solo 3 de los 12 lo son.</p>${fuente(HIP)}` },
+];
+function conf1(){ const v = ME.evaluar({ coefs:C1, x:1 });
+  return { fichas:{ filas:[{ coefs:C1, prod:v.terminos.map(t => fq(t.valor)), total:`= ${D1.texto}` }] },
+    graf:{ coefs:C1, xr:[-1.6, 3], yr:[-12, 14], a:1, altura:true, nombre:'y = P(x)' }, lect:[() => ['r', 'P(1)', D1.texto]], desc:'Las fichas con su valor en x = 1 y la curva.' }; }
+function conf3(f){ return { fichas:{ sinProd:true, filas:[{ coefs:huecos(F3), nombre:'F' }, { coefs:huecos(G3), nombre:'G' }, { coefs:huecos(sumaF), nombre:'F+G', alfa:f }] },
+  lect: f >= 1 ? [() => ['g', 'grado de F + G', D3.texto]] : [], desc:'F, G y su suma, casilla por casilla.' }; }
+function conf4(f){ return { caja:{ c:K4, f, anulan:[[0, 1], [2, 0]], resto:K4.restoTexto }, lect: f >= 1 ? lect4() : [], desc:'La tabla de área de la división entre x² + 1.' }; }
+function lect4(){ return [() => ['q', 'cociente Q', ME.texto(D4.cociente)], () => ['r', 'resto R', D4.texto]]; }
+function conf5(){
+  const a0 = 1;
+  return { ruf:{ res:rufA(C5, a0) }, graf:{ coefs:C5, xr:[-6.5, 6.5], yr:[-30, 30], a:a0, altura:true, arrastre:true, valores:D5.candidatos, marcas:D5.candidatos, nombre:'y = P(x)',
+    alMover:a => { E.ruf.res = rufA(C5, a); } },
+    lect:[() => ['a', 'a', fq(E.graf.a)], () => ['r', 'resto R', E.ruf.res.restoTexto], () => ['ink', 'candidatos', D5.texto]], desc:'La máquina con un candidato a y la curva con los 12 candidatos.' };
+}
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = false; E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    tramos($('res2'));
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); E.dibujar(); });
+  });
+  pintar();
+}
+addEventListener('modo', () => { if (!document.getElementById('m2').hidden) E.rehacer(); });
+ir(0);
+})();
+</script>
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+
 </body>
 </html>

@@ -80,6 +80,12 @@ test('división clásica y por sustitución: dividendo = divisor · cociente + r
     const caja = motor.cajaDivision({ dividendo: D, divisor: [1, 0, kk] }); cerca(caja.comprobacion, recorta(D), 'la caja suma el dividendo', 1e-9);
   }
 });
+test('sumar: casilla por casilla, grado del mayor si son distintos', () => {
+  const S = motor.sumar({ p: [2, 0, 0, 1, 0, -3], q: [4, 0, -1, 1] });
+  assert.deepEqual(S.coefs, [2, 0, 4, 1, -1, -2]); assert.equal(S.texto, '2x⁵ + 4x³ + x² − x − 2'); assert.equal(S.grado, 5);
+  assert.equal(motor.sumar({ p: [1, 0, 0], q: [-1, 0, 2] }).grado, 0);
+  for (let k = 0; k < 50; k++) { const p = poliAzar(1, 5), q = poliAzar(1, 5), s = motor.sumar({ p, q }); for (const x of [-2, 1, 3]) cerca(ev(s.coefs, x), ev(p, x) + ev(q, x), 'suma'); }
+});
 test('P(0), P(1), factor y raíces racionales', () => {
   for (let k = 0; k < N; k++) {
     const p = poliAzar(1, 5, true);

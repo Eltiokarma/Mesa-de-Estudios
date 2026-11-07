@@ -81,6 +81,8 @@
  *                                     candidatosTexto: ['−3', '−1/2', …], raices: [las candidatas con P = 0],
  *                                     errores: soloPositivos (PO24: la mitad), soloIndependiente (PO25: ±divisores del
  *                                     independiente), sinSimplificar (PO26: 2·(divisores de p)·(divisores de q)) }.
+ *   sumar({ p, q })                 → suma de dos polinomios (coefs), casilla por casilla: { coefs (sin ceros de
+ *                                     adelante), texto, grado }.
  *   curva({ coefs, desde, hasta, n }) → { pts: [[x, P(x)], …] } con n + 1 puntos igualmente espaciados (n por
  *                                     defecto 200).
  *   num(texto)                      → número de un coeficiente ('1/2' → 0.5).
@@ -410,6 +412,11 @@
       sinSimplificar: errE(2 * P.length * Q.length, 'PO26', 'cuenta p/q sin simplificar (2/2, 6/2…)'),
     }, igualValor(r));
   }
+  function sumar(o) {
+    o = o || {};
+    const r = sumF(poli(o.p, 'p'), poli(o.q, 'q'));
+    return { coefs: nums(r), texto: textoF(r), grado: r.length === 1 && r[0].n === 0 ? null : r.length - 1 };
+  }
   function curva(o) {
     o = o || {};
     const p = nums(poli(o.coefs)), a = Number(o.desde), b = Number(o.hasta), n = o.n === undefined ? 200 : o.n;
@@ -420,5 +427,5 @@
   }
 
   return { texto, evaluar, pDeCero, pDeUno, grado, gradoProducto, gradoSuma, gradoPotencia, completo, gradoDeCompleto,
-    ruffini, dividir, cajaDivision, restoSustitucion, teoremaResto, factorK, raicesRacionales, curva, num, textoNumero };
+    ruffini, dividir, cajaDivision, restoSustitucion, teoremaResto, factorK, raicesRacionales, sumar, curva, num, textoNumero };
 });
