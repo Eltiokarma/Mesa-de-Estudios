@@ -11,7 +11,7 @@
       "universidades": {"uni": {"semanas": [0, 1]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["lectura-verbal"],
       "investigacion": null
     },
     {
@@ -21,7 +21,7 @@
       "universidades": {"uni": {"semanas": [2]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
@@ -57,7 +57,7 @@
       "universidades": {"uni": {"semanas": [6]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
@@ -72,7 +72,7 @@
       "universidades": {"uni": {"semanas": [7]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {

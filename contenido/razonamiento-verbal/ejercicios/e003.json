@@ -1,0 +1,56 @@
+{
+  "id": "e003",
+  "version": 1,
+  "tipo": "analogia",
+  "unidad": "razonamiento-verbal.analogias",
+  "grado": 3,
+  "dificultad": 1,
+  "cuerpo": {
+    "base": [
+      "PÉTALO",
+      "FLOR"
+    ]
+  },
+  "previo": {
+    "tipo": "relacion-analogia",
+    "pide": "Antes de ver las alternativas: ¿qué relación hay entre las dos palabras?",
+    "aceptada": "a-parte-de-b",
+    "explicacion": "La flor tiene varios pétalos: el pétalo es una de sus partes.",
+    "explicaciones": {
+      "b-parte-de-a": "Es al revés: el pétalo es parte de la flor.",
+      "a-tipo-de-b": "El pétalo no es una clase de flor: es una de sus partes."
+    }
+  },
+  "enunciado": "PÉTALO : FLOR ::",
+  "alternativas": [
+    {
+      "t": "tecla : piano",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Una parte y el todo, en el mismo orden: el pétalo es parte de la flor y la tecla es parte del piano."
+    },
+    {
+      "t": "libro : página",
+      "codigo": "RV16",
+      "explicacion": "Es la relación de parte y todo, pero al revés: primero va el todo y después la parte."
+    },
+    {
+      "t": "jardín : abeja",
+      "codigo": "RV15",
+      "explicacion": "Recuerda a las flores, pero la abeja no es parte del jardín."
+    },
+    {
+      "t": "rosa : flor",
+      "codigo": "RV17",
+      "explicacion": "La rosa es un tipo de flor, no una parte de ella."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. Sin cambios de clave."
+  }
+}

@@ -10,7 +10,11 @@
     "razonamiento-verbal.inferencias",
     "razonamiento-verbal.compatibilidad",
     "razonamiento-verbal.extrapolacion",
-    "razonamiento-verbal.textos-argumentativos-y-dialecticos"
+    "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+    "razonamiento-verbal.analogias",
+    "razonamiento-verbal.plan-de-redaccion",
+    "razonamiento-verbal.eliminacion-de-oraciones",
+    "razonamiento-verbal.definiciones"
   ],
   "estado": "borrador",
   "version": "0.1.0",

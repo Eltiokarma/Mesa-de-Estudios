@@ -133,6 +133,10 @@ Los ejemplos son propios, escritos para este informe.
 | RV30 | **Se elimina una oración con un dato nuevo pero pertinente**, por parecer "de más", y se deja la impertinente que comparte palabras con el tema. | Texto sobre los usos de la totora: se elimina la oración "su parte tierna, el chullo, se come" (pertinente: es otro uso) y se deja una sobre la pesca de trucha en el lago (comparte "Titicaca" con el resto, pero no habla de la totora). | Sin estudio encontrado; ligado al eco literal (RV5). | Hipótesis (ligada a RV5) | — |
 | RV31 | **No se elimina la oración incompatible** cuando coincide con lo que el alumno cree. | Texto que explica que las estaciones se deben a la inclinación del eje de la Tierra, con una oración que dice que en verano la Tierra está más cerca del Sol (creencia común, en contra de lo que sostiene el texto). | Mismo hallazgo que RV8: no se detecta la contradicción que encaja con las creencias previas. | Parcial (cualitativo) | Otero y Kintsch (1992); Markman (1979) |
 | RV32 | **No se detecta la redundancia por paráfrasis**: se cree que una oración aporta porque usa otras palabras. | Dos oraciones que dicen lo mismo ("se construyó con piedras sin argamasa" y "sus muros no llevan mezcla"). | Sin estudio encontrado. | Hipótesis | — |
+| RV37 | **En plan de redacción, se empieza por la conclusión** (la oración con "por eso" o "así"), porque parece la idea más general. | Plan sobre la quinua: el alumno pone primero "Por esas dos razones, hoy se siembra en otros continentes". | Sin estudio encontrado. | Hipótesis (ligada a RV29) | — |
+| RV38 | **En eliminación, se saca la oración que presenta el tema**, porque no trae un dato concreto. | Cinco oraciones sobre la totora: el alumno elimina "La totora es una planta que crece en las orillas del Titicaca". | Sin estudio encontrado. | Hipótesis (ligada a RV30) | — |
+| RV39 | **En término excluido, se saca el que difiere en un rasgo secundario** (tamaño, color, si vuela, si es valioso) y no el que no pertenece a la clase. | Quena, zampoña, pinkillo y charango: se excluye "zampoña" porque es la única de varios tubos, y no "charango", que es de cuerda. | Sin estudio encontrado; vecino de RV22 (se agrupa por un rasgo visible y no por la categoría). | Hipótesis (ligada a RV22) | — |
+| RV40 | **En término excluido, se saca la palabra que no se conoce**, porque "no suena" a las demás. | Quena, zampoña, pinkillo y charango: se excluye "pinkillo" porque el alumno no sabe qué es. | Sin estudio encontrado. | Hipótesis | — |
 
 ## Lo que no tiene respaldo (todavía)
 
@@ -154,6 +158,10 @@ Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada 
 | Plan por cronología superficial (RV29) | Sin dato; el único estudio apunta en contra |
 | Eliminar lo pertinente (RV30) | RV5 (eco literal) |
 | Redundancia por paráfrasis (RV32) | Sin dato |
+| Plan que empieza por la conclusión (RV37) | RV29 |
+| Eliminar la oración que presenta el tema (RV38) | RV30 |
+| Término excluido por un rasgo secundario (RV39) | RV22 |
+| Término excluido por la palabra desconocida (RV40) | Sin dato |
 | Postura que el autor no toma (RV33) | RV7 (inferencia no autorizada) |
 | Definiciones: elegir un rasgo accidental como diferencia específica | Sin dato (unidad `definiciones`) |
 | Textos discontinuos: leer el título del gráfico y no los ejes | Sin dato en esta revisión (unidad `textos-discontinuos`) |

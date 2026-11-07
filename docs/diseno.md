@@ -18,6 +18,20 @@
 
 Todos los textos pasan el contraste AA (4,5 a 1) sobre su fondo: blanco sobre lavanda 4,7; gris sobre crema 4,6; tinta sobre crema 13,4.
 
+## Pegatinas (7 nov 2026): «Brilliant en esteroides»
+
+Pedido de Gerson con referencias de Dribbble y Pinterest: la cáscara de la app se veía seca. Ahora cada tarjeta es una **pegatina**: contorno ciruela de 2 px (`--borde`) y una base de color debajo (`box-shadow: 0 5px 0`, la «plataforma»), como un objeto que se aprieta; al tocarla se hunde. Los botones llevan la misma base y se hunden al tocarlos.
+
+- **Un color por curso** (`TINTE` en `app/ilustraciones.js`, solo en la cáscara): un pastel de fondo (`--cf`) y una base (`--cb`) para la plataforma y las barras de avance. Física lavanda, química menta, álgebra cielo, aritmética miel, geometría rosa, trigonometría durazno, razonamiento matemático amarillo y razonamiento verbal aguamarina. El texto va siempre en tinta sobre el pastel; en oscuro el fondo es la base mezclada al 30 % con la tarjeta.
+- **Una viñeta grande por curso** (`Ilus.viñeta`, SVG propio de 160 × 120): la rampa con el carrito y el sol, el matraz con la molécula, la balanza con la x, el ábaco con la moneda, el triángulo con el compás y la regla, la circunferencia con el seno, las piezas y el dado, y el libro con el globo de diálogo.
+- **Inicio:** el reto del día es la pegatina del curso con su viñeta (flota despacio) y el gatito asomado; la racha va en una píldora arriba; «Hoy» en tres pasteles; «Lo que sigue» en filas con botón; «Tus cursos» en carrusel (en PC, una columna de pegatinas).
+- **Cursos:** cuadrícula de pegatinas pastel con su viñeta y la barra en la base del curso.
+- **Un curso:** cabecera del color del curso con la viñeta, el avance y los filtros; cada unidad lleva su número en el pastel del curso (✓ verde si está estudiada).
+- **Navegación:** píldora con contorno y la sección activa en lavanda.
+- **Movimiento** (solo sin «reducir movimiento»): las tarjetas entran escalonadas, las barras se llenan y las viñetas flotan.
+- **Títulos** con la letra redondeada del sistema cuando existe (`ui-rounded`; en Android cae a la de siempre).
+- Dentro de las escenas no cambia nada: ahí mandan los colores de las variables.
+
 ## Dos familias de color que no se mezclan
 
 | Familia | Colores | Dónde se usa | Dónde no |
@@ -106,6 +120,10 @@ Variables de espejos esféricos 0.2.0 (`plantillas/optica-espejo-esferico/`, 7 n
 Variables de la recta en trozos (`plantillas/numeros-reales/`): A azul (#1f5fbf, oscuro #7cb0ff), B naranja (#a05200, oscuro #f0a04a), conjunto pedido fucsia (#a10fbf, oscuro #cf6bfa), x oliva (#5f6f00, oscuro #c8dc3c), centro y distancia azul petróleo (#086a96, oscuro #25caf4), irracional tostado (#541d12, oscuro #97fcfc) y neutro violeta (#6b3dbd, oscuro #fdecaa); ΔE00 mínimo 20,4; contraste mínimo 4,64.
 
 Banco Óptico 0.3.0 (`plantillas/optica-lente-delgada/`, 7 nov 2026): la misma paleta que espejos 0.2.0 (o, f, i, h, d, rayos #035c8c / #5cb8ff y A con color propio #3d2e00 / #ffdc14); chips al 8 % y .v.hl con contorno; el anillo de foco en tinta; lo correcto e incorrecto con --ok y --warn; los deslizadores en el color de su variable (d₁₂ y d₂₃ en el de d).
+
+Variables del espejo en la cuadrícula (`plantillas/simetria/`): figura azul (#1f5fbf, oscuro #7cb0ff), imagen fucsia (#a10fbf, oscuro #cf6bfa), espejo, ejes y plano naranja (#a05200, oscuro #f0a04a), H y d turquesa (#0f766e, oscuro #5ed9c8), centro O verde (#1b7530, oscuro #6fdc8c), L₂ oliva (#5f6f00, oscuro #c8dc3c) e imagen final y el movimiento granate (#77032c, oscuro #ff8fa3); ΔE00 mínimo 25,9 entre los que salen juntos (O y H nunca salen juntos); AA mínimo 4,63.
+
+Variables de la flecha en el plano (`plantillas/numeros-complejos/`): parte real Re (a) naranja (#a05200, oscuro #f0a04a), parte imaginaria Im (b) verde (#466d14, oscuro #a3d65e), módulo r (flecha de z y |z|) fucsia (#a10fbf, oscuro #cf6bfa), argumento θ azul (#1f5fbf, oscuro #7cb0ff) y w turquesa (#0f766e, oscuro #5ed9c8); el ángulo del resultado en tinta; ΔE00 mínimo 23,6 (claro) y 25,3 (oscuro); AA mínimo 4,63; w queda a 11 del verde de «correcto», que siempre lleva texto.
 
 **Paleta común de elementos de química** (`nucleo/elementos.js`, 7 nov 2026): cada elemento tiene un solo color en todas las escenas (`--el-<Símbolo>`, por ejemplo `--el-Fe`), copiado en cada escena desde `Elementos.css([...])` como bloque generado. Manda sobre los hex de elementos escritos arriba para limitante, mol, balance, celda y enlace. O rojo (#c4284e, oscuro #f17384), H turquesa (#0f766e, #5ed9c8), N azul (#136caa, #4eb3f9), C gris (#6b6b6b, #9a9a9a), Cl verde (#466d14, #a3d65e), S añil (#2d29c7, #9386ff), Cu cobre (#c52e03, #ff8a3d), Zn gris (#6a676d, #9e9ea4), Fe azul (#1768be, #209cf2), Ag turquesa (#0b7471, #02d6d6), K violeta (#7843e9, #a788d3), Na gris verdoso (#3f4948, #8a9a90), Ca lavanda (#6a5b8f, #deb0f5), Mg azul pizarra (#425697, #8db7ff), Al celeste (#056ea3, #38b6e8), Mn marrón rojizo (#6b260f, #ff6600) y Cr verde (#4f7303, #58a833), más F, P, Si, Br, I, Ba, Pb, Li, B, Ni, Sn, Hg, Au, He y Ar para escenas futuras. Todos pasan AA sobre papel, tarjeta, chip al 8 % y la letra del átomo; ΔE00 ≥ 20 entre lo que sale junto y contra las variables de cada escena (lo comprueba `nucleo/elementos-escenas.test.js`). Los 117 pares bajo 20 están en `Elementos.CERCANOS` y hoy nunca comparten vista; antes de juntarlos en una escena nueva hay que separarlos (riesgos: K–S, Ca–S en CaSO₄, Cu–O en CuO y CuSO₄, Fe–Al en la termita, N–Fe con aire junto al hierro). Los chips de elementos van al 8 %. El 7 nov se ajustó para materia y energía (O–Na y C–Fe juntos): Fe y Zn intercambiaron colores, Na pasó a gris verdoso y S se movió un poco; `Elementos.VISTAS` incluye las vistas de esa escena. El Na claro (#3f4948) queda a unos 19,5 de la tinta: en la celda galvánica lleva un aro. Una escena nueva de química copia su bloque con `Elementos.css([...])` y se suma a la prueba.
 

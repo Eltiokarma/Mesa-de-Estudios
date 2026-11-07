@@ -1,0 +1,143 @@
+{
+  "titulo": "El espejo en la cuadrícula: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Haz siempre un dibujo en la cuadrícula. Para el simétrico de un punto respecto de una recta, baja la perpendicular hasta la recta (el pie H) y sigue otro tanto: P′ = 2H − P. Respecto de un punto O, O es el punto medio: P′ = 2O − P. Un eje de simetría es una recta que, usada como espejo, deja la figura encima de sí misma; compruébalo doblando, no a ojo.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Halla el simétrico del punto P(3; −2) respecto de la recta x = 1 (simetría axial: la recta es el eje de simetría).",
+      "respuesta": "P′(−1; −2).",
+      "pasos": [
+        "La recta x = 1 es vertical: la perpendicular desde P es horizontal y se queda en y = −2.",
+        "El pie es H(1; −2), y P está 2 unidades a su derecha.",
+        "P′ queda 2 unidades a la izquierda de H: P′(1 − 2; −2) = (−1; −2). Comprobación: H es el punto medio de PP′."
+      ],
+      "verificar": [ { "fn": "reflejar", "args": [{ "x": 3, "y": -2 }, { "x": 1 }], "espera": { "P.x": -1, "P.y": -2, "H.x": 1, "d": 2 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Halla el simétrico del punto A(−4; 5) respecto del punto O(1; 2) (simetría central o respecto de un punto).",
+      "respuesta": "A′(6; −1).",
+      "pasos": [
+        "O es el punto medio de AA′: A′ = 2O − A.",
+        "A′ = (2·1 − (−4); 2·2 − 5) = (6; −1).",
+        "Comprobación: el punto medio de A(−4; 5) y A′(6; −1) es (1; 2), que es O."
+      ],
+      "verificar": [ { "fn": "central", "args": [{ "x": -4, "y": 5 }, { "x": 1, "y": 2 }], "espera": { "P.x": 6, "P.y": -1 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Halla el simétrico del punto P(6; 2) respecto de la recta L: y = x + 2.",
+      "respuesta": "P′(0; 8).",
+      "pasos": [
+        "La perpendicular a L por P tiene pendiente −1: y − 2 = −(x − 6), es decir, y = −x + 8.",
+        "Se corta con L: x + 2 = −x + 8, así que x = 3 e y = 5. El pie es H(3; 5).",
+        "P′ = 2H − P = (2·3 − 6; 2·5 − 2) = (0; 8).",
+        "Comprobación: P′(0; 8) también está en y = −x + 8, y H es el punto medio de PP′."
+      ],
+      "verificar": [ { "fn": "reflejar", "args": [{ "x": 6, "y": 2 }, { "m": 1, "n": 2 }], "espera": { "P.x": 0, "P.y": 8, "H.x": 3, "H.y": 5 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "Halla el simétrico de P(5; 5) respecto de la recta L: 3x + 4y − 10 = 0 y la distancia de P a L.",
+      "respuesta": "P′(−1; −3) y la distancia es 5.",
+      "pasos": [
+        "Distancia de P a L: |3·5 + 4·5 − 10| / √(3² + 4²) = 25/5 = 5.",
+        "La perpendicular a L va en la dirección (3; 4), que tiene longitud 5: un paso de 5 unidades es justo (3; 4).",
+        "Como 3·5 + 4·5 − 10 es positivo, P está del lado hacia donde apunta (3; 4); para llegar a L se resta: H = (5 − 3; 5 − 4) = (2; 1). Comprobación: 3·2 + 4·1 − 10 = 0.",
+        "P′ = 2H − P = (4 − 5; 2 − 5) = (−1; −3)."
+      ],
+      "verificar": [ { "fn": "reflejar", "args": [{ "x": 5, "y": 5 }, { "a": 3, "b": 4, "c": -10 }], "espera": { "P.x": -1, "P.y": -3, "H.x": 2, "H.y": 1, "d": 5 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Sean a, b, c, d y e los números de ejes de simetría de un rectángulo (no cuadrado), un rombo (no cuadrado), un cuadrado, un triángulo equilátero y un romboide, en ese orden. Calcula a + b + c + d + e.",
+      "respuesta": "11.",
+      "pasos": [
+        "Rectángulo: 2 (las rectas que unen los puntos medios de los lados opuestos). Las diagonales no: al doblar por una diagonal, las esquinas no caen una sobre otra. a = 2.",
+        "Rombo: 2 (sus diagonales). b = 2. Cuadrado: 4 (las dos del rectángulo y las dos del rombo). c = 4.",
+        "Triángulo equilátero: 3 (cada altura). d = 3. Romboide: ninguno, aunque sí tiene centro de simetría. e = 0.",
+        "a + b + c + d + e = 2 + 2 + 4 + 3 + 0 = 11."
+      ],
+      "verificar": [ { "fn": "prediccionEjes", "args": [{ "fig": ["rectangulo", 6, 4] }], "espera": { "ejes": 2 } },
+                     { "fn": "prediccionEjes", "args": [{ "fig": ["rombo", 6, 4] }], "espera": { "ejes": 2 } },
+                     { "fn": "prediccionEjes", "args": [{ "fig": ["cuadrado", 3] }], "espera": { "ejes": 4 } },
+                     { "fn": "prediccionEjes", "args": [{ "fig": ["equilatero", 3] }], "espera": { "ejes": 3 } },
+                     { "fn": "prediccionEjes", "args": [{ "fig": ["romboide", 5, 3, 2] }], "espera": { "ejes": 0, "centro": true } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Con las letras A, E, H, N, S, T, X y Z escritas en imprenta mayúscula de trazos rectos, sea m el número de letras con centro de simetría y n el número de letras con exactamente un eje. Calcula m − n.",
+      "respuesta": "m − n = 2.",
+      "pasos": [
+        "Centro de simetría: la letra queda igual al girarla media vuelta. Lo cumplen H, N, S, X y Z: m = 5.",
+        "Exactamente un eje: A (vertical), T (vertical) y E (horizontal): n = 3. H y X tienen dos; N, S y Z, ninguno.",
+        "m − n = 5 − 3 = 2."
+      ],
+      "verificar": [ { "fn": "simetrias", "args": [{ "fig": ["letra", "H"] }], "espera": { "numEjes": 2, "tieneCentro": true } },
+                     { "fn": "simetrias", "args": [{ "fig": ["letra", "N"] }], "espera": { "numEjes": 0, "tieneCentro": true } },
+                     { "fn": "simetrias", "args": [{ "fig": ["letra", "S"] }], "espera": { "numEjes": 0, "tieneCentro": true } },
+                     { "fn": "simetrias", "args": [{ "fig": ["letra", "X"] }], "espera": { "numEjes": 2, "tieneCentro": true } },
+                     { "fn": "simetrias", "args": [{ "fig": ["letra", "Z"] }], "espera": { "numEjes": 0, "tieneCentro": true } },
+                     { "fn": "simetrias", "args": [{ "fig": ["letra", "A"] }], "espera": { "numEjes": 1, "tieneCentro": false } },
+                     { "fn": "simetrias", "args": [{ "fig": ["letra", "T"] }], "espera": { "numEjes": 1, "tieneCentro": false } },
+                     { "fn": "simetrias", "args": [{ "fig": ["letra", "E"] }], "espera": { "numEjes": 1, "tieneCentro": false } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un polígono regular de 12 lados y otro de 9 lados. ¿Cuántos ejes de simetría tiene cada uno? ¿Cuál de los dos tiene centro de simetría?",
+      "respuesta": "12 y 9 ejes; solo el de 12 lados tiene centro de simetría.",
+      "pasos": [
+        "Un polígono regular de n lados tiene n ejes. Con n par, cada eje une dos vértices opuestos o dos puntos medios de lados opuestos; con n impar, cada eje va de un vértice al punto medio del lado de enfrente (no se cuentan dos veces).",
+        "El de 12 lados: 12 ejes. El de 9 lados: 9 ejes.",
+        "Centro: al girar media vuelta, cada vértice debe caer sobre otro. Con 12 lados, cada vértice tiene uno opuesto; con 9, frente a un vértice queda un lado. Solo el de 12 lados tiene centro."
+      ],
+      "verificar": [ { "fn": "prediccionEjes", "args": [{ "fig": ["regular", 12] }], "espera": { "ejes": 12, "centro": true } },
+                     { "fn": "prediccionEjes", "args": [{ "fig": ["regular", 9] }], "espera": { "ejes": 9, "centro": false } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Dos espejos planos paralelos están a 5 cm uno del otro. Una figura se refleja en el primero y su imagen, en el segundo. ¿Qué movimiento lleva la figura a la imagen final y cuánto se desplaza?",
+      "respuesta": "Una traslación de 10 cm, perpendicular a los espejos, del primero hacia el segundo.",
+      "pasos": [
+        "Pon el primer espejo en x = 0 y el segundo en x = 5. Un punto (p; q) va a (−p; q) y después a (10 + p; q).",
+        "Cada punto avanza (10; 0): es una traslación de 10 cm, el doble de la distancia entre los espejos.",
+        "Dos reflexiones seguidas no voltean la figura: la segunda deshace el volteo de la primera."
+      ],
+      "verificar": [ { "fn": "componer", "args": [{ "x": 0 }, { "x": 5 }], "espera": { "tipo": "traslacion", "modulo": 10, "vector.x": 10 } },
+                     { "fn": "aplicarDos", "args": [{ "x": 2, "y": 1 }, { "x": 0 }, { "x": 5 }], "espera": { "x": 12, "y": 1 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Las rectas L₁ y L₂ se cortan en Q y forman un ángulo de 35°. Un punto se refleja primero en L₁ y luego en L₂. ¿Qué movimiento resulta?",
+      "respuesta": "Un giro de 70° alrededor de Q, en el sentido que va de L₁ a L₂.",
+      "pasos": [
+        "Q está en las dos rectas, así que no se mueve: el movimiento es un giro alrededor de Q.",
+        "Si el punto forma un ángulo α con L₁, su reflejo forma −α; al reflejarlo en L₂ (a 35°) pasa a 70° + α. Avanzó 70°.",
+        "El ángulo de giro es el doble del ángulo entre los espejos: 2·35° = 70°."
+      ],
+      "verificar": [ { "fn": "componer", "args": [{ "y": 0 }, { "punto": { "x": 0, "y": 0 }, "angulo": 35 }], "espera": { "tipo": "giro", "angulo": 70 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "¿Cuántos planos de simetría tiene un prisma recto de base cuadrada cuya altura es el doble del lado de la base? ¿Y un cubo?",
+      "respuesta": "El prisma, 5; el cubo, 9.",
+      "pasos": [
+        "En el prisma: un plano paralelo a las bases, por la mitad de la altura (1).",
+        "Planos verticales: los dos que pasan por los puntos medios de las aristas opuestas de la base y los dos que contienen las diagonales de la base (4). Total: 5.",
+        "En el cubo, cualquiera de las tres direcciones puede hacer de «altura»: 3 planos paralelos a las caras y 6 que contienen dos aristas opuestas. Total: 9."
+      ],
+      "verificar": [ { "fn": "prediccionPlanos", "args": [{ "poli": ["prismaCuadrado", 2, 4] }], "espera": { "planos": 5 } },
+                     { "fn": "prediccionPlanos", "args": [{ "poli": ["cubo", 2] }], "espera": { "planos": 9 } } ]
+    }
+  ]
+}

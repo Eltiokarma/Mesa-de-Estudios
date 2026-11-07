@@ -1,0 +1,256 @@
+{
+  "id": "t024",
+  "version": 1,
+  "titulo": "Una ciudad en el desierto",
+  "tema": "Sociedad · el agua en Lima",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Lima es una de las ciudades más grandes del mundo construidas en un desierto."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "La mayor parte del agua que usan sus habitantes viene de tres ríos que bajan de la sierra: el Rímac, el Chillón y el Lurín."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "En los meses en que no llueve en las alturas, esos ríos llevan poca agua, y la ciudad depende de lo que se guardó en lagunas y represas."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "contraste",
+        "t": "Como el agua sale del caño cada mañana, es fácil pensar que sobra."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Mientras la ciudad crece, los ríos no crecen con ella: cada nuevo barrio se reparte la misma agua que ya había."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Además, en muchos barrios de las afueras el agua no llega por tubería, y las familias la compran a camiones cisterna a un precio mucho más alto."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Por eso, cuidar el agua en Lima no es solo un consejo para ahorrar en el recibo: es una condición para que una ciudad tan grande pueda seguir viviendo en el desierto."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o7"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 7 dice la idea del autor: cuidar el agua es una condición para que Lima siga viviendo en el desierto.",
+        "explicaciones": {
+          "o1": "La primera oración presenta a Lima en el desierto: es el punto de partida.",
+          "o2": "Dice de dónde viene el agua: es un dato de base.",
+          "o3": "Explica qué pasa en los meses secos: es un detalle.",
+          "o4": "Presenta lo que es fácil pensar, y que el texto va a corregir.",
+          "o5": "Es el argumento principal, pero la conclusión está en la oración 7.",
+          "o6": "Agrega otro problema: es un argumento más.",
+          "ninguna": "La oración 7 sí la dice completa: cuidar el agua es una condición para que la ciudad siga."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "Como Lima crece en un desierto con la misma agua de siempre, cuidarla es necesario para que la ciudad pueda seguir.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o7"
+          ],
+          "explicacion": "Junta el argumento (oración 5: la ciudad crece y los ríos no) con la conclusión (oración 7)."
+        },
+        {
+          "t": "Casi toda el agua de Lima viene de tres ríos que bajan de la sierra: el Rímac, el Chillón y el Lurín.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es un dato de base, un detalle."
+        },
+        {
+          "t": "El agua es un recurso importante en todo el mundo.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla del agua en Lima."
+        },
+        {
+          "t": "En muchos barrios de las afueras de Lima, las familias compran el agua a camiones cisterna.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Es una parte del texto, pero deja fuera la conclusión del autor."
+        },
+        {
+          "t": "Lima es la segunda ciudad más grande del mundo en un desierto, después de El Cairo.",
+          "codigo": "RV8",
+          "explicacion": "Es un dato que se suele repetir, pero el texto no lo dice así."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "conector",
+      "unidad": "razonamiento-verbal.conectores",
+      "previo": {
+        "tipo": "relacion",
+        "pide": "Antes de ver las alternativas: ¿qué relación hay entre la oración 4 y la oración 5?",
+        "aceptada": "oposicion",
+        "codigos": {
+          "suma": "RV26",
+          "causa": "RV24"
+        },
+        "explicacion": "La oración 4 dice que es fácil pensar que el agua sobra, y la 5 explica por qué no es así: se oponen.",
+        "explicaciones": {
+          "suma": "La oración 5 no agrega otra razón para pensar que el agua sobra: la contradice.",
+          "causa": "La oración 5 no es una consecuencia de la 4: que el agua salga del caño no causa que los ríos no crezcan."
+        }
+      },
+      "enunciado": "¿Qué conector podría ir al comienzo de la oración 5 (\"___ mientras la ciudad crece…\") sin cambiar el sentido del texto?",
+      "alternativas": [
+        {
+          "t": "Sin embargo,",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5"
+          ],
+          "explicacion": "La oración 4 dice que es fácil pensar que el agua sobra, y la 5 lo contradice: se oponen, como con \"sin embargo\"."
+        },
+        {
+          "t": "Por eso,",
+          "codigo": "RV24",
+          "explicacion": "Lee como consecuencia lo que es una oposición: que el agua salga del caño no es la razón de que los ríos no crezcan."
+        },
+        {
+          "t": "Además,",
+          "codigo": "RV26",
+          "explicacion": "La oración 5 no suma algo en la misma dirección que la 4: la corrige."
+        },
+        {
+          "t": "Por ejemplo,",
+          "codigo": "RV35",
+          "explicacion": "La oración 5 no es un ejemplo de la 4: dice lo contrario."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Los camiones cisterna llevan agua del río Rímac.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": "RV36"
+        },
+        "explicacion": "El texto no dice de dónde sacan el agua los camiones cisterna. No se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto nombra el Rímac y los camiones cisterna, pero no los relaciona.",
+          "se-deduce": "Que el Rímac sea una fuente de agua de Lima no permite concluir que los camiones saquen de ahí su agua: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice que los camiones lleven agua de otro lado; simplemente no lo dice."
+        }
+      },
+      "enunciado": "Se infiere del texto que las familias de las afueras que compran agua a camiones cisterna",
+      "alternativas": [
+        {
+          "t": "por la misma cantidad de agua, pagan más que las familias que la reciben por tubería.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "La oración 6 dice que la compran \"a un precio mucho más alto\"; de ahí se deduce que la misma cantidad les cuesta más."
+        },
+        {
+          "t": "compran el agua a camiones cisterna a un precio mucho más alto.",
+          "codigo": "RV6",
+          "origen": "o6",
+          "explicacion": "Eso lo dice el texto tal cual (oración 6): no es una inferencia."
+        },
+        {
+          "t": "usan más agua que las familias del centro de la ciudad.",
+          "codigo": "RV7",
+          "explicacion": "El texto no dice cuánta agua usa cada familia; esa conclusión va más allá."
+        },
+        {
+          "t": "reciben el agua directamente de las lagunas y represas de la sierra.",
+          "codigo": "RV5",
+          "origen": "o3",
+          "explicacion": "Usa palabras de la oración 3, pero el texto dice que la reciben de camiones cisterna."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si Lima dejara de crecer y su población se mantuviera igual durante muchos años, según la lógica del texto,",
+      "alternativas": [
+        {
+          "t": "el agua de los ríos dejaría de repartirse entre más barrios cada año.",
+          "correcta": true,
+          "evidencia": [
+            "o5"
+          ],
+          "explicacion": "La oración 5 dice que cada barrio nuevo se reparte la misma agua. Sin barrios nuevos, ese reparto no seguiría creciendo."
+        },
+        {
+          "t": "cada nuevo barrio seguiría repartiéndose la misma agua que ya había.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: si la ciudad no crece, no hay barrios nuevos."
+        },
+        {
+          "t": "ya nadie tendría que cuidar el agua en Lima.",
+          "codigo": "RV11",
+          "origen": "o3",
+          "explicacion": "\"Ya nadie\" es un término absoluto que no sale del texto: la ciudad seguiría en el desierto y con meses en que los ríos llevan poca agua (oración 3)."
+        },
+        {
+          "t": "los ríos Rímac, Chillón y Lurín llevarían el doble de agua.",
+          "codigo": "RV7",
+          "explicacion": "El texto no da ninguna base para eso: que la ciudad deje de crecer no cambia el agua que llevan los ríos."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "Lima está en un desierto costero y se abastece sobre todo de los ríos Rímac, Chillón y Lurín; en época seca depende de lagunas y represas de la sierra; muchas familias de las afueras compran agua a camiones cisterna a un precio mucho mayor.",
+      "fuente": "Sunass y Sedapal, información sobre el abastecimiento de Lima; Ioris, A. A. R. (2012), sobre el agua y la desigualdad en Lima."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 7 de 7. Cambios: la correcta de inferencia decía más de lo que el texto permite (gasto total frente a precio por cantidad); códigos RV11 y RV7 cruzados; «la mayor parte del agua». Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": "e010",
+  "version": 1,
+  "tipo": "plan-de-redaccion",
+  "unidad": "razonamiento-verbal.plan-de-redaccion",
+  "titulo": "Plan de redacción: La quinua",
+  "grado": 3,
+  "dificultad": 1,
+  "cuerpo": {
+    "oraciones": [
+      {
+        "n": "I",
+        "t": "Por su valor nutritivo, su demanda creció en todo el mundo en las últimas décadas.",
+        "retoma": "V"
+      },
+      {
+        "n": "II",
+        "t": "Así, el grano que alimentó a los Andes por siglos corre el riesgo de dejar sus mesas."
+      },
+      {
+        "n": "III",
+        "t": "La quinua es un grano andino que se cultiva desde hace miles de años."
+      },
+      {
+        "n": "IV",
+        "t": "Ese auge subió su precio, y algunas familias andinas prefirieron vender su cosecha en lugar de comerla.",
+        "retoma": "I"
+      },
+      {
+        "n": "V",
+        "t": "Este grano tiene proteínas de buena calidad y resiste heladas y sequías.",
+        "retoma": "III"
+      }
+    ]
+  },
+  "previo": {
+    "tipo": "ordenar",
+    "pide": "Antes de ver las alternativas: arrastra las tarjetas al orden que tendría el texto.",
+    "aceptada": [
+      "III",
+      "V",
+      "I",
+      "IV",
+      "II"
+    ],
+    "explicacion": "Primero se presenta la quinua (III); luego \"este grano\" la retoma con sus cualidades (V); \"por su valor nutritivo\" viene de esas cualidades (I); \"ese auge\" retoma la demanda que creció (IV), y \"así\" cierra con la consecuencia (II)."
+  },
+  "enunciado": "Elige el orden correcto de las oraciones.",
+  "alternativas": [
+    {
+      "t": "III – V – I – IV – II",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Presenta el grano, da sus cualidades, cuenta el auge, su efecto en el precio y cierra con la conclusión."
+    },
+    {
+      "t": "II – III – V – I – IV",
+      "codigo": "RV37",
+      "explicacion": "Empieza por la conclusión: \"así\" resume lo que todavía no se ha contado."
+    },
+    {
+      "t": "III – V – IV – I – II",
+      "codigo": "RV28",
+      "explicacion": "\"Ese auge\" (IV) aparece antes de contar que la demanda creció (I): se refiere a algo que aún no se dijo."
+    },
+    {
+      "t": "III – V – I – II – IV",
+      "codigo": "RV29",
+      "explicacion": "Cierra antes de tiempo: la conclusión de la II se apoya en lo que cuenta la IV, que queda suelta al final."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "La quinua se domesticó en los Andes hace miles de años; su exportación y su precio crecieron mucho alrededor de 2013, Año Internacional de la Quinua.",
+      "fuente": "FAO, La quinua: cultivo milenario para contribuir a la seguridad alimentaria mundial (2011); FAO, Año Internacional de la Quinua 2013."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. Se suavizó lo de las familias que dejan de comer quinua (el efecto es discutido)."
+  }
+}

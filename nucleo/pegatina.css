@@ -1,0 +1,47 @@
+/* Pegatinas para las escenas (borrador para aprobar, 7 nov 2026).
+   Mismo lenguaje que la cáscara de la app (docs/diseno.md, «Pegatinas»): contorno ciruela y base debajo.
+   Regla 4: el color del curso va SOLO en la banda de arriba (título y pestañas). El lienzo, las ecuaciones y las
+   opciones conservan sus colores; las tarjetas del dibujo y de los pasos llevan una base neutra, no de color.
+   Se carga después del <style> de cada escena; el curso sale de <html data-curso="…">. */
+:root{ --borde:#2d2340; --base-neutra:#e7d9cc; --cf:#efe6ff; --cb:#7f5ae0 }
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){ --borde:#0f0a15; --base-neutra:#120c19 } }
+:root[data-theme="dark"]{ --borde:#0f0a15; --base-neutra:#120c19 }
+[data-curso="fisica"]{--cf:#e9e1ff;--cb:#7f5ae0} [data-curso="quimica"]{--cf:#d6f3e7;--cb:#2f9e78}
+[data-curso="algebra"]{--cf:#dbecff;--cb:#3f7fd1} [data-curso="aritmetica"]{--cf:#ffebc8;--cb:#d98f1e}
+[data-curso="geometria"]{--cf:#ffdfe9;--cb:#d9567f} [data-curso="trigonometria"]{--cf:#ffe1d3;--cb:#e0703f}
+[data-curso="razonamiento-matematico"]{--cf:#fff0c2;--cb:#c9961a} [data-curso="razonamiento-verbal"]{--cf:#d3f1ed;--cb:#26948b}
+
+/* Banda del curso: título, subtítulo y pestañas. */
+.top{background:var(--cf);border:2px solid var(--borde);border-radius:28px;box-shadow:0 6px 0 var(--cb);padding:16px 16px 14px;color:#2d2340;position:relative;overflow:hidden}
+.top::after{content:"";position:absolute;right:-40px;top:-50px;width:170px;height:170px;border-radius:50%;background:#fff;opacity:.45;pointer-events:none}
+.top>*{position:relative;z-index:1}
+.top .eyebrow{display:inline-block;justify-self:start;background:#fff;color:#2d2340;border:2px solid var(--borde);border-radius:14px;padding:3px 10px;font-size:.7rem;line-height:1.35}
+.top h1{color:#2d2340;font-weight:850;letter-spacing:-.02em}
+.top .sub{color:#5b4f66}
+.top .tabs{border:2px solid var(--borde);box-shadow:0 3px 0 var(--borde);background:#fff}
+.top .tabs a{color:#5b4f66}
+.top .tabs a[aria-current="page"]{background:#2d2340;color:#fff}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .top{background:color-mix(in srgb,var(--cb) 30%,var(--card));box-shadow:0 6px 0 color-mix(in srgb,var(--cb) 55%,#000);color:var(--ink)}
+  :root:not([data-theme="light"]) .top h1{color:var(--ink)} :root:not([data-theme="light"]) .top .sub{color:var(--muted)}
+  :root:not([data-theme="light"]) .top::after{opacity:.06} :root:not([data-theme="light"]) .top .tabs,:root:not([data-theme="light"]) .top .eyebrow{background:var(--card);color:var(--ink)}
+  :root:not([data-theme="light"]) .top .tabs a{color:var(--muted)} :root:not([data-theme="light"]) .top .tabs a[aria-current="page"]{background:var(--ink);color:var(--card)} }
+:root[data-theme="dark"] .top{background:color-mix(in srgb,var(--cb) 30%,var(--card));box-shadow:0 6px 0 color-mix(in srgb,var(--cb) 55%,#000);color:var(--ink)}
+:root[data-theme="dark"] .top h1{color:var(--ink)} :root[data-theme="dark"] .top .sub{color:var(--muted)} :root[data-theme="dark"] .top::after{opacity:.06}
+:root[data-theme="dark"] .top .tabs,:root[data-theme="dark"] .top .eyebrow{background:var(--card);color:var(--ink)}
+
+/* Tarjetas del dibujo y de los pasos: contorno y base neutra. */
+.bench,.guide,.card{border:2px solid var(--borde);box-shadow:0 5px 0 var(--base-neutra)}
+.lienzo{border:2px solid var(--borde);border-radius:18px}
+/* Pasos: los números con contorno. */
+.dots button{border-width:2px}
+.dots button.done,.dots button.on{border-color:var(--borde)}
+/* Opciones de predicción: se apoyan en una base; los colores de estado (correcta, incorrecta) no cambian. */
+.opt{box-shadow:0 3px 0 var(--base-neutra);transition:transform .12s,box-shadow .12s}
+.opt .l{border-width:2px}
+/* Botones: contorno y base, se hunden al tocarlos. */
+.btn{border:2px solid var(--borde);box-shadow:0 3px 0 var(--borde);transition:transform .12s,box-shadow .12s}
+.btn:disabled{box-shadow:none}
+@media (prefers-reduced-motion:no-preference){
+  .btn:not(:disabled):active,.opt:not(:disabled):active{transform:translateY(3px);box-shadow:0 0 0 var(--borde)}
+  .opt:not(:disabled):hover{transform:translateY(-1px)}
+}

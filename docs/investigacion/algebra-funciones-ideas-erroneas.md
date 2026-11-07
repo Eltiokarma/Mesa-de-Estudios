@@ -334,3 +334,8 @@ Cualitativos o sin porcentaje a la vista:
 - Agencia de Calidad de la Educación (Chile). *Aprendiendo de los errores: un análisis de los errores frecuentes de los estudiantes en las pruebas SIMCE*. [PDF](https://archivos.agenciaeducacion.cl/Aprendiendo_de_los_errores.pdf).
 - Chua, B. L. y Wood, E. (2005). Errores en logaritmos de escolares de Singapur, The Mathematics Educator 8(2). Ganesan, R. y Dindyal, J. (2014). *An investigation of students' errors in logarithms*. Proceedings of MERGA 37.
 - [Cinemática](cinematica-ideas-erroneas.md), informe de este repositorio: G1 y G2, con datos de Beichner (1994).
+
+
+## Números complejos (CX1 a CX35, 7 nov 2026)
+
+Este informe no trata los complejos. Los errores CX1 a CX35 de `plantillas/numeros-complejos/` (multiplicar por i, módulo, conjugado, producto en forma polar, De Moivre y argumento) son **hipótesis nuestras**, sin dato publicado leído; la lista y sus convenciones están en `rutinas/matematica-a.md` y en la cabecera del motor. Se confirman o descartan con los datos del colegio piloto.

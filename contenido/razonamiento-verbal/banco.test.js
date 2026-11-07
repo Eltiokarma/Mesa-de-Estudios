@@ -26,7 +26,8 @@ const TIPOS_PREGUNTA = ['idea-principal', 'inferencia', 'compatibilidad', 'incom
   'intencion', 'sentido-contextual', 'referente', 'conector'];
 const CLASES = ['lo-dice', 'se-deduce', 'no-se-sabe', 'lo-contradice'];
 const PROPOSITOS = ['explicar', 'convencer', 'narrar'];
-const LETRA = /\b(la|alternativa|opción) [A-E]\b/i;
+// Sin \b al final: en JavaScript, \b toma las letras con tilde como separadores ("la década" daría falso positivo).
+const LETRA = /(^|[^\p{L}])(la|alternativa|opción) [A-E](?![\p{L}\p{N}])/iu;
 const ROL_CODIGO = { detalle: 'RV1', ejemplo: 'RV1', cita: 'RV1', general: 'RV2', apoyo: 'RV3', contraste: 'RV3' };
 
 const oraciones = t => t.parrafos.flat();
@@ -165,6 +166,91 @@ for (const { archivo, t } of TEXTOS) {
       }
     }
     if (t.revision) assert.ok(t.revision.por && t.revision.fecha && ['aprobado', 'cambios'].includes(t.revision.veredicto), `${t.id}: revisión incompleta`);
+  });
+}
+
+// ---------- Ejercicios sueltos (ejercicios/eNNN.json: una sola pregunta con su "cuerpo") ----------
+const Lectura = require(path.join(raiz, 'nucleo/lectura.js'));
+const CODIGOS_JSON = leer(path.join(aqui, 'codigos.json'));
+const dirEj = path.join(aqui, 'ejercicios');
+const EJERCICIOS = fs.existsSync(dirEj) ? fs.readdirSync(dirEj).filter(f => f.endsWith('.json')).sort()
+  .map(f => ({ archivo: f, e: leer(path.join(dirEj, f)) })) : [];
+// Tipo de ejercicio → forma del cuerpo y paso previo que admite (null: sin paso previo).
+const TIPOS_EJ = {
+  analogia: { cuerpo: c => Array.isArray(c.base) && c.base.length === 2, previo: 'relacion-analogia' },
+  'termino-excluido': { cuerpo: c => Array.isArray(c.terminos) && c.terminos.length >= 4, previo: null },
+  'oracion-incompleta': { cuerpo: c => typeof c.oracion === 'string' && c.oracion.includes('___'), previo: 'relacion' },
+  conector: { cuerpo: c => typeof c.oracion === 'string' && c.oracion.includes('___'), previo: 'relacion' },
+  'plan-de-redaccion': { cuerpo: c => Array.isArray(c.oraciones) && c.oraciones.length >= 4, previo: 'ordenar' },
+  eliminacion: { cuerpo: c => Array.isArray(c.oraciones) && c.oraciones.length >= 4, previo: 'marcar-oracion' },
+};
+
+test('el índice apunta a ejercicios que existen y están aprobados', () => {
+  const ids = new Set(EJERCICIOS.map(x => x.e.id));
+  const lista = INDICE.ejercicios || [];
+  assert.equal(new Set(lista).size, lista.length, 'indice.json: hay ejercicios repetidos');
+  for (const id of lista) {
+    assert.ok(ids.has(id), `indice.json: falta ejercicios/${id}.json`);
+    const e = EJERCICIOS.find(x => x.e.id === id).e;
+    assert.equal(e.revision && e.revision.veredicto, 'aprobado', `${id}: está en el índice sin revisión aprobada`);
+  }
+});
+
+for (const { archivo, e } of EJERCICIOS) {
+  test(`ejercicios/${archivo}: cumple el formato del banco`, () => {
+    assert.equal(archivo, `${e.id}.json`, `${archivo}: el id debe coincidir con el nombre del archivo`);
+    assert.match(e.id, /^e\d{3}$/);
+    assert.deepEqual(Lectura.validar(e, { codigos: CODIGOS_JSON, unidades: UNIDADES }), []);
+    const tipo = TIPOS_EJ[e.tipo];
+    assert.ok(tipo, `${e.id}: tipo "${e.tipo}" no válido`);
+    assert.ok(tipo.cuerpo(e.cuerpo || {}), `${e.id}: el cuerpo no tiene la forma de un ejercicio de ${e.tipo}`);
+    assert.ok([3, 4, 5].includes(e.grado) && [1, 2, 3].includes(e.dificultad), `${e.id}: grado o dificultad inválidos`);
+    assert.equal(e.origen, 'propio', `${e.id}: el ejercicio debe ser propio (regla 5)`);
+    assert.ok(!e.hechos || e.hechos.every(h => h.afirmacion && h.fuente), `${e.id}: cada hecho necesita afirmación y fuente`);
+    const alts = e.alternativas;
+    assert.ok(alts.length >= 4 && alts.length <= 5, `${e.id}: 4 o 5 alternativas (regla 1)`);
+    assert.equal(new Set(alts.map(a => a.t)).size, alts.length, `${e.id}: hay alternativas repetidas`);
+    const cods = alts.filter(a => !a.correcta).map(a => a.codigo);
+    assert.equal(new Set(cods).size, cods.length, `${e.id}: dos incorrectas con el mismo código (regla 4): ${cods}`);
+    for (const c of cods) { assert.ok(codigoValido(c), `${e.id}: el código ${c} no está en el informe`); usados.add(c); }
+    for (const a of alts) assert.ok(!LETRA.test(a.explicacion), `${e.id}: una explicación nombra una letra (regla 8): "${a.explicacion}"`);
+    if (e.tipo === 'termino-excluido') assert.deepEqual(alts.map(a => a.t).sort(), [...e.cuerpo.terminos].sort(), `${e.id}: las alternativas deben ser los términos`);
+    if (e.tipo === 'eliminacion') assert.deepEqual(alts.map(a => a.t).sort(), e.cuerpo.oraciones.map(o => o.n).sort(), `${e.id}: las alternativas deben ser los numerales de las oraciones`);
+    const p = e.previo;
+    assert.equal(p ? p.tipo : null, tipo.previo, `${e.id}: un ejercicio de ${e.tipo} lleva el paso previo ${tipo.previo}`);
+    if (!p) return;
+    assert.ok(!LETRA.test(p.explicacion) && Object.values(p.explicaciones || {}).every(x => !LETRA.test(x)), `${e.id}: el previo nombra una letra`);
+    const correcta = alts.find(a => a.correcta).t;
+    if (p.tipo === 'ordenar') {
+      // La correcta es el orden aceptado, y el motor no ve un retoma roto en ella.
+      assert.equal(correcta, p.aceptada.join(' – '), `${e.id}: la correcta debe ser el orden aceptado`);
+      for (const a of alts) {
+        const r = Lectura.calificarPrevio(p, a.t.split(' – '), e);
+        if (a.codigo === 'RV28') assert.equal(r.error, 'RV28', `${e.id}: "${a.t}" dice RV28, pero no rompe ningún retoma`);
+        if (a.codigo && a.codigo !== 'RV28') assert.notEqual(r.error, 'RV28', `${e.id}: "${a.t}" rompe un retoma y debería ser RV28`);
+      }
+      return;
+    }
+    let incorrectas;
+    if (p.tipo === 'marcar-oracion') {
+      assert.deepEqual(p.aceptadas, [correcta], `${e.id}: la oración que se marca debe ser la correcta`);
+      const ns = e.cuerpo.oraciones.map(o => o.n).filter(n => !p.aceptadas.includes(n));
+      assert.deepEqual(Object.keys(p.codigos).sort(), ns.sort(), `${e.id}: el previo necesita un código para cada oración que no sobra`);
+      for (const n of ns) assert.equal(p.codigos[n], alts.find(a => a.t === n).codigo, `${e.id}: la oración ${n} tiene otro código en el previo y en la alternativa`);
+      incorrectas = ns;
+    } else if (p.tipo === 'relacion') {
+      assert.equal(p.aceptada, 'oposicion', `${e.id}: por ahora, el previo relacion solo se usa con la oposición`);
+      assert.deepEqual(p.codigos, { suma: 'RV26', causa: 'RV24' }, `${e.id}: códigos del previo relacion`);
+      incorrectas = ['suma', 'causa'];
+    } else {
+      // Analogía: el código sale de la regla (inversa → RV16, otra → RV17); se pide la explicación de la inversa.
+      const inv = Lectura.ANALOGIAS.find(x => x.id === p.aceptada).inversa;
+      incorrectas = inv ? [inv] : [];
+      for (const r of Object.keys(p.explicaciones || {})) assert.ok(r !== p.aceptada && Lectura.ANALOGIAS.some(x => x.id === r), `${e.id}: sobra la explicación del previo para "${r}"`);
+    }
+    for (const r of incorrectas) assert.ok(p.explicaciones && p.explicaciones[r], `${e.id}: falta la explicación del previo para "${r}"`);
+    if (p.tipo !== 'relacion-analogia') for (const r of Object.keys(p.explicaciones || {})) assert.ok(incorrectas.includes(r), `${e.id}: sobra la explicación del previo para "${r}"`);
+    for (const c of Object.values(p.codigos || {})) usados.add(c);
   });
 }
 

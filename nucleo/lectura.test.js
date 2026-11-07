@@ -120,11 +120,15 @@ test('analogía, plan de redacción y eliminación se califican con sus reglas',
   assert.equal(L.calificarPrevio(pa, 'b-produce-a', ANALOGIA).error, 'RV16'); // la inversa
   assert.equal(L.calificarPrevio(pa, 'a-parte-de-b', ANALOGIA).error, 'RV17');
   assert.equal(L.calificarPrevio(pa, 'sinonimos', ANALOGIA).error, 'RV17');
-  assert.equal(L.etiquetaPrevio(pa, 'b-produce-a', ANALOGIA), 'LECHE produce VACA');
+  assert.equal(L.etiquetaPrevio(pa, 'b-produce-a', ANALOGIA), 'LECHE fabrica o da VACA');
   const pp = PLAN.previo;
   assert.deepEqual(L.calificarPrevio(pp, ['II', 'I', 'III'], PLAN), { correcta: true, error: null, opcion: 'II-I-III' });
   assert.equal(L.calificarPrevio(pp, ['I', 'II', 'III'], PLAN).error, 'RV28'); // "Esta celebración" antes de nombrarla
   assert.equal(L.calificarPrevio(pp, 'II-III-I', PLAN).error, 'RV29');
+  // RV37: empezar por la conclusión (sin retoma y con «así» o «por eso») pesa más que el retoma roto.
+  const CONC = structuredClone(PLAN); CONC.cuerpo.oraciones.push({ n: 'IV', t: 'Por eso, la fiesta sigue viva.' }); CONC.previo.aceptada = [...CONC.previo.aceptada, 'IV'];
+  assert.equal(L.calificarPrevio(CONC.previo, ['IV', 'II', 'I', 'III'], CONC).error, 'RV37');
+  assert.equal(L.calificarPrevio(CONC.previo, ['I', 'II', 'III', 'IV'], CONC).error, 'RV28');
   // El orden aceptado no puede ser el presentado (bastaría confirmar sin mover nada).
   const mal = structuredClone(PLAN); mal.previo.aceptada = ['I', 'II', 'III'];
   assert.match(L.validar(mal).join(), /mismo en que se presentan/);
