@@ -1,0 +1,274 @@
+{
+  "id": "t010",
+  "version": 1,
+  "titulo": "La balanza de la feria",
+  "tema": "Relato · confianza y verdad",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "narrativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Los sábados, Rosa ayudaba a su abuela a vender quinua en la feria de Juliaca."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Esa mañana, una señora pidió dos kilos, miró la aguja de la balanza y frunció el ceño."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "—Esa balanza está arreglada —dijo en voz alta—. Aquí no hay dos kilos."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Varias personas se dieron vuelta para mirar, y Rosa sintió que se le subía el calor a la cara."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "La abuela no discutió."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Le pidió a la señora el paquete de azúcar que llevaba en la bolsa, uno de un kilo, cerrado de fábrica, y lo puso sobre el plato."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "La aguja se detuvo justo en el uno."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "La señora se quedó callada un momento, pidió disculpas y pagó sus dos kilos de quinua."
+      }
+    ],
+    [
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "Cuando se fue, Rosa le preguntó a su abuela por qué no le había contestado."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "—Porque la balanza no necesitaba que yo hablara por ella —dijo la abuela—. Necesitaba que alguien la viera pesar algo que todos conocen."
+      },
+      {
+        "id": "o11",
+        "rol": "principal",
+        "t": "Rosa se quedó pensando que, a veces, la mejor manera de defender la verdad es mostrarla."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume lo que el relato quiere mostrar.",
+        "aceptadas": [
+          "o10",
+          "o11"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "Las oraciones 10 y 11 dicen lo que el relato quiere mostrar: la abuela no habló por la balanza, mostró una prueba, y Rosa entiende que la verdad se defiende mostrándola.",
+        "explicaciones": {
+          "o1": "La primera oración presenta a los personajes y el lugar: es el comienzo del relato.",
+          "o2": "Cuenta el hecho que inicia el conflicto, no lo que el relato quiere mostrar.",
+          "o3": "Es la acusación de la señora: el conflicto, no la enseñanza.",
+          "o4": "Cuenta cómo se sintió Rosa en ese momento; es un detalle.",
+          "o5": "Dice lo que no hizo la abuela; prepara lo importante, pero no lo dice.",
+          "o6": "Cuenta lo que hizo la abuela, pero no por qué eso es lo importante.",
+          "o7": "Es el resultado de la prueba, un hecho del relato.",
+          "o8": "Cuenta cómo terminó el conflicto, no lo que se aprende de él.",
+          "o9": "Es la pregunta de Rosa, que prepara la respuesta de la abuela.",
+          "ninguna": "Las oraciones 10 y 11 sí lo dicen: la verdad se defiende mostrándola con algo que todos conocen."
+        }
+      },
+      "enunciado": "¿Cuál es la idea central del relato?",
+      "alternativas": [
+        {
+          "t": "Una prueba que todos pueden comprobar convence más que una discusión.",
+          "correcta": true,
+          "evidencia": [
+            "o10",
+            "o11"
+          ],
+          "explicacion": "Es lo que aprende Rosa: la abuela no discutió, mostró una prueba que nadie podía negar (oraciones 10 y 11)."
+        },
+        {
+          "t": "Una señora acusó a la abuela de Rosa de vender con una balanza arreglada en la feria de Juliaca.",
+          "codigo": "RV1",
+          "origen": "o3",
+          "explicacion": "Es lo que pasa al comienzo, un hecho del relato. El tema es lo que el relato muestra con ese hecho."
+        },
+        {
+          "t": "Las ferias son lugares de encuentro en los pueblos andinos.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el relato no trata de las ferias, sino de cómo se defiende la verdad."
+        },
+        {
+          "t": "Una señora desconfió de una balanza y después pidió disculpas.",
+          "codigo": "RV3",
+          "origen": "o8",
+          "explicacion": "Cuenta lo que pasó, pero deja fuera lo esencial: cómo la abuela mostró que la balanza estaba bien y lo que Rosa aprende."
+        },
+        {
+          "t": "Los compradores de las ferias siempre desconfían de los vendedores.",
+          "codigo": "RV11",
+          "explicacion": "El relato cuenta lo que pasó con una señora; \"siempre\" y \"los compradores\" dicen mucho más que eso."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "La abuela estaba segura de que su balanza pesaba bien.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV6",
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "El relato no lo dice, pero se deduce: la abuela no discutió y puso a prueba la balanza delante de todos (oraciones 5 y 6). Nadie hace eso si duda de su balanza.",
+        "explicaciones": {
+          "lo-dice": "El relato nunca dice \"la abuela estaba segura\"; eso se saca de lo que hace.",
+          "no-se-sabe": "No hace falta que el relato lo diga: probar la balanza delante de todos muestra que estaba segura.",
+          "lo-contradice": "Nada en el relato muestra que la abuela dudara; al contrario, se arriesga a probar la balanza en público."
+        }
+      },
+      "enunciado": "Se infiere del relato que la abuela usó el paquete de azúcar porque",
+      "alternativas": [
+        {
+          "t": "era de la señora y su peso venía marcado de fábrica, así que nadie podía discutirlo.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o10"
+          ],
+          "explicacion": "La oración 6 dice que el paquete era de la señora, de un kilo y cerrado de fábrica, y la 10, que la balanza tenía que pesar \"algo que todos conocen\". Nadie podía decir que la abuela hubiera hecho trampa con él."
+        },
+        {
+          "t": "la señora se lo había ofrecido para probar la balanza.",
+          "codigo": "RV9",
+          "origen": "o6",
+          "explicacion": "Choca con el relato: fue la abuela quien le pidió el paquete a la señora (oración 6), no la señora quien lo ofreció."
+        },
+        {
+          "t": "quería venderle también azúcar a la señora.",
+          "codigo": "RV7",
+          "explicacion": "Nada en el relato apoya eso, y además choca con él: el azúcar era de la señora (oración 6), y la abuela vende quinua."
+        },
+        {
+          "t": "el azúcar pesa más que la quinua y llena más rápido el plato.",
+          "codigo": "RV8",
+          "explicacion": "Es una idea de fuera del relato, y además confusa: un kilo pesa lo mismo sea de azúcar o de quinua."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 3, la palabra ARREGLADA significa",
+      "alternativas": [
+        {
+          "t": "alterada para engañar.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "La señora dice que la balanza no marca los dos kilos de verdad: la acusa de estar trucada para pesar de menos."
+        },
+        {
+          "t": "reparada.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de \"arreglada\", pero la señora no dice que la balanza estuviera bien reparada: la acusa de hacer trampa."
+        },
+        {
+          "t": "descompuesta.",
+          "codigo": "RV19",
+          "explicacion": "Está cerca (una balanza que pesa mal), pero \"descompuesta\" no dice que haya engaño, y la señora acusa a la abuela de hacer trampa."
+        },
+        {
+          "t": "puesta sobre el plato.",
+          "codigo": "RV5",
+          "origen": "o6",
+          "explicacion": "Repite palabras de la oración 6, pero no dice qué significa \"arreglada\"."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "narrar",
+        "codigos": {
+          "explicar": null,
+          "convencer": "RV33"
+        },
+        "explicacion": "El texto cuenta una historia con personajes, diálogo y un final: narra.",
+        "explicaciones": {
+          "explicar": "El texto no explica cómo funciona algo: cuenta lo que les pasó a Rosa y a su abuela.",
+          "convencer": "El relato deja una enseñanza, pero no discute una idea ni da argumentos: la muestra contando una historia."
+        }
+      },
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Contar un episodio de la vida diaria del que se saca una enseñanza.",
+          "correcta": true,
+          "evidencia": [
+            "o11"
+          ],
+          "explicacion": "El texto es un relato: cuenta lo que pasó en la feria y termina con lo que Rosa entiende."
+        },
+        {
+          "t": "Explicar cómo funcionan las balanzas de aguja que se usan en las ferias.",
+          "codigo": "RV14",
+          "explicacion": "La balanza aparece en el relato, pero el texto no explica cómo funciona."
+        },
+        {
+          "t": "Criticar a los compradores que desconfían de los vendedores de la feria.",
+          "codigo": "RV33",
+          "explicacion": "El autor no critica a nadie: la señora pide disculpas y el relato termina con una enseñanza, no con un reproche."
+        },
+        {
+          "t": "Informar sobre la venta de quinua en la feria de Juliaca.",
+          "codigo": "RV2",
+          "explicacion": "La feria es el lugar del relato, pero el texto no informa sobre la venta de quinua."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 7 de 7. Cambios: la correcta de p2 incluye que el paquete era de la señora (el distractor RV6 era defendible y se reemplazó por uno que choca con el relato, RV9); \"idea central\" en vez de \"tema\"; previo de propósito con RV33 en \"convencer\". Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+  }
+}

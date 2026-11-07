@@ -1,6 +1,6 @@
 {
   "id": "t006",
-  "version": 1,
+  "version": 2,
   "titulo": "El rojo que vino de la tuna",
   "tema": "Ciencia e historia · tintes naturales",
   "grado": 4,
@@ -21,7 +21,7 @@
       {
         "id": "o3",
         "rol": "detalle",
-        "t": "Mucho antes de los incas, los tejedores de los Andes ya la usaban para teñir mantos de colores firmes."
+        "t": "Mucho antes de los incas, los tejedores de los Andes ya usaban la cochinilla para teñir mantos de colores firmes."
       }
     ],
     [
@@ -45,7 +45,7 @@
       {
         "id": "o7",
         "rol": "detalle",
-        "t": "Sin embargo, en el siglo XX se descubrió que algunos colorantes artificiales usados en alimentos podían dañar la salud, y varios fueron prohibidos."
+        "t": "En el siglo XX se descubrió que algunos colorantes artificiales usados en alimentos podían dañar la salud, y varios fueron prohibidos."
       },
       {
         "id": "o8",
@@ -76,7 +76,15 @@
         },
         "explicacion": "La oración 9 junta la historia entera: la cochinilla parecía cosa del pasado y recuperó su valor. Las demás cuentan cada etapa.",
         "explicaciones": {
-          "o6": "Esa oración cuenta solo el momento en que la cochinilla parecía perdida; el texto sigue y cuenta cómo se recuperó."
+          "o1": "La primera oración presenta la cochinilla: es el punto de partida, no la idea que junta todo.",
+          "o2": "Dice de dónde sale el color: es un detalle.",
+          "o3": "Cuenta un uso antiguo de la cochinilla: es una etapa de la historia.",
+          "o4": "Cuenta otra etapa: su valor en la Colonia.",
+          "o5": "Cuenta por qué perdió valor: es una etapa, no el resumen de todo.",
+          "o6": "Esa oración cuenta solo el momento en que la cochinilla parecía perdida; el texto sigue y cuenta cómo se recuperó.",
+          "o7": "Cuenta lo que cambió la situación: es una etapa más.",
+          "o8": "Cuenta la consecuencia de ese cambio, no la historia entera.",
+          "ninguna": "La oración 9 sí lo dice completo: un insecto que parecía cosa del pasado recuperó su valor."
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
@@ -93,7 +101,7 @@
           "explicacion": "Resume las etapas del texto en una sola idea: caída frente a lo artificial y regreso cuando cambió lo que se buscaba."
         },
         {
-          "t": "Al aplastar una hembra de cochinilla queda una mancha de un rojo intenso, que se debe al ácido carmínico que contiene.",
+          "t": "Al aplastar una hembra de cochinilla queda una mancha roja por el ácido carmínico.",
           "codigo": "RV1",
           "origen": "o2",
           "explicacion": "Es un detalle de la cochinilla. El texto cuenta su historia, no solo cómo produce el color."
@@ -124,14 +132,19 @@
       "previo": {
         "tipo": "clasificar",
         "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
-        "sonda": "El precio de los colorantes artificiales influyó en el valor comercial de la cochinilla.",
-        "clase": "se-deduce",
+        "sonda": "El Perú produce mucha cochinilla porque allí crecen más tunas que en otros países.",
+        "clase": "no-se-sabe",
         "codigos": {
-          "lo-dice": "RV6",
-          "no-se-sabe": "RV34",
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
           "lo-contradice": null
         },
-        "explicacion": "No lo dice así, pero se deduce: la cochinilla perdió valor cuando aparecieron colorantes artificiales más baratos (oración 5)."
+        "explicacion": "El texto dice que el Perú es uno de los principales productores (oración 9), pero no da ninguna razón para eso ni habla de cuántas tunas hay. No se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto dice que el Perú es uno de los principales productores (oración 9), pero nunca da la razón ni habla de cuántas tunas hay.",
+          "se-deduce": "Que el Perú sea un gran productor no permite concluir por qué lo es: esa razón va más allá del texto.",
+          "lo-contradice": "El texto no dice nada en contra de esa idea; simplemente no la menciona."
+        }
       },
       "enunciado": "Se infiere del texto que los cambios en el valor comercial de la cochinilla se debieron, sobre todo, a",
       "alternativas": [
@@ -181,34 +194,37 @@
           "suma": "RV26",
           "causa": "RV24"
         },
-        "explicacion": "La oración 6 dice que la cochinilla parecía condenada a desaparecer; la 7, con \"Sin embargo\", cuenta lo que cambió esa situación. Se oponen."
+        "explicacion": "La oración 6 dice que la cochinilla parecía condenada a desaparecer, y la 7 empieza a contar lo que cambió ese destino (se completa en la 8). Se oponen.",
+        "explicaciones": {
+          "suma": "La oración 7 no agrega otra razón para que la cochinilla desapareciera: cuenta lo que la salvó.",
+          "causa": "La oración 7 no es una consecuencia de la 6: que la cochinilla casi desapareciera no hizo que se prohibieran los colorantes."
+        }
       },
-      "enunciado": "En la oración 7, el conector SIN EMBARGO indica que lo que sigue",
+      "enunciado": "¿Qué conector podría ir al comienzo de la oración 7 (\"___ en el siglo XX se descubrió…\") sin cambiar el sentido del texto?",
       "alternativas": [
         {
-          "t": "va en contra de lo que se esperaba según la oración anterior.",
+          "t": "No obstante,",
           "correcta": true,
           "evidencia": [
             "o6",
             "o7"
           ],
-          "explicacion": "Si la cochinilla parecía condenada a desaparecer (oración 6), el \"Sin embargo\" anuncia un giro: algo que cambió ese destino."
+          "explicacion": "La oración 6 dice que la cochinilla parecía condenada; la 7 cuenta un giro que cambió ese destino. \"No obstante\" marca esa oposición."
         },
         {
-          "t": "es una consecuencia de que la cochinilla casi desapareciera.",
+          "t": "Por eso,",
           "codigo": "RV24",
-          "explicacion": "Se lee como causa y efecto lo que es una oposición: que la cochinilla casi desapareciera no causó que se prohibieran los colorantes."
+          "explicacion": "Lee como consecuencia lo que es una oposición: que la cochinilla casi desapareciera no es la razón del descubrimiento."
         },
         {
-          "t": "agrega otra razón por la que la cochinilla dejó de venderse.",
+          "t": "Además,",
           "codigo": "RV26",
-          "explicacion": "No es una suma: la oración 7 cuenta lo que hizo que la cochinilla volviera a venderse, no otra razón para su caída."
+          "explicacion": "La oración 7 no suma otra razón para la caída: cuenta lo que hizo que la cochinilla volviera."
         },
         {
-          "t": "repite que los colorantes artificiales eran más baratos.",
-          "codigo": "RV5",
-          "origen": "o5",
-          "explicacion": "Eso lo dice la oración 5. La 7 trae algo nuevo: que algunos colorantes artificiales podían dañar la salud."
+          "t": "Dicho de otro modo,",
+          "codigo": "RV35",
+          "explicacion": "\"Dicho de otro modo\" anuncia que se repite lo mismo con otras palabras, pero la oración 7 cuenta algo nuevo."
         }
       ]
     }
@@ -241,6 +257,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 6 de 6. Cambios: enunciado de p2 sobre los cambios del valor (el ácido carmínico ya no es defendible), paso previo de p2 alineado con la pregunta, evidencia de p1 y hecho de Paracas corregido (la cochinilla abunda desde Wari; en Paracas es rara)."
+    "notas": "A ciegas: 6 de 6. Cambios: enunciado de p2 sobre los cambios del valor (el ácido carmínico ya no es defendible), paso previo de p2 alineado con la pregunta, evidencia de p1 y hecho de Paracas corregido (la cochinilla abunda desde Wari; en Paracas es rara). Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Sin el \"Sin embargo\" explícito en o7; sonda nueva sobre las tunas; RV1 más corto."
   }
 }

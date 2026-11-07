@@ -1,6 +1,6 @@
 // Valida el banco de textos de razonamiento verbal con las reglas de docs/formato-lectura.md (sección 5.5).
 // Los códigos de error se leen del informe (docs/investigacion/razonamiento-verbal-ideas-erroneas.md)
-// mientras no exista el guion que genera codigos.json.
+// (codigos.json se genera de ahí con herramientas/codigos-verbal.js).
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -59,7 +59,7 @@ function validarPrevio(q, t, donde) {
     assert.ok(p.ninguna === 'correcta' || codigoValido(p.ninguna), `${donde}: "ninguna" debe ser "correcta" o un código`);
     if (p.ninguna !== 'correcta') usados.add(p.ninguna);
     for (const id of Object.keys(p.codigos || {})) assert.ok(ids.has(id), `${donde}: el código apunta a ${id}, que no existe`);
-    for (const id of Object.keys(p.explicaciones || {})) assert.ok(ids.has(id), `${donde}: la explicación apunta a ${id}, que no existe`);
+    for (const id of Object.keys(p.explicaciones || {})) assert.ok(ids.has(id) || id === 'ninguna', `${donde}: la explicación apunta a ${id}, que no existe`);
     for (const o of oraciones(t)) {
       if (p.aceptadas.includes(o.id)) continue;
       const c = codigoMarcar(p, t, o);
@@ -78,6 +78,12 @@ function validarPrevio(q, t, donde) {
   } else {
     assert.fail(`${donde}: tipo de previo "${p.tipo}" no válido en un texto`);
   }
+  // Toda respuesta incorrecta del previo trae su explicación (pedido de la integración, 6 nov 2026).
+  const incorrectas = p.tipo === 'marcar-oracion'
+    ? [...oraciones(t).map(o => o.id).filter(id => !p.aceptadas.includes(id)), ...(p.ninguna && p.ninguna !== 'correcta' ? ['ninguna'] : [])]
+    : Object.keys(p.codigos);
+  for (const r of incorrectas) assert.ok(p.explicaciones && p.explicaciones[r], `${donde}: falta la explicación del previo para "${r}"`);
+  for (const r of Object.keys(p.explicaciones || {})) assert.ok(incorrectas.includes(r), `${donde}: sobra la explicación del previo para "${r}"`);
 }
 
 test('el índice apunta a textos que existen y están aprobados (reglas 9 y 7)', () => {
@@ -94,6 +100,19 @@ test('el índice apunta a textos que existen y están aprobados (reglas 9 y 7)',
     assert.ok(ids.has(INDICE[f]), `indice.json: falta el texto de ${f}`);
     assert.ok(!TEXTOS.find(x => x.t.id === INDICE[f]).t.preguntas.some(q => q.previo), `${INDICE[f]}: la prueba de ${f} va sin paso previo`);
   }
+});
+
+test('la entrada y la salida son formas paralelas', () => {
+  if (INDICE.entrada === null || INDICE.salida === null) return;
+  const [a, b] = [INDICE.entrada, INDICE.salida].map(id => TEXTOS.find(x => x.t.id === id).t);
+  assert.equal(a.preguntas.length, b.preguntas.length, 'entrada y salida: distinta cantidad de preguntas');
+  assert.equal(a.dificultad, b.dificultad, 'entrada y salida: distinta dificultad');
+  a.preguntas.forEach((qa, i) => {
+    const qb = b.preguntas[i];
+    assert.equal(qa.tipo, qb.tipo, `pregunta ${i + 1}: distinto tipo`);
+    const cods = q => q.alternativas.filter(x => !x.correcta).map(x => x.codigo).sort().join();
+    assert.equal(cods(qa), cods(qb), `pregunta ${i + 1}: distintos códigos RV en los distractores`);
+  });
 });
 
 for (const { archivo, t } of TEXTOS) {

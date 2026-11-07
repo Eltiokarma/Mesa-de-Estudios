@@ -2,8 +2,8 @@
  "cursos": {
   "algebra": {
    "curso": "algebra",
-   "version": "1.3.0",
-   "minutos": 12,
+   "version": "1.4.0",
+   "minutos": 15,
    "errores": {
     "AL28-h-al-reves": {
      "respaldo": "parcial",
@@ -100,6 +100,26 @@
     "suma-geometrica-como-aritmetica": {
      "respaldo": "hipotesis",
      "describe": "Usa la fórmula de la suma aritmética, (primero + último)·n/2"
+    },
+    "AL10-log-producto-de-logs": {
+     "respaldo": "parcial",
+     "describe": "Cree que log(ab) = log a · log b (AL10)"
+    },
+    "EL2-log-solo-del-primer-factor": {
+     "respaldo": "hipotesis",
+     "describe": "Toma el logaritmo solo del primer factor"
+    },
+    "EL1-log-da-el-numero": {
+     "respaldo": "hipotesis",
+     "describe": "Da el número y no su logaritmo"
+    },
+    "AL32-iguala-exponentes-con-bases-distintas": {
+     "respaldo": "hipotesis",
+     "describe": "Iguala los exponentes aunque las bases son distintas"
+    },
+    "EL7-potencia-de-potencia-suma": {
+     "respaldo": "hipotesis",
+     "describe": "En una potencia de potencia suma los exponentes en vez de multiplicarlos"
     }
    },
    "pares": [
@@ -438,13 +458,91 @@
       ],
       "k": "235b24d170030ee163989bc42435ffca253a675558e5aa0363fa66b6efee6cffc049ce187507d2b8e249726d86fd00339386231ca94e687a0d448a14f6d0a1b4f843d624861d968e9766a4c274ff8153870a3b3c6d1c1700761f6a7ce1fa896f1203ff79233cdde575fe6e1a"
      }
+    },
+    {
+     "par": "el-01",
+     "plantilla": "exponenciales-logaritmos",
+     "unidad": "algebra.exponenciales-y-logaritmos",
+     "mide": "Logaritmo de un producto: log(ab) = log a + log b",
+     "A": {
+      "enunciado": "¿Cuánto vale log₂(8 · 4)?",
+      "opciones": [
+       {
+        "texto": "6"
+       },
+       {
+        "texto": "5"
+       },
+       {
+        "texto": "12"
+       },
+       {
+        "texto": "32"
+       }
+      ],
+      "k": "565666cdb51b9f3f7cb05bdc9daf3e57ff69aa29e5775ccd5029417b76c489716415c309c9cac44a769a76616a0922ebf3bae7bb7a4ee44cc9bebf7a7a7b448d12914190c39759667d33e6e45ec9e720e27e3331e52f291bd6d43b1a"
+     },
+     "B": {
+      "enunciado": "¿Cuánto vale log₃(9 · 81)?",
+      "opciones": [
+       {
+        "texto": "8"
+       },
+       {
+        "texto": "6"
+       },
+       {
+        "texto": "162"
+       },
+       {
+        "texto": "729"
+       }
+      ],
+      "k": "e5ce7a7c8294c29e3896e3f81b757fe7e626e1531398ba2c256a242bd3881a645201df0d920072192663bf63f239c267b5db87f3366e043f3c5fd3524965bb73a13addd17d87454b9b3bf8880a3969ee8bd6158b51e97708736ac027"
+     }
+    },
+    {
+     "par": "el-02",
+     "plantilla": "exponenciales-logaritmos",
+     "unidad": "algebra.exponenciales-y-logaritmos",
+     "mide": "Ecuación exponencial: se igualan exponentes solo con la misma base",
+     "A": {
+      "enunciado": "¿Qué valor de x cumple 4^(2x − 3) = 8^(x + 2)?",
+      "opciones": [
+       {
+        "texto": "x = 5"
+       },
+       {
+        "texto": "x = 6"
+       },
+       {
+        "texto": "x = 12"
+       }
+      ],
+      "k": "92e50a4a69d6211784322467594daa5ff4840706ba8082a5ff2411075649c832f4e85b5d5ec765dc925794f62df554cc7b950af091e2375d14dfd3a5a5128b65b309f2ee23d88e83c7302d3676f42251508f5eef3e"
+     },
+     "B": {
+      "enunciado": "¿Qué valor de x cumple 9^(2x − 2) = 27^(x + 1)?",
+      "opciones": [
+       {
+        "texto": "x = 3"
+       },
+       {
+        "texto": "x = 4"
+       },
+       {
+        "texto": "x = 7"
+       }
+      ],
+      "k": "9e7ab840fa9c18495823bc2844efd61cd73cfd293e75c30f84dd519fc7b619158fc311931d25e5479b85f3317215e9b219597c351b5d0b64d47bd429e335f1eb71e97ba587dadd952f91ffab69ab54b1aa7b9436bd"
+     }
     }
    ]
   },
   "aritmetica": {
    "curso": "aritmetica",
-   "version": "2.0.0",
-   "minutos": 14,
+   "version": "2.1.0",
+   "minutos": 16,
    "errores": {
     "suma-descuentos": {
      "respaldo": "documentado",
@@ -537,6 +635,30 @@
     "ultimo-por-n": {
      "respaldo": "hipotesis",
      "describe": "Multiplica el último término por n"
+    },
+    "AR12-suma-numeradores-y-denominadores": {
+     "respaldo": "documentado",
+     "describe": "Suma numeradores y denominadores (AR12)"
+    },
+    "suma-numeradores-multiplica-denominadores": {
+     "respaldo": "hipotesis",
+     "describe": "Suma los numeradores y multiplica los denominadores"
+    },
+    "multiplica-en-vez-de-sumar": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica las fracciones en vez de sumarlas"
+    },
+    "AR13-mcd-en-vez-de-mcm": {
+     "respaldo": "parcial",
+     "describe": "Usa el MCD donde va el MCM (AR13)"
+    },
+    "AR13-producto": {
+     "respaldo": "parcial",
+     "describe": "Multiplica los números en vez de buscar el MCM"
+    },
+    "suma": {
+     "respaldo": "hipotesis",
+     "describe": "Suma los dos periodos"
     }
    },
    "pares": [
@@ -874,6 +996,90 @@
        }
       ],
       "k": "7823c414738ce299ff2ebc9916e6d32884802002b45339442a7ee387fab6746c06c830cec02ec3b5e0af7cc4e2174900b7b77a821f8d6e8fb500eddc35d6a8274ee861"
+     }
+    },
+    {
+     "par": "fr-01",
+     "plantilla": "fracciones",
+     "unidad": "aritmetica.numeros-racionales",
+     "mide": "Suma de fracciones: con denominador común, no sumando de frente",
+     "A": {
+      "enunciado": "¿Cuánto es 2/3 + 3/5?",
+      "opciones": [
+       {
+        "texto": "5/8"
+       },
+       {
+        "texto": "19/15"
+       },
+       {
+        "texto": "1/3"
+       },
+       {
+        "texto": "2/5"
+       }
+      ],
+      "k": "95124068fe759ae64be0045870040600434b078110a7569c371e0d5cdb30a86dccbb6e13684a008558e7aa78c7da5dac13c059aea00cf9f7e3dc1d2ecf8400f8c91dc2c9b8f97bd3696194c83dfb7ea6db394a094a4e06deba598db0eaae33f4534f98f992784f7ecfb6ff3e15df9cc24e9705268e3506e730"
+     },
+     "B": {
+      "enunciado": "¿Cuánto es 2/5 + 1/4?",
+      "opciones": [
+       {
+        "texto": "1/3"
+       },
+       {
+        "texto": "13/20"
+       },
+       {
+        "texto": "3/20"
+       },
+       {
+        "texto": "1/10"
+       }
+      ],
+      "k": "e5f18ddc20826cc68c046c70218f5e3e629d07492963b154c45dade95a22811641ea504150f3c23c7973b457311760cadf761af95a691fc76c90765ad3ac140161f1314dc566a5e50e32a893246a7b58206fc6c6c5d7b34290eb5ae9b35c39ac0636d6cb54904039775e86871adf057fdde6320afa31935f5d"
+     }
+    },
+    {
+     "par": "fr-02",
+     "plantilla": "fracciones",
+     "unidad": "aritmetica.mcd-y-mcm",
+     "mide": "Coincidencias periódicas: el primer momento común es el MCM",
+     "A": {
+      "enunciado": "Dos luces se encienden juntas. Una parpadea cada 8 segundos y la otra cada 12 segundos. ¿Cuántos segundos después vuelven a encenderse juntas por primera vez?",
+      "opciones": [
+       {
+        "texto": "4 segundos"
+       },
+       {
+        "texto": "24 segundos"
+       },
+       {
+        "texto": "96 segundos"
+       },
+       {
+        "texto": "20 segundos"
+       }
+      ],
+      "k": "062974d3c8ee88aeeb4fbc9f2c6a5dd4048c91895187ba73e0509fa5e4552184f7ed8f5ebb6764e20360123ae4c5b8d1fae98b74ca9d4f2a"
+     },
+     "B": {
+      "enunciado": "Dos alarmas suenan juntas. Una suena cada 10 minutos y la otra cada 15 minutos. ¿Cuántos minutos después vuelven a sonar juntas por primera vez?",
+      "opciones": [
+       {
+        "texto": "5 minutos"
+       },
+       {
+        "texto": "30 minutos"
+       },
+       {
+        "texto": "150 minutos"
+       },
+       {
+        "texto": "25 minutos"
+       }
+      ],
+      "k": "fcf4e76bf82efa06db641ebf0ba30397513e540120475cc09c99567d2e1d18404404fa2c8904d7b0dda8f472dc402a86c26f691668956d74"
      }
     }
    ]
@@ -1429,8 +1635,8 @@
   },
   "geometria": {
    "curso": "geometria",
-   "version": "1.2.0",
-   "minutos": 12,
+   "version": "2.0.0",
+   "minutos": 15,
    "errores": {
     "GE1-area-como-lado": {
      "respaldo": "documentado",
@@ -1440,14 +1646,6 @@
      "respaldo": "hipotesis",
      "describe": "Usa k³ para un área"
     },
-    "GE2-volumen-como-arista": {
-     "respaldo": "parcial",
-     "describe": "Cree que el volumen crece igual que la arista (k en vez de k³)"
-    },
-    "GE2-volumen-como-area": {
-     "respaldo": "parcial",
-     "describe": "Usa k² para un volumen"
-    },
     "area-sin-dividir-entre-2": {
      "respaldo": "hipotesis",
      "describe": "Olvida dividir entre 2 el producto base por altura"
@@ -1455,14 +1653,6 @@
     "GE7-lado-como-altura": {
      "respaldo": "documentado",
      "describe": "Usa un lado inclinado como si fuera la altura"
-    },
-    "GE15-inscrito-igual-central": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que el inscrito mide lo mismo que el central"
-    },
-    "GE15-inscrito-doble": {
-     "respaldo": "hipotesis",
-     "describe": "Invierte la relación: cree que el inscrito es el doble del central"
     },
     "GE16-exterior-suma": {
      "respaldo": "hipotesis",
@@ -1515,6 +1705,54 @@
     "suma-n-menos-1-triangulos": {
      "respaldo": "hipotesis",
      "describe": "Cuenta n − 1 triángulos desde un vértice"
+    },
+    "GE20-sin-tercio": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida el tercio: toma el volumen del prisma"
+    },
+    "piramide-mitad-del-prisma": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la pirámide es la mitad del prisma"
+    },
+    "GE14-volumen-como-area-total": {
+     "respaldo": "parcial",
+     "describe": "Confunde volumen con área total"
+    },
+    "esfera-area-como-circulo": {
+     "respaldo": "hipotesis",
+     "describe": "Usa el área de un círculo máximo, πr²"
+    },
+    "esfera-area-dos-circulos": {
+     "respaldo": "hipotesis",
+     "describe": "Usa dos círculos máximos, 2πr²"
+    },
+    "GE19-diametro-como-radio": {
+     "respaldo": "hipotesis",
+     "describe": "Usa el diámetro donde va el radio"
+    },
+    "distancia-sin-raiz": {
+     "respaldo": "hipotesis",
+     "describe": "Se queda en Δx² + Δy², sin la raíz"
+    },
+    "distancia-suma-catetos": {
+     "respaldo": "hipotesis",
+     "describe": "Suma |Δx| + |Δy|, el camino por la cuadrícula"
+    },
+    "GE11-resta-cuadrados": {
+     "respaldo": "hipotesis",
+     "describe": "Resta los cuadrados en vez de sumarlos"
+    },
+    "distancia-recta-sin-raiz": {
+     "respaldo": "hipotesis",
+     "describe": "Divide entre A² + B², sin la raíz"
+    },
+    "distancia-recta-sin-dividir": {
+     "respaldo": "hipotesis",
+     "describe": "No divide entre √(A² + B²)"
+    },
+    "distancia-recta-sin-c": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida el término independiente C"
     }
    },
    "pares": [
@@ -1552,42 +1790,6 @@
        }
       ],
       "k": "2495ffb98ae4bdc1e8e98a300190f3341675be9f9bce211c26507c49568e6f3944defe099ab3a66231e5df81a33edb95"
-     }
-    },
-    {
-     "par": "geo-02",
-     "plantilla": "ampliadora",
-     "unidad": "geometria.prisma-y-piramide",
-     "mide": "El volumen de sólidos semejantes se multiplica por k³",
-     "A": {
-      "enunciado": "En una caja cúbica caben 2 litros. Otra caja cúbica tiene la arista del doble de largo. ¿Cuántos litros caben en ella?",
-      "opciones": [
-       {
-        "texto": "4 litros"
-       },
-       {
-        "texto": "8 litros"
-       },
-       {
-        "texto": "16 litros"
-       }
-      ],
-      "k": "072eb7b19169d8b4abd79189f03b94818a6533ecf5307f2b13cd87b7ddf014775615dc595f6c21e1bf3e0897826d1af98a67f14942da1130da58"
-     },
-     "B": {
-      "enunciado": "Un dado de madera tiene 5 cm³ de volumen. Se fabrica otro dado con la arista del triple de largo. ¿Cuál es su volumen?",
-      "opciones": [
-       {
-        "texto": "15 cm³"
-       },
-       {
-        "texto": "45 cm³"
-       },
-       {
-        "texto": "135 cm³"
-       }
-      ],
-      "k": "8a68fc2e838ff339b626554b255cb2f1a35a9b0ffa8a204c0df181ff60fafc20e6f5a49b010c1528f9c4b4c998c4061b710bf96f2259bbf98c67"
      }
     },
     {
@@ -1672,42 +1874,6 @@
        }
       ],
       "k": "22e82a49179a6beaa6539b2cbe297c328aaba1bd36277d9cceb7955bb86c23357aa35a9597eddf7b5db6a67b122beed2cc5ff48a7b88f613f7fbdb6dd6e2008ba673301a7091bc70683d323704533ea3af0f52"
-     }
-    },
-    {
-     "par": "geo-07",
-     "plantilla": "angulo-inscrito",
-     "unidad": "geometria.circunferencia",
-     "mide": "El ángulo central mide el doble del inscrito que abarca el mismo arco",
-     "A": {
-      "enunciado": "En una circunferencia de centro O, el ángulo inscrito APB mide 35° (P está en el arco mayor AB). ¿Cuánto mide el ángulo central AOB?",
-      "opciones": [
-       {
-        "texto": "35°"
-       },
-       {
-        "texto": "70°"
-       },
-       {
-        "texto": "17,5°"
-       }
-      ],
-      "k": "e68308261f152b590ce17e0e66ffb0d789f8894892c41c258438f1803934f5ad27ac0126b436f67ee8fe660fb87f081ff2c121388df79d6c2d492479"
-     },
-     "B": {
-      "enunciado": "En una circunferencia de centro O, el ángulo inscrito MQN mide 48° (Q está en el arco mayor MN). ¿Cuánto mide el ángulo central MON?",
-      "opciones": [
-       {
-        "texto": "48°"
-       },
-       {
-        "texto": "96°"
-       },
-       {
-        "texto": "24°"
-       }
-      ],
-      "k": "9b2f719c3a76b39840fd378d25aeedc43ff069ac9dbe5346f28fa3e9a1601640227a94c87487277109ff73b06f2f52d5ce00ae76e76538b3e1259e39"
      }
     },
     {
@@ -1834,6 +2000,174 @@
        }
       ],
       "k": "a4d4d6c0650446730896442c37471754948c3ef29ed767d0913c7d47e72ecfabe02100dec109a13064c1d0f6d5765a492d1840508a13d99005893c51074f44dd67a81d280f758ec4"
+     }
+    },
+    {
+     "par": "sol-01",
+     "plantilla": "solidos",
+     "unidad": "geometria.prisma-y-piramide",
+     "mide": "Volumen de la pirámide: un tercio del prisma de igual base y altura",
+     "A": {
+      "enunciado": "Una pirámide tiene base cuadrada de 6 cm de lado y una altura de 10 cm. ¿Cuál es su volumen?",
+      "opciones": [
+       {
+        "texto": "360 cm³"
+       },
+       {
+        "texto": "180 cm³"
+       },
+       {
+        "texto": "120 cm³"
+       },
+       {
+        "texto": "161,3 cm³"
+       }
+      ],
+      "k": "6c62dbc9212b05cfc4607098fd1d7113a9fafac0c2249378545f188932cc7c4a6803c19fd658e9a1524cc2bf379bac33d47889ae6b9fe18d98b88d29ab48e53e2a6db745c2e5b30d1d6818c720551ddcaaba759394"
+     },
+     "B": {
+      "enunciado": "Una pirámide tiene base cuadrada de 9 cm de lado y una altura de 8 cm. ¿Cuál es su volumen?",
+      "opciones": [
+       {
+        "texto": "648 cm³"
+       },
+       {
+        "texto": "324 cm³"
+       },
+       {
+        "texto": "216 cm³"
+       },
+       {
+        "texto": "246,2 cm³"
+       }
+      ],
+      "k": "d8b8c7c5a571dd67d0296873f8280914914f53d6d12713eada96123213880760beb522ab2291df41d0f296d4c912326effecb0ad4b3736d8ce1b0798ed2bee497907325efa45ce8fb5cea7a26094b1649de5a6fcc6"
+     }
+    },
+    {
+     "par": "sol-02",
+     "plantilla": "solidos",
+     "unidad": "geometria.solidos-de-revolucion",
+     "mide": "Área de la esfera: 4πr², cuatro círculos máximos",
+     "A": {
+      "enunciado": "¿Cuál es el área de la superficie de una esfera de 5 cm de radio?",
+      "opciones": [
+       {
+        "texto": "25π cm²"
+       },
+       {
+        "texto": "100π cm²"
+       },
+       {
+        "texto": "50π cm²"
+       },
+       {
+        "texto": "400π cm²"
+       }
+      ],
+      "k": "cf47de04e56ffcb4bf56d75970eddd7e95f15855f02f1dcb42172bf3b01ba52437c2ae189b982dc6a49a241fd9bebf325c2dd3e4c780e81ea403e484c6fd6a26ce6ec17fb0a59341c7467e222f23383961f2d166a886670771"
+     },
+     "B": {
+      "enunciado": "¿Cuál es el área de la superficie de una esfera de 4 cm de radio?",
+      "opciones": [
+       {
+        "texto": "16π cm²"
+       },
+       {
+        "texto": "64π cm²"
+       },
+       {
+        "texto": "32π cm²"
+       },
+       {
+        "texto": "256π cm²"
+       }
+      ],
+      "k": "0f26ce0d1c0466a46e32b51d74968b906e17dd78ab98b999ff6d649d3ea42ccddb8cd93d2d64503c3cc947da152360d5ce2485a21a10a13ef082107fa915f404f915b66346ed96307ead6e63329ef40c96ffdeed6ccf80f59a"
+     }
+    },
+    {
+     "par": "ga-01",
+     "plantilla": "geometria-analitica",
+     "unidad": "geometria.geometria-analitica",
+     "mide": "Distancia entre dos puntos: √(Δx² + Δy²)",
+     "A": {
+      "enunciado": "¿Cuál es la distancia entre los puntos A(2; 1) y B(8; 9)?",
+      "opciones": [
+       {
+        "texto": "100"
+       },
+       {
+        "texto": "14"
+       },
+       {
+        "texto": "10"
+       },
+       {
+        "texto": "5,3"
+       }
+      ],
+      "k": "5455cf3b1e159b513270c1e7a448b6cfc07529349808e85a5baad4f4151dcfb8cadbdf899a742a3ade8b8881ca0f7e7602404f50aad1915bd02c8e74993ed3ee1ec36f4c40f3ebc26d310fbf70"
+     },
+     "B": {
+      "enunciado": "¿Cuál es la distancia entre los puntos P(−2; 1) y Q(10; 6)?",
+      "opciones": [
+       {
+        "texto": "169"
+       },
+       {
+        "texto": "17"
+       },
+       {
+        "texto": "13"
+       },
+       {
+        "texto": "10,9"
+       }
+      ],
+      "k": "0c55cfcd8e36476f58aad7fff6a0fd1051a386f4788dc15465160c35a5d483731e1105f92b1b7b2f8be080134b8dda1e2b2295ad0b925985a2e4715d8fb13a037094a8d5982f90ffce3fea3446"
+     }
+    },
+    {
+     "par": "ga-02",
+     "plantilla": "geometria-analitica",
+     "unidad": "geometria.geometria-analitica",
+     "mide": "Distancia de un punto a una recta: |Ax₀ + By₀ + C| / √(A² + B²)",
+     "A": {
+      "enunciado": "¿Cuál es la distancia del punto P(6; 2) a la recta 3x + 4y + 1 = 0?",
+      "opciones": [
+       {
+        "texto": "1,08"
+       },
+       {
+        "texto": "27"
+       },
+       {
+        "texto": "5,4"
+       },
+       {
+        "texto": "5,2"
+       }
+      ],
+      "k": "10ec54711e84a02cf119bf0f975600f775d1adcad5e165836b5123f924239c64c8095844468c8ec8869216a2dd3d24905e4dc3220eeb39c7f32791b3095bfd28064192a23d4f26f546ca877087a86dd8668071766d95eb6a68"
+     },
+     "B": {
+      "enunciado": "¿Cuál es la distancia del punto Q(2; 5) a la recta 8x + 6y − 3 = 0?",
+      "opciones": [
+       {
+        "texto": "0,43"
+       },
+       {
+        "texto": "43"
+       },
+       {
+        "texto": "4,3"
+       },
+       {
+        "texto": "4,6"
+       }
+      ],
+      "k": "6a144033b8dce7ace0839aeba01a28e20cdbb1ad3d12d52dafad55e7591fa374be6f8713ce56c30bcdcfaa40ac71b0f532959727382471c3da1643d0cc1405c4cc946c40b62ef7b6df420bb196b27b433a5aa54aaa5c29f591"
      }
     }
    ]
@@ -2794,8 +3128,8 @@
   },
   "trigonometria": {
    "curso": "trigonometria",
-   "version": "1.2.0",
-   "minutos": 14,
+   "version": "2.0.0",
+   "minutos": 12,
    "errores": {
     "TR1-lee-2-como-2pi": {
      "respaldo": "parcial",
@@ -2820,50 +3154,6 @@
     "arco-sin-radio": {
      "respaldo": "hipotesis",
      "describe": "Da el ángulo en radianes como si fuera la longitud del arco"
-    },
-    "GE1-area-como-lado": {
-     "respaldo": "documentado",
-     "describe": "Cree que el área crece igual que el radio"
-    },
-    "arco-depende-solo-del-angulo": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que el arco y el área solo dependen del ángulo"
-    },
-    "arco-igual-area-doble": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que el arco no cambia con el radio y el área crece como él"
-    },
-    "vueltas-sin-2pi": {
-     "respaldo": "hipotesis",
-     "describe": "Divide la distancia entre el radio, sin 2π"
-    },
-    "vueltas-perimetro-pi-r": {
-     "respaldo": "hipotesis",
-     "describe": "Usa π·r como perímetro de la rueda"
-    },
-    "vueltas-con-diametro": {
-     "respaldo": "hipotesis",
-     "describe": "Usa 2π por el diámetro como perímetro"
-    },
-    "bici-mismas-vueltas": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que la rueda da las mismas vueltas que el pedal"
-    },
-    "bici-invertido": {
-     "respaldo": "hipotesis",
-     "describe": "Divide los radios al revés"
-    },
-    "bici-faja-en-el-eje": {
-     "respaldo": "hipotesis",
-     "describe": "Trata la rueda como si la moviera la cadena, y no el eje del piñón"
-    },
-    "centesimal-igual": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que los grados centesimales y los sexagesimales son iguales"
-    },
-    "factor-centesimal-invertido": {
-     "respaldo": "hipotesis",
-     "describe": "Multiplica por 9/10 en vez de 10/9"
     },
     "TR11-TR12-abscisa-sin-signo": {
      "respaldo": "parcial",
@@ -2908,6 +3198,30 @@
     "suma-de-lados": {
      "respaldo": "hipotesis",
      "describe": "Suma los dos lados"
+    },
+    "ID8-olvida-el-dos": {
+     "respaldo": "hipotesis",
+     "describe": "Usa 1 − sen²x: olvida el 2 de cos 2x = 1 − 2 sen²x"
+    },
+    "ID15-olvida-el-cuadrado": {
+     "respaldo": "hipotesis",
+     "describe": "Usa 1 − 2 sen x: olvida elevar al cuadrado"
+    },
+    "ID7-cos-doble-como-pitagorica": {
+     "respaldo": "hipotesis",
+     "describe": "Confunde cos 2x con cos²x + sen²x = 1"
+    },
+    "TR16-tangente-de-la-suma-lineal": {
+     "respaldo": "hipotesis",
+     "describe": "Reparte la tangente: tan(a + b) = tan a + tan b"
+    },
+    "ID11-signo-del-denominador": {
+     "respaldo": "hipotesis",
+     "describe": "Suma en el denominador: 1 + tan a · tan b"
+    },
+    "ID6-producto-de-tangentes": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica las tangentes"
     }
    },
    "pares": [
@@ -2993,168 +3307,6 @@
        }
       ],
       "k": "f9f39c83876e6a5bc8eed8f49dad5423ac95730abcebf9404bfb8afbeb7f6c41429e09989f35686b3395f1c5911b72e1c6b555534caafc8cf46eecd3b02e3dbbdcf953a224f7"
-     }
-    },
-    {
-     "par": "tri-04",
-     "plantilla": "cinta-radio",
-     "unidad": "trigonometria.angulo-trigonometrico",
-     "mide": "Sistemas sexagesimal y centesimal: S/9 = C/10",
-     "A": {
-      "enunciado": "Un ángulo mide 54° sexagesimales. ¿Cuántos grados centesimales mide?",
-      "opciones": [
-       {
-        "texto": "54ᵍ"
-       },
-       {
-        "texto": "60ᵍ"
-       },
-       {
-        "texto": "48,6ᵍ"
-       }
-      ],
-      "k": "ec574bc1d3ecff30c7892fa1c9841f28f8078cdd87501ef188d67bb50a45952cf4c63632f6fab952bbfbab0c2ebc75ac90d762b2f6ef6885e7"
-     },
-     "B": {
-      "enunciado": "Un ángulo mide 72° sexagesimales. ¿Cuántos grados centesimales mide?",
-      "opciones": [
-       {
-        "texto": "72ᵍ"
-       },
-       {
-        "texto": "80ᵍ"
-       },
-       {
-        "texto": "64,8ᵍ"
-       }
-      ],
-      "k": "9505bbbc31b810f3de3000dfddb9095795e5fcbf3a586f3309b333305fa685b7092c97d0b96b63c36c68f8a88abc1125cc858186febb65bef5"
-     }
-    },
-    {
-     "par": "tri-05",
-     "plantilla": "cinta-radio",
-     "unidad": "trigonometria.longitud-de-arco-y-sector",
-     "mide": "Con el mismo ángulo, el arco va con el radio y el área con el radio al cuadrado",
-     "A": {
-      "enunciado": "Un sector circular tiene un ángulo central de 60° y un radio de 4 cm. Si el radio se triplica y el ángulo no cambia, ¿qué pasa con su arco y con su área?",
-      "opciones": [
-       {
-        "texto": "El arco el triple y el área el triple"
-       },
-       {
-        "texto": "El arco igual y el área igual"
-       },
-       {
-        "texto": "El arco el triple y el área 9 veces"
-       },
-       {
-        "texto": "El arco igual y el área el triple"
-       }
-      ],
-      "k": "134d3b36259c398b6123bd53d35c7fc5295618a9387e66fa5d5656b49d82ecc688d9fa9255a4b03c1e4260943999bd8f8cc8eef989478cc961387544ce34909f055da7129562c89a3465b67dc6cb02926f973052"
-     },
-     "B": {
-      "enunciado": "Un sector circular tiene un ángulo central de 45° y un radio de 10 cm. Si el radio se reduce a la mitad y el ángulo no cambia, ¿qué pasa con su arco y con su área?",
-      "opciones": [
-       {
-        "texto": "El arco a la mitad y el área a la mitad"
-       },
-       {
-        "texto": "El arco igual y el área igual"
-       },
-       {
-        "texto": "El arco a la mitad y el área a la cuarta parte"
-       },
-       {
-        "texto": "El arco igual y el área a la mitad"
-       }
-      ],
-      "k": "113ed85ab8a11dc4713c3bd9669087e431e0f0fcf7cca1ce80cea8191be0c65f9b497f981c4ce94bbb37a0173dd56e0aaf0d9ced20b9b25d1255f4c0d526e3835f2268519767687402bf6558e83e4681cb22e458"
-     }
-    },
-    {
-     "par": "tri-06",
-     "plantilla": "cinta-radio",
-     "unidad": "trigonometria.longitud-de-arco-y-sector",
-     "mide": "Vueltas de una rueda: distancia entre el perímetro 2πr",
-     "A": {
-      "enunciado": "Un aro de 0,4 m de radio rueda por el piso sin patinar y recorre 12π m. ¿Cuántos giros completos da?",
-      "opciones": [
-       {
-        "texto": "30"
-       },
-       {
-        "texto": "15"
-       },
-       {
-        "texto": "7,5"
-       },
-       {
-        "texto": "30π"
-       }
-      ],
-      "k": "14c54fcdfd0bc76a412f5485654e971732927036c282a766da9acd0878e56fcf61e178df4c93b153fe0a0952600066d870ce695df4ddf778bc7fef57ef86f121b18d25f5760b1090d7b2"
-     },
-     "B": {
-      "enunciado": "Una llanta de 0,3 m de radio rueda por la pista sin patinar y recorre 18π m. ¿Cuántos giros completos da?",
-      "opciones": [
-       {
-        "texto": "60"
-       },
-       {
-        "texto": "30"
-       },
-       {
-        "texto": "15"
-       },
-       {
-        "texto": "60π"
-       }
-      ],
-      "k": "4f2fe4391d1a36e54269b3da7a4d9a09e604e896642800bbb9b2eb8c597f6ce2d2a05f7967c0dead60757a2e3aab8465a7856c6cde051f8c1dacc5174396b1ab67958fbf8ab58ba86f8e"
-     }
-    },
-    {
-     "par": "tri-08",
-     "plantilla": "cinta-radio",
-     "unidad": "trigonometria.longitud-de-arco-y-sector",
-     "mide": "Cadena y eje en la bicicleta: la cadena iguala arcos y el eje iguala vueltas",
-     "A": {
-      "enunciado": "Pedro pedalea 2 vueltas completas. En su bicicleta, la catalina (12 cm de radio) mueve con la cadena un piñón de 4 cm de radio, y ese piñón comparte eje con la llanta trasera, de 30 cm de radio. ¿Cuántos giros da la llanta trasera?",
-      "opciones": [
-       {
-        "texto": "2"
-       },
-       {
-        "texto": "0,67"
-       },
-       {
-        "texto": "6"
-       },
-       {
-        "texto": "0,8"
-       }
-      ],
-      "k": "9411fc412d561f65d9194c250fed7fc5deb07648498212f2dc9b786cf1ce2f614a419e096e4ce6831e49ac612ca6a5a14f8f3205ec7ad3fb350ad5ba8dc2e9a7a6892c2e5b"
-     },
-     "B": {
-      "enunciado": "Rosa pedalea 3 vueltas completas. En su bicicleta, la catalina (18 cm de radio) mueve con la cadena un piñón de 6 cm de radio, y ese piñón comparte eje con la llanta trasera, de 36 cm de radio. ¿Cuántos giros da la llanta trasera?",
-      "opciones": [
-       {
-        "texto": "3"
-       },
-       {
-        "texto": "1"
-       },
-       {
-        "texto": "9"
-       },
-       {
-        "texto": "1,5"
-       }
-      ],
-      "k": "ef97a48120ddf1d3c0929cd467d542baf52374f34cd809f945ce2eff083dd95de6606754ba54db8e63f69ce19734741099265f48ce6028c59ccd6fe5c6370ddc7add30954b"
      }
     },
     {
@@ -3317,6 +3469,90 @@
        }
       ],
       "k": "cca1c09228fa1ae104b6b70b1407c4ce5b4d99382c0fba5d6d3d98814fb925c4b692cd54ad2f302bcb78eba4461725298693e4b7c7782b2e"
+     }
+    },
+    {
+     "par": "id-01",
+     "plantilla": "identidades-trig",
+     "unidad": "trigonometria.arcos-multiples",
+     "mide": "Coseno del ángulo doble: cos 2x = 1 − 2 sen²x",
+     "A": {
+      "enunciado": "El ángulo x es agudo y sen x = 2/5. ¿Cuánto vale cos 2x?",
+      "opciones": [
+       {
+        "texto": "21/25"
+       },
+       {
+        "texto": "17/25"
+       },
+       {
+        "texto": "1/5"
+       },
+       {
+        "texto": "1"
+       }
+      ],
+      "k": "1755f696769039dca0b163d7de684325f3b4f9350f3311cd79315735dd27395c2a0d5af732202f2e9d7e918cf47f0b340170adc4fcdf3fef701d6a43ed911a92b8bdfa41e1288e226038bd0dee2cadc6b056df3ca3dc"
+     },
+     "B": {
+      "enunciado": "El ángulo x es agudo y sen x = 3/5. ¿Cuánto vale cos 2x?",
+      "opciones": [
+       {
+        "texto": "16/25"
+       },
+       {
+        "texto": "7/25"
+       },
+       {
+        "texto": "−1/5"
+       },
+       {
+        "texto": "1"
+       }
+      ],
+      "k": "3f36aad0e73761f57f5b64fbb92271fd6c7bc2354ca27f5055cd5fe0df67fb077823f7ee184935c952ab24c0da9680760590b3fc7e5e9ad33d137a026747e643853e9960d54138bea393a3b6f7996c128b5a32b9204f"
+     }
+    },
+    {
+     "par": "id-02",
+     "plantilla": "identidades-trig",
+     "unidad": "trigonometria.arcos-compuestos",
+     "mide": "Tangente de la suma: (tan a + tan b)/(1 − tan a · tan b)",
+     "A": {
+      "enunciado": "Los ángulos a y b cumplen tan a = 2 y tan b = 1/3. ¿Cuánto vale tan(a + b)?",
+      "opciones": [
+       {
+        "texto": "7/3"
+       },
+       {
+        "texto": "7/5"
+       },
+       {
+        "texto": "7"
+       },
+       {
+        "texto": "2/3"
+       }
+      ],
+      "k": "9c209251d9d0d567c79328856704a728d5dce2ec7ffe8255e89eed4ac90828a31dfe5a6421179e5ddf6cab3ded2cd6071d64ca058dc45beaf279004dc03fb32d6c7708d2907137f89dc222001c2f10b783a580876c694c08ee227ecfaf063d0d313328"
+     },
+     "B": {
+      "enunciado": "Los ángulos a y b cumplen tan a = 2/3 y tan b = 1/4. ¿Cuánto vale tan(a + b)?",
+      "opciones": [
+       {
+        "texto": "11/12"
+       },
+       {
+        "texto": "11/14"
+       },
+       {
+        "texto": "11/10"
+       },
+       {
+        "texto": "1/6"
+       }
+      ],
+      "k": "2060ca615092b142025f1834c6843887621211f2a28fceff9dbf3db3bcbb3d399d8179dbaf67d584e45644ee9087eeadada8b2561bbd661f54ba00386b0bcf45f847b500320ef3a564333980644536af6d199f8805f1c884f56148d63a5fb02b88ca39"
      }
     }
    ]

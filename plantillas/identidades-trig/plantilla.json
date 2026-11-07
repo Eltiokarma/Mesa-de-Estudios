@@ -1,0 +1,17 @@
+{
+  "id": "identidades-trig",
+  "titulo": "Alturas que no se suman: identidades y arcos compuestos",
+  "formato": "escena",
+  "unidades": [
+    "trigonometria.identidades-fundamentales",
+    "trigonometria.arcos-compuestos",
+    "trigonometria.arcos-multiples"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

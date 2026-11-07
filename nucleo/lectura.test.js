@@ -17,6 +17,14 @@ const FRASES = leer(path.join(dirBanco, 'frases.json'));
 const UNIDADES = new Set(leer(path.join(raiz, 'catalogo/cursos/razonamiento-verbal.json')).unidades.map(u => u.id));
 const TEXTOS = fs.readdirSync(path.join(dirBanco, 'textos')).filter(f => f.endsWith('.json')).sort()
   .map(f => leer(path.join(dirBanco, 'textos', f)));
+// Las pruebas de entrada y salida (t000a, t000b) van sin paso previo: para lo que necesita un previo,
+// se busca el caso por su forma en los textos de práctica, no por su posición en la carpeta.
+const PRACTICA = TEXTOS.filter(t => INDICE.textos.includes(t.id));
+const conPrevio = (pred = () => true) => {
+  for (const t of PRACTICA) { const k = t.preguntas.findIndex(q => q.previo && pred(q.previo)); if (k >= 0) return { t, k, q: t.preguntas[k] }; }
+  throw new Error('ningún texto de práctica tiene un paso previo de esa forma');
+};
+const MARCAR = conPrevio(p => p.tipo === 'marcar-oracion');
 
 // Ejercicios de muestra (no están en el banco: solo prueban el núcleo).
 const ANALOGIA = { id: 'e901', version: 1, tipo: 'analogia', unidad: 'razonamiento-verbal.analogias',
@@ -56,11 +64,13 @@ test('cada texto del banco pasa la validación del núcleo', () => {
 });
 
 test('validar encuentra los errores que romperían la pantalla', () => {
-  const t = structuredClone(TEXTOS[0]);
+  // Un texto de práctica con un previo de tabla (clasificar, relación o propósito): quitarle un código debe saltar.
+  const base = conPrevio(p => p.tipo !== 'marcar-oracion' && p.codigos && Object.keys(p.codigos).length);
+  const t = structuredClone(base.t);
   t.preguntas[0].alternativas[0].correcta = false;
   t.preguntas[0].alternativas[1].evidencia = ['o99'];
-  const q = t.preguntas.find(x => x.previo && x.previo.tipo !== 'marcar-oracion') || t.preguntas[0];
-  if (q.previo.codigos) delete q.previo.codigos[Object.keys(q.previo.codigos)[0]];
+  const q = t.preguntas[base.k];
+  delete q.previo.codigos[Object.keys(q.previo.codigos)[0]];
   const err = L.validar(t, { codigos: CODIGOS, unidades: UNIDADES }).join('\n');
   assert.match(err, /una sola correcta/);
   assert.match(err, /o99/);
@@ -101,7 +111,7 @@ test('el paso previo se califica con las tablas del banco (todas las respuestas 
     const o = Object.keys(q.previo.codigos).find(k => q.previo.codigos[k] === null);
     assert.deepEqual(L.calificarPrevio(q.previo, o, t3), { correcta: false, error: null, opcion: o });
   }
-  assert.throws(() => L.calificarPrevio(TEXTOS[0].preguntas[0].previo, 'o99', TEXTOS[0]), /no existe/);
+  assert.throws(() => L.calificarPrevio(MARCAR.q.previo, 'o99', MARCAR.t), /no existe/);
 });
 
 test('analogía, plan de redacción y eliminación se califican con sus reglas', () => {
@@ -163,16 +173,22 @@ test('calificar por letra o por posición, y la pintura del texto', () => {
 });
 
 test('la corrección del paso previo usa su explicación o la frase del código', () => {
-  const t = TEXTOS[0], p = t.preguntas[0].previo;
-  const mal = t.parrafos.flat().find(o => !p.aceptadas.includes(o.id) && !(p.explicaciones || {})[o.id]);
+  // El banco trae una explicación para cada respuesta incorrecta del previo (banco.test.js); para probar la
+  // vuelta a la frase del código se le quita la explicación a una oración en una copia.
+  const { t } = MARCAR, p0 = MARCAR.q.previo;
+  const mal = t.parrafos.flat().find(o => !p0.aceptadas.includes(o.id) && L.calificarPrevio(p0, o.id, t).error);
+  const p = structuredClone(p0);
+  if (p.explicaciones) delete p.explicaciones[mal.id];
   const c = L.correccionPrevio(p, L.calificarPrevio(p, mal.id, t), t, FRASES);
   assert.equal(c.correcta, false);
   assert.match(c.eligio, /^la oración \d+$/);
   assert.equal(c.explicacion, p.explicacion);
+  assert.ok(FRASES[L.calificarPrevio(p, mal.id, t).error]);
   assert.equal(c.porQue, FRASES[L.calificarPrevio(p, mal.id, t).error]);
   assert.deepEqual(c.idea, p.aceptadas);
-  const conExp = Object.keys(p.explicaciones || {})[0];
-  if (conExp) assert.equal(L.correccionPrevio(p, L.calificarPrevio(p, conExp, t), t, FRASES).porQue, p.explicaciones[conExp]);
+  const conExp = Object.keys(p0.explicaciones || {}).find(o => o !== 'ninguna');
+  assert.ok(conExp, 'el previo del banco trae explicaciones propias');
+  assert.equal(L.correccionPrevio(p0, L.calificarPrevio(p0, conExp, t), t, FRASES).porQue, p0.explicaciones[conExp]);
   const bien = L.correccionPrevio(p, L.calificarPrevio(p, p.aceptadas[0], t), t, FRASES);
   assert.equal(bien.porQue, '');
 });
@@ -192,7 +208,7 @@ test('la práctica sigue el índice, filtra por unidad y no repite hasta acabar'
 });
 
 test('los eventos tienen la forma del diseño (sección 6)', () => {
-  const t = TEXTOS[0], pr = L.preparar(t, 'a1'), q = pr.preguntas[0];
+  const t = MARCAR.t, pr = L.preparar(t, 'a1'), q = pr.preguntas[MARCAR.k];
   assert.deepEqual(L.ev.lectura({ modulo: 'lectura-verbal', unidad: q.unidad, item: t, ms: 1200 }),
     { tipo: 'lectura', modulo: 'lectura-verbal', unidad: q.unidad, problema: `${t.id}v${t.version}`, ms: 1200 });
   const mal = t.parrafos.flat().find(o => !q.previo.aceptadas.includes(o.id));

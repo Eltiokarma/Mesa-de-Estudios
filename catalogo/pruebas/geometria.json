@@ -1,8 +1,8 @@
 {
   "curso": "geometria",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "fecha": "2026-11-06",
-  "minutos": 12,
+  "minutos": 15,
   "informes": [
     "docs/investigacion/geometria-ideas-erroneas.md"
   ],
@@ -15,14 +15,6 @@
       "respaldo": "hipotesis",
       "describe": "Usa k³ para un área"
     },
-    "GE2-volumen-como-arista": {
-      "respaldo": "parcial",
-      "describe": "Cree que el volumen crece igual que la arista (k en vez de k³)"
-    },
-    "GE2-volumen-como-area": {
-      "respaldo": "parcial",
-      "describe": "Usa k² para un volumen"
-    },
     "area-sin-dividir-entre-2": {
       "respaldo": "hipotesis",
       "describe": "Olvida dividir entre 2 el producto base por altura"
@@ -30,14 +22,6 @@
     "GE7-lado-como-altura": {
       "respaldo": "documentado",
       "describe": "Usa un lado inclinado como si fuera la altura"
-    },
-    "GE15-inscrito-igual-central": {
-      "respaldo": "hipotesis",
-      "describe": "Cree que el inscrito mide lo mismo que el central"
-    },
-    "GE15-inscrito-doble": {
-      "respaldo": "hipotesis",
-      "describe": "Invierte la relación: cree que el inscrito es el doble del central"
     },
     "GE16-exterior-suma": {
       "respaldo": "hipotesis",
@@ -90,6 +74,54 @@
     "suma-n-menos-1-triangulos": {
       "respaldo": "hipotesis",
       "describe": "Cuenta n − 1 triángulos desde un vértice"
+    },
+    "GE20-sin-tercio": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida el tercio: toma el volumen del prisma"
+    },
+    "piramide-mitad-del-prisma": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que la pirámide es la mitad del prisma"
+    },
+    "GE14-volumen-como-area-total": {
+      "respaldo": "parcial",
+      "describe": "Confunde volumen con área total"
+    },
+    "esfera-area-como-circulo": {
+      "respaldo": "hipotesis",
+      "describe": "Usa el área de un círculo máximo, πr²"
+    },
+    "esfera-area-dos-circulos": {
+      "respaldo": "hipotesis",
+      "describe": "Usa dos círculos máximos, 2πr²"
+    },
+    "GE19-diametro-como-radio": {
+      "respaldo": "hipotesis",
+      "describe": "Usa el diámetro donde va el radio"
+    },
+    "distancia-sin-raiz": {
+      "respaldo": "hipotesis",
+      "describe": "Se queda en Δx² + Δy², sin la raíz"
+    },
+    "distancia-suma-catetos": {
+      "respaldo": "hipotesis",
+      "describe": "Suma |Δx| + |Δy|, el camino por la cuadrícula"
+    },
+    "GE11-resta-cuadrados": {
+      "respaldo": "hipotesis",
+      "describe": "Resta los cuadrados en vez de sumarlos"
+    },
+    "distancia-recta-sin-raiz": {
+      "respaldo": "hipotesis",
+      "describe": "Divide entre A² + B², sin la raíz"
+    },
+    "distancia-recta-sin-dividir": {
+      "respaldo": "hipotesis",
+      "describe": "No divide entre √(A² + B²)"
+    },
+    "distancia-recta-sin-c": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida el término independiente C"
     }
   },
   "pares": [
@@ -147,64 +179,6 @@
             "texto": "320 m²",
             "valor": 320,
             "error": "GE2-cubo-en-area"
-          }
-        ]
-      }
-    },
-    {
-      "par": "geo-02",
-      "plantilla": "ampliadora",
-      "unidad": "geometria.prisma-y-piramide",
-      "mide": "El volumen de sólidos semejantes se multiplica por k³",
-      "A": {
-        "enunciado": "En una caja cúbica caben 2 litros. Otra caja cúbica tiene la arista del doble de largo. ¿Cuántos litros caben en ella?",
-        "datos": {
-          "volumen": 2,
-          "modelo": {
-            "k": 2
-          }
-        },
-        "opciones": [
-          {
-            "texto": "4 litros",
-            "valor": 4,
-            "error": "GE2-volumen-como-arista"
-          },
-          {
-            "texto": "8 litros",
-            "valor": 8,
-            "error": "GE2-volumen-como-area"
-          },
-          {
-            "texto": "16 litros",
-            "valor": 16,
-            "correcta": true
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Un dado de madera tiene 5 cm³ de volumen. Se fabrica otro dado con la arista del triple de largo. ¿Cuál es su volumen?",
-        "datos": {
-          "volumen": 5,
-          "modelo": {
-            "k": 3
-          }
-        },
-        "opciones": [
-          {
-            "texto": "15 cm³",
-            "valor": 15,
-            "error": "GE2-volumen-como-arista"
-          },
-          {
-            "texto": "45 cm³",
-            "valor": 45,
-            "error": "GE2-volumen-como-area"
-          },
-          {
-            "texto": "135 cm³",
-            "valor": 135,
-            "correcta": true
           }
         ]
       }
@@ -335,58 +309,6 @@
             "texto": "5,4 cm",
             "valor": 5.4,
             "error": "proyeccion-como-altura"
-          }
-        ]
-      }
-    },
-    {
-      "par": "geo-07",
-      "plantilla": "angulo-inscrito",
-      "unidad": "geometria.circunferencia",
-      "mide": "El ángulo central mide el doble del inscrito que abarca el mismo arco",
-      "A": {
-        "enunciado": "En una circunferencia de centro O, el ángulo inscrito APB mide 35° (P está en el arco mayor AB). ¿Cuánto mide el ángulo central AOB?",
-        "datos": {
-          "inscrito": 35
-        },
-        "opciones": [
-          {
-            "texto": "35°",
-            "valor": 35,
-            "error": "GE15-inscrito-igual-central"
-          },
-          {
-            "texto": "70°",
-            "valor": 70,
-            "correcta": true
-          },
-          {
-            "texto": "17,5°",
-            "valor": 17.5,
-            "error": "GE15-inscrito-doble"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "En una circunferencia de centro O, el ángulo inscrito MQN mide 48° (Q está en el arco mayor MN). ¿Cuánto mide el ángulo central MON?",
-        "datos": {
-          "inscrito": 48
-        },
-        "opciones": [
-          {
-            "texto": "48°",
-            "valor": 48,
-            "error": "GE15-inscrito-igual-central"
-          },
-          {
-            "texto": "96°",
-            "valor": 96,
-            "correcta": true
-          },
-          {
-            "texto": "24°",
-            "valor": 24,
-            "error": "GE15-inscrito-doble"
           }
         ]
       }
@@ -575,6 +497,294 @@
             "texto": "1440°",
             "valor": 1440,
             "error": "suma-n-menos-1-triangulos"
+          }
+        ]
+      }
+    },
+    {
+      "par": "sol-01",
+      "plantilla": "solidos",
+      "unidad": "geometria.prisma-y-piramide",
+      "mide": "Volumen de la pirámide: un tercio del prisma de igual base y altura",
+      "A": {
+        "enunciado": "Una pirámide tiene base cuadrada de 6 cm de lado y una altura de 10 cm. ¿Cuál es su volumen?",
+        "datos": {
+          "lado": 6,
+          "h": 10
+        },
+        "opciones": [
+          {
+            "texto": "360 cm³",
+            "valor": 360,
+            "error": "GE20-sin-tercio"
+          },
+          {
+            "texto": "180 cm³",
+            "valor": 180,
+            "error": "piramide-mitad-del-prisma"
+          },
+          {
+            "texto": "120 cm³",
+            "valor": 120,
+            "correcta": true
+          },
+          {
+            "texto": "161,3 cm³",
+            "valor": 161.284,
+            "error": "GE14-volumen-como-area-total"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una pirámide tiene base cuadrada de 9 cm de lado y una altura de 8 cm. ¿Cuál es su volumen?",
+        "datos": {
+          "lado": 9,
+          "h": 8
+        },
+        "opciones": [
+          {
+            "texto": "648 cm³",
+            "valor": 648,
+            "error": "GE20-sin-tercio"
+          },
+          {
+            "texto": "324 cm³",
+            "valor": 324,
+            "error": "piramide-mitad-del-prisma"
+          },
+          {
+            "texto": "216 cm³",
+            "valor": 216,
+            "correcta": true
+          },
+          {
+            "texto": "246,2 cm³",
+            "valor": 246.18,
+            "error": "GE14-volumen-como-area-total"
+          }
+        ]
+      }
+    },
+    {
+      "par": "sol-02",
+      "plantilla": "solidos",
+      "unidad": "geometria.solidos-de-revolucion",
+      "mide": "Área de la esfera: 4πr², cuatro círculos máximos",
+      "A": {
+        "enunciado": "¿Cuál es el área de la superficie de una esfera de 5 cm de radio?",
+        "datos": {
+          "r": 5
+        },
+        "opciones": [
+          {
+            "texto": "25π cm²",
+            "valor": 78.53981625,
+            "error": "esfera-area-como-circulo"
+          },
+          {
+            "texto": "100π cm²",
+            "valor": 314.159265,
+            "correcta": true
+          },
+          {
+            "texto": "50π cm²",
+            "valor": 157.0796325,
+            "error": "esfera-area-dos-circulos"
+          },
+          {
+            "texto": "400π cm²",
+            "valor": 1256.63706,
+            "error": "GE19-diametro-como-radio"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuál es el área de la superficie de una esfera de 4 cm de radio?",
+        "datos": {
+          "r": 4
+        },
+        "opciones": [
+          {
+            "texto": "16π cm²",
+            "valor": 50.2654824,
+            "error": "esfera-area-como-circulo"
+          },
+          {
+            "texto": "64π cm²",
+            "valor": 201.0619296,
+            "correcta": true
+          },
+          {
+            "texto": "32π cm²",
+            "valor": 100.5309648,
+            "error": "esfera-area-dos-circulos"
+          },
+          {
+            "texto": "256π cm²",
+            "valor": 804.2477184,
+            "error": "GE19-diametro-como-radio"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ga-01",
+      "plantilla": "geometria-analitica",
+      "unidad": "geometria.geometria-analitica",
+      "mide": "Distancia entre dos puntos: √(Δx² + Δy²)",
+      "A": {
+        "enunciado": "¿Cuál es la distancia entre los puntos A(2; 1) y B(8; 9)?",
+        "datos": {
+          "modelo": {
+            "A": [
+              2,
+              1
+            ],
+            "B": [
+              8,
+              9
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "100",
+            "valor": 100,
+            "error": "distancia-sin-raiz"
+          },
+          {
+            "texto": "14",
+            "valor": 14,
+            "error": "distancia-suma-catetos"
+          },
+          {
+            "texto": "10",
+            "valor": 10,
+            "correcta": true
+          },
+          {
+            "texto": "5,3",
+            "valor": 5.2915,
+            "error": "GE11-resta-cuadrados"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuál es la distancia entre los puntos P(−2; 1) y Q(10; 6)?",
+        "datos": {
+          "modelo": {
+            "A": [
+              -2,
+              1
+            ],
+            "B": [
+              10,
+              6
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "169",
+            "valor": 169,
+            "error": "distancia-sin-raiz"
+          },
+          {
+            "texto": "17",
+            "valor": 17,
+            "error": "distancia-suma-catetos"
+          },
+          {
+            "texto": "13",
+            "valor": 13,
+            "correcta": true
+          },
+          {
+            "texto": "10,9",
+            "valor": 10.9087,
+            "error": "GE11-resta-cuadrados"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ga-02",
+      "plantilla": "geometria-analitica",
+      "unidad": "geometria.geometria-analitica",
+      "mide": "Distancia de un punto a una recta: |Ax₀ + By₀ + C| / √(A² + B²)",
+      "A": {
+        "enunciado": "¿Cuál es la distancia del punto P(6; 2) a la recta 3x + 4y + 1 = 0?",
+        "datos": {
+          "modelo": {
+            "P": [
+              6,
+              2
+            ],
+            "L": [
+              3,
+              4,
+              1
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "1,08",
+            "valor": 1.08,
+            "error": "distancia-recta-sin-raiz"
+          },
+          {
+            "texto": "27",
+            "valor": 27,
+            "error": "distancia-recta-sin-dividir"
+          },
+          {
+            "texto": "5,4",
+            "valor": 5.4,
+            "correcta": true
+          },
+          {
+            "texto": "5,2",
+            "valor": 5.2,
+            "error": "distancia-recta-sin-c"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuál es la distancia del punto Q(2; 5) a la recta 8x + 6y − 3 = 0?",
+        "datos": {
+          "modelo": {
+            "P": [
+              2,
+              5
+            ],
+            "L": [
+              8,
+              6,
+              -3
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "0,43",
+            "valor": 0.43,
+            "error": "distancia-recta-sin-raiz"
+          },
+          {
+            "texto": "43",
+            "valor": 43,
+            "error": "distancia-recta-sin-dividir"
+          },
+          {
+            "texto": "4,3",
+            "valor": 4.3,
+            "correcta": true
+          },
+          {
+            "texto": "4,6",
+            "valor": 4.6,
+            "error": "distancia-recta-sin-c"
           }
         ]
       }

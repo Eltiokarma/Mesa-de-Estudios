@@ -1,0 +1,253 @@
+{
+  "id": "t011",
+  "version": 1,
+  "titulo": "El desierto junto al mar",
+  "tema": "Perú costeño · clima",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "La costa del Perú es uno de los desiertos más secos del mundo, aunque está junto al océano."
+      },
+      {
+        "id": "o2",
+        "rol": "contraste",
+        "t": "Parecería lógico que, con tanta agua al lado, lloviera a menudo."
+      },
+      {
+        "id": "o3",
+        "rol": "principal",
+        "t": "La razón de la sequía está en el propio mar: frente a la costa corre una corriente de agua fría, la de Humboldt."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Esa agua enfría el aire que está justo encima, y el aire frío, más pesado, queda atrapado debajo de una capa de aire más tibio."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Así, el aire húmedo no puede subir lo suficiente para formar nubes de lluvia, y se queda como una neblina baja."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "En invierno, esa neblina cubre Lima durante semanas y deja apenas una llovizna fina, la garúa."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "En algunos cerros cercanos al mar, la humedad de la neblina basta para que, durante unos meses, crezcan pastos y flores: son las lomas."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "El mismo mar que vuelve seca la costa es, entonces, el que le da su humedad de invierno."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o3",
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 3 dice la causa (el mar frío) y la 8 la conclusión: el mismo mar da la sequía y la humedad de invierno.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el hecho que se va a explicar: la costa es un desierto junto al mar.",
+          "o2": "Presenta lo que parecería lógico, y que el texto va a corregir.",
+          "o4": "Explica cómo el agua fría enfría el aire: es un paso de la explicación.",
+          "o5": "Es otro paso de la explicación: por qué no se forman nubes de lluvia.",
+          "o6": "Es un ejemplo de lo que produce la neblina: la garúa de Lima.",
+          "o7": "Es otro ejemplo: las lomas.",
+          "ninguna": "Las oraciones 3 y 8 sí lo dicen: el mar frío explica la sequía y también la humedad de invierno."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "El mar frío frente a la costa explica tanto la falta de lluvias como la neblina del invierno.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o8"
+          ],
+          "explicacion": "Junta la causa (oración 3: la corriente fría) con la conclusión (oración 8: el mismo mar da la sequía y la humedad de invierno)."
+        },
+        {
+          "t": "En algunos cerros cercanos al mar, la humedad de la neblina hace crecer pastos y flores durante unos meses.",
+          "codigo": "RV1",
+          "origen": "o7",
+          "explicacion": "Es un detalle: las lomas son una de las consecuencias de la neblina."
+        },
+        {
+          "t": "El clima del Perú es muy variado de una región a otra.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla solo del clima de la costa y de por qué es así."
+        },
+        {
+          "t": "La corriente de Humboldt enfría el aire que está justo encima del mar.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Es una parte de la explicación, pero deja fuera lo que el texto concluye: que ese mismo mar causa la sequía y la humedad."
+        },
+        {
+          "t": "El fenómeno El Niño trae lluvias fuertes a la costa norte.",
+          "codigo": "RV8",
+          "explicacion": "Es un dato conocido, pero el texto no habla de El Niño. La idea principal sale de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "En las lomas viven animales que se quedan allí todo el año.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto habla de pastos y flores que crecen unos meses, pero no dice nada de animales. No se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto nombra las lomas, pero habla solo de pastos y flores, no de animales.",
+          "se-deduce": "Que crezcan pastos unos meses no permite concluir que haya animales todo el año: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice que no haya animales; simplemente no habla de ellos."
+        }
+      },
+      "enunciado": "Se infiere del texto que, en un año en que la neblina de invierno fuera muy escasa,",
+      "alternativas": [
+        {
+          "t": "las lomas tendrían menos pastos y flores.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "La oración 7 dice que las lomas reverdecen gracias a la humedad de la neblina; con poca neblina, crecería menos."
+        },
+        {
+          "t": "la corriente de Humboldt se volvería más tibia.",
+          "codigo": "RV5",
+          "explicacion": "Usa palabras del texto (\"corriente de Humboldt\", \"tibio\"), pero las pone en una relación que el texto no dice: el mar causa la neblina, no al revés."
+        },
+        {
+          "t": "nunca más volvería a haber garúa en Lima.",
+          "codigo": "RV11",
+          "explicacion": "Habla de un solo año; \"nunca más\" va mucho más allá de lo que el texto permite concluir."
+        },
+        {
+          "t": "llovería mucho más en toda la costa ese invierno.",
+          "codigo": "RV7",
+          "explicacion": "El texto no dice que menos neblina traiga más lluvia: la sequía viene del mar frío, que seguiría ahí."
+        },
+        {
+          "t": "el fenómeno El Niño sería más fuerte ese año.",
+          "codigo": "RV8",
+          "explicacion": "El texto no habla de El Niño; es una idea de fuera del texto."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.compatibilidad",
+      "enunciado": "Es incompatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "en la costa llueve poco porque el mar está lejos.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o3"
+          ],
+          "explicacion": "Choca con el texto: la costa está junto al océano (oración 1), y la sequía se debe a que el mar es frío, no a que esté lejos (oración 3)."
+        },
+        {
+          "t": "no basta tener el mar al lado para que llueva.",
+          "codigo": "RV10",
+          "origen": "o2",
+          "explicacion": "Tiene un \"no\", pero es compatible: es justo lo que muestra el texto con la costa peruana."
+        },
+        {
+          "t": "en los valles de la costa se cultivan espárragos y algodón.",
+          "codigo": "RV36",
+          "explicacion": "El texto no lo menciona, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible."
+        },
+        {
+          "t": "un desierto puede estar justo al lado del mar.",
+          "codigo": "RV8",
+          "origen": "o1",
+          "explicacion": "Va en contra de lo que mucha gente imagina de un desierto, pero es lo que dice la oración 1."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si el agua del mar frente a la costa peruana fuera tibia, según la lógica del texto,",
+      "alternativas": [
+        {
+          "t": "el aire húmedo podría subir más y formar nubes de lluvia.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5"
+          ],
+          "explicacion": "El texto dice que el agua fría deja el aire frío atrapado abajo y eso impide que suba (oraciones 4 y 5). Sin agua fría, ese freno desaparecería."
+        },
+        {
+          "t": "seguiría formándose cada invierno una neblina baja que no da lluvia.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: la neblina baja se forma porque el mar es frío."
+        },
+        {
+          "t": "la costa se volvería la región más lluviosa del mundo.",
+          "codigo": "RV11",
+          "explicacion": "Es una consecuencia exagerada que no sale del texto."
+        },
+        {
+          "t": "desaparecerían todos los peces del mar peruano.",
+          "codigo": "RV8",
+          "explicacion": "El texto no habla de los peces; esa idea viene de lo que se sabe de fuera, no de lo que se leyó."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "La costa peruana es un desierto muy seco por la corriente fría de Humboldt, que enfría el aire y produce una inversión térmica que impide la formación de nubes de lluvia; en invierno hay neblina, garúa y lomas.",
+      "fuente": "Senamhi, información climática de la costa; Garreaud, R. y otros (2009), sobre el clima de la costa occidental de Sudamérica; Dillon, M. O. sobre las lomas."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6. Cambios: código del distractor de los peces (RV8) y explicación del distractor de la corriente. Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+  }
+}
