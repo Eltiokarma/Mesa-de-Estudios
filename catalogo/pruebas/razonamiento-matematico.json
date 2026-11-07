@@ -1,10 +1,11 @@
 {
   "curso": "razonamiento-matematico",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "fecha": "2026-11-07",
   "minutos": 17,
   "informes": [
-    "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
+    "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md",
+    "docs/investigacion/geometria-ideas-erroneas.md"
   ],
   "nota": "Diez pares, dos por cada módulo del curso. Comparten motor con aritmética y álgebra, pero los ítems son otros (planteo, juegos, engranajes, inducción, relojes).",
   "errores": {
@@ -111,6 +112,114 @@
     "adelanto-hasta-una-hora": {
       "respaldo": "hipotesis",
       "describe": "Espera que el adelanto llegue a una hora, no a 12"
+    },
+    "cuadrado-con-costos-distintos": {
+      "respaldo": "hipotesis",
+      "describe": "Arma un cuadrado aunque los lados cuestan distinto: lo mejor es gastar lo mismo en cada par de lados, no poner los mismos metros"
+    },
+    "costo-un-lado-de-cada-par": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta un solo lado de cada precio, como si el cerco tuviera un lado de reja y uno de malla"
+    },
+    "costo-todo-al-precio-mayor": {
+      "respaldo": "hipotesis",
+      "describe": "Calcula como si todo el cerco costara lo del material caro (el cuadrado de ese perímetro)"
+    },
+    "eje-truncado-sobrante-dibujado": {
+      "respaldo": "hipotesis",
+      "describe": "Con el eje que no empieza en 0, calcula el porcentaje con las alturas dibujadas"
+    },
+    "AR3-porcentaje-sobre-el-mayor": {
+      "respaldo": "hipotesis",
+      "describe": "Calcula el porcentaje sobre el valor mayor en vez de sobre el que se compara (base equivocada, AR3)"
+    },
+    "variacion-absoluta-por-porcentual": {
+      "respaldo": "hipotesis",
+      "describe": "Da la diferencia entre los valores como si fuera el porcentaje"
+    },
+    "balanza-sin-huecos": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que se pesan todas las masas enteras hasta la suma de las pesas, sin huecos (eso solo pasa con pesas como 1, 3 y 9)"
+    },
+    "balanza-un-solo-platillo": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta solo las sumas de pesas, como si todas fueran en el mismo platillo"
+    },
+    "balanza-cuenta-acomodos": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta cada forma de acomodar las pesas (3ⁿ − 1) como una masa distinta"
+    },
+    "perimetro-entrante-como-rectangulo": {
+      "respaldo": "hipotesis",
+      "describe": "Da el perímetro del rectángulo que encierra la figura, sin las paredes de los entrantes"
+    },
+    "perimetro-un-solo-entrante": {
+      "respaldo": "hipotesis",
+      "describe": "Suma las paredes de un solo entrante y se olvida del otro"
+    },
+    "GE4-area-por-perimetro": {
+      "respaldo": "parcial",
+      "describe": "Calcula el área en vez del perímetro (GE4)"
+    },
+    "parada-ignorada": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta todos los caminos, sin exigir que pasen por la esquina obligada"
+    },
+    "parada-suma-los-tramos": {
+      "respaldo": "hipotesis",
+      "describe": "Suma los caminos hasta la esquina y desde ella en vez de multiplicarlos"
+    },
+    "parada-como-cruce-cerrado": {
+      "respaldo": "hipotesis",
+      "describe": "Resta los caminos que pasan por la esquina, como si estuviera cerrada"
+    },
+    "arreglo-vertices-una-vez": {
+      "respaldo": "hipotesis",
+      "describe": "Divide el total entre los lados, como si cada vértice estuviera en un solo lado"
+    },
+    "arreglo-chicos-en-vertices": {
+      "respaldo": "hipotesis",
+      "describe": "Pone los números menores en los vértices cuando se pide la mayor suma"
+    },
+    "arreglo-suma-de-vertices": {
+      "respaldo": "hipotesis",
+      "describe": "Responde lo que suman los vértices, no lo que suma un lado"
+    },
+    "rueda-solo-el-borde-que-toca": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta las vueltas con el borde que toca (R/r), no con el camino del centro"
+    },
+    "rueda-por-dentro-como-por-fuera": {
+      "respaldo": "hipotesis",
+      "describe": "Por dentro suma la vuelta alrededor del aro en vez de restarla: (R + r)/r"
+    },
+    "rueda-no-gira": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que la rueda no gira porque siempre va pegada al otro borde"
+    },
+    "vuelta-da-la-ida": {
+      "respaldo": "hipotesis",
+      "describe": "Para regresar, da la dirección del lugar donde quedó (la de ida) en vez de la opuesta"
+    },
+    "giro-derecha-por-izquierda": {
+      "respaldo": "hipotesis",
+      "describe": "Gira a la derecha cuando se pide la izquierda, o al revés"
+    },
+    "cardinal-suma-los-catetos": {
+      "respaldo": "hipotesis",
+      "describe": "Suma lo que se alejó en cada eje en vez de usar el teorema de Pitágoras"
+    },
+    "coincidencias-sin-la-primera": {
+      "respaldo": "hipotesis",
+      "describe": "No cuenta la coincidencia del momento inicial"
+    },
+    "coincidencia-mcm-de-dos": {
+      "respaldo": "hipotesis",
+      "describe": "Usa el MCM de solo dos de los tres intervalos"
+    },
+    "coincidencia-suma-de-intervalos": {
+      "respaldo": "hipotesis",
+      "describe": "Usa la suma de los intervalos en vez del MCM"
     }
   },
   "pares": [
@@ -796,6 +905,723 @@
             "texto": "7,5 días",
             "valor": 7.5,
             "error": "adelanto-por-hora-sin-el-cada"
+          }
+        ]
+      }
+    }
+  ],
+  "reserva": [
+    {
+      "par": "rm-11",
+      "plantilla": "maximos-minimos",
+      "unidad": "razonamiento-matematico.maximos-y-minimos",
+      "nombreUnidad": "Máximos y mínimos",
+      "mide": "Con dos precios de cerco, el mejor rectángulo no es el cuadrado: lo mejor es gastar lo mismo en cada par de lados",
+      "A": {
+        "enunciado": "Una familia de Ilave va a cercar un terreno rectangular. Los dos lados que dan a la calle llevan reja, que cuesta S/ 50 el metro, y los otros dos lados llevan malla, que cuesta S/ 25 el metro. Si tiene S/ 6000 para el cerco, ¿cuál es la mayor área que puede encerrar?",
+        "datos": {
+          "reja": 50,
+          "malla": 25,
+          "presupuesto": 6000
+        },
+        "opciones": [
+          {
+            "texto": "1600 m²",
+            "valor": 1600,
+            "error": "cuadrado-con-costos-distintos"
+          },
+          {
+            "texto": "1800 m²",
+            "valor": 1800,
+            "correcta": true
+          },
+          {
+            "texto": "7200 m²",
+            "valor": 7200,
+            "error": "costo-un-lado-de-cada-par"
+          },
+          {
+            "texto": "900 m²",
+            "valor": 900,
+            "error": "costo-todo-al-precio-mayor"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un colegio va a cercar un biohuerto rectangular. El frente y el fondo llevan muro de adobe, que cuesta S/ 30 el metro, y los dos costados llevan malla, que cuesta S/ 10 el metro. Si hay S/ 2400 para el cerco, ¿cuál es la mayor área que se puede encerrar?",
+        "datos": {
+          "reja": 30,
+          "malla": 10,
+          "presupuesto": 2400
+        },
+        "opciones": [
+          {
+            "texto": "400 m²",
+            "valor": 400,
+            "error": "costo-todo-al-precio-mayor"
+          },
+          {
+            "texto": "900 m²",
+            "valor": 900,
+            "error": "cuadrado-con-costos-distintos"
+          },
+          {
+            "texto": "4800 m²",
+            "valor": 4800,
+            "error": "costo-un-lado-de-cada-par"
+          },
+          {
+            "texto": "1200 m²",
+            "valor": 1200,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-12",
+      "plantilla": "tablas-graficos",
+      "unidad": "razonamiento-matematico.tablas-graficos-y-suficiencia",
+      "nombreUnidad": "Tablas, gráficos y suficiencia de datos",
+      "mide": "Con el eje que no empieza en 0, el porcentaje se calcula con los valores y sobre la base correcta, no con las alturas dibujadas",
+      "A": {
+        "enunciado": "En un gráfico de barras sobre la elección del municipio escolar, la lista Verde aparece con 300 votos y la lista Azul con 250. El eje vertical del gráfico empieza en 200. ¿En qué porcentaje superan los votos de la lista Verde a los de la lista Azul?",
+        "datos": {
+          "a": 300,
+          "b": 250,
+          "inicio": 200
+        },
+        "opciones": [
+          {
+            "texto": "100 %",
+            "valor": 100,
+            "error": "eje-truncado-sobrante-dibujado"
+          },
+          {
+            "texto": "16,7 %",
+            "valor": 16.6667,
+            "error": "AR3-porcentaje-sobre-el-mayor"
+          },
+          {
+            "texto": "50 %",
+            "valor": 50,
+            "error": "variacion-absoluta-por-porcentual"
+          },
+          {
+            "texto": "20 %",
+            "valor": 20,
+            "correcta": true
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un gráfico de barras muestra la leche que juntaron en un día dos asociaciones de Ayaviri: Santa Rosa, 450 litros, y Umachiri, 360 litros. El eje vertical del gráfico empieza en 300. ¿En qué porcentaje supera la leche de Santa Rosa a la de Umachiri?",
+        "datos": {
+          "a": 450,
+          "b": 360,
+          "inicio": 300
+        },
+        "opciones": [
+          {
+            "texto": "25 %",
+            "valor": 25,
+            "correcta": true
+          },
+          {
+            "texto": "90 %",
+            "valor": 90,
+            "error": "variacion-absoluta-por-porcentual"
+          },
+          {
+            "texto": "150 %",
+            "valor": 150,
+            "error": "eje-truncado-sobrante-dibujado"
+          },
+          {
+            "texto": "20 %",
+            "valor": 20,
+            "error": "AR3-porcentaje-sobre-el-mayor"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-13",
+      "plantilla": "cortes-pesadas",
+      "unidad": "razonamiento-matematico.cortes-y-pesadas",
+      "nombreUnidad": "Cortes, pesadas y balanzas",
+      "mide": "Con pesas en los dos platillos se pesan sumas y restas de pesas; con pesas cualesquiera quedan huecos y no se llega a todas las masas",
+      "A": {
+        "enunciado": "En una tienda hay una balanza de dos platillos y solo tres pesas: de 1 kg, de 4 kg y de 6 kg. Cada pesa se puede poner en cualquiera de los dos platillos, incluso al lado de la mercadería. ¿Cuántas cantidades distintas de kilos enteros se pueden medir en una sola pesada?",
+        "datos": {
+          "p1": 1,
+          "p2": 4,
+          "p3": 6
+        },
+        "opciones": [
+          {
+            "texto": "10 cantidades",
+            "valor": 10,
+            "correcta": true
+          },
+          {
+            "texto": "11 cantidades",
+            "valor": 11,
+            "error": "balanza-sin-huecos"
+          },
+          {
+            "texto": "7 cantidades",
+            "valor": 7,
+            "error": "balanza-un-solo-platillo"
+          },
+          {
+            "texto": "26 cantidades",
+            "valor": 26,
+            "error": "balanza-cuenta-acomodos"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En un almacén de Juliaca hay una balanza de dos platillos y solo tres pesas: de 1 kg, de 4 kg y de 10 kg. Cada pesa se puede poner en cualquiera de los dos platillos, incluso al lado de la mercadería. ¿Cuántas cantidades distintas de kilos enteros se pueden medir en una sola pesada?",
+        "datos": {
+          "p1": 1,
+          "p2": 4,
+          "p3": 10
+        },
+        "opciones": [
+          {
+            "texto": "7 cantidades",
+            "valor": 7,
+            "error": "balanza-un-solo-platillo"
+          },
+          {
+            "texto": "26 cantidades",
+            "valor": 26,
+            "error": "balanza-cuenta-acomodos"
+          },
+          {
+            "texto": "12 cantidades",
+            "valor": 12,
+            "correcta": true
+          },
+          {
+            "texto": "15 cantidades",
+            "valor": 15,
+            "error": "balanza-sin-huecos"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-14",
+      "plantilla": "trazos-rutas",
+      "unidad": "razonamiento-matematico.trazos-y-perimetros",
+      "nombreUnidad": "Trazos de figuras y perímetros",
+      "mide": "Cada entrante suma sus dos paredes al perímetro del rectángulo que encierra la figura; con dos entrantes, cuatro paredes",
+      "A": {
+        "enunciado": "Para un letrero se hace una letra H de cartón a partir de un rectángulo de 9 cm de base y 12 cm de altura: arriba y abajo se le saca, al centro, un pedazo de 3 cm a lo ancho y 5 cm hacia adentro. ¿Cuánto mide el contorno de la letra?",
+        "datos": {
+          "ancho": 9,
+          "alto": 12,
+          "entrante": 3,
+          "hondo": 5,
+          "modelo": {
+            "desde": 3,
+            "vertices": [
+              [
+                0,
+                0
+              ],
+              [
+                3,
+                0
+              ],
+              [
+                3,
+                5
+              ],
+              [
+                6,
+                5
+              ],
+              [
+                6,
+                0
+              ],
+              [
+                9,
+                0
+              ],
+              [
+                9,
+                12
+              ],
+              [
+                6,
+                12
+              ],
+              [
+                6,
+                7
+              ],
+              [
+                3,
+                7
+              ],
+              [
+                3,
+                12
+              ],
+              [
+                0,
+                12
+              ]
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "42 cm",
+            "valor": 42,
+            "error": "perimetro-entrante-como-rectangulo"
+          },
+          {
+            "texto": "52 cm",
+            "valor": 52,
+            "error": "perimetro-un-solo-entrante"
+          },
+          {
+            "texto": "62 cm",
+            "valor": 62,
+            "correcta": true
+          },
+          {
+            "texto": "78 cm",
+            "valor": 78,
+            "error": "GE4-area-por-perimetro"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una pieza de un juego de encaje es un rectángulo de 14 cm por 8 cm al que, en su lado largo de arriba, le faltan dos muescas separadas, cada una de 2 cm de ancho y 5 cm de profundidad. ¿Cuánto mide el contorno de la pieza?",
+        "datos": {
+          "ancho": 14,
+          "alto": 8,
+          "entrante": 2,
+          "hondo": 5,
+          "modelo": {
+            "desde": 2,
+            "vertices": [
+              [
+                0,
+                0
+              ],
+              [
+                14,
+                0
+              ],
+              [
+                14,
+                8
+              ],
+              [
+                12,
+                8
+              ],
+              [
+                12,
+                3
+              ],
+              [
+                10,
+                3
+              ],
+              [
+                10,
+                8
+              ],
+              [
+                4,
+                8
+              ],
+              [
+                4,
+                3
+              ],
+              [
+                2,
+                3
+              ],
+              [
+                2,
+                8
+              ],
+              [
+                0,
+                8
+              ]
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "92 cm",
+            "valor": 92,
+            "error": "GE4-area-por-perimetro"
+          },
+          {
+            "texto": "64 cm",
+            "valor": 64,
+            "correcta": true
+          },
+          {
+            "texto": "44 cm",
+            "valor": 44,
+            "error": "perimetro-entrante-como-rectangulo"
+          },
+          {
+            "texto": "54 cm",
+            "valor": 54,
+            "error": "perimetro-un-solo-entrante"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-15",
+      "plantilla": "trazos-rutas",
+      "unidad": "razonamiento-matematico.rutas-y-visualizacion-espacial",
+      "nombreUnidad": "Rutas y visualización espacial",
+      "mide": "Para pasar por una esquina obligada, se multiplican los caminos hasta ella por los caminos desde ella",
+      "A": {
+        "enunciado": "Para ir de su casa al colegio, Lucía camina por calles en cuadrícula, sin retroceder nunca: el colegio está 4 cuadras al este y 3 al norte de su casa. Hoy quiere pasar por la panadería, en la esquina que está 2 cuadras al este y 1 al norte de su casa. ¿De cuántas maneras distintas puede hacer el recorrido?",
+        "datos": {
+          "m": 4,
+          "n": 3,
+          "x": 2,
+          "y": 1
+        },
+        "opciones": [
+          {
+            "texto": "35 maneras",
+            "valor": 35,
+            "error": "parada-ignorada"
+          },
+          {
+            "texto": "18 maneras",
+            "valor": 18,
+            "correcta": true
+          },
+          {
+            "texto": "9 maneras",
+            "valor": 9,
+            "error": "parada-suma-los-tramos"
+          },
+          {
+            "texto": "17 maneras",
+            "valor": 17,
+            "error": "parada-como-cruce-cerrado"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un repartidor va del almacén a un restaurante que está 5 cuadras al este y 2 al norte, por calles en cuadrícula y sin retroceder nunca. En el camino debe recoger un pedido en la esquina que está 3 cuadras al este y 1 al norte del almacén. ¿De cuántas maneras distintas puede hacer el recorrido?",
+        "datos": {
+          "m": 5,
+          "n": 2,
+          "x": 3,
+          "y": 1
+        },
+        "opciones": [
+          {
+            "texto": "7 maneras",
+            "valor": 7,
+            "error": "parada-suma-los-tramos"
+          },
+          {
+            "texto": "9 maneras",
+            "valor": 9,
+            "error": "parada-como-cruce-cerrado"
+          },
+          {
+            "texto": "21 maneras",
+            "valor": 21,
+            "error": "parada-ignorada"
+          },
+          {
+            "texto": "12 maneras",
+            "valor": 12,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-16",
+      "plantilla": "arreglos-giros",
+      "unidad": "razonamiento-matematico.arreglos-numericos",
+      "nombreUnidad": "Arreglos numéricos y cuadrados mágicos",
+      "mide": "Cada esquina está en dos bordes: los cinco bordes suman el total de las fichas más las esquinas otra vez (5S = total + esquinas)",
+      "A": {
+        "enunciado": "Un tablero con forma de pentágono tiene 10 casillas: una en cada una de sus 5 esquinas y una a la mitad de cada borde. Se ponen las fichas numeradas del 1 al 10, una por casilla, de modo que cada borde (sus dos esquinas y la casilla del medio) sume lo mismo. ¿Cuál es la mayor suma por borde que se puede lograr?",
+        "datos": {
+          "desde": 1,
+          "hasta": 10,
+          "modelo": {
+            "lados": 5,
+            "extremo": "maximo"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "11",
+            "valor": 11,
+            "error": "arreglo-vertices-una-vez"
+          },
+          {
+            "texto": "14",
+            "valor": 14,
+            "error": "arreglo-chicos-en-vertices"
+          },
+          {
+            "texto": "40",
+            "valor": 40,
+            "error": "arreglo-suma-de-vertices"
+          },
+          {
+            "texto": "19",
+            "valor": 19,
+            "correcta": true
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un tablero con forma de pentágono tiene 10 casillas: una en cada una de sus 5 esquinas y una a la mitad de cada borde. Se ponen las fichas numeradas del 2 al 11, una por casilla, de modo que cada borde (sus dos esquinas y la casilla del medio) sume lo mismo. ¿Cuál es la mayor suma por borde que se puede lograr?",
+        "datos": {
+          "desde": 2,
+          "hasta": 11,
+          "modelo": {
+            "lados": 5,
+            "extremo": "maximo"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "45",
+            "valor": 45,
+            "error": "arreglo-suma-de-vertices"
+          },
+          {
+            "texto": "13",
+            "valor": 13,
+            "error": "arreglo-vertices-una-vez"
+          },
+          {
+            "texto": "22",
+            "valor": 22,
+            "correcta": true
+          },
+          {
+            "texto": "17",
+            "valor": 17,
+            "error": "arreglo-chicos-en-vertices"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-17",
+      "plantilla": "arreglos-giros",
+      "unidad": "razonamiento-matematico.transformaciones-de-figuras",
+      "nombreUnidad": "Movimiento y comparación de figuras",
+      "mide": "Por dentro de un aro, el centro de la rueda recorre un círculo de radio R − r: da (R − r)/r vueltas, una menos que R/r",
+      "A": {
+        "enunciado": "En un espirógrafo, un engranaje de 2 cm de radio avanza rodando por el interior de un anillo dentado de 10 cm de radio, siempre en contacto con él, hasta dar la vuelta completa al anillo. ¿Cuántas vueltas da el engranaje alrededor de su propio centro?",
+        "datos": {
+          "R": 10,
+          "r": 2
+        },
+        "opciones": [
+          {
+            "texto": "4 vueltas",
+            "valor": 4,
+            "correcta": true
+          },
+          {
+            "texto": "5 vueltas",
+            "valor": 5,
+            "error": "rueda-solo-el-borde-que-toca"
+          },
+          {
+            "texto": "6 vueltas",
+            "valor": 6,
+            "error": "rueda-por-dentro-como-por-fuera"
+          },
+          {
+            "texto": "0 vueltas",
+            "valor": 0,
+            "error": "rueda-no-gira"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una chapa de 3 cm de radio avanza rodando por el interior del borde de una tapa circular de 18 cm de radio, siempre en contacto con él, hasta dar la vuelta completa a la tapa. ¿Cuántas vueltas da la chapa alrededor de su propio centro?",
+        "datos": {
+          "R": 18,
+          "r": 3
+        },
+        "opciones": [
+          {
+            "texto": "0 vueltas",
+            "valor": 0,
+            "error": "rueda-no-gira"
+          },
+          {
+            "texto": "5 vueltas",
+            "valor": 5,
+            "correcta": true
+          },
+          {
+            "texto": "6 vueltas",
+            "valor": 6,
+            "error": "rueda-solo-el-borde-que-toca"
+          },
+          {
+            "texto": "7 vueltas",
+            "valor": 7,
+            "error": "rueda-por-dentro-como-por-fuera"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-18",
+      "plantilla": "traslados-sucesos",
+      "unidad": "razonamiento-matematico.traslados-y-puntos-cardinales",
+      "nombreUnidad": "Traslados y puntos cardinales",
+      "mide": "Los giros se cuentan desde hacia donde se mira, y para volver se va en la dirección opuesta a la del lugar donde se quedó",
+      "A": {
+        "enunciado": "Un dron despega del patio del colegio con el frente hacia el este. Vuela 50 m, dobla a su izquierda y vuela 80 m, y vuelve a doblar a su izquierda y vuela 110 m. ¿Qué distancia debe volar en línea recta, y hacia dónde, para regresar al patio?",
+        "datos": {
+          "inicio": "E",
+          "lado": "I",
+          "d1": 50,
+          "d2": 80,
+          "d3": 110
+        },
+        "opciones": [
+          {
+            "texto": "100 m hacia el noroeste",
+            "error": "vuelta-da-la-ida"
+          },
+          {
+            "texto": "100 m hacia el noreste",
+            "error": "giro-derecha-por-izquierda"
+          },
+          {
+            "texto": "100 m hacia el sureste",
+            "correcta": true
+          },
+          {
+            "texto": "140 m hacia el sureste",
+            "error": "cardinal-suma-los-catetos"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una lancha sale del muelle con la proa hacia el oeste. Avanza 40 m, gira a su izquierda y avanza 90 m, y vuelve a girar a su izquierda y avanza 160 m. ¿Qué distancia debe recorrer en línea recta, y hacia dónde, para regresar al muelle?",
+        "datos": {
+          "inicio": "O",
+          "lado": "I",
+          "d1": 40,
+          "d2": 90,
+          "d3": 160
+        },
+        "opciones": [
+          {
+            "texto": "150 m hacia el noroeste",
+            "correcta": true
+          },
+          {
+            "texto": "210 m hacia el noroeste",
+            "error": "cardinal-suma-los-catetos"
+          },
+          {
+            "texto": "150 m hacia el sureste",
+            "error": "vuelta-da-la-ida"
+          },
+          {
+            "texto": "150 m hacia el suroeste",
+            "error": "giro-derecha-por-izquierda"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-19",
+      "plantilla": "traslados-sucesos",
+      "unidad": "razonamiento-matematico.frecuencia-de-sucesos",
+      "nombreUnidad": "Frecuencia de sucesos",
+      "mide": "Tres sucesos vuelven a coincidir cada MCM de los tres; en un lapso se cuentan esas coincidencias más la del inicio",
+      "A": {
+        "enunciado": "En la vitrina de una tienda hay tres luces: la roja se enciende cada 8 segundos, la verde cada 12 segundos y la azul cada 18 segundos. En cierto momento se encienden las tres a la vez. ¿Cuántas veces se encienden las tres a la vez durante los 12 minutos que siguen, contando ese primer momento y el último, cuando también coinciden?",
+        "datos": {
+          "a": 8,
+          "b": 12,
+          "c": 18,
+          "minutos": 12
+        },
+        "opciones": [
+          {
+            "texto": "10 veces",
+            "valor": 10,
+            "error": "coincidencias-sin-la-primera"
+          },
+          {
+            "texto": "11 veces",
+            "valor": 11,
+            "correcta": true
+          },
+          {
+            "texto": "31 veces",
+            "valor": 31,
+            "error": "coincidencia-mcm-de-dos"
+          },
+          {
+            "texto": "19 veces",
+            "valor": 19,
+            "error": "coincidencia-suma-de-intervalos"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En una bahía hay tres faros: uno destella cada 4 segundos, otro cada 10 segundos y el tercero cada 16 segundos. En cierto momento destellan los tres a la vez. ¿Cuántas veces destellan los tres a la vez durante los 8 minutos que siguen, contando ese primer momento y el último, cuando también coinciden?",
+        "datos": {
+          "a": 4,
+          "b": 10,
+          "c": 16,
+          "minutos": 8
+        },
+        "opciones": [
+          {
+            "texto": "25 veces",
+            "valor": 25,
+            "error": "coincidencia-mcm-de-dos"
+          },
+          {
+            "texto": "17 veces",
+            "valor": 17,
+            "error": "coincidencia-suma-de-intervalos"
+          },
+          {
+            "texto": "7 veces",
+            "valor": 7,
+            "correcta": true
+          },
+          {
+            "texto": "6 veces",
+            "valor": 6,
+            "error": "coincidencias-sin-la-primera"
           }
         ]
       }
