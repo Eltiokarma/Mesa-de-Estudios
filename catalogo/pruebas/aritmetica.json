@@ -736,7 +736,7 @@
       "unidad": "aritmetica.mcd-y-mcm",
       "mide": "Coincidencias periódicas: el primer momento común es el MCM",
       "A": {
-        "enunciado": "Dos luces se encienden juntas. Una se enciende cada 8 segundos y la otra cada 12 segundos. ¿Cuántos segundos después vuelven a encenderse juntas por primera vez?",
+        "enunciado": "Dos luces se prenden a la vez. Una se enciende cada 8 segundos y la otra cada 12 segundos. ¿Cuántos segundos después vuelven a encenderse juntas por primera vez?",
         "datos": {
           "a": 8,
           "b": 12
