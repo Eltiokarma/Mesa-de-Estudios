@@ -332,7 +332,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "fluidos"
+     ]
     },
     {
      "id": "fisica.temperatura-y-calor",
@@ -418,7 +420,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "electrostatica"
+     ]
     },
     {
      "id": "fisica.corriente-y-circuitos",
@@ -2047,7 +2051,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "numeracion"
+     ]
     },
     {
      "id": "aritmetica.cuatro-operaciones",
@@ -3599,7 +3605,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "maximos-minimos"
+     ]
     },
     {
      "id": "razonamiento-matematico.cortes-y-pesadas",
@@ -4450,6 +4458,23 @@
     "/plantillas/divisores/papel.json"
    ]
   },
+  "electrostatica": {
+   "id": "electrostatica",
+   "titulo": "Cargas que se empujan: Coulomb, campo y potencial",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.electrostatica"
+   ],
+   "url": "/plantillas/electrostatica/index.html",
+   "papel": "/plantillas/electrostatica/papel.json",
+   "archivos": [
+    "/plantillas/electrostatica/index.html",
+    "/plantillas/electrostatica/motor.js",
+    "/plantillas/electrostatica/papel.json"
+   ]
+  },
   "energia": {
    "id": "energia",
    "titulo": "Trabajo y energía",
@@ -4549,6 +4574,23 @@
     "/plantillas/exponenciales-logaritmos/index.html",
     "/plantillas/exponenciales-logaritmos/motor.js",
     "/plantillas/exponenciales-logaritmos/papel.json"
+   ]
+  },
+  "fluidos": {
+   "id": "fluidos",
+   "titulo": "Fluidos: presión, Pascal y Arquímedes",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.fluidos"
+   ],
+   "url": "/plantillas/fluidos/index.html",
+   "papel": "/plantillas/fluidos/papel.json",
+   "archivos": [
+    "/plantillas/fluidos/index.html",
+    "/plantillas/fluidos/motor.js",
+    "/plantillas/fluidos/papel.json"
    ]
   },
   "fracciones": {
@@ -4741,6 +4783,23 @@
     "/plantillas/limitante-particulas/papel.json"
    ]
   },
+  "maximos-minimos": {
+   "id": "maximos-minimos",
+   "titulo": "El cordel que encierra: máximos y mínimos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.maximos-y-minimos"
+   ],
+   "url": "/plantillas/maximos-minimos/index.html",
+   "papel": "/plantillas/maximos-minimos/papel.json",
+   "archivos": [
+    "/plantillas/maximos-minimos/index.html",
+    "/plantillas/maximos-minimos/motor.js",
+    "/plantillas/maximos-minimos/papel.json"
+   ]
+  },
   "mol-composicion": {
    "id": "mol-composicion",
    "titulo": "Mol, masa molar y composición",
@@ -4773,6 +4832,23 @@
     "/plantillas/mruv/index.html",
     "/plantillas/mruv/motor.js",
     "/plantillas/mruv/papel.json"
+   ]
+  },
+  "numeracion": {
+   "id": "numeracion",
+   "titulo": "Las fichas que se agrupan: sistemas de numeración",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeracion"
+   ],
+   "url": "/plantillas/numeracion/index.html",
+   "papel": "/plantillas/numeracion/papel.json",
+   "archivos": [
+    "/plantillas/numeracion/index.html",
+    "/plantillas/numeracion/motor.js",
+    "/plantillas/numeracion/papel.json"
    ]
   },
   "optica-espejo-esferico": {

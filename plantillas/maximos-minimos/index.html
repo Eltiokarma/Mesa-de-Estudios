@@ -1,0 +1,1278 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El cordel que encierra: máximos y mínimos</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de relojes-calendarios/.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   corrales: ancho o fondo x azul, largo y naranja, área S verde; río: tramo AP rojo, tramo PB (y su reflejo PB') turquesa,
+   la recta AB' (el recorrido mínimo) fucsia; precio: precio p índigo, cantidad vendida q ocre, ingreso I granate.
+   Las flores del mapa (pinturas 1 a 4) son objetos y no variables: van en pastel con su número escrito encima.
+   Elegidos con CIEDE2000; mínimos entre los que salen juntos (claro / oscuro): corral (x, y, S) 37,2 / 36,0;
+   río (AP, PB, AB') 28,9 / 26,9; precio (p, q, I) 32,4 / 26,2; flores 22,2 / 25,4. Pares por debajo de 20 que nunca
+   comparten vista: AB'–p (16,2 / 16,2), x–p (17,0 / 12,1), S–q (17,3 / 18,1), AP–I (17,6 / 16,8) e y–q (19,8 / 18,9).
+   Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %), en claro y en oscuro (mínimo 4,54: q en el chip
+   claro); el número de cada flor contra su relleno, mínimo 8,1 en claro y 5,2 en oscuro. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-x:#1f5fbf; --c-y:#a05200; --c-S:#466d14; --c-AP:#c0364a; --c-PB:#0f766e; --c-T:#a10fbf; --c-p:#3328c4; --c-q:#7d6a00; --c-I:#77032c;
+  --pin-0:#f7d774; --pin-1:#a6d4f2; --pin-2:#f4abc9; --pin-3:#b5e3b0;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-x:#7cb0ff; --c-y:#f0a04a; --c-S:#a3d65e; --c-AP:#f17384; --c-PB:#5ed9c8; --c-T:#cf6bfa; --c-p:#9f9bff; --c-q:#e3c84a; --c-I:#fdb4ce;
+  --pin-0:#7a5f12; --pin-1:#1f5a80; --pin-2:#7f2f58; --pin-3:#2f6b3a;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-x:#7cb0ff; --c-y:#f0a04a; --c-S:#a3d65e; --c-AP:#f17384; --c-PB:#5ed9c8; --c-T:#cf6bfa; --c-p:#9f9bff; --c-q:#e3c84a; --c-I:#fdb4ce;
+  --pin-0:#7a5f12; --pin-1:#1f5a80; --pin-2:#7f2f58; --pin-3:#2f6b3a;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.8}
+.legend i.dash{background:none!important; border-top:2px dashed var(--k); height:0}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
+.v-y{color:var(--c-y); background:color-mix(in srgb, var(--c-y) 8%, transparent)}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
+.v-AP{color:var(--c-AP); background:color-mix(in srgb, var(--c-AP) 8%, transparent)}
+.v-PB{color:var(--c-PB); background:color-mix(in srgb, var(--c-PB) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-p{color:var(--c-p); background:color-mix(in srgb, var(--c-p) 8%, transparent)}
+.v-q{color:var(--c-q); background:color-mix(in srgb, var(--c-q) 8%, transparent)}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:center; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn.chico{padding:8px 14px; min-height:40px; font-size:.9rem}
+.btn[aria-pressed="true"]{border-color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.fila{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* tabla de la barrida del corral */
+.tabla{border-collapse:collapse; font:700 .9rem var(--mono); font-variant-numeric:tabular-nums}
+.tabla th, .tabla td{border:1px solid var(--line); padding:3px 7px; text-align:center}
+.tabla th{font-family:var(--font); color:var(--muted); font-weight:700; text-align:left}
+.tabla .tx{color:var(--c-x)} .tabla .ty{color:var(--c-y)} .tabla .tS{color:var(--c-S)}
+.tabla td.max{outline:2px solid var(--c-S); outline-offset:-2px}
+/* pinturas del mapa */
+.flor{display:inline-flex; align-items:center; gap:6px}
+.flor i{width:18px; height:18px; border-radius:5px; display:inline-block; border:1.5px solid var(--ink)}
+.zona{min-width:44px}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Máximos y mínimos · Problemas tipo admisión</p>
+      <h1>El cordel que encierra</h1>
+      <p class="sub">Estira un cordel en rectángulos, arrima el corral a una pared, busca el camino más corto que toca un río, sube el precio de un menú y pinta una plaza con pocas flores. Primero predices; después, el motor barre todas las posibilidades.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: corral, río, precio o plaza">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos de máximos y mínimos">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/maximos-minimos">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'maximos-minimos', unidad: 'razonamiento-matematico.maximos-y-minimos', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (áreas, máximos, recorridos, ingresos y colores mínimos) sale de MotorMaximos (motor.js);
+   aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MM = MotorMaximos;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  d = d === undefined ? 2 : d;
+  const p = Math.pow(10, d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const sol = n => { const t = fmt(n, 2); return 'S/ ' + (/,\d$/.test(t) ? t + '0' : t); };
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const x_ = t => V('x', t), y_ = t => V('y', t), S_ = t => V('S', t), AP_ = t => V('AP', t), PB_ = t => V('PB', t),
+  T_ = t => V('T', t), p_ = t => V('p', t), q_ = t => V('q', t), I_ = t => V('I', t);
+const VARS = ['x', 'y', 'S', 'AP', 'PB', 'T', 'p', 'q', 'I'];
+const m = n => `${fmt(n, 2)} m`, m2 = n => `${fmt(n, 2)} m²`;
+
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'), warn:css('--warn'), font:css('--font') };
+  for (const k of VARS) c[k] = css('--c-' + k);
+  c.pin = [0, 1, 2, 3].map(k => css('--pin-' + k));
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function punto(ctx, c, x, y, r, relleno, borde){ ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fillStyle = relleno; ctx.fill(); if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = 2; ctx.stroke(); } ctx.restore(); }
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Modos:
+   'corral'  un rectángulo sobre una cuadrícula de 1 m. cor = { tipo ('perimetro' | 'area'), valor, x, xmin, xmax, paso,
+             verS (el área con su número), verMalla (en tipo 'area': el perímetro), curva: { ver, hasta, max } }.
+             Con E.drag, la esquina de arriba a la derecha se arrastra por su camino (dedo, ratón o flechas).
+   'pared'   un corral contra una pared (arriba): dos lados x de fondo y uno y junto a la pared. par = { malla, x, xmin, xmax,
+             paso, verS, reflejo (el corral reflejado al otro lado de la pared), curva }.
+   'rio'     la orilla (y = 0), A y B del mismo lado y el punto P. rio = { a, b, d, p, verP, verNum, verReflejo, verRecta,
+             recta (0 a 1: cuánto de la recta A–B' se dibuja), bAntes (otra posición de B, a trazos), pAntes, pmin, pmax }.
+   'precio'  el rectángulo precio × cantidad, cuya área es el ingreso. pre = { p0, q0, dp, dq, u, umin, umax, paso, pmax, qmax,
+             unidad, verI, curva }.
+   'mapa'    el jardín redondo del centro y n jardines en ronda. mapa = { n, colores, conflictos, oculto }. Con E.tocar, tocar una zona la pinta.
+   'dos'     dos corrales cuadrados lado a lado (el cordel y el doble). dos = { l1, l2, ver, prog }.
+   Antes de responder, lo que se pregunta se dibuja como «?» y nada adelanta la respuesta. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'corral', lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:'',
+    drag:false, tocar:false, cor:null, par:null, rio:null, pre:null, mapa:null, dos:null, alArrastrar:null, alTocar:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, Hh = 0, sobre = false, arr = false, geo = null;
+  const conCurva = () => (E.modo === 'corral' && E.cor && E.cor.curva.ver) || (E.modo === 'pared' && E.par && E.par.curva.ver) || (E.modo === 'precio' && E.pre && E.pre.curva.ver);
+  // El alto sale de la escala del dibujo (con topes), para no dejar franjas vacías.
+  function altoBase(w){
+    const ancho = w >= 560, entre = (h, a, b) => Math.round(Math.max(a, Math.min(b, h)));
+    if (conCurva()) return ancho ? 330 : 400;
+    if (E.modo === 'pared' && E.par){ const Pa = E.par, s = Math.min((w - 84)/(Pa.malla - 2*Pa.xmin), 14); return entre(Pa.xmax*(Pa.reflejo ? 2 : 1)*s + 58, 170, 400); }
+    if (E.modo === 'corral' && E.cor){ const C = E.cor, mx = C.tipo === 'perimetro' ? C.valor/2 : C.xmax, my = C.tipo === 'perimetro' ? C.valor/2 : C.valor/C.xmin; return entre((w - 86)/mx*my + 50, 240, 360); }
+    if (E.modo === 'dos' && E.dos){ const D = E.dos, s = Math.min((w - 178)/(D.l1 + D.l2), 18); return entre(D.l2*s + 84, 200, 330); }
+    if (E.modo === 'rio') return ancho ? 330 : 310;
+    if (E.modo === 'mapa') return ancho ? 330 : 310;
+    return ancho ? 320 : 300;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(altoBase(w), E.compacto)), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === Hh) { E.dibujar(); return; }
+    W = w; Hh = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  const curvaBase = o => Object.assign({ ver:false, hasta:Infinity, max:false }, o || {});
+  E.config = o => {
+    E.tok++; E.anim = false;
+    Object.assign(E, { modo:'corral', lect:[], ley:null, alCambiar:null, desc:'', drag:false, tocar:false, cor:null, par:null, rio:null, pre:null,
+      mapa:null, dos:null, alArrastrar:null, alTocar:null }, o);
+    if (E.cor) E.cor = Object.assign({ tipo:'perimetro', paso:.5, verS:false, verMalla:true }, E.cor, { curva:curvaBase(E.cor.curva) });
+    if (E.par) E.par = Object.assign({ paso:.5, verS:false, reflejo:false }, E.par, { curva:curvaBase(E.par.curva) });
+    if (E.pre) E.pre = Object.assign({ paso:.5, verI:true, unidad:'menús' }, E.pre, { curva:curvaBase(E.pre.curva) });
+    if (E.rio) E.rio = Object.assign({ verP:true, verNum:false, verReflejo:false, verRecta:false, recta:1, pmin:-1, pmax:null }, E.rio);
+    cv.tabIndex = E.drag ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  const atenuar = k => (E.hl && E.hl !== k ? .45 : 1);
+
+  // Caja del dibujo principal y de la gráfica (lado a lado desde 560 px; si no, una encima de otra)
+  function cajas(){
+    if (!conCurva()) return { dib:{ x:0, y:0, w:W, h:Hh }, gra:null };
+    if (W >= 560) return { dib:{ x:0, y:0, w:W*0.55, h:Hh }, gra:{ x:W*0.55, y:0, w:W*0.45, h:Hh } };
+    const h1 = Math.round(Hh*0.56);
+    return { dib:{ x:0, y:0, w:W, h:h1 }, gra:{ x:0, y:h1, w:W, h:Hh - h1 } };
+  }
+  const pasoEje = r => r <= 6 ? 1 : r <= 14 ? 2 : r <= 30 ? 5 : r <= 60 ? 10 : r <= 150 ? 25 : r <= 300 ? 50 : r <= 1000 ? 200 : 500;
+
+  // ----- gráfica de una función -----
+  function grafica(c, b, g){
+    const l = b.x + 40, r = b.x + b.w - 14, t = b.y + 22, bo = b.y + b.h - 28;
+    const X = v => l + (r - l)*(v - g.xmin)/(g.xmax - g.xmin), Y = v => bo - (bo - t)*v/g.ymax;
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.rect(l, t, r - l, bo - t); ctx.stroke();
+    ctx.fillStyle = c.muted; ctx.font = `600 10px ${c.font}`; ctx.textBaseline = 'top'; ctx.textAlign = 'center';
+    const sx = pasoEje(g.xmax - g.xmin);
+    for (let v = Math.ceil(g.xmin/sx)*sx; v <= g.xmax + 1e-9; v += sx){ ctx.fillText(fmt(v, 2), X(v), bo + 3); linea(ctx, { x:X(v), y:bo }, { x:X(v), y:bo - 3 }); }
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    const sy = pasoEje(g.ymax);
+    for (let v = 0; v <= g.ymax + 1e-9; v += sy){ ctx.fillText(fmt(v, 0), l - 4, Y(v)); ctx.strokeStyle = c.grid; linea(ctx, { x:l, y:Y(v) }, { x:r, y:Y(v) }); }
+    ctx.restore();
+    rotulo(ctx, c, l, b.y + 10, g.ty, g.cy, 'left', 800, 11);
+    rotulo(ctx, c, r, bo + 20, g.tx, g.cx, 'right', 800, 11);
+    const hasta = Math.min(g.hasta, g.xmax);
+    if (hasta > g.xmin){
+      ctx.save(); ctx.strokeStyle = g.color; ctx.lineWidth = grosor(g.k, 2.6); ctx.globalAlpha = atenuar(g.k); ctx.beginPath();
+      for (let i = 0; i <= 160; i++){ const v = g.xmin + (hasta - g.xmin)*i/160, yv = g.f(v); if (yv < 0) continue; if (i === 0) ctx.moveTo(X(v), Y(yv)); else ctx.lineTo(X(v), Y(yv)); }
+      ctx.stroke(); ctx.restore();
+    }
+    if (g.max){
+      ctx.save(); ctx.strokeStyle = g.color; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.4; linea(ctx, { x:X(g.max.x), y:bo }, { x:X(g.max.x), y:Y(g.max.y) }); ctx.restore();
+      rotulo(ctx, c, X(g.max.x), Y(g.max.y) - 12, g.max.t, g.color, 'center', 800, 11);
+    }
+    if (g.punto) punto(ctx, c, X(g.punto.x), Y(g.punto.y), 5, c.card, g.color);
+  }
+
+  // ----- el corral sobre la cuadrícula -----
+  function datosCorral(C){
+    return C.tipo === 'perimetro' ? MM.rectangulo({ perimetro:C.valor, ancho:C.x }) : MM.rectanguloArea({ area:C.valor, ancho:C.x });
+  }
+  function geoCorral(b){
+    const C = E.cor, maxX = C.tipo === 'perimetro' ? C.valor/2 : C.xmax, maxY = C.tipo === 'perimetro' ? C.valor/2 : C.valor/C.xmin;
+    const s = Math.min((b.w - 86)/maxX, (b.h - 50)/maxY), ox = b.x + 70, oy = b.y + b.h - 28;
+    return { s, ox, oy, maxX, maxY, P:(X, Y) => ({ x:ox + X*s, y:oy - Y*s }) };
+  }
+  function dibCorral(c, b){
+    const C = E.cor, R = datosCorral(C), g = geoCorral(b); geo = g;
+    // cuadrícula de 1 m
+    const paso = g.s < 7 ? 2 : 1;
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let i = 0; i <= g.maxX + 1e-9; i += paso) linea(ctx, g.P(i, 0), g.P(i, g.maxY));
+    for (let j = 0; j <= g.maxY + 1e-9; j += paso) linea(ctx, g.P(0, j), g.P(g.maxX, j));
+    ctx.restore();
+    // camino de la esquina
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([5, 5]); ctx.lineWidth = 1.3; ctx.beginPath();
+    for (let i = 0; i <= 80; i++){
+      const xx = C.xmin + (C.xmax - C.xmin)*i/80, yy = C.tipo === 'perimetro' ? C.valor/2 - xx : C.valor/xx, q = g.P(xx, yy);
+      if (i) ctx.lineTo(q.x, q.y); else ctx.moveTo(q.x, q.y);
+    }
+    ctx.stroke(); ctx.restore();
+    const o = g.P(0, 0), e = g.P(R.ancho, R.largo), w = e.x - o.x, h = o.y - e.y;
+    if (C.verS){ ctx.save(); ctx.fillStyle = c.S; ctx.globalAlpha = .2*atenuar('S'); ctx.fillRect(o.x, e.y, w, h); ctx.restore(); }
+    ctx.save(); ctx.lineCap = 'round';
+    ctx.strokeStyle = c.x; ctx.globalAlpha = atenuar('x'); ctx.lineWidth = grosor('x', 4); linea(ctx, o, { x:e.x, y:o.y }); linea(ctx, { x:o.x, y:e.y }, e);
+    ctx.strokeStyle = c.y; ctx.globalAlpha = atenuar('y'); ctx.lineWidth = grosor('y', 4); linea(ctx, o, { x:o.x, y:e.y }); linea(ctx, { x:e.x, y:o.y }, e);
+    ctx.restore();
+    rotulo(ctx, c, o.x + w/2, o.y + 14, `x = ${m(R.ancho)}`, c.x, 'center', 800, 12);
+    rotulo(ctx, c, o.x - 6, o.y - h/2, `y = ${m(R.largo)}`, c.y, 'right', 800, 12);
+    const tS = C.tipo === 'perimetro' ? (C.verS ? `S = ${m2(R.area)}` : 'S = ?') : `S = ${m2(R.area)}`;
+    ctx.font = `800 12px ${c.font}`;
+    const cabe = w > ctx.measureText(tS).width + 10 && h > 22;
+    if (cabe) rotulo(ctx, c, o.x + w/2, o.y - h/2, tS, c.S, 'center', 800, 12);
+    else rotulo(ctx, c, e.x + 8, e.y - 12, tS, c.S, 'left', 800, 12);
+    const tit = C.tipo === 'perimetro' ? `cordel: ${m(C.valor)}` : (C.verMalla ? `malla: ${m(R.perimetro)}` : 'malla: ?');
+    rotulo(ctx, c, b.x + b.w - 8, b.y + 12, tit, c.ink, 'right', 800, 12);
+    if (E.drag){
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arr || sobre) ? .2 : .1; ctx.beginPath(); ctx.arc(e.x, e.y, 16, 0, 7); ctx.fill(); ctx.restore();
+      punto(ctx, c, e.x, e.y, 7, c.card, c.ink);
+    }
+    geo.esquina = e;
+  }
+  function graCorral(c, b){
+    const C = E.cor, R = datosCorral(C);
+    if (C.tipo === 'perimetro'){
+      const M = MM.productoMaximo({ a:2, b:2, total:C.valor });
+      grafica(c, b, { xmin:C.xmin, xmax:C.xmax, ymax:M.producto*1.18, f:v => MM.rectangulo({ perimetro:C.valor, ancho:v }).area, color:c.S, k:'S',
+        hasta:C.curva.hasta, punto:{ x:R.ancho, y:R.area }, max: C.curva.max ? { x:M.x, y:M.producto, t:`máximo: ${m2(M.producto)}` } : null,
+        tx:'x (m)', cx:c.x, ty:'S (m²)', cy:c.S });
+    } else {
+      const S = MM.sumaMinima({ producto:C.valor });
+      grafica(c, b, { xmin:C.xmin, xmax:C.xmax, ymax:MM.rectanguloArea({ area:C.valor, ancho:C.xmin }).perimetro*1.15, f:v => MM.rectanguloArea({ area:C.valor, ancho:v }).perimetro,
+        color:c.ink, k:'', hasta:C.curva.hasta, punto:{ x:R.ancho, y:R.perimetro }, max: C.curva.max ? { x:S.x, y:2*S.suma, t:`mínimo: ${m(2*S.suma)}` } : null,
+        tx:'x (m)', cx:c.x, ty:'malla (m)', cy:c.ink });
+    }
+  }
+
+  // ----- contra la pared -----
+  function geoPared(b){
+    const Pa = E.par, maxW = Pa.malla - 2*Pa.xmin, maxH = Pa.xmax*(Pa.reflejo ? 2 : 1);
+    const s = Math.min((b.w - 84)/maxW, (b.h - 58)/maxH), ox = b.x + 16, wy = b.y + 18 + (Pa.reflejo ? Pa.xmax*s : 0);
+    return { s, ox, wy, P:(X, Y) => ({ x:ox + X*s, y:wy + Y*s }) };
+  }
+  function dibPared(c, b){
+    const Pa = E.par, R = MM.pared({ malla:Pa.malla, x:Pa.x }), g = geoPared(b); geo = g;
+    const x1 = g.P(R.paralelo, R.x);
+    // camino de la esquina
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([5, 5]); ctx.lineWidth = 1.3;
+    linea(ctx, g.P(Pa.malla - 2*Pa.xmin, Pa.xmin), g.P(Pa.malla - 2*Pa.xmax, Pa.xmax)); ctx.restore();
+    if (Pa.reflejo){
+      const r0 = g.P(0, -R.x);
+      ctx.save(); ctx.setLineDash([6, 5]); ctx.lineWidth = 2.4;
+      ctx.strokeStyle = c.x; ctx.globalAlpha = .7*atenuar('x'); linea(ctx, r0, g.P(0, 0)); linea(ctx, g.P(R.paralelo, -R.x), g.P(R.paralelo, 0));
+      ctx.strokeStyle = c.y; ctx.globalAlpha = .7*atenuar('y'); linea(ctx, r0, g.P(R.paralelo, -R.x)); ctx.restore();
+      if (Pa.verS){ ctx.save(); ctx.fillStyle = c.S; ctx.globalAlpha = .08; ctx.fillRect(r0.x, r0.y, R.paralelo*g.s, R.x*g.s); ctx.restore(); }
+      rotulo(ctx, c, r0.x + R.paralelo*g.s/2, r0.y + R.x*g.s/2, 'reflejo', c.muted, 'center', 700, 11);
+    }
+    // la pared
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, { x:b.x + 6, y:g.wy }, { x:b.x + b.w - 6, y:g.wy });
+    ctx.lineWidth = 1.2; ctx.globalAlpha = Pa.reflejo ? .35 : .8;
+    for (let xx = b.x + 10; xx < b.x + b.w - 6; xx += 9) linea(ctx, { x:xx, y:g.wy }, { x:xx + 6, y:g.wy - 7 });
+    ctx.restore();
+    if (!Pa.reflejo) rotulo(ctx, c, b.x + b.w - 8, g.wy - 12, 'pared (sin malla)', c.muted, 'right', 700, 11);
+    if (Pa.verS){ ctx.save(); ctx.fillStyle = c.S; ctx.globalAlpha = .2*atenuar('S'); ctx.fillRect(g.ox, g.wy, R.paralelo*g.s, R.x*g.s); ctx.restore(); }
+    ctx.save(); ctx.lineCap = 'round';
+    ctx.strokeStyle = c.x; ctx.globalAlpha = atenuar('x'); ctx.lineWidth = grosor('x', 4); linea(ctx, g.P(0, 0), g.P(0, R.x)); linea(ctx, g.P(R.paralelo, 0), x1);
+    ctx.strokeStyle = c.y; ctx.globalAlpha = atenuar('y'); ctx.lineWidth = grosor('y', 4); linea(ctx, g.P(0, R.x), x1);
+    ctx.restore();
+    rotulo(ctx, c, x1.x + 6, g.wy + R.x*g.s/2, `x = ${m(R.x)}`, c.x, 'left', 800, 12);
+    rotulo(ctx, c, g.ox + R.paralelo*g.s/2, x1.y + 14, `y = ${m(R.paralelo)}`, c.y, 'center', 800, 12);
+    const tS = Pa.verS ? `S = ${m2(R.area)}` : 'S = ?';
+    ctx.font = `800 12px ${c.font}`;
+    if (R.paralelo*g.s > ctx.measureText(tS).width + 10 && R.x*g.s > 22) rotulo(ctx, c, g.ox + R.paralelo*g.s/2, g.wy + R.x*g.s/2, tS, c.S, 'center', 800, 12);
+    else rotulo(ctx, c, x1.x + 6, x1.y + 14, tS, c.S, 'left', 800, 12);
+    if (Pa.reflejo && Pa.verS) rotulo(ctx, c, b.x + b.w - 8, b.y + 10, `con el reflejo: ${m(2*R.x)} × ${m(R.paralelo)}`, c.ink, 'right', 800, 11);
+    if (E.drag){
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arr || sobre) ? .2 : .1; ctx.beginPath(); ctx.arc(x1.x, x1.y, 16, 0, 7); ctx.fill(); ctx.restore();
+      punto(ctx, c, x1.x, x1.y, 7, c.card, c.ink);
+    }
+    geo.esquina = x1;
+  }
+  function graPared(c, b){
+    const Pa = E.par, R = MM.pared({ malla:Pa.malla, x:Pa.x }), M = MM.paredMaxima({ malla:Pa.malla });
+    grafica(c, b, { xmin:Pa.xmin, xmax:Pa.xmax, ymax:M.area*1.18, f:v => MM.pared({ malla:Pa.malla, x:v }).area, color:c.S, k:'S',
+      hasta:Pa.curva.hasta, punto:{ x:R.x, y:R.area }, max: Pa.curva.max ? { x:M.x, y:M.area, t:`máximo: ${m2(M.area)}` } : null,
+      tx:'x (m)', cx:c.x, ty:'S (m²)', cy:c.S });
+  }
+
+  // ----- el río -----
+  function geoRio(){
+    const Ri = E.rio, bmax = Math.max(Ri.b, Ri.bAntes || 0), top = Math.max(Ri.a, bmax) + 1.3, bot = -(bmax + 1.2);
+    const x0 = -1.6, x1 = Ri.d + 1.6, s = Math.min((W - 20)/(x1 - x0), (Hh - 16)/(top - bot));
+    const ox = (W - (x1 - x0)*s)/2 - x0*s, oy = 8 + top*s;
+    return { s, x0, x1, top, bot, P:(X, Y) => ({ x:ox + X*s, y:oy - Y*s }) };
+  }
+  function dibRio(c){
+    const Ri = E.rio, g = geoRio(); geo = g;
+    const o0 = g.P(g.x0 - 2, 0), o1 = g.P(g.x1 + 2, 0), A = g.P(0, Ri.a), B = g.P(Ri.d, Ri.b), Bp = g.P(Ri.d, -Ri.b);
+    // agua
+    ctx.save(); ctx.fillStyle = c.muted; ctx.globalAlpha = .08; ctx.fillRect(0, o0.y, W, Hh - o0.y); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.globalAlpha = .35; ctx.lineWidth = 1;
+    for (let yy = o0.y + 14; yy < Hh; yy += 18) for (let xx = 8 + (yy % 36 ? 12 : 0); xx < W; xx += 46){ ctx.beginPath(); ctx.moveTo(xx, yy); ctx.quadraticCurveTo(xx + 7, yy - 4, xx + 14, yy); ctx.quadraticCurveTo(xx + 21, yy + 4, xx + 28, yy); ctx.stroke(); }
+    ctx.restore();
+    rotulo(ctx, c, 10, Hh - 12, 'río', c.muted, 'left', 700, 11);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, o0, o1); ctx.restore();
+    rotulo(ctx, c, W - 10, o0.y - 11, 'orilla', c.muted, 'right', 700, 11);
+    // datos: distancias a la orilla y separación
+    const pieA = g.P(0, 0), pieB = g.P(Ri.d, 0);
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.2; linea(ctx, A, pieA); linea(ctx, B, pieB); ctx.restore();
+    rotulo(ctx, c, A.x - 6, (A.y + pieA.y)/2, `${fmt(Ri.a)} m`, c.ink, 'right', 700, 11);
+    rotulo(ctx, c, B.x + 6, Ri.bAntes ? B.y + (pieB.y - B.y)*0.25 : (B.y + pieB.y)/2, `${fmt(Ri.b)} m`, c.ink, 'left', 700, 11);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1; const yb = pieA.y + 30;
+    linea(ctx, { x:pieA.x, y:yb - 4 }, { x:pieA.x, y:yb + 4 }); linea(ctx, { x:pieB.x, y:yb - 4 }, { x:pieB.x, y:yb + 4 }); linea(ctx, { x:pieA.x, y:yb }, { x:pieB.x, y:yb }); ctx.restore();
+    rotulo(ctx, c, (pieA.x + pieB.x)/2, yb + 11, `${fmt(Ri.d)} m`, c.ink, 'center', 700, 11);
+    if (Ri.bAntes){
+      const Ba = g.P(Ri.d, Ri.bAntes);
+      punto(ctx, c, Ba.x, Ba.y, 5, c.paper, c.muted);
+      rotulo(ctx, c, Ba.x + 9, Ba.y, 'B antes', c.muted, 'left', 700, 11);
+      if (Ri.pAntes !== undefined){
+        const Pa = g.P(Ri.pAntes, 0), Bap = g.P(Ri.d, -Ri.bAntes);
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.4; linea(ctx, A, Bap); ctx.restore();
+        punto(ctx, c, Pa.x, Pa.y, 4, c.muted);
+      }
+    }
+    if (Ri.verReflejo){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.2; linea(ctx, pieB, Bp); ctx.restore();
+      punto(ctx, c, Bp.x, Bp.y, 5, c.paper, c.ink);
+      rotulo(ctx, c, Bp.x + 9, Bp.y, "B'", c.ink, 'left', 800, 12);
+    }
+    if (Ri.verRecta && Ri.recta > 0){
+      ctx.save(); ctx.strokeStyle = c.T; ctx.globalAlpha = atenuar('T'); ctx.setLineDash([7, 5]); ctx.lineWidth = grosor('T', 2.4);
+      linea(ctx, A, { x:A.x + (Bp.x - A.x)*Ri.recta, y:A.y + (Bp.y - A.y)*Ri.recta }); ctx.restore();
+    }
+    if (Ri.verP){
+      const P = g.P(Ri.p, 0), R = MM.recorrido({ a:Ri.a, b:Ri.b, d:Ri.d, p:Ri.p });
+      ctx.save(); ctx.lineCap = 'round';
+      ctx.strokeStyle = c.AP; ctx.globalAlpha = atenuar('AP'); ctx.lineWidth = grosor('AP', 3.5); linea(ctx, A, P);
+      ctx.strokeStyle = c.PB; ctx.globalAlpha = atenuar('PB'); ctx.lineWidth = grosor('PB', 3.5); linea(ctx, P, B);
+      if (Ri.verReflejo){ ctx.setLineDash([6, 5]); ctx.lineWidth = 2; ctx.globalAlpha = .75*atenuar('PB'); linea(ctx, P, Bp); }
+      ctx.restore();
+      if (Ri.verNum){
+        // dentro de la V que forman AP y PB, lejos de los datos (3 m, 5 m) que van por fuera
+        rotulo(ctx, c, A.x + (P.x - A.x)*0.35 + 10, A.y + (P.y - A.y)*0.35, `${fmt(R.AP)} m`, c.AP, 'left', 800, 11);
+        rotulo(ctx, c, P.x + (B.x - P.x)*0.6 - 10, P.y + (B.y - P.y)*0.6, `${fmt(R.PB)} m`, c.PB, 'right', 800, 11);
+      }
+      if (E.drag){ ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arr || sobre) ? .2 : .1; ctx.beginPath(); ctx.arc(P.x, P.y, 16, 0, 7); ctx.fill(); ctx.restore(); }
+      punto(ctx, c, P.x, P.y, 6, c.card, c.ink);
+      rotulo(ctx, c, P.x, P.y + 15, 'P', c.ink, 'center', 800, 12);
+      geo.esquina = P;
+    } else rotulo(ctx, c, (pieA.x + pieB.x)/2, pieA.y + 62, '¿dónde toca la orilla?', c.ink, 'center', 800, 11);
+    punto(ctx, c, A.x, A.y, 6, c.ink); rotulo(ctx, c, A.x, A.y - 15, 'A', c.ink, 'center', 800, 13);
+    punto(ctx, c, B.x, B.y, 6, c.ink); rotulo(ctx, c, B.x, B.y - 15, 'B', c.ink, 'center', 800, 13);
+  }
+
+  // ----- el precio: rectángulo precio × cantidad -----
+  function geoPrecio(b){
+    const Pr = E.pre, l = b.x + 46, r = b.x + b.w - 18, t = b.y + 24, bo = b.y + b.h - 30;
+    return { l, r, t, bo, X:v => l + (r - l)*v/Pr.pmax, Y:v => bo - (bo - t)*v/Pr.qmax };
+  }
+  function dibPrecio(c, b){
+    const Pr = E.pre, R = MM.ingreso(Pr), g = geoPrecio(b); geo = g;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, { x:g.l, y:g.bo }, { x:g.r, y:g.bo }); linea(ctx, { x:g.l, y:g.bo }, { x:g.l, y:g.t }); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.muted; ctx.font = `600 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    const sx = pasoEje(Pr.pmax); for (let v = 0; v <= Pr.pmax + 1e-9; v += sx){ ctx.fillText(String(v), g.X(v), g.bo + 3); ctx.strokeStyle = c.grid; linea(ctx, { x:g.X(v), y:g.bo }, { x:g.X(v), y:g.t }); }
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    const sy = pasoEje(Pr.qmax); for (let v = sy; v <= Pr.qmax + 1e-9; v += sy){ ctx.fillText(String(v), g.l - 4, g.Y(v)); ctx.strokeStyle = c.grid; linea(ctx, { x:g.l, y:g.Y(v) }, { x:g.r, y:g.Y(v) }); }
+    ctx.restore();
+    rotulo(ctx, c, g.r, g.bo + 20, 'precio (S/)', c.p, 'right', 800, 11);
+    rotulo(ctx, c, g.l - 2, b.y + 10, Pr.unidad, c.q, 'left', 800, 11);
+    // por dónde se mueve la esquina
+    const ini = MM.ingreso(Object.assign({}, Pr, { u:Pr.umin })), fin = MM.ingreso(Object.assign({}, Pr, { u:Pr.umax }));
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([5, 5]); ctx.lineWidth = 1.3;
+    linea(ctx, { x:g.X(ini.precio), y:g.Y(Math.max(0, ini.cantidad)) }, { x:g.X(fin.precio), y:g.Y(Math.max(0, fin.cantidad)) }); ctx.restore();
+    const e = { x:g.X(R.precio), y:g.Y(Math.max(0, R.cantidad)) }, o = { x:g.l, y:g.bo };
+    ctx.save(); ctx.fillStyle = c.I; ctx.globalAlpha = (Pr.verI ? .2 : .07)*atenuar('I'); ctx.fillRect(o.x, e.y, e.x - o.x, o.y - e.y); ctx.restore();
+    ctx.save(); ctx.lineCap = 'round';
+    ctx.strokeStyle = c.p; ctx.globalAlpha = atenuar('p'); ctx.lineWidth = grosor('p', 4); linea(ctx, { x:o.x, y:o.y - 1 }, { x:e.x, y:o.y - 1 }); linea(ctx, { x:o.x, y:e.y }, e);
+    ctx.strokeStyle = c.q; ctx.globalAlpha = atenuar('q'); ctx.lineWidth = grosor('q', 4); linea(ctx, { x:o.x + 1, y:o.y }, { x:o.x + 1, y:e.y }); linea(ctx, { x:e.x, y:o.y }, e);
+    ctx.restore();
+    const tI = Pr.verI ? `I = ${sol(R.ingreso)}` : 'I = ?';
+    rotulo(ctx, c, (o.x + e.x)/2, (o.y + e.y)/2, tI, c.I, 'center', 800, 12);
+    const der = e.x > (g.l + g.r)/2, tp = sol(R.precio), tq = `${fmt(R.cantidad, 2)} ${Pr.unidad}`, xr = e.x + (der ? -12 : 12);
+    ctx.font = `800 11px ${c.font}`;
+    const wq = ctx.measureText(tq).width, wp = ctx.measureText(tp + ' · ').width;
+    if (der){ rotulo(ctx, c, xr, e.y - 14, tq, c.q, 'right', 800, 11); rotulo(ctx, c, xr - wq - 6, e.y - 14, tp + ' ·', c.p, 'right', 800, 11); }
+    else { rotulo(ctx, c, xr, e.y - 14, tp + ' ·', c.p, 'left', 800, 11); rotulo(ctx, c, xr + wp, e.y - 14, tq, c.q, 'left', 800, 11); }
+    if (E.drag){
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arr || sobre) ? .2 : .1; ctx.beginPath(); ctx.arc(e.x, e.y, 16, 0, 7); ctx.fill(); ctx.restore();
+      punto(ctx, c, e.x, e.y, 7, c.card, c.ink);
+    }
+    geo.esquina = e;
+  }
+  function graPrecio(c, b){
+    const Pr = E.pre, R = MM.ingreso(Pr), M = MM.ingresoMaximo(Pr);
+    const pa = Pr.p0 + Pr.dp*Pr.umin, pb = Pr.p0 + Pr.dp*Pr.umax;
+    grafica(c, b, { xmin:pa, xmax:pb, ymax:M.ingreso*1.2, f:v => MM.ingreso(Object.assign({}, Pr, { u:(v - Pr.p0)/Pr.dp })).ingreso, color:c.I, k:'I',
+      hasta: Pr.curva.hasta, punto:{ x:R.precio, y:R.ingreso }, max: Pr.curva.max ? { x:M.precio, y:M.ingreso, t:`máximo: ${sol(M.ingreso)}` } : null,
+      tx:'precio (S/)', cx:c.p, ty:'I (S/)', cy:c.I });
+  }
+
+  // ----- la plaza: jardín del centro y jardines en ronda -----
+  function geoMapa(){
+    const Ma = E.mapa, cx = W/2, cy = Hh/2 + 4, R2 = Math.min(W/2 - 12, Hh/2 - 14), R1 = R2*0.38;
+    const ang = k => -Math.PI/2 + (k - 1)*2*Math.PI/Ma.n;
+    return { cx, cy, R1, R2, ang };
+  }
+  function zonaEn(p){
+    if (E.modo !== 'mapa' || !E.mapa) return -1;
+    const g = geoMapa(), dx = p.x - g.cx, dy = p.y - g.cy, r = Math.hypot(dx, dy);
+    if (r <= g.R1) return 0;
+    if (r > g.R2) return -1;
+    let a = Math.atan2(dy, dx) + Math.PI/2; a = (a + 4*Math.PI) % (2*Math.PI);
+    return 1 + Math.floor(a/(2*Math.PI/E.mapa.n));
+  }
+  function dibMapa(c){
+    const Ma = E.mapa, g = geoMapa(), col = Ma.colores || [];
+    const relleno = k => (col[k] === null || col[k] === undefined) ? c.paper : c.pin[col[k]];
+    for (let k = 1; k <= Ma.n; k++){
+      ctx.save(); ctx.beginPath(); ctx.arc(g.cx, g.cy, g.R2, g.ang(k), g.ang(k + 1)); ctx.arc(g.cx, g.cy, g.R1, g.ang(k + 1), g.ang(k), true); ctx.closePath();
+      ctx.fillStyle = relleno(k); ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); ctx.restore();
+      const am = (g.ang(k) + g.ang(k + 1))/2, rr = (g.R1 + g.R2)/2;
+      const t = col[k] === null || col[k] === undefined ? `jardín ${k}` : `${k} · flor ${col[k] + 1}`;
+      ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 ${g.R2 > 110 ? 12 : 11}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(t, g.cx + rr*Math.cos(am), g.cy + rr*Math.sin(am)); ctx.restore();
+    }
+    ctx.save(); ctx.beginPath(); ctx.arc(g.cx, g.cy, g.R1, 0, 7); ctx.fillStyle = relleno(0); ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('centro', g.cx, g.cy - (col[0] === null || col[0] === undefined ? 0 : 8));
+    if (!(col[0] === null || col[0] === undefined)) ctx.fillText(`flor ${col[0] + 1}`, g.cx, g.cy + 9);
+    ctx.restore();
+    // choques: el borde común, grueso y a trazos
+    for (const [i, j] of Ma.conflictos || []){
+      const trazo = () => { ctx.beginPath();
+        if (i === 0) ctx.arc(g.cx, g.cy, g.R1, g.ang(j), g.ang(j + 1));
+        else { const k = (j === i + 1) ? j : i, a = g.ang(k); ctx.moveTo(g.cx + g.R1*Math.cos(a), g.cy + g.R1*Math.sin(a)); ctx.lineTo(g.cx + g.R2*Math.cos(a), g.cy + g.R2*Math.sin(a)); } };
+      // contorno en tinta (contrasta con las flores) y encima el borde a trazos del aviso
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 9; ctx.lineCap = 'round'; trazo(); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.warn; ctx.lineWidth = 5; ctx.setLineDash([7, 4]); trazo(); ctx.stroke(); ctx.restore();
+    }
+    if (Ma.conflictos && Ma.conflictos.length) rotulo(ctx, c, 10, 12, `⚠ choques: ${Ma.conflictos.length}`, c.warn, 'left', 800, 12);
+    if (Ma.oculto) rotulo(ctx, c, W - 10, 12, '¿cuántos colores?', c.ink, 'right', 800, 12);
+  }
+
+  // ----- dos corrales cuadrados -----
+  function dibDos(c){
+    const D = E.dos, mg = 64, s = Math.min((W - mg*2 - 50)/(D.l1 + D.l2), (Hh - 84)/D.l2);
+    const oy = Hh - 44, ax = mg, bx = mg + D.l1*s + 66;
+    const cuadro = (ox, l, llenar, txt, oculto) => {
+      if (llenar){ ctx.save(); ctx.fillStyle = c.S; ctx.globalAlpha = .2*atenuar('S'); ctx.fillRect(ox, oy - l*s, l*s, l*s); ctx.restore(); }
+      ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+      for (let i = 1; i < l; i++){ linea(ctx, { x:ox + i*s, y:oy }, { x:ox + i*s, y:oy - l*s }); linea(ctx, { x:ox, y:oy - i*s }, { x:ox + l*s, y:oy - i*s }); }
+      ctx.restore();
+      ctx.save(); ctx.lineCap = 'round'; ctx.lineWidth = 3.5;
+      ctx.strokeStyle = c.x; linea(ctx, { x:ox, y:oy }, { x:ox + l*s, y:oy }); linea(ctx, { x:ox, y:oy - l*s }, { x:ox + l*s, y:oy - l*s });
+      ctx.strokeStyle = c.y; linea(ctx, { x:ox, y:oy }, { x:ox, y:oy - l*s }); linea(ctx, { x:ox + l*s, y:oy }, { x:ox + l*s, y:oy - l*s });
+      ctx.restore();
+      rotulo(ctx, c, ox + l*s/2, oy + 13, oculto ? 'x = ?' : `x = ${m(l)}`, c.x, 'center', 800, 11);
+      rotulo(ctx, c, ox - 5, oy - l*s/2, oculto ? 'y = ?' : `y = ${m(l)}`, c.y, 'right', 800, 11);
+      ctx.font = `800 12px ${c.font}`;
+      if (txt && ctx.measureText(txt).width + 8 < l*s) rotulo(ctx, c, ox + l*s/2, oy - l*s/2, txt, c.S, 'center', 800, 12);
+      else if (txt) rotulo(ctx, c, ox + l*s/2, oy + 30, txt, c.S, 'center', 800, 12);
+    };
+    cuadro(ax, D.l1, true, `S = ${m2(D.l1*D.l1)}`);
+    rotulo(ctx, c, ax + D.l1*s/2, oy - D.l1*s - 14, `cordel ${m(4*D.l1)}`, c.ink, 'center', 800, 11);
+    if (!D.ver){
+      // antes de responder: solo un contorno a trazos del mismo tamaño que el chico, con «?»
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([6, 5]); ctx.lineWidth = 2; ctx.strokeRect(bx, oy - D.l1*s, D.l1*s, D.l1*s); ctx.restore();
+      rotulo(ctx, c, bx + D.l1*s/2, oy - D.l1*s/2, '?', c.ink, 'center', 800, 16);
+      rotulo(ctx, c, bx + D.l1*s/2, oy - D.l1*s - 14, `cordel ${m(4*D.l2)}`, c.ink, 'center', 800, 11);
+      rotulo(ctx, c, bx + D.l1*s/2, oy + 13, 'S = ?', c.S, 'center', 800, 12);
+      return;
+    }
+    cuadro(bx, D.l2, false, '');
+    {
+      const k = D.l2/D.l1, n = Math.floor(D.prog + 1e-9);
+      for (let j = 0; j < k*k && j < n; j++){
+        const i = j % k, f = Math.floor(j/k), x0 = bx + i*D.l1*s, y0 = oy - (f + 1)*D.l1*s;
+        ctx.save(); ctx.fillStyle = c.S; ctx.globalAlpha = .2*atenuar('S'); ctx.fillRect(x0, y0, D.l1*s, D.l1*s); ctx.globalAlpha = 1;
+        ctx.strokeStyle = c.S; ctx.lineWidth = 2; ctx.strokeRect(x0 + 1.5, y0 + 1.5, D.l1*s - 3, D.l1*s - 3); ctx.restore();
+      }
+    }
+    rotulo(ctx, c, bx + D.l2*s/2, oy - D.l2*s/2, D.ver && D.prog >= (D.l2/D.l1)**2 ? `S = ${m2(D.l2*D.l2)}` : 'S = ?', c.S, 'center', 800, 13);
+    rotulo(ctx, c, bx + D.l2*s/2, oy - D.l2*s - 14, `cordel ${m(4*D.l2)}`, c.ink, 'center', 800, 11);
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, Hh); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, Hh);
+    const k = cajas();
+    if (E.modo === 'corral' && E.cor){ dibCorral(c, k.dib); if (k.gra) graCorral(c, k.gra); }
+    else if (E.modo === 'pared' && E.par){ dibPared(c, k.dib); if (k.gra) graPared(c, k.gra); }
+    else if (E.modo === 'rio' && E.rio) dibRio(c);
+    else if (E.modo === 'precio' && E.pre){ dibPrecio(c, k.dib); if (k.gra) graPrecio(c, k.gra); }
+    else if (E.modo === 'mapa' && E.mapa) dibMapa(c);
+    else if (E.modo === 'dos' && E.dos) dibDos(c);
+    if (k.gra){ ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; if (W >= 560) linea(ctx, { x:k.gra.x, y:8 }, { x:k.gra.x, y:Hh - 8 }); else linea(ctx, { x:8, y:k.gra.y }, { x:W - 8, y:k.gra.y }); ctx.restore(); }
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const vr = k => k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : k.startsWith('pin') ? '--' + k : '--c-' + k;
+    const it = (k, t, f) => `<span style="--k:var(${vr(k)})"><i class="${f || ''}" style="background:var(${vr(k)})"></i>${t}</span>`;
+    let l = E.ley;
+    if (!l){
+      if (E.modo === 'corral' || E.modo === 'dos') l = [['x', 'x · ancho'], ['y', 'y · largo'], ['S', 'S · área', 'sq']].concat(E.modo === 'corral' ? [['muted', 'camino de la esquina', 'dash']] : []);
+      else if (E.modo === 'pared') l = [['x', 'x · fondo (dos lados)'], ['y', 'y · junto a la pared'], ['S', 'S · área', 'sq']];
+      else if (E.modo === 'rio') l = [['AP', 'tramo AP'], ['PB', 'tramo PB']].concat(E.rio && E.rio.verReflejo ? [['PB', "PB' · reflejo de PB", 'dash']] : []).concat(E.rio && E.rio.verRecta ? [['T', "recta AB'", 'dash']] : []);
+      else if (E.modo === 'precio') l = [['p', 'p · precio'], ['q', `q · ${E.pre ? E.pre.unidad : ''}`], ['I', 'I · ingreso = p · q', 'sq']];
+      else l = [0, 1, 2, 3].map(k => ['pin-' + k, `flor ${k + 1}`, 'sq']);
+    }
+    document.getElementById(idLey).innerHTML = l.map(([k, t, f]) => it(k, t, f)).join('');
+  };
+  E.avisar = () => {
+    const filas = E.lect.map(f => f(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = { corral:'Un corral rectangular sobre una cuadrícula de 1 m.', pared:'Un corral rectangular contra una pared.', rio:'La orilla de un río con los puntos A y B.',
+        precio:'El rectángulo precio por cantidad: su área es el ingreso.', mapa:'Una plaza con un jardín redondo al centro y jardines alrededor.', dos:'Dos corrales cuadrados.' }[E.modo];
+      document.getElementById(idDesc).textContent = [E.desc || base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); E.avisar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+
+  // ----- arrastrar la esquina, el fondo, el punto P o el precio (dedo, ratón y teclado) -----
+  function valor(){ return E.modo === 'corral' ? E.cor.x : E.modo === 'pared' ? E.par.x : E.modo === 'rio' ? E.rio.p : E.pre.u; }
+  function poner(v){
+    const o = E.modo === 'corral' ? E.cor : E.modo === 'pared' ? E.par : E.modo === 'rio' ? E.rio : E.pre;
+    const paso = o.paso || .25, lo = E.modo === 'rio' ? o.pmin : E.modo === 'precio' ? o.umin : o.xmin, hi = E.modo === 'rio' ? o.pmax : E.modo === 'precio' ? o.umax : o.xmax;
+    v = clamp(Math.round(v/paso)*paso, lo, hi);
+    if (Math.abs(v - valor()) < 1e-9) return;
+    if (E.modo === 'corral') o.x = v; else if (E.modo === 'pared') o.x = v; else if (E.modo === 'rio') o.p = v; else o.u = v;
+    if (E.alArrastrar) E.alArrastrar(v); E.dibujar(); E.avisar();
+  }
+  Celular.arrastre(cv, {
+    activo: () => !!E.drag && !E.ocupado && !E.anim,
+    cerca: (p, r) => { return !!geo && !!geo.esquina && Math.hypot(p.x - geo.esquina.x, p.y - geo.esquina.y) < r; },
+    empezar: () => { arr = true; E.dibujar(); },
+    mover: p => {
+      if (!geo) return;
+      if (E.modo === 'corral') poner((p.x - geo.ox)/geo.s);
+      else if (E.modo === 'pared') poner((p.y - geo.wy)/geo.s);
+      else if (E.modo === 'rio') poner(geo.x0 + (p.x - geo.P(geo.x0, 0).x)/geo.s);
+      else if (E.modo === 'precio'){ const pr = (p.x - geo.l)/(geo.r - geo.l)*E.pre.pmax; poner((pr - E.pre.p0)/E.pre.dp); }
+    },
+    soltar: () => { arr = false; E.dibujar(); },
+    sobre: s => { sobre = s; E.dibujar(); }
+  });
+  cv.addEventListener('keydown', e => {
+    if (!E.drag || E.ocupado || E.anim) return;
+    const o = E.modo === 'corral' ? E.cor : E.modo === 'pared' ? E.par : E.modo === 'rio' ? E.rio : E.pre, paso = (o.paso || .25)*(e.shiftKey ? 4 : 1);
+    const sube = E.modo === 'pared' ? -1 : 1;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp'){ e.preventDefault(); poner(valor() + paso*(e.key === 'ArrowUp' ? sube : 1)); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown'){ e.preventDefault(); poner(valor() - paso*(e.key === 'ArrowDown' ? sube : 1)); }
+  });
+  // tocar una zona del mapa (un toque no le quita el desplazamiento a la página)
+  cv.addEventListener('click', e => {
+    if (!E.tocar || E.ocupado || E.anim || !E.alTocar) return;
+    const r = cv.getBoundingClientRect(), k = zonaEn({ x:e.clientX - r.left, y:e.clientY - r.top });
+    if (k >= 0) E.alTocar(k);
+  });
+  return E;
+}
+
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const L = (k, nombre, valor) => () => [k, nombre, valor];
+// Pintor del mapa: paleta de flores y botones por zona (teclado), además de tocar el dibujo.
+function pintor(E, cont, regiones, vecinos, estado, alPintar){
+  const nombres = k => k === 0 ? 'Jardín del centro' : `Jardín ${k}`;
+  const html = () => `<div class="fila" role="group" aria-label="Elige una flor">${[0, 1, 2, 3].map(k => `<button type="button" class="btn chico flor" data-flor="${k}" aria-pressed="${estado.flor === k}"><i style="background:var(--pin-${k})"></i>Flor ${k + 1}</button>`).join('')}
+      <button type="button" class="btn chico" data-flor="-1" aria-pressed="${estado.flor === -1}">Borrar</button></div>
+    <div class="fila" role="group" aria-label="Pinta una zona">${Array.from({ length: regiones }, (_, k) => `<button type="button" class="btn chico zona" data-zona="${k}" aria-label="${nombres(k)}: ${estado.colores[k] === null ? 'sin flor' : 'flor ' + (estado.colores[k] + 1)}">${k === 0 ? 'Centro' : k}</button>`).join('')}</div>
+    <div class="fila"><button type="button" class="btn chico" data-accion="ejemplo">Ver una pintura del motor</button><button type="button" class="btn chico" data-accion="borrar">Borrar todo</button></div>`;
+  const pintar = k => { estado.colores[k] = estado.flor < 0 ? null : estado.flor; alPintar(); poner(); };
+  function poner(){
+    cont.innerHTML = html();
+    cont.querySelectorAll('[data-flor]').forEach(b => b.onclick = () => { estado.flor = +b.dataset.flor; poner(); });
+    cont.querySelectorAll('[data-zona]').forEach(b => b.onclick = () => pintar(+b.dataset.zona));
+    cont.querySelector('[data-accion="ejemplo"]').onclick = () => { estado.colores = MM.minimoColores({ regiones, vecinos }).ejemplo.slice(); alPintar(); poner(); };
+    cont.querySelector('[data-accion="borrar"]').onclick = () => { estado.colores = new Array(regiones).fill(null); alPintar(); poner(); };
+  }
+  E.alTocar = pintar;
+  poner();
+}
+function lecturasMapa(regiones, vecinos, estado){
+  return [E0 => { const R = MM.revisarPintura({ regiones, vecinos, colores:estado.colores }); return ['ink', 'Flores usadas', String(R.usados)]; },
+    E0 => { const R = MM.revisarPintura({ regiones, vecinos, colores:estado.colores }); return ['ink', 'Choques', R.conflictos.length ? `${R.conflictos.length} ⚠` : '0']; },
+    E0 => { const R = MM.revisarPintura({ regiones, vecinos, colores:estado.colores }); return ['ink', 'Sin flor', String(R.sinPintar)]; }];
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, x2:8, x4:8, p6:0, u7:5, reflejo:false, mapa:{ flor:0, colores:null } };
+
+// Números de la escena: todos salen del motor
+const P1 = MM.compararRectangulos({ tipo:'perimetro', valor:24, anchos:[11, 6, 8] });
+const R1 = k => P1.rectangulos.find(r => r.ancho === k);
+const M2 = MM.productoMaximo({ a:1, b:1, total:12 });
+const P3 = MM.paredMaxima({ malla:40 });
+const R5 = MM.recorridoMinimo({ a:3, b:5, d:6 });
+const I7 = MM.ingresoMaximo({ p0:10, q0:66, dp:1, dq:3 });
+const RU = MM.rueda(5), M8 = MM.minimoColores(RU);
+const MENU = { p0:10, q0:66, dp:1, dq:3 };
+const dims = r => `${fmt(r.ancho)} m × ${fmt(r.largo)} m`;
+const frTxt = v => { const f = MM.fraccion(v); return f && f.den !== 1 ? f.mixto : fmt(v); };
+S.mapa.colores = new Array(RU.regiones).fill(null);
+
+const G1 = { id:'maximos-paso1', ok:'b', opts:[
+  ['a', `${dims(R1(P1.errores.masAlargado))}: es el más largo, llega más lejos`, 'rectangulo-mas-alargado', 'hipotesis'],
+  ['b', `${dims(R1(P1.mejor))}: los cuatro lados iguales`],
+  ['c', `${dims(R1(P1.errores.intermedio))}: ni muy largo ni muy angosto`, 'rectangulo-intermedio', 'hipotesis'],
+  ['d', 'Todos encierran lo mismo: el cordel mide lo mismo', 'GE5-mismo-perimetro-misma-area', 'parcial']],
+  fb:{ b:`¡Bien! Con el mismo cordel, el cuadrado de 6 × 6 encierra ${fmt(R1(6).area)} m²; el de 8 × 4, ${fmt(R1(8).area)} m², y el de 11 × 1, solo ${fmt(R1(11).area)} m². Mismo perímetro, áreas distintas.`,
+    a:`Elegiste la A. El de 11 × 1 es el más largo, pero tan angosto que encierra solo ${fmt(R1(11).area)} m²: una fila de 11 cuadraditos. El cuadrado de 6 × 6 encierra ${fmt(R1(6).area)}. La correcta está marcada.`,
+    c:`Elegiste la C. El de 8 × 4 encierra ${fmt(R1(8).area)} m², bastante, pero el cuadrado de 6 × 6 encierra ${fmt(R1(6).area)}. Cuanto más parejos los lados, más área. La correcta está marcada.`,
+    d:`Elegiste la D. El cordel (el perímetro) es el mismo, pero el área no: ${fmt(R1(11).area)} m², ${fmt(R1(8).area)} m² y ${fmt(R1(6).area)} m². El perímetro mide el borde; el área, lo que queda adentro. La correcta está marcada.` } };
+const dimP = r => `${frTxt(r.x)} m de fondo y ${frTxt(r.paralelo)} m junto a la pared`;
+const G3 = { id:'maximos-paso3', ok:'c', opts:[
+  ['a', `${MM.fraccion(P3.errores.cuadrado.x).texto} m (unos ${fmt(P3.errores.cuadrado.x, 1)} m) por lado: un cuadrado, como con el cordel`, 'pared-cuadrado-sin-mirar-que-se-suma', 'hipotesis'],
+  ['b', `${dimP(P3.errores.alReves)}: el fondo es el doble`, 'pared-razon-invertida', 'hipotesis'],
+  ['c', `${dimP(P3)}: la mitad de la malla va junto a la pared`],
+  ['d', `${dimP(P3.errores.comoCorralLibre)}: el mejor corral de 40 m`, 'pared-regla-del-corral-libre', 'hipotesis']],
+  fb:{ c:`¡Bien! Lo que se suma es x + x + y = 40. El producto es máximo cuando las dos partes, 2x e y, valen lo mismo: 20 y 20. Fondo de 10 m y 20 m junto a la pared: ${fmt(P3.area)} m².`,
+    a:`Elegiste la A. El cuadrado de 40/3 m (unos 13,3 m) por lado encierra 1600/9 ≈ ${fmt(P3.errores.cuadrado.area, 1)} m². Con la pared, x e y ya no se suman por igual: x va dos veces. El mejor es 10 × 20 = ${fmt(P3.area)} m². La correcta está marcada.`,
+    b:`Elegiste la B. 16 m de fondo y 8 m junto a la pared encierran ${fmt(P3.errores.alReves.area)} m². Es al revés: conviene alargar el lado junto a la pared, porque su malla se pone una sola vez. La correcta está marcada.`,
+    d:`Elegiste la D. 10 × 10 es el mejor corral de 40 m sin pared, pero aquí usa solo 30 m de malla y le sobran 10. Con toda la malla: 10 × 20 = ${fmt(P3.area)} m². La correcta está marcada.` } };
+const G5 = { id:'maximos-paso5', ok:'c', opts:[
+  ['a', `${R5.exactos.sumaPerpendiculares} m: 3 m para bajar a la orilla y 5 m para subir a B`, 'rio-suma-de-distancias-a-la-orilla', 'hipotesis'],
+  ['b', `${R5.exactos.perpendicularA} ≈ ${fmt(R5.errores.perpendicularA, 1)} m: bajando derecho desde A`, 'rio-perpendicular-desde-A', 'hipotesis'],
+  ['c', `${R5.exacto} m: tocando la orilla más cerca del pie de A que del de B`],
+  ['d', `${R5.exactos.porLaOrilla} m: bajar, caminar 6 m por la orilla y subir`, 'rio-por-la-orilla', 'hipotesis']],
+  fb:{ c:`¡Bien! Refleja B al otro lado de la orilla: B' queda 5 m dentro del agua. Cualquier camino A–P–B mide lo mismo que A–P–B'. El más corto es la recta A–B', con catetos 6 y 3 + 5 = 8: mide ${R5.exacto} m.`,
+    a:'Elegiste la A. 3 y 5 son las distancias de A y de B a la orilla, pero bajan a dos puntos distintos de la orilla, separados 6 m. Un camino que toca la orilla una sola vez mide más: el menor es 10 m. La correcta está marcada.',
+    b:`Elegiste la B. Bajar derecho es lo más corto para llegar a la orilla, pero después queda un tramo largo hasta B: ${R5.exactos.perpendicularA} ≈ ${fmt(R5.errores.perpendicularA, 1)} m. Conviene tocar la orilla un poco más adelante. La correcta está marcada.`,
+    d:'Elegiste la D. Ese camino baja, recorre la orilla y sube: 3 + 6 + 5 = 14 m. Ir en diagonal ahorra mucho: el mejor mide 10 m. La correcta está marcada.' } };
+const G7 = { id:'maximos-paso7', ok:'b', opts:[
+  ['a', `${sol(I7.errores.noCambiar)}: cada sol de más le quita clientes`, 'precio-no-cambiar', 'hipotesis'],
+  ['b', `${sol(I7.precio)}: sube un poco y pierde pocos clientes`],
+  ['c', `${sol(I7.errores.hastaLaMitad)}: a la mitad del camino hasta S/ 32, cuando ya nadie compra`, 'precio-mitad-hasta-el-cero', 'hipotesis'],
+  ['d', `${sol(I7.errores.igualarFactores)}: el precio igual al número de menús, como en el cuadrado`, 'precio-iguala-factores-sin-suma-fija', 'hipotesis']],
+  fb:{ b:`¡Bien! El ingreso es precio × menús: (10 + n)(66 − 3n). Se hace cero en n = −10 (gratis) y en n = 22 (S/ 32, nadie compra). El máximo está a la mitad de los dos ceros: n = 6. ${sol(I7.precio)} × ${I7.cantidad} menús = ${sol(I7.ingreso)}.`,
+    a:`Elegiste la A. Hoy gana 10 × 66 = ${sol(I7.erroresIngreso.noCambiar)}. Si sube a S/ 16 pierde 18 clientes, pero cada uno de los 48 que quedan paga más: ${sol(I7.ingreso)}. La correcta está marcada.`,
+    c:`Elegiste la C. A S/ 21 vende 33 menús: ${sol(I7.erroresIngreso.hastaLaMitad)}, más que hoy pero menos que el máximo. La curva sube y baja igual a los dos lados del máximo: S/ 11 y S/ 21 dan lo mismo, y el mejor está en medio, en S/ 16. La correcta está marcada.`,
+    d:`Elegiste la D. Igualar los factores funciona cuando su suma es fija. Aquí precio + menús cambia: (10 + n) + (66 − 3n) baja 2 por cada sol. A ${sol(I7.errores.igualarFactores)} vende 24 menús: ${sol(I7.erroresIngreso.igualarFactores)}. La correcta está marcada.` } };
+const G8 = { id:'maximos-paso8', ok:'c', opts:[
+  ['a', `${M8.errores.alternarDos} colores: se alternan alrededor del centro`, 'mapa-alternar-dos', 'hipotesis'],
+  ['b', `${M8.errores.tresBastan} colores: el centro de uno y los jardines de alrededor alternando otros dos`, 'mapa-tres-bastan', 'hipotesis'],
+  ['c', `${M8.colores} colores: el centro de uno y los jardines de alrededor con otros tres`],
+  ['d', `${M8.errores.unoPorRegion} colores: uno por zona, porque todas se tocan`, 'mapa-uno-por-region', 'hipotesis']],
+  fb:{ c:'¡Bien! Con 5 jardines en ronda, dos colores no alcanzan para alternar: al dar la vuelta, el quinto choca con el primero. La ronda pide 3 colores, y el jardín del centro, que toca a los cinco, uno más: 4.',
+    a:'Elegiste la A. Alternar dos colores funciona con un número par de jardines. Con 5, el último queda junto al primero con el mismo color. Y el jardín del centro toca a todos. La correcta está marcada.',
+    b:`Elegiste la B. Con 5 jardines, alternar dos colores falla al cerrar la vuelta: la ronda ya necesita 3, y el jardín del centro toca a los cinco, así que necesita un cuarto color. El motor probó las ${fmt(M8.probadas, 0)} formas de pintar con 3 colores: todas tienen un choque. La correcta está marcada.`,
+    d:'Elegiste la D. No todas las zonas se tocan: el jardín 1 y el 3, por ejemplo, no comparten borde y pueden llevar la misma flor. Bastan 4. La correcta está marcada.' } };
+
+// ---- configuraciones ----
+const lectCorral = verS => [E0 => ['x', 'Ancho x', m(E0.cor.x)], E0 => ['y', 'Largo y', m(MM.rectangulo({ perimetro:24, ancho:E0.cor.x }).largo)]]
+  .concat(verS ? [E0 => ['S', 'Área S', m2(MM.rectangulo({ perimetro:24, ancho:E0.cor.x }).area)]] : [L('S', 'Área S', '?')]);
+const corral1 = ya => ({ modo:'corral', cor:{ tipo:'perimetro', valor:24, x: ya ? 6 : 8, xmin:.5, xmax:11.5, verS:ya, curva:{ ver:ya, max:ya } },
+  lect:lectCorral(ya), desc:'Un corral de 24 m de cordel sobre una cuadrícula de 1 m.' });
+function corral2(){
+  E.config({ modo:'corral', drag:true, cor:{ tipo:'perimetro', valor:24, x:S.x2, xmin:.5, xmax:11.5, verS:true, curva:{ ver:true, max:true } },
+    lect:lectCorral(true), alArrastrar:v => { S.x2 = v; }, alCambiar:vivoCorral, desc:'Corral de 24 m: arrastra la esquina.' });
+}
+function vivoCorral(){
+  const d = $('vivoC'); if (!d) return;
+  const R = MM.rectangulo({ perimetro:24, ancho:E.cor.x }), t = R.ancho - 6, tt = (t < 0 ? '(' : '') + fmt(t) + (t < 0 ? ')' : '');
+  d.innerHTML = `<div class="eq">${x_('x')} + ${y_('y')} = ${x_(fmt(R.ancho))} + ${y_(fmt(R.largo))} = 12<span class="note">medio cordel</span></div>
+    <div class="eq">${S_('S')} = ${x_(fmt(R.ancho))} · ${y_(fmt(R.largo))} = ${S_(fmt(R.area))}</div>
+    <div class="eq">t = ${tt}: ${x_('x')} = 6 + t, ${y_('y')} = 6 − t → ${S_('S')} = 36 − t² = 36 − ${tt}² = ${S_(fmt(R.area))}</div>`;
+}
+const tablaCorral = () => { const xs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], rs = xs.map(x => MM.rectangulo({ perimetro:24, ancho:x }));
+  return `<div style="overflow-x:auto"><table class="tabla"><tr><th>${x_('x')}</th>${rs.map(r => `<td class="tx">${r.ancho}</td>`).join('')}</tr><tr><th>${y_('y')}</th>${rs.map(r => `<td class="ty">${r.largo}</td>`).join('')}</tr><tr><th>${S_('S')}</th>${rs.map(r => `<td class="tS${r.area === M2.producto ? ' max' : ''}">${r.area}</td>`).join('')}</tr></table></div>`; };
+const lectPared = verS => [E0 => ['x', 'Fondo x', m(E0.par.x)], E0 => ['y', 'Junto a la pared y', m(MM.pared({ malla:40, x:E0.par.x }).paralelo)]]
+  .concat(verS ? [E0 => ['S', 'Área S', m2(MM.pared({ malla:40, x:E0.par.x }).area)]] : [L('S', 'Área S', '?')]);
+const pared3 = ya => ({ modo:'pared', par:{ malla:40, x: ya ? P3.x : 8, xmin:1, xmax:19, verS:ya, curva:{ ver:ya, max:ya } }, lect:lectPared(ya), desc:'Un corral contra una pared con 40 m de malla.' });
+function pared4(){
+  E.config({ modo:'pared', drag:true, par:{ malla:40, x:S.x4, xmin:1, xmax:14, verS:true, reflejo:S.reflejo }, lect:lectPared(true),
+    alArrastrar:v => { S.x4 = v; }, alCambiar:vivoPared, desc:'Corral contra la pared: arrastra la esquina de abajo.' });
+}
+function vivoPared(){
+  const d = $('vivoP'); if (!d) return;
+  const R = MM.pared({ malla:40, x:E.par.x });
+  d.innerHTML = `<div class="eq">${x_(fmt(R.x))} + ${x_(fmt(R.x))} + ${y_(fmt(R.paralelo))} = 40</div>
+    <div class="eq">${S_('S')} = ${x_(fmt(R.x))} · ${y_(fmt(R.paralelo))} = ${S_(fmt(R.area))}</div>
+    ${S.reflejo ? `<div class="eq">con el reflejo: ${x_(fmt(2*R.x))} × ${y_(fmt(R.paralelo))}, perímetro 80, área ${fmt(2*R.area)}<span class="note">${Math.abs(2*R.x - R.paralelo) < 1e-9 ? 'es un cuadrado' : 'todavía no es cuadrado'}</span></div>` : ''}`;
+}
+const rio5 = ya => ({ modo:'rio', rio:{ a:3, b:5, d:6, p:R5.p, verP:ya, verNum:ya, verReflejo:ya, verRecta:ya, recta:1 },
+  lect: ya ? [L('AP', 'AP', m(R5.AP)), L('PB', 'PB', m(R5.PB)), L('T', "AP + PB = AB'", m(R5.minimo))] : [L('ink', 'A a la orilla', '3 m'), L('ink', 'B a la orilla', '5 m'), L('ink', 'Separación', '6 m')],
+  desc:'A está a 3 m de la orilla y B a 5 m, del mismo lado; sus pies en la orilla están a 6 m.' });
+function rio6(){
+  E.config({ modo:'rio', drag:true, rio:{ a:3, b:5, d:6, p:S.p6, verP:true, verNum:true, verReflejo:true, verRecta:true, pmin:-1, pmax:7, paso:.25 },
+    lect:[E0 => ['AP', 'AP', m(MM.recorrido(E0.rio).AP)], E0 => ['PB', 'PB', m(MM.recorrido(E0.rio).PB)], E0 => ['ink', 'AP + PB', m(MM.recorrido(E0.rio).total)]],
+    alArrastrar:v => { S.p6 = v; }, alCambiar:vivoRio, desc:'El río: arrastra el punto P por la orilla.' });
+}
+function vivoRio(){
+  const d = $('vivoR'); if (!d) return;
+  const R = MM.recorrido(E.rio);
+  d.innerHTML = `<div class="eq">${AP_('AP')} + ${PB_('PB')} = ${AP_(fmt(R.AP))} + ${PB_(fmt(R.PB))} = ${fmt(R.total)} m</div>
+    <div class="eq">${PB_('PB')} = ${PB_("PB'")} → ${AP_('AP')} + ${PB_("PB'")} ≥ ${T_("AB'")} = ${T_(fmt(R.ABprima) + ' m')}<span class="note">${Math.abs(R.total - R.ABprima) < 1e-9 ? 'P está sobre la recta: es el mínimo' : `te sobran ${fmt(R.total - R.ABprima)} m`}</span></div>`;
+}
+const lectPrecio = verI => [E0 => ['p', 'Precio p', sol(MM.ingreso(E0.pre).precio)], E0 => ['q', 'Menús q', fmt(MM.ingreso(E0.pre).cantidad)],
+  verI ? (E0 => ['I', 'Ingreso I', sol(MM.ingreso(E0.pre).ingreso)]) : L('I', 'Ingreso hoy', sol(I7.erroresIngreso.noCambiar))];
+const precio7 = ya => ({ modo:'precio', drag:ya, pre:Object.assign({ u: ya ? S.u7 : 0, umin:-4, umax:21, pmax:34, qmax:80, unidad:'menús', verI:true, curva:{ ver:ya, max:ya } }, MENU),
+  lect:lectPrecio(ya), alArrastrar:v => { S.u7 = v; }, alCambiar: ya ? vivoPrecio : null, desc:'El menú: un rectángulo de precio por menús vendidos.' });
+function vivoPrecio(){
+  const d = $('vivoI'); if (!d) return;
+  const R = MM.ingreso(E.pre), n = E.pre.u;
+  d.innerHTML = `<div class="eq">${I_('I')} = (10 + ${fmt(n)}) · (66 − 3 · ${fmt(n)}) = ${p_(fmt(R.precio))} · ${q_(fmt(R.cantidad))} = ${I_(sol(R.ingreso))}</div>`;
+}
+function mapa8(ya){
+  const est = S.mapa;
+  E.config({ modo:'mapa', tocar:ya, mapa:{ n:5, colores: ya ? est.colores : new Array(RU.regiones).fill(null), conflictos: ya ? MM.revisarPintura({ regiones:RU.regiones, vecinos:RU.vecinos, colores:est.colores }).conflictos : [], oculto:!ya },
+    lect: ya ? lecturasMapa(RU.regiones, RU.vecinos, est) : [L('ink', 'Zonas', '6 (el centro y 5 jardines)')], ley: ya ? null : [],
+    desc:'La plaza: un jardín redondo al centro y 5 jardines en ronda. Cada jardín de la ronda toca al del centro y a sus dos vecinos.' });
+}
+function repintar(){ const est = S.mapa; E.mapa.colores = est.colores; E.mapa.conflictos = MM.revisarPintura({ regiones:RU.regiones, vecinos:RU.vecinos, colores:est.colores }).conflictos; E.dibujar(); E.avisar(); }
+
+const steps = [
+ { k:'Paso 1', t:'Predice: el cordel de 24 m', gate:G1,
+   prep:() => E.config(corral1(!!S.pred[G1.id])),
+   anima:fin => { const o = corral1(true); o.cor.x = .5; o.cor.curva = { ver:true, hasta:.5, max:false }; E.config(o); const C = E.cor;
+     E.animar(.5, 11.5, 2600, v => { C.x = Math.round(v*4)/4; C.curva.hasta = v; }, () => E.animar(11.5, 6, 1200, v => { C.x = Math.round(v*4)/4; }, () => { E.config(corral1(true)); fin(); }), true); },
+   body:() => `<p class="problem">Con un cordel de 24 m se arma un corral rectangular para unas ovejas. El cordel se puede estirar en muchos rectángulos distintos: de ${x_('ancho x')} y ${y_('largo y')}, siempre con 24 m de borde.</p>
+   <p>¿Cuál de estos corrales encierra más pasto (más ${S_('área S')})?</p>${opcionesHTML(G1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">2${x_('x')} + 2${y_('y')} = 24 → ${x_('x')} + ${y_('y')} = 12</div>
+     <div class="eq">${S_('S')} = ${x_('x')} · ${y_('y')}: 11 · 1 = ${fmt(R1(11).area)}; 8 · 4 = ${fmt(R1(8).area)}; 6 · 6 = ${S_(fmt(R1(6).area))}</div></div>
+   <p>Mira la gráfica: mientras la esquina corre por la línea a trazos, el área sube, llega a su punto más alto en el cuadrado y vuelve a bajar. Cada cuadradito de la cuadrícula es 1 m² de pasto.</p>
+   <p class="aviso">El mismo perímetro puede encerrar áreas muy distintas. Con el borde fijo, el que más encierra es el cuadrado.</p>
+   <p class="fuente">«Mismo perímetro, misma área» es una idea errónea descrita por D'Amore y Fandiño Pinilla (2007), que la encontraron con frecuencia en estudiantes, incluso universitarios, y en maestros; en lo que pudimos ver no dan cifras, así que la tomamos como respaldo parcial. Elegir el más alargado o el intermedio son hipótesis nuestras.</p></div>` },
+ { k:'Paso 2', t:'Suma fija, producto máximo', explora:true,
+   prep:() => corral2(),
+   body:() => `<p class="problem">Arrastra la esquina (o usa las flechas del teclado). El cordel no cambia: si el ${x_('ancho')} crece, el ${y_('largo')} se achica lo mismo.</p>
+   <div class="eqs" id="vivoC"></div>
+   ${tablaCorral()}
+   <p>La regla: si dos números tienen una <b>suma fija</b> (${x_('x')} + ${y_('y')} = 12), su <b>producto</b> es máximo cuando son iguales (6 · 6 = ${M2.producto}). Si x = 6 + t, entonces y = 6 − t y el producto es 36 − t²: siempre menos que 36.</p>
+   <p>La tabla es simétrica: 5 · 7 y 7 · 5 dan lo mismo. Por eso el máximo queda justo en el medio.</p>` },
+ { k:'Paso 3', t:'Predice: contra la pared', gate:G3,
+   prep:() => E.config(pared3(!!S.pred[G3.id])),
+   anima:fin => { const o = pared3(true); o.par.x = 1; o.par.curva = { ver:true, hasta:1, max:false }; E.config(o); const Pa = E.par;
+     E.animar(1, 19, 2600, v => { Pa.x = Math.round(v*2)/2; Pa.curva.hasta = v; }, () => E.animar(19, P3.x, 1200, v => { Pa.x = Math.round(v*2)/2; }, () => { E.config(pared3(true)); fin(); }), true); },
+   body:() => `<p class="problem">Ahora hay 40 m de malla y el corral se arrima a una pared larga: la pared hace de un lado y no lleva malla. La malla forma dos lados de ${x_('fondo x')} y un lado ${y_('y')} junto a la pared.</p>
+   <p>¿Qué medidas dan el corral de mayor ${S_('área')}?</p>${opcionesHTML(G3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${x_('x')} + ${x_('x')} + ${y_('y')} = 40<span class="note">lo que se suma son 2x e y</span></div>
+     <div class="eq">2${x_('x')} = ${y_('y')} = 20 → ${x_('x')} = ${x_('10')}, ${y_('y')} = ${y_('20')}, ${S_('S')} = ${S_(fmt(P3.area))}</div></div>
+   <p>La regla del paso 2 sigue valiendo, pero hay que mirar qué se suma: aquí los sumandos son ${x_('2x')} e ${y_('y')}, y son ellos los que deben ser iguales. El cuadrado de 40/3 m (unos 13,3 m) por lado encierra solo 1600/9 ≈ ${fmt(P3.errores.cuadrado.area, 1)} m².</p>
+   <p class="fuente">El cuadrado otra vez, invertir la razón y usar la regla del corral sin pared son hipótesis nuestras: no encontramos estudios con cifras sobre estos problemas.</p></div>` },
+ { k:'Paso 4', t:'El reflejo en la pared', explora:'pared',
+   prep:() => pared4(),
+   body:() => `<p class="problem">Arrastra la esquina de abajo para cambiar el ${x_('fondo')}. Después toca «Ver el reflejo»: el corral se refleja al otro lado de la pared.</p>
+   <div class="fila"><button type="button" class="btn chico" id="btnRef" aria-pressed="${S.reflejo}">Ver el reflejo</button></div>
+   <div class="eqs" id="vivoP"></div>
+   <p>El corral y su reflejo forman un rectángulo de ${x_('2x')} por ${y_('y')}, cerrado con 80 m de malla (la de verdad y la reflejada). Del paso 1 ya sabes que, con el borde fijo, el que más encierra es el cuadrado: ${x_('2x')} = ${y_('y')} = 20. La mitad de ese cuadrado es el mejor corral contra la pared.</p>
+   <p class="aviso">Reflejar es un truco que sirve para muchos máximos y mínimos: convierte un problema raro en uno que ya sabes resolver.</p>` },
+ { k:'Paso 5', t:'Predice: el camino que toca el río', gate:G5,
+   prep:() => E.config(rio5(!!S.pred[G5.id])),
+   anima:fin => { const o = rio5(true); Object.assign(o.rio, { verP:false, verRecta:true, recta:0, verNum:false }); o.lect = []; E.config(o); const Ri = E.rio;
+     E.animar(0, 1, 1800, v => { Ri.recta = v; }, () => { E.config(rio5(true)); fin(); }); },
+   body:() => `<p class="problem">Lucía está en A, a 3 m de la orilla de un río recto. Tiene que llenar un balde en el río y llevarlo a su chacra B, a 5 m de la orilla y del mismo lado. Los pies de A y de B en la orilla están a 6 m uno del otro.</p>
+   <p>¿Cuánto mide el camino más corto de A a la orilla y de ahí a B?</p>${opcionesHTML(G5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">B' = reflejo de B, a 5 m dentro del agua</div>
+     <div class="eq">${T_("AB'")} = √(6² + (3 + 5)²) = √100 = ${T_(R5.exacto + ' m')}</div>
+     <div class="eq">${AP_('AP')} = ${AP_(fmt(R5.AP))}, ${PB_('PB')} = ${PB_(fmt(R5.PB))}<span class="note">P a ${R5.pExacto} m del pie de A</span></div></div>
+   <p>Como B' es el reflejo de B, ${PB_('PB')} y ${PB_("PB'")} miden lo mismo para cualquier P de la orilla. El camino A–P–B mide lo mismo que A–P–B', y ese es más corto cuando es una recta. El punto P es donde la recta A–B' cruza la orilla.</p>
+   <p class="fuente">Las tres opciones incorrectas, y tocar en el punto medio (que da 3√2 + √34 ≈ ${fmt(R5.errores.puntoMedio, 2)} m, muy cerca pero más), son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Mueve el punto P', explora:true,
+   prep:() => rio6(),
+   body:() => `<p class="problem">Arrastra el punto P por la orilla (o usa las flechas). La línea a trazos fucsia es la recta de A a B'.</p>
+   <div class="eqs" id="vivoR"></div>
+   <p>Fíjate en los ángulos: en el mejor punto, ${AP_('AP')} y ${PB_('PB')} forman el mismo ángulo con la orilla (${fmt(R5.angulo, 1)}°), como la luz que rebota en un espejo. Por eso un rayo de luz que rebota en un espejo hace justo el camino más corto que toca el espejo.</p>` },
+ { k:'Paso 7', t:'Predice: el precio del menú', gate:G7,
+   prep:() => { E.config(precio7(!!S.pred[G7.id])); },
+   anima:fin => { const o = precio7(true); o.pre.u = -4; o.pre.curva = { ver:true, hasta:6, max:false }; o.drag = false; E.config(o); const Pr = E.pre;
+     E.animar(-4, 21, 2800, v => { Pr.u = Math.round(v*2)/2; Pr.curva.hasta = MENU.p0 + v; }, () => E.animar(21, I7.u, 1200, v => { Pr.u = Math.round(v*2)/2; }, () => { S.u7 = I7.u; E.config(precio7(true)); fin(); }), true); },
+   body:() => `<p class="problem">Doña Rosa vende 66 menús al día a S/ 10. Por cada sol que sube el ${p_('precio')}, pierde 3 clientes. Su ${I_('ingreso')} es ${p_('precio')} × ${q_('menús vendidos')}: el área del rectángulo.</p>
+   <p>¿A qué precio gana más dinero al día?</p>${opcionesHTML(G7.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${I_('I')} = (10 + n)(66 − 3n)<span class="note">n soles de aumento</span></div>
+     <div class="eq">ceros: n = −10 y n = 22 → máximo en n = ${fr('−10 + 22', '2')} = ${I7.u}</div>
+     <div class="eq">${p_(sol(I7.precio))} · ${q_(String(I7.cantidad))} = ${I_(sol(I7.ingreso))}</div></div>
+   <div class="eqs" id="vivoI"></div>
+   <p>Ahora puedes arrastrar la esquina del rectángulo. Subir el precio agranda un lado y achica el otro, pero esta vez la suma de los lados no es fija: por eso «iguales» no sirve. Lo que sí sirve es la simetría: el ingreso es una parábola, y su punto más alto está a la mitad entre los dos precios en que el ingreso es cero.</p>
+   <p class="fuente">No cambiar el precio, ir a la mitad hasta el cero e igualar los factores sin suma fija son hipótesis nuestras.</p></div>` },
+ { k:'Paso 8', t:'Predice: las flores de la plaza', gate:G8,
+   prep:() => { mapa8(!!S.pred[G8.id]); },
+   anima:fin => { S.mapa.colores = new Array(RU.regiones).fill(null); mapa8(true); E.tocar = false; const ej = M8.ejemplo;
+     E.animar(0, RU.regiones, 2200, v => { const n = Math.floor(v + 1e-9); S.mapa.colores = ej.map((c0, k) => k < n ? c0 : null); E.mapa.colores = S.mapa.colores; E.mapa.conflictos = []; }, () => { mapa8(true); montarPintor(); fin(); }, true); },
+   body:() => `<p class="problem">En la plaza hay un jardín redondo al centro y 5 jardines alrededor. Las 6 zonas se siembran, cada una con flores de un solo color, y dos zonas que comparten un borde no pueden tener el mismo color (si solo se tocaran en un punto, no contarían como vecinas).</p>
+   <p>¿Cuál es el menor número de colores de flores que se necesita?</p>${opcionesHTML(G8.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">con 3 colores: 3⁶ = ${fmt(M8.probadas, 0)} formas → todas con un choque</div>
+     <div class="eq">con 4 colores: ${M8.formas} formas sin choques</div></div>
+   <p>Pinta tú: elige una flor y toca una zona del dibujo (o su botón). Intenta usar solo 3 flores: siempre queda un choque, marcado con un borde grueso a trazos.</p>
+   <div id="pintor" class="body"></div>
+   <p>Con un número par de jardines, la ronda se alterna con dos colores y basta un tercero para el centro. Con un número impar, la ronda ya necesita tres. Cuatro colores alcanzan para cualquier mapa dibujado en un plano, si las zonas que solo se tocan en un punto no cuentan como vecinas (es un teorema famoso), pero no siempre hacen falta los cuatro.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras: no encontramos estudios con cifras sobre problemas de colorear mapas.</p></div>` },
+];
+function montarPintor(){
+  const cont = $('pintor'); if (!cont) return;
+  E.tocar = true;
+  pintor(E, cont, RU.regiones, RU.vecinos, S.mapa, repintar);
+  repintar();
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = false;
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.explora === 'pared'){ $('btnRef').onclick = () => { S.reflejo = !S.reflejo; $('btnRef').setAttribute('aria-pressed', S.reflejo); pared4(); if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); }; }
+  if (s.gate === G8 && S.pred[G8.id]) montarPintor();
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos: el cordel doble, la malla mínima, B más lejos del río, las chompas de Juliaca y la plaza de 6 jardines.
+   La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const E1 = MM.escalarCorral({ perimetro:24, factor:2 });
+const E2 = MM.compararRectangulos({ tipo:'area', valor:36, anchos:[18, 9, 6] });
+const R2 = k => E2.rectangulos.find(r => r.ancho === k);
+const E3 = MM.moverPunto({ a:3, b:5, d:6, b2:9 });
+const E3m = MM.recorridoMinimo({ a:3, b:9, d:6 });
+const CH = { p0:40, q0:30, dp:2, dq:3 }, E4 = MM.ingresoMaximo(CH);
+const RU6 = MM.rueda(6), E5 = MM.minimoColores(RU6);
+const SENT = { A:'Se acerca al pie de A', B:'Se acerca al pie de B', quieto:'No se mueve', medio:'Se va al punto medio de la orilla' };
+const mapa6 = { flor:0, colores:new Array(RU6.regiones).fill(null) };
+
+const EXPS = [
+  { id:'cordel-doble', corto:'El cordel doble',
+    q:`Con 24 m de cordel, el mejor corral es el cuadrado de 6 m × 6 m, que encierra ${S_('36 m²')}. Si el cordel mide el doble, 48 m, ¿cuánta ${S_('área')} encierra el mejor corral?`,
+    opts:[['a', `${fmt(E1.errores.lineal)} m²: el doble de cordel, el doble de área`, 'GE1-area-proporcional-al-lado', 'documentado'],
+          ['b', `${fmt(E1.errores.aditiva)} m²: 24 m más de cordel, 24 m² más de área`, 'AR6-area-aditiva', 'hipotesis'],
+          ['c', `${fmt(E1.areaNueva)} m²: el lado se duplica y el área se cuadruplica`]],
+    ok:'c',
+    fb:{ a:`Con 48 m, el mejor corral es el cuadrado de 12 m × 12 m: ${fmt(E1.areaNueva)} m². El área crece a lo largo y a lo ancho a la vez: 2 × 2 = 4 veces, no 2.`,
+         b:`Sumar lo que creció el cordel no sirve: el área crece en las dos direcciones. El cuadrado de 12 × 12 tiene ${fmt(E1.areaNueva)} m², cuatro cuadrados de 36.` },
+    antes:ya => E.config({ modo:'dos', dos:{ l1:E1.lado, l2:E1.ladoNuevo, ver:ya, prog: ya ? 4 : 0 },
+      lect:[L('ink', 'Cordel', '24 m → 48 m'), L('x', 'Lado', ya ? '6 m → 12 m' : '6 m → ?')].concat(ya ? [L('S', 'Área S', `36 → ${fmt(E1.areaNueva)} m²`)] : [L('S', 'Área S', '36 m² → ?')]),
+      desc:'Dos corrales cuadrados: con 24 m y con 48 m de cordel.' }),
+    despues:() => { EXPS[0].antes(true); const D = E.dos; D.prog = 0; E.animar(0, 4, 2000, v => { D.prog = v; }, () => EXPS[0].antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">lado = ${fr('48', '4')} = 12 m<span class="note">el doble de 6</span></div>
+      <div class="eq">${S_('S')} = 12 · 12 = ${S_(fmt(E1.areaNueva) + ' m²')} = ${E1.razon} · 36</div></div>
+      <p>En el dibujo, el corral grande se llena con cuatro copias del chico. Si el cordel se multiplica por 3, el área se multiplica por 9: el área va con el cuadrado.</p>
+      <p class="fuente">Creer que el área crece en la misma proporción que el lado (o que el cordel) es la ilusión de linealidad (GE1 del informe de geometría, ligada a AR7). En un problema con un terreno cuadrado de lado triple, más del 90 % de los alumnos belgas de 12 años y más del 80 % de los de 16 respondieron como si el trabajo solo se triplicara (De Bock y otros). Las cifras salen de resúmenes y están por verificar. Sumar lo que creció el cordel es una hipótesis nuestra, ligada a la estrategia aditiva (AR6).</p>` },
+  { id:'malla-minima', corto:'La malla mínima',
+    q:`Un huerto rectangular debe tener ${S_('36 m²')}. ¿Qué forma necesita menos malla para cercarlo?`,
+    opts:[['a', `${R2(18).ancho} m × ${R2(18).largo} m: es angosto y casi no ocupa`, 'malla-mas-alargado', 'hipotesis'],
+          ['b', `${R2(9).ancho} m × ${R2(9).largo} m: ni muy largo ni muy angosto`, 'malla-intermedio', 'hipotesis'],
+          ['c', `${R2(6).ancho} m × ${R2(6).largo} m: los cuatro lados iguales`],
+          ['d', 'Todos la misma: encierran la misma área', 'GE5-misma-area-mismo-perimetro', 'parcial']],
+    ok:'c',
+    fb:{ a:`18 × 2 necesita ${fmt(R2(18).perimetro)} m de malla; 6 × 6, solo ${fmt(R2(6).perimetro)} m. Con la misma área, cuanto más alargado, más borde.`,
+         b:`9 × 4 necesita ${fmt(R2(9).perimetro)} m, casi lo mismo, pero 6 × 6 necesita ${fmt(R2(6).perimetro)} m.`,
+         d:`La misma área no quiere decir el mismo perímetro: ${fmt(R2(18).perimetro)} m, ${fmt(R2(9).perimetro)} m y ${fmt(R2(6).perimetro)} m para los mismos 36 m².` },
+    antes:ya => E.config({ modo:'corral', cor:{ tipo:'area', valor:36, x: ya ? 6 : 9, xmin:2, xmax:18, verS:true, verMalla:ya, curva:{ ver:ya, max:ya } },
+      lect:[L('S', 'Área S', '36 m²')].concat(ya ? [E0 => ['x', 'Ancho x', m(E0.cor.x)], E0 => ['ink', 'Malla', m(MM.rectanguloArea({ area:36, ancho:E0.cor.x }).perimetro)]] : [L('ink', 'Malla', '?')]),
+      desc:'Un huerto rectangular de 36 m² sobre una cuadrícula de 1 m.' }),
+    despues:() => { const x = EXPS[1]; x.antes(true); const C = E.cor; C.x = 2; C.curva.hasta = 2; C.curva.max = false;
+      E.animar(2, 18, 2400, v => { C.x = Math.round(v*2)/2; C.curva.hasta = v; }, () => E.animar(18, 6, 1100, v => { C.x = Math.round(v*2)/2; }, () => x.antes(true)), true); },
+    exp:() => `<div class="eqs"><div class="eq">${x_('x')} · ${y_('y')} = 36 → malla = 2(${x_('x')} + ${y_('y')})</div>
+      <div class="eq">${x_('6')} + ${y_('6')} = 12 es la menor suma: malla = ${fmt(R2(6).perimetro)} m</div></div>
+      <p>Es la regla al revés: con el <b>producto fijo</b>, la <b>suma</b> es mínima cuando los factores son iguales. Con la misma área, el cuadrado es el que necesita menos borde.</p>
+      <p class="fuente">«Misma área, mismo perímetro» es la otra cara de la idea errónea que describen D'Amore y Fandiño Pinilla (2007), sin cifras en lo que pudimos ver (respaldo parcial). Las otras dos opciones son hipótesis nuestras.</p>` },
+  { id:'rio-lejos', corto:'B más lejos del río',
+    q:`A está a 3 m de la orilla y B a 5 m, del mismo lado; sus pies en la orilla están a 6 m. Si B se aleja hasta 9 m de la orilla, ¿hacia dónde se mueve el punto P que da el camino más corto A–P–B?`,
+    opts:[['a', SENT[E3.sentido]], ['b', SENT[E3.errores.quieto], 'rio-punto-no-se-mueve', 'hipotesis'],
+          ['c', SENT[E3.errores.contrario], 'rio-punto-hacia-el-lejano', 'hipotesis'], ['d', SENT[E3.errores.puntoMedio], 'rio-punto-medio', 'hipotesis']],
+    ok:'a',
+    fb:{ b:"Sí se mueve: el reflejo B' baja 4 m más y la recta de A a B' cambia de inclinación.", c:`Al revés: B' baja más, la recta A–B' se pone más empinada y cruza la orilla antes, más cerca de A (a ${MM.fraccion(E3.p2).texto} m de su pie).`,
+         d:'El punto medio solo es el mejor si A y B están a la misma distancia de la orilla.' },
+    antes:ya => E.config({ modo:'rio', rio:{ a:3, b:9, d:6, p:E3.p2, verP:ya, verNum:ya, verReflejo:ya, verRecta:ya, bAntes:5, pAntes: ya ? E3.p1 : undefined },
+      lect:[L('ink', 'B a la orilla', '5 m → 9 m')].concat(ya ? [L('ink', 'P (desde el pie de A)', `${MM.fraccion(E3.p1).texto} m → ${MM.fraccion(E3.p2).texto} m`), L('T', "AB'", `${E3m.exacto} m`)] : [L('ink', 'P', '?')]),
+      desc:'El río con B a 9 m de la orilla; a trazos, B donde estaba antes, a 5 m.' }),
+    despues:() => { const x = EXPS[2]; x.antes(true); const Ri = E.rio; Ri.verP = false; Ri.recta = 0; E.animar(0, 1, 1600, v => { Ri.recta = v; }, () => x.antes(true)); },
+    exp:() => `<div class="eqs"><div class="eq">distancia de P al pie de A = ${fr('a · d', 'a + b')}<span class="note">a = 3 (A), b = distancia de B y d = 6</span></div>
+      <div class="eq">${fr('3 · 6', '3 + 5')} = ${MM.fraccion(E3.p1).texto} → ${fr('3 · 6', '3 + 9')} = ${MM.fraccion(E3.p2).texto}</div>
+      <div class="eq">${T_("AB'")} = √(6² + 12²) = ${T_(E3m.exacto + ' m')}</div></div>
+      <p>La recta A–B' corta la orilla en la proporción de las distancias: P queda más cerca del punto que está más cerca de la orilla. AP y PB siguen formando el mismo ángulo con la orilla.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'chompas', corto:'Las chompas de Juliaca',
+    q:`En una feria de Juliaca, una tienda vende 30 chompas por semana a S/ 40. Por cada S/ 2 que rebaja el ${p_('precio')}, vende 3 chompas más. ¿Qué precio le da el mayor ${I_('ingreso')}?`,
+    opts:[['a', `${sol(E4.errores.noCambiar)}: rebajar es perder plata`, 'precio-no-cambiar', 'hipotesis'],
+          ['b', `${sol(E4.errores.igualarFactores)}: el precio igual al número de chompas`, 'precio-iguala-factores-sin-suma-fija', 'hipotesis'],
+          ['c', `${sol(E4.precio)}: rebaja un poco y vende muchas más`],
+          ['d', `${sol(E4.errores.hastaLaMitad)}: a mitad del camino hasta regalarlas`, 'precio-mitad-hasta-el-cero', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`Hoy gana 40 × 30 = ${sol(E4.erroresIngreso.noCambiar)}. A S/ 30 vende 45: ${sol(E4.ingreso)}. Aquí conviene bajar.`,
+         b:`Igualar precio y cantidad no sirve si su suma cambia. A S/ 36 vende 36: ${sol(E4.erroresIngreso.igualarFactores)}, menos que ${sol(E4.ingreso)}.`,
+         d:`A S/ 20 vende 60 chompas, el doble, pero gana 20 × 60 = ${sol(E4.erroresIngreso.hastaLaMitad)}, lo mismo que hoy. El máximo está entre S/ 40 y S/ 20.` },
+    antes:ya => E.config({ modo:'precio', pre:Object.assign({ u: ya ? E4.u : 0, umin:-15, umax:3, pmax:50, qmax:80, unidad:'chompas', verI:true, curva:{ ver:ya, max:ya } }, CH),
+      lect:[E0 => ['p', 'Precio p', sol(MM.ingreso(E0.pre).precio)], E0 => ['q', 'Chompas q', fmt(MM.ingreso(E0.pre).cantidad)], ya ? (E0 => ['I', 'Ingreso I', sol(MM.ingreso(E0.pre).ingreso)]) : L('I', 'Ingreso hoy', sol(E4.erroresIngreso.noCambiar))],
+      desc:'Las chompas: un rectángulo de precio por chompas vendidas.' }),
+    despues:() => { const x = EXPS[3]; x.antes(true); const Pr = E.pre; Pr.u = -15; Pr.curva.max = false; Pr.curva.hasta = CH.p0 - 15*CH.dp;
+      E.animar(-15, 3, 2600, v => { Pr.u = Math.round(v*2)/2; Pr.curva.hasta = CH.p0 + CH.dp*v; }, () => E.animar(3, E4.u, 1100, v => { Pr.u = Math.round(v*2)/2; }, () => x.antes(true)), true); },
+    exp:() => `<div class="eqs"><div class="eq">${I_('I')} = (40 − 2r)(30 + 3r)<span class="note">r rebajas de S/ 2</span></div>
+      <div class="eq">ceros: r = 20 (gratis) y r = −10 → máximo en r = 5: ${p_(sol(E4.precio))} · ${q_(String(E4.cantidad))} = ${I_(sol(E4.ingreso))}</div></div>
+      <p>Esta vez conviene bajar el precio: el máximo de la parábola está del lado de la rebaja. Para saber hacia dónde ir, busca los dos ceros y quédate en medio.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'seis-jardines', corto:'La plaza de 6 jardines',
+    q:'Ahora en la plaza hay un jardín redondo al centro y 6 jardines alrededor. Las 7 zonas se siembran, cada una con flores de un solo color, y dos zonas que comparten un borde no pueden tener el mismo color (si solo se tocaran en un punto, no contarían como vecinas). ¿Cuál es el menor número de colores?',
+    opts:[['a', `${E5.errores.alternarDos} colores: se alternan alrededor del centro`, 'mapa-alternar-dos', 'hipotesis'],
+          ['b', `${E5.colores} colores: el centro de uno y los jardines de alrededor alternando otros dos`],
+          ['c', `${E5.errores.siempreCuatro} colores: con mapas siempre hacen falta 4`, 'mapa-siempre-cuatro', 'hipotesis'],
+          ['d', `${E5.errores.unoPorRegion} colores: uno por zona, porque todas se tocan`, 'mapa-uno-por-region', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Los jardines sí pueden alternar dos colores (son 6, un número par), pero el jardín del centro toca a todos y necesita un tercero.',
+         c:'Cuatro colores siempre alcanzan para un mapa plano (si los toques en un punto no cuentan), pero no siempre hacen falta. Aquí la ronda par se alterna con 2 y el centro lleva el tercero.',
+         d:'Los jardines que no son vecinos pueden repetir color. Bastan 3.' },
+    antes:ya => { E.config({ modo:'mapa', tocar:ya, mapa:{ n:6, colores: ya ? mapa6.colores : new Array(RU6.regiones).fill(null), conflictos: ya ? MM.revisarPintura({ regiones:RU6.regiones, vecinos:RU6.vecinos, colores:mapa6.colores }).conflictos : [], oculto:!ya },
+      lect: ya ? lecturasMapa(RU6.regiones, RU6.vecinos, mapa6) : [L('ink', 'Zonas', '7 (el centro y 6 jardines)')], ley: ya ? null : [], desc:'La plaza con un jardín redondo al centro y 6 jardines en ronda.' }); },
+    despues:() => { const x = EXPS[4]; mapa6.colores = new Array(RU6.regiones).fill(null); x.antes(true); E.tocar = false;
+      E.animar(0, RU6.regiones, 2000, v => { const n = Math.floor(v + 1e-9); mapa6.colores = E5.ejemplo.map((c0, k) => k < n ? c0 : null); E.mapa.colores = mapa6.colores; E.mapa.conflictos = []; }, () => { x.antes(true); montar6(); }, true); },
+    exp:() => `<div class="eqs"><div class="eq">con 2 colores: 2⁷ = ${E5.probadas} formas → todas con un choque</div>
+      <div class="eq">con 3 colores: ${E5.formas} formas sin choques</div></div>
+      <p>Pinta tú: elige una flor y toca una zona.</p><div id="pintor2" class="body"></div>
+      <p>Un jardín más cambió la respuesta: con un número par de jardines en ronda bastan 3 colores; con uno impar hacen falta 4.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+];
+function montar6(){
+  const cont = $('pintor2'); if (!cont || S.k !== 4) return;
+  E.tocar = true;
+  const rep = () => { E.mapa.colores = mapa6.colores; E.mapa.conflictos = MM.revisarPintura({ regiones:RU6.regiones, vecinos:RU6.vecinos, colores:mapa6.colores }).conflictos; E.dibujar(); E.avisar(); };
+  pintor(E, cont, RU6.regiones, RU6.vecinos, mapa6, rep); rep();
+}
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = false;
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => { x.despues(); E.avisar(); }, () => S.k === k); };
+    if (k === 4 && !E.anim) montar6();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

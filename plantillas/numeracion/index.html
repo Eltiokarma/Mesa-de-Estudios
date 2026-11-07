@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Las fichas que se agrupan: sistemas de numeración</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde del rectángulo de fichas.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), uno por papel en toda la escena:
+   el número en base 10, N (las fichas que se cuentan), azul #1f5fbf / #7cb0ff; la base b fucsia #a10fbf / #cf6bfa;
+   y un color por orden, el mismo en la cifra del numeral, en la pieza del dibujo y en el término a·bᵏ:
+   unidades (fichas sueltas, k = 0) turquesa #0f766e / #5ed9c8; grupos de b (paquetes, k = 1) naranja #a05200 / #f0a04a;
+   grupos de b² (cajas, k = 2) verde #466d14 / #a3d65e; grupos de b³ (cajones, k = 3) rojo #b02c41 / #f17384
+   (oscurecido como la Z de átomo y tabla para pasar AA en la opción ya marcada correcta).
+   Las cantidades que se cuentan (capicúas, cifras de un libro, páginas) y lo que no es variable van en tinta.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py): mínimo 23,6 en claro (unidades–cajas) y 25,3 en oscuro; N–b 27,1 y 29,3.
+   Contraste AA sobre el papel, la tarjeta, el chip (.v, fondo al 8 %) y las opciones ya marcadas (correcta y elegida):
+   mínimo 4,53 en claro (unidades en la opción correcta) y 4,63 en oscuro (b en la opción correcta). Pares cercanos con
+   los colores de estado, que siempre llevan texto: cajones–aviso (rojo, 7,6 en claro y 5,0 en oscuro) y unidades–correcto (11,1). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-n:#1f5fbf; --c-b:#a10fbf; --c-o0:#0f766e; --c-o1:#a05200; --c-o2:#466d14; --c-o3:#b02c41;
+  --relleno:.12;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-n:#7cb0ff; --c-b:#cf6bfa; --c-o0:#5ed9c8; --c-o1:#f0a04a; --c-o2:#a3d65e; --c-o3:#f17384;
+  --relleno:.16; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-n:#7cb0ff; --c-b:#cf6bfa; --c-o0:#5ed9c8; --c-o1:#f0a04a; --c-o2:#a3d65e; --c-o3:#f17384;
+  --relleno:.16; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo pegado arriba lo pone nucleo/celular.js; aquí solo se apretan las lecturas. */
+@media (max-width:899px){ .mode.pendiente .lecturas{gap:4px} .mode.pendiente .lectura{padding:2px 8px} }
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-o0{color:var(--c-o0); background:color-mix(in srgb, var(--c-o0) 8%, transparent)}
+.v-o1{color:var(--c-o1); background:color-mix(in srgb, var(--c-o1) 8%, transparent)}
+.v-o2{color:var(--c-o2); background:color-mix(in srgb, var(--c-o2) 8%, transparent)}
+.v-o3{color:var(--c-o3); background:color-mix(in srgb, var(--c-o3) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+/* Un numeral: cada cifra en el color de su orden y la base en subíndice, en el color de b. */
+.num{font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap; letter-spacing:.02em}
+.cf.k0{color:var(--c-o0)} .cf.k1{color:var(--c-o1)} .cf.k2{color:var(--c-o2)} .cf.k3{color:var(--c-o3)}
+.raya{text-decoration:overline 1.5px; text-decoration-color:var(--ink); padding-top:2px}
+.raya .v{text-decoration:none}
+.sb{color:var(--c-b); font-weight:800; font-size:.72em; vertical-align:-.28em; line-height:0; margin-left:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.75; font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.eq .num{font-family:var(--mono)}
+.eq .note{display:block; font-family:var(--font); font-size:.84rem; line-height:1.4; color:var(--muted); white-space:normal}
+.eq sup{font-size:.75em; vertical-align:.6em; line-height:0}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura > span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura b .num{font-family:var(--mono)}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+.stepper{display:flex; flex-wrap:wrap; gap:8px}
+.stepper > div{display:inline-flex; align-items:center; gap:6px; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 6px 4px 12px}
+.stepper button{font:800 .95rem var(--font); min-width:38px; height:38px; padding:0 6px; border-radius:999px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer}
+.stepper button:disabled{opacity:.4; cursor:not-allowed}
+.stepper .val{font:800 1rem var(--mono); min-width:2.4em; text-align:center}
+.stepper .que{font-size:.85rem; color:var(--muted); font-weight:700}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Aritmética · Sistemas de numeración · Problemas tipo admisión</p>
+      <h1>Las fichas que se agrupan</h1>
+      <p class="sub">Junta fichas en paquetes, cajas y cajones de la misma cantidad: lo que queda en cada lugar es una cifra. Cambia la base y mira cómo se reagrupan las mismas fichas. Antes de cada respuesta, predice; después, la escena te muestra por qué.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: fichas sueltas, paquetes, cajas y cajones, y numerales">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con numerales en distintas bases">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/numeracion">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'numeracion', unidad: 'aritmetica.numeracion', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (divisiones sucesivas, descomposición, etapas de agrupar y desarmar, cada cuadro de la animación,
+   validez, comparación, base desconocida, conteos) sale de MotorNumeracion (motor.js); aquí solo se pinta y se anima.
+   El celular (dibujo fijo arriba con una predicción pendiente, subir el lienzo al responder) va con nucleo/celular.js. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const M = MotorNumeracion;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Texto plano para el lector de pantalla: el subíndice se dice «en base 5» (si no, 43 con base 5 se leería «435»).
+const quitar = t => String(t).replace(/<sub[^>]*>\(?([^<)]*)\)?<\/sub>/g, ' en base $1').replace(/<[^>]+>/g, '');
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const n_ = t => V('n', t), b_ = t => V('b', t), o_ = (k, t) => V('o' + k, t);
+const SUPS = ['', '', '²', '³'];
+// Un numeral en HTML: cada cifra en el color de su orden (de las unidades hacia la izquierda) y la base en subíndice.
+function numH(t, b){
+  const cs = String(t).split(''), L = cs.length;
+  return `<span class="num">${cs.map((d, i) => { const k = L - 1 - i; return `<span class="cf${k <= 3 ? ' k' + k : ''}">${d}</span>`; }).join('')}${b === null || b === undefined ? '' : `<sub class="sb">(${b})</sub>`}</span>`;
+}
+// Nombre de las piezas de cada orden: sueltas, paquetes de b, cajas de b², cajones de b³.
+const NOMBRE = ['sueltas', 'paquetes', 'cajas', 'cajones'];
+const NOMBRE1 = ['suelta', 'paquete', 'caja', 'cajón'];
+// El nombre de n piezas de orden k, en singular o plural: «1 cajón», «18 paquetes», «75 fichas sueltas».
+const nombreN = (k, n) => (k === 0 ? (n === 1 ? 'ficha suelta' : 'fichas sueltas') : n === 1 ? NOMBRE1[k] : NOMBRE[k]);
+const pieza = (k, b, n) => (k === 0 ? (n === 1 ? 'ficha suelta' : 'fichas sueltas') : `${n === 1 ? NOMBRE1[k] : NOMBRE[k]} de ${Math.pow(b, k)}`);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const CLAVES = ['n', 'b', 'o0', 'o1', 'o2', 'o3'];
+function colores(){
+  const g = n => css(n);
+  const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    ok:g('--ok'), warn:g('--warn'), relleno:Number(g('--relleno')) || .12, mono:g('--mono'), font:g('--font') };
+  for (const k of CLAVES) c[k] = g('--c-' + k);
+  return c;
+}
+const col = (c, k) => (k === 'ink' ? c.ink : k === 'muted' ? c.muted : c[k] || c.ink);
+const ko = k => (k <= 3 ? 'o' + k : 'ink');
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function redondeado(ctx, x, y, w, h, r){ r = Math.max(0, Math.min(r, w/2, h/2)); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Lo más que crece cada cuenta a lo largo de un plan del motor (para que el dibujo no salte durante la animación).
+function maximos(planes){
+  const m = [];
+  planes.forEach(p => [p.inicio].concat(p.etapas.map(e => e.despues), p.etapas.map(e => e.antes)).forEach(cu => cu.forEach((x, k) => { m[k] = Math.max(m[k] || 0, x); })));
+  return m;
+}
+
+/* ================= La escena =================
+   Modos: 'fichas' (columnas por orden, de las unidades a la derecha hacia los cajones a la izquierda; cada pieza en el
+   color de su orden; la cuenta de cada columna abajo), 'dos' (dos tableros de fichas, para comparar), 'tarjetas'
+   (numerales escritos, con marcas de existe o no existe), 'capicuas' (la tabla de primera cifra por cifra del medio),
+   'cuadrado' (121 en base b armado como un cuadrado de lado b + 1), 'paginas' (los tramos de páginas de un libro) y
+   'binario' (las cifras de base 2 juntadas de a tres desde la derecha). */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'fichas', st:{}, lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0;
+  const ALTO = {
+    fichas: w => (w >= 560 ? 340 : 310), dos: w => (w >= 560 ? 330 : 470), tarjetas: w => (w >= 560 ? 230 : 250),
+    capicuas: w => (E.st.tabla ? 70 + (E.st.b - 1)*Math.min(34, w >= 560 ? 34 : 30) + 34 : 210),
+    cuadrado: w => (w >= 560 ? 330 : 300), paginas: () => 250, binario: () => 210 };
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(ALTO[E.modo](w), E.compacto)), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const grosor = (k, base) => (E.hl === k ? base + 2 : base);
+
+  E.config = o => {
+    E.tok++; E.anim = false;   // una animación vieja no sigue moviendo el dibujo nuevo
+    Object.assign(E, { modo:'fichas', st:{}, lect:[], ley:null, alCambiar:null, desc:null }, o);
+    E.listo = true; cv.tabIndex = -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.redimensionar = () => { W = 0; resize(); };
+  // Con una predicción pendiente en el celular, el dibujo se achica y queda pegado arriba (nucleo/celular.js).
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+
+  function rotulo(c, x, y, t, color, align, peso, tam){
+    ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+    ctx.fillStyle = color; ctx.fillText(t, x, y);
+    return w;
+  }
+  // Un rótulo hecho de pedazos: [['23', 'n'], [' = ', 'ink'], ['4', 'o1'], …]; un pedazo ['(5)', 'b', 'sub'] va en subíndice.
+  function partes(c, x, y, ps, align, tam, peso){
+    tam = tam || 14; const fn = s => `${peso || 800} ${s ? Math.round(tam*.68) : tam}px ${c.font}`;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const ws = ps.map(([t, , s]) => { ctx.font = fn(s); return ctx.measureText(String(t)).width + (s ? 1 : 0); }), tot = ws.reduce((s, w) => s + w, 0);
+    let x0 = align === 'left' ? x : align === 'right' ? x - tot : x - tot/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - tam*.75, tot + 6, tam*1.55); ctx.restore();
+    ps.forEach(([t, k, s], j) => { ctx.font = fn(s); ctx.fillStyle = col(c, k || 'ink'); ctx.fillText(String(t), x0 + (s ? 1 : 0), y + (s ? tam*.32 : 0)); x0 += ws[j]; });
+    return tot;
+  }
+  // Los pedazos de un numeral: cada cifra en el color de su orden y la base en subíndice.
+  const pedazosNum = (t, b) => { const cs = String(t).split(''), L = cs.length, ps = cs.map((d, i) => [d, ko(L - 1 - i)]); if (b !== null && b !== undefined) ps.push([`(${b})`, 'b', 'sub']); return ps; };
+  function linea(x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+  function punto(x, y, r, color){ ctx.fillStyle = color; if (r < 1.6) ctx.fillRect(x - r, y - r, 2*r, 2*r); else { ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); } }
+
+  // ----- fichas agrupadas -----
+  // Medidas de una pieza de orden k en unidades de p (el paso de una ficha): ancho, alto y separación.
+  const medidas = (k, b) => (k === 0 ? [1, 1, .22] : k === 1 ? [1, b, .45] : k === 2 ? [b, b, .6] : [b + (b - 1)*.35, b + (b - 1)*.35, .7]);
+  function geoFichas(R, b, max, ncols, extraAbajo){
+    const top = 40, bot = 40 + (extraAbajo || 0), Hc = R.h - top - bot, gapCol = 8, minW = R.w >= 520 ? 76 : 62;
+    for (let p = 30; p >= 1.4; p -= .2){
+      const cols = []; let tot = 0, cabe = true;
+      for (let k = 0; k < ncols; k++){
+        const [mw, mh, mg] = medidas(k, b), w = mw*p, h = mh*p, g = mg*p, c = max[k] || 0;
+        if (c && h > Hc){ cabe = false; break; }
+        const filas = Math.max(1, Math.floor((Hc + g)/(h + g))), n = c ? Math.ceil(c/filas) : 0;
+        const ancho = Math.max(minW, n*(w + g) - (n ? g : 0));
+        cols.push({ k, w, h, g, ancho }); tot += ancho;
+      }
+      tot += gapCol*(ncols - 1);
+      if (!cabe || tot > R.w - 8) continue;
+      const extra = (R.w - 8 - tot)/ncols;
+      let x = R.x + R.w - 4;
+      cols.forEach(q => { q.ancho += extra; x -= q.ancho; q.x = x; x -= gapCol; });
+      return { p, cols, top: R.y + top, Hc, bot: R.y + R.h - bot };
+    }
+    return null;
+  }
+  function dibPieza(c, k, b, x, y, p){
+    const color = c[ko(k)], r = Math.max(.9, p*.33);
+    if (k === 0){ punto(x + p/2, y + p/2, Math.max(1, p*.38), color); return; }
+    if (k === 3){
+      const d = .35*p;
+      for (let j = b - 1; j >= 1; j--){ ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha = .55; ctx.lineWidth = 1; ctx.fillStyle = c.paper;
+        ctx.beginPath(); ctx.rect(x + j*d, y + (b - 1 - j)*d, b*p, b*p); ctx.fill(); ctx.stroke(); ctx.restore(); }
+      y += (b - 1)*d;
+    }
+    const w = k === 1 ? p : b*p, h = b*p;
+    ctx.save(); ctx.fillStyle = color; ctx.globalAlpha = c.relleno; redondeado(ctx, x, y, w, h, Math.min(5, p*.4)); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = grosor(ko(k), 1.4); redondeado(ctx, x, y, w, h, Math.min(5, p*.4)); ctx.stroke(); ctx.restore();
+    if (k >= 2 && p >= 3){ ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha = .3; ctx.lineWidth = 1; for (let j = 1; j < b; j++) linea(x + j*p, y + 2, x + j*p, y + h - 2); ctx.restore(); }
+    if (p >= 2.6){ const cols = k === 1 ? 1 : b; for (let i = 0; i < b; i++) for (let j = 0; j < cols; j++) punto(x + (j + .5)*p, y + (i + .5)*p, r*.85, color); }
+  }
+  // Un tablero de fichas dentro del rectángulo R. s = { b, cuentas, max, ncols, cifras, totales, nuevo }.
+  function dibTablero(c, R, s){
+    const b = s.b, cu = s.cuentas, ncols = Math.max(s.ncols || 1, cu.length);
+    const max = (s.max || cu).slice(); cu.forEach((x, k) => { max[k] = Math.max(max[k] || 0, x); });
+    const g = geoFichas(R, b, max, ncols, s.totales ? 18 : 0);
+    if (!g) { rotulo(c, R.x + R.w/2, R.y + R.h/2, 'no cabe en el dibujo', c.muted); return; }
+    const valido = cu.every(x => x < b);
+    let alto = ncols - 1; while (alto > 0 && !cu[alto]) alto--;
+    g.cols.forEach(q => {
+      const k = q.k, n = cu[k] || 0, color = c[ko(k)], cx = q.x + q.ancho/2;
+      // cabecera: nombre de la pieza
+      ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.setLineDash([3, 3]); redondeado(ctx, q.x, g.top - 4, q.ancho, g.Hc + 8, 10); ctx.stroke(); ctx.restore();
+      rotulo(c, cx, R.y + 11, NOMBRE[k], color, 'center', 800, 12);
+      rotulo(c, cx, R.y + 27, k === 0 ? 'de 1' : `de ${Math.pow(b, k)}`, color, 'center', 700, 11);
+      const porFila = Math.max(1, Math.floor((q.ancho + q.g)/(q.w + q.g))), usados = Math.min(porFila, Math.max(1, max[k] || 1));
+      const x0 = q.x + (q.ancho - (usados*(q.w + q.g) - q.g))/2;
+      for (let i = 0; i < n; i++){
+        const fila = Math.floor(i/porFila), j = i % porFila;
+        dibPieza(c, k, b, x0 + j*(q.w + q.g), g.top + fila*(q.h + q.g), g.p);
+      }
+      // la cuenta de la columna, abajo: es la cifra cuando ya no se puede agrupar más
+      if (s.cifras !== false){
+        const cero = k > alto && k > 0;
+        ctx.save(); if (cero) ctx.globalAlpha = .45;
+        rotulo(c, cx, g.bot + 16, String(n), cero ? c.muted : color, 'center', 800, n >= b ? 17 : 22);
+        ctx.restore();
+        if (n >= b && s.avisoLleno) rotulo(c, cx, g.bot + 32, `${n} ≥ ${b}: se pueden juntar`, c.ink, 'center', 700, 10);
+      }
+      if (s.totales && n) rotulo(c, cx, g.bot + 34, k === 0 ? `${n}` : `${n}·${Math.pow(b, k)} = ${n*Math.pow(b, k)}`, color, 'center', 800, 11);
+    });
+    if (s.cifras !== false && valido){
+      const q = g.cols[0];
+      rotulo(c, q.x + q.ancho - 14, g.bot + 22, `(${b})`, c.b, 'left', 800, 13);
+    }
+    if (s.titulo) partes(c, R.x + R.w/2, R.y + R.h - 6, s.titulo, 'center', 12, 800);
+  }
+  function dibFichas(c){ dibTablero(c, { x:4, y:4, w:W - 8, h:H - 8 - (E.st.titulo ? 14 : 0) }, E.st); }
+  function dibDos(c){
+    const s = E.st, lado = W >= 560;
+    s.paneles.forEach((P, i) => {
+      const R = lado ? { x:4 + i*(W/2), y:26, w:W/2 - 8, h:H - 30 } : { x:4, y:26 + i*(H/2), w:W - 8, h:H/2 - 30 };
+      partes(c, R.x + R.w/2, R.y - 13, P.encabezado, 'center', 14, 800);
+      dibTablero(c, R, P);
+    });
+    if (!lado){ ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; linea(10, H/2 + 2, W - 10, H/2 + 2); ctx.restore(); }
+  }
+
+  // ----- numerales escritos -----
+  function dibTarjetas(c){
+    const s = E.st, its = s.items, n = its.length, tam = n > 3 ? 22 : 28;
+    ctx.font = `800 ${tam}px ${c.font}`;
+    const anchos = its.map(t => ctx.measureText(t.numeral).width + tam*1.1 + 30 + (t.valor !== undefined ? ctx.measureText(' = ' + t.valor).width : 0));
+    // filas de tarjetas que caben
+    const filas = []; let fila = [], usado = 0;
+    its.forEach((t, i) => { const w = anchos[i] + 12; if (fila.length && usado + w > W - 16){ filas.push(fila); fila = []; usado = 0; } fila.push(i); usado += w; });
+    if (fila.length) filas.push(fila);
+    const hT = tam + 30, marca = its.some(t => t.marca), dy = hT + (marca ? 26 : 12);
+    const y0 = (s.titulo ? 30 : 10) + Math.max(0, (H - (s.titulo ? 30 : 10) - filas.length*dy)/2);
+    if (s.titulo) rotulo(c, W/2, 16, s.titulo, c.muted, 'center', 700, 12);
+    filas.forEach((f, r) => {
+      const tot = f.reduce((t, i) => t + anchos[i] + 12, -12); let x = (W - tot)/2;
+      f.forEach(i => {
+        const t = its[i], y = y0 + r*dy, w = anchos[i];
+        ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = t.marca === 'mal' ? c.ink : t.marca === 'ok' ? c.ok : c.line; ctx.lineWidth = t.marca ? 2 : 1.5;
+        redondeado(ctx, x, y, w, hT, 14); ctx.fill(); ctx.stroke(); ctx.restore();
+        const ps = pedazosNum(t.numeral, t.b);
+        if (t.valor !== undefined) ps.push([' = ', 'ink'], [String(t.valor), 'n']);
+        partes(c, x + w/2, y + hT/2, ps, 'center', tam, 800);
+        // la cifra que no existe en esa base, encerrada
+        if (t.malas && t.malas.length){
+          ctx.font = `800 ${tam}px ${c.font}`;
+          const totw = ps.reduce((a, [tx, , sb]) => { ctx.font = `800 ${sb ? Math.round(tam*.68) : tam}px ${c.font}`; return a + ctx.measureText(String(tx)).width + (sb ? 1 : 0); }, 0);
+          let xx = x + w/2 - totw/2; ctx.font = `800 ${tam}px ${c.font}`;
+          String(t.numeral).split('').forEach((d, j) => { const dw = ctx.measureText(d).width;
+            if (t.malas.includes(j)){ ctx.save(); ctx.strokeStyle = c.warn; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.ellipse(xx + dw/2, y + hT/2, dw/2 + 5, tam*.62, 0, 0, 7); ctx.stroke(); ctx.restore(); }
+            xx += dw; });
+        }
+        if (t.marca) rotulo(c, x + w/2, y + hT + 13, t.marca === 'ok' ? '✓ existe' : '✗ no existe', t.marca === 'ok' ? c.ok : c.warn, 'center', 800, 12);
+        x += w + 12;
+      });
+    });
+  }
+
+  // ----- capicúas de 3 cifras: primera cifra (= última) por cifra del medio -----
+  function dibCapicuas(c){
+    const s = E.st, b = s.b;
+    if (!s.tabla){
+      const sw = Math.min(70, (W - 60)/3), y = 70, x0 = W/2 - 1.5*sw - 8;
+      [2, 1, 0].forEach((k, j) => { const x = x0 + j*(sw + 8);
+        ctx.save(); ctx.strokeStyle = c[ko(k)]; ctx.lineWidth = grosor(ko(k), 2); ctx.setLineDash([6, 4]); redondeado(ctx, x, y, sw, sw, 12); ctx.stroke(); ctx.restore();
+        rotulo(c, x + sw/2, y + sw/2, '?', c[ko(k)], 'center', 800, 26);
+        rotulo(c, x + sw/2, y + sw + 16, k === 0 ? 'unidades' : `de ${b}${SUPS[k]}`, c[ko(k)], 'center', 700, 11); });
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.beginPath();
+      ctx.moveTo(x0 + sw/2, y - 6); ctx.quadraticCurveTo(W/2, y - 46, x0 + 2*(sw + 8) + sw/2, y - 6); ctx.stroke(); ctx.restore();
+      rotulo(c, W/2, y - 30, 'la primera y la última son iguales', c.muted, 'center', 700, 12);
+      partes(c, W/2, y + sw + 44, [['tres cifras en base ', 'muted'], [String(b), 'b']], 'center', 13, 700);
+      return;
+    }
+    const filas = b - 1, cols = b, izq = 44, top = 54;
+    const cw = Math.min(64, (W - izq - 10)/cols), ch = Math.min(34, W >= 560 ? 34 : 30), gx = izq + (W - izq - 10 - cols*cw)/2;
+    rotulo(c, gx + cols*cw/2, 14, 'cifra del medio', c.o1, 'center', 800, 12);
+    rotulo(c, 6, top - 22, 'primera', c.o2, 'left', 800, 11);
+    for (let j = 0; j < cols; j++) rotulo(c, gx + (j + .5)*cw, top - 16, String(j), c.o1, 'center', 800, 13);
+    const llenas = s.llenas === undefined ? filas*cols : s.llenas, tam = Math.round(clamp(cw/3.6, 10, 14));
+    for (let i = 0; i < filas; i++){
+      rotulo(c, izq - 12, top + (i + .5)*ch, String(i + 1), c.o2, 'right', 800, 13);
+      for (let j = 0; j < cols; j++){
+        const x = gx + j*cw, y = top + i*ch, idx = i*cols + j;
+        ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.line; ctx.lineWidth = 1; redondeado(ctx, x + 2, y + 2, cw - 4, ch - 4, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+        if (idx < llenas) partes(c, x + cw/2, y + ch/2 + 1, pedazosNum(`${i + 1}${j}${i + 1}`, null), 'center', tam, 800);
+      }
+    }
+    if (llenas >= filas*cols) partes(c, W/2, top + filas*ch + 18, [[String(filas), 'o2'], [' × ', 'ink'], [String(cols), 'o1'], [` = ${filas*cols} capicúas`, 'ink']], 'center', 14, 800);
+  }
+
+  // ----- 121 en base b: b² + 2b + 1 armado como un cuadrado de lado b + 1 -----
+  function dibCuadrado(c){
+    const s = E.st, b = s.b, L = b + 1, p = Math.min(24, (W - 40)/L, (H - 70)/L), x0 = (W - L*p)/2, y0 = 34;
+    partes(c, W/2, 14, pedazosNum('121', b).concat([[' = ', 'ink'], ['1', 'o2'], ['·', 'ink'], [String(b), 'b'], ['²', 'ink'], [' + ', 'ink'], ['2', 'o1'], ['·', 'ink'], [String(b), 'b'], [' + ', 'ink'], ['1', 'o0'], [` = ${M.valor('121', b)}`, 'n']]), 'center', 14, 800);
+    dibPieza(c, 2, b, x0, y0, p);
+    dibPieza(c, 1, b, x0 + b*p + p*.1, y0, p);
+    // el segundo paquete, acostado
+    ctx.save(); ctx.translate(x0, y0 + b*p + p*.1 + p); ctx.rotate(-Math.PI/2); dibPieza(c, 1, b, 0, 0, p); ctx.restore();
+    dibPieza(c, 0, b, x0 + b*p + p*.1, y0 + b*p + p*.1, p);
+    ctx.save(); ctx.strokeStyle = c.n; ctx.lineWidth = grosor('n', 1.6); ctx.setLineDash([5, 4]); ctx.strokeRect(x0 - 4, y0 - 4, L*p + p*.1 + 8, L*p + p*.1 + 8); ctx.restore();
+    rotulo(c, W/2, y0 + L*p + 22, `un cuadrado de ${L} × ${L}`, c.n, 'center', 800, 13);
+  }
+
+  // ----- las páginas de un libro, por tramos -----
+  function dibPaginas(c){
+    const s = E.st, P = M.cifrasPaginas(s.N);
+    if (!s.tramos){
+      const bw = Math.min(160, W*.4), bh = 130, x = W/2 - bw/2, y = 40;
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; redondeado(ctx, x, y, bw, bh, 10); ctx.fill(); ctx.stroke();
+      ctx.globalAlpha = .4; for (let j = 1; j < 6; j++) linea(x + bw/2, y + 6, x + bw/2, y + bh - 6); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; for (let j = 0; j < 5; j++){ linea(x + 12, y + 26 + j*16, x + bw/2 - 10, y + 26 + j*16); linea(x + bw/2 + 10, y + 26 + j*16, x + bw - 12, y + 26 + j*16); } ctx.restore();
+      rotulo(c, x + 16, y + bh - 12, '1', c.ink, 'left', 800, 12); rotulo(c, x + bw - 16, y + bh - 12, String(s.N), c.n, 'right', 800, 12);
+      rotulo(c, W/2, y + bh + 26, `un libro de ${s.N} páginas`, c.n, 'center', 800, 13);
+      return;
+    }
+    const n = s.tramos === true ? P.tramos.length : s.tramos, maxP = Math.max(...P.tramos.map(t => t.paginas));
+    const izq = W >= 560 ? 150 : 104, der = W >= 560 ? 150 : 92, bw = W - izq - der, dy = Math.min(56, (H - 60)/P.tramos.length);
+    P.tramos.forEach((t, i) => {
+      const y = 22 + i*dy;
+      rotulo(c, izq - 8, y + 10, `${t.desde} a ${t.hasta}`, c.ink, 'right', 800, 12);
+      rotulo(c, izq - 8, y + 26, `${t.paginas} pág.`, c.muted, 'right', 700, 11);
+      ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.strokeRect(izq, y + 4, bw, 26); ctx.restore();
+      if (i < n){
+        const w = Math.max(4, bw*t.paginas/maxP);
+        ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .18; ctx.fillRect(izq, y + 4, w, 26); ctx.restore();
+        rotulo(c, izq + 6, y + 17, `${t.cifras} cifra${t.cifras > 1 ? 's' : ''} c/u`, c.ink, 'left', 700, 11);
+        rotulo(c, W - 8, y + 17, `${t.paginas} × ${t.cifras} = ${t.subtotal}`, c.ink, 'right', 800, 12);
+      }
+    });
+    if (n >= P.tramos.length) rotulo(c, W/2, 22 + P.tramos.length*dy + 12, `en total: ${P.tramos.map(t => t.subtotal).join(' + ')} = ${P.total} cifras`, c.ink, 'center', 800, 13);
+  }
+
+  // ----- de base 2 a base 8: de a tres cifras desde la derecha -----
+  function dibBinario(c){
+    const s = E.st, t = s.numeral, G = M.agruparCifras(t, 2, s.k), cs = t.split(''), L = cs.length;
+    const tam = Math.min(30, (W - 60)/(L + 2)), cw = tam*.95, gapG = s.fase >= 1 ? tam*.6 : 0, ng = G.grupos.length;
+    const tot = L*cw + (ng - 1)*gapG, x0 = (W - tot)/2, y = 70;
+    rotulo(c, W/2, 18, s.fase >= 1 ? `de a ${s.k} cifras desde la derecha (${2}${SUPS[s.k]} = ${G.base})` : 'un numeral en base 2', c.muted, 'center', 700, 12);
+    let x = x0, idx = 0;
+    G.grupos.forEach((g, gi) => {
+      const k = ng - 1 - gi, gw = g.length*cw, visible = s.fase >= 1 && (s.vistos === undefined || ng - gi <= s.vistos);
+      if (visible){
+        ctx.save(); ctx.strokeStyle = c[ko(k)]; ctx.lineWidth = grosor(ko(k), 2); redondeado(ctx, x - 3, y - tam*.75, gw + 6, tam*1.5, 10); ctx.stroke(); ctx.restore();
+        if (s.fase >= 2){ ctx.save(); ctx.strokeStyle = c[ko(k)]; ctx.lineWidth = 1.5; linea(x + gw/2, y + tam*.78, x + gw/2, y + tam*.78 + 24); ctx.restore();
+          rotulo(c, x + gw/2, y + tam*.78 + 40, String(G.cifras[gi]), c[ko(k)], 'center', 800, Math.round(tam*.95)); }
+      }
+      g.split('').forEach(d => { rotulo(c, x + cw/2, y, d, c.ink, 'center', 800, Math.round(tam)); x += cw; idx++; });
+      x += gapG;
+    });
+    rotulo(c, x - gapG + 8, y + tam*.3, '(2)', c.b, 'left', 800, Math.round(tam*.6));
+    if (s.fase >= 2) partes(c, W/2, H - 22, pedazosNum(G.texto, G.base).concat([[' = ', 'ink'], [String(G.valor), 'n']]), 'center', 16, 800);
+  }
+
+  const DIB = { fichas:dibFichas, dos:dibDos, tarjetas:dibTarjetas, capicuas:dibCapicuas, cuadrado:dibCuadrado, paginas:dibPaginas, binario:dibBinario };
+  E.dibujar = () => { if (!W || !E.listo) return; const c = colores(); ctx.clearRect(0, 0, W, H); DIB[E.modo](c); };
+
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t) => `<span><i style="background:var(${k === 'ink' ? '--ink' : '--c-' + k})"></i>${t}</span>`;
+    document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t]) => it(k, t)).join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = E.desc || 'Fichas agrupadas.';
+      document.getElementById(idDesc).textContent = [base, ...filas.map(([, t, v]) => `${t}: ${quitar(v)}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  // Recorre un plan del motor (agrupar, desagrupar o normalizar) con los cuadros que calcula M.cuadro.
+  // tablero(s) devuelve el objeto del dibujo donde van las cuentas (E.st o un panel).
+  E.plan = (plan, fin, tablero) => {
+    const T = plan.etapas.length, dest = tablero || (() => E.st);
+    if (!T){ dest().cuentas = plan.inicio.slice(); E.dibujar(); if (fin) setTimeout(fin, 0); return; }
+    const dur = plan.etapas.reduce((s, e) => s + clamp(e.grupos*110, 650, 1700), 0);
+    E.animar(0, T, dur, t => { dest().cuentas = M.cuadro(plan, t).cuentas; }, fin, true);
+  };
+  // Una lista de estados, uno tras otro (cada uno se queda ms[j] milisegundos).
+  E.secuencia = (estados, ms, fin) => {
+    const tok = ++E.tok; E.anim = true; let j = 0;
+    const sig = () => { if (tok !== E.tok) return;
+      if (j >= estados.length){ E.anim = false; E.avisar(); if (fin) fin(); return; }
+      Object.assign(E.st, estados[j]); E.redimensionar(); E.avisar(); const espera = Array.isArray(ms) ? ms[j] : ms; j++; setTimeout(sig, RM ? 0 : espera); };
+    sig();
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+  return E;
+}
+
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
+
+// Lecturas comunes del tablero
+const lectN = n => ['n', 'fichas (base 10)', String(n)];
+const lectB = b => ['b', 'base', String(b)];
+const lectNum = (t, b) => ['ink', `numeral en base ${b}`, t === '—' ? '—' : numH(t, b)];
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, b1:5, agrupado1:false, n8:23, b8:5 };
+
+// Números de la escena: todos salen del motor
+const A75 = M.aBase(75, 4), G75 = M.agrupar(75, 4);
+const D213 = M.aDecimal('213', 5);
+const LISTA4 = ['507', '1000', '3416', '5405', '2110'], V4 = M.validos(LISTA4, 6);
+const C5 = M.comparar('44', 5, '30', 8);
+const B6 = M.baseDesconocida('23', 17);
+const K7 = M.capicuas(3, 6);
+const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores en sistemas de numeración; las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
+const LEY_ORD = b => [['o0', 'fichas sueltas'], ['o1', `paquetes de ${b}`], ['o2', `cajas de ${b*b}`], ['o3', `cajones de ${b*b*b}`], ['b', 'la base']];
+const leyHasta = (b, k) => LEY_ORD(b).filter(([q]) => q === 'b' || +q.slice(1) <= k);
+
+const P_75 = { id:'numeracion-paso2', ok:'b', opts:[
+  ['a', numH(A75.errores.restosAlReves, 4), 'restos-leidos-al-reves', 'hipotesis'],
+  ['b', numH(A75.texto, 4)],
+  ['c', numH(A75.errores.omiteCeros, 4), 'omite-el-cero', 'hipotesis'],
+  ['d', numH(A75.errores.olvidaUltimoCociente, 4), 'olvida-el-ultimo-cociente', 'hipotesis']],
+  fb:{ b:'¡Bien! 75 = 1 · 64 + 0 · 16 + 2 · 4 + 3: un cajón de 64, ninguna caja de 16, 2 paquetes de 4 y 3 sueltas.',
+    a:'3201₍₄₎ son los restos en el orden en que salen. Pero el primer resto, 3, son las fichas sueltas: va a la derecha, en las unidades. Las cifras se leen desde el último cociente hacia el primer resto.',
+    c:'123₍₄₎ se salta el 0. Pero ese 0 dice que no quedó ninguna caja de 16 suelta; sin él, el 1 pasa a contar cajas de 16 y el numeral vale 16 + 8 + 3 = 27, no 75.',
+    d:'23₍₄₎ se queda solo con los restos (3, 2 y 0) y olvida el último cociente, el 1: es el cajón de 64. Sin él, el numeral vale 2 · 4 + 3 = 11, no 75.' } };
+
+const P_213 = { id:'numeracion-paso3', ok:'c', opts:[
+  ['a', String(D213.errores.potenciasCorridas), 'potencias-corridas', 'hipotesis'],
+  ['b', String(D213.errores.sumaCifrasPorBase), 'suma-cifras-por-la-base', 'hipotesis'],
+  ['c', String(D213.valor)],
+  ['d', String(D213.errores.comoDecimal), 'lee-como-decimal', 'hipotesis']],
+  fb:{ c:'¡Bien! 2 · 25 + 1 · 5 + 3 = 50 + 5 + 3 = 58.',
+    a:'290 = 2 · 5³ + 1 · 5² + 3 · 5 empieza a contar las potencias en 1. Pero la cifra de la derecha son fichas sueltas: vale 3 · 1, porque 5⁰ = 1. Las unidades tienen orden 0.',
+    b:'30 = (2 + 1 + 3) · 5 trata todas las cifras igual. Pero cada lugar vale distinto: el 2 cuenta cajas de 25, el 1 un paquete de 5 y el 3 fichas sueltas.',
+    d:'213 lo lee como si fuera 213₍₁₀₎, en base 10, con centenas y decenas. En base 5, el 2 de la izquierda cuenta cajas de 5² = 25, no de 100.' } };
+
+const P_EXISTE = { id:'numeracion-paso4', ok:'b', opts:[
+  ['a', String(V4.errores.deUnoALaBase), 'cifras-de-1-a-b', 'hipotesis'],
+  ['b', String(V4.cantidad)],
+  ['c', String(V4.errores.cifraIgualALaBase), 'cifra-igual-a-la-base', 'hipotesis'],
+  ['d', String(V4.errores.cualquierCifra), 'cualquier-cifra-decimal-sirve', 'hipotesis']],
+  fb:{ b:'¡Bien! Existen 1000₍₆₎, 5405₍₆₎ y 2110₍₆₎. En 507₍₆₎ hay un 7 y en 3416₍₆₎ hay un 6, y en base 6 las cifras van del 0 al 5.',
+    a:'1 cuenta solo 3416₍₆₎, como si en base 6 se usaran las cifras del 1 al 6. Es al revés: van del 0 al 5. El 0 sí es una cifra (un lugar vacío) y el 6 no: 6 sueltas ya forman un paquete.',
+    c:'4 acepta 3416₍₆₎, que tiene un 6. En base 6 nunca quedan 6 sueltas, porque se juntan en un paquete: la cifra más grande es 5.',
+    d:'5 acepta todos. Pero 507₍₆₎ tiene un 7 y 3416₍₆₎ tiene un 6: en base 6 las cifras van del 0 al 5.' } };
+
+const P_CMP = { id:'numeracion-paso5', ok:'c', opts:[
+  ['a', `Ana (${numH('44', 5)})`, 'compara-cifras-sin-base', 'hipotesis'],
+  ['b', `Beto (${numH('30', 8)})`, 'base-mayor-da-mas', 'hipotesis'],
+  ['c', 'Tienen lo mismo'],
+  ['d', 'No se pueden comparar', 'no-se-comparan-bases-distintas', 'hipotesis']],
+  fb:{ c:`¡Bien! 4 · 5 + 4 = ${C5.valorA} y 3 · 8 + 0 = ${C5.valorB}: es la misma cantidad de fichas escrita en dos bases.`,
+    a:`44 parece mayor que 30 si se leen como números de base 10. Pero en 44₍₅₎ los paquetes son de 5 y en 30₍₈₎ son de 8: 4 · 5 + 4 = ${C5.valorA} y 3 · 8 = ${C5.valorB}.`,
+    b:`La base 8 hace paquetes más grandes, pero 30₍₈₎ tiene menos paquetes y ninguna suelta: 3 · 8 = ${C5.valorB}. Y 44₍₅₎ = 4 · 5 + 4 = ${C5.valorA} también.`,
+    d:`Sí se pueden comparar: se cuentan las fichas de cada uno. 44₍₅₎ son ${C5.valorA} fichas y 30₍₈₎ también.` } };
+// Que el motor y las opciones digan lo mismo (si cambian los números, la escena avisa en la consola).
+console.assert(C5.mayor === 'iguales' && C5.errores.comparaCifras === 'A' && C5.errores.baseMayor === 'B', 'paso 5: revisar las opciones');
+
+const P_BASE = { id:'numeracion-paso6', ok:'c', opts:[
+  ['a', String(B6.errores.baseMinima), 'base-minima-como-respuesta', 'hipotesis'],
+  ['b', String(B6.errores.restaNumerales), 'resta-los-numerales', 'hipotesis'],
+  ['c', String(B6.base)],
+  ['d', String(B6.errores.sinDividir), 'resta-las-unidades-y-no-divide', 'hipotesis']],
+  fb:{ c:'¡Bien! 2 · b + 3 = 17, así que 2 · b = 14 y b = 7. Control: 23₍₇₎ = 2 · 7 + 3 = 17.',
+    a:'4 es la base más chica en la que 23 existe, porque la cifra mayor es 3. Pero en base 4, 23 vale 2 · 4 + 3 = 11, no 17.',
+    b:'6 sale de restar 23 − 17 como si fueran números de base 10. En base 6, 23 vale 2 · 6 + 3 = 15, no 17.',
+    d:'14 = 17 − 3 son las fichas de los 2 paquetes juntos. Falta repartirlas entre los 2 paquetes: 14 ÷ 2 = 7 fichas por paquete.' } };
+
+const P_CAPI = { id:'numeracion-paso7', ok:'b', opts:[
+  ['a', String(K7.errores.sinCeroAdentro), 'olvida-el-cero-en-el-medio', 'hipotesis'],
+  ['b', String(K7.cantidad)],
+  ['c', String(K7.errores.conCero), 'cuenta-el-cero-al-inicio', 'hipotesis'],
+  ['d', String(K7.errores.todos), 'cuenta-todos-los-de-3-cifras', 'hipotesis']],
+  fb:{ b:'¡Bien! La primera cifra tiene 5 opciones (del 1 al 5), la del medio tiene 6 (del 0 al 5) y la última ya está decidida: 5 · 6 = 30.',
+    a:'25 = 5 · 5 no deja el 0 en el medio. Pero 101₍₆₎ y 505₍₆₎ son capicúas de 3 cifras: el 0 solo está prohibido adelante.',
+    c:'36 = 6 · 6 deja que la primera cifra sea 0. Pero 010₍₆₎ no tiene 3 cifras: es 10₍₆₎. La primera cifra va del 1 al 5.',
+    d:'180 = 5 · 6 · 6 cuenta todos los numerales de 3 cifras en base 6. En un capicúa la última cifra no se elige: tiene que ser igual a la primera.' } };
+
+// ----- paso 1: agrupar 23 fichas -----
+function prep1(){
+  const b = S.b1, A = M.agrupar(23, b);
+  E.config({ modo:'fichas', st:{ b, cuentas: S.agrupado1 ? A.cuentas.slice() : [23], max: maximos([A]), ncols: A.cuentas.length, cifras:true, avisoLleno:true },
+    ley: leyHasta(b, A.cuentas.length - 1),
+    desc: S.agrupado1 ? `23 fichas en base ${b}: ${A.cuentas.map((x, k) => `${x} ${pieza(k, b, x)}`).reverse().join(', ')}.` : '23 fichas sueltas.',
+    lect:[() => lectN(23), () => lectB(S.b1), () => lectNum(S.agrupado1 ? M.aBase(23, S.b1).texto : '—', S.b1)], alCambiar:vivo1 });
+}
+function vivo1(){
+  const d = $('vivo1'); if (!d) return;
+  const b = S.b1, A = M.aBase(23, b);
+  d.innerHTML = S.agrupado1 ? `<div class="eqs"><div class="eq">${n_('23')} = ${A.cifras.map((x, i) => { const k = A.cifras.length - 1 - i; return k === 0 ? o_(0, x) : `${o_(k, x)}·${b_(b)}${SUPS[k]}`; }).join(' + ')} = ${numH(A.texto, b)}</div></div>` :
+    `<p class="hint">Toca «Agrupar» para juntar las fichas de ${b} en ${b}.</p>`;
+  $('agr1').textContent = S.agrupado1 ? 'Desarmar' : `Agrupar de ${b} en ${b}`;
+}
+function agrupar1(){
+  if (S.ocupado || E.anim) return;
+  const b = S.b1;
+  if (S.agrupado1){ S.agrupado1 = false; const D = M.desagrupar(M.aBase(23, b).texto, b); E.plan(D, () => { prep1(); }); return; }
+  S.agrupado1 = true; const A = M.agrupar(23, b); E.st.cuentas = [23];
+  E.ley = leyHasta(b, A.cuentas.length - 1); E.leyenda();
+  E.plan(A, () => { prep1(); });
+  vivo1();
+}
+function base1(b){
+  if (S.ocupado || E.anim || b === S.b1) return;
+  const antes = S.b1, R = M.reagrupar(23, antes, b), estaba = S.agrupado1;
+  S.b1 = b; S.agrupado1 = true;
+  $('stepBody').querySelectorAll('[data-b1]').forEach(q => q.setAttribute('aria-pressed', String(+q.dataset.b1 === b)));
+  const mx = maximos([R.desarmar, R.armar]);
+  E.st = { b:antes, cuentas: estaba ? M.agrupar(23, antes).cuentas.slice() : [23], max: mx, ncols: mx.length, cifras:true, avisoLleno:true };
+  E.ley = leyHasta(b, R.armar.cuentas.length - 1); E.leyenda();
+  const armar = () => { E.st.b = b; E.st.cuentas = [23]; E.plan(R.armar, () => prep1()); };
+  if (estaba) E.plan(R.desarmar, () => esperar(250, armar)); else armar();
+  vivo1();
+}
+
+// ----- paso 8: el explorador -----
+const NMAX = b => Math.min(Math.pow(b, 4) - 1, 300);
+function prep8(){
+  const b = S.b8, n = S.n8, A = M.agrupar(n, b);
+  E.config({ modo:'fichas', st:{ b, cuentas:A.cuentas.slice(), max: A.cuentas.map(x => Math.max(x, b - 1)).concat([0, 0, 0, 0]).slice(0, Math.max(A.cuentas.length, 2)), ncols: Math.max(2, A.cuentas.length), cifras:true },
+    ley: leyHasta(b, Math.max(1, A.cuentas.length - 1)),
+    desc:`${n} fichas en base ${b}: ${A.cuentas.map((x, k) => `${x} ${pieza(k, b, x)}`).reverse().join(', ')}.`,
+    lect:[() => lectN(S.n8), () => lectB(S.b8), () => lectNum(M.aBase(S.n8, S.b8).texto, S.b8)], alCambiar:vivo8 });
+}
+function vivo8(){
+  const d = $('vivo8b'); if (!d) return;
+  const b = S.b8, n = S.n8, A = M.aBase(n, b), D = M.aDecimal(A.texto, b);
+  $('n8').textContent = n; $('b8').textContent = b;
+  $('stepBody').querySelectorAll('[data-dn]').forEach(q => { const dn = +q.dataset.dn; q.disabled = S.ocupado || n + dn < 0 || n + dn > NMAX(b); });
+  $('stepBody').querySelectorAll('[data-db]').forEach(q => { const db = +q.dataset.db; q.disabled = S.ocupado || b + db < 2 || b + db > 10; });
+  d.innerHTML = `<div class="eqs"><div class="eq">${n_(n)} = ${numH(A.texto, b)}</div>
+    <div class="eq">${numH(A.texto, b)} = ${D.terminos.map(t => t.orden === 0 ? o_(0, t.cifra) : `${o_(t.orden, t.cifra)}·${b_(b)}${t.orden <= 3 ? SUPS[t.orden] : '<sup>' + t.orden + '</sup>'}`).join(' + ')} = ${D.terminos.map(t => t.producto).join(' + ')} = ${n_(n)}<span class="note">descomposición polinómica: cada cifra por la base elevada a su orden</span></div>
+    <div class="eq">${A.divisiones.map((q, j) => `${q.dividendo} = ${q.cociente}·${b_(b)} + ${o_(Math.min(j, 3), q.resto)}`).join('<br>')}<span class="note">divisiones sucesivas: cada resto es una cifra, desde las unidades hacia arriba</span></div></div>
+    ${n === NMAX(b) && NMAX(b) < 300 ? `<p class="hint">En base ${b} el dibujo llega hasta ${NMAX(b)} fichas (cuatro lugares: ${numH(M.aBase(NMAX(b), b).texto, b)}).</p>` : ''}`;
+}
+function cambiarN8(dn){
+  if (S.ocupado || E.anim) return;
+  const b = S.b8, n = S.n8 + dn; if (n < 0 || n > NMAX(b)) return;
+  S.n8 = n;
+  if (dn > 0){
+    // las fichas nuevas entran sueltas y se llevan en cadena (lo calcula el motor)
+    const cu = E.st.cuentas.slice(); cu[0] += dn; const P = M.normalizar(cu, b);
+    E.st.max = maximos([P]).map((x, k) => Math.max(x, (E.st.max || [])[k] || 0)); E.st.ncols = Math.max(E.st.ncols, P.cuentas.length);
+    E.st.cuentas = cu; E.ley = leyHasta(b, Math.max(1, P.cuentas.length - 1)); E.leyenda(); E.redimensionar();
+    E.plan(P, () => prep8());
+  } else prep8();
+  vivo8();
+}
+function cambiarB8(db){
+  if (S.ocupado || E.anim) return;
+  const b1 = S.b8, b2 = b1 + db; if (b2 < 2 || b2 > 10) return;
+  if (S.n8 > NMAX(b2)) S.n8 = NMAX(b2);
+  const R = M.reagrupar(S.n8, b1, b2), mx = maximos([R.desarmar, R.armar]);
+  S.b8 = b2;
+  E.st = { b:b1, cuentas:M.agrupar(S.n8, b1).cuentas.slice(), max:mx, ncols:Math.max(2, mx.length), cifras:true };
+  E.ley = leyHasta(b2, Math.max(1, R.armar.cuentas.length - 1)); E.leyenda(); E.redimensionar();
+  E.plan(R.desarmar, () => esperar(250, () => { E.st.b = b2; E.st.cuentas = [S.n8]; E.plan(R.armar, () => prep8()); }));
+  vivo8();
+}
+
+const DESC2 = `75 fichas en base 4: 1 cajón de 64, ninguna caja de 16, 2 paquetes de 4 y 3 sueltas. 75 = ${A75.texto} en base 4.`;
+const LECT2 = [() => lectN(75), () => lectB(4), () => lectNum(A75.texto, 4)];
+const DESC3 = '213 en base 5: 2 cajas de 25, 1 paquete de 5 y 3 sueltas; 50 + 5 + 3 = 58 fichas.';
+const LECT3 = [() => lectNum('213', 5), () => lectN(D213.valor)];
+const DESC5 = `44 en base 5 y 30 en base 8, desarmados: los dos son ${C5.valorA} fichas sueltas.`;
+const LECT5 = [() => ['n', '44 en base 5', String(C5.valorA)], () => ['n', '30 en base 8', String(C5.valorB)]];
+const DESC6 = `23 en base b: 2 paquetes de b y 3 sueltas. Con b = 7 son 17 fichas.`;
+const LECT6 = [() => lectB(B6.base), () => lectN(17)];
+const DESC7 = 'La tabla de capicúas de 3 cifras en base 6: la primera cifra (igual a la última) de 1 a 5 por la cifra del medio de 0 a 5, 30 casillas.';
+const LECT7 = [() => ['ink', 'capicúas de 3 cifras', String(K7.cantidad)]];
+
+const steps = [
+ { k:'Paso 1', t:'Junta las fichas de 5 en 5', explora:true,
+   prep:() => prep1(),
+   body:() => `<p class="problem">Tienes ${n_('23 fichas')}. Junta ${b_('5')} fichas sueltas y forma un ${o_(1, 'paquete de 5')}. Junta 5 paquetes y forma una ${o_(2, 'caja de 25')}. Sigue hasta que ya no se pueda juntar nada.</p>
+   <p><button type="button" class="btn primary" id="agr1">Agrupar de 5 en 5</button></p>
+   <div id="vivo1"></div>
+   <p>Lo que queda en cada lugar es una <b>cifra</b>: con 23 fichas quedan ${o_(1, '4 paquetes')} y ${o_(0, '3 sueltas')}, y se escribe ${numH('43', 5)}. El subíndice ${b_('5')} es la <b>base</b>: de cuántas en cuántas se junta. Ninguna cifra llega a 5, porque 5 de cualquier cosa ya forman la pieza siguiente.</p>
+   <p>Prueba otra base con las mismas 23 fichas:</p>
+   <div class="seg" role="group" aria-label="Base">${[3, 4, 5, 6, 7, 10].map(b => `<button type="button" data-b1="${b}" aria-pressed="${S.b1 === b}">base ${b}</button>`).join('')}</div>
+   <p>En base 10 es lo de siempre: ${o_(1, 'decenas')} y ${o_(0, 'unidades')}. Las fichas son las mismas; lo que cambia es el tamaño de los grupos y, por eso, el numeral.</p>`,
+   luego:() => { $('agr1').onclick = agrupar1; $('stepBody').querySelectorAll('[data-b1]').forEach(q => q.onclick = () => base1(+q.dataset.b1)); vivo1(); } },
+ { k:'Paso 2', t:'Predice: 75 en base 4', gate:P_75,
+   prep:() => { const ya = !!S.pred[P_75.id];
+     E.config({ modo:'fichas', st: ya ? { b:4, cuentas:G75.cuentas.slice(), max:maximos([G75]), ncols:4, cifras:true } : { b:4, cuentas:[75], max:[75], ncols:1, cifras:true },
+       ley: ya ? leyHasta(4, 3) : [['o0', 'fichas sueltas']],
+       desc: ya ? DESC2 : '75 fichas sueltas.', lect: ya ? LECT2 : [() => lectN(75), () => lectB(4)] }); },
+   anima:fin => { const mx = maximos([G75]); Object.assign(E.st, { cuentas:[75], max:mx, ncols:4 }); E.ley = leyHasta(4, 3); E.leyenda(); E.redimensionar();
+     E.plan(G75, () => { E.lect = LECT2; E.desc = DESC2; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">¿Cómo se escribe ${n_('75')} en base ${b_('4')}?</p>${opcionesHTML(P_75.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     ${A75.divisiones.map((q, j) => `<div class="eq">${q.dividendo} = ${q.cociente}·${b_(4)} + ${o_(j, q.resto)}<span class="note">${q.dividendo} ${nombreN(j, q.dividendo)}: ${q.cociente ? `${q.cociente === 1 ? 'se forma' : 'se forman'} ${q.cociente} ${nombreN(j + 1, q.cociente)} y ${q.resto === 1 ? 'queda' : 'quedan'} ${o_(j, q.resto)}` : `no alcanza para otro grupo: ${q.resto === 1 ? 'queda' : 'quedan'} ${o_(j, q.resto)}`}</span></div>`).join('')}
+     <div class="eq">${n_('75')} = ${numH(A75.texto, 4)}<span class="note">se lee desde el último cociente hacia el primer resto</span></div></div>
+   <p>Cada división <b>es</b> una ronda de agrupar: el cociente dice cuántos grupos se formaron y el resto, cuántas piezas quedaron sin grupo. El primer resto son las ${o_(0, 'sueltas')} y va a la derecha; el último, los ${o_(3, 'cajones')}, y va a la izquierda. El 0 dice que no quedó ninguna ${o_(2, 'caja de 16')} suelta: no se puede omitir.</p>${FUENTE}</div>` },
+ { k:'Paso 3', t:'Predice: 213 en base 5, a base 10', gate:P_213,
+   prep:() => { const ya = !!S.pred[P_213.id];
+     E.config(ya ? { modo:'fichas', st:{ b:5, cuentas:[3, 1, 2], max:[3, 1, 2], ncols:3, cifras:true, totales:true }, ley: leyHasta(5, 2), desc:DESC3, lect:LECT3 }
+       : { modo:'tarjetas', st:{ items:[{ numeral:'213', b:5 }], titulo:'un numeral en base 5' }, ley:[['o2', 'cifra de las cajas de 25'], ['o1', 'cifra de los paquetes de 5'], ['o0', 'cifra de las sueltas'], ['b', 'la base']], desc:'El numeral 213 en base 5.', lect:[] }); },
+   anima:fin => { E.config({ modo:'fichas', st:{ b:5, cuentas:[3, 1, 2], max:[3, 1, 2], ncols:3, cifras:true }, ley: leyHasta(5, 2), desc:DESC3, lect:[() => lectNum('213', 5)] });
+     esperar(900, () => { E.st.totales = true; E.redimensionar(); E.lect = LECT3; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">El numeral ${numH('213', 5)} está en base ${b_('5')}: cada cifra cuenta piezas de un tamaño distinto.</p>
+   <p>¿Cuántas fichas son en total, en base 10?</p>${opcionesHTML(P_213.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${numH('213', 5)} = ${o_(2, '2')}·${b_(5)}² + ${o_(1, '1')}·${b_(5)} + ${o_(0, '3')}<span class="note">descomposición polinómica: cada cifra por la base elevada a su orden; las unidades tienen orden 0</span></div>
+     <div class="eq">= ${o_(2, '50')} + ${o_(1, '5')} + ${o_(0, '3')} = ${n_(D213.valor)}</div>
+     <div class="eq">((${o_(2, '2')}·${b_(5)} + ${o_(1, '1')})·${b_(5)} + ${o_(0, '3')}) = (11·${b_(5)} + 3) = ${n_(D213.valor)}<span class="note">otra forma (Horner): abrir las cajas en paquetes y los paquetes en sueltas</span></div></div>
+   <p>Una ${o_(2, 'caja')} tiene 5 paquetes de 5: 25 fichas. Las 2 cajas son 50, el ${o_(1, 'paquete')} son 5 y las ${o_(0, 'sueltas')}, 3. Abre las piezas para comprobarlo:</p>
+   <p><button type="button" class="btn" id="abrir3">Abrir las piezas</button></p>${FUENTE}</div>`,
+   luego:() => { const bt = $('abrir3'); if (bt) bt.onclick = () => { if (S.ocupado || E.anim) return; const D = M.desagrupar('213', 5);
+     Object.assign(E.st, { totales:false, max:maximos([D]), ncols:3 }); E.redimensionar(); E.plan(D, () => { E.desc = '213 en base 5, abierto: 58 fichas sueltas.'; E.avisar(); }); }; } },
+ { k:'Paso 4', t:'Predice: ¿cuáles existen en base 6?', gate:P_EXISTE,
+   prep:() => { const ya = !!S.pred[P_EXISTE.id];
+     E.config({ modo:'tarjetas', st:{ items: LISTA4.map(t => { const v = M.valido(t, 6); return ya ? { numeral:t, b:6, marca: v.valido ? 'ok' : 'mal', malas: v.malas.map(m => m.posicion) } : { numeral:t, b:6 }; }), titulo:'cinco numerales en base 6' },
+       ley:[['o3', 'cifra de los cajones de 216'], ['o2', 'cifra de las cajas de 36'], ['o1', 'cifra de los paquetes de 6'], ['o0', 'cifra de las sueltas'], ['b', 'la base']], desc: ya ? `Existen ${V4.validos.join(', ')} en base 6; no existen ${V4.invalidos.join(' ni ')}.` : 'Cinco numerales en base 6: 507, 1000, 3416, 5405 y 2110.',
+       lect: ya ? [() => ['ink', 'existen', String(V4.cantidad)]] : [] }); },
+   anima:fin => { const its = LISTA4.map(t => ({ numeral:t, b:6 }));
+     E.secuencia(LISTA4.map((t, i) => ({ items: its.map((x, j) => { if (j > i) return x; const v = M.valido(LISTA4[j], 6); return Object.assign({}, x, { marca: v.valido ? 'ok' : 'mal', malas: v.malas.map(m => m.posicion) }); }) })), 650,
+       () => { E.lect = [() => ['ink', 'existen', String(V4.cantidad)]]; E.desc = `Existen ${V4.validos.join(', ')} en base 6; no existen ${V4.invalidos.join(' ni ')}.`; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">En base ${b_('6')} se juntan las fichas de 6 en 6. Mira estos numerales: ${LISTA4.map(t => numH(t, 6)).join(', ')}.</p>
+   <p>¿Cuántos de ellos están bien escritos (existen) en base ${b_('6')}?</p>${opcionesHTML(P_EXISTE.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">cifras de base ${b_('6')}: 0, 1, 2, 3, 4, 5<span class="note">la cifra más grande es 6 − 1 = 5</span></div></div>
+   <p>Si quedaran 6 ${o_(0, 'sueltas')}, se juntarían en un ${o_(1, 'paquete')}; si quedaran 6 paquetes, en una ${o_(2, 'caja')}. Por eso, en base ${b_('b')} las cifras van del <b>0</b> al <b>b − 1</b>: la cifra b nunca aparece. El 0 sí: dice que en ese lugar no quedó nada, como en ${numH('1000', 6)} = 216.</p>${FUENTE}</div>` },
+ { k:'Paso 5', t:'Predice: ¿cuál es mayor?', gate:P_CMP,
+   prep:() => { const ya = !!S.pred[P_CMP.id];
+     E.config(ya ? { modo:'dos', st:{ paneles:[ { b:5, cuentas:[C5.valorA], ncols:2, max:[24, 4], encabezado:pedA() }, { b:8, cuentas:[C5.valorB], ncols:2, max:[24, 3], encabezado:pedB() } ] },
+         ley:[['o0', 'fichas sueltas'], ['o1', 'paquetes'], ['b', 'la base']], desc:DESC5, lect:LECT5 }
+       : { modo:'tarjetas', st:{ items:[{ numeral:'44', b:5 }, { numeral:'30', b:8 }], titulo:'dos numerales en bases distintas' }, ley:[['o1', 'cifra de los paquetes'], ['o0', 'cifra de las sueltas'], ['b', 'la base']], desc:'Los numerales 44 en base 5 y 30 en base 8.', lect:[] }); },
+   anima:fin => { const pA = M.desagrupar('44', 5), pB = M.desagrupar('30', 8);
+     E.config({ modo:'dos', st:{ paneles:[ { b:5, cuentas:pA.inicio.slice(), ncols:2, max:[24, 4], encabezado:pedA() }, { b:8, cuentas:pB.inicio.slice(), ncols:2, max:[24, 3], encabezado:pedB() } ] },
+       ley:[['o0', 'fichas sueltas'], ['o1', 'paquetes'], ['b', 'la base']], desc:'44 en base 5 y 30 en base 8, con sus paquetes.', lect:[] });
+     // las dos se abren a la vez, cada una con los cuadros que calcula el motor
+     esperar(1300, () => E.animar(0, 1, 1600, f => { E.st.paneles[0].cuentas = M.cuadro(pA, f*pA.etapas.length).cuentas; E.st.paneles[1].cuentas = M.cuadro(pB, f*pB.etapas.length).cuentas; },
+       () => { E.lect = LECT5; E.desc = DESC5; E.avisar(); fin(); }, true)); },
+   body:() => `<p class="problem">Dos amigos cuentan sus fichas en bases distintas. Ana tiene ${numH('44', 5)} y Beto tiene ${numH('30', 8)}.</p>
+   <p>¿Quién tiene más fichas?</p>${opcionesHTML(P_CMP.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${numH('44', 5)} = ${o_(1, '4')}·${b_(5)} + ${o_(0, '4')} = ${n_(C5.valorA)}</div>
+     <div class="eq">${numH('30', 8)} = ${o_(1, '3')}·${b_(8)} + ${o_(0, '0')} = ${n_(C5.valorB)}</div></div>
+   <p>Para comparar numerales en bases distintas, se pasan a la misma base (por ejemplo, a base 10) o se cuentan las fichas. Ni las cifras solas ni la base sola deciden: un ${o_(1, 'paquete')} de 8 vale más que uno de 5, pero Ana tiene más paquetes y además sueltas.</p>${FUENTE}</div>` },
+ { k:'Paso 6', t:'Predice: la base escondida', gate:P_BASE,
+   prep:() => { const ya = !!S.pred[P_BASE.id];
+     E.config(ya ? { modo:'fichas', st:{ b:B6.base, cuentas:[3, 2], max:[3, 2], ncols:2, cifras:true, totales:true, titulo:tit6(B6.base) }, ley:[['o0', 'fichas sueltas'], ['o1', 'paquetes de b'], ['b', 'la base b']], desc:DESC6, lect:LECT6 }
+       : { modo:'tarjetas', st:{ items:[{ numeral:'23', b:'b', valor:17 }], titulo:'¿de cuántas en cuántas se juntaron?' }, ley:[['o1', 'cifra de los paquetes'], ['o0', 'cifra de las sueltas'], ['b', 'la base b'], ['n', 'fichas en base 10']], desc:'23 en una base desconocida b vale 17.', lect:[] }); },
+   anima:fin => { E.config({ modo:'fichas', st:{ b:B6.pruebas[0].b, cuentas:[3, 2], max:[3, 2], ncols:2, cifras:true, totales:true, titulo:tit6(B6.pruebas[0].b) }, ley:[['o0', 'fichas sueltas'], ['o1', 'paquetes de b'], ['b', 'la base b']], desc:'23 en base b, probando bases.', lect:[] });
+     E.secuencia(B6.pruebas.map(q => ({ b:q.b, titulo:tit6(q.b) })), B6.pruebas.map((q, j) => (j === B6.pruebas.length - 1 ? 0 : 1100)), () => { E.lect = LECT6; E.desc = DESC6; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Alguien juntó fichas en paquetes, todos del mismo tamaño, y anotó ${numH('23', 'b')}: ${o_(1, '2 paquetes')} y ${o_(0, '3 sueltas')}. Si en total son ${n_('17 fichas')}, ¿de cuántas fichas es cada paquete?</p>
+   <p>¿Cuánto vale la base ${b_('b')}?</p>${opcionesHTML(P_BASE.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${o_(1, '2')}·${b_('b')} + ${o_(0, '3')} = ${n_('17')}</div>
+     <div class="eq">${o_(1, '2')}·${b_('b')} = 14 &nbsp;→&nbsp; ${b_('b')} = ${b_(B6.base)}<span class="note">y 7 es mayor que las cifras 2 y 3: el numeral existe en base 7</span></div></div>
+   <p>Se plantea la descomposición polinómica con la base como incógnita y se despeja. Con más cifras, como ${numH('121', 'b')} = 64, la ecuación tiene b²; ahí conviene probar bases desde la cifra mayor + 1, como hizo la escena: el valor crece con la base.</p>${FUENTE}</div>` },
+ { k:'Paso 7', t:'Predice: los capicúas', gate:P_CAPI,
+   prep:() => { const ya = !!S.pred[P_CAPI.id];
+     E.config({ modo:'capicuas', st: ya ? { b:6, tabla:true } : { b:6, tabla:false }, ley:[['o2', 'primera cifra'], ['o1', 'cifra del medio'], ['o0', 'última cifra (copia la primera)'], ['b', 'la base']],
+       desc: ya ? DESC7 : 'Tres casillas vacías para un numeral de 3 cifras en base 6; la primera y la última son iguales.', lect: ya ? LECT7 : [] }); },
+   anima:fin => { Object.assign(E.st, { tabla:true, llenas:0 }); E.redimensionar();
+     E.animar(0, K7.cantidad, 2600, x => { E.st.llenas = Math.floor(x + 1e-9); }, () => { E.lect = LECT7; E.desc = DESC7; E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">Un numeral <b>capicúa</b> se lee igual de izquierda a derecha que de derecha a izquierda, como ${numH('343', 6)} o ${numH('151', 6)}.</p>
+   <p>¿Cuántos numerales capicúas de 3 cifras hay en base ${b_('6')}?</p>${opcionesHTML(P_CAPI.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="raya">${o_(2, 'a')}${o_(1, 'm')}${o_(0, 'a')}</span><sub class="sb">(6)</sub><span class="note">la última cifra copia a la primera</span></div>
+     <div class="eq">${o_(2, '5')} · ${o_(1, '6')} = ${K7.cantidad}<span class="note">primera cifra: 1 a 5 (no puede ser 0); cifra del medio: 0 a 5</span></div></div>
+   <p>Para contar numerales se cuentan las <b>elecciones</b>: cada cifra libre multiplica. En un capicúa de 3 cifras solo hay dos cifras libres; la tercera ya está decidida. Con 4 cifras (<span class="raya">amma</span>) también son dos libres, y con 5 (<span class="raya">amnma</span>), tres: en base b son (b − 1)·b<sup>libres − 1</sup>.</p>${FUENTE}</div>` },
+ { k:'Paso 8', t:'Explora: cualquier cantidad, cualquier base', explora:true,
+   prep:() => prep8(),
+   body:() => `<p class="problem">Agrega o quita ${n_('fichas')} y cambia la ${b_('base')}: las mismas fichas se desarman y se vuelven a juntar.</p>
+   <div class="stepper">
+     <div><span class="que">fichas</span>${[-10, -1].map(d => `<button type="button" data-dn="${d}" aria-label="Quitar ${-d} ficha${d === -1 ? '' : 's'}">${d}</button>`).join('')}<span class="val" id="n8" aria-live="polite"></span>${[1, 10].map(d => `<button type="button" data-dn="${d}" aria-label="Agregar ${d} ficha${d === 1 ? '' : 's'}">+${d}</button>`).join('')}</div>
+     <div><span class="que">base</span><button type="button" data-db="-1" aria-label="Bajar la base">−</button><span class="val" id="b8" aria-live="polite"></span><button type="button" data-db="1" aria-label="Subir la base">+</button></div>
+   </div>
+   <div id="vivo8b"></div>
+   <p>Mira qué pasa al agregar una ficha cuando las sueltas están a punto de llegar a la base: se forma un paquete, y a veces una caja, en cadena. Y al subir la base, ¿el numeral se acorta o se alarga?</p>
+   <p><a class="btn primary" href="#que-pasa-si" style="display:inline-block; text-decoration:none">Seguir con ¿Qué pasa si…?</a></p>`,
+   luego:() => { $('stepBody').querySelectorAll('[data-dn]').forEach(q => q.onclick = () => cambiarN8(+q.dataset.dn));
+     $('stepBody').querySelectorAll('[data-db]').forEach(q => q.onclick = () => cambiarB8(+q.dataset.db)); vivo8(); } },
+];
+function pedA(){ return [['Ana: ', 'ink'], ['4', 'o1'], ['4', 'o0'], ['(5)', 'b', 'sub']]; }
+function pedB(){ return [['Beto: ', 'ink'], ['3', 'o1'], ['0', 'o0'], ['(8)', 'b', 'sub']]; }
+function tit6(b){ const v = 2*b + 3; return [['con ', 'ink'], ['b', 'b'], [' = ', 'ink'], [String(b), 'b'], [': ', 'ink'], ['2', 'o1'], ['·', 'ink'], [String(b), 'b'], [' + ', 'ink'], ['3', 'o0'], [' = ', 'ink'], [String(v), 'n'], [v === 17 ? '  ✓ son 17' : `  (no son 17)`, 'ink']]; }
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.luego) s.luego();
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+  pintarDots();
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max || (S.ocupado && k !== S.step);
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb'); f.textContent = fb(p, P.ok, P.fb[p]); f.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('fb').focus({ preventScroll:true });
+    const paso = S.step, listo = () => { S.ocupado = false; E.avisar(); nav(); };
+    Celular.alResponder($('cv'), () => s.anima(listo), () => S.step === paso, { siNo:listo });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Una ficha más a 44₍₅₎ (la llevada en cadena), 121 leído en bases cada vez mayores, las cifras de un libro, multiplicar
+   por la base y de base 2 a base 8 juntando cifras. La escena cambia recién después de responder. Un experimento se
+   abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const U44 = M.sumarUno('44', 5), U444 = M.sumarUno('444', 5), L121 = M.leerEnBases('121', [3, 4, 5, 6, 7]);
+const P120 = M.cifrasPaginas(120), X324 = M.porLaBase('324', 5),
+  // por la base: 5 copias de cada pieza (20 sueltas, 10 paquetes, 15 cajas) que el motor vuelve a juntar de 5 en 5
+  X5 = M.normalizar(M.porLaBase('324', 5).cuentasAntes.map(x => 5*x), 5), MX5 = maximos([X5]), G2 = M.agruparCifras('1011010', 2, 3), NM3 = M.numerales(3, 5);
+const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>';
+const S = { k:0, pred:{}, t0:Date.now(), b2:3 };
+const LEY = b => [['o0', 'fichas sueltas'], ['o1', `paquetes de ${b}`], ['o2', `cajas de ${b*b}`], ['o3', `cajones de ${b*b*b}`], ['b', 'la base']];
+console.assert(L121.cuadrados && L121.errores.siempreIgual && L121.errores.deUnoEnUno && L121.errores.seDuplica, '121: revisar las opciones');
+
+function verCuadrado(b){
+  S.b2 = b; E.parar(); E.st.b = b; E.redimensionar();
+  E.lect = [() => lectB(b), () => lectN(M.valor('121', b))];
+  E.desc = `121 en base ${b} vale ${M.valor('121', b)}: una caja de ${b} por ${b}, dos paquetes de ${b} y una suelta forman un cuadrado de ${b + 1} por ${b + 1}.`;
+  E.avisar();
+  document.querySelectorAll('#body2 [data-c]').forEach(q => q.setAttribute('aria-pressed', String(+q.dataset.c === b)));
+}
+
+const EXPS = [
+  { id:'una-mas', corto:'Una ficha más',
+    q:`Tienes ${numH('44', 5)} fichas: ${o_(1, '4 paquetes de 5')} y ${o_(0, '4 sueltas')}. Si agregas una ficha, ¿cómo se escribe en base ${b_('5')}?`,
+    opts:[['a', numH(U44.errores.sinLlevar, 5), 'cifra-igual-a-la-base', 'hipotesis'], ['b', numH(U44.errores.unaLlevada, 5), 'lleva-solo-una-vez', 'hipotesis'],
+          ['c', numH(U44.texto, 5)], ['d', numH(U44.errores.olvidaLlevar, 5), 'pone-cero-sin-llevar', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'45₍₅₎ tiene un 5, que en base 5 no existe: 5 sueltas forman un paquete nuevo.',
+      b:'50₍₅₎ lleva una sola vez: las 5 sueltas forman un paquete y quedan 5 paquetes. Pero 5 paquetes forman una caja de 25: hay que llevar otra vez.',
+      d:'40₍₅₎ pone el 0 en las unidades pero se olvida del paquete que se formó: serían 20 fichas, y son 25.' },
+    antes:ya => E.config({ modo:'fichas', st:{ b:5, cuentas: ya ? U44.cifras.slice().reverse() : [4, 4], max:maximos([U44.plan]).concat([0]), ncols:4, cifras:true },
+      ley:LEY(5), desc: ya ? '25 fichas en base 5: una caja de 25, ningún paquete, ninguna suelta: 100 en base 5.' : '44 en base 5: 4 paquetes de 5 y 4 sueltas.',
+      lect: ya ? [() => lectN(25), () => lectNum(U44.texto, 5)] : [() => lectNum('44', 5)] }),
+    despues:() => { E.st.cuentas = U44.plan.inicio.slice(); E.dibujar(); esperar(700, () => E.plan(U44.plan, () => { E.lect = [() => lectN(25), () => lectNum(U44.texto, 5)]; E.desc = 'Con una ficha más, 5 sueltas forman un paquete; 5 paquetes, una caja: 100 en base 5.'; E.avisar(); })); },
+    exp:() => `<div class="eqs"><div class="eq">${numH('44', 5)} + 1 = ${numH(U44.texto, 5)}<span class="note">${U44.llevadas} llevadas en cadena: 5 sueltas → 1 paquete; 5 paquetes → 1 caja</span></div>
+      <div class="eq">${numH('444', 5)} + 1 = ${numH(U444.texto, 5)} = 5³ = 125<span class="note">por eso ${numH('444', 5)} = 125 − 1 = ${NM3.mayor}</span></div></div>
+      <p>Es lo mismo que pasa en base 10 con 99 + 1 = 100 o 999 + 1 = 1000. El mayor numeral de 3 cifras en base ${b_('b')} tiene todas sus cifras iguales a b − 1, y vale <b>b³ − 1</b>: una ficha más y ya es 1000 en base b.</p>${FUENTE}` },
+
+  { id:'ciento-veintiuno', corto:'121 en otras bases',
+    q:`Lee el mismo numeral ${numH('121', null)} en base ${b_('3')}, en base ${b_('4')}, en base ${b_('5')}… ¿Qué pasa con su valor?`,
+    opts:[['a', 'Siempre vale 121', 'el-valor-no-depende-de-la-base', 'hipotesis'], ['b', 'Sube de 1 en 1, como la base', 'crece-igual-que-la-base', 'hipotesis'],
+          ['c', 'Siempre es un cuadrado perfecto'], ['d', 'Se duplica cada vez', 'se-duplica-con-la-base', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'121 solo vale ciento veintiuno en base 10. En base 3 vale 1 · 9 + 2 · 3 + 1 = 16.',
+      b:`De base 3 a base 4 el valor pasa de ${L121.valores[0]} a ${L121.valores[1]}: sube ${L121.diferencias[0]}, no 1. La primera cifra cuenta grupos de b², que crecen rápido.`,
+      d:`De ${L121.valores[0]} (base 3) a ${L121.valores[1]} (base 4) no se duplica. Los valores son ${L121.valores.join(', ')}…` },
+    antes:ya => E.config(ya ? { modo:'cuadrado', st:{ b:S.b2 }, ley:[['o2', 'caja de b²'], ['o1', 'paquetes de b'], ['o0', 'suelta'], ['b', 'la base'], ['n', 'el valor']],
+        desc:`121 en base ${S.b2} armado como un cuadrado.`, lect:[() => lectB(S.b2), () => lectN(M.valor('121', S.b2))] }
+      : { modo:'tarjetas', st:{ items:[3, 4, 5, 6].map(b => ({ numeral:'121', b })), titulo:'el mismo numeral en cuatro bases' }, ley:[['b', 'la base']], desc:'El numeral 121 en base 3, 4, 5 y 6.', lect:[] }),
+    despues:() => { E.config({ modo:'cuadrado', st:{ b:3 }, ley:[['o2', 'caja de b²'], ['o1', 'paquetes de b'], ['o0', 'suelta'], ['b', 'la base'], ['n', 'el valor']], desc:'121 en base 3.', lect:[] });
+      E.secuencia(L121.bases.map(b => ({ b })), L121.bases.map((b, j) => (j === L121.bases.length - 1 ? 0 : 1100)), () => verCuadrado(L121.bases[L121.bases.length - 1])); },
+    exp:() => `<div class="eqs"><div class="eq">${numH('121', 'b')} = ${o_(2, '1')}·${b_('b')}² + ${o_(1, '2')}·${b_('b')} + ${o_(0, '1')} = (${b_('b')} + 1)²</div>
+      <div class="eq">${L121.bases.map((b, i) => `${numH('121', b)} = ${n_(L121.valores[i])}`).join(', ')}<span class="note">cuadrados de ${L121.raices.join(', ')}</span></div></div>
+      <p>Una ${o_(2, 'caja')} de b × b, dos ${o_(1, 'paquetes')} de b y una ${o_(0, 'suelta')} siempre arman un cuadrado de (b + 1) × (b + 1). Es el producto notable (b + 1)² = b² + 2b + 1. Por eso 121 es el cuadrado de 11 en base 10.</p>
+      <div class="seg" role="group" aria-label="Base">${[3, 4, 5, 6, 7, 8, 9, 10].map(b => `<button type="button" data-c="${b}" aria-pressed="${b === S.b2}">base ${b}</button>`).join('')}</div>${FUENTE}`,
+    luego:() => document.querySelectorAll('#body2 [data-c]').forEach(q => q.onclick = () => verCuadrado(+q.dataset.c)) },
+
+  { id:'paginas', corto:'Las cifras de un libro',
+    q:`Se numeran las páginas de un libro de la 1 a la ${n_('120')}. ¿Cuántas cifras se escriben en total?`,
+    opts:[['a', String(P120.errores.cuentaPaginas), 'cuenta-paginas-no-cifras', 'hipotesis'], ['b', String(P120.errores.sinMasUno), 'olvida-el-mas-uno', 'hipotesis'],
+          ['c', String(P120.total)], ['d', String(P120.errores.mismasCifras), 'todas-con-tres-cifras', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'120 cuenta páginas, no cifras: la página 57 lleva dos cifras y la 104, tres.',
+      b:'249 cuenta de la 100 a la 120 como 120 − 100 = 20 páginas. Pero son 21: la 100 también cuenta (120 − 100 + 1).',
+      d:'360 = 120 · 3 escribe todas las páginas con 3 cifras. Las páginas 1 a 9 llevan una sola cifra y las de la 10 a la 99, dos.' },
+    antes:ya => E.config({ modo:'paginas', st:{ N:120, tramos: ya ? true : 0 }, ley:[['n', 'la última página']],
+      desc: ya ? `Las páginas 1 a 9 usan 9 cifras; de la 10 a la 99, 180; de la 100 a la 120, 63. Total ${P120.total}.` : 'Un libro de 120 páginas.',
+      lect: ya ? [() => ['ink', 'cifras', String(P120.total)]] : [] }),
+    despues:() => { E.st.tramos = 0; E.dibujar(); E.secuencia([{ tramos:1 }, { tramos:2 }, { tramos:true }], [900, 900, 0], () => { E.lect = [() => ['ink', 'cifras', String(P120.total)]];
+      E.desc = `Las páginas 1 a 9 usan 9 cifras; de la 10 a la 99, 180; de la 100 a la 120, 63. Total ${P120.total}.`; E.avisar(); }); },
+    exp:() => `<div class="eqs">${P120.tramos.map(t => `<div class="eq">de la ${t.desde} a la ${t.hasta}: ${t.hasta} − ${t.desde} + 1 = ${t.paginas} páginas × ${t.cifras} = ${t.subtotal}</div>`).join('')}
+      <div class="eq">total: ${P120.tramos.map(t => t.subtotal).join(' + ')} = ${P120.total}</div>
+      <div class="eq">atajo: (${n_('120')} + 1) · 3 − 111 = ${P120.formula}<span class="note">3 es la cantidad de cifras de 120 y 111 tiene tres unos</span></div></div>
+      <p>Se cuenta por tramos, según cuántas cifras tiene cada página. Hay 9 páginas de una cifra, 90 de dos, 900 de tres… Y para contar cuántos números hay del primero al último, se hace último − primero + 1: el primero también cuenta.</p>${FUENTE}` },
+
+  { id:'por-la-base', corto:'Multiplicar por la base',
+    q:`¿Cuánto es ${numH('324', 5)} por ${b_('5')}, escrito en base 5?`,
+    opts:[['a', numH(X324.errores.multiplicaComoDecimal, 5), 'multiplica-como-en-base-10', 'hipotesis'], ['b', numH(X324.errores.sumaLaBase, 5), 'suma-la-base', 'hipotesis'],
+          ['c', numH(X324.texto, 5)], ['d', numH(X324.errores.dosCeros, 5), 'agrega-dos-ceros', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'1620₍₅₎ sale de hacer 324 · 5 en base 10, y además tiene un 6, que en base 5 no existe.',
+      b:`334₍₅₎ = ${X324.antes} + 5 suma la base una vez. Multiplicar por 5 es tomar 5 veces cada pieza.`,
+      d:'32400₍₅₎ multiplica por 25 = 5²: cada pieza subiría dos lugares.' },
+    antes:ya => E.config({ modo:'fichas', st:{ b:5, cuentas: ya ? X324.cuentasDespues.slice() : X324.cuentasAntes.slice(), max:MX5, ncols:4, cifras:true },
+      ley:LEY(5), desc: ya ? '324 en base 5 por 5: 3 cajones, 2 cajas, 4 paquetes y ninguna suelta: 3240 en base 5.' : '324 en base 5: 3 cajas, 2 paquetes y 4 sueltas.',
+      lect: ya ? [() => lectNum(X324.texto, 5), () => lectN(X324.valor)] : [() => lectNum('324', 5), () => lectN(X324.antes)] }),
+    despues:() => { E.st.cuentas = X324.cuentasAntes.slice(); E.dibujar();
+      esperar(700, () => { E.st.cuentas = X5.inicio.slice(); E.desc = '5 copias de cada pieza: 20 sueltas, 10 paquetes y 15 cajas.'; E.avisar(); E.dibujar();
+        esperar(1100, () => E.plan(X5, () => { E.lect = [() => lectNum(X324.texto, 5), () => lectN(X324.valor)];
+          E.desc = 'Las 5 copias se juntan de 5 en 5: cada pieza forma la pieza del lugar siguiente y no queda ninguna suelta: 3240 en base 5.'; E.avisar(); })); }); },
+    exp:() => `<div class="eqs"><div class="eq">${numH('324', 5)} · ${b_(5)} = ${numH(X324.texto, 5)}</div>
+      <div class="eq">5 copias: ${o_(0, 20)} sueltas, ${o_(1, 10)} paquetes, ${o_(2, 15)} cajas<span class="note">se juntan de 5 en 5: 20 sueltas → 4 paquetes; 14 paquetes → 2 cajas y quedan 4; 17 cajas → 3 cajones y quedan 2</span></div>
+      <div class="eq">${X324.antes} · 5 = ${n_(X324.valor)}<span class="note">el mismo cálculo en base 10</span></div></div>
+      <p>Cinco ${o_(0, 'sueltas')} forman un ${o_(1, 'paquete')}, cinco paquetes una ${o_(2, 'caja')} y cinco cajas un ${o_(3, 'cajón')}. Al multiplicar por la base, cada pieza sube un lugar y las sueltas quedan en 0: las cifras se corren a la izquierda y entra un 0, como al multiplicar por 10 en base 10.</p>${FUENTE}` },
+
+  { id:'base-ocho', corto:'De base 2 a base 8',
+    q:`Como 8 = 2³, cada cifra de base 8 corresponde a 3 cifras de base 2. ¿Cómo se escribe ${numH('1011010', 2).replace(/class="cf k\d"/g, 'class="cf"')} en base 8?`,
+    opts:[['a', numH(G2.errores.sumaCifrasGrupo, 8), 'suma-las-cifras-del-grupo', 'hipotesis'], ['b', numH(G2.texto, 8)],
+          ['c', numH(G2.errores.desdeLaIzquierda, 8), 'agrupa-desde-la-izquierda', 'hipotesis'], ['d', numH(G2.errores.otroTamano, 8), 'agrupa-de-a-dos', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'121₍₈₎ suma las cifras de cada grupo (0 + 1 + 1 = 2). Pero 011 en base 2 no vale 2: vale 0 · 4 + 1 · 2 + 1 = 3.',
+      c:'550₍₈₎ junta de a tres desde la izquierda: 101 | 101 | 0. Pero los grupos se arman desde las unidades, como los paquetes: 1 | 011 | 010.',
+      d:'1122 junta de a dos: así se escribe en base 4 (1122₍₄₎ = 90), no en base 8.' },
+    antes:ya => E.config({ modo:'binario', st:{ numeral:'1011010', k:3, fase: ya ? 2 : 0 }, ley: ya ? [['o0', 'unidades de base 8'], ['o1', 'grupos de 8'], ['o2', 'grupos de 64'], ['b', 'la base'], ['n', 'el valor']] : [['b', 'la base']],
+      desc: ya ? `1011010 en base 2, en grupos de tres desde la derecha: 1, 011 y 010, que valen 1, 3 y 2: ${G2.texto} en base 8 = ${G2.valor}.` : 'El numeral 1011010 en base 2.',
+      lect: ya ? [() => lectNum(G2.texto, 8), () => lectN(G2.valor)] : [] }),
+    despues:() => { E.ley = [['o0', 'unidades de base 8'], ['o1', 'grupos de 8'], ['o2', 'grupos de 64'], ['b', 'la base'], ['n', 'el valor']]; E.leyenda();
+      E.secuencia([{ fase:1, vistos:1 }, { fase:1, vistos:2 }, { fase:1, vistos:3 }, { fase:2, vistos:3 }], [800, 800, 900, 0], () => { E.lect = [() => lectNum(G2.texto, 8), () => lectN(G2.valor)];
+        E.desc = `Tres grupos desde la derecha: 010 vale 2, 011 vale 3 y 1 vale 1: ${G2.texto} en base 8 = ${G2.valor}.`; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">1 | 011 | 010 → ${o_(2, '1')} | ${o_(1, '3')} | ${o_(0, '2')} = ${numH(G2.texto, 8)}</div>
+      <div class="eq">control: ${o_(2, '1')}·64 + ${o_(1, '3')}·8 + ${o_(0, '2')} = ${n_(G2.valor)} = 64 + 16 + 8 + 2</div></div>
+      <p>Ocho fichas sueltas son 2 · 2 · 2: un grupo de 8 en base 8 es lo mismo que un grupo de 2³ en base 2. Por eso cada 3 cifras de base 2, contadas <b>desde la derecha</b>, son una cifra de base 8; si al final sobran menos de 3, se completan con ceros a la izquierda (1 = 001). Para base 4 = 2² se junta de a dos, y para base 16 = 2⁴, de a cuatro.</p>${FUENTE}` },
+];
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb2');
+    f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    if (x.luego) x.luego();
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); x.antes(false); Celular.alResponder($('cv2'), () => { x.despues(); E.avisar(); }, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false); $('fb2').focus({ preventScroll:true });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

@@ -13,11 +13,11 @@
      libre par libre (sin compartir)                            ámbar      #8f5800 / #ffc04d
      dip   dipolo de enlace; su tamaño es ΔEN                   fucsia     #a10fbf / #cf6bfa
      mu    dipolo total, la suma de los dipolos de enlace       marrón rojizo / naranja  #6b260f / #ff6600
-     Na    ion Na⁺ en la red                                    frambuesa  paleta común (nucleo/elementos.js, --el-Na)
+     Na    ion Na⁺ en la red                                    gris      paleta común (nucleo/elementos.js, --el-Na)
      Cl    ion Cl⁻ en la red                                    verde      paleta común (nucleo/elementos.js, --el-Cl)
    Los átomos de las moléculas, la carga formal, los ángulos, la hibridación y los electrones sueltos del paso 1 van en
    tinta. Salen juntos enl, libre, dip y mu (moléculas) y Na y Cl (red): ΔE00 mínimo 20,7 en claro (libre–mu) y 26,4 en
-   oscuro (libre–mu); con la paleta común, Na⁺ y Cl⁻ quedan a 20 o más de todas las variables de la escena (Na–dip 20,4, Na–mu 21,9); Na⁺ queda a 16,2 del rojo de los avisos.
+   oscuro (libre–mu); con la paleta común, Na⁺ y Cl⁻ quedan a 20 o más de todas las variables de la escena (Na–dip 25,0, Na–mu 29,0).
    Contraste mínimo contra el papel, la tarjeta, el chip (8 %) y el fondo de una opción respondida (verde 10 % o rojo 9 %;
    dentro de .opt la ficha va sin fondo): 4,88 en claro (libre) y 4,63 en oscuro (dip; mu 4,64); todos pasan AA (4,5).
    Con el rojo de los avisos (--warn): mu a ΔE00 20,6 / 21,7; el aviso siempre va con texto. */
@@ -43,9 +43,9 @@
   --c-enl:#7cb0ff; --c-libre:#ffc04d; --c-dip:#cf6bfa; --c-mu:#ff6600; color-scheme:dark }
 /* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
    Elementos.css(['Na', 'Cl']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
-:root{ --el-Na:#8d3656; --el-Cl:#466d14 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-Na:#c2849e; --el-Cl:#a3d65e } }
-:root[data-theme="dark"]{ --el-Na:#c2849e; --el-Cl:#a3d65e }
+:root{ --el-Na:#3f4948; --el-Cl:#466d14 }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-Na:#8a9a90; --el-Cl:#a3d65e } }
+:root[data-theme="dark"]{ --el-Na:#8a9a90; --el-Cl:#a3d65e }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
