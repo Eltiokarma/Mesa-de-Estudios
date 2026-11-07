@@ -188,7 +188,7 @@ test('dibujo: cada ficha en su región, sin encimarse, lejos de los bordes de lo
   const geos = [];
   for (const W of [300, 336, 420, 700]) {
     geos.push(M.aros(2, W, 290, {}), M.aros(2, W, 312, { banca: 44 }), M.aros(2, W, 290, { relacion: 'dentro' }), M.aros(2, W, 290, { relacion: 'separados' }),
-      M.aros(3, W, 350, {}), M.aros(3, W, 380, { abajo: 30 }), M.carroll(2, W, 270, {}), M.carroll(3, W, 300, { abajo: 30 }));
+      M.aros(3, W, 350, {}), M.aros(3, W, 380, { abajo: 30 }), M.aros(3, W, 424, { banca: 44, abajo: 30 }), M.carroll(2, W, 270, {}), M.carroll(3, W, 300, { abajo: 30 }));
   }
   for (const g of geos) for (let t = 0; t < 12; t++) {
     const cuentas = {}; g.zonas.forEach(z => { cuentas[z] = ent(0, t < 6 ? 6 : 14); });
@@ -209,7 +209,9 @@ test('dibujo: cada ficha en su región, sin encimarse, lejos de los bordes de lo
       assert.ok(Math.hypot(todos[i].x - todos[j].x, todos[i].y - todos[j].y) >= 2 * L.radio - 1e-9, 'fichas encimadas');
   }
   // las cuentas de las predicciones caben a 336 px (el celular)
-  assert.ok(M.layout(M.aros(2, 336, 290, {}), { A: 18, AB: 7, B: 11 }, { rotulos: true }).ok);
+  assert.ok(M.layout(M.aros(2, 336, 320, { abajo: 30 }), { A: 19, AB: 7, B: 11 }, { rotulos: true }).ok);
+  assert.ok(M.layout(M.aros(3, 336, 424, { banca: 44, abajo: 30 }), { A: 15, B: 12, C: 9, AB: 7, AC: 5, BC: 3, ABC: 3, '': 6 }, { rotulos: true, radio: 8 }).ok);
+  assert.ok(M.layout(M.aros(3, 336, 394, { banca: 44 }), { A: 2, AB: 1, ABC: 1, B: 1, BC: 1, C: 2, AC: 1, '': 1 }, { rotulos: true }).ok);
   assert.ok(M.layout(M.aros(2, 336, 342, { banca: 44, abajo: 30 }), { '': 6, A: 18, AB: 10, B: 11 }, { rotulos: true }).ok);
   assert.ok(M.layout(M.aros(3, 336, 380, { abajo: 30 }), { A: 15, B: 12, C: 9, AB: 7, AC: 5, BC: 3, ABC: 3, '': 6 }, { rotulos: true, radio: 8 }).ok);
   assert.ok(M.layout(M.aros(2, 336, 320, { relacion: 'dentro', abajo: 30 }), { A: 12, AB: 8 }, { rotulos: true }).ok);

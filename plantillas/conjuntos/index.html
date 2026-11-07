@@ -9,15 +9,17 @@
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), uno por papel en toda la
    escena (los mismos hex que «Las fichas que se agrupan»): el conjunto A (su aro, su nombre, sus elementos y n(A)) azul
    #1f5fbf / #7cb0ff; el conjunto B naranja #a05200 / #f0a04a; el conjunto C verde #466d14 / #a3d65e; lo que está en
-   todos los aros a la vez (A ∩ B con dos aros, A ∩ B ∩ C con tres) fucsia #a10fbf / #cf6bfa; lo que queda fuera de
+   todos los aros a la vez (A ∩ B con dos aros, A ∩ B ∩ C con tres) fucsia #a10fbf / #e180ff; lo que queda fuera de
    todos los aros (los que no están en ninguno) turquesa #0f766e / #5ed9c8, y los subconjuntos y P(A) rojo
-   #b02c41 / #f17384. Las fichas, el universo U, las cuentas de las regiones de dos aros (con tres) y lo que no es
+   #b02c41 / #ff8091 (los dos oscuros, más claros que en numeración para pasar AA con margen). Las fichas, el universo U, las cuentas de las regiones de dos aros (con tres) y lo que no es
    variable van en tinta; el resultado de una operación, rayado en tinta.
-   Elegidos con CIEDE2000 (docs/metodo/paleta.py): mínimo 23,6 en claro (C–fuera) y 25,3 en oscuro (C–fuera); A–B 48,9;
-   A–∩ 27,1; B–subconjuntos 25,8; ∩–subconjuntos 28,6. Contraste AA sobre el papel, la tarjeta, el chip (.v, fondo al 8 %)
-   y las opciones ya marcadas, donde el color va sin chip (.t-*): mínimo 4,53 en claro (fuera, en la opción marcada) y
-   4,63 en oscuro (∩, en la opción correcta). El rojo de los subconjuntos queda cerca del rojo de los avisos y el
-   turquesa, del verde de «correcto»: los avisos y «correcto» siempre van con texto. */
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py): mínimo 23,6 en claro (C–fuera) y 25,1 en oscuro (∩–subconjuntos);
+   A–B 48,9; A–∩ 27,1; B–subconjuntos 25,8. Contraste AA sobre el papel, la tarjeta, el chip (.v, fondo al 8 %) y las
+   opciones ya marcadas, donde el color va sin chip (.t-*): mínimo 4,53 en claro (fuera, en la opción marcada) y 4,94 en
+   oscuro (∩ con chip sobre la opción correcta). El rojo de los subconjuntos queda cerca del rojo de los avisos (ΔE00 7,6
+   en claro y 4,5 en oscuro) y el turquesa, del verde de «correcto» (11): nunca van en las opciones, y los avisos y
+   «correcto» siempre llevan texto. Los glifos ∪ ∩ ∅ ∈ ⊂ Δ van con la letra de texto (.g): en monoespaciada se confunden
+   con «u», «n» y «ø». */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
@@ -32,13 +34,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-A:#7cb0ff; --c-B:#f0a04a; --c-C:#a3d65e; --c-I:#cf6bfa; --c-fu:#5ed9c8; --c-S:#f17384;
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-C:#a3d65e; --c-I:#e180ff; --c-fu:#5ed9c8; --c-S:#ff8091;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-A:#7cb0ff; --c-B:#f0a04a; --c-C:#a3d65e; --c-I:#cf6bfa; --c-fu:#5ed9c8; --c-S:#f17384;
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-C:#a3d65e; --c-I:#e180ff; --c-fu:#5ed9c8; --c-S:#ff8091;
   color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -93,6 +95,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .t-A{color:var(--c-A); font-weight:800} .t-B{color:var(--c-B); font-weight:800} .t-C{color:var(--c-C); font-weight:800}
 .t-I{color:var(--c-I); font-weight:800} .t-fu{color:var(--c-fu); font-weight:800} .t-S{color:var(--c-S); font-weight:800}
 .num{font-variant-numeric:tabular-nums; white-space:nowrap}
+.eq .g, .lectura .g, .opt .g{font-family:var(--font); font-size:1.15em; line-height:1; font-weight:inherit}
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
 .eqs:empty{display:none}
 .eq{font-family:var(--mono); font-size:1.02rem; line-height:1.75; font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
@@ -243,6 +246,8 @@ const quitar = t => String(t).replace(/<[^>]+>/g, '')
   .replace(/′/g, ' complemento').replace(/∉/g, ' no pertenece a ').replace(/∈/g, ' pertenece a ').replace(/⊂/g, ' está incluido en ')
   .replace(/≠/g, ' es distinto de ').replace(/∅/g, 'el vacío').replace(/ × /g, ' por ').replace(/ − /g, ' menos ')
   .replace(/…/g, '').replace(/\s+/g, ' ').trim();
+// Los glifos de conjuntos, con la letra de texto (en monoespaciada se confunden con «u», «n» y «ø»). Solo fuera de las etiquetas.
+const glifos = h => String(h).replace(/(<[^>]*>)|([∪∩∅∈∉⊂⊄Δ′])/g, (m, tag, g) => tag || `<span class="g">${g}</span>`);
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
 const T = (k, t) => `<span class="t-${k}">${t}</span>`;
 const nb = t => String(t).replace(/ /g, ' ');
@@ -282,6 +287,7 @@ const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos 
 // La zona que está en todos los aros va en fucsia; la de afuera, en turquesa; las demás cuentas, en tinta.
 const claveZona = (z, n) => (z === '' ? 'fu' : z.length === n ? 'I' : 'ink');
 // Fichas anónimas para una cuenta por región, en el orden en que aparecen en la animación.
+const cartel = (k, ps) => ({ k, partes:ps });
 const fichasDe = (cuentas, orden) => [].concat(...orden.map(z => Array.from({ length: cuentas[z] || 0 }, () => ({ zona: z }))));
 </script>
 <script>
@@ -295,7 +301,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   const ctx = cv.getContext('2d');
   let W = 0, H = 0, sobre = false, arrastre = null, geo = null, lay = null;
   const PIE = 30;
-  const ALTO = { venn: () => (E.st.carteles ? 190 : E.st.n === 3 ? 350 : (E.st.banca ? 312 : 290)), carroll: () => (E.st.n === 3 ? 300 : 270),
+  const ALTO = { venn: () => (E.st.carteles ? 190 : (E.st.n === 3 ? 350 : 290) + (E.st.banca ? 44 : 0)), carroll: () => (E.st.n === 3 ? 300 : 270),
     arbol: () => 300, cuadricula: () => 230, bolsas: () => 210 };
   function resize(){
     const w = cv.clientWidth; if (!w) return;
@@ -469,10 +475,12 @@ function crearEscena(cv, idDesc, idLect, idLey){
     // los rótulos del último nivel dibujado: el subconjunto armado hasta ahí
     const txt = A.nivelesTexto[k], m = txt.length, tam = m > 16 ? 9 : m > 8 ? 10.5 : 12;
     txt.forEach((t, j) => {
-      const x = X(k, j), y = Y(k) + 8, completo = k === n && j === 0, vacio = j === m - 1;
+      const x = X(k, j), completo = k === n && j === 0, vacio = j === m - 1;
       const color = completo ? c.A : c.S;
-      ctx.save(); ctx.translate(x, y); ctx.rotate(m > 4 ? Math.PI/2 : 0); ctx.font = `800 ${tam}px ${c.font}`; ctx.fillStyle = color;
-      ctx.textAlign = m > 4 ? 'left' : 'center'; ctx.textBaseline = m > 4 ? 'middle' : 'top'; ctx.fillText(t, 0, 0); ctx.restore();
+      // el vacío va derecho y más grande (rotado y chico se pierde); todos empiezan debajo del círculo de marcar
+      const rota = m > 4 && !vacio, yy = Y(k) + 11;
+      ctx.save(); ctx.translate(x, yy); ctx.rotate(rota ? Math.PI/2 : 0); ctx.font = `800 ${vacio ? 14 : tam}px ${c.font}`; ctx.fillStyle = color;
+      ctx.textAlign = rota ? 'left' : 'center'; ctx.textBaseline = rota ? 'middle' : 'top'; ctx.fillText(t, 0, 0); ctx.restore();
       if (s.marcar && k === n && (completo || vacio)){ ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, Y(k), 7.5, 0, 7); ctx.stroke(); ctx.restore(); }
     });
     if (s.pie) partes(c, W/2, H - PIE/2, s.pie, 'center', 14, 800);
@@ -556,7 +564,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   // Lecturas y descripción para lectores de pantalla (leen el estado del momento; antes de responder no adelantan nada).
   E.avisar = () => {
     const filas = E.lect.map(k => k(E));
-    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${varCSS(k)})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idLect) document.getElementById(idLect).innerHTML = glifos(filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${varCSS(k)})"><span>${t}</span><b>${v}</b></div>`).join(''));
     if (idDesc && !E.anim){
       const d = typeof E.desc === 'function' ? E.desc(E) : (E.desc || 'Un diagrama.');
       document.getElementById(idDesc).textContent = quitar([d, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' '));
@@ -619,7 +627,7 @@ const S = { step:0, max:0, pred:{}, ocupado:false, f1:null, f8:null, n8:2, vista
 const A_ = t => V('A', t), B_ = t => V('B', t), C_ = t => V('C', t), I_ = t => V('I', t), fu_ = t => V('fu', t), S_ = t => V('S', t);
 
 // Números de la escena: todos salen del motor
-const P2 = M.alMenosUno(25, 18, 7);
+const D2 = { A:26, B:18, AB:7 }, P2 = M.alMenosUno(D2.A, D2.B, D2.AB);
 const P3 = M.soloUno(22, 15, 6);
 const P4 = M.interseccionPorComplemento(45, 28, 21, 6);
 const D5 = { U:60, A:30, B:25, C:20, AB:10, AC:8, BC:6, ABC:3 }, P5 = M.ningunoTres(D5);
@@ -627,7 +635,7 @@ const A6 = [1, 3, 5, 7], P6 = M.cuantosSubconjuntos(A6.length), AR6 = M.arbol(A6
 const A7 = [1, 2, 3], B7 = [2, 3, 4, 5], P7 = M.cuantosPares(A7, B7), CA7 = M.cartesiano(A7, B7);
 const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
 
-console.assert(P2.respuesta === 36 && Object.keys(P2.errores).length === 3, 'paso 2: revisar las opciones');
+console.assert(P2.respuesta === 37 && P2.soloA === 19 && Object.keys(P2.errores).length === 3, 'paso 2: revisar las opciones');
 console.assert(P3.respuesta === 16 && P3.errores.todoElConjunto && P3.errores.quitaDosVeces && P3.errores.elOtro, 'paso 3: revisar las opciones');
 console.assert(P4.respuesta === 10 && Object.keys(P4.errores).length === 3, 'paso 4: revisar las opciones');
 console.assert(P5.respuesta === 6 && Object.keys(P5.errores).length === 3, 'paso 5: revisar las opciones');
@@ -640,10 +648,10 @@ const P_2 = { id:'conjuntos-paso2', ok:'c', opts:[
   ['b', al(P2.errores.restaDosVeces), 'resta-la-interseccion-dos-veces', 'hipotesis'],
   ['c', al(P2.respuesta)],
   ['d', al(P2.errores.elMayor), 'da-el-grupo-mayor', 'hipotesis']],
-  fb:{ c:`¡Bien! Los 7 que juegan los dos deportes están dentro de los dos aros: en 25 + 18 = ${P2.suma} se cuentan dos veces. Se quitan una vez: ${P2.suma} − 7 = ${P2.respuesta}.`,
-    a:`${P2.suma} = 25 + 18 cuenta dos veces a los 7 que juegan los dos deportes: están entre los 25 y también entre los 18. Contados una sola vez: ${P2.suma} − 7 = ${P2.respuesta}.`,
-    b:`${P2.errores.restaDosVeces} = ${P2.suma} − 7 − 7 deja afuera a los 7 que juegan los dos deportes, y ellos también juegan al menos uno. Basta quitarlos una vez: ${P2.suma} − 7 = ${P2.respuesta}.`,
-    d:`25 son los que juegan fútbol. También cuentan los de vóley que no juegan fútbol: entre todos, 25 + 18 − 7 = ${P2.respuesta}.` } };
+  fb:{ c:`¡Bien! Los ${D2.AB} que juegan los dos deportes están dentro de los dos aros: en ${D2.A} + ${D2.B} = ${P2.suma} se cuentan dos veces. Se quitan una vez: ${P2.suma} − ${D2.AB} = ${P2.respuesta}.`,
+    a:`${P2.suma} = ${D2.A} + ${D2.B} cuenta dos veces a los ${D2.AB} que juegan los dos deportes: están entre los ${D2.A} y también entre los ${D2.B}. Contados una sola vez: ${P2.suma} − ${D2.AB} = ${P2.respuesta}.`,
+    b:`${P2.errores.restaDosVeces} = ${P2.suma} − ${D2.AB} − ${D2.AB} son los que juegan uno solo de los dos deportes; «al menos uno» incluye también a los ${D2.AB} que juegan los dos. Basta quitarlos una vez: ${P2.suma} − ${D2.AB} = ${P2.respuesta}.`,
+    d:`${D2.A} son los que juegan fútbol. También cuentan los de vóley que no juegan fútbol: entre todos, ${D2.A} + ${D2.B} − ${D2.AB} = ${P2.respuesta}.` } };
 
 const P_3 = { id:'conjuntos-paso3', ok:'b', opts:[
   ['a', al(P3.errores.todoElConjunto), 'solo-como-todo-el-conjunto', 'hipotesis'],
@@ -675,7 +683,7 @@ const P_5 = { id:'conjuntos-paso5', ok:'b', opts:[
     c:`${P5.union} son los que practican al menos un deporte. Los que no practican ninguno son 60 − ${P5.union} = ${P5.respuesta}.`,
     d:`${P5.errores.restaElCentro} sale de restar también a los 3 de los tres deportes. Pero al restar los pares ya se quitaron tres veces; hay que devolverlos: ${P5.suma} − ${P5.pares} + 3 = ${P5.union}, y 60 − ${P5.union} = ${P5.respuesta}.` } };
 
-const sub = ([a, b]) => `${T('S', a)} subconjuntos y ${T('S', b)} propios`;
+const sub = ([a, b]) => `${a} subconjuntos y ${b} propios`;
 const dosVeces = Array(A6.length).fill('2').join(' × ');
 const P_6 = { id:'conjuntos-paso6', ok:'b', opts:[
   ['a', sub(P6.errores.dosPorElemento), 'dos-por-cada-elemento', 'hipotesis'],
@@ -716,8 +724,8 @@ function prep8(){
   const n = S.n8, ops = n === 2 ? OPS2 : OPS3;
   if (!ops.some(o => o[0] === S.op8)) S.op8 = '';
   const nom = n === 2 ? { A:'A', B:'B' } : { A:'A', B:'B', C:'C' };
-  E.config({ modo:S.vista8, st:{ n, banca:n === 2 ? 44 : 0, fichas:S.f8, mover:true, cuentas:true, nombres:nom, sombra:S.op8 ? M.zonasOperacion(S.op8, n) : [], alMover:vivo8 },
-    ley:[['A', 'A'], ['B', 'B']].concat(n === 3 ? [['C', 'C']] : [], [['I', n === 2 ? 'A ∩ B' : 'A ∩ B ∩ C'], ['fu', 'fuera de todos']], S.op8 ? [['ink', 'resultado de la operación', true]] : []),
+  E.config({ modo:S.vista8, st:{ n, banca:44, fichas:S.f8, mover:true, cuentas:true, nombres:nom, sombra:S.op8 ? M.zonasOperacion(S.op8, n) : [], alMover:vivo8 },
+    ley:[['A', 'A'], ['B', 'B']].concat(n === 3 ? [['C', 'C']] : [], [['I', n === 2 ? 'A ∩ B' : 'en los tres aros'], ['fu', 'fuera de todos']], S.op8 ? [['ink', 'resultado de la operación', true]] : []),
     alCambiar:vivo8,
     lect:[() => { const c = M.cardinales(M.deFichas(S.f8.map(f => f.zona), n)); return ['A', 'n(A)', String(c.A)]; }, () => ['B', 'n(B)', String(M.cardinales(M.deFichas(S.f8.map(f => f.zona), n)).B)]]
       .concat(n === 3 ? [() => ['C', 'n(C)', String(M.cardinales(M.deFichas(S.f8.map(f => f.zona), n)).C)]] : [])
@@ -737,9 +745,9 @@ function vivo8(){
   const ie = n === 2
     ? `<div class="eq">n(A ∪ B) = ${A_('n(A)')} + ${B_('n(B)')} − ${I_('n(A ∩ B)')} = ${A_(c.A)} + ${B_(c.B)} − ${I_(c.AB)} = ${c.union}<span class="note">los que están en los dos aros se cuentan en n(A) y otra vez en n(B): se restan una vez</span></div>`
     : `<div class="eq">n(A ∪ B ∪ C) = ${A_(c.A)} + ${B_(c.B)} + ${C_(c.C)} − ${c.AB} − ${c.AC} − ${c.BC} + ${I_(c.ABC)} = ${c.union}<span class="note">se suman los aros, se restan las intersecciones de a dos y se devuelven los que están en los tres</span></div>`;
-  d.innerHTML = `<div class="eqs">${ie}
+  d.innerHTML = glifos(`<div class="eqs">${ie}
     <div class="eq">U = ${nb(M.texto(L.U))}<span class="note">n(U) = ${c.U}; fuera de todos los aros: ${fu_(c.ninguno)}</span></div>
-    ${res ? `<div class="eq">${op[1]} = ${nb(res.texto)}<span class="note">la parte rayada del dibujo; tiene ${res.n} ${pl(res.n, 'elemento', 'elementos')}</span></div>` : ''}</div>`;
+    ${res ? `<div class="eq">${op[1]} = ${nb(res.texto)}<span class="note">la parte rayada del dibujo; tiene ${res.n} ${pl(res.n, 'elemento', 'elementos')}</span></div>` : ''}</div>`);
 }
 
 // ----- estados del dibujo de cada predicción (antes y después de responder) -----
@@ -754,29 +762,32 @@ const steps = [
    luego:() => { enlazarMover(E, $('stepBody')); vivo1(); } },
  { k:'Paso 2', t:'Predice: al menos uno de los dos', gate:P_2,
    prep:() => { const ya = !!S.pred[P_2.id];
-     E.config({ modo:'venn', st:Object.assign({ n:2, nombres:nombres2('A · fútbol: 25', 'B · vóley: 18') }, ya ? fin2() : { fichas:[] }),
-       ley:LEY2('A: juegan fútbol', 'B: juegan vóley', [['I', 'juegan los dos']]),
-       desc: ya ? DESC2 : 'Los aros A, de fútbol, y B, de vóley, todavía sin fichas.',
-       lect:[() => ['A', 'juegan fútbol', '25'], () => ['B', 'juegan vóley', '18'], () => ['I', 'juegan los dos', '7']].concat(ya ? [() => ['ink', 'al menos uno', String(P2.respuesta)]] : []) }); },
+     E.config({ modo:'venn', st: ya ? Object.assign({ n:2, nombres:nombres2(`A · fútbol: ${D2.A}`, `B · vóley: ${D2.B}`) }, fin2())
+         : { carteles:[cartel('A', [['A · fútbol: ', 'A'], [`${D2.A} alumnos`, 'ink']]), cartel('B', [['B · vóley: ', 'B'], [`${D2.B} alumnos`, 'ink']]), cartel('I', [['los dos: ', 'I'], [`${D2.AB} alumnos`, 'ink']])] },
+       ley:LEY2('A: juegan fútbol', 'B: juegan vóley', ya ? [['I', 'juegan los dos']] : []),
+       desc: ya ? DESC2 : `Tres carteles: fútbol, ${D2.A} alumnos; vóley, ${D2.B} alumnos; los dos deportes, ${D2.AB} alumnos.`,
+       lect:[() => ['A', 'juegan fútbol', String(D2.A)], () => ['B', 'juegan vóley', String(D2.B)], () => ['I', 'juegan los dos', String(D2.AB)]].concat(ya ? [() => ['ink', 'al menos uno', String(P2.respuesta)]] : []) }); },
    anima:fin => { const s = E.st, fs = fichasDe({ A:P2.soloA, AB:P2.ambos, B:P2.soloB }, ['A', 'AB', 'B']);
-     Object.assign(s, { fichas:fs, visibles:0 }); E.redimensionar();
+     Object.assign(s, { n:2, carteles:null, nombres:nombres2(`A · fútbol: ${D2.A}`, `B · vóley: ${D2.B}`), fichas:fs, visibles:0 }); E.redimensionar();
+     E.ley = LEY2('A: juegan fútbol', 'B: juegan vóley', [['I', 'juegan los dos']]); E.leyenda();
      E.aparecer(0, fs.length, 900, () => E.secuencia([
-       st => { st.fichas.forEach(f => { f.halos = f.zona.includes('A') ? ['A'] : []; }); st.pie = [['25', 'A'], [' fichas en el aro A', 'ink']]; },
-       st => { st.fichas.forEach(f => { f.halos = ['A', 'B'].filter(k => f.zona.includes(k)); }); st.pie = [['25', 'A'], [' + ', 'ink'], ['18', 'B'], [` = ${P2.suma}: las del medio, dos veces`, 'ink']]; },
+       st => { st.fichas.forEach(f => { f.halos = f.zona.includes('A') ? ['A'] : []; }); st.pie = [[String(D2.A), 'A'], [' fichas en el aro A', 'ink']]; },
+       st => { st.fichas.forEach(f => { f.halos = ['A', 'B'].filter(k => f.zona.includes(k)); }); st.pie = [[String(D2.A), 'A'], [' + ', 'ink'], [String(D2.B), 'B'], [` = ${P2.suma}: las del medio, dos veces`, 'ink']]; },
        fin2()], [1300, 1600, 0], () => { E.lect = E.lect.concat([() => ['ink', 'al menos uno', String(P2.respuesta)]]); E.desc = DESC2; E.avisar(); fin(); })); },
-   body:() => `<p class="problem">En una sección, ${A_('25 alumnos juegan fútbol')}, ${B_('18 juegan vóley')} y ${I_('7 juegan los dos deportes')}. ¿Cuántos alumnos juegan al menos uno de los dos deportes?</p>${opcionesHTML(P_2.opts, 'fb')}
+   body:() => `<p class="problem">En una sección, ${A_(D2.A + ' alumnos juegan fútbol')}, ${B_(D2.B + ' juegan vóley')} y ${I_(D2.AB + ' juegan los dos deportes')}. ¿Cuántos alumnos juegan al menos uno de los dos deportes?</p>${opcionesHTML(P_2.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${A_('25')} + ${B_('18')} = ${P2.suma}<span class="note">los ${I_('7')} del medio están en los dos aros: aquí se cuentan dos veces</span></div>
-     <div class="eq">n(A ∪ B) = ${A_('n(A)')} + ${B_('n(B)')} − ${I_('n(A ∩ B)')} = ${P2.suma} − ${I_('7')} = ${P2.respuesta}<span class="note">se quitan una vez: cada alumno queda contado una sola vez</span></div></div>
+     <div class="eq">${A_(D2.A)} + ${B_(D2.B)} = ${P2.suma}<span class="note">los ${I_(D2.AB)} del medio están en los dos aros: aquí se cuentan dos veces</span></div>
+     <div class="eq">n(A ∪ B) = ${A_('n(A)')} + ${B_('n(B)')} − ${I_('n(A ∩ B)')} = ${P2.suma} − ${I_(D2.AB)} = ${P2.respuesta}<span class="note">se quitan una vez: cada alumno queda contado una sola vez</span></div></div>
    <p>«Al menos uno» son todos los que están dentro de algún aro: A ∪ B. Al sumar n(A) y n(B), cada alumno de la intersección se cuenta dos veces; por eso se resta n(A ∩ B) una vez.</p>${FUENTE}</div>` },
  { k:'Paso 3', t:'Predice: solo en uno', gate:P_3,
    prep:() => { const ya = !!S.pred[P_3.id];
-     E.config({ modo:'venn', st:Object.assign({ n:2, nombres:nombres2('A · UNI: 22', 'B · San Marcos: 15') }, ya ? fin3() : { fichas:[] }),
-       ley:LEY2('A: examen en la UNI', 'B: examen en San Marcos', [['I', 'en las dos']].concat(ya ? [['ink', 'solo en la UNI', true]] : [])),
-       desc: ya ? DESC3 : 'Los aros A, de la UNI, y B, de San Marcos, todavía sin fichas.',
+     E.config({ modo:'venn', st: ya ? Object.assign({ n:2, nombres:nombres2('A · UNI: 22', 'B · San Marcos: 15') }, fin3())
+         : { carteles:[cartel('A', [['A · UNI: ', 'A'], ['22 postulantes', 'ink']]), cartel('B', [['B · San Marcos: ', 'B'], ['15 postulantes', 'ink']]), cartel('I', [['las dos: ', 'I'], ['6 postulantes', 'ink']])] },
+       ley:LEY2('A: examen en la UNI', 'B: examen en San Marcos', ya ? [['I', 'en las dos'], ['ink', 'solo en la UNI', true]] : []),
+       desc: ya ? DESC3 : 'Tres carteles: la UNI, 22 postulantes; San Marcos, 15 postulantes; las dos universidades, 6 postulantes.',
        lect:[() => ['A', 'en la UNI', '22'], () => ['B', 'en San Marcos', '15'], () => ['I', 'en las dos', '6']] }); },
    anima:fin => { const s = E.st, fs = fichasDe({ A:P3.respuesta, AB:P3.ambos, B:P3.soloB }, ['AB', 'A', 'B']);
-     Object.assign(s, { fichas:fs, visibles:0 }); E.redimensionar(); E.ley = LEY2('A: examen en la UNI', 'B: examen en San Marcos', [['I', 'en las dos'], ['ink', 'solo en la UNI', true]]); E.leyenda();
+     Object.assign(s, { n:2, carteles:null, nombres:nombres2('A · UNI: 22', 'B · San Marcos: 15'), fichas:fs, visibles:0 }); E.redimensionar(); E.ley = LEY2('A: examen en la UNI', 'B: examen en San Marcos', [['I', 'en las dos'], ['ink', 'solo en la UNI', true]]); E.leyenda();
      E.aparecer(0, fs.length, 900, () => E.secuencia([fin3()], [0], () => { E.desc = DESC3; E.avisar(); fin(); })); },
    body:() => `<p class="problem">De un grupo de postulantes, ${A_('22 darán examen en la UNI')}, ${B_('15 en San Marcos')} y ${I_('6 en las dos universidades')}. ¿Cuántos darán examen solo en la UNI?</p>${opcionesHTML(P_3.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
@@ -801,8 +812,8 @@ const steps = [
    <p>Los que no están en ningún aro forman el complemento (A ∪ B)′. Primero se quitan del total; lo que queda es A ∪ B, y de ahí sale la intersección.</p>${FUENTE}</div>` },
  { k:'Paso 5', t:'Predice: tres aros', gate:P_5,
    prep:() => { const ya = !!S.pred[P_5.id];
-     E.config({ modo:'venn', st:Object.assign({ n:3, rotuloU:'U: 60', nombres:{ A:'A · atletismo: 30', B:'B · natación: 25', C:'C · ciclismo: 20' } }, ya ? fin5() : { fichas:[] }),
-       ley:[['A', 'A: atletismo'], ['B', 'B: natación'], ['C', 'C: ciclismo'], ['I', 'los tres'], ['fu', 'ninguno']],
+     E.config({ modo:'venn', st:Object.assign({ n:3, banca:44, rotuloU:'U: 60', nombres:{ A:'A · atletismo: 30', B:'B · natación: 25', C:'C · ciclismo: 20' } }, ya ? fin5() : { fichas:[] }),
+       ley:[['A', 'A: atletismo'], ['B', 'B: natación'], ['C', 'C: ciclismo'], ['I', 'en los tres aros'], ['fu', 'ninguno']],
        desc: ya ? DESC5 : 'El universo U, de 60 alumnos, con los aros A, B y C, todavía sin fichas.',
        lect:[() => ['ink', 'alumnos', '60'], () => ['I', 'los tres', '3']] }); },
    anima:fin => { const s = E.st, R = P5.regiones, fs = fichasDe(R, ['ABC', 'AB', 'AC', 'BC', 'A', 'B', 'C', '']);
@@ -835,7 +846,7 @@ const steps = [
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">n(A × B) = ${A_('n(A)')} × ${B_('n(B)')} = ${A_(P7.nA)} × ${B_(P7.nB)} = ${P7.respuesta}<span class="note">una fila por cada elemento de A, una columna por cada elemento de B</span></div>
      <div class="eq">${P7.dadosVuelta[0]} ≠ ${P7.dadosVuelta[1]}<span class="note">en un par ordenado, primero va el de A y después el de B</span></div></div>
-   <p>Dos pares ordenados son iguales solo si coinciden la primera componente con la primera y la segunda con la segunda. Por eso A × B y B × A tienen los mismos ${P7.respuesta} elementos en número, pero no son el mismo conjunto.</p>${FUENTE}</div>` },
+   <p>Dos pares ordenados son iguales solo si coinciden la primera componente con la primera y la segunda con la segunda. Por eso A × B y B × A tienen el mismo número de elementos, ${P7.respuesta}, pero no son el mismo conjunto.</p>${FUENTE}</div>` },
  { k:'Paso 8', t:'Explora: dos o tres aros, Venn o Carroll', explora:true,
    prep:() => prep8(),
    body:() => `<p class="problem">Arrastra las fichas, elige 2 o 3 aros, cambia entre el diagrama de Venn y el de Carroll (una tabla con las mismas regiones) y elige una operación para ver qué parte del dibujo es.</p>
@@ -853,8 +864,8 @@ const steps = [
      enlazarMover(E, sb); vivo8(); } },
 ];
 // Estados finales de cada predicción (los mismos al volver al paso)
-function fin2(){ return { fichas:fichasDe({ A:P2.soloA, AB:P2.ambos, B:P2.soloB }, ['A', 'AB', 'B']), visibles:null, cuentas:['A', 'AB', 'B'], pie:[['25', 'A'], [' + ', 'ink'], ['18', 'B'], [' − ', 'ink'], ['7', 'I'], [` = ${P2.respuesta}`, 'ink']] }; }
-const DESC2 = `Los aros con sus fichas: ${P2.soloA} dentro de A y fuera de B, 7 en los dos aros y ${P2.soloB} dentro de B y fuera de A. Al sumar 25 y 18, las 7 del medio se cuentan dos veces: dentro de algún aro hay ${P2.respuesta}.`;
+function fin2(){ return { fichas:fichasDe({ A:P2.soloA, AB:P2.ambos, B:P2.soloB }, ['A', 'AB', 'B']), visibles:null, cuentas:['A', 'AB', 'B'], pie:[[String(D2.A), 'A'], [' + ', 'ink'], [String(D2.B), 'B'], [' − ', 'ink'], [String(D2.AB), 'I'], [` = ${P2.respuesta}`, 'ink']] }; }
+const DESC2 = `Los aros con sus fichas: ${P2.soloA} dentro de A y fuera de B, ${D2.AB} en los dos aros y ${P2.soloB} dentro de B y fuera de A. Al sumar ${D2.A} y ${D2.B}, las ${D2.AB} del medio se cuentan dos veces: dentro de algún aro hay ${P2.respuesta}.`;
 function fin3(){ return { fichas:fichasDe({ A:P3.respuesta, AB:P3.ambos, B:P3.soloB }, ['AB', 'A', 'B']), visibles:null, cuentas:['A', 'AB', 'B'], sombra:['A'], pie:[['22', 'A'], [' − ', 'ink'], ['6', 'I'], [` = ${P3.respuesta} solo en la UNI`, 'ink']] }; }
 const DESC3 = `Los aros con sus fichas: ${P3.respuesta} dentro de A y fuera de B (rayado), 6 en los dos aros y ${P3.soloB} dentro de B y fuera de A.`;
 function fin4(){ return { fichas:fichasDe({ '':6, A:P4.soloA, AB:P4.respuesta, B:P4.soloB }, ['', 'A', 'AB', 'B']), visibles:null, cuentas:true, pie:[['28', 'A'], [' + ', 'ink'], ['21', 'B'], [` − ${P4.union} = `, 'ink'], [String(P4.respuesta), 'I']] }; }
@@ -883,7 +894,7 @@ function go(k){
   E.parar();
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
-  $('stepBody').innerHTML = s.body();
+  $('stepBody').innerHTML = glifos(s.body());
   E.compactar(s.gate && !S.pred[s.gate.id]);
   if (s.prep) s.prep();
   pintarDots();
@@ -960,9 +971,8 @@ console.assert(Q1.respuesta === 20 && Q1.errores.sumaSinRestar && Q1.errores.res
   && Object.values(verdad5).filter(Boolean).length === 1 && verdad5.b, 'qué pasa si: revisar las opciones');
 
 const al = n => `${n} ${n === 1 ? 'alumno' : 'alumnos'}`;
-const cartel = (k, ps) => ({ k, partes:ps });
 const EXPS = [
-  { id:'b-dentro-de-a', corto:'B dentro de A',
+  { id:'b-dentro-de-a', corto:'Pintura y cerámica',
     q:`En una casa de la cultura, ${A_('20 alumnos van al taller de pintura')} y ${B_('8 al de cerámica')}; todos los de cerámica también van a pintura. ¿Cuántos alumnos van a al menos uno de los dos talleres?`,
     opts:[['a', al(Q1.errores.sumaSinRestar), 'suma-sin-restar-la-interseccion', 'hipotesis'], ['b', al(Q1.respuesta)],
           ['c', al(Q1.errores.restaDosVeces), 'resta-la-interseccion-dos-veces', 'hipotesis'], ['d', 'No se puede saber: falta cuántos van a los dos', 'no-ve-la-interseccion-en-la-inclusion', 'hipotesis']],
@@ -979,7 +989,7 @@ const EXPS = [
       <p>«Todos los de cerámica van a pintura» dice que B está incluido en A. Entonces la intersección es todo B, y la unión es todo A. La regla de siempre sigue sirviendo: n(A ∩ B) = n(B).</p>` },
 
   { id:'disjuntos', corto:'Aros que no se tocan',
-    q:`En una academia, ${A_('14 alumnos estudian en el turno mañana')} y ${B_('11 en el turno tarde')}; nadie estudia en los dos turnos. ¿Qué es A ∩ B?`,
+    q:`En una academia, ${A_('14 alumnos estudian en el turno mañana')} y ${B_('11 en el turno tarde')}; nadie estudia en los dos turnos. Si A es el conjunto de los del turno mañana y B el de los del turno tarde, ¿qué es A ∩ B?`,
     opts:[['a', 'A ∩ B = {0}: tiene un elemento, el 0', 'el-vacio-como-el-cero', 'hipotesis'], ['b', 'A ∩ B = {∅}: tiene un elemento, el vacío', 'el-vacio-entre-llaves', 'hipotesis'],
           ['c', 'A ∩ B no existe: los aros no se cruzan', 'la-interseccion-no-existe', 'hipotesis'], ['d', 'A ∩ B = ∅: no tiene elementos']],
     ok:'d',
@@ -1009,7 +1019,7 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">${Q3.antes} × 2 = ${S_(Q3.respuesta)}<span class="note">cada camino viejo se parte en dos: con el 7 y sin el 7</span></div></div>
       <p>Cada elemento nuevo <b>duplica</b> el número de subconjuntos: los viejos siguen, y cada uno tiene una copia con el elemento nuevo. Por eso un conjunto de n elementos tiene 2 × 2 × … × 2 = 2<sup>n</sup>.</p>` },
 
-  { id:'a-menos-b', corto:'A − B y B − A',
+  { id:'a-menos-b', corto:'La diferencia',
     q:`${A_('A = {1, 2, 3, 4, 5}')} y ${B_('B = {4, 5, 6, 7}')}. ¿Cuál es B − A?`,
     opts:[['a', `B − A = ${M.texto(Q4.errores.alReves)}`, 'invierte-la-diferencia', 'hipotesis'], ['b', `B − A = ${M.texto(Q4.errores.interseccion)}`, 'da-la-interseccion', 'hipotesis'],
           ['c', `B − A = ${M.texto(Q4.respuesta)}`], ['d', `B − A = ${M.texto(Q4.errores.simetrica)}`, 'da-la-diferencia-simetrica', 'hipotesis']],
@@ -1079,7 +1089,7 @@ function ir(k){
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
-  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  $('body2').innerHTML = glifos(`<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`);
   const btns = [...$('body2').querySelectorAll('.opt')];
   const pintar = () => {
     const p = S.pred[x.id]; if (!p) return;
@@ -1087,7 +1097,7 @@ function ir(k){
     const f = $('fb2');
     f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
     f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
-    $('res2').innerHTML = x.exp() + FUENTE + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    $('res2').innerHTML = glifos(x.exp()) + FUENTE + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
     $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k); };
   };
