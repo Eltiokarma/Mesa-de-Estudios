@@ -803,7 +803,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "balance-reacciones"
+     ]
     },
     {
      "id": "quimica.estequiometria",
@@ -4224,6 +4226,23 @@
     "/plantillas/atomo-y-tabla/index.html",
     "/plantillas/atomo-y-tabla/motor.js",
     "/plantillas/atomo-y-tabla/papel.json"
+   ]
+  },
+  "balance-reacciones": {
+   "id": "balance-reacciones",
+   "titulo": "Balance de reacciones: contar átomos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.reacciones-y-balance"
+   ],
+   "url": "/plantillas/balance-reacciones/index.html",
+   "papel": "/plantillas/balance-reacciones/papel.json",
+   "archivos": [
+    "/plantillas/balance-reacciones/index.html",
+    "/plantillas/balance-reacciones/motor.js",
+    "/plantillas/balance-reacciones/papel.json"
    ]
   },
   "calorimetria": {

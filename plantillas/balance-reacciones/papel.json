@@ -1,0 +1,373 @@
+{
+  "titulo": "Balance de reacciones: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Para balancear, cuenta los átomos de cada elemento a los dos lados y cambia solo los coeficientes (cuántas moléculas): nunca los subíndices, porque cambiarían la sustancia. Cuando te pidan la suma de coeficientes, usa los menores enteros y cuenta también los 1. En redox, quien se oxida pierde electrones y es el agente reductor; quien se reduce gana electrones y es el agente oxidante. Por ion-electrón: iguala el elemento central, el oxígeno con H₂O, el hidrógeno con H⁺ (en medio básico, con OH⁻ y H₂O) y la carga con electrones; después iguala los electrones de las dos semirreacciones.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un clavo de hierro se oxida al aire y forma óxido férrico: Fe + O₂ → Fe₂O₃. Balancea la ecuación con los menores enteros y da la suma de los coeficientes.",
+      "respuesta": "4Fe + 3O₂ → 2Fe₂O₃; la suma es 9.",
+      "pasos": [
+        "Con todo en 1 hay 1 Fe y 2 O a la izquierda, y 2 Fe y 3 O a la derecha.",
+        "El O pasa de 2 a 3: el menor número que es múltiplo de los dos es 6. Se pone 3 delante del O₂ y 2 delante del Fe₂O₃: 6 O a cada lado.",
+        "Ahora hay 2 · 2 = 4 Fe a la derecha: se pone 4 delante del Fe.",
+        "Conteo final: 4 Fe y 6 O a cada lado. Suma: 4 + 3 + 2 = 9.",
+        "No se vale escribir FeO para que salga más fácil: el Fe₂O₃ es la sustancia que se forma, y su fórmula no se toca."
+      ],
+      "verificar": [
+        {
+          "fn": "balancear",
+          "args": [
+            "Fe + O2 -> Fe2O3"
+          ],
+          "espera": {
+            "coefs": [
+              4,
+              3,
+              2
+            ],
+            "suma": 9
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "El gas de una cocina arde con el oxígeno del aire. Si fuera solo butano, la reacción sería C₄H₁₀ + O₂ → CO₂ + H₂O. Balancéala con los menores enteros y da la suma de los coeficientes.",
+      "respuesta": "2C₄H₁₀ + 13O₂ → 8CO₂ + 10H₂O; la suma es 33.",
+      "pasos": [
+        "Primero el carbono: 4 C a la izquierda, así que 4 CO₂.",
+        "Después el hidrógeno: 10 H a la izquierda, así que 5 H₂O.",
+        "El oxígeno al final: a la derecha hay 4 · 2 + 5 · 1 = 13 O. Para tener 13 O a la izquierda harían falta 13/2 de O₂.",
+        "No existe media molécula en los menores enteros: se multiplica todo por 2. Quedan 2, 13, 8 y 10.",
+        "Suma: 2 + 13 + 8 + 10 = 33. Si te sale 16,5, te faltó multiplicar por 2."
+      ],
+      "verificar": [
+        {
+          "fn": "balancear",
+          "args": [
+            "C4H10 + O2 -> CO2 + H2O"
+          ],
+          "espera": {
+            "coefs": [
+              2,
+              13,
+              8,
+              10
+            ],
+            "suma": 33,
+            "sumaFraccional": 16.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un antiácido de hidróxido de aluminio reacciona con ácido sulfúrico: Al(OH)₃ + H₂SO₄ → Al₂(SO₄)₃ + H₂O. Balancea la ecuación, di de qué tipo es y da la suma de los coeficientes.",
+      "respuesta": "2Al(OH)₃ + 3H₂SO₄ → Al₂(SO₄)₃ + 6H₂O; doble desplazamiento (neutralización); la suma es 12.",
+      "pasos": [
+        "El subíndice fuera del paréntesis multiplica todo lo de adentro: Al(OH)₃ tiene 1 Al, 3 O y 3 H; Al₂(SO₄)₃ tiene 2 Al, 3 S y 12 O.",
+        "Metal primero: 2 Al a la derecha, así que 2 Al(OH)₃.",
+        "No metal: 3 S a la derecha, así que 3 H₂SO₄.",
+        "Hidrógeno: a la izquierda hay 2 · 3 + 3 · 2 = 12 H, así que 6 H₂O.",
+        "Oxígeno para comprobar: izquierda 2 · 3 + 3 · 4 = 18; derecha 12 + 6 = 18. Suma: 2 + 3 + 1 + 6 = 12.",
+        "Los dos reactivos intercambian sus partes (el Al pasa con el sulfato y el H con el OH): es doble desplazamiento. Ningún elemento cambia su número de oxidación."
+      ],
+      "verificar": [
+        {
+          "fn": "balancear",
+          "args": [
+            "Al(OH)3 + H2SO4 -> Al2(SO4)3 + H2O"
+          ],
+          "espera": {
+            "coefs": [
+              2,
+              3,
+              1,
+              6
+            ],
+            "suma": 12
+          }
+        },
+        {
+          "fn": "clasificar",
+          "args": [
+            "Al(OH)3 + H2SO4 -> Al2(SO4)3 + H2O"
+          ],
+          "espera": {
+            "tipo": "doble desplazamiento",
+            "redox": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "En un laboratorio se calientan 5 moléculas de N₂ con 12 moléculas de H₂ y se forma amoniaco: N₂ + H₂ → NH₃. a) ¿Cuántas moléculas de NH₃ se forman y qué sobra? b) ¿Qué ecuación química se escribe?",
+      "respuesta": "a) Se forman 8 NH₃ y sobra 1 N₂. b) N₂ + 3H₂ → 2NH₃.",
+      "pasos": [
+        "La ecuación balanceada es N₂ + 3H₂ → 2NH₃: cada N₂ necesita 3 H₂.",
+        "Los 12 H₂ alcanzan para 12 / 3 = 4 N₂. De los 5 N₂ sobra 1.",
+        "Se forman 4 · 2 = 8 NH₃.",
+        "La ecuación no cambia por lo que hay en el frasco: sigue siendo N₂ + 3H₂ → 2NH₃. El N₂ que sobra no se escribe en ella, y tampoco se escribe 5N₂ + 12H₂ → 8NH₃.",
+        "Comprobación de la masa: antes, 5 · 28 + 12 · 2 = 164 u; después, 8 · 17 + 1 · 28 = 164 u."
+      ],
+      "verificar": [
+        {
+          "fn": "frasco",
+          "args": [
+            "N2 + H2 -> NH3",
+            {
+              "N2": 5,
+              "H2": 12
+            }
+          ],
+          "espera": {
+            "final.NH3": 8,
+            "sobrante.N2": 1,
+            "ecuacion": "N2 + 3H2 -> 2NH3",
+            "masaAntes": 164,
+            "masaDespues": 164
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En un alto horno ocurre Fe₂O₃ + CO → Fe + CO₂. a) ¿Qué elemento se oxida y cuál se reduce? b) ¿Cuál es el agente oxidante y cuál el reductor? c) Balancea la ecuación. d) ¿Cuántos electrones se transfieren por cada Fe₂O₃?",
+      "respuesta": "a) Se oxida el C (+2 a +4) y se reduce el Fe (+3 a 0). b) Oxidante: Fe₂O₃; reductor: CO. c) Fe₂O₃ + 3CO → 2Fe + 3CO₂. d) 6 electrones.",
+      "pasos": [
+        "Números de oxidación: en Fe₂O₃, el O es −2, así que 2x + 3(−2) = 0 y el Fe es +3. En el Fe solo, 0. En CO, el C es +2; en CO₂, +4.",
+        "El C sube de +2 a +4: pierde 2 electrones, se oxida. El Fe baja de +3 a 0: gana 3 electrones, se reduce.",
+        "El agente oxidante es la sustancia que trae al que se reduce: Fe₂O₃. El reductor trae al que se oxida: CO.",
+        "Electrones: cada Fe₂O₃ tiene 2 Fe y gana 2 · 3 = 6; cada CO pierde 2. Hacen falta 3 CO por cada Fe₂O₃: Fe₂O₃ + 3CO → 2Fe + 3CO₂.",
+        "Conteo: 2 Fe, 3 C y 6 O a cada lado."
+      ],
+      "verificar": [
+        {
+          "fn": "redox",
+          "args": [
+            "Fe2O3 + CO -> Fe + CO2"
+          ],
+          "espera": {
+            "seOxida": [
+              "C"
+            ],
+            "seReduce": [
+              "Fe"
+            ],
+            "agenteOxidante": [
+              "Fe2O3"
+            ],
+            "agenteReductor": [
+              "CO"
+            ],
+            "electrones": 6
+          }
+        },
+        {
+          "fn": "balancear",
+          "args": [
+            "Fe2O3 + CO -> Fe + CO2"
+          ],
+          "espera": {
+            "coefs": [
+              1,
+              3,
+              2,
+              3
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Balancea por ion-electrón, en medio ácido: MnO₄⁻ + Fe²⁺ → Mn²⁺ + Fe³⁺. Da la suma de todos los coeficientes de la ecuación global y el número de electrones transferidos.",
+      "respuesta": "MnO₄⁻ + 5Fe²⁺ + 8H⁺ → Mn²⁺ + 5Fe³⁺ + 4H₂O; la suma es 24 y se transfieren 5 electrones.",
+      "pasos": [
+        "Reducción: MnO₄⁻ → Mn²⁺. Faltan 4 O a la derecha: se agregan 4 H₂O. Ahora faltan 8 H a la izquierda: 8 H⁺.",
+        "Carga: izquierda −1 + 8 = +7; derecha +2. Se agregan 5 e⁻ a la izquierda: MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O.",
+        "Oxidación: Fe²⁺ → Fe³⁺ + e⁻. La carga queda +2 a cada lado.",
+        "Electrones iguales: la oxidación se multiplica por 5. Al sumar, los 5 e⁻ se cancelan.",
+        "Global: MnO₄⁻ + 5Fe²⁺ + 8H⁺ → Mn²⁺ + 5Fe³⁺ + 4H₂O. Suma: 1 + 5 + 8 + 1 + 5 + 4 = 24. Carga: +17 a cada lado."
+      ],
+      "verificar": [
+        {
+          "fn": "ionElectron",
+          "args": [
+            [
+              "Fe^2+",
+              "Fe^3+"
+            ],
+            [
+              "MnO4^-",
+              "Mn^2+"
+            ],
+            "acido"
+          ],
+          "espera": {
+            "texto": "MnO4^- + 5Fe^2+ + 8H^+ -> Mn^2+ + 5Fe^3+ + 4H2O",
+            "suma": 24,
+            "electrones": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Balancea por ion-electrón, en medio ácido: Cr₂O₇²⁻ + I⁻ → Cr³⁺ + I₂. ¿Cuál es el agente oxidante y cuánto suman los coeficientes de la ecuación global?",
+      "respuesta": "Cr₂O₇²⁻ + 6I⁻ + 14H⁺ → 2Cr³⁺ + 3I₂ + 7H₂O; el agente oxidante es el Cr₂O₇²⁻ y la suma es 33.",
+      "pasos": [
+        "Reducción: Cr₂O₇²⁻ → 2Cr³⁺ (primero el cromo). Se agregan 7 H₂O a la derecha y 14 H⁺ a la izquierda.",
+        "Carga: izquierda −2 + 14 = +12; derecha 2 · 3 = +6. Se agregan 6 e⁻ a la izquierda. Ojo: son 3 por cada Cr y hay 2 Cr.",
+        "Oxidación: 2I⁻ → I₂ + 2e⁻.",
+        "Electrones iguales: 6 y 2 tienen mínimo común múltiplo 6; la oxidación va por 3.",
+        "Global: Cr₂O₇²⁻ + 6I⁻ + 14H⁺ → 2Cr³⁺ + 3I₂ + 7H₂O. Suma: 1 + 6 + 14 + 2 + 3 + 7 = 33.",
+        "El Cr baja de +6 a +3 (se reduce): el Cr₂O₇²⁻ es el agente oxidante."
+      ],
+      "verificar": [
+        {
+          "fn": "ionElectron",
+          "args": [
+            [
+              "I^-",
+              "I2"
+            ],
+            [
+              "Cr2O7^2-",
+              "Cr^3+"
+            ],
+            "acido"
+          ],
+          "espera": {
+            "texto": "Cr2O7^2- + 6I^- + 14H^+ -> 2Cr^3+ + 3I2 + 7H2O",
+            "suma": 33,
+            "agenteOxidante": "Cr2O7^2-"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Balancea por ion-electrón, en medio básico: MnO₄⁻ + I⁻ → MnO₂ + I₂. Da la suma de los coeficientes de la ecuación global.",
+      "respuesta": "2MnO₄⁻ + 6I⁻ + 4H₂O → 2MnO₂ + 3I₂ + 8OH⁻; la suma es 25.",
+      "pasos": [
+        "Reducción: en MnO₄⁻ → MnO₂ sobran 2 O a la izquierda. En medio básico no hay H⁺: por cada O que sobra se pone 1 H₂O del mismo lado y 2 OH⁻ del otro: MnO₄⁻ + 2H₂O → MnO₂ + 4OH⁻.",
+        "Carga: izquierda −1; derecha −4. Se agregan 3 e⁻ a la izquierda: MnO₄⁻ + 2H₂O + 3e⁻ → MnO₂ + 4OH⁻.",
+        "Oxidación: 2I⁻ → I₂ + 2e⁻.",
+        "Mínimo común múltiplo de 3 y 2: 6. La reducción va por 2 y la oxidación por 3.",
+        "Global: 2MnO₄⁻ + 6I⁻ + 4H₂O → 2MnO₂ + 3I₂ + 8OH⁻. Suma: 2 + 6 + 4 + 2 + 3 + 8 = 25. Carga: −8 a cada lado."
+      ],
+      "verificar": [
+        {
+          "fn": "ionElectron",
+          "args": [
+            [
+              "I^-",
+              "I2"
+            ],
+            [
+              "MnO4^-",
+              "MnO2"
+            ],
+            "basico"
+          ],
+          "espera": {
+            "texto": "2MnO4^- + 6I^- + 4H2O -> 2MnO2 + 3I2 + 8OH^-",
+            "suma": 25
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Se calientan 10 g de piedra caliza (CaCO₃) en una cápsula abierta, hasta que se descompone toda: CaCO₃ → CaO + CO₂. ¿Cuánto marca la balanza al final, sin contar la cápsula? ¿Se conservó la masa?",
+      "respuesta": "Quedan 5,6 g de CaO en la cápsula; se fueron 4,4 g de CO₂ al aire. La masa se conservó: 5,6 g + 4,4 g = 10 g.",
+      "pasos": [
+        "La ecuación ya está balanceada: 1 Ca, 1 C y 3 O a cada lado. Es una descomposición.",
+        "Masas molares: CaCO₃ = 40 + 12 + 48 = 100 g/mol; CO₂ = 44 g/mol; CaO = 56 g/mol.",
+        "10 g de CaCO₃ son 0,1 mol, que dan 0,1 mol de CO₂ (4,4 g) y 0,1 mol de CaO (5,6 g).",
+        "La cápsula está abierta: el CO₂ se va y la balanza marca 5,6 g. En un recipiente cerrado seguiría marcando 10 g.",
+        "La masa no desapareció: está en el gas que salió. 5,6 + 4,4 = 10 g (ley de Lavoisier)."
+      ],
+      "verificar": [
+        {
+          "fn": "conservacion",
+          "args": [
+            "CaCO3 -> CaO + CO2",
+            "CaCO3",
+            10,
+            "CO2",
+            10
+          ],
+          "espera": {
+            "masaGas": 4.4,
+            "abierto": 5.6,
+            "cerrado": 10
+          }
+        },
+        {
+          "fn": "clasificar",
+          "args": [
+            "CaCO3 -> CaO + CO2"
+          ],
+          "espera": {
+            "tipo": "descomposición",
+            "redox": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "El cobre se disuelve en ácido nítrico y desprende un gas: Cu + HNO₃ → Cu(NO₃)₂ + NO + H₂O. Balancea la ecuación con los menores enteros, di cuál es el agente oxidante y da la suma de los coeficientes.",
+      "respuesta": "3Cu + 8HNO₃ → 3Cu(NO₃)₂ + 2NO + 4H₂O; el agente oxidante es el HNO₃; la suma es 20.",
+      "pasos": [
+        "Números de oxidación: Cu pasa de 0 a +2 (pierde 2 e⁻, se oxida). El N pasa de +5 en HNO₃ a +2 en NO (gana 3 e⁻, se reduce). El N del Cu(NO₃)₂ sigue en +5.",
+        "Electrones iguales: 2 y 3 tienen mínimo común múltiplo 6. Van 3 Cu y 2 NO.",
+        "Cobre: 3 Cu(NO₃)₂. Nitrógeno a la derecha: 3 · 2 + 2 = 8, así que 8 HNO₃ (6 no cambian y 2 se reducen).",
+        "Hidrógeno: 8 H a la izquierda, así que 4 H₂O. Oxígeno para comprobar: 24 a la izquierda; 18 + 2 + 4 = 24 a la derecha.",
+        "Suma: 3 + 8 + 3 + 2 + 4 = 20. El HNO₃ trae al N que se reduce: es el agente oxidante."
+      ],
+      "verificar": [
+        {
+          "fn": "balancear",
+          "args": [
+            "Cu + HNO3 -> Cu(NO3)2 + NO + H2O"
+          ],
+          "espera": {
+            "coefs": [
+              3,
+              8,
+              3,
+              2,
+              4
+            ],
+            "suma": 20
+          }
+        },
+        {
+          "fn": "redox",
+          "args": [
+            "Cu + HNO3 -> Cu(NO3)2 + NO + H2O"
+          ],
+          "espera": {
+            "agenteOxidante": [
+              "HNO3"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

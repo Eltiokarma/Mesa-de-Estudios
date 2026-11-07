@@ -1,0 +1,1145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Balance de reacciones: contar átomos</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 (docs/metodo/paleta.py) y contraste WCAG sobre
+   #fdf7f1 y #241c2e, también sobre el chip .v (fondo del 8 %):
+     Elementos (cada átomo lleva el color de su elemento y su letra; el texto dice "moléculas de H₂O" o "átomos de H")
+       H  hidrógeno   turquesa      #0f766e / #5ed9c8   (el de limitante-particulas y mol-composicion)
+       O  oxígeno     rojo          #c0364a / #f17384   (ídem)
+       N  nitrógeno   azul          #1f5fbf / #7cb0ff   (ídem)
+       C  carbono     gris          #6b6b6b / #9a9a9a   (más claro que el de mol-composicion, para separarlo de la tinta)
+       Cl cloro       verde         #466d14 / #a3d65e
+       Fe hierro      celeste       #036a99 / #30b4f2
+       Zn zinc        gris pizarra  #5b6470 / #9aa3b2
+       Cu cobre       cobre         #b5402a / #ff8a70
+       Mn manganeso   marrón rojizo #6b260f / #ff6600
+       Cr cromo       verde oscuro  #255c1f / #5fe06a
+     Variables
+       coeficiente (cuántas moléculas)   fucsia  #a10fbf / #cf6bfa   (el subíndice va en el color de su elemento)
+       e⁻ electrones (las fichas)        dorado  #8f5f00 / #ffd54a   (el de celda-galvanica)
+       carga, número de oxidación y masa: en tinta, con su signo o su unidad.
+   Qué sale junto: H y O; C, H y O; Zn, Cu y Cl con e⁻; Mn, Fe, O y H con e⁻; N y H; Fe y O; Zn, H y Cl; H y O (peróxido);
+   Cr, Fe, O y H con e⁻; Fe y Cl; N, O y H. Todos con el coeficiente y la tinta.
+   ΔE00 mínimo entre los que salen juntos: 20,4 en claro (Cr–H) y 20,0 en oscuro (Zn–tinta). Contraste mínimo 4,5 (AA)
+   en papel y en chip, en los dos modos.
+   Parecidos que nunca comparten dibujo: C–Zn (7,4), Cl–Cr (8,8), N–Fe (9,5) y O–Cu (11,4): cada átomo lleva su letra. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --e-H:#0f766e; --e-O:#c0364a; --e-N:#1f5fbf; --e-C:#6b6b6b; --e-Cl:#466d14; --e-Fe:#036a99; --e-Zn:#5b6470; --e-Cu:#b5402a; --e-Mn:#6b260f; --e-Cr:#255c1f;
+  --c-coef:#a10fbf; --c-e:#8f5f00;
+  --vidrio:#8e97a8; --caja:#f6ece4; --letra-atomo:#ffffff;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --e-H:#5ed9c8; --e-O:#f17384; --e-N:#7cb0ff; --e-C:#9a9a9a; --e-Cl:#a3d65e; --e-Fe:#30b4f2; --e-Zn:#9aa3b2; --e-Cu:#ff8a70; --e-Mn:#ff6600; --e-Cr:#5fe06a;
+  --c-coef:#cf6bfa; --c-e:#ffd54a;
+  --vidrio:#5e5670; --caja:#211a2a; --letra-atomo:#1d1626; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --e-H:#5ed9c8; --e-O:#f17384; --e-N:#7cb0ff; --e-C:#9a9a9a; --e-Cl:#a3d65e; --e-Fe:#30b4f2; --e-Zn:#9aa3b2; --e-Cu:#ff8a70; --e-Mn:#ff6600; --e-Cr:#5fe06a;
+  --c-coef:#cf6bfa; --c-e:#ffd54a;
+  --vidrio:#5e5670; --caja:#211a2a; --letra-atomo:#1d1626; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* Nada se arrastra en esta escena: el dedo siempre desplaza la página sobre el dibujo. */
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend svg{flex:none}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 2px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.f{white-space:nowrap}
+.f .v{padding:0; border-radius:3px; text-decoration:none}
+.f sub, .f sup{font-size:.72em; line-height:0}
+.v-coef{color:var(--c-coef); background:color-mix(in srgb, var(--c-coef) 8%, transparent)}
+.v-e{color:var(--c-e); background:color-mix(in srgb, var(--c-e) 8%, transparent)}
+.v-H{color:var(--e-H)} .v-O{color:var(--e-O)} .v-N{color:var(--e-N)} .v-C{color:var(--e-C)} .v-Cl{color:var(--e-Cl)}
+.v-Fe{color:var(--e-Fe)} .v-Zn{color:var(--e-Zn)} .v-Cu{color:var(--e-Cu)} .v-Mn{color:var(--e-Mn)} .v-Cr{color:var(--e-Cr)}
+.v.hl{background:none; outline:2px solid currentColor; outline-offset:1px}
+.carga{color:var(--ink); font-weight:800}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-size:1.04rem; font-variant-numeric:tabular-nums; min-width:0}
+.eq .note{font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq .ex{white-space:normal; line-height:2}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+.tabla{border-collapse:collapse; font-size:.95rem; font-variant-numeric:tabular-nums}
+.tabla th, .tabla td{padding:4px 10px; border-bottom:1px solid var(--line); text-align:center; white-space:nowrap}
+.tabla th:first-child, .tabla td:first-child{text-align:left; color:var(--muted); font-weight:700; font-size:.88rem; white-space:normal}
+.scroll{overflow-x:auto; max-width:100%}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%}
+.campo{display:grid; gap:4px; font-weight:700}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.exps{border-radius:20px}
+.coefs{display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:8px}
+.coef{display:flex; align-items:center; justify-content:space-between; gap:6px; padding:6px 8px; border-radius:14px; border:1.5px solid var(--line); background:var(--paper)}
+.coef .nom{font-weight:800; font-size:1.05rem; white-space:nowrap}
+.coef button{width:44px; height:44px; border-radius:50%; border:1.5px solid var(--line); background:var(--card); color:var(--ink); font:800 1.2rem var(--font); cursor:pointer}
+.coef button:disabled{opacity:.4; cursor:not-allowed}
+.estado{font-weight:700}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, select:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Reacciones y balance · Problemas tipo admisión</p>
+      <h1>Balancear es contar átomos</h1>
+      <p class="sub">Un tablero con las moléculas de cada lado y la cuenta de cada elemento. Solo se tocan los coeficientes. Predice y después mira.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Tablero de la reacción">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Arriba, la ecuación; al centro, las moléculas de los reactivos y de los productos; abajo, cuántos átomos de cada elemento hay a cada lado"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con el tablero">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="El tablero de la reacción o los frascos sobre las balanzas, según el experimento"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/balance-reacciones">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'balance-reacciones', unidad: 'quimica.reacciones-y-balance', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorBalance (motor.js): contar átomos y carga, balancear, los pasos del tanteo, el frasco,
+   la conservación de la masa, números de oxidación, redox y semirreacciones. Aquí solo se pinta lo que el motor dice.
+   Tres niveles a la vez (Johnstone): las moléculas (lo que no se ve), la ecuación (los símbolos) y la cuenta de átomos. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MB = MotorBalance;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Dos decimales fijos, como una balanza digital: 300,00 g.
+const fmt2 = n => (Math.round(n*100)/100).toFixed(2).replace('.', ',');
+const conSigno = n => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const NOMBRE = { H:'hidrógeno', O:'oxígeno', N:'nitrógeno', C:'carbono', Cl:'cloro', Fe:'hierro', Zn:'zinc', Cu:'cobre', Mn:'manganeso', Cr:'cromo' };
+const SUBD = { '0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉' };
+const SUPD = { '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹', '+':'⁺', '-':'⁻' };
+// Texto plano de una fórmula: "MnO4^-" → "MnO₄⁻".
+function txt(f){ const [c, q] = String(f).split('^'); return c.replace(/\d/g, d => SUBD[d]) + (q ? q.split('').map(ch => SUPD[ch] || ch).join('') : ''); }
+// Texto plano de una ecuación del motor: "2H2 + O2 -> 2H2O" → "2H₂ + O₂ → 2H₂O".
+function txtEc(e){ return String(e).split(' -> ').map(l => l.split(' + ').map(t => { const m = t.match(/^(\d*)(.+)$/); return m[1] + txt(m[2]); }).join(' + ')).join(' → '); }
+const cargaTxt = q => q === 0 ? '' : (Math.abs(q) === 1 ? '' : Math.abs(q)) + (q > 0 ? '+' : '−');
+// Piezas de una fórmula: [{ t, k, mod }] con k el elemento (o 'ink' para la carga) y mod 'sub' o 'sup'.
+function piezasF(f){
+  const s = MB.especie(f), r = [];
+  if (s.electron){ r.push({ t:'e', k:'e' }, { t:'−', k:'e', mod:'sup' }); return r; }
+  const [cuerpo] = String(f).split('^');
+  cuerpo.split(/[·]/).forEach((parte, i) => {
+    if (i) r.push({ t:'·', k:'ink' });
+    parte.replace(/([A-Z][a-z]?)|(\d+)|([()])/g, (m, el, d, par) => {
+      if (el) r.push({ t:el, k:el });
+      else if (d){ const prev = r[r.length - 1]; if (!prev || prev.t === '·') r.push({ t:d, k:'ink' }); else r.push({ t:d, k:prev.k === 'paren' ? 'ink' : prev.k, mod:'sub' }); }
+      else r.push({ t:par, k:'paren' });
+      return m;
+    });
+  });
+  if (s.carga) r.push({ t:cargaTxt(s.carga), k:'ink', mod:'sup' });
+  return r.map(p => p.k === 'paren' ? { ...p, k:'ink' } : p);
+}
+// En el texto: cada elemento con su color; al tocarlo se resalta en el dibujo.
+const Fh = f => {
+  let h = '', abierto = false;
+  const cerrar = () => { if (abierto){ h += '</span>'; abierto = false; } };
+  for (const p of piezasF(f)){
+    if (p.mod === 'sub'){ h += `<sub>${p.t}</sub>`; continue; }          // el subíndice, dentro del color de su elemento
+    cerrar();
+    if (p.mod === 'sup') h += `<sup class="carga">${p.t}</sup>`;
+    else if (p.k === 'ink') h += p.t;
+    else { h += `<span class="v v-${p.k}" data-var="${p.k}" tabindex="0">${p.t}`; abierto = true; }
+  }
+  cerrar();
+  return `<span class="f">${h}</span>`;
+};
+const C_ = n => `<span class="v v-coef" data-var="coef" tabindex="0">${n}</span>`;
+const E_ = t => `<span class="v v-e" data-var="e" tabindex="0">${t}</span>`;
+// Ecuación del motor en HTML: coeficientes en fucsia, fórmulas con el color de cada elemento.
+function EQ(e){ return String(e).split(' -> ').map(l => l.split(' + ').map(t => { const m = t.match(/^(\d*)(.+)$/); return (m[1] ? C_(m[1]) : '') + Fh(m[2]); }).join(' + ')).join(' → '); }
+
+function colores(){
+  const g = n => css(n), el = {};
+  for (const e of Object.keys(NOMBRE)) el[e] = g('--e-' + e);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), ok:g('--ok'), warn:g('--warn'),
+    coef:g('--c-coef'), e:g('--c-e'), el, vidrio:g('--vidrio'), caja:g('--caja'), letra:g('--letra-atomo'), font:g('--font') };
+}
+const colK = (c, k) => k === 'coef' ? c.coef : k === 'e' ? c.e : k === 'muted' ? c.muted : k === 'ok' ? c.ok : k === 'warn' ? c.warn : (c.el[k] || c.ink);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function azar(sem){ let s = sem >>> 0 || 1; return () => (s = (s*1664525 + 1013904223) >>> 0)/4294967296; }
+const ease = p => p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2)/2;
+
+/* ----- Texto en el lienzo por piezas: { t, k, mod, peso } -----
+   Si no entra en el ancho, baja la letra hasta 10 px; nunca se sale del dibujo. */
+function anchoP(ctx, c, ps, tam){ let w = 0; for (const p of ps){ ctx.font = `${p.peso || 800} ${p.mod ? tam*0.68 : tam}px ${c.font}`; w += ctx.measureText(p.t).width; } return w; }
+function pintarP(ctx, c, ps, x, y, tam, align, max, hl){
+  let t = tam; if (max) while (t > 10 && anchoP(ctx, c, ps, t) > max) t -= 0.5;
+  const w = anchoP(ctx, c, ps, t); let x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (const p of ps){
+    const tt = p.mod ? t*0.68 : t, dy = p.mod === 'sub' ? t*0.3 : p.mod === 'sup' ? -t*0.36 : 0;
+    ctx.font = `${p.peso || 800} ${tt}px ${c.font}`; const ww = ctx.measureText(p.t).width;
+    if (hl && hl === p.k){ ctx.save(); ctx.strokeStyle = colK(c, p.k); ctx.lineWidth = 1.5; rr(ctx, x0 - 1.5, y + dy - tt*0.62, ww + 3, tt*1.24, 3); ctx.stroke(); ctx.restore(); }
+    ctx.fillStyle = colK(c, p.k); ctx.fillText(p.t, x0, y + dy); x0 += ww;
+  }
+  return w;
+}
+const pF = f => piezasF(f);
+const pT = (t, k, peso) => ({ t, k: k || 'ink', peso: peso || 700 });
+// Piezas de una ecuación: coeficientes (si no son 1) en fucsia.
+function pEc(fsI, cI, fsD, cD){
+  const ps = [], lado = (fs, cs) => fs.forEach((f, k) => { if (k) ps.push(pT(' + ')); if (cs[k] !== 1) ps.push({ t:String(cs[k]), k:'coef', peso:900 }); ps.push(...pF(f)); });
+  lado(fsI, cI); ps.push(pT('  →  ')); lado(fsD, cD); return ps;
+}
+
+/* ----- Moléculas -----
+   Cada átomo lleva el color de su elemento y, si cabe, su letra. Coordenadas en radios de átomo. */
+const RADIO = { H:0.68, C:1, N:1, O:1, Cl:1.12, Fe:1.15, Zn:1.15, Cu:1.15, Mn:1.15, Cr:1.15 };
+const FORMAS = {
+  H2:[['H',-.62,0],['H',.62,0]], O2:[['O',-.78,0],['O',.78,0]], N2:[['N',-.78,0],['N',.78,0]], Cl2:[['Cl',-.88,0],['Cl',.88,0]], O:[['O',0,0]],
+  H2O:[['H',-.92,.58],['H',.92,.58],['O',0,-.12]],
+  H2O2:[['H',-1.75,.72],['O',-.72,-.12],['O',.72,.12],['H',1.75,-.72]],
+  CO2:[['O',-1.55,0],['O',1.55,0],['C',0,0]], NO:[['N',-.78,0],['O',.78,0]], NO2:[['O',-1.3,.7],['O',1.3,.7],['N',0,0]],
+  CH4:[['H',-.95,-.95],['H',.95,-.95],['H',-.95,.95],['H',.95,.95],['C',0,0]],
+  NH3:[['H',0,-1.25],['H',-1.08,.66],['H',1.08,.66],['N',0,0]],
+  C3H8:[['H',-2.4,-.9],['H',-2.4,.9],['H',-3.1,0],['H',0,-1.25],['H',0,1.25],['H',2.4,-.9],['H',2.4,.9],['H',3.1,0],['C',-1.6,0],['C',0,0],['C',1.6,0]],
+  C4H10:[['H',-3.2,-.9],['H',-3.2,.9],['H',-3.9,0],['H',-.8,-1.25],['H',-.8,1.25],['H',.8,-1.25],['H',.8,1.25],['H',3.2,-.9],['H',3.2,.9],['H',3.9,0],['C',-2.4,0],['C',-.8,0],['C',.8,0],['C',2.4,0]],
+  HCl:[['H',-.95,0],['Cl',.55,0]], ZnCl2:[['Cl',-2.1,0],['Cl',2.1,0],['Zn',0,0]], CuCl2:[['Cl',-2.1,0],['Cl',2.1,0],['Cu',0,0]],
+  FeCl3:[['Cl',0,-2.1],['Cl',-1.85,1.05],['Cl',1.85,1.05],['Fe',0,0]],
+  Fe2O3:[['Fe',-1.95,.45],['Fe',1.95,.45],['O',-3.9,-.45],['O',0,-.45],['O',3.9,-.45]],
+  'MnO4^-':[['O',0,-1.95],['O',0,1.95],['O',-1.95,0],['O',1.95,0],['Mn',0,0]], MnO2:[['O',-1.95,0],['O',1.95,0],['Mn',0,0]],
+  'OH^-':[['O',0,0],['H',.95,-.62]],
+  'Cr2O7^2-':[['O',-1.6,-1.75],['O',-1.6,1.75],['O',-3.35,0],['O',1.6,-1.75],['O',1.6,1.75],['O',3.35,0],['Cr',-1.6,0],['Cr',1.6,0],['O',0,0]],
+};
+function forma(f){
+  const s = MB.especie(f);
+  if (s.electron) return [['e', 0, 0]];
+  const clave = FORMAS[f] ? f : String(f).split('^')[0];
+  if (FORMAS[clave]) return FORMAS[clave];
+  const els = Object.keys(s.atomos);
+  if (els.length === 1 && s.atomos[els[0]] === 1) return [[els[0], 0, 0]];
+  // Cualquier otra (H₁₀O₄, por ejemplo): los átomos en espiral, los pesados al centro.
+  const lista = []; for (const [e, n] of Object.entries(s.atomos)) for (let k = 0; k < n; k++) lista.push(e);
+  lista.sort((a, b) => (a === 'H') - (b === 'H'));
+  return lista.map((e, k) => { const r = 1.25*Math.sqrt(k), a = k*2.4; return [e, r*Math.cos(a), r*Math.sin(a)]; });
+}
+const radioDe = e => e === 'e' ? 0.75 : (RADIO[e] || 1);
+// Lugar que ocupa en el tablero: con carga, un poco más ancho para que el rótulo no pise al vecino.
+function celda(f){ const [x, y] = extension(f), s = MB.especie(f); return s.carga && !s.electron ? [x + 1.5, y + 0.4] : [x, y]; }
+function extension(f){ let x = 0, y = 0; for (const [el, dx, dy] of forma(f)){ x = Math.max(x, Math.abs(dx) + radioDe(el)); y = Math.max(y, Math.abs(dy) + radioDe(el)); } return [x, y]; }
+// Dibuja una molécula; op.ox = { elemento: número de oxidación } escribe el número arriba de cada átomo de esos elementos.
+function molecula(ctx, c, f, x, y, R, op){
+  op = op || {};
+  ctx.save(); ctx.globalAlpha = op.alpha === undefined ? 1 : op.alpha;
+  const s = MB.especie(f), p = forma(f);
+  for (const [e, dx, dy] of p){
+    const r = radioDe(e)*R, px = x + dx*R, py = y + dy*R;
+    ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2);
+    ctx.fillStyle = e === 'e' ? c.e : (c.el[e] || c.ink); ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = r > 4 ? 1.3 : 0.8; ctx.stroke();
+    if (op.hl && (op.hl === e || (op.hl === 'e' && e === 'e'))){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(px, py, r + 2.2, 0, Math.PI*2); ctx.stroke(); }
+    if (r >= 6.5){ ctx.fillStyle = c.letra; ctx.font = `800 ${Math.round(r*(e.length > 1 ? 0.82 : 0.98))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(e === 'e' ? 'e⁻' : e, px, py + 0.5); }
+  }
+  if (op.ox){
+    const hechos = new Set();
+    for (const [e, dx, dy] of p) if (e in op.ox && !hechos.has(e)){
+      hechos.add(e);
+      const r = radioDe(e)*R;
+      ctx.font = `800 ${clamp(R*0.95, 10, 13)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillStyle = c.ink;
+      ctx.fillText(conSigno(op.ox[e]), x + dx*R, y + dy*R - r - 2);
+    }
+  }
+  if (s.carga && !s.electron && R >= 3.6 && !op.sinCarga){
+    const [ex, ey] = extension(f);
+    ctx.font = `800 ${clamp(R*1.25, 9, 14)}px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.ink;
+    ctx.fillText(cargaTxt(s.carga), x + ex*R + 1, y - ey*R + 2);
+  }
+  ctx.restore();
+}
+
+/* ----- La escena -----
+   E.vista.tipo dice qué se dibuja:
+     'tablero': { ec, coefs, tapa, carga:'no'|'tapa'|'si', ox:{ f:{ elemento:número } }, listo:[elementos], aparte:{ de, a }, fichas:{ n, p, de, a } }
+     'frasco':  { ec, ini, p, marcar, conteo }  (antes y después de reaccionar; p anima los átomos)
+     'conserv': { r (de motor.conservacion), fase:'antes'|'despues', p }
+   Nada regala la respuesta antes de responder: la cuenta y la carga se tapan cuando son la respuesta. */
+const ESCENAS = [];
+function crearEscena(cv, idDesc, modoId, idLey){
+  const E = { vista:{ tipo:'tablero', ec:'H2 + O2 -> H2O', coefs:[1, 1, 1] }, hl:null, modoId, anims:[], compacto:false };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, Hn = 0, esc = 1, L = null;
+  const chico = () => W < 560;
+  // Alto natural de cada tipo de vista; en el celular, con una predicción pendiente, se encoge a escala (nucleo/celular.js).
+  function layout(w){
+    const v = E.vista, r = {};
+    if (v.tipo === 'tablero'){
+      const ec = MB.ecuacion(v.ec), els = MB.elementos(ec);
+      // Celular: reactivos arriba y productos abajo, cada caja a todo el ancho. Pantalla grande: lado a lado.
+      r.vertical = w < 560; r.yEc = 22; r.yCaja = 46; r.hCaja = r.vertical ? (E.compacto ? 104 : 118) : 190;
+      r.yCaja2 = r.vertical ? r.yCaja + r.hCaja + 26 : r.yCaja;
+      r.yCnt = r.yCaja2 + r.hCaja + 12;
+      r.filas = els.length + (v.carga && v.carga !== 'no' ? 1 : 0);
+      r.hCnt = 22 + r.filas*24;
+      r.yAp = r.yCnt + r.hCnt + 6; r.hAp = v.aparte ? 108 : 0;
+      r.H = r.yAp + r.hAp + 6;
+    } else if (v.tipo === 'frasco'){
+      r.yEc = 22; r.yF = 44; r.hF = w < 560 ? 170 : 210; r.yPie = r.yF + r.hF + 16; r.H = r.yPie + (v.conteo ? 22 + 24*MB.elementos(MB.ecuacion(v.ec)).length : 26) + 8;
+    } else {
+      r.yEc = 22; r.yF = 70; r.hF = w < 560 ? 190 : 230; r.H = r.yF + r.hF + 64;
+    }
+    return r;
+  }
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    W = w; L = layout(w); Hn = L.H;
+    const h = Math.round(Celular.alto(Hn, E.compacto, { tope:380 })); esc = h/Hn;
+    const dpr = window.devicePixelRatio || 1;
+    if (h !== H || cv.width !== Math.round(w*dpr)){ H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+  };
+  new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; E.resize(); E.dibujar(); };
+  let llave = '';
+  const llaveDe = () => { const v = E.vista; return `${W}|${v.tipo}|${v.ec}|${v.carga}|${!!v.aparte}|${!!v.conteo}|${E.compacto}`; };
+
+  // ----- Tablero: cajas de reactivos y productos con una columna por sustancia -----
+  function columnas(v){
+    const ec = MB.ecuacion(v.ec), nR = ec.reactivos.length, fs = [...ec.reactivos, ...ec.productos].map(t => t.f);
+    const m = 10, gap = 44, vert = L.vertical, bw = vert ? W - 2*m : (W - 2*m - gap)/2;
+    const cajas = vert ? [{ x:m, y:L.yCaja }, { x:m, y:L.yCaja2 }] : [{ x:m, y:L.yCaja }, { x:m + bw + gap, y:L.yCaja }];
+    const cols = fs.map((f, k) => {
+      const lado = k < nR ? 0 : 1, enLado = lado ? fs.length - nR : nR, i = lado ? k - nR : k;
+      const cw = bw/enLado, x0 = cajas[lado].x + cw*i;
+      return { f, k, lado, x0, cw, yCaja: cajas[lado].y, n: v.coefs[k] };
+    });
+    return { cols, cajas, bw, gap, nR, fs, ec, vert };
+  }
+  // Escala común: todas las moléculas del dibujo, del mismo tamaño (un átomo de Zn se ve igual en los dos lados).
+  function escalaComun(cols, hUtil){
+    let R = 13;
+    for (const q of cols){
+      const n = Math.max(1, Math.ceil(q.n)), [ex, ey] = celda(q.f);
+      let mejor = 0;
+      for (let nc = 1; nc <= n; nc++){ const nf = Math.ceil(n/nc), r = Math.min((q.cw - 6)/nc/(2*ex + 0.6), (hUtil - 8)/nf/(2*ey + 0.9)); if (r > mejor) mejor = r; }
+      R = Math.min(R, mejor);
+    }
+    return Math.max(1.6, R);
+  }
+  function posiciones(q, R, y0, hUtil){
+    const n = Math.max(0, Math.round(q.n)), [ex, ey] = celda(q.f), cwM = (2*ex + 0.6)*R, chM = (2*ey + 0.9)*R;
+    const nc = Math.max(1, Math.min(n, Math.floor((q.cw - 6)/cwM))), nf = Math.ceil(n/nc), alto = nf*chM, yA = y0 + (hUtil - alto)/2 + chM/2;
+    const pts = [];
+    for (let i = 0; i < n; i++){ const fila = Math.floor(i/nc), col = i % nc, enFila = Math.min(nc, n - fila*nc);
+      pts.push([q.x0 + q.cw/2 + (col - (enFila - 1)/2)*cwM, yA + fila*chM]); }
+    return pts;
+  }
+  function tablero(c){
+    const v = E.vista, G = columnas(v), cnt = MB.contar(v.ec, v.coefs);
+    // La ecuación arriba.
+    pintarP(ctx, c, pEc(G.fs.slice(0, G.nR), v.coefs.slice(0, G.nR), G.fs.slice(G.nR), v.coefs.slice(G.nR)), W/2, L.yEc, chico() ? 17 : 19, 'center', W - 16, E.hl);
+    // Las dos cajas y la flecha.
+    ctx.save();
+    G.cajas.forEach(({ x, y }, i) => { rr(ctx, x, y, G.bw, L.hCaja, 14); ctx.fillStyle = c.caja; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.stroke();
+      ctx.fillStyle = c.muted; ctx.font = `700 11px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(i ? 'productos' : 'reactivos', x + 8, y + 6); });
+    ctx.strokeStyle = c.ink; ctx.fillStyle = c.ink; ctx.lineWidth = 2.2;
+    if (G.vert){ const xa = W/2, ya = L.yCaja + L.hCaja + 4, yb = L.yCaja2 - 4; linea(ctx, xa, ya, xa, yb); ctx.beginPath(); ctx.moveTo(xa, yb); ctx.lineTo(xa - 5, yb - 7); ctx.lineTo(xa + 5, yb - 7); ctx.closePath(); ctx.fill(); }
+    else { const xa = G.cajas[0].x + G.bw + 6, xb = G.cajas[1].x - 6, ya = L.yCaja + L.hCaja/2; linea(ctx, xa, ya, xb, ya); ctx.beginPath(); ctx.moveTo(xb, ya); ctx.lineTo(xb - 7, ya - 5); ctx.lineTo(xb - 7, ya + 5); ctx.closePath(); ctx.fill(); }
+    ctx.restore();
+    const hUtil = L.hCaja - 44, R = escalaComun(G.cols, hUtil);
+    const lugares = {};
+    for (const q of G.cols){
+      const pts = posiciones(q, R, q.yCaja + 20, hUtil); lugares[q.k] = pts;
+      const ox = v.ox && v.ox[q.f];
+      pts.forEach(([x, y], i) => molecula(ctx, c, q.f, x, y, R, { hl:E.hl, ox: i === 0 ? ox : null, alpha: q.alpha && q.alpha[i] !== undefined ? q.alpha[i] : 1 }));
+      // Debajo: coeficiente y fórmula.
+      const n = v.coefs[q.k];
+      pintarP(ctx, c, [{ t:String(n), k:'coef', peso:900 }, pT(' '), ...pF(q.f)], q.x0 + q.cw/2, q.yCaja + L.hCaja - 14, 14, 'center', q.cw - 2, E.hl);
+    }
+    // Fichas de electrones que viajan (redox).
+    if (v.fichas && v.fichas.p > 0){
+      const F = v.fichas, [xd, yd] = F.de(lugares, R), [xh, yh] = F.a(lugares, R), pe = ease(clamp(F.p, 0, 1));
+      for (let i = 0; i < F.n; i++){
+        const q = clamp(pe*1.15 - i*0.15, 0, 1), hx = xh + (i - (F.n - 1)/2)*15, hy = yh - 2.6*R - 8;
+        const x = xd + (hx - xd)*q, y = yd + (hy - yd)*q - Math.sin(Math.PI*q)*(28 + i*6);
+        ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI*2); ctx.fillStyle = c.e; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 1.2; ctx.stroke();
+        ctx.fillStyle = c.letra; ctx.font = `800 9px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('e⁻', x, y + 0.5);
+      }
+    }
+    // La cuenta.
+    ctx.save(); ctx.strokeStyle = c.line; linea(ctx, 12, L.yCnt - 4, W - 12, L.yCnt - 4); ctx.restore();
+    const xL = G.vert ? W*0.36 : G.cajas[0].x + G.bw/2, xR = G.vert ? W*0.8 : G.cajas[1].x + G.bw/2, xM = (xL + xR)/2, anc = G.vert ? W*0.4 : G.bw;
+    pintarP(ctx, c, [pT(G.vert ? 'en los reactivos' : 'átomos a la izquierda', 'muted', 700)], xL, L.yCnt + 8, 11, 'center', anc);
+    pintarP(ctx, c, [pT(G.vert ? 'en los productos' : 'átomos a la derecha', 'muted', 700)], xR, L.yCnt + 8, 11, 'center', anc);
+    let y = L.yCnt + 30;
+    const fila = (etq, a, b, igual, kColor) => {
+      pintarP(ctx, c, etq, 14, y, 14, 'left', 60, E.hl);
+      if (v.tapa && kColor !== 'carga'){ pintarP(ctx, c, [pT('?', 'muted', 800)], xL, y, 16, 'center'); pintarP(ctx, c, [pT('?', 'muted', 800)], xR, y, 16, 'center'); }
+      else {
+        pintarP(ctx, c, [{ t:a, k:kColor === 'carga' ? 'ink' : kColor, peso:900 }], xL, y, 16, 'center');
+        pintarP(ctx, c, [{ t:b, k:kColor === 'carga' ? 'ink' : kColor, peso:900 }], xR, y, 16, 'center');
+        if (igual !== null) pintarP(ctx, c, [pT(igual ? '=' : '≠', 'ink', 900)], xM, y, 18, 'center');
+      }
+      y += 24;
+    };
+    for (const e of cnt.elementos){
+      const listo = v.listo && v.listo.includes(e);
+      fila([{ t:e, k:e, peso:900 }, ...(listo ? [pT(' ✓', 'ink', 900)] : [])], fmt(cnt.izq[e], 2), fmt(cnt.der[e], 2), cnt.izq[e] === cnt.der[e], e);
+    }
+    if (v.carga === 'si') fila([pT('carga', 'ink', 800)], conSigno(cnt.cargaIzq), conSigno(cnt.cargaDer), cnt.cargaIzq === cnt.cargaDer, 'carga');
+    else if (v.carga === 'tapa'){ pintarP(ctx, c, [pT('carga', 'ink', 800)], 14, y, 14, 'left', 60); pintarP(ctx, c, [pT('responde para verla', 'muted', 700)], xM, y, 12, 'center', W - 90); y += 24; }
+    // Aparte: cambiar el subíndice cambia la sustancia.
+    if (v.aparte){
+      const A = v.aparte, yA = L.yAp, h = L.hAp;
+      ctx.save(); rr(ctx, 10, yA, W - 20, h, 14); ctx.setLineDash([5, 4]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore();
+      const Ra = Math.min(10, (h - 50)/4), x1 = W*0.27, x2 = W*0.73, ym = yA + 34;
+      molecula(ctx, c, A.de, x1, ym, Ra, { hl:E.hl }); molecula(ctx, c, A.a, x2, ym, Ra, { hl:E.hl });
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; linea(ctx, W/2 - 18, ym, W/2 + 14, ym); ctx.beginPath(); ctx.moveTo(W/2 + 14, ym); ctx.lineTo(W/2 + 8, ym - 4); ctx.lineTo(W/2 + 8, ym + 4); ctx.closePath(); ctx.fillStyle = c.muted; ctx.fill(); ctx.restore();
+      pintarP(ctx, c, [...pF(A.de), pT(' agua', 'ink', 700)], x1, yA + h - 36, 13, 'center', W*0.42);
+      pintarP(ctx, c, [...pF(A.a), pT(' agua oxigenada', 'ink', 700)], x2, yA + h - 36, 13, 'center', W*0.42);
+      pintarP(ctx, c, [pT('cambiar un subíndice cambia la sustancia', 'muted', 700)], W/2, yA + h - 14, 11, 'center', W - 30);
+    }
+  }
+
+  // ----- Frasco: antes y después -----
+  // Cada átomo del "antes" viaja a su lugar en el "después" (se conservan los átomos de cada elemento).
+  function lugaresFrasco(cant, x, y, w, h, sem){
+    const lista = []; for (const [f, n] of Object.entries(cant)) for (let i = 0; i < n; i++) lista.push(f);
+    const n = lista.length, nc = Math.ceil(Math.sqrt(n*w/h)), nf = Math.ceil(n/nc), cw = w/nc, ch = h/nf, rnd = azar(sem);
+    return lista.map((f, i) => ({ f, x: x + cw*(i % nc + 0.5) + (rnd() - .5)*cw*0.25, y: y + ch*(Math.floor(i/nc) + 0.5) + (rnd() - .5)*ch*0.2 }));
+  }
+  function atomosDe(ms, R){ const r = []; for (const m of ms) for (const [e, dx, dy] of forma(m.f)) r.push({ e, x: m.x + dx*R, y: m.y + dy*R }); return r; }
+  function frasco(c){
+    const v = E.vista, fr = MB.frasco(v.ec, v.ini), m = 12, gap = chico() ? 26 : 40, fw = (W - 2*m - gap)/2, xs = [m, m + fw + gap];
+    pintarP(ctx, c, v.marcar ? [pT('Reacción: ', 'ink', 700), ...pEcTexto(fr.ecuacion)] : [pT('Un frasco cerrado: antes y después de reaccionar', 'muted', 700)], W/2, L.yEc, chico() ? 15 : 17, 'center', W - 16, E.hl);
+    xs.forEach((x, i) => {
+      rr(ctx, x, L.yF, fw, L.hF, 18); ctx.fillStyle = c.caja; ctx.fill(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 3; ctx.stroke();
+      ctx.fillStyle = c.muted; ctx.font = `700 11px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(i ? 'después' : 'antes', x + 10, L.yF + 7);
+    });
+      const R = chico() ? 8 : 10, pad = 26;
+    const antes = lugaresFrasco(v.ini, xs[0] + 8, L.yF + pad, fw - 16, L.hF - pad - 10, 7);
+    const despues = lugaresFrasco(Object.fromEntries(Object.entries(fr.final).filter(([, n]) => n > 0)), xs[1] + 8, L.yF + pad, fw - 16, L.hF - pad - 10, 11);
+    for (const q of antes) molecula(ctx, c, q.f, q.x, q.y, R, { hl:E.hl });
+    const p = v.p === undefined ? 1 : v.p;
+    if (p >= 1) for (const q of despues) molecula(ctx, c, q.f, q.x, q.y, R, { hl:E.hl });
+    else {
+      // Los átomos del "antes", corridos al frasco de la derecha, viajan a su lugar final.
+      const a0 = atomosDe(antes.map(q => ({ ...q, x: q.x + xs[1] - xs[0] })), R), a1 = atomosDe(despues, R), usados = new Set();
+      const pe = ease(p);
+      for (const at of a1){
+        let j = -1, dmin = Infinity;
+        a0.forEach((b, k) => { if (!usados.has(k) && b.e === at.e){ const d = Math.hypot(b.x - at.x, b.y - at.y); if (d < dmin){ dmin = d; j = k; } } });
+        usados.add(j); const b = a0[j] || at, x = b.x + (at.x - b.x)*pe, y = b.y + (at.y - b.y)*pe, r = radioDe(at.e)*R;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = c.el[at.e]; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 1; ctx.stroke();
+      }
+    }
+    // Lo que sobra, marcado.
+    if (v.marcar && p >= 1){
+      for (const q of despues) if (fr.sobrante[q.f]){
+        const [ex, ey] = extension(q.f);
+        ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.ellipse(q.x, q.y, ex*R + 6, ey*R + 6, 0, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+        pintarP(ctx, c, [pT('sobra', 'ink', 800)], q.x, q.y + ey*R + 15, 11, 'center');
+      }
+    }
+    // Pie: qué hay en cada frasco (y la masa, o la cuenta de átomos).
+    const lista = (cant) => { const ps = []; Object.entries(cant).filter(([, n]) => n > 0).forEach(([f, n], i) => { if (i) ps.push(pT(' + ')); ps.push(pT(`${n} `, 'ink', 800), ...pF(f)); }); return ps; };
+    pintarP(ctx, c, lista(v.ini), xs[0] + fw/2, L.yPie, 13, 'center', fw);
+    pintarP(ctx, c, lista(fr.final), xs[1] + fw/2, L.yPie, 13, 'center', fw);
+    if (v.conteo){
+      let y = L.yPie + 22;
+      pintarP(ctx, c, [pT(`masa: ${fmt(fr.masaAntes, 1)} u`, 'ink', 800)], xs[0] + fw/2, y, 13, 'center', fw);
+      pintarP(ctx, c, [pT(`masa: ${fmt(fr.masaDespues, 1)} u`, 'ink', 800)], xs[1] + fw/2, y, 13, 'center', fw);
+      const at = cant => { const r = {}; for (const [f, n] of Object.entries(cant)) for (const [e, k] of Object.entries(MB.atomos(f))) r[e] = (r[e] || 0) + n*k; return r; };
+      const A = at(v.ini), B = at(fr.final);
+      for (const e of Object.keys(A)){ y += 24;
+        pintarP(ctx, c, [pT(`${A[e]} átomos de `, 'ink', 700), { t:e, k:e, peso:900 }], xs[0] + fw/2, y, 13, 'center', fw, E.hl);
+        pintarP(ctx, c, [pT(`${B[e]} átomos de `, 'ink', 700), { t:e, k:e, peso:900 }], xs[1] + fw/2, y, 13, 'center', fw, E.hl); }
+    }
+  }
+  const pEcTexto = e => { const [a, b] = String(e).split(' -> '), lado = s => s.split(' + ').map(t => { const m = t.match(/^(\d*)(.+)$/); return [m[2], m[1] ? Number(m[1]) : 1]; });
+    const A = lado(a), B = lado(b); return pEc(A.map(x => x[0]), A.map(x => x[1]), B.map(x => x[0]), B.map(x => x[1])); };
+
+  // ----- Conservación: dos frascos sobre balanzas digitales (cerrado y abierto) -----
+  function conserv(c){
+    const v = E.vista, r = v.r, m = 12, gap = chico() ? 22 : 40, fw = (W - 2*m - gap)/2, xs = [m, m + fw + gap];
+    pintarP(ctx, c, [pT('Zinc con ácido clorhídrico: ', 'ink', 700), ...pEcTexto('Zn + 2HCl -> ZnCl2 + H2')], W/2, L.yEc, chico() ? 14 : 16, 'center', W - 16, E.hl);
+    const p = v.fase === 'despues' ? (v.p === undefined ? 1 : v.p) : 0, pe = ease(p);
+    xs.forEach((x, i) => {
+      const cx = x + fw/2, yb = L.yF + L.hF, cuello = fw*0.22, base = fw*0.8, hF = L.hF*0.62, yC = yb - hF, yTop = yC - 26;
+      // Erlenmeyer.
+      ctx.save(); ctx.beginPath();
+      ctx.moveTo(cx - cuello/2, yTop); ctx.lineTo(cx - cuello/2, yC); ctx.lineTo(cx - base/2, yb - 8); ctx.quadraticCurveTo(cx - base/2, yb, cx - base/2 + 8, yb);
+      ctx.lineTo(cx + base/2 - 8, yb); ctx.quadraticCurveTo(cx + base/2, yb, cx + base/2, yb - 8); ctx.lineTo(cx + cuello/2, yC); ctx.lineTo(cx + cuello/2, yTop);
+      ctx.fillStyle = c.caja; ctx.fill(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 3; ctx.stroke();
+      if (i === 0){ ctx.fillStyle = c.vidrio; rr(ctx, cx - cuello/2 - 4, yTop - 12, cuello + 8, 14, 4); ctx.fill(); }
+      ctx.restore();
+      // Contenido: 3 Zn y 6 HCl antes; 3 ZnCl2 y 3 H2 después. En el abierto, el H2 sale por la boca.
+      const R = chico() ? 7 : 9;
+      const zona = (n, fila) => Array.from({ length:n }, (_, k) => [cx + (k - (n - 1)/2)*base*(fila ? 0.62 : 0.8)/n, yb - 20 - fila*28]);
+      if (p < 1){
+        zona(3, 0).forEach(([x0, y0]) => molecula(ctx, c, 'Zn', x0, y0, R*1.1, { hl:E.hl, alpha:1 - pe }));
+        // 8 HCl: reaccionan 6 con los 3 Zn y sobran 2 (el ácido está de sobra).
+        zona(8, 1).forEach(([x0, y0], k) => molecula(ctx, c, 'HCl', x0, y0, R*0.85, { hl:E.hl, alpha: k === 0 || k === 7 ? 1 : 1 - pe }));
+      }
+      if (p >= 1) [zona(8, 1)[0], zona(8, 1)[7]].forEach(([x0, y0]) => molecula(ctx, c, 'HCl', x0, y0, R*0.85, { hl:E.hl }));
+      if (p > 0){
+        zona(3, 0).forEach(([x0, y0]) => molecula(ctx, c, 'ZnCl2', x0, y0, R*0.8, { hl:E.hl, alpha:pe }));
+        const hs = i === 0 ? [[cx - cuello*0.25, yC - 4], [cx + cuello*0.25, yC + 12], [cx, yC + 30]] : [[cx - 18, yTop - 14], [cx + 16, yTop - 26], [cx - 4, yTop - 38]];
+        hs.forEach(([x1, y1], k) => { const x0 = cx + (k - 1)*12, y0 = yb - 40; molecula(ctx, c, 'H2', x0 + (x1 - x0)*pe, y0 + (y1 - y0)*pe, R, { hl:E.hl, alpha:clamp(pe*1.5, 0, 1) }); });
+      }
+      // Balanza digital.
+      const bw = fw*0.92, yB = yb + 4;
+      ctx.save(); rr(ctx, cx - bw/2, yB, bw, 30, 8); ctx.fillStyle = c.vidrio; ctx.fill();
+      rr(ctx, cx - bw*0.34, yB + 5, bw*0.68, 20, 5); ctx.fillStyle = c.paper; ctx.fill(); ctx.restore();
+      const lect = v.fase === 'antes' ? r.cerrado : p < 1 ? null : (i === 0 ? r.cerrado : r.abierto);
+      pintarP(ctx, c, [pT(lect === null ? '… g' : v.oculta && v.fase === 'despues' ? '? g' : `${fmt2(lect)} g`, lect === null ? 'muted' : 'ink', 900)], cx, yB + 15.5, 14, 'center', bw*0.64);
+      pintarP(ctx, c, [pT(i === 0 ? 'cerrado (con tapón)' : 'abierto', 'ink', 800)], cx, yB + 46, 13, 'center', fw);
+    });
+  }
+
+  E.dibujar = () => {
+    const w = cv.clientWidth; if (!w) return;
+    if (!L || llave !== llaveDe() || w !== W){ E.resize(); llave = llaveDe(); }
+    const c = colores(), dpr = window.devicePixelRatio || 1;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    // Compacto: todo el dibujo a escala, centrado.
+    ctx.setTransform(dpr*esc, 0, 0, dpr*esc, dpr*(W - W*esc)/2, 0);
+    const v = E.vista;
+    if (v.tipo === 'tablero') tablero(c); else if (v.tipo === 'frasco') frasco(c); else conserv(c);
+    const ley = leyendaHTML(v), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+  };
+  // Para lector de pantalla: solo lo que ya se puede saber.
+  E.describir = () => {
+    const v = E.vista; let t = '';
+    if (v.tipo === 'tablero'){
+      const cnt = MB.contar(v.ec, v.coefs);
+      t = `Ecuación: ${txtEc(MB.escribir(v.ec, v.coefs))}. `;
+      t += v.tapa ? 'La cuenta de átomos está tapada hasta que respondas. ' : `Átomos a la izquierda y a la derecha: ${cnt.elementos.map(e => `${NOMBRE[e]}, ${cnt.izq[e]} y ${cnt.der[e]}`).join('; ')}. ${cnt.atomosBalanceados ? 'Los átomos están balanceados.' : 'Los átomos no están balanceados.'} `;
+      if (v.carga === 'si') t += `Carga: ${conSigno(cnt.cargaIzq)} a la izquierda y ${conSigno(cnt.cargaDer)} a la derecha. `;
+      if (v.ox) t += `Números de oxidación: ${Object.entries(v.ox).map(([f, o]) => `${txt(f)}, ${Object.entries(o).map(([e, n]) => `${e} ${conSigno(n)}`).join(' y ')}`).join('; ')}. `;
+      if (v.aparte) t += `Aparte: ${txt(v.aparte.de)} es agua y ${txt(v.aparte.a)}, agua oxigenada: otra sustancia. `;
+    } else if (v.tipo === 'frasco'){
+      const fr = MB.frasco(v.ec, v.ini);
+      t = `Frasco antes: ${Object.entries(v.ini).map(([f, n]) => `${n} ${txt(f)}`).join(' y ')}. Después: ${Object.entries(fr.final).filter(([, n]) => n).map(([f, n]) => `${n} ${txt(f)}`).join(' y ')}. `;
+      if (v.marcar) t += `La ecuación es ${txtEc(fr.ecuacion)}; lo que sobra no reaccionó. `;
+      if (v.conteo) t += `Masa antes y después: ${fmt(fr.masaAntes, 1)} u. `;
+    } else {
+      t = v.fase === 'antes' || v.oculta ? `Los dos frascos marcan ${fmt2(v.r.cerrado)} gramos al empezar. ` : `Al final, el frasco cerrado marca ${fmt2(v.r.cerrado)} g y el abierto ${fmt2(v.r.abierto)} g: el hidrógeno se escapó por la boca.`;
+    }
+    const el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t;
+  };
+  return E;
+}
+function elementosVistos(v){
+  const s = new Set(), agregar = f => { for (const e of Object.keys(MB.especie(f).atomos)) s.add(e); };
+  if (v.tipo === 'tablero' || v.tipo === 'frasco'){ const ec = MB.ecuacion(v.ec); for (const t of [...ec.reactivos, ...ec.productos]) agregar(t.f); if (v.aparte) agregar(v.aparte.a); }
+  else ['Zn', 'HCl'].forEach(agregar);
+  return [...s];
+}
+function leyendaHTML(v){
+  const it = elementosVistos(v).map(e => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--e-${e})"/></svg>${e} · ${NOMBRE[e]}</span>`);
+  if (v.tipo === 'tablero') it.push(`<span><i style="background:var(--c-coef)"></i>coeficiente · cuántas moléculas</span>`);
+  const ec = v.ec ? MB.ecuacion(v.ec) : null;
+  if ((ec && [...ec.reactivos, ...ec.productos].some(t => t.f === 'e^-')) || (v.fichas && v.fichas.p > 0)) it.push(`<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--c-e)"/></svg>e⁻ · electrón</span>`);
+  if (v.ox) it.push(`<span>+2 · número de oxidación, en tinta</span>`);
+  return it.join('');
+}
+// Resaltar en el dibujo lo que se toca en el texto (regla 4).
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un bucle que solo corre mientras algo se mueve.
+let RAF = 0, ULT = 0;
+function pedir(){ if (!RAF){ ULT = performance.now(); RAF = requestAnimationFrame(tick); } }
+function tick(now){
+  RAF = 0; const dt = Math.min(0.05, (now - ULT)/1000); ULT = now; let sigue = false;
+  for (const E of ESCENAS){
+    if (document.getElementById(E.modoId).hidden) continue;
+    for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(Math.max(0, f)); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
+    E.dibujar();
+  }
+  if (sigue) pedir();
+}
+// Animación de dur segundos; con movimiento reducido, de una vez.
+function animar(E, dur, paso, fin, retraso){
+  if (RM){ paso(1); if (fin) fin(); E.dibujar(); return; }
+  E.anims.push({ t:-(retraso || 0), dur, paso, fin }); pedir();
+}
+function cortar(E){ E.anims = []; }
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${'abcd'.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${'abcd'.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+const tablero = (ec, coefs, extra) => ({ tipo:'tablero', ec, coefs: coefs || MB.ecuacion(ec).reactivos.concat(MB.ecuacion(ec).productos).map(() => 1), ...(extra || {}) });
+// Números de oxidación de cada sustancia (del motor), para escribirlos sobre sus átomos.
+function oxDe(ec, solo){ const r = {}, e = MB.ecuacion(ec); for (const t of [...e.reactivos, ...e.productos]) if (!MB.especie(t.f).electron){ const o = MB.oxidacion(t.f).porElemento, q = {}; for (const el of solo) if (el in o) q[el] = o[el]; if (Object.keys(q).length) r[t.f] = q; } return r; }
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problemas de docs/investigacion/estequiometria-ideas-erroneas.md («Ecuación química y balance», ES8 a ES12;
+   «Conservación de la masa», ES13 y ES14; la fila de «Balance redox ion-electrón» de lo que no tiene respaldo) y de
+   docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md (EC9). */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1');
+const S = { step:0, max:0, pred:{} };
+// Todo sale del motor: el balance del agua y sus errores, el frasco, el propano, el redox y la semirreacción.
+const AGUA = 'H2 + O2 -> H2O', BA = MB.balancear(AGUA), SUBS = BA.errores.subindices, SOLO = BA.errores.unSoloCoeficiente[0];
+const sH2O2 = SUBS.find(s => s.cambiada === 'H2O2'), sO = SUBS.find(s => s.cambiada === 'O');
+const INI = { H2:5, O2:2 }, FR = MB.frasco(AGUA, INI);
+const PROP = 'C3H8 + O2 -> CO2 + H2O', BP = MB.balancear(PROP);
+const ZN = 'Zn + CuCl2 -> ZnCl2 + Cu', RX = MB.redox(ZN), OX_ZN = oxDe(ZN, ['Zn', 'Cu', 'Cl']);
+const SEMI = MB.semirreaccion('MnO4^-', 'Mn^2+', 'acido'), SIN_E = 'MnO4^- + H^+ -> Mn^2+ + H2O';
+const COEF_SIN_E = [1, 8, 1, 4], SEMI_EC = 'MnO4^- + H^+ + e^- -> Mn^2+ + H2O', COEF_SEMI = [1, 8, SEMI.electrones, 1, 4];
+const GLOB = MB.ionElectron(['Fe^2+', 'Fe^3+'], ['MnO4^-', 'Mn^2+'], 'acido');
+
+const P1 = { id:'balance-paso2', ok:'b', opts:[
+  ['a', `Cambiar ${Fh(sH2O2.formula)} por ${Fh(sH2O2.cambiada)}: así quedan 2 O a cada lado`, 'ES11-cambia-subindice', 'parcial'],
+  ['b', `Poner ${C_(BA.coefs[0])} delante del ${Fh('H2')} y del ${Fh('H2O')}: así quedan 4 H y 2 O a cada lado`],
+  ['c', `Cambiar ${Fh(sO.formula)} por ${Fh(sO.cambiada)}: así queda 1 O a cada lado`, 'ES11-cambia-subindice-reactivo', 'parcial'],
+  ['d', `Poner ${C_(SOLO.coefs[2])} delante del ${Fh('H2O')}: así quedan 2 O a cada lado`, 'ES12-un-solo-coeficiente', 'documentado']],
+  fb:{ b:'¡Bien! Los coeficientes dicen cuántas moléculas hay; la fórmula de cada sustancia no se toca. Mira el tablero: aparecen una molécula de H₂ y una de H₂O más, y quedan 4 H y 2 O a cada lado.',
+    a:'Elegiste la 1. Los átomos cuadran, pero H₂O₂ ya no es agua: es agua oxigenada, otra sustancia (blanquea y no se toma). El subíndice dice cuántos átomos tiene una molécula; si lo cambias, cambias la molécula. Confundir subíndices con coeficientes está documentado: en otra pregunta, cerca del 40 % de 79 escolares argentinos juntó todos los átomos en una sola fórmula (Casado y Raviolo, 2005). Cambiar un subíndice para balancear no tiene un dato propio. La correcta está marcada.',
+    c:'Elegiste la 3. Así cuadran los átomos, pero el oxígeno del aire no viene en átomos sueltos: viene en moléculas de O₂. Cambiar el subíndice cambia la sustancia. Confundir subíndices con coeficientes está documentado: en otra pregunta, cerca del 40 % de 79 escolares argentinos juntó todos los átomos en una sola fórmula (Casado y Raviolo, 2005). Cambiar un subíndice para balancear no tiene un dato propio. La correcta está marcada.',
+    d:'Elegiste la 4. El O quedó bien, pero ahora hay 2 H a la izquierda y 4 a la derecha. Después de cada cambio hay que volver a contar todos los elementos. Balancear sin contar cada elemento a los dos lados aparece en un estudio con 32 escolares de Indonesia: cerca de 1 de cada 5 lo sostuvo con confianza alta (Christianto y otros, 2025). La correcta está marcada.' } };
+const P2 = { id:'balance-paso4', ok:'b', opts:[
+  ['a', EQ(FR.errores.conSobrante), 'ES9-sobrante-en-la-ecuacion', 'documentado'],
+  ['b', EQ(FR.ecuacion)],
+  ['c', EQ(FR.errores.juntaTodo), 'ES11-junta-todo-en-una-formula', 'documentado'],
+  ['d', EQ(FR.errores.conCantidades), 'ES9-cantidades-del-frasco', 'documentado']],
+  fb:{ b:'¡Bien! La ecuación dice qué reacciona y en qué proporción: 2 moléculas de H₂ por cada una de O₂. Pasó dos veces, y una molécula de H₂ no encontró pareja. Mira cómo se reacomodan los átomos.',
+    a:'Elegiste la 1. Esa ecuación copia el frasco, pero dice que se forma H₂, y el H₂ que sobra no se formó: estaba desde el principio y no reaccionó. Lo que sobra es un dato del problema, no de la ecuación. Con 42 universitarios argentinos, cerca del 79 % eligió escribir lo que sobra dentro de la ecuación (Raviolo y Lerzo, 2016). La correcta está marcada.',
+    c:'Elegiste la 3. En el frasco no se formó una molécula gigante H₁₀O₄: se formaron moléculas de agua. Juntar todos los átomos en una sola fórmula es confundir subíndices con coeficientes. En un estudio con 79 escolares argentinos, cerca del 40 % eligió una opción así (Casado y Raviolo, 2005). La correcta está marcada.',
+    d:'Elegiste la 4. Esa ecuación usa las cantidades del frasco y no está balanceada: tiene 10 H a la izquierda y 8 a la derecha. En un problema numérico, el 17 % de 42 universitarios escribió la ecuación con las cantidades del enunciado (Raviolo y Lerzo, 2016). La correcta está marcada.' } };
+const P3 = { id:'balance-paso6', ok:'b', opts:[
+  ['a', String(BP.errores.olvida.O.suma), 'ES12-olvida-el-oxigeno', 'documentado'],
+  ['b', String(BP.suma)],
+  ['c', String(BP.errores.sinContarUnos), 'suma-sin-contar-el-1', 'hipotesis'],
+  ['d', String(BP.errores.doble), 'no-simplifica', 'hipotesis']],
+  fb:{ b:`¡Bien! 1 + 5 + 3 + 4 = ${BP.suma}. Mira el tablero: primero el C, después el H y al final el O.`,
+    a:`Elegiste la 1. Salió de balancear el C y el H y no volver a contar el O: con ${txtEc(BP.errores.olvida.O.ecuacion)} hay 2 O a la izquierda y 10 a la derecha. Balancear sin contar cada elemento aparece en un estudio con 32 escolares de Indonesia: cerca de 1 de cada 5 lo sostuvo con confianza alta (Christianto y otros, 2025). La correcta está marcada.`,
+    c:`Elegiste la 3. El coeficiente del C₃H₈ es 1: no se escribe, pero sí se suma. ${BP.suma} − 1 = ${BP.errores.sinContarUnos}. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`Elegiste la 4. 2, 10, 6 y 8 también balancean, pero no son los menores enteros: todos se dividen entre 2. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P4 = { id:'balance-paso7', ok:'b', opts:[
+  ['a', `Se oxida el ${Fh('Zn')} y el agente oxidante es el ${Fh('Zn')}: el que se oxida es el oxidante`, 'agente-es-el-que-se-oxida', 'hipotesis'],
+  ['b', `Se oxida el ${Fh('Zn')} y el agente oxidante es el ${Fh(RX.agenteOxidante[0])}: su cobre le quita 2 electrones al Zn`],
+  ['c', `Se oxida el ${Fh(RX.errores.alReves.seOxida[0])} y el agente oxidante es el ${Fh(RX.errores.alReves.agenteOxidante[0])}: el Cu gana 2 electrones`, 'EC9-definiciones-al-reves', 'parcial'],
+  ['d', 'No se oxida nadie y no hay agente oxidante: ningún elemento gana ni pierde oxígeno', 'EC9-oxidar-es-ganar-oxigeno', 'documentado']],
+  fb:{ b:'¡Bien! El Zn pasa de 0 a +2: pierde 2 electrones, se oxida y es el agente reductor. El cobre pasa de +2 a 0: gana esos 2 electrones, se reduce, y el CuCl₂ que lo trae es el agente oxidante. Mira las fichas.',
+    a:'Elegiste la 1. El Zn sí se oxida, pero por eso es el agente reductor: el agente oxidante es el que oxida al otro, y para eso se reduce él. Confundir el que se oxida con el agente oxidante es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    c:'Elegiste la 3. Oxidarse es perder electrones y reducirse es ganarlos. El Cu gana 2 electrones: se reduce. Hay alumnos que leen "reducir" como "perder", porque en el lenguaje diario reducir es disminuir; en São Paulo se encontró en varios estudiantes, sin porcentaje (Caramel y Pacca, 2011). La correcta está marcada.',
+    d:'Elegiste la 4. Oxidar no es ganar oxígeno: es perder electrones. Aquí no hay oxígeno y el Zn igual pasa de 0 a +2. Un estudio con 59 escolares turcos de 11.º grado, después de la enseñanza, encontró que cerca del 12 % sostenía que oxidar es agregar oxígeno (Şen y otros, 2016). La correcta está marcada.' } };
+const P5 = { id:'balance-paso8', ok:'c', opts:[
+  ['a', `${E_(SEMI.errores.numeroOxidacion + ' e⁻')} a la izquierda: el Mn tiene +7`, 'redox-electrones-numero-de-oxidacion', 'hipotesis'],
+  ['b', `${E_(SEMI.electrones + ' e⁻')} a la derecha: el Mn pierde 5`, 'redox-electrones-lado-equivocado', 'hipotesis'],
+  ['c', `${E_(SEMI.electrones + ' e⁻')} a la izquierda: el Mn gana 5`],
+  ['d', `${E_(SEMI.errores.cargaDelIon + ' e⁻')} a la izquierda: la carga pasa de −1 a +2`, 'redox-carga-sin-los-H', 'hipotesis']],
+  fb:{ c:'¡Bien! A la izquierda la carga es −1 + 8 = +7; a la derecha, +2. Con 5 e⁻ a la izquierda queda +2 a cada lado. Y el Mn pasa de +7 a +2: gana 5 electrones, se reduce. Mira la carga en la cuenta.',
+    a:'Elegiste la 1. +7 es el número de oxidación del Mn, pero no todos esos electrones se ganan: el Mn llega a +2, así que gana 7 − 2 = 5. Con 7 e⁻ la carga quedaría 0 contra +2. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    b:'Elegiste la 2. El número es el correcto, pero el lado no: el Mn baja de +7 a +2, así que gana electrones y van a la izquierda, con los reactivos. Con 5 e⁻ a la derecha la carga queda +7 contra −3. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    d:'Elegiste la 4. −1 y +2 son las cargas de los iones, pero los 8 H⁺ también tienen carga: la izquierda suma +7, no −1. Primero se igualan los átomos y después se cuenta la carga de todo. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+
+// Vistas de cada paso (r: true si ya respondió; false si está por responder).
+const vAgua = (coefs, r, alpha) => tablero(AGUA, coefs, { aparte: r ? { de:'H2O', a:'H2O2' } : null });
+const vFrasco = (r, p, conteo) => ({ tipo:'frasco', ec:AGUA, ini:INI, p: p === undefined ? 1 : p, marcar: !!r, conteo: !!conteo });
+const vProp = (coefs, listo) => tablero(PROP, coefs, { listo });
+const vZn = (r, p) => tablero(ZN, [1, 1, 1, 1], { ox: r ? OX_ZN : null, fichas: r ? { n:RX.electrones, p, de:(l) => l[0][0], a:(l) => l[1][0] } : null });
+const vSemi = (r, n) => r ? tablero(SEMI_EC, [1, 8, n, 1, 4], { carga:'si' }) : tablero(SIN_E, COEF_SIN_E, { carga:'tapa' });
+const vGlobal = () => tablero('MnO4^- + Fe^2+ + H^+ -> Mn^2+ + Fe^3+ + H2O', [GLOB.coef('MnO4^-'), GLOB.coef('Fe^2+'), GLOB.coef('H^+'), GLOB.coef('Mn^2+'), GLOB.coef('Fe^3+'), GLOB.coef('H2O')], { carga:'si' });
+
+const steps = [
+ { k:'Paso 1', t:'El problema', vista:() => vAgua([1, 1, 1]),
+   body:() => `<p class="problem">El hidrógeno arde con el oxígeno y forma agua. Tal como está escrita, la ecuación es ${EQ(AGUA)}. ¿Está balanceada?</p>
+   <p>En una reacción los átomos no aparecen ni desaparecen: solo se separan y se vuelven a juntar en moléculas nuevas. Por eso la ecuación tiene que tener los mismos átomos de cada elemento a los dos lados. Balancear es contar.</p>
+   <p>Arriba, el tablero muestra las moléculas de los reactivos (izquierda) y de los productos (derecha). Abajo está la cuenta: hay 2 átomos de ${Fh('H')} a cada lado, pero 2 de ${Fh('O')} a la izquierda y 1 a la derecha. Falta un O.</p>
+   <p class="hint">Cada elemento tiene su color en el texto, en las moléculas y en la cuenta: ${Fh('H')} el hidrógeno y ${Fh('O')} el oxígeno. El ${C_('coeficiente')}, el número grande delante de una fórmula, va en fucsia. Toca un color del texto para resaltarlo en el dibujo.</p>
+   <p class="hint">Una reacción se nota por sus evidencias: sale un gas, cambia el color, aparece un sólido (un precipitado) o se libera o absorbe calor. Aquí el hidrógeno arde con una llama y se forma vapor de agua.</p>` },
+ { k:'Paso 2', t:'Antes de mirar, predice', gate:P1, vista:r => r ? vAgua(BA.coefs, true) : vAgua([1, 1, 1]),
+   body:() => `<p>¿Cuál de estos cambios es una forma correcta de balancear ${EQ(AGUA)}?</p>${opcionesHTML(P1.opts, 'fb')}` },
+ { k:'Paso 3', t:'Coeficiente o subíndice', vista:() => vAgua(BA.coefs, true),
+   body:() => `<p>El <b>subíndice</b> (el número chico, abajo) dice cuántos átomos hay en <b>una</b> molécula: ${Fh('H2O')} tiene 2 H y 1 O. El <b>${C_('coeficiente')}</b> (el número grande, delante) dice cuántas moléculas hay: ${C_(2)}${Fh('H2O')} son dos moléculas de agua.</p>
+   <div class="eqs">
+     <div class="eq"><span class="ex">${EQ(BA.ecuacion)}</span></div>
+     <div class="eq"><span class="ex">${Fh('H')}: ${C_(2)}&nbsp;×&nbsp;2&nbsp;=&nbsp;4 &nbsp;→&nbsp; ${C_(2)}&nbsp;×&nbsp;2&nbsp;=&nbsp;4</span><span class="ex">${Fh('O')}: ${C_(1)}&nbsp;×&nbsp;2&nbsp;=&nbsp;2 &nbsp;→&nbsp; ${C_(2)}&nbsp;×&nbsp;1&nbsp;=&nbsp;2</span><span class="note">Átomos de un elemento = coeficiente × subíndice, sumado en cada sustancia del lado.</span></div>
+   </div>
+   <p>Si cambias el subíndice, cambias la sustancia: ${Fh('H2O2')} es agua oxigenada, no agua (lo ves aparte, abajo del tablero). Al balancear solo se mueven los coeficientes. Y ${C_(2)}${Fh('H')} no es ${Fh('H2')}: dos átomos sueltos no son una molécula.</p>
+   <p class="fuente">Confundir coeficientes con subíndices (ES11): en otra pregunta, cerca del 40 % de 79 escolares argentinos juntó todos los átomos en una sola fórmula (Casado y Raviolo, 2005); cambiar un subíndice para balancear no tiene un dato propio. Balancear sin contar todos los elementos (ES12): cerca de 1 de cada 5 de 32 escolares de Indonesia lo sostuvo con confianza alta (Christianto y otros, 2025).</p>` },
+ { k:'Paso 4', t:'Lo que hay en el frasco', gate:P2, vista:r => vFrasco(r),
+   body:() => `<p>En un frasco cerrado hay ${INI.H2} moléculas de ${Fh('H2')} y ${INI.O2} de ${Fh('O2')}. Reaccionan, y al final el frasco queda como en el dibujo: ${FR.final.H2O} moléculas de ${Fh('H2O')} y ${FR.final.H2} de ${Fh('H2')}.</p>
+   <p>Una ecuación química dice qué sustancias reaccionan, cuáles se forman y en qué proporción. ¿Qué ecuación química representa la reacción que ocurrió en el frasco?</p>${opcionesHTML(P2.opts, 'fb')}` },
+ { k:'Paso 5', t:'La ecuación no es el frasco', vista:() => vFrasco(true, 1, true),
+   body:() => `<p>La ecuación ${EQ(FR.ecuacion)} es la receta: ${C_(2)} moléculas de ${Fh('H2')} por cada ${C_(1)} de ${Fh('O2')}. En el frasco la receta se cumplió ${FR.vueltas} veces: reaccionaron ${FR.reaccionan.H2} ${Fh('H2')} y ${FR.reaccionan.O2} ${Fh('O2')}, y sobró ${FR.sobrante.H2} ${Fh('H2')}.</p>
+   <p>Los coeficientes no son lo que hay en el frasco: son la proporción en que reaccionan las sustancias. Lo que sobra no se escribe en la ecuación.</p>
+   <div class="eqs"><div class="eq"><span class="ex">Masa antes: ${INI.H2}&nbsp;×&nbsp;2&nbsp;u + ${INI.O2}&nbsp;×&nbsp;32&nbsp;u = ${fmt(FR.masaAntes, 0)}&nbsp;u</span><span class="ex">Masa después: ${FR.final.H2O}&nbsp;×&nbsp;18&nbsp;u + ${FR.final.H2}&nbsp;×&nbsp;2&nbsp;u = ${fmt(FR.masaDespues, 0)}&nbsp;u</span><span class="note">Ley de Lavoisier: en un recipiente cerrado la masa no cambia, porque los átomos de cada elemento son los mismos. Las moléculas sí cambian: de ${INI.H2 + INI.O2} pasaron a ${FR.final.H2O + FR.final.H2}.</span></div></div>
+   <p class="fuente">Tomar los coeficientes como lo que hay (ES8) y escribir lo que sobra en la ecuación (ES9): con 42 universitarios argentinos, cerca del 60 % y del 79 % (Raviolo y Lerzo, 2016). Escribir la ecuación con las cantidades del problema: el 17 % de esos 42. Creer que se conservan las moléculas (ES14) está documentado, sin porcentaje en las fuentes leídas.</p>` },
+ { k:'Paso 6', t:'La combustión del propano', gate:P3, vista:r => r ? vProp(BP.coefs, BP.pasos.map(p => p.elemento)) : vProp([1, 1, 1, 1]),
+   body:() => `<p>El gas de un balón de cocina es casi todo propano. Al arder: ${EQ(PROP)}.</p>
+   <p>Balancea por tanteo, con los menores enteros. ¿Cuánto suman los coeficientes?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras6" hidden><div class="eqs"><div class="eq"><span class="ex">${Fh('C')}: 3 → ${C_(3)}${Fh('CO2')} &nbsp;·&nbsp; ${Fh('H')}: 8 → ${C_(4)}${Fh('H2O')} &nbsp;·&nbsp; ${Fh('O')}: 3 × 2 + 4 × 1 = 10 → ${C_(5)}${Fh('O2')}</span><span class="note">Orden de academia: metales, no metales, hidrógeno y oxígeno al final. El O va al último porque está en casi todas las sustancias.</span></div>
+   <div class="eq"><span class="ex">${EQ(BP.ecuacion)} &nbsp;→&nbsp; suma = ${BP.coefs.join(' + ')} = ${BP.suma}</span></div></div>
+   <div class="nav"><span></span>${otraVez}</div></div>` },
+ { k:'Paso 7', t:'¿Quién se oxida?', gate:P4, vista:r => vZn(r, 1),
+   body:() => `<p>Una lámina de zinc en una disolución azul verdosa de cloruro de cobre(II) se cubre de cobre rojizo, y el azul se va aclarando: ${EQ(ZN)}. La ecuación ya está balanceada.</p>
+   <p>¿Qué elemento se oxida y cuál es el agente oxidante?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras7" hidden><div class="eqs"><div class="eq"><span class="ex">${Fh('Zn')}: 0 → +2 &nbsp;(pierde ${E_('2 e⁻')}: se oxida; ${Fh('Zn')} es el agente reductor)</span></div>
+   <div class="eq"><span class="ex">${Fh('Cu')}: +2 → 0 &nbsp;(gana ${E_('2 e⁻')}: se reduce; ${Fh('CuCl2')} es el agente oxidante)</span><span class="note">El ${Fh('Cl')} sigue en −1: no participa. Un elemento sin combinar tiene número de oxidación 0; en una especie, la suma de todos los números de oxidación es igual a su carga (0 en un compuesto neutro).</span></div>
+   <div class="eq"><span class="ex">Forma oxidada: ${Fh('ZnCl2')} (el Zn²⁺); forma reducida: ${Fh('Cu')}.</span></div></div>
+   <div class="nav"><span></span>${otraVez}</div></div>` },
+ { k:'Paso 8', t:'Ion-electrón: los electrones como fichas', gate:P5, vista:r => vSemi(r, r ? SEMI.electrones : 0),
+   body:() => `<p>En medio ácido, el permanganato violeta pasa a Mn²⁺, casi incoloro. La semirreacción se balancea por partes. Ya están iguales el ${Fh('Mn')}, el ${Fh('O')} (con 4 ${Fh('H2O')} a la derecha) y el ${Fh('H')} (con 8 ${Fh('H^+')} a la izquierda):</p>
+   <div class="eqs"><div class="eq"><span class="ex">${EQ('MnO4^- + 8H^+ -> Mn^2+ + 4H2O')}</span></div></div>
+   <p>Falta igualar la carga con electrones. ¿Cuántos se agregan y de qué lado?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras8" hidden>
+   <div class="eqs"><div class="eq"><span class="ex">Reducción: ${EQ(SEMI.texto)}</span><span class="note">Carga: −1 + 8 − 5 = +2 a la izquierda; +2 a la derecha.</span></div>
+     <div class="eq"><span class="ex">Oxidación: ${EQ(GLOB.oxidacion.texto)} &nbsp; × ${C_(GLOB.factores[0])}</span><span class="note">Cada Fe²⁺ pierde 1 electrón. Para que los ${SEMI.electrones} que gana el MnO₄⁻ salgan de algún lado, hacen falta ${GLOB.factores[0]} Fe²⁺.</span></div>
+     <div class="eq"><span class="ex">Global: ${EQ(GLOB.texto)}</span><span class="note">Los ${GLOB.electrones} e⁻ se cancelan al sumar. Suma de coeficientes: ${[...GLOB.izq, ...GLOB.der].map(([c]) => c).join(' + ')} = ${GLOB.suma}. Agente oxidante: MnO₄⁻; agente reductor: Fe²⁺.</span></div></div>
+   <p>En medio básico se usa ${Fh('OH^-')} en vez de ${Fh('H^+')}: lo pruebas en «¿Qué pasa si…?».</p>
+   <div class="nav"><span></span><button type="button" class="btn" id="verGlobal">Ver la ecuación global en el tablero</button></div>
+   <p class="fuente">No hay estudios que midan los errores del balance ion-electrón: igualar átomos sin igualar cargas, poner los electrones del lado equivocado o usar el número de oxidación sin restar son hipótesis nuestras, de la tabla de lo que no tiene respaldo del informe de estequiometría.</p></div>` },
+];
+
+// ----- Navegación -----
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+// Lo que pasa después de responder (o al pedir "Ver de nuevo"); todo lo calcula el motor.
+function mostrar(n){
+  cortar(E);
+  if (n === 1){
+    // De 1, 1, 1 a 2, 1, 2: la molécula nueva aparece de a poco.
+    E.vista = vAgua([1, 1, 1], true); E.dibujar();
+    animar(E, 1.0, f => { E.vista = vAgua(f < 0.5 ? [2, 1, 1] : BA.coefs, true); }, () => { E.vista = vAgua(BA.coefs, true); E.describir(); }, 0.3);
+  } else if (n === 3){
+    E.vista = vFrasco(false, 0); E.dibujar();
+    animar(E, 1.6, f => { E.vista = vFrasco(false, f); }, () => { E.vista = vFrasco(true, 1); E.describir(); }, 0.3);
+  } else if (n === 5){
+    // Tanteo del motor: después de cada elemento, sus sustancias ya tienen el coeficiente final.
+    const pasos = BP.pasos; E.vista = vProp([1, 1, 1, 1], []); E.dibujar();
+    animar(E, pasos.length*0.9, f => { const k = Math.min(pasos.length - 1, Math.floor(f*pasos.length)); E.vista = vProp(pasos[k].coefs, pasos.slice(0, k + 1).map(p => p.elemento)); },
+      () => { E.vista = vProp(BP.coefs, pasos.map(p => p.elemento)); E.describir(); }, 0.4);
+  } else if (n === 6){
+    E.vista = vZn(true, 0); E.dibujar();
+    animar(E, 1.6, f => { E.vista = vZn(true, f); }, () => { E.vista = vZn(true, 1); E.describir(); }, 0.3);
+  } else if (n === 7){
+    const ne = SEMI.electrones; E.vista = vSemi(true, 0); E.dibujar();
+    animar(E, ne*0.3, f => { E.vista = vSemi(true, Math.round(f*ne)); }, () => { E.vista = vSemi(true, ne); E.describir(); }, 0.4);
+  } else E.vista = steps[n].vista(true);
+  pedir();
+}
+function enlazar(){
+  const rep = $('stepBody').querySelector('[data-repetir]'); if (rep) rep.onclick = () => { mostrar(S.step); E.describir(); };
+  const vg = $('verGlobal'); if (vg) vg.onclick = () => { cortar(E); E.vista = vGlobal(); E.dibujar(); E.describir(); if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+}
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  const s = steps[n]; S.step = n; cortar(E);
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  E.vista = s.vista(r);
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  enlazar(); pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  nav(); E.dibujar(); pedir(); E.describir();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    for (const id of ['tras6', 'tras7', 'tras8']){ const el = $(id); if (el) el.hidden = false; }
+    enlazar();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots(); nav();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    // En el celular el dibujo sube a la vista y la animación arranca ~380 ms después (nucleo/celular.js).
+    const paso = S.step; E.compactar(false);
+    Celular.alResponder($('cv'), () => { mostrar(paso); E.dibujar(); E.describir(); }, () => S.step === paso);
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Cada experimento arranca con una predicción; lo que la respondería (la cuenta, la balanza, la carga) se muestra
+   después de responder. El primero deja después un tablero libre para subir y bajar coeficientes. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2');
+const AMO = 'N2 + H2 -> NH3', BN = MB.balancear(AMO), SOLO_N = BN.errores.unSoloCoeficiente[0];
+const CONS = MB.conservacion('Zn + HCl -> ZnCl2 + H2', 'Zn', 0.65, 'H2', 300);
+const PER = 'H2O2 -> H2O + O2', BPER = MB.balancear(PER), TIPO = MB.clasificar(PER), RPER = MB.redox(PER);
+const BAS = MB.semirreaccion('MnO4^-', 'MnO2', 'basico');
+const DIC = MB.ionElectron(['Fe^2+', 'Fe^3+'], ['Cr2O7^2-', 'Cr^3+'], 'acido');
+// Reacciones del tablero libre (sus colores se revisaron juntos; ver el comentario del CSS).
+const LIBRES = ['N2 + H2 -> NH3', 'H2 + O2 -> H2O', 'CH4 + O2 -> CO2 + H2O', 'C3H8 + O2 -> CO2 + H2O', 'C4H10 + O2 -> CO2 + H2O', 'Fe + O2 -> Fe2O3',
+  'Zn + HCl -> ZnCl2 + H2', 'H2O2 -> H2O + O2', 'Fe + Cl2 -> FeCl3', 'N2 + O2 -> NO2', 'NH3 + O2 -> NO + H2O'];
+const X = { ec:AMO, coefs:[1, 1, 1] };
+const vBas = (r, n) => r ? tablero('MnO4^- + H2O + e^- -> MnO2 + OH^-', [1, BAS.mapa.H2O, n, 1, -BAS.mapa['OH^-']], { carga:'si' })
+  : tablero('MnO4^- -> MnO2', [1, 1], { carga:'tapa' });
+const coefDic = f => DIC.coef(f);
+const vDic = r => tablero('Cr2O7^2- + Fe^2+ + H^+ -> Cr^3+ + Fe^3+ + H2O', r ? ['Cr2O7^2-', 'Fe^2+', 'H^+', 'Cr^3+', 'Fe^3+', 'H2O'].map(coefDic) : [1, 1, 1, 1, 1, 1], { carga: r ? 'si' : 'no' });
+
+const EXPS = [
+  { id:'tablero-amoniaco', corto:'El tablero',
+    q:`El amoniaco se fabrica con nitrógeno e hidrógeno del aire: ${EQ(AMO)}. Con los menores enteros, ¿qué ${C_('coeficiente')} lleva el ${Fh('H2')}?`,
+    opts:[['a', String(SOLO_N.coefs[1]), 'ES12-un-solo-coeficiente', 'documentado'],
+          ['b', '2', 'copia-el-subindice', 'hipotesis'],
+          ['c', String(BN.coefs[1])],
+          ['d', String(BN.coefs[1]*2), 'cuenta-atomos-no-moleculas', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`Salió de poner 2 delante del NH₃ para igualar el N y no volver a contar el H: con ${txtEc(SOLO_N.ecuacion)} hay 2 H a la izquierda y 6 a la derecha. Balancear sin contar cada elemento aparece en un estudio con 32 escolares de Indonesia: cerca de 1 de cada 5 lo sostuvo con confianza alta (Christianto y otros, 2025).`,
+      b:'2 es el subíndice del H₂ (cuántos átomos tiene una molécula), no cuántas moléculas hacen falta. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'6 son los átomos de H que hacen falta, pero cada molécula de H₂ trae 2: son 3 moléculas. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => tablero(AMO, [1, 1, 1]), despues:() => tablero(X.ec, X.coefs),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ(BN.ecuacion)}</span><span class="note">${Fh('N')}: 2 → ${C_(2)} × 1 = 2 · ${Fh('H')}: ${C_(3)} × 2 = 6 → ${C_(2)} × 3 = 6.</span></div></div>
+      <p>Ahora el tablero es tuyo. Elige una reacción, sube y baja los ${C_('coeficientes')} y mira la cuenta de abajo. Las fórmulas no se tocan.</p>
+      <label class="campo" for="xEc">Reacción<select id="xEc">${LIBRES.map(e => `<option value="${e}">${txtEc(e)}</option>`).join('')}</select></label>
+      <div class="coefs" id="xCoefs" role="group" aria-label="Coeficientes"></div>
+      <p class="estado" id="xEst" aria-live="polite"></p>
+      <div class="nav"><button type="button" class="btn" id="xUno">Todo en 1</button><button type="button" class="btn" id="xVer">Ver la respuesta</button></div>
+      <p class="fuente">Arreglar un elemento y no volver a contar los demás (ES12): cerca de 1 de cada 5 de 32 escolares de Indonesia lo sostuvo con confianza alta (Christianto y otros, 2025). Confundir el subíndice o los átomos con el coeficiente: hipótesis nuestras.</p>` },
+  { id:'frasco-abierto', corto:'¿Frasco abierto o cerrado?',
+    q:`Dos frascos iguales, cada uno con 0,65 g de ${Fh('Zn')} y ácido clorhídrico (${Fh('HCl')}) de sobra. Uno se tapa con un tapón; el otro queda abierto. Los dos marcan ${fmt2(CONS.cerrado)} g en la balanza al empezar. Se forman burbujas de ${Fh('H2')} hasta que el zinc se acaba. ¿Qué marcan las balanzas al final?`,
+    opts:[['a', `Los dos ${fmt2(CONS.errores.cerradoPierde)} g: el gas no pesa`, 'ES13-el-gas-no-pesa', 'documentado'],
+          ['b', `Los dos ${fmt2(CONS.errores.abiertoIgual)} g: la masa siempre se conserva`, 'conservacion-sin-sistema-abierto', 'hipotesis'],
+          ['c', `El cerrado ${fmt2(CONS.cerrado)} g y el abierto ${fmt2(CONS.abierto)} g: el gas se escapa del abierto`],
+          ['d', `El cerrado ${fmt2(CONS.errores.gana)} g y el abierto ${fmt2(CONS.cerrado)} g: el gas nuevo agrega masa`, 'ES13-la-masa-sube', 'parcial']],
+    ok:'c',
+    fb:{ a:`El gas sí pesa: en el frasco cerrado el H₂ se queda adentro y la balanza sigue en ${fmt2(CONS.cerrado)} g. Solo el 38 % de 79 escolares argentinos aceptó que la masa se conserva en un recipiente cerrado (Casado y Raviolo, 2005).`,
+      b:`La masa se conserva, pero hay que contarla toda: en el frasco abierto el H₂ sale al aire y la balanza ya no lo pesa. Marca ${fmt2(CONS.masaGas)} g menos. Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
+      d:'Ningún átomo nuevo entra al frasco: el gas se forma con los átomos que ya estaban. La masa no sube. La idea contraria a la conservación está documentada (ES13), pero esta forma de verla no tiene un dato propio.' },
+    antes:() => ({ tipo:'conserv', r:CONS, fase:'antes' }), despues:p => ({ tipo:'conserv', r:CONS, fase:'despues', p }), anima:true,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ('Zn + 2HCl -> ZnCl2 + H2')}</span></div>
+      <div class="eq"><span class="ex">0,65 g de ${Fh('Zn')} = 0,01 mol &nbsp;→&nbsp; 0,01 mol de ${Fh('H2')} = ${fmt2(CONS.masaGas)} g</span><span class="note">La masa del gas sale de la ecuación balanceada: 1 Zn da 1 H₂. Es la diferencia entre las dos balanzas.</span></div></div>
+      <p>La ley de Lavoisier vale en un sistema cerrado. En el abierto la masa tampoco desaparece: está en el gas que se fue. Las burbujas son una evidencia de que hubo reacción.</p>
+      <p class="fuente">Que el gas no pesa o que la masa cambia (ES13): solo el 38 % de 79 escolares argentinos aceptó la conservación en un recipiente cerrado (Casado y Raviolo, 2005); en 195 escolares de Israel, las respuestas erróneas en recipiente cerrado bajaron de cerca del 45 % al 19 % después de enseñar el tema (Basheer y otros, 2018).</p>` },
+  { id:'tipo-peroxido', corto:'¿Qué tipo de reacción?',
+    q:`El agua oxigenada se descompone sola, poco a poco, y suelta burbujas: ${EQ(BPER.ecuacion)}. ¿De qué tipo es esta reacción?`,
+    opts:[['a', 'Combustión: sale oxígeno', 'combustion-porque-sale-O2', 'hipotesis'],
+          ['b', 'Adición: el agua y el oxígeno quedan juntos', 'adicion-lee-al-reves', 'hipotesis'],
+          ['c', 'Doble desplazamiento: hay dos productos', 'doble-desplazamiento-por-dos-productos', 'hipotesis'],
+          ['d', 'Descomposición: una sola sustancia da dos']],
+    ok:'d',
+    fb:{ a:'En una combustión algo arde con el O₂: el O₂ es reactivo y salen CO₂ y H₂O. Aquí el O₂ es un producto. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      b:'En una adición dos o más reactivos se juntan en un solo producto. Aquí pasa lo contrario: un solo reactivo se parte en dos. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'En un doble desplazamiento dos compuestos intercambian sus partes: hacen falta dos reactivos. Aquí hay uno solo. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => tablero(PER, BPER.coefs, { tapa:true }), despues:() => tablero(PER, BPER.coefs, { ox: oxDe(PER, ['O']) }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ(BPER.ecuacion)} &nbsp;·&nbsp; ${TIPO.tipo}</span><span class="note">Se clasifica por la forma: adición (A + B → AB), descomposición (AB → A + B), desplazamiento simple (A + BC → AC + B), doble desplazamiento (AB + CD → AD + CB) y combustión (algo con C y H arde con O₂ y da CO₂ y H₂O).</span></div>
+      <div class="eq"><span class="ex">${Fh('O')}: −1 en ${Fh('H2O2')} → −2 en ${Fh('H2O')} y 0 en ${Fh('O2')}</span><span class="note">Además es redox: unos O se reducen y otros se oxidan (en la academia se llama dismutación o desproporción). Mira los números sobre los átomos.</span></div></div>
+      <p class="fuente">Los tres errores de clasificación son hipótesis nuestras: el informe no encontró estudios que los midan.</p>` },
+  { id:'medio-basico', corto:'Medio básico',
+    q:`En medio básico, el permanganato pasa a dióxido de manganeso: ${EQ('MnO4^- -> MnO2')}. ¿Cuál es la semirreacción bien balanceada?`,
+    opts:[['a', EQ(BAS.errores.conH), 'ion-electron-H-en-medio-basico', 'hipotesis'],
+          ['b', EQ(BAS.texto)],
+          ['c', EQ(BAS.errores.sinElectrones.texto), 'ion-electron-sin-igualar-carga', 'hipotesis'],
+          ['d', EQ(BAS.errores.electronesAlReves.texto), 'ion-electron-electrones-al-reves', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Átomos y carga cuadran, pero en medio básico casi no hay H⁺: hay OH⁻. Esta es la de medio ácido. Esta opción es una hipótesis nuestra, de la lista de errores sin respaldo del informe.',
+      c:`Los átomos cuadran, pero la carga no: ${conSigno(BAS.errores.sinElectrones.cargaIzq)} a la izquierda y ${conSigno(BAS.errores.sinElectrones.cargaDer)} a la derecha. Faltan los electrones. Esta opción es una hipótesis nuestra, de la lista de errores sin respaldo del informe.`,
+      d:`El Mn baja de +7 a +4: gana electrones, y los electrones ganados van a la izquierda. Con ellos a la derecha la carga queda ${conSigno(BAS.errores.electronesAlReves.cargaIzq)} contra ${conSigno(BAS.errores.electronesAlReves.cargaDer)}. Esta opción es una hipótesis nuestra, de la lista de errores sin respaldo del informe.` },
+    antes:() => vBas(false), despues:p => vBas(true, Math.round((p === undefined ? 1 : p)*BAS.electrones)), anima:true,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ(BAS.texto)}</span><span class="note">Sobran 2 O a la izquierda: por cada O que sobra va 1 H₂O del mismo lado y 2 OH⁻ del otro. Después, la carga: −1 a la izquierda y −4 a la derecha; con 3 e⁻ a la izquierda queda −4 a cada lado.</span></div>
+      <div class="eq"><span class="ex">${Fh('Mn')}: +7 → +4 &nbsp;(gana ${E_(BAS.electrones + ' e⁻')}: se reduce)</span></div></div>
+      <p class="fuente">Usar H⁺ en medio básico, igualar átomos sin igualar cargas y poner los electrones del lado equivocado son hipótesis nuestras: el informe no encontró estudios que midan los errores del balance ion-electrón.</p>` },
+  { id:'suma-dicromato', corto:'La suma de la academia',
+    q:`En medio ácido: ${EQ('Cr2O7^2- + Fe^2+ -> Cr^3+ + Fe^3+')}. Balancea por ion-electrón. ¿Cuánto suman todos los coeficientes de la ecuación global?`,
+    opts:[['a', String(DIC.errores.sinIgualar.suma), 'ion-electron-sin-igualar-electrones', 'hipotesis'],
+          ['b', String(DIC.errores.porAtomo.suma), 'ion-electron-electrones-por-atomo', 'hipotesis'],
+          ['c', String(DIC.errores.sinContarUnos), 'suma-sin-contar-el-1', 'hipotesis'],
+          ['d', String(DIC.suma)]],
+    ok:'d',
+    fb:{ a:`Salió de sumar las dos semirreacciones sin igualar los electrones: el Cr₂O₇²⁻ gana ${DIC.reduccion.electrones} y cada Fe²⁺ pierde 1, así que hacen falta ${DIC.factores[0]} Fe²⁺. Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
+      b:`Salió de contar ${DIC.reduccion.electronesPorAtomo} electrones (los de un Cr) y no ${DIC.reduccion.electrones} (los de los 2 Cr del Cr₂O₇²⁻). Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
+      c:`El coeficiente del Cr₂O₇²⁻ es 1: no se escribe, pero sí se suma. Esta opción es una hipótesis nuestra, sin estudio que la mida.` },
+    antes:() => vDic(false), despues:() => vDic(true),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">Reducción: ${EQ(DIC.reduccion.texto)}</span><span class="note">Primero el Cr (2 a cada lado), después 7 H₂O y 14 H⁺; la carga pasa de +12 a +6: 6 e⁻, 3 por cada Cr.</span></div>
+      <div class="eq"><span class="ex">Oxidación: ${EQ(DIC.oxidacion.texto)} &nbsp; × ${C_(DIC.factores[0])}</span></div>
+      <div class="eq"><span class="ex">${EQ(DIC.texto)}</span><span class="note">Suma: ${[...DIC.izq, ...DIC.der].map(([c]) => c).join(' + ')} = ${DIC.suma}. Carga: +24 a cada lado.</span></div></div>
+      <p class="fuente">No igualar los electrones de las dos semirreacciones está en la lista de errores sin respaldo del informe; contar los electrones de un solo Cr y no sumar el 1 también son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan.
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function despues(x){
+  cortar(E);
+  if (x.anima){ E.vista = x.despues(0); E.dibujar(); animar(E, 1.4, f => { E.vista = x.despues(f); }, () => { E.vista = x.despues(1); E.describir(); }, 0.3); }
+  else E.vista = x.despues();
+  E.dibujar(); pedir();
+}
+// Tipo de reacción para el tablero libre (todo del motor; dos aclaraciones de forma).
+function tipoTxt(ec){
+  const t = MB.clasificar(ec);
+  if (t.tipo === 'otra') return t.redox ? 'redox (no encaja en las formas de la lista)' : 'no encaja en las formas de la lista';
+  if (t.tipo === 'adición' && ec === 'H2 + O2 -> H2O') return 'adición (también es la combustión del hidrógeno)';
+  return t.tipo;
+}
+// Tablero libre (experimento 1, después de responder).
+function libre(){
+  const sel = $('xEc'); if (!sel) return;
+  const pintar = () => {
+    const ec = MB.ecuacion(X.ec), fs = [...ec.reactivos, ...ec.productos].map(t => t.f), c = MB.contar(X.ec, X.coefs);
+    $('xCoefs').innerHTML = fs.map((f, k) => `<div class="coef"><button type="button" data-d="-1" data-k="${k}" aria-label="Una molécula menos de ${txt(f)}"${X.coefs[k] <= 1 ? ' disabled' : ''}>−</button><span class="nom">${C_(X.coefs[k])} ${Fh(f)}</span><button type="button" data-d="1" data-k="${k}" aria-label="Una molécula más de ${txt(f)}"${X.coefs[k] >= 15 ? ' disabled' : ''}>+</button></div>`).join('');
+    $('xCoefs').querySelectorAll('button').forEach(b => b.onclick = () => { X.coefs[+b.dataset.k] += +b.dataset.d; pintar(); E.describir(); });
+    const g = X.coefs.reduce((a, x) => MB.mcd(a, x), 0);
+    $('xEst').textContent = c.atomosBalanceados
+      ? (g > 1 ? `Balanceada, pero no con los menores enteros: todos se dividen entre ${g}.` : `¡Balanceada! Suma de coeficientes: ${X.coefs.reduce((s, x) => s + x, 0)}. Tipo: ${tipoTxt(X.ec)}.`)
+      : `Todavía no: ${c.elementos.filter(e => c.izq[e] !== c.der[e]).map(e => `${NOMBRE[e]} ${c.izq[e]} contra ${c.der[e]}`).join('; ')}.`;
+    E.vista = tablero(X.ec, X.coefs); E.dibujar();
+  };
+  sel.value = X.ec;
+  sel.onchange = () => { X.ec = sel.value; X.coefs = MB.ecuacion(X.ec).reactivos.concat(MB.ecuacion(X.ec).productos).map(() => 1); pintar(); E.describir(); };
+  $('xUno').onclick = () => { X.coefs = X.coefs.map(() => 1); pintar(); E.describir(); };
+  $('xVer').onclick = () => { X.coefs = MB.balancear(X.ec).coefs.slice(); pintar(); E.describir(); };
+  pintar();
+}
+function ir(k){
+  if (!abierto(k)) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  cortar(E); E.vista = x.antes();
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const explicar = () => {
+    if (S.k !== k || !S.pred[x.id]) return;
+    $('res2').innerHTML = x.exp() + `<div class="nav">${x.anima ? otraVez : '<span></span>'}${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const rep = $('res2').querySelector('[data-repetir]'); if (rep) rep.onclick = () => { despues(x); E.describir(); };
+    if (x.id === 'tablero-amoniaco') libre();
+  };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y la cuenta para ver por qué.' : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    explicar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones(); E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => { if (x.id !== 'tablero-amoniaco') despues(x); else { E.dibujar(); pedir(); } E.describir(); }, () => S.k === k);
+  });
+  // Si ya respondió antes, se muestra directo lo que pasa.
+  if (S.pred[x.id] && x.id !== 'tablero-amoniaco') E.vista = x.anima ? x.despues(1) : x.despues();
+  E.compactar(!S.pred[x.id]);
+  pintar(); E.dibujar(); pedir(); E.describir();
+}
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

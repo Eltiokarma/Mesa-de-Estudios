@@ -213,7 +213,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["balance-reacciones"],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },
     {
