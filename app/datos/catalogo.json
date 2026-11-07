@@ -2091,7 +2091,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "cuatro-operaciones"
+     ]
     },
     {
      "id": "aritmetica.divisibilidad",
@@ -4450,6 +4452,23 @@
     "/plantillas/cuadrado-crece/index.html",
     "/plantillas/cuadrado-crece/motor.js",
     "/plantillas/cuadrado-crece/papel.json"
+   ]
+  },
+  "cuatro-operaciones": {
+   "id": "cuatro-operaciones",
+   "titulo": "El tablero de las llevadas: las cuatro operaciones",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.cuatro-operaciones"
+   ],
+   "url": "/plantillas/cuatro-operaciones/index.html",
+   "papel": "/plantillas/cuatro-operaciones/papel.json",
+   "archivos": [
+    "/plantillas/cuatro-operaciones/index.html",
+    "/plantillas/cuatro-operaciones/motor.js",
+    "/plantillas/cuatro-operaciones/papel.json"
    ]
   },
   "dinamica": {
