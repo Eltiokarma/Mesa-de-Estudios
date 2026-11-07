@@ -319,26 +319,33 @@ const RAD = { H:0.3, O:0.46, N:0.48, C:0.5, F:0.44, S:0.6, CH3:0.62, CH2:0.6, CH
 const colAt = (c, el) => /^CH/.test(el) ? c.C : (c[el] || c.C);
 // Las moléculas chicas (u < 10 px: líquido, vapor, burbuja, tubo) se pintan una vez por giro en un lienzo aparte y se
 // pegan con drawImage (la2): son decenas por cuadro y cada una pedía unos diez trazos. Hay 256 giros y la figura cae en
-// el píxel real más cercano: la diferencia con el trazo directo no pasa de medio píxel real. Solo el bucle prepara
-// figuras nuevas, a lo más 3 por cuadro (las demás van con trazo directo mientras tanto): así un toque o un cambio de
-// tamaño no pagan la preparación.
-// Las grandes (con letras o u ≥ 10) se siguen trazando directo.
-const FIGURAS = new Map(), GIROS = 256;
-let NUEVAS = 0, EN_BUCLE = false;
-function figura(c, s, u, k, d){
-  const clave = `${s}|${u}|${k}|${d}|${c.ink}|${c.borde}|${c.H}|${c.O}|${c.N}|${c.C}|${c.F}|${c.S}`;
-  let f = FIGURAS.get(clave);
-  if (!f){
-    if (!EN_BUCLE || NUEVAS >= 3) return null;
-    NUEVAS++;
+// el píxel real más cercano: la diferencia con el trazo directo no pasa de medio píxel real. Las figuras que faltan se
+// preparan en los ratos libres del navegador (requestIdleCallback) y, mientras tanto, esa molécula va con trazo directo:
+// así ni un toque ni un cambio de tamaño pagan la preparación. Las grandes (con letras o u ≥ 10) van siempre directo.
+const FIGURAS = new Map(), GIROS = 256, FALTAN = new Map();
+let preparando = false;
+const ocioso = typeof requestIdleCallback === 'function' ? fn => requestIdleCallback(fn, { timeout: 500 }) : fn => setTimeout(() => fn({ timeRemaining: () => 4 }), 50);
+function prepararFiguras(plazo){
+  for (const [clave, [c, s, u, k, d]] of FALTAN){
+    if (plazo.timeRemaining() < 1) break;
+    FALTAN.delete(clave);
     if (FIGURAS.size > 3000) FIGURAS.clear();
     const S = ML.SUSTANCIAS[s], ext = Math.max(...S.atomos.map(a => Math.hypot(a.x, a.y) + (RAD[a.el] || 0.5)))*u + 2, n = Math.ceil(2*ext*d) + 2;
     const cv = document.createElement('canvas'); cv.width = n; cv.height = n;
     const g = cv.getContext('2d'); g.setTransform(d, 0, 0, d, n/2, n/2);
     trazarMolecula(g, c, S, molPuntos(S, 0, 0, u, k/GIROS*2*Math.PI), u, {});
-    f = { cv, n }; FIGURAS.set(clave, f);
+    FIGURAS.set(clave, { cv, n });
   }
-  return f;
+  preparando = FALTAN.size > 0;
+  if (preparando) ocioso(prepararFiguras);
+}
+function figura(c, s, u, k, d){
+  const clave = `${s}|${u}|${k}|${d}|${c.ink}|${c.borde}|${c.H}|${c.O}|${c.N}|${c.C}|${c.F}|${c.S}`;
+  const f = FIGURAS.get(clave);
+  if (f) return f;
+  if (FALTAN.size < 600) FALTAN.set(clave, [c, s, u, k, d]);
+  if (!preparando){ preparando = true; ocioso(prepararFiguras); }
+  return null;
 }
 function molPuntos(S, x, y, u, ang){
   const co = Math.cos(ang || 0), si = Math.sin(ang || 0);
@@ -823,7 +830,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
   E.dibujar = () => {
     E.resize(); if (!W || !Lz) return; // la vista pudo cambiar de paneles: se rearma cada vez (es barato)
     const c = colores();
-    DIBUJADOS = new Set(); NUEVAS = 0;
+    DIBUJADOS = new Set();
     ctx.clearRect(0, 0, W, H);
     for (const P of Lz.p){
       if (P.k === 'frascos') panelFrascos(c, P);
@@ -873,7 +880,7 @@ function tick(now){
     if (!RM && E.vista.frascos) for (const f of E.vista.frascos.items) if (f.caja) ML.pasoCaja(f.caja, dt*E.vel);
     if (E.alAvanzar) E.alAvanzar();
     // Si nada se mueve, el dibujo ya está al día: quien cambia la vista llama a E.dibujar antes de pedir() (la2).
-    if (anima || vivo){ EN_BUCLE = true; try { E.dibujar(); } finally { EN_BUCLE = false; } }
+    if (anima || vivo) E.dibujar();
     if (vivo) sigue = true;
   }
   if (sigue) pedir();
