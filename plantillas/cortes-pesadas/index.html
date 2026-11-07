@@ -7,12 +7,13 @@
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de maximos-minimos/.
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   cortes c rojo, piezas n azul, tiempo T verde, estacas e turquesa, tramo d naranja, largo o contorno L fucsia,
+   cortes c rojo, piezas n azul, tiempo T verde, postes de la avenida e_A turquesa, estacas del corral e_C oliva,
+   tramo d naranja, largo o contorno L fucsia,
    masa M índigo y pesadas k granate. Las varillas, sogas, pesas, monedas y sacos son objetos, no variables: van en
    tonos neutros (--o-*) con su número escrito encima.
    Elegidos con CIEDE2000; mínimos entre los que salen juntos (claro / oscuro): varilla (c, n, T, d, L) 25,9 / 26,9;
-   estacas (e, d, L) 39,4 / 43,8; soga (c, n, L) 27,1 / 26,9. Pares por debajo de 20 que nunca comparten vista:
-   L–M (16,2 / 16,2), n–M (17,0 / 12,1) y c–k (17,6 / 16,8). Contraste AA sobre el papel, la tarjeta y su chip
+   estacas (e_A, e_C, d, L) 26,1 / 27,4; soga (c, n, L) 27,1 / 26,9. Pares por debajo de 20 que nunca comparten vista:
+   L–M (16,2 / 16,2), n–M (17,0 / 12,1), c–k (17,6 / 16,8) y e_C–T (11,0 / 11,0). Contraste AA sobre el papel, la tarjeta y su chip
    (.v, fondo al 8 %), en claro y en oscuro (mínimo 4,56: c en el chip claro); el número de cada pesa, moneda o saco
    contra su relleno, mínimo 10,4 en claro y 4,9 en oscuro. */
 [hidden]{display:none!important}
@@ -20,7 +21,7 @@
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-c:#c0364a; --c-n:#1f5fbf; --c-T:#466d14; --c-e:#0f766e; --c-d:#a05200; --c-L:#a10fbf; --c-M:#3328c4; --c-k:#77032c;
+  --c-c:#c0364a; --c-n:#1f5fbf; --c-T:#466d14; --c-eA:#0f766e; --c-eC:#6b6b00; --c-d:#a05200; --c-L:#a10fbf; --c-M:#3328c4; --c-k:#77032c;
   --o-fierro:#9aa1ad; --o-madera:#c99a68; --o-soga:#c9a46a; --o-pesa:#e6dcf2; --o-moneda:#f3d98b; --o-saco:#ead7b4; --o-calle:#d9cfc7;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -30,14 +31,14 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-c:#f17384; --c-n:#7cb0ff; --c-T:#a3d65e; --c-e:#5ed9c8; --c-d:#f0a04a; --c-L:#cf6bfa; --c-M:#9f9bff; --c-k:#fdb4ce;
+  --c-c:#f17384; --c-n:#7cb0ff; --c-T:#a3d65e; --c-eA:#5ed9c8; --c-eC:#d4d84a; --c-d:#f0a04a; --c-L:#cf6bfa; --c-M:#9f9bff; --c-k:#fdb4ce;
   --o-fierro:#6f7480; --o-madera:#8a6440; --o-soga:#9c7c48; --o-pesa:#4a3f5c; --o-moneda:#7a6420; --o-saco:#6e5a3a; --o-calle:#463b52;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-c:#f17384; --c-n:#7cb0ff; --c-T:#a3d65e; --c-e:#5ed9c8; --c-d:#f0a04a; --c-L:#cf6bfa; --c-M:#9f9bff; --c-k:#fdb4ce;
+  --c-c:#f17384; --c-n:#7cb0ff; --c-T:#a3d65e; --c-eA:#5ed9c8; --c-eC:#d4d84a; --c-d:#f0a04a; --c-L:#cf6bfa; --c-M:#9f9bff; --c-k:#fdb4ce;
   --o-fierro:#6f7480; --o-madera:#8a6440; --o-soga:#9c7c48; --o-pesa:#4a3f5c; --o-moneda:#7a6420; --o-saco:#6e5a3a; --o-calle:#463b52;
   color-scheme:dark }
 
@@ -90,7 +91,8 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
 .v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
 .v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
-.v-e{color:var(--c-e); background:color-mix(in srgb, var(--c-e) 8%, transparent)}
+.v-eA{color:var(--c-eA); background:color-mix(in srgb, var(--c-eA) 8%, transparent)}
+.v-eC{color:var(--c-eC); background:color-mix(in srgb, var(--c-eC) 8%, transparent)}
 .v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
 .v-L{color:var(--c-L); background:color-mix(in srgb, var(--c-L) 8%, transparent)}
 .v-M{color:var(--c-M); background:color-mix(in srgb, var(--c-M) 8%, transparent)}
@@ -250,9 +252,10 @@ function fmt(n, d){
   return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
 }
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
-const c_ = t => V('c', t), n_ = t => V('n', t), T_ = t => V('T', t), e_ = t => V('e', t), d_ = t => V('d', t),
+const c_ = t => V('c', t), n_ = t => V('n', t), T_ = t => V('T', t), eA_ = t => V('eA', t), eC_ = t => V('eC', t), d_ = t => V('d', t),
   L_ = t => V('L', t), M_ = t => V('M', t), k_ = t => V('k', t);
-const VARS = ['c', 'n', 'T', 'e', 'd', 'L', 'M', 'k'];
+const VARS = ['c', 'n', 'T', 'eA', 'eC', 'd', 'L', 'M', 'k'];
+const eA = 'e<sub>A</sub>', eC = 'e<sub>C</sub>';
 const OBJS = ['fierro', 'madera', 'soga', 'pesa', 'moneda', 'saco', 'calle'];
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
@@ -282,6 +285,15 @@ function rotulo(ctx, c, x, y, t, color, align, peso, tam){
   ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
   ctx.fillStyle = color; ctx.fillText(t, x, y);
   return w;
+}
+// rótulo con subíndice («e» + «A» + « = 13»), sobre una cajita del color del papel
+function rotuloSub(ctx, c, x, y, base, sub, resto, color, align){
+  ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  const f1 = `800 12px ${c.font}`, f2 = `800 9px ${c.font}`;
+  ctx.font = f1; const w1 = ctx.measureText(base).width, w3 = ctx.measureText(resto).width; ctx.font = f2; const w2 = ctx.measureText(sub).width;
+  const w = w1 + w2 + w3, x0 = align === 'right' ? x - w : align === 'center' ? x - w/2 : x;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 20); ctx.restore();
+  ctx.fillStyle = color; ctx.font = f1; ctx.fillText(base, x0, y); ctx.font = f2; ctx.fillText(sub, x0 + w1, y + 4); ctx.font = f1; ctx.fillText(resto, x0 + w1 + w2, y);
 }
 function texto(ctx, c, x, y, t, color, tam, peso){ ctx.font = `${peso || 800} ${tam || 11}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(t, x, y); }
 function caja(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
@@ -445,7 +457,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   }
 
   // ----- avenida y corral -----
-  function poste(c, x, y, alto){ ctx.save(); ctx.strokeStyle = c.e; ctx.fillStyle = c.e; ctx.globalAlpha = atenuar('e'); ctx.lineWidth = grosor('e', 3); linea(ctx, { x, y }, { x, y:y - alto }); ctx.beginPath(); ctx.arc(x, y - alto, 3.5, 0, 7); ctx.fill(); ctx.restore(); }
+  function poste(c, x, y, alto){ ctx.save(); ctx.strokeStyle = c.eA; ctx.fillStyle = c.eA; ctx.globalAlpha = atenuar('eA'); ctx.lineWidth = grosor('eA', 3); linea(ctx, { x, y }, { x, y:y - alto }); ctx.beginPath(); ctx.arc(x, y - alto, 3.5, 0, 7); ctx.fill(); ctx.restore(); }
   function cota(c, x1, x2, y, t, color, k){
     ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha = atenuar(k); ctx.lineWidth = grosor(k, 1.6);
     linea(ctx, { x:x1, y }, { x:x2, y }); linea(ctx, { x:x1, y:y - 4 }, { x:x1, y:y + 4 }); linea(ctx, { x:x2, y:y - 4 }, { x:x2, y:y + 4 }); ctx.restore();
@@ -459,7 +471,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     rotulo(ctx, c, bA.x + 12, bA.y + 16, 'Avenida: poste en los dos extremos', c.muted, 'left', 700, 12);
     ctx.save(); ctx.fillStyle = c.ocalle; ctx.fillRect(ax0 - 6, ay, ax1 - ax0 + 12, 12); ctx.restore();
     const tramos = Li.largo/Li.sep;
-    if (Li.verA){ for (let i = 0; i <= tramos && i < Li.progA; i++) poste(c, X(i*Li.sep), ay, 26); if (Li.progA >= tramos + 1) rotulo(ctx, c, X(Li.largo), ay - 40, `e = ${tramos + 1}`, c.e, 'right', 800, 12); }
+    if (Li.verA){ for (let i = 0; i <= tramos && i < Li.progA; i++) poste(c, X(i*Li.sep), ay, 26); if (Li.progA >= tramos + 1) rotuloSub(ctx, c, X(Li.largo), ay - 40, 'e', 'A', ` = ${tramos + 1}`, c.eA, 'right'); }
     else { poste(c, X(0), ay, 26); poste(c, X(Li.sep), ay, 26); poste(c, X(Li.largo), ay, 26); rotulo(ctx, c, (X(Li.sep) + X(Li.largo))/2, ay - 14, '…', c.muted, 'center', 800, 16); }
     cota(c, X(0), X(Li.sep), ay + 22, `d = ${Li.sep} m`, c.d, 'd');
     cota(c, X(0), X(Li.largo), ay + 48, `L = ${Li.largo} m`, c.L, 'L');
@@ -467,8 +479,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const cx = bC.x + bC.w/2, cy = bC.y + bC.h/2 + 12, R = Math.min(bC.w*.3, bC.h*.3), a = p => -Math.PI/2 + 2*Math.PI*p/Li.largo;
     rotulo(ctx, c, bC.x + 12, bC.y + 16, 'Corral redondo: cerrado', c.muted, 'left', 700, 12);
     ctx.save(); ctx.strokeStyle = c.ocalle; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.stroke(); ctx.restore();
-    const estaca = p => { const t = a(p), x = cx + Math.cos(t)*R, y = cy + Math.sin(t)*R; ctx.save(); ctx.fillStyle = c.e; ctx.globalAlpha = atenuar('e'); ctx.beginPath(); ctx.arc(x, y, E.hl === 'e' ? 6.5 : 5, 0, 7); ctx.fill(); ctx.restore(); };
-    if (Li.verC){ for (let i = 0; i < tramos && i < Li.progC; i++) estaca(i*Li.sep); if (Li.progC >= tramos) rotulo(ctx, c, cx, cy + 18, `e = ${tramos}`, c.e, 'center', 800, 12); }
+    const estaca = p => { const t = a(p), x = cx + Math.cos(t)*R, y = cy + Math.sin(t)*R; ctx.save(); ctx.fillStyle = c.eC; ctx.globalAlpha = atenuar('eC'); ctx.beginPath(); ctx.arc(x, y, E.hl === 'eC' ? 6.5 : 5, 0, 7); ctx.fill(); ctx.restore(); };
+    if (Li.verC){ for (let i = 0; i < tramos && i < Li.progC; i++) estaca(i*Li.sep); if (Li.progC >= tramos) rotuloSub(ctx, c, cx, cy + 18, 'e', 'C', ` = ${tramos}`, c.eC, 'center'); }
     else { estaca(0); estaca(Li.sep); }
     ctx.save(); ctx.strokeStyle = c.d; ctx.globalAlpha = atenuar('d'); ctx.lineWidth = grosor('d', 1.8); ctx.beginPath(); ctx.arc(cx, cy, R + 12, a(0), a(Li.sep)); ctx.stroke(); ctx.restore();
     const am = a(Li.sep/2); rotulo(ctx, c, cx + Math.cos(am)*(R + 22) + 22, cy + Math.sin(am)*(R + 22) - 4, `d = ${Li.sep} m`, c.d, 'left', 800, 12);
@@ -551,7 +563,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     else if (o.fuera){ ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.stroke(); }
     else { ctx.fillStyle = c.omoneda; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = o.falsa ? 3 : 1; ctx.stroke(); }
     ctx.restore();
-    if (!o.fantasma) texto(ctx, c, x, y + .5, String(id), o.fuera ? c.muted : c.ink, r >= 12 ? 11 : 9);
+    if (!o.fantasma && r >= 8) texto(ctx, c, x, y + .5, String(id), o.fuera ? c.muted : c.ink, r >= 12 ? 11 : 9);
   }
   function dibBalanza(c, izq, der, tope, rotulos){
     // izq y der: listas de { tipo:'pesa'|'saco'|'moneda', v } que se dibujan sobre cada platillo
@@ -644,11 +656,11 @@ function crearEscena(cv, idDesc, idLect, idLey){
   E.leyenda = () => {
     if (!idLey) return;
     const vr = k => k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : k.startsWith('o-') ? '--' + k : '--c-' + k;
-    const it = (k, t, f) => `<span style="--k:var(${vr(k)})"><i class="${f || ''}" style="background:var(${vr(k)})"></i>${t}</span>`;
+    const it = (k, t, f) => `<span style="--k:var(${vr(k)})"><i class="${f || ''}" style="background:var(${vr(k)})"></i><bdi>${t}</bdi></span>`;
     let l = E.ley;
     if (!l){
       if (E.modo === 'barras' || E.modo === 'aro') l = [['c', 'c · cortes'], ['n', 'n · piezas (numeradas)'], ['d', 'd · largo de cada pieza'], ['L', 'L · largo total']];
-      else if (E.modo === 'lineas') l = [['e', 'e · postes y estacas'], ['d', 'd · separación'], ['L', 'L · largo o contorno']];
+      else if (E.modo === 'lineas') l = [['eA', `${eA} · postes`], ['eC', `${eC} · estacas`], ['d', 'd · separación'], ['L', 'L · largo o contorno']];
       else if (E.modo === 'soga') l = [['c', 'c · cortes'], ['n', 'n · pedazos (numerados)'], ['L', 'L · largo de la soga']];
       else if (E.modo === 'balanza') l = [['M', 'M · masa de la papa'], ['o-pesa', 'pesas', 'sq']];
       else if (E.modo === 'monedas') l = [['o-moneda', 'monedas (las vacías ya se descartaron)', 'sq']];
@@ -663,7 +675,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       const base = { barras:'Una varilla sobre una regla de 1 m.', aro:'Un aro cerrado de fierro.', lineas:'Una avenida con postes y un corral redondo con estacas.',
         soga:'Una soga doblada en capas y la misma soga estirada.', balanza:'Una balanza de dos platillos con un saco de papa y pesas.', monedas:'Una balanza de dos platillos y una fila de monedas.',
         pila:'Los pedazos de una varilla después de cada corte.' }[E.modo];
-      document.getElementById(idDesc).textContent = [E.desc || base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+      document.getElementById(idDesc).textContent = [E.desc || base, ...filas.map(([, t, v]) => `${t.replace(/<[^>]+>/g, '')}: ${v}.`)].join(' ');
     }
     if (E.alCambiar) E.alCambiar();
   };
@@ -749,7 +761,7 @@ const ped = v => `${v} pedazos`;
 const G4 = { id:'cortes-paso4', ok:'c', opts:[
   ['a', `${ped(P4.errores.sinCapas)}: 2 cortes, como en una soga estirada`, 'soga-sin-contar-capas', 'hipotesis'],
   ['b', `${ped(P4.errores.sinMasUno)}: 3 capas por 2 cortes`, 'soga-sin-mas-uno', 'hipotesis'],
-  ['c', `${ped(P4.piezas)}: 3 capas por 2 cortes, más uno`],
+  ['c', `${ped(P4.piezas)}: se cuentan los cortes en la soga estirada`],
   ['d', `${ped(P4.errores.cadaCapaAparte)}: cada capa queda en 3 pedazos`, 'soga-cada-capa-aparte', 'hipotesis']],
   fb:{ c:`¡Bien! Cada corte atraviesa las 3 capas, así que corta la soga en 3 lugares. Con 2 cortes, la soga estirada tiene ${P4.puntos.length} cortes, y una soga abierta con ${P4.puntos.length} cortes queda en ${P4.piezas} pedazos.`,
     a:`Elegiste la A. Con la soga estirada, 2 cortes darían 3 pedazos. Pero doblada, cada corte pasa por las 3 capas: son ${P4.puntos.length} cortes en la soga y ${P4.piezas} pedazos. La correcta está marcada.`,
@@ -764,7 +776,7 @@ const G5 = { id:'cortes-paso5', ok:'c', opts:[
   fb:{ c:'¡Bien! Una pesa junto a la papa resta: 2 = 3 − 1, 5 = 9 − 3 − 1, 6 = 9 − 3, 7 = 9 + 1 − 3… Así se llenan los huecos entre las sumas, y sale todo de 1 a 13 kg.',
     a:'Elegiste la A. Cada pesa sola pesa una masa, pero juntas pesan más: 1 + 3 = 4, 9 + 3 + 1 = 13. Y una pesa junto a la papa resta: 3 − 1 = 2. Salen 13 masas. La correcta está marcada.',
     b:`Elegiste la B. Con las pesas solo enfrente salen ${P5.unPlatillo.join(', ')}: ${P5.unPlatillo.length} masas. Pero una pesa también puede ir junto a la papa y restar: 3 − 1 = 2, 9 − 3 − 1 = 5… Salen las 13 de 1 a 13 kg. La correcta está marcada.`,
-    d:'Elegiste la D. Hay 27 acomodos, pero no todos pesan algo distinto: el acomodo y su espejo (cambiar de platillo todas las pesas) dan la misma masa en el otro lado, y uno no pesa nada. 26 ÷ 2 = 13. La correcta está marcada.' } };
+    d:'Elegiste la D. Hay 27 acomodos, pero uno no pesa nada (todas fuera) y, de los otros 26, la mitad pondría más pesas junto a la papa que enfrente: pedirían una masa negativa. Quedan 13. La correcta está marcada.' } };
 const pes = (v, t) => `${v} pesadas: ${t}`;
 const G7 = { id:'cortes-paso7', ok:'a', opts:[
   ['a', pes(P7.pesadas, 'en tres grupos de 3')],
@@ -780,7 +792,7 @@ const G7 = { id:'cortes-paso7', ok:'a', opts:[
 const lectVarilla = ya => [L('L', 'Largo L', '12 m'), L('d', 'Cada pieza d', '2 m')]
   .concat(ya ? [E0 => ['c', 'Cortes c', String(E0.barras.lista[0].cortes.length)], E0 => ['T', 'Tiempo T', min(3*E0.barras.lista[0].cortes.length)]] : [L('c', 'Cortes c', '?'), L('T', 'Tiempo T', '?')]);
 const varilla1 = ya => ({ modo:'barras', barras:{ muestra:2, lista:[{ largo:12, titulo:'varilla de fierro: L = 12 m', tk:'L', cortes: ya ? P1.posiciones.slice() : [], sep: ya ? 1 : 0, verN:ya }] },
-  lect:lectVarilla(ya), desc:'Una varilla de fierro de 12 m sobre una regla de 1 m, y una pieza de ejemplo de 2 m.' });
+  lect:lectVarilla(ya), ley:[['c', 'c · cortes'], ['n', 'n · piezas (numeradas)'], ['d', 'd · largo de cada pieza'], ['L', 'L · largo total'], ['T', 'T · tiempo']], desc:'Una varilla de fierro de 12 m sobre una regla de 1 m, y una pieza de ejemplo de 2 m.' });
 function varilla2(){
   E.config({ modo:'barras', tocar:true, barras:{ muestra:null, lista:[{ largo:12, titulo:'varilla de fierro: L = 12 m', tk:'L', cortes:S.cortes2, verN:true }] },
     lect:[E0 => ['c', 'Cortes c', String(E0.barras.lista[0].cortes.length)], E0 => ['n', 'Piezas n', String(MC.contarPiezas({ forma:'abierta', largo:12, cortes:E0.barras.lista[0].cortes }).piezas)]],
@@ -800,7 +812,7 @@ function botonesCortes(){
   cont.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { const m = +b.dataset.m; if (!m) S.cortes2.length = 0; else E.alTocar(m); E.dibujar(); E.avisar(); botonesCortes(); });
 }
 const lineas3 = ya => ({ modo:'lineas', lin:{ largo:60, sep:5, verA:ya, verC:ya, progA: ya ? 99 : 0, progC: ya ? 99 : 0 },
-  lect: ya ? [L('e', 'Postes en la avenida e', String(P3.abierta)), L('e', 'Estacas en el corral e', String(P3.cerrada))] : [L('L', 'Largo L', '60 m'), L('d', 'Separación d', '5 m'), L('e', 'Postes e', '?'), L('e', 'Estacas e', '?')],
+  lect: ya ? [L('eA', `Postes de la avenida ${eA}`, String(P3.abierta)), L('eC', `Estacas del corral ${eC}`, String(P3.cerrada))] : [L('L', 'Largo L', '60 m'), L('d', 'Separación d', '5 m'), L('eA', `Postes ${eA}`, '?'), L('eC', `Estacas ${eC}`, '?')],
   desc:'Una avenida recta de 60 m con un poste cada 5 m, con poste en las dos puntas, y un corral redondo de 60 m de contorno con una estaca cada 5 m.' });
 const soga4 = ya => ({ modo:'soga', soga:{ largo:6, capas:3, pos:[.5, 1.5], ver:ya, prog: ya ? 99 : 0, sep: ya ? 1 : 0, verN:ya },
   lect: ya ? [L('c', 'Cortes en la soga c', String(P4.puntos.length)), L('n', 'Pedazos n', String(P4.piezas))] : [L('L', 'Soga L', '6 m'), L('ink', 'Capas', '3'), L('c', 'Cortes al atado', '2'), L('n', 'Pedazos n', '?')],
@@ -820,9 +832,10 @@ function cambio6(){ E.bal.lugar = S.lugar6; E.bal.masa = S.masa6; E.inclinar(); 
 function vivoBal(){
   const d = $('vivoB'); if (!d) return;
   const A = acomodo6(), R = MC.equilibrio(A);
-  const izq = [M_(S.masa6)].concat(A.junto.map(String)).join(' + '), der = A.otro.length ? A.otro.join(' + ') : '0';
+  const dm = a => a.slice().sort((x, y) => y - x);
+  const izq = [M_(S.masa6)].concat(dm(A.junto).map(String)).join(' + '), der = A.otro.length ? dm(A.otro).join(' + ') : '0';
   d.innerHTML = `<div class="eq">${izq} = ${R.izquierdo}<span class="note">platillo de la papa</span></div><div class="eq">${der} = ${R.derecho}<span class="note">platillo de enfrente</span></div>
-    <p class="fb ${R.estado === 'equilibrio' ? 'ok' : ''}">${R.estado === 'equilibrio' ? `En equilibrio: ${M_(S.masa6 + ' kg')} = ${der}${A.junto.length ? ' − ' + A.junto.join(' − ') : ''}.` : R.estado === 'baja-masa' ? 'Baja el platillo de la papa: falta masa enfrente.' : 'Baja el platillo de enfrente: sobra masa enfrente.'}</p>`;
+    <p class="fb ${R.estado === 'equilibrio' ? 'ok' : ''}">${R.estado === 'equilibrio' ? `En equilibrio: ${M_(S.masa6 + ' kg')} = ${der}${A.junto.length ? ' − ' + dm(A.junto).join(' − ') : ''}.` : R.estado === 'baja-masa' ? 'Baja el platillo de la papa: falta masa enfrente.' : 'Baja el platillo de enfrente: sobra masa enfrente.'}</p>`;
 }
 const mon7 = ya => ({ modo:'monedas', mon:{ n:9, sosp: ya ? [S7.encontrada] : [1, 2, 3, 4, 5, 6, 7, 8, 9], falsa:S7.encontrada, verFalsa:ya },
   lect:[L('ink', 'Monedas', '9, una más liviana'), L('k', 'Pesadas k', ya ? String(P7.pesadas) : '?')].concat(ya ? [L('ink', 'La falsa', `la ${S7.encontrada}`)] : []), desc:'Una balanza de dos platillos vacía y una fila de 9 monedas iguales a la vista; una es más liviana.' });
@@ -835,14 +848,15 @@ function mon8(){
 }
 function pintar8(){
   const cont = $('ctl8'); if (!cont) return;
-  const Sm = MC.simularPesadas({ monedas:S.n8, falsa:S.falsa8, estrategia:S.est8 });
+  const Sm = MC.simularPesadas({ monedas:S.n8, falsa:S.falsa8, estrategia:S.est8 }), peor8 = MC.minimoPesadas({ monedas:S.n8 })[S.est8];
   const nom = { 'equilibrio':'se equilibran: la falsa está fuera', 'izquierda-liviana':'sube el platillo de la izquierda: la falsa está ahí', 'derecha-liviana':'sube el platillo de la derecha: la falsa está ahí' };
   cont.innerHTML = `<div class="seg" role="group" aria-label="Cuántas monedas">${[9, 27].map(n => `<button type="button" data-n="${n}" aria-pressed="${S.n8 === n}">${n} monedas</button>`).join('')}</div>
     <div class="seg" role="group" aria-label="Estrategia">${[['tercios', 'En tres grupos'], ['mitades', 'En mitades']].map(([e, t]) => `<button type="button" data-e="${e}" aria-pressed="${S.est8 === e}">${t}</button>`).join('')}</div>
     <label class="fila">Esconder la falsa en la moneda <select id="sel8">${Array.from({ length:S.n8 }, (_, k) => `<option value="${k + 1}"${k + 1 === S.falsa8 ? ' selected' : ''}>${k + 1}</option>`).join('')}</select></label>
     <div class="fila"><button type="button" class="btn chico primary" id="sig8"${S.i8 >= Sm.cuantas ? ' disabled' : ''}>Siguiente pesada</button><button type="button" class="btn chico" id="rein8">Empezar de nuevo</button></div>
     <div class="eqs">${Sm.pasos.slice(0, S.i8).map((p, j) => `<div class="eq"><span>${k_('pesada ' + (j + 1))}: ${p.izquierda.length} contra ${p.derecha.length}, ${p.fuera.length} fuera → ${nom[p.resultado]}</span></div>`).join('') || '<div class="eq">Todavía no pesas nada.</div>'}
-    ${S.i8 >= Sm.cuantas ? `<div class="eq"><span>Encontrada: la moneda ${Sm.encontrada}, en ${k_(Sm.cuantas)} pesadas.</span></div>` : ''}</div>`;
+    ${S.i8 >= Sm.cuantas ? `<div class="eq"><span>Encontrada: la moneda ${Sm.encontrada}, en ${k_(Sm.cuantas)} ${Sm.cuantas === 1 ? 'pesada' : 'pesadas'}.</span></div>` : ''}</div>
+    <p>En el peor caso, esta estrategia necesita ${k_(peor8)} ${peor8 === 1 ? 'pesada' : 'pesadas'}.</p>`;
   cont.querySelectorAll('[data-n]').forEach(b => b.onclick = () => { S.n8 = +b.dataset.n; S.falsa8 = Math.min(S.falsa8, S.n8); S.i8 = 0; mon8(); pintar8(); });
   cont.querySelectorAll('[data-e]').forEach(b => b.onclick = () => { S.est8 = b.dataset.e; S.i8 = 0; mon8(); pintar8(); });
   $('sel8').onchange = e => { S.falsa8 = +e.target.value; S.i8 = 0; mon8(); pintar8(); };
@@ -856,7 +870,7 @@ const steps = [
    anima:fin => { const o = varilla1(false); o.lect = lectVarilla(true); E.config(o); const b = E.barras.lista[0];
      E.animar(0, P1.cortes, 2600, v => { const k = Math.min(P1.cortes, Math.floor(v + 1e-9)); b.cortes = P1.posiciones.slice(0, k); b.sierra = k < P1.cortes ? P1.posiciones[k] : null; }, () => {
        b.sierra = null; E.animar(0, 1, 700, v => { b.sep = v; b.verN = v > .4; }, () => { E.config(varilla1(true)); fin(); }); }, true); },
-   body:() => `<p class="problem">En la obra hay una varilla de fierro de ${L_('12 m')} y se necesitan piezas de ${d_('2 m')}. Con la amoladora, cada corte toma 3 minutos.</p>
+   body:() => `<p class="problem">En la obra hay una varilla de fierro de ${L_('12 m')} y se necesitan piezas de ${d_('2 m')}. Con la amoladora se corta una pieza a la vez, sin juntar pedazos, y cada corte toma 3 minutos.</p>
    <p>¿Cuánto ${T_('tiempo T')} toma dejar toda la varilla en piezas de 2 m?</p>${opcionesHTML(G1.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${n_('n')} = ${L_('L')} ÷ ${d_('d')} = ${L_('12')} ÷ ${d_('2')} = ${n_(P1.piezas)}<span class="note">piezas</span></div>
@@ -876,18 +890,18 @@ const steps = [
    anima:fin => { const o = lineas3(true); o.lin.progA = 0; o.lin.progC = 0; E.config(o); const Li = E.lin;
      E.animar(0, P3.abierta, 2200, v => { Li.progA = Math.floor(v + 1e-9); }, () => E.animar(0, P3.cerrada, 2000, v => { Li.progC = Math.floor(v + 1e-9); }, () => { E.config(lineas3(true)); fin(); }, true), true); },
    body:() => `<p class="problem">En una avenida recta de Juliaca de ${L_('60 m')} se pone un poste cada ${d_('5 m')}, con un poste en cada punta. En el campo, un corral redondo tiene ${L_('60 m')} de contorno y se le clava una estaca cada ${d_('5 m')}, todo alrededor.</p>
-   <p>¿Cuántos ${e_('postes e')} lleva la avenida y cuántas ${e_('estacas e')} lleva el corral?</p>${opcionesHTML(G3.opts, 'fb')}
+   <p>¿Cuántos ${eA_('postes ' + eA)} lleva la avenida y cuántas ${eC_('estacas ' + eC)} lleva el corral?</p>${opcionesHTML(G3.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">tramos = ${L_('L')} ÷ ${d_('d')} = ${L_('60')} ÷ ${d_('5')} = ${P3.tramos}</div>
-     <div class="eq">avenida (abierta): ${e_('e')} = tramos + 1 = ${e_(P3.abierta)}</div>
-     <div class="eq">corral (cerrado): ${e_('e')} = tramos = ${e_(P3.cerrada)}</div></div>
+     <div class="eq">avenida (abierta): ${eA_(eA)} = tramos + 1 = ${eA_(P3.abierta)}</div>
+     <div class="eq">corral (cerrado): ${eC_(eC)} = tramos = ${eC_(P3.cerrada)}</div></div>
    <p>Es lo mismo que con los cortes, al revés: en la línea abierta los postes son las puntas de los tramos y sobra uno; en el contorno cerrado la última estaca coincidiría con la primera.</p>
    <p class="fuente">El informe de aritmética anota «contar los términos de una progresión sin el +1» como un error que suponemos, sin estudios que lo midan; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
  { k:'Paso 4', t:'Predice: la soga doblada', gate:G4,
    prep:() => E.config(soga4(!!S.pred[G4.id])),
    anima:fin => { const o = soga4(true); o.soga.prog = 0; o.soga.sep = 0; o.soga.verN = false; E.config(o); const So = E.soga;
      E.animar(0, P4.puntos.length, 2400, v => { So.prog = Math.floor(v + 1e-9); }, () => E.animar(0, 1, 700, v => { So.sep = v; So.verN = v > .4; }, () => { E.config(soga4(true)); fin(); }), true); },
-   body:() => `<p class="problem">Una soga de ${L_('6 m')} se dobla en zigzag en 3 partes iguales, así que quedan 3 capas de 2 m una sobre otra. Con un cuchillo se dan 2 cortes que atraviesan las 3 capas, como en el dibujo.</p>
+   body:() => `<p class="problem">Una soga de ${L_('6 m')} se dobla en zigzag en 3 partes iguales, así que quedan 3 capas de 2 m una sobre otra. Con un cuchillo se dan 2 cortes que atraviesan las 3 capas, ninguno en un doblez, como en el dibujo.</p>
    <p>Al estirar la soga, ¿en cuántos ${n_('pedazos n')} quedó?</p>${opcionesHTML(G4.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${c_('c')} = 3 capas · 2 cortes = ${c_(P4.puntos.length)}<span class="note">cortes en la soga estirada</span></div>
@@ -904,7 +918,7 @@ const steps = [
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${M_('M')} + (pesas junto a la papa) = (pesas enfrente)</div>
      <div class="eq">${M_('M')} = (enfrente) − (junto a la papa)</div></div>
-   <div class="chips">${P5.masas.map(m => { const P = MC.pesar({ pesas:[1, 3, 9], masa:m }); return `<span class="chip">${m} = ${P.otro.join(' + ')}${P.junto.length ? ' − ' + P.junto.join(' − ') : ''}</span>`; }).join('')}</div>
+   <div class="chips">${P5.masas.map(m => { const P = MC.pesar({ pesas:[1, 3, 9], masa:m }); const dm = a => a.slice().sort((x, y) => y - x); return `<span class="chip">${m} = ${dm(P.otro).join(' + ')}${P.junto.length ? ' − ' + dm(P.junto).join(' − ') : ''}</span>`; }).join('')}</div>
    <p>El motor probó las 27 formas de poner las tres pesas. Cada masa de 1 a 13 kg sale de una sola forma; pasar de 13 no se puede, porque es la suma de las tres.</p>
    <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
  { k:'Paso 6', t:'Explora: equilibra la balanza',
@@ -1029,30 +1043,30 @@ const lugarDe = (pesas, P) => { const j = P.junto.slice(), o = P.otro.slice(); r
 
 const EXPS = [
   { id:'tronco', corto:'El tronco en más trozos',
-    q:`Partir un tronco de eucalipto en 3 trozos iguales le toma a un leñador ${T_('6 minutos')}. ¿Cuánto ${T_('tiempo')} le toma partir otro tronco igual en 6 trozos iguales, si cada corte toma lo mismo?`,
+    q:`Partir un tronco de eucalipto en 3 trozos iguales, cortando un trozo a la vez, le toma a un leñador ${T_('6 minutos')}. ¿Cuánto ${T_('tiempo')} le toma partir otro tronco igual en 6 trozos iguales, si cada corte toma lo mismo?`,
     opts:[['a', `${min(X1.errores.lineal)}: el doble de trozos, el doble de tiempo`, 'AR7-cortes-proporcionales', 'hipotesis'],
-          ['b', `${min(X1.tiempo)}: 5 cortes de 3 minutos`],
-          ['c', `${min(X1.errores.porPieza)}: 6 trozos de 3 minutos`, 'cuenta-piezas-no-cortes', 'hipotesis']],
-    ok:'b',
+          ['b', `${min(X1.errores.porPieza)}: 6 trozos de 3 minutos`, 'cuenta-piezas-no-cortes', 'hipotesis'],
+          ['c', `${min(X1.tiempo)}: 5 cortes de 3 minutos`]],
+    ok:'c',
     fb:{ a:`El tiempo no va con los trozos sino con los cortes: 3 trozos son 2 cortes (3 min cada uno) y 6 trozos son 5 cortes: ${min(X1.tiempo)}.`,
-         c:`Los 3 minutos son por corte, y 6 trozos piden 5 cortes, no 6: ${min(X1.tiempo)}.` },
-    antes:ya => E.config({ modo:'barras', barras:{ muestra:null, lista:[{ largo:6, tipo:'madera', titulo:'tronco 1: 3 trozos en 6 min', cortes:[2, 4], sep:.6, verN:true },
+         b:`Los 3 minutos son por corte, y 6 trozos piden 5 cortes, no 6: ${min(X1.tiempo)}.` },
+    antes:ya => E.config({ modo:'barras', barras:{ muestra:null, lista:[{ largo:6, tipo:'madera', titulo:'tronco 1: 3 trozos en 6 min', cortes: ya ? [2, 4] : [], sep: ya ? .6 : 0, verN:ya },
       { largo:6, tipo:'madera', titulo:'tronco 2: 6 trozos', cortes: ya ? X1b.posiciones.slice() : [], sep: ya ? .6 : 0, verN:ya }] },
-      lect:[L('c', 'Cortes del tronco 1', '2'), L('T', 'Tiempo del tronco 1', '6 min'), L('c', 'Cortes del tronco 2', ya ? String(X1.cortes) : '?'), L('T', 'Tiempo del tronco 2', ya ? min(X1.tiempo) : '?')],
+      lect:[ya ? L('c', 'Cortes del tronco 1', '2') : L('n', 'Trozos del tronco 1', '3'), L('T', 'Tiempo del tronco 1', '6 min'), L('c', 'Cortes del tronco 2', ya ? String(X1.cortes) : '?'), L('T', 'Tiempo del tronco 2', ya ? min(X1.tiempo) : '?')],
       ley:[['c', 'c · cortes'], ['n', 'n · trozos (numerados)'], ['T', 'T · tiempo']], desc:'Dos troncos de eucalipto iguales: el primero ya está en 3 trozos; el segundo, entero.' }),
-    despues:() => { EXPS[0].antes(false); const b = E.barras.lista[1]; E.lect[2] = E0 => ['c', 'Cortes del tronco 2', String(E0.barras.lista[1].cortes.length)]; E.lect[3] = E0 => ['T', 'Tiempo del tronco 2', min(3*E0.barras.lista[1].cortes.length)];
+    despues:() => { EXPS[0].antes(false); const b0 = E.barras.lista[0], b = E.barras.lista[1]; b0.cortes = [2, 4]; b0.sep = .6; b0.verN = true; E.lect[0] = L('c', 'Cortes del tronco 1', '2'); E.lect[2] = E0 => ['c', 'Cortes del tronco 2', String(E0.barras.lista[1].cortes.length)]; E.lect[3] = E0 => ['T', 'Tiempo del tronco 2', min(3*E0.barras.lista[1].cortes.length)];
       E.animar(0, X1.cortes, 2200, v => { b.cortes = X1b.posiciones.slice(0, Math.floor(v + 1e-9)); }, () => E.animar(0, .6, 500, v => { b.sep = v; b.verN = v > .3; }, () => EXPS[0].antes(true)), true); },
     exp:() => `<div class="eqs"><div class="eq">tronco 1: 3 trozos → ${c_('2 cortes')} → 6 ÷ 2 = 3 min por corte</div>
       <div class="eq">tronco 2: 6 trozos → ${c_(X1.cortes + ' cortes')} → ${T_('T')} = ${X1.cortes} · 3 = ${T_(min(X1.tiempo))}</div></div>
       <p>El doble de trozos no es el doble de cortes: 2 cortes contra 5. Por eso la regla de tres con los trozos falla.</p>
       <p class="fuente">La regla de tres donde no va se llama ilusión de linealidad (AR7 en el informe de aritmética): estudios con escolares la encontraron en problemas que no son proporcionales, pero no hay cifras para los cortes. Las dos opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'aro', corto:'El aro de fierro',
-    q:`En el paso 1, la varilla de ${L_('12 m')} en piezas de ${d_('2 m')} tomaba 15 minutos. Ahora es un aro de fierro soldado, también de ${L_('12 m')} de contorno, que se parte en piezas de ${d_('2 m')}, con 3 minutos por corte. ¿Cuánto ${T_('tiempo')} toma?`,
-    opts:[['a', `${min(X2.erroresTiempo.comoAbierta)}: 5 cortes, como la varilla`, 'cerrada-como-abierta', 'hipotesis'],
-          ['b', `${min(X2.tiempo)}: 6 cortes, uno por pieza`],
+    q:`Una varilla recta de ${L_('12 m')} se partió en piezas de ${d_('2 m')}. Ahora es un aro de fierro soldado, también de ${L_('12 m')} de contorno, que se parte en piezas de ${d_('2 m')}, cortando una pieza a la vez, con 3 minutos por corte. ¿Cuánto ${T_('tiempo')} toma?`,
+    opts:[['a', `${min(X2.tiempo)}: 6 cortes, uno por pieza`],
+          ['b', `${min(X2.erroresTiempo.comoAbierta)}: 5 cortes, como la varilla`, 'cerrada-como-abierta', 'hipotesis'],
           ['c', `${min(X2.erroresTiempo.masUno)}: 7 cortes, uno más que las piezas`, 'cortes-mas-uno', 'hipotesis']],
-    ok:'b',
-    fb:{ a:`El aro no tiene puntas: el primer corte solo lo abre y no suelta ninguna pieza. Después queda una tira de 6 piezas, que pide 5 cortes más: 6 cortes, ${min(X2.tiempo)}.`,
+    ok:'a',
+    fb:{ b:`El aro no tiene puntas: el primer corte solo lo abre y no suelta ninguna pieza. Después queda una tira de 6 piezas, que pide 5 cortes más: 6 cortes, ${min(X2.tiempo)}.`,
          c:`Con 7 cortes saldrían 7 piezas: en un aro, cada corte termina una pieza. Para 6 piezas, 6 cortes: ${min(X2.tiempo)}.` },
     antes:ya => E.config({ modo:'aro', aro:{ largo:12, muestra:2, cortes: ya ? X2.posiciones.slice() : [], sep: ya ? 1 : 0, verN:ya },
       lect:[L('L', 'Contorno L', '12 m'), L('d', 'Cada pieza d', '2 m'), L('c', 'Cortes c', ya ? String(X2.cortes) : '?'), L('T', 'Tiempo T', ya ? min(X2.tiempo) : '?')],
@@ -1067,12 +1081,12 @@ const EXPS = [
     q:`Una varilla de 8 m se parte en piezas de 1 m. Ahora, después de cada corte, se pueden juntar los pedazos uno sobre otro y cortarlos todos con un solo corte recto. ¿Cuál es el menor número de ${c_('cortes')}?`,
     opts:[['a', `${X3.errores.sinApilar} cortes: uno entre cada dos piezas`, 'apilar-como-sin-apilar', 'hipotesis'],
           ['b', `${X3.errores.mitad} cortes: la mitad de las piezas`, 'apilar-la-mitad', 'hipotesis'],
-          ['c', `${X3.minimo} cortes: cada corte duplica los pedazos`],
-          ['d', `${X3.errores.unoPorPieza} cortes: uno por cada pieza`, 'cuenta-piezas-no-cortes', 'hipotesis']],
-    ok:'c',
+          ['c', `${X3.errores.unoPorPieza} cortes: uno por cada pieza`, 'cuenta-piezas-no-cortes', 'hipotesis'],
+          ['d', `${X3.minimo} cortes: cada corte duplica los pedazos`]],
+    ok:'d',
     fb:{ a:'Sin apilar serían 7. Pero si juntas los pedazos, un corte los parte a todos a la vez: 1 → 2 → 4 → 8 pedazos en 3 cortes.',
          b:'Con 4 cortes alcanza, pero se puede con menos: 8 → 4 + 4; apilas los dos de 4 y cortas: cuatro de 2; apilas los cuatro y cortas: ocho de 1. Son 3.',
-         d:'En una varilla abierta nunca hace falta un corte por pieza, y apilando menos aún: 3 cortes bastan.' },
+         c:'En una varilla abierta nunca hace falta un corte por pieza, y apilando menos aún: 3 cortes bastan.' },
     antes:ya => E.config({ modo:'pila', pila:{ plan:X3.plan, largo:8, prog: ya ? X3.plan.length : 0, ver:ya },
       lect:[L('ink', 'Varilla', '8 m → piezas de 1 m'), L('c', 'Cortes c', ya ? String(X3.minimo) : '?')], desc:'Una varilla de 8 m que se quiere partir en piezas de 1 m, apilando los pedazos.' }),
     despues:() => { EXPS[2].antes(false); const Pi = E.pila; Pi.ver = true; E.lect[1] = E0 => ['c', 'Cortes c', String(E0.pila.prog)];
@@ -1082,14 +1096,14 @@ const EXPS = [
       <p>El motor buscó todos los montones posibles: con 2 cortes no se llega a 8 pedazos, porque cada corte, aun con todo apilado, a lo más duplica los pedazos.</p>
       <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'pesa27', corto:'Una pesa de 27 kg',
-    q:`Con pesas de 1, 3 y 9 kg se pesa todo de 1 a 13 kg. Si el comerciante compra una pesa más, de 27 kg, ¿hasta cuántos kg puede pesar todas las ${M_('masas')} enteras, sin saltarse ninguna?`,
+    q:`El comerciante tenía pesas de 1, 3 y 9 kg y compra una más, de 27 kg. Con la balanza de dos platillos, ¿hasta cuántos kg puede pesar todas las ${M_('masas')} enteras, sin saltarse ninguna?`,
     opts:[['a', `Hasta ${X4.errores.laMayor} kg: lo que pesa la pesa nueva`, 'balanza-hasta-la-mayor', 'hipotesis'],
-          ['b', `Hasta ${X4.errores.doble} kg: el doble que con tres pesas`, 'AR7-balanza-doble-alcance', 'hipotesis'],
-          ['c', `Hasta ${X4.despues} kg: la suma de las cuatro pesas`],
+          ['b', `Hasta ${X4.despues} kg: la suma de las cuatro pesas`],
+          ['c', `Hasta ${X4.errores.doble} kg: el doble que con tres pesas`, 'AR7-balanza-doble-alcance', 'hipotesis'],
           ['d', `Hasta ${X4.errores.siguiente} kg: la pesa que seguiría en la serie`, 'balanza-siguiente-pesa', 'hipotesis']],
-    ok:'c',
+    ok:'b',
     fb:{ a:'La pesa de 27 enfrente, con las otras sumando o restando hasta 13, alcanza de 27 − 13 = 14 a 27 + 13 = 40. Y de 1 a 13 ya se tenía: todo hasta 40.',
-         b:'Una pesa más no duplica: la de 27 junto con las otras llega de 14 a 40, y de 1 a 13 ya se tenía. Todo hasta 40, la suma de las cuatro.',
+         c:'Una pesa más no duplica: la de 27 junto con las otras llega de 14 a 40, y de 1 a 13 ya se tenía. Todo hasta 40, la suma de las cuatro.',
          d:'Para pesar 81 kg harían falta 81 kg de pesas enfrente, y en total solo hay 1 + 3 + 9 + 27 = 40. Se llega hasta 40.' },
     antes:ya => E.config({ modo:'balanza', bal:{ pesas:[1, 3, 9, 27], lugar: ya ? ['otro', 'otro', 'otro', 'otro'] : ['fuera', 'fuera', 'fuera', 'fuera'], masa: ya ? X4.despues : null },
       lect:[L('ink', 'Pesas', '1, 3, 9 y 27 kg'), L('M', 'Hasta M', ya ? `${X4.despues} kg` : '?')], desc:'Una balanza con un saco de papa y cuatro pesas sin usar: 1, 3, 9 y 27 kg.' }),
@@ -1101,14 +1115,14 @@ const EXPS = [
       <p>El motor recorrió las 81 formas de poner las cuatro pesas: salen todas las masas de 1 a 40 kg, cada una de una sola forma.</p>
       <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras; «el doble» se liga a la ilusión de linealidad (AR7 del informe), sin cifras para este problema.</p>`; } },
   { id:'monedas27', corto:'27 monedas',
-    q:`Con 9 monedas bastaban 2 pesadas. Ahora hay 27 monedas iguales a la vista y una es falsa, más liviana. ¿Cuál es el menor número de ${k_('pesadas')} que asegura encontrarla?`,
-    opts:[['a', `${X5.pesadas} pesadas: en tres grupos de 9`],
-          ['b', `${X5.errores.mitades} pesadas: en mitades, 13 contra 13`, 'pesadas-en-mitades', 'hipotesis'],
-          ['c', `${X5.errores.parejas} pesadas: de dos en dos`, 'pesadas-de-dos-en-dos', 'hipotesis'],
+    q:`Ahora hay 27 monedas iguales a la vista y una es falsa, más liviana. ¿Cuál es el menor número de ${k_('pesadas')} que asegura encontrarla?`,
+    opts:[['a', `${X5.errores.mitades} pesadas: en mitades, 13 contra 13`, 'pesadas-en-mitades', 'hipotesis'],
+          ['b', `${X5.errores.parejas} pesadas: de dos en dos`, 'pesadas-de-dos-en-dos', 'hipotesis'],
+          ['c', `${X5.pesadas} pesadas: en tres grupos de 9`],
           ['d', `${X5.errores.unaPorUna} pesadas: la moneda 1 contra cada una`, 'pesadas-una-por-una', 'hipotesis']],
-    ok:'a',
-    fb:{ b:'Las mitades dejan 13, luego 6, luego 3, luego 1: 4 pesadas. Con tres grupos, 27 → 9 → 3 → 1: bastan 3.',
-         c:'De dos en dos, con mala suerte hacen falta 13. Con tres grupos de 9, la primera pesada ya descarta 18 monedas: bastan 3.',
+    ok:'c',
+    fb:{ a:'Las mitades dejan 13, luego 6, luego 3, luego 1: 4 pesadas. Con tres grupos, 27 → 9 → 3 → 1: bastan 3.',
+         b:'De dos en dos, con mala suerte hacen falta 13. Con tres grupos de 9, la primera pesada ya descarta 18 monedas: bastan 3.',
          d:'Una por una pueden ser 25. Con tres grupos, cada pesada deja la tercera parte: 27 → 9 → 3 → 1, 3 pesadas.' },
     antes:ya => E.config({ modo:'monedas', mon:{ n:27, sosp: ya ? [S5.encontrada] : Array.from({ length:27 }, (_, k) => k + 1), falsa:S5.encontrada, verFalsa:ya },
       lect:[L('ink', 'Monedas', '27, una más liviana'), L('k', 'Pesadas k', ya ? String(X5.pesadas) : '?')].concat(ya ? [L('ink', 'La falsa', `la ${S5.encontrada}`)] : []), desc:'Una balanza de dos platillos vacía y 27 monedas iguales a la vista; una es más liviana.' }),

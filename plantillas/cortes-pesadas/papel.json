@@ -1,11 +1,11 @@
 {
   "titulo": "La sierra y la balanza: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. Antes de usar una fórmula, dibuja el caso chico (una varilla de 3 piezas, un cerco de 4 estacas) y cuenta con el dedo. En la balanza, una pesa puede ir en el platillo de enfrente o junto al objeto. Para la moneda falsa, piensa cuántos resultados distintos puede dar cada pesada.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. Antes de usar una fórmula, dibuja el caso chico (una varilla de 3 piezas, un cerco de 4 estacas) y cuenta con el dedo. En la balanza, piensa en todos los lugares donde puede ir cada pesa. Para la moneda falsa, piensa cuántos resultados distintos puede dar cada pesada.",
   "problemas": [
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Un maestro de obra tiene una varilla de fierro de 18 m y necesita piezas de 3 m. Cada corte con la amoladora le toma 4 minutos. ¿Cuánto tiempo tarda en dejar lista toda la varilla?",
+      "enunciado": "Un maestro de obra tiene una varilla de fierro de 18 m y necesita piezas de 3 m. Cada corte con la amoladora, de un pedazo a la vez, le toma 4 minutos. ¿Cuánto tiempo tarda en dejar lista toda la varilla?",
       "respuesta": "20 minutos.",
       "pasos": [
         "Salen 18 ÷ 3 = 6 piezas.",
@@ -54,7 +54,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Partir un tronco de eucalipto en 5 trozos le toma a un leñador 12 minutos. ¿Cuánto tardará en partir otro tronco igual en 9 trozos, si cada corte toma lo mismo?",
+      "enunciado": "Partir un tronco de eucalipto en 5 trozos, cortando un trozo a la vez, le toma a un leñador 12 minutos. ¿Cuánto tardará en partir otro tronco igual en 9 trozos de la misma forma, si cada corte toma lo mismo?",
       "respuesta": "24 minutos.",
       "pasos": [
         "5 trozos piden 4 cortes: cada corte toma 12 ÷ 4 = 3 minutos.",

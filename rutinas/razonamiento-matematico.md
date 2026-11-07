@@ -125,3 +125,62 @@ Sesión paralela a la conversación principal, en la rama `rutina/razonamiento-m
 - `docs/diseno.md`: la tabla de colores de arriba.
 - `docs/pendientes.md` (ra1): «Hecha `tablas-graficos` (barras con eje truncado, crecimiento porcentual, circular, tabla de campeonato y suficiencia de datos; 21 casos verificados aparte)».
 - `CLAUDE.md`, historia: «Tablas y gráficos (7 nov 2026, rutina de razonamiento matemático): `plantillas/tablas-graficos/` (la bodega en gráficos: eje que no empieza en cero, variación absoluta contra porcentual, sectores, tabla de un campeonato deducida por el motor y suficiencia de datos con las soluciones enumeradas; 21 casos verificados aparte).»
+
+## 7 nov 2026 · La sierra y la balanza (`plantillas/cortes-pesadas/`)
+
+**Qué hice.** Unidad `razonamiento-matematico.cortes-y-pesadas`. Título neutro (no adelanta «n − 1 cortes» ni «+1 estaca»).
+
+- **`motor.js`** (UMD, `MotorCortes`, sin DOM; cabecera hasta la línea 111): cortes en forma abierta y cerrada (`cortar`, `contarPiezas`, `tiempoCortes`), `cortesApilando` (búsqueda en anchura sobre montones), estacas en línea y en contorno (`estacas`, `compararEstacas`), `sogaDoblada`, balanza (`pesar` por fuerza bruta 3^k, `equilibrio`, `masasMedibles`, `agregarPesa`) y monedas (`simularPesadas` en tercios o mitades, `minimoPesadas` que busca el árbol de decisión más bajo, sin la fórmula). Cada respuesta trae `errores`, `coinciden` y `repetidos`.
+- **`casos.json`:** 21 casos. **`motor.test.js`:** 45 pruebas (piezas = cortes + 1 en abierta y = cortes en cerrada con 300 casos al azar, la línea lleva una estaca más que el contorno, soga doblada contra otra simulación, apilar da ⌈log₂ n⌉, con potencias de 3 se mide todo de una sola forma, la estrategia en tres grupos halla la falsa en cada posición para n = 3 a 100 y el mínimo es ⌈log₃ n⌉, errores que no coinciden).
+- **`papel.json`:** 10 problemas propios (varilla en la obra, postes en Juliaca, corral de alpacas, collar, eucalipto, soga, papa con 1, 3 y 9 kg, 1, 3, 9 y 27 kg, 81 monedas, varilla apilada).
+- **Paso a paso** (8 pasos, 5 predicciones que bloquean y 3 de exploración: marcar cortes tocando, equilibrar la balanza, esconder la falsa; todo hipótesis nuestra):
+  1. varilla de 12 m en piezas de 2 m, de una pieza a la vez, 3 min por corte: 15 min (18 cuenta piezas, 21 corta los extremos, 9 dos piezas por corte);
+  2. marcar cortes;
+  3. avenida y corral de 60 m, uno cada 5 m: 13 postes (e_A) y 12 estacas (e_C), cita con cautela «términos de una progresión sin el +1» del informe (sin dato);
+  4. soga de 6 m en 3 capas con 2 cortes: 7 pedazos;
+  5. pesas de 1, 3 y 9 kg en los dos platillos: 13 masas (3, 7 con un platillo, 26 contando acomodos);
+  6. equilibrar;
+  7. 9 monedas con una más liviana: 2 pesadas (3 en mitades, 4 de dos en dos, 7 una por una);
+  8. esconder la falsa y ver las pesadas, con el peor caso de cada estrategia.
+- **¿Qué pasa si…?** (5, con bloqueo; la correcta en otra posición que en el paso a paso): tronco de 3 trozos en 6 min → 6 trozos en 15 min (12 es `AR7-cortes-proporcionales`, hipótesis), aro de 12 m (18 min), 8 m apilando (3 cortes), se agrega la pesa de 27 kg (hasta 40 kg) y 27 monedas (3 pesadas).
+
+**Pruebas.** `npm test`: 2454, pasan 2452; fallan solo los 2 del catálogo. Playwright a 1366×768 y 390×844, claro y oscuro, con y sin movimiento reducido: sin errores ni desbordes, lienzo a la vista al responder en el celular; no hay arrastre (todo se toca y hay botones para el teclado) y el dedo sobre el lienzo desplaza la página.
+
+**Subagentes.**
+
+- **Verificador independiente** (solo la cabecera): 189 campos de los 21 casos con fracciones, soga pasando cada punto al atado, apilado por búsqueda en anchura propia, pesas enumerando 3^k y pesadas por árboles de decisión sin fórmula: 0 discrepancias; papel sin errores. Las correcciones no tocaron el motor ni los valores.
+- **Revisor de contenido** (nada grave). Se aplicó todo:
+  - la D del paso 1 (9 min) era defendible apilando, lo que la propia escena enseña después: ahora se dice «una pieza a la vez» (también en papel y experimentos);
+  - «e» nombraba postes y estacas: ahora e_A y e_C, con un color nuevo para e_C;
+  - el exp. 1 mostraba los 2 cortes antes de responder: ahora se ven los 3 trozos juntos;
+  - la pestaña «¿Qué pasa si…?» no se bloquea y sus enunciados soltaban respuestas del paso a paso (15 min, 1 a 13 kg, 2 pesadas): reescritos sin las cifras;
+  - el paso 8 con suerte daba 1 pesada en mitades: ahora dice el peor caso de cada estrategia;
+  - la correcta de los experimentos repetía la secuencia del paso a paso: reordenada; retoques de texto, leyenda y monedas.
+
+**Colores** (claro / oscuro):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| c cortes | #c0364a | #f17384 |
+| n piezas | #1f5fbf | #7cb0ff |
+| T tiempo | #466d14 | #a3d65e |
+| e_A postes | #0f766e | #5ed9c8 |
+| e_C estacas | #6b6b00 | #d4d84a |
+| d tramo | #a05200 | #f0a04a |
+| L largo o contorno | #a10fbf | #cf6bfa |
+| M masa | #3328c4 | #9f9bff |
+| k pesadas | #77032c | #fdb4ce |
+
+- ΔE00 mínimo entre los que salen juntos: 25,9 en claro y 26,9 en oscuro (el revisor lo confirmó); en la vista del paso 3 (e_A, e_C, d, L), 26,1 y 27,4. Los pares bajo 20 (L–M, n–M, c–k, e_C–T) nunca comparten vista.
+- Contraste ≥ 4,56:1 sobre papel, tarjeta y chip (e_C: 5,3 sobre #fdf7f1 y 10,7 sobre #241c2e).
+- Varillas, sogas, pesas, monedas y sacos en tonos neutros con su número escrito.
+
+**Pendiente.** El cubo cortado en cubitos no entró (se eligieron la soga doblada y el apilado). El informe no tiene filas sobre cortes ni pesadas: convendría agregarlas como «sin dato».
+
+**Pedidos para la integración.**
+
+- Catálogo: `"cortes-pesadas"` en `razonamiento-matematico.cortes-y-pesadas` (con `investigacion` en el informe de aritmética y razonamiento); `npm run catalogo`; `VERSION` de `app/sw.js`; rebalanceo del banco de RM si toca.
+- `docs/diseno.md`: la tabla de colores de arriba.
+- `docs/pendientes.md` (ra1): «Hecha `cortes-pesadas` (cortes en abierta y cerrada, estacas, soga doblada, apilado, balanza de dos platillos con 1, 3, 9 y mínimo de pesadas; 21 casos verificados aparte)».
+- `CLAUDE.md`, historia: «Cortes y pesadas (7 nov 2026, rutina de razonamiento matemático): `plantillas/cortes-pesadas/` (la sierra y la balanza: cortes contra piezas en varilla y aro, estacas en línea y contorno, soga doblada, apilar para cortar, pesas en los dos platillos y la moneda falsa en tres grupos con el mínimo buscado por árbol de decisión; 21 casos verificados aparte).»
+- `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`: si te parece, agregar filas «sin dato» para cortes contra piezas, estacas en cerrada y pesadas en mitades.

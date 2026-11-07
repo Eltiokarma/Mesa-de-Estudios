@@ -2,7 +2,7 @@
   "plantilla": "cortes-pesadas",
   "unidades": "Longitudes en metros, tiempos en minutos, masas en kilogramos. Forma 'abierta' (varilla, soga, avenida) o 'cerrada' (aro, collar, cerco). Balanza: 'junto' es el platillo del objeto, 'otro' el de enfrente. Monedas numeradas desde 1; la falsa es más liviana.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.unoPorPieza, pasos.0.resultado); las listas, objetos y textos se comparan completos. 'tambien' son llamadas extra del mismo caso (con 'fn' propia si la traen).",
-  "verificacion": "",
+  "verificacion": "Verificado por un subagente independiente (7 nov 2026) sin ver el código del motor ni este archivo: recalculó en Python con fracciones exactas los 189 campos de los 21 casos; cortes y estacas contando posiciones, soga doblada pasando cada punto al atado, cortesApilando por búsqueda en anchura propia (plan único para 8 y 16), pesar y masasMedibles enumerando las 3^k ubicaciones y minimoPesadas por búsqueda de árboles de decisión, sin usar la fórmula (igual a ⌈log₃ n⌉ para n de 3 a 40). Todo coincide; también los 10 problemas de papel.json.",
   "tolerancia": 1e-09,
   "casos": [
     {"nombre": "Predicción del paso 1: varilla de 12 m en piezas de 2 m, 3 min por corte → 6 piezas, 5 cortes, 15 min (un corte por pieza: 18; uno de más: 21; dos piezas por corte: 9)", "fn": "cortar", "args": [{"largo": 12, "tramo": 2, "minutos": 3}], "espera": {"forma": "abierta", "piezas": 6, "cortes": 5, "posiciones": [2, 4, 6, 8, 10], "tiempo": 15, "errores": {"unoPorPieza": 6, "masUno": 7, "dosPorCorte": 3}, "erroresTiempo": {"unoPorPieza": 18, "masUno": 21, "dosPorCorte": 9}, "coinciden": [], "repetidos": {}}},
