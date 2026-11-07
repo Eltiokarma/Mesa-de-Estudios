@@ -544,7 +544,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "ondas-electromagneticas"
+     ]
     },
     {
      "id": "fisica.optica-geometrica",
@@ -5240,6 +5242,23 @@
     "/plantillas/ondas/index.html",
     "/plantillas/ondas/motor.js",
     "/plantillas/ondas/papel.json"
+   ]
+  },
+  "ondas-electromagneticas": {
+   "id": "ondas-electromagneticas",
+   "titulo": "La antena y el arcoíris: ondas electromagnéticas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.ondas-electromagneticas"
+   ],
+   "url": "/plantillas/ondas-electromagneticas/index.html",
+   "papel": "/plantillas/ondas-electromagneticas/papel.json",
+   "archivos": [
+    "/plantillas/ondas-electromagneticas/index.html",
+    "/plantillas/ondas-electromagneticas/motor.js",
+    "/plantillas/ondas-electromagneticas/papel.json"
    ]
   },
   "optica-espejo-esferico": {
