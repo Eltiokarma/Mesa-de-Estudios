@@ -319,16 +319,17 @@ const RAD = { H:0.3, O:0.46, N:0.48, C:0.5, F:0.44, S:0.6, CH3:0.62, CH2:0.6, CH
 const colAt = (c, el) => /^CH/.test(el) ? c.C : (c[el] || c.C);
 // Las moléculas chicas (u < 10 px: líquido, vapor, burbuja, tubo) se pintan una vez por giro en un lienzo aparte y se
 // pegan con drawImage (la2): son decenas por cuadro y cada una pedía unos diez trazos. Hay 256 giros y la figura cae en
-// el píxel real más cercano: la diferencia con el trazo directo no pasa de medio píxel real. Cada dibujo prepara a lo
-// más 3 figuras nuevas (las demás van con trazo directo mientras tanto), para que un cambio de tamaño no trabe el toque.
+// el píxel real más cercano: la diferencia con el trazo directo no pasa de medio píxel real. Solo el bucle prepara
+// figuras nuevas, a lo más 3 por cuadro (las demás van con trazo directo mientras tanto): así un toque o un cambio de
+// tamaño no pagan la preparación.
 // Las grandes (con letras o u ≥ 10) se siguen trazando directo.
 const FIGURAS = new Map(), GIROS = 256;
-let NUEVAS = 0;
+let NUEVAS = 0, EN_BUCLE = false;
 function figura(c, s, u, k, d){
   const clave = `${s}|${u}|${k}|${d}|${c.ink}|${c.borde}|${c.H}|${c.O}|${c.N}|${c.C}|${c.F}|${c.S}`;
   let f = FIGURAS.get(clave);
   if (!f){
-    if (NUEVAS >= 3) return null;
+    if (!EN_BUCLE || NUEVAS >= 3) return null;
     NUEVAS++;
     if (FIGURAS.size > 3000) FIGURAS.clear();
     const S = ML.SUSTANCIAS[s], ext = Math.max(...S.atomos.map(a => Math.hypot(a.x, a.y) + (RAD[a.el] || 0.5)))*u + 2, n = Math.ceil(2*ext*d) + 2;
@@ -351,9 +352,10 @@ function molecula(ctx, c, s, x, y, u, ang, o){
   if (!o.letras && u < 10 && o.alfa === undefined && !t.b && !t.c && t.a === t.d){
     const d = t.a, a2 = (((ang || 0) % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI), f = figura(c, s, u, Math.round(a2/(2*Math.PI)*GIROS) % GIROS, d);
     if (f){
-      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
+      const ga = ctx.globalAlpha;
+      ctx.setTransform(1, 0, 0, 1, 0, 0); if (ga !== 1) ctx.globalAlpha = 1;
       ctx.drawImage(f.cv, Math.round(x*d + t.e - f.n/2), Math.round(y*d + t.f - f.n/2));
-      ctx.restore();
+      ctx.setTransform(t); if (ga !== 1) ctx.globalAlpha = ga;
       return pts;
     }
   }
@@ -871,7 +873,7 @@ function tick(now){
     if (!RM && E.vista.frascos) for (const f of E.vista.frascos.items) if (f.caja) ML.pasoCaja(f.caja, dt*E.vel);
     if (E.alAvanzar) E.alAvanzar();
     // Si nada se mueve, el dibujo ya está al día: quien cambia la vista llama a E.dibujar antes de pedir() (la2).
-    if (anima || vivo) E.dibujar();
+    if (anima || vivo){ EN_BUCLE = true; try { E.dibujar(); } finally { EN_BUCLE = false; } }
     if (vivo) sigue = true;
   }
   if (sigue) pedir();
