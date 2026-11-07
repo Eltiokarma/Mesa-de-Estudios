@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1926 pruebas.
+Deben pasar 1966 pruebas.
 
 ```bash
 npm run dev
@@ -52,7 +52,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
 | ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito`, `poligonos`, `solidos` y `geometria-analitica` | Falta congruencia (sesión matematica-b) |
-| ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig`, `caso-ambiguo` e `identidades-trig` | Faltan funciones trigonométricas inversas (sesión matematica-a) |
+| ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig`, `caso-ambiguo` e `identidades-trig` | Hecha también `funciones-trig-inversas` (7 nov). Faltan transformaciones, cónicas y polares (sesión matematica-a) |
 | ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización), `sucesiones`, `exponenciales-logaritmos` y `polinomios` (Ruffini, resto, raíces racionales) | Faltan números reales, lógica y conjuntos, matrices, complejos, binomio de Newton y programación lineal |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres`, `probabilidad-dados`, `sucesiones` y `fracciones` (fracciones, decimales, MCD y MCM, promedios) | Hechas también `interes` y `divisores` (7 nov). Faltan numeración, cuatro operaciones, potenciación, mezclas y razonamiento numérico |
@@ -73,6 +73,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 
+- **Funciones trigonométricas inversas** (`plantillas/funciones-trig-inversas/`, sesión de matemática A, 7 nov 2026): la ventana principal (la recta y = k corta la onda muchas veces y solo un corte cae en la ventana; reflejo en y = x, arcsen y arccos en la circunferencia, compuestas con el triángulo, dominio y suma de arcotangentes); 19 casos verificados aparte; IN1 a IN29 son hipótesis. Sin ítems en el banco de trigonometría (tiene 8 pares; caben 2 de esta plantilla).
 - **Balance de reacciones** (`plantillas/balance-reacciones/`, 7 nov 2026, subagentes de la conversación principal): balancear es contar átomos (tablero de moléculas con la cuenta por elemento, subíndice contra coeficiente, el frasco que no es la ecuación, tanteo animado, conservación de la masa en frasco abierto y cerrado, clasificación, números de oxidación, agentes y formas oxidada y reducida, ion-electrón en medio ácido y básico con fichas de electrones); 20 casos verificados aparte; 10 de papel; 5 predicciones y 5 «¿qué pasa si…?». Documentados: ES9, ES11 (H₁₀O₄), ES12, ES13 y EC9; cambiar subíndices es parcial; redox ion-electrón, hipótesis. Falta: paleta común de elementos de química (ver diseno.md); sin ítems en el banco de química.
 - **Divisores** (`plantillas/divisores/`, 7 nov 2026, subagentes de la conversación principal): el rectángulo de fichas (divisores como rectángulos, criba, árbol y tabla de exponentes con CD, SD y PD, divisores múltiplos de k, criterios con fichas sobrantes, restos con el patio partido, PESI, φ y el reloj de restos potenciales con el gaussiano); 19 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todos los distractores son hipótesis. Unidades: divisibilidad y números primos y divisores. Falta en la escena: diofánticas, Wilson y Fermat (están en motor y papel). Sin ítems en el banco de aritmética (está en 10).
 - **Relojes y calendarios** (`plantillas/relojes-calendarios/`, sesión de matemática B, 7 nov 2026): ángulo entre las agujas con minutero arrastrable, superposiciones en un día, adelantos y atrasos, campanadas, bisiestos y día de la semana; 20 casos verificados aparte; 10 de papel. Errores sin datos (hipótesis). Falta: lo transcurrido contra lo que falta del día, campanadas que dan la hora, desde cuándo se atrasa, «el ayer del pasado mañana», N días con N grande y el ángulo con segundos; algunas conversiones de horas a días están en el HTML. Sin ítems en el banco de razonamiento matemático (tiene 8 pares; caben 2 de esta plantilla).
