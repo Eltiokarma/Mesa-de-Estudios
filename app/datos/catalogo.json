@@ -1959,7 +1959,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "mezclas"
+     ]
     },
     {
      "id": "aritmetica.estadistica",
@@ -5026,6 +5028,23 @@
     "/plantillas/maximos-minimos/index.html",
     "/plantillas/maximos-minimos/motor.js",
     "/plantillas/maximos-minimos/papel.json"
+   ]
+  },
+  "mezclas": {
+   "id": "mezclas",
+   "titulo": "La balanza de las mezclas: mezclas y aleaciones",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.mezclas-y-aleaciones"
+   ],
+   "url": "/plantillas/mezclas/index.html",
+   "papel": "/plantillas/mezclas/papel.json",
+   "archivos": [
+    "/plantillas/mezclas/index.html",
+    "/plantillas/mezclas/motor.js",
+    "/plantillas/mezclas/papel.json"
    ]
   },
   "mol-composicion": {
