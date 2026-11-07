@@ -15,10 +15,13 @@ const motor = require('./motor.js');
 const datos = JSON.parse(fs.readFileSync(path.join(__dirname, 'casos.json'), 'utf8'));
 const tol = datos.tolerancia;
 
-function cerca(real, esperado, que) {
-  assert.ok(Math.abs(real - esperado) <= tol,
-    `${que}: el motor da ${real}, se esperaba ${esperado} (tolerancia ${tol})`);
+function cerca(real, esperado, que, t) {
+  const tt = t === undefined ? tol : t;
+  assert.ok(Math.abs(real - esperado) <= tt,
+    `${que}: el motor da ${real}, se esperaba ${esperado} (tolerancia ${tt})`);
 }
+// papel.json trae algunas respuestas redondeadas a 7 decimales (50/3 ≈ 16,6666667).
+const TOL_PAPEL = 1e-6;
 
 function resolver(entrada) {
   const sis = motor.sistema(entrada.o1, entrada.h, entrada.lentes);
@@ -27,28 +30,49 @@ function resolver(entrada) {
   return { sis, pasos: motor.cadena(sis, 1e-9) };
 }
 
+// Cada caso llama a motor[fn](...args) y compara 'espera': números con la tolerancia, listas elemento por
+// elemento y lo demás (booleanos) igual. Campos anidados con punto, como en las otras plantillas.
+const leer = (o, k) => k.split('.').reduce((x, p) => (x === null || x === undefined ? undefined : x[p]), o);
+function ver(x, v, que) {
+  if (Array.isArray(v)) {
+    assert.ok(Array.isArray(x) && x.length === v.length, `${que}: el motor da ${JSON.stringify(x)}, se esperaba ${JSON.stringify(v)}`);
+    v.forEach((y, k) => ver(x[k], y, `${que}[${k}]`));
+  } else if (typeof v === 'number') {
+    assert.ok(typeof x === 'number', `${que}: el motor da ${x}, se esperaba ${v}`);
+    cerca(x, v, que);
+  } else assert.equal(x, v, `${que}: el motor da ${x}, se esperaba ${v}`);
+}
+function comprobar(fn, args, espera, que) {
+  assert.equal(typeof motor[fn], 'function', `motor.${fn} no existe`);
+  const r = motor[fn](...args);
+  if (espera !== null && typeof espera === 'object' && !Array.isArray(espera)) for (const [k, v] of Object.entries(espera)) ver(leer(r, k), v, `${que} · ${k}`);
+  else ver(r, espera, `${que} · valor`);
+  return r;
+}
+// problema(o1, h, lentes) como entrada para el trazado de rayos.
+const entradaDe = caso => ({ o1: caso.args[0], h: caso.args[1], lentes: caso.args[2] });
+
 for (const caso of datos.casos) {
   test(`casos.json: ${caso.nombre}`, () => {
-    const { pasos } = resolver(caso.entrada);
-    const e = caso.esperado;
-
-    if (e.sin_imagen) {
-      assert.ok(pasos[pasos.length - 1].inf, 'se esperaba que no hubiera imagen (objeto en el foco)');
-      return;
-    }
-
-    assert.equal(pasos.length, caso.entrada.lentes.length, 'la cadena se cortó antes de la última lente');
-    assert.ok(pasos.every(p => !p.inf), 'una imagen intermedia se fue al infinito');
-    if (e.o) e.o.forEach((o, k) => cerca(pasos[k].o, o, `o${k + 1}`));
-    if (e.i) e.i.forEach((i, k) => cerca(pasos[k].i, i, `i${k + 1}`));
-    if (e.A !== undefined) cerca(motor.aumentoTotal(pasos), e.A, 'A');
-    if (e.h_final !== undefined) cerca(pasos[pasos.length - 1].h, e.h_final, 'h final');
+    comprobar(caso.fn, caso.args, caso.espera, caso.nombre);
+    for (const t of caso.tambien || []) comprobar(t.fn || caso.fn, t.args, t.espera, caso.nombre);
   });
 }
 
-for (const caso of datos.casos.filter(c => !c.esperado.sin_imagen)) {
+// La migración al formato fn/args/espera (7 nov 2026) no cambió ningún valor; el caso 4 pasó a sus fracciones
+// exactas (10/3, −4/3, −8/3) al bajar la tolerancia a 1e-9, y se agregaron los casos 8 y 9.
+test('casos.json: los siete casos de la 0.1.0 más dos, en el formato fn/args/espera', () => {
+  assert.equal(datos.casos.length, 9);
+  assert.ok(datos.casos.every(c => c.fn === 'problema' && Array.isArray(c.args) && c.espera));
+  assert.deepEqual(datos.casos.map(c => c.args[0]), [30, 10, 5, 15, 15, 10, 15, 15, 4]);
+  const r4 = x => Math.round(x * 1e4) / 1e4;
+  assert.deepEqual(datos.casos.map(c => c.espera.i ? c.espera.i.map(r4) : null), [[15], null, [-10], [30, 20], [30, 3.3333], [-5], [30, 20, -5], [30], [-6.6667]]);
+  assert.deepEqual(datos.casos.map(c => c.espera.A === undefined ? null : r4(c.espera.A)), [-0.5, null, 2, 2, -1.3333, 0.5, 1, null, 1.6667]);
+});
+
+for (const caso of datos.casos.filter(c => c.fn === 'problema' && !c.espera.sin_imagen)) {
   test(`el dibujo coincide con la ecuación: ${caso.nombre}`, () => {
-    const { sis, pasos } = resolver(caso.entrada);
+    const { sis, pasos } = resolver(entradaDe(caso));
     const fin = pasos[pasos.length - 1];
     const xFin = fin.x + 100;
 
@@ -133,9 +157,9 @@ for (const p of papel.problemas) {
     const fin = pasos[pasos.length - 1];
     if (v.espera.infinito) { assert.ok(fin.inf, `${p.id}: se esperaba imagen en el infinito`); return; }
     assert.ok(!fin.inf && pasos.length === v.lentes.length, `${p.id}: la cadena se cortó`);
-    if ('i' in v.espera) cerca(fin.i, v.espera.i, `${p.id} i`);
-    if ('A' in v.espera) cerca(motor.aumentoTotal(pasos), v.espera.A, `${p.id} A`);
-    if ('hi' in v.espera) cerca(fin.h, v.espera.hi, `${p.id} altura de la imagen`);
-    if ('x' in v.espera) cerca(fin.x, v.espera.x, `${p.id} posición final`);
+    if ('i' in v.espera) cerca(fin.i, v.espera.i, `${p.id} i`, TOL_PAPEL);
+    if ('A' in v.espera) cerca(motor.aumentoTotal(pasos), v.espera.A, `${p.id} A`, TOL_PAPEL);
+    if ('hi' in v.espera) cerca(fin.h, v.espera.hi, `${p.id} altura de la imagen`, TOL_PAPEL);
+    if ('x' in v.espera) cerca(fin.x, v.espera.x, `${p.id} posición final`, TOL_PAPEL);
   });
 }

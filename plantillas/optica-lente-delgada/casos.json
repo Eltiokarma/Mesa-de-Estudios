@@ -1,43 +1,232 @@
 {
   "plantilla": "optica-lente-delgada",
   "unidades": "cm",
-  "convencion": "Descartes para lentes: 1/f = 1/o + 1/i; A = -i/o. o > 0 objeto real; i > 0 imagen real; f > 0 convergente.",
-  "tolerancia": 0.01,
+  "convencion": "Descartes para lentes: 1/f = 1/o + 1/i; A = -i/o. o > 0 objeto real; i > 0 imagen real; f > 0 convergente. Cada caso llama a la función 'fn' de motor.js con 'args' (una lista) y compara 'espera'. problema(o1, h, lentes): o1 distancia del objeto a la primera lente, h altura del objeto y lentes una lista [{ f }, { f, d }, ...], donde d es la separación con la lente anterior. Devuelve o e i como listas (una entrada por lente; o de cada lente es la distancia desde su objeto, negativa si el objeto es virtual), A = producto de los aumentos, h_final = altura de la imagen final (negativa: invertida) y sin_imagen = true si alguna imagen cae en el foco de la lente siguiente (los rayos salen paralelos). Las listas se comparan elemento por elemento.",
+  "verificacion": "Reverificado el 7 nov 2026 por un verificador independiente (subagente) sin leer el código del motor: con fracciones exactas, encadenando 1/o + 1/i = 1/f lente por lente (objeto virtual con o < 0, A como producto de aumentos) y, aparte, con matrices ABCD y dos rayos paraxiales para la imagen final. Los 7 casos coinciden; el caso 4 vale exactamente i2 = 10/3, A = −4/3 y h_final = −8/3. Los casos 8 y 9 (imagen intermedia en el foco de la lente siguiente y o = 4 del explorador) los verificó la conversación principal con la ecuación de la lente.",
+  "tolerancia": 1e-09,
   "casos": [
     {
       "nombre": "Lente sola, objeto lejano",
-      "entrada": { "lentes": [{ "f": 10 }], "o1": 30, "h": 4 },
-      "esperado": { "i": [15], "A": -0.5, "h_final": -2 }
+      "fn": "problema",
+      "args": [
+        30,
+        4,
+        [
+          {
+            "f": 10
+          }
+        ]
+      ],
+      "espera": {
+        "sin_imagen": false,
+        "i": [
+          15
+        ],
+        "A": -0.5,
+        "h_final": -2
+      }
     },
     {
       "nombre": "Lente sola, objeto en el foco",
-      "entrada": { "lentes": [{ "f": 10 }], "o1": 10, "h": 4 },
-      "esperado": { "sin_imagen": true }
+      "fn": "problema",
+      "args": [
+        10,
+        4,
+        [
+          {
+            "f": 10
+          }
+        ]
+      ],
+      "espera": {
+        "sin_imagen": true
+      }
     },
     {
       "nombre": "Lente sola, lupa",
-      "entrada": { "lentes": [{ "f": 10 }], "o1": 5, "h": 4 },
-      "esperado": { "i": [-10], "A": 2, "h_final": 8 }
+      "fn": "problema",
+      "args": [
+        5,
+        4,
+        [
+          {
+            "f": 10
+          }
+        ]
+      ],
+      "espera": {
+        "sin_imagen": false,
+        "i": [
+          -10
+        ],
+        "A": 2,
+        "h_final": 8
+      }
     },
     {
       "nombre": "Dos lentes convergentes",
-      "entrada": { "lentes": [{ "f": 10 }, { "f": 10, "d": 50 }], "o1": 15, "h": 2 },
-      "esperado": { "i": [30, 20], "o": [15, 20], "A": 2, "h_final": 4 }
+      "fn": "problema",
+      "args": [
+        15,
+        2,
+        [
+          {
+            "f": 10
+          },
+          {
+            "f": 10,
+            "d": 50
+          }
+        ]
+      ],
+      "espera": {
+        "sin_imagen": false,
+        "i": [
+          30,
+          20
+        ],
+        "o": [
+          15,
+          20
+        ],
+        "A": 2,
+        "h_final": 4
+      }
     },
     {
       "nombre": "Objeto virtual en la segunda lente",
-      "entrada": { "lentes": [{ "f": 10 }, { "f": 10, "d": 25 }], "o1": 15, "h": 2 },
-      "esperado": { "i": [30, 3.3333], "o": [15, -5], "A": -1.3333, "h_final": -2.6667 }
+      "fn": "problema",
+      "args": [
+        15,
+        2,
+        [
+          {
+            "f": 10
+          },
+          {
+            "f": 10,
+            "d": 25
+          }
+        ]
+      ],
+      "espera": {
+        "sin_imagen": false,
+        "i": [
+          30,
+          3.3333333333333335
+        ],
+        "o": [
+          15,
+          -5
+        ],
+        "A": -1.3333333333333333,
+        "h_final": -2.6666666666666665
+      }
     },
     {
       "nombre": "Lente divergente sola",
-      "entrada": { "lentes": [{ "f": -10 }], "o1": 10, "h": 4 },
-      "esperado": { "i": [-5], "A": 0.5, "h_final": 2 }
+      "fn": "problema",
+      "args": [
+        10,
+        4,
+        [
+          {
+            "f": -10
+          }
+        ]
+      ],
+      "espera": {
+        "sin_imagen": false,
+        "i": [
+          -5
+        ],
+        "A": 0.5,
+        "h_final": 2
+      }
     },
     {
       "nombre": "Tres lentes, la última divergente (sistema del explorador)",
-      "entrada": { "lentes": [{ "f": 10 }, { "f": 10, "d": 50 }, { "f": -10, "d": 30 }], "o1": 15, "h": 2 },
-      "esperado": { "i": [30, 20, -5], "o": [15, 20, 10], "A": 1, "h_final": 2 }
+      "fn": "problema",
+      "args": [
+        15,
+        2,
+        [
+          {
+            "f": 10
+          },
+          {
+            "f": 10,
+            "d": 50
+          },
+          {
+            "f": -10,
+            "d": 30
+          }
+        ]
+      ],
+      "espera": {
+        "sin_imagen": false,
+        "i": [
+          30,
+          20,
+          -5
+        ],
+        "o": [
+          15,
+          20,
+          10
+        ],
+        "A": 1,
+        "h_final": 2
+      }
+    },
+    {
+      "nombre": "Imagen intermedia en el foco de la segunda lente",
+      "fn": "problema",
+      "args": [
+        15,
+        2,
+        [
+          {
+            "f": 10
+          },
+          {
+            "f": 10,
+            "d": 40
+          }
+        ]
+      ],
+      "espera": {
+        "sin_imagen": true,
+        "o": [
+          15,
+          10
+        ],
+        "i": [
+          30
+        ]
+      }
+    },
+    {
+      "nombre": "Lente sola, objeto a 4 cm (el mínimo del explorador)",
+      "fn": "problema",
+      "args": [
+        4,
+        4,
+        [
+          {
+            "f": 10
+          }
+        ]
+      ],
+      "espera": {
+        "sin_imagen": false,
+        "i": [
+          -6.666666666666667
+        ],
+        "A": 1.6666666666666667,
+        "h_final": 6.666666666666667
+      }
     }
   ]
 }

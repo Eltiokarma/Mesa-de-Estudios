@@ -61,10 +61,10 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Dos lentes convergentes de 10 cm de distancia focal están separadas 50 cm. Un objeto está a 15 cm de la primera. ¿Dónde queda la imagen final, medida desde la primera lente, y cómo es comparada con el objeto?",
-      "respuesta": "A 70 cm de la primera lente (20 cm después de la segunda). A = (−2)(−1) = 2: derecha y el doble de grande.",
-      "pasos": ["Lente 1: 1/i₁ = 1/10 − 1/15 = 1/30, así que i₁ = 30 cm. A₁ = −30/15 = −2.", "Esa imagen está a 50 − 30 = 20 cm de la lente 2: es su objeto (o₂ = 20 cm).", "Lente 2: 1/i₂ = 1/10 − 1/20 = 1/20, así que i₂ = 20 cm. A₂ = −20/20 = −1.", "Posición final: 50 + 20 = 70 cm. A = A₁ · A₂ = 2 (se multiplican, no se suman)."],
-      "verificar": { "o1": 15, "lentes": [{ "f": 10 }, { "f": 10, "d": 50 }], "espera": { "i": 20, "x": 70, "A": 2 } }
+      "enunciado": "Una lente convergente de 8 cm de distancia focal y otra convergente de 12 cm están separadas 44 cm. Un objeto está a 12 cm de la primera. ¿Dónde queda la imagen final, medida desde la primera lente, y cómo es comparada con el objeto?",
+      "respuesta": "A 74 cm de la primera lente (30 cm después de la segunda). A = (−2)(−1,5) = 3: derecha y el triple de grande.",
+      "pasos": ["Lente 1: 1/i₁ = 1/8 − 1/12 = 3/24 − 2/24 = 1/24, así que i₁ = 24 cm. A₁ = −24/12 = −2.", "Esa imagen está a 44 − 24 = 20 cm de la lente 2: es su objeto (o₂ = 20 cm).", "Lente 2: 1/i₂ = 1/12 − 1/20 = 5/60 − 3/60 = 2/60, así que i₂ = 30 cm. A₂ = −30/20 = −1,5.", "Posición final: 44 + 30 = 74 cm. A = A₁ · A₂ = 3 (se multiplican, no se suman)."],
+      "verificar": { "o1": 12, "lentes": [{ "f": 8 }, { "f": 12, "d": 44 }], "espera": { "i": 30, "x": 74, "A": 3 } }
     },
     {
       "id": "p9",
