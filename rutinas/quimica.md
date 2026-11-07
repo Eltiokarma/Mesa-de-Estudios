@@ -319,4 +319,23 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
   - notas de los cortes de ΔEN.
   
   Además, 7 bajos.
-- **Estado:** correcciones EN CURSO; este reporte se cierra al terminar.
+- **Estado:** todo corregido. El constructor volvió a probar las 8 combinaciones con Playwright: sin errores, sin desbordes, con el lienzo visible y el dedo bien. Las 80 pruebas pasan. Además:
+  - la correcta ya no es la más larga en ninguna de las 10 predicciones y cambia de posición;
+  - el híbrido de resonancia se dibuja con una raya llena y otra a trazos.
+
+**Pendiente.**
+- Las flechas son ΔEN del modelo, no el momento dipolar medido: no sirven para ordenar CH₃Cl, CH₂Cl₂ y CHCl₃, ni para comparar NH₃ con NF₃. La escena lo dice.
+- El H₂S sale polar aunque su enlace S–H queda «casi apolar» por el corte; hay una nota.
+- Del informe falta la escena de ebullición y fuerzas intermoleculares: va en líquidos y sólidos.
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/quimica.json`, unidad `quimica.enlace-quimico`: `"plantillas": ["enlace"]`. Después, `npm run catalogo` y rebalancear el banco de química si hace falta.
+2. En `docs/diseno.md`, variables de enlace (`plantillas/enlace/`):
+   - par enlazante azul (#1f5fbf, oscuro #7cb0ff);
+   - par libre ámbar (#8f5800, oscuro #ffc04d);
+   - dipolo de enlace (ΔEN) fucsia (#a10fbf, oscuro #cf6bfa);
+   - dipolo total μ marrón rojizo (#6b260f, oscuro #ff6600), elegido para no confundirse con el verde de «correcto»;
+   - Na⁺ granate (#77032c, oscuro #fdb4ce) y Cl⁻ verde (#466d14, oscuro #a3d65e);
+   - ΔE00 mínimo 20,7 en claro y 25,2 en oscuro;
+   - el rojo de los avisos queda a 17,4 del Na⁺ en oscuro, y el aviso siempre va con texto.
+3. En `docs/pendientes.md` y `CLAUDE.md`, una línea como las demás.
