@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 3504 pruebas.
+Deben pasar 3532 pruebas.
 
 ```bash
 npm run dev
@@ -63,7 +63,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - **Mol y composición** (`plantillas/mol-composicion/`, rutina de química, 6 nov 2026): balanza, lupa y cuenta a la vez; mol contra masa, átomos en u, fórmula empírica y molecular; 16 casos verificados aparte; 10 de papel. Los colores pendientes (C–Ca y m–O) quedaron resueltos con la paleta común de elementos (7 nov 2026).
 
-- **Tiro parabólico y circular** (`plantillas/tiro-parabolico/`, rutina de física, 6 nov 2026): dos movimientos con sombras sobre los ejes y estroboscopio, MCU, MCUV y transmisión; 17 casos verificados aparte; 10 de papel; 3 predicciones y 6 «¿qué pasa si…?» (Prescott y Mitchelmore 2005, Thornton y Sokoloff 1998). Falta en la escena: MCUV, transmisión, encuentros en la circunferencia e impacto contra una pared (están en el motor y el papel).
+- **Tiro parabólico y circular** (`plantillas/tiro-parabolico/`, rutina de física, 6 nov 2026): dos movimientos con sombras sobre los ejes y estroboscopio, MCU, MCUV y transmisión; 17 casos verificados aparte; 10 de papel; 3 predicciones y 6 «¿qué pasa si…?» (Prescott y Mitchelmore 2005, Thornton y Sokoloff 1998). Hecho (7 nov, 0.2.0): pestaña «Ruedas» (rotonda, honda, cadena, rueda de atrás, frenado MCUV y pista con encuentros), «La pared» y «El golpe» en «¿qué pasa si…?», f en vueltas/s y ω en rad/s; cinco respaldos bajaron a parcial.
 - **Formato lectura y banco de razonamiento verbal** (rutina verbal, 6 nov 2026; pl4 implementada el mismo día): diseño en `docs/formato-lectura.md` y los primeros 6 textos en `contenido/razonamiento-verbal/`. Ya está en la app: `nucleo/lectura.js` (con pruebas sobre los textos reales), `app/lectura.js` (los seis tipos de paso previo, que bloquean las alternativas; hoja que sube en el celular y dos columnas en la PC; texto pintado con evidencia, distractor e idea), la ficha `plantillas/lectura-verbal/` en las 8 unidades que tocan los textos, `codigos.json` generado del informe, y la medición (`previo`, `lectura`, posición en el banco, resumen por código RV en `analizar-medicion.js`). Detalle en `docs/arquitectura.md` (sección «Formato lectura»). Falta:
   - Llegar a 30 textos: hay 18 de práctica (t013 a t018 integrados el 7 nov 2026) más la pareja de entrada y salida t000a y t000b; faltan 12 en dos tandas.
   - Ejercicios sueltos (analogías, plan de redacción, eliminación, término excluido, oraciones incompletas): la app y el núcleo ya los muestran y califican (probados con ejercicios de muestra); falta escribirlos y las unidades de término excluido y oraciones incompletas en el catálogo. Al agregar un texto o ejercicio con una unidad nueva, sumarla a `plantillas/lectura-verbal/plantilla.json` y nombrar el módulo en la unidad (la prueba avisa); luego `npm run catalogo`.
