@@ -111,7 +111,7 @@
       "fn": "energiaCondensador", "args": [2, 12],
       "espera": { "U": 144, "Q": 24, "QV2": 144, "Q2C": 144, "errores.sinMedio": 288 } },
 
-    { "nombre": "Experimento 5: esfera de 1 cm con +12 µC toca una neutra de 3 cm → quedan 3 µC y 9 µC (proporcional al radio, mismo potencial 2,7 × 10⁶ V); EL8: 6 y 6",
+    { "nombre": "Experimento 5: esfera de 1 cm con +12 toca una neutra de 3 cm → quedan 3 y 9 (proporcional al radio; el motor trabaja en µC, la escena muestra nC y el reparto es el mismo en cualquier unidad). Mismo potencial: 2,7 × 10⁶ V con µC (con nC, 2,7 × 10³ V); EL8: 6 y 6",
       "fn": "contacto", "args": [12, 0.01, 0, 0.03],
       "espera": { "total": 12, "Q1f": 3, "Q2f": 9, "V": 2700000, "pasa": 9, "errores.mitades": 6, "errores.alReves.Q2f": 3, "errores.todaPasa.Q2f": 12 } },
 

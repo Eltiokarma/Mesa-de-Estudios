@@ -9,7 +9,8 @@
  *   - serie, paralelo, energiaCondensador y dielectrico: capacidades en µF, cargas en µC y energías en µJ
  *     (µF · V² = µJ); en dielectrico, la distancia d entre placas (opcional) en m y el campo E en V/m (= N/C).
  *   - capacidad y cambioPlacas: todo en SI (A en m², d en m, Q en C, C en F); además dan la capacidad en pF.
- *   - contacto: cargas en µC y radios en m.
+ *   - contacto: cargas en µC y radios en m. El reparto es proporcional y sale igual en cualquier unidad de carga
+ *     (la escena usa nC); el potencial V sí necesita las cargas en µC.
  * k = 9 × 10⁹ N·m²/C², ε₀ = 8,85 × 10⁻¹² C²/(N·m²) y g = 10 m/s², como en las academias.
  * Una carga en el plano es { q, x, y } (q en µC con su signo; x e y en m). Ángulos en grados desde el eje x, antihorario.
  *

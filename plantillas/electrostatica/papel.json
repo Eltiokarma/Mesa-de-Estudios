@@ -342,12 +342,12 @@
     {
       "id": "p10",
       "nivel": "avanzado",
-      "enunciado": "Una esfera conductora de 2 cm de radio tiene +10 µC y otra de 3 cm tiene −4 µC. Se tocan y se separan. ¿Con cuánta carga queda cada una?",
-      "respuesta": "La de 2 cm con +2,4 µC y la de 3 cm con +3,6 µC.",
+      "enunciado": "Una esfera conductora de 2 cm de radio tiene +10 nC y otra de 3 cm tiene −4 nC. Se tocan y se separan. ¿Con cuánta carga queda cada una?",
+      "respuesta": "La de 2 cm con +2,4 nC y la de 3 cm con +3,6 nC.",
       "pasos": [
-        "La carga total se conserva: 10 + (−4) = +6 µC.",
+        "La carga total se conserva: 10 + (−4) = +6 nC.",
         "Al tocarse, la carga pasa hasta que las dos tienen el mismo potencial: kQ1/R1 = kQ2/R2. La carga se reparte en proporción a los radios, 2 : 3.",
-        "Q1 = 6 · 2/5 = 2,4 µC y Q2 = 6 · 3/5 = 3,6 µC. No quedan 3 y 3: la esfera más grande se queda con más carga."
+        "Q1 = 6 · 2/5 = 2,4 nC y Q2 = 6 · 3/5 = 3,6 nC. No quedan 3 y 3: la esfera más grande se queda con más carga."
       ],
       "verificar": [
         {
