@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El montón y la caja punteada: pureza, rendimiento y equivalentes</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 y contraste WCAG (docs/metodo/paleta.py):
+     imp   impureza: la parte de la muestra que no es el reactivo         marrón    #7a4a1e / #d9a877
+     pur   reactivo puro (su masa y su fórmula en la ecuación)            verde azulado #0d6f6b / #4fd1c5
+     teo   producto teórico, el máximo que da la ecuación (caja punteada) violeta   #6a3fc0 / #b49cff
+     real  producto real, el que se obtiene                               verde     #36700c / #8fd14f
+     vol   volumen del gas en condiciones normales                        fucsia    #a3168f / #f07ce0
+     eq    equivalentes                                                   naranja   #a04f00 / #ffa64d
+     Fe, O átomos de la lupa de la hematita: paleta común (nucleo/elementos.js, --el-Fe y --el-O)
+   La masa de la muestra, los porcentajes, los otros productos (CO₂ en la caliza, CO, CaO del gas) y las masas molares
+   van en tinta. Salen juntos imp, pur, teo y real (con Fe y O en la hematita); imp, pur, real y vol (gas); eq solo.
+   ΔE00 mínimo entre lo que sale junto: 20,1 en claro (teo–Fe) y 24,7 en oscuro (teo–Fe); pur–real 24,7 / 26,9;
+   contra la tinta, 24,3 / 26,3 (teo). Contraste mínimo contra el papel, la tarjeta y el chip (8 %): 4,91 en claro (eq)
+   y 5,54 en oscuro (vol); todos pasan AA (4,5). pur y real quedan a ΔE00 13 a 16 del verde de «correcto» (--ok):
+   ese verde solo marca el borde de la opción y siempre va con texto. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-imp:#7a4a1e; --c-pur:#0d6f6b; --c-teo:#6a3fc0; --c-real:#36700c; --c-vol:#a3168f; --c-eq:#a04f00;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-imp:#d9a877; --c-pur:#4fd1c5; --c-teo:#b49cff; --c-real:#8fd14f; --c-vol:#f07ce0; --c-eq:#ffa64d; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-imp:#d9a877; --c-pur:#4fd1c5; --c-teo:#b49cff; --c-real:#8fd14f; --c-vol:#f07ce0; --c-eq:#ffa64d; color-scheme:dark }
+/* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
+   Elementos.css(['O', 'Fe']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-O:#c4284e; --el-Fe:#1768be }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-O:#f17384; --el-Fe:#209cf2 } }
+:root[data-theme="dark"]{ --el-O:#f17384; --el-Fe:#209cf2 }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* El dedo desplaza la página sobre el dibujo; solo un toque que empieza sobre un átomo gira la molécula (nucleo/celular.js). */
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+.giro{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:0 4px; font-size:.84rem; color:var(--muted)}
+.giro button{font:700 .85rem var(--font); padding:6px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:36px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend svg{flex:none}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 2px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-imp{color:var(--c-imp); background:color-mix(in srgb, var(--c-imp) 8%, transparent)}
+.v-pur{color:var(--c-pur); background:color-mix(in srgb, var(--c-pur) 8%, transparent)}
+.v-teo{color:var(--c-teo); background:color-mix(in srgb, var(--c-teo) 8%, transparent)}
+.v-real{color:var(--c-real); background:color-mix(in srgb, var(--c-real) 8%, transparent)}
+.v-vol{color:var(--c-vol); background:color-mix(in srgb, var(--c-vol) 8%, transparent)}
+.v-eq{color:var(--c-eq); background:color-mix(in srgb, var(--c-eq) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+.opt .v{background:transparent}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1rem; font-variant-numeric:tabular-nums; min-width:0}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq .ex{white-space:normal; line-height:2}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:12px; align-items:end}
+select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%; width:100%; min-width:0}
+.campo{display:grid; gap:4px; font-weight:700; min-width:0}
+.botones{display:flex; flex-wrap:wrap; gap:6px}
+.botones .btn{padding:8px 14px; min-height:40px; font-size:.9rem}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.lect{font-size:.92rem; font-variant-numeric:tabular-nums; display:grid; gap:4px}
+.lect .fila{display:flex; flex-wrap:wrap; gap:2px 14px}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, select:focus-visible, a:focus-visible, canvas:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); font-variant-numeric:tabular-nums}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:32px}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.15fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Estequiometría · Problemas tipo admisión</p>
+      <h1>El montón y la caja punteada</h1>
+      <p class="sub">Pureza, rendimiento y equivalentes con montones que se pesan. Predice cada resultado antes de verlo.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Los montones del problema">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Montones de la muestra y del producto, con barras de masa"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Montones, barras o equivalentes del experimento, que se completan al responder"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/rendimiento-pureza">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'rendimiento-pureza', unidad: 'quimica.estequiometria', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorRendimiento (motor.js): masas molares, masa a masa, pureza, rendimiento, el problema
+   inverso, la cadena, la conservación de la masa, los equivalentes y los cuadros de la animación (reparto).
+   Aquí solo se pinta lo que el motor dice. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MR = MotorRendimiento;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Números con coma decimal; hasta d decimales, sin ceros de más.
+function g(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const SUB = { '0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉' };
+const fx = f => String(f).replace(/\d/g, d => SUB[d]);          // 'Fe2O3' → 'Fe₂O₃'
+// Chips del texto: cada variable con su color; al tocarlos se resalta en el dibujo.
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const Im_ = t => V('imp', t), Pu_ = t => V('pur', t), Te_ = t => V('teo', t), Re_ = t => V('real', t), Vo_ = t => V('vol', t), Eq_ = t => V('eq', t);
+
+function colores(){
+  const c = css;
+  return { ink:c('--ink'), muted:c('--muted'), grid:c('--grid'), paper:c('--paper'), card:c('--card'), line:c('--line'),
+    imp:c('--c-imp'), pur:c('--c-pur'), teo:c('--c-teo'), real:c('--c-real'), vol:c('--c-vol'), eq:c('--c-eq'),
+    Fe:c('--el-Fe'), O:c('--el-O'), font:c('--font') };
+}
+function alfa(hex, a){
+  const h = String(hex).replace('#', ''); if (h.length !== 6) return hex;
+  return `rgba(${parseInt(h.slice(0, 2), 16)},${parseInt(h.slice(2, 4), 16)},${parseInt(h.slice(4, 6), 16)},${a})`;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, Math.max(0, Math.min(r, w/2, h/2))); else ctx.rect(x, y, w, h); }
+// Texto por piezas de colores: [texto, clave de color, peso]. Baja la letra hasta 9 px si no entra.
+function anchoPiezas(ctx, c, ps, tam){ let w = 0; for (const [t, , peso] of ps){ ctx.font = `${peso || 700} ${tam}px ${c.font}`; w += ctx.measureText(t).width; } return w; }
+function dibujarPiezas(ctx, c, ps, x, y, tam, align, max){
+  let t = tam; if (max) while (t > 9 && anchoPiezas(ctx, c, ps, t) > max) t -= 0.5;
+  const w = anchoPiezas(ctx, c, ps, t);
+  let x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (const [txt, k, peso] of ps){ ctx.font = `${peso || 700} ${t}px ${c.font}`; ctx.fillStyle = c[k] || c.ink; ctx.fillText(txt, x0, y); x0 += ctx.measureText(txt).width; }
+  return w;
+}
+function envolver(ctx, c, txt, max, tam){
+  ctx.font = `700 ${tam}px ${c.font}`; const pal = String(txt).split(' '), lineas = []; let l = '';
+  for (const p of pal){ const t = l ? l + ' ' + p : p; if (ctx.measureText(t).width > max && l){ lineas.push(l); l = p; } else l = t; }
+  if (l) lineas.push(l); return lineas;
+}
+function flecha(ctx, x1, y, x2, col){
+  ctx.save(); ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(x2 - 6, y); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y); ctx.lineTo(x2 - 8, y - 5); ctx.lineTo(x2 - 8, y + 5); ctx.closePath(); ctx.fill(); ctx.restore();
+}
+
+/* ----- La escena -----
+   E.vista: { ec:[piezas], paneles:[...], pie, vars:[claves de la leyenda], desc }
+     { tipo:'montones', mmax, items:[slot], flechas:[[x1, x2]], recipiente:{ balanza:[piezas] } }
+        slot: { x (0 a 1), k ('imp' | 'pur' | 'real' | 'otro' | 'mezcla'), masa, alfa, relleno (0 a 1), teo (masa de la
+        caja punteada), teoAlfa, tapa ('?' en vez del montón), gas (globo en vez de montón), etq:[[piezas]] }
+        El área del montón (o del globo) es proporcional a la masa, con la misma escala (mmax) en toda la vista.
+     { tipo:'barras', max, filas:[{ etq:[piezas], segs:[{ k, masa, punteado, lupa }], tapa }] }
+        lupa 'Fe2O3': casillas de 10 % de la masa con una unidad Fe₂O₃ dibujada (Fe y O con la paleta común).
+     { tipo:'fichas', grupos:[{ x, etq:[piezas], bajo:[piezas], n, tapa }], unir (0 a 1) }   equivalentes
+   Nada regala la respuesta antes de responder: lo que la delataría queda tapado con «?». */
+const ESCENAS = [];
+function crearEscena(cv, idDesc, modoId, idLey){
+  const E = { vista:{ paneles:[] }, hl:null, modoId, anims:[], compacto:false };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, Lz = null;
+  function layout(w){
+    const v = E.vista, chico = innerWidth < 900, comp = E.compacto && chico, L = { p:[] };
+    let y = 6;
+    if (v.ec){ L.yEc = y + 10; y += 26; }
+    for (const P of v.paneles || []){
+      if (comp && P.tipo === 'barras' && !P.siempre) continue;
+      let h;
+      if (P.tipo === 'montones') h = comp ? Math.max(120, 232 - y) : clamp(w*0.34, 150, 200) + (P.recipiente ? 26 : 0);
+      else if (P.tipo === 'barras') h = P.filas.length*(P.alto || 34) + 6;
+      else h = comp ? Math.max(110, 232 - y) : clamp(w*0.36, 150, 200);
+      L.p.push({ ...P, y, h }); y += h + 6;
+    }
+    if (v.pie && !comp){ const c = colores(); L.pie = envolver(ctx, c, v.pie, w - 24, 11.5); L.yPie = y; y += L.pie.length*15 + 4; }
+    L.H = Math.round(Celular.alto(Math.max(80, y + 2), E.compacto, { tope:244 }));
+    return L;
+  }
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    Lz = layout(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); E.compacto = on; E.resize(); E.dibujar(); };
+  new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+
+  const tapaCaja = (c, x, y, w, h, txt) => {
+    ctx.save(); rr(ctx, x, y, w, h, 12); ctx.fillStyle = c.card; ctx.fill(); ctx.setLineDash([5, 4]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(clamp(h*0.5, 14, 30))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt || '?', x + w/2, y + h/2 + 1);
+    ctx.restore();
+  };
+  // Un montón: media elipse de ancho w y alto 0,55 w (área proporcional a la masa).
+  function monton(c, cx, yb, w, col, o){
+    const h = w*0.55;
+    ctx.save(); ctx.beginPath(); ctx.ellipse(cx, yb, w/2, h, 0, Math.PI, 2*Math.PI); ctx.closePath();
+    if (o.mezcla){
+      ctx.fillStyle = alfa(c.muted, 0.18*o.a); ctx.fill();
+      ctx.save(); ctx.clip(); ctx.fillStyle = alfa(c.muted, 0.5*o.a);
+      for (let yy = yb - h + 3; yy < yb; yy += 7) for (let xx = cx - w/2 + ((yy/7) % 2 ? 3 : 7); xx < cx + w/2; xx += 9){ ctx.beginPath(); ctx.arc(xx, yy, 1.4, 0, Math.PI*2); ctx.fill(); }
+      ctx.restore();
+      ctx.beginPath(); ctx.ellipse(cx, yb, w/2, h, 0, Math.PI, 2*Math.PI); ctx.closePath();
+      ctx.strokeStyle = alfa(c.ink, o.a); ctx.lineWidth = 1.6; ctx.stroke();
+    } else {
+      ctx.fillStyle = alfa(col, (o.relleno === undefined ? 0.85 : o.relleno)*o.a); ctx.fill();
+      ctx.strokeStyle = alfa(col, o.a); ctx.lineWidth = o.hl ? 3.2 : 1.8; if (o.punteado) ctx.setLineDash([5, 4]); ctx.stroke(); ctx.setLineDash([]);
+    }
+    ctx.restore();
+  }
+  function globo(c, cx, yb, r, col, o){
+    ctx.save(); ctx.beginPath(); ctx.arc(cx, yb - r, r, 0, Math.PI*2);
+    ctx.fillStyle = alfa(col, (o.relleno === undefined ? 0.28 : o.relleno)*o.a); ctx.fill();
+    ctx.strokeStyle = alfa(col, o.a); ctx.lineWidth = o.hl ? 3.2 : 1.8; if (o.punteado) ctx.setLineDash([5, 4]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.restore();
+  }
+  function panelMontones(c, P){
+    const top = P.y + (P.recipiente ? 16 : 4), yb = P.y + P.h - 40 - (P.recipiente ? 26 : 0), alto = yb - top - 4;
+    const ancho = W/Math.max(3, P.items.length + (P.flechas ? P.flechas.length*0.5 : 0)) - 8;
+    // Escala común: el montón de masa mmax llena el ancho de su lugar o el alto, lo que llegue antes.
+    const wMax = Math.min(ancho, alto/0.55), k = wMax*wMax/P.mmax;
+    const wDe = m => Math.sqrt(Math.max(0, m)*k), rDe = m => Math.sqrt(Math.max(0, m)*k*0.55*Math.PI/4/Math.PI);
+    if (P.recipiente){
+      // El recipiente encierra los montones y sus rótulos; la balanza va debajo.
+      ctx.save(); rr(ctx, 6, P.y + 2, W - 12, yb + 38 - P.y, 16); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); ctx.restore();
+      dibujarPiezas(ctx, c, [['recipiente cerrado', 'muted', 700]], 16, P.y + 12, 11, 'left');
+      ctx.save(); rr(ctx, 30, yb + 42, W - 60, 4, 2); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+      dibujarPiezas(ctx, c, P.recipiente.balanza, W/2, yb + 57, 12.5, 'center', W - 20);
+    }
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(10, yb + 0.5); ctx.lineTo(W - 10, yb + 0.5); ctx.stroke(); ctx.restore();
+    for (const [x1, x2] of P.flechas || []) flecha(ctx, x1*W, yb - alto*0.35, x2*W, c.muted);
+    for (const s of P.items){
+      const cx = s.x*W, a = s.alfa === undefined ? 1 : s.alfa, col = c[s.k] || c.ink, hl = E.hl === s.k;
+      if (a <= 0.01) continue;
+      if (s.tapa){ const w = Math.min(ancho, 84), h = Math.min(alto, 56); tapaCaja(c, cx - w/2, yb - h - 2, w, h, s.tapa === true ? '?' : s.tapa); }
+      else {
+        if (s.teo && (s.teoAlfa === undefined || s.teoAlfa > 0)){
+          const ta = s.teoAlfa === undefined ? 1 : s.teoAlfa, wt = wDe(s.teo);
+          const bw = s.gas ? 2*rDe(s.teo) : wt, bh = s.gas ? 2*rDe(s.teo) : wt*0.55;
+          ctx.save(); ctx.globalAlpha = ta; rr(ctx, cx - bw/2 - 5, yb - bh - 5, bw + 10, bh + 5, 8); ctx.setLineDash([5, 4]); ctx.strokeStyle = c.teo; ctx.lineWidth = E.hl === 'teo' ? 3 : 1.6; ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+          if (s.gas) globo(c, cx, yb, rDe(s.teo), c.teo, { a:ta, relleno:0, punteado:true, hl:E.hl === 'teo' });
+          else monton(c, cx, yb, wt, c.teo, { a:ta, relleno:0, punteado:true, hl:E.hl === 'teo' });
+        }
+        if (s.masa > 0){
+          if (s.gas) globo(c, cx, yb, rDe(s.masa), s.k === 'otro' ? c.muted : col, { a, relleno:s.relleno, hl });
+          else monton(c, cx, yb, wDe(s.masa), s.k === 'otro' ? c.muted : col, { a, relleno:s.relleno, mezcla:s.k === 'mezcla', hl });
+        }
+        if (s.k === 'mezcla' && s.signo) dibujarPiezas(ctx, c, [['?', 'ink', 800]], cx, yb - wDe(s.masa)*0.22, 16, 'center');
+      }
+      (s.etq || []).forEach((ps, i) => { ctx.save(); ctx.globalAlpha = Math.max(a, s.etqAlfa || 0); dibujarPiezas(ctx, c, ps, cx, yb + 13 + i*15, 12, 'center', s.etqMax ? s.etqMax*W : ancho + 6); ctx.restore(); });
+    }
+  }
+  function rocas(c, x, y, w, h, col){
+    ctx.save(); ctx.fillStyle = alfa(col, 0.85);
+    const pts = [[0.25, 0.4, 0.16], [0.62, 0.35, 0.13], [0.45, 0.72, 0.14], [0.8, 0.7, 0.1]];
+    for (const [px, py, r] of pts){ const R = r*Math.min(w, h*2), cx = x + px*w, cy = y + py*h; ctx.beginPath();
+      for (let i = 0; i < 6; i++){ const an = i*Math.PI/3 + px, rr2 = R*(0.75 + 0.25*((i*7 + px*10) % 3)/2); ctx.lineTo(cx + Math.cos(an)*rr2, cy + Math.sin(an)*rr2*0.8); }
+      ctx.closePath(); ctx.fill(); }
+    ctx.restore();
+  }
+  function unidadFe2O3(c, cx, cy, s){
+    // Fe₂O₃: dos Fe (más grandes) y tres O, en la paleta común de elementos.
+    const fe = [[-0.28, 0], [0.28, 0]], o = [[-0.56, -0.22], [0, 0.3], [0.56, -0.22]];
+    ctx.save();
+    for (const [x, y] of o){ ctx.beginPath(); ctx.arc(cx + x*s, cy + y*s, s*0.2, 0, Math.PI*2); ctx.fillStyle = c.O; ctx.fill(); }
+    for (const [x, y] of fe){ ctx.beginPath(); ctx.arc(cx + x*s, cy + y*s, s*0.25, 0, Math.PI*2); ctx.fillStyle = c.Fe; ctx.fill(); }
+    ctx.restore();
+  }
+  function panelBarras(c, P){
+    const alto = P.alto || 34, x0 = 10, wTot = W - 20;
+    P.filas.forEach((F, i) => {
+      const y = P.y + i*alto, yb = y + 15, hb = alto - 19;
+      ctx.save(); ctx.globalAlpha = F.alfa === undefined ? 1 : F.alfa;
+      dibujarPiezas(ctx, c, F.etq, x0, y + 7, 11.5, 'left', wTot);
+      if (F.tapa){ tapaCaja(c, x0, yb, Math.min(wTot, F.tapaAncho ? F.tapaAncho/P.max*wTot : 70), hb, '?'); ctx.restore(); return; }
+      let x = x0;
+      for (const s of F.segs){
+        const w = Math.max(0, s.masa)/P.max*wTot; if (w < 0.5){ continue; }
+        const col = c[s.k] || c.muted, hl = E.hl === s.k;
+        rr(ctx, x, yb, w, hb, 4);
+        if (s.punteado){ ctx.setLineDash([4, 3]); ctx.strokeStyle = col; ctx.lineWidth = hl ? 2.6 : 1.4; ctx.stroke(); ctx.setLineDash([]); }
+        else { ctx.fillStyle = alfa(col, s.lupa || s.k === 'imp' ? 0.16 : 0.8); ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = hl ? 2.6 : 1.2; ctx.stroke(); }
+        if (s.casillas && P.casillasDe){
+          // Casillas de 10 % de la masa de la muestra, contadas desde el principio de la barra.
+          const cw = P.casillasDe/P.max*wTot;
+          for (let j = 1; j < 10; j++){ const xx = x0 + j*cw; if (xx > x + 1 && xx < x + w - 1){ ctx.strokeStyle = alfa(col, 0.55); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(xx, yb + 2); ctx.lineTo(xx, yb + hb - 2); ctx.stroke(); } }
+          for (let j = 0; j < 10; j++){ const a0 = x0 + j*cw, a1 = a0 + cw; if (a0 < x - 0.5 || a1 > x + w + 0.5) continue;
+            if (s.lupa === 'Fe2O3' && cw > 18) unidadFe2O3(c, a0 + cw/2, yb + hb/2 + 1, Math.min(cw*0.62, hb*0.9));
+            if (s.k === 'imp' && cw > 12) rocas(c, a0 + 2, yb + 2, cw - 4, hb - 4, c.imp); }
+        }
+        x += w;
+      }
+      ctx.restore();
+    });
+  }
+  function panelFichas(c, P){
+    const fw = 46, fh = 30, gap = 8, yT = P.y + P.h/2 - fh/2 + 4;
+    const pos = P.grupos.map(G => { const tot = G.n*fw + (G.n - 1)*gap; return Array.from({ length:G.n }, (_, i) => G.x*W - tot/2 + i*(fw + gap)); });
+    P.grupos.forEach((G, gi) => {
+      dibujarPiezas(ctx, c, G.etq, G.x*W, P.y + 14, 12.5, 'center', W*0.46);
+      if (G.tapa) tapaCaja(c, G.x*W - fw/2, yT, fw, fh, '?');
+      else pos[gi].forEach(x => { rr(ctx, x, yT, fw, fh, 8); ctx.fillStyle = alfa(c.eq, 0.14); ctx.fill(); ctx.strokeStyle = c.eq; ctx.lineWidth = E.hl === 'eq' ? 3 : 1.6; ctx.stroke();
+        dibujarPiezas(ctx, c, [['1 eq', 'eq', 800]], x + fw/2, yT + fh/2 + 1, 12, 'center', fw - 4); });
+      if (G.bajo) dibujarPiezas(ctx, c, G.bajo, G.x*W, P.y + P.h - 14, 12.5, 'center', W*0.46);
+    });
+    if (P.unir > 0 && !P.grupos.some(G => G.tapa) && P.grupos.length === 2){
+      ctx.save(); ctx.globalAlpha = P.unir; ctx.strokeStyle = c.eq; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]);
+      const n = Math.min(P.grupos[0].n, P.grupos[1].n);
+      for (let i = 0; i < n; i++){ const xa = pos[0][i] + fw/2, xb = pos[1][i] + fw/2, yy = yT + fh;
+        ctx.beginPath(); ctx.moveTo(xa, yy); ctx.bezierCurveTo(xa, yy + 26 + i*6, xb, yy + 26 + i*6, xb, yy); ctx.stroke(); }
+      ctx.restore();
+    }
+  }
+  E.dibujar = () => {
+    const w = cv.clientWidth; if (!w) return;
+    E.resize();
+    const c = colores(); ctx.clearRect(0, 0, W, H);
+    if (E.vista.ec) dibujarPiezas(ctx, c, E.vista.ec, W/2, Lz.yEc, 14, 'center', W - 16);
+    for (const P of Lz.p){
+      if (P.tipo === 'montones') panelMontones(c, P);
+      else if (P.tipo === 'barras') panelBarras(c, P);
+      else if (P.tipo === 'fichas') panelFichas(c, P);
+    }
+    if (Lz.pie){ ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 11.5px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; Lz.pie.forEach((l, k) => ctx.fillText(l, W/2, Lz.yPie + 6 + k*15)); ctx.restore(); }
+    const ley = leyendaHTML(E.vista), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+  };
+  E.describir = () => { const t = E.vista.desc || '', el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t; };
+  return E;
+}
+const LEY = { imp:'impureza', pur:'reactivo puro', teo:'producto teórico (caja punteada)', real:'producto real', vol:'volumen del gas en CN',
+  eq:'equivalentes', Fe:'átomo de Fe', O:'átomo de O', otro:'otro producto' };
+function leyendaHTML(v){
+  return (v.vars || []).map(k => k === 'Fe' || k === 'O' ? `<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="var(--el-${k})"/></svg>${LEY[k]}</span>`
+    : k === 'teo' ? `<span><svg width="16" height="10" aria-hidden="true"><rect x="1" y="1" width="14" height="8" rx="2" fill="none" stroke="var(--c-teo)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>${LEY.teo}</span>`
+    : k === 'otro' ? `<span><i style="background:var(--muted)"></i>${LEY.otro}</span>`
+    : `<span><i style="background:var(--c-${k})"></i>${LEY[k]}</span>`).join('');
+}
+// Resaltar en el dibujo lo que se toca en el texto (regla 4).
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un bucle que solo corre mientras algo se mueve.
+let RAF = 0, ULT = 0;
+function pedir(){ if (!RAF){ ULT = performance.now(); RAF = requestAnimationFrame(tick); } }
+function tick(now){
+  RAF = 0; const dt = Math.min(0.05, (now - ULT)/1000); ULT = now; let sigue = false;
+  for (const E of ESCENAS){
+    if (document.getElementById(E.modoId).hidden){ if (E.anims.length) sigue = true; continue; }
+    for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(Math.max(0, f)); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
+    E.dibujar();
+  }
+  if (sigue) pedir();
+}
+// Animación de dur segundos; con movimiento reducido, de una vez.
+function animar(E, dur, paso, fin, retraso){
+  if (RM){ paso(1); if (fin) fin(); E.dibujar(); return; }
+  E.anims.push({ t:-(retraso || 0), dur, paso, fin }); pedir();
+}
+function cortar(E){ E.anims = []; }
+// Opciones numeradas del 1 al 4 (las letras chocarían con los símbolos de los elementos).
+const LETRAS = 'abcd';
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+// La fuente queda escrita aquí para quien lea el código; la medición guarda solo la categoría.
+const RES = (cat, fuente) => cat;
+const HIPO = 'Esta opción sale de un error que suponemos frecuente en los problemas de academia; no encontramos un estudio que lo mida (hipótesis nuestra).';
+// Respuestas de «¿Qué pasa si…?»: la misma variable que abre los experimentos en orden. El explorador del paso 7 la lee
+// para no regalar ninguna respuesta de un experimento que aún no se respondió.
+const PRED_EXP = {};
+const DESCUBRE = 'descúbrelo en «¿Qué pasa si…?»';
+
+/* ----- Vistas de una reacción con muestra impura -----
+   o = { reac, muestra, p, eta, producto, f (0 a 1, cuadro de la animación del motor), antes, tapaReal, lupa, recipiente }
+   Antes de responder: un solo montón de muestra (sin separar) y la caja del producto con «?». */
+function vistaMuestra(o){
+  const R = MR.REACCIONES[o.reac], prod = o.producto || R.producto;
+  const d = MR.producir({ reaccion:o.reac, muestra:o.muestra, pureza:o.p, rendimiento:o.eta, producto:prod });
+  const gas = R.gases.includes(prod), lupa = o.reac === 'hierro' && o.lupa !== false;
+  const nomR = fx(R.reactivo), nomP = fx(prod);
+  const ec = R.texto.split(/(\s\+\s|\s→\s)/).map(t => {
+    const limpio = t.replace(/^\d+/, ''), coefTxt = t.match(/^\d+/) ? t.match(/^\d+/)[0] : '';
+    if (limpio === nomR) return [[coefTxt + limpio, 'pur', 800]];
+    if (limpio === nomP) return [[coefTxt + limpio, 'real', 800]];
+    return [[t, 'ink', 700]];
+  }).flat();
+  const mmax = o.mmax || Math.max(o.muestra, d.teorico);
+  const xs = { imp:0.12, pur:0.39, prod:0.81, mez:0.26 };
+  if (o.antes){
+    return { ec, mmax, d, paneles:[{ tipo:'montones', mmax, flechas:[[0.5, 0.64]], items:[
+        { x:xs.mez, k:'mezcla', masa:o.muestra, signo:true, etq:[[[`${g(o.muestra)} g de ${R.muestra}`, 'ink', 800]], [[`${g(o.p)} % de ${nomR}`, 'ink', 700]]], etqMax:0.46 },
+        { x:xs.prod, tapa:true, etq:[[[nomP + ': ? g', 'ink', 800]]] }] },
+      { tipo:'barras', max:mmax, filas:[{ etq:[[`muestra: ${g(o.muestra)} g`, 'ink', 700]], tapa:true, tapaAncho:o.muestra }, { etq:[[`${nomP}: ? g`, 'ink', 700]], tapa:true }] }],
+      vars:[] };
+  }
+  const r = MR.reparto({ impureza:d.impureza, pura:d.pura, teorico:d.teorico, real:d.real, reacciona:0 }, o.f === undefined ? 1 : o.f);
+  const s = r.separa, av = r.avance;
+  const tapaR = !!o.tapaReal;
+  const completo = d.noFormado < 1e-9, vTxt = gas && o.V !== false ? (o.tapaV ? [[' · ', 'muted', 700], ['? L', 'muted', 800]] : [[' · ', 'muted', 700], [`${g(d.nProducto*MR.VM*av)} L en CN`, 'vol', 800]]) : [];
+  const prodEtq = tapaR ? [[[nomP + ': ?', 'ink', 800]], [[o.tapaTxt || '', 'muted', 700]]]
+    : [[[`${g(r.formado)} g de ${nomP}`, 'real', 800], ...vTxt], completo ? [['rendimiento 100 %', 'muted', 700]] : [[`teórico: `, 'muted', 700], [`${g(d.teorico)} g`, 'teo', 800]]];
+  const items = [
+    { x:xs.mez, k:'mezcla', masa:o.muestra, alfa:1 - s },
+    { x:xs.mez + (xs.imp - xs.mez)*s, k:'imp', masa:d.impureza, alfa:s, etqMax:0.24, etq:[[[`${g(d.impureza)} g`, 'imp', 800]], [['impureza', 'imp', 700]]] },
+    { x:xs.mez + (xs.pur - xs.mez)*s, k:'pur', masa:d.pura, alfa:s, etqMax:0.3, relleno:0.85 - 0.5*av, etq:[[[`${g(d.pura)} g de ${nomR}`, 'pur', 800]], [[av > 0.5 ? 'puro, al inicio' : 'puro', 'pur', 700]]] },
+    tapaR ? { x:xs.prod, tapa:true, etq:prodEtq, etqAlfa:1, etqMax:0.36 }
+      : { x:xs.prod, k:'real', masa:r.formado, teo: completo ? 0 : d.teorico, teoAlfa:r.teoricoVisible, gas, relleno: gas ? 0.3 : 0.85, etq:prodEtq, etqAlfa:1, etqMax:0.38 },
+  ];
+  const filas = [
+    { etq:[['muestra ', 'ink', 700], [`${g(o.muestra)} g`, 'ink', 800], ['  =  ', 'muted', 700], [`${g(d.impureza)} g`, 'imp', 800], [' + ', 'ink', 700], [`${g(d.pura)} g`, 'pur', 800]],
+      segs:[{ k:'imp', masa:d.impureza, casillas:'auto' }, { k:'pur', masa:d.pura, lupa: lupa ? 'Fe2O3' : null, casillas:'auto' }], alfa:Math.max(0.25, s) },
+    tapaR ? { etq:[[nomP + ': ?', 'ink', 700]], tapa:true }
+      : completo ? { etq:[[nomP + ' ', 'ink', 700], [`${g(r.formado)} g`, 'real', 800], [' (rendimiento 100 %)', 'muted', 700]], segs:[{ k:'real', masa:r.formado }] }
+      : { etq:[[nomP + ' ', 'ink', 700], [`${g(r.formado)} g`, 'real', 800], [' de ', 'ink', 700], [`${g(d.teorico)} g`, 'teo', 800], [' posibles', 'ink', 700]],
+        segs:[{ k:'real', masa:r.formado }, { k:'teo', masa:(d.teorico - r.formado)*r.teoricoVisible, punteado:true }] },
+  ];
+  return { ec, mmax, d, paneles:[{ tipo:'montones', mmax, flechas:[[0.55, 0.64]], items },
+    { tipo:'barras', max:mmax, filas, casillasDe:o.muestra/10 }],
+    vars:['imp', 'pur', ...(tapaR ? [] : completo ? ['real'] : ['teo', 'real']), ...(gas && !tapaR && !o.tapaV && o.V !== false ? ['vol'] : []), ...(lupa ? ['Fe', 'O'] : [])] };
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   docs/investigacion/estequiometria-ideas-erroneas.md, «Rendimiento y reactivos impuros» (todo hipótesis) y la
+   conservación de la masa (ES13 a ES15, ES19): la hematita al 80 % con 90 % de rendimiento, el rendimiento porcentual
+   de la caliza, adónde va el producto que no se forma y el problema inverso. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+const FE = MR.producir({ reaccion:'hierro', muestra:200, pureza:80, rendimiento:90 }), FEe = FE.errores;
+const FE140 = MR.masaAMasa('hierro', 200, 'Fe2O3', 'Fe');
+const CAL = MR.rendimientoPorcentual({ reaccion:'caliza', masa:50, real:21 }), CALe = CAL.errores;
+const CO2t = MR.masaAMasa('caliza', 50, 'CaCO3', 'CO2');
+const BAL = MR.balanceMasa({ reaccion:'caliza', masa:50, rendimiento:CAL.porcentaje }), BALe = BAL.errores;
+const INV = MR.muestraNecesaria({ reaccion:'caliza', real:42, pureza:80, rendimiento:75 }), INVe = INV.errores;
+const INV315 = 42*0.75, INVpuro315 = MR.masaAMasa('caliza', INV315, 'CaO', 'CaCO3');
+const COMB = MR.combustionIncompleta(12, 0.75);
+const pct0 = x => g(x, 0) + ' %';
+
+const P0 = { id:'rendimiento-paso2', ok:'c', opts:[
+  ['a', `${g(FEe['muestra-pura'])} g: 200 g de mineral darían ${g(FE140)} g de hierro, y el 90 % de ${g(FE140)} g es ${g(FEe['muestra-pura'])} g.`, 'muestra-pura', RES('hipotesis', 'tabla de lo que no tiene respaldo: reactivos impuros')],
+  ['b', `${g(FEe['olvida-rendimiento'])} g: los 160 g de Fe₂O₃ puro son 1 mol, y cada mol de Fe₂O₃ da 2 mol de hierro.`, 'olvida-rendimiento', RES('hipotesis', 'informe, propuesta de rendimiento')],
+  ['c', `${g(FE.real)} g: 160 g de Fe₂O₃ darían ${g(FE.teorico)} g de hierro, y el 90 % de ${g(FE.teorico)} g es ${g(FE.real)} g.`],
+  ['d', `${g(FEe['suma-porcentajes'])} g: 80 % y 90 % dejan 70 % útil (80 + 90 − 100), y 140 g de Fe₂O₃ dan ${g(FEe['suma-porcentajes'])} g de hierro.`, 'suma-porcentajes', RES('hipotesis', 'tabla de lo que no tiene respaldo: pureza y rendimiento sumados')]],
+  fb:{ c:`¡Bien! Primero la pureza: el 80 % de 200 g es ${Pu_('160 g de Fe₂O₃')} puro; los otros ${Im_('40 g')} son roca. Con la ecuación salen ${Te_(g(FE.teorico) + ' g de hierro teóricos')}, y el 90 % de rendimiento deja ${Re_(g(FE.real) + ' g reales')}.`,
+    a:`Elegiste la 1. Los 200 g son de mineral, no de Fe₂O₃: solo el 80 %, ${Pu_('160 g')}, es Fe₂O₃; los otros ${Im_('40 g')} son roca y no dan hierro. Con 160 g salen ${Te_(g(FE.teorico) + ' g')} teóricos y ${Re_(g(FE.real) + ' g')} reales. ${HIPO} La correcta está marcada.`,
+    b:`Elegiste la 2. ${Te_(g(FE.teorico) + ' g')} es el máximo que da la ecuación: el teórico. Con 90 % de rendimiento se obtiene solo el 90 % de eso: ${Re_(g(FE.real) + ' g')}. ${HIPO} La correcta está marcada.`,
+    d:`Elegiste la 4. Los porcentajes no se suman ni se restan: se aplican uno después del otro. El 80 % de 200 g da ${Pu_('160 g')} puros, que dan ${Te_(g(FE.teorico) + ' g')}, y el 90 % de eso es ${Re_(g(FE.real) + ' g')}. En una sola cuenta, 0,80 × 0,90 = 0,72, no 0,70. ${HIPO} La correcta está marcada.` } };
+const P1 = { id:'rendimiento-paso4', ok:'b', opts:[
+  ['a', `${pct0(CALe['sobre-reactivo'])}: de los 50 g de CaCO₃, solo 21 g terminaron convertidos en CaO.`, 'sobre-reactivo', RES('hipotesis', 'tabla de lo que no tiene respaldo: rendimiento aplicado al reactivo')],
+  ['b', `${pct0(CAL.porcentaje)}: con 50 g de CaCO₃ se podían formar ${g(CAL.teorico)} g de CaO, y se formaron 21 g.`],
+  ['c', `${pct0(CALe['lo-que-falta'])}: de los ${g(CAL.teorico)} g de CaO que se podían formar, faltaron ${g(CAL.noFormado)} g.`, 'lo-que-falta', RES('hipotesis', 'hipótesis nuestra')],
+  ['d', `${pct0(CALe['otro-producto'])}: con 50 g de CaCO₃ se podían formar ${g(CO2t)} g de CO₂, y se obtuvieron 21 g.`, 'otro-producto', RES('hipotesis', 'hipótesis nuestra')]],
+  fb:{ b:`¡Bien! El rendimiento compara el ${Re_('producto real')} con el ${Te_('teórico')} del mismo producto: 21 ÷ ${g(CAL.teorico)} × 100 = ${pct0(CAL.porcentaje)}.`,
+    a:`Elegiste la 1. 21 ÷ 50 compara el CaO con el CaCO₃, dos sustancias distintas. Aunque todo el CaCO₃ reaccionara, nunca saldrían 50 g de CaO: el máximo es ${Te_(g(CAL.teorico) + ' g')}, porque parte de la masa se va como CO₂. Rendimiento = 21 ÷ ${g(CAL.teorico)} = ${pct0(CAL.porcentaje)}. ${HIPO} La correcta está marcada.`,
+    c:`Elegiste la 3. ${pct0(CALe['lo-que-falta'])} es lo que no se formó. El rendimiento mide lo que sí se obtuvo: ${Re_('21 g')} de ${Te_(g(CAL.teorico) + ' g')}, ${pct0(CAL.porcentaje)}. ${HIPO} La correcta está marcada.`,
+    d:`Elegiste la 4. ${g(CO2t)} g es el teórico del CO₂, el otro producto. Los 21 g son de CaO, y se comparan con el teórico del CaO: ${Te_(g(CAL.teorico) + ' g')}. ${HIPO} La correcta está marcada.` } };
+const fBal = (x, conTotal) => {
+  const q = x.quedan.CaCO3, f = x.formados;
+  return `${g(f.CaO)} g de CaO${q ? ', ' : ' y '}${g(f.CO2)} g de CO₂${q ? ` y ${g(q)} g de CaCO₃` : ''}, ${g(x.total)} g${conTotal ? ' en total' : ''}`;
+};
+const P2 = { id:'rendimiento-paso5', ok:'d', opts:[
+  ['a', `${fBal(BALe['se-pierde'], true)}: los ${g(BAL.falta)} g de CaO que faltan se perdieron.`, 'se-pierde', RES('parcial', 'ES13: 38 % de 79 acepta la conservación en recipiente cerrado (Casado y Raviolo 2005); esta opción, hipótesis')],
+  ['b', `${fBal(BALe['sale-como-gas'], true)}: lo que no formó CaO salió como gas.`, 'sale-como-gas', RES('parcial', 'ES14: 57 % de 79 acepta que los átomos se redistribuyen (Casado y Raviolo 2005)')],
+  ['c', `${fBal(BALe['falta-igual-sobra'])}: sobra tanto CaCO₃ como CaO falta.`, 'falta-igual-sobra', RES('parcial', 'cercana a ES19: proporción en masa igual a la de moles (Dahsah y otros 2006)')],
+  ['d', `${fBal(BAL)}: parte del CaCO₃ no reaccionó.`]],
+  fb:{ d:`¡Bien! Reaccionó el ${pct0(CAL.porcentaje)} del CaCO₃, ${g(BAL.reacciona)} g, y dio ${Re_(g(BAL.formados.CaO) + ' g de CaO')} y ${g(BAL.formados.CO2)} g de CO₂. Quedan ${Pu_(g(BAL.quedan.CaCO3) + ' g de CaCO₃')} sin reaccionar. La balanza sigue en ${g(BAL.total)} g.`,
+    a:`Elegiste la 1. La masa no se pierde: en un recipiente cerrado, la balanza marca lo mismo antes y después. El CaO que falta nunca se formó: sus átomos siguen en ${Pu_(g(BAL.quedan.CaCO3) + ' g de CaCO₃')} que no reaccionó. Y si solo reaccionó el ${pct0(CAL.porcentaje)}, tampoco hay ${g(CO2t)} g de CO₂, sino ${g(BAL.formados.CO2)} g. En un estudio con 79 escolares argentinos, solo cerca de 4 de cada 10 aceptó que la masa se conserva en un recipiente cerrado (Casado y Raviolo, 2005); esta opción en particular es una hipótesis nuestra. La correcta está marcada.`,
+    b:`Elegiste la 2. La masa sí cuadra (50 g), pero los átomos no: el CO₂ no tiene calcio, así que el calcio del CaO que falta no puede irse en el gas. Lo que se conserva son los átomos de cada elemento: el CaO que falta sigue como ${Pu_(g(BAL.quedan.CaCO3) + ' g de CaCO₃')}. En el mismo estudio con 79 escolares, algo más de la mitad aceptó que los átomos se reacomodan para formar sustancias nuevas (Casado y Raviolo, 2005); esta opción es una hipótesis nuestra. La correcta está marcada.`,
+    c:`Elegiste la 3. ${g(BAL.falta)} g de CaO no vienen de ${g(BAL.falta)} g de CaCO₃: la ecuación da proporciones de moles, no de gramos. ${g(BAL.falta)} g de CaO son ${g(BAL.falta/56, 3)} mol, que vienen de ${g(BAL.quedan.CaCO3)} g de CaCO₃. Con 7 g la suma da ${g(BALe['falta-igual-sobra'].total)} g: faltaría masa. Leer la ecuación como proporción de masas es una idea descrita en la investigación; esta opción es una hipótesis nuestra. La correcta está marcada.` } };
+const P3 = { id:'rendimiento-paso6', ok:'a', opts:[
+  ['a', `${g(INV.muestra)} g: el teórico es ${g(INV.teorico)} g de CaO, que salen de ${g(INV.pura)} g de CaCO₃, el 80 % de la caliza.`],
+  ['b', `${g(INVe['olvida-pureza'])} g: el teórico es ${g(INV.teorico)} g de CaO, y ${g(INV.teorico)} g de CaO salen de ${g(INV.pura)} g de CaCO₃.`, 'olvida-pureza', RES('hipotesis', 'tabla de lo que no tiene respaldo: reactivos impuros')],
+  ['c', `${g(INVe['multiplica-pureza'])} g: ${g(INV.teorico)} g de CaO salen de ${g(INV.pura)} g de CaCO₃, y el 80 % de ${g(INV.pura)} g es ${g(INVe['multiplica-pureza'])} g.`, 'multiplica-pureza', RES('hipotesis', 'hipótesis nuestra')],
+  ['d', `${g(INVe['multiplica-rendimiento'], 1)} g: el 75 % de 42 g es ${g(INV315)} g de CaO, que salen de ${g(INVpuro315)} g de CaCO₃ y ${g(INVe['multiplica-rendimiento'], 1)} g de caliza.`, 'multiplica-rendimiento', RES('hipotesis', 'tabla de lo que no tiene respaldo: dividir en vez de multiplicar, al revés')]],
+  fb:{ a:`¡Bien! Al revés, se divide: si ${Re_('42 g')} son el 75 % del teórico, el ${Te_('teórico')} es 42 ÷ 0,75 = ${Te_(g(INV.teorico) + ' g')}. Salen de ${Pu_(g(INV.pura) + ' g de CaCO₃')}, y si eso es el 80 % de la caliza, la caliza pesa ${g(INV.pura)} ÷ 0,80 = ${g(INV.muestra)} g (${Im_(g(INV.impureza) + ' g')} de impureza).`,
+    b:`Elegiste la 2. ${Pu_(g(INV.pura) + ' g')} es el CaCO₃ puro. La caliza también trae impureza: si el CaCO₃ es el 80 %, la caliza pesa ${g(INV.pura)} ÷ 0,80 = ${g(INV.muestra)} g. ${HIPO} La correcta está marcada.`,
+    c:`Elegiste la 3. Hacia atrás se divide: la caliza tiene que pesar más que su CaCO₃, no menos. ${g(INV.pura)} ÷ 0,80 = ${g(INV.muestra)} g. Con 80 g de caliza solo habría 64 g de CaCO₃. ${HIPO} La correcta está marcada.`,
+    d:`Elegiste la 4. Multiplicar por el rendimiento sirve para ir del teórico al real. Aquí se va al revés, del real al teórico: 42 ÷ 0,75 = ${Te_(g(INV.teorico) + ' g')}, más que 42, porque el horno pierde una parte. ${HIPO} La correcta está marcada.` } };
+
+// ----- Vistas -----
+const pieFe = 'La muestra es un solo montón: todavía no sabemos cuánto es Fe₂O₃. La caja del hierro se llena al responder.';
+const vFe = (r, f) => r ? { ...vistaMuestra({ reac:'hierro', muestra:200, p:80, eta:90, f }),
+    pie:'Abajo, la muestra en casillas de 10 % de su masa: en la lupa, cada unidad Fe₂O₃ con sus 2 Fe y 3 O.',
+    desc:`La muestra de 200 gramos se separa en 40 gramos de roca y 160 gramos de óxido de hierro. Se forman ${g(FE.real)} gramos de hierro de ${g(FE.teorico)} posibles; la caja punteada muestra los ${g(FE.noFormado)} gramos que no se formaron.` }
+  : { ...vistaMuestra({ reac:'hierro', muestra:200, p:80, eta:90, antes:true }), pie:pieFe, desc:'Un montón de 200 gramos de mineral y una caja vacía con signo de pregunta para el hierro.' };
+const ecCal = [['CaCO₃', 'pur', 800], [' → ', 'ink', 700], ['CaO', 'real', 800], [' + CO₂', 'ink', 700]];
+function vCal(r, f){
+  const t = r ? f : 0;
+  return { ec:ecCal, paneles:[{ tipo:'montones', mmax:50, flechas:[[0.44, 0.58]], items:[
+      { x:0.24, k:'pur', masa:50, etq:[[['50 g de CaCO₃', 'pur', 800]], [['puro', 'pur', 700]]] },
+      { x:0.78, k:'real', masa:21, teo: r ? CAL.teorico : 0, teoAlfa:t, etq:[[['21 g de CaO', 'real', 800]], r ? [['teórico: ', 'muted', 700], [g(CAL.teorico) + ' g', 'teo', 800]] : [['teórico: ?', 'muted', 700]]], etqMax:0.42 }] },
+    { tipo:'barras', max:50, filas:[{ etq:[['CaCO₃ ', 'ink', 700], ['50 g', 'pur', 800]], segs:[{ k:'pur', masa:50 }] },
+      { etq: r ? [['CaO ', 'ink', 700], ['21 g', 'real', 800], [' de ', 'ink', 700], [g(CAL.teorico) + ' g', 'teo', 800], [' posibles', 'ink', 700]] : [['CaO ', 'ink', 700], ['21 g', 'real', 800], [' de ? posibles', 'ink', 700]],
+        segs:[{ k:'real', masa:21 }, { k:'teo', masa:(CAL.teorico - 21)*t, punteado:true }] }] }],
+    pie: r ? 'La caja punteada es el teórico del CaO: lo que darían los 50 g si todo reaccionara.' : 'Se calientan 50 g de CaCO₃ puro y se obtienen 21 g de CaO.',
+    vars: r ? ['pur', 'teo', 'real'] : ['pur', 'real'],
+    desc: r ? `50 gramos de carbonato de calcio podían dar ${g(CAL.teorico)} gramos de óxido de calcio; se obtuvieron 21: rendimiento ${g(CAL.porcentaje)} por ciento.` : '50 gramos de carbonato de calcio y 21 gramos de óxido de calcio obtenidos.' };
+}
+function vBal(r, f){
+  const q = MR.reparto({ impureza:0, pura:50, teorico:BAL.teorico, real:BAL.formados.CaO, reacciona:BAL.reacciona/50 }, r ? 0.35 + 0.65*f : 0);
+  const gas = BAL.formados.CO2*q.avance, total = q.puroQueda + q.formado + gas;
+  return { ec:ecCal, paneles:[{ tipo:'montones', mmax:50, recipiente:{ balanza: r ? [['balanza: ', 'ink', 700], [g(total, 1) + ' g', 'ink', 800], [' (al inicio, 50 g)', 'muted', 700]] : [['balanza al inicio: 50 g · al final: ?', 'ink', 700]] },
+    items: r ? [
+      { x:0.2, k:'pur', masa:q.puroQueda, etq:[[[`${g(q.puroQueda, 1)} g de CaCO₃`, 'pur', 800]], [[q.avance > 0.99 ? 'sin reaccionar' : 'CaCO₃', 'pur', 700]]], etqMax:0.32 },
+      { x:0.52, k:'real', masa:q.formado, teo:BAL.teorico, teoAlfa:q.teoricoVisible, etq:[[[`${g(q.formado, 1)} g de CaO`, 'real', 800]], [['de ', 'muted', 700], [g(BAL.teorico) + ' g', 'teo', 800]]], etqMax:0.32 },
+      { x:0.83, k:'otro', gas:true, masa:gas, etq:[[[`${g(gas, 1)} g de CO₂`, 'ink', 800]], [['gas', 'muted', 700]]], etqMax:0.32 }]
+    : [{ x:0.2, k:'pur', masa:50, etq:[[['50 g de CaCO₃', 'pur', 800]], [['al inicio', 'pur', 700]]], etqMax:0.32 },
+       { x:0.52, tapa:true, etq:[[['CaO: 21 g', 'real', 800]], [['de ', 'muted', 700], [g(BAL.teorico) + ' g', 'teo', 800]]], etqMax:0.32 },
+       { x:0.83, tapa:true, etq:[[['CO₂: ? g', 'ink', 800]]], etqMax:0.32 }] }],
+    pie: r ? 'El recipiente está cerrado: lo que no se formó sigue ahí, como CaCO₃ sin reaccionar. La suma no cambia.' : 'Recipiente cerrado con 50 g de CaCO₃ puro. ¿Qué hay al final?',
+    vars: r ? ['pur', 'teo', 'real', 'otro'] : ['pur', 'teo', 'real'],
+    desc: r ? `Al final hay ${g(BAL.quedan.CaCO3)} gramos de carbonato sin reaccionar, ${g(BAL.formados.CaO)} de óxido de calcio y ${g(BAL.formados.CO2)} de dióxido de carbono: 50 gramos, lo mismo que al inicio.` : 'Recipiente cerrado con 50 gramos de carbonato de calcio; el contenido final está oculto.' };
+}
+const ecCalP = [['CaCO₃', 'pur', 800], [' → ', 'ink', 700], ['CaO', 'real', 800], [' + CO₂', 'ink', 700]];
+function vInv(r, f){
+  const a = k => r ? clamp(f*3 - k, 0, 1) : 0;
+  const items = r ? [
+      { x:0.12, k:'imp', masa:INV.impureza, alfa:a(2), etqMax:0.24, etq:[[[`${g(INV.impureza)} g`, 'imp', 800]], [['impureza', 'imp', 700]]] },
+      { x:0.39, k:'pur', masa:INV.pura, alfa:a(1), etqMax:0.3, etq:[[[`${g(INV.pura)} g de CaCO₃`, 'pur', 800]], [['puro', 'pur', 700]]] },
+      { x:0.8, k:'real', masa:42, teo:INV.teorico, teoAlfa:a(0), etq:[[['42 g de CaO', 'real', 800]], [['teórico: ', 'muted', 700], [g(INV.teorico) + ' g', 'teo', 800]]], etqAlfa:1, etqMax:0.36 }]
+    : [{ x:0.26, tapa:true, etq:[[['caliza: ? g', 'ink', 800]], [['80 % de CaCO₃', 'ink', 700]]], etqMax:0.46 },
+       { x:0.8, k:'real', masa:42, etq:[[['42 g de CaO', 'real', 800]], [['teórico: ?', 'muted', 700]]], etqMax:0.36 }];
+  return { ec:ecCalP, paneles:[{ tipo:'montones', mmax:INV.muestra, flechas:[[0.55, 0.64]], items },
+    { tipo:'barras', max:INV.muestra, casillasDe:INV.muestra/10, filas:[
+      r ? { etq:[['caliza ', 'ink', 700], [g(INV.muestra) + ' g', 'ink', 800], ['  =  ', 'muted', 700], [g(INV.impureza) + ' g', 'imp', 800], [' + ', 'ink', 700], [g(INV.pura) + ' g', 'pur', 800]],
+          segs:[{ k:'imp', masa:INV.impureza*a(2), casillas:true }, { k:'pur', masa:INV.pura*a(1), casillas:true }] } : { etq:[['caliza: ? g', 'ink', 700]], tapa:true },
+      { etq: r ? [['CaO ', 'ink', 700], ['42 g', 'real', 800], [' de ', 'ink', 700], [g(INV.teorico) + ' g', 'teo', 800], [' posibles', 'ink', 700]] : [['CaO ', 'ink', 700], ['42 g', 'real', 800], [' de ? posibles', 'ink', 700]],
+        segs:[{ k:'real', masa:42 }, { k:'teo', masa:(INV.teorico - 42)*a(0), punteado:true }] }] }],
+    pie: r ? 'Del final al principio: primero el teórico (más que lo real), luego el CaCO₃ puro y al final la caliza (más que su CaCO₃).' : 'La calera quiere 42 g de CaO. ¿Cuánta caliza tiene que pesar?',
+    vars: r ? ['imp', 'pur', 'teo', 'real'] : ['real'],
+    desc: r ? `Para 42 gramos de óxido de calcio con 75 por ciento de rendimiento hacen falta ${g(INV.teorico)} gramos teóricos, ${g(INV.pura)} gramos de carbonato puro y ${g(INV.muestra)} gramos de caliza.` : 'Un montón de 42 gramos de óxido de calcio; la caliza necesaria está oculta.' };
+}
+
+const steps = [
+ { k:'Paso 1', t:'El problema', vista:() => vFe(false),
+   body:() => `<p class="problem">Un mineral de hierro, la hematita, tiene 80 % de Fe₂O₃; el resto es roca. Se tratan 200 g del mineral con CO en exceso: Fe₂O₃ + 3CO → 2Fe + 3CO₂. La reacción tiene un rendimiento de 90 %. ¿Cuántos gramos de hierro se obtienen?</p>
+   <p>Dos palabras del enunciado. La <b>pureza</b> dice qué parte de la masa de la muestra es la sustancia que se pide (aquí, Fe₂O₃). El <b>rendimiento</b> dice qué parte del ${Te_('producto teórico')}, el máximo que da la ecuación, se obtiene de verdad: el ${Re_('producto real')}.</p>
+   <p>Masas molares: Fe₂O₃ = 2 × 56 + 3 × 16 = 160 g/mol; Fe = 56 g/mol.</p>
+   <p class="hint">Cada variable tiene su color en el texto, en el dibujo y en las cuentas. Toca un color del texto para resaltarlo en el dibujo.</p>` },
+ { k:'Paso 2', t:'El hierro de la hematita: predice', gate:P0, vista:r => vFe(!!r, 1),
+   anima: fin => animar(E, 2.6, f => { E.vista = vFe(true, f); }, () => { E.vista = vFe(true, 1); fin(); }, 0.2),
+   body:() => `<p>200 g de mineral con 80 % de Fe₂O₃, CO en exceso y 90 % de rendimiento. ¿Cuántos gramos de hierro se obtienen?</p>${opcionesHTML(P0.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">200 g × 0,80 = ${Pu_('160 g de Fe₂O₃')} &nbsp;(+ ${Im_('40 g')} de roca)</span></div>
+     <div class="eq"><span class="ex">160 ÷ 160 = 1 mol de Fe₂O₃ → 2 mol de Fe → ${Te_(g(FE.teorico) + ' g')}</span></div>
+     <div class="eq"><span class="ex">${Te_(g(FE.teorico) + ' g')} × 0,90 = ${Re_(g(FE.real) + ' g')}</span><span class="note">La caja punteada guarda los ${g(FE.noFormado)} g que no se formaron.</span></div></div>
+   <p class="fuente">Las cuatro opciones salen de errores que suponemos frecuentes en los problemas de academia. Ningún estudio que hayamos leído los mide: son hipótesis nuestras, y la escena las va a poner a prueba.</p></div>` },
+ { k:'Paso 3', t:'Uno después del otro', vista:() => vFe(true, 1),
+   body:() => `<p>La pureza y el rendimiento actúan en lugares distintos. La pureza separa la muestra: solo el ${Pu_('Fe₂O₃ puro')} entra a la ecuación y la ${Im_('roca')} se queda afuera. El rendimiento actúa al final, sobre el producto: de la ${Te_('caja teórica')} solo se llena una parte con ${Re_('hierro real')}.</p>
+   <div class="eqs"><div class="eq"><span class="ex">${Re_('real')} = 200 × 0,80 × (112 ÷ 160) × 0,90 = ${Re_(g(FE.real) + ' g')}</span><span class="note">112 ÷ 160 = 0,7: cada gramo de Fe₂O₃ da 0,7 g de Fe (masa → mol → mol → masa).</span></div>
+   <div class="eq"><span class="ex">0,80 × 0,90 = 0,72 &nbsp;→&nbsp; 72 % de lo que darían 200 g de Fe₂O₃ puro: ${g(FE140)} × 0,72 = ${g(FE.real)} g</span><span class="note">Como se multiplican, da lo mismo el orden: primero la pureza o primero el rendimiento. Sumarlos y restar 100 no sale de ninguna cuenta con la masa.</span></div></div>
+   <p>El rendimiento se aplica una sola vez, al producto. Si se aplicara también al reactivo, saldrían ${g(FEe['rendimiento-dos-veces'])} g: el 90 % estaría contado dos veces.</p>` },
+ { k:'Paso 4', t:'La cal viva: predice', gate:P1, vista:r => vCal(!!r, 1),
+   anima: fin => animar(E, 1.2, f => { E.vista = vCal(true, f); }, () => { E.vista = vCal(true, 1); fin(); }, 0.2),
+   body:() => `<p>En un horno se calientan 50 g de CaCO₃ puro: CaCO₃ → CaO + CO₂. Se obtienen 21 g de CaO (cal viva). Masas molares: CaCO₃ = 100 g/mol, CaO = 56 g/mol, CO₂ = 44 g/mol. ¿Cuál fue el rendimiento?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">50 ÷ 100 = 0,5 mol de CaCO₃ → 0,5 mol de CaO = ${Te_(g(CAL.teorico) + ' g')}</span></div>
+     <div class="eq"><span class="ex">rendimiento = ${Re_('21 g')} ÷ ${Te_(g(CAL.teorico) + ' g')} × 100 = ${pct0(CAL.porcentaje)}</span><span class="note">Real y teórico tienen que ser del mismo producto.</span></div></div></div>` },
+ { k:'Paso 5', t:'¿Adónde va lo que falta?: predice', gate:P2, vista:r => vBal(!!r, 1),
+   anima: fin => animar(E, 2, f => { E.vista = vBal(true, f); }, () => { E.vista = vBal(true, 1); fin(); }, 0.2),
+   body:() => `<p>La misma reacción, ahora en un recipiente cerrado sobre una balanza: 50 g de CaCO₃ puro y se forman 21 g de CaO, el ${pct0(CAL.porcentaje)} del ${Te_('teórico (' + g(BAL.teorico) + ' g)')}. Faltan ${g(BAL.falta)} g de CaO. ¿Qué hay en el recipiente al final?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">reacciona: 50 × 0,75 = ${g(BAL.reacciona)} g de CaCO₃ → ${Re_(g(BAL.formados.CaO) + ' g de CaO')} + ${g(BAL.formados.CO2)} g de CO₂</span></div>
+     <div class="eq"><span class="ex">quedan: 50 − ${g(BAL.reacciona)} = ${Pu_(g(BAL.quedan.CaCO3) + ' g de CaCO₃')}</span></div>
+     <div class="eq"><span class="ex">${g(BAL.formados.CaO)} + ${g(BAL.formados.CO2)} + ${g(BAL.quedan.CaCO3)} = ${g(BAL.total)} g</span><span class="note">Si el recipiente estuviera abierto, el CO₂ se escaparía y la balanza bajaría, pero esa masa no desaparece: está en el aire.</span></div></div>
+   <p>En otras reacciones, lo que falta sale como otro producto. Al quemar 12 g de carbón con poco aire, si el 75 % del carbono forma CO₂ (${g(COMB.CO2)} g de ${g(COMB.teoricoCO2)} posibles), el resto forma ${g(COMB.CO)} g de CO. La masa cuadra igual: 12 + ${g(COMB.O2)} de O₂ = ${g(COMB.CO2)} + ${g(COMB.CO)}.</p>
+   <p class="fuente">Las opciones 1 y 2 rompen la conservación de la masa o de los átomos. En un estudio con 79 escolares argentinos, solo cerca de 4 de cada 10 aceptó que la masa se conserva en un recipiente cerrado, y algo más de la mitad, que los átomos se reacomodan (Casado y Raviolo, 2005). Que aparezcan en este problema es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 6', t:'Al revés: predice', gate:P3, vista:r => vInv(!!r, 1),
+   anima: fin => animar(E, 1.8, f => { E.vista = vInv(true, f); }, () => { E.vista = vInv(true, 1); fin(); }, 0.2),
+   body:() => `<p>Una calera quiere obtener 42 g de CaO. Su caliza tiene 80 % de CaCO₃ y su horno rinde 75 %. ¿Cuántos gramos de caliza tiene que calentar?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">${Te_('teórico')} = ${Re_('42 g')} ÷ 0,75 = ${Te_(g(INV.teorico) + ' g de CaO')} = 1 mol</span></div>
+     <div class="eq"><span class="ex">1 mol de CaO ← 1 mol de CaCO₃ = ${Pu_(g(INV.pura) + ' g')}</span></div>
+     <div class="eq"><span class="ex">caliza = ${Pu_(g(INV.pura) + ' g')} ÷ 0,80 = ${g(INV.muestra)} g &nbsp;(${Im_(g(INV.impureza) + ' g')} de impureza)</span><span class="note">Hacia adelante se multiplica por la pureza y por el rendimiento; hacia atrás se divide. Comprobación: 125 × 0,80 = 100 g → 56 g → 56 × 0,75 = 42 g.</span></div></div></div>` },
+ { k:'Paso 7', t:'Ahora explora tú', explora:true, vista:() => ({ paneles:[] }),
+   body:() => `<div class="ctrls">
+     <label class="campo" for="xR">Reacción del examen<select id="xR">${Object.entries(MR.REACCIONES).map(([k, r]) => `<option value="${k}">${r.texto} · ${r.nombre}</option>`).join('')}</select></label>
+     <div class="slider"><label for="xM"><span>Masa de la muestra</span><output id="xMo"></output></label><input id="xM" type="range" min="20" max="400" step="5" value="200"></div>
+     <div class="slider"><label for="xP"><span>Pureza</span><output id="xPo"></output></label><input id="xP" type="range" min="10" max="100" step="1" value="80"></div>
+     <div class="slider"><label for="xE"><span>Rendimiento</span><output id="xEo"></output></label><input id="xE" type="range" min="10" max="100" step="1" value="90"></div>
+   </div>
+   <div class="lect" id="live" aria-live="off"></div>
+   <p class="hint">Baja la pureza y mira cómo crece la ${Im_('impureza')} sin cambiar la muestra. Baja el rendimiento y mira cómo la ${Te_('caja punteada')} se queda con más espacio vacío.</p>` },
+];
+
+// ----- Explorador -----
+const X = { reac:'hierro', m:200, p:80, eta:90 };
+function explorar(){
+  const vivo = () => {
+    const R = MR.REACCIONES[X.reac], d = MR.producir({ reaccion:X.reac, muestra:X.m, pureza:X.p, rendimiento:X.eta });
+    const gas = R.gases.includes(R.producto);
+    // Lo que regalaría el experimento 2 (pureza o rendimiento al 100 %) y el 3 (volumen de gas en CN).
+    const tapaM = !PRED_EXP['mejora'] && (X.p === 100 || X.eta === 100), tapaV = !PRED_EXP['gas'];
+    $('xR').value = X.reac; $('xM').value = X.m; $('xP').value = X.p; $('xE').value = X.eta;
+    $('xMo').textContent = g(X.m) + ' g'; $('xPo').textContent = X.p + ' %'; $('xEo').textContent = X.eta + ' %';
+    const P = fx(R.producto), Rr = fx(R.reactivo);
+    $('live').innerHTML = `<div class="fila"><span>${Pu_(g(d.pura, 1) + ' g de ' + Rr)} puro</span><span>${Im_(g(d.impureza, 1) + ' g')} de impureza</span><span>${g(d.n, 3)} mol de ${Rr}</span></div>
+      <div class="fila">${tapaM ? `<span>${P}: ? (${DESCUBRE}, experimento 2)</span>` : `<span>teórico: ${Te_(g(d.teorico, 2) + ' g de ' + P)}</span><span>real: ${Re_(g(d.real, 2) + ' g')}</span><span>no se formó: ${g(d.noFormado, 2)} g</span>`}</div>
+      ${gas ? `<div class="fila"><span>${tapaV ? `Volumen en CN: ? (${DESCUBRE}, experimento 3)` : tapaM ? 'Volumen en CN: ?' : `Volumen en CN: ${Vo_(g(d.V, 2) + ' L')} (22,4 L por mol)`}</span></div>` : ''}
+      <div class="fila"><span>${R.exceso ? `El ${fx(R.exceso)} está en exceso: no limita.` : 'Un solo reactivo: se descompone con el calor.'}</span></div>`;
+    const mmax = Math.max(400, 400*MR.masaAMasa(X.reac, 1, R.reactivo, R.producto));
+    E.vista = { ...vistaMuestra({ reac:X.reac, muestra:X.m, p:X.p, eta:X.eta, f:1, mmax, tapaReal:tapaM, tapaTxt:'experimento 2', tapaV }),
+      pie: X.reac === 'hierro' ? 'Abajo, la muestra en casillas de 10 % de su masa; en la lupa, unidades Fe₂O₃.' : 'Abajo, la muestra en casillas de 10 % de su masa. Los gases van en globos (misma escala de masa).',
+      desc:'' };
+    E.dibujar();
+  };
+  $('xR').onchange = () => { X.reac = $('xR').value; vivo(); };
+  $('xM').oninput = () => { X.m = +$('xM').value; vivo(); };
+  $('xP').oninput = () => { X.p = +$('xP').value; vivo(); };
+  $('xE').oninput = () => { X.eta = +$('xE').value; vivo(); };
+  vivo();
+}
+
+// ----- Navegación -----
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max || S.ocupado) return;
+  const s = steps[n]; S.step = n; cortar(E);
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  E.vista = s.vista(s.gate ? r : undefined);
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar();
+  nav(); E.dibujar(); E.describir();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  pintarDots();
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max || S.ocupado;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.innerHTML = P.fb[p].replace(/ tabindex="0"/g, ''); fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    const tras = $('tras'); if (tras) tras.hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    // En el celular, el dibujo sube a la vista y se anima después (nucleo/celular.js).
+    Celular.alResponder($('cv'), () => { s.anima(() => { S.ocupado = false; nav(); E.describir(); }); E.describir(); },
+      () => S.step === paso, { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { const s = steps[S.step]; if (S.ocupado || (s.gate && !S.pred[s.gate.id])) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => {
+  // Al volver de «¿Qué pasa si…?», el explorador se rehace: puede haber algo recién descubierto.
+  if (!document.getElementById('m1').hidden && steps[S.step].explora && !S.ocupado) go(S.step);
+  else { E.resize(); E.dibujar(); }
+});
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Todo hipótesis (informe de estequiometría, «Lo que no tiene respaldo»): rendimiento en dos pasos, pureza al 100 % contra
+   rendimiento al 100 %, gas en condiciones normales desde caliza impura y equivalentes en una neutralización. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2');
+const CAD = MR.rendimientoCadena([90, 80]), CADe = CAD.errores;
+const MEJ = MR.compararMejoras({ reaccion:'hierro', muestra:200, pureza:80, rendimiento:90 });
+const T140 = MR.producir({ reaccion:'hierro', muestra:200, pureza:100 }).teorico;
+const GAS = MR.producir({ reaccion:'caliza', muestra:80, pureza:75, producto:'CO2' }), GASe = GAS.errores;
+const GASpuro = MR.producir({ reaccion:'caliza', muestra:80, producto:'CO2' });
+const NEU = MR.neutralizar('H2SO4', 98, 'NaOH'), NEUe = NEU.errores;
+const pct0 = x => g(x, 0) + ' %';
+const fila = (etq, real, teo, max, tapa) => tapa ? { etq, tapa:true, tapaAncho:max*0.4 } : { etq, segs:[{ k:'real', masa:real }, { k:'teo', masa:Math.max(0, teo - real), punteado:true }] };
+
+const EXPS = [
+  { id:'cadena', corto:'Dos pasos seguidos', ok:'b',
+    q:`Un laboratorio fabrica un producto en dos pasos seguidos: el primero rinde 90 % y el segundo, 80 % (de lo que le entrega el primero). ¿Qué rendimiento tiene el proceso completo?`,
+    opts:[['a', `${pct0(CADe['suma-porcentajes'])}: se pierden 10 puntos en el primer paso y otros 20 en el segundo.`, 'suma-porcentajes', RES('hipotesis', 'tabla de lo que no tiene respaldo: porcentajes sumados')],
+          ['b', `${pct0(CAD.total)}: el segundo paso se queda con el 80 % de lo que dejó el primero.`],
+          ['c', `${pct0(CADe['el-menor'])}: el paso que rinde menos es el que decide el total.`, 'el-menor', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', `${pct0(CADe['promedio'])}: el proceso completo rinde el promedio de lo que rinden sus pasos.`, 'promedio', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:`Restar puntos funciona solo si los dos porcentajes son del mismo total, y no lo son: el 80 % es de lo que salió del primer paso (90), no del máximo (100). El 80 % de 90 es ${g(CAD.total)}. ${HIPO}`,
+      c:`El paso que rinde menos no basta: el primero ya perdió el 10 %, y el segundo pierde el 20 % de lo que quedó. Juntos dejan ${pct0(CAD.total)}, menos que cualquiera de los dos. ${HIPO}`,
+      d:`El promedio no sigue a la masa: cada paso trabaja con lo que le deja el anterior. 0,90 × 0,80 = 0,72. ${HIPO}` },
+    vista:(r, f) => { const t = r ? f : 0, fin = 90 - (90 - CAD.total)*t;
+      return { paneles:[{ tipo:'barras', siempre:true, alto:44, max:100, filas:[
+        { etq:[['lo que da la ecuación: ', 'ink', 700], ['100 %', 'teo', 800]], segs:[{ k:'teo', masa:100, punteado:true }] },
+        fila([['tras el paso 1 (rinde 90 %): ', 'ink', 700], ['90 %', 'real', 800]], 90, 100, 100),
+        r ? fila([['tras el paso 2 (rinde 80 %): ', 'ink', 700], [pct0(fin), 'real', 800]], fin, 100, 100) : fila([['tras el paso 2 (rinde 80 %): ?', 'ink', 700]], 0, 0, 100, true)] }],
+        pie: r ? 'El segundo paso solo puede trabajar con el 90 % que le llegó: pierde el 20 % de eso, 18 puntos.' : 'Cada barra es lo que hay después de cada paso, como porcentaje del máximo.',
+        vars: ['teo', 'real'], desc: r ? `Tras el primer paso queda el 90 por ciento; tras el segundo, el ${g(CAD.total)} por ciento.` : 'Barras del máximo y del primer paso; la del segundo paso está oculta.' }; },
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">0,90 × 0,80 = 0,72 &nbsp;→&nbsp; ${Re_(pct0(CAD.total))} del ${Te_('máximo')}</span><span class="note">Con más pasos, se siguen multiplicando: 90 %, 80 % y 50 % dejan 36 %. Por eso las síntesis largas rinden poco aunque cada paso rinda bien.</span></div></div>
+      <p class="fuente">Las cuatro opciones son errores que suponemos (hipótesis nuestras); no hay estudios que los midan en este tipo de problema.</p>` },
+  { id:'mejora', corto:'Pureza o rendimiento', ok:'c',
+    q:`Con 200 g de hematita al 80 % de Fe₂O₃ y 90 % de rendimiento se obtienen ${Re_(g(MEJ.real) + ' g de hierro')}. Una mina ofrece mineral puro (100 %); otra fábrica ofrece un horno que rinde 100 %. Con los mismos 200 g, ¿qué da más hierro?`,
+    opts:[['a', `El horno al 100 %: el rendimiento actúa sobre el producto, y la pureza solo sobre el reactivo.`, 'rendimiento-pesa-mas', RES('hipotesis', 'hipótesis nuestra')],
+          ['b', `Dan lo mismo: en los dos casos un porcentaje sube a 100 y el otro no cambia.`, 'dan-lo-mismo', RES('hipotesis', 'hipótesis nuestra')],
+          ['c', `El mineral puro: pasar de 80 a 100 multiplica por más que pasar de 90 a 100.`],
+          ['d', `Depende de la masa: con más mineral, el horno al 100 % terminaría ganando.`, 'depende-de-la-masa', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:`Los dos se multiplican en la misma cuenta: real = muestra × pureza × 0,7 × rendimiento. Da lo mismo dónde actúa cada uno; gana el que más crece. 80 → 100 es × ${g(MEJ.factorPureza)}; 90 → 100 es × ${g(MEJ.factorRendimiento)}. ${HIPO}`,
+      b:`Los dos llegan a 100, pero desde lugares distintos: la pureza sube de 80 a 100 (× ${g(MEJ.factorPureza)}) y el rendimiento de 90 a 100 (× ${g(MEJ.factorRendimiento)}). ${HIPO}`,
+      d:`Con más mineral crecen los dos casos en la misma proporción: si se duplica la muestra, se duplica el hierro en los dos. El que gana no cambia. ${HIPO}` },
+    vista:(r, f) => { const t = r ? f : 0;
+      return { paneles:[{ tipo:'barras', siempre:true, alto:44, max:T140, filas:[
+        fila([['ahora (80 % y 90 %): ', 'ink', 700], [g(MEJ.real) + ' g', 'real', 800], [' de ', 'ink', 700], [g(MEJ.real/0.9) + ' g', 'teo', 800]], MEJ.real, MEJ.real/0.9, T140),
+        r ? fila([['mineral puro (100 % y 90 %): ', 'ink', 700], [g(MEJ.conPureza*t, 1) + ' g', 'real', 800], [' de ', 'ink', 700], [g(T140) + ' g', 'teo', 800]], MEJ.conPureza*t, T140*t, T140)
+          : fila([['mineral puro (100 % y 90 %): ?', 'ink', 700]], 0, 0, T140, true),
+        r ? fila([['horno al 100 % (80 % y 100 %): ', 'ink', 700], [g(MEJ.conRendimiento*t, 1) + ' g', 'real', 800]], MEJ.conRendimiento*t, MEJ.conRendimiento*t, T140)
+          : fila([['horno al 100 % (80 % y 100 %): ?', 'ink', 700]], 0, 0, T140, true)] }],
+        pie: r ? 'Con el mineral puro, la caja teórica crece a 140 g y se llena al 90 %; con el horno perfecto, la caja de 112 g se llena entera.' : 'La barra llena es el hierro real; la punteada, el teórico que no se formó.',
+        vars:['teo', 'real'], desc: r ? `Ahora ${g(MEJ.real)} gramos. Con mineral puro, ${g(MEJ.conPureza)} gramos. Con rendimiento de 100 por ciento, ${g(MEJ.conRendimiento)} gramos.` : 'Barra del hierro de ahora; las de las dos mejoras están ocultas.' }; },
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">mineral puro: 200 × 1,00 × 0,7 × 0,90 = ${Re_(g(MEJ.conPureza) + ' g')} &nbsp;·&nbsp; horno al 100 %: 200 × 0,80 × 0,7 × 1,00 = ${Re_(g(MEJ.conRendimiento) + ' g')}</span><span class="note">Pureza y rendimiento son dos factores de la misma multiplicación. Mejora más el que está más lejos de 100.</span></div></div>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'gas', corto:'El gas de la caliza', ok:'a',
+    q:`Se calientan 80 g de caliza con 75 % de CaCO₃ hasta que todo el CaCO₃ se descompone: CaCO₃ → CaO + CO₂. ¿Qué volumen de CO₂ se obtiene en condiciones normales (22,4 L por mol)?`,
+    opts:[['a', `${g(GAS.V)} L: los 60 g de CaCO₃ puro son 0,6 mol, y dan 0,6 mol de CO₂.`],
+          ['b', `${g(GASpuro.V)} L: los 80 g de caliza son 0,8 mol de CaCO₃, y dan 0,8 mol de CO₂.`, 'muestra-pura', RES('hipotesis', 'tabla de lo que no tiene respaldo: muestra como si fuera pura')],
+          ['c', `${g(GASe['masa-como-volumen'])} L: los 60 g de CaCO₃ dan ${g(GAS.real)} g de CO₂, que es lo que ocupa el gas.`, 'masa-como-volumen', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', `${g(GASe['coeficiente-como-moles'])} L: la ecuación da 1 mol de CO₂, y un mol de gas ocupa 22,4 L.`, 'coeficiente-como-moles', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ b:`La caliza no es CaCO₃ puro: solo el 75 % de los 80 g, ${Pu_('60 g')}, se descompone; los ${Im_('20 g')} de impureza no dan gas. 60 g son 0,6 mol y dan ${Vo_(g(GAS.V) + ' L')}. ${HIPO}`,
+      c:`${Re_(g(GAS.real) + ' g')} es la masa del CO₂, no su volumen. Para el volumen se pasa a moles: 26,4 ÷ 44 = 0,6 mol, y 0,6 × 22,4 = ${Vo_(g(GAS.V) + ' L')}. ${HIPO}`,
+      d:`El coeficiente 1 dice la proporción (1 mol de CO₂ por cada mol de CaCO₃), no cuántos moles hay. Hay 0,6 mol de CaCO₃ puro: ${Vo_(g(GAS.V) + ' L')}. ${HIPO}` },
+    vista:(r, f) => r ? { ...vistaMuestra({ reac:'caliza', muestra:80, p:75, eta:100, producto:'CO2', f }),
+        pie:'Los gases van en globos, con la misma escala de masa que los montones. El CaO que también se forma no se dibuja.',
+        desc:`Los 80 gramos de caliza se separan en 20 de impureza y 60 de carbonato puro, que dan ${g(GAS.real)} gramos de dióxido de carbono: ${g(GAS.V)} litros en condiciones normales.` }
+      : { ...vistaMuestra({ reac:'caliza', muestra:80, p:75, eta:100, producto:'CO2', antes:true }), pie:'Un montón de caliza sin separar. El gas se ve al responder.', desc:'Un montón de 80 gramos de caliza y una caja oculta para el gas.' },
+    dur:2.4,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">80 × 0,75 = ${Pu_('60 g de CaCO₃')} = 0,6 mol → 0,6 mol de CO₂ = ${Re_(g(GAS.real) + ' g')} → 0,6 × 22,4 = ${Vo_(g(GAS.V) + ' L')}</span><span class="note">CN: 0 °C y 1 atm. A otra temperatura o presión, el mismo gas ocupa otro volumen (PV = nRT).</span></div></div>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'equivalentes', corto:'Ácido contra base', ok:'d',
+    q:`¿Cuántos gramos de NaOH neutralizan exactamente 98 g de H₂SO₄? El H₂SO₄ tiene 2 H ácidos y el NaOH, un OH. Masas molares: H₂SO₄ = 98 g/mol y NaOH = 40 g/mol.`,
+    opts:[['a', `${g(NEUe['theta-1'])} g: 98 g de H₂SO₄ son 1 equivalente, y piden 1 equivalente de NaOH.`, 'theta-1', RES('hipotesis', 'tabla de lo que no tiene respaldo: θ = 1 para todo')],
+          ['b', `${g(NEUe['masas-iguales'])} g: para neutralizar hace falta la misma masa de base que de ácido.`, 'masas-iguales', RES('hipotesis', 'hipótesis nuestra')],
+          ['c', `${g(NEUe['theta-multiplica'])} g: el equivalente del H₂SO₄ pesa 196 g, y 98 g son medio equivalente.`, 'theta-multiplica', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', `${g(NEU.masaBase)} g: 98 g de H₂SO₄ son 2 equivalentes, y piden 2 equivalentes de NaOH.`]],
+    fb:{ a:`Con θ = 1, 98 g serían 1 equivalente, pero el H₂SO₄ tiene 2 H ácidos: θ = 2 y su equivalente pesa 98 ÷ 2 = 49 g. 98 g son ${Eq_('2 eq')}, y piden ${Eq_('2 eq')} de NaOH: 2 × 40 = ${g(NEU.masaBase)} g. ${HIPO}`,
+      b:`La neutralización iguala equivalentes, no gramos: cada H⁺ del ácido necesita un OH⁻ de la base. 98 g de H₂SO₄ son ${Eq_('2 eq')} y piden ${Eq_('2 eq')} de NaOH, ${g(NEU.masaBase)} g. ${HIPO}`,
+      c:`La masa equivalente se divide entre θ, no se multiplica: 98 ÷ 2 = 49 g por equivalente. 98 g son ${Eq_('2 eq')}. ${HIPO}` },
+    vista:(r, f) => ({ paneles:[{ tipo:'fichas', unir: r ? f : 0, grupos:[
+        { x:0.27, etq:[['H₂SO₄: 98 g', 'ink', 800]], n:2, tapa:!r, bajo: r ? [['θ = 2 · 49 g por ', 'ink', 700], ['eq', 'eq', 800]] : [['equivalentes: ?', 'muted', 700]] },
+        { x:0.73, etq: r ? [['NaOH: ', 'ink', 800], [g(NEU.masaBase*Math.min(1, f*1.5)) + ' g', 'ink', 800]] : [['NaOH: ? g', 'ink', 800]], n:2, tapa:!r, bajo: r ? [['θ = 1 · 40 g por ', 'ink', 700], ['eq', 'eq', 800]] : [['equivalentes: ?', 'muted', 700]] }] }],
+      pie: r ? 'Cada equivalente de ácido (un H⁺) se junta con uno de base (un OH⁻).' : 'Las fichas de equivalentes aparecen al responder.',
+      vars: r ? ['eq'] : [], desc: r ? '98 gramos de ácido sulfúrico son 2 equivalentes y se juntan con 2 equivalentes de hidróxido de sodio: 80 gramos.' : 'Ácido sulfúrico e hidróxido de sodio; los equivalentes están ocultos.' }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">masa equivalente = M ÷ θ: H₂SO₄ 98 ÷ 2 = 49 g · NaOH 40 ÷ 1 = 40 g · Ca(OH)₂ 74 ÷ 2 = 37 g</span></div>
+      <div class="eq"><span class="ex">${Eq_('eq')} de ácido = ${Eq_('eq')} de base: 98 ÷ 49 = ${Eq_('2 eq')} → 2 × 40 = ${g(NEU.masaBase)} g de NaOH</span><span class="note">Con moles da lo mismo: H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O; 1 mol de ácido con 2 mol de base. θ: en un ácido, los H ácidos; en una base, los OH; en una sal, la carga total de los cationes.</span></div></div>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras; el informe no encontró estudios con cifras sobre equivalentes.</p>` },
+];
+const S = { k:0, pred:PRED_EXP, t0:Date.now(), ocupado:false };
+// Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan.
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}"${S.ocupado ? ' disabled' : ''}>${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function despues(x, fin){
+  cortar(E); E.vista = x.vista(true, 0); E.dibujar();
+  animar(E, x.dur || 1.4, f => { E.vista = x.vista(true, f); }, () => { E.vista = x.vista(true, 1); if (fin) fin(); }, 0.2);
+}
+function ir(k){
+  if (!abierto(k) || S.ocupado) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  cortar(E); E.vista = ya ? x.vista(true, 1) : x.vista(false, 0);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const explicar = () => {
+    if (S.k !== k || !S.pred[x.id]) return;
+    $('res2').innerHTML = x.exp() + `<div class="nav">${otraVez}${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { if (S.ocupado) return; ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const rep = $('res2').querySelector('[data-repetir]');
+    if (rep) rep.onclick = () => { if (S.ocupado) return; Celular.alResponder($('cv2'), () => despues(x, () => E.describir()), () => S.k === k); };
+  };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.innerHTML = (p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`).replace(/ tabindex="0"/g, '');
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    explicar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id] || S.ocupado) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; S.ocupado = true; pintar(); botones();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    E.compactar(false);
+    Celular.alResponder($('cv2'), () => { despues(x, () => { S.ocupado = false; botones(); E.describir(); }); E.describir(); },
+      () => S.k === k, { siNo:() => { S.ocupado = false; botones(); } });
+  });
+  pintar(); E.dibujar(); E.describir();
+}
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); });
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
