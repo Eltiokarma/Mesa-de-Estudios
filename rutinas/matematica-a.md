@@ -734,3 +734,91 @@ Ya lleva el estilo «pegatinas»: `data-curso="algebra"` y `nucleo/pegatina.css`
    ΔE00 mínimo: 23,6 en claro y 25,3 en oscuro. Contraste mínimo: 4,63.
 3. Informe de álgebra: registrar BN1 a BN27 como hipótesis nuestras.
 4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Binomio de Newton (7 nov 2026, sesión de matemática A): `plantillas/binomio-newton/` (el tablero de los caminos: cada término elige a o b en cada paréntesis, Pascal con fichas, término general, central e independiente con la recta de exponentes, Galton; 20 casos verificados aparte)».
+
+## 7 nov 2026 · Cónicas: la cuerda del jardinero (`plantillas/conicas/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, fracciones y radicales exactos; la cabecera llega hasta la línea 102). Cubre:
+  - circunferencia, desde la ecuación general completando cuadrados, con su punto y su vacío;
+  - parábola, con vértice, foco, directriz, p, eje y lado recto 4|p|;
+  - elipse y su jardinero: a² = b² + c², e = c/a y lado recto 2b²/a;
+  - hipérbola: c² = a² + b², asíntotas y e > 1;
+  - el plato de una antena;
+  - reconocer la cónica por la ecuación general, incluidos los casos degenerados (punto, vacía, dos rectas que se cortan, paralelas y recta doble);
+  - el cono cortado por un plano, con e = sen φ / sen g.
+
+  Los errores van de CO1 a CO37.
+- **`casos.json`**: 23 casos.
+- **`motor.test.js`**: 44 pruebas. Comprueba la definición métrica sobre los trazos (PF₁ + PF₂ = 2a, |PF₁ − PF₂| = 2a y PF = PD), que la ecuación general armada se vuelva a reconocer y el cono. Incluye la prueba de propiedades, las predicciones, y las paralelas y la recta doble.
+- **`papel.json`**: 10 problemas propios.
+- **`plantilla.json`**: unidades `trigonometria.conicas` y `geometria.geometria-analitica`. Esta última trae circunferencia, parábola y elipse en el temario (UNMSM, temas 16 a 18), y `geometria-analitica` las deja fuera a propósito. El experimento 2 se registra con esa unidad.
+- **`index.html`**: la cuerda del jardinero. Dos estacas son los focos y el lápiz tensa la cuerda; las barras PF₁ y PF₂ suman siempre 2a. Hay además la parábola con PF = PD que se arrastra, la hipérbola con su diferencia constante y el cono cortado.
+  - **Paso a paso** (7 predicciones después de la exploración):
+    - b desde a y c;
+    - la excentricidad;
+    - los focos en la forma ordinaria;
+    - el foco de (y − 1)² = −8(x − 2);
+    - el lado recto;
+    - los focos de la hipérbola;
+    - reconocer la cónica de una ecuación general, mirando A y C y sabiendo que es una curva.
+  - **¿Qué pasa si…?** (5):
+    - las estacas se juntan;
+    - la circunferencia desde la ecuación general;
+    - la antena de 120 cm de boca;
+    - las asíntotas de una hipérbola vertical;
+    - el cono con el plano paralelo a la generatriz.
+- **Respaldo.** Todo va como hipótesis, porque ningún informe trata las cónicas.
+
+**Pruebas.** `motor.test.js`: 44 de 44. `npm test`: 4329, y fallan solo las 2 de catálogo. La pasada del celular no da QUEDA. Playwright pasa en las 8 combinaciones. Lleva pegatinas (`data-curso="trigonometria"`), dos columnas desde 900 px y `tween` acotado con `Math.max(0, …)`.
+
+**Subagentes.**
+
+- **Verificador independiente.** Recalculó con fracciones y radicales. Como segundo método usó la definición métrica en puntos al azar y la expansión de cada canónica contra su ecuación general. Coinciden los 21 casos y los 10 problemas de papel.
+  - Encontró un riesgo real: una general sin término lineal de la otra variable, como (y − 1)² = 4, hacía dividir entre D = 0. El motor ahora devuelve paralelas, recta doble o vacía, con `rectasTexto`.
+  - Entraron todos sus bordes:
+    - circunferencia punto y vacía;
+    - hipérbola vertical con A < 0, y con A = −C;
+    - dos rectas que se cortan;
+    - parábola con x²;
+    - entradas que lanzan;
+    - hipérbola con eje y;
+    - el cono en 85° (válido) y 86° (error).
+- **Revisor de contenido.** Sin graves. Corregí:
+  - el scroll lateral en el paso 8 y el experimento 2, con `tramos()` que ya no corta dentro de un punto (x; y);
+  - el enunciado del paso 8, que no era riguroso: con solo A·C > 0 la curva también podría ser un punto o el vacío;
+  - el segmento a, que quedaba tapado por c en el paso 3;
+  - los puntos de arranque que tachaban rótulos en los pasos 5 y 7;
+  - «una parábola», poco creíble en el experimento 1, que ahora es «una elipse más alargada» (CO37);
+  - los rótulos que caían sobre los números de los ejes;
+  - las leyendas que no coincidían con el dibujo;
+  - «forma ordinaria», «lápiz» y las opciones de texto en fuente normal;
+  - la nota de que D, E y F son coeficientes.
+
+  El paso 6 quedó como estaba: en el paso 5, ya respondido, el lápiz llega a la punta del lado recto. Eso da la mitad del lado recto y obliga a duplicar, que es justo el razonamiento del paso 6.
+
+**Pedidos para la integración.**
+
+1. Catálogo: `conicas` en `trigonometria.conicas` y en `geometria.geometria-analitica`, y luego `npm run catalogo`. Hoy la unidad de cónicas tiene `"plantillas": []`. Los ítems de prueba van a `reserva`.
+2. `docs/diseno.md`: dos grupos que nunca salen juntos.
+
+   | Variable | Claro | Oscuro |
+   | --- | --- | --- |
+   | PF₁ y F₁ | #1f5fbf | #7cb0ff |
+   | PF₂ y F₂ | #7d6a00 | #e3c84a |
+   | a (y r) | #a10fbf | #cf6bfa |
+   | b | #2e7535 | #7fd36a |
+   | c | #77032c | #fdb4ce |
+   | PF y F de la parábola | #b04a00 | #ff8a3d |
+   | PD y directriz | #0f766e | #5ed9c8 |
+   | p | #3605c7 | #858bff |
+   | LR | #5c491f | #f7ffb2 |
+
+   - ΔE00 dentro de cada grupo: 23,5 en claro y 23,7 en oscuro en elipse e hipérbola; 22,7 en claro y 27,5 en oscuro en la parábola.
+   - Entre grupos: 14,7 y 12,5. Nunca salen juntos.
+   - Contraste mínimo: 4,54.
+   - b queda a ΔE00 8,3 del verde de «¡Bien!» en claro; el verde siempre va con texto.
+3. Investigación: no hay informe de ideas erróneas en cónicas. Conviene uno que respalde o descarte CO1 a CO35 y CO37; mientras tanto, registrarlos como hipótesis nuestras.
+4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Cónicas (7 nov 2026, sesión de matemática A): `plantillas/conicas/` (la cuerda del jardinero: PF₁ + PF₂ = 2a con estacas y lápiz, parábola con PF = PD, hipérbola, ecuación general con sus casos degenerados, antena y cono; 23 casos verificados aparte)».
+
+**Fin de la lista nueva.** Están hechas transformaciones, complejos, matrices, binomio y cónicas. Números reales, programación lineal, lógica y conjuntos ya los habían hecho otras rutinas, y coordenadas polares la toma otra rutina.
