@@ -18,10 +18,13 @@
  *   exacto(t)                          el número: { valor, texto, exacto } (texto con signo menos tipográfico)
  *   arco({ fn, k })                    fn 'sen' | 'cos' | 'tan' | 'cot': el ángulo principal arcfn(k), su rango y
  *                                      dominio, y 'errores' (ángulos que dan los errores típicos). Si k está fuera
- *                                      del dominio: { existe: false, motivo }.
+ *                                      del dominio: { existe: false, motivo }. Con fn 'sec' | 'csc': arcsec k =
+ *                                      arccos(1/k), rango [0; π] − {π/2}; arccsc k = arcsen(1/k), rango
+ *                                      [−π/2; π/2] − {0}; |k| ≥ 1; sin errores típicos (solo el papel).
  *   cortes({ fn, k, desde, hasta })    todos los ángulos θ en [desde; hasta⟩ (grados) con fn θ = k, en orden, cuál
  *                                      es el principal (principal: true), 'cuantos', 'texto' ('π/6 y 5π/6') y, para
- *                                      el seno, errores con listas ('una', 'sinSigno', 'comoCoseno').
+ *                                      el seno, errores con listas ('una', 'sinSigno', 'comoCoseno': los de
+ *                                      cos θ = k).
  *   arcoDe({ fn, grados })             arcfn(fn φ) con φ en grados: el ángulo principal (texto en grados), 'igual'
  *                                      (si φ ya estaba en el rango) y errores. Si fn φ no existe: { existe: false }.
  *   ventana({ fn, desde, hasta })      fn 'sen' | 'cos': ¿el tramo [desde; hasta] (grados) sirve de rango para la
@@ -51,7 +54,9 @@
  * Cada resultado que es la respuesta de una predicción trae 'errores': nombre → { id, valor, texto, … } con lo que
  * dan los errores típicos de docs/investigacion/trigonometria-ideas-erroneas.md (TR12, TR14 y TR22; el informe casi
  * no trata las inversas, así que todos son hipótesis o extensiones) y los nuestros (IN1 a IN29, hipótesis). Un
- * error que en ese caso da lo mismo que la respuesta correcta se quita y su nombre queda en 'coinciden'.
+ * error que en ese caso da lo mismo que la respuesta correcta se quita y su nombre queda en 'coinciden'; uno que da
+ * lo mismo que otro error anterior se quita y queda en 'repetidos' (la escena no muestra dos opciones iguales). El
+ * error IN18 (rango cerrado de arctan) solo se genera con |k| ≥ 10.
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -102,6 +107,10 @@
     cos: { de: 0, a: 180, abierto: false, texto: '[0; π]', dominio: '[−1; 1]' },
     tan: { de: -90, a: 90, abierto: true, texto: '⟨−π/2; π/2⟩', dominio: 'ℝ' },
     cot: { de: 0, a: 180, abierto: true, texto: '⟨0; π⟩', dominio: 'ℝ' }
+  };
+  const RANGO2 = {
+    sec: { texto: '[0; π] − {π/2}', dominio: '⟨−∞; −1] ∪ [1; +∞⟩' },
+    csc: { texto: '[−π/2; π/2] − {0}', dominio: '⟨−∞; −1] ∪ [1; +∞⟩' }
   };
   const FN = ['sen', 'cos', 'tan', 'cot'];
   function fnValida(fn, lista) {
@@ -245,18 +254,21 @@
     return angR(real);
   }
 
-  // Errores: lista [nombre, id, ángulo]; quita los que coinciden con la correcta.
+  // Errores: lista [nombre, id, ángulo]; quita los que coinciden con la correcta ('coinciden') y los que dan lo
+  // mismo que un error anterior de la lista ('repetidos': no hay dos opciones iguales).
   function armarErrores(correcta, lista, valorDe) {
-    const val = valorDe || (a => a.rad), errores = {}, coinciden = [];
+    const val = valorDe || (a => a.rad), errores = {}, coinciden = [], repetidos = [];
     for (const [nombre, id, x] of lista) {
       if (x === null || x === undefined) continue;
       if (Math.abs(val(x) - val(correcta)) < 1e-9) coinciden.push(nombre);
+      else if (Object.values(errores).some(e => Math.abs(val(e) - val(x)) < 1e-9)) repetidos.push(nombre);
       else errores[nombre] = Object.assign({ id }, x, x.valor === undefined && x.rad !== undefined ? { valor: x.rad } : {});
     }
-    return { errores, coinciden };
+    return { errores, coinciden, repetidos };
   }
 
   function arco(o) {
+    if (o && (o.fn === 'sec' || o.fn === 'csc')) return arcoRecip(o);
     const fn = fnValida(o && o.fn), L = leer(o.k);
     const base = { fn, k: L.texto, rango: RANGO[fn].texto, dominio: RANGO[fn].dominio };
     if ((fn === 'sen' || fn === 'cos') && Math.abs(L.valor) > 1 + TOL)
@@ -281,7 +293,7 @@
         ['vueltaPositiva', 'IN4', d(g => (neg ? 360 + g : g))],
         ['sinSigno', 'TR12', d(g => Math.abs(g))],
         ['comoCot', 'IN26', d(g => 90 - g)],
-        ['rangoCerrado', 'IN18', angG(90 * t, false, 90 * t)],
+        ['rangoCerrado', 'IN18', Math.abs(L.valor) >= 10 ? angG(90 * t, false, 90 * t) : null],   // solo con |k| grande
         ['mezcla', 'IN20', angR(A.rad * GR)]];   // el número de radianes leído como grados
     } else lista = [
       ['arctanInverso', 'IN19', L.valor === 0 ? null : d(g => (neg ? g - 180 : g))],
@@ -290,6 +302,16 @@
       ['comoTan', 'IN26', d(g => 90 - g)]];
     const E = armarErrores(A, lista);
     return Object.assign(base, { existe: true, angulo: A, valor: A.rad, texto: A.texto, textoG: A.textoG, exacto: A.exacto, academia: A.academia }, E);
+  }
+
+  // arcsec k = arccos(1/k) y arccsc k = arcsen(1/k), con |k| ≥ 1 (solo para el papel; sin errores típicos)
+  function arcoRecip(o) {
+    const fn = o.fn, L = leer(o.k), R2 = RANGO2[fn];
+    const base = { fn, k: L.texto, rango: R2.texto, dominio: R2.dominio, errores: {}, coinciden: [], repetidos: [] };
+    if (Math.abs(L.valor) < 1 - TOL) return Object.assign(base, { existe: false, motivo: `${L.texto} está entre −1 y 1: ningún ángulo tiene ${fn === 'sec' ? 'secante' : 'cosecante'} ${L.texto}` });
+    const inv = L.exacto ? tTexto(tDiv(R(1), L.t)) : 1 / L.valor;
+    const A = arco({ fn: fn === 'sec' ? 'cos' : 'sen', k: inv }).angulo;
+    return Object.assign(base, { existe: true, angulo: A, valor: A.rad, texto: A.texto, textoG: A.textoG, exacto: A.exacto, academia: A.academia, recipro: exacto(inv).texto });
   }
 
   // ---------- Todos los cortes de una recta horizontal con la gráfica ----------
@@ -332,7 +354,7 @@
       const cand = {
         una: { id: 'TR22', lista: pos.slice(0, 1) },
         sinSigno: { id: 'TR12', lista: (() => { const Q = cortes({ fn, k: tTexto(tNeg(leer(o.k).t || R(0))), desde, hasta, sinErrores: true }); return lista.concat(leer(o.k).valor === 0 ? [] : Q.lista).sort((p, q) => p.grados - q.grados); })() },
-        comoCoseno: { id: 'IN7', lista: (() => { const g = lista.find(x => x.grados >= 0 && x.grados <= 90) || lista[0]; return g ? [g, derivar(g, y => 90 - y)].sort((p, q) => p.grados - q.grados) : []; })() }
+        comoCoseno: { id: 'IN7', lista: cortes({ fn: 'cos', k: o.k, desde, hasta, sinErrores: true }).lista }
       };
       if (!leer(o.k).exacto) delete cand.sinSigno;
       for (const [k, e] of Object.entries(cand)) {
@@ -445,10 +467,13 @@
     const I = intervalo(tDiv(tMenos(m1, b), a), tDiv(tMenos(uno, b), a));
     const lista = [['copia', 'IN14', intervalo(m1, uno)], ['signoB', 'IN15', intervalo(tDiv(tMas(m1, b), a), tDiv(tMas(uno, b), a))],
       ['sinDividir', 'IN16', intervalo(tMenos(m1, b), tMenos(uno, b))]];
-    const errores = {}, coinciden = [];
-    for (const [k, id, J] of lista) { if (J.texto === I.texto) coinciden.push(k); else errores[k] = Object.assign({ id }, J); }
+    const errores = {}, coinciden = [], repetidos = [];
+    for (const [k, id, J] of lista) {
+      if (J.texto === I.texto) coinciden.push(k);
+      else if (Object.values(errores).some(e => e.texto === J.texto)) repetidos.push(k);
+      else errores[k] = Object.assign({ id }, J); }
     const m = Math.abs(a.n), ax = (a.n < 0 ? '−' : '') + (m === 1 ? '' : m) + 'x' + (a.d === 1 ? '' : '/' + a.d);
-    return Object.assign({ fn, expresion: ax + (b.n === 0 ? '' : (b.n < 0 ? ' − ' : ' + ') + tTexto(tAbs(b))) }, I, { errores, coinciden });
+    return Object.assign({ fn, expresion: ax + (b.n === 0 ? '' : (b.n < 0 ? ' − ' : ' + ') + tTexto(tAbs(b))) }, I, { errores, coinciden, repetidos });
   }
   function dentro(o) {
     const fn = fnValida(o && o.fn), a = racional(o.a, 'a'), b = racional(o.b === undefined ? 0 : o.b, 'b'), x = numero(o.x, 'x');
@@ -549,6 +574,6 @@
 
   function punto(g) { numero(g, 'el ángulo'); return { x: Math.cos(g * GR) + 0, y: Math.sin(g * GR) + 0 }; }
 
-  return { ERRORES, RANGO, exacto, punto, arco, cortes, arcoDe, ventana, compuesta, dominio, dentro, sumaSenCos, notacion, sumaTan, muestras,
+  return { ERRORES, RANGO, RANGO2, exacto, punto, arco, cortes, arcoDe, ventana, compuesta, dominio, dentro, sumaSenCos, notacion, sumaTan, muestras,
     textoRad, textoGrados, decimal };
 });

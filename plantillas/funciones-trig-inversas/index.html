@@ -106,7 +106,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
   background:var(--card); border:1.5px solid var(--line)}
 .opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums}
 .opt .m.frase{font-family:var(--font)}
-.opt:hover:not(:disabled){border-color:var(--ink)}
+@media (hover:hover){ .opt:hover:not(:disabled){border-color:var(--ink)} }
 .opt:disabled{cursor:default}
 .opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
 .opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
@@ -153,7 +153,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
     <header>
       <p class="eyebrow">Trigonometría · Funciones inversas · Problemas tipo admisión</p>
       <h1>Una sola respuesta</h1>
-      <p class="sub">Muchos ángulos tienen el mismo seno. Arrastra la recta, mira cuántos cortes hay y descubre por qué arcsen, arccos y arctan devuelven uno solo.</p>
+      <p class="sub">Arrastra una recta sobre la onda del seno y descubre qué ángulo devuelven arcsen, arccos y arctan.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -245,7 +245,7 @@ function tween(dur, paso, fin){
 function tramos(raiz){ raiz.querySelectorAll('.eq').forEach(q => { if (q.dataset.tr) return; q.dataset.tr = '1';
   const nota = q.querySelector('.note'), html = nota ? q.innerHTML.replace(nota.outerHTML, '') : q.innerHTML;
   q.innerHTML = html.split(/(⟹|;| = )/).reduce((a, p, i, l) => (i % 2 ? a : a + `<span class="tramo">${p}${l[i + 1] || ''}</span> `), '') + (nota ? ' ' + nota.outerHTML : ''); }); }
-const opcionesHTML = (opts, idFb, frase) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m${frase ? ' frase' : ''}">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const opcionesHTML = (opts, idFb, frase) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m${frase ? ' frase' : ''}">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" aria-live="polite"></p>`;
 const KS = ['th', 'k', 'phi', 'r'];
 function colores(){
   const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
@@ -321,13 +321,16 @@ function crearEscena(cv, idDesc, idLect, idLey){
   E.escala = () => escala();
   function linea(p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
   // Texto con fondo de papel detrás; partes: [[texto, color], …]
-  function rotulo(c, x, y, partes, align, tam, peso){
+  // Los rótulos se pintan al final, encima de curvas, circunferencia y manijas, con fondo de papel.
+  let cola = null;
+  function rotulo(...a){ if (cola) cola.push(() => rotuloYa(...a)); else rotuloYa(...a); }
+  function rotuloYa(c, x, y, partes, align, tam, peso){
     if (typeof partes === 'string') partes = [[partes, 'ink']];
     ctx.font = `${peso || 800} ${tam || 12}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
     const ws = partes.map(([t]) => ctx.measureText(t).width), w = ws.reduce((s, v) => s + v, 0);
     let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
     x0 = clamp(x0, 3, W - w - 3);
-    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .92; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
     let xx = x0; partes.forEach(([t, k], i) => { ctx.fillStyle = col(c, k); ctx.fillText(t, xx, y); xx += ws[i]; });
   }
   function flecha(p, q, color, s){
@@ -339,7 +342,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   E.dibujar = () => {
     if (!W || !E.L) return;
     const c = colores(), L = E.L, e = escala(), B = L.caja;
-    ctx.clearRect(0, 0, W, H);
+    ctx.clearRect(0, 0, W, H); cola = [];
     // bandas (la ventana, el rango, el dominio)
     for (const R of L.bandas){ if (!(alfa(R) > 0)) continue; const p = e.P(pt(R.x0, R.y1)), q = e.P(pt(R.x1, R.y0));
       ctx.save(); ctx.globalAlpha = alfa(R)*(R.alfa || c.relleno)*(E.hl === R.color ? 1.8 : 1); ctx.fillStyle = col(c, R.color); ctx.fillRect(p.x, p.y, q.x - p.x, q.y - p.y);
@@ -408,6 +411,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = on ? .18 : .09; ctx.beginPath(); ctx.arc(p.x, p.y, 20, 0, 7); ctx.fill(); ctx.restore();
       ctx.fillStyle = c.card; ctx.strokeStyle = col(c, M.color); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(p.x, p.y, 9, 0, 7); ctx.fill(); ctx.stroke();
     }
+    const q = cola; cola = null; q.forEach(f => f());
   };
   const it = (k, t, tipo) => `<span><i class="${tipo || ''}" style="border-color:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k});${tipo ? '' : `background:color-mix(in srgb, var(${k === 'ink' || k === 'muted' ? '--' + k : '--c-' + k}) 25%, transparent)`}"></i>${t}</span>`;
   E.leyenda = () => { document.getElementById(idLey).innerHTML = E.ley.map(([k, t, tipo]) => it(k, t, tipo)).join(''); };
@@ -474,7 +478,7 @@ const P1 = { id:'funciones-trig-inversas-paso1', ok:'b', opts:[
   fb:{ b:'¡Bien! La recta de altura 1/2 corta la onda dos veces en una vuelta: en π/6 (subiendo) y en 5π/6 (bajando).',
     a:'Elegiste la A. π/6 es la que da la calculadora, pero hay otro ángulo de la primera vuelta con seno 1/2: 5π/6, en el segundo cuadrante. La correcta está marcada.',
     c:'Elegiste la C. En 7π/6 y en 11π/6 el seno vale −1/2: la onda está bajo el eje. Son los de seno 1/2 si se olvida el signo. La correcta está marcada.',
-    d:'Elegiste la D. π/3 tiene coseno 1/2, no seno: sen(π/3) = √3/2. La correcta está marcada.' } };
+    d:'Elegiste la D. π/3 y 5π/3 son los ángulos con coseno 1/2, no con seno 1/2: sen(π/3) = √3/2. La correcta está marcada.' } };
 const P2 = { id:'funciones-trig-inversas-paso2', ok:'c', opts:[
   ['a', A2.errores.fueraDelRango.texto, 'IN1-fuera-del-rango', 'hipotesis'],
   ['b', A2.errores.vueltaPositiva.texto, 'IN4-una-vuelta-positiva', 'hipotesis'],
@@ -525,7 +529,7 @@ const P7 = { id:'funciones-trig-inversas-paso7', ok:'c', opts:[
   ['b', S7.errores.seAnulan.decimal, 'IN12-se-anulan', 'hipotesis'],
   ['c', S7.decimal],
   ['d', S7.errores.iguales.decimal, 'IN13-arccos-igual-a-arcsen', 'hipotesis']],
-  fb:{ c:`¡Bien! ${S7.decimal} es π/2: los dos ángulos son los agudos de un mismo triángulo rectángulo, y suman 90°.`,
+  fb:{ c:`¡Bien! Es π/2 (${S7.decimal}): los dos ángulos son los agudos de un mismo triángulo rectángulo, y suman 90°.`,
     a:'Elegiste la A. ≈ 3,14 es π: los ángulos no son suplementarios. arccos(−k) = π − arccos k es otra regla, la del número con el signo cambiado. La correcta está marcada.',
     b:'Elegiste la B. arccos k no es −arcsen k: con k = 0,3 los dos ángulos son positivos (están en el primer cuadrante). La correcta está marcada.',
     d:'Elegiste la D. ≈ 0,61 es 2 · arcsen(0,3): arccos k no es igual a arcsen k. Uno lee la altura y el otro la abscisa. La correcta está marcada.' } };
@@ -689,8 +693,8 @@ function config5(r){
     rehacer:L => { const s = L.estado, libre = s.libre && s.g !== null;
       const P = libre ? P_(s.g) : null, op = libre ? 5*P.y : 3, ad = libre ? 5*P.x : 4;
       const O = pt(0, 0), A = pt(ad, 0), T = pt(ad, op), ang = libre ? s.g : A5.angulo.gradosReal;
-      L.segs.push({ p:O, q:A, color:'r', ancho:4, texto:[[libre ? fmt(ad, 2) : (s.f >= 1 ? Q5.enteros.ady : '?'), 'r']], dy:16 },
-        { p:A, q:T, color:'k', ancho:4, texto:[[libre ? fmt(op, 2) : Q5.enteros.op, 'k']], dx:16, align:'left' },
+      L.segs.push({ p:O, q:A, color:'ink', ancho:3, texto:[[libre ? fmt(ad, 2) : (s.f >= 1 ? Q5.enteros.ady : '?'), 'ink']], dy:16 },
+        { p:A, q:T, color:'ink', ancho:3, texto:[[libre ? fmt(op, 2) : Q5.enteros.op, 'ink']], dx:16, align:'left' },
         { p:O, q:T, color:'ink', ancho:2.6, texto:[[Q5.enteros.hip, 'ink']], dx:-12, dy:-10, align:'right' });
       const q = .28; L.segs.push({ p:pt(ad - q, 0), q:pt(ad - q, q), color:'ink', ancho:1.2 }, { p:pt(ad - q, q), q:pt(ad, q), color:'ink', ancho:1.2 });
       L.arcos.push({ de:0, a:ang, r:.9, color:'th', texto:'θ', flecha:false, sep:12 });
@@ -698,7 +702,7 @@ function config5(r){
         L.arcos.push({ de:5, a:85, r:5, color:'muted', ancho:1.2, dash:true, flecha:false }); } },
     mover:(id, q, L) => { L.estado.g = clamp(Math.round(Math.atan2(q.y, q.x)/GR), 5, 85); },
     tecla:(id, d, L) => { L.estado.g = clamp((L.estado.g === null ? 37 : L.estado.g) + d, 5, 85); } },
-    lect: r ? lect5 : [], ley:[['th', 'θ = arcsen k'], ['k', 'cateto opuesto (sen θ por la hipotenusa)'], ['r', 'cateto adyacente (el que se busca)']],
+    lect: r ? lect5 : [], ley:[['th', 'θ = arcsen k'], ['ink', 'lados del triángulo', 'linea'], ['k', 'k = sen θ = opuesto/hipotenusa'], ['r', 'cos θ = adyacente/hipotenusa']],
     desc:'Un triángulo rectángulo con hipotenusa 5 y cateto opuesto 3 al ángulo θ; el cateto adyacente está marcado con un signo de pregunta.' });
 }
 const lect5 = [E => { const g = E.L.estado.g; return ['k', 'k = sen θ', g === null ? '3/5' : fmt(P_(g).y, 3)]; },
@@ -710,10 +714,11 @@ function config6(r){
   E.config({ L:{ caja:{ x0:-1.95, x1:1.75, y0:-1.4, y1:1.55 }, aspY:1, estado:{ modo:'cot', k:-1, f1: r ? 1 : 0, f2: r ? 1 : 0, libre:r },
     rehacer:L => { const s = L.estado, cot = s.modo === 'cot';
       L.circ = true; L.ejes = { tx:[[1, '1']], ty:[[-1, '−1']] };
-      if (cot || !s.libre) L.segs.push({ p:pt(-1.88, 1), q:pt(1.65, 1), color:'muted', ancho:1.6, texto:[['recta de arriba', 'muted']], en:pt(1.62, 1), dy:-12, align:'right' });
+      if (cot || !s.libre) L.segs.push({ p:pt(-1.88, 1), q:pt(1.65, 1), color:'muted', ancho:1.6, texto: s.libre ? [['recta de arriba', 'muted']] : null, en:pt(1.62, 1), dy:-12, align:'right' });
       if (!cot || (!s.libre && s.f2 > 0)) L.segs.push({ p:pt(1, -1.33), q:pt(1, 1.45), color:'muted', ancho:1.6, f: s.libre ? 1 : s.f2, texto:[['recta de la derecha', 'muted']], en:pt(1, -1.3), dx:-6, dy:0, align:'right' });
       if (!s.libre){
-        L.puntos.push({ p:pt(-1, 1), color:'k', r:5, texto:[['k = −1', 'k']], dy:-15 });
+        L.textos.push({ p:pt(-1.85, 1.38), t:[['k = −1, en la recta de arriba', 'k']], align:'left' });
+        if (s.f1 > 0) L.puntos.push({ p:pt(-1, 1), color:'k', r:5, f:s.f1 });
         if (s.f1 > 0){ const P = P_(135);
           L.sector = { de:0, a:180, color:'th', f:s.f1 };
           L.segs.push({ p:pt(0, 0), q:pt(-s.f1, s.f1), color:'th', ancho:2.2 });
@@ -754,7 +759,7 @@ function config7(r){
       if (s.libre) L.manijas = [{ id:'A', p:A, color:'th' }]; },
     mover:(id, q, L) => { const g = clamp(Math.atan2(q.y, q.x)/GR, 3, 87); L.estado.k = Math.round(P_(g).y*100)/100; },
     tecla:(id, d, L) => { L.estado.k = Math.round(clamp(kv(L.estado.k) + d*.01, .05, .99)*100)/100; } },
-    lect: r ? lect7 : [], ley:[['k', 'k, en los dos ejes'], ['th', 'θ = arcsen k'], ['phi', 'φ = arccos k'], ['muted', 'la diagonal', 'trazos']],
+    lect: r ? lect7 : [], ley:[['k', 'k, en los dos ejes'], ['th', 'θ = arcsen k'], ['phi', 'φ: el segundo ángulo (aquí, arccos k)'], ['muted', 'la diagonal', 'trazos']],
     desc:'Un cuarto de la circunferencia de radio 1 con la marca 0,3 en los dos ejes.' });
 }
 const lect7 = [E => ['k', 'k', fmt(kv(E.L.estado.k), 2)], E => ['th', 'θ = arcsen k', MI.arco({ fn:'sen', k:E.L.estado.k }).textoG], E => ['phi', 'φ = arccos k', MI.arco({ fn:'cos', k:E.L.estado.k }).textoG],
@@ -787,7 +792,7 @@ const lect8 = [E => ['ink', 'x', fmt(E.L.estado.x, 2)], E => ['k', 'k = 2x − 1
   E => { const d = MI.dentro({ fn:'sen', a:'2', b:'-1', x:E.L.estado.x }); return ['th', 'arcsen k', d.dentro ? MI.arco({ fn:'sen', k:Math.round(d.u*100)/100 }).textoG : 'no existe']; }];
 
 const steps = [
- { k:'Paso 1', t:'Predice: una altura, varios ángulos', gate:P1,
+ { k:'Paso 1', t:'Predice: los ángulos de un seno', gate:P1,
    prep:() => config1(!!S.pred[P1.id]),
    anima:fin => { config1(false); const L = E.L, s = L.estado;
      E.cadena([n => E.animar(900, f => { s.ky = lerp(1.62, .5, f); }, n), n => E.animar(700, f => { s.fc = f; }, n)],
@@ -795,9 +800,9 @@ const steps = [
    body:() => `<p class="problem">En la gráfica, la onda es la del seno: para cada ángulo ${th_('θ')} (en radianes, en el eje horizontal), su altura es sen θ. ¿Qué ángulos de [0; 2π⟩ tienen seno igual a ${k_('1/2')}?</p>${opcionesHTML(P1.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">sen ${th_('θ')} = ${k_('1/2')}  ⟹  ${th_('θ')} = π/6 o ${th_('θ')} = π − π/6 = 5π/6</div></div>
-   <p>Una recta horizontal de altura ${k_('k')} corta la onda en dos puntos por vuelta (si ${k_('k')} está entre −1 y 1). Y la onda sigue: cada 2π se repite, así que en toda la recta numérica hay infinitos ángulos con seno 1/2.</p>
+   <p>Una recta horizontal de altura ${k_('k')} corta la onda en dos puntos por vuelta (si −1 &lt; ${k_('k')} &lt; 1; con ${k_('k')} = 1 o ${k_('k')} = −1, en uno solo). Y la onda sigue: cada 2π se repite, así que en toda la recta numérica hay infinitos ángulos con seno 1/2.</p>
    <p>Arrastra la manija de la recta (o usa ← y → en el dibujo): mira cuántos cortes hay con ${k_('k')} = 1, con ${k_('k')} = 0 y con ${k_('k')} mayor que 1.</p>
-   <p class="fuente">El informe recoge como hipótesis de aula, sin estudio con cifras, quedarse con la única solución que da la calculadora (TR22). Que el seno se piense como una distancia sin signo lo describe Brown (2005), citado por terceros y sin porcentaje (TR12, respaldo parcial). Confundir seno y coseno es una hipótesis nuestra.</p></div>` },
+   <p class="fuente">El informe recoge como hipótesis de aula, sin estudio con cifras, quedarse con la única solución que da la calculadora (TR22). Que el seno se piense como una distancia sin signo lo describe Brown (2005), citado por terceros y sin porcentaje (TR12, respaldo parcial). Resolver con el coseno en lugar del seno es una hipótesis nuestra.</p></div>` },
  { k:'Paso 2', t:'Predice: una ventana para el seno', gate:P2,
    prep:() => config2(!!S.pred[P2.id]),
    anima:fin => { config2(false); const s = E.L.estado;
@@ -833,7 +838,7 @@ const steps = [
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">arccos(${k_('−1/2')}) = π − arccos(1/2) = π − π/3 = ${th_(A4.texto)}</div>
    <div class="eq">arccos(−${k_('k')}) = π − arccos ${k_('k')}<span class="note">no es −arccos k</span></div></div>
-   <p>Los puntos de abscisa −1/2 y 1/2 son simétricos respecto del eje vertical: si uno está a π/3 del lado derecho del eje horizontal, el otro está a π/3 del lado izquierdo, es decir, en π − π/3. Por eso arccos no es impar como arcsen: su rango no es simétrico respecto de 0.</p>
+   <p>Los puntos de abscisa −1/2 y 1/2 son simétricos respecto del eje vertical: uno está a π/3 del semieje positivo de las x; el otro, a π/3 del semieje negativo, es decir, en π − π/3. Por eso arccos no es impar como arcsen: su rango no es simétrico respecto de 0.</p>
    <p>Arrastra el punto por la mitad de arriba (o usa ← y →). Con el botón, el mismo dibujo lee con arcsen: la altura y la mitad derecha.</p>
    <div class="pasos"><button type="button" class="btn" id="modo4" aria-pressed="false">Leer con arcsen</button></div>
    ${hip} Quitar el signo es una extensión nuestra de TR12; aquí queda como hipótesis.</p></div>`,
@@ -845,8 +850,8 @@ const steps = [
    anima:fin => { config5(false); const s = E.L.estado; E.animar(700, f => { s.f = f; }, () => { config5(true); fin(); }); },
    body:() => `<p class="problem">Sea ${th_('θ')} = arcsen(${k_('3/5')}). ¿Cuánto vale cos ${th_('θ')}, es decir, cos(arcsen(${k_('3/5')}))?</p>${opcionesHTML(P5.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <div class="eqs"><div class="eq">sen ${th_('θ')} = ${k_('3/5')}  ⟹  cateto opuesto ${k_('3')}, hipotenusa 5</div>
-   <div class="eq">cateto adyacente = √(5² − 3²) = √16 = ${r_('4')}  ⟹  cos ${th_('θ')} = ${r_(Q5.texto)}</div></div>
+   <div class="eqs"><div class="eq">sen ${th_('θ')} = ${k_('3/5')}  ⟹  cateto opuesto 3, hipotenusa 5</div>
+   <div class="eq">cateto adyacente = √(5² − 3²) = √16 = 4  ⟹  cos ${th_('θ')} = ${r_(Q5.texto)}</div></div>
    <p>${th_('θ')} está en la ventana de arcsen, entre −π/2 y π/2: su coseno nunca es negativo. Si te dieran cos(arcsen(−3/5)), también saldría 4/5; en cambio, tan(arcsen(−3/5)) = −3/4.</p>
    <p>Las academias llaman a este ángulo «37°»: arcsen(3/5) = 37° es una <b>convención</b>; el ángulo de verdad mide ${fmt(A5.angulo.gradosReal, 2)}°. La respuesta 4/5 es exacta con o sin la convención, porque sale del triángulo.</p>
    <p>Arrastra el vértice de arriba (o usa ← y →): la hipotenusa sigue midiendo 5 y los catetos cambian.</p>
@@ -881,7 +886,7 @@ const steps = [
  { k:'Paso 8', t:'Predice: qué números puede recibir', gate:P8,
    prep:() => config8(!!S.pred[P8.id]),
    anima:fin => { config8(false); const s = E.L.estado; E.animar(1000, f => { s.f = f; }, () => { config8(true); fin(); }); },
-   body:() => `<p class="problem">arcsen solo recibe números ${k_('k')} entre −1 y 1. ¿Para qué valores de x existe arcsen(2x − 1)?</p>${opcionesHTML(P8.opts, 'fb')}
+   body:() => `<p class="problem">arcsen solo recibe números ${k_('k')} entre −1 y 1. ¿Para qué valores de x existe arcsen(${k_('2x − 1')})?</p>${opcionesHTML(P8.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">−1 ≤ ${k_('2x − 1')} ≤ 1  ⟹  0 ≤ 2x ≤ 2  ⟹  0 ≤ x ≤ 1</div></div>
    <p>El tramo [−1; 1] de la recta de abajo «se jala» a la de arriba: x = 0 va a ${k_('k')} = −1 y x = 1 va a ${k_('k')} = 1. Arrastra x por la recta de arriba (o usa ← y →): fuera de [0; 1], ${k_('k')} sale del tramo sombreado y arcsen no existe.</p>
@@ -994,8 +999,8 @@ function cfg1(libre){
     lect: libre ? lect1 : [], ley:[['ink', 'la onda del seno (altura sen θ)', 'linea'], ['th', 'la ventana propuesta y sus cortes'], ['k', 'alturas 1/2 y −1/2', 'linea']],
     desc:'El eje de los ángulos con la ventana propuesta, de 0 a π, sombreada.' });
 }
-const lect1 = [E => { const V = MI.ventana({ fn:'sen', desde:E.L.estado.de, hasta:E.L.estado.de + 180 }); return ['th', 'repite alturas', V.inyectiva ? 'no' : 'sí'] },
-  E => { const V = MI.ventana({ fn:'sen', desde:E.L.estado.de, hasta:E.L.estado.de + 180 }); return ['th', 'le faltan alturas', V.cubre ? 'no' : 'sí'] },
+const lect1 = [E => { const V = MI.ventana({ fn:'sen', desde:E.L.estado.de, hasta:E.L.estado.de + 180 }); return ['th', '¿repite?', V.inyectiva ? 'no' : 'sí'] },
+  E => { const V = MI.ventana({ fn:'sen', desde:E.L.estado.de, hasta:E.L.estado.de + 180 }); return ['th', '¿faltan alturas?', V.cubre ? 'no' : 'sí'] },
   E => { const V = MI.ventana({ fn:'sen', desde:E.L.estado.de, hasta:E.L.estado.de + 180 }); return ['ink', '¿sirve?', V.sirve ? 'sí' : 'no'] }];
 
 // 2. Un ángulo negativo en la circunferencia
@@ -1059,17 +1064,17 @@ function cfg4(libre){
     lect: libre ? lect4 : [], ley:[['k', 'la altura k'], ['th', 'el arco: sen⁻¹ k en radianes']],
     desc:'La circunferencia de radio 1 con la altura 0,5 marcada.' });
 }
-const lect4 = [E => ['k', 'k (altura)', fmt(P_(E.L.estado.g).y, 3)], E => ['th', 'sen⁻¹ k (largo del arco)', `${fmt(E.L.estado.g*GR, 3)} rad`], E => ['ink', '1/k (otra cosa)', Math.abs(P_(E.L.estado.g).y) > .01 ? fmt(1/P_(E.L.estado.g).y, 2) : '—']];
+const lect4 = [E => ['k', 'k (altura)', fmt(P_(E.L.estado.g).y, 3)], E => ['th', 'arco (rad)', `${fmt(E.L.estado.g*GR, 3)}`], E => ['ink', '1/k', Math.abs(P_(E.L.estado.g).y) > .01 ? fmt(1/P_(E.L.estado.g).y, 2) : '—']];
 
 // 5. Dos arcos seguidos, en la cuadrícula
 function cfg5(f){
   E.config({ L:{ caja:{ x0:-.7, x1:6, y0:-.7, y1:6 }, aspY:1, estado:{ f },
     rehacer:L => { const s = L.estado, ga = A5.angulo.grados, gb = B5.angulo.grados, [ux, uy] = S5.vectores.u, [vx, vy] = S5.vectores.v, [dx, dy] = S5.direccion;
       L.rejilla = { x0:0, x1:5.5, y0:0, y1:5.5 }; L.ejes = { x0:-.3, x1:5.8, y0:-.3, y1:5.8, tx:[[1, '1'], [5, '5']], ty:[[1, '1'], [5, '5']] };
-      L.segs.push({ p:pt(0, 0), q:pt(ux, uy), color:'th', ancho:3, flecha:true, texto:[['(2; 1)', 'th']], en:pt(ux, uy), dx:26, dy:-2 });
+      L.segs.push({ p:pt(0, 0), q:pt(ux, uy), color:'th', ancho:3, flecha:true, texto:[['(2; 1)', 'th']], en:pt(ux, uy), dx:8, dy:14, align:'left' });
       L.arcos.push({ de:0, a:ga, r:1.1, color:'th', texto:'θ', flecha:false, sep:10 });
       const g0 = lerp(0, ga, s.f), Pv = P_(g0 + gb), lv = Math.hypot(vx, vy);
-      L.segs.push({ p:pt(0, 0), q:pt(Pv.x*lv, Pv.y*lv), color:'phi', ancho:3, flecha:true, texto: s.f < 1 ? [['(3; 1)', 'phi']] : null, en:pt(Pv.x*lv, Pv.y*lv), dx:28, dy:4 });
+      L.segs.push({ p:pt(0, 0), q:pt(Pv.x*lv, Pv.y*lv), color:'phi', ancho:3, flecha:true, texto: s.f < 1 ? [['(3; 1)', 'phi']] : null, en:pt(Pv.x*lv, Pv.y*lv), dx:8, dy:-12, align:'left' });
       L.arcos.push({ de:g0, a:g0 + gb, r:1.9, color:'phi', texto:'φ', flecha:false, sep:10 });
       if (s.f >= 1){
         L.segs.push({ p:pt(0, 0), q:pt(dx, dy), color:'ink', ancho:2, dash:true, texto:[[`(${dx}; ${dy})`, 'ink']], en:pt(dx, dy), dx:-6, dy:-14, align:'right' });
@@ -1078,7 +1083,7 @@ function cfg5(f){
     lect: f >= 1 ? lect5 : [], ley:[['th', 'θ = arctan(1/2): la dirección (2; 1)'], ['phi', 'φ = arctan(1/3): la dirección (3; 1)'], ['ink', 'θ + φ', 'trazos']],
     desc:'Una cuadrícula con dos direcciones desde el origen: (2; 1), de pendiente 1/2, y (3; 1), de pendiente 1/3.' });
 }
-const lect5 = [() => ['th', 'θ = arctan(1/2)', A5.textoG], () => ['phi', 'φ = arctan(1/3)', B5.textoG], () => ['ink', 'θ + φ', S5.angulo.textoG]];
+const lect5 = [() => ['th', 'θ', A5.textoG], () => ['phi', 'φ', B5.textoG], () => ['ink', 'θ + φ', S5.angulo.textoG]];
 
 const EXPS = [
   { id:'otra-ventana', corto:'Otra ventana', frase:true,
@@ -1089,10 +1094,10 @@ const EXPS = [
       ['d', 'No: una ventana debe tener una vuelta entera, de 0 a 2π', 'IN28-ventana-de-una-vuelta', 'hipotesis']], ok:'b',
     fb:{ a:'Ser continua no basta: en [0; π] la onda sube de 0 a 1 y vuelve a 0, así que cada altura entre 0 y 1 sale dos veces.',
       c:'El largo no basta: en [0; π] la altura 1/2 sale dos veces (π/6 y 5π/6) y ninguna altura negativa aparece.',
-      d:'Con una vuelta entera cada altura saldría dos veces: justo lo que la ventana evita.' },
+      d:'Con una vuelta entera, cada altura, salvo 1 y −1, saldría dos veces: justo lo que la ventana evita.' },
     antes:ya => cfg1(ya), despues:() => { cfg1(false); const s = E.L.estado; E.cadena([n => E.animar(800, f => { s.fc = f; }, n), n => E.animar(700, f => { s.fl = f; }, n), n => esperar(500, n)], () => cfg1(true)); },
     exp:() => `<p>En [0; π], la altura ${k_('1/2')} tiene dos cortes (${V1.repetido.cortes.join(' y ')}) y la altura ${k_(V1.falta.k)} no tiene ninguno: no hay una sola respuesta, y a veces no hay ninguna. Una ventana sirve si la onda pasa por cada altura de −1 a 1 exactamente una vez.</p>
-      <p>Arrastra la ventana (la manija de arriba, o ← y →): [π/2; 3π/2] también serviría (ahí la onda baja de 1 a −1). Se eligió [−π/2; π/2] por costumbre y porque contiene a los ángulos agudos.</p><p class="fuente">${hip}</p>` },
+      <p>Arrastra la ventana (la manija de abajo, o ← y →): [π/2; 3π/2] también serviría (ahí la onda baja de 1 a −1). Se eligió [−π/2; π/2] por costumbre y porque contiene a los ángulos agudos.</p><p class="fuente">${hip}</p>` },
   { id:'coseno-de-un-negativo', corto:'Un ángulo negativo',
     q:`¿Cuánto vale arccos(cos(${phi_('−60°')}))?`,
     opts:[['a', D2.errores.siempre.texto, 'IN3-se-cancelan-siempre', 'hipotesis'], ['b', D2.errores.vuelta.texto, 'IN4-una-vuelta-positiva', 'hipotesis'],
@@ -1111,7 +1116,7 @@ const EXPS = [
       c:'≈ 0,06° es arccot 1000: la cotangente se lee en la recta de arriba.',
       d:'≈ 1,57 es el valor en radianes; escrito con «°» se mezclan las unidades. En grados es casi 90°.' },
     antes:ya => cfg3(ya), despues:() => { cfg3(false); const s = E.L.estado; s.f = 1; E.animar(2200, f => { s.k = Math.round(Math.pow(1000, f)*100)/100; }, () => cfg3(true)); },
-    exp:() => `<div class="eqs"><div class="eq">arctan ${k_('1000')} ≈ ${fmt(T3.valor, 4)} rad</div><div class="eq">${fmt(T3.valor, 4)} rad ≈ ${fmt(T3.angulo.grados, 2)}°<span class="note">muy cerca de 90° = π/2, sin llegar</span></div></div>
+    exp:() => `<div class="eqs"><div class="eq">arctan ${k_('1000')} ≈ ${fmt(T3.valor, 4)} rad</div><div class="eq">≈ ${fmt(T3.valor, 4)} rad ≈ ${fmt(T3.angulo.grados, 2)}°<span class="note">muy cerca de 90° = π/2, sin llegar</span></div></div>
       <p>Cuanto más arriba está la lectura ${k_('k')} en la recta de la derecha, más se para el rayo, pero nunca llega a la vertical: por eso el rango de arctan es ⟨−π/2; π/2⟩, abierto. Arrastra ${k_('k')} (o usa ← y →).</p><p class="fuente">${hip}</p>` },
   { id:'lo-que-dice-el-exponente', corto:'Lo que dice el ⁻¹',
     q:`La calculadora está en radianes. ¿Qué número muestra sen⁻¹(${k_('0,5')})?`,
@@ -1134,7 +1139,7 @@ const EXPS = [
     antes:ya => cfg5(ya ? 1 : 0), despues:() => { cfg5(0); const s = E.L.estado; E.animar(1500, f => { s.f = f; }, () => cfg5(1)); },
     exp:() => `<div class="eqs"><div class="eq">tan(${th_('θ')} + ${phi_('φ')}) = (1/2 + 1/3)/(1 − 1/2 · 1/3) = (5/6)/(5/6) = 1</div>
       <div class="eq">${th_('θ')} + ${phi_('φ')} = arctan(1) = ${S5.texto}<span class="note">porque 1/2 · 1/3 &lt; 1</span></div></div>
-      <p>En la cuadrícula: la dirección (2; 1) tiene pendiente 1/2 y la (3; 1), pendiente 1/3. Al poner el ángulo ${phi_('φ')} a continuación de ${th_('θ')}, la flecha queda sobre la diagonal, la dirección (5; 5) = (2 · 3 − 1 · 1; 2 · 1 + 1 · 3): 45°. Si el producto de los números pasa de 1, hay que sumar π: arctan 2 + arctan 3 = 3π/4.</p><p class="fuente">${hip}</p>` },
+      <p>En la cuadrícula: la flecha (2;&nbsp;1) tiene pendiente 1/2 y la (3;&nbsp;1), pendiente 1/3. Al poner el ángulo ${phi_('φ')} a continuación de ${th_('θ')}, la flecha cae sobre la diagonal, donde la pendiente es 1: el ángulo es 45° = π/4, como dice la fórmula. Si el producto de los números pasa de 1, hay que sumar π: arctan 2 + arctan 3 = 3π/4.</p><p class="fuente">${hip}</p>` },
 ];
 
 const S = { k:0, pred:{}, t0:Date.now() };

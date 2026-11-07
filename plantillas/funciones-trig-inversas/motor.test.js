@@ -74,6 +74,7 @@ const enRango = (fn, x) => { const R = motor.RANGO[fn], a = R.de * GR, b = R.a *
   return R.abierto ? x > a - 1e-12 && x < b + 1e-12 && Math.abs(x - a) > 1e-12 && Math.abs(x - b) > 1e-12 : x >= a - 1e-12 && x <= b + 1e-12; };
 
 test('las inversas coinciden con Math, caen en su rango y deshacen a la directa', () => {
+  assert.deepEqual(Object.keys(motor.RANGO), ['sen', 'cos', 'tan', 'cot']);
   const ks = { sen: conSigno(NOTABLES_SC), cos: conSigno(NOTABLES_SC), tan: conSigno(NOTABLES_T), cot: conSigno(NOTABLES_T) };
   for (const fn of motor.RANGO ? Object.keys(motor.RANGO) : []) {
     const lista = ks[fn].concat(Array.from({ length: N }, () => (fn === 'sen' || fn === 'cos' ? fraccionAzar() : `${ent(-60, 60)}/${ent(1, 9)}`)));
