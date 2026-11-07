@@ -194,7 +194,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "gravitacion"
+     ]
     },
     {
      "id": "fisica.trabajo-y-energia",
@@ -4778,6 +4780,23 @@
     "/plantillas/grafica-perillas/index.html",
     "/plantillas/grafica-perillas/motor.js",
     "/plantillas/grafica-perillas/papel.json"
+   ]
+  },
+  "gravitacion": {
+   "id": "gravitacion",
+   "titulo": "Gravitación: la Tierra, los satélites y la órbita",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.gravitacion"
+   ],
+   "url": "/plantillas/gravitacion/index.html",
+   "papel": "/plantillas/gravitacion/papel.json",
+   "archivos": [
+    "/plantillas/gravitacion/index.html",
+    "/plantillas/gravitacion/motor.js",
+    "/plantillas/gravitacion/papel.json"
    ]
   },
   "identidades-trig": {
