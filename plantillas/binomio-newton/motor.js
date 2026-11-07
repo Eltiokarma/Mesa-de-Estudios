@@ -8,7 +8,9 @@
  * (BigInt) y fracciones de enteros grandes; nunca se pasa por decimales.
  *
  * CONVENCIONES
- *   n y k son enteros con 0 ≤ k ≤ n (n hasta 200). Un término del binomio es un monomio { c, v }: c es el
+ *   n y k son enteros con 0 ≤ k ≤ n (n hasta 200). Fuera de rango, el motor LANZA un error (no devuelve 0):
+ *   combinatorio({ n: 7, k: 9 }) → «k debe estar entre 0 y 7»; termino con lugar > n + 1 → «lugar debe estar entre
+ *   1 y n + 1». Para coeficiente, en cambio, una potencia que no aparece da texto '0' (k null). Un término del binomio es un monomio { c, v }: c es el
  *   coeficiente (entero, o texto de entero o fracción: 2, '−3', '1/2') y v las letras con su exponente entero
  *   (también negativo): { x: 2 } es x², { x: −1 } es 1/x, { a: 1 } es a, {} o sin v es una constante.
  *   El binomio es (A + B)ⁿ con A = { c, v } y B = { c, v }; (x − 2)⁵ es A = { c: 1, v: { x: 1 } }, B = { c: −2 }.
@@ -18,7 +20,7 @@
  *   1 omitido ('a⁶b³'), coeficiente fraccionario entre paréntesis ('(1/2)x³') y lugares como 't₄'.
  *   Cada función que responde una predicción devuelve { …, texto, num, errores, coinciden, noAplica }: num es el
  *   valor numérico (Number) para comparar; 'errores' es un objeto cuyas claves son errores típicos y cada uno trae
- *   { texto, num, id, regla }. 'id' es BN1…BN26 (hipótesis nuestras) o AL8 / AL11 (docs/investigacion/
+ *   { texto, num, id, regla }. 'id' es BN1…BN27 (hipótesis nuestras) o AL8 / AL11 (docs/investigacion/
  *   algebra-funciones-ideas-erroneas.md). Un error que con esos datos da lo mismo que la respuesta correcta NO va
  *   en 'errores': su clave va en 'coinciden'. Uno que no se puede calcular con esos datos va en 'noAplica'.
  *
@@ -35,7 +37,7 @@
  *   fila({ n })               → fila n del triángulo. { fila: [textos de C(n, 0) … C(n, n)], texto: suma de la fila
  *                               (2ⁿ), num, errores: sumaN (BN5: n), doble (BN6: 2n), cuadrado (BN18: n²) }.
  *   terminos({ n })           → cuántos términos tiene (a + b)ⁿ reducido. { texto: n + 1, num, errores: nTerminos
- *                               (BN1: n), reparte (AL11, o AL8 si n = 2: aⁿ + bⁿ, dos términos), sinJuntar (BN14: 2ⁿ,
+ *                               (BN1: n), reparte (AL11, o AL8 si n = 2: aⁿ + bⁿ, dos términos), sinJuntar (BN17: 2ⁿ,
  *                               una por palabra, sin juntar semejantes) }.
  *   desarrollo({ A, B, n })   → (A + B)ⁿ término por término. { terminos: [{ k, lugar, texto, coef: texto,
  *                               combinatorio: texto C(n, k), exponentes: { letra: exponente }, suma: texto de la suma
@@ -66,9 +68,9 @@
  *                               Para n par, num es el coeficiente del central; para n impar, num es 2.
  *   sumaCoeficientes({ A, B, n }) → suma de coeficientes = valor con todas las letras en 1 = (cA + cB)ⁿ. { texto,
  *                               num, errores: ignoraCoef (BN20: 2ⁿ, como si cA = cB = 1), reparte (AL11, o AL8 si
- *                               n = 2: cAⁿ + cBⁿ), sinSigno (BN8: (|cA| + |cB|)ⁿ), sumaN (BN5: n) }.
+ *                               n = 2: cAⁿ + cBⁿ), sinSigno (BN8: (|cA| + |cB|)ⁿ), sumaN (BN27: n) }.
  *   galton({ n, bolitas, k }) → tablero de Galton con n filas de clavos: en promedio caen bolitas · C(n, k)/2ⁿ en el
- *                               casillero k (contado desde 0 por la izquierda). { texto (exacto, fracción si no es
+ *                               casillero k (contado desde 0 por la izquierda; n = 0 vale: todas caen en el casillero 0). { texto (exacto, fracción si no es
  *                               entero), num, caminos: C(n, k) (número), total: 2ⁿ (número), errores: uniforme
  *                               (BN21: bolitas/(n + 1), todos los casilleros igual), desfase (BN2: bolitas ·
  *                               C(n, k − 1)/2ⁿ; noAplica si k = 0), mitad (BN22: bolitas/2, la mitad cae al centro) }.
@@ -215,7 +217,7 @@
     return cerrar(r, {
       nTerminos: E(String(n), n, 'BN1', 'n términos en vez de n + 1 (olvida el término con k = 0)'),
       reparte: E('2', 2, n === 2 ? 'AL8' : 'AL11', '(a + b)ⁿ = aⁿ + bⁿ: el exponente se reparte sobre la suma'),
-      sinJuntar: E(bTexto(t), Number(t), 'BN14', '2ⁿ: una por palabra, sin juntar los términos semejantes'),
+      sinJuntar: E(bTexto(t), Number(t), 'BN17', '2ⁿ: una por palabra, sin juntar los términos semejantes'),
     });
   }
 
@@ -368,13 +370,13 @@
       ignoraCoef: E(bTexto(ig), Number(ig), 'BN20', '2ⁿ: suma la fila de Pascal sin mirar los coeficientes de A y B'),
       reparte: E(fTexto(rep), fNum(rep), n === 2 ? 'AL8' : 'AL11', 'cAⁿ + cBⁿ: el exponente se reparte sobre la suma'),
       sinSigno: E(fTexto(ss), fNum(ss), 'BN8', 'olvida el signo: (|cA| + |cB|)ⁿ'),
-      sumaN: E(String(n), n, 'BN5', 'la suma de coeficientes es n'),
+      sumaN: E(String(n), n, 'BN27', 'la suma de coeficientes es n'),
     });
   }
 
   function galton(o) {
     if (!o || typeof o !== 'object') throw new Error('se espera { n, bolitas, k }');
-    const n = entero(o.n, 'n', 1, 60), k = entero(o.k, 'k', 0, n), b = entero(o.bolitas, 'bolitas', 1, 1e9);
+    const n = entero(o.n, 'n', 0, 60), k = entero(o.k, 'k', 0, n), b = entero(o.bolitas, 'bolitas', 1, 1e9);
     const tot = 2n ** BigInt(n);
     const v = F(BigInt(b) * C(n, k), tot);
     const r = { texto: fTexto(v), num: fNum(v), caminos: Number(C(n, k)), total: Number(tot) };
@@ -388,7 +390,7 @@
 
   function simular(o) {
     if (!o || typeof o !== 'object') throw new Error('se espera { n, bolitas, semilla }');
-    const n = entero(o.n, 'n', 1, 30), b = entero(o.bolitas, 'bolitas', 1, 5000);
+    const n = entero(o.n, 'n', 0, 30), b = entero(o.bolitas, 'bolitas', 1, 5000);
     let s = ((o.semilla === undefined ? 1 : o.semilla) >>> 0) || 1;
     const azar = () => {   // mulberry32: un bit limpio por clavo
       s = (s + 0x6D2B79F5) >>> 0;

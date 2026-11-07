@@ -144,6 +144,11 @@ input[type=range]{width:100%; margin:0; accent-color:var(--ink); min-height:32px
 .palabras .la{color:var(--c-a)} .palabras .lb{color:var(--c-b)}
 .eq sup, .eq sub{font-size:.72em; line-height:0}
 .eq .v sup, .eq .v sub{font-size:.8em}
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
 </head>
@@ -417,9 +422,10 @@ function crearTablero(cv, idDesc, idLect, idLey){
   function dibujarRegla(c){
     const g = E.st.regla, Lr = layR(), y = Lr.y;
     ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; linea({ x:Lr.X(g.min), y }, { x:Lr.X(g.max), y });
-    for (let e = g.min; e <= g.max; e++){ const x = Lr.X(e), largo = e % 3 === 0 ? 7 : 4;
+    const cada = g.cada || 3;
+    for (let e = g.min; e <= g.max; e++){ const x = Lr.X(e), largo = g.parejas ? 5 : (e % cada === 0 ? 7 : 4);
       ctx.strokeStyle = e === 0 ? c.ink : c.muted; ctx.lineWidth = e === 0 ? 2.5 : 1.2; linea({ x, y:y - largo }, { x, y:y + largo });
-      if (e % 3 === 0 || e === 0) texto(c, x, y + 18, [[e < 0 ? '−' + (-e) : String(e), e === 0 ? 'ink' : 'muted']], 'center', 11, e === 0 ? 800 : 700); }
+      if (e % cada === 0) texto(c, x, y + 18, [[e < 0 ? '−' + (-e) : String(e), e === 0 ? 'ink' : 'muted']], 'center', 11, e === 0 ? 800 : 700); }
     texto(c, W/2, H - 12, [['exponente de x', 'm']], 'center', 11, 700);
     if (!g.mostrar) return;
     // saltos desde k = 0 hasta el k actual
@@ -497,7 +503,7 @@ function crearTablero(cv, idDesc, idLect, idLey){
 </script>
 <script>
 // Textos de respaldo compartidos por los dos modos
-const HIP = `<p class="fuente">El informe de ideas erróneas de álgebra no trata el binomio de Newton: estas opciones son hipótesis nuestras (BN), armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.</p>`;
+const HIP = `<p class="fuente">El informe de ideas erróneas de álgebra solo trata el binomio al cuadrado y el reparto del exponente (AL8 y AL11); del desarrollo de Newton no trae datos: estas opciones son hipótesis nuestras (BN), armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.</p>`;
 const FUENTE_AL = `<p class="fuente">El informe de ideas erróneas de álgebra documenta de forma parcial el caso del cuadrado, (a + b)² = a² + b² (AL8: el SIMCE de Chile lo señala como el error típico del binomio, sin un porcentaje legible), y trata el caso general, (a + b)ⁿ = aⁿ + bⁿ, como hipótesis con base en Matz (1982), sin dato propio (AL11). Las otras opciones son hipótesis nuestras.</p>`;
 const LEY = [['a', 'paso a la izquierda: primer término', 'linea'], ['b', 'paso a la derecha: segundo término', 'linea'], ['n', 'fila n (exponente)'], ['k', 'casillero k (veces que se elige el segundo)']];
 const sub = MB.sub;
@@ -552,7 +558,7 @@ const P4 = { id:'binomio-newton-paso4', ok:'a', opts:[
   ['a', T4.texto],
   ['b', T4.errores.nTerminos.texto, 'BN1-n-terminos', 'hipotesis'],
   ['c', T4.errores.reparte.texto, 'AL11-reparte-el-exponente', 'hipotesis'],
-  ['d', T4.errores.sinJuntar.texto, 'BN14-no-junta-semejantes', 'hipotesis']],
+  ['d', T4.errores.sinJuntar.texto, 'BN17-no-junta-semejantes', 'hipotesis']],
   fb:{ a:'¡Bien! Los caminos de 7 filas terminan en 8 casilleros, con k = 0, 1, …, 7 letras b: (a + b)⁷ tiene 7 + 1 = 8 términos.',
     b:'Elegiste la B. 7 deja fuera un casillero: k va de 0 a 7, y eso son 8 valores (a⁷, con k = 0, también es un término). La correcta está marcada.',
     c:'Elegiste la C. 2 es pensar que (a + b)⁷ = a⁷ + b⁷, como si el exponente se repartiera. Esos son solo los caminos de los dos bordes: los del medio dan a⁶b, a⁵b², … La correcta está marcada.',
@@ -655,11 +661,12 @@ function cfg7(ya){
 }
 function cfg8(ya){
   const D = MB.desarrollo(Object.assign({ n:6 }, B8));
-  const g = { min:-6, max:12, n:6, k: ya ? s8.k : 0, e:k => K8.exponentes[k], salto:'−3', mostrar:ya, mano:ya };
+  const g = ya ? { min:-6, max:12, cada:3, n:6, k:s8.k, e:k => K8.exponentes[k], salto:'−3', mostrar:true, mano:true }
+               : { min:-8, max:14, cada:2, parejas:true, n:6, k:0, e:k => K8.exponentes[k], salto:'−3', mostrar:false, mano:false };
   E.config({ st:{ tipo:'regla', regla:g }, ley:[['m', 'exponente de x en el término'], ['b', 'un paso a la derecha más', 'linea']],
     lect: ya ? [() => ['k', 'k', String(g.k)], () => ['m', 'exp. de x', String(K8.exponentes[g.k]).replace('-', '−')], () => ['ink', 'término', D.terminos[g.k].texto]]
              : [() => ['a', 'paso a la izquierda', 'x²'], () => ['b', 'paso a la derecha', '1/x']],
-    desc: ya ? 'La recta de exponentes de x con la marca del término elegido.' : 'Una recta de exponentes de x, de −6 a 12, sin marcas.',
+    desc: ya ? 'La recta de exponentes de x con la marca del término elegido.' : 'Una recta de exponentes de x, de −8 a 14, sin marcas.',
     alMover: k => { s8.k = k; } });
 }
 
@@ -691,7 +698,7 @@ function anima6(fin){ cfg6(false); const st = E.st; const c = { w:mezcla(6, 2), 
 function anima7(fin){ cfg7(false); const st = E.st; const c = { w:mezcla(5, 3), f:0 };
   E.cadena([n => E.animar(600, f => { st.numeros = 4 + f; }, n, true), n => { st.anillos = [[5, 3]]; st.caminos = [c]; E.animar(900, f => { c.f = f; }, n); }],
     () => esperar(500, () => { s7.k = 3; cfg7(true); fin(); })); }
-function anima8(fin){ cfg8(false); const g = E.st.regla; g.mostrar = true; g.kf = 0;
+function anima8(fin){ cfg8(true); E.ocupado = true; const g = E.st.regla; g.mano = false; g.kf = 0;
   E.animar(RM ? 0 : 2000, f => { g.kf = 4*f; }, () => esperar(500, () => { s8.k = 4; cfg8(true); fin(); }), true); }
 
 const steps = [
@@ -699,7 +706,7 @@ const steps = [
    body:() => `<p class="problem">Una bolita entra por arriba y baja ${n_('5')} filas de clavos. En cada clavo va a la izquierda (${a_('a')}) o a la derecha (${b_('b')}), así que su camino se escribe como una palabra de 5 letras; el dibujado es <span class="palabras" style="display:inline-flex">${palabra('abbab')}</span>. ¿Cuántos caminos distintos llegan al casillero marcado, el de ${k_('k = 3')} letras b?</p>${opcionesHTML(P1.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">C(${n_('n')}, ${k_('k')}) = ${n_('n')}!/(${k_('k')}! (${n_('n')} − ${k_('k')})!)  ⟹  C(5, 3) = 5!/(3! · 2!) = 120/12 = 10</div></div>
-   <p>Un camino queda decidido al elegir en qué clavos va a la derecha: es elegir ${k_('k')} lugares entre ${n_('n')}, sin importar el orden. Eso es el número combinatorio C(${n_('n')}, ${k_('k')}). Las palabras que llegan al casillero:</p>
+   <p>Un camino queda decidido al elegir en qué clavos va a la derecha: es elegir ${k_('k')} lugares entre ${n_('n')}, sin importar el orden. Eso es el número combinatorio C(${n_('n')}, ${k_('k')}), que en la academia se escribe Cⁿₖ o (n k). Las palabras que llegan al casillero:</p>
    <p class="palabras" id="pal1"></p>
    <div class="control"><label for="n1">Filas, n</label><input type="range" id="n1" min="1" max="10" step="1" value="${s1.n}"></div>
    <p>Arrastra el casillero marcado por la última fila (o usa las flechas del teclado en el dibujo) y mueve n: el número de cada casillero cuenta los caminos que llegan a él. Fíjate en los bordes: C(${n_('n')}, 0) = C(${n_('n')}, ${n_('n')}) = 1, y en la simetría C(${n_('n')}, ${k_('k')}) = C(${n_('n')}, ${n_('n')} − ${k_('k')}).</p>
@@ -719,41 +726,41 @@ const steps = [
    <div class="control"><label for="n3">Fila, n</label><input type="range" id="n3" min="0" max="10" step="1" value="${s3.n}"></div>
    ${HIP}</div>` },
  { k:'Paso 4', t:'Predice: cuántos términos', gate:P4, prep:() => cfg4(!!S.pred[P4.id]), anima:anima4,
-   body:() => `<p class="problem">Al multiplicar (${a_('a')} + ${b_('b')})(${a_('a')} + ${b_('b')})…(${a_('a')} + ${b_('b')}), con ${n_('7')} paréntesis, se elige ${a_('a')} o ${b_('b')} en cada uno: cada camino de 7 filas es un producto, como <span class="palabras" style="display:inline-flex">${palabra('abbabaa')}</span> = a⁴b³. Los caminos que llegan al mismo casillero dan el mismo término. ¿Cuántos términos tiene el desarrollo de (a + b)⁷ después de juntar los semejantes?</p>${opcionesHTML(P4.opts, 'fb')}
+   body:() => `<p class="problem">Al multiplicar (${a_('a')} + ${b_('b')})(${a_('a')} + ${b_('b')})…(${a_('a')} + ${b_('b')}), con ${n_('7')} paréntesis, se elige ${a_('a')} o ${b_('b')} en cada uno: cada camino de 7 filas es un producto, como <span class="palabras" style="display:inline-flex">${palabra('abbabaa')}</span>. Después se juntan los términos semejantes. ¿Cuántos términos tiene el desarrollo de (a + b)⁷ después de juntar los semejantes?</p>${opcionesHTML(P4.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">(${a_('a')} + ${b_('b')})<sup>${n_('n')}</sup> = Σ C(${n_('n')}, ${k_('k')})${a_('a')}<sup>${n_('n')}−${k_('k')}</sup>${b_('b')}<sup>${k_('k')}</sup>;  ${k_('k')} = 0, 1, …, ${n_('n')}  ⟹  ${n_('n')} + 1 términos</div>
    <div class="eq">(a + b)⁷ = a⁷ + 7a⁶b + 21a⁵b²</div><div class="eq">+ 35a⁴b³ + 35a³b⁴ + 21a²b⁵</div><div class="eq">+ 7ab⁶ + b⁷</div></div>
-   <p>Hay un término por casillero de la última fila, y la fila ${n_('n')} tiene ${n_('n')} + 1 casilleros (k = 0, 1, …, ${n_('n')}). El coeficiente de cada término es el número de su casillero: cuántos caminos lo forman. En cada término los exponentes suman ${n_('n')}.</p>
+   <p>Los caminos que llegan al mismo casillero dan el mismo término (abbabaa = a⁴b³). Hay un término por casillero de la última fila, y la fila ${n_('n')} tiene ${n_('n')} + 1 casilleros (k = 0, 1, …, ${n_('n')}). El coeficiente de cada término es el número de su casillero: cuántos caminos lo forman. En cada término los exponentes suman ${n_('n')}.</p>
    <div class="control"><label for="n4">Exponente, n</label><input type="range" id="n4" min="1" max="10" step="1" value="${s4.n}"></div>
    ${FUENTE_AL}</div>` },
  { k:'Paso 5', t:'Predice: el cuarto término', gate:P5, prep:() => cfg5(!!S.pred[P5.id]), anima:anima5,
-   body:() => `<p class="problem">Los términos de (${a_('a')} + ${b_('b')})⁹ se cuentan desde la izquierda: t₁ = a⁹ es el del casillero sin letras b, t₂ el siguiente, y así. ¿Cuál es el cuarto término, t₄?</p>${opcionesHTML(P5.opts, 'fb')}
+   body:() => `<p class="problem">Los términos de (${a_('a')} + ${b_('b')})⁹ se numeran desde la izquierda, empezando por a⁹: t₁, t₂, t₃, … ¿Cuál es t₄?</p>${opcionesHTML(P5.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">t<sub>${k_('k')}+1</sub> = C(${n_('n')}, ${k_('k')}) ${a_('a')}<sup>${n_('n')}−${k_('k')}</sup> ${b_('b')}<sup>${k_('k')}</sup>  ⟹  t₄ = C(9, 3) a⁶ b³ = 84a⁶b³</div></div>
-   <p>El lugar se corre en 1: t<sub>${k_('k')}+1</sub> viene del casillero ${k_('k')}, porque el primer término tiene ${k_('k')} = 0. El mismo ${k_('k')} va en el número combinatorio y en el exponente de ${b_('b')}; ${a_('a')} se lleva lo que falta para ${n_('n')}.</p>
+   <p>t₁ = a⁹ es el del casillero sin letras b. El lugar se corre en 1: t<sub>${k_('k')}+1</sub> viene del casillero ${k_('k')}, porque el primer término tiene ${k_('k')} = 0. El mismo ${k_('k')} va en el número combinatorio y en el exponente de ${b_('b')}; ${a_('a')} se lleva lo que falta para ${n_('n')}.</p>
    <p>Arrastra el casillero marcado por la fila 9 y mira cómo cambian el lugar y el término.</p>
    ${HIP}</div>` },
  { k:'Paso 6', t:'Predice: un coeficiente con 2x', gate:P6, prep:() => cfg6(!!S.pred[P6.id]), anima:anima6,
-   body:() => `<p class="problem">Ahora el primer término es ${a_('2x')} y el segundo, ${b_('1')}: cada paso a la izquierda multiplica por 2x. ¿Cuál es el coeficiente de x⁴ en el desarrollo de (2x + 1)⁶?</p>${opcionesHTML(P6.opts, 'fb')}
+   body:() => `<p class="problem">Ahora el primer término es ${a_('2x')} y el segundo, ${b_('1')}. ¿Cuál es el coeficiente de x⁴ en el desarrollo de (2x + 1)⁶?</p>${opcionesHTML(P6.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">t<sub>${k_('k')}+1</sub> = C(6, ${k_('k')}) (${a_('2x')})<sup>6−${k_('k')}</sup> · ${b_('1')}<sup>${k_('k')}</sup>;  x⁴  ⟹  6 − ${k_('k')} = 4  ⟹  ${k_('k')} = 2</div>
    <div class="eq">C(6, 2) · 2⁴ = 15 · 16 = 240</div></div>
-   <p>El término del binomio se eleva entero: (2x)⁴ = 2x · 2x · 2x · 2x = 16x⁴. El 2 entra una vez por cada paso a la izquierda.</p>
+   <p>Cada paso a la izquierda multiplica por 2x, y el término del binomio se eleva entero: (2x)⁴ = 2x · 2x · 2x · 2x = 16x⁴. El 2 entra una vez por cada paso a la izquierda.</p>
    <p>Arrastra el casillero marcado: bajo la fila 6 están todos los términos del desarrollo.</p>
    ${HIP}</div>` },
  { k:'Paso 7', t:'Predice: un binomio con resta', gate:P7, prep:() => cfg7(!!S.pred[P7.id]), anima:anima7,
-   body:() => `<p class="problem">En (${a_('x')} − 2)⁵ el segundo término es ${b_('−2')}: cada paso a la derecha multiplica por −2. ¿Cuál es el cuarto término, t₄?</p>${opcionesHTML(P7.opts, 'fb')}
+   body:() => `<p class="problem">En (${a_('x')} − 2)⁵ el segundo término es ${b_('−2')}. ¿Cuál es el cuarto término, t₄?</p>${opcionesHTML(P7.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">t₄ = C(5, 3) · ${a_('x')}<sup>5−3</sup> · (${b_('−2')})³ = 10 · x² · (−8) = −80x²</div></div>
-   <p>El signo viaja con el −2: con ${k_('k')} par, (−2)<sup>${k_('k')}</sup> es positivo; con ${k_('k')} impar, negativo. Por eso en (a − b)ⁿ los signos se alternan: +, −, +, −, …</p>
+   <p>Cada paso a la derecha multiplica por −2, y el signo viaja con él: con ${k_('k')} par, (−2)<sup>${k_('k')}</sup> es positivo; con ${k_('k')} impar, negativo. Por eso en (a − b)ⁿ los signos se alternan: +, −, +, −, …</p>
    <p>Arrastra el casillero marcado y mira los signos bajo la fila 5.</p>
    ${HIP}</div>` },
  { k:'Paso 8', t:'Predice: el término sin x', gate:P8, prep:() => cfg8(!!S.pred[P8.id]), anima:anima8,
-   body:() => `<p class="problem">En (${a_('x²')} + ${b_('1/x')})⁶, cada paso a la izquierda multiplica por x² y cada paso a la derecha, por 1/x. ¿Cuánto vale el término independiente de x (el que no tiene x)?</p>${opcionesHTML(P8.opts, 'fb', true)}
+   body:() => `<p class="problem">En (${a_('x²')} + ${b_('1/x')})⁶, ¿cuánto vale el término independiente de x (el que no tiene x)?</p>${opcionesHTML(P8.opts, 'fb', true)}
    <div id="tras" class="body" hidden>
-   <div class="eqs"><div class="eq">t<sub>${k_('k')}+1</sub> = C(6, ${k_('k')}) (${a_('x²')})<sup>6−${k_('k')}</sup> (${b_('x⁻¹')})<sup>${k_('k')}</sup> = C(6, ${k_('k')}) x<sup>${m_('12 − 3k')}</sup></div>
-   <div class="eq">${m_('12 − 3k')} = 0  ⟹  ${k_('k')} = 4  ⟹  t₅ = C(6, 4) = 15</div></div>
-   <p>En la recta, el exponente de x empieza en 12 (seis veces x²) y cada paso a la derecha lo baja 3: quita un x² y pone un 1/x. Llega a 0 en el cuarto paso.</p>
+   <div class="eqs"><div class="eq">t<sub>${k_('k')}+1</sub> = C(6, ${k_('k')}) (${a_('x²')})<sup>6−${k_('k')}</sup> (${b_('x⁻¹')})<sup>${k_('k')}</sup> = C(6, ${k_('k')}) x<sup>${m_('12 − 3')}${k_('k')}</sup></div>
+   <div class="eq">${m_('12 − 3')}${k_('k')} = 0  ⟹  ${k_('k')} = 4  ⟹  t₅ = C(6, 4) = 15</div></div>
+   <p>Cada paso a la izquierda del tablero multiplica por x² y cada paso a la derecha, por 1/x: cada paso a la derecha del tablero baja el exponente. En la recta, el exponente de x empieza en 12 (seis veces x²) y cada paso a la derecha lo baja 3: quita un x² y pone un 1/x. Llega a 0 en el cuarto paso.</p>
    <p>Arrastra la marca por la recta (o usa las flechas del teclado): solo un término cae en el cero.</p>
    ${HIP}</div>` },
 ];
@@ -881,15 +888,16 @@ function cfg3(ya){
 function anim3(){ cfg3(false); const st = E.st;
   E.animar(1200, f => { st.hasta = 5 + 2*f; st.numeros = 5 + 2*f; }, () => esperar(300, () => cfg3(true)), true); }
 // 4. Galton
-let semilla = 2203;
+let semilla = 2203, ultima = null;
 function cfg4(ya, cuenta){
+  if (ya && !cuenta) cuenta = ultima;
   const g = { cuenta: cuenta || new Array(8).fill(0), marca:3, contar:!!ya, esperado: ya ? ESP4 : null, vuelo:[] };
-  E.config({ st:{ tipo:'galton', R:7, galton:g }, ley:[['k', 'casillero k'], ['ink', 'promedio esperado', 'trazos'], ['n', 'fila n']],
+  E.config({ st:{ tipo:'galton', R:7, galton:g }, ley:[['k', 'casillero k'], ['ink', 'promedio esperado', 'trazos']],
     lect: ya ? [() => ['k', 'en k = 3', String(g.cuenta[3])], () => ['ink', 'promedio', G4.texto]] : [() => ['ink', 'bolitas', '128'], () => ['n', 'filas', '7']],
     desc: ya ? `Las bolitas cayeron en los casilleros: ${g.cuenta.join(', ')}. La línea punteada marca el promedio esperado.` : 'Un tablero de 7 filas de clavos con 8 casilleros abajo; el de k = 3 está marcado.' });
 }
 function anim4(){
-  const sim = MB.simular({ n:7, bolitas:128, semilla }); semilla += 1;
+  const sim = MB.simular({ n:7, bolitas:128, semilla }); semilla += 1; ultima = sim.casilleros;
   cfg4(false); const st = E.st, g = st.galton, DT = 24, T = 70, R = 7, total = 127*DT + (R + 1)*T;
   st.t = 0;
   st.mover = L => {
@@ -922,8 +930,8 @@ const EXPS = [
   { id:'suma-coeficientes', corto:'Sumar los coeficientes',
     q:`¿Cuánto suman los coeficientes del desarrollo de (${a_('2x')} + ${b_('1')})⁵?`,
     opts:[['a', S1.errores.ignoraCoef.texto, 'BN20-ignora-los-coeficientes', 'hipotesis'], ['b', S1.errores.reparte.texto, 'AL11-reparte-el-exponente', 'hipotesis'],
-      ['c', S1.texto], ['d', S1.errores.sumaN.texto, 'BN5-suma-es-n', 'hipotesis']], ok:'c',
-    fb:{ a:'32 = 2⁵ es la suma de la fila 5, que sirve cuando los dos términos del binomio son 1. Aquí cada paso a la izquierda multiplica por 2.',
+      ['c', S1.texto], ['d', S1.errores.sumaN.texto, 'BN27-suma-de-coeficientes-es-n', 'hipotesis']], ok:'c',
+    fb:{ a:'32 = 2⁵ es la suma de la fila 5, que sirve cuando los dos coeficientes del binomio son 1. Aquí cada paso a la izquierda multiplica por 2.',
       b:'33 = 2⁵ + 1 reparte el exponente: (2x + 1)⁵ no es (2x)⁵ + 1⁵. Faltan todos los términos del medio.',
       d:'5 es el exponente. La suma de los coeficientes es lo que vale el desarrollo con x = 1: (2 + 1)⁵.' },
     antes:ya => cfg1(ya), despues:anim1,
@@ -960,7 +968,7 @@ const EXPS = [
       d:'21 = C(7, 2) son los caminos del casillero de al lado. Al de k = 3 llegan C(7, 3) = 35 de los 2⁷ = 128 caminos.' },
     antes:ya => cfg4(ya), despues:anim4,
     exp:() => `<div class="eqs"><div class="eq">promedio = 128 · C(7, 3)/2⁷ = 128 · 35/128 = 35</div></div>
-      <p>Los 2⁷ = 128 caminos son igual de probables, y 35 de ellos terminan en ${k_('k = 3')}. En cada tanda caen unas más o unas menos (mira la altura de la barra contra la línea punteada); con muchas bolitas, la forma se parece cada vez más a la fila 7 del triángulo.</p>${HIP}` },
+      <p>Los 2⁷ = 128 caminos son igual de probables, y 35 de ellos terminan en ${k_('k = 3')}. En cada tanda caen unas más o unas menos (mira la altura de la barra contra la línea punteada); con muchas bolitas, la forma se parece cada vez más a la fila 7 del triángulo. Es una simulación con azar: con «Ver otra vez» cae otra tanda y los números cambian.</p>${HIP}` },
   { id:'signos', corto:'Coeficientes con signo',
     q:`¿Cuánto suman los coeficientes del desarrollo de (${a_('x')} − 2)⁷, cuyo segundo término es ${b_('−2')}?`,
     opts:[['a', S5.errores.reparte.texto, 'AL11-reparte-el-exponente', 'hipotesis'], ['b', S5.errores.sinSigno.texto, 'BN8-olvida-el-signo', 'hipotesis'],

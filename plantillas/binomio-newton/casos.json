@@ -2,7 +2,7 @@
   "plantilla": "binomio-newton",
   "unidades": "Cantidades sin unidad. n y k son enteros con 0 ≤ k ≤ n. Un término del binomio es un monomio { c, v }: c es el coeficiente (entero o fracción como texto, '1/2', '−2') y v las letras con su exponente entero ({ x: −1 } es 1/x); sin v es una constante. El binomio es (A + B)ⁿ. El término de lugar L es t_L = t(k+1) con k = L − 1 = cuántas veces se elige B. Los textos usan el signo menos tipográfico (−), superíndices para los exponentes ('84a⁶b³', 'x⁻³'), el coeficiente 1 omitido y subíndices para los lugares ('t₄').",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera' (siempre un objeto). Los campos anidados van con punto (errores.desfase.texto); los números se comparan con la tolerancia; las listas se comparan completas; los textos, exactos. 'tambien' son llamadas extra del mismo caso (con su propia 'fn' si la cambian). Un error que no aparece en 'errores' es porque con esos datos da la respuesta correcta (va en 'coinciden') o no se puede calcular (va en 'noAplica').",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer motor ni casos: Python con enteros exactos y fractions. C(n, k) por el triángulo de Pascal sumado (con math.comb de control), desarrollos multiplicando los n paréntesis uno por uno, Galton contando los 2ⁿ caminos. Coinciden los 198 campos. De la simulación con semilla solo se comprobaron totales y que casilleros y caminos sean coherentes. Los bordes agregados después ((x/2 − 3)⁴ y (x/2 − 3)⁵ con fracciones, (√x + 1/x)ⁿ con x = y², central de (2x − 1)⁵ y de (x − 1)¹, (2x − 3y)⁴, C(200, 100), C(200, 3) y Galton con n = 0) los calculó él mismo; k > n y lugar > n + 1 lanzan error (prueba de entradas inválidas).",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Factorial: 0! = 1, 5! = 120, 10! = 3628800 y 25! exacto (entero grande)",
@@ -31,7 +31,8 @@
     { "nombre": "Enteros grandes: C(100, 50) y C(60, 30) exactos",
       "fn": "combinatorio", "args": [{ "n": 100, "k": 50 }],
       "espera": { "texto": "100891344545564193334812497256" },
-      "tambien": [ { "args": [{ "n": 60, "k": 30 }], "espera": { "texto": "118264581564861424" } } ] },
+      "tambien": [ { "args": [{ "n": 200, "k": 100 }], "espera": { "texto": "90548514656103281165404177077484163874504589675413336841320" } }, { "args": [{ "n": 200, "k": 3 }], "espera": { "texto": "1313400" } },
+                    { "args": [{ "n": 60, "k": 30 }], "espera": { "texto": "118264581564861424" } } ] },
 
     { "nombre": "Caminos: las palabras de 4 letras con 2 b son 6, en orden alfabético; con 0 b, solo aaaa",
       "fn": "caminos", "args": [{ "n": 4, "k": 2 }],
@@ -53,7 +54,7 @@
                    { "args": [{ "n": 2 }], "espera": { "texto": "4", "coinciden": ["doble", "cuadrado"] } },
                    { "args": [{ "n": 10 }], "espera": { "texto": "1024" } } ] },
 
-    { "nombre": "Número de términos (predicción del paso 4): (a + b)⁷ tiene 8; BN1 7; AL11 2 (a⁷ + b⁷); BN14 128 palabras; con n = 2 el reparto es AL8",
+    { "nombre": "Número de términos (predicción del paso 4): (a + b)⁷ tiene 8; BN1 7; AL11 2 (a⁷ + b⁷); BN17 128 sin juntar semejantes; con n = 2 el reparto es AL8",
       "fn": "terminos", "args": [{ "n": 7 }],
       "espera": { "texto": "8", "num": 8, "errores.nTerminos.texto": "7", "errores.reparte.texto": "2", "errores.reparte.id": "AL11", "errores.sinJuntar.texto": "128", "coinciden": [] },
       "tambien": [ { "args": [{ "n": 2 }], "espera": { "texto": "3", "errores.reparte.id": "AL8", "errores.sinJuntar.texto": "4" } },
@@ -62,7 +63,8 @@
     { "nombre": "Desarrollo: (a + b)⁴ = a⁴ + 4a³b + 6a²b² + 4ab³ + b⁴; (x − 1/2)³ con fracciones; (2x + 1)⁰ = 1",
       "fn": "desarrollo", "args": [{ "A": { "c": 1, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 4 }],
       "espera": { "texto": "a⁴ + 4a³b + 6a²b² + 4ab³ + b⁴", "terminos.2.texto": "6a²b²", "terminos.2.lugar": 3, "terminos.2.combinatorio": "6" },
-      "tambien": [ { "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": "-1/2" }, "n": 3 }], "espera": { "texto": "x³ − (3/2)x² + (3/4)x − 1/8", "terminos.3.coef": "−1/8", "terminos.3.suma": "1/8", "terminos.1.suma": "−1/2" } },
+      "tambien": [ { "args": [{ "A": { "c": "1/2", "v": { "x": 1 } }, "B": { "c": -3 }, "n": 4 }], "espera": { "texto": "(1/16)x⁴ − (3/2)x³ + (27/2)x² − 54x + 81" } }, { "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": -3, "v": { "y": 1 } }, "n": 4 }], "espera": { "texto": "16x⁴ − 96x³y + 216x²y² − 216xy³ + 81y⁴" } }, { "fn": "sumaCoeficientes", "args": [{ "A": { "c": "1/2", "v": { "x": 1 } }, "B": { "c": -3 }, "n": 4 }], "espera": { "texto": "625/16" } }, { "fn": "sumaCoeficientes", "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": -3, "v": { "y": 1 } }, "n": 4 }], "espera": { "texto": "1" } },
+                    { "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": "-1/2" }, "n": 3 }], "espera": { "texto": "x³ − (3/2)x² + (3/4)x − 1/8", "terminos.3.coef": "−1/8", "terminos.3.suma": "1/8", "terminos.1.suma": "−1/2" } },
                    { "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": 1 }, "n": 0 }], "espera": { "texto": "1" } },
                    { "args": [{ "A": { "c": 3, "v": { "x": 1 } }, "B": { "c": -2, "v": { "y": 1 } }, "n": 3 }], "espera": { "texto": "27x³ − 54x²y + 36xy² − 8y³" } } ] },
 
@@ -97,7 +99,8 @@
     { "nombre": "Término independiente (predicción del paso 8): (x² + 1/x)⁶, exponente 12 − 3k = 0 con k = 4: C(6, 4) = 15 en t₅; BN2 6; BN19 central 20; BN3 1; BN9 12 − k nunca es 0: no tiene",
       "fn": "coeficiente", "args": [{ "A": { "c": 1, "v": { "x": 2 } }, "B": { "c": 1, "v": { "x": -1 } }, "n": 6, "m": 0 }],
       "espera": { "k": 4, "lugar": 5, "texto": "15", "exponentes": [12, 9, 6, 3, 0, -3, -6], "errores.desfase.texto": "6", "errores.central.texto": "20", "errores.sinCoef.texto": "1", "errores.exponenteSuma.texto": "no tiene", "coinciden": ["sinElevar", "sinSigno"] },
-      "tambien": [ { "args": [{ "A": { "c": 1, "v": { "x": 2 } }, "B": { "c": 1, "v": { "x": -1 } }, "n": 5, "m": 0 }], "espera": { "texto": "0", "k": null } },
+      "tambien": [ { "args": [{ "A": { "c": 1, "v": { "y": 1 } }, "B": { "c": 1, "v": { "y": -2 } }, "n": 6, "m": 0, "letra": "y" }], "espera": { "exponentes": [6, 3, 0, -3, -6, -9, -12], "texto": "15", "lugar": 3 } }, { "args": [{ "A": { "c": 1, "v": { "y": 1 } }, "B": { "c": 1, "v": { "y": -2 } }, "n": 5, "m": 0, "letra": "y" }], "espera": { "texto": "0", "k": null } }, { "args": [{ "A": { "c": "1/2", "v": { "x": 1 } }, "B": { "c": -3 }, "n": 5, "m": 2 }], "espera": { "texto": "−135/2", "termino": "−(135/2)x²" } }, { "fn": "sumaCoeficientes", "args": [{ "A": { "c": "1/2", "v": { "x": 1 } }, "B": { "c": -3 }, "n": 5 }], "espera": { "texto": "−3125/32" } },
+                    { "args": [{ "A": { "c": 1, "v": { "x": 2 } }, "B": { "c": 1, "v": { "x": -1 } }, "n": 5, "m": 0 }], "espera": { "texto": "0", "k": null } },
                    { "args": [{ "A": { "c": 1, "v": { "x": 3 } }, "B": { "c": -1, "v": { "x": -1 } }, "n": 8, "m": 0 }], "espera": { "texto": "28", "lugar": 7, "errores.central.texto": "70", "errores.sinElevar.texto": "−28" } },
                    { "args": [{ "A": { "c": 1, "v": { "x": 2 } }, "B": { "c": -2, "v": { "x": -1 } }, "n": 5, "m": 1 }], "espera": { "texto": "−80", "lugar": 4, "termino": "−80x" } } ] },
 
@@ -109,15 +112,16 @@
     { "nombre": "Términos centrales con n impar (experimento 3): (a + b)⁷ tiene dos, t₄ = 35a⁴b³ y t₅ = 35a³b⁴; BN24 solo t₄; BN25 solo t₅; BN26 ninguno",
       "fn": "central", "args": [{ "A": { "c": 1, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 7 }],
       "espera": { "lugares": [4, 5], "cuantos": 2, "texto": "t₄ y t₅", "terminos": ["35a⁴b³", "35a³b⁴"], "errores.soloAbajo.texto": "t₄", "errores.soloArriba.texto": "t₅", "errores.ninguno.texto": "ninguno" },
-      "tambien": [ { "args": [{ "A": { "c": 1, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 1 }], "espera": { "texto": "t₁ y t₂", "terminos": ["a", "b"] } } ] },
+      "tambien": [ { "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": -1 }, "n": 5 }], "espera": { "texto": "t₃ y t₄", "terminos": ["80x³", "−40x²"] } }, { "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": -1 }, "n": 1 }], "espera": { "terminos": ["x", "−1"] } },
+                    { "args": [{ "A": { "c": 1, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 1 }], "espera": { "texto": "t₁ y t₂", "terminos": ["a", "b"] } } ] },
 
-    { "nombre": "Suma de coeficientes (experimento 1): (2x + 1)⁵ en x = 1 da 3⁵ = 243; BN20 2⁵ = 32; AL11 2⁵ + 1 = 33; BN5 5",
+    { "nombre": "Suma de coeficientes (experimento 1): (2x + 1)⁵ en x = 1 da 3⁵ = 243; BN20 2⁵ = 32; AL11 2⁵ + 1 = 33; BN27 5",
       "fn": "sumaCoeficientes", "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": 1 }, "n": 5 }],
       "espera": { "texto": "243", "errores.ignoraCoef.texto": "32", "errores.reparte.texto": "33", "errores.reparte.id": "AL11", "errores.sumaN.texto": "5", "coinciden": ["sinSigno"] },
       "tambien": [ { "args": [{ "A": { "c": 3, "v": { "x": 1 } }, "B": { "c": -1, "v": { "y": 1 } }, "n": 2 }], "espera": { "texto": "4", "errores.reparte.texto": "10", "errores.reparte.id": "AL8", "coinciden": ["ignoraCoef"] } },
                    { "args": [{ "A": { "c": "1/2", "v": { "x": 1 } }, "B": { "c": 1 }, "n": 2 }], "espera": { "texto": "9/4" } } ] },
 
-    { "nombre": "Suma de coeficientes con signo (experimento 5): (x − 2)⁷ da (1 − 2)⁷ = −1; BN20 128; AL11 1 − 128 = −127; BN8 3⁷ = 2187; BN5 7",
+    { "nombre": "Suma de coeficientes con signo (experimento 5): (x − 2)⁷ da (1 − 2)⁷ = −1; BN20 128; AL11 1 − 128 = −127; BN8 3⁷ = 2187; BN27 7",
       "fn": "sumaCoeficientes", "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": -2 }, "n": 7 }],
       "espera": { "texto": "−1", "num": -1, "errores.ignoraCoef.texto": "128", "errores.reparte.texto": "−127", "errores.sinSigno.texto": "2187", "errores.sumaN.texto": "7", "coinciden": [] },
       "tambien": [ { "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": -1 }, "n": 6 }], "espera": { "texto": "0" } } ] },
@@ -125,7 +129,8 @@
     { "nombre": "Galton (experimento 4): 128 bolitas, 7 filas, casillero k = 3: 128 · 35/128 = 35; BN21 16; BN2 21; BN22 64; con 100 bolitas y 6 filas sale fracción",
       "fn": "galton", "args": [{ "n": 7, "bolitas": 128, "k": 3 }],
       "espera": { "texto": "35", "caminos": 35, "total": 128, "errores.uniforme.texto": "16", "errores.desfase.texto": "21", "errores.mitad.texto": "64", "coinciden": [] },
-      "tambien": [ { "args": [{ "n": 6, "bolitas": 100, "k": 2 }], "espera": { "texto": "375/16", "num": 23.4375, "errores.uniforme.texto": "100/7" } },
+      "tambien": [ { "args": [{ "n": 0, "bolitas": 50, "k": 0 }], "espera": { "texto": "50", "caminos": 1, "total": 1 } },
+                    { "args": [{ "n": 6, "bolitas": 100, "k": 2 }], "espera": { "texto": "375/16", "num": 23.4375, "errores.uniforme.texto": "100/7" } },
                    { "args": [{ "n": 7, "bolitas": 128, "k": 0 }], "espera": { "texto": "1", "noAplica": ["desfase"] } } ] },
 
     { "nombre": "Simulación con semilla fija: 128 bolitas en 7 filas suman 128 y la misma semilla repite el resultado",

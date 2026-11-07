@@ -192,7 +192,9 @@ test('entradas inválidas', () => {
   assert.throws(() => motor.coeficiente({ A: X, B: { c: 1, v: { y: 1 } }, n: 3, m: 1 }), /solo puede haber/);
   assert.throws(() => motor.coeficiente({ A: X, B: { c: 2, v: { x: 1 } }, n: 3, m: 1 }), /misma potencia/);
   assert.throws(() => motor.coeficiente({ A: X, B: { c: 1 }, n: 3, m: 1.5 }), /entero/);
-  assert.throws(() => motor.galton({ n: 0, bolitas: 10, k: 0 }), /entre 1/);
+  assert.throws(() => motor.galton({ n: 2, bolitas: 0, k: 0 }), /entre 1/);
+  assert.throws(() => motor.combinatorio({ n: 7, k: 9 }), /entre 0 y 7/);
+  assert.throws(() => motor.termino({ A: X, B: { c: 1 }, n: 3, lugar: 5 }), /entre 1 y 4/);
   assert.throws(() => motor.monomio({ c: 1, v: { X: 1 } }), /no vale/);
 });
 

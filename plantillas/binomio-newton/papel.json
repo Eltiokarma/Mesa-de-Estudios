@@ -1,6 +1,6 @@
 {
   "titulo": "Binomio de Newton: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Tres controles antes de marcar: (a + b)ⁿ tiene n + 1 términos; en el término de lugar k + 1 el número combinatorio es C(n, k), con el mismo k que el exponente del segundo término; y cada término del binomio se eleva entero, con su coeficiente y su signo: (2x)³ = 8x³ y (−3)⁴ = 81.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Tres controles antes de marcar: (a + b)ⁿ tiene n + 1 términos; en el término de lugar k + 1, tₖ₊₁, el número combinatorio es C(n, k) (que en la academia se escribe Cⁿₖ o (n k), número combinatorio), con el mismo k que el exponente del segundo término; y cada término del binomio se eleva entero, con su coeficiente y su signo: (2x)³ = 8x³ y (−3)⁴ = 81.",
   "problemas": [
     {
       "id": "p1",
@@ -59,7 +59,7 @@
       "enunciado": "Halla el tercer término del desarrollo de (3a + b)⁶.",
       "respuesta": "t₃ = 1215a⁴b².",
       "pasos": [
-        "t₃ = t(k+1) con k = 2: t₃ = C(6, 2) · (3a)⁶⁻² · b².",
+        "t₃ = tₖ₊₁ con k = 2: t₃ = C(6, 2) · (3a)⁶⁻² · b².",
         "C(6, 2) = 15 y (3a)⁴ = 3⁴a⁴ = 81a⁴: el 3 también se eleva a la cuarta.",
         "t₃ = 15 · 81a⁴ · b² = 1215a⁴b²."
       ],
@@ -71,7 +71,7 @@
       "enunciado": "Halla el quinto término del desarrollo de (x − 3)⁷.",
       "respuesta": "t₅ = 2835x³.",
       "pasos": [
-        "t₅ = t(k+1) con k = 4: t₅ = C(7, 4) · x⁷⁻⁴ · (−3)⁴.",
+        "t₅ = tₖ₊₁ con k = 4: t₅ = C(7, 4) · x⁷⁻⁴ · (−3)⁴.",
         "C(7, 4) = 35 y (−3)⁴ = 81, positivo porque el exponente es par.",
         "t₅ = 35 · 81 · x³ = 2835x³. En (a − b)ⁿ los signos se alternan: los términos con k par son positivos y los de k impar, negativos."
       ],
@@ -83,7 +83,7 @@
       "enunciado": "Halla el coeficiente de x⁵ en el desarrollo de (x² − 2/x)⁷.",
       "respuesta": "−280 (el término es t₄ = −280x⁵).",
       "pasos": [
-        "t(k+1) = C(7, k) · (x²)⁷⁻ᵏ · (−2x⁻¹)ᵏ = C(7, k) · (−2)ᵏ · x^(14 − 2k − k).",
+        "tₖ₊₁ = C(7, k) · (x²)⁷⁻ᵏ · (−2x⁻¹)ᵏ = C(7, k) · (−2)ᵏ · x^(14 − 2k − k).",
         "El exponente de x es 14 − 3k (el 1/x resta k). Se pide 14 − 3k = 5, así que k = 3.",
         "Coeficiente: C(7, 3) · (−2)³ = 35 · (−8) = −280."
       ],
@@ -95,7 +95,7 @@
       "enunciado": "Halla el término independiente de x en el desarrollo de (x + 1/x²)⁹ y di qué lugar ocupa.",
       "respuesta": "84, en el lugar 4 (t₄).",
       "pasos": [
-        "t(k+1) = C(9, k) · x⁹⁻ᵏ · (x⁻²)ᵏ = C(9, k) · x^(9 − 3k).",
+        "tₖ₊₁ = C(9, k) · x⁹⁻ᵏ · (x⁻²)ᵏ = C(9, k) · x^(9 − 3k).",
         "Independiente quiere decir exponente 0: 9 − 3k = 0, k = 3. El lugar es k + 1 = 4.",
         "Su valor es C(9, 3) = 84."
       ],
@@ -121,7 +121,7 @@
       "pasos": [
         "Un binomio a la quinta tiene 5 + 1 = 6 términos.",
         "La suma de los coeficientes es el valor del desarrollo con x = 1: (3 · 1 − 2)⁵ = 1⁵.",
-        "Suman 1. No es 2⁵ = 32: eso pasaría solo si los dos coeficientes del binomio fueran 1."
+        "Suman 1. No es 2⁵ = 32: eso pasa cuando los coeficientes del binomio suman 2, como en (x + 1)⁵."
       ],
       "verificar": [ { "fn": "terminos", "args": [{ "n": 5 }], "espera": { "texto": "6" } },
                      { "fn": "sumaCoeficientes", "args": [{ "A": { "c": 3, "v": { "x": 1 } }, "B": { "c": -2 }, "n": 5 }], "espera": { "texto": "1" } } ]
