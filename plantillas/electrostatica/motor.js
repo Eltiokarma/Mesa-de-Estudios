@@ -33,8 +33,8 @@
  *   serie(Cs, V), paralelo(Cs, V)      condensadores: capacidad equivalente, carga, voltaje y energía de cada uno
  *   energiaCondensador(C, V)           U = C·V²/2 = Q·V/2 = Q²/(2C)
  *   dielectrico(o)                     se mete una lámina de dieléctrico κ que llena el espacio entre las placas (o una
- *                                      fracción del área): C × κ siempre; CONECTADO a la pila, V fijo y Q, U × κ;
- *                                      DESCONECTADO, Q fija y V, E, U ÷ κ
+ *                                      fracción f del área): C × κ si la llena (con f, C × (1 + (κ − 1)·f)); CONECTADO, V fijo y Q, U crecen igual que C;
+ *                                      DESCONECTADO, Q fija y V, E, U bajan en esa razón
  *   contacto(Q1, R1, Q2, R2)           dos esferas conductoras que se tocan: la carga se reparte hasta igualar el
  *                                      potencial (proporcional al radio), no en partes iguales
  *   mapaCampo(cargas, caja, n)         flechitas del campo en una cuadrícula, con su dirección y su intensidad relativa
