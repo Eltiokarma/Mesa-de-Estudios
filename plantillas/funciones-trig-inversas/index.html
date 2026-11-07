@@ -547,7 +547,7 @@ function pegar(y, lo, hi){
   for (const t of NOT){ const v = MI.exacto(t).valor; if (Math.abs(v - y) < .035) return t; }
   return Math.round(y*100)/100;
 }
-const kv = k => MI.exacto(k).valor, kt = k => MI.exacto(k).texto;
+const kv = k => MI.exacto(k).valor, kt = k => (typeof k === 'number' ? fmt(k, 2) : MI.exacto(k).texto);
 const ventanaSen = (o) => Object.assign({ x0:-Math.PI/2, x1:Math.PI/2, y0:-1.3, y1:1.6, color:'th', borde:true, texto:[['ventana', 'th']] }, o || {});
 const BOX1 = { x0:-.75, x1:6.85, y0:-1.5, y1:1.75 };
 const BOX2 = { x0:-5.05, x1:8.15, y0:-1.45, y1:1.75 };
@@ -605,7 +605,7 @@ function espejo(f){
       L.ejes = { x0:-1.95, x1:1.95, y0:-1.85, y1:1.85, tx: F >= 1 ? [[-1, '−1', 'k'], [1, '1', 'k']] : [[-Math.PI/2, '−π/2'], [Math.PI/2, 'π/2']],
         ty: F >= 1 ? [[-Math.PI/2, '−π/2', 'th'], [Math.PI/2, 'π/2', 'th']] : [[-1, '−1'], [1, '1']],
         nx: F >= 1 ? [['k', 'k']] : [['θ', 'th']], ny: F >= 1 ? [['arcsen k', 'th']] : [['sen θ', 'ink']] };
-      L.segs.push({ p:pt(-1.8, -1.8), q:pt(1.8, 1.8), color:'muted', ancho:1.3, dash:true, texto: F < 1 ? null : [['diagonal', 'muted']], en:pt(1.45, 1.75), align:'right' });
+      L.segs.push({ p:pt(-1.8, -1.8), q:pt(1.8, 1.8), color:'muted', ancho:1.3, dash:true });
       L.curvas = [{ tramos:ramas, ancho:3, color: F >= 1 ? 'ink' : 'ink' }];
       if (s.libre){
         L.segs.push({ p:pt(-1, -.03), q:pt(1, -.03), color:'k', ancho:5, f:.55 }, { p:pt(.03, -Math.PI/2), q:pt(.03, Math.PI/2), color:'th', ancho:5, f:.45 });
@@ -735,7 +735,7 @@ function config6(r){
     lect: r ? lect6 : [], ley:[['ink', 'circunferencia de radio 1', 'linea'], ['muted', 'rectas tangentes', 'linea'], ['k', 'la lectura k'], ['th', 'el rango y el ángulo θ']],
     desc:'La circunferencia de radio 1 con la recta tangente de arriba; en ella, la marca k = −1.' });
 }
-const lect6 = [E => { const s = E.L.estado; return ['k', s.modo === 'cot' || !s.libre ? 'k (en la recta de arriba)' : 'k (en la recta de la derecha)', fmt(s.k, 2)]; },
+const lect6 = [E => { const s = E.L.estado; return ['k', s.modo === 'cot' || !s.libre ? 'k (recta de arriba)' : 'k (recta derecha)', fmt(s.k, 2)]; },
   E => { const s = E.L.estado; if (!s.libre) return ['th', 'arccot k', A6.texto]; const A = MI.arco({ fn: s.modo === 'cot' ? 'cot' : 'tan', k:s.k }); return ['th', s.modo === 'cot' ? 'arccot k' : 'arctan k', A.textoG]; }];
 
 // Paso 7: arcsen k + arccos k
