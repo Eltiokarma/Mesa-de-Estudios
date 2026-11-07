@@ -18,6 +18,20 @@
 
 Todos los textos pasan el contraste AA (4,5 a 1) sobre su fondo: blanco sobre lavanda 4,7; gris sobre crema 4,6; tinta sobre crema 13,4.
 
+## Pegatinas (7 nov 2026): «Brilliant en esteroides»
+
+Pedido de Gerson con referencias de Dribbble y Pinterest: la cáscara de la app se veía seca. Ahora cada tarjeta es una **pegatina**: contorno ciruela de 2 px (`--borde`) y una base de color debajo (`box-shadow: 0 5px 0`, la «plataforma»), como un objeto que se aprieta; al tocarla se hunde. Los botones llevan la misma base y se hunden al tocarlos.
+
+- **Un color por curso** (`TINTE` en `app/ilustraciones.js`, solo en la cáscara): un pastel de fondo (`--cf`) y una base (`--cb`) para la plataforma y las barras de avance. Física lavanda, química menta, álgebra cielo, aritmética miel, geometría rosa, trigonometría durazno, razonamiento matemático amarillo y razonamiento verbal aguamarina. El texto va siempre en tinta sobre el pastel; en oscuro el fondo es la base mezclada al 30 % con la tarjeta.
+- **Una viñeta grande por curso** (`Ilus.viñeta`, SVG propio de 160 × 120): la rampa con el carrito y el sol, el matraz con la molécula, la balanza con la x, el ábaco con la moneda, el triángulo con el compás y la regla, la circunferencia con el seno, las piezas y el dado, y el libro con el globo de diálogo.
+- **Inicio:** el reto del día es la pegatina del curso con su viñeta (flota despacio) y el gatito asomado; la racha va en una píldora arriba; «Hoy» en tres pasteles; «Lo que sigue» en filas con botón; «Tus cursos» en carrusel (en PC, una columna de pegatinas).
+- **Cursos:** cuadrícula de pegatinas pastel con su viñeta y la barra en la base del curso.
+- **Un curso:** cabecera del color del curso con la viñeta, el avance y los filtros; cada unidad lleva su número en el pastel del curso (✓ verde si está estudiada).
+- **Navegación:** píldora con contorno y la sección activa en lavanda.
+- **Movimiento** (solo sin «reducir movimiento»): las tarjetas entran escalonadas, las barras se llenan y las viñetas flotan.
+- **Títulos** con la letra redondeada del sistema cuando existe (`ui-rounded`; en Android cae a la de siempre).
+- Dentro de las escenas no cambia nada: ahí mandan los colores de las variables.
+
 ## Dos familias de color que no se mezclan
 
 | Familia | Colores | Dónde se usa | Dónde no |

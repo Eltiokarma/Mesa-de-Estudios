@@ -151,50 +151,57 @@ function vInicio() {
   const q = cola(est.uni), pend = q.filter(x => !visto(x.u.id));
   const conEscena = pend.find(x => !x.a && x.u.plantillas.length) || pend[0];
   const totalU = q.length, hechas = q.length - pend.length;
-  const reto = conEscena ? `<div class="reto">${Ilus.gato('class="reto-gato"')}
+  const reto = conEscena ? `<div class="reto tinte" style="${Ilus.tinte(conEscena.c.id)}">${Ilus.viñeta(conEscena.c.id, 'class="reto-vineta vineta-flota"')}${Ilus.gato('class="reto-gato-mini"')}
       <div class="etq">Reto de hoy · ${esc(conEscena.c.nombre)}</div>
       <h3>${esc(conEscena.u.nombre)}</h3>
       <p>${conEscena.u.plantillas.length ? 'Predice antes de ver la respuesta.' : esc(conEscena.u.temas.slice(0, 3).join(' · '))}</p>
       ${conEscena.u.plantillas.length
-        ? `<a class="btn blanco" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]], conEscena.u.id))}" data-abrir="${esc(conEscena.u.id)}">${VERBO[cat.plantillas[conEscena.u.plantillas[0]].formato] || 'Abrir'} ›</a>`
-        : `<a class="btn blanco" href="#/curso/${esc(conEscena.c.id)}">Ver unidad ›</a>`}
+        ? `<a class="btn tinta" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]], conEscena.u.id))}" data-abrir="${esc(conEscena.u.id)}">${VERBO[cat.plantillas[conEscena.u.plantillas[0]].formato] || 'Abrir'} ›</a>`
+        : `<a class="btn tinta" href="#/curso/${esc(conEscena.c.id)}">Ver unidad ›</a>`}
     </div>` : `<div class="reto">${Ilus.gatoDormido('class="reto-gato"')}<h3>¡Terminaste todo el temario!</h3><p>Repasa lo que más te costó.</p></div>`;
   // Lo que sigue: solo unidades con módulo (las demás no tienen nada que abrir todavía), una por curso primero
   // para que no salgan cuatro del mismo curso, y luego el resto en el orden del temario.
   const conModulo = pend.filter(x => x !== conEscena && cat.plantillas[x.u.plantillas[0]]);
   const cursosVistos = new Set(), primeras = conModulo.filter(x => !cursosVistos.has(x.c.id) && cursosVistos.add(x.c.id));
-  const sig = [...primeras, ...conModulo.filter(x => !primeras.includes(x))].slice(0, 4).map(x => `<a class="item" href="${esc(enlace(cat.plantillas[x.u.plantillas[0]], x.u.id))}" data-abrir="${esc(x.u.id)}">${icono(x.c.id)}
+  const sig = [...primeras, ...conModulo.filter(x => !primeras.includes(x))].slice(0, 4).map(x => `<a class="item" style="${Ilus.tinte(x.c.id)}" href="${esc(enlace(cat.plantillas[x.u.plantillas[0]], x.u.id))}" data-abrir="${esc(x.u.id)}">${icono(x.c.id)}
       <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
-      <span class="der">${tagAdelanto(x.u)}<span class="tag acento">${ETIQUETA[cat.plantillas[x.u.plantillas[0]].formato] || 'Módulo'}</span>›</span></a>`).join('');
+      <span class="ir">${tagAdelanto(x.u)}${esc(ETIQUETA[cat.plantillas[x.u.plantillas[0]].formato] || 'Abrir')} ›</span></a>`).join('');
+  // Tus cursos: carrusel de pegatinas con la viñeta de cada curso.
+  const carrusel = cat.cursos.filter(c => unidadesDe(c, est.uni).length).map(c => { const a = avance(c, est.uni);
+    return `<a class="cursito tinte" style="${Ilus.tinte(c.id)}" href="#/curso/${esc(c.id)}">${Ilus.viñeta(c.id)}<span class="t">${esc(c.nombre)}</span>
+      <span class="barra" aria-label="${Math.round(a * 100)} % estudiado"><i style="width:${Math.round(a * 100)}%"></i></span></a>`; }).join('');
   const salidas = avisosSalida();
   $app.innerHTML = `
     ${salidas.map(({ c, href }) => `<a class="aviso" style="display:block;text-decoration:none;margin-top:0" href="${esc(href)}">Tu profesor abrió la prueba de salida de ${esc(c.nombre)}. Hazla aquí ›</a>`).join('')}
     <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
       <div><p class="sub">Hola${est.nombre ? `, ${esc(est.nombre)}` : ''} 👋</p><h1>¿Qué entendemos hoy?</h1></div>
-      <a class="btn borde solo-grande" href="#/otro" style="margin-left:auto">Otro alumno en esta PC</a></header>
+      <span class="pildora-racha" title="Racha de estudio">${Ilus.mini.llama}${racha()}<span class="lector"> ${racha() === 1 ? 'día seguido' : 'días seguidos'}</span></span>
+      <a class="btn borde solo-grande" href="#/otro">Otro alumno en esta PC</a></header>
     <div class="col2 inicio"><div>
     ${reto}
     <h2>Hoy</h2>
-    <div class="stats">
-      <div class="stat"><div class="ic" style="background:var(--acento)">${Ilus.mini.llama}</div><div class="n">${racha()}</div><div class="l">${racha() === 1 ? 'día seguido' : 'días seguidos'}</div></div>
-      <div class="stat"><div class="ic" style="background:#efe6ff">${Ilus.mini.libro}</div><div class="n">${hechas}</div><div class="l">unidades estudiadas</div></div>
-      <div class="stat"><div class="ic" style="background:#efe6ff">${Ilus.mini.meta}</div><div class="n">${totalU ? Math.round(100 * hechas / totalU) : 0}<span style="font-size:16px">%</span></div><div class="l">del temario ${esc(UNI_CORTA[est.uni] || '')}</div></div>
-    </div></div><div>
-    <h2>Lo que sigue <a href="#/cursos">Ver cursos ›</a></h2>
-    <div class="lista">${sig || `<div class="vacio">${Ilus.gatoDormido('width="140"')}<p>${pend.length > 1 ? 'Ya abriste todas las unidades con escena. El resto del temario está en Cursos.' : 'No hay más unidades pendientes.'}</p></div>`}</div></div></div>`;
+    <div class="stats aparece">
+      <div class="stat rosa"><div class="ic" style="background:#fff">${Ilus.mini.llama}</div><div class="n">${racha()}</div><div class="l">${racha() === 1 ? 'día seguido' : 'días seguidos'}</div></div>
+      <div class="stat lav"><div class="ic" style="background:#fff">${Ilus.mini.libro}</div><div class="n">${hechas}</div><div class="l">unidades estudiadas</div></div>
+      <div class="stat menta"><div class="ic" style="background:#fff">${Ilus.mini.meta}</div><div class="n">${totalU ? Math.round(100 * hechas / totalU) : 0}<span style="font-size:16px">%</span></div><div class="l">del temario ${esc(UNI_CORTA[est.uni] || '')}</div></div>
+    </div>
+    <h2>Lo que sigue</h2>
+    <div class="lista aparece">${sig || `<div class="vacio">${Ilus.gatoDormido('width="140"')}<p>${pend.length > 1 ? 'Ya abriste todas las unidades con escena. El resto del temario está en Cursos.' : 'No hay más unidades pendientes.'}</p></div>`}</div></div><div>
+    <h2>Tus cursos <a href="#/cursos">Ver todos ›</a></h2>
+    <div class="carrusel aparece">${carrusel}</div></div></div>`;
 }
 
 function vCursos() {
   const tarjetas = cat.cursos.map(c => {
     const us = unidadesDe(c, est.uni); if (!us.length) return '';
     const p = avance(c, est.uni), escenas = us.filter(u => u.plantillas.length).length;
-    return `<a class="curso" href="#/curso/${esc(c.id)}">${icono(c.id)}
+    return `<a class="curso tinte" style="${Ilus.tinte(c.id)}" href="#/curso/${esc(c.id)}">${Ilus.viñeta(c.id, 'class="vin"')}
       <span class="t">${esc(c.nombre)}</span>
-      <span class="d">${us.length} unidades · ${FORMATO_TXT[c.formato_principal] || ''}${escenas ? ` · ${escenas} con escena` : ''}</span>
+      <span class="d">${us.length} unidades${escenas ? ` · ${escenas} con escena` : ''}</span>
       <span class="barra" aria-label="${Math.round(p * 100)} % estudiado"><i style="width:${Math.round(p * 100)}%"></i></span></a>`;
   }).join('');
   $app.innerHTML = `<h1>Cursos</h1><p class="sub">Ordenados según el temario de ${esc(cat.universidades[est.uni]?.nombre || '')}.</p>
-    <div class="cursos" style="margin-top:18px">${tarjetas}</div>`;
+    <div class="cursos aparece" style="margin-top:18px">${tarjetas}</div>`;
 }
 
 function vCurso(id) {
@@ -209,22 +216,25 @@ function vCurso(id) {
   const todas = sessionStorage.getItem('todas') === '1';
   const us = todas ? c.unidades : unidadesDe(c, est.uni);
   const ord = [...us].sort((a, b) => Math.min(...(ubic(a, est.uni) || [99])) - Math.min(...(ubic(b, est.uni) || [99])));
-  const filas = ord.map(u => {
+  const filas = ord.map((u, i) => {
     const pl = u.plantillas.map(p => cat.plantillas[p]).filter(Boolean);
     const tags = tagAdelanto(u) + Object.keys(u.universidades).map(k => `<span class="tag">${esc(etiquetaUbic(u, k))}</span>`).join('');
-    return `<article class="unidad"><div class="fila">
-        <span class="t">${esc(u.nombre)}</span>
+    return `<article class="unidad${visto(u.id) ? ' hecha' : ''}" style="${Ilus.tinte(c.id)}"><div class="fila">
+        <span class="num" aria-hidden="true">${visto(u.id) ? '✓' : i + 1}</span><span class="t">${esc(u.nombre)}</span>
         <button class="check${visto(u.id) ? ' on' : ''}" data-ver="${esc(u.id)}" aria-pressed="${visto(u.id)}" aria-label="Marcar ${esc(u.nombre)} como estudiada">${visto(u.id) ? '✓' : ''}</button></div>
       <div class="temas">${esc(u.temas.join(' · '))}</div>
       <div class="acc">${tags}${pl.map(p => `<a class="btn morado" style="padding:8px 14px;font-size:14px" href="${esc(enlace(p, u.id))}" data-abrir="${esc(u.id)}">${esc(p.formato === 'lectura' ? VERBO.lectura : p.titulo)} ›</a>`
           + (p.papel ? `<a class="btn borde" style="padding:7px 14px;font-size:14px" href="#/papel/${esc(p.id)}">✎ Papel</a>` : '')).join('')}
-        ${pl.length ? '' : '<span class="sub" style="font-size:12px">Escena en preparación</span>'}</div></article>`;
+        ${pl.length ? '' : '<span class="prep">Escena en preparación</span>'}</div></article>`;
   }).join('');
-  $app.innerHTML = `<a class="volver" href="#/cursos" aria-label="Volver">‹</a>
-    <h1>${esc(c.nombre)}</h1><p class="sub">${esc(AREA_TXT[c.area])} · ${us.length} unidades · ${Math.round(avance(c, todas ? '' : est.uni) * 100)} % estudiado</p>
+  const pc = Math.round(avance(c, todas ? '' : est.uni) * 100);
+  $app.innerHTML = `<header class="curso-hero tinte" style="${Ilus.tinte(c.id)}">${Ilus.viñeta(c.id, 'class="vin vineta-flota"')}
+    <a class="volver" href="#/cursos" aria-label="Volver">‹</a>
+    <h1>${esc(c.nombre)}</h1><p class="sub">${esc(AREA_TXT[c.area])} · ${us.length} unidades · ${pc} % estudiado</p>
+    <span class="barra" aria-hidden="true"><i style="width:${pc}%"></i></span>
+    <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div></header>
     ${PC ? PC.tarjeta(ctxPrueba(), c.id) : ''}${lec ? tarjetaLectura(lec, c) : ''}
-    <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div>
-    <div class="lista unidades" style="margin-top:12px">${filas}</div>`;
+    <div class="lista unidades aparece" style="margin-top:16px">${filas}</div>`;
   $app.querySelectorAll('[data-todas]').forEach(b => b.onclick = () => { sessionStorage.setItem('todas', b.dataset.todas); vCurso(id); });
   $app.querySelectorAll('[data-ver]').forEach(b => b.onclick = () => {
     const k = b.dataset.ver; if (est.vistas[k]) delete est.vistas[k]; else { est.vistas[k] = hoy(); marcarDia(); }
@@ -270,7 +280,7 @@ function vProgreso() {
       <p>${racha() ? 'Una taza de chocolate por cada día que vuelves.' : 'Abre una unidad hoy y empieza tu racha.'}</p></div></div></div><div>
     <h2 class="primero">Por curso</h2>
     <div class="lista">${cat.cursos.filter(c => unidadesDe(c, est.uni).length).map(c => { const a = avance(c, est.uni);
-      return `<a class="item" href="#/curso/${esc(c.id)}">${icono(c.id)}<span class="tx"><span class="t">${esc(c.nombre)}</span>
+      return `<a class="item" style="${Ilus.tinte(c.id)}" href="#/curso/${esc(c.id)}">${icono(c.id)}<span class="tx"><span class="t">${esc(c.nombre)}</span>
         <span class="barra" style="display:block;margin-top:8px"><i style="width:${Math.round(a * 100)}%"></i></span></span><span class="der">${Math.round(a * 100)} %</span></a>`; }).join('')}</div></div></div>`;
 }
 
