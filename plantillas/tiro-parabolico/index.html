@@ -49,7 +49,9 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
 .tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
 .tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
 .tabs a:hover:not([aria-current]){color:var(--ink)}
-@media (max-width:419px){ .tabs{overflow-x:auto} .tabs a{padding:9px 12px} }
+.tabs{flex-wrap:wrap; border-radius:20px}
+.top > *{min-width:0}
+@media (max-width:480px){ .tabs a{padding:8px 12px; font-size:.88rem} }
 
 .mode{display:grid; gap:16px; min-width:0; align-items:start}
 .bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
@@ -270,7 +272,6 @@ const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</s
 const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const M = MotorTiro;
-const chico = () => Celular.chico();
 // Escribe en una región aria-live solo si el texto cambia (si no, el lector de pantalla repite en cada cuadro).
 function decir(el, t){ if (el.textContent !== t) el.textContent = t; }
 function crearLienzo(cv, alto, dibujar){
@@ -373,7 +374,7 @@ function vistaTiro(L, c, P){
   if (P.plataforma && y0 > 0){
     ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4;
     rr(ctx, X(0) - 26, Y(y0), 26, Y(0) - Y(y0), 3); ctx.fill(); ctx.stroke();
-    if (P.altoTxt) rotulo(ctx, c, X(0) - 13, Y(y0) - 12, `azotea ${N1(y0)} m`, c.ink, 'left', 800, W);
+    if (P.altoTxt) rotulo(ctx, c, X(0) - 3, Y(y0) - 12, `${N1(y0)} m`, c.ink, 'right', 800, W);
   }
   // Números del eje vertical, encima de la plataforma y con fondo, para que se lean
   ctx.save(); ctx.font = `600 10px ${c.mono}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
@@ -643,7 +644,7 @@ function vistaGiroW(L, c, P){
   const d = M.mcuvDatos({ f0:P.f0, f:0, t:P.tp, r });
   const giro = M.mcuv({ r, omega0:w0, alfa:d.alfa, t:P.t || 0, frena:!P.seguir });
   const ancho = W >= 560;
-  const tAx = Math.ceil(P.seguir ? P.tp*1.5 : P.tp + 1), fTop = Math.ceil(P.f0 + 0.5), fBot = P.seguir ? -Math.ceil(P.f0*0.5) : 0;
+  const tAx = Math.ceil(P.seguir ? P.tp*1.5 : P.tp + 1), fTop = Math.ceil(P.f0 + 0.5), fBot = P.seguir ? -Math.ceil(P.f0*(tAx/P.tp - 1) - 1e-9) : 0;
   const gx0 = ancho ? W*0.4 : 46, gx1 = W - 16, gy0 = ancho ? 30 : Math.min(112, H*0.33), gy1 = H - (P.pie ? 46 : 32);
   const Xg = t => gx0 + t/tAx*(gx1 - gx0), Yg = f => gy0 + (fTop - f)/(fTop - fBot)*(gy1 - gy0);
   // Cuadrícula de 1 s por 1 vuelta/s
@@ -673,7 +674,7 @@ function vistaGiroW(L, c, P){
   for (let f = fBot; f <= fTop; f++) if (f) ctx.fillText(String(f).replace('-', '−'), Xg(0) - 5, Yg(f));
   ctx.restore();
   ctx.save(); ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
-  ctx.fillText('t (s)', Xg(tAx), Yg(0) - 4); ctx.textAlign = 'left'; ctx.fillText('ω (vueltas por segundo)', Xg(0) + 4, gy0 - 8); ctx.restore();
+  ctx.textBaseline = 'top'; ctx.fillText('t (s)', Xg(tAx), Yg(Math.min(0, fBot)) + 18); ctx.textBaseline = 'bottom'; ctx.textAlign = 'left'; ctx.fillText('ω (vueltas por segundo)', Xg(0) + 4, gy0 - 8); ctx.restore();
   // La recta de ω
   ctx.save(); ctx.strokeStyle = c.w; ctx.lineWidth = 3; linea(ctx, Xg(0), Yg(P.f0), Xg(P.tp), Yg(0));
   if (P.seguir){ ctx.setLineDash([6, 5]); linea(ctx, Xg(P.tp), Yg(0), Xg(tAx), Yg(P.f0*(1 - tAx/P.tp))); }
@@ -743,7 +744,7 @@ function vistaPista(L, c, P){
   // Reloj
   ctx.save(); ctx.font = `800 ${c.chico ? 17 : 20}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.t;
   ctx.fillText(`t = ${fmt(P.t || 0, 0)} s`, cx, cy - (ver.fin ? 12 : 0)); ctx.restore();
-  if (ver.fin && !e.nunca) rotulo(ctx, c, cx, cy + 14, `${mismo ? (P.v1 >= P.v2 ? '¡Ana alcanza a Beto!' : '¡Beto alcanza a Ana!') : '¡se cruzan!'} a ${N1(e.lugar)} m`, c.ink, 'center', 800, W);
+  if (ver.fin && !e.nunca) rotulo(ctx, c, cx, cy + 14, `${mismo ? (P.v1 >= P.v2 ? '¡Ana alcanza a Beto!' : '¡Beto alcanza a Ana!') : '¡Se cruzan!'} · a ${N1(e.lugar)} m de la salida`, c.ink, 'center', 800, W);
 }
 
 const NOMBRES = { vx:'vx · velocidad horizontal (y su sombra)', vy:'vy · velocidad vertical (y su sombra)', v:'v · velocidad', a:'a · aceleración de la gravedad, g', t:'t · tiempo (líneas de igual instante)', w:'ω · velocidad angular' };
