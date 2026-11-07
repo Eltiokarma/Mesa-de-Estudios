@@ -307,6 +307,15 @@ const V = {
   'fr-02': d => { const r = motor('fracciones').coinciden(d.a, d.b);
     return { correcta: r.minutos, errores: { 'AR13-mcd-en-vez-de-mcm': r.errores.mcd, 'AR13-producto': r.errores.producto, suma: r.errores.suma } }; },
 
+  'inv-01': d => { const r = motor('funciones-trig-inversas').arcoDe({ fn: 'sen', grados: d.grados }), e = r.errores;
+    return { correcta: r.valor, errores: { 'IN3-se-cancelan-siempre': e.siempre.grados, 'TR14-cambia-de-funcion': e.complemento.grados, 'IN24-signo-al-reducir': e.signo.grados } }; },
+  'inv-02': d => { const r = motor('funciones-trig-inversas').compuesta({ ext: 'sen', inv: 'tan', k: `${d.num}/${d.den}` }), e = r.errores;
+    return { correcta: r.valor, errores: { 'IN8-cancela-funciones-distintas': e.cancela.valor, 'IN9-olvida-la-raiz': e.sinRaiz.valor, 'IN10-usa-la-reciproca': e.reciproca.valor } }; },
+  'rm-09': d => { const r = motor('relojes-calendarios').angulo({ H: d.H, M: d.M }), e = r.errores;
+    return { correcta: r.menor, errores: { 'AR7-horario-quieto': e.horarioQuieto, 'formula-signo-cambiado': e.signoCambiado, 'no-toma-el-menor-angulo': e.noMenor } }; },
+  'rm-10': d => { const r = motor('relojes-calendarios').vuelveHoraCorrecta({ a: d.a, cada: d.cada }), e = r.erroresDias;
+    return { correcta: r.dias, errores: { 'adelanto-hasta-24-horas': e.dia24, 'adelanto-por-hora-sin-el-cada': e.sinCada, 'adelanto-hasta-una-hora': e.unaHora } }; },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },

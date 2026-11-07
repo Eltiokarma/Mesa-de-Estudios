@@ -249,7 +249,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "choques"
+     ]
     },
     {
      "id": "fisica.oscilaciones",
@@ -714,7 +716,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "enlace"
+     ]
     },
     {
      "id": "quimica.nomenclatura-inorganica",
@@ -2307,7 +2311,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "segmentos-angulos"
+     ]
     },
     {
      "id": "geometria.triangulos",
@@ -3179,7 +3185,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "funciones-trig-inversas"
+     ]
     },
     {
      "id": "trigonometria.ecuaciones-trigonometricas",
@@ -4297,6 +4305,23 @@
     "/plantillas/celda-galvanica/papel.json"
    ]
   },
+  "choques": {
+   "id": "choques",
+   "titulo": "Choques: impulso y cantidad de movimiento",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.impulso-y-choques"
+   ],
+   "url": "/plantillas/choques/index.html",
+   "papel": "/plantillas/choques/papel.json",
+   "archivos": [
+    "/plantillas/choques/index.html",
+    "/plantillas/choques/motor.js",
+    "/plantillas/choques/papel.json"
+   ]
+  },
   "cinetica": {
    "id": "cinetica",
    "titulo": "Cinética química",
@@ -4442,6 +4467,23 @@
     "/plantillas/energia/papel.json"
    ]
   },
+  "enlace": {
+   "id": "enlace",
+   "titulo": "La molécula en 3D: enlace, forma y polaridad",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.enlace-quimico"
+   ],
+   "url": "/plantillas/enlace/index.html",
+   "papel": "/plantillas/enlace/papel.json",
+   "archivos": [
+    "/plantillas/enlace/index.html",
+    "/plantillas/enlace/motor.js",
+    "/plantillas/enlace/papel.json"
+   ]
+  },
   "equilibrio-quimico": {
    "id": "equilibrio-quimico",
    "titulo": "Equilibrio químico",
@@ -4526,6 +4568,23 @@
     "/plantillas/fracciones/index.html",
     "/plantillas/fracciones/motor.js",
     "/plantillas/fracciones/papel.json"
+   ]
+  },
+  "funciones-trig-inversas": {
+   "id": "funciones-trig-inversas",
+   "titulo": "Una sola respuesta: funciones trigonométricas inversas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.funciones-trigonometricas-inversas"
+   ],
+   "url": "/plantillas/funciones-trig-inversas/index.html",
+   "papel": "/plantillas/funciones-trig-inversas/papel.json",
+   "archivos": [
+    "/plantillas/funciones-trig-inversas/index.html",
+    "/plantillas/funciones-trig-inversas/motor.js",
+    "/plantillas/funciones-trig-inversas/papel.json"
    ]
   },
   "gases": {
@@ -4875,6 +4934,23 @@
     "/plantillas/relojes-calendarios/index.html",
     "/plantillas/relojes-calendarios/motor.js",
     "/plantillas/relojes-calendarios/papel.json"
+   ]
+  },
+  "segmentos-angulos": {
+   "id": "segmentos-angulos",
+   "titulo": "La escuadra y las paralelas: segmentos y ángulos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.segmentos-y-angulos"
+   ],
+   "url": "/plantillas/segmentos-angulos/index.html",
+   "papel": "/plantillas/segmentos-angulos/papel.json",
+   "archivos": [
+    "/plantillas/segmentos-angulos/index.html",
+    "/plantillas/segmentos-angulos/motor.js",
+    "/plantillas/segmentos-angulos/papel.json"
    ]
   },
   "solidos": {
