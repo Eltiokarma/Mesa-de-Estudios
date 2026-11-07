@@ -617,6 +617,12 @@ const V = {
     return { correcta: r.respuesta, errores: { 'dobla-y-despues-devuelve': e.devuelveDespues, 'olvida-lo-que-gasto-de-mas': e.olvidaElExtra, 'resta-lo-que-gasto-de-mas': e.restaElExtra } };
   },
 
+  // ---------------- Reserva de álgebra (rutina de matemática C) ----------------
+
+  // ---------------- Reserva de geometría (rutina de matemática C) ----------------
+
+  // ---------------- Reserva de trigonometría (rutina de matemática C) ----------------
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },
