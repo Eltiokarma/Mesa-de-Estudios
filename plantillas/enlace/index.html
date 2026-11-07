@@ -12,20 +12,22 @@
      enl   par enlazante (cada raya del enlace es un par)       azul       #1f5fbf / #7cb0ff
      libre par libre (sin compartir)                            ámbar      #8f5800 / #ffc04d
      dip   dipolo de enlace; su tamaño es ΔEN                   fucsia     #a10fbf / #cf6bfa
-     mu    dipolo total, la suma de los dipolos de enlace       turquesa   #0f766e / #5ed9c8
+     mu    dipolo total, la suma de los dipolos de enlace       marrón rojizo / naranja  #6b260f / #ff6600
      Na    ion Na⁺ en la red                                    granate    #77032c / #fdb4ce
      Cl    ion Cl⁻ en la red                                    verde      #466d14 / #a3d65e
    Los átomos de las moléculas, la carga formal, los ángulos, la hibridación y los electrones sueltos del paso 1 van en
-   tinta. Los seis se separan entre todos: ΔE00 mínimo 23,6 en claro (mu–Cl) y 25,2 en oscuro (dip–Na). Contraste mínimo
-   contra el papel, la tarjeta, el chip (8 %) y el fondo de una opción respondida (verde 10 % o rojo 9 %; dentro de .opt
-   la ficha va sin fondo): 4,53 en claro (mu) y 4,63 en oscuro (dip); todos pasan AA (4,5). El turquesa de mu está a
-   ΔE00 11 del verde de «correcto» (--ok) y el granate de Na⁺ a 20,6 del rojo de los avisos: los dos avisos van con texto. */
+   tinta. Salen juntos enl, libre, dip y mu (moléculas) y Na y Cl (red): ΔE00 mínimo 20,7 en claro (libre–mu) y 26,4 en
+   oscuro (libre–mu); Na–Cl 58,4 / 56,3. El único par cercano, mu–Na (16,3 en claro), nunca sale en el mismo dibujo.
+   Contraste mínimo contra el papel, la tarjeta, el chip (8 %) y el fondo de una opción respondida (verde 10 % o rojo 9 %;
+   dentro de .opt la ficha va sin fondo): 4,88 en claro (libre) y 4,63 en oscuro (dip; mu 4,64); todos pasan AA (4,5).
+   Con el rojo de los avisos (--warn): mu a ΔE00 20,6 / 21,7 y Na⁺ a 20,6 en claro y 17,4 en oscuro; el aviso siempre va
+   con texto. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-enl:#1f5fbf; --c-libre:#8f5800; --c-dip:#a10fbf; --c-mu:#0f766e; --c-Na:#77032c; --c-Cl:#466d14;
+  --c-enl:#1f5fbf; --c-libre:#8f5800; --c-dip:#a10fbf; --c-mu:#6b260f; --c-Na:#77032c; --c-Cl:#466d14;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -34,12 +36,12 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-enl:#7cb0ff; --c-libre:#ffc04d; --c-dip:#cf6bfa; --c-mu:#5ed9c8; --c-Na:#fdb4ce; --c-Cl:#a3d65e; color-scheme:dark } }
+  --c-enl:#7cb0ff; --c-libre:#ffc04d; --c-dip:#cf6bfa; --c-mu:#ff6600; --c-Na:#fdb4ce; --c-Cl:#a3d65e; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-enl:#7cb0ff; --c-libre:#ffc04d; --c-dip:#cf6bfa; --c-mu:#5ed9c8; --c-Na:#fdb4ce; --c-Cl:#a3d65e; color-scheme:dark }
+  --c-enl:#7cb0ff; --c-libre:#ffc04d; --c-dip:#cf6bfa; --c-mu:#ff6600; --c-Na:#fdb4ce; --c-Cl:#a3d65e; color-scheme:dark }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
@@ -113,8 +115,8 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
 
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:12px; align-items:end}
-select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%}
-.campo{display:grid; gap:4px; font-weight:700}
+select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%; width:100%; min-width:0}
+.campo{display:grid; gap:4px; font-weight:700; min-width:0}
 .botones{display:flex; flex-wrap:wrap; gap:6px}
 .botones .btn{padding:8px 14px; min-height:40px; font-size:.9rem}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
@@ -389,7 +391,11 @@ function crearEscena(cv, idDesc, modoId, idLey, idGiro){
     ctx.save();
     ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.stroke();
     ctx.fillStyle = c.ink; ctx.font = `800 ${Math.round(r*(s.length > 1 ? 0.85 : 1.05))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(s, x, y + 1);
-    if (cf) dibujarPiezas(ctx, c, [[cf > 0 ? '+' + cf : '−' + (-cf), 'ink', 800]], x + r*0.95, y - r*0.95, 11, 'left');
+    if (cf){
+      // Con pares libres alrededor, la carga formal va más afuera, entre el par de afuera y el de un costado.
+      const a = libresL ? Math.atan2(libresL.uy, libresL.ux) - Math.PI/4 : -Math.PI/4, d = libresL ? r + 14 : r*1.25;
+      dibujarPiezas(ctx, c, [[cf > 0 ? '+' + cf : '−' + (-cf), 'ink', 800]], x + Math.cos(a)*d, y + Math.sin(a)*d, 10.5, 'center');
+    }
     if (libresL && libresL.n){
       const a0 = Math.atan2(libresL.uy, libresL.ux), offs = libresL.n === 1 ? [0] : libresL.n === 2 ? [-0.9, 0.9] : [-Math.PI/2, 0, Math.PI/2];
       for (const o of offs){ const a = a0 + o, ux = Math.cos(a), uy = Math.sin(a); puntos2(c, x + ux*(r + 5), y + uy*(r + 5), ux, uy, c.libre); }
@@ -417,7 +423,8 @@ function crearEscena(cv, idDesc, modoId, idLey, idGiro){
       const x0 = 6 + (W - 12 - enFila*P.cw)/2 + col*P.cw, y0 = P.y + fila*(P.ch + P.rotH + 4);
       const R = Math.min(P.cw, P.ch)/2 - 4;
       molecula(c, it, x0 + P.cw/2, y0 + P.ch/2, R);
-      (it.rot || []).forEach((ps, k) => dibujarPiezas(ctx, c, ps, x0 + P.cw/2, y0 + P.ch + 8 + k*15, 12, 'center', P.cw - 6));
+      const corto = E.compacto && innerWidth < 900 && P.items.length > 1, rots = corto ? [[(it.rot && it.rot[0] && it.rot[0][0]) || ['', 'ink']]] : (it.rot || []);
+      rots.forEach((ps, k) => dibujarPiezas(ctx, c, ps, x0 + P.cw/2, y0 + P.ch + 8 + k*15, 12, 'center', P.cw - 6));
     });
   }
   function panelSueltos(c, P){
@@ -435,7 +442,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idGiro){
   function panelRes(c, P){
     const mo = ME.molecula(P.clave), k = P.ordenes.length;
     P.ordenes.forEach((ord, i) => {
-      const cx = 6 + P.cw*(i + 0.5), cy = P.y + P.ch/2, R = Math.min(P.cw, P.ch)/2 - 6, Lb = R*0.74, ra = clamp(R*0.16, 8, 15);
+      const cx = 6 + P.cw*(i + 0.5), cy = P.y + P.ch/2, R = Math.min(P.cw, P.ch)/2 - 6, Lb = R*(P.cw < 150 ? 0.62 : 0.74), ra = clamp(R*0.15, 8, 15);
       const d = ME.dibujo(mo, { f:0 }), est = ME.resonancia(P.clave).estructuras[i];
       if (P.marca === i){ rr(ctx, cx - P.cw/2 + 4, P.y, P.cw - 8, P.ch + 18, 14); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.stroke(); }
       d.ligandos.forEach((l, j) => {
@@ -446,7 +453,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idGiro){
       });
       atomo(c, cx, cy, ra*1.12, mo.central, est.cfCentral, null);
       dibujarPiezas(ctx, c, [[`Estructura ${i + 1}`, 'muted', 700]], cx, P.y + P.ch + 10, 11, 'center', P.cw - 8);
-      if (i < k - 1) dibujarPiezas(ctx, c, [['↔', 'ink', 800]], cx + P.cw/2, cy, 16, 'center');
+      if (i < k - 1) dibujarPiezas(ctx, c, [['↔', 'ink', 800]], cx + P.cw/2, P.cw < 150 ? cy + Lb*0.8 : cy, P.cw < 150 ? 13 : 16, 'center');
     });
   }
   function panelRed(c, P){
@@ -490,7 +497,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idGiro){
   let ult = null;
   Celular.arrastre(cv, {
     activo:() => !!E.vista.girable,
-    cerca:(p, r) => E.puntos.some(q => Math.hypot(q[0] - p.x, q[1] - p.y) <= r),
+    cerca:(p, r) => E.puntos.some(q => Math.hypot(q[0] - p.x, q[1] - p.y) <= Math.min(r, E.vista.radio || r)),
     empezar:p => { ult = p; },
     mover:p => { if (!ult) return; E.giro += (p.x - ult.x)*0.012; E.inc = clamp(E.inc + (p.y - ult.y)*0.008, -1.2, 1.2); ult = p; E.dibujar(); },
     soltar:() => { ult = null; },
@@ -541,6 +548,13 @@ const suave = f => f*f*(3 - 2*f);
 // Opciones numeradas del 1 al 4: las letras chocarían con C, N, O, F y S.
 const LETRAS = 'abcd';
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// Cambia el orden en que se muestran las opciones: las claves se vuelven a escribir a, b, c, d según la posición
+// (la medición guarda la posición que vio el alumno) y la correcta, sus comentarios y sus códigos van con ella.
+function reordenar(P, orden){
+  const viejo = Object.fromEntries(P.opts.map(o => [o[0], o])), fb = {}; let ok;
+  P.opts = orden.map((k, i) => { const o = viejo[k].slice(), nk = LETRAS[i]; if (P.fb[k]) fb[nk] = P.fb[k]; if (k === P.ok) ok = nk; o[0] = nk; return o; });
+  P.fb = fb; P.ok = ok; return P;
+}
 const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
 // La fuente queda escrita aquí para quien lea el código; la medición guarda solo la categoría.
 const RES = (cat, fuente) => cat;
@@ -554,7 +568,7 @@ const DESCUBRE = 'descúbrelo en «¿Qué pasa si…?»';
 function tapaExp(mo){
   const n = mo.ligandos.length, m = mo.paresLibres, lig = mo.ligandos.slice().sort().join(',');
   const t = { forma:null, pol:null, res:null };
-  if (!PRED_EXP['co2-so2'] && (mo.central === 'C' || mo.central === 'S') && lig === 'O,O') t.forma = 1;
+  if (!PRED_EXP['co2-so2'] && n === 2 && m <= 1 && mo.ligandos.every(l => l === 'O' || l === 'S')) t.forma = 1;
   if (!PRED_EXP['bf3-nh3'] && (mo.central === 'B' || mo.central === 'Al') && n === 3) t.forma = 2;
   if (!PRED_EXP['xef4'] && n === 4 && m === 2) t.forma = 3;
   if (!PRED_EXP['clorometanos'] && mo.central === 'C' && n === 4 && m === 0 && mo.ligandos.every(l => ['H', 'F', 'Cl'].includes(l)) && lig !== 'Cl,Cl,H,H') t.pol = 4;
@@ -587,13 +601,14 @@ const P0 = { id:'enlace-paso2', ok:'b', opts:[
     d:`Elegiste la 4. Alrededor del N sí hay 4 pares, pero 3 son compartidos con los H: son ${En_('pares enlazantes')}. Solo uno queda sin compartir. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
 const P1 = { id:'enlace-paso3', ok:'b', opts:[
   ['a', `Trigonal plana, como en el dibujo: los tres H alrededor del N.`, 'EN8-forma-del-dibujo', RES('documentado', 'Karonen 2021, 6a: 44 % acierta antes del curso')],
-  ['b', `Piramidal: los 4 pares apuntan como en un tetraedro y los tres H quedan debajo del par libre.`],
-  ['c', `Tetraédrica: hay cuatro pares alrededor del N.`, 'dominios-en-vez-de-molecular', RES('hipotesis', 'informe, propuesta de geometría: hipótesis')],
+  ['b', `Piramidal: los tres H quedan debajo del N y el par libre, arriba.`],
+  ['c', `Tetraédrica: hay cuatro pares alrededor del N y cada uno apunta a un vértice.`, 'dominios-en-vez-de-molecular', RES('hipotesis', 'informe, propuesta de geometría: hipótesis')],
   ['d', `Angular: el par libre aplasta la molécula y la dobla.`, 'EN9-solo-pares-libres', RES('parcial', 'Birk y Kurtz 1999, citado por Uyulgan y Akkuzu: 27 %, otra pregunta')]],
   fb:{ b:`¡Bien! El N tiene 4 dominios: 3 ${En_('pares enlazantes')} y ${Li_('un par libre')}. Se separan lo más posible, hacia los vértices de un tetraedro. La forma solo mira a los átomos: los tres H forman la base de una pirámide con el N arriba.`,
     a:`Elegiste la 1. El dibujo de Lewis es plano porque el papel es plano. El ${Li_('par libre')} también ocupa lugar y empuja a los H hacia abajo: piramidal. En ${KARONEN}, antes del curso solo cerca del 44 % acertó la forma del NH₃. La correcta está marcada.`,
     c:`Elegiste la 3. Los 4 pares sí apuntan a los vértices de un tetraedro: esa es la forma de los dominios. Pero la forma de la molécula solo mira dónde están los átomos, y uno de los 4 vértices lo ocupa el ${Li_('par libre')}: piramidal. Esta opción es una hipótesis nuestra. La correcta está marcada.`,
     d:`Elegiste la 4. El ${Li_('par libre')} cuenta, pero no aplasta: es un dominio más, como los 3 enlaces. Los 4 juntos dan el tetraedro y los H quedan en pirámide. «La forma la deciden solo los pares libres» es una idea que un estudio con estudiantes de posgrado encontró en cerca del 27 % (Birk y Kurtz, citado por Uyulgan y Akkuzu), con otra pregunta. La correcta está marcada.` } };
+reordenar(P1, ['a', 'c', 'd', 'b']);
 const P2 = { id:'enlace-paso4', ok:'b', opts:[
   ['a', `${hib(VS.errores['hibridacion-solo-ligandos'])}: tiene 3 átomos unidos.`, 'hibridacion-solo-ligandos', RES('hipotesis', 'tabla de lo que no tiene respaldo: NH₃ como sp²')],
   ['b', `${hib(VS.hibridacion)}: tiene 4 dominios, los 3 enlaces y el par libre.`],
@@ -606,12 +621,13 @@ const P2 = { id:'enlace-paso4', ok:'b', opts:[
 const P3 = { id:'enlace-paso6', ok:'c', opts:[
   ['a', `Apolar: en el dibujo, los dos Cl quedan opuestos y sus dipolos se anulan.`, 'EN10-dibujo-plano', RES('documentado', 'Karonen 2021, 7c: 56 % antes y 71 % después')],
   ['b', `Apolar: es tetraédrica como el CH₄, y una forma simétrica no tiene dipolo.`, 'EN11-simetrica-apolar', RES('parcial', 'Furió y otros 2000, sin porcentaje')],
-  ['c', `Polar: en 3D los dipolos C–Cl no se anulan con los C–H, y la suma apunta hacia los Cl.`],
+  ['c', `Polar: en 3D los dipolos C–Cl y C–H no se anulan.`],
   ['d', `Polar, y lo sería cualquier molécula que tenga átomos distintos.`, 'EN11-atomos-distintos', RES('parcial', 'Uyulgan y Akkuzu 2016, sin porcentaje de esta razón')]],
   fb:{ c:`¡Bien! En el tetraedro, los dos C–Cl quedan abajo y los dos C–H arriba. Sus ${Di_('dipolos')} apuntan los cuatro hacia abajo (al Cl, y desde el H hacia el C), y la suma no es cero: ${Mu_('el dipolo total')} apunta a los Cl.`,
     a:`Elegiste la 1. En el papel los Cl parecen opuestos, pero en 3D los cuatro enlaces apuntan a los vértices de un tetraedro: los dos Cl quedan del mismo lado. Mira cómo se levanta la molécula. En ${KARONEN}, cerca del 56 % eligió una idea así antes del curso y cerca del 71 % después: el error creció. La correcta está marcada.`,
     b:`Elegiste la 2. La forma sí es tetraédrica, pero los cuatro ligandos no son iguales: el C–Cl y el C–H tiran distinto, y en el tetraedro no se compensan. Mirar solo la forma, sin los ligandos, está descrito como error en la investigación, pero no tenemos su porcentaje. La correcta está marcada.`,
-    d:`Elegiste la 4. El CH₂Cl₂ sí es polar, pero no por tener átomos distintos: el CO₂ tiene C y O y es apolar, porque sus dos dipolos se anulan en línea. Lo que decide es la suma en 3D. «Es polar porque tiene átomos distintos» está descrito por la investigación, sin porcentaje. La correcta está marcada.` } };
+    d:`Elegiste la 4. El CH₂Cl₂ sí es polar, pero no por tener átomos distintos: el SF₆ tiene S y F y es apolar: sus seis dipolos se anulan en el octaedro. Lo que decide es la suma en 3D. «Es polar porque tiene átomos distintos» está descrito por la investigación, sin porcentaje. La correcta está marcada.` } };
+reordenar(P3, ['c', 'a', 'b', 'd']);
 const P4 = { id:'enlace-paso7', ok:'c', opts:[
   ['a', `${RED.errores['pares-como-moleculas']}: cada Na⁺ forma una molécula con un Cl⁻ vecino.`, 'EN1-par-ionico', RES('documentado', 'Kumpha y otros 2014: 92 % de 102 dice moléculas; 39 % par iónico')],
   ['b', `Una sola: todo el trozo es una gran molécula de NaCl.`, 'una-molecula-gigante', RES('hipotesis', 'hipótesis nuestra')],
@@ -637,7 +653,7 @@ const vHib = r => ({ girable:true, paneles:[{ tipo:'mol', items:[it(NH3, { f:1, 
   pie:'Cuatro dominios alrededor del N: tres enlaces y un par libre.', vars:['enl', 'libre'],
   desc: r ? 'El nitrógeno tiene 4 dominios: hibridación sp3.' : 'El amoniaco en 3D con sus cuatro dominios.' });
 const vDip = () => ({ girable:true, paneles:[{ tipo:'mol', items:[it(NH3, { f:1, libres:true, dip:true, total:true, rot:[[['NH₃: ', 'ink', 800], ['polar', 'mu', 800]]] })] }],
-  pie:'Gira: el dipolo total no cambia de tamaño; siempre apunta del lado del par libre.', vars:['enl', 'libre', 'dip', 'mu'],
+  pie:'Gira: el dipolo total gira con la molécula y siempre apunta del lado del par libre.', vars:['enl', 'libre', 'dip', 'mu'],
   desc:'El amoniaco con tres flechas de dipolo hacia el nitrógeno y el dipolo total hacia el par libre.' });
 const vCH = (r, f) => ({ girable: r && f >= 1, paneles:[{ tipo:'mol', items:[it(DC, { f, libres:true, libresL:true, dip:r, total:r,
     rot: r && f >= 1 ? [[['CH₂Cl₂: ', 'ink', 800], ['polar', 'mu', 800]]] : [[['CH₂Cl₂ en el papel', 'ink', 800]]] })] }],
@@ -660,11 +676,11 @@ const steps = [
    <p class="hint">Cada variable tiene su color en el texto, en el dibujo y en las cuentas. Toca un color del texto para resaltarlo en el dibujo.</p>` },
  { k:'Paso 2', t:'Los pares del nitrógeno: predice', gate:P0, vista:r => vLewis(!!r),
    anima: fin => { E.vista = vLewis(true); E.dibujar(); fin(); },
-   body:() => `<p>Con ${LW.electrones} electrones de valencia (4 pares), ya se dibujaron los 3 enlaces N–H. ¿Cuántos ${Li_('pares libres')} le quedan al N?</p>${opcionesHTML(P0.opts, 'fb')}
+   body:() => `<p>Con ${LW.electrones} electrones de valencia ya se dibujaron los 3 enlaces N–H. ¿Cuántos ${Li_('pares libres')} le quedan al N?</p>${opcionesHTML(P0.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs"><div class="eq"><span class="ex">4 pares − ${En_('3 pares enlazantes')} = ${Li_('1 par libre')}</span><span class="note">Con el par libre, el N queda con 8 electrones a su alrededor (octeto) y cada H con 2.</span></div></div></div>` },
  { k:'Paso 3', t:'La forma: predice', gate:P1, vista:r => vForma(!!r, r ? 1 : 0),
    anima: fin => levantar(f => vForma(true, f), fin),
-   body:() => `<p>Así se dibuja el NH₃ en el papel: los tres H alrededor del N y el ${Li_('par libre')} arriba. Pero la molécula no es de papel. ¿Qué forma tiene?</p>${opcionesHTML(P1.opts, 'fb')}
+   body:() => `<p>Así se dibuja el NH₃ en el papel: los tres H alrededor del N y el ${Li_('par libre')} arriba. Pero la molécula no es de papel. ¿Qué geometría molecular tiene, es decir, qué figura forman sus átomos?</p>${opcionesHTML(P1.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs"><div class="eq"><span class="ex">AXE: ${axe(VS.AXE)} &nbsp;→&nbsp; dominios: ${VS.geometriaDominios} &nbsp;·&nbsp; molécula: ${VS.geometria}</span><span class="note">A es el átomo central, X cada átomo unido y E cada par libre del central. La forma de los dominios cuenta todo; la de la molécula, solo los átomos.</span></div></div>
    <p class="fuente">En ${KARONEN}, antes del curso solo cerca del 44 % acertó la forma del NH₃, y cerca del 77 % después. Algunos alumnos de otro estudio dieron como «trigonal plana» al NH₃, al BF₃ y al ICl₃ a la vez (Uyulgan y Akkuzu, 2016).</p></div>` },
  { k:'Paso 4', t:'La hibridación: predice', gate:P2, vista:r => vHib(!!r), anima: fin => { E.vista = vHib(true); E.dibujar(); fin(); },
@@ -674,15 +690,15 @@ const steps = [
  { k:'Paso 5', t:'Flechas que se suman', vista:vDip,
    body:() => `<p>El N es más electronegativo que el H (3,04 contra 2,20 en la escala de Pauling): atrae más al par compartido. Cada enlace N–H tiene un ${Di_('dipolo')}, una flecha que apunta al átomo más electronegativo, con la cruz en el extremo δ+. Su tamaño en este modelo es la diferencia de electronegatividad: ${Di_('ΔEN = ' + dNH)}.</p>
    <p>La molécula es polar si la suma de las flechas, ${Mu_('el dipolo total')}, no es cero. En el NH₃ las tres apuntan hacia arriba, hacia el N, y la suma no se anula.</p>
-   <div class="eqs"><div class="eq"><span class="ex">${Mu_('dipolo total')} = suma de los ${Di_('3 dipolos N–H')} ≈ ${Mu_(fmt(PN.modulo, 2))}</span><span class="note">Las flechas se suman como vectores, en 3D. Es un modelo de academia: los ${Li_('pares libres')} no llevan flecha propia aquí, aunque en la molécula real también aportan.</span></div></div>
-   <p class="hint">Gira la molécula: las flechas giran con ella, pero el ${Mu_('dipolo total')} no cambia de tamaño.</p>` },
+   <div class="eqs"><div class="eq"><span class="ex">${Mu_('dipolo total')} = suma de los ${Di_('3 dipolos N–H')} ≠ 0: ${Mu_('polar')}</span><span class="note">Las flechas se suman como vectores, en 3D. Es un modelo de academia: los ${Li_('pares libres')} no llevan flecha propia aquí, aunque en la molécula real también aportan: en el NH₃ suman y en el NF₃ restan.</span></div></div>
+   <p class="hint">Gira la molécula: el ${Mu_('dipolo total')} gira con ella. Si en la pantalla se ve más corto es porque apunta hacia ti o lejos de ti; su tamaño no cambia.</p>` },
  { k:'Paso 6', t:'El diclorometano: predice', gate:P3, vista:r => vCH(!!r, r ? 1 : 0), anima: fin => levantar(f => vCH(true, f), fin),
-   body:() => `<p>El diclorometano, CH₂Cl₂, tiene un C con dos H y dos Cl, sin pares libres en el C (4 dominios). En el papel se dibuja así, con los Cl opuestos. Las diferencias de electronegatividad: ${Di_('C–Cl ' + dCCl)} (hacia el Cl) y ${Di_('C–H ' + dCH)} (hacia el C). ¿Es polar la molécula?</p>${opcionesHTML(P3.opts, 'fb')}
-   <div id="tras" class="body" hidden><div class="eqs"><div class="eq"><span class="ex">en el papel: ${Mu_('suma = 0')} &nbsp;·&nbsp; en 3D: ${Mu_('suma ≈ ' + fmt(PC.modulo, 2))}</span><span class="note">La polaridad necesita dos cosas a la vez: enlaces polares y una forma donde sus flechas no se anulen.</span></div></div>
+   body:() => `<p>El diclorometano, CH₂Cl₂, tiene un C con dos H y dos Cl, sin pares libres en el C (4 dominios). En el papel se dibuja así, con los Cl opuestos. Las diferencias de electronegatividad: ${Di_('C–Cl ' + dCCl)} (hacia el Cl) y ${Di_('C–H ' + dCH)} (hacia el C). ¿Es polar la molécula? Elige la opción en que la respuesta y la razón sean correctas.</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq"><span class="ex">en el papel: ${Mu_('suma = 0')} &nbsp;·&nbsp; en 3D: ${Mu_('suma ≠ 0')}</span><span class="note">La polaridad necesita dos cosas a la vez: enlaces polares y una forma donde sus flechas no se anulen.</span></div></div>
    <p class="fuente">En ${KARONEN}, solo cerca de 1 de cada 4 acertó que el CH₂Cl₂ es polar, antes y después del curso; los autores notan que los alumnos miran la polaridad en el dibujo plano.</p></div>` },
  { k:'Paso 7', t:'Un trozo de sal: predice', gate:P4, vista:r => vRed(!!r), anima: fin => { E.vista = vRed(true); E.dibujar(); fin(); },
    body:() => `<p>El cloruro de sodio es distinto: entre un metal muy activo y un no metal, ΔEN = 3,16 − 0,93 = 2,23, enlace iónico. Arriba, un trozo de cristal con ${Na_(RED.Na + ' Na⁺')} y ${Cl_(RED.Cl + ' Cl⁻')} (gíralo). ¿Cuántas moléculas de NaCl hay en este trozo?</p>${opcionesHTML(P4.opts, 'fb')}
-   <div id="tras" class="body" hidden><div class="eqs"><div class="eq"><span class="ex">coordinación 6:6 · moléculas: ${RED.moleculas} · proporción ${Na_('Na⁺')} : ${Cl_('Cl⁻')} ≈ 1 : 1</span><span class="note">En un cristal real hay tantísimos iones que la proporción es 1 a 1; en este trozo pequeño sobra uno. El enlace iónico es la atracción entre iones de carga opuesta en todas las direcciones.</span></div></div></div>` },
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq"><span class="ex">coordinación 6:6 · moléculas: ${RED.moleculas} · proporción ${Na_('Na⁺')} : ${Cl_('Cl⁻')} ≈ 1 : 1</span><span class="note">En un cristal real hay tantísimos iones que la proporción es 1 a 1; en este trozo pequeño sobra uno. El enlace iónico es la atracción entre iones de carga opuesta en todas las direcciones. En las academias se dice unidad fórmula: es la proporción 1 : 1, no una partícula.</span></div></div></div>` },
  { k:'Paso 8', t:'Ahora explora tú', explora:true, vista:() => ({ paneles:[] }),
    body:() => `<div class="ctrls">
      <label class="campo" for="xMol">Molécula del examen<select id="xMol"><option value="">— la que armas abajo —</option>${Object.entries(ME.MOLECULAS).map(([k, m]) => `<option value="${k}">${m.texto} · ${m.nombre}</option>`).join('')}<option value="red">Cristal de NaCl</option></select></label>
@@ -723,10 +739,14 @@ function explorar(){
     const ion = mo.carga !== 0;
     const lw = mo.lewis;
     const forma = t.forma ? `? (${DESCUBRE}, experimento ${t.forma})` : `${v.geometria} · dominios: ${v.geometriaDominios} · ángulos ideales: ${angTxt(v)} · hibridación del central: ${hib(v.hibridacion)}`;
-    const pol = t.forma || t.pol ? `? (${DESCUBRE}, experimento ${t.forma || t.pol})` : (p.polar ? Mu_('polar') + ` (dipolo total ≈ ${fmt(p.modulo, 2)})` : Mu_('apolar') + ' (dipolo total = 0)') + (ion ? '. Ojo: es un ion; en el examen se pregunta la polaridad de moléculas neutras.' : '');
-    const enl = [...new Set(mo.ligandos)].map(l => { const te = ME.tipoEnlace(mo.central, l); return `${mo.central}–${l}: ΔEN ${fmt(te.dEN, 2)}, ${te.tipo}${te.coincide ? '' : ` (por el corte; ${te.porAtomos === 'covalente' ? 'son dos no metales: covalente' : 'metal con no metal'})`}`; }).join(' · ');
+    const pol = t.forma || t.pol ? `? (${DESCUBRE}, experimento ${t.forma || t.pol})` : (p.polar ? Mu_('polar') : Mu_('apolar') + ' (dipolo total = 0)') + (m > 0 && p.enlaces.some(e => e.dEN > 0) ? '. Ojo: aquí el par libre empuja al revés que los enlaces. En la molécula real el NF₃ es mucho menos polar que el NH₃; este modelo no lo muestra' : '') + (ion ? '. Ojo: es un ion; en el examen se pregunta la polaridad de moléculas neutras.' : '');
+    const enl = [...new Set(mo.ligandos)].map(l => { const te = ME.tipoEnlace(mo.central, l); const d = fmt(te.dEN, 2);
+      if (!te.coincide && te.porAtomos === 'covalente') return `${mo.central}–${l}: ΔEN ${d}: el corte diría iónico, pero son dos no metales que comparten pares: covalente polar`;
+      if (!te.coincide) return `${mo.central}–${l}: ΔEN ${d}, ${te.tipo} por el corte, aunque es metal con no metal (el paso es gradual)`;
+      if (te.dEN > 0 && te.dEN < 0.4) return `${mo.central}–${l}: ΔEN ${d}, casi apolar por el corte, pero en el modelo igual lleva su flecha pequeña`;
+      return `${mo.central}–${l}: ΔEN ${d}, ${te.tipo}`; }).join(' · ');
     $('live').innerHTML = `<div class="fila"><b>${mo.formula}</b>${mo.nombre ? `<span>${mo.nombre}</span>` : ''}<span>${axe(v.AXE)}</span><span>${En_(n + (n === 1 ? ' átomo unido' : ' átomos unidos'))}</span><span>${Li_(m + (m === 1 ? ' par libre' : ' pares libres'))} en el ${mo.central}</span></div>
-      ${lw ? `<div class="fila"><span>Lewis: ${lw.electrones} electrones de valencia; ${En_(lw.paresEnlazantes + ' pares enlazantes')}${lw.pi ? ` (${lw.pi} pi)` : ''} y ${Li_(lw.paresLibres + ' pares libres')} en el central; octeto ${lw.octeto}; carga formal del ${mo.central}: ${lw.cfCentral > 0 ? '+' : lw.cfCentral < 0 ? '−' : ''}${Math.abs(lw.cfCentral)}${t.res ? ` · resonancia: ? (${DESCUBRE}, experimento 5)` : lw.resonancia > 1 ? ` · ${lw.resonancia} estructuras de resonancia` : ''}</span></div>` : `<div class="fila"><span>Lewis: ${mo.lewisError}</span></div>`}
+      ${lw ? `<div class="fila"><span>Lewis: ${lw.electrones} electrones de valencia; ${En_(lw.paresEnlazantes + ' pares enlazantes')}${lw.pi ? ` (${lw.pi} pi)` : ''} y ${Li_(lw.paresLibres + (lw.paresLibres === 1 ? ' par libre' : ' pares libres'))} en el central; octeto ${lw.octeto}; carga formal del ${mo.central}: ${lw.cfCentral > 0 ? '+' : lw.cfCentral < 0 ? '−' : ''}${Math.abs(lw.cfCentral)}${t.res ? ` · resonancia: ? (${DESCUBRE}, experimento 5)` : lw.resonancia > 1 ? ` · ${lw.resonancia} estructuras de resonancia` : ''}</span></div>` : `<div class="fila"><span>Lewis: ${mo.lewisError}</span></div>`}
       ${lw && !mo.lewisCoincide ? `<div class="aviso">Con estos átomos, la cuenta de Lewis da ${Li_(lw.paresLibres + (lw.paresLibres === 1 ? ' par libre' : ' pares libres'))} en el ${mo.central}, no ${m}: esta molécula no existe así. La forma de abajo es la de ${axe(v.AXE)}.</div>` : ''}
       <div class="fila"><span>Forma: ${forma}</span></div>
       <div class="fila"><span>Polaridad: ${pol}</span></div>
@@ -738,7 +758,7 @@ function explorar(){
   };
   const fijar = spec => { X.red = 0; X.spec = spec; try { X.spec.paresLibres = ME.lewis(spec).paresLibres; } catch (e) { X.spec.paresLibres = X.spec.paresLibres || 0; } vivo(); };
   $('xMol').onchange = () => { const k = $('xMol').value; if (k === 'red'){ X.red = 3; vivo(); return; } if (!k) return;
-    const m = ME.MOLECULAS[k]; fijar({ central:m.central, ligandos:m.ligandos.slice(), carga:m.carga || 0 }); };
+    const m = ME.MOLECULAS[k]; fijar({ central:m.central, ligandos:m.ligandos.slice(), carga:m.carga || 0, texto:m.texto, nombre:m.nombre }); };
   const propio = () => { $('xMol').value = ''; X.spec = { central:X.spec.central, ligandos:X.spec.ligandos.slice(), paresLibres:X.spec.paresLibres }; };
   $('xCen').onchange = () => { propio(); X.spec.central = $('xCen').value; fijar(X.spec); };
   $('stepBody').querySelectorAll('[data-lig]').forEach(b => b.onclick = () => { propio(); X.spec.ligandos.push(b.dataset.lig); fijar(X.spec); });
@@ -792,7 +812,8 @@ function prediccion(s){
   const pintar = () => {
     const p = S.pred[P.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
-    const fb = $('fb'); fb.innerHTML = P.fb[p].replace(/ tabindex="0"/g, ''); fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    const t = p === P.ok ? P.fb[p] : `Elegiste la ${LETRAS.indexOf(p) + 1}. ` + P.fb[p].replace(/^Elegiste la \d\. /, '');
+    const fb = $('fb'); fb.innerHTML = t.replace(/ tabindex="0"/g, ''); fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
     const tras = $('tras'); if (tras) tras.hidden = false;
   };
   const t0 = Date.now();
@@ -844,7 +865,7 @@ const en3D = (mo, f, conPol) => ({ mol:mo, f, libres:true, libresL:true, dip:tru
 const VARS = ['enl', 'libre', 'dip', 'mu'];
 const EXPS = [
   { id:'co2-so2', corto:'CO₂ y SO₂', ok:'b',
-    q:`El CO₂ y el SO₂ se escriben casi igual en el papel: O=C=O y O=S=O. Pero el S tiene un ${Li_('par libre')} y el C no. ¿Cuál de las dos moléculas es polar?`,
+    q:`El CO₂ y el SO₂ se escriben casi igual en el papel: O=C=O y O=S=O (arriba, con sus ${Li_('pares libres')}). ¿Cuál de las dos moléculas es polar?`,
     opts:[['a', `Las dos: sus enlaces C=O y S=O son polares.`, 'EN11-enlaces-polares', RES('parcial', 'Uyulgan y Akkuzu 2016: 37,5 % explica el enlace y no la molécula')],
           ['b', `Solo el SO₂: su par libre la dobla y los dos dipolos no se anulan.`],
           ['c', `Ninguna: las dos son lineales, como se escriben, y sus dipolos se anulan.`, 'EN8-forma-del-dibujo', RES('parcial', 'Karonen 2021: forma desde el dibujo, medido en otras moléculas')],
@@ -863,12 +884,12 @@ const EXPS = [
   { id:'bf3-nh3', corto:'BF₃ y NH₃', ok:'b',
     q:`El BF₃ y el NH₃ tienen los dos un átomo central unido a tres átomos. El N del NH₃ tiene ${Li_('un par libre')}. ¿Qué formas tienen las dos moléculas?`,
     opts:[['a', `Las dos trigonales planas: tres átomos unidos dan siempre la misma forma.`, 'EN8-trigonal-las-dos', RES('parcial', 'Uyulgan y Akkuzu 2016: NH₃, BF₃ e ICl₃ como trigonales, sin porcentaje')],
-          ['b', `BF₃ trigonal plana y NH₃ piramidal: el N tiene un par libre que ocupa lugar y el B no.`],
+          ['b', `BF₃ trigonal plana y NH₃ piramidal: solo el N tiene par libre.`],
           ['c', `Las dos piramidales: los tres átomos se van hacia un lado del átomo central.`, 'piramidal-las-dos', RES('hipotesis', 'hipótesis nuestra')],
           ['d', `BF₃ tetraédrica y NH₃ piramidal: el B completa su octeto con un par libre, como el N.`, 'EN3-octeto-como-ley', RES('parcial', 'Karonen 2021: 27 % acierta octeto expandido; aquí incompleto')]],
     fb:{ a:`El NH₃ tiene 4 dominios: los 3 enlaces y el ${Li_('par libre')}, que empuja a los H hacia abajo. El BF₃ tiene 3 y sí es plano. En un estudio con futuros profesores de Turquía (Uyulgan y Akkuzu, 2016), algunos dieron el NH₃, el BF₃ y el ICl₃ como trigonales planas los tres; no hay porcentaje.`,
       c:`El B no tiene pares libres: sus 3 dominios se separan a 120° en un plano, y nada empuja a los F hacia un lado. Esta opción es una hipótesis nuestra.`,
-      d:`El octeto es una guía, no una ley: el B se queda con 6 electrones (octeto incompleto) y no tiene un par libre que agregar. Con 3 dominios, trigonal plana. En ${KARONEN}, solo cerca de 1 de cada 4 aceptó el octeto expandido antes del curso; el incompleto es la misma idea al revés.` },
+      d:`El octeto es una guía, no una ley: el B se queda con 6 electrones (octeto incompleto) y no tiene un par libre que agregar. Con 3 dominios, trigonal plana. En ${KARONEN}, solo cerca de 1 de cada 4 acertó la pregunta de octeto expandido antes del curso; el incompleto es la misma idea al revés.` },
     antes:() => ({ paneles:[{ tipo:'mol', items:[enPapel(BF3), enPapel(NH3)] }], pie:'Los dos en el papel.', vars:['enl', 'libre'], desc:'Trifluoruro de boro y amoniaco dibujados en el papel.' }),
     despues:f => ({ girable:f >= 1, paneles:[{ tipo:'mol', items:[en3D(BF3, f, true), en3D(NH3, f, true)] }],
       pie:'Gíralas: el BF₃ es plano y sus tres flechas se anulan; el NH₃ es una pirámide y su suma apunta al par libre.', vars:VARS,
@@ -879,8 +900,8 @@ const EXPS = [
       <p class="fuente">La forma leída del dibujo es el error más medido de este tema; las opciones 3 y 4 son variantes nuestras.</p>` },
   { id:'xef4', corto:'El XeF₄', ok:'b',
     q:`El xenón es un gas noble, y aun así forma XeF₄: cuatro F y ${Li_('2 pares libres')} en el Xe, 6 dominios. ¿Qué forma tiene y es polar?`,
-    opts:[['a', `Tetraédrica y apolar: tiene 4 átomos unidos, como el CCl₄.`, 'EN9-no-cuenta-pares', RES('parcial', 'EN9, segunda versión: sin porcentaje')],
-          ['b', `Cuadrada plana y apolar: los 2 pares libres quedan opuestos y los 4 F, en un plano.`],
+    opts:[['a', `Tetraédrica y apolar: tiene 4 átomos unidos, como el CCl₄, y los pares libres no cuentan para la forma.`, 'EN9-no-cuenta-pares', RES('parcial', 'EN9, segunda versión: sin porcentaje')],
+          ['b', `Cuadrada plana y apolar: los pares libres quedan opuestos.`],
           ['c', `Octaédrica y polar: tiene 6 dominios, y los pares libres la desequilibran.`, 'dominios-y-pares-polares', RES('hipotesis', 'hipótesis nuestra')],
           ['d', `Pirámide cuadrada y polar: los 2 pares libres empujan a los F hacia el mismo lado.`, 'pares-del-mismo-lado', RES('hipotesis', 'hipótesis nuestra')]],
     fb:{ a:`Con 4 átomos unidos y sin pares libres sería tetraédrica, pero el Xe tiene también ${Li_('2 pares libres')}: 6 dominios, como un octaedro. La idea de que los pares libres no cuentan está descrita en la investigación, sin porcentaje.`,
@@ -898,26 +919,27 @@ const EXPS = [
     q:`CH₄, CH₃Cl, CH₂Cl₂, CHCl₃ y CCl₄: el C con 4 átomos unidos y ningún par libre. Las cinco son tetraédricas. ¿Cuáles son polares?`,
     opts:[['a', `Ninguna: las cinco son tetraédricas, y una forma simétrica no tiene dipolo.`, 'EN11-simetrica-apolar', RES('parcial', 'Furió y otros 2000, sin porcentaje')],
           ['b', `Solo ${SER_PLANO}: en el dibujo, los Cl del CH₂Cl₂ quedan opuestos y se anulan.`, 'EN10-dibujo-plano', RES('documentado', 'Karonen 2021, 7c: 56 % y 71 % con el CH₂Cl₂')],
-          ['c', `${SER_OK}: mezclan H y Cl, y en el tetraedro sus dipolos no se anulan.`],
-          ['d', `Las cinco: todas tienen átomos distintos.`, 'EN11-atomos-distintos', RES('parcial', 'Uyulgan y Akkuzu 2016, sin porcentaje')]],
+          ['c', `${SER_OK}: al mezclar H y Cl, sus dipolos no se anulan.`],
+          ['d', `Las cinco: todas tienen átomos distintos, el C con H o con Cl, y eso basta.`, 'EN11-atomos-distintos', RES('parcial', 'Uyulgan y Akkuzu 2016, sin porcentaje')]],
     fb:{ a:`La forma es la misma, pero los ligandos no: si los 4 son iguales (CH₄, CCl₄), las flechas se anulan; si se mezclan H y Cl, no. Mirar solo la forma está descrito en la investigación, sin porcentaje.`,
       b:`En el papel, el CH₂Cl₂ parece tener los Cl opuestos; en 3D los dos quedan del mismo lado y es polar. En ${KARONEN}, cerca del 56 % antes del curso y cerca del 71 % después eligió que el CH₂Cl₂ es apolar.`,
       d:`El CH₄ y el CCl₄ tienen átomos distintos (C y H, C y Cl) y son apolares: sus 4 flechas iguales se anulan en el tetraedro. «Es polar porque tiene átomos distintos» está descrito en la investigación, sin porcentaje.` },
     antes:() => ({ paneles:[{ tipo:'mol', items:SERIE.map(enPapel) }], pie:'Las cinco en el papel.', vars:['enl', 'libre'], desc:'Metano y sus derivados clorados dibujados en el papel.' }),
-    despues:f => ({ girable:f >= 1, paneles:[{ tipo:'mol', items:SERIE.map(m => ({ ...en3D(m, f, false), libresL:false, rot: f >= 1 ? rot(m, polTxt(m)) : rot(m) })) }],
+    giro:2.9,
+    despues:f => ({ girable:f >= 1, radio:16, paneles:[{ tipo:'mol', items:SERIE.map(m => ({ ...en3D(m, f, false), libresL:false, rot: f >= 1 ? rot(m, polTxt(m)) : rot(m) })) }],
       pie:'Gíralas: con los 4 ligandos iguales las flechas se anulan; al mezclar H y Cl, no.', vars:VARS,
       desc:`Polares: ${SER_OK}. Apolares: metano y tetracloruro de carbono.` }),
     anima:true,
-    exp:() => `<div class="eqs">${SERIE.map(m => `<div class="eq"><span class="ex">${m.formula}: ${m.polaridad.polar ? Mu_('polar') + ` (≈ ${fmt(m.polaridad.modulo, 2)})` : Mu_('apolar')}</span></div>`).join('')}
-      <div class="eq"><span class="note">Los tamaños son del modelo (suma de diferencias de electronegatividad), no los momentos dipolares medidos: sirven para decir polar o apolar, no para ordenar estas tres.</span></div></div>
+    exp:() => `<div class="eqs">${SERIE.map(m => `<div class="eq"><span class="ex">${m.formula}: ${m.polaridad.polar ? Mu_('polar') : Mu_('apolar')}</span></div>`).join('')}
+      <div class="eq"><span class="note">Las flechas son del modelo (diferencias de electronegatividad), no los momentos dipolares medidos: sirven para decir polar o apolar, no para ordenar las tres polares.</span></div></div>
       <p class="fuente">El error del dibujo plano está medido con el CH₂Cl₂ (Karonen y otros, 2021). En ${UYULGAN}, solo cerca de 1 de cada 7 explicó bien la polaridad de los enlaces y de las moléculas del CH₄ y sus derivados clorados.</p>` },
   { id:'resonancia', corto:'Resonancia del carbonato', ok:'b',
     q:`Para el ion carbonato, CO₃²⁻, se dibujan tres estructuras de Lewis (arriba): el enlace doble está con un O distinto en cada una. ¿Qué cambia de una a otra?`,
     opts:[['a', `Los átomos de O cambian de lugar: el ion pasa de una forma a otra.`, 'EN6-atomos-se-mueven', RES('documentado', 'Uyulgan y Akkuzu 2016: 37,5 % de 88')],
-          ['b', `Solo dónde se dibujan los electrones: los átomos no se mueven, y el ion real es un promedio de las tres.`],
+          ['b', `Solo dónde se dibujan los electrones: el ion real es un promedio de las tres.`],
           ['c', `El ion salta muy rápido de una estructura a otra; en cada instante es una de las tres.`, 'alterna-entre-estructuras', RES('hipotesis', 'hipótesis nuestra')],
-          ['d', `Son tres iones distintos que existen mezclados en la muestra.`, 'tres-iones-distintos', RES('hipotesis', 'hipótesis nuestra')]],
-    fb:{ a:`Los tres O están en el mismo lugar en las tres estructuras: lo único que cambia es dónde se dibuja el ${En_('par enlazante')} extra. En ${UYULGAN}, cerca de 4 de cada 10 definió la resonancia como tener varias geometrías o átomos en distintas posiciones.`,
+          ['d', `Son tres iones distintos que existen mezclados en la muestra, cada uno con su enlace doble fijo.`, 'tres-iones-distintos', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:`Los tres O están en el mismo lugar en las tres estructuras: lo único que cambia es dónde se dibuja el ${En_('par enlazante')} extra. En ${UYULGAN}, cerca del 38 % definió la resonancia como tener varias geometrías o átomos en distintas posiciones.`,
       c:`El ion no salta: es siempre el mismo, un promedio. Sus tres enlaces C–O miden lo mismo, algo entre un simple y un doble. Esta opción es una hipótesis nuestra.`,
       d:`Si fueran tres iones distintos, habría enlaces C–O de dos largos distintos, y los tres miden igual. Esta opción es una hipótesis nuestra.` },
     antes:() => ({ paneles:[{ tipo:'res', clave:'CO3^2-', ordenes:RS.estructuras.map(s => s.ordenes) }], pie:'Tres estructuras de Lewis del CO₃²⁻, con la carga formal de cada átomo.', vars:['enl', 'libre'], desc:'Tres estructuras de Lewis del ion carbonato, con el doble enlace en un oxígeno distinto en cada una.' }),
@@ -934,6 +956,7 @@ const EXPS = [
       <div class="eq"><span class="ex">orden de cada C–O = (2 + 1 + 1)/3 = ${fmt(RS.ordenPromedio[0], 2)}</span></div></div>
       <p class="fuente">Definir la resonancia como que la molécula cambia de forma o que los átomos se mueven: cerca del 38 % de 88 futuros profesores de Turquía (Uyulgan y Akkuzu, 2016). Confundir la carga formal con la carga del ion también aparece allí, en cerca de 1 de cada 10. Las opciones 3 y 4 son hipótesis nuestras.</p>` },
 ];
+reordenar(EXPS[2], ['a', 'c', 'd', 'b']); reordenar(EXPS[4], ['b', 'a', 'c', 'd']);
 const S = { k:0, pred:PRED_EXP, t0:Date.now(), ocupado:false };
 // Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan.
 const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
@@ -956,6 +979,7 @@ function ir(k){
   if (!abierto(k) || S.ocupado) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], ya = !!S.pred[x.id];
+  E.giro = x.giro === undefined ? 0.2 : x.giro; E.inc = 0.45;
   cortar(E); E.vista = ya ? x.despues(1) : x.antes();
   E.compactar(!ya);
   botones();

@@ -37,8 +37,8 @@
  *  - compararFrascos(liq, T, [V1, V2], nLiquido?): { P [P1, P2], nVapor [...], iguales, errores: {
  *    'mas-volumen-mas-presion' [P, P·V2/V1], 'se-reparte-como-gas' [P, P·V1/V2], 'cerrado-no-evapora' [0, 0] } } (GQ18).
  *  - Caja de partículas (2D, determinística con semilla): crearCaja({ liq, T, W, H, escala, rapidez, semilla, llena }),
- *    pasoCaja(caja, dt), cambiarT(caja, T), lecturaCaja(caja) → { vapor, densidad, densidadEq, presion, presionEq,
- *    evaporan, condensan (por segundo, ventana de 2 s), t }. Cada figura es una molécula entera.
+ *    pasoCaja(caja, dt), cambiarT(caja, T), lecturaCaja(caja) → { vapor, densidad, densidadEq, presion, presionMedia
+ *    (promedio móvil de 1,5 s), presionEq, evaporan, condensan (por segundo, ventana de 2 s), t }. Cada figura es una molécula entera.
  *  - rejillaLiquido(W, prof, d, t, semilla): moléculas del líquido [{ x, y, ang }] (y < 0, bajo la superficie);
  *    vecinosRejilla(pos, dmax): pares de vecinas. burbuja(R, n, semilla): moléculas dentro de una burbuja.
  *  - condensacion(n, W, H, d, semilla): { gas [...], liquido [...], radio } para el gas que se enfría (GQ16).
@@ -185,7 +185,7 @@
     CH3F: { texto: 'CH₃F', nombre: 'fluorometano', M: 34.03, Teb: -78.4, nC: 1,
       atomos: [['C', 0, 0], ['F', 1.2, 0], ['H', -0.5, -0.95], ['H', -0.95, 0.3], ['H', -0.3, 1]], enlaces: [[0, 1], [0, 2], [0, 3], [0, 4]] },
     CH3OCH3: { texto: 'CH₃OCH₃', nombre: 'dimetil éter', M: 46.07, Teb: -24.8, nC: 2,
-      atomos: [['O', 0, 0], ['C', -1.1, 0.6], ['C', 1.1, 0.6], ['H', -1.1, 1.65], ['H', -2.05, 0.1], ['H', -1.55, -0.3], ['H', 1.1, 1.65], ['H', 2.05, 0.1], ['H', 1.55, -0.3]],
+      atomos: [['O', 0, 0], ['C', -1.1, 0.6], ['C', 1.1, 0.6], ['H', -0.62, 1.48], ['H', -1.98, 1.08], ['H', -1.58, -0.28], ['H', 0.62, 1.48], ['H', 1.98, 1.08], ['H', 1.58, -0.28]],
       enlaces: [[0, 1], [0, 2], [1, 3], [1, 4], [1, 5], [2, 6], [2, 7], [2, 8]] },
     CH3OH: { texto: 'CH₃OH', nombre: 'metanol', M: 32.04, Teb: 64.7, nC: 1,
       atomos: [['C', 0, 0], ['O', 1.2, 0], ['H', 1.7, 0.85], ['H', -0.45, -0.95], ['H', -0.95, 0.3], ['H', -0.3, 1]], enlaces: [[0, 1], [1, 2], [0, 3], [0, 4], [0, 5]] },
@@ -330,14 +330,14 @@
   }
 
   // ---------------- Caja de partículas: evaporación y condensación ----------------
-  const VENTANA = 2;
+  const VENTANA = 2, TAU = 1.5;
   function densidadEq(c) { return c.escala * pv(c.liq, c.T) / (c.T + K0); }
   function rapidezDe(c) { return c.rapidez * Math.sqrt((c.T + K0) / 298.15); }
   function crearCaja(o) {
     o = o || {};
     const c = { liq: o.liq || 'agua', T: num(o.T === undefined ? 25 : o.T, 'T'), W: num(o.W || 1, 'W'), H: num(o.H || 0.6, 'H'),
       escala: num(o.escala || 300, 'escala'), rapidez: num(o.rapidez || 0.8, 'rapidez'), rnd: azar(o.semilla || 1),
-      vapor: [], acc: 0, t: 0, ev: [], cn: [], id: 0 };
+      vapor: [], acc: 0, t: 0, ev: [], cn: [], id: 0, dm: 0 };
     liquido(c.liq);
     if (o.llena) {
       // Ya en equilibrio: tantas moléculas como da la densidad de equilibrio, repartidas y con dirección al azar.
@@ -346,6 +346,7 @@
         const a = c.rnd() * 2 * Math.PI;
         c.vapor.push({ id: c.id++, x: c.rnd() * c.W, y: c.rnd() * c.H, vx: v * Math.cos(a), vy: v * Math.sin(a) });
       }
+      c.dm = N / (c.W * c.H);
     }
     return c;
   }
@@ -380,6 +381,7 @@
         c.vapor.push({ id: c.id++, x: c.rnd() * c.W, y: y0, vx: v * Math.sin(phi), vy: v * Math.cos(phi) });
         c.ev.push(c.t);
       }
+      c.dm += (c.vapor.length / (c.W * c.H) - c.dm) * Math.min(1, h / TAU);
       const t0 = c.t - VENTANA;
       while (c.ev.length && c.ev[0] < t0) c.ev.shift();
       while (c.cn.length && c.cn[0] < t0) c.cn.shift();
@@ -389,6 +391,7 @@
   function lecturaCaja(c) {
     const A = c.W * c.H, d = c.vapor.length / A, ventana = Math.min(VENTANA, c.t) || 1;
     return { vapor: c.vapor.length, densidad: d, densidadEq: densidadEq(c), presion: d * (c.T + K0) / c.escala,
+      presionMedia: c.dm * (c.T + K0) / c.escala,
       presionEq: pv(c.liq, c.T), evaporan: c.ev.length / ventana, condensan: c.cn.length / ventana, t: c.t };
   }
 

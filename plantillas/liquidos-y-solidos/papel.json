@@ -1,0 +1,155 @@
+{
+  "titulo": "Líquidos y sólidos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Un líquido en un recipiente cerrado se evapora hasta que salen tantas moléculas como vuelven: esa presión del vapor es la presión de vapor, y solo depende del líquido y de la temperatura. Un líquido hierve cuando su presión de vapor iguala la presión de afuera. Gas recogido sobre agua: P total = P del gas + P de vapor del agua. Humedad relativa = presión del vapor que hay en el aire ÷ presión de vapor a esa temperatura × 100. Puente de hidrógeno: un H unido directamente a F, O o N, y un F, O o N con par libre en la otra molécula. 1 atm = 760 mmHg; R = 62,4 mmHg·L/(mol·K); K = °C + 273.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se recoge oxígeno sobre agua a 25 °C en un tubo invertido. Con el agua de adentro al mismo nivel que la de afuera, la presión total en el tubo es 750 mmHg. La presión de vapor del agua a 25 °C es 23,7 mmHg. ¿Qué presión hace el oxígeno solo? Si el gas ocupa 0,250 L, ¿cuántos moles de O₂ se recogieron?",
+      "respuesta": "726,3 mmHg de O₂ y unos 9,76 × 10⁻³ mol.",
+      "pasos": [
+        "En el tubo hay dos gases: el oxígeno y el vapor del agua sobre la que se recogió. Con los niveles igualados, la presión total es la de afuera: 750 mmHg.",
+        "P del O₂ = P total − P de vapor = 750 − 23,7 = 726,3 mmHg.",
+        "n = PV/(RT) = 726,3 × 0,250 / (62,4 × 298) ≈ 9,76 × 10⁻³ mol. Sin restar el vapor saldría 10,1 × 10⁻³ mol: unos 3 % de más."
+      ],
+      "verificar": [
+        { "fn": "gasSobreAgua", "args": [750, 25, 0.25], "espera": { "Pgas": 726.3, "n": 0.00976 }, "tol": { "Pgas": 0.05, "n": 0.00002 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una tarde en Arequipa, a 25 °C, el vapor de agua del aire hace una presión parcial de 14,2 mmHg. La presión de vapor del agua a 25 °C es 23,7 mmHg y la presión del aire en Arequipa es de unos 572 mmHg. ¿Cuál es la humedad relativa? ¿Quiere decir que el 60 % del aire es agua?",
+      "respuesta": "Unos 60 %. No: el vapor de agua es solo cerca del 2,5 % del aire (14,2 de 572 mmHg).",
+      "pasos": [
+        "Humedad relativa = 14,2 / 23,7 × 100 ≈ 60 %. Compara el vapor que hay con el máximo que el aire puede tener a esa temperatura antes de que el agua empiece a condensarse.",
+        "La fracción del aire que es vapor de agua es otra cuenta: 14,2 / 572 ≈ 0,025, cerca del 2,5 % de las moléculas del aire.",
+        "Con 100 % de humedad, el vapor llegaría a 23,7 mmHg: el aire estaría saturado y el agua empezaría a condensarse (rocío, ventanas empañadas)."
+      ],
+      "verificar": [
+        { "fn": "humedadRelativa", "args": [14.2, 25, 572], "espera": { "HR": 60, "errores.fraccion-del-aire": 2.5 }, "tol": { "HR": 0.2, "errores.fraccion-del-aire": 0.05 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "El aire de un cuarto está a 30 °C con 50 % de humedad relativa. La presión de vapor del agua a 30 °C es 31,7 mmHg. ¿Qué presión parcial tiene el vapor de agua del cuarto? Con la tabla (16 °C: 13,6 mmHg; 18 °C: 15,4 mmHg; 20 °C: 17,5 mmHg), ¿desde qué temperatura una botella fría se empaña?",
+      "respuesta": "Unos 15,9 mmHg. Se empaña si está a menos de unos 18,5 °C (entre 18 y 20 °C).",
+      "pasos": [
+        "Presión parcial del vapor = 0,50 × 31,7 ≈ 15,9 mmHg.",
+        "Junto a la botella fría, el aire se enfría sin que cambie su vapor. Se empaña cuando la presión de vapor a esa temperatura baja hasta 15,9 mmHg: el aire queda saturado y el vapor se condensa.",
+        "En la tabla, 15,9 mmHg está entre 15,4 (18 °C) y 17,5 (20 °C), más cerca de 18 °C: unos 18,5 °C. Es el punto de rocío."
+      ],
+      "verificar": [
+        { "fn": "vaporDesdeHR", "args": [50, 30], "espera": { "p": 15.87, "rocio": 18.5 }, "tol": { "p": 0.05, "rocio": 0.1 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "En Cusco, la presión del aire es de unos 500 mmHg. Con la tabla de presión de vapor del agua (85 °C: 433 mmHg; 88 °C: 487 mmHg; 90 °C: 525 mmHg; 95 °C: 634 mmHg), ¿a qué temperatura hierve el agua de una olla destapada? ¿Y si la sigues calentando con más fuego?",
+      "respuesta": "Entre 88 y 90 °C, cerca de 88,7 °C. Con más fuego hierve más fuerte, pero la temperatura no sube.",
+      "pasos": [
+        "El agua hierve cuando su presión de vapor iguala a la de afuera: 500 mmHg. Ahí se pueden formar burbujas de vapor dentro del líquido sin que el aire las aplaste.",
+        "500 mmHg está entre 487 (88 °C) y 525 (90 °C): hierve a unos 88,7 °C, no a 100 °C.",
+        "Más fuego hace más burbujas por segundo, pero el agua que hierve no pasa de esa temperatura: la energía extra se va en separar moléculas."
+      ],
+      "verificar": [
+        { "fn": "ebullicion", "args": ["agua", 500], "espera": { "T": 88.7 }, "tol": { "T": 0.1 } },
+        { "fn": "hierve", "args": ["agua", 95, 500], "espera": { "hierve": true, "Tliquido": 88.7 }, "tol": { "Tliquido": 0.1 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una olla a presión mantiene adentro una presión de 1,5 atm. Con la tabla de presión de vapor del agua (105 °C: 909 mmHg; 110 °C: 1075 mmHg; 115 °C: 1266 mmHg), ¿hierve el agua de la olla a 110 °C? ¿Entre qué temperaturas de la tabla hierve?",
+      "respuesta": "A 110 °C todavía no hierve (1075 mmHg no llega a 1140 mmHg). Hierve entre 110 y 115 °C, cerca de 112 °C.",
+      "pasos": [
+        "1,5 atm = 1,5 × 760 = 1140 mmHg.",
+        "A 110 °C, la presión de vapor (1075 mmHg) es menor que 1140 mmHg: las burbujas no pueden crecer y no hierve.",
+        "1140 mmHg está entre 1075 (110 °C) y 1266 (115 °C): hierve a unos 112 °C. Por eso la comida se cocina más rápido: el agua está más caliente que en una olla abierta."
+      ],
+      "verificar": [
+        { "fn": "hierve", "args": ["agua", 110, 1140], "espera": { "hierve": false } },
+        { "fn": "ebullicion", "args": ["agua", 1140], "espera": { "T": 111.8 }, "tol": { "T": 0.1 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un frasco cerrado de 2 L, sin aire, tiene un poco de agua líquida a 25 °C. Todo su contenido se pasa a un frasco de 4 L, también a 25 °C, y todavía queda agua líquida. ¿Cuál es la presión del vapor en cada frasco? ¿Cuántos moles de vapor hay en cada uno? (presión de vapor del agua a 25 °C: 23,7 mmHg)",
+      "respuesta": "23,7 mmHg en los dos. Vapor: unos 2,55 × 10⁻³ mol en el de 2 L y 5,10 × 10⁻³ mol en el de 4 L.",
+      "pasos": [
+        "Mientras quede líquido, el agua se evapora hasta que salen tantas moléculas como vuelven. Eso pasa siempre a la misma densidad de vapor, así que la presión es la presión de vapor a 25 °C: 23,7 mmHg en los dos frascos.",
+        "En el frasco de 2 L: n = PV/(RT) = 23,7 × 2 / (62,4 × 298) ≈ 2,55 × 10⁻³ mol.",
+        "En el de 4 L hay el doble de espacio, así que se evapora el doble: 5,10 × 10⁻³ mol, a la misma presión. La presión no se reparte, como en un gas sin líquido, porque se evapora más agua."
+      ],
+      "verificar": [
+        { "fn": "compararFrascos", "args": ["agua", 25, [2, 4]], "espera": { "iguales": true, "P.0": 23.7, "nVapor.0": 0.00255, "nVapor.1": 0.0051 }, "tol": { "P.0": 0.05, "nVapor.0": 0.00001, "nVapor.1": 0.00001 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Ordena de mayor a menor punto de ebullición: a) CH₄, NH₃, H₂O y HF; b) H₂O, H₂S y H₂Se. Explica por qué el orden no sigue la masa molar.",
+      "respuesta": "a) H₂O > HF > NH₃ > CH₄. b) H₂O > H₂Se > H₂S.",
+      "pasos": [
+        "Al hervir, las moléculas se separan unas de otras; los enlaces de adentro no se rompen. Hierve más alto la sustancia cuyas moléculas se atraen más.",
+        "a) H₂O, HF y NH₃ forman puentes de hidrógeno; el CH₄ no, y es el más bajo (−161,5 °C). El agua forma más puentes por molécula (dos H y dos pares libres): 100 °C. Después el HF (19,5 °C) y el NH₃ (−33,3 °C). La masa molar casi no cambia en esta serie.",
+        "b) El H₂O es el más liviano y aun así es el que hierve más alto (100 °C), por sus puentes de hidrógeno. El H₂S y el H₂Se casi no los forman: entre ellos manda el tamaño de la nube de electrones, y el H₂Se (−41,3 °C) supera al H₂S (−60,3 °C)."
+      ],
+      "verificar": [
+        { "fn": "ordenEbullicion", "args": [["CH4", "NH3", "H2O", "HF"]], "espera": { "orden": ["H2O", "HF", "NH3", "CH4"] } },
+        { "fn": "ordenEbullicion", "args": [["H2O", "H2S", "H2Se"]], "espera": { "orden": ["H2O", "H2Se", "H2S"] } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuáles de estas sustancias forman puentes de hidrógeno entre sus propias moléculas: CH₃OH, CH₃OCH₃, HF, CH₄, CH₃NH₂ y CH₃F? ¿Puede el CH₃OCH₃ formar un puente de hidrógeno con el agua?",
+      "respuesta": "CH₃OH, HF y CH₃NH₂. Sí: el H del agua puede unirse a un par libre del O del éter.",
+      "pasos": [
+        "Para que haya puente hace falta un H unido directamente a F, O o N (el que se presta) y un F, O o N con par libre en la otra molécula (el que lo recibe).",
+        "CH₃OH (H en el O), HF (H en el F) y CH₃NH₂ (H en el N) tienen las dos cosas.",
+        "El CH₃OCH₃ y el CH₃F tienen O o F, pero sus H están unidos a C: entre sus propias moléculas no hay puente. El CH₄ no tiene ni lo uno ni lo otro.",
+        "Con el agua sí: el agua pone el H unido a O y el éter pone el O con su par libre. Por eso el éter se disuelve algo en agua."
+      ],
+      "verificar": [
+        { "fn": "quienesFormanPuentes", "args": [["CH3OH", "CH3OCH3", "HF", "CH4", "CH3NH2", "CH3F"]], "espera": { "forman": ["CH3OH", "HF", "CH3NH2"] } },
+        { "fn": "puenteHEntre", "args": ["CH3OCH3", "H2O"], "espera": { "hay": true, "desde": "b" } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "El n-pentano, CH₃(CH₂)₃CH₃, y el neopentano, C(CH₃)₄, tienen la misma fórmula, C₅H₁₂. ¿Cuál hierve a mayor temperatura y por qué? Uno hierve a 36,1 °C y el otro a 9,5 °C.",
+      "respuesta": "El n-pentano (36,1 °C). Su cadena recta toca más a sus vecinas que la forma de bola del neopentano (9,5 °C).",
+      "pasos": [
+        "Los dos tienen 5 carbonos y la misma masa molar, y ninguno forma puentes de hidrógeno (sus H están unidos a C). El número de carbonos no los distingue.",
+        "Entre moléculas así, la atracción crece con la superficie por la que se tocan. La cadena recta del pentano se acuesta junto a otra a lo largo; el neopentano es casi una esfera y solo se toca con sus vecinas en pocos puntos.",
+        "Más contacto, más atracción, más temperatura para separarlas: el n-pentano hierve a 36,1 °C y el neopentano a 9,5 °C."
+      ],
+      "verificar": [
+        { "fn": "ordenEbullicion", "args": [["neopentano", "pentano"]], "espera": { "orden": ["pentano", "neopentano"], "Teb": [36.1, 9.5] } },
+        { "fn": "razonEbullicion", "args": ["pentano", "neopentano"], "espera": { "razon": "superficie-de-contacto", "errores.por-carbonos": "iguales" } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Datos: el punto triple del agua está a 0,01 °C y 0,006 atm; el del CO₂, a −56,6 °C y 5,1 atm. A 1 atm, el hielo seco (CO₂ sólido) sublima a −78,5 °C, y a −30 °C la presión de vapor del CO₂ líquido es de unos 14 atm. a) ¿Qué fase tiene el agua a 0,001 atm y −10 °C? b) ¿Por qué no hay CO₂ líquido a 1 atm? c) ¿Qué fase tiene el CO₂ a 20 atm y −30 °C? ¿Y a 10 atm y −30 °C?",
+      "respuesta": "a) Gas. b) Porque 1 atm está por debajo de su punto triple (5,1 atm): el sólido pasa directo a gas. c) Líquido a 20 atm y gas a 10 atm.",
+      "pasos": [
+        "a) 0,001 atm está por debajo del punto triple del agua (0,006 atm). Ahí no hay agua líquida: a −10 °C, la presión de sublimación del hielo es unos 0,0026 atm y 0,001 atm es menos, así que hay vapor.",
+        "b) La zona del líquido empieza en el punto triple. A cualquier presión menor que 5,1 atm, el CO₂ sólido se convierte directo en gas al calentarlo: el hielo seco no moja.",
+        "c) A −30 °C, el CO₂ es líquido si la presión pasa su presión de vapor (unos 14 atm). Con 20 atm es líquido (así viene en los extintores); con 10 atm es gas."
+      ],
+      "verificar": [
+        { "fn": "fase", "args": ["agua", 0.001, -10], "espera": { "": "gas" } },
+        { "fn": "calentarAPresion", "args": ["co2", 1, -100, 20], "espera": { "cambios.0.a": "gas", "cambios.0.T": -78.5 }, "tol": { "cambios.0.T": 0.05 } },
+        { "fn": "fase", "args": ["co2", 20, -30], "espera": { "": "líquido" } },
+        { "fn": "fase", "args": ["co2", 10, -30], "espera": { "": "gas" } }
+      ]
+    }
+  ]
+}

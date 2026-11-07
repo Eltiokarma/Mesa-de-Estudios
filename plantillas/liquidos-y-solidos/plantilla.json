@@ -1,0 +1,15 @@
+{
+  "id": "liquidos-y-solidos",
+  "titulo": "El frasco cerrado: presión de vapor, ebullición y fuerzas entre moléculas",
+  "formato": "escena",
+  "unidades": [
+    "quimica.liquidos-y-solidos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

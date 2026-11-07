@@ -1,0 +1,786 @@
+{
+  "plantilla": "liquidos-y-solidos",
+  "unidades": "Temperatura en °C; presión en mmHg (1 atm = 760 mmHg; 1 mmHg = 133,322 Pa) salvo en los diagramas de fases, que van en atm; presionAltitud y el campo Pa en pascales; volumen en L; moles en mol; humedad relativa en %.",
+  "constantes": "Antoine (log10 P/mmHg = A − B/(C + T/°C)): agua 8,07131; 1730,63; 233,426 hasta 100 °C y 8,14019; 1810,94; 244,485 sobre 100 °C; etanol 8,20417; 1642,89; 230,300; acetona 7,11714; 1210,595; 229,664. ISA: P = 101 325 (1 − 2,25577·10⁻⁵ h)^5,25588 Pa. R = 62,36 mmHg·L/(mol·K); K = °C + 273,15. Puntos de ebullición normales del CRC (ver la cabecera de motor.js). Agua: triple 0,01 °C y 611,657 Pa, crítico 373,946 °C y 22,064 MPa, ΔH_sub 51,06 kJ/mol, fusión con pendiente −13,46 MPa/K. CO₂: triple −56,558 °C y 517,95 kPa, crítico 30,978 °C y 7,3773 MPa, sublimación normal −78,464 °C, fusión con pendiente 4,676 MPa/K; curvas de Clausius–Clapeyron por dos puntos (ver la cabecera).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.no-resta es lo que da el error típico 'no-resta'; cambios.0.T es la temperatura del primer cambio). El campo vacío '' es el resultado entero (fase devuelve un texto; presionCurva y presionAltitud, un número). Los textos, booleanos y listas se comparan exactos; los números, con la tolerancia relativa.",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    {
+      "nombre": "Agua a 25 °C: presión de vapor de unos 23,7 mmHg (Antoine, tramo de 1 a 100 °C)",
+      "fn": "presionVapor",
+      "args": [
+        "agua",
+        25
+      ],
+      "espera": {
+        "mmHg": 23.686413553095218,
+        "atm": 0.031166333622493707,
+        "kPa": 3.1579200277257606,
+        "tramo": 0,
+        "extrapolado": false
+      }
+    },
+    {
+      "nombre": "Agua a 100 °C: unos 760 mmHg con el tramo de 1 a 100 °C",
+      "fn": "presionVapor",
+      "args": [
+        "agua",
+        100
+      ],
+      "espera": {
+        "mmHg": 760.0863691649308,
+        "tramo": 0
+      }
+    },
+    {
+      "nombre": "Agua a 120 °C: unos 1485 mmHg con el tramo de 99 a 374 °C",
+      "fn": "presionVapor",
+      "args": [
+        "agua",
+        120
+      ],
+      "espera": {
+        "mmHg": 1484.9102771630824,
+        "tramo": 1,
+        "extrapolado": false
+      }
+    },
+    {
+      "nombre": "Etanol a 25 °C: unos 59 mmHg, más del doble que el agua",
+      "fn": "presionVapor",
+      "args": [
+        "etanol",
+        25
+      ],
+      "espera": {
+        "mmHg": 58.753651766755986,
+        "extrapolado": false
+      }
+    },
+    {
+      "nombre": "Acetona a 25 °C: unos 230 mmHg",
+      "fn": "presionVapor",
+      "args": [
+        "acetona",
+        25
+      ],
+      "espera": {
+        "mmHg": 230.91116645145334,
+        "extrapolado": false
+      }
+    },
+    {
+      "nombre": "Etanol a 90 °C: fuera del rango de la tabla (de −57 a 80 °C), el motor avisa que extrapola",
+      "fn": "presionVapor",
+      "args": [
+        "etanol",
+        90
+      ],
+      "espera": {
+        "mmHg": 1188.3582791242982,
+        "extrapolado": true
+      }
+    },
+    {
+      "nombre": "Ebullición normal del agua: 760 mmHg da unos 100,0 °C",
+      "fn": "ebullicion",
+      "args": [
+        "agua",
+        760
+      ],
+      "espera": {
+        "T": 99.99682973671645,
+        "extrapolado": false
+      }
+    },
+    {
+      "nombre": "Ebullición normal del etanol: unos 78,3 °C",
+      "fn": "ebullicion",
+      "args": [
+        "etanol",
+        760
+      ],
+      "espera": {
+        "T": 78.31920077673254
+      }
+    },
+    {
+      "nombre": "Ebullición normal de la acetona: unos 56,1 °C (un grado sobre el rango de la tabla: extrapolado)",
+      "fn": "ebullicion",
+      "args": [
+        "acetona",
+        760
+      ],
+      "espera": {
+        "T": 56.10127951059633,
+        "extrapolado": true
+      }
+    },
+    {
+      "nombre": "Agua a 500 mmHg: hierve a unos 88,7 °C",
+      "fn": "ebullicion",
+      "args": [
+        "agua",
+        500
+      ],
+      "espera": {
+        "T": 88.71109508273724
+      }
+    },
+    {
+      "nombre": "Puno (3827 m): unos 472,9 mmHg y el agua hierve a unos 87,3 °C",
+      "fn": "ebullicionAltitud",
+      "args": [
+        "agua",
+        3827
+      ],
+      "espera": {
+        "Pa": 63042.644682366976,
+        "mmHg": 472.86002822015104,
+        "T": 87.26429552345007
+      }
+    },
+    {
+      "nombre": "Juliaca (3825 m): 87,27 °C, lo mismo que da el motor de calorimetría",
+      "fn": "ebullicionAltitud",
+      "args": [
+        "agua",
+        3825
+      ],
+      "espera": {
+        "Pa": 63059.00757743179,
+        "T": 87.27099329230919
+      }
+    },
+    {
+      "nombre": "Nivel del mar: 101 325 Pa y unos 100,0 °C",
+      "fn": "ebullicionAltitud",
+      "args": [
+        "agua",
+        0
+      ],
+      "espera": {
+        "Pa": 101325,
+        "mmHg": 760.0021001785152,
+        "T": 99.99690682934772
+      }
+    },
+    {
+      "nombre": "Agua en Puno: hierve a menos que a 1 atm; «siempre a 100 °C» daría 100 y «el frío la hace hervir más alto», mayor",
+      "fn": "ebullicionLugar",
+      "args": [
+        3827
+      ],
+      "espera": {
+        "T": 87.26429552345007,
+        "comparada": "menor",
+        "errores.siempre-a-100": 100,
+        "errores.pv-igual-hierve-igual": 100,
+        "errores.frio-hierve-mas": "mayor"
+      }
+    },
+    {
+      "nombre": "Agua a 90 °C en Puno (472,9 mmHg): su presión de vapor (525 mmHg) ya pasa la de afuera, hierve; el líquido abierto se queda en unos 87,3 °C",
+      "fn": "hierve",
+      "args": [
+        "agua",
+        90,
+        472.86002822015104
+      ],
+      "espera": {
+        "Pv": 525.2664328234991,
+        "Teb": 87.26429552345007,
+        "hierve": true,
+        "Tliquido": 87.26429552345007
+      }
+    },
+    {
+      "nombre": "Agua a 90 °C a 760 mmHg: su presión de vapor no llega, no hierve",
+      "fn": "hierve",
+      "args": [
+        "agua",
+        90,
+        760
+      ],
+      "espera": {
+        "Pv": 525.2664328234991,
+        "hierve": false,
+        "Tliquido": 90
+      }
+    },
+    {
+      "nombre": "Olla a presión a 2 atm (1520 mmHg): el agua hierve a unos 120,7 °C; «el doble de presión, el doble de temperatura» daría 200 °C",
+      "fn": "ollaPresion",
+      "args": [
+        1520
+      ],
+      "espera": {
+        "T": 120.74563326052845,
+        "comparada": "mayor",
+        "errores.olla-sigue-en-100": 100,
+        "errores.doble-presion-doble-T": 200,
+        "errores.presion-ayuda-a-escapar": "menor"
+      }
+    },
+    {
+      "nombre": "Gas recogido sobre agua a 25 °C con 760 mmHg en total: el gas seco hace 760 − 23,7 = 736,3 mmHg",
+      "fn": "gasSobreAgua",
+      "args": [
+        760,
+        25
+      ],
+      "espera": {
+        "Pv": 23.686413553095218,
+        "Pgas": 736.3135864469048,
+        "errores.no-resta": 760,
+        "errores.suma-el-vapor": 783.6864135530952,
+        "errores.reparte-a-medias": 380
+      }
+    },
+    {
+      "nombre": "O₂ sobre agua a 25 °C, 750 mmHg y 0,250 L: 726,3 mmHg de O₂ y unos 9,77 milimoles (sin restar, 10,08)",
+      "fn": "gasSobreAgua",
+      "args": [
+        750,
+        25,
+        0.25
+      ],
+      "espera": {
+        "Pgas": 726.3135864469048,
+        "n": 0.0097661469919607,
+        "errores.n-sin-restar": 0.010084638895166764
+      }
+    },
+    {
+      "nombre": "Humedad relativa: 14,2 mmHg de vapor a 25 °C es casi el 60 %; como fracción del aire (14,2/760) saldría 1,9 %; punto de rocío unos 16,7 °C",
+      "fn": "humedadRelativa",
+      "args": [
+        14.2,
+        25,
+        760
+      ],
+      "espera": {
+        "Pv": 23.686413553095218,
+        "HR": 59.9499792071494,
+        "rocio": 16.700403144735674,
+        "errores.fraccion-del-aire": 1.868421052631579,
+        "errores.invierte": 166.80572924714943
+      }
+    },
+    {
+      "nombre": "Aire a 30 °C con 50 % de humedad: 15,9 mmHg de vapor; rocío a unos 18,5 °C",
+      "fn": "vaporDesdeHR",
+      "args": [
+        50,
+        30
+      ],
+      "espera": {
+        "p": 15.870083635592405,
+        "rocio": 18.458414377598558
+      }
+    },
+    {
+      "nombre": "Frasco cerrado sin aire de 1 L con agua a 25 °C: 23,7 mmHg y unos 1,27 milimoles de vapor",
+      "fn": "equilibrioCerrado",
+      "args": [
+        "agua",
+        25,
+        1
+      ],
+      "espera": {
+        "P": 23.686413553095218,
+        "nVapor": 0.0012739676128242625,
+        "quedaLiquido": true
+      }
+    },
+    {
+      "nombre": "Frasco de 1 L con solo 0,001 mol de agua a 25 °C: se evapora todo y la presión queda bajo la de vapor",
+      "fn": "equilibrioCerrado",
+      "args": [
+        "agua",
+        25,
+        1,
+        0.001
+      ],
+      "espera": {
+        "P": 18.592633999999997,
+        "nVapor": 0.001,
+        "quedaLiquido": false
+      }
+    },
+    {
+      "nombre": "GQ18: frascos de 1 L y 2 L a 25 °C, con líquido en los dos: la misma presión de vapor; el de 2 L tiene el doble de moléculas de vapor",
+      "fn": "compararFrascos",
+      "args": [
+        "agua",
+        25,
+        [
+          1,
+          2
+        ]
+      ],
+      "espera": {
+        "P": [
+          23.686413553095218,
+          23.686413553095218
+        ],
+        "nVapor": [
+          0.0012739676128242625,
+          0.002547935225648525
+        ],
+        "iguales": true,
+        "errores.mas-volumen-mas-presion": [
+          23.686413553095218,
+          47.372827106190435
+        ],
+        "errores.se-reparte-como-gas": [
+          23.686413553095218,
+          11.843206776547609
+        ],
+        "errores.cerrado-no-evapora": [
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "nombre": "EN15: entre NH₃, CH₃F y CH₃OCH₃ solo el NH₃ forma puentes de hidrógeno; «tener O» elige el éter; «F o N», NH₃ y CH₃F",
+      "fn": "quienesFormanPuentes",
+      "args": [
+        [
+          "NH3",
+          "CH3F",
+          "CH3OCH3"
+        ]
+      ],
+      "espera": {
+        "forman": [
+          "NH3"
+        ],
+        "errores.tiene-oxigeno": [
+          "CH3OCH3"
+        ],
+        "errores.tiene-F-o-N": [
+          "NH3",
+          "CH3F"
+        ],
+        "errores.H-y-electronegativo": [
+          "NH3",
+          "CH3F",
+          "CH3OCH3"
+        ]
+      }
+    },
+    {
+      "nombre": "Metanol: H unido a O y O con par libre: forma puentes de hidrógeno",
+      "fn": "puentesH",
+      "args": [
+        "CH3OH"
+      ],
+      "espera": {
+        "forma": true,
+        "donador": true,
+        "aceptor": true
+      }
+    },
+    {
+      "nombre": "Dimetil éter: tiene O (aceptor), pero sus H están unidos a C: entre sus moléculas no hay puente",
+      "fn": "puentesH",
+      "args": [
+        "CH3OCH3"
+      ],
+      "espera": {
+        "forma": false,
+        "donador": false,
+        "aceptor": true,
+        "errores.tiene-oxigeno": true
+      }
+    },
+    {
+      "nombre": "El éter sí recibe un puente del agua: el H del agua va al O del éter",
+      "fn": "puenteHEntre",
+      "args": [
+        "CH3OCH3",
+        "H2O"
+      ],
+      "espera": {
+        "hay": true,
+        "desde": "b",
+        "h": 1,
+        "aceptor": 0
+      }
+    },
+    {
+      "nombre": "Metano con metano: no hay puente de hidrógeno",
+      "fn": "puenteHEntre",
+      "args": [
+        "CH4",
+        "CH4"
+      ],
+      "espera": {
+        "hay": false
+      }
+    },
+    {
+      "nombre": "Serie CH₄, NH₃, H₂O, HF: H₂O > HF > NH₃ > CH₄; por masa saldría el HF primero",
+      "fn": "ordenEbullicion",
+      "args": [
+        [
+          "CH4",
+          "NH3",
+          "H2O",
+          "HF"
+        ]
+      ],
+      "espera": {
+        "orden": [
+          "H2O",
+          "HF",
+          "NH3",
+          "CH4"
+        ],
+        "Teb": [
+          100,
+          19.5,
+          -33.3,
+          -161.5
+        ],
+        "errores.por-masa": [
+          "HF",
+          "H2O",
+          "NH3",
+          "CH4"
+        ]
+      }
+    },
+    {
+      "nombre": "Serie H₂O, H₂S, H₂Se: H₂O > H₂Se > H₂S; por masa, el H₂O sería el último",
+      "fn": "ordenEbullicion",
+      "args": [
+        [
+          "H2O",
+          "H2S",
+          "H2Se"
+        ]
+      ],
+      "espera": {
+        "orden": [
+          "H2O",
+          "H2Se",
+          "H2S"
+        ],
+        "Teb": [
+          100,
+          -41.3,
+          -60.3
+        ],
+        "errores.por-masa": [
+          "H2Se",
+          "H2S",
+          "H2O"
+        ]
+      }
+    },
+    {
+      "nombre": "H₂O contra H₂S: el agua hierve más alto por los puentes de hidrógeno; por masa ganaría el H₂S",
+      "fn": "razonEbullicion",
+      "args": [
+        "H2O",
+        "H2S"
+      ],
+      "espera": {
+        "mayor": "H2O",
+        "razon": "puentes-de-hidrogeno",
+        "puentesA": true,
+        "puentesB": false,
+        "errores.por-masa": "H2S",
+        "errores.enlace-interno": "H2O"
+      }
+    },
+    {
+      "nombre": "EN16: butano contra isobutano, misma fórmula: gana el butano por superficie de contacto; por carbonos o por masa saldrían iguales",
+      "fn": "razonEbullicion",
+      "args": [
+        "butano",
+        "isobutano"
+      ],
+      "espera": {
+        "mayor": "butano",
+        "razon": "superficie-de-contacto",
+        "errores.por-carbonos": "iguales",
+        "errores.por-masa": "iguales",
+        "errores.ramificada-mas-unida": "isobutano"
+      }
+    },
+    {
+      "nombre": "Pentano contra neopentano: 36,1 °C contra 9,5 °C, por superficie de contacto",
+      "fn": "ordenEbullicion",
+      "args": [
+        [
+          "neopentano",
+          "pentano"
+        ]
+      ],
+      "espera": {
+        "orden": [
+          "pentano",
+          "neopentano"
+        ],
+        "Teb": [
+          36.1,
+          9.5
+        ]
+      }
+    },
+    {
+      "nombre": "Diagrama del agua: a 1 atm y −5 °C hay sólido",
+      "fn": "fase",
+      "args": [
+        "agua",
+        1,
+        -5
+      ],
+      "espera": {
+        "": "sólido"
+      }
+    },
+    {
+      "nombre": "Diagrama del agua: a 1 atm y 50 °C hay líquido",
+      "fn": "fase",
+      "args": [
+        "agua",
+        1,
+        50
+      ],
+      "espera": {
+        "": "líquido"
+      }
+    },
+    {
+      "nombre": "Diagrama del agua: a 1 atm y 150 °C hay gas",
+      "fn": "fase",
+      "args": [
+        "agua",
+        1,
+        150
+      ],
+      "espera": {
+        "": "gas"
+      }
+    },
+    {
+      "nombre": "Diagrama del agua: a 0,001 atm y −10 °C hay gas",
+      "fn": "fase",
+      "args": [
+        "agua",
+        0.001,
+        -10
+      ],
+      "espera": {
+        "": "gas"
+      }
+    },
+    {
+      "nombre": "Diagrama del agua: a 0,005 atm y −10 °C hay sólido",
+      "fn": "fase",
+      "args": [
+        "agua",
+        0.005,
+        -10
+      ],
+      "espera": {
+        "": "sólido"
+      }
+    },
+    {
+      "nombre": "Diagrama del agua: a 300 atm y 400 °C hay supercrítico",
+      "fn": "fase",
+      "args": [
+        "agua",
+        300,
+        400
+      ],
+      "espera": {
+        "": "supercrítico"
+      }
+    },
+    {
+      "nombre": "Diagrama del CO₂: a 1 atm y −90 °C hay sólido",
+      "fn": "fase",
+      "args": [
+        "co2",
+        1,
+        -90
+      ],
+      "espera": {
+        "": "sólido"
+      }
+    },
+    {
+      "nombre": "Diagrama del CO₂: a 1 atm y −50 °C hay gas",
+      "fn": "fase",
+      "args": [
+        "co2",
+        1,
+        -50
+      ],
+      "espera": {
+        "": "gas"
+      }
+    },
+    {
+      "nombre": "Diagrama del CO₂: a 20 atm y −30 °C hay líquido",
+      "fn": "fase",
+      "args": [
+        "co2",
+        20,
+        -30
+      ],
+      "espera": {
+        "": "líquido"
+      }
+    },
+    {
+      "nombre": "Diagrama del CO₂: a 10 atm y −30 °C hay gas",
+      "fn": "fase",
+      "args": [
+        "co2",
+        10,
+        -30
+      ],
+      "espera": {
+        "": "gas"
+      }
+    },
+    {
+      "nombre": "Diagrama del CO₂: a 100 atm y 40 °C hay supercrítico",
+      "fn": "fase",
+      "args": [
+        "co2",
+        100,
+        40
+      ],
+      "espera": {
+        "": "supercrítico"
+      }
+    },
+    {
+      "nombre": "Hielo seco a 1 atm: de −100 °C a 20 °C pasa directo de sólido a gas a −78,5 °C (sublima)",
+      "fn": "calentarAPresion",
+      "args": [
+        "co2",
+        1,
+        -100,
+        20
+      ],
+      "espera": {
+        "inicial": "sólido",
+        "final": "gas",
+        "cambios": [
+          {
+            "de": "sólido",
+            "a": "gas",
+            "T": -78.464
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "Hielo de agua a 1 atm: se funde cerca de 0 °C y hierve a 100 °C",
+      "fn": "calentarAPresion",
+      "args": [
+        "agua",
+        1,
+        -20,
+        120
+      ],
+      "espera": {
+        "inicial": "sólido",
+        "final": "gas",
+        "cambios": [
+          {
+            "de": "sólido",
+            "a": "líquido",
+            "T": 0.002517582243684993
+          },
+          {
+            "de": "líquido",
+            "a": "gas",
+            "T": 99.99682973671645
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "CO₂ a 10 atm (sobre el punto triple de 5,1 atm): se funde y después hierve",
+      "fn": "calentarAPresion",
+      "args": [
+        "co2",
+        10,
+        -100,
+        20
+      ],
+      "espera": {
+        "cambios": [
+          {
+            "de": "sólido",
+            "a": "líquido",
+            "T": -56.45207613344739
+          },
+          {
+            "de": "líquido",
+            "a": "gas",
+            "T": -39.574333429171446
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "Atmósfera estándar a 3827 m (Puno): unos 63 043 Pa",
+      "fn": "presionAltitud",
+      "args": [
+        3827
+      ],
+      "espera": {
+        "": 63042.644682366976
+      }
+    },
+    {
+      "nombre": "Curva de vaporización del CO₂ a −30 °C: unos 14,0 atm (modelo de dos puntos)",
+      "fn": "presionCurva",
+      "args": [
+        "co2",
+        "vaporizacion",
+        -30
+      ],
+      "espera": {
+        "": 14.006993376028396
+      }
+    },
+    {
+      "nombre": "Hielo a −10 °C: presión de sublimación de unos 260 Pa (0,00257 atm), cerca del dato de tabla",
+      "fn": "presionCurva",
+      "args": [
+        "agua",
+        "sublimacion",
+        -10
+      ],
+      "espera": {
+        "": 0.0025666604423795853
+      }
+    },
+    {
+      "nombre": "Curva de sublimación del CO₂ a 1 atm: −78,464 °C, la sublimación normal del hielo seco",
+      "fn": "temperaturaCurva",
+      "args": [
+        "co2",
+        "sublimacion",
+        1
+      ],
+      "espera": {
+        "": -78.464
+      }
+    }
+  ]
+}
