@@ -23,7 +23,8 @@
  *   3. Gas que no reacciona (7 nov 2026): inerte() mete n moles de un gas que no reacciona a volumen fijo (ninguna
  *      concentración cambia y Q sigue igual a K) o a presión total fija (el volumen crece, todo se diluye y el
  *      equilibrio se corre hacia el lado con más moles de gas), con sus errores típicos; la caja hace lo mismo con
- *      inerte() y presionFija(). kp() trae además sus errores de Δn (sin Δn, signo al revés, un solo lado).
+ *      inerte() y presionFija(). kp() trae además sus errores de Δn (sin Δn, signo al revés, un solo lado:
+ *      soloProductos y soloReactivos usan como Δn la suma de coeficientes gaseosos de ese lado, con signo +).
  */
 (function (root, fabrica) {
   const motor = fabrica();

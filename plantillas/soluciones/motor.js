@@ -38,7 +38,7 @@
  *   solubilidad('KNO3', 20)                                → 31,6 (número: g por 100 g de agua; en gases, g/kg a 1 atm)
  *   curva('KNO3', 5)                                       → [[T, S], …] cada 5 °C de punta a punta de la tabla (para dibujar)
  *   tipoSolucion({ sustancia, g, gAgua:100, T })           g de soluto TODO DISUELTO en gAgua: S, cabe = S·gAgua/100, porCien = 100·g/gAgua,
- *       tipo 'insaturada' (g < cabe), 'saturada' (g = cabe, tolerancia 1e-9) o 'sobresaturada' (g > cabe), falta = cabe − g, exceso = g − cabe;
+ *       tipo 'insaturada' (g < cabe), 'saturada' (g = cabe, tolerancia 1e-9) o 'sobresaturada' (g > cabe), falta = máx(0, cabe − g), exceso = máx(0, g − cabe);
  *       errores.porSolucion: el tipo si se compara S con los g de soluto por 100 g de SOLUCIÓN (100·g/(g + gAgua)) en vez de por 100 g de agua.
  *   equilibrio({ sustancia, g, gAgua:100, T, sobresaturar })  g de soluto echados (disueltos o no) a T: cabe, disuelto = mín(g, cabe),
  *       solido = g − disuelto, tipo ('saturada' si queda sólido). Con sobresaturar: true (sin sólido ni cristalito) no cristaliza: todo disuelto.
