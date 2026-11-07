@@ -2717,7 +2717,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "geometria-espacio"
+     ]
     },
     {
      "id": "geometria.poliedros",
@@ -4888,6 +4890,23 @@
     "/plantillas/geometria-analitica/index.html",
     "/plantillas/geometria-analitica/motor.js",
     "/plantillas/geometria-analitica/papel.json"
+   ]
+  },
+  "geometria-espacio": {
+   "id": "geometria-espacio",
+   "titulo": "El cubo que gira: rectas y planos en el espacio",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.geometria-del-espacio"
+   ],
+   "url": "/plantillas/geometria-espacio/index.html",
+   "papel": "/plantillas/geometria-espacio/papel.json",
+   "archivos": [
+    "/plantillas/geometria-espacio/index.html",
+    "/plantillas/geometria-espacio/motor.js",
+    "/plantillas/geometria-espacio/papel.json"
    ]
   },
   "grafica-perillas": {

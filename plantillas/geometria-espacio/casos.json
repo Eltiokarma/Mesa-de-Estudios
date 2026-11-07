@@ -1,0 +1,116 @@
+{
+  "plantilla": "geometria-espacio",
+  "unidades": "Distancias en las unidades del problema (u); ángulos en grados. El cubo de arista a es ABCD-EFGH con A(0,0,0), B(a,0,0), C(a,a,0), D(0,a,0) en el piso z = 0 y E, F, G, H encima de A, B, C, D.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.angulo.dibujo, pies.0); las listas se comparan completas. 'tambien' trae otras llamadas que comprueban lo mismo (con su propia 'fn' si cambia). Un error que con esos datos da lo mismo que la respuesta correcta no va en 'errores' sino en 'coinciden'. Los números irracionales van con 9 o más decimales y se comparan con tolerancia relativa 1e-9. 'dibujo' es el ángulo que se ve en el dibujo con la vista dada (giro az y elevación el; la vista con que abre la escena es az = 28, el = 22), redondeado a grados.",
+  "verificacion": "Verificado a ciegas (7 nov 2026, dos pasadas) por un subagente que leyó solo la cabecera de motor.js: Python con fracciones; distancia entre rectas con producto mixto y minimizando |P(s)−Q(t)|² (pies incluidos); recta-plano con la normal y con la proyección; diedros con perpendiculares a la arista y con normales (triedros también con la ley de cosenos esférica); ángulos del dibujo reproduciendo la cámara ortográfica. Los 20 casos con todos sus 'tambien' (secantes, paralelas, diedro obtuso, triedros de borde) y papel.json coinciden sin discrepancias.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso a paso, predicción 1: la varilla de largo 4 clavada en O(3, 3, 0), inclinada 60° con su sombra hacia D, es perpendicular a una sola recta del piso que pasa por O (la paralela a AB): ni a ninguna, ni a dos, ni a todas",
+      "fn": "varilla", "args": [{ "incl": 60, "dir": 90, "largo": 4, "O": [3, 3, 0], "vista": { "az": 28, "el": 22 } }],
+      "espera": { "respuestas.cuantas": 1, "errores.cuantas.ninguna": 0, "errores.cuantas.bastaUna": "todas", "errores.cuantas.dos": 2, "perpendicularA": 0, "perpendicularAlPlano": false,
+        "punta": [3, 5, 3.464101615138], "pieSombra": [3, 5, 0], "sombra": 2, "altura": 3.464101615138, "anguloPlano": 60,
+        "respuestas.conM": 60, "errores.conM.bastaUna": 90, "errores.conM.complemento": 30, "errores.conM.dibujo": 41 } },
+
+    { "nombre": "La varilla vertical sí es perpendicular a todas las rectas del piso que pasan por su pie (la idea «basta una» da lo mismo y se aparta)",
+      "fn": "varilla", "args": [{ "incl": 90, "dir": 0, "largo": 5 }],
+      "espera": { "respuestas.cuantas": "todas", "perpendicularA": "todas", "perpendicularAlPlano": true, "sombra": 0, "altura": 5, "coinciden.cuantas": ["bastaUna"], "errores.cuantas.dos": 2, "errores.cuantas.ninguna": 0 },
+      "tambien": [ { "args": [{ "incl": 30, "dir": 135 }], "espera": { "perpendicularA": 45, "respuestas.cuantas": 1 } },
+                   { "args": [{ "incl": 30, "dir": 270 }], "espera": { "perpendicularA": 0, "respuestas.cuantas": 1 } } ] },
+
+    { "nombre": "Varilla inclinada 60° con la sombra hacia y: forma 90° con la recta del piso de azimut 0°, 60° con su sombra (azimut 90°) y acos(cos 60° · cos 45°) con la de 45°",
+      "fn": "anguloConRecta", "args": [{ "incl": 60, "dir": 90, "phi": 0 }],
+      "espera": { "": 90 },
+      "tambien": [ { "args": [{ "incl": 60, "dir": 90, "phi": 90 }], "espera": { "": 60 } },
+                   { "args": [{ "incl": 60, "dir": 90, "phi": 45 }], "espera": { "": 69.295188945365 } } ] },
+
+    { "nombre": "Paso a paso, predicción 2: la diagonal AG del cubo de arista 6 forma con el piso el ángulo θ de su sombra AC: tan θ = 6/(6√2) = √2/2, θ ≈ 35,26°. Con la arista AB saldría ≈ 54,74°; con la diagonal de la cara, 45°; con AG como cateto, 30°",
+      "fn": "anguloDiagonal", "args": [{ "largo": 6, "ancho": 6, "alto": 6 }],
+      "espera": { "respuestas.angulo": 35.264389682755, "respuestas.tan": 0.707106781187, "sombra": 8.485281374239, "diagonal": 10.392304845413, "sen": 0.577350269190,
+        "errores.angulo.conArista": 54.735610317245, "errores.angulo.diagonalCara": 45, "errores.angulo.hipotenusa": 30, "coinciden.angulo": [] } },
+
+    { "nombre": "Paralelepípedo de 3 × 4 × 12: la sombra de la diagonal mide 5, la diagonal 13, tan θ = 12/5 y θ ≈ 67,38°",
+      "fn": "anguloDiagonal", "args": [{ "largo": 3, "ancho": 4, "alto": 12 }],
+      "espera": { "sombra": 5, "diagonal": 13, "tan": 2.4, "angulo": 67.380135051960, "errores.angulo.conArista": 76.657636202912, "errores.angulo.diagonalCara": 75.963756532074, "errores.angulo.hipotenusa": 42.709389957361 } },
+
+    { "nombre": "Paso a paso, predicción 3 (tres perpendiculares): EA ⊥ piso, AB ⊥ BC, entonces EB ⊥ BC y la distancia de E a la recta BC es EB = 6√2. Hasta el piso es 6; hasta el punto medio de BC, 9; hasta C, 6√3",
+      "fn": "tresPerpendiculares", "args": [{ "h": 6, "m": 6, "largo": 6 }],
+      "espera": { "respuestas.distancia": 8.485281374239, "anguloPBL": 90, "errores.distancia.alPlano": 6, "errores.distancia.alPie": 6, "errores.distancia.alMedio": 9, "errores.distancia.alExtremo": 10.392304845413 } },
+
+    { "nombre": "Tres perpendiculares con PA = 8 y AB = 6: PB = 10 (el tramo de L mide 6 por defecto)",
+      "fn": "tresPerpendiculares", "args": [{ "h": 8, "m": 6 }],
+      "espera": { "distancia": 10, "errores.distancia.alPlano": 8, "errores.distancia.alPie": 6, "errores.distancia.alMedio": 10.440306508911, "errores.distancia.alExtremo": 11.661903789691 } },
+
+    { "nombre": "Paso a paso, predicción 4 (la puerta): el diedro entre el piso y el plano ABGH se mide con AD y AH, perpendiculares a la arista AB: 45°. Con las oblicuas AC y AG saldría ≈ 35,26°; con AC y AH, 60°",
+      "fn": "diedro", "args": [[0, 0, 0], [6, 0, 0], [6, 6, 0], [6, 6, 6]],
+      "espera": { "respuestas.diedro": 45, "pieC": [6, 0, 0], "perpC": [0, 6, 0], "perpD": [0, 6, 6], "errores.diedro.oblicuas": 35.264389682755, "errores.diedro.unaOblicua": 60, "errores.diedro.recto": 90 } },
+
+    { "nombre": "Diedro de arista BD entre el piso (lado de A) y el plano BDE del cubo de arista 6: tan φ = 6/(3√2) = √2, φ ≈ 54,74°",
+      "fn": "diedro", "args": [[6, 0, 0], [0, 6, 0], [0, 0, 0], [0, 0, 6]],
+      "espera": { "diedro": 54.735610317245, "pieC": [3, 3, 0], "pieD": [3, 3, 0], "errores.diedro.oblicuas": 45, "errores.diedro.unaOblicua": 65.905157447889, "errores.diedro.recto": 90 },
+      "tambien": [ { "args": [[0, 0, 0], [6, 0, 0], [0, 6, 0], [0, -6, 6]], "espera": { "diedro": 135, "perpC": [0, 6, 0], "perpD": [0, -6, 6] } } ] },
+
+    { "nombre": "Paso a paso, predicción 5: AG y BF son cruzadas; su perpendicular común va del centro (3, 3, 3) al punto medio (6, 0, 3) de BF y mide 3√2. Entre extremos: 6; media diagonal: 3√3; de B a la diagonal: 2√6",
+      "fn": "distanciaCruzadas", "args": [{ "a": 6, "r1": "AG", "r2": "BF" }],
+      "espera": { "respuestas.distancia": 4.242640687119, "respuestas.tipo": "cruzadas", "respuestas.angulo": 54.735610317245, "pies": [[3, 3, 3], [6, 0, 3]],
+        "errores.distancia.entreExtremos": 6, "errores.distancia.mitadDeR1": 5.196152422707, "errores.distancia.perpendicularAUna": 4.898979485566 },
+      "tambien": [ { "args": [{ "a": 6, "r1": "AB", "r2": "BC" }], "espera": { "tipo": "secantes", "respuestas.distancia": 0, "respuestas.angulo": 90 } },
+                   { "args": [{ "a": 6, "r1": "AB", "r2": "GH" }], "espera": { "tipo": "paralelas", "respuestas.distancia": 8.485281374239, "pies": null } } ] },
+
+    { "nombre": "Posición de rectas del cubo de arista 6: AE y BD son cruzadas y perpendiculares, a distancia 3√2; AB y GH son paralelas, a 6√2; AG y CE se cortan en el centro con ángulo acos(1/3)",
+      "fn": "rectasCubo", "args": [6, "AE", "BD"],
+      "espera": { "tipo": "cruzadas", "angulo": 90, "distancia": 4.242640687119, "pies": [[0, 0, 0], [3, 3, 0]] },
+      "tambien": [ { "args": [6, "AB", "GH"], "espera": { "tipo": "paralelas", "angulo": 0, "distancia": 8.485281374239, "pies": null } },
+                   { "args": [6, "AG", "CE"], "espera": { "tipo": "secantes", "angulo": 70.528779365509, "distancia": 0, "pies": [[3, 3, 3], [3, 3, 3]] } },
+                   { "args": [6, "AB", "BC"], "espera": { "tipo": "secantes", "angulo": 90, "distancia": 0 } },
+                   { "args": [6, "AF", "BD"], "espera": { "tipo": "cruzadas", "angulo": 60, "distancia": 3.464101615138, "pies": [[2, 0, 2], [4, 2, 0]] } } ] },
+
+    { "nombre": "¿Qué pasa si…?, 1: la varilla de 10 con la punta a 6 del piso tiene una sombra de 8 con el sol cenital y forma ≈ 36,87° con el piso",
+      "fn": "proyeccion", "args": [{ "largo": 10, "h2": 6 }],
+      "espera": { "respuestas.proyeccion": 8, "angulo": 36.869897645844, "errores.proyeccion.igual": 10, "errores.proyeccion.resta": 4, "errores.proyeccion.altura": 6 },
+      "tambien": [ { "args": [{ "largo": 10, "h1": 2, "h2": 8 }], "espera": { "proyeccion": 8, "desnivel": 6 } },
+                   { "args": [{ "largo": 13, "h1": 0, "h2": 5 }], "espera": { "proyeccion": 12, "errores.proyeccion.resta": 8 } } ] },
+
+    { "nombre": "¿Qué pasa si…?, 2: la arista AE y la diagonal BD del piso no se cortan, pero forman 90°. En el dibujo de la vista inicial se ven a 39°",
+      "fn": "anguloRectasCubo", "args": [{ "a": 6, "r1": "AE", "r2": "BD", "vista": { "az": 28, "el": 22 } }],
+      "espera": { "respuestas.angulo": 90, "respuestas.tipo": "cruzadas", "errores.angulo.dibujo": 39, "errores.angulo.paralelas": 0, "errores.angulo.medio": 45, "errores.angulo.equilatero": 60, "coinciden.angulo": ["recto"] } },
+
+    { "nombre": "¿Qué pasa si…?, 3: las diagonales AF y AH de dos caras vecinas forman 60° (el triángulo AFH es equilátero); en el dibujo de la vista inicial el ángulo se ve de 29°",
+      "fn": "anguloEnVertice", "args": [{ "a": 6, "v": "A", "p": "F", "q": "H", "vista": { "az": 28, "el": 22 } }],
+      "espera": { "respuestas.angulo": 60, "errores.angulo.dibujo": 29, "errores.angulo.recto": 90, "errores.angulo.medio": 45, "coinciden.angulo": ["equilatero"] } },
+
+    { "nombre": "¿Qué pasa si…?, 4: el ángulo EBC mide 90° (tres perpendiculares), pero con la vista az = −40°, el = 15° se dibuja de 29°",
+      "fn": "anguloEnVertice", "args": [{ "a": 6, "v": "B", "p": "E", "q": "C", "vista": { "az": -40, "el": 15 } }],
+      "espera": { "respuestas.angulo": 90, "errores.angulo.dibujo": 29, "errores.angulo.medio": 45, "errores.angulo.equilatero": 60, "coinciden.angulo": ["recto"] } },
+
+    { "nombre": "¿Qué pasa si…?, 6: la distancia del vértice B a la diagonal AG del cubo de arista 6 es 2√6, con el pie en (2, 2, 2). Al centro: 3√3; a A: 6; a la sombra AC: 3√2",
+      "fn": "distanciaVerticeRecta", "args": [{ "a": 6, "v": "B", "r": "AG" }],
+      "espera": { "respuestas.distancia": 4.898979485566, "pie": [2, 2, 2], "errores.distancia.alMedio": 5.196152422707, "errores.distancia.alExtremo": 6, "errores.distancia.conLaSombra": 4.242640687119 } },
+
+    { "nombre": "¿Qué pasa si…?, 5: caras de 100°, 120° y 150°: cada una es menor que 180° y la mayor es menor que la suma de las otras dos, pero suman 370° > 360°: no hay triedro (se enciman 10°)",
+      "fn": "triedro", "args": [{ "caras": [100, 120, 150] }],
+      "espera": { "respuestas.existe": false, "respuestas.razon": "suma", "suma": 370, "traslape": 10, "criterios.cadaCara": true, "criterios.suma": false, "criterios.desigualdad": true,
+        "errores.existe.soloCadaCara": true, "errores.existe.soloDesigualdad": true, "coinciden.existe": ["obtusaImposible"],
+        "errores.razon.soloCadaCara": "existe", "errores.razon.soloDesigualdad": "existe", "errores.razon.obtusaImposible": "obtusa", "diedros": null } },
+
+    { "nombre": "La esquina del cubo es un triedro de caras 90°, 90°, 90° (suma 270°) con diedros rectos; el de caras 60°, 60°, 60° tiene diedros de acos(1/3); con 50°, 60° y 120° falla la desigualdad",
+      "fn": "triedro", "args": [{ "caras": [90, 90, 90] }],
+      "espera": { "existe": true, "suma": 270, "diedros": [90, 90, 90], "aristas": [[1, 0, 0], [0, 1, 0], [0, 0, 1]], "respuestas.razon": "existe" },
+      "tambien": [ { "args": [{ "caras": [60, 60, 60] }], "espera": { "existe": true, "diedros": [70.528779365509, 70.528779365509, 70.528779365509] } },
+                   { "args": [{ "caras": [50, 60, 120] }], "espera": { "existe": false, "respuestas.razon": "desigualdad", "errores.razon.soloCadaCara": "existe", "coinciden.razon": ["soloDesigualdad"] } },
+                   { "args": [{ "caras": [100, 110, 130] }], "espera": { "existe": true, "suma": 340 } },
+                   { "args": [{ "caras": [100, 120, 140] }], "espera": { "existe": false, "suma": 360, "respuestas.razon": "suma" } },
+                   { "args": [{ "caras": [50, 60, 110] }], "espera": { "existe": false, "respuestas.razon": "desigualdad", "criterios.desigualdad": false } } ] },
+
+    { "nombre": "El cubo de arista 6: G está en (6, 6, 6), el centro en (3, 3, 3); la proyección de G sobre el piso es C y su distancia al piso, 6",
+      "fn": "puntoCubo", "args": [6, "G"],
+      "espera": { "": [6, 6, 6] },
+      "tambien": [ { "fn": "proyeccionPunto", "args": [[6, 6, 6], [0, 0, 0], [0, 0, 1]], "espera": { "": [6, 6, 0] } },
+                   { "fn": "distanciaPuntoPlano", "args": [[6, 6, 6], [0, 0, 0], [0, 0, 1]], "espera": { "": 6 } },
+                   { "fn": "anguloRectaPlano", "args": [[6, 6, 6], [0, 0, 1]], "espera": { "": 35.264389682755 } },
+                   { "fn": "anguloRectaPlano", "args": [[1, 2, 0], [0, 0, 1]], "espera": { "": 0 } } ] },
+
+    { "nombre": "La puerta con bisagra en AB, de ancho 6√2, abierta 45°, llega justo a GH: sus esquinas son A, B, G y H",
+      "fn": "puerta", "args": [{ "a": 6, "ancho": 8.485281374238571, "abre": 45 }],
+      "espera": { "esquinas": [[0, 0, 0], [6, 0, 0], [6, 6, 6], [0, 6, 6]], "diedro": 45 } }
+  ]
+}
