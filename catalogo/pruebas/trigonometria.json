@@ -445,61 +445,61 @@
       "unidad": "trigonometria.triangulos-oblicuangulos",
       "mide": "Ley de cosenos: a² = b² + c² − 2bc·cos A",
       "A": {
-        "enunciado": "En un triángulo, dos lados miden 5 cm y 8 cm, y el ángulo entre ellos mide 60°. ¿Cuánto mide el tercer lado? (cos 60° = 0,5)",
+        "enunciado": "Una lámpara de escritorio tiene dos brazos rectos unidos por una bisagra: el de abajo, fijo a la base, mide 15 cm y el de arriba, que lleva el foco, mide 7 cm. Si los brazos forman un ángulo de 60° en la bisagra, ¿qué distancia hay entre la base y el foco? (cos 60° = 0,5)",
         "datos": {
-          "b": 5,
-          "c": 8,
+          "b": 7,
+          "c": 15,
           "A": 60
         },
         "opciones": [
           {
-            "texto": "11,4 cm",
-            "valor": 11.358,
+            "texto": "19,5 cm",
+            "valor": 19.468,
             "error": "TR24-signo"
           },
           {
-            "texto": "9,4 cm",
-            "valor": 9.434,
+            "texto": "16,6 cm",
+            "valor": 16.553,
             "error": "TR24-sin-termino"
-          },
-          {
-            "texto": "7 cm",
-            "valor": 7,
-            "correcta": true
           },
           {
             "texto": "13 cm",
             "valor": 13,
+            "correcta": true
+          },
+          {
+            "texto": "22 cm",
+            "valor": 22,
             "error": "suma-de-lados"
           }
         ]
       },
       "B": {
-        "enunciado": "En un triángulo, dos lados miden 15 cm y 8 cm, y el ángulo entre ellos mide 60°. ¿Cuánto mide el tercer lado? (cos 60° = 0,5)",
+        "enunciado": "Un brazo robótico de juguete tiene dos piezas rectas unidas por una articulación: la de abajo, fija a la base, mide 16 cm y la de arriba, que lleva la pinza, mide 10 cm. Si las piezas forman un ángulo de 60° en la articulación, ¿qué distancia hay entre la base y la pinza? (cos 60° = 0,5)",
         "datos": {
-          "b": 15,
-          "c": 8,
+          "b": 10,
+          "c": 16,
           "A": 60
         },
         "opciones": [
           {
-            "texto": "20,2 cm",
-            "valor": 20.224,
+            "texto": "22,7 cm",
+            "valor": 22.716,
             "error": "TR24-signo"
           },
           {
-            "texto": "17 cm",
-            "valor": 17,
+            "texto": "18,9 cm",
+            "valor": 18.868,
             "error": "TR24-sin-termino"
           },
           {
-            "texto": "13 cm",
-            "valor": 13,
+            "texto": "14 cm",
+            "valor": 14,
             "correcta": true
           },
           {
-            "texto": "23 cm",
-            "valor": 23,
+            "texto": "26 cm",
+            "valor": 26,
             "error": "suma-de-lados"
           }
         ]

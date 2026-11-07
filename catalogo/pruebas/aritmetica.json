@@ -765,30 +765,30 @@
         ]
       },
       "B": {
-        "enunciado": "Dos alarmas suenan juntas. Una suena cada 10 minutos y la otra cada 15 minutos. ¿Cuántos minutos después vuelven a sonar juntas por primera vez?",
+        "enunciado": "Un paciente toma un jarabe cada 6 horas y una pastilla cada 9 horas. Al mediodía tomó los dos a la vez. ¿Cuántas horas después le vuelve a tocar tomar los dos juntos por primera vez?",
         "datos": {
-          "a": 10,
-          "b": 15
+          "a": 6,
+          "b": 9
         },
         "opciones": [
           {
-            "texto": "5 minutos",
-            "valor": 5,
+            "texto": "3 horas",
+            "valor": 3,
             "error": "AR13-mcd-en-vez-de-mcm"
           },
           {
-            "texto": "30 minutos",
-            "valor": 30,
+            "texto": "18 horas",
+            "valor": 18,
             "correcta": true
           },
           {
-            "texto": "150 minutos",
-            "valor": 150,
+            "texto": "54 horas",
+            "valor": 54,
             "error": "AR13-producto"
           },
           {
-            "texto": "25 minutos",
-            "valor": 25,
+            "texto": "15 horas",
+            "valor": 15,
             "error": "suma"
           }
         ]

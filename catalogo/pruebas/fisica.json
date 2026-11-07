@@ -634,30 +634,30 @@
         ]
       },
       "B": {
-        "enunciado": "Una vela está a 40 cm de una lupa (lente convergente) de 8 cm de distancia focal. ¿A qué distancia de la lupa se forma su imagen?",
+        "enunciado": "En una cámara antigua de fuelle, la lente es convergente y tiene 6 cm de distancia focal. Se fotografía una flor que está a 18 cm de la lente. ¿A qué distancia detrás de la lente debe quedar la placa para que la foto salga nítida?",
         "datos": {
-          "o": 40,
-          "f": 8
+          "o": 18,
+          "f": 6
         },
         "opciones": [
           {
-            "texto": "6,7 cm",
-            "valor": 6.667,
+            "texto": "4,5 cm",
+            "valor": 4.5,
             "error": "lente-suma-inversas"
           },
           {
-            "texto": "8 cm",
-            "valor": 8,
+            "texto": "6 cm",
+            "valor": 6,
             "error": "objeto-lejano-en-el-foco"
           },
           {
-            "texto": "10 cm",
-            "valor": 10,
+            "texto": "9 cm",
+            "valor": 9,
             "correcta": true
           },
           {
-            "texto": "40 cm",
-            "valor": 40,
+            "texto": "18 cm",
+            "valor": 18,
             "error": "imagen-espejo"
           }
         ]
@@ -733,30 +733,30 @@
       "unidad": "fisica.trabajo-y-energia",
       "mide": "Conservación de la energía: m·g·h = m·v²/2, y la masa se simplifica",
       "A": {
-        "enunciado": "Un bloque de 2 kg se suelta desde 1,8 m de altura y baja por una rampa sin roce. ¿Con qué rapidez llega al pie de la rampa? (g = 10 m/s²)",
+        "enunciado": "Un niño de 25 kg se suelta desde el reposo en un columpio, con el asiento 0,8 m más alto que en el punto más bajo de su recorrido. Sin roce ni aire, ¿con qué rapidez pasa por el punto más bajo? (g = 10 m/s²)",
         "datos": {
-          "m": 2,
-          "h": 1.8
+          "m": 25,
+          "h": 0.8
         },
         "opciones": [
           {
-            "texto": "36 m/s",
-            "valor": 36,
+            "texto": "16 m/s",
+            "valor": 16,
             "error": "energia-sin-raiz"
           },
           {
-            "texto": "6 m/s",
-            "valor": 6,
+            "texto": "4 m/s",
+            "valor": 4,
             "correcta": true
           },
           {
-            "texto": "4,2 m/s",
-            "valor": 4.243,
+            "texto": "2,8 m/s",
+            "valor": 2.828,
             "error": "energia-sin-mitad"
           },
           {
-            "texto": "18 m/s",
-            "valor": 18,
+            "texto": "8 m/s",
+            "valor": 8,
             "error": "energia-v-igual-gh"
           }
         ]
