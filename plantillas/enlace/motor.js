@@ -39,7 +39,9 @@
  *    las posiciones ecuatoriales de la bipirámide (sp³d) y opuestos en el octaedro (AX₄E₂). Los ángulos son los ideales
  *    del modelo; los pares libres los cierran un poco en la molécula real (NH₃ cerca de 107°, H₂O cerca de 104,5°).
  *  - Ejes: y hacia arriba, x a la derecha, z hacia quien mira. Tetraedro sin pares libres con dos vértices arriba y dos
- *    abajo (los dos primeros ligandos arriba); con pares libres, el primer par arriba. Trigonal en el plano xy con el
+ *    abajo (los dos primeros ligandos arriba); con un par libre (AX₃E), el par arriba en (0, 1, 0); con dos (AX₂E₂), los
+ *    dos pares en los dos vértices de arriba del tetraedro y los dos ligandos en los de abajo, así que el dipolo del H₂O
+ *    apunta entero hacia +y. Trigonal en el plano xy con el
  *    primer dominio arriba. Bipirámide con ejes axiales en y. Octaedro en los ejes.
  *  - Polaridad: cada enlace aporta un vector (EN del ligando − EN del central) × la dirección del ligando: la flecha
  *    apunta al átomo más electronegativo, el extremo δ−, como en las academias. Su tamaño es la diferencia de
