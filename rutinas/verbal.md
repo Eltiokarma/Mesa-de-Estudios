@@ -4,7 +4,7 @@ Cada ejecución hace la primera pieza que falte:
 
 1. [x] Informe `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`
 2. [x] Diseño del formato lectura, `docs/formato-lectura.md`
-3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (12 de 30, más la pareja de entrada y salida)
+3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (18 de 30, más la pareja de entrada y salida)
 4. [ ] Guía para profesores, `docs/guia-profesores.md`
 
 ---
@@ -222,3 +222,45 @@ Los 12 textos de práctica ya están en el índice.
 - Integrar `rutina/verbal`.
 - Correr `npm run catalogo`.
 - Ajustar las 4 pruebas de `nucleo/lectura.test.js` que dan por hecho que `TEXTOS[0].preguntas[0]` tiene un paso previo de marcar oración.
+
+---
+
+## 7 nov 2026 · Pieza 3, tercera tanda: t013 a t018
+
+**Estado al empezar.** La nueva conversación principal integró todo hasta 1457604 (12 textos, t000a y t000b), y `npm test` daba 1567 de 1567. Me pidió seguir con el plan y no pasar de 2 subagentes a la vez; los revisores fueron 2 a la vez.
+
+**Qué hice.** Seis textos de práctica:
+
+| Texto | Tema | Tipo, grado y dificultad | Preguntas |
+| --- | --- | --- | --- |
+| t013 La ciudad sin murallas | Caral y el debate sobre una sociedad sin guerra | argumentativo (dialéctico), 4.º, 2 | idea principal, compatibilidad, extrapolación, sentido contextual |
+| t014 La quena de Mateo | Relato: paciencia | narrativo, 3.º, 1 | idea central, inferencia, sentido contextual |
+| t015 ¿Celular en el aula? | Dos posturas y una síntesis | argumentativo (dialéctico), 4.º, 2 | tesis, compatibilidad, conector, extrapolación |
+| t016 La memoria del cuerpo | Vacunas e inmunidad de grupo | expositivo, 3.º, 1 | idea principal, conector, inferencia, sentido contextual |
+| t017 La ciudad de barro y la lluvia | Chan Chan y qué es conservar | argumentativo, **5.º, 3** | intención, tesis, sentido contextual, incompatibilidad, extrapolación |
+| t018 Ríos que vuelan | El bosque que hace llover | argumentativo, **5.º, 3** | idea principal, referente, inferencia, extrapolación |
+
+Son 24 preguntas y 16 pasos previos, todos con su explicación para cada respuesta incorrecta. Los conectores siguen sin estar a la vista en el texto (t015 y t016): se pregunta qué conector podría ir.
+
+En el informe amplié la definición de RV10 para que cubra también el caso inverso: en incompatibilidad, marcar como incompatible una frase compatible solo porque tiene un "no". `codigos.json` se regeneró.
+
+**Pruebas:**
+- `banco.test.js` da 24 de 24, y `validar` del núcleo acepta los seis textos.
+- `npm test` da 1572 de 1573. **Falla solo la prueba de "app/datos/catalogo.json está al día"**, porque el índice tiene 6 textos más. Se arregla con `npm run catalogo`, que escribe en `app/`, fuera de mi alcance.
+
+**Subagentes** (2 revisores a la vez y una verificación final):
+- **Revisor de t013 a t015, a ciegas:** coincidió en los 17 ítems y pasos previos. Encontró una frase de t013 que sonaba contradictoria, un distractor de compatibilidad débil y códigos del paso previo que no eran coherentes con los distractores.
+- **Revisor de t016 a t018, a ciegas:**
+  - **Falló dos pasos previos, y tenía razón.** En t016 y t018 marcó "ninguna la dice completa" porque la idea principal junta dos oraciones. Ahora "ninguna" también se acepta en esos dos.
+  - En t018 dudó en la pregunta de inferencia porque la alternativa literal era defendible, así que la reescribí entera, y cambié la sonda del paso previo.
+  - En t017, varios distractores se descartaban enseguida y no llegaba a dificultad alta; puse otros más cercanos.
+- **Verificación final:** seis ajustes chicos (evidencias, dos códigos y un enunciado). Todos aplicados.
+
+**Pendiente:**
+- 12 textos de práctica más para llegar a 30, en dos tandas.
+- Después, la pieza 4: la guía para profesores. Tiene que explicar `?colegio=`, `?salida=`, `?soluciones=` y "Otro alumno en esta PC", como pidió la principal.
+- Los ejercicios sueltos (analogías, plan de redacción, eliminación, término excluido, oraciones incompletas), que el núcleo ya califica, quedan para después de los 30 textos o para cuando la principal los priorice.
+
+**Pedidos para la integración:**
+- Integrar `rutina/verbal`.
+- Correr `npm run catalogo` (es la única prueba que falla).

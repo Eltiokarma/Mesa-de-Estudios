@@ -46,7 +46,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "vectores"
+     ]
     },
     {
      "id": "fisica.movimiento-rectilineo",
@@ -136,7 +138,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "estatica"
+     ]
     },
     {
      "id": "fisica.dinamica",
@@ -647,7 +651,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "atomo-y-tabla"
+     ]
     },
     {
      "id": "quimica.tabla-periodica",
@@ -676,7 +682,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "atomo-y-tabla"
+     ]
     },
     {
      "id": "quimica.enlace-quimico",
@@ -1375,7 +1383,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "polinomios"
+     ]
     },
     {
      "id": "algebra.division-de-polinomios",
@@ -1402,7 +1412,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "polinomios"
+     ]
     },
     {
      "id": "algebra.factorizacion",
@@ -1459,7 +1471,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "polinomios"
+     ]
     },
     {
      "id": "algebra.funciones",
@@ -1881,7 +1895,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "interes"
+     ]
     },
     {
      "id": "aritmetica.mezclas-y-aleaciones",
@@ -4186,6 +4202,24 @@
     "/plantillas/angulo-inscrito/papel.json"
    ]
   },
+  "atomo-y-tabla": {
+   "id": "atomo-y-tabla",
+   "titulo": "El átomo y la tabla periódica",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estructura-atomica",
+    "quimica.tabla-periodica"
+   ],
+   "url": "/plantillas/atomo-y-tabla/index.html",
+   "papel": "/plantillas/atomo-y-tabla/papel.json",
+   "archivos": [
+    "/plantillas/atomo-y-tabla/index.html",
+    "/plantillas/atomo-y-tabla/motor.js",
+    "/plantillas/atomo-y-tabla/papel.json"
+   ]
+  },
   "calorimetria": {
    "id": "calorimetria",
    "titulo": "Calorimetría",
@@ -4382,6 +4416,23 @@
     "/plantillas/equilibrio-quimico/papel.json"
    ]
   },
+  "estatica": {
+   "id": "estatica",
+   "titulo": "Estática: palancas, centro de gravedad y cuerdas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.estatica"
+   ],
+   "url": "/plantillas/estatica/index.html",
+   "papel": "/plantillas/estatica/papel.json",
+   "archivos": [
+    "/plantillas/estatica/index.html",
+    "/plantillas/estatica/motor.js",
+    "/plantillas/estatica/papel.json"
+   ]
+  },
   "estequiometria-limitante": {
    "id": "estequiometria-limitante",
    "titulo": "Reactivo limitante",
@@ -4507,6 +4558,23 @@
     "/plantillas/identidades-trig/papel.json"
    ]
   },
+  "interes": {
+   "id": "interes",
+   "titulo": "La alcancía que gana interés: interés simple y compuesto, tasas y descuento",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.interes-y-descuento"
+   ],
+   "url": "/plantillas/interes/index.html",
+   "papel": "/plantillas/interes/papel.json",
+   "archivos": [
+    "/plantillas/interes/index.html",
+    "/plantillas/interes/motor.js",
+    "/plantillas/interes/papel.json"
+   ]
+  },
   "lectura-verbal": {
    "id": "lectura-verbal",
    "titulo": "Lectura y razonamiento verbal",
@@ -4545,7 +4613,13 @@
     "/contenido/razonamiento-verbal/textos/t009.json",
     "/contenido/razonamiento-verbal/textos/t010.json",
     "/contenido/razonamiento-verbal/textos/t011.json",
-    "/contenido/razonamiento-verbal/textos/t012.json"
+    "/contenido/razonamiento-verbal/textos/t012.json",
+    "/contenido/razonamiento-verbal/textos/t013.json",
+    "/contenido/razonamiento-verbal/textos/t014.json",
+    "/contenido/razonamiento-verbal/textos/t015.json",
+    "/contenido/razonamiento-verbal/textos/t016.json",
+    "/contenido/razonamiento-verbal/textos/t017.json",
+    "/contenido/razonamiento-verbal/textos/t018.json"
    ]
   },
   "limitante-particulas": {
@@ -4669,6 +4743,25 @@
     "/plantillas/poligonos/index.html",
     "/plantillas/poligonos/motor.js",
     "/plantillas/poligonos/papel.json"
+   ]
+  },
+  "polinomios": {
+   "id": "polinomios",
+   "titulo": "La máquina de Ruffini: polinomios y división",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.polinomios",
+    "algebra.division-de-polinomios",
+    "algebra.ecuaciones-polinomiales"
+   ],
+   "url": "/plantillas/polinomios/index.html",
+   "papel": "/plantillas/polinomios/papel.json",
+   "archivos": [
+    "/plantillas/polinomios/index.html",
+    "/plantillas/polinomios/motor.js",
+    "/plantillas/polinomios/papel.json"
    ]
   },
   "porcentajes-sucesivos": {
@@ -4833,6 +4926,23 @@
     "/plantillas/triangulo-estira/index.html",
     "/plantillas/triangulo-estira/motor.js",
     "/plantillas/triangulo-estira/papel.json"
+   ]
+  },
+  "vectores": {
+   "id": "vectores",
+   "titulo": "Flechas que se suman: vectores y análisis dimensional",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "/plantillas/vectores/index.html",
+   "papel": "/plantillas/vectores/papel.json",
+   "archivos": [
+    "/plantillas/vectores/index.html",
+    "/plantillas/vectores/motor.js",
+    "/plantillas/vectores/papel.json"
    ]
   }
  }

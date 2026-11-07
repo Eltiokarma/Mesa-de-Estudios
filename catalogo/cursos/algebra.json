@@ -114,7 +114,7 @@
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["polinomios"],
       "investigacion": null
     },
     {
@@ -130,7 +130,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7, 10]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["polinomios"],
       "investigacion": null
     },
     {
@@ -163,7 +163,7 @@
       "universidades": {"uni": {"semanas": [4, 10]}, "unmsm": {"temas": [9, 11]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["polinomios"],
       "investigacion": null
     },
     {

@@ -206,4 +206,73 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
 3. `docs/pendientes.md`, sección 2: "**Mol y composición** (`plantillas/mol-composicion/`, rutina de química, 6 nov 2026): balanza, lupa y cuenta a la vez; mol contra masa, átomos en u, fórmula empírica y molecular; 16 casos verificados aparte; 10 de papel. Falta la escena de rendimiento y pureza."
 4. `CLAUDE.md`: sumar "mol y composición" a la lista de plantillas y una línea en Historia.
 
-**Siguiente en la cola:** `atomo-y-tabla`.
+
+## 7 nov 2026 · atomo-y-tabla (pedido de la conversación principal; el disparo programado no llegó)
+
+**Antes de empezar.** Junté `claude/awesome-wozniak-5etl1n` en la rama sin conflictos: entraron mol-composicion integrada y muchas plantillas nuevas, y `npm test` dio 1389 en verde. Desde esta ejecución sigo el método de `docs/metodo/`:
+1. el constructor recibe `brief-plantilla.md` y el encargo, y arma la plantilla completa;
+2. el verificador usa `brief-verificador.md`, con las entradas sin respuestas de `entradas.py`;
+3. el revisor usa `brief-revisor.md`;
+4. las correcciones vuelven al mismo constructor.
+
+**Qué se hizo.** `plantillas/atomo-y-tabla/`, para las unidades `quimica.estructura-atomica` y `quimica.tabla-periodica`. El informe es `docs/investigacion/atomo-enlace-ideas-erroneas.md`.
+
+- **`motor.js`** (`window.MotorAtomo`):
+  - partículas de átomos e iones, con sus errores;
+  - configuración por Möller, con excepciones solo en Cr y Cu (más Mo, Ag y Au declaradas);
+  - cajas con Hund y Pauli;
+  - cationes que pierden primero los de mayor n, con el error "quitar los últimos en llenarse";
+  - números cuánticos del último electrón (convención declarada: cajas de −l a +l, primero las flechas hacia arriba);
+  - ubicación: período, grupo 1–18 y A/B, y bloque;
+  - datos de Z = 1–36: primera energía de ionización (NIST, en kJ/mol), radio calculado (Clementi 1967), electronegatividad de Pauling y radios iónicos de Shannon;
+  - energías sucesivas de Na, Mg y Al;
+  - series isoelectrónicas.
+- **`casos.json`:** 29 casos. **`papel.json`:** 10 problemas. **`motor.test.js`:** 58 pruebas, entre ellas que ningún error típico coincida con la respuesta.
+- **`index.html`:**
+  - **Paso a paso:** 8 pasos con 5 predicciones:
+    - partículas del ⁵⁶Fe³⁺;
+    - configuración del Fe³⁺ (todas las opciones incorrectas son hipótesis);
+    - Na⁺ y un electrón libre (TP1, TP2);
+    - la segunda ionización del Na (TP3, TP4);
+    - por qué baja la energía de ionización del P al S (TP6, TP7, TP4).
+  - **¿Qué pasa si…?:** 5 experimentos bloqueados en orden: Mg contra Al (TP7), átomos contra iones, una serie isoelectrónica, Cr y Ni, y qué es ser electronegativo (TP8).
+  - **Explorador:** una tabla tocable que hace de mapa (energía de ionización, radio o electronegatividad), con el átomo y sus cajas, y botones para quitar o agregar electrones.
+
+**Subagentes.**
+- **Verificador:** sin leer el motor (solo su cabecera) y con su propio programa, recalculó los 29 casos (unas 150 comprobaciones). Todos coinciden. Las únicas diferencias son de redondeo en dos energías sucesivas, de menos de 0,03 %. Su texto quedó en el campo `"verificacion"`.
+- **Revisor:** no encontró nada grave. Ninguna opción incorrecta es defendible, los números están bien y los respaldos coinciden con el informe. Hallazgos de gravedad media:
+  - el paso a paso regalaba las respuestas de los experimentos Mg–Al y Cr–Ni;
+  - una frase falsa sobre el octeto;
+  - el átomo con bandas se parecía al modelo de Bohr;
+  - contraste de las fichas dentro de las opciones;
+  - la escala de radios teórica, distinta de la de los libros;
+  - textos cortados en el celular.
+  
+  Todo quedó corregido. El constructor volvió a probar las 8 combinaciones con Playwright, sin problemas, y las 58 pruebas pasan. Decisiones mías:
+  - en el explorador, Mg, Al, Cr, Cu y Ni quedan con "?" hasta responder su experimento;
+  - se queda la escala de Clementi, nombrada en pantalla con el aviso "tu libro usa radios medidos, con otros números y el mismo orden".
+
+**Pendiente.**
+- Los datos de tabla los escribió el constructor de memoria a partir de las fuentes. El verificador y el revisor los cotejaron, también de memoria, y no hallaron errores, pero nadie los confirmó contra la fuente: hay que contrastarlos con el libro que use el colegio.
+- Configuraciones de Z > 36: solo se modelan Mo, Ag y Au como excepciones.
+- Del informe falta lo de enlace: geometría y polaridad, ebullición y red iónica. Eso va en las plantillas que siguen, `enlace` y `liquidos-y-solidos`.
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/quimica.json`, poner `"plantillas": ["atomo-y-tabla"]` en `quimica.estructura-atomica` y en `quimica.tabla-periodica`. Después, `npm run catalogo`. Si química llega a 4 plantillas o más, rebalancear `catalogo/pruebas/quimica.json`, como dice `docs/metodo/LEEME.md`.
+2. En `docs/diseno.md`, las variables de átomo y tabla (`plantillas/atomo-y-tabla/`):
+   - protones Z: rojo #b02c41 (oscuro #f17384), oscurecido para pasar AA dentro de las opciones ya respondidas;
+   - neutrones: granate #66003d (oscuro #ffc2ea);
+   - electrones: azul #1f5fbf (oscuro #7cb0ff);
+   - electrón que sale o entra: ámbar #8f5800 (oscuro #ffc04d);
+   - nivel n: verde #466d14 (oscuro #a3d65e);
+   - radio: turquesa #0f766e (oscuro #5ed9c8);
+   - energía de ionización: fucsia #a10fbf (oscuro #cf6bfa);
+   - electronegatividad: tostado #5a1802 (oscuro #f96c1f);
+   - en tinta: A, q, l, mₗ, mₛ, período y grupo;
+   - ΔE00 mínimo: 20,6 en claro (Z–neutrones) y 22,2 en oscuro;
+   - contraste mínimo: 4,53;
+   - Z queda cerca del rojo de los avisos, y el aviso siempre va con texto.
+   - los neutrones se escriben con la palabra entera, porque n es el nivel.
+3. En `docs/pendientes.md` y `CLAUDE.md`, una línea como las de las otras plantillas.
+
+**Siguiente en la cola:** `enlace`.

@@ -1,0 +1,146 @@
+{
+  "titulo": "Flechas que se suman: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja siempre las flechas: los vectores no se suman como números, salvo que apunten hacia el mismo lado. Con dos vectores y el ángulo entre ellos, R² = a² + b² + 2ab·cos θ, y R siempre queda entre la resta y la suma de los módulos. Con muchos vectores, súmalos por componentes, cada una con su signo. En las fórmulas, cada término de una suma tiene la misma dimensión, y los números y los ángulos no tienen dimensión. Usa el triángulo notable de 37° y 53° (lados 3, 4 y 5), que es aproximado. El producto escalar a·b = ax·bx + ay·by también vale |a|·|b|·cos θ: si da cero (y ningún vector es nulo), los vectores son perpendiculares.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos cuerdas tiran de una argolla: una con 6 N hacia el este y otra con 8 N hacia el norte. ¿Cuánto mide la fuerza resultante sobre la argolla?",
+      "respuesta": "10 N.",
+      "pasos": [
+        "Las dos fuerzas forman 90°. Se pone la cola de la segunda en la punta de la primera: queda un triángulo rectángulo de catetos 6 y 8.",
+        "La resultante es la hipotenusa: R² = 6² + 8² = 36 + 64 = 100, así que R = 10 N.",
+        "No es 14 N: los módulos se suman como números solo si las dos fuerzas apuntan hacia el mismo lado."
+      ],
+      "verificar": [ { "fn": "resultante", "args": [6, 8, 90], "espera": { "R": 10, "errores.sumaModulos": 14 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Dos vectores de módulo 5 cada uno salen del mismo punto y forman 60° entre sí. Halla el módulo de su resultante.",
+      "respuesta": "5√3, unos 8,66.",
+      "pasos": [
+        "R² = a² + b² + 2ab·cos θ = 25 + 25 + 2 · 5 · 5 · cos 60° = 50 + 50 · (1/2) = 75.",
+        "R = √75 = 5√3 ≈ 8,66.",
+        "Atajo: dos vectores iguales con ángulo θ dan R = 2a·cos(θ/2) = 10 · cos 30° = 5√3. Con 60° el paralelogramo es un rombo y R es su diagonal mayor."
+      ],
+      "verificar": [ { "fn": "resultante", "args": [5, 5, 60], "espera": { "R": 8.660254037844386, "R2": 75 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Dos vectores miden 7 y 3, y el ángulo entre ellos se puede cambiar. ¿Cuántos valores enteros puede tomar el módulo de la resultante?",
+      "respuesta": "7 valores: de 4 a 10.",
+      "pasos": [
+        "La resultante es máxima cuando los vectores apuntan hacia el mismo lado (θ = 0°): 7 + 3 = 10.",
+        "Es mínima cuando apuntan en sentidos opuestos (θ = 180°): 7 − 3 = 4. Nunca llega a 0, porque los módulos son distintos.",
+        "Entonces 4 ≤ R ≤ 10, y los enteros son 4, 5, 6, 7, 8, 9 y 10: siete valores."
+      ],
+      "verificar": [ { "fn": "rango", "args": [7, 3], "espera": { "minimo": 4, "maximo": 10 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El vector a mide 10 y forma 53° con el eje x positivo. El vector b mide 6 y apunta hacia el eje x negativo. Halla el módulo y la dirección de a + b.",
+      "respuesta": "8, vertical hacia arriba (90°).",
+      "pasos": [
+        "Componentes de a con el notable 3-4-5: ax = 10 · cos 53° = 6 y ay = 10 · sen 53° = 8.",
+        "Componentes de b: bx = −6 (apunta a la izquierda) y by = 0.",
+        "Rx = 6 + (−6) = 0 y Ry = 8 + 0 = 8. La resultante mide 8 y apunta hacia arriba.",
+        "Si se olvida el signo de bx sale (12; 8), que mide √208 ≈ 14,4: el signo dice hacia dónde apunta la componente."
+      ],
+      "verificar": [
+        { "fn": "vector", "args": [10, 53], "espera": { "x": 6, "y": 8 } },
+        { "fn": "suma", "args": [[{ "x": 6, "y": 8 }, { "x": -6, "y": 0 }]], "espera": { "x": 0, "y": 8, "modulo": 8, "angulo": 90 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Tres vectores salen del origen: a de módulo 10 a 37°, b de módulo 5 a 127° y c de módulo 10 apuntando hacia abajo (270°). Halla el módulo de la resultante.",
+      "respuesta": "5, sobre el eje x positivo.",
+      "pasos": [
+        "a: ax = 10 · cos 37° = 8 y ay = 10 · sen 37° = 6.",
+        "b: 127° = 90° + 37°, así que bx = −5 · sen 37° = −3 y by = 5 · cos 37° = 4.",
+        "c: cx = 0 y cy = −10.",
+        "Rx = 8 − 3 + 0 = 5 y Ry = 6 + 4 − 10 = 0. La resultante mide 5 y apunta hacia el eje x positivo."
+      ],
+      "verificar": [
+        { "fn": "vector", "args": [5, 127], "espera": { "x": -3, "y": 4 } },
+        { "fn": "suma", "args": [[{ "x": 8, "y": 6 }, { "x": -3, "y": 4 }, { "x": 0, "y": -10 }]], "espera": { "x": 5, "y": 0, "modulo": 5 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En un cuadrado ABCD de 4 cm de lado se trazan los vectores AB, AC y AD, todos desde el vértice A. ¿Cuánto mide su resultante?",
+      "respuesta": "8√2 cm, unos 11,3 cm.",
+      "pasos": [
+        "Por el paralelogramo, AB + AD = AC: los dos lados que salen de A suman la diagonal.",
+        "Entonces AB + AC + AD = AC + AC = 2·AC.",
+        "La diagonal del cuadrado mide 4√2 cm, así que la resultante mide 8√2 ≈ 11,3 cm, en la dirección de la diagonal.",
+        "Con coordenadas, A(0; 0): AB = (4; 0), AC = (4; 4) y AD = (0; 4); la suma es (8; 8)."
+      ],
+      "verificar": [ { "fn": "suma", "args": [[{ "x": 4, "y": 0 }, { "x": 4, "y": 4 }, { "x": 0, "y": 4 }]], "espera": { "x": 8, "y": 8, "modulo": 11.313708498984761 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En un hexágono regular ABCDEF de 3 cm de lado se trazan los cinco vectores que salen de A hacia los otros vértices: AB, AC, AD, AE y AF. Halla el módulo de su resultante.",
+      "respuesta": "18 cm.",
+      "pasos": [
+        "Se agrupan por pares simétricos respecto de la diagonal AD. AB + AF: sus partes perpendiculares a AD se anulan y queda un vector a lo largo de AD de 3 cm (la mitad de AD).",
+        "AC + AE: igual, queda un vector a lo largo de AD de 9 cm (vez y media AD).",
+        "AD mide 6 cm (dos lados). Total: 3 + 9 + 6 = 18 cm = 3·AD, sobre la diagonal AD.",
+        "No es la suma de los cinco módulos, 3 + 3√3 + 6 + 3√3 + 3: los vectores no apuntan hacia el mismo lado."
+      ],
+      "verificar": [ { "fn": "hexagono", "args": [3], "espera": { "modulo": 18, "enDiagonales": 3, "pares.AB+AF.x": 3, "pares.AC+AE.x": 9 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Sea el vector a = (−5; 12). a) Halla su módulo y su vector unitario. b) ¿El vector b = (12; 5) es perpendicular a a?",
+      "respuesta": "a) Módulo 13; unitario (−5/13; 12/13). b) Sí: a·b = 0.",
+      "pasos": [
+        "Módulo: √(25 + 144) = √169 = 13.",
+        "Unitario: se divide cada componente entre el módulo, (−5/13; 12/13). Su módulo es 1. No es (−5; 12), que mide 13.",
+        "Producto escalar: a·b = (−5)(12) + (12)(5) = −60 + 60 = 0. Si el producto escalar es cero y ninguno es nulo, los vectores son perpendiculares."
+      ],
+      "verificar": [
+        { "fn": "unitario", "args": [{ "x": -5, "y": 12 }], "espera": { "x": -0.38461538461538464, "y": 0.9230769230769231, "moduloOriginal": 13 } },
+        { "fn": "escalar", "args": [{ "x": -5, "y": 12 }, { "x": 12, "y": 5 }], "espera": { "valor": 0 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "La ecuación U = K₁·v² + K₂·h es dimensionalmente correcta, donde U es una energía, v una velocidad y h una altura. Halla las dimensiones de K₁ y de K₂.",
+      "respuesta": "[K₁] = M; [K₂] = MLT⁻² (una fuerza).",
+      "pasos": [
+        "Principio de homogeneidad: cada término de la suma pesa lo mismo que U, ML²T⁻².",
+        "[K₁]·[v]² = ML²T⁻², con [v]² = L²T⁻². Entonces [K₁] = ML²T⁻² / L²T⁻² = M.",
+        "[K₂]·[h] = ML²T⁻², con [h] = L. Entonces [K₂] = MLT⁻², la dimensión de una fuerza.",
+        "Ojo: K₁ no pesa lo mismo que U. Cada constante pesa lo que le falta a su término para llegar a ML²T⁻²."
+      ],
+      "verificar": [
+        { "fn": "constante", "args": ["energia", [{ "dim": "velocidad", "exp": 2 }]], "espera": { "texto": "M" } },
+        { "fn": "constante", "args": ["energia", [{ "dim": "longitud" }]], "espera": { "texto": "MLT⁻²" } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "La potencia que el viento entrega a un molino depende de la densidad del aire ρ, del largo ℓ de sus aspas y de la rapidez v del viento: potencia = k·ρ^α·ℓ^β·v^γ, donde k es un número. Halla α + β + γ.",
+      "respuesta": "6 (α = 1, β = 2 y γ = 3).",
+      "pasos": [
+        "Dimensiones: potencia ML²T⁻³; ρ: ML⁻³; ℓ: L; v: LT⁻¹. El número k no tiene dimensión.",
+        "M: α = 1.",
+        "T: −γ = −3, así que γ = 3.",
+        "L: −3α + β + γ = 2, así que −3 + β + 3 = 2 y β = 2.",
+        "α + β + γ = 1 + 2 + 3 = 6."
+      ],
+      "verificar": [ { "fn": "exponentes", "args": ["potencia", [{ "nombre": "α", "dim": "densidad" }, { "nombre": "β", "dim": "longitud" }, { "nombre": "γ", "dim": "velocidad" }]],
+        "espera": { "exponentes.α": 1, "exponentes.β": 2, "exponentes.γ": 3, "unica": true } } ]
+    }
+  ]
+}

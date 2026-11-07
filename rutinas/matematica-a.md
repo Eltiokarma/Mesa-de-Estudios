@@ -165,3 +165,96 @@ Cada plantilla pasa por tres subagentes: constructor, verificador independiente 
    - En oscuro, 3x queda a ΔE00 18,4 del rojo de los avisos, que siempre llevan texto.
 3. `docs/investigacion/trigonometria-ideas-erroneas.md`: registrar ID1 a ID15 como hipótesis nuestras y anotar que TR16 se extendió a la resta, la tangente y el triple.
 4. Líneas para `docs/pendientes.md` y `CLAUDE.md`: «Identidades trigonométricas (6 nov 2026, rutina de matemática A): `plantillas/identidades-trig/` (alturas que no se suman: pitagórica con cuadritos, arcos compuestos con barras y el rectángulo, doble, mitad con signo y triple; academia separada de los valores reales; 21 casos verificados aparte)». Con esto, en la fila ma1 de pendientes quedan faltando transformaciones y funciones inversas.
+
+## 7 nov 2026 · Polinomios: la máquina de Ruffini (`plantillas/polinomios/`)
+
+Un reinicio del contenedor borró el primer avance, y después el límite de uso cortó al constructor. Por eso hay un commit de avance a medias antes del borrador.
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, fracciones exactas). La cabecera para el verificador va hasta la línea 93. Tiene 20 funciones:
+  - texto y valor numérico, con P(0) y P(1);
+  - grados relativo y absoluto, del producto, de la suma y de la potencia;
+  - polinomio completo;
+  - Ruffini, también con divisor ax + b y el cociente falso, y división clásica, con su caja de área;
+  - resto por sustitución con x² + k, teorema del resto y k para que haya factor;
+  - raíces racionales candidatas, suma y curva.
+
+  Cada resultado trae `errores` y `coinciden`, con 34 errores propios: PO1 a PO34.
+- **`casos.json`**: 22 casos con sus `tambien`.
+- **`motor.test.js`**: 39 pruebas. Incluye:
+  - dividendo = divisor·Q + R en Ruffini y en la división clásica;
+  - resto = P(raíz);
+  - la sustitución coincide con la división;
+  - el k de `factorK` anula P;
+  - la prueba de propiedades, en los casos y en un barrido de 300;
+  - las 12 predicciones de la escena.
+- **`papel.json`**: 10 problemas propios.
+- **`plantilla.json`**: unidades `algebra.polinomios`, `algebra.division-de-polinomios` y `algebra.ecuaciones-polinomiales` (esta última porque su temario incluye raíces racionales).
+- **`index.html`**, paso a paso de 8 pasos con 7 predicciones. Las fichas de los coeficientes bajan por la tabla, con el hueco que se llena con 0. El triángulo a se arrastra sobre la recta, y la curva muestra que el resto es la altura P(a). Las predicciones:
+  - T(0) = término independiente;
+  - grado absoluto;
+  - grado del producto;
+  - Ruffini con el 0 que falta;
+  - resto entre x + 2 en P(x) = x³ − 4x² − x + 4, con raíces −1, 1 y 4 dentro de la manija;
+  - divisor 2x − 1, con el cociente falso;
+  - k para que haya factor.
+
+  «¿Qué pasa si…?» tiene 5 experimentos: P(1), los términos de un completo, el grado de la suma, el resto entre x² + 1 por sustitución y las raíces candidatas.
+- **Respaldo.** Todos los PO son hipótesis nuestras, porque el informe no trae datos de polinomios. AL16 (el despeje con el signo cambiado) también va como hipótesis. Gamboa y otros (2019) se cita solo como un parecido, sin cifras.
+
+**Pruebas.** `npm test`: 1515; pasan 1513 y solo fallan las 2 esperadas. Playwright en las 8 combinaciones:
+- sin errores de consola ni desbordes, y ninguna ecuación pide desplazarse de lado;
+- el bloqueo no se salta con clic forzado, consola ni hash;
+- en el celular el lienzo se ve al responder, y el dedo lejos del triángulo desplaza la página (lo probó el revisor).
+
+**Subagentes.** Esta vez usé el método vigente de `docs/metodo/`.
+
+- **Verificador independiente.** Recibió solo las entradas, sin respuestas, y la cabecera del motor. Recalculó 130 campos con fracciones:
+  - evaluó con potencias directas;
+  - contrastó Ruffini con la división larga;
+  - contrastó la sustitución con la división.
+
+  Coincidieron 129. El otro fue una decisión de diseño: PO15 ((−2)² = −4) solo existe con raíz negativa, y quedó escrito en la cabecera. Los 14 bordes que calculó entraron todos, entre ellos:
+  - divisor con a negativo;
+  - resto 0 y varios ceros;
+  - polinomio constante, que el motor rechaza en Ruffini;
+  - raíces repetidas y k fraccionario;
+  - división clásica con divisor de grado 2, con resto −x, exacta o con dividendo de grado menor.
+- **Revisor de contenido.** Encontró dos graves y las corregí:
+  - El paso 6 invitaba a buscar un a con resto 0 en un polinomio sin raíz entera. Lo cambié por x³ − 4x² − x + 4 y recalculé las opciones con el motor.
+  - PO15 estaba como 'parcial' sin dato. Ahora es hipótesis.
+
+  Corregí también:
+  - las ecuaciones cortadas: ahora parten en «=» y en ⟹;
+  - las opciones del paso 7, en dos líneas;
+  - el paso 2, que tras responder mostraba justo un distractor;
+  - la letra a, que nombraba la manija y el coeficiente del divisor;
+  - lecturas y chips partidos;
+  - las marcas del experimento 5, que se pisaban;
+  - textos del paso 1 y de las fuentes.
+
+**Pendiente.** Horner solo aparece en un texto y en el papel, sin animación. En el experimento 4 la tabla comprueba la sustitución, pero no la dibuja paso a paso.
+
+**Pedidos para la integración.**
+
+1. Catálogo: `polinomios` en `algebra.polinomios`, `algebra.division-de-polinomios` y `algebra.ecuaciones-polinomiales`, y luego `npm run catalogo`. Con esta plantilla álgebra pasa de 4 plantillas, así que hay que rebalancear `catalogo/pruebas/algebra.json` (máximo 2 ítems por plantilla).
+2. `docs/diseno.md`, colores de la máquina de Ruffini:
+
+   | Variable | Claro | Oscuro |
+   | --- | --- | --- |
+   | Coeficientes y k | #1f5fbf | #7cb0ff |
+   | a | #a05200 | #f0a04a |
+   | Resto R = P(a) | #a10fbf | #cf6bfa |
+   | Cociente Q | #466d14 | #a3d65e |
+   | Exponentes y grado | #0f766e | #5ed9c8 |
+   | Divisor | #77032c | #fdb4ce |
+
+   - ΔE00 mínimo entre los que salen juntos: 23,6 en claro y 25,2 en oscuro.
+   - Pares bajo ΔE00 20 con los colores de estado, que siempre van con texto:
+     - turquesa y verde de «correcto»: 11,1 en claro y 11,0 en oscuro;
+     - cociente y «correcto»: 15,6 en claro y 17,3 en oscuro;
+     - divisor y rojo de avisos: 17,4 en oscuro.
+3. `docs/investigacion/algebra-funciones-ideas-erroneas.md`: registrar PO1 a PO34 como hipótesis nuestras, porque el informe no cubre polinomios.
+4. `docs/metodo/entradas.py` se cae cuando `espera` es un valor suelto y no un objeto. Usé una copia corregida en el scratchpad: `pide` = ["valor"].
+5. Líneas para `docs/pendientes.md` y `CLAUDE.md`: «Polinomios (7 nov 2026, rutina de matemática A): `plantillas/polinomios/` (la máquina de Ruffini: fichas con el 0 que falta, el resto es la altura P(a) en la curva, divisor ax + b con el cociente falso, grados, resto por sustitución y raíces racionales; 22 casos verificados aparte)».
