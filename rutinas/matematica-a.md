@@ -652,3 +652,85 @@ Ya lleva el estilo «pegatinas»: `data-curso="algebra"` y `nucleo/pegatina.css`
   - La pasada del celular no da QUEDA.
   - Playwright en las 8 combinaciones, respondiendo los 8 pasos: sin errores ni pasos colgados.
 - **Pedido:** integrar los dos `index.html`. Puede que otras escenas armadas con el mismo molde de `tween` tengan el defecto. Conviene buscar `function tween` en las plantillas y revisarlas.
+
+## 7 nov 2026 · Binomio de Newton: el tablero de los caminos (`plantillas/binomio-newton/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, BigInt y fracciones exactas; la cabecera llega hasta la línea 79).
+  - Funciones: factorial, combinatorio, caminos, Pascal, fila, términos, desarrollo con suma acumulada, monomio, término tₖ₊₁, coeficiente de xᵐ, término central, suma de coeficientes, Galton y simulación con semilla.
+  - Fuera de rango lanza error con mensaje: k > n y un lugar mayor que n + 1.
+  - Tiene los errores BN1 a BN27.
+- **`casos.json`**: 20 casos con sus `tambien`, incluidos los bordes del verificador.
+- **`motor.test.js`**: 39 pruebas.
+  - Propiedades: C(n, k) contra factoriales, simetría, Pascal, la suma 2ⁿ, el desarrollo contra (A + B)ⁿ evaluado y Galton.
+  - Prueba de que ningún error típico coincide con la respuesta, en los casos y en 300 al azar.
+  - Las 13 predicciones de la escena.
+- **`papel.json`**: 10 problemas propios.
+- **`plantilla.json`**: unidad `algebra.binomio-de-newton`.
+- **`index.html`**: el tablero de caminos. Cada término elige a o b en cada uno de los n paréntesis, y los caminos que llegan a un casillero son C(n, k). El triángulo de Pascal se arma con fichas y hay una perilla para n.
+  - **Paso a paso** (8 predicciones):
+    - C(5, 3);
+    - la suma de Pascal C(7, 3) + C(7, 4);
+    - la suma de la fila 6;
+    - los términos de (a + b)⁷;
+    - t₄ de (a + b)⁹;
+    - el coeficiente de x⁴ en (2x + 1)⁶;
+    - t₄ de (x − 2)⁵;
+    - el término independiente de (x² + 1/x)⁶, con la recta de exponentes.
+  - **¿Qué pasa si…?** (5):
+    - la suma de coeficientes de (2x + 1)⁵;
+    - el término central de (x + y)¹⁰;
+    - los dos centrales de (a + b)⁷;
+    - el tablero de Galton con 128 bolitas, con aviso de que es una simulación con azar;
+    - la suma de coeficientes de (x − 2)⁷.
+- **Respaldo.**
+  - AL11 queda como hipótesis.
+  - AL8 aparece como 'parcial', pero solo en el texto de fuente.
+  - BN1 a BN27 son hipótesis nuestras. El texto dice que el informe trata (a + b)² y el reparto del exponente, pero no el desarrollo de Newton.
+
+**Pruebas.** `motor.test.js` pasa 39 de 39. `npm test` da 4285 en verde y solo fallan las 2 de catálogo. La pasada del celular no da QUEDA, y Playwright pasa en las 8 combinaciones. Lleva el estilo pegatinas (`data-curso="algebra"`) y el bloque de dos columnas desde 900 px.
+
+**Subagentes.**
+
+- **Verificador independiente:** calculó C(n, k) con el triángulo de Pascal sumado, expandió los desarrollos multiplicando los n paréntesis y contó en Galton los 2ⁿ caminos. Coincidieron los 198 campos y los 10 de papel. De la simulación con semilla solo comprobó los totales y que fuera coherente. Entraron sus bordes:
+  - k > n, que da error;
+  - (x/2 − 3)⁴ y (x/2 − 3)⁵, con fracciones;
+  - (√x + 1/x)ⁿ, haciendo x = y²;
+  - el término central de (2x − 1)⁵;
+  - (2x − 3y)⁴;
+  - C(200, 100);
+  - (x − 1)¹;
+  - Galton con n = 0.
+- **Revisor de contenido:** encontró dos graves.
+  - La recta de exponentes del paso 8 iba de −6 a 12 con marcas cada 3. Eso delataba el paso −3 y que el 0 se alcanza, y descartaba «No tiene». Ahora va de −8 a 14 cada 2 hasta responder.
+  - En pantalla grande faltaban las dos columnas.
+
+  También corregí:
+  - el Galton, que al volver al experimento salía vacío;
+  - los enunciados de P4 a P7, que resolvían el error que medían; las explicaciones pasaron a después de responder;
+  - la notación: Cⁿₖ o (n k), y tₖ₊₁;
+  - una frase falsa de p10;
+  - la nota de simulación del Galton;
+  - el texto de las hipótesis;
+  - la k en fucsia del paso 8;
+  - los códigos repetidos: BN17 para «no junta semejantes» y BN27 para la suma de coeficientes = n.
+
+  Sobre la semilla del Galton, el revisor juzgó que es honesto: la pregunta pide el promedio y la tanda que se ve (33 en k = 3) no coincide con él.
+
+**Pedidos para la integración.**
+
+1. Catálogo: `binomio-newton` en `algebra.binomio-de-newton`, y luego `npm run catalogo`. Los ítems de prueba van a `reserva`.
+2. `docs/diseno.md`, con la paleta de complejos:
+
+   | Variable | Claro | Oscuro |
+   | --- | --- | --- |
+   | a, primer término | #a05200 | #f0a04a |
+   | b, segundo término | #466d14 | #a3d65e |
+   | k | #a10fbf | #cf6bfa |
+   | n | #1f5fbf | #7cb0ff |
+   | exponente de x | #0f766e | #5ed9c8 |
+
+   ΔE00 mínimo: 23,6 en claro y 25,3 en oscuro. Contraste mínimo: 4,63.
+3. Informe de álgebra: registrar BN1 a BN27 como hipótesis nuestras.
+4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Binomio de Newton (7 nov 2026, sesión de matemática A): `plantillas/binomio-newton/` (el tablero de los caminos: cada término elige a o b en cada paréntesis, Pascal con fichas, término general, central e independiente con la recta de exponentes, Galton; 20 casos verificados aparte)».
