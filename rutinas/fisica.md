@@ -5,7 +5,89 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 ## Reglas vigentes para las próximas plantillas
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico quedó hecho el 6 nov (abajo). La próxima ejecución sigue con **estática (equilibrio y torque)**.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov) y estática (7 nov) quedaron hechos (abajo). La próxima ejecución sigue con **choques (impulso y cantidad de movimiento)**.
+- Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Estática: equilibrio y torque (`plantillas/estatica/`)
+
+La pidió la conversación principal, a pedido de Gerson, porque el disparo del día anterior no llegó. Antes de empezar traje la rama principal y revisé que ninguna rama tuviera algo de estática: nadie lo estaba tocando.
+
+**Cómo se hizo.** Con el método de `docs/metodo/`:
+- un subagente constructor con `brief-plantilla.md` y el encargo concreto;
+- un verificador independiente con `brief-verificador.md`, que trabajó sobre las entradas sin respuestas armadas con `entradas.py`;
+- un revisor con `brief-revisor.md`;
+- las correcciones, que volvieron al mismo constructor. Al final hice dos retoques yo.
+
+**Qué hay.**
+- `motor.js` (MotorEstatica, UMD):
+  - la barra con peso propio, homogénea o por tramos, con uno o dos apoyos o cuerdas y una carga desconocida; los momentos respecto a cualquier punto; si se vuelca;
+  - el momento de una fuerza inclinada, con su brazo y su pie;
+  - el centro de gravedad de masas puntuales y de figuras compuestas (con el hueco que se resta);
+  - el bate cortado en su punto de equilibrio, por tramos o cónico;
+  - el nudo con dos cuerdas, por componentes y por Lamy;
+  - la polea fija, el roce estático en el piso y en la rampa, y el par de fuerzas.
+
+  Usa los ángulos de academia, también sus suplementos (143° y otros). Cada resultado trae `errores`.
+- `casos.json`: 21 casos y 42 llamadas. Incluye todas las filas de Balanza y Nudo del informe.
+- `motor.test.js`: ΣF = 0 y Στ = 0 respecto a varios puntos (también con la barra inclinada), el triángulo del nudo cerrado y lo que enseña la escena: E1, E3, E4, E5, E6/E9, E7, E8 y E10. También prueba los errores de entrada y el papel.
+- `papel.json`: 10 problemas propios: palanca, tablón con peso propio, viga en dos apoyos, llave con fuerza inclinada, dos nudos, dos centros de gravedad, roce estático y barra articulada con cable.
+- `index.html`:
+  - **Paso a paso** (8 pasos, 5 predicciones que bloquean): la barra de 6 m y 30 kg con el apoyo a 2 m. Pregunta el peso en A (150 N), la reacción del apoyo (450 N), la barra inclinada que se queda quieta (E3), el bate cortado (la parte gruesa pesa más, E1) y el momento de una fuerza inclinada (60 N·m). En un paso se arrastra el punto O: Στ = 0 respecto a cualquier punto (E5). El explorador deja arrastrar el apoyo y el bloque.
+  - **¿Qué pasa si…?** (5, con pastillas bloqueadas en orden): el nudo de 37° y 53° (E8, E7), el nudo de 53° y 53° (62,5 N, no 50), la tabla en el hielo (el par, E4), la cuerda y la rueda (E9, E6, E7) y la caja en el piso (E10).
+  - En el celular, el dibujo queda compacto y fijo arriba mientras hay predicción pendiente.
+
+**Pruebas.** `npm test`: 1435 pasan y solo fallan las 2 del catálogo. En Playwright, a 390 y 1366, claro y oscuro, con y sin movimiento reducido: sin errores ni desbordes.
+
+**Subagentes.**
+- **Verificador independiente** (leyó solo la cabecera del motor). Usó fracciones exactas y otro camino en cada caso:
+  - momentos respecto a otro extremo y suma de fuerzas;
+  - nudos por componentes y por Lamy;
+  - bate cónico por centroides de trapecio;
+  - láminas por resta de momentos de área y por franjas.
+
+  No encontró ninguna discrepancia numérica. Señaló tres cosas, y se corrigieron:
+  - el signo de `punta.tau` en el bate;
+  - que faltaba documentar que 143° se toma como notable;
+  - el nombre de un caso.
+- **Revisor de contenido.** Recalculó todos los números y estaban bien. Lo que se corrigió:
+  - **Graves:**
+    - en el bate, dos opciones decían lo mismo («pesan igual»), con una de ellas ya contradicha por el enunciado;
+    - en la cuerda y la rueda, D llegaba a la misma conclusión que A y su respaldo era «documentado» sin dato para ese error.
+  - **Medios:**
+    - la opción de 100 N de la barra pasó a «parcial» (el 80 % es del bate, no de esta barra);
+    - en el nudo, dos opciones concluían «la 1»;
+    - «la parte a lo largo apunta al eje» era falso según el dibujo, igual que en el papel p4;
+    - el roce máximo se pintaba en el verde de N;
+    - «Dos cuerdas distintas» insinuaba la respuesta (ahora «El nudo de 37° y 53°»);
+    - en el celular, la polea se metía en la rueda.
+  - **Menores:** rótulos encimados, unidades, aria-live, el color del deslizador y la leyenda de F.
+  - **Confirmó que son correctas** dos cosas que le pedí revisar: la barra inclinada 16° sobre el pasador queda en equilibrio indiferente (el centro de gravedad del sistema queda siempre bajo el pasador), y el turquesa de T₂ no choca con nada en esta escena.
+
+**Colores** (para `docs/diseno.md`). Variables de estática (`plantillas/estatica/`):
+
+| Variable | Color | Claro | Oscuro |
+| --- | --- | --- | --- |
+| P | azul | #1f5fbf | #7cb0ff |
+| N (reacción, normal) | verde | #4f7a17 | #a3d65e |
+| f (roce) | ámbar | #8f5800 | #ffc04d |
+| T y T₁ | rojo | #c0364a | #f17384 |
+| F (fuerza aplicada) | fucsia | #a10fbf | #cf6bfa |
+| T₂ (la segunda cuerda del nudo) | turquesa | #0f766e | #5ed9c8 |
+
+- Los primeros cinco son los mismos de dinámica. T₂ usa el turquesa que en dinámica es la aceleración; aquí no hay aceleración.
+- El brazo y el momento τ de cada fuerza van en el color de esa fuerza («τ = fuerza × brazo»). Masa, metros, ángulos, el punto O, ΣF y Στ van en tinta.
+- ΔE00: el par más cercano de los que salen juntos es F–P, con 27 en claro y 29 en oscuro.
+- AA: el mínimo es 4,55 (N sobre su chip, que va con fondo al 4 % en vez del 8 %, porque al 8 % daba 4,33).
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/fisica.json`, unidad `fisica.estatica`, agregar `"plantillas": ["estatica"]`. Luego `npm run catalogo`.
+2. En `docs/diseno.md`, el párrafo de colores de arriba. Hay que decidir si el chip de N al 4 % se vuelve la norma o si se oscurece un poco el verde.
+3. En `docs/pendientes.md` y `CLAUDE.md`: «Estática (`plantillas/estatica/`, 7 nov 2026): barra con peso propio, momentos respecto a cualquier punto, bate cortado, nudo, polea y roce estático; 21 casos verificados aparte; 10 problemas de papel; 5 predicciones y 5 «¿qué pasa si…?» con los datos de Ortiz y otros (2005), Fischer y otros (2014) y Flores-García y otros (2009)». Subir también el conteo de pruebas.
+4. Si física llega a 4 plantillas o más, rebalancear `catalogo/pruebas/fisica.json`, como dice `docs/metodo/LEEME.md`.
+
+**Pendiente.**
+- **En la escena:** no hay un modo que alargue una sola cuerda del nudo sin cambiar su ángulo (contra E7). Hay un deslizador de «profundidad», que alarga las dos.
+- **Opciones sin dato:** las del momento inclinado, de la reacción y de la caja son hipótesis.
 
 ## 6 nov 2026 · Tiro parabólico y movimiento circular (`plantillas/tiro-parabolico/`)
 
