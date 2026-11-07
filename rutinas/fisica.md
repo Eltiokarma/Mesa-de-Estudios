@@ -8,9 +8,69 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa; la siguiente ejecución espera un orden nuevo de Gerson.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica (hecha, abajo), tiro parabólico y energía (en curso), calorimetría, circuitos y espejos.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Dinámica 0.2.0: varios cuerpos y movimiento circular (`plantillas/dinamica/`)
+
+Primer punto de la lista nueva de Gerson (huecos de escenas ya hechas). Se hizo después del commit de rendimiento (e11c420) y respeta Celular.dpr, Celular.variable y Celular.bucle.
+
+**Qué hay de nuevo.**
+
+- **Tres pestañas, como el Banco Óptico:**
+  - «Paso a paso» no cambia.
+  - «¿Qué pasa si…?» trae los experimentos de un cuerpo: saco quieto, ascensor, empujón, tirón, el columpio y la loma (estos dos son nuevos y son dinámica circular).
+  - «Varios cuerpos» es nueva. Tiene Atwood y las dos cajas, que se mudaron con sus mismos ids de medición, más el tren de carritos, el bloque sobre otro y la polea móvil.
+  - Cada pestaña bloquea sus experimentos en orden.
+- **Motor:** solo se sumaron funciones (`vertical`, `loma`, `curva`, `tren`, `apilados` y `poleaMovil`), cada una con `errores`. Los 21 casos de antes siguen tal cual.
+- **Casos:** ahora son 33. Los 10 nuevos se verificaron aparte, y la conversación principal recalculó los 2 de apilados con roce en el piso.
+- **Pruebas:** 66 en verde.
+- **Papel:** p3, p5 y p10 se reemplazaron por el carrito con la caja, la polea móvil y el balde en un círculo vertical.
+- **5 predicciones nuevas:**
+  - el columpio (cuántas fuerzas actúan; centrífuga D9 y «fuerza del movimiento» D1, ambas parciales);
+  - la loma (N = 6000 N);
+  - el tren (T₂ = 10 N);
+  - el bloque sobre otro (van juntos, con 6 N de roce y no 8);
+  - la polea móvil (la mitad de rápido).
+  
+  Los demás distractores son hipótesis.
+- **Lo que se arregló de lo publicado:**
+  - las predicciones viejas quedaron parejas;
+  - D8, D11 y D10 pasaron a parcial;
+  - los pasos bloqueados se leen «Paso N, bloqueado»;
+  - los tres modos usan nucleo/celular.js;
+  - al cambiar de pestaña, la animación salta a su final.
+
+**Verificador independiente.** Recalculó los casos 21 a 30 por caminos distintos:
+- ejes a lo largo de la pendiente en la curva;
+- la tensión como lo que arrastran los carritos de atrás;
+- en la polea móvil, una sola coordenada con masa efectiva m2 + m1/4;
+- en apilados, primero el sistema y después el bloque de arriba.
+
+Hizo unas 95 comprobaciones y no encontró discrepancias. Dedujo por su cuenta el Fmax de apilados con roce en el piso y confirmó la corrección del constructor al diseño: (fsA·M − mA·μPiso·M·g)/mB, o fsA si el piso aguanta más.
+
+**Revisor de contenido.**
+- **Lo grave:** a 390 px la página medía 448 de ancho, porque las tres pestañas no cabían. Ahora hacen salto de línea. Se medía mal porque innerWidth también daba 448; hay que medir con scrollWidth.
+- **Lo medio:**
+  - el asa de la rampa se alejaba del puntero por debajo de 30°;
+  - las palabras de color no pasaban AA en claro (ahora el fondo va al 8 %, y al 4 % en N);
+  - el respaldo de D10 subía de más;
+  - el rótulo tapaba el auto de la loma.
+- **Lo bajo:** p5 define a₁ y a₂, el rótulo del roce entre bloques, la flecha T del columpio, la amplitud del vaivén y el vacío en el tren.
+
+**Colores** (para `docs/diseno.md`):
+- **T₂ nuevo:** #5a1f08 en claro y #f57a1f en oscuro.
+  - Contraste: 12,1 en claro y 6,0 en oscuro.
+  - ΔE00 mínimo: 22,6 y 21,5, los dos con f.
+  - Cambia de tono entre modos (tostado y naranja), como Dc en interés.
+- **a₁ y a₂:** van en el turquesa de a, con el rótulo pegado a su cuerpo. Es la misma magnitud con dos valores (decisión aprobada).
+
+**Pedidos para la integración.**
+1. `npm run catalogo`: cambió el título y la versión es 0.2.0.
+2. En `docs/diseno.md`: T₂, la regla de a₁ y a₂ y el fondo de los chips de dinámica al 8 % (N al 4 %).
+3. Actualizar la línea de dinámica en pendientes: falta el péndulo en un vagón y la fuerza horizontal sobre el plano.
+4. Las pestañas de las otras escenas con tres modos pueden tener el mismo desborde: medir con scrollWidth.
 
 ## 7 nov 2026 · Gravitación universal y satélites (`plantillas/gravitacion/`)
 
