@@ -8,6 +8,9 @@
 // 3. La imagen no depende de dónde esté el ojo (idea errónea S2): todos los
 //    rayos del abanico, y el rayo que llega a cualquier ojo, pasan por el mismo punto.
 // 4. Cada problema de papel.json coincide con el motor.
+// 5. El doblez (0.2.0): la hoja de la luz que sale de una lente, doblada sobre la línea del espejo, es el
+//    dibujo del espejo; en cada cuadro los rayos siguen concurriendo y la imagen no cambia su distancia a
+//    la bisagra. Las fórmulas de la lente y de la proyección se escriben aquí aparte, no se toman del motor.
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -20,32 +23,40 @@ const TOL = 1e-6;
 
 function cerca(real, esperado, que, tol) {
   const t = tol === undefined ? TOL : tol;
-  assert.ok(Math.abs(real - esperado) <= t,
+  assert.ok(typeof real === 'number' && Math.abs(real - esperado) <= t,
     `${que}: el motor da ${real}, se esperaba ${esperado} (tolerancia ${t})`);
 }
-const focalDe = e => e.f !== undefined ? e.f : motor.focal(e.R, e.tipo);
 
-// 1. Casos
+// 1. Casos: cada uno llama a motor[fn](...args) y compara 'espera' (campos anidados con punto).
+const leer = (o, k) => k.split('.').reduce((x, p) => (x === null || x === undefined ? undefined : x[p]), o);
+function comprobar(fn, args, espera, que) {
+  assert.equal(typeof motor[fn], 'function', `motor.${fn} no existe`);
+  const r = motor[fn](...args);
+  const ver = (x, v, k) => {
+    if (typeof v === 'number') cerca(x, v, `${que} · ${k}`, datos.tolerancia);
+    else assert.equal(x, v, `${que} · ${k}: el motor da ${x}, se esperaba ${v}`);
+  };
+  if (espera !== null && typeof espera === 'object') for (const [k, v] of Object.entries(espera)) ver(leer(r, k), v, k);
+  else ver(r, espera, 'valor');
+  return r;
+}
 for (const caso of datos.casos) {
   test(`casos.json: ${caso.nombre}`, () => {
-    const e = caso.entrada, x = caso.esperado;
-    const f = focalDe(e);
-    if (x.f !== undefined) cerca(f, x.f, 'f = R/2');
-    if (x.zona) assert.equal(motor.zona(e.o, f), x.zona, 'zona del objeto');
-    const r = motor.imagen(e.o, f, e.h);
-    if (x.sin_imagen) { assert.ok(r.inf, 'se esperaba que no hubiera imagen (objeto en el foco)'); return; }
-    assert.ok(!r.inf);
-    cerca(r.i, x.i, 'i');
-    cerca(r.m, x.A, 'A');
-    cerca(r.m, -r.i / e.o, 'A = -i/o');
-    cerca(r.h, x.h_imagen, 'altura de la imagen');
-    cerca(r.x, -x.i, 'posición en el dibujo (la imagen real se dobla hacia el objeto)');
-    const d = motor.describir(r);
-    assert.equal(d.real, x.real, 'real o virtual');
-    assert.equal(d.derecha, x.derecha, 'derecha o invertida');
-    assert.equal(d.tamano, x.tamano, 'mayor, menor o igual');
+    const r = comprobar(caso.fn, caso.args, caso.espera, caso.nombre);
+    for (const t of caso.tambien || []) comprobar(t.fn || caso.fn, t.args, t.espera, caso.nombre);
+    if (caso.fn === 'imagen' && !r.inf) {
+      cerca(r.m, -r.i / caso.args[0], 'A = -i/o');
+      cerca(r.x, -r.i, 'posición en el dibujo (la imagen real se dobla hacia el objeto)');
+    }
   });
 }
+// Los siete casos del informe siguen ahí, con sus valores (la migración de formato no cambió ninguno).
+test('casos.json: los siete casos del informe, en el formato fn/args/espera', () => {
+  const im = datos.casos.filter(c => c.fn === 'imagen');
+  assert.equal(im.length, 7);
+  assert.deepEqual(im.map(c => c.args[0]), [15, 30, 20, 10, 5, 10, 30]);
+  assert.deepEqual(im.map(c => c.espera.i === undefined ? null : c.espera.i), [30, 15, 20, null, -10, -5, -7.5]);
+});
 
 test('focal: f = R/2, positiva en el cóncavo y negativa en el convexo', () => {
   assert.equal(motor.focal(20, 'concavo'), 10);
@@ -77,7 +88,7 @@ function cruce(a, b) {
   const x = (b.yM - a.yM) / (a.pend - b.pend);
   return [x, a.yM + a.pend * x];
 }
-const configuraciones = datos.casos.filter(c => !c.esperado.sin_imagen).map(c => [c.nombre, c.entrada.o, focalDe(c.entrada), c.entrada.h])
+const configuraciones = datos.casos.filter(c => c.fn === 'imagen' && !c.espera.inf).map(c => [c.nombre, ...c.args])
   .concat([['cóncavo, objeto casi en F', 10.5, 10, 3], ['convexo grande', 40, -25, 5], ['cóncavo, objeto muy cerca', 1, 10, 2]]);
 for (const [nombre, o, f, h] of configuraciones) {
   test(`el dibujo coincide con la ecuación: ${nombre}`, () => {
@@ -172,5 +183,137 @@ for (const p of papel.problemas) {
     if ('i' in e) cerca(r.i, e.i, `${p.id} i`);
     if ('A' in e) cerca(r.m, e.A, `${p.id} A`);
     if ('hi' in e) cerca(r.h, e.hi, `${p.id} altura de la imagen`);
+    if ('xEspejo' in e) cerca(r.x, e.xEspejo, `${p.id} posición de la imagen del espejo`);
+    if ('xLente' in e) cerca(motor.hojaDeSalida(v.o, v.f, v.h === undefined ? 1 : v.h, 0).imagen.x, e.xLente, `${p.id} posición de la imagen de la lente`);
   });
 }
+
+// 5. El doblez
+const K = motor.PROYECCION;
+const lenteI = (o, f) => 1 / (1 / f - 1 / o);   // la lente delgada, escrita aquí aparte
+const pasosS = (n) => Array.from({ length: n + 1 }, (_, j) => j / n);
+const grillaOF = [];
+for (const o of [3, 5, 8, 12, 15, 25, 30, 45]) for (const f of [-20, -10, -6, 6, 10, 20]) if (Math.abs(o - f) > 1e-9) grillaOF.push([o, f]);
+
+test('doblez 1 · extremos: con s = 0 la hoja está abierta y con s = 1 cae en (−x, y), con cualquier k', () => {
+  for (const k of [K, { kx: 0.3, ky: 0.5 }, { kx: -0.6, ky: 0.2 }])
+    for (const x of [-30, -7.5, 0, 4, 22]) for (const y of [-11, 0, 3.5]) {
+      const a = motor.plegar(x, y, 0, k), b = motor.plegar(x, y, 1, k);
+      cerca(a.x, x, 's = 0, x', 1e-12); cerca(a.y, y, 's = 0, y', 1e-12); cerca(a.z, 0, 's = 0, z', 1e-12);
+      cerca(b.x, -x, 's = 1, x', 1e-12); cerca(b.y, y, 's = 1, y', 1e-12); cerca(b.z, 0, 's = 1, z', 1e-12);
+    }
+});
+
+test('doblez 2 · el giro es rígido: cada punto conserva su distancia a la bisagra en todo s', () => {
+  for (const s of pasosS(40)) for (const x of [-25, -5, 3, 30]) {
+    const p = motor.plegar(x, 2, s);
+    cerca(Math.hypot(p.x - K.kx * p.z, p.z), Math.abs(x), `x = ${x}, s = ${s}`, 1e-9);
+  }
+  for (const s of pasosS(20)) cerca(motor.hojaDeSalida(15, 10, 4, s).distanciaBisagra, 30, `distancia de la imagen, s = ${s}`, 1e-12);
+});
+
+test('doblez 3 · en cada cuadro, los rayos plegados (o sus prolongaciones) pasan por la imagen plegada', () => {
+  const conf = datos.casos.filter(c => c.fn === 'imagen' && !c.espera.inf).map(c => c.args)
+    .concat([[10.5, 10, 3], [40, -25, 5], [1, 10, 2]]);
+  for (const [o, f, h] of conf) for (const s of pasosS(20)) {
+    const H = motor.hojaDeSalida(o, f, h, s), I = H.imagen;
+    assert.ok(H.rayos.length >= 3, `o=${o} f=${f}: tres rayos`);
+    for (const r of H.rayos) {
+      const ax = r.hasta.x - r.desde.x, ay = r.hasta.y - r.desde.y, bx = I.x - r.desde.x, by = I.y - r.desde.y;
+      const cruz = (ax * by - ay * bx) / Math.max(1, Math.hypot(ax, ay));
+      cerca(cruz, 0, `o=${o} f=${f} s=${s} rayo ${r.nombre}`, 1e-7);
+      if (!I.real) assert.ok(r.prolongacion, 'imagen virtual: el rayo trae su prolongación');
+    }
+  }
+});
+
+test('doblez 4 · doblada es el espejo: la pendiente de cada rayo es la de reflejar y la imagen cae en imagen().x', () => {
+  for (const [o, f] of grillaOF) {
+    const H = motor.hojaDeSalida(o, f, 3, 1), r = motor.imagen(o, f, 3);
+    cerca(H.imagen.x, r.x, `o=${o} f=${f}: x`, 1e-9); cerca(H.imagen.y, r.h, `o=${o} f=${f}: y`, 1e-9);
+    for (const ry of H.rayos) {
+      cerca(ry.pendPantalla, motor.reflejar(ry.yM, ry.uEntra, f), `o=${o} f=${f} rayo ${ry.nombre}`, 1e-9);
+      cerca(motor.reflejar(ry.yM, ry.uEntra, f), -motor.pendienteLente(ry.yM, ry.uEntra, f), 'reflejar = −pendienteLente', 1e-12);
+    }
+  }
+});
+
+test('doblez 5 · abierta es la lente: la imagen queda en x = 1/(1/f − 1/o), al otro lado si es real', () => {
+  for (const [o, f] of grillaOF) {
+    const H = motor.hojaDeSalida(o, f, 2, 0);
+    cerca(H.imagen.x, lenteI(o, f), `o=${o} f=${f}`, 1e-9);
+    assert.equal(H.imagen.x > 0, H.imagen.real, 'real: al otro lado de la lente');
+  }
+});
+
+test('doblez 6 · focos: doblada, F′ cae sobre F (x = −f) y el doble foco sobre C (x = −2f)', () => {
+  for (const f of [-15, -10, 8, 10, 20]) {
+    const H = motor.hojaDeSalida(30, f, 4, 1);
+    cerca(H.focoPrima.x, -f, `f=${f} F′`, 1e-12); cerca(H.focoPrima.y, 0, 'F′ en el eje', 1e-12);
+    cerca(H.dobleFoco.x, -2 * f, `f=${f} C`, 1e-12);
+  }
+});
+
+test('doblez 7 · la regla de i se voltea con la hoja: doblada, la marca v queda en x = −v; el sentido cambia una vez, en sDeCanto', () => {
+  const H = motor.hojaDeSalida(15, 10, 4, 1, { regla: [-10, -5, 5, 10, 20, 30] });
+  for (const m of H.regla) { cerca(m.x, -m.v, `marca ${m.v}`, 1e-12); assert.equal(m.x < 0, m.v > 0, 'positiva: delante'); }
+  const sc = motor.sDeCanto();
+  let cambios = 0, ant = motor.hojaDeSalida(15, 10, 4, 0).sentido;
+  for (const s of pasosS(500).slice(1)) {
+    const v = motor.hojaDeSalida(15, 10, 4, s).sentido;
+    if (v !== ant && v !== 0) { cambios++; assert.ok(Math.abs(s - sc) < 0.003, `cambia en s = ${s}, cerca de ${sc}`); ant = v; }
+  }
+  assert.equal(cambios, 1);
+});
+
+test('doblez 8 · de canto: anchoHoja(sDeCanto) = 0 y deCanto vale solo en un tramo seguido alrededor de s*', () => {
+  const sc = motor.sDeCanto();
+  cerca(motor.anchoHoja(sc), 0, 'ancho de canto', 1e-12);
+  cerca(sc, Math.atan(4) / Math.PI, 's* = atan 4/π', 1e-12);
+  const marcas = pasosS(1000).map(s => motor.hojaDeSalida(15, 10, 4, s).deCanto);
+  const ini = marcas.indexOf(true), fin = marcas.lastIndexOf(true);
+  assert.ok(ini > 0 && fin < 1000, 'no está de canto en los extremos');
+  for (let j = ini; j <= fin; j++) assert.ok(marcas[j], 'el tramo de canto es seguido');
+  assert.ok(ini / 1000 < sc && fin / 1000 > sc, 'el tramo contiene s*');
+});
+
+test('doblez 9 · arrastre: sMasCercano devuelve el s de cada punto del recorrido de la pestaña, y 0 o 1 fuera de él', () => {
+  for (const [W, yH] of [[34, 14], [20, -5], [10, 0]]) for (const s of pasosS(50)) {
+    const p = motor.plegar(W, yH, s);
+    cerca(motor.sMasCercano(p, W, yH), s, `W=${W} yH=${yH} s=${s}`, 1e-9);
+  }
+  // Fuera de la media elipse (del lado de la hoja abierta o de la doblada): 0 o 1, sin saltos raros.
+  assert.equal(motor.sMasCercano({ x: 40, y: 30 }, 34, 14), 0);
+  assert.equal(motor.sMasCercano({ x: -40, y: 30 }, 34, 14), 1);
+  let ant = 0;
+  for (let x = 40; x >= -40; x -= 0.5) {
+    const s = motor.sMasCercano({ x, y: 14 + 0.5 * K.ky * 34 * Math.max(0, 1 - (x / 40) ** 2) }, 34, 14);
+    assert.ok(s >= ant - 1e-9, `monótono al barrer x = ${x}`); ant = s;
+  }
+});
+
+test('doblez 10 · errores de entrada', () => {
+  assert.throws(() => motor.plegar(1, 1, 1.2), RangeError);
+  assert.throws(() => motor.plegar(1, 1, -0.1), RangeError);
+  assert.throws(() => motor.plegar(1, 1, NaN), RangeError);
+  assert.throws(() => motor.plegar('1', 1, 0.5), TypeError);
+  assert.throws(() => motor.plegar(1, Infinity, 0.5), TypeError);
+  assert.throws(() => motor.anchoHoja(2), RangeError);
+  assert.throws(() => motor.hojaDeSalida(0, 10, 4, 0.5), RangeError);
+  assert.throws(() => motor.hojaDeSalida(15, 0, 4, 0.5), RangeError);
+  assert.throws(() => motor.hojaDeSalida(15, 10, 4, 1.5), RangeError);
+  assert.throws(() => motor.pendienteLente(1, 0, 0), RangeError);
+  assert.throws(() => motor.sMasCercano({ x: 0, y: 0 }, 0, 14), RangeError);
+  assert.throws(() => motor.sMasCercano({ x: 0, y: 0 }, 34, 14, { kx: -0.25, ky: 0 }), RangeError);
+  cerca(motor.pendienteLente(4, 0.1, Infinity), 0.1, 'vidrio plano: no desvía', 1e-12);
+});
+
+test('doblez 11 · papel p10: la lente y el espejo dan i = 36 y A = −2; la lente la pone en x = +36 y el espejo en x = −36', () => {
+  const p10 = papel.problemas.find(p => p.id === 'p10');
+  assert.ok(p10, 'falta el p10');
+  const v = p10.verificar;
+  const r = motor.imagen(v.o, v.f, 1);
+  cerca(r.i, 36, 'i'); cerca(r.m, -2, 'A');
+  cerca(motor.hojaDeSalida(v.o, v.f, 1, 0).imagen.x, 36, 'lente'); cerca(motor.hojaDeSalida(v.o, v.f, 1, 1).imagen.x, -36, 'espejo');
+  cerca(lenteI(v.o, v.f), 36, 'lente, con la fórmula escrita aquí');
+});

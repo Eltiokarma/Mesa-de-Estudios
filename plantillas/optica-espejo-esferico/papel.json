@@ -7,72 +7,204 @@
       "nivel": "básico",
       "enunciado": "Una vela está a 36 cm de un espejo cóncavo de distancia focal 12 cm. ¿A qué distancia del espejo se forma su imagen y cuál es el aumento?",
       "respuesta": "i = 18 cm: imagen real, delante del espejo. A = −0,5: invertida y de la mitad del tamaño.",
-      "pasos": ["1/i = 1/12 − 1/36 = 3/36 − 1/36 = 2/36, así que i = 18 cm.", "i positiva: la imagen es real y está del mismo lado que la vela, delante del espejo.", "A = −i/o = −18/36 = −0,5."],
-      "verificar": { "o": 36, "f": 12, "espera": { "i": 18, "A": -0.5 } }
+      "pasos": [
+        "1/i = 1/12 − 1/36 = 3/36 − 1/36 = 2/36, así que i = 18 cm.",
+        "i positiva: la imagen es real y está del mismo lado que la vela, delante del espejo.",
+        "A = −i/o = −18/36 = −0,5."
+      ],
+      "verificar": {
+        "o": 36,
+        "f": 12,
+        "espera": {
+          "i": 18,
+          "A": -0.5
+        }
+      }
     },
     {
       "id": "p2",
       "nivel": "básico",
       "enunciado": "Un espejo cóncavo tiene un radio de curvatura de 40 cm. Un objeto se coloca a 30 cm del espejo. ¿Dónde se forma la imagen y cómo es?",
       "respuesta": "f = 20 cm; i = 60 cm (real, delante del espejo); A = −2: invertida y el doble de grande.",
-      "pasos": ["El dato es el radio, no la focal: f = R/2 = 40/2 = 20 cm.", "1/i = 1/20 − 1/30 = 3/60 − 2/60 = 1/60, así que i = 60 cm.", "A = −60/30 = −2.", "Ojo: si usas 40 como si fuera f, te sale 1/i = 1/40 − 1/30 < 0, una imagen virtual. Es un error común."],
-      "verificar": { "o": 30, "R": 40, "f": 20, "espera": { "i": 60, "A": -2 } }
+      "pasos": [
+        "El dato es el radio, no la focal: f = R/2 = 40/2 = 20 cm.",
+        "1/i = 1/20 − 1/30 = 3/60 − 2/60 = 1/60, así que i = 60 cm.",
+        "A = −60/30 = −2.",
+        "Ojo: si usas 40 como si fuera f, te sale 1/i = 1/40 − 1/30 < 0, una imagen virtual. Es un error común."
+      ],
+      "verificar": {
+        "o": 30,
+        "R": 40,
+        "f": 20,
+        "espera": {
+          "i": 60,
+          "A": -2
+        }
+      }
     },
     {
       "id": "p3",
       "nivel": "básico",
       "enunciado": "Te miras en un espejo de maquillaje, que es cóncavo y tiene 20 cm de distancia focal. Tu cara está a 10 cm del espejo. ¿Dónde está tu imagen y cuántas veces más grande se ve?",
       "respuesta": "i = −20 cm: imagen virtual, 20 cm detrás del espejo. A = 2: derecha y el doble de grande.",
-      "pasos": ["1/i = 1/20 − 1/10 = 1/20 − 2/20 = −1/20, así que i = −20 cm.", "i negativa: la imagen es virtual, detrás del espejo.", "A = −(−20)/10 = 2."],
-      "verificar": { "o": 10, "f": 20, "espera": { "i": -20, "A": 2 } }
+      "pasos": [
+        "1/i = 1/20 − 1/10 = 1/20 − 2/20 = −1/20, así que i = −20 cm.",
+        "i negativa: la imagen es virtual, detrás del espejo.",
+        "A = −(−20)/10 = 2."
+      ],
+      "verificar": {
+        "o": 10,
+        "f": 20,
+        "espera": {
+          "i": -20,
+          "A": 2
+        }
+      }
     },
     {
       "id": "p4",
       "nivel": "intermedio",
       "enunciado": "Una vela de 2,5 cm de alto está a 12 cm de un espejo cóncavo de distancia focal 8 cm. ¿Qué altura tiene su imagen y hacia dónde apunta la llama?",
       "respuesta": "La imagen mide 5 cm y está invertida: altura −5 cm, con la llama hacia abajo. Está a 24 cm del espejo, delante.",
-      "pasos": ["1/i = 1/8 − 1/12 = 3/24 − 2/24 = 1/24, así que i = 24 cm.", "A = −24/12 = −2.", "Altura de la imagen: −2 × 2,5 cm = −5 cm. El signo menos dice que está de cabeza."],
-      "verificar": { "o": 12, "f": 8, "h": 2.5, "espera": { "i": 24, "A": -2, "hi": -5 } }
+      "pasos": [
+        "1/i = 1/8 − 1/12 = 3/24 − 2/24 = 1/24, así que i = 24 cm.",
+        "A = −24/12 = −2.",
+        "Altura de la imagen: −2 × 2,5 cm = −5 cm. El signo menos dice que está de cabeza."
+      ],
+      "verificar": {
+        "o": 12,
+        "f": 8,
+        "h": 2.5,
+        "espera": {
+          "i": 24,
+          "A": -2,
+          "hi": -5
+        }
+      }
     },
     {
       "id": "p5",
       "nivel": "intermedio",
       "enunciado": "El retrovisor de una moto es un espejo convexo de 40 cm de radio de curvatura. Un auto de 1,6 m de alto está 3 m detrás de la moto. ¿Dónde está la imagen del auto y qué altura tiene?",
       "respuesta": "i = −18,75 cm: imagen virtual, detrás del espejo. A = 1/16 = 0,0625: la imagen mide 10 cm, derecha y mucho más pequeña.",
-      "pasos": ["Convexo: f = −R/2 = −20 cm. Todo en centímetros: o = 300 cm, h = 160 cm.", "1/i = −1/20 − 1/300 = −15/300 − 1/300 = −16/300, así que i = −300/16 = −18,75 cm.", "A = −(−18,75)/300 = 0,0625 = 1/16.", "Altura de la imagen: 160/16 = 10 cm. El convexo achica; por eso cabe tanto en el retrovisor."],
-      "verificar": { "o": 300, "R": 40, "f": -20, "h": 160, "espera": { "i": -18.75, "A": 0.0625, "hi": 10 } }
+      "pasos": [
+        "Convexo: f = −R/2 = −20 cm. Todo en centímetros: o = 300 cm, h = 160 cm.",
+        "1/i = −1/20 − 1/300 = −15/300 − 1/300 = −16/300, así que i = −300/16 = −18,75 cm.",
+        "A = −(−18,75)/300 = 0,0625 = 1/16.",
+        "Altura de la imagen: 160/16 = 10 cm. El convexo achica; por eso cabe tanto en el retrovisor."
+      ],
+      "verificar": {
+        "o": 300,
+        "R": 40,
+        "f": -20,
+        "h": 160,
+        "espera": {
+          "i": -18.75,
+          "A": 0.0625,
+          "hi": 10
+        }
+      }
     },
     {
       "id": "p6",
       "nivel": "intermedio",
       "enunciado": "Quieres proyectar en una pared la imagen de una lámpara pequeña usando un espejo. La lámpara está a 50 cm del espejo y la pared, del mismo lado, a 2 m. ¿Qué tipo de espejo necesitas y cuál es su radio de curvatura?",
       "respuesta": "Un espejo cóncavo de f = 40 cm, es decir, R = 80 cm. La imagen sale invertida y 4 veces más grande (A = −4).",
-      "pasos": ["En una pared solo se forma una imagen real: i = +200 cm.", "1/f = 1/50 + 1/200 = 4/200 + 1/200 = 5/200, así que f = 40 cm.", "f positiva: espejo cóncavo. R = 2f = 80 cm.", "A = −200/50 = −4."],
-      "verificar": { "o": 50, "f": 40, "espera": { "i": 200, "A": -4 } }
+      "pasos": [
+        "En una pared solo se forma una imagen real: i = +200 cm.",
+        "1/f = 1/50 + 1/200 = 4/200 + 1/200 = 5/200, así que f = 40 cm.",
+        "f positiva: espejo cóncavo. R = 2f = 80 cm.",
+        "A = −200/50 = −4."
+      ],
+      "verificar": {
+        "o": 50,
+        "f": 40,
+        "espera": {
+          "i": 200,
+          "A": -4
+        }
+      }
     },
     {
       "id": "p7",
       "nivel": "avanzado",
       "enunciado": "Con un espejo cóncavo de distancia focal 15 cm quieres ver un objeto derecho y 3 veces más grande. ¿A qué distancia del espejo lo pones y dónde aparece la imagen?",
       "respuesta": "El objeto va a 10 cm del espejo (entre F y el espejo) y la imagen aparece 30 cm detrás del espejo (i = −30 cm), virtual.",
-      "pasos": ["Derecha y 3 veces mayor: A = +3, así que −i/o = 3 e i = −3o.", "1/15 = 1/o + 1/(−3o) = 3/(3o) − 1/(3o) = 2/(3o), así que 3o = 30 y o = 10 cm.", "i = −3 × 10 = −30 cm: virtual, detrás del espejo."],
-      "verificar": { "o": 10, "f": 15, "espera": { "i": -30, "A": 3 } }
+      "pasos": [
+        "Derecha y 3 veces mayor: A = +3, así que −i/o = 3 e i = −3o.",
+        "1/15 = 1/o + 1/(−3o) = 3/(3o) − 1/(3o) = 2/(3o), así que 3o = 30 y o = 10 cm.",
+        "i = −3 × 10 = −30 cm: virtual, detrás del espejo."
+      ],
+      "verificar": {
+        "o": 10,
+        "f": 15,
+        "espera": {
+          "i": -30,
+          "A": 3
+        }
+      }
     },
     {
       "id": "p8",
       "nivel": "avanzado",
       "enunciado": "Un espejo convexo forma la imagen de un objeto a 15 cm detrás del espejo, y la imagen mide la cuarta parte del objeto. ¿A qué distancia está el objeto y cuál es el radio de curvatura del espejo?",
       "respuesta": "El objeto está a 60 cm del espejo; f = −20 cm, así que el radio de curvatura es R = 40 cm.",
-      "pasos": ["Imagen detrás del espejo: virtual, i = −15 cm. En el convexo la imagen es derecha: A = +1/4.", "A = −i/o: 1/4 = 15/o, así que o = 60 cm.", "1/f = 1/60 + 1/(−15) = 1/60 − 4/60 = −3/60, así que f = −20 cm.", "R = 2|f| = 40 cm. La f negativa confirma que es convexo."],
-      "verificar": { "o": 60, "R": 40, "f": -20, "espera": { "i": -15, "A": 0.25 } }
+      "pasos": [
+        "Imagen detrás del espejo: virtual, i = −15 cm. En el convexo la imagen es derecha: A = +1/4.",
+        "A = −i/o: 1/4 = 15/o, así que o = 60 cm.",
+        "1/f = 1/60 + 1/(−15) = 1/60 − 4/60 = −3/60, así que f = −20 cm.",
+        "R = 2|f| = 40 cm. La f negativa confirma que es convexo."
+      ],
+      "verificar": {
+        "o": 60,
+        "R": 40,
+        "f": -20,
+        "espera": {
+          "i": -15,
+          "A": 0.25
+        }
+      }
     },
     {
       "id": "p9",
       "nivel": "avanzado",
       "enunciado": "El faro de una bicicleta usa un espejo cóncavo de 16 cm de radio de curvatura. ¿A qué distancia del espejo hay que poner el foquito para que la luz salga en un haz de rayos paralelos? ¿Dónde se forma la imagen del foquito?",
       "respuesta": "A 8 cm del espejo, en el foco. Los rayos reflejados salen paralelos y nunca se cruzan: no se forma imagen (se dice que está en el infinito).",
-      "pasos": ["f = R/2 = 16/2 = 8 cm.", "Un rayo que pasa por el foco sale paralelo al eje: el foquito va en F, a 8 cm.", "Con o = f: 1/i = 1/8 − 1/8 = 0. No hay i que cumpla la ecuación: la imagen está en el infinito."],
-      "verificar": { "o": 8, "R": 16, "f": 8, "espera": { "infinito": true } }
+      "pasos": [
+        "f = R/2 = 16/2 = 8 cm.",
+        "Un rayo que pasa por el foco sale paralelo al eje: el foquito va en F, a 8 cm.",
+        "Con o = f: 1/i = 1/8 − 1/8 = 0. No hay i que cumpla la ecuación: la imagen está en el infinito."
+      ],
+      "verificar": {
+        "o": 8,
+        "R": 16,
+        "f": 8,
+        "espera": {
+          "infinito": true
+        }
+      }
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Una lente convergente y un espejo cóncavo tienen la misma distancia focal, 12 cm. En dos experimentos separados, un objeto se pone a 18 cm de cada uno. ¿Dónde queda cada imagen? Si la lente y el espejo se ponen en el mismo lugar de la mesa, ¿qué distancia separa las dos imágenes?",
+      "respuesta": "En los dos, i = 36 cm y A = −2. Con la lente, la imagen queda 36 cm al otro lado; con el espejo, 36 cm delante, del lado del objeto. Las dos imágenes quedan a 72 cm una de la otra.",
+      "pasos": [
+        "La ecuación es la misma: 1/i = 1/12 − 1/18 = 3/36 − 2/36 = 1/36, así que i = 36 cm, para la lente y para el espejo.",
+        "i positiva: la imagen es real, y está hacia donde sale la luz. En la lente, la luz sigue al otro lado; en el espejo, vuelve hacia adelante.",
+        "Es como doblar la hoja por la línea de la lente: la imagen de la lente, a 36 cm detrás de la línea, queda a 36 cm delante.",
+        "Entre las dos posiciones hay 36 + 36 = 72 cm. A = −36/18 = −2 en los dos: invertidas y el doble de grandes."
+      ],
+      "verificar": {
+        "o": 18,
+        "f": 12,
+        "espera": {
+          "i": 36,
+          "A": -2,
+          "xEspejo": -36,
+          "xLente": 36
+        }
+      }
     }
   ]
 }
