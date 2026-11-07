@@ -6,7 +6,7 @@
  *
  * Unidades: temperatura en °C (K = °C + 273,15); presión en mmHg (1 atm = 760 mmHg = 101 325 Pa; 1 mmHg = 133,322 Pa,
  * el mismo factor del motor de calorimetría), salvo en los diagramas de fases, que van en atm; volumen en L.
- * R = 62,36 mmHg·L/(mol·K) (0,082 atm·L/(mol·K) por 760).
+ * R = 62,36 mmHg·L/(mol·K) (0,082 atm·L/(mol·K) por 760) en PV = nRT; R = 8,314 J/(mol·K) en Clausius–Clapeyron.
  *
  * Funciones (liq es 'agua', 'etanol' o 'acetona'; s es una sustancia de SUSTANCIAS, como 'H2O', 'NH3' o 'butano'):
  *  - presionVapor(liq, T): { mmHg, atm, kPa, tramo, extrapolado }. Ecuación de Antoine log10(P/mmHg) = A − B/(C + T).
@@ -17,7 +17,7 @@
  *  - ebullicionLugar(h, Tnormal?): { T, comparada ('menor' | 'igual' | 'mayor' que a 1 atm), errores }: el agua en un
  *    lugar a h metros. errores: 'siempre-a-100' (100), 'pv-igual-hierve-igual' (100: «su presión de vapor es la misma en
  *    todas partes, así que hierve igual»), 'frio-hierve-mas' ('mayor').
- *  - ollaPresion(Pabs): { T, errores: { 'olla-sigue-en-100': 100, 'doble-presion-doble-T': T a 1 atm × Pabs/760,
+ *  - ollaPresion(Pabs): { T, errores: { 'olla-sigue-en-100': 100, 'doble-presion-doble-T': 100 × Pabs/760,
  *    'presion-ayuda-a-escapar': 'menor' } }.
  *  - SUSTANCIAS[s]: { texto, nombre, M (g/mol), Teb (°C, normal), nC, atomos [{ el, x, y }], enlaces [[i, j]] }.
  *  - puentesH(s): { forma (entre sus propias moléculas), donador (un H unido a F, O o N), aceptor (un F, O o N con par
@@ -38,7 +38,7 @@
  *    'mas-volumen-mas-presion' [P, P·V2/V1], 'se-reparte-como-gas' [P, P·V1/V2], 'cerrado-no-evapora' [0, 0] } } (GQ18).
  *  - Caja de partículas (2D, determinística con semilla): crearCaja({ liq, T, W, H, escala, rapidez, semilla, llena }),
  *    pasoCaja(caja, dt), cambiarT(caja, T), lecturaCaja(caja) → { vapor, densidad, densidadEq, presion, presionMedia
- *    (promedio móvil de 1,5 s), presionEq, evaporan, condensan (por segundo, ventana de 2 s), t }. Cada figura es una molécula entera.
+ *    (promedio móvil de 1,5 s), presionEq, evaporan, condensan (por segundo, ventana de 2 s), t }; ritmoEquilibrio(caja). Cada figura es una molécula entera.
  *  - rejillaLiquido(W, prof, d, t, semilla): moléculas del líquido [{ x, y, ang }] (y < 0, bajo la superficie);
  *    vecinosRejilla(pos, dmax): pares de vecinas. burbuja(R, n, semilla): moléculas dentro de una burbuja.
  *  - condensacion(n, W, H, d, semilla): { gas [...], liquido [...], radio } para el gas que se enfría (GQ16).
@@ -49,7 +49,7 @@
  * Datos de tabla (por verificar con la tabla que use el colegio):
  *  - Antoine (mmHg, °C), constantes de uso común (Dortmund Data Bank, como las reproducen muchas tablas): agua 8,07131;
  *    1730,63; 233,426 (de 1 a 100 °C, las mismas del motor de calorimetría) y 8,14019; 1810,94; 244,485 (de 99 a
- *    374 °C; el motor la usa sobre 100 °C; las dos difieren 0,6 % a 100 °C, así que entre 760,1 y 764,4 mmHg el agua
+ *    374 °C; el motor la usa sobre 100 °C; las dos difieren 0,6 % a 100 °C, así que entre 760,1 y 764,3 mmHg el agua
  *    hierve a 100,0 °C); etanol 8,20417; 1642,89; 230,300 (de −57 a 80 °C); acetona 7,11714; 1210,595; 229,664
  *    (de −13 a 55 °C). Fuera del rango, el motor extrapola y lo avisa (extrapolado: true).
  *  - Atmósfera estándar (ISA, troposfera): P = 101 325 · (1 − 2,25577·10⁻⁵ · h)^5,25588 Pa.
@@ -59,7 +59,8 @@
  *  - Agua: punto triple 0,01 °C y 611,657 Pa (0,0060365 atm); punto crítico 373,946 °C y 22,064 MPa (217,75 atm);
  *    sublimación por Clausius–Clapeyron desde el punto triple con ΔH_sub = 51,06 kJ/mol; fusión por Clapeyron, recta
  *    desde el punto triple con pendiente −13,46 MPa/K (ΔH_fus 6,01 kJ/mol y ΔV −1,63 cm³/mol); vaporización por Antoine.
- *  - CO₂: punto triple −56,558 °C y 517,95 kPa (5,1118 atm); punto crítico 30,978 °C y 7,3773 MPa (72,808 atm);
+ *  - CO₂ (presiones de tabla en Pa, que el motor pasa a atm dividiendo entre 101 325): punto triple −56,558 °C y
+ *    517,95 kPa (5,1118 atm); punto crítico 30,978 °C y 7,3773 MPa (72,808 atm);
  *    sublimación normal −78,464 °C a 1 atm. Sublimación: Clausius–Clapeyron por el punto triple y por la sublimación
  *    normal; vaporización: Clausius–Clapeyron por el punto triple y el crítico; fusión: recta desde el punto triple con
  *    la pendiente inicial de la curva de fusión de Span y Wagner (1996), 4,676 MPa/K. Son curvas de modelo: dan la forma
@@ -84,7 +85,7 @@
  * de hidrógeno = tener oxígeno, o tener F o N), EN16 (el punto de ebullición lo decide el número de carbonos), GQ16 (las
  * partículas cambian de tamaño al condensar) y los de cálculo sin respaldo: no restar la presión de vapor al gas recogido
  * sobre agua y la humedad relativa como fracción del aire.
- * CABECERA: líneas 1 a 88 (funciones, unidades, datos y convenciones).
+ * CABECERA: líneas 1 a 89 (funciones, unidades, datos y convenciones).
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -388,6 +389,8 @@
     }
     return c;
   }
+  // Ritmo de evaporación de la caja (moléculas por segundo): en equilibrio, también el de condensación.
+  function ritmoEquilibrio(c) { return densidadEq(c) * rapidezDe(c) / Math.PI * c.W; }
   function lecturaCaja(c) {
     const A = c.W * c.H, d = c.vapor.length / A, ventana = Math.min(VENTANA, c.t) || 1;
     return { vapor: c.vapor.length, densidad: d, densidadEq: densidadEq(c), presion: d * (c.T + K0) / c.escala,
@@ -512,6 +515,6 @@
     presionVapor, ebullicion, presionAltitud, ebullicionAltitud, hierve, ebullicionLugar, ollaPresion,
     sustancia, puentesH, puenteHEntre, quienesFormanPuentes, ordenEbullicion, razonEbullicion,
     gasSobreAgua, humedadRelativa, vaporDesdeHR, equilibrioCerrado, compararFrascos,
-    azar, crearCaja, pasoCaja, cambiarT, lecturaCaja, rejillaLiquido, vecinosRejilla, burbuja, condensacion,
+    azar, crearCaja, pasoCaja, cambiarT, lecturaCaja, ritmoEquilibrio, rejillaLiquido, vecinosRejilla, burbuja, condensacion,
     presionCurva, temperaturaCurva, fase, calentarAPresion };
 });
