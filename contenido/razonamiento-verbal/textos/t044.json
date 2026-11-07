@@ -1,0 +1,257 @@
+{
+  "id": "t044",
+  "version": 1,
+  "titulo": "Un mensaje para el tío Julián",
+  "tema": "Sociedad · mensaje familiar entre Puerto Maldonado y Arequipa",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Hola, tío Julián, ¿cómo estás?"
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Aquí en Puerto Maldonado todos bien, aunque esta semana nos estamos derritiendo: ni con el ventilador prendido se puede dormir."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Mi mamá te manda saludos y dice que ya no te pierdas tanto."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Te escribo porque necesito tu ayuda con una tarea."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "En Ciencias Sociales, la profesora Nélida nos pidió comparar cómo se construyen las casas en dos regiones del país."
+      },
+      {
+        "id": "o6",
+        "rol": "cita",
+        "t": "Ella nos dijo: «Busquen a alguien que viva allá y pídanle fotos de verdad, no de internet»."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Yo elegí Arequipa porque me acordé de la casa de la abuela, la de las paredes blancas y gruesas, que por dentro estaba fresquita aunque afuera quemara el sol."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Aquí, en cambio, muchas casas son de madera, con el techo alto y ventanas grandes para que corra el aire."
+      }
+    ],
+    [
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "¿Podrías mandarme tres o cuatro fotos de casas de sillar, de preferencia del centro, que te queda cerca?"
+      },
+      {
+        "id": "o10",
+        "rol": "detalle",
+        "t": "Si puedes, mándame también un audio contando por qué las hacían con esa piedra, porque tú siempre sabes esas cosas."
+      },
+      {
+        "id": "o11",
+        "rol": "detalle",
+        "t": "Las necesito para el lunes, que es cuando presentamos."
+      },
+      {
+        "id": "o12",
+        "rol": "detalle",
+        "t": "Gracias, tío, te quiero mucho; cuando vengas en julio te llevo al lago Sandoval."
+      },
+      {
+        "id": "o13",
+        "rol": "detalle",
+        "t": "Tu sobrina, Milagros."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Quien escribe conoce en persona a quien lee.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV6",
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "El mensaje no lo dice con esas palabras, pero se deduce: Milagros lo llama «tío», le manda saludos de su mamá, le dice que lo quiere y lo espera en julio (oraciones 1, 3 y 12).",
+        "explicaciones": {
+          "lo-dice": "Ninguna oración dice «nos conocemos»; eso se saca del trato y de los saludos.",
+          "no-se-sabe": "No hace falta que lo diga: nadie le escribe «tío, te quiero mucho» ni lo invita a pasear a alguien que no conoce.",
+          "lo-contradice": "Nada en el mensaje muestra que sean desconocidos; al contrario, se tratan con mucha confianza."
+        }
+      },
+      "enunciado": "¿A quién se dirige el mensaje?",
+      "alternativas": [
+        {
+          "t": "A un familiar que vive en Arequipa.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o6",
+            "o9"
+          ],
+          "explicacion": "Milagros le escribe a su tío y le pide fotos de casas de Arequipa, como la profesora pidió a «alguien que viva allá»."
+        },
+        {
+          "t": "A un especialista en casas de sillar al que consulta para su tarea.",
+          "codigo": "RV51",
+          "explicacion": "El tema son las casas de sillar, pero las marcas dicen otra cosa: lo llama «tío», lo trata de tú y firma «tu sobrina»."
+        },
+        {
+          "t": "A la profesora Nélida, que dejó la tarea.",
+          "codigo": "RV50",
+          "origen": "o6",
+          "explicacion": "La profesora aparece citada en el mensaje, pero Milagros no le escribe a ella: habla de ella en tercera persona."
+        },
+        {
+          "t": "A un turista que conoció en Puerto Maldonado.",
+          "codigo": "RV7",
+          "explicacion": "Nada en el mensaje dice eso: quien lee es su tío, y la que vive en Puerto Maldonado es Milagros."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "En el mensaje, la expresión «nos estamos derritiendo» quiere decir que",
+      "alternativas": [
+        {
+          "t": "en Puerto Maldonado está haciendo mucho calor.",
+          "correcta": true,
+          "evidencia": [
+            "o2"
+          ],
+          "explicacion": "La misma oración lo aclara: ni con el ventilador se puede dormir. Es una exageración para decir que hace mucho calor."
+        },
+        {
+          "t": "las cosas de la casa se están derritiendo con el sol.",
+          "codigo": "RV49",
+          "explicacion": "Lee la frase al pie de la letra. En un mensaje familiar, «derretirse» es una forma exagerada de quejarse del calor."
+        },
+        {
+          "t": "el ventilador de la casa se malogró esta semana.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Repite palabras de la oración 2, pero dice otra cosa: el ventilador está prendido y aun así no se puede dormir."
+        },
+        {
+          "t": "la familia quiere mudarse a Arequipa por el clima.",
+          "codigo": "RV7",
+          "explicacion": "El mensaje no dice que quieran mudarse: es ir más allá de lo que dice el texto."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "¿En qué situación escribe Milagros?",
+      "alternativas": [
+        {
+          "t": "Tiene que presentar una tarea el lunes y le faltan fotos de Arequipa.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o9",
+            "o11"
+          ],
+          "explicacion": "Ella misma dice que escribe por una tarea (oración 4), pide fotos (oración 9) y dice que las necesita para el lunes (oración 11)."
+        },
+        {
+          "t": "Está de visita en Arequipa y quiere fotografiar ella misma las casas del centro.",
+          "codigo": "RV9",
+          "explicacion": "El mensaje dice lo contrario sin decirlo con esas palabras: escribe desde Puerto Maldonado («aquí en Puerto Maldonado») y pide que le manden las fotos."
+        },
+        {
+          "t": "Su mamá le pidió que salude al tío, que hace tiempo no llama.",
+          "codigo": "RV1",
+          "origen": "o3",
+          "explicacion": "Los saludos de la mamá están en el mensaje, pero son un detalle: Milagros escribe por la tarea."
+        },
+        {
+          "t": "Prepara la visita de su tío en julio al lago Sandoval.",
+          "codigo": "RV5",
+          "origen": "o12",
+          "explicacion": "Repite palabras del final, pero la visita es una invitación al despedirse, no el motivo del mensaje."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "Del mensaje se deduce que Milagros",
+      "alternativas": [
+        {
+          "t": "ha estado alguna vez en la casa de su abuela en Arequipa.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "Se acuerda de cómo era la casa por dentro: fresquita aunque afuera quemara el sol. Eso solo lo recuerda quien estuvo ahí."
+        },
+        {
+          "t": "nunca ha salido de Puerto Maldonado en toda su vida.",
+          "codigo": "RV11",
+          "explicacion": "Es una afirmación absoluta que el texto no apoya; al contrario, recuerda por dentro la casa de su abuela."
+        },
+        {
+          "t": "prefiere vivir en Arequipa antes que en Puerto Maldonado.",
+          "codigo": "RV33",
+          "explicacion": "Milagros compara las casas, pero no dice cuál prefiere: le atribuye una preferencia que no expresa."
+        },
+        {
+          "t": "sabe que el sillar es una piedra que sale de los volcanes.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto en la realidad, pero el mensaje no dice de dónde sale el sillar ni qué sabe Milagros de esa piedra: por eso le pide al tío que le cuente."
+        },
+        {
+          "t": "tiene una profesora que también vive en Arequipa.",
+          "codigo": "RV5",
+          "origen": "o6",
+          "explicacion": "Toma el «allá» de lo que dijo la profesora, pero ella se refiere a la región que cada alumno elija, no a donde vive ella."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "En el centro histórico de Arequipa muchas casas y edificios están hechos de sillar, una piedra volcánica blanca.",
+      "fuente": "Unesco, Lista del patrimonio mundial: \"Centro histórico de la ciudad de Arequipa\" (inscrito en 2000)."
+    },
+    {
+      "afirmacion": "El lago Sandoval está cerca de Puerto Maldonado, en la Reserva Nacional Tambopata (Madre de Dios).",
+      "fuente": "SERNANP, ficha de la Reserva Nacional Tambopata (gob.pe/sernanp)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: acertó 20 de 20 (los cuatro textos de la unidad). Cambios: tipo de texto expositivo; la oración 9 dice que el centro le queda cerca al tío, y la 11 pasa a «para el lunes»."
+  }
+}

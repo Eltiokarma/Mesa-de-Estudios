@@ -1,0 +1,196 @@
+{
+  "id": "t041",
+  "version": 1,
+  "titulo": "Si la tierra tiembla",
+  "tema": "Ciudad · prevención ante sismos",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "discontinuo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En el Perú los sismos son frecuentes, porque frente a su costa una placa del fondo del océano se hunde debajo del continente."
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "Por eso, la brigada escolar del colegio Pampa Verde, un colegio ficticio de la costa, preparó esta infografía para recordar qué hacer antes, durante y después de un temblor."
+      }
+    ]
+  ],
+  "figuras": [
+    {
+      "id": "f1",
+      "tipo": "recuadros",
+      "despues": 1,
+      "titulo": "Qué hacer ante un sismo",
+      "recuadros": [
+        {
+          "id": "f1a",
+          "titulo": "Antes",
+          "t": "Ubica con tu familia las zonas seguras de tu casa y prepara una mochila de emergencia con agua, alimentos que no se malogren, linterna, radio a pilas y botiquín."
+        },
+        {
+          "id": "f1b",
+          "titulo": "Durante",
+          "t": "Mantén la calma y no corras. Aléjate de las ventanas y de los objetos que puedan caer. Si estás en un piso alto, no uses el ascensor."
+        },
+        {
+          "id": "f1c",
+          "titulo": "Después",
+          "t": "Sal con calma hacia un espacio abierto y aléjate de postes y cables caídos. Para avisar que estás bien, manda un mensaje de texto en lugar de llamar: así no saturas las líneas."
+        },
+        {
+          "id": "f1d",
+          "titulo": "En el colegio",
+          "t": "Sigue a tu brigadista y participa en los simulacros: practicar el camino de salida hace que, cuando de verdad haga falta, lo recorras sin tener que pensarlo."
+        }
+      ],
+      "nota": "Consejos basados en las recomendaciones del Indeci. El colegio es ficticio."
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "Se infiere de la infografía que, después de un sismo fuerte, las líneas telefónicas",
+      "alternativas": [
+        {
+          "t": "pueden congestionarse porque mucha gente llama a la vez.",
+          "correcta": true,
+          "evidencia": [
+            "f1c"
+          ],
+          "explicacion": "El recuadro «Después» pide mandar un mensaje en vez de llamar para no saturar las líneas: eso supone que, si muchos llaman a la vez, las líneas se llenan."
+        },
+        {
+          "t": "se cortan porque los postes y los cables se vienen abajo.",
+          "codigo": "RV5",
+          "origen": "f1c",
+          "explicacion": "Los postes y cables caídos aparecen en el mismo recuadro, pero como un peligro del que hay que alejarse. La infografía no los relaciona con las llamadas."
+        },
+        {
+          "t": "dejan de funcionar siempre, en todas las ciudades del país.",
+          "codigo": "RV11",
+          "explicacion": "La infografía habla de no saturar las líneas, no de que fallen siempre ni en todo el país. Es una exageración."
+        },
+        {
+          "t": "deben quedar libres solo para las llamadas de los bomberos.",
+          "codigo": "RV7",
+          "explicacion": "La infografía no habla de los bomberos ni de quién puede llamar: va más allá de lo que dice."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto y la infografía.",
+        "sonda": "Durante un sismo, estar junto a una ventana es más peligroso que estar lejos de ella.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": null,
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "La infografía no usa la palabra \"peligroso\", pero pide alejarse de las ventanas durante el sismo: si hay que alejarse, es porque cerca de ellas se corre más riesgo. Se deduce.",
+        "explicaciones": {
+          "lo-dice": "El recuadro «Durante» dice que hay que alejarse de las ventanas, pero no dice con esas palabras que estar cerca sea más peligroso: eso se saca del consejo.",
+          "no-se-sabe": "Aunque no lo diga con esas palabras, el consejo de alejarse de las ventanas solo tiene sentido si estar cerca es más riesgoso.",
+          "lo-contradice": "La infografía no dice que las ventanas sean seguras; al contrario, pide alejarse de ellas."
+        }
+      },
+      "enunciado": "Es compatible con el texto y la infografía afirmar que",
+      "alternativas": [
+        {
+          "t": "practicar la salida en un simulacro ayuda a reaccionar mejor en un sismo real.",
+          "correcta": true,
+          "evidencia": [
+            "f1d"
+          ],
+          "explicacion": "El recuadro «En el colegio» dice que practicar el camino de salida hace que se recorra sin pensarlo cuando de verdad hace falta."
+        },
+        {
+          "t": "si estás en un piso alto durante un sismo, conviene usar el ascensor para bajar rápido.",
+          "codigo": "RV10",
+          "origen": "f1b",
+          "explicacion": "El recuadro «Durante» dice «no uses el ascensor». Si se pasa por alto ese «no», se lee justo lo contrario."
+        },
+        {
+          "t": "en el Perú los temblores ocurren muy de vez en cuando, por eso hay que prepararse.",
+          "codigo": "RV9",
+          "origen": "o1",
+          "explicacion": "La primera oración dice que en el Perú los sismos son frecuentes. \"Muy de vez en cuando\" es lo opuesto, aunque no use la misma palabra."
+        },
+        {
+          "t": "durante un sismo no hay ningún lugar de la casa que sea más seguro que otro.",
+          "codigo": "RV11",
+          "origen": "f1a",
+          "explicacion": "El recuadro «Antes» pide ubicar las zonas seguras de la casa: hay lugares más seguros que otros. El \"ningún\" choca con la infografía."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "Según la infografía, si en un colegio nunca se hicieran simulacros, lo más probable es que, ante un sismo real, sus alumnos",
+      "alternativas": [
+        {
+          "t": "tardaran más en encontrar y recorrer el camino de salida.",
+          "correcta": true,
+          "evidencia": [
+            "f1d"
+          ],
+          "explicacion": "La infografía dice que practicar la salida hace que se recorra sin pensarlo. Sin práctica, habría que pensarlo en el momento, y eso toma más tiempo."
+        },
+        {
+          "t": "saldrían igual de rápido, porque el camino de salida es siempre el mismo.",
+          "codigo": "RV7",
+          "explicacion": "Que el camino sea el mismo no basta: la infografía dice que recorrerlo sin pensar viene de haberlo practicado. Sin simulacros, no hay esa práctica."
+        },
+        {
+          "t": "se hicieran daño todos, sin excepción, al tratar de salir del aula.",
+          "codigo": "RV11",
+          "explicacion": "La infografía permite pensar que saldrían peor, no que todos se lastimarían. El \"todos, sin excepción\" exagera."
+        },
+        {
+          "t": "No se puede saber, porque la infografía no habla de colegios sin simulacros.",
+          "codigo": "RV34",
+          "explicacion": "No habla de ese caso, pero dice para qué sirve practicar. De ahí se puede deducir qué pasaría sin práctica."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "En el Perú los sismos son frecuentes porque la placa de Nazca, del fondo del océano Pacífico, se hunde (subduce) debajo de la placa Sudamericana frente a la costa.",
+      "fuente": "Tavera, H. y Buforn, E. (1998). «Sismicidad y sismotectónica de Perú». Física de la Tierra, 10, 187-219 (Universidad Complutense de Madrid; Hernando Tavera es investigador del Instituto Geofísico del Perú). Los informes técnicos del IGP sobre sismos recientes (repositorio.igp.gob.pe) describen la convergencia de la placa de Nazca bajo la Sudamericana a unos 7-8 cm por año. Por confirmar las páginas."
+    },
+    {
+      "afirmacion": "Ante un sismo se recomienda: identificar zonas seguras, preparar una mochila de emergencia (agua, alimentos no perecibles, linterna, radio a pilas, botiquín), mantener la calma y no correr, alejarse de ventanas y objetos que puedan caer, no usar ascensores, evacuar con calma a espacios abiertos alejados de postes y cables, y participar en simulacros.",
+      "fuente": "Instituto Nacional de Defensa Civil (Indeci), recomendaciones ante sismos y campaña «Mochila para emergencias»; Ministerio de Educación, simulacros escolares nacionales."
+    },
+    {
+      "afirmacion": "Después de un sismo se pide usar mensajes de texto o el servicio de mensajes de voz 119 en vez de llamar, para no congestionar las redes.",
+      "fuente": "Ministerio de Transportes y Comunicaciones (MTC), servicio 119 de mensajes de voz ante emergencias, e Indeci. Por verificar la redacción exacta de la recomendación."
+    },
+    {
+      "afirmacion": "El colegio Pampa Verde y su brigada son inventados.",
+      "fuente": "Inventado para el ejercicio."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en todos los ítems de este texto (17 de 18 en los cuatro textos). Cambios: el recuadro «Durante» usa solo lo confirmado en Indeci (no correr, no usar el ascensor, alejarse de ventanas); el distractor RV10 de p2 pasa al ascensor; el RV12 de p3 se cambió por uno RV7; fuente concreta para la subducción."
+  }
+}

@@ -130,7 +130,7 @@
       "universidades": {"uni": {"semanas": [15]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["resumen-sintesis"],
       "investigacion": null
     },
     {
@@ -140,7 +140,7 @@
       "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [1, 9, 15]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["textos-discontinuos"],
       "investigacion": null
     },
     {
@@ -204,7 +204,7 @@
       "universidades": {"uni": {"semanas": [16]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["texto-contexto"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
@@ -214,7 +214,7 @@
       "universidades": {"uni": {"semanas": [20]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["textos-filosoficos-cientificos"],
       "investigacion": null
     },
     {
@@ -224,7 +224,7 @@
       "universidades": {"unmsm": {"temas": [2, 16, 17]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["lectura-ingles"],
       "investigacion": null
     }
   ]

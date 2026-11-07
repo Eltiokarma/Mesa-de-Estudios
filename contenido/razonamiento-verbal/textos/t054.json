@@ -1,0 +1,261 @@
+{
+  "id": "t054",
+  "version": 1,
+  "titulo": "The Sun in Arequipa",
+  "tema": "Lectura en inglés · radiación solar en Arequipa",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "contraste",
+        "t": "Many people in Arequipa believe that the sun is only dangerous on hot days at the beach."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "I used to think the same, until a doctor visited my school and explained how strong the sun is here."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Arequipa is more than 2,000 meters above sea level, and at that height the sun's rays are stronger."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "On some mornings the air feels cool, but the sun can still burn your skin very quickly."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "However, most of us do very little to protect ourselves."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "We walk to school without a hat, and few students use sunscreen."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Some say that sunscreen is expensive, and that is true for many families."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Although that problem is real, there are cheaper ways to stay safe: a hat with a wide brim, long sleeves and some shade at midday."
+      }
+    ],
+    [
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "In my opinion, protecting ourselves from the sun should be a daily habit in Arequipa, not something we only do in summer."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "It is the sensible thing to do, and if we start now, we will probably have fewer skin problems when we are older."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que dice la opinión que defiende el autor.",
+        "aceptadas": [
+          "o9"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV53",
+          "o7": "RV53"
+        },
+        "explicacion": "La oración 9 empieza con «In my opinion» y dice la tesis: cuidarse del sol debería ser una costumbre diaria en Arequipa, no solo de verano. Las demás la preparan o la sostienen.",
+        "explicaciones": {
+          "o1": "Es lo que mucha gente cree, y el autor lo presenta para luego decir que no es así («I used to think the same, until…»). No es su opinión.",
+          "o2": "Cuenta cómo cambió de idea el autor: es una experiencia que prepara la tesis.",
+          "o3": "Es una razón: a esa altura los rayos son más fuertes. Sostiene la opinión, pero no es la opinión.",
+          "o4": "Es otra razón: aunque el aire esté fresco, el sol quema. Apoya la tesis.",
+          "o5": "Dice el problema (casi nadie se cuida), no lo que el autor propone.",
+          "o6": "Da ejemplos del problema: sin sombrero y sin protector.",
+          "o7": "Es una objeción que el autor presenta para responderla en la oración siguiente («Although that problem is real…»): no es su opinión.",
+          "o8": "Responde la objeción del precio con formas baratas de cuidarse: es un argumento.",
+          "o10": "Da una razón más para cuidarse; apoya la tesis, pero no la dice.",
+          "ninguna": "La oración 9 sí dice la opinión completa del autor."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "En Arequipa, cuidarse del sol debería ser una costumbre diaria, no solo de verano.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "Es la tesis de la oración 9 («In my opinion, protecting ourselves from the sun should be a daily habit…»). Lo demás son razones y respuestas a objeciones."
+        },
+        {
+          "t": "El sol es peligroso sobre todo en los días calurosos, cuando uno va a la playa.",
+          "codigo": "RV53",
+          "origen": "o1",
+          "explicacion": "Es lo que cree mucha gente (oración 1), y el autor lo cita para decir que se equivocan: él también lo pensaba, hasta que aprendió lo fuerte que es el sol en Arequipa."
+        },
+        {
+          "t": "Arequipa está a más de 2000 metros sobre el nivel del mar, y a esa altura los rayos del sol son más fuertes.",
+          "codigo": "RV1",
+          "origen": "o3",
+          "explicacion": "Es verdad (oración 3), pero es una de las razones que da el autor, no la opinión que defiende."
+        },
+        {
+          "t": "La luz del sol puede dañar la piel de las personas en cualquier lugar del mundo.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de Arequipa y de lo que deberían hacer sus habitantes."
+        },
+        {
+          "t": "Arequipa tiene uno de los índices de radiación ultravioleta más altos del planeta.",
+          "codigo": "RV8",
+          "explicacion": "El texto no da ese dato ni compara Arequipa con otros lugares. Puede leerse en otro lado, pero no está en el texto."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "enunciado": "En la oración «It is the sensible thing to do», la palabra SENSIBLE significa",
+      "alternativas": [
+        {
+          "t": "sensato.",
+          "correcta": true,
+          "evidencia": [
+            "o10"
+          ],
+          "explicacion": "«Sensible» en inglés quiere decir sensato, prudente: cuidarse del sol es lo razonable, porque así habrá menos problemas de piel más adelante."
+        },
+        {
+          "t": "sensible.",
+          "codigo": "RV54",
+          "origen": "o10",
+          "explicacion": "Es un falso amigo: «sensible» se escribe igual en los dos idiomas, pero en inglés significa sensato. Lo que en español llamamos «sensible» (que siente o se afecta fácilmente) en inglés es «sensitive»."
+        },
+        {
+          "t": "barato.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Toma la idea de «cheaper ways» (formas más baratas) de la oración 8, pero «sensible» no habla del precio."
+        },
+        {
+          "t": "agradable.",
+          "codigo": "RV19",
+          "explicacion": "Es otra cualidad de una acción, pero no la que dice la palabra: el autor no dice que cuidarse sea agradable, sino que es lo razonable."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "enunciado": "¿Qué se puede afirmar sobre el autor del texto?",
+      "alternativas": [
+        {
+          "t": "Antes creía que el sol solo era peligroso en la playa, pero cambió de opinión.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o2"
+          ],
+          "explicacion": "«I used to think the same» (antes pensaba lo mismo) habla de una idea del pasado que ya dejó, y «until a doctor… explained» dice qué lo hizo cambiar."
+        },
+        {
+          "t": "Todavía piensa que el sol de Arequipa solo es peligroso en los días calurosos de verano.",
+          "codigo": "RV55",
+          "origen": "o2",
+          "explicacion": "«Used to think» indica que lo pensaba antes y ya no. Además, en la oración 9 dice lo contrario: que hay que cuidarse todos los días."
+        },
+        {
+          "t": "Es el médico que visitó el colegio para hablar sobre el sol de Arequipa.",
+          "codigo": "RV50",
+          "origen": "o2",
+          "explicacion": "El médico es alguien que el autor menciona. El autor es un estudiante: dice «a doctor visited my school» y «We walk to school»."
+        },
+        {
+          "t": "Ya convenció a todos sus compañeros de ir al colegio con sombrero.",
+          "codigo": "RV7",
+          "origen": "o6",
+          "explicacion": "El texto dice lo contrario de lo que pasa hoy: «We walk to school without a hat». El autor propone un cambio; no dice que ya lo logró."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "enunciado": "¿Qué piensa el autor sobre el precio del protector solar?",
+      "alternativas": [
+        {
+          "t": "Admite que es caro para muchas familias, pero dice que hay otras formas baratas de cuidarse.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "«That is true for many families» acepta el problema, y «Although that problem is real, there are cheaper ways…» (aunque el problema es real, hay formas más baratas) lo responde."
+        },
+        {
+          "t": "Como el protector es caro, cree que no tiene sentido tratar de protegerse del sol.",
+          "codigo": "RV24",
+          "origen": "o8",
+          "explicacion": "Lee «although» (aunque) como si fuera «por eso». El autor dice lo contrario: aunque el protector sea caro, hay otras maneras de cuidarse."
+        },
+        {
+          "t": "Solo dice que el protector solar es caro para muchas de las familias de la ciudad.",
+          "codigo": "RV3",
+          "origen": "o7",
+          "explicacion": "Se queda con la mitad: es cierto que lo admite (oración 7), pero enseguida propone formas más baratas de protegerse."
+        },
+        {
+          "t": "Propone que los colegios de Arequipa regalen protector solar a todos sus alumnos cada verano.",
+          "codigo": "RV33",
+          "explicacion": "El autor no propone nada de eso: sus soluciones son el sombrero de ala ancha, las mangas largas y la sombra al mediodía."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "La ciudad de Arequipa está a unos 2300 metros sobre el nivel del mar.",
+      "fuente": "Instituto Nacional de Estadística e Informática (INEI), Compendio Estadístico Arequipa (altitud de la capital de la provincia)."
+    },
+    {
+      "afirmacion": "La radiación ultravioleta aumenta con la altitud (alrededor de 10 % por cada 1000 m) y puede quemar la piel aunque el aire esté fresco.",
+      "fuente": "OMS, OMM, PNUMA y ICNIRP (2002). Global Solar UV Index: A Practical Guide. Organización Mundial de la Salud."
+    },
+    {
+      "afirmacion": "El sombrero de ala ancha, la ropa que cubre la piel y la sombra al mediodía son formas de protegerse del sol, además del protector solar.",
+      "fuente": "OMS (2002). Global Solar UV Index: A Practical Guide, sección de medidas de protección."
+    },
+    {
+      "afirmacion": "Arequipa registra con frecuencia índices UV muy altos o extremos (dato usado solo en un distractor, que el texto no da).",
+      "fuente": "SENAMHI, pronóstico del índice de radiación ultravioleta para Arequipa."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Coincidió a ciegas con todas las claves. Cambios: en el previo de p1, o7 se califica con RV53 (objeción que el autor responde), con su explicación; o4 dice «can still burn your skin very quickly»."
+  }
+}

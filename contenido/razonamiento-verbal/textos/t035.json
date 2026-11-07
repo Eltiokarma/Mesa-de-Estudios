@@ -1,0 +1,267 @@
+{
+  "id": "t035",
+  "version": 1,
+  "titulo": "La fibra que salvó a la vicuña",
+  "tema": "Sierra · la vicuña y el chaccu",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "La vicuña es el camélido más pequeño de los Andes y vive en las punas, a gran altura."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Su fibra es una de las más finas del mundo, y una prenda tejida con ella puede costar miles de dólares."
+      },
+      {
+        "id": "o3",
+        "rol": "contraste",
+        "t": "Por eso mismo estuvo a punto de desaparecer: durante décadas, los cazadores la mataban para quitarle el vellón, y hacia la década de 1960 quedaban en el Perú apenas unos pocos miles."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "La especie se recuperó cuando, además de las leyes que la protegieron, las comunidades de las punas dejaron de verla como una presa y empezaron a cuidarla, porque viva les deja más que muerta."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Cada cierto tiempo, los comuneros organizan un chaccu: forman una larga cadena humana, arrean a las vicuñas silvestres hacia un corral de redes y las esquilan."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Después las sueltan, y en dos o tres años el vellón vuelve a crecer."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "La fibra se vende, y lo que se gana queda en la comunidad, que por eso vigila sus pastos para que no entren cazadores."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Así, la misma fibra que casi acabó con la vicuña es hoy la razón para protegerla."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "En el censo nacional de 2012 se contaron en el Perú más de doscientas mil."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "resumen",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume el texto.",
+        "aceptadas": [
+          "o4",
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {},
+        "explicacion": "La oración 4 dice por qué se recuperó la vicuña: las comunidades la cuidan porque viva les deja más que muerta. La 8 lo junta con el comienzo: la fibra que la ponía en peligro hoy es la razón para protegerla.",
+        "explicaciones": {
+          "o1": "La primera oración presenta a la vicuña: es el punto de partida, no lo que el texto quiere decir sobre ella.",
+          "o2": "Dice que su fibra es muy fina y cara. Es un dato importante, pero falta lo que pasó con la especie.",
+          "o3": "Cuenta el peligro, pero se queda en la primera mitad: falta cómo se salvó.",
+          "o5": "Describe el chaccu: es un detalle de cómo se aprovecha la fibra.",
+          "o6": "Es un paso del chaccu: las sueltan y el vellón vuelve a crecer.",
+          "o7": "Explica por qué la comunidad vigila sus pastos; es una pieza de la idea, no la idea entera.",
+          "o9": "Es la cifra que muestra la recuperación, pero no dice cómo ni por qué se dio.",
+          "ninguna": "Sí hay oraciones que la dicen: la 4 explica la recuperación y la 8 la resume en una frase."
+        }
+      },
+      "enunciado": "¿Cuál es el mejor resumen del texto?",
+      "alternativas": [
+        {
+          "t": "La caza por su fibra casi acabó con la vicuña, pero hoy esa fibra, esquilada sin matarla, lleva a las comunidades a cuidarla, y la especie se recuperó.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4",
+            "o8"
+          ],
+          "explicacion": "Junta las tres partes con su orden de importancia: el peligro, el cambio en las comunidades y por qué ese cambio salvó a la especie."
+        },
+        {
+          "t": "La vicuña vive en las punas, tiene una fibra muy fina, fue cazada durante décadas, se esquila en el chaccu, luego se suelta y hoy hay más de doscientas mil.",
+          "codigo": "RV43",
+          "explicacion": "Repite los datos en el mismo orden del texto, pero no dice qué los une: que la fibra pasó de ser la causa del peligro a ser la razón del cuidado."
+        },
+        {
+          "t": "Como ya hay más de doscientas mil vicuñas, las comunidades de las punas pueden organizar el chaccu y vender su fibra.",
+          "codigo": "RV44",
+          "origen": "o9",
+          "explicacion": "Invierte la relación: en el texto, las comunidades cuidan a la vicuña porque venden su fibra, y por eso la especie se recuperó; no es la recuperación la que permite el chaccu."
+        },
+        {
+          "t": "En el chaccu, los comuneros forman una larga cadena humana para arrear a las vicuñas hacia un corral de redes.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Es verdad, pero es un detalle de cómo se hace el chaccu, no lo que dice el texto entero."
+        },
+        {
+          "t": "Los animales silvestres de los Andes necesitan que las personas los protejan para no desaparecer.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla solo de la vicuña y de por qué su fibra la puso en peligro y luego la salvó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "¿Cuál es el título más adecuado para el texto?",
+      "alternativas": [
+        {
+          "t": "La vicuña: de presa a animal que se cuida",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o8"
+          ],
+          "explicacion": "Recoge el cambio que cuenta el texto: la vicuña dejó de ser una presa y pasó a ser cuidada."
+        },
+        {
+          "t": "Cómo se organiza un chaccu en las punas",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "El chaccu es un detalle del segundo párrafo; el texto lo cuenta para explicar por qué se cuida a la vicuña."
+        },
+        {
+          "t": "Los camélidos de América del Sur",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado amplio: el texto no habla de la llama ni de la alpaca, solo de la vicuña."
+        },
+        {
+          "t": "La vicuña, una especie a punto de desaparecer",
+          "codigo": "RV3",
+          "origen": "o3",
+          "explicacion": "Se queda con la primera parte. El texto cuenta también que la vicuña se recuperó, y por qué."
+        },
+        {
+          "t": "La vicuña, el animal del escudo nacional",
+          "codigo": "RV8",
+          "explicacion": "Es cierto que la vicuña está en el escudo del Perú, pero el texto no lo menciona: el título sale de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "¿Qué alternativa dice lo mismo que la oración 8, con otras palabras?",
+      "alternativas": [
+        {
+          "t": "Lo que antes ponía en peligro a la vicuña es ahora el motivo para cuidarla.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "«La fibra que casi acabó con la vicuña» es lo que la ponía en peligro, y «la razón para protegerla» es el motivo para cuidarla."
+        },
+        {
+          "t": "La fibra de la vicuña casi acabó con las razones para protegerla.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Usa las mismas palabras de la oración 8, pero las junta de otro modo y dice algo distinto: la fibra casi acabó con la vicuña, no con las razones para cuidarla."
+        },
+        {
+          "t": "Hoy la fibra de la vicuña se vende a un precio mucho más alto que cuando la cazaban.",
+          "codigo": "RV7",
+          "explicacion": "La oración 8 no compara precios: dice que la fibra pasó de ser un peligro a ser un motivo de cuidado."
+        },
+        {
+          "t": "La fibra siempre fue la única razón para proteger a la vicuña.",
+          "codigo": "RV11",
+          "explicacion": "«Siempre» y «única» van más allá de la oración 8, que habla de hoy, y el texto nombra también las leyes que la protegieron."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "resumen",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "El segundo párrafo se puede sintetizar así:",
+      "alternativas": [
+        {
+          "t": "Las comunidades cuidan a la vicuña porque esquilarla viva les da un ingreso que se repite.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Es la idea que une el párrafo: la vicuña se esquila y se suelta, el vellón vuelve a crecer y la venta deja dinero en la comunidad, que por eso la cuida."
+        },
+        {
+          "t": "Los comuneros arrean a las vicuñas, las esquilan, las sueltan, venden su fibra y vigilan sus pastos.",
+          "codigo": "RV43",
+          "origen": "o5",
+          "explicacion": "Pone en fila lo que hacen los comuneros, pero no dice por qué lo hacen ni qué relación hay entre esas acciones y el cuidado de la vicuña."
+        },
+        {
+          "t": "Los comuneros esquilan a las vicuñas con el fin de que su vellón vuelva a crecer en dos o tres años.",
+          "codigo": "RV44",
+          "origen": "o6",
+          "explicacion": "Cambia la relación: el texto dice que el vellón vuelve a crecer después de la esquila, no que se esquile para eso."
+        },
+        {
+          "t": "Las comunidades de las punas dejaron de ver a la vicuña como una presa.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Dice el cambio, pero deja fuera lo esencial del párrafo: por qué cambió la manera de verla."
+        },
+        {
+          "t": "El Estado debería pagar a las comunidades por cada vicuña que cuidan en sus pastos.",
+          "codigo": "RV33",
+          "explicacion": "El texto no da esa opinión ni pide nada al Estado: explica cómo la venta de la fibra lleva a cuidar a la vicuña."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "La vicuña (Vicugna vicugna) es el camélido sudamericano más pequeño, vive en las punas altoandinas y su fibra está entre las más finas del mundo (unas 12 a 13 micras); las prendas de vicuña se venden a precios de miles de dólares.",
+      "fuente": "Wheeler, J. C. (1995). Evolution and present situation of the South American Camelidae. Biological Journal of the Linnean Society, 54(3), 271-295; SERFOR, información sobre la vicuña en su portal institucional."
+    },
+    {
+      "afirmacion": "Por la caza furtiva, la población de vicuñas del Perú cayó a unos pocos miles hacia la década de 1960; en 1967 se creó la Reserva Nacional de Pampa Galeras para protegerla, y luego vinieron la ley de protección y el Convenio para la Conservación y Manejo de la Vicuña (1979).",
+      "fuente": "SERNANP, ficha de la Reserva Nacional Pampa Galeras Bárbara D'Achille; Convenio para la Conservación y Manejo de la Vicuña (Lima, 1979)."
+    },
+    {
+      "afirmacion": "En el chaccu, una cadena de personas arrea a las vicuñas silvestres hacia un corral de redes, se las esquila y se las suelta; la esquila se repite cada dos o tres años y el ingreso de la fibra va a las comunidades que manejan las vicuñas.",
+      "fuente": "SERFOR, manejo de vicuñas y chaccu (información institucional); Ley N.° 26496 (1995), régimen de la propiedad, comercialización y sanciones por la caza de las especies de vicuña, guanaco y sus híbridos."
+    },
+    {
+      "afirmacion": "El Censo Nacional de Vicuñas de 2012 contó en el Perú 208 899 vicuñas.",
+      "fuente": "MINAGRI y SERFOR, Censo Nacional de Vicuñas 2012. Por confirmar la cifra exacta en el informe."
+    },
+    {
+      "afirmacion": "La vicuña figura en el escudo nacional del Perú (dato que usa un distractor; el texto no lo dice).",
+      "fuente": "Ley del Congreso Constituyente del 25 de febrero de 1825, que fijó el escudo; artículo 49 de la Constitución Política del Perú de 1993 (símbolos de la patria)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en todas las claves y en el previo. Cambio: «a mediados del siglo XX» pasa a «hacia la década de 1960» en la oración 3 y en los hechos."
+  }
+}

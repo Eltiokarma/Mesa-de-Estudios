@@ -1,0 +1,277 @@
+{
+  "id": "t049",
+  "version": 1,
+  "titulo": "El reloj que se apaga al morir",
+  "tema": "Ciencia · fechado con carbono 14",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "A fines de la década de 1940, el químico estadounidense Willard Libby partió de dos hechos conocidos."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "En la atmósfera se forma sin cesar carbono 14, una variante radiactiva del carbono; las plantas lo absorben junto con el carbono común al tomar dióxido de carbono, y los animales lo reciben al comerlas."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Además, el carbono 14 se desintegra a un ritmo fijo: cada unos 5700 años queda la mitad."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "De ahí sacó su hipótesis: mientras un ser vive, repone el carbono 14 que pierde; cuando muere, deja de reponerlo, y el que tiene empieza a disminuir como la arena de un reloj de arena."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Si eso era cierto, bastaría medir cuánto carbono 14 le queda a un resto para saber hace cuánto murió."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Para ponerlo a prueba, Libby fechó maderas cuya edad ya se conocía por otros medios, como piezas de tumbas egipcias, y las fechas coincidieron bastante bien."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Pero el método suponía algo más: que la cantidad de carbono 14 en el aire había sido siempre la misma."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Al comparar con la madera de árboles muy antiguos, cuyos anillos se cuentan año por año, se vio que esa cantidad sí había variado; desde entonces, cada fecha se corrige con curvas de calibración, que todavía se siguen afinando."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "El método tiene además un límite: pasados unos 50 000 años queda tan poco carbono 14 que ya no se mide bien, y una punta de piedra no se fecha así, porque nunca estuvo viva."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "El carbono 14 es, entonces, un reloj confiable, pero no porque su primera suposición fuera cierta, sino porque se descubrió en qué fallaba y se aprendió a corregirla."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o10"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 10 junta las dos partes del texto: el método funciona, y funciona porque se corrigió la suposición que fallaba.",
+        "explicaciones": {
+          "o1": "La primera oración presenta a Libby y su punto de partida.",
+          "o2": "Explica de dónde sale el carbono 14 de los seres vivos: es un dato de base.",
+          "o3": "Es el otro dato de base, el ritmo de desintegración.",
+          "o4": "Es la hipótesis de Libby; el texto sigue más allá: cómo se probó y qué hubo que corregir.",
+          "o5": "Saca la consecuencia de la hipótesis, sin la corrección posterior.",
+          "o6": "Cuenta la primera prueba del método.",
+          "o7": "Presenta la suposición del método, que luego resultó falsa; no es la conclusión.",
+          "o8": "Cuenta cómo se corrigió la suposición; la idea que lo resume todo viene en la oración 10.",
+          "o9": "Señala los límites del método: es un detalle.",
+          "ninguna": "La oración 10 sí lo resume: el reloj es confiable porque se aprendió a corregirlo."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "El fechado con carbono 14 es confiable porque se descubrió en qué fallaba su primera suposición y se corrigió.",
+          "correcta": true,
+          "evidencia": [
+            "o10"
+          ],
+          "explicacion": "Es la oración 10, que junta todo el texto: el método funciona, pero gracias a que se corrigió."
+        },
+        {
+          "t": "El carbono 14 se desintegra a un ritmo fijo, de modo que cada unos 5700 años queda la mitad.",
+          "codigo": "RV1",
+          "origen": "o3",
+          "explicacion": "Es un dato del que parte el método, no la idea que lo junta todo."
+        },
+        {
+          "t": "Midiendo el carbono 14 que le queda a un resto se puede saber hace cuánto murió el ser vivo.",
+          "codigo": "RV3",
+          "origen": "o5",
+          "explicacion": "Es la hipótesis de Libby, pero deja fuera la segunda mitad del texto: la suposición que falló y su corrección."
+        },
+        {
+          "t": "Libby comprobó que el carbono 14 del aire había sido siempre el mismo, y por eso todas sus fechas resultaron exactas.",
+          "codigo": "RV52",
+          "origen": "o7",
+          "explicacion": "Eso era una suposición del método, no algo comprobado; y al comparar con los anillos de árboles se vio que era falsa (oraciones 7 y 8)."
+        },
+        {
+          "t": "La química ha permitido grandes avances en el estudio del pasado.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de un solo método, el del carbono 14."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Las maderas egipcias que fechó Libby eran las más antiguas que se conocían en su época.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto dice que la edad de esas maderas ya se conocía, no que fueran las más antiguas. No se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto nombra las maderas egipcias, pero solo dice que su edad ya se conocía.",
+          "se-deduce": "Que se conociera su edad no permite concluir que fueran las más antiguas: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice que hubiera maderas más antiguas que esas; simplemente no compara."
+        }
+      },
+      "enunciado": "Es compatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "el hueso de un animal muerto hace 30 000 años aún podría fecharse así.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o9"
+          ],
+          "explicacion": "Los animales reciben carbono 14 al comer plantas (oración 2), y 30 000 años está dentro del límite de unos 50 000 (oración 9)."
+        },
+        {
+          "t": "la cantidad de carbono 14 del aire se ha mantenido igual a lo largo de los siglos.",
+          "codigo": "RV52",
+          "origen": "o7",
+          "explicacion": "Era la suposición del método, y el texto dice que resultó falsa: esa cantidad «sí había variado» (oración 8)."
+        },
+        {
+          "t": "el método da la edad de cualquier objeto antiguo, sea cual sea el material del que esté hecho.",
+          "codigo": "RV11",
+          "origen": "o9",
+          "explicacion": "El texto pone límites: una punta de piedra no se fecha así, porque nunca estuvo viva (oración 9)."
+        },
+        {
+          "t": "una punta de piedra puede fecharse por su carbono 14, aunque nunca haya estado viva.",
+          "codigo": "RV10",
+          "origen": "o9",
+          "explicacion": "Se pasa por alto el «no» de la oración 9: la piedra no se fecha así justamente porque nunca estuvo viva."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "enunciado": "En la oración 8, ¿a qué se refiere el texto con CURVAS DE CALIBRACIÓN?",
+      "alternativas": [
+        {
+          "t": "A registros para corregir cada fecha según el carbono 14 que había en el aire en cada época.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "Se usan porque la cantidad de carbono 14 del aire varió (oración 8): sirven para corregir la fecha."
+        },
+        {
+          "t": "A los anillos que se cuentan año por año en la madera de árboles muy antiguos, uno por cada año vivido.",
+          "codigo": "RV56",
+          "origen": "o8",
+          "explicacion": "Los anillos son el material con el que se hizo la comparación, no lo que significa la expresión."
+        },
+        {
+          "t": "A las curvas que muestran cómo baja el carbono 14 de un resto con el paso de los años.",
+          "codigo": "RV19",
+          "origen": "o3",
+          "explicacion": "Es del mismo campo, pero esa baja sigue el ritmo fijo de la oración 3, que es un dato de partida; las curvas de calibración corrigen la fecha según lo que había en el aire."
+        },
+        {
+          "t": "Al ritmo fijo con que se desintegra el carbono 14 dentro de cualquier resto.",
+          "codigo": "RV5",
+          "origen": "o3",
+          "explicacion": "Repite palabras de la oración 3, pero ese ritmo es un dato de partida, no la corrección de la oración 8."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "enunciado": "Si la cantidad de carbono 14 del aire de verdad hubiera sido siempre la misma, según el texto,",
+      "alternativas": [
+        {
+          "t": "no habría hecho falta corregir las fechas comparándolas con los anillos de los árboles.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "La corrección existe porque esa cantidad varió (oración 8). Si no hubiera variado, la suposición de la oración 7 habría bastado."
+        },
+        {
+          "t": "igual habría que corregir cada fecha con curvas de calibración, tal como se hace en la actualidad.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: las curvas existen justamente porque la cantidad varió."
+        },
+        {
+          "t": "el método serviría también para fechar rocas y puntas de piedra.",
+          "codigo": "RV7",
+          "explicacion": "No se sigue: la piedra no se fecha porque nunca estuvo viva (oración 9), y eso no depende del aire."
+        },
+        {
+          "t": "las fechas obtenidas serían exactas hasta el día, en cualquier resto y de cualquier época.",
+          "codigo": "RV11",
+          "explicacion": "Es exagerado: el texto no dice nada que permita llegar a una exactitud así, y sigue el límite de los 50 000 años."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "Willard F. Libby desarrolló el fechado por carbono 14 a fines de los años cuarenta y recibió por él el premio Nobel de Química de 1960.",
+      "fuente": "Fundación Nobel, «The Nobel Prize in Chemistry 1960» (nobelprize.org); W. F. Libby, Radiocarbon Dating, University of Chicago Press, 1952."
+    },
+    {
+      "afirmacion": "El carbono 14 se forma en la atmósfera, entra en las plantas por el dióxido de carbono y en los animales por la alimentación; al morir el organismo deja de incorporarse y decae con una vida media de unos 5730 años.",
+      "fuente": "Libby, Radiocarbon Dating (1952); vida media de 5730 ± 40 años: H. Godwin, «Half-life of radiocarbon», Nature 195 (1962): 984."
+    },
+    {
+      "afirmacion": "Libby comprobó el método con muestras de edad conocida, entre ellas maderas de tumbas egipcias, con buena coincidencia.",
+      "fuente": "J. R. Arnold y W. F. Libby, «Age determinations by radiocarbon content: checks with samples of known age», Science 110 (1949): 678-680."
+    },
+    {
+      "afirmacion": "La cantidad de carbono 14 en la atmósfera varió en el tiempo; las fechas se calibran con curvas basadas en anillos de árboles y otros registros, que se actualizan periódicamente. El límite práctico del método es de unos 50 000 años.",
+      "fuente": "P. J. Reimer y otros, «The IntCal20 Northern Hemisphere radiocarbon age calibration curve (0–55 cal kBP)», Radiocarbon 62 (2020): 725-757."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 4 de 4 preguntas y los dos previos. Cambios: se quitó el código RV52 de la oración 7 en el previo (queda el de su rol); distractor de la curva que baja con los años (RV19) y el del ritmo fijo pasó a RV5; «reloj de arena»; correcta de compatibilidad acortada y un distractor de extrapolación alargado."
+  }
+}

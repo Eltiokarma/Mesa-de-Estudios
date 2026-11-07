@@ -1,0 +1,258 @@
+{
+  "id": "t053",
+  "version": 1,
+  "titulo": "A Morning at Belén Market",
+  "tema": "Lectura en inglés · el mercado de Belén en Iquitos",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "descriptivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Iquitos is a city in the Amazon rainforest, and no road connects it with Lima."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Because of this, a lot of its food arrives by river, and much of it is sold at Belén Market."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "The market opens very early, when the boats come in with fish, bananas and other products."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Some stalls sell aguaje, the fruit of a palm tree, which people eat fresh or drink as juice."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Others sell medicinal plants, and the sellers explain what each plant is good for."
+      },
+      {
+        "id": "o6",
+        "rol": "principal",
+        "t": "Visitors soon realize that the market is more than a place to buy food: it shows how the whole city lives with the river."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Next to the market, down by the river, is the neighborhood of Belén, where many houses stand on tall wooden posts."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "For several months each year, the river rises, and people in this area move around by canoe."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "Doña Elvira, a fish seller, says the market may move to a new building one day."
+      },
+      {
+        "id": "o10",
+        "rol": "detalle",
+        "t": "However, she hopes it will not leave the river, because the river is what keeps it alive."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que mejor resume todo el texto.",
+        "aceptadas": [
+          "o6"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 6 junta todo: el mercado es más que un lugar para comprar comida, porque muestra cómo la ciudad vive con el río. Lo demás (los botes, el aguaje, las casas sobre postes, la canoa) son ejemplos de esa vida con el río.",
+        "explicaciones": {
+          "o1": "«Iquitos is a city in the Amazon rainforest…» presenta la ciudad: es el punto de partida.",
+          "o2": "Explica por qué la comida llega por río: es un antecedente, no la idea completa.",
+          "o3": "Dice a qué hora abre el mercado y qué traen los botes: un detalle.",
+          "o4": "Habla del aguaje: un producto que se vende, es decir, un detalle.",
+          "o5": "Habla de las plantas medicinales: otro detalle del mercado.",
+          "o7": "Describe el barrio de Belén: es un ejemplo de cómo se vive con el río.",
+          "o8": "Cuenta que el río crece y que se usa canoa: otro ejemplo.",
+          "o9": "Es lo que dice doña Elvira sobre el futuro del mercado: un detalle.",
+          "o10": "Es la esperanza de doña Elvira; cierra el texto, pero habla solo de lo que ella quiere.",
+          "ninguna": "La oración 6 sí dice la idea completa."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "El mercado de Belén es más que un lugar de compras: muestra cómo Iquitos vive con el río.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "Es lo que dice la oración 6 («more than a place to buy food: it shows how the whole city lives with the river»), y el resto del texto lo muestra con ejemplos."
+        },
+        {
+          "t": "En algunos puestos del mercado venden aguaje, el fruto de una palmera, que se come o se toma en jugo.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Es verdad (oración 4), pero es solo uno de los productos que se venden: un detalle."
+        },
+        {
+          "t": "La Amazonía peruana tiene muchos ríos y una enorme variedad de frutas y plantas.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado amplio: el texto no habla de toda la Amazonía, sino de un mercado de Iquitos y de su relación con el río."
+        },
+        {
+          "t": "En el mercado de Belén se vende la comida que llega a Iquitos por el río.",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Es verdad (oración 2), pero deja fuera lo esencial: que el mercado es más que eso, porque muestra cómo vive la ciudad con el río."
+        },
+        {
+          "t": "Iquitos es la ciudad más grande del mundo a la que no se puede llegar por carretera.",
+          "codigo": "RV8",
+          "origen": "o1",
+          "explicacion": "El texto solo dice que ninguna carretera une Iquitos con Lima; no la compara con otras ciudades del mundo. Esa idea sale de afuera."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "enunciado": "En la oración «Visitors soon realize that the market is more than a place to buy food», la palabra REALIZE significa",
+      "alternativas": [
+        {
+          "t": "se dan cuenta.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "«Realize» quiere decir darse cuenta: al poco tiempo, los visitantes notan que el mercado es más que un lugar para comprar comida."
+        },
+        {
+          "t": "realizan.",
+          "codigo": "RV54",
+          "origen": "o6",
+          "explicacion": "Es un falso amigo: «realize» se parece a «realizar», pero significa darse cuenta. «Realizar» (hacer algo) se dice «carry out» o «do»."
+        },
+        {
+          "t": "visitan.",
+          "codigo": "RV5",
+          "origen": "o6",
+          "explicacion": "Repite la idea de «Visitors», la palabra que está justo antes, pero «realize» no quiere decir visitar."
+        },
+        {
+          "t": "se preguntan si.",
+          "codigo": "RV19",
+          "explicacion": "Es otro verbo de lo que uno piensa, pero no significa lo mismo: los visitantes no se preguntan si es así, sino que lo notan."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "enunciado": "Según el texto, ¿qué piensa doña Elvira sobre el mercado?",
+      "alternativas": [
+        {
+          "t": "Cree posible que algún día se mude, pero quiere que siga junto al río.",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o10"
+          ],
+          "explicacion": "«The market may move» dice que es posible, no seguro; y «she hopes it will not leave the river» dice que ella espera que no se aleje del río."
+        },
+        {
+          "t": "Está segura de que muy pronto el mercado se mudará a un edificio nuevo.",
+          "codigo": "RV55",
+          "origen": "o9",
+          "explicacion": "«May» indica posibilidad («puede que se mude»), no certeza; y «one day» es «algún día», no «pronto»."
+        },
+        {
+          "t": "Espera que el mercado se vaya a un edificio nuevo, lejos del río.",
+          "codigo": "RV10",
+          "origen": "o10",
+          "explicacion": "Pasa por alto el «not»: «she hopes it will not leave the river» quiere decir que espera que el mercado no deje el río."
+        },
+        {
+          "t": "Todos los vendedores del mercado quieren que se quede junto al río.",
+          "codigo": "RV7",
+          "origen": "o10",
+          "explicacion": "El texto solo cuenta lo que piensa doña Elvira; no dice qué quieren los demás vendedores. Pasa de una persona a todos."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "enunciado": "¿Qué se deduce sobre el barrio de Belén?",
+      "alternativas": [
+        {
+          "t": "Durante varios meses del año, el agua del río llega hasta sus calles.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "Si cuando el río crece la gente se mueve en canoa (oración 8), el agua cubre por donde antes se caminaba. Eso explica también las casas sobre postes altos (oración 7)."
+        },
+        {
+          "t": "Los vendedores del mercado llegan cada mañana en canoa desde ese barrio.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Junta palabras del texto («canoe», «boats», «market»), pero el texto no dice cómo llegan los vendedores. Los botes de la oración 3 traen productos."
+        },
+        {
+          "t": "Las familias de Belén viven todo el año dentro de sus canoas.",
+          "codigo": "RV7",
+          "origen": "o8",
+          "explicacion": "Va más allá del texto: las familias usan canoas para moverse cuando el río crece, durante algunos meses, pero viven en casas sobre postes."
+        },
+        {
+          "t": "Sus calles se inundan porque en Iquitos llueve mucho más que en Lima.",
+          "codigo": "RV8",
+          "explicacion": "El texto dice que el río crece, pero no habla de la lluvia ni compara Iquitos con Lima. Esa explicación sale de lo que uno sabe, no del texto."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "Iquitos no está unida por carretera con Lima ni con la red vial nacional; se llega por avión o por río.",
+      "fuente": "Encyclopaedia Britannica, artículo «Iquitos»."
+    },
+    {
+      "afirmacion": "Belén es un mercado de Iquitos junto al barrio del mismo nombre, en la orilla del río Itaya; en la parte baja del barrio (Bajo Belén) hay casas sobre pilotes y casas flotantes, que en la creciente quedan rodeadas de agua.",
+      "fuente": "Encyclopaedia Britannica, artículo «Iquitos» (el barrio de Belén y sus casas sobre pilotes y balsas)."
+    },
+    {
+      "afirmacion": "En Iquitos los ríos tienen una creciente anual de varios meses (aguas altas aproximadamente de diciembre a mayo).",
+      "fuente": "SENAMHI, boletines hidrológicos del río Amazonas en Iquitos (estación Enapu-Perú)."
+    },
+    {
+      "afirmacion": "El aguaje es el fruto de la palmera Mauritia flexuosa y se consume fresco o en bebidas.",
+      "fuente": "Instituto de Investigaciones de la Amazonía Peruana (IIAP), fichas técnicas del aguaje."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Coincidió a ciegas con todas las claves. Cambios: o7 sitúa el barrio «down by the river» (Bajo Belén); el hecho de Belén quedó más general y con fuente concreta en lugar de «por confirmar»."
+  }
+}

@@ -1,0 +1,238 @@
+{
+  "id": "t040",
+  "version": 1,
+  "titulo": "¿Crecieron todos los talleres?",
+  "tema": "Sociedad · talleres municipales de verano (datos inventados)",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "discontinuo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Cada verano, la municipalidad de un distrito de la selva ofrece talleres gratuitos para escolares a orillas del río."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "En marzo de 2026 pegó en el mercado un afiche con el lema «¡Este verano todos nuestros talleres crecieron parejo!» y, debajo, el gráfico de inscritos."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "El fútbol fue otra vez el taller con más inscritos y el que sumó más chicos nuevos."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Para 2027, la municipalidad piensa abrir un segundo grupo de ajedrez."
+      }
+    ]
+  ],
+  "figuras": [
+    {
+      "id": "f1",
+      "tipo": "barras",
+      "despues": 1,
+      "titulo": "Inscritos en los talleres de verano del distrito, 2025 y 2026",
+      "unidad": "inscritos",
+      "barras": [
+        {
+          "id": "f1a",
+          "etiqueta": "Fútbol 2025",
+          "valor": 120
+        },
+        {
+          "id": "f1b",
+          "etiqueta": "Fútbol 2026",
+          "valor": 150
+        },
+        {
+          "id": "f1c",
+          "etiqueta": "Danza 2025",
+          "valor": 80
+        },
+        {
+          "id": "f1d",
+          "etiqueta": "Danza 2026",
+          "valor": 96
+        },
+        {
+          "id": "f1e",
+          "etiqueta": "Natación 2025",
+          "valor": 60
+        },
+        {
+          "id": "f1f",
+          "etiqueta": "Natación 2026",
+          "valor": 54
+        },
+        {
+          "id": "f1g",
+          "etiqueta": "Ajedrez 2025",
+          "valor": 20
+        },
+        {
+          "id": "f1h",
+          "etiqueta": "Ajedrez 2026",
+          "valor": 40
+        }
+      ],
+      "nota": "Datos inventados para el ejercicio. El distrito no es real."
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto y el gráfico.",
+        "sonda": "En 2026, el taller de danza tuvo 96 inscritos.",
+        "clase": "lo-dice",
+        "codigos": {
+          "se-deduce": null,
+          "no-se-sabe": "RV34",
+          "lo-contradice": "RV45"
+        },
+        "explicacion": "El gráfico lo muestra directamente: la barra de danza 2026 marca 96.",
+        "explicaciones": {
+          "se-deduce": "No hay que calcular nada: es el número de una barra.",
+          "no-se-sabe": "El párrafo no lo dice, pero el gráfico sí: la barra de danza 2026 marca 96.",
+          "lo-contradice": "Revisa la etiqueta: 96 es la barra de 2026; la de 2025 marca 80."
+        }
+      },
+      "enunciado": "Según el gráfico, ¿qué pasó con el taller de natación de 2025 a 2026?",
+      "alternativas": [
+        {
+          "t": "Bajó de 60 a 54 inscritos.",
+          "correcta": true,
+          "evidencia": [
+            "f1e",
+            "f1f"
+          ],
+          "explicacion": "La barra de 2025 marca 60 y la de 2026, 54: natación perdió 6 inscritos."
+        },
+        {
+          "t": "Subió de 54 a 60 inscritos.",
+          "codigo": "RV45",
+          "origen": "f1f",
+          "explicacion": "Se cruzaron los años: 54 es la barra de 2026 y 60 la de 2025. Fíjate en la etiqueta de cada barra."
+        },
+        {
+          "t": "Creció, como todos los talleres según el afiche.",
+          "codigo": "RV48",
+          "origen": "o2",
+          "explicacion": "El lema del afiche dice que todos los talleres crecieron, pero las barras de natación muestran que bajó. Manda el dato, no el lema."
+        },
+        {
+          "t": "Bajó porque sus inscritos se pasaron a ajedrez.",
+          "codigo": "RV47",
+          "origen": "f1h",
+          "explicacion": "El gráfico muestra que natación bajó y ajedrez subió el mismo año, pero no dice que una cosa cause la otra ni de dónde salieron los chicos."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto y el gráfico.",
+        "sonda": "En 2026 se inscribieron en fútbol 30 chicos más que en 2025.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": null,
+          "no-se-sabe": "RV34",
+          "lo-contradice": "RV45"
+        },
+        "explicacion": "Ni el texto ni el gráfico dan el número 30, pero sale restando las dos barras de fútbol: 150 − 120 = 30. Se deduce.",
+        "explicaciones": {
+          "lo-dice": "El texto dice que fútbol sumó más chicos nuevos que los demás, pero no cuántos. El 30 hay que calcularlo: 150 − 120.",
+          "no-se-sabe": "Sí se puede saber: basta restar las barras de fútbol, 150 − 120 = 30.",
+          "lo-contradice": "Las barras de fútbol son 120 (2025) y 150 (2026): la diferencia es justo 30. Quizá se restó con la barra de otro taller."
+        }
+      },
+      "enunciado": "De 2025 a 2026, ¿qué taller creció más en proporción, es decir, en porcentaje?",
+      "alternativas": [
+        {
+          "t": "Ajedrez, que pasó de 20 a 40 inscritos.",
+          "correcta": true,
+          "evidencia": [
+            "f1g",
+            "f1h"
+          ],
+          "explicacion": "Ajedrez se duplicó: creció 100 %. Fútbol creció 25 % (30 de 120) y danza 20 % (16 de 80); natación bajó."
+        },
+        {
+          "t": "Fútbol, que fue el que sumó más inscritos nuevos.",
+          "codigo": "RV46",
+          "origen": "o3",
+          "explicacion": "Fútbol sumó más chicos (30), pero sobre una base grande: 30 de 120 es el 25 %. Ajedrez sumó menos (20), pero sobre 20: se duplicó."
+        },
+        {
+          "t": "Todos por igual, como dice el afiche.",
+          "codigo": "RV48",
+          "origen": "o2",
+          "explicacion": "El afiche dice que crecieron parejo, pero las barras no: ajedrez se duplicó, fútbol creció 25 %, danza 20 % y natación bajó. Manda el dato, no el lema."
+        },
+        {
+          "t": "No se puede saber, porque el gráfico no muestra porcentajes.",
+          "codigo": "RV34",
+          "explicacion": "El gráfico no trae porcentajes, pero se calculan con sus barras: cada aumento dividido entre lo que había en 2025."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "Si en 2027 el taller de ajedrez creciera en la misma proporción que de 2025 a 2026, tendría",
+      "alternativas": [
+        {
+          "t": "80 inscritos.",
+          "correcta": true,
+          "evidencia": [
+            "f1g",
+            "f1h"
+          ],
+          "explicacion": "De 2025 a 2026, ajedrez se duplicó (de 20 a 40). Crecer en la misma proporción es volver a duplicarse: 40 × 2 = 80."
+        },
+        {
+          "t": "60 inscritos.",
+          "codigo": "RV46",
+          "explicacion": "Así se suman otra vez los mismos 20 inscritos: es repetir el aumento en cantidad, no en proporción. La misma proporción es duplicarse otra vez."
+        },
+        {
+          "t": "40 inscritos, los mismos de 2026.",
+          "codigo": "RV12",
+          "origen": "f1h",
+          "explicacion": "Eso es lo que el gráfico ya dice de 2026. La pregunta supone que ajedrez vuelve a crecer."
+        },
+        {
+          "t": "20 inscritos, los mismos que en 2025.",
+          "codigo": "RV45",
+          "origen": "f1g",
+          "explicacion": "20 es la barra de ajedrez en 2025, el punto de partida. La pregunta es por 2027, después de otro crecimiento."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El distrito (sin nombre), su municipalidad, el afiche y todas las cifras del gráfico son inventados.",
+      "fuente": "Inventado para el ejercicio; no hay datos del mundo que verificar."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en todo salvo el previo de p1 (17 de 18 en los cuatro textos). Cambios: sonda del previo de p1 (un valor de una barra, sin comparación); lema del afiche «crecieron parejo» para que el RV48 de p2 tenga base; distractor RV45 de p3 (20, la barra de 2025); el distrito ya no se nombra (Puerto Alegre existe en Loreto)."
+  }
+}

@@ -4062,7 +4062,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "resumen-sintesis"
+     ]
     },
     {
      "id": "razonamiento-verbal.textos-discontinuos",
@@ -4089,7 +4091,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "textos-discontinuos"
+     ]
     },
     {
      "id": "razonamiento-verbal.inferencias",
@@ -4222,7 +4226,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "texto-contexto"
+     ]
     },
     {
      "id": "razonamiento-verbal.textos-filosoficos-y-cientificos",
@@ -4240,7 +4246,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "textos-filosoficos-cientificos"
+     ]
     },
     {
      "id": "razonamiento-verbal.lectura-en-ingles",
@@ -4262,7 +4270,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-ingles"
+     ]
     }
    ]
   }
@@ -5042,6 +5052,30 @@
     "/plantillas/interes/papel.json"
    ]
   },
+  "lectura-ingles": {
+   "id": "lectura-ingles",
+   "titulo": "Reading in English",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.lectura-en-ingles"
+   ],
+   "url": "#/lectura/lectura-ingles",
+   "banco": "/contenido/razonamiento-verbal/indice-lectura-ingles.json",
+   "papel": null,
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-lectura-ingles.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t051.json",
+    "/contenido/razonamiento-verbal/textos/t052.json",
+    "/contenido/razonamiento-verbal/textos/t053.json",
+    "/contenido/razonamiento-verbal/textos/t054.json"
+   ]
+  },
   "lectura-verbal": {
    "id": "lectura-verbal",
    "titulo": "Lectura y razonamiento verbal",
@@ -5675,6 +5709,30 @@
     "/plantillas/rendimiento-pureza/papel.json"
    ]
   },
+  "resumen-sintesis": {
+   "id": "resumen-sintesis",
+   "titulo": "Resumir y sintetizar",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.resumen-y-sintesis"
+   ],
+   "url": "#/lectura/resumen-sintesis",
+   "banco": "/contenido/razonamiento-verbal/indice-resumen-sintesis.json",
+   "papel": null,
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-resumen-sintesis.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t035.json",
+    "/contenido/razonamiento-verbal/textos/t036.json",
+    "/contenido/razonamiento-verbal/textos/t037.json",
+    "/contenido/razonamiento-verbal/textos/t038.json"
+   ]
+  },
   "segmentos-angulos": {
    "id": "segmentos-angulos",
    "titulo": "La escuadra y las paralelas: segmentos y ángulos",
@@ -5796,6 +5854,78 @@
     "/plantillas/termodinamica/index.html",
     "/plantillas/termodinamica/motor.js",
     "/plantillas/termodinamica/papel.json"
+   ]
+  },
+  "texto-contexto": {
+   "id": "texto-contexto",
+   "titulo": "Quién habla, a quién y para qué",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.texto-y-contexto"
+   ],
+   "url": "#/lectura/texto-contexto",
+   "banco": "/contenido/razonamiento-verbal/indice-texto-contexto.json",
+   "papel": null,
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-texto-contexto.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t043.json",
+    "/contenido/razonamiento-verbal/textos/t044.json",
+    "/contenido/razonamiento-verbal/textos/t045.json",
+    "/contenido/razonamiento-verbal/textos/t046.json"
+   ]
+  },
+  "textos-discontinuos": {
+   "id": "textos-discontinuos",
+   "titulo": "Tablas, gráficos e infografías",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.textos-discontinuos"
+   ],
+   "url": "#/lectura/textos-discontinuos",
+   "banco": "/contenido/razonamiento-verbal/indice-textos-discontinuos.json",
+   "papel": null,
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-textos-discontinuos.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t039.json",
+    "/contenido/razonamiento-verbal/textos/t040.json",
+    "/contenido/razonamiento-verbal/textos/t041.json",
+    "/contenido/razonamiento-verbal/textos/t042.json"
+   ]
+  },
+  "textos-filosoficos-cientificos": {
+   "id": "textos-filosoficos-cientificos",
+   "titulo": "Textos filosóficos y científicos",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.textos-filosoficos-y-cientificos"
+   ],
+   "url": "#/lectura/textos-filosoficos-cientificos",
+   "banco": "/contenido/razonamiento-verbal/indice-textos-filosoficos-cientificos.json",
+   "papel": null,
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-textos-filosoficos-cientificos.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t047.json",
+    "/contenido/razonamiento-verbal/textos/t048.json",
+    "/contenido/razonamiento-verbal/textos/t049.json",
+    "/contenido/razonamiento-verbal/textos/t050.json"
    ]
   },
   "tipologia-textual": {

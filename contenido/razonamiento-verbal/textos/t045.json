@@ -1,0 +1,253 @@
+{
+  "id": "t045",
+  "version": 1,
+  "titulo": "El plástico del fitotoldo",
+  "tema": "Sociedad · discurso ante los padres de familia en Juliaca",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Buenas tardes, señores padres de familia; buenas tardes, señor presidente de la APAFA."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Muchos de ustedes me conocen: soy la hija de la señora Fortunata, la del puesto de quesos, y este año mis compañeros de quinto me eligieron para hablar por ellos."
+      }
+    ],
+    [
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Vengo a hablarles del fitotoldo que está detrás del pabellón B."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Hace dos años, ahí cosechábamos lechuga, acelga y rabanito para nuestro refrigerio, aunque afuera cayera helada, como cae casi todas las noches de invierno en Juliaca."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Hoy el plástico está roto, y el viento de agosto se llevó lo poco que quedaba."
+      },
+      {
+        "id": "o6",
+        "rol": "cita",
+        "t": "Cuando le preguntamos al director, nos respondió: «Este año no hay presupuesto para eso»."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Él tiene razón: el dinero que llega al colegio ya tiene destino."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Por eso les pedimos a ustedes algo que no cuesta tanto: una faena de un sábado y cinco soles por familia para el plástico nuevo."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "Nosotros pondremos las manos: los de cuarto ya aprendieron a armar los arcos, y los de tercero se ofrecieron para regar."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "Ustedes saben mejor que nadie lo que vale una verdura fresca en julio, cuando en el mercado se pone cara."
+      }
+    ],
+    [
+      {
+        "id": "o11",
+        "rol": "principal",
+        "t": "No les pedimos un regalo, sino que nos ayuden a recuperar algo que ya era nuestro."
+      },
+      {
+        "id": "o12",
+        "rol": "detalle",
+        "t": "Muchas gracias por escucharme."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "¿Quién pronuncia, con mayor probabilidad, este discurso?",
+      "alternativas": [
+        {
+          "t": "Una alumna del colegio que habla en nombre de sus compañeros.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o9"
+          ],
+          "explicacion": "Dice que sus compañeros la eligieron para hablar por ellos y que «nosotros», los alumnos de cuarto y de tercero, pondrán el trabajo."
+        },
+        {
+          "t": "El director del colegio, que no tiene presupuesto este año.",
+          "codigo": "RV50",
+          "origen": "o6",
+          "explicacion": "El director aparece citado, pero quien habla cuenta lo que él les respondió: es otra persona."
+        },
+        {
+          "t": "La señora Fortunata, que vende quesos en el mercado.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Repite palabras de la oración 2, pero quien habla dice que es la hija de la señora Fortunata, no ella."
+        },
+        {
+          "t": "Una profesora encargada de los cultivos y del refrigerio escolar.",
+          "codigo": "RV8",
+          "explicacion": "En muchos colegios un docente se encarga del biohuerto, pero el discurso no lo dice: quien habla es alguien a quien eligieron «mis compañeros de quinto» y que cosechaba para «nuestro refrigerio»: una alumna."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "¿A quiénes se dirige principalmente el discurso?",
+      "alternativas": [
+        {
+          "t": "A los padres de familia, reunidos con el presidente de la APAFA.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o8",
+            "o10"
+          ],
+          "explicacion": "El saludo los nombra, y a ellos se les pide la faena y los cinco soles «por familia»."
+        },
+        {
+          "t": "A sus compañeros de colegio, que antes cosechaban en el fitotoldo.",
+          "codigo": "RV51",
+          "origen": "o4",
+          "explicacion": "El tema es el fitotoldo de los alumnos, pero las marcas dicen otra cosa: a los alumnos los incluye en «nosotros», y a quienes trata de «ustedes» es a los padres."
+        },
+        {
+          "t": "Al director, para que cambie de opinión sobre el presupuesto.",
+          "codigo": "RV50",
+          "origen": "o6",
+          "explicacion": "El director solo aparece citado; quien habla le da la razón y no le pide nada."
+        },
+        {
+          "t": "A las autoridades de Juliaca, para que paguen el plástico.",
+          "codigo": "RV7",
+          "explicacion": "El discurso no se dirige a ninguna autoridad: el plástico se pagaría con los cinco soles de cada familia."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo quien habla?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "Cuenta qué pasó con el fitotoldo, pero para pedir algo y dar razones: busca que los padres acepten ayudar (oraciones 8 y 11).",
+        "explicaciones": {
+          "explicar": "Da información sobre el fitotoldo, pero no se queda ahí: la usa para pedir una faena y una cuota.",
+          "narrar": "Hay un pequeño relato de lo que pasó, pero el discurso no busca contar una historia: busca un sí de los padres."
+        }
+      },
+      "enunciado": "¿Qué busca principalmente quien habla?",
+      "alternativas": [
+        {
+          "t": "Que los padres apoyen con trabajo y dinero el arreglo del fitotoldo.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o11"
+          ],
+          "explicacion": "La oración 8 hace el pedido y la 11 lo justifica: recuperar algo que ya era de los alumnos."
+        },
+        {
+          "t": "Informar qué verduras se cosechaban en el fitotoldo hace dos años.",
+          "codigo": "RV14",
+          "origen": "o4",
+          "explicacion": "Ese dato está en la oración 4, pero sirve para pedir ayuda; quedarse en el dato deja fuera el pedido."
+        },
+        {
+          "t": "Contar la historia del fitotoldo desde que se construyó hasta hoy.",
+          "codigo": "RV13",
+          "explicacion": "El discurso no cuenta cómo se construyó: menciona lo que pasó solo para llegar al pedido."
+        },
+        {
+          "t": "Criticar al director por negarse a dar dinero para el fitotoldo.",
+          "codigo": "RV33",
+          "origen": "o6",
+          "explicacion": "Quien habla no lo critica; al contrario, dice que «él tiene razón» (oración 7)."
+        },
+        {
+          "t": "Pedir que el Estado dé más presupuesto a los colegios públicos de todo el país.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el pedido es para un fitotoldo y se dirige a los padres de este colegio."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "En el discurso, la frase «Nosotros pondremos las manos» quiere decir que",
+      "alternativas": [
+        {
+          "t": "los alumnos se encargarán del trabajo de armar y regar.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "La misma oración lo explica: los de cuarto arman los arcos y los de tercero riegan."
+        },
+        {
+          "t": "los alumnos levantarán la mano para aprobar el pedido en la reunión.",
+          "codigo": "RV49",
+          "explicacion": "Toma la frase al pie de la letra, como un gesto. En este discurso, «poner las manos» es poner el trabajo."
+        },
+        {
+          "t": "los alumnos juntarán entre ellos el dinero para el plástico.",
+          "codigo": "RV19",
+          "origen": "o8",
+          "explicacion": "«Aportar dinero» es del mismo campo que «poner», pero no es lo que se dice: el dinero lo piden a las familias."
+        },
+        {
+          "t": "los alumnos de quinto dirigirán a los de cuarto y de tercero.",
+          "codigo": "RV7",
+          "explicacion": "El texto no dice quién dirige el trabajo: es una conclusión sin base."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "En el altiplano de Puno se usan fitotoldos (invernaderos rústicos con techo de plástico) para cultivar hortalizas protegidas de las heladas.",
+      "fuente": "Ministerio de Desarrollo Agrario y Riego, programa Agro Rural, notas de prensa sobre la instalación de fitotoldos en Puno (gob.pe/agrorural)."
+    },
+    {
+      "afirmacion": "En Juliaca las heladas son frecuentes en las noches de invierno (junio a agosto).",
+      "fuente": "SENAMHI, Atlas de heladas del Perú (2010): https://web2.senamhi.gob.pe/load/file/01404SENA-1.pdf"
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: acertó 20 de 20 (los cuatro textos de la unidad). Cambios: la correcta de p2 ya no dice «asamblea», que el texto no nombra (tampoco el distractor de p4); fuente del Atlas de heladas con enlace. El RV50 de p2 vale con la definición ampliada (emisor o destinatario)."
+  }
+}

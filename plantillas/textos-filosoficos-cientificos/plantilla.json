@@ -1,0 +1,13 @@
+{
+  "id": "textos-filosoficos-cientificos",
+  "titulo": "Textos filosóficos y científicos",
+  "formato": "lectura",
+  "unidades": [
+    "razonamiento-verbal.textos-filosoficos-y-cientificos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "banco": "../../contenido/razonamiento-verbal/indice-textos-filosoficos-cientificos.json",
+  "pruebas": "../../contenido/razonamiento-verbal/banco.test.js",
+  "papel": null
+}

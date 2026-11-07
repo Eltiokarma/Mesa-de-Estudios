@@ -1,0 +1,13 @@
+{
+  "id": "lectura-ingles",
+  "titulo": "Reading in English",
+  "formato": "lectura",
+  "unidades": [
+    "razonamiento-verbal.lectura-en-ingles"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "banco": "../../contenido/razonamiento-verbal/indice-lectura-ingles.json",
+  "pruebas": "../../contenido/razonamiento-verbal/banco.test.js",
+  "papel": null
+}

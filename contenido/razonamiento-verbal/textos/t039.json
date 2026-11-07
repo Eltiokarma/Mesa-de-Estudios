@@ -1,0 +1,212 @@
+{
+  "id": "t039",
+  "version": 1,
+  "titulo": "Los préstamos de la biblioteca",
+  "tema": "Sociedad · lectura escolar (datos inventados)",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "discontinuo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Desde agosto, la biblioteca del colegio Los Algarrobos, en el distrito de San Juan de las Lomas, abre también durante el recreo largo."
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "La bibliotecaria anotó cada mes cuántos libros se llevaron a casa los alumnos de tercero, cuarto y quinto de secundaria."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "La meta del colegio era que cada grado llegara a 50 préstamos por mes."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Con estos datos, la dirección decidirá en diciembre si la biblioteca seguirá abriendo en el recreo el próximo año."
+      }
+    ]
+  ],
+  "figuras": [
+    {
+      "id": "f1",
+      "tipo": "tabla",
+      "despues": 1,
+      "titulo": "Libros prestados por grado y por mes (2026)",
+      "columnas": [
+        "Grado",
+        "Agosto",
+        "Septiembre",
+        "Octubre"
+      ],
+      "filas": [
+        {
+          "id": "f1a",
+          "celdas": [
+            "3.º",
+            "42",
+            "55",
+            "61"
+          ]
+        },
+        {
+          "id": "f1b",
+          "celdas": [
+            "4.º",
+            "38",
+            "47",
+            "70"
+          ]
+        },
+        {
+          "id": "f1c",
+          "celdas": [
+            "5.º",
+            "64",
+            "51",
+            "52"
+          ]
+        }
+      ],
+      "nota": "Datos inventados para el ejercicio. El colegio y el distrito son ficticios."
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "¿Cuántos libros se llevaron los alumnos de cuarto grado en septiembre?",
+      "alternativas": [
+        {
+          "t": "47 libros",
+          "correcta": true,
+          "evidencia": [
+            "f1b"
+          ],
+          "explicacion": "Hay que cruzar la fila de 4.º con la columna de septiembre: ahí dice 47."
+        },
+        {
+          "t": "55 libros",
+          "codigo": "RV45",
+          "origen": "f1a",
+          "explicacion": "Es la columna correcta, pero la fila de 3.º. Sigue con el dedo la fila de 4.º hasta septiembre."
+        },
+        {
+          "t": "50 libros",
+          "codigo": "RV48",
+          "origen": "o3",
+          "explicacion": "50 es la meta que menciona el texto, no lo que pasó. Lo que pasó está en la tabla."
+        },
+        {
+          "t": "No se puede saber, porque el texto no da esa cifra.",
+          "codigo": "RV34",
+          "explicacion": "El párrafo no la da, pero la tabla sí. En un texto discontinuo, la tabla también es parte de lo que se lee."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "Según el texto y la tabla, ¿qué grado alcanzó la meta del colegio en los tres meses?",
+      "alternativas": [
+        {
+          "t": "Quinto grado",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "f1c"
+          ],
+          "explicacion": "La meta era 50 préstamos por mes (oración 3). Quinto tuvo 64, 51 y 52: es el único que no bajó de 50 en ningún mes."
+        },
+        {
+          "t": "Tercer grado",
+          "codigo": "RV7",
+          "origen": "f1a",
+          "explicacion": "Tercero pasó la meta en septiembre y octubre, pero en agosto tuvo 42. Haberla pasado en dos meses no es haberla pasado en los tres."
+        },
+        {
+          "t": "Cuarto grado",
+          "codigo": "RV45",
+          "origen": "f1b",
+          "explicacion": "Cuarto tuvo el número más alto de la tabla (70), pero solo en octubre. En agosto y septiembre quedó debajo de 50: hay que leer toda la fila, no una columna."
+        },
+        {
+          "t": "Los tres grados",
+          "codigo": "RV11",
+          "explicacion": "No todos: tercero (42) y cuarto (38 y 47) quedaron debajo de 50 en algún mes."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto y la tabla.",
+        "sonda": "En octubre, la biblioteca prestó más libros en total que en agosto.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": null,
+          "no-se-sabe": "RV34",
+          "lo-contradice": "RV45"
+        },
+        "explicacion": "Ni el párrafo ni la tabla dan el total, pero se puede sacar sumando cada columna: en agosto, 42 + 38 + 64 = 144; en octubre, 61 + 70 + 52 = 183. Se deduce.",
+        "explicaciones": {
+          "lo-dice": "La tabla no trae una fila de totales: el total hay que calcularlo sumando cada columna.",
+          "no-se-sabe": "Sí se puede saber: basta sumar la columna de agosto (144) y la de octubre (183).",
+          "lo-contradice": "Quinto bajó de agosto a octubre, pero tercero y cuarto subieron mucho más. Sumando los tres, octubre (183) supera a agosto (144)."
+        }
+      },
+      "enunciado": "Es incompatible con la tabla afirmar que",
+      "alternativas": [
+        {
+          "t": "los tres grados se llevaron más libros en octubre que en agosto.",
+          "correcta": true,
+          "evidencia": [
+            "f1c"
+          ],
+          "explicacion": "Tercero y cuarto subieron, pero quinto bajó: de 64 en agosto a 52 en octubre. No fueron los tres."
+        },
+        {
+          "t": "en agosto, quinto grado se llevó más libros que tercero y que cuarto.",
+          "codigo": "RV45",
+          "origen": "f1c",
+          "explicacion": "Es verdad: en la columna de agosto, quinto tiene 64, tercero 42 y cuarto 38. Si se mira la columna de octubre, parece falsa, pero la frase habla de agosto."
+        },
+        {
+          "t": "cuarto grado no llegó a la meta del colegio en el mes de agosto.",
+          "codigo": "RV10",
+          "origen": "f1b",
+          "explicacion": "Tiene un \"no\", pero es verdad: en agosto, cuarto tuvo 38 préstamos, menos que la meta de 50."
+        },
+        {
+          "t": "algunos alumnos de quinto también leen en la biblioteca durante el recreo.",
+          "codigo": "RV36",
+          "explicacion": "La tabla cuenta los libros que se llevaron a casa; no dice nada de quién lee en la biblioteca. Que no lo diga no la vuelve incompatible."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El colegio Los Algarrobos, el distrito de San Juan de las Lomas y todas las cifras de la tabla son inventados.",
+      "fuente": "Inventado para el ejercicio; no hay datos del mundo que verificar."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en todos los ítems de este texto (17 de 18 en los cuatro textos). Sin cambios de contenido."
+  }
+}

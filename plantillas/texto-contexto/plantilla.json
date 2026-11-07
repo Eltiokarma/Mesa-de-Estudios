@@ -1,0 +1,13 @@
+{
+  "id": "texto-contexto",
+  "titulo": "Quién habla, a quién y para qué",
+  "formato": "lectura",
+  "unidades": [
+    "razonamiento-verbal.texto-y-contexto"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "banco": "../../contenido/razonamiento-verbal/indice-texto-contexto.json",
+  "pruebas": "../../contenido/razonamiento-verbal/banco.test.js",
+  "papel": null
+}

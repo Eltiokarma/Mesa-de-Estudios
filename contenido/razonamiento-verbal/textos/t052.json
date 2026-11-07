@@ -1,0 +1,222 @@
+{
+  "id": "t052",
+  "version": 1,
+  "titulo": "The Train to Machu Picchu",
+  "tema": "Lectura en inglés · el tren a Machu Picchu",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Every day, thousands of visitors travel to Machu Picchu, the famous Inca city in the mountains of Cusco."
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "Most of them go by train, because no road connects Aguas Calientes, the town at the foot of the mountain, with the rest of the country."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "The train leaves from Ollantaytambo or from a station near Cusco, and it follows the Urubamba River."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "From the windows, passengers can see snowy mountains, small farms and, near the end, the green forest."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "The trip from Ollantaytambo takes about an hour and a half."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "In Aguas Calientes, visitors take a bus up a winding road to the ruins, or they walk up for more than an hour."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Ana, a guide from Cusco, used to take this train almost every day."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Now she works in an office, but she says she will never forget those trips."
+      },
+      {
+        "id": "o9",
+        "rol": "cita",
+        "t": "\"People think the ruins are the best part,\" she says, \"but actually, I loved the trip just as much.\""
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "For many visitors, the train is not only the way to Machu Picchu: it is also part of the adventure."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que mejor resume todo el texto.",
+        "aceptadas": [
+          "o2",
+          "o10"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 2 dice que la mayoría llega a Machu Picchu en tren y por qué. La 10 completa la idea: el tren no es solo el camino, también es parte de la aventura.",
+        "explicaciones": {
+          "o1": "«Every day, thousands of visitors…» presenta el lugar y a los visitantes: es el punto de partida.",
+          "o3": "Dice de dónde sale el tren y por dónde va: un detalle del viaje.",
+          "o4": "Describe lo que se ve desde la ventana: un detalle.",
+          "o5": "Dice cuánto dura el viaje: un dato.",
+          "o6": "Cuenta cómo se sube de Aguas Calientes a las ruinas: un detalle.",
+          "o7": "Presenta a Ana, que da un ejemplo de lo que el texto quiere mostrar.",
+          "o8": "Cuenta qué hace Ana hoy: sigue siendo parte del ejemplo.",
+          "o9": "Es lo que dice Ana: una cita que apoya la idea, no la idea completa.",
+          "ninguna": "Sí hay oraciones que la dicen: la 2 y la 10, juntas, resumen el texto."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "La mayoría llega a Machu Picchu en tren, y ese viaje también es parte de la aventura.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o10"
+          ],
+          "explicacion": "Junta las oraciones 2 y 10: el tren es el camino de casi todos los visitantes y, además, un viaje que vale por sí mismo."
+        },
+        {
+          "t": "Desde Ollantaytambo, el viaje en tren hasta Aguas Calientes dura más o menos una hora y media.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Es verdad («The trip from Ollantaytambo takes about an hour and a half»), pero es un dato del viaje, no la idea que junta todo."
+        },
+        {
+          "t": "Cusco recibe cada año a muchísimos turistas que llegan de todo el mundo.",
+          "codigo": "RV2",
+          "explicacion": "Es más amplio que el texto: no habla del turismo en Cusco, sino del tren a Machu Picchu."
+        },
+        {
+          "t": "La mayoría de los visitantes va en tren porque ninguna carretera une Aguas Calientes con el resto del país.",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Es verdad (oración 2), pero deja fuera la otra mitad de la idea: que el viaje en tren es también parte de la aventura."
+        },
+        {
+          "t": "Machu Picchu fue declarado patrimonio mundial por la Unesco en el año 1983.",
+          "codigo": "RV8",
+          "explicacion": "Es un dato cierto, pero el texto no lo menciona. La idea principal sale de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "enunciado": "En la frase de Ana «but actually, I loved the trip just as much», la palabra ACTUALLY significa",
+      "alternativas": [
+        {
+          "t": "en realidad.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "«Actually» quiere decir «en realidad»: Ana corrige lo que la gente cree («People think the ruins are the best part») y dice lo que de verdad piensa."
+        },
+        {
+          "t": "actualmente.",
+          "codigo": "RV54",
+          "origen": "o9",
+          "explicacion": "Es un falso amigo: «actually» se parece a «actualmente», pero significa «en realidad». «Actualmente» se dice «currently» o «nowadays». Además, Ana habla de viajes que ya no hace."
+        },
+        {
+          "t": "todos los días.",
+          "codigo": "RV5",
+          "origen": "o7",
+          "explicacion": "Repite la idea de «almost every day» de la oración 7, que habla de cuántas veces Ana tomaba el tren, no de esta palabra."
+        },
+        {
+          "t": "felizmente.",
+          "codigo": "RV19",
+          "explicacion": "Ana habla de algo que le gustó, pero «actually» no expresa alegría: sirve para decir lo que de verdad piensa frente a lo que cree la gente."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "enunciado": "¿Qué se puede afirmar sobre Ana?",
+      "alternativas": [
+        {
+          "t": "Antes viajaba en ese tren casi a diario, pero hoy ya no lo hace.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "«Used to take this train» quiere decir que lo tomaba antes y ya no; «Now she works in an office» (ahora trabaja en una oficina) lo confirma."
+        },
+        {
+          "t": "Sigue tomando el tren casi todos los días para llevar turistas a las ruinas.",
+          "codigo": "RV55",
+          "origen": "o7",
+          "explicacion": "«Used to» habla de una costumbre del pasado que ya terminó: Ana tomaba el tren antes, y ahora trabaja en una oficina."
+        },
+        {
+          "t": "Ya se olvidó de cómo eran los viajes que hacía en el tren.",
+          "codigo": "RV10",
+          "origen": "o8",
+          "explicacion": "Pasa por alto el «never»: «she will never forget those trips» quiere decir que nunca olvidará esos viajes."
+        },
+        {
+          "t": "Está triste porque no le gusta nada su trabajo en la oficina.",
+          "codigo": "RV7",
+          "origen": "o8",
+          "explicacion": "El texto dice que extraña los viajes, pero no dice nada de si le gusta o no su trabajo. Esa idea va más allá de lo que se lee."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "A Machu Picchu se llega sobre todo en tren hasta Aguas Calientes (Machu Picchu Pueblo), que no tiene conexión por carretera con el resto del país; desde allí, un bus sube por una carretera en zigzag hasta la ciudadela.",
+      "fuente": "Encyclopaedia Britannica, artículo «Machu Picchu»; PeruRail e Inca Rail, rutas Cusco (Poroy)–Machu Picchu y Ollantaytambo–Machu Picchu."
+    },
+    {
+      "afirmacion": "El tren sigue el valle del río Urubamba, y el viaje desde Ollantaytambo dura de 1 h 30 a 1 h 50, según el servicio.",
+      "fuente": "PeruRail e Inca Rail, horarios de la ruta Ollantaytambo–Machu Picchu."
+    },
+    {
+      "afirmacion": "Machu Picchu recibe miles de visitantes al día (el aforo diario fijado por el Ministerio de Cultura es de varios miles).",
+      "fuente": "Ministerio de Cultura del Perú, resoluciones de aforo de la Llaqta de Machupicchu."
+    },
+    {
+      "afirmacion": "Machu Picchu fue inscrito en la Lista del patrimonio mundial en 1983 (dato usado solo en un distractor).",
+      "fuente": "Unesco, ficha «Historic Sanctuary of Machu Picchu» (n.º 274), 1983."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Coincidió a ciegas con todas las claves. Cambios: la duración desde Ollantaytambo pasa a «about an hour and a half» (y el distractor RV1 de p1 en concordancia); el hecho ahora dice de 1 h 30 a 1 h 50 según PeruRail e Inca Rail."
+  }
+}

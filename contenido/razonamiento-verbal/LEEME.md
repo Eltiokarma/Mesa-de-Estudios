@@ -5,6 +5,7 @@ Textos propios para el formato lectura. El formato completo está en `docs/forma
 - `textos/tNNN.json`: un texto con sus preguntas. Se escribe, se revisa a ciegas con un subagente aparte y recién entonces se agrega a `indice.json`.
 - `ejercicios/eNNN.json`: un ejercicio suelto, con una sola pregunta y su `cuerpo`: analogía (`base`), término excluido (`terminos`), conector u oración incompleta (`oracion`, con `___`), plan de redacción y eliminación (`oraciones`, con numerales). Se revisa igual que un texto.
 - `indice.json`: los textos (`textos`) y ejercicios (`ejercicios`) que la app puede usar, en orden. Solo entran los que tienen `revision.veredicto: "aprobado"`. `entrada` y `salida` son la pareja de textos de las pruebas (t000a y t000b). Un ejercicio entra solo si `plantillas/lectura-verbal/plantilla.json` ya lista su unidad (lo pide `catalogo/catalogo.test.js`).
+- `indice-<módulo>.json`: el índice de cada módulo que no es `lectura-verbal` (tipología, resumen, discontinuos, contexto, filosóficos y científicos, inglés). Un texto va en un solo índice. Los discontinuos llevan `figuras` y los de inglés `"idioma": "en"` (`docs/formato-lectura.md`, sección 5.7).
 - `frases.json`: una frase para el alumno por cada código RV ("Elegiste un detalle verdadero…").
 - `banco.test.js`: corre con `npm test` y aplica las reglas de la sección 5.5 del diseño, a los textos y a los ejercicios.
 - `codigos.json`: el respaldo de cada código; se genera del informe con `node herramientas/codigos-verbal.js`.
