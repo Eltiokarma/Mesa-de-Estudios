@@ -36,15 +36,15 @@
       "id": "p3",
       "nivel": "básico",
       "enunciado": "La casiterita es el mineral del que se saca el estaño; es SnO₂. El estaño tiene +2 y +4. Escribe su nombre en las tres nomenclaturas.",
-      "respuesta": "Sistemática: dióxido de estaño. Stock: óxido de estaño (IV). Tradicional: óxido estánnico.",
+      "respuesta": "Sistemática: dióxido de estaño. Stock: óxido de estaño(IV). Tradicional: óxido estánnico.",
       "pasos": [
         "Es un metal con oxígeno: óxido básico.",
         "Estado del estaño: 2 O dan −4, así que el Sn es +4.",
         "Sistemática: se cuentan los átomos con prefijos: 2 O → dióxido; 1 Sn → de estaño.",
-        "Stock: el estado en número romano, porque el estaño tiene más de un estado: óxido de estaño (IV).",
+        "Stock: el estado en número romano, porque el estaño tiene más de un estado: óxido de estaño(IV).",
         "Tradicional: con dos estados, -oso para el menor (+2) e -ico para el mayor (+4): óxido estánnico."
       ],
-      "verificar": [ { "fn": "nombrar", "args": ["SnO2"], "espera": { "sistematica": "dióxido de estaño", "stock": "óxido de estaño (IV)", "tradicional": "óxido estánnico" } } ]
+      "verificar": [ { "fn": "nombrar", "args": ["SnO2"], "espera": { "sistematica": "dióxido de estaño", "stock": "óxido de estaño(IV)", "tradicional": "óxido estánnico" } } ]
     },
     {
       "id": "p4",
@@ -80,7 +80,7 @@
       "pasos": [
         "Sumando los átomos: N₂O₅ + H₂O tiene 2 H, 2 N y 6 O.",
         "Eso es H₂N₂O₆, que se divide entre 2: HNO₃. Salen 2 moléculas.",
-        "El N tiene +5: 1 H (+1) y 3 O (−6) dejan +5. Con +3 y +5, el +5 es -ico: ácido nítrico."
+        "El N tiene +5: 1 H (+1) y 3 O (−6) dejan +5. Con +1, +3 y +5, el +5 es -ico: ácido nítrico."
       ],
       "verificar": [ { "fn": "formar", "args": ["oxacido", "N", 5], "espera": { "formula": "HNO3", "reaccion": "N2O5 + H2O -> 2HNO3", "nombres.tradicional": "ácido nítrico" } } ]
     },
@@ -115,7 +115,7 @@
     {
       "id": "p9",
       "nivel": "avanzado",
-      "enunciado": "El sulfato de cobre (II) pentahidratado, CuSO₄·5H₂O, forma cristales azules. ¿Qué porcentaje de su masa es agua? (Cu = 63,5; S = 32; O = 16; H = 1)",
+      "enunciado": "El sulfato de cobre(II) pentahidratado, CuSO₄·5H₂O, forma cristales azules. ¿Qué porcentaje de su masa es agua? (Cu = 63,5; S = 32; O = 16; H = 1)",
       "respuesta": "Cerca del 36,1 %.",
       "pasos": [
         "Masa de CuSO₄: 63,5 + 32 + 4 × 16 = 159,5.",

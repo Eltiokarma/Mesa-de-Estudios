@@ -102,11 +102,12 @@ test('el árbol: cada rama da la función que dice, con el estado pedido', () =>
     }
   }
 });
-test('la tradicional: -oso al menor e -ico al mayor; con cuatro estados, hipo-…-oso, -oso, -ico y per-…-ico', () => {
+test('la tradicional: -oso al menor e -ico al mayor; con tres, hipo-…-oso, -oso e -ico; con cuatro estados, hipo-…-oso, -oso, -ico y per-…-ico', () => {
   for (const [e, t] of Object.entries(motor.ESTADOS)) for (const como of ['m', 'nm']) {
     const l = t[como] || []; if (!l.length || (como === 'nm' && t.trad)) continue;
     const ts = l.map(v => motor.terminacion(e, v, como));
     if (l.length === 2) assert.deepEqual(ts.map(x => x.sufijo), ['oso', 'ico'], e);
+    if (l.length === 3) assert.deepEqual(ts.map(x => x.prefijo + x.sufijo), ['hipooso', 'oso', 'ico'], e);
     if (l.length === 4) assert.deepEqual(ts.map(x => x.prefijo + x.sufijo), ['hipooso', 'oso', 'ico', 'perico'], e);
   }
 });
