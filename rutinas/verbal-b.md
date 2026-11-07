@@ -60,7 +60,7 @@ Lo probé con Playwright a 390 × 844 en claro y a 1366 × 768 en oscuro: sin er
 - exige que lleven figuras los discontinuos y solo ellos;
 - corre `validar` también sobre los textos.
 
-**`app/sw.js`:** VERSION pasó de v115 a v116, porque cambió la cáscara.
+**`app/sw.js`:** VERSION pasó de v115 a v116, porque cambió la cáscara. Después del merge con la principal quedó en v121.
 
 **Documentación:** `docs/formato-lectura.md` tiene una sección nueva, la 5.7, y lo mismo, en corto, `contenido/razonamiento-verbal/LEEME.md`.
 
@@ -138,7 +138,7 @@ Un tropiezo: el constructor de filosóficos regeneró sus JSON mientras yo los t
 4. **RV6 en «lo dice» de un previo clasificar.** El revisor de tipología notó que 6 textos viejos del banco usan RV6 cuando el alumno responde «lo dice» ante algo que se deduce. La frase de RV6 («Eso está dicho en el texto tal cual…») describe lo contrario de lo que pensó el alumno. La app ya lo neutraliza (`FRASE_NO_APLICA` en `clasificar` / `lo-dice`), pero el código registrado no es el error. Propongo revisarlo en la rutina verbal original. No lo toqué, porque está fuera de mi encargo.
 5. **Unidad de algunas preguntas.** Algunas son de inferencia o de idea principal pero van con la unidad del módulo (por ejemplo, la inferencia de t032 está en tipología). Así lo pide la prueba de cobertura. Si la medición necesita separar por habilidad, se puede leer el campo `tipo` de la pregunta.
 6. **Lápiz y papel.** Como `lectura-verbal`, los seis módulos quedan en `borrador` con `papel: null`, hasta que exista `herramientas/papel-lectura.js` (pendiente de antes).
-7. **`sw.js`.** Lo subí a v116. Si otra rama también lo subió, en la integración hay que dejar el número mayor más uno.
+7. **`sw.js`.** Lo había subido a v116. La principal lo dejó en v121 al integrar, y desde entonces esta rama no lo sube.
 
 ## Pedidos para la integración
 
