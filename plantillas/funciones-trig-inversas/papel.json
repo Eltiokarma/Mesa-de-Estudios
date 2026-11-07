@@ -1,0 +1,120 @@
+{
+  "titulo": "Una sola respuesta: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja la circunferencia o el triángulo cuando te ayude. Tres controles antes de marcar: la respuesta de un arco tiene que estar en su rango (arcsen y arctan, del lado derecho: entre −π/2 y π/2; arccos y arccot, de arriba: entre 0 y π); arcsen y arccos solo reciben números entre −1 y 1; y sen⁻¹k es un ángulo, no 1/sen k.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Calcula E = arcsen(√3/2) + arccos(−√2/2).",
+      "respuesta": "E = 13π/12.",
+      "pasos": [
+        "arcsen(√3/2): el ángulo del lado derecho (entre −π/2 y π/2) cuyo seno es √3/2. Es π/3.",
+        "arccos(−√2/2): el ángulo de arriba (entre 0 y π) cuyo coseno es −√2/2. Con arccos(−k) = π − arccos k: π − π/4 = 3π/4. No es −π/4: arccos nunca da negativos.",
+        "E = π/3 + 3π/4 = 4π/12 + 9π/12 = 13π/12."
+      ],
+      "verificar": [ { "fn": "arco", "args": [{ "fn": "sen", "k": "√3/2" }], "espera": { "texto": "π/3" } },
+                     { "fn": "arco", "args": [{ "fn": "cos", "k": "-√2/2" }], "espera": { "texto": "3π/4", "errores.negativo.texto": "−π/4" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Calcula M = arctan(−√3) − arccot(−√3).",
+      "respuesta": "M = −7π/6.",
+      "pasos": [
+        "arctan es impar: arctan(−√3) = −arctan √3 = −π/3, que está en ⟨−π/2; π/2⟩.",
+        "arccot(−√3) = π − arccot √3 = π − π/6 = 5π/6, que está en ⟨0; π⟩. No es arctan(−1/√3) = −π/6: esa regla vale solo con k positivo.",
+        "M = −π/3 − 5π/6 = −2π/6 − 5π/6 = −7π/6."
+      ],
+      "verificar": [ { "fn": "arco", "args": [{ "fn": "tan", "k": "-√3" }], "espera": { "texto": "−π/3" } },
+                     { "fn": "arco", "args": [{ "fn": "cot", "k": "-√3" }], "espera": { "texto": "5π/6", "errores.arctanInverso.texto": "−π/6" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Calcula arcsen(sen 240°) y arccos(cos 220°).",
+      "respuesta": "arcsen(sen 240°) = −60° y arccos(cos 220°) = 140°.",
+      "pasos": [
+        "sen 240° = −sen 60° = −√3/2 (tercer cuadrante, seno negativo). El ángulo del lado derecho con ese seno es −60°: arcsen(sen 240°) = −60°, no 240°, que está fuera de [−90°; 90°].",
+        "cos 220° = cos(360° − 220°) = cos 140°, y 140° sí está en [0°; 180°]: arccos(cos 220°) = 140°.",
+        "Control: los dos resultados están en el rango y tienen la misma razón que el ángulo de partida."
+      ],
+      "verificar": [ { "fn": "arcoDe", "args": [{ "fn": "sen", "grados": 240 }], "espera": { "texto": "−60°", "errores.siempre.texto": "240°" } },
+                     { "fn": "arcoDe", "args": [{ "fn": "cos", "grados": 220 }], "espera": { "texto": "140°" } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Si θ = arccos(−5/13), calcula sen θ y tan θ.",
+      "respuesta": "sen θ = 12/13 y tan θ = −12/5.",
+      "pasos": [
+        "θ está entre 0 y π y su coseno es negativo: θ está en el segundo cuadrante, donde el seno es positivo.",
+        "Triángulo de hipotenusa 13 y cateto 5: el otro cateto es √(169 − 25) = √144 = 12. Así, sen θ = 12/13 (positivo, no −12/13).",
+        "tan θ = sen θ / cos θ = (12/13)/(−5/13) = −12/5."
+      ],
+      "verificar": [ { "fn": "compuesta", "args": [{ "ext": "sen", "inv": "cos", "k": "-5/13" }], "espera": { "texto": "12/13", "errores.signoDeK.texto": "−12/13" } },
+                     { "fn": "compuesta", "args": [{ "ext": "tan", "inv": "cos", "k": "-5/13" }], "espera": { "texto": "−12/5" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Calcula tan(arcsen(1/3)).",
+      "respuesta": "√2/4.",
+      "pasos": [
+        "Sea θ = arcsen(1/3): θ es agudo y sen θ = 1/3. Triángulo de cateto opuesto 1 e hipotenusa 3.",
+        "Cateto adyacente: √(9 − 1) = √8 = 2√2.",
+        "tan θ = 1/(2√2) = √2/4 (racionalizado). No es 1/3: tan y sen no se cancelan."
+      ],
+      "verificar": [ { "fn": "compuesta", "args": [{ "ext": "tan", "inv": "sen", "k": "1/3" }], "espera": { "texto": "√2/4", "enteros.ady": "2√2", "errores.cancela.texto": "1/3" } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Halla el dominio de f(x) = arccos(3x + 2).",
+      "respuesta": "[−1; −1/3].",
+      "pasos": [
+        "arccos solo recibe números entre −1 y 1: −1 ≤ 3x + 2 ≤ 1.",
+        "Se resta 2 en los tres lados: −3 ≤ 3x ≤ −1.",
+        "Se divide entre 3 (positivo, no cambia el sentido): −1 ≤ x ≤ −1/3. El dominio es [−1; −1/3], no [−1; 1]."
+      ],
+      "verificar": [ { "fn": "dominio", "args": [{ "fn": "cos", "a": "3", "b": "2" }], "espera": { "texto": "[−1; −1/3]", "errores.copia.texto": "[−1; 1]" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "¿Cuánto vale arctan 2 + arctan 3?",
+      "respuesta": "3π/4.",
+      "pasos": [
+        "Con la fórmula de la tangente de una suma: (2 + 3)/(1 − 2 · 3) = 5/(−5) = −1.",
+        "Pero 2 · 3 = 6 > 1: cada arco pasa de π/4, la suma pasa de π/2 y no puede ser arctan(−1) = −π/4. Hay que sumar π: −π/4 + π = 3π/4.",
+        "Control en la cuadrícula: (1; 2) girado por (1; 3) da (1 · 1 − 2 · 3; 2 · 1 + 1 · 3) = (−5; 5), que apunta a 135° = 3π/4."
+      ],
+      "verificar": [ { "fn": "sumaTan", "args": [{ "a": "2", "b": "3" }], "espera": { "texto": "3π/4", "direccion": [-5, 5], "errores.sinCorreccion.texto": "−π/4" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Con la convención de academia (arcsen(4/5) = 53° y arctan(3/4) = 37°), calcula arcsen(4/5) + arctan(3/4). ¿Es exacto el resultado sin la convención?",
+      "respuesta": "90°, y sí es exacto: los dos ángulos son los agudos del triángulo 3-4-5.",
+      "pasos": [
+        "Con la convención: 53° + 37° = 90°.",
+        "De verdad, arcsen(4/5) ≈ 53,13° y arctan(3/4) ≈ 36,87°: no son 53° ni 37°, pero son los dos ángulos agudos del mismo triángulo de lados 3, 4 y 5 (el de arcsen(4/5) está frente al 4 y el de arctan(3/4) frente al 3).",
+        "Los dos agudos de un triángulo rectángulo suman 90°: la suma es π/2 exacta, con o sin la convención."
+      ],
+      "verificar": [ { "fn": "arco", "args": [{ "fn": "sen", "k": "4/5" }], "espera": { "texto": "53°", "academia": true, "angulo.gradosReal": 53.13010235415598 } },
+                     { "fn": "arco", "args": [{ "fn": "tan", "k": "3/4" }], "espera": { "texto": "37°", "angulo.gradosReal": 36.86989764584402 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "¿Cuántos ángulos de [0; 2π⟩ cumplen sen θ = −√2/2? ¿Alguno es arcsen(−√2/2)?",
+      "respuesta": "Dos: 5π/4 y 7π/4. Ninguno es arcsen(−√2/2) = −π/4, que está fuera de [0; 2π⟩ (7π/4 es −π/4 más una vuelta).",
+      "pasos": [
+        "El seno es negativo en el tercer y en el cuarto cuadrante. Con ángulo de referencia π/4: π + π/4 = 5π/4 y 2π − π/4 = 7π/4.",
+        "arcsen(−√2/2) es el único ángulo de [−π/2; π/2] con ese seno: −π/4. No está entre 0 y 2π.",
+        "Cuidado: 7π/4 y −π/4 son el mismo lado terminal, pero arcsen devuelve el del rango, −π/4."
+      ],
+      "verificar": [ { "fn": "cortes", "args": [{ "fn": "sen", "k": "-√2/2", "desde": 0, "hasta": 360 }], "espera": { "cuantos": 2, "texto": "5π/4 y 7π/4" } },
+                     { "fn": "arco", "args": [{ "fn": "sen", "k": "-√2/2" }], "espera": { "texto": "−π/4", "errores.vueltaPositiva.texto": "7π/4" } } ]
+    }
+  ]
+}
