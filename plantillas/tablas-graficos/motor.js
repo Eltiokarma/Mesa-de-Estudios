@@ -113,9 +113,9 @@
  *   CLAVES                      la lista ['solo-I', 'solo-II', 'juntas', 'cada-una', 'faltan'] (las alternativas A a E
  *                               del formato de admisión, en ese orden).
  *
- * Respaldos (docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md): baseFinal es AR3 (el porcentaje sobre la
- * base equivocada; parcial: Jacobs Danan y Gelman, 2018, sin cifra propia); porcentajeComoCantidad y responder el
- * cambio en vez del porcentaje se parecen a AR5 (hipótesis). Leer las alturas dibujadas con el eje truncado, el tramo
+ * Respaldos (docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md): baseFinal es hipótesis, ligada a AR3 (el
+ * porcentaje sobre la base equivocada, sin cifra propia); porcentajeComoCantidad y responder el cambio en vez del
+ * porcentaje se parecen a AR5 (hipótesis). Leer las alturas dibujadas con el eje truncado, el tramo
  * más empinado, el punto más alto, el pictograma, la vuelta de 100, el porcentaje del porcentaje, los errores de la
  * tabla deportiva y los de suficiencia de datos son hipótesis nuestras.
  */
