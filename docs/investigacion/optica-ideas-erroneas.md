@@ -54,7 +54,7 @@ Para lo cuantitativo, que es lo que más pregunta la admisión, la búsqueda no 
 
 | Opción | Error que representa | Respaldo |
 | --- | --- | --- |
-| a) Entre la lente y F′ | Confunde "objeto lejano" con "rayos paralelos": todo se junta en el foco (cercana a E8) | Parcial |
+| a) Entre la lente y F′ | Confunde "objeto lejano" con "rayos paralelos": todo se junta en el foco (cercana a E8) | Hipótesis: solo cercana a E8, sin dato propio (desde el 7 nov 2026, igual que en el código) |
 | b) Entre F′ y 2F′ | Correcta | — |
 | c) Más allá de 2F′ | Regla de movimiento invertida, o imagen "espejo" a la misma distancia | Distractor propuesto por Wörner y otros, no documentado |
 | d) Del mismo lado que el objeto | Confusión real–virtual | No documentado (Wörner y otros lo proponen al revés) |

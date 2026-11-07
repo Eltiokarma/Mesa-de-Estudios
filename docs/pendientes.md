@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 3971 pruebas.
+Deben pasar 3975 pruebas.
 
 ```bash
 npm run dev
@@ -120,8 +120,8 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 - **Equilibrio químico** (`plantillas/equilibrio-quimico/`, rutina de química, 6 nov 2026): A ⇌ B y 2 X ⇌ Y con partículas, Q contra K en vez de la regla de Le Chatelier (Quílez 2017); 18 casos verificados aparte; 9 de papel. Hecho (7 nov, 0.2.0): gas inerte en caja rígida y con émbolo libre, y Kp con Δn (experimentos 6 a 8; casos 18 a 23 verificados aparte). Por revisar: los experimentos antiguos marcan EQ14 y Tagle Barrios como «documentado». ΔH y Ea de la escena elegidos para números redondos.
 
 - **Banco Óptico:**
-  - Pasar la tipografía a la misma de la app (hoy carga Google Fonts, que sin conexión cae a la del sistema).
-  - Revisar a 1366 × 768.
+  - Hecho (7 nov, 0.3.0): pinch-zoom y nucleo/celular.js, chips al 8 %, A y los rayos con color propio (paleta de espejos), pasos bloqueados anunciados, retroalimentación por opción, opciones emparejadas, decimales con coma, sin desbordes a 390 px, casos en fn/args/espera (9 casos) y p8 con datos propios.
+  - Por confirmar en el PDF de John, Molepo y Chirwa (2017): qué mitad de la lente se tapó. Si fue la de abajo, el «46 de 70 dijeron mitad de arriba» no corresponde al error E1 de la escena.
 - **Espejos:**
   - Hecho (7 nov, 0.2.0): el doblez (paso 7 y experimento 5), casos en fn/args/espera, retroalimentación por opción, pinch-zoom y siete respaldos a parcial.
   - El 30 % de S1 no se cita al alumno hasta confirmarlo en el artículo original.

@@ -5308,7 +5308,7 @@
    "titulo": "Banco Óptico",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.2.0",
+   "version": "0.3.0",
    "unidades": [
     "fisica.optica-geometrica"
    ],
