@@ -1,0 +1,123 @@
+{
+  "titulo": "La lámpara y la placa: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa hc = 1240 eV·nm, o h = 6,6 × 10⁻³⁴ J·s y c = 3 × 10⁸ m/s; e = 1,6 × 10⁻¹⁹ C y 1 eV = 1,6 × 10⁻¹⁹ J. Fotón: E = h·f = hc/λ. Efecto fotoeléctrico: Kmax = E − φ, e·V₀ = Kmax, λ₀ = hc/φ, f₀ = φ/h. Fotones por segundo: N = P/E. Hidrógeno: En = −13,6/n² eV. Rayos X: λmin = hc/(e·V). Wien: λmax·T = 2,9 × 10⁻³ m·K. Incertidumbre: Δx·Δp ≥ h/(4π).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una lámpara ultravioleta emite luz de 300 nm. Con h = 6,6 × 10⁻³⁴ J·s, c = 3 × 10⁸ m/s y e = 1,6 × 10⁻¹⁹ C, ¿cuál es la frecuencia de esa luz y cuánta energía trae cada fotón, en joules y en electronvoltios?",
+      "respuesta": "f = 10¹⁵ Hz; E = 6,6 × 10⁻¹⁹ J = 4,125 eV.",
+      "pasos": [
+        "f = c/λ = 3 × 10⁸ / (300 × 10⁻⁹) = 10¹⁵ Hz.",
+        "E = h·f = 6,6 × 10⁻³⁴ · 10¹⁵ = 6,6 × 10⁻¹⁹ J.",
+        "En eV se divide entre 1,6 × 10⁻¹⁹: 6,6/1,6 = 4,125 eV (33/8 eV)."
+      ],
+      "verificar": [ { "fn": "foton", "args": [300, "SI"], "espera": { "f": 1e15, "EJ": 6.6e-19, "E": 4.125 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Con hc = 1240 eV·nm, ¿cuánta energía trae un fotón de luz roja de 620 nm? ¿Y uno de luz ultravioleta de 248 nm? ¿Cuál trae más?",
+      "respuesta": "Rojo: 2 eV; ultravioleta: 5 eV. Trae más el de menor longitud de onda.",
+      "pasos": [
+        "E = hc/λ = 1240/620 = 2 eV.",
+        "E = 1240/248 = 5 eV.",
+        "La energía del fotón es inversa a λ: el fotón de 248 nm trae 2,5 veces más."
+      ],
+      "verificar": [ { "fn": "foton", "args": [620], "espera": { "E": 2 } }, { "fn": "foton", "args": [248], "espera": { "E": 5 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Sobre una placa de sodio (función trabajo de unos 2,3 eV) llega luz de 248 nm. Con hc = 1240 eV·nm, ¿cuál es la energía cinética máxima de los electrones que salen y cuál es el potencial de frenado?",
+      "respuesta": "Kmax = 2,7 eV; V₀ = 2,7 V.",
+      "pasos": [
+        "Energía de cada fotón: E = 1240/248 = 5 eV.",
+        "Kmax = E − φ = 5 − 2,3 = 2,7 eV.",
+        "Para frenarlos, e·V₀ = Kmax: V₀ = 2,7 V."
+      ],
+      "verificar": [ { "fn": "fotoelectrico", "args": [248, 2.3], "espera": { "E": 5, "Kmax": 2.7, "V0": 2.7, "emite": true } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un metal tiene una función trabajo de 3,1 eV. Con hc = 1240 eV·nm, ¿cuál es su longitud de onda umbral? Si se ilumina con una luz azul de 450 nm muy intensa, ¿salen electrones?",
+      "respuesta": "λ₀ = 400 nm. Con 450 nm no sale ninguno, por intensa que sea la luz.",
+      "pasos": [
+        "En el umbral, el fotón trae justo φ: λ₀ = hc/φ = 1240/3,1 = 400 nm.",
+        "La luz de 450 nm tiene λ mayor que λ₀: cada fotón trae 1240/450 ≈ 2,76 eV, menos que 3,1 eV.",
+        "Más intensidad significa más fotones, pero cada uno sigue sin alcanzar: no sale ningún electrón."
+      ],
+      "verificar": [ { "fn": "fotoelectrico", "args": [450, 3.1], "espera": { "lambda0": 400, "emite": false, "Kmax": 0 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un puntero láser verde de 496 nm emite una potencia de 5 mW. Con hc = 1240 eV·nm y 1 eV = 1,6 × 10⁻¹⁹ J, ¿cuántos fotones emite por segundo?",
+      "respuesta": "1,25 × 10¹⁶ fotones por segundo.",
+      "pasos": [
+        "Energía de cada fotón: E = 1240/496 = 2,5 eV = 2,5 · 1,6 × 10⁻¹⁹ = 4 × 10⁻¹⁹ J.",
+        "La potencia es la energía por segundo: P = 5 × 10⁻³ J/s.",
+        "N = P/E = 5 × 10⁻³ / (4 × 10⁻¹⁹) = 1,25 × 10¹⁶ fotones por segundo."
+      ],
+      "verificar": [ { "fn": "fotonesPorSegundo", "args": [0.005, 496], "espera": { "E": 2.5, "EJ": 4e-19, "N": 1.25e16 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "En un experimento con un metal, la energía cinética máxima de los electrones es 0,8 eV con luz de 8 × 10¹⁴ Hz y 2,4 eV con luz de 1,2 × 10¹⁵ Hz. A partir de la gráfica Kmax contra f, ¿cuánto valen la constante de Planck (en eV·s), la función trabajo y la frecuencia umbral?",
+      "respuesta": "h = 4 × 10⁻¹⁵ eV·s; φ = 2,4 eV; f₀ = 6 × 10¹⁴ Hz.",
+      "pasos": [
+        "La gráfica es una recta Kmax = h·f − φ; su pendiente es h = (2,4 − 0,8)/(1,2 × 10¹⁵ − 8 × 10¹⁴) = 1,6/(4 × 10¹⁴) = 4 × 10⁻¹⁵ eV·s.",
+        "φ = h·f − Kmax = 4 × 10⁻¹⁵ · 8 × 10¹⁴ − 0,8 = 3,2 − 0,8 = 2,4 eV.",
+        "La recta corta el eje de f donde Kmax = 0: f₀ = φ/h = 2,4/(4 × 10⁻¹⁵) = 6 × 10¹⁴ Hz. Por debajo de f₀ no sale ningún electrón."
+      ],
+      "verificar": [ { "fn": "rectaKf", "args": [8e14, 0.8, 1.2e15, 2.4], "espera": { "h": 4e-15, "phi": 2.4, "f0": 6e14 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "En el modelo de Bohr del hidrógeno, el electrón pasa del nivel n = 4 al nivel n = 2. Con hc = 1240 eV·nm, ¿qué energía tiene el fotón emitido, qué longitud de onda y de qué color se ve?",
+      "respuesta": "2,55 eV; unos 486 nm; azul.",
+      "pasos": [
+        "E4 = −13,6/16 = −0,85 eV y E2 = −13,6/4 = −3,4 eV.",
+        "El fotón se lleva la diferencia: ΔE = −0,85 − (−3,4) = 2,55 eV.",
+        "λ = 1240/2,55 ≈ 486 nm: luz azul visible, de la serie de Balmer."
+      ],
+      "verificar": [ { "fn": "transicion", "args": [4, 2], "espera": { "E": 2.55, "lambda": 486.274509804, "color": "azul", "serie": "Balmer" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "Un equipo de rayos X dental acelera los electrones con 25 kV. Con hc = 1240 eV·nm, ¿cuál es la longitud de onda más corta de los rayos X que produce?",
+      "respuesta": "λmin = 0,0496 nm (unos 5 × 10⁻¹¹ m).",
+      "pasos": [
+        "Cada electrón llega al blanco con una energía e·V = 25 000 eV.",
+        "El fotón más energético se lleva toda esa energía: λmin = hc/(e·V) = 1240/25 000 = 0,0496 nm."
+      ],
+      "verificar": [ { "fn": "rayosX", "args": [25000], "espera": { "Emax": 25000, "lambdaMin": 0.0496 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "La superficie del Sol está a unos 5800 K. Si se comporta como un cuerpo negro, ¿en qué longitud de onda emite con más intensidad? ¿Y una estrella más fría, de 2900 K?",
+      "respuesta": "Sol: 500 nm (luz visible); estrella de 2900 K: 1000 nm (infrarrojo).",
+      "pasos": [
+        "Ley de Wien: λmax = 2,9 × 10⁻³ / 5800 = 5 × 10⁻⁷ m = 500 nm.",
+        "Con la mitad de temperatura, el doble de λmax: 2,9 × 10⁻³ / 2900 = 10⁻⁶ m = 1000 nm, ya en el infrarrojo."
+      ],
+      "verificar": [ { "fn": "wien", "args": [5800], "espera": { "lambdaMaxNm": 500 } }, { "fn": "wien", "args": [2900], "espera": { "lambdaMaxNm": 1000 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Un electrón está confinado en una región de 10⁻¹⁰ m (el tamaño de un átomo). Con h = 6,6 × 10⁻³⁴ J·s y π ≈ 3,14, ¿cuál es la menor incertidumbre posible en su cantidad de movimiento?",
+      "respuesta": "Δp ≈ 5,3 × 10⁻²⁵ kg·m/s.",
+      "pasos": [
+        "Principio de incertidumbre: Δx·Δp ≥ h/(4π).",
+        "Δp ≥ 6,6 × 10⁻³⁴ / (4 · 3,14 · 10⁻¹⁰) ≈ 5,3 × 10⁻²⁵ kg·m/s."
+      ],
+      "verificar": [ { "fn": "incertidumbre", "args": [1e-10, "SI"], "espera": { "dpMin": 5.25211312203e-25 } } ]
+    }
+  ]
+}

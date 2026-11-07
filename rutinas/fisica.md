@@ -8,9 +8,225 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa; la siguiente ejecución espera un orden nuevo de Gerson.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico y energía (hechas, abajo), calorimetría y circuitos (en curso), calorimetría, circuitos y espejos.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Tiro parabólico 0.2.0: ruedas, pared y encuentros (`plantillas/tiro-parabolico/`)
+
+Es el punto 2 de la lista nueva.
+
+**Qué hay de nuevo.**
+
+- **Tres pestañas:**
+  - «Paso a paso», igual que antes.
+  - «¿Qué pasa si…?»: los 4 de tiro, más «La pared» (altura del impacto) y «El golpe» (rapidez del impacto).
+  - «Ruedas» (`#ruedas`), nueva: la rotonda y la honda (se mudaron con sus mismos ids), más la cadena (faja), la rueda de atrás (mismo eje), el frenado (MCUV) y la pista (encuentros, con un arco grueso que muestra lo que falta cerrar).
+  - El explorador tiene una pared opcional que se arrastra.
+- **Motor:**
+  - Nuevas: `impactoPared`, `mcuvDatos` (tres de ω0, ω, α, t, θ) y `encuentroPista` (alcance y cruce, ventaja inicial y n-ésimo encuentro).
+  - `mcuv` gana `frena: true`, sin retroceso.
+  - `transmision` acepta engranaje, faja cruzada, sentido y la entrada por v1, f1 o rpm1.
+  - Los 17 casos de antes siguen tal cual.
+- **Casos y pruebas:** 37 casos (20 nuevos, N1 a N20) y 70 pruebas.
+- **Papel:** p2, p8 y p10 son ahora la pared, la pista y la rueda que frena. El revisor cambió sus números para que no repitan los de la escena.
+- **6 predicciones nuevas.** Solo 3 de los 18 distractores llegan a parcial: la suma de módulos (Flores-García 2009) y dos de G4 (Beichner 1994). Los demás son hipótesis, porque no hay estudios con cifra de transmisión, MCUV ni encuentros.
+- **Notación:** f (vueltas/s) y ω (rad/s), las dos en turquesa; f = ω/2π.
+- **Lo que se arregló de lo publicado:**
+  - C2, K3, D9, «queda atrás» y P3-cae-en-picada pasan a parcial.
+  - Las 9 correctas que iban sin razón ya la llevan.
+  - Toda la escena usa `nucleo/celular.js`.
+  - El verde de a pasa a #466d14 y los chips van al 8 %.
+
+**Verificador independiente.** Recalculó N1 a N20 por otros caminos:
+- la pared con y(x) y su pendiente;
+- el MCUV con el área bajo f(t);
+- las ruedas contando vueltas por perímetro y dientes;
+- la pista con rapidez relativa.
+
+Todo coincide. Pidió aclarar `vueltasEje`, que ahora es |f0|, lo que se lee en el eje al empezar.
+
+**Revisor de contenido.** No encontró nada grave.
+- **Lo medio:**
+  - el papel repetía los números de la escena;
+  - en «Frena la rueda», el pie decía que ac siempre supera a at (al final se hace cero);
+  - una fuente le atribuía a Beichner algo que el informe no dice;
+  - el rótulo de la respuesta se encimaba en «La pared»;
+  - ω iba en vueltas/s;
+  - P3 subía de más.
+- **Lo bajo:**
+  - código y fuente de «El golpe»; la azotea pasó a 50 m para que 25 m de altura y 25 m/s no coincidan;
+  - la cadena giraba al revés, como pedaleando hacia atrás;
+  - rótulos y redondeos de la pista;
+  - el botón de «La rueda de atrás»;
+  - el mensaje «cae justo al pie».
+
+**Colores** (para `docs/diseno.md`):
+- **at nueva:** #4a3b00 en claro y #ffde0a en oscuro. Contraste 10,3 y 12,3; ΔE00 mínimo 21,7 y 21,3 (con ac). Va en flechas de 4 px con halo y punta rellena.
+- **a / ac:** #466d14 en claro. diseno.md todavía trae #4f7a17.
+- **Lo demás no cambia:** vx #1f5fbf, vy #c0364a, v #8a2aa8, t #a05200 y ω/f #0f766e (claro).
+
+**Pedidos para la integración.**
+1. `npm run catalogo` (versión 0.2.0).
+2. En `docs/diseno.md`: at y el verde nuevo de a.
+3. Pendientes: corregir la línea de tiro parabólico. Decía que encuentros y pared ya estaban en el motor y en el papel, pero no estaban; ahora sí.
+
+## 7 nov 2026 · Energía 0.2.0: fuerza variable (`plantillas/energia/`)
+
+Este es el punto 3 de la lista nueva.
+
+**Qué hay de nuevo.**
+
+- **Modo «Fuerza variable»** (`#fuerza-variable`): 9 pasos y 4 predicciones que bloquean el avance. Al final hay un explorador con una gráfica F–x de 5 puntos, en x = 0 a 8 m y F de −40 a 40 N, en pasos de 5 N.
+  - Los puntos se arrastran con Celular.arrastre (radio de 40 px) o con el teclado.
+  - El área positiva va rellena y la negativa rayada. La barra de Ec muestra W neto = ΔEc.
+  - Si el carrito se detiene, el área se pinta solo hasta ahí, y se lee «W hasta detenerse = −Ec0».
+  - Antes de responder no se pinta ningún área: se ve «W = ?» y barras con «?».
+- **Predicciones:**
+  - El área de un trapecio (100 J). Los distractores G4 son parciales (Beichner).
+  - Dos carritos de 2 y 8 kg con la misma fuerza: misma Ec. W6 es documentado (Singh y Rosengrant 2003, ítem 24).
+  - El trabajo negativo resta (24 J).
+  - El área del resorte de 0,1 a 0,3 m (24 J, no 36).
+- **Motor:**
+  - Funciones nuevas: validarGrafica, fuerzaEn, areaPartes, trabajoHasta, fuerzaVariable, recorridoFuerza (tiempo en forma cerrada por tramo) y resorteArea.
+  - **Se corrigieron 3 errores de trabajoArea** que ningún caso pisaba:
+    - límites al revés (daba −10 donde va −15);
+    - fuera de la gráfica: ahora se rechaza con un mensaje;
+    - salto vertical (daba 60 J donde van 80 J).
+  - Ningún resultado de antes cambió.
+- **Casos y pruebas:** 36 casos (19 nuevos) y 71 pruebas, entre ellas Simpson en 200 gráficas al azar, RK4 y el teorema trabajo-energía punto a punto.
+- **Papel:**
+  - p5 corregido: partía del reposo con F = 0 y nunca arrancaba.
+  - p2, p3 y p6 se reemplazaron por p12, p11 y p13.
+  - Quedan 10, ordenados por dificultad.
+- **Lo que se arregló de lo publicado:**
+  - Los pasos bloqueados se leen «Paso N, bloqueado».
+  - W9 pasó a parcial.
+  - El «20 J» del paso 2 va en el color de Ep.
+  - Las leyendas de Ec y Ee ya no salen partidas.
+  - Los chips van al 8 %.
+
+**Verificador independiente.** Recalculó los casos 17 a 35:
+- las áreas con fracciones exactas;
+- los tiempos en forma cerrada (cosh/asinh), contrastados con RK4.
+
+Todos coinciden. Aclaró dos lecturas, y en las dos tenía razón casos.json: v2 es v², y si el carrito se detiene, W es el trabajo hasta detenerse. Ahora las dos están escritas en la cabecera.
+
+**Revisor de contenido.** No encontró nada grave.
+- **Lo medio:**
+  - El explorador decía «W neto = 20 J» con un carrito que se detenía (lo de arriba).
+  - W9 subía de más.
+  - La línea de F media no tenía rótulo.
+- **Lo bajo:**
+  - las opciones de P2 parejas (sin «porque»);
+  - el caso en que el carrito llega justo a F = 0;
+  - la leyenda;
+  - la flecha de v en el borde;
+  - rótulos encimados;
+  - el rectángulo del paso 2;
+  - la barra antes de soltar;
+  - el orden del papel;
+  - 2 px de desborde en los deslizadores.
+
+**Colores** (para `docs/diseno.md`):
+
+F no pudo quedarse igual. Con el celeste de Ec ningún azul llegaba a ΔE00 ≥ 20, así que también se movió Ec en claro.
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| F | #0039a3 | #99b6ff |
+| x | #097163 | #52e0c9 |
+| Ec | #1c719c | #2fc8ee |
+| k | #9500eb | #e9adff |
+| Ee | #850068 | #fb1fff |
+| m | #ad4500 | igual |
+| Ep | #030099 | #7a8aff |
+| h | #466d14 | igual |
+
+- En el modo nuevo, el ΔE00 mínimo es 20,1 en claro y 20,4 en oscuro. AA mínimo: 4,52.
+- m sobre el papel pasó de 4,39 a 5,44.
+- Siguen bajo 20, y ya estaban así: m–roce en los modos 1 y 2 (12,8 y 10,5) y v–P en el modo 2 (13,3 y 12,4). Hace falta un ajuste aparte.
+- F–Ep queda en 12,2, pero nunca salen en el mismo modo.
+
+**Arreglo de color posterior (7 nov 2026).** Lo pidió la conversación principal. m–roce y v–P salían juntos con ΔE00 de 10,5 a 13,3, lo que rompía la regla 4. Se movieron solo el roce y P, porque m y v comparten color con otras escenas:
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| f (roce) | #8f5800 → #3d2e00 | #ffc04d → #ffdc14 |
+| P (potencia) | #b3246b → #520000 | #ff86bd → #7af2ff |
+
+- Ahora ningún par que sale junto queda bajo 20:
+  - modo 1: 20,1 en claro y 20,5 en oscuro (Ee–k);
+  - modo 2: 21,0 en claro (v–m) y 21,5 en oscuro (f–h).
+- Contra la tinta: f 33,8 y P 25,5 en claro; f 37,8 y P 32,1 en oscuro (medido por la conversación principal).
+- AA mínimo: 9,4.
+- Los dos cambian de tono entre modos:
+  - el roce es café muy oscuro en claro y amarillo en oscuro;
+  - P es granate en claro y celeste en oscuro, como Dc en interés.
+
+**Pedidos para la integración.**
+1. `npm run catalogo` (versión 0.2.0).
+2. En `docs/diseno.md`: la tabla de colores de energía, con estos f y P nuevos. Además, cambiar «roce y calor ámbar» y «potencia P magenta».
+
+## 7 nov 2026 · Dinámica 0.2.0: varios cuerpos y movimiento circular (`plantillas/dinamica/`)
+
+Primer punto de la lista nueva de Gerson (huecos de escenas ya hechas). Se hizo después del commit de rendimiento (e11c420) y respeta Celular.dpr, Celular.variable y Celular.bucle.
+
+**Qué hay de nuevo.**
+
+- **Tres pestañas, como el Banco Óptico:**
+  - «Paso a paso» no cambia.
+  - «¿Qué pasa si…?» trae los experimentos de un cuerpo: saco quieto, ascensor, empujón, tirón, el columpio y la loma (estos dos son nuevos y son dinámica circular).
+  - «Varios cuerpos» es nueva. Tiene Atwood y las dos cajas, que se mudaron con sus mismos ids de medición, más el tren de carritos, el bloque sobre otro y la polea móvil.
+  - Cada pestaña bloquea sus experimentos en orden.
+- **Motor:** solo se sumaron funciones (`vertical`, `loma`, `curva`, `tren`, `apilados` y `poleaMovil`), cada una con `errores`. Los 21 casos de antes siguen tal cual.
+- **Casos:** ahora son 33. Los 10 nuevos se verificaron aparte, y la conversación principal recalculó los 2 de apilados con roce en el piso.
+- **Pruebas:** 66 en verde.
+- **Papel:** p3, p5 y p10 se reemplazaron por el carrito con la caja, la polea móvil y el balde en un círculo vertical.
+- **5 predicciones nuevas:**
+  - el columpio (cuántas fuerzas actúan; centrífuga D9 y «fuerza del movimiento» D1, ambas parciales);
+  - la loma (N = 6000 N);
+  - el tren (T₂ = 10 N);
+  - el bloque sobre otro (van juntos, con 6 N de roce y no 8);
+  - la polea móvil (la mitad de rápido).
+  
+  Los demás distractores son hipótesis.
+- **Lo que se arregló de lo publicado:**
+  - las predicciones viejas quedaron parejas;
+  - D8, D11 y D10 pasaron a parcial;
+  - los pasos bloqueados se leen «Paso N, bloqueado»;
+  - los tres modos usan nucleo/celular.js;
+  - al cambiar de pestaña, la animación salta a su final.
+
+**Verificador independiente.** Recalculó los casos 21 a 30 por caminos distintos:
+- ejes a lo largo de la pendiente en la curva;
+- la tensión como lo que arrastran los carritos de atrás;
+- en la polea móvil, una sola coordenada con masa efectiva m2 + m1/4;
+- en apilados, primero el sistema y después el bloque de arriba.
+
+Hizo unas 95 comprobaciones y no encontró discrepancias. Dedujo por su cuenta el Fmax de apilados con roce en el piso y confirmó la corrección del constructor al diseño: (fsA·M − mA·μPiso·M·g)/mB, o fsA si el piso aguanta más.
+
+**Revisor de contenido.**
+- **Lo grave:** a 390 px la página medía 448 de ancho, porque las tres pestañas no cabían. Ahora hacen salto de línea. Se medía mal porque innerWidth también daba 448; hay que medir con scrollWidth.
+- **Lo medio:**
+  - el asa de la rampa se alejaba del puntero por debajo de 30°;
+  - las palabras de color no pasaban AA en claro (ahora el fondo va al 8 %, y al 4 % en N);
+  - el respaldo de D10 subía de más;
+  - el rótulo tapaba el auto de la loma.
+- **Lo bajo:** p5 define a₁ y a₂, el rótulo del roce entre bloques, la flecha T del columpio, la amplitud del vaivén y el vacío en el tren.
+
+**Colores** (para `docs/diseno.md`):
+- **T₂ nuevo:** #5a1f08 en claro y #f57a1f en oscuro.
+  - Contraste: 12,1 en claro y 6,0 en oscuro.
+  - ΔE00 mínimo: 22,6 y 21,5, los dos con f.
+  - Cambia de tono entre modos (tostado y naranja), como Dc en interés.
+- **a₁ y a₂:** van en el turquesa de a, con el rótulo pegado a su cuerpo. Es la misma magnitud con dos valores (decisión aprobada).
+
+**Pedidos para la integración.**
+1. `npm run catalogo`: cambió el título y la versión es 0.2.0.
+2. En `docs/diseno.md`: T₂, la regla de a₁ y a₂ y el fondo de los chips de dinámica al 8 % (N al 4 %).
+3. Actualizar la línea de dinámica en pendientes: falta el péndulo en un vagón y la fuerza horizontal sobre el plano.
+4. Las pestañas de las otras escenas con tres modos pueden tener el mismo desborde: medir con scrollWidth.
 
 ## 7 nov 2026 · Gravitación universal y satélites (`plantillas/gravitacion/`)
 

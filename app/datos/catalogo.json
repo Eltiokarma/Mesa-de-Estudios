@@ -602,7 +602,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "fisica-moderna"
+     ]
     }
    ]
   },
@@ -1124,7 +1126,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "funciones-organicas"
+     ]
     },
     {
      "id": "quimica.biomoleculas-y-productos-naturales",
@@ -1959,7 +1963,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "mezclas"
+     ]
     },
     {
      "id": "aritmetica.estadistica",
@@ -2973,7 +2979,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "geometria-analitica"
+     ]
     },
     {
      "id": "trigonometria.angulos-en-posicion-normal",
@@ -4359,7 +4367,7 @@
    "titulo": "Redox y celda galvánica: electrones por el alambre, iones por el puente",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.electroquimica"
    ],
@@ -4393,7 +4401,7 @@
    "titulo": "Cinética química",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.cinetica-quimica"
    ],
@@ -4534,10 +4542,10 @@
   },
   "dinamica": {
    "id": "dinamica",
-   "titulo": "Dinámica: fuerzas, plano inclinado y poleas",
+   "titulo": "Dinámica: fuerzas, plano inclinado, poleas y movimiento circular",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.dinamica"
    ],
@@ -4589,7 +4597,7 @@
    "titulo": "Trabajo y energía",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.trabajo-y-energia"
    ],
@@ -4623,7 +4631,7 @@
    "titulo": "Equilibrio químico",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.equilibrio-quimico"
    ],
@@ -4685,6 +4693,23 @@
     "/plantillas/exponenciales-logaritmos/papel.json"
    ]
   },
+  "fisica-moderna": {
+   "id": "fisica-moderna",
+   "titulo": "La lámpara y la placa: fotones y efecto fotoeléctrico",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.fisica-moderna"
+   ],
+   "url": "/plantillas/fisica-moderna/index.html",
+   "papel": "/plantillas/fisica-moderna/papel.json",
+   "archivos": [
+    "/plantillas/fisica-moderna/index.html",
+    "/plantillas/fisica-moderna/motor.js",
+    "/plantillas/fisica-moderna/papel.json"
+   ]
+  },
   "fluidos": {
    "id": "fluidos",
    "titulo": "Fluidos: presión, Pascal y Arquímedes",
@@ -4719,6 +4744,23 @@
     "/plantillas/fracciones/index.html",
     "/plantillas/fracciones/motor.js",
     "/plantillas/fracciones/papel.json"
+   ]
+  },
+  "funciones-organicas": {
+   "id": "funciones-organicas",
+   "titulo": "El grupo que se cambia: funciones orgánicas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.funciones-organicas"
+   ],
+   "url": "/plantillas/funciones-organicas/index.html",
+   "papel": "/plantillas/funciones-organicas/papel.json",
+   "archivos": [
+    "/plantillas/funciones-organicas/index.html",
+    "/plantillas/funciones-organicas/motor.js",
+    "/plantillas/funciones-organicas/papel.json"
    ]
   },
   "funciones-trig-inversas": {
@@ -4762,7 +4804,8 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "geometria.geometria-analitica"
+    "geometria.geometria-analitica",
+    "trigonometria.recta-en-el-plano"
    ],
    "url": "/plantillas/geometria-analitica/index.html",
    "papel": "/plantillas/geometria-analitica/papel.json",
@@ -5026,6 +5069,23 @@
     "/plantillas/maximos-minimos/index.html",
     "/plantillas/maximos-minimos/motor.js",
     "/plantillas/maximos-minimos/papel.json"
+   ]
+  },
+  "mezclas": {
+   "id": "mezclas",
+   "titulo": "La balanza de las mezclas: mezclas y aleaciones",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.mezclas-y-aleaciones"
+   ],
+   "url": "/plantillas/mezclas/index.html",
+   "papel": "/plantillas/mezclas/papel.json",
+   "archivos": [
+    "/plantillas/mezclas/index.html",
+    "/plantillas/mezclas/motor.js",
+    "/plantillas/mezclas/papel.json"
    ]
   },
   "mol-composicion": {
@@ -5367,7 +5427,7 @@
    "titulo": "Soluciones: concentración, dilución y mezcla",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "quimica.soluciones"
    ],
@@ -5437,7 +5497,7 @@
    "titulo": "Tiro parabólico y movimiento circular",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.movimiento-parabolico-y-circular"
    ],

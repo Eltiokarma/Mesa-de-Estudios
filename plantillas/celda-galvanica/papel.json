@@ -1,6 +1,6 @@
 {
   "titulo": "Redox y pilas: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa los potenciales estándar de reducción: Mg²⁺/Mg −2,37 V; Al³⁺/Al −1,66 V; Zn²⁺/Zn −0,76 V; Fe²⁺/Fe −0,44 V; Sn²⁺/Sn −0,14 V; Pb²⁺/Pb −0,13 V; H⁺/H₂ 0 V; Cu²⁺/Cu +0,34 V; Ag⁺/Ag +0,80 V. En una pila, antes de calcular, decide quién se oxida (el de menor potencial: es el ánodo) y quién se reduce (el de mayor potencial: es el cátodo). En la electrólisis manda la fuente, pero el cátodo sigue siendo donde ocurre la reducción. La fem es E°(cátodo) − E°(ánodo) y no se multiplica por los coeficientes. En Faraday, pasa el tiempo a segundos y divide los moles de electrones entre la carga del ion. F = 96 500 C/mol; Cu = 63,5; Ag = 108; Pb = 207.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa los potenciales estándar de reducción: Mg²⁺/Mg −2,37 V; Al³⁺/Al −1,66 V; Zn²⁺/Zn −0,76 V; Fe²⁺/Fe −0,44 V; Sn²⁺/Sn −0,14 V; Pb²⁺/Pb −0,13 V; H⁺/H₂ 0 V; Cu²⁺/Cu +0,34 V; Ag⁺/Ag +0,80 V. En una pila, antes de calcular, decide quién se oxida (el de menor potencial: es el ánodo) y quién se reduce (el de mayor potencial: es el cátodo). En la electrólisis manda la fuente, pero el cátodo sigue siendo donde ocurre la reducción. La fem es E°(cátodo) − E°(ánodo) y no se multiplica por los coeficientes. En Faraday, pasa el tiempo a segundos y divide los moles de electrones entre la carga del ion. F = 96 500 C/mol; Cu = 63,5; Ag = 108; Pb = 207; Na = 23. Volumen molar en condiciones normales: 22,4 L/mol.",
   "problemas": [
     {
       "id": "p1",
@@ -81,17 +81,23 @@
       "verificar": [ { "fn": "celda", "args": [{ "anodo": "Fe", "catodo": "Cu" }], "espera": { "E": 0.78, "espontanea": true, "reaccion.texto": "Fe + Cu²⁺ → Fe²⁺ + Cu" } } ]
     },
     {
-      "id": "p7",
+      "id": "p11",
       "nivel": "intermedio",
-      "enunciado": "Para cobrear una llave se la usa como cátodo en una disolución de Cu²⁺ y se hace pasar una corriente de 2 A durante 16 minutos y 5 segundos. ¿Cuántos gramos de cobre se depositan?",
-      "respuesta": "0,635 g de cobre.",
+      "enunciado": "En el laboratorio del colegio se electroliza agua con un poco de Na₂SO₄ en un voltámetro de Hofmann, con 3 A durante 1 hora, 4 minutos y 20 segundos. ¿Qué gas se junta en cada tubo y cuántos litros, en condiciones normales? Si la misma carga pasara por NaCl fundido, ¿qué saldría en cada electrodo y cuánto?",
+      "respuesta": "Agua: H₂ en el cátodo (−), 1,344 L, y O₂ en el ánodo (+), 0,672 L. NaCl fundido: 2,76 g de sodio en el cátodo y 1,344 L de Cl₂ en el ánodo.",
       "pasos": [
-        "Pasa el tiempo a segundos: 16 · 60 + 5 = 965 s.",
-        "Carga: Q = I · t = 2 · 965 = 1930 C. Moles de electrones: 1930 / 96 500 = 0,02 mol.",
-        "Cada Cu²⁺ necesita 2 electrones: Cu²⁺ + 2 e⁻ → Cu. Moles de Cu = 0,02 / 2 = 0,01 mol.",
-        "Masa = 0,01 · 63,5 = 0,635 g. Si olvidas dividir entre la carga del ion, te sale el doble: 1,27 g."
+        "Tiempo en segundos: 3600 + 4 · 60 + 20 = 3860 s. Carga: Q = 3 · 3860 = 11 580 C. Moles de electrones: 11 580 / 96 500 = 0,12 mol.",
+        "Cátodo (polo −, reducción): 2 H₂O + 2 e⁻ → H₂ + 2 OH⁻. Cada H₂ necesita 2 electrones: 0,12 / 2 = 0,06 mol de H₂, es decir, 0,06 · 22,4 = 1,344 L.",
+        "Ánodo (polo +, oxidación): 2 H₂O → O₂ + 4 H⁺ + 4 e⁻. Cada O₂ suelta 4 electrones: 0,12 / 4 = 0,03 mol de O₂, es decir, 0,672 L. Sale el doble de hidrógeno que de oxígeno, como en la fórmula H₂O. Si divides entre 2 también para el O₂, te salen 1,344 L, como si los dos gases salieran iguales.",
+        "El Na₂SO₄ no se gasta: solo hace que el agua conduzca. Por eso no sale sodio.",
+        "NaCl fundido (sin agua): en el cátodo, Na⁺ + e⁻ → Na: 0,12 mol de Na, es decir, 0,12 · 23 = 2,76 g. En el ánodo, 2 Cl⁻ → Cl₂ + 2 e⁻: 0,06 mol de Cl₂, es decir, 1,344 L.",
+        "Con salmuera concentrada (NaCl disuelto en agua) el ánodo también da Cl₂, pero en el cátodo sale H₂, no sodio: se reduce el agua. En el ánodo compiten el Cl⁻ y el agua: si la salmuera está diluida, sale también O₂, y con muy poca sal, sobre todo O₂."
       ],
-      "verificar": [ { "fn": "faraday", "args": [{ "especie": "Cu", "I": 2, "s": 965 }], "espera": { "Q": 1930, "molE": 0.02, "mol": 0.01, "g": 0.635, "errores.sinCarga": 1.27 } } ]
+      "verificar": [
+        {"fn": "electrolizar", "args": ["agua-sulfato", {"I": 3, "s": 3860}], "espera": {"Q": 11580, "molE": 0.12, "catodo.producto": "H₂", "catodo.L": 1.344, "anodo.producto": "O₂", "anodo.L": 0.672, "errores.oxigenoConDos": 1.344}},
+        {"fn": "electrolizar", "args": ["nacl-fundido", {"I": 3, "s": 3860}], "espera": {"molE": 0.12, "catodo.producto": "Na", "catodo.g": 2.76, "anodo.producto": "Cl₂", "anodo.L": 1.344}},
+        {"fn": "electrolizar", "args": ["nacl-acuoso", {"Q": 11580}], "espera": {"catodo.producto": "H₂", "anodo.producto": "Cl₂"}}
+      ]
     },
     {
       "id": "p8",

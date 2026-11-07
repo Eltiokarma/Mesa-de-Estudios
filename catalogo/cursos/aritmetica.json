@@ -189,8 +189,8 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["mezclas"],
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.estadistica",

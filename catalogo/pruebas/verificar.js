@@ -140,6 +140,83 @@ const V = {
     if (Math.abs(p.Eanodo - d.Eanodo) > 1e-9 || Math.abs(p.Ecatodo - d.Ecatodo) > 1e-9) throw new Error('los potenciales del enunciado no son los del motor');
     return { correcta: p.E, errores: { 'fem-multiplica-coeficientes': p.errores.multiplicaCoeficientes, 'fem-suma-sin-cambiar-signo': p.errores.sumaSinCambiarSigno, 'fem-resta-al-reves': p.errores.restaAlReves } };
   },
+  // qui-11 a qui-17: escenas de química que no tenían ítems (en "reserva" del banco: las formas tienen un tope de 10).
+  'qui-11': d => {
+    // Al revés: de los electrones de un ion a su elemento. Se busca con el motor el Z cuyo ion da esos electrones
+    // y esos neutrones; cada error es el Z cuyo error del motor da los mismos electrones. La clave es el símbolo.
+    const T = motor('atomo-y-tabla'), m = d.ion.match(/^X\^(\d?)([+-])$/), carga = (m[1] ? Number(m[1]) : 1) * (m[2] === '+' ? 1 : -1);
+    const buscar = (que) => {
+      for (let Z = 1; Z <= 36; Z++) {
+        let r; try { r = T.particulas({ Z, A: Z + d.neutrones, carga }); } catch { continue; }
+        if (que(r)) return T.SIMBOLOS[Z];
+      }
+      throw new Error('ningún ion da esas partículas');
+    };
+    return { correcta: buscar(r => r.electrones === d.electrones), errores: {
+      'carga-al-reves': buscar(r => r.errores['suma-carga-a-electrones'] === d.electrones),
+      'ignora-la-carga': buscar(r => r.errores['ignora-la-carga'] === d.electrones) } };
+  },
+  'qui-12': d => {
+    // Al revés: de los electrones de valencia de un ion XOₙ^q al aporte de X. La cuenta usa la valencia del O del
+    // motor, y se comprueba que un elemento del motor con esa valencia da, en el Lewis, los electrones del enunciado.
+    const E = motor('enlace'), m = d.formula.match(/^XO(\d)\^(\d?)([+-])$/), n = Number(m[1]), q = (m[2] ? Number(m[2]) : 1) * (m[3] === '+' ? 1 : -1);
+    const vO = E.elemento('O').valencia;
+    const vX = d.V - n * vO + q;
+    const ok = Object.keys(E.DATOS).some(s => { if (E.elemento(s).valencia !== vX) return false;
+      try { return E.lewis({ central: s, ligandos: Array(n).fill('O'), carga: q }).electrones === d.V; } catch { return false; } });
+    if (!ok) throw new Error('ningún elemento del motor da ese ion');
+    return { correcta: vX, errores: { 'ignora-la-carga': d.V - n * vO, 'carga-al-reves': d.V - n * vO - q } };
+  },
+  'qui-13': d => {
+    // Combustión de un alcohol: O₂ por cada molécula de combustible (coeficientes del motor). Los errores salen del
+    // motor por otros caminos: balancear el combustible sin su O, contar solo los O del CO₂ y dar átomos de O.
+    const B = motor('balance-reacciones'), r = B.balancear(d.ecuacion), ec = B.ecuacion(d.ecuacion);
+    const fs = [...ec.reactivos, ...ec.productos].map(t => t.f), k = f => r.coefs[fs.indexOf(f)];
+    const comb = fs[0], at = B.especie(comb).atomos, oO2 = B.especie('O2').atomos.O;
+    if (!at.O) throw new Error('el combustible debe tener oxígeno');
+    const sinO = Object.entries(at).filter(([e]) => e !== 'O').map(([e, n]) => e + (n === 1 ? '' : n)).join('');
+    const r2 = B.balancear(d.ecuacion.replace(comb, sinO));
+    const porComb = k('O2') / k(comb);
+    return { correcta: porComb, errores: {
+      'olvida-el-O-del-combustible': r2.coefs[1] / r2.coefs[0],
+      'solo-el-O-del-CO2': k('CO2') / k(comb) * B.especie('CO2').atomos.O / oO2,
+      'cuenta-atomos-no-moleculas': porComb * oO2 } };
+  },
+  'qui-14': d => {
+    // Gas recogido sobre agua: moléculas de vapor por cada 100 del gas seco = 100·Pv/(P − Pv) (Dalton). La Pv del
+    // enunciado es la del motor (Antoine) redondeada a 0,1 mmHg; la cuenta usa la del enunciado.
+    const r = motor('liquidos-y-solidos').gasSobreAgua(d.Ptotal, d.T);
+    if (Math.abs(r.Pv - d.Pv) > 0.05) throw new Error(`la presión de vapor del enunciado (${d.Pv}) no es la del motor (${r.Pv})`);
+    const seco = d.Ptotal - d.Pv, mitad = r.errores['reparte-a-medias'];
+    return { correcta: 100 * d.Pv / seco, errores: { 'fraccion-sobre-la-total': 100 * d.Pv / d.Ptotal,
+      'da-la-fraccion-del-otro-gas': 100 * seco / d.Ptotal, 'gas-agua-reparte-a-medias': 100 * mitad / (d.Ptotal - mitad) } };
+  },
+  'qui-15': d => {
+    // Rendimiento con muestra impura. El teórico sale de la parte pura, con los coeficientes del motor de balance y
+    // las masas molares del motor de rendimiento; se comprueba con R.pureza que la parte pura es la del motor.
+    const R = motor('rendimiento-pureza'), Bm = motor('balance-reacciones'), b = Bm.balancear(d.ecuacion), ec = Bm.ecuacion(d.ecuacion);
+    for (const [f, M] of Object.entries(d.masas)) if (R.masaMolar(f) !== M) throw new Error(`la masa molar de ${f} del enunciado no es la del motor`);
+    const fs = [...ec.reactivos, ...ec.productos].map(t => t.f), reactivo = fs[0], kP = fs.indexOf(d.producto);
+    const teo = m => m / R.masaMolar(reactivo) * b.coefs[kP] / b.coefs[0] * R.masaMolar(d.producto);
+    const pura = R.pureza(d.muestra, d.pureza).pura, p = d.pureza / 100;
+    const eta = 100 * d.real / teo(pura), sinP = 100 * d.real / teo(d.muestra);
+    return { correcta: eta, errores: { 'olvida-pureza': sinP, 'multiplica-pureza': sinP * p, 'suma-porcentajes': sinP + 100 - d.pureza } };
+  },
+  'qui-16': d => {
+    // Hidrólisis de un péptido cíclico: n uniones (las n − 1 de la cadena del motor más la que cierra el anillo),
+    // un agua por unión, con la masa del agua del motor. El error de cadena lineal sale de hidrolisis del motor.
+    const B = motor('biomoleculas'), agua = B.masa('H2O'), piezas = Array(d.n).fill('Gly');
+    const lineal = B.hidrolisis(piezas, d.mol * B.peptido(piezas).M).gramosAgua;
+    const uniones = B.enlacesCadena(d.n).enlaces + 1;
+    return { correcta: d.mol * uniones * agua, errores: { 'cuenta-como-cadena-lineal': lineal, 'BMH7-un-agua': d.mol * agua, 'BM9-hidrolisis-sin-agua': 0 } };
+  },
+  'qui-17': d => {
+    // Combustión completa con O₂ de sobra: los productos pesan el combustible más el O₂ que se gasta, no todo el O₂.
+    const Q = motor('quimica-ambiente'), r = Q.balanzaCombustion(d.hc, d.masaComb, d.masaO2, 0, true);
+    if (r.reparto.comb !== 0 || r.reparto.CO !== 0 || r.reparto.C !== 0 || !(r.reparto.O2 > 0)) throw new Error('la combustión debe ser completa y con O₂ de sobra');
+    return { correcta: r.gases, errores: { 'ES15-suma-de-masas': d.masaComb + d.masaO2, 'productos-pesan-lo-del-combustible': d.masaComb,
+      'olvida-el-agua': r.reparto.CO2 * Q.masaMolar({ C: 1, O: 2 }) } };
+  },
 
   // ---------------- Geometría ----------------
   'geo-01': d => { const r = motor('ampliadora').segunMagnitud(d.area, d.k, 'area');

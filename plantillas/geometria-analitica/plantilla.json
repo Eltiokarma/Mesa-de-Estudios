@@ -3,7 +3,8 @@
   "titulo": "El plano con imán: distancia, pendiente y ecuación de la recta",
   "formato": "escena",
   "unidades": [
-    "geometria.geometria-analitica"
+    "geometria.geometria-analitica",
+    "trigonometria.recta-en-el-plano"
   ],
   "estado": "borrador",
   "version": "0.1.0",
