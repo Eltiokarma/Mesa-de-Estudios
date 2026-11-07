@@ -884,7 +884,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
 }
 
 // Opciones de predicción (las mismas en los dos modos)
-const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;');
+const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;').replace(/(\d) (?=µ|pF|mm|kV|V\b|N\b|J\b)/g, '$1&nbsp;');
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${sinCorte(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const NC = 'N/C';
 // Fuentes (cifras de resúmenes, por verificar con los PDF: docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md)
