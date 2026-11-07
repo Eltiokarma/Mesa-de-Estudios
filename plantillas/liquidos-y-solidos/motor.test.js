@@ -121,6 +121,7 @@ test('caja: empieza sin vapor, la evaporación es pareja y la condensación sube
   let ev = 0, cn = 0, k = 0;
   while (c.t < 120) { motor.pasoCaja(c, 1 / 30); if (c.t > 20) { const L = motor.lecturaCaja(c); ev += L.evaporan; cn += L.condensan; k++; } }
   assert.ok(Math.abs(cn / ev - 1) < 0.1, `en equilibrio, los dos flujos se igualan: ${cn / k} contra ${ev / k}`);
+  assert.ok(Math.abs(ev / k / motor.ritmoEquilibrio(c) - 1) < 0.1, `el ritmo de evaporación es el de equilibrio: ${ev / k} contra ${motor.ritmoEquilibrio(c)}`);
   for (const p of c.vapor) assert.ok(p.x >= 0 && p.x <= c.W && p.y > 0 && p.y <= c.H);
 });
 test('caja: la misma semilla da la misma caja; llena empieza en equilibrio; cambiarT conserva las moléculas', () => {
