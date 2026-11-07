@@ -24,7 +24,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["logica"],
       "investigacion": null
     },
     {
@@ -49,7 +49,7 @@
       },
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["conjuntos"],
       "investigacion": null
     },
     {

@@ -1255,7 +1255,10 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "conjuntos",
+      "logica"
+     ]
     },
     {
      "id": "algebra.numeros-reales",
@@ -1798,7 +1801,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "logica"
+     ]
     },
     {
      "id": "aritmetica.conjuntos",
@@ -1822,7 +1827,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "conjuntos"
+     ]
     },
     {
      "id": "aritmetica.razones-y-proporciones",
@@ -4512,6 +4519,24 @@
     "/plantillas/congruencia/papel.json"
    ]
   },
+  "conjuntos": {
+   "id": "conjuntos",
+   "titulo": "Las fichas en los aros: conjuntos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.conjuntos",
+    "algebra.logica-y-conjuntos"
+   ],
+   "url": "/plantillas/conjuntos/index.html",
+   "papel": "/plantillas/conjuntos/papel.json",
+   "archivos": [
+    "/plantillas/conjuntos/index.html",
+    "/plantillas/conjuntos/motor.js",
+    "/plantillas/conjuntos/papel.json"
+   ]
+  },
   "cortes-pesadas": {
    "id": "cortes-pesadas",
    "titulo": "La sierra y la balanza: cortes y pesadas",
@@ -5025,6 +5050,24 @@
     "/plantillas/liquidos-y-solidos/index.html",
     "/plantillas/liquidos-y-solidos/motor.js",
     "/plantillas/liquidos-y-solidos/papel.json"
+   ]
+  },
+  "logica": {
+   "id": "logica",
+   "titulo": "Los interruptores de la lógica: lógica proposicional",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.logica-proposicional",
+    "algebra.logica-y-conjuntos"
+   ],
+   "url": "/plantillas/logica/index.html",
+   "papel": "/plantillas/logica/papel.json",
+   "archivos": [
+    "/plantillas/logica/index.html",
+    "/plantillas/logica/motor.js",
+    "/plantillas/logica/papel.json"
    ]
   },
   "magnetismo": {
