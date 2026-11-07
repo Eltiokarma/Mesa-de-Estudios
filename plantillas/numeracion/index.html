@@ -796,6 +796,7 @@ const LECT5 = [() => ['n', '44 en base 5', String(C5.valorA)], () => ['n', '30 e
 const DESC6 = `23 en base b: 2 paquetes de b y 3 sueltas. Con b = 7 son 17 fichas.`;
 const LECT6 = [() => lectB(B6.base), () => lectN(17)];
 const DESC7 = 'La tabla de capicúas de 3 cifras en base 6: la primera cifra (igual a la última) de 1 a 5 por la cifra del medio de 0 a 5, 30 casillas.';
+const LEY7 = [['o2', 'primera cifra'], ['o1', 'cifra del medio'], ['o0', 'última cifra (copia la primera)'], ['b', 'la base']];
 const LECT7 = [() => ['ink', 'capicúas de 3 cifras', String(K7.cantidad)]];
 
 const steps = [
@@ -804,7 +805,7 @@ const steps = [
    body:() => `<p class="problem">Tienes ${n_('23 fichas')}. Junta ${b_('5')} fichas sueltas y forma un ${o_(1, 'paquete de 5')}. Junta 5 paquetes y forma una ${o_(2, 'caja de 25')}. Sigue hasta que ya no se pueda juntar nada.</p>
    <p><button type="button" class="btn primary" id="agr1">Agrupar de 5 en 5</button></p>
    <div id="vivo1"></div>
-   <p>Lo que queda en cada lugar es una <b>cifra</b>: con 23 fichas quedan ${o_(1, '4 paquetes')} y ${o_(0, '3 sueltas')}, y se escribe ${numH('43', 5)}. El subíndice ${b_('5')} es la <b>base</b>: de cuántas en cuántas se junta. Ninguna cifra llega a 5, porque 5 de cualquier cosa ya forman la pieza siguiente.</p>
+   <p>Lo que queda en cada lugar es una <b>cifra</b>: con 23 fichas quedan ${o_(1, '4 paquetes')} y ${o_(0, '3 sueltas')}, y se escribe ${numH('43', 5)}. El subíndice ${b_('5')} es la <b>base</b>: de cuántas en cuántas se junta.</p>
    <p>Prueba otra base con las mismas 23 fichas:</p>
    <div class="seg" role="group" aria-label="Base">${[3, 4, 5, 6, 7, 10].map(b => `<button type="button" data-b1="${b}" aria-pressed="${S.b1 === b}">base ${b}</button>`).join('')}</div>
    <p>En base 10 es lo de siempre: ${o_(1, 'decenas')} y ${o_(0, 'unidades')}. Las fichas son las mismas; lo que cambia es el tamaño de los grupos y, por eso, el numeral.</p>`,
@@ -824,10 +825,10 @@ const steps = [
  { k:'Paso 3', t:'Predice: 213 en base 5, a base 10', gate:P_213,
    prep:() => { const ya = !!S.pred[P_213.id];
      E.config(ya ? { modo:'fichas', st:{ b:5, cuentas:[3, 1, 2], max:[3, 1, 2], ncols:3, cifras:true, totales:true }, ley: leyHasta(5, 2), desc:DESC3, lect:LECT3 }
-       : { modo:'tarjetas', st:{ items:[{ numeral:'213', b:5 }], titulo:'un numeral en base 5' }, ley:[['o2', 'cifra de las cajas de 25'], ['o1', 'cifra de los paquetes de 5'], ['o0', 'cifra de las sueltas'], ['b', 'la base']], desc:'El numeral 213 en base 5.', lect:[] }); },
+       : { modo:'tarjetas', st:{ items:[{ numeral:'213', b:5 }], titulo:'un numeral en base 5' }, ley:[['o2', 'cifra de la izquierda'], ['o1', 'cifra del medio'], ['o0', 'cifra de la derecha'], ['b', 'la base']], desc:'El numeral 213 en base 5.', lect:[] }); },
    anima:fin => { E.config({ modo:'fichas', st:{ b:5, cuentas:[3, 1, 2], max:[3, 1, 2], ncols:3, cifras:true }, ley: leyHasta(5, 2), desc:DESC3, lect:[() => lectNum('213', 5)] });
      esperar(900, () => { E.st.totales = true; E.redimensionar(); E.lect = LECT3; E.avisar(); fin(); }); },
-   body:() => `<p class="problem">El numeral ${numH('213', 5)} está en base ${b_('5')}: cada cifra cuenta piezas de un tamaño distinto.</p>
+   body:() => `<p class="problem">El numeral ${numH('213', 5)} está en base ${b_('5')}.</p>
    <p>¿Cuántas fichas son en total, en base 10?</p>${opcionesHTML(P_213.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${numH('213', 5)} = ${o_(2, '2')}·${b_(5)}² + ${o_(1, '1')}·${b_(5)} + ${o_(0, '3')}<span class="note">descomposición polinómica: cada cifra por la base elevada a su orden; las unidades tienen orden 0</span></div>
@@ -854,7 +855,7 @@ const steps = [
    prep:() => { const ya = !!S.pred[P_CMP.id];
      E.config(ya ? { modo:'dos', st:{ paneles:[ { b:5, cuentas:[C5.valorA], ncols:2, max:[24, 4], encabezado:pedA() }, { b:8, cuentas:[C5.valorB], ncols:2, max:[24, 3], encabezado:pedB() } ] },
          ley:[['o0', 'fichas sueltas'], ['o1', 'paquetes'], ['b', 'la base']], desc:DESC5, lect:LECT5 }
-       : { modo:'tarjetas', st:{ items:[{ numeral:'44', b:5 }, { numeral:'30', b:8 }], titulo:'dos numerales en bases distintas' }, ley:[['o1', 'cifra de los paquetes'], ['o0', 'cifra de las sueltas'], ['b', 'la base']], desc:'Los numerales 44 en base 5 y 30 en base 8.', lect:[] }); },
+       : { modo:'tarjetas', st:{ items:[{ numeral:'44', b:5 }, { numeral:'30', b:8 }], titulo:'dos numerales en bases distintas' }, ley:[['o1', 'cifra de la izquierda'], ['o0', 'cifra de la derecha'], ['b', 'la base']], desc:'Los numerales 44 en base 5 y 30 en base 8.', lect:[] }); },
    anima:fin => { const pA = M.desagrupar('44', 5), pB = M.desagrupar('30', 8);
      E.config({ modo:'dos', st:{ paneles:[ { b:5, cuentas:pA.inicio.slice(), ncols:2, max:[24, 4], encabezado:pedA() }, { b:8, cuentas:pB.inicio.slice(), ncols:2, max:[24, 3], encabezado:pedB() } ] },
        ley:[['o0', 'fichas sueltas'], ['o1', 'paquetes'], ['b', 'la base']], desc:'44 en base 5 y 30 en base 8, con sus paquetes.', lect:[] });
@@ -881,9 +882,9 @@ const steps = [
    <p>Se plantea la descomposición polinómica con la base como incógnita y se despeja. Con más cifras, como ${numH('121', 'b')} = 64, la ecuación tiene b²; ahí conviene probar bases desde la cifra mayor + 1, como hizo la escena: el valor crece con la base.</p>${FUENTE}</div>` },
  { k:'Paso 7', t:'Predice: los capicúas', gate:P_CAPI,
    prep:() => { const ya = !!S.pred[P_CAPI.id];
-     E.config({ modo:'capicuas', st: ya ? { b:6, tabla:true } : { b:6, tabla:false }, ley:[['o2', 'primera cifra'], ['o1', 'cifra del medio'], ['o0', 'última cifra (copia la primera)'], ['b', 'la base']],
+     E.config({ modo:'capicuas', st: ya ? { b:6, tabla:true } : { b:6, tabla:false }, ley: ya ? LEY7 : [['o2', 'primera cifra'], ['o1', 'cifra del medio'], ['o0', 'última cifra'], ['b', 'la base']],
        desc: ya ? DESC7 : 'Tres casillas vacías para un numeral de 3 cifras en base 6; la primera y la última son iguales.', lect: ya ? LECT7 : [] }); },
-   anima:fin => { Object.assign(E.st, { tabla:true, llenas:0 }); E.redimensionar();
+   anima:fin => { Object.assign(E.st, { tabla:true, llenas:0 }); E.ley = LEY7; E.leyenda(); E.redimensionar();
      E.animar(0, K7.cantidad, 2600, x => { E.st.llenas = Math.floor(x + 1e-9); }, () => { E.lect = LECT7; E.desc = DESC7; E.avisar(); fin(); }, true); },
    body:() => `<p class="problem">Un numeral <b>capicúa</b> se lee igual de izquierda a derecha que de derecha a izquierda, como ${numH('343', 6)} o ${numH('151', 6)}.</p>
    <p>¿Cuántos numerales capicúas de 3 cifras hay en base ${b_('6')}?</p>${opcionesHTML(P_CAPI.opts, 'fb')}
@@ -1075,7 +1076,7 @@ const EXPS = [
       <p>Cinco ${o_(0, 'sueltas')} forman un ${o_(1, 'paquete')}, cinco paquetes una ${o_(2, 'caja')} y cinco cajas un ${o_(3, 'cajón')}. Al multiplicar por la base, cada pieza sube un lugar y las sueltas quedan en 0: las cifras se corren a la izquierda y entra un 0, como al multiplicar por 10 en base 10.</p>${FUENTE}` },
 
   { id:'base-ocho', corto:'De base 2 a base 8',
-    q:`Como 8 = 2³, cada cifra de base 8 corresponde a 3 cifras de base 2. ¿Cómo se escribe ${numH('1011010', 2).replace(/class="cf k\d"/g, 'class="cf"')} en base 8?`,
+    q:`Como 8 = 2³, de base 2 se puede pasar a base 8 juntando cifras, sin pasar por base 10. ¿Cómo se escribe ${numH('1011010', 2).replace(/class="cf k\d"/g, 'class="cf"')} en base 8?`,
     opts:[['a', numH(G2.errores.sumaCifrasGrupo, 8), 'suma-las-cifras-del-grupo', 'hipotesis'], ['b', numH(G2.texto, 8)],
           ['c', numH(G2.errores.desdeLaIzquierda, 8), 'agrupa-desde-la-izquierda', 'hipotesis'], ['d', numH(G2.errores.otroTamano, 8), 'agrupa-de-a-dos', 'hipotesis']],
     ok:'b',
