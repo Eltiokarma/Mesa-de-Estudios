@@ -121,3 +121,8 @@ test('armar sigue igual que antes sin opciones nuevas', () => {
   const alt = P.armar({ correcta: 10, rng: Azar.crear(9), errores: [{ id: 'a', valor: 20, explicacion: 'x', respaldo: 'hipotesis' }, { id: 'b', valor: 10.001, explicacion: 'x', respaldo: 'hipotesis' }] });
   assert.deepEqual(alt.map(a => a.texto).sort(), ['10', '20']);
 });
+
+test('xml escapa el texto que va dentro de la figura de un problema', () => {
+  assert.equal(P.xml('a < b & "c" > d'), 'a &lt; b &amp; &quot;c&quot; &gt; d');
+  assert.equal(P.xml(12), '12');
+});

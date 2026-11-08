@@ -37,6 +37,15 @@ function probarGenerador(gen, { semillas = 400, recalcular, igual = igualNumero 
         assert.ok(igual(esperado, p.respuesta.valor), `semilla ${s}: el cálculo independiente da ${esperado}, el generador ${p.respuesta.valor}`);
       }
       for (const campo of ['enunciado', 'pregunta', 'solucion']) assert.ok(Array.isArray(p[campo]) && p[campo].length, `semilla ${s}: falta ${campo}`);
+      // Figura opcional ({ svg, alt }, ver app/practica.js): SVG propio, con descripción y sin código.
+      for (const campo of ['figura', 'figuraSolucion']) {
+        const f = p[campo];
+        if (f === undefined || f === null) continue;
+        assert.ok(typeof f.svg === 'string' && /^<svg[\s>]/.test(f.svg) && /viewBox=/.test(f.svg), `semilla ${s}: ${campo} sin <svg viewBox>`);
+        assert.ok(typeof f.alt === 'string' && f.alt.length > 10, `semilla ${s}: ${campo} sin descripción (alt)`);
+        assert.ok(!/<script|\son[a-z]+\s*=|javascript:|<foreignObject/i.test(f.svg), `semilla ${s}: ${campo} con código`);
+        assert.ok(!/#[0-9a-f]{3,6}\b/i.test(f.svg), `semilla ${s}: ${campo} con colores fijos (usa var(--c-*) o currentColor)`);
+      }
     }
   });
 }
