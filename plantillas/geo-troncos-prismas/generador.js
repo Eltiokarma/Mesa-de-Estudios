@@ -102,25 +102,44 @@
   const COS = { 37: [4, 5], 53: [3, 5] };
   const fr = ([a, b]) => a / b;
 
+  // Se sortean el tipo y la variante una sola vez; si los números no sirven, se reintenta la MISMA
+  // variante. Se pide además que la correcta no sea la única fracción entre enteros (ni al revés): al
+  // menos `minimo` distractores de la misma clase; se afloja solo si la variante no lo logra.
   function generar(semilla) {
     const rng = Azar.crear('geo-troncos-prismas|' + semilla);
-    for (let intento = 0; intento < 200; intento++) {
-      const pr = construir(rng, semilla);
-      if (pr && pr.alternativas.length >= 4) return pr;
+    const tipo = rng.elegir(TIPOS), sub = rng.elegir(SUBS[tipo]);
+    for (let intento = 0; intento < 400; intento++) {
+      const minimo = intento < 120 ? 2 : intento < 300 ? 1 : 0;
+      const pr = construir(rng, semilla, tipo, sub, minimo);
+      if (pr) return pr;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
   const TIPOS = ['tronco-piramide', 'piramide-menor', 'tronco-apotema', 'prisma-oblicuo', 'tronco-prisma'];
 
-  function construir(rng, semilla) {
-    const tipo = rng.elegir(TIPOS);
-    const pr = HACER[tipo](rng);
+  // Variantes de cada tipo (las repetidas pesan más).
+  const SUBS = {
+    'tronco-piramide': ['cuadrada', 'bases-area', 'triangular-diedro'],
+    'piramide-menor': ['corte', 'desde-menor'],
+    'tronco-apotema': ['lateral', 'chimenea', 'hueco'],
+    'prisma-oblicuo': ['base-desde-recta', 'cara-distancia', 'volumen-arista'],
+    'tronco-prisma': ['volumen', 'volumen', 'lateral', 'minima'],
+  };
+
+  // Clase de un valor según cómo se escribe: coeficiente entero contra fracción.
+  const clase = (forma, x) => esEntero({ pi: x / PI, q: x, r3: x / R3 }[forma]);
+
+  function construir(rng, semilla, tipo, sub, minimo) {
+    const pr = HACER[tipo](rng, sub);
     if (!pr) return null;
     const texto = FORMAS[pr.forma](pr.unidad);
     if (texto(pr.correcta) === null) return null;
     const errores = pr.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && texto(e.valor) !== null);
     const alternativas = P.armar({ correcta: pr.correcta, errores, rng, texto });
+    if (alternativas.length < 4) return null;
+    const cc = clase(pr.forma, pr.correcta);
+    if (alternativas.filter(a => !a.correcta && clase(pr.forma, a.valor) === cc).length < minimo) return null;
     return {
       id: `geo-troncos-prismas#${semilla}`, variables: pr.variables, enunciado: pr.enunciado, pregunta: pr.pregunta,
       datos: '', alternativas, solucion: pr.solucion,
@@ -140,10 +159,14 @@
   }
 
   // ---------- Tronco de pirámide: volumen ----------
-  function troncoPiramide(rng) {
-    const sub = rng.elegir(['cuadrada', 'bases-area', 'triangular-diedro']);
+  function troncoPiramide(rng, sub) {
     const u = rng.elegir(['cm', 'm']), u3 = u + '³';
     const variables = { B: { nombre: 'base mayor', color: 'o' }, b: { nombre: 'base menor', color: 'i' }, h: { nombre: 'altura', color: 'h' }, V: { nombre: 'volumen', color: 'd' } };
+    if (sub !== 'bases-area') {
+      delete variables.B; delete variables.b;
+      variables.L = { nombre: 'lado de la base mayor', color: 'o' };
+      variables.l = { nombre: 'lado de la base menor', color: 'i' };
+    }
     if (sub === 'cuadrada') {
       const L = rng.entero(4, 12), l = rng.entero(2, L - 1), h = rng.entero(2, 12);
       const B = L * L, b = l * l, V = calc.troncoPiramide(B, b, h);
@@ -152,9 +175,9 @@
         h_('GE-tronco-promedio-lados', h * ((L + l) / 2) ** 2, 'Usaste un prisma con el lado promedio (L + l)/2: el tronco no es un prisma.'),
       ]);
       const cosa = u === 'm' ? 'Un pedestal de piedra' : 'Una caja de regalo';
-      const enunciado = [`${cosa} tiene forma de tronco de pirámide regular de bases cuadradas: la base mayor mide `, v('B', `${L} ${u}`), ' de lado, la menor ', v('b', `${l} ${u}`), ' de lado y la altura es ', v('h', `${h} ${u}`), '.'];
+      const enunciado = [`${cosa} tiene forma de tronco de pirámide regular de bases cuadradas: la base mayor mide `, v('L', `${L} ${u}`), ' de lado, la menor ', v('l', `${l} ${u}`), ' de lado y la altura es ', v('h', `${h} ${u}`), '.'];
       const solucion = [
-        ['Áreas de las bases: B = ', v('B', `${L}`), `² = ${B} y b = `, v('b', `${l}`), `² = ${b}; √(Bb) = ${L}·${l} = ${L * l}.`],
+        ['Áreas de las bases: B = ', v('L', `${L}`), `² = ${B} y b = `, v('l', `${l}`), `² = ${b}; √(Bb) = ${L}·${l} = ${L * l}.`],
         ['V = h(B + b + √(Bb))/3 = ', v('h', `${h}`), `·(${B} + ${b} + ${L * l})/3 = `, v('V', tq(V, u3)), '.'],
       ];
       return { forma: 'q', unidad: u3, correcta: V, errores, variables, enunciado, pregunta: ['¿Cuál es su volumen?'], solucion, datos: { sub, L, l, h } };
@@ -179,11 +202,11 @@
     const errores = erroresTronco(B, b, h).concat([
       h_('GE-diedro-circunradio', 2 * V, 'Mediste la diferencia de distancias del centro a los vértices (circunradios). El diedro se mide sobre la perpendicular a la arista de la base: va con los apotemas de las bases (los inradios).'),
     ]);
-    variables.h = { nombre: 'diedro de 60°', color: 'h' };
-    const enunciado = ['Un tronco de pirámide regular tiene por bases triángulos equiláteros de aristas ', v('B', `${L} ${u}`), ' y ', v('b', `${l} ${u}`), '. Cada cara lateral forma un ángulo diedro de ', v('h', '60°'), ' con la base mayor.'];
+    delete variables.h; variables.t = { nombre: 'diedro de 60°', color: 'h' };
+    const enunciado = ['Un tronco de pirámide regular tiene por bases triángulos equiláteros de aristas ', v('L', `${L} ${u}`), ' y ', v('l', `${l} ${u}`), '. Cada cara lateral forma un ángulo diedro de ', v('t', '60°'), ' con la base mayor.'];
     const solucion = [
-      ['Apotema (inradio) de un equilátero de lado x: x√3/6. Diferencia entre las dos bases: (', v('B', `${L}`), ' − ', v('b', `${l}`), `)√3/6 = ${t3((L - l) * R3 / 6)}.`],
-      ['En el corte perpendicular a una arista: tg ', v('h', '60°'), ` = altura ÷ diferencia de apotemas → altura = √3·${t3((L - l) * R3 / 6)} = ${tq(h)} ${u}.`],
+      ['Apotema (inradio) de un equilátero de lado x: x√3/6. Diferencia entre las dos bases: (', v('L', `${L}`), ' − ', v('l', `${l}`), `)√3/6 = ${t3((L - l) * R3 / 6)}.`],
+      ['En el corte perpendicular a una arista: tg ', v('t', '60°'), ` = altura ÷ diferencia de apotemas → altura = √3·${t3((L - l) * R3 / 6)} = ${tq(h)} ${u}.`],
       [`Bases: ${t3(B)} y ${t3(b)}; √(Bb) = ${t3(L * l * R3 / 4)}. La suma es (√3/4)·${S}.`],
       [`V = ${tq(h)}·(√3/4)·${S}/3 = `, v('V', t3(V, u3)), '.'],
     ];
@@ -192,8 +215,7 @@
 
   // ---------- Pirámide menor por semejanza ----------
   const FRACS = [[1, 2], [1, 3], [2, 3], [1, 4], [3, 4]];
-  function piramideMenor(rng) {
-    const sub = rng.elegir(['corte', 'desde-menor']);
+  function piramideMenor(rng, sub) {
     const u3 = 'cm³';
     if (sub === 'corte') {
       const [p, q] = rng.elegir(FRACS), k = p / q, n = rng.entero(1, 4), V = q ** 3 * n * (q === 2 ? 3 : 1);
@@ -243,8 +265,7 @@
   function gcd(a, b) { while (b) [a, b] = [b, a % b]; return a; }
 
   // ---------- Diedro y apotema del tronco ----------
-  function troncoApotema(rng) {
-    const sub = rng.elegir(['lateral', 'chimenea', 'hueco']);
+  function troncoApotema(rng, sub) {
     const u = rng.elegir(['cm', 'm']), u2 = u + '²';
     const variables = { L: { nombre: 'arista de la base mayor', color: 'o' }, l: { nombre: 'arista de la base menor', color: 'i' }, t: { nombre: 'diedro', color: 'h' }, X: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'lateral' || sub === 'chimenea') {
@@ -283,39 +304,38 @@
     const V = calc.cilindro(rho, hh);
     const u3 = u + '³';
     const variables2 = dato === 'bases'
-      ? { A: { nombre: 'apotemas de las bases', color: 'o' }, r: { nombre: 'radio del hueco', color: 'i' }, t: { nombre: 'diedro', color: 'h' }, X: { nombre: 'volumen del hueco', color: 'd' } }
+      ? { A: { nombre: 'apotema de la base mayor', color: 'o' }, a: { nombre: 'apotema de la base menor', color: 'i' }, t: { nombre: 'diedro', color: 'h' }, r: { nombre: 'radio del hueco', color: 'd' } }
       : { A: { nombre: 'apotema del tronco', color: 'o' }, r: { nombre: 'radio del hueco', color: 'i' }, t: { nombre: 'diedro', color: 'h' }, X: { nombre: 'volumen del hueco', color: 'd' } };
     const enunciado = dato === 'bases'
-      ? ['Un bloque de concreto tiene forma de tronco de pirámide regular de bases cuadradas. El apotema de la base mayor (distancia del centro a un lado) mide ', v('A', `${A} ${u}`), ' y el de la base menor ', v('A', `${a} ${u}`), '; cada cara lateral forma un diedro de ', v('t', `${theta}°`), ' con la base mayor. A lo largo del eje se perfora, de base a base, un hueco cilíndrico de radio ', v('r', `${rho} ${u}`), '.']
+      ? ['Un bloque de concreto tiene forma de tronco de pirámide regular de bases cuadradas. El apotema de la base mayor (distancia del centro a un lado) mide ', v('A', `${A} ${u}`), ' y el de la base menor ', v('a', `${a} ${u}`), '; cada cara lateral forma un diedro de ', v('t', `${theta}°`), ' con la base mayor. A lo largo del eje se perfora, de base a base, un hueco cilíndrico de radio ', v('r', `${rho} ${u}`), '.']
       : ['Un bloque de concreto tiene forma de tronco de pirámide regular. El apotema del tronco (la altura de cada cara lateral) mide ', v('A', `${ap} ${u}`), ' y cada cara lateral forma un diedro de ', v('t', `${theta}°`), ' con la base mayor. A lo largo del eje se perfora, de base a base, un hueco cilíndrico de radio ', v('r', `${rho} ${u}`), '.'];
     const errores = [
       h_('GE21', calc.cilindro(rho, ap), 'Usaste el apotema del tronco como largo del hueco. El hueco va a lo largo de la altura, que es vertical y más corta.'),
-      h_('GE-tronco-apotema-base', calc.cilindro(rho, dif), 'Usaste la diferencia de apotemas de las bases como altura. Ese es el cateto horizontal del triángulo del diedro.'),
-      h_('GE20', V / 3, 'Pusiste un 1/3: el hueco es un cilindro, no un cono.'),
-      h_('GE19', 2 * PI * rho * hh, 'Calculaste la pared del hueco (2πrh), no su volumen (πr²h).'),
-    ];
-    if (dato === 'lateral') errores.push(h_('GE-seno-coseno', calc.cilindro(rho, dif), `Multiplicaste el apotema por cos ${theta}° en vez de sen ${theta}°: así sale el cateto horizontal, no la altura.`));
+      dato === 'bases' ? h_('GE-tronco-apotema-base', calc.cilindro(rho, dif), 'Usaste la diferencia de apotemas de las bases como altura. Ese es el cateto horizontal del triángulo del diedro.') : null,
+      h_('GE-tercio-de-mas', V / 3, 'Pusiste un 1/3: el hueco es un cilindro, no un cono.'),
+      h_('GE-area-por-volumen', 2 * PI * rho * hh, 'Calculaste la pared del hueco (2πrh), no su volumen (πr²h).'),
+    ].filter(Boolean);
+    if (dato === 'lateral') errores.splice(1, 0, h_('GE-seno-coseno', calc.cilindro(rho, dif), `Multiplicaste el apotema por cos ${theta}° en vez de sen ${theta}°: así sale el cateto horizontal, no la altura.`));
     const tg = theta === 37 ? '3/4' : '4/3';
     const sn = theta === 37 ? '3/5' : '4/5';
     const solucion = dato === 'bases' ? [
-      ['Corte perpendicular a una arista: el cateto horizontal es la diferencia de apotemas, ', v('A', `${A}`), ' − ', v('A', `${a}`), ` = ${dif}.`],
+      ['Corte perpendicular a una arista: el cateto horizontal es la diferencia de apotemas, ', v('A', `${A}`), ' − ', v('a', `${a}`), ` = ${dif}.`],
       ['Altura del tronco: ', `${dif}·tg `, v('t', `${theta}°`), ` = ${dif}·${tg} = ${hh} ${u}.`],
-      ['Hueco: π·', v('r', `${rho}`), `²·${hh} = `, v('X', tpi(V, u3)), '.'],
+      ['Hueco: π·', v('r', `${rho}`), `²·${hh} = ${tpi(V, u3)}.`],
     ] : [
       ['El apotema del tronco es la hipotenusa del triángulo del diedro; la altura es el cateto opuesto al ángulo.'],
       ['Altura: ', v('A', `${ap}`), '·sen ', v('t', `${theta}°`), ` = ${ap}·${sn} = ${hh} ${u}.`],
-      ['Hueco: π·', v('r', `${rho}`), `²·${hh} = `, v('X', tpi(V, u3)), '.'],
+      ['Hueco: π·', v('r', `${rho}`), `²·${hh} = ${tpi(V, u3)}.`],
     ];
     return { forma: 'pi', unidad: u3, correcta: V, errores, variables: variables2, enunciado, pregunta: ['¿Cuál es el volumen del hueco?'], solucion, datos: dato === 'bases' ? { sub, dato, A, a, theta, rho } : { sub, dato, ap, theta, rho } };
   }
 
   // ---------- Prisma oblicuo ----------
-  function prismaOblicuo(rng) {
-    const sub = rng.elegir(['base-desde-recta', 'cara-distancia', 'volumen-arista']);
+  function prismaOblicuo(rng, sub) {
     const u = rng.elegir(['cm', 'm']), u2 = u + '²', u3 = u + '³';
     if (sub === 'base-desde-recta') {
       const theta = rng.elegir([37, 53, 30]), s = fr(SEN[theta]);
-      const a = rng.entero(1, 6), Sr = calc.areaHexagono(a), A = calc.baseDesdeRecta(Sr, s);
+      const a = rng.entero(1, 12), Sr = calc.areaHexagono(a), A = calc.baseDesdeRecta(Sr, s);
       if (!FORMAS.r3('')(A)) return null;
       const variables = { a: { nombre: 'lado del hexágono de la sección recta', color: 'o' }, t: { nombre: 'inclinación de las aristas', color: 'h' }, S: { nombre: 'sección recta', color: 'i' }, X: { nombre: 'área de la base', color: 'd' } };
       const enunciado = ['En un prisma hexagonal oblicuo, la sección recta (el corte perpendicular a las aristas laterales) es un hexágono regular de ', v('a', `${a} ${u}`), ' de lado. Las aristas laterales forman un ángulo de ', v('t', `${theta}°`), ' con el plano de la base.'];
@@ -339,7 +359,7 @@
       const enunciado = ['En un prisma triangular oblicuo, una de las caras laterales tiene ', v('S', `${S} ${u2}`), ' de área, y la arista lateral opuesta a esa cara está a ', v('d', `${d} ${u}`), ' de ella.'];
       const errores = [
         h_('GE-prisma-cara-sin-mitad', S * d, 'Multiplicaste el área de la cara por la distancia: eso da un prisma de sección recta paralelogramo, el doble del triangular.'),
-        h_('GE20', S * d / 3, 'Pusiste 1/3 como en una pirámide. El prisma triangular es la mitad de un prisma con sección de paralelogramo: va 1/2.'),
+        h_('GE-tercio-de-mas', S * d / 3, 'Pusiste 1/3 como en una pirámide. El prisma triangular es la mitad de un prisma con sección de paralelogramo: va 1/2.'),
         h_('GE-prisma-como-piramide-triangular', S * d / 6, 'Usaste 1/3·1/2, como si fuera una pirámide de base triangular. Es un prisma: solo va 1/2.'),
       ];
       const solucion = [
@@ -357,7 +377,7 @@
     const errores = [
       h_('GE-oblicuo-arista-como-altura', B * La, 'Usaste la arista lateral como altura. En el prisma oblicuo la arista está inclinada; la altura es la distancia entre las bases.'),
       theta === 30 ? null : h_('GE-seno-coseno', B * La * fr(COS[theta]), `Usaste cos ${theta}°: así sale la sombra horizontal de la arista, no la altura.`),
-      h_('GE20', V / 3, 'Pusiste 1/3: es un prisma, no una pirámide.'),
+      h_('GE-tercio-de-mas', V / 3, 'Pusiste 1/3: es un prisma, no una pirámide.'),
       h_('GE-oblicuo-divide', B * La / s, 'Dividiste entre el seno: la altura es más corta que la arista, hay que multiplicar.'),
     ].filter(Boolean);
     const solucion = [
@@ -369,8 +389,7 @@
   }
 
   // ---------- Tronco de prisma triangular ----------
-  function troncoPrisma(rng) {
-    const sub = rng.elegir(['volumen', 'volumen', 'lateral', 'minima']);
+  function troncoPrisma(rng, sub) {
     const u = 'cm';
     const tres = () => { for (;;) { const a = rng.entero(2, 15), b = rng.entero(2, 15), c = rng.entero(2, 15); if (a !== b && b !== c && a !== c) return [a, b, c]; } };
     const [a, b, c] = tres();
@@ -378,6 +397,7 @@
     const variables = { base: { nombre: 'base', color: 'o' }, ar: { nombre: 'aristas laterales', color: 'i' }, X: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'volumen') {
       const p = rng.entero(2, 8), q = rng.entero(2, 8), A = p * q / 2;
+      if ((p * q * (a + b + c)) % 6 !== 0) return null; // volumen entero, como sus distractores
       const V = calc.troncoPrisma(A, a, b, c);
       const enunciado = ['Un bloque de madera tiene forma de tronco de prisma triangular recto: su base es un triángulo rectángulo de catetos ', v('base', `${p} ${u} y ${q} ${u}`), ', sus tres aristas laterales son perpendiculares a la base y miden ', v('ar', `${a} ${u}, ${b} ${u} y ${c} ${u}`), ', y la cara de arriba es oblicua.'];
       const errores = [
@@ -402,7 +422,7 @@
         h_('GE-limite-estricto', lim * suma, `Tomaste lado ${lim}: con él el perímetro es exactamente ${P0}, y debe ser mayor. El menor lado entero que cumple es ${smin}.`),
         h_('GE-tronco-prisma-cada-arista-una-vez', AL / 2, 'Contaste cada arista en una sola cara. Cada arista lateral es lado de dos caras: AL = s·(a + b + c).'),
         h_('GE-tronco-prisma-perimetro-por-suma', 3 * AL, 'Multiplicaste el perímetro por la suma de aristas. Cada cara es un trapecio de altura s con dos aristas: sumando las tres, sale s·(a + b + c).'),
-        h_('GE-tronco-prisma-altura-media', AL / 3, 'Usaste la altura media (a + b + c)/3, que sirve para el volumen. El área lateral suma tres trapecios: s·(a + b + c).'),
+        h_('GE-tronco-prisma-altura-media', AL / 3, 'Multiplicaste la altura media (a + b + c)/3 por un solo lado: eso es una cara promedio. Son tres caras: (a + b + c)/3 · 3s = s·(a + b + c).'),
       ];
       const solucion = [
         ['Cada cara lateral es un trapecio de altura s; al sumar las tres, cada arista aparece dos veces: AL = s·(a + b + c) = s·', v('S', `${suma}`), '.'],

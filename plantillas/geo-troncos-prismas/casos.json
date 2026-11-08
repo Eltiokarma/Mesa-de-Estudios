@@ -2,7 +2,7 @@
   "plantilla": "geo-troncos-prismas",
   "tolerancia": 0.000001,
   "nota": "Notables de academia: sen 37° = 3/5, cos 37° = 4/5, tg 37° = 3/4, tg 53° = 4/3, sen 30° = 1/2, tg 60° = √3. La respuesta es el valor numérico; «exacta» es el texto que ve el alumno.",
-  "verificacion": "Verificado a ciegas por un subagente (8 nov 2026): resolvió los 21 casos desde el enunciado con fracciones y los ángulos de academia, e integró las secciones en dos casos (cuadrada y triangular). Los 21 coinciden con respuesta y exacta. No halló enunciados ambiguos (en el hueco con dato de apotema lateral, el tamaño de las bases no se puede comprobar, pero la respuesta no depende de él).",
+  "verificacion": "",
   "casos": [
     {
       "semilla": 0,
@@ -106,33 +106,16 @@
       }
     },
     {
-      "semilla": 10,
-      "entrada": {
-        "tipo": "tronco-prisma",
-        "sub": "lateral",
-        "s": 9,
-        "a": 3,
-        "b": 13,
-        "c": 8
-      },
-      "esperado": {
-        "respuesta": 216,
-        "exacta": "216 cm²"
-      }
-    },
-    {
       "semilla": 12,
       "entrada": {
-        "tipo": "piramide-menor",
-        "sub": "corte",
-        "V": 192,
-        "p": 1,
-        "q": 4,
-        "pide": "menor"
+        "tipo": "tronco-piramide",
+        "sub": "triangular-diedro",
+        "L": 8,
+        "l": 4
       },
       "esperado": {
-        "respuesta": 3,
-        "exacta": "3 cm³"
+        "respuesta": 32.33161507461904,
+        "exacta": "56√3/3 cm³"
       }
     },
     {
@@ -140,12 +123,12 @@
       "entrada": {
         "tipo": "prisma-oblicuo",
         "sub": "base-desde-recta",
-        "a": 4,
+        "a": 8,
         "theta": 53
       },
       "esperado": {
-        "respuesta": 51.96152422706632,
-        "exacta": "30√3 m²"
+        "respuesta": 207.84609690826528,
+        "exacta": "120√3 m²"
       }
     },
     {
@@ -178,19 +161,6 @@
       }
     },
     {
-      "semilla": 28,
-      "entrada": {
-        "tipo": "tronco-piramide",
-        "sub": "triangular-diedro",
-        "L": 11,
-        "l": 5
-      },
-      "esperado": {
-        "respuesta": 87.0355530803361,
-        "exacta": "201√3/4 cm³"
-      }
-    },
-    {
       "semilla": 35,
       "entrada": {
         "tipo": "prisma-oblicuo",
@@ -205,22 +175,6 @@
       }
     },
     {
-      "semilla": 53,
-      "entrada": {
-        "tipo": "tronco-apotema",
-        "sub": "hueco",
-        "dato": "bases",
-        "A": 14,
-        "a": 2,
-        "theta": 37,
-        "rho": 1
-      },
-      "esperado": {
-        "respuesta": 28.274333882308138,
-        "exacta": "9π m³"
-      }
-    },
-    {
       "semilla": 59,
       "entrada": {
         "tipo": "prisma-oblicuo",
@@ -231,6 +185,37 @@
       "esperado": {
         "respuesta": 30,
         "exacta": "30 cm³"
+      }
+    },
+    {
+      "semilla": 73,
+      "entrada": {
+        "tipo": "tronco-prisma",
+        "sub": "lateral",
+        "s": 8,
+        "a": 2,
+        "b": 9,
+        "c": 13
+      },
+      "esperado": {
+        "respuesta": 192,
+        "exacta": "192 cm²"
+      }
+    },
+    {
+      "semilla": 114,
+      "entrada": {
+        "tipo": "tronco-apotema",
+        "sub": "hueco",
+        "dato": "bases",
+        "A": 14,
+        "a": 5,
+        "theta": 53,
+        "rho": 3
+      },
+      "esperado": {
+        "respuesta": 339.29200658769764,
+        "exacta": "108π cm³"
       }
     },
     {
@@ -252,27 +237,27 @@
       "entrada": {
         "tipo": "prisma-oblicuo",
         "sub": "base-desde-recta",
-        "a": 4,
+        "a": 10,
         "theta": 30
       },
       "esperado": {
-        "respuesta": 83.13843876330611,
-        "exacta": "48√3 m²"
+        "respuesta": 519.6152422706632,
+        "exacta": "300√3 cm²"
       }
     },
     {
-      "semilla": 127,
+      "semilla": 133,
       "entrada": {
-        "tipo": "tronco-apotema",
-        "sub": "chimenea",
-        "L": 30,
-        "l": 6,
-        "theta": 37,
-        "H": 7
+        "tipo": "piramide-menor",
+        "sub": "corte",
+        "V": 96,
+        "p": 1,
+        "q": 2,
+        "pide": "menor"
       },
       "esperado": {
-        "respuesta": 1248,
-        "exacta": "1 248 cm²"
+        "respuesta": 12,
+        "exacta": "12 cm³"
       }
     },
     {
@@ -292,17 +277,15 @@
     {
       "semilla": "salida-1",
       "entrada": {
-        "tipo": "tronco-prisma",
-        "sub": "volumen",
-        "p": 5,
-        "q": 6,
-        "a": 9,
-        "b": 14,
-        "c": 2
+        "tipo": "tronco-piramide",
+        "sub": "cuadrada",
+        "L": 5,
+        "l": 3,
+        "h": 12
       },
       "esperado": {
-        "respuesta": 125,
-        "exacta": "125 cm³"
+        "respuesta": 196,
+        "exacta": "196 m³"
       }
     }
   ]

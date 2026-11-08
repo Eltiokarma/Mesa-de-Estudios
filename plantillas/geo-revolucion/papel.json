@@ -13,7 +13,19 @@
         "V = π·7·63/3 = 147π cm³.",
         "Si te salió 141,75π, usaste un cilindro con el radio promedio 4,5: el tronco no es un cilindro."
       ],
-      "verificar": [ { "fn": "troncoCono", "args": [6, 3, 7], "espera": { "pi": 147 } } ]
+      "verificar": [
+        {
+          "fn": "troncoCono",
+          "args": [
+            6,
+            3,
+            7
+          ],
+          "espera": {
+            "pi": 147
+          }
+        }
+      ]
     },
     {
       "id": "p2",
@@ -25,7 +37,18 @@
         "V = π·5²·3 = 75π cm³.",
         "Con el diámetro como radio saldría 300π: cuatro veces más."
       ],
-      "verificar": [ { "fn": "cilindro", "args": [5, 3], "espera": { "pi": 75 } } ]
+      "verificar": [
+        {
+          "fn": "cilindro",
+          "args": [
+            5,
+            3
+          ],
+          "espera": {
+            "pi": 75
+          }
+        }
+      ]
     },
     {
       "id": "p3",
@@ -39,8 +62,28 @@
         "Tomar 2/3 del volumen del balde lleno da otro número: el balde se ensancha hacia arriba."
       ],
       "verificar": [
-        { "fn": "radioANivel", "args": [4, 10, 12, 8], "espera": 8 },
-        { "fn": "troncoCono", "args": [8, 4, 8], "espera": { "pi": 896, "den": 3 } }
+        {
+          "fn": "radioANivel",
+          "args": [
+            4,
+            10,
+            12,
+            8
+          ],
+          "espera": 8
+        },
+        {
+          "fn": "troncoCono",
+          "args": [
+            8,
+            4,
+            8
+          ],
+          "espera": {
+            "pi": 896,
+            "den": 3
+          }
+        }
       ]
     },
     {
@@ -54,8 +97,26 @@
         "Total: 27π + 12π = 39π cm³."
       ],
       "verificar": [
-        { "fn": "cilindro", "args": [3, 3], "espera": { "pi": 27 } },
-        { "fn": "cono", "args": [3, 4], "espera": { "pi": 12 } }
+        {
+          "fn": "cilindro",
+          "args": [
+            3,
+            3
+          ],
+          "espera": {
+            "pi": 27
+          }
+        },
+        {
+          "fn": "cono",
+          "args": [
+            3,
+            4
+          ],
+          "espera": {
+            "pi": 12
+          }
+        }
       ]
     },
     {
@@ -68,7 +129,18 @@
         "Área del casquete: 2πRh = 2π·10·2 = 40π m².",
         "El área del círculo del borde (36π) no es la del toldo: el toldo es curvo."
       ],
-      "verificar": [ { "fn": "casquete", "args": [10, 2], "espera": { "pi": 40 } } ]
+      "verificar": [
+        {
+          "fn": "casquete",
+          "args": [
+            10,
+            2
+          ],
+          "espera": {
+            "pi": 40
+          }
+        }
+      ]
     },
     {
       "id": "p6",
@@ -82,28 +154,81 @@
         "Agua: 768π − 288π = 480π cm³."
       ],
       "verificar": [
-        { "fn": "radioInscritoCono", "args": [12, 16], "espera": 6 },
-        { "fn": "cono", "args": [12, 16], "espera": { "pi": 768 } },
-        { "fn": "esfera", "args": [6], "espera": { "pi": 288 } }
+        {
+          "fn": "radioInscritoCono",
+          "args": [
+            12,
+            16
+          ],
+          "espera": 6
+        },
+        {
+          "fn": "cono",
+          "args": [
+            12,
+            16
+          ],
+          "espera": {
+            "pi": 768
+          }
+        },
+        {
+          "fn": "esfera",
+          "args": [
+            6
+          ],
+          "espera": {
+            "pi": 288
+          }
+        }
       ]
     },
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Una lata tiene forma de tronco de cilindro recto de 3 cm de radio: su borde superior está a 5 cm del fondo en el punto más bajo y a 11 cm en el más alto. Al lado hay dos pelotas de radios 8 cm y 2 cm, apoyadas en el piso y tocándose. a) ¿Cuál es el volumen de la lata? b) ¿A qué distancia están los puntos donde las pelotas tocan el piso?",
-      "respuesta": "a) 72π cm³; b) 8 cm",
+      "enunciado": "Una lata tiene forma de tronco de cilindro recto de 3 cm de radio: su borde superior está a 5 cm del fondo en el punto más bajo y a 11 cm en el más alto. ¿Cuál es el volumen de la lata?",
+      "respuesta": "72π cm³",
       "pasos": [
-        "a) Generatriz media: (5 + 11)/2 = 8. V = π·3²·8 = 72π cm³.",
-        "b) Los centros distan 8 + 2 = 10 y sus alturas difieren 8 − 2 = 6.",
-        "Distancia en el piso: √(10² − 6²) = 8 cm (es 2√(8·2))."
+        "Dos latas iguales, una invertida sobre la otra, forman un cilindro de altura 5 + 11 = 16: la lata es la mitad.",
+        "Generatriz media: (5 + 11)/2 = 8 cm.",
+        "V = π·3²·8 = 72π cm³."
       ],
       "verificar": [
-        { "fn": "troncoCilindro", "args": [3, 5, 11], "espera": { "pi": 72 } },
-        { "fn": "distanciaContactos", "args": [8, 2], "espera": 8 }
+        {
+          "fn": "troncoCilindro",
+          "args": [
+            3,
+            5,
+            11
+          ],
+          "espera": {
+            "pi": 72
+          }
+        }
       ]
     },
     {
       "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Dos pelotas de radios 8 cm y 2 cm están apoyadas en el piso y se tocan. ¿A qué distancia están los puntos donde tocan el piso?",
+      "respuesta": "8 cm",
+      "pasos": [
+        "Los centros distan 8 + 2 = 10 cm y sus alturas difieren 8 − 2 = 6 cm.",
+        "Distancia en el piso: √(10² − 6²) = 8 cm (es 2√(8·2))."
+      ],
+      "verificar": [
+        {
+          "fn": "distanciaContactos",
+          "args": [
+            8,
+            2
+          ],
+          "espera": 8
+        }
+      ]
+    },
+    {
+      "id": "p9",
       "nivel": "avanzado",
       "enunciado": "Un cilindro recto de 4 cm de radio se corta con dos planos paralelos inclinados y queda un cilindro oblicuo cuyas bases son elipses de 20π cm² de área. Las generatrices del cilindro oblicuo miden 10 cm. ¿Cuál es su altura?",
       "respuesta": "8 cm",
@@ -112,7 +237,17 @@
         "Volumen con la base: 20π·h.",
         "20π·h = 160π → h = 8 cm (menos que la generatriz, como debe ser)."
       ],
-      "verificar": [ { "fn": "alturaOblicuo", "args": [4, 10, 20], "espera": 8 } ]
+      "verificar": [
+        {
+          "fn": "alturaOblicuo",
+          "args": [
+            4,
+            10,
+            20
+          ],
+          "espera": 8
+        }
+      ]
     }
   ]
 }

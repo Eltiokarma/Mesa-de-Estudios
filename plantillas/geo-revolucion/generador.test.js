@@ -109,14 +109,14 @@ function recalcular(p) {
         const v = [90, 210, 330].map(t => [d.R * Math.cos(t * PI / 180), d.R * Math.sin(t * PI / 180)]);
         const [[x1, y1], [x2, y2]] = [v[1], v[2]];
         const dist = Math.abs((x2 - x1) * y1 - (y2 - y1) * x1) / Math.hypot(x2 - x1, y2 - y1);
-        return capa(d.R, dist, d.R);
+        return d.pide === 'menor' ? capa(d.R, dist, d.R) : capa(d.R, -d.R, dist);
       }
       const z1 = Math.sqrt(d.R ** 2 - d.a1 ** 2), z2 = Math.sqrt(d.R ** 2 - d.a2 ** 2);
       return d.mismoLado ? capa(d.R, Math.min(z1, z2), Math.max(z1, z2)) : capa(d.R, -z1, z2);
     }
     case 'esfera-cono': {
       if (d.sub === 'razon') {
-        const R = 1, H = Math.sqrt(3), r = inscrita(R, H), g = Math.hypot(R, H);
+        const R = d.equilatero ? 1 : d.R, H = d.equilatero ? Math.sqrt(3) : d.H, r = inscrita(R, H), g = Math.hypot(R, H);
         if (d.pide === 'lateral') return 4 * PI * r * r / (PI * R * g);
         if (d.pide === 'total') return 4 * PI * r * r / (PI * R * g + PI * R * R);
         return (4 / 3 * PI * r ** 3) / discos(lineal(R, 0, H), 0, H);
@@ -128,7 +128,8 @@ function recalcular(p) {
     }
     case 'esferas-tangentes': {
       if (d.sub === 'tres') {
-        const lado = d.dato === 'perimetro' ? d.valor / 3 : biseccion(s => s * s * Math.sqrt(3) / 4 - d.valor * Math.sqrt(3), 0, 100);
+        const lado = d.dato === 'perimetro' ? d.valor / 3 : d.dato === 'area' ? biseccion(s => s * s * Math.sqrt(3) / 4 - d.valor * Math.sqrt(3), 0, 100)
+          : biseccion(s => s * Math.sqrt(3) / 2 - d.valor * Math.sqrt(3), 0, 100);
         const r = lado / 2;
         return simpson(phi => 2 * PI * r * Math.sin(phi) * r, 0, PI);
       }
@@ -188,9 +189,9 @@ test('cada problema: a lo más 4 colores, distintos, y la correcta se escribe co
   }
 });
 
-test('papel.json: entre 6 y 8 problemas, cada uno verificado contra calc', () => {
+test('papel.json: entre 6 y 10 problemas, cada uno verificado contra calc', () => {
   assert.ok(papel.titulo && papel.indicacion);
-  assert.ok(papel.problemas.length >= 6 && papel.problemas.length <= 8);
+  assert.ok(papel.problemas.length >= 6 && papel.problemas.length <= 10);
   for (const pr of papel.problemas) {
     assert.ok(pr.id && pr.enunciado && pr.respuesta && pr.pasos.length && pr.verificar.length, pr.id);
     assert.ok(['básico', 'intermedio', 'avanzado'].includes(pr.nivel));

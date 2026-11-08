@@ -1,8 +1,8 @@
 {
   "plantilla": "geo-revolucion",
-  "tolerancia": 1e-06,
+  "tolerancia": 0.000001,
   "nota": "Medidas en cm o m; ángulos de academia (sen 37° = 3/5, sen 53° = 4/5, sen 30° = 1/2). La respuesta es el valor numérico (con π ya multiplicado); en el subtipo desplazamiento/piramide es la clave «mix:a|b» de aπ − b√3. «exacta» es el texto que ve el alumno.",
-  "verificacion": "Verificado a ciegas por un subagente (8 nov 2026): resolvió los 25 casos desde el enunciado con aritmética exacta (fracciones, π como coeficiente, raíces comprobadas) e integró por discos el volumen de cuatro casos. Los 25 coinciden con respuesta y exacta, incluida la clave mix:316|4. No halló enunciados ambiguos.",
+  "verificacion": "",
   "casos": [
     {
       "semilla": 0,
@@ -18,19 +18,6 @@
       "esperado": {
         "respuesta": 810.5309046261667,
         "exacta": "258π cm³"
-      }
-    },
-    {
-      "semilla": 1,
-      "entrada": {
-        "tipo": "tronco-cilindro",
-        "sub": "lateral",
-        "r": 2,
-        "ALpi": 32
-      },
-      "esperado": {
-        "respuesta": 100.53096491487338,
-        "exacta": "32π cm³"
       }
     },
     {
@@ -51,24 +38,12 @@
       "entrada": {
         "tipo": "esfera-cono",
         "sub": "razon",
-        "pide": "total"
+        "equilatero": true,
+        "pide": "volumen"
       },
       "esperado": {
         "respuesta": 0.4444444444444444,
         "exacta": "4/9"
-      }
-    },
-    {
-      "semilla": 4,
-      "entrada": {
-        "tipo": "esfera-segmento",
-        "sub": "cupula",
-        "a": 2,
-        "hh": 1
-      },
-      "esperado": {
-        "respuesta": 15.707963267948966,
-        "exacta": "5π m²"
       }
     },
     {
@@ -89,15 +64,15 @@
       "semilla": 8,
       "entrada": {
         "tipo": "tronco-volumen",
-        "sub": "radios",
-        "r": 4,
-        "R": 7,
-        "h": 5,
-        "diametros": false
+        "sub": "silo",
+        "R": 14,
+        "H": 5,
+        "r": 2,
+        "g": 20
       },
       "esperado": {
-        "respuesta": 486.94686130641793,
-        "exacta": "155π cm³"
+        "respuesta": 6898.9374672831855,
+        "exacta": "2 196π m³"
       }
     },
     {
@@ -134,17 +109,58 @@
       }
     },
     {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "esfera-segmento",
+        "sub": "equilatero",
+        "R": 6,
+        "pide": "mayor"
+      },
+      "esperado": {
+        "respuesta": 763.4070148223196,
+        "exacta": "243π m³"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "tronco-volumen",
+        "sub": "radios",
+        "r": 4,
+        "R": 6,
+        "h": 3,
+        "diametros": false
+      },
+      "esperado": {
+        "respuesta": 238.76104167282426,
+        "exacta": "76π cm³"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "esfera-cono",
+        "sub": "radio",
+        "R": 30,
+        "H": 72
+      },
+      "esperado": {
+        "respuesta": 20,
+        "exacta": "20 cm"
+      }
+    },
+    {
       "semilla": 19,
       "entrada": {
         "tipo": "tronco-llenado",
         "sub": "suma",
-        "S": 8,
-        "D": 4,
-        "V3pi": 156
+        "S": 16,
+        "D": 8,
+        "V3pi": 2496
       },
       "esperado": {
-        "respuesta": 3,
-        "exacta": "3 cm"
+        "respuesta": 12,
+        "exacta": "12 cm"
       }
     },
     {
@@ -177,34 +193,20 @@
       }
     },
     {
-      "semilla": 27,
-      "entrada": {
-        "tipo": "region-gira",
-        "sub": "rectangulo",
-        "w": 4,
-        "L": 8,
-        "d": 4
-      },
-      "esperado": {
-        "respuesta": 1206.3715789784806,
-        "exacta": "384π cm³"
-      }
-    },
-    {
       "semilla": 28,
       "entrada": {
         "tipo": "esferas-tangentes",
         "sub": "tres",
-        "dato": "area",
-        "valor": 9
+        "dato": "lado",
+        "valor": 5
       },
       "esperado": {
-        "respuesta": 113.09733552923255,
-        "exacta": "36π cm²"
+        "respuesta": 314.1592653589793,
+        "exacta": "100π cm²"
       }
     },
     {
-      "semilla": 33,
+      "semilla": 38,
       "entrada": {
         "tipo": "esfera-cono",
         "sub": "liquido",
@@ -232,34 +234,35 @@
       }
     },
     {
-      "semilla": 48,
-      "entrada": {
-        "tipo": "tronco-volumen",
-        "sub": "silo",
-        "R": 6,
-        "H": 2,
-        "r": 1,
-        "g": 13
-      },
-      "esperado": {
-        "respuesta": 766.5486074759095,
-        "exacta": "244π m³"
-      }
-    },
-    {
       "semilla": 55,
       "entrada": {
         "tipo": "desplazamiento",
         "sub": "balde",
-        "r": 6,
-        "R": 10,
-        "H": 16,
-        "h1": 8,
-        "h2": 12
+        "r": 4,
+        "R": 12,
+        "H": 12,
+        "h1": 3,
+        "h2": 9
       },
       "esperado": {
-        "respuesta": 908.9674744386467,
-        "exacta": "868π/3 cm³"
+        "respuesta": 1231.504320207199,
+        "exacta": "392π cm³"
+      }
+    },
+    {
+      "semilla": 63,
+      "entrada": {
+        "tipo": "desplazamiento",
+        "sub": "piramide",
+        "r": 3,
+        "R": 6,
+        "H": 4,
+        "s": 2,
+        "hp": 4
+      },
+      "esperado": {
+        "respuesta": "mix:84/1|8/1",
+        "exacta": "84π − 8√3 cm³"
       }
     },
     {
@@ -274,22 +277,6 @@
       "esperado": {
         "respuesta": 10,
         "exacta": "10 cm"
-      }
-    },
-    {
-      "semilla": 98,
-      "entrada": {
-        "tipo": "desplazamiento",
-        "sub": "piramide",
-        "r": 3,
-        "R": 7,
-        "H": 12,
-        "s": 2,
-        "hp": 2
-      },
-      "esperado": {
-        "respuesta": "mix:316/1|4/1",
-        "exacta": "316π − 4√3 cm³"
       }
     },
     {
@@ -310,12 +297,12 @@
       "entrada": {
         "tipo": "esfera-segmento",
         "sub": "cubo",
-        "a": 6,
-        "pide": "seis"
+        "a": 3,
+        "pide": "uno"
       },
       "esperado": {
-        "respuesta": 198.75265585429173,
-        "exacta": "108(2 − √2)π cm²"
+        "respuesta": 8.281360660595489,
+        "exacta": "9(2 − √2)π/2 cm²"
       }
     },
     {
@@ -331,6 +318,19 @@
       "esperado": {
         "respuesta": 3635.869897754587,
         "exacta": "3 472π/3 cm³"
+      }
+    },
+    {
+      "semilla": 184,
+      "entrada": {
+        "tipo": "desplazamiento",
+        "sub": "pieza",
+        "d": 10,
+        "s": 6
+      },
+      "esperado": {
+        "respuesta": 471.23889803846896,
+        "exacta": "150π cm³"
       }
     },
     {
