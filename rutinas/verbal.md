@@ -474,3 +474,15 @@ El revisor a ciegas las resolvió bien, con una sola respuesta en cada una. Reto
 - **e021:** con FRICCIÓN : CALOR, «De la fricción se obtiene calor» se defendía con razón, porque se frota justamente para obtener calor. La base pasó a DESCUIDO : ACCIDENTE, con la misma clave (golpe : moretón).
 
 Los tres quedaron aprobados y en el índice. `npm test` da 4419 de 4420; falta `npm run catalogo` por el índice.
+
+---
+
+## 8 nov 2026 (noche) · Sin pieza pendiente
+
+Hice fetch y merge de la principal (trae `rutinas/verbal-ab/` y la nota de la pausa por límite de uso). `npm test` da 5134 de 5134. Los 21 ejercicios sueltos (e001 a e021) y los 30 textos están en el índice.
+
+No empecé nada nuevo. La lista de la rutina está cerrada, y Gerson ya pidió y recibió las opciones 1 y 2. Por el límite de uso, conviene que esta rutina no gaste ejecuciones vacías.
+
+**Para Gerson:**
+1. Más textos de dificultad 3 en las unidades de la rutina original.
+2. Apagar la rutina diaria hasta que haya algo nuevo que pedirle.
