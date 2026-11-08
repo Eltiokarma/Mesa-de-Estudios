@@ -1,0 +1,322 @@
+{
+  "plantilla": "geo-poligonos",
+  "tolerancia": 0.000001,
+  "nota": "Ángulos en grados; notable 37°/53° con lados 3-4-5. En el dodecágono con apotema, la respuesta es la clave dod:N:- que significa N(2 − √3).",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "equiangulo",
+        "a": 10,
+        "b": 5,
+        "c": 9,
+        "d": 12,
+        "pedido": "perimetro"
+      },
+      "esperado": {
+        "respuesta": 50,
+        "exacta": "50 m"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "diagonales",
+        "X": "D",
+        "pedido": "BPC"
+      },
+      "esperado": {
+        "respuesta": 108,
+        "exacta": "108°"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "encajados",
+        "dato": "exterior",
+        "valor": 105
+      },
+      "esperado": {
+        "respuesta": 720,
+        "exacta": "720 cm"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "trapecio",
+        "sub": "altura",
+        "B": 20,
+        "b": 3,
+        "c": 25,
+        "d": 26
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24 m"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "hexagono",
+        "seg": "BM",
+        "s": 2,
+        "s2": 4
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 cm"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "trapecio",
+        "sub": "bases",
+        "m": 25,
+        "s": 4
+      },
+      "esperado": {
+        "respuesta": 29,
+        "exacta": "29 cm"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "area-regular",
+        "sub": "dodecagono-apotema",
+        "ap": 5
+      },
+      "esperado": {
+        "respuesta": "dod:300:-",
+        "exacta": "300(2 − √3) m²"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "rombo",
+        "beta": 110,
+        "pedido": "AED"
+      },
+      "esperado": {
+        "respuesta": 150,
+        "exacta": "150°"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "soporte",
+        "n": 5,
+        "pedido": "FCD"
+      },
+      "esperado": {
+        "respuesta": 42,
+        "exacta": "42°"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "equiangulo",
+        "a": 12,
+        "b": 3,
+        "c": 7,
+        "d": 11,
+        "pedido": "lado"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 cm"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "cuadrados",
+        "pedido": "DEC"
+      },
+      "esperado": {
+        "respuesta": 45,
+        "exacta": "45°"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "diagonales",
+        "X": "D",
+        "pedido": "APB"
+      },
+      "esperado": {
+        "respuesta": 72,
+        "exacta": "72°"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "tipo": "area-regular",
+        "sub": "dodecagono-R",
+        "R": 8
+      },
+      "esperado": {
+        "respuesta": 192,
+        "exacta": "192 m²"
+      }
+    },
+    {
+      "semilla": 44,
+      "entrada": {
+        "tipo": "area-regular",
+        "sub": "hexagono-apotema",
+        "k": 8
+      },
+      "esperado": {
+        "respuesta": 665.1075101064489,
+        "exacta": "384√3 m²"
+      }
+    },
+    {
+      "semilla": 98,
+      "entrada": {
+        "tipo": "trapecio",
+        "sub": "segmento",
+        "B": 10,
+        "b": 4
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 u"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "encajados",
+        "dato": "interior",
+        "valor": 100
+      },
+      "esperado": {
+        "respuesta": 960,
+        "exacta": "960 cm"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "rombo",
+        "beta": 84,
+        "pedido": "BAE"
+      },
+      "esperado": {
+        "respuesta": 78,
+        "exacta": "78°"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "cuadrados",
+        "pedido": "CDE"
+      },
+      "esperado": {
+        "respuesta": 90,
+        "exacta": "90°"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "soporte",
+        "n": 10,
+        "pedido": "BFC"
+      },
+      "esperado": {
+        "respuesta": 48,
+        "exacta": "48°"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "diagonales",
+        "X": "D",
+        "pedido": "BPC"
+      },
+      "esperado": {
+        "respuesta": 108,
+        "exacta": "108°"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "rombo",
+        "beta": 76,
+        "pedido": "EAD"
+      },
+      "esperado": {
+        "respuesta": 22,
+        "exacta": "22°"
+      }
+    },
+    {
+      "semilla": 36,
+      "entrada": {
+        "tipo": "cuadrados",
+        "pedido": "BDE"
+      },
+      "esperado": {
+        "respuesta": 135,
+        "exacta": "135°"
+      }
+    },
+    {
+      "semilla": 57,
+      "entrada": {
+        "tipo": "hexagono",
+        "seg": "AM",
+        "s": 2.9999999999999996,
+        "s2": 9
+      },
+      "esperado": {
+        "respuesta": 3.4641016151377544,
+        "exacta": "2√3 m"
+      }
+    },
+    {
+      "semilla": 63,
+      "entrada": {
+        "tipo": "equiangulo",
+        "a": 7,
+        "b": 8,
+        "c": 2,
+        "d": 10,
+        "pedido": "perimetro"
+      },
+      "esperado": {
+        "respuesta": 37,
+        "exacta": "37 cm"
+      }
+    },
+    {
+      "semilla": 90,
+      "entrada": {
+        "tipo": "hexagono",
+        "seg": "PD",
+        "s": 6.000000000000001,
+        "s2": 36
+      },
+      "esperado": {
+        "respuesta": 5.196152422706632,
+        "exacta": "3√3 cm"
+      }
+    }
+  ]
+}
