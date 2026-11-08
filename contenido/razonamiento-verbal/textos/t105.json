@@ -298,7 +298,7 @@
         },
         {
           "t": "requisito para vender el oro.",
-          "codigo": "RV5",
+          "codigo": "RV7",
           "explicacion": "La oración 7 dice que el papel le sirve para vender el oro, pero eso es lo que la cubierta permite, no lo que la palabra significa: aquí es lo que tapa una actividad que sigue siendo ilegal.",
           "origen": "o7"
         }

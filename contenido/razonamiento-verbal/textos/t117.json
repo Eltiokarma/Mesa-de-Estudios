@@ -14,7 +14,7 @@
     [
       { "id": "o1", "rol": "principal", "t": "La biblioteca del colegio debería seguir comprando, sobre todo, libros de papel." },
       { "id": "o2", "rol": "apoyo", "t": "Un libro impreso se puede leer sin electricidad, sin señal de internet y sin cargar ninguna batería." },
-      { "id": "o3", "rol": "apoyo", "t": "Además, quien lee en papel no tiene a un toque de distancia los mensajes y los videos que lo distraen." },
+      { "id": "o3", "rol": "apoyo", "t": "Además, en una pantalla los mensajes y los videos están a un toque de distancia, y distraen a quien intenta leer." },
       { "id": "o4", "rol": "apoyo", "t": "Y un libro bien cuidado pasa por las manos de muchos alumnos durante años." },
       { "id": "o5", "rol": "detalle", "t": "Las pantallas tienen su lugar en el colegio, pero no deberían reemplazar a los estantes." }
     ],
@@ -87,7 +87,7 @@
         "sonda": "Leer en una pantalla puede hacer que uno se distraiga.",
         "aceptada": "ambos",
         "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
-        "explicacion": "Los dos lo sostienen: el texto A habla de los mensajes y videos que distraen a quien no lee en papel (oración 3), y el texto B admite que «una pantalla puede distraer» (oración 9).",
+        "explicacion": "Los dos lo sostienen: el texto A dice que en la pantalla los mensajes y videos distraen a quien intenta leer (oración 3), y el texto B admite que «una pantalla puede distraer» (oración 9).",
         "explicaciones": {
           "A": "El texto A lo dice en la oración 3, pero el B también lo admite en la oración 9. Discrepan en qué libros comprar, no en esto.",
           "B": "El texto B lo admite en la oración 9, pero el A también lo dice en la oración 3.",
@@ -146,5 +146,10 @@
   "origen": "propio",
   "fecha": "2026-11-08",
   "hechos": [],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "5 de 5 preguntas y 2 de 2 pasos previos coincidieron a ciegas. La oración 3 decía la distracción de la pantalla solo de forma implícita; se hizo explícita para que la coincidencia del paso previo de p3 sea indiscutible."
+  }
 }

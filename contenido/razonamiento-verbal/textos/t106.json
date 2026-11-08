@@ -293,9 +293,9 @@
           "explicacion": "Es del mismo campo (las tareas del colegio), pero el texto habla de lo que no se entendió, no de algo por entregar."
         },
         {
-          "t": "de poca importancia.",
-          "codigo": "RV19",
-          "explicacion": "Se refuerza lo que no se aprendió bien, no lo que importa poco; el texto habla de lo que «no se aprendió en la mañana» (oración 2)."
+          "t": "fluido, que sale con facilidad.",
+          "codigo": "RV20",
+          "explicacion": "Se parece en la forma (flojo, fluido), pero es casi lo contrario: lo que quedó flojo es lo que no se aprendió bien (oración 2) y por eso necesita refuerzo."
         }
       ]
     }
@@ -307,6 +307,6 @@
     "por": "subagente (revisor a ciegas)",
     "fecha": "2026-11-08",
     "veredicto": "aprobado",
-    "notas": "5 de 5 a ciegas (con los previos). Se cambió «flotante», que caía solo, por «de poca importancia» en el sentido contextual."
+    "notas": "5 de 5 a ciegas (con los previos). Se cambió «flotante», que caía solo, por «fluido, que sale con facilidad» en el sentido contextual."
   }
 }

@@ -147,7 +147,12 @@
   "origen": "propio",
   "fecha": "2026-11-08",
   "hechos": [
-    { "afirmacion": "En comunidades andinas se usan indicadores naturales, como la floración de ciertas plantas, para prever cómo será la campaña agrícola, y se siembra atendiendo a las fases de la luna.", "fuente": "Claverías, R. (2000). Conocimientos de los campesinos andinos sobre los predictores climáticos: elementos para su verificación. Puno: CIED" }
+    { "afirmacion": "Campesinos de los Andes peruanos y bolivianos prevén cómo será la campaña agrícola observando indicadores de la naturaleza y deciden la siembra según esa lectura.", "fuente": "Orlove, B. S., Chiang, J. C. H. y Cane, M. A. (2000). Forecasting Andean rainfall and crop yield from the influence of El Niño on Pleiades visibility. Nature, 403, 68-71" }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "5 de 5 preguntas y 2 de 2 pasos previos coincidieron a ciegas. La cita de Claverías (2000) era una ponencia inédita con la editorial mal puesta; se reemplazó por Orlove, Chiang y Cane (2000, Nature) y el hecho se dejó general, sin la luna."
+  }
 }

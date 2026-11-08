@@ -31,10 +31,10 @@
       "id": "p1",
       "tipo": "controversia",
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
-      "enunciado": "¿Sobre qué asunto toman posición los dos textos?",
+      "enunciado": "¿Cuál es el asunto de fondo que se discute entre los dos textos?",
       "alternativas": [
         { "t": "Qué hacer para que haya agua suficiente en los Andes.", "correcta": true, "evidencia": ["o5", "o10"],
-          "explicacion": "El texto A propone sembrar el agua en las alturas (oración 5) y el B añade que las ciudades necesitan además obras grandes y tuberías sin fugas (oración 10): los dos responden a cómo asegurar el agua." },
+          "explicacion": "El texto A propone sembrar el agua en las alturas (oración 5) y el B responde que, además, las ciudades necesitan obras grandes y tuberías sin fugas (oración 10): discuten qué hace falta para asegurar el agua." },
         { "t": "Si las qochas y las zanjas merecen el apoyo de las autoridades.", "codigo": "RV61", "origen": "o6",
           "explicacion": "En eso no discrepan: el texto B dice «estoy de acuerdo en que las qochas y las zanjas merecen apoyo» (oración 6)." },
         { "t": "Si el agua tratada se escapa por las tuberías viejas de las ciudades.", "codigo": "RV60", "origen": "o9",
@@ -133,8 +133,8 @@
       "alternativas": [
         { "t": "hacer que la lluvia entre en la tierra para usarla después.", "correcta": true, "evidencia": ["o3", "o4"],
           "explicacion": "Las qochas y las zanjas detienen la lluvia y la hacen entrar en la tierra (oración 3), y esa agua reaparece meses después (oración 4)." },
-        { "t": "poner semillas en un campo bien regado.", "codigo": "RV18",
-          "explicacion": "Es el sentido más común de «sembrar», pero aquí lo que se siembra es el agua, no semillas." },
+        { "t": "sembrar cultivos en las laderas durante la temporada de lluvias.", "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «sembrar», poner semillas o cultivos; pero aquí lo que se siembra es el agua, que se guarda en la tierra para después." },
         { "t": "regar las chacras con el agua de los ríos.", "codigo": "RV19",
           "explicacion": "Regar es del mismo campo, la agricultura, pero no es lo que describe el texto: el agua se guarda en la tierra, no se echa sobre las chacras." },
         { "t": "sacar el agua del subsuelo para llevarla a la superficie.", "codigo": "RV16",
@@ -150,5 +150,10 @@
     { "afirmacion": "Las qochas (lagunas pequeñas en hondonadas) y las zanjas de infiltración en laderas son prácticas de siembra y cosecha de agua en los Andes peruanos, que favorecen la recarga de manantiales.", "fuente": "Ministerio de Desarrollo Agrario y Riego (MIDAGRI), Fondo Sierra Azul: proyectos de siembra y cosecha de agua" },
     { "afirmacion": "En las empresas prestadoras de agua del Perú, una parte importante del agua producida no llega a facturarse, en buena medida por pérdidas físicas (fugas) en las redes.", "fuente": "SUNASS, Benchmarking regulatorio de las empresas prestadoras (indicador de agua no facturada)" }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "5 de 5 preguntas y 2 de 2 pasos previos coincidieron a ciegas. p1 preguntaba sobre qué «toman posición» y así el apoyo a las qochas también valía; ahora pregunta qué se discute. Se reforzó el distractor literal de p5; hechos de MIDAGRI (Sierra Azul) y SUNASS (agua no facturada) comprobados como fuentes existentes."
+  }
 }

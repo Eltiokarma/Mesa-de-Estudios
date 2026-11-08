@@ -133,10 +133,10 @@
       "alternativas": [
         { "t": "rivalidad por sacar más puntos.", "correcta": true, "evidencia": ["o4"],
           "explicacion": "La misma oración la explica: convierte cada examen en una pelea entre compañeros por el medio punto." },
-        { "t": "profesión que se estudia.", "codigo": "RV18",
-          "explicacion": "Es un sentido frecuente de «carrera», pero aquí no se habla de estudios superiores." },
-        { "t": "prueba de velocidad entre atletas.", "codigo": "RV49",
-          "explicacion": "Es el sentido al pie de la letra; en el texto, «carrera» se usa en sentido figurado, para la competencia por las notas." },
+        { "t": "estudios que se siguen para obtener una profesión.", "codigo": "RV18",
+          "explicacion": "Es otro sentido frecuente de «carrera», pero aquí no se habla de estudios superiores, sino de la competencia por el medio punto." },
+        { "t": "competencia en la que gana el que llega primero a la meta.", "codigo": "RV49",
+          "explicacion": "Es el sentido al pie de la letra, el de la pista; en el texto, «carrera» se usa en sentido figurado, para la competencia por las notas." },
         { "t": "prisa por terminar el examen.", "codigo": "RV19",
           "explicacion": "La prisa es del mismo campo que la carrera (la velocidad), pero el texto no habla de terminar rápido, sino de competir por puntos." },
         { "t": "avance en cada competencia del currículo.", "codigo": "RV5", "origen": "o2",
@@ -149,5 +149,10 @@
   "hechos": [
     { "afirmacion": "En la educación básica del Perú, la escala de calificación es literal: AD (logro destacado), A (logro esperado), B (en proceso) y C (en inicio), referida a competencias.", "fuente": "Resolución Viceministerial N.º 094-2020-MINEDU, Norma que regula la evaluación de las competencias de los estudiantes de la Educación Básica" }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "5 de 5 preguntas y 2 de 2 pasos previos coincidieron a ciegas. En p5 se reforzaron los dos distractores de sentido frecuente y literal, que se descartaban por absurdos; la RVM 094-2020-MINEDU existe y fija la escala AD, A, B y C."
+  }
 }

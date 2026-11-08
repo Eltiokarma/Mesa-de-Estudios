@@ -138,8 +138,8 @@
           "explicacion": "Repite palabras de la oración 4, que habla de otra cosa: de vender el mineral sin procesarlo." },
         { "t": "sepultada por un derrumbe.", "codigo": "RV19",
           "explicacion": "Es del mismo campo (enterrar, sepultar), pero el texto no habla de ningún derrumbe." },
-        { "t": "informada de algo.", "codigo": "RV20",
-          "explicacion": "Es el sentido de «enterada», que se parece en la forma pero no tiene relación con «enterrada»." }
+        { "t": "que ya todos conocen.", "codigo": "RV20",
+          "explicacion": "Viene de confundir «enterrada» con «enterada», que se parecen en la forma; el texto no habla de que la promesa sea conocida, sino de que quedaría sin aprovechar." }
       ]
     }
   ],
@@ -151,5 +151,10 @@
     { "afirmacion": "En el Perú, los pueblos indígenas u originarios tienen derecho a ser consultados antes de medidas que afecten sus derechos colectivos.", "fuente": "Ley N.º 29785, Ley del derecho a la consulta previa a los pueblos indígenas u originarios" },
     { "afirmacion": "En las zonas altoandinas de Puno, los bofedales sostienen la crianza de alpacas.", "fuente": "Ministerio del Ambiente del Perú (MINAM), información sobre ecosistemas de bofedales" }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "5 de 5 preguntas y 2 de 2 pasos previos coincidieron a ciegas. Se reforzó el distractor de parónimo de p5; Falchani (Macusani, Carabaya), la Ley 29785 de consulta previa y los bofedales como sustento de la crianza de alpacas son datos públicos y conocidos."
+  }
 }
