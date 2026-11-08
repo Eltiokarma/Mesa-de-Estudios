@@ -422,7 +422,7 @@
       }[sub];
       const ctx = !agudo && rng.moneda();
       const enunciado = ctx
-        ? ['Un terreno triangular ABC tiene en la esquina A un ángulo de ', v('A', g(A)), '. Dos caminos rectos parten los ángulos B y C en dos partes iguales ', sub === 'incentro' ? '(bisectrices interiores) y se cruzan en I.' : sub === 'excentro' ? '(bisectrices de los ángulos exteriores en B y en C) y se cruzan en E, fuera del terreno.' : '(el de B es bisectriz interior y el de C, del ángulo exterior en C) y se cruzan en E, fuera del terreno.']
+        ? ['Un terreno triangular ABC tiene en la esquina A un ángulo de ', v('A', g(A)), '. Dos caminos rectos parten en dos partes iguales ', sub === 'incentro' ? 'los ángulos B y C del terreno (bisectrices interiores) y se cruzan en I.' : sub === 'excentro' ? 'los ángulos exteriores en B y en C (bisectrices exteriores) y se cruzan en E, fuera del terreno.' : 'el ángulo B del terreno y el ángulo exterior en C, y se cruzan en E, fuera del terreno.']
         : [`En el triángulo ${agudo ? 'acutángulo ' : ''}ABC, `, v('A', `∠A = ${g(A)}`), ` y ${que[0]}.`];
       const pregunta = ['¿Cuánto mide el ángulo ', v('x', que[1]), '?'];
       const E = {
