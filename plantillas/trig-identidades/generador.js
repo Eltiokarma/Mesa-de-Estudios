@@ -57,12 +57,12 @@
   function ex(x) {
     if (!Number.isFinite(x) || Math.abs(x) > 1e5) return null;
     if (Math.abs(x) < 1e-9) return '0';
-    for (let d = 1; d <= 400; d++) { const n = x * d, r = Math.round(n); if (Math.abs(n - r) < 1e-7) return fr(r, d); }
+    for (let d = 1; d <= 2000; d++) { const n = x * d, r = Math.round(n); if (Math.abs(n - r) < 1e-9 * Math.max(1, Math.abs(n))) return fr(r, d); }
     for (const r of RAICES) {
       const s = Math.sqrt(r);
-      for (let d = 1; d <= 24; d++) for (let q = 1; q <= 24; q++) for (const sg of [1, -1]) {
+      for (let d = 1; d <= 24; d++) for (let q = 1; q <= 64; q++) for (const sg of [1, -1]) {
         const pn = x * d - sg * q * s, pr = Math.round(pn);
-        if (Math.abs(pn - pr) < 1e-7 && Math.abs(pr) <= 500) return textoRaiz(pr, sg * q, r, d);
+        if (Math.abs(pn - pr) < 1e-10 * Math.max(1, Math.abs(x * d)) && Math.abs(pr) <= 2000) return textoRaiz(pr, sg * q, r, d);
       }
     }
     return null;
@@ -136,7 +136,7 @@
     // C = 2B, altura h y base a: h·t² + 2a·t − 3h = 0 con t = tan B.
     trianguloDoble: ({ h: al, a }) => { const t = (-2 * a + Math.sqrt(4 * a * a + 12 * al * al)) / (2 * al); return { tanB: t, tanC: 2 * t / (1 - t * t) }; },
     // k·F x·F(60 − x)·F(60 + x) = (k/4)·F 3x.
-    tripleProducto: ({ F, x, k }) => (k / 4) * (F === 'cos' ? Math.cos(3 * x * RAD) : Math.sin(3 * x * RAD)),
+    tripleProducto: ({ F, x, k }) => (F === 'tan' ? k * Math.tan(3 * x * RAD) : (k / 4) * (F === 'cos' ? Math.cos(3 * x * RAD) : Math.sin(3 * x * RAD))),
     // T = c + b·cos 3θ con θ = k·t: primera hora t > 0 del extremo pedido.
     horaExtremo: ({ k, b, pide }) => { const objetivo = (pide === 'minima') === (b > 0) ? -1 : 1; return (objetivo === -1 ? 180 : 360) / (3 * k); },
     // Rango de las expresiones del tipo acotar.
@@ -163,6 +163,10 @@
     const tx = x => { const t = texto(x); return t === null ? null : (unidad ? `${t} ${unidad}` : t); };
     if (tx(correcta) === null) return null;
     const lista = errores.filter(e => e && Number.isFinite(e.valor) && Math.abs(e.valor - correcta) > 1e-9 && (!positivo || e.valor > 0) && tx(e.valor) !== null);
+    // Primero los distractores que se escriben como la correcta (signo, raíz, fracción, π): ninguno delata a la correcta.
+    const rasgos = t => [t.startsWith('−'), t.includes('√'), t.includes('/'), t.includes('π')];
+    const rc = rasgos(tx(correcta)), parecido = e => rasgos(tx(e.valor)).filter((r, i) => r === rc[i]).length;
+    lista.sort((e1, e2) => parecido(e2) - parecido(e1));
     return P.armar({ correcta, errores: lista, rng, negativos: true, texto: tx });
   }
   const enteroPos = x => Number.isFinite(x) && x > 0 && Math.abs(x - Math.round(x)) < 1e-9;
@@ -261,7 +265,8 @@
       pregunta: [`¿Cuál es el valor ${nombre} de L?`],
       correcta,
       errores: [
-        pa('TR16', base + s * (a + b), `Tomaste ${a} + ${b} como ${nombre} de ${a} sen 2x ${mas} ${b} cos 2x. El seno y el coseno no llegan a 1 a la vez: el ${nombre} es ${s > 0 ? '' : '−'}√(${a}² + ${b}²) = ${s > 0 ? '' : '−'}${R}.`),
+        h('TRI-suma-coeficientes', base + s * (a + b), `Tomaste ${s > 0 ? '' : '−'}(${a} + ${b}) como ${nombre} de ${a} sen 2x ${mas} ${b} cos 2x. El seno y el coseno no son extremos a la vez: esa parte va de −√(${a}² + ${b}²) = −${R} a ${R}, y después se suma la parte constante.`),
+        h('TRI-otro-extremo', base - s * R, `Ese es el ${s > 0 ? 'mínimo' : 'máximo'} de L, no el ${nombre}.`),
         h('TRI-olvida-desplazamiento', c + s * R, `Reemplazaste ${cuadrado}²x por ${mas === '+' ? '' : '−'}(cos 2x)/2 y te olvidaste del término constante: ${cuadrado}²x = (1 ${mas} cos 2x)/2 deja ${n}/2 = ${b} sumando.`),
         h('TRI-sin-mitad', c + s * Math.hypot(m, n), `Usaste ${m} y ${n} como coeficientes de sen 2x y cos 2x. Al pasar al ángulo doble se dividen entre 2: sen x cos x = (sen 2x)/2.`),
         h('TRI-senxcosx-hasta-1', s > 0 ? m + n + c : c - m, s > 0 ? `Tomaste sen x cos x ≤ 1 y ${cuadrado}²x ≤ 1 por separado. sen x cos x llega solo a 1/2 y los dos términos no son máximos a la vez.` : `Tomaste −1 ≤ sen x cos x y ${cuadrado}²x ≥ 0 por separado. sen x cos x llega solo a −1/2, y los dos términos no son mínimos a la vez.`),
@@ -298,9 +303,10 @@
     ];
     if (otra >= 90) errores.push(pa('TR21', otra, `Tomaste la otra solución de sen(x + ${conf.phi}°) = ${ex(senAc(x + conf.phi))}. Con ella x no es agudo (y el ángulo entre AC y AD sería 90° − x ≤ 0): se descarta.`));
     const tR = ex(conf.R * k);
+    const nota = conf.phi === 37 || conf.phi === 53 ? ' (Considera sen 37° = 3/5 y sen 53° = 4/5.)' : '';
     return {
       variables,
-      enunciado: ['Un terreno tiene forma de cuadrilátero ABCD con ángulo recto en A. Los lados AB y AD miden ', v('AB', `${tAB} m`), ' y ', v('AD', `${tAD} m`), `. La diagonal AC mide ${AC} m y forma con AB un ángulo agudo x (y con AD, el ángulo 90° − x). El área del terreno es `, v('S', `${tS} m²`), '.'],
+      enunciado: ['Un terreno tiene forma de cuadrilátero ABCD con ángulo recto en A. Los lados AB y AD miden ', v('AB', `${tAB} m`), ' y ', v('AD', `${tAD} m`), `. La diagonal AC mide ${AC} m y forma con AB un ángulo agudo x (y con AD, el ángulo 90° − x). El área del terreno es `, v('S', `${tS} m²`), '.' + nota],
       pregunta: ['¿Cuánto mide x?'],
       correcta: x,
       errores,
@@ -349,10 +355,10 @@
       correcta = O;
       errores = [
         pa('TR21', -O, `Al sacar la raíz salen dos valores, ±${ex(Math.abs(O))}. En el ${ROM[cuadrante]} cuadrante sen x ${opOtra} cos x es ${O > 0 ? 'positivo' : 'negativo'}: había que descartar el otro.`),
-        h('TRI-sin-raiz', O * O, `Ese es (sen x ${opOtra} cos x)². Faltó sacar la raíz cuadrada.`),
+        h('TRI-sin-raiz', Math.sign(O) * O * O, `Te quedaste con (sen x ${opOtra} cos x)² = ${ex(O * O)} (con el signo del cuadrante). Faltó sacar la raíz cuadrada.`),
         h('TRI-da-el-producto', Pr, 'Ese es sen x · cos x, un paso intermedio. Con él se calcula (sen x ' + opOtra + ' cos x)² = 1 ' + opOtra + ' 2 sen x cos x.'),
         h('TRI-olvida-el-2', Math.sign(O) * Math.sqrt(Math.max(0, 1 - (dato === 'suma' ? 1 : -1) * Pr)), `Usaste (sen x ${opOtra} cos x)² = 1 ${opOtra} sen x cos x: faltó el 2 del doble producto.`),
-        h('TRI-resta-lineal', dato === 'suma' ? 1 - k : 1 + k, 'Restaste o sumaste k a 1 como si fuera lineal. Hay que pasar por el cuadrado.'),
+        h('TRI-resta-lineal', Math.sign(O) * Math.abs(dato === 'suma' ? 1 - k : 1 + k), 'Restaste o sumaste k a 1 como si fuera lineal. Hay que pasar por el cuadrado.'),
       ];
       solucion = [pasoP, [`(sen x ${opOtra} cos x)² = 1 ${opOtra} 2P = ${ex(O * O)} → sen x ${opOtra} cos x = ±${ex(Math.abs(O))}.`],
         [`En el ${ROM[cuadrante]} cuadrante sen x es ${sS > 0 ? 'positivo' : 'negativo'} y cos x es ${sC > 0 ? 'positivo' : 'negativo'}, así que sen x ${opOtra} cos x es ${O > 0 ? 'positivo' : 'negativo'}: `, v('R', ex(O)), '.']];
@@ -375,10 +381,10 @@
   }
 
   function trianguloDoble(rng) {
-    const [n, d] = rng.elegir([[1, 2], [1, 3], [3, 4], [2, 3], [1, 4], [2, 5]]);
+    const [n, d] = rng.elegir([[1, 2], [1, 3], [3, 4], [2, 3], [1, 4], [2, 5], [1, 5], [3, 5], [3, 7], [4, 5]]);
     const g = gcd(3 * d * d - n * n, 2 * n * d);
     let al = 2 * n * d / g, a = (3 * d * d - n * n) / g;
-    if (al * 2 <= 24 && rng.moneda()) { al *= 2; a *= 2; }
+    const mult = rng.elegir([1, 2, 3].filter(z => z === 1 || z * al <= 30)); al *= mult; a *= mult;
     const t = n / d, tC = 2 * t / (1 - t * t), pide = rng.elegir(['tanB', 'tanC']);
     const variables = { h: { nombre: 'altura AH', color: 'o' }, a: { nombre: 'lado BC', color: 'i' }, t: { nombre: 'tan B', color: 'h' }, C: { nombre: 'tan C', color: 'd' } };
     const neg = -3 / t, intro = rng.elegir(['El frontón de un techo es un triángulo ABC que tiene', 'Un triángulo ABC tiene']);
@@ -413,26 +419,36 @@
 
   function tripleProducto(rng) {
     if (rng.moneda()) {
-      const F = rng.elegir(['cos', 'sen']), G = F === 'cos' ? 'sen' : 'cos', x = rng.elegir([10, 15, 20]), k = rng.elegir([2, 4, 8, 16]);
-      const val = th => (F === 'cos' ? Math.cos(th * RAD) : Math.sin(th * RAD));
-      const F3 = val(3 * x), correcta = k / 4 * F3, G3 = G === 'cos' ? Math.cos(3 * x * RAD) : Math.sin(3 * x * RAD);
-      const variables = { k: { nombre: 'coeficiente', color: 'o' }, x: { nombre: 'ángulo menor', color: 'i' }, R: { nombre: 'valor de E', color: 'd' } };
+      const F = rng.elegir(['cos', 'sen', 'tan']), x = rng.elegir(F === 'tan' ? [10, 20] : [10, 15, 20, 40, 45, 50]);
+      const k = rng.elegir(F === 'tan' ? [1, 2, 3, 6] : [2, 4, 8, 12, 16]), div = F === 'tan' ? 1 : 4;
+      const FN = { cos: Math.cos, sen: Math.sin, tan: Math.tan, cot: t => 1 / Math.tan(t) }, G = { cos: 'sen', sen: 'cos', tan: 'cot' }[F];
+      const val = th => FN[F](th * RAD), F3 = val(3 * x), correcta = k / div * F3, G3 = FN[G](3 * x * RAD);
+      const variables = { k: { nombre: 'coeficiente', color: 'o' }, x: { nombre: 'ángulo x', color: 'i' }, R: { nombre: 'valor de E', color: 'd' } };
+      const angs = [x, 60 - x, 60 + x].sort((p, q) => p - q);
+      const enun = ['Calcula E = ', v('k', k)];
+      for (const g of angs) enun.push(` · ${F} `, g === x ? v('x', `${x}°`) : `${g}°`);
+      enun.push('.');
+      const cuad = 3 * x < 90 ? 'I' : 'II';
+      const errores = [
+        div === 4 ? h('TRI-olvida-el-cuarto', k * F3, `La identidad es 4·${F} x·${F}(60° − x)·${F}(60° + x) = ${F} 3x: el producto solo vale ${F} 3x dividido entre 4.`)
+          : h('TRI-cuarto-de-mas', k / 4 * F3, 'Dividiste entre 4 como en la identidad de senos y cosenos. Con tangentes no hay factor: tan x·tan(60° − x)·tan(60° + x) = tan 3x.'),
+        h('TRI-cambia-funcion', k / div * G3, `El producto de ${F === 'cos' ? 'cosenos' : F === 'sen' ? 'senos' : 'tangentes'} da ${F} 3x, no ${G} 3x.`),
+        h('TRI-signo-del-triple', -correcta, `El signo no va: 3x = ${3 * x}° está en el ${cuad} cuadrante, donde ${F} es ${F3 > 0 ? 'positivo' : 'negativo'}.`),
+        div === 4 ? h('TRI-un-medio', k / 2 * F3, 'Dividiste entre 2, como en 2 sen x cos x = sen 2x. Con tres factores, la identidad lleva un 4.')
+          : h('TRI-un-tercio', k / 3 * F3, 'Dividiste entre 3 por ser el ángulo triple. La identidad de tangentes no lleva ningún factor.'),
+        div === 4 ? h('TRI-un-octavo', k / 8 * F3, 'Dividiste entre 8. La identidad del triple lleva un 4: 4·F x·F(60° − x)·F(60° + x) = F 3x.') : null,
+        h('TRI-sin-triple', k / div * val(x), `Usaste ${F} x en vez de ${F} 3x.`),
+      ].filter(Boolean);
       return {
         variables,
-        enunciado: ['Calcula E = ', v('k', k), ` · ${F} `, v('x', `${x}°`), ` · ${F} ${60 - x}° · ${F} ${60 + x}°.`],
+        enunciado: enun,
         pregunta: ['¿Cuánto vale E?'],
         correcta,
-        errores: [
-          h('TRI-olvida-el-cuarto', k * F3, `La identidad es 4·${F} x·${F}(60° − x)·${F}(60° + x) = ${F} 3x: el producto solo vale ${F} 3x dividido entre 4.`),
-          h('TRI-cambia-funcion', k / 4 * G3, `Con ${F === 'cos' ? 'cosenos' : 'senos'} el producto da ${F} 3x, no ${G} 3x.`),
-          pa('TR16', k * val(120), 'Sumaste los tres ángulos como si el producto de las razones fuera la razón de la suma. Eso no vale: hay que usar la identidad del triple.'),
-          h('TRI-un-medio', k / 2 * F3, `Dividiste entre 2, como en 2 sen x cos x = sen 2x. Con tres factores, la identidad lleva un 4.`),
-          h('TRI-sin-triple', k / 4 * val(x), `Usaste ${F} x en vez de ${F} 3x.`),
-        ],
+        errores,
         solucion: [
-          [`Identidad del triple: 4·${F} x·${F}(60° − x)·${F}(60° + x) = ${F} 3x.`],
-          ['Aquí x = ', v('x', `${x}°`), `: 60° − x = ${60 - x}° y 60° + x = ${60 + x}°.`],
-          ['E = (', v('k', k), `/4)·${F} ${3 * x}° = (${ex(k / 4)})·(${ex(F3)}) = `, v('R', ex(correcta)), '.'],
+          [F === 'tan' ? 'Identidad del triple: tan x·tan(60° − x)·tan(60° + x) = tan 3x.' : `Identidad del triple: 4·${F} x·${F}(60° − x)·${F}(60° + x) = ${F} 3x.`],
+          ['Los tres ángulos son x, 60° − x y 60° + x con x = ', v('x', `${x}°`), `: ${60 - x}° = 60° − x y ${60 + x}° = 60° + x.`],
+          ['E = ', div === 4 ? '(' : '', v('k', k), div === 4 ? '/4)' : '', `·${F} ${3 * x}° = ${div === 4 ? '(' + ex(k / 4) + ')·' : k + '·'}(${ex(F3)}) = `, v('R', ex(correcta)), '.'],
         ],
         datos: { tipo: 'triple-producto', modo: 'valor', F, x, k },
       };
@@ -477,7 +493,7 @@
       rango = [a * (1 - f) + c, a + c];
       modelos = [
         ['TRI-seno-cuadrado-negativo', [a * (1 - f) + c, a * (1 + f) + c], `Tomaste −1 ≤ sen²2x ≤ 1. Un cuadrado no es negativo: 0 ≤ sen²2x ≤ 1.`],
-        ['TR16', [a * (1 - 4 * f) + c, a + c], `Escribiste sen²x cos²x como sen²2x. Pero sen x cos x = (sen 2x)/2, así que sen²x cos²x = (sen²2x)/4.`],
+        ['TRI-sin-cuarto', [a * (1 - 4 * f) + c, a + c], `Escribiste sen²x cos²x como sen²2x. Pero sen x cos x = (sen 2x)/2, así que sen²x cos²x = (sen²2x)/4.`],
         ['TRI-es-constante', [a + c, a + c], `Tomaste sen${sup}x + cos${sup}x = 1, como si fuera sen²x + cos²x. Al desarrollar aparece un término con sen²x cos²x que cambia con x.`],
         ['TRI-cada-potencia', [c, 2 * a + c], `Acotaste cada potencia entre 0 y 1 por separado. Las dos no llegan a 1 (ni a 0) a la vez.`],
       ];
@@ -495,7 +511,7 @@
         ['TRI-seno-doble-positivo', [a + c, a * 2 ** nn + c], `Tomaste 0 ≤ sen 2x ≤ 1. El seno también es negativo: −1 ≤ sen 2x ≤ 1, y 1 ${o} sen 2x va de 0 a 2.`],
         ['TRI-suma-hasta-1', [c, a + c], `Tomaste −1 ≤ sen x ${o} cos x ≤ 1. La suma de los dos llega hasta √2 en valor absoluto.`],
         ['TRI-olvida-la-potencia', [c, 2 * a + c], `Acotaste (sen x ${o} cos x)² y olvidaste elevar al resto de la potencia.`],
-        ['TR16', [a + c, a + c], `Tomaste (sen x ${o} cos x)² = sen²x + cos²x = 1: faltó el doble producto ${o}2 sen x cos x.`],
+        ['TRI-sin-doble-producto', [a + c, a + c], `Tomaste (sen x ${o} cos x)² = sen²x + cos²x = 1: faltó el doble producto ${o}2 sen x cos x.`],
       ];
       expr = ['E = ', v('a', a), `(sen x ${o} cos x)${pot === 2 ? '²' : '⁴'}`, ...cola];
       pasos = [
@@ -508,7 +524,7 @@
     const que = { dif: 'la diferencia entre el valor máximo y el valor mínimo de E', suma: 'la suma del valor máximo y el valor mínimo de E', min: 'el valor mínimo de E', max: 'el valor máximo de E' }[pide];
     const valor = ([lo, hi]) => ({ dif: hi - lo, suma: hi + lo, min: lo, max: hi }[pide]);
     const correcta = valor(rango);
-    const errores = modelos.map(([id, r, exp]) => (id === 'TR16' ? pa : h)(id, valor(r), exp));
+    const errores = modelos.map(([id, r, exp]) => h(id, valor(r), exp));
     pasos.push([`${{ dif: 'máximo − mínimo', suma: 'máximo + mínimo', min: 'mínimo', max: 'máximo' }[pide]} = `, v('R', ex(correcta)), '.']);
     return {
       variables,
@@ -575,7 +591,7 @@
   }
 
   function cadena(rng) {
-    const [n, x] = rng.elegir([[1, 22.5], [1, 15], [1, 30], [1, 60], [2, 7.5], [2, 15], [2, 11.25], [2, 30], [3, 7.5], [3, 15]]);
+    const [n, x] = rng.elegir([[1, 22.5], [1, 15], [1, 30], [1, 60], [1, 7.5], [1, 67.5], [1, 75], [1, 52.5], [2, 7.5], [2, 15], [2, 11.25], [2, 30], [2, 37.5], [2, 33.75], [2, 3.75], [3, 7.5], [3, 15], [3, 3.75]]);
     const N = 2 ** n, correcta = calc.cadena({ n, x });
     const terminos = ['cot ', v('x', grados(x)), ' − tan ', v('x', grados(x))];
     for (let j = 1; j < n; j++) terminos.push(` − ${2 ** j} tan ${grados(2 ** j * x)}`);
@@ -593,9 +609,9 @@
       pregunta: ['¿Cuánto vale E?'],
       correcta,
       errores: [
-        pa('TR16', cotR(N * x), `Usaste cot θ − tan θ = cot 2θ, sin el factor 2. Cada paso duplica el coeficiente: al final queda ${N}·cot ${grados(N * x)}.`),
+        h('TRI-olvida-el-2', cotR(N * x), `Usaste cot θ − tan θ = cot 2θ, sin el factor 2. Cada paso duplica el coeficiente: al final queda ${N}·cot ${grados(N * x)}.`),
         h('TRI-tan-por-cot', N * tanR(N * x), 'La identidad da la cotangente del doble, no la tangente.'),
-        pa('TR12', -correcta, `Te equivocaste de signo: cot ${grados(N * x)} es ${correcta > 0 ? 'positiva' : 'negativa'} (${grados(N * x)} está en el ${N * x < 90 ? 'I' : 'II'} cuadrante).`),
+        (N * x > 90 ? pa : h)(N * x > 90 ? 'TR12' : 'TRI-cambia-signo', -correcta, `Te equivocaste de signo: cot ${grados(N * x)} es ${correcta > 0 ? 'positiva' : 'negativa'} (${grados(N * x)} está en el ${N * x < 90 ? 'I' : 'II'} cuadrante).`),
         h('TRI-confunde-con-csc', N * csc(N * x), 'Usaste cot θ + tan θ = 2 csc 2θ. Aquí la tangente se resta: va cot θ − tan θ = 2 cot 2θ.'),
         h('TRI-cuenta-mal-los-pasos', 2 * N * cotR(2 * N * x), 'Aplicaste la identidad una vez de más: hay tantos pasos como términos con tangente.'),
       ],
@@ -614,12 +630,12 @@
     const t = tanRed(theta);
     return {
       variables,
-      enunciado: [...texto, '.'],
+      enunciado: [...texto, '.', beta === 37 || beta === 53 ? ' (Considera sen 37° = 3/5 y sen 53° = 4/5.)' : ''],
       pregunta: ['¿Cuánto vale E?'],
       correcta,
       errores: [
         pa('TR12', -correcta, `El signo no cuadra con el cuadrante: tan ${tg} es ${t > 0 ? 'positiva' : 'negativa'} (${tg} está en el ${['I', 'II', 'III', 'IV'][Math.floor(theta / 90)]} cuadrante).`),
-        pa('TR16', correcta / 2, `Usaste ${op === 'suma' ? 'tan θ + cot θ = csc 2θ' : 'cot θ − tan θ = cot 2θ'}, sin el factor 2.`),
+        h('TRI-olvida-el-2', correcta / 2, `Usaste ${op === 'suma' ? 'tan θ + cot θ = csc 2θ' : 'cot θ − tan θ = cot 2θ'}, sin el factor 2.`),
         h('TRI-confunde-identidad', op === 'suma' ? 1 / t - t : t + 1 / t, op === 'suma' ? 'Usaste cot θ − tan θ = 2 cot 2θ. Con la suma, la identidad es tan θ + cot θ = 2 csc 2θ.' : 'Usaste tan θ + cot θ = 2 csc 2θ. Con la resta, la identidad es cot θ − tan θ = 2 cot 2θ.'),
         h('TRI-doble-factor', 2 * correcta, 'Pusiste el factor 2 dos veces.'),
       ],

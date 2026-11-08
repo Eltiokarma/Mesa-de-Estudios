@@ -2,7 +2,7 @@
   "plantilla": "trig-identidades",
   "tolerancia": 0.000001,
   "nota": "Ángulos con la convención de academia (37°/53° del triángulo 3-4-5). Fracciones de _datos como [n, d] = n/d; los campos de cada tipo están en la cabecera de generador.js.",
-  "verificacion": "Verificación a ciegas (subagente verificador, 8 nov 2026): los 23 casos se resolvieron desde el enunciado con cálculo exacto (ángulo doble y triple, cofunciones, arcos compuestos) y se comprobaron numéricamente por otra vía (barrido de x, bisección, fuerza bruta en x con ángulos agudos). Coinciden los 23; en el terreno, 16° es la convención 7-24-25 (exacto 16,26°).",
+  "verificacion": "",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -23,8 +23,8 @@
       "semilla": "salida-1",
       "entrada": {
         "tipo": "triangulo-doble",
-        "h": 4,
-        "a": 11,
+        "h": 8,
+        "a": 22,
         "pide": "tanB"
       },
       "esperado": {
@@ -63,13 +63,13 @@
       "semilla": 2,
       "entrada": {
         "tipo": "triangulo-doble",
-        "h": 24,
-        "a": 46,
+        "h": 20,
+        "a": 71,
         "pide": "tanC"
       },
       "esperado": {
-        "respuesta": 2.4,
-        "exacta": "12/5"
+        "respuesta": 0.9523809523809524,
+        "exacta": "20/21"
       }
     },
     {
@@ -204,12 +204,12 @@
         "tipo": "triple-producto",
         "modo": "valor",
         "F": "cos",
-        "x": 10,
-        "k": 2
+        "x": 15,
+        "k": 4
       },
       "esperado": {
-        "respuesta": 0.43301270189221935,
-        "exacta": "√3/4"
+        "respuesta": 0.7071067811865476,
+        "exacta": "√2/2"
       }
     },
     {
@@ -251,13 +251,13 @@
       "semilla": 39,
       "entrada": {
         "tipo": "triangulo-doble",
-        "h": 12,
-        "a": 23,
+        "h": 20,
+        "a": 71,
         "pide": "tanB"
       },
       "esperado": {
-        "respuesta": 0.6666666666666666,
-        "exacta": "2/3"
+        "respuesta": 0.4,
+        "exacta": "2/5"
       }
     },
     {
@@ -353,6 +353,20 @@
       "esperado": {
         "respuesta": 4,
         "exacta": "4"
+      }
+    },
+    {
+      "semilla": 36,
+      "entrada": {
+        "tipo": "triple-producto",
+        "modo": "valor",
+        "F": "tan",
+        "x": 10,
+        "k": 2
+      },
+      "esperado": {
+        "respuesta": 1.1547005383792515,
+        "exacta": "2√3/3"
       }
     }
   ]

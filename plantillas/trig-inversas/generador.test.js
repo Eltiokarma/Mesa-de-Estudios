@@ -32,6 +32,7 @@ function raices(f, a, b, N = 20000) {
     }
     x0 = x1; f0 = f1;
   }
+  for (const e of [a, b]) if (Math.abs(f(e)) < 1e-12) xs.push(e); // raíz justo en el borde del dominio
   const out = [];
   for (const x of xs.sort((u, w) => u - w)) if (!out.length || Math.abs(x - out[out.length - 1]) > 1e-7) out.push(x);
   return out;
@@ -50,6 +51,7 @@ function recalcular(p) {
       const [f, g] = { 'sen-cos': ['arcsen', 'arccos'], 'tan-cot': ['arctan', 'arccot'], 'sec-csc': ['arcsec', 'arccsc'] }[d.par];
       const ecu = d.forma === 'diferencia' ? x => ARC[f](x) - ARC[g](x) - q(d.d) * PI
         : d.forma === 'multiplo' ? x => d.m * ARC[f](x) - d.n * ARC[g](x)
+        : d.forma === 'triple' ? x => 2 * ARC[f](x) - ARC[g](x) - q(d.c) * PI
         : x => ARC[f](x) + 2 * ARC[g](x) - q(d.c) * PI;
       const tramos = d.par === 'sen-cos' ? [[-1, 1]] : d.par === 'tan-cot' ? [[-40, 40]] : [[-40, -1], [1, 40]];
       const sol = tramos.flatMap(([a, b]) => raices(ecu, a, b)).filter(x => Math.abs(ecu(x)) < 1e-9);
@@ -80,9 +82,10 @@ function recalcular(p) {
     }
     case 'interseccion': {
       const m = d.m[0] / d.m[1] * Math.sqrt(d.m[2]);
-      const xs = raices(x => Math.atan(m * x) - Math.acos(x), -1, 1);
+      const ecu = d.par === 'cot-sen' ? x => ARC.arccot(m * x) - Math.asin(x) : x => Math.atan(m * x) - Math.acos(x);
+      const xs = raices(ecu, -1, 1);
       assert.equal(xs.length, 1);
-      return d.pide === 'x2' ? xs[0] ** 2 : d.pide === 'x' ? xs[0] : Math.acos(xs[0]);
+      return d.pide === 'x2' ? xs[0] ** 2 : d.pide === 'x' ? xs[0] : (d.par === 'cot-sen' ? Math.asin(xs[0]) : Math.acos(xs[0]));
     }
     case 'transformacion': {
       const f = x => d.a * PI / 4 + d.B * Math.atan(d.C * x + d.D);

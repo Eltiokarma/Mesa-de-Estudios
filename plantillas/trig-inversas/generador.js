@@ -8,11 +8,13 @@
  * Tipos y campos de _datos:
  *   complementaria  par 'sen-cos' (arcsen x y arccos x), 'tan-cot' (arctan x y arccot x) o 'sec-csc' (arcsec x y
  *                   arccsc x); f es la primera y g la segunda. forma 'diferencia': f(x) − g(x) = d·π (d = [n, den]);
- *                   'multiplo': m·f(x) = n·g(x); 'suma': f(x) + 2·g(x) = c·π (c = [n, den]). Se pide x.
+ *                   'multiplo': m·f(x) = n·g(x); 'suma': f(x) + 2·g(x) = c·π (c = [n, den]);
+ *                   'triple': 2·f(x) − g(x) = c·π. Se pide x.
  *   lugar           forma 'recta': arcsec(y − a·x) + arccsc(b·x + c) = π/2; se pide la ecuación de la recta
  *                   (respuesta de texto, clave 'recta:m,n' para y = m·x + n).
  *                   forma 'circunferencia': arcsec(x² + y² + c) + arccsc(2a·x + 2b·y) = π/2; se pide el radio.
- *   interseccion    las gráficas de y = arctan(m·x) e y = arccos x se cortan en P; m = [n, den, r]: m = (n/den)·√r
+ *   interseccion    par 'tan-cos': las gráficas de y = arctan(m·x) e y = arccos x se cortan en P; par 'cot-sen':
+ *                   las de y = arccot(m·x) e y = arcsen x. m = [n, den, r]: m = (n/den)·√r
  *                   (r = 1 si no hay raíz). pide 'x2' (cuadrado de la abscisa), 'x' (abscisa) u 'ordenada' (en rad).
  *   transformacion  f(x) = A + B·arctan(C·x + D) con A = a·π/4. Se pide el rango y si f es creciente o decreciente
  *                   (respuesta de texto, clave 'lo|hi|sentido|abierto' con lo y hi en cuartos de π).
@@ -46,12 +48,12 @@
   function ex(x) {
     if (!Number.isFinite(x) || Math.abs(x) > 1e5) return null;
     if (Math.abs(x) < 1e-9) return '0';
-    for (let d = 1; d <= 400; d++) { const n = x * d, r = Math.round(n); if (Math.abs(n - r) < 1e-7) return fr(r, d); }
+    for (let d = 1; d <= 2000; d++) { const n = x * d, r = Math.round(n); if (Math.abs(n - r) < 1e-9 * Math.max(1, Math.abs(n))) return fr(r, d); }
     for (const r of RAICES) {
       const s = Math.sqrt(r);
-      for (let d = 1; d <= 24; d++) for (let q = 1; q <= 24; q++) for (const sg of [1, -1]) {
+      for (let d = 1; d <= 24; d++) for (let q = 1; q <= 64; q++) for (const sg of [1, -1]) {
         const pn = x * d - sg * q * s, pr = Math.round(pn);
-        if (Math.abs(pn - pr) < 1e-7 && Math.abs(pr) <= 500) return textoRaiz(pr, sg * q, r, d);
+        if (Math.abs(pn - pr) < 1e-10 * Math.max(1, Math.abs(x * d)) && Math.abs(pr) <= 2000) return textoRaiz(pr, sg * q, r, d);
       }
     }
     return null;
@@ -90,6 +92,7 @@
       let ang;
       if (forma === 'diferencia') ang = (PI / 2 + d * PI) / 2;
       else if (forma === 'multiplo') ang = n / (m + n) * PI / 2;
+      else if (forma === 'triple') ang = (c * PI + PI / 2) / 3; // 2f − g = cπ y g = π/2 − f → 3f = cπ + π/2
       else ang = PI - c * PI; // f + 2g = cπ y f + g = π/2 → g = cπ − π/2 → f = π − cπ
       return { x: DIR[f](ang), angulo: ang };
     },
@@ -97,7 +100,8 @@
     recta: ({ a, b, c }) => ({ pendiente: a + b, ordenada: c }),
     circunferencia: ({ a, b, c }) => ({ radio: Math.sqrt(a * a + b * b - c), cx: a, cy: b }),
     // arctan(m x) = arccos x = θ: cos θ = x y tan θ = m x → m x² = sen θ → m²x⁴ + x² − 1 = 0.
-    interseccion: ({ m }) => { const x2 = (-1 + Math.sqrt(1 + 4 * m * m)) / (2 * m * m); return { x2, x: Math.sqrt(x2), ordenada: Math.acos(Math.sqrt(x2)) }; },
+    // Con par 'cot-sen': arccot(m x) = arcsen x = θ, sen θ = x y cot θ = m x → m x² = cos θ: la misma cuadrática.
+    interseccion: ({ m, par = 'tan-cos' }) => { const x2 = (-1 + Math.sqrt(1 + 4 * m * m)) / (2 * m * m), x = Math.sqrt(x2); return { x2, x, ordenada: par === 'cot-sen' ? Math.asin(x) : Math.acos(x) }; },
     // A + B·arctan(Cx + D): rango ⟨A − |B|π/2; A + |B|π/2⟩, creciente si B·C > 0.
     transformacion: ({ A, B, C }) => ({ lo: A - Math.abs(B) * PI / 2, hi: A + Math.abs(B) * PI / 2, creciente: B * C > 0 ? 1 : 0 }),
     // El dominio de F(u) con G(u) es u = ±1; el rango, los valores distintos de f ahí.
@@ -123,19 +127,22 @@
     if (t(correcta) === null) return null;
     const lista = errores.filter(e => e && Number.isFinite(e.valor) && Math.abs(e.valor - correcta) > 1e-9 && t(e.valor) !== null)
       .map(({ texto: _t, ...resto }) => resto);
+    const rasgos = z => [z.startsWith('−'), z.includes('√'), z.includes('/'), z.includes('π')];
+    const rc = rasgos(t(correcta)), parecido = e => rasgos(t(e.valor)).filter((r, i) => r === rc[i]).length;
+    lista.sort((e1, e2) => parecido(e2) - parecido(e1));
     return P.armar({ correcta, errores: lista, rng, negativos: true, texto: t });
   }
 
   // ---------- tipos ----------
   function complementaria(rng) {
     const par = rng.elegir(Object.keys(PARES)), [f, g] = PARES[par];
-    const forma = rng.elegir(['diferencia', 'multiplo', 'suma']);
+    const forma = rng.elegir(['diferencia', 'multiplo', 'suma', 'triple']);
     const fn = f.slice(3), gn = g.slice(3);
     const co = { sen: 'cos', cos: 'sen', tan: 'cot', cot: 'tan', sec: 'csc', csc: 'sec' };
     const variables = { f: { nombre: `${f} x`, color: 'o' }, g: { nombre: `${g} x`, color: 'i' }, t: { nombre: 'ángulo', color: 'h' }, R: { nombre: 'x', color: 'd' } };
     let enun, dat, ang, pasos, ang11;
     if (forma === 'diferencia') {
-      const d = rng.elegir([[1, 6], [-1, 6]]), dv = d[0] / d[1];
+      const d = rng.elegir([[1, 6], [-1, 6], [0, 1], [1, 2], [-1, 2]]), dv = d[0] / d[1];
       ang = (PI / 2 + dv * PI) / 2;
       enun = [v('f', `${f} x`), ' − ', v('g', `${g} x`), ` = ${pi(dv * PI)}`];
       pasos = [[v('f', `${f} x`), ' + ', v('g', `${g} x`), ' = π/2 (siempre, para x en el dominio).'], [`Sumando con la condición: 2·${f} x = π/2 ${dv > 0 ? '+' : '−'} ${pi(Math.abs(dv) * PI)} = ${pi(2 * ang)} → ${f} x = `, v('t', pi(ang)), '.']];
@@ -147,13 +154,20 @@
       pasos = [[v('f', `${f} x`), ' + ', v('g', `${g} x`), ' = π/2, así que ', v('g', `${g} x`), ` = π/2 − ${f} x.`],
         [`${m === 1 ? '' : m + '·'}${f} x = ${n === 1 ? '' : n + '·'}(π/2 − ${f} x) → ${m + n}·${f} x = ${pi(n * PI / 2)} → ${f} x = `, v('t', pi(ang)), '.']];
       dat = { forma, m, n }; ang11 = n / (m + n) * PI;
-    } else {
-      const c = rng.elegir([[2, 3], [5, 6], [3, 4]]), cv = c[0] / c[1];
+    } else if (forma === 'suma') {
+      const c = rng.elegir([[2, 3], [5, 6], [3, 4], [1, 1], [1, 2]]), cv = c[0] / c[1];
       ang = PI - cv * PI;
       enun = [v('f', `${f} x`), ' + 2·', v('g', `${g} x`), ` = ${pi(cv * PI)}`];
       pasos = [['Como ', v('f', `${f} x`), ' + ', v('g', `${g} x`), ' = π/2, la condición queda π/2 + ', v('g', `${g} x`), ` = ${pi(cv * PI)}, así que ${g} x = ${pi(cv * PI - PI / 2)}.`],
         [`${f} x = π/2 − ${pi(cv * PI - PI / 2)} = `, v('t', pi(ang)), '.']];
       dat = { forma, c }; ang11 = PI - (cv * PI - PI); // con f + g = π: g = cπ − π y f = π − g
+    } else {
+      const c = rng.elegir([[1, 2], [0, 1], [1, 4], [-1, 2], [1, 1]]), cv = c[0] / c[1];
+      ang = (cv * PI + PI / 2) / 3;
+      enun = ['2·', v('f', `${f} x`), ' − ', v('g', `${g} x`), ` = ${pi(cv * PI)}`];
+      pasos = [[v('f', `${f} x`), ' + ', v('g', `${g} x`), ' = π/2, así que ', v('g', `${g} x`), ` = π/2 − ${f} x.`],
+        [`2·${f} x − (π/2 − ${f} x) = ${pi(cv * PI)} → 3·${f} x = ${pi(cv * PI + PI / 2)} → ${f} x = `, v('t', pi(ang)), '.']];
+      dat = { forma, c }; ang11 = (cv * PI + PI) / 3; // con f + g = π
     }
     const x = DIR[f](ang);
     pasos.push([`x = ${fn}(${pi(ang)}) = `, v('R', ex(x)), '.']);
@@ -196,12 +210,19 @@
       const U = lineal([[1, 'y'], [-a, 'x']]), W = lineal([[b, 'x'], [c, '']]);
       const variables = { U: { nombre: 'argumento del arcsec', color: 'o' }, W: { nombre: 'argumento del arccsc', color: 'i' }, R: { nombre: 'recta', color: 'd' } };
       const op = (m, n) => ({ clave: `recta:${m},${n}`, texto: textoRecta(m, n) });
-      const errores = [
+      const simples = [
         { id: 'IN11', ...op(a - b, -c), explicacion: 'Tomaste arcsec u + arccsc w = π/2 como si pidiera w = −u. Con el mismo argumento, arcsec u + arccsc u = π/2: los argumentos son iguales.', respaldo: 'hipotesis' },
-        { id: 'INV-signo-al-despejar', ...op(b - a, c), explicacion: `Al pasar ${a > 0 ? '−' : '+'}${Math.abs(a)}x al otro lado no le cambiaste el signo.`, respaldo: 'hipotesis' },
-        { id: 'INV-olvida-termino', ...op(b, c), explicacion: `Olvidaste el término ${-a > 0 ? '+' : '−'} ${Math.abs(a)}x del argumento del arcsec al despejar y.`, respaldo: 'hipotesis' },
+        { id: 'INV-signo-al-despejar', ...op(b - a, c), explicacion: `Al pasar ${a > 0 ? '−' : '+'}${Math.abs(a) === 1 ? '' : Math.abs(a)}x al otro lado no le cambiaste el signo.`, respaldo: 'hipotesis' },
+        { id: 'INV-olvida-termino', ...op(b, c), explicacion: `Olvidaste el término ${-a > 0 ? '+' : '−'} ${Math.abs(a) === 1 ? '' : Math.abs(a)}x del argumento del arcsec al despejar y.`, respaldo: 'hipotesis' },
         { id: 'INV-signo-de-la-constante', ...op(a + b, -c), explicacion: 'Cambiaste el signo del término independiente al despejar.', respaldo: 'hipotesis' },
       ];
+      // Con errores dobles, ni la pendiente ni la constante de la correcta son las que más se repiten.
+      const dobles = [simples[1],
+        { id: 'INV-signo-al-despejar+INV-signo-de-la-constante', ...op(b - a, -c), explicacion: `Dos errores: al pasar ${a > 0 ? '−' : '+'}${Math.abs(a) === 1 ? '' : Math.abs(a)}x al otro lado no le cambiaste el signo, y además cambiaste el signo del término independiente.`, respaldo: 'hipotesis' },
+        simples[0],
+        { id: 'INV-olvida-termino+INV-signo-de-la-constante', ...op(b, -c), explicacion: `Dos errores: olvidaste el término ${-a > 0 ? '+' : '−'} ${Math.abs(a) === 1 ? '' : Math.abs(a)}x del arcsec y cambiaste el signo del término independiente.`, respaldo: 'hipotesis' },
+      ];
+      const errores = rng.moneda() ? simples : dobles;
       return {
         variables, texto: true,
         enunciado: ['Los puntos (x; y) que cumplen arcsec(', v('U', U), ') + arccsc(', v('W', W), ') = π/2 están sobre una recta.'],
@@ -210,7 +231,7 @@
         solucion: [
           ['Para |u| ≥ 1, arcsec u + arccsc u = π/2. Como arccsc es inyectiva, arcsec U + arccsc W = π/2 obliga a que W = U.'],
           [v('U', U), ' = ', v('W', W), ` → y = ${lineal([[a, 'x']])} + ${lineal([[b, 'x'], [c, '']])}.`],
-          [v('R', textoRecta(a + b, c)), ' (solo los puntos con |', v('W', W), '| ≥ 1, donde existen las dos funciones).'],
+          [v('R', textoRecta(a + b, c)), ' (solo valen los puntos con |', v('W', W), '| ≥ 1, donde existen las dos funciones).'],
         ],
         datos: { tipo: 'lugar', forma: 'recta', a, b, c },
       };
@@ -237,113 +258,139 @@
     const px = a === 0 ? 'x²' : `(x ${a > 0 ? '−' : '+'} ${Math.abs(a)})²`, py = b === 0 ? 'y²' : `(y ${b > 0 ? '−' : '+'} ${Math.abs(b)})²`;
     return {
       variables,
-      enunciado: ['Los puntos (x; y) que cumplen arcsec(', v('U', U), ') + arccsc(', v('W', W), ') = π/2 están sobre una circunferencia.'],
+      enunciado: ['Los puntos (x; y) que cumplen arcsec(', v('U', U), ') + arccsc(', v('W', W), ') = π/2 están sobre una circunferencia (solo valen los puntos donde existen las dos funciones).'],
       pregunta: ['¿Cuánto mide su radio?'],
       correcta: r, errores,
       solucion: [
         ['Para |u| ≥ 1, arcsec u + arccsc u = π/2; como arccsc es inyectiva, la condición obliga a que los dos argumentos sean iguales.'],
         [v('U', U), ' = ', v('W', W), ` → ${lineal([[1, 'x²'], [-2 * a, 'x'], [1, 'y²'], [-2 * b, 'y'], [c, '']])} = 0.`],
         [`Completando cuadrados: ${px} + ${py} = ${a * a + b * b} ${c > 0 ? '−' : '+'} ${Math.abs(c)} = ${r2}.`],
-        ['r = √' + r2 + ' = ', v('R', ex(r)), '.'],
+        ['r = √' + r2 + ' = ', v('R', ex(r)), '. Solo valen los puntos de la circunferencia con |', v('W', W), '| ≥ 1, donde existen las dos funciones.'],
       ],
       datos: { tipo: 'lugar', forma: 'circunferencia', a, b, c },
     };
   }
 
+  const textoM = ([n, d, r]) => {
+    const num = (n === 1 && r !== 1 ? '' : String(n)) + (r > 1 ? '√' + r : '');
+    const k = num === '1' ? '' : num;
+    if (d === 1) return k ? `${k}${r > 1 ? '·' : ''}x` : 'x';
+    return k ? `${k}x/${d}` : `x/${d}`;
+  };
   function interseccion(rng) {
-    const caso = rng.elegir([
-      { th: null, m: [1, 1, 1], mt: '' },
-      { th: 30, m: [2, 3, 1], mt: '2x/3' }, { th: 45, m: [1, 1, 2], mt: '√2·x' }, { th: 60, m: [2, 1, 3], mt: '2√3·x' },
-      { th: 37, m: [15, 16, 1], mt: '15x/16' }, { th: 53, m: [20, 9, 1], mt: '20x/9' },
-    ]);
-    const m = caso.m[0] / caso.m[1] * Math.sqrt(caso.m[2]);
-    const { x2, x, ordenada } = calc.interseccion({ m });
-    const variables = { m: { nombre: 'arctan', color: 'o' }, c: { nombre: 'arccos', color: 'i' }, t: { nombre: 'ángulo θ', color: 'h' }, R: { nombre: 'lo que se pide', color: 'd' } };
-    const fa = caso.th === null ? 'arctan x' : `arctan(${caso.mt})`;
-    const enunciado = ['Las gráficas de y = ', v('m', fa), ' e y = ', v('c', 'arccos x'), ' se cortan en un punto P.'];
-    const pasoBase = [['En P las dos dan el mismo ángulo θ: ', v('m', fa), ' = ', v('c', 'arccos x'), ' = ', v('t', 'θ'), `. Entonces cos θ = x y tan θ = ${caso.th === null ? 'x' : caso.mt}.`]];
-    if (caso.th === null) {
+    const par = rng.elegir(['tan-cos', 'cot-sen']);
+    const [fa0, fb, dentro, fuera] = par === 'tan-cos' ? ['arctan', 'arccos', 'tan', 'cos'] : ['arccot', 'arcsen', 'cot', 'sen'];
+    const otra = par === 'tan-cos' ? 'sen' : 'cos';
+    const pide = rng.elegir(['x2', 'x', 'ordenada']);
+    const NOT = { 30: [2, 3, 1], 45: [1, 1, 2], 60: [2, 1, 3], 37: [15, 16, 1], 53: [20, 9, 1] };
+    const DIRM = par === 'tan-cos' ? NOT : { 30: NOT[60], 45: NOT[45], 60: NOT[30], 37: NOT[53], 53: NOT[37] };
+    let mm;
+    if (pide === 'x2') mm = rng.elegir([[1, 1, 1], [2, 1, 1], [1, 2, 1], [3, 1, 1], [1, 1, 3], [2, 3, 1], [1, 3, 1]]);
+    else mm = DIRM[rng.elegir(pide === 'ordenada' ? [30, 45, 60] : [30, 45, 60, 37, 53])];
+    const m = mm[0] / mm[1] * Math.sqrt(mm[2]);
+    const { x2, x, ordenada } = calc.interseccion({ m, par });
+    const mt = textoM(mm), fa = `${fa0}(${mt})`.replace('(x)', ' x');
+    const variables = { m: { nombre: fa0, color: 'o' }, c: { nombre: fb, color: 'i' }, t: { nombre: 'ángulo θ', color: 'h' }, R: { nombre: 'lo que se pide', color: 'd' } };
+    const enunciado = ['Las gráficas de y = ', v('m', fa), ' e y = ', v('c', `${fb} x`), ' se cortan en un punto P.'];
+    const tm = ex(m);
+    const cuerpo = [
+      ['En P las dos dan el mismo ángulo θ: ', v('m', fa), ' = ', v('c', `${fb} x`), ' = ', v('t', 'θ'), `. Entonces ${fuera} θ = x y ${dentro} θ = ${mt}.`],
+      [`${otra} θ = ${dentro} θ · ${fuera} θ = ${tm === '1' ? '' : '(' + tm + ')·'}x². Con sen²θ + cos²θ = 1: ${tm === '1' ? '' : '(' + tm + ')²·'}x⁴ + x² = 1.`],
+      [`Con z = x²: ${ex(m * m) === '1' ? '' : '(' + ex(m * m) + ')'}z² + z − 1 = 0 → z = (−1 ± √(${ex(1 + 4 * m * m)}))/(${ex(2 * m * m)}). Como z = x² ≥ 0, se queda la raíz positiva: x² = ${ex(x2)}.`],
+    ];
+    const raizTexto = ex(x) || `√(${ex(x2)})`;
+    if (pide === 'x2') {
+      const neg = (-1 - Math.sqrt(1 + 4 * m * m)) / (2 * m * m);
+      cuerpo.push(['x² = ', v('R', ex(x2)), ' (no su raíz: esa es la abscisa).']);
       const errores = [
-        h('INV-valor-por-raiz', Math.sqrt(x2), 'Ese es la abscisa x, la raíz del valor pedido. Pedían x².', '√((√5 − 1)/2)'),
-        pa('TR21', (1 + S5) / 2, 'Tomaste la otra raíz de z² + z − 1 = 0 (cambiando su signo). Como x² = cos²θ ≤ 1, esa raíz no sirve: se descarta.'),
-        h('INV-olvida-la-mitad', (S5 - 1) / 4, 'Al aplicar la fórmula de la cuadrática dividiste entre 4 en vez de entre 2a = 2.'),
-        h('INV-da-el-seno-cuadrado', (3 - S5) / 2, 'Ese es 1 − x² = sen²θ. Pedían x² = cos²θ.'),
-      ];
+        h('INV-valor-por-raiz', x, 'Esa es la abscisa x, la raíz del valor pedido. Pedían x².', raizTexto),
+        pa('TR21', neg, 'Esa es la otra raíz de la cuadrática en z = x². Es negativa y x² no puede serlo: se descarta.'),
+        h('INV-olvida-la-mitad', x2 / 2, 'En la fórmula de la cuadrática dividiste entre el doble de lo que va (2a).'),
+        h(otra === 'sen' ? 'INV-da-el-seno-cuadrado' : 'INV-da-el-coseno-cuadrado', 1 - x2, `Ese es 1 − x² = ${otra}²θ. Pedían x² = ${fuera}²θ.`),
+        m !== 1 ? h('INV-sin-coeficiente', (S5 - 1) / 2, `Resolviste como si el coeficiente de x dentro del ${fa0} fuera 1; aquí es ${tm}.`) : null,
+      ].filter(Boolean);
       return {
         variables, enunciado, pregunta: ['¿Cuánto vale el cuadrado de la abscisa de P?'],
-        correcta: x2, textoCorrecta: '(√5 − 1)/2', errores,
-        solucion: [...pasoBase,
-          ['sen θ = tan θ · cos θ = x · x = x². Con sen²θ + cos²θ = 1: x⁴ + x² = 1.'],
-          ['Con z = x²: z² + z − 1 = 0 → z = (−1 ± √5)/2. Como z = x² ≥ 0, se queda la raíz positiva.'],
-          ['x² = ', v('R', '(√5 − 1)/2'), '.']],
-        datos: { tipo: 'interseccion', m: caso.m, pide: 'x2' },
+        correcta: x2, errores, solucion: cuerpo,
+        datos: { tipo: 'interseccion', par, m: mm, pide },
       };
     }
-    const notable = [30, 45, 60].includes(caso.th);
-    const pide = notable && rng.moneda() ? 'ordenada' : 'x';
-    const sen = Math.sqrt(1 - x * x);
-    const cuerpo = [...pasoBase,
-      [`sen θ = tan θ · cos θ = m·x², con m = ${ex(m)}. Con sen²θ + cos²θ = 1: m²x⁴ + x² − 1 = 0, una cuadrática en x² con una sola raíz positiva.`],
-      [`x² = (−1 + √(1 + 4m²))/(2m²) = ${ex(x2)}, así que x = ${ex(x)} (positiva, porque arctan(mx) y arccos x solo coinciden en un ángulo agudo).`],
-    ];
     if (pide === 'x') {
-      cuerpo.push(['La abscisa es x = cos θ = ', v('R', ex(x)), '.']);
+      cuerpo.push(['La abscisa es x = ', v('R', ex(x)), '.']);
       return {
         variables, enunciado, pregunta: ['¿Cuál es la abscisa de P?'],
         correcta: x, errores: [
           h('INV-valor-por-raiz', x2, 'Ese es x², un paso intermedio. La abscisa es su raíz.'),
-          h('INV-da-el-seno', sen, 'Ese es sen θ. La abscisa es x = cos θ, porque y = arccos x.'),
-          h('INV-da-la-tangente', m * x, 'Ese es tan θ = m·x, el valor de dentro del arctan, no la abscisa.'),
-          h('INV-reciproco', 1 / x, 'Ese es 1/x = sec θ. La abscisa es cos θ.'),
+          h(otra === 'sen' ? 'INV-da-el-seno' : 'INV-da-el-coseno', Math.sqrt(1 - x2), `Ese es ${otra} θ. La abscisa es x = ${fuera} θ, porque y = ${fb} x.`),
+          h(dentro === 'tan' ? 'INV-da-la-tangente' : 'INV-da-la-cotangente', m * x, `Ese es ${dentro} θ = ${mt}, el valor de dentro del ${fa0}, no la abscisa.`),
+          h('INV-reciproco', 1 / x, `Ese es 1/x. La abscisa es ${fuera} θ.`),
+          h('IN29', -x, 'Le cambiaste el signo: las dos gráficas se cortan con x > 0.'),
         ],
         solucion: cuerpo,
-        datos: { tipo: 'interseccion', m: caso.m, pide: 'x' },
+        datos: { tipo: 'interseccion', par, m: mm, pide },
       };
     }
-    cuerpo.push(['La ordenada es y = arccos x = θ = ', v('R', pi(ordenada)), '.']);
+    cuerpo.push(['x = ', ex(x), `, y la ordenada es y = ${fb} x = θ = `, v('R', pi(ordenada)), '.']);
     return {
       variables, enunciado, pregunta: ['¿Cuál es la ordenada de P?'],
-      correcta: ordenada, opciones: { texto: x => pi(x) }, errores: [
-        h('IN7', PI / 2 - ordenada, 'Ese es arcsen x, el complemento de θ. La ordenada es arccos x.'),
-        h('IN1', PI - ordenada, 'Ese ángulo está fuera de donde se cortan las dos gráficas: arctan con m > 0 da un ángulo agudo para x > 0.'),
-        h('INV-da-la-abscisa', x, 'Esa es la abscisa x = cos θ, no la ordenada.', ex(x)),
+      correcta: ordenada, opciones: { texto: z => pi(z) }, errores: [
+        h('IN7', PI / 2 - ordenada, `Ese es ${par === 'tan-cos' ? 'arcsen' : 'arccos'} x, el complemento de θ. La ordenada es ${fb} x.`),
+        h('IN1', PI - ordenada, `Ese ángulo está fuera de donde se cortan las dos gráficas: ${fa0} con m > 0 da un ángulo agudo para x > 0.`),
+        h('INV-da-la-abscisa', x, 'Esa es la abscisa x, no la ordenada.', ex(x)),
         h('INV-doble', 2 * ordenada, 'Duplicaste el ángulo: la ordenada es θ.'),
+        h('INV-mitad', ordenada / 2, 'Dividiste el ángulo entre 2: la ordenada es θ.'),
       ],
       solucion: cuerpo,
-      datos: { tipo: 'interseccion', m: caso.m, pide: 'ordenada' },
+      datos: { tipo: 'interseccion', par, m: mm, pide },
     };
   }
 
   function transformacion(rng) {
     const a = rng.elegir([-2, 0, 1, 2, 4]), B = rng.elegir([-3, -2, -1, 1, 2, 3]), C = rng.elegir([-2, -1, 1, 2, 3]), D = rng.entero(-3, 3);
-    const A = a * PI / 4, cuarto = x => Math.round(x / (PI / 4));
-    const op = (lo, hi, crece, abierto = true) => ({
-      clave: `${cuarto(lo)}|${cuarto(hi)}|${crece ? 'creciente' : 'decreciente'}|${abierto ? 'abierto' : 'cerrado'}`,
-      texto: `rango ${abierto ? '⟨' : '['}${pi(lo)}; ${pi(hi)}${abierto ? '⟩' : ']'}, ${crece ? 'creciente' : 'decreciente'}`,
-    });
-    const crece = B * C > 0, lo = A - Math.abs(B) * PI / 2, hi = A + Math.abs(B) * PI / 2;
+    const A = a * PI / 4, cuarto = x => Math.round(x / (PI / 4)), aB = Math.abs(B);
+    const crece = B * C > 0, lo = A - aB * PI / 2, hi = A + aB * PI / 2;
     const dentro = lineal([[C, 'x'], [D, '']]);
-    const tB = B === 1 ? '' : B === -1 ? '−' : `${B < 0 ? '−' : ''}${Math.abs(B)}`;
-    const expr = A === 0 ? `${tB}arctan(${dentro})` : `${pi(A)} ${B > 0 ? '+' : '−'} ${Math.abs(B) === 1 ? '' : Math.abs(B)}arctan(${dentro})`;
+    const tB = B === 1 ? '' : B === -1 ? '−' : `${B < 0 ? '−' : ''}${aB}`;
+    const expr = A === 0 ? `${tB}arctan(${dentro})` : `${pi(A)} ${B > 0 ? '+' : '−'} ${aB === 1 ? '' : aB + '·'}arctan(${dentro})`;
     const variables = { A: { nombre: 'desplazamiento vertical', color: 'o' }, B: { nombre: 'factor del arctan', color: 'i' }, R: { nombre: 'rango y sentido', color: 'd' } };
-    const errores = [
-      { id: 'INV-sentido-sin-reflejo', ...op(lo, hi, !crece), explicacion: `El sentido sale del signo de B·C = (${ent(B)})·(${ent(C)}): ${crece ? 'positivo, la gráfica sube' : 'negativo, la gráfica baja'}. ${B < 0 || C < 0 ? 'Un signo menos refleja la gráfica.' : ''}`.trim(), respaldo: 'hipotesis' },
-      Math.abs(B) !== 1 ? { id: 'INV-asintotas-sin-factor', ...op(A - PI / 2, A + PI / 2, crece), explicacion: `Olvidaste multiplicar por |B| = ${Math.abs(B)}: el arctan va de −π/2 a π/2, y ${Math.abs(B)}·arctan va de ${pi(-Math.abs(B) * PI / 2)} a ${pi(Math.abs(B) * PI / 2)}.`, respaldo: 'hipotesis' } : null,
-      { id: 'INV-asintotas-con-pi', ...op(A - Math.abs(B) * PI, A + Math.abs(B) * PI, crece), explicacion: 'Tomaste el rango de arctan como ⟨−π; π⟩. Es ⟨−π/2; π/2⟩.', respaldo: 'hipotesis' },
-      A !== 0 ? { id: 'INV-sin-desplazar', ...op(-Math.abs(B) * PI / 2, Math.abs(B) * PI / 2, crece), explicacion: `Olvidaste subir (o bajar) todo en ${pi(A)}: las asíntotas son y = A ± |B|π/2.`, respaldo: 'hipotesis' } : null,
-      { id: 'IN18', ...op(lo, hi, crece, false), explicacion: 'Pusiste el rango cerrado. arctan nunca llega a ±π/2: las rectas y = ' + pi(lo) + ' e y = ' + pi(hi) + ' son asíntotas, no valores de f.', respaldo: 'hipotesis' },
+    // Una opción = (rango, sentido, abierto); cada error cambia una de esas tres cosas.
+    const RANGOS = [
+      aB !== 1 ? { id: 'INV-asintotas-sin-factor', lo: A - PI / 2, hi: A + PI / 2, exp: `olvidaste multiplicar por |B| = ${aB} (${aB}·arctan va de ${pi(-aB * PI / 2)} a ${pi(aB * PI / 2)})` } : null,
+      { id: 'INV-asintotas-con-pi', lo: A - aB * PI, hi: A + aB * PI, exp: 'tomaste el rango de arctan como ⟨−π; π⟩ (es ⟨−π/2; π/2⟩)' },
+      A !== 0 ? { id: 'INV-sin-desplazar', lo: -aB * PI / 2, hi: aB * PI / 2, exp: `olvidaste subir (o bajar) todo en ${pi(A)}` } : null,
     ].filter(Boolean);
+    const SENT = { id: 'INV-sentido-sin-reflejo', exp: `el sentido sale del signo de B·C = (${ent(B)})·(${ent(C)}), que es ${crece ? 'positivo: la gráfica sube' : 'negativo: la gráfica baja'}` + (B < 0 && C < 0 ? ' (los dos signos menos se compensan)' : B < 0 || C < 0 ? ' (un signo menos la refleja)' : '') };
+    const CERR = { id: 'IN18', exp: `pusiste el rango cerrado, pero arctan nunca llega a ±π/2: y = ${pi(lo)} e y = ${pi(hi)} son asíntotas, no valores de f` };
+    const op = (rg, s, cerrado) => {
+      const l = rg ? rg.lo : lo, hh = rg ? rg.hi : hi, c = s ? !crece : crece, ab = !cerrado;
+      const ids = [rg, s ? SENT : null, cerrado ? CERR : null].filter(Boolean);
+      return {
+        clave: `${cuarto(l)}|${cuarto(hh)}|${c ? 'creciente' : 'decreciente'}|${ab ? 'abierto' : 'cerrado'}`,
+        texto: `rango ${ab ? '⟨' : '['}${pi(l)}; ${pi(hh)}${ab ? '⟩' : ']'}, ${c ? 'creciente' : 'decreciente'}`,
+        id: ids.map(e => e.id).join('+'), respaldo: 'hipotesis',
+        explicacion: (ids.length > 1 ? (ids.length === 2 ? 'Dos errores: ' : 'Tres errores: ') : '') + ids.map(e => e.exp).join('; y ') + '.',
+      };
+    };
+    const correcta = op(null, false, false);
+    const rg = rng.elegir(RANGOS);
+    // Dos repartos: errores sueltos, o combinados de modo que ni el rango ni el sentido ni el cierre de la correcta
+    // sean los que más se repiten entre las opciones.
+    const errores = rng.moneda()
+      ? [op(null, true, false), ...RANGOS.map(r => op(r, false, false)), op(null, false, true)]
+      : [op(null, true, true), op(rg, false, true), op(rg, true, false), op(rg, true, true)];
+    errores.forEach(e => { e.explicacion = e.explicacion.charAt(0).toUpperCase() + e.explicacion.slice(1); });
+    const enB = B < 0 ? `−${aB}` : String(aB);
     return {
       variables, texto: true,
-      enunciado: ['Sea f(x) = ', ...(A === 0 ? (Math.abs(B) === 1 ? [`${B < 0 ? '−' : ''}arctan(${dentro})`] : [v('B', B < 0 ? `−${-B}` : B), `·arctan(${dentro})`])
-        : [v('A', pi(A)), B > 0 ? ' + ' : ' − ', ...(Math.abs(B) === 1 ? [] : [v('B', Math.abs(B)), '·']), `arctan(${dentro})`]), ', con x real.'],
-      pregunta: ['¿Cuál es el rango de f y cómo es su gráfica?'],
-      correcta: op(lo, hi, crece), errores,
+      enunciado: ['Sea f(x) = ', ...(A === 0 ? (aB === 1 ? [`${B < 0 ? '−' : ''}arctan(${dentro})`] : [v('B', enB), `·arctan(${dentro})`])
+        : [v('A', pi(A)), ' + ', v('B', `(${enB})`), `·arctan(${dentro})`]), ', con x real.'],
+      pregunta: ['¿Cuál es el rango de f y es creciente o decreciente?'],
+      correcta, errores,
       solucion: [
         [`−π/2 < arctan(${dentro}) < π/2 para todo x (las rectas ±π/2 son asíntotas y nunca se alcanzan).`],
-        [`Multiplicado por ${B < 0 ? '−' + -B : B}: el intervalo pasa a medir |B|·π = ${pi(Math.abs(B) * PI)} de ancho${B < 0 ? ' y se da vuelta' : ''}; luego se suma ${A === 0 ? '0' : pi(A)}.`],
-        [`Asíntotas horizontales y = ${pi(lo)} e y = ${pi(hi)}; la gráfica ${crece ? 'sube' : 'baja'} porque B·C = ${ent(B * C)} es ${crece ? 'positivo' : 'negativo'}.`],
-        [v('R', op(lo, hi, crece).texto), '.'],
+        ['Multiplicado por ', aB === 1 && A === 0 ? enB : v('B', enB), `: queda entre ${pi(-aB * PI / 2)} y ${pi(aB * PI / 2)}${B < 0 ? ' (el signo menos lo da vuelta)' : ''}` + (A === 0 ? '.' : '; luego se suma '), ...(A === 0 ? [] : [v('A', pi(A)), '.'])],
+        [`Asíntotas horizontales y = ${pi(lo)} e y = ${pi(hi)}. B·C = (${ent(B)})·(${ent(C)}) = ${ent(B * C)} es ${crece ? 'positivo: la gráfica sube' : 'negativo: la gráfica baja'}${B < 0 && C < 0 ? ' (los dos signos menos se compensan)' : ''}.`],
+        [v('R', correcta.texto), '.'],
       ],
       datos: { tipo: 'transformacion', a, B, C, D, expresion: expr },
     };
@@ -359,7 +406,7 @@
     const impar = { arcsen: ARC.arcsen, arccsc: ARC.arccsc, arccos: x => (x < 0 ? -ARC.arccos(-x) : ARC.arccos(x)), arcsec: x => (x < 0 ? -ARC.arcsec(-x) : ARC.arcsec(x)) };
     const fuera = { arccos: ARC.arccos, arcsec: ARC.arcsec, arcsen: x => (x < 0 ? 3 * PI / 2 : ARC.arcsen(x)), arccsc: x => (x < 0 ? 3 * PI / 2 : ARC.arccsc(x)) };
     const variables = { u: { nombre: 'argumento', color: 'o' }, D: { nombre: 'dominio', color: 'i' }, R: { nombre: 'suma del rango', color: 'd' } };
-    const coef = (c, primero) => (c === 1 ? (primero ? '' : ' + ') : c === -1 ? (primero ? '−' : ' − ') : (primero ? `${c}` : (c < 0 ? ` − ${-c}` : ` + ${c}`)));
+    const coef = (c, primero) => (c === 1 ? (primero ? '' : ' + ') : c === -1 ? (primero ? '−' : ' − ') : (primero ? `${c} ` : (c < 0 ? ` − ${-c} ` : ` + ${c} `)));
     const x1 = hh + k, x2 = hh - k;
     const errores = [
       r.elementos === 1 ? h('INV-cuenta-repetido', 2 * r.enUno, `Los dos puntos del dominio dan el mismo valor, ${pi(r.enUno)}: el rango tiene un solo elemento y se cuenta una vez.`) : null,
@@ -367,6 +414,8 @@
       h('IN2', sumaDe(val(1, impar), val(-1, impar)), `Tomaste ${[F, G].filter(z => z === 'arccos' || z === 'arcsec').map(z => z + '(−1) = −' + z + ' 1 = 0').join(' y ')}, como si fuera impar. arccos y arcsec no son impares: arccos(−1) = π y arcsec(−1) = π.`),
       h('IN1', sumaDe(val(1, fuera), val(-1, fuera)), `Usaste 3π/2 para ${F === 'arcsen' ? 'arcsen(−1)' : 'arccsc(−1)'}: está fuera del rango principal [−π/2; π/2]. El valor es −π/2.`),
       h('INV-sin-coeficientes', sumaDe(ARC[F](1) + ARC[G](1), ARC[F](-1) + ARC[G](-1)), 'Olvidaste los coeficientes que multiplican a cada función.'),
+      h('INV-signo-del-segundo', sumaDe(p * ARC[F](1) - q * ARC[G](1), p * ARC[F](-1) - q * ARC[G](-1)), `Cambiaste el signo del término con ${G}.`),
+      h('INV-solo-negativo', r.enMenosUno, 'Solo usaste u = −1. El dominio tiene dos puntos: u = 1 y u = −1.'),
     ].filter(Boolean);
     return {
       variables,

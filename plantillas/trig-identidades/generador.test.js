@@ -94,7 +94,7 @@ function recalcular(p) {
       return d.pide === 'tanB' ? Math.tan(r[0]) : Math.tan(2 * r[0]);
     }
     case 'triple-producto': {
-      const F = d.F === 'sen' ? Math.sin : Math.cos;
+      const F = { sen: Math.sin, cos: Math.cos, tan: Math.tan }[d.F];
       if (d.modo === 'valor') return d.k * F(d.x * RAD) * F((60 - d.x) * RAD) * F((60 + d.x) * RAD);
       const T = t => { const th = d.k * t * RAD; return d.c + 4 * d.b * Math.cos(th) * Math.cos(Math.PI / 3 - th) * Math.cos(Math.PI / 3 + th); };
       const sg = d.pide === 'maxima' ? 1 : -1;
