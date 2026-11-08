@@ -5,7 +5,11 @@
     {
       "id": "180G0ufWjo0upKFwSWpMhNuOAqynExsll",
       "pagina_pdf": 3,
-      "hallazgos": ["Mezcla de columnas", "Letras de alternativas confundidas", "Subíndices y fórmulas químicas mal reconocidos"],
+      "hallazgos": [
+        "Mezcla de columnas",
+        "Letras de alternativas confundidas",
+        "Subíndices y fórmulas químicas mal reconocidos"
+      ],
       "correcciones_locales_documentadas": 4,
       "accion": "Separar páginas enfrentadas y conservar correcciones parciales aparte del OCR crudo"
     },
@@ -13,8 +17,31 @@
       "id": "1-u8Lo79goClEw-VgMgv7_zQu7cGuXi-S",
       "pagina_pdf": 10,
       "confianza_ocr": 95,
-      "hallazgos": ["Definición en recuadro sombreado omitida", "Rótulos de figura omitidos", "Encabezado fragmentado"],
+      "hallazgos": [
+        "Definición en recuadro sombreado omitida",
+        "Rótulos de figura omitidos",
+        "Encabezado fragmentado"
+      ],
       "accion": "Revisar recuadros y figuras también en páginas de confianza alta"
+    },
+    {
+      "id": "15NfYUMNgJxpc9TgHXSXQna7-eUS6B5un",
+      "pagina_pdf": 26,
+      "hallazgos": [
+        "Franja tramada sobre fórmulas",
+        "Mitad derecha en blanco"
+      ],
+      "accion": "Cinco expresiones matemáticas cotejadas y registradas localmente; revisión parcial"
+    },
+    {
+      "id": "13Xzh_EV0raCTV2wkk2IG5tQ-Hea5zbzX",
+      "pagina_pdf": 127,
+      "hallazgos": [
+        "Soluciones manuscritas",
+        "Bases y exponentes mal reconocidos"
+      ],
+      "accion": "Cotejo parcial de la resolución 18; revisar páginas contiguas antes de clasificar"
     }
-  ]
+  ],
+  "prioridad_solicitada": "Páginas de baja confianza"
 }

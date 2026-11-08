@@ -5,7 +5,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / '.ocr-deps'))
@@ -94,14 +94,26 @@ def main():
     parser.add_argument('--workers', type=int, default=3)
     args = parser.parse_args()
     files = [args.archivo] if args.archivo else sorted((ROOT / 'fuentes/libros/cuzcano').glob('*.pdf'))
+    errors = []
+    results = {}
     with ProcessPoolExecutor(max_workers=args.workers) as pool:
-        results = list(pool.map(process, [(str(p), args.forzar_ocr, args.dpi) for p in files]))
-    # Rebuild from all completed books, including previous resumable batches.
-    all_results = []
-    for p in sorted((ROOT / 'fuentes/ocr-local/cuzcano').glob('*/resumen.json')):
-        r = json.loads(p.read_text(encoding='utf-8'))
-        all_results.append({k: v for k, v in r.items() if k != 'detalle'})
-    save(ROOT / 'fuentes/cuzcano/procesamiento.json', all_results)
+        futures = {pool.submit(process, (str(p), args.forzar_ocr, args.dpi)): p for p in files}
+        for future in as_completed(futures):
+            source = futures[future]
+            try:
+                result = future.result()
+                results[result['id']] = result
+            except Exception as error:
+                errors.append({'id': source.stem, 'error': str(error)})
+                print(f'ERROR {source.stem}: {error}', flush=True)
+            save(ROOT / 'fuentes/cuzcano/procesamiento.json', sorted(results.values(), key=lambda r: r['id']))
+            save(ROOT / 'fuentes/cuzcano/errores-ocr.json', errors)
+    from estado_cuzcano import main as update_status
+    from cola_revision_ocr import main as update_queue
+    update_status()
+    update_queue()
+    if errors:
+        raise SystemExit(1)
 
 
 if __name__ == '__main__':

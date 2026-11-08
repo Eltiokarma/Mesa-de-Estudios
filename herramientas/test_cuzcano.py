@@ -1,7 +1,11 @@
 import io
 import unittest
+import json
+import tempfile
+from pathlib import Path
 from unittest.mock import patch
 from cuzcano import open_pdf
+from reordenar_columnas_ocr import reorder
 
 
 class DescargasTest(unittest.TestCase):
@@ -30,6 +34,22 @@ class DescargasTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 open_pdf('https://drive.google.com/uc?id=abc')
             self.assertEqual(request.call_count, 1)
+
+
+class ColumnasTest(unittest.TestCase):
+    def test_separa_lineas_que_el_ocr_mezclo_entre_columnas(self):
+        # Two physical lines, each crossing the two columns in the OCR TSV.
+        rows = ['5\t1\t1\t1\t1\t1\t10\t10\t10\t10\t90\tA',
+                '5\t1\t1\t1\t1\t2\t60\t10\t10\t10\t90\tB',
+                '5\t1\t1\t1\t2\t1\t10\t30\t10\t10\t90\tC',
+                '5\t1\t1\t1\t2\t2\t60\t30\t10\t10\t90\tD']
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'p-0001.json'
+            path.write_text(json.dumps({'archivo': 'prueba.pdf', 'pagina_pdf': 1,
+                'regiones': [{'caja_px': [0, 0, 100, 100], 'tsv': '\n'.join(rows)}]}), encoding='utf-8')
+            reorder(path, 2)
+            result = json.loads((path.parent / 'columnas-p-0001.json').read_text(encoding='utf-8'))
+            self.assertEqual(result['texto'], 'A\nC\n\nB\nD')
 
 
 if __name__ == '__main__':

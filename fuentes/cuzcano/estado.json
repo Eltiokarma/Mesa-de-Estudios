@@ -1,11 +1,11 @@
 {
-  "generado_utc": "2026-11-08T14:32:59.318183+00:00",
+  "generado_utc": "2026-11-08T14:45:41.105344+00:00",
   "resumen": {
     "libros_catalogados": 198,
     "libros_descargados": 198,
     "paginas_descargadas": 21522,
-    "paginas_procesadas": 1854,
-    "libros_procesados": 8,
+    "paginas_procesadas": 4233,
+    "libros_procesados": 36,
     "libros_revisados_integramente": 0
   },
   "libros": [
@@ -30,7 +30,7 @@
       "titulo": "Química",
       "descargado": true,
       "paginas": 451,
-      "paginas_procesadas": 185,
+      "paginas_procesadas": 451,
       "revision_visual_completa": false
     },
     {
@@ -38,7 +38,7 @@
       "titulo": "Solucionario 1",
       "descargado": true,
       "paginas": 27,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 27,
       "revision_visual_completa": false
     },
     {
@@ -54,7 +54,7 @@
       "titulo": "Solucionario 3",
       "descargado": true,
       "paginas": 29,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 29,
       "revision_visual_completa": false
     },
     {
@@ -126,7 +126,7 @@
       "titulo": "Solucionario 6",
       "descargado": true,
       "paginas": 27,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 27,
       "revision_visual_completa": false
     },
     {
@@ -286,7 +286,7 @@
       "titulo": "Solucionario 4",
       "descargado": true,
       "paginas": 23,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 19,
       "revision_visual_completa": false
     },
     {
@@ -310,7 +310,7 @@
       "titulo": "Solucionario 1",
       "descargado": true,
       "paginas": 29,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 29,
       "revision_visual_completa": false
     },
     {
@@ -326,7 +326,7 @@
       "titulo": "Solucionario 3",
       "descargado": true,
       "paginas": 29,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 29,
       "revision_visual_completa": false
     },
     {
@@ -342,7 +342,7 @@
       "titulo": "Solucionario 5",
       "descargado": true,
       "paginas": 29,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 29,
       "revision_visual_completa": false
     },
     {
@@ -454,7 +454,7 @@
       "titulo": "Análisis de gráficas del movimiento mecánico",
       "descargado": true,
       "paginas": 167,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 35,
       "revision_visual_completa": false
     },
     {
@@ -606,7 +606,7 @@
       "titulo": "Hidrostática e hidrodinámica",
       "descargado": true,
       "paginas": 154,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 154,
       "revision_visual_completa": false
     },
     {
@@ -726,7 +726,7 @@
       "titulo": "Inductivo y deductivo",
       "descargado": true,
       "paginas": 73,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 20,
       "revision_visual_completa": false
     },
     {
@@ -758,7 +758,7 @@
       "titulo": "Operaciones matemáticas",
       "descargado": true,
       "paginas": 83,
-      "paginas_procesadas": 79,
+      "paginas_procesadas": 83,
       "revision_visual_completa": false
     },
     {
@@ -782,7 +782,7 @@
       "titulo": "Tanto por ciento",
       "descargado": true,
       "paginas": 71,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 71,
       "revision_visual_completa": false
     },
     {
@@ -910,7 +910,7 @@
       "titulo": "Áreas de regiones poligonales y circulares",
       "descargado": true,
       "paginas": 133,
-      "paginas_procesadas": 103,
+      "paginas_procesadas": 133,
       "revision_visual_completa": false
     },
     {
@@ -958,7 +958,7 @@
       "titulo": "Circunferencia y parábola",
       "descargado": true,
       "paginas": 98,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 98,
       "revision_visual_completa": false
     },
     {
@@ -1006,7 +1006,7 @@
       "titulo": "Puntos notables",
       "descargado": true,
       "paginas": 340,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 75,
       "revision_visual_completa": false
     },
     {
@@ -1014,7 +1014,7 @@
       "titulo": "Proporcionalidad de segmentos y semejanza de triángulos",
       "descargado": true,
       "paginas": 312,
-      "paginas_procesadas": 218,
+      "paginas_procesadas": 312,
       "revision_visual_completa": false
     },
     {
@@ -1022,7 +1022,7 @@
       "titulo": "Relaciones métricas",
       "descargado": true,
       "paginas": 327,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 199,
       "revision_visual_completa": false
     },
     {
@@ -1078,7 +1078,7 @@
       "titulo": "Circunferencia y parábola",
       "descargado": true,
       "paginas": 63,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 63,
       "revision_visual_completa": false
     },
     {
@@ -1102,7 +1102,7 @@
       "titulo": "Transformación de coordenadas",
       "descargado": true,
       "paginas": 64,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 64,
       "revision_visual_completa": false
     },
     {
@@ -1150,7 +1150,7 @@
       "titulo": "Razones trigonométricas de un ángulo agudo",
       "descargado": true,
       "paginas": 63,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 63,
       "revision_visual_completa": false
     },
     {
@@ -1158,7 +1158,7 @@
       "titulo": "Razones trigonométricas de un ángulo en posición normal",
       "descargado": true,
       "paginas": 78,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 78,
       "revision_visual_completa": false
     },
     {
@@ -1182,7 +1182,7 @@
       "titulo": "Identidades de arcos compuestos",
       "descargado": true,
       "paginas": 59,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 59,
       "revision_visual_completa": false
     },
     {
@@ -1262,7 +1262,7 @@
       "titulo": "Arcos múltiples: doble, mitad y triple",
       "descargado": true,
       "paginas": 19,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 19,
       "revision_visual_completa": false
     },
     {
@@ -1270,7 +1270,7 @@
       "titulo": "Teoría de conjuntos",
       "descargado": true,
       "paginas": 33,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 33,
       "revision_visual_completa": false
     },
     {
@@ -1278,7 +1278,7 @@
       "titulo": "Numeración",
       "descargado": true,
       "paginas": 71,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 71,
       "revision_visual_completa": false
     },
     {
@@ -1350,7 +1350,7 @@
       "titulo": "Regla de interés",
       "descargado": true,
       "paginas": 25,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 25,
       "revision_visual_completa": false
     },
     {
@@ -1366,7 +1366,7 @@
       "titulo": "Regla de descuento",
       "descargado": true,
       "paginas": 22,
-      "paginas_procesadas": 11,
+      "paginas_procesadas": 22,
       "revision_visual_completa": false
     },
     {
@@ -1382,7 +1382,7 @@
       "titulo": "Números primos",
       "descargado": true,
       "paginas": 132,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 16,
       "revision_visual_completa": false
     },
     {
@@ -1406,7 +1406,7 @@
       "titulo": "Lógica proposicional",
       "descargado": true,
       "paginas": 58,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 58,
       "revision_visual_completa": false
     },
     {
@@ -1494,7 +1494,7 @@
       "titulo": "Geometría II",
       "descargado": true,
       "paginas": 37,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 37,
       "revision_visual_completa": false
     },
     {
@@ -1526,7 +1526,7 @@
       "titulo": "Aritmética II",
       "descargado": true,
       "paginas": 33,
-      "paginas_procesadas": 0,
+      "paginas_procesadas": 33,
       "revision_visual_completa": false
     },
     {
@@ -1574,7 +1574,7 @@
       "titulo": "Solucionario de Trigonometría",
       "descargado": true,
       "paginas": 233,
-      "paginas_procesadas": 24,
+      "paginas_procesadas": 233,
       "revision_visual_completa": false
     },
     {
@@ -1590,7 +1590,7 @@
       "titulo": "Solucionario de Aritmética",
       "descargado": true,
       "paginas": 352,
-      "paginas_procesadas": 47,
+      "paginas_procesadas": 352,
       "revision_visual_completa": false
     }
   ]
