@@ -38,8 +38,8 @@
           "explicacion": "«Realize» significa darse cuenta: los hábitos nos dan tiempo para notar que una historia es falsa." },
         { "t": "carry out.", "codigo": "RV54",
           "explicacion": "Es un falso amigo: «realize» se parece a «realizar» (llevar a cabo), pero en inglés significa darse cuenta. «Carry out» es realizar." },
-        { "t": "prove in court.", "codigo": "RV19",
-          "explicacion": "Probar algo es del mismo campo (saber si algo es verdad), pero no significa lo mismo: el texto habla de darse cuenta, no de demostrar ante un juez." },
+        { "t": "explain.", "codigo": "RV19",
+          "explicacion": "Explicar es del mismo campo (lo que se hace con una noticia falsa una vez descubierta), pero no significa lo mismo: el texto habla de darse cuenta, no de explicárselo a otros." },
         { "t": "share.", "codigo": "RV5", "origen": "o9",
           "explicacion": "Repite una palabra del párrafo («Before sharing a post», oración 9). Los hábitos sirven justo para no compartir lo falso: no es lo que significa «realize»." }
       ]
@@ -111,14 +111,14 @@
           "no-se-sabe": "El texto sí lo trata: las oraciones 1 y 2 rechazan que solo caigan los mal informados."
         }
       },
-      "enunciado": "Which statement is NOT consistent with the text?",
+      "enunciado": "Which statement contradicts the text?",
       "alternativas": [
         { "t": "Well-educated people are not at risk of believing false news.", "correcta": true, "evidencia": ["o1", "o2"],
           "explicacion": "Choca con la oración 2: «almost anyone may accept a false story». El autor rechaza la idea de que solo los mal informados caen (oración 1)." },
         { "t": "Strong emotions such as fear can make a false story easier to accept.", "codigo": "RV10", "origen": "o2",
-          "explicacion": "Concuerda con la oración 2. Se pide la que NO es compatible." },
+          "explicacion": "Concuerda con la oración 2. Se pide la que contradice al texto." },
         { "t": "Looking for the same information in other sources may help a reader.", "codigo": "RV9", "origen": "o10",
-          "explicacion": "Es compatible con la oración 10. La incompatible es la que contradice a la oración 2." },
+          "explicacion": "Concuerda con la oración 10. Se pide la que choca con la oración 2." },
         { "t": "False news spreads more during elections than during the rest of the year.", "codigo": "RV36",
           "explicacion": "El texto no habla de elecciones, pero no mencionarlo no es contradecirlo." }
       ]
@@ -145,9 +145,9 @@
   "fecha": "2026-11-08",
   "hechos": [
     { "afirmacion": "Ver varias veces una misma afirmación hace que parezca más verdadera (efecto de verdad ilusoria).", "fuente": "Hasher, L., Goldstein, D. y Toppino, T. (1977). Frequency and the conference of referential validity. Journal of Verbal Learning and Verbal Behavior, 16(1), 107-112." },
-    { "afirmacion": "En redes sociales, las noticias falsas tienden a difundirse más que las verdaderas, en parte porque provocan emociones fuertes.", "fuente": "Vosoughi, S., Roy, D. y Aral, S. (2018). The spread of true and false news online. Science, 359(6380), 1146-1151." },
+    { "afirmacion": "En redes sociales, las noticias falsas se difundieron más lejos y más rápido que las verdaderas; eran más novedosas y despertaban respuestas de sorpresa y rechazo.", "fuente": "Vosoughi, S., Roy, D. y Aral, S. (2018). The spread of true and false news online. Science, 359(6380), 1146-1151." },
     { "afirmacion": "Muchas personas comparten enlaces sin haber leído más que el titular.", "fuente": "Gabielkov, M. y otros (2016). Social clicks: What and who gets read on Twitter? ACM SIGMETRICS." },
-    { "afirmacion": "Buscar la misma información en otras fuentes (lectura lateral) ayuda a detectar sitios poco fiables.", "fuente": "Wineburg, S. y McGrew, S. (2019). Lateral reading and the nature of expertise. Teachers College Record, 121(11)." }
+    { "afirmacion": "Buscar la misma información en otras fuentes (lectura lateral) ayuda a detectar sitios poco fiables.", "fuente": "Wineburg, S. y McGrew, S. (2019). Lateral reading and the nature of expertise: Reading less and learning more when evaluating digital information. Teachers College Record, 121(11)." }
   ],
-  "revision": null
+  "revision": {"por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "A ciegas coincidí en los 7 ítems. El p4 pasó de «NOT consistent» a «contradicts» para que el distractor de lo no mencionado no sea defendible, cambié el distractor débil del p1 («prove in court») por «explain» y ajusté el hecho de Vosoughi y otros; las cuatro referencias existen."}
 }

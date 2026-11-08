@@ -18,7 +18,7 @@
       { "id": "o5", "rol": "apoyo", "t": "Years later, after studying agronomy, Valeria decided to answer that old question." },
       { "id": "o6", "rol": "detalle", "t": "In her test fields, she planted dozens of local varieties side by side and gave some plots much less water than others." },
       { "id": "o7", "rol": "detalle", "t": "Most plants produced less grain when water was scarce, but a few varieties still gave a surprisingly good harvest." },
-      { "id": "o8", "rol": "detalle", "t": "She did not work alone: farmers from nearby communities visited the fields, compared the plants with their own and shared seeds that were not in any collection." }
+      { "id": "o8", "rol": "detalle", "t": "She did not work alone: farmers from nearby communities visited the fields, compared the plants with their own and shared seeds that were not in any collection, which she added to her trials." }
     ],
     [
       { "id": "o9", "rol": "principal", "t": "For Valeria, the varieties that families have kept for generations are not old-fashioned; they may be one of the best tools for farming in a drier future." },
@@ -35,12 +35,12 @@
       "alternativas": [
         { "t": "abundant.", "correcta": true, "evidencia": ["o6", "o7"],
           "explicacion": "«Scarce» es escaso: en algunas parcelas el agua era poca (oración 6). Lo contrario es «abundant», abundante." },
-        { "t": "limited.", "codigo": "RV21",
+        { "t": "limited.", "codigo": "RV19",
           "explicacion": "«Limited» (limitado) dice casi lo mismo que «scarce»: es un sinónimo, no el contrario." },
         { "t": "scared.", "codigo": "RV20",
           "explicacion": "Se parece en la forma («scarce», «scared»), pero «scared» significa asustado y no tiene que ver con la cantidad de agua." },
-        { "t": "expensive.", "codigo": "RV19",
-          "explicacion": "Lo escaso a veces es caro, pero «expensive» habla del precio, no de la cantidad: es del mismo campo, no el contrario." }
+        { "t": "expensive.", "codigo": "RV21",
+          "explicacion": "Lo escaso a veces es caro, pero «expensive» habla del precio, no de la cantidad: es otro rasgo, no el contrario." }
       ]
     },
     {
@@ -128,7 +128,7 @@
         "sonda": "Without the farmers, Valeria would probably have tested fewer local varieties.",
         "clase": "se-deduce",
         "codigos": { "lo-dice": "RV58", "no-se-sabe": "RV34", "lo-contradice": "RV63" },
-        "explicacion": "La oración 8 dice que los agricultores compartieron semillas «that were not in any collection». Sin ellos, esas variedades no habrían llegado a sus pruebas: se deduce que habría probado menos.",
+        "explicacion": "La oración 8 dice que los agricultores compartieron semillas «that were not in any collection» y que Valeria las sumó a sus pruebas. Sin ellos, esas variedades no habrían estado: se deduce que habría probado menos.",
         "explicaciones": {
           "lo-dice": "El texto no habla de lo que habría pasado sin los agricultores; se saca de la oración 8, pero no está escrito.",
           "no-se-sabe": "Sí se puede saber: si las semillas de los agricultores no estaban en ninguna colección, sin ellos Valeria no las habría tenido.",
@@ -156,5 +156,5 @@
     { "afirmacion": "Hay muchas variedades de quinua, con granos de colores (blanco, rojo, negro), y varias toleran bien la sequía, aunque con poca agua el rendimiento suele bajar.", "fuente": "FAO (2013), La quinua, cultivo milenario…; Jacobsen, S.-E. y otros (2003), The resistance of quinoa (Chenopodium quinoa Willd.) to adverse abiotic factors, Food Reviews International, 19(1-2), 99-109." },
     { "afirmacion": "Las familias campesinas guardan e intercambian semillas propias que no siempre están en bancos de germoplasma.", "fuente": "FAO (2013), La quinua, cultivo milenario… (conservación en finca y bancos de germoplasma)." }
   ],
-  "revision": null
+  "revision": {"por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "A ciegas coincidí en los 7 ítems. La oración 8 ahora dice que Valeria sumó a sus pruebas las semillas de los agricultores, para que la extrapolación del p5 sea firme, y alineé los códigos del antónimo (sinónimo RV19, otro rasgo RV21)."}
 }

@@ -175,13 +175,13 @@
         },
         {
           "t": "used once more.",
-          "codigo": "RV21",
+          "codigo": "RV19",
           "explicacion": "«Used once more» (usado otra vez) dice casi lo mismo que «reusable»: es un sinónimo, no el contrario."
         },
         {
           "t": "recycled.",
-          "codigo": "RV19",
-          "explicacion": "Reciclar es del mismo campo (lo que se hace con la basura), pero no es lo contrario de reutilizable."
+          "codigo": "RV21",
+          "explicacion": "Reciclar es otra cosa que se hace con lo usado (convertirlo en material nuevo), pero no es lo contrario de reutilizable."
         },
         {
           "t": "useful.",
@@ -195,7 +195,7 @@
       "tipo": "incompatibilidad",
       "unidad": "razonamiento-verbal.lectura-en-ingles",
       "idioma": "en",
-      "enunciado": "Which statement is false according to the letter?",
+      "enunciado": "Which statement contradicts what the letter says?",
       "alternativas": [
         {
           "t": "Plastic in the river disappears after a few months.",
@@ -210,7 +210,7 @@
           "t": "After the cleaning day, the students asked to clean the river bank again.",
           "codigo": "RV10",
           "origen": "o6",
-          "explicacion": "Es verdad: la oración 6 lo dice. Se pide la falsa."
+          "explicacion": "Es verdad: la oración 6 lo dice. Se pide la que contradice a la carta."
         },
         {
           "t": "According to the teacher, cleaning the river bank is not enough by itself.",
@@ -221,7 +221,7 @@
         {
           "t": "Other cities in the Amazon have the same problem with plastic in their rivers.",
           "codigo": "RV36",
-          "explicacion": "La carta no habla de otras ciudades, pero no decirlo no lo vuelve falso. La falsa es la que el texto niega."
+          "explicacion": "La carta no habla de otras ciudades, pero no decirlo no es contradecirlo. Se pide lo que la carta niega."
         }
       ]
     },
@@ -265,9 +265,9 @@
           "explicacion": "Vuelve a confirmar lo que el condicional cambia: si el plástico de los mercados se hubiera reducido, el razonamiento de la autora lleva a menos basura, no a la misma."
         },
         {
-          "t": "the Itaya River would be completely free of trash.",
+          "t": "the river banks would have no plastic at all today, so no cleaning would ever be needed.",
           "codigo": "RV11",
-          "explicacion": "«Completely» es un término absoluto: la autora habla de los mercados como un comienzo, no dice que eso solo limpie todo el río."
+          "explicacion": "«At all» y «ever» son absolutos: la autora habla de los mercados como un comienzo y menciona también botellas y envases; nada dice que eso solo deje las orillas sin nada de plástico."
         },
         {
           "t": "the students would not have wanted to clean the bank again.",
@@ -298,5 +298,5 @@
       "fuente": "Texto propio (carta ficticia)."
     }
   ],
-  "revision": null
+  "revision": {"por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "A ciegas coincidí en los 7 ítems. El p4 pasó de «false according to the letter» a «contradicts» para que lo no mencionado no sea defendible, reforcé el distractor absoluto del p5 y alineé los códigos del antónimo (sinónimo RV19, otro término RV21)."}
 }

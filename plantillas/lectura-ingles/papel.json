@@ -4,303 +4,6 @@
   "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
   "problemas": [
     {
-      "id": "t051",
-      "nivel": "básico",
-      "enunciado": "Lee el texto «Rosa and the Clay» y responde las 4 preguntas.",
-      "texto": {
-        "titulo": "Rosa and the Clay",
-        "idioma": "en",
-        "parrafos": [
-          [
-            {
-              "n": 1,
-              "t": "Rosa is sixteen and lives in a small town near Ica."
-            },
-            {
-              "n": 2,
-              "t": "Every Saturday, she goes to her grandfather's workshop, where he teaches her to make pots from clay, just as his father taught him."
-            },
-            {
-              "n": 3,
-              "t": "First, they mix the clay with water and a little sand."
-            },
-            {
-              "n": 4,
-              "t": "Then Rosa shapes each pot slowly with her hands."
-            },
-            {
-              "n": 5,
-              "t": "After that, the pots dry in the sun for several days before they go into the kiln (a special oven)."
-            }
-          ],
-          [
-            {
-              "n": 6,
-              "t": "At first, Rosa's pots were not very good."
-            },
-            {
-              "n": 7,
-              "t": "Some of them broke in the kiln, and she felt embarrassed in front of her grandfather."
-            },
-            {
-              "n": 8,
-              "t": "He just laughed and said, \"My first pots broke too.\""
-            },
-            {
-              "n": 9,
-              "t": "Now she can paint birds and fish on them, like the ones on the old Nasca pots in the museum in Ica."
-            },
-            {
-              "n": 10,
-              "t": "Rosa wants to keep her family's craft alive, and she feels proud of every pot she makes."
-            }
-          ]
-        ]
-      },
-      "preguntas": [
-        {
-          "n": 1,
-          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
-          "enunciado": "¿Cuál es la idea principal del texto?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Rosa aprende de su abuelo la cerámica, un oficio familiar, y se siente orgullosa de él."
-            },
-            {
-              "letra": "B",
-              "t": "Al principio, las vasijas que hacía Rosa no eran buenas y algunas se le rompían en el horno."
-            },
-            {
-              "letra": "C",
-              "t": "La cerámica es un arte muy antiguo que se practica en muchas regiones del Perú."
-            },
-            {
-              "letra": "D",
-              "t": "Antes de entrar al horno, las vasijas se secan al sol durante varios días."
-            },
-            {
-              "letra": "E",
-              "t": "En Ica, muchos ceramistas venden sus vasijas pintadas a los turistas."
-            }
-          ]
-        },
-        {
-          "n": 2,
-          "enunciado": "En la oración «she felt embarrassed in front of her grandfather», la palabra EMBARRASSED significa",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "embarazada."
-            },
-            {
-              "letra": "B",
-              "t": "rota."
-            },
-            {
-              "letra": "C",
-              "t": "enfadada con su abuelo."
-            },
-            {
-              "letra": "D",
-              "t": "avergonzada."
-            }
-          ]
-        },
-        {
-          "n": 3,
-          "enunciado": "¿Cuál de estas afirmaciones es compatible con el texto?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Rosa ya pinta sus vasijas mejor que los antiguos ceramistas nasca."
-            },
-            {
-              "letra": "B",
-              "t": "Las vasijas de Rosa todavía no son buenas y siguen rompiéndose en el horno."
-            },
-            {
-              "letra": "C",
-              "t": "Con la práctica, Rosa mejoró: ahora pinta aves y peces en sus vasijas."
-            },
-            {
-              "letra": "D",
-              "t": "Desde el principio, las vasijas que hacía Rosa salieron muy bien."
-            },
-            {
-              "letra": "E",
-              "t": "El abuelo de Rosa guarda las vasijas de su familia en el museo de Ica."
-            }
-          ]
-        },
-        {
-          "n": 4,
-          "enunciado": "¿Por qué el abuelo le dice a Rosa «My first pots broke too» («Mis primeras vasijas también se rompieron»)?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Porque se burla de Rosa y piensa que ella nunca aprenderá el oficio."
-            },
-            {
-              "letra": "B",
-              "t": "Para que Rosa no se sienta mal: a él también le pasó cuando empezaba."
-            },
-            {
-              "letra": "C",
-              "t": "Porque antes los hornos rompían muchas más vasijas que los hornos de ahora."
-            },
-            {
-              "letra": "D",
-              "t": "Porque su padre le enseñó a hacer vasijas de arcilla en ese mismo taller."
-            }
-          ]
-        }
-      ],
-      "respuesta": "Clave: 1: A · 2: D · 3: C · 4: B.",
-      "pasos": [
-        "Pregunta 1. Antes de las alternativas: la oración 2 o la oración 10. La oración 2 dice de qué trata todo: Rosa aprende con su abuelo a hacer vasijas de arcilla, un oficio que pasa de padre a hijo. La 10 lo cierra: quiere mantener vivo ese oficio familiar y está orgullosa de lo que hace.",
-        "Pregunta 1. Clave A. Junta lo que dicen las oraciones 2 y 10: el abuelo le enseña a hacer vasijas, como a él le enseñó su padre, y Rosa quiere mantener vivo ese oficio.",
-        "Pregunta 2. Clave D. «Embarrassed» quiere decir avergonzada. Encaja con el texto: sus vasijas se rompieron delante del abuelo, y él la calma diciendo «My first pots broke too» («Mis primeras vasijas también se rompieron»).",
-        "Pregunta 3. Clave C. «At first … were not very good» (al principio no eran muy buenas) está en pasado, y «Now she can paint birds and fish» (ahora puede pintar aves y peces) muestra que mejoró.",
-        "Pregunta 4. Clave B. Rosa se siente avergonzada porque sus vasijas se rompieron (oración 7). El abuelo le cuenta que a él le pasó lo mismo al comienzo: la consuela."
-      ]
-    },
-    {
-      "id": "t052",
-      "nivel": "básico",
-      "enunciado": "Lee el texto «The Train to Machu Picchu» y responde las 3 preguntas.",
-      "texto": {
-        "titulo": "The Train to Machu Picchu",
-        "idioma": "en",
-        "parrafos": [
-          [
-            {
-              "n": 1,
-              "t": "Every day, thousands of visitors travel to Machu Picchu, the famous Inca city in the mountains of Cusco."
-            },
-            {
-              "n": 2,
-              "t": "Most of them go by train, because no road connects Aguas Calientes, the town at the foot of the mountain, with the rest of the country."
-            },
-            {
-              "n": 3,
-              "t": "The train leaves from Ollantaytambo or from a station near Cusco, and it follows the Urubamba River."
-            },
-            {
-              "n": 4,
-              "t": "From the windows, passengers can see snowy mountains, small farms and, near the end, the green forest."
-            },
-            {
-              "n": 5,
-              "t": "The trip from Ollantaytambo takes about an hour and a half."
-            }
-          ],
-          [
-            {
-              "n": 6,
-              "t": "In Aguas Calientes, visitors take a bus up a winding road to the ruins, or they walk up for more than an hour."
-            },
-            {
-              "n": 7,
-              "t": "Ana, a guide from Cusco, used to take this train almost every day."
-            },
-            {
-              "n": 8,
-              "t": "Now she works in an office, but she says she will never forget those trips."
-            },
-            {
-              "n": 9,
-              "t": "\"People think the ruins are the best part,\" she says, \"but actually, I loved the trip just as much.\""
-            },
-            {
-              "n": 10,
-              "t": "For many visitors, the train is not only the way to Machu Picchu: it is also part of the adventure."
-            }
-          ]
-        ]
-      },
-      "preguntas": [
-        {
-          "n": 1,
-          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
-          "enunciado": "¿Cuál es la idea principal del texto?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "La mayoría llega a Machu Picchu en tren, y ese viaje también es parte de la aventura."
-            },
-            {
-              "letra": "B",
-              "t": "Desde Ollantaytambo, el viaje en tren hasta Aguas Calientes dura más o menos una hora y media."
-            },
-            {
-              "letra": "C",
-              "t": "Cusco recibe cada año a muchísimos turistas que llegan de todo el mundo."
-            },
-            {
-              "letra": "D",
-              "t": "La mayoría de los visitantes va en tren porque ninguna carretera une Aguas Calientes con el resto del país."
-            },
-            {
-              "letra": "E",
-              "t": "Machu Picchu fue declarado patrimonio mundial por la Unesco en el año 1983."
-            }
-          ]
-        },
-        {
-          "n": 2,
-          "enunciado": "En la frase de Ana «but actually, I loved the trip just as much», la palabra ACTUALLY significa",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "todos los días."
-            },
-            {
-              "letra": "B",
-              "t": "en realidad."
-            },
-            {
-              "letra": "C",
-              "t": "felizmente."
-            },
-            {
-              "letra": "D",
-              "t": "actualmente."
-            }
-          ]
-        },
-        {
-          "n": 3,
-          "enunciado": "¿Qué se puede afirmar sobre Ana?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Está triste porque no le gusta nada su trabajo en la oficina."
-            },
-            {
-              "letra": "B",
-              "t": "Sigue tomando el tren casi todos los días para llevar turistas a las ruinas."
-            },
-            {
-              "letra": "C",
-              "t": "Ya se olvidó de cómo eran los viajes que hacía en el tren."
-            },
-            {
-              "letra": "D",
-              "t": "Antes viajaba en ese tren casi a diario, pero hoy ya no lo hace."
-            }
-          ]
-        }
-      ],
-      "respuesta": "Clave: 1: A · 2: B · 3: D.",
-      "pasos": [
-        "Pregunta 1. Antes de las alternativas: la oración 2 o la oración 10. La oración 2 dice que la mayoría llega a Machu Picchu en tren y por qué. La 10 completa la idea: el tren no es solo el camino, también es parte de la aventura.",
-        "Pregunta 1. Clave A. Junta las oraciones 2 y 10: el tren es el camino de casi todos los visitantes y, además, un viaje que vale por sí mismo.",
-        "Pregunta 2. Clave B. «Actually» quiere decir «en realidad»: Ana corrige lo que la gente cree («People think the ruins are the best part») y dice lo que de verdad piensa.",
-        "Pregunta 3. Clave D. «Used to take this train» quiere decir que lo tomaba antes y ya no; «Now she works in an office» (ahora trabaja en una oficina) lo confirma."
-      ]
-    },
-    {
       "id": "t053",
       "nivel": "intermedio",
       "enunciado": "Lee el texto «A Morning at Belén Market» y responde las 4 preguntas.",
@@ -618,6 +321,1498 @@
         "Pregunta 2. Clave B. «Sensible» en inglés quiere decir sensato, prudente: cuidarse del sol es lo razonable, porque así habrá menos problemas de piel más adelante.",
         "Pregunta 3. Clave D. «I used to think the same» (antes pensaba lo mismo) habla de una idea del pasado que ya dejó, y «until a doctor… explained» dice qué lo hizo cambiar.",
         "Pregunta 4. Clave D. «That is true for many families» acepta el problema, y «Although that problem is real, there are cheaper ways…» (aunque el problema es real, hay formas más baratas) lo responde."
+      ]
+    },
+    {
+      "id": "t123",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «A Cold and Rich Sea» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "A Cold and Rich Sea",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Many visitors expect the sea in front of Lima to be warm, like the water of other tropical countries."
+            },
+            {
+              "n": 2,
+              "t": "In fact, it is surprisingly cold, even in summer."
+            },
+            {
+              "n": 3,
+              "t": "The reason is the Humboldt Current, and this cold water is also what makes the Peruvian sea one of the richest in fish in the world."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "The Humboldt Current carries cold water from the south towards the north, along the coasts of Chile and Peru."
+            },
+            {
+              "n": 5,
+              "t": "At the same time, winds that blow along the coast push the surface water away from the shore."
+            },
+            {
+              "n": 6,
+              "t": "Cold water from the deep then rises to take its place, and it brings up nutrients that had sunk to the bottom."
+            },
+            {
+              "n": 7,
+              "t": "These nutrients feed tiny plants called phytoplankton, which are eaten by small fish such as the anchoveta."
+            },
+            {
+              "n": 8,
+              "t": "The anchoveta, in turn, is food for larger fish, sea birds and sea lions, and it is also the base of an important fishing industry."
+            }
+          ],
+          [
+            {
+              "n": 9,
+              "t": "However, this system does not work the same way every year."
+            },
+            {
+              "n": 10,
+              "t": "During an El Niño event, warm water reaches the coast, fewer nutrients come up from below, and the anchoveta becomes scarce."
+            },
+            {
+              "n": 11,
+              "t": "Then fishermen catch much less, and many sea birds have trouble finding food."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "According to the text, what brings nutrients up to the surface of the sea?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The warm water that reaches the coast during El Niño."
+            },
+            {
+              "letra": "B",
+              "t": "Tiny plants that carry the nutrients up from the bottom."
+            },
+            {
+              "letra": "C",
+              "t": "Cold water that rises from the deep."
+            },
+            {
+              "letra": "D",
+              "t": "The rivers that come down from the Andes to the sea."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "If the winds along the coast stopped blowing for a long time, then",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "cold water from the deep would still rise and bring up the same nutrients."
+            },
+            {
+              "letra": "B",
+              "t": "less deep water would rise, so there would probably be fewer anchovetas."
+            },
+            {
+              "letra": "C",
+              "t": "every fish in the Peruvian sea would die and never come back."
+            },
+            {
+              "letra": "D",
+              "t": "the Humboldt Current would change direction and flow towards the south."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Which statement is NOT consistent with the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Not every year is good for the fishermen of Peru."
+            },
+            {
+              "letra": "B",
+              "t": "The sea in front of Lima is warm, like a tropical sea."
+            },
+            {
+              "letra": "C",
+              "t": "Some of the anchoveta is sold in other countries."
+            },
+            {
+              "letra": "D",
+              "t": "A cold sea can have more fish than a warm one."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "In sentence 10, the word SCARCE can be replaced by",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "warmer."
+            },
+            {
+              "letra": "B",
+              "t": "smaller."
+            },
+            {
+              "letra": "C",
+              "t": "hard to find."
+            },
+            {
+              "letra": "D",
+              "t": "frightened."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «When El Niño arrives, the fishing industry of Peru has a harder time.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "What can be inferred from the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Sea birds depend, indirectly, on the cold water that rises from the deep."
+            },
+            {
+              "letra": "B",
+              "t": "Phytoplankton is the only food that sea lions eat."
+            },
+            {
+              "letra": "C",
+              "t": "Fishermen catch much less fish during an El Niño event."
+            },
+            {
+              "letra": "D",
+              "t": "El Niño happens every year in the Peruvian sea."
+            },
+            {
+              "letra": "E",
+              "t": "The sea in front of Lima is cold only in winter."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: B · 3: B · 4: C · 5: A.",
+      "pasos": [
+        "Pregunta 1. Clave C. La oración 6 lo dice: el agua fría del fondo sube a ocupar el lugar del agua de la superficie «and it brings up nutrients» (y trae hacia arriba los nutrientes).",
+        "Pregunta 2. Clave B. Según las oraciones 5 y 6, el viento aparta el agua de la superficie y por eso sube el agua fría del fondo con sus nutrientes. Sin viento subiría menos agua y menos nutrientes, y habría menos fitoplancton para la anchoveta (oración 7).",
+        "Pregunta 3. Clave B. Choca con las oraciones 1 y 2: eso es lo que esperan muchos visitantes, pero el texto dice que el mar de Lima es sorprendentemente frío, incluso en verano.",
+        "Pregunta 4. Clave C. «Scarce» significa escaso, difícil de encontrar: con El Niño hay poca anchoveta, y por eso los pescadores pescan menos y las aves no encuentran comida (oración 11).",
+        "Pregunta 5. Antes de las alternativas: Se deduce del texto. La oración 8 dice que la anchoveta es la base de una industria pesquera importante, y las oraciones 10 y 11, que con El Niño escasea y se pesca mucho menos. El texto no lo dice con esas palabras, pero se deduce.",
+        "Pregunta 5. Clave A. Hay que juntar la cadena: el agua fría que sube trae nutrientes (oración 6), los nutrientes alimentan al fitoplancton, que come la anchoveta (oración 7), y la anchoveta alimenta a las aves (oración 8). Por eso, cuando sube menos agua fría, las aves no encuentran comida (oración 11). El texto no lo dice así, pero se deduce."
+      ]
+    },
+    {
+      "id": "t124",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Let Us Sleep» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Let Us Sleep",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Every morning at six, my alarm rings, and I feel as if I have not slept at all."
+            },
+            {
+              "n": 2,
+              "t": "In my classroom, I am not the only one: during the first class, many of my classmates are yawning or resting their heads on their desks."
+            },
+            {
+              "n": 3,
+              "t": "Some adults say that we are just lazy, or that we stay up too late with our phones."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Phones are part of the problem, I admit, but they are not the whole story."
+            },
+            {
+              "n": 5,
+              "t": "Doctors explain that during adolescence the body's clock changes, so teenagers naturally feel sleepy later at night than children or adults."
+            },
+            {
+              "n": 6,
+              "t": "Health organizations recommend that teenagers sleep between eight and ten hours a night, but with classes that start so early, most of us cannot get that much rest."
+            },
+            {
+              "n": 7,
+              "t": "A tired student may sit in class for hours and still learn very little."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "For these reasons, I believe that teenagers should sleep more, and that schools should start classes later in the morning."
+            },
+            {
+              "n": 9,
+              "t": "Even one more hour of sleep could help us pay attention, remember what we study and feel better."
+            },
+            {
+              "n": 10,
+              "t": "I hope that our principal and the parents of my classmates will think about this before the next school year begins."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "What is the author's main purpose?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "To argue that schools should start later so teenagers can sleep more."
+            },
+            {
+              "letra": "B",
+              "t": "To tell how the author's mornings at home usually begin before going to school."
+            },
+            {
+              "letra": "C",
+              "t": "To describe the changes that happen in the body's clock during adolescence."
+            },
+            {
+              "letra": "D",
+              "t": "To warn teenagers that their phones are the real cause of their tiredness."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "In sentence 3, the opposite of LAZY is",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "late."
+            },
+            {
+              "letra": "B",
+              "t": "hard-working."
+            },
+            {
+              "letra": "C",
+              "t": "tired."
+            },
+            {
+              "letra": "D",
+              "t": "idle."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Who does the author most want to persuade?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The principal and the students' parents."
+            },
+            {
+              "letra": "B",
+              "t": "Children in primary school who also wake up very early."
+            },
+            {
+              "letra": "C",
+              "t": "The doctors who study the body's clock during adolescence."
+            },
+            {
+              "letra": "D",
+              "t": "The companies that make and sell cell phones in Peru."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "According to the author, if classes started one hour later, then",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "students would probably pay more attention in class."
+            },
+            {
+              "letra": "B",
+              "t": "every student in the school would get top grades in all subjects."
+            },
+            {
+              "letra": "C",
+              "t": "teenagers would stop using their phones late at night."
+            },
+            {
+              "letra": "D",
+              "t": "most students would still be unable to get enough rest."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "Which statement is NOT consistent with the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The author's school has a library that opens very early."
+            },
+            {
+              "letra": "B",
+              "t": "Not all of the tiredness can be blamed on phones."
+            },
+            {
+              "letra": "C",
+              "t": "Teenagers naturally feel sleepy later at night than adults."
+            },
+            {
+              "letra": "D",
+              "t": "The author thinks phones play no part in the problem."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: B · 3: A · 4: A · 5: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Convencer. El autor da su opinión («I believe», oración 8), responde a quienes piensan distinto (oraciones 3 y 4) y pide que el director y los padres lo piensen (oración 10): quiere convencer.",
+        "Pregunta 1. Clave A. La oración 8 dice la tesis con «I believe»: los adolescentes deberían dormir más y los colegios deberían empezar más tarde. Todo lo demás son razones para eso.",
+        "Pregunta 2. Clave B. «Lazy» es perezoso, flojo; lo contrario es «hard-working», trabajador. Algunos adultos dicen que los adolescentes son flojos, y el autor responde que lo que pasa es que les falta sueño.",
+        "Pregunta 3. Clave A. La oración 10 lo dice: el autor espera que el director y los padres de sus compañeros piensen en esto antes del próximo año escolar, porque ellos pueden cambiar la hora de entrada.",
+        "Pregunta 4. Clave A. La oración 9 dice que incluso una hora más de sueño podría ayudarlos a prestar atención, recordar lo que estudian y sentirse mejor.",
+        "Pregunta 5. Clave D. Choca con la oración 4: el autor admite que el celular es parte del problema («Phones are part of the problem, I admit»), aunque no toda la historia."
+      ]
+    },
+    {
+      "id": "t125",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Ice That Feeds the Rivers» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Ice That Feeds the Rivers",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "The Cordillera Blanca, in the region of Áncash, is often described as the largest range of tropical glaciers on Earth."
+            },
+            {
+              "n": 2,
+              "t": "For centuries, its ice has worked like a slow water tank for the valleys below."
+            }
+          ],
+          [
+            {
+              "n": 3,
+              "t": "During the rainy months, snow falls on the high peaks and adds to the ice."
+            },
+            {
+              "n": 4,
+              "t": "During the dry season, when it hardly rains, the glaciers keep melting little by little, and that meltwater helps keep the Santa River and many streams flowing."
+            },
+            {
+              "n": 5,
+              "t": "Farmers, towns and even some farms on the coast depend, to some degree, on that water."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Studies by Peruvian and foreign scientists suggest that most of these glaciers have been getting smaller for several decades."
+            },
+            {
+              "n": 7,
+              "t": "The likely main cause is the rise in temperature, although the details seem to vary from one valley to another."
+            },
+            {
+              "n": 8,
+              "t": "At first, a melting glacier may even release more water than before, so some rivers could appear to be doing well."
+            },
+            {
+              "n": 9,
+              "t": "However, this extra water would probably not last: as the ice gets smaller, there would be less and less ice left to melt in the dry season."
+            }
+          ],
+          [
+            {
+              "n": 10,
+              "t": "That is why many researchers think that communities should begin to plan now, for example by storing rainwater or recovering old Andean ways of keeping water in the soil."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que dice lo más importante del texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "Which is the best title for the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The Cordillera Blanca: The Largest Tropical Glacier Range on Earth"
+            },
+            {
+              "letra": "B",
+              "t": "Climate Change Around the World"
+            },
+            {
+              "letra": "C",
+              "t": "Melting Glaciers Give the Andes More Water Than Ever"
+            },
+            {
+              "letra": "D",
+              "t": "Scientists Prove That the Santa River Will Dry Up Soon"
+            },
+            {
+              "letra": "E",
+              "t": "Shrinking Glaciers and Dry-Season Water"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "In sentence 5, the phrase TO SOME DEGREE can be replaced by",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "with a university diploma."
+            },
+            {
+              "letra": "B",
+              "t": "partly."
+            },
+            {
+              "letra": "C",
+              "t": "completely."
+            },
+            {
+              "letra": "D",
+              "t": "in degrees of temperature."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "If the temperature stopped rising and the glaciers kept their size, then",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "the meltwater of the dry season would probably not keep decreasing."
+            },
+            {
+              "letra": "B",
+              "t": "farms on the coast would no longer need the Santa River."
+            },
+            {
+              "letra": "C",
+              "t": "it would never stop raining in the valleys of Áncash."
+            },
+            {
+              "letra": "D",
+              "t": "there would still be less and less ice left to melt each dry season."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Which statement is NOT consistent with the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Not every valley shows exactly the same changes."
+            },
+            {
+              "letra": "B",
+              "t": "Many tourists visit the Cordillera Blanca to climb its peaks."
+            },
+            {
+              "letra": "C",
+              "t": "The ice has worked like a water tank for a long time."
+            },
+            {
+              "letra": "D",
+              "t": "For a while, a shrinking glacier can give rivers more water."
+            },
+            {
+              "letra": "E",
+              "t": "Scientists know exactly when each glacier will melt away."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "In sentence 7, the opposite of LIKELY is",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "secondary."
+            },
+            {
+              "letra": "B",
+              "t": "well liked."
+            },
+            {
+              "letra": "C",
+              "t": "probable."
+            },
+            {
+              "letra": "D",
+              "t": "unlikely."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: B · 3: A · 4: E · 5: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 9. La oración 9 dice lo que significa que los glaciares se achiquen: el agua de más no duraría, y en la estación seca quedaría cada vez menos hielo para derretirse. Las demás explican cómo funciona el glaciar, presentan los estudios o sacan una consecuencia.",
+        "Pregunta 1. Clave E. El texto trata de que los glaciares se achican (oración 6) y de lo que eso significaría para el agua de la estación seca (oración 9). El título junta las dos partes.",
+        "Pregunta 2. Clave B. «To some degree» quiere decir en cierta medida, en parte: los agricultores y los pueblos dependen del agua del glaciar, pero no solo de ella.",
+        "Pregunta 3. Clave A. Según las oraciones 7 y 9, el agua de la estación seca disminuiría porque el hielo se achica, y la causa probable es el calor. Si el hielo no se achicara, ya no habría razón para esperar esa disminución.",
+        "Pregunta 4. Clave E. Choca con el tono del texto: los estudios «suggest» (oración 6), la causa es «likely» y los detalles cambian de un valle a otro (oración 7). Nada indica que se sepa con exactitud.",
+        "Pregunta 5. Clave D. «Likely» es probable; lo contrario es «unlikely», improbable. El autor dice que el calor es la causa probable, sin darlo por seguro."
+      ]
+    },
+    {
+      "id": "t126",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Reading Evenings» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Reading Evenings",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Did you leave school before you could become a confident reader, or have you simply lost the habit of reading?"
+            },
+            {
+              "n": 2,
+              "t": "Starting next month, our community library in Arequipa will offer a free reading program for adults, called Reading Evenings."
+            }
+          ],
+          [
+            {
+              "n": 3,
+              "t": "The group will meet on Tuesday and Thursday evenings, from seven to half past eight, so that people who work during the day can attend."
+            },
+            {
+              "n": 4,
+              "t": "Each session will begin with a short text read aloud, and then participants will talk about it in small groups."
+            },
+            {
+              "n": 5,
+              "t": "No previous studies are required, and nobody will be asked to read in front of others unless they want to."
+            },
+            {
+              "n": 6,
+              "t": "Volunteers, many of them retired teachers, will help anyone who finds reading difficult."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Our city is the birthplace of Mario Vargas Llosa, a winner of the Nobel Prize in Literature, but books should not belong only to famous writers."
+            },
+            {
+              "n": 8,
+              "t": "We believe that reading can help adults understand official documents, enjoy a good story and share books with their children and grandchildren."
+            }
+          ],
+          [
+            {
+              "n": 9,
+              "t": "To sign up, come to the front desk with your ID card or call the library during opening hours."
+            },
+            {
+              "n": 10,
+              "t": "Places are limited: we planned for twenty people, but more than forty have actually called already, so we recommend registering this week."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «The library itself wrote this text.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Where would this text most likely be published?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "In a newspaper report about a program that already ended last year."
+            },
+            {
+              "letra": "B",
+              "t": "In a university textbook about the history of literature."
+            },
+            {
+              "letra": "C",
+              "t": "On the library's notice board and in the neighborhood."
+            },
+            {
+              "letra": "D",
+              "t": "In a biography of the writer Mario Vargas Llosa."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "What is the main purpose of the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "To ask the city to pay the retired teachers who work as volunteers."
+            },
+            {
+              "letra": "B",
+              "t": "To explain to schoolchildren how they can borrow books from the library."
+            },
+            {
+              "letra": "C",
+              "t": "To invite adults to join a free reading program."
+            },
+            {
+              "letra": "D",
+              "t": "To tell the life story of a famous writer who was born in Arequipa."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "In sentence 10, the word ACTUALLY can be replaced by",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "currently."
+            },
+            {
+              "letra": "B",
+              "t": "finally."
+            },
+            {
+              "letra": "C",
+              "t": "in fact."
+            },
+            {
+              "letra": "D",
+              "t": "this week."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "According to the text, why will the group meet in the evening?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Because participants must bring their ID card to sign up."
+            },
+            {
+              "letra": "B",
+              "t": "Because the retired teachers are only free at night."
+            },
+            {
+              "letra": "C",
+              "t": "Because it is easier to read aloud when the city is quiet."
+            },
+            {
+              "letra": "D",
+              "t": "So that people who work during the day can come."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "Which title fits the text best?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "How to Get an ID Card in Arequipa"
+            },
+            {
+              "letra": "B",
+              "t": "Reading Lessons for Primary School Children"
+            },
+            {
+              "letra": "C",
+              "t": "The Importance of Reading in the World"
+            },
+            {
+              "letra": "D",
+              "t": "A Free Reading Program for Adults"
+            },
+            {
+              "letra": "E",
+              "t": "Mario Vargas Llosa, Arequipa's Nobel Prize Winner"
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: C · 3: C · 4: D · 5: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Se deduce del texto. El texto no dice quién lo escribió, pero habla de «our community library» (oración 2), de «our city» (oración 7) y de «we» (oraciones 8 y 10), y pide ir a su mostrador (oración 9): se deduce que lo escribe la propia biblioteca.",
+        "Pregunta 1. Clave C. Es un aviso: la biblioteca habla de sí misma («our community library», oración 2), anuncia un programa que empezará el próximo mes y explica cómo inscribirse en su mostrador (oración 9). Un aviso así se pone donde lo vean los vecinos.",
+        "Pregunta 2. Clave C. El aviso se dirige a adultos (oración 1), anuncia el programa gratuito (oración 2) y explica cómo inscribirse (oraciones 9 y 10): busca que la gente se inscriba.",
+        "Pregunta 3. Clave C. «Actually» quiere decir en realidad, de hecho: la biblioteca esperaba veinte personas, pero de hecho ya llamaron más de cuarenta. Por eso recomienda inscribirse esta semana.",
+        "Pregunta 4. Clave D. La oración 3 lo dice: el grupo se reunirá de siete a ocho y media de la noche «so that people who work during the day can attend».",
+        "Pregunta 5. Clave D. La oración 2 dice lo principal del aviso: la biblioteca ofrecerá un programa de lectura gratuito para adultos. Lo demás da detalles."
+      ]
+    },
+    {
+      "id": "t128",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Nazca from Above» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Nazca from Above",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "For a long time, the best way to see the Nazca lines was to fly over them in a small plane."
+            },
+            {
+              "n": 2,
+              "t": "These huge drawings on the desert floor of southern Peru were made more than a thousand years ago by people who moved the dark stones on the surface and uncovered the lighter ground below."
+            },
+            {
+              "n": 3,
+              "t": "Because it almost never rains there, many of the lines have survived until today."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Today, archaeologists also study them in a new way: with drones."
+            },
+            {
+              "n": 5,
+              "t": "A drone can fly low and slowly and take many photos, which are eventually joined into a detailed map of the ground."
+            },
+            {
+              "n": 6,
+              "t": "In these images, researchers can notice faint figures that are very hard to see from a plane or from the ground."
+            },
+            {
+              "n": 7,
+              "t": "In fact, in recent years some figures that nobody had noticed before have been found with the help of drones."
+            },
+            {
+              "n": 8,
+              "t": "Drones have another advantage: researchers do not need to walk on the fragile surface, so they leave no footprints on it."
+            }
+          ],
+          [
+            {
+              "n": 9,
+              "t": "However, drones do not replace archaeologists."
+            },
+            {
+              "n": 10,
+              "t": "A photo can show a shape, but only people who know the Nasca culture can suggest what that shape may have meant."
+            },
+            {
+              "n": 11,
+              "t": "The new technology, then, is a tool that helps researchers, not a machine that does their job."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "In sentence 5, the word EVENTUALLY can be replaced by",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "quickly."
+            },
+            {
+              "letra": "B",
+              "t": "finally."
+            },
+            {
+              "letra": "C",
+              "t": "slowly."
+            },
+            {
+              "letra": "D",
+              "t": "occasionally."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, lee esta afirmación y di qué relación tiene con el texto. «If it rained often in that desert, fewer lines would probably have survived.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "If it rained often in the Nazca desert, then, according to the text, the lines",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "would certainly all have disappeared by now."
+            },
+            {
+              "letra": "B",
+              "t": "probably would not have lasted so well."
+            },
+            {
+              "letra": "C",
+              "t": "would have lasted just as well, because they are made of stones and ground."
+            },
+            {
+              "letra": "D",
+              "t": "would be easier to study with drones than from a plane."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Which statement contradicts the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Some figures that nobody had noticed before were found with the help of drones."
+            },
+            {
+              "letra": "B",
+              "t": "Drones can now explain what each figure meant."
+            },
+            {
+              "letra": "C",
+              "t": "Many tourists from other countries visit the Nazca lines every year."
+            },
+            {
+              "letra": "D",
+              "t": "Thanks to drones, researchers can study the lines without walking on their fragile surface."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "According to the text, why can drones help find figures that were not noticed before?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Because it almost never rains in that part of southern Peru."
+            },
+            {
+              "letra": "B",
+              "t": "Because they fly much higher and faster than small planes do."
+            },
+            {
+              "letra": "C",
+              "t": "Because they fly low, and their images show faint figures."
+            },
+            {
+              "letra": "D",
+              "t": "Because, unlike archaeologists, they can tell what every shape meant."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que mejor dice de qué trata el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "Which is the best title for the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "The Deserts of Southern Peru"
+            },
+            {
+              "letra": "B",
+              "t": "Drones: A New Tool for Nazca Research"
+            },
+            {
+              "letra": "C",
+              "t": "Flying over Nazca in a Small Plane"
+            },
+            {
+              "letra": "D",
+              "t": "Drones Will Replace Archaeologists"
+            },
+            {
+              "letra": "E",
+              "t": "How the Ancient Nasca People Made Their Huge Drawings in the Desert"
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: B · 3: B · 4: C · 5: B.",
+      "pasos": [
+        "Pregunta 1. Clave B. «Eventually» quiere decir al final, después de un proceso: primero el dron toma muchas fotos y, al final, se unen en un mapa.",
+        "Pregunta 2. Antes de las alternativas: Se deduce del texto. La oración 3 da la causa: muchas líneas sobrevivieron «because it almost never rains there». Si lloviera a menudo, faltaría esa causa: se deduce que habrían sobrevivido menos.",
+        "Pregunta 2. Clave B. La oración 3 dice que muchas líneas sobrevivieron porque casi nunca llueve. Sin esa causa, lo probable es que se hubieran conservado peor.",
+        "Pregunta 3. Clave B. Las oraciones 9 y 10 dicen lo contrario: los drones no reemplazan a los arqueólogos, y solo quienes conocen la cultura Nasca pueden proponer qué significaba una figura.",
+        "Pregunta 4. Clave C. Las oraciones 5 y 6 lo dicen: el dron vuela bajo y lento, toma muchas fotos, y en esas imágenes se ven figuras tenues, difíciles de ver desde un avión o desde el suelo.",
+        "Pregunta 5. Antes de las alternativas: la oración 4 o la oración 11. La oración 4 anuncia el tema (hoy las líneas también se estudian con drones) y la 11 lo completa: el dron es una herramienta que ayuda a los investigadores, no los reemplaza.",
+        "Pregunta 5. Clave B. Junta las oraciones 4 y 11: hoy las líneas también se estudian con drones, que ayudan a los investigadores sin reemplazarlos."
+      ]
+    },
+    {
+      "id": "t129",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Our Rivers Are Not a Trash Can» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Our Rivers Are Not a Trash Can",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "I am a science teacher in Iquitos, and I am writing because many people in our city think that a plastic bottle thrown into the river simply disappears."
+            },
+            {
+              "n": 2,
+              "t": "It does not: plastic breaks into smaller and smaller pieces, but it stays in the water for many years."
+            },
+            {
+              "n": 3,
+              "t": "When I was a child, my friends and I used to swim in the Itaya River every weekend."
+            },
+            {
+              "n": 4,
+              "t": "Today, after a heavy rain, its banks are covered with bags, bottles and food containers."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "Last month, my students and I spent a morning cleaning a small part of the bank near our school, and we filled more than forty bags with trash."
+            },
+            {
+              "n": 6,
+              "t": "Their reaction surprised me: instead of complaining, they asked to do it again."
+            },
+            {
+              "n": 7,
+              "t": "Cleaning, however, is not enough if new plastic keeps arriving every day."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "That is why I believe our city must reduce the plastic it uses, starting with the markets, where most products are still sold in single-use bags."
+            },
+            {
+              "n": 9,
+              "t": "Peru already has a law that limits single-use plastic, but a law works only if people and shops follow it."
+            },
+            {
+              "n": 10,
+              "t": "I invite your readers, and especially the market vendors, to try reusable bags for one month and see the difference in our rivers."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo la autora de la carta? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "What is the main purpose of the letter?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "To tell the story of a morning when a teacher and some students cleaned a river bank."
+            },
+            {
+              "letra": "B",
+              "t": "To persuade people in Iquitos to use less plastic."
+            },
+            {
+              "letra": "C",
+              "t": "To explain how plastic breaks into smaller and smaller pieces in the water."
+            },
+            {
+              "letra": "D",
+              "t": "To describe the rivers of the Amazon."
+            },
+            {
+              "letra": "E",
+              "t": "To complain that Peru has no law about single-use plastic."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "This text would most probably be published in",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "an official document that explains Peru's law on plastic bags."
+            },
+            {
+              "letra": "B",
+              "t": "a science textbook chapter about how plastic breaks down in water."
+            },
+            {
+              "letra": "C",
+              "t": "the readers' letters section of a newspaper."
+            },
+            {
+              "letra": "D",
+              "t": "a school report written by the teacher's students."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "In sentence 10, the opposite of REUSABLE is",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "useful."
+            },
+            {
+              "letra": "B",
+              "t": "recycled."
+            },
+            {
+              "letra": "C",
+              "t": "single-use."
+            },
+            {
+              "letra": "D",
+              "t": "used once more."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Which statement contradicts what the letter says?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Plastic in the river disappears after a few months."
+            },
+            {
+              "letra": "B",
+              "t": "After the cleaning day, the students asked to clean the river bank again."
+            },
+            {
+              "letra": "C",
+              "t": "Other cities in the Amazon have the same problem with plastic in their rivers."
+            },
+            {
+              "letra": "D",
+              "t": "According to the teacher, cleaning the river bank is not enough by itself."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "previo": "Antes de mirar las alternativas, lee esta afirmación y di qué relación tiene con el texto. «For the teacher, less new plastic in the city would mean less plastic arriving at the rivers.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "If the markets of Iquitos had stopped using single-use bags years ago, then, according to the teacher's reasoning,",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "the students would not have wanted to clean the bank again."
+            },
+            {
+              "letra": "B",
+              "t": "the river banks would still be just as full of plastic after a heavy rain."
+            },
+            {
+              "letra": "C",
+              "t": "the river banks would have no plastic at all today, so no cleaning would ever be needed."
+            },
+            {
+              "letra": "D",
+              "t": "less plastic would probably reach the rivers today."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: C · 3: C · 4: A · 5: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Convencer. La autora da su opinión («I believe our city must reduce the plastic…», oración 8) y termina invitando a los lectores a cambiar (oración 10): busca convencer.",
+        "Pregunta 1. Clave B. La oración 8 dice la tesis (la ciudad debe reducir el plástico que usa) y la 10 invita a los lectores a probar bolsas reutilizables: la carta busca convencer.",
+        "Pregunta 2. Clave C. La autora dice «I am writing because…» (oración 1) y se dirige a «your readers» (oración 10): escribe a un medio para que la lean sus lectores, como en una carta al director.",
+        "Pregunta 3. Clave C. «Reusable» es lo que se usa varias veces. Su contrario es lo que se usa una sola vez: «single-use», como las bolsas de la oración 8, que la autora quiere cambiar.",
+        "Pregunta 4. Clave A. Es lo que cree mucha gente (oración 1), y la autora lo niega: «It does not», el plástico se rompe en pedazos pero se queda muchos años en el agua (oración 2).",
+        "Pregunta 5. Antes de las alternativas: Se deduce del texto. La oración 7 dice que limpiar no basta si sigue llegando plástico nuevo, y la 8 propone reducir el plástico que usa la ciudad. De ahí se deduce que, para ella, menos plástico en la ciudad es menos plástico en los ríos.",
+        "Pregunta 5. Clave D. La autora une la basura de los ríos al plástico que sigue llegando (oración 7) y propone empezar por los mercados (oración 8). Si los mercados lo hubieran dejado antes, lo probable es que llegara menos plástico."
+      ]
+    },
+    {
+      "id": "t130",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Why We Fall for False News» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Why We Fall for False News",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "It is tempting to think that only careless or poorly informed people believe false news."
+            },
+            {
+              "n": 2,
+              "t": "The evidence suggests otherwise: almost anyone may accept a false story when it fits what they already think, or when it makes them feel strong emotions such as fear or anger."
+            },
+            {
+              "n": 3,
+              "t": "Repetition seems to play a part as well."
+            },
+            {
+              "n": 4,
+              "t": "When we see the same claim several times, it tends to feel familiar, and familiar ideas are easily mistaken for true ones."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "Social media may make these tendencies stronger."
+            },
+            {
+              "n": 6,
+              "t": "Posts that provoke strong reactions are often shared more, and many users pass on a link after reading only its headline."
+            },
+            {
+              "n": 7,
+              "t": "In this way, a story can reach a great many people before anyone checks whether it is accurate."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "This does not mean that readers are helpless, since a few simple habits can probably reduce the risk."
+            },
+            {
+              "n": 9,
+              "t": "Before sharing a post, a reader can pause and ask who published it and when."
+            },
+            {
+              "n": 10,
+              "t": "It also helps to look for the same information in other sources, instead of reading the suspicious page again and again."
+            },
+            {
+              "n": 11,
+              "t": "None of these habits is perfect, but together they may give us enough time to realize that a story is false."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "In sentence 11, the word REALIZE can be replaced by",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "share."
+            },
+            {
+              "letra": "B",
+              "t": "explain."
+            },
+            {
+              "letra": "C",
+              "t": "notice."
+            },
+            {
+              "letra": "D",
+              "t": "carry out."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "What is the author's main purpose?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "To describe how a post reaches many people in a short time."
+            },
+            {
+              "letra": "B",
+              "t": "To explain why people believe false news and what readers can do."
+            },
+            {
+              "letra": "C",
+              "t": "To show that only careless or poorly informed people believe false news on the internet."
+            },
+            {
+              "letra": "D",
+              "t": "To tell the story of a reader who shared a false headline."
+            },
+            {
+              "letra": "E",
+              "t": "To demand that the government close the social media sites that spread lies."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas, lee esta afirmación y di qué relación tiene con el texto. «A false claim seen only once would probably feel less familiar than one seen many times.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "If a reader saw a false claim only once instead of many times, then, according to the text, the claim",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "would never be believed by anyone."
+            },
+            {
+              "letra": "B",
+              "t": "would surely be checked in other sources before being shared."
+            },
+            {
+              "letra": "C",
+              "t": "might seem less familiar and less believable."
+            },
+            {
+              "letra": "D",
+              "t": "would seem just as familiar and believable as a claim seen many times."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "previo": "Antes de mirar las alternativas, lee esta afirmación y di qué relación tiene con el texto. «People with a good education cannot be fooled by false news.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Which statement contradicts the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Looking for the same information in other sources may help a reader."
+            },
+            {
+              "letra": "B",
+              "t": "Strong emotions such as fear can make a false story easier to accept."
+            },
+            {
+              "letra": "C",
+              "t": "Well-educated people are not at risk of believing false news."
+            },
+            {
+              "letra": "D",
+              "t": "False news spreads more during elections than during the rest of the year."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "The text is mainly addressed to",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "journalists who need to learn how to write better headlines."
+            },
+            {
+              "letra": "B",
+              "t": "engineers who design the platforms where posts are shared."
+            },
+            {
+              "letra": "C",
+              "t": "ordinary users of social media."
+            },
+            {
+              "letra": "D",
+              "t": "only careless people who never check what they read online."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: B · 3: C · 4: C · 5: C.",
+      "pasos": [
+        "Pregunta 1. Clave C. «Realize» significa darse cuenta: los hábitos nos dan tiempo para notar que una historia es falsa.",
+        "Pregunta 2. Clave B. Los dos primeros párrafos explican por qué se cree en noticias falsas (emociones, repetición, redes) y el tercero propone hábitos para el lector (oración 8).",
+        "Pregunta 3. Antes de las alternativas: Se deduce del texto. La oración 4 dice que lo que se ve varias veces «tends to feel familiar». De ahí se deduce que lo que se ve una sola vez se siente menos conocido.",
+        "Pregunta 3. Clave C. La oración 4 une la repetición con la sensación de que algo es conocido, y lo conocido se confunde con lo verdadero. Sin repetición, la afirmación podría parecer menos conocida y menos creíble.",
+        "Pregunta 4. Antes de las alternativas: Lo contradice. La oración 2 dice que casi cualquiera («almost anyone») puede aceptar una historia falsa; el autor rechaza la idea de que solo caen los descuidados o mal informados (oración 1).",
+        "Pregunta 4. Clave C. Choca con la oración 2: «almost anyone may accept a false story». El autor rechaza la idea de que solo los mal informados caen (oración 1).",
+        "Pregunta 5. Clave C. Habla de lo que puede hacer «a reader» antes de compartir (oración 9) y se incluye con «us» (oración 11): se dirige a cualquier persona que usa redes."
+      ]
+    },
+    {
+      "id": "t131",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «The Seed Keeper (an imagined life)» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "The Seed Keeper (an imagined life)",
+        "idioma": "en",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Valeria Condori is not a real person, but her story is built on real facts about quinoa."
+            },
+            {
+              "n": 2,
+              "t": "She grew up on a small farm near Lake Titicaca, in Puno, where quinoa has been grown for thousands of years."
+            },
+            {
+              "n": 3,
+              "t": "As a girl, she used to help her grandmother choose the seeds for the next season: white, red and black grains, each kept in its own bag."
+            },
+            {
+              "n": 4,
+              "t": "Her grandmother said that some kinds survived dry years better than others, but nobody in the family had ever measured the difference."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "Years later, after studying agronomy, Valeria decided to answer that old question."
+            },
+            {
+              "n": 6,
+              "t": "In her test fields, she planted dozens of local varieties side by side and gave some plots much less water than others."
+            },
+            {
+              "n": 7,
+              "t": "Most plants produced less grain when water was scarce, but a few varieties still gave a surprisingly good harvest."
+            },
+            {
+              "n": 8,
+              "t": "She did not work alone: farmers from nearby communities visited the fields, compared the plants with their own and shared seeds that were not in any collection, which she added to her trials."
+            }
+          ],
+          [
+            {
+              "n": 9,
+              "t": "For Valeria, the varieties that families have kept for generations are not old-fashioned; they may be one of the best tools for farming in a drier future."
+            },
+            {
+              "n": 10,
+              "t": "She knows that one dry season is not enough to be sure, so she will repeat her trials for several more years before recommending any variety."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "In sentence 7, the opposite of SCARCE is",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "expensive."
+            },
+            {
+              "letra": "B",
+              "t": "scared."
+            },
+            {
+              "letra": "C",
+              "t": "abundant."
+            },
+            {
+              "letra": "D",
+              "t": "limited."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración (en inglés) que mejor resume la idea que deja el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "Which is the best title for the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Quinoa, the Food That Will Feed the Whole World"
+            },
+            {
+              "letra": "B",
+              "t": "Farming in the Andes"
+            },
+            {
+              "letra": "C",
+              "t": "A Grandmother's Bags of White, Red and Black Seeds"
+            },
+            {
+              "letra": "D",
+              "t": "A Scientist Who Studied Agronomy"
+            },
+            {
+              "letra": "E",
+              "t": "Old Seeds for a Drier Future"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "According to the text, what will Valeria do before recommending a variety?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "She will recommend the best variety after only one dry season."
+            },
+            {
+              "letra": "B",
+              "t": "She will ask her grandmother which kinds survive dry years best."
+            },
+            {
+              "letra": "C",
+              "t": "She has already repeated her trials for many years, so she is now sure."
+            },
+            {
+              "letra": "D",
+              "t": "She will repeat her trials for several more years."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "What is the main purpose of the text?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "To show, through an invented life, why old quinoa varieties may matter."
+            },
+            {
+              "letra": "B",
+              "t": "To sell quinoa seeds to farmers in Puno."
+            },
+            {
+              "letra": "C",
+              "t": "To explain in detail how families near Lake Titicaca store white, red and black seeds in bags."
+            },
+            {
+              "letra": "D",
+              "t": "To prove that quinoa can only grow near Lake Titicaca."
+            },
+            {
+              "letra": "E",
+              "t": "To tell the true life story of a famous Peruvian scientist."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "previo": "Antes de mirar las alternativas, lee esta afirmación y di qué relación tiene con el texto. «Without the farmers, Valeria would probably have tested fewer local varieties.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "If the farmers had not shared their own seeds with Valeria, then, according to the text,",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "she would have stopped working as a scientist forever."
+            },
+            {
+              "letra": "B",
+              "t": "she would have tested exactly the same varieties, taken from a seed collection."
+            },
+            {
+              "letra": "C",
+              "t": "all the plants would have died when water was scarce."
+            },
+            {
+              "letra": "D",
+              "t": "her trials would probably have had fewer varieties."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: E · 3: D · 4: A · 5: D.",
+      "pasos": [
+        "Pregunta 1. Clave C. «Scarce» es escaso: en algunas parcelas el agua era poca (oración 6). Lo contrario es «abundant», abundante.",
+        "Pregunta 2. Antes de las alternativas: la oración 9. La oración 9 dice lo que todo el relato muestra: las variedades que las familias guardaron por generaciones pueden ayudar a cultivar en un futuro más seco.",
+        "Pregunta 2. Clave E. Resume la oración 9: las variedades antiguas que guardaron las familias pueden servir para cultivar cuando haya menos agua.",
+        "Pregunta 3. Clave D. La oración 10 lo dice: «she will repeat her trials for several more years before recommending any variety».",
+        "Pregunta 4. Clave A. La oración 1 avisa que Valeria es inventada, y su historia lleva a la idea de la oración 9: las variedades que guardaron las familias pueden ayudar ante la sequía.",
+        "Pregunta 5. Antes de las alternativas: Se deduce del texto. La oración 8 dice que los agricultores compartieron semillas «that were not in any collection» y que Valeria las sumó a sus pruebas. Sin ellos, esas variedades no habrían estado: se deduce que habría probado menos.",
+        "Pregunta 5. Clave D. La oración 8 dice que los agricultores le dieron semillas que no estaban en ninguna colección. Sin ellas, lo probable es que hubiera probado menos variedades."
       ]
     }
   ]

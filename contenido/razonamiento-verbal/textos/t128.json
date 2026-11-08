@@ -70,8 +70,8 @@
           "explicacion": "Vuelve a confirmar lo que el condicional niega: el texto une la conservación de las líneas a la falta de lluvia. Si llueve a menudo, no hay razón para que duren igual." },
         { "t": "would be easier to study with drones than from a plane.", "codigo": "RV7", "origen": "o6",
           "explicacion": "El texto compara drones y aviones, pero nada relaciona la lluvia con lo fácil que es estudiar las líneas. Es una inferencia que no se apoya en el texto." },
-        { "t": "would all disappear completely in a single rainy day.", "codigo": "RV12",
-          "explicacion": "Lleva la idea a un extremo: el texto permite pensar que se conservarían peor, no que todas desaparecerían en un solo día." }
+        { "t": "would certainly all have disappeared by now.", "codigo": "RV12",
+          "explicacion": "Lleva la idea a un extremo: el texto permite pensar que se habrían conservado peor, no que con seguridad todas habrían desaparecido." }
       ]
     },
     {
@@ -79,16 +79,16 @@
       "tipo": "incompatibilidad",
       "unidad": "razonamiento-verbal.lectura-en-ingles",
       "idioma": "en",
-      "enunciado": "Which statement is NOT consistent with the text?",
+      "enunciado": "Which statement contradicts the text?",
       "alternativas": [
         { "t": "Drones can now explain what each figure meant.", "correcta": true, "evidencia": ["o9", "o10"],
           "explicacion": "Las oraciones 9 y 10 dicen lo contrario: los drones no reemplazan a los arqueólogos, y solo quienes conocen la cultura Nasca pueden proponer qué significaba una figura." },
         { "t": "Thanks to drones, researchers can study the lines without walking on their fragile surface.", "codigo": "RV10", "origen": "o8",
-          "explicacion": "Es compatible: la oración 8 lo dice. Se pide la que NO concuerda con el texto." },
+          "explicacion": "Concuerda con la oración 8, que lo dice. Se pide la que contradice al texto." },
         { "t": "Some figures that nobody had noticed before were found with the help of drones.", "codigo": "RV9", "origen": "o7",
-          "explicacion": "Concuerda con la oración 7. La incompatible es la que contradice a las oraciones 9 y 10." },
+          "explicacion": "Concuerda con la oración 7. Se pide la que choca con las oraciones 9 y 10." },
         { "t": "Many tourists from other countries visit the Nazca lines every year.", "codigo": "RV36",
-          "explicacion": "El texto no habla de turistas, pero no decirlo no es contradecirlo. Lo incompatible es lo que choca con el texto." }
+          "explicacion": "El texto no habla de turistas, pero no decirlo no es contradecirlo. Se pide lo que choca con lo que el texto afirma." }
       ]
     },
     {
@@ -152,8 +152,8 @@
   "hechos": [
     { "afirmacion": "Las líneas de Nazca son geoglifos del desierto del sur del Perú, hechos por la cultura Nasca hace más de mil años, retirando las piedras oscuras de la superficie para dejar ver el suelo más claro.", "fuente": "UNESCO, Lista del Patrimonio Mundial: Lines and Geoglyphs of Nasca and Palpa (1994), descripción del sitio." },
     { "afirmacion": "Se han conservado sobre todo porque en esa zona casi nunca llueve (clima muy seco y estable).", "fuente": "UNESCO, Lines and Geoglyphs of Nasca and Palpa, descripción y estado de conservación." },
-    { "afirmacion": "En los últimos años se han encontrado figuras nuevas con ayuda de drones y fotografía aérea.", "fuente": "Ministerio de Cultura del Perú, anuncios sobre nuevos geoglifos en Nasca y Palpa (2018 en adelante); Sakai, M. y otros (2024), PNAS, sobre la prospección de geoglifos de Nasca con imágenes aéreas." },
+    { "afirmacion": "En los últimos años se han encontrado figuras nuevas con ayuda de imágenes aéreas y drones (en 2022-2023, un equipo de la Universidad de Yamagata verificó en el campo, a pie y con drones, figuras que un programa de aprendizaje automático había señalado).", "fuente": "Sakai, M. y otros (2024). AI-accelerated Nazca survey nearly doubles the number of known figurative geoglyphs and sheds light on their purpose. PNAS, 121(40), doi 10.1073/pnas.2407652121; Ministerio de Cultura del Perú, anuncios sobre nuevos geoglifos en Nasca y Palpa (2018 en adelante)." },
     { "afirmacion": "Caminar o pasar vehículos sobre la superficie deja huellas que dañan los geoglifos.", "fuente": "UNESCO, Lines and Geoglyphs of Nasca and Palpa, estado de conservación; Ministerio de Cultura del Perú, comunicados sobre daños a las líneas." }
   ],
-  "revision": null
+  "revision": {"por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "A ciegas coincidí en los 7 ítems. El p3 pasó de «NOT consistent» a «contradicts» para que el distractor de lo no mencionado no sea defendible, reforcé el distractor extremo del p2 y confirmé la cita de Sakai y otros (PNAS 2024, verificación de campo con drones)."}
 }

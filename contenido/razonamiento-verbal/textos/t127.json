@@ -49,9 +49,9 @@
       "alternativas": [
         { "t": "dull.", "correcta": true, "evidencia": ["o5"],
           "explicacion": "«Shiny» es brillante; su contrario es «dull», opaco, sin brillo." },
-        { "t": "bright.", "codigo": "RV21",
+        { "t": "bright.", "codigo": "RV19",
           "explicacion": "«Bright» (brillante) es un sinónimo de «shiny», no su contrario: se pide lo opuesto." },
-        { "t": "short.", "codigo": "RV19", "origen": "o5",
+        { "t": "short.", "codigo": "RV21", "origen": "o5",
           "explicacion": "«Short» es el contrario de «long», otra palabra de la misma oración. Habla del largo de la fibra, no de su brillo." },
         { "t": "fluffy.", "codigo": "RV5", "origen": "o5",
           "explicacion": "Repite una palabra de la oración 5, que describe la fibra de la huacaya. No es lo contrario de brillante." }
@@ -83,8 +83,8 @@
           "explicacion": "Pasa por alto la negación de la oración 7: la fibra tiene colores naturales y «does not always need dye»." },
         { "t": "They used to weave it, but now they only sell it in the market.", "codigo": "RV55", "origen": "o6",
           "explicacion": "El texto está en presente («families clean it… and weave it»): lo hacen hoy. Nada dice que antes tejían y ahora ya no." },
-        { "t": "They send all of it to big factories in other countries.", "codigo": "RV8",
-          "explicacion": "El texto no habla de fábricas ni de otros países: dice que algunas familias venden la fibra en mercados locales (oración 8)." }
+        { "t": "They use it only to make ponchos for their own families.", "codigo": "RV7", "origen": "o6",
+          "explicacion": "Los ponchos aparecen en la oración 6, pero también hacen gorros y frazadas, y algunas familias venden la fibra (oración 8): no la usan solo para sus propios ponchos." }
       ]
     },
     {
@@ -144,9 +144,9 @@
   "origen": "propio",
   "fecha": "2026-11-08",
   "hechos": [
-    { "afirmacion": "Puno es la región del Perú con más alpacas, y el Perú tiene la mayor población de alpacas del mundo (este último dato solo va en un distractor).", "fuente": "INEI, IV Censo Nacional Agropecuario 2012 (población de alpacas por región); MIDAGRI, información sobre camélidos sudamericanos." },
+    { "afirmacion": "Puno es la región del Perú con más alpacas (cerca de 1,46 millones en el censo de 2012, seguida de Cusco y Arequipa), y el Perú tiene la mayor población de alpacas del mundo (este último dato solo va en un distractor, que la explicación presenta como algo que el texto no dice).", "fuente": "INEI, IV Censo Nacional Agropecuario 2012, población de alpacas por región (citado por Andina, Día Nacional de la Alpaca); MIDAGRI, información sobre camélidos sudamericanos; FAO, Camélidos sudamericanos." },
     { "afirmacion": "Hay dos razas de alpaca, huacaya (fibra esponjosa) y suri (fibra en rizos largos y lustrosos).", "fuente": "MIDAGRI / INIA, información técnica sobre camélidos sudamericanos domésticos; FAO, Camélidos sudamericanos." },
     { "afirmacion": "La esquila no daña al animal y la fibra vuelve a crecer; la fibra de alpaca tiene muchos colores naturales.", "fuente": "FAO, Camélidos sudamericanos; MIDAGRI, guías de esquila de alpacas." }
   ],
-  "revision": null
+  "revision": {"por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "A ciegas coincidí en los 7 ítems. Cambié el distractor débil del p3 (fábricas en otros países) por uno apoyado en la oración 6 (solo ponchos para la familia), alineé los códigos del antónimo (sinónimo RV19, otro rasgo RV21) y confirmé con el censo de 2012 que Puno es la región con más alpacas."}
 }
