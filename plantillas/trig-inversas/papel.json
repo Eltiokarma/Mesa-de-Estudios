@@ -1,0 +1,115 @@
+{
+  "titulo": "Funciones trigonométricas inversas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la práctica, con unos 3 minutos por problema. Rangos principales: arcsen [−π/2; π/2], arccos [0; π], arctan ⟨−π/2; π/2⟩, arccot ⟨0; π⟩, arcsec [0; π] sin π/2 y arccsc [−π/2; π/2] sin 0. En su dominio: arcsen x + arccos x = π/2, arctan x + arccot x = π/2 y arcsec x + arccsc x = π/2. Para sumar arcotangentes: tan(α + β) = (tan α + tan β)/(1 − tan α·tan β), y mira en qué cuadrante cae la suma. Sector de radio R y ángulo θ (en radianes): arco θR y área θR²/2.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Resuelve arcsen x − arccos x = π/6.",
+      "respuesta": "x = √3/2",
+      "pasos": [
+        "arcsen x + arccos x = π/2 para todo x de [−1; 1].",
+        "Sumando las dos igualdades: 2 arcsen x = π/2 + π/6 = 2π/3, así que arcsen x = π/3.",
+        "x = sen(π/3) = √3/2. Control: arccos(√3/2) = π/6 y π/3 − π/6 = π/6."
+      ],
+      "verificar": [{ "fn": "complementaria", "args": [{ "par": "sen-cos", "forma": "diferencia", "d": 0.16666666666666666 }], "espera": { "x": 0.8660254037844386, "angulo": 1.0471975511965976 } }]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Resuelve arcsec x = 2·arccsc x.",
+      "respuesta": "x = 2",
+      "pasos": [
+        "arcsec x + arccsc x = π/2, así que arccsc x = π/2 − arcsec x.",
+        "arcsec x = 2(π/2 − arcsec x) → 3 arcsec x = π → arcsec x = π/3.",
+        "x = sec(π/3) = 2. Control: arccsc 2 = π/6, y π/3 = 2·π/6."
+      ],
+      "verificar": [{ "fn": "complementaria", "args": [{ "par": "sec-csc", "forma": "multiplo", "m": 1, "n": 2 }], "espera": { "x": 2 } }]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Los puntos (x; y) que cumplen arcsec(x² + y² − 3) + arccsc(4x − 2y) = π/2 están sobre una circunferencia. Halla su centro y su radio.",
+      "respuesta": "Centro (2; −1) y radio 2√2",
+      "pasos": [
+        "arcsec u + arccsc u = π/2 y arccsc es inyectiva: la condición pide que los dos argumentos sean iguales.",
+        "x² + y² − 3 = 4x − 2y → x² − 4x + y² + 2y − 3 = 0.",
+        "(x − 2)² + (y + 1)² = 4 + 1 + 3 = 8: centro (2; −1) y radio √8 = 2√2."
+      ],
+      "verificar": [{ "fn": "circunferencia", "args": [{ "a": 2, "b": -1, "c": -3 }], "espera": { "radio": 2.8284271247461903, "cx": 2, "cy": -1 } }]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "Las gráficas de y = arccot x e y = arcsen x se cortan en un punto P. ¿Cuánto vale el cuadrado de la abscisa de P?",
+      "respuesta": "(√5 − 1)/2",
+      "pasos": [
+        "En P, arccot x = arcsen x = θ, un ángulo agudo: cot θ = x y sen θ = x.",
+        "cos θ = cot θ · sen θ = x². Con sen²θ + cos²θ = 1: x² + x⁴ = 1.",
+        "Con z = x²: z² + z − 1 = 0 → z = (−1 ± √5)/2. Como z ≥ 0, x² = (√5 − 1)/2 (no su raíz: esa sería la abscisa)."
+      ],
+      "verificar": [{ "fn": "interseccion", "args": [{ "m": 1 }], "espera": { "x2": 0.6180339887498949 } }]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Sea f(x) = π/2 − 2 arctan(1 − x). Halla sus asíntotas horizontales y di si su gráfica sube o baja.",
+      "respuesta": "Asíntotas y = −π/2 e y = 3π/2; la gráfica sube (rango ⟨−π/2; 3π/2⟩).",
+      "pasos": [
+        "−π/2 < arctan(1 − x) < π/2, así que −π < 2 arctan(1 − x) < π y −π < −2 arctan(1 − x) < π.",
+        "Sumando π/2: −π/2 < f(x) < 3π/2. Las rectas y = −π/2 e y = 3π/2 son asíntotas y no se alcanzan.",
+        "Cuando x crece, 1 − x baja, arctan(1 − x) baja y −2 arctan(1 − x) sube: f es creciente (dos signos menos se compensan)."
+      ],
+      "verificar": [{ "fn": "transformacion", "args": [{ "A": 1.5707963267948966, "B": -2, "C": -1 }], "espera": { "lo": -1.5707963267948966, "hi": 4.71238898038469, "creciente": 1 } }]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Sea f(x) = arccos((x − 1)/2) + 2 arccsc((x − 1)/2). Halla el dominio, el rango y la suma de los elementos del rango.",
+      "respuesta": "Dominio {−1; 3}, rango {0; π}; la suma es π.",
+      "pasos": [
+        "arccos pide |u| ≤ 1 y arccsc pide |u| ≥ 1: solo sirve u = (x − 1)/2 = ±1, es decir, x = 3 o x = −1.",
+        "x = 3 (u = 1): arccos 1 + 2 arccsc 1 = 0 + 2·π/2 = π.",
+        "x = −1 (u = −1): arccos(−1) + 2 arccsc(−1) = π + 2·(−π/2) = 0.",
+        "Rango {0; π}; la suma es π."
+      ],
+      "verificar": [{ "fn": "dominioPuntos", "args": [{ "p": 1, "F": "arccos", "q": 2, "G": "arccsc" }], "espera": { "suma": 3.141592653589793, "elementos": 2 } }]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un abanico de papel abierto es un sector circular de radio 6 cm. Su ángulo central, en radianes, es arccos(−√2/2) − arccos(√2/2). ¿Cuál es su área?",
+      "respuesta": "9π cm²",
+      "pasos": [
+        "arccos(−√2/2) = π − π/4 = 3π/4 (no −π/4: arccos no es impar) y arccos(√2/2) = π/4.",
+        "θ = 3π/4 − π/4 = π/2.",
+        "Área = θR²/2 = (π/2)·36/2 = 9π cm²."
+      ],
+      "verificar": [{ "fn": "sector", "args": [{ "terminos": [{ "f": "arccos", "k": -0.7071067811865476, "s": 1 }, { "f": "arccos", "k": 0.7071067811865476, "s": -1 }], "R": 6 }], "espera": { "angulo": 1.5707963267948966, "area": 28.274333882308138 } }]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una rueda de radio 8 cm gira un ángulo θ = arctan(1/4) + arctan(3/5). ¿Cuánto avanza un punto del borde?",
+      "respuesta": "2π cm",
+      "pasos": [
+        "tan θ = (1/4 + 3/5)/(1 − 3/20) = (17/20)/(17/20) = 1.",
+        "Los dos arcos son agudos y su producto 3/20 es menor que 1: θ está entre 0 y π/2, así que θ = π/4.",
+        "Arco = θR = (π/4)·8 = 2π cm."
+      ],
+      "verificar": [{ "fn": "sector", "args": [{ "terminos": [{ "f": "arctan", "k": 0.25, "s": 1 }, { "f": "arctan", "k": 0.6, "s": 1 }], "R": 8 }], "espera": { "angulo": 0.7853981633974483, "arco": 6.283185307179586 } }]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "Los puntos (x; y) que cumplen arcsec(y + 2x) + arccsc(3x − 1) = π/2 están sobre una recta. ¿Cuál es su ecuación?",
+      "respuesta": "y = x − 1",
+      "pasos": [
+        "arcsec u + arccsc u = π/2 y arccsc es inyectiva: los dos argumentos son iguales.",
+        "y + 2x = 3x − 1 → y = x − 1.",
+        "Solo valen los puntos con |3x − 1| ≥ 1, donde existen las dos funciones."
+      ],
+      "verificar": [{ "fn": "recta", "args": [{ "a": -2, "b": 3, "c": -1 }], "espera": { "pendiente": 1, "ordenada": -1 } }]
+    }
+  ]
+}
