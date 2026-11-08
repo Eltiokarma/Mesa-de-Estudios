@@ -1,0 +1,14 @@
+{
+  "id": "vectores-unitario",
+  "titulo": "El vector unitario",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.magnitudes-y-vectores"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": null
+}
