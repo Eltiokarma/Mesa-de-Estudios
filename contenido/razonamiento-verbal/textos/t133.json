@@ -1,0 +1,272 @@
+{
+  "id": "t133",
+  "version": 1,
+  "titulo": "Tres maneras de mirar la helada",
+  "tema": "Filosofía · formas del conocimiento",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "discontinuo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "apoyo",
+        "t": "En los cursos de filosofía suele presentarse el conocimiento dividido en tres formas, como en el esquema que sigue."
+      }
+    ],
+    [
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "Distinguir estas formas no significa enfrentarlas."
+      },
+      {
+        "id": "o3",
+        "rol": "ejemplo",
+        "t": "Una agricultora sabe por experiencia que, si en junio la noche está despejada, puede helar; un meteorólogo explica ese enfriamiento con mediciones; y alguien puede preguntarse si es justo que los avisos del clima lleguen tarde a las comunidades que más sufren las heladas."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Las tres respuestas no se anulan: miran el mismo hecho desde preguntas distintas."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Además, se alimentan entre sí: la ciencia suele partir de observaciones comunes, y la filosofía examina lo que la ciencia da por supuesto, como la confianza en que la naturaleza sigue un orden."
+      },
+      {
+        "id": "o6",
+        "rol": "principal",
+        "t": "Por eso, el esquema sirve para ver en qué se diferencian, no para decidir cuál de ellas debe desaparecer."
+      }
+    ]
+  ],
+  "figuras": [
+    {
+      "id": "f1",
+      "tipo": "recuadros",
+      "despues": 1,
+      "titulo": "Las formas de conocer",
+      "recuadros": [
+        {
+          "id": "f1a",
+          "titulo": "Conocimiento común",
+          "t": "Nace de la experiencia diaria y de lo que se aprende de los mayores. Es práctico: sirve para actuar, aunque no siempre explica por qué las cosas pasan."
+        },
+        {
+          "id": "f1b",
+          "titulo": "Conocimiento científico",
+          "t": "Busca explicar los hechos con causas y leyes. Pone a prueba sus explicaciones con la observación, la medición y el experimento, y las corrige si fallan."
+        },
+        {
+          "id": "f1c",
+          "titulo": "Conocimiento filosófico",
+          "t": "Pregunta por los fundamentos y el sentido: qué es conocer, qué es lo justo, qué vale la pena. Avanza con la reflexión y el argumento, no con el experimento."
+        },
+        {
+          "id": "f1d",
+          "titulo": "Lo que comparten",
+          "t": "Las tres formas buscan comprender la realidad y orientar la vida."
+        }
+      ],
+      "nota": "Esquema propio, preparado para el ejercicio."
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "Según el esquema, lo que distingue al conocimiento científico de las otras dos formas es que",
+      "alternativas": [
+        {
+          "t": "prueba sus explicaciones con experimentos.",
+          "correcta": true,
+          "evidencia": ["f1b", "f1c"],
+          "explicacion": "Solo el recuadro del conocimiento científico habla de la observación, la medición y el experimento; el del filosófico aclara que avanza «no con el experimento»."
+        },
+        {
+          "t": "se pregunta qué es lo justo y qué vale la pena.",
+          "codigo": "RV45",
+          "origen": "f1c",
+          "explicacion": "Eso está en el recuadro vecino, el del conocimiento filosófico, no en el del científico."
+        },
+        {
+          "t": "busca comprender la realidad y orientar la vida.",
+          "codigo": "RV2",
+          "origen": "f1d",
+          "explicacion": "Es lo que el recuadro «Lo que comparten» atribuye a las tres formas. Algo común a todas no puede ser lo que distingue a una."
+        },
+        {
+          "t": "es la única que llega a verdades definitivas.",
+          "codigo": "RV11",
+          "origen": "f1b",
+          "explicacion": "El esquema dice lo contrario: la ciencia corrige sus explicaciones si fallan. El «única» y el «definitivas» no salen de ningún recuadro."
+        },
+        {
+          "t": "trabaja con laboratorios y aparatos modernos.",
+          "codigo": "RV8",
+          "explicacion": "El esquema no habla de laboratorios ni de aparatos. La idea viene de la imagen que uno tiene de la ciencia, no de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto y el esquema.",
+        "sonda": "Una persona puede valerse del saber común y del científico sin tener que renunciar a uno de ellos.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV58",
+          "no-se-sabe": "RV34",
+          "lo-contradice": "RV44"
+        },
+        "explicacion": "El texto no habla de una persona que use los dos saberes, pero dice que las formas no se enfrentan (oración 2) y que no se anulan (oración 4). Si no se anulan, no hay que elegir una y dejar la otra. Se deduce.",
+        "explicaciones": {
+          "lo-dice": "Ninguna oración habla de alguien que use los dos saberes ni de renunciar. Se saca de que las formas «no se anulan».",
+          "no-se-sabe": "Aunque no lo diga así, si las formas no se enfrentan ni se anulan, usar una no obliga a dejar la otra.",
+          "lo-contradice": "El texto distingue las formas, pero niega que se opongan (oraciones 2 y 6). Leer la distinción como un enfrentamiento cambia la relación que plantea."
+        }
+      },
+      "enunciado": "Se infiere del texto que el saber de la agricultora sobre las heladas",
+      "alternativas": [
+        {
+          "t": "puede convivir con la explicación del meteorólogo.",
+          "correcta": true,
+          "evidencia": ["o3", "o4"],
+          "explicacion": "La oración 4 dice que las tres respuestas sobre la helada no se anulan: miran el mismo hecho desde preguntas distintas. El saber de ella y la explicación de él caben juntos."
+        },
+        {
+          "t": "queda desmentido cuando el meteorólogo mide el enfriamiento.",
+          "codigo": "RV44",
+          "origen": "o3",
+          "explicacion": "Convierte en oposición lo que el texto presenta como distinción. La oración 4 dice justo lo contrario: las respuestas no se anulan."
+        },
+        {
+          "t": "merece más confianza que la ciencia, porque nace de la experiencia.",
+          "codigo": "RV7",
+          "explicacion": "El texto no ordena las formas por su confianza; dice que el esquema no sirve para decidir cuál vale más ni cuál debe desaparecer (oración 6)."
+        },
+        {
+          "t": "explica por completo por qué se enfría la noche.",
+          "codigo": "RV11",
+          "origen": "f1a",
+          "explicacion": "Según el esquema, el saber común sirve para actuar, pero «no siempre explica por qué las cosas pasan». El «por completo» no tiene apoyo."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "Es incompatible con el texto y el esquema afirmar que la filosofía",
+      "alternativas": [
+        {
+          "t": "avanza con mediciones y experimentos.",
+          "correcta": true,
+          "evidencia": ["f1c"],
+          "explicacion": "El recuadro del conocimiento filosófico dice que avanza con la reflexión y el argumento, «no con el experimento»."
+        },
+        {
+          "t": "examina lo que la ciencia da por supuesto.",
+          "codigo": "RV44",
+          "origen": "o5",
+          "explicacion": "La oración 5 lo dice. Parece incompatible solo si se cree que la filosofía y la ciencia están enfrentadas y no tienen nada que ver; el texto dice que se alimentan entre sí."
+        },
+        {
+          "t": "no avanza por experimentos, sino por argumentos.",
+          "codigo": "RV10",
+          "origen": "f1c",
+          "explicacion": "Tiene un «no», pero es compatible: es lo que dice el recuadro del conocimiento filosófico."
+        },
+        {
+          "t": "se enseña en la mayoría de los colegios del país.",
+          "codigo": "RV36",
+          "explicacion": "El texto no habla de eso, pero tampoco dice nada en contra: que algo no se mencione no lo vuelve incompatible."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "En la oración 5, la expresión SE ALIMENTAN ENTRE SÍ significa",
+      "alternativas": [
+        {
+          "t": "se aportan unas a otras.",
+          "correcta": true,
+          "evidencia": ["o5"],
+          "explicacion": "La misma oración lo explica: la ciencia toma observaciones comunes y la filosofía examina lo que la ciencia supone. Cada forma recibe algo de otra."
+        },
+        {
+          "t": "se dan de comer.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más frecuente de «alimentar», pero aquí no se habla de comida, sino de cómo se relacionan las formas de conocer."
+        },
+        {
+          "t": "se oponen unas a otras.",
+          "codigo": "RV44",
+          "explicacion": "Es lo contrario de lo que el texto sostiene: las formas se distinguen, pero no se enfrentan (oración 2)."
+        },
+        {
+          "t": "parten de observaciones comunes.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Repite palabras de la misma oración, pero eso es lo que hace la ciencia, no lo que significa la expresión, que vale para las tres formas."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "Si un estudiante concluyera, al ver el esquema, que el conocimiento filosófico no sirve porque no hace experimentos, el autor del texto le respondería que",
+      "alternativas": [
+        {
+          "t": "confunde una diferencia de método con una falta de valor.",
+          "correcta": true,
+          "evidencia": ["o6", "f1c"],
+          "explicacion": "Que la filosofía no use el experimento es una de las diferencias del esquema; la oración 6 dice que el esquema muestra en qué se diferencian, no cuál debe desaparecer."
+        },
+        {
+          "t": "tiene razón, porque solo el experimento prueba algo.",
+          "codigo": "RV33",
+          "explicacion": "El autor no sostiene eso en ninguna parte. Al contrario, presenta la reflexión y el argumento como la forma en que avanza la filosofía."
+        },
+        {
+          "t": "en realidad la filosofía vale más, porque piensa los fundamentos.",
+          "codigo": "RV7",
+          "explicacion": "El texto no pone a una forma por encima de otra; cambiar un orden por otro tampoco es lo que el autor dice."
+        },
+        {
+          "t": "las tres formas son idénticas y no se distinguen en nada.",
+          "codigo": "RV11",
+          "explicacion": "El autor sí las distingue: para eso está el esquema. Lo que niega es que distinguirlas sea enfrentarlas."
+        },
+        {
+          "t": "debería empezar por el saber común, que es la base de todo.",
+          "codigo": "RV12",
+          "origen": "o5",
+          "explicacion": "La oración 5 dice que la ciencia «suele partir» de observaciones comunes; llevar eso a «la base de todo» va más allá del texto y no responde a la conclusión del estudiante."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "Las noches despejadas favorecen las heladas, porque el suelo pierde calor más rápido sin nubes que lo retengan.",
+      "fuente": "Servicio Nacional de Meteorología e Hidrología del Perú (Senamhi), avisos y material informativo sobre heladas y friaje (gob.pe/senamhi)."
+    },
+    {
+      "afirmacion": "El esquema de las tres formas de conocer (común, científico y filosófico) es una síntesis propia, sin citas de autores.",
+      "fuente": "Elaborado para el ejercicio."
+    }
+  ],
+  "revision": null
+}

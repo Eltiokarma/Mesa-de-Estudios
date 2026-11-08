@@ -1,0 +1,149 @@
+{
+  "id": "t102",
+  "version": 1,
+  "titulo": "¿En qué lengua se aprende a leer?",
+  "tema": "Educación · lenguas originarias en la primaria",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una profesora de primaria de una escuela rural" },
+    { "id": "B", "desde": 1, "firma": "Un padre de familia de una comunidad altoandina" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "apoyo", "t": "Un niño que solo ha hablado quechua o aimara en su casa llega al primer grado y encuentra una pizarra llena de palabras que no entiende." },
+      { "id": "o2", "rol": "apoyo", "t": "Si le enseñan a leer en una lengua que todavía no habla, tiene que aprender dos cosas a la vez: el idioma y la lectura." },
+      { "id": "o3", "rol": "principal", "t": "Por eso, en las zonas donde se habla quechua o aimara, la primaria debería empezar en la lengua materna de los niños." },
+      { "id": "o4", "rol": "apoyo", "t": "Quien aprende a leer en la lengua que ya domina entiende lo que lee, y esa habilidad le sirve después para leer en castellano." },
+      { "id": "o5", "rol": "detalle", "t": "El castellano también debe enseñarse en la escuela, pero poco a poco, como segunda lengua." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Las familias de nuestras comunidades sabemos que nuestros hijos necesitarán el castellano para seguir estudiando, para hacer un trámite o para conseguir trabajo en la ciudad." },
+      { "id": "o7", "rol": "apoyo", "t": "Si los primeros años de la primaria se dictan en otra lengua, el niño llega tarde al castellano y se queda atrás frente a los que lo usaron desde el inicio." },
+      { "id": "o8", "rol": "principal", "t": "Por eso, la escuela debería enseñar en castellano desde el primer grado." },
+      { "id": "o9", "rol": "detalle", "t": "Eso no significa olvidar la lengua materna: el quechua y el aimara deben seguir vivos en la casa, en la comunidad y en algunas clases." },
+      { "id": "o10", "rol": "apoyo", "t": "Pero la lengua de la lectura y de los cursos tiene que ser, desde el principio, la que el niño necesitará fuera de su pueblo." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál es el tema en controversia entre los dos textos?",
+      "alternativas": [
+        { "t": "En qué lengua deben aprender a leer los niños en los primeros grados.", "correcta": true, "evidencia": ["o3", "o8"],
+          "explicacion": "El texto A quiere que la primaria empiece en quechua o aimara (oración 3) y el texto B, en castellano desde el primer grado (oración 8): discuten en qué lengua empezar." },
+        { "t": "Si los niños que hablan quechua o aimara deben aprender castellano en la escuela.", "codigo": "RV61", "origen": "o5",
+          "explicacion": "En eso no discuten: el texto A dice que el castellano «también debe enseñarse» (oración 5) y el B quiere que se enseñe desde el inicio. Los dos aceptan que hay que aprenderlo." },
+        { "t": "Si leer en la lengua que uno ya domina ayuda después a leer en castellano.", "codigo": "RV60", "origen": "o4",
+          "explicacion": "Es un argumento del texto A (oración 4). El texto B no toma posición sobre eso, así que no es el tema que los enfrenta." },
+        { "t": "Si los niños necesitarán el castellano para hacer un trámite.", "codigo": "RV1", "origen": "o6",
+          "explicacion": "Es un ejemplo que da el texto B en la oración 6, no lo que se discute entre los dos." },
+        { "t": "Cuál es el valor de todas las lenguas que se hablan en el Perú.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos no hablan de todas las lenguas del país, sino de en qué lengua empezar la primaria." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Un niño al que le enseñan a leer en un idioma que no habla carga con dos aprendizajes al mismo tiempo.",
+        "aceptada": "A",
+        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto A en la oración 2: el niño tiene que aprender «el idioma y la lectura» a la vez. El texto B no lo menciona.",
+        "explicaciones": {
+          "B": "El texto B no habla de lo difícil que es aprender a leer en otro idioma; su preocupación es que el niño llegue tarde al castellano (oración 7). La idea es del texto A (oración 2).",
+          "ambos": "Solo el texto A lo dice (oración 2). El texto B no discute esa dificultad.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 2."
+        }
+      },
+      "enunciado": "¿Qué sostiene la autora del texto A?",
+      "alternativas": [
+        { "t": "La primaria debería empezar en la lengua materna y sumar el castellano poco a poco.", "correcta": true, "evidencia": ["o3", "o5"],
+          "explicacion": "Es su tesis (oración 3) con lo que agrega en la oración 5: el castellano se enseña después, como segunda lengua." },
+        { "t": "La escuela debería enseñar en castellano desde el primer grado para que ningún niño se quede atrás.", "codigo": "RV59", "origen": "o8",
+          "explicacion": "Esa es la postura del texto B (oraciones 7 y 8), no la del A." },
+        { "t": "La primaria debería empezar en la lengua materna y no enseñar castellano en ningún grado.", "codigo": "RV62", "origen": "o5",
+          "explicacion": "La primera mitad es su tesis, pero la segunda la contradice: el texto A dice que el castellano «también debe enseñarse» (oración 5)." },
+        { "t": "Todos los niños del Perú deberían aprender a leer en quechua.", "codigo": "RV11",
+          "explicacion": "El texto A habla solo de «las zonas donde se habla quechua o aimara», y de la lengua materna de cada niño, no de todos los niños del país." },
+        { "t": "Los niños que estudian en su lengua materna sacan mejores notas en matemática.", "codigo": "RV8",
+          "explicacion": "El texto A no habla de notas ni de matemática. Puede que alguien lo haya estudiado, pero la respuesta tiene que salir de lo que dice el texto." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Los niños de esas comunidades tienen que aprender castellano en la escuela.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que el castellano «también debe enseñarse» (oración 5) y el texto B quiere que se enseñe desde el primer grado (oración 8). Discrepan en cuándo, no en si hay que aprenderlo.",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 5, pero el B también: quiere el castellano desde el primer grado (oración 8).",
+          "B": "El texto B lo defiende, pero el A también lo acepta: el castellano «también debe enseñarse en la escuela» (oración 5).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 5 y el B en las oraciones 6 y 8."
+        }
+      },
+      "enunciado": "¿En qué coinciden los autores de los dos textos?",
+      "alternativas": [
+        { "t": "En que la escuela tiene que enseñar castellano a los niños.", "correcta": true, "evidencia": ["o5", "o8"],
+          "explicacion": "El texto A lo acepta en la oración 5 y el B lo pide en la oración 8. Lo que los separa es cuándo empezar." },
+        { "t": "En que los primeros grados de la primaria deben dictarse en quechua o aimara.", "codigo": "RV60", "origen": "o3",
+          "explicacion": "Esa es la tesis del texto A (oración 3). El texto B quiere lo contrario: castellano desde el primer grado." },
+        { "t": "En que hay que enseñar castellano y en que debe hacerse desde el primer día de clases.", "codigo": "RV62", "origen": "o8",
+          "explicacion": "La primera mitad es el punto en común, pero la segunda es solo del texto B: el A quiere que el castellano llegue poco a poco (oración 5)." },
+        { "t": "En que el quechua y el aimara deben dejar de usarse en la escuela.", "codigo": "RV33", "origen": "o9",
+          "explicacion": "Ninguno lo dice: el texto A quiere empezar en esas lenguas y el B dice que deben seguir vivas «en algunas clases» (oración 9)." },
+        { "t": "En nada, porque cada uno defiende una lengua distinta.", "codigo": "RV61",
+          "explicacion": "Sí coinciden en algo: los dos aceptan que la escuela debe enseñar castellano (oraciones 5 y 8)." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Ante la propuesta del texto B, la autora del texto A probablemente respondería que",
+      "alternativas": [
+        { "t": "un niño que aún no habla castellano no entenderá lo que lee en esa lengua.", "correcta": true, "evidencia": ["o2", "o4"],
+          "explicacion": "Para el texto A, leer en una lengua que no se habla obliga a aprender dos cosas a la vez (oración 2), y solo se entiende lo que se lee en la lengua que se domina (oración 4)." },
+        { "t": "el castellano será necesario para seguir estudiando o para conseguir trabajo en la ciudad.", "codigo": "RV59", "origen": "o6",
+          "explicacion": "Ese es un argumento del texto B (oración 6), no una respuesta del A contra él." },
+        { "t": "los niños de las comunidades no necesitan aprender castellano.", "codigo": "RV61", "origen": "o5",
+          "explicacion": "En eso los dos están de acuerdo: el texto A dice que el castellano «también debe enseñarse» (oración 5)." },
+        { "t": "el castellano debería prohibirse en las escuelas de las comunidades.", "codigo": "RV12",
+          "explicacion": "Lleva la postura del texto A a un extremo que no toma: ella quiere el castellano como segunda lengua, no prohibirlo." },
+        { "t": "las escuelas rurales no tienen libros escritos en castellano.", "codigo": "RV8",
+          "explicacion": "El texto A no habla de libros. Es una idea que viene de fuera del texto." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, el verbo DOMINAR («la lengua que ya domina») significa",
+      "alternativas": [
+        { "t": "maneja bien.", "correcta": true, "evidencia": ["o1", "o4"],
+          "explicacion": "Se habla de la lengua que el niño ya habla desde su casa (oración 1): la conoce y la usa con soltura." },
+        { "t": "tiene bajo su mando.", "codigo": "RV18",
+          "explicacion": "Es el sentido de «dominar» como mandar sobre alguien, pero aquí se habla de conocer bien una lengua." },
+        { "t": "está estudiando en clase.", "codigo": "RV19",
+          "explicacion": "Estudiar es del mismo campo (aprender), pero el niño no estudia esa lengua en clase: la trae de su casa." },
+        { "t": "doma.", "codigo": "RV20",
+          "explicacion": "Se parece en la forma, pero «domar» es amansar a un animal; no tiene que ver con una lengua." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [],
+  "revision": null
+}

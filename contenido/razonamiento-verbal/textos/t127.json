@@ -1,0 +1,152 @@
+{
+  "id": "t127",
+  "version": 1,
+  "titulo": "Alpacas in Puno",
+  "tema": "Lectura en inglés · las alpacas y su fibra en Puno",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "In the highlands of Puno, many families raise alpacas, and these animals are an important part of their lives." },
+      { "id": "o2", "rol": "detalle", "t": "Alpacas live high above sea level, where the days can be sunny but the nights are very cold." },
+      { "id": "o3", "rol": "detalle", "t": "Their thick fiber protects them from the cold, and it can also protect people." },
+      { "id": "o4", "rol": "detalle", "t": "When the fiber is long, farmers cut it carefully; this does not hurt the animal, and the fiber grows back." },
+      { "id": "o5", "rol": "detalle", "t": "There are two kinds of alpaca: the huacaya, with soft and fluffy fiber, and the suri, with long and shiny locks." }
+    ],
+    [
+      { "id": "o6", "rol": "detalle", "t": "After cutting the fiber, families clean it, spin it into yarn and weave it into ponchos, hats and blankets." },
+      { "id": "o7", "rol": "detalle", "t": "The fiber comes in many natural colors, such as white, brown, gray and black, so it does not always need dye." },
+      { "id": "o8", "rol": "detalle", "t": "Some families sell the fiber in local markets, and the money helps them buy food and school supplies." },
+      { "id": "o9", "rol": "principal", "t": "For these families, the alpaca is not only an animal: it means warmth, work and income." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 1 («many families raise alpacas»), the word RAISE can be replaced by",
+      "alternativas": [
+        { "t": "breed.", "correcta": true, "evidencia": ["o1", "o8"],
+          "explicacion": "Aquí «raise» significa criar: las familias tienen alpacas, las cuidan y viven de ellas (oraciones 1 y 8). «Breed» (criar) la reemplaza sin cambiar el sentido." },
+        { "t": "lift up.", "codigo": "RV18", "origen": "o1",
+          "explicacion": "Es el sentido más común de «raise» (levantar, alzar: «raise your hand»), pero las familias no levantan a las alpacas: las crían." },
+        { "t": "sell at the market.", "codigo": "RV19", "origen": "o8",
+          "explicacion": "Vender es algo que hacen algunas familias con la fibra (oración 8), del mismo campo del trabajo con alpacas, pero no es lo que significa «raise»." },
+        { "t": "cut carefully.", "codigo": "RV5", "origen": "o4",
+          "explicacion": "Repite palabras de la oración 4 («farmers cut it carefully»), que hablan de la fibra, no de lo que las familias hacen con los animales." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "antonimo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 5, the opposite of SHINY is",
+      "alternativas": [
+        { "t": "dull.", "correcta": true, "evidencia": ["o5"],
+          "explicacion": "«Shiny» es brillante; su contrario es «dull», opaco, sin brillo." },
+        { "t": "bright.", "codigo": "RV21",
+          "explicacion": "«Bright» (brillante) es un sinónimo de «shiny», no su contrario: se pide lo opuesto." },
+        { "t": "short.", "codigo": "RV19", "origen": "o5",
+          "explicacion": "«Short» es el contrario de «long», otra palabra de la misma oración. Habla del largo de la fibra, no de su brillo." },
+        { "t": "fluffy.", "codigo": "RV5", "origen": "o5",
+          "explicacion": "Repite una palabra de la oración 5, que describe la fibra de la huacaya. No es lo contrario de brillante." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, lee esta afirmación y di qué relación tiene con el texto.",
+        "sonda": "Alpaca fiber always has to be dyed before families can use it.",
+        "clase": "lo-contradice",
+        "codigos": { "lo-dice": "RV10", "se-deduce": "RV7", "no-se-sabe": "RV9" },
+        "explicacion": "La oración 7 dice lo contrario: la fibra tiene muchos colores naturales, «so it does not always need dye» (no siempre necesita tinte).",
+        "explicaciones": {
+          "lo-dice": "La oración 7 habla del tinte, pero con una negación: «does not always need dye». Dice que no siempre hace falta teñirla.",
+          "se-deduce": "No se puede deducir: el texto dice lo contrario, que por sus colores naturales no siempre hace falta teñirla.",
+          "no-se-sabe": "El texto sí habla del tema, en la oración 7, y dice lo contrario: no siempre hace falta tinte."
+        }
+      },
+      "enunciado": "According to the text, what do families do with the fiber after they cut it?",
+      "alternativas": [
+        { "t": "They clean it, spin it and weave it.", "correcta": true, "evidencia": ["o6"],
+          "explicacion": "La oración 6 lo dice: «families clean it, spin it into yarn and weave it into ponchos, hats and blankets»." },
+        { "t": "They always dye it black before they sell it in the market.", "codigo": "RV10", "origen": "o7",
+          "explicacion": "Pasa por alto la negación de la oración 7: la fibra tiene colores naturales y «does not always need dye»." },
+        { "t": "They used to weave it, but now they only sell it in the market.", "codigo": "RV55", "origen": "o6",
+          "explicacion": "El texto está en presente («families clean it… and weave it»): lo hacen hoy. Nada dice que antes tejían y ahora ya no." },
+        { "t": "They send all of it to big factories in other countries.", "codigo": "RV8",
+          "explicacion": "El texto no habla de fábricas ni de otros países: dice que algunas familias venden la fibra en mercados locales (oración 8)." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que mejor resume de qué trata todo el texto.",
+        "aceptadas": ["o1", "o9"],
+        "ninguna": "RV3",
+        "explicacion": "La oración 1 presenta la idea (las alpacas son importantes en la vida de las familias de Puno) y la 9 la cierra: la alpaca es abrigo, trabajo e ingreso. Las demás dan detalles.",
+        "explicaciones": {
+          "o2": "Dice dónde viven las alpacas y cómo es el clima: es un detalle.",
+          "o3": "Habla de la fibra que abriga: es una de las razones por las que la alpaca importa, no la idea completa.",
+          "o4": "Cuenta cómo se corta la fibra: es un paso del trabajo.",
+          "o5": "Describe las dos clases de alpaca: es un detalle.",
+          "o6": "Cuenta qué hacen con la fibra después de cortarla: es un detalle del trabajo.",
+          "o7": "Habla de los colores de la fibra: es un detalle.",
+          "o8": "Habla de la venta de la fibra: es una parte de la idea (el ingreso), no toda.",
+          "ninguna": "Las oraciones 1 y 9 sí resumen el texto: la alpaca es abrigo, trabajo e ingreso para las familias de Puno."
+        }
+      },
+      "enunciado": "Which is the best title for the text?",
+      "alternativas": [
+        { "t": "Alpacas: Warmth, Work and Income", "correcta": true, "evidencia": ["o1", "o9"],
+          "explicacion": "Junta lo que dicen las oraciones 1 y 9: para las familias de Puno, la alpaca da abrigo, trabajo e ingreso." },
+        { "t": "The Huacaya and the Suri: Two Different Kinds of Fiber", "codigo": "RV1", "origen": "o5",
+          "explicacion": "Las dos clases de alpaca aparecen en la oración 5, pero son un detalle, no el tema de todo el texto." },
+        { "t": "The Animals of South America", "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla solo de las alpacas y de las familias de Puno que las crían." },
+        { "t": "A Fiber That Protects from the Cold", "codigo": "RV3", "origen": "o3",
+          "explicacion": "Se queda con una parte (la fibra abriga, oración 3) y deja fuera el trabajo y el ingreso que la alpaca da a las familias." },
+        { "t": "Peru, the Country with the Most Alpacas in the World", "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no lo dice: no compara al Perú con otros países." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Where would this text most probably be published?",
+      "alternativas": [
+        { "t": "In a magazine for young readers about life in Peru.", "correcta": true, "evidencia": ["o1", "o9"],
+          "explicacion": "El texto explica con palabras sencillas cómo viven las familias de Puno con sus alpacas, para alguien que no lo conoce: no da instrucciones técnicas ni vende nada." },
+        { "t": "In a technical manual that teaches farmers how to cut fiber step by step.", "codigo": "RV51", "origen": "o4",
+          "explicacion": "El tema (la fibra) hace pensar en criadores, pero el texto no da pasos ni instrucciones: solo dice que la fibra se corta con cuidado y vuelve a crecer." },
+        { "t": "In an advertisement from a store that sells alpaca ponchos.", "codigo": "RV33",
+          "explicacion": "El texto no vende nada ni invita a comprar: explica qué significa la alpaca para las familias." },
+        { "t": "In a science journal that reports new research on alpaca fiber.", "codigo": "RV7",
+          "explicacion": "El texto no presenta ninguna investigación nueva ni datos de un estudio: describe algo conocido con palabras sencillas." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    { "afirmacion": "Puno es la región del Perú con más alpacas, y el Perú tiene la mayor población de alpacas del mundo (este último dato solo va en un distractor).", "fuente": "INEI, IV Censo Nacional Agropecuario 2012 (población de alpacas por región); MIDAGRI, información sobre camélidos sudamericanos." },
+    { "afirmacion": "Hay dos razas de alpaca, huacaya (fibra esponjosa) y suri (fibra en rizos largos y lustrosos).", "fuente": "MIDAGRI / INIA, información técnica sobre camélidos sudamericanos domésticos; FAO, Camélidos sudamericanos." },
+    { "afirmacion": "La esquila no daña al animal y la fibra vuelve a crecer; la fibra de alpaca tiene muchos colores naturales.", "fuente": "FAO, Camélidos sudamericanos; MIDAGRI, guías de esquila de alpacas." }
+  ],
+  "revision": null
+}

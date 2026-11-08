@@ -1,0 +1,162 @@
+{
+  "id": "t104",
+  "version": 1,
+  "titulo": "La tarea y la máquina que responde",
+  "tema": "Educación · inteligencia artificial en las tareas",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una profesora de ciencias de secundaria" },
+    { "id": "B", "desde": 1, "firma": "Un profesor de comunicación" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "apoyo", "t": "Prohibir la inteligencia artificial en las tareas es tan inútil como lo fue prohibir la calculadora: los alumnos ya la tienen en el bolsillo y la seguirán usando." },
+      { "id": "o2", "rol": "contraste", "t": "El problema no es que la usen, sino que crean todo lo que responde." },
+      { "id": "o3", "rol": "apoyo", "t": "Estos programas redactan con tanta seguridad que una fecha equivocada o una fuente inexistente pasan por verdaderas." },
+      { "id": "o4", "rol": "principal", "t": "Por eso, lo urgente es enseñar a verificar: comparar la respuesta con un libro, buscar la fuente que cita y desconfiar de lo que suena demasiado redondo." },
+      { "id": "o5", "rol": "apoyo", "t": "Un alumno que aprende a revisar lo que le dice una máquina aprende, de paso, a revisar lo que le dice cualquiera." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Coincido en que la inteligencia artificial llegó para quedarse en la vida de los escolares." },
+      { "id": "o7", "rol": "contraste", "t": "Pero si la tarea sigue siendo «escribe un resumen sobre la Revolución francesa», el programa la hará en segundos y nadie habrá aprendido nada, verifique o no." },
+      { "id": "o8", "rol": "principal", "t": "Lo que tiene que cambiar es la tarea misma." },
+      { "id": "o9", "rol": "ejemplo", "t": "Entrevistar a la abuela sobre cómo era el barrio, medir cuánto tarda en hervir el agua en la propia cocina o defender en voz alta lo que uno escribió son trabajos que el alumno tiene que hacer por sí mismo." },
+      { "id": "o10", "rol": "apoyo", "t": "Cuando la tarea exige observar, preguntar o explicar en persona, la herramienta deja de ser un atajo y, a lo más, se vuelve una ayuda." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Como estos programas escriben con aplomo, un dato falso puede parecer cierto.",
+        "aceptada": "A",
+        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto A en la oración 3: redactan «con tanta seguridad» que una fecha equivocada pasa por verdadera. El texto B no habla de los errores del programa.",
+        "explicaciones": {
+          "B": "El texto B no trata de los errores del programa; le preocupa que haga la tarea entera (oración 7). La idea es del texto A (oración 3).",
+          "ambos": "Solo el texto A lo dice (oración 3). El texto B no menciona datos falsos.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 3."
+        }
+      },
+      "enunciado": "¿Qué sostiene la autora del texto A?",
+      "alternativas": [
+        { "t": "Hay que enseñar a los alumnos a revisar lo que responde la inteligencia artificial.", "correcta": true, "evidencia": ["o4"],
+          "explicacion": "Es su tesis (oración 4): lo urgente es enseñar a verificar, comparando con un libro y buscando la fuente." },
+        { "t": "Hay que cambiar las tareas por trabajos de observar, preguntar o explicar en persona, que el alumno haga por sí mismo.", "codigo": "RV59", "origen": "o8",
+          "explicacion": "Esa es la propuesta del texto B (oraciones 8 a 10), no la del A." },
+        { "t": "Hay que enseñar a verificar las respuestas y prohibir la inteligencia artificial en las tareas.", "codigo": "RV62", "origen": "o1",
+          "explicacion": "La primera mitad es su tesis, pero la segunda la contradice: el texto A dice que prohibirla es «inútil» (oración 1)." },
+        { "t": "Todo lo que responde la inteligencia artificial es falso.", "codigo": "RV11",
+          "explicacion": "El texto A dice que a veces una fecha equivocada pasa por verdadera, no que todo sea falso; por eso pide verificar, no descartar." },
+        { "t": "Una fecha equivocada puede pasar por verdadera en un texto bien redactado.", "codigo": "RV1", "origen": "o3",
+          "explicacion": "Es un argumento de la oración 3, que sostiene la tesis; lo que la autora propone está en la oración 4." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Los escolares van a seguir usando la inteligencia artificial, se quiera o no.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que la seguirán usando (oración 1) y el B, que «llegó para quedarse» (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 1, pero el B también: «Coincido en que la inteligencia artificial llegó para quedarse» (oración 6).",
+          "B": "El texto B lo dice en la oración 6, pero lo hace para coincidir con el A, que ya lo había dicho en la oración 1.",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 1 y el B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué coinciden los dos autores?",
+      "alternativas": [
+        { "t": "En que la inteligencia artificial seguirá en la vida de los escolares.", "correcta": true, "evidencia": ["o1", "o6"],
+          "explicacion": "El texto A lo dice en la oración 1 y el B lo acepta en la oración 6 con un «Coincido»." },
+        { "t": "En que lo urgente es enseñar a comprobar las fuentes que cita el programa.", "codigo": "RV60", "origen": "o4",
+          "explicacion": "Esa es la tesis del texto A (oración 4). El texto B dice que, con la tarea de siempre, nadie aprende «verifique o no» (oración 7)." },
+        { "t": "En nada, porque el texto B refuta todo lo que propone el texto A.", "codigo": "RV61",
+          "explicacion": "El texto B empieza coincidiendo con el A (oración 6). No lo refuta: pone el acento en otra cosa, la tarea misma." },
+        { "t": "En que las tareas para la casa deberían desaparecer de los colegios.", "codigo": "RV12",
+          "explicacion": "Ninguno lo dice: el texto A quiere tareas con verificación y el B, tareas distintas. Es llevar el tema a un extremo." },
+        { "t": "En que la inteligencia artificial terminará reemplazando a los profesores.", "codigo": "RV7",
+          "explicacion": "Ninguno de los textos dice ni deja entender eso; hablan de las tareas, no del lugar del profesor." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Los colegios deberían impedir que los alumnos usen inteligencia artificial en sus tareas.",
+        "aceptada": "ninguno",
+        "codigos": { "A": "RV33", "B": "RV33", "ambos": "RV33" },
+        "explicacion": "Ninguno lo sostiene: el texto A dice que prohibirla es «inútil» (oración 1) y el B acepta que llegó para quedarse y que puede ser «una ayuda» (oraciones 6 y 10).",
+        "explicaciones": {
+          "A": "El texto A dice lo contrario: prohibirla es «tan inútil como lo fue prohibir la calculadora» (oración 1).",
+          "B": "El texto B no pide prohibirla: pide cambiar la tarea, y dice que así la herramienta se vuelve «una ayuda» (oración 10).",
+          "ambos": "Ninguno de los dos lo pide. Los dos aceptan que la inteligencia artificial se quedará (oraciones 1 y 6)."
+        }
+      },
+      "enunciado": "¿Cuál de estas ideas integra mejor lo que plantean los dos textos?",
+      "alternativas": [
+        { "t": "La escuela debe enseñar a revisar lo que responde la máquina y cambiar el tipo de tarea.", "correcta": true, "evidencia": ["o4", "o8"],
+          "explicacion": "Junta la propuesta del texto A (verificar, oración 4) con la del B (cambiar la tarea, oración 8), sobre la base que comparten: la herramienta se queda." },
+        { "t": "Ante una herramienta que no se irá, hay que enseñar a verificar, aunque las tareas deben seguir siendo las de siempre.", "codigo": "RV62", "origen": "o7",
+          "explicacion": "La primera parte es del texto A, pero la segunda contradice al B, que pide cambiar la tarea misma (oración 8)." },
+        { "t": "Como la inteligencia artificial llegó para quedarse, lo único que hace falta es cambiar el tipo de tarea que se deja.", "codigo": "RV3", "origen": "o8",
+          "explicacion": "Recoge solo lo que propone el texto B y deja fuera lo del A: enseñar a verificar." },
+        { "t": "Como los alumnos no saben verificar, la inteligencia artificial seguirá presente en sus vidas.", "codigo": "RV44",
+          "explicacion": "Cambia la relación entre las ideas: los textos no dicen que la herramienta se quede porque los alumnos no verifican." },
+        { "t": "La tecnología cambia la manera en que vive y trabaja la gente de hoy.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos hablan de la inteligencia artificial en las tareas escolares." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Si leyera el texto A, el autor del texto B probablemente le diría a su autora que",
+      "alternativas": [
+        { "t": "verificar sirve de poco si el programa puede hacer la tarea entera.", "correcta": true, "evidencia": ["o7"],
+          "explicacion": "Es lo que plantea la oración 7: con la tarea de siempre, nadie aprende nada, «verifique o no»." },
+        { "t": "se equivoca, porque la inteligencia artificial pronto dejará de usarse en los colegios.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B dice que la inteligencia artificial «llegó para quedarse» (oración 6)." },
+        { "t": "conviene desconfiar de las respuestas que suenan demasiado redondas.", "codigo": "RV59", "origen": "o4",
+          "explicacion": "Eso lo dice el texto A (oración 4); no es algo que el B le respondería." },
+        { "t": "habría que quitarles el celular a los alumnos para que no usen estos programas.", "codigo": "RV12",
+          "explicacion": "Es un extremo que el texto B no toma: él no quiere impedir el uso, sino cambiar la tarea." },
+        { "t": "los libros también traen errores, así que no vale la pena comparar con ellos.", "codigo": "RV33",
+          "explicacion": "El texto B no dice nada sobre los libros ni sobre comparar respuestas; es una postura que no toma." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, la palabra REDONDO («lo que suena demasiado redondo») significa",
+      "alternativas": [
+        { "t": "sin falla aparente.", "correcta": true, "evidencia": ["o3", "o4"],
+          "explicacion": "Se refiere a respuestas que parecen perfectas por lo seguras que suenan (oración 3), aunque tengan errores." },
+        { "t": "con forma de círculo.", "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «redondo», pero aquí se habla de una respuesta, que no tiene forma." },
+        { "t": "agradable al oído.", "codigo": "RV19",
+          "explicacion": "Va con «suena» (el campo del sonido), pero la autora no habla de cómo se oye, sino de lo perfecta que parece la respuesta." },
+        { "t": "que da muchos rodeos.", "codigo": "RV20",
+          "explicacion": "Se parece en la forma (redondo, rodeo), pero es casi lo contrario: lo redondo aquí es lo que no tiene fisuras." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [],
+  "revision": null
+}

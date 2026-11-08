@@ -1,0 +1,153 @@
+{
+  "id": "t119",
+  "version": 1,
+  "titulo": "¿Letras o números en la libreta?",
+  "tema": "Educación · calificación escolar",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una profesora de secundaria" },
+    { "id": "B", "desde": 1, "firma": "Un padre de familia" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "contraste", "t": "Un 13 en matemática no dice si el alumno resuelve bien las ecuaciones pero falla en geometría, o si le va regular en todo." },
+      { "id": "o2", "rol": "apoyo", "t": "La escala de letras busca responder a esa pregunta: AD, A, B y C indican cuánto avanzó el estudiante en cada competencia, y cada nivel describe lo que ya sabe hacer." },
+      { "id": "o3", "rol": "apoyo", "t": "Así, una B le avisa al alumno que está en proceso y, junto con los comentarios del profesor, le señala qué le falta." },
+      { "id": "o4", "rol": "apoyo", "t": "Además, las letras desalientan la carrera por el medio punto, que convierte cada examen en una pelea entre compañeros." },
+      { "id": "o5", "rol": "principal", "t": "Por eso, en la secundaria conviene mantener las letras: informan sobre el aprendizaje, no solo lo miden." }
+    ],
+    [
+      { "id": "o6", "rol": "detalle", "t": "No dudo de que las letras busquen describir aprendizajes." },
+      { "id": "o7", "rol": "contraste", "t": "Pero entre dos alumnos con A puede haber mucha distancia, y la letra la esconde: uno apenas llegó y el otro casi alcanza el AD." },
+      { "id": "o8", "rol": "apoyo", "t": "Con una nota de 0 a 20, esa distancia se ve." },
+      { "id": "o9", "rol": "apoyo", "t": "Además, las familias entendemos un 15 sin que nadie nos lo explique; ante una C, muchos padres no saben si su hijo aprobó o no." },
+      { "id": "o10", "rol": "principal", "t": "Prefiero el número en la secundaria, siempre que el profesor añada unas líneas sobre lo que el alumno debe mejorar." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "El eje del debate entre los dos textos es",
+      "alternativas": [
+        { "t": "qué escala de calificación conviene en la secundaria.", "correcta": true, "evidencia": ["o5", "o10"],
+          "explicacion": "El texto A defiende las letras (oración 5) y el B prefiere el número de 0 a 20 (oración 10): discuten con qué escala calificar." },
+        { "t": "si la calificación debe decirle al alumno qué le falta mejorar.", "codigo": "RV61", "origen": "o10",
+          "explicacion": "En eso no discuten: el texto A dice que la letra señala qué le falta al alumno (oración 3) y el B pide que el profesor añada lo que debe mejorar (oración 10)." },
+        { "t": "si las notas con números alientan la carrera por el medio punto.", "codigo": "RV60", "origen": "o4",
+          "explicacion": "Es un argumento del texto A (oración 4). El texto B no lo discute." },
+        { "t": "qué nota sacó un alumno en matemática.", "codigo": "RV1", "origen": "o1",
+          "explicacion": "El 13 en matemática es un ejemplo con que empieza el texto A, no el asunto del debate." },
+        { "t": "cómo se evalúa a los estudiantes en los colegios de todo el mundo.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten una sola cosa, letras o números en la secundaria." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Las notas con números empujan a los alumnos a competir entre ellos por diferencias muy pequeñas.",
+        "aceptada": "A",
+        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo dice el texto A en la oración 4: las letras desalientan la «carrera por el medio punto». El texto B no habla de esa competencia.",
+        "explicaciones": {
+          "B": "El texto B defiende el número porque muestra la distancia entre alumnos; la crítica a la carrera por el medio punto es del texto A (oración 4).",
+          "ambos": "Solo el texto A lo sostiene. El texto B no menciona la competencia entre compañeros.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en la oración 4."
+        }
+      },
+      "enunciado": "¿Qué sostiene la autora del texto A?",
+      "alternativas": [
+        { "t": "Que las letras dicen qué logró el alumno y qué le falta.", "correcta": true, "evidencia": ["o2", "o3", "o5"],
+          "explicacion": "Es su tesis (oración 5) con su razón: cada letra describe lo que el alumno ya sabe hacer y le señala lo que le falta (oraciones 2 y 3)." },
+        { "t": "Que una nota de 0 a 20 muestra diferencias que la letra esconde.", "codigo": "RV59", "origen": "o7",
+          "explicacion": "Ese es el argumento del texto B (oraciones 7 y 8), no el del A." },
+        { "t": "Que las letras informan sobre el aprendizaje y deben usarse solo hasta la primaria.", "codigo": "RV62", "origen": "o5",
+          "explicacion": "La primera parte es suya, pero la segunda la contradice: el texto A quiere mantener las letras en la secundaria (oración 5)." },
+        { "t": "Que los números no sirven para nada en ninguna evaluación.", "codigo": "RV11",
+          "explicacion": "El texto A dice que un 13 no muestra dónde falla el alumno (oración 1), no que los números no sirvan para nada; «nada» y «ninguna» exageran." },
+        { "t": "Que los exámenes deberían desaparecer de la secundaria.", "codigo": "RV33",
+          "explicacion": "El texto A critica la carrera por el medio punto, no los exámenes; no propone eliminarlos." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Ante el argumento de las oraciones 7 y 8, la autora del texto A probablemente respondería que",
+      "alternativas": [
+        { "t": "distinguir a los alumnos por puntos no les dice qué les falta aprender.", "correcta": true, "evidencia": ["o1", "o3"],
+          "explicacion": "Para el texto A, el número no dice dónde falla el alumno (oración 1), mientras que la letra le señala qué le falta (oración 3). Una distancia de puntos no responde a eso." },
+        { "t": "las letras no buscan describir lo que el alumno aprendió.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso los dos coinciden: el texto B dice «no dudo de que las letras busquen describir aprendizajes» y el A lo afirma en la oración 2." },
+        { "t": "las familias entienden un 15 sin que nadie se lo explique.", "codigo": "RV59", "origen": "o9",
+          "explicacion": "Ese es otro argumento del texto B (oración 9), no una respuesta del A." },
+        { "t": "todos los alumnos que tienen A saben exactamente lo mismo.", "codigo": "RV11",
+          "explicacion": "El texto A no dice eso: cada letra describe un nivel, no que todos los que lo alcanzan sean iguales. «Todos» y «exactamente» exageran." },
+        { "t": "los padres no deberían opinar sobre cómo se califica en el colegio.", "codigo": "RV33",
+          "explicacion": "El texto A no habla de los padres ni les niega opinión: discute qué escala informa mejor." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "La calificación debería ayudar al alumno a saber qué tiene que mejorar.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que la letra, con los comentarios del profesor, le señala al alumno qué le falta (oración 3), y el texto B pide que el profesor añada lo que el alumno debe mejorar (oración 10).",
+        "explicaciones": {
+          "A": "El texto A lo dice en la oración 3, pero el B también lo pide en la oración 10. Discrepan en la escala, no en esto.",
+          "B": "El texto B lo pide en la oración 10, pero el A también: la letra le señala al alumno qué le falta (oración 3).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 3 y el B en la oración 10."
+        }
+      },
+      "enunciado": "¿En qué coinciden los dos autores?",
+      "alternativas": [
+        { "t": "En que el alumno necesita saber qué le falta mejorar.", "correcta": true, "evidencia": ["o3", "o10"],
+          "explicacion": "El texto A lo espera de la letra con los comentarios del profesor (oración 3) y el B lo pone como condición para preferir el número (oración 10)." },
+        { "t": "En que las letras esconden diferencias entre los alumnos.", "codigo": "RV60", "origen": "o7",
+          "explicacion": "Eso lo sostiene solo el texto B (oración 7). El texto A defiende las letras." },
+        { "t": "En que hay que decirle al alumno qué mejorar, y hacerlo con una nota de 0 a 20.", "codigo": "RV62", "origen": "o10",
+          "explicacion": "La primera parte es el punto en común, pero la segunda es solo del texto B: el A prefiere las letras." },
+        { "t": "En que el Ministerio de Educación debería cambiar la escala.", "codigo": "RV7",
+          "explicacion": "Ninguno de los textos habla del Ministerio ni pide un cambio de esa clase; es una suposición que no se deduce." },
+        { "t": "En que la educación peruana necesita una reforma completa.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos solo discuten cómo se califica en la secundaria." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto A, la palabra CARRERA («la carrera por el medio punto») significa",
+      "alternativas": [
+        { "t": "rivalidad por sacar más puntos.", "correcta": true, "evidencia": ["o4"],
+          "explicacion": "La misma oración la explica: convierte cada examen en una pelea entre compañeros por el medio punto." },
+        { "t": "profesión que se estudia.", "codigo": "RV18",
+          "explicacion": "Es un sentido frecuente de «carrera», pero aquí no se habla de estudios superiores." },
+        { "t": "prueba de velocidad entre atletas.", "codigo": "RV49",
+          "explicacion": "Es el sentido al pie de la letra; en el texto, «carrera» se usa en sentido figurado, para la competencia por las notas." },
+        { "t": "prisa por terminar el examen.", "codigo": "RV19",
+          "explicacion": "La prisa es del mismo campo que la carrera (la velocidad), pero el texto no habla de terminar rápido, sino de competir por puntos." },
+        { "t": "avance en cada competencia del currículo.", "codigo": "RV5", "origen": "o2",
+          "explicacion": "Repite palabras de la oración 2 («cuánto avanzó» y «competencia»), que habla de otra cosa: lo que indican las letras." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    { "afirmacion": "En la educación básica del Perú, la escala de calificación es literal: AD (logro destacado), A (logro esperado), B (en proceso) y C (en inicio), referida a competencias.", "fuente": "Resolución Viceministerial N.º 094-2020-MINEDU, Norma que regula la evaluación de las competencias de los estudiantes de la Educación Básica" }
+  ],
+  "revision": null
+}

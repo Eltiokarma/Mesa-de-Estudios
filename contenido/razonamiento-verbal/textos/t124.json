@@ -1,0 +1,262 @@
+{
+  "id": "t124",
+  "version": 1,
+  "titulo": "Let Us Sleep",
+  "tema": "Lectura en inglés · un estudiante pide que los colegios empiecen más tarde",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Every morning at six, my alarm rings, and I feel as if I have not slept at all."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "In my classroom, I am not the only one: during the first class, many of my classmates are yawning or resting their heads on their desks."
+      },
+      {
+        "id": "o3",
+        "rol": "contraste",
+        "t": "Some adults say that we are just lazy, or that we stay up too late with our phones."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Phones are part of the problem, I admit, but they are not the whole story."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Doctors explain that during adolescence the body's clock changes, so teenagers naturally feel sleepy later at night than children or adults."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Health organizations recommend that teenagers sleep between eight and ten hours a night, but with classes that start so early, most of us cannot get that much rest."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "A tired student may sit in class for hours and still learn very little."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "For these reasons, I believe that teenagers should sleep more, and that schools should start classes later in the morning."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Even one more hour of sleep could help us pay attention, remember what we study and feel better."
+      },
+      {
+        "id": "o10",
+        "rol": "detalle",
+        "t": "I hope that our principal and the parents of my classmates will think about this before the next school year begins."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El autor da su opinión («I believe», oración 8), responde a quienes piensan distinto (oraciones 3 y 4) y pide que el director y los padres lo piensen (oración 10): quiere convencer.",
+        "explicaciones": {
+          "explicar": "Explica cosas, como el reloj del cuerpo (oración 5), pero para sostener una propuesta. Quien solo explica no dice «I believe» ni pide un cambio.",
+          "narrar": "La oración 1 cuenta una escena de su mañana, pero el texto no sigue una historia: da razones para defender una idea."
+        }
+      },
+      "enunciado": "What is the author's main purpose?",
+      "alternativas": [
+        {
+          "t": "To argue that schools should start later so teenagers can sleep more.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "La oración 8 dice la tesis con «I believe»: los adolescentes deberían dormir más y los colegios deberían empezar más tarde. Todo lo demás son razones para eso."
+        },
+        {
+          "t": "To describe the changes that happen in the body's clock during adolescence.",
+          "codigo": "RV14",
+          "explicacion": "El cambio del reloj del cuerpo (oración 5) es una razón que usa el autor, pero el texto no se queda en explicarlo: lo usa para defender una propuesta."
+        },
+        {
+          "t": "To warn teenagers that their phones are the real cause of their tiredness.",
+          "codigo": "RV53",
+          "origen": "o3",
+          "explicacion": "Esa es la objeción de algunos adultos (oración 3), y el autor la responde: el celular es parte del problema, pero no toda la historia (oración 4)."
+        },
+        {
+          "t": "To tell how the author's mornings at home usually begin before going to school.",
+          "codigo": "RV13",
+          "explicacion": "La oración 1 cuenta cómo empieza su mañana, pero solo para presentar el problema. El texto no narra: argumenta."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "antonimo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 3, the opposite of LAZY is",
+      "alternativas": [
+        {
+          "t": "hard-working.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "«Lazy» es perezoso, flojo; lo contrario es «hard-working», trabajador. Algunos adultos dicen que los adolescentes son flojos, y el autor responde que lo que pasa es que les falta sueño."
+        },
+        {
+          "t": "idle.",
+          "codigo": "RV21",
+          "explicacion": "«Idle» (ocioso, que no hace nada) significa casi lo mismo que «lazy»: es un sinónimo, no su contrario."
+        },
+        {
+          "t": "tired.",
+          "codigo": "RV19",
+          "origen": "o7",
+          "explicacion": "«Tired» (cansado) es del mismo campo y aparece en la oración 7, pero no es lo opuesto de perezoso: alguien puede estar cansado y ser muy trabajador."
+        },
+        {
+          "t": "late.",
+          "codigo": "RV5",
+          "origen": "o3",
+          "explicacion": "«Late» está en la misma oración 3 («stay up too late»), pero habla de la hora, no de la actitud. No es lo contrario de «lazy»."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Who does the author most want to persuade?",
+      "alternativas": [
+        {
+          "t": "The principal and the students' parents.",
+          "correcta": true,
+          "evidencia": [
+            "o10"
+          ],
+          "explicacion": "La oración 10 lo dice: el autor espera que el director y los padres de sus compañeros piensen en esto antes del próximo año escolar, porque ellos pueden cambiar la hora de entrada."
+        },
+        {
+          "t": "The doctors who study the body's clock during adolescence.",
+          "codigo": "RV50",
+          "origen": "o5",
+          "explicacion": "Los médicos aparecen en la oración 5 como fuente de una razón: el autor los cita, no les escribe a ellos."
+        },
+        {
+          "t": "Children in primary school who also wake up very early.",
+          "codigo": "RV51",
+          "explicacion": "El tema (levantarse temprano) podría interesarles, pero nada del texto se dirige a ellos: el autor habla de adolescentes y le pide un cambio al director y a los padres."
+        },
+        {
+          "t": "The companies that make and sell cell phones in Peru.",
+          "codigo": "RV7",
+          "explicacion": "El texto menciona los celulares (oraciones 3 y 4), pero no les pide nada a las empresas ni se dirige a ellas."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "According to the author, if classes started one hour later, then",
+      "alternativas": [
+        {
+          "t": "students would probably pay more attention in class.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "La oración 9 dice que incluso una hora más de sueño podría ayudarlos a prestar atención, recordar lo que estudian y sentirse mejor."
+        },
+        {
+          "t": "most students would still be unable to get enough rest.",
+          "codigo": "RV63",
+          "origen": "o6",
+          "explicacion": "Vuelve a afirmar lo que la condición cambia. Según la oración 6, no descansan lo suficiente porque las clases empiezan muy temprano; si empezaran más tarde, el autor espera lo contrario (oración 9)."
+        },
+        {
+          "t": "every student in the school would get top grades in all subjects.",
+          "codigo": "RV11",
+          "explicacion": "Exagera con «every» y «all». El autor dice que dormir más «could help» (podría ayudar); no promete notas perfectas para todos."
+        },
+        {
+          "t": "teenagers would stop using their phones late at night.",
+          "codigo": "RV7",
+          "explicacion": "El texto no relaciona la hora de entrada con el uso del celular. Esa consecuencia no sale de nada de lo que dice el autor."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement is NOT consistent with the text?",
+      "alternativas": [
+        {
+          "t": "The author thinks phones play no part in the problem.",
+          "correcta": true,
+          "evidencia": [
+            "o4"
+          ],
+          "explicacion": "Choca con la oración 4: el autor admite que el celular es parte del problema («Phones are part of the problem, I admit»), aunque no toda la historia."
+        },
+        {
+          "t": "Not all of the tiredness can be blamed on phones.",
+          "codigo": "RV10",
+          "explicacion": "Tiene un «not», pero es compatible: la oración 4 dice justamente que el celular no es toda la historia."
+        },
+        {
+          "t": "Teenagers naturally feel sleepy later at night than adults.",
+          "codigo": "RV8",
+          "explicacion": "Va en contra de lo que muchos adultos piensan (que es pura flojera), pero es lo que dice la oración 5."
+        },
+        {
+          "t": "The author's school has a library that opens very early.",
+          "codigo": "RV36",
+          "explicacion": "El texto no habla de una biblioteca, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "Para los adolescentes de 13 a 18 años se recomienda dormir de 8 a 10 horas cada noche.",
+      "fuente": "Paruthi, S. y otros (2016). Recommended Amount of Sleep for Pediatric Populations: A Consensus Statement of the American Academy of Sleep Medicine. Journal of Clinical Sleep Medicine, 12(6), 785-786."
+    },
+    {
+      "afirmacion": "En la adolescencia el ritmo circadiano se retrasa, de modo que los adolescentes tienden a sentir sueño más tarde por la noche; por eso se recomienda que los colegios no empiecen muy temprano.",
+      "fuente": "American Academy of Pediatrics (2014). School Start Times for Adolescents (policy statement). Pediatrics, 134(3), 642-649."
+    }
+  ],
+  "revision": null
+}

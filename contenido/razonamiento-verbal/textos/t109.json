@@ -1,0 +1,167 @@
+{
+  "id": "t109",
+  "version": 1,
+  "titulo": "Los octógonos en los envases",
+  "tema": "Salud · advertencias en los alimentos procesados",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Una nutricionista de un centro de salud" },
+    { "id": "B", "desde": 1, "firma": "Un profesor de secundaria" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Los octógonos negros de los alimentos procesados son una de las mejores herramientas que tenemos para comer mejor." },
+      { "id": "o2", "rol": "apoyo", "t": "Antes, saber cuánta azúcar o cuánta sal tenía una galleta exigía leer una tabla en letra pequeña y hacer cuentas." },
+      { "id": "o3", "rol": "detalle", "t": "Ahora basta una mirada: «Alto en azúcar», «Alto en sodio»." },
+      { "id": "o4", "rol": "apoyo", "t": "Esa advertencia llega también a quien no tiene tiempo ni costumbre de leer etiquetas, y le permite comparar dos productos en el mismo estante." },
+      { "id": "o5", "rol": "principal", "t": "Por eso, los octógonos ayudan a elegir mejor, y deberían mantenerse y hacerse todavía más visibles." }
+    ],
+    [
+      { "id": "o6", "rol": "apoyo", "t": "Es cierto que los octógonos informan con claridad: cualquiera entiende qué producto tiene demasiada azúcar." },
+      { "id": "o7", "rol": "contraste", "t": "Pero informar no es lo mismo que cambiar lo que se come." },
+      { "id": "o8", "rol": "ejemplo", "t": "En la tienda del colegio, mis alumnos reconocen el octógono y compran igual la gaseosa, porque cuesta menos que una fruta y porque nadie les enseñó a armar una lonchera." },
+      { "id": "o9", "rol": "principal", "t": "Sin educación alimentaria en las escuelas y sin alimentos saludables a precios accesibles, la advertencia se queda en el envase." },
+      { "id": "o10", "rol": "apoyo", "t": "El octógono es un buen primer paso, no el camino entero." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Los octógonos tendrían que verse todavía más en los envases.",
+        "aceptada": "A",
+        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo pide el texto A en la oración 5. El texto B no habla de hacerlos más visibles: pide educación y precios accesibles.",
+        "explicaciones": {
+          "B": "El texto B acepta los octógonos como un primer paso (oración 10), pero no pide que se vean más. Eso lo pide el texto A (oración 5).",
+          "ambos": "Solo el texto A lo pide (oración 5). Lo que el texto B agrega es otra cosa: educación alimentaria y precios accesibles.",
+          "ninguno": "Sí lo sostiene alguien: el texto A dice que los octógonos deberían «hacerse todavía más visibles» (oración 5)."
+        }
+      },
+      "enunciado": "¿Qué sostiene la autora del texto A?",
+      "alternativas": [
+        { "t": "Que las advertencias ayudan a elegir mejor y conviene mantenerlas.", "correcta": true, "evidencia": ["o1", "o5"],
+          "explicacion": "Es su tesis, anunciada en la oración 1 y cerrada en la 5: los octógonos ayudan a elegir mejor y deberían mantenerse." },
+        { "t": "Que sin educación alimentaria las advertencias no cambian lo que se come.", "codigo": "RV59", "origen": "o9",
+          "explicacion": "Eso lo sostiene el texto B (oración 9). El texto A no pone esa condición." },
+        { "t": "Que antes la tabla de los envases tenía letra pequeña.", "codigo": "RV1", "origen": "o2",
+          "explicacion": "Es un detalle de la oración 2, que sirve para mostrar la ventaja de los octógonos; no es lo que la autora defiende." },
+        { "t": "Que los octógonos bastan para que todos coman sano.", "codigo": "RV11",
+          "explicacion": "El texto A dice que ayudan a elegir mejor, no que basten por sí solos ni que logren que todos coman sano." },
+        { "t": "Que los alimentos procesados deberían prohibirse.", "codigo": "RV33",
+          "explicacion": "La autora no propone prohibir nada: defiende informar con advertencias para que cada uno compare y elija." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "discrepancia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Con los octógonos, cualquiera puede darse cuenta rápido de qué producto tiene demasiada azúcar.",
+        "aceptada": "ambos",
+        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "explicacion": "Los dos lo sostienen: el texto A dice que «basta una mirada» (oración 3) y el texto B, que «cualquiera entiende qué producto tiene demasiada azúcar» (oración 6).",
+        "explicaciones": {
+          "A": "El texto A lo dice, pero el B también lo concede en la oración 6: los octógonos «informan con claridad».",
+          "B": "El texto B lo dice en la oración 6, pero el A también: «Ahora basta una mirada» (oración 3).",
+          "ninguno": "Los dos lo sostienen: el texto A en la oración 3 y el texto B en la oración 6."
+        }
+      },
+      "enunciado": "¿En qué discrepan los autores de los dos textos?",
+      "alternativas": [
+        { "t": "A confía en que la advertencia lleva a elegir mejor; B duda de que, sola, cambie lo que se come.", "correcta": true, "evidencia": ["o5", "o7", "o9"],
+          "explicacion": "El texto A dice que los octógonos ayudan a elegir mejor (oración 5); el texto B responde que informar no es cambiar lo que se come (oración 7) y pone condiciones (oración 9)." },
+        { "t": "A cree que los octógonos informan con claridad; B piensa que confunden a los compradores.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso coinciden: el texto B dice que los octógonos «informan con claridad» (oración 6)." },
+        { "t": "A pide educación alimentaria en las escuelas; B, octógonos más visibles en cada envase.", "codigo": "RV59",
+          "explicacion": "Está al revés: los octógonos más visibles los pide el texto A (oración 5) y la educación alimentaria, el texto B (oración 9)." },
+        { "t": "A defiende que se mantengan los octógonos; B pide que se retiren de los envases.", "codigo": "RV62", "origen": "o10",
+          "explicacion": "La primera mitad es cierta, pero la segunda no: el texto B llama al octógono «un buen primer paso» (oración 10)." },
+        { "t": "A escribe sobre las galletas; B escribe sobre la tienda de un colegio.", "codigo": "RV1", "origen": "o8",
+          "explicacion": "La galleta y la tienda son ejemplos; los dos textos tratan de las advertencias de los alimentos procesados." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sintesis",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "¿Cuál de estas ideas integra mejor lo que dicen los dos textos?",
+      "alternativas": [
+        { "t": "Los octógonos sirven para reconocer lo poco saludable, pero cambiar la dieta exige también educación y precios justos.", "correcta": true, "evidencia": ["o5", "o9", "o10"],
+          "explicacion": "Recoge lo que acepta cada texto: el valor de la advertencia (texto A y oración 6) y lo que le falta según el texto B (oraciones 9 y 10)." },
+        { "t": "Como en las escuelas ya se enseña a comer bien, las advertencias de los envases han dejado de ser necesarias para nadie.", "codigo": "RV44", "origen": "o9",
+          "explicacion": "Cambia la relación entre las ideas: el texto B dice que falta educación alimentaria, no que ya exista, y no propone quitar los octógonos." },
+        { "t": "Lo importante es que los octógonos negros sean más grandes y se vean bien en todos los estantes de las tiendas.", "codigo": "RV60", "origen": "o5",
+          "explicacion": "Es solo la propuesta del texto A (oración 5). Deja fuera lo que agrega el texto B." },
+        { "t": "Los octógonos de los envases informan con claridad cuánta azúcar o sal tiene cada producto que se compra.", "codigo": "RV3", "origen": "o6",
+          "explicacion": "Es cierto para los dos textos, pero omite la parte esencial del texto B: que informar no basta para cambiar lo que se come." },
+        { "t": "Ni los octógonos ni las clases de alimentación sirven de algo mientras las gaseosas sigan siendo baratas.", "codigo": "RV11", "origen": "o8",
+          "explicacion": "Exagera: ninguno dice que los octógonos no sirvan; el texto B los llama «un buen primer paso» (oración 10) y pide educación, no la descarta." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Del ejemplo de la tienda del colegio (texto B) se deduce que",
+      "alternativas": [
+        { "t": "saber que un producto no es sano no siempre basta para dejar de comprarlo.", "correcta": true, "evidencia": ["o8"],
+          "explicacion": "Los alumnos reconocen el octógono y aun así compran la gaseosa (oración 8): la información está, pero no cambia la compra." },
+        { "t": "los alumnos no entienden lo que advierte el octógono.", "codigo": "RV7", "origen": "o8",
+          "explicacion": "La oración 8 dice lo contrario: los alumnos reconocen el octógono. El problema no es entenderlo." },
+        { "t": "la gaseosa tiene más azúcar que cualquier fruta.", "codigo": "RV8",
+          "explicacion": "El texto compara precios, no cantidades de azúcar; esa idea viene de lo que se sabe por fuera de la lectura." },
+        { "t": "ningún escolar elige una fruta en la tienda.", "codigo": "RV11", "origen": "o8",
+          "explicacion": "El texto habla de lo que hacen sus alumnos, sin decir que ningún escolar compre fruta; «ningún» afirma más de lo que se puede deducir." },
+        { "t": "la tienda del colegio debería cerrarse.", "codigo": "RV33",
+          "explicacion": "El profesor no propone cerrar la tienda: pide educación alimentaria y precios accesibles (oración 9)." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas: ¿qué relación tiene esta afirmación con el texto B?",
+        "sonda": "Para el autor del texto B, los octógonos no sirven para nada.",
+        "clase": "lo-contradice",
+        "codigos": { "lo-dice": "RV11", "se-deduce": "RV7", "no-se-sabe": null },
+        "explicacion": "Lo contradice: el autor dice que los octógonos informan con claridad (oración 6) y que son «un buen primer paso» (oración 10).",
+        "explicaciones": {
+          "lo-dice": "El texto B no lo dice: dice que el octógono no basta, que es distinto de decir que no sirve. Lo llama «un buen primer paso» (oración 10).",
+          "se-deduce": "No se deduce: que algo no baste no quiere decir que no sirva. El autor reconoce su valor en las oraciones 6 y 10.",
+          "no-se-sabe": "Sí se sabe qué piensa el autor: valora los octógonos como un primer paso (oración 10), así que la afirmación lo contradice."
+        }
+      },
+      "enunciado": "¿Cuál de estas propuestas es compatible con lo que sostiene el autor del texto B?",
+      "alternativas": [
+        { "t": "Mantener los octógonos y enseñar en las escuelas a armar una lonchera.", "correcta": true, "evidencia": ["o9", "o10"],
+          "explicacion": "Conserva el «primer paso» (oración 10) y le suma la educación alimentaria que el autor echa de menos (oración 9)." },
+        { "t": "Retirar los octógonos, porque los alumnos compran igual la gaseosa.", "codigo": "RV11", "origen": "o8",
+          "explicacion": "El autor no quiere quitarlos: dice que son un buen primer paso (oración 10). Del ejemplo saca que faltan otras medidas, no que sobren los octógonos." },
+        { "t": "Confiar solo en la advertencia del envase para que se coma mejor.", "codigo": "RV59", "origen": "o5",
+          "explicacion": "Se acerca a lo que defiende el texto A. El autor del texto B dice justamente que la advertencia sola «se queda en el envase» (oración 9)." },
+        { "t": "Dejar las clases de alimentación para cuando los precios bajen solos.", "codigo": "RV44", "origen": "o9",
+          "explicacion": "Cambia la relación de la oración 9: el autor pide educación y precios accesibles a la vez, como condiciones; no pone una después de la otra ni espera que los precios bajen solos." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "En el Perú, los alimentos procesados que superan ciertos límites llevan advertencias octogonales negras con frases como «Alto en azúcar», «Alto en sodio», «Alto en grasas saturadas» o «Contiene grasas trans».",
+      "fuente": "Ley 30021, Ley de Promoción de la Alimentación Saludable para Niños, Niñas y Adolescentes, y su Manual de Advertencias Publicitarias (Decreto Supremo 012-2018-SA)."
+    }
+  ],
+  "revision": null
+}

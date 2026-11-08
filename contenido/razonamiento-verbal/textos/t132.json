@@ -1,0 +1,266 @@
+{
+  "id": "t132",
+  "version": 1,
+  "titulo": "Agua segura en casa",
+  "tema": "Salud · agua de consumo en el hogar",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "discontinuo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "apoyo",
+        "t": "El agua del caño, del pozo o del río puede traer microbios que causan diarrea, aunque se vea limpia."
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "Por eso, el centro de salud de Villa Ribera, un distrito ficticio, repartió esta infografía, que ordena los métodos caseros para hacer segura el agua en dos grupos según cómo se usan."
+      }
+    ],
+    [
+      {
+        "id": "o3",
+        "rol": "principal",
+        "t": "Los dos grupos no compiten: se combinan."
+      },
+      {
+        "id": "o4",
+        "rol": "ejemplo",
+        "t": "Una familia puede filtrar el agua turbia, clorarla y guardarla en un bidón tapado y con caño."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Lo que no conviene es confiar en un solo paso y descuidar los demás, porque hasta el agua mejor tratada vuelve a ensuciarse en un balde abierto."
+      }
+    ]
+  ],
+  "figuras": [
+    {
+      "id": "f1",
+      "tipo": "recuadros",
+      "despues": 1,
+      "titulo": "Cómo hacer segura el agua en casa",
+      "recuadros": [
+        {
+          "id": "f1a",
+          "titulo": "Grupo 1 · Para el agua que vas a tomar pronto",
+          "t": "Estos métodos limpian una porción de agua, pero no la protegen después: si se guarda en un balde destapado o se saca con un vaso sucio, puede volver a contaminarse."
+        },
+        {
+          "id": "f1b",
+          "titulo": "Hervir",
+          "t": "Deja que el agua hierva con burbujas grandes al menos un minuto. Déjala enfriar en la misma olla, tapada."
+        },
+        {
+          "id": "f1c",
+          "titulo": "Desinfección solar",
+          "t": "Llena botellas de plástico transparente con agua clara, ciérralas y déjalas al sol directo al menos seis horas. Si el día está nublado, déjalas dos días."
+        },
+        {
+          "id": "f1d",
+          "titulo": "Filtrar",
+          "t": "Pasar el agua por una tela limpia doblada le quita la tierra y la turbidez, pero no mata todos los microbios. Hazlo antes de hervir, de clorar o de poner el agua al sol."
+        },
+        {
+          "id": "f1e",
+          "titulo": "Grupo 2 · Para el agua que vas a guardar",
+          "t": "Estos métodos siguen cuidando el agua durante el tiempo que pasa en el recipiente."
+        },
+        {
+          "id": "f1f",
+          "titulo": "Clorar",
+          "t": "Echa dos gotas de lejía sin aroma por cada litro de agua, mezcla y espera media hora antes de tomarla. El cloro que queda sigue actuando contra los microbios que entren después."
+        },
+        {
+          "id": "f1g",
+          "titulo": "Guardar bien",
+          "t": "Usa un recipiente limpio, con tapa y, si se puede, con caño, para no meter la mano ni el vaso en el agua."
+        }
+      ],
+      "nota": "Consejos basados en recomendaciones de la OMS y del Minsa. El distrito y su centro de salud son ficticios."
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "Según la infografía, para que la desinfección solar funcione, las botellas con agua deben",
+      "alternativas": [
+        {
+          "t": "ser transparentes y quedar al sol directo.",
+          "correcta": true,
+          "evidencia": ["f1c"],
+          "explicacion": "El recuadro «Desinfección solar» pide botellas de plástico transparente, con agua clara, al sol directo al menos seis horas."
+        },
+        {
+          "t": "llenarse con agua que ya hirvió por un minuto.",
+          "codigo": "RV45",
+          "origen": "f1b",
+          "explicacion": "El minuto de hervor está en el recuadro «Hervir», que es otro método. La desinfección solar no pide hervir antes."
+        },
+        {
+          "t": "quedarse dos días al sol, aunque el cielo esté despejado.",
+          "codigo": "RV11",
+          "origen": "f1c",
+          "explicacion": "Los dos días son solo para el día nublado; con sol bastan seis horas. La alternativa vuelve regla para todos los casos lo que vale para uno."
+        },
+        {
+          "t": "ser de vidrio oscuro, que guarda mejor el calor.",
+          "codigo": "RV8",
+          "explicacion": "La infografía pide plástico transparente, no vidrio oscuro. Esta idea sale de lo que uno cree saber del calor, no de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "¿Qué completa mejor el enunciado, según la infografía? «Los métodos del primer grupo ___, mientras que los del segundo ___».",
+      "alternativas": [
+        {
+          "t": "limpian el agua que se va a tomar pronto / la siguen cuidando mientras está guardada",
+          "correcta": true,
+          "evidencia": ["f1a", "f1e"],
+          "explicacion": "Las dos mitades salen de los títulos y las explicaciones de los grupos: el primero limpia una porción sin protegerla después; el segundo sigue cuidando el agua en el recipiente."
+        },
+        {
+          "t": "limpian el agua que se va a tomar pronto / impiden para siempre que vuelva a contaminarse",
+          "codigo": "RV62",
+          "origen": "f1e",
+          "explicacion": "La primera mitad es correcta, pero la segunda exagera: el segundo grupo «sigue cuidando» el agua mientras está en el recipiente, no la protege para siempre. Basta una mitad mala para que la pareja falle."
+        },
+        {
+          "t": "cuidan el agua mientras está guardada / limpian el agua que se va a tomar pronto",
+          "codigo": "RV16",
+          "explicacion": "Las dos ideas son de la infografía, pero están cruzadas: lo de guardar es del segundo grupo y lo de tomar pronto, del primero."
+        },
+        {
+          "t": "son mejores que los del segundo / solo sirven cuando faltan los del primero",
+          "codigo": "RV44",
+          "origen": "o3",
+          "explicacion": "La infografía distingue los grupos por su uso, no los ordena de mejor a peor, y la oración 3 dice que no compiten: se combinan."
+        },
+        {
+          "t": "se usan en el campo / se usan en la ciudad",
+          "codigo": "RV7",
+          "explicacion": "La infografía no separa los métodos por el lugar donde se vive. Esa diferencia no se puede sacar de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto y la infografía.",
+        "sonda": "Para el agua que se va a guardar varios días, clorarla da una protección que hervirla no da.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV58",
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "La infografía no compara el cloro con el hervido, pero lo permite: el hervido está en el grupo que no protege el agua después, y del cloro dice que sigue actuando contra los microbios que entren. Se deduce.",
+        "explicaciones": {
+          "lo-dice": "Ningún recuadro hace esa comparación con esas palabras. Se saca al juntar el título del primer grupo con el recuadro «Clorar».",
+          "no-se-sabe": "Aunque no lo diga así, el primer grupo «no protege después» y el cloro «sigue actuando»: de ahí sale la ventaja del cloro para el agua guardada.",
+          "lo-contradice": "La infografía no dice que el hervido proteja el agua guardada; dice lo contrario, que puede volver a contaminarse."
+        }
+      },
+      "enunciado": "Se infiere de la infografía que, si una familia hierve el agua y luego la guarda en un balde destapado, esa agua",
+      "alternativas": [
+        {
+          "t": "puede volver a tener microbios.",
+          "correcta": true,
+          "evidencia": ["f1a", "o5"],
+          "explicacion": "El primer grupo, donde está hervir, no protege el agua después: si se guarda destapada puede volver a contaminarse, como repite la oración 5."
+        },
+        {
+          "t": "queda protegida, porque el hervor ya mató los microbios.",
+          "codigo": "RV10",
+          "origen": "f1a",
+          "explicacion": "Se pasa por alto el «no la protegen después» del primer grupo: el hervor limpia esa porción, pero no la cuida de lo que entre luego."
+        },
+        {
+          "t": "se volverá turbia por la tierra que entre al balde.",
+          "codigo": "RV7",
+          "explicacion": "La infografía habla de microbios que vuelven a entrar, no de que el agua se enturbie. Eso va más allá de lo que se puede sacar."
+        },
+        {
+          "t": "se echará a perder toda en pocas horas.",
+          "codigo": "RV11",
+          "explicacion": "La infografía dice que «puede» volver a contaminarse, no que toda se eche a perder ni en cuánto tiempo. Es una exageración."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.textos-discontinuos",
+      "enunciado": "Si en una casa el agua sale turbia del caño, lo que la infografía permite recomendar antes de clorarla o de ponerla al sol es",
+      "alternativas": [
+        {
+          "t": "pasarla por una tela limpia doblada.",
+          "correcta": true,
+          "evidencia": ["f1d"],
+          "explicacion": "El recuadro «Filtrar» dice que la tela quita la turbidez y que se haga antes de hervir, de clorar o de poner el agua al sol."
+        },
+        {
+          "t": "nada, porque la infografía no habla del agua del caño.",
+          "codigo": "RV34",
+          "explicacion": "La oración 1 nombra el agua del caño, y el recuadro «Filtrar» dice qué hacer con el agua turbia antes de los otros métodos. No hace falta que hable de ese caño en particular."
+        },
+        {
+          "t": "dejarla dos días al sol, como en un día nublado.",
+          "codigo": "RV12",
+          "origen": "f1c",
+          "explicacion": "Los dos días son para el cielo nublado, no para el agua turbia. Se aplica al pie de la letra una regla pensada para otro caso."
+        },
+        {
+          "t": "guardarla en un recipiente tapado y con caño.",
+          "codigo": "RV45",
+          "origen": "f1g",
+          "explicacion": "Es el recuadro «Guardar bien», que sirve para cuidar el agua ya tratada. Contra la turbidez, la infografía recomienda filtrar."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    {
+      "afirmacion": "El agua puede verse limpia y aun así traer microbios que causan diarrea.",
+      "fuente": "Organización Mundial de la Salud (OMS), Guías para la calidad del agua de consumo humano, 4.ª ed. (2011, con adendas de 2017), capítulo 7 (aspectos microbiológicos); OMS, nota descriptiva «Agua para consumo humano»."
+    },
+    {
+      "afirmacion": "Hervir el agua hasta que haga burbujas grandes la desinfecta; basta con llevarla a ebullición fuerte (se suele indicar al menos un minuto), y no deja protección contra la recontaminación si se guarda mal.",
+      "fuente": "OMS, «Boiling water» (nota técnica WHO/FWC/WSH/15.02, 2015); OMS, Guías para la calidad del agua de consumo humano, 4.ª ed., sección 7.3 y anexo sobre tratamiento en el hogar."
+    },
+    {
+      "afirmacion": "La desinfección solar (SODIS) usa botellas de plástico transparente con agua clara, al sol al menos seis horas, o dos días seguidos si está muy nublado.",
+      "fuente": "OMS, Guías para la calidad del agua de consumo humano, 4.ª ed., tratamiento del agua en el hogar; Eawag/SODIS, «Método SODIS» (sodis.ch). Por verificar la redacción exacta de los dos días."
+    },
+    {
+      "afirmacion": "Filtrar con tela quita partículas y turbidez, pero no elimina todos los microbios; conviene hacerlo antes de desinfectar.",
+      "fuente": "OMS, Guías para la calidad del agua de consumo humano, 4.ª ed., tratamiento del agua en el hogar (la turbidez reduce la eficacia del cloro y de la desinfección solar)."
+    },
+    {
+      "afirmacion": "Para desinfectar agua en casa se recomienda echar dos gotas de lejía sin aroma por litro y esperar treinta minutos antes de consumirla; el cloro residual sigue protegiendo el agua almacenada.",
+      "fuente": "Ministerio de Salud del Perú (Minsa) y Digesa, recomendaciones para el consumo de agua segura (gob.pe); OMS, Guías, 4.ª ed., sobre el cloro residual. Por verificar la redacción exacta de la dosis en la página del Minsa."
+    },
+    {
+      "afirmacion": "El agua se debe guardar en recipientes limpios, tapados y, de preferencia, con caño o de boca angosta, para no meter la mano ni utensilios.",
+      "fuente": "OMS, Guías para la calidad del agua de consumo humano, 4.ª ed., almacenamiento seguro en el hogar; Minsa, recomendaciones de agua segura."
+    },
+    {
+      "afirmacion": "El distrito de Villa Ribera y su centro de salud son inventados.",
+      "fuente": "Inventado para el ejercicio."
+    }
+  ],
+  "revision": null
+}

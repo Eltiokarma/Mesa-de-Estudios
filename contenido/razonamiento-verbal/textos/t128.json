@@ -1,0 +1,159 @@
+{
+  "id": "t128",
+  "version": 1,
+  "titulo": "Nazca from Above",
+  "tema": "Lectura en inglés · las líneas de Nazca y los drones en la arqueología",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "contraste", "t": "For a long time, the best way to see the Nazca lines was to fly over them in a small plane." },
+      { "id": "o2", "rol": "detalle", "t": "These huge drawings on the desert floor of southern Peru were made more than a thousand years ago by people who moved the dark stones on the surface and uncovered the lighter ground below." },
+      { "id": "o3", "rol": "detalle", "t": "Because it almost never rains there, many of the lines have survived until today." }
+    ],
+    [
+      { "id": "o4", "rol": "principal", "t": "Today, archaeologists also study them in a new way: with drones." },
+      { "id": "o5", "rol": "detalle", "t": "A drone can fly low and slowly and take many photos, which are eventually joined into a detailed map of the ground." },
+      { "id": "o6", "rol": "detalle", "t": "In these images, researchers can notice faint figures that are very hard to see from a plane or from the ground." },
+      { "id": "o7", "rol": "detalle", "t": "In fact, in recent years some figures that nobody had noticed before have been found with the help of drones." },
+      { "id": "o8", "rol": "apoyo", "t": "Drones have another advantage: researchers do not need to walk on the fragile surface, so they leave no footprints on it." }
+    ],
+    [
+      { "id": "o9", "rol": "apoyo", "t": "However, drones do not replace archaeologists." },
+      { "id": "o10", "rol": "detalle", "t": "A photo can show a shape, but only people who know the Nasca culture can suggest what that shape may have meant." },
+      { "id": "o11", "rol": "principal", "t": "The new technology, then, is a tool that helps researchers, not a machine that does their job." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 5, the word EVENTUALLY can be replaced by",
+      "alternativas": [
+        { "t": "finally.", "correcta": true, "evidencia": ["o5"],
+          "explicacion": "«Eventually» quiere decir al final, después de un proceso: primero el dron toma muchas fotos y, al final, se unen en un mapa." },
+        { "t": "occasionally.", "codigo": "RV54", "origen": "o5",
+          "explicacion": "Es un falso amigo: «eventually» se parece a «eventualmente» (de vez en cuando), pero en inglés significa al final. De vez en cuando sería «occasionally»." },
+        { "t": "quickly.", "codigo": "RV19",
+          "explicacion": "Es otra forma de decir cómo se hace algo, pero no significa lo mismo: «eventually» habla de cuándo (al final), no de la rapidez." },
+        { "t": "slowly.", "codigo": "RV5", "origen": "o5",
+          "explicacion": "Repite una palabra de la misma oración («fly low and slowly»), que dice cómo vuela el dron, no cuándo se arma el mapa." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, lee esta afirmación y di qué relación tiene con el texto.",
+        "sonda": "If it rained often in that desert, fewer lines would probably have survived.",
+        "clase": "se-deduce",
+        "codigos": { "lo-dice": "RV58", "no-se-sabe": "RV34", "lo-contradice": "RV63" },
+        "explicacion": "La oración 3 da la causa: muchas líneas sobrevivieron «because it almost never rains there». Si lloviera a menudo, faltaría esa causa: se deduce que habrían sobrevivido menos.",
+        "explicaciones": {
+          "lo-dice": "El texto no habla de qué pasaría si lloviera: dice que casi nunca llueve. La afirmación se saca de la causa de la oración 3, no está escrita.",
+          "no-se-sabe": "Sí se puede saber: la oración 3 dice que las líneas sobrevivieron porque casi nunca llueve. Basta pensar qué pasa si falta esa causa.",
+          "lo-contradice": "El texto no dice que las líneas resistirían la lluvia: al revés, explica que sobrevivieron porque casi no llueve."
+        }
+      },
+      "enunciado": "If it rained often in the Nazca desert, then, according to the text, the lines",
+      "alternativas": [
+        { "t": "probably would not have lasted so well.", "correcta": true, "evidencia": ["o3"],
+          "explicacion": "La oración 3 dice que muchas líneas sobrevivieron porque casi nunca llueve. Sin esa causa, lo probable es que se hubieran conservado peor." },
+        { "t": "would have lasted just as well, because they are made of stones and ground.", "codigo": "RV63", "origen": "o3",
+          "explicacion": "Vuelve a confirmar lo que el condicional niega: el texto une la conservación de las líneas a la falta de lluvia. Si llueve a menudo, no hay razón para que duren igual." },
+        { "t": "would be easier to study with drones than from a plane.", "codigo": "RV7", "origen": "o6",
+          "explicacion": "El texto compara drones y aviones, pero nada relaciona la lluvia con lo fácil que es estudiar las líneas. Es una inferencia que no se apoya en el texto." },
+        { "t": "would all disappear completely in a single rainy day.", "codigo": "RV12",
+          "explicacion": "Lleva la idea a un extremo: el texto permite pensar que se conservarían peor, no que todas desaparecerían en un solo día." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "Which statement is NOT consistent with the text?",
+      "alternativas": [
+        { "t": "Drones can now explain what each figure meant.", "correcta": true, "evidencia": ["o9", "o10"],
+          "explicacion": "Las oraciones 9 y 10 dicen lo contrario: los drones no reemplazan a los arqueólogos, y solo quienes conocen la cultura Nasca pueden proponer qué significaba una figura." },
+        { "t": "Thanks to drones, researchers can study the lines without walking on their fragile surface.", "codigo": "RV10", "origen": "o8",
+          "explicacion": "Es compatible: la oración 8 lo dice. Se pide la que NO concuerda con el texto." },
+        { "t": "Some figures that nobody had noticed before were found with the help of drones.", "codigo": "RV9", "origen": "o7",
+          "explicacion": "Concuerda con la oración 7. La incompatible es la que contradice a las oraciones 9 y 10." },
+        { "t": "Many tourists from other countries visit the Nazca lines every year.", "codigo": "RV36",
+          "explicacion": "El texto no habla de turistas, pero no decirlo no es contradecirlo. Lo incompatible es lo que choca con el texto." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "According to the text, why can drones help find figures that were not noticed before?",
+      "alternativas": [
+        { "t": "Because they fly low, and their images show faint figures.", "correcta": true, "evidencia": ["o5", "o6"],
+          "explicacion": "Las oraciones 5 y 6 lo dicen: el dron vuela bajo y lento, toma muchas fotos, y en esas imágenes se ven figuras tenues, difíciles de ver desde un avión o desde el suelo." },
+        { "t": "Because they fly much higher and faster than small planes do.", "codigo": "RV7", "origen": "o5",
+          "explicacion": "El texto dice lo contrario: el dron vuela «low and slowly» (bajo y lento)." },
+        { "t": "Because, unlike archaeologists, they can tell what every shape meant.", "codigo": "RV10", "origen": "o9",
+          "explicacion": "Pasa por alto la negación de la oración 9: «drones do not replace archaeologists». Una foto muestra una forma; el significado lo proponen las personas." },
+        { "t": "Because it almost never rains in that part of southern Peru.", "codigo": "RV5", "origen": "o3",
+          "explicacion": "Toma la oración 3, que explica por qué las líneas se conservaron, no por qué los drones ayudan a encontrar figuras." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que mejor dice de qué trata el texto.",
+        "aceptadas": ["o4", "o11"],
+        "ninguna": "RV3",
+        "explicacion": "La oración 4 anuncia el tema (hoy las líneas también se estudian con drones) y la 11 lo completa: el dron es una herramienta que ayuda a los investigadores, no los reemplaza.",
+        "explicaciones": {
+          "o1": "Habla de cómo se veían antes las líneas, desde un avión. El texto parte de ahí para presentar lo nuevo.",
+          "o2": "Explica cómo se hicieron las líneas: es un detalle de fondo.",
+          "o3": "Dice por qué se conservaron: es un detalle.",
+          "o5": "Cuenta qué hace un dron: es un detalle de cómo se usa.",
+          "o6": "Dice qué se ve en las imágenes: es un detalle.",
+          "o7": "Da un ejemplo de lo que se ha logrado: es un detalle.",
+          "o8": "Da otra ventaja del dron; apoya la idea, pero no la dice entera.",
+          "o9": "Prepara la conclusión (el dron no reemplaza a nadie), pero sola no dice que es una herramienta para estudiar las líneas.",
+          "o10": "Explica por qué el dron no reemplaza al arqueólogo: es un detalle.",
+          "ninguna": "Las oraciones 4 y 11 juntas sí dicen el tema: los drones como herramienta nueva para estudiar las líneas."
+        }
+      },
+      "enunciado": "Which is the best title for the text?",
+      "alternativas": [
+        { "t": "Drones: A New Tool for Nazca Research", "correcta": true, "evidencia": ["o4", "o11"],
+          "explicacion": "Junta las oraciones 4 y 11: hoy las líneas también se estudian con drones, que ayudan a los investigadores sin reemplazarlos." },
+        { "t": "How the Ancient Nasca People Made Their Huge Drawings in the Desert", "codigo": "RV1", "origen": "o2",
+          "explicacion": "Cómo se hicieron las líneas aparece en la oración 2, pero es un detalle de fondo, no el tema." },
+        { "t": "The Deserts of Southern Peru", "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto trata de las líneas de Nazca y de cómo se estudian hoy." },
+        { "t": "Drones Will Replace Archaeologists", "codigo": "RV33", "origen": "o9",
+          "explicacion": "El texto dice lo contrario: «drones do not replace archaeologists» (oración 9)." },
+        { "t": "Flying over Nazca in a Small Plane", "codigo": "RV4", "origen": "o1",
+          "explicacion": "Sale de la primera oración, que cuenta cómo se veían antes las líneas. El texto la usa para presentar la manera nueva de estudiarlas." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    { "afirmacion": "Las líneas de Nazca son geoglifos del desierto del sur del Perú, hechos por la cultura Nasca hace más de mil años, retirando las piedras oscuras de la superficie para dejar ver el suelo más claro.", "fuente": "UNESCO, Lista del Patrimonio Mundial: Lines and Geoglyphs of Nasca and Palpa (1994), descripción del sitio." },
+    { "afirmacion": "Se han conservado sobre todo porque en esa zona casi nunca llueve (clima muy seco y estable).", "fuente": "UNESCO, Lines and Geoglyphs of Nasca and Palpa, descripción y estado de conservación." },
+    { "afirmacion": "En los últimos años se han encontrado figuras nuevas con ayuda de drones y fotografía aérea.", "fuente": "Ministerio de Cultura del Perú, anuncios sobre nuevos geoglifos en Nasca y Palpa (2018 en adelante); Sakai, M. y otros (2024), PNAS, sobre la prospección de geoglifos de Nasca con imágenes aéreas." },
+    { "afirmacion": "Caminar o pasar vehículos sobre la superficie deja huellas que dañan los geoglifos.", "fuente": "UNESCO, Lines and Geoglyphs of Nasca and Palpa, estado de conservación; Ministerio de Cultura del Perú, comunicados sobre daños a las líneas." }
+  ],
+  "revision": null
+}
