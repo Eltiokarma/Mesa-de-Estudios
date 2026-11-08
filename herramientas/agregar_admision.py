@@ -10,8 +10,9 @@ las tablas en Markdown.
 Repetidas: la misma pregunta puede salir en dos áreas del mismo día (anexos del
 solucionario) o en dos días del mismo periodo. Se marca como repetida si coincide
 el curso, el periodo, el comienzo normalizado del enunciado (6 palabras o más) y
-la clave cuando ambas la traen. Los enunciados genéricos («Halle el valor de x»)
-no bastan para juntar: además tiene que coincidir el tema.
+la clave cuando ambas la traen, y además el tema. En razonamiento verbal no se
+junta nada: sus enunciados son fórmulas que se repiten sobre textos distintos.
+En 2019-2027 cada día de examen es un examen distinto, así que casi no hay repetidas.
 """
 import csv, json, re, sys, unicodedata
 from collections import Counter, defaultdict
@@ -36,34 +37,72 @@ for p in sorted(d.glob("*.jsonl")):
         if r.get("curso") not in CURSOS: malas += 1; continue
         r["numero"] = int(r.get("numero") or 0)
         r["id"] = f'{r.get("archivo","")}#{r["numero"]}'
+        u = r.get("unidad", "")
+        if u.startswith("fuera-del-catalogo:"): r["unidad"] = "fuera-del-catalogo:" + u.split(":", 1)[1].replace("-", " ").strip().lower()
         filas.append(r)
 
-# Una misma pregunta clasificada dos veces en el mismo archivo (p. ej. dos agentes): se queda la primera.
-vistas, tmp = set(), []
+# Las «preguntas adicionales» de otra área, al final de algunos solucionarios, reusan números:
+# si el número ya existe en ese archivo con otro enunciado, el id lleva sufijo «b».
+# Si el enunciado es el mismo, es la misma pregunta registrada dos veces y se queda la primera.
+vistas, tmp = {}, []
 for r in filas:
     k = (r["id"], r["curso"])
-    if k in vistas: continue
-    vistas.add(k); tmp.append(r)
+    if k in vistas:
+        if vistas[k] == r.get("inicio", ""): continue
+        r["id"] += "b"; k = (r["id"], r["curso"])
+    vistas[k] = r.get("inicio", ""); tmp.append(r)
 filas = tmp
+
+# Familias de tema: los clasificadores escriben etiquetas finas («Certezas con suma»,
+# «Certezas (peor caso)»); para contar periodos se juntan en familias con reglas fijas.
+FAMILIAS = {
+    "razonamiento-verbal": [
+        (r"a/b", "Textos A/B (dos autores)"), (r"ingl", "Lectura en inglés"),
+        (r"mixto|discontinu|infograf", "Texto mixto o discontinuo"), (r".", "Texto continuo (argumentativo, científico, filosófico)")],
+    "razonamiento-matematico": [
+        (r"flujo", "Diagramas de flujo"), (r"trasvase|recipientes", "Trasvases"),
+        (r"agujas|reloj|hora|campanada|adelant|atras", "Relojes"), (r"calendar|semana|fecha|d[ií]as", "Calendarios"),
+        (r"pesad|pesas|balanza", "Balanzas y pesadas"), (r"corte|estaca|guillotina", "Cortes y estacas"),
+        (r"certeza|palomar|llaves", "Certezas"), (r"verdad|mentir|veraces|r[óo]tulos|mal rotuladas", "Verdades y mentiras"),
+        (r"deportiv|goles|torneo|campeonato", "Situaciones deportivas"), (r"doble entrada|cuadro latino", "Cuadro de doble entrada"),
+        (r"ordenamiento|parentesco", "Ordenamiento y parentesco"), (r"rumbo|cardinal|avance", "Rumbos y desplazamientos"),
+        (r"euler|un solo trazo|repetir tramo|calles a repetir", "Trazos de un solo golpe"),
+        (r"lectura.*palabra|palabras en arreglo", "Lectura de palabras en arreglos"),
+        (r"ruta|camino|recorrido m[ií]nimo|hormiga", "Rutas y caminos mínimos"),
+        (r"rodamiento|rueda|engranaje|polea|vueltas", "Rodamientos, ruedas y poleas"),
+        (r"dado|domin", "Dados y dominó"), (r"cubo|s[óo]lido|proyecci|vista", "Cubos, sólidos y vistas"),
+        (r"papel|doblad", "Papel doblado y cortado"), (r"simetr|giro|rotaci|volteo|superposici", "Simetrías y giros"),
+        (r"pastilla|peri[óo]dic|ciclo|sucesos", "Frecuencia de sucesos"), (r"traslado|fichas|tablero|caballo|latas", "Traslados de fichas y juegos"),
+        (r"conteo de (cuadr|tri[áa]ng|figur|casillas)", "Conteo de figuras"),
+        (r"inducci|serie|sucesi|espiral|pir[áa]mide", "Inducción y series"),
+        (r"m[áa]gico|arreglo|distribuci|sumas", "Arreglos numéricos"), (r"gr[áa]fic|tabla|suficiencia|sectores|barras", "Tablas, gráficos y suficiencia"),
+        (r"m[áa]xim|m[ií]nim|optimiz|empaquet", "Máximos y mínimos"), (r"per[ií]metro|[áa]rea|semejanza|disecci|partici", "Perímetros, áreas y particiones"),
+        (r".", "Planteo y otros")],
+}
+def familia(r):
+    reglas = FAMILIAS.get(r["curso"])
+    if not reglas: return r.get("tema", "?")
+    t = (r.get("tema", "") or "").lower()
+    return next(f for pat, f in reglas if re.search(pat, t))
 
 def norm(s):
     s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
     return " ".join(re.findall(r"[a-z0-9]{2,}", s)[:8])
 
-GENERICO = re.compile(r"^(halle|calcule|determine|indique|senale|cual|segun|el texto|en el texto|del texto|si|se|la|el|los|las)\b")
 vistos = {}
 for r in sorted(filas, key=lambda r: (r["periodo"], r["archivo"], r["numero"])):
     n = norm(r.get("inicio", ""))
     r["repetida_de"] = ""
-    if len(n.split()) < 6: continue
-    k = (r["curso"], r["periodo"], n)
-    if GENERICO.match(n): k += (r.get("tema", ""),)
+    # En verbal los enunciados son fórmulas («Según el texto…») sobre textos distintos: no se junta.
+    if len(n.split()) < 6 or r["curso"] == "razonamiento-verbal": continue
+    k = (r["curso"], r["periodo"], n, r.get("tema", ""))
     previo = vistos.get(k)
     if previo and (not r.get("clave") or not previo.get("clave") or r["clave"] == previo["clave"]):
         r["repetida_de"] = previo["id"]
     else:
         vistos.setdefault(k, r)
 unicas = [r for r in filas if not r["repetida_de"]]
+for r in filas: r["familia"] = familia(r)
 
 def pct(a, b): return f"{100*a/b:.0f} %" if b else "—"
 out = []
@@ -90,8 +129,19 @@ for c in CURSOS:
     u = [r for r in unicas if r["curso"] == c]
     if not u: continue
     w(f"\n## {NOMBRE[c]} ({len(u)} distintas)\n")
+    w("Por unidad del catálogo:\n")
+    w("| Unidad | Preguntas | Periodos (de 14) | Sí / medio / no | Módulos que la cubren |")
+    w("| --- | --- | --- | --- | --- |")
+    por_uni = defaultdict(list)
+    for r in u: por_uni[r.get("unidad", "?")].append(r)
+    for un, rs in sorted(por_uni.items(), key=lambda kv: (-len(kv[1]), kv[0])):
+        cob = Counter(r.get("cobertura", "no") for r in rs)
+        mods = Counter(r.get("modulo", "") for r in rs if r.get("modulo"))
+        w(f'| {un} | {len(rs)} | {len({r["periodo"] for r in rs})} | {cob["si"]} / {cob["medio"]} / {cob["no"]} | '
+          f'{", ".join(m for m, _ in mods.most_common(3)) or "—"} |')
+    w("\nPor tema (en razonamiento matemático y verbal, por familia de temas):\n")
     por_tema = defaultdict(list)
-    for r in u: por_tema[r.get("tema", "?")].append(r)
+    for r in u: por_tema[familia(r)].append(r)
     w("| Tema | Preguntas | Periodos (de 14) | Unidad | Módulo más usado | Sí / medio / no |")
     w("| --- | --- | --- | --- | --- | --- |")
     for t, rs in sorted(por_tema.items(), key=lambda kv: (-len({r["periodo"] for r in kv[1]}), -len(kv[1]), kv[0])):
@@ -118,6 +168,21 @@ for i, h in enumerate(sorted(huecos, key=lambda h: (-h[0], -h[1])), 1):
     per, flojas, cu, t, uni, no, me, falta = h
     w(f"| {i} | {cu} | {t} | {per} | {flojas} ({no} + {me}) | {uni} | {falta} |")
 
+w("\n## Huecos por unidad: preguntas sin cubrir del todo (no + medio)\n")
+w("| # | Curso | Unidad | Sin cubrir | De | Periodos con alguna sin cubrir | Lo que más falta |")
+w("| --- | --- | --- | --- | --- | --- | --- |")
+pu = defaultdict(list)
+for r in unicas: pu[(r["curso"], r.get("unidad", "?"))].append(r)
+filas_h = []
+for (c, un), rs in pu.items():
+    fl = [r for r in rs if r.get("cobertura") in ("no", "medio")]
+    if len(fl) < 3: continue
+    fam = Counter(familia(r) for r in fl).most_common(3)
+    filas_h.append((len(fl), len({r["periodo"] for r in fl}), NOMBRE[c], un, len(rs),
+                    "; ".join(f"{t} ({n})" for t, n in fam)))
+for i, (n, per, cu, un, tot_u, fam) in enumerate(sorted(filas_h, key=lambda h: (-h[0], -h[1])), 1):
+    w(f"| {i} | {cu} | {un} | {n} | {tot_u} | {per} | {fam} |")
+
 w("\n## Preguntas por examen (registradas, con repetidas)\n")
 por = defaultdict(Counter)
 for r in filas: por[(r["periodo"], r["archivo"])][r["curso"]] += 1
@@ -130,7 +195,7 @@ texto = "\n".join(out)
 print(texto)
 if md: md.write_text(texto + "\n", encoding="utf-8")
 
-campos = ["id", "periodo", "archivo", "numero", "pagina", "curso", "unidad", "tema", "titular", "tipo",
+campos = ["id", "periodo", "archivo", "numero", "pagina", "curso", "unidad", "familia", "tema", "titular", "tipo",
           "figura", "visual", "modulo", "cobertura", "falta", "resumen", "clave", "trampa", "ocr",
           "repetida_de", "nota"]
 with salida.open("w", newline="", encoding="utf-8") as f:
