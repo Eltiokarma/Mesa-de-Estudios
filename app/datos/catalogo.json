@@ -118,7 +118,8 @@
       "circular-enesimo-segundo",
       "circular-encuentros",
       "circular-mcu",
-      "circular-horaria"
+      "circular-horaria",
+      "circular-grafica"
      ]
     },
     {
@@ -4586,6 +4587,21 @@
    "papel": null,
    "archivos": [
     "/plantillas/circular-enesimo-segundo/generador.js"
+   ]
+  },
+  "circular-grafica": {
+   "id": "circular-grafica",
+   "titulo": "El área bajo la gráfica ω-t",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "#/practica/circular-grafica",
+   "papel": null,
+   "archivos": [
+    "/plantillas/circular-grafica/generador.js"
    ]
   },
   "circular-horaria": {

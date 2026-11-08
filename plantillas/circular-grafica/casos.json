@@ -1,0 +1,321 @@
+{
+  "plantilla": "circular-grafica",
+  "tolerancia": 0.000001,
+  "nota": "puntos = [[t (s), ω]], unidos por rectas; ω en rad/s, o en múltiplos de π rad/s si pi es true (entonces se piden vueltas). Positiva en sentido antihorario. «neto» va con signo; lo demás, sin signo.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: integró cada tramo lineal en exacto, cortándolo donde cruza el eje, para el desplazamiento con signo y para lo recorrido. Coinciden las 11; en las semillas 200 a 229, todas las áreas y los distractores bien.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "recorrido",
+        "pi": false,
+        "puntos": [
+          [
+            0,
+            2
+          ],
+          [
+            3,
+            -1
+          ],
+          [
+            4,
+            -7
+          ],
+          [
+            5,
+            -7
+          ]
+        ],
+        "t1": 0,
+        "t2": 5
+      },
+      "esperado": {
+        "respuesta": 13.5,
+        "exacta": "13,5 rad"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "recorrido",
+        "pi": false,
+        "puntos": [
+          [
+            0,
+            -3
+          ],
+          [
+            3,
+            -4
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            8,
+            -3
+          ]
+        ],
+        "t1": 6,
+        "t2": 8
+      },
+      "esperado": {
+        "respuesta": 5.800000000000001,
+        "exacta": "5,8 rad"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "recorrido",
+        "pi": false,
+        "puntos": [
+          [
+            0,
+            -6
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            7,
+            -2
+          ]
+        ],
+        "t1": 0,
+        "t2": 2
+      },
+      "esperado": {
+        "respuesta": 5.199999999999999,
+        "exacta": "5,2 rad"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "angulo",
+        "pi": false,
+        "puntos": [
+          [
+            0,
+            5
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            3,
+            1
+          ]
+        ],
+        "t1": 2,
+        "t2": 3
+      },
+      "esperado": {
+        "respuesta": 2.5,
+        "exacta": "2,5 rad"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "neto",
+        "pi": false,
+        "puntos": [
+          [
+            0,
+            -7
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            3,
+            -3
+          ]
+        ],
+        "t1": 0,
+        "t2": 3
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 rad"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "neto",
+        "pi": false,
+        "puntos": [
+          [
+            0,
+            8
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            7,
+            -8
+          ]
+        ],
+        "t1": 0,
+        "t2": 7
+      },
+      "esperado": {
+        "respuesta": 18,
+        "exacta": "18 rad"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "vueltas",
+        "pi": true,
+        "puntos": [
+          [
+            0,
+            -4
+          ],
+          [
+            1,
+            -2
+          ],
+          [
+            4,
+            3
+          ]
+        ],
+        "t1": 1,
+        "t2": 4
+      },
+      "esperado": {
+        "respuesta": 1.95,
+        "exacta": "1,95 vueltas"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "neto",
+        "pi": false,
+        "puntos": [
+          [
+            0,
+            2
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            6,
+            -3
+          ]
+        ],
+        "t1": 0,
+        "t2": 6
+      },
+      "esperado": {
+        "respuesta": 19.5,
+        "exacta": "19,5 rad"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "vueltas",
+        "pi": true,
+        "puntos": [
+          [
+            0,
+            6
+          ],
+          [
+            4,
+            0
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            9,
+            -4
+          ]
+        ],
+        "t1": 0,
+        "t2": 9
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15 vueltas"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "angulo",
+        "pi": false,
+        "puntos": [
+          [
+            0,
+            6
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "t1": 0,
+        "t2": 2
+      },
+      "esperado": {
+        "respuesta": 9,
+        "exacta": "9 rad"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "angulo",
+        "pi": false,
+        "puntos": [
+          [
+            0,
+            4
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            5,
+            2
+          ]
+        ],
+        "t1": 0,
+        "t2": 5
+      },
+      "esperado": {
+        "respuesta": 25.5,
+        "exacta": "25,5 rad"
+      }
+    }
+  ]
+}
