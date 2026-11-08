@@ -60,10 +60,10 @@
     {
       "id": "p6",
       "nivel": "avanzado",
-      "enunciado": "En un centro de salud se atendió a 360 pacientes. El 41,6̅ % eran varones; de los varones, el 33,3̅ % llegó con fiebre; y del total de pacientes, el 27,7̅ % llegó con fiebre. ¿Cuántas mujeres llegaron sin fiebre?",
+      "enunciado": "En un centro de salud se atendió a 360 pacientes. El 41,666… % eran varones; de los varones, el 33,333… % llegó con fiebre; y del total de pacientes, el 27,777… % llegó con fiebre. ¿Cuántas mujeres llegaron sin fiebre?",
       "respuesta": "160.",
       "pasos": [
-        "Los periódicos a fracción: 41,6̅ % = 5/12; 33,3̅ % = 1/3; 27,7̅ % = 5/18.",
+        "Los periódicos a fracción: 41,666… % = 5/12; 33,333… % = 1/3; 27,777… % = 5/18.",
         "Varones: 5/12 de 360 = 150; varones con fiebre: 1/3 de 150 = 50. Mujeres: 360 − 150 = 210.",
         "Con fiebre en total: 5/18 de 360 = 100, así que mujeres con fiebre: 100 − 50 = 50. Mujeres sin fiebre: 210 − 50 = 160."
       ]

@@ -219,7 +219,7 @@ test('los datos son creíbles', () => {
     if (d.tipo === 'dimensiones') assert.ok(r > -100 && r !== 0, `${p.id}: ${r} %`);
     if (d.tipo === 'llegadas' && d.sub === 'sucesivas') assert.ok(Math.max(d.c, d.d, d.e, d.f) <= 12);
     if (d.tipo === 'extracciones' && d.sub === 'sucesivas') assert.ok(d.V <= 400 && p.respuesta.valor > 0);
-    if (d.tipo === 'doble-entrada' && d.sub === 'carroll') assert.ok(/̅/.test(JSON.stringify(p.enunciado)), `${p.id}: Carroll sin periódico`);
+    if (d.tipo === 'doble-entrada' && d.sub === 'carroll') assert.ok(/…/.test(JSON.stringify(p.enunciado)), `${p.id}: Carroll sin periódico`);
   }
 });
 
@@ -237,10 +237,11 @@ test('ningún texto trae «undefined», «NaN», «−−» ni un guion como sig
 });
 
 test('porcentajes periódicos bien escritos', () => {
-  assert.equal(gen._pctPeriodico({ n: 5, d: 12 }), '41,6̅ %');
-  assert.equal(gen._pctPeriodico({ n: 1, d: 3 }), '33,3̅ %');
-  assert.equal(gen._pctPeriodico({ n: 5, d: 18 }), '27,7̅ %');
+  assert.equal(gen._pctPeriodico({ n: 5, d: 12 }), '41,666… %');
+  assert.equal(gen._pctPeriodico({ n: 1, d: 3 }), '33,333… %');
+  assert.equal(gen._pctPeriodico({ n: 5, d: 18 }), '27,777… %');
   assert.equal(gen._pctPeriodico({ n: 3, d: 8 }), '37,5 %');
+  assert.equal(gen._pctPeriodico({ n: 3, d: 11 }), '27,2727… %');
   assert.equal(gen._pctPeriodico({ n: 1, d: 4 }), '25 %');
 });
 

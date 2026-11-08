@@ -4,7 +4,7 @@
  * (window.Generadores['fracciones-problemas']) y en Node (require). No usa ningún motor.
  *
  * Tipos (entre paréntesis, la fila que cubre, por su campo «falta»):
- *   acotada       fracciones irreductibles n/(n + k) entre dos cotas: cuántas hay
+ *   acotada       fracciones irreducibles n/(n + k) entre dos cotas: cuántas hay
  *                 (condiciones sobre fracciones con parámetro entero y acotación)
  *   pesi          dos números con su diferencia y su MCM: A = d·p, B = d·q con p y q PESI; se pide A + B
  *                 (propiedades MCD·cocientes PESI para reconstruir dos números)
@@ -17,15 +17,15 @@
  *                 (contar fracciones equivalentes con restricciones de divisibilidad)
  *   trabajo       una bomba llena una fracción y luego su rendimiento disminuye en a/b: tiempo total
  *                 (trabajo con rendimiento que cambia a mitad de la tarea)
- *   diferencia    sub suma: fracción propia irreductible con suma de términos dada y la menor
+ *   diferencia    sub suma: fracción propia irreducible con suma de términos dada y la menor
  *                 diferencia; sub producto: lo mismo con el producto de los términos
- *                 (elegir la fracción irreductible que minimiza una diferencia)
- *   formar        con cuatro números, todas las fracciones propias irreductibles y su producto
- *                 (formar fracciones propias irreductibles a partir de un conjunto de números)
+ *                 (elegir la fracción irreducible que minimiza una diferencia)
+ *   formar        con cuatro números, todas las fracciones propias irreducibles y su producto
+ *                 (formar fracciones propias irreducibles a partir de un conjunto de números)
  *   periodo       sub ultimas: las dos últimas cifras del periodo de a/p, p primo, sin dividir;
  *                 sub lugar: la cifra del lugar k de un periódico puro
  *                 (cifras del periodo de un decimal sin dividir completamente)
- *   suma-entera   a/d y b/d impropias irreductibles con suma entera: cuántos pares (a; b)
+ *   suma-entera   a/d y b/d impropias irreducibles con suma entera: cuántos pares (a; b)
  *                 (condiciones sobre fracciones con suma entera y denominadores comunes)
  *   tipo-decimal  sub factorial: N/k!; sub producto: N/D con un factor común escondido; cuántas
  *                 cifras no periódicas y periódicas (relación entre factores del denominador y tipo
@@ -90,7 +90,7 @@
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
-  const SUBS = { equivalentes: ['den', 'den', 'suma'], diferencia: ['suma', 'producto'], periodo: ['ultimas', 'lugar'], 'tipo-decimal': ['factorial', 'producto'] };
+  const SUBS = { equivalentes: ['den', 'den', 'suma'], diferencia: ['suma', 'producto', 'producto'], periodo: ['ultimas', 'lugar'], 'tipo-decimal': ['factorial', 'producto'] };
   function construir(rng, semilla, tipo, sub) {
     const f = { acotada, pesi, porcentaje, stock, equivalentes, trabajo, diferencia, formar, periodo,
       'suma-entera': sumaEntera, 'tipo-decimal': tipoDecimal, 'pg-mcd': pgMcd, euclides }[tipo];
@@ -125,7 +125,7 @@
     return { quitar: total, partes };
   }
 
-  // ---- acotada: n/(n + k) irreductibles entre dos cotas ----
+  // ---- acotada: n/(n + k) irreducibles entre dos cotas ----
   function acotada(rng, semilla) {
     const k = rng.elegir([6, 10, 12, 14, 15, 18, 20, 21, 24, 28, 30]);
     const COT = [[1, 4], [1, 3], [2, 5], [1, 2], [3, 5], [2, 3], [3, 4], [4, 5], [5, 6]];
@@ -141,18 +141,18 @@
     const variables = { f: { nombre: `fracción n/(n + ${k})`, color: 'o' }, c1: { nombre: 'cota inferior', color: 'i' }, c2: { nombre: 'cota superior', color: 'h' }, x: { nombre: 'cantidad de fracciones', color: 'd' } };
     const forma = `n/(n + ${k})`;
     const enunciado = ['Se consideran las fracciones de la forma ', v('f', forma), ', donde n es un entero positivo.'];
-    const pregunta = ['¿Cuántas de ellas son irreductibles y, a la vez, mayores que ', v('c1', `${p1}/${q1}`), ' y menores que ', v('c2', `${p2}/${q2}`), '?'];
+    const pregunta = ['¿Cuántas de ellas son irreducibles y, a la vez, mayores que ', v('c1', `${p1}/${q1}`), ' y menores que ', v('c2', `${p2}/${q2}`), '?'];
     let nr = lo; while (mcd(nr, k) === 1) nr++;
     const errores = [
-      e('cuenta-reducibles', T, `Contaste los ${T} valores de n, también los que hacen reducible la fracción. Por ejemplo, n = ${nr} da ${nr}/${nr + k}, que se simplifica entre ${mcd(nr, k)}. Se piden solo las irreductibles.`),
+      e('cuenta-reducibles', T, `Contaste los ${T} valores de n, también los que hacen reducible la fracción. Por ejemplo, n = ${nr} da ${nr}/${nr + k}, que se simplifica entre ${mcd(nr, k)}. Se piden solo las irreducibles.`),
     ];
     for (const p of ps) {
       const cnt = T - multiplos(lo, hi, p);
-      errores.push(e('quita-un-solo-primo', cnt, `Quitaste solo los múltiplos de ${p}. Como ${k} = ${factorizar(k)}, la fracción también se simplifica cuando n es múltiplo de ${ps.filter(x => x !== p).join(' o de ')}.`));
+      errores.push(e(`quita-solo-multiplos-de-${p}`, cnt, `Quitaste solo los múltiplos de ${p}. Como ${k} = ${factorizar(k)}, la fracción también se simplifica cuando n es múltiplo de ${ps.filter(x => x !== p).join(' o de ')}.`));
     }
     const sinIE = T - ps.reduce((s, p) => s + multiplos(lo, hi, p), 0);
     errores.push(e('sin-inclusion-exclusion', sinIE, `Quitaste los múltiplos de cada primo de ${k} por separado, y los que son múltiplos de dos de ellos a la vez (de ${ps[0] * ps[1]}, por ejemplo) los quitaste dos veces. Hay que devolverlos una vez.`));
-    errores.push(e('cuenta-las-reducibles', T - C, `Ese número es el de las fracciones que se simplifican. Se piden las irreductibles: las que quedan al quitar esas de los ${T} valores de n.`));
+    errores.push(e('cuenta-las-reducibles', T - C, `Ese número es el de las fracciones que se simplifican. Se piden las irreducibles: las que quedan al quitar esas de los ${T} valores de n.`));
     const cota = (p, q) => { const fr = P.frac(p * k, q - p); return P.textoFraccion(fr) + (fr.d === 1 ? '' : ` = ${F(fr.n / fr.d)}`); };
     const ineq = (p, q, sg) => `${q}n ${sg} ${p === 1 ? `n + ${k}` : `${p}(n + ${k})`}` + (q - p === 1 ? '' : ` ⇔ ${q - p}n ${sg} ${p * k}`) + ` ⇔ n ${sg} ${cota(p, q)}`;
     const ieTxt = partes.map((x, idx) => `${idx === 0 ? '' : x.signo > 0 ? ' + ' : ' − '}${x.c}`).join('') + (partes.length > 1 ? ` = ${quitar}` : '');
@@ -197,12 +197,12 @@
     const errores = [
       e('cocientes-sin-el-mcd', p + q, `Sumaste los cocientes p = ${p} y q = ${q}. Los números son d·p y d·q: falta multiplicar por el MCD, d = ${d}.`),
     ];
-    for (const t of ternas(D, M, false)) errores.push(e('cocientes-no-pesi', t.d * (t.p + t.q), `Tomaste p = ${t.p} y q = ${t.q}, que no son primos entre sí. Con ellos el MCD de ${t.d * t.p} y ${t.d * t.q} no es ${t.d}, y su MCM no es ${M}: compruébalo.`));
+    for (const t of ternas(D, M, false)) if (t.d * (t.p + t.q) !== A && t.d * (t.p + t.q) !== B) errores.push(e('cocientes-no-pesi', t.d * (t.p + t.q), `Tomaste p = ${t.p} y q = ${t.q}, que no son primos entre sí. Con ellos el MCD de ${t.d * t.p} y ${t.d * t.q} no es ${t.d}, y su MCM no es ${M}: compruébalo.`));
     const disc = D * D + 4 * M, r = Math.round(Math.sqrt(disc));
     if (r * r === disc && (r - D) % 2 === 0) { const b = (r - D) / 2; errores.push(e('mcm-como-producto', 2 * b + D, `Tomaste el MCM como si fuera el producto de los dos números. Eso solo pasa si son primos entre sí; aquí ${b}·${b + D} = ${M}, pero el MCM de ${b} y ${b + D} no es ${M}.`)); }
-    errores.push(e('AR5-responde-el-mayor', A, `${A} es el mayor de los dos números. Se pide la suma de los dos: ${A} + ${B}.`));
-    errores.push(e('AR5-responde-el-menor', B, `${B} es el menor de los dos números. Se pide la suma de los dos: ${A} + ${B}.`));
-    errores.push(e('diferencia-por-mcm', D + M, 'Sumaste la diferencia y el MCM. Esos son datos; los números salen de escribirlos como d·p y d·q.'));
+    errores.push(e('responde-un-numero-mayor', A, `${A} es el mayor de los dos números. Se pide la suma de los dos: ${A} + ${B}.`));
+    errores.push(e('responde-un-numero-menor', B, `${B} es el menor de los dos números. Se pide la suma de los dos: ${A} + ${B}.`));
+    errores.push(e('suma-diferencia-y-mcm', D + M, 'Sumaste la diferencia y el MCM. Esos son datos; los números salen de escribirlos como d·p y d·q.'));
     const solucion = [
       ['Sea ', v('d', 'd'), ' el MCD: los números son d·p y d·q, con p > q primos entre sí. Entonces ', v('D', `d·(p − q) = ${D}`), ' y ', v('M', `d·p·q = ${M}`), '.'],
       ['Como p − q y p·q no tienen factores comunes (p y q son PESI), ', v('d', 'd'), ` = MCD(${D}; ${M}) = `, v('d', `${d}`), '.'],
@@ -224,7 +224,7 @@
     const todo = Number(`${des.ent}${des.ante}${des.per}`), sinPer = Number(`${des.ent}${des.ante}`);
     const den = '9'.repeat(des.per.length) + '0'.repeat(des.ante.length);
     const num = todo - sinPer;
-    return `${conPuntos(des)} = (${todo} − ${sinPer})/${den} = ${num}/${den} = ${fracTxt(num, Number(den))}; dividido entre 100: ${fracTxt(n, d)}`;
+    return `${conPuntos(des)} = (${todo} − ${sinPer})/${den} = ${num}/${den}${fracTxt(num, Number(den)) === `${num}/${den}` ? '' : ` = ${fracTxt(num, Number(den))}`}; dividido entre 100: ${fracTxt(n, d)}`;
   }
   const FR_PER = [[1, 3], [2, 3], [1, 6], [5, 6], [1, 9], [2, 9], [4, 9], [1, 12], [5, 12], [7, 12], [1, 11], [2, 11], [3, 11], [1, 15], [2, 15], [4, 15], [1, 18], [5, 18]];
 
@@ -238,7 +238,8 @@
     if (!Number.isInteger(g1) || !Number.isInteger(g2)) return null;
     const p1 = porcentajeTxt(n1, d1).texto, p2 = porcentajeTxt(n2, d2).texto;
     const quien = rng.elegir([['Rosa', 'su gratificación'], ['Don Julio', 'lo que ganó en la feria'], ['Carmen', 'su sueldo'], ['Wilber', 'sus ahorros']]);
-    const gastos = rng.elegir([['ropa', 'útiles'], ['el alquiler', 'el mercado'], ['pasajes', 'comida'], ['un celular', 'regalos']]);
+    const par = rng.elegir([['ropa', 'útiles'], ['el alquiler', 'el mercado'], ['un celular', 'pasajes'], ['la matrícula', 'regalos']]);
+    const gastos = g1 >= g2 ? par : [par[1], par[0]];       // el rubro grande va con el gasto grande
     const variables = { g1: { nombre: 'primer porcentaje', color: 'o' }, g2: { nombre: 'segundo porcentaje', color: 'i' }, R: { nombre: 'lo que quedó', color: 'h' }, X: { nombre: 'dinero inicial', color: 'd' } };
     const enunciado = [`${quien[0]} gastó el `, v('g1', p1), ` de ${quien[1]} en ${gastos[0]} y luego el `, v('g2', p2), ` de lo que le quedaba en ${gastos[1]}. Al final le quedaron `, v('R', `S/ ${F(R)}`), '.'];
     const pregunta = ['¿Cuánto ', v('X', 'dinero tenía al inicio'), '?'];
@@ -256,7 +257,7 @@
       [`Al final queda ${fracTxt(d1 - n1, d1)} · ${fracTxt(d2 - n2, d2)} = ${fracTxt((d1 - n1) * (d2 - n2), d1 * d2)} del dinero inicial: `, v('X', 'X'), ` · ${fracTxt((d1 - n1) * (d2 - n2), d1 * d2)} = `, v('R', F(R)), '.'],
       [v('X', 'X'), ` = ${F(R)} ÷ ${fracTxt((d1 - n1) * (d2 - n2), d1 * d2)} = `, v('X', `S/ ${F(X)}`), `. Comprobación: gasta ${F(g1)}, quedan ${F(resto)}; gasta ${F(g2)}, quedan ${F(R)}.`],
     ];
-    return cerrar(rng, semilla, { correcta: X, errores, texto: x => `S/ ${F(x)}`, unidad: 'S/', variables, enunciado, pregunta, solucion,
+    return cerrar(rng, semilla, { correcta: X, errores: errores.filter(x => Number.isInteger(Math.round(x.valor * 1e6) / 1e6)), texto: x => `S/ ${F(x)}`, unidad: 'S/', variables, enunciado, pregunta, solucion,
       datos: { tipo: 'porcentaje', f1: [n1, d1], f2: [n2, d2], p1, p2, R } });
   }
 
@@ -270,8 +271,8 @@
     const topeC = Math.floor((C * fd - 1) / fn);     // N·fn < C·fd
     const Nstar0 = Math.floor(topeC / m) * m;
     if (Nstar0 < 2 * m || Nstar0 > 900) return null;
-    const H = Nstar0 + rng.entero(1, 3) * m + rng.entero(0, m - 1);
-    const L = Math.max(m, Nstar0 - rng.entero(2, 5) * m - rng.entero(0, m - 1));
+    const H = Math.ceil((Nstar0 + rng.entero(1, 3) * m + rng.entero(0, m - 1)) / 10) * 10;
+    const L = Math.max(10, Math.floor((Nstar0 - rng.entero(2, 5) * m - rng.entero(0, m - 1)) / 10) * 10);
     // El mayor N de [L; H] múltiplo de paso con N·num < cota (estricto o no).
     const mayor = (paso, num, den, cotaC, estricto) => { for (let N = Math.floor(H / paso) * paso; N >= L; N -= paso) { const ok = estricto ? N * num < cotaC * den : N * num <= cotaC * den; if (ok) return N; } return NaN; };
     const N = mayor(m, fn, fd, C, true);
@@ -283,7 +284,9 @@
     const pregunta = ['¿Cuántos ', v('N', `${prod[1]} tenía como máximo`), '?'];
     const errores = [];
     const l12 = mcm(b1, b2);
-    if (l12 !== m) errores.push(e('exige-multiplo-de-ambos', mayor(l12, fn, fd, C, true), `Pediste que el total sea múltiplo de ${b1} y de ${b2}. Pero ${a2}/${b2} se toma de lo que queda, ${b1 - a1}/${b1} del total: basta que el total sea múltiplo de ${m}.`));
+    if (l12 !== m) errores.push(e('exige-multiplo-de-ambos', mayor(l12, fn, fd, C, true), m > l12
+      ? `No alcanza con que sea múltiplo de ${b1} y de ${b2}: ${a2}/${b2} se toma de lo que queda, ${b1 - a1}/${b1} del total, y eso tiene que dar entero; el total debe ser múltiplo de ${m}.`
+      : `Pediste que el total sea múltiplo de ${b1} y de ${b2}. Pero ${a2}/${b2} se toma de lo que queda, ${b1 - a1}/${b1} del total: basta que el total sea múltiplo de ${m}.`));
     if (b1 * b2 !== m && b1 * b2 !== l12) errores.push(e('exige-multiplo-del-producto', mayor(b1 * b2, fn, fd, C, true), `Pediste que el total sea múltiplo de ${b1}·${b2} = ${b1 * b2}. Basta que salgan enteras las dos ventas: múltiplo de ${m}.`));
     if (b1 !== m) errores.push(e('solo-primera-venta', mayor(b1, fn, fd, C, true), `Solo cuidaste que la primera venta salga entera. La segunda, ${a2}/${b2} de lo que queda, también tiene que dar un número entero de ${prod[1]}.`));
     if (a1 * b2 + a2 * b1 < b1 * b2) errores.push(e('AR3-segunda-sobre-el-total', mayor(l12, b1 * b2 - a1 * b2 - a2 * b1, b1 * b2, C, true), `Tomaste ${a2}/${b2} del total. La segunda venta es de lo que le quedaba después de la primera.`, 'parcial'));
@@ -326,7 +329,7 @@
     errores.push(e('resta-entre-q', T - Math.floor(T / q), `Quitaste ${T}/${q} redondeado, como si exactamente una de cada ${q} se fuera. Hay que contar los múltiplos de ${q} entre ${kmin} y ${kmax}, que dependen de dónde empieza el rango.`));
     const expr = sub === 'den' ? `${b}k` : `${a}k + ${b}k = ${a + b}k`;
     const solucion = [
-      ['Como ', v('fr', `${a}/${b}`), ' es irreducible, sus equivalentes son ', v('k', `${a}k/${b}k`), ' con k entero positivo.'],
+      ['Como ', v('fr', `${a}/${b}`), ` es irreducible, sus equivalentes son ${a}k/${b}k con `, v('k', 'k'), ' entero positivo.'],
       [`${sub === 'den' ? 'Denominador' : 'Suma de términos'}: ${expr}, de tres cifras: 100 ≤ ${base}k ≤ 999 ⇒ k va de ${kmin} a ${kmax}: ${kmax} − ${kmin} + 1 = ${T} valores.`],
       [`El ${quien} es ${cond}k, y como ${cond} no es múltiplo de `, v('q', `${q}`), `, ${cond}k es múltiplo de ${q} solo cuando k lo es. Múltiplos de ${q} entre ${kmin} y ${kmax}: ${E}.`],
       ['Cumplen ', `${T} − ${E} = `, v('x', `${C}`), ' fracciones.'],
@@ -346,12 +349,12 @@
     if (!corto(total) || Math.abs(total * 4 - Math.round(total * 4)) > 1e-9 || total > 40) return null;
     const variables = { f: { nombre: 'fracción llenada', color: 'o' }, t1: { nombre: 'tiempo de la primera parte', color: 'i' }, r: { nombre: 'disminución del rendimiento', color: 'h' }, T: { nombre: 'tiempo total', color: 'd' } };
     const [obj, el, del] = rng.elegir([['un tanque', 'el tanque', 'del tanque'], ['un reservorio', 'el reservorio', 'del reservorio'], ['una cisterna', 'la cisterna', 'de la cisterna'], ['un tanque elevado', 'el tanque', 'del tanque']]);
-    const enunciado = ['Una bomba llena ', v('f', `${p}/${q}`), ` de ${obj} en `, v('t1', `${t1} ${t1 === 1 ? 'hora' : 'horas'}`), '. Desde ese momento su rendimiento disminuye en ', v('r', `${a}/${b}`), ', y así sigue hasta terminar.'];
+    const enunciado = ['Una bomba llena ', v('f', `${p}/${q}`), ` de ${obj} en `, v('t1', `${t1} ${t1 === 1 ? 'hora' : 'horas'}`), '. Desde ese momento su rendimiento disminuye en ', v('r', `${a}/${b}`), ' de lo que era, y así sigue hasta terminar.'];
     const pregunta = ['¿En cuántas horas se llena, ', v('T', 'en total'), `, ${el}?`];
     const base = t1 * (q - p) / p; // horas que faltarían con el rendimiento de antes
     const errores = [
       e('AR4-disminuye-en-como-queda-en', t1 + base * b / a, `Tomaste «disminuye en ${a}/${b}» como «queda en ${a}/${b}». Si disminuye en ${a}/${b}, la bomba trabaja con ${b - a}/${b} de su rendimiento.`, 'parcial'),
-      e('sin-cambio-de-rendimiento', t1 + base, 'Seguiste con el rendimiento de antes. Desde la mitad de la tarea la bomba llena menos por hora: tarda más.'),
+      e('sin-cambio-de-rendimiento', t1 + base, `Seguiste con el rendimiento de antes. Después de llenar ${p}/${q} la bomba llena menos por hora: tarda más.`),
       e('AR8-tiempo-directo', t1 + base * (b - a) / b, `Multiplicaste el tiempo por ${b - a}/${b}. Con menos rendimiento se tarda más: el tiempo se divide entre ${b - a}/${b} (es inversamente proporcional).`),
       e('AR5-solo-lo-que-falta', t2.n / t2.d, `Esas son solo las horas de la segunda parte. Se pide el tiempo total: hay que sumar las ${t1} primeras horas.`),
     ];
@@ -366,7 +369,7 @@
       datos: { tipo: 'trabajo', f: [p, q], t1, baja: [a, b] } });
   }
 
-  // ---- diferencia: la fracción propia irreductible con la menor diferencia de términos ----
+  // ---- diferencia: la fracción propia irreducible con la menor diferencia de términos ----
   function diferencia(rng, semilla, sub) {
     let pares;
     if (sub === 'suma') {
@@ -389,7 +392,7 @@
     const pregunta = ['De todas las que cumplen, ¿cuál es ', v('x', 'la que tiene la menor diferencia entre su denominador y su numerador'), '?'];
     const correcta = terminos(a, b);
     const errores = [
-      et('reducible-aceptada', terminos(ra, rb), `${ra}/${rb} tiene la diferencia más chica, pero no es irreducible: ${ra} y ${rb} se dividen entre ${g}.`),
+      et('reducible-aceptada', terminos(ra, rb), `${ra}/${rb} tiene la diferencia más pequeña, pero no es irreducible: ${ra} y ${rb} se dividen entre ${g}.`),
       et('simplifica-y-cambia-el-dato', terminos(ra / g, rb / g), `Simplificaste ${ra}/${rb} a ${ra / g}/${rb / g}, pero así sus términos ya no tienen ${sub === 'suma' ? 'suma' : 'producto'} ${S}.`),
       et('impropia', terminos(b, a), `${b}/${a} es impropia: el numerador es mayor que el denominador. Se pide una fracción propia.`),
       malas[1] ? et('reducible-aceptada', terminos(malas[1][0], malas[1][1]), `${malas[1][0]}/${malas[1][1]} no es irreducible: ${malas[1][0]} y ${malas[1][1]} se dividen entre ${mcd(malas[1][0], malas[1][1])}.`) : null,
@@ -409,7 +412,7 @@
       datos: { tipo: 'diferencia', sub, S } });
   }
 
-  // ---- formar: fracciones propias irreductibles con cuatro números ----
+  // ---- formar: fracciones propias irreducibles con cuatro números ----
   function formar(rng, semilla) {
     const set = new Set(); while (set.size < 4) set.add(rng.entero(2, 24));
     const ns = [...set].sort((x, y) => x - y);
@@ -420,11 +423,11 @@
     const [pn, pd] = prod(irr), [tn, td] = prod(prop);
     if (P.frac(pn, pd).d > 2000) return null;
     const variables = { n: { nombre: 'números dados', color: 'o' }, x: { nombre: 'producto de las fracciones', color: 'd' } };
-    const enunciado = ['Con los números ', v('n', ns.join(', ').replace(/, (\d+)$/, ' y $1')), ' se forman fracciones cuyo numerador y denominador son dos de ellos, distintos. Se toman todas las fracciones propias e irreductibles que se pueden formar.'];
+    const enunciado = ['Con los números ', v('n', ns.join(', ').replace(/, (\d+)$/, ' y $1')), ' se forman fracciones cuyo numerador y denominador son dos de ellos, distintos. Se toman todas las fracciones propias e irreducibles que se pueden formar.'];
     const pregunta = ['¿Cuál es el ', v('x', 'producto'), ' de esas fracciones?'];
     const correcta = numero(pn, pd);
     const errores = [
-      et('reducibles-incluidas', numero(tn, td), `Multiplicaste también ${red.map(([x, y]) => `${x}/${y}`).join(', ')}, que no ${red.length === 1 ? 'es irreducible' : 'son irreducibles'}. Se piden solo las irreductibles.`),
+      et('reducibles-incluidas', numero(tn, td), `Multiplicaste también ${red.map(([x, y]) => `${x}/${y}`).join(', ')}, que no ${red.length === 1 ? 'es irreducible' : 'son irreducibles'}. Se piden solo las irreducibles.`),
       et('impropias-incluidas', numero(1), 'Multiplicaste también las impropias (cada una es la inversa de una propia): así todo se cancela y sale 1. Se piden solo las propias.'),
       et('impropias-en-vez-de-propias', numero(pd, pn), 'Pusiste el número mayor arriba: esas son impropias. En una fracción propia el numerador es menor que el denominador.'),
     ];
@@ -498,7 +501,7 @@
       datos: { tipo: 'periodo', sub, a, q, k } });
   }
 
-  // ---- suma-entera: a/d + b/d entero, impropias irreductibles ----
+  // ---- suma-entera: a/d + b/d entero, impropias irreducibles ----
   function sumaEntera(rng, semilla) {
     const d = rng.elegir([6, 8, 9, 10, 12, 14, 15, 16, 18, 20]), m = rng.entero(3, 8), S = d * m;
     const as = []; for (let a = d + 1; 2 * a < S; a++) if (mcd(a, d) === 1) as.push(a);
@@ -506,7 +509,7 @@
     if (C < 3 || C > 20) return null;
     const todos = Math.ceil(S / 2) - 1 - d;
     const variables = { d: { nombre: 'denominador común', color: 'o' }, m: { nombre: 'suma de las fracciones', color: 'i' }, x: { nombre: 'cantidad de pares', color: 'd' } };
-    const enunciado = ['Las fracciones a/', v('d', `${d}`), ' y b/', v('d', `${d}`), ' son impropias e irreductibles, con a < b, y su suma es ', v('m', `${m}`), '.'];
+    const enunciado = ['Las fracciones a/', v('d', `${d}`), ' y b/', v('d', `${d}`), ' son impropias e irreducibles, con a < b, y su suma es ', v('m', `${m}`), '.'];
     const pregunta = ['¿Cuántos ', v('x', 'pares (a; b)'), ' son posibles?'];
     let propias = 0; for (let a = 1; 2 * a < S; a++) if (mcd(a, d) === 1) propias++;
     const errores = [
@@ -554,26 +557,27 @@
     const g = mcd(N, D), Dr = D / g;
     const real = partes(Dr), bruto = partes(D);
     if (real.m === 1 || real.ante === 0) return null;
-    const variables = { fr: { nombre: 'fracción dada', color: 'o' }, a: { nombre: 'cifras no periódicas', color: 'i' }, p: { nombre: 'cifras periódicas', color: 'h' }, x: { nombre: 'respuesta', color: 'd' } };
-    const enunciado = ['Se escribe como decimal la fracción ', v('fr', `${N}/${presentacion}`), '.'];
+    const variables = { fr: { nombre: 'fracción dada', color: 'o' }, a: { nombre: 'cifras no periódicas', color: 'i' }, p: { nombre: 'cifras periódicas', color: 'h' } };
+    const fracDada = sub === 'factorial' ? `${N}/(${presentacion})` : `${N}/${presentacion}`;
+    const enunciado = ['Se escribe como decimal la fracción ', v('fr', fracDada), '.'];
     const pregunta = ['¿Cuántas ', v('a', 'cifras no periódicas'), ' (después de la coma) y cuántas ', v('p', 'cifras periódicas'), ' tiene?'];
     const correcta = cuenta(real.ante, real.per);
     const sumaOrd = real.comps.reduce((s, c) => s + orden10(c), 0);
     const errores = [
-      g > 1 ? et('sin-simplificar', cuenta(bruto.ante, bruto.per), `Miraste el denominador sin simplificar. ${N} y ${presentacion} tienen factor común ${g}: primero se simplifica y luego se miran los factores.`) : null,
+      g > 1 ? et('sin-simplificar', cuenta(bruto.ante, bruto.per), `Miraste el denominador sin simplificar. ${N} y ${sub === 'factorial' ? presentacion + ' = ' + D : presentacion} tienen factor común ${g}: primero se simplifica y luego se miran los factores.`) : null,
       real.x > 0 && real.y > 0 ? et('suma-exponentes', cuenta(real.x + real.y, real.per), `Sumaste los exponentes del 2 y del 5. Las cifras no periódicas son el mayor de los dos exponentes: con 2${sup(real.x)}·5${sup(real.y)} se completa 10${sup(real.ante)}.`) : null,
       real.x > 0 && real.y > 0 && Math.min(real.x, real.y) > 0 && real.x !== real.y ? et('ante-menor-exponente', cuenta(Math.min(real.x, real.y), real.per), `Tomaste el menor exponente. Hace falta el mayor de los exponentes del 2 y del 5 para que 10ⁿ se divida entre ellos.`) : null,
       et('puro-por-mixto', cuenta(0, real.per), `Lo tomaste como periódico puro. El denominador simplificado tiene factor ${real.x ? 2 : 5}: el decimal es periódico mixto y tiene cifras no periódicas.`),
       real.comps.length > 1 ? et('periodo-suma', cuenta(real.ante, sumaOrd), `Sumaste las cifras del periodo de cada factor. El periodo de todo es el MCM de esas cantidades, no su suma.`) : null,
-      real.comps.length === 1 && primos(real.m).length === 1 && real.m === primos(real.m)[0] && real.m - 1 !== real.per ? et('periodo-p-menos-1', cuenta(real.ante, real.m - 1), `Diste ${real.m} − 1 cifras al periodo. Ese es el máximo posible; el periodo de 1/${real.m} es el menor número de nueves (99…9) que se divide entre ${real.m}: ${real.per}.`) : null,
+      real.comps.length === 1 && primos(real.m).length === 1 && real.m === primos(real.m)[0] && real.m - 1 !== real.per ? et('periodo-p-menos-1', cuenta(real.ante, real.m - 1), `Diste ${real.m} − 1 cifras al periodo. Ese es el máximo posible; el periodo de 1/${real.m} tiene tantas cifras como nueves tiene el menor 99…9 que se divide entre ${real.m}: ${real.per}.`) : null,
       et('cambia-los-papeles', cuenta(real.per, real.ante), 'Cambiaste los papeles: las cifras no periódicas salen del 2 y del 5; las periódicas, de los otros factores.'),
     ];
     const ords = real.comps.map(c => `${c} → ${orden10(c)}`).join('; ');
     const solucion = [
-      g > 1 ? [`Primero se simplifica: MCD = ${g}, y `, v('fr', `${N}/${presentacion}`), ` = ${N / g}/${Dr}.`] : [v('fr', `${N}/${presentacion}`), ` ya es irreducible (denominador ${Dr}).`],
-      [`${Dr} = ${factorizar(Dr)}. Del 2 y del 5: el mayor exponente es ${real.ante}, y esas son las `, v('a', 'cifras no periódicas'), '.'],
-      [`Lo demás es ${real.m}${factorizar(real.m) === String(real.m) ? '' : ' = ' + factorizar(real.m)}. Cifras del periodo de cada parte (el menor 99…9 que se divide entre ella): ${ords}.${real.comps.length > 1 ? ` El MCM es ${real.per}.` : ''}`],
-      ['Tiene ', v('x', correcta.texto), `. Comprobación: ${N / g}/${Dr} = ${conPuntos(desarrollo(N / g, Dr))}`],
+      g > 1 ? [`Primero se simplifica: MCD = ${g}, y `, v('fr', fracDada), ` = ${N / g}/${Dr}.`] : [v('fr', fracDada), ` ya es irreducible (denominador ${Dr}).`],
+      [`${Dr} = ${factorizar(Dr)}. Del 2 y del 5: el mayor exponente es `, v('a', `${real.ante}`), ', y esas son las ', v('a', 'cifras no periódicas'), '.'],
+      [`Lo demás es ${real.m}${factorizar(real.m) === String(real.m) ? '' : ' = ' + factorizar(real.m)}. Cifras del periodo de cada parte (el menor 99…9 que se divide entre ella): ${ords}.${real.comps.length > 1 ? ` El MCM es ${real.per}.` : ''}`, ' Cifras periódicas: ', v('p', `${real.per}`), '.'],
+      ['Tiene ', v('a', real.ante === 1 ? '1 cifra no periódica' : `${real.ante} cifras no periódicas`), ' y ', v('p', plural(real.per, 'periódica')), `. Comprobación: ${N / g}/${Dr} = ${conPuntos(desarrollo(N / g, Dr))}`],
     ];
     return cerrar(rng, semilla, { textual: true, correcta, errores, variables, enunciado, pregunta, solucion,
       datos: { tipo: 'tipo-decimal', sub, N, D, presentacion } });
@@ -598,8 +602,8 @@
       e('mcm-por-mcd', mcm(a, c), `Ese es el MCM de ${a} y ${c}. Se pide el MCD, el mayor número que divide a los dos.`),
     ];
     const solucion = [
-      ['En una progresión geométrica a, ', v('m', 'm'), ', c se cumple a·c = m². Así el producto es m³: ', v('m', 'm'), ` = ∛${P.formatear(Pr)} = `, v('m', `${m}`), '.'],
-      [`a + c = ${S} − ${m} = ${a + c} y a·c = ${m}² = ${m * m}: dos números que suman ${a + c} y multiplican ${m * m}: ${a} y ${c}.`],
+      ['En una progresión geométrica a, ', v('m', 'm'), ', c se cumple a·c = m². Así el producto es m³: ', v('m', 'm'), ' = ∛', v('P', P.formatear(Pr)), ' = ', v('m', `${m}`), '.'],
+      ['a + c = ', v('S', `${S}`), ' − ', v('m', `${m}`), ` = ${a + c} y a·c = ${m}² = ${m * m}: dos números que suman ${a + c} y multiplican ${m * m}: ${a} y ${c}.`],
       [`Las edades son ${a}, ${m} y ${c} (razón ${p}/${q}). ${a} = ${factorizar(a)} y ${c} = ${factorizar(c)}.`],
       [v('x', 'MCD'), `(${a}; ${c}) = `, v('x', `${mcd(a, c)}`), '.'],
     ];
@@ -635,7 +639,7 @@
       alt([qs, [1, 1]], `Hiciste todas las divisiones por defecto. En la ${ord}, por exceso, el dividendo es cociente·divisor menos el resto, no más.`, 'exceso-como-defecto'),
       alt([qs.slice().reverse(), signos], 'Usaste los cocientes al revés. El primero corresponde a la primera división: la de los dos números dados.', 'cocientes-al-reves'),
       alt([qs, [signos[1], signos[0]]], `Pusiste la división por exceso en otro lugar. Es la ${ord} división la que se hizo por exceso.`, 'exceso-en-otra-division'),
-      e('AR5-responde-el-mayor', A, `${A} cm es el listón más largo. Se pide la suma de las dos medidas.`),
+      e('responde-un-numero-mayor', A, `${A} cm es el listón más largo. Se pide la suma de las dos medidas.`),
       e('responde-el-mcd', d, `${d} cm es el MCD. Se pide la suma de las dos medidas.`),
     ];
     const r1 = qs[2];
@@ -648,7 +652,8 @@
       [`Segunda división: ${lin(1)}.`],
       [`Primera división: ${lin(0)}.`],
       ['Diferencia: ', `${u.A}d − ${u.B}d = ${u.A - u.B}d = `, v('D', `${D}`), ' ⇒ ', v('d', `d = ${d}`), '.'],
-      [`Las medidas son ${A} cm y ${B} cm; `, v('S', 'suma'), ` = ${A + B} cm.`],
+      [`Las medidas son ${A} cm y ${B} cm; `, v('S', 'suma'), ' = ', v('S', `${A + B} cm`), '.'],
+      [`Comprobación: ${A} = ${qs[0]}·${B} ${signos[0] > 0 ? '+' : '−'} ${r1 * d}${signos[0] < 0 ? ' (por exceso)' : ''}; ${B} = ${qs[1]}·${r1 * d} ${signos[1] > 0 ? '+' : '−'} ${d}${signos[1] < 0 ? ' (por exceso)' : ''}; ${r1 * d} = ${qs[2]}·${d}.`],
     ];
     return cerrar(rng, semilla, { correcta: A + B, errores, texto: x => `${F(x)} cm`, unidad: 'cm', variables, enunciado, pregunta, solucion,
       datos: { tipo: 'euclides', cocientes: qs, exceso: ex + 1, D } });

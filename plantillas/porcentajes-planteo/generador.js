@@ -21,7 +21,7 @@
  *                 cantidades distintas y ventas parciales)
  *   doble-entrada (sub tabla) porcentajes de un grupo y de un subgrupo; se pide el porcentaje dentro
  *                 de otro subgrupo (porcentajes de subgrupos en tablas de doble entrada);
- *                 (sub carroll) porcentajes periódicos (33,3̅ %) de sexo y síntoma; se pide una
+ *                 (sub carroll) porcentajes periódicos (33,333… %) de sexo y síntoma; se pide una
  *                 casilla (diagramas de Carroll con datos en porcentajes periódicos)
  *   sobrante      dos jarras iguales en litros, se sirve un porcentaje de cada una; con lo que sobra
  *                 se llenan vasos en mL o cm³ (porcentajes sobrantes con conversión de unidades de volumen)
@@ -50,7 +50,7 @@
   'use strict';
   const ID = 'porcentajes-planteo';
   const INF = 'docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md';
-  const RESP = { AR1: 'documentado', AR3: 'parcial', AR4: 'parcial', AR5: 'hipotesis', AR6: 'parcial', AR7: 'documentado', AR15: 'parcial' };
+  const RESP = { AR1: 'parcial', AR3: 'parcial', AR4: 'parcial', AR5: 'hipotesis', AR6: 'parcial', AR7: 'parcial', AR15: 'parcial' };
   // Error con nombre: si el id empieza con un código del informe, toma su respaldo y la fuente.
   function E(id, valor, explicacion, respaldo) {
     const cod = (id.match(/^(AR\d+)/) || [])[1];
@@ -58,7 +58,8 @@
   }
   const v = P.v;
   const f = (x, d = 2) => P.formatear(x, d);
-  const soles = x => `S/ ${f(x)}`;
+  // Soles con dos decimales cuando no es entero: «S/ 42,50».
+  const soles = x => (Math.abs(x - Math.round(x)) < 1e-9 ? `S/ ${f(x)}` : `S/ ${f(x).replace(/,(\d)$/, ',$10')}`);
   const pc = x => `${f(x)} %`;
 
   // ---------- fracciones exactas ----------
@@ -75,7 +76,7 @@
   // Número exacto a lo más con 2 decimales (para los distractores: misma forma que la correcta).
   const corto = x => Number.isFinite(x) && x > 0 && Math.abs(x * 100 - Math.round(x * 100)) < 1e-7 && x < 1e7;
 
-  // Porcentaje que puede ser periódico: 41,6̅ % (raya sobre la cifra que se repite).
+  // Porcentaje que puede ser periódico: «41,666… %» (el bloque que se repite, escrito varias veces).
   function pctPeriodico(q) {
     const x = cien(q);
     const ent = Math.floor(x.n / x.d);
@@ -85,7 +86,8 @@
     while (r !== 0 && !vistos.has(r)) { vistos.set(r, cifras.length); r *= 10; cifras.push(Math.floor(r / x.d)); r %= x.d; }
     if (r === 0) return `${f(ent)},${cifras.join('')} %`;
     const i = vistos.get(r);
-    return `${f(ent)},${cifras.slice(0, i).join('')}${cifras.slice(i).map(c => c + '̅').join('')} %`;
+    const bloque = cifras.slice(i).join('');
+    return `${f(ent)},${cifras.slice(0, i).join('')}${bloque.repeat(bloque.length === 1 ? 3 : 2)}… %`;
   }
 
   const SUBS = { dimensiones: ['volumen', 'volumen', 'area'], partes: ['del-total', 'de-los-otros'], tramos: ['partes', 'partes', 'venta-costo'],
@@ -197,7 +199,7 @@
     if (![a, b, c, r].every(q => entero(mul(q, Q(total))))) return null;
     const [n1, n2, n3, n4] = rng.barajar(NOMBRES).slice(0, 4);
     const obj = rng.elegir(['una laptop para el negocio familiar', 'una refrigeradora para la casa', 'una cocina para el comedor del barrio', 'una impresora para la librería']);
-    const variables = { T: { nombre: 'precio total', color: 'o' }, O: { nombre: 'lo que ponen los otros tres', color: 'i' }, X: { nombre: `lo que pone ${n4}`, color: 'd' } };
+    const variables = { T: { nombre: 'precio total', color: 'o' }, O: { nombre: 'lo que ponen los otros tres', color: 'i' }, C: { nombre: `lo que pone ${n4}`, color: 'h' }, X: { nombre: 'porcentaje pedido', color: 'd' } };
     const ctxt = `0,${String(cc).padStart(2, '0')}`.replace(/0$/, '');
     const enunciado = [`Entre cuatro familiares compran ${obj}, que cuesta `, v('T', soles(total)), `. ${n1} pone ${an}/${ad} del precio; ${n2}, el ${bp} % del precio; y ${n3}, ${ctxt} del precio. ${n4} pone lo que falta.`];
     const seq = mul(res(Q(1), a), res(Q(1), b), res(Q(1), c));
@@ -206,27 +208,28 @@
     if (sub === 'del-total') {
       correcta = val(cien(r));
       if (!dec2(cien(r))) return null;
-      pregunta = ['¿Qué porcentaje del precio pone ', v('X', n4), '?'];
+      pregunta = ['¿Qué ', v('X', 'porcentaje del precio'), ' pone ', v('C', n4), '?'];
       errores = [
         E('AR3-cada-parte-sobre-el-resto', val(cien(seq)), 'Tomaste cada aporte sobre lo que faltaba pagar. El enunciado dice que cada aporte es parte del precio total: se suman y se restan del 100 %.'),
         E('decimal-como-porcentaje', val(cien(literal)), `Leíste ${ctxt} como ${ctxt} %. ${ctxt} del precio es ${f(cc)} centésimos del precio: el ${cc} %.`),
         E('AR5-lo-que-ponen-los-otros', val(cien(sum(a, b, c))), `Ese es el porcentaje que ponen entre ${n1}, ${n2} y ${n3}. La pregunta es por lo que pone ${n4}.`),
         E('AR3-ultima-parte-sobre-el-resto', val(cien(mul(res(Q(1), sum(a, b)), res(Q(1), c)))), `Tomaste lo de ${n3} sobre lo que faltaba después de ${n1} y ${n2}. Su aporte es ${ctxt} del precio total.`),
       ];
-      ultimo = [v('X', n4), ' pone 100 % − ', `${pc(val(cien(sum(a, b, c))))} = `, v('X', pc(correcta)), ` del precio (${soles(val(mul(r, Q(total))))}).`];
+      ultimo = [v('C', n4), ' pone 100 % − ', `${pc(val(cien(sum(a, b, c))))} = `, v('X', pc(correcta)), ` del precio (`, v('C', soles(val(mul(r, Q(total))))), ').'];
     } else {
       const q = div(r, res(Q(1), r));
       if (!dec2(cien(q))) return null;
       correcta = val(cien(q));
-      pregunta = ['Lo que pone ', v('X', n4), ', ¿qué porcentaje es de ', v('O', 'lo que pusieron entre los otros tres'), '?'];
+      pregunta = ['Lo que pone ', v('C', n4), ', ¿qué ', v('X', 'porcentaje'), ' es de ', v('O', 'lo que pusieron entre los otros tres'), '?'];
       errores = [
         E('AR3-base-el-precio-total', val(cien(r)), `Ese es el porcentaje del precio total. La pregunta toma como base lo que pusieron entre los otros tres (${soles(val(mul(res(Q(1), r), Q(total))))}).`),
         E('razon-invertida', val(cien(div(res(Q(1), r), r))), `Dividiste al revés: eso es lo de los otros tres como porcentaje de lo de ${n4}.`),
         E('AR3-cada-parte-sobre-el-resto', val(cien(div(seq, res(Q(1), seq)))), 'Tomaste cada aporte sobre lo que faltaba pagar. Cada aporte es parte del precio total.'),
         E('decimal-como-porcentaje', val(cien(div(literal, res(Q(1), literal)))), `Leíste ${ctxt} como ${ctxt} %. ${ctxt} del precio es el ${cc} % del precio.`),
       ];
-      ultimo = [v('X', soles(val(mul(r, Q(total))))), ' de ', v('O', soles(val(mul(res(Q(1), r), Q(total))))), ': ', `${f(val(mul(r, Q(total))))}/${f(val(mul(res(Q(1), r), Q(total))))} × 100 % = `, v('X', pc(correcta)), '.'];
+      ultimo = [v('C', soles(val(mul(r, Q(total))))), ' de ', v('O', soles(val(mul(res(Q(1), r), Q(total))))), ': ', `${f(val(mul(r, Q(total))))}/${f(val(mul(res(Q(1), r), Q(total))))} × 100 % = `, v('X', pc(correcta)), '.'];
     }
+    if ([val(cien(a)), bp, cc].some(x => Math.abs(x - correcta) < 1e-9)) return null;   // que no coincida con otro aporte
     const solucion = [
       [`Todo como porcentaje del precio: ${an}/${ad} = ${pc(val(cien(a)))}; ${bp} %; ${ctxt} = ${cc} %.`],
       [`Entre ${n1}, ${n2} y ${n3}: ${pc(val(cien(a)))} + ${bp} % + ${cc} % = `, v('O', pc(val(cien(sum(a, b, c))))), ' del precio, es decir, ', v('O', soles(val(mul(sum(a, b, c), Q(total))))), '.'],
@@ -387,7 +390,7 @@
     const A1 = D / (1 - q / 100), A2 = D / (1 - p / 100);
     const errores = [
       E('AR3-encadenado-sobre-la-misma-base', quedan(A1, A1 * p / 100, A1 * q / 100), `Tomaste el ${q} % sobre el arroz. Los fideos son el ${q} % del azúcar, que ya es el ${p} % del arroz: los fideos son el ${f(100 * pq)} % del arroz.`),
-      E('AR5-diferencia-con-el-azucar', quedan(A2, A2 * p / 100, A2 * pq), `Usaste los ${f(D)} kg como si fueran la diferencia entre el arroz y el azúcar. Son la diferencia entre el arroz y los fideos.`),
+      E('diferencia-con-el-azucar', quedan(A2, A2 * p / 100, A2 * pq), `Usaste los ${f(D)} kg como si fueran la diferencia entre el arroz y el azúcar. Son la diferencia entre el arroz y los fideos.`),
       E('AR4-lo-vendido', A + val(B) + val(Cf) - R, 'Eso es lo que se vendió. La pregunta es por lo que queda.'),
       E('AR15-promedio-de-porcentajes', (A + val(B) + val(Cf)) * (1 - (s[0] + s[1] + s[2]) / 300), 'Promediaste los porcentajes vendidos y los aplicaste al total. Cada porcentaje es de un producto distinto, con cantidades distintas.'),
     ];
@@ -415,14 +418,15 @@
     if (!dec2(ans)) return null;
     const correcta = val(ans);
     const lugar = rng.elegir(['una empresa de Arequipa', 'una universidad de Cusco', 'un mercado de Lima']);
+    const destino = lugar.includes('universidad') ? 'a su trabajo o estudio' : 'a su trabajo';
     const variables = { A: { nombre: 'los que van en auto', color: 'o' }, M: { nombre: 'mujeres entre los que van en auto', color: 'i' }, V: { nombre: 'varones del total', color: 'h' }, X: { nombre: 'porcentaje pedido', color: 'd' } };
-    const enunciado = [`En una encuesta a ${N} personas de ${lugar}, el `, v('A', `${p} % va en auto`), ' a su trabajo o estudio. De los que van en auto, el ', v('M', `${q} % son mujeres`), '. Del total de encuestados, el ', v('V', `${vv} % son varones`), '.'];
+    const enunciado = [`En una encuesta a ${N} personas de ${lugar}, el `, v('A', `${p} % va en auto`), ` ${destino}. De los que van en auto, el `, v('M', `${q} % son mujeres`), '. Del total de encuestados, el ', v('V', `${vv} % son varones`), '.'];
     const pregunta = ['De los que no van en auto, ¿qué ', v('X', 'porcentaje son varones'), '?'];
     const errores = [
       E('AR3-sobre-el-total', 100 * vNo / N, `Calculaste los varones que no van en auto como porcentaje de todos los encuestados. La pregunta toma como base solo a los que no van en auto (${no}).`),
       E('AR5-el-otro-grupo', 100 - correcta, 'Ese es el porcentaje de mujeres entre los que no van en auto.'),
       ...(N * q / 100 < auto ? [E('AR3-subgrupo-sobre-el-total', 100 * (varones - (auto - N * q / 100)) / no, `Tomaste el ${q} % de mujeres sobre todos los encuestados. Es el ${q} % de los que van en auto.`)] : []),
-      E('todos-los-varones-sin-auto', 100 * varones / no, 'Contaste a todos los varones como si ninguno fuera en auto. Primero hay que quitar a los varones que van en auto.'),
+      ...(varones <= no ? [E('todos-los-varones-sin-auto', 100 * varones / no, 'Contaste a todos los varones como si ninguno fuera en auto. Primero hay que quitar a los varones que van en auto.')] : []),
     ];
     const solucion = [
       [v('A', `Van en auto: ${p} % de ${N} = ${auto}`), '; de ellos, varones: ', `${100 - q} % de ${auto} = ${vAuto} (`, v('M', `mujeres: ${mAuto}`), ').'],
@@ -434,11 +438,11 @@
   }
 
   function carroll(rng, semilla) {
-    const a = Q(...rng.elegir([[1, 3], [2, 3], [5, 12], [7, 12], [4, 9], [5, 9], [3, 8]]));
-    const b = Q(...rng.elegir([[1, 3], [2, 3], [1, 6], [5, 6], [1, 4], [3, 4], [1, 2]]));
-    const c = Q(...rng.elegir([[1, 3], [1, 6], [2, 9], [5, 12], [1, 4], [3, 8], [5, 18]]));
+    const a = Q(...rng.elegir([[1, 3], [2, 3], [5, 12], [7, 12], [4, 9], [5, 9], [3, 8], [5, 8], [1, 2], [2, 5], [3, 5], [7, 18], [11, 18]]));
+    const b = Q(...rng.elegir([[1, 3], [2, 3], [1, 6], [5, 6], [1, 4], [3, 4], [1, 2], [1, 9], [2, 9], [1, 5], [2, 5], [1, 12], [5, 12]]));
+    const c = Q(...rng.elegir([[1, 3], [1, 6], [2, 9], [5, 12], [1, 4], [3, 8], [5, 18], [1, 9], [7, 18], [1, 5], [3, 10], [1, 12], [7, 36]]));
     if (![a, b, c].some(x => !dec2(cien(x)))) return null;                  // al menos un periódico
-    const N = rng.elegir([72, 108, 144, 180, 216, 288, 360]);
+    const N = rng.elegir([72, 108, 144, 180, 216, 240, 252, 288, 324, 360, 432, 480, 540]);
     const V = mul(a, Q(N)), Vf = mul(b, V), Tf = mul(c, Q(N));
     if (![V, Vf, Tf].every(entero)) return null;
     const M = N - val(V), Mf = val(Tf) - val(Vf), Ms = M - Mf;
@@ -450,7 +454,9 @@
       '; y del total de pacientes, el ', v('T', `${pctPeriodico(c)} llegó ${sint[1]}`), '.'];
     const pregunta = ['¿Cuántas ', v('X', `mujeres llegaron ${sint[2]}`), '?'];
     const errores = [
-      E('AR3-subgrupo-sobre-el-total', M - (val(Tf) - val(mul(b, Q(N)))), `Tomaste el ${pctPeriodico(b)} sobre todos los pacientes. Es de los varones: ${ftxt(b)} de ${f(val(V))}.`),
+      ...(val(mul(b, Q(N))) <= val(Tf) && M - (val(Tf) - val(mul(b, Q(N)))) < M
+        ? [E('AR3-subgrupo-sobre-el-total', M - (val(Tf) - val(mul(b, Q(N)))), `Tomaste el ${pctPeriodico(b)} sobre todos los pacientes. Es de los varones: ${ftxt(b)} de ${f(val(V))}.`)] : []),
+      E('sin-quitar-a-los-varones', M - val(Tf), `Restaste a las mujeres todos los pacientes ${sint[1]} (${f(val(Tf))}). También hay varones ${sint[1]} (${f(val(Vf))}): a las mujeres solo les tocan ${f(val(Tf))} − ${f(val(Vf))} = ${f(Mf)}.`),
       E('otra-casilla', Mf, `Esas son las mujeres que llegaron ${sint[1]}. Se piden las que llegaron ${sint[2]}.`),
       E('sin-separar-por-sexo', N - val(Tf), `Ese es el total de pacientes ${sint[2]}, varones y mujeres juntos.`),
       E('otra-casilla-varones', val(V) - val(Vf), `Esos son los varones ${sint[2]}. Se piden las mujeres.`),
@@ -483,7 +489,7 @@
     const vasos = x => Math.floor(x / vaso + 1e-9);
     const errores = [
       E('AR4-lo-servido', vasos(ml * (s1 + s2) / 100), 'Usaste lo que se sirvió. Los vasos se llenan con lo que sobra: el 100 % menos lo servido en cada jarra.'),
-      E('AR5-litro-como-100', vasos(sobra / 10), `Pasaste los litros multiplicando por 100. Un litro tiene 1000 mL, que son 1000 cm³.`),
+      E('litro-como-100-ml', vasos(sobra / 10), `Pasaste los litros multiplicando por 100. Un litro tiene 1000 mL, que son 1000 cm³.`),
       E('una-sola-jarra', vasos(ml * (100 - s1) / 100), 'Contaste solo lo que sobra de la primera jarra. También sobra algo de la segunda.'),
       E('porcentajes-sobre-las-dos', vasos(2 * ml * (100 - Math.max(s1, s2)) / 100), `Aplicaste el ${Math.max(s1, s2)} % a las dos jarras. Cada jarra tiene su propio porcentaje servido.`),
       E('una-jarra-con-lo-servido', vasos(ml * (100 - s2) / 100), 'Contaste solo lo que sobra de la segunda jarra. También sobra algo de la primera.'),
@@ -509,8 +515,8 @@
     const x = E1 * a / (a + b) + E1 * c / (c + d), y = E1 * b / (a + b) + E1 * d / (c + d);
     const VA = E1 * rng.entero(2, 4), VB = E1 * rng.entero(2, 4);
     const [cosa, comp] = rng.elegir([['jugo concentrado', 'agua'], ['alcohol', 'agua'], ['leche', 'agua'], ['pintura blanca', 'pintura azul']]);
-    const variables = { A: { nombre: 'primer recipiente', color: 'o' }, B: { nombre: 'segundo recipiente', color: 'i' }, E: { nombre: 'volumen extraído de cada uno', color: 'h' }, X: { nombre: 'razón de la mezcla', color: 'd' } };
-    const enunciado = ['Un ', v('A', `primer recipiente tiene ${VA} L`), ` de ${cosa} y ${comp} mezclados en la razón `, v('A', `${a} : ${b}`), ', y un ', v('B', `segundo recipiente tiene ${VB} L`), ` de ${cosa} y ${comp} en la razón `,
+    const variables = { A: { nombre: 'razón del primer recipiente', color: 'o' }, B: { nombre: 'razón del segundo recipiente', color: 'i' }, E: { nombre: 'volumen extraído de cada uno', color: 'h' }, X: { nombre: 'razón de la mezcla', color: 'd' } };
+    const enunciado = [`Un primer recipiente tiene ${VA} L de ${cosa} y ${comp} mezclados en la razón `, v('A', `${a} : ${b}`), `, y un segundo recipiente tiene ${VB} L de ${cosa} y ${comp} en la razón `,
       v('B', `${c} : ${d}`), '. Se sacan ', v('E', `${E1} L`), ' de cada recipiente y se juntan en un balde.'];
     const pregunta = [`¿En qué `, v('X', 'razón'), ` están el ${cosa} y el ${comp} en el balde?`];
     const correcta = razon(x, y);
@@ -523,9 +529,9 @@
     ];
     const alternativas = P.armarTexto({ correcta, errores, rng });
     const solucion = [
-      [`De los `, v('E', `${E1} L`), ' del primero: ', v('A', `${f(E1 * a / (a + b))} L de ${cosa} y ${f(E1 * b / (a + b))} L de ${comp}`), ` (${a}/${a + b} y ${b}/${a + b} de ${E1}).`],
-      [`De los `, v('E', `${E1} L`), ' del segundo: ', v('B', `${f(E1 * c / (c + d))} L de ${cosa} y ${f(E1 * d / (c + d))} L de ${comp}`), ` (${c}/${c + d} y ${d}/${c + d} de ${E1}).`],
-      [`En el balde: ${f(x)} L de ${cosa} y ${f(y)} L de ${comp}; la razón es ${f(x)} : ${f(y)} = `, v('X', correcta.texto), '.'],
+      [`De los `, v('E', `${E1} L`), ` del primero (razón `, v('A', `${a} : ${b}`), `): ${f(E1 * a / (a + b))} L de ${cosa} y ${f(E1 * b / (a + b))} L de ${comp} (${a}/${a + b} y ${b}/${a + b} de ${E1}).`],
+      [`De los `, v('E', `${E1} L`), ` del segundo (razón `, v('B', `${c} : ${d}`), `): ${f(E1 * c / (c + d))} L de ${cosa} y ${f(E1 * d / (c + d))} L de ${comp} (${c}/${c + d} y ${d}/${c + d} de ${E1}).`],
+      [`En el balde: ${f(x)} L de ${cosa} y ${f(y)} L de ${comp}; la razón es `, v('X', correcta.texto), '.'],
     ];
     return { id: `${ID}#${semilla}`, variables, enunciado, pregunta, datos: '', alternativas, solucion,
       respuesta: { valor: correcta.clave, texto: correcta.texto, unidad: '' }, _datos: { tipo: 'extracciones', sub: 'juntar', a, b, c, d, E: E1, VA, VB } };
@@ -594,6 +600,7 @@
 
   // ======================= llegadas =======================
   // «k·x = m» con el signo y el 1 arreglados: «−1t = −14» se escribe «t = 14».
+  const nv = n => (n === 1 ? '1 varón' : `${n} varones`), nm = n => (n === 1 ? '1 mujer' : `${n} mujeres`);
   function ecuacion(k, m, x) {
     if (k < 0) { k = -k; m = -m; }
     return `${k === 1 ? '' : k}${x} = ${f(m)}`;
@@ -611,7 +618,7 @@
       if (fin.n > 12 || fin.d > 12 || fin.n * b === fin.d * a) return null;
       const [c, d] = [fin.n, fin.d];
       const correcta = H + M;
-      const enunciado = [`En ${evento}, por cada `, v('R', `${a} varones hay ${b} mujeres`), '. Se retiran ', v('K', `${k} parejas`), ' (cada pareja es un varón y una mujer) y ahora hay ', v('S', `${c} varones por cada ${d} mujeres`), '.'];
+      const enunciado = [`En ${evento}, por cada `, v('R', `${nv(a)} hay ${nm(b)}`), '. Se retiran ', v('K', `${k} parejas`), ' (cada pareja es un varón y una mujer) y ahora hay ', v('S', `${nv(c)} por cada ${nm(d)}`), '.'];
       const pregunta = ['¿Cuántas ', v('X', 'personas había al inicio'), '?'];
       // k restado solo de los varones: d(a·t − k) = c·b·t; solo de las mujeres: c(b·t − k) = d·a·t.
       const tV = d * k / (a * d - b * c), tM = c * k / (b * c - a * d);
@@ -638,8 +645,8 @@
     const pideH = rng.moneda();
     const correcta = pideH ? H : M;
     const s = H / c;
-    const enunciado = [`En ${evento} llegan ${k1} mujeres y la razón de varones a mujeres queda en `, v('R', `${c} : ${d}`), '. Luego se retiran ', v('K', `${k2} parejas`), ' (cada pareja es un varón y una mujer) y la razón pasa a ', v('S', `${e} : ${g}`), '.'];
-    const pregunta = ['¿Cuántos ', v('X', pideH ? 'varones' : 'mujeres'), ' había antes de que llegaran las mujeres?'].map(x => (pideH || typeof x !== 'string' ? x : x.replace('Cuántos', 'Cuántas')));
+    const enunciado = [`En ${evento} llegan ${nm(k1)} y la razón de varones a mujeres queda en `, v('R', `${c} : ${d}`), '. Luego se retiran ', v('K', `${k2} parejas`), ' (cada pareja es un varón y una mujer) y la razón pasa a ', v('S', `${e} : ${g}`), '.'];
+    const pregunta = ['¿Cuántos ', v('X', pideH ? 'varones' : 'mujeres'), ` había antes de que llegaran las ${k1} mujeres?`].map(x => (pideH || typeof x !== 'string' ? x : x.replace('Cuántos', 'Cuántas')));
     // k2 solo de los varones: (c·s − k2)·g = e·d·s; solo de las mujeres: c·s·g = e(d·s − k2).
     const sV = k2 * g / (c * g - e * d), sM = e * k2 / (e * d - c * g);
     const sErr = entero2(sV) ? sV : sM;

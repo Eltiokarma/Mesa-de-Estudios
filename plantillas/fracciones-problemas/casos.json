@@ -2,7 +2,7 @@
   "plantilla": "fracciones-problemas",
   "tolerancia": 0.000001,
   "nota": "Respuestas numéricas (cantidades, soles, horas, cm) o de texto (fracción con sus términos, cifras del periodo, cifras no periódicas y periódicas). Los periódicos se escriben con puntos suspensivos y el bloque repetido. En euclides, «exceso» es el número de la división (1.ª o 2.ª) que se hizo por exceso.",
-  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 19 problemas con aritmética exacta en Python (Fraction), recorriendo todos los valores posibles en MCM, cotas, conteo de equivalentes, pares irreductibles, edades y Euclides por exceso, y con división larga y detección de restos para los decimales. Las 19 respuestas coinciden con esperado.respuesta y esperado.exacta; ninguna otra alternativa es defendible.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 19 problemas con aritmética exacta en Python (Fraction), recorriendo todos los valores posibles en MCM, cotas, conteo de equivalentes, pares irreductibles, edades y Euclides por exceso, y con división larga y detección de restos para los decimales. Las 19 respuestas coinciden con esperado.respuesta y esperado.exacta; ninguna otra alternativa es defendible. Tras la revisión cambiaron dos casos (semillas 1 y 14: 128 panes y S/ 900), recalculados aparte por la conversación principal.",
   "casos": [
     {
       "semilla": 0,
@@ -28,8 +28,8 @@
           1,
           4
         ],
-        "L": 32,
-        "H": 179,
+        "L": 10,
+        "H": 180,
         "C": 65
       },
       "esperado": {
@@ -131,20 +131,20 @@
       "entrada": {
         "tipo": "porcentaje",
         "f1": [
-          4,
+          2,
           15
         ],
         "f2": [
-          1,
-          15
+          5,
+          6
         ],
-        "p1": "26,666… %",
-        "p2": "6,666… %",
-        "R": 1848
+        "p1": "13,333… %",
+        "p2": "83,333… %",
+        "R": 130
       },
       "esperado": {
-        "respuesta": 2700,
-        "exacta": "S/ 2 700"
+        "respuesta": 900,
+        "exacta": "S/ 900"
       }
     },
     {

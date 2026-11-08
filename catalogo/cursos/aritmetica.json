@@ -49,7 +49,7 @@
       },
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["conjuntos"],
+      "plantillas": ["conjuntos", "porcentajes-planteo"],
       "investigacion": null
     },
     {
@@ -76,7 +76,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["regla-de-tres"],
+      "plantillas": ["regla-de-tres", "porcentajes-planteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -104,7 +104,7 @@
       },
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["regla-de-tres"],
+      "plantillas": ["regla-de-tres", "porcentajes-planteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -189,7 +189,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["mezclas"],
+      "plantillas": ["mezclas", "porcentajes-planteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -423,7 +423,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["fracciones"],
+      "plantillas": ["fracciones", "fracciones-problemas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -454,7 +454,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["fracciones"],
+      "plantillas": ["fracciones", "fracciones-problemas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {

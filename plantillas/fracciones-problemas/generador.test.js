@@ -234,7 +234,7 @@ test('papel.json: 5 a 10 problemas con sus campos, y las respuestas se recalcula
   assert.deepEqual(generatrizTexto('41,666… %'), [5, 12]); con('p1', '5/12');
   // p2: 7/440, cifras no periódicas y periódicas.
   assert.deepEqual(antePer(7, 440), { ante: 3, per: 2 }); con('p2', '3'); con('p2', '2');
-  // p3: n/(n + 10) irreductibles entre 1/2 y 4/5.
+  // p3: n/(n + 10) irreducibles entre 1/2 y 4/5.
   assert.equal(recalcular({ _datos: { tipo: 'acotada', k: 10, cotas: [[1, 2], [4, 5]] } }), 12); con('p3', '12');
   // p4: entre 200 y 300 panes, vende 1/3 y luego 3/4 del resto, quedan menos de 40.
   assert.equal(recalcular({ _datos: { tipo: 'stock', f1: [1, 3], f2: [3, 4], L: 200, H: 300, C: 40 } }), 234); con('p4', '234');

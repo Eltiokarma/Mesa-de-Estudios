@@ -27,7 +27,7 @@
     {
       "id": "p3",
       "nivel": "intermedio",
-      "enunciado": "¿Cuántas fracciones irreductibles de la forma n/(n + 10), con n entero positivo, son mayores que 1/2 y menores que 4/5?",
+      "enunciado": "¿Cuántas fracciones irreducibles de la forma n/(n + 10), con n entero positivo, son mayores que 1/2 y menores que 4/5?",
       "respuesta": "12.",
       "pasos": [
         "n/(n + 10) > 1/2 ⇔ 2n > n + 10 ⇔ n > 10. Y n/(n + 10) < 4/5 ⇔ 5n < 4n + 40 ⇔ n < 40. Así n va de 11 a 39: 29 valores.",
@@ -104,7 +104,7 @@
     {
       "id": "p10",
       "nivel": "intermedio",
-      "enunciado": "Con los números 6, 7, 10 y 21 se forman todas las fracciones propias e irreductibles cuyo numerador y denominador son dos de ellos, distintos. ¿Cuál es el producto de esas fracciones?",
+      "enunciado": "Con los números 6, 7, 10 y 21 se forman todas las fracciones propias e irreducibles cuyo numerador y denominador son dos de ellos, distintos. ¿Cuál es el producto de esas fracciones?",
       "respuesta": "2/7.",
       "pasos": [
         "Propias (el menor arriba): 6/7, 6/10, 6/21, 7/10, 7/21 y 10/21.",
