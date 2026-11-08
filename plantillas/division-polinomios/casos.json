@@ -1,0 +1,339 @@
+{
+  "plantilla": "division-polinomios",
+  "tolerancia": 0.000001,
+  "nota": "Respuestas exactas: enteros, o texto (un monomio con su signo o un resto px + q). Cocientes notables (xᴺʳ ± yᴺˢ)/(xʳ ± yˢ) con término de lugar k igual a ±(xʳ)ᴺ⁻ᵏ(yˢ)ᵏ⁻¹.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "parametros",
+        "sub": "exacta",
+        "r1": -2,
+        "r2": 2,
+        "t": -4,
+        "c": 16
+      },
+      "esperado": {
+        "respuesta": -8,
+        "exacta": "−8"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "mcdmcm",
+        "sub": "mcd-valor",
+        "A": [
+          1,
+          0,
+          -3,
+          2
+        ],
+        "B": [
+          1,
+          4,
+          1,
+          -6
+        ],
+        "x": -1
+      },
+      "esperado": {
+        "respuesta": -2,
+        "exacta": "−2"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "cociente",
+        "sub": "fila",
+        "r": 4,
+        "s": 3,
+        "N": 21
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "resto2",
+        "sub": "condiciones",
+        "r1": 2,
+        "r2": 1,
+        "R1": -7,
+        "R2": 1
+      },
+      "esperado": {
+        "respuesta": "−8x + 9",
+        "exacta": "−8x + 9"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "cociente",
+        "sub": "central",
+        "r": 3,
+        "s": 5,
+        "N": 13,
+        "dado": true
+      },
+      "esperado": {
+        "respuesta": 48,
+        "exacta": "48"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "mcdmcm",
+        "sub": "grado",
+        "pide": "mcd",
+        "raices": [
+          -5,
+          -1,
+          3,
+          5
+        ],
+        "eA": [
+          1,
+          2,
+          1,
+          0
+        ],
+        "eB": [
+          1,
+          1,
+          0,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "cociente",
+        "sub": "exponentes",
+        "r": 1,
+        "s": 5,
+        "N": 9,
+        "k": 2,
+        "A": 7,
+        "B": 5
+      },
+      "esperado": {
+        "respuesta": 54,
+        "exacta": "54"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "caja",
+        "sub": "lado",
+        "a": 20,
+        "k": 2,
+        "R": 1472
+      },
+      "esperado": {
+        "respuesta": 50,
+        "exacta": "50 cm"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "cociente",
+        "sub": "termino",
+        "forma": "mp",
+        "r": 1,
+        "s": 1,
+        "N": 6,
+        "k": 5
+      },
+      "esperado": {
+        "respuesta": "xy⁴",
+        "exacta": "xy⁴"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "cociente",
+        "sub": "coeficiente",
+        "forma": "pp",
+        "a": 2,
+        "N": 9,
+        "k": 7
+      },
+      "esperado": {
+        "respuesta": 64,
+        "exacta": "64"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "caja",
+        "sub": "resto",
+        "a": 40,
+        "b": 20,
+        "k": 4
+      },
+      "esperado": {
+        "respuesta": 1536,
+        "exacta": "1 536"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "parametros",
+        "sub": "monico",
+        "a": -4,
+        "k": 2,
+        "r": 6
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "identidad",
+        "sub": "suma",
+        "D": [
+          3,
+          6,
+          -4,
+          2,
+          -9
+        ],
+        "d": [
+          1,
+          2,
+          -2
+        ],
+        "R": [
+          -2,
+          -5
+        ]
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "5"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "tipo": "mcdmcm",
+        "sub": "mcm-dado",
+        "D": [
+          1,
+          -1,
+          -6
+        ],
+        "A": [
+          1,
+          -3,
+          -4,
+          12
+        ],
+        "cB": 6,
+        "x": 0
+      },
+      "esperado": {
+        "respuesta": -12,
+        "exacta": "−12"
+      }
+    },
+    {
+      "semilla": 47,
+      "entrada": {
+        "tipo": "resto2",
+        "sub": "explicito",
+        "r1": 1,
+        "r2": 2,
+        "P": [
+          1,
+          0,
+          -2,
+          0,
+          0,
+          -1
+        ]
+      },
+      "esperado": {
+        "respuesta": "17x − 19",
+        "exacta": "17x − 19"
+      }
+    },
+    {
+      "semilla": 59,
+      "entrada": {
+        "tipo": "identidad",
+        "sub": "independiente",
+        "D": [
+          1,
+          -2,
+          -2,
+          8,
+          -24
+        ],
+        "d": [
+          1,
+          -1,
+          4
+        ],
+        "R": [
+          5,
+          4
+        ]
+      },
+      "esperado": {
+        "respuesta": -7,
+        "exacta": "−7"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "caja",
+        "sub": "lado",
+        "a": 30,
+        "k": 5,
+        "R": 4200
+      },
+      "esperado": {
+        "respuesta": 52,
+        "exacta": "52 cm"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "resto2",
+        "sub": "condiciones",
+        "r1": 1,
+        "r2": 2,
+        "R1": -5,
+        "R2": 2
+      },
+      "esperado": {
+        "respuesta": "7x − 12",
+        "exacta": "7x − 12"
+      }
+    }
+  ]
+}
