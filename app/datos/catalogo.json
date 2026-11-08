@@ -112,6 +112,7 @@
      "grado": 4,
      "plantillas": [
       "tiro-parabolico",
+      "movimiento-circular",
       "circular-transmision",
       "circular-mcuv",
       "circular-enesimo-segundo",
@@ -5439,6 +5440,23 @@
     "/plantillas/mol-composicion/index.html",
     "/plantillas/mol-composicion/motor.js",
     "/plantillas/mol-composicion/papel.json"
+   ]
+  },
+  "movimiento-circular": {
+   "id": "movimiento-circular",
+   "titulo": "El disco y sus flechas: movimiento circular",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "/plantillas/movimiento-circular/index.html",
+   "papel": "/plantillas/movimiento-circular/papel.json",
+   "archivos": [
+    "/plantillas/movimiento-circular/index.html",
+    "/plantillas/movimiento-circular/motor.js",
+    "/plantillas/movimiento-circular/papel.json"
    ]
   },
   "mruv": {
