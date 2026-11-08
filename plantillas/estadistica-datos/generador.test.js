@@ -153,7 +153,11 @@ test('textos limpios y un color por variable', () => {
     assert.equal(new Set(colores).size, colores.length, `semilla ${s}: dos variables con el mismo color`);
     for (const c of colores) assert.ok(['o', 'i', 'd', 'h'].includes(c));
     const todos = [p.enunciado, p.pregunta, ...p.solucion];
-    for (const segs of todos) for (const x of segs) if (typeof x === 'object') assert.ok(p.variables[x.v], `semilla ${s}: clave ${x.v} sin variable`);
+    for (const segs of todos) for (const x of segs) {
+      // app/practica.js solo sabe pintar textos y objetos { v, t }: un número suelto sale como «undefined».
+      if (typeof x === 'string') continue;
+      assert.ok(x && typeof x === 'object' && typeof x.t === 'string' && p.variables[x.v], `semilla ${s}: segmento inválido ${JSON.stringify(x)}`);
+    }
     const textos = [...todos.map(texto), ...p.alternativas.map(a => a.texto), ...p.alternativas.filter(a => a.error).map(a => a.error.explicacion)];
     for (const t of textos) assert.ok(!/undefined|NaN|−−|null|Infinity/.test(t), `semilla ${s}: «${t}»`);
   }

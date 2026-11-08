@@ -213,7 +213,7 @@
     const nombre = rng.elegir(['Rosa', 'Yaneth', 'Wilber', 'Fidel', 'Nayeli']);
     const texto = y => f(y);
     const variables = { n: { nombre: 'número de prácticas', color: 'o' }, p: { nombre: 'promedio', color: 'i' },
-      m: { nombre: 'nota más alta', color: 'd' }, x: { nombre: 'menor nota posible', color: 'h' } };
+      m: { nombre: 'tope', color: 'd' }, x: { nombre: 'menor nota posible', color: 'h' } };
     const enunciado = [`${nombre} rindió `, v('n', `${n} prácticas`), ' (calificadas de 0 a 20) y su promedio es ', v('p', p), '. En ninguna sacó más de ', v('m', M), '.'];
     const pregunta = ['¿Cuál es la ', v('x', 'menor nota posible'), ` que pudo sacar ${nombre} en alguna práctica?`];
     const errores = [
@@ -347,8 +347,8 @@
     if (sols.length !== 1) return null;
     const q = rng.elegir(['mayor', 'mayor', 'rango', 'extremos']);
     const Q = valorQ(q, L);
-    const variables = { x: { nombre: 'media', color: 'i' }, me: { nombre: 'mediana', color: 'o' }, mo: { nombre: 'moda', color: 'd' }, q: { nombre: 'lo que se pide', color: 'h' } };
-    const enunciado = [`${ctx.cinco}. Los cinco números son enteros positivos; su media es `, v('x', exacto(media)), ', su mediana es ', v('me', Me),
+    const variables = { med: { nombre: 'media', color: 'i' }, me: { nombre: 'mediana', color: 'o' }, mo: { nombre: 'moda', color: 'd' }, q: { nombre: 'lo que se pide', color: 'h' } };
+    const enunciado = [`${ctx.cinco}. Los cinco números son enteros positivos; su media es `, v('med', exacto(media)), ', su mediana es ', v('me', Me),
       ' y tienen una sola moda, ', v('mo', m), '.', ...(conocido ? [` Uno de los números es ${k}.`] : [])];
     const pregunta = ['¿Cuál es ', v('q', NOMBRE_Q[q]), '?'];
     // Errores: el libre que se calcula al final es el que absorbe una suma mal tomada.
@@ -364,7 +364,7 @@
     for (const o of otros) errores.push(h(`da-${o}-en-vez-de-${q}`, valorQ(o, L), `Hallaste bien los datos, pero ese valor es ${NOMBRE_Q[o]}. Se pide ${NOMBRE_Q[q]}.`));
     const R = abajo ? S - 2 * m - Me : S - Me - 2 * m;
     const pasos = [
-      ['Ordena los cinco números: a ≤ b ≤ c ≤ d ≤ e. La mediana es el del centro: c = ', v('me', Me), '. La suma es 5 × ', v('x', exacto(media)), ` = ${S}.`],
+      ['Ordena los cinco números: a ≤ b ≤ c ≤ d ≤ e. La mediana es el del centro: c = ', v('me', Me), '. La suma es 5 × ', v('med', exacto(media)), ` = ${S}.`],
     ];
     if (abajo) {
       pasos.push(['La moda ', v('mo', m), ' es menor que la mediana, así que sus repeticiones van antes del centro: a = b = ', v('mo', m), `. Los otros dos son mayores que ${Me} y distintos (si no, habría otra moda): ${Me} < d < e, con d + e = ${S} − ${2 * m} − ${Me} = ${R}.`]);
@@ -406,25 +406,37 @@
     const pide = rng.elegir(['max-mayor', 'min-mayor']);
     const Q = extremoSeis(pide, sols);
     const optima = sols.find(L => L[5] === Q);
-    const variables = { x: { nombre: 'media', color: 'i' }, me: { nombre: 'mediana', color: 'o' }, mo: { nombre: 'moda', color: 'd' }, q: { nombre: 'lo que se pide', color: 'h' } };
-    const enunciado = [`${ctx.seis}. Los seis números son enteros positivos; su media es `, v('x', exacto(media)), ', su mediana es ', v('me', f(Me)),
+    const variables = { med: { nombre: 'media', color: 'i' }, me: { nombre: 'mediana', color: 'o' }, mo: { nombre: 'moda', color: 'd' }, q: { nombre: 'lo que se pide', color: 'h' } };
+    const enunciado = [`${ctx.seis}. Los seis números son enteros positivos; su media es `, v('med', exacto(media)), ', su mediana es ', v('me', f(Me)),
       ' y tienen una sola moda, ', v('mo', m), '.'];
     const pregunta = ['¿Cuál es ', v('q', NOMBRE_SEIS[pide]), '?'];
     const errores = [];
     const otra = pide === 'max-mayor' ? 'min-mayor' : 'max-mayor';
     errores.push(h('extremo-al-reves', extremoSeis(otra, sols), `Ese es ${NOMBRE_SEIS[otra]}. Se pide ${NOMBRE_SEIS[pide]}.`));
     errores.push(h('olvida-moda-unica', extremoSeis(pide, listas(6, S, Me2, xs => modaEntre(xs, m))), `Con ese valor la lista tendría otra moda empatada con ${m}. El enunciado dice que hay una sola moda.`));
-    if (Number.isInteger(Me)) errores.push(h('mediana-un-central', extremoSeis(pide, listas(6, S, Me2, cond, 'un-central')), `Pusiste el tercer dato igual a ${f(Me)}, como si hubiera un solo central. Con seis datos la mediana es la semisuma del 3.° y el 4.°: c + d = ${Me2}.`));
+    if (Number.isInteger(Me)) errores.push(h('mediana-un-central', extremoSeis(pide, listas(6, S, Me2, cond, 'un-central')), `Fijaste el 3.° dato en ${f(Me)} y dejaste libre el 4.°, como si la mediana fuera un solo dato. Con seis datos la mediana es la semisuma del 3.° y el 4.°: c + d = ${Me2}.`));
     if (Number.isInteger(5 * media)) errores.push(h('suma-con-un-dato-menos', extremoSeis(pide, listas(6, 5 * media, Me2, cond)), `Tomaste la suma como 5 × ${exacto(media)}. Son seis datos: la suma es 6 × ${exacto(media)} = ${S}.`));
     if (Number.isInteger(6 * Me) && Me !== media) errores.push(h('suma-con-la-mediana', extremoSeis(pide, listas(6, 6 * Me, Me2, cond)), `Tomaste la suma como 6 × ${f(Me)}, con la mediana. La suma sale de la media: 6 × ${exacto(media)} = ${S}.`));
     const meta = pide === 'max-mayor' ? 'lo más grande posible, los otros deben ser lo más pequeños que permitan la mediana y la moda'
       : 'lo más pequeño posible, los datos deben estar lo más parejos que permitan la mediana y la moda';
     const QQ = pide === 'max-mayor' ? Q + 1 : Q - 1;
+    let pasoSeis;
+    if (pide === 'max-mayor') {
+      const S5 = S - Q; // la menor suma posible de los otros cinco (sale de la enumeración)
+      pasoSeis = [[`Para que f sea ${meta}. Los otros cinco (a, b, c, d, e) deben cumplir c + d = ${Me2} y dejar a ${m} como única moda: lo menos que pueden sumar es ${S5}, así que f ≤ ${S} − ${S5} = ${Q}.`]];
+    } else {
+      // Con f = Q − 1, todos los datos valen a lo más Q − 1: la mayor suma posible con la mediana y la moda.
+      let Mx = -1;
+      for (let T = 6 * QQ; T >= 6 && Mx < 0; T--) if (listas(6, T, Me2, xs => cond(xs) && xs[5] <= QQ).length) Mx = T;
+      pasoSeis = Mx >= 0 && Mx < S
+        ? [[`Para que f sea ${meta}. Si f fuera ${QQ}, todos los datos valdrían a lo más ${QQ}, y con c + d = ${Me2} y ${m} como única moda la mayor suma posible es ${Mx}, que no llega a ${S}. Así que f ≥ ${Q}.`]]
+        : [[`Para que f sea ${meta}. Con f = ${QQ} ya no hay ninguna lista que cumpla las tres condiciones, así que f ≥ ${Q}.`]];
+    }
     const solucion = [
-      ['Ordena: a ≤ b ≤ c ≤ d ≤ e ≤ f. Con seis datos, la mediana es la semisuma del 3.° y el 4.°: c + d = 2 × ', v('me', f(Me)), ` = ${Me2}. La suma es 6 × `, v('x', exacto(media)), ` = ${S}.`],
+      ['Ordena: a ≤ b ≤ c ≤ d ≤ e ≤ f. Con seis datos, la mediana es la semisuma del 3.° y el 4.°: c + d = 2 × ', v('me', f(Me)), ` = ${Me2}. La suma es 6 × `, v('med', exacto(media)), ` = ${S}.`],
       ['La moda ', v('mo', m), ' tiene que repetirse más veces que cualquier otro número.'],
-      [`Para que f sea ${meta}. La mejor lista es `, lista(optima), `: su mediana es (${optima[2]} + ${optima[3]})/2 = ${f(Me)}, suma ${S} y su única moda es ${m}.`],
-      [`Con f = ${QQ} ya no hay ninguna lista que cumpla las tres condiciones. Respuesta: `, v('q', f(Q)), '.'],
+      ...pasoSeis,
+      ['Una lista que lo logra es ', lista(optima), `: su mediana es (${optima[2]} + ${optima[3]})/2 = ${f(Me)}, suma ${S} y su única moda es ${m}. Respuesta: `, v('q', f(Q)), '.'],
     ];
     return cerrar(rng, semilla, { correcta: Q, errores, texto: y => f(y), variables, enunciado, pregunta, solucion,
       datos: { tipo: 'reconstruir', sub: 'seis', media, mediana: Me, moda: m, pide } });
@@ -442,9 +454,10 @@
     const xv = L[iX], yv = L[iY];
     const pide = iY > iX ? rng.elegir(['y', 'dif']) : 'y';
     const Q = pide === 'y' ? yv : yv - xv;
-    const variables = { x: { nombre: 'media', color: 'i' }, me: { nombre: 'mediana', color: 'o' }, u: { nombre: 'x', color: 'd' }, q: { nombre: pide === 'y' ? 'y' : 'y − x', color: 'h' } };
+    const variables = { med: { nombre: 'media', color: 'i' }, me: { nombre: 'mediana', color: 'o' }, u: { nombre: 'x', color: 'd' }, q: { nombre: pide === 'y' ? 'y' : 'y − x', color: 'h' } };
     const vista = L.map((t, i) => i === iX ? 'x' : i === iY ? 'y' : f(t)).join('; ');
-    const enunciado = [`Los ${n} datos de una encuesta, ordenados de menor a mayor, son: ${vista}. Su media es `, v('x', exacto(media)), ' y su mediana es ', v('me', f(Me)), '.'];
+    const segVista = L.flatMap((t, i) => [...(i ? ['; '] : []), i === iX ? v('u', 'x') : i === iY ? 'y' : f(t)]);
+    const enunciado = [`Los ${n} datos de una encuesta, ordenados de menor a mayor, son: `, ...segVista, '. Su media es ', v('med', exacto(media)), ' y su mediana es ', v('me', f(Me)), '.'];
     const pregunta = ['¿Cuál es el valor de ', v('q', pide === 'y' ? 'y' : 'y − x'), '?'];
     const conocidos = S - xv - yv;
     const resp = (x, y) => pide === 'y' ? y : y - x;
@@ -458,9 +471,9 @@
     if (pide === 'y') errores.push(h('da-x-en-vez-de-y', xv, `Ese es el valor de x. Se pide y.`));
     else { errores.push(h('suma-en-vez-de-diferencia', xv + yv, `Ese es x + y. Se pide y − x.`)); errores.push(h('da-y-en-vez-de-diferencia', yv, `Ese es el valor de y. Se pide y − x.`)); }
     const solucion = [
-      n === 6 ? ['Con seis datos, la mediana es la semisuma del 3.° y el 4.°: (x + ', `${L[3]})/2 = `, v('me', f(Me)), `, así que x = ${2 * Me} − ${L[3]} = `, v('u', xv), '.']
-        : ['Con siete datos, la mediana es el 4.°, que es x: x = ', v('me', f(Me)), ' = ', v('u', xv), '.'],
-      ['La suma de los datos es ', n, ' × ', v('x', exacto(media)), ` = ${S}. Los conocidos y x suman ${conocidos + xv}, así que y = ${S} − ${conocidos + xv} = ${yv}.`],
+      n === 6 ? ['Con seis datos, la mediana es la semisuma del 3.° y el 4.°: (', v('u', 'x'), ` + ${L[3]})/2 = `, v('me', f(Me)), ', así que ', v('u', 'x'), ` = ${2 * Me} − ${L[3]} = `, v('u', xv), '.']
+        : ['Con siete datos, la mediana es el 4.°, que es ', v('u', 'x'), ': ', v('u', 'x'), ' = ', v('me', f(Me)), ' = ', v('u', xv), '.'],
+      [`La suma de los datos es ${n} × `, v('med', exacto(media)), ` = ${S}. Los conocidos y x suman ${conocidos + xv}, así que y = ${S} − ${conocidos + xv} = ${yv}.`],
       ...(pide === 'y' ? [['Respuesta: ', v('q', `y = ${yv}`), '.']] : [['Entonces ', v('q', 'y − x'), ` = ${yv} − ${xv} = `, v('q', f(Q)), '.']]),
     ];
     return cerrar(rng, semilla, { correcta: Q, errores, texto: y => f(y), variables, enunciado, pregunta, solucion,
@@ -477,8 +490,8 @@
       intro = 'Los puntajes de los participantes de un concurso de matemática tienen';
       cambio = `Para pasarlos a otra escala, cada puntaje se multiplica por ${a} y luego se le ${b > 0 ? 'suma' : 'resta'} ${Math.abs(b)}.`;
     } else if (ctx === 'temperaturas') {
-      mu = rng.entero(8, 18); a = 1.8; b = 32; sigma = rng.elegir([1, 2, 2.5, 3, 5]); unidad = '°F'; unidad2 = '(°F)²';
-      intro = 'Las temperaturas máximas de un mes en Arequipa, en grados Celsius, tienen';
+      mu = rng.entero(12, 18); a = 1.8; b = 32; sigma = rng.elegir([1, 2, 2.5, 3, 5]); unidad = '°F'; unidad2 = '(°F)²';
+      intro = 'Las temperaturas máximas de un mes en Puno, en grados Celsius, tienen';
       cambio = 'Se pasan todas a grados Fahrenheit con F = 1,8·C + 32.';
     } else {
       mu = 100 * rng.entero(12, 20); a = rng.elegir([1.1, 1.2, 1.5]); b = rng.elegir([50, 100, -50, -100]);
@@ -494,7 +507,7 @@
     const variables = { x: { nombre: sub === 'media' ? 'media original' : (daVar ? 'varianza original' : 'desviación estándar original'), color: 'o' }, a: { nombre: 'factor', color: 'i' }, b: { nombre: 'constante', color: 'd' }, y: { nombre: 'resultado pedido', color: 'h' } };
     const dadoMedia = ctx === 'sueldos' ? `S/ ${f(mu)}` : ctx === 'temperaturas' ? `${mu} °C` : `${mu} puntos`;
     const dadoDesv = ctx === 'sueldos' ? `S/ ${f(sigma)}` : ctx === 'temperaturas' ? `${f(sigma)} °C` : `${f(sigma)} puntos`;
-    const dadoVar = ctx === 'temperaturas' ? `${f(V)} (°C)²` : `${f(V)} puntos²`;
+    const dadoVar = ctx === 'temperaturas' ? `${f(V)} (°C)²` : `${f(V)} ${V === 1 ? 'punto²' : 'puntos²'}`;
     const enunciado = [`${intro} media `, sub === 'media' ? v('x', dadoMedia) : dadoMedia, ' y ', daVar ? 'varianza ' : 'desviación estándar ', sub === 'media' ? (daVar ? dadoVar : dadoDesv) : v('x', daVar ? dadoVar : dadoDesv), '. ', cambio];
     const regla = ['Con Y = ', v('a', f(a)), '·X ', v('b', signoB), ': la constante ', v('b', signoB), ' corre todos los datos por igual y no cambia la dispersión; el factor ', v('a', f(a)), ' estira las distancias a la media.'];
     let correcta, errores, pregunta, solucion, texto;
@@ -514,7 +527,7 @@
       pregunta = ['¿Cuál es la ', v('y', 'desviación estándar'), ' de los nuevos datos?'];
       errores = [
         h('desviacion-por-k-cuadrado', a * a * sigma, `Multiplicaste la desviación estándar por ${f(a)}² = ${f(a * a)}. El cuadrado va en la varianza; la desviación estándar es su raíz y se multiplica por ${f(a)}.`),
-        h('desviacion-cambia-con-constante', a * sigma + b, `Le ${b > 0 ? 'sumaste' : 'restaste'} ${f(Math.abs(b))} a la desviación estándar. Esa constante mueve todos los datos por igual: la dispersión no cambia.`),
+        h('desviacion-cambia-con-constante', a * sigma + b, `Le aplicaste a la desviación estándar la misma fórmula que a los datos: ${f(a)} × ${f(sigma)} ${signoB}. La constante mueve todos los datos por igual: no cambia la dispersión.`),
         h('desviacion-no-cambia', sigma, `Dejaste la desviación estándar igual. La constante no la cambia, pero multiplicar por ${f(a)} sí separa los datos.`),
         h('desviacion-es-la-varianza', a * a * V, `Ese valor es la varianza nueva (${f(a)}² × ${f(V)}). Se pide la desviación estándar, que es su raíz.`),
       ];
@@ -522,7 +535,7 @@
       solucion = [
         ...(sub === 'var-a-desv' ? [['La desviación estándar original es √', v('x', f(V)), ` = ${f(sigma)}.`]] : []),
         regla,
-        [v('y', 'σ(Y)'), ' = ', v('a', f(a)), ` × ${f(sigma)} = `, v('y', texto(correcta)), '.'],
+        [v('y', 'σ(Y)'), ' = ', v('a', f(a)), ' × ', sub === 'desv' ? v('x', f(sigma)) : f(sigma), ' = ', v('y', texto(correcta)), '.'],
       ];
     } else {
       correcta = a * mu + b; texto = y => ctx === 'sueldos' ? `S/ ${f(y)}` : `${f(y)} ${ctx === 'temperaturas' ? '°F' : 'puntos'}`;
@@ -568,7 +581,7 @@
       ];
       const solucion = [
         ['Si los números son a y b: a + b = 2 × ', v('a', A), ` = ${2 * A} y ab = `, v('g', G), `² = ${G * G}.`],
-        ['La media armónica es 2ab/(a + b) = ', `2 × ${G * G}/${2 * A} = `, v('g', `${G}²`), '/', v('a', A), ' = ', v('y', f(correcta)), '. (Siempre MA ≥ MG ≥ MH.)'],
+        ['La media armónica es 2ab/(a + b) = ', `2 × ${G * G}/${2 * A} = `, v('g', G), '²/', v('a', A), ' = ', v('y', f(correcta)), '. (Siempre MA ≥ MG ≥ MH.)'],
       ];
       return cerrar(rng, semilla, { correcta, errores, texto: y => f(y), variables, enunciado, pregunta, solucion,
         datos: { tipo: 'medias', sub, MA: A, MG: G } });
@@ -637,7 +650,7 @@
     const solucion = [
       ['Con el producto fijo, la ', v('g', 'media geométrica'), ' también es fija: ', v('g', `${raizTxt}${N}`), '. Como MA ≥ MG, la MA es menor mientras más parejos sean los números (y no pueden ser todos iguales, porque ', v('n', N), ` no es una potencia ${k === 3 ? 'cúbica' : 'cuarta'} de un número del 1 al 6).`],
       [`Las formas de obtener ${N} con caras del 1 al 6 son: ${ts.map(ver).join(', ')}.`],
-      [`La de menor suma es ${ver(optima)}, con suma ${minS}: la menor MA es ${minS}/${k} = `, v('y', fracTxt(correcta)), '.'],
+      [`La de menor suma es ${ver(optima)}, con suma ${minS}: la menor MA es ${fracTxt(correcta) === `${minS}/${k}` ? '' : `${minS}/${k} = `}`, v('y', fracTxt(correcta)), '.'],
     ];
     const texto = y => fracTxt(y);
     return cerrar(rng, semilla, { correcta, errores: errores.filter(Boolean), texto, fraccion: true, variables, enunciado, pregunta, solucion,
@@ -662,14 +675,14 @@
       const pregunta = ['¿Cuál es su ', v('y', 'promedio'), '?'];
       const errores = [
         h('promedio-de-los-limites', (A + B) / 2, `Promediaste ${A} y ${B}, pero esos no son ${impares ? 'impares' : `múltiplos de ${k}`}. Se promedian el primero y el último de ${nombre} que están entre ellos: ${fi} y ${la}.`),
-        h('poste-valla-cuenta-terminos', Ssum / (n - 1), `Contaste ${n - 1} términos con (${la} − ${fi})/${k}. Ese cociente cuenta los saltos; los términos son uno más: ${n}.`),
-        h('poste-valla-cuenta-terminos', Ssum / (n + 1), `Dividiste la suma entre ${n + 1}: contaste un término de más. Del ${fi} al ${la}, de ${k} en ${k}, hay ${n} términos.`),
+        h('poste-valla-cuenta-terminos', Ssum / (n - 1), `Sumaste bien (${f(Ssum)}), pero dividiste entre ${n - 1}: (${la} − ${fi})/${k} = ${n - 1} cuenta los saltos, y los términos son uno más, ${n}.`),
+        h('poste-valla-cuenta-terminos', Ssum / (n + 1), `Sumaste bien (${f(Ssum)}), pero dividiste entre ${n + 1}: contaste un término de más. Del ${fi} al ${la}, de ${k} en ${k}, hay ${n} términos.`),
         h('semidiferencia', (la - fi) / 2, `Restaste el último menos el primero y dividiste entre 2. El promedio de una progresión es la semisuma del primero y el último.`),
         h('poste-valla-un-extremo-de-mas', (fi + la + k) / 2, `Llegaste hasta ${la + k}, que ya pasa de ${B}. El último ${impares ? 'impar' : `múltiplo de ${k}`} antes de ${B} es ${la}.`),
       ];
       const solucion = [
-        [`El primero de ${nombre} mayor que ${A} es `, v('a', fi), ` y el último menor que ${B} es `, v('l', la), '.'],
-        ['Forman una progresión de razón ', k, ': hay ', v('n', `(${la} − ${fi})/${k} + 1 = ${n}`), ` términos y suman ${n} × (${fi} + ${la})/2 = ${f(Ssum)}.`],
+        [`El primer ${impares ? 'número impar' : `múltiplo de ${k}`} mayor que ${A} es `, v('a', fi), ` y el último menor que ${B} es `, v('l', la), '.'],
+        [`Forman una progresión de razón ${k}: hay `, v('n', `(${la} − ${fi})/${k} + 1 = ${n}`), ` términos y suman ${n} × (${fi} + ${la})/2 = ${f(Ssum)}.`],
         ['El promedio es la suma entre la cantidad de términos, que en una progresión es la semisuma de los extremos: (', v('a', fi), ' + ', v('l', la), ')/2 = ', v('y', f(correcta)), '.'],
       ];
       return cerrar(rng, semilla, { correcta, errores, texto: y => f(y), variables, enunciado, pregunta, solucion,
@@ -689,8 +702,8 @@
       ar15(3 * total - p1 - p3, `Supusiste que el promedio de todos (${total}) es el promedio de los tres promedios. Los grupos tienen distinta cantidad de números: hay que pesar cada promedio por su cantidad.`),
       h('promedio-de-los-dos-grupos', (p1 + p3) / 2, 'Promediaste los dos promedios dados. El grupo del medio tiene sus propios números: sale de dónde empieza y dónde termina.'),
       h('promedio-de-todos', total, `${total} es el promedio de todos los pares. El grupo del medio coincide con él solo si los otros dos están parejos a cada lado.`),
-      h('poste-valla-cuenta-grupo', correcta + 1, `Contaste un par de más en el primer grupo: si su promedio es ${p1}, va del 2 al ${2 * a} (${a} pares), y el grupo del medio empieza en ${2 * a + 2}.`),
-      h('poste-valla-cuenta-grupo', correcta - 1, `Contaste un par de más en el último grupo: si su promedio es ${p3}, va del ${2 * (N - c + 1)} al ${2 * N} (${c} pares), y el grupo del medio termina en ${2 * (N - c)}.`),
+      h('poste-valla-cuenta-grupo', correcta + 1, `Hiciste terminar el primer grupo en 2 × ${p1} = ${2 * p1}, sin restar el 2 con que empieza; así el del medio te empezó en ${2 * p1 + 2}. Si su promedio es ${p1}, el primer grupo va del 2 al ${2 * a} y el del medio empieza en ${2 * a + 2}.`),
+      h('poste-valla-cuenta-grupo', correcta - 1, `Empezaste el último grupo en ${2 * (N - c + 1) - 2}, un par antes; así el del medio te terminó en ${2 * (N - c) - 2}. Si su promedio es ${p3}, el último grupo va del ${2 * (N - c + 1)} al ${2 * N} y el del medio termina en ${2 * (N - c)}.`),
     ];
     const solucion = [
       ['En pares consecutivos, el promedio es la semisuma del primero y el último. El primer grupo empieza en 2: termina en 2 × ', v('p', p1), ` − 2 = ${2 * a}.`],

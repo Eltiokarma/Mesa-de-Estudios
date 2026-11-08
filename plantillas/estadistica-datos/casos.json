@@ -2,7 +2,7 @@
   "plantilla": "estadistica-datos",
   "tolerancia": 0.000001,
   "nota": "Varianza poblacional (se divide entre n). En reconstruir/seis se pide un extremo posible sobre todas las listas de enteros positivos que cumplen media, mediana y moda única; en reconstruir/cinco la lista es única. Las respuestas de central/orden son la relación entre x̄, Me y Mo (clave ord:…); las de medias/dados, fracciones.",
-  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 22 problemas desde el enunciado con Python y fracciones exactas, y usó fuerza bruta en los casos de media, mediana y moda, en los cortes de los pares, en los dados y en los múltiplos. Los 22 valores coinciden con esperado, y en cada caso solo una alternativa es correcta.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 22 problemas desde el enunciado con Python y fracciones exactas, y usó fuerza bruta en los casos de media, mediana y moda, en los cortes de los pares, en los dados y en los múltiplos. Los 22 valores coinciden con esperado, y en cada caso solo una alternativa es correcta. Tras la revisión cambiaron dos casos (semillas 0 y 13, por pasar las temperaturas a Puno: 53,6 °F y 1,8 °F), recalculados aparte por la conversación principal.",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -38,14 +38,14 @@
         "tipo": "varianza",
         "sub": "media",
         "contexto": "temperaturas",
-        "media": 9,
+        "media": 12,
         "desviacion": 2.5,
         "a": 1.8,
         "b": 32
       },
       "esperado": {
-        "respuesta": 48.2,
-        "exacta": "48,2 °F"
+        "respuesta": 53.6,
+        "exacta": "53,6 °F"
       }
     },
     {
@@ -166,7 +166,7 @@
         "tipo": "varianza",
         "sub": "var-a-desv",
         "contexto": "temperaturas",
-        "media": 13,
+        "media": 15,
         "desviacion": 1,
         "a": 1.8,
         "b": 32
