@@ -25,7 +25,7 @@
  * Notación: probabilidades como fracción irreducible («3/14»); conteos como enteros («1 440»);
  * C(n, k) para las combinaciones y n! para el factorial, como en plantillas/probabilidad-dados/.
  * Errores: las trampas 11, 14, 15, 16 y 17 de docs/clasificacion/trampas-admision-unmsm/aritmetica-algebra.md
- * (hipótesis) y AR17, AR19 y AR20 de docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md (parcial).
+ * (hipótesis) y AR17 y AR20 de docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md (parcial).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -143,15 +143,18 @@
       q = [0, 1, 2].map(() => paso * rng.entero(Math.ceil(lo / paso), Math.floor(hi / paso)));
     }
     if (new Set(q).size < q.length) return null;
-    const condSi = ctx.id === 'estudio' ? rng.sig() < 0.3 : rng.sig() < 0.7;  // en el aula, casi siempre se sabe que desaprobó
+    const sorteo = rng.sig();
+    // En el aula, casi siempre se sabe que desaprobó; con máquinas y papas, siempre que salió el efecto.
+    const condSi = ctx.id === 'estudio' ? sorteo < 0.3 : (ctx.id === 'maquinas' || ctx.id === 'papas' ? true : sorteo < 0.7);
     const i = rng.entero(0, p.length - 1);
     const datos = { tipo: 'bayes', sub, contexto: ctx.id, p, q, condicion: condSi ? 'si' : 'no', causa: i };
     const r = resolverBayes(datos);
     const { previas, tasas, ramas, total, x } = r;
+    if (sub === 'tres' && !condSi && x.d > 200) return null;
     const evento = condSi ? ctx.si : ctx.no, inf = ctx.inf[condSi ? 0 : 1];
     const variables = {
-      p: { nombre: 'parte que corresponde a cada causa', color: 'o' },
-      q: { nombre: `porcentaje que ${ctx.siPlural} en cada causa`, color: 'i' },
+      p: { nombre: 'probabilidades de cada causa (las partes de los casos)', color: 'o' },
+      q: { nombre: `porcentajes de ${ctx.inf[0]} en cada causa`, color: 'i' },
       E: { nombre: `probabilidad total de ${inf}`, color: 'h' },
       X: { nombre: 'probabilidad pedida', color: 'd' },
     };
@@ -161,11 +164,11 @@
     const tasasSi = q.map(t => Q(t, 100));
     const errores = [
       eP('bayes-condicional-directa', tasas[i], `Esa es la probabilidad del efecto dada la causa: la de ${inf} para ${ctx.causas[i]}. Se pide al revés: la causa sabiendo el efecto. Hay que dividir la rama de esa causa entre el total de casos en que ${evento}.`),
+      !condSi ? eP('bayes-sin-complemento', div(prod(previas[i], tasasSi[i]), sumaDe(previas.map((pp, j) => prod(pp, tasasSi[j])))), `Usaste los porcentajes de ${ctx.inf[0]} que da el enunciado, pero se sabe que ${evento}. Para esa rama van los complementos: 100 % menos cada porcentaje.`) : null,
       eP('interseccion-por-condicional', ramas[i], `Esa es la probabilidad de que ocurran las dos cosas a la vez (la rama completa del árbol). Como ya se sabe que ${evento}, solo cuentan los casos en que ${evento}: hay que dividir esa rama entre la suma de todas.`),
       eP('bayes-probabilidad-total', total, `Esa es la probabilidad total de ${inf}, sin mirar la causa. Es el denominador del cálculo, no la respuesta: falta dividir la rama de la causa pedida entre ese total.`),
       eP('bayes-sin-pesos', div(tasas[i], sumaDe(tasas)), `Comparaste solo las probabilidades de ${inf} de cada causa, como si todas las causas tuvieran la misma parte de los casos. Cada rama pesa la parte de su causa por esa probabilidad: hay que multiplicar antes de comparar.`),
       eP('bayes-previa', previas[i], `Esa es la probabilidad de la causa antes de saber nada. El dato de que ${evento} cambia esa probabilidad: hay que quedarse solo con los casos en que ${evento}.`),
-      !condSi ? eP('bayes-sin-complemento', div(prod(previas[i], tasasSi[i]), sumaDe(previas.map((pp, j) => prod(pp, tasasSi[j])))), `Usaste los porcentajes de ${ctx.inf[0]} que da el enunciado, pero se sabe que ${evento}. Para esa rama van los complementos: 100 % menos cada porcentaje.`) : null,
     ];
     const pasoTasas = !condSi
       ? [[`Se sabe que ${evento}: en cada causa, la probabilidad de ${inf} es 100 % menos el porcentaje dado: `, ...ctx.causas.map((c, j) => [`${c}, 100 % − `, v('q', pc(q[j])), ` = ${100 - q[j]} %`, j < q.length - 1 ? '; ' : '.']).flat()]]
@@ -200,7 +203,7 @@
       texto: ps => ['Tres combis salen a la vez del paradero de Juliaca hacia Puno, por rutas distintas. Las probabilidades de que lleguen a tiempo son ', v('p', tf(ps[0])), ', ', v('p', tf(ps[1])), ' y ', v('p', tf(ps[2])), ', respectivamente, y lo que le pase a una no depende de las otras.'] },
   ];
   const CTX_BIN = [
-    { id: 'penales', probs: [[1, 3], [1, 4], [2, 5], [1, 5]],
+    { id: 'penales', probs: [[1, 4], [1, 5]],
       texto: (n, p) => ['Un arquero ataja cada penal con probabilidad ', v('p', tf(p)), ', sin importar lo que pasó en los otros. En una tanda le patean ', v('n', `${n} penales`), '.'],
       pide: k => `ataje exactamente ${k === 1 ? 'uno' : k}` },
     { id: 'examen', probs: [[1, 4], [1, 5]],
@@ -221,7 +224,7 @@
       const datos = { tipo: 'exactamente', sub, contexto: ctx.id, p: ps, k };
       const f = ps.map(x => Q(x[0], x[1])), g = f.map(comp);
       const x = resolverExactamente(datos);
-      const variables = { p: { nombre: 'probabilidad de cada uno', color: 'o' }, qq: { nombre: 'probabilidad de que cada uno no lo logre', color: 'i' }, X: { nombre: 'probabilidad pedida', color: 'd' } };
+      const variables = { p: { nombre: 'probabilidades de que cada uno lo logre', color: 'o' }, qq: { nombre: 'probabilidades de que cada uno no lo logre', color: 'i' }, X: { nombre: 'probabilidad pedida', color: 'd' } };
       const enunciado = ctx.texto(f);
       const pregunta = ['¿Cuál es la ', v('X', `probabilidad de que exactamente ${ctx.quien(k)}`), '?'];
       const pares = [[0, 1], [0, 2], [1, 2]];
@@ -230,18 +233,18 @@
       let errores, casos;
       if (k === 2) {
         errores = [
-          eP('exactamente-dos-sin-quitar-tres', sumPares, 'Sumaste los productos de dos en dos, pero cada producto incluye también el caso en que los tres lo logran. «Exactamente dos» pide que el tercero NO lo logre: en cada caso falta multiplicar por la probabilidad de que el tercero falle.'),
-          eP('exactamente-dos-resta-una-vez', resta(sumPares, tres), 'Quitaste una sola vez el caso de los tres. Ese caso está metido en cada uno de los tres productos de dos en dos, así que sobra tres veces. Más seguro: en cada caso, multiplica por la probabilidad de que el tercero falle.'),
-          eP('al-menos-dos-por-exactamente', suma(x, tres), 'Esa es la probabilidad de que por lo menos dos lo logren: incluye el caso en que lo logran los tres. «Exactamente dos» lo deja fuera.'),
-          eP('AR17', prodDe([f[0], f[1], g[2]]), `Contaste un solo caso (${ctx.nombres[0]} y ${ctx.nombres[1]} sí, ${ctx.nombres[2]} no). Hay tres maneras de que sean exactamente dos: depende de cuál es el que falla. Hay que sumar los tres casos.`, 'parcial', INFORME),
+          eP('exactamente-dos-sin-quitar-tres', sumPares, 'Sumaste los productos de dos en dos, pero cada producto incluye también el caso en que lo logran todos. «Exactamente dos» pide que el que queda NO lo logre: en cada caso falta multiplicar por la probabilidad de que el que queda falle.'),
+          eP('exactamente-dos-resta-una-vez', resta(sumPares, tres), 'Quitaste una sola vez el caso en que lo logran todos. Ese caso está metido en cada uno de los tres productos de dos en dos, así que sobra tres veces. Más seguro: en cada caso, multiplica por la probabilidad de que el que queda falle.'),
+          eP('al-menos-dos-por-exactamente', suma(x, tres), 'Esa es la probabilidad de que por lo menos dos lo logren: incluye el caso en que lo logran todos. «Exactamente dos» lo deja fuera.'),
+          eP('exactamente-un-solo-caso', prodDe([f[0], f[1], g[2]]), `Contaste un solo caso (${ctx.nombres[0]} y ${ctx.nombres[1]} sí, ${ctx.nombres[2]} no). Hay tres maneras de que sean exactamente dos: depende de cuál falla. Hay que sumar los tres casos.`),
         ];
         casos = pares.map(([a, b]) => [0, 1, 2].map(j => (j === a || j === b ? f[j] : g[j])));
       } else {
         errores = [
-          eP('exactamente-uno-suma-simple', sumaDe(f), 'Sumaste las tres probabilidades. Así no se pide que los otros dos fallen, y se cuentan varias veces los casos en que lo logra más de uno. En cada caso, multiplica la probabilidad del que lo logra por las de los dos que fallan.'),
+          eP('exactamente-uno-suma-simple', sumaDe(f), 'Sumaste las tres probabilidades. Así no se pide que los demás fallen, y se cuentan varias veces los casos en que lo logra más de uno. En cada caso, multiplica la probabilidad del que lo logra por las de los dos que fallan.'),
           eP('al-menos-uno-por-exactamente', comp(prodDe(g)), 'Esa es la probabilidad de que por lo menos uno lo logre (1 menos la de que fallen todos): incluye los casos en que lo logran dos o tres. «Exactamente uno» los deja fuera.'),
-          eP('AR17', prodDe([f[0], g[1], g[2]]), `Contaste un solo caso (solo ${ctx.nombres[0]}). Hay tres maneras de que sea exactamente uno: depende de cuál es el que lo logra. Hay que sumar los tres casos.`, 'parcial', INFORME),
-          eP('ninguno-por-exactamente-uno', prodDe(g), 'Esa es la probabilidad de que fallen los tres. Se pide que exactamente uno lo logre.'),
+          eP('exactamente-un-solo-caso', prodDe([f[0], g[1], g[2]]), `Contaste un solo caso (solo ${ctx.nombres[0]}). Hay tres maneras de que sea exactamente uno: depende de cuál lo logra. Hay que sumar los tres casos.`),
+          eP('ninguno-por-exactamente-uno', prodDe(g), 'Esa es la probabilidad de que fallen todos. Se pide que exactamente uno lo logre.'),
         ];
         casos = [0, 1, 2].map(a => [0, 1, 2].map(j => (j === a ? f[j] : g[j])));
       }
@@ -266,16 +269,16 @@
     const una = prod(potQ(p, k), potQ(q, n - k));
     let alMenos = Q(0); for (let j = k; j <= n; j++) alMenos = suma(alMenos, prod(Q(C(n, j)), prod(potQ(p, j), potQ(q, n - j))));
     const errores = [
-      eP('AR17', una, `Calculaste un solo orden (primero ${k === 1 ? 'el éxito' : `los ${k} éxitos`} y después ${n - k === 1 ? 'el fallo' : 'los fallos'}). ${k === 1 ? 'El éxito puede' : `Los ${k} éxitos pueden`} caer en cualquiera de los ${n} intentos: hay C(${n}, ${k}) = ${C(n, k)} órdenes, todos con la misma probabilidad.`, 'parcial', INFORME),
+      eP('binomial-un-solo-orden', una, `Calculaste un solo orden (primero ${k === 1 ? 'el éxito' : `los ${k} éxitos`} y después ${n - k === 1 ? 'el fallo' : 'los fallos'}). ${k === 1 ? 'El éxito puede' : `Los ${k} éxitos pueden`} caer en cualquiera de los ${n} intentos: hay C(${n}, ${k}) = ${C(n, k)} órdenes, todos con la misma probabilidad.`),
       eP('binomial-sin-fallos', prod(Q(C(n, k)), potQ(p, k)), `Faltó pedir que ${n - k === 1 ? 'el otro intento falle' : `los otros ${n - k} intentos fallen`}: cada fallo multiplica por ${tf(q)}.`),
       eP('binomial-al-menos', alMenos, `Esa es la probabilidad de por lo menos ${k}: sumaste también los casos con más éxitos. Se pide exactamente ${k}.`),
       eP('AR20', Q(C(n, k), 2 ** n), `Contaste los casos favorables sobre los ${2 ** n} resultados posibles, como si éxito y fallo fueran igual de probables. Aquí el éxito tiene probabilidad ${tf(p)}, no 1/2: cada caso pesa ${pot(p, k)}·${pot(q, n - k)}.`, 'parcial', INFORME),
-      eP('binomial-solo-exitos', potQ(p, k), `Multiplicaste solo ${k === 1 ? 'el éxito' : `los ${k} éxitos`}. Faltan los fallos de los otros intentos y los distintos órdenes.`),
+      eP('binomial-solo-exitos', potQ(p, k), `${k === 1 ? 'Tomaste solo la probabilidad del éxito' : `Multiplicaste solo los ${k} éxitos`}. Faltan los fallos de los otros intentos y los distintos órdenes.`),
     ];
     const solucion = [
       ['En cada intento, la probabilidad de fallo es 1 − ', v('p', tf(p)), ` = ${tf(q)}.`],
       ['Un orden concreto con ', v('k', k === 1 ? '1 éxito' : `${k} éxitos`), ` y ${n - k} ${n - k === 1 ? 'fallo' : 'fallos'} tiene probabilidad ${pot(p, k)}·${pot(q, n - k)} = ${tf(una)}.`],
-      [`Los éxitos pueden caer en cualquiera de los `, v('n', `${n} intentos`), `: hay C(${n}, ${k}) = ${C(n, k)} órdenes.`],
+      [`${k === 1 ? 'El éxito puede' : 'Los éxitos pueden'} caer en cualquiera de los `, v('n', `${n} intentos`), `: hay C(${n}, ${k}) = ${C(n, k)} órdenes.`],
       ['Probabilidad pedida = ', `${C(n, k)} · ${tf(una)} = `, v('X', tf(x)), '.'],
     ];
     return { correcta: prob(x), errores, variables, enunciado, pregunta, solucion, datos };
@@ -310,7 +313,7 @@
       const datos = { tipo: 'bloques-prob', sub, libros: c };
       const x = resolverBloquesProb(datos);
       const pf = c.reduce((a, b) => a * fact(b), 1);
-      const variables = { c: { nombre: 'libros de cada curso', color: 'o' }, m: { nombre: 'bloques de cursos', color: 'i' }, N: { nombre: 'órdenes posibles', color: 'h' }, X: { nombre: 'probabilidad pedida', color: 'd' } };
+      const variables = { c: { nombre: 'cantidades de libros de cada curso', color: 'o' }, m: { nombre: 'bloques de cursos', color: 'i' }, N: { nombre: 'órdenes posibles', color: 'h' }, X: { nombre: 'probabilidad pedida', color: 'd' } };
       const cur = CURSOS.slice(0, m);
       const enunciado = ['En un estante se colocan al azar, uno al lado de otro, ', ...cur.map((cu, j) => [v('c', `${c[j]} libro${c[j] > 1 ? 's' : ''} de ${cu}`), j < m - 2 ? ', ' : (j === m - 2 ? ' y ' : '')]).flat(), ', todos distintos.'];
       const pregunta = ['¿Cuál es la ', v('X', 'probabilidad'), ' de que los libros de cada curso queden juntos?'];
@@ -318,13 +321,13 @@
         eP('bloque-sin-permutar-dentro', Q(fact(m), fact(N)), 'Ordenaste los bloques, pero dentro de cada bloque los libros también se pueden ordenar (son distintos). Falta multiplicar por el factorial de cada bloque.'),
         eP('bloques-sin-ordenar', Q(pf, fact(N)), `Ordenaste los libros dentro de cada bloque, pero los ${m} bloques también pueden ir en cualquier orden en el estante: falta multiplicar por ${m}!.`),
         eP('suma-en-vez-de-producto', Q(fact(m) * c.reduce((a, b) => a + fact(b), 0), fact(N)), 'Sumaste los factoriales de los bloques. Cada orden de un bloque se combina con cada orden de los otros: se multiplican, no se suman.'),
-        eP('bloques-sobre-bloques', Q(1, fact(m)), `Dividiste entre los órdenes de los bloques, como si los libros ya vinieran agrupados. Se ordenan al azar los ${N} libros: los casos posibles son ${N}!.`),
+        eP('bloques-sobre-bloques', Q(1, fact(m)), `Tomaste como casos posibles solo los ${m}! órdenes de los bloques y contaste uno solo como favorable, como si los libros ya vinieran agrupados en un orden de cursos fijo. Se ordenan al azar los ${N} libros: los casos posibles son ${N}!, y cualquier orden de los bloques sirve.`),
       ];
       const solucion = [
-        ['Casos posibles: los ', v('N', `${N} libros se ordenan de ${N}! = ${P.formatear(fact(N))} maneras`), ', todas igual de probables.'],
+        [`Casos posibles: los ${N} libros se ordenan de `, v('N', `${N}! = ${P.formatear(fact(N))}`), ' maneras, todas igual de probables.'],
         ['Casos favorables: cada curso forma un bloque. Los ', v('m', `${m} bloques`), ` se ordenan de ${m}! = ${fact(m)} maneras, y dentro de cada uno los libros se ordenan de `, v('c', c.map(t => `${t}!`).join(', ')), ` maneras.`],
         [`Favorables = ${m}! · ${c.map(t => `${t}!`).join(' · ')} = ${fact(m)} · ${c.map(fact).join(' · ')} = ${P.formatear(fact(m) * pf)}.`],
-        ['Probabilidad = ', `${P.formatear(fact(m) * pf)}/`, v('N', P.formatear(fact(N))), ' = ', v('X', tf(x)), '.'],
+        ['Probabilidad = ', `${P.formatear(fact(m) * pf)}/`, v('N', `${N}!`), ' = ', v('X', tf(x)), '.'],
       ];
       return { correcta: prob(x), errores, variables, enunciado, pregunta, solucion, datos };
     }
@@ -346,7 +349,7 @@
       eP('AR17', Q(2, n), `Contaste como si fuera una fila (${n}! casos posibles). En una mesa redonda los giros no cambian la ubicación: los casos posibles son (${n} − 1)! = ${n - 1}!.`, 'parcial', INFORME),
       eP('bloque-sin-permutar-dentro', Q(1, n - 1), 'Contaste el bloque «Ana-Beto» en un solo orden. También puede ir «Beto-Ana»: falta multiplicar por 2.'),
       eP('un-solo-par-de-asientos', Q(2, n * (n - 1)), `Esa es la probabilidad de que Ana y Beto ocupen dos sillas fijas. En la mesa hay ${n} pares de sillas vecinas que les sirven.`),
-      eP('pareja-sin-orden-ni-total', Q(1, n), 'Contaste como si fuera una fila y además sin los dos órdenes de la pareja.'),
+      eP('pareja-sin-orden-ni-total', Q(1, n), `Contaste como si fuera una fila (${n}! casos posibles) y además el bloque en un solo orden: (${n} − 1)!/${n}! = 1/${n}. En la ronda los casos posibles son (${n} − 1)! y la pareja tiene 2 órdenes.`),
     ];
     const solucion = lugar === 'fila' ? [
       ['Casos posibles: las ', v('n', `${n} personas`), ` se ordenan de ${n}! = ${P.formatear(fact(n))} maneras.`],
@@ -410,17 +413,15 @@
       ];
       solucion = [
         ['Primero se pasa ', ctx.fem ? 'una' : 'un', ` ${o1} de la `, v('A', `${caja} 1`), ` (${nA} ${oN}): es ${c1} con probabilidad ${tf(pR)} y ${d1} con ${tf(pN)}.`],
-        ['Después del traspaso, la ', v('h', `${caja} 2 tiene ${nB + 1} ${oN}`), `: si pasó ${ctx.fem ? 'una' : 'un'} ${o1} ${c1}, ${B[0] + 1} son ${cN}; si pasó ${ctx.fem ? 'una' : 'un'} ${d1}, ${B[0]}.`],
+        ['Después del traspaso, la ', v('h', `${caja} 2 tiene ${nB + 1} ${oN}`), `: si pasó ${ctx.fem ? 'una' : 'uno'} ${c1}, ${B[0] + 1} son ${cN}; si pasó ${ctx.fem ? 'una' : 'uno'} ${d1}, ${B[0]}.`],
         [`Rama ${c1}: ${tf(pR)} · ${tf(rR)} = ${tf(prod(pR, rR))}. Rama ${d1}: ${tf(pN)} · ${tf(rN)} = ${tf(prod(pN, rN))}.`],
         ['Probabilidad total = ', `${tf(prod(pR, rR))} + ${tf(prod(pN, rN))} = `, v('X', tf(x)), '.'],
       ];
     } else {
       const tot = C(nA, 2);
       const pk = [0, 1, 2].map(k => Q(C(A[0], k) * C(A[1], 2 - k), tot));
-      const indep = [0, 1, 2].map(k => prod(Q(C(2, k)), prod(potQ(Q(A[0], nA), k), potQ(Q(A[1], nA), 2 - k))));
       const fin = k => Q(B[0] + k, nB + 2);
       errores = [
-        eP('AR19', sumaDe(indep.map((w, k) => prod(w, fin(k)))), `Calculaste las dos extracciones de la ${caja} 1 como si ${lo} primer${ctx.fem ? 'a' : 'o'} se devolviera (con reposición). Sin devolver, la segunda sale de ${nA - 1} ${oN}, y cambian las cuentas.`, 'parcial', INFORME),
         eP('traspaso-ignora-la-pasada', Q(B[0], nB), `Calculaste con la ${caja} 2 como estaba al principio. Después del traspaso tiene ${nB + 2} ${oN}.`),
         eP('traspaso-sin-aumentar-total', sumaDe(pk.map((w, k) => prod(w, Q(B[0] + k, nB)))), `Sumaste a los favorables lo que llega, pero no al total: después del traspaso la ${caja} 2 tiene ${nB + 2} ${oN}, no ${nB}.`),
         eP('traspaso-junta-las-cajas', Q(A[0] + B[0], nA + nB), `Juntaste las dos ${caja}s. Solo pasan dos ${oN}; la extracción final es de la ${caja} 2.`),
@@ -428,9 +429,9 @@
       ];
       solucion = [
         ['De la ', v('A', `${caja} 1`), ` se sacan 2 de ${nA}, sin devolver: hay C(${nA}, 2) = ${tot} pares posibles.`],
-        [`Pasan 0 ${cN}: ${C(A[1], 2)}/${tot}; pasa 1: ${A[0]}·${A[1]}/${tot}; pasan 2: ${C(A[0], 2)}/${tot}.`],
+        [`Pasan 0 ${cN}: C(${A[1]}, 2)/${tot} = ${C(A[1], 2)}/${tot}; pasa 1: ${A[0]}·${A[1]}/${tot} = ${A[0] * A[1]}/${tot}; pasan 2: C(${A[0]}, 2)/${tot} = ${C(A[0], 2)}/${tot}.`],
         ['Luego la ', v('h', `${caja} 2 tiene ${nB + 2} ${oN}`), `, de ${ctx.fem ? 'las' : 'los'} cuales ${B[0]}, ${B[0] + 1} o ${B[0] + 2} son ${cN}, según el caso.`],
-        ['Probabilidad total = ', [0, 1, 2].map(k => `${tf(pk[k])} · ${tf(fin(k))}`).join(' + '), ' = ', v('X', tf(x)), '.'],
+        ['Probabilidad total = ', [0, 1, 2].map(k => `${C(A[0], k) * C(A[1], 2 - k)}/${tot} · ${tf(fin(k))}`).join(' + '), ' = ', v('X', tf(x)), '.'],
       ];
     }
     return { correcta: prob(x), errores, variables, enunciado, pregunta, solucion, datos };
@@ -461,11 +462,11 @@
     const fa = fact(a), fb = b ? fact(b) : 1;
     const { g1, g2 } = gruposTexto(n, a, b);
     const variables = { n: { nombre: 'personas', color: 'o' }, a: { nombre: 'primer grupo', color: 'i' }, ...(b ? { b: { nombre: 'segundo grupo', color: 'h' } } : {}), X: { nombre: 'número de maneras', color: 'd' } };
-    const condicion = b ? [v('a', g1), ' quieren ir juntos, y también ', v('b', g2), ' (sin mezclarse con el primer grupo)'] : [v('a', g1), ' quieren ir juntos'];
+    const condicion = b ? [v('a', g1), ' quieren ir juntos, y también ', v('b', g2)] : [v('a', g1), ' quieren ir juntos'];
     const enunciado = lugar === 'circular'
       ? [v('n', `${n} amigos`), ' van a sentarse alrededor de una mesa redonda. ', ...condicion, '. Dos ubicaciones que solo se diferencian por un giro de la mesa cuentan como la misma.']
       : [v('n', `${n} amigos`), ` van a sentarse en ${n} butacas seguidas de una fila del cine. `, ...condicion, '.'];
-    const pregunta = ['¿De cuántas maneras ', v('X', 'distintas'), ' pueden sentarse?'];
+    const pregunta = ['¿De cuántas ', v('X', 'maneras distintas'), ' pueden sentarse?'];
     const piezas = `${m} piezas (${b ? 'los dos bloques' : 'el bloque'}${n - a - b > 0 ? ` y ${n - a - b === 1 ? 'la persona suelta' : `las ${n - a - b} personas sueltas`}` : ''})`;
     const dentro = b ? [' y dentro de los bloques, ', v('a', `${a}! = ${fa}`), ' y ', v('b', `${b}! = ${fb}`), ' órdenes'] : [' y dentro del bloque, ', v('a', `${a}! = ${fa}`), ' órdenes'];
     let errores, solucion;
@@ -490,7 +491,7 @@
         eN('circulo-por-fila', fact(m - 1) * fa * fb, `Usaste (${m} − 1)!, que es para una mesa redonda. En una fila no hay giros que se repitan: las ${m} piezas se ordenan de ${m}! maneras.`),
         eN('sin-restriccion', fact(n), `Esas son todas las maneras de sentar a ${n} personas en fila, sin pedir que ${b ? 'los grupos' : 'el grupo'} vaya${b ? 'n' : ''} junto${b ? 's' : ''}.`),
         b ? eN('suma-en-vez-de-producto', fact(m) * (fa + fb), 'Sumaste los órdenes de dentro de los bloques. Cada orden de un bloque se combina con cada orden del otro: se multiplican.') : null,
-        eN('bloques-sin-ordenar', fa * fb, `Ordenaste solo dentro de ${b ? 'los bloques' : 'el bloque'}. Las ${m} piezas también se ordenan en la fila: falta multiplicar por ${m}!.`),
+        eN('bloques-sin-ordenar', fa * fb, `Ordenaste solo ${b ? 'dentro de los bloques' : 'dentro del bloque'}. Las ${m} piezas también se ordenan en la fila: falta multiplicar por ${m}!.`),
       ];
       solucion = [
         [`Cada grupo que va junto se cuenta como una sola pieza: quedan `, piezas, '.'],

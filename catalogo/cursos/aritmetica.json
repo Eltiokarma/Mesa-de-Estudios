@@ -249,7 +249,7 @@
       },
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": ["probabilidad-dados"],
+      "plantillas": ["probabilidad-dados", "probabilidad-conteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -279,7 +279,7 @@
       },
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": ["probabilidad-dados"],
+      "plantillas": ["probabilidad-dados", "probabilidad-conteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
