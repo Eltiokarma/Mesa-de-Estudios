@@ -50,7 +50,7 @@ async function vista(ctx, id) {
       <p class="preg">${texto(p.pregunta, p, esc)}</p>
       <div class="alts" role="group" aria-label="Alternativas">${p.alternativas.map(a =>
         `<button class="alt" data-letra="${a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.texto)}</span></button>`).join('')}</div>
-      <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>E</kbd> o <kbd>1</kbd>–<kbd>5</kbd> para elegir, <kbd>Enter</kbd> para seguir.</p>
+      <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>${p.alternativas[p.alternativas.length - 1].letra}</kbd> o <kbd>1</kbd>–<kbd>${p.alternativas.length}</kbd> para elegir, <kbd>Enter</kbd> para seguir.</p>
       <div id="retro"></div>
     </article>`;
   }
