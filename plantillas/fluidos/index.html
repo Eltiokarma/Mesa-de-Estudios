@@ -1275,8 +1275,7 @@ const S = { step:0, max:0, pred:{}, r2:R2_0, crece:1, ocupado:false, sobre:false
 let parar = () => {};
 const L = crearLienzo(cv, W => W >= 560 ? clamp(W*0.58, 320, 430) : clamp(W*0.95, 320, 400), draw);
 const cm = m => `${N2(m*100)} cm`;
-const N3 = n => fmt(n, Math.abs(n*100 - Math.round(n*100)) < 1e-7 ? 2 : 3).replace(/,(\d*?)0+$/, (m, d) => d ? ',' + d : '');
-const ms = v => `${N3(v)} m/s`;
+const ms = v => `${N2(v)} m/s`;   // rapidez con 2 decimales como mucho
 
 const PV = { id:'tubo-rapidez', ok:'b',
   opts:[['a','1 m/s, porque el radio se reduce a la mitad y la rapidez se duplica.','PR1-radio-lineal','hipotesis'],
@@ -1287,14 +1286,14 @@ const PV = { id:'tubo-rapidez', ok:'b',
        a:'Elegiste la A. La rapidez no va con el radio sino con el área, que va con el radio al cuadrado: con la mitad del radio, la cuarta parte del área. La correcta está marcada.',
        c:'Elegiste la C. Es al revés: el agua que entra por lo ancho tiene que salir por lo angosto en el mismo tiempo, así que ahí corre más rápido. La correcta está marcada.',
        d:'Elegiste la D. Que el agua no se comprima es justo lo que obliga a que corra más rápido: el mismo volumen por segundo pasa por un hueco más chico. La correcta está marcada.' } };
-const PP = { id:'tubo-tubitos', ok:'b',
+const PP = { id:'tubo-tubitos', ok:'c',
   opts:[['a','En el del tramo angosto, porque ahí el agua va más rápido y empuja con más fuerza.','FH-mas-rapido-mas-presion','hipotesis'],
-        ['b','En el del tramo ancho, porque el agua necesita más presión detrás para acelerar.',null,''],
-        ['c','Sube lo mismo en los dos, porque es el mismo tubo y pasa el mismo caudal.','FH-presion-igual','hipotesis'],
-        ['d','En el del tramo angosto, porque ahí las paredes aprietan más el agua.','F3-encerrado-mas-presion','parcial']],
-  fb:{ b:'¡Bien! El agua acelera al entrar en lo angosto, y lo que la empuja hacia adelante es que detrás hay más presión que delante. Por eso el tubito del tramo angosto queda más bajo.',
+        ['b','Sube lo mismo en los dos, porque es el mismo tubo y pasa el mismo caudal.','FH-presion-igual','hipotesis'],
+        ['c','En el del tramo ancho, porque el agua necesita más presión detrás para acelerar.',null,''],
+        ['d','En el del tramo angosto, porque ahí las paredes aprietan más el agua.','F3-encerrado','parcial']],
+  fb:{ c:'¡Bien! El agua acelera al entrar en lo angosto, y lo que la empuja hacia adelante es que detrás hay más presión que delante. Por eso el tubito del tramo angosto queda más bajo.',
        a:'Elegiste la A. Que el agua vaya más rápido no quiere decir que empuje más hacia los costados. Para acelerar, la empujan desde atrás, donde hay más presión: en lo angosto la presión es menor. La correcta está marcada.',
-       c:'Elegiste la C. El caudal sí es el mismo, pero la presión no: cuando el agua corre, cambia de un tramo a otro. La correcta está marcada.',
+       b:'Elegiste la B. El caudal sí es el mismo, pero la presión no: cuando el agua corre, cambia de un tramo a otro. La correcta está marcada.',
        d:'Elegiste la D. Las paredes no aprietan más por estar más cerca; en un líquido quieto, la presión no depende del ancho. Y aquí el agua corre: en lo angosto la presión baja. La correcta está marcada.' } };
 
 const steps = [
@@ -1315,7 +1314,7 @@ const steps = [
        <div class="eq">${V('P','P₂')} = 6000 − 500 · (${V('v','2')}² − ${V('v','0,5')}²) = 6000 − ${fmt(E0.dP, 0)} = ${V('P', Pa(E0.P2))}</div>
        <div class="eq">${V('hT','h₂')} = ${V('P','P₂')}/(ρ · g) = ${V('hT', cm(E0.h2))}</div></div>
      <p>Al entrar en lo angosto, el agua acelera de 0,5 a 2 m/s. Para acelerar, algo tiene que empujarla hacia adelante: el agua de atrás, que está a más ${V('P','presión')} que la de adelante. Por eso, donde el agua va más rápido, la presión es menor, y su tubito queda más bajo.</p>
-     ${fuente('Que la presión sube donde el agua va más rápido es una trampa que se repite en la admisión de San Marcos; no encontramos un estudio que mida cuántos la eligen, así que la A y la C son errores que suponemos. La D trae al agua que corre una idea medida en líquidos quietos: entre el 36 % y el 52 % de unos universitarios de Estados Unidos, antes de estudiar el tema, creyó que un punto «encerrado» tiene más presión (Goszewski y otros, 2012).')}` },
+     ${fuente('Que la presión sube donde el agua va más rápido es una trampa que se repite en la admisión de San Marcos; no encontramos un estudio que mida cuántos la eligen, así que la A y la B son errores que suponemos. La D trae al agua que corre una idea medida en líquidos quietos: entre el 36 % y el 52 % de unos universitarios de Estados Unidos, antes de estudiar el tema, creyó que un punto «encerrado» tiene más presión (Goszewski y otros, 2012).')}` },
  { k:'Paso 3', t:'Ajusta el estrechamiento', ley:['v','P','hT'], explora:true,
    body:() => `<p>Arrastra el borde de la parte angosta para cambiar su radio r₂ (o usa el control). Mira las partículas y los dos tubitos.</p>
      <div class="slider"><label for="r2-3"><span>Radio de la parte angosta, r₂</span><output id="r2-3-o"></output></label><input id="r2-3" type="range" min="${R2_MIN*100}" max="${R2_MAX*100}" step="0.05" value="${S.r2*100}"></div>
@@ -1497,7 +1496,7 @@ function vivo(){
   const e = est(S.r2), o = $('r2-3-o'); if (!o) return;
   o.textContent = cm(S.r2); $('r2-3').value = String(Math.round(S.r2*2000)/20);
   $('vivo3').innerHTML = `<div class="eq">${V('v','v₂')} = ${V('v','0,5')} · (2/${N2(S.r2*100)})² = ${V('v', ms(e.v2))}<span class="note">el mismo caudal</span></div>
-    <div class="eq">${V('P','P₂')} = 6000 − 500 · (${V('v', N3(e.v2))}² − ${V('v','0,5')}²) = ${V('P', Pa(e.P2))}</div>
+    <div class="eq">${V('P','P₂')} = 6000 − 500 · (${V('v', N2(e.v2))}² − ${V('v','0,5')}²) = ${V('P', Pa(e.P2))}</div>
     <div class="eq">${V('hT','h₂')} = ${V('P', fmt(e.P2, 0))}/(1000 · 10) = ${V('hT', cm(e.h2))}<span class="note">el tubito 1 sigue en 60 cm</span></div>`;
   draw();
 }

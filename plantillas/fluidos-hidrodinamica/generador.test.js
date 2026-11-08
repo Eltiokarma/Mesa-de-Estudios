@@ -61,7 +61,7 @@ function recalcular(p) {
     const t = tiempoCaida(d.y);
     if (d.sub === 'alcance') return vs * t;
     if (d.sub === 'llegada') return Math.hypot(vs, g * t);
-    return Math.atan2(g * t, vs) * 180 / Math.PI;
+    return (g * t) / vs;   // tan θ bajo la horizontal: vy/vx
   }
   if (d.tipo === 'densidad') {
     if (d.sub === 'peso-especifico') return (d.m_g / 1000 * g) / (d.V_cm3 * 1e-6);
@@ -107,7 +107,6 @@ test('la pregunta no dice la respuesta y cada variable tiene un solo color', () 
     const p = gen.generar(s);
     const plano = seg => seg.map(x => (typeof x === 'string' ? x : x.t)).join('');
     const c = p.alternativas.find(a => a.correcta).texto;
-    if (p._datos.sub === 'angulo') continue;   // el enunciado nombra los cuatro notables (30°, 37°, 53° y 60°), sin señalar uno
     const re = new RegExp('(^|[^\\d,√])' + c.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&'));
     assert.ok(!re.test(plano(p.enunciado)) && !re.test(plano(p.pregunta)), `semilla ${s}: el enunciado dice ${c}`);
     const colores = Object.values(p.variables).map(x => x.color);

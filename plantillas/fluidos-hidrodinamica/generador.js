@@ -17,11 +17,11 @@
  *   torricelli   rapidez   tanque con un orificio lateral → rapidez de salida, v = √(2g·h), h bajo la superficie
  *                alcance   el chorro cae al piso: distancia horizontal x = v·t, t = √(2y/g)
  *                llegada   rapidez con que el chorro llega al piso (componentes vx y vy)
- *                angulo    ángulo bajo la horizontal con que el chorro llega al piso (notables 30°, 37°, 53°, 60°)
+ *                angulo    tangente del ángulo bajo la horizontal con que el chorro llega al piso (fracción exacta)
  *   densidad     peso-especifico  masa (g) y volumen (cm³) de un líquido → peso específico γ = ρ·g en N/m³
  *                densidad         peso (N) y volumen (L) de un cuerpo → densidad en kg/m³
  *   barometro    columna     presión atmosférica de una ciudad → altura de la columna de mercurio
- *                comparar    modelo simple (aire de densidad constante, declarado) → columna en una ciudad de altura
+ *                comparar    modelo simple (densidad media del aire de 1 kg/m³, declarado) → columna en una ciudad de altura
  *                absoluta    manómetro en una ciudad de altura → presión absoluta (con la atmosférica de ahí)
  *                manometrica presión absoluta en una ciudad de altura → lo que marca el manómetro
  *
@@ -57,7 +57,7 @@
 
   const TIPOS = [
     ['caudal', 'rapidez'], ['caudal', 'rapidez'], ['caudal', 'ducto'], ['caudal', 'llenado'],
-    ['continuidad', 'diametros'], ['continuidad', 'diametros'], ['continuidad', 'radios'],
+    ['continuidad', 'diametros'], ['continuidad', 'radios'], ['continuidad', 'radios'],
     ['bernoulli', 'presion'], ['bernoulli', 'presion'], ['bernoulli', 'caudal'], ['bernoulli', 'velocidad'], ['bernoulli', 'sube'],
     ['torricelli', 'rapidez'], ['torricelli', 'alcance'], ['torricelli', 'llegada'], ['torricelli', 'angulo'],
     ['densidad', 'peso-especifico'], ['densidad', 'peso-especifico'], ['densidad', 'densidad'],
@@ -92,11 +92,11 @@
   function caudal(rng, semilla, sub) {
     const VAR = { Q: { nombre: 'caudal', color: 'o' }, D: { nombre: 'diámetro', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'rapidez') {
-      const D = rng.elegir([1, 2, 4, 5, 10]), vel = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 8]);
+      const D = rng.elegir([1, 2, 3, 4, 5, 6, 8, 10, 20]), vel = rng.elegir([0.5, 1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8]);
       const A = area(D), Q = A * vel, enMin = rng.moneda();
       const Qm = enMin ? Q * 60000 : Q * 1000, uQ = enMin ? 'L/min' : 'L/s';
       if (!limpio(Qm, 2) || Qm < 0.1 || Qm > 2000) return null;
-      const [Obj, verbo] = rng.elegir([['una manguera', 'sale'], ['el caño de la cocina', 'sale'], ['una tubería de riego', 'corre']]);
+      const [Obj, verbo] = rng.elegir([['una manguera', 'sale'], ['el caño de la cocina', 'sale'], ['una tubería de riego', 'corre'], ['el tubo de una bomba de agua', 'sale'], ['una acequia entubada', 'corre']]);
       const enunciado = [`Por ${Obj} de `, v('D', `${f(D)} cm de diámetro`), ` ${verbo} agua con un caudal de `, v('Q', `${f(Qm)} ${uQ}`), '.' + conPi];
       const pregunta = ['¿Con qué ', v('x', 'rapidez'), ` ${verbo} el agua?`];
       const errores = [
@@ -114,10 +114,10 @@
         datos: { tipo: 'caudal', sub, D_cm: D, Q: Qm, uQ, pi: PI } });
     }
     if (sub === 'ducto') {
-      const D = rng.elegir([20, 30, 40]), vel = rng.elegir([1, 1.5, 2, 2.5, 3, 4, 5]), t = rng.elegir([5, 8, 10, 12, 15, 20]);
+      const D = rng.elegir([20, 30, 40]), vel = rng.elegir([1, 1.5, 2, 2.5, 3, 4, 5]), t = rng.elegir([4, 5, 6, 8, 10, 12, 15, 20, 25, 30]);
       const A = area(D), Vol = vel * A * t * 60;
       if (!limpio(Vol, 0) || Vol < 20 || Vol > 400) return null;
-      const deLugar = rng.elegir(['de un aula', 'de la sala de cómputo', 'del comedor del colegio']);
+      const deLugar = rng.elegir(['de un aula', 'de la sala de cómputo', 'del comedor del colegio', 'del laboratorio', 'de la biblioteca', 'de un auditorio']);
       const enunciado = ['Un ducto de ventilación de ', v('D', `${f(D)} cm de diámetro`), ` renueva todo el aire ${deLugar}, de ${f(Vol)} m³, en `, v('t', `${t} minutos`), '.' + conPi];
       const pregunta = ['¿Con qué ', v('x', 'rapidez'), ' pasa el aire por el ducto?'];
       const errores = [
@@ -135,10 +135,10 @@
         datos: { tipo: 'caudal', sub, D_cm: D, V_m3: Vol, t_min: t, pi: PI } });
     }
     // llenado
-    const D = rng.elegir([1, 2, 4]), vel = rng.elegir([1, 2, 3, 4, 5]), t = rng.elegir([5, 10, 15, 20, 30, 40, 60]);
+    const D = rng.elegir([1, 2, 3, 4]), vel = rng.elegir([1, 1.5, 2, 2.5, 3, 4, 5]), t = rng.elegir([4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40, 50, 60]);
     const A = area(D), VL = A * vel * t * 60 * 1000;
     if (!limpio(VL, 0) || VL < 40 || VL > 3000) return null;
-    const enunciado = ['Con una manguera de ', v('D', `${f(D)} cm de diámetro`), `, por la que el agua sale a ${f(vel)} m/s, se llena un cilindro de ${f(VL)} L en la chacra.` + conPi];
+    const enunciado = ['Con una manguera de ', v('D', `${f(D)} cm de diámetro`), `, por la que el agua sale a ${f(vel)} m/s, se llena ${rng.elegir(['un cilindro', 'un tanque', 'una tina', 'un bebedero'])} de ${f(VL)} L${rng.elegir([' en la chacra', ' en el patio', '', ' en el corral'])}.` + conPi];
     const pregunta = ['¿Cuántos ', v('x', 'minutos'), ' tarda en llenarse?'];
     const errores = [
       h('PR6-diametro-radio', t / 4, `Usaste el diámetro como radio: el área salió 4 veces mayor y el tiempo 4 veces menor. El radio es ${f(D / 2)} cm.`),
@@ -161,10 +161,11 @@
     const VAR = { D: { nombre: sub === 'radios' ? 'radio' : 'diámetro', color: 'i' }, v1: { nombre: 'rapidez conocida', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'diametros') {
       const [D1, D2] = rng.elegir([[2, 4], [3, 6], [2, 6], [4, 6], [4, 10], [5, 10], [6, 9], [2, 5], [3, 9]]);
-      const v1 = rng.elegir([2, 3, 4, 4.5, 5, 6, 8, 9, 10, 12, 16, 18, 20, 25]);
+      const v1 = rng.elegir([1.5, 2, 3, 3.6, 4, 4.5, 5, 6, 7.2, 8, 9, 10, 12, 14.4, 16, 18, 20, 25, 27]);
       const k = D1 / D2, v2 = v1 * k * k;
       if (!limpio(v2, 2) || v2 < 0.2) return null;
-      const enunciado = ['En una tubería de agua, un tramo angosto de ', v('D', `${f(D1)} cm de diámetro`), ' se une a un tramo ancho de ', v('D', `${f(D2)} cm de diámetro`),
+      const lugar = rng.elegir(['En una tubería de agua', 'En la cañería del colegio', 'En una tubería de riego de la chacra', 'En el desagüe de un lavadero', 'En una tubería de la planta de agua']);
+      const enunciado = [`${lugar}, un tramo angosto de `, v('D', `${f(D1)} cm de diámetro`), ' se une a un tramo ancho de ', v('D', `${f(D2)} cm de diámetro`),
         '. En el tramo angosto el agua va a ', v('v1', `${f(v1)} m/s`), '. La tubería está llena.'];
       const pregunta = ['¿Con qué ', v('x', 'rapidez'), ' va el agua en el tramo ancho?'];
       const errores = [
@@ -181,11 +182,12 @@
         datos: { tipo: 'continuidad', sub, D1_cm: D1, D2_cm: D2, v1 } });
     }
     // radios: manguera ancha con boquilla angosta
-    const [r1, r2] = rng.elegir([[1, 0.5], [2, 1], [1.5, 0.5], [3, 1], [2, 0.5], [1.2, 0.4], [3, 2], [2.5, 1]]);
-    const v1 = rng.elegir([0.25, 0.5, 0.8, 1, 1.2, 1.5, 2]);
+    const [r1, r2] = rng.elegir([[1, 0.5], [2, 1], [1.5, 0.5], [3, 1], [2, 0.5], [1.2, 0.4], [3, 2], [2.5, 1], [1.5, 1], [2, 1.5], [1.8, 0.6], [2.4, 0.8], [1, 0.25]]);
+    const v1 = rng.elegir([0.2, 0.25, 0.4, 0.5, 0.6, 0.8, 0.9, 1, 1.2, 1.5, 1.6, 2]);
     const k = r1 / r2, v2 = v1 * k * k;
     if (!limpio(v2, 2) || v2 > 40) return null;
-    const enunciado = ['Una manguera de ', v('D', `${f(r1)} cm de radio`), ' lleva agua a ', v('v1', `${f(v1)} m/s`), '. En la punta se le pone una boquilla de ', v('D', `${f(r2)} cm de radio`), '.'];
+    const [quien, punta] = rng.elegir([['Una manguera', 'una boquilla'], ['La manguera del jardín', 'un pitón'], ['Una manguera de bomberos', 'una boquilla'], ['La manguera de lavar el carro', 'una pistola de riego']]);
+    const enunciado = [`${quien} de `, v('D', `${f(r1)} cm de radio`), ' lleva agua a ', v('v1', `${f(v1)} m/s`), `. En la punta se le pone ${punta} de `, v('D', `${f(r2)} cm de radio`), '.'];
     const pregunta = ['¿Con qué ', v('x', 'rapidez'), ' sale el agua por la boquilla?'];
     const errores = [
       h('PR1-area-lineal', v1 * k, `Hiciste la rapidez proporcional al radio. El área va con el radio al cuadrado: la razón es (${f(r1)}/${f(r2)})², no ${f(r1)}/${f(r2)}.`),
@@ -211,14 +213,16 @@
       const P1 = rng.elegir([120, 140, 150, 160, 180, 200, 250, 300]);
       if (sub === 'presion') {
         porDiam = rng.moneda();
+        var tuberia = rng.elegir(['Por una tubería horizontal', 'Por la tubería horizontal de un edificio', 'Por un tubo horizontal de la red de agua', 'Por una manguera estirada en el piso']);
         v1 = rng.elegir([1, 2, 3]);
         n = porDiam ? 4 : rng.elegir([2, 3]);
         v2 = n * v1;
         enunciadoTubo = porDiam
-          ? ['Por una tubería horizontal corre agua a ', v('vel', `${f(v1)} m/s`), ' con una presión de ', v('P1', kPa(P1)), '. Más adelante, el ', v('A', 'diámetro se reduce a la mitad'), '.']
-          : ['Por una tubería horizontal corre agua a ', v('vel', `${f(v1)} m/s`), ' con una presión de ', v('P1', kPa(P1)), '. Más adelante, el tubo se angosta y su ', v('A', `área queda ${n === 2 ? 'a la mitad' : 'en la tercera parte'}`), '.'];
+          ? [`${tuberia} corre agua a `, v('vel', `${f(v1)} m/s`), ' con una presión de ', v('P1', kPa(P1)), '. Más adelante, el ', v('A', 'diámetro se reduce a la mitad'), '.']
+          : [`${tuberia} corre agua a `, v('vel', `${f(v1)} m/s`), ' con una presión de ', v('P1', kPa(P1)), '. Más adelante, el tubo se angosta y su ', v('A', `área queda ${n === 2 ? 'a la mitad' : 'en la tercera parte'}`), '.'];
       } else {
-        A1 = rng.elegir([20, 25, 40, 50, 80]); n = rng.elegir([2, 4]); A2 = A1 / n;
+        A1 = rng.elegir([20, 25, 30, 40, 50, 60, 80]); n = rng.elegir([2, 3, 4]); A2 = A1 / n;
+        if (!limpio(A2, 2)) return null;
         v1 = rng.elegir([1, 1.5, 2, 3]); v2 = n * v1; Q = A1 * 1e-4 * v1 * 1000;
         if (!limpio(Q, 2)) return null;
         enunciadoTubo = [`Un tubo horizontal de riego lleva un caudal de ${f(Q)} L/s. Tiene una sección de `, v('A', `${f(A1)} cm²`), ', donde la presión es ', v('P1', kPa(P1)),
@@ -250,9 +254,9 @@
     if (sub === 'velocidad') {
       const [n, v2] = rng.elegir([[2, 2], [2, 4], [2, 6], [2, 8], [3, 3], [3, 6], [4, 4], [4, 8]]);
       const v1 = v2 / n, dP = AGUA * (v2 * v2 - v1 * v1) / 2 / 1000;
-      const P1 = rng.elegir([120, 150, 180, 200]), P2 = P1 - dP;
+      const P1 = rng.elegir([110, 120, 130, 150, 160, 180, 200, 220, 250]), P2 = P1 - dP;
       if (!limpio(P2, 2)) return null;
-      const enunciado = ['Por un tubo horizontal corre agua. En la sección ancha la presión es ', v('P1', kPa(P1)), ' y en la sección angosta, ', v('P1', kPa(P2)),
+      const enunciado = [rng.elegir(['Por un tubo horizontal corre agua.', 'Un medidor de Venturi es un tubo horizontal con un estrechamiento; por él corre agua.', 'Por una tubería horizontal de riego corre agua.']), ' En la sección ancha la presión es ', v('P1', kPa(P1)), ' y en la sección angosta, ', v('P1', kPa(P2)),
         '. El ', v('A', `área de la sección ancha es ${n === 2 ? 'el doble' : n === 3 ? 'el triple' : 'el cuádruple'}`), ' que la de la angosta. Toma el agua como un fluido ideal (1000 kg/m³).'];
       const pregunta = ['¿Con qué ', v('x', 'rapidez'), ' pasa el agua por la sección angosta?'];
       const txt = x => `${raiz(x)} m/s`;
@@ -271,7 +275,7 @@
         datos: { tipo: 'bernoulli', sub, P1, P2, razonAreas: n } });
     }
     // sube: tubo que sube Δh (con o sin estrechamiento)
-    const P1 = rng.elegir([200, 250, 300]), v1 = rng.elegir([1, 2]), n = rng.elegir([1, 2]), dh = rng.elegir([2, 3, 4, 5, 6]);
+    const P1 = rng.elegir([180, 200, 220, 250, 280, 300]), v1 = rng.elegir([1, 2, 3]), n = rng.elegir([1, 2]), dh = rng.elegir([2, 2.5, 3, 4, 5, 6, 7.5, 9]);
     const v2 = n * v1, dK = AGUA * (v2 * v2 - v1 * v1) / 2000, dG = AGUA * G * dh / 1000, P2 = P1 - dK - dG;
     const enunciado = ['El agua entra a una casa por un tubo en el primer piso con una presión de ', v('P1', kPa(P1)), ' y a ', v('vel', `${f(v1)} m/s`), '. El tubo sube ',
       v('A', `${dh} m`), n === 1 ? ' hasta la ducha de arriba, con el mismo diámetro.' : ' hasta la ducha de arriba, donde su área es la mitad.', ' Toma el agua como un fluido ideal (1000 kg/m³).'];
@@ -299,8 +303,10 @@
   function torricelli(rng, semilla, sub) {
     const VAR = { H: { nombre: 'altura del agua sobre el piso', color: 'o' }, y: { nombre: 'altura del orificio sobre el piso', color: 'i' }, vel: { nombre: 'rapidez de salida', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     const ms = x => `${raiz(x)} m/s`;
-    const marco = (H, y) => ['Un tanque abierto está sobre el piso, con el agua hasta ', v('H', `${f(H)} m`), ' de altura. A ', v('y', `${f(y)} m`),
-      ' del piso tiene un orificio pequeño en la pared, por donde sale un chorro horizontal. Desprecia el roce y toma g = 10 m/s²; el nivel del agua baja muy despacio.'];
+    const [recip, hueco] = rng.elegir([['Un tanque abierto', 'un orificio pequeño'], ['Un bidón abierto', 'un agujerito'], ['Un cilindro de agua de la chacra', 'un caño abierto'],
+      ['Un tanque de agua del colegio', 'una fuga pequeña'], ['Un balde muy alto', 'un huequito']]);
+    const marco = (H, y) => [`${recip} está sobre el piso, con el agua hasta `, v('H', `${f(H)} m`), ' de altura. A ', v('y', `${f(y)} m`),
+      ` del piso tiene ${hueco} en la pared, por donde sale un chorro horizontal. Desprecia el roce y toma g = 10 m/s²; el nivel del agua baja muy despacio.`];
     if (sub === 'rapidez') {
       const hh = rng.elegir(HS), y = rng.elegir([0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.75, 1]), H = hh + y;
       if (!limpio(H, 2)) return null;
@@ -363,30 +369,28 @@
       return cerrar(rng, semilla, { correcta: vel, errores, texto: ms, unidad: 'm/s', cualquiera: true, variables: VAR, enunciado, pregunta, solucion,
         datos: { tipo: 'torricelli', sub, H, y } });
     }
-    // angulo: tan θ = vy/vx = √(y/h)
-    const [ratio, nombre] = rng.elegir([[3, '60'], [1 / 3, '30'], [16 / 9, '53'], [9 / 16, '37']]);
-    const hh = rng.elegir([0.2, 0.3, 0.45, 0.6, 0.8, 0.9, 1.2, 1.6]), y = Math.round(ratio * hh * 100) / 100;
-    if (Math.abs(y - ratio * hh) > 1e-9) return null;
-    if (!limpio(y, 2) || y > 2 || y < 0.15) return null;
-    const H = Math.round((hh + y) * 100) / 100;
-    const ang = Math.atan(Math.sqrt(y / hh)) * 180 / Math.PI;
-    const grados = x => `${P.formatear(x, 0)}°`;
-    const enunciado = [...marco(H, y), ' Usa los triángulos notables (30°, 37°, 53° y 60°).'];
-    const pregunta = ['¿Qué ', v('x', 'ángulo'), ' forma con la horizontal la velocidad del chorro al llegar al piso?'];
-    const deg = t => Math.atan(t) * 180 / Math.PI;
+    // angulo: tan θ = vy/vx = √(y/h). Con y/h = a²/b² y (a, b, c) pitagórico, la correcta y los cuatro errores salen
+    // como fracciones exactas: b/a, a²/b², a/c y c/b. La respuesta se da como tan θ (sin lista de ángulos notables).
+    const [a, b, c] = rng.elegir([[3, 4, 5], [4, 3, 5], [5, 12, 13], [12, 5, 13], [8, 15, 17], [15, 8, 17]]);
+    const k = a + b <= 7 ? rng.elegir([0.05, 0.1]) : 0.01;
+    const y = Math.round(k * a * a * 100) / 100, hh = Math.round(k * b * b * 100) / 100, H = Math.round((hh + y) * 100) / 100;
+    if (H > 4) return null;
+    const tanT = a / b;
+    const enunciado = marco(H, y);
+    const pregunta = ['¿Cuánto vale la ', v('x', 'tangente del ángulo'), ' que forma con la horizontal la velocidad del chorro al llegar al piso?'];
     const errores = [
-      h('FH-angulo-con-la-vertical', 90 - ang, 'Ese es el ángulo con la vertical. Con la horizontal, tan θ = vy/vx.'),
-      h('PR2-sin-raiz', deg(y / hh), 'Tomaste tan θ = y/h. Las rapideces van con la raíz de las alturas: tan θ = √(2gy)/√(2gh) = √(y/h).'),
-      h('FH-profundidad-total', deg(Math.sqrt(y / H)), `Para la salida usaste toda la altura del agua (${f(H)} m) en vez de la profundidad del orificio (${f(hh)} m).`, TRAMPAS),
-      h('FH-cae-desde-la-superficie', deg(Math.sqrt(H / hh)), `Para la velocidad vertical usaste una caída desde la superficie. El chorro cae desde el orificio: ${f(y)} m.`),
+      h('FH-angulo-con-la-vertical', b / a, 'Tomaste vx/vy: esa es la tangente del ángulo con la vertical. Con la horizontal, tan θ = vy/vx.'),
+      h('PR2-sin-raiz', (a * a) / (b * b), 'Tomaste tan θ = y/h. Las rapideces van con la raíz de las alturas: tan θ = √(2gy)/√(2gh) = √(y/h).'),
+      h('FH-profundidad-total', a / c, `Para la salida usaste toda la altura del agua (${f(H)} m) en vez de la profundidad del orificio (${f(hh)} m).`, TRAMPAS),
+      h('FH-cae-desde-la-superficie', c / b, `Para la velocidad vertical usaste una caída desde la superficie. El chorro cae desde el orificio: ${f(y)} m.`),
     ];
-    const t = Math.sqrt(y / hh);
+    const fr = x => { for (let d = 1; d <= 400; d++) { const n = Math.round(x * d); if (Math.abs(n / d - x) < 1e-9) return P.textoFraccion(P.frac(n, d)); } return f(x); };
     const solucion = [
-      ['Salida: h = ', v('H', f(H)), ' − ', v('y', f(y)), ` = ${f(hh)} m, `, v('vel', `vx = √(2 · 10 · ${f(hh)}) = ${raiz(Math.sqrt(20 * hh))} m/s`), '.'],
-      ['Al llegar al piso, después de caer ', v('y', `${f(y)} m`), `: vy = √(2 · 10 · ${f(y)}) = ${raiz(Math.sqrt(20 * y))} m/s.`],
-      [`tan θ = vy/vx = ${t > 1 ? (nombre === '60' ? '√3' : '4/3') : (nombre === '30' ? '√3/3' : '3/4')}, así que `, v('x', `θ = ${nombre}°`), ' bajo la horizontal.'],
+      ['Salida: h = ', v('H', f(H)), ' − ', v('y', f(y)), ` = ${f(hh)} m, `, v('vel', `vx = √(2 · 10 · ${f(hh)}) = √${f(20 * hh)} m/s`), ' (no cambia al caer).'],
+      ['Al llegar al piso, después de caer ', v('y', `${f(y)} m`), `: vy = √(2 · 10 · ${f(y)}) = √${f(20 * y)} m/s.`],
+      [v('x', 'tan θ'), ` = vy/vx = √(${f(20 * y)}/${f(20 * hh)}) = `, v('x', fr(tanT)), ' (bajo la horizontal).'],
     ];
-    return cerrar(rng, semilla, { correcta: ang, errores, texto: grados, unidad: '°', cualquiera: true, variables: VAR, enunciado, pregunta, solucion,
+    return cerrar(rng, semilla, { correcta: tanT, errores, texto: fr, unidad: '', cualquiera: true, variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'torricelli', sub, H, y } });
   }
 
@@ -394,10 +398,10 @@
   function densidad(rng, semilla, sub) {
     const VAR = { m: { nombre: sub === 'densidad' ? 'peso' : 'masa', color: 'o' }, V: { nombre: 'volumen', color: 'i' }, x: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'peso-especifico') {
-      const rho = rng.elegir([700, 800, 900, 1030, 1200, 1260, 1400, 13600]), Vc = rng.elegir([50, 100, 200, 250, 500]);
+      const rho = rng.elegir([700, 800, 900, 1030, 1200, 1260, 1400, 13600]), Vc = rng.elegir([20, 40, 50, 80, 100, 150, 200, 250, 300, 400, 500]);
       const m = rho * Vc / 1000, gam = rho * G;
       if (!limpio(m, 1)) return null;
-      const [Obj, que] = rng.elegir([['Una probeta', 'una muestra líquida'], ['Un frasco del laboratorio', 'un líquido'], ['Un vaso medidor', 'un líquido']]);
+      const [Obj, que] = rng.elegir([['Una probeta', 'una muestra líquida'], ['Un frasco del laboratorio', 'un líquido'], ['Un vaso medidor', 'un líquido'], ['Una jeringa', 'un líquido'], ['Un matraz', 'una muestra de un líquido']]);
       const enunciado = [`${Obj} contiene `, v('V', `${f(Vc)} cm³`), ` de ${que} cuya masa es `, v('m', `${f(m)} g`), '. Toma g = 10 m/s².'];
       const pregunta = ['¿Cuál es el ', v('x', 'peso específico'), ' del líquido?'];
       const nm3 = x => `${f3(x)} N/m³`;
@@ -417,7 +421,10 @@
     const rho = rng.elegir([600, 800, 900, 1200, 2500, 2700, 7800]), VL = rng.elegir([0.5, 1, 2, 4, 5]);
     const W = rho * G * VL / 1000;
     if (!limpio(W, 2)) return null;
-    const cosa = rho > 1000 ? rng.elegir(['Una pieza de metal', 'Una piedra', 'Un ladrillo pequeño']) : rng.elegir(['Un trozo de madera', 'Un bloque de plástico', 'Un taco de corcho prensado']);
+    const cosa = rng.elegir({ 600: ['Un trozo de madera de pino', 'Una tabla de cedro'], 800: ['Un trozo de madera de eucalipto', 'Un taco de madera de roble'],
+      900: ['Un trozo de hielo', 'Un bloque de hielo'], 1200: ['Un bloque de plástico acrílico', 'Una plancha de acrílico'],
+      2500: ['Un pisapapeles de vidrio', 'Un trozo de vidrio'], 2700: ['Una pieza de aluminio', 'Un lingote de aluminio'],
+      7800: ['Una pieza de hierro', 'Una pesa de acero'] }[rho]);
     const enunciado = [`${cosa} pesa `, v('m', `${f(W)} N`), ' y ocupa ', v('V', `${f(VL)} L`), '. Toma g = 10 m/s².'];
     const pregunta = ['¿Cuál es su ', v('x', 'densidad'), '?'];
     const kg = x => `${f3(x)} kg/m³`;
@@ -435,14 +442,17 @@
   }
 
   // ================= barometro =================
-  // Columnas redondeadas a cm, cerca de lo que marca un barómetro en cada ciudad (solo para dar números de examen).
-  const CIUDADES = [['Lima', 0.75], ['Arequipa', 0.57], ['Huancayo', 0.51], ['Cusco', 0.5], ['Juliaca', 0.48], ['Puno', 0.48], ['Cerro de Pasco', 0.45]];
+  // Modelo simple de todo el generador: densidad media del aire constante, 1 kg/m³. Cada 136 m de subida, la columna de
+  // mercurio baja 1 cm (1 · 10 · 136 = 13 600 · 10 · 0,01). Alturas redondeadas para que la columna salga en cm enteros;
+  // los mismos valores por ciudad en columna, comparar, absoluta y manometrica.
+  const CIUDADES = [['Lima', 136, 0.75], ['Arequipa', 2584, 0.57], ['Huancayo', 3264, 0.52], ['Cusco', 3400, 0.51], ['Juliaca', 3808, 0.48], ['Puno', 3808, 0.48], ['Cerro de Pasco', 4352, 0.44]];
   function barometro(rng, semilla, sub) {
     const VAR = { P: { nombre: 'presión atmosférica', color: 'o' }, hc: { nombre: 'columna de mercurio', color: 'i' }, z: { nombre: 'altura sobre el mar', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     const cm = x => `${f(x)} cm`;
     if (sub === 'columna') {
-      const [ciudad, hm] = rng.elegir(CIUDADES), Pa = HG * G * hm;
-      const enunciado = [`Un día en ${ciudad}, la presión atmosférica es de `, v('P', `${P.formatear(Pa, 0)} Pa`), '. Se arma un barómetro de mercurio (13 600 kg/m³). Toma g = 10 m/s².'];
+      const [ciudad, , hm] = rng.elegir(CIUDADES), Pa = HG * G * hm;
+      const [cuando, quien] = [rng.elegir(['Un día', 'Una mañana', 'Una tarde', 'Durante una clase', 'En una feria de ciencias']), rng.elegir(['Se arma', 'Un grupo de alumnos arma', 'La profesora arma', 'Se usa'])];
+      const enunciado = [`${cuando} en ${ciudad}, la presión atmosférica es de `, v('P', `${P.formatear(Pa, 0)} Pa`), `. ${quien} un barómetro de mercurio (13 600 kg/m³). Toma g = 10 m/s².`];
       const pregunta = ['¿Qué ', v('x', 'altura'), ' tiene la columna de mercurio?'];
       const errores = [
         h('FH-nivel-del-mar', 76, 'Esos 76 cm son la columna al nivel del mar. Aquí la presión atmosférica es otra: la columna se calcula con la presión que se da.', TRAMPAS),
@@ -458,30 +468,35 @@
         datos: { tipo: 'barometro', sub, P_Pa: Pa } });
     }
     if (sub === 'comparar') {
-      const [ciudad, z] = rng.elegir([['Arequipa', 2400], ['Huancayo', 3200], ['Cusco', 3400], ['Juliaca', 3800], ['Puno', 3800], ['La Oroya', 3800], ['Cerro de Pasco', 4000]]);
-      const rhoA = 0.85, dh = rhoA * z / HG * 100, hc = 76 - dh;   // cm
-      const enunciado = ['A nivel del mar, en el Callao, un barómetro de mercurio (13 600 kg/m³) marca ', v('hc', '76 cm'), `. Se lo lleva a ${ciudad}, `, v('z', `${f(z)} m`),
-        ' más arriba. Usa un modelo simple: el aire tiene una densidad constante de 0,85 kg/m³ entre las dos ciudades (en realidad se enrarece al subir). Toma g = 10 m/s².'];
+      const lugares = [['el Callao', 0, 0.76], ...CIUDADES];
+      const ia = rng.entero(0, lugares.length - 2), ib = rng.entero(ia + 1, lugares.length - 1);
+      const [desde, zA, hA] = lugares[ia], [ciudad, zB] = lugares[ib], z = zB - zA, h0 = Math.round(hA * 100);
+      if (z < 500) return null;
+      const rhoA = 1, dh = rhoA * z / HG * 100, hc = h0 - dh;   // cm
+      const instrumento = rng.elegir(['un barómetro de mercurio', 'el barómetro de mercurio del colegio', 'un barómetro de mercurio de laboratorio']);
+      const enunciado = [`En ${desde}${zA === 0 ? ', a nivel del mar' : ''}, ${instrumento} (13 600 kg/m³) marca `, v('hc', `${h0} cm`), `. Se lo lleva a ${ciudad}, `, v('z', `${f(z)} m`),
+        ' más arriba. Usa un modelo simple: densidad media constante del aire, 1 kg/m³, entre las dos ciudades. Toma g = 10 m/s².'];
       const pregunta = [`¿Qué `, v('x', 'altura'), ` marcará la columna de mercurio en ${ciudad}?`];
       const errores = [
-        h('FH-nivel-del-mar', 76, 'La columna no se queda igual: arriba hay menos aire encima, así que el aire empuja menos y sostiene menos mercurio.', TRAMPAS),
-        pa('F8-presion-crece-al-subir', 76 + dh, 'Sumaste la diferencia. Al subir, la presión del aire baja: queda menos aire encima.'),
+        h('FH-misma-columna', h0, 'La columna no se queda igual: arriba hay menos aire encima, así que el aire empuja menos y sostiene menos mercurio.', TRAMPAS),
+        pa('F8-presion-crece-al-subir', h0 + dh, 'Sumaste la diferencia. Al subir, la presión del aire baja: queda menos aire encima.'),
         h('FH-da-la-bajada', dh, `${f(dh)} cm es cuánto baja la columna, no cuánto mide.`),
-        h('FH-mezcla-m-y-cm', 76 - dh / 100, `Restaste la bajada en metros (${f(dh / 100)} m) a la columna en centímetros.`),
+        h('FH-mezcla-m-y-cm', h0 - dh / 100, `Restaste la bajada en metros (${f(dh / 100)} m) a la columna en centímetros.`),
       ];
+      if (zA > 0) errores.splice(1, 0, h('FH-nivel-del-mar', 76 - dh, `Partiste de 76 cm, la columna del nivel del mar. El barómetro marcaba ${h0} cm en ${desde}: la bajada se resta de ahí.`, TRAMPAS));
       const solucion = [
-        ['Al subir ', v('z', `${f(z)} m`), `, se deja abajo una capa de aire que empujaba con ρ·g·h = 0,85 · 10 · ${f(z)} = ${f(rhoA * G * z)} Pa.`],
+        ['Al subir ', v('z', `${f(z)} m`), `, se deja abajo una capa de aire que empujaba con ρ·g·h = 1 · 10 · ${f(z)} = ${f(rhoA * G * z)} Pa.`],
         [`Esa presión equivale a una columna de mercurio de ${f(rhoA * G * z)} / (13 600 · 10) = ${P.formatear(dh / 100, 4)} m = ${f(dh)} cm.`],
-        [v('x', 'h'), ' = ', v('hc', '76'), ` − ${f(dh)} = `, v('x', cm(hc)), '.'],
+        [v('x', 'h'), ' = ', v('hc', String(h0)), ` − ${f(dh)} = `, v('x', cm(hc)), '.'],
       ];
       return cerrar(rng, semilla, { correcta: hc, errores, texto: cm, unidad: 'cm', dec: 2, cualquiera: true, variables: VAR, enunciado, pregunta, solucion,
-        datos: { tipo: 'barometro', sub, h0_cm: 76, z_m: z, rhoAire: rhoA } });
+        datos: { tipo: 'barometro', sub, h0_cm: h0, z_m: z, rhoAire: rhoA } });
     }
     // absoluta o manométrica en una ciudad de altura
-    const [ciudad, hm] = rng.elegir(CIUDADES.filter(c => c[1] < 0.6));
+    const [ciudad, , hm] = rng.elegir(CIUDADES.filter(c => c[2] < 0.6));
     const Patm = HG * G * hm / 1000;
-    const Pm = rng.elegir([30, 50, 80, 120, 150, 200, 250]);
-    const deCosa = rng.elegir(['de la llanta de una mototaxi', 'del tanque de una compresora', 'de una olla a presión']);
+    const Pm = rng.elegir([20, 30, 40, 50, 60, 80, 90, 120, 150, 180, 200, 220, 250, 300]);
+    const deCosa = rng.elegir(['de la llanta de una mototaxi', 'del tanque de una compresora', 'de una olla a presión', 'de la llanta de una bicicleta', 'de la llanta de una combi']);
     if (deCosa.includes('olla') && Pm > 100) return null;
     if (sub === 'absoluta') {
       const enunciado = [`En ${ciudad}, un barómetro de mercurio (13 600 kg/m³) marca `, v('hc', cm(hm * 100)), `. Ahí mismo, el manómetro ${deCosa} marca `, v('P', kPa(Pm)), ' (presión manométrica). Toma g = 10 m/s².'];

@@ -1,16 +1,16 @@
 {
   "plantilla": "fluidos-hidrodinamica",
   "tolerancia": 1e-06,
-  "nota": "g = 10 m/s², agua 1000 kg/m³, mercurio 13 600 kg/m³, π = 3 en las áreas con diámetro o radio. Presiones en kPa (las de bernoulli son absolutas). En torricelli, H es la altura del agua sobre el piso e y la del orificio; la profundidad del orificio es H − y. En barometro/comparar el aire tiene densidad constante rhoAire (modelo declarado en el enunciado). Los esperados se calcularon aparte, en Python, con las fórmulas cerradas (el generador y la prueba usan otros caminos).",
-  "verificacion": "PENDIENTE",
+  "nota": "g = 10 m/s², agua 1000 kg/m³, mercurio 13 600 kg/m³, π = 3 en las áreas con diámetro o radio. Presiones en kPa (las de bernoulli son absolutas). En torricelli, H es la altura del agua sobre el piso e y la del orificio; la profundidad del orificio es H − y. En barometro/comparar el aire tiene densidad media constante rhoAire = 1 kg/m³ (modelo declarado en el enunciado); h0_cm es la columna en la ciudad de partida. En torricelli/angulo la respuesta es tan θ = vy/vx bajo la horizontal. Los esperados se calcularon aparte, en Python, con las fórmulas cerradas (el generador y la prueba usan otros caminos).",
+  "verificacion": "Verificación a ciegas (subagente verificador, 8 nov 2026): se resolvieron por cuenta propia, con fracciones exactas, las 46 semillas del lote (16 de casos.json y 30 extra), con Torricelli como caída desde la superficie más la cinemática del chorro y Bernoulli como energía por volumen. Coinciden 46 de 46 en letra y valor. Tras la revisión, el barómetro usa densidad media de 1 kg/m³ y los ángulos de llegada se corrigieron; esos casos los recalculó el constructor aparte.",
   "casos": [
     {
       "semilla": 0,
       "entrada": {
         "tipo": "densidad",
         "sub": "peso-especifico",
-        "m_g": 200,
-        "V_cm3": 250
+        "m_g": 240,
+        "V_cm3": 300
       },
       "esperado": {
         "respuesta": 8000.0,
@@ -22,25 +22,12 @@
       "entrada": {
         "tipo": "torricelli",
         "sub": "rapidez",
-        "H": 2,
-        "y": 0.2
+        "H": 0.7,
+        "y": 0.5
       },
       "esperado": {
-        "respuesta": 6.0,
-        "exacta": "6 m/s"
-      }
-    },
-    {
-      "semilla": 2,
-      "entrada": {
-        "tipo": "torricelli",
-        "sub": "llegada",
-        "H": 1.25,
-        "y": 0.8
-      },
-      "esperado": {
-        "respuesta": 5.0,
-        "exacta": "5 m/s"
+        "respuesta": 2.0,
+        "exacta": "2 m/s"
       }
     },
     {
@@ -48,8 +35,8 @@
       "entrada": {
         "tipo": "bernoulli",
         "sub": "velocidad",
-        "P1": 120,
-        "P2": 106.5,
+        "P1": 110,
+        "P2": 96.5,
         "razonAreas": 2
       },
       "esperado": {
@@ -63,9 +50,9 @@
         "tipo": "bernoulli",
         "sub": "caudal",
         "P1": 150,
-        "Q_Ls": 8,
-        "A1_cm2": 40,
-        "A2_cm2": 20
+        "Q_Ls": 10,
+        "A1_cm2": 50,
+        "A2_cm2": 25
       },
       "esperado": {
         "respuesta": 144.0,
@@ -77,14 +64,14 @@
       "entrada": {
         "tipo": "caudal",
         "sub": "rapidez",
-        "D_cm": 10,
-        "Q": 60,
+        "D_cm": 8,
+        "Q": 12,
         "uQ": "L/s",
         "pi": 3
       },
       "esperado": {
-        "respuesta": 8.0,
-        "exacta": "8 m/s"
+        "respuesta": 2.5,
+        "exacta": "2,5 m/s"
       }
     },
     {
@@ -93,8 +80,8 @@
         "tipo": "caudal",
         "sub": "llenado",
         "D_cm": 4,
-        "v": 1,
-        "V_L": 360,
+        "v": 1.5,
+        "V_L": 540,
         "pi": 3
       },
       "esperado": {
@@ -107,12 +94,12 @@
       "entrada": {
         "tipo": "torricelli",
         "sub": "angulo",
-        "H": 1.2,
+        "H": 2.5,
         "y": 0.9
       },
       "esperado": {
-        "respuesta": 60.0,
-        "exacta": "60°"
+        "respuesta": 0.75,
+        "exacta": "3/4"
       }
     },
     {
@@ -135,13 +122,13 @@
         "tipo": "bernoulli",
         "sub": "presion",
         "P1": 160,
-        "v1": 1,
+        "v1": 2,
         "razonAreas": 4,
         "porDiametro": true
       },
       "esperado": {
-        "respuesta": 152.5,
-        "exacta": "152,5 kPa"
+        "respuesta": 130.0,
+        "exacta": "130 kPa"
       }
     },
     {
@@ -149,14 +136,28 @@
       "entrada": {
         "tipo": "caudal",
         "sub": "ducto",
-        "D_cm": 20,
-        "V_m3": 54,
-        "t_min": 12,
+        "D_cm": 40,
+        "V_m3": 72,
+        "t_min": 5,
         "pi": 3
       },
       "esperado": {
-        "respuesta": 2.5,
-        "exacta": "2,5 m/s"
+        "respuesta": 2.0,
+        "exacta": "2 m/s"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "continuidad",
+        "sub": "radios",
+        "r1_cm": 2.4,
+        "r2_cm": 0.8,
+        "v1": 1.2
+      },
+      "esperado": {
+        "respuesta": 10.8,
+        "exacta": "10,8 m/s"
       }
     },
     {
@@ -165,12 +166,12 @@
         "tipo": "barometro",
         "sub": "comparar",
         "h0_cm": 76,
-        "z_m": 3800,
-        "rhoAire": 0.85
+        "z_m": 3808,
+        "rhoAire": 1
       },
       "esperado": {
-        "respuesta": 52.25,
-        "exacta": "52,25 cm"
+        "respuesta": 48.0,
+        "exacta": "48 cm"
       }
     },
     {
@@ -178,12 +179,12 @@
       "entrada": {
         "tipo": "barometro",
         "sub": "absoluta",
-        "h_cm": 51,
+        "h_cm": 52,
         "Pman_kPa": 250
       },
       "esperado": {
-        "respuesta": 319.36,
-        "exacta": "319,36 kPa"
+        "respuesta": 320.72,
+        "exacta": "320,72 kPa"
       }
     },
     {
@@ -191,12 +192,12 @@
       "entrada": {
         "tipo": "torricelli",
         "sub": "alcance",
-        "H": 2,
-        "y": 0.2
+        "H": 1.7,
+        "y": 1.25
       },
       "esperado": {
-        "respuesta": 1.2,
-        "exacta": "1,2 m"
+        "respuesta": 1.5,
+        "exacta": "1,5 m"
       }
     },
     {
