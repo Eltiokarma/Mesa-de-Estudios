@@ -120,6 +120,10 @@ input[type=text]:focus{outline:none;border-color:var(--brand)}
 .alt.mal{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--card))}
 .alt.mal .letra{background:var(--warn);border-color:var(--warn);color:#fff}
 .alt:disabled{cursor:default;opacity:1;color:inherit}
+/* «No sé»: al final, sin letra, sobria (borde punteado y texto suave). Ocupa toda la fila. */
+.alt.nose{grid-column:1/-1;justify-content:center;border-style:dashed;background:transparent;color:var(--muted);font-weight:500;font-size:15px;padding:10px 14px}
+.alt.nose:not(:disabled):hover{border-color:var(--muted);color:var(--ink)}
+.alt.nose.elegida,.alt.nose.ok{border-color:var(--muted);background:var(--line);color:var(--ink)}
 .retro{margin-top:16px;border-radius:var(--radius-s);padding:14px 16px}
 .retro.bien{background:color-mix(in srgb,var(--ok) 14%,var(--card))}
 .retro.malo{background:color-mix(in srgb,var(--warn) 10%,var(--card))}
