@@ -74,7 +74,10 @@ async function vista(ctx, id, unidad) {
     const ors = L().oraciones(it);
     const pars = [...new Set(ors.map(o => o.parrafo))];
     const figs = k => L().figuras(it).filter(f => f.despues === k).map(f => figuraHTML(f, pint)).join('');
-    return figs(0) + pars.map(k => `<p class="lec-par${modo === 'marcar' ? ' marcar' : ''}"><span class="lec-np" aria-hidden="true">${CIRC[k - 1] || k}</span> ${ors.filter(o => o.parrafo === k).map(o => oracionHTML(o, modo, pint, sel)).join(' ')}</p>${figs(k)}`).join('');
+    // Par de textos A/B: un rótulo («Texto A», y la firma si la hay) antes del primer párrafo de cada autor.
+    const autor = k => { const a = L().autores(it).find(x => x.desde === k - 1);
+      return a ? `<h2 class="lec-autor"><span>${esc(a.titulo)}</span>${a.firma ? ` <small>${esc(a.firma)}</small>` : ''}</h2>` : ''; };
+    return figs(0) + pars.map(k => `${autor(k)}<p class="lec-par${modo === 'marcar' ? ' marcar' : ''}"><span class="lec-np" aria-hidden="true">${CIRC[k - 1] || k}</span> ${ors.filter(o => o.parrafo === k).map(o => oracionHTML(o, modo, pint, sel)).join(' ')}</p>${figs(k)}`).join('');
   }
   // Textos discontinuos: tabla, barras horizontales (desde 0) o recuadros. Cada parte se pinta como una oración.
   function figuraHTML(f, pint) {
@@ -187,6 +190,7 @@ async function vista(ctx, id, unidad) {
           clasificar: L().CLASES.map(c => [c.id, c.t, '']),
           relacion: L().RELACIONES.map(c => [c.id, c.t, c.d]),
           proposito: L().PROPOSITOS.map(c => [c.id, c.t, '']),
+          atribuir: L().ATRIBUCIONES.map(c => [c.id, c.t, '']),
           'relacion-analogia': L().ANALOGIAS.map(c => [c.id, L().textoAnalogia(c.id, (it.cuerpo || {}).base), '']),
         }[p.tipo];
         cuerpo = (p.sonda ? `<blockquote class="sonda">${esc(p.sonda)}</blockquote>` : '')
@@ -325,8 +329,9 @@ async function vista(ctx, id, unidad) {
   // La etiqueta de la tarjeta ya dice "Antes de ver las alternativas": no se repite en la consigna.
   const pide = t => { const x = String(t).replace(/^antes de ver las alternativas\s*[,:]?\s*/i, ''); return x.charAt(0).toUpperCase() + x.slice(1); };
   const etqPregunta = q => `<div class="etq-p">${q.numero ? `Pregunta ${q.numero} de ${q.total}` : 'Pregunta'}</div>`;
-  const altsHTML = q => `<p class="preg" tabindex="-1">${esc(q.enunciado)}</p>
-    <div class="alts lec-alts" role="group" aria-label="Alternativas">${q.alternativas.map(a =>
+  // Una pregunta con "idioma" (inglés, como en el examen de San Marcos) marca su enunciado y sus alternativas con lang.
+  const altsHTML = q => `<p class="preg" tabindex="-1"${q.idioma ? ` lang="${esc(q.idioma)}"` : ''}>${esc(q.enunciado)}</p>
+    <div class="alts lec-alts" role="group" aria-label="Alternativas"${q.idioma ? ` lang="${esc(q.idioma)}"` : ''}>${q.alternativas.map(a =>
       `<button type="button" class="alt" data-letra="${a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.t)}</span></button>`).join('')}</div>
     <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>${q.alternativas[q.alternativas.length - 1].letra}</kbd> o <kbd>1</kbd>–<kbd>${q.alternativas.length}</kbd> para elegir, <kbd>Enter</kbd> para seguir.</p>`;
   function esperarAlternativa(q) {
