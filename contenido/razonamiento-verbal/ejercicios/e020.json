@@ -48,9 +48,9 @@
   "origen": "propio",
   "fecha": "2026-11-07",
   "revision": {
-    "por": "subagente (resolución a ciegas de 3 ejercicios cada uno)",
+    "por": "subagente (resolución a ciegas), dos rondas: con «fabrica o da» y con la etiqueta nueva «De {a} se obtiene {b}»",
     "fecha": "2026-11-08",
-    "veredicto": "cambios",
-    "notas": "A ciegas: clave correcta, pero «el virus te da fiebre» hace defendible «fabrica o da». Fuera del índice hasta resolver la etiqueta."
+    "veredicto": "aprobado",
+    "notas": "A ciegas: una sola respuesta; paso previo limpio con la etiqueta nueva."
   }
 }

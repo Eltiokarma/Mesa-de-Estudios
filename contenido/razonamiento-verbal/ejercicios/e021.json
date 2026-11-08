@@ -7,27 +7,27 @@
   "dificultad": 2,
   "cuerpo": {
     "base": [
-      "FRICCIÓN",
-      "CALOR"
+      "DESCUIDO",
+      "ACCIDENTE"
     ]
   },
   "previo": {
     "tipo": "relacion-analogia",
     "pide": "Antes de ver las alternativas: ¿qué relación hay entre las dos palabras?",
     "aceptada": "a-causa-b",
-    "explicacion": "Al frotarse las manos se calientan: la fricción causa calor.",
+    "explicacion": "Por un descuido, como cruzar sin mirar, ocurre un accidente: el descuido es la causa.",
     "explicaciones": {
-      "b-causa-a": "Es al revés: la fricción causa el calor, no el calor la fricción.",
-      "a-usa-b": "La fricción no es alguien que use el calor: el calor es lo que resulta de ella."
+      "b-causa-a": "Es al revés: el descuido causa el accidente, no el accidente al descuido.",
+      "a-produce-b": "Del descuido no se obtiene nada, como de la vaca se obtiene leche: el accidente ocurre por él, sin que nadie lo busque."
     }
   },
-  "enunciado": "FRICCIÓN : CALOR ::",
+  "enunciado": "DESCUIDO : ACCIDENTE ::",
   "alternativas": [
     {
       "t": "golpe : moretón",
       "correcta": true,
       "evidencia": [],
-      "explicacion": "Lo primero causa lo segundo, en el mismo orden: frotar causa calor y el golpe causa el moretón."
+      "explicacion": "Lo primero causa lo segundo, en el mismo orden: el descuido causa el accidente y el golpe causa el moretón."
     },
     {
       "t": "humo : fuego",
@@ -35,9 +35,9 @@
       "explicacion": "Es una causa y su efecto, pero al revés: el fuego causa el humo, y en la pareja base la causa va primero."
     },
     {
-      "t": "leña : fogón",
+      "t": "casco : obra",
       "codigo": "RV15",
-      "explicacion": "Las dos recuerdan el calor y el fuego, pero la leña no causa el fogón: es lo que se quema en él."
+      "explicacion": "Recuerda la seguridad y los accidentes, pero el casco no causa la obra: se usa en ella."
     },
     {
       "t": "mango : sartén",
@@ -48,9 +48,9 @@
   "origen": "propio",
   "fecha": "2026-11-07",
   "revision": {
-    "por": "subagente (resolución a ciegas de 3 ejercicios cada uno)",
+    "por": "subagente (resolución a ciegas), dos rondas: con «fabrica o da» y con la etiqueta nueva «De {a} se obtiene {b}»",
     "fecha": "2026-11-08",
-    "veredicto": "cambios",
-    "notas": "A ciegas: clave correcta, pero «la fricción produce calor» hace defendible «fabrica o da». «Fósforo : vela» pasó a «leña : fogón». Fuera del índice hasta resolver la etiqueta."
+    "veredicto": "aprobado",
+    "notas": "A ciegas: con FRICCIÓN : CALOR, «De la fricción se obtiene calor» era defendible (se frota para obtener calor). La base pasó a DESCUIDO : ACCIDENTE, sin propósito de obtener nada; «leña : fogón» pasó a «casco : obra»."
   }
 }

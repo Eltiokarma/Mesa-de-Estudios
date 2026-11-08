@@ -468,3 +468,9 @@ El revisor a ciegas las resolvió bien, con una sola respuesta en cada una. Reto
    - que el paso previo `relacion-analogia` acepte más de una respuesta (`aceptadas`), para tomar como buenas «causa» y «fabrica o da» en pares de fenómenos.
 
    Cuando esté, reviso e019 a e021 y los meto al índice.
+
+**Actualización (8 nov 2026).** La integración cambió la etiqueta de `a-produce-b` a «De {a} se obtiene {b}». Ajusté a esa etiqueta las explicaciones del paso previo de e001, e019 y e020, y repetí la revisión a ciegas de e019 a e021:
+- **e019 y e020:** limpias.
+- **e021:** con FRICCIÓN : CALOR, «De la fricción se obtiene calor» se defendía con razón, porque se frota justamente para obtener calor. La base pasó a DESCUIDO : ACCIDENTE, con la misma clave (golpe : moretón).
+
+Los tres quedaron aprobados y en el índice. `npm test` da 4419 de 4420; falta `npm run catalogo` por el índice.

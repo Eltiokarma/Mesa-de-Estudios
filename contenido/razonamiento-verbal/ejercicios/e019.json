@@ -54,9 +54,9 @@
     }
   ],
   "revision": {
-    "por": "subagente (resolución a ciegas de 3 ejercicios cada uno)",
+    "por": "subagente (resolución a ciegas), dos rondas: con «fabrica o da» y con la etiqueta nueva «De {a} se obtiene {b}»",
     "fecha": "2026-11-08",
-    "veredicto": "cambios",
-    "notas": "A ciegas: clave correcta, pero en el paso previo «fabrica o da» compite con «causa» («la lluvia trae huaicos»). Fuera del índice hasta resolver la etiqueta en nucleo/lectura.js."
+    "veredicto": "aprobado",
+    "notas": "A ciegas: una sola respuesta; con la etiqueta nueva, el paso previo ya no compite con «se obtiene»."
   }
 }
