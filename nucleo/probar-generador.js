@@ -37,6 +37,10 @@ function probarGenerador(gen, { semillas = 400, recalcular, igual = igualNumero 
         assert.ok(igual(esperado, p.respuesta.valor), `semilla ${s}: el cálculo independiente da ${esperado}, el generador ${p.respuesta.valor}`);
       }
       for (const campo of ['enunciado', 'pregunta', 'solucion']) assert.ok(Array.isArray(p[campo]) && p[campo].length, `semilla ${s}: falta ${campo}`);
+      // Nada de «null», «NaN» ni «undefined» en lo que ve el alumno (un texto exacto que no se pudo armar).
+      const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t) : String(x));
+      const visto = [p.enunciado, p.pregunta, p.solucion, alt.map(a => a.texto), alt.filter(a => a.error).map(a => a.error.explicacion)].map(plano).join(' ');
+      assert.ok(!/\bnull\b|\bNaN\b|\bundefined\b/.test(visto), `semilla ${s}: el texto muestra null, NaN o undefined`);
     }
   });
 }
