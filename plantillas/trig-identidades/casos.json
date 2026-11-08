@@ -1,0 +1,359 @@
+{
+  "plantilla": "trig-identidades",
+  "tolerancia": 0.000001,
+  "nota": "Ángulos con la convención de academia (37°/53° del triángulo 3-4-5). Fracciones de _datos como [n, d] = n/d; los campos de cada tipo están en la cabecera de generador.js.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "maximo",
+        "m": 6,
+        "n": 8,
+        "c": 0,
+        "cuadrado": "sen",
+        "pide": "min"
+      },
+      "esperado": {
+        "respuesta": -1,
+        "exacta": "−1"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "triangulo-doble",
+        "h": 4,
+        "a": 11,
+        "pide": "tanB"
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "exacta": "1/2"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "reduccion-doble",
+        "theta": 330,
+        "op": "resta"
+      },
+      "esperado": {
+        "respuesta": -1.154700538379251,
+        "exacta": "−2√3/3"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "triple-producto",
+        "modo": "hora",
+        "k": 20,
+        "b": 3,
+        "c": 20,
+        "pide": "maxima"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 h"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "triangulo-doble",
+        "h": 24,
+        "a": 46,
+        "pide": "tanC"
+      },
+      "esperado": {
+        "respuesta": 2.4,
+        "exacta": "12/5"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "suma-k",
+        "dato": "suma",
+        "k": [
+          1,
+          5
+        ],
+        "cuadrante": 4,
+        "pide": "otra"
+      },
+      "esperado": {
+        "respuesta": -1.4,
+        "exacta": "−7/5"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "cadena",
+        "n": 2,
+        "x": 7.5
+      },
+      "esperado": {
+        "respuesta": 6.92820323027551,
+        "exacta": "4√3"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "suma-k",
+        "dato": "suma",
+        "k": [
+          -1,
+          5
+        ],
+        "cuadrante": 2,
+        "pide": "tangente"
+      },
+      "esperado": {
+        "respuesta": -0.7499999999999999,
+        "exacta": "−3/4"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "cofuncion",
+        "rel": "sec-csc",
+        "al": 5,
+        "p": -10,
+        "be": 4,
+        "q": 19
+      },
+      "esperado": {
+        "respuesta": 9,
+        "exacta": "9"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "acotar",
+        "modo": "cuartas",
+        "a": 10,
+        "c": 4,
+        "pot": 4,
+        "signo": null,
+        "pide": "min"
+      },
+      "esperado": {
+        "respuesta": 9,
+        "exacta": "9"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "maximo",
+        "m": 16,
+        "n": 12,
+        "c": -2,
+        "cuadrado": "sen",
+        "pide": "min"
+      },
+      "esperado": {
+        "respuesta": -6,
+        "exacta": "−6"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "maximo",
+        "m": 6,
+        "n": 8,
+        "c": -2,
+        "cuadrado": "sen",
+        "pide": "max"
+      },
+      "esperado": {
+        "respuesta": 7,
+        "exacta": "7"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "condicional",
+        "suma": 180,
+        "tanA": [
+          2,
+          3
+        ],
+        "tanB": [
+          1,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": -1.75,
+        "exacta": "−7/4"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "triple-producto",
+        "modo": "valor",
+        "F": "cos",
+        "x": 10,
+        "k": 2
+      },
+      "esperado": {
+        "respuesta": 0.43301270189221935,
+        "exacta": "√3/4"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "condicional",
+        "suma": 90,
+        "tanA": [
+          1,
+          2
+        ],
+        "tanB": [
+          2,
+          11
+        ],
+        "pide": "cos"
+      },
+      "esperado": {
+        "respuesta": 0.6,
+        "exacta": "3/5"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "cofuncion",
+        "rel": "tan-cot",
+        "al": 4,
+        "p": 15,
+        "be": 2,
+        "q": -3
+      },
+      "esperado": {
+        "respuesta": 13,
+        "exacta": "13"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "triangulo-doble",
+        "h": 12,
+        "a": 23,
+        "pide": "tanB"
+      },
+      "esperado": {
+        "respuesta": 0.6666666666666666,
+        "exacta": "2/3"
+      }
+    },
+    {
+      "semilla": 48,
+      "entrada": {
+        "tipo": "cofuncion",
+        "rel": "tan-tan",
+        "al": 2,
+        "p": -5,
+        "be": 3,
+        "q": 40
+      },
+      "esperado": {
+        "respuesta": 11,
+        "exacta": "11"
+      }
+    },
+    {
+      "semilla": 59,
+      "entrada": {
+        "tipo": "terreno",
+        "AB": 12,
+        "AD": 9,
+        "AC": 10,
+        "S": 60,
+        "ABtexto": "12",
+        "ADtexto": "9",
+        "Stexto": "60"
+      },
+      "esperado": {
+        "respuesta": 16,
+        "exacta": "16°"
+      }
+    },
+    {
+      "semilla": 60,
+      "entrada": {
+        "tipo": "acotar",
+        "modo": "potencia",
+        "a": 3,
+        "c": 1,
+        "pot": 4,
+        "signo": "mas",
+        "pide": "dif"
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12"
+      }
+    },
+    {
+      "semilla": 83,
+      "entrada": {
+        "tipo": "suma-k",
+        "dato": "suma",
+        "k": [
+          7,
+          13
+        ],
+        "cuadrante": 2,
+        "pide": "producto"
+      },
+      "esperado": {
+        "respuesta": -0.3550295857988166,
+        "exacta": "−60/169"
+      }
+    },
+    {
+      "semilla": 150,
+      "entrada": {
+        "tipo": "cofuncion",
+        "rel": "sen-cos",
+        "al": 3,
+        "p": 25,
+        "be": 2,
+        "q": 10
+      },
+      "esperado": {
+        "respuesta": 11,
+        "exacta": "11"
+      }
+    },
+    {
+      "semilla": 381,
+      "entrada": {
+        "tipo": "cofuncion",
+        "rel": "cos-cos",
+        "al": 5,
+        "p": 30,
+        "be": 3,
+        "q": 38
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4"
+      }
+    }
+  ]
+}

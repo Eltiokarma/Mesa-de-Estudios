@@ -1,0 +1,115 @@
+{
+  "titulo": "Ángulo doble, triple y condiciones entre ángulos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la práctica, con unos 3 minutos por problema. Identidades que sirven: sen 2x = 2 sen x cos x; cos 2x = cos²x − sen²x = 2cos²x − 1 = 1 − 2sen²x; tan 2x = 2 tan x/(1 − tan²x); cot x − tan x = 2 cot 2x; tan x + cot x = 2 csc 2x; 4 cos x cos(60° − x) cos(60° + x) = cos 3x (y lo mismo con senos). Si A + B + C = 180°, tan A + tan B + tan C = tan A·tan B·tan C; si A + B + C = 90°, tan A·tan B + tan B·tan C + tan C·tan A = 1. El valor de a sen θ + b cos θ va de −√(a² + b²) a √(a² + b²). Ángulos de academia: sen 37° = 3/5 y sen 53° = 4/5.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Calcula E = cot 15° − tan 15°.",
+      "respuesta": "2√3",
+      "pasos": [
+        "Con la identidad auxiliar cot x − tan x = 2 cot 2x y x = 15°: E = 2 cot 30°.",
+        "cot 30° = √3, así que E = 2√3.",
+        "Control: tan 15° = 2 − √3 y cot 15° = 2 + √3; la resta da 2√3."
+      ],
+      "verificar": [{ "fn": "cadena", "args": [{ "n": 1, "x": 15 }], "espera": { "valor": 3.4641016151377544 } }]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un ángulo x del II cuadrante cumple sen x + cos x = 7/13. Calcula sen x · cos x y sen x − cos x.",
+      "respuesta": "sen x · cos x = −60/169 y sen x − cos x = 17/13",
+      "pasos": [
+        "Eleva al cuadrado: (sen x + cos x)² = 1 + 2 sen x cos x, así que 49/169 = 1 + 2 sen x cos x y sen x cos x = −60/169.",
+        "(sen x − cos x)² = 1 − 2 sen x cos x = 1 + 120/169 = 289/169, así que sen x − cos x = ±17/13.",
+        "En el II cuadrante sen x > 0 y cos x < 0: sen x − cos x es positivo. Se descarta −17/13 y queda 17/13."
+      ],
+      "verificar": [{ "fn": "sumaK", "args": [{ "k": 0.5384615384615384, "dato": "suma", "cuadrante": 2 }], "espera": { "producto": -0.35502958579881655, "otra": 1.3076923076923077 } }]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "En un triángulo ABC, tan A = 3 y tan B = 1/2. ¿Cuánto vale tan C?",
+      "respuesta": "7",
+      "pasos": [
+        "En un triángulo, tan A + tan B + tan C = tan A·tan B·tan C.",
+        "3 + 1/2 + tan C = (3/2)·tan C → (3/2 − 1)·tan C = 7/2 → tan C = 7.",
+        "Control: tan(A + B) = (7/2)/(1 − 3/2) = −7 y tan C = −tan(A + B) = 7."
+      ],
+      "verificar": [{ "fn": "condicional180", "args": [{ "tanA": 3, "tanB": 0.5 }], "espera": { "tanC": 7 } }]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La altura (en cm) de una boya sobre un nivel de referencia, para un ángulo de giro x de la ola, es H(x) = 10 sen x cos x + 24 sen²x − 3. ¿Cuál es la mayor altura que alcanza?",
+      "respuesta": "22 cm",
+      "pasos": [
+        "sen x cos x = (sen 2x)/2 y sen²x = (1 − cos 2x)/2: H = 5 sen 2x − 12 cos 2x + 12 − 3 = 5 sen 2x − 12 cos 2x + 9.",
+        "5 sen 2x − 12 cos 2x llega como mucho a √(5² + 12²) = 13 (no a 17: el seno y el coseno no son extremos a la vez).",
+        "Altura máxima: 13 + 9 = 22 cm. La menor es −13 + 9 = −4 cm."
+      ],
+      "verificar": [{ "fn": "maximo", "args": [{ "m": 10, "n": 24, "c": -3, "cuadrado": "sen" }], "espera": { "max": 22, "min": -4 } }]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Calcula E = 8 sen 20° · sen 40° · sen 80°.",
+      "respuesta": "√3",
+      "pasos": [
+        "Con x = 20°: 60° − x = 40° y 60° + x = 80°. La identidad del triple dice 4 sen x sen(60° − x) sen(60° + x) = sen 3x.",
+        "E = 2·[4 sen 20° sen 40° sen 80°] = 2 sen 60°.",
+        "E = 2·(√3/2) = √3."
+      ],
+      "verificar": [{ "fn": "tripleProducto", "args": [{ "F": "sen", "x": 20, "k": 8 }], "espera": { "valor": 1.7320508075688772 } }]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "En un triángulo ABC el ángulo C mide el doble que el ángulo B. La altura AH (H en el lado BC) mide 6 m y BC mide 26 m. Calcula tan B y tan C.",
+      "respuesta": "tan B = 1/3 y tan C = 3/4",
+      "pasos": [
+        "Con t = tan B: BH = 6/t y HC = 6·cot 2B = 6(1 − t²)/(2t).",
+        "BH + HC = 26: 6/t + 3(1 − t²)/t = 26 → 3(3 − t²) = 26t → 3t² + 26t − 9 = 0.",
+        "Las raíces son 1/3 y −9; B es agudo, así que tan B = 1/3 (se descarta −9).",
+        "tan C = tan 2B = (2/3)/(1 − 1/9) = 3/4."
+      ],
+      "verificar": [{ "fn": "trianguloDoble", "args": [{ "h": 6, "a": 26 }], "espera": { "tanB": 0.3333333333333333, "tanC": 0.75 } }]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Sea E = 8(sen⁶x + cos⁶x) − 1, con x real. Halla el valor máximo, el mínimo y su diferencia.",
+      "respuesta": "Máximo 7, mínimo 1; diferencia 6",
+      "pasos": [
+        "sen⁶x + cos⁶x = (sen²x + cos²x)³ − 3 sen²x cos²x (sen²x + cos²x) = 1 − 3 sen²x cos²x = 1 − (3/4) sen²2x.",
+        "Como 0 ≤ sen²2x ≤ 1: 1/4 ≤ sen⁶x + cos⁶x ≤ 1.",
+        "E va de 8·(1/4) − 1 = 1 a 8 − 1 = 7. La diferencia es 6."
+      ],
+      "verificar": [{ "fn": "acotar", "args": [{ "modo": "cuartas", "a": 8, "c": -1, "pot": 6 }], "espera": { "max": 7, "min": 1, "dif": 6 } }]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Un huerto tiene forma de cuadrilátero ABCD con ángulo recto en A; AB = 6 m y AD = 8 m. La diagonal AC mide 10 m y forma con AB un ángulo agudo x (y con AD, 90° − x). El área del huerto es 50 m². ¿Cuánto mide x?",
+      "respuesta": "37°",
+      "pasos": [
+        "Área por los dos triángulos de la diagonal: 50 = (10/2)(6 sen x + 8 cos x), así que 6 sen x + 8 cos x = 10.",
+        "6 sen x + 8 cos x = 10 sen(x + 53°), porque √(6² + 8²) = 10, cos 53° = 3/5 y sen 53° = 4/5.",
+        "sen(x + 53°) = 1 → x + 53° = 90° → x = 37°."
+      ],
+      "verificar": [{ "fn": "terreno", "args": [{ "AB": 6, "AD": 8, "AC": 10, "S": 50 }], "espera": { "x": 37, "phi": 53 } }]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "Calcula E = tan 202°30′ + cot 202°30′.",
+      "respuesta": "2√2",
+      "pasos": [
+        "Identidad auxiliar: tan θ + cot θ = 2 csc 2θ. Con θ = 202°30′, 2θ = 405° = 360° + 45°.",
+        "csc 405° = csc 45° = √2 (I cuadrante, positivo).",
+        "E = 2√2. Control: 202°30′ está en el III cuadrante, donde la tangente es positiva."
+      ],
+      "verificar": [{ "fn": "reduccionDoble", "args": [{ "theta": 202.5, "op": "suma" }], "espera": { "valor": 2.8284271247461903 } }]
+    }
+  ]
+}
