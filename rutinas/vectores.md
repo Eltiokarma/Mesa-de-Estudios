@@ -120,3 +120,44 @@ Y en `nucleo/probar-generador.js`, una opción `igual(a, b)` para comparar `resp
 **Variante, si la principal prefiere no tocar el núcleo:** G4 a G7 preguntan solo escalares, y se aceptan solo los tipos en los que el resumen no colapsa los errores; se quedan fuera los de pesos derechos y los de m y n cambiados. Es posible, pero se pierde lo más frecuente del libro (T4: 26 de 200).
 
 **Espero la aprobación de la principal antes de implementar nada de esto.**
+
+## Tarea 4: `armarTexto` y generadores G4 a G7 (aprobado por la principal)
+
+La principal aprobó `armarTexto` con cuatro condiciones. Se cumplieron todas:
+1. Es compatible hacia atrás y tiene sus pruebas.
+2. Se agregó la opción `igual` en `probarGenerador`.
+3. Convive con `formato: 'pi'`: primero hice merge de la principal.
+4. Hay un commit para el núcleo y otro por generador.
+
+**Núcleo** (`nucleo/predicciones.js` y `nucleo/probar-generador.js`):
+- `frac` y `textoFraccion`.
+- `combinacion(coefs, nombres)`, que da `{ clave, texto }` en forma de academia: «(2a + b)/3», «(2b − a)/2», «−(u + w)/6» o «3B − 2A».
+- `vector(comps)`, que escribe «(3/5; −4/5)».
+- `armarTexto`: compara por clave canónica, así que dos formas equivalentes no salen como dos opciones, y falla si dos claves distintas se escriben igual.
+- `probarGenerador(gen, { igual })`.
+- Pruebas en `nucleo/predicciones.test.js`.
+
+Los G4 a G7 de esta rutina son los G3 a G6 del mapa; el G7 del mapa (productos) es el G3 de la tarea 1.
+
+| Módulo | Tipos | Respuesta |
+| --- | --- | --- |
+| `vectores-unitario` (G4, T12) | unitario de un vector 2D o 3D; vector de módulo dado paralelo o antiparalelo; constante c > 0; unitario de A + B; unitario de y = mx + b hacia x creciente | vector con fracciones o número |
+| `vectores-combinacion` (G5, T5 y T10) | C en función de A y B (cuadrícula o componentes); A o B a partir de A + B y A − B; parámetro de paralelismo | expresión, vector o número |
+| `vectores-division` (G6, T4) | punto que divide m:n desde O; baricentro (AG, GM, AM); trapecio (diagonales y lados no paralelos); paralelogramo con punto medio o 1:2 | expresión en a y b, o en u y w |
+| `vectores-poligono` (G7, T1a) | desde un vértice a los demás (n = 3, 4, 6); n − 1 lados consecutivos (n de 3 a 8); del centro a todos los vértices menos uno | entero o k√n (con `armar`) |
+
+**Trampas que ahora sí se miden**, porque con un escalar resumen se perdían: `VE-pesos-derechos`, `VE-coeficientes-cambiados`, `VE-semisuma-por-semidiferencia`, `VE-baricentro-invertido`, `VE-suma-de-unitarios`, `VE-pendiente-a-direccion`, `VE-unitario-sin-escalar` y `VE-sentido-opuesto`, entre otras.
+
+**Códigos nuevos** (hipótesis):
+- `VE-unitario-sin-raiz`, `VE-modulo-entre`, `VE-constante-invertida`, `VE-unitario-de-la-resta`, `VE-pendiente-signo` y `VE-ordenada-en-direccion`;
+- `VE-signo-de-un-coeficiente`, `VE-componentes-como-coeficientes`, `VE-confunde-A-con-B`, `VE-suma-por-diferencia`, `VE-proporcion-invertida`, `VE-perpendicular-por-paralelo` y `VE-diferencia-constante`;
+- `VE-vector-equivocado`, `VE-baricentro-sin-mitad`, `VE-diferencia-por-suma`, `VE-mitad-de-una-base` y `VE-mitad-equivocada`;
+- `VE-perimetro`, `VE-lado-por-radio` y `VE-diametro`.
+
+**Pruebas:**
+- Cada generador corre 600 semillas con un recálculo independiente: módulo entero por tanteo, Cramer, fórmulas de academia y el radio L/√3, L/√2 o L.
+- Hay 39 casos verificados a ciegas, con coordenadas concretas, Cramer y trigonometría. Coinciden todos, también en la forma escrita.
+- `npm test`: 4609 en verde.
+- Playwright de los cuatro en la app, a 390 y 1366 px: sin errores ni desbordes.
+
+**Ojo con el historial:** los commits de G4, G5 y G6 no traen todavía el catálogo, que entró con el de G7. En esos tres commits intermedios fallaría la prueba de catálogo; en la punta de la rama está todo en verde.
