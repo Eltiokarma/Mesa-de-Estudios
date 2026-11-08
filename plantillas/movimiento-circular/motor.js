@@ -137,7 +137,17 @@
  *                               del borde, a un ángulo en grados medido desde lo más alto hacia adelante, trae x, y
  *                               (respecto al centro), vx, vy, modulo y distanciaApoyo (modulo = ω·distanciaApoyo).
  *                               Devuelve omega, arriba, adelante, abajo, centro = v y, con angulo, punto. errores: todosAv =
- *                               v, triple = 3v, arribaCero = 0, comoLateral = v·√2 (lo más alto tomado como un punto lateral).
+ *                               v, triple = 3v, arribaCero = 0, comoLateral = v·√2 (lo más alto tomado como un punto lateral),
+ *                               y para el punto más bajo (en una bobina, debajo del apoyo): abajoAdelante = |abajo.vx| (la
+ *                               rapidez correcta, pero hacia adelante como el centro) y abajoCero = 0 (quieto como el apoyo).
+ *   barraResbala({ L, angulo, vA })  barra (escalera) de largo L (m) apoyada en una pared (x = 0) y en el piso (y = 0), que
+ *                               forma angulo (grados, notables de academia) con el piso. El extremo A, en la pared, baja a vA
+ *                               (m/s, > 0); el extremo B, en el piso, se aleja de la pared. A = (0; L·sen), B = (L·cos; 0). El
+ *                               centro instantáneo es el corte de la horizontal por A con la vertical por B: cir = (L·cos;
+ *                               L·sen), fuera de la barra. Devuelve A, B, cir, dA = |cir − A| = L·cos, dB = |cir − B| = L·sen,
+ *                               omega = vA/dA (rad/s), vB = ω·dB = vA·tan(angulo) y vMedio (la del punto medio, ω·L/2).
+ *                               errores: vbIgualVa = vA (el centro en el medio de la barra: los dos extremos a L/2),
+ *                               cirEnExtremo = 0 (el centro en B: B quieto), senCosCambiados = vA·cos/sen (vA/tan).
  *   gotaDeRueda({ r, g, vueltas })  rueda vertical de radio r (m) que gira en un eje fijo; una gota sale del borde a la
  *                               altura del eje con la velocidad del borde hacia arriba y vuelve a caer al mismo lugar. Para
  *                               que la reciba el mismo punto del borde, la rueda da vueltas (1 si no se da) en el vuelo:
@@ -678,8 +688,18 @@
       return { x, y, vx: limpio(vx), vy: limpio(vy), modulo: limpio(Math.hypot(vx, vy)), distanciaApoyo: limpio(d) }; };
     const res = { r, rApoyo: rA, v, omega: w, arriba: punto(0), adelante: punto(90), abajo: punto(180), centro: v,
       errores: { todosAv: v, triple: 3 * v, arribaCero: 0, comoLateral: v * Math.SQRT2 } };
+    res.errores.abajoAdelante = Math.abs(res.abajo.vx); res.errores.abajoCero = 0;
     if (o.angulo !== undefined) res.punto = punto(num(o.angulo, 'ángulo'));
     return res;
+  }
+
+  // La barra que resbala entre la pared y el piso: centro instantáneo en el corte de las perpendiculares a vA y vB.
+  function barraResbala(o) {
+    const L = pos(o.L, 'largo de la barra'), ang = num(o.angulo, 'ángulo con el piso'), vA = pos(o.vA, 'vA');
+    if (!(ang > 0 && ang < 90)) throw new Error('el ángulo con el piso va entre 0° y 90° (sin incluirlos)');
+    const { sen, cos } = trig(ang, o.exacto), dA = L * cos, dB = L * sen, w = vA / dA;
+    return { L, angulo: ang, vA, A: { x: 0, y: dB }, B: { x: dA, y: 0 }, cir: { x: dA, y: dB }, dA, dB, omega: w, vB: w * dB, vMedio: w * L / 2,
+      errores: { vbIgualVa: vA, cirEnExtremo: 0, senCosCambiados: vA * cos / sen } };
   }
 
   // ---------- Más giros con otro movimiento ----------
@@ -703,5 +723,5 @@
 
   return { TAU, NOTABLES, trig, convertir, mcu, mcuv, mcuvDatos, mcuvTramos, entre, aceleracionTotal, desdeReposo, razonDesdeReposo,
     vectorial, deltaV, rigido, latitud, transmision, tren, poleaEscalonada, encuentroPista, reencuentroSalida, atraviesa,
-    enesimoSegundo, horaria, grafica, dosMoviles, poleaMovil, transmisionMCUV, rodadura, gotaDeRueda, despegaDelDisco };
+    enesimoSegundo, horaria, grafica, dosMoviles, poleaMovil, transmisionMCUV, rodadura, barraResbala, gotaDeRueda, despegaDelDisco };
 });

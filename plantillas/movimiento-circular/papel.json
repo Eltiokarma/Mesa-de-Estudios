@@ -204,25 +204,30 @@
   },
   {
    "id": "p7",
-   "nivel": "básico",
-   "enunciado": "Un bloque cuelga de una polea móvil. La cuerda de la izquierda sube a 5 m/s y la de la derecha baja a 1 m/s. ¿Con qué velocidad se mueve el bloque y hacia dónde?",
-   "respuesta": "Sube a 2 m/s.",
+   "nivel": "intermedio",
+   "enunciado": "Una escalera de 2,5 m está apoyada en una pared lisa y en el piso, formando 37° con el piso. Resbala: su extremo de arriba baja por la pared a 1,2 m/s. En ese instante, ¿con qué rapidez se aleja de la pared el extremo de abajo, y con qué velocidad angular gira la escalera? (sen 37° = 3/5)",
+   "respuesta": "El pie se aleja a 0,9 m/s y la escalera gira a 0,6 rad/s.",
    "pasos": [
-    "El centro de la polea (y el bloque) va al promedio de las velocidades de los dos lados, con su signo.",
-    "Tomando positivo hacia arriba: v = (5 + (−1))/2 = 2 m/s.",
-    "Sale positivo: el bloque sube. Además la polea gira, porque sus dos lados no van igual."
+    "Cada extremo se mueve a lo largo de su apoyo: el de arriba, vertical; el de abajo, horizontal. El centro instantáneo está donde se cortan las perpendiculares a esas velocidades: la horizontal que pasa por el extremo de arriba y la vertical que pasa por el de abajo. Queda fuera de la escalera.",
+    "El extremo de arriba está a 2,5·sen 37° = 1,5 m del piso y el de abajo a 2,5·cos 37° = 2 m de la pared. El centro instantáneo, en (2; 1,5), está a 2 m del extremo de arriba y a 1,5 m del de abajo.",
+    "ω = 1,2/2 = 0,6 rad/s. El pie: v = ω·1,5 = 0,9 m/s.",
+    "Ojo: los dos extremos no van igual de rápido (sería si el centro instantáneo estuviera en el medio de la escalera), y cambiar seno por coseno da 1,6 m/s."
    ],
    "verificar": [
     {
-     "fn": "poleaMovil",
+     "fn": "barraResbala",
      "args": [
       {
-       "v1": 5,
-       "v2": -1
+       "L": 2.5,
+       "angulo": 37,
+       "vA": 1.2
       }
      ],
      "espera": {
-      "vBloque": 2
+      "omega": 0.6,
+      "vB": 0.9,
+      "cir.x": 2,
+      "cir.y": 1.5
      }
     }
    ]

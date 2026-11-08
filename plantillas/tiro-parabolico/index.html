@@ -229,6 +229,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
         <h2 class="step-t" id="t3" tabindex="-1"></h2>
       </div>
       <div id="body3" class="body"></div>
+      <p class="pie">El movimiento circular sigue en su propia escena, con el MCUV, las aceleraciones, las gráficas y las poleas: <a class="a-escena" href="../movimiento-circular/index.html">«El disco y sus flechas»</a>.</p>
     </section>
   </div>
 
@@ -241,6 +242,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
   const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
   a.setAttribute('aria-label', 'Volver a la app');
   document.body.prepend(a);
+  document.querySelectorAll('a.a-escena').forEach(x => { x.search = '?desde=app'; });
 });
 </script>
 <script src="motor.js"></script>

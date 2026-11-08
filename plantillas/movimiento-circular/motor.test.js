@@ -8,7 +8,8 @@
 //    |Δv| = 2v·sen(Δθ/2) (CI-delta-v-cero); la cuerda nunca es más larga que el arco; acp apunta al centro con
 //    cualquier signo de ω; en la rueda que rueda, cada punto va a ω por su distancia al apoyo; el reencuentro en la
 //    salida es múltiplo de los dos periodos; la gráfica ω-t da lo mismo que la ecuación horaria; y las conversiones
-//    van y vuelven.
+//    van y vuelven; en la escalera que resbala, vB = vA·tan y el centro instantáneo cae fuera de la barra; en la bobina,
+//    el punto más bajo del disco grande va hacia atrás.
 // 4. Errores de entrada.
 
 const test = require('node:test');
@@ -176,6 +177,44 @@ test('la gota de la rueda: el vuelo dura lo que la rueda tarda en dar sus vuelta
   }
 });
 
+test('la escalera que resbala: el centro instantáneo cae fuera de la barra y vB = vA·tan', () => {
+  for (let k = 0; k < N; k++) {
+    const L = al(0.5, 10), ang = al(5, 85), vA = al(0.1, 10), x = M.barraResbala({ L, angulo:ang, vA, exacto:true });
+    const r = ang*Math.PI/180;
+    cerca(x.vB, vA*Math.tan(r), 'vB'); cerca(x.omega*x.dA, vA, 'vA = ω·dA'); cerca(Math.hypot(x.dA, x.dB), L, 'Pitágoras');
+    // fuera de la barra: la distancia del centro instantáneo a la recta AB es L·sen·cos > 0
+    const dist = Math.abs(x.cir.x*x.A.y + x.cir.y*x.B.x - x.A.y*x.B.x)/L;
+    cerca(dist, L*Math.sin(r)*Math.cos(r), 'distancia a la barra'); assert.ok(dist > 0);
+    // la velocidad del punto medio es ω por su distancia al centro instantáneo (L/2)
+    cerca(x.vMedio, x.omega*Math.hypot(x.cir.x - x.B.x/2, x.cir.y - x.A.y/2), 'punto medio');
+  }
+});
+test('la bobina: el punto más bajo del disco grande va hacia atrás', () => {
+  for (let k = 0; k < N; k++) {
+    const r = al(0.1, 1), b = al(0.1, 0.9)*r, v = al(0.2, 10), x = M.rodadura({ r, v, rApoyo:b });
+    assert.ok(x.abajo.vx < 0, 'hacia atrás'); cerca(x.abajo.vx, -v*(r - b)/b, 'v = −ω·(r − rApoyo)');
+  }
+});
+
+test('la escalera que resbala: el centro instantáneo cae fuera de la barra y vB = vA·tan', () => {
+  for (let k = 0; k < N; k++) {
+    const L = al(0.5, 10), ang = al(5, 85), vA = al(0.1, 10), x = M.barraResbala({ L, angulo:ang, vA, exacto:true });
+    const r = ang*Math.PI/180;
+    cerca(x.vB, vA*Math.tan(r), 'vB'); cerca(x.omega*x.dA, vA, 'vA = ω·dA'); cerca(Math.hypot(x.dA, x.dB), L, 'Pitágoras');
+    // fuera de la barra: la distancia del centro instantáneo a la recta AB es L·sen·cos > 0
+    const dist = Math.abs(x.cir.x*x.A.y + x.cir.y*x.B.x - x.A.y*x.B.x)/L;
+    cerca(dist, L*Math.sin(r)*Math.cos(r), 'distancia a la barra'); assert.ok(dist > 0);
+    // la velocidad del punto medio es ω por su distancia al centro instantáneo (L/2)
+    cerca(x.vMedio, x.omega*Math.hypot(x.cir.x - x.B.x/2, x.cir.y - x.A.y/2), 'punto medio');
+  }
+});
+test('la bobina: el punto más bajo del disco grande va hacia atrás', () => {
+  for (let k = 0; k < N; k++) {
+    const r = al(0.1, 1), b = al(0.1, 0.9)*r, v = al(0.2, 10), x = M.rodadura({ r, v, rApoyo:b });
+    assert.ok(x.abajo.vx < 0, 'hacia atrás'); cerca(x.abajo.vx, -v*(r - b)/b, 'v = −ω·(r − rApoyo)');
+  }
+});
+
 // 4. Errores de entrada
 test('errores de entrada', () => {
   assert.throws(() => M.convertir({ rpm: 60, f: 1 }), /una sola/);
@@ -186,6 +225,7 @@ test('errores de entrada', () => {
   assert.throws(() => M.grafica({ puntos: [[0, 1], [0, 2]] }), /crecer/);
   assert.throws(() => M.atraviesa({ L: 1, v: 100, modo: 'otro' }), /modo/);
   assert.throws(() => M.despegaDelDisco({ R: 1, d: 2, omega: 1 }), /dentro/);
+  assert.throws(() => M.barraResbala({ L: 1, angulo: 90, vA: 1 }), /entre 0° y 90°/);
   assert.throws(() => M.dosMoviles({ omega01: 1, alfa1: 1, omega02: 2, alfa2: 1 }), /nunca/);
   assert.throws(() => M.vectorial({ r: 1, omega: 0, t1: 0, t2: 1 }), /no gira/);
   assert.throws(() => M.mcuvDatos({ omega0: 1, omega: 2 }), /exactamente tres/);
