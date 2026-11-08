@@ -117,7 +117,8 @@
       "circular-mcuv",
       "circular-enesimo-segundo",
       "circular-encuentros",
-      "circular-mcu"
+      "circular-mcu",
+      "circular-horaria"
      ]
     },
     {
@@ -4585,6 +4586,21 @@
    "papel": null,
    "archivos": [
     "/plantillas/circular-enesimo-segundo/generador.js"
+   ]
+  },
+  "circular-horaria": {
+   "id": "circular-horaria",
+   "titulo": "De la ecuación al giro",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "#/practica/circular-horaria",
+   "papel": null,
+   "archivos": [
+    "/plantillas/circular-horaria/generador.js"
    ]
   },
   "circular-mcu": {

@@ -1,0 +1,194 @@
+{
+  "plantilla": "circular-horaria",
+  "tolerancia": 0.000001,
+  "nota": "θ en rad, S en m, t en s; θ y S crecen en sentido antihorario. coef = [a, b, c] de a + b·t + c·t². Las velocidades y aceleraciones van con signo; lo recorrido suma la ida y la vuelta sin signo.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: derivó simbólicamente los polinomios y calculó lo recorrido partiendo el intervalo donde ω = 0. Coinciden las 11; en las semillas 200 a 229 todo bien, salvo «de el punto» y dos explicaciones que daban |θ| como θ, ya corregidos (una prueba exige que nunca salga «de el»).",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "girado",
+        "coef": [
+          10,
+          10,
+          3
+        ],
+        "t1": 1,
+        "t2": 4
+      },
+      "esperado": {
+        "respuesta": 75,
+        "exacta": "75 rad"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "acp",
+        "coef": [
+          6,
+          1,
+          0.5
+        ],
+        "t": 1,
+        "r": 5
+      },
+      "esperado": {
+        "respuesta": 0.8,
+        "exacta": "0,8 m/s²"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "recorrido",
+        "sub": "neto",
+        "coef": [
+          4,
+          -16,
+          2
+        ],
+        "t1": 0,
+        "t2": 5
+      },
+      "esperado": {
+        "respuesta": -30,
+        "exacta": "−30 rad"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "girado",
+        "coef": [
+          3,
+          5,
+          0.5
+        ],
+        "t1": 3,
+        "t2": 5
+      },
+      "esperado": {
+        "respuesta": 18,
+        "exacta": "18 rad"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "parada",
+        "coef": [
+          35,
+          -12,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 s"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "omega",
+        "coef": [
+          3,
+          5,
+          -1
+        ],
+        "t": 3
+      },
+      "esperado": {
+        "respuesta": -1,
+        "exacta": "−1 rad/s"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "recorrido",
+        "sub": "neto",
+        "coef": [
+          1,
+          20,
+          -2
+        ],
+        "t1": 0,
+        "t2": 8
+      },
+      "esperado": {
+        "respuesta": 32,
+        "exacta": "32 rad"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "girado",
+        "coef": [
+          10,
+          6,
+          3
+        ],
+        "t1": 2,
+        "t2": 5
+      },
+      "esperado": {
+        "respuesta": 81,
+        "exacta": "81 rad"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "recorrido",
+        "sub": "recorrido",
+        "coef": [
+          7,
+          -10,
+          1
+        ],
+        "t1": 1,
+        "t2": 8
+      },
+      "esperado": {
+        "respuesta": 25,
+        "exacta": "25 rad"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "alfa",
+        "sub": "theta",
+        "coef": [
+          4,
+          3,
+          -1.5
+        ]
+      },
+      "esperado": {
+        "respuesta": -3,
+        "exacta": "−3 rad/s²"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "alfa",
+        "sub": "s",
+        "coef": [
+          3,
+          8,
+          1
+        ],
+        "r": 4
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "exacta": "0,5 rad/s²"
+      }
+    }
+  ]
+}
