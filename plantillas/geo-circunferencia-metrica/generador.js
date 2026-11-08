@@ -13,8 +13,11 @@
  *       sub 'centro':  la secante pasa por el centro; dados PT = t y PA = a, se pide el radio.
  *                                                                                   { t, a }
  *       sub 'semicirculo': rectángulo ABCD con AB = w (base) y BC = h; una semicircunferencia con
- *                      el diámetro sobre AB es tangente a BC (en B) y a la diagonal AC. Se pide la
- *                      longitud del arco de la semicircunferencia (π·r, con π indicado). { w, h }
+ *                      el diámetro sobre AB es tangente a BC (en B) y a la diagonal AC. pide 'arco':
+ *                      la longitud del arco (π·r, con π indicado); pide 'perimetro': el perímetro de
+ *                      la región semicircular (arco + diámetro = πr + 2r). En ese caso respuesta.valor
+ *                      es la clave 'pq:<coef. de π>|<término sin π>' (números con 6 decimales).
+ *                                                                                   { w, h, pide }
  *   secantes   Desde P exterior, dos secantes: P, A, B y P, C, D (A y C son los cortes más
  *              cercanos a P). Dados PA, AB y PC, se pide CD.                       { PA, AB, PC }
  *   cuerdas    Las cuerdas AB y CD se cortan en E.
@@ -37,6 +40,9 @@
  *   arcos-cuerdas  Circunferencia de radio R; B es el punto medio del arco menor AC.
  *       sub 'cuerda':  dados R y AC, se pide AB.                                   { R, AC }
  *       sub 'al-reves': dados R y AB (= BC), se pide AC.                           { R, AB2 } (AB2 = AB²)
+ *       sub 'congruencia': A, B, C, D en la circunferencia en ese orden, con arco AB = arco CD; las
+ *                      cuerdas AC y BD se cortan en E; AE = p, BE = q, ∠AED = ang (60, 90 o 120).
+ *                      Se pide la cuerda AD.                                       { p, q, ang }
  *   inscriptible  Cuadrado ABCD de lado L; M en BC con BM = m; N en CD con CN = m; P = AM ∩ BN.
  *                 pide 'MPC' o 'NPC': se pide ese ángulo (en grados; puede ser la mitad de un
  *                 notable, escrita «53°/2»).                                       { L, m, pide }
@@ -66,6 +72,13 @@
   };
   const igualRaiz = n2 => { const t = R(sq(n2)); return t === `√${n2}` ? t : `√${n2} = ${t}`; };
   const L = (x, u) => `${R(x)} ${u}`;
+  // Perímetro «pπ + q»: clave canónica y texto («(9π + 18) cm»). Solo si q es entero y pπ sale limpio.
+  const f6 = x => (Math.round(x * 1e6) / 1e6).toFixed(6);
+  const piMas = (p, q, u) => {
+    if (!(p > 0) || !(q > 0) || Math.abs(q - Math.round(q)) > 1e-9 || P.pi(Math.PI * p) === null) return null;
+    return { clave: `pq:${f6(p)}|${f6(q)}`, texto: `(${P.pi(Math.PI * p)} + ${Math.round(q)}) ${u}` };
+  };
+  const conPiMas = (id, p, q, u, explicacion) => { const t = piMas(p, q, u); return t && { id, ...t, explicacion, respaldo: 'hipotesis', fuente: null }; };
   // Ángulo: entero «37°» o mitad de un entero «53°/2».
   const grados = x => Number.isInteger(x) ? `${x}°` : `${Math.round(2 * x)}°/2`;
   const esAngulo = x => Number.isFinite(x) && x > 0 && x < 180 && Number.isInteger(Math.round(2 * x * 1e6) / 1e6);
@@ -87,6 +100,8 @@
     poncelet: (a, b) => (a + b - Math.hypot(a, b)) / 2,
     perimetroPoncelet: (c, r) => 2 * c + 2 * r,
     cuerdaArcoMitad: (r, ac) => sq(2 * r * (r - sq(r * r - ac * ac / 4))),
+    perimetroSemicirculo: (w, hh) => { const r = calc.radioSemicirculo(w, hh); return Math.PI * r + 2 * r; },
+    cuerdaCongruencia: (p_, ang) => sq(2 * p_ * p_ * (1 - Math.cos(ang * Math.PI / 180))), // AD con EA = ED = p
     anguloInscriptible: (l, m) => { const t = (l - m) / m; const T = { 1: 45, 2: 63.5, 0.5: 26.5, 3: 71.5 }; for (const [k, a] of Object.entries(T)) if (Math.abs(t - k) < 1e-9) return a; if (Math.abs(t - 1 / 3) < 1e-9) return 18.5; if (Math.abs(t - 4 / 3) < 1e-9) return 53; if (Math.abs(t - 0.75) < 1e-9) return 37; return NaN; },
   };
 
@@ -108,6 +123,15 @@
     const u = rng.elegir(['m', 'cm']);
     const r = CONSTRUCTORES[tipo](rng, u);
     if (!r) return null;
+    if (r.textual) {
+      const vistos = new Set([r.correcta.texto]);
+      const errores = r.errores.filter(e => e && e.clave && !vistos.has(e.texto) && (vistos.add(e.texto), true));
+      const alternativas = P.armarTexto({ correcta: r.correcta, errores, rng });
+      return {
+        id: `${ID}#${semilla}`, variables: r.variables, enunciado: r.enunciado, pregunta: r.pregunta, datos: '',
+        alternativas, solucion: r.solucion, respuesta: { valor: r.correcta.clave, unidad: r.unidad }, _datos: { tipo, ...r.datos },
+      };
+    }
     let forma, texto;
     if (r.angular) { forma = esAngulo; texto = grados; }
     else if (r.pi) { forma = x => P.pi(x, '', 12) !== null; texto = x => P.pi(x, r.unidad); }
@@ -232,8 +256,31 @@
       const w = 8 * k, hh = 6 * k, dg = 10 * k, r = 3 * k;
       const variables = { w: { nombre: 'base AB', color: 'o' }, hh: { nombre: 'lado BC', color: 'i' }, t: { nombre: 'tangente AT', color: 'h' }, x: { nombre: 'arco de la semicircunferencia', color: 'd' } };
       const rMal = (w * w - hh * hh) / (2 * w);
+      const pide = rng.elegir(['arco', 'perimetro']);
+      const pasos = [
+        ['Diagonal: AC = √(', v('w', `${w}`), '² + ', v('hh', `${hh}`), `²) = ${dg}.`],
+        ['Desde C, las tangentes CB y CT miden lo mismo: CT = ', v('hh', `${hh}`), '. Entonces ', v('t', `AT = ${dg} − ${hh} = ${dg - hh}`), '.'],
+        [`Desde A, la recta AB pasa por el centro y corta la semicircunferencia en E (AE = ${w} − 2r) y en B. Teorema de la tangente: AT² = AE·AB → ${(dg - hh) ** 2} = (${w} − 2r)·${w}.`],
+      ];
+      if (pide === 'perimetro') {
+        variables.x = { nombre: 'perímetro de la región semicircular', color: 'd' };
+        const corr = piMas(r, 2 * r, u);
+        return {
+          variables, unidad: u, textual: true, correcta: corr, datos: { sub, w, h: hh, pide },
+          enunciado: ['En el rectángulo ABCD, AB = ', v('w', L(w, u)), ' y BC = ', v('hh', L(hh, u)), '. Una semicircunferencia tiene su diámetro sobre AB, es tangente al lado BC en B y es tangente a la diagonal AC. La región semicircular queda limitada por el arco y por su diámetro.'],
+          pregunta: ['¿Cuál es el perímetro de la región semicircular?'],
+          errores: [
+            conPiMas('GE19-circunferencia-entera', 2 * r, 2 * r, u, `Usaste 2πr para el arco, la circunferencia entera. El arco de una semicircunferencia mide πr.`),
+            conPiMas('CM-perimetro-un-radio', r, r, u, `Sumaste un solo radio. El borde recto de la región es el diámetro entero: 2r.`),
+            conPiMas('CM-semicirculo-mitad-de-AB', w / 4, w / 2, u, `Supusiste que el diámetro es la mitad de AB. El radio sale de las tangentes: desde C, CT = CB; desde A, AT² = AE·AB.`),
+            conPiMas('CM-tangentes-mal-tomadas', rMal, 2 * rMal, u, `Tomaste AT = BC. La tangente igual a CB es CT, la que sale de C; desde A queda AT = AC − CB.`),
+            conPiMas('CM-perimetro-con-radios-dobles', r, 4 * r, u, `Sumaste dos diámetros. La región tiene un solo borde recto, el diámetro: 2r.`),
+          ],
+          solucion: [...pasos, [`${w} − 2r = ${(dg - hh) ** 2 / w}, así que r = ${r}. Perímetro = arco + diámetro = πr + 2r = `, v('x', corr.texto), '.']],
+        };
+      }
       return {
-        variables, unidad: u, pi: true, correcta: Math.PI * r, datos: { sub, w, h: hh },
+        variables, unidad: u, pi: true, correcta: Math.PI * r, datos: { sub, w, h: hh, pide },
         enunciado: ['En el rectángulo ABCD, AB = ', v('w', L(w, u)), ' y BC = ', v('hh', L(hh, u)), '. Una semicircunferencia tiene su diámetro sobre AB, es tangente al lado BC en B y es tangente a la diagonal AC.'],
         pregunta: ['¿Cuánto mide el arco de la semicircunferencia?'],
         errores: [
@@ -525,7 +572,35 @@
     },
 
     'arcos-cuerdas'(rng, u) {
-      const sub = rng.elegir(['cuerda', 'al-reves']);
+      const sub = rng.elegir(['cuerda', 'al-reves', 'congruencia']);
+      if (sub === 'congruencia') {
+        let p, q;
+        for (;;) { p = rng.entero(2, 12); q = rng.entero(2, 12); if (p !== q) break; }
+        const ang = rng.elegir([60, 90, 120]), co = { 60: 0.5, 90: 0, 120: -0.5 }[ang];
+        const AD2 = 2 * p * p * (1 - co);
+        const variables = { p: { nombre: 'AE', color: 'o' }, q: { nombre: 'BE', color: 'i' }, ang: { nombre: 'ángulo AED', color: 'h' }, x: { nombre: 'cuerda AD', color: 'd' } };
+        const ctx = rng.moneda();
+        return {
+          variables, unidad: u, correcta: sq(AD2), datos: { sub, p, q, ang },
+          enunciado: [ctx ? 'En el borde de una mesa redonda se marcan cuatro puntos A, B, C y D, en ese orden, de modo que los arcos AB y CD son iguales. Dos listones rectos, AC y BD, se cruzan en E.' : 'En una circunferencia, los puntos A, B, C y D están en ese orden y los arcos AB y CD son iguales. Las cuerdas AC y BD se cortan en E.',
+            ' AE = ', v('p', L(p, u)), ', BE = ', v('q', L(q, u)), ' y el ángulo AED mide ', v('ang', `${ang}°`), '.'],
+          pregunta: ['¿Cuánto mide la cuerda AD?'],
+          errores: [
+            h('CM-congruencia-da-AB', sq(p * p + q * q + 2 * p * q * co), `Esa es la cuerda AB (en el triángulo AEB, con el ángulo ${180 - ang}°). Se pide AD.`),
+            h('CM-congruencia-da-BC', sq(2 * q * q * (1 - co)), `Esa es la cuerda BC, que sale del triángulo isósceles BEC. Para AD va el triángulo AED, con EA = ED = AE.`),
+            h('CM-congruencia-pareja', sq(p * p + q * q - 2 * p * q * co), `Tomaste ED = BE. Los ángulos inscritos sobre arcos iguales hacen isósceles al triángulo AED: ED = EA, no EB.`),
+            h('CM-congruencia-lineal', 2 * p, `Sumaste EA + ED. AD es el tercer lado del triángulo AED: no está sobre las cuerdas.`),
+          ],
+          solucion: [
+            ['Arco AB = arco CD, así que los ángulos inscritos que los abarcan son iguales: ∠ADB = ∠DAC. En el triángulo AED, los ángulos en A y en D son iguales: ED = EA = ', v('p', `${p}`), '.'],
+            ['Del mismo modo ∠DBC = ∠ACB, así que EC = EB; los triángulos ABE y DCE son congruentes (LAL) y AB = CD, como se esperaba de arcos iguales.'],
+            ang === 90 ? ['El triángulo AED es rectángulo isósceles: AD = AE·√2.']
+              : ang === 60 ? ['El triángulo AED es isósceles con un ángulo de 60°: es equilátero, AD = AE.']
+              : ['El triángulo AED es isósceles con 120° en E: la altura desde E forma dos triángulos de 30° y 60°, y AD = AE·√3.'],
+            ['AD = ', v('x', L(sq(AD2), u)), '.'],
+          ],
+        };
+      }
       const [Rr, hm, om] = rng.elegir([[5, 4, 3], [5, 3, 4], [10, 8, 6], [10, 6, 8], [13, 12, 5], [13, 5, 12], [17, 15, 8], [17, 8, 15], [25, 24, 7], [25, 20, 15], [25, 15, 20], [25, 7, 24]]);
       const AC = 2 * hm, BM = Rr - om, AB2 = hm * hm + BM * BM;
       const variables = { R: { nombre: 'radio', color: 'o' }, ac: { nombre: 'cuerda AC', color: 'i' }, bm: { nombre: 'flecha BM', color: 'h' }, ab: { nombre: 'cuerda AB', color: 'd' } };

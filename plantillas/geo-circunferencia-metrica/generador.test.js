@@ -53,6 +53,7 @@ function recalcular(p) {
       if (d.sub === 'centro') return raiz(rho => Math.sqrt((d.a + rho) ** 2 - rho * rho) - d.t, 1e-9, 1000);
       // semicírculo: centro (w − ρ, 0), tangente a la diagonal AC.
       const rho = raiz(r => distRecta([d.w - r, 0], [0, 0], [d.w, d.h]) - r, 1e-9, d.w / 2);
+      if (d.pide === 'perimetro') { const f6 = x => (Math.round(x * 1e6) / 1e6).toFixed(6); return `pq:${f6(rho)}|${f6(2 * rho)}`; }
       return Math.PI * rho;
     }
     case 'secantes': {
@@ -116,6 +117,17 @@ function recalcular(p) {
       return a + Math.sqrt(d.c * d.c - a * a) + d.c;
     }
     case 'arcos-cuerdas': {
+      if (d.sub === 'congruencia') {
+        // E en el origen: A y C sobre el eje x, D y B sobre la recta que forma ang con EA. EC = EB = q y ED = EA = p
+        // son lo que da la congruencia; se comprueba que los cuatro puntos son concíclicos y que AB = CD.
+        const t = d.ang * Math.PI / 180, A = [d.p, 0], C = [-d.q, 0], D = [d.p * Math.cos(t), d.p * Math.sin(t)], B = [-d.q * Math.cos(t), -d.q * Math.sin(t)];
+        // Centro: intersección de las mediatrices de AC y de AD.
+        const ox = (A[0] + C[0]) / 2, mx = (A[0] + D[0]) / 2, my = (A[1] + D[1]) / 2, dx = D[0] - A[0], dy = D[1] - A[1];
+        const oy = (dx * (mx - ox) + dy * my) / dy, O = [ox, oy], rho = dist(O, A);
+        for (const X of [B, C, D]) assert.ok(Math.abs(dist(O, X) - rho) < 1e-9, 'no son concíclicos');
+        assert.ok(Math.abs(dist(A, B) - dist(C, D)) < 1e-9, 'AB ≠ CD');
+        return dist(A, D);
+      }
       const AB = h => dist([-h, -Math.sqrt(d.R * d.R - h * h)], [0, -d.R]);
       if (d.sub === 'cuerda') return AB(d.AC / 2);
       return 2 * raiz(h => AB(h) - Math.sqrt(d.AB2), 1e-9, d.R);
@@ -133,13 +145,15 @@ function recalcular(p) {
   }
   return NaN;
 }
-probarGenerador(gen, { semillas: 600, recalcular, igual: (a, b) => Math.abs(a - b) < 1e-6 });
+const igual = (a, b) => (typeof b === 'string' ? a === b : Math.abs(a - b) < 1e-6);
+probarGenerador(gen, { semillas: 600, recalcular, igual });
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {
     const p = gen.generar(c.semilla);
     assert.deepEqual(p._datos, c.entrada, 'el generador cambió: recalcula casos.json');
-    assert.ok(Math.abs(p.respuesta.valor - c.esperado.respuesta) <= casos.tolerancia, `da ${p.respuesta.valor}`);
+    assert.ok(typeof c.esperado.respuesta === 'string' ? p.respuesta.valor === c.esperado.respuesta
+      : Math.abs(p.respuesta.valor - c.esperado.respuesta) <= casos.tolerancia, `da ${p.respuesta.valor}`);
     assert.equal(p.alternativas.find(a => a.correcta).texto, c.esperado.exacta);
   });
 }
@@ -149,6 +163,7 @@ test('salen todos los tipos y subtipos; las alternativas tienen la misma forma',
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);
     vistos.add(p._datos.tipo + '/' + (p._datos.sub || ''));
+    if (p._datos.pide === 'perimetro') vistos.add('perimetro-region');
     const conGrado = p.alternativas.filter(a => /°/.test(a.texto)).length, conPi = p.alternativas.filter(a => a.texto.includes('π')).length;
     assert.ok(conGrado === 0 || conGrado === p.alternativas.length, `semilla ${s}: mezcla ángulos`);
     assert.ok(conPi === 0 || conPi === p.alternativas.length, `semilla ${s}: mezcla π`);
@@ -159,7 +174,7 @@ test('salen todos los tipos y subtipos; las alternativas tienen la misma forma',
   for (const t of ['tangente/pt', 'tangente/secante', 'tangente/razon', 'tangente/centro', 'tangente/semicirculo', 'secantes/',
     'cuerdas/cuarto', 'cuerdas/partes', 'tangentes-iguales/incirculo', 'tangentes-iguales/esquina', 'pitot/general',
     'pitot/isosceles', 'pitot/rectangulo', 'poncelet/radio', 'poncelet/perimetro', 'arcos-cuerdas/cuerda',
-    'arcos-cuerdas/al-reves', 'inscriptible/']) assert.ok(vistos.has(t), `no salió ${t}`);
+    'arcos-cuerdas/al-reves', 'arcos-cuerdas/congruencia', 'inscriptible/', 'perimetro-region']) assert.ok(vistos.has(t), `no salió ${t}`);
 });
 
 // ---------- Lápiz y papel ----------

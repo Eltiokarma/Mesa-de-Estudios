@@ -1,7 +1,7 @@
 {
   "plantilla": "geo-circunferencia-metrica",
   "tolerancia": 0.000001,
-  "nota": "Ángulos con la convención de academia: tan(53°/2) = 1/2, tan(37°/2) = 1/3, cos 37° = 4/5. Los ángulos que son mitad de un entero se escriben «53°/2». Longitudes en la unidad u del enunciado.",
+  "nota": "Ángulos con la convención de academia: tan(53°/2) = 1/2, tan(37°/2) = 1/3, cos 37° = 4/5. Los ángulos que son mitad de un entero se escriben «53°/2». Longitudes en la unidad u del enunciado. Cuando se pide el perímetro de la región semicircular, la respuesta es la clave 'pq:<coeficiente de π>|<término sin π>' (texto «(9π + 18) cm»).",
   "verificacion": "",
   "casos": [
     {
@@ -152,16 +152,43 @@
       }
     },
     {
-      "semilla": 24,
+      "semilla": 23,
       "entrada": {
         "tipo": "arcos-cuerdas",
         "sub": "al-reves",
-        "R": 10,
-        "AB2": 80
+        "R": 5,
+        "AB2": 20
       },
       "esperado": {
-        "respuesta": 16,
-        "exacta": "16 m"
+        "respuesta": 8,
+        "exacta": "8 m"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "arcos-cuerdas",
+        "sub": "congruencia",
+        "p": 4,
+        "q": 5,
+        "ang": 60
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 m"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "poncelet",
+        "sub": "perimetro",
+        "c": 39,
+        "r": 6
+      },
+      "esperado": {
+        "respuesta": 90,
+        "exacta": "90 m"
       }
     },
     {
@@ -222,11 +249,12 @@
         "tipo": "tangente",
         "sub": "semicirculo",
         "w": 24,
-        "h": 18
+        "h": 18,
+        "pide": "perimetro"
       },
       "esperado": {
-        "respuesta": 28.274333882308138,
-        "exacta": "9π cm"
+        "respuesta": "pq:9.000000|18.000000",
+        "exacta": "(9π + 18) cm"
       }
     },
     {
@@ -241,6 +269,20 @@
       "esperado": {
         "respuesta": 15,
         "exacta": "15 cm"
+      }
+    },
+    {
+      "semilla": 107,
+      "entrada": {
+        "tipo": "tangente",
+        "sub": "semicirculo",
+        "w": 32,
+        "h": 24,
+        "pide": "arco"
+      },
+      "esperado": {
+        "respuesta": 37.69911184307752,
+        "exacta": "12π cm"
       }
     },
     {

@@ -9,6 +9,10 @@
  *       sub 'cateto':   dados AH = m y HC = n, se pide el cateto AB.              { m, n }
  *       sub 'h-catetos': dados los catetos AB = a y BC = b, se pide BH (pide 'BH')
  *                       o la proyección AH de AB sobre la hipotenusa (pide 'AH'). { a, b, pide }
+ *       sub 'tangente': AB diámetro de una circunferencia de centro O; las tangentes en A y en B son
+ *                       paralelas; una tercera tangente toca en T y corta a esas dos en P y Q (del
+ *                       mismo lado de AB), con PA = m y QB = n. pide 'r' (radio) o 'AB' (diámetro).
+ *                       (∠POQ = 90° y OT es la altura relativa a la hipotenusa PQ.) { m, n, pide }
  *   semicircunferencia  Semicircunferencia de diámetro AB = d; C en el arco; H = pie de la
  *                       perpendicular desde C a AB; AH = m.
  *       sub 'cuerda':   se pide la cuerda AC.                                     { d, m }
@@ -18,6 +22,10 @@
  *       sub 'lado':     dados b, c, m y el tipo de ángulo, se pide BC.            { b, c, m, obtuso }
  *       sub 'proyeccion': dados los tres lados BC = a, AC = b, AB = c (el alumno decide si A es
  *                       agudo u obtuso), se pide la proyección de AC sobre la recta AB. { a, b, c }
+ *       sub 'corona':   corona circular de centro O y radios r (interior) y R (exterior); A en la
+ *                       circunferencia interior, B en la exterior; H = pie de la perpendicular desde
+ *                       O a la recta AB, que cae en la prolongación de BA más allá de A, con AH = m
+ *                       (ángulo OAB obtuso). Se pide AB.                          { R, r, m }
  *   mediana            Triángulo ABC con BC = a, AC = b, AB = c; M = punto medio de BC.
  *       sub 'mediana':  dados a, b, c, se pide AM.                                 { a, b, c }
  *       sub 'lado':     dados b, c y AM = ma2 (se guarda AM², ma2), se pide BC.    { b, c, ma2 }
@@ -42,6 +50,14 @@
  *       sub 'altura':   dados d1 y BD = d2, se pide la altura.                    { d1, d2 }
  *       sub 'area':     dados AD + BC = suma (con AD = B y BC = b) y d1, se pide el área (u²).
  *                                                                                 { B, b, d1 }
+ *   figuras-compuestas
+ *       sub 'cometa':   cometa ABCD con AC bisectriz del ángulo BAD y ángulos rectos en B y en D;
+ *                       AB = a; M = punto medio de AC y BM = bm. pide 'perimetro' o 'BC'. { a, bm, pide }
+ *       sub 'isosceles-bisectriz': triángulo ABC recto en B, AB = a, BC = b; H = pie de la altura
+ *                       desde B sobre AC; D en HC con BD bisectriz del ángulo HBC. pide 'HD' o 'BD'.
+ *                                                                                 { a, b, pide }
+ *       sub 'equilatero': cuadrilátero ABCD con AB = AD = s, ∠BAD = 60°, ∠ADC = 150° y ∠BCD = 30°;
+ *                       se pide AC.                                               { s }
  *
  * Respuestas: enteros o a√b. Las alternativas se escriben igual que la correcta (filtro limpio).
  * Errores: GE7, GE8 y GE11 (parcial) y GE18 (hipótesis) de docs/investigacion/geometria-ideas-erroneas.md;
@@ -101,6 +117,11 @@
     perimetroHeptagono: k => 7 * k,
     alturaTrapecioPerpendiculares: (d1, d2) => d1 * d2 / Math.hypot(d1, d2),
     areaTrapecioPerpendiculares: (suma, d1) => d1 * sq(suma * suma - d1 * d1) / 2,
+    radioTangentesParalelas: (m, n) => sq(m * n),
+    plataformaCorona: (R, r, m) => sq(m * m + R * R - r * r) - m,
+    perimetroCometa: (a, bm) => 2 * (a + sq(4 * bm * bm - a * a)),
+    tramoBisectriz: (a, b) => a - a * a / Math.hypot(a, b),          // HD
+    diagonalEquilatero: s => s * sq(7),
   };
 
   // ---------- Tablas precalculadas ----------
@@ -141,7 +162,7 @@
   }
 
   const TIPOS = ['altura-hipotenusa', 'semicircunferencia', 'euclides', 'mediana', 'marlen',
-    'diferencia-cuadrados', 'heron', 'ptolomeo', 'trapecio-perpendiculares'];
+    'diferencia-cuadrados', 'heron', 'ptolomeo', 'trapecio-perpendiculares', 'figuras-compuestas'];
 
   function construir(rng, semilla, tipo) {
     const u = rng.elegir(['m', 'cm']);
@@ -163,7 +184,37 @@
 
   const CONSTRUCTORES = {
     'altura-hipotenusa'(rng, u) {
-      const sub = rng.elegir(['h', 'cateto', 'h-catetos']);
+      const sub = rng.elegir(['h', 'cateto', 'h-catetos', 'tangente']);
+      if (sub === 'tangente') {
+        let m, n;
+        for (;;) { m = rng.entero(1, 16); n = rng.entero(1, 25); if (m !== n && m * n <= 400) break; }
+        const pide = rng.elegir(['r', 'AB']), mn = m * n, k = pide === 'r' ? 1 : 2;
+        const variables = { m: { nombre: 'PA', color: 'o' }, n: { nombre: 'QB', color: 'i' }, r: { nombre: 'radio', color: 'h' }, x: { nombre: pide === 'r' ? 'radio' : 'diámetro AB', color: 'd' } };
+        if (pide === 'r') delete variables.r;
+        const ctx = rng.moneda();
+        return {
+          variables, unidad: u, correcta: k * sq(mn), datos: { sub, m, n, pide },
+          enunciado: ctx
+            ? ['Un vidrio redondo de centro O está entre dos marcos paralelos que lo tocan en A y en B, los extremos de un diámetro. Una varilla recta toca el vidrio en un solo punto T y se apoya en los marcos en P (del lado de A) y en Q (del lado de B), los dos del mismo lado de AB, con PA = ', v('m', L(m, u)), ' y QB = ', v('n', L(n, u)), '.']
+            : ['AB es un diámetro de una circunferencia de centro O; las rectas tangentes en A y en B son paralelas. Una tercera recta tangente toca la circunferencia en T y corta a las dos anteriores en P y en Q (del mismo lado de AB), con PA = ', v('m', L(m, u)), ' y QB = ', v('n', L(n, u)), '.'],
+          pregunta: [pide === 'r' ? (ctx ? '¿Cuánto mide el radio del vidrio?' : '¿Cuánto mide el radio?') : '¿Cuánto mide el diámetro AB?'],
+          errores: [
+            h('GE18-altura-promedio', k * (m + n) / 2, `Tomaste el radio como el promedio de PT y TQ. El radio OT es la altura del triángulo rectángulo POQ: su cuadrado es el producto PT·TQ, no un promedio.`),
+            h('GE19-diametro-por-radio', pide === 'r' ? 2 * sq(mn) : sq(mn), pide === 'r' ? `Ese es el diámetro AB; el radio es la mitad.` : `Ese es el radio OT; el diámetro AB es el doble.`),
+            h('RM-sin-raiz', mn, `Te quedaste con r² = ${mn}: falta sacar la raíz cuadrada${pide === 'AB' ? ' (y luego duplicar)' : ''}.`),
+            h('RM-tangente-da-PQ', m + n, `Esa es la longitud PQ = PT + TQ (la hipotenusa del triángulo POQ), no ${pide === 'r' ? 'el radio' : 'el diámetro'}.`),
+            pa('GE11-pitagoras-proyecciones', k * sq(m * m + n * n), `Aplicaste Pitágoras con PT y TQ, que están sobre la misma recta PQ: no forman un ángulo recto entre sí.`),
+          ],
+          solucion: [
+            ['Tangentes iguales desde P y desde Q: PT = PA = ', v('m', `${m}`), ' y QT = QB = ', v('n', `${n}`), '.'],
+            ['OP es bisectriz del ángulo APT y OQ es bisectriz del ángulo BQT. Esos dos ángulos suman 180° (las tangentes en A y B son paralelas), así que sus mitades suman 90°: el ángulo POQ es recto.'],
+            ['OT ⊥ PQ es la altura del triángulo rectángulo POQ relativa a la hipotenusa: OT² = PT·TQ = ', `${m}·${n} = ${mn}.`],
+            pide === 'r'
+              ? ['r = OT = ', v('x', `${igualRaiz(mn)} ${u}`), '.']
+              : ['r = ', v('r', `${R(sq(mn))}`), ' y AB = 2r = ', v('x', L(2 * sq(mn), u)), '.'],
+          ],
+        };
+      }
       if (sub === 'h-catetos') {
         const k = rng.elegir([1, 2, 3]);
         let a = 15 * k, b = 20 * k;
@@ -309,7 +360,30 @@
     },
 
     euclides(rng, u) {
-      const sub = rng.elegir(['lado', 'proyeccion']);
+      const sub = rng.elegir(['lado', 'proyeccion', 'corona']);
+      if (sub === 'corona') {
+        let r, m, x, R2;
+        for (;;) { r = rng.entero(3, 15); m = rng.entero(1, r - 1); x = rng.entero(2, 20); R2 = r * r + x * x + 2 * x * m; if (esCuadrado(R2) && sq(R2) <= 40) break; }
+        const Rr = sq(R2), w = m * m + R2 - r * r;
+        const variables = { r: { nombre: 'radio interior OA', color: 'o' }, R: { nombre: 'radio exterior OB', color: 'i' }, m: { nombre: 'AH', color: 'h' }, x: { nombre: 'plataforma AB', color: 'd' } };
+        return {
+          variables, unidad: u, correcta: x, datos: { sub, R: Rr, r, m },
+          enunciado: ['Una pista tiene forma de corona circular: dos circunferencias concéntricas de centro O, la interior de radio ', v('r', L(r, u)), ' y la exterior de radio ', v('R', L(Rr, u)), '. Una plataforma recta AB va desde un punto A del borde interior hasta un punto B del borde exterior. Si se prolonga BA más allá de A, el pie H de la perpendicular trazada desde O a esa recta queda a AH = ', v('m', L(m, u)), ' de A.'],
+          pregunta: ['¿Cuánto mide la plataforma AB?'],
+          errores: [
+            h('RM-corona-ancho', Rr - r, `Ese es el ancho de la corona (R − r). La plataforma va inclinada: no sigue un radio.`),
+            pa('GE11-pitagoras-sin-angulo-recto', sq(R2 - r * r), `Usaste Pitágoras con OA y OB, como si el ángulo en A fuera recto. Es obtuso: H cae fuera, más allá de A.`),
+            h('RM-euclides-signo', sq(w) + m, `Usaste el signo del ángulo agudo (OB² = OA² + AB² − 2·AB·AH). El ángulo OAB es obtuso: va + 2·AB·AH.`),
+            h('RM-corona-sin-restar', sq(w), `Hallaste BH = √(OB² − OH²) y lo tomaste como AB. Falta quitarle AH: AB = BH − AH.`),
+          ],
+          solucion: [
+            ['El pie H cae fuera del segmento, más allá de A: en el triángulo OAB el ángulo en A es obtuso y AH = ', v('m', `${m}`), ' es la proyección de OA sobre la recta AB.'],
+            ['Teorema de Euclides (ángulo obtuso): OB² = OA² + AB² + 2·AB·AH → ', v('R', `${Rr}`), '² = ', v('r', `${r}`), `² + AB² + 2·${m}·AB.`],
+            [`AB² + ${2 * m}·AB − ${R2 - r * r} = 0 → (AB + ${m})² = ${w} → AB + ${m} = ${R(sq(w))}.`],
+            ['AB = ', v('x', L(x, u)), '. (Comprobación: OH² = ', `${r * r} − ${m * m} = ${r * r - m * m} y BH = ${x + m}; OH² + BH² = ${R2} = OB².)`],
+          ],
+        };
+      }
       let a, b, c, m, obtuso;
       if (sub === 'proyeccion') ({ a, b, c, m, obtuso } = rng.elegir(EUCLIDES_ENTEROS));
       else for (;;) {
@@ -655,6 +729,88 @@
           ['Se traslada BD paralelamente hasta C: CE = BD, y AE = AD + BC = ', v('B', `${S - b}`), ' + ', v('b', `${b}`), ` = ${S}. El triángulo ACE es rectángulo en C.`],
           [`BD = CE = √(${S}² − `, v('d1', `${d1}`), `²) = √${S * S - d1 * d1} = ${d2}.`],
           ['Con diagonales perpendiculares, el área es AC·BD/2 = ', `${d1}·${d2}/2 = `, v('x', `${area} ${u}²`), '.'],
+        ],
+      };
+    },
+    'figuras-compuestas'(rng, u) {
+      const sub = rng.elegir(['cometa', 'isosceles-bisectriz', 'equilatero']);
+      if (sub === 'cometa') {
+        const [p0, q0, c0] = rng.elegir([[6, 8, 10], [10, 24, 26], [12, 16, 20], [16, 30, 34], [18, 24, 30], [14, 48, 50], [24, 10, 26], [8, 6, 10], [16, 12, 20]]);
+        const a = p0, b = q0, c = c0, bm = c / 2;
+        const pide = rng.elegir(['perimetro', 'BC']);
+        const variables = { a: { nombre: 'AB', color: 'o' }, bm: { nombre: 'BM', color: 'i' }, c: { nombre: 'diagonal AC', color: 'h' }, x: { nombre: pide === 'BC' ? 'BC' : 'perímetro', color: 'd' } };
+        const mal = sq(bm * bm - a * a);
+        const errores = pide === 'BC' ? [
+          h('RM-cometa-mediana-como-diagonal', mal, `Usaste BM como si fuera la diagonal AC. M es el punto medio: AC = 2·BM.`),
+          h('RM-cometa-da-AC', c, `Esa es la diagonal AC. BC es un cateto del triángulo ABC.`),
+          pa('GE8-mediana-por-lado', bm, `Tomaste BC igual a BM. BM es la mediana a la hipotenusa; BC sale de Pitágoras.`),
+          pa('GE11-pitagoras-sumando', sq(c * c + a * a), `Sumaste los cuadrados: así se halla una hipotenusa. BC es un cateto: BC² = AC² − AB².`),
+        ] : [
+          h('RM-cometa-mediana-como-diagonal', 2 * (a + mal), `Usaste BM como si fuera la diagonal AC. M es el punto medio: AC = 2·BM.`),
+          h('RM-cometa-medio-perimetro', a + b, `Sumaste solo AB y BC. La cometa tiene cuatro lados: AD = AB y DC = BC.`),
+          h('RM-cometa-con-diagonal', 2 * a + b + c, `Contaste la diagonal AC como si fuera un lado. El perímetro solo suma el borde: AB + BC + CD + DA.`),
+          pa('GE8-mediana-por-lado', 2 * (a + bm), `Tomaste BC igual a BM. BM es la mediana a la hipotenusa; BC sale de Pitágoras.`),
+        ];
+        return {
+          variables, unidad: u, correcta: pide === 'BC' ? b : 2 * (a + b), datos: { sub, a, bm, pide }, errores,
+          enunciado: ['Una cometa ABCD tiene una varilla AC que es bisectriz del ángulo BAD, y los ángulos ABC y ADC son rectos. El borde AB mide ', v('a', L(a, u)), '. Si M es el punto medio de la varilla AC, la distancia de B a M es BM = ', v('bm', L(bm, u)), '.'],
+          pregunta: [pide === 'BC' ? '¿Cuánto mide el borde BC?' : '¿Cuál es el perímetro de la cometa?'],
+          solucion: [
+            ['Los triángulos ABC y ADC son congruentes: comparten AC, tienen el ángulo en A partido en dos iguales y un ángulo recto. Así, AD = AB y DC = BC.'],
+            ['En el triángulo rectángulo ABC, la mediana a la hipotenusa mide la mitad de la hipotenusa: AC = 2·', v('bm', `${bm}`), ' = ', v('c', `${c}`), '.'],
+            ['Pitágoras: BC = √(', `${c}² − `, v('a', `${a}`), `²) = √${c * c - a * a} = ${b}.`],
+            pide === 'BC' ? ['BC = ', v('x', L(b, u)), '.'] : ['Perímetro = 2·(AB + BC) = 2·(', `${a} + ${b}) = `, v('x', L(2 * (a + b), u)), '.'],
+          ],
+        };
+      }
+      if (sub === 'isosceles-bisectriz') {
+        const k = rng.elegir([1, 2]);
+        let a = 15 * k, b = 20 * k;
+        if (rng.moneda()) [a, b] = [b, a];
+        const c = 25 * k, AH = a * a / c, BH = a * b / c, HD = a - AH, HC = c - AH, DC = c - a, BD2 = BH * BH + HD * HD;
+        const pide = rng.elegir(['HD', 'BD']);
+        const variables = { a: { nombre: 'AB', color: 'o' }, b: { nombre: 'BC', color: 'i' }, ah: { nombre: 'AH', color: 'h' }, x: { nombre: pide, color: 'd' } };
+        const errores = pide === 'HD' ? [
+          h('RM-bisectriz-da-DC', DC, `Ese es DC, el otro tramo. Se pide HD.`),
+          pa('GE8-bisectriz-punto-medio', HC / 2, `Supusiste que la bisectriz BD parte HC por la mitad. La bisectriz divide el lado opuesto en la razón de los lados vecinos (BH : BC), no en dos mitades.`),
+          h('RM-bisectriz-da-AH', AH, `Ese es AH, la proyección de AB. Falta usar que AD = AB.`),
+          h('RM-bisectriz-da-BH', BH, `Esa es la altura BH, no el tramo HD.`),
+        ] : [
+          h('RM-bisectriz-da-BH', BH, `Esa es la altura BH. La cerca BD va inclinada: BD² = BH² + HD².`),
+          h('RM-isosceles-al-reves', a, `El triángulo isósceles es ABD con AB = AD, no con BD = AB.`),
+          pa('GE8-bisectriz-punto-medio', sq(BH * BH + HC * HC / 4), `Supusiste que D es el punto medio de HC. La bisectriz no parte el lado opuesto por la mitad.`),
+          h('RM-bisectriz-da-DC', sq(BH * BH + DC * DC), `Usaste DC en vez de HD como cateto del triángulo BHD.`),
+        ];
+        return {
+          variables, unidad: u, correcta: pide === 'HD' ? HD : sq(BD2), datos: { sub, a, b, pide }, errores,
+          enunciado: ['Un terreno tiene forma de triángulo ABC con el ángulo recto en la esquina B; AB = ', v('a', L(a, u)), ' y BC = ', v('b', L(b, u)), '. Desde B salen dos cercas rectas hasta el lindero AC: BH, perpendicular a AC, y BD (con D entre H y C), que es bisectriz del ángulo HBC.'],
+          pregunta: [pide === 'HD' ? '¿Cuánto mide el tramo HD del lindero AC?' : '¿Cuánto mide la cerca BD?'],
+          solucion: [
+            ['∠ABD = 90° − ∠DBC y ∠ADB = 90° − ∠HBD (en el triángulo BHD). Como ∠HBD = ∠DBC (bisectriz), ∠ABD = ∠ADB: el triángulo ABD es isósceles y AD = AB = ', v('a', `${a}`), '.'],
+            [`Hipotenusa: AC = √(${a}² + ${b}²) = ${c}. Relaciones métricas: AB² = AC·AH → `, v('ah', `AH = ${a * a}/${c} = ${AH}`), ` y BH = AB·BC/AC = ${BH}.`],
+            ['HD = AD − AH = ', `${a} − ${AH} = ${HD}.`],
+            pide === 'HD' ? ['HD = ', v('x', L(HD, u)), '.'] : ['BD² = BH² + HD² = ', `${BH * BH} + ${HD * HD} = ${BD2}, así que BD = `, v('x', `${igualRaiz(BD2)} ${u}`), '.'],
+          ],
+        };
+      }
+      const s = rng.elegir([2, 4, 6, 8, 10]);
+      const variables = { s: { nombre: 'AB = AD', color: 'o' }, dc: { nombre: 'DC', color: 'i' }, ae: { nombre: 'AE', color: 'h' }, x: { nombre: 'AC', color: 'd' } };
+      const ctx = rng.moneda();
+      return {
+        variables, unidad: u, correcta: s * sq(7), datos: { sub, s },
+        enunciado: [ctx ? 'Un terreno tiene forma de cuadrilátero ABCD, con ' : 'En el cuadrilátero ABCD, ', 'AB = AD = ', v('s', L(s, u)), ' y el ángulo BAD de 60°. El ángulo ADC mide 150° y el ángulo BCD mide 30°.', ctx ? ' Se quiere abrir un camino recto de A a C.' : ''],
+        pregunta: [ctx ? '¿Cuánto mide el camino AC?' : '¿Cuánto mide la diagonal AC?'],
+        errores: [
+          pa('GE11-pitagoras-sin-angulo-recto', 2 * s, `Usaste Pitágoras con AD y DC, pero el ángulo ADC mide 150°, no 90°. El ángulo recto está en BDC.`),
+          h('RM-equilatero-da-DC', s * sq(3), `Ese es DC. Falta llevarlo hasta A con el triángulo rectángulo de 30°.`),
+          h('RM-proyeccion-al-reves', s, `Pusiste la proyección de DC hacia el lado de A (AE = AD − DE). El ángulo ADC es obtuso: C se proyecta sobre la prolongación de AD, más allá de D.`),
+          h('RM-proyeccion-como-lado', 5 * s / 2, `Ese es AE, la proyección de AC sobre la recta AD. Falta Pitágoras con CE.`),
+        ],
+        solucion: [
+          ['AB = AD y ∠BAD = 60°: el triángulo ABD es equilátero, BD = ', v('s', `${s}`), ' y ∠ADB = 60°. Entonces ∠BDC = 150° − 60° = 90°.'],
+          ['En el triángulo rectángulo BDC, con ∠C = 30° (notable de 30° y 60°): ', v('dc', `DC = ${s}√3`), '.'],
+          [`Se baja CE ⊥ a la prolongación de AD. ∠CDE = 180° − 150° = 30°, así que CE = DC/2 = ${s === 2 ? '' : s / 2}√3 y DE = DC·√3/2 = ${3 * s / 2}; `, v('ae', `AE = ${s} + ${3 * s / 2} = ${5 * s / 2}`), '.'],
+          ['AC² = AE² + CE² = ', `${25 * s * s / 4} + ${3 * s * s / 4} = ${7 * s * s}, así que AC = `, v('x', `${R(s * sq(7))} ${u}`), '.'],
         ],
       };
     },

@@ -42,6 +42,13 @@ function recalcular(p) {
   const d = p._datos;
   switch (d.tipo) {
     case 'altura-hipotenusa': {
+      if (d.sub === 'tangente') {
+        // Centro (0, 0); tangentes x = −ρ y x = ρ; P = (−ρ, m), Q = (ρ, n): se busca ρ con PQ a distancia ρ del centro.
+        const g = rho => { const P = [-rho, d.m], Q = [rho, d.n]; return Math.abs(P[0] * Q[1] - P[1] * Q[0]) / dist(P, Q) - rho; };
+        let lo = 1e-9, hi = 1e4;
+        for (let i = 0; i < 300; i++) { const mid = (lo + hi) / 2; if (g(mid) > 0) lo = mid; else hi = mid; }
+        return (d.pide === 'r' ? 1 : 2) * lo;
+      }
       if (d.sub === 'h-catetos') {
         const B = [0, 0], A = [0, d.a], C = [d.b, 0], H = pie(B, A, C);
         return d.pide === 'BH' ? dist(B, H) : dist(A, H);
@@ -54,6 +61,12 @@ function recalcular(p) {
       return d.sub === 'cuerda' ? dist([0, 0], C) : areaPol([[0, 0], [d.d, 0], C]);
     }
     case 'euclides': {
+      if (d.sub === 'corona') {
+        // O = (0, 0); la recta AB es y = OH; A = (AH, OH) y B a la derecha, sobre la circunferencia exterior.
+        const OH = Math.sqrt(d.r * d.r - d.m * d.m), A = [d.m, OH], B = [Math.sqrt(d.R * d.R - OH * OH), OH];
+        assert.ok(Math.abs(dist([0, 0], A) - d.r) < 1e-9 && B[0] > A[0]);
+        return dist(A, B);
+      }
       if (d.sub === 'lado') {
         const C = [d.obtuso ? -d.m : d.m, Math.sqrt(d.b * d.b - d.m * d.m)];
         return dist(C, [d.c, 0]);
@@ -112,6 +125,32 @@ function recalcular(p) {
       assert.ok(Math.abs(dist(T.B, T.C) - d.b) < 1e-6);
       return areaPol([T.A, T.B, T.C, T.D]);
     }
+    case 'figuras-compuestas': {
+      if (d.sub === 'cometa') {
+        // A = (0, 0), C = (c, 0); B con AB = a y ∠ABC = 90°. Se busca c con BM = bm.
+        const Bde = c => [d.a * d.a / c, d.a * Math.sqrt(c * c - d.a * d.a) / c];
+        const c = biseccion(c => dist(Bde(c), [c / 2, 0]), d.bm, d.a + 1e-9, 1e4);
+        const B = Bde(c), D = [B[0], -B[1]]; // simétrico respecto de AC (la bisectriz)
+        const BC = dist(B, [c, 0]);
+        return d.pide === 'BC' ? BC : d.a + BC + dist([c, 0], D) + dist(D, [0, 0]);
+      }
+      if (d.sub === 'isosceles-bisectriz') {
+        const B = [0, 0], A = [0, d.a], C = [d.b, 0], H = pie(B, A, C);
+        const un = P => { const l = Math.hypot(P[0], P[1]); return [P[0] / l, P[1] / l]; };
+        const w = [un(H)[0] + un(C)[0], un(H)[1] + un(C)[1]]; // dirección de la bisectriz de HBC
+        // D = t·w sobre la recta AC: x/b + y/a = 1.
+        const t = 1 / (w[0] / d.b + w[1] / d.a), D = [t * w[0], t * w[1]];
+        return d.pide === 'HD' ? dist(H, D) : dist(B, D);
+      }
+      // equilátero: A = (0, 0), D = (s, 0), B arriba; DC sale de D a 30° sobre el eje x.
+      const B = [d.s / 2, d.s * Math.sqrt(3) / 2], Dd = [d.s, 0], u = [Math.cos(Math.PI / 6), Math.sin(Math.PI / 6)];
+      const ang = (P, Q, R) => { const a = [Q[0] - P[0], Q[1] - P[1]], b = [R[0] - P[0], R[1] - P[1]]; return Math.acos((a[0] * b[0] + a[1] * b[1]) / Math.hypot(...a) / Math.hypot(...b)); };
+      // ∠BCD baja de 90° a 0° a medida que C se aleja: se busca 30°.
+      const t = biseccion(t => -ang([Dd[0] + t * u[0], Dd[1] + t * u[1]], B, Dd), -Math.PI / 6, 1e-9, 1e4);
+      const C = [Dd[0] + t * u[0], Dd[1] + t * u[1]];
+      assert.ok(Math.abs(ang(Dd, [0, 0], C) - 5 * Math.PI / 6) < 1e-9, '∠ADC = 150°');
+      return dist([0, 0], C);
+    }
   }
   return NaN;
 }
@@ -140,7 +179,8 @@ test('salen todos los tipos y subtipos; las alternativas tienen la misma forma',
   for (const t of ['altura-hipotenusa/h', 'altura-hipotenusa/cateto', 'altura-hipotenusa/h-catetos', 'semicircunferencia/cuerda',
     'semicircunferencia/area', 'euclides/lado', 'euclides/proyeccion', 'mediana/mediana', 'mediana/lado', 'marlen/',
     'diferencia-cuadrados/', 'heron/area', 'heron/altura', 'ptolomeo/trapecio', 'ptolomeo/heptagono',
-    'trapecio-perpendiculares/altura', 'trapecio-perpendiculares/area']) assert.ok(vistos.has(t), `no salió ${t}`);
+    'trapecio-perpendiculares/altura', 'trapecio-perpendiculares/area', 'altura-hipotenusa/tangente', 'euclides/corona',
+    'figuras-compuestas/cometa', 'figuras-compuestas/isosceles-bisectriz', 'figuras-compuestas/equilatero']) assert.ok(vistos.has(t), `no salió ${t}`);
 });
 
 // ---------- Lápiz y papel ----------

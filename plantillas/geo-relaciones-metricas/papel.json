@@ -5,17 +5,40 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "En un triángulo rectángulo ABC, recto en B, la altura BH relativa a la hipotenusa la divide en AH = 4 cm y HC = 16 cm. ¿Cuánto miden la altura BH y el cateto AB?",
-      "respuesta": "BH = 8 cm y AB = 4√5 cm.",
+      "enunciado": "En un triángulo rectángulo ABC, recto en B, la altura BH relativa a la hipotenusa la divide en AH = 4 cm y HC = 16 cm. ¿Cuánto miden la altura BH y el cateto AB? (c) En otra figura, AB es un diámetro de una circunferencia de centro O y las tangentes en A y en B son paralelas. Una tercera tangente toca en T y corta a esas dos en P y Q, con PA = 4 cm y QB = 9 cm. ¿Cuánto mide el radio?",
+      "respuesta": "BH = 8 cm y AB = 4√5 cm. (c) r = 6 cm.",
       "pasos": [
         "La altura es media geométrica de las proyecciones: BH² = AH·HC = 4·16 = 64, así que BH = 8 cm (no el promedio, 10 cm).",
         "La hipotenusa es AC = 4 + 16 = 20 cm.",
         "Cada cateto al cuadrado es la hipotenusa por su proyección: AB² = AC·AH = 20·4 = 80, así que AB = √80 = 4√5 cm.",
-        "Comprobación con Pitágoras en ABH: 4² + 8² = 80."
+        "Comprobación con Pitágoras en ABH: 4² + 8² = 80.",
+        "(c) Tangentes iguales: PT = 4 y TQ = 9. OP y OQ son bisectrices de dos ángulos que suman 180°, así que el ángulo POQ es recto y OT es su altura sobre PQ: r² = 4·9 = 36, r = 6 cm (no el promedio, 6,5)."
       ],
       "verificar": [
-        { "fn": "alturaHipotenusa", "args": [4, 16], "espera": 8 },
-        { "fn": "catetoProyeccion", "args": [4, 16], "espera": 8.94427190999916 }
+        {
+          "fn": "alturaHipotenusa",
+          "args": [
+            4,
+            16
+          ],
+          "espera": 8
+        },
+        {
+          "fn": "catetoProyeccion",
+          "args": [
+            4,
+            16
+          ],
+          "espera": 8.94427190999916
+        },
+        {
+          "fn": "radioTangentesParalelas",
+          "args": [
+            4,
+            9
+          ],
+          "espera": 6
+        }
       ]
     },
     {
@@ -30,36 +53,96 @@
         "Área = AB·CH/2 = 20·5√3/2 = 50√3 m². No sirve AH como altura: AH está sobre la base."
       ],
       "verificar": [
-        { "fn": "cuerdaSemicircunferencia", "args": [20, 5], "espera": 10 },
-        { "fn": "areaSemicircunferencia", "args": [20, 5], "espera": 86.60254037844388 }
+        {
+          "fn": "cuerdaSemicircunferencia",
+          "args": [
+            20,
+            5
+          ],
+          "espera": 10
+        },
+        {
+          "fn": "areaSemicircunferencia",
+          "args": [
+            20,
+            5
+          ],
+          "espera": 86.60254037844388
+        }
       ]
     },
     {
       "id": "p3",
       "nivel": "intermedio",
-      "enunciado": "Dos barras AB = 7 dm y AC = 8 dm salen del mismo punto A y forman un ángulo obtuso. La proyección de AC sobre la prolongación de BA mide 4 dm. (a) ¿Cuánto mide BC? (b) Si solo te dieran los tres lados 13 dm, 8 dm y 7 dm, ¿cómo obtendrías otra vez esa proyección?",
-      "respuesta": "(a) BC = 13 dm. (b) Con el mismo teorema despejado: m = (13² − 8² − 7²)/(2·7) = 4 dm.",
+      "enunciado": "Dos barras AB = 7 dm y AC = 8 dm salen del mismo punto A y forman un ángulo obtuso. La proyección de AC sobre la prolongación de BA mide 4 dm. (a) ¿Cuánto mide BC? (b) Si solo te dieran los tres lados 13 dm, 8 dm y 7 dm, ¿cómo obtendrías otra vez esa proyección? (c) Una pista con forma de corona circular tiene radios 7 dm (interior) y 13 dm (exterior). Una plataforma recta va de A (borde interior) a B (borde exterior), y el pie H de la perpendicular desde el centro O a la recta AB cae más allá de A, con AH = 1 dm. ¿Cuánto mide AB?",
+      "respuesta": "(a) BC = 13 dm. (b) Con el mismo teorema despejado: m = (13² − 8² − 7²)/(2·7) = 4 dm. (c) AB = 10 dm.",
       "pasos": [
         "Teorema de Euclides para el ángulo obtuso: BC² = AB² + AC² + 2·AB·m.",
         "BC² = 49 + 64 + 2·7·4 = 169, así que BC = 13 dm. Con el signo menos (el del ángulo agudo) saldría √57, demasiado corto.",
-        "Al revés: 169 es mayor que 49 + 64 = 113, así que el ángulo en A es obtuso; 169 = 113 + 14·m da m = 4 dm."
+        "Al revés: 169 es mayor que 49 + 64 = 113, así que el ángulo en A es obtuso; 169 = 113 + 14·m da m = 4 dm.",
+        "(c) En el triángulo OAB el ángulo en A es obtuso y AH es la proyección de OA: 13² = 7² + AB² + 2·1·AB, o sea (AB + 1)² = 121 y AB = 10 dm. No es 13 − 7 = 6, el ancho de la corona."
       ],
       "verificar": [
-        { "fn": "euclidesLado", "args": [8, 7, 4, true], "espera": 13 },
-        { "fn": "euclidesProyeccion", "args": [13, 8, 7], "espera": 4 }
+        {
+          "fn": "euclidesLado",
+          "args": [
+            8,
+            7,
+            4,
+            true
+          ],
+          "espera": 13
+        },
+        {
+          "fn": "euclidesProyeccion",
+          "args": [
+            13,
+            8,
+            7
+          ],
+          "espera": 4
+        },
+        {
+          "fn": "plataformaCorona",
+          "args": [
+            13,
+            7,
+            1
+          ],
+          "espera": 10
+        }
       ]
     },
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Un terreno triangular ABC tiene lados AB = 9 m, AC = 7 m y BC = 8 m. Se quiere tender un cable desde A hasta el punto medio M de BC. ¿Cuánto mide el cable?",
-      "respuesta": "7 m.",
+      "enunciado": "Un terreno triangular ABC tiene lados AB = 9 m, AC = 7 m y BC = 8 m. Se quiere tender un cable desde A hasta el punto medio M de BC. ¿Cuánto mide el cable? Después: en una cometa ABCD, la varilla AC es bisectriz del ángulo BAD y los ángulos en B y en D son rectos; AB = 6 m y la distancia de B al punto medio M de AC es 5 m. ¿Cuál es el perímetro de la cometa?",
+      "respuesta": "7 m. El perímetro de la cometa es 28 m.",
       "pasos": [
         "Teorema de la mediana: AB² + AC² = 2·AM² + BC²/2 (la mitad del cuadrado del lado).",
         "81 + 49 = 2·AM² + 64/2, o sea 130 = 2·AM² + 32.",
-        "AM² = 49 y AM = 7 m. Si olvidas el /2 de BC²/2, sale AM² = 33, que es un error."
+        "AM² = 49 y AM = 7 m. Si olvidas el /2 de BC²/2, sale AM² = 33, que es un error.",
+        "Cometa: la mediana a la hipotenusa mide la mitad de ella, así que AC = 10; BC = √(100 − 36) = 8, y como ABC y ADC son congruentes, el perímetro es 2·(6 + 8) = 28 m."
       ],
-      "verificar": [ { "fn": "mediana", "args": [8, 7, 9], "espera": 7 } ]
+      "verificar": [
+        {
+          "fn": "mediana",
+          "args": [
+            8,
+            7,
+            9
+          ],
+          "espera": 7
+        },
+        {
+          "fn": "perimetroCometa",
+          "args": [
+            6,
+            5
+          ],
+          "espera": 28
+        }
+      ]
     },
     {
       "id": "p5",
@@ -71,7 +154,17 @@
         "Por eso PA² + PC² = PB² + PD² (se juntan las esquinas opuestas, A con C y B con D).",
         "36 + 81 = 49 + PD², así que PD² = 68 y PD = 2√17 m."
       ],
-      "verificar": [ { "fn": "marlen", "args": [36, 49, 81], "espera": 8.246211251235321 } ]
+      "verificar": [
+        {
+          "fn": "marlen",
+          "args": [
+            36,
+            49,
+            81
+          ],
+          "espera": 8.246211251235321
+        }
+      ]
     },
     {
       "id": "p6",
@@ -84,7 +177,17 @@
         "BH = 9 es mayor que BC = 4: H cae fuera, más allá de C (el ángulo en C es obtuso). HC = 5 cm y AH = 12 cm.",
         "El triángulo ABH es el 9-12-15 (un 3-4-5): cos B = 9/15 = 3/5, así que el ángulo ABC mide 53°."
       ],
-      "verificar": [ { "fn": "anguloDiferenciaCuadrados", "args": [225, 169, 4], "espera": 53 } ]
+      "verificar": [
+        {
+          "fn": "anguloDiferenciaCuadrados",
+          "args": [
+            225,
+            169,
+            4
+          ],
+          "espera": 53
+        }
+      ]
     },
     {
       "id": "p7",
@@ -97,8 +200,24 @@
         "Área = base·altura/2: 84 = 14·h/2, así que h = 12 m. Ojo: no es 84/14 = 6, falta el 2."
       ],
       "verificar": [
-        { "fn": "heron", "args": [13, 14, 15], "espera": 84 },
-        { "fn": "alturaHeron", "args": [14, 13, 15], "espera": 12 }
+        {
+          "fn": "heron",
+          "args": [
+            13,
+            14,
+            15
+          ],
+          "espera": 84
+        },
+        {
+          "fn": "alturaHeron",
+          "args": [
+            14,
+            13,
+            15
+          ],
+          "espera": 12
+        }
       ]
     },
     {
@@ -113,8 +232,52 @@
         "La altura del trapecio es la altura de ese triángulo sobre la hipotenusa: h = 7√2·7√2/14 = 98/14 = 7 cm."
       ],
       "verificar": [
-        { "fn": "diagonalTrapecioIsosceles", "args": [10, 4, 7.615773105863909], "espera": 9.899494936611665 },
-        { "fn": "alturaTrapecioPerpendiculares", "args": [9.899494936611665, 9.899494936611665], "espera": 7 }
+        {
+          "fn": "diagonalTrapecioIsosceles",
+          "args": [
+            10,
+            4,
+            7.615773105863909
+          ],
+          "espera": 9.899494936611665
+        },
+        {
+          "fn": "alturaTrapecioPerpendiculares",
+          "args": [
+            9.899494936611665,
+            9.899494936611665
+          ],
+          "espera": 7
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "(a) Un terreno ABC tiene el ángulo recto en B, con AB = 15 m y BC = 20 m. Desde B salen dos cercas hasta AC: BH, perpendicular a AC, y BD (D entre H y C), bisectriz del ángulo HBC. ¿Cuánto mide HD? (b) Otro terreno ABCD tiene AB = AD = 4 m, el ángulo BAD de 60°, el ángulo ADC de 150° y el ángulo BCD de 30°. ¿Cuánto mide el camino recto AC?",
+      "respuesta": "(a) HD = 6 m. (b) AC = 4√7 m.",
+      "pasos": [
+        "(a) ∠ABD = 90° − ∠DBC y ∠ADB = 90° − ∠HBD; como la bisectriz hace ∠HBD = ∠DBC, el triángulo ABD es isósceles: AD = AB = 15.",
+        "(a) AC = 25 y AH = AB²/AC = 9, así que HD = 15 − 9 = 6 m (no 8, la mitad de HC: la bisectriz no parte el lado por la mitad).",
+        "(b) ABD es equilátero (BD = 4 y ∠ADB = 60°), así que ∠BDC = 90°. Con ∠C = 30°, DC = 4√3.",
+        "(b) Se baja CE a la prolongación de AD: ∠CDE = 30°, CE = 2√3 y DE = 6, así que AE = 10 y AC² = 100 + 12 = 112: AC = 4√7 m."
+      ],
+      "verificar": [
+        {
+          "fn": "tramoBisectriz",
+          "args": [
+            15,
+            20
+          ],
+          "espera": 6
+        },
+        {
+          "fn": "diagonalEquilatero",
+          "args": [
+            4
+          ],
+          "espera": 10.583005244258363
+        }
       ]
     }
   ]
