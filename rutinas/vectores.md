@@ -37,3 +37,33 @@ Lo pedía el mapa («convendría además una opción para aceptar respuestas neg
 **Colores.** Los generadores usan la paleta de la app (`c-o`, `c-i`, `c-h`, `c-d`): A naranja, B turquesa, θ rojo, R verde. No hay colores nuevos.
 
 Playwright: los tres módulos funcionan a 390 y 1366 px, sin errores de consola ni desbordes.
+
+## Tarea 3: decisión de núcleo para G4 a G7 (propuesta, sin implementar)
+
+**Recomiendo `armarTexto`. No recomiendo preguntar un escalar resumen** («halle m + n») como camino principal.
+
+**Por qué.** El escalar resumen borra justo las trampas que queremos medir:
+- En G5 (punto que divide m:n), los pesos cruzados (n/(m+n), m/(m+n)) y los derechos (m/(m+n), n/(m+n)) suman 1 los dos. Con «halle p + q», `VE-pesos-derechos` da la misma alternativa que la correcta y no se puede medir.
+- Pasa lo mismo con «m y n cambiados» en G4 (m + n no cambia) y con la semisuma contra la semidiferencia cuando se pregunta p + q.
+- El sentido opuesto (−v) a veces sobrevive al resumen y a veces no, según el resumen que se elija.
+
+Con un escalar, el distractor existe en el papel, pero `armar` lo descarta por repetido. La medición, que es la única fuente de datos del colegio, nunca lo vería. El resumen sirve como formato secundario, para imitar la forma del examen («halle α − β») solo donde no colapsa errores.
+
+**Propuesta de API** (compatible con lo que hay; `app/practica.js` no cambia, porque solo usa `texto`, `letra`, `correcta` y `error`):
+
+```js
+// nucleo/predicciones.js
+armarTexto({ correcta: { clave, texto }, errores: [{ id, clave, texto, explicacion, respaldo, fuente }], rng, total = 5 })
+// clave: forma canónica comparable, p. ej. '2/3|1/3' para (2/3)A + (1/3)B o '3|-4|0' para (3; −4; 0).
+// Se compara por clave (no por texto): así dos formas equivalentes no salen como dos opciones,
+// y un mismo texto con otra clave falla una prueba.
+// Devuelve el mismo formato que armar; valor = clave.
+```
+
+Y en `nucleo/probar-generador.js`, una opción `igual(a, b)` para comparar `respuesta.valor` con el recálculo independiente cuando no es un número. Por defecto queda `|a − b| < 1e-9`.
+
+**Lo que costaría:** unas 30 líneas en el núcleo, más sus pruebas. Además, un ayudante para escribir expresiones con fracciones («⅔A + ⅓B», «(3; −4)»), que conviene que viva en el núcleo para que G4, G5 y G7 escriban igual.
+
+**Variante, si la principal prefiere no tocar el núcleo:** G4 a G7 preguntan solo escalares, y se aceptan solo los tipos en los que el resumen no colapsa los errores; se quedan fuera los de pesos derechos y los de m y n cambiados. Es posible, pero se pierde lo más frecuente del libro (T4: 26 de 200).
+
+**Espero la aprobación de la principal antes de implementar nada de esto.**
