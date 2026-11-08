@@ -249,6 +249,7 @@
             pa('GE8-pie-en-punto-medio', c / 2, `Supusiste que H es el punto medio de AC. Eso solo pasa si los catetos son iguales; aquí AB y BC son distintos.`),
             h('RM-proyeccion-por-altura', a * b / c, `Calculaste la altura BH, no la proyección AH.`),
             h('RM-proyeccion-cruzada', b * b / c, `Usaste BC² = AC·HC: esa es la proyección HC del otro cateto. Para AH va el cateto que toca a A: AB² = AC·AH.`),
+            h('RM-proyeccion-diferencia', (b * b - a * a) / c, `Restaste las dos proyecciones (HC − AH). AH sale de AB² = AC·AH.`),
             h('RM-proyeccion-resta', c - a, `Restaste AC − AB. AB es inclinado respecto de AC; su proyección sale de AB² = AC·AH.`),
           ];
           ultimo = [['AB² = AC·AH: ', `${a}² = ${c}·AH, y AH = ${a * a}/${c} = `, v('x', L(correcta, u)), '.']];
@@ -416,6 +417,7 @@
             pa('GE11-pitagoras-sin-angulo-recto', sq(b * b + c * c), `Usaste Pitágoras, pero el ángulo en A no es recto: falta el término 2·AB·m.`),
             h('RM-euclides-sin-lado', sq(b * b + c * c + s * 2 * m), `En el término 2·AB·m olvidaste multiplicar por AB: pusiste solo 2·m.`),
             h('RM-euclides-sin-doble', sq(b * b + c * c + s * c * m), `Olvidaste el 2 del término 2·AB·m.`),
+            h('RM-euclides-doble-termino', sq(b * b + c * c + s * 4 * c * m), `Pusiste 4·AB·m: el término del teorema es 2·AB·m, una sola vez.`),
           ],
           solucion: [
             [`Teorema de Euclides (de la proyección): el lado opuesto a un ángulo ${obtuso ? 'obtuso' : 'agudo'} cumple BC² = AB² + AC² ${obtuso ? '+' : '−'} 2·AB·m, con m la proyección de AC sobre la recta AB.`],
@@ -437,6 +439,7 @@
           h('RM-proyeccion-por-altura', sq(b * b - m * m), `Calculaste la altura desde C, no la proyección: la proyección es el cateto que queda sobre la recta AB.`),
           h('RM-proyeccion-sobre-BC', Math.abs(c * c - a * a - b * b) / (2 * a), `Calculaste la proyección de AC sobre BC (usaste el ángulo C). Se pide sobre la recta AB.`),
           h('RM-proyeccion-de-BC', dif > 0 ? c + m : c - m, `Esa es la proyección de BC sobre la recta AB (el tramo desde B hasta el pie de la altura), no la de AC.`),
+          h('RM-proyeccion-doble-termino', Math.abs(dif) / (4 * c), `Usaste 4·AB·m en vez de 2·AB·m: el término del teorema de Euclides lleva un solo 2.`),
           h('RM-proyeccion-solo-entre-2', Math.abs(dif) / 2, `Al despejar dividiste solo entre 2: el término es 2·AB·m, así que se divide entre 2·AB.`),
         ],
         solucion: [
@@ -562,6 +565,7 @@
           : `Tomaste el suplemento. Aquí H cae entre B y C, así que el ángulo en B es agudo y es el mismo del triángulo ABH.`),
         h('RM-angulo-otro-vertice', C, `Ese es el ángulo en C (del triángulo ACH). Se pide el ángulo en B.`),
         h('RM-angulo-en-A', A, `Ese es el ángulo en A. Se pide el ángulo en B.`),
+        h('RM-angulo-exterior-C', 180 - C, `Ese es el ángulo exterior en C (180° − ∠ACB). Se pide el ángulo interior en B.`),
       ];
       const medio = notable((bc / 2) / sq(ab2));
       if (Number.isFinite(medio)) errores.splice(2, 0, pa('GE8-pie-en-punto-medio', medio, `Supusiste que la altura desde A cae en el punto medio de BC. Eso solo pasa si AB = AC.`));
@@ -725,6 +729,7 @@
         pregunta: ['¿Cuál es el área del trapecio?'],
         errores: [
           h('RM-trapecio-sin-mitad', d1 * d2, `Multiplicaste las diagonales y no dividiste entre 2.`),
+          h('RM-trapecio-bases-por-diagonales', (S - b) * b / 2, `Usaste AD·BC/2: multiplicaste las bases en vez de las diagonales. Con diagonales perpendiculares, el área es AC·BD/2.`),
           h('RM-trapecio-triangulo-ACD', (S - b) * d1 * d2 / (2 * S), `Ese es el área del triángulo ACD (AD·h/2), una parte del trapecio. Con diagonales perpendiculares, el trapecio entero mide AC·BD/2.`),
           h('RM-trapecio-triangulo-ABC', b * d1 * d2 / (2 * S), `Ese es el área del triángulo ABC (BC·h/2), una parte del trapecio. Con diagonales perpendiculares, el trapecio entero mide AC·BD/2.`),
           pa('GE7-diagonal-como-altura', S * d1 / 2, `Usaste la diagonal AC como altura. AC es inclinada; la altura es perpendicular a las bases.`),
