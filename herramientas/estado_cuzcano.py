@@ -1,6 +1,7 @@
 """Cuenta descargas y páginas procesadas sin confundir OCR con revisión visual."""
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,7 +36,7 @@ def main():
                'paginas_procesadas': sum(r['paginas_procesadas'] for r in rows),
                'libros_procesados': sum(r['paginas'] is not None and r['paginas_procesadas'] == r['paginas'] for r in rows),
                'libros_revisados_integramente': 0}
-    save(ROOT / 'fuentes/cuzcano/estado.json', {'resumen': summary, 'libros': rows})
+    save(ROOT / 'fuentes/cuzcano/estado.json', {'generado_utc': datetime.now(timezone.utc).isoformat(), 'resumen': summary, 'libros': rows})
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 

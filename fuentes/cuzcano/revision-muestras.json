@@ -1,0 +1,20 @@
+{
+  "fecha": "2026-11-08",
+  "alcance": "Muestras parciales; no certifica la colección ni las páginas completas",
+  "muestras": [
+    {
+      "id": "180G0ufWjo0upKFwSWpMhNuOAqynExsll",
+      "pagina_pdf": 3,
+      "hallazgos": ["Mezcla de columnas", "Letras de alternativas confundidas", "Subíndices y fórmulas químicas mal reconocidos"],
+      "correcciones_locales_documentadas": 4,
+      "accion": "Separar páginas enfrentadas y conservar correcciones parciales aparte del OCR crudo"
+    },
+    {
+      "id": "1-u8Lo79goClEw-VgMgv7_zQu7cGuXi-S",
+      "pagina_pdf": 10,
+      "confianza_ocr": 95,
+      "hallazgos": ["Definición en recuadro sombreado omitida", "Rótulos de figura omitidos", "Encabezado fragmentado"],
+      "accion": "Revisar recuadros y figuras también en páginas de confianza alta"
+    }
+  ]
+}

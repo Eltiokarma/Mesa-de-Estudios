@@ -51,7 +51,8 @@ def process(task):
                     else:
                         if api is None:
                             api = tesserocr.PyTessBaseAPI(path='.tessdata', lang='spa', psm=tesserocr.PSM.AUTO)
-                        pix = page.get_pixmap(dpi=dpi, colorspace=pymupdf.csGRAY)
+                        scale = min(dpi / 72, 3500 / max(page.rect.width, page.rect.height))
+                        pix = page.get_pixmap(matrix=pymupdf.Matrix(scale, scale), colorspace=pymupdf.csGRAY)
                         image = Image.frombytes('L', (pix.width, pix.height), pix.samples)
                         # A landscape scan normally contains two facing pages. Preserve both
                         # halves in reading order; retain the original PDF for visual checking.
@@ -67,7 +68,8 @@ def process(task):
                             api.Clear()
                         data.update(metodo='tesseract_spa', texto='\n\n'.join(r['texto'] for r in regions),
                                     confianza=min(r['confianza'] for r in regions), regiones=regions,
-                                    dimensiones_px=[pix.width, pix.height], division_doble_pagina=split)
+                                    dimensiones_px=[pix.width, pix.height], division_doble_pagina=split,
+                                    dpi_renderizado=scale * 72)
                     data['prioridad_revision'] = 'alta' if (len(data['texto'].strip()) < 100 or (data['confianza'] is not None and data['confianza'] < 80)) else 'normal'
                     save(out, data)
                 summaries.append({k: data[k] for k in ['pagina_pdf', 'metodo', 'confianza', 'prioridad_revision', 'revision_visual']})

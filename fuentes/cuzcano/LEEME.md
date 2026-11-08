@@ -35,7 +35,7 @@ Para actualizar el inventario, descargar `https://universetostudy.com/universe-u
 - `procesamiento.json`: resumen de libros procesados hasta el final. Se reconstruye cuando termina cada ejecución del lote.
 - `estado.json`: avance que se puede regenerar mientras corre el OCR; diferencia páginas procesadas y revisión visual.
 
-El OCR usa Tesseract 5 en español y renderiza a 200 dpi. Una capa textual previa se reutiliza si supera comprobaciones básicas de longitud, caracteres legibles y caracteres de reemplazo; esas comprobaciones **no certifican su exactitud**. `--forzar-ocr` permite reconocer un archivo íntegramente, pero requiere una salida sin resultados de otra configuración.
+El OCR usa Tesseract 5 en español y renderiza a 200 dpi, con un máximo de 3500 píxeles en el lado largo: algunos PDF declaran dimensiones físicas desproporcionadas. Cada resultado nuevo registra su resolución efectiva; los resultados anteriores conservan sus dimensiones originales. Una capa textual previa se reutiliza si supera comprobaciones básicas de longitud, caracteres legibles y caracteres de reemplazo; esas comprobaciones **no certifican su exactitud**. `--forzar-ocr` permite reconocer un archivo íntegramente, pero requiere una salida sin resultados de otra configuración.
 
 En escaneados apaisados con relación de aspecto mayor que 1,2, se reconocen las mitades izquierda y derecha en ese orden. Es una heurística: revisar las páginas apaisadas que no sean dobles. Se conservan las regiones y sus coordenadas para cotejarlas con el original. El texto no representa fielmente figuras, fracciones, matrices ni otras expresiones bidimensionales.
 
@@ -45,4 +45,4 @@ Todas las páginas parten de `revision_visual: pendiente`. La confianza de Tesse
 
 Conservar el OCR crudo. Guardar correcciones en un archivo local separado, con identificador de libro, página PDF, fragmento original, corrección y motivo. No completar texto ilegible por conjetura. Registrar explícitamente si una revisión fue parcial; no contarla como revisión integral.
 
-La prueba inicial con el Solucionario 1 de Química CEPREUNI 2015-2 mostró mezcla de columnas y confusiones en letras de alternativas y fórmulas. Motivó la lectura separada de páginas enfrentadas. La colección no debe considerarse un corpus validado mientras quede revisión pendiente.
+La prueba inicial con el Solucionario 1 de Química CEPREUNI 2015-2 mostró mezcla de columnas y confusiones en letras de alternativas y fórmulas. Motivó la lectura separada de páginas enfrentadas. Una segunda muestra (Ondas electromagnéticas, página PDF 10) omitió un recuadro sombreado y rótulos de una figura aunque tenía confianza 95. La colección no debe considerarse un corpus validado mientras quede revisión pendiente.
