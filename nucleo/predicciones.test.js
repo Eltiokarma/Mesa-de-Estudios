@@ -121,3 +121,13 @@ test('armar sigue igual que antes sin opciones nuevas', () => {
   const alt = P.armar({ correcta: 10, rng: Azar.crear(9), errores: [{ id: 'a', valor: 20, explicacion: 'x', respaldo: 'hipotesis' }, { id: 'b', valor: 10.001, explicacion: 'x', respaldo: 'hipotesis' }] });
   assert.deepEqual(alt.map(a => a.texto).sort(), ['10', '20']);
 });
+
+test('formatear redondea bien los valores que en binario quedan justo debajo de la mitad', () => {
+  assert.equal(P.formatear(1.035), '1,04');
+  assert.equal(P.formatear(1.005), '1,01');
+  assert.equal(P.formatear(0.345), '0,35');
+  assert.equal(P.formatear(5.175), '5,18');
+  assert.equal(P.formatear(-2.675), '−2,68');
+  assert.equal(P.formatear(1.0349), '1,03');
+  assert.equal(P.formatear(0), '0');
+});

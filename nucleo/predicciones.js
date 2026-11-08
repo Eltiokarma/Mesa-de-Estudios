@@ -16,7 +16,10 @@
   // Número con coma decimal, como en los exámenes peruanos. Quita ceros sobrantes.
   function formatear(n, decimales = 2) {
     if (!Number.isFinite(n)) return String(n);
-    const r = Math.round(n * 10 ** decimales) / 10 ** decimales;
+    // Redondeo a la mitad hacia afuera, con un margen relativo: 1,035 se guarda como 1,03499… en binario
+    // y debe mostrarse 1,04, como lo redondea el alumno a mano.
+    const x = Math.abs(n) * 10 ** decimales;
+    const r = Math.sign(n) * Math.round(x * (1 + 1e-12)) / 10 ** decimales;
     const fijo = Math.abs(r).toFixed(decimales);
     const [ent, dec] = (decimales > 0 ? fijo.replace(/0+$/, '').replace(/\.$/, '') : fijo).split('.');
     const miles = ent.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
