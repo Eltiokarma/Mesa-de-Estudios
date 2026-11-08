@@ -1,0 +1,116 @@
+{
+  "titulo": "Promedios y estadística: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 a 3 minutos por problema, como en el examen. Antes de calcular, escribe qué sabes: ¿cuánto suman los datos? (el promedio por la cantidad), ¿están ordenados?, ¿cuántos datos hay, un número par o impar? Cuando se pide un valor «posible» (el mayor o el menor), piensa qué tienen que hacer los demás datos para dejarle lugar.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Siete amigos juntaron dinero para un regalo y aportaron en promedio S/ 18 cada uno. Nadie dio menos de S/ 12. ¿Cuál es el mayor aporte posible de uno de ellos?",
+      "respuesta": "S/ 54.",
+      "pasos": [
+        "Entre todos juntaron 7 × 18 = 126 soles.",
+        "Para que uno dé lo más posible, los otros 6 deben dar lo mínimo: 6 × 12 = 72 soles.",
+        "Le queda al que más dio: 126 − 72 = 54 soles. Ojo: son 6 los que se quedan en el mínimo, no 7."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Seis alumnos obtuvieron notas enteras, todas diferentes, con promedio 13. Ninguno sacó menos de 10. ¿Cuál es la mayor nota posible de uno de ellos?",
+      "respuesta": "18.",
+      "pasos": [
+        "La suma de las notas es 6 × 13 = 78.",
+        "Para que una sea lo más alta posible, las otras cinco deben ser lo más bajas posible y diferentes: 10, 11, 12, 13 y 14, que suman 60.",
+        "La mayor posible es 78 − 60 = 18, y es mayor que las otras cinco: la lista 10; 11; 12; 13; 14; 18 cumple todo."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Los minutos que tardaron ocho alumnos en resolver un acertijo fueron: 12; 7; 15; 7; 10; 18; 9; 13. Halla la mediana.",
+      "respuesta": "11.",
+      "pasos": [
+        "Ordena de menor a mayor: 7; 7; 9; 10; 12; 13; 15; 18.",
+        "Con ocho datos (número par) hay dos centrales: el 4.° (10) y el 5.° (12).",
+        "La mediana es su semisuma: (10 + 12)/2 = 11. Si no ordenas, el centro de la lista original da (7 + 10)/2 = 8,5, que no es la mediana."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Cinco números enteros positivos tienen media 9, mediana 8 y una sola moda, 12. ¿Cuál es el menor de los cinco?",
+      "respuesta": "6.",
+      "pasos": [
+        "Ordénalos: a ≤ b ≤ c ≤ d ≤ e. La mediana es c = 8 y la suma es 5 × 9 = 45.",
+        "La moda 12 es mayor que la mediana: sus dos repeticiones van al final, d = e = 12. Entonces a + b = 45 − 8 − 24 = 13.",
+        "a y b deben ser menores que 8 y distintos (si se repitieran, habría dos modas). Lo más que suman así es 6 + 7 = 13: la única opción es a = 6 y b = 7. Los números son 6; 7; 8; 12; 12."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Los seis datos 4; 6; x; 12; y; 17 están ordenados de menor a mayor. Su media es 10 y su mediana es 9. Halla y.",
+      "respuesta": "y = 15.",
+      "pasos": [
+        "Con seis datos, la mediana es la semisuma del 3.° y el 4.°: (x + 12)/2 = 9, así que x = 6.",
+        "La suma es 6 × 10 = 60. Los datos conocidos con x suman 4 + 6 + 6 + 12 + 17 = 45.",
+        "y = 60 − 45 = 15, que queda entre 12 y 17, como debe ser. Si tomaras x = 9 (un solo central), saldría y = 12, que no cumple la mediana."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Un grupo de datos tiene varianza 5. A cada dato se le multiplica por 4 y luego se le resta 7. ¿Cuál es la varianza de los nuevos datos?",
+      "respuesta": "80.",
+      "pasos": [
+        "Restar 7 corre todos los datos la misma cantidad: las distancias a la media no cambian, así que la varianza tampoco cambia por eso.",
+        "Multiplicar por 4 multiplica cada distancia a la media por 4, y la varianza (que promedia distancias al cuadrado) se multiplica por 4² = 16.",
+        "Var = 16 × 5 = 80. La desviación estándar, en cambio, se multiplica por 4."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "La media aritmética de dos números es 13 y su media geométrica es 12. Halla los números y su media armónica.",
+      "respuesta": "Los números son 8 y 18; la media armónica es 144/13.",
+      "pasos": [
+        "a + b = 2 × 13 = 26 y ab = 12² = 144.",
+        "(a − b)² = 26² − 4 × 144 = 676 − 576 = 100, así que a − b = 10: los números son 18 y 8.",
+        "MH = 2ab/(a + b) = 288/26 = 144/13, que es MG²/MA. Comprueba el orden: 13 > 12 > 144/13 ≈ 11,08."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Se lanzan tres dados comunes y el producto de los resultados es 60. ¿Cuál es la menor media aritmética posible de los tres resultados?",
+      "respuesta": "4.",
+      "pasos": [
+        "Con caras del 1 al 6, el 60 sale como 2 × 5 × 6 o como 3 × 4 × 5 (el 1 no sirve: 60 no se parte en dos caras).",
+        "Las sumas son 13 y 12. Con el producto fijo, la media geométrica es fija y la aritmética es menor mientras más parejos sean los números (MA ≥ MG).",
+        "La menor MA es 12/3 = 4, con 3; 4; 5."
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "¿Cuál es el promedio de los múltiplos de 6 comprendidos entre 50 y 200?",
+      "respuesta": "126.",
+      "pasos": [
+        "El primero es 54 y el último es 198.",
+        "Hay (198 − 54)/6 + 1 = 25 términos: el cociente cuenta los saltos y los términos son uno más.",
+        "En una progresión, el promedio es la semisuma de los extremos: (54 + 198)/2 = 126. Comprueba: la suma es 25 × 126 = 3150."
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Los números pares del 2 al 80 se separan, en orden, en tres grupos de pares consecutivos. El primer grupo promedia 9 y el último promedia 71. ¿Cuál es el promedio de los pares del grupo del medio?",
+      "respuesta": "39.",
+      "pasos": [
+        "El primer grupo empieza en 2 y su promedio es la semisuma de sus extremos: termina en 2 × 9 − 2 = 16 (son 8 pares).",
+        "El último termina en 80: empieza en 2 × 71 − 80 = 62 (son 10 pares).",
+        "El grupo del medio va del 18 al 60: su promedio es (18 + 60)/2 = 39. No vale suponer que el promedio de todos (41) es el promedio de los tres promedios: eso daría 3 × 41 − 9 − 71 = 43, porque los grupos no tienen la misma cantidad de números."
+      ]
+    }
+  ]
+}
