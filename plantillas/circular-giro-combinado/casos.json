@@ -1,0 +1,157 @@
+{
+  "plantilla": "circular-giro-combinado",
+  "tolerancia": 0.000001,
+  "nota": "g = 10 m/s², sin resistencia del aire. «Detrás» se mide en el sentido de giro. L y R en m; t en s (los ms ya pasados); la ω pedida es la mínima, con π indicado.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: planteó el giro durante el vuelo como φ + 2πn (discos con desfase «detrás», vuelo de la bolita como 2v/g o 2√(2H/g), media vuelta del cascarón) en exacto con π. Coinciden las 11, incluidas las seis regeneradas; en las semillas 200 a 229, correctas bien, ningún distractor defendible (tampoco el nuevo CI-caida-sin-raiz) y balas de 100 a 450 m/s.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "discos",
+        "sub": "omega",
+        "L": 0.8,
+        "phi": 36,
+        "t": 0.005333333333333334
+      },
+      "esperado": {
+        "respuesta": 117.80972450961723,
+        "exacta": "75π/2 rad/s"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "discos",
+        "sub": "v",
+        "L": 2,
+        "phi": 120,
+        "rpm": null,
+        "omegaPi": 40
+      },
+      "esperado": {
+        "respuesta": 120.00000000000001,
+        "exacta": "120 m/s"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "discos",
+        "sub": "omega",
+        "L": 1.5,
+        "phi": 135,
+        "t": 0.00625
+      },
+      "esperado": {
+        "respuesta": 376.99111843077515,
+        "exacta": "120π rad/s"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "plataforma",
+        "phi": 270,
+        "v0": 15
+      },
+      "esperado": {
+        "respuesta": 1.5707963267948966,
+        "exacta": "π/2 rad/s"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "discos",
+        "sub": "omega",
+        "L": 1,
+        "phi": 36,
+        "t": 0.0016666666666666668
+      },
+      "esperado": {
+        "respuesta": 376.99111843077515,
+        "exacta": "120π rad/s"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "discos",
+        "sub": "ms",
+        "phi": 150,
+        "t": 0.01
+      },
+      "esperado": {
+        "respuesta": 261.79938779914943,
+        "exacta": "250π/3 rad/s"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "discos",
+        "sub": "v",
+        "L": 1.2,
+        "phi": 36,
+        "rpm": 1800,
+        "omegaPi": null
+      },
+      "esperado": {
+        "respuesta": 359.99999999999994,
+        "exacta": "360 m/s"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "discos",
+        "sub": "v",
+        "L": 1.5,
+        "phi": 60,
+        "rpm": 3000,
+        "omegaPi": null
+      },
+      "esperado": {
+        "respuesta": 450,
+        "exacta": "450 m/s"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "plataforma",
+        "phi": 120,
+        "v0": 20
+      },
+      "esperado": {
+        "respuesta": 0.5235987755982988,
+        "exacta": "π/6 rad/s"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "plataforma",
+        "phi": 90,
+        "v0": 2.5
+      },
+      "esperado": {
+        "respuesta": 3.141592653589793,
+        "exacta": "π rad/s"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "cascaron",
+        "R": 0.5,
+        "diametro": false,
+        "v": 100
+      },
+      "esperado": {
+        "respuesta": 314.1592653589793,
+        "exacta": "100π rad/s"
+      }
+    }
+  ]
+}

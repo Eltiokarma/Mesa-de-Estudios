@@ -120,7 +120,8 @@
       "circular-mcu",
       "circular-horaria",
       "circular-grafica",
-      "circular-aceleracion-total"
+      "circular-aceleracion-total",
+      "circular-giro-combinado"
      ]
     },
     {
@@ -4603,6 +4604,21 @@
    "papel": null,
    "archivos": [
     "/plantillas/circular-enesimo-segundo/generador.js"
+   ]
+  },
+  "circular-giro-combinado": {
+   "id": "circular-giro-combinado",
+   "titulo": "Balas, cascarones y plataformas que giran",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "#/practica/circular-giro-combinado",
+   "papel": null,
+   "archivos": [
+    "/plantillas/circular-giro-combinado/generador.js"
    ]
   },
   "circular-grafica": {
