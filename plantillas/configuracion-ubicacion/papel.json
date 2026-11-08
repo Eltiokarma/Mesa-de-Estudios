@@ -1,0 +1,130 @@
+{
+  "titulo": "Configuración y lugar en la tabla: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la práctica, con unos 2 minutos por problema, como en el examen. Escribe la configuración en el orden de llenado (1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p) y abrévela con el gas noble anterior. Para los números cuánticos, llena las cajas de mₗ = −ℓ a +ℓ, primero con flechas hacia arriba (mₛ = +1/2).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un elemento tiene número atómico 51. ¿En qué periodo y en qué grupo está? Da el grupo de 1 a 18 y en la notación A/B.",
+      "respuesta": "Periodo 5, grupo 15 (VA).",
+      "pasos": [
+        "Configuración: [Kr] 5s² 4d¹⁰ 5p³.",
+        "El mayor nivel con electrones es el 5: periodo 5.",
+        "Termina en p: bloque p. Electrones de valencia 5s² + 5p³ = 5, grupo VA, que en la numeración de 1 a 18 es el 10 + 5 = 15. Los 4d¹⁰ no cuentan: pertenecen a la capa anterior."
+      ],
+      "verificar": [ { "fn": "ubicacion", "args": [51], "espera": { "periodo": 5, "grupo": 15, "grupoAB": "VA", "bloque": "p" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Un metal tiene Z = 75. Una compañera dice que está en el periodo 5 porque su último subnivel es un 5d. ¿Tiene razón? Ubica el elemento.",
+      "respuesta": "No: está en el periodo 6, grupo 7 (VIIB).",
+      "pasos": [
+        "Configuración: [Xe] 6s² 4f¹⁴ 5d⁵.",
+        "El último subnivel que se llena es el 5d, pero el mayor nivel con electrones es el 6 (el 6s²): periodo 6.",
+        "Termina en d: bloque d, metal de transición. Grupo = 6s² + 5d⁵ = 7, es decir, VIIB."
+      ],
+      "verificar": [ { "fn": "ubicacion", "args": [75], "espera": { "periodo": 6, "grupo": 7, "grupoAB": "VIIB", "bloque": "d" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Escribe la configuración del ion Co³⁺ (Z = 27) y di cuántos electrones desapareados tiene.",
+      "respuesta": "[Ar] 3d⁶, con 4 electrones desapareados.",
+      "pasos": [
+        "Átomo neutro: [Ar] 4s² 3d⁷.",
+        "Salen 3 electrones, primero los del nivel de mayor n: los dos del 4s y luego uno del 3d. Queda [Ar] 3d⁶ (no [Ar] 4s² 3d⁴).",
+        "3d⁶ en 5 cajas: una flecha en cada caja y una sexta que se aparea. Quedan 4 cajas con una sola flecha: 4 desapareados."
+      ],
+      "verificar": [ { "fn": "configuracion", "args": [27, 3], "espera": { "abreviada": "[Ar] 3d6", "desapareados": 4 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La plata tiene Z = 47. Escribe la configuración del átomo y la del ion Ag⁺, y cuenta los desapareados de cada uno.",
+      "respuesta": "Ag: [Kr] 5s¹ 4d¹⁰, 1 desapareado. Ag⁺: [Kr] 4d¹⁰, 0 desapareados.",
+      "pasos": [
+        "Por la regla saldría [Kr] 5s² 4d⁹, pero la plata es anómala, como el cobre: un electrón del 5s pasa al 4d, que queda lleno. Ag: [Kr] 5s¹ 4d¹⁰.",
+        "Solo el 5s¹ queda solo en su caja: 1 desapareado.",
+        "Ag⁺ pierde el electrón del nivel de mayor n, el 5s¹: [Kr] 4d¹⁰. Todas las cajas llenas: 0 desapareados."
+      ],
+      "verificar": [
+        { "fn": "configuracion", "args": [47, 0], "espera": { "abreviada": "[Kr] 5s1 4d10", "desapareados": 1 } },
+        { "fn": "configuracion", "args": [47, 1], "espera": { "abreviada": "[Kr] 4d10", "desapareados": 0 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "El ion ¹²⁸Te²⁻ tiene Z = 52. ¿Cuántos protones, neutrones y electrones tiene? Escribe su configuración.",
+      "respuesta": "52 protones, 76 neutrones y 54 electrones; [Kr] 5s² 4d¹⁰ 5p⁶.",
+      "pasos": [
+        "Protones: Z = 52. Neutrones: A − Z = 128 − 52 = 76; la carga no cambia el núcleo.",
+        "Electrones: el anión 2− ganó 2: 52 + 2 = 54.",
+        "El átomo es [Kr] 5s² 4d¹⁰ 5p⁴; los 2 electrones que entran completan el 5p: [Kr] 5s² 4d¹⁰ 5p⁶, igual que el xenón."
+      ],
+      "verificar": [
+        { "fn": "particulas", "args": [52, 128, -2], "espera": { "protones": 52, "neutrones": 76, "electrones": 54 } },
+        { "fn": "configuracion", "args": [52, -2], "espera": { "abreviada": "[Kr] 5s2 4d10 5p6" } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Halla los números cuánticos (n; ℓ; mₗ; mₛ) del último electrón de un átomo con Z = 43.",
+      "respuesta": "(4; 2; +2; +1/2).",
+      "pasos": [
+        "Configuración: [Kr] 5s² 4d⁵. El último subnivel escrito es el 4d⁵: n = 4 y ℓ = 2.",
+        "Cinco cajas, de mₗ = −2 a +2. Los 5 electrones van uno por caja, todos con flecha hacia arriba (Hund).",
+        "El quinto cae en la última caja: mₗ = +2 y mₛ = +1/2."
+      ],
+      "verificar": [ { "fn": "ultimoElectron", "args": [43, 0], "espera": { "n": 4, "l": 2, "ml": 2, "ms": 0.5 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Se tienen 200 g de un isótopo radiactivo con vida media de 6 días. ¿Cuánto queda a los 24 días? ¿Al cabo de cuántos días quedarán 6,25 g?",
+      "respuesta": "Quedan 12,5 g a los 24 días; quedan 6,25 g a los 30 días.",
+      "pasos": [
+        "En 24 días caben 24 ÷ 6 = 4 vidas medias: 200 → 100 → 50 → 25 → 12,5 g.",
+        "6,25 g es 200 ÷ 32, y 32 = 2⁵: hacen falta 5 mitades.",
+        "5 × 6 = 30 días. No es lineal: no se pierden 100 g cada 6 días, sino la mitad de lo que queda."
+      ],
+      "verificar": [
+        { "fn": "vidaQueda", "args": [200, 6, 24], "espera": 12.5 },
+        { "fn": "vidaTiempo", "args": [6, 0.03125], "espera": 30 }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Un detector registra la actividad de una fuente: 1200 desintegraciones por minuto al empezar, 300 a las 16 horas y 75 a las 32 horas. Un alumno dice que la vida media es de 16 horas. ¿Tiene razón? ¿Cuál es?",
+      "respuesta": "No: la vida media es de 8 horas.",
+      "pasos": [
+        "En 16 horas la actividad bajó de 1200 a 300, a la cuarta parte, no a la mitad: 16 horas no es la vida media.",
+        "1/4 = (1/2)²: en 16 horas pasaron 2 vidas medias, de 8 horas cada una.",
+        "Comprobación: de 300 a 75 también hay 2 mitades (300 → 150 → 75) en otras 16 horas."
+      ],
+      "verificar": [
+        { "fn": "vidaQueda", "args": [1200, 8, 16], "espera": 300 },
+        { "fn": "vidaQueda", "args": [1200, 8, 32], "espera": 75 }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "De los elementos con Z = 34, Z = 42 y Z = 52, ¿cuáles dos son de la misma familia? ¿Por qué el otro no lo es, si también tiene 6 electrones de valencia?",
+      "respuesta": "Z = 34 y Z = 52 (grupo VIA). Z = 42 es del grupo VIB.",
+      "pasos": [
+        "Z = 34: [Ar] 4s² 3d¹⁰ 4p⁴, bloque p, 2 + 4 = 6: grupo VIA (16).",
+        "Z = 52: [Kr] 5s² 4d¹⁰ 5p⁴, bloque p, grupo VIA (16). Misma columna, otro periodo: misma familia.",
+        "Z = 42 es anómalo: [Kr] 5s¹ 4d⁵, bloque d, 1 + 5 = 6, pero es un grupo B: VIB (6). Mismo número romano no es misma familia."
+      ],
+      "verificar": [
+        { "fn": "ubicacion", "args": [34], "espera": { "grupo": 16, "grupoAB": "VIA" } },
+        { "fn": "ubicacion", "args": [52], "espera": { "grupo": 16, "grupoAB": "VIA" } },
+        { "fn": "ubicacion", "args": [42], "espera": { "grupo": 6, "grupoAB": "VIB" } }
+      ]
+    }
+  ]
+}

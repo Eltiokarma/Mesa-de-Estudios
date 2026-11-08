@@ -1,0 +1,15 @@
+{
+  "id": "configuracion-ubicacion",
+  "titulo": "Configuración y lugar en la tabla, hasta Z = 86",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.tabla-periodica",
+    "quimica.estructura-atomica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
