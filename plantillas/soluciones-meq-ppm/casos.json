@@ -1,0 +1,382 @@
+{
+  "plantilla": "soluciones-meq-ppm",
+  "tolerancia": 1e-9,
+  "nota": "Respuestas sin redondear en \"respuesta\" (tolerancia relativa); \"texto\" es la alternativa correcta como la ve el alumno, con 4 cifras significativas. Entradas: ver la cabecera de generador.js (tipos y campos de _datos). Volúmenes en mL salvo los m³ de ppmMasa; masas molares de academia.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "jarabe",
+        "azucar": "sacarosa",
+        "p": 17.1
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "texto": "0,5 mol/L"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "ppmMasa",
+        "sub": "masa",
+        "ppm": 1.5,
+        "V": 1000,
+        "unidad": "kg"
+      },
+      "esperado": {
+        "respuesta": 1.5,
+        "texto": "1,5 kg"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "carbonato",
+        "carb": "Na2CO3",
+        "acido": "HCl",
+        "n": 0.2,
+        "p": 7.3
+      },
+      "esperado": {
+        "respuesta": 200.00000000000003,
+        "texto": "200 mL"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "jarabe",
+        "azucar": "glucosa",
+        "p": 13.5
+      },
+      "esperado": {
+        "respuesta": 0.75,
+        "texto": "0,75 mol/L"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "masa",
+        "sal": "MgCl2",
+        "X": 3,
+        "V": 1000,
+        "otra": "KCl",
+        "Xotra": 20
+      },
+      "esperado": {
+        "respuesta": 142.5,
+        "texto": "142,5 mg"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "preparar",
+        "sub": "B",
+        "sA": "NaCl",
+        "MA": 1,
+        "sB": "CaCl2",
+        "MB": 0.1,
+        "Vf": 250,
+        "y": 4,
+        "w": 204
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 mL"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "ppmGas",
+        "gas": "SO2",
+        "X": 50,
+        "t": 17,
+        "P": 0.75,
+        "unidad": "mol/m³"
+      },
+      "esperado": {
+        "respuesta": 0.0015769554247266609,
+        "texto": "0,001577 mol/m³"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "meq",
+        "sal": "Na2SO4",
+        "ion": "cat",
+        "dado": "pct",
+        "pct": 3,
+        "V": 100
+      },
+      "esperado": {
+        "respuesta": 42.25352112676056,
+        "texto": "42,25 mEq"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "mezcla",
+        "sub": "porL",
+        "s1": "KCl",
+        "M1": 0.3,
+        "V1": 200,
+        "s2": "MgCl2",
+        "M2": 0.1,
+        "V2": 150,
+        "ion": "an"
+      },
+      "esperado": {
+        "respuesta": 257.14285714285717,
+        "texto": "257,1 mEq/L"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "volumen-pct",
+        "sub": "agua",
+        "V": 750,
+        "a": 12
+      },
+      "esperado": {
+        "respuesta": 660,
+        "texto": "660 mL"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "mezcla",
+        "sub": "porL",
+        "s1": "NaCl",
+        "M1": 0.15,
+        "V1": 300,
+        "s2": "MgCl2",
+        "M2": 0.2,
+        "V2": 150,
+        "ion": "an"
+      },
+      "esperado": {
+        "respuesta": 233.33333333333334,
+        "texto": "233,3 mEq/L"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "mezcla",
+        "sub": "total",
+        "s1": "NaCl",
+        "M1": 0.3,
+        "V1": 400,
+        "s2": "MgCl2",
+        "M2": 0.25,
+        "V2": 500,
+        "ion": "an"
+      },
+      "esperado": {
+        "respuesta": 370,
+        "texto": "370 mEq"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "ppmGas",
+        "gas": "NO2",
+        "X": 150,
+        "t": 27,
+        "P": 0.68,
+        "unidad": "mol/m³"
+      },
+      "esperado": {
+        "respuesta": 0.004146341463414634,
+        "texto": "0,004146 mol/m³"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "volumen",
+        "sal": "CaCl2",
+        "ion": "cat",
+        "M": 0.05,
+        "N": 15
+      },
+      "esperado": {
+        "respuesta": 150,
+        "texto": "150 mL"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "ppmMasa",
+        "sub": "ppm",
+        "m": 5,
+        "V": 500,
+        "unidad": "ppm"
+      },
+      "esperado": {
+        "respuesta": 0.01,
+        "texto": "0,01 ppm"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "igualar",
+        "sal": "KCl",
+        "ion": "cat",
+        "p": 7.45,
+        "X": 20,
+        "Vs": 100
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2 mL"
+      }
+    },
+    {
+      "semilla": 25,
+      "entrada": {
+        "tipo": "volumen",
+        "sal": "KCl",
+        "ion": "cat",
+        "M": 1,
+        "N": 100
+      },
+      "esperado": {
+        "respuesta": 100,
+        "texto": "100 mL"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "igualar",
+        "sal": "NaCl",
+        "ion": "cat",
+        "p": 0.45,
+        "X": 145,
+        "Vs": 200
+      },
+      "esperado": {
+        "respuesta": 377,
+        "texto": "377 mL"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "meq",
+        "sal": "NaHCO3",
+        "ion": "cat",
+        "dado": "M",
+        "M": 0.5,
+        "V": 1000
+      },
+      "esperado": {
+        "respuesta": 500,
+        "texto": "500 mEq"
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "tipo": "meq",
+        "sal": "K2SO4",
+        "ion": "cat",
+        "dado": "pct",
+        "pct": 0.9,
+        "V": 1000
+      },
+      "esperado": {
+        "respuesta": 103.44827586206897,
+        "texto": "103,4 mEq"
+      }
+    },
+    {
+      "semilla": 42,
+      "entrada": {
+        "tipo": "precipitacion",
+        "sub": "cloruro",
+        "Vm": 10,
+        "c": 0.1,
+        "Vt": 15
+      },
+      "esperado": {
+        "respuesta": 5325,
+        "texto": "5 325 mg/L"
+      }
+    },
+    {
+      "semilla": 50,
+      "entrada": {
+        "tipo": "preparar",
+        "sub": "A",
+        "sA": "NaCl",
+        "MA": 2,
+        "sB": "CaCl2",
+        "MB": 1,
+        "Vf": 2000,
+        "y": 10,
+        "w": 70
+      },
+      "esperado": {
+        "respuesta": 60,
+        "texto": "60 mL"
+      }
+    },
+    {
+      "semilla": 61,
+      "entrada": {
+        "tipo": "volumen-pct",
+        "sub": "mezcla",
+        "V1": 200,
+        "a1": 96,
+        "V2": 300,
+        "a2": 0
+      },
+      "esperado": {
+        "respuesta": 38.4,
+        "texto": "38,4 % v/v"
+      }
+    },
+    {
+      "semilla": 75,
+      "entrada": {
+        "tipo": "carbonato",
+        "carb": "CaCO3",
+        "acido": "H2SO4",
+        "n": 0.1,
+        "p": 9.8
+      },
+      "esperado": {
+        "respuesta": 100,
+        "texto": "100 mL"
+      }
+    },
+    {
+      "semilla": 78,
+      "entrada": {
+        "tipo": "precipitacion",
+        "sub": "precipitado",
+        "Vm": 10,
+        "c": 0.01,
+        "Vt": 10
+      },
+      "esperado": {
+        "respuesta": 14.350000000000001,
+        "texto": "14,35 mg"
+      }
+    }
+  ]
+}
