@@ -62,3 +62,30 @@ AR18 (enumeración sin sistema) tiene dato y se usa con `parcial` donde la opci�
 | RME43 | **Olvidar los tramos rectos o un arco compartido** en un perímetro con semicircunferencias. | Dos zonas con un arco común: contar ese arco una sola vez al sumar. | Perímetros con arcos |
 | RME44 | **Contar dos veces las casillas de las esquinas**, que son comunes a dos lados (o al revés). | Marco de 5 × 5: «20 casillas en el borde» (16). | Casillas en bordes (trampa 7 de rm-a) |
 | RME45 | **Olvidar las ubicaciones giradas o reflejadas** de una pieza al contar cuántas caben. | La L de 3 casillas en un tablero de 3 × 3: contar solo las que van como en el dibujo. | Conteo de piezas |
+
+## Errores de los generadores (8 nov 2026)
+
+Los abrieron los generadores de formato «predicciones». Todos son hipótesis.
+
+| Código | Error | Módulo |
+| --- | --- | --- |
+| RME170 | Quitar una sola capa por medida (n − 1 en vez de n − 2) al contar cubitos con k caras pintadas. | cubitos-conteo |
+| RME171 | Contar cubitos pintados en vez de caras pintadas. | cubitos-conteo |
+| RME172 | Responder otra cantidad del problema: lo que se quita en vez de lo que queda, el total en vez de lo que falta, el volumen en vez del número de ladrillos. | cubitos-conteo |
+| RME173 | Restar los cruces de dos en dos cuando tres túneles se cruzan en un mismo cubito. | cubitos-conteo |
+| RME174 | Tomar como lado del cubo el producto de las medidas o la mayor de ellas, en vez del MCM. | cubitos-conteo |
+| RME175 | Sumar los ladrillos que van en cada dirección en vez de multiplicarlos. | cubitos-conteo |
+| RME176 | En el dominó, olvidar las fichas dobles. | dados-caras |
+| RME177 | En el área exterior de una torre, olvidar la base cuando sí se cuenta, o las caras escalonadas de los costados. | cubitos-conteo |
+| RME178 | Restar del total el extremo equivocado (el máximo en vez del mínimo, o al revés). | dados-caras |
+| RME179 | No usar una condición del enunciado (la cara de arriba dada, la regla de los contactos, el producto). | dados-caras |
+| RME180 | Creer que la faja abierta también invierte el sentido. | poleas-giros |
+| RME181 | Contar las poleas que giran en el otro sentido (el complemento). | poleas-giros |
+| RME182 | Equivocar si el bloque sube o baja, sin mirar de qué lado cuelga cada cuerda ni si la faja es cruzada. | poleas-giros |
+| RME183 | Tomar el mismo ángulo en dos poleas unidas por faja: la faja comparte el arco, no el ángulo. | poleas-giros |
+| RME184 | Contar la posición inicial como una de las coincidencias. | poleas-giros |
+| RME185 | Dar el MCM (arco común o dientes) sin dividirlo entre el tamaño de la rueda. | poleas-giros |
+| RME186 | Multiplicar rutas alternativas (una «o» la otra) en vez de sumarlas. | rutas-tramos |
+| RME187 | No aplicar la condición de paso obligado o prohibido, o contar justo las que excluye. | rutas-tramos |
+| RME188 | Con un cruce cerrado, restar una sola ruta en vez de todas las que pasan por él. | rutas-tramos |
+| RME189 | En una cuadrícula, contar 2 opciones por cuadra (2^(m+n)) sin ver que las cuadras al este y al norte están fijas. | rutas-tramos |
