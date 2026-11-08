@@ -29,4 +29,4 @@ Gerson va a pasar, uno por uno, los compendios de academia con problemas tipo UN
 
 | Libro | Tema | Mapa | Estado |
 | --- | --- | --- | --- |
-| Tarazona, *Análisis vectorial* (Cuzcano, 2005), dos PDF que cubren las 128 páginas | Vectores | `compendio-vectores.md` | En clasificación |
+| Tarazona, *Análisis vectorial* (Cuzcano, 2005), dos PDF que cubren las 128 páginas | Vectores | `compendio-vectores.md` | Mapa hecho; vectores 0.2.0 y generadores en `rutina/vectores` |
