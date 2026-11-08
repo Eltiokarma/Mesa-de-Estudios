@@ -2,7 +2,7 @@
   "plantilla": "geo-areas-triangulares",
   "tolerancia": 0.000001,
   "nota": "Respuestas exactas q + p·√3; «respuesta» es su valor numérico. Ver la cabecera de generador.js para el significado de cada campo de «entrada».",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026): resolvió los 22 casos a partir del enunciado, sin ver generador.js ni casos.json, con coordenadas y la fórmula del área por coordenadas (shoelace), y los hexágonos armados lado a lado con giros de 60°; comprobó que cada enunciado cuadra con sus datos y que la respuesta no cambia con la figura (bisectriz con A agudo u obtuso, P en cualquier punto de BC). Resultado: 22/22 coinciden en el valor y en la forma exacta q + p√3.",
   "casos": [
     {
       "semilla": "entrada-1",
