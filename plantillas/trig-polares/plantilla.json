@@ -1,0 +1,14 @@
+{
+  "id": "trig-polares",
+  "titulo": "De cartesianas a polares y al revés",
+  "formato": "predicciones",
+  "unidades": [
+    "trigonometria.coordenadas-polares-y-complejos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

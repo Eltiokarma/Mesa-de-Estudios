@@ -1,0 +1,86 @@
+{
+  "titulo": "De cartesianas a polares y al revés: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 3 minutos por problema. Polo en el origen y eje polar sobre el semieje X positivo. Usa x = r cos θ, y = r sen θ y x² + y² = r². Al ubicar un punto, mira primero los signos de x e y: arctan(y/x) solo da ángulos del I y del IV cuadrante. Al terminar, comprueba tu ecuación con un punto fácil de la curva.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Escribe en forma polar la recta y = −3.",
+      "respuesta": "r = −3 csc θ (o r sen θ = −3).",
+      "pasos": [
+        "y = r sen θ, así que r sen θ = −3.",
+        "Despeja r dividiendo: r = −3/sen θ = −3 csc θ.",
+        "Prueba: θ = 270° da r = −3/(−1) = 3, el punto (0; −3), que está en la recta."
+      ],
+      "verificar": [{ "fn": "polar", "args": [{ "forma": "frac", "N": -3, "D0": 0, "Dc": 0, "Ds": 1 }], "espera": { "texto": "r = −3 csc θ" } }]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Pasa a cartesianas la ecuación polar r = 8 sen θ y di qué curva es.",
+      "respuesta": "x² + y² = 8y: la circunferencia de centro (0; 4) y radio 4, que pasa por el polo.",
+      "pasos": [
+        "Multiplica por r: r² = 8 r sen θ.",
+        "Reemplaza: x² + y² = 8y.",
+        "Completa cuadrados: x² + (y − 4)² = 16. No tiene centro en el polo: pasa por él."
+      ],
+      "verificar": [{ "fn": "cartesiana", "args": [[1, 1, 0, -8, 0]], "espera": { "texto": "x² + y² = 8y" } }]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Escribe en forma polar la recta x + 2y = 6.",
+      "respuesta": "r = 6/(cos θ + 2 sen θ).",
+      "pasos": [
+        "r cos θ + 2 r sen θ = 6.",
+        "Saca r de factor común: r(cos θ + 2 sen θ) = 6.",
+        "Divide: r = 6/(cos θ + 2 sen θ). Prueba con θ = 0: r = 6, el punto (6; 0) está en la recta."
+      ],
+      "verificar": [{ "fn": "polar", "args": [{ "forma": "frac", "N": 6, "D0": 0, "Dc": 1, "Ds": 2 }], "espera": { "texto": "r = 6/(cos θ + 2 sen θ)" } }]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La parábola y² = 12x + 36 tiene su foco en el origen. Escribe su ecuación polar.",
+      "respuesta": "r = 6/(1 − cos θ).",
+      "pasos": [
+        "x² + y² = x² + 12x + 36 = (x + 6)², así que r = x + 6 (r ≥ 0 y x + 6 ≥ 0 en la parábola).",
+        "r = r cos θ + 6 ⇒ r(1 − cos θ) = 6.",
+        "r = 6/(1 − cos θ). Prueba: θ = 180° da r = 3, el punto (−3; 0), vértice de la parábola.",
+        "Con 1 + cos θ saldría la parábola que abre hacia la izquierda."
+      ],
+      "verificar": [
+        { "fn": "polar", "args": [{ "forma": "frac", "N": 6, "D0": 1, "Dc": -1, "Ds": 0 }], "espera": { "texto": "r = 6/(1 − cos θ)" } },
+        { "fn": "cartesiana", "args": [[0, 1, -12, 0, -36]], "espera": { "texto": "y² = 12x + 36" } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "avanzado",
+      "enunciado": "Una pelota sigue la trayectoria y = 4 − (x − 2)²/4, en metros. Su foco es F = (2; 3). Con el polo en F y el eje polar paralelo al eje X, ¿cuál es la ecuación polar de la trayectoria?",
+      "respuesta": "r = 2/(1 + sen θ).",
+      "pasos": [
+        "Desde el foco: X = x − 2 e Y = y − 3. La curva (x − 2)² = −4(y − 4) queda X² = −4(Y − 1) = −4Y + 4.",
+        "X² + Y² = Y² − 4Y + 4 = (2 − Y)², así que r = 2 − Y = 2 − r sen θ.",
+        "r(1 + sen θ) = 2 ⇒ r = 2/(1 + sen θ).",
+        "Prueba: θ = 90° da r = 1, el punto (2; 4), que es la altura máxima."
+      ],
+      "verificar": [{ "fn": "polar", "args": [{ "forma": "frac", "N": 2, "D0": 1, "Dc": 0, "Ds": 1 }], "espera": { "texto": "r = 2/(1 + sen θ)" } }]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Convierte el punto polar (−4; 120°) a cartesianas y luego escribe el punto (−1; −√3) en polares con r > 0 y 0° ≤ θ < 360°.",
+      "respuesta": "(−4; 120°) es (2; −2√3); (−1; −√3) es (2; 240°).",
+      "pasos": [
+        "x = −4·cos 120° = −4·(−1/2) = 2; y = −4·sen 120° = −4·(√3/2) = −2√3. Con r negativo, el punto queda del lado opuesto a 120°.",
+        "Para (−1; −√3): r = √(1 + 3) = 2.",
+        "x < 0 e y < 0: III cuadrante. arctan(√3) = 60° es solo la referencia: θ = 180° + 60° = 240°."
+      ],
+      "verificar": [
+        { "fn": "aCartesianas", "args": [-4, 120], "espera": { "texto": "(2; −2√3)" } },
+        { "fn": "aPolares", "args": [-1, -1.7320508075688772], "espera": { "r": 2, "theta": 240 } }
+      ]
+    }
+  ]
+}
