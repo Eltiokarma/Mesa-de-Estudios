@@ -1,0 +1,5 @@
+# Rutina de química-admisión: pausa (8 nov 2026, por límite de uso)
+
+- Terminados, con verificación ciega, revisión y correcciones: generadores `soluciones-meq-ppm`, `configuracion-ubicacion`, `quimica-conceptos`, `clasificar-reacciones`, `estequiometria-admision` y `conversiones-quimica`; más el arreglo de redondeo de `formatear` en `nucleo/predicciones.js` (núcleo compartido).
+- A medias: `cinetica` 0.3.0 (pestaña «Mecanismos»): verificación ciega 134/134, falta la revisión de contenido (se detuvo) y pegar el texto de verificación en los casos mec-*. `molecula-grande`: motor, biblioteca, casos y papel hechos; falta index.html (la escena), la verificación ciega con RDKit y la revisión. Commit «WIP: pausa por límite de uso».
+- Falta al final: renombrar el prefijo de códigos `QA-` a `AQ-` (choca con QA1–QA17 de ambiente) en los generadores y en cinetica, agregar los módulos a `catalogo/cursos/quimica.json`, marcar «si» en las filas cubiertas del CSV y escribir este reporte completo (cobertura antes: 196 si, 110 medio, 1 no de 307).
