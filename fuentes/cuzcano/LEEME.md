@@ -22,7 +22,7 @@ No se identifica un título de razonamiento verbal en este catálogo.
 
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
-- Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las once pruebas de herramientas están aprobadas.
+- Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las trece pruebas de herramientas están aprobadas.
 - 36 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 24 parcialmente revisadas. Ningún libro completo certificado.
 - 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
 - 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
@@ -96,7 +96,23 @@ python herramientas/exportar_revision_cuzcano.py
 python -m unittest discover -s herramientas -p 'test_*.py'
 ```
 
-## Entrega y futura integración con la app
+## Piloto de mejora local por lotes
+
+En Windows, `OCR-local-5-paginas.cmd` ejecuta un lote de cinco páginas de química y abre un comparador local. No usa servicios externos ni modelos de OpenAI. Requiere los PDF, el OCR previo, `.ocr-deps` y `.tessdata` locales: el repositorio por sí solo no contiene esos archivos. Busca Python en `.venv` o en el runtime instalado de Codex.
+
+El piloto conserva tres alternativas: resolución de 300 dpi (limitada a 4200 píxeles de lado), contraste y columnas de anchura fija. No modifica originales, correcciones ni la cola, y no declara ninguna alternativa validada. Las páginas giradas requieren indicar `--giro` tras confirmar su orientación visualmente. No se aplican reglas químicas o matemáticas para adivinar símbolos.
+
+```sh
+python herramientas/mejorar_ocr_local.py --libro 1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl --limite 5 --abrir
+# Para elegir otro lote explícito, sustituir los números por páginas pendientes:
+python herramientas/mejorar_ocr_local.py --libro IDENTIFICADOR --limite 5 --paginas 1 2 3 4 5
+```
+
+Sin `--paginas` se eligen hasta cinco páginas de menor confianza sin cotejo previo del libro. El límite máximo es veinte por ejecución. Repetir el mismo lote reutiliza sus resultados cuando coinciden PDF, OCR original, modelo y configuración; no avanza silenciosamente a otras páginas. El informe y el lector están en `fuentes/ocr-local/cuzcano/<id>/lotes-locales/`; las alternativas, en `candidatos-locales/`.
+
+El primer piloto procesó las páginas PDF 13, 14, 22, 12 y 9. Sólo una de cinco tuvo una alternativa con mayor confianza media por palabra; las otras cuatro no mejoraron esa métrica. El cotejo de un fragmento de la página 13 confirmó que siguen fallando cargas y subíndices. Esto no mide la exactitud real de las cinco páginas ni justifica reprocesar toda la colección con estos ajustes. `piloto-ocr-local.json` conserva las métricas, sin texto de los libros.
+
+## Formatos para consulta y producto
 
 La entrega local está en `fuentes/ocr-local/cuzcano/entrega/`: `index.html` permite leer y comparar, `paginas-corregidas.jsonl` guarda un registro por página y `revision-cuzcano.zip` reúne ambos con un manifiesto de hashes. El paquete es un avance, no toda la colección corregida. No contiene los PDF. Cada registro incluye referencia al libro y página, OCR original, texto corregido, estado del cotejo, pendientes y validación matemática pendiente. `formulas_latex` contiene únicamente las expresiones ya normalizadas; no se promete cobertura total.
 
