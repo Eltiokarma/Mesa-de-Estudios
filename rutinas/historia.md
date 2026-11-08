@@ -137,3 +137,65 @@ Los libros de historia de la ciencia que valdría conseguir están en `fuentes/p
 ## Pruebas
 
 `npm test` en verde antes del push (solo cambian documentos).
+
+## Verificación (8 nov 2026)
+
+Rama `rutina/historia-verificacion`, sacada de `claude/awesome-wozniak-5etl1n`. Encargo: verificar contra la fuente completa los 30 ★ de `docs/investigacion/historia-ganchos.md`. Solo documentos: no toqué escenas ni contenido de alumnos, y no subí `VERSION`.
+
+### Red
+
+Gerson aprobó los seis hosts: mathshistory.st-andrews.ac.uk, plato.stanford.edu, scielo.org.pe, arxiv.org, www.jstor.org y archive.org. SciELO Perú se sirve desde `www.scielo.org.pe`, que seguía bloqueado, y lo agregué aparte. Lo que funcionó y lo que no:
+
+- **archive.org:** la ruta `/download/` redirige a servidores de descarga (`ia600…`, `ia902804.us.archive.org`, `dn…archive.org`) que dan 403. La ruta `https://archive.org/stream/<id>/<id>_djvu.txt` sí devuelve el texto completo, así que **no hizo falta agregar más hosts**. Los libros que solo se prestan (Ascher 1981, Roller 1950, Biggs-Lloyd-Wilson 1976, Benson 1979) no muestran el texto.
+- **JSTOR:** responde, pero solo con un desafío de JavaScript; no se pudo leer ni la ficha. Varios artículos de JSTOR (Locke 1912, por ejemplo) sí están completos en archive.org.
+- **Siguen bloqueados**, y harían falta para lo pendiente: cambridge.org, doi.org, www.frontiersin.org, tandfonline.com, nature.com, edweek.org, scientificamerican.com, maa.org, muse.jhu.edu, utpress.utexas.edu, ajtmh.org, PubMed, encyclopedia.com, rigb.org, scielo.org.co y las revistas de la UNAL.
+
+### Método
+
+Cinco verificadores en paralelo, seis ★ cada uno. Cada uno leyó la fuente completa, buscó la afirmación en el texto y anotó autor, año, página o sección y una cita literal. Después, un revisor volvió a bajar las 52 fuentes por su cuenta y comprobó que cada cita existe (salvo errores del OCR, como la ſ leída como f) y que respalda lo que se afirma. No cambió ningún estado, pero encontró seis textos corregidos que decían más que la fuente, y se ajustaron (Königsberg, quipus, Hammurabi, Buridan, Regiomontano y Haber).
+
+### Resultado
+
+| | ★ |
+| --- | --- |
+| `verificado` | 20 |
+| `verificado`, con una parte marcada aparte (dudosa, mito o por verificar) | 6 (★3, ★10, ★12, ★19, ★22, ★26) |
+| Siguen en `verificado (extracto)`: no se pudo abrir la fuente | 4 (★8, ★9, ★21, ★29) |
+
+Ningún ★ resultó un mito entero. Las citas y páginas están en la columna de fuentes de cada fila.
+
+### Lo que cambió (correcciones de contenido)
+
+- **★1 Faraday:** el 29 ago 1831 el indicador fue una **aguja magnética**, no un galvanómetro (Bence Jones 1870, II, p. 2). «A mere momentary push or pull» es del **24 de septiembre**, no del día del anillo.
+- **★2 Lavoisier:** sin cambios. Lo de Boyle, que estaba por verificar, está en su propio texto (1673, Exper. V): rompió el sello y después pesó.
+- **★3 Quipus:** el nudo en ocho para el 1 está en Locke **1927**, no en 1912, y Locke dice «generally». Que el tramo vacío sea cero no está en Locke: queda atribuido a los Ascher, sin leer.
+- **★4 Dinámica:** las dos citas en inglés que traía la fila **no están en la SEP actual**; se cambiaron por citas literales. «Es casi la primera ley» se suavizó: la SEP advierte contra hacer de Buridan un precursor de Galileo.
+- **★5 Puy de Dôme:** sin cambios. Ahora se cita a Pascal (ed. Brunschvicg y Boutroux, II, pp. 351-369), con el padre Chastin y la torre de Saint-Jacques.
+- **★6 Caldas:** el termómetro se rompió **en Popayán**, no en un viaje por los Andes (carta a Mutis, 1802). Tampoco hay Puracé en su relato. «Hipsómetro» es el nombre moderno.
+- **★7 Seno:** «1500 años» pasó a «más de mil años». Regiomontano usó también una tabla de 6 000 000.
+- **★10 Eratóstenes:** sin cambios (Heath 1921, II, pp. 106-107). Se agregó que Teón y Estrabón dan 252 000.
+- **★11 Bouguer:** fecha del Chimborazo, **diciembre de 1738** (Bouguer 1749, p. 390; MacTutor dice 1740). Midió 7½″. Se quitaron, hasta leerlos, la «redención» de Smallwood 2010, el paso a Nueva Granada en 1739 y el regreso en 1744.
+- **★12 Méré:** la carta de Pascal (29 jul 1654) **no dice que Méré apostara y perdiera**. Dice que ya sabía que en 24 tiradas hay desventaja y que le escandalizaba que fallara la regla de proporción. El gancho se reescribió y la apuesta perdida pasó a la tabla de mitos.
+- **★13 Galileo:** «1613-1623» y lo del Gran Duque son conjeturas de F. N. David (1962), y ahora se dicen como tales.
+- **★15 Ímpetu:** el ímpetu que «se gasta» es el de **Filopón**; para Buridan duraría si nada lo estorbara. Los grabados de Tartaglia y Ryff no se verificaron y salieron del texto.
+- **★16 Calórico:** salieron «sin peso» y «hasta Joule». La SEP da el abandono del calórico en la década de 1840, con la primera ley.
+- **★17 Königsberg:** **una isla** (Kneiphof), no dos. Salieron, hasta verificarlos, el 26 ago 1735, la impresión en 1741 y «no dibuja ningún grafo».
+- **★18 Bombelli:** murió probablemente en **1572** (ninguna fuente dice 1573). «No por x² + 1 = 0» se matizó: Cardano ya se topó con √(−15) en 1545.
+- **★19 Euler y √−2·√−3:** salió la mención a Needham (no se leyó). Se agregó la edición rusa de 1768.
+- **★20 Interés:** la tablilla es **AO 6770, n.º 2**, y la respuesta del escriba, 3;47,13,20 años (Muroi 2015, arXiv). Salió «12 siclos por mina en el Código». La tasa de la cebada en el Código está en un pasaje restaurado.
+- **★22 Wöhler:** no «calentó» el cianato: juntó ácido ciánico y amoniaco. Berzelius acuñó «isomería» en 1830 sin usar la urea de ejemplo. El mito del vitalismo sigue por verificar (Ramberg y McKie, bloqueados).
+- **★23 Ørsted:** «nadie esperaba» exageraba. Él mismo esperaba una acción «lateral» (Ørsted 1830, p. 357).
+- **★24 Le Chatelier y Haber:** Haber trabajó a unos **600 °C**, no a 500-550 °C (Johnson 2022). Salieron «había aire en la mezcla», «abandonó por eso» y «admitió que se le escapó».
+- **★25 Euler y la función:** sin cambios en el gancho (Cajori 1929, §643; MacTutor). Se agregó el matiz de que Euler amplió su definición en 1755. Lo de Dirichlet ya está confirmado.
+- **★26 Tales:** se verifica que las fuentes antiguas lo cuentan (Heath 1921, I, pp. 129-130; Diógenes Laercio I.27). El hecho sigue siendo dudoso.
+- **★27 Nazca:** pasó de «por verificar» a verificado, pero **Nickell descartó la cuadrícula**: usó una línea central con coordenadas, estacas y cordel, en agosto de 1982 (*Skeptical Inquirer* 7(3), 1983).
+- **★28 Nightingale:** sin cambios (Friendly 2008, §2.5.1).
+- **★30 Carrión:** pasó de «por verificar» a verificado con cuatro artículos de SciELO Perú. Matices: Strong **sí aceptó** a Bartonella para la fiebre de La Oroya, y Harvard reconoció la unidad recién en **1937**. Las fuentes cambiaron: el artículo de «Pachas» no apareció.
+
+### Lo que no se pudo verificar, y por qué
+
+- **★8 Dorado electroquímico de Loma Negra** y **★9 Dorado por depleción:** Lechtman y otros (1982, *American Antiquity*) están en Cambridge y JSTOR; Lechtman (1984) no está en abierto; el estudio de 2020 está en Frontiers (no resuelve) y doi.org está bloqueado.
+- **★21 SAT de 1982:** Education Week, Scientific American, MathWorld, Wikipedia y web.archive.org están bloqueados. Los resúmenes del buscador coinciden con la fila, pero no cuentan.
+- **★29 Quipus como escritura (Urton 2003):** el libro y sus reseñas están en UT Press, Project MUSE, Cambridge y JSTOR. Hay una copia en archive.org que parece subida sin permiso, y no la usé.
+- **Detalles sueltos que siguen por verificar:** el cero de los quipus (Ascher 1981, solo préstamo), el mito del vitalismo (Ramberg 2000, McKie 1944), Smallwood 2010 sobre Bouguer, la fecha de 1735 y la impresión en 1741 de Euler sobre Königsberg, los grabados de Tartaglia y Ryff, la defensa de Needham, y si la regla de Méré venía de Cardano.
+- **No llegué a las demás filas** en `verificado (extracto)` (unas 160): el turno se fue en los 30 ★ y la revisión. Para seguir, conviene el mismo método por lotes. Para los cuatro ★ pendientes, habría que habilitar www.cambridge.org, doi.org y www.frontiersin.org, o que Gerson consiga los PDF.
