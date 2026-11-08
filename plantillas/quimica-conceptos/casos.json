@@ -1,0 +1,334 @@
+{
+  "plantilla": "quimica-conceptos",
+  "nota": "Cada caso da la semilla, el tipo, el tema o conjunto y los ids que se muestran (en el orden I, II, III… o en el orden en que se eligieron), y la respuesta. vf: la secuencia de los valores de verdad de gen.BANCO en el orden de ids. incorrecta y correcta: el único id falso (o verdadero) entre los ids. relacionar: la letra de cada id de la izquierda es su posición (a, b, c, d) en derecha. Lo que se verifica a ciegas es el valor de verdad de cada proposición del banco y cada par de gen.PARES.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "correcta",
+        "tema": "solidos",
+        "ids": [
+          "sol11",
+          "sol13",
+          "sol9",
+          "sol10",
+          "sol5"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:sol5",
+        "texto": "La celda unitaria es la porción más pequeña de la red que, repetida en el espacio, reproduce todo el cristal."
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "vf",
+        "tema": "polimeros",
+        "ids": [
+          "pol2",
+          "pol1",
+          "pol11"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VVF",
+        "texto": "VVF"
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "correcta",
+        "tema": "modelos",
+        "ids": [
+          "mod11",
+          "mod7",
+          "mod5",
+          "mod10",
+          "mod8"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:mod5",
+        "texto": "En el modelo actual, un orbital es la región del espacio donde es más probable encontrar al electrón."
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "correcta",
+        "tema": "vitaminas",
+        "ids": [
+          "vit13",
+          "vit7",
+          "vit15",
+          "vit17"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:vit7",
+        "texto": "La vitamina D se forma en la piel por la acción de la luz ultravioleta sobre un derivado del colesterol."
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "equilibrio-sangre",
+        "ids": [
+          "eqs8",
+          "eqs2",
+          "eqs4",
+          "eqs1"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:eqs8",
+        "texto": "En un equilibrio heterogéneo, los sólidos puros sí aparecen en la expresión de K."
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "vf",
+        "tema": "dalton",
+        "ids": [
+          "dal8",
+          "dal6",
+          "dal3",
+          "dal2"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FFVV",
+        "texto": "FFVV"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "relacionar",
+        "conjunto": "funciones",
+        "ids": [
+          "f-d",
+          "f-k",
+          "f-b12",
+          "f-a"
+        ],
+        "derecha": [
+          "f-k",
+          "f-d",
+          "f-b12",
+          "f-a"
+        ]
+      },
+      "esperado": {
+        "respuesta": "rel:Ib, IIa, IIIc, IVd",
+        "texto": "Ib, IIa, IIIc, IVd"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "vf",
+        "tema": "proteinas",
+        "ids": [
+          "pro1",
+          "pro7",
+          "pro10"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VVF",
+        "texto": "VVF"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "esferas",
+        "ids": [
+          "esf1",
+          "esf4",
+          "esf8",
+          "esf5"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:esf8",
+        "texto": "El oxígeno (O₂) es el gas más abundante de la atmósfera."
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "vf",
+        "tema": "tendencia",
+        "ids": [
+          "ten11",
+          "ten1",
+          "ten2"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FVV",
+        "texto": "FVV"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "vf",
+        "tema": "ion-sodio",
+        "ids": [
+          "sod4",
+          "sod1",
+          "sod2",
+          "sod12"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VVVF",
+        "texto": "VVVF"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "sustancias",
+        "ids": [
+          "sus5",
+          "sus10",
+          "sus2",
+          "sus4"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:sus10",
+        "texto": "El ozono es un compuesto formado por tres elementos distintos."
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "vf",
+        "tema": "oxidos",
+        "ids": [
+          "oxi3",
+          "oxi4",
+          "oxi5",
+          "oxi11"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VVVF",
+        "texto": "VVVF"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "relacionar",
+        "conjunto": "solido-ejemplo",
+        "ids": [
+          "se-yodo",
+          "se-nacl",
+          "se-cuarzo",
+          "se-cu"
+        ],
+        "derecha": [
+          "se-cuarzo",
+          "se-yodo",
+          "se-cu",
+          "se-nacl"
+        ]
+      },
+      "esperado": {
+        "respuesta": "rel:Ib, IId, IIIa, IVc",
+        "texto": "Ib, IId, IIIa, IVc"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "correcta",
+        "tema": "pilas",
+        "ids": [
+          "pil3",
+          "pil15",
+          "pil10",
+          "pil13"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:pil3",
+        "texto": "El electrolito de la batería de plomo es una solución de ácido sulfúrico."
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "relacionar",
+        "conjunto": "cientificos",
+        "ids": [
+          "c-dalton",
+          "c-heisenberg",
+          "c-millikan"
+        ],
+        "derecha": [
+          "c-dalton",
+          "c-millikan",
+          "c-heisenberg"
+        ]
+      },
+      "esperado": {
+        "respuesta": "rel:Ia, IIc, IIIb",
+        "texto": "Ia, IIc, IIIb"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "relacionar",
+        "conjunto": "solido-propiedad",
+        "ids": [
+          "sp-molecular",
+          "sp-metalico",
+          "sp-red",
+          "sp-ionico"
+        ],
+        "derecha": [
+          "sp-molecular",
+          "sp-red",
+          "sp-ionico",
+          "sp-metalico"
+        ]
+      },
+      "esperado": {
+        "respuesta": "rel:Ia, IId, IIIb, IVc",
+        "texto": "Ia, IId, IIIb, IVc"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "incorrecta",
+        "tema": "lewis-bronsted",
+        "ids": [
+          "lb13",
+          "lb4",
+          "lb2",
+          "lb8"
+        ]
+      },
+      "esperado": {
+        "respuesta": "p:lb13",
+        "texto": "El amoníaco es una base fuerte porque acepta protones."
+      }
+    }
+  ]
+}
