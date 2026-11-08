@@ -44,7 +44,13 @@ function recalcular(p) {
     if (d.sub === 'rama' || d.sub === 'tres') return Math.abs(sube(sol, d.e, 1));
     if (d.sub === 'fuente') return Math.abs(sube(sol, d.e, 2));
     if (d.sub === 'potencia') return sol.ramas.k0.fem * sol.ramas.k0.I; // ε1·I1, sin la resistencia
-    if (d.sub === 'ddp') return Math.abs(sol.V.A - sol.V.B);
+    if (d.sub === 'ddp') return sol.V.A - sol.V.B; // con signo: el borne + del voltímetro va en A
+    if (d.sub === 'estado') {
+      // La pila 3 entrega energía si su potencia recibida (motor: P = I·V de la rama) es negativa.
+      const r3 = sol.ramas.k2, I = Math.abs(r3.I);
+      const texto = `${r3.entrega > 0 ? 'Entrega energía' : 'Se carga'}, con ${String(Math.round(I * 100) / 100).replace('.', ',')} A`;
+      return 'pila3:' + texto;
+    }
     // fem: la red escondida da las corrientes del enunciado, y ε3 se busca por bisección.
     assert.ok(Math.abs(sube(sol, d.e, 0) - d.I1) < 1e-9 && Math.abs(sube(sol, d.e, 1) - d.I2) < 1e-9, 'el enunciado no calza con la red');
     const s3 = Math.sign(d.e[2]);
@@ -53,6 +59,10 @@ function recalcular(p) {
   }
   if (d.tipo === 'puente') {
     if (d.sub === 'req') return req(puenteRamas(d.R, { id: 'R5', tipo: 'resistencia', a: 'C', b: 'D', R: d.R5 }));
+    if (d.sub === 'r5') {
+      const s = motor.resolver({ tierra: 'B', ramas: [{ id: 'p', tipo: 'pila', a: 'B', b: 'A', fem: d.E }, ...puenteRamas(d.R, { id: 'R5', tipo: 'resistencia', a: 'C', b: 'D', R: d.R5 })] });
+      return Math.abs(s.ramas.R5.I);
+    }
     if (d.sub === 'corriente') return d.E / req(puenteRamas(d.R, { id: 'R5', tipo: 'resistencia', a: 'C', b: 'D', R: d.R5 }));
     if (d.sub === 'amperimetro') {
       const s = motor.resolver({ tierra: 'B', ramas: [{ id: 'p', tipo: 'pila', a: 'B', b: 'A', fem: d.E }, ...puenteRamas(d.R, { id: 'am', tipo: 'amperimetro', a: 'C', b: 'D' })] });
@@ -79,8 +89,9 @@ function recalcular(p) {
   const s = motor.resolver({ tierra: 'n', ramas });
   return d.medidor === 'A' ? s.ramas.am.lectura : s.ramas.vm.lectura;
 }
-probarGenerador(gen, { semillas: 600, recalcular: p => {
+probarGenerador(gen, { semillas: 600, igual: (a, b) => (typeof a === 'string' ? a === b : Math.abs(a - b) < 1e-9), recalcular: p => {
   const r = recalcular(p);
+  if (typeof r === 'string') return r;
   return Math.abs(r - p.respuesta.valor) < 1e-6 * Math.max(1, Math.abs(r)) ? p.respuesta.valor : r;
 } });
 
@@ -88,22 +99,27 @@ for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {
     const p = gen.generar(c.semilla);
     assert.deepEqual(p._datos, c.entrada, 'el generador cambió: recalcula casos.json');
-    assert.ok(Math.abs(p.respuesta.valor - c.esperado.respuesta) <= casos.tolerancia, `da ${p.respuesta.valor}`);
+    if (typeof c.esperado.respuesta === 'string') assert.equal(p.respuesta.valor, c.esperado.respuesta);
+    else assert.ok(Math.abs(p.respuesta.valor - c.esperado.respuesta) <= casos.tolerancia, `da ${p.respuesta.valor}`);
     assert.equal(p.alternativas.find(a => a.correcta).texto, c.esperado.exacta);
   });
 }
 
 test('salen todos los tipos y subtipos; las alternativas llevan la misma unidad', () => {
   const vistos = new Set();
+  let negativas = 0;
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), d = p._datos;
     vistos.add(d.tipo + '/' + d.sub + (d.medidor ? '/' + d.medidor : ''));
     const unidad = a => a.texto.replace(/^[−\d ,]+/, '');
+    if (d.sub === 'estado') { assert.ok(p.alternativas.every(a => /^(Entrega energía|Se carga), con [\d,]+ A$/.test(a.texto)), `semilla ${s}`); continue; }
     assert.equal(new Set(p.alternativas.map(unidad)).size, 1, `semilla ${s}: unidades distintas (${p.alternativas.map(a => a.texto)})`);
+    if (d.sub === 'ddp') { if (p.respuesta.valor < 0) negativas++; continue; }
     assert.ok(p.alternativas.every(a => a.valor > 0), `semilla ${s}: una alternativa no positiva`);
   }
-  assert.deepEqual([...vistos].sort(), ['kirchhoff/ddp', 'kirchhoff/fem', 'kirchhoff/fuente', 'kirchhoff/potencia', 'kirchhoff/rama', 'kirchhoff/tres',
-    'pilas/grafica', 'pilas/paralelo/A', 'pilas/paralelo/V', 'pilas/serie/A', 'pilas/serie/V', 'puente/amperimetro', 'puente/corriente', 'puente/corto', 'puente/req']);
+  assert.deepEqual([...vistos].sort(), ['kirchhoff/ddp', 'kirchhoff/estado', 'kirchhoff/fem', 'kirchhoff/fuente', 'kirchhoff/potencia', 'kirchhoff/rama', 'kirchhoff/tres',
+    'pilas/grafica', 'pilas/paralelo/A', 'pilas/paralelo/V', 'pilas/serie/A', 'pilas/serie/V', 'puente/amperimetro', 'puente/corriente', 'puente/corto', 'puente/r5', 'puente/req']);
+  assert.ok(negativas >= 1, 'ninguna lectura negativa en ddp');
 });
 
 test('en kirchhoff hay pilas en oposición (con el borne + hacia B), y la pregunta no dice la respuesta', () => {
@@ -118,13 +134,16 @@ test('en kirchhoff hay pilas en oposición (con el borne + hacia B), y la pregun
   assert.ok(opuestas > 60, `solo ${opuestas} con pilas opuestas`);
 });
 
-test('los puentes de «req» y «corriente» están equilibrados; los de «amperimetro», no', () => {
+test('«req» y «corriente» salen equilibrados y no equilibrados; «amperimetro» y «r5», nunca equilibrados', () => {
+  const cuenta = { si: 0, no: 0 };
   for (let s = 0; s < 600; s++) {
     const d = gen.generar(s)._datos;
     if (d.tipo !== 'puente' || d.sub === 'corto') continue;
     const eq = Math.abs(d.R[0] * d.R[3] - d.R[1] * d.R[2]) < 1e-9;
-    assert.equal(eq, d.sub !== 'amperimetro', `semilla ${s}`);
+    if (d.sub === 'amperimetro' || d.sub === 'r5') assert.ok(!eq, `semilla ${s}`);
+    else cuenta[eq ? 'si' : 'no']++;
   }
+  assert.ok(cuenta.si > 20 && cuenta.no > 20, JSON.stringify(cuenta));
 });
 
 test('los textos no dicen «de el» ni «a el»', () => {

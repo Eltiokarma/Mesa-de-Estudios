@@ -46,7 +46,12 @@ function recalcular(p) {
     }
     // R como suma de rebanadas de 1 cm de largo en serie, cada una de resistencia ρ·dx/A.
     const rebanadas = (rho, L, A) => { let R = 0; const dx = 0.01, n = Math.round(L / dx); for (let k = 0; k < n; k++) R += rho * dx / A; return R; };
-    if (d.sub === 'mm2') return rebanadas(d.rho, d.L, d.Amm * SI.mm2);
+    if (d.sub === 'comparar') {
+      // Se halla ρ con el primer alambre y se arma el segundo.
+      const A = x => (d.diametro ? areaCirculo(x / 2 * SI.mm) : x * SI.mm2);
+      const rho = d.R1 * A(d.x1) / d.L1;
+      return rebanadas(rho, d.L2, A(d.x2));
+    }
     if (d.sub === 'diametro') return rebanadas(d.rho, d.L, areaCirculo(d.d / 2 * SI.mm));
     return biseccion(rho => rebanadas(rho, d.L, areaCirculo(d.r * SI.mm)) - d.R, 0, 1e-3);
   }
@@ -94,14 +99,30 @@ test('salen todos los tipos y subtipos; las alternativas llevan la misma unidad'
   }
   assert.deepEqual([...vistos].sort(), ['agua/agua', 'cables/calentador', 'cables/perdida', 'carga/carga', 'carga/duracion', 'carga/tiempo',
     'joule/calorias', 'joule/corriente', 'joule/energia', 'joule/escala', 'joule/kwh',
-    'resistividad/diametro', 'resistividad/doblado', 'resistividad/estirado', 'resistividad/mm2', 'resistividad/rho']);
+    'resistividad/comparar', 'resistividad/diametro', 'resistividad/doblado', 'resistividad/estirado', 'resistividad/rho']);
 });
 
-test('las trampas de unidades aparecen: mA, minutos, mm², diámetro, calorías y el cable de ida y vuelta', () => {
+test('las trampas de unidades aparecen: mA, minutos, diámetro, calorías y el cable de ida y vuelta; ningún distractor fuera de escala', () => {
   const ids = new Set();
-  for (let s = 0; s < 600; s++) for (const a of gen.generar(s).alternativas) if (a.error) ids.add(a.error.id);
-  for (const id of ['U2-mA', 'U6-min', 'U3-mm2', 'PR6-diametro', 'U5-sin-convertir', 'CAB-un-tramo', 'PR1-cuadrado', 'PR4-seccion', 'PI-no-suma-fem', 'JO-voltaje-fijo'])
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), c = p.respuesta.valor;
+    for (const a of p.alternativas) {
+      if (a.error) ids.add(a.error.id);
+      assert.ok(a.valor >= c / 60 - 1e-12 && a.valor <= c * 60 + 1e-12, `semilla ${s}: ${a.texto} fuera de escala`);
+    }
+    const sci = p.alternativas.map(a => / × 10/.test(a.texto));
+    assert.ok(sci.every(x => x === sci[0]), `semilla ${s}: notaciones mezcladas`);
+    for (const a of p.alternativas) assert.ok(!/^0,0?\d? /.test(a.texto) || a.valor >= 0.01, `semilla ${s}: ${a.texto} redondeado de más`);
+  }
+  for (const id of ['U2-mA', 'U6-min', 'U6-s', 'U5-al-reves', 'PR6-diametro', 'U5-sin-convertir', 'CAB-un-tramo', 'PR1-cuadrado', 'PR4-seccion', 'PI-no-suma-fem', 'JO-voltaje-fijo'])
     assert.ok(ids.has(id), `no sale ${id}`);
+});
+
+test('hay variedad: muchos enunciados distintos', () => {
+  const plano = seg => seg.map(x => (typeof x === 'string' ? x : x.t)).join('');
+  const vistos = new Set();
+  for (let s = 0; s < 600; s++) vistos.add(plano(gen.generar(s).enunciado));
+  assert.ok(vistos.size > 540, `solo ${vistos.size} enunciados distintos en 600`);
 });
 
 test('la pregunta no dice la respuesta, y los textos no dicen «de el» ni «a el»', () => {

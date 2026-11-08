@@ -15,7 +15,7 @@
  *                (c = 1 cal/(g·°C), 1 cal = 4,2 J)
  *   resistividad (π = 3, como en muchas academias, para que las cuentas salgan a mano)
  *     diametro   R = ρL/A con el diámetro en mm
- *     mm2        R = ρL/A con la sección en mm²
+ *     comparar   dos alambres del mismo metal (secciones en mm² o diámetros en mm): R del segundo
  *     rho        ρ = R·A/L con el radio en mm; respuesta en notación científica
  *     estirado   alambre estirado n veces más largo (mismo volumen): R nueva
  *     doblado    alambre doblado en k tramos iguales unidos lado a lado: R nueva
@@ -28,8 +28,10 @@
  *     duracion   n pilas ideales en serie alimentan un aparato de resistencia R y pueden mover
  *                una carga Q: cuántas horas duran
  *
- * Errores: U2, U3, U5, U6, PR1, PR4 y PR6 de docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md
- * (hipótesis, con sufijo: U2-mA, U6-min, PR6-diametro…); JO-*, RES-*, CAB-* y PI-no-suma-fem,
+ * Cada distractor queda entre 1/60 y 60 veces la correcta (60 deja pasar minutos por segundos), y
+ * todas las alternativas de un problema van en la misma notación.
+ * Errores: U2, U5, U6, PR1, PR3, PR4 y PR6 de docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md
+ * (hipótesis, con sufijo: U2-mA, U6-min, PR6-diametro…); JO-*, RES-*, CAB-*, PI-no-suma-fem y PI-voltaje-como-corriente,
  * hipótesis nuestras (docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md, sección
  * «Lo que no tiene respaldo»: energía contra potencia, minutos en vez de segundos).
  */
@@ -57,7 +59,10 @@
     return `${f(m)} × 10${String(e).split('').map(c => SUP[c]).join('')}`;
   }
   // Valores normales con coma; muy chicos o muy grandes, en notación científica.
-  const num = x => (x >= 0.01 && x < 1e7 ? f(x) : cien(x));
+  // Números de 1 para arriba, con dos decimales; menores que 1, con tres cifras significativas
+  // (0,0158 y no 0,02). Muy chicos o muy grandes, en notación científica.
+  const normal = x => P.formatear(x, x >= 1 ? 2 : Math.max(2, 2 - Math.floor(Math.log10(x))));
+  const num = x => (x >= 0.001 && x < 1e7 ? normal(x) : cien(x));
   const conUnidad = u => x => `${num(x)} ${u}`;
 
   const FACTOR = { 2: 'el doble', 3: 'el triple', 4: 'el cuádruple', 0.5: 'la mitad' };
@@ -67,7 +72,7 @@
     const [tipo, sub] = rng.elegir([
       ['joule', 'energia'], ['joule', 'energia'], ['joule', 'corriente'], ['joule', 'corriente'], ['joule', 'escala'], ['joule', 'kwh'], ['joule', 'calorias'],
       ['agua', 'agua'], ['agua', 'agua'],
-      ['resistividad', 'diametro'], ['resistividad', 'diametro'], ['resistividad', 'mm2'], ['resistividad', 'rho'], ['resistividad', 'rho'], ['resistividad', 'estirado'], ['resistividad', 'doblado'],
+      ['resistividad', 'diametro'], ['resistividad', 'diametro'], ['resistividad', 'comparar'], ['resistividad', 'rho'], ['resistividad', 'rho'], ['resistividad', 'estirado'], ['resistividad', 'doblado'],
       ['cables', 'calentador'], ['cables', 'calentador'], ['cables', 'perdida'],
       ['carga', 'carga'], ['carga', 'tiempo'], ['carga', 'duracion'], ['carga', 'duracion']]);
     const fn = { joule, agua, resistividad, cables, carga }[tipo];
@@ -79,8 +84,13 @@
   }
 
   function cerrar(rng, semilla, o) {
-    const texto = o.texto || conUnidad(o.unidad);
-    const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && e.valor < 1e12);
+    // Nada fuera de escala: cada distractor entre 1/60 y 60 veces la correcta (60 deja pasar el
+    // olvido de minutos a segundos, que es la trampa de examen; mata los 10⁸ J y las 27 000 h).
+    const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && e.valor >= o.correcta / 60 - 1e-12 && e.valor <= o.correcta * 60 + 1e-12);
+    // Una sola notación por problema: todas normales o todas en notación científica.
+    const todas = [o.correcta, ...errores.map(e => e.valor)];
+    const cientifica = o.cientifica || todas.some(x => x < 0.001 || x >= 1e7);
+    const texto = o.texto || (x => `${cientifica ? cien(x) : normal(x)} ${o.unidad}`);
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto });
     return {
       id: `circuitos-joule#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
@@ -89,12 +99,12 @@
   }
 
   const VJ = { i: { nombre: 'corriente', color: 'i' }, r: { nombre: 'resistencia', color: 'h' }, t: { nombre: 'tiempo', color: 'o' }, x: { nombre: 'lo que se pide', color: 'd' } };
-  const APARATO = ['Una terma', 'Un calentador', 'Una plancha', 'Un hervidor', 'Una estufa eléctrica'];
+  const APARATO = [['Una terma', 'ella'], ['Un calentador', 'él'], ['Una plancha', 'ella'], ['Un hervidor', 'él'], ['Una estufa eléctrica', 'ella'], ['Una hornilla eléctrica', 'ella'], ['Un secador de pelo', 'él']];
 
   // ---------------- joule ----------------
   function joule(rng, semilla, sub) {
     if (sub === 'energia') {
-      const ImA = rng.elegir([100, 200, 250, 300, 400, 500, 800]), R = rng.elegir([10, 20, 25, 40, 50, 100]), tmin = rng.elegir([1, 2, 3, 5, 10, 15, 20, 30]);
+      const ImA = rng.elegir([100, 150, 200, 250, 300, 400, 500, 600, 800, 1500]), R = rng.elegir([5, 8, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120]), tmin = rng.elegir([1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 30]);
       const I = ImA / 1000, ts = 60 * tmin, E = I * I * R * ts;
       const kilo = E >= 10000, k = kilo ? 1 / 1000 : 1, unidad = kilo ? 'kJ' : 'J', correcta = E * k;
       if (!limpio(correcta)) return null;
@@ -103,8 +113,8 @@
       const errores = [
         tr('PR1-cuadrado', I * R * ts * k, 'Multiplicaste I·R·t sin elevar la corriente al cuadrado. La energía disipada es E = I²·R·t.'),
         tr('U6-min', I * I * R * tmin * k, `Usaste el tiempo en minutos. Con I en A y R en Ω, el tiempo va en segundos: ${f(tmin)} min = ${f(ts)} s.`),
-        tr('U2-mA', ImA * ImA * R * ts * k, `Usaste la corriente en mA como si fueran amperios. ${f(ImA)} mA = ${f(I)} A.`),
         tr('PR1-doble', 2 * I * R * ts * k, 'Pusiste 2·I en lugar de I². Elevar al cuadrado es multiplicar la corriente por sí misma.'),
+        tr('PR3-medio', I * I * R * ts * k / 2, 'Pusiste un ½ que no va, como en ½·m·v². La energía que disipa una resistencia es E = I²·R·t, sin ½.'),
       ];
       if (kilo) errores.push(tr('U2-kilo', E, 'Calculaste la energía en joules y la escribiste como si fueran kilojoules. Para pasar a kJ se divide entre 1000.'));
       const solucion = [
@@ -114,15 +124,15 @@
       return cerrar(rng, semilla, { correcta, errores, unidad, variables: VJ, enunciado, pregunta, solucion, datos: { tipo: 'joule', sub, ImA, R, tmin, unidad } });
     }
     if (sub === 'corriente') {
-      const I = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3, 4, 5]), R = rng.elegir([2, 4, 5, 10, 20, 50]);
-      const enMin = rng.moneda(), tdado = enMin ? rng.elegir([1, 2, 5, 10]) : rng.elegir([10, 20, 30, 50, 100]);
+      const I = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 8]), R = rng.elegir([2, 4, 5, 8, 10, 12, 15, 20, 25, 30, 40, 50]);
+      const enMin = rng.moneda(), tdado = enMin ? rng.elegir([1, 2, 3, 4, 5, 6, 10]) : rng.elegir([10, 15, 20, 30, 40, 50, 60, 80, 100]);
       const ts = enMin ? 60 * tdado : tdado, E = I * I * R * ts;
       const kilo = E >= 1000, Edado = kilo ? E / 1000 : E;
       if (!limpio(Edado)) return null;
       const ut = enMin ? 'min' : 's';
-      const ap = rng.elegir(APARATO);
+      const [ap, pron] = rng.elegir(APARATO);
       const enunciado = [`${ap} de resistencia `, v('r', `${f(R)} Ω`), ' disipa ', v('x', `${f(Edado)} ${kilo ? 'kJ' : 'J'}`), ' de calor en ', v('t', `${f(tdado)} ${ut}`), '.'];
-      const pregunta = ['¿Qué ', v('i', 'corriente'), ' pasa por él?'];
+      const pregunta = ['¿Qué ', v('i', 'corriente'), ` pasa por ${pron}?`];
       const errores = [
         tr('PR1-raiz', E / (R * ts), 'Despejaste E/(R·t) y no sacaste la raíz. En E = I²·R·t la corriente está al cuadrado: I = √(E/(R·t)).'),
         h('JO-sin-tiempo', Math.sqrt(E / R), 'Olvidaste dividir entre el tiempo. E es energía (J), no potencia: I²·R = E/t.'),
@@ -138,18 +148,19 @@
         datos: { tipo: 'joule', sub, E: Edado, kilo, R, t: tdado, ut } });
     }
     if (sub === 'escala') {
-      const Q0 = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]), a = rng.elegir([2, 3, 0.5]), b = rng.elegir([2, 3, 4]);
+      const Q0 = rng.elegir([1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20]), a = rng.elegir([2, 3, 4, 0.5]), b = rng.elegir([2, 3, 4, 0.5]);
+      if (a === 0.5 && b === 0.5) return null;
       const correcta = Q0 * a * b;
-      const ap = rng.elegir(APARATO);
+      const [ap] = rng.elegir(APARATO);
       const enunciado = [`${ap} funciona con una `, v('i', 'corriente constante'), ` (su fuente la mantiene fija) y en cierto tiempo disipa ${f(Q0)} kJ. Se cambia su resistencia por otra que es `,
         v('r', `${FACTOR[a]} de la anterior`), ', con la misma corriente, y se le deja funcionando ', v('t', `${FACTOR[b]} de tiempo`), '.'];
       const pregunta = ['¿Cuánto ', v('x', 'calor'), ' disipa ahora?'];
       const errores = [
-        h('JO-voltaje-fijo', Q0 * b / a, 'Usaste E = V²·t/R, como si el voltaje fuera fijo. Aquí lo fijo es la corriente: con E = I²·R·t, el calor crece con R.'),
+        h('JO-voltaje-fijo', Q0 * b / a, `Usaste E = V²·t/R, como si el voltaje fuera fijo: así el calor quedaría multiplicado por ${f(b)}/${f(a)}. Aquí lo fijo es la corriente: con E = I²·R·t, el calor se multiplica por ${f(a)} · ${f(b)}.`),
         tr('PR1-cuadrado', Q0 * a * a * b, 'Elevaste al cuadrado el factor de la resistencia. En E = I²·R·t lo que va al cuadrado es la corriente, que no cambia.'),
         h('JO-solo-tiempo', Q0 * b, 'Solo tomaste en cuenta el cambio de tiempo. La resistencia también cambió y, con la misma corriente, el calor es proporcional a R.'),
         h('JO-solo-resistencia', Q0 * a, 'Solo tomaste en cuenta el cambio de resistencia. El tiempo también cambió: el calor es proporcional a t.'),
-        h('JO-voltaje-fijo', Q0, 'Pensaste que el calor no cambia. Eso pasaría con el voltaje fijo y los dos factores iguales; aquí lo fijo es la corriente.'),
+        h('JO-no-cambia', Q0, 'Pensaste que el calor no cambia porque la corriente es la misma. Con la misma corriente, E = I²·R·t sigue dependiendo de R y de t, y los dos cambiaron.'),
       ];
       const solucion = [
         ['Con la misma ', v('i', 'corriente'), ', E = I²·', v('r', 'R'), '·', v('t', 't'), ' es proporcional a R y a t.'],
@@ -158,10 +169,10 @@
       return cerrar(rng, semilla, { correcta, errores, unidad: 'kJ', variables: VJ, enunciado, pregunta, solucion, datos: { tipo: 'joule', sub, Q0, a, b } });
     }
     if (sub === 'kwh') {
-      const Pw = rng.elegir([60, 100, 500, 800, 1000, 1200, 1500, 2000]), hd = rng.elegir([0.5, 1, 2, 3, 4, 5, 6, 8]), dias = rng.elegir([10, 15, 20, 30]);
+      const Pw = rng.elegir([15, 20, 60, 100, 150, 500, 800, 1000, 1200, 1500, 2000, 2500]), hd = rng.elegir([0.25, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10]), dias = rng.elegir([7, 10, 15, 20, 30, 31]);
       const correcta = Pw * hd * dias / 1000;
       if (!limpio(correcta)) return null;
-      const ap = Pw <= 100 ? 'Un foco' : rng.elegir(APARATO);
+      const ap = Pw <= 150 ? (Pw <= 20 ? 'Un foco ahorrador' : 'Un foco') : rng.elegir(APARATO)[0];
       const enunciado = [`${ap} de `, v('i', `${f(Pw)} W`), ' se usa ', v('t', `${f(hd)} h al día`), ` durante ${dias} días.`];
       const pregunta = ['¿Cuánta ', v('x', 'energía'), ' consume en ese tiempo, en kW·h?'];
       const errores = [
@@ -169,6 +180,8 @@
         tr('U6-s', Pw * hd * 3600 * dias / 1000, 'Pasaste las horas a segundos. El kW·h ya trae la hora: la potencia en kW por el tiempo en horas.'),
         h('JO-un-dia', Pw * hd / 1000, `Calculaste el consumo de un solo día. Son ${dias} días.`),
         tr('U6-min', Pw * hd * 60 * dias / 1000, 'Pasaste las horas a minutos. Para el kW·h el tiempo va en horas.'),
+        h('JO-sin-horas', Pw * dias / 1000, `Multiplicaste por los días pero no por las ${f(hd)} h de cada día. El tiempo total es horas por día × días.`),
+        tr('U2-kilo', Pw * hd * dias / 100, 'Pasaste los watts a kilowatts dividiendo entre 100. Un kilowatt son 1000 W.'),
       ];
       const solucion = [
         ['Potencia en kW: ', v('i', `${f(Pw / 1000)} kW`), '. Tiempo total: ', v('t', `${f(hd)} · ${dias} = ${f(hd * dias)} h`), '.'],
@@ -177,8 +190,8 @@
       return cerrar(rng, semilla, { correcta, errores, unidad: 'kW·h', variables: { ...VJ, i: { nombre: 'potencia', color: 'i' } }, enunciado, pregunta, solucion, datos: { tipo: 'joule', sub, P: Pw, hd, dias } });
     }
     // calorias
-    const I = rng.elegir([1, 2, 3, 4, 5]), R = rng.elegir([5, 10, 20, 25, 50]);
-    const enMin = rng.moneda(), tdado = enMin ? rng.elegir([1, 2, 5]) : rng.elegir([10, 20, 25, 50, 100]);
+    const I = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3, 4, 5]), R = rng.elegir([4, 5, 8, 10, 12, 20, 25, 40, 50]);
+    const enMin = rng.moneda(), tdado = enMin ? rng.elegir([1, 2, 3, 4, 5]) : rng.elegir([10, 15, 20, 25, 30, 50, 60, 100]);
     const ts = enMin ? 60 * tdado : tdado, E = I * I * R * ts, correcta = 0.24 * E;
     if (!limpio(correcta)) return null;
     const ut = enMin ? 'min' : 's';
@@ -200,9 +213,9 @@
 
   // ---------------- agua ----------------
   function agua(rng, semilla) {
-    const R = rng.elegir([22, 24.2, 44, 48.4, 55]), V = 220, Pw = V * V / R;
-    const eta = rng.elegir([100, 90, 84, 80, 75, 70]), m = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3]);
-    const T1 = rng.elegir([10, 12, 15, 18, 20]), T2 = rng.elegir([50, 60, 70, 80, 90]), dT = T2 - T1;
+    const R = rng.elegir([20, 22, 24.2, 32, 40, 44, 48.4, 55, 60.5, 80, 96.8, 110]), V = 220, Pw = V * V / R;
+    const eta = rng.elegir([100, 96, 90, 88, 84, 80, 75, 70, 60]), m = rng.elegir([0.4, 0.5, 0.6, 0.8, 1, 1.2, 1.5, 2, 2.5, 3, 4, 5]);
+    const T1 = rng.elegir([8, 10, 12, 14, 15, 16, 18, 20, 22, 25]), T2 = rng.elegir([40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90]), dT = T2 - T1;
     const Q = m * 1000 * dT * 4.2, ts = Q / (eta / 100 * Pw), correcta = ts / 60;
     if (!limpio(correcta) || !limpio(Pw)) return null;
     const enunciado = ['Un hervidor eléctrico de resistencia ', v('r', `${f(R)} Ω`), ' se conecta a ', v('i', `${V} V`), ` y aprovecha el ${eta} % de su energía para calentar `,
@@ -257,34 +270,46 @@
       return cerrar(rng, semilla, { correcta, errores, unidad: 'Ω', variables: { ...VRHO, p: { nombre: 'resistencia inicial', color: 'o' } }, enunciado, pregunta, solucion, datos: { tipo: 'resistividad', sub, R0, n } });
     }
     const man = rng.elegir([1.5, 1.6, 1.8, 2, 2.4, 3, 4.5, 6]), ex = rng.elegir([-8, -8, -7]), rho = man * 10 ** ex;
-    const L = rng.elegir([10, 20, 30, 50, 100, 150, 200, 300]);
+    const L = rng.elegir([5, 10, 12, 15, 20, 24, 30, 40, 50, 60, 80, 100, 120, 150, 200, 300]);
     const obj = rng.elegir(OBJR);
-    if (sub === 'mm2') {
-      const Amm = rng.elegir([0.5, 1, 1.5, 2, 2.5, 4, 6]), A = Amm * 1e-6, correcta = rho * L / A;
-      if (!limpio(correcta) || correcta < 0.1 || correcta > 1e4) return null;
-      const enunciado = [`${obj[0].toUpperCase() + obj.slice(1)} de `, v('l', `${f(L)} m`), ' de largo y ', v('a', `${f(Amm)} mm²`), ' de sección es de un metal de resistividad ', v('p', `${cien(rho)} Ω·m`), '.'];
-      const pregunta = ['¿Cuál es su ', v('x', 'resistencia'), '?'];
+    if (sub === 'comparar') {
+      // Dos alambres del mismo metal: R2 = R1·(L2/L1)·(A1/A2), con secciones en mm² o diámetros en mm.
+      const R1 = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30]), L1 = rng.elegir([10, 20, 30, 40, 50, 60, 100]), kL = rng.elegir([0.5, 2, 3, 4, 1.5]);
+      const conDiam = rng.moneda();
+      const x1 = conDiam ? rng.elegir([0.5, 1, 2, 3]) : rng.elegir([0.5, 1, 1.5, 2, 2.5, 4, 6]);
+      const kx = conDiam ? rng.elegir([2, 3, 0.5]) : rng.elegir([2, 3, 4, 0.5, 1.5]);
+      const x2 = x1 * kx, L2 = L1 * kL, kA = conDiam ? kx * kx : kx;
+      const correcta = R1 * kL / kA;
+      if (!limpio(correcta) || !limpio(x2) || !limpio(L2) || correcta < 0.1 || kL === kA) return null;
+      const u = conDiam ? 'mm de diámetro' : 'mm² de sección';
+      const enunciado = ['Dos alambres son del mismo metal. El primero mide ', v('l', `${f(L1)} m`), ', tiene ', v('a', `${f(x1)} ${u}`), ' y una resistencia de ', v('p', `${f(R1)} Ω`),
+        '. El segundo mide ', v('l', `${f(L2)} m`), ' y tiene ', v('a', `${f(x2)} ${u}`), '.'];
+      const pregunta = ['¿Cuál es la ', v('x', 'resistencia'), ' del segundo?'];
       const errores = [
-        tr('U3-mm2', rho * L / (Amm * 1e-3), 'Pasaste los mm² a m² dividiendo entre 1000. Un milímetro es 10⁻³ m, así que un mm² es (10⁻³)² = 10⁻⁶ m².'),
-        tr('U3-mm2', rho * L / (Amm * 1e-4), 'Pasaste los mm² a m² dividiendo entre 10 000. Un mm² es (10⁻³ m)² = 10⁻⁶ m².'),
-        tr('U3-sin-convertir', rho * L / Amm, 'Usaste la sección en mm² sin pasarla a m². Con ρ en Ω·m y L en m, la sección va en m²: un mm² es 10⁻⁶ m².'),
+        tr('PR4-seccion', R1 * kL * kA, 'Pusiste la sección en el lado equivocado: la resistencia crece con el largo y baja con la sección. Un alambre más grueso tiene menos resistencia.'),
+        h('RES-solo-largo', R1 * kL, 'Solo tomaste en cuenta el cambio de largo. La sección también cambió, y la resistencia es inversamente proporcional a ella: R = ρL/A.'),
+        h('RES-solo-seccion', R1 / kA, 'Solo tomaste en cuenta el cambio de sección. El largo también cambió, y la resistencia es proporcional a él: R = ρL/A.'),
+        conDiam
+          ? tr('PR1-cuadrado', R1 * kL / kx, `Tomaste la razón de diámetros (${f(kx)}) como la razón de secciones. El área va con el diámetro al cuadrado: las secciones están en razón ${f(kx)}² = ${f(kA)}.`)
+          : tr('PR6-diametro', R1 * kL / (kA * kA), 'Elevaste al cuadrado la razón de secciones, como si fueran diámetros. El dato ya es la sección (mm²): entra tal cual, sin elevar.'),
       ];
       const solucion = [
-        ['Sección en m²: ', v('a', `A = ${f(Amm)} mm² = ${f(Amm)} × 10⁻⁶ m²`), '.'],
-        [v('x', 'R'), ' = ', v('p', 'ρ'), '·', v('l', 'L'), '/', v('a', 'A'), ` = ${cien(rho)} · ${f(L)}/(${f(Amm)} × 10⁻⁶) = `, v('x', `${f(correcta)} Ω`), '.'],
+        ['Mismo metal, mismo ρ: R = ρL/A, así que R2/R1 = (L2/L1)·(A1/A2).'],
+        [`L2/L1 = ${f(L2)}/${f(L1)} = ${f(kL)}. `, conDiam ? `Las secciones van con el diámetro al cuadrado: A2/A1 = (${f(x2)}/${f(x1)})² = ${f(kA)}.` : `A2/A1 = ${f(x2)}/${f(x1)} = ${f(kA)}.`],
+        [v('x', 'R2'), ` = ${f(R1)} · ${f(kL)}/${f(kA)} = `, v('x', `${f(correcta)} Ω`), '.'],
       ];
-      return cerrar(rng, semilla, { correcta, errores, unidad: 'Ω', variables: VRHO, enunciado, pregunta, solucion, datos: { tipo: 'resistividad', sub, rho, L, Amm } });
+      return cerrar(rng, semilla, { correcta, errores, unidad: 'Ω', variables: { ...VRHO, p: { nombre: 'resistencia del primero', color: 'o' } }, enunciado, pregunta, solucion,
+        datos: { tipo: 'resistividad', sub, R1, L1, L2, x1, x2, diametro: conDiam } });
     }
     if (sub === 'diametro') {
-      const d = rng.elegir([0.2, 0.4, 0.5, 1, 2, 3]), A = 3 * d * d / 4 * 1e-6, correcta = rho * L / A;
+      const d = rng.elegir([0.2, 0.4, 0.5, 0.8, 1, 1.2, 1.6, 2, 3, 4]), A = 3 * d * d / 4 * 1e-6, correcta = rho * L / A;
       if (!limpio(correcta) || correcta < 0.1 || correcta > 1e4) return null;
       const enunciado = [`${obj[0].toUpperCase() + obj.slice(1)} de `, v('l', `${f(L)} m`), ' de largo y ', v('a', `${f(d)} mm de diámetro`), ' es de un metal de resistividad ', v('p', `${cien(rho)} Ω·m`), '. Usa π = 3.'];
       const pregunta = ['¿Cuál es su ', v('x', 'resistencia'), '?'];
       const errores = [
         tr('PR6-diametro', correcta / 4, `Usaste el diámetro como si fuera el radio, y el área te salió 4 veces mayor. El radio es la mitad: ${f(d / 2)} mm.`),
-        h('RES-circunferencia', rho * L / (3 * d * 1e-3), 'Usaste π·d, que es el contorno de la sección, no su área. El área de un círculo es π·r², con r = d/2.'),
-        tr('U3-mm2', correcta / 1000, 'Pasaste los mm² a m² dividiendo entre 1000. Un mm² es (10⁻³ m)² = 10⁻⁶ m².'),
-        tr('U3-sin-convertir', correcta * 1e-6, 'Usaste el área en mm² sin pasarla a m². Con ρ en Ω·m y L en m, la sección va en m²: un mm² es 10⁻⁶ m².'),
+        tr('PR6-mitad', correcta / 2, 'Escribiste A = π·d²/2. El radio es d/2 y, al elevarlo al cuadrado, queda d²/4: A = π·d²/4.'),
+        h('RES-sin-pi', correcta * 3, 'Olvidaste el π en el área: A = π·r², no r².'),
       ];
       const solucion = [
         ['Radio: ', v('a', `r = ${f(d)}/2 = ${f(d / 2)} mm`), '. Área: ', v('a', `A = 3 · ${f(d / 2)}² = ${f(3 * d * d / 4)} mm² = ${f(3 * d * d / 4)} × 10⁻⁶ m²`), '.'],
@@ -293,15 +318,14 @@
       return cerrar(rng, semilla, { correcta, errores, unidad: 'Ω', variables: VRHO, enunciado, pregunta, solucion, datos: { tipo: 'resistividad', sub, rho, L, d } });
     }
     // rho: con el radio en mm
-    const r = rng.elegir([0.1, 0.2, 0.5, 1, 2]), A = 3 * r * r * 1e-6, R = rho * L / A;
+    const r = rng.elegir([0.1, 0.2, 0.25, 0.4, 0.5, 0.8, 1, 1.5, 2]), A = 3 * r * r * 1e-6, R = rho * L / A;
     if (!limpio(R) || R < 0.1 || R > 1e4) return null;
     const enunciado = [`${obj[0].toUpperCase() + obj.slice(1)} de `, v('l', `${f(L)} m`), ' de largo y ', v('a', `${f(r)} mm de radio`), ' tiene una resistencia de ', v('p', `${f(R)} Ω`), '. Usa π = 3.'];
     const pregunta = ['¿Cuál es la ', v('x', 'resistividad'), ' del material?'];
     const errores = [
       tr('PR6-radio-como-diametro', rho / 4, 'Tomaste el radio como si fuera el diámetro y el área te salió 4 veces menor. El dato es el radio: A = π·r².'),
-      h('RES-circunferencia', R * (6 * r * 1e-3) / L, 'Usaste 2π·r, que es el contorno de la sección, no su área. El área de un círculo es π·r².'),
-      tr('U3-mm2', rho * 1000, 'Pasaste los mm² a m² dividiendo entre 1000. Un mm² es (10⁻³ m)² = 10⁻⁶ m².'),
-      tr('PR4-seccion', R * L / A, 'Despejaste al revés: de R = ρL/A sale ρ = R·A/L, no R·L/A.'),
+      tr('PR6-diametro', rho * 4, 'Sacaste el diámetro (2r) y lo pusiste en π·r², y el área te salió 4 veces mayor. En A = π·r² va el radio, que es el dato.'),
+      h('RES-sin-pi', rho / 3, 'Olvidaste el π en el área: A = π·r², no r².'),
     ];
     const solucion = [
       ['Área: ', v('a', `A = 3 · ${f(r)}² = ${f(3 * r * r)} mm² = ${f(3 * r * r)} × 10⁻⁶ m²`), '.'],
@@ -314,12 +338,12 @@
   // ---------------- cables ----------------
   const VCAB = { r: { nombre: 'resistencia del aparato', color: 'h' }, i: { nombre: 'voltaje y corriente', color: 'i' }, t: { nombre: 'el cable', color: 'o' }, x: { nombre: 'lo que se pide', color: 'd' } };
   function cables(rng, semilla, sub) {
-    const L = rng.elegir([10, 20, 25, 40, 50, 100]), Amm = rng.elegir([0.5, 1, 1.5, 2, 2.5]), man = rng.elegir([1.5, 1.6, 1.8, 2, 2.5, 3]), rho = man * 1e-8;
+    const L = rng.elegir([10, 15, 20, 25, 30, 40, 50, 60, 75, 100, 150]), Amm = rng.elegir([0.5, 0.75, 1, 1.5, 2, 2.5, 4]), man = rng.elegir([1.5, 1.6, 1.7, 1.8, 2, 2.4, 2.5, 2.8, 3]), rho = man * 1e-8;
     const Rcab = rho * 2 * L / (Amm * 1e-6);
-    const Rc = rng.elegir([10, 11, 20, 22, 40, 44, 48, 50, 100, 110]), V = rng.elegir([110, 220]);
+    const Rc = rng.elegir([8, 10, 11, 12, 18, 20, 22, 24, 30, 40, 44, 48, 50, 60, 100, 110]), V = rng.elegir([110, 220, 220]);
     const I = V / (Rc + Rcab), Pc = I * I * Rc, Pp = I * I * Rcab;
     if (!limpio(Rcab) || !limpio(I) || !limpio(Pc) || !limpio(Pp)) return null;
-    const [ap, apDef] = rng.elegir([['una terma', 'a la terma'], ['un calentador', 'al calentador'], ['una estufa', 'a la estufa'], ['una bomba de agua', 'a la bomba de agua']]);
+    const [ap, apDef] = rng.elegir([['una terma', 'a la terma'], ['un calentador', 'al calentador'], ['una estufa', 'a la estufa'], ['una hornilla eléctrica', 'a la hornilla'], ['una plancha', 'a la plancha'], ['un secador de pelo', 'al secador']]);
     const enunciado = [`En una chacra, ${ap} de resistencia `, v('r', `${f(Rc)} Ω`), ' se conecta a un tomacorriente de ', v('i', `${V} V`), ' mediante una extensión de ', v('t', `${f(L)} m`),
       ' de largo. La extensión tiene dos hilos (ida y vuelta), cada uno de ', v('t', `${f(Amm)} mm²`), ' de sección y resistividad ', v('t', `${cien(rho)} Ω·m`), '.'];
     const corriente = (Rcable) => V / (Rc + Rcable);
@@ -351,7 +375,7 @@
   // ---------------- carga ----------------
   function carga(rng, semilla, sub) {
     if (sub === 'duracion') {
-      const n = rng.elegir([2, 3, 4]), E = rng.elegir([1.5, 3]), R = rng.elegir([3, 6, 9, 12, 15, 30, 45, 60]), Q = rng.elegir([1800, 3600, 5400, 7200, 10800]);
+      const n = rng.elegir([2, 3, 4, 6]), E = rng.elegir([1.5, 1.5, 3, 9]), R = rng.elegir([2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 18, 20, 24, 30, 36, 45, 60]), Q = rng.elegir([1800, 2700, 3600, 5400, 7200, 9000, 10800, 14400, 18000]);
       const I = n * E / R, th = Q / I / 3600;
       if (!limpio(th) || !limpio(I)) return null;
       const enunciado = [`${n} pilas ideales de `, v('t', `${f(E)} V`), ' cada una, conectadas en serie, alimentan un juguete de resistencia ', v('r', `${f(R)} Ω`),
@@ -371,15 +395,15 @@
         enunciado, pregunta, solucion, datos: { tipo: 'carga', sub, n, E, R, Q } });
     }
     const VQ = { i: { nombre: 'corriente', color: 'i' }, t: { nombre: 'tiempo', color: 'o' }, q: { nombre: 'carga', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
-    const ImA = rng.elegir([20, 50, 100, 150, 200, 250, 300, 400, 500, 800]), tmin = rng.elegir([1, 2, 5, 10, 15, 20, 30, 45, 60]);
+    const ImA = rng.elegir([20, 25, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500, 600, 750, 800]), tmin = rng.elegir([1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40, 45, 60, 90]);
     const I = ImA / 1000, Q = I * 60 * tmin;
     if (!limpio(Q)) return null;
-    const cosa = rng.elegir(['un celular que se carga', 'un foquito LED', 'un motorcito', 'una radio']);
+    const [porDonde, aparato] = rng.elegir([['el cable de un cargador de celular', 'el cargador de un celular'], ['un foquito LED', 'un foquito LED'], ['el motorcito de un juguete', 'el motorcito de un juguete'], ['una radio a pilas', 'una radio a pilas'], ['un timbre', 'un timbre']]);
     if (sub === 'carga') {
-      const enunciado = [`Por los cables de ${cosa} pasa una corriente de `, v('i', `${f(ImA)} mA`), ' durante ', v('t', `${f(tmin)} min`), '.'];
-      const pregunta = ['¿Cuánta ', v('x', 'carga'), ' pasa por los cables?'];
+      const enunciado = [`Por ${porDonde} pasa una corriente de `, v('i', `${f(ImA)} mA`), ' durante ', v('t', `${f(tmin)} min`), '.'];
+      const pregunta = ['¿Cuánta ', v('x', 'carga'), ' pasa en ese tiempo?'];
       const errores = [
-        tr('U2-mA', ImA * 60 * tmin, `Usaste la corriente en mA como si fueran amperios. ${f(ImA)} mA = ${f(I)} A.`),
+        tr('U2-mA', Q * 10, `Pasaste de mA a A dividiendo entre 100. Un amperio tiene 1000 mA: ${f(ImA)} mA = ${f(I)} A.`),
         tr('U6-min', I * tmin, `Usaste el tiempo en minutos. Va en segundos: ${f(tmin)} min = ${f(60 * tmin)} s.`),
         tr('U2-mA', ImA * tmin, 'No convertiste ni la corriente a amperios ni el tiempo a segundos. Q = I·t con I en A y t en s.'),
         tr('PR4-carga', I / (60 * tmin), 'Dividiste la corriente entre el tiempo. La corriente es carga por segundo, así que la carga es corriente por tiempo: Q = I·t.'),
@@ -391,13 +415,14 @@
       return cerrar(rng, semilla, { correcta: Q, errores, unidad: 'C', variables: VQ, enunciado, pregunta, solucion, datos: { tipo: 'carga', sub, ImA, tmin } });
     }
     // tiempo
-    const enunciado = [`Por ${cosa} pasa una corriente de `, v('i', `${f(ImA)} mA`), ' y por sus cables circulan ', v('q', `${f(Q)} C`), ' de carga.'];
+    const enunciado = [`Por ${aparato} pasa una corriente constante de `, v('i', `${f(ImA)} mA`), ' y en total circulan ', v('q', `${f(Q)} C`), ' de carga.'];
     const pregunta = ['¿Cuántos ', v('x', 'minutos'), ' estuvo funcionando?'];
     const errores = [
       tr('U6-s', 60 * tmin, 'Ese es el tiempo en segundos. Para minutos, divide entre 60.'),
       tr('U2-mA', Q / ImA / 60, `Usaste la corriente en mA como si fueran amperios. ${f(ImA)} mA = ${f(I)} A.`),
       tr('PR4-carga', Q * I / 60, 'Multiplicaste la carga por la corriente. De Q = I·t, el tiempo es t = Q/I.'),
-      tr('U2-mA', Q / ImA, 'Usaste la corriente en mA y dejaste el tiempo en segundos. Con I en A, t = Q/I sale en segundos; luego divide entre 60.'),
+      tr('U2-mA', tmin / 10, `Pasaste de mA a A dividiendo entre 100. Un amperio tiene 1000 mA: ${f(ImA)} mA = ${f(I)} A.`),
+      tr('U6-h', tmin / 60, 'Pasaste los segundos a horas (entre 3600). Para minutos se divide entre 60.'),
     ];
     const solucion = [
       ['En el SI: ', v('i', `I = ${f(I)} A`), '. De Q = I·t: t = ', v('q', 'Q'), `/I = ${f(Q)}/${f(I)} = ${f(60 * tmin)} s.`],

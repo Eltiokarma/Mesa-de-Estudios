@@ -11,12 +11,15 @@
  *     fuente     dos pilas; la corriente que pasa por la pila 3
  *     tres       tres pilas (una en cada rama); la corriente por la rama central
  *     potencia   dos pilas; la potencia que entrega la pila 1 (ε1·I1)
- *     ddp        dos pilas; la lectura de un voltímetro ideal entre A y B
+ *     ddp        dos pilas; la lectura con signo (V_A − V_B) de un voltímetro ideal con su borne + en A
+ *     estado     dos pilas; si la pila 3 entrega energía o se carga, y con qué corriente (armarTexto)
  *     fem        se conocen la corriente por la pila 1 y por la rama central: la fem de la pila 3
  *   puente     cinco resistencias: R1 de A a C, R2 de C a B, R3 de A a D, R4 de D a B, y el tramo
  *              central entre C y D.
- *     req        puente equilibrado (R1/R2 = R3/R4): la resistencia equivalente entre A y B
- *     corriente  puente equilibrado con una pila ideal entre A y B: la corriente de la pila
+ *     req        la resistencia equivalente entre A y B; la mitad de las veces el puente está equilibrado
+ *                (R1/R2 = R3/R4, R5 no conduce) y la otra mitad no (potenciales de nodo)
+ *     corriente  igual, con una pila ideal entre A y B: la corriente de la pila
+ *     r5         puente no equilibrado con pila: la corriente por R5
  *     amperimetro puente no equilibrado con un amperímetro ideal en el tramo central: su lectura
  *     corto      tres resistencias y un cable sin resistencia que deja una en corto: Req
  *   pilas      n pilas iguales reales (fem ε, resistencia interna r) alimentan una resistencia R.
@@ -25,10 +28,10 @@
  *     grafica    la gráfica corriente contra resistencia externa pasa por dos puntos: r o ε
  *
  * Convenciones: corrientes en A, fem y voltajes en V, resistencias en Ω, potencias en W. Las
- * respuestas son magnitudes (positivas); el sentido se dice en la solución. Pilas ideales salvo
+ * respuestas son magnitudes (positivas), salvo ddp (con signo) y estado (texto); el sentido se dice en la solución. Pilas ideales salvo
  * en «pilas». En kirchhoff, las fem se guardan con signo en _datos.e: positiva si el borne
  * positivo mira hacia A.
- * Errores: C6, C11 y C12 (docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md, con
+ * Errores: C6 (documentado), C11 y C12 (parcial; docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md, con
  * su respaldo); KIR-* (signos y nodos en Kirchhoff, hipótesis que sale de C10), PU-* (puentes),
  * PI-* (pilas reales) y POT-* (potencia), hipótesis nuestras; PR5 del informe transversal.
  */
@@ -59,21 +62,27 @@
 
   function generar(semilla) {
     const rng = Azar.crear('circuitos-mallas|' + semilla);
+    const equilibrado = rng.moneda(); // en puente/req y puente/corriente: mitad y mitad
     const [tipo, sub] = rng.elegir([
       ['kirchhoff', 'rama'], ['kirchhoff', 'rama'], ['kirchhoff', 'fuente'], ['kirchhoff', 'tres'], ['kirchhoff', 'tres'],
-      ['kirchhoff', 'potencia'], ['kirchhoff', 'ddp'], ['kirchhoff', 'fem'], ['kirchhoff', 'fem'],
-      ['puente', 'req'], ['puente', 'corriente'], ['puente', 'amperimetro'], ['puente', 'amperimetro'], ['puente', 'corto'],
+      ['kirchhoff', 'potencia'], ['kirchhoff', 'ddp'], ['kirchhoff', 'fem'], ['kirchhoff', 'fem'], ['kirchhoff', 'estado'], ['kirchhoff', 'estado'],
+      ['puente', 'req'], ['puente', 'req'], ['puente', 'corriente'], ['puente', 'corriente'], ['puente', 'r5'], ['puente', 'amperimetro'], ['puente', 'amperimetro'], ['puente', 'corto'],
       ['pilas', 'serie'], ['pilas', 'serie'], ['pilas', 'paralelo'], ['pilas', 'paralelo'], ['pilas', 'grafica'], ['pilas', 'grafica']]);
     for (let intento = 0; intento < 5000; intento++) {
-      const pr = tipo === 'kirchhoff' ? kirchhoff(rng, semilla, sub) : tipo === 'puente' ? puente(rng, semilla, sub) : pilas(rng, semilla, sub);
+      const pr = tipo === 'kirchhoff' ? kirchhoff(rng, semilla, sub) : tipo === 'puente' ? puente(rng, semilla, sub, equilibrado) : pilas(rng, semilla, sub);
       if (pr && pr.alternativas.length >= 4) return pr;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
   function cerrar(rng, semilla, o) {
-    const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor >= 0.01 && e.valor < 1e5);
-    const alternativas = P.armar({ correcta: o.correcta, errores, rng, unidad: o.unidad });
+    let alternativas;
+    if (o.textual) alternativas = P.armarTexto({ correcta: o.correcta, errores: o.errores, rng });
+    else {
+      const errores = o.errores.filter(e => Number.isFinite(e.valor) && Math.abs(e.valor) >= 0.01 && Math.abs(e.valor) < 1e5 && (o.negativos || e.valor > 0));
+      alternativas = P.armar({ correcta: o.correcta, errores, rng, unidad: o.unidad, negativos: !!o.negativos });
+    }
+    if (o.textual) o.correcta = o.correcta.clave;
     return {
       id: `circuitos-mallas#${semilla}`, variables: VAR, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
@@ -124,6 +133,9 @@
     const datos = { tipo: 'kirchhoff', sub, e, R };
     const con = (k, s) => { const ee = e.slice(); ee[k] = s; return nodal(ee, R); };
     const flip3 = con(2, -e[2]), flip1 = con(0, -e[0]);
+    // Malla de afuera sola (ramas 1 y 3, con la rama 2 abierta): sube por la rama 1 y baja por la 3.
+    const Iext = (e[0] - e[2]) / (R[0] + R[2]);
+    const exterior = (que) => h('KIR-malla-exterior', Math.abs(Iext), `Recorriste solo la malla de afuera (ramas 1 y 3), como si la rama central estuviera abierta: ${e[2] > 0 ? 'las dos pilas miran hacia A, así que en esa malla se oponen' : 'las pilas miran a lados opuestos, así que en esa malla se suman'}, y (${f(e[0])} ${e[2] > 0 ? '−' : '+'} ${f(Math.abs(e[2]))})/(${f(R[0])} + ${f(R[2])}) = ${f(Math.abs(Iext))} A. Esa sería la corriente sin la rama 2${que}. Con R2 conectada, la corriente se reparte: hay que plantear el nodo A o las dos mallas.`);
 
     if (sub === 'rama' || sub === 'tres') {
       const correcta = Math.abs(u2);
@@ -131,7 +143,7 @@
       const errores = [
         h('KIR-signo', Math.abs(flip3.u[1]), 'Tomaste la pila 3 con la polaridad al revés. Al recorrer una rama, la fem suma si vas del borne − al + y resta si vas del + al −: mira hacia dónde está su borne positivo.'),
         h('KIR-signo', Math.abs(flip1.u[1]), 'Cambiaste el signo de la pila 1. Su borne positivo mira hacia A: en la ecuación entra con signo +.'),
-        h('KIR-malla-exterior', Math.abs(e[0] - e[2]) / (R[0] + R[2]), 'Recorriste solo la malla de afuera, como si la rama central no existiera. La rama central también lleva corriente: hay que plantear las dos mallas, o el nodo A.'),
+        exterior(', y además la tomaste como la de R2, que en ese caso no llevaría nada'),
       ];
       if (central) errores.unshift(h('KIR-sin-fem-central', Math.abs(con(1, 0).u[1]), 'Dejaste fuera la pila de la rama central. Cada pila que cruzas al recorrer una malla entra en la ecuación con su signo.'),
         h('KIR-ohm-rama', Math.abs(e[1]) / R[1], `Aplicaste Ohm a la rama central sola, ε2/R2. Pero entre A y B no hay 0 V: la corriente de la rama es (ε2 − V)/R2, con V el potencial de A.`));
@@ -146,7 +158,7 @@
         h('KIR-signo', Math.abs(flip3.u[2]), 'Tomaste la pila 3 con la polaridad al revés. Al recorrer una rama, la fem suma si vas del borne − al + y resta si vas del + al −.'),
         h('KIR-ohm-rama', Math.abs(e[2]) / R[2], 'Aplicaste Ohm a la rama 3 sola, ε3/R3, como si entre A y B hubiera 0 V. La corriente de la rama es (fem con signo − V)/R3, con V el potencial de A.'),
         h('KIR-nodo', Math.abs(u1 - u2), `Te equivocaste en el nodo A: sumaste corrientes que en realidad se restan. Lo que llega a A es igual a lo que sale de A; con I1 e I2 bien calculadas, I3 sale de esa cuenta.`),
-        h('KIR-malla-exterior', Math.abs(e[0] - e[2]) / (R[0] + R[2]), 'Recorriste solo la malla de afuera, como si la rama central no existiera. La rama central también lleva corriente.'),
+        exterior(''),
       ];
       const solucion = [nodoEc, corrientes, ['Por la pila 3 pasa ', v('x', `${f(correcta)} A`), u3 < 0 && e[2] > 0 || u3 > 0 && e[2] < 0 ? ': entra por su borne positivo, así que la pila 3 se está cargando.' : ': sale por su borne positivo, así que la pila 3 entrega energía.']];
       return cerrar(rng, semilla, { correcta, errores, unidad: 'A', enunciado, pregunta, solucion, datos });
@@ -164,16 +176,31 @@
       return cerrar(rng, semilla, { correcta, errores, unidad: 'W', enunciado, pregunta, solucion, datos });
     }
     if (sub === 'ddp') {
-      const correcta = Math.abs(VA);
-      const pregunta = ['¿Cuánto marca un ', v('x', 'voltímetro ideal'), ' conectado entre A y B?'];
+      const correcta = VA;
+      const enun = [...enunciado, ' Un voltímetro ideal tiene su borne positivo en A y su borne negativo en B.'];
+      const pregunta = ['¿Qué marca el ', v('x', 'voltímetro'), '? (Con signo: marca V_A − V_B.)'];
       const errores = [
-        h('KIR-fem-como-ddp', e[0], 'Tomaste la fem de la pila 1 como el voltaje entre A y B. Por R1 pasa corriente, así que en R1 se pierde I1·R1: V = ε1 − I1·R1.'),
-        h('KIR-caida-por-potencial', Math.abs(u1) * R[0], 'Esa es la caída en R1, I1·R1, no el voltaje entre A y B. Falta restarla de la fem: V = ε1 − I1·R1.'),
-        h('KIR-fem-neta', Math.abs(e[0] - e[2]), 'Restaste (o sumaste) las dos fem como si estuvieran solas en una malla. Las resistencias también se llevan voltaje.'),
-        h('KIR-signo', Math.abs(flip3.VA), 'Tomaste la pila 3 con la polaridad al revés. Mira hacia dónde está su borne positivo.'),
+        h('KIR-fem-como-ddp', e[0], 'Tomaste la fem de la pila 1 como el voltaje entre A y B. Por R1 pasa corriente, así que en R1 cambia el potencial en I1·R1: V_A − V_B = ε1 − I1·R1.'),
+        h('KIR-caida-por-potencial', u1 * R[0], 'Esa es la caída en R1, I1·R1, no el voltaje entre A y B. Falta la fem: V_A − V_B = ε1 − I1·R1.'),
+        h('KIR-fem-neta', e[0] - e[2], 'Combinaste las dos fem como si estuvieran solas en una malla. Las resistencias también cambian el potencial.'),
+        h('KIR-signo', flip3.VA, 'Tomaste la pila 3 con la polaridad al revés. Mira hacia dónde está su borne positivo.'),
+        h('KIR-lectura-invertida', -VA, 'Leíste el voltímetro al revés. Su borne positivo está en A: marca V_A − V_B, no V_B − V_A.'),
       ];
-      const solucion = [nodoEc, ['El voltímetro ideal no deja pasar corriente y marca ', v('x', `${f(correcta)} V`), `. Con la rama 1: V = ε1 − I1·R1 = ${f(e[0])} − ${f(u1)} · ${f(R[0])} = ${f(VA)} V.`]];
-      return cerrar(rng, semilla, { correcta, errores, unidad: 'V', enunciado, pregunta, solucion, datos });
+      const solucion = [nodoEc, ['El voltímetro ideal no deja pasar corriente y marca ', v('x', `V_A − V_B = ${f(correcta)} V`), `. Con la rama 1: ε1 − I1·R1 = ${f(e[0])} − ${u1 < 0 ? `(${f(u1)})` : f(u1)} · ${f(R[0])} = ${f(VA)} V.`]];
+      return cerrar(rng, semilla, { correcta, errores, negativos: true, unidad: 'V', enunciado: enun, pregunta, solucion, datos });
+    }
+    if (sub === 'estado') {
+      // ¿La pila 3 entrega energía o se carga, y con qué corriente? Entrega si la corriente sale por su borne +.
+      const op = (ek3, uk3) => { const I = Math.round(Math.abs(uk3) * 100) / 100, ent = (uk3 > 0) === (ek3 > 0); const texto = `${ent ? 'Entrega energía' : 'Se carga'}, con ${f(I)} A`; return { clave: 'pila3:' + texto, texto }; };
+      const correcta = op(e[2], u3);
+      const errores = [
+        { ...op(-e[2], u3), id: 'KIR-estado-invertido', explicacion: 'La corriente está bien, pero no el papel de la pila. Si la corriente sale por su borne positivo, la pila entrega energía; si entra por el borne positivo, la están cargando.', respaldo: 'hipotesis', fuente: EM },
+        { ...op(e[2], flip3.u[2]), id: 'KIR-signo', explicacion: 'Tomaste la pila 3 con la polaridad al revés, y cambiaron la corriente y el papel de la pila. Mira hacia dónde está su borne positivo.', respaldo: 'hipotesis', fuente: EM },
+        { ...op(e[2], e[2] / R[2]), id: 'KIR-ohm-rama', explicacion: 'Aplicaste Ohm a la rama 3 sola, ε3/R3, como si esa pila empujara sola. Entre A y B hay voltaje por las otras ramas: la corriente es (fem con signo − V)/R3.', respaldo: 'hipotesis', fuente: EM },
+        { ...op(e[2], -Iext), ...exterior(''), valor: undefined },
+      ];
+      const solucion = [nodoEc, corrientes, ['Por la pila 3 pasan ', v('x', `${f(Math.abs(u3))} A`), (u3 > 0) === (e[2] > 0) ? ', que salen por su borne positivo: ' : ', que entran por su borne positivo: ', v('x', correcta.texto[0].toLowerCase() + correcta.texto.slice(1)), '.']];
+      return cerrar(rng, semilla, { textual: true, correcta, errores, unidad: '', enunciado, pregunta: ['¿Qué hace la ', v('x', 'pila 3'), ': entrega energía o se está cargando? ¿Con qué corriente?'], solucion, datos });
     }
     // fem: la pila 3 con fem desconocida; se dan I1 (por la pila 1) e I2 (por R2).
     const E3 = Math.abs(e[2]), s3 = Math.sign(e[2]);
@@ -204,34 +231,78 @@
     return ['Entre los nodos A y B hay dos caminos. Por uno: ', v('r', `R1 = ${f(R[0])} Ω`), ' de A a C y ', v('r', `R2 = ${f(R[1])} Ω`), ' de C a B. Por el otro: ',
       v('r', `R3 = ${f(R[2])} Ω`), ' de A a D y ', v('r', `R4 = ${f(R[3])} Ω`), ' de D a B. ', ...central];
   }
-  function puente(rng, semilla, sub) {
-    if (sub === 'req' || sub === 'corriente') {
-      const R1 = rng.elegir(RP), R2 = rng.elegir(RP), k = rng.elegir([1, 2, 3, 0.5, 1.5]);
-      const R = [R1, R2, R1 * k, R2 * k], R5 = rng.elegir(RP);
-      if (R1 === R2 && k === 1) return null; // todo igual: muy evidente
-      if (!Number.isInteger(R[2]) || !Number.isInteger(R[3])) return null;
-      const Req = par(R1 + R2, R[2] + R[3]);
-      if (!limpio(Req)) return null;
-      const enunciado = puenteTexto(R, ['Además, entre C y D hay una ', v('r', `R5 = ${f(R5)} Ω`), '.']);
-      const errores = [
-        h('PU-puente-en-serie', par(R[0], R[2]) + R5 + par(R[1], R[3]), 'Pusiste R5 en serie entre los dos pares, como si toda la corriente tuviera que cruzar el puente. Aquí R1/R2 = R3/R4: C y D quedan al mismo potencial y por R5 no pasa corriente.'),
-        h('PU-puente-en-paralelo', par(Req, R5), 'Pusiste R5 en paralelo con todo, entre A y B. R5 no une A con B: une C con D, que en este puente están al mismo potencial.'),
-        h('RES-paralelo-como-serie', R[0] + R[1] + R[2] + R[3], 'Sumaste los dos caminos como si estuvieran en serie. Los caminos A-C-B y A-D-B están en paralelo: 1/Req = 1/(R1 + R2) + 1/(R3 + R4).'),
-        h('PU-un-camino', R[0] + R5 + R[3], 'Seguiste un solo camino, A-C-D-B, pasando por el puente. La corriente se reparte por los dos caminos, y por R5 no pasa.'),
-      ];
-      const sol0 = ['R1/R2 = ', `${f(R1)}/${f(R2)}`, ' y R3/R4 = ', `${f(R[2])}/${f(R[3])}`, ': son iguales, el puente está equilibrado. C y D quedan al mismo potencial y por R5 no pasa corriente: se puede quitar.'];
-      const sol1 = ['Quedan dos caminos en paralelo: ', v('r', `R1 + R2 = ${f(R1 + R2)} Ω`), ' y ', v('r', `R3 + R4 = ${f(R[2] + R[3])} Ω`), `. Req = ${f(R1 + R2)} · ${f(R[2] + R[3])}/(${f(R1 + R2)} + ${f(R[2] + R[3])}) = ${f(Req)} Ω.`];
-      if (sub === 'req') {
-        return cerrar(rng, semilla, { correcta: Req, errores, unidad: 'Ω', enunciado, pregunta: ['¿Cuál es la ', v('x', 'resistencia equivalente'), ' entre A y B?'],
-          solucion: [sol0, sol1, ['La resistencia equivalente es ', v('x', `${f(Req)} Ω`), '.']], datos: { tipo: 'puente', sub, R, R5 } });
+  // Potenciales de C y D con A a E voltios y B a 0 (regla de Cramer sobre los dos nodos).
+  function puenteNodal(R, R5, E) {
+    const g = R.map(x => 1 / x), g5 = 1 / R5;
+    const a11 = g[0] + g[1] + g5, a22 = g[2] + g[3] + g5, b1 = E * g[0], b2 = E * g[2];
+    const det = a11 * a22 - g5 * g5;
+    const VC = (b1 * a22 + g5 * b2) / det, VD = (a11 * b2 + g5 * b1) / det;
+    return { VC, VD, It: (E - VC) * g[0] + (E - VD) * g[2], I5: (VC - VD) * g5 };
+  }
+  function puente(rng, semilla, sub, eq) {
+    if (sub === 'req' || sub === 'corriente' || sub === 'r5') {
+      // req y corriente: mitad equilibrados (R1/R2 = R3/R4) y mitad no; r5: nunca equilibrado.
+      const equilibrado = sub !== 'r5' && eq;
+      let R;
+      if (equilibrado) {
+        const R1 = rng.elegir(RP), R2 = rng.elegir(RP), k = rng.elegir([1, 2, 3, 0.5, 1.5]);
+        R = [R1, R2, R1 * k, R2 * k];
+        if (R1 === R2 && k === 1) return null; // todo igual: muy evidente
+        if (!Number.isInteger(R[2]) || !Number.isInteger(R[3])) return null;
+      } else {
+        R = [rng.elegir(RP), rng.elegir(RP), rng.elegir(RP), rng.elegir(RP)];
+        if (R[0] * R[3] === R[1] * R[2]) return null;
       }
-      const E = rng.elegir([6, 9, 12, 18, 20, 24, 30, 36, 48, 60]);
-      const I = E / Req;
-      if (!limpio(I) || I > 50) return null;
-      const enun = [...enunciado, ' Una pila ideal de ', v('e', `ε = ${f(E)} V`), ' se conecta entre A y B, con un amperímetro ideal en serie con ella.'];
-      const errs = errores.map(er => ({ ...er, valor: E / er.valor, explicacion: er.explicacion.replace(/^/, 'Usaste una resistencia equivocada. ') }));
-      return cerrar(rng, semilla, { correcta: I, errores: errs, unidad: 'A', enunciado: enun, pregunta: ['¿Cuánto marca el ', v('x', 'amperímetro'), '?'],
-        solucion: [sol0, sol1, ['El amperímetro marca ', v('x', 'I'), ' = ', v('e', 'ε'), `/Req = ${f(E)}/${f(Req)} = `, v('x', `${f(I)} A`), '.']], datos: { tipo: 'puente', sub, R, R5, E } });
+      const R5 = rng.elegir(RP);
+      const E = sub === 'req' ? rng.elegir([6, 12, 24, 30, 60]) : rng.elegir([6, 9, 12, 18, 20, 24, 30, 36, 48, 60]);
+      const n = puenteNodal(R, R5, E), Req = E / n.It;
+      if (!limpio(Req)) return null;
+      if (!equilibrado && (!limpio(Math.abs(n.VC)) || !limpio(Math.abs(n.VD)))) return null;
+      if (!limpio(n.It) || n.It > 50) return null;
+      if (sub === 'r5' && (!limpio(Math.abs(n.I5)) || Math.abs(n.I5) < 0.05)) return null;
+      const enunciado = puenteTexto(R, ['Además, entre C y D hay una ', v('r', `R5 = ${f(R5)} Ω`), '.',
+        ...(sub === 'req' ? [] : [' Una pila ideal de ', v('e', `ε = ${f(E)} V`), ' se conecta entre A y B', sub === 'corriente' ? ', con un amperímetro ideal en serie con ella.' : '.'])]);
+      const sinR5 = par(R[0] + R[1], R[2] + R[3]), conCable = par(R[0], R[2]) + par(R[1], R[3]);
+      const r12 = `${f(R[0])}/${f(R[1])}`, r34 = `${f(R[2])}/${f(R[3])}`;
+      const resistencias = [
+        h('PU-puente-en-serie', par(R[0], R[2]) + R5 + par(R[1], R[3]), 'Pusiste R5 en serie entre los dos pares, como si toda la corriente tuviera que cruzar el puente. R5 une C con D: por ella pasa, como mucho, una parte de la corriente.'),
+        h('PU-puente-en-paralelo', par(sinR5, R5), 'Pusiste R5 en paralelo con todo, entre A y B. R5 no une A con B: une C con D.'),
+        h('RES-paralelo-como-serie', R[0] + R[1] + R[2] + R[3], 'Sumaste los dos caminos como si estuvieran en serie. Los caminos A-C-B y A-D-B salen de A y llegan a B: están en paralelo.'),
+        h('PU-un-camino', R[0] + R5 + R[3], 'Seguiste un solo camino, A-C-D-B, pasando por el puente. La corriente se reparte por varios caminos.'),
+      ];
+      if (!equilibrado) resistencias.unshift(
+        h('PU-como-equilibrado', sinR5, `Quitaste R5 como si el puente estuviera equilibrado. Compruébalo antes: R1/R2 = ${r12} y R3/R4 = ${r34} no son iguales, así que C y D no quedan al mismo potencial y por R5 sí pasa corriente.`),
+        h('PU-como-cable', conCable, `Tomaste R5 como un cable que une C con D. Eso solo da lo mismo en un puente equilibrado, y aquí R1/R2 = ${r12} no es igual a R3/R4 = ${r34}.`));
+      const sol0 = equilibrado
+        ? ['R1/R2 = ', r12, ' y R3/R4 = ', r34, ': son iguales, el puente está equilibrado. C y D quedan al mismo potencial y por R5 no pasa corriente: se puede quitar.']
+        : ['R1/R2 = ', r12, ' y R3/R4 = ', r34, ': no son iguales, el puente no está equilibrado y R5 sí lleva corriente. No es serie ni paralelo: se resuelve con potenciales de nodo (o pasando un triángulo a estrella).'];
+      const sol1 = equilibrado
+        ? ['Quedan dos caminos en paralelo: ', v('r', `R1 + R2 = ${f(R[0] + R[1])} Ω`), ' y ', v('r', `R3 + R4 = ${f(R[2] + R[3])} Ω`), `. Req = ${f(R[0] + R[1])} · ${f(R[2] + R[3])}/(${f(R[0] + R[1])} + ${f(R[2] + R[3])}) = ${f(Req)} Ω.`]
+        : [sub === 'req' ? `Pon una pila de prueba de ${f(E)} V entre A y B (A a ${f(E)} V, B a 0 V). ` : `A a ${f(E)} V y B a 0 V. `,
+          `Nodo C: (${f(E)} − VC)/${f(R[0])} = VC/${f(R[1])} + (VC − VD)/${f(R5)}. Nodo D: (${f(E)} − VD)/${f(R[2])} = VD/${f(R[3])} + (VD − VC)/${f(R5)}. Salen VC = ${f(n.VC)} V y VD = ${f(n.VD)} V.`];
+      const sol2 = equilibrado ? [] : [[`Corriente que sale de A: (${f(E)} − ${f(n.VC)})/${f(R[0])} + (${f(E)} − ${f(n.VD)})/${f(R[2])} = ${f(n.It)} A`, sub === 'req' ? `, así que Req = ${f(E)}/${f(n.It)} = ${f(Req)} Ω.` : '.']];
+      const datos = { tipo: 'puente', sub, R, R5, ...(sub === 'req' ? {} : { E }) };
+      if (sub === 'req') {
+        return cerrar(rng, semilla, { correcta: Req, errores: resistencias, unidad: 'Ω', enunciado, pregunta: ['¿Cuál es la ', v('x', 'resistencia equivalente'), ' entre A y B?'],
+          solucion: [sol0, sol1, ...sol2, ['La resistencia equivalente es ', v('x', `${f(Req)} Ω`), '.']], datos });
+      }
+      if (sub === 'corriente') {
+        const errs = resistencias.map(er => ({ ...er, valor: E / er.valor, explicacion: 'Usaste una resistencia equivocada. ' + er.explicacion }));
+        return cerrar(rng, semilla, { correcta: n.It, errores: errs, unidad: 'A', enunciado, pregunta: ['¿Cuánto marca el ', v('x', 'amperímetro'), '?'],
+          solucion: [sol0, sol1, ...sol2, ['El amperímetro marca ', v('x', `${f(n.It)} A`), equilibrado ? ` (ε/Req = ${f(E)}/${f(Req)}).` : '.']], datos });
+      }
+      // r5: corriente por R5
+      const correcta = Math.abs(n.I5);
+      const VC0 = E * R[1] / (R[0] + R[1]), VD0 = E * R[3] / (R[2] + R[3]);
+      const Ra = par(R[0], R[2]), VM = E * par(R[1], R[3]) / (Ra + par(R[1], R[3]));
+      const errores = [
+        h('PU-tramo-abierto', Math.abs(VC0 - VD0) / R5, 'Calculaste VC y VD como si R5 no estuviera, y dividiste su diferencia entre R5. Al conectar R5, la corriente que pasa por ella cambia esos potenciales: hay que plantear los nodos con R5 puesta.'),
+        h('PU-todo-el-voltaje', E / R5, 'Pusiste todo el voltaje de la pila sobre R5. R5 no va de A a B: va de C a D, que están a potenciales parecidos.'),
+        h('PU-como-cable', Math.abs((E - VM) / R[0] - VM / R[1]), 'Calculaste la corriente como si R5 fuera un cable (sin resistencia). R5 frena la corriente y cambia los potenciales de C y D.'),
+        h('PU-total', n.It, 'Esa es la corriente que da la pila. Por R5 pasa solo una parte: la que no sigue por R2 (o por R4).'),
+      ];
+      return cerrar(rng, semilla, { correcta, errores, unidad: 'A', enunciado, pregunta: ['¿Qué ', v('x', 'corriente'), ' pasa por R5?'],
+        solucion: [sol0, sol1, ['Por R5: ', v('x', `|VC − VD|/R5 = ${f(Math.abs(n.VC - n.VD))}/${f(R5)} = ${f(correcta)} A`), n.I5 > 0 ? ', de C hacia D.' : ', de D hacia C.']], datos });
     }
     if (sub === 'amperimetro') {
       const R = [rng.elegir(RP), rng.elegir(RP), rng.elegir(RP), rng.elegir(RP)];
@@ -246,7 +317,9 @@
         h('PU-total', It, 'Esa es la corriente que da la pila. El amperímetro está en el tramo central: marca solo la diferencia entre lo que llega a C por R1 y lo que sale de C por R2.'),
         h('PU-una-rama', I1, 'Esa es la corriente por R1. Por el amperímetro pasa la diferencia entre lo que llega a C por R1 y lo que sale de C por R2: hay que calcular las dos y restar.'),
         h('PU-tramo-abierto', Math.abs(E / (R[0] + R[1]) - E / (R[2] + R[3])), 'Calculaste las corrientes de los dos caminos como si el tramo central no existiera, y las restaste. El amperímetro ideal es un cable: une C con D y cambia el circuito.'),
-        pa('C11-mitades', It / 2, 'Repartiste la corriente por mitades. En cada nudo, por la rama de menor resistencia pasa más corriente; nada obliga a que sea la mitad.'),
+        Iam > 0
+          ? pa('C11-mitades', I1 / 2, `Supusiste que la corriente que llega a C por R1 (${f(I1)} A) se reparte por mitades entre R2 y el amperímetro. No hay por qué: el amperímetro ideal no tiene resistencia y R2 sí. Lo que cruza es lo que llega por R1 menos lo que sigue por R2.`)
+          : pa('C11-mitades', VAM / R[2] / 2, `Supusiste que la corriente que llega a D por R3 (${f(VAM / R[2])} A) se reparte por mitades entre R4 y el amperímetro. No hay por qué: el amperímetro ideal no tiene resistencia y R4 sí. Lo que cruza es lo que llega por R3 menos lo que sigue por R4.`),
       ];
       const solucion = [
         ['El amperímetro ideal no tiene resistencia: C y D quedan unidos. Así, ', v('r', 'R1'), ' y ', v('r', 'R3'), ` quedan en paralelo (${f(Ra)} Ω), y `, v('r', 'R2'), ' y ', v('r', 'R4'), ` también (${f(Rb)} Ω), en serie entre sí.`],
@@ -265,7 +338,7 @@
       ' va directamente de A a B. Además, un cable sin resistencia une ', cable === 'CB' ? 'C con B.' : 'A con C.'];
     const corta = cable === 'CB' ? 'R2' : 'R1';
     const errores = [
-      doc('C12-corto', par(R[0] + R[1], R[2]), `No viste el corto. El cable une los dos extremos de ${corta}: la corriente pasa por el cable y ${corta} no lleva nada.`),
+      pa('C12-corto', par(R[0] + R[1], R[2]), `No viste el corto. El cable une los dos extremos de ${corta}: la corriente pasa por el cable y ${corta} no lleva nada.`),
       h('RES-todo-serie', R[0] + R[1] + R[2], 'Sumaste todo como si fuera una sola fila. R3 va de A a B por su cuenta: está en paralelo con el resto.'),
       h('PU-corto-en-serie', par(R[queda], R[2]) + R[1 - queda], `Dejaste ${corta} en serie con el resto. Sus dos extremos están unidos por un cable: no hay voltaje entre ellos y no pasa corriente.`),
       h('RES-todo-paralelo', 1 / (1 / R[0] + 1 / R[1] + 1 / R[2]), 'Pusiste las tres en paralelo. Solo están en paralelo las que van entre los mismos dos nodos; mira qué nodos quedan unidos por el cable.'),

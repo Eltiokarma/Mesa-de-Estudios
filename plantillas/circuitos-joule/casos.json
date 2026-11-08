@@ -1,8 +1,8 @@
 {
   "plantilla": "circuitos-joule",
   "tolerancia": 1e-06,
-  "nota": "Tolerancia relativa. Unidades de _datos: ImA en mA, tmin en min, t en la unidad ut, E en J o kJ (kilo), P en W, hd en h por día, R en Ω, rho en Ω·m, L en m, Amm en mm², d y r en mm (π = 3), Q en C, eta en %, m en kg, temperaturas en °C, Q0 en kJ. Respuestas: energia en J o kJ (unidad), corriente en A, escala en kJ, kwh en kW·h, calorias en cal, agua en min, resistividad en Ω (rho en Ω·m), cables en W, carga en C, tiempo en min, duracion en h.",
-  "verificacion": "PENDIENTE",
+  "nota": "Tolerancia relativa. Unidades de _datos: ImA en mA, tmin en min, t en la unidad ut, E en J o kJ (kilo), P en W, hd en h por día, R en Ω, rho en Ω·m, L en m, Amm en mm², d y r en mm (π = 3); en comparar, x1 y x2 son secciones en mm² o, si diametro es true, diámetros en mm, Q en C, eta en %, m en kg, temperaturas en °C, Q0 en kJ. Respuestas: energia en J o kJ (unidad), corriente en A, escala en kJ, kwh en kW·h, calorias en cal, agua en min, resistividad en Ω (rho en Ω·m; comparar, R del segundo alambre), cables en W, carga en C, tiempo en min, duracion en h.",
+  "verificacion": "Verificado a ciegas (8 nov 2026) por un subagente que no vio el generador: 46 problemas (16 de casos.json y 30 semillas nuevas) resueltos con Q = It, E = I²Rt, R = ρL/A con π = 3, cable de ida y vuelta y Q = mcΔT/(ηP), en fracciones exactas. 46/46 coinciden en letra y valor, y cada distractor reproduce el error que dice su explicación. Tras la revisión se quitaron los distractores fuera de escala.",
   "casos": [
     {
       "semilla": 0,
@@ -22,12 +22,12 @@
       "entrada": {
         "tipo": "carga",
         "sub": "carga",
-        "ImA": 150,
-        "tmin": 2
+        "ImA": 80,
+        "tmin": 3
       },
       "esperado": {
-        "respuesta": 18.0,
-        "exacta": "18 C"
+        "respuesta": 14.4,
+        "exacta": "14,4 C"
       }
     },
     {
@@ -35,15 +35,15 @@
       "entrada": {
         "tipo": "cables",
         "sub": "calentador",
-        "L": 100,
-        "Amm": 1,
-        "rho": 2.5e-08,
-        "Rc": 50,
-        "V": 220
+        "L": 40,
+        "Amm": 1.5,
+        "rho": 1.5000000000000002e-08,
+        "Rc": 8,
+        "V": 110
       },
       "esperado": {
-        "respuesta": 800.0,
-        "exacta": "800 W"
+        "respuesta": 1250.0,
+        "exacta": "1 250 W"
       }
     },
     {
@@ -51,16 +51,16 @@
       "entrada": {
         "tipo": "agua",
         "sub": "agua",
-        "R": 48.4,
+        "R": 96.8,
         "V": 220,
-        "eta": 75,
-        "m": 3,
-        "T1": 15,
-        "T2": 70
+        "eta": 84,
+        "m": 1.5,
+        "T1": 20,
+        "T2": 65
       },
       "esperado": {
-        "respuesta": 15.4,
-        "exacta": "15,4 min"
+        "respuesta": 11.25,
+        "exacta": "11,25 min"
       }
     },
     {
@@ -69,13 +69,13 @@
         "tipo": "joule",
         "sub": "calorias",
         "I": 5,
-        "R": 50,
+        "R": 40,
         "t": 20,
         "ut": "s"
       },
       "esperado": {
-        "respuesta": 6000.0,
-        "exacta": "6 000 cal"
+        "respuesta": 4800.0,
+        "exacta": "4 800 cal"
       }
     },
     {
@@ -84,12 +84,12 @@
         "tipo": "joule",
         "sub": "kwh",
         "P": 1200,
-        "hd": 0.5,
+        "hd": 0.25,
         "dias": 10
       },
       "esperado": {
-        "respuesta": 6.0,
-        "exacta": "6 kW·h"
+        "respuesta": 3.0,
+        "exacta": "3 kW·h"
       }
     },
     {
@@ -97,8 +97,8 @@
       "entrada": {
         "tipo": "resistividad",
         "sub": "rho",
-        "R": 3.0000000000000004,
-        "L": 300,
+        "R": 2.0000000000000004,
+        "L": 200,
         "r": 1
       },
       "esperado": {
@@ -112,13 +112,13 @@
         "tipo": "joule",
         "sub": "energia",
         "ImA": 200,
-        "R": 20,
-        "tmin": 3,
+        "R": 10,
+        "tmin": 4,
         "unidad": "J"
       },
       "esperado": {
-        "respuesta": 144.0,
-        "exacta": "144 J"
+        "respuesta": 96.0,
+        "exacta": "96 J"
       }
     },
     {
@@ -126,14 +126,14 @@
       "entrada": {
         "tipo": "carga",
         "sub": "duracion",
-        "n": 2,
-        "E": 3,
-        "R": 15,
+        "n": 3,
+        "E": 1.5,
+        "R": 6,
         "Q": 10800
       },
       "esperado": {
-        "respuesta": 7.5,
-        "exacta": "7,5 h"
+        "respuesta": 4.0,
+        "exacta": "4 h"
       }
     },
     {
@@ -141,15 +141,15 @@
       "entrada": {
         "tipo": "cables",
         "sub": "perdida",
-        "L": 25,
-        "Amm": 1,
-        "rho": 3.0000000000000004e-08,
+        "L": 60,
+        "Amm": 2,
+        "rho": 2.5e-08,
         "Rc": 11,
-        "V": 220
+        "V": 110
       },
       "esperado": {
-        "respuesta": 464.64000000000004,
-        "exacta": "464,64 W"
+        "respuesta": 116.16,
+        "exacta": "116,16 W"
       }
     },
     {
@@ -157,13 +157,13 @@
       "entrada": {
         "tipo": "joule",
         "sub": "escala",
-        "Q0": 4,
+        "Q0": 3,
         "a": 3,
         "b": 4
       },
       "esperado": {
-        "respuesta": 48.0,
-        "exacta": "48 kJ"
+        "respuesta": 36.0,
+        "exacta": "36 kJ"
       }
     },
     {
@@ -172,12 +172,12 @@
         "tipo": "resistividad",
         "sub": "diametro",
         "rho": 4.5e-08,
-        "L": 100,
+        "L": 50,
         "d": 2
       },
       "esperado": {
-        "respuesta": 1.5,
-        "exacta": "1,5 Ω"
+        "respuesta": 0.75,
+        "exacta": "0,75 Ω"
       }
     },
     {
@@ -185,9 +185,9 @@
       "entrada": {
         "tipo": "joule",
         "sub": "corriente",
-        "E": 7.5,
+        "E": 6,
         "kilo": true,
-        "R": 50,
+        "R": 40,
         "t": 10,
         "ut": "min"
       },
@@ -226,14 +226,17 @@
       "semilla": 48,
       "entrada": {
         "tipo": "resistividad",
-        "sub": "mm2",
-        "rho": 1.8000000000000002e-08,
-        "L": 150,
-        "Amm": 6
+        "sub": "comparar",
+        "R1": 4,
+        "L1": 30,
+        "L2": 90,
+        "x1": 0.5,
+        "x2": 0.25,
+        "diametro": true
       },
       "esperado": {
-        "respuesta": 0.45000000000000007,
-        "exacta": "0,45 Ω"
+        "respuesta": 48.0,
+        "exacta": "48 Ω"
       }
     }
   ]
