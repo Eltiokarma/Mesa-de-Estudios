@@ -1,0 +1,64 @@
+# Razonamiento matemático espacial: errores típicos (hipótesis)
+
+Rutina rm-espacial, 8 nov 2026. Este informe da código a las trampas que la clasificación de la admisión de San Marcos (`docs/clasificacion/trampas-admision-unmsm/rm-a.md` y `rm-b.md`) dedujo de las alternativas y resoluciones de los exámenes 2019-I a 2027-I en las familias visuales y espaciales de razonamiento matemático: cubos y vistas, dados y dominó, rutas, rodamientos y poleas, simetrías y giros, papel doblado, particiones y conteo de figuras.
+
+**Ninguno tiene dato publicado.** Todos son `hipotesis` («hipótesis nuestra» en pantalla) hasta que los datos del colegio digan otra cosa. Donde un código es la cara espacial de uno del informe de aritmética y razonamiento (`aritmetica-razonamiento-ideas-erroneas.md`), se dice; en ese caso la opción puede llevar `parcial` solo si ese código tiene dato (AR18 lo tiene; RM5 no).
+
+Los códigos usan el prefijo **RME** para no chocar con los RM7 en adelante que pueda abrir otra rutina.
+
+## Cubos, sólidos y vistas
+
+| Código | Error | Ejemplo propio | Frecuencia en la admisión |
+| --- | --- | --- | --- |
+| RME1 | **Contar como visibles (o pintadas) las caras pegadas** entre cubitos, o la que se apoya en la mesa o la pared. | Dos cubitos pegados y pintados por fuera: «12 caras» (son 10; 8 si están sobre la mesa y no se pintan las bases). | Caras pintadas, inducción con sólidos, cubos que cubren un sólido |
+| RME2 | **Contar dos veces el cubito donde se cruzan dos túneles.** | Cubo de 3 × 3 × 3 con dos túneles que se cruzan en el centro: «se quitan 6» (son 5). | Cubo agujereado (3 preguntas) |
+| RME3 | **Contar solo los cubitos que se ven** y olvidar los ocultos detrás o debajo. | Escalera de tres peldaños vista de frente: «6 cubitos» cuando hay más detrás. | Completar un cubo o una caja |
+| RME4 | **Equivocar cuántas caras pintadas tiene cada posición**: esquina 3, arista 2, centro de cara 1, interior 0. | En un cubo de 4 × 4 × 4 pintado, contar las esquinas entre los de dos caras: «32» (son 24). | Cubos pintados |
+| RME5 | **Leer una sola vista o confundir la superior con la frontal**, o tomar un sólido compatible que no es el de volumen máximo. | Con las tres vistas de un sólido, contar los cubitos de la vista frontal como si fueran todos. | Proyecciones (9 preguntas) |
+| RME6 | **Contar cubos atravesados en vez de caras atravesadas** (o al revés). | Una barra cruza 3 cubitos en fila: «3 caras» (atraviesa 6). | Cubos atravesados por barras |
+
+## Dados y dominó
+
+| Código | Error | Ejemplo propio | Frecuencia |
+| --- | --- | --- | --- |
+| RME10 | **Olvidar que en el dado las caras opuestas suman 7.** | Si arriba hay 2, «abajo puede haber cualquiera». | Casi todas las de dados (trampa 8 de rm-a) |
+| RME11 | **Contar como visibles la cara de abajo o las caras en contacto** entre dados. | Torre de 3 dados: sumar las 6 caras de cada uno menos solo la de abajo del primero. | Dados apilados, caras no visibles |
+| RME12 | **Repetir fichas del dominó** (que son únicas) o contar (a, b) y (b, a) como fichas distintas. | «Hay 49 fichas en el dominó del 0 al 6» (son 28). | Dominó (3) |
+| RME13 | **En el dado que rueda, subir la cara equivocada**: la que queda arriba al volcar hacia adelante es la que estaba atrás, no la de adelante. | Dado con 1 arriba y 2 adelante que rueda hacia adelante: «arriba queda 2» (queda la de atrás, 5). | Dado que rueda (4) |
+
+## Rodamientos, giros y poleas
+
+| Código | Error | Ejemplo propio | Frecuencia |
+| --- | --- | --- | --- |
+| RME20 | **Tomar la longitud de la pista como recorrido del centro**: olvidar los arcos en las esquinas que salen y el atajo en las que entran. | Rueda por fuera de un rectángulo: «el centro recorre el perímetro» (falta una vuelta de arcos). | Recorrido del centro (6) |
+| RME21 | **Usar el radio equivocado**: el lado en vez de la diagonal en un vuelco, o el radio de la pista en vez del del centro. | Cuadrado que vuelca: todos los arcos con radio igual al lado. | Vuelcos, regiones barridas (6) |
+| RME22 | **Usar el mismo ángulo en cada vuelco** cuando la figura o el piso no es regular. | Trapecio que vuelca: los cuatro giros de 90°. | Vuelcos de polígonos |
+| RME23 | **No reducir el giro a menos de una vuelta, o girar en el sentido contrario.** | Girar 810° horario: «2 vueltas y 90° antihorario». | Giro y superposición, rotación en el plano |
+| RME24 | **Tomar la simetría respecto de un punto como reflexión en un eje.** La simetría central es un giro de 180°. | Reflejar una letra respecto de un vértice y dibujarla como en un espejo. | Simetrías (trampa 4 de rm-a) |
+| RME25 | **En una región barrida, sumar el perímetro de la figura sin los arcos** (o los arcos sin los tramos rectos). | Rectángulo que gira media vuelta: perímetro = la suma de los lados. | Región generada por rotación (3) |
+| RME26 | **Olvidar que la faja cruzada y el contacto invierten el sentido** (la faja abierta y el eje no). | Cinco poleas en cadena: «todas giran igual». | Sentido de giro de poleas |
+| RME27 | **Tomar iguales los desplazamientos en poleas solidarias**: en un mismo eje se comparte el ángulo, no el arco. | Poleas de 10 y 30 cm en un eje: si una cuerda baja 6 cm, «la otra sube 6» (sube 18). | Poleas y bloques (2) |
+| RME28 | **Igualar vueltas en vez de longitudes de arco** cuando dos puntos marcados deben volver a tocarse. | Ruedas de 6 y 9 cm: «la chica da 9 vueltas hasta que vuelven a coincidir» (da 3: hace falta el mismo arco, 36π cm). | Coincidencias (3) |
+
+RM5 (más dientes, más vueltas) sigue siendo el error de proporción en engranajes.
+
+## Rutas y caminos
+
+| Código | Error | Ejemplo propio | Frecuencia |
+| --- | --- | --- | --- |
+| RME30 | **Sumar las rutas de dos tramos en vez de multiplicarlas.** Cara de AR18 (enumeración sin sistema). | 3 caminos de A a B y 4 de B a C: «7 de A a C» (son 12). | Rutas por tramos (4) |
+| RME31 | **No desarrollar la superficie y medir por el borde**, o desarrollar una sola vuelta cuando la hormiga da varias. | Hormiga que sube por fuera de un tarro dando 2 vueltas: «2 × la altura + 2 × la circunferencia». | Camino mínimo sobre superficie (4) |
+| RME32 | **Repetir vértices o dejar fuera la condición de dirección** al contar rutas en un sólido de alambre. | Contar caminos que retroceden en un cubo de alambre cuando solo se permite avanzar. | Rutas en 3D (5) |
+
+AR18 (enumeración sin sistema) tiene dato y se usa con `parcial` donde la opción es «olvidar rutas al listarlas».
+
+## Papel, particiones y conteo de figuras
+
+| Código | Error | Ejemplo propio | Frecuencia |
+| --- | --- | --- | --- |
+| RME40 | **No multiplicar el corte por las capas del doblez.** | Hoja doblada en cuatro y un agujero: «1 agujero al abrir» (4). | Papel doblado y cortado (4) |
+| RME41 | **No ver las piezas que quedan unidas por el doblez** (o las que se separan). | Hoja doblada en dos y cortada por el medio: «4 piezas» (3: la del doblez queda entera). | Papel cortado: piezas |
+| RME42 | **Cortar en línea recta sin buscar el borde más quebrado** cuando se pide el mayor perímetro. | Tablero de 4 × 4 en dos piezas congruentes: el corte recto da el menor perímetro, no el mayor. | Particiones congruentes (3) |
+| RME43 | **Olvidar los tramos rectos o un arco compartido** en un perímetro con semicircunferencias. | Dos zonas con un arco común: contar ese arco una sola vez al sumar. | Perímetros con arcos |
+| RME44 | **Contar dos veces las casillas de las esquinas**, que son comunes a dos lados (o al revés). | Marco de 5 × 5: «20 casillas en el borde» (16). | Casillas en bordes (trampa 7 de rm-a) |
+| RME45 | **Olvidar las ubicaciones giradas o reflejadas** de una pieza al contar cuántas caben. | La L de 3 casillas en un tablero de 3 × 3: contar solo las que van como en el dibujo. | Conteo de piezas |
