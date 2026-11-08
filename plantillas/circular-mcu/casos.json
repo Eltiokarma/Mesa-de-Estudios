@@ -1,0 +1,170 @@
+{
+  "plantilla": "circular-mcu",
+  "tolerancia": 0.000001,
+  "nota": "Rapideces en rpm, en vueltas por un tiempo, en periodo o en rad/s; las ω y las v del borde con π indicado. La latitud usa cos 37° = 0,8, cos 53° = 0,6 y cos 60° = 0,5.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió las 12 semillas con fracciones exactas y π como coeficiente, y la latitud con la distancia al eje R·cos λ. Coinciden las 12 (la de 5π cm/s, con 0,05π m/s). Revisó a mano las semillas 200 a 229: correctas bien y ningún distractor defendible; los ids que no calzaban con su explicación se corrigieron.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "vueltas",
+        "modo": "pi-min",
+        "k": 4,
+        "minutos": 3
+      },
+      "esperado": {
+        "respuesta": 360,
+        "exacta": "360 vueltas"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "rigido",
+        "sub": "diferencia",
+        "d": 40,
+        "vA": 0.4,
+        "vB": 1.2
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2 rad/s"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "omega",
+        "modo": "rpm",
+        "rpm": 600
+      },
+      "esperado": {
+        "respuesta": 62.83185307179586,
+        "exacta": "20π rad/s"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "latitud",
+        "tierra": false,
+        "R": 25,
+        "T": 5,
+        "lambda": 60
+      },
+      "esperado": {
+        "respuesta": 15.707963267948966,
+        "exacta": "5π cm/s"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "acp",
+        "sub": "omega",
+        "omega": 10,
+        "rcm": 50
+      },
+      "esperado": {
+        "respuesta": 50,
+        "exacta": "50 m/s²"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "v",
+        "modo": "periodo",
+        "dato": 0.1,
+        "r": 10,
+        "diametro": true
+      },
+      "esperado": {
+        "respuesta": 6.283185307179586,
+        "exacta": "2π m/s"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "rigido",
+        "sub": "razon",
+        "R": 30,
+        "dB": 20
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "rigido",
+        "sub": "rapidez",
+        "rA": 20,
+        "rB": 5,
+        "vA": 1.2
+      },
+      "esperado": {
+        "respuesta": 0.3,
+        "exacta": "0,3 m/s"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "acp",
+        "sub": "v",
+        "v": 3,
+        "r": 1.2,
+        "diametro": false
+      },
+      "esperado": {
+        "respuesta": 7.5,
+        "exacta": "7,5 m/s²"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "omega",
+        "modo": "vueltas",
+        "n": 5,
+        "t": 8,
+        "minutos": false
+      },
+      "esperado": {
+        "respuesta": 3.9269908169872414,
+        "exacta": "5π/4 rad/s"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "vueltas",
+        "modo": "rpm-s",
+        "rpm": 90,
+        "t": 12
+      },
+      "esperado": {
+        "respuesta": 18,
+        "exacta": "18 vueltas"
+      }
+    },
+    {
+      "semilla": 43,
+      "entrada": {
+        "tipo": "v",
+        "modo": "rpm",
+        "dato": 240,
+        "r": 50,
+        "diametro": true
+      },
+      "esperado": {
+        "respuesta": 12.56637061435917,
+        "exacta": "4π m/s"
+      }
+    }
+  ]
+}

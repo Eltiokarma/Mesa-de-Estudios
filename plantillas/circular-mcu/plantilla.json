@@ -1,0 +1,14 @@
+{
+  "id": "circular-mcu",
+  "titulo": "Rpm, radianes y puntos que giran juntos",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": null
+}

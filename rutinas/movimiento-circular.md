@@ -84,3 +84,29 @@ Variables de el disco y sus flechas (`plantillas/movimiento-circular/`):
   - la ω que cambia de sentido en el paso 10, que va solo en texto.
 - El arrastre del cursor se probó con ratón, no con un dedo real.
 - Generadores que faltan: G1, G5, G6, G7 y G9. El motor de la escena ya tiene las funciones que piden.
+
+## 8 nov 2026 · Segunda tanda: G1, G5, G6, G7 y G9, la bobina, la escalera y el enlace
+
+- **Generadores** (uno por commit, todos en `fisica.movimiento-parabolico-y-circular`):
+  - `circular-mcu` (G1): ω, v, acp, vueltas, cuerpo rígido y latitud.
+  - `circular-aceleracion-total` (G5): radio y componentes con notables, acp/aT = 2θ desde el reposo, y acp después de girar.
+  - `circular-horaria` (G6): θ(t) y S(t), con signo.
+  - `circular-grafica` (G7): ω-t de tramos rectos, recorrido, neto y vueltas.
+  - `circular-giro-combinado` (G9): discos con desfase, cascarón y plataforma con un tubo fijo.
+  - Cada uno con 600 semillas y un recálculo por otro camino.
+- **Verificación ciega.** Coinciden 55 de 55. En la revisión de las semillas 200 a 229 se corrigieron:
+  - «de el»;
+  - explicaciones sin el signo;
+  - ids que no calzaban con su explicación;
+  - autos con más de 6 m/s²;
+  - balas de menos de 100 m/s;
+  - el distractor «180π rad/s», que se quitó; en su lugar entró `CI-caida-sin-raiz`.
+
+  Las 10 semillas que cambiaron se volvieron a verificar a ciegas y coinciden. Una prueba exige que `CI-no-minima` salga solo si se pide «la menor» o «menos de una vuelta».
+- **Escena 0.2.0.** La bobina y la escalera que resbala son los pasos 4 y 5 de «Ruedas y poleas», con `barraResbala` en el motor. Los casos nuevos se recalcularon a mano. El problema de papel de la polea móvil pasó a ser de la escalera.
+- **Enlace.** La pestaña «Ruedas» de `tiro-parabolico` enlaza a la escena y conserva `?desde=app`.
+- `npm test`: 4708 en verde. No se subió `VERSION`.
+- **Pendiente.**
+  - `alfaMediaVectorial` y la variante «ω cambia de sentido» del paso 10.
+  - Probar el arrastre con un dedo real.
+  - TR5 no entra en los generadores con π: «1 vuelta = 1 rad» da un número sin π y rompe la homogeneidad de las alternativas.
