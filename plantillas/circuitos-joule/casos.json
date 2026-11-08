@@ -1,0 +1,240 @@
+{
+  "plantilla": "circuitos-joule",
+  "tolerancia": 1e-06,
+  "nota": "Tolerancia relativa. Unidades de _datos: ImA en mA, tmin en min, t en la unidad ut, E en J o kJ (kilo), P en W, hd en h por día, R en Ω, rho en Ω·m, L en m, Amm en mm², d y r en mm (π = 3), Q en C, eta en %, m en kg, temperaturas en °C, Q0 en kJ. Respuestas: energia en J o kJ (unidad), corriente en A, escala en kJ, kwh en kW·h, calorias en cal, agua en min, resistividad en Ω (rho en Ω·m), cables en W, carga en C, tiempo en min, duracion en h.",
+  "verificacion": "PENDIENTE",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "carga",
+        "sub": "tiempo",
+        "ImA": 400,
+        "Q": 1440
+      },
+      "esperado": {
+        "respuesta": 60.0,
+        "exacta": "60 min"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "carga",
+        "sub": "carga",
+        "ImA": 150,
+        "tmin": 2
+      },
+      "esperado": {
+        "respuesta": 18.0,
+        "exacta": "18 C"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "cables",
+        "sub": "calentador",
+        "L": 100,
+        "Amm": 1,
+        "rho": 2.5e-08,
+        "Rc": 50,
+        "V": 220
+      },
+      "esperado": {
+        "respuesta": 800.0,
+        "exacta": "800 W"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "agua",
+        "sub": "agua",
+        "R": 48.4,
+        "V": 220,
+        "eta": 75,
+        "m": 3,
+        "T1": 15,
+        "T2": 70
+      },
+      "esperado": {
+        "respuesta": 15.4,
+        "exacta": "15,4 min"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "joule",
+        "sub": "calorias",
+        "I": 5,
+        "R": 50,
+        "t": 20,
+        "ut": "s"
+      },
+      "esperado": {
+        "respuesta": 6000.0,
+        "exacta": "6 000 cal"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "joule",
+        "sub": "kwh",
+        "P": 1200,
+        "hd": 0.5,
+        "dias": 10
+      },
+      "esperado": {
+        "respuesta": 6.0,
+        "exacta": "6 kW·h"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "resistividad",
+        "sub": "rho",
+        "R": 3.0000000000000004,
+        "L": 300,
+        "r": 1
+      },
+      "esperado": {
+        "respuesta": 3.0000000000000004e-08,
+        "exacta": "3 × 10⁻⁸ Ω·m"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "joule",
+        "sub": "energia",
+        "ImA": 200,
+        "R": 20,
+        "tmin": 3,
+        "unidad": "J"
+      },
+      "esperado": {
+        "respuesta": 144.0,
+        "exacta": "144 J"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "carga",
+        "sub": "duracion",
+        "n": 2,
+        "E": 3,
+        "R": 15,
+        "Q": 10800
+      },
+      "esperado": {
+        "respuesta": 7.5,
+        "exacta": "7,5 h"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "cables",
+        "sub": "perdida",
+        "L": 25,
+        "Amm": 1,
+        "rho": 3.0000000000000004e-08,
+        "Rc": 11,
+        "V": 220
+      },
+      "esperado": {
+        "respuesta": 464.64000000000004,
+        "exacta": "464,64 W"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "joule",
+        "sub": "escala",
+        "Q0": 4,
+        "a": 3,
+        "b": 4
+      },
+      "esperado": {
+        "respuesta": 48.0,
+        "exacta": "48 kJ"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "resistividad",
+        "sub": "diametro",
+        "rho": 4.5e-08,
+        "L": 100,
+        "d": 2
+      },
+      "esperado": {
+        "respuesta": 1.5,
+        "exacta": "1,5 Ω"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "joule",
+        "sub": "corriente",
+        "E": 7.5,
+        "kilo": true,
+        "R": 50,
+        "t": 10,
+        "ut": "min"
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "exacta": "0,5 A"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "resistividad",
+        "sub": "doblado",
+        "R0": 20,
+        "n": 2
+      },
+      "esperado": {
+        "respuesta": 5.0,
+        "exacta": "5 Ω"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "resistividad",
+        "sub": "estirado",
+        "R0": 9,
+        "n": 2
+      },
+      "esperado": {
+        "respuesta": 36.0,
+        "exacta": "36 Ω"
+      }
+    },
+    {
+      "semilla": 48,
+      "entrada": {
+        "tipo": "resistividad",
+        "sub": "mm2",
+        "rho": 1.8000000000000002e-08,
+        "L": 150,
+        "Amm": 6
+      },
+      "esperado": {
+        "respuesta": 0.45000000000000007,
+        "exacta": "0,45 Ω"
+      }
+    }
+  ]
+}

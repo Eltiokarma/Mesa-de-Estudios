@@ -1,0 +1,102 @@
+{
+  "titulo": "El foco que calienta: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema. Antes de usar una fórmula, pasa todo al SI: mA a A, minutos a segundos, kJ a J, mm a m y mm² a m² (un mm² es 10⁻⁶ m²). Fórmulas: E = I²·R·t = V·I·t, P = V²/R, R = ρL/A, Q = I·t. 1 cal = 4,2 J. Usa π = 3.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Por una resistencia de 30 Ω pasa una corriente de 500 mA durante 4 minutos. ¿Cuánta energía disipa como calor?",
+      "respuesta": "1800 J, es decir, 1,8 kJ.",
+      "pasos": ["Al SI: 500 mA = 0,5 A y 4 min = 240 s.", "E = I²·R·t = 0,5² · 30 · 240 = 0,25 · 7200 = 1800 J.", "Si no elevas la corriente al cuadrado, te sale 3600 J; si dejas los minutos, 7,5 J."],
+      "verificar": [
+        { "tipo": "joule", "args": { "I": 0.5, "R": 30, "t": 240 }, "espera": 1800 }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un celular se carga con una corriente de 250 mA durante 8 minutos. ¿Cuánta carga pasa por el cable?",
+      "respuesta": "120 C.",
+      "pasos": ["Al SI: 250 mA = 0,25 A y 8 min = 480 s.", "Q = I·t = 0,25 · 480 = 120 C."],
+      "verificar": [
+        { "tipo": "producto", "args": { "a": 0.25, "b": 480 }, "espera": 120 }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un foco de 100 W está encendido 5 horas cada día durante 30 días. ¿Cuántos kW·h consume? Si el kW·h cuesta S/ 0,70, ¿cuánto se paga por ese foco?",
+      "respuesta": "15 kW·h y S/ 10,50.",
+      "pasos": ["Potencia en kW: 100 W = 0,1 kW. Tiempo total: 5 · 30 = 150 h.", "E = 0,1 · 150 = 15 kW·h. El kW·h ya trae la hora: no se pasa a segundos.", "Costo: 15 · 0,70 = S/ 10,50."],
+      "verificar": [
+        { "tipo": "producto", "args": { "a": 0.1, "b": 150 }, "espera": 15 },
+        { "tipo": "producto", "args": { "a": 15, "b": 0.7 }, "espera": 10.5 }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un calentador de 20 Ω disipa 9,6 kJ de calor en 2 minutos. ¿Qué corriente pasa por él?",
+      "respuesta": "2 A.",
+      "pasos": ["Al SI: 9,6 kJ = 9600 J y 2 min = 120 s.", "I² = E/(R·t) = 9600/(20 · 120) = 4.", "I = √4 = 2 A. Si te olvidas de la raíz, te queda 4, que no son amperios sino A²."],
+      "verificar": [
+        { "tipo": "corriente", "args": { "E": 9600, "R": 20, "t": 120 }, "espera": 2 }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un alambre de 50 m de largo y 1 mm de diámetro es de un metal de resistividad 1,8 × 10⁻⁸ Ω·m. ¿Cuál es su resistencia? Usa π = 3.",
+      "respuesta": "1,2 Ω.",
+      "pasos": ["El radio es la mitad del diámetro: 0,5 mm = 5 × 10⁻⁴ m.", "A = π·r² = 3 · (5 × 10⁻⁴)² = 7,5 × 10⁻⁷ m².", "R = ρL/A = 1,8 × 10⁻⁸ · 50/(7,5 × 10⁻⁷) = 1,2 Ω. Con el diámetro como radio te saldría 0,3 Ω, cuatro veces menos."],
+      "verificar": [
+        { "tipo": "circulo", "args": { "radio": 0.0005 }, "espera": 7.5e-7 },
+        { "tipo": "resistencia", "args": { "rho": 1.8e-8, "L": 50, "A": 7.5e-7 }, "espera": 1.2 }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una terma de 2000 W aprovecha el 80 % de su energía. ¿Cuántos minutos tarda en calentar 40 L de agua de 15 °C a 45 °C? (1 L de agua tiene 1 kg; c = 1 cal/(g·°C); 1 cal = 4,2 J.)",
+      "respuesta": "52,5 minutos.",
+      "pasos": ["Calor: 40 000 g · 1 · 30 °C = 1 200 000 cal = 5 040 000 J.", "Potencia útil: 80 % de 2000 W = 1600 W.", "t = 5 040 000/1600 = 3150 s = 52,5 min. Si no pasas las calorías a joules, te sale 12,5 min."],
+      "verificar": [
+        { "tipo": "tiempoAgua", "args": { "m": 40, "dT": 30, "Pu": 1600 }, "espera": 3150 },
+        { "tipo": "cociente", "args": { "a": 3150, "b": 60 }, "espera": 52.5 }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un alambre de 5 Ω se estira hasta que su longitud es el triple; su volumen no cambia. ¿Cuál es su nueva resistencia?",
+      "respuesta": "45 Ω.",
+      "pasos": ["Si el largo se triplica y el volumen no cambia, la sección queda dividida entre 3.", "R = ρL/A: el largo la multiplica por 3 y la sección menor por otros 3.", "R = 5 · 9 = 45 Ω (no 15 Ω)."],
+      "verificar": [
+        { "tipo": "resistencia", "args": { "rho": 5, "L": 3, "A": 0.3333333333333333 }, "espera": 45 }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un hervidor de 20 Ω se conecta a 220 V con una extensión de 50 m. La extensión tiene dos hilos (ida y vuelta) de 1 mm² de sección y resistividad 2 × 10⁻⁸ Ω·m. ¿Qué potencia le llega al hervidor y cuánta se pierde en la extensión?",
+      "respuesta": "2000 W al hervidor y 200 W en la extensión (sin la extensión serían 2420 W).",
+      "pasos": ["Cada hilo: R = 2 × 10⁻⁸ · 50/10⁻⁶ = 1 Ω. Son dos: 2 Ω en total.", "Todo en serie: I = 220/(20 + 2) = 10 A.", "Hervidor: 10² · 20 = 2000 W. Extensión: 10² · 2 = 200 W."],
+      "verificar": [
+        { "tipo": "resistencia", "args": { "rho": 2e-8, "L": 50, "A": 1e-6 }, "espera": 1 },
+        { "tipo": "cables", "args": { "V": 220, "Rc": 20, "Rhilo": 1, "pide": "aparato" }, "espera": 2000 },
+        { "tipo": "cables", "args": { "V": 220, "Rc": 20, "Rhilo": 1, "pide": "perdida" }, "espera": 200 }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Cuatro pilas ideales de 1,5 V en serie alimentan un juguete de 20 Ω. Las pilas pueden hacer circular en total 5400 C. ¿Cuántas horas funciona el juguete?",
+      "respuesta": "5 horas.",
+      "pasos": ["En serie las fem se suman: 4 · 1,5 = 6 V.", "I = 6/20 = 0,3 A.", "t = Q/I = 5400/0,3 = 18 000 s = 5 h. Con una sola pila (1,5 V) te saldrían 20 h."],
+      "verificar": [
+        { "tipo": "cociente", "args": { "a": 6, "b": 20 }, "espera": 0.3 },
+        { "tipo": "cociente", "args": { "a": 5400, "b": 0.3 }, "espera": 18000 }
+      ]
+    }
+  ]
+}

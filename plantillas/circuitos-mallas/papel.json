@@ -1,0 +1,83 @@
+{
+  "titulo": "Dos pilas y una malla: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 3 minutos por problema. Antes de calcular, dibuja el circuito con los nodos que dice el enunciado y marca hacia dónde mira el borne positivo de cada pila. Pilas ideales salvo que se diga su resistencia interna. Amperímetro ideal: es un cable que mide. Voltímetro ideal: no deja pasar corriente. Con dos nodos A y B, toma B como 0 V: la corriente que sube por una rama hacia A es (fem con signo − V)/R, y lo que llega a A suma cero.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Tres pilas iguales de 1,5 V y 0,5 Ω de resistencia interna cada una se conectan en serie y alimentan un foco de 3 Ω. ¿Qué marca un amperímetro ideal en serie con el foco? ¿Y un voltímetro ideal entre los bornes del arreglo?",
+      "respuesta": "El amperímetro marca 1 A y el voltímetro 3 V (no 4,5 V).",
+      "pasos": ["En serie se suman las fem: 3 · 1,5 = 4,5 V. También se suman las resistencias internas: 3 · 0,5 = 1,5 Ω.", "I = 4,5/(3 + 1,5) = 1 A.", "El voltímetro marca la fem menos lo que se pierde adentro: 4,5 − 1 · 1,5 = 3 V, que es lo mismo que I·R en el foco."],
+      "verificar": [
+        { "tipo": "pilasSerie", "args": { "n": 3, "E": 1.5, "r": 0.5, "R": 3 }, "espera": 1 },
+        { "tipo": "producto", "args": { "a": 1, "b": 3 }, "espera": 3 }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Dos baterías iguales de 6 V y 1 Ω de resistencia interna se conectan en paralelo (bornes positivos juntos y negativos juntos) a una resistencia de 5,5 Ω. ¿Qué corriente pasa por la resistencia y qué voltaje tiene?",
+      "respuesta": "1 A y 5,5 V. En paralelo la fem sigue siendo 6 V, no 12 V.",
+      "pasos": ["En paralelo la fem del arreglo es la de una batería: 6 V.", "Las resistencias internas quedan en paralelo: 1/2 = 0,5 Ω.", "I = 6/(5,5 + 0,5) = 1 A y V = 1 · 5,5 = 5,5 V."],
+      "verificar": [
+        { "tipo": "pilasParalelo", "args": { "n": 2, "E": 6, "r": 1, "R": 5.5 }, "espera": 1 }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Entre A y B hay dos caminos: R1 = 2 Ω de A a C y R2 = 4 Ω de C a B; R3 = 3 Ω de A a D y R4 = 6 Ω de D a B. Entre C y D hay una resistencia de 10 Ω. ¿Cuál es la resistencia equivalente entre A y B? ¿Cambia si la resistencia de 10 Ω se cambia por un cable?",
+      "respuesta": "3,6 Ω, y no cambia con el cable: el puente está equilibrado.",
+      "pasos": ["R1/R2 = 2/4 y R3/R4 = 3/6: son iguales. C y D quedan al mismo potencial y por el tramo central no pasa corriente.", "Sin el tramo central: (2 + 4) en paralelo con (3 + 6): 6 · 9/15 = 3,6 Ω.", "Con un cable entre C y D: (2 ∥ 3) + (4 ∥ 6) = 1,2 + 2,4 = 3,6 Ω. Da lo mismo, como debía."],
+      "verificar": [
+        { "tipo": "puenteReq", "args": { "R": [2, 4, 3, 6], "R5": 10 }, "espera": 3.6 },
+        { "tipo": "puenteReq", "args": { "R": [2, 4, 3, 6], "R5": 0 }, "espera": 3.6 }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Entre A y B: R1 = 3 Ω de A a C, R2 = 6 Ω de C a B, R3 = 6 Ω de A a D y R4 = 3 Ω de D a B. Entre C y D hay un amperímetro ideal, y una pila ideal de 18 V se conecta entre A y B. ¿Cuánto marca el amperímetro?",
+      "respuesta": "1,5 A, de C hacia D.",
+      "pasos": ["El amperímetro ideal une C con D. R1 y R3 quedan en paralelo (2 Ω), y R2 y R4 también (2 Ω).", "La pila da 18/(2 + 2) = 4,5 A. Entre A y C hay 4,5 · 2 = 9 V.", "Por R1 pasan 9/3 = 3 A y por R2, 9/6 = 1,5 A. Lo que no sigue por R2 cruza el amperímetro: 3 − 1,5 = 1,5 A."],
+      "verificar": [
+        { "tipo": "puenteAmperimetro", "args": { "R": [3, 6, 6, 3], "E": 18 }, "espera": 1.5 }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Dos nodos, A y B, están unidos por tres ramas. Rama 1: una pila ideal de 12 V con su borne positivo hacia A, en serie con 2 Ω. Rama 2: solo una resistencia de 3 Ω. Rama 3: una pila ideal de 4 V con su borne positivo hacia A, en serie con 2 Ω. ¿Qué corriente pasa por la resistencia de 3 Ω? ¿La pila de 4 V entrega energía o se carga?",
+      "respuesta": "2 A por la resistencia de 3 Ω (de A hacia B). Por la pila de 4 V pasa 1 A que entra por su borne positivo: se está cargando.",
+      "pasos": ["Toma B como 0 V y V en A: (12 − V)/2 + (0 − V)/3 + (4 − V)/2 = 0.", "Multiplica por 6: 36 − 3V − 2V + 12 − 3V = 0, así que V = 6 V.", "Rama 2: 6/3 = 2 A, de A hacia B. Rama 1: (12 − 6)/2 = 3 A hacia A. Rama 3: (4 − 6)/2 = −1 A: baja 1 A hacia B y entra por el borne positivo de la pila de 4 V."],
+      "verificar": [
+        { "tipo": "kirchhoff", "args": { "ramas": [[12, 2], [0, 3], [4, 2]], "pide": "sube1" }, "espera": -2 },
+        { "tipo": "kirchhoff", "args": { "ramas": [[12, 2], [0, 3], [4, 2]], "pide": "sube2" }, "espera": -1 },
+        { "tipo": "kirchhoff", "args": { "ramas": [[12, 2], [0, 3], [4, 2]], "pide": "VA" }, "espera": 6 }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Dos nodos, A y B, están unidos por tres ramas. Rama 1: una pila ideal de 12 V con su borne positivo hacia A, en serie con 4 Ω. Rama 2: solo 4 Ω. Rama 3: una pila ideal de 6 V con su borne positivo hacia B, en serie con 10 Ω. ¿Qué potencia entrega la pila de 12 V y qué marca un voltímetro ideal entre A y B?",
+      "respuesta": "24 W y 4 V.",
+      "pasos": ["La pila de 6 V mira hacia B: en la ecuación entra con signo −. (12 − V)/4 + (0 − V)/4 + (−6 − V)/10 = 0.", "Multiplica por 20: 60 − 5V − 5V − 12 − 2V = 0, así que V = 4 V.", "Por la pila de 12 V: (12 − 4)/4 = 2 A, que sale por su borne positivo. Entrega P = 12 · 2 = 24 W.", "Comprueba: por la rama 2 bajan 4/4 = 1 A y por la rama 3 bajan (4 + 6)/10 = 1 A. 2 = 1 + 1."],
+      "verificar": [
+        { "tipo": "kirchhoff", "args": { "ramas": [[12, 4], [0, 4], [-6, 10]], "pide": "sube0" }, "espera": 2 },
+        { "tipo": "kirchhoff", "args": { "ramas": [[12, 4], [0, 4], [-6, 10]], "pide": "VA" }, "espera": 4 },
+        { "tipo": "producto", "args": { "a": 12, "b": 2 }, "espera": 24 }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Con una batería real y un reóstato se mide la corriente para dos valores de la resistencia externa: con 1 Ω pasan 3 A y con 4 Ω pasan 1,5 A. ¿Cuáles son la fem y la resistencia interna de la batería?",
+      "respuesta": "r = 2 Ω y ε = 9 V.",
+      "pasos": ["La fem es la misma en las dos medidas: ε = I·(R + r).", "3 · (1 + r) = 1,5 · (4 + r), así que 3 + 3r = 6 + 1,5r y r = 2 Ω.", "ε = 3 · (1 + 2) = 9 V. Comprueba: 1,5 · (4 + 2) = 9 V."],
+      "verificar": [
+        { "tipo": "graficaR", "args": { "puntos": [[1, 3], [4, 1.5]] }, "espera": 2 },
+        { "tipo": "producto", "args": { "a": 3, "b": 3 }, "espera": 9 }
+      ]
+    }
+  ]
+}
