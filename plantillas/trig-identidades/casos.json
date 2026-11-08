@@ -2,7 +2,7 @@
   "plantilla": "trig-identidades",
   "tolerancia": 0.000001,
   "nota": "Ángulos con la convención de academia (37°/53° del triángulo 3-4-5). Fracciones de _datos como [n, d] = n/d; los campos de cada tipo están en la cabecera de generador.js.",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas por un subagente verificador el 8 nov 2026 (segunda vuelta tras la revisión): los 24 casos se resolvieron desde el enunciado con identidades exactas y se comprobaron por otro método (barridos numéricos de x, bisección del triángulo con C = 2B y búsqueda de raíces por cuadrante y con ángulos agudos). Coinciden los 24 en respuesta y forma exacta; el terreno da 16° con la convención 7-24-25 (exacto 16,26°).",
   "casos": [
     {
       "semilla": "entrada-1",
