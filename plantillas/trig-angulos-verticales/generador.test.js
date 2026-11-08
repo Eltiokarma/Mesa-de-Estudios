@@ -68,7 +68,7 @@ function recalcular(p) {
     const D = d.H / S(b) * C(b), s = D / C(a);              // visual hasta la vertical del otro edificio
     return d.H - s * S(a);
   }
-  if (d.tipo === 'mitad-cima') return Math.tan(visto(d.h1, d.h2, d.D));
+  if (d.tipo === 'mitad-cima') { const t = Math.tan(visto(d.h1, d.h2, d.D)); return d.pide === 'cot' ? 1 / t : t; }
   if (d.tipo === 'objeto-elevado') {
     if (d.sub === 'tan') return Math.tan(visto(d.b, d.b + d.a, d.D));
     if (d.sub === 'altura' || d.sub === 'pura') return biseccion(a => Math.tan(visto(d.b, d.b + a, d.D)) - d.t, 1e-6, 5000);

@@ -10,7 +10,7 @@
  *   a-cartesiana  se da la ecuación polar y se pide la cartesiana. Campos: curva, polar.
  *   punto-a-cart  se da (r; θ) y se pide (x; y). Campos: r, theta (grados), modo ('grados' o 'radianes').
  *   punto-a-polar se da (x; y) y se pide (r; θ) con r > 0 y 0 ≤ θ < 360° (o 2π). Campos: x, y, modo.
- * curva: 'recta-x' (x = a), 'recta-y' (y = b), 'recta' (ax + by = c), 'circ-polo' (x² + y² = a²),
+ * curva: 'recta-x' (x = a), 'recta-y' (y = b), 'recta' (ax + by = c), 'circ-polo' (x² + y² = R²),
  *   'circ-cos' (x² + y² = 2ax), 'circ-sen' (x² + y² = 2by), 'parabola' (y² = ±4p·x + 4p² o
  *   x² = ±4p·y + 4p², foco en el polo) y 'trayectoria' (y = k − (x − m)²/(4p): el polo se pone en el
  *   foco F = (m; k − p) y el eje polar, paralelo al eje X).
@@ -18,13 +18,17 @@
  *   medidas desde el foco).
  * polar: { forma: 'frac', N, D0, Dc, Ds } es r = N/(D0 + Dc·cos θ + Ds·sen θ);
  *        { forma: 'lin', K0, Kc, Ks, pot } es r^pot = K0 + Kc·cos θ + Ks·sen θ.
- * Respuestas (armarTexto): ecuación polar con clave 'pf:…' o 'pl:…'; cartesiana con clave
- * 'cart:A|B|C|D|E' normalizada (primer coeficiente no nulo = 1); punto (x; y) con clave 'pt:x|y' y punto
- * polar con clave 'pp:r|θ', redondeados a 6 decimales.
+ * Claves de las respuestas (armarTexto), con números a 9 decimales: polar 'pf:N|D0|Dc|Ds' (dividido entre
+ * el primer coeficiente no nulo del denominador) o 'pl:pot:K0|Kc|Ks'; cartesiana 'cart:A|B|C|D|E'
+ * (dividida entre el primer coeficiente no nulo); punto 'pt:x|y'; punto polar 'pp:r|θ'.
  *
- * Errores: CP3, CP2, CP9 a CP15, CP17 a CP19 de plantillas/coordenadas-polares/motor.js (CP3 parcial; el
- * resto, hipótesis; docs/investigacion/matematica-avanzada-ideas-erroneas.md), TR12 parcial
- * (docs/investigacion/trigonometria-ideas-erroneas.md). Los TP-* son hipótesis nuestras.
+ * Distractores: cada problema tiene varios rasgos (el factor, el signo, el eje, la forma de despejar; en
+ * los puntos, r, θ, el orden y los signos). Los distractores cruzan errores de varios rasgos, y se eligen
+ * de modo que la correcta no sea «la más parecida a las demás».
+ * Errores: CP2, CP3, CP9 a CP15, CP17 y CP19 de plantillas/coordenadas-polares/motor.js (CP3 parcial; el
+ * resto, hipótesis; docs/investigacion/matematica-avanzada-ideas-erroneas.md), TR12 (parcial, en CP2:
+ * docs/investigacion/trigonometria-ideas-erroneas.md). Los TP-* son hipótesis nuestras. Un error cruzado
+ * lleva los códigos unidos con «+» y es hipótesis.
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -38,158 +42,193 @@
   const MAV = 'docs/investigacion/matematica-avanzada-ideas-erroneas.md';
   const TRI = 'docs/investigacion/trigonometria-ideas-erroneas.md';
   const v = P.v, GR = Math.PI / 180;
-  const fracTxt = x => { for (let d = 1; d <= 64; d++) { const n = Math.round(x * d); if (Math.abs(x * d - n) < 1e-9) return P.textoFraccion(P.frac(n, d)); } return P.formatear(x, 4); };
-  const r6 = x => String(Math.round(x * 1e6) / 1e6 + 0);
-  const err = (id, eq, explicacion, respaldo = 'hipotesis', fuente = null) => (eq ? { id, ...eq, explicacion, respaldo, fuente } : null);
-  const cp = (id, eq, expl) => err(id, eq, expl, 'hipotesis', MAV);
+  // Número como fracción («3/2») o, si no, como raíz («2√3», «√2/2»).
+  const fraccion = x => { for (let d = 1; d <= 64; d++) { const n = Math.round(x * d); if (Math.abs(x * d - n) < 1e-9) return P.textoFraccion(P.frac(n, d)); } return null; };
+  const num = x => fraccion(x) ?? P.radical(x);
+  const r6 = x => String(Math.round(x * 1e9) / 1e9 + 0);
+  const mcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a; };
 
-  // ---------- ecuaciones polares ----------
-  function termTrig(terms) { // [[coef, 'cos θ'], …] con el primero sin signo
+  // Términos «2 cos θ − (3/2) sen θ + 4»; el primero sin signo.
+  function terminos(terms) {
     let t = '';
     for (const [c, s] of terms) {
       if (!c) continue;
-      const a = Math.abs(c), pega = /^[xy]/.test(s) ? '' : ' ', cuerpo = s ? (a === 1 ? s : `${fracTxt(a)}${pega}${s}`) : fracTxt(a);
+      const a = Math.abs(c), n = num(a), pega = /^[xy]/.test(s) ? '' : ' ';
+      const cuerpo = s ? (a === 1 ? s : `${n.includes('/') ? `(${n})` : n}${pega}${s}`) : n;
       t += t === '' ? (c < 0 ? '−' : '') + cuerpo : (c < 0 ? ' − ' : ' + ') + cuerpo;
     }
     return t || '0';
   }
+  // ---------- ecuaciones polares ----------
   function polar(q) {
+    if (!q) return null;
     if (q.forma === 'frac') {
-      const { N, D0, Dc, Ds } = q;
+      let { N, D0, Dc, Ds } = q;
       const lead = [D0, Dc, Ds].find(x => x);
-      const clave = 'pf:' + [N, D0, Dc, Ds].map(x => fracTxt(x / lead)).join('|');
+      const clave = 'pf:' + [N, D0, Dc, Ds].map(x => r6(x / lead)).join('|');
+      if (lead < 0) [N, D0, Dc, Ds] = [-N, -D0, -Dc, -Ds]; // primer coeficiente del denominador positivo
       let texto;
-      if (!D0 && !Ds) texto = `r = ${termTrig([[N / Dc, 'sec θ']])}`;
-      else if (!D0 && !Dc) texto = `r = ${termTrig([[N / Ds, 'csc θ']])}`;
-      else texto = `r = ${fracTxt(N)}/(${termTrig([[D0, ''], [Dc, 'cos θ'], [Ds, 'sen θ']])})`;
+      if (!D0 && !Ds) texto = `r = ${terminos([[N / Dc, 'sec θ']])}`;
+      else if (!D0 && !Dc) texto = `r = ${terminos([[N / Ds, 'csc θ']])}`;
+      else texto = `r = ${num(N)}/(${terminos([[D0, ''], [Dc, 'cos θ'], [Ds, 'sen θ']])})`;
       return { clave, texto };
     }
     const { K0, Kc, Ks, pot = 1 } = q;
-    return { clave: `pl:${pot}:` + [K0, Kc, Ks].map(fracTxt).join('|'), texto: `${pot === 2 ? 'r²' : 'r'} = ${termTrig([[K0, ''], [Kc, 'cos θ'], [Ks, 'sen θ']])}` };
+    return { clave: `pl:${pot}:` + [K0, Kc, Ks].map(r6).join('|'), texto: `${pot === 2 ? 'r²' : 'r'} = ${terminos([[K0, ''], [Kc, 'cos θ'], [Ks, 'sen θ']])}` };
   }
   // ---------- ecuaciones cartesianas ----------
   function cart(c) {
+    if (!c) return null;
     const lead = c.find(x => x);
-    const clave = 'cart:' + c.map(x => fracTxt(x / lead)).join('|');
+    const clave = 'cart:' + c.map(x => r6(x / lead)).join('|');
     let [A, B, C, D, E] = c;
+    if (c.every(Number.isInteger)) { const g = c.reduce((p, x) => mcd(p, x), 0) || 1; [A, B, C, D, E] = c.map(x => x / g); }
     let texto;
     if (A || B) {
       if ((A || B) < 0) [A, B, C, D, E] = [-A, -B, -C, -D, -E];
-      const izq = termTrig([[A, 'x²'], [B, 'y²']]), der = termTrig([[-C, 'x'], [-D, 'y'], [-E, '']]);
-      texto = `${izq} = ${der}`;
+      texto = `${terminos([[A, 'x²'], [B, 'y²']])} = ${terminos([[-C, 'x'], [-D, 'y'], [-E, '']])}`;
     } else {
       if ((C || D) < 0) [C, D, E] = [-C, -D, -E];
-      if (!D) texto = `x = ${fracTxt(-E / C)}`;
-      else if (!C) texto = `y = ${fracTxt(-E / D)}`;
-      else texto = `${termTrig([[C, 'x'], [D, 'y']])} = ${fracTxt(-E)}`;
+      if (!D) texto = `x = ${num(-E / C)}`;
+      else if (!C) texto = `y = ${num(-E / D)}`;
+      else texto = `${terminos([[C, 'x'], [D, 'y']])} = ${num(-E)}`;
     }
     return { clave, texto };
   }
 
-  // Curva: ecuación cartesiana, polar correcta y distractores en las dos direcciones.
+  // ---------- rasgos de cada curva ----------
+  // Cada rasgo: lista de valores (el primero es el correcto) con el código y la explicación del error.
+  // construir(valores) da { polar, cart } (cualquiera puede ser null si no se escribe así).
+  const R_ = (valor, id, expl, respaldo = 'hipotesis', fuente = null) => ({ valor, id, expl, respaldo, fuente });
+  const CP = (valor, id, expl) => R_(valor, id, expl, 'hipotesis', MAV);
   function curva(rng) {
     const nombre = rng.elegir(['recta-x', 'recta-y', 'recta', 'circ-polo', 'circ-cos', 'circ-sen', 'parabola', 'parabola', 'trayectoria']);
     const s = () => (rng.moneda() ? 1 : -1);
     if (nombre === 'recta-x' || nombre === 'recta-y') {
-      const a = s() * rng.entero(2, 6), enX = nombre === 'recta-x';
-      const c = enX ? [0, 0, 1, 0, -a] : [0, 0, 0, 1, -a];
-      const q = enX ? { forma: 'frac', N: a, D0: 0, Dc: 1, Ds: 0 } : { forma: 'frac', N: a, D0: 0, Dc: 0, Ds: 1 };
-      const tr = enX ? 'cos θ' : 'sen θ';
-      return { nombre, cart: c, polar: q,
-        aPolar: [
-          cp('CP17-eje-cruzado', polar(enX ? { ...q, Dc: 0, Ds: 1 } : { ...q, Dc: 1, Ds: 0 }), `Cambiaste ${enX ? 'cos θ por sen θ' : 'sen θ por cos θ'}: ${enX ? 'x = r cos θ' : 'y = r sen θ'}.`),
-          err('TP-multiplica-en-vez-de-dividir', polar({ forma: 'lin', K0: 0, Kc: enX ? a : 0, Ks: enX ? 0 : a }), `De r ${tr} = ${fracTxt(a)} se despeja r dividiendo entre ${tr}, no multiplicando.`),
-          err('TP-recta-como-circunferencia', polar({ forma: 'lin', K0: Math.abs(a), Kc: 0, Ks: 0 }), `r = ${fracTxt(Math.abs(a))} es una circunferencia de centro en el polo, no una recta: la distancia al polo no es constante en una recta.`),
-          err('TP-signo', polar({ ...q, N: -a }), 'Cambiaste el signo de la constante.'),
-        ],
-        aCart: [
-          cp('CP17-eje-cruzado', cart(enX ? [0, 0, 0, 1, -a] : [0, 0, 1, 0, -a]), `${enX ? 'sec θ = 1/cos θ: r cos θ es x, no y' : 'csc θ = 1/sen θ: r sen θ es y, no x'}.`),
-          err('TP-recta-como-circunferencia', cart([1, 1, 0, 0, -a * a]), `r ${tr} = ${fracTxt(a)} no es r = ${fracTxt(a)}: no es una circunferencia.`),
-          err('TP-signo', cart(enX ? [0, 0, 1, 0, a] : [0, 0, 0, 1, a]), 'Cambiaste el signo de la constante.'),
-        ] };
+      const a = s() * rng.entero(2, 9), enX = nombre === 'recta-x';
+      const rasgos = [
+        [R_(enX, ''), CP(!enX, 'CP17-eje-cruzado', `Cruzaste: ${enX ? 'x = r cos θ, así que va cos θ (sec θ), no sen θ' : 'y = r sen θ, así que va sen θ (csc θ), no cos θ'}.`)],
+        [R_(1, ''), R_(-1, 'TP-signo', 'Cambiaste el signo de la constante.')],
+        [R_('div', ''), R_('mult', 'TP-multiplica-en-vez-de-dividir', `De r ${enX ? 'cos' : 'sen'} θ = ${num(a)} se despeja r dividiendo: el ${enX ? 'cos' : 'sen'} θ pasa a dividir, no a multiplicar.`),
+          R_('const', 'TP-recta-como-circunferencia', 'Una distancia al polo constante da una circunferencia, no una recta.')],
+      ];
+      const construir = ([x, sg, forma]) => {
+        const A = sg * a;
+        if (forma === 'div') return { polar: { forma: 'frac', N: A, D0: 0, Dc: x ? 1 : 0, Ds: x ? 0 : 1 }, cart: x ? [0, 0, 1, 0, -A] : [0, 0, 0, 1, -A] };
+        if (forma === 'mult') return { polar: { forma: 'lin', K0: 0, Kc: x ? A : 0, Ks: x ? 0 : A }, cart: x ? [1, 1, -A, 0, 0] : [1, 1, 0, -A, 0] };
+        return x === enX ? { polar: { forma: 'lin', K0: A, Kc: 0, Ks: 0 }, cart: [1, 1, 0, 0, -A * A] } : null;
+      };
+      return { nombre, rasgos, construir };
     }
     if (nombre === 'recta') {
-      const a = s() * rng.entero(1, 4), b = s() * rng.entero(1, 4), c0 = s() * rng.entero(2, 12);
-      if (Math.abs(a) === Math.abs(b)) return null;
-      const q = { forma: 'frac', N: c0, D0: 0, Dc: a, Ds: b };
-      return { nombre, cart: [0, 0, a, b, -c0], polar: q,
-        aPolar: [
-          cp('CP17-eje-cruzado', polar({ ...q, Dc: b, Ds: a }), 'Cruzaste seno y coseno: x = r cos θ e y = r sen θ.'),
-          err('TP-signo-de-un-termino', polar({ ...q, Ds: -b }), 'Cambiaste el signo de uno de los términos al sacar r de factor común.'),
-          err('TP-multiplica-en-vez-de-dividir', polar({ forma: 'lin', K0: 0, Kc: c0 * a, Ks: c0 * b }), 'De r(a cos θ + b sen θ) = c se despeja r dividiendo, no multiplicando.'),
-          err('TP-solo-un-termino', polar({ ...q, Ds: 0 }), 'Olvidaste el término en y.'),
-        ],
-        aCart: [
-          cp('CP17-eje-cruzado', cart([0, 0, b, a, -c0]), 'Cruzaste seno y coseno: r cos θ = x y r sen θ = y.'),
-          err('TP-signo-de-un-termino', cart([0, 0, a, -b, -c0]), 'Cambiaste el signo de uno de los términos.'),
-          err('TP-multiplica-en-vez-de-dividir', cart([1, 1, -c0 * a, -c0 * b, 0]), 'Multiplicaste por r en vez de pasarlo a multiplicar al otro lado: r(a cos θ + b sen θ) = c da ax + by = c.'),
-        ] };
+      const a = s() * rng.entero(1, 6), b = s() * rng.entero(1, 6), c0 = s() * rng.entero(2, 12);
+      if (Math.abs(a) === Math.abs(b) || mcd(mcd(a, b), c0) !== 1) return null;
+      const rasgos = [
+        [R_(false, ''), CP(true, 'CP17-eje-cruzado', 'Cruzaste seno y coseno: x = r cos θ e y = r sen θ.')],
+        [R_(false, ''), R_(true, 'TP-signo-de-un-termino', 'Cambiaste el signo del término en y.')],
+        [R_('div', ''), R_('mult', 'TP-multiplica-en-vez-de-dividir', 'El denominador no multiplica al numerador: pasa (a cos θ + b sen θ) a multiplicar a r.')],
+      ];
+      const construir = ([cruz, sig, forma]) => {
+        let [p, q] = cruz ? [b, a] : [a, b]; if (sig) q = -q;
+        return forma === 'div' ? { polar: { forma: 'frac', N: c0, D0: 0, Dc: p, Ds: q }, cart: [0, 0, p, q, -c0] }
+          : { polar: { forma: 'lin', K0: 0, Kc: c0 * p, Ks: c0 * q }, cart: [1, 1, -c0 * p, -c0 * q, 0] };
+      };
+      return { nombre, rasgos, construir };
     }
     if (nombre === 'circ-polo') {
-      const a = rng.entero(2, 6);
-      const q = { forma: 'lin', K0: a, Kc: 0, Ks: 0 };
-      return { nombre, cart: [1, 1, 0, 0, -a * a], polar: q,
-        aPolar: [
-          cp('CP13-sin-raiz', polar({ ...q, K0: a * a }), `r² = x² + y² = ${a * a}: r es la raíz, ${a}.`),
-          err('TP-diametro', polar({ ...q, K0: 2 * a }), `Usaste el diámetro. El radio de x² + y² = ${a * a} es ${a}.`),
-          err('TP-agrega-coseno', polar({ ...q, K0: 0, Kc: a }), `r = ${a} cos θ es otra circunferencia: pasa por el polo y tiene el centro en (${fracTxt(a / 2)}; 0).`),
-          err('TP-r-cuadrado-sin-raiz', polar({ ...q, K0: a, pot: 2 }), `r² = ${a} da radio √${a}. La ecuación es r² = ${a * a}, o sea r = ${a}.`),
-        ],
-        aCart: [
-          cp('CP13-sin-raiz', cart([1, 1, 0, 0, -a]), `r = ${a} es √(x² + y²) = ${a}: al elevar al cuadrado, x² + y² = ${a * a}.`),
-          err('TP-r-es-x-mas-y', cart([0, 0, 1, 1, -a]), 'r no es x + y; es √(x² + y²).'),
-          err('TP-diametro', cart([1, 1, 0, 0, -4 * a * a]), `Esa es la circunferencia de radio ${2 * a}. En r = ${a}, el radio es ${a}.`),
-        ] };
+      // Radio entero o raíz (√n); en el sentido polar → cartesiano solo enteros.
+      const raiz = rng.moneda(), R0 = raiz ? Math.sqrt(rng.elegir([2, 3, 5, 6, 7, 8, 10, 12])) : rng.entero(2, 9);
+      const rasgos = dir => [
+        [R_(R0, ''), dir === 'a-polar' ? CP(R0 * R0, 'CP13-sin-raiz', `r² = x² + y² = ${num(R0 * R0)}: r es la raíz, ${num(R0)}.`)
+          : CP(Math.sqrt(R0), 'CP13-sin-raiz', `r = ${num(R0)} es √(x² + y²) = ${num(R0)}: al elevar al cuadrado queda ${num(R0 * R0)}, no ${num(R0)}.`),
+          R_(2 * R0, 'TP-diametro', `Usaste el diámetro, ${num(2 * R0)}. El radio es ${num(R0)}.`)],
+        [R_('const', ''), R_('cos', 'TP-agrega-coseno', 'Agregaste un cos θ: r = c·cos θ es otra circunferencia, que pasa por el polo.')],
+      ];
+      const construir = ([R, forma]) => (forma === 'const' ? { polar: { forma: 'lin', K0: R, Kc: 0, Ks: 0 }, cart: [1, 1, 0, 0, -R * R] }
+        : { polar: { forma: 'lin', K0: 0, Kc: R, Ks: 0 }, cart: Number.isInteger(R) ? [1, 1, -R, 0, 0] : null });
+      return { nombre, rasgos, construir, raiz };
     }
     if (nombre === 'circ-cos' || nombre === 'circ-sen') {
-      const a = s() * rng.entero(1, 5), enX = nombre === 'circ-cos', K = 2 * a;
-      const c = enX ? [1, 1, -K, 0, 0] : [1, 1, 0, -K, 0];
-      const q = { forma: 'lin', K0: 0, Kc: enX ? K : 0, Ks: enX ? 0 : K };
-      const otro = { ...q, Kc: q.Ks, Ks: q.Kc };
-      return { nombre, cart: c, polar: q,
-        aPolar: [
-          err('TP-sin-factor-2', polar({ ...q, Kc: q.Kc / 2, Ks: q.Ks / 2 }), `Perdiste el 2: r² = ${fracTxt(K)}r ${enX ? 'cos' : 'sen'} θ da r = ${fracTxt(K)} ${enX ? 'cos' : 'sen'} θ.`),
-          cp('CP17-eje-cruzado', polar(otro), `Cruzaste seno y coseno: ${enX ? 'x = r cos θ' : 'y = r sen θ'}.`),
-          cp('CP15-centro-en-el-polo', polar({ forma: 'lin', K0: Math.abs(K), Kc: 0, Ks: 0 }), 'Esa circunferencia no tiene el centro en el polo: pasa por él.'),
-          err('TP-sin-dividir-entre-r', polar({ ...q, pot: 2 }), 'Falta dividir entre r: r² = k·r cos θ da r = k cos θ (r = 0, el polo, ya está en la curva).'),
-          err('TP-signo', polar({ ...q, Kc: -q.Kc, Ks: -q.Ks }), `Cambiaste el signo. El centro está del lado ${(enX ? (a > 0 ? 'derecho' : 'izquierdo') : (a > 0 ? 'de arriba' : 'de abajo'))}.`),
-        ],
-        aCart: [
-          err('TP-sin-factor-2', cart(enX ? [1, 1, -a, 0, 0] : [1, 1, 0, -a, 0]), 'Perdiste un factor 2 al pasar.'),
-          cp('CP17-eje-cruzado', cart(enX ? [1, 1, 0, -K, 0] : [1, 1, -K, 0, 0]), `Cruzaste: r ${enX ? 'cos θ es x' : 'sen θ es y'}.`),
-          cp('CP15-centro-en-el-polo', cart([1, 1, 0, 0, -K * K]), 'Esa circunferencia pasa por el polo; no tiene centro en él.'),
-          cp('CP19-sin-x', cart([1, 1, 0, 0, -K]), `Se multiplica por r: r² = ${fracTxt(K)}r ${enX ? 'cos θ' : 'sen θ'}, y r ${enX ? 'cos θ = x' : 'sen θ = y'}.`),
-        ] };
+      const a = s() * rng.entero(2, 9), enX = nombre === 'circ-cos', K = 2 * a;
+      const fn = enX ? 'cos' : 'sen', otra = enX ? 'sen' : 'cos', coord = enX ? 'x' : 'y';
+      const rasgos = [
+        [R_(K, ''), R_(a, 'TP-sin-factor-2', 'Tomaste la mitad (el radio) en vez del coeficiente.'), R_(2 * K, 'TP-doble', 'Duplicaste el coeficiente: el diámetro ya es el coeficiente.')],
+        [R_(1, ''), R_(-1, 'TP-signo', `Cambiaste el signo. El centro está del lado ${enX ? (a > 0 ? 'derecho' : 'izquierdo') : (a > 0 ? 'de arriba' : 'de abajo')}.`)],
+        [R_(enX, ''), CP(!enX, 'CP17-eje-cruzado', `Cruzaste: ${coord} = r ${fn} θ; el centro está sobre el eje ${enX ? 'X' : 'Y'}.`)],
+        [R_(1, ''), R_(2, 'TP-sin-dividir-entre-r', `Reemplazaste ${coord} por ${fn} θ, pero ${coord} = r ${fn} θ: r² = ${num(K)}r ${fn} θ, y al dividir entre r queda r = ${num(K)} ${fn} θ.`)],
+      ];
+      const construir = ([k, sg, x, pot]) => {
+        const kk = sg * k;
+        return { polar: { forma: 'lin', K0: 0, Kc: x ? kk : 0, Ks: x ? 0 : kk, pot }, cart: pot === 1 ? (x ? [1, 1, -kk, 0, 0] : [1, 1, 0, -kk, 0]) : null };
+      };
+      return { nombre, rasgos, construir, otra };
     }
-    // parábola con foco en el polo
+    // parábola con foco en el polo: r = N/(1 − σ·trig)
     const tray = nombre === 'trayectoria';
-    const p = tray ? rng.entero(1, 4) : rng.entero(1, 4);
-    const enX = tray ? false : rng.moneda(), sg = tray ? -1 : s(); // r = 2p/(1 − sg·trig)
-    const c = enX ? [0, 1, -4 * p * sg, 0, -4 * p * p] : [1, 0, 0, -4 * p * sg, -4 * p * p];
-    const q = { forma: 'frac', N: 2 * p, D0: 1, Dc: enX ? -sg : 0, Ds: enX ? 0 : -sg };
-    const base = {
-      nombre, cart: c, polar: q,
-      aPolar: [
-        err('TP-signo-del-denominador', polar({ ...q, Dc: -q.Dc, Ds: -q.Ds }), `Cambiaste el signo de ${enX ? 'cos θ' : 'sen θ'}. La parábola abre ${enX ? (sg > 0 ? 'hacia la derecha' : 'hacia la izquierda') : (sg > 0 ? 'hacia arriba' : 'hacia abajo')}: r = 2p/(1 ${sg > 0 ? '−' : '+'} ${enX ? 'cos' : 'sen'} θ).`),
-        err('TP-sin-factor-2', polar({ ...q, N: p }), `El numerador es 2p = ${2 * p}: de r = ${enX ? 'x' : 'y'}·(…) + ${2 * p} sale r(1 ${sg > 0 ? '−' : '+'} ${enX ? 'cos' : 'sen'} θ) = ${2 * p}.`),
-        err('TP-numerador-4p', polar({ ...q, N: 4 * p }), `Usaste 4p = ${4 * p}. Al despejar queda 2p = ${2 * p} en el numerador.`),
-        cp('CP17-eje-cruzado', polar({ ...q, Dc: q.Ds, Ds: q.Dc }), `Cruzaste seno y coseno: el eje de esta parábola es ${enX ? 'horizontal' : 'vertical'}.`),
-      ],
-      aCart: [
-        err('TP-signo-del-denominador', cart(enX ? [0, 1, 4 * p * sg, 0, -4 * p * p] : [1, 0, 0, 4 * p * sg, -4 * p * p]), 'Cambiaste el signo del término lineal: revisa hacia dónde abre.'),
-        err('TP-sin-factor-2', cart(enX ? [0, 1, -2 * p * sg, 0, -p * p] : [1, 0, 0, -2 * p * sg, -p * p]), `Tomaste 2p = ${p}: el numerador ${2 * p} ya es 2p.`),
-        cp('CP17-eje-cruzado', cart(enX ? [1, 0, 0, -4 * p * sg, -4 * p * p] : [0, 1, -4 * p * sg, 0, -4 * p * p]), 'Cruzaste x con y: el eje de la parábola está en el otro eje.'),
-        err('TP-olvida-constante', cart(enX ? [0, 1, -4 * p * sg, 0, 0] : [1, 0, 0, -4 * p * sg, 0]), `Al elevar al cuadrado ${2 * p} ${sg > 0 ? '+' : '−'} ${enX ? 'x' : 'y'} se olvidó el ${4 * p * p}.`),
-        err('TP-sin-elevar', cart(enX ? [1, 1, -sg, 0, -2 * p] : [1, 1, 0, -sg, -2 * p]), `Reemplazaste r por x² + y², sin raíz: r = √(x² + y²). Hay que elevar al cuadrado los dos lados.`),
-      ],
+    const p = rng.entero(1, tray ? 6 : 4);
+    const enX = tray ? false : rng.moneda(), sg = tray ? -1 : s();
+    const abre = enX ? (sg > 0 ? 'hacia la derecha' : 'hacia la izquierda') : (sg > 0 ? 'hacia arriba' : 'hacia abajo');
+    const rasgos = [
+      [R_(2 * p, ''), R_(p, 'TP-numerador-p', `El numerador es 2p = ${2 * p}, no p = ${p}.`), R_(4 * p, 'TP-numerador-4p', `Usaste 4p = ${4 * p}. Al despejar queda 2p = ${2 * p} en el numerador.`)],
+      [R_(sg, ''), R_(-sg, 'TP-signo-del-denominador', `Cambiaste el signo del denominador. La parábola abre ${abre}: va 1 ${sg > 0 ? '−' : '+'} ${enX ? 'cos' : 'sen'} θ.`)],
+      [R_(enX, ''), CP(!enX, 'CP17-eje-cruzado', `Cruzaste seno y coseno: el eje de esta parábola es ${enX ? 'horizontal' : 'vertical'}.`)],
+    ];
+    const construir = ([N, sig, x]) => ({
+      polar: { forma: 'frac', N, D0: 1, Dc: x ? -sig : 0, Ds: x ? 0 : -sig },
+      cart: x ? [0, 1, -2 * N * sig, 0, -N * N] : [1, 0, 0, -2 * N * sig, -N * N],
+    });
+    const C = { nombre, rasgos, construir };
+    if (tray) { C.p = p; C.m = rng.entero(1, 9); C.k = p + rng.entero(1, 9); }
+    return C;
+  }
+
+  // ---------- elección de distractores ----------
+  // Distancia de Hamming entre dos claves (por partes).
+  const partes = c => c.split(/[:|]/);
+  const hamming = (a, b) => { const x = partes(a), y = partes(b); let d = Math.abs(x.length - y.length); for (let i = 0; i < Math.min(x.length, y.length); i++) if (x[i] !== y[i]) d++; return d; };
+  // De un conjunto de candidatos, toma 4 (o 3) de modo que la correcta no sea la más central.
+  function elegir(rng, correcta, pool) {
+    const vistos = new Set([correcta.clave]), textos = new Set([correcta.texto]);
+    const unicos = pool.filter(e => e && !vistos.has(e.clave) && !textos.has(e.texto) && vistos.add(e.clave) && textos.add(e.texto));
+    for (const n of [4, 3]) {
+      if (unicos.length < n) continue;
+      for (let intento = 0; intento < 80; intento++) {
+        const sel = rng.barajar(unicos).slice(0, n), todas = [correcta, ...sel];
+        const suma = x => todas.reduce((t, y) => t + hamming(x.clave, y.clave), 0);
+        const sc = suma(correcta);
+        if (sel.some(e => suma(e) <= sc)) return sel;
+      }
+    }
+    return null;
+  }
+  // Todas las combinaciones de rasgos salvo la correcta, con sus errores juntos.
+  function combinaciones(rasgos, construir, rep) {
+    const out = [];
+    const idx = rasgos.map(() => 0);
+    const rec = i => {
+      if (i === rasgos.length) {
+        if (idx.every(x => x === 0)) return;
+        const vals = rasgos.map((r, k) => r[idx[k]].valor), b = construir(vals);
+        const eq = b && rep(b);
+        if (!eq) return;
+        const errs = rasgos.map((r, k) => r[idx[k]]).filter((e, k) => idx[k] > 0);
+        const uno = errs.length === 1;
+        out.push({ id: errs.map(e => e.id).join('+'), ...eq, explicacion: errs.map(e => e.expl).join(' Además: ').replace(/ Además: (.)/g, (m, c) => ' Además, ' + c.toLowerCase()),
+          respaldo: uno ? errs[0].respaldo : 'hipotesis', fuente: uno ? errs[0].fuente : (errs.some(e => e.fuente) ? MAV : null) });
+        return;
+      }
+      for (let j = 0; j < rasgos[i].length; j++) { idx[i] = j; rec(i + 1); }
+      idx[i] = 0;
     };
-    if (tray) { base.m = rng.entero(1, 6); base.k = p + rng.entero(1, 8); base.p = p; }
-    return base;
+    rec(0);
+    return out;
   }
 
   // ---------- armado ----------
   function cerrar(rng, semilla, o) {
-    const alternativas = P.armarTexto({ correcta: o.correcta, errores: o.errores.filter(Boolean), rng });
+    const errores = elegir(rng, o.correcta, o.pool);
+    if (!errores) return null;
+    const alternativas = P.armarTexto({ correcta: o.correcta, errores, rng, total: errores.length + 1 });
     return { id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '', alternativas, solucion: o.solucion,
       respuesta: { valor: o.correcta.clave, unidad: '' }, _datos: o.datos };
   }
@@ -203,82 +242,96 @@
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
-  const VARS = { c: { nombre: 'ecuación cartesiana', color: 'o' }, q: { nombre: 'ecuación polar', color: 'd' }, x: { nombre: 'x = r cos θ', color: 'i' }, y: { nombre: 'y = r sen θ', color: 'h' } };
-  const pasoCambio = ['Usa ', v('x', 'x = r cos θ'), ', ', v('y', 'y = r sen θ'), ' y x² + y² = r².'];
+  const VARS = { c: { nombre: 'forma cartesiana', color: 'o' }, q: { nombre: 'forma polar', color: 'd' }, x: { nombre: 'x = r cos θ', color: 'i' }, y: { nombre: 'y = r sen θ', color: 'h' } };
+  const pasoCambio = (X = 'x', Y = 'y') => ['Usa ', v('x', `${X} = r cos θ`), ', ', v('y', `${Y} = r sen θ`), ` y ${X}² + ${Y}² = r².`];
+  const rasgosDe = (C, dir) => (typeof C.rasgos === 'function' ? C.rasgos(dir) : C.rasgos);
+  const correctos = rasgos => rasgos.map(r => r[0].valor);
   function aPolar(rng, semilla) {
     const C = curva(rng); if (!C) return null;
-    const correcta = polar(C.polar);
-    const ec = C.nombre === 'trayectoria' ? `y = ${C.k} − (x − ${C.m})²/${4 * C.p}` : cart(C.cart).texto;
-    const enunciado = C.nombre === 'trayectoria'
-      ? ['Un balón lanzado sigue la trayectoria ', v('c', ec), ` (en metros). Su foco es F = (${C.m}; ${C.k - C.p}). Pon el polo en F y el eje polar paralelo al eje X, hacia la derecha.`]
-      : ['Una curva tiene ecuación cartesiana ', v('c', ec), '.'];
-    const solucion = C.nombre === 'trayectoria'
-      ? [[`Con X = x − ${C.m} e Y = y − ${C.k - C.p} (coordenadas desde el foco): (x − ${C.m})² = −${4 * C.p}(y − ${C.k}) se vuelve `, v('c', cart(C.cart).texto.replace(/x/g, 'X').replace(/y/g, 'Y')), '.'],
-        pasoCambio, [`r = √(X² + Y²) = ${2 * C.p} − Y, con Y = r sen θ ⇒ r(1 + sen θ) = ${2 * C.p}.`], ['', v('q', correcta.texto), '.']]
-      : [pasoCambio, [`Reemplaza en ${cart(C.cart).texto} y despeja r.`], ['', v('q', correcta.texto), '.']];
-    return cerrar(rng, semilla, { correcta, errores: C.aPolar, variables: VARS, enunciado, pregunta: ['¿Cuál es su ecuación polar?'], solucion,
-      datos: { tipo: 'a-polar', curva: C.nombre, cart: C.cart, ...(C.nombre === 'trayectoria' ? { m: C.m, k: C.k, p: C.p } : {}) } });
+    const rasgos = rasgosDe(C, 'a-polar'), base = C.construir(correctos(rasgos));
+    const correcta = polar(base.polar);
+    const pool = combinaciones(rasgos, C.construir, b => polar(b.polar));
+    const tray = C.nombre === 'trayectoria';
+    const ecTxt = tray ? `y = ${C.k} − (x − ${C.m})²/${4 * C.p}` : C.raiz ? `x² + y² = ${num(base.cart[4] * -1)}` : cart(base.cart).texto;
+    const enunciado = tray
+      ? ['Un balón lanzado sigue la trayectoria ', v('c', ecTxt), ` (en metros). Su foco es F = (${C.m}; ${C.k - C.p}). Pon el polo en F y el eje polar paralelo al eje X, hacia la derecha.`]
+      : ['Una curva tiene ecuación cartesiana ', v('c', ecTxt), '.'];
+    const solucion = tray
+      ? [[`Desde el foco, X = x − ${C.m} e Y = y − ${C.k - C.p}: (x − ${C.m})² = −${4 * C.p}(y − ${C.k}) se vuelve `, v('c', cart(base.cart).texto.replace(/x/g, 'X').replace(/y/g, 'Y')), '.'],
+        pasoCambio('X', 'Y'), [`√(X² + Y²) = ${2 * C.p} − Y, o sea r = ${2 * C.p} − r sen θ ⇒ r(1 + sen θ) = ${2 * C.p}.`], ['', v('q', correcta.texto), '.']]
+      : [pasoCambio(), [`Reemplaza en ${ecTxt} y despeja r.`], ['', v('q', correcta.texto), '.']];
+    return cerrar(rng, semilla, { correcta, pool, variables: VARS, enunciado, pregunta: ['¿Cuál es su ecuación polar?'], solucion,
+      datos: { tipo: 'a-polar', curva: C.nombre, cart: base.cart, ...(tray ? { m: C.m, k: C.k, p: C.p } : {}) } });
   }
   function aCart(rng, semilla) {
-    const C = curva(rng); if (!C || C.nombre === 'trayectoria') return null;
-    const correcta = cart(C.cart);
-    const enunciado = ['Una curva tiene ecuación polar ', v('q', polar(C.polar).texto), '.'];
-    const solucion = [pasoCambio,
-      [C.polar.forma === 'frac' ? 'Pasa el denominador a multiplicar a r y reemplaza r cos θ y r sen θ' : 'Multiplica por r si hace falta y reemplaza r², r cos θ y r sen θ', C.nombre === 'parabola' ? '; luego aísla √(x² + y²) y eleva al cuadrado.' : '.'],
+    const C = curva(rng); if (!C || C.nombre === 'trayectoria' || C.raiz) return null;
+    const rasgos = rasgosDe(C, 'a-cartesiana'), base = C.construir(correctos(rasgos));
+    const correcta = cart(base.cart);
+    const pool = combinaciones(rasgos, C.construir, b => cart(b.cart));
+    const enunciado = ['Una curva tiene ecuación polar ', v('q', polar(base.polar).texto), '.'];
+    const solucion = [pasoCambio(),
+      [base.polar.forma === 'frac' ? 'Pasa el denominador a multiplicar a r y reemplaza r cos θ y r sen θ' : 'Multiplica por r si hace falta y reemplaza r², r cos θ y r sen θ', C.nombre === 'parabola' ? '; luego aísla √(x² + y²) y eleva al cuadrado.' : '.'],
       ['', v('c', correcta.texto), '.']];
-    return cerrar(rng, semilla, { correcta, errores: C.aCart, variables: VARS, enunciado, pregunta: ['¿Cuál es su ecuación cartesiana?'], solucion,
-      datos: { tipo: 'a-cartesiana', curva: C.nombre, polar: C.polar } });
+    return cerrar(rng, semilla, { correcta, pool, variables: VARS, enunciado, pregunta: ['¿Cuál es su ecuación cartesiana?'], solucion,
+      datos: { tipo: 'a-cartesiana', curva: C.nombre, polar: base.polar } });
   }
 
   // ---------- puntos ----------
-  const ANG = [30, 45, 60, 120, 135, 150, 210, 225, 240, 300, 315, 330, 90, 180, 270];
+  const ANG = [30, 45, 60, 120, 135, 150, 210, 225, 240, 300, 315, 330];
   const angTxt = (g, modo) => (modo === 'radianes' ? (P.pi(g * GR) || '0') : `${P.formatear(g)}°`);
-  const num = x => (Math.abs(x * 2 - Math.round(x * 2)) < 1e-9 ? fracTxt(x) : P.radical(x));
   const ptTxt = (x, y) => ({ clave: `pt:${r6(x)}|${r6(y)}`, texto: `(${num(x)}; ${num(y)})` });
   function puntoCart(rng, semilla) {
-    const r = rng.elegir([2, 4, 6, 8, -2, -4]), th = rng.elegir(ANG.slice(0, 12)), modo = rng.elegir(['grados', 'radianes']);
+    const r = rng.elegir([2, 4, 6, 8, -2, -4, -6]), th = rng.elegir(ANG), modo = rng.elegir(['grados', 'radianes']);
     const c = Math.cos(th * GR), s = Math.sin(th * GR), x = r * c, y = r * s;
     const correcta = ptTxt(x, y);
-    const ref = th % 90 === 0 ? th : [th % 180, 180 - (th % 180)].reduce((a, b) => Math.min(a, b));
-    const errores = [
-      err('TP-cruza-coordenadas', ptTxt(r * s, r * c), 'Cruzaste: x = r cos θ e y = r sen θ.'),
-      cp('CP14-olvida-r', ptTxt(c * Math.sign(r), s * Math.sign(r)), `Olvidaste multiplicar por r = ${r}.`),
-      err('TR12-signo-del-cuadrante', ptTxt(-x, y), `El signo de x no corresponde al cuadrante: cos ${angTxt(th, modo)} = ${num(c)}.`, 'parcial', TRI),
-      cp('CP2-reduce-al-primer-cuadrante', ptTxt(Math.abs(r) * Math.cos(ref * GR), Math.abs(r) * Math.sin(ref * GR)), 'Usaste el ángulo de referencia sin los signos del cuadrante.'),
+    const rT = r < 0 ? `(−${Math.abs(r)})` : String(r), aT = angTxt(th, modo);
+    const rasgos = [
+      [R_(1, ''), CP(Math.sign(r) / r, 'CP14-olvida-r', `Olvidaste multiplicar por r = ${num(r)}.`)],
+      [R_(false, ''), R_(true, 'TP-cruza-coordenadas', 'Cruzaste: x = r cos θ e y = r sen θ.')],
+      [R_('ok', ''), R_('x', 'TP-signo-de-x', `x = ${rT}·cos ${aT} = ${num(x)}: revisa el signo de cos ${aT} y el de r.`),
+        R_('y', 'TP-signo-de-y', `y = ${rT}·sen ${aT} = ${num(y)}: revisa el signo de sen ${aT} y el de r.`),
+        r < 0 ? R_('ambos', 'CP3-ignora-signo-de-r', `Con r = ${num(r)} < 0, el punto queda del lado opuesto al de θ: x = r cos θ e y = r sen θ llevan el signo de r.`, 'parcial', MAV)
+          : R_('ambos', 'TP-cuadrante-opuesto', 'Pusiste el punto en el cuadrante opuesto: los dos signos están cambiados.'),
+        R_('abs', 'CP2-reduce-al-primer-cuadrante', 'Usaste el ángulo de referencia sin los signos del cuadrante: x e y salieron positivos.', 'parcial', TRI)],
     ];
-    if (r < 0) errores.unshift(err('CP3-ignora-signo-de-r', ptTxt(-x, -y), `Con r = ${r} < 0, el punto queda del lado opuesto al de θ: x = r cos θ e y = r sen θ con r negativo.`, 'parcial', MAV));
-    const rT = r < 0 ? `(−${Math.abs(r)})` : String(r);
-    const enunciado = ['Un punto tiene coordenadas polares (', v('q', `${r < 0 ? '−' : ''}${Math.abs(r)}; ${angTxt(th, modo)}`), ').'];
-    const solucion = [pasoCambio,
-      ['', v('x', `x = ${rT}·cos ${angTxt(th, modo)} = ${num(x)}`), '; ', v('y', `y = ${rT}·sen ${angTxt(th, modo)} = ${num(y)}`), '.'],
+    const construir = ([esc, cruz, sg]) => {
+      let [a, b] = cruz ? [y, x] : [x, y]; a *= esc; b *= esc;
+      if (sg === 'x' || sg === 'ambos') a = -a; if (sg === 'y' || sg === 'ambos') b = -b; if (sg === 'abs') { a = Math.abs(a); b = Math.abs(b); }
+      return { pt: ptTxt(a, b) };
+    };
+    const pool = combinaciones(rasgos, construir, b => b.pt).filter(e => !(Math.abs(Number(e.clave.split(/[:|]/)[1]) - x) < 1e-6 && Math.abs(Number(e.clave.split('|')[1]) - y) < 1e-6));
+    const enunciado = ['Un punto tiene coordenadas polares (', v('q', `${num(r)}; ${aT}`), ').'];
+    const solucion = [pasoCambio(),
+      ['', v('x', `x = ${rT}·cos ${aT} = ${num(x)}`), '; ', v('y', `y = ${rT}·sen ${aT} = ${num(y)}`), '.'],
       ['El punto es ', v('c', correcta.texto), '.']];
-    return cerrar(rng, semilla, { correcta, errores, variables: VARS, enunciado, pregunta: ['¿Cuáles son sus coordenadas cartesianas (x; y)?'], solucion,
+    return cerrar(rng, semilla, { correcta, pool, variables: VARS, enunciado, pregunta: ['¿Cuáles son sus coordenadas cartesianas (x; y)?'], solucion,
       datos: { tipo: 'punto-a-cart', r, theta: th, modo } });
   }
   function puntoPolar(rng, semilla) {
-    const th = rng.elegir(ANG.slice(0, 12)), modo = rng.elegir(['grados', 'radianes']);
+    const th = rng.elegir(ANG), modo = rng.elegir(['grados', 'radianes']);
     const r = th % 90 === 45 ? rng.elegir([1, 2, 3]) * Math.SQRT2 : rng.elegir([2, 4, 6, 8]);
     const x = r * Math.cos(th * GR), y = r * Math.sin(th * GR);
-    const pp = (rr, g) => ({ clave: `pp:${r6(rr)}|${r6(((g % 360) + 360) % 360)}`, texto: `(${P.radical(rr)}; ${angTxt(g, modo)})` });
+    const norm = g => ((g % 360) + 360) % 360;
+    const sumaAbs = Math.abs(x) + Math.abs(y);
+    const rTexto = rr => (Math.abs(rr - sumaAbs) < 1e-9 && fraccion(rr) === null && P.radical(rr).includes(',') ? [num(Math.abs(x)), num(Math.abs(y))].sort((a, b) => a.length - b.length).join(' + ') : num(rr));
+    const pp = (rr, g) => ({ clave: `pp:${r6(rr)}|${r6(norm(g))}`, texto: `(${rTexto(rr)}; ${angTxt(norm(g), modo)})` });
     const correcta = pp(r, th);
-    const mismo = (rr, g) => Math.abs(rr * Math.cos(g * GR) - x) < 1e-9 && Math.abs(rr * Math.sin(g * GR) - y) < 1e-9;
-    const cand = [];
-    const add = (id, rr, g, expl, resp, fte) => { if (!mismo(rr, g) && g > -360) cand.push(err(id, pp(rr, g), expl, resp || 'hipotesis', fte || MAV)); };
     const atan = Math.round(Math.atan(y / x) / GR * 1e6) / 1e6, ref = Math.abs(atan);
-    if (Math.abs(x) > 1e-9) add('CP10-arctan-directo', r, ((atan % 360) + 360) % 360, 'Usaste θ = arctan(y/x) tal como lo da la calculadora. Ese ángulo está en el I o el IV cuadrante; el punto está en otro.');
-    if (Math.abs(x) > 1e-9) add('CP12-angulo-de-referencia', r, ref, 'Ese es el ángulo agudo con el eje X, no el ángulo medido desde el eje polar.');
-    add('CP13-sin-raiz', r * r, th, `r = √(x² + y²) = ${P.radical(r)}; olvidaste la raíz.`);
-    add('CP9-desde-el-eje-vertical', r, ((90 - th) % 360 + 360) % 360, 'Mediste el ángulo desde el eje Y. θ se mide desde el semieje X positivo, en sentido antihorario.');
-    if (Math.abs(y) > 1e-9) add('CP11-arctan-invertido', r, ((Math.round(Math.atan(x / y) / GR * 1e6) / 1e6) % 360 + 360) % 360, 'Usaste arctan(x/y): la tangente es y/x.');
-    add('TP-suma-180-de-mas', r, (th + 180) % 360, 'Sumaste 180° sin que hiciera falta: ese ángulo apunta al cuadrante opuesto. Mira los signos de x e y antes de corregir el ángulo.');
-    const errores = cand;
-    const enunciado = ['Un punto tiene coordenadas cartesianas (', v("x", num(x)), "; ", v("y", num(y)), ').'];
+    const angulos = [R_(th, ''), CP(norm(atan), 'CP10-arctan-directo', 'Usaste θ = arctan(y/x) tal como lo da la calculadora. Ese ángulo está en el I o el IV cuadrante; mira los signos de x e y.'),
+      CP(ref, 'CP12-angulo-de-referencia', 'Ese es el ángulo agudo con el eje X, no el ángulo medido desde el eje polar.'),
+      CP(norm(90 - th), 'CP9-desde-el-eje-vertical', 'Mediste el ángulo desde el eje Y. θ se mide desde el semieje X positivo, en sentido antihorario.'),
+      CP(norm(Math.round(Math.atan(x / y) / GR * 1e6) / 1e6), 'CP11-arctan-invertido', 'Usaste arctan(x/y): la tangente es y/x.'),
+      R_(norm(th + 180), 'TP-suma-180-de-mas', 'Sumaste 180° sin que hiciera falta: ese ángulo apunta al cuadrante opuesto.')];
+    const unicosAng = angulos.filter((a, i) => i === 0 || (Math.abs(a.valor - th) > 1e-6 && angulos.findIndex(b => Math.abs(b.valor - a.valor) < 1e-6) === i));
+    const rasgos = [[R_(r, ''), CP(r * r, 'CP13-sin-raiz', `r = √(x² + y²) = ${num(r)}; olvidaste la raíz.`), R_(sumaAbs, 'TP-r-suma', 'r no es |x| + |y|; es √(x² + y²).')], unicosAng];
+    const pool = combinaciones(rasgos, ([rr, g]) => ({ pp: pp(rr, g) }), b => b.pp);
+    const enunciado = ['Un punto tiene coordenadas cartesianas (', v('x', num(x)), '; ', v('y', num(y)), ').'];
     const cuad = th < 90 ? 'I' : th < 180 ? 'II' : th < 270 ? 'III' : 'IV';
     const solucion = [
-      ['r = √(x² + y²) = √', `${fracTxt(x * x + y * y)} = ${P.radical(r)}`, '.'],
-      [`Signos: x ${x > 0 ? '> 0' : x < 0 ? '< 0' : '= 0'}, y ${y > 0 ? '> 0' : y < 0 ? '< 0' : '= 0'}: el punto está en el ${cuad} cuadrante; el ángulo de referencia es ${angTxt(th % 90 === 0 ? 90 : Math.min(th % 180, 180 - th % 180), modo)}.`],
+      ['r = √(x² + y²) = √', `${num(x * x + y * y)} = ${num(r)}`, '.'],
+      [`Signos: x ${x > 0 ? '> 0' : '< 0'}, y ${y > 0 ? '> 0' : '< 0'}: el punto está en el ${cuad} cuadrante; el ángulo de referencia es ${angTxt(Math.min(th % 180, 180 - (th % 180)), modo)}.`],
       ['Medido desde el eje polar: ', v('q', `θ = ${angTxt(th, modo)}`), '; el punto es ', v('q', correcta.texto), '.']];
-    return cerrar(rng, semilla, { correcta, errores, variables: VARS, enunciado, pregunta: [`¿Cuáles son sus coordenadas polares (r; θ), con r > 0 y 0 ≤ θ < ${modo === 'radianes' ? '2π' : '360°'}?`], solucion,
+    return cerrar(rng, semilla, { correcta, pool, variables: VARS, enunciado, pregunta: [`¿Cuáles son sus coordenadas polares (r; θ), con r > 0 y 0 ≤ θ < ${modo === 'radianes' ? '2π' : '360°'}?`], solucion,
       datos: { tipo: 'punto-a-polar', x, y, modo } });
   }
 

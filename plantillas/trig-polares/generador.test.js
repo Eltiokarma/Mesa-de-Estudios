@@ -14,7 +14,7 @@ const casos = require('./casos.json');
 const { probarGenerador } = require('../../nucleo/probar-generador.js');
 
 const R = Math.PI / 180;
-const fr = t => { const neg = t.startsWith('−'); const [n, d] = (neg ? t.slice(1) : t).split('/').map(Number); return (neg ? -1 : 1) * n / (d || 1); };
+const fr = Number;
 // Clave polar → r(θ) (o null si r^2 < 0).
 function rDe(clave) {
   if (clave.startsWith('pf:')) { const [N, D0, Dc, Ds] = clave.slice(3).split('|').map(fr); return t => N / (D0 + Dc * Math.cos(t) + Ds * Math.sin(t)); }
@@ -51,6 +51,21 @@ function chequeo(d, clave) {
   return Math.abs(r - Math.hypot(d.x, d.y)) < 1e-6 && Math.abs(g - gg) < 1e-6 && g >= 0 && g < 360;
 }
 probarGenerador(gen, { semillas: 600, recalcular: p => (chequeo(p._datos, p.respuesta.valor) ? p.respuesta.valor : 'no cumple'), igual: (a, b) => a === b });
+
+// Control contra la estrategia «elige la alternativa más parecida a las demás» (Hamming sobre las partes
+// de la clave; con empate se reparte). No debe acertar más del 40 %.
+test('la alternativa central no delata la correcta', () => {
+  const partes = c => c.split(/[:|]/);
+  const ham = (a, b) => { const x = partes(a), y = partes(b); let d = Math.abs(x.length - y.length); for (let i = 0; i < Math.min(x.length, y.length); i++) if (x[i] !== y[i]) d++; return d; };
+  let aciertos = 0;
+  for (let s = 0; s < 600; s++) {
+    const alt = gen.generar(s).alternativas;
+    const suma = alt.map(a => alt.reduce((t, b) => t + ham(a.valor, b.valor), 0)), min = Math.min(...suma);
+    const centrales = alt.filter((a, i) => suma[i] === min);
+    if (centrales.some(a => a.correcta)) aciertos += 1 / centrales.length;
+  }
+  assert.ok(aciertos / 600 <= 0.4, `la central acierta el ${Math.round(aciertos / 6)} %`);
+});
 
 test('ningún distractor cumple la condición (ninguno es defendible)', () => {
   for (let s = 0; s < 600; s++) {

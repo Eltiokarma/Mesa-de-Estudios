@@ -31,8 +31,9 @@
  *                     sub 'otro': otro edificio más bajo; su azotea se ve con depresión α y su base con β (tA < tB).
  *                     Respuesta: su altura = H − (H·cot β)·tan α.
  *   mitad-cima        Torre de altura h2 a D m del observador; se ve un punto de la torre a h1 m del suelo con
- *                     elevación α y la punta con β. { sub, h1, h2, D }. sub 'mitad' (h1 = h2/2) o 'ventana'.
- *                     Respuesta: tan(β − α) = (h2 − h1)·D / (D² + h1·h2), una fracción.
+ *                     elevación α y la punta con β. { sub, h1, h2, D, pide }. sub 'mitad' (h1 = h2/2) o 'ventana'.
+ *                     Respuesta: tan(β − α) = (h2 − h1)·D / (D² + h1·h2), una fracción; con pide 'cot' (solo en 'mitad'),
+ *                     su inverso cot(β − α).
  *   objeto-elevado    Antena de a m sobre un edificio de b m; observador en el suelo a D m de la base; la antena se
  *                     ve bajo θ (ángulo entre las visuales a la base y a la punta de la antena). { sub, a, b, D, t, D0, pide }.
  *                     sub 'tan': da a, b, D; respuesta tan θ = a·D/(D² + b(a + b)).
@@ -517,12 +518,20 @@
     if (dd / g <= 60 && n / g < dd / g) TAN_DIF.push([h1, h2, D]);
   }
   function todosTanDif(filtro) { return TAN_DIF.filter(c => filtro(...c)); }
+  // Punto medio: hay pocas razones h1/D distintas, así que se admite denominador hasta 100.
+  const MITAD = [];
+  for (let D = 4; D <= 80; D++) for (let h1 = 2; h1 <= 50; h1++) {
+    if (D === h1 || D === 2 * h1) continue;
+    const n = h1 * D, dd = D * D + 2 * h1 * h1, g = mcd(n, dd);
+    if (dd / g <= 100) MITAD.push([h1, 2 * h1, D]);
+  }
 
   function mitadCima(rng, pref) {
     const sub = pref < 0.5 ? 'mitad' : 'ventana';
-    const c = elegirTanDif(rng, sub === 'mitad' ? (h1, h2) => h2 === 2 * h1 : (h1, h2) => 2 * h1 !== h2);
+    const c = sub === 'mitad' ? rng.elegir(MITAD) : elegirTanDif(rng, (h1, h2) => 2 * h1 !== h2);
     if (!c) return null;
-    const [h1, h2, D] = c, correcta = calc.tanVisto({ h1, h2, D });
+    const pide = sub === 'mitad' && rng.moneda() ? 'cot' : 'tan';
+    const [h1, h2, D] = c, tanDif = calc.tanVisto({ h1, h2, D }), correcta = pide === 'cot' ? 1 / tanDif : tanDif;
     const variables = {
       a: { nombre: 'elevación al punto más bajo', color: 'o' }, b: { nombre: 'elevación a la punta', color: 'i' },
       d: { nombre: 'distancia a la torre', color: 'd' }, H: { nombre: 'altura de la torre', color: 'h' },
@@ -530,15 +539,22 @@
     const enunciado = sub === 'mitad'
       ? ['Una torre vertical de ', v('H', `${h2} m`), ' se levanta sobre un suelo horizontal. Desde un punto del suelo a ', v('d', `${D} m`), ' de su base, se ve el punto medio de la torre con un ángulo de elevación ', v('a', 'α'), ' y la punta con un ángulo de elevación ', v('b', 'β'), '.']
       : ['Una torre vertical de ', v('H', `${h2} m`), ` tiene una ventana a ${h1} m del suelo horizontal. Desde un punto del suelo a `, v('d', `${D} m`), ' de su base, se ve la ventana con un ángulo de elevación ', v('a', 'α'), ' y la punta de la torre con un ángulo de elevación ', v('b', 'β'), '.'];
-    const pregunta = ['¿Cuánto vale tan(β − α), la tangente del ángulo entre las dos visuales?'];
-    const errores = erroresTanDif(h1, h2, D, 'la punta');
+    const pregunta = [pide === 'cot' ? '¿Cuánto vale cot(β − α), la cotangente del ángulo entre las dos visuales?' : '¿Cuánto vale tan(β − α), la tangente del ángulo entre las dos visuales?'];
     const ta = h1 / D, tb = h2 / D;
+    const errores = pide === 'tan' ? erroresTanDif(h1, h2, D, 'la punta') : [
+      h('AV-tangente-por-cotangente', tanDif, 'Ese es tan(β − α). Se pide la cotangente, su inverso.'),
+      p('TR16', 1 / (tb - ta), 'Tomaste tan(β − α) = tan β − tan α y luego invertiste. La tangente de la diferencia lleva el denominador 1 + tan β·tan α.'),
+      h('AV-signo-denominador', (1 - ta * tb) / (tb - ta), 'Usaste 1 − tan β·tan α: ese es el de la tangente de una suma. Para la diferencia va 1 + tan β·tan α.'),
+      h('AV-tangente-total', D / h2, 'Esa es la cotangente de la elevación a la punta, no la del ángulo entre las dos visuales.'),
+      h('AV-tangente-parte', D / h1, 'Esa es la cotangente de la elevación al punto medio, no la del ángulo entre las dos visuales.'),
+    ];
     const solucion = [
       ['tan ', v('a', 'α'), ` = ${h1}/${D}${ex(ta) === `${h1}/${D}` ? '' : ' = ' + ex(ta)} (${sub === 'mitad' ? 'la mitad de la torre' : 'la ventana'}) y tan `, v('b', 'β'), ' = ', v('H', `${h2}`), '/', v('d', `${D}`), `${ex(tb) === `${h2}/${D}` ? '' : ' = ' + ex(tb)}.`],
       ['tan(β − α) = (tan β − tan α) / (1 + tan β·tan α).'],
-      [`= (${ex(tb)} − ${ex(ta)}) / (1 + ${ex(tb)}·${ex(ta)}) = ${entreP(ex(tb - ta))} ÷ ${entreP(ex(1 + ta * tb))} = ${ex(correcta)}.`],
+      [`= (${ex(tb)} − ${ex(ta)}) / (1 + ${ex(tb)}·${ex(ta)}) = ${entreP(ex(tb - ta))} ÷ ${entreP(ex(1 + ta * tb))} = ${ex(tanDif)}.`],
+      ...(pide === 'cot' ? [['cot(β − α) = 1/tan(β − α) = ', ex(correcta), '.']] : []),
     ];
-    return { correcta, errores, variables, enunciado, pregunta, solucion, datos: { sub, h1, h2, D }, unidad: '', fraccion: true };
+    return { correcta, errores, variables, enunciado, pregunta, solucion, datos: { sub, h1, h2, D, pide }, unidad: '', fraccion: true };
   }
 
   function objetoElevado(rng, pref) {

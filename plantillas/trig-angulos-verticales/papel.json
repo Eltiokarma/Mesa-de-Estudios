@@ -10,7 +10,7 @@
       "pasos": [
         "Sea H la altura. Desde el punto cercano la distancia a la base es H · cot 45° = H; desde el lejano, H · cot 37° = 4H/3.",
         "Los dos puntos están del mismo lado: 4H/3 − H = 7, es decir, H/3 = 7.",
-        "H = 21 m. Control: si se suman las cotangentes, sale 3 m, que no puede ser: con 7 m de avance el ángulo apenas cambiaría."
+        "H = 21 m. Control: si se suman las cotangentes, sale 3 m; eso sería con el poste entre los dos puntos, y aquí están del mismo lado."
       ],
       "verificar": [ { "fn": "mismoLado", "args": [{ "d": 7, "tA": [3, 4], "tB": [1, 1] }], "espera": 21 } ]
     },
