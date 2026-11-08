@@ -142,7 +142,9 @@ for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {
     const p = gen.generar(c.semilla);
     assert.deepEqual(p._datos, c.entrada, 'el generador cambió: recalcula casos.json');
-    if (typeof c.esperado.respuesta === 'number') assert.ok(Math.abs(p.respuesta.valor - c.esperado.respuesta) <= casos.tolerancia, `da ${p.respuesta.valor}`);
+    const valor = typeof p.respuesta.valor === 'string' && p.respuesta.valor.startsWith('num:') ? valorFrac(p.respuesta.valor.slice(4)) : p.respuesta.valor;
+    if (typeof c.esperado.respuesta === 'number') assert.ok(Math.abs(valor - c.esperado.respuesta) <= casos.tolerancia, `da ${valor}`);
+    else assert.equal(p.respuesta.texto, c.esperado.respuesta);
     assert.equal(p.alternativas.find(a => a.correcta).texto, c.esperado.exacta);
   });
 }

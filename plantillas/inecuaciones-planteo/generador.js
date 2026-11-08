@@ -38,9 +38,12 @@
  * Convenciones: intervalos ⟨a; b], uniones con ∪, coma decimal y signo menos «−». Las respuestas
  * que son intervalos van con armarTexto y clave canónica «int:lo,lc,hi,hc|…» (lo y hi como n/d o
  * ±inf); las fracciones sueltas, con clave «num:n/d».
- * Errores: AL1, AL19 y AL22 de docs/investigacion/algebra-funciones-ideas-erroneas.md (parciales),
- * AR5 de docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md (hipótesis) y los demás,
- * hipótesis nuestras con id descriptivo (trampas 40, 51 y 53 de la clasificación de San Marcos).
+ * Errores: AL19-inecuacion-como-ecuacion (parcial, docs/investigacion/algebra-funciones-ideas-erroneas.md)
+ * solo cuando el distractor es la raíz de la ecuación asociada; AL22 (parcial, mismo informe) en
+ * valor absoluto; AR5-el-gasto (hipótesis, docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md).
+ * El resto son hipótesis nuestras sin fuente: redondeo-de-la-cota, extremos y corchetes mal puestos,
+ * no-menor-que-como-a-lo-mas, responde-* (otra cantidad, trampa 33) y los de las trampas 40, 51 y 53
+ * de la clasificación de San Marcos.
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -63,8 +66,13 @@
 
   // Errores con valor numérico y con texto.
   const err = (id, valor, explicacion, respaldo = 'hipotesis', fuente = null) => ({ id, valor, explicacion, respaldo, fuente });
-  const al19 = (id, valor, explicacion) => err('AL19-' + id, valor, explicacion, 'parcial', FAL);
-  const ar5 = (id, valor, explicacion) => err('AR5-' + id, valor, explicacion, 'hipotesis', FAR);
+  // AL19 (parcial) solo cuando el distractor es la raíz de la ecuación asociada: la inecuación
+  // se resolvió como ecuación. Redondear la cota o mover un extremo es hipótesis nuestra.
+  const al19 = (valor, explicacion) => err('AL19-inecuacion-como-ecuacion', valor, explicacion, 'parcial', FAL);
+  const hip = (id, valor, explicacion) => err(id, valor, explicacion);
+  const redondeo = (valor, explicacion) => err('redondeo-de-la-cota', valor, explicacion);
+  // Responder otra cantidad (trampa 33 de la clasificación): hipótesis, sin fuente.
+  const ar5 = (id, valor, explicacion) => err('responde-' + id, valor, explicacion);
   const conTexto = (e, r) => (r ? { id: e.id, clave: r.clave, texto: r.texto, explicacion: e.explicacion, respaldo: e.respaldo, fuente: e.fuente } : null);
 
   // Fracción como texto con su valor decimal: «61/2 = 30,5», «94/3 ≈ 31,33», «31».
@@ -204,11 +212,11 @@
     const cotaMenos = fr(a * (n - 1), b), cotaMas = fr(c * (n + 1), d);
     const errores = [
       qv(L) === n - 1
-        ? al19('extremo-incluido', n - 1, `Con ${n - 1} le habrían quedado ${n - 1 - k1}, que es justo ${f1} de ${n - 1}, no más. La desigualdad es estricta: N > ${n - 1}.`)
-        : al19('redondeo', n - 1, `Redondeaste ${qt(L)} hacia abajo. Con ${n - 1} le habrían quedado ${n - 1 - k1}, que no es más que ${qDec(cotaMenos)} (${f1} de ${n - 1}).`),
+        ? al19(n - 1, `Resolviste N − ${k1} = (${a}/${b})·N como ecuación: N = ${n - 1}. Con ${n - 1} le quedan ${n - 1 - k1}, justo ${f1} de ${n - 1}, no más; la desigualdad es estricta: N > ${n - 1}.`)
+        : redondeo(n - 1, `Redondeaste ${qt(L)} hacia abajo. Con ${n - 1} le habrían quedado ${n - 1 - k1}, que no es más que ${qDec(cotaMenos)} (${f1} de ${n - 1}).`),
       qv(U) === n + 1
-        ? al19('extremo-incluido', n + 1, `Con ${n + 1} le quedarían al final ${n + 1 - k1 - k2}, que es justo ${f2} de ${n + 1}, no menos. La desigualdad es estricta: N < ${n + 1}.`)
-        : al19('redondeo', n + 1, `Redondeaste ${qt(U)} hacia arriba. Con ${n + 1} le quedarían al final ${n + 1 - k1 - k2}, que no es menos que ${qDec(cotaMas)} (${f2} de ${n + 1}).`),
+        ? al19(n + 1, `Resolviste N − ${k1 + k2} = (${c}/${d})·N como ecuación: N = ${n + 1}. Con ${n + 1} le quedan al final ${n + 1 - k1 - k2}, justo ${f2} de ${n + 1}, no menos; la desigualdad es estricta: N < ${n + 1}.`)
+        : redondeo(n + 1, `Redondeaste ${qt(U)} hacia arriba. Con ${n + 1} le quedarían al final ${n + 1 - k1 - k2}, que no es menos que ${qDec(cotaMas)} (${f2} de ${n + 1}).`),
       ar5('lo-que-quedo', n - k1 - k2, `${n - k1 - k2} es lo que le quedó al final. La pregunta es cuántos tenía al inicio.`),
       ar5('quedo-tras-la-primera-venta', n - k1, `${n - k1} es lo que le quedó después de la primera venta. La pregunta es cuántos tenía al inicio.`),
     ];
@@ -244,8 +252,12 @@
     ];
     const errores = [
       ar5('la-otra-persona', x0, `S/ ${x0} es lo que ganó ${A}. La pregunta es por lo que ganó ${B}.`),
-      al19('redondeo', m * (x0 - 1) + c, `Usaste x = ${x0 - 1}. Entonces entre los dos ganan S/ ${(m + 1) * (x0 - 1) + c}, que no es más de S/ ${T}: la primera condición es estricta.`),
-      al19('redondeo', m * (x0 + 1) + c, `Usaste x = ${x0 + 1}. Entonces ${A}, con S/ ${e} más, tendría S/ ${x0 + 1 + e} y ${B} S/ ${m * (x0 + 1) + c}: no lo supera.`),
+      (m + 1) * (x0 - 1) === T - c
+        ? al19(m * (x0 - 1) + c, `Resolviste ${m + 1}x = ${N(T - c)} como ecuación: x = ${x0 - 1}. Con x = ${x0 - 1} entre los dos ganan justo S/ ${T}, no más; la desigualdad es estricta: x > ${x0 - 1}.`)
+        : redondeo(m * (x0 - 1) + c, `Usaste x = ${x0 - 1}, redondeando la cota x > ${qt(fr(T - c, m + 1))} hacia abajo. Entonces entre los dos ganan S/ ${(m + 1) * (x0 - 1) + c}, que no es más de S/ ${T}.`),
+      (m - 1) * (x0 + 1) === e - c
+        ? al19(m * (x0 + 1) + c, `Resolviste x + ${e} = ${Lx} como ecuación: x = ${x0 + 1}. Con x = ${x0 + 1}, ${A} con S/ ${e} más tendría S/ ${x0 + 1 + e}, justo lo de ${B}, y no lo supera; la desigualdad es estricta: x < ${x0 + 1}.`)
+        : redondeo(m * (x0 + 1) + c, `Usaste x = ${x0 + 1}, redondeando la cota x < ${qt(fr(e - c, m - 1))} hacia arriba. Entonces ${A}, con S/ ${e} más, tendría S/ ${x0 + 1 + e} y ${B} S/ ${m * (x0 + 1) + c}: no lo supera.`),
       ar5('el-total', x0 + L0, `S/ ${x0 + L0} es lo que ganaron entre los dos. La pregunta es solo por ${B}.`),
     ];
     return cerrar(rng, semilla, { correcta: L0, errores, texto: x => `S/ ${N(x)}`, unidad: 'S/', variables, enunciado, pregunta, solucion,
@@ -333,8 +345,9 @@
     const op = pedido === 'producto' ? '·' : ' + ';
     if (sub === 'unico') solucion.push([`La única pareja es x = ${S[0][0]}, y = ${S[0][1]}: `, v('r', `${S[0][0]}${op}${S[0][1]} = ${correcta}`), '.']);
     else {
-      const mejor = S.find(p => obj(p) === correcta);
-      solucion.push([`Las parejas posibles son ${S.map(p => `(${p[0]}; ${p[1]})`).join(', ')}. ${pedido === 'max-x' ? 'El mayor valor de x' : 'La mayor suma'} se da en (${mejor[0]}; ${mejor[1]}): `, v('r', correcta), '.']);
+      const mejores = S.filter(p => obj(p) === correcta).map(p => `(${p[0]}; ${p[1]})`);
+      const enDonde = mejores.length === 1 ? `se da en ${mejores[0]}` : `se da en ${mejores.slice(0, -1).join(', ')} y ${mejores[mejores.length - 1]}`;
+      solucion.push([`Las parejas posibles son ${S.map(p => `(${p[0]}; ${p[1]})`).join(', ')}. ${pedido === 'max-x' ? 'El mayor valor de x' : 'La mayor suma'} ${enDonde}: `, v('r', correcta), '.']);
     }
 
     const errores = [];
@@ -344,11 +357,11 @@
       const c = ineqs[idxGe][3];
       const inv = ineqs.map((I, i) => (i === idxGe ? [I[0], I[1], '≤', I[3]] : I));
       const Si = soluciones(inv);
-      if (Si.length && acotado(Si) && (sub === 'maximo' || Si.length === 1)) errores.push(err('AL1-no-menor-que-invertido', valorDe(Si),
-        `Leíste «no puede ser menor que ${c}» como «≤ ${c}». «No puede ser menor» quiere decir que es mayor o igual: ≥ ${c}.`, 'parcial', FAL));
+      if (Si.length && acotado(Si) && (sub === 'maximo' || Si.length === 1)) errores.push(hip('no-menor-que-como-a-lo-mas', valorDe(Si),
+        `Leíste «no puede ser menor que ${c}» como «≤ ${c}». «No puede ser menor» quiere decir que es mayor o igual: ≥ ${c}.`));
       const est = ineqs.map((I, i) => (i === idxGe ? [I[0], I[1], '>', I[3]] : I));
       const Se = soluciones(est);
-      if (Se.length && (sub === 'maximo' || Se.length === 1)) errores.push(al19('extremo-excluido', valorDe(Se),
+      if (Se.length && (sub === 'maximo' || Se.length === 1)) errores.push(hip('extremo-excluido', valorDe(Se),
         `Tomaste «no puede ser menor que ${c}» como «> ${c}» y dejaste fuera el caso igual a ${c}, que sí vale.`));
     }
     if (sub === 'unico') {
@@ -403,8 +416,12 @@
       [`El único entero entre esas cotas es `, v('n', n0), `. Comprobación: ${n0}·${n0 + a} = ${g(n0)} > ${A} y ${n0}·${n0 - b} = ${h(n0)} < ${B}.`],
     ];
     const errores = [
-      al19(r1 === n0 - 1 ? 'extremo-incluido' : 'redondeo', n0 - 1, `Con ${n0 - 1} paquetes el gasto sería ${n0 - 1}·${n0 - 1 + a} = ${g(n0 - 1)} soles, que no es más de ${A}. La desigualdad es estricta.`),
-      al19(r2 === n0 + 1 ? 'extremo-incluido' : 'redondeo', n0 + 1, `Con ${n0 + 1} paquetes, al otro precio el gasto sería ${n0 + 1}·${n0 + 1 - b} = ${h(n0 + 1)} soles, que no es menos de ${B}.`),
+      g(n0 - 1) === A
+        ? al19(n0 - 1, `Resolviste ${pol([1, a, -A], 'n')} = 0 como ecuación: n = ${n0 - 1}. Con ${n0 - 1} paquetes el gasto es ${n0 - 1}·${n0 - 1 + a} = ${A} soles, justo ${A}, no más; la desigualdad es estricta: n > ${n0 - 1}.`)
+        : redondeo(n0 - 1, `Redondeaste ${N(r1)} hacia abajo. Con ${n0 - 1} paquetes el gasto sería ${n0 - 1}·${n0 - 1 + a} = ${g(n0 - 1)} soles, que no es más de ${A}.`),
+      h(n0 + 1) === B
+        ? al19(n0 + 1, `Resolviste ${pol([1, -b, -B], 'n')} = 0 como ecuación: n = ${n0 + 1}. Con ${n0 + 1} paquetes, al otro precio el gasto es justo ${B} soles, no menos; la desigualdad es estricta: n < ${n0 + 1}.`)
+        : redondeo(n0 + 1, `Redondeaste ${N(r2)} hacia arriba. Con ${n0 + 1} paquetes, al otro precio el gasto sería ${n0 + 1}·${n0 + 1 - b} = ${h(n0 + 1)} soles, que no es menos de ${B}.`),
       ar5('el-precio', n0 + a, `${n0 + a} es el precio de cada paquete, en soles. Se pregunta cuántos paquetes compró.`),
       ar5('el-precio-supuesto', n0 - b, `${n0 - b} es el precio supuesto de cada paquete. Se pregunta cuántos paquetes compró.`),
     ];
@@ -429,10 +446,10 @@
     const xMal = Math.floor(2 * s + Math.sqrt(3 * s * s + D) + 1e-12);
     const errores = [
       exacta
-        ? al19('extremo-excluido', xm - 1, `Con largo ${xm} cm el área es justo ${Amin} cm², y eso vale: «no puede ser menor» incluye el caso igual.`)
-        : al19('redondeo', xm + 1, `Con largo ${xm + 1} cm el ancho es ${2 * s - xm - 1} cm y el área ${(xm + 1) * (2 * s - xm - 1)} cm², menor que ${Amin} cm²: redondeaste ${N(s + Math.sqrt(D))} hacia arriba.`),
+        ? hip('extremo-excluido', xm - 1, `Con largo ${xm} cm el área es justo ${Amin} cm², y eso vale: «no puede ser menor» incluye el caso igual.`)
+        : redondeo(xm + 1, `Con largo ${xm + 1} cm el ancho es ${2 * s - xm - 1} cm y el área ${(xm + 1) * (2 * s - xm - 1)} cm², menor que ${Amin} cm²: redondeaste ${N(s + Math.sqrt(D))} hacia arriba.`),
       err('perimetro-como-suma-de-dos-lados', xMal, `Tomaste largo + ancho = ${4 * s} cm, el perímetro entero. El perímetro suma los cuatro lados: largo + ancho es la mitad, ${2 * s} cm.`),
-      err('AL1-no-menor-que-invertido', 2 * s - 1, `Leíste «no puede ser menor que» como «a lo más». Con largo ${2 * s - 1} cm y ancho 1 cm el área es ${2 * s - 1} cm², muy por debajo de ${Amin} cm².`, 'parcial', FAL),
+      hip('no-menor-que-como-a-lo-mas', 2 * s - 1, `Leíste «no puede ser menor que» como «a lo más». Con largo ${2 * s - 1} cm y ancho 1 cm el área es ${2 * s - 1} cm², muy por debajo de ${Amin} cm².`),
       ar5('el-ancho', 2 * s - xm, `${2 * s - xm} cm es el ancho del rectángulo más alargado. Se pide su largo.`),
       ar5('el-lado-del-cuadrado', s, `${s} cm es el lado del cuadrado; con ese largo el rectángulo sería el mismo cuadrado. Se pide el mayor largo.`),
     ];
@@ -462,9 +479,13 @@
     ];
     const errores = [
       err('semiperimetro', 2 * x0 + a, `${2 * x0 + a} cm es la suma del largo y el ancho, la mitad del perímetro. El perímetro suma los cuatro lados.`),
-      al19('redondeo', 2 * (2 * (x0 - 1) + a), `Usaste x = ${x0 - 1}: la suma de áreas sería ${S(x0 - 1)} cm², que no es mayor que ${Bc} cm².`),
-      al19('redondeo', 2 * (2 * (x0 + 1) + a), `Usaste x = ${x0 + 1}: la suma de áreas sería ${S(x0 + 1)} cm², que no es menor que ${Ac} cm².`),
       ar5('el-otro-rectangulo', 2 * (2 * x0 + c - b), `${2 * (2 * x0 + c - b)} cm es el perímetro del segundo rectángulo. Se pide el del primero.`),
+      S(x0 - 1) === Bc
+        ? al19(2 * (2 * (x0 - 1) + a), `Resolviste ${pol([2, k, -b * c])} = ${Bc} como ecuación: x = ${x0 - 1}. Con x = ${x0 - 1} la suma de áreas es justo ${Bc} cm², no más; la desigualdad es estricta.`)
+        : redondeo(2 * (2 * (x0 - 1) + a), `Usaste x = ${x0 - 1}: la suma de áreas sería ${S(x0 - 1)} cm², que no es mayor que ${Bc} cm².`),
+      S(x0 + 1) === Ac
+        ? al19(2 * (2 * (x0 + 1) + a), `Resolviste ${pol([2, k, -b * c])} = ${Ac} como ecuación: x = ${x0 + 1}. Con x = ${x0 + 1} la suma de áreas es justo ${Ac} cm², no menos; la desigualdad es estricta.`)
+        : redondeo(2 * (2 * (x0 + 1) + a), `Usaste x = ${x0 + 1}: la suma de áreas sería ${S(x0 + 1)} cm², que no es menor que ${Ac} cm².`),
       ar5('el-valor-de-x', x0, `${x0} es el valor de x, el ancho del primer rectángulo. Se pide su perímetro.`),
     ];
     return cerrar(rng, semilla, { correcta: P1, errores, texto: x => `${N(x)} cm`, unidad: 'cm', variables, enunciado, pregunta, solucion,
@@ -487,8 +508,8 @@
       ['El menor entero es ', v('k', ans), `.${entero ? ` Con k = ${N(t.n)} la expresión vale 0 en x = ${qt(vx)} y no es positiva.` : ''}`],
     ];
     const errores = [
-      entero ? al19('extremo-incluido', t.n, `Con k = ${t.n} el discriminante es 0: la expresión vale 0 en x = ${qt(vx)}, y 0 no es mayor que 0.`)
-        : al19('redondeo', piso(t), `Redondeaste ${qt(t)} hacia abajo. Con k = ${piso(t)} el discriminante es positivo y la expresión es negativa cerca de x = ${qt(vx)}.`),
+      entero ? al19(t.n, `Resolviste Δ = ${b * b} − ${4 * a}k = 0 como ecuación: k = ${t.n}. Con k = ${t.n} la expresión vale 0 en x = ${qt(vx)}, y 0 no es mayor que 0; la desigualdad es estricta: k > ${t.n}.`)
+        : redondeo(piso(t), `Redondeaste ${qt(t)} hacia abajo. Con k = ${piso(t)} el discriminante es positivo y la expresión es negativa cerca de x = ${qt(vx)}.`),
       err('discriminante-signo-invertido', techo(t) - 1, `Pediste Δ > 0, y eso da k < ${qt(t)}. Para que no corte al eje se necesita Δ < 0.`),
       err('discriminante-sin-el-4', piso(fr(b * b, a)) + 1, `Olvidaste el 4 de Δ = b² − 4ac: quedó ${b * b} − ${a === 1 ? '' : a}k < 0.`),
       ...(a !== 1 ? [err('discriminante-sin-a', piso(fr(b * b, 4)) + 1, `Olvidaste el coeficiente ${a} de x² en Δ = b² − 4ac: quedó ${b * b} − 4k < 0.`)] : []),
@@ -504,16 +525,16 @@
     const entero = max.d === 1, ans = piso(max) + 1;
     const variables = { h0: { nombre: 'altura inicial', color: 'o' }, vv: { nombre: 'rapidez inicial', color: 'i' }, H: { nombre: 'altura de la malla', color: 'd' } };
     const enunciado = ['Desde la azotea de una casa, a ', v('h0', `${h0} m`), ' del suelo, se lanza una pelota hacia arriba. Su altura, en metros, a los t segundos es h(t) = −5t² + ',
-      v('vv', `${vel}t`), ' + ', v('h0', h0), '. Se quiere colocar arriba una malla horizontal que la pelota no llegue a tocar.'];
+      v('vv', vel), 't + ', v('h0', h0), '. Se quiere colocar arriba una malla horizontal que la pelota no llegue a tocar.'];
     const pregunta = ['¿A qué menor ', v('H', 'altura'), ' entera, en metros, se puede colocar la malla?'];
     const solucion = [
-      ['La malla a la altura ', v('H', 'H'), ' no se toca si h(t) < H para todo t: 5t² − ', v('vv', `${vel}t`), ' + (H − ', v('h0', h0), ') > 0 para todo t.'],
+      ['La malla a la altura ', v('H', 'H'), ' no se toca si h(t) < H para todo t: 5t² − ', v('vv', vel), 't + (H − ', v('h0', h0), ') > 0 para todo t.'],
       [`La parábola 5t² − ${vel}t + (H − ${h0}) abre hacia arriba; es siempre positiva si Δ < 0: ${vel}² − 4·5·(H − ${h0}) < 0 → H − ${h0} > ${qDec(fr(vel * vel, 20))} → H > ${qDec(max)}.`],
       ['La menor altura entera es ', v('H', `${ans} m`), `.${entero ? ` A ${N(max.n)} m la pelota llega justo y la toca.` : ''}`],
     ];
     const errores = [
-      entero ? al19('extremo-incluido', max.n, `A ${max.n} m llega justo la pelota en su punto más alto, así que la toca. Se necesita H > ${max.n}.`)
-        : al19('redondeo', piso(max), `Redondeaste ${N(qv(max))} hacia abajo. A ${piso(max)} m la pelota pasa y toca la malla, porque llega hasta ${N(qv(max))} m.`),
+      entero ? al19(max.n, `Resolviste Δ = 0 como ecuación: H = ${max.n}. A ${max.n} m llega justo la pelota en su punto más alto, así que la toca; la desigualdad es estricta: H > ${max.n}.`)
+        : redondeo(piso(max), `Redondeaste ${N(qv(max))} hacia abajo. A ${piso(max)} m la pelota pasa y toca la malla, porque llega hasta ${N(qv(max))} m.`),
       err('discriminante-signo-invertido', techo(max) - 1, `Pediste Δ > 0. Eso da H < ${N(qv(max))}: alturas que la pelota sí alcanza. Para que nunca la toque, Δ < 0.`),
       err('discriminante-sin-el-4', piso(fr(5 * h0 + vel * vel, 5)) + 1, `Olvidaste el 4 de Δ = b² − 4ac: quedó ${vel}² − 5(H − ${h0}) < 0.`),
       err('olvida-la-altura-inicial', piso(fr(vel * vel, 20)) + 1, `No sumaste los ${h0} m de la azotea: la pelota sube ${qDec(fr(vel * vel, 20))} m desde ahí, pero se mide desde el suelo.`),
@@ -539,7 +560,7 @@
     const errores = [
       conTexto(err('olvida-el-signo-de-a', 0, `Olvidaste que el coeficiente de x² también debe ser ${positivo ? 'positivo' : 'negativo'}: con k ${positivo ? `< −${m}` : `> ${m}`} la parábola abre hacia ${positivo ? 'abajo y es negativa' : 'arriba y es positiva'} lejos del vértice.`), union),
       conTexto(err('discriminante-signo-invertido', 0, `Pediste Δ > 0 (k² < ${m * m}). Con Δ > 0 la parábola corta al eje y cambia de signo.`), intervalo([pz(-m, false, m, false)])),
-      conTexto(al19('extremo-incluido', 0, `Con k = ${N(positivo ? m : -m)} el discriminante es 0 y la expresión vale 0 en un punto: no es ${positivo ? 'positiva' : 'negativa'} ahí.`),
+      conTexto(hip('extremo-incluido', 0, `Con k = ${N(positivo ? m : -m)} el discriminante es 0 y la expresión vale 0 en un punto: no es ${positivo ? 'positiva' : 'negativa'} ahí.`),
         intervalo(positivo ? [pz(m, true, null, false)] : [pz(null, false, -m, true)])),
       conTexto(err('solo-el-coeficiente-principal', 0, `Pediste solo k ${positivo ? '>' : '<'} 0. Con k = ${qt(fr(positivo ? m : -m, 2))}, por ejemplo, el discriminante es positivo y la parábola corta al eje.`),
         intervalo(positivo ? [pz(0, false, null, false)] : [pz(null, false, 0, false)])),
@@ -570,7 +591,7 @@
     ];
     const S = vA + vB;
     const errores = [
-      al19('extremo-excluido-tomado', (p - s1) / S, `Tomaste q = ${s1}, pero la desigualdad es estricta: ${s1} no está en ⟨${s1}; ${s2}⟩ y el menor entero es ${q}.`),
+      hip('extremo-excluido-tomado', (p - s1) / S, `Tomaste q = ${s1}, pero la desigualdad es estricta: ${s1} no está en ⟨${s1}; ${s2}⟩ y el menor entero es ${q}.`),
       err('otro-extremo', Math.abs(q - r1) / S, `Tomaste p = ${r1}, el menor elemento de [${r1}; ${r2}]. Se pide el mayor.`),
       err('otro-extremo', (p - (s2 - 1)) / S, `Tomaste q = ${s2 - 1}, el mayor entero de ⟨${s1}; ${s2}⟩. Se pide el menor.`),
       err('encuentro-con-resta', d / Math.abs(vA - vB), `Restaste las rapideces, como si uno persiguiera al otro. Van uno hacia el otro: se acercan con la suma, ${S} km/h.`),
@@ -600,14 +621,14 @@
     const Ir = intervalo([pz(a + r, izqCerrado, b + r, !izqCerrado)]).texto;
     const inv = intervalo([pz(fr(1, b + r), !izqCerrado, fr(1, a + r), izqCerrado)]).texto;
     const solucion = [
-      [`Se separa la parte entera: E = ${pp} ${m < 0 ? '−' : '+'} ${Math.abs(m)}/(x + ${r}), porque ${pp === 1 ? '' : pp}(x + ${r}) = ${pol([pp, pp * r])} y ${N(q)} − ${pp * r} = ${N(m)}.`],
+      [`Se separa la parte entera: E = ${pp} ${m < 0 ? '−' : '+'} ${Math.abs(m)}/(x + ${r}), ${pp === 1 ? `porque ${pol([1, q])} = (x + ${r}) ${m < 0 ? '−' : '+'} ${Math.abs(m)}` : `porque ${pp}(x + ${r}) = ${pol([pp, pp * r])} y ${N(q)} − ${pp * r} = ${N(m)}`}.`],
       ['Como ', v('x', `x ∈ ${I}`), `, x + ${r} ∈ ${Ir}, que es positivo. Al tomar el inverso se da vuelta el orden y también los corchetes: 1/(x + ${r}) ∈ ${inv}.`],
       [`Se multiplica por ${N(m)}${m < 0 ? ' (negativo: el orden y los corchetes se dan vuelta otra vez)' : ''} y se suma ${pp}: `, v('E', `E ∈ ${correcta.texto}`), '.'],
     ];
     const errores = [
-      conTexto(al19('corchetes-cambiados', 0, `Los extremos están bien, pero los corchetes no: ${qt(lo)} sale de x = ${decrece ? b : a}, que ${(decrece ? !izqCerrado : izqCerrado) ? 'sí' : 'no'} está en el intervalo de x. Cada corchete va con el extremo de x que lo produce.`),
+      conTexto(hip('corchetes-cambiados', 0, `Los extremos están bien, pero los corchetes no: ${qt(lo)} sale de x = ${decrece ? b : a}, que ${(decrece ? !izqCerrado : izqCerrado) ? 'sí' : 'no'} está en el intervalo de x. Cada corchete va con el extremo de x que lo produce.`),
         intervalo([{ lo, lc: !lc, hi, hc: !hc }])),
-      conTexto(al19('todo-cerrado', 0, `Cerraste los dos extremos. Uno de ellos sale de un extremo de x que no está en el intervalo, así que E nunca lo alcanza.`), intervalo([{ lo, lc: true, hi, hc: true }])),
+      conTexto(hip('todo-cerrado', 0, `Cerraste los dos extremos. Uno de ellos sale de un extremo de x que no está en el intervalo, así que E nunca lo alcanza.`), intervalo([{ lo, lc: true, hi, hc: true }])),
       conTexto(err('olvida-la-parte-entera', 0, `Ese es el intervalo de ${N(m)}/(x + ${r}). Falta sumarle la parte entera, ${pp}.`),
         intervalo([{ lo: fr(lo.n - pp * lo.d, lo.d), lc, hi: fr(hi.n - pp * hi.d, hi.d), hc }])),
       pp * a + q > 0 ? conTexto(err('numerador-y-denominador-por-separado', 0, `Dividiste la cota menor del numerador entre la mayor del denominador, y al revés. Numerador y denominador dependen del mismo x: no toman sus extremos a la vez.`),
@@ -636,6 +657,7 @@
       conTexto(err('solo-los-extremos', 0, `Evaluaste solo en x = ${N(a)} y x = ${b}. Pero x² es mínimo en x = 0, que está dentro del intervalo: ahí el denominador es menor y E es mayor.`), numero(fr(k, mn + c))),
       conTexto(ar5('el-menor-valor', 0, `${qt(fr(k, M + c))} es el menor valor de E, en x = ${N(lejos)}. Se pide el mayor.`), numero(fr(k, M + c))),
       conTexto(err('maximo-en-el-centro', 0, `Evaluaste en el centro del intervalo, x = ${qt(mid)}. El mayor valor está donde x² es mínimo, en x = 0.`), numero(fr(k * mid.d * mid.d, mid.n * mid.n + c * mid.d * mid.d))),
+      a + c > 0 ? conTexto(err('olvida-el-cuadrado', 0, `Usaste x en vez de x² en el denominador y tomaste el menor x, ${N(a)}. Pero x² no crece con x: es mínimo en x = 0.`), numero(fr(k, a + c))) : null,
     ];
     return cerrarTexto(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion,
       datos: { tipo: 'racional', sub: 'cuadrado', k, c, a, b } });
@@ -666,6 +688,7 @@
       err('medias-sin-el-2', L / 2, 'Olvidaste el 2 de la desigualdad de medias: a + b ≥ 2√(ab).'),
       ...(ex === 1 ? [err('cerca-el-muro', 2 * Math.sqrt(2 * (k + 2) * A), 'Contaste también el frente, que da al muro y no se cerca.')] : []),
       ar5('el-frente', x0, `${x0} m es el frente del terreno óptimo. Se pide la longitud total de alambre.`),
+      hip('olvida-los-divisorios-al-sumar', ex * x0 + 2 * y0, `Con las medidas óptimas (${x0} m y ${y0} m) sumaste ${ex === 2 ? 'frente, fondo' : 'el fondo'} y los dos costados, pero no ${k === 1 ? 'el cerco divisorio' : `los ${k} cercos divisorios`}, que también son alambre.`),
       ar5('el-costado', y0, `${y0} m es el costado del terreno óptimo. Se pide la longitud total de alambre.`),
     ];
     return cerrar(rng, semilla, { correcta: L, errores, texto: x => `${N(x)} m`, unidad: 'm', variables, enunciado, pregunta, solucion,
@@ -687,22 +710,22 @@
     if (Sm[0] === 0 && Sm[1] === 0) return null;
     // Orden al azar de los sumandos.
     const swap = rng.moneda();
-    const [U, W, cu, cw] = swap ? [B, A, 'b', 'a'] : [A, B, 'a', 'b'];
+    const [U, W] = swap ? [B, A] : [A, B]; // a es el primero que se lee
     const variables = { a: { nombre: 'primer sumando', color: 'o' }, b: { nombre: 'segundo sumando', color: 'i' }, C: { nombre: 'conjunto solución', color: 'd' } };
-    const enunciado = ['Se tiene la inecuación |', v(cu === 'a' ? 'a' : 'b', lineal(...U)), '| + |', v(cw === 'a' ? 'a' : 'b', lineal(...W)), Sm[0] === 0 ? `| ≤ ${N(Math.abs(Sm[1]))}.` : `| ≤ |${lineal(...Sm)}|.`];
+    const enunciado = ['Se tiene la inecuación |', v('a', lineal(...U)), '| + |', v('b', lineal(...W)), Sm[0] === 0 ? `| ≤ ${N(Math.abs(Sm[1]))}.` : `| ≤ |${lineal(...Sm)}|.`];
     const pregunta = ['¿Cuál es su ', v('C', 'conjunto solución'), '?'];
     const fuera = intervalo([pz(null, false, p, true), pz(q, true, null, false)]);
     const dentro = intervalo([pz(p, true, q, true)]);
     const correcta = sub === 'mismo' ? fuera : dentro;
     const solucion = [
-      ['Llama ', v('a', `a = ${lineal(...A)}`), ' y ', v('b', `b = ${lineal(...B)}`), `. Su suma es a + b = ${lineal(...Sm)}${Sm[0] === 0 ? `, y ${N(Math.abs(Sm[1]))} = |a + b|` : ''}: la inecuación es |a| + |b| ≤ |a + b|.`],
+      ['Llama ', v('a', `a = ${lineal(...U)}`), ' y ', v('b', `b = ${lineal(...W)}`), `. Su suma es a + b = ${lineal(...Sm)}${Sm[0] === 0 ? `, y ${N(Math.abs(Sm[1]))} = |a + b|` : ''}: la inecuación es |a| + |b| ≤ |a + b|.`],
       ['Siempre se cumple |a + b| ≤ |a| + |b| (desigualdad triangular). Entonces solo puede valer la igualdad, y eso ocurre cuando a y b no tienen signos opuestos: a·b ≥ 0.'],
       [sub === 'mismo' ? `a·b = ${al * be === 1 ? '' : al * be}${factor(p)}${factor(q)} ≥ 0 → x ≤ ${N(p)} o x ≥ ${N(q)}.` : `a·b = ${al * be === 1 ? '' : al * be}${factor(p)}(${N(q)} − x) ≥ 0 → ${factor(p)}${factor(q)} ≤ 0 → ${N(p)} ≤ x ≤ ${N(q)}.`],
       ['C.S. = ', v('C', correcta.texto), '.'],
     ];
     const errores = [
       conTexto(err('signo-del-producto-invertido', 0, `Pediste a·b ≤ 0, signos opuestos. Con signos opuestos |a + b| es menor que |a| + |b|: la desigualdad pedida falla.`), sub === 'mismo' ? dentro : fuera),
-      conTexto(al19('extremo-excluido', 0, `Dejaste fuera x = ${N(p)} y x = ${N(q)}. Ahí uno de los dos vale 0 y la igualdad se cumple: a·b ≥ 0 incluye el 0.`),
+      conTexto(hip('extremo-excluido', 0, `Dejaste fuera x = ${N(p)} y x = ${N(q)}. Ahí uno de los dos vale 0 y la igualdad se cumple: a·b ≥ 0 incluye el 0.`),
         sub === 'mismo' ? intervalo([pz(null, false, p, false), pz(q, false, null, false)]) : intervalo([pz(p, false, q, false)])),
       conTexto(err('AL22-suma-de-absolutos', 0, 'Tomaste |a| + |b| = |a + b| para todo x. Eso solo vale cuando a y b tienen el mismo signo (o uno es 0).', 'parcial', FAL), intervalo([pz(null, false, null, false)])),
       conTexto(err('triangular-sin-igualdad', 0, 'La desigualdad triangular dice |a + b| ≤ |a| + |b|, pero la igualdad sí puede darse: cuando a y b tienen el mismo signo.'), intervalo([])),
@@ -757,7 +780,7 @@
       err('PL-vertice-no-entero', oV.n, `S/ ${oV.n} es la ganancia en el vértice (${qt(Vx)}; ${qt(Vy)}), que no tiene coordenadas enteras: no se pueden vender fracciones de prenda.`),
       err('PL-vertice-redondeado', oF, `Redondeaste el vértice hacia abajo, a (${fx}; ${fy}). Ese punto cumple, pero no es el mejor: hay otros puntos enteros con más ganancia.`),
       err('PL-solo-vertices-de-los-ejes', ejes, 'Revisaste solo hacer un tipo de prenda. Mezclando las dos se gana más.'),
-      ...(!ok(rx, ry) ? [err('PL-redondeo-al-mas-cercano', c * rx + d * ry, `Redondeaste el vértice al entero más cercano, (${rx}; ${ry}), pero ese punto se pasa de ${a1 * rx + b1 * ry > R1 ? 'los ovillos' : 'las horas'}.`)] : []),
+      ...(!ok(rx, ry) ? [err('PL-redondeo-al-mas-cercano', c * rx + d * ry, `Redondeaste el vértice al entero más cercano, (${rx}; ${ry}), pero ese punto se pasa de ${[a1 * rx + b1 * ry > R1 ? `los ovillos (usa ${a1 * rx + b1 * ry})` : '', a2 * rx + b2 * ry > R2 ? `las horas (usa ${a2 * rx + b2 * ry})` : ''].filter(Boolean).join(' y de ')}.`)] : []),
     ];
     return cerrar(rng, semilla, { correcta: opt, errores, texto: x => `S/ ${N(x)}`, unidad: 'S/', variables, enunciado, pregunta, solucion,
       datos: { tipo: 'lineal-entera', sub: 'ganancia', a1, b1, a2, b2, R1, R2, c, d } });
@@ -802,8 +825,8 @@
       err('PL-vertice-no-entero', Bud - cV.n, `Usaste el gasto del vértice (${qt(Vx)}; ${qt(Vy)}), S/ ${cV.n}, que no tiene coordenadas enteras: no se compran fracciones de caja.`),
       err('PL-vertice-redondeado', Bud - cC, `Redondeaste el vértice hacia arriba, a (${cx}; ${cy}). Ese punto cumple, pero hay otros puntos enteros más baratos.`),
       err('PL-solo-vertices-de-los-ejes', Bud - ejes, 'Revisaste solo comprar un tipo de caja. Mezclando los dos tipos se gasta menos.'),
-      ...(!ok(rx, ry) ? [err('PL-redondeo-al-mas-cercano', Bud - (ca * rx + cb * ry), `Redondeaste el vértice al entero más cercano, (${rx}; ${ry}), pero así faltan ${u1 * rx + v1 * ry < R1 ? 'panes' : 'frutas'}.`)] : []),
-      ar5('el-gasto', best, `S/ ${best} es lo que se gasta. Se pide lo que sobra de los S/ ${Bud}.`),
+      ...(!ok(rx, ry) ? [err('PL-redondeo-al-mas-cercano', Bud - (ca * rx + cb * ry), `Redondeaste el vértice al entero más cercano, (${rx}; ${ry}), pero así faltan ${[u1 * rx + v1 * ry < R1 ? `panes (solo ${u1 * rx + v1 * ry})` : '', u2 * rx + v2 * ry < R2 ? `frutas (solo ${u2 * rx + v2 * ry})` : ''].filter(Boolean).join(' y ')}.`)] : []),
+      err('AR5-el-gasto', best, `S/ ${best} es lo que se gasta. Se pide lo que sobra de los S/ ${Bud}.`, 'hipotesis', FAR),
     ];
     return cerrar(rng, semilla, { correcta: Bud - best, errores, texto: x => `S/ ${N(x)}`, unidad: 'S/', variables, enunciado, pregunta, solucion,
       datos: { tipo: 'lineal-entera', sub: 'sobrante', u1, v1, u2, v2, R1, R2, ca, cb, presupuesto: Bud } });

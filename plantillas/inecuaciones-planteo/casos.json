@@ -2,7 +2,7 @@
   "plantilla": "inecuaciones-planteo",
   "tolerancia": 0.000001,
   "nota": "Una semilla por tipo y subtipo (y por pedido en dos-enteros), más entrada-1 y salida-1. Las respuestas numéricas son exactas (enteros o decimales finitos); en los intervalos y las fracciones, respuesta es el texto (notación ⟨a; b], fracciones a/b).",
-  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 22 casos con Python y fracciones exactas, por fuerza bruta sobre los enteros en los problemas de conteo y programación lineal, y barriendo una malla fina de x en las inecuaciones con valor absoluto, los intervalos y los extremos. Coinciden los 22 con esperado.respuesta y esperado.exacta. No hay ambigüedades ni otra alternativa defendible.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 22 casos con Python y fracciones exactas, por fuerza bruta sobre los enteros en los problemas de conteo y programación lineal, y barriendo una malla fina de x en las inecuaciones con valor absoluto, los intervalos y los extremos. Coinciden los 22 con esperado.respuesta y esperado.exacta. No hay ambigüedades ni otra alternativa defendible. Tras la revisión cambiaron dos casos (semillas 5 y 17: 210 m y 11), recalculados aparte por la conversación principal.",
   "casos": [
     {
       "semilla": 0,
@@ -92,13 +92,13 @@
       "semilla": 5,
       "entrada": {
         "tipo": "medias",
-        "A": 250,
+        "A": 2205,
         "k": 3,
-        "muro": false
+        "muro": true
       },
       "esperado": {
-        "respuesta": 100,
-        "exacta": "100 m"
+        "respuesta": 210,
+        "exacta": "210 m"
       }
     },
     {
@@ -197,14 +197,14 @@
       "entrada": {
         "tipo": "racional",
         "sub": "cuadrado",
-        "k": 18,
-        "c": 2,
+        "k": 44,
+        "c": 4,
         "a": -2,
-        "b": 1
+        "b": 6
       },
       "esperado": {
-        "respuesta": "9",
-        "exacta": "9"
+        "respuesta": 11,
+        "exacta": "11"
       }
     },
     {

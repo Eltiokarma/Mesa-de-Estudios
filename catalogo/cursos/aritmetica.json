@@ -133,7 +133,8 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [
-        "porcentajes-sucesivos"
+        "porcentajes-sucesivos",
+        "porcentajes-planteo"
       ],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },

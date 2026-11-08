@@ -35,7 +35,7 @@
       "universidades": {"uni": {"semanas": [2, 3]}, "unmsm": {"temas": [1]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["numeros-reales"],
+      "plantillas": ["numeros-reales", "inecuaciones-planteo"],
       "investigacion": null
     },
     {
@@ -83,7 +83,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3, 12]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["grafica-perillas"],
+      "plantillas": ["grafica-perillas", "inecuaciones-planteo"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -98,7 +98,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [4, 11, 12]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["grafica-perillas", "sistemas-ecuaciones"],
+      "plantillas": ["grafica-perillas", "sistemas-ecuaciones", "inecuaciones-planteo"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -280,7 +280,7 @@
       "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["programacion-lineal"],
+      "plantillas": ["programacion-lineal", "inecuaciones-planteo"],
       "investigacion": null
     },
     {
