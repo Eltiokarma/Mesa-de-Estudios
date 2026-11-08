@@ -2,7 +2,7 @@
   "plantilla": "geo-troncos-prismas",
   "tolerancia": 0.000001,
   "nota": "Notables de academia: sen 37° = 3/5, cos 37° = 4/5, tg 37° = 3/4, tg 53° = 4/3, sen 30° = 1/2, tg 60° = √3. La respuesta es el valor numérico; «exacta» es el texto que ve el alumno.",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas por un subagente (8 nov 2026): resolvió los 21 casos desde el enunciado con fracciones y los ángulos de academia, e integró las secciones en dos casos (cuadrada y triangular). Los 21 coinciden con respuesta y exacta. No halló enunciados ambiguos (en el hueco con dato de apotema lateral, el tamaño de las bases no se puede comprobar, pero la respuesta no depende de él).",
   "casos": [
     {
       "semilla": 0,

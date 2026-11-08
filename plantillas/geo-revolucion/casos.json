@@ -2,7 +2,7 @@
   "plantilla": "geo-revolucion",
   "tolerancia": 1e-06,
   "nota": "Medidas en cm o m; ángulos de academia (sen 37° = 3/5, sen 53° = 4/5, sen 30° = 1/2). La respuesta es el valor numérico (con π ya multiplicado); en el subtipo desplazamiento/piramide es la clave «mix:a|b» de aπ − b√3. «exacta» es el texto que ve el alumno.",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas por un subagente (8 nov 2026): resolvió los 25 casos desde el enunciado con aritmética exacta (fracciones, π como coeficiente, raíces comprobadas) e integró por discos el volumen de cuatro casos. Los 25 coinciden con respuesta y exacta, incluida la clave mix:316|4. No halló enunciados ambiguos.",
   "casos": [
     {
       "semilla": 0,
