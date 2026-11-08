@@ -124,7 +124,11 @@
     });
     if (t === '') return { clave, texto: '0' };
     const varios = nums.filter(n => n !== 0).length > 1;
-    return { clave, texto: D === 1 ? t : (varios ? `(${t})/${D}` : `${t}/${D}`) };
+    if (D === 1) return { clave, texto: t };
+    if (!varios) return { clave, texto: `${t}/${D}` };
+    // Todos negativos: «−(u + w)/6», no «(−u − w)/6».
+    if (nums.every(n => n <= 0)) return { clave, texto: '−' + combinacion(fs.map(f => frac(-f.n, f.d)), nombres).texto };
+    return { clave, texto: `(${t})/${D}` };
   }
   // vector(comps) → { clave, texto }: «(3; −4)» o «(1/2; 0; −2)», con fracciones exactas.
   function vector(comps) {

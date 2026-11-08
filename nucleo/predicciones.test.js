@@ -86,6 +86,7 @@ test('combinacion: forma de academia y clave canónica', () => {
   assert.equal(P.combinacion([[1, 2], [-1, 2]], ['a', 'b']).texto, '(a − b)/2');
   assert.equal(P.combinacion([0, [3, 4]], ['A', 'B']).texto, '3B/4');
   assert.equal(P.combinacion([-1, 0], ['A', 'B']).texto, '−A');
+  assert.equal(P.combinacion([[-1, 6], [-1, 6]], ['u', 'w']).texto, '−(u + w)/6');
   assert.equal(P.combinacion([0, 0], ['A', 'B']).texto, '0');
   assert.equal(P.combinacion([[2, 4], 1], ['A', 'B']).clave, P.combinacion([[1, 2], [3, 3]], ['A', 'B']).clave);
   assert.notEqual(P.combinacion([1, 2], ['A', 'B']).clave, P.combinacion([2, 1], ['A', 'B']).clave);
