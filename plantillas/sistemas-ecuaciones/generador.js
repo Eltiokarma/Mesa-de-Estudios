@@ -164,16 +164,16 @@
     const T = x + r, H = x + j;
     if (T > 40) return null;
     const variables = { T: { nombre: `jornadas de ${A} en total`, color: 'o' }, H: { nombre: `jornadas en la casa de ${A}`, color: 'i' },
-      p: { nombre: 'tarifas por jornada', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+      x: { nombre: 'lo que se pide', color: 'd' } };
     const enunciado = [`${A} y ${B} son albañiles y se ayudaron a construir sus casas: cada uno trabajó algunas jornadas en su propia casa y otras en la casa del otro. ${A} trabajó `,
       v('T', `${T} jornadas`), ` en total, entre las dos casas. En la casa de ${A} se trabajaron `, v('H', `${H} jornadas`),
-      ', sumando las de los dos. Por cada jornada en la casa del otro, ', `${A} cobra `, v('p', `S/ ${a}`), ` y ${B} cobra `, v('p', `S/ ${b}`),
+      ', sumando las de los dos. Por cada jornada en la casa del otro, ', `${A} cobra S/ ${a} y ${B} cobra S/ ${b}`,
       `. Al hacer cuentas, lo que ${A} le debía a ${B} era justo lo que ${B} le debía a ${A}.`];
     const D = T - H, ra = b / g, ja = a / g;
     const solucion = [
       [`Llama r a las jornadas de ${A} en la casa de ${B}, j a las de ${B} en la casa de ${A}, y x a las de ${A} en su propia casa.`],
       [`${A} trabajó en total x + r = `, v('T', String(T)), `; en la casa de ${A} se trabajó x + j = `, v('H', String(H)), '. Restando: r − j = ', `${T} − ${H} = ${ent(D)}.`],
-      [`Deudas iguales: ${A} le debe a ${B} `, v('p', String(b)), '·j y ', `${B} le debe a ${A} `, v('p', String(a)), '·r. Entonces ', `${a}·r = ${b}·j, o sea r/j = ${ra}/${ja}: r = ${ra}k y j = ${ja}k.`],
+      [`Deudas iguales: ${A} le debe a ${B} ${b}·j y ${B} le debe a ${A} ${a}·r. Entonces `, `${a}·r = ${b}·j, o sea r/j = ${ra}/${ja}: r = ${ra}k y j = ${ja}k.`],
       [`r − j = ${ra}k − ${ja}k = ${poli([[ra - ja, 'k']])} = ${ent(D)}, así que k = ${t}: r = ${r} y j = ${j}.`],
     ];
     let correcta, errores, pregunta;
@@ -191,7 +191,7 @@
     } else {
       correcta = b * j;
       pregunta = ['¿Cuánto ', v('x', `le debía ${A} a ${B}`), ', en soles, antes de cancelar las cuentas?'];
-      solucion.push([`${A} le debía a ${B} sus ${j} jornadas a `, v('p', `S/ ${b}`), `: ${b} · ${j} = `, v('x', `S/ ${b * j}`), ` (lo mismo que ${a} · ${r}).`]);
+      solucion.push([`${A} le debía a ${B} sus ${j} jornadas a S/ ${b}: ${b} · ${j} = `, v('x', `S/ ${b * j}`), ` (lo mismo que ${a} · ${r}).`]);
       errores = [
         h('tarifa-cruzada', a * j, `Multiplicaste las jornadas de ${B} por la tarifa de ${A}. Cada jornada se paga con la tarifa de quien la trabaja: ${B} cobra S/ ${b}.`),
         h('tarifa-cruzada', b * r, `Multiplicaste las jornadas de ${A} en la casa de ${B} por la tarifa de ${B}. Lo que ${A} debe son las jornadas de ${B} en su casa, a la tarifa de ${B}.`),
@@ -229,9 +229,8 @@
     const S = p * x0 + q * y0 + r * z0;
     const sols = soluciones(p, q, r, N, S);
     if (sols.length < 2 || sols.length > 6) return null;
-    const variables = { N: { nombre: 'cantidad de artículos', color: 'o' }, S: { nombre: 'dinero pagado', color: 'i' }, p: { nombre: 'precios', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
-    const enunciado = [`En ${lugar}, Pedro compró `, v('N', `${N} artículos`), ` entre ${c1}, ${c2} y ${c3}, y pagó `, v('S', `S/ ${S}`), `. Cada ${o1[1]} costó `, v('p', `S/ ${p}`),
-      `; cada ${o2[1]}, `, v('p', `S/ ${q}`), `, y cada ${o3[1]}, `, v('p', `S/ ${r}`), '. Compró por lo menos uno de cada tipo.'];
+    const variables = { N: { nombre: 'cantidad de artículos', color: 'o' }, S: { nombre: 'dinero pagado', color: 'i' }, x: { nombre: 'lo que se pide', color: 'd' } };
+    const enunciado = [`En ${lugar}, Pedro compró `, v('N', `${N} artículos`), ` entre ${c1}, ${c2} y ${c3}, y pagó `, v('S', `S/ ${S}`), `. Cada ${o1[1]} costó S/ ${p}; cada ${o2[1]}, S/ ${q}, y cada ${o3[1]}, S/ ${r}. Compró por lo menos uno de cada tipo.`];
     const K = S - r * N, dp = p - r, dq = q - r;
     const solucion = [
       [`Con x ${c1}, y ${c2} y z ${c3}: x + y + z = `, v('N', String(N)), ' y ', poli([[p, 'x'], [q, 'y'], [r, 'z']]), ' = ', v('S', String(S)), '.'],
@@ -249,7 +248,7 @@
       errores = [
         h('enteros-con-cero', Math.max(...ceros.map(s => s[0])), `Aceptaste compras con 0 ${c2} o 0 ${c3}. El enunciado dice que compró por lo menos uno de cada tipo.`),
         h('enteros-minimo', sols[0][0], `Esa es la menor cantidad posible de ${c1}, no la mayor.`),
-        h('enteros-solo-dinero', Math.floor((S - q - r) / p), `Usaste solo el dinero (un artículo de cada uno de los otros y el resto en ${c1}), sin la otra ecuación: también tienen que ser ${N} artículos.`),
+        h('enteros-solo-dinero', Math.floor((S - q - r) / p), `Usaste solo el dinero: un artículo de cada uno de los otros, el resto en ${c1}, y te quedaste con la parte entera de ${S - q - r}/${p}. Pero también tienen que ser ${N} artículos en total.`),
         h('responde-otra-cantidad', max[1], `Esa es la cantidad de ${c2} en esa compra. Se pregunta por ${o1[2]} ${c1}.`),
       ];
     } else {
@@ -295,8 +294,8 @@
         solucion.push([`No hay raíces reales cuando Δ < 0: ${ladoK} > ${tf(Q(S2, 4))}, o sea m > ${tf(m0)}.`], ['m ∈ ', v('m', correcta.texto), '.']);
         errores = [
           ht('T40-discriminante-positivo', intervalo(null, m0), 'Pediste Δ > 0. Con Δ > 0 la ecuación tiene dos raíces reales y el sistema sí tiene soluciones reales; sin soluciones reales es Δ < 0.'),
-          ht('AL19-extremo-incluido', intervalo(m0, null, true), `Incluiste m = ${tf(m0)}. Con ese valor Δ = 0 y hay una solución real (x = y = ${tf(Q(S, 2))}).`, 'parcial', AL),
-          ht('discriminante-sin-4', intervalo(umbral(Q(S2)), null), 'Escribiste Δ = b² − c, sin el 4. El discriminante es b² − 4ac.'),
+          ht('extremo-incluido', intervalo(m0, null, true), `Incluiste m = ${tf(m0)}. Con ese valor Δ = 0 y hay una solución real (x = y = ${tf(Q(S, 2))}).`),
+          ht('discriminante-sin-4', intervalo(umbral(Q(S2)), null), `Olvidaste el 4: escribiste Δ = ${S2} − (${ladoK}). El término independiente va multiplicado por 4: Δ = ${S2} − 4(${ladoK}).`),
           ht('responde-el-complemento', intervalo(null, m0, false, true), 'Ese es el conjunto donde el sistema sí tiene soluciones reales (Δ ≥ 0): justo lo contrario de lo que se pide.'),
         ];
       } else {
@@ -304,7 +303,7 @@
         pregunta = ['¿Para qué valor de ', v('m', 'm'), ' el sistema tiene una sola solución real (x; y)?'];
         solucion.push([`Si Δ > 0 hay dos soluciones (los valores de x e y se intercambian); una sola cuando Δ = 0: ${ladoK} = ${tf(Q(S2, 4))}, con x = y = ${tf(Q(S, 2))}.`], ['m = ', v('m', correcta.texto), '.']);
         errores = [
-          ht('discriminante-sin-4', numero(umbral(Q(S2))), 'Escribiste Δ = b² − c, sin el 4. El discriminante es b² − 4ac.'),
+          ht('discriminante-sin-4', numero(umbral(Q(S2))), `Olvidaste el 4: escribiste Δ = ${S2} − (${ladoK}). El término independiente va multiplicado por 4: Δ = ${S2} − 4(${ladoK}).`),
           ht('discriminante-entre-2', numero(umbral(Q(S2, 2))), `Dividiste ${S2} entre 2. De ${S2} − 4(${ladoK}) = 0 sale ${ladoK} = ${S2}/4.`),
           ht('discriminante-signo-de-c', numero(umbral(Q(-S2, 4))), `Pusiste Δ = b² + 4c. El término independiente es ${ladoK}, con su signo: Δ = ${S2} − 4(${ladoK}).`),
           ht('responde-otra-cantidad', numero(Q(S, 2)), `Ese es el valor de x (y de y) en la solución única, no el de m.`),
@@ -321,9 +320,9 @@
       ];
       errores = [
         ht('T40-discriminante-positivo', intervalo(m0, null), 'Pediste Δ > 0. Con Δ > 0 hay dos raíces reales y el sistema sí tiene soluciones reales; sin soluciones reales es Δ < 0.'),
-        ht('AL19-extremo-incluido', intervalo(null, m0, false, true), `Incluiste m = ${tf(m0)}. Con ese valor Δ = 0 y hay una solución real.`, 'parcial', AL),
-        ht('vieta-diferencia-como-suma', intervalo(umbral(Q(S2, 4)), null), `Trataste x − y = ${S} como si fuera una suma (t² − ${S}t + producto = 0). Con una diferencia, al reemplazar x = y + ${S} el producto queda con el signo cambiado.`),
-        ht('discriminante-sin-4', intervalo(null, umbral(Q(-S2))), 'Escribiste Δ = b² + c, sin el 4. El discriminante es b² − 4ac.'),
+        ht('extremo-incluido', intervalo(null, m0, false, true), `Incluiste m = ${tf(m0)}. Con ese valor Δ = 0 y hay una solución real.`),
+        ht('vieta-diferencia-como-suma', intervalo(umbral(Q(S2, 4)), null), `Usaste t² − ${S}t + (${ladoK}) = 0, como si x − y = ${S} fuera una suma. Con x − y = ${S}, al reemplazar x = y + ${S} queda y² + ${S}y − (${ladoK}) = 0: cambian de signo el término en y y el independiente.`),
+        ht('discriminante-sin-4', intervalo(null, umbral(Q(-S2))), `Olvidaste el 4: escribiste Δ = ${S2} + (${ladoK}). El término independiente va multiplicado por 4: Δ = ${S2} + 4(${ladoK}).`),
       ];
     }
     return cerrar(rng, semilla, { textos: true, correcta, errores, variables, enunciado, pregunta, solucion, datos: { tipo: 'parametro', sub, S, u, w } });
@@ -402,7 +401,7 @@
           ['La ecuación: ', v('x', correcta.texto), '.']];
         errores = [
           ht('desplaza-una-vez', sp(Q(-b + k), p), `Sumaste ${k} una sola vez. Cada raíz aumenta en ${k}: la suma aumenta en ${2 * k}.`),
-          ht('AL8-producto-sin-termino-cruzado', sp(s, Q(c + k * k)), `Multiplicaste (x₁ + ${k})(x₂ + ${k}) como x₁x₂ + ${k * k}: faltó el término ${k}(x₁ + x₂).`, 'parcial', AL),
+          ht('AL8-producto-sin-termino-cruzado', sp(s, Q(c + k * k)), `Multiplicaste (x₁ + ${k})(x₂ + ${k}) como x₁x₂ + ${k * k}: faltó el término ${k}(x₁ + x₂).`),
           ht('vieta-signo-suma', sp(neg(s), p), 'La suma nueva va con signo menos en el término en x: x² − (suma)x + (producto) = 0.'),
           ht('AL28-desplazamiento-contrario', sp(Q(-b - 2 * k), Q(c + b * k + k * k)), `Esa ecuación tiene raíces x₁ − ${k} y x₂ − ${k}: corriste las raíces hacia el otro lado.`, 'parcial', AL),
         ];
@@ -420,6 +419,7 @@
   function franja(rng, semilla, sub) {
     const variables = { w: { nombre: 'ancho de la vereda', color: 'o' }, A: { nombre: 'área de la vereda', color: 'i' }, L: { nombre: 'medidas del jardín', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'perimetro') {
+      delete variables.L;
       const w = rng.entero(1, 3), L = rng.entero(5, 20), W = rng.entero(3, 15);
       if (L < W || L + W <= 4 * w) return null;
       const A = 2 * w * (L + W) + 4 * w * w, Pj = 2 * (L + W);
@@ -433,8 +433,8 @@
       ];
       const errores = [
         h('T53-franja-sin-esquinas', A / w, `Tomaste la vereda como cuatro tiras de ${w} m pegadas a los lados, sin las cuatro esquinas de ${w} × ${w}.`),
-        h('T53-esquinas-dos-veces', (A - 8 * w * w) / w, `Contaste las esquinas dos veces: tomaste dos tiras largas (a + ${2 * w}) y dos anchas (b + ${2 * w}), y cada esquina entra en dos tiras.`),
-        h('T53-semiperimetro', (A - 4 * w * w) / (2 * w), `${L + W} es a + b, el largo más el ancho. El perímetro tiene dos largos y dos anchos.`),
+        h('T53-esquinas-dos-veces', (A - 8 * w * w) / w, `Contaste las esquinas dos veces: tomaste dos tiras del largo + ${2 * w} y dos del ancho + ${2 * w}, y cada esquina entra en dos tiras.`),
+        h('T53-semiperimetro', (A - 4 * w * w) / (2 * w), `${L + W} es el largo más el ancho. El perímetro tiene dos largos y dos anchos.`),
         h('responde-otra-cantidad', Pj + 8 * w, 'Ese es el perímetro del borde exterior de la vereda. Se pregunta por el del jardín.'),
       ];
       return cerrar(rng, semilla, { correcta: Pj, errores, texto: y => `${f(y)} m`, unidad: 'm', variables, enunciado, pregunta, solucion, datos: { tipo: 'franja', sub, w, A } });
@@ -443,10 +443,11 @@
     if (L <= W) return null;
     const A = 2 * w * (L + W) + 4 * w * w;
     if (!corto(A)) return null;
-    const enunciado = ['Alrededor de un jardín rectangular de ', v('L', `${L} m`), ' por ', v('L', `${W} m`), ' se construye una vereda de ancho uniforme, pegada a sus cuatro lados. La vereda ocupa ', v('A', `${f(A)} m²`), '.'];
+    delete variables.w; variables.L = { nombre: 'largo del jardín', color: 'h' }; variables.W = { nombre: 'ancho del jardín', color: 'o' };
+    const enunciado = ['Alrededor de un jardín rectangular de ', v('L', `${L} m`), ' por ', v('W', `${W} m`), ' se construye una vereda de ancho uniforme, pegada a sus cuatro lados. La vereda ocupa ', v('A', `${f(A)} m²`), '.'];
     const pregunta = ['¿Cuál es el ', v('x', 'ancho de la vereda'), '?'];
     const solucion = [
-      ['Con ancho x, el terreno con la vereda mide (', v('L', String(L)), ' + 2x) por (', v('L', String(W)), ' + 2x).'],
+      ['Con ancho x, el terreno con la vereda mide (', v('L', String(L)), ' + 2x) por (', v('W', String(W)), ' + 2x).'],
       [`Área de la vereda = (${L} + 2x)(${W} + 2x) − ${L}·${W} = 4x² + ${2 * (L + W)}x.`],
       ['4x² + ', `${2 * (L + W)}x = `, v('A', f(A)), ` → la raíz positiva es x = ${f(w)} (la otra es negativa).`],
       ['Ancho: ', v('x', `${f(w)} m`), '.'],
@@ -517,7 +518,8 @@
     const ecs = [poli([[1, 'x'], [1, 'y'], [1, 'z']]) + ' = 1', poli([[a, 'x'], [b, 'y'], [c, 'z']]) + ` = ${ent(d)}`, poli([[a * a, 'x'], [b * b, 'y'], [c * c, 'z']]) + ` = ${d * d}`];
     const enunciado = ['Se tiene el sistema ', v('S', ecs.join(' ; ')), '.'];
     const vdm = `(${ent(b)} − ${par(a)})(${ent(c)} − ${par(a)})(${ent(c)} − ${par(b)})`;
-    const paso1 = [`Los coeficientes de x, y, z en la segunda ecuación son a = ${ent(a)}, b = ${ent(b)} y c = ${ent(c)}; en la tercera están sus cuadrados. El determinante del sistema es de Vandermonde: `, v('D', 'Δ'), ` = (b − a)(c − a)(c − b) = ${vdm} = ${ent(D)}.`];
+    const paso1 = [`Los coeficientes de x, y, z en la segunda ecuación son a = ${ent(a)}, b = ${ent(b)} y c = ${ent(c)}; en la tercera están sus cuadrados. El determinante del sistema es de Vandermonde: `, v(sub === 'determinante' ? 'x' : 'D', 'Δ'), ` = (b − a)(c − a)(c − b) = ${vdm} = ${ent(D)}.`];
+    if (sub === 'determinante') { delete variables.D; delete variables.Dv; }
     let correcta, errores, pregunta, solucion;
     const sarrus = { p: M[0][0] * M[1][1] * M[2][2] + M[0][1] * M[1][2] * M[2][0] + M[0][2] * M[1][0] * M[2][1], s: M[0][2] * M[1][1] * M[2][0] + M[0][0] * M[1][2] * M[2][1] + M[0][1] * M[1][0] * M[2][2] };
     if (sub === 'determinante') {
@@ -553,7 +555,7 @@
   // ======================= matriz: potencias de una triangular =======================
   const mul2 = (X, Y) => [[X[0][0] * Y[0][0] + X[0][1] * Y[1][0], X[0][0] * Y[0][1] + X[0][1] * Y[1][1]], [X[1][0] * Y[0][0] + X[1][1] * Y[1][0], X[1][0] * Y[0][1] + X[1][1] * Y[1][1]]];
   const potencias = (A, n) => { const out = [A]; for (let k = 2; k <= n; k++) out.push(mul2(out[out.length - 1], A)); return out; };
-  const txtM = M => `[${M.map(fila => fila.map(ent).join(', ')).join('; ')}]`;
+  const txtM = M => `(${M[0].map(ent).join('; ')}) y (${M[1].map(ent).join('; ')})`;
   function matriz(rng, semilla, sub) {
     const variables = { A: { nombre: 'matriz A', color: 'o' }, n: { nombre: 'exponente', color: 'i' }, x: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'entrada') {
@@ -566,7 +568,7 @@
         const pot = potencias(A, n);
         correcta = pot[n - 1][pos[0]][pos[1]];
         solucion = [
-          ['Calcula las primeras potencias: ', `A² = ${txtM(pot[1])}, A³ = ${txtM(pot[2])}.`],
+          ['Calcula las primeras potencias: ', `A² tiene filas ${txtM(pot[1])}; A³ tiene filas ${txtM(pot[2])}.`],
           [`Cada vez que se multiplica por A, ese elemento aumenta en ${k}: en Aⁿ vale ${k}n (se comprueba por inducción: Aⁿ·A suma ${k} más).`],
           ['Con ', v('n', `n = ${n}`), `: ${k} · ${n} = `, v('x', String(correcta)), '.'],
         ];
@@ -579,42 +581,44 @@
       } else {
         const a = rng.elegir([2, 3]); n = rng.entero(4, a === 2 ? 9 : 6);
         A = [[a, 1], [0, a]]; pos = [0, 1];
+        const m = a === 2 ? 3 : 2;   // la potencia en que el patrón de la diagonal ya falla a la vista
         const pot = potencias(A, n);
         correcta = pot[n - 1][0][1];
         solucion = [
-          ['Calcula las primeras potencias: ', `A² = ${txtM(pot[1])}, A³ = ${txtM(pot[2])}.`],
-          [`El patrón es Aⁿ = [${a}ⁿ, n·${a}ⁿ⁻¹; 0, ${a}ⁿ] (por inducción: al multiplicar por A, el de arriba a la derecha pasa a ser ${a}ⁿ + ${a}·n·${a}ⁿ⁻¹ = (n + 1)·${a}ⁿ).`],
+          ['Calcula las primeras potencias: ', `A² tiene filas ${txtM(pot[1])}; A³ tiene filas ${txtM(pot[2])}.`],
+          [`El patrón: Aⁿ tiene filas (${a}ⁿ; n·${a}ⁿ⁻¹) y (0; ${a}ⁿ) (por inducción: al multiplicar por A, el de arriba a la derecha pasa a ser ${a}ⁿ + ${a}·n·${a}ⁿ⁻¹ = (n + 1)·${a}ⁿ).`],
           ['Con ', v('n', `n = ${n}`), `: ${n} · ${a}${sup(n - 1)} = `, v('x', String(correcta)), '.'],
         ];
         errores = [
           h('MT1-potencia-por-entradas', 1, `Elevaste cada elemento a la ${n} (1ⁿ = 1). Una potencia de una matriz es multiplicarla por sí misma, fila por columna.`, 'hipotesis', MTF),
-          h('patron-como-la-diagonal', a ** n, `Supusiste que ese elemento sigue el mismo patrón que la diagonal, ${a}ⁿ. Calcula A²: vale ${2 * a}, no ${a * a}.`),
+          h('patron-como-la-diagonal', a ** n, `Supusiste que ese elemento sigue el mismo patrón que la diagonal, ${a}ⁿ. Calcula A${sup(m)}: vale ${m * a ** (m - 1)}, no ${a ** m}.`),
           h('induccion-desfase', n * a ** n, `Pusiste n·${a}ⁿ. Comprueba con n = 1: debe dar 1, el elemento de A.`),
           h('induccion-desfase', (n - 1) * a ** (n - 2), `Te quedaste una potencia atrás: (n − 1)·${a}ⁿ⁻² es el elemento de Aⁿ⁻¹.`),
         ];
       }
       const lugar = pos[0] === 0 ? 'fila 1, columna 2' : 'fila 2, columna 1';
-      const enunciado = ['Sea la matriz ', v('A', `A = ${txtM(A)}`), ' (las filas separadas por «;»).'];
-      const pregunta = ['¿Cuánto vale el elemento de la ', v('x', lugar), ' de ', v('n', `A${sup(n)}`), '?'];
+      const enunciado = ['Sea ', v('A', 'A'), ` la matriz de filas ${txtM(A)}.`];
+      const pregunta = ['¿Cuánto vale el elemento de la ', v('x', lugar), ' de A', v('n', sup(n)), '?'];
       return cerrar(rng, semilla, { correcta, errores, enteros: true, texto: z => f(z), variables, enunciado, pregunta, solucion, datos: { tipo: 'matriz', sub, forma, A, n } });
     }
     const [a, c] = rng.elegir([[1, 2], [2, 1], [1, -1], [-1, 2], [2, -1], [1, 3], [3, -1], [-1, 3], [2, 3]]);
     const b = rng.entero(1, 5), n = rng.entero(3, 5);
     const A = [[a, b], [0, c]];
+    delete variables.n;
     const pot = potencias(A, n);
     const correcta = pot.reduce((s, M) => s + M[0][0] + M[1][1], 0);
     let sumaTraza = 0; for (let k = 1; k <= n; k++) sumaTraza += (a + c) ** k;
-    const enunciado = ['Sea la matriz ', v('A', `A = ${txtM(A)}`), ' (las filas separadas por «;»).'];
-    const pregunta = ['¿Cuánto vale la ', v('x', 'traza'), ' de ', v('n', n === 3 ? 'A + A² + A³' : `A + A² + ⋯ + A${sup(n)}`), '?'];
+    const enunciado = ['Sea ', v('A', 'A'), ` la matriz de filas ${txtM(A)}.`];
+    const pregunta = ['¿Cuánto vale la ', v('x', 'traza'), ' de ', n === 3 ? 'A + A² + A³' : `A + A² + ⋯ + A${sup(n)}`, '?'];
     const solucion = [
-      ['A es triangular: al multiplicar triangulares, la diagonal se multiplica elemento a elemento. ', `A² = ${txtM(pot[1])}, A³ = ${txtM(pot[2])}.`],
+      ['A es triangular: al multiplicar triangulares, la diagonal se multiplica elemento a elemento. ', `A² tiene filas ${txtM(pot[1])}; A³ tiene filas ${txtM(pot[2])}.`],
       [`Por inducción, Aᵏ tiene diagonal ${par(a)}ᵏ y ${par(c)}ᵏ (lo de arriba a la derecha no entra en la traza).`],
       [`Traza de la suma = suma de las trazas = (${Array.from({ length: n }, (_, k) => `${par(a)}${sup(k + 1)}`).join(' + ')}) + (${Array.from({ length: n }, (_, k) => `${par(c)}${sup(k + 1)}`).join(' + ')}) = `, v('x', ent(correcta)), '.'],
     ];
     const errores = [
       h('traza-de-potencia-como-potencia-de-traza', sumaTraza, `Tomaste la traza de Aᵏ como (traza A)ᵏ = ${par(a + c)}ᵏ. La traza de Aᵏ es ${par(a)}ᵏ + ${par(c)}ᵏ, la suma de las potencias de la diagonal.`),
       h('solo-la-ultima-potencia', a ** n + c ** n, `Esa es solo la traza de A${sup(n)}. Se pide la de la suma de todas las potencias, desde A.`),
-      h('potencias-iguales-a-A', n * (a + c), 'Sumaste n veces la traza de A, como si todas las potencias fueran iguales a A.'),
+      h('potencias-iguales-a-A', n * (a + c), `Sumaste ${n} veces la traza de A, como si todas las potencias fueran iguales a A.`),
       h('traza-como-suma-de-elementos', pot.reduce((s, M) => s + M[0][0] + M[0][1] + M[1][0] + M[1][1], 0), 'Sumaste todos los elementos de la matriz. La traza es solo la suma de la diagonal principal.'),
     ];
     return cerrar(rng, semilla, { correcta, errores, enteros: true, negativos: true, texto: z => f(z), variables, enunciado, pregunta, solucion, datos: { tipo: 'matriz', sub, A, n } });
@@ -628,7 +632,7 @@
     const signo = rng.elegir([-1, -1, 1]);    // −1: máximo en la semana k; +1: mínimo en la semana k
     const a = rng.elegir([4, 5, 6, 8, 10, 12, 15, 20]), k = rng.entero(6, 12), c = rng.entero(10, 40) * 10;
     const t1 = rng.entero(1, k - 2), t2 = rng.entero(1, 20);
-    if (t2 === t1 || t2 === k) return null;
+    if (t2 <= t1 || t2 === k) return null;
     const Pf = (aa, t, abs = true) => c + signo * aa * (abs ? Math.abs(t - k) : (t - k));
     const v1 = Pf(a, t1);
     const correcta = Pf(a, t2);

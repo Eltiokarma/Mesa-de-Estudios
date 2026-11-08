@@ -94,7 +94,7 @@
       "enunciado": "Resuelve por la regla de Cramer y halla z: x + y + z = 1; 2x + 3y + 4z = 5; 4x + 9y + 16z = 25.",
       "respuesta": "z = 3.",
       "pasos": [
-        "Las filas de la matriz de coeficientes son 1, a, a² con a = 2, b = 3, c = 4: es un determinante de Vandermonde.",
+        "Cada columna de la matriz de coeficientes es (1; a; a²), con a = 2, b = 3 y c = 4: es un determinante de Vandermonde.",
         "Δ = (b − a)(c − a)(c − b) = (3 − 2)(4 − 2)(4 − 3) = 2.",
         "Para Δz se cambia la columna de z por (1; 5; 25): es el mismo Vandermonde con 5 en lugar de 4. Δz = (3 − 2)(5 − 2)(5 − 3) = 6.",
         "z = Δz/Δ = 6/2 = 3. Del mismo modo salen x = 1 e y = −3. Comprobación: 1 − 3 + 3 = 1; 2 − 9 + 12 = 5; 4 − 27 + 48 = 25."
@@ -103,10 +103,10 @@
     {
       "id": "p9",
       "nivel": "avanzado",
-      "enunciado": "Sea A = [1, 4; 0, 2] (las filas separadas por «;»). Halla la traza de A + A² + A³ + A⁴.",
+      "enunciado": "Sea A la matriz de filas (1; 4) y (0; 2). Halla la traza de A + A² + A³ + A⁴.",
       "respuesta": "34.",
       "pasos": [
-        "A es triangular: al multiplicarla por sí misma, la diagonal se multiplica elemento a elemento. A² = [1, 12; 0, 4].",
+        "A es triangular: al multiplicarla por sí misma, la diagonal se multiplica elemento a elemento. A² tiene filas (1; 12) y (0; 4).",
         "Por inducción, Aᵏ tiene en la diagonal 1ᵏ = 1 y 2ᵏ.",
         "La traza de una suma es la suma de las trazas: (1 + 1 + 1 + 1) + (2 + 4 + 8 + 16) = 4 + 30 = 34.",
         "Ojo: no es (traza A)ᵏ = 3ᵏ; esa cuenta daría 3 + 9 + 27 + 81 = 120."

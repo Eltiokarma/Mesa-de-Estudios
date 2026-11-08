@@ -168,6 +168,18 @@ test('ningún texto trae undefined, NaN, −− ni guiones como signo menos', ()
   }
 });
 
+test('cada segmento es texto o { v, t } con v declarada, y toda variable declarada se usa', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), usadas = new Set();
+    for (const parte of [...p.enunciado, ...p.pregunta, ...p.solucion.flat()]) {
+      if (typeof parte === 'string') continue;
+      assert.ok(parte && typeof parte.t === 'string' && typeof parte.v === 'string' && p.variables[parte.v], `semilla ${s}: segmento mal formado ${JSON.stringify(parte)}`);
+      usadas.add(parte.v);
+    }
+    for (const clave of Object.keys(p.variables)) assert.ok(usadas.has(clave), `semilla ${s}: la variable ${clave} no se usa`);
+  }
+});
+
 test('los datos son creíbles', () => {
   for (let s = 0; s < 800; s++) {
     const p = gen.generar(s), d = p._datos;
