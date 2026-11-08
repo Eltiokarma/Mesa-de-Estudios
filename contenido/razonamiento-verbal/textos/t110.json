@@ -37,7 +37,7 @@
           "explicacion": "El texto A defiende la moratoria (oración 4) y el texto B propone reemplazarla por una evaluación caso por caso (oración 9)." },
         { "t": "Si las papas y los maíces nativos son una riqueza que merece protegerse.", "codigo": "RV61", "origen": "o6",
           "explicacion": "En eso coinciden: el texto B dice «comparto la preocupación por las papas y los maíces nativos» (oración 6)." },
-        { "t": "Si la diversidad nativa se conserva en chacras abiertas y no en depósitos.", "codigo": "RV60", "origen": "o2",
+        { "t": "Si la diversidad nativa se conserva mejor en chacras abiertas, donde el polen viaja, que en depósitos.", "codigo": "RV60", "origen": "o2",
           "explicacion": "Es un argumento del texto A (oración 2); el texto B no lo discute." },
         { "t": "Si los alimentos transgénicos hacen daño a quienes los comen.", "codigo": "RV8",
           "explicacion": "Es una discusión conocida fuera del texto, pero ninguno de los dos autores habla de la salud de quien come transgénicos: hablan de cultivos y de diversidad." },
@@ -84,7 +84,7 @@
       "alternativas": [
         { "t": "en chacras abiertas, un solo error de evaluación ya no se puede corregir.", "correcta": true, "evidencia": ["o2", "o3", "o5"],
           "explicacion": "Para el texto A, el polen viaja libre (oración 2) y el cambio no tiene marcha atrás (oraciones 3 y 5): si una evaluación caso por caso se equivoca una vez, el daño queda." },
-        { "t": "una prohibición general aleja a los jóvenes científicos del país.", "codigo": "RV59", "origen": "o8",
+        { "t": "una prohibición general aleja del país a los jóvenes científicos que buscan oportunidades.", "codigo": "RV59", "origen": "o8",
           "explicacion": "Ese es un argumento del texto B (oración 8), no una réplica del texto A." },
         { "t": "las papas y los maíces nativos no valen tanto como se cree.", "codigo": "RV61", "origen": "o6",
           "explicacion": "Los dos autores valoran las variedades nativas; el texto A es el que más las defiende." },
@@ -113,7 +113,7 @@
       "alternativas": [
         { "t": "Un laboratorio podría reponer sin pérdida las variedades nativas.", "correcta": true, "evidencia": ["o4", "o6"],
           "explicacion": "Los dos lo niegan: para el texto A, ese patrimonio no se puede reconstruir (oración 4); para el texto B, ningún laboratorio podría reemplazarlo (oración 6)." },
-        { "t": "Los transgénicos podrían afectar la salud de quienes los comen.", "codigo": "RV36",
+        { "t": "Los transgénicos podrían afectar la salud de las personas que los comen todos los días.", "codigo": "RV36",
           "explicacion": "Ninguno de los textos habla de eso. Que un texto no mencione algo no lo vuelve incompatible con él." },
         { "t": "La moratoria debería dar paso a una evaluación de cada cultivo.", "codigo": "RV60", "origen": "o9",
           "explicacion": "Es incompatible con el texto A, pero es justo lo que propone el texto B (oración 9). No choca con los dos." },

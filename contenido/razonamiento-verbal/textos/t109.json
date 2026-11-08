@@ -79,7 +79,7 @@
       "alternativas": [
         { "t": "A confía en que la advertencia lleva a elegir mejor; B duda de que, sola, cambie lo que se come.", "correcta": true, "evidencia": ["o5", "o7", "o9"],
           "explicacion": "El texto A dice que los octógonos ayudan a elegir mejor (oración 5); el texto B responde que informar no es cambiar lo que se come (oración 7) y pone condiciones (oración 9)." },
-        { "t": "A cree que los octógonos informan con claridad; B piensa que confunden a los compradores.", "codigo": "RV61", "origen": "o6",
+        { "t": "A cree que los octógonos informan con claridad; B piensa que confunden a los compradores en la tienda.", "codigo": "RV61", "origen": "o6",
           "explicacion": "En eso coinciden: el texto B dice que los octógonos «informan con claridad» (oración 6)." },
         { "t": "A pide educación alimentaria en las escuelas; B, octógonos más visibles en cada envase.", "codigo": "RV59",
           "explicacion": "Está al revés: los octógonos más visibles los pide el texto A (oración 5) y la educación alimentaria, el texto B (oración 9)." },
@@ -121,7 +121,7 @@
           "explicacion": "El texto compara precios, no cantidades de azúcar; esa idea viene de lo que se sabe por fuera de la lectura." },
         { "t": "ningún escolar elige una fruta en la tienda.", "codigo": "RV11", "origen": "o8",
           "explicacion": "El texto habla de lo que hacen sus alumnos, sin decir que ningún escolar compre fruta; «ningún» afirma más de lo que se puede deducir." },
-        { "t": "la tienda del colegio debería cerrarse.", "codigo": "RV33",
+        { "t": "la tienda del colegio debería cerrarse para que los alumnos no compren gaseosas.", "codigo": "RV33",
           "explicacion": "El profesor no propone cerrar la tienda: pide educación alimentaria y precios accesibles (oración 9)." }
       ]
     },

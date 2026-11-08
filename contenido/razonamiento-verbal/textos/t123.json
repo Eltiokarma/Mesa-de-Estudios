@@ -180,13 +180,13 @@
       "enunciado": "In sentence 10, the word SCARCE can be replaced by",
       "alternativas": [
         {
-          "t": "rare.",
+          "t": "hard to find.",
           "correcta": true,
           "evidencia": [
             "o10",
             "o11"
           ],
-          "explicacion": "«Scarce» significa escaso, raro de encontrar: con El Niño hay poca anchoveta, y por eso los pescadores pescan menos y las aves no encuentran comida (oración 11)."
+          "explicacion": "«Scarce» significa escaso, difícil de encontrar: con El Niño hay poca anchoveta, y por eso los pescadores pescan menos y las aves no encuentran comida (oración 11)."
         },
         {
           "t": "frightened.",
@@ -231,13 +231,15 @@
       "enunciado": "What can be inferred from the text?",
       "alternativas": [
         {
-          "t": "Many sea birds depend on the anchoveta for food.",
+          "t": "Sea birds depend, indirectly, on the cold water that rises from the deep.",
           "correcta": true,
           "evidencia": [
+            "o6",
+            "o7",
             "o8",
             "o11"
           ],
-          "explicacion": "La oración 8 dice que la anchoveta es alimento de las aves marinas, y la 11 que, cuando escasea, muchas aves tienen problemas para encontrar comida. De ahí se deduce que dependen de ella."
+          "explicacion": "Hay que juntar la cadena: el agua fría que sube trae nutrientes (oración 6), los nutrientes alimentan al fitoplancton, que come la anchoveta (oración 7), y la anchoveta alimenta a las aves (oración 8). Por eso, cuando sube menos agua fría, las aves no encuentran comida (oración 11). El texto no lo dice así, pero se deduce."
         },
         {
           "t": "Fishermen catch much less fish during an El Niño event.",
@@ -284,5 +286,10 @@
       "fuente": "IMARPE; NOAA Climate.gov, «El Niño & La Niña»; Agro Rural (aves guaneras)."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas 6 de 6. La correcta de la inferencia se reescribió para que exija juntar la cadena (antes estaba casi dicha en la oración 8) y la de «scarce» pasó de «rare» a «hard to find», más exacta."
+  }
 }

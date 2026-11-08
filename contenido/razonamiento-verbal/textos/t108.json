@@ -38,7 +38,7 @@
           "explicacion": "El texto A pide bajar el límite diario (oración 4) y el texto B propone, antes de recortar, repartir a los visitantes en horarios y rutas (oración 10)." },
         { "t": "Si Machu Picchu debe protegerse del deterioro.", "codigo": "RV61", "origen": "o6",
           "explicacion": "En eso los dos coinciden: el texto B dice «nadie discute que Machu Picchu debe cuidarse» (oración 6)." },
-        { "t": "Si lo que se pierde de una piedra tallada puede recuperarse con dinero.", "codigo": "RV60", "origen": "o5",
+        { "t": "Si lo que se pierde de una piedra tallada puede recuperarse con el dinero que dejan las entradas vendidas.", "codigo": "RV60", "origen": "o5",
           "explicacion": "Es un argumento del texto A (oración 5); el texto B no toma posición sobre eso." },
         { "t": "Si los visitantes dejan basura en el santuario.", "codigo": "RV1", "origen": "o2",
           "explicacion": "Es un detalle de la oración 2, uno de los ejemplos de desgaste; no es lo que se discute." },
@@ -73,7 +73,7 @@
           "explicacion": "La primera mitad es su propuesta, pero la segunda no: el texto B pide repartir «antes de recortar»." },
         { "t": "Que los turistas nunca dañan el santuario.", "codigo": "RV11", "origen": "o9",
           "explicacion": "El texto B acepta que hay daño: dice que «no viene solo de cuántos entran» (oración 9), no que no exista." },
-        { "t": "Que el Estado debe pagar a las familias por cada entrada que no se venda.", "codigo": "RV33", "origen": "o8",
+        { "t": "Que el Estado debería pagar a las familias de los pueblos cercanos por cada entrada que no se venda.", "codigo": "RV33", "origen": "o8",
           "explicacion": "El texto B no propone ningún pago: menciona a las familias para mostrar lo que pierden si se recorta el límite." }
       ]
     },
@@ -120,7 +120,7 @@
           "explicacion": "Ese es un argumento del texto B (oración 8), no una respuesta del texto A contra él." },
         { "t": "se equivoca al decir que el santuario debe cuidarse.", "codigo": "RV61", "origen": "o6",
           "explicacion": "En eso los dos están de acuerdo; el texto A es el que más insiste en cuidar el monumento." },
-        { "t": "el turismo debería prohibirse por completo.", "codigo": "RV33",
+        { "t": "el turismo debería prohibirse por completo hasta que la piedra se recupere del desgaste.", "codigo": "RV33",
           "explicacion": "El texto A no pide prohibir el turismo, sino bajar el límite diario (oración 4)." },
         { "t": "los guías son los que más dañan los muros.", "codigo": "RV7", "origen": "o7",
           "explicacion": "El texto A no culpa a ningún grupo en especial: habla del desgaste que suman todos los visitantes." }

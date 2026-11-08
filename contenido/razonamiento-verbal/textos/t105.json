@@ -7,23 +7,71 @@
   "dificultad": 3,
   "tipo_texto": "argumentativo",
   "autores": [
-    { "id": "A", "desde": 0, "firma": "Un ingeniero de minas" },
-    { "id": "B", "desde": 1, "firma": "Una bióloga que trabaja en la Amazonía" }
+    {
+      "id": "A",
+      "desde": 0,
+      "firma": "Un ingeniero de minas"
+    },
+    {
+      "id": "B",
+      "desde": 1,
+      "firma": "Una bióloga que trabaja en la Amazonía"
+    }
   ],
   "parrafos": [
     [
-      { "id": "o1", "rol": "apoyo", "t": "En los ríos de la Amazonía sur, muchas familias viven de sacar oro con dragas y motobombas, y el mercurio con que separan el metal termina en el agua y en los peces." },
-      { "id": "o2", "rol": "apoyo", "t": "Tratar a todas como delincuentes no detiene la extracción: solo la empuja a lugares más alejados, donde nadie la ve." },
-      { "id": "o3", "rol": "principal", "t": "La salida es formalizar a los pequeños mineros: darles derechos claros sobre una zona permitida a cambio de que cumplan reglas ambientales y laborales." },
-      { "id": "o4", "rol": "apoyo", "t": "Con apoyo técnico del Estado, un minero formal puede cambiar el mercurio por métodos más limpios y reforestar lo que excava." },
-      { "id": "o5", "rol": "apoyo", "t": "Quien tiene algo que perder, como un permiso o una inversión, tiene también razones para cuidarlo." }
+      {
+        "id": "o1",
+        "rol": "apoyo",
+        "t": "En los ríos de la Amazonía sur, muchas familias viven de sacar oro con dragas y motobombas, y el mercurio con que separan el metal termina en el agua y en los peces."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Tratar a todas como delincuentes no detiene la extracción: solo la empuja a lugares más alejados, donde nadie la ve."
+      },
+      {
+        "id": "o3",
+        "rol": "principal",
+        "t": "La salida es formalizar a los pequeños mineros: darles derechos claros sobre una zona permitida a cambio de que cumplan reglas ambientales y laborales."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Con apoyo técnico del Estado, un minero formal puede cambiar el mercurio por métodos más limpios y reforestar lo que excava."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Quien tiene algo que perder, como un permiso o una inversión, tiene también razones para cuidarlo."
+      }
     ],
     [
-      { "id": "o6", "rol": "apoyo", "t": "Coincido en que el mercurio envenena los ríos y en que perseguir solo a quien trabaja en la draga no resuelve nada." },
-      { "id": "o7", "rol": "contraste", "t": "Pero, en la práctica, la formalización se ha vuelto muchas veces una cubierta: quien figura como minero en trámite sigue trabajando donde no debe, y el papel le sirve para vender el oro sin preguntas." },
-      { "id": "o8", "rol": "apoyo", "t": "Ningún plan de apoyo técnico funciona si nadie controla de dónde sale el oro ni quién vende el mercurio." },
-      { "id": "o9", "rol": "principal", "t": "Antes de ofrecer permisos, el Estado tiene que controlar el comercio del oro y cerrar de verdad las zonas donde la extracción está prohibida, como las áreas protegidas." },
-      { "id": "o10", "rol": "detalle", "t": "Solo después tiene sentido formalizar a quien acepte las reglas." }
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Coincido en que el mercurio envenena los ríos y en que perseguir solo a quien trabaja en la draga no resuelve nada."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Pero, en la práctica, la formalización se ha vuelto muchas veces una cubierta: quien figura como minero en trámite sigue trabajando donde no debe, y el papel le sirve para vender el oro sin preguntas."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Ningún plan de apoyo técnico funciona si nadie controla de dónde sale el oro ni quién vende el mercurio."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Antes de ofrecer permisos, el Estado tiene que controlar el comercio del oro y cerrar de verdad las zonas donde la extracción está prohibida, como las áreas protegidas."
+      },
+      {
+        "id": "o10",
+        "rol": "detalle",
+        "t": "Solo después tiene sentido formalizar a quien acepte las reglas."
+      }
     ]
   ],
   "preguntas": [
@@ -33,16 +81,37 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "El eje de la controversia entre los dos textos es",
       "alternativas": [
-        { "t": "qué debe hacer primero el Estado ante la minería informal: formalizar o controlar.", "correcta": true, "evidencia": ["o3", "o9"],
-          "explicacion": "El texto A propone formalizar como salida (oración 3) y el B, controlar y cerrar zonas «antes de ofrecer permisos» (oración 9): discuten qué va primero." },
-        { "t": "si el mercurio que se usa para separar el oro daña los ríos y los peces de la Amazonía.", "codigo": "RV61", "origen": "o6",
-          "explicacion": "En eso coinciden: el texto A lo dice en la oración 1 y el B lo acepta en la oración 6." },
-        { "t": "si el apoyo técnico permite cambiar el mercurio por métodos más limpios.", "codigo": "RV60", "origen": "o4",
-          "explicacion": "Es un argumento del texto A (oración 4). El texto B no lo niega: dice que no basta sin control (oración 8)." },
-        { "t": "si la extracción de oro debe prohibirse en todo el país.", "codigo": "RV12",
-          "explicacion": "Ninguno lo plantea: el texto B pide cerrar las zonas donde la extracción ya está prohibida, no todo el país." },
-        { "t": "cuál es el futuro económico de la Amazonía peruana.", "codigo": "RV2",
-          "explicacion": "Es demasiado general: los textos discuten cómo enfrentar la minería informal de oro, no el futuro de toda la región." }
+        {
+          "t": "qué debe hacer primero el Estado ante la minería informal: formalizar o controlar.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o9"
+          ],
+          "explicacion": "El texto A propone formalizar como salida (oración 3) y el B, controlar y cerrar zonas «antes de ofrecer permisos» (oración 9): discuten qué va primero."
+        },
+        {
+          "t": "si el mercurio que se usa para separar el oro daña los ríos y los peces de la Amazonía.",
+          "codigo": "RV61",
+          "origen": "o6",
+          "explicacion": "En eso coinciden: el texto A lo dice en la oración 1 y el B lo acepta en la oración 6."
+        },
+        {
+          "t": "si el apoyo técnico permite cambiar el mercurio por métodos más limpios.",
+          "codigo": "RV60",
+          "origen": "o4",
+          "explicacion": "Es un argumento del texto A (oración 4). El texto B no lo niega: dice que no basta sin control (oración 8)."
+        },
+        {
+          "t": "si la extracción de oro debe prohibirse en todo el país.",
+          "codigo": "RV12",
+          "explicacion": "Ninguno lo plantea: el texto B pide cerrar las zonas donde la extracción ya está prohibida, no todo el país."
+        },
+        {
+          "t": "cuál es el futuro económico de la Amazonía peruana.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten cómo enfrentar la minería informal de oro, no el futuro de toda la región."
+        }
       ]
     },
     {
@@ -54,7 +123,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Estar inscrito como minero en proceso de formalización puede servir para seguir extrayendo en un lugar no permitido.",
         "aceptada": "B",
-        "codigos": { "A": "RV59", "ambos": "RV60", "ninguno": null },
+        "codigos": {
+          "A": "RV59",
+          "ambos": "RV60",
+          "ninguno": null
+        },
         "explicacion": "Lo sostiene el texto B en la oración 7: quien figura como minero en trámite «sigue trabajando donde no debe». El texto A ve la formalización como la salida.",
         "explicaciones": {
           "A": "El texto A no ve ese riesgo: para él, formalizar es la salida (oración 3). La crítica es del texto B (oración 7).",
@@ -64,16 +137,38 @@
       },
       "enunciado": "Según el texto B, la formalización de los mineros",
       "alternativas": [
-        { "t": "tiene sentido solo después de controlar el comercio del oro y cerrar las zonas prohibidas.", "correcta": true, "evidencia": ["o9", "o10"],
-          "explicacion": "Las oraciones 9 y 10 fijan el orden: primero control y cierre; «solo después» formalizar a quien acepte las reglas." },
-        { "t": "debe descartarse para siempre, porque solo ha servido de cubierta.", "codigo": "RV12", "origen": "o7",
-          "explicacion": "Lleva la crítica a un extremo: el texto B dice que la formalización «muchas veces» fue una cubierta, y acepta formalizar después del control (oración 10)." },
-        { "t": "es la salida, porque un minero que tiene un permiso o una inversión que perder tiene también razones para cuidarlos.", "codigo": "RV59", "origen": "o5",
-          "explicacion": "Ese es el argumento del texto A (oraciones 3 y 5), no la postura del B." },
-        { "t": "ha servido de cubierta y por eso debe acelerarse con más apoyo técnico.", "codigo": "RV62", "origen": "o8",
-          "explicacion": "La primera mitad es del texto B, pero la segunda no: el B dice que el apoyo técnico no funciona sin control (oración 8)." },
-        { "t": "es un trámite que el Estado cobra demasiado caro a los mineros.", "codigo": "RV8",
-          "explicacion": "El texto B no habla del costo del trámite; es una idea que viene de fuera del texto." }
+        {
+          "t": "tiene sentido solo después de controlar el comercio del oro y cerrar las zonas prohibidas.",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Las oraciones 9 y 10 fijan el orden: primero control y cierre; «solo después» formalizar a quien acepte las reglas."
+        },
+        {
+          "t": "debe descartarse para siempre, porque solo ha servido de cubierta.",
+          "codigo": "RV12",
+          "origen": "o7",
+          "explicacion": "Lleva la crítica a un extremo: el texto B dice que la formalización «muchas veces» fue una cubierta, y acepta formalizar después del control (oración 10)."
+        },
+        {
+          "t": "es la salida, porque un minero que tiene un permiso o una inversión que perder tiene también razones para cuidarlos.",
+          "codigo": "RV59",
+          "origen": "o5",
+          "explicacion": "Ese es el argumento del texto A (oraciones 3 y 5), no la postura del B."
+        },
+        {
+          "t": "ha servido de cubierta y por eso debe acelerarse con más apoyo técnico.",
+          "codigo": "RV62",
+          "origen": "o8",
+          "explicacion": "La primera mitad es del texto B, pero la segunda no: el B dice que el apoyo técnico no funciona sin control (oración 8)."
+        },
+        {
+          "t": "es un trámite que el Estado cobra demasiado caro a los mineros.",
+          "codigo": "RV8",
+          "explicacion": "El texto B no habla del costo del trámite; es una idea que viene de fuera del texto."
+        }
       ]
     },
     {
@@ -85,7 +180,11 @@
         "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
         "sonda": "Castigar únicamente a los que trabajan en las dragas no acaba con el problema.",
         "aceptada": "ambos",
-        "codigos": { "A": "RV61", "B": "RV61", "ninguno": null },
+        "codigos": {
+          "A": "RV61",
+          "B": "RV61",
+          "ninguno": null
+        },
         "explicacion": "Los dos lo sostienen: el texto A dice que tratarlos a todos como delincuentes no detiene la extracción (oración 2) y el B, que perseguir solo a quien trabaja en la draga «no resuelve nada» (oración 6).",
         "explicaciones": {
           "A": "El texto A lo dice en la oración 2, pero el B también lo acepta en la oración 6.",
@@ -95,16 +194,37 @@
       },
       "enunciado": "Los dos autores coincidirían en que",
       "alternativas": [
-        { "t": "perseguir solo a quien trabaja en la draga no detiene la extracción.", "correcta": true, "evidencia": ["o2", "o6"],
-          "explicacion": "El texto A lo dice en la oración 2 y el B lo acepta en la oración 6 con un «Coincido»." },
-        { "t": "el Estado debe dar derechos claros sobre una zona permitida a los pequeños mineros.", "codigo": "RV60", "origen": "o3",
-          "explicacion": "Es la tesis del texto A (oración 3). El texto B pide primero control y cierre de zonas." },
-        { "t": "el mercurio daña los ríos y la formalización se ha vuelto una cubierta.", "codigo": "RV62", "origen": "o7",
-          "explicacion": "La primera mitad la comparten (oraciones 1 y 6), pero la segunda es solo del texto B (oración 7)." },
-        { "t": "todos los que sacan oro en la Amazonía usan mercurio.", "codigo": "RV11",
-          "explicacion": "Los dos dicen que el mercurio daña los ríos, pero ninguno dice que lo usen todos; el texto A incluso habla de cambiarlo por métodos más limpios (oración 4)." },
-        { "t": "los mineros informales ganan más dinero que los formales.", "codigo": "RV7",
-          "explicacion": "Ninguno de los textos compara ganancias; esa conclusión no sale de lo que dicen." }
+        {
+          "t": "perseguir solo a quien trabaja en la draga no detiene la extracción.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o6"
+          ],
+          "explicacion": "El texto A lo dice en la oración 2 y el B lo acepta en la oración 6 con un «Coincido»."
+        },
+        {
+          "t": "el Estado debe dar derechos claros sobre una zona permitida a los pequeños mineros.",
+          "codigo": "RV60",
+          "origen": "o3",
+          "explicacion": "Es la tesis del texto A (oración 3). El texto B pide primero control y cierre de zonas."
+        },
+        {
+          "t": "el mercurio daña los ríos y la formalización se ha vuelto una cubierta.",
+          "codigo": "RV62",
+          "origen": "o7",
+          "explicacion": "La primera mitad la comparten (oraciones 1 y 6), pero la segunda es solo del texto B (oración 7)."
+        },
+        {
+          "t": "todos los que sacan oro en la Amazonía usan mercurio.",
+          "codigo": "RV11",
+          "explicacion": "Los dos dicen que el mercurio daña los ríos, pero ninguno dice que lo usen todos; el texto A incluso habla de cambiarlo por métodos más limpios (oración 4)."
+        },
+        {
+          "t": "los mineros informales ganan más dinero que los formales.",
+          "codigo": "RV7",
+          "explicacion": "Ninguno de los textos compara ganancias; esa conclusión no sale de lo que dicen."
+        }
       ]
     },
     {
@@ -113,16 +233,37 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "Del texto A se infiere que, para su autor, perseguir a los mineros sin ofrecerles otra salida",
       "alternativas": [
-        { "t": "volvería la extracción más difícil de controlar.", "correcta": true, "evidencia": ["o2"],
-          "explicacion": "La oración 2 dice que esa persecución empuja la extracción a lugares alejados, «donde nadie la ve»: así se controla menos." },
-        { "t": "obligaría a los mineros a trabajar más cerca de las ciudades y de los controles.", "codigo": "RV44", "origen": "o2",
-          "explicacion": "Invierte lo que dice la oración 2: la extracción se va a lugares más alejados, no más cercanos." },
-        { "t": "es necesario mientras el Estado no controle el comercio del oro.", "codigo": "RV59", "origen": "o9",
-          "explicacion": "El control del comercio del oro es lo que pide el texto B (oración 9); el A no lo plantea así." },
-        { "t": "acabaría con la minería de oro en toda la Amazonía.", "codigo": "RV12",
-          "explicacion": "El texto A dice lo contrario: la persecución no detiene la extracción, solo la mueve (oración 2)." },
-        { "t": "les daría derechos claros sobre una zona permitida.", "codigo": "RV5", "origen": "o3",
-          "explicacion": "Repite palabras de la oración 3, pero eso es lo que da la formalización, no la persecución." }
+        {
+          "t": "volvería la extracción más difícil de controlar.",
+          "correcta": true,
+          "evidencia": [
+            "o2"
+          ],
+          "explicacion": "La oración 2 dice que esa persecución empuja la extracción a lugares alejados, «donde nadie la ve»: así se controla menos."
+        },
+        {
+          "t": "obligaría a los mineros a trabajar más cerca de las ciudades y de los controles.",
+          "codigo": "RV44",
+          "origen": "o2",
+          "explicacion": "Invierte lo que dice la oración 2: la extracción se va a lugares más alejados, no más cercanos."
+        },
+        {
+          "t": "es necesario mientras el Estado no controle el comercio del oro.",
+          "codigo": "RV59",
+          "origen": "o9",
+          "explicacion": "El control del comercio del oro es lo que pide el texto B (oración 9); el A no lo plantea así."
+        },
+        {
+          "t": "acabaría con la minería de oro en toda la Amazonía.",
+          "codigo": "RV12",
+          "explicacion": "El texto A dice lo contrario: la persecución no detiene la extracción, solo la mueve (oración 2)."
+        },
+        {
+          "t": "les daría derechos claros sobre una zona permitida.",
+          "codigo": "RV5",
+          "origen": "o3",
+          "explicacion": "Repite palabras de la oración 3, pero eso es lo que da la formalización, no la persecución."
+        }
       ]
     },
     {
@@ -131,24 +272,51 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "En el texto B, la palabra CUBIERTA («la formalización se ha vuelto muchas veces una cubierta») significa",
       "alternativas": [
-        { "t": "fachada que oculta otra cosa.", "correcta": true, "evidencia": ["o7"],
-          "explicacion": "La oración 7 explica que el trámite deja seguir trabajando «donde no debe»: sirve para disimular la extracción en zonas no permitidas." },
-        { "t": "techo que protege de la lluvia.", "codigo": "RV18",
-          "explicacion": "Es el sentido más común de «cubierta», pero aquí no se habla de un objeto que tapa, sino de algo que encubre." },
-        { "t": "permiso que otorga el Estado.", "codigo": "RV19",
-          "explicacion": "Es del mismo campo (la formalización, los trámites), pero el texto no dice que la formalización sea un permiso, sino que se usa para encubrir." },
-        { "t": "papel del minero en trámite.", "codigo": "RV5", "origen": "o7",
-          "explicacion": "Repite palabras de la misma oración 7, pero el papel es lo que se usa como cubierta, no lo que la palabra significa: algo que oculta." },
-        { "t": "descubrimiento de oro.", "codigo": "RV20",
-          "explicacion": "Se parece en la forma (cubierta, descubrimiento), pero significa otra cosa." }
+        {
+          "t": "fachada que oculta otra cosa.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "La oración 7 explica que el trámite deja seguir trabajando «donde no debe»: sirve para disimular la extracción en zonas no permitidas."
+        },
+        {
+          "t": "techo que protege de la lluvia.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de «cubierta», pero aquí no se habla de un objeto que tapa, sino de algo que encubre."
+        },
+        {
+          "t": "permiso que otorga el Estado.",
+          "codigo": "RV19",
+          "explicacion": "Es del mismo campo (la formalización, los trámites), pero el texto no dice que la formalización sea un permiso, sino que se usa para encubrir."
+        },
+        {
+          "t": "papel del minero en trámite.",
+          "codigo": "RV5",
+          "origen": "o7",
+          "explicacion": "Repite palabras de la misma oración 7, pero el papel es lo que se usa como cubierta, no lo que la palabra significa: algo que oculta."
+        },
+        {
+          "t": "requisito para vender el oro.",
+          "codigo": "RV5",
+          "explicacion": "La oración 7 dice que el papel le sirve para vender el oro, pero eso es lo que la cubierta permite, no lo que la palabra significa: aquí es lo que tapa una actividad que sigue siendo ilegal.",
+          "origen": "o7"
+        }
       ]
     }
   ],
   "origen": "propio",
   "fecha": "2026-11-08",
   "hechos": [
-    { "afirmacion": "En la extracción de oro artesanal y en pequeña escala se usa mercurio para separar el oro, y ese mercurio contamina el agua y los peces.",
-      "fuente": "Convenio de Minamata sobre el Mercurio (PNUMA, 2013), artículo 7 y anexo C; Organización Mundial de la Salud, nota descriptiva «El mercurio y la salud»" }
+    {
+      "afirmacion": "En la extracción de oro artesanal y en pequeña escala se usa mercurio para separar el oro, y ese mercurio contamina el agua y los peces.",
+      "fuente": "Convenio de Minamata sobre el Mercurio (PNUMA, 2013), artículo 7 y anexo C; Organización Mundial de la Salud, nota descriptiva «El mercurio y la salud»"
+    }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "5 de 5 a ciegas (con los previos). Se cambió «descubrimiento de oro» por un distractor que se apoya en la oración 7; el hecho del mercurio en la minería de oro artesanal (Minamata, art. 7 y anexo C; nota de la OMS) es correcto y el texto no lo exagera."
+  }
 }

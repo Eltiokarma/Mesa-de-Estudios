@@ -133,8 +133,8 @@
           "explicacion": "El texto B cuenta campañas de miles de plantones de las que casi no quedó ninguno (oración 7): sembrar muchos no es lograr un bosque." },
         { "t": "siempre fracasa cuando se hace en cerros donde hay ganado.", "codigo": "RV11", "origen": "o8",
           "explicacion": "El texto B no dice «siempre»: propone cercar el terreno para que el ganado no se coma los plantones." },
-        { "t": "recibe dinero del Estado para comprar los plantones.", "codigo": "RV8",
-          "explicacion": "El texto B no dice de dónde sale el dinero de las campañas." },
+        { "t": "fracasa sobre todo porque elige mal las especies que siembra.", "codigo": "RV7", "origen": "o7",
+          "explicacion": "El texto B cuenta campañas que sembraron especies nativas, la mejor elección para él (oración 6), y aun así fracasaron: lo que faltó fue el riego y el cerco." },
         { "t": "debe elegir árboles que den refugio a las aves.", "codigo": "RV59", "origen": "o3",
           "explicacion": "Esa razón para elegir especies es del texto A (oración 3), no algo que se deduzca del B." },
         { "t": "no necesita a la comunidad si los técnicos que siembran conocen bien el cerro y el clima.", "codigo": "RV33", "origen": "o10",
@@ -147,5 +147,5 @@
   "hechos": [
     { "afirmacion": "La queñua (género Polylepis) es un árbol nativo de los Andes que crece a gran altura y soporta heladas.", "fuente": "SERFOR (Servicio Nacional Forestal y de Fauna Silvestre), información sobre especies forestales nativas altoandinas del género Polylepis" }
   ],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "Coincidí a ciegas en 7 de 7. Cambié en p5 un distractor débil (el dinero del Estado) por uno que confunde la especie con el cuidado; el hecho de la queñua (Polylepis) es correcto." }
 }

@@ -112,7 +112,7 @@
           "t": "The Cordillera Blanca: The Largest Tropical Glacier Range on Earth",
           "codigo": "RV1",
           "origen": "o1",
-          "explicacion": "Es lo que dice la oración 1, pero solo presenta el lugar: no dice nada del problema del agua, que es de lo que trata el texto."
+          "explicacion": "Repite la oración 1, que solo presenta el lugar (y el texto lo dice con cautela: «is often described as»). No dice nada del problema del agua, que es de lo que trata el texto."
         },
         {
           "t": "Melting Glaciers Give the Andes More Water Than Ever",
@@ -291,9 +291,14 @@
       "fuente": "Baraer, M. y otros (2012), Journal of Glaciology, 58(207); IPCC (2019), SROCC, capítulo 2."
     },
     {
-      "afirmacion": "Hay técnicas andinas antiguas para retener agua en el suelo (por ejemplo, las amunas de Huarochirí) que hoy se recuperan.",
-      "fuente": "SUNASS y MINAM, programas de infraestructura natural y mecanismos de retribución por servicios ecosistémicos (recuperación de amunas)."
+      "afirmacion": "Hay técnicas andinas antiguas para que el agua de lluvia se infiltre y quede en el suelo (por ejemplo, las amunas de Huarochirí, en Lima), y hoy se recuperan algunas.",
+      "fuente": "Ochoa-Tocachi, B. F. y otros (2019). Potential contributions of pre-Inca infiltration infrastructure to Andean water security. Nature Sustainability, 2, 584-593; SUNASS, mecanismos de retribución por servicios ecosistémicos de SEDAPAL (recuperación de amunas en Huarochirí)."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas 6 de 6 (el previo, en la oración 9). Se concretó la fuente de las amunas (Ochoa-Tocachi y otros 2019, Nature Sustainability) y se precisó una explicación del título."
+  }
 }

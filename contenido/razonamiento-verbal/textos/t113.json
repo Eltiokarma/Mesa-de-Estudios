@@ -82,7 +82,7 @@
       "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
       "enunciado": "Ante la propuesta del texto B, la autora del texto A probablemente objetaría que",
       "alternativas": [
-        { "t": "las notas del colegio las pone cada profesor y no siguen una regla igual para todos.", "correcta": true, "evidencia": ["o3", "o4", "o5"],
+        { "t": "las notas del colegio las pone cada profesor con su propio criterio, sin una regla igual para todos.", "correcta": true, "evidencia": ["o3", "o4", "o5"],
           "explicacion": "Para el texto A, cualquier criterio distinto del examen deja entrar la preferencia de quien evalúa (oración 4) y lo justo es una regla igual (oración 5). Las notas de la secundaria tienen ese problema." },
         { "t": "una parte del puntaje mide la preparación que se pudo comprar.", "codigo": "RV59", "origen": "o9",
           "explicacion": "Ese es el argumento del texto B (oración 9); no sirve al A para objetarle." },
@@ -145,5 +145,5 @@
   "origen": "propio",
   "fecha": "2026-11-08",
   "hechos": [],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "Coincidí a ciegas en 7 de 7. En p3 la correcta ahora dice «con su propio criterio» para atarla mejor a la oración 4; códigos revisados sin cambios." }
 }

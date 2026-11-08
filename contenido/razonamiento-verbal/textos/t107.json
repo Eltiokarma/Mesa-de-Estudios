@@ -48,7 +48,7 @@
       "alternativas": [
         { "t": "Que hay que cuidar los totorales porque limpian el lago y dan vida a la orilla.", "correcta": true, "evidencia": ["o1", "o3", "o5"],
           "explicacion": "Es su tesis (oración 5) con sus razones: la totora filtra el agua (oraciones 1 y 2) y da refugio y material a la gente de la orilla (oración 3)." },
-        { "t": "Que lo primero es tratar las aguas que llegan por los desagües.", "codigo": "RV59", "origen": "o10",
+        { "t": "Que lo primero es tratar las aguas sucias que llegan al lago por los desagües de las ciudades.", "codigo": "RV59", "origen": "o10",
           "explicacion": "Eso lo propone el texto B (oración 10). El texto A no habla de los desagües." },
         { "t": "Que los uros construyen sus islas con totora.", "codigo": "RV1", "origen": "o3",
           "explicacion": "Es un detalle de la oración 3, que sirve para mostrar lo útil que es la totora; no es lo que la autora defiende." },

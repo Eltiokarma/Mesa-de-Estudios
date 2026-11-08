@@ -57,7 +57,7 @@
         {
           "id": "f1c",
           "titulo": "Desinfección solar",
-          "t": "Llena botellas de plástico transparente con agua clara, ciérralas y déjalas al sol directo al menos seis horas. Si el día está nublado, déjalas dos días."
+          "t": "Llena botellas de plástico transparente con agua clara, ciérralas y déjalas al sol directo al menos seis horas. Si el cielo está muy nublado, déjalas dos días seguidos."
         },
         {
           "id": "f1d",
@@ -72,7 +72,7 @@
         {
           "id": "f1f",
           "titulo": "Clorar",
-          "t": "Echa dos gotas de lejía sin aroma por cada litro de agua, mezcla y espera media hora antes de tomarla. El cloro que queda sigue actuando contra los microbios que entren después."
+          "t": "Echa dos gotas de lejía comercial sin aroma por cada litro de agua, mezcla, tapa y espera media hora antes de tomarla. El cloro que queda sigue actuando contra los microbios que entren después."
         },
         {
           "id": "f1g",
@@ -93,7 +93,9 @@
         {
           "t": "ser transparentes y quedar al sol directo.",
           "correcta": true,
-          "evidencia": ["f1c"],
+          "evidencia": [
+            "f1c"
+          ],
           "explicacion": "El recuadro «Desinfección solar» pide botellas de plástico transparente, con agua clara, al sol directo al menos seis horas."
         },
         {
@@ -103,10 +105,10 @@
           "explicacion": "El minuto de hervor está en el recuadro «Hervir», que es otro método. La desinfección solar no pide hervir antes."
         },
         {
-          "t": "quedarse dos días al sol, aunque el cielo esté despejado.",
+          "t": "quedarse dos días seguidos al sol, para mayor seguridad.",
           "codigo": "RV11",
           "origen": "f1c",
-          "explicacion": "Los dos días son solo para el día nublado; con sol bastan seis horas. La alternativa vuelve regla para todos los casos lo que vale para uno."
+          "explicacion": "Los dos días son solo para cuando el cielo está muy nublado; con sol bastan seis horas. La alternativa vuelve regla para todos los casos lo que vale para uno."
         },
         {
           "t": "ser de vidrio oscuro, que guarda mejor el calor.",
@@ -124,7 +126,10 @@
         {
           "t": "limpian el agua que se va a tomar pronto / la siguen cuidando mientras está guardada",
           "correcta": true,
-          "evidencia": ["f1a", "f1e"],
+          "evidencia": [
+            "f1a",
+            "f1e"
+          ],
           "explicacion": "Las dos mitades salen de los títulos y las explicaciones de los grupos: el primero limpia una porción sin protegerla después; el segundo sigue cuidando el agua en el recipiente."
         },
         {
@@ -145,9 +150,9 @@
           "explicacion": "La infografía distingue los grupos por su uso, no los ordena de mejor a peor, y la oración 3 dice que no compiten: se combinan."
         },
         {
-          "t": "se usan en el campo / se usan en la ciudad",
+          "t": "se usan con agua turbia / se usan con agua clara",
           "codigo": "RV7",
-          "explicacion": "La infografía no separa los métodos por el lugar donde se vive. Esa diferencia no se puede sacar de lo que se leyó."
+          "explicacion": "La infografía no separa los grupos por la turbidez del agua: en el primero está filtrar, que es para el agua turbia, y también la desinfección solar, que pide agua clara."
         }
       ]
     },
@@ -158,7 +163,7 @@
       "previo": {
         "tipo": "clasificar",
         "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto y la infografía.",
-        "sonda": "Para el agua que se va a guardar varios días, clorarla da una protección que hervirla no da.",
+        "sonda": "Si el agua se va a quedar guardada varios días, conviene más clorarla que solo hervirla.",
         "clase": "se-deduce",
         "codigos": {
           "lo-dice": "RV58",
@@ -167,7 +172,7 @@
         },
         "explicacion": "La infografía no compara el cloro con el hervido, pero lo permite: el hervido está en el grupo que no protege el agua después, y del cloro dice que sigue actuando contra los microbios que entren. Se deduce.",
         "explicaciones": {
-          "lo-dice": "Ningún recuadro hace esa comparación con esas palabras. Se saca al juntar el título del primer grupo con el recuadro «Clorar».",
+          "lo-dice": "Ningún recuadro compara el cloro con el hervido ni dice cuál conviene más. Se saca al juntar el título del primer grupo con el recuadro «Clorar».",
           "no-se-sabe": "Aunque no lo diga así, el primer grupo «no protege después» y el cloro «sigue actuando»: de ahí sale la ventaja del cloro para el agua guardada.",
           "lo-contradice": "La infografía no dice que el hervido proteja el agua guardada; dice lo contrario, que puede volver a contaminarse."
         }
@@ -177,7 +182,10 @@
         {
           "t": "puede volver a tener microbios.",
           "correcta": true,
-          "evidencia": ["f1a", "o5"],
+          "evidencia": [
+            "f1a",
+            "o5"
+          ],
           "explicacion": "El primer grupo, donde está hervir, no protege el agua después: si se guarda destapada puede volver a contaminarse, como repite la oración 5."
         },
         {
@@ -192,9 +200,9 @@
           "explicacion": "La infografía habla de microbios que vuelven a entrar, no de que el agua se enturbie. Eso va más allá de lo que se puede sacar."
         },
         {
-          "t": "se echará a perder toda en pocas horas.",
+          "t": "se contaminará toda sin remedio, aunque después se tape.",
           "codigo": "RV11",
-          "explicacion": "La infografía dice que «puede» volver a contaminarse, no que toda se eche a perder ni en cuánto tiempo. Es una exageración."
+          "explicacion": "La infografía dice que «puede» volver a contaminarse, no que se contamine toda ni que ya no tenga remedio. Es una exageración."
         }
       ]
     },
@@ -207,19 +215,21 @@
         {
           "t": "pasarla por una tela limpia doblada.",
           "correcta": true,
-          "evidencia": ["f1d"],
+          "evidencia": [
+            "f1d"
+          ],
           "explicacion": "El recuadro «Filtrar» dice que la tela quita la turbidez y que se haga antes de hervir, de clorar o de poner el agua al sol."
         },
         {
-          "t": "nada, porque la infografía no habla del agua del caño.",
+          "t": "nada, porque la infografía no dice qué hacer cuando el agua del caño sale turbia.",
           "codigo": "RV34",
-          "explicacion": "La oración 1 nombra el agua del caño, y el recuadro «Filtrar» dice qué hacer con el agua turbia antes de los otros métodos. No hace falta que hable de ese caño en particular."
+          "explicacion": "La oración 1 nombra el agua del caño, y el recuadro «Filtrar» dice qué hacer con el agua turbia antes de los otros métodos. No hace falta que hable del caño en particular."
         },
         {
-          "t": "dejarla dos días al sol, como en un día nublado.",
+          "t": "dejarla al sol dos días seguidos, como cuando el cielo está muy nublado.",
           "codigo": "RV12",
           "origen": "f1c",
-          "explicacion": "Los dos días son para el cielo nublado, no para el agua turbia. Se aplica al pie de la letra una regla pensada para otro caso."
+          "explicacion": "Los dos días son para el cielo muy nublado, no para el agua turbia, y la desinfección solar pide agua clara. Se aplica al pie de la letra una regla pensada para otro caso."
         },
         {
           "t": "guardarla en un recipiente tapado y con caño.",
@@ -242,16 +252,16 @@
       "fuente": "OMS, «Boiling water» (nota técnica WHO/FWC/WSH/15.02, 2015); OMS, Guías para la calidad del agua de consumo humano, 4.ª ed., sección 7.3 y anexo sobre tratamiento en el hogar."
     },
     {
-      "afirmacion": "La desinfección solar (SODIS) usa botellas de plástico transparente con agua clara, al sol al menos seis horas, o dos días seguidos si está muy nublado.",
-      "fuente": "OMS, Guías para la calidad del agua de consumo humano, 4.ª ed., tratamiento del agua en el hogar; Eawag/SODIS, «Método SODIS» (sodis.ch). Por verificar la redacción exacta de los dos días."
+      "afirmacion": "La desinfección solar (SODIS) usa botellas de plástico transparente con agua clara, al sol al menos seis horas, o dos días seguidos si más de la mitad del cielo está cubierta de nubes.",
+      "fuente": "Eawag/SODIS, guía del método SODIS (sodis.ch); Akvopedia, «UV treatment / Solar disinfection (SODIS)»; OMS, Guías para la calidad del agua de consumo humano, 4.ª ed., tratamiento del agua en el hogar."
     },
     {
       "afirmacion": "Filtrar con tela quita partículas y turbidez, pero no elimina todos los microbios; conviene hacerlo antes de desinfectar.",
       "fuente": "OMS, Guías para la calidad del agua de consumo humano, 4.ª ed., tratamiento del agua en el hogar (la turbidez reduce la eficacia del cloro y de la desinfección solar)."
     },
     {
-      "afirmacion": "Para desinfectar agua en casa se recomienda echar dos gotas de lejía sin aroma por litro y esperar treinta minutos antes de consumirla; el cloro residual sigue protegiendo el agua almacenada.",
-      "fuente": "Ministerio de Salud del Perú (Minsa) y Digesa, recomendaciones para el consumo de agua segura (gob.pe); OMS, Guías, 4.ª ed., sobre el cloro residual. Por verificar la redacción exacta de la dosis en la página del Minsa."
+      "afirmacion": "Para desinfectar agua en casa, el Minsa recomienda echar dos gotas de lejía comercial (al 5 %) por litro, tapar y esperar treinta minutos antes de usarla; el cloro residual sigue protegiendo el agua almacenada.",
+      "fuente": "Minsa, «¿Qué es la enfermedad diarreica aguda (EDA)?», gob.pe/36692 (dos gotas de lejía al 5 % por litro, reposo de 30 minutos); Digesa, «Agua segura para el consumo humano» (boletín); OMS, Guías, 4.ª ed., sobre el cloro residual."
     },
     {
       "afirmacion": "El agua se debe guardar en recipientes limpios, tapados y, de preferencia, con caño o de boca angosta, para no meter la mano ni utensilios.",
@@ -262,5 +272,10 @@
       "fuente": "Inventado para el ejercicio."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 5 de 5. Se confirmaron la dosis del Minsa (dos gotas de lejía al 5 % por litro, 30 minutos) y la regla SODIS (dos días si el cielo está muy nublado), ajustando la infografía; la sonda de p3 pasó a paráfrasis y se reforzaron distractores débiles (p1, p2, p3 y p4)."
+  }
 }

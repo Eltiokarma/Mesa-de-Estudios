@@ -1,0 +1,160 @@
+{
+  "id": "t131",
+  "version": 1,
+  "titulo": "The Seed Keeper (an imagined life)",
+  "tema": "Lectura en inglés · biografía inventada de una científica que estudia variedades de quinua que resisten la sequía",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "narrativo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "detalle", "t": "Valeria Condori is not a real person, but her story is built on real facts about quinoa." },
+      { "id": "o2", "rol": "detalle", "t": "She grew up on a small farm near Lake Titicaca, in Puno, where quinoa has been grown for thousands of years." },
+      { "id": "o3", "rol": "detalle", "t": "As a girl, she used to help her grandmother choose the seeds for the next season: white, red and black grains, each kept in its own bag." },
+      { "id": "o4", "rol": "detalle", "t": "Her grandmother said that some kinds survived dry years better than others, but nobody in the family had ever measured the difference." }
+    ],
+    [
+      { "id": "o5", "rol": "apoyo", "t": "Years later, after studying agronomy, Valeria decided to answer that old question." },
+      { "id": "o6", "rol": "detalle", "t": "In her test fields, she planted dozens of local varieties side by side and gave some plots much less water than others." },
+      { "id": "o7", "rol": "detalle", "t": "Most plants produced less grain when water was scarce, but a few varieties still gave a surprisingly good harvest." },
+      { "id": "o8", "rol": "detalle", "t": "She did not work alone: farmers from nearby communities visited the fields, compared the plants with their own and shared seeds that were not in any collection." }
+    ],
+    [
+      { "id": "o9", "rol": "principal", "t": "For Valeria, the varieties that families have kept for generations are not old-fashioned; they may be one of the best tools for farming in a drier future." },
+      { "id": "o10", "rol": "detalle", "t": "She knows that one dry season is not enough to be sure, so she will repeat her trials for several more years before recommending any variety." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "antonimo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "In sentence 7, the opposite of SCARCE is",
+      "alternativas": [
+        { "t": "abundant.", "correcta": true, "evidencia": ["o6", "o7"],
+          "explicacion": "«Scarce» es escaso: en algunas parcelas el agua era poca (oración 6). Lo contrario es «abundant», abundante." },
+        { "t": "limited.", "codigo": "RV21",
+          "explicacion": "«Limited» (limitado) dice casi lo mismo que «scarce»: es un sinónimo, no el contrario." },
+        { "t": "scared.", "codigo": "RV20",
+          "explicacion": "Se parece en la forma («scarce», «scared»), pero «scared» significa asustado y no tiene que ver con la cantidad de agua." },
+        { "t": "expensive.", "codigo": "RV19",
+          "explicacion": "Lo escaso a veces es caro, pero «expensive» habla del precio, no de la cantidad: es del mismo campo, no el contrario." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que mejor resume la idea que deja el texto.",
+        "aceptadas": ["o9"],
+        "ninguna": "RV3",
+        "explicacion": "La oración 9 dice lo que todo el relato muestra: las variedades que las familias guardaron por generaciones pueden ayudar a cultivar en un futuro más seco.",
+        "explicaciones": {
+          "o1": "Avisa que la persona es inventada: es una aclaración para el lector, no la idea del texto.",
+          "o2": "Dice dónde creció Valeria: es un dato de su vida.",
+          "o3": "Cuenta un recuerdo de infancia: es un detalle.",
+          "o4": "Presenta la pregunta que Valeria responderá después; prepara la idea, pero no la dice.",
+          "o5": "Cuenta que Valeria decidió responder esa pregunta: une la infancia con su trabajo, pero no dice qué encontró ni qué piensa.",
+          "o6": "Describe cómo hizo sus pruebas: es un detalle.",
+          "o7": "Da el resultado de las pruebas: es un detalle que sostiene la idea de la oración 9.",
+          "o8": "Cuenta cómo la ayudaron los agricultores: es un detalle.",
+          "o10": "Dice lo que hará después: es un detalle del futuro de su trabajo.",
+          "ninguna": "La oración 9 sí dice la idea que deja el texto."
+        }
+      },
+      "enunciado": "Which is the best title for the text?",
+      "alternativas": [
+        { "t": "Old Seeds for a Drier Future", "correcta": true, "evidencia": ["o9"],
+          "explicacion": "Resume la oración 9: las variedades antiguas que guardaron las familias pueden servir para cultivar cuando haya menos agua." },
+        { "t": "A Grandmother's Bags of White, Red and Black Seeds", "codigo": "RV1", "origen": "o3",
+          "explicacion": "Las bolsas de semillas son un recuerdo de la oración 3: un detalle, no el tema." },
+        { "t": "Farming in the Andes", "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto trata de la quinua, de su resistencia a la sequía y del trabajo de Valeria." },
+        { "t": "A Scientist Who Studied Agronomy", "codigo": "RV3", "origen": "o5",
+          "explicacion": "Se queda con una parte (quién es Valeria) y deja fuera lo esencial: qué estudia y qué cree sobre las variedades antiguas." },
+        { "t": "Quinoa, the Food That Will Feed the Whole World", "codigo": "RV8",
+          "explicacion": "El texto no habla de alimentar al mundo: es una idea que se oye en otros lados, no lo que dice el texto." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dato",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "According to the text, what will Valeria do before recommending a variety?",
+      "alternativas": [
+        { "t": "She will repeat her trials for several more years.", "correcta": true, "evidencia": ["o10"],
+          "explicacion": "La oración 10 lo dice: «she will repeat her trials for several more years before recommending any variety»." },
+        { "t": "She has already repeated her trials for many years, so she is now sure.", "codigo": "RV55", "origen": "o10",
+          "explicacion": "Lee mal el tiempo del verbo: «will repeat» es futuro. Todavía no lo ha hecho, y la oración 10 dice que una sola temporada no basta para estar segura." },
+        { "t": "She will recommend the best variety after only one dry season.", "codigo": "RV10", "origen": "o10",
+          "explicacion": "Pasa por alto la negación de la oración 10: «one dry season is not enough to be sure»." },
+        { "t": "She will ask her grandmother which kinds survive dry years best.", "codigo": "RV7", "origen": "o4",
+          "explicacion": "La abuela aparece en el recuerdo de la oración 4, pero el texto no dice que Valeria vaya a preguntarle: dice que repetirá sus pruebas." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "enunciado": "What is the main purpose of the text?",
+      "alternativas": [
+        { "t": "To show, through an invented life, why old quinoa varieties may matter.", "correcta": true, "evidencia": ["o1", "o9"],
+          "explicacion": "La oración 1 avisa que Valeria es inventada, y su historia lleva a la idea de la oración 9: las variedades que guardaron las familias pueden ayudar ante la sequía." },
+        { "t": "To tell the true life story of a famous Peruvian scientist.", "codigo": "RV10", "origen": "o1",
+          "explicacion": "Pasa por alto la negación de la oración 1: «Valeria Condori is not a real person». La historia es inventada." },
+        { "t": "To explain in detail how families near Lake Titicaca store white, red and black seeds in bags.", "codigo": "RV3", "origen": "o3",
+          "explicacion": "Las bolsas de semillas son un recuerdo de la oración 3. Se queda con ese detalle y deja fuera la idea a la que lleva el relato." },
+        { "t": "To sell quinoa seeds to farmers in Puno.", "codigo": "RV33",
+          "explicacion": "El texto no vende nada ni invita a comprar: cuenta una historia para mostrar el valor de las variedades antiguas." },
+        { "t": "To prove that quinoa can only grow near Lake Titicaca.", "codigo": "RV11", "origen": "o2",
+          "explicacion": "«Only» es absoluto. La oración 2 dice que la quinua se cultiva allí desde hace miles de años, no que solo crezca allí." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "idioma": "en",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, lee esta afirmación y di qué relación tiene con el texto.",
+        "sonda": "Without the farmers, Valeria would probably have tested fewer local varieties.",
+        "clase": "se-deduce",
+        "codigos": { "lo-dice": "RV58", "no-se-sabe": "RV34", "lo-contradice": "RV63" },
+        "explicacion": "La oración 8 dice que los agricultores compartieron semillas «that were not in any collection». Sin ellos, esas variedades no habrían llegado a sus pruebas: se deduce que habría probado menos.",
+        "explicaciones": {
+          "lo-dice": "El texto no habla de lo que habría pasado sin los agricultores; se saca de la oración 8, pero no está escrito.",
+          "no-se-sabe": "Sí se puede saber: si las semillas de los agricultores no estaban en ninguna colección, sin ellos Valeria no las habría tenido.",
+          "lo-contradice": "El texto no dice que Valeria tuviera esas semillas por otro lado: dice que no estaban en ninguna colección."
+        }
+      },
+      "enunciado": "If the farmers had not shared their own seeds with Valeria, then, according to the text,",
+      "alternativas": [
+        { "t": "her trials would probably have had fewer varieties.", "correcta": true, "evidencia": ["o8"],
+          "explicacion": "La oración 8 dice que los agricultores le dieron semillas que no estaban en ninguna colección. Sin ellas, lo probable es que hubiera probado menos variedades." },
+        { "t": "she would have tested exactly the same varieties, taken from a seed collection.", "codigo": "RV63", "origen": "o8",
+          "explicacion": "Vuelve a confirmar lo que el condicional quita: esas semillas «were not in any collection», así que no podía sacarlas de una." },
+        { "t": "she would have stopped working as a scientist forever.", "codigo": "RV12",
+          "explicacion": "Lleva la idea a un extremo: sin esas semillas tendría menos variedades, pero nada dice que dejaría su trabajo." },
+        { "t": "all the plants would have died when water was scarce.", "codigo": "RV7", "origen": "o7",
+          "explicacion": "El texto no une las semillas de los agricultores con que las plantas murieran; además, la oración 7 dice que la mayoría solo dio menos grano." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    { "afirmacion": "Valeria Condori y su familia son inventadas para el ejercicio; el texto lo dice en la oración 1.", "fuente": "Texto propio (biografía ficticia)." },
+    { "afirmacion": "La quinua se cultiva en la cuenca del lago Titicaca desde hace miles de años y Puno es la principal región productora del Perú.", "fuente": "FAO (2013), Año Internacional de la Quinua: La quinua, cultivo milenario para contribuir a la seguridad alimentaria mundial; MIDAGRI, estadísticas de producción de quinua por región." },
+    { "afirmacion": "Hay muchas variedades de quinua, con granos de colores (blanco, rojo, negro), y varias toleran bien la sequía, aunque con poca agua el rendimiento suele bajar.", "fuente": "FAO (2013), La quinua, cultivo milenario…; Jacobsen, S.-E. y otros (2003), The resistance of quinoa (Chenopodium quinoa Willd.) to adverse abiotic factors, Food Reviews International, 19(1-2), 99-109." },
+    { "afirmacion": "Las familias campesinas guardan e intercambian semillas propias que no siempre están en bancos de germoplasma.", "fuente": "FAO (2013), La quinua, cultivo milenario… (conservación en finca y bancos de germoplasma)." }
+  ],
+  "revision": null
+}

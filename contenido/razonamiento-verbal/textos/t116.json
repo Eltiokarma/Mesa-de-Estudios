@@ -147,5 +147,5 @@
   "hechos": [
     { "afirmacion": "La Carta de Venecia (Carta internacional sobre la conservación y la restauración de monumentos y sitios, 1964) dice que la restauración debe detenerse allí donde empieza la conjetura.", "fuente": "ICOMOS, Carta de Venecia (1964), artículo 9" }
   ],
-  "revision": null
+  "revision": { "por": "subagente (revisor a ciegas)", "fecha": "2026-11-08", "veredicto": "aprobado", "notas": "Coincidí a ciegas en 7 de 7. Sin cambios; verificado que el artículo 9 de la Carta de Venecia (1964) pide detener la restauración donde empieza la conjetura." }
 }

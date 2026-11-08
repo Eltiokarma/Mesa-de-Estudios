@@ -1,0 +1,153 @@
+{
+  "id": "t121",
+  "version": 1,
+  "titulo": "¿Quién prueba el saber del campo?",
+  "tema": "Ciencia · saber tradicional y método científico",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "autores": [
+    { "id": "A", "desde": 0, "firma": "Un investigador agrícola" },
+    { "id": "B", "desde": 1, "firma": "Una antropóloga cusqueña" }
+  ],
+  "parrafos": [
+    [
+      { "id": "o1", "rol": "principal", "t": "Que una práctica agrícola tenga siglos no prueba que funcione; prueba, a lo sumo, que no ha fracasado de un modo visible." },
+      { "id": "o2", "rol": "ejemplo", "t": "Sembrar según las fases de la luna o anunciar cómo será el año por la floración de ciertas plantas son prácticas que se transmiten de padres a hijos en muchas comunidades andinas." },
+      { "id": "o3", "rol": "apoyo", "t": "Algunas pueden tener una razón sólida; otras pueden haberse conservado solo porque nadie las comparó con otra manera de hacer las cosas." },
+      { "id": "o4", "rol": "apoyo", "t": "Para distinguirlas no basta la confianza: hay que sembrar parcelas con la práctica y sin ella, en las mismas condiciones, y medir la cosecha." },
+      { "id": "o5", "rol": "principal", "t": "Solo así el saber tradicional que funciona podrá defenderse con pruebas, y el que no funciona dejará de costarles esfuerzo a los agricultores." }
+    ],
+    [
+      { "id": "o6", "rol": "detalle", "t": "No me opongo a que se hagan ensayos en parcelas." },
+      { "id": "o7", "rol": "contraste", "t": "Pero llamar «no probado» a un saber que generaciones de agricultores han puesto a prueba en cada campaña, con su propia cosecha en juego, es olvidar que también ellos observan, comparan y corrigen." },
+      { "id": "o8", "rol": "apoyo", "t": "Ese saber, además, no es una suma de recetas sueltas: la rotación, el descanso de la tierra y la lectura del clima forman un sistema pensado para un lugar, y una parcela de prueba puede medir una pieza y perder el conjunto." },
+      { "id": "o9", "rol": "principal", "t": "La ciencia debería dialogar con los agricultores, y no solo examinar sus prácticas: preguntarles por qué hacen lo que hacen, diseñar con ellos los estudios y aceptar que también puede aprender de ellos." },
+      { "id": "o10", "rol": "apoyo", "t": "Examinar sin escuchar es tratar al campesino como un objeto de estudio y no como alguien que también sabe." }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "controversia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "El tema en controversia entre los dos textos es",
+      "alternativas": [
+        { "t": "qué vale como prueba de que una práctica agrícola tradicional funciona.", "correcta": true, "evidencia": ["o1", "o4", "o7"],
+          "explicacion": "Para el texto A, los siglos de uso no prueban nada y hace falta el ensayo controlado (oraciones 1 y 4); para el B, los agricultores ya pusieron a prueba su saber en cada campaña (oración 7)." },
+        { "t": "si conviene hacer ensayos con parcelas de prueba.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "En eso no discrepan: el texto A los propone y el B dice «no me opongo a que se hagan ensayos en parcelas» (oración 6)." },
+        { "t": "si sembrar según las fases de la luna mejora la cosecha.", "codigo": "RV1", "origen": "o2",
+          "explicacion": "Es un ejemplo del texto A; ninguno de los dos discute si esa práctica en particular funciona." },
+        { "t": "si la rotación, el descanso y la lectura del clima forman un sistema propio de cada lugar.", "codigo": "RV60", "origen": "o8",
+          "explicacion": "Es un argumento del texto B (oración 8); el texto A no toma posición sobre eso." },
+        { "t": "cómo ha avanzado el conocimiento humano a lo largo de la historia.", "codigo": "RV2",
+          "explicacion": "Es demasiado general: los textos discuten cómo se comprueba el saber agrícola tradicional." }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "postura",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Que una costumbre se haya mantenido mucho tiempo no basta para saber si da resultado.",
+        "aceptada": "A",
+        "codigos": { "B": "RV59", "ambos": "RV60", "ninguno": null },
+        "explicacion": "Lo sostiene el texto A en las oraciones 1 y 3: que una práctica tenga siglos solo prueba que no fracasó de un modo visible, y pudo conservarse sin que nadie la comparara.",
+        "explicaciones": {
+          "B": "El texto B sostiene casi lo contrario: que generaciones de agricultores ya pusieron a prueba su saber en cada campaña (oración 7).",
+          "ambos": "Solo el texto A lo sostiene. El texto B rechaza llamar «no probado» a un saber que se ha probado en cada campaña.",
+          "ninguno": "Sí lo sostiene alguien: el texto A, en las oraciones 1 y 3."
+        }
+      },
+      "enunciado": "El autor del texto A sostiene que",
+      "alternativas": [
+        { "t": "las prácticas tradicionales deben compararse en ensayos controlados para saber cuáles funcionan.", "correcta": true, "evidencia": ["o4", "o5"],
+          "explicacion": "Es su propuesta: parcelas con la práctica y sin ella, en las mismas condiciones (oración 4), para separar lo que funciona de lo que no (oración 5)." },
+        { "t": "los agricultores ya ponen a prueba sus prácticas en cada campaña.", "codigo": "RV59", "origen": "o7",
+          "explicacion": "Ese es el argumento del texto B (oración 7), con el que discute el A." },
+        { "t": "conviene medir las prácticas en parcelas de prueba, con estudios diseñados junto con los propios agricultores de la comunidad.", "codigo": "RV62", "origen": "o9",
+          "explicacion": "La primera parte es del texto A, pero la segunda es la propuesta del B (oración 9): el A no habla de diseñar los estudios con los agricultores." },
+        { "t": "todas las prácticas tradicionales carecen de fundamento.", "codigo": "RV11", "origen": "o3",
+          "explicacion": "El texto A dice que «algunas pueden tener una razón sólida» (oración 3); «todas» contradice eso." },
+        { "t": "el Estado debería prohibir las costumbres agrícolas de las comunidades.", "codigo": "RV33",
+          "explicacion": "El texto A no propone prohibir nada: quiere saber cuáles funcionan para defenderlas con pruebas." }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "dialogo",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "Ante el método que propone el texto A, la autora del texto B probablemente objetaría que",
+      "alternativas": [
+        { "t": "una parcela de prueba puede juzgar una práctica suelta y perder el sistema al que pertenece.", "correcta": true, "evidencia": ["o4", "o8"],
+          "explicacion": "El texto A propone comparar cada práctica en parcelas (oración 4); el B advierte que esas prácticas forman un sistema y que la parcela «puede medir una pieza y perder el conjunto» (oración 8)." },
+        { "t": "los ensayos en parcelas no deberían hacerse.", "codigo": "RV61", "origen": "o6",
+          "explicacion": "El texto B dice lo contrario: «no me opongo a que se hagan ensayos en parcelas» (oración 6). En eso coincide con el A." },
+        { "t": "una costumbre pudo conservarse solo porque nadie la comparó con otra.", "codigo": "RV59", "origen": "o3",
+          "explicacion": "Ese es un argumento del texto A (oración 3), no una objeción del B." },
+        { "t": "la luna no influye en el crecimiento de las plantas.", "codigo": "RV8", "origen": "o2",
+          "explicacion": "Ninguno de los textos se pronuncia sobre la luna; la afirmación vendría de lo que uno sabe o cree, no del texto B." },
+        { "t": "solo los agricultores pueden juzgar si sus prácticas funcionan.", "codigo": "RV11",
+          "explicacion": "El texto B no excluye a la ciencia: pide que dialogue con los agricultores y diseñe con ellos los estudios (oración 9). «Solo» exagera su postura." }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "coincidencia",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "atribuir",
+        "pide": "Antes de ver las alternativas: ¿quién sostiene esta idea?",
+        "sonda": "Las prácticas tradicionales deberían reemplazarse por técnicas modernas.",
+        "aceptada": "ninguno",
+        "codigos": { "A": "RV12", "B": "RV33", "ambos": "RV7" },
+        "explicacion": "Ninguno lo sostiene. El texto A quiere comprobar cuáles funcionan para defenderlas con pruebas (oración 5), no reemplazarlas todas; el texto B defiende ese saber y pide dialogar con él (oración 9).",
+        "explicaciones": {
+          "A": "El texto A pide comprobar las prácticas, no reemplazarlas: dice que las que funcionen «podrán defenderse con pruebas» (oración 5). Pasar de «comprobar» a «reemplazar» es llevarlo a un extremo.",
+          "B": "El texto B defiende el saber tradicional y pide que la ciencia aprenda de él (oración 9); no propone reemplazarlo.",
+          "ambos": "Ninguno de los dos lo dice, y el texto B lo rechazaría. Es una conclusión que no sale de los textos."
+        }
+      },
+      "enunciado": "¿En qué coinciden los dos autores?",
+      "alternativas": [
+        { "t": "En aceptar que las prácticas tradicionales se estudien en parcelas.", "correcta": true, "evidencia": ["o4", "o6"],
+          "explicacion": "El texto A propone los ensayos en parcelas (oración 4) y el B dice que no se opone a ellos (oración 6)." },
+        { "t": "En que la ciencia debe diseñar los estudios junto con los agricultores.", "codigo": "RV60", "origen": "o9",
+          "explicacion": "Eso lo propone solo el texto B (oración 9). El texto A no dice quién diseña los estudios." },
+        { "t": "En que conviene estudiar las prácticas, aunque su larga historia ya demuestra que funcionan.", "codigo": "RV62", "origen": "o1",
+          "explicacion": "La primera parte es el punto en común, pero la segunda la niega el texto A: que una práctica tenga siglos no prueba que funcione (oración 1)." },
+        { "t": "En que la ciencia siempre ha despreciado a los campesinos.", "codigo": "RV11",
+          "explicacion": "El texto B critica examinar sin escuchar, pero no dice que la ciencia «siempre» haya despreciado a nadie, y el A no habla de eso." },
+        { "t": "En que las prácticas tradicionales deben reemplazarse por técnicas modernas.", "codigo": "RV33",
+          "explicacion": "Ninguno lo propone: el texto A quiere defender con pruebas las que funcionan y el B, dialogar con ese saber." }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "enunciado": "En el texto B, el verbo EXAMINAR («no solo examinar sus prácticas») significa",
+      "alternativas": [
+        { "t": "evaluar desde fuera.", "correcta": true, "evidencia": ["o9", "o10"],
+          "explicacion": "La autora lo opone a dialogar: examinar es juzgar las prácticas sin escuchar a quienes las usan (oración 10)." },
+        { "t": "tomar una prueba escrita.", "codigo": "RV18",
+          "explicacion": "Es el sentido más frecuente en el colegio, pero aquí nadie toma un examen: se habla de cómo la ciencia estudia las prácticas." },
+        { "t": "observar con una lupa.", "codigo": "RV19",
+          "explicacion": "Es del mismo campo (mirar con atención), pero el texto no habla de instrumentos ni de mirar de cerca." },
+        { "t": "preguntar por qué se hace algo.", "codigo": "RV5", "origen": "o9",
+          "explicacion": "Repite palabras de la oración 9, pero ahí preguntar es lo que la autora propone en lugar de solo examinar." },
+        { "t": "eximir de una obligación.", "codigo": "RV20",
+          "explicacion": "Es el sentido de «eximir», que se parece en la forma, pero no tiene relación con «examinar»." }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-08",
+  "hechos": [
+    { "afirmacion": "En comunidades andinas se usan indicadores naturales, como la floración de ciertas plantas, para prever cómo será la campaña agrícola, y se siembra atendiendo a las fases de la luna.", "fuente": "Claverías, R. (2000). Conocimientos de los campesinos andinos sobre los predictores climáticos: elementos para su verificación. Puno: CIED" }
+  ],
+  "revision": null
+}

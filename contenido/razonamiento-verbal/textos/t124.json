@@ -130,14 +130,14 @@
         },
         {
           "t": "idle.",
-          "codigo": "RV21",
-          "explicacion": "«Idle» (ocioso, que no hace nada) significa casi lo mismo que «lazy»: es un sinónimo, no su contrario."
+          "codigo": "RV19",
+          "explicacion": "«Idle» (ocioso, que no hace nada) es del mismo campo que «lazy» y significa casi lo mismo: es un sinónimo, no su contrario."
         },
         {
           "t": "tired.",
-          "codigo": "RV19",
+          "codigo": "RV21",
           "origen": "o7",
-          "explicacion": "«Tired» (cansado) es del mismo campo y aparece en la oración 7, pero no es lo opuesto de perezoso: alguien puede estar cansado y ser muy trabajador."
+          "explicacion": "«Tired» (cansado) aparece en la oración 7 y es solo otro rasgo, distinto pero no opuesto: alguien puede estar cansado y ser muy trabajador."
         },
         {
           "t": "late.",
@@ -258,5 +258,10 @@
       "fuente": "American Academy of Pediatrics (2014). School Start Times for Adolescents (policy statement). Pediatrics, 134(3), 642-649."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas 6 de 6. Solo se ajustaron los códigos del antónimo (sinónimo RV19, otro rasgo RV21); referencias de la AASM (Paruthi y otros 2016) y la AAP (2014) comprobadas."
+  }
 }

@@ -83,7 +83,10 @@
         {
           "t": "prueba sus explicaciones con experimentos.",
           "correcta": true,
-          "evidencia": ["f1b", "f1c"],
+          "evidencia": [
+            "f1b",
+            "f1c"
+          ],
           "explicacion": "Solo el recuadro del conocimiento científico habla de la observación, la medición y el experimento; el del filosófico aclara que avanza «no con el experimento»."
         },
         {
@@ -137,7 +140,10 @@
         {
           "t": "puede convivir con la explicación del meteorólogo.",
           "correcta": true,
-          "evidencia": ["o3", "o4"],
+          "evidencia": [
+            "o3",
+            "o4"
+          ],
           "explicacion": "La oración 4 dice que las tres respuestas sobre la helada no se anulan: miran el mismo hecho desde preguntas distintas. El saber de ella y la explicación de él caben juntos."
         },
         {
@@ -152,10 +158,10 @@
           "explicacion": "El texto no ordena las formas por su confianza; dice que el esquema no sirve para decidir cuál vale más ni cuál debe desaparecer (oración 6)."
         },
         {
-          "t": "explica por completo por qué se enfría la noche.",
-          "codigo": "RV11",
-          "origen": "f1a",
-          "explicacion": "Según el esquema, el saber común sirve para actuar, pero «no siempre explica por qué las cosas pasan». El «por completo» no tiene apoyo."
+          "t": "explica, igual que la ciencia, por qué se enfría la noche.",
+          "codigo": "RV45",
+          "origen": "f1b",
+          "explicacion": "Explicar los hechos con causas es lo que el esquema pone en el recuadro del conocimiento científico. Del saber común dice que sirve para actuar, pero «no siempre explica por qué las cosas pasan»."
         }
       ]
     },
@@ -168,7 +174,9 @@
         {
           "t": "avanza con mediciones y experimentos.",
           "correcta": true,
-          "evidencia": ["f1c"],
+          "evidencia": [
+            "f1c"
+          ],
           "explicacion": "El recuadro del conocimiento filosófico dice que avanza con la reflexión y el argumento, «no con el experimento»."
         },
         {
@@ -199,7 +207,9 @@
         {
           "t": "se aportan unas a otras.",
           "correcta": true,
-          "evidencia": ["o5"],
+          "evidencia": [
+            "o5"
+          ],
           "explicacion": "La misma oración lo explica: la ciencia toma observaciones comunes y la filosofía examina lo que la ciencia supone. Cada forma recibe algo de otra."
         },
         {
@@ -208,9 +218,9 @@
           "explicacion": "Es el sentido más frecuente de «alimentar», pero aquí no se habla de comida, sino de cómo se relacionan las formas de conocer."
         },
         {
-          "t": "se oponen unas a otras.",
+          "t": "se mezclan hasta confundirse.",
           "codigo": "RV44",
-          "explicacion": "Es lo contrario de lo que el texto sostiene: las formas se distinguen, pero no se enfrentan (oración 2)."
+          "explicacion": "El texto sostiene que las formas se aportan algo, pero sigue distinguiéndolas: para eso está el esquema (oración 6). Mezclarlas hasta confundirse cambia la relación que plantea."
         },
         {
           "t": "parten de observaciones comunes.",
@@ -229,13 +239,16 @@
         {
           "t": "confunde una diferencia de método con una falta de valor.",
           "correcta": true,
-          "evidencia": ["o6", "f1c"],
+          "evidencia": [
+            "o6",
+            "f1c"
+          ],
           "explicacion": "Que la filosofía no use el experimento es una de las diferencias del esquema; la oración 6 dice que el esquema muestra en qué se diferencian, no cuál debe desaparecer."
         },
         {
-          "t": "tiene razón, porque solo el experimento prueba algo.",
+          "t": "tiene razón en parte, porque sin experimento no se puede saber nada sobre la helada.",
           "codigo": "RV33",
-          "explicacion": "El autor no sostiene eso en ninguna parte. Al contrario, presenta la reflexión y el argumento como la forma en que avanza la filosofía."
+          "explicacion": "El texto dice lo contrario: la agricultora sabe por experiencia cuándo puede helar, sin experimentos (oración 3), y el autor no le da la razón a quien desprecia una forma de conocer."
         },
         {
           "t": "en realidad la filosofía vale más, porque piensa los fundamentos.",
@@ -243,9 +256,9 @@
           "explicacion": "El texto no pone a una forma por encima de otra; cambiar un orden por otro tampoco es lo que el autor dice."
         },
         {
-          "t": "las tres formas son idénticas y no se distinguen en nada.",
-          "codigo": "RV11",
-          "explicacion": "El autor sí las distingue: para eso está el esquema. Lo que niega es que distinguirlas sea enfrentarlas."
+          "t": "las tres formas sirven para lo mismo, así que da igual cuál se use.",
+          "codigo": "RV44",
+          "explicacion": "El autor dice que las formas miran el mismo hecho «desde preguntas distintas» (oración 4): no da igual cuál se use, porque cada una responde a otra pregunta."
         },
         {
           "t": "debería empezar por el saber común, que es la base de todo.",
@@ -268,5 +281,10 @@
       "fuente": "Elaborado para el ejercicio."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en 6 de 6. Se reforzaron distractores débiles (p2, p4 y p5) y se ajustaron sus códigos (RV7, RV44)."
+  }
 }

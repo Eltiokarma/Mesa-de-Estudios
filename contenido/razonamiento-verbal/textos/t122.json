@@ -159,9 +159,10 @@
           "explicacion": "«Proud» (orgulloso) está en la misma oración 8, pero describe lo que sienten los niños ahora, no cómo veían la papa antes."
         },
         {
-          "t": "healthy.",
-          "codigo": "RV19",
-          "explicacion": "Es otra cualidad de una comida (sana), pero no es lo que dice la palabra. El texto no habla de si la papa es sana."
+          "t": "special.",
+          "codigo": "RV55",
+          "explicacion": "Confunde el antes con el ahora: «used to see» habla de cómo veían la papa antes (como algo común). Que ahora la sientan especial es lo contrario de lo que dice la palabra.",
+          "origen": "o8"
         }
       ]
     },
@@ -182,13 +183,13 @@
         },
         {
           "t": "pleased.",
-          "codigo": "RV21",
-          "explicacion": "«Pleased» (contento, satisfecho) está cerca de «proud»: se parece en el sentido, no es su contrario. Se pedía lo opuesto."
+          "codigo": "RV19",
+          "explicacion": "«Pleased» (contento, satisfecho) es del mismo campo que «proud» y casi dice lo mismo: no es su contrario. Se pedía lo opuesto."
         },
         {
           "t": "bored.",
-          "codigo": "RV19",
-          "explicacion": "«Bored» (aburrido) es otro sentimiento, pero no es lo contrario de estar orgulloso. Lo opuesto de sentir orgullo es sentir vergüenza."
+          "codigo": "RV21",
+          "explicacion": "«Bored» (aburrido) es solo otro sentimiento, distinto pero no opuesto. Lo contrario de sentir orgullo es sentir vergüenza."
         },
         {
           "t": "ordinary.",
@@ -260,5 +261,10 @@
       "fuente": "Centro Internacional de la Papa (CIP) y Ministerio de Desarrollo Agrario y Riego (MIDAGRI), información sobre papas nativas del Perú."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (revisor a ciegas)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas 6 de 6. Se cambió el distractor débil «healthy» por «special» (antes contra ahora, RV55) y se ajustaron los códigos del antónimo (casi sinónimo RV19, solo distinto RV21)."
+  }
 }
