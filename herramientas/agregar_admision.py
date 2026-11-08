@@ -89,6 +89,9 @@ def norm(s):
     s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
     return " ".join(re.findall(r"[a-z0-9]{2,}", s)[:8])
 
+# Pares que la regla junta pero que, revisados contra el PDF, son preguntas distintas
+# (mismo escenario con otros datos).
+NO_SON_REPETIDAS = {"unmsm-2021-solucionario-2021-09-12#29"}
 vistos = {}
 for r in sorted(filas, key=lambda r: (r["periodo"], r["archivo"], r["numero"])):
     n = norm(r.get("inicio", ""))
@@ -96,6 +99,7 @@ for r in sorted(filas, key=lambda r: (r["periodo"], r["archivo"], r["numero"])):
     # En verbal los enunciados son fórmulas («Según el texto…») sobre textos distintos: no se junta.
     if len(n.split()) < 6 or r["curso"] == "razonamiento-verbal": continue
     k = (r["curso"], r["periodo"], n, r.get("tema", ""))
+    if r["id"] in NO_SON_REPETIDAS: continue
     previo = vistos.get(k)
     if previo and (not r.get("clave") or not previo.get("clave") or r["clave"] == previo["clave"]):
         r["repetida_de"] = previo["id"]
