@@ -1,0 +1,738 @@
+{
+  "plantilla": "rm-movimientos",
+  "tolerancia": 0,
+  "nota": "Casillas del caballo como [columna, fila] desde 0 (a1 = [0, 0]). En canoa, gente en el orden del enunciado; choques con índices de gente; cada cruce es un viaje. En salto, casillas 1..n. En tubo, el primer elemento es la izquierda (2 bocas) o la boca de arriba (1 boca); un movimiento es sacar una bola a la mesa o meterla desde la mesa. En pares, '_' es una casilla vacía; se mueven dos fichas vecinas a dos vacías vecinas sin cambiar su orden.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "canoa",
+        "modo": "cupo",
+        "gente": [
+          {
+            "nombre": "el campesino",
+            "rema": true
+          },
+          {
+            "nombre": "el zorro",
+            "rema": false
+          },
+          {
+            "nombre": "el cuy",
+            "rema": false
+          },
+          {
+            "nombre": "la leña",
+            "rema": false
+          },
+          {
+            "nombre": "la alfalfa",
+            "rema": false
+          }
+        ],
+        "cupo": 2,
+        "choques": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            4
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 9,
+        "texto": "9 viajes"
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "caballo",
+        "filas": 5,
+        "columnas": 6,
+        "A": [
+          5,
+          3
+        ],
+        "B": [
+          4,
+          1
+        ],
+        "C": [
+          4,
+          0
+        ],
+        "bloqueadas": []
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 saltos"
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "tubo",
+        "bocas": 2,
+        "inicio": [
+          1,
+          3,
+          2,
+          4
+        ],
+        "meta": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 movimientos"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "canoa",
+        "modo": "cupo",
+        "gente": [
+          {
+            "nombre": "el campesino",
+            "rema": true
+          },
+          {
+            "nombre": "el zorro",
+            "rema": false
+          },
+          {
+            "nombre": "el gato",
+            "rema": false
+          },
+          {
+            "nombre": "el cuy",
+            "rema": false
+          },
+          {
+            "nombre": "la leña",
+            "rema": false
+          }
+        ],
+        "cupo": 2,
+        "choques": [
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 9,
+        "texto": "9 viajes"
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "caballo",
+        "filas": 4,
+        "columnas": 4,
+        "A": [
+          3,
+          1
+        ],
+        "B": [
+          3,
+          0
+        ],
+        "C": [
+          0,
+          3
+        ],
+        "bloqueadas": []
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 saltos"
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "tubo",
+        "bocas": 2,
+        "inicio": [
+          4,
+          1,
+          2,
+          3
+        ],
+        "meta": [
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 movimientos"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "caballo",
+        "filas": 8,
+        "columnas": 8,
+        "A": [
+          4,
+          7
+        ],
+        "B": [
+          0,
+          1
+        ],
+        "C": [
+          6,
+          3
+        ],
+        "bloqueadas": [
+          [
+            7,
+            2
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 saltos"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "tubo",
+        "bocas": 2,
+        "inicio": [
+          5,
+          4,
+          1,
+          2,
+          3
+        ],
+        "meta": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 movimientos"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "canoa",
+        "modo": "cupo",
+        "gente": [
+          {
+            "nombre": "el campesino",
+            "rema": true
+          },
+          {
+            "nombre": "su hija",
+            "rema": true
+          },
+          {
+            "nombre": "el zorro",
+            "rema": false
+          },
+          {
+            "nombre": "la gallina",
+            "rema": false
+          },
+          {
+            "nombre": "el perro",
+            "rema": false
+          }
+        ],
+        "cupo": 2,
+        "choques": [
+          [
+            2,
+            3
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        "guarda": "campesino"
+      },
+      "esperado": {
+        "respuesta": 7,
+        "texto": "7 viajes"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "tubo",
+        "bocas": 2,
+        "inicio": [
+          4,
+          2,
+          3,
+          1
+        ],
+        "meta": [
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 movimientos"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "canoa",
+        "modo": "peso",
+        "gente": [
+          {
+            "nombre": "el papá",
+            "peso": 80,
+            "rema": true
+          },
+          {
+            "nombre": "la mamá",
+            "peso": 75,
+            "rema": true
+          },
+          {
+            "nombre": "Ana",
+            "peso": 35,
+            "rema": true
+          },
+          {
+            "nombre": "Luis",
+            "peso": 45,
+            "rema": true
+          },
+          {
+            "nombre": "Rosa",
+            "peso": 30,
+            "rema": true
+          },
+          {
+            "nombre": "el perro",
+            "peso": 20,
+            "rema": false
+          }
+        ],
+        "limite": 105,
+        "choques": []
+      },
+      "esperado": {
+        "respuesta": 9,
+        "texto": "9 viajes"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "tubo",
+        "bocas": 1,
+        "inicio": [
+          2,
+          3,
+          4,
+          1
+        ],
+        "meta": [
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 movimientos"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "salto",
+        "modo": "avanza-retrocede",
+        "n": 10,
+        "p": 3,
+        "q": 5,
+        "s": 3,
+        "t": 10
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 saltos"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "canoa",
+        "modo": "cupo",
+        "gente": [
+          {
+            "nombre": "el campesino",
+            "rema": true
+          },
+          {
+            "nombre": "su hija",
+            "rema": true
+          },
+          {
+            "nombre": "el zorro",
+            "rema": false
+          },
+          {
+            "nombre": "el gato",
+            "rema": false
+          },
+          {
+            "nombre": "el cuy",
+            "rema": false
+          },
+          {
+            "nombre": "la leña",
+            "rema": false
+          }
+        ],
+        "cupo": 2,
+        "choques": [
+          [
+            3,
+            4
+          ],
+          [
+            2,
+            4
+          ]
+        ],
+        "guarda": "campesino"
+      },
+      "esperado": {
+        "respuesta": 9,
+        "texto": "9 viajes"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "tubo",
+        "bocas": 1,
+        "inicio": [
+          4,
+          3,
+          2,
+          1
+        ],
+        "meta": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "esperado": {
+        "respuesta": 8,
+        "texto": "8 movimientos"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "canoa",
+        "modo": "cupo",
+        "gente": [
+          {
+            "nombre": "el campesino",
+            "rema": true
+          },
+          {
+            "nombre": "el perro",
+            "rema": false
+          },
+          {
+            "nombre": "el gato",
+            "rema": false
+          },
+          {
+            "nombre": "el cuy",
+            "rema": false
+          }
+        ],
+        "cupo": 2,
+        "choques": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            3
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 7,
+        "texto": "7 viajes"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "pares",
+        "meta": "alternar",
+        "n": 3,
+        "L": 8,
+        "inicio": "B__BBNNN"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 movimientos"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "caballo",
+        "filas": 6,
+        "columnas": 5,
+        "A": [
+          2,
+          5
+        ],
+        "B": [
+          3,
+          3
+        ],
+        "C": [
+          1,
+          4
+        ],
+        "bloqueadas": [
+          [
+            2,
+            4
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 saltos"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "salto",
+        "modo": "avanza-retrocede",
+        "n": 11,
+        "p": 5,
+        "q": 7,
+        "s": 3,
+        "t": 11
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 saltos"
+      }
+    },
+    {
+      "semilla": 38,
+      "entrada": {
+        "tipo": "salto",
+        "modo": "dos-saltos",
+        "n": 10,
+        "p": 4,
+        "q": 7,
+        "s": 8,
+        "t": 10
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 saltos"
+      }
+    },
+    {
+      "semilla": 43,
+      "entrada": {
+        "tipo": "pares",
+        "meta": "alternar",
+        "n": 3,
+        "L": 8,
+        "inicio": "BNNBNB__"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 movimientos"
+      }
+    },
+    {
+      "semilla": 44,
+      "entrada": {
+        "tipo": "caballo",
+        "filas": 8,
+        "columnas": 8,
+        "A": [
+          6,
+          7
+        ],
+        "B": [
+          6,
+          1
+        ],
+        "C": null,
+        "bloqueadas": []
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 saltos"
+      }
+    },
+    {
+      "semilla": 47,
+      "entrada": {
+        "tipo": "caballo",
+        "filas": 4,
+        "columnas": 4,
+        "A": [
+          0,
+          3
+        ],
+        "B": [
+          1,
+          2
+        ],
+        "C": null,
+        "bloqueadas": [
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 saltos"
+      }
+    },
+    {
+      "semilla": 61,
+      "entrada": {
+        "tipo": "salto",
+        "modo": "avanza-retrocede",
+        "n": 12,
+        "p": 3,
+        "q": 7,
+        "s": 3,
+        "t": 11
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 saltos"
+      }
+    },
+    {
+      "semilla": 75,
+      "entrada": {
+        "tipo": "pares",
+        "meta": "separar",
+        "n": 3,
+        "L": 8,
+        "inicio": "NBNBNB__"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 movimientos"
+      }
+    },
+    {
+      "semilla": 115,
+      "entrada": {
+        "tipo": "pares",
+        "meta": "separar",
+        "n": 3,
+        "L": 8,
+        "inicio": "__BBNBNN"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 movimientos"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "canoa",
+        "modo": "peso",
+        "gente": [
+          {
+            "nombre": "el papá",
+            "peso": 90,
+            "rema": true
+          },
+          {
+            "nombre": "Ana",
+            "peso": 40,
+            "rema": true
+          },
+          {
+            "nombre": "Luis",
+            "peso": 35,
+            "rema": true
+          },
+          {
+            "nombre": "Rosa",
+            "peso": 35,
+            "rema": true
+          },
+          {
+            "nombre": "el perro",
+            "peso": 15,
+            "rema": false
+          }
+        ],
+        "limite": 95,
+        "choques": []
+      },
+      "esperado": {
+        "respuesta": 7,
+        "texto": "7 viajes"
+      }
+    }
+  ]
+}

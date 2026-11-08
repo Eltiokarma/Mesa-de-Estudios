@@ -1,0 +1,121 @@
+{
+  "titulo": "Diagramas de flujo y operadores: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 minutos por problema. Haz una tabla con una columna por variable y una fila por vuelta. «x ← …» significa que x toma el valor de la derecha.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un diagrama de flujo hace esto: Inicio; S ← 0 y k ← 5; luego S ← S + k y después k ← k + 5; pregunta ¿S ≥ 75? Si es no, vuelve a «S ← S + k»; si es sí, imprime k y termina. ¿Qué número se imprime?",
+      "respuesta": "30",
+      "pasos": [
+        "Vuelta 1: S = 5, k = 10. ¿5 ≥ 75? No.",
+        "Vuelta 2: S = 15, k = 15. Vuelta 3: S = 30, k = 20. Vuelta 4: S = 50, k = 25. Todas dan «No».",
+        "Vuelta 5: S = 75, k = 30. ¿75 ≥ 75? Sí: el signo ≥ incluye la igualdad.",
+        "Se imprime k, no S: 30."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "acumulador", "sub": "suma", "termino": "k", "k0": 5, "p": 5, "forma": "abajo", "op": ">=", "L": 75, "orden": "acum", "imprime": "k" }], "espera": 30 } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se define a ◇ b = ab − a. Calcula (4 ◇ 3) ◇ 10.",
+      "respuesta": "72",
+      "pasos": [
+        "Primero el paréntesis, con a = 4 y b = 3: 4 × 3 − 4 = 8.",
+        "Luego 8 ◇ 10, con a = 8 y b = 10: 8 × 10 − 8 = 72.",
+        "Cuidado: 10 ◇ 8 daría 10 × 8 − 10 = 70. La regla no es conmutativa."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "operador", "regla": "ab-a", "forma": "izq", "x": 4, "y": 3, "z": 10, "regla2": null }], "espera": 72 } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un diagrama empieza con n ← 1. En cada vuelta calcula x ← n² + 1; si x es múltiplo de 5, imprime x. Después hace n ← n + 1 y pregunta ¿n > 15?: si es no, vuelve a calcular x; si es sí, termina. ¿Cuál es la suma de los números impresos?",
+      "respuesta": "445",
+      "pasos": [
+        "Se revisan n = 1, 2, …, 15 (con n = 16 se sale).",
+        "n² + 1 es múltiplo de 5 cuando n² termina en 4 o en 9, o sea, cuando n termina en 2, 3, 7 u 8.",
+        "Esos n son 2, 3, 7, 8, 12 y 13; sus x son 5, 10, 50, 65, 145 y 170.",
+        "Suma: 5 + 10 + 50 + 65 + 145 + 170 = 445."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "contador", "a": 1, "p": 1, "opFin": ">", "b": 15, "expr": "n2+1", "m": 5, "pide": "suma" }], "espera": 445 } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un diagrama empieza con n ← 1, A ← 0 y B ← 0. Si n es primo, hace A ← A + 1; si no, B ← B + 1. Luego n ← n + 1 y pregunta ¿n > 20?: si es no, vuelve a preguntar si n es primo; si es sí, imprime B − A. ¿Qué se imprime?",
+      "respuesta": "4",
+      "pasos": [
+        "Se revisan los números del 1 al 20.",
+        "Primos: 2, 3, 5, 7, 11, 13, 17 y 19. Son 8, así que A = 8.",
+        "Los otros 12 números van a B, y entre ellos está el 1, que no es primo: B = 12.",
+        "Se imprime B − A = 12 − 8 = 4."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "dos-contadores", "sub": "primo", "a": 1, "opFin": ">", "b": 20, "d": null, "imprime": "B-A" }], "espera": 4 } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una librería de Puno cobra así: lee el precio P; si P > 400, hace D ← 0,8 × P y luego D ← 0,85 × D; si no, pregunta si P ≥ 150: si es sí, D ← 0,9 × P; si es no, D ← P. Al final imprime D + 12 (el envío). ¿Cuánto se imprime si P = 480?",
+      "respuesta": "S/ 338,40",
+      "pasos": [
+        "¿480 > 400? Sí: se va por la rama de los dos descuentos.",
+        "D = 0,8 × 480 = 384. Luego D = 0,85 × 384 = 326,4.",
+        "Se imprime 326,4 + 12 = 338,4 soles.",
+        "Sumar los descuentos (20 % + 15 % = 35 %) daría 0,65 × 480 + 12 = 324, que está mal: el segundo descuento es sobre 384."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "descuentos", "P": 480, "T1": 400, "T2": 150, "op1": ">", "op2": ">=", "a": 20, "b": 15, "c": 10, "E": 12 }], "espera": 338.4 } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Un diagrama hace S ← 0 y k ← 1; repite S ← S + k³ y k ← k + 1 hasta que k > 7. Después, mientras S ≥ 10, cambia S por la suma de sus cifras. Al final imprime S. ¿Qué se imprime?",
+      "respuesta": "1",
+      "pasos": [
+        "1³ + 2³ + … + 7³ = (1 + 2 + … + 7)² = 28² = 784.",
+        "784 → 7 + 8 + 4 = 19. Como 19 ≥ 10, se repite.",
+        "19 → 1 + 9 = 10. Como 10 ≥ 10, se repite otra vez.",
+        "10 → 1 + 0 = 1. Ahora S < 10 y se imprime 1."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "cifras", "termino": "k3", "n": 7, "orden": "acum", "sub": "reducir" }], "espera": 1 } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un diagrama hace n ← 1000 y S ← 0. En cada vuelta: S ← S + (resto de n ÷ 7) y después n ← (cociente de n ÷ 7). Pregunta ¿n = 0?: si es no, repite; si es sí, imprime S. ¿Qué se imprime?",
+      "respuesta": "16",
+      "pasos": [
+        "1000 ÷ 7: cociente 142, resto 6. S = 6, n = 142.",
+        "142 ÷ 7: cociente 20, resto 2. S = 8, n = 20.",
+        "20 ÷ 7: cociente 2, resto 6. S = 14, n = 2.",
+        "2 ÷ 7: cociente 0, resto 2. S = 16, n = 0. Se imprime 16 (son las cifras de 1000 en base 7: 2626)."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "potencias-div", "sub": "base", "N": 1000, "b": 7, "orden": "acum" }], "espera": 16 } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un diagrama empieza con n ← 7 y S ← 0. En cada vuelta: si n es par, n ← n ÷ 2; si es impar, n ← 3n + 1. Luego S ← S + n y pregunta ¿n = 1?: si es no, repite; si es sí, imprime S. ¿Qué se imprime?",
+      "respuesta": "281",
+      "pasos": [
+        "Valores de n: 22, 11, 34, 17, 52, 26, 13, 40, 20, 10, 5, 16, 8, 4, 2, 1.",
+        "El 7 no se suma: S suma el n ya cambiado. El 1 sí se suma, porque la pregunta va después de la suma.",
+        "22 + 11 + 34 + 17 + 52 + 26 + 13 + 40 = 215.",
+        "20 + 10 + 5 + 16 + 8 + 4 + 2 + 1 = 66. Total: 215 + 66 = 281."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "potencias-div", "sub": "mitades", "N": 7, "regla": "3n+1" }], "espera": 281 } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Un diagrama hace P ← 1 y k ← 1. Pregunta ¿k ≤ 9?: si es sí, hace P ← P × k y k ← k + 2, y vuelve a preguntar; si es no, imprime P. ¿Qué se imprime?",
+      "respuesta": "945",
+      "pasos": [
+        "La pregunta va antes de cada vuelta: entran k = 1, 3, 5, 7 y 9 (9 ≤ 9 es verdadero).",
+        "Con k = 11 la pregunta da «No» y se imprime.",
+        "P = 1 × 3 × 5 × 7 × 9 = 945."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "acumulador", "sub": "producto", "termino": "k", "k0": 1, "p": 2, "forma": "arriba", "op": "<=", "L": 9, "orden": "acum", "imprime": "P" }], "espera": 945 } ]
+    }
+  ]
+}

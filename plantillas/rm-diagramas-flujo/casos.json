@@ -1,0 +1,314 @@
+{
+  "plantilla": "rm-diagramas-flujo",
+  "tolerancia": 0.005,
+  "nota": "Respuesta: el último valor impreso (en contador, cuántos números se imprimen o su suma; en operador, el valor de la expresión). Las entradas son el _datos del generador; ver la cabecera de generador.js.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "operador",
+        "regla": "a+2b",
+        "forma": "der",
+        "x": 5,
+        "y": 1,
+        "z": 2,
+        "regla2": null
+      },
+      "esperado": {
+        "respuesta": 15
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "acumulador",
+        "sub": "suma",
+        "termino": "k2",
+        "k0": 1,
+        "p": 1,
+        "forma": "abajo",
+        "op": ">=",
+        "L": 54,
+        "orden": "cont",
+        "imprime": "k"
+      },
+      "esperado": {
+        "respuesta": 5
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "operador",
+        "regla": "3a+b",
+        "forma": "mixto",
+        "x": 2,
+        "y": 1,
+        "z": 3,
+        "regla2": "ab+b"
+      },
+      "esperado": {
+        "respuesta": 24
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "potencias-div",
+        "sub": "base",
+        "N": 50,
+        "b": 3,
+        "orden": "acum"
+      },
+      "esperado": {
+        "respuesta": 6
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "dos-contadores",
+        "sub": "multiplo",
+        "a": 11,
+        "opFin": ">=",
+        "b": 23,
+        "d": 4,
+        "imprime": "A-B"
+      },
+      "esperado": {
+        "respuesta": 39
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "cifras",
+        "termino": "kk1",
+        "n": 8,
+        "orden": "cont",
+        "sub": "una-vez"
+      },
+      "esperado": {
+        "respuesta": 13
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "acumulador",
+        "sub": "suma",
+        "termino": "k2",
+        "k0": 2,
+        "p": 3,
+        "forma": "abajo",
+        "op": ">=",
+        "L": 695,
+        "orden": "cont",
+        "imprime": "k"
+      },
+      "esperado": {
+        "respuesta": 17
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "potencias-div",
+        "sub": "base",
+        "N": 53,
+        "b": 3,
+        "orden": "acum"
+      },
+      "esperado": {
+        "respuesta": 7
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "dos-contadores",
+        "sub": "primo",
+        "a": 14,
+        "opFin": ">",
+        "b": 21,
+        "d": null,
+        "imprime": "B-A"
+      },
+      "esperado": {
+        "respuesta": 4
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "descuentos",
+        "P": 300,
+        "T1": 300,
+        "T2": 150,
+        "op1": ">=",
+        "op2": ">",
+        "a": 10,
+        "b": 20,
+        "c": 15,
+        "E": 5
+      },
+      "esperado": {
+        "respuesta": 221
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "descuentos",
+        "P": 600,
+        "T1": 600,
+        "T2": 200,
+        "op1": ">=",
+        "op2": ">",
+        "a": 25,
+        "b": 10,
+        "c": 15,
+        "E": 5
+      },
+      "esperado": {
+        "respuesta": 410
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "cifras",
+        "termino": "kk1",
+        "n": 5,
+        "orden": "acum",
+        "sub": "una-vez"
+      },
+      "esperado": {
+        "respuesta": 7
+      }
+    },
+    {
+      "semilla": 34,
+      "entrada": {
+        "tipo": "contador",
+        "a": 8,
+        "p": 1,
+        "opFin": ">",
+        "b": 15,
+        "expr": "n2-n",
+        "m": 6,
+        "pide": "cuantos"
+      },
+      "esperado": {
+        "respuesta": 5
+      }
+    },
+    {
+      "semilla": 42,
+      "entrada": {
+        "tipo": "contador",
+        "a": 2,
+        "p": 1,
+        "opFin": ">",
+        "b": 13,
+        "expr": "n2-n",
+        "m": 3,
+        "pide": "cuantos"
+      },
+      "esperado": {
+        "respuesta": 8
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "operador",
+        "regla": "a(a-b)",
+        "forma": "der",
+        "x": 1,
+        "y": 4,
+        "z": 5,
+        "regla2": null
+      },
+      "esperado": {
+        "respuesta": 5
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "cifras",
+        "termino": "kk1",
+        "n": 6,
+        "orden": "cont",
+        "sub": "una-vez"
+      },
+      "esperado": {
+        "respuesta": 13
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "acumulador",
+        "sub": "producto",
+        "termino": "k",
+        "k0": 2,
+        "p": 2,
+        "forma": "abajo",
+        "op": ">",
+        "L": 48,
+        "orden": "acum",
+        "imprime": "P"
+      },
+      "esperado": {
+        "respuesta": 384
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "dos-contadores",
+        "sub": "multiplo",
+        "a": 12,
+        "opFin": ">",
+        "b": 21,
+        "d": 5,
+        "imprime": "A-B"
+      },
+      "esperado": {
+        "respuesta": 27
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "cifras",
+        "termino": "k2",
+        "n": 9,
+        "orden": "acum",
+        "sub": "reducir"
+      },
+      "esperado": {
+        "respuesta": 6
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "contador",
+        "a": 6,
+        "p": 1,
+        "opFin": ">=",
+        "b": 17,
+        "expr": "n2-n",
+        "m": 6,
+        "pide": "cuantos"
+      },
+      "esperado": {
+        "respuesta": 8
+      }
+    }
+  ]
+}

@@ -1,0 +1,1051 @@
+{
+ "plantilla": "rm-parentesco",
+ "tolerancia": 0,
+ "nota": "Respuestas: claves de parentesco (cadena), id de persona (arbol), orden de mayor a menor (orden) o números.",
+ "verificacion": "",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "tipo": "orden",
+    "nombres": [
+     "Uriel",
+     "Saúl",
+     "Rosa",
+     "Tania"
+    ],
+    "tema": "edad",
+    "pistas": [
+     {
+      "t": "simple",
+      "a": 1,
+      "b": 3
+     },
+     {
+      "t": "suma",
+      "a": [
+       2,
+       1
+      ],
+      "b": [
+       3,
+       0
+      ],
+      "rel": "<"
+     },
+     {
+      "t": "suma",
+      "a": [
+       1,
+       3
+      ],
+      "b": [
+       2,
+       0
+      ],
+      "rel": "="
+     }
+    ]
+   },
+   "esperado": {
+    "respuesta": "orden:0,1,3,2",
+    "texto": "Uriel, Saúl, Tania, Rosa"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "tipo": "arbol",
+    "arbol": {
+     "personas": [
+      {
+       "id": 0,
+       "nombre": "Nico",
+       "sexo": "v",
+       "padre": null,
+       "madre": null,
+       "conyuge": 1,
+       "gen": 1
+      },
+      {
+       "id": 1,
+       "nombre": "Rut",
+       "sexo": "m",
+       "padre": null,
+       "madre": null,
+       "conyuge": 0,
+       "gen": 1
+      },
+      {
+       "id": 2,
+       "nombre": "Abel",
+       "sexo": "v",
+       "padre": 0,
+       "madre": 1,
+       "conyuge": 3,
+       "gen": 2,
+       "col": 0
+      },
+      {
+       "id": 3,
+       "nombre": "Inés",
+       "sexo": "m",
+       "padre": null,
+       "madre": null,
+       "conyuge": 2,
+       "gen": 2,
+       "col": 1
+      },
+      {
+       "id": 4,
+       "nombre": "Nora",
+       "sexo": "m",
+       "padre": 2,
+       "madre": 3,
+       "conyuge": null,
+       "gen": 3,
+       "col": 0
+      },
+      {
+       "id": 5,
+       "nombre": "Hugo",
+       "sexo": "v",
+       "padre": 2,
+       "madre": 3,
+       "conyuge": null,
+       "gen": 3,
+       "col": 1
+      },
+      {
+       "id": 6,
+       "nombre": "Elsa",
+       "sexo": "m",
+       "padre": 0,
+       "madre": 1,
+       "conyuge": 7,
+       "gen": 2,
+       "col": 2
+      },
+      {
+       "id": 7,
+       "nombre": "Iván",
+       "sexo": "v",
+       "padre": null,
+       "madre": null,
+       "conyuge": 6,
+       "gen": 2,
+       "col": 3
+      },
+      {
+       "id": 8,
+       "nombre": "Elías",
+       "sexo": "v",
+       "padre": 7,
+       "madre": 6,
+       "conyuge": null,
+       "gen": 3,
+       "col": 2
+      },
+      {
+       "id": 9,
+       "nombre": "Ciro",
+       "sexo": "v",
+       "padre": 7,
+       "madre": 6,
+       "conyuge": null,
+       "gen": 3,
+       "col": 3
+      },
+      {
+       "id": 10,
+       "nombre": "Flor",
+       "sexo": "m",
+       "padre": 0,
+       "madre": 1,
+       "conyuge": 11,
+       "gen": 2,
+       "col": 4
+      },
+      {
+       "id": 11,
+       "nombre": "Raúl",
+       "sexo": "v",
+       "padre": null,
+       "madre": null,
+       "conyuge": 10,
+       "gen": 2,
+       "col": 5
+      },
+      {
+       "id": 12,
+       "nombre": "Noé",
+       "sexo": "v",
+       "padre": 11,
+       "madre": 10,
+       "conyuge": null,
+       "gen": 3,
+       "col": 4
+      },
+      {
+       "id": 13,
+       "nombre": "Juan",
+       "sexo": "v",
+       "padre": 11,
+       "madre": 10,
+       "conyuge": null,
+       "gen": 3,
+       "col": 5
+      }
+     ]
+    },
+    "habla": 9,
+    "pasos": [
+     "madre",
+     "hermano",
+     "madre"
+    ],
+    "dicho": [
+     "me prestó su bicicleta",
+     "le prestó su bicicleta a"
+    ]
+   },
+   "esperado": {
+    "respuesta": "p1",
+    "texto": "Rut"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "tipo": "edades",
+    "nombres": [
+     "Rosa",
+     "Gina",
+     "Teo"
+    ],
+    "conds": [
+     {
+      "t": "primo",
+      "p": 1
+     },
+     {
+      "t": "par",
+      "p": 0
+     },
+     {
+      "t": "mayor",
+      "p": 1,
+      "q": 2
+     },
+     {
+      "t": "mayor",
+      "p": 2,
+      "q": 0
+     },
+     {
+      "t": "suma",
+      "k": 29
+     }
+    ],
+    "pide": [
+     1,
+     2
+    ]
+   },
+   "esperado": {
+    "respuesta": 21,
+    "texto": "21 años"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "tipo": "cadena",
+    "ego": "m",
+    "pasos": [
+     "padre",
+     "hijo",
+     "hermana"
+    ],
+    "unicos": [
+     false,
+     false,
+     true
+    ],
+    "nombre": "Ana",
+    "dicho": "trabaja en el mercado de Puno"
+   },
+   "esperado": {
+    "respuesta": "D:0m",
+    "texto": "Ella misma"
+   }
+  },
+  {
+   "semilla": 4,
+   "entrada": {
+    "tipo": "billetes",
+    "montos": [
+     25,
+     40,
+     45,
+     70,
+     80,
+     100
+    ],
+    "nombres": [
+     "Fredy",
+     "Elsa",
+     "Gaby"
+    ],
+    "pistas": [
+     {
+      "t": "tope",
+      "a": 1,
+      "k": 120,
+      "menos": true
+     },
+     {
+      "t": "tiene",
+      "a": 1,
+      "sobre": 2
+     },
+     {
+      "t": "tope",
+      "a": 2,
+      "k": 75,
+      "menos": true
+     }
+    ],
+    "pide": {
+     "t": "dif",
+     "p": 0,
+     "q": 1
+    }
+   },
+   "esperado": {
+    "respuesta": 65,
+    "texto": "S/ 65"
+   }
+  },
+  {
+   "semilla": 5,
+   "entrada": {
+    "tipo": "cadena",
+    "ego": "m",
+    "pasos": [
+     "madre",
+     "padre",
+     "hermana",
+     "hermano"
+    ],
+    "unicos": [
+     false,
+     false,
+     false,
+     true
+    ],
+    "nombre": "Kati",
+    "dicho": "vive en Juliaca"
+   },
+   "esperado": {
+    "respuesta": "D:M2v",
+    "texto": "Su abuelo materno"
+   }
+  },
+  {
+   "semilla": 6,
+   "entrada": {
+    "tipo": "orden",
+    "nombres": [
+     "Tania",
+     "Uriel",
+     "Rosa",
+     "Saúl"
+    ],
+    "tema": "edad",
+    "pistas": [
+     {
+      "t": "simple",
+      "a": 0,
+      "b": 1
+     },
+     {
+      "t": "suma",
+      "a": [
+       3,
+       2
+      ],
+      "b": [
+       1,
+       0
+      ],
+      "rel": "="
+     },
+     {
+      "t": "suma",
+      "a": [
+       2,
+       1
+      ],
+      "b": [
+       0,
+       3
+      ],
+      "rel": ">"
+     }
+    ]
+   },
+   "esperado": {
+    "respuesta": "orden:2,0,1,3",
+    "texto": "Rosa, Tania, Uriel, Saúl"
+   }
+  },
+  {
+   "semilla": 7,
+   "entrada": {
+    "tipo": "edades",
+    "nombres": [
+     "Ana",
+     "Beto",
+     "Ciro"
+    ],
+    "conds": [
+     {
+      "t": "primo",
+      "p": 0
+     },
+     {
+      "t": "par",
+      "p": 2
+     },
+     {
+      "t": "mayor",
+      "p": 0,
+      "q": 1
+     },
+     {
+      "t": "mayor",
+      "p": 1,
+      "q": 2
+     },
+     {
+      "t": "suma",
+      "k": 32
+     }
+    ],
+    "pide": [
+     0,
+     2
+    ]
+   },
+   "esperado": {
+    "respuesta": 19,
+    "texto": "19 años"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "tipo": "arbol",
+    "arbol": {
+     "personas": [
+      {
+       "id": 0,
+       "nombre": "Abel",
+       "sexo": "v",
+       "padre": null,
+       "madre": null,
+       "conyuge": 1,
+       "gen": 1
+      },
+      {
+       "id": 1,
+       "nombre": "Olga",
+       "sexo": "m",
+       "padre": null,
+       "madre": null,
+       "conyuge": 0,
+       "gen": 1
+      },
+      {
+       "id": 2,
+       "nombre": "Ana",
+       "sexo": "m",
+       "padre": 0,
+       "madre": 1,
+       "conyuge": 3,
+       "gen": 2,
+       "col": 0
+      },
+      {
+       "id": 3,
+       "nombre": "Hugo",
+       "sexo": "v",
+       "padre": null,
+       "madre": null,
+       "conyuge": 2,
+       "gen": 2,
+       "col": 1
+      },
+      {
+       "id": 4,
+       "nombre": "Luis",
+       "sexo": "v",
+       "padre": 3,
+       "madre": 2,
+       "conyuge": null,
+       "gen": 3,
+       "col": 0
+      },
+      {
+       "id": 5,
+       "nombre": "Iván",
+       "sexo": "v",
+       "padre": 3,
+       "madre": 2,
+       "conyuge": null,
+       "gen": 3,
+       "col": 1
+      },
+      {
+       "id": 6,
+       "nombre": "Inés",
+       "sexo": "m",
+       "padre": 0,
+       "madre": 1,
+       "conyuge": 7,
+       "gen": 2,
+       "col": 2
+      },
+      {
+       "id": 7,
+       "nombre": "Elías",
+       "sexo": "v",
+       "padre": null,
+       "madre": null,
+       "conyuge": 6,
+       "gen": 2,
+       "col": 3
+      },
+      {
+       "id": 8,
+       "nombre": "Rubén",
+       "sexo": "v",
+       "padre": 7,
+       "madre": 6,
+       "conyuge": null,
+       "gen": 3,
+       "col": 2
+      },
+      {
+       "id": 9,
+       "nombre": "Leo",
+       "sexo": "v",
+       "padre": 7,
+       "madre": 6,
+       "conyuge": null,
+       "gen": 3,
+       "col": 3
+      },
+      {
+       "id": 10,
+       "nombre": "Raúl",
+       "sexo": "v",
+       "padre": 0,
+       "madre": 1,
+       "conyuge": 11,
+       "gen": 2,
+       "col": 4
+      },
+      {
+       "id": 11,
+       "nombre": "Sara",
+       "sexo": "m",
+       "padre": null,
+       "madre": null,
+       "conyuge": 10,
+       "gen": 2,
+       "col": 5
+      },
+      {
+       "id": 12,
+       "nombre": "Elsa",
+       "sexo": "m",
+       "padre": 10,
+       "madre": 11,
+       "conyuge": null,
+       "gen": 3,
+       "col": 4
+      },
+      {
+       "id": 13,
+       "nombre": "Alba",
+       "sexo": "m",
+       "padre": 10,
+       "madre": 11,
+       "conyuge": null,
+       "gen": 3,
+       "col": 5
+      }
+     ]
+    },
+    "habla": 4,
+    "pasos": [
+     "madre",
+     "hermano",
+     "padre"
+    ],
+    "dicho": [
+     "me ayuda con las tareas",
+     "ayuda con las tareas a"
+    ]
+   },
+   "esperado": {
+    "respuesta": "p0",
+    "texto": "Abel"
+   }
+  },
+  {
+   "semilla": 12,
+   "entrada": {
+    "tipo": "billetes",
+    "montos": [
+     5,
+     15,
+     25,
+     35,
+     50,
+     70
+    ],
+    "nombres": [
+     "Lucho",
+     "Nilo",
+     "Mery"
+    ],
+    "pistas": [
+     {
+      "t": "mas",
+      "a": 2,
+      "b": 0
+     },
+     {
+      "t": "tiene",
+      "a": 2,
+      "sobre": 1
+     },
+     {
+      "t": "notiene",
+      "a": 2,
+      "sobre": 4
+     },
+     {
+      "t": "tiene",
+      "a": 0,
+      "sobre": 3
+     }
+    ],
+    "pide": {
+     "t": "monto",
+     "p": 2
+    }
+   },
+   "esperado": {
+    "respuesta": 85,
+    "texto": "S/ 85"
+   }
+  },
+  {
+   "semilla": 20,
+   "entrada": {
+    "tipo": "minimo",
+    "pedido": {
+     "padre": 1,
+     "madre": 1,
+     "hijo": 2,
+     "hija": 1,
+     "hermano": 2,
+     "hermana": 1
+    }
+   },
+   "esperado": {
+    "respuesta": 5,
+    "texto": "5"
+   }
+  },
+  {
+   "semilla": 24,
+   "entrada": {
+    "tipo": "minimo",
+    "pedido": {
+     "padre": 1,
+     "madre": 2,
+     "hija": 3,
+     "hermano": 1,
+     "hermana": 2,
+     "nieto": 1,
+     "nieta": 1
+    }
+   },
+   "esperado": {
+    "respuesta": 6,
+    "texto": "6"
+   }
+  },
+  {
+   "semilla": "entrada-1",
+   "entrada": {
+    "tipo": "orden",
+    "nombres": [
+     "Dina",
+     "Ciro",
+     "Ana",
+     "Beto"
+    ],
+    "tema": "edad",
+    "pistas": [
+     {
+      "t": "simple",
+      "a": 3,
+      "b": 1
+     },
+     {
+      "t": "suma",
+      "a": [
+       0,
+       2
+      ],
+      "b": [
+       3,
+       1
+      ],
+      "rel": "="
+     },
+     {
+      "t": "suma",
+      "a": [
+       1,
+       2
+      ],
+      "b": [
+       0,
+       3
+      ],
+      "rel": ">"
+     }
+    ]
+   },
+   "esperado": {
+    "respuesta": "orden:2,3,1,0",
+    "texto": "Ana, Beto, Ciro, Dina"
+   }
+  },
+  {
+   "semilla": "entrada-2",
+   "entrada": {
+    "tipo": "cadena",
+    "ego": "v",
+    "pasos": [
+     "madre",
+     "padre",
+     "hija",
+     "hija"
+    ],
+    "unicos": [
+     false,
+     false,
+     true,
+     false
+    ],
+    "nombre": "Saúl",
+    "dicho": "me enseñó a tocar charango"
+   },
+   "esperado": {
+    "respuesta": "C:1,1m",
+    "texto": "Su hermana"
+   }
+  },
+  {
+   "semilla": "entrada-3",
+   "entrada": {
+    "tipo": "orden",
+    "nombres": [
+     "Gina",
+     "Hugo",
+     "Elsa",
+     "Fico"
+    ],
+    "tema": "dinero",
+    "pistas": [
+     {
+      "t": "suma",
+      "a": [
+       0,
+       3
+      ],
+      "b": [
+       1,
+       2
+      ],
+      "rel": "="
+     },
+     {
+      "t": "suma",
+      "a": [
+       1,
+       3
+      ],
+      "b": [
+       0,
+       2
+      ],
+      "rel": ">"
+     },
+     {
+      "t": "simple",
+      "a": 2,
+      "b": 1
+     }
+    ]
+   },
+   "esperado": {
+    "respuesta": "orden:3,2,1,0",
+    "texto": "Fico, Elsa, Hugo, Gina"
+   }
+  },
+  {
+   "semilla": "salida-1",
+   "entrada": {
+    "tipo": "orden",
+    "nombres": [
+     "Inés",
+     "Lucho",
+     "Kati",
+     "Juan"
+    ],
+    "tema": "dinero",
+    "pistas": [
+     {
+      "t": "suma",
+      "a": [
+       2,
+       0
+      ],
+      "b": [
+       3,
+       1
+      ],
+      "rel": "<"
+     },
+     {
+      "t": "suma",
+      "a": [
+       2,
+       1
+      ],
+      "b": [
+       0,
+       3
+      ],
+      "rel": "="
+     },
+     {
+      "t": "simple",
+      "a": 0,
+      "b": 3
+     }
+    ]
+   },
+   "esperado": {
+    "respuesta": "orden:1,0,3,2",
+    "texto": "Lucho, Inés, Juan, Kati"
+   }
+  },
+  {
+   "semilla": "salida-2",
+   "entrada": {
+    "tipo": "arbol",
+    "arbol": {
+     "personas": [
+      {
+       "id": 0,
+       "nombre": "Saúl",
+       "sexo": "v",
+       "padre": null,
+       "madre": null,
+       "conyuge": 1,
+       "gen": 1
+      },
+      {
+       "id": 1,
+       "nombre": "Rut",
+       "sexo": "m",
+       "padre": null,
+       "madre": null,
+       "conyuge": 0,
+       "gen": 1
+      },
+      {
+       "id": 2,
+       "nombre": "Hugo",
+       "sexo": "v",
+       "padre": 0,
+       "madre": 1,
+       "conyuge": 3,
+       "gen": 2,
+       "col": 0
+      },
+      {
+       "id": 3,
+       "nombre": "Rosa",
+       "sexo": "m",
+       "padre": null,
+       "madre": null,
+       "conyuge": 2,
+       "gen": 2,
+       "col": 1
+      },
+      {
+       "id": 4,
+       "nombre": "Juan",
+       "sexo": "v",
+       "padre": 2,
+       "madre": 3,
+       "conyuge": null,
+       "gen": 3,
+       "col": 0
+      },
+      {
+       "id": 5,
+       "nombre": "Kati",
+       "sexo": "m",
+       "padre": 2,
+       "madre": 3,
+       "conyuge": null,
+       "gen": 3,
+       "col": 1
+      },
+      {
+       "id": 6,
+       "nombre": "Ciro",
+       "sexo": "v",
+       "padre": 0,
+       "madre": 1,
+       "conyuge": 7,
+       "gen": 2,
+       "col": 2
+      },
+      {
+       "id": 7,
+       "nombre": "Olga",
+       "sexo": "m",
+       "padre": null,
+       "madre": null,
+       "conyuge": 6,
+       "gen": 2,
+       "col": 3
+      },
+      {
+       "id": 8,
+       "nombre": "Ana",
+       "sexo": "m",
+       "padre": 6,
+       "madre": 7,
+       "conyuge": null,
+       "gen": 3,
+       "col": 2
+      },
+      {
+       "id": 9,
+       "nombre": "Abel",
+       "sexo": "v",
+       "padre": 6,
+       "madre": 7,
+       "conyuge": null,
+       "gen": 3,
+       "col": 3
+      },
+      {
+       "id": 10,
+       "nombre": "Flor",
+       "sexo": "m",
+       "padre": 0,
+       "madre": 1,
+       "conyuge": 11,
+       "gen": 2,
+       "col": 4
+      },
+      {
+       "id": 11,
+       "nombre": "Raúl",
+       "sexo": "v",
+       "padre": null,
+       "madre": null,
+       "conyuge": 10,
+       "gen": 2,
+       "col": 5
+      },
+      {
+       "id": 12,
+       "nombre": "Yoni",
+       "sexo": "v",
+       "padre": 11,
+       "madre": 10,
+       "conyuge": null,
+       "gen": 3,
+       "col": 4
+      },
+      {
+       "id": 13,
+       "nombre": "Luis",
+       "sexo": "v",
+       "padre": 11,
+       "madre": 10,
+       "conyuge": null,
+       "gen": 3,
+       "col": 5
+      }
+     ]
+    },
+    "habla": 8,
+    "pasos": [
+     "padre",
+     "hermana",
+     "madre"
+    ],
+    "dicho": [
+     "me prestó su bicicleta",
+     "le prestó su bicicleta a"
+    ]
+   },
+   "esperado": {
+    "respuesta": "p1",
+    "texto": "Rut"
+   }
+  },
+  {
+   "semilla": "salida-3",
+   "entrada": {
+    "tipo": "cadena",
+    "ego": "m",
+    "pasos": [
+     "padre",
+     "hermana",
+     "hermano",
+     "hija"
+    ],
+    "unicos": [
+     false,
+     false,
+     true,
+     true
+    ],
+    "nombre": "Nora",
+    "dicho": "juega vóley conmigo"
+   },
+   "esperado": {
+    "respuesta": "D:0m",
+    "texto": "Ella misma"
+   }
+  }
+ ]
+}

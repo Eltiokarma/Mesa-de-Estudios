@@ -1,0 +1,729 @@
+{
+  "plantilla": "rm-balanzas",
+  "tolerancia": 0,
+  "nota": "Pesos enteros. Una balanza es { izq, der, estado }: lo que hay en cada platillo (figuras por cantidad; pesa en kg o g) y 'equilibrio', 'izq-baja' (el platillo izquierdo pesa más) o 'der-baja'. En una-pesada, base 10: pesas de 1, 10, 100, 1 000 y 10 000 g sin límite de cantidad; base 3: una pesa de 1, 3, 9, 27, 81 y 243 g. La respuesta es un número (kg, figuras o pesas).",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "sustitucion",
+        "balanzas": [
+          {
+            "izq": {
+              "rombo": 1
+            },
+            "der": {
+              "cuadrado": 1,
+              "circulo": 2
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "circulo": 2
+            },
+            "der": {
+              "cuadrado": 1
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "rombo": 4
+            },
+            "der": {
+              "triangulo": 2
+            },
+            "estado": "equilibrio"
+          }
+        ],
+        "pregunta": {
+          "izq": {
+            "triangulo": 2
+          },
+          "figura": "circulo"
+        }
+      },
+      "esperado": {
+        "respuesta": 16
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "minimo-pesas",
+        "valores": [
+          6,
+          9,
+          14
+        ],
+        "carga": 78
+      },
+      "esperado": {
+        "respuesta": 7
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "una-pesada",
+        "base": 10,
+        "cantidad": 2466
+      },
+      "esperado": {
+        "respuesta": 14
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "desigualdad",
+        "balanzas": [
+          {
+            "izq": {
+              "circulo": 2
+            },
+            "der": {
+              "triangulo": 3
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "cuadrado": 1
+            },
+            "der": {
+              "circulo": 1,
+              "triangulo": 2
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "pesa": 111
+            },
+            "der": {
+              "circulo": 3,
+              "triangulo": 1
+            },
+            "estado": "izq-baja"
+          }
+        ],
+        "pide": "max",
+        "figura": "triangulo"
+      },
+      "esperado": {
+        "respuesta": 20
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "minimo-pesas",
+        "valores": [
+          3,
+          5,
+          7
+        ],
+        "carga": 86
+      },
+      "esperado": {
+        "respuesta": 14
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "sustitucion",
+        "balanzas": [
+          {
+            "izq": {
+              "triangulo": 1
+            },
+            "der": {
+              "rombo": 1,
+              "cuadrado": 2
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "cuadrado": 1
+            },
+            "der": {
+              "rombo": 2
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "rombo": 1
+            },
+            "der": {
+              "circulo": 3
+            },
+            "estado": "equilibrio"
+          }
+        ],
+        "pregunta": {
+          "izq": {
+            "triangulo": 2,
+            "cuadrado": 2
+          },
+          "figura": "circulo"
+        }
+      },
+      "esperado": {
+        "respuesta": 42
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "sustitucion",
+        "balanzas": [
+          {
+            "izq": {
+              "cuadrado": 1
+            },
+            "der": {
+              "triangulo": 1,
+              "circulo": 1
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "triangulo": 6
+            },
+            "der": {
+              "circulo": 3
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "rombo": 1
+            },
+            "der": {
+              "triangulo": 1,
+              "circulo": 1
+            },
+            "estado": "equilibrio"
+          }
+        ],
+        "pregunta": {
+          "izq": {
+            "rombo": 3
+          },
+          "figura": "triangulo"
+        }
+      },
+      "esperado": {
+        "respuesta": 9
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "minimo-pesas",
+        "valores": [
+          4,
+          7,
+          10
+        ],
+        "carga": 89
+      },
+      "esperado": {
+        "respuesta": 11
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "una-pesada",
+        "base": 10,
+        "cantidad": 9698
+      },
+      "esperado": {
+        "respuesta": 6
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "minimo-pesas",
+        "valores": [
+          5,
+          9,
+          16
+        ],
+        "carga": 77
+      },
+      "esperado": {
+        "respuesta": 7
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "sustitucion",
+        "balanzas": [
+          {
+            "izq": {
+              "triangulo": 1
+            },
+            "der": {
+              "cuadrado": 1,
+              "rombo": 2
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "circulo": 3
+            },
+            "der": {
+              "cuadrado": 4
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "cuadrado": 1
+            },
+            "der": {
+              "rombo": 3
+            },
+            "estado": "equilibrio"
+          }
+        ],
+        "pregunta": {
+          "izq": {
+            "triangulo": 3
+          },
+          "figura": "rombo"
+        }
+      },
+      "esperado": {
+        "respuesta": 15
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "sustitucion",
+        "balanzas": [
+          {
+            "izq": {
+              "circulo": 1,
+              "triangulo": 2
+            },
+            "der": {
+              "rombo": 1
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "circulo": 6
+            },
+            "der": {
+              "cuadrado": 3
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "triangulo": 1
+            },
+            "der": {
+              "cuadrado": 1,
+              "circulo": 2
+            },
+            "estado": "equilibrio"
+          }
+        ],
+        "pregunta": {
+          "izq": {
+            "rombo": 2,
+            "cuadrado": 1
+          },
+          "figura": "circulo"
+        }
+      },
+      "esperado": {
+        "respuesta": 20
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "una-pesada",
+        "base": 10,
+        "cantidad": 1187
+      },
+      "esperado": {
+        "respuesta": 7
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "minimo-pesas",
+        "valores": [
+          5,
+          9,
+          16
+        ],
+        "carga": 59
+      },
+      "esperado": {
+        "respuesta": 5
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "una-pesada",
+        "base": 3,
+        "cantidad": 62
+      },
+      "esperado": {
+        "respuesta": 4
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "una-pesada",
+        "base": 10,
+        "cantidad": 2778
+      },
+      "esperado": {
+        "respuesta": 9
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "desigualdad",
+        "balanzas": [
+          {
+            "izq": {
+              "circulo": 2
+            },
+            "der": {
+              "triangulo": 3
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "cuadrado": 1
+            },
+            "der": {
+              "triangulo": 2
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "triangulo": 1,
+              "cuadrado": 1
+            },
+            "der": {
+              "pesa": 29
+            },
+            "estado": "der-baja"
+          }
+        ],
+        "pide": "max",
+        "figura": "cuadrado"
+      },
+      "esperado": {
+        "respuesta": 16
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "desigualdad",
+        "balanzas": [
+          {
+            "izq": {
+              "circulo": 5
+            },
+            "der": {
+              "triangulo": 3
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "cuadrado": 1
+            },
+            "der": {
+              "circulo": 2,
+              "triangulo": 1
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "circulo": 1,
+              "cuadrado": 1
+            },
+            "der": {
+              "pesa": 68
+            },
+            "estado": "izq-baja"
+          },
+          {
+            "izq": {
+              "circulo": 2,
+              "triangulo": 1
+            },
+            "der": {
+              "pesa": 82
+            },
+            "estado": "der-baja"
+          }
+        ],
+        "pide": "min",
+        "figura": "circulo"
+      },
+      "esperado": {
+        "respuesta": 15
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "desigualdad",
+        "balanzas": [
+          {
+            "izq": {
+              "circulo": 3
+            },
+            "der": {
+              "triangulo": 4
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "cuadrado": 1
+            },
+            "der": {
+              "circulo": 2
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "circulo": 1,
+              "cuadrado": 1
+            },
+            "der": {
+              "pesa": 146
+            },
+            "estado": "der-baja"
+          },
+          {
+            "izq": {
+              "pesa": 20
+            },
+            "der": {
+              "circulo": 2,
+              "triangulo": 2
+            },
+            "estado": "der-baja"
+          }
+        ],
+        "pide": "max",
+        "figura": "cuadrado"
+      },
+      "esperado": {
+        "respuesta": 96
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "tipo": "desigualdad",
+        "balanzas": [
+          {
+            "izq": {
+              "circulo": 3
+            },
+            "der": {
+              "triangulo": 1
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "cuadrado": 1
+            },
+            "der": {
+              "circulo": 1,
+              "triangulo": 1
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "pesa": 38
+            },
+            "der": {
+              "triangulo": 1,
+              "cuadrado": 1
+            },
+            "estado": "der-baja"
+          },
+          {
+            "izq": {
+              "cuadrado": 3,
+              "triangulo": 3
+            },
+            "der": {
+              "pesa": 182
+            },
+            "estado": "der-baja"
+          }
+        ],
+        "pide": "max",
+        "figura": "triangulo"
+      },
+      "esperado": {
+        "respuesta": 24
+      }
+    },
+    {
+      "semilla": 76,
+      "entrada": {
+        "tipo": "desigualdad",
+        "balanzas": [
+          {
+            "izq": {
+              "circulo": 5
+            },
+            "der": {
+              "triangulo": 3
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "cuadrado": 1
+            },
+            "der": {
+              "circulo": 1,
+              "triangulo": 2
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "pesa": 22
+            },
+            "der": {
+              "circulo": 2,
+              "cuadrado": 1
+            },
+            "estado": "der-baja"
+          },
+          {
+            "izq": {
+              "pesa": 54
+            },
+            "der": {
+              "triangulo": 1,
+              "circulo": 1
+            },
+            "estado": "izq-baja"
+          }
+        ],
+        "pide": "min",
+        "figura": "cuadrado"
+      },
+      "esperado": {
+        "respuesta": 26
+      }
+    },
+    {
+      "semilla": 82,
+      "entrada": {
+        "tipo": "desigualdad",
+        "balanzas": [
+          {
+            "izq": {
+              "circulo": 3
+            },
+            "der": {
+              "triangulo": 4
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "cuadrado": 1
+            },
+            "der": {
+              "circulo": 1,
+              "triangulo": 1
+            },
+            "estado": "equilibrio"
+          },
+          {
+            "izq": {
+              "pesa": 57
+            },
+            "der": {
+              "cuadrado": 1
+            },
+            "estado": "izq-baja"
+          },
+          {
+            "izq": {
+              "pesa": 64
+            },
+            "der": {
+              "cuadrado": 2
+            },
+            "estado": "der-baja"
+          }
+        ],
+        "pide": "min",
+        "figura": "circulo"
+      },
+      "esperado": {
+        "respuesta": 20
+      }
+    },
+    {
+      "semilla": 105,
+      "entrada": {
+        "tipo": "una-pesada",
+        "base": 3,
+        "cantidad": 187
+      },
+      "esperado": {
+        "respuesta": 5
+      }
+    },
+    {
+      "semilla": 107,
+      "entrada": {
+        "tipo": "una-pesada",
+        "base": 3,
+        "cantidad": 315
+      },
+      "esperado": {
+        "respuesta": 3
+      }
+    }
+  ]
+}

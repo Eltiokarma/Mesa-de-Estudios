@@ -1,0 +1,112 @@
+{
+  "titulo": "Sacar a ciegas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 minutos por problema. En cada uno, primero escribe el peor caso (lo más que se puede sacar sin lograrlo) y después suma lo que falta.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una lata hay 6 chapitas rojas, 4 azules y 2 verdes. Sin mirar, se sacan chapitas una por una. ¿Cuántas hay que sacar como mínimo para estar seguro de tener 3 del mismo color?",
+      "respuesta": "7 chapitas.",
+      "pasos": [
+        "Peor caso: de cada color salen 2 (de las verdes salen las 2 que hay): 2 + 2 + 2 = 6 chapitas, y no hay 3 iguales.",
+        "La séptima es roja o azul (las verdes se acabaron) y completa 3 de ese color: 6 + 1 = 7."
+      ],
+      "verificar": [ { "fn": "colores", "args": [{ "urna": { "rojas": 6, "azules": 4, "verdes": 2 }, "pide": "mismo", "k": 3 }], "espera": { "respuesta": 7 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En una caja hay 5 pares de guantes negros y 3 pares de guantes grises, sueltos y mezclados. Cada par tiene un guante izquierdo y uno derecho. ¿Cuántos guantes hay que sacar a oscuras, como mínimo, para estar seguro de tener un par gris que se pueda usar?",
+      "respuesta": "14 guantes.",
+      "pasos": [
+        "Los negros no sirven: en el peor caso salen los 10 primero.",
+        "De los grises pueden salir los 3 izquierdos (o los 3 derechos) sin formar par: van 13.",
+        "El guante 14 es gris del otro lado y completa el par."
+      ],
+      "verificar": [ { "fn": "guantes", "args": [{ "pares": { "negros": 5, "grises": 3 }, "color": "grises" }], "espera": { "respuesta": 14 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "En una tómbola hay 100 bolitas numeradas del 1 al 100. ¿Cuántas hay que sacar como mínimo para estar seguro de obtener una bolita cuyo número sea múltiplo de 6 o de 10?",
+      "respuesta": "78 bolitas.",
+      "pasos": [
+        "Múltiplos de 6 hasta 100: 16. Múltiplos de 10: 10. Los de los dos son los múltiplos de 30 (el MCM): 3.",
+        "Sirven 16 + 10 − 3 = 23; no sirven 100 − 23 = 77.",
+        "Peor caso: salen las 77 que no sirven. La siguiente sirve: 77 + 1 = 78."
+      ],
+      "verificar": [ { "fn": "divisibilidad", "args": [{ "N": 100, "a": 6, "b": 10, "k": 1 }], "espera": { "respuesta": 78, "sirven": 23 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Doce tarjetas boca abajo tienen los números del 1 al 12. Se voltean una por una. ¿Cuántas hay que voltear como mínimo para estar seguro de que la suma de lo volteado sea mayor que 30?",
+      "respuesta": "8 tarjetas.",
+      "pasos": [
+        "Peor caso: salen las más chicas. 1 + 2 + … + 7 = 28, que no pasa de 30.",
+        "La octava es por lo menos 8: la suma llega al menos a 36 > 30."
+      ],
+      "verificar": [ { "fn": "sumaSupera", "args": [{ "valores": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "S": 30 }], "espera": { "respuesta": 8, "sumaPeor": 28 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una bolsa tiene 20 fichas numeradas del 1 al 20. ¿Cuántas hay que sacar como mínimo para estar seguro de tener dos cuyos números sumen 25?",
+      "respuesta": "13 fichas.",
+      "pasos": [
+        "Parejas que suman 25: 5 y 20, 6 y 19, …, 12 y 13: son 8 parejas.",
+        "Del 1 al 4 no tienen pareja (les faltaría 21 a 24, que no hay).",
+        "Peor caso: 1, 2, 3, 4 y un número de cada pareja: 4 + 8 = 12.",
+        "La ficha 13 completa una pareja."
+      ],
+      "verificar": [ { "fn": "parejaSuma", "args": [{ "N": 20, "copias": 1, "S": 25 }], "espera": { "respuesta": 13, "solos": [1, 2, 3, 4] } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Del 1 al 20, ¿cuántos números hay que elegir a ciegas como mínimo para estar seguro de tener tres consecutivos?",
+      "respuesta": "15 números.",
+      "pasos": [
+        "Peor caso: dos seguidos y se salta uno: 1, 2, 4, 5, 7, 8, …, 19, 20. Quedan fuera los múltiplos de 3 (6 números): se toman 14.",
+        "En bloques 1-2-3, 4-5-6, …, 16-17-18 hay 6 bloques completos; para no tener tres seguidos falta uno de cada uno. Con 15 ya no alcanza."
+      ],
+      "verificar": [ { "fn": "consecutivos", "args": [{ "N": 20, "k": 3 }], "espera": { "respuesta": 15 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Una encargada tiene 6 llaves y 6 casilleros, sin saber cuál abre cuál. ¿Cuántos intentos debe hacer como mínimo para estar segura de saber qué llave abre cada casillero?",
+      "respuesta": "15 intentos.",
+      "pasos": [
+        "Primer casillero: en el peor caso fallan 5 llaves; la sexta abre sin probarla.",
+        "Luego 4, 3, 2 y 1 intentos; el último casillero ya no necesita ninguno.",
+        "5 + 4 + 3 + 2 + 1 = 15."
+      ],
+      "verificar": [ { "fn": "llaves", "args": [{ "n": 6 }], "espera": { "respuesta": 15 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En una caja hay fichas numeradas del 1 al 30. ¿Cuántas hay que sacar como mínimo para estar seguro de tener 3 cuyos números tengan la misma suma de cifras?",
+      "respuesta": "22 fichas.",
+      "pasos": [
+        "Las sumas de cifras van de 1 (el 1 y el 10) a 11 (solo el 29): 11 sumas.",
+        "La suma 11 tiene una sola ficha; las demás tienen 2 o más.",
+        "Peor caso: 2 fichas de cada una de las 10 sumas y la única de suma 11: 20 + 1 = 21.",
+        "La ficha 22 repite una suma que ya tiene 2."
+      ],
+      "verificar": [ { "fn": "sumaCifras", "args": [{ "desde": 1, "hasta": 30, "k": 3 }], "espera": { "respuesta": 22, "escasas": [11] } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "Tres bolsas tienen los rótulos «arroz», «azúcar» y «mezcla», y los tres están equivocados: una bolsa tiene solo arroz, otra solo azúcar y otra arroz con azúcar. Se mete la mano en la bolsa rotulada «mezcla» y salen solo granos de azúcar. ¿Qué tiene la bolsa rotulada «arroz»?",
+      "respuesta": "La mezcla de arroz y azúcar.",
+      "pasos": [
+        "La bolsa «mezcla» no tiene mezcla; salió azúcar, así que tiene solo azúcar.",
+        "Quedan solo arroz y la mezcla. La bolsa «arroz» no puede tener arroz: tiene la mezcla, y la bolsa «azúcar» tiene el arroz."
+      ],
+      "verificar": [ { "fn": "cajas", "args": [{ "pide": "contenido", "sale": "B", "rotulo": "A" }], "espera": { "respuesta": "mezcla" } } ]
+    }
+  ]
+}

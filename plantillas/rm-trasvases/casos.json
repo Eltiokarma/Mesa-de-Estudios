@@ -1,0 +1,450 @@
+{
+  "plantilla": "rm-trasvases",
+  "tolerancia": 0,
+  "nota": "Estados como (recipiente 1; recipiente 2; …) en el orden de caps. Un trasvase es pasar líquido hasta vaciar el primero o llenar el segundo. En dos-jarras, con cuenta 'todo' llenar, vaciar y pasar cuentan; con 'trasvases' solo cuenta pasar. En los demás tipos el primer recipiente empieza lleno y los otros vacíos. En barriles, la respuesta es la capacidad del barril que queda.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "tres-cerrados",
+        "caps": [
+          11,
+          5,
+          3
+        ],
+        "meta": {
+          "tipo": "alguno",
+          "x": 10
+        },
+        "contexto": "chicha"
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 trasvases"
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "dos-jarras",
+        "caps": [
+          7,
+          10
+        ],
+        "cuenta": "todo",
+        "x": 6,
+        "contexto": "chicha"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 operaciones"
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "cuatro",
+        "caps": [
+          11,
+          9,
+          7,
+          4
+        ],
+        "meta": {
+          "tipo": "en",
+          "i": 0,
+          "x": 5
+        },
+        "contexto": "chicha"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 trasvases"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "tres-cerrados",
+        "caps": [
+          14,
+          9,
+          5
+        ],
+        "meta": {
+          "tipo": "alguno",
+          "x": 13
+        },
+        "contexto": "leche"
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 trasvases"
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "dos-jarras",
+        "caps": [
+          3,
+          11
+        ],
+        "cuenta": "todo",
+        "x": 2,
+        "contexto": "chicha"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 operaciones"
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "cuatro",
+        "caps": [
+          19,
+          10,
+          7,
+          6
+        ],
+        "meta": {
+          "tipo": "en",
+          "i": 0,
+          "x": 8
+        },
+        "contexto": "agua"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 trasvases"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "tres-cerrados",
+        "caps": [
+          10,
+          7,
+          5
+        ],
+        "meta": {
+          "tipo": "en",
+          "i": 0,
+          "x": 6
+        },
+        "contexto": "chicha"
+      },
+      "esperado": {
+        "respuesta": 7,
+        "texto": "7 trasvases"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "dos-jarras",
+        "caps": [
+          5,
+          8
+        ],
+        "cuenta": "todo",
+        "x": 2,
+        "contexto": "agua"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 operaciones"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "dos-jarras",
+        "caps": [
+          2,
+          13
+        ],
+        "cuenta": "todo",
+        "x": 3,
+        "contexto": "agua"
+      },
+      "esperado": {
+        "respuesta": 10,
+        "texto": "10 operaciones"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "dos-jarras",
+        "caps": [
+          3,
+          8
+        ],
+        "cuenta": "trasvases",
+        "x": 4,
+        "contexto": "leche"
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 trasvases"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "dos-jarras",
+        "caps": [
+          4,
+          11
+        ],
+        "cuenta": "trasvases",
+        "x": 9,
+        "contexto": "chicha"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 trasvases"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "barriles",
+        "barriles": [
+          13,
+          14,
+          15,
+          31,
+          32,
+          34
+        ],
+        "k": 1,
+        "contexto": "leche"
+      },
+      "esperado": {
+        "respuesta": 13,
+        "texto": "13 L"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "tres-cerrados",
+        "caps": [
+          16,
+          12,
+          11
+        ],
+        "meta": {
+          "tipo": "alguno",
+          "x": 15
+        },
+        "contexto": "chicha"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 trasvases"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "tres-cerrados",
+        "caps": [
+          6,
+          3,
+          2
+        ],
+        "meta": {
+          "tipo": "en",
+          "i": 0,
+          "x": 5
+        },
+        "contexto": "leche"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 trasvases"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "tres-cerrados",
+        "caps": [
+          15,
+          14,
+          3
+        ],
+        "meta": {
+          "tipo": "alguno",
+          "x": 8
+        },
+        "contexto": "leche"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 trasvases"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "cuatro",
+        "caps": [
+          15,
+          11,
+          10,
+          5
+        ],
+        "meta": {
+          "tipo": "en",
+          "i": 0,
+          "x": 6
+        },
+        "contexto": "agua"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 trasvases"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "cuatro",
+        "caps": [
+          13,
+          9,
+          6,
+          2
+        ],
+        "meta": {
+          "tipo": "en",
+          "i": 0,
+          "x": 3
+        },
+        "contexto": "chicha"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 trasvases"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "tres-cerrados",
+        "caps": [
+          9,
+          7,
+          4
+        ],
+        "meta": {
+          "tipo": "reparto",
+          "estado": [
+            3,
+            6,
+            0
+          ]
+        },
+        "contexto": "aceite"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 trasvases"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "barriles",
+        "barriles": [
+          12,
+          13,
+          16,
+          22,
+          24,
+          25
+        ],
+        "k": 2,
+        "contexto": "chicha"
+      },
+      "esperado": {
+        "respuesta": 25,
+        "texto": "25 L"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "tres-cerrados",
+        "caps": [
+          10,
+          3,
+          2
+        ],
+        "meta": {
+          "tipo": "reparto",
+          "estado": [
+            9,
+            1,
+            0
+          ]
+        },
+        "contexto": "chicha"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 trasvases"
+      }
+    },
+    {
+      "semilla": 65,
+      "entrada": {
+        "tipo": "cuatro",
+        "caps": [
+          19,
+          11,
+          3,
+          2
+        ],
+        "meta": {
+          "tipo": "alguno",
+          "x": 7
+        },
+        "contexto": "chicha"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 trasvases"
+      }
+    },
+    {
+      "semilla": 83,
+      "entrada": {
+        "tipo": "cuatro",
+        "caps": [
+          20,
+          8,
+          7,
+          6
+        ],
+        "meta": {
+          "tipo": "alguno",
+          "x": 10
+        },
+        "contexto": "agua"
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 trasvases"
+      }
+    }
+  ]
+}

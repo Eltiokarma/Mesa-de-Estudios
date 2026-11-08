@@ -1,0 +1,99 @@
+{
+  "titulo": "Cortes, tramos y estacas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 minutos por problema. En los de cortes, se pueden mover y apilar las piezas entre corte y corte (sin doblarlas), y cada corte recto atraviesa todo el montón.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una tira de papel tiene 10 casilleros en fila. ¿Cuántos cortes rectos se necesitan como mínimo para separar los 10 casilleros, si se pueden apilar los pedazos?",
+      "respuesta": "4 cortes.",
+      "pasos": [
+        "Cada corte, apilando todo, a lo más duplica el número de pedazos: 1 → 2 → 4 → 8 → 16.",
+        "Con 3 cortes hay a lo más 8 pedazos, menos que 10. Con 4 cortes alcanza: por ejemplo 10 → 5 + 5, luego 5 → 2 + 3 en las dos, luego 3 → 1 + 2 y 2 → 1 + 1, y al final los 2 que quedan."
+      ],
+      "verificar": [ { "fn": "plancha", "args": [{ "m": 1, "n": 10, "c": null }], "espera": { "respuesta": 4 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un tablero de cartón de 4 × 4 casillas se quiere separar en sus 16 casillas. Se pueden apilar las piezas entre corte y corte. ¿Cuántos cortes rectos se necesitan como mínimo? ¿Y si no se pudiera apilar?",
+      "respuesta": "4 cortes apilando; 15 sin apilar.",
+      "pasos": [
+        "Apilando: 2 cortes parten el lado de 4 en 4 tiras (4 → 2 + 2 → 1 + 1), y 2 cortes más parten las tiras en casillas: 2 + 2 = 4.",
+        "Sin apilar, cada corte suelta una sola pieza nueva: de 1 pieza a 16 piezas hacen falta 15 cortes."
+      ],
+      "verificar": [ { "fn": "plancha", "args": [{ "m": 4, "n": 4, "c": null }], "espera": { "respuesta": 4 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una plancha de 2 × 6 cuadraditos se quiere separar en sus 12 cuadraditos con una guillotina que corta a lo más 3 piezas apiladas. ¿Cuántos cortes se necesitan como mínimo?",
+      "respuesta": "5 cortes.",
+      "pasos": [
+        "Cada corte parte a lo más 3 piezas, o las que haya si son menos. Piezas que puede haber: 1 → 2 → 4 → 7 → 10 → 13. Con 4 cortes hay a lo más 10 piezas: no alcanza.",
+        "Con 5 sí: por ejemplo, 2×6 → 2×1 + 2×5; luego 2×5 → 2×2 + 2×3 junto con 2×1 → 1 + 1; y se sigue apilando de a tres hasta separar todo."
+      ],
+      "verificar": [ { "fn": "plancha", "args": [{ "m": 2, "n": 6, "c": 3 }], "espera": { "respuesta": 5, "cota": 5 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una cartulina de 2 filas y 4 columnas tiene las letras A B C D arriba y E F G H abajo. Se quiere obtener las piezas A-B, C, D-H, E y F-G (las letras unidas con guion quedan juntas). Se pueden apilar las piezas. ¿Cuántos cortes rectos se necesitan como mínimo?",
+      "respuesta": "3 cortes.",
+      "pasos": [
+        "Son 5 piezas: con 2 cortes habría a lo más 4. Hacen falta al menos 3.",
+        "Corte 1: la línea vertical entre C y D separa D-H de ABC-EFG.",
+        "Corte 2: la línea horizontal separa ABC de EFG.",
+        "Corte 3: se apilan ABC y EFG; un corte vertical separa AB de C y, a la vez, E de FG."
+      ],
+      "verificar": [ { "fn": "arreglo", "args": [{ "celdas": [[0, 0, 1, 2], [3, 4, 4, 2]] }], "espera": { "respuesta": 3, "bloques": 5 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un listón de 180 cm se corta en tramos cuyas longitudes forman una progresión aritmética. El menor mide 9 cm y el mayor 27 cm. ¿Cuántos cortes se hicieron?",
+      "respuesta": "9 cortes.",
+      "pasos": [
+        "El tramo promedio es (9 + 27) ÷ 2 = 18 cm.",
+        "Tramos: 180 ÷ 18 = 10 (de 9, 11, 13, …, 27).",
+        "Diez tramos de un listón abierto salen con 10 − 1 = 9 cortes."
+      ],
+      "verificar": [ { "fn": "progresion", "args": [{ "pide": "cortes", "L": 180, "a": 9, "b": 27 }], "espera": { "respuesta": 9, "n": 10, "d": 2 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Con 4 cortes, una varilla de 100 cm queda en tramos que crecen de manera uniforme (progresión aritmética). El tramo menor mide 12 cm. ¿Cuánto mide el mayor?",
+      "respuesta": "28 cm.",
+      "pasos": [
+        "4 cortes dan 5 tramos; el promedio es 100 ÷ 5 = 20 cm.",
+        "En una progresión, el promedio está a la mitad entre el menor y el mayor: mayor = 2 × 20 − 12 = 28 cm (tramos 12, 16, 20, 24, 28)."
+      ],
+      "verificar": [ { "fn": "progresion", "args": [{ "pide": "mayor", "L": 100, "a": 12, "c": 4 }], "espera": { "respuesta": 28 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una chacra de 60 m por 36 m se divide en parcelas cuadradas iguales, lo más grandes posible, y se cercan todas (un solo cerco donde dos parcelas se tocan). Se clavan estacas cada 4 m a lo largo de todos los cercos, con una en cada esquina. ¿Cuántas estacas se necesitan?",
+      "respuesta": "100 estacas.",
+      "pasos": [
+        "Lado de la parcela: MCD(60, 36) = 12 m, así que hay 5 × 3 parcelas.",
+        "Hay 4 cercos de 60 m (con 60 ÷ 4 + 1 = 16 estacas cada uno) y 6 cercos de 36 m (con 10 cada uno): 64 + 60 = 124.",
+        "Los 4 × 6 = 24 cruces se contaron dos veces: 124 − 24 = 100."
+      ],
+      "verificar": [ { "fn": "estacas", "args": [{ "A": 60, "B": 36, "e": 4, "pide": "cada" }], "espera": { "respuesta": 100, "g": 12 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "A un cuadrado de papel de 20 cm de lado se le cortan las cuatro esquinas en diagonal: cada corte quita 2 cm de cada uno de los dos lados que toca. ¿Cuál es el perímetro del octógono que queda?",
+      "respuesta": "64 + 8√2 cm.",
+      "pasos": [
+        "Del borde se quitan 8 tramos de 2 cm: 80 − 16 = 64 cm.",
+        "Cada corte es la hipotenusa de un triángulo rectángulo isósceles de catetos 2: 2√2 cm. Son cuatro: 8√2 cm.",
+        "Perímetro: 64 + 8√2 cm (unos 75,3 cm)."
+      ],
+      "verificar": [ { "fn": "esquinas", "args": [{ "corte": "triangulo", "L": 20, "W": 20, "a": 2 }], "espera": { "respuesta": { "p": 64, "q": 8 } } } ]
+    }
+  ]
+}

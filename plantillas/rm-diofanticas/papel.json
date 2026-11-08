@@ -1,0 +1,126 @@
+{
+  "titulo": "Enteros que cumplen la cuenta: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 o 3 minutos por problema. No te quedes con la primera solución: busca todas y compara.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un cuaderno cuesta S/ 5 y un lapicero, S/ 3. Luis gastó exactamente S/ 47 y compró al menos uno de cada uno. ¿De cuántas maneras pudo hacer su compra, y cuál es la mayor cantidad de artículos que pudo llevar?",
+      "respuesta": "De 3 maneras; como máximo, 15 artículos.",
+      "pasos": [
+        "5x + 3y = 47 con x, y ≥ 1. Se prueba x = 1, 2, 3, …: 47 − 5x tiene que ser múltiplo de 3.",
+        "x = 1 → y = 14; x = 4 → y = 9; x = 7 → y = 4; con x = 10 ya no alcanza.",
+        "Son 3 maneras. Artículos: 15, 13 y 11: el máximo es 15 (la primera que salió no siempre es la mejor; aquí hay que comparar)."
+      ],
+      "verificar": [ { "fn": "soluciones2", "args": [5, 3, 47, 1], "espera": [[1, 14], [4, 9], [7, 4]] } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Con palitos de 5 cm y de 8 cm, sin cortarlos, se quiere armar una varilla de exactamente 61 cm. ¿Cuál es el menor número de palitos que se necesitan?",
+      "respuesta": "8 palitos.",
+      "pasos": [
+        "5x + 8y = 61. Como 61 − 8y debe ser múltiplo de 5, y puede ser 2 o 7.",
+        "y = 2 → x = 9 (11 palitos); y = 7 → x = 1 (8 palitos).",
+        "El menor es 8: un palito de 5 cm y siete de 8 cm."
+      ],
+      "verificar": [ { "fn": "palitos", "args": [5, 8, 61], "espera": { "soluciones": [[1, 7], [9, 2]], "min": 8, "max": 11 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "En una alcancía hay S/ 5,00 en monedas de S/ 0,20, S/ 0,50 y S/ 1,00, con al menos una de cada tipo. ¿Cuántas monedas puede haber, como máximo?",
+      "respuesta": "18 monedas.",
+      "pasos": [
+        "Una de cada tipo suma S/ 1,70; quedan S/ 3,30 por repartir.",
+        "Para tener muchas monedas se usan las de S/ 0,20, pero 3,30 no es múltiplo de 0,20: hace falta una de S/ 0,50 más. Quedan S/ 2,80 = 14 de S/ 0,20.",
+        "Total: 15 de S/ 0,20, 2 de S/ 0,50 y 1 de S/ 1,00: 18 monedas."
+      ],
+      "verificar": [ { "fn": "monedas", "args": [[20, 50, 100], 500, 1], "espera": { "max": 18, "mejor": [15, 2, 1] } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Rosa tiene 4 monedas de S/ 1, 3 de S/ 2 y 3 de S/ 5. Quiere formar grupos que sumen exactamente S/ 6 cada uno, sin repetir monedas. ¿Cuántos grupos puede formar, como máximo?",
+      "respuesta": "4 grupos.",
+      "pasos": [
+        "En total tiene S/ 25, así que no puede haber más de 4 grupos de S/ 6.",
+        "Tres grupos de 5 + 1 usan las 3 de S/ 5 y 3 de S/ 1.",
+        "Con las 3 de S/ 2 se arma otro grupo: 2 + 2 + 2. Son 4, el máximo posible."
+      ],
+      "verificar": [ { "fn": "grupos", "args": [[1, 2, 5], [4, 3, 3], 6], "espera": { "max": 4 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un bodeguero gasta exactamente S/ 30 en cajas de S/ 2, S/ 3 y S/ 5, con al menos una de cada tipo. Gana S/ 1, S/ 1 y S/ 3 por cada caja, respectivamente. ¿Cuál es la mayor ganancia posible?",
+      "respuesta": "S/ 17.",
+      "pasos": [
+        "La caja de S/ 5 es la que más gana por sol: conviene llevar muchas.",
+        "Con 5 cajas de S/ 5 quedan S/ 5 = 2 + 3: (1, 1, 5), ganancia 1 + 1 + 15 = 17.",
+        "Con 4 de S/ 5 quedan S/ 10: (2, 2, 4) gana 16. Con menos cajas de S/ 5 se gana todavía menos. La mayor es S/ 17."
+      ],
+      "verificar": [ { "fn": "tresPrecios", "args": [[2, 3, 5], [1, 1, 3], 30, 1], "espera": { "ganancia": 17, "mejor": [1, 1, 5] } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una diana tiene anillos de 1, 6 y 10 puntos y se puede repetir anillo. ¿Cuál es el menor número de dardos para sumar exactamente 24 puntos?",
+      "respuesta": "4 dardos.",
+      "pasos": [
+        "Tirar primero al 10 da 10 + 10 + 1 + 1 + 1 + 1: 6 dardos. No es lo mejor.",
+        "Con un 10: faltan 14 = 6 + 6 + 1 + 1, 5 dardos. Sin el 10: 6 + 6 + 6 + 6, 4 dardos.",
+        "Con 3 dardos el máximo sin pasarse que se acerca es 10 + 10 + 1 = 21 o 10 + 6 + 6 = 22: no se llega a 24. El mínimo es 4."
+      ],
+      "verificar": [ { "fn": "dardos", "args": [[1, 6, 10], 24], "espera": 4 } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un cuaderno cuesta S/ 3 más que un lapicero, y 2 lapiceros con un cuaderno cuestan S/ 15. Tengo una cantidad entera de soles: me alcanza para 2 cuadernos y un lapicero, pero no para 4 cuadernos ni para 6 lapiceros. ¿Cuánto tengo, como máximo?",
+      "respuesta": "S/ 23.",
+      "pasos": [
+        "2l + (l + 3) = 15: l = S/ 4 y el cuaderno, S/ 7.",
+        "Alcanza: D ≥ 2·7 + 4 = 18. No alcanza: D < 4·7 = 28 y D < 6·4 = 24.",
+        "18 ≤ D < 24: lo más es S/ 23 (no 24: «no alcanza» quiere decir que falta al menos un sol)."
+      ],
+      "verificar": [ { "fn": "alcanza", "args": [{ "l": 4, "d": 3, "k": 2, "a1": 2, "b1": 1, "a2": 4, "b3": 6 }], "espera": { "c": 7, "Q": 15, "desde": 18, "hasta": 23 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Se quieren repartir 200 caramelos en partes iguales entre los niños de un taller, sin que sobre ninguno, pero faltan 7 caramelos. En el taller hay más de 20 y menos de 30 niños. ¿Cuántos niños hay?",
+      "respuesta": "23 niños.",
+      "pasos": [
+        "Con 7 más el reparto es exacto: el número de niños divide a 207.",
+        "207 = 3 × 3 × 23; sus divisores son 1, 3, 9, 23, 69 y 207.",
+        "El único entre 20 y 30 es 23."
+      ],
+      "verificar": [ { "fn": "reparto", "args": [{ "C": 200, "f": 7, "lo": 20, "hi": 30 }], "espera": [23] } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Se escribe 5 veces seguidas el bloque 4053: 40534053405340534053. Se borran algunas cifras y las que quedan suman 20. ¿Cuántas cifras se pueden borrar, como máximo?",
+      "respuesta": "16 cifras.",
+      "pasos": [
+        "Borrar muchas es dejar pocas. Los 5 ceros se borran todos.",
+        "Con las cifras más grandes: 5 + 5 + 5 + 5 = 20, así que bastan 4 cifras (con 3, lo más es 15).",
+        "Se borran 20 − 4 = 16 cifras."
+      ],
+      "verificar": [ { "fn": "borrar", "args": [{ "bloque": "4053", "r": 5, "S": 20 }], "espera": { "total": 20, "ceros": 5, "quedanMin": 4, "borrar": 16 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Ubica 1, 2, 3, 4 y 5, uno en cada casilla, en □ × □ − □ ÷ □ + □ para que el resultado sea un entero lo más grande posible (primero × y ÷, después + y −). ¿Cuál es ese resultado?",
+      "respuesta": "21.",
+      "pasos": [
+        "Conviene multiplicar los más grandes: 4 × 5 = 20, y sumar el que sigue, 3.",
+        "Lo que se resta, a ÷ b, debe ser chico y entero: con 1 y 2, 1 ÷ 2 = 0,5 no da entero; 2 ÷ 1 = 2 sí.",
+        "4 × 5 − 2 ÷ 1 + 3 = 21. (Con 1 ÷ 2 saldría 22,5, que no es entero.)"
+      ],
+      "verificar": [ { "fn": "expresion", "args": [[1, 2, 3, 4, 5], ["×", "−", "÷", "+"]], "espera": { "max": 21 } } ]
+    }
+  ]
+}

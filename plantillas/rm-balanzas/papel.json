@@ -1,0 +1,104 @@
+{
+  "titulo": "Balanzas, figuras y pesas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 minutos por problema. Escribe cada balanza como una igualdad (si está en equilibrio) o una desigualdad (si un platillo baja: ese lado pesa más).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "intermedio",
+      "enunciado": "Cada figura pesa un número entero de kilogramos. Balanza 1, en equilibrio: 2 círculos a la izquierda y 3 triángulos a la derecha. Balanza 2, en equilibrio: 1 cuadrado a la izquierda; 1 círculo y 1 triángulo a la derecha. Balanza 3: 1 círculo y 1 cuadrado a la izquierda y una pesa de 50 kg a la derecha; baja el platillo de la pesa. ¿Cuál es el mayor peso posible del cuadrado?",
+      "respuesta": "30 kg.",
+      "pasos": [
+        "De la balanza 1: círculo = 3t y triángulo = 2t, con t entero.",
+        "De la balanza 2: cuadrado = 3t + 2t = 5t.",
+        "De la balanza 3: 3t + 5t < 50, o sea t < 6,25: t vale a lo más 6.",
+        "Cuadrado = 5 × 6 = 30 kg. (31 kg no sirve: el cuadrado pesa un múltiplo de 5.)"
+      ],
+      "verificar": [ { "fn": "desigualdad", "args": [{ "balanzas": [
+        { "izq": { "circulo": 2 }, "der": { "triangulo": 3 }, "estado": "equilibrio" },
+        { "izq": { "cuadrado": 1 }, "der": { "circulo": 1, "triangulo": 1 }, "estado": "equilibrio" },
+        { "izq": { "circulo": 1, "cuadrado": 1 }, "der": { "pesa": 50 }, "estado": "der-baja" }
+      ], "pide": "max", "figura": "cuadrado" }], "espera": { "respuesta": 30, "t": [1, 6] } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "avanzado",
+      "enunciado": "Con las tres balanzas del problema anterior y una cuarta: 1 círculo y 1 triángulo a la izquierda, una pesa de 22 kg a la derecha, y baja el platillo de las figuras. ¿Cuál es el menor peso posible del círculo?",
+      "respuesta": "15 kg.",
+      "pasos": [
+        "La cuarta balanza dice 3t + 2t > 22, o sea t > 4,4: t vale por lo menos 5.",
+        "Con la tercera, t va de 5 a 6.",
+        "El menor peso del círculo es 3 × 5 = 15 kg."
+      ],
+      "verificar": [ { "fn": "desigualdad", "args": [{ "balanzas": [
+        { "izq": { "circulo": 2 }, "der": { "triangulo": 3 }, "estado": "equilibrio" },
+        { "izq": { "cuadrado": 1 }, "der": { "circulo": 1, "triangulo": 1 }, "estado": "equilibrio" },
+        { "izq": { "circulo": 1, "cuadrado": 1 }, "der": { "pesa": 50 }, "estado": "der-baja" },
+        { "izq": { "circulo": 1, "triangulo": 1 }, "der": { "pesa": 22 }, "estado": "izq-baja" }
+      ], "pide": "min", "figura": "circulo" }], "espera": { "respuesta": 15, "t": [5, 6] } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Tres balanzas en equilibrio: (1) 1 círculo equilibra a 2 triángulos; (2) 3 triángulos equilibran a 2 cuadrados; (3) 1 rombo equilibra a 1 círculo y 1 triángulo. ¿Cuántos cuadrados equilibran a 3 rombos?",
+      "respuesta": "6 cuadrados.",
+      "pasos": [
+        "Toma el triángulo como medida: 1 círculo = 2 triángulos y 1 rombo = 2 + 1 = 3 triángulos.",
+        "3 rombos = 9 triángulos.",
+        "De la balanza 2, 3 triángulos = 2 cuadrados; entonces 9 triángulos = 6 cuadrados."
+      ],
+      "verificar": [ { "fn": "sustitucion", "args": [{ "balanzas": [
+        { "izq": { "circulo": 1 }, "der": { "triangulo": 2 }, "estado": "equilibrio" },
+        { "izq": { "triangulo": 3 }, "der": { "cuadrado": 2 }, "estado": "equilibrio" },
+        { "izq": { "rombo": 1 }, "der": { "circulo": 1, "triangulo": 1 }, "estado": "equilibrio" }
+      ], "pregunta": { "izq": { "rombo": 3 }, "figura": "cuadrado" } }], "espera": { "respuesta": 6 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Hay pesas de 3 kg, 5 kg y 8 kg, tantas como se quiera de cada una. Un costal de 31 kg está en un platillo y en el otro solo se ponen pesas. ¿Cuántas pesas se necesitan como mínimo para equilibrar?",
+      "respuesta": "5 pesas.",
+      "pasos": [
+        "Con 3 pesas se llega a lo más a 24 kg: no alcanza.",
+        "Con 4 pesas: 8 + 8 + 8 + 5 = 29, 8 + 8 + 8 + 8 = 32; ninguna combinación de 4 da 31 (prueba también con tres de 8 y una de 3: 27).",
+        "Con 5: 8 + 8 + 5 + 5 + 5 = 31. Mínimo: 5 pesas."
+      ],
+      "verificar": [ { "fn": "minimoPesas", "args": [{ "valores": [3, 5, 8], "carga": 31 }], "espera": { "respuesta": 5 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Hay pesas de 1 g, 10 g, 100 g y 1 000 g, tantas como se quiera, y se pueden poner en los dos platillos. ¿Cuántas pesas se necesitan como mínimo para pesar 1 998 g de quinua en una sola pesada?",
+      "respuesta": "4 pesas.",
+      "pasos": [
+        "En un solo platillo harían falta 1 + 9 + 9 + 8 = 27 pesas.",
+        "Con los dos platillos: 1 998 = 2 000 − 2. Dos pesas de 1 000 g en el otro platillo y dos de 1 g junto a la quinua: 4 pesas."
+      ],
+      "verificar": [ { "fn": "unaPesada", "args": [{ "base": 10, "cantidad": 1998 }], "espera": { "respuesta": 4, "otro": [1000, 1000], "junto": [1, 1] } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Se tiene una pesa de cada valor: 1 g, 3 g, 9 g, 27 g y 81 g. ¿Cómo se pesan 100 g de café en una sola pesada, usando los dos platillos? ¿Cuántas pesas se usan?",
+      "respuesta": "81 g, 27 g y 1 g en el otro platillo y 9 g junto al café: 4 pesas.",
+      "pasos": [
+        "100 ÷ 3 = 33, resto 1 → la pesa de 1 g va al otro platillo.",
+        "33 ÷ 3 = 11, resto 0 → la de 3 g queda fuera. 11 ÷ 3 = 3, resto 2 → la de 9 g va junto al café (es 27 − 9) y el cociente sube a 4.",
+        "4 ÷ 3 = 1, resto 1 → la de 27 g al otro platillo; queda 1 → la de 81 g al otro platillo.",
+        "Comprobación: 81 + 27 + 1 − 9 = 100."
+      ],
+      "verificar": [ { "fn": "unaPesada", "args": [{ "base": 3, "cantidad": 100 }], "espera": { "respuesta": 4, "otro": [1, 27, 81], "junto": [9] } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Con las mismas pesas de 1 g, 10 g, 100 g y 1 000 g del problema 5, ¿cuántas pesas se necesitan como mínimo para pesar 3 097 g en una sola pesada?",
+      "respuesta": "7 pesas.",
+      "pasos": [
+        "3 097 = 3 100 − 3.",
+        "Otro platillo: tres de 1 000 g y una de 100 g. Junto al objeto: tres de 1 g. Total: 7 pesas.",
+        "En un solo platillo serían 3 + 0 + 9 + 7 = 19 pesas."
+      ],
+      "verificar": [ { "fn": "unaPesada", "args": [{ "base": 10, "cantidad": 3097 }], "espera": { "respuesta": 7 } } ]
+    }
+  ]
+}

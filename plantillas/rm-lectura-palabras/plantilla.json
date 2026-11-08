@@ -1,0 +1,14 @@
+{
+  "id": "rm-lectura-palabras",
+  "titulo": "Lecturas en un arreglo de letras",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

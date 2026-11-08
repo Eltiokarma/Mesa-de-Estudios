@@ -1,0 +1,15 @@
+{
+  "id": "rm-movimientos",
+  "titulo": "El menor número de movimientos: canoas, caballos, saltos y fichas",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.juegos-recreativos",
+    "razonamiento-matematico.traslados-y-puntos-cardinales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

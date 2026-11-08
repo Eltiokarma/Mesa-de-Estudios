@@ -1,0 +1,695 @@
+{
+  "plantilla": "rm-certezas",
+  "tolerancia": 0,
+  "nota": "La respuesta es el número mínimo de extracciones (o de intentos) para estar seguro: el mayor grupo que se puede sacar sin lograr lo pedido, más 1 (en llaves, la suma de los intentos que fallan en el peor caso). En cajas la respuesta es una clave: 'A', 'B' o 'mezcla' (el contenido o el rótulo de la caja) o 'no-se-sabe'.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "cajas",
+        "pide": "contenido",
+        "etiquetas": [
+          "caramelos de fresa",
+          "caramelos de limón",
+          "mezcla"
+        ],
+        "sale": "B",
+        "rotulo": "B"
+      },
+      "esperado": {
+        "respuesta": "A"
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "cumpleanos",
+        "casilla": "mes",
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 25
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "colores",
+        "urna": {
+          "negras": 11,
+          "verdes": 6,
+          "azules": 5,
+          "blancas": 6
+        },
+        "pide": "de-color",
+        "k": 2,
+        "color": "negras"
+      },
+      "esperado": {
+        "respuesta": 19
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "consecutivos",
+        "N": 10,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 8
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "cajas",
+        "pide": "contenido",
+        "etiquetas": [
+          "papas blancas",
+          "papas amarillas",
+          "mezcla"
+        ],
+        "sale": "A",
+        "rotulo": "A"
+      },
+      "esperado": {
+        "respuesta": "B"
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "paridad",
+        "desde": 9,
+        "hasta": 20,
+        "pide": "producto-par"
+      },
+      "esperado": {
+        "respuesta": 7
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "trio-suma",
+        "N": 9,
+        "S": 19
+      },
+      "esperado": {
+        "respuesta": 8
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "diferencia",
+        "desde": 10,
+        "hasta": 28,
+        "d": 8,
+        "pide": "mayor"
+      },
+      "esperado": {
+        "respuesta": 10
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "consecutivos",
+        "N": 23,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 17
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "division",
+        "N": 36
+      },
+      "esperado": {
+        "respuesta": 19
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "cumpleanos",
+        "casilla": "fecha",
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 733
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "llaves",
+        "n": 10
+      },
+      "esperado": {
+        "respuesta": 45
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "division",
+        "N": 37
+      },
+      "esperado": {
+        "respuesta": 20
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "guantes",
+        "pares": {
+          "azules": 4,
+          "blancos": 3,
+          "negros": 4,
+          "marrones": 9
+        },
+        "color": "negros"
+      },
+      "esperado": {
+        "respuesta": 37
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "colores",
+        "urna": {
+          "amarillas": 12,
+          "blancas": 7,
+          "verdes": 10,
+          "negras": 3
+        },
+        "pide": "mismo",
+        "k": 2,
+        "color": null
+      },
+      "esperado": {
+        "respuesta": 5
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "cumpleanos",
+        "casilla": "fecha",
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 733
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "cajas",
+        "pide": "contenido",
+        "etiquetas": [
+          "manzanas",
+          "naranjas",
+          "mezcla"
+        ],
+        "sale": "A",
+        "rotulo": "A"
+      },
+      "esperado": {
+        "respuesta": "B"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "pareja-suma",
+        "N": 9,
+        "copias": 1,
+        "S": 13
+      },
+      "esperado": {
+        "respuesta": 7
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "suma-supera",
+        "valores": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "S": 39
+      },
+      "esperado": {
+        "respuesta": 8
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "paridad",
+        "desde": 7,
+        "hasta": 22,
+        "pide": "producto-par"
+      },
+      "esperado": {
+        "respuesta": 9
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "primos",
+        "N": 22,
+        "S": 25
+      },
+      "esperado": {
+        "respuesta": 21
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "trio-suma",
+        "N": 8,
+        "S": 18
+      },
+      "esperado": {
+        "respuesta": 7
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "paridad",
+        "desde": 11,
+        "hasta": 33,
+        "pide": "suma-impar"
+      },
+      "esperado": {
+        "respuesta": 13
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "cajas",
+        "pide": "contenido",
+        "etiquetas": [
+          "canicas rojas",
+          "canicas azules",
+          "mezcla"
+        ],
+        "sale": "A",
+        "rotulo": "B"
+      },
+      "esperado": {
+        "respuesta": "mezcla"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "consecutivos",
+        "N": 29,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 21
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "diferencia",
+        "desde": 9,
+        "hasta": 30,
+        "d": 12,
+        "pide": "mayor"
+      },
+      "esperado": {
+        "respuesta": 14
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "llaves",
+        "n": 11
+      },
+      "esperado": {
+        "respuesta": 55
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "primos",
+        "N": 18,
+        "S": 27
+      },
+      "esperado": {
+        "respuesta": 18
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "tipo": "diferencia",
+        "desde": 10,
+        "hasta": 34,
+        "d": 5,
+        "pide": "igual"
+      },
+      "esperado": {
+        "respuesta": 16
+      }
+    },
+    {
+      "semilla": 34,
+      "entrada": {
+        "tipo": "suma-supera",
+        "valores": [
+          2,
+          3,
+          8,
+          21,
+          23,
+          24,
+          26,
+          27,
+          29
+        ],
+        "S": 54
+      },
+      "esperado": {
+        "respuesta": 5
+      }
+    },
+    {
+      "semilla": 35,
+      "entrada": {
+        "tipo": "colores",
+        "urna": {
+          "amarillas": 6,
+          "rojas": 10,
+          "negras": 7
+        },
+        "pide": "de-color",
+        "k": 2,
+        "color": "rojas"
+      },
+      "esperado": {
+        "respuesta": 15
+      }
+    },
+    {
+      "semilla": 40,
+      "entrada": {
+        "tipo": "divisibilidad",
+        "N": 71,
+        "a": 4,
+        "b": 6,
+        "k": 1
+      },
+      "esperado": {
+        "respuesta": 49
+      }
+    },
+    {
+      "semilla": 42,
+      "entrada": {
+        "tipo": "colores",
+        "urna": {
+          "negras": 10,
+          "verdes": 8,
+          "azules": 6
+        },
+        "pide": "uno-de-cada",
+        "k": null,
+        "color": null
+      },
+      "esperado": {
+        "respuesta": 19
+      }
+    },
+    {
+      "semilla": 45,
+      "entrada": {
+        "tipo": "billetes",
+        "billetes": {
+          "10": 5,
+          "20": 4,
+          "50": 4,
+          "100": 7
+        },
+        "M": 70
+      },
+      "esperado": {
+        "respuesta": 17
+      }
+    },
+    {
+      "semilla": 46,
+      "entrada": {
+        "tipo": "suma-cifras",
+        "desde": 20,
+        "hasta": 75,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 27
+      }
+    },
+    {
+      "semilla": 49,
+      "entrada": {
+        "tipo": "billetes",
+        "billetes": {
+          "10": 6,
+          "20": 7,
+          "50": 2
+        },
+        "M": 20
+      },
+      "esperado": {
+        "respuesta": 11
+      }
+    },
+    {
+      "semilla": 53,
+      "entrada": {
+        "tipo": "guantes",
+        "pares": {
+          "blancos": 4,
+          "negros": 5,
+          "grises": 3
+        },
+        "color": "blancos"
+      },
+      "esperado": {
+        "respuesta": 21
+      }
+    },
+    {
+      "semilla": 55,
+      "entrada": {
+        "tipo": "paridad",
+        "desde": 2,
+        "hasta": 15,
+        "pide": "suma-impar"
+      },
+      "esperado": {
+        "respuesta": 8
+      }
+    },
+    {
+      "semilla": 62,
+      "entrada": {
+        "tipo": "diferencia",
+        "desde": 6,
+        "hasta": 36,
+        "d": 5,
+        "pide": "igual"
+      },
+      "esperado": {
+        "respuesta": 17
+      }
+    },
+    {
+      "semilla": 64,
+      "entrada": {
+        "tipo": "colores",
+        "urna": {
+          "azules": 5,
+          "amarillas": 9,
+          "negras": 4
+        },
+        "pide": "de-color",
+        "k": 3,
+        "color": "azules"
+      },
+      "esperado": {
+        "respuesta": 16
+      }
+    },
+    {
+      "semilla": 67,
+      "entrada": {
+        "tipo": "pareja-suma",
+        "N": 16,
+        "copias": 2,
+        "S": 18
+      },
+      "esperado": {
+        "respuesta": 18
+      }
+    },
+    {
+      "semilla": 68,
+      "entrada": {
+        "tipo": "colores",
+        "urna": {
+          "amarillas": 7,
+          "azules": 6,
+          "negras": 5
+        },
+        "pide": "uno-de-cada",
+        "k": null,
+        "color": null
+      },
+      "esperado": {
+        "respuesta": 14
+      }
+    },
+    {
+      "semilla": 74,
+      "entrada": {
+        "tipo": "paridad",
+        "desde": 10,
+        "hasta": 32,
+        "pide": "producto-par"
+      },
+      "esperado": {
+        "respuesta": 12
+      }
+    },
+    {
+      "semilla": 78,
+      "entrada": {
+        "tipo": "cajas",
+        "pide": "cual",
+        "etiquetas": [
+          "papas blancas",
+          "papas amarillas",
+          "mezcla"
+        ],
+        "sale": null,
+        "rotulo": null
+      },
+      "esperado": {
+        "respuesta": "mezcla"
+      }
+    },
+    {
+      "semilla": 82,
+      "entrada": {
+        "tipo": "cajas",
+        "pide": "cual",
+        "etiquetas": [
+          "caramelos de fresa",
+          "caramelos de limón",
+          "mezcla"
+        ],
+        "sale": null,
+        "rotulo": null
+      },
+      "esperado": {
+        "respuesta": "mezcla"
+      }
+    },
+    {
+      "semilla": 92,
+      "entrada": {
+        "tipo": "suma-cifras",
+        "desde": 10,
+        "hasta": 37,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 21
+      }
+    },
+    {
+      "semilla": 95,
+      "entrada": {
+        "tipo": "divisibilidad",
+        "N": 60,
+        "a": 2,
+        "b": 3,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 23
+      }
+    },
+    {
+      "semilla": 146,
+      "entrada": {
+        "tipo": "colores",
+        "urna": {
+          "blancas": 9,
+          "negras": 5,
+          "azules": 9
+        },
+        "pide": "mismo",
+        "k": 5,
+        "color": null
+      },
+      "esperado": {
+        "respuesta": 13
+      }
+    },
+    {
+      "semilla": 301,
+      "entrada": {
+        "tipo": "paridad",
+        "desde": 12,
+        "hasta": 34,
+        "pide": "suma-par"
+      },
+      "esperado": {
+        "respuesta": 3
+      }
+    },
+    {
+      "semilla": 321,
+      "entrada": {
+        "tipo": "paridad",
+        "desde": 1,
+        "hasta": 21,
+        "pide": "suma-par"
+      },
+      "esperado": {
+        "respuesta": 3
+      }
+    }
+  ]
+}

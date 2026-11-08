@@ -1,0 +1,16 @@
+{
+  "id": "rm-planteo",
+  "titulo": "Planteo de situaciones: compras, votos, pistas y torneos",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.planteo-de-ecuaciones",
+    "razonamiento-matematico.maximos-y-minimos",
+    "razonamiento-matematico.tablas-graficos-y-suficiencia"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

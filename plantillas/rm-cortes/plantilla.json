@@ -1,0 +1,14 @@
+{
+  "id": "rm-cortes",
+  "titulo": "Cortes, tramos y estacas",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.cortes-y-pesadas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

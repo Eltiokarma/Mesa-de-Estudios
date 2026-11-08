@@ -1,0 +1,333 @@
+{
+  "titulo": "El menor número de movimientos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 o 3 minutos por problema. Dibuja o anota cada estado y cuenta los movimientos entre estados, no los estados.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un papá y una mamá, de 80 kg cada uno, y sus hijos Juan y Lucía, de 40 kg cada uno, quieren cruzar un río en una canoa que soporta 80 kg como máximo. Todos saben remar y en cada cruce alguien tiene que remar. Cada cruce, de ida o de vuelta, es un viaje. ¿Cuántos viajes, como mínimo, se necesitan para que todos queden en la otra orilla?",
+      "respuesta": "9 viajes.",
+      "pasos": [
+        "Un adulto solo llena la canoa, así que cada adulto cruza solo y alguien tiene que traer la canoa de vuelta.",
+        "Ida: Juan y Lucía. Vuelta: Lucía. Ida: el papá. Vuelta: Juan (4 viajes, el papá ya pasó).",
+        "Ida: Juan y Lucía. Vuelta: Lucía. Ida: la mamá. Vuelta: Juan (8 viajes, la mamá ya pasó).",
+        "Ida: Juan y Lucía (9 viajes). Son 5 idas y 4 regresos.",
+        "Si solo cuentas las idas, te salen 5: la canoa no vuelve sola."
+      ],
+      "verificar": [
+        {
+          "fn": "canoa",
+          "args": [
+            {
+              "tipo": "canoa",
+              "modo": "peso",
+              "gente": [
+                {
+                  "nombre": "el papá",
+                  "peso": 80,
+                  "rema": true
+                },
+                {
+                  "nombre": "la mamá",
+                  "peso": 80,
+                  "rema": true
+                },
+                {
+                  "nombre": "Juan",
+                  "peso": 40,
+                  "rema": true
+                },
+                {
+                  "nombre": "Lucía",
+                  "peso": 40,
+                  "rema": true
+                }
+              ],
+              "limite": 80,
+              "choques": []
+            }
+          ],
+          "espera": {
+            "n": 9
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Un campesino y su hija deben cruzar un río con un perro, un gato y un cuy. En la canoa caben 2 a la vez y solo reman el campesino y su hija. Si en una orilla no queda ninguna persona, el perro ataca al gato y el gato ataca al cuy. Cada cruce, de ida o de vuelta, es un viaje. ¿Cuántos viajes, como mínimo, se necesitan?",
+      "respuesta": "7 viajes.",
+      "pasos": [
+        "El peligro está en el gato: no puede quedar sin una persona junto al perro ni junto al cuy. Con dos remeros, uno puede quedarse cuidando mientras el otro rema.",
+        "Ida: la hija y el cuy. Vuelta: la hija (en la salida, el campesino cuida al perro y al gato).",
+        "Ida: la hija y el perro. Vuelta: la hija (en la llegada, el perro y el cuy pueden quedarse juntos).",
+        "Ida: el campesino y la hija. Vuelta: la hija (el gato se quedó solo en la salida, sin peligro).",
+        "Ida: la hija y el gato. Son 4 idas y 3 regresos: 7 viajes."
+      ],
+      "verificar": [
+        {
+          "fn": "canoa",
+          "args": [
+            {
+              "tipo": "canoa",
+              "modo": "cupo",
+              "gente": [
+                {
+                  "nombre": "el campesino",
+                  "rema": true
+                },
+                {
+                  "nombre": "su hija",
+                  "rema": true
+                },
+                {
+                  "nombre": "el perro",
+                  "rema": false
+                },
+                {
+                  "nombre": "el gato",
+                  "rema": false
+                },
+                {
+                  "nombre": "el cuy",
+                  "rema": false
+                }
+              ],
+              "cupo": 2,
+              "choques": [
+                [
+                  2,
+                  3
+                ],
+                [
+                  3,
+                  4
+                ]
+              ]
+            }
+          ],
+          "espera": {
+            "n": 7
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "En un tablero de ajedrez de 8 × 8, un caballo está en la esquina a1. ¿Cuántos saltos, como mínimo, necesita para llegar a b2, la casilla vecina en diagonal?",
+      "respuesta": "4 saltos.",
+      "pasos": [
+        "Desde a1 solo se puede saltar a b3 o a c2.",
+        "Marca las casillas a 1, 2 y 3 saltos de a1: b2 no aparece. Recién aparece a los 4.",
+        "Un camino de 4: a1 → b3 → c5 → d3 → b2.",
+        "Si el tablero siguiera más allá de la esquina, bastarían 2 saltos (por ejemplo, de a1 a una casilla fuera del tablero y de ahí a b2). La esquina le quita saltos al caballo: hay que mirar el tablero real."
+      ],
+      "verificar": [
+        {
+          "fn": "caballo",
+          "args": [
+            {
+              "tipo": "caballo",
+              "filas": 8,
+              "columnas": 8,
+              "A": [
+                0,
+                0
+              ],
+              "B": [
+                1,
+                1
+              ],
+              "C": null,
+              "bloqueadas": []
+            }
+          ],
+          "espera": {
+            "n": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "En un tablero de 5 × 5 (columnas a a e, filas 1 a 5), un caballo está en a1 y debe llegar a e5 pasando antes por el centro, c3. ¿Cuántos saltos, como mínimo, necesita?",
+      "respuesta": "8 saltos.",
+      "pasos": [
+        "De a1 a c3: los saltos desde a1 van a b3 o c2, y desde ahí no se llega a c3 en uno ni en dos más; hacen falta 4 (por ejemplo, a1 → b3 → c5 → e4 → c3).",
+        "De c3 a e5 pasa lo mismo, por simetría: 4 saltos (por ejemplo, c3 → d5 → e3 → c4 → e5).",
+        "Total: 4 + 4 = 8 saltos. Sin pasar por c3 bastarían 4: la casilla intermedia cambia todo."
+      ],
+      "verificar": [
+        {
+          "fn": "caballo",
+          "args": [
+            {
+              "tipo": "caballo",
+              "filas": 5,
+              "columnas": 5,
+              "A": [
+                0,
+                0
+              ],
+              "B": [
+                4,
+                4
+              ],
+              "C": [
+                2,
+                2
+              ],
+              "bloqueadas": []
+            }
+          ],
+          "espera": {
+            "n": 8,
+            "tramos": [
+              4,
+              4
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una fila tiene 12 casillas numeradas del 1 al 12. Una ficha está en la casilla 1. En cada movimiento avanza exactamente 5 casillas o retrocede exactamente 3, sin salir de la fila. ¿Cuántos movimientos, como mínimo, necesita para llegar a la casilla 12?",
+      "respuesta": "7 movimientos.",
+      "pasos": [
+        "Hay que avanzar 11 casillas: a avances y r retrocesos con 5a − 3r = 11. La menor suma es a = 4, r = 3 (20 − 9 = 11): 7 movimientos.",
+        "Falta ver que se pueda sin salir de la fila: 1 → 6 → 11 → 8 → 5 → 10 → 7 → 12. Funciona.",
+        "Si cuentas cada avance con su retroceso como un solo paso, te salen 4: cada salto es un movimiento."
+      ],
+      "verificar": [
+        {
+          "fn": "salto",
+          "args": [
+            {
+              "tipo": "salto",
+              "modo": "avanza-retrocede",
+              "n": 12,
+              "p": 5,
+              "q": 3,
+              "s": 1,
+              "t": 12
+            }
+          ],
+          "espera": {
+            "n": 7
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Un tubo acostado, abierto por sus dos extremos, tiene cuatro bolas en este orden, de izquierda a derecha: 2, 1, 4, 3. Un movimiento es sacar una bola por un extremo y dejarla en la mesa, o meter una bola de la mesa por un extremo. ¿Cuántos movimientos, como mínimo, hacen falta para que queden 1, 2, 3, 4?",
+      "respuesta": "6 movimientos.",
+      "pasos": [
+        "Sacar por la izquierda la 2, la 1 y la 4: en el tubo queda (3) (3 movimientos).",
+        "Meter por la izquierda la 2 y luego la 1: (1, 2, 3) (5 movimientos).",
+        "Meter la 4 por la derecha: (1, 2, 3, 4) (6 movimientos).",
+        "Sacar y volver a meter son dos movimientos: tres bolas salen y entran, 6."
+      ],
+      "verificar": [
+        {
+          "fn": "tubo",
+          "args": [
+            {
+              "tipo": "tubo",
+              "bocas": 2,
+              "inicio": [
+                2,
+                1,
+                4,
+                3
+              ],
+              "meta": [
+                1,
+                2,
+                3,
+                4
+              ]
+            }
+          ],
+          "espera": {
+            "n": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un tubo de ensayo, cerrado por abajo, tiene cuatro bolas en este orden, de arriba hacia abajo: 1, 3, 2, 4. Solo se puede sacar la bola de arriba y dejarla en la mesa, o meter una bola de la mesa por arriba; cada cosa es un movimiento. ¿Cuántos movimientos, como mínimo, hacen falta para que queden 1, 2, 3, 4 de arriba hacia abajo?",
+      "respuesta": "6 movimientos.",
+      "pasos": [
+        "La 4 ya está al fondo: no se toca.",
+        "Sacar la 1, la 3 y la 2 (3 movimientos): en el tubo queda (4).",
+        "Meter la 3, luego la 2 y luego la 1 (3 movimientos): (1, 2, 3, 4).",
+        "Son 6. Solo la bola 1 parece estar en su lugar, pero hay que sacarla para llegar a las de abajo."
+      ],
+      "verificar": [
+        {
+          "fn": "tubo",
+          "args": [
+            {
+              "tipo": "tubo",
+              "bocas": 1,
+              "inicio": [
+                1,
+                3,
+                2,
+                4
+              ],
+              "meta": [
+                1,
+                2,
+                3,
+                4
+              ]
+            }
+          ],
+          "espera": {
+            "n": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una fila de 8 casillas tiene tres fichas blancas, tres negras y dos casillas vacías al final: B B B N N N · ·. En cada movimiento se toman dos fichas que estén juntas y se llevan, sin cambiar su orden, a dos casillas vacías que estén juntas. ¿Cuántos movimientos, como mínimo, hacen falta para que las fichas queden en casillas seguidas, alternadas (da igual con qué color empiecen)?",
+      "respuesta": "4 movimientos.",
+      "pasos": [
+        "Las casillas 1 y 2 (B B) pasan a la 7 y la 8: · · B N N N B B.",
+        "Las 3 y 4 (B N) pasan a la 1 y la 2: B N · · N N B B.",
+        "Las 6 y 7 (N B) pasan a la 3 y la 4: B N N B N · · B.",
+        "Las 1 y 2 (B N) pasan a la 6 y la 7: · · N B N B N B. Quedan alternadas en las casillas 3 a 8.",
+        "Con casillas fuera de la fila bastarían 3; dentro de las 8 casillas hacen falta 4."
+      ],
+      "verificar": [
+        {
+          "fn": "pares",
+          "args": [
+            {
+              "tipo": "pares",
+              "meta": "alternar",
+              "n": 3,
+              "L": 8,
+              "inicio": "BBBNNN__"
+            }
+          ],
+          "espera": {
+            "n": 4
+          }
+        }
+      ]
+    }
+  ]
+}

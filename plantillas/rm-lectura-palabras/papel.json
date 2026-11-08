@@ -1,0 +1,93 @@
+{
+  "titulo": "Lecturas en un arreglo de letras: problemas para lápiz y papel",
+  "indicacion": "Dibuja cada arreglo en tu hoja y resuélvelo sin la app, escribiendo sobre cada letra cuántas lecturas llegan hasta ella (como en el triángulo de Pascal). Unos 2 o 3 minutos por problema.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se escribe PUNO en un triángulo: P arriba; debajo U U; luego N N N; y abajo O O O O, con las filas centradas. Se empieza en la P y en cada paso se baja a la letra de abajo a la izquierda o a la de abajo a la derecha. ¿De cuántas maneras se lee PUNO?",
+      "respuesta": "8 maneras.",
+      "pasos": [
+        "Números de Pascal fila por fila: 1; 1 1; 1 2 1; 1 3 3 1.",
+        "Se lee PUNO terminando en cualquier O: 1 + 3 + 3 + 1 = 8.",
+        "Atajo: 4 letras, 3 pasos con 2 opciones: 2³ = 8. Ojo: 4 (una por cada O) y 16 (2⁴) son los errores típicos."
+      ],
+      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "triangulo", "n": 4, "palabra": "PUNO" }], "espera": { "total": 8 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se escribe CUSCO en un rombo: C; U U; S S S; C C; O (filas centradas). Se empieza en la C de arriba y en cada paso se baja a una vecina de abajo a la izquierda o a la derecha. ¿De cuántas maneras se lee CUSCO?",
+      "respuesta": "6 maneras.",
+      "pasos": [
+        "Números: 1; 1 1; 1 2 1; 3 3; 6.",
+        "En la mitad de abajo el rombo se cierra: cada C recibe de dos S (1 + 2 = 3) y la O de las dos C (3 + 3 = 6).",
+        "Atajo: de 4 pasos, 2 a la izquierda y 2 a la derecha en cualquier orden: C(4; 2) = 6."
+      ],
+      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "rombo", "a": 2, "b": 2, "palabra": "CUSCO" }], "espera": { "total": 6 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "En una cuadrícula de 3 filas y 4 columnas se escribe ALPACA de modo que, yendo de la esquina de arriba a la izquierda hacia la derecha o hacia abajo, se deletrea la palabra (fila 1: A L P A; fila 2: L P A C; fila 3: P A C A). Se empieza en la esquina de arriba a la izquierda y en cada paso se va a la derecha o abajo. ¿De cuántas maneras se lee ALPACA?",
+      "respuesta": "10 maneras.",
+      "pasos": [
+        "Primera fila y primera columna: todo 1.",
+        "Fila 2: 1, 2, 3, 4. Fila 3: 1, 3, 6, 10.",
+        "Atajo: 5 pasos, 2 de ellos hacia abajo: C(5; 2) = 10."
+      ],
+      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "cuadricula", "filas": 3, "columnas": 4, "palabra": "ALPACA" }], "espera": { "total": 10 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "RADAR está escrito en un rombo: R; A A; D D D; A A; R. Como se lee igual al revés, vale leer de arriba abajo o de abajo arriba, siempre pasando a una vecina de la fila siguiente. a) Si una lectura y la misma al revés (mismas casillas) cuentan como una sola, ¿cuántas hay? b) ¿Y si se cuentan aparte?",
+      "respuesta": "a) 6; b) 12.",
+      "pasos": [
+        "De arriba abajo: 1; 1 1; 1 2 1; 3 3; 6 lecturas.",
+        "Cada lectura de abajo arriba recorre las mismas casillas que una de arriba abajo, al revés.",
+        "a) Si cuentan como una sola, son 6 (12 sería contarlas dos veces). b) Si se cuentan aparte, 6 · 2 = 12."
+      ],
+      "verificar": [
+        { "fn": "lecturas", "args": [{ "forma": "rombo", "a": 2, "b": 2, "palabra": "RADAR", "sentidos": 2, "iguales": true }], "espera": { "total": 6 } },
+        { "fn": "lecturas", "args": [{ "forma": "rombo", "a": 2, "b": 2, "palabra": "RADAR", "sentidos": 2, "iguales": false }], "espera": { "total": 12 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "avanzado",
+      "enunciado": "TITICACA se escribe así, con filas centradas: T T T T; I I I; T T; I (una sola I en el centro); C C; A A A; C C; A. Se puede empezar en cualquier T de la primera fila y en cada paso se baja a una vecina de abajo a la izquierda o a la derecha. ¿De cuántas maneras se lee TITICACA?",
+      "respuesta": "48 maneras.",
+      "pasos": [
+        "Arriba (triángulo invertido): 1 1 1 1; 2 2 2; 4 4; 8 en la I del centro (2³ = 8).",
+        "Abajo (un rombo de dos pasos por lado): de la I salen 6 caminos hasta la última A (1; 1 1; 1 2 1; 3 3; 6).",
+        "Toda lectura pasa por la I del centro: 8 × 6 = 48. Sumar los tramos (8 + 6 = 14) es el error típico."
+      ],
+      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "bloques", "arriba": { "tipo": "invertido", "k": 3 }, "abajo": { "tipo": "rombo", "k": 2 }, "palabra": "TITICACA" }], "espera": { "total": 48 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "LLAMA está escrita en un triángulo: L; L L; A A A; M M M M; A A A A A. La A del medio de la tercera fila está tapada y no se puede pasar por ella. Se empieza arriba y se baja a una vecina de abajo a la izquierda o a la derecha. ¿De cuántas maneras se lee LLAMA?",
+      "respuesta": "8 maneras.",
+      "pasos": [
+        "Sin tapar habría 2⁴ = 16.",
+        "A la A tapada llegan 2 lecturas, y desde ella salen 4 caminos hasta abajo: se pierden 2 × 4 = 8.",
+        "16 − 8 = 8. Con Pascal y un 0 en la tapada: 1; 1 1; 1 0 1; 1 1 1 1; 1 2 2 2 1, que suman 8."
+      ],
+      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "triangulo", "n": 5, "palabra": "LLAMA", "tapada": [3, 2] }], "espera": { "total": 8, "llegan": 2, "salen": 4 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Una cuadrícula de 3 × 3 tiene ANDES escrito como en el p3 (fila 1: A N D; fila 2: N D E; fila 3: D E S), pero le falta la casilla de la esquina de abajo a la izquierda (la D de la fila 3). Se va de la A a la S por la derecha o hacia abajo. ¿De cuántas maneras se lee ANDES?",
+      "respuesta": "5 maneras.",
+      "pasos": [
+        "Fila 1: 1, 1, 1. Fila 2: 1, 2, 3.",
+        "Fila 3 (empieza en la segunda columna): la E recibe solo de arriba, 2; la S recibe 2 + 3 = 5.",
+        "Con la cuadrícula completa habrían sido C(4; 2) = 6: falta el camino que bajaba por el borde izquierdo."
+      ],
+      "verificar": [ { "fn": "lecturas", "args": [{ "forma": "cuadricula", "filas": 3, "columnas": 3, "palabra": "ANDES", "banda": [1, 2] }], "espera": { "total": 5 } } ]
+    }
+  ]
+}

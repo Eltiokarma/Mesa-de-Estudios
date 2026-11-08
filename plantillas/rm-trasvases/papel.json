@@ -1,0 +1,136 @@
+{
+  "titulo": "Recipientes sin marcas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 o 3 minutos por problema. Anota cada estado como una lista con lo que tiene cada recipiente y cuenta los pasos entre estados, no los estados.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un tanque grande está lleno con 9 L de aceite y hay dos jarras vacías de 5 L y 4 L, todos sin marcas. No hay caño ni desagüe: solo se puede pasar aceite de un recipiente a otro hasta que el primero se vacíe o el segundo se llene. ¿Cuántos trasvases, como mínimo, hacen falta para que en el tanque quede exactamente 1 L?",
+      "respuesta": "3 trasvases.",
+      "pasos": [
+        "Anota (tanque, jarra de 5, jarra de 4). Al inicio: (9; 0; 0).",
+        "Del tanque a la jarra de 4: (5; 0; 4).",
+        "De la jarra de 4 a la de 5: (5; 4; 0).",
+        "Del tanque a la jarra de 4: (1; 4; 4). Queda 1 L en el tanque.",
+        "Si empiezas llenando la jarra de 5, necesitas 5 trasvases: por eso hay que probar los dos comienzos."
+      ],
+      "verificar": [
+        { "fn": "minimo", "args": [{ "tipo": "tres-cerrados", "caps": [9, 5, 4], "meta": { "tipo": "en", "i": 0, "x": 1 } }], "espera": { "n": 3 } },
+        { "fn": "rutas", "args": [{ "tipo": "tres-cerrados", "caps": [9, 5, 4], "meta": { "tipo": "en", "i": 0, "x": 1 } }], "espera": { "0": 3, "1": 5 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Hay un caño, un desagüe y dos jarras vacías sin marcas, de 4 L y 9 L. Llenar una jarra con el caño, vaciarla en el desagüe o pasar agua de una a otra (hasta vaciar la primera o llenar la segunda) cuenta, cada una, como una operación. ¿Cuántas operaciones, como mínimo, hacen falta para tener exactamente 6 L en una jarra?",
+      "respuesta": "8 operaciones.",
+      "pasos": [
+        "Anota (jarra de 4, jarra de 9). Al inicio: (0; 0).",
+        "Llenar la de 9: (0; 9). Pasar a la de 4: (4; 5). Vaciar la de 4: (0; 5).",
+        "Pasar a la de 4: (4; 1). Vaciar la de 4: (0; 1). Pasar a la de 4: (1; 0).",
+        "Llenar la de 9: (1; 9). Pasar a la de 4 (le caben 3): (4; 6).",
+        "Son 8 operaciones. Empezando por llenar la de 4 se necesitan 10."
+      ],
+      "verificar": [
+        { "fn": "minimo", "args": [{ "tipo": "dos-jarras", "caps": [4, 9], "cuenta": "todo", "x": 6 }], "espera": { "n": 8, "ops": 8 } },
+        { "fn": "rutas", "args": [{ "tipo": "dos-jarras", "caps": [4, 9], "cuenta": "todo", "x": 6 }], "espera": { "0": 8, "1": 10 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Con un caño, un desagüe y dos jarras vacías sin marcas de 5 L y 7 L, se quiere tener exactamente 1 L en una jarra. Llenar con el caño y vaciar en el desagüe no se cuentan; solo cuenta como trasvase pasar agua de una jarra a la otra. ¿Cuántos trasvases, como mínimo, hacen falta?",
+      "respuesta": "4 trasvases.",
+      "pasos": [
+        "Anota (jarra de 5, jarra de 7). Llenar la de 5 (no cuenta) y pasarla a la de 7: (0; 5), 1 trasvase.",
+        "Llenar la de 5 y pasar a la de 7 hasta llenarla: (3; 7), 2 trasvases.",
+        "Vaciar la de 7 (no cuenta) y pasar los 3 L: (0; 3), 3 trasvases.",
+        "Llenar la de 5 y pasar a la de 7 (le caben 4): (1; 7), 4 trasvases.",
+        "Si contaras también llenar y vaciar, serían 8 acciones; aquí la pregunta pide solo los trasvases."
+      ],
+      "verificar": [
+        { "fn": "minimo", "args": [{ "tipo": "dos-jarras", "caps": [5, 7], "cuenta": "trasvases", "x": 1 }], "espera": { "n": 4, "ops": 8 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un balde lleno tiene 10 L de chicha y hay dos jarras vacías de 7 L y 3 L, sin marcas. Solo se puede trasvasar (hasta vaciar un recipiente o llenar el otro). ¿Cuántos trasvases, como mínimo, hacen falta para que algún recipiente tenga exactamente 5 L?",
+      "respuesta": "8 trasvases.",
+      "pasos": [
+        "Anota (balde, jarra de 7, jarra de 3). Al inicio: (10; 0; 0).",
+        "(3; 7; 0) → (3; 4; 3) → (6; 4; 0) → (6; 1; 3) → (6 + 3; 1; 0) = (9; 1; 0).",
+        "(9; 0; 1) → (2; 7; 1) → (2; 5; 3). Ya hay 5 L en la jarra de 7.",
+        "Son 8 flechas, es decir, 8 trasvases (la tabla tiene 9 filas contando el inicio).",
+        "Empezando por la jarra de 3 se necesitan 9."
+      ],
+      "verificar": [
+        { "fn": "minimo", "args": [{ "tipo": "tres-cerrados", "caps": [10, 7, 3], "meta": { "tipo": "alguno", "x": 5 } }], "espera": { "n": 8 } },
+        { "fn": "rutas", "args": [{ "tipo": "tres-cerrados", "caps": [10, 7, 3], "meta": { "tipo": "alguno", "x": 5 } }], "espera": { "0": 8, "1": 9 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "avanzado",
+      "enunciado": "Un bidón lleno tiene 12 L de agua y hay dos jarras vacías de 7 L y 5 L, todos sin marcas. Solo se puede trasvasar. ¿Cuántos trasvases, como mínimo, hacen falta para repartir el agua en dos partes iguales, 6 L en el bidón y 6 L en la jarra de 7 L?",
+      "respuesta": "11 trasvases.",
+      "pasos": [
+        "Anota (bidón, jarra de 7, jarra de 5). Al inicio: (12; 0; 0).",
+        "Repite el ciclo «bidón → 7, 7 → 5, 5 → bidón»: (5; 7; 0) → (5; 2; 5) → (10; 2; 0) → (10; 0; 2).",
+        "(3; 7; 2) → (3; 4; 5) → (8; 4; 0) → (8; 0; 4).",
+        "(1; 7; 4) → (1; 6; 5) → (6; 6; 0).",
+        "Son 11 trasvases. Empezando por la jarra de 5 se necesitan 12."
+      ],
+      "verificar": [
+        { "fn": "minimo", "args": [{ "tipo": "tres-cerrados", "caps": [12, 7, 5], "meta": { "tipo": "reparto", "estado": [6, 6, 0] } }], "espera": { "n": 11 } },
+        { "fn": "rutas", "args": [{ "tipo": "tres-cerrados", "caps": [12, 7, 5], "meta": { "tipo": "reparto", "estado": [6, 6, 0] } }], "espera": { "0": 11, "1": 12 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un porongo lleno tiene 12 L de leche y hay tres jarras vacías de 7 L, 4 L y 2 L, todos sin marcas. Solo se puede trasvasar. ¿Cuántos trasvases, como mínimo, hacen falta para que en el porongo queden exactamente 11 L?",
+      "respuesta": "5 trasvases.",
+      "pasos": [
+        "Anota (porongo, 7, 4, 2). Al inicio: (12; 0; 0; 0).",
+        "Porongo → 7: (5; 7; 0; 0). La 7 → la 4: (5; 3; 4; 0). La 4 → porongo: (9; 3; 0; 0).",
+        "La 7 → la 2: (9; 1; 0; 2). La 2 → porongo: (11; 1; 0; 0).",
+        "Son 5 trasvases. Ojo: con solo 4 ya hay 11 L repartidos (9 en el porongo y 2 en la jarra), pero eso no es lo que se pide."
+      ],
+      "verificar": [
+        { "fn": "minimo", "args": [{ "tipo": "cuatro", "caps": [12, 7, 4, 2], "meta": { "tipo": "en", "i": 0, "x": 11 } }], "espera": { "n": 5 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Un comerciante tiene siete barriles llenos de 9, 11, 14, 17, 20, 23 y 26 litros. Vende barriles enteros a dos clientes: el segundo se lleva el doble de litros que el primero. Le queda un solo barril. ¿De cuántos litros es?",
+      "respuesta": "9 L.",
+      "pasos": [
+        "En total hay 9 + 11 + 14 + 17 + 20 + 23 + 26 = 120 L.",
+        "Lo vendido son 1 + 2 = 3 partes iguales: 120 − (el que queda) debe ser múltiplo de 3.",
+        "Como 120 es múltiplo de 3, el que queda también: solo sirve el de 9 L.",
+        "Comprobación: el primero se lleva (120 − 9) ÷ 3 = 37 L (17 + 20) y el segundo 74 L (11 + 14 + 23 + 26)."
+      ],
+      "verificar": [
+        { "fn": "barriles", "args": [{ "tipo": "barriles", "barriles": [9, 11, 14, 17, 20, 23, 26], "k": 2 }], "espera": { "queda": 9, "candidatos": [9] } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En una feria hay seis barriles llenos de 12, 15, 18, 21, 26 y 30 litros. Se venden barriles enteros a dos clientes que se llevan la misma cantidad de litros, y queda un solo barril. ¿De cuántos litros es el barril que queda?",
+      "respuesta": "26 L.",
+      "pasos": [
+        "En total hay 122 L. Lo vendido se parte en dos iguales, así que 122 − (el que queda) debe ser par: el que queda es par (12, 18, 26 o 30).",
+        "Si queda 12: cada uno se lleva 55 L, pero con 15, 18, 21, 26 y 30 ningún grupo suma 55. Se descarta.",
+        "Si queda 18: cada uno 52 L; ningún grupo de 12, 15, 21, 26 y 30 suma 52. Se descarta. Si queda 30: cada uno 46 L; tampoco se arma. Se descarta.",
+        "Si queda 26: cada uno 48 L, con 12 + 15 + 21 = 48 y 18 + 30 = 48. Funciona.",
+        "La divisibilidad deja cuatro candidatos; solo armar los pedidos decide."
+      ],
+      "verificar": [
+        { "fn": "barriles", "args": [{ "tipo": "barriles", "barriles": [12, 15, 18, 21, 26, 30], "k": 1 }], "espera": { "queda": 26, "candidatos": [12, 18, 26, 30] } }
+      ]
+    }
+  ]
+}

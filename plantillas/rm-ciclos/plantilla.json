@@ -1,0 +1,15 @@
+{
+  "id": "rm-ciclos",
+  "titulo": "Lo que se repite",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.frecuencia-de-sucesos",
+    "razonamiento-matematico.razonamiento-inductivo"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

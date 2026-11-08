@@ -1,0 +1,392 @@
+{
+  "plantilla": "rm-lectura-palabras",
+  "tolerancia": 1e-9,
+  "nota": "Una lectura es un camino de casilla en casilla vecina que deletrea la palabra: en los arreglos de filas centradas se baja a la vecina de abajo a la izquierda o a la derecha; en la cuadrícula, a la derecha o abajo. En los palíndromos (sentidos = 2) también vale de abajo arriba; con iguales = true, una lectura y la misma al revés cuentan como una. tapada = [fila, posición en la fila], desde 1. Entrada-k y salida-k son del mismo tipo.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "bloques",
+        "forma": "bloques",
+        "arriba": {
+          "tipo": "invertido",
+          "k": 2
+        },
+        "abajo": {
+          "tipo": "rombo",
+          "k": 2
+        },
+        "palabra": "CEVICHE"
+      },
+      "esperado": {
+        "respuesta": 24,
+        "texto": "24"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "bloques",
+        "forma": "bloques",
+        "arriba": {
+          "tipo": "invertido",
+          "k": 2
+        },
+        "abajo": {
+          "tipo": "rombo",
+          "k": 2
+        },
+        "palabra": "JULIACA"
+      },
+      "esperado": {
+        "respuesta": 24,
+        "texto": "24"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "cuadricula",
+        "forma": "cuadricula",
+        "filas": 4,
+        "columnas": 4,
+        "palabra": "JULIACA",
+        "banda": [
+          1,
+          3
+        ]
+      },
+      "esperado": {
+        "respuesta": 14,
+        "texto": "14"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "cuadricula",
+        "forma": "cuadricula",
+        "filas": 4,
+        "columnas": 5,
+        "palabra": "AREQUIPA"
+      },
+      "esperado": {
+        "respuesta": 35,
+        "texto": "35"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "palindromo",
+        "forma": "rombo",
+        "a": 2,
+        "b": 2,
+        "palabra": "ORURO",
+        "sentidos": 2,
+        "iguales": true
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "palindromo",
+        "forma": "rombo",
+        "a": 3,
+        "b": 3,
+        "palabra": "1234321",
+        "sentidos": 2,
+        "iguales": true
+      },
+      "esperado": {
+        "respuesta": 20,
+        "texto": "20"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "palindromo",
+        "forma": "triangulo",
+        "n": 7,
+        "palabra": "7654567",
+        "sentidos": 2,
+        "iguales": false
+      },
+      "esperado": {
+        "respuesta": 128,
+        "texto": "128"
+      }
+    },
+    {
+      "semilla": 42,
+      "entrada": {
+        "tipo": "palindromo",
+        "forma": "triangulo",
+        "n": 7,
+        "palabra": "7654567",
+        "sentidos": 2,
+        "iguales": false
+      },
+      "esperado": {
+        "respuesta": 128,
+        "texto": "128"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "rombo",
+        "forma": "rombo",
+        "a": 3,
+        "b": 3,
+        "palabra": "AYAVIRI"
+      },
+      "esperado": {
+        "respuesta": 20,
+        "texto": "20"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "rombo",
+        "forma": "rombo",
+        "a": 3,
+        "b": 2,
+        "palabra": "CALLAO"
+      },
+      "esperado": {
+        "respuesta": 10,
+        "texto": "10"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "tapada",
+        "forma": "cuadricula",
+        "filas": 4,
+        "columnas": 5,
+        "palabra": "20262027",
+        "tapada": [
+          3,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 23,
+        "texto": "23"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "tapada",
+        "forma": "cuadricula",
+        "filas": 4,
+        "columnas": 3,
+        "palabra": "CANCHA",
+        "tapada": [
+          2,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "tapada",
+        "forma": "rombo",
+        "a": 3,
+        "b": 3,
+        "palabra": "MERCADO",
+        "tapada": [
+          5,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 8,
+        "texto": "8"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "tapada",
+        "forma": "rombo",
+        "a": 3,
+        "b": 3,
+        "palabra": "CEVICHE",
+        "tapada": [
+          3,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 8,
+        "texto": "8"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "tapada",
+        "forma": "triangulo",
+        "n": 6,
+        "palabra": "QUINUA",
+        "tapada": [
+          4,
+          4
+        ]
+      },
+      "esperado": {
+        "respuesta": 28,
+        "texto": "28"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "tapada",
+        "forma": "triangulo",
+        "n": 5,
+        "palabra": "COMBI",
+        "tapada": [
+          4,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 10,
+        "texto": "10"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "triangulo",
+        "forma": "triangulo",
+        "n": 5,
+        "palabra": "LLAMA"
+      },
+      "esperado": {
+        "respuesta": 16,
+        "texto": "16"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "triangulo",
+        "forma": "triangulo",
+        "n": 8,
+        "palabra": "20262027"
+      },
+      "esperado": {
+        "respuesta": 128,
+        "texto": "128"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "triangulo",
+        "forma": "triangulo",
+        "n": 6,
+        "palabra": "CALLAO"
+      },
+      "esperado": {
+        "respuesta": 32,
+        "texto": "32"
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "rombo",
+        "forma": "rombo",
+        "a": 3,
+        "b": 2,
+        "palabra": "CHOCLO"
+      },
+      "esperado": {
+        "respuesta": 10,
+        "texto": "10"
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "tapada",
+        "forma": "cuadricula",
+        "filas": 3,
+        "columnas": 3,
+        "palabra": "FERIA",
+        "tapada": [
+          2,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "triangulo",
+        "forma": "triangulo",
+        "n": 6,
+        "palabra": "314159"
+      },
+      "esperado": {
+        "respuesta": 32,
+        "texto": "32"
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "rombo",
+        "forma": "rombo",
+        "a": 4,
+        "b": 3,
+        "palabra": "20262027"
+      },
+      "esperado": {
+        "respuesta": 35,
+        "texto": "35"
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "tapada",
+        "forma": "rombo",
+        "a": 3,
+        "b": 2,
+        "palabra": "QUINUA",
+        "tapada": [
+          5,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    }
+  ]
+}

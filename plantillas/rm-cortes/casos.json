@@ -1,0 +1,421 @@
+{
+  "plantilla": "rm-cortes",
+  "tolerancia": 0,
+  "nota": "Cortes rectos que atraviesan todo lo apilado; entre corte y corte las piezas se mueven, giran y apilan sin doblarse. c: piezas que admite la sierra por corte (null, sin límite). En arreglo, celdas da el número de pieza de cada casilla (las casillas con el mismo número deben quedar juntas). En esquinas la respuesta es una clave: 'num:x' (perímetro x cm) o 'rad:p:q' (p + q√2 cm).",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "progresion",
+        "pide": "cortes",
+        "L": 80,
+        "a": 11,
+        "b": 29,
+        "c": null
+      },
+      "esperado": {
+        "respuesta": 3
+      }
+    },
+    {
+      "semilla": "entrada-2",
+      "entrada": {
+        "tipo": "plancha",
+        "m": 5,
+        "n": 8,
+        "c": null
+      },
+      "esperado": {
+        "respuesta": 6
+      }
+    },
+    {
+      "semilla": "entrada-3",
+      "entrada": {
+        "tipo": "plancha",
+        "m": 3,
+        "n": 8,
+        "c": 4
+      },
+      "esperado": {
+        "respuesta": 7
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "arreglo",
+        "filas": 3,
+        "cols": 6,
+        "celdas": [
+          [
+            0,
+            1,
+            2,
+            2,
+            3,
+            4
+          ],
+          [
+            5,
+            1,
+            6,
+            6,
+            7,
+            4
+          ],
+          [
+            8,
+            8,
+            9,
+            10,
+            10,
+            10
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 5
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "estacas",
+        "A": 30,
+        "B": 50,
+        "e": 5,
+        "pide": "cada"
+      },
+      "esperado": {
+        "respuesta": 62
+      }
+    },
+    {
+      "semilla": "salida-3",
+      "entrada": {
+        "tipo": "estacas",
+        "A": 60,
+        "B": 100,
+        "e": null,
+        "pide": "vertices"
+      },
+      "esperado": {
+        "respuesta": 24
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "arreglo",
+        "filas": 4,
+        "cols": 4,
+        "celdas": [
+          [
+            0,
+            0,
+            1,
+            2
+          ],
+          [
+            3,
+            3,
+            4,
+            5
+          ],
+          [
+            3,
+            3,
+            6,
+            6
+          ],
+          [
+            7,
+            7,
+            6,
+            6
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 4
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "esquinas",
+        "corte": "cuadrado",
+        "L": 16,
+        "W": 8,
+        "a": 1
+      },
+      "esperado": {
+        "respuesta": "num:48"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "arreglo",
+        "filas": 4,
+        "cols": 5,
+        "celdas": [
+          [
+            0,
+            1,
+            2,
+            2,
+            2
+          ],
+          [
+            3,
+            4,
+            5,
+            6,
+            6
+          ],
+          [
+            3,
+            7,
+            5,
+            6,
+            6
+          ],
+          [
+            3,
+            8,
+            8,
+            6,
+            6
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 6
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "plancha",
+        "m": 5,
+        "n": 6,
+        "c": null
+      },
+      "esperado": {
+        "respuesta": 6
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "plancha",
+        "m": 3,
+        "n": 5,
+        "c": 2
+      },
+      "esperado": {
+        "respuesta": 8
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "estacas",
+        "A": 45,
+        "B": 30,
+        "e": null,
+        "pide": "vertices"
+      },
+      "esperado": {
+        "respuesta": 12
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "estacas",
+        "A": 90,
+        "B": 54,
+        "e": null,
+        "pide": "vertices"
+      },
+      "esperado": {
+        "respuesta": 24
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "progresion",
+        "pide": "cortes",
+        "L": 210,
+        "a": 15,
+        "b": 45,
+        "c": null
+      },
+      "esperado": {
+        "respuesta": 6
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "progresion",
+        "pide": "mayor",
+        "L": 56,
+        "a": 11,
+        "b": null,
+        "c": 3
+      },
+      "esperado": {
+        "respuesta": 17
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "plancha",
+        "m": 3,
+        "n": 6,
+        "c": 4
+      },
+      "esperado": {
+        "respuesta": 6
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "estacas",
+        "A": 100,
+        "B": 40,
+        "e": 5,
+        "pide": "cada"
+      },
+      "esperado": {
+        "respuesta": 99
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "progresion",
+        "pide": "cortes",
+        "L": 252,
+        "a": 4,
+        "b": 52,
+        "c": null
+      },
+      "esperado": {
+        "respuesta": 8
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "plancha",
+        "m": 6,
+        "n": 6,
+        "c": null
+      },
+      "esperado": {
+        "respuesta": 6
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "progresion",
+        "pide": "mayor",
+        "L": 117,
+        "a": 12,
+        "b": null,
+        "c": 5
+      },
+      "esperado": {
+        "respuesta": 27
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "esquinas",
+        "corte": "triangulo",
+        "L": 29,
+        "W": 17,
+        "a": 3
+      },
+      "esperado": {
+        "respuesta": "rad:68:12"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "estacas",
+        "A": 75,
+        "B": 45,
+        "e": 5,
+        "pide": "cada"
+      },
+      "esperado": {
+        "respuesta": 100
+      }
+    },
+    {
+      "semilla": 37,
+      "entrada": {
+        "tipo": "esquinas",
+        "corte": "triangulo",
+        "L": 28,
+        "W": 28,
+        "a": 8
+      },
+      "esperado": {
+        "respuesta": "rad:48:32"
+      }
+    },
+    {
+      "semilla": 46,
+      "entrada": {
+        "tipo": "esquinas",
+        "corte": "cuadrado",
+        "L": 10,
+        "W": 10,
+        "a": 3
+      },
+      "esperado": {
+        "respuesta": "num:40"
+      }
+    },
+    {
+      "semilla": 94,
+      "entrada": {
+        "tipo": "esquinas",
+        "corte": "octogono",
+        "L": 8,
+        "W": 8,
+        "a": null
+      },
+      "esperado": {
+        "respuesta": "rad:-64:64"
+      }
+    },
+    {
+      "semilla": 107,
+      "entrada": {
+        "tipo": "esquinas",
+        "corte": "octogono",
+        "L": 27,
+        "W": 27,
+        "a": null
+      },
+      "esperado": {
+        "respuesta": "rad:-216:216"
+      }
+    }
+  ]
+}

@@ -16,7 +16,7 @@
       "universidades": {"unmsm": {"temas": [1, 2, 18]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["orden-informacion"],
+      "plantillas": ["orden-informacion", "rm-deduccion"],
       "investigacion": null
     },
     {
@@ -121,7 +121,7 @@
       "universidades": {"unmsm": {"temas": [9]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["orden-informacion"],
+      "plantillas": ["orden-informacion", "rm-deduccion"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {

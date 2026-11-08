@@ -1,0 +1,15 @@
+{
+  "id": "rm-parentesco",
+  "titulo": "Parentescos, órdenes y repartos con pistas",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.razonamiento-deductivo",
+    "razonamiento-matematico.ordenamiento-de-informacion"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
