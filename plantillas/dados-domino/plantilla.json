@@ -1,0 +1,16 @@
+{
+  "id": "dados-domino",
+  "titulo": "El dado en la mesa y las fichas del dominó",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.juegos-recreativos",
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

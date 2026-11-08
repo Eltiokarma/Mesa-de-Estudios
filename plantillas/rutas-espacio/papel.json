@@ -1,0 +1,134 @@
+{
+  "titulo": "La hormiga en el alambre: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 o 3 minutos por problema, como en el examen. Dibuja la estructura y numera los puntos.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un cubo está hecho con 12 alambres. Una hormiga va de una esquina de abajo a la esquina de arriba más alejada caminando por los alambres, y solo avanza: hacia la derecha, hacia el fondo o hacia arriba. ¿Cuántas rutas distintas puede seguir?",
+      "respuesta": "6 rutas.",
+      "pasos": [
+        "Cada ruta tiene 3 alambres: uno hacia la derecha, uno hacia el fondo y uno hacia arriba.",
+        "Numera los vértices: a los tres vecinos de la salida llega 1 ruta a cada uno.",
+        "A cada vértice del nivel siguiente llegan 1 + 1 = 2 rutas (de los dos vecinos que lo alcanzan).",
+        "A la llegada llegan 2 + 2 + 2 = 6 rutas. Es lo mismo que ordenar tres pasos distintos: 3 · 2 · 1 = 6."
+      ],
+      "verificar": [ { "fn": "dirigidas", "args": [{ "estructura": "cubo" }, { "desde": 0, "hasta": 7 }], "espera": { "total": 6, "tabla": [1, 1, 1, 2, 1, 2, 2, 6] } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "avanzado",
+      "enunciado": "Con 8 cubitos de alambre se arma un cubo de 2 × 2 × 2, pero se saca el cubito de arriba que está adelante a la derecha. Una hormiga va de la esquina de abajo, adelante a la izquierda, a la esquina de arriba, atrás a la derecha, y solo avanza (derecha, fondo o arriba). ¿Cuántas rutas tiene?",
+      "respuesta": "84 rutas.",
+      "pasos": [
+        "Si estuvieran los 8 cubitos, cada ruta tendría 2 pasos de cada dirección: 6! ÷ (2! · 2! · 2!) = 90 rutas.",
+        "Al sacar el cubito, desaparece solo su esquina de arriba adelante a la derecha y los 3 alambres que llegan a ella; las demás aristas son de otros cubitos.",
+        "Las rutas que pasaban por esa esquina: hasta ella hay 4! ÷ (2! · 2!) = 6 formas (2 a la derecha y 2 arriba) y desde ella, 1 (al fondo dos veces). Se pierden 6.",
+        "Quedan 90 − 6 = 84. También sale numerando los vértices por niveles: 1; 1, 1, 1; …; 30, 24, 30; 84."
+      ],
+      "verificar": [ { "fn": "dirigidas", "args": [{ "celdas": [[0,0,0],[1,0,0],[0,1,0],[1,1,0],[0,0,1],[1,1,1],[0,1,1]] }, { "desde": 0, "hasta": 25 }], "espera": { "total": 84, "errores.cajaCompleta": 90 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una pirámide de base cuadrada está hecha con hilos: los 4 lados de la base y las 4 aristas que suben a la punta. Una araña va de una esquina de la base a la punta sin pasar dos veces por el mismo punto. ¿Cuántas rutas distintas puede seguir?",
+      "respuesta": "7 rutas.",
+      "pasos": [
+        "Ordena por casos, según cuántas esquinas de la base recorre antes de subir.",
+        "Directo a la punta: 1 ruta.",
+        "Pasando por una esquina vecina y subiendo: 2 rutas (una por cada vecina).",
+        "Pasando por dos esquinas: 2 rutas (rodeando por un lado o por el otro). Pasando por las tres: 2 rutas.",
+        "Total: 1 + 2 + 2 + 2 = 7."
+      ],
+      "verificar": [ { "fn": "rutasSinRepetir", "args": [{ "estructura": "piramide" }, { "desde": 0, "hasta": 4 }], "espera": { "total": 7, "porPasos": { "1": 1, "2": 2, "3": 2, "4": 2 } } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un adorno de alambre tiene una circunferencia y un hexágono regular inscrito en ella: entre cada dos vértices vecinos hay un lado recto y un arco. Se va de un vértice al opuesto sin pasar dos veces por el mismo punto. ¿Cuántas rutas hay? Da la suma de las cifras del total.",
+      "respuesta": "16 rutas; la suma de cifras es 7.",
+      "pasos": [
+        "Por arriba hay 3 tramos seguidos y en cada uno se elige el lado recto o el arco: 2 · 2 · 2 = 8.",
+        "Por abajo, lo mismo: 8.",
+        "Arriba y abajo son alternativas (o una o la otra): se suman. 8 + 8 = 16.",
+        "Suma de cifras: 1 + 6 = 7."
+      ],
+      "verificar": [ { "fn": "rutasSinRepetir", "args": [{ "estructura": "hexagonoSolo" }, { "desde": 0, "hasta": 3 }], "espera": { "total": 16 } }, { "fn": "porTramos", "args": [{ "cadenas": [[2, 2, 2], [2, 2, 2]] }], "espera": { "total": 16 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "De Ayaviri a Pucará hay 3 caminos y de Pucará a Juliaca hay 4. Además, hay una carretera directa de Ayaviri a Juliaca que no pasa por Pucará. ¿De cuántas formas se puede ir de Ayaviri a Juliaca?",
+      "respuesta": "13 formas.",
+      "pasos": [
+        "Pasando por Pucará: por cada uno de los 3 primeros caminos hay 4 para seguir: 3 · 4 = 12.",
+        "Por la carretera directa: 1.",
+        "Son alternativas, así que se suman: 12 + 1 = 13."
+      ],
+      "verificar": [ { "fn": "porTramos", "args": [{ "cadenas": [[3, 4], [1]] }], "espera": { "total": 13, "errores.sumarTodo": 8, "errores.multiplicarTodo": 12 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una reja tiene 5 cuadraditos en una fila. Se va de la esquina de abajo a la izquierda a la de arriba a la derecha por las líneas de la reja, en cualquier dirección pero sin pasar dos veces por el mismo punto. ¿Cuántas rutas hay? (Prueba con 1, 2 y 3 cuadraditos.)",
+      "respuesta": "32 rutas.",
+      "pasos": [
+        "Con 1 cuadradito hay 2 rutas; con 2, 4; con 3, 8.",
+        "La ruta nunca puede volver hacia la izquierda: quedaría encerrada. Solo decide en qué palitos verticales cambia de fila.",
+        "Cada cuadradito nuevo duplica las rutas: 2, 4, 8, 16, 32. Con n cuadraditos hay 2ⁿ.",
+        "Con 5 cuadraditos: 2⁵ = 32."
+      ],
+      "verificar": [ { "fn": "franjaSucesion", "args": [{ "hasta": 5 }], "espera": { "valores": [2, 4, 8, 16, 32], "formula": "2^n" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un tubo mide 10 cm de alto y su contorno mide 8 cm. Una cinta sale de un punto del borde de abajo, da 3 vueltas al tubo y llega al punto del borde de arriba que está justo encima. ¿Cuánto mide como mínimo la cinta?",
+      "respuesta": "26 cm.",
+      "pasos": [
+        "Corta el tubo por la recta que une los dos puntos y desarróllalo. Para 3 vueltas pon 3 desarrollos uno al lado del otro.",
+        "Queda un rectángulo de 3 · 8 = 24 cm de ancho y 10 cm de alto; la cinta es su diagonal.",
+        "√(24² + 10²) = √676 = 26 cm."
+      ],
+      "verificar": [ { "fn": "helice", "args": [{ "contorno": 8, "altura": 10, "vueltas": 3 }], "espera": { "L": 26, "exacto": "26" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un vaso sin tapa tiene un contorno de 16 cm. Una hormiga está por fuera, 2 cm debajo del borde. Por dentro, del lado opuesto, hay una gota de miel 4 cm debajo del borde. ¿Cuánto mide el camino más corto de la hormiga a la miel?",
+      "respuesta": "10 cm.",
+      "pasos": [
+        "La hormiga tiene que cruzar el borde. Desarrolla la pared de afuera y, pegada a ella por el borde, la de adentro: la de adentro queda reflejada hacia arriba.",
+        "La miel queda 4 cm sobre el borde en el dibujo; la hormiga, 2 cm debajo: la diferencia de alturas es 2 + 4 = 6 cm.",
+        "Del lado opuesto hay media vuelta: 16 ÷ 2 = 8 cm de ancho.",
+        "√(8² + 6²) = 10 cm."
+      ],
+      "verificar": [ { "fn": "tarro", "args": [{ "contorno": 16, "afuera": 2, "adentro": 4 }], "espera": { "L": 10, "exacto": "10" } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Dos latas iguales, de 2 cm de radio y 6 cm de alto, están paradas y se tocan a lo largo de una recta. Una hormiga sale del borde de abajo de la primera lata, del lado opuesto al contacto, y llega al borde de arriba de la segunda, también del lado opuesto. ¿Cuánto mide su camino más corto?",
+      "respuesta": "2√(9 + 4π²) cm (unos 13,9 cm).",
+      "pasos": [
+        "La hormiga solo puede pasar de una lata a la otra por la recta de contacto.",
+        "Desarrolla media lata de cada una: queda un rectángulo de 2π + 2π = 4π cm de ancho y 6 cm de alto.",
+        "El camino es la diagonal: √(6² + (4π)²) = √(36 + 16π²) = 2√(9 + 4π²) ≈ 13,9 cm."
+      ],
+      "verificar": [ { "fn": "tangentes", "args": [{ "radio": 2, "altura": 6 }], "espera": { "exacto": "2√(9 + 4π²)" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Dos cubos de alambre de 2 cm de arista están pegados por una cara (forman un prisma de 4 × 2 × 2 con 20 alambres). Una hormiga va de una esquina a la esquina más alejada sin pasar dos veces por el mismo alambre. ¿Cuál es el recorrido más largo que puede hacer?",
+      "respuesta": "32 cm.",
+      "pasos": [
+        "Las 8 esquinas de afuera tienen 3 alambres (impares); las 4 del medio tienen 4.",
+        "Para recorrer lo que quede de un tirón, solo la salida y la llegada pueden ser impares: hay que dejar sin usar alambres que arreglen las otras 6 esquinas.",
+        "En cada extremo, dos esquinas impares vecinas se arreglan con un alambre de 2 cm. Las dos que sobran están en extremos distintos: las une el camino de 4 cm de largo. Se dejan 2 + 2 + 4 = 8 cm.",
+        "Total de alambre: 20 · 2 = 40 cm. Lo más largo: 40 − 8 = 32 cm."
+      ],
+      "verificar": [ { "fn": "maximoSinRepetir", "args": [{ "celdas": [[0, 0, 0], [1, 0, 0]], "arista": 2 }, { "desde": 0, "hasta": 11 }], "espera": { "maximo": 32, "total": 40, "quitarMinimo": 8 } } ]
+    }
+  ]
+}

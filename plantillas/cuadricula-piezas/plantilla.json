@@ -1,0 +1,16 @@
+{
+  "id": "cuadricula-piezas",
+  "titulo": "El tablero que se parte en piezas: cortes, perímetros, áreas y conteos",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.trazos-y-perimetros",
+    "razonamiento-matematico.transformaciones-de-figuras"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

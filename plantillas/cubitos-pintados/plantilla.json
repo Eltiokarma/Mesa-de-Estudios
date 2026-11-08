@@ -1,0 +1,15 @@
+{
+  "id": "cubitos-pintados",
+  "titulo": "El cubo que se pinta y se perfora: cubitos, túneles y barras",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

@@ -1,0 +1,150 @@
+{
+  "titulo": "Vistas y cubitos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja la vista superior como una cuadrícula y escribe en cada cuadradito cuántos cubitos tiene esa columna: con esa tabla de alturas se leen la frontal (la mayor altura de cada columna), la lateral (la mayor de cada fila) y el total. Cuenta también los cubitos que no se ven y las caras de atrás y de abajo.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un sólido de cubitos iguales ocupa, visto desde arriba, un rectángulo de 3 columnas y 2 filas, todo lleno. En la vista frontal, las columnas miden (de izquierda a derecha) 3, 1 y 2 cubitos de alto. En la vista lateral, vista desde la derecha, la fila del frente mide 2 y la del fondo 3. ¿Cuántos cubitos puede tener como máximo?",
+      "respuesta": "11 cubitos.",
+      "pasos": [
+        "En el sólido de volumen máximo cada columna es tan alta como lo permiten las dos vistas: su altura es la menor entre la altura de su columna en la frontal y la de su fila en la lateral.",
+        "Fila del frente (la lateral permite 2): mín(3, 2) = 2, mín(1, 2) = 1, mín(2, 2) = 2. Suman 5.",
+        "Fila del fondo (la lateral permite 3): mín(3, 3) = 3, mín(1, 3) = 1, mín(2, 3) = 2. Suman 6.",
+        "Máximo: 5 + 6 = 11. No es 3 · 2 · 3 = 18 (la caja entera) ni 6 (los cuadraditos de una vista)."
+      ],
+      "verificar": [
+        { "fn": "maximo", "args": [["#..", "#.#", "###"], ["###", "###"], [".#", "##", "##"]], "espera": { "cubitos": 11, "coincide": true, "errores.caja": 18 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Con las mismas tres vistas del problema anterior, ¿cuántos cubitos tiene como mínimo el sólido, si cada cubito está sobre la mesa o sobre otro cubito?",
+      "respuesta": "9 cubitos.",
+      "pasos": [
+        "Cada cuadradito de la vista superior necesita al menos un cubito: 6.",
+        "La frontal pide una columna de 3 (la de la izquierda) y la lateral una fila de 3 (la del fondo): una sola torre de 3 en la esquina del fondo a la izquierda cumple las dos. Suma 2 cubitos más.",
+        "La frontal pide una columna de 2 (la de la derecha) y la lateral una fila de 2 (la del frente): una torre de 2 en la esquina del frente a la derecha cumple las dos. Suma 1 más.",
+        "Mínimo: 6 + 2 + 1 = 9. La columna del medio queda con 1, como pide la frontal."
+      ],
+      "verificar": [
+        { "fn": "minimo", "args": [["#..", "#.#", "###"], ["###", "###"], [".#", "##", "##"]], "espera": { "volumen": 9, "errores.unoPorCuadro": 6 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "El sólido de volumen máximo del problema 1 se sumerge entero en pintura. ¿Cuántas caras (regiones planas, sin contar cuadraditos sueltos) quedan pintadas?",
+      "respuesta": "12 caras.",
+      "pasos": [
+        "Tabla de alturas: frente 2, 1, 2; fondo 3, 1, 2. Al sumergirlo se pintan todas las caras: también las de atrás, las de la izquierda y la de abajo.",
+        "Arriba hay 4 caras: el fondo del canal del medio (altura 1), dos caras a la altura 2 que el canal separa y la punta de la torre de 3.",
+        "Hacia el frente hay 2 y hacia la derecha 2. Hacia la izquierda hay 2 (la pared de la izquierda y la pared del canal que mira a la izquierda). Atrás hay 1 y abajo 1.",
+        "Total: 4 + 2 + 2 + 2 + 1 + 1 = 12. Si se cuentan solo las que se ven en las tres vistas (arriba, frente y derecha) salen 8: faltan las ocultas."
+      ],
+      "verificar": [
+        { "fn": "maximo", "args": [["#..", "#.#", "###"], ["###", "###"], [".#", "##", "##"]], "espera": { "caras": 12, "carasEnVistas": 8, "cuadraditos": 38 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "¿Cuántos vértices y cuántas aristas tiene ese mismo sólido? Comprueba con la relación de Euler.",
+      "respuesta": "20 vértices y 30 aristas.",
+      "pasos": [
+        "Cuenta los vértices piso por piso: los de la base, los de los escalones y los de las puntas. Un punto en medio de una arista recta no es vértice.",
+        "Salen 20 vértices. Las aristas se cuentan de vértice a vértice: 30.",
+        "Euler: V − A + C = 20 − 30 + 12 = 2. Si la cuenta no da 2, falta o sobra algo (en un sólido de una pieza y sin túneles)."
+      ],
+      "verificar": [
+        { "fn": "maximo", "args": [["#..", "#.#", "###"], ["###", "###"], [".#", "##", "##"]], "espera": { "vertices": 20, "aristas": 30, "euler": 2 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Un sólido tiene tres pisos. Abajo, una fila del fondo de 3 cubitos y, delante, una fila de 2 (a la izquierda). En el segundo piso hay un cubito sobre la esquina del fondo a la izquierda y otro sobre la esquina del frente a la izquierda. En el tercero, un cubito sobre el del frente. Dibuja la vista superior (la fila del fondo arriba).",
+      "respuesta": "Fila del fondo: 3 cuadraditos. Fila del frente: 2 cuadraditos, a la izquierda.",
+      "pasos": [
+        "La vista superior es la huella del sólido: un cuadradito por cada columna que tenga al menos un cubito, sin importar su altura.",
+        "Fila del fondo: las tres columnas tienen cubitos. Fila del frente: solo las dos de la izquierda.",
+        "No es la frontal: esa tendría 3 pisos de alto (3 cuadraditos abajo, 1 en el segundo y 1 en el tercero, a la izquierda)."
+      ],
+      "verificar": [
+        { "fn": "elegirVista", "args": [[["###", "##."], ["#..", "#.."], ["...", "#.."]], "superior"], "espera": { "correcta": ["###", "##."], "errores.frontal": ["#..", "#..", "###"] } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Un sólido tiene abajo un bloque de 4 × 2 cubitos y encima, en la fila del fondo, 3 cubitos seguidos desde la izquierda. ¿Cuántos cubitos como mínimo faltan para convertirlo en un cubo compacto?",
+      "respuesta": "53 cubitos.",
+      "pasos": [
+        "El sólido tiene 8 + 3 = 11 cubitos y su medida mayor es 4: el cubo más pequeño que lo contiene es de 4 × 4 × 4 = 64.",
+        "Faltan 64 − 11 = 53.",
+        "No basta llenar la caja de 4 × 2 × 2 = 16 (faltarían 5): esa caja no es un cubo."
+      ],
+      "verificar": [
+        { "fn": "completarCubo", "args": [[["####", "####"], ["###.", "...."]]], "espera": { "n": 4, "faltan": 53, "errores.caja": 5 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "En una caja transparente de 4 columnas, 3 filas y 2 pisos hay cubitos: abajo, la fila del fondo llena (4), la del medio con 3 y la del frente con 2, todas desde la izquierda; arriba, un cubito en la columna de la izquierda de la fila del fondo y otro en la de la fila del medio. ¿Cuántos cubitos faltan para llenar la caja?",
+      "respuesta": "13 cubitos.",
+      "pasos": [
+        "La caja tiene 4 · 3 · 2 = 24 lugares.",
+        "Hay 4 + 3 + 2 = 9 cubitos abajo y 2 arriba: 11 en total, aunque desde el frente solo se vean 5.",
+        "Faltan 24 − 11 = 13. Contando solo los que se ven de frente saldrían 24 − 5 = 19."
+      ],
+      "verificar": [
+        { "fn": "completarCaja", "args": [[["####", "###.", "##.."], ["#...", "#...", "...."]], [4, 3, 2]], "espera": { "faltan": 13, "errores.deFrente": 19 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una pieza tiene forma de T: 3 cubitos en fila y uno más debajo del cubito del medio, todo en un mismo piso. Con copias iguales de la pieza (se pueden girar) se quiere armar el cubo compacto más pequeño posible. ¿De qué arista es el cubo y cuántas copias se usan?",
+      "respuesta": "Un cubo de arista 4, con 16 copias.",
+      "pasos": [
+        "La pieza mide 3 de largo: el cubo tiene arista 3 o más.",
+        "El volumen del cubo tiene que ser múltiplo de 4: 3³ = 27 no lo es. 4³ = 64 sí: 64 / 4 = 16 copias.",
+        "Se puede armar: cuatro T llenan un cuadrado de 4 × 4 y cuatro capas así llenan el cubo. Se agregan 64 − 4 = 60 cubitos a la pieza."
+      ],
+      "verificar": [
+        { "fn": "copiasCubo", "args": [[["###", ".#."]]], "espera": { "n": 4, "copias": 16, "adicionales": 60, "errores.sinDividir": 23 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Sobre la mesa hay 3 cubitos en fila (término 1). El término 2 se forma tapando con un cubito cada cara al aire del término 1, menos las que tocan la mesa, y así sucesivamente. ¿Cuántos cubitos se agregan para formar el término 3?",
+      "respuesta": "23 cubitos.",
+      "pasos": [
+        "Término 2: 3 encima, 3 delante, 3 detrás y 1 en cada punta: se agregan 11 y quedan 14.",
+        "Término 3: hay que rodear al término 2 por arriba y por los lados, sin tocar la mesa. Un cubito en una esquina entrante tapa dos caras a la vez: se cuentan cubitos, no caras.",
+        "Por pisos: en el piso 1 se agregan 12, en el piso 2 se agregan 8 y en el piso 3, 3. Total: 23 (quedan 37). Con un cubito por cara saldrían 35, y no se agrega lo mismo que antes (11)."
+      ],
+      "verificar": [
+        { "fn": "cubrir", "args": [[["###"]], 3], "espera": { "agregados": 23, "volumen": 37, "errores.porCara": 35, "errores.mismoAumento": 11 } },
+        { "fn": "cubrir", "args": [[["###"]], 2], "espera": { "agregados": 11, "volumen": 14 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "La vista frontal de un sólido es un triángulo isósceles de base 2 y altura 2; la superior, un rectángulo de 2 de ancho y 3 de fondo; la lateral, un rectángulo de 3 de fondo y 2 de alto. ¿Cuántas caras, vértices y aristas tiene el sólido de volumen máximo?",
+      "respuesta": "5 caras, 6 vértices y 9 aristas (un prisma triangular, como un techo de dos aguas).",
+      "pasos": [
+        "El sólido es el prisma que sale de la frontal, empujado 3 unidades hacia el fondo; la superior y la lateral no le quitan nada.",
+        "Caras: los dos triángulos (frente y fondo), la base y las dos caras inclinadas del techo: 5. Vértices: 3 adelante y 3 atrás: 6.",
+        "Aristas: 3 + 3 de los triángulos y 3 a lo largo: 9. Euler: 6 − 9 + 5 = 2."
+      ],
+      "verificar": [
+        { "fn": "poliedroVistas", "args": [{ "frontal": [[0, 0], [2, 0], [1, 2]], "superior": [[0, 0], [2, 0], [2, 3], [0, 3]], "lateral": [[0, 0], [3, 0], [3, 2], [0, 2]] }], "espera": { "caras": 5, "vertices": 6, "aristas": 9, "euler": 2 } }
+      ]
+    }
+  ]
+}

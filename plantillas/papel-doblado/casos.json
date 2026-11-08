@@ -1,0 +1,126 @@
+{
+  "plantilla": "papel-doblado",
+  "unidades": "Longitudes en cuadritos de la cuadrícula (1 cm); la hoja es { ancho, alto } con esquinas (0; 0) y (ancho; alto), el eje y hacia arriba. Un doblez es { recta, mueve }: la parte del paquete del lado «mueve» de la recta cae sobre el otro lado. Los cortes atraviesan todas las capas del paquete y se dan en las coordenadas del paquete.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (perimetro.exacto, errores.soloDoblez.1.agujeros, copias.0); las listas se comparan completas; los textos se comparan exactos. Un texto exacto se escribe con la parte racional primero, luego las raíces de menor a mayor y al final π, con ' + ' entre términos y fracciones con barra ('15/2'). El perímetro es la suma de los bordes de todas las piezas al abrir, incluidos los bordes de los agujeros; un tijeretazo (corte 'linea') que separa cuenta sus dos lados. Las áreas de las piezas son exactas cuando sus bordes son rectas horizontales o verticales.",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción del paso 1: hoja de 8 × 8 doblada en cuatro (x = 4, la derecha sobre la izquierda; y = 4, arriba sobre abajo) con un agujero triangular (1; 1), (3; 1), (1; 2) → 4 capas, 4 agujeros triangulares; perímetro 44 + 4√5 (una capa: 1 agujero; deshaciendo un solo doblez: 2)",
+      "fn": "desplegar",
+      "args": [{ "ancho": 8, "alto": 8 }, [{ "recta": { "x": 4 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }], [{ "tipo": "poligono", "puntos": [{ "x": 1, "y": 1 }, { "x": 3, "y": 1 }, { "x": 1, "y": 2 }] }]],
+      "espera": { "capas": 4, "copias.0": 4, "agujeros": 4, "muescas": 0, "piezas": 1, "perimetro.exacto": "44 + 4√5",
+                  "errores.unaCapa.agujeros": 1, "errores.soloDoblez.0.agujeros": 2, "errores.soloDoblez.1.agujeros": 2 } },
+
+    { "nombre": "Predicción del paso 2: el mismo paquete con un corte semicircular de radio 1 sobre el doblez vertical (centro (4; 2)) → 2 círculos enteros, cada uno hecho de 2 capas; perímetro 32 + 4π (deshaciendo solo el doblez vertical: 1 círculo; cada capa una figura: 4; con los diámetros del doblez como borde: 40 + 4π)",
+      "fn": "desplegar",
+      "args": [{ "ancho": 8, "alto": 8 }, [{ "recta": { "x": 4 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }], [{ "tipo": "circulo", "centro": { "x": 4, "y": 2 }, "r": 1 }]],
+      "espera": { "copias.0": 4, "agujeros": 2, "agujerosDetalle.0.celdas": 2, "agujerosDetalle.1.celdas": 2, "perimetro.exacto": "32 + 4π",
+                  "errores.soloDoblez.0.agujeros": 1, "errores.enteroPorCapa.agujeros": 4, "errores.enteroPorCapa.perimetro.exacto": "32 + 8π",
+                  "errores.tramosDelDoblez.exacto": "40 + 4π" } },
+
+    { "nombre": "Predicción del paso 3: el mismo paquete con un corte semicircular de radio 1 en el borde exterior (centro (0; 2)) → 4 muescas en el borde, perímetro 24 + 4π (una capa: 30 + π; sin restar el borde que se va: 32 + 4π; un solo doblez: 28 + 2π)",
+      "fn": "desplegar",
+      "args": [{ "ancho": 8, "alto": 8 }, [{ "recta": { "x": 4 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }], [{ "tipo": "circulo", "centro": { "x": 0, "y": 2 }, "r": 1 }]],
+      "espera": { "agujeros": 0, "muescas": 4, "perimetro.exacto": "24 + 4π", "perimetro.valor": 36.56637061435917,
+                  "errores.unaCapa.perimetro.exacto": "30 + π", "errores.sinRestarBorde.exacto": "32 + 4π", "errores.soloDoblez.1.perimetro.exacto": "28 + 2π" } },
+
+    { "nombre": "Predicción del paso 4: el mismo paquete con un rombo de semidiagonales 2 (horizontal) y 1 (vertical) centrado en la esquina doblada (4; 4) → 1 rombo entero de lado √5; perímetro 32 + 4√5 (una capa: 32 + √5; un doblez: 32 + 2√5; con los tramos del doblez: 44 + 4√5)",
+      "fn": "desplegar",
+      "args": [{ "ancho": 8, "alto": 8 }, [{ "recta": { "x": 4 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }], [{ "tipo": "rombo", "centro": { "x": 4, "y": 4 }, "dx": 2, "dy": 1 }]],
+      "espera": { "copias.0": 4, "agujeros": 1, "agujerosDetalle.0.celdas": 4, "agujerosDetalle.0.area": 4, "perimetro.exacto": "32 + 4√5",
+                  "errores.unaCapa.perimetro.exacto": "32 + √5", "errores.soloDoblez.0.perimetro.exacto": "32 + 2√5",
+                  "errores.tramosDelDoblez.exacto": "44 + 4√5", "errores.enteroPorCapa.perimetro.exacto": "32 + 16√5" } },
+
+    { "nombre": "Predicción del paso 5: tira de 6 × 2 doblada en tres como acordeón (x = 2 la izquierda; x = 4 la derecha) y cortada de través por x = 3 → 4 piezas (dos cuadrados de 2 × 2 y dos tiras de 1 × 2); cada capa suelta: 6; una capa: 2; los tajos: 3",
+      "fn": "desplegar",
+      "args": [{ "ancho": 6, "alto": 2 }, [{ "recta": { "x": 2 }, "mueve": "izquierda" }, { "recta": { "x": 4 }, "mueve": "derecha" }], [{ "tipo": "linea", "A": { "x": 3, "y": -1 }, "B": { "x": 3, "y": 3 } }]],
+      "espera": { "capas": 3, "caja": [2, 4, 0, 2], "piezas": 4, "piezasCuadradas": 2, "areas": [4, 4, 2, 2], "perimetro.exacto": "28",
+                  "errores.sinUniones": 6, "errores.unaCapa.piezas": 2, "errores.cortesComoPiezas": 3 } },
+
+    { "nombre": "La misma tira en tres cortada a lo largo por y = 1 → 2 piezas de 6 × 1 (cada capa suelta: 6)",
+      "fn": "desplegar",
+      "args": [{ "ancho": 6, "alto": 2 }, [{ "recta": { "x": 2 }, "mueve": "izquierda" }, { "recta": { "x": 4 }, "mueve": "derecha" }], [{ "tipo": "linea", "A": { "x": 1, "y": 1 }, "B": { "x": 5, "y": 1 } }]],
+      "espera": { "piezas": 2, "areas": [6, 6], "piezasCuadradas": 0, "errores.sinUniones": 6, "errores.cortesComoPiezas": 3 } },
+
+    { "nombre": "Hoja de 8 × 4 doblada por la mitad (x = 4) y cortada por x = 2 → 3 piezas (la del medio, de 4 × 4, queda unida por el doblez); cada capa suelta: 4",
+      "fn": "desplegar",
+      "args": [{ "ancho": 8, "alto": 4 }, [{ "recta": { "x": 4 }, "mueve": "derecha" }], [{ "tipo": "linea", "A": { "x": 2, "y": -1 }, "B": { "x": 2, "y": 5 } }]],
+      "espera": { "capas": 2, "piezas": 3, "areas": [16, 8, 8], "piezasCuadradas": 1, "errores.sinUniones": 4, "errores.unaCapa.piezas": 2 } },
+
+    { "nombre": "Cuadrado de 6 × 6 doblado por la diagonal y = x (lo de arriba baja) y por x + y = 6 → triángulo de 4 capas; un corte de y = 2 a y = 4 quita la punta → 1 agujero cuadrado de 2 × 2, perímetro 32 (una capa: 26; un doblez: 28; con los tramos del doblez: 32 + 8√2)",
+      "fn": "desplegar",
+      "args": [{ "ancho": 6, "alto": 6 }, [{ "recta": { "m": 1, "n": 0 }, "mueve": "arriba" }, { "recta": { "m": -1, "n": 6 }, "mueve": "arriba" }], [{ "tipo": "poligono", "puntos": [{ "x": 1, "y": 2 }, { "x": 5, "y": 2 }, { "x": 5, "y": 4 }, { "x": 1, "y": 4 }] }]],
+      "espera": { "capas": 4, "caja": [0, 6, 0, 3], "agujeros": 1, "agujerosDetalle.0.area": 4, "perimetro.exacto": "32",
+                  "errores.unaCapa.perimetro.exacto": "26", "errores.soloDoblez.1.perimetro.exacto": "28", "errores.tramosDelDoblez.exacto": "32 + 8√2" } },
+
+    { "nombre": "Hoja de 8 × 8 en cuatro con un círculo de radio 1 en la esquina doblada (4; 4) → 1 agujero redondo entero, de 4 capas; perímetro 32 + 2π (cada capa una figura: 4 agujeros)",
+      "fn": "desplegar",
+      "args": [{ "ancho": 8, "alto": 8 }, [{ "recta": { "x": 4 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }], [{ "tipo": "circulo", "centro": { "x": 4, "y": 4 }, "r": 1 }]],
+      "espera": { "agujeros": 1, "agujerosDetalle.0.celdas": 4, "perimetro.exacto": "32 + 2π", "errores.enteroPorCapa.agujeros": 4, "errores.unaCapa.perimetro.exacto": "32 + π/2" } },
+
+    { "nombre": "Hoja de 10 × 10 en cuatro con un agujero redondo de radio 1 en (2; 3) → 4 agujeros, perímetro 40 + 8π",
+      "fn": "desplegar",
+      "args": [{ "ancho": 10, "alto": 10 }, [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }], [{ "tipo": "circulo", "centro": { "x": 2, "y": 3 }, "r": 1 }]],
+      "espera": { "agujeros": 4, "copias.0": 4, "perimetro.exacto": "40 + 8π", "errores.unaCapa.perimetro.exacto": "40 + 2π" } },
+
+    { "nombre": "Hoja de 10 × 10 en cuatro con un rombo de semidiagonales 1 y 3 en la esquina doblada (5; 5) → 1 rombo de lado √10, perímetro 40 + 4√10",
+      "fn": "desplegar",
+      "args": [{ "ancho": 10, "alto": 10 }, [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }], [{ "tipo": "rombo", "centro": { "x": 5, "y": 5 }, "dx": 1, "dy": 3 }]],
+      "espera": { "agujeros": 1, "agujerosDetalle.0.area": 6, "perimetro.exacto": "40 + 4√10", "errores.unaCapa.perimetro.exacto": "40 + √10" } },
+
+    { "nombre": "Capas en un punto del paquete: hoja de 8 × 8 en cuatro, en (1; 1) → 4",
+      "fn": "capasEn",
+      "args": [{ "ancho": 8, "alto": 8 }, [{ "recta": { "x": 4 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }], { "x": 1, "y": 1 }],
+      "espera": 4,
+      "tambien": [ { "args": [{ "ancho": 6, "alto": 2 }, [{ "recta": { "x": 2 }, "mueve": "izquierda" }, { "recta": { "x": 4 }, "mueve": "derecha" }], { "x": 3, "y": 1 }], "espera": 3 },
+                   { "args": [{ "ancho": 8, "alto": 6 }, [{ "recta": { "A": { "x": 6.25, "y": 0 }, "B": { "x": 1.75, "y": 6 } }, "mueve": "arriba" }], { "x": 3, "y": 1 }], "espera": 2 },
+                   { "args": [{ "ancho": 8, "alto": 6 }, [{ "recta": { "A": { "x": 6.25, "y": 0 }, "B": { "x": 1.75, "y": 6 } }, "mueve": "arriba" }], { "x": 0.5, "y": 5 }], "espera": 1 } ] },
+
+    { "nombre": "Doblar por las dos diagonales: cuadrado de 6 × 6 → 4 capas y paquete con caja [0, 6, 0, 3]",
+      "fn": "doblar",
+      "args": [{ "ancho": 6, "alto": 6 }, [{ "recta": { "m": 1, "n": 0 }, "mueve": "arriba" }, { "recta": { "m": -1, "n": 6 }, "mueve": "arriba" }]],
+      "espera": { "capas": 4, "caja": [0, 6, 0, 3] } },
+
+    { "nombre": "Predicción del paso 6: rectángulo de 8 × 6 doblado con C sobre A → AE = 6,25, EB = 1,75, doblez 7,5 (la diagonal mide 10 y su mitad 5; el lado corto 6; la mitad del largo 4)",
+      "fn": "esquinaSobreEsquina", "args": [8, 6],
+      "espera": { "x": 6.25, "resto": 1.75, "doblez": 7.5, "doblezExacto": "15/2", "diagonal": 10, "E.x": 6.25, "F.x": 1.75, "F.y": 6,
+                  "errores.diagonal": 10, "errores.mitadDiagonal": 5, "errores.ladoCorto": 6, "errores.xMitad": 4, "errores.xHipotenusa": 1.75 } },
+
+    { "nombre": "Rectángulo de 16 × 12 con C sobre A → AE = 12,5, doblez 15; y uno de 20 × 15 → doblez 18,75",
+      "fn": "esquinaSobreEsquina", "args": [16, 12],
+      "espera": { "x": 12.5, "resto": 3.5, "doblez": 15, "doblezExacto": "15", "diagonal": 20 },
+      "tambien": [ { "args": [20, 15], "espera": { "doblez": 18.75, "doblezExacto": "75/4", "x": 15.625 } },
+                   { "args": [5, 5], "espera": { "x": 5, "resto": 0, "doblez": 7.0710678118654755, "doblezExacto": "5√2" } } ] },
+
+    { "nombre": "Del doblez al lado: lado corto 6 y doblez 7,5 → lado largo 8 (tomando el doblez por la diagonal: 4,5); lado corto 15 y doblez 18,75 → 20",
+      "fn": "ladoDesdeDoblez", "args": [6, 7.5],
+      "espera": { "a": 8, "exacto": "8", "errores.comoDiagonal": 4.5 },
+      "tambien": [ { "args": [15, 18.75], "espera": { "a": 20, "errores.comoDiagonal": 11.25 } } ] },
+
+    { "nombre": "Predicción del paso 7: loseta de esquina (0; 0) reflejada respecto de su vértice O(2; 0) → el vértice del triángulo va de (0; 2) a (4; −2) (eje vertical por O: (4; 2); eje horizontal por O: (0; −2); corrida sin voltear: (2; 0)); es el giro de 180° y es el reflejo en la vertical seguido del de la horizontal",
+      "fn": "reflejoEnVertice", "args": [0, 0, { "x": 2, "y": 0 }],
+      "espera": { "original.triangulo.x": 0, "original.triangulo.y": 2, "correcta.triangulo.x": 4, "correcta.triangulo.y": -2,
+                  "errores.ejeVertical.triangulo.x": 4, "errores.ejeVertical.triangulo.y": 2, "errores.ejeHorizontal.triangulo.x": 0, "errores.ejeHorizontal.triangulo.y": -2,
+                  "errores.trasladada.triangulo.x": 2, "errores.trasladada.triangulo.y": 0, "igualGiro180": true, "igualDosEjes": true } },
+
+    { "nombre": "Imagen de un punto: (1; 3) respecto del punto (3; 1) → (5; −1); girado 90° alrededor de (3; 1) → (1; −1); reflejado en x = 3 → (5; 3)",
+      "fn": "imagen", "args": [{ "x": 1, "y": 3 }, { "tipo": "central", "O": { "x": 3, "y": 1 } }],
+      "espera": { "x": 5, "y": -1 },
+      "tambien": [ { "args": [{ "x": 1, "y": 3 }, { "tipo": "giro", "O": { "x": 3, "y": 1 }, "grados": 90 }], "espera": { "x": 1, "y": -1 } },
+                   { "args": [{ "x": 1, "y": 3 }, { "tipo": "eje", "recta": { "x": 3 } }], "espera": { "x": 5, "y": 3 } } ] },
+
+    { "nombre": "Predicción del paso 8: cartas 110101 → 000000 volteando dos juntas → 3 jugadas (una por una: 4; dividir entre 2: 2; cada par una vez: 5)",
+      "fn": "voltear", "args": ["110101", "000000", { "k": 2, "contiguas": true }],
+      "espera": { "posible": true, "minimo": 3, "diferentes": 4, "errores.unoPorUno": 4, "errores.dividir": 2, "errores.cadaGrupo": 5, "paridad.kPar": true, "paridad.iguales": true } },
+
+    { "nombre": "Predicción del paso 9: cinco cartas boca abajo → todas boca arriba volteando dos juntas → no se puede (la paridad de las boca arriba no cambia)",
+      "fn": "voltear", "args": ["00000", "11111", { "k": 2, "contiguas": true }],
+      "espera": { "posible": false, "minimo": null, "diferentes": 5, "errores.dividir": 3, "errores.cadaGrupo": 4, "paridad.iguales": false } },
+
+    { "nombre": "Vasos: cinco boca arriba → boca abajo volteando tres cualesquiera → 3 jugadas (dividir: 2); ocho → 4 (dividir: 3)",
+      "fn": "voltear", "args": ["11111", "00000", { "k": 3, "contiguas": false }],
+      "espera": { "posible": true, "minimo": 3, "errores.dividir": 2, "errores.unoPorUno": 5 },
+      "tambien": [ { "args": ["11111111", "00000000", { "k": 3, "contiguas": false }], "espera": { "minimo": 4, "errores.dividir": 3 } },
+                   { "args": ["1011000", "0000000", { "k": 2, "contiguas": true }], "espera": { "posible": false } } ] }
+  ]
+}

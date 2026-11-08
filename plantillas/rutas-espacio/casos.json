@@ -1,0 +1,1079 @@
+{
+ "plantilla": "rutas-espacio",
+ "unidades": "Estructuras de alambre con nodos [x, y, z] (z hacia arriba) numerados desde 0 y tramos [i, j] (o [i, j, longitud]); los cubitos miden 1 salvo que se diga. Longitudes de cilindros en centímetros. Una franja de n tiene n cuadraditos de lado 1 en una fila.",
+ "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.potencia, rutas.0.pasos); las listas, objetos y textos se comparan completos; la clave '' es el resultado entero. 'tambien' son llamadas extra del mismo caso (con 'fn' propia si la traen). Un argumento {\"estructura\": \"ele\"} es la estructura motor.estructuras.ele (ver la cabecera de motor.js).",
+ "verificacion": "",
+ "tolerancia": 1e-9,
+ "casos": [
+  {
+   "nombre": "Predicción del paso 1: tres cubitos de alambre en L (celdas [0,0,0], [1,0,0], [1,1,0]); la hormiga solo avanza de (0,0,0) a (2,2,1) → 25 rutas; la caja de 2 × 2 × 1 completa daría 30",
+   "fn": "dirigidas",
+   "args": [
+    {
+     "estructura": "ele"
+    },
+    {
+     "desde": 0,
+     "hasta": 15
+    }
+   ],
+   "espera": {
+    "total": 25,
+    "pasos": 5,
+    "tabla": [
+     1,
+     1,
+     1,
+     1,
+     2,
+     3,
+     2,
+     5,
+     1,
+     2,
+     3,
+     2,
+     6,
+     12,
+     8,
+     25
+    ],
+    "casos": {
+     "x": 12,
+     "y": 8,
+     "z": 5
+    },
+    "errores": {
+     "cajaCompleta": 30,
+     "potencia": 243,
+     "aMano": 13,
+     "sinDireccion": 1232
+    },
+    "coinciden": []
+   },
+   "tambien": [
+    {
+     "fn": "cubos",
+     "args": [
+      [
+       [
+        0,
+        0,
+        0
+       ],
+       [
+        1,
+        0,
+        0
+       ],
+       [
+        1,
+        1,
+        0
+       ]
+      ]
+     ],
+     "espera": {
+      "nodos": [
+       [
+        0,
+        0,
+        0
+       ],
+       [
+        1,
+        0,
+        0
+       ],
+       [
+        2,
+        0,
+        0
+       ],
+       [
+        0,
+        1,
+        0
+       ],
+       [
+        1,
+        1,
+        0
+       ],
+       [
+        2,
+        1,
+        0
+       ],
+       [
+        1,
+        2,
+        0
+       ],
+       [
+        2,
+        2,
+        0
+       ],
+       [
+        0,
+        0,
+        1
+       ],
+       [
+        1,
+        0,
+        1
+       ],
+       [
+        2,
+        0,
+        1
+       ],
+       [
+        0,
+        1,
+        1
+       ],
+       [
+        1,
+        1,
+        1
+       ],
+       [
+        2,
+        1,
+        1
+       ],
+       [
+        1,
+        2,
+        1
+       ],
+       [
+        2,
+        2,
+        1
+       ]
+      ],
+      "tramos": [
+       [
+        0,
+        1
+       ],
+       [
+        0,
+        3
+       ],
+       [
+        0,
+        8
+       ],
+       [
+        1,
+        2
+       ],
+       [
+        1,
+        4
+       ],
+       [
+        1,
+        9
+       ],
+       [
+        2,
+        5
+       ],
+       [
+        2,
+        10
+       ],
+       [
+        3,
+        4
+       ],
+       [
+        3,
+        11
+       ],
+       [
+        4,
+        5
+       ],
+       [
+        4,
+        6
+       ],
+       [
+        4,
+        12
+       ],
+       [
+        5,
+        7
+       ],
+       [
+        5,
+        13
+       ],
+       [
+        6,
+        7
+       ],
+       [
+        6,
+        14
+       ],
+       [
+        7,
+        15
+       ],
+       [
+        8,
+        9
+       ],
+       [
+        8,
+        11
+       ],
+       [
+        9,
+        10
+       ],
+       [
+        9,
+        12
+       ],
+       [
+        10,
+        13
+       ],
+       [
+        11,
+        12
+       ],
+       [
+        12,
+        13
+       ],
+       [
+        12,
+        14
+       ],
+       [
+        13,
+        15
+       ],
+       [
+        14,
+        15
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Un cubo de alambre, solo avanzando de una esquina a la opuesta: 6 rutas; la fórmula de la caja coincide",
+   "fn": "dirigidas",
+   "args": [
+    {
+     "estructura": "cubo"
+    },
+    {
+     "desde": 0,
+     "hasta": 7
+    }
+   ],
+   "espera": {
+    "total": 6,
+    "tabla": [
+     1,
+     1,
+     1,
+     2,
+     1,
+     2,
+     2,
+     6
+    ],
+    "niveles": [
+     [
+      0
+     ],
+     [
+      1,
+      2,
+      4
+     ],
+     [
+      3,
+      5,
+      6
+     ],
+     [
+      7
+     ]
+    ],
+    "llegan": [
+     [],
+     [
+      0
+     ],
+     [
+      0
+     ],
+     [
+      1,
+      2
+     ],
+     [
+      0
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      2,
+      4
+     ],
+     [
+      3,
+      5,
+      6
+     ]
+    ],
+    "casos": {
+     "x": 2,
+     "y": 2,
+     "z": 2
+    },
+    "errores": {
+     "potencia": 27,
+     "aMano": 0,
+     "sinDireccion": 18
+    },
+    "coinciden": [
+     "cajaCompleta"
+    ]
+   }
+  },
+  {
+   "nombre": "Dos cubitos en fila, de (0,0,0) a (2,1,1): 12 rutas, 6 empiezan a lo largo",
+   "fn": "dirigidas",
+   "args": [
+    {
+     "estructura": "dosCubos"
+    },
+    {
+     "desde": 0,
+     "hasta": 11
+    }
+   ],
+   "espera": {
+    "total": 12,
+    "tabla": [
+     1,
+     1,
+     1,
+     1,
+     2,
+     3,
+     1,
+     2,
+     3,
+     2,
+     6,
+     12
+    ],
+    "casos": {
+     "x": 6,
+     "y": 3,
+     "z": 3
+    },
+    "errores.potencia": 81,
+    "errores.sinDireccion": 156,
+    "coinciden": [
+     "cajaCompleta"
+    ]
+   }
+  },
+  {
+   "nombre": "Las rutas del cubo que solo avanza, en orden alfabético de pasos",
+   "fn": "dirigidas",
+   "args": [
+    {
+     "estructura": "cubo"
+    },
+    {
+     "desde": 0,
+     "hasta": 7
+    }
+   ],
+   "espera": {
+    "rutas.0.pasos": "xyz",
+    "rutas.0.nodos": [
+     0,
+     1,
+     3,
+     7
+    ],
+    "rutas.5.pasos": "zyx",
+    "rutas.5.nodos": [
+     0,
+     4,
+     6,
+     7
+    ],
+    "rutas.3.giros": 2
+   }
+  },
+  {
+   "nombre": "Predicción del paso 3: pirámide de hilos de base cuadrada, de una esquina de la base a la opuesta sin repetir punto → 9 rutas (3 de 2 tramos, 4 de 3 y 2 de 4)",
+   "fn": "rutasSinRepetir",
+   "args": [
+    {
+     "estructura": "piramide"
+    },
+    {
+     "desde": 0,
+     "hasta": 2,
+     "espejo": [
+      0,
+      3,
+      2,
+      1,
+      4
+     ]
+    }
+   ],
+   "espera": {
+    "total": 9,
+    "porPasos": {
+     "2": 3,
+     "3": 4,
+     "4": 2
+    },
+    "masCortas": 3,
+    "porInicio": {
+     "0": 3,
+     "3": 3,
+     "4": 3
+    },
+    "errores": {
+     "soloCortas": 3,
+     "unLado": 6,
+     "ejeDoble": 12
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "La misma pirámide sin repetir tramo (puntos sí): 19 rutas",
+   "fn": "rutasSinRepetir",
+   "args": [
+    {
+     "estructura": "piramide"
+    },
+    {
+     "desde": 0,
+     "hasta": 2,
+     "repetir": "tramo"
+    }
+   ],
+   "espera": {
+    "total": 19,
+    "porPasos": {
+     "2": 3,
+     "3": 4,
+     "4": 2,
+     "5": 4,
+     "6": 6
+    },
+    "masCortas": 3
+   }
+  },
+  {
+   "nombre": "Tronco de pirámide (abajo 4, arriba 2, altura 2), de una esquina de abajo a la opuesta de arriba sin repetir punto → 18 rutas, 6 de cada largo",
+   "fn": "rutasSinRepetir",
+   "args": [
+    {
+     "estructura": "tronco"
+    },
+    {
+     "desde": 0,
+     "hasta": 6,
+     "espejo": [
+      0,
+      3,
+      2,
+      1,
+      4,
+      7,
+      6,
+      5
+     ]
+    }
+   ],
+   "espera": {
+    "total": 18,
+    "porPasos": {
+     "3": 6,
+     "5": 6,
+     "7": 6
+    },
+    "porInicio": {
+     "0": 6,
+     "3": 6,
+     "8": 6
+    },
+    "errores": {
+     "soloCortas": 6,
+     "unLado": 12,
+     "ejeDoble": 24
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "Experimento 5: el mismo tronco sin repetir tramo → 30 rutas, 12 pasan dos veces por un punto",
+   "fn": "compararRepetir",
+   "args": [
+    {
+     "estructura": "tronco"
+    },
+    {
+     "desde": 0,
+     "hasta": 6
+    }
+   ],
+   "espera": {
+    "total": 30,
+    "punto": 18,
+    "nuevas": 12,
+    "porPasos": {
+     "3": 6,
+     "5": 6,
+     "7": 18
+    },
+    "errores": {
+     "igual": 18,
+     "doble": 36
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "Predicción del paso 5: circunferencia con el hexágono inscrito y un diámetro, de un vértice al opuesto sin repetir punto → 17 rutas",
+   "fn": "rutasSinRepetir",
+   "args": [
+    {
+     "estructura": "hexagono"
+    },
+    {
+     "desde": 0,
+     "hasta": 3,
+     "espejo": [
+      0,
+      5,
+      4,
+      3,
+      2,
+      1,
+      6
+     ]
+    }
+   ],
+   "espera": {
+    "total": 17,
+    "porPasos": {
+     "2": 1,
+     "3": 16
+    },
+    "porInicio": {
+     "0": 4,
+     "5": 4,
+     "6": 4,
+     "11": 4,
+     "12": 1
+    },
+    "errores": {
+     "soloCortas": 1,
+     "unLado": 16,
+     "ejeDoble": 18
+    },
+    "coinciden": []
+   },
+   "tambien": [
+    {
+     "fn": "longitud",
+     "args": [
+      {
+       "estructura": "hexagono"
+      },
+      6
+     ],
+     "espera": {
+      "": 1.0471975511965976
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Por tramos: 2 · 2 · 2 por arriba, 2 · 2 · 2 por abajo y 1 por el diámetro → 17",
+   "fn": "porTramos",
+   "args": [
+    {
+     "cadenas": [
+      [
+       2,
+       2,
+       2
+      ],
+      [
+       2,
+       2,
+       2
+      ],
+      [
+       1
+      ]
+     ]
+    }
+   ],
+   "espera": {
+    "total": 17,
+    "productos": [
+     8,
+     8,
+     1
+    ],
+    "errores": {
+     "sumarTodo": 13,
+     "multiplicarTodo": 64,
+     "unaCadena": 8
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "Franja de 1 × n, de la esquina de abajo a la izquierda a la de arriba a la derecha: 2, 4, 8, … = 2^n",
+   "fn": "franjaSucesion",
+   "args": [
+    {
+     "hasta": 6
+    }
+   ],
+   "espera": {
+    "valores": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "razon": 2,
+    "formula": "2^n"
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "hasta": 4,
+       "filas": 2
+      }
+     ],
+     "espera": {
+      "valores": [
+       4,
+       12,
+       38,
+       125
+      ],
+      "razon": null,
+      "formula": null
+     }
+    },
+    {
+     "args": [
+      {
+       "hasta": 5,
+       "llegada": "abajo-derecha"
+      }
+     ],
+     "espera": {
+      "valores": [
+       2,
+       4,
+       8,
+       16,
+       32
+      ],
+      "formula": "2^n"
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Predicción del paso 6: la franja de 6 cuadraditos → 64; la regla «de 2 en 2» daría 12",
+   "fn": "franjaPrediccion",
+   "args": [
+    {
+     "n": 6
+    }
+   ],
+   "espera": {
+    "total": 64,
+    "sucesion": [
+     2,
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "errores": {
+     "lineal": 12,
+     "porPuntos": 128,
+     "cuadrado": 36
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "Predicción del paso 7: tarro de radio 2 y altura 12, la hormiga da 2 vueltas → 4√(9 + 4π²)",
+   "fn": "helice",
+   "args": [
+    {
+     "radio": 2,
+     "altura": 12,
+     "vueltas": 2
+    }
+   ],
+   "espera": {
+    "L": 27.85057776186553,
+    "exacto": "4√(9 + 4π²)",
+    "ancho": 25.132741228718345,
+    "alto": 12,
+    "anchoTexto": "8π",
+    "errores": {
+     "unaVuelta": 17.375663164824235,
+     "porBorde": 37.132741228718345,
+     "cadaVuelta": 34.75132632964847
+    },
+    "coinciden": [],
+    "exactos": {
+     "unaVuelta": "4√(9 + π²)",
+     "porBorde": "12 + 8π",
+     "cadaVuelta": "8√(9 + π²)"
+    }
+   }
+  },
+  {
+   "nombre": "Cilindro de contorno 6 y altura 8: una vuelta → 10; tres vueltas → 2√97",
+   "fn": "helice",
+   "args": [
+    {
+     "contorno": 6,
+     "altura": 8,
+     "vueltas": 1
+    }
+   ],
+   "espera": {
+    "L": 10,
+    "exacto": "10",
+    "errores": {
+     "porBorde": 14
+    },
+    "coinciden": [
+     "unaVuelta",
+     "cadaVuelta"
+    ]
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "contorno": 6,
+       "altura": 8,
+       "vueltas": 3
+      }
+     ],
+     "espera": {
+      "L": 19.697715603592208,
+      "exacto": "2√97",
+      "ancho": 18
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Experimento 4: tarro sin tapa de contorno 24, hormiga afuera a 3 bajo el borde, miel adentro a 6 bajo el borde al otro lado → 15",
+   "fn": "tarro",
+   "args": [
+    {
+     "contorno": 24,
+     "afuera": 3,
+     "adentro": 6
+    }
+   ],
+   "espera": {
+    "L": 15,
+    "exacto": "15",
+    "ancho": 12,
+    "alto": 9,
+    "errores": {
+     "porBorde": 21,
+     "sinReflejar": 12.36931687685298,
+     "vueltaEntera": 25.63201123595259
+    },
+    "coinciden": [],
+    "exactos": {
+     "porBorde": "21",
+     "sinReflejar": "3√17",
+     "vueltaEntera": "3√73"
+    }
+   }
+  },
+  {
+   "nombre": "Dos cilindros tangentes de radio 3 y altura 8, de lado opuesto a lado opuesto → 2√(16 + 9π²)",
+   "fn": "tangentes",
+   "args": [
+    {
+     "radio": 3,
+     "altura": 8
+    }
+   ],
+   "espera": {
+    "L": 20.4769567670398,
+    "exacto": "2√(16 + 9π²)",
+    "ancho": 18.84955592153876,
+    "errores": {
+     "porBorde": 26.84955592153876,
+     "unCilindro": 12.362299123132567
+    },
+    "coinciden": [],
+    "exactos": {
+     "porBorde": "8 + 6π",
+     "unCilindro": "√(64 + 9π²)"
+    }
+   }
+  },
+  {
+   "nombre": "Tarro con tapa de radio 3 y altura 10: del borde de abajo al centro de la tapa → 13",
+   "fn": "tapa",
+   "args": [
+    {
+     "radio": 3,
+     "altura": 10
+    }
+   ],
+   "espera": {
+    "L": 13,
+    "exacto": "13",
+    "errores": {
+     "diagonal": 10.44030650891055
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "Predicción del paso 9: cubo de alambre de arista 3, recorrido más largo sin repetir tramo entre esquinas opuestas → 27 (se quedan sin usar 3 aristas)",
+   "fn": "maximoSinRepetir",
+   "args": [
+    {
+     "estructura": "cuboArista3"
+    },
+    {
+     "desde": 0,
+     "hasta": 7
+    }
+   ],
+   "espera": {
+    "total": 36,
+    "maximo": 27,
+    "quitado": 9,
+    "impares": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "quitarMinimo": 9,
+    "errores": {
+     "todas": 36,
+     "unaPorImpar": 18,
+     "sumar": 45
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "Dos cubitos en fila de arista 1, de (0,0,0) a (2,1,1): el más largo mide 16 de 20",
+   "fn": "maximoSinRepetir",
+   "args": [
+    {
+     "estructura": "dosCubos"
+    },
+    {
+     "desde": 0,
+     "hasta": 11
+    }
+   ],
+   "espera": {
+    "total": 20,
+    "maximo": 16,
+    "quitado": 4,
+    "quitarMinimo": 4,
+    "errores": {
+     "todas": 20,
+     "unaPorImpar": 14,
+     "sumar": 24
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "Quitar tramos del cubo: sin las aristas 4, 5 y 9 (tres que no se tocan) queda un recorrido de esquina a esquina; sin 0, 1 y 2, no",
+   "fn": "revisarQuitar",
+   "args": [
+    {
+     "estructura": "cubo"
+    },
+    {
+     "desde": 0,
+     "hasta": 7,
+     "quitados": [
+      4,
+      5,
+      9
+     ]
+    }
+   ],
+   "espera": {
+    "impares": [
+     0,
+     7
+    ],
+    "conexa": true,
+    "sePuede": true,
+    "longitud": 9,
+    "quedan": 9
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "estructura": "cubo"
+      },
+      {
+       "desde": 0,
+       "hasta": 7,
+       "quitados": [
+        0,
+        1,
+        2
+       ]
+      }
+     ],
+     "espera": {
+      "impares": [
+       3,
+       5,
+       6,
+       7
+      ],
+      "conexa": false,
+      "sePuede": false,
+      "longitud": 9
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Experimento 1: en el cubo, sin la regla de solo avanzar → 18 rutas sin repetir punto",
+   "fn": "soltarDireccion",
+   "args": [
+    {
+     "estructura": "cubo"
+    },
+    {
+     "desde": 0,
+     "hasta": 7
+    }
+   ],
+   "espera": {
+    "total": 18,
+    "dirigidas": 6,
+    "errores": {
+     "igual": 6,
+     "doble": 12,
+     "potencia": 27
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "Experimento 2: un cubito y dos en fila que se tocan solo en un vértice; solo avanzando → 6 · 12 = 72",
+   "fn": "pasoObligado",
+   "args": [
+    {
+     "estructura": "unidosVertice"
+    },
+    {
+     "desde": 0,
+     "paso": 7,
+     "hasta": 18,
+     "dirigido": true
+    }
+   ],
+   "espera": {
+    "antes": 6,
+    "despues": 12,
+    "producto": 72,
+    "total": 72,
+    "todasPasan": true,
+    "errores": {
+     "suma": 18,
+     "soloMayor": 12,
+     "comoCaja": 210
+    },
+    "coinciden": []
+   }
+  },
+  {
+   "nombre": "Experimento 3: rutas que pasan por los 8 vértices del cubo, de una esquina a la opuesta → 6",
+   "fn": "hamiltonianos",
+   "args": [
+    {
+     "estructura": "cubo"
+    },
+    {
+     "desde": 0,
+     "hasta": 7
+    }
+   ],
+   "espera": {
+    "total": 6,
+    "porInicio": {
+     "0": 2,
+     "1": 2,
+     "2": 2
+    },
+    "errores": {
+     "todasSimples": 18,
+     "unaPorSalida": 3,
+     "ordenarTodos": 720
+    },
+    "coinciden": []
+   }
+  }
+ ]
+}

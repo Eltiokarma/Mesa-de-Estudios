@@ -1,0 +1,495 @@
+{
+  "titulo": "Dados y dominó: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. Todos los dados son normales: las caras opuestas suman 7.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Tres dados están en fila sobre la mesa y un cuarto dado está encima del de en medio. Se retira el dado de encima y se ve que la cara de arriba del dado de en medio tiene 4 puntos. ¿Cuál es la mayor suma posible de los puntos de las tres caras que tocan la mesa?",
+      "respuesta": "15 puntos.",
+      "pasos": [
+        "La cara que toca la mesa es la opuesta de la de arriba: suman 7.",
+        "En el dado de en medio, arriba hay 4, así que abajo hay 7 − 4 = 3.",
+        "En los otros dos no se sabe nada: para que abajo haya lo más posible, abajo va el 6 (y arriba el 1).",
+        "La mayor suma es 6 + 3 + 6 = 15."
+      ],
+      "verificar": [
+        {
+          "fn": "optimizarDados",
+          "args": [
+            {
+              "dados": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  0,
+                  0
+                ]
+              ],
+              "fijas": [
+                [
+                  1,
+                  "arriba",
+                  4
+                ]
+              ],
+              "objetivo": "mesa",
+              "extremo": "max"
+            }
+          ],
+          "espera": {
+            "respuesta": 15
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Tres dados están en fila sobre una mesa, pegados entre sí y contra la pared del fondo. Desde donde miras ves la cara de arriba, la del frente y la de cada extremo libre. Las caras del frente tienen, de izquierda a derecha, 2, 5 y 3 puntos, pero las de arriba no se distinguen. ¿Cuál es la mayor suma posible de los puntos que no se ven?",
+      "respuesta": "45 puntos.",
+      "pasos": [
+        "No se ven: la cara de abajo de cada dado, la que toca la pared (la opuesta de la del frente) y las caras pegadas entre dados.",
+        "Dado de la izquierda: la pared tiene 7 − 2 = 5. Quedan abajo y la cara pegada a su vecino, que son vecinas entre sí: lo más es 6 + 4 (de los pares 1–6 y 3–4). Suma 5 + 6 + 4 = 15.",
+        "Dado del medio: la pared tiene 7 − 5 = 2; sus dos caras pegadas son opuestas y suman 7; abajo, lo más es 6. Suma 2 + 7 + 6 = 15.",
+        "Dado de la derecha: la pared tiene 7 − 3 = 4; abajo 6 y la cara pegada 5 (de los pares 1–6 y 2–5). Suma 4 + 6 + 5 = 15.",
+        "En total, 15 + 15 + 15 = 45."
+      ],
+      "verificar": [
+        {
+          "fn": "optimizarDados",
+          "args": [
+            {
+              "dados": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  0,
+                  0
+                ]
+              ],
+              "pared": [
+                "atras"
+              ],
+              "vista": [
+                "arriba",
+                "frente",
+                "derecha",
+                "izquierda"
+              ],
+              "fijas": [
+                [
+                  0,
+                  "frente",
+                  2
+                ],
+                [
+                  1,
+                  "frente",
+                  5
+                ],
+                [
+                  2,
+                  "frente",
+                  3
+                ]
+              ],
+              "objetivo": "noVisibles"
+            }
+          ],
+          "espera": {
+            "respuesta": 45,
+            "total": 63
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un dado está en una casilla con 4 puntos arriba, 2 puntos en la cara que te mira y 1 punto en la cara de la derecha. Rueda tres casillas a la derecha, después dos casillas hacia el fondo y por último una casilla a la izquierda. ¿Cuánto suman los puntos de la cara de arriba después del tercer vuelco y al final del recorrido?",
+      "respuesta": "4 puntos (1 después del tercer vuelco y 3 al final).",
+      "pasos": [
+        "Al inicio: arriba 4, frente 2 y derecha 1; con la regla del 7, abajo 3, atrás 5 e izquierda 6.",
+        "Al volcar a la derecha, la cara de arriba pasa a la derecha y sube la de la izquierda. Vuelco 1: arriba 6 (izquierda 3, derecha 4). Vuelco 2: arriba 3 (izquierda 1, derecha 6). Vuelco 3: arriba 1 (izquierda 4, derecha 3).",
+        "Después del tercer vuelco hay 1 arriba. El frente (2) y el fondo (5) no cambiaron.",
+        "Al volcar hacia el fondo, sube la cara del frente: vuelco 4, arriba 2 (y al frente queda la que estaba abajo, 6); vuelco 5, arriba 6 (al frente, 5). La derecha sigue siendo 3.",
+        "Al volcar a la izquierda sube la cara de la derecha: arriba 3. Suma: 1 + 3 = 4."
+      ],
+      "verificar": [
+        {
+          "fn": "rodarCamino",
+          "args": [
+            {
+              "inicio": {
+                "arriba": 4,
+                "frente": 2
+              },
+              "camino": "DDDAAI",
+              "pregunta": "sumaArriba",
+              "en": [
+                3,
+                6
+              ]
+            }
+          ],
+          "espera": {
+            "respuesta": 4,
+            "arribas": [
+              4,
+              6,
+              3,
+              1,
+              2,
+              6,
+              3
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "Un dado con 1 punto arriba, 3 puntos en la cara que te mira y 5 en la de la derecha da vueltas a un circuito de seis casillas que forman un rectángulo de 3 × 2: rueda dos casillas a la derecha, una hacia el fondo, dos a la izquierda y una hacia el frente, y así vuelve a su casilla. ¿Qué cara queda arriba después de 100 vueltas?",
+      "respuesta": "La de 1 punto.",
+      "pasos": [
+        "Se sigue el dado durante una vuelta. Con la regla del 7, al inicio abajo 6, atrás 4 e izquierda 2. Tras D, D, A, I, I, F queda arriba 6, frente 4 y derecha 5: no vuelve como empezó.",
+        "En la segunda vuelta, desde esa posición, el dado sí queda como al inicio, con el 1 arriba y el 3 al frente: el ciclo dura 2 vueltas.",
+        "Tras un número par de vueltas el dado está como al inicio. 100 es par.",
+        "Arriba queda el 1."
+      ],
+      "verificar": [
+        {
+          "fn": "circuito",
+          "args": [
+            {
+              "inicio": {
+                "arriba": 1,
+                "frente": 3
+              },
+              "vuelta": "DDAIIF",
+              "vueltas": 100
+            }
+          ],
+          "espera": {
+            "respuesta": 1,
+            "periodo": 2,
+            "arribas": [
+              1,
+              6,
+              1
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un cubo tiene en sus caras 1, 2, 3, 4, 5 y 6 puntos, pero no es un dado normal. Se fotografía en tres posiciones, viendo la cara de arriba, la del frente y la de la derecha: (arriba 1, frente 2, derecha 4), (arriba 2, frente 3, derecha 4) y (arriba 5, frente 1, derecha 6). ¿Qué cara está opuesta a la de 4 puntos? En la tercera foto, ¿cuántos puntos tiene la cara que toca la mesa?",
+      "respuesta": "La de 5 puntos; en la tercera foto toca la mesa la de 4.",
+      "pasos": [
+        "El 4 sale junto al 1, al 2 y al 3: su opuesta es el 5 o el 6. El 1 sale junto al 2, al 4, al 5 y al 6: su opuesta es el 3.",
+        "En una foto, las tres caras (arriba, frente, derecha) se pueden correr en ronda sin cambiar el cubo (es girarlo sobre esa esquina): la tercera foto, (5, 1, 6), es lo mismo que (1, 6, 5), con el 1 arriba, el 6 al frente y el 5 a la derecha.",
+        "Con el 1 arriba y girando el cubo, los costados pasan por el frente en este orden (primera foto): 2, 4, la opuesta del 2 y la opuesta del 4. La tercera foto dice que, con el 1 arriba, después del 6 viene el 5. Entonces el 6 es la opuesta del 2 y el 5 es la opuesta del 4.",
+        "En la tercera foto se ven 5, 1 y 6. Abajo va la opuesta del 5, que es el 4. (No sirve restar de 7: el cubo no es un dado normal.)"
+      ],
+      "verificar": [
+        {
+          "fn": "deducirCubo",
+          "args": [
+            {
+              "vistas": [
+                [
+                  1,
+                  2,
+                  4
+                ],
+                [
+                  2,
+                  3,
+                  4
+                ],
+                [
+                  5,
+                  1,
+                  6
+                ]
+              ],
+              "cara": 4
+            }
+          ],
+          "espera": {
+            "respuesta": 5,
+            "cubos": 1
+          }
+        },
+        {
+          "fn": "deducirCubo",
+          "args": [
+            {
+              "vistas": [
+                [
+                  1,
+                  2,
+                  4
+                ],
+                [
+                  2,
+                  3,
+                  4
+                ],
+                [
+                  5,
+                  1,
+                  6
+                ]
+              ],
+              "vista": 2
+            }
+          ],
+          "espera": {
+            "ocultas.abajo": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "De un juego de dominó del 0 al 6 se eligen tres fichas distintas, ninguna doble, y se ponen de pie. Las mitades de arriba suman el doble de puntos que las de abajo. ¿Cuál es la menor cantidad total de puntos que pueden tener las tres fichas?",
+      "respuesta": "6 puntos.",
+      "pasos": [
+        "Si abajo suman b, arriba suman 2b y el total es 3b: hay que hacer b lo más chico posible.",
+        "b = 0: las tres de abajo serían blancas y arriba también sumarían 0; sería la ficha 0|0 tres veces, que además es doble. No sirve.",
+        "b = 1: abajo 0, 0 y 1; arriba deben sumar 2. Las fichas con abajo 0 serían x|0 y y|0 con x y y distintos y no 0: suman al menos 1 + 2 = 3. No sirve.",
+        "b = 2: por ejemplo 1|0, 2|0 y 1|2 (arriba 1 + 2 + 1 = 4, abajo 0 + 0 + 2 = 2). Son distintas y ninguna es doble.",
+        "El menor total es 3 · 2 = 6."
+      ],
+      "verificar": [
+        {
+          "fn": "elegirFichas",
+          "args": [
+            {
+              "k": 3,
+              "razon": [
+                2,
+                1
+              ],
+              "sinDobles": true
+            }
+          ],
+          "espera": {
+            "respuesta": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una cadena de dominó tiene cinco fichas en fila; las mitades que se tocan tienen los mismos puntos. Se ven la primera, 3|1, y la última, 6|4; las tres del medio están boca abajo. Las cinco fichas suman 35 puntos. ¿Cuál es la menor cantidad de puntos que puede tener la cuarta ficha?",
+      "respuesta": "8 puntos.",
+      "pasos": [
+        "Las fichas son 3|1, 1|x, x|y, y|6 y 6|4. Suman 3 + 1 + 1 + x + x + y + y + 6 + 6 + 4 = 21 + 2x + 2y = 35, así que x + y = 7.",
+        "La cuarta ficha es y|6 y vale y + 6: hay que hacer y lo más chico posible.",
+        "y = 0 o y = 1 piden x = 7 o x = 6: con x = 6 la segunda ficha sería 1|6 y la cuarta 1|6: se repite. y = 0 pide x = 7, que no existe.",
+        "y = 2 da x = 5: fichas 3|1, 1|5, 5|2, 2|6 y 6|4, todas distintas. La cuarta vale 2 + 6 = 8."
+      ],
+      "verificar": [
+        {
+          "fn": "cadenaDomino",
+          "args": [
+            {
+              "cadena": [
+                [
+                  3,
+                  1
+                ],
+                null,
+                null,
+                null,
+                [
+                  6,
+                  4
+                ]
+              ],
+              "total": 35,
+              "ficha": 3
+            }
+          ],
+          "espera": {
+            "respuesta": 8,
+            "cadenas": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Se lanza un dado tres veces y salen tres puntajes distintos cuya suma es un cubo perfecto. ¿Cuál es el mayor puntaje que pudo salir? Si en cambio se lanza cuatro veces (con o sin repetir) y la suma es un cuadrado perfecto o un cubo perfecto, ¿cuántos valores distintos puede tener la suma?",
+      "respuesta": "5; la suma puede tomar 4 valores (4, 8, 9 y 16).",
+      "pasos": [
+        "Con tres puntajes distintos la suma va de 1 + 2 + 3 = 6 a 4 + 5 + 6 = 15. El único cubo en ese tramo es 8.",
+        "Tres puntajes distintos que suman 8: 1, 2 y 5, o 1, 3 y 4. El mayor puntaje posible es 5.",
+        "Con cuatro lanzamientos la suma va de 4 a 24. Cuadrados: 4, 9 y 16. Cubos: 8 (27 ya se pasa).",
+        "Son 4 valores: 4, 8, 9 y 16."
+      ],
+      "verificar": [
+        {
+          "fn": "lanzamientos",
+          "args": [
+            {
+              "n": 3,
+              "suma": "cubo",
+              "distintos": true,
+              "pregunta": "mayor"
+            }
+          ],
+          "espera": {
+            "respuesta": 5,
+            "sumas": [
+              8
+            ]
+          }
+        },
+        {
+          "fn": "lanzamientos",
+          "args": [
+            {
+              "n": 4,
+              "suma": "cuadradoOCubo",
+              "pregunta": "sumas"
+            }
+          ],
+          "espera": {
+            "respuesta": 4,
+            "sumas": [
+              4,
+              8,
+              9,
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Rosa lanzó un dado 12 veces y siempre salió un puntaje impar. Si todas hubieran sido 5, habría sumado 60 puntos, pero sumó 42. El 1 salió tantas veces como el 3. ¿Cuántas veces salió el 5?",
+      "respuesta": "6 veces.",
+      "pasos": [
+        "Faltan 60 − 42 = 18 puntos respecto del máximo.",
+        "Cada 3 en lugar de un 5 resta 2 puntos y cada 1 resta 4. Un 1 y un 3 juntos restan 6.",
+        "Como el 1 y el 3 salen las mismas veces, van en parejas: 18 ÷ 6 = 3 parejas, es decir, tres 1 y tres 3.",
+        "Quedan 12 − 6 = 6 lanzamientos con 5. Comprobación: 3 · 1 + 3 · 3 + 6 · 5 = 3 + 9 + 30 = 42."
+      ],
+      "verificar": [
+        {
+          "fn": "conteoPuntajes",
+          "args": [
+            {
+              "n": 12,
+              "valores": [
+                1,
+                3,
+                5
+              ],
+              "total": 42,
+              "iguales": [
+                [
+                  1,
+                  3
+                ]
+              ],
+              "valor": 5
+            }
+          ],
+          "espera": {
+            "respuesta": 6,
+            "deficit": 18
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Ana, Beto, Ciro y Dina lanzan un dado cada uno y sacan puntajes distintos; cada uno paga tantos soles como puntos sacó y entre los cuatro pagan 15 soles. El puntaje de Ana es primo y par, el de Beto es impar y el de Dina es mayor que el de Ciro. ¿Cuántos soles paga Dina?",
+      "respuesta": "6 soles.",
+      "pasos": [
+        "El único primo par es el 2: Ana sacó 2. Los otros tres suman 15 − 2 = 13.",
+        "Beto es impar: 1, 3 o 5. Si Beto saca 1, Ciro y Dina suman 12 con dos puntajes distintos: imposible (solo 6 + 6). Si saca 5, suman 8 sin usar 2 ni 5: 2 + 6 usa el 2 de Ana; 3 + 5 usa el 5 de Beto; 4 + 4 se repite. No sirve.",
+        "Beto saca 3: Ciro y Dina suman 10 sin repetir 2 ni 3: 4 + 6.",
+        "Como Dina sacó más que Ciro, Dina sacó 6 y paga 6 soles."
+      ],
+      "verificar": [
+        {
+          "fn": "deducirPuntajes",
+          "args": [
+            {
+              "nombres": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "condiciones": [
+                {
+                  "primo": "A"
+                },
+                {
+                  "par": "A"
+                },
+                {
+                  "suma": [
+                    "A",
+                    "B",
+                    "C",
+                    "D"
+                  ],
+                  "valor": 15
+                },
+                {
+                  "impar": "B"
+                },
+                {
+                  "mayor": [
+                    "D",
+                    "C"
+                  ]
+                }
+              ],
+              "pregunta": "D"
+            }
+          ],
+          "espera": {
+            "respuesta": 6,
+            "unica": true
+          }
+        }
+      ]
+    }
+  ]
+}

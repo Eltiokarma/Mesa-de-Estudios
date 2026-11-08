@@ -1,0 +1,1165 @@
+<!doctype html>
+<html lang="es" data-curso="razonamiento-matematico">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El cubo que se pinta y se perfora: cubitos, túneles y barras</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de geometria-espacio.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   p3 rojo: cubitos con tres caras pintadas; p2 naranja: con dos; p1 turquesa: con una; p0 violeta: con ninguna;
+   pin verde: las caras pintadas (y los cuadraditos de superficie); tun magenta: los cubitos que se quitan por los túneles;
+   cr mostaza: el cubito del cruce; b azul: los cubitos atravesados por barras; ca rosa: las caras atravesadas;
+   co verde limón: los cortes; g óxido: los cubos grandes; ch pizarra: los cubitos chicos.
+   Las aristas, la mesa, la pared y los cubitos sin pintar van en tinta y papel.
+   Elegidos con CIEDE2000 (script en el scratchpad del constructor): ΔE00 ≥ 21,3 entre los que salen juntos (p3, p2,
+   p1, p0 y pin; tun, cr y pin; b, ca y cr; g y ch), en claro y en oscuro. Los que no salen juntos quedan a ΔE00 ≥ 10
+   (el par más cercano es p0 y tun, que nunca se ven a la vez). Contraste AA ≥ 4,5:1 sobre el papel, la tarjeta y el
+   chip .v (fondo al 8 %) en los dos temas. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-p3:#c0364a; --c-p2:#a05200; --c-p1:#0f766e; --c-p0:#6b3dbd; --c-pin:#17451e; --c-tun:#a10fbf; --c-cr:#7d6a00;
+  --c-b:#1f5fbf; --c-ca:#b3246b; --c-co:#44691a; --c-g:#551c07; --c-ch:#1c3940;
+  --cubo:#fffdf9; --mesa:#e9dccf; --pared:#e3d6ea;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-p3:#f17384; --c-p2:#f0a04a; --c-p1:#5ed9c8; --c-p0:#ab8cf2; --c-pin:#40bf59; --c-tun:#cf6bfa; --c-cr:#e3c84a;
+  --c-b:#7cb0ff; --c-ca:#ff86bd; --c-co:#a3d65e; --c-g:#f27448; --c-ch:#58a8bb;
+  --cubo:#3a3047; --mesa:#2f2739; --pared:#332a42;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-p3:#f17384; --c-p2:#f0a04a; --c-p1:#5ed9c8; --c-p0:#ab8cf2; --c-pin:#40bf59; --c-tun:#cf6bfa; --c-cr:#e3c84a;
+  --c-b:#7cb0ff; --c-ca:#ff86bd; --c-co:#a3d65e; --c-g:#f27448; --c-ch:#58a8bb;
+  --cubo:#3a3047; --mesa:#2f2739; --pared:#332a42;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend, .mode.pendiente .control, .mode.pendiente .giro{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none; cursor:grab}
+canvas:active{cursor:grabbing}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:12px; height:12px; border-radius:3px; display:inline-block; border:2px solid; opacity:.9}
+.legend i.linea{width:16px; height:0; border-width:3px 0 0; border-radius:0}
+.giro{margin:0; padding:0 4px; font-size:.8rem; color:var(--muted); display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.giro button{width:40px; height:36px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); font:800 1.05rem var(--font); cursor:pointer}
+.giro span{flex:1 1 180px}
+
+/* El control (abrir por pisos, el tamaño n, la figura) también con teclado */
+.control{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:0 4px}
+.control label{font-weight:800; font-size:.92rem}
+.control input[type=range]{flex:1 1 140px; min-width:120px; height:44px; accent-color:var(--ink); touch-action:none; margin:0}
+.control output{font:800 .95rem var(--mono); min-width:3.4em; text-align:right; font-variant-numeric:tabular-nums; color:var(--muted)}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-p3{color:var(--c-p3); background:color-mix(in srgb, var(--c-p3) 8%, transparent)}
+.v-p2{color:var(--c-p2); background:color-mix(in srgb, var(--c-p2) 8%, transparent)}
+.v-p1{color:var(--c-p1); background:color-mix(in srgb, var(--c-p1) 8%, transparent)}
+.v-p0{color:var(--c-p0); background:color-mix(in srgb, var(--c-p0) 8%, transparent)}
+.v-pin{color:var(--c-pin); background:color-mix(in srgb, var(--c-pin) 8%, transparent)}
+.v-tun{color:var(--c-tun); background:color-mix(in srgb, var(--c-tun) 8%, transparent)}
+.v-cr{color:var(--c-cr); background:color-mix(in srgb, var(--c-cr) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-ca{color:var(--c-ca); background:color-mix(in srgb, var(--c-ca) 8%, transparent)}
+.v-co{color:var(--c-co); background:color-mix(in srgb, var(--c-co) 8%, transparent)}
+.v-g{color:var(--c-g); background:color-mix(in srgb, var(--c-g) 8%, transparent)}
+.v-ch{color:var(--c-ch); background:color-mix(in srgb, var(--c-ch) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{font-family:var(--mono); font-size:1.0rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+table.formulas{border-collapse:collapse; font-size:.92rem; width:100%}
+table.formulas th, table.formulas td{border-bottom:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top}
+table.formulas td{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.tabla{overflow-x:auto}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums; padding-top:1px}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.0rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+.opt .m.t{font-family:inherit}
+</style>
+<link rel="stylesheet" href="../../nucleo/pegatina.css">
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Visualización espacial · Problemas tipo admisión</p>
+      <h1>El cubo que se pinta y se perfora</h1>
+      <p class="sub">Un bloque de cubitos que se pinta por fuera, se perfora con túneles y se atraviesa con barras. Gíralo; después de predecir, ábrelo por pisos para ver lo de adentro.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del bloque de cubitos">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del bloque de cubitos"></canvas></div>
+      <div class="control" id="ctl1" hidden>
+        <label for="r1" id="rl1">Abrir</label>
+        <input type="range" id="r1" min="0" max="100" step="1" value="0">
+        <output id="ro1" for="r1"></output>
+      </div>
+      <p class="giro"><button type="button" id="izq1" aria-label="Girar a la izquierda">⟲</button><button type="button" id="der1" aria-label="Girar a la derecha">⟳</button>
+        <span>Arrastra el dibujo hacia los lados para girarlo (o tócalo y usa las flechas).</span></p>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <div class="control" id="ctl2" hidden>
+        <label for="r2" id="rl2">Abrir</label>
+        <input type="range" id="r2" min="0" max="100" step="1" value="0">
+        <output id="ro2" for="r2"></output>
+      </div>
+      <p class="giro"><button type="button" id="izq2" aria-label="Girar a la izquierda">⟲</button><button type="button" id="der2" aria-label="Girar a la derecha">⟳</button>
+        <span>Arrastra el dibujo hacia los lados para girarlo.</span></p>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/cubitos-pintados">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'cubitos-pintados', unidad: 'razonamiento-matematico.rutas-y-visualizacion-espacial', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Todos los conteos (caras pintadas de cada cubito, túneles, cruces, barras, superficies, cortes y bloques, y lo que da
+   cada error típico) salen de MotorCubitos (motor.js); aquí solo se acomoda, se proyecta, se pinta y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MC = MotorCubitos;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const lerp = (a, b, t) => a + (b - a)*t;
+const lerp3 = (p, q, t) => [lerp(p[0], q[0], t), lerp(p[1], q[1], t), lerp(p[2], q[2], t)];
+const add3 = (p, q) => [p[0] + q[0], p[1] + q[1], p[2] + q[2]];
+const dot3 = (p, q) => p[0]*q[0] + p[1]*q[1] + p[2]*q[2];
+const num = n => String(n).replace('.', ',');
+const V_ = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const opcionesHTML = (opts, idFb, texto) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m${texto ? ' t' : ''}">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const fuenteHip = que => `<p class="fuente">${que}: buscamos estos errores con cubitos pintados, túneles y barras en estudios publicados y no encontramos datos, así que son hipótesis nuestras, tomadas de las alternativas de exámenes de admisión. Lo que marquen los alumnos dirá cuáles aparecen.</p>`;
+const CATS = ['p0', 'p1', 'p2', 'p3'];   // color de un cubito según cuántas caras pintadas tiene (0 a 3)
+const catDe = k => CATS[Math.min(k, 3)];
+
+function colores(){
+  const g = n => css(n), c = { ink:g('--ink'), muted:g('--muted'), paper:g('--paper'), card:g('--card'), line:g('--line'), cubo:g('--cubo'), mesa:g('--mesa'), pared:g('--pared'), font:g('--font') };
+  for (const k of ['p3', 'p2', 'p1', 'p0', 'pin', 'tun', 'cr', 'b', 'ca', 'co', 'g', 'ch']) c[k] = g('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function rotulo(ctx, c, x, y, t, color, tam){
+  ctx.font = `800 ${tam || 13}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .85; ctx.fillRect(x - w/2 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ----- la cámara: ortográfica, girada az grados alrededor de la vertical y elevada el grados ----- */
+function vista(az, el){
+  const a = az*Math.PI/180, e = el*Math.PI/180;
+  const v = [Math.sin(a)*Math.cos(e), -Math.cos(a)*Math.cos(e), Math.sin(e)];   // hacia el que mira
+  const u = [Math.cos(a), Math.sin(a), 0];                                        // derecha de la pantalla
+  const up = [v[1]*u[2] - v[2]*u[1], v[2]*u[0] - v[0]*u[2], v[0]*u[1] - v[1]*u[0]];
+  return { u, up, v };
+}
+const NORMALES = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
+const LUZ = (() => { const l = [-.35, -.55, 1], n = Math.hypot(...l); return l.map(x => x/n); })();
+// Las 4 esquinas de la cara f de la caja con esquina o y lados d
+function esquinasCara(o, d, f){
+  const [x0, y0, z0] = o, x1 = x0 + d[0], y1 = y0 + d[1], z1 = z0 + d[2];
+  switch (f){
+    case 0: return [[x0, y0, z0], [x0, y1, z0], [x0, y1, z1], [x0, y0, z1]];
+    case 1: return [[x1, y0, z0], [x1, y0, z1], [x1, y1, z1], [x1, y1, z0]];
+    case 2: return [[x0, y0, z0], [x0, y0, z1], [x1, y0, z1], [x1, y0, z0]];
+    case 3: return [[x0, y1, z0], [x1, y1, z0], [x1, y1, z1], [x0, y1, z1]];
+    case 4: return [[x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0]];
+    default: return [[x0, y0, z1], [x0, y1, z1], [x1, y1, z1], [x1, y0, z1]];
+  }
+}
+
+/* ================= La escena =================
+   cfg = { vista:{ az, el }, azRango ([min, max] si hay paredes detrás), caja (puntos que deben caber al girar),
+   dibujo(L, E) (agrega cajas, planos, líneas y textos), control ({ etiqueta, min, max, paso, leer(E), poner(E, v),
+   fmt }), lect(E) (lecturas en vivo), ley, desc }. */
+function crearEscena(cv, idDesc, idLect, idLey, idCtl, idIzq, idDer){
+  const E = { cfg:{}, prog:{}, az:-30, el:28, hl:null, gen:0, compacto:false, desc:'' };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, encuadre = null, claveEnc = '';
+
+  function altoDe(w){
+    const h = innerWidth >= 900 ? clamp(w*.78, 340, Math.max(340, Math.min(560, innerHeight - 250))) : clamp(w*.92, 280, 400);
+    return Math.round(Celular.alto(h, E.compacto));
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = altoDe(w), dpr = Celular.dpr();
+    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); encuadre = null; }
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  addEventListener('modo', () => { W = 0; resize(); });
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.gen++;
+    E.cfg = o; E.prog = Object.assign({}, o.prog);
+    const v = o.vista || { az:-30, el:28 }; E.az = v.az; E.el = v.el;
+    E.desc = o.desc || ''; encuadre = null;
+    cv.setAttribute('aria-label', E.desc || 'Dibujo de la escena');
+    resize(); E.lecturas(); E.leyenda(); E.control();
+    document.getElementById(idDesc).textContent = '';
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) { E.control(); return; } E.compacto = on; W = 0; resize(); E.control(); };
+  const leer = k => (k === 'az' || k === 'el' ? E[k] : E.prog[k]);
+  const poner = (k, v) => { if (k === 'az' || k === 'el') E[k] = v; else E.prog[k] = v; };
+  E.animar = (k, hasta, dur, fin) => {
+    const gen = E.gen, de = leer(k);
+    if (RM || !dur){ poner(k, hasta); E.dibujar(); E.lecturas(); if (fin) setTimeout(() => { if (E.gen === gen) fin(); }, 0); return; }
+    const t0 = performance.now();
+    const tick = now => {
+      if (E.gen !== gen) return;
+      const f = Math.max(0, Math.min(1, (now - t0)/dur)); poner(k, de + (hasta - de)*suave(f)); E.dibujar(); E.lecturas();
+      if (f < 1) requestAnimationFrame(tick); else if (fin) fin();
+    };
+    requestAnimationFrame(tick);
+  };
+  E.cadena = (pasos, fin) => {
+    const gen = E.gen; let i = 0;
+    const sigue = () => { if (E.gen !== gen) return; if (i >= pasos.length) { if (fin) fin(); return; } pasos[i++](sigue); };
+    sigue();
+  };
+  E.pausa = ms => n => esperar(ms, n);
+  E.avisar = t => { document.getElementById(idDesc).textContent = t || E.desc; };
+  E.lecturas = () => {
+    const el = document.getElementById(idLect); if (!el) return;
+    const out = (typeof E.cfg.lect === 'function' ? E.cfg.lect(E) : E.cfg.lect) || [];
+    const html = out.map(([k, t, v]) => `<div class="lectura" style="--k:var(--c-${k}, var(--ink))"><b>${v}</b><span>${t}</span></div>`).join('');
+    if (el.dataset.h !== html){ el.dataset.h = html; el.innerHTML = html; }
+  };
+  E.leyenda = () => {
+    const l = (typeof E.cfg.ley === 'function' ? E.cfg.ley(E) : E.cfg.ley) || [];
+    document.getElementById(idLey).innerHTML = l.map(([k, t, cls]) => `<span><i class="${cls || ''}" style="border-color:var(--c-${k}, var(--${k}, var(--ink))); background:color-mix(in srgb, var(--c-${k}, var(--${k}, var(--ink))) 30%, transparent)${k === 'cubo' ? '; border-color:var(--muted)' : ''}"></i>${t}</span>`).join('');
+  };
+
+  // ----- el control deslizable (abrir por pisos, el tamaño, la figura) -----
+  const ctl = document.getElementById(idCtl), rng = ctl.querySelector('input'), out = ctl.querySelector('output'), lab = ctl.querySelector('label');
+  E.control = () => {
+    const m = E.cfg.control;
+    ctl.hidden = !m;
+    if (!m) return;
+    rng.min = m.min; rng.max = m.max; rng.step = m.paso || 1; rng.value = m.leer(E);
+    lab.textContent = m.etiqueta; out.textContent = m.fmt ? m.fmt(m.leer(E)) : String(m.leer(E));
+    rng.disabled = !!E.ocupado;
+  };
+  rng.addEventListener('input', () => { const m = E.cfg.control; if (!m || E.ocupado) return; m.poner(E, +rng.value); out.textContent = m.fmt ? m.fmt(+rng.value) : rng.value; encuadre = m.reencuadra ? null : encuadre; E.dibujar(); E.lecturas(); });
+
+  // ----- girar con el dedo o el ratón (hacia los lados: lo vertical sigue moviendo la página) -----
+  const rango = a => { const r = E.cfg.azRango; return r ? clamp(a, r[0], r[1]) : a; };
+  let giro = null;
+  cv.addEventListener('pointerdown', e => { giro = { x:e.clientX, y:e.clientY, az:E.az, el:E.el, id:e.pointerId, raton:e.pointerType === 'mouse' }; });
+  cv.addEventListener('pointermove', e => {
+    if (!giro || e.pointerId !== giro.id) return;
+    const dx = e.clientX - giro.x, dy = e.clientY - giro.y;
+    if (Math.abs(dx) < 3 && Math.abs(dy) < 3) return;
+    E.az = rango(giro.az + dx*.45);
+    if (giro.raton) E.el = clamp(giro.el + dy*.3, 8, 80);
+    E.dibujar();
+  });
+  const soltar = () => { giro = null; };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar); cv.addEventListener('pointerleave', soltar);
+  cv.tabIndex = 0;
+  cv.addEventListener('keydown', e => {
+    const k = { ArrowLeft:[-8, 0], ArrowRight:[8, 0], ArrowUp:[0, 5], ArrowDown:[0, -5] }[e.key];
+    if (!k) return;
+    e.preventDefault(); E.az = rango(E.az + k[0]); E.el = clamp(E.el + k[1], 8, 80); E.dibujar();
+  });
+  document.getElementById(idIzq).addEventListener('click', () => { E.az = rango(E.az - 20); E.dibujar(); });
+  document.getElementById(idDer).addEventListener('click', () => { E.az = rango(E.az + 20); E.dibujar(); });
+
+  // ----- encuadre: la esfera que envuelve la caja cabe con cualquier giro, así el dibujo no salta -----
+  function calcularEncuadre(){
+    const pts = E.cfg.caja || [[0, 0, 0], [1, 1, 1]];
+    const m = [0, 1, 2].map(i => Math.min(...pts.map(p => p[i]))), M = [0, 1, 2].map(i => Math.max(...pts.map(p => p[i])));
+    const c3 = m.map((v, i) => (v + M[i])/2), R = Math.max(.5, Math.hypot(M[0] - m[0], M[1] - m[1], M[2] - m[2])/2);
+    const pad = 14, s = Math.min((W - 2*pad)/(2*R), (H - 2*pad)/(2*R));
+    return { s, c3 };
+  }
+  E.proyector = () => {
+    const clave = `${W}x${H}`;
+    if (!encuadre || clave !== claveEnc){ encuadre = calcularEncuadre(); claveEnc = clave; }
+    const V = vista(E.az, E.el), K = encuadre, cx = dot3(K.c3, V.u), cy = dot3(K.c3, V.up);
+    const f = p => [W/2 + K.s*(dot3(p, V.u) - cx), H/2 - K.s*(dot3(p, V.up) - cy)];
+    f.V = V; f.s = K.s; return f;
+  };
+  E.recajar = () => { encuadre = null; E.dibujar(); };
+
+  E.dibujar = () => {
+    if (!W || !E.cfg) return;
+    const c = colores(), P = E.proyector();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    const L = lista();
+    if (E.cfg.dibujo) E.cfg.dibujo(L, E);
+    pintar(ctx, c, E, P, L);
+  };
+  return E;
+}
+
+/* ================= Lo que se dibuja =================
+   Cada paso agrega piezas a una lista: cajas (cubitos o bloques: esquina o, lados d, estilo), planos del fondo (la mesa,
+   las paredes), planos de encima (un corte), líneas (las barras) y textos. */
+function lista(){
+  const L = { cajas:[], fondo:[], encima:[], lineas:[], txt:[] };
+  // o = { col: color del cubito (null: sin color), caras: [6 estados del motor: 0 pegada, 1 pintada, 2 apoyada],
+  //       alfa (relleno), marcas: [caras con un cuadrito rosado], transparente (se dibujan también las caras de atrás) }
+  L.cubo = (p, o) => L.cajas.push({ o:p, d:[1, 1, 1], s:o || {} });
+  L.caja = (p, d, o) => L.cajas.push({ o:p, d, s:o || {} });
+  L.plano = (pts, col, o) => L.fondo.push({ pts, col, o:o || {} });
+  L.corte = (pts, col, o) => L.encima.push({ pts, col, o:o || {} });
+  L.linea = (p, q, col, o) => L.lineas.push({ p, q, col, o:o || {} });
+  L.texto = (p, t, col, o) => L.txt.push({ p, t, col, o:o || {} });
+  return L;
+}
+function pintar(ctx, c, E, P, L){
+  const V = P.V, col = k => (k && c[k]) || c.ink, fuerte = k => E.hl && E.hl === k;
+  const camino = pts => { ctx.beginPath(); pts.forEach((p, j) => { const q = P(p); j ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); }); ctx.closePath(); };
+  const lw = Math.max(.8, Math.min(1.5, P.s/28));
+  // planos del fondo (mesa y paredes)
+  for (const it of L.fondo){
+    ctx.save(); camino(it.pts); ctx.fillStyle = it.col === 'pared' ? c.pared : c.mesa; ctx.globalAlpha = it.o.alfa === undefined ? 1 : it.o.alfa; ctx.fill();
+    ctx.globalAlpha = .5; ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.stroke(); ctx.restore();
+    if (it.o.et){ const q = P(it.o.etEn); rotulo(ctx, c, q[0], q[1], it.o.et, c.muted, 12); }
+  }
+  // cajas, de atrás hacia adelante; las caras pegadas a otra caja (en su lugar) no se dibujan
+  const ocupado = new Set();
+  const k3 = p => p.map(v => Math.round(v*1000)).join(',');
+  // los cubitos casi transparentes (los que se apagan para mirar otros) no tapan las caras de sus vecinos
+  for (const b of L.cajas) if (b.d[0] === 1 && b.d[1] === 1 && b.d[2] === 1 && !b.s.transparente && !(b.s.alfa < .5)) ocupado.add(k3(b.o));
+  const prof = b => dot3([b.o[0] + b.d[0]/2, b.o[1] + b.d[1]/2, b.o[2] + b.d[2]/2], V.v);
+  const orden = L.cajas.map(b => [prof(b), b]).sort((a, b) => a[0] - b[0]);
+  for (const [, b] of orden){
+    const s = b.s, unit = b.d[0] === 1 && b.d[1] === 1 && b.d[2] === 1;
+    const caras = [0, 1, 2, 3, 4, 5].filter(f => s.transparente || dot3(NORMALES[f], V.v) > 1e-9)
+      .sort((f, g) => dot3(NORMALES[f], V.v) - dot3(NORMALES[g], V.v));
+    for (const f of caras){
+      if (unit && !s.transparente && ocupado.has(k3(add3(b.o, NORMALES[f])))) continue;
+      const pts = esquinasCara(b.o, b.d, f), est = s.caras ? s.caras[f] : null;
+      ctx.save(); camino(pts);
+      const base = s.col ? col(s.col) : (est === 1 ? c.pin : c.cubo);
+      let a = s.alfa === undefined ? 1 : s.alfa;
+      if (s.col && s.caras) a *= est === 1 ? .92 : (s.fuerte ? .8 : .4);
+      else if (s.col) a *= .8;
+      else if (est === 1) a *= .82;
+      ctx.fillStyle = c.cubo; ctx.globalAlpha = s.transparente ? 0 : (s.alfa === undefined ? 1 : s.alfa); ctx.fill();
+      ctx.fillStyle = base; ctx.globalAlpha = a; ctx.fill();
+      // sombra suave según la cara
+      const sombra = .16*(1 - Math.max(0, dot3(NORMALES[f], LUZ)));
+      if (!s.transparente){ ctx.fillStyle = '#000'; ctx.globalAlpha = sombra*(s.alfa === undefined ? 1 : s.alfa); ctx.fill(); }
+      ctx.globalAlpha = (s.bordeAlfa === undefined ? .7 : s.bordeAlfa)*(s.alfa === undefined ? 1 : Math.max(.35, s.alfa));
+      ctx.strokeStyle = s.borde ? col(s.borde) : c.ink; ctx.lineWidth = lw*(s.col && fuerte(s.col) ? 2.4 : 1) + (s.grueso || 0); ctx.lineJoin = 'round'; ctx.stroke();
+      ctx.restore();
+      // cara atravesada: un cuadrito en el centro
+      if (s.marcas && s.marcas.includes(f)){
+        const cen = pts.reduce((p, q) => add3(p, q.map(v => v/4)), [0, 0, 0]);
+        const chico = pts.map(q => lerp3(cen, q, .42));
+        ctx.save(); camino(chico); ctx.fillStyle = c.ca; ctx.globalAlpha = .95*(fuerte('ca') ? 1 : .9); ctx.fill();
+        ctx.lineWidth = fuerte('ca') ? 2.5 : 1; ctx.strokeStyle = c.ca; ctx.stroke(); ctx.restore();
+      }
+    }
+  }
+  // planos de encima (un corte), líneas (barras) y textos
+  for (const it of L.encima){
+    ctx.save(); camino(it.pts); ctx.fillStyle = col(it.col); ctx.globalAlpha = it.o.alfa === undefined ? .3 : it.o.alfa; ctx.fill();
+    ctx.globalAlpha = 1; ctx.strokeStyle = col(it.col); ctx.lineWidth = 2.5 + (fuerte(it.col) ? 2 : 0); ctx.stroke(); ctx.restore();
+  }
+  for (const s of L.lineas){
+    const a = P(s.p), b = P(s.q);
+    ctx.save(); ctx.globalAlpha = s.o.alfa === undefined ? 1 : s.o.alfa; ctx.strokeStyle = col(s.col); ctx.lineWidth = (s.o.ancho || 4) + (fuerte(s.col) ? 2 : 0); ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); ctx.restore();
+  }
+  for (const t of L.txt){ const q = P(t.p); ctx.save(); ctx.globalAlpha = t.o.alfa === undefined ? 1 : t.o.alfa; rotulo(ctx, c, q[0] + (t.o.dx || 0), q[1] + (t.o.dy || 0), t.t, col(t.col), t.o.tam || 13); ctx.restore(); }
+}
+// La mesa bajo una caja [x0, x1] × [y0, y1] (con margen) y una pared detrás (y = yp) o a la izquierda (x = xp)
+function mesa(L, x0, x1, y0, y1, et){ L.plano([[x0, y0, 0], [x1, y0, 0], [x1, y1, 0], [x0, y1, 0]], 'mesa', { et, etEn:[x1 - .6, y0 + .4, 0] }); }
+function paredAtras(L, x0, x1, yp, h, a){ if (a === 0) return; L.plano([[x0, yp, 0], [x1, yp, 0], [x1, yp, h], [x0, yp, h]], 'pared', { alfa:.9*(a === undefined ? 1 : a) }); }
+function paredIzq(L, xp, y0, y1, h, a){ if (a === 0) return; L.plano([[xp, y0, 0], [xp, y1, 0], [xp, y1, h], [xp, y0, h]], 'pared', { alfa:.9*(a === undefined ? 1 : a) }); }
+// Separación de un cubito al abrir: por pisos (z), por capas (todas las direcciones) o nada
+function abrir(p, f, modo, gap){
+  const g = (gap || .9)*f;
+  if (modo === 'pisos') return [p[0], p[1], p[2]*(1 + g)];
+  if (modo === 'todo') return [p[0]*(1 + g), p[1]*(1 + g), p[2]*(1 + g)];
+  return p;
+}
+// Lo que cuenta cada color de cubito
+const LEY_CAT = [['p3', 'tres caras'], ['p2', 'dos caras'], ['p1', 'una cara'], ['p0', 'ninguna']];
+const lectCat = R => [['p3', '3 caras', R.cuenta[3]], ['p2', '2 caras', R.cuenta[2]], ['p1', '1 cara', R.cuenta[1]], ['p0', 'ninguna', R.cuenta[0]]];
+// Un sólido pintado: cada cubito con sus caras (pintadas en verde) y, si col, con el color de su cantidad de caras
+function dibSolido(L, R, o){
+  o = o || {};
+  R.celdas.forEach((p, i) => {
+    const q = add3(abrir(p, o.abre || 0, o.modo || 'pisos', o.gap), o.mover || [0, 0, 0]);
+    const cat = o.col ? catDe(R.pintadas[i]) : null;
+    const fuera = o.solo && !o.solo.includes(R.pintadas[i]);
+    L.cubo(q, { caras:R.porCara[i], col:fuera ? null : cat, fuerte:!!o.solo && !fuera, alfa:fuera ? .16 : (o.alfa === undefined ? 1 : o.alfa) });
+  });
+}
+const cajaSolido = (R, f, modo, extra) => { const B = MC.util.caja(R.celdas), M = B.max.map(v => v + 1); const top = abrir(M, f || 0, modo || 'pisos'); return [[B.min[0], B.min[1], 0], top].concat(extra || []); };
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1', 'ctl1', 'izq1', 'der1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+
+// ----- los datos de cada predicción, del motor -----
+const C4 = MC.pintado({ dims:[4, 4, 4], k:2 });
+const MP = MC.pintado({ dims:[5, 4, 3], sinPintar:['mesa', 'atras'], k:0 });
+const SOL = [[3, 2, 1], [2, 2, 1], [1, 1, 1]];
+const AR = MC.pintado({ alturas:SOL, sinPintar:['mesa'] });
+const TU = MC.agujereado({ n:5, tuneles:[{ eje:'x', en:[2, 2] }, { eje:'y', en:[2, 2] }, { eje:'z', en:[2, 2] }] });
+const BA = MC.barras({ dims:[4, 3, 3], barras:[{ eje:'x', en:[1, 1] }, { eje:'y', en:[1, 1] }, { eje:'z', en:[1, 1] }] });
+const ES = MC.sucesion({ tipo:'escalera', n:20, desde:10 });
+const ES10 = MC.sucesion({ tipo:'escalera', n:10 });
+const CAJA_TU = [[-3.6, -3.6, 0], [8.6, 8.6, 12]], CAJA_BA = [[-1.5, -1.5, -1.5], [6.5, 5, 5.5]];
+
+const P1 = { id:'cubitos-dos-caras', ok:'b', opts:[
+  ['a', `${C4.errores.k.yLaSiguiente} cubitos`, 'RME4', 'hipotesis'],
+  ['b', `${C4.respuestas.k} cubitos`],
+  ['c', `${C4.errores.k.restaUna} cubitos`, 'RME115', 'hipotesis'],
+  ['d', `${C4.errores.k.sinRestar} cubitos`, 'RME115', 'hipotesis']],
+  fb:{ b:'¡Bien! En cada una de las 12 aristas hay 4 cubitos, pero los 2 de los extremos son esquinas (tres caras): quedan 2 por arista, 12 × 2 = 24.',
+    a:'Elegiste la A. 32 junta los 24 de las aristas con las 8 esquinas. Las esquinas tienen tres caras pintadas, no dos. La correcta está marcada.',
+    c:'Elegiste la C. 36 sale de restar una sola esquina por arista (4 − 1 = 3). Cada arista tiene dos extremos, y los dos son esquinas: 4 − 2 = 2. La correcta está marcada.',
+    d:'Elegiste la D. 48 cuenta las aristas enteras, 12 × 4, con sus esquinas. Las esquinas tienen tres caras pintadas. La correcta está marcada.' } };
+const P2 = { id:'cubitos-mesa-pared', ok:'b', opts:[
+  ['a', `${MP.errores.k.olvidaPared} cubitos`, 'RME1', 'hipotesis'],
+  ['b', `${MP.respuestas.k} cubitos`],
+  ['c', `${MP.errores.k.conTodas} cubitos`, 'RME1', 'hipotesis'],
+  ['d', `${MP.errores.k.olvidaMesa} cubitos`, 'RME1', 'hipotesis']],
+  fb:{ b:'¡Bien! Abajo y atrás no se pinta, así que no se quita esa capa: (5 − 2) × (4 − 1) × (3 − 1) = 3 × 3 × 2 = 18.',
+    a:'Elegiste la A. 12 sale de quitar la capa de atrás, como si la pared también se pintara. Pero la cara pegada a la pared no recibe pintura. La correcta está marcada.',
+    c:'Elegiste la C. 6 sería si se pintara todo, también abajo y atrás: (5 − 2)(4 − 2)(3 − 2). La mesa y la pared tapan esas caras. La correcta está marcada.',
+    d:'Elegiste la D. 9 sale de quitar la capa de abajo, como si se pintara la base. La base está sobre la mesa y no se pinta. La correcta está marcada.' } };
+const P3 = { id:'cubitos-caras-solido', ok:'a', opts:[
+  ['a', `${AR.respuestas.caras} caras`],
+  ['b', `${AR.errores.caras.pegadas} caras`, 'RME1', 'hipotesis'],
+  ['c', `${AR.errores.caras.conTodas} caras`, 'RME1', 'hipotesis'],
+  ['d', `${AR.errores.caras.todas} caras`, 'RME1', 'hipotesis']],
+  fb:{ a:`¡Bien! Hay ${AR.expuestas} caras al aire y ${AR.expuestas - AR.caras} de ellas tocan la mesa: ${AR.caras} pintadas.`,
+    b:`Elegiste la B. ${AR.errores.caras.pegadas} cuenta todas las caras menos la base, también las ${6*AR.cubitos - AR.expuestas} que quedan pegadas entre cubitos, donde no entra la pintura. La correcta está marcada.`,
+    c:`Elegiste la C. ${AR.errores.caras.conTodas} son todas las caras al aire, con las ${AR.expuestas - AR.caras} de la base, que tocan la mesa y no se pintan. La correcta está marcada.`,
+    d:`Elegiste la D. ${AR.errores.caras.todas} es 6 × ${AR.cubitos}: las seis caras de cada cubito. Las pegadas y las de la base no se pintan. La correcta está marcada.` } };
+const P4 = { id:'cubitos-tuneles', ok:'b', opts:[
+  ['a', `${TU.errores.quedan.sinCruces} cubitos`, 'RME2', 'hipotesis'],
+  ['b', `${TU.respuestas.quedan} cubitos`],
+  ['c', `${TU.errores.quedan.parejas} cubitos`, 'RME110', 'hipotesis'],
+  ['d', `${TU.errores.quedan.soloVisibles} cubitos`, 'RME3', 'hipotesis']],
+  fb:{ b:`¡Bien! Cada túnel pasa por 5 cubitos, pero el del centro está en los tres y se quita una sola vez: 15 − 2 = ${TU.quitados} quitados, quedan ${TU.quedan}.`,
+    a:`Elegiste la A. ${TU.errores.quedan.sinCruces} resta 3 × 5 = 15, como si el cubito del centro se quitara tres veces. Se quita una vez. La correcta está marcada.`,
+    c:`Elegiste la C. ${TU.errores.quedan.parejas} descuenta un cruce por cada par de túneles (tres pares), pero los tres pares se cruzan en el mismo cubito: hay que descontar 2, no 3. La correcta está marcada.`,
+    d:`Elegiste la D. ${TU.errores.quedan.soloVisibles} resta solo los 6 huecos que se ven en las caras. Los túneles siguen por dentro. La correcta está marcada.` } };
+const P5 = { id:'cubitos-barras', ok:'d', opts:[
+  ['a', `${BA.errores.caras.cubos} caras`, 'RME6', 'hipotesis'],
+  ['b', `${BA.errores.caras.paredes} caras`, 'RME111', 'hipotesis'],
+  ['c', `${BA.errores.caras.cruceDos} caras`, 'RME117', 'hipotesis'],
+  ['d', `${BA.respuestas.caras} caras`]],
+  fb:{ d:`¡Bien! Cada barra entra y sale de cada cubito por dos caras: 2 × (4 + 3 + 3) = ${BA.respuestas.caras}. En el cubito del cruce pasan las tres: tiene 6 caras atravesadas.`,
+    a:`Elegiste la A. ${BA.errores.caras.cubos} son los cubitos atravesados, no las caras. Cada cubito atravesado tiene al menos dos caras atravesadas. La correcta está marcada.`,
+    b:`Elegiste la B. ${BA.errores.caras.paredes} cuenta una sola vez las dos caras que se tocan entre dos cubitos vecinos (4 + 1, 3 + 1, 3 + 1). Son dos caras, una de cada cubito. La correcta está marcada.`,
+    c:`Elegiste la C. ${BA.errores.caras.cruceDos} da dos caras a cada cubito atravesado, también al del cruce. Por ese cubito pasan tres barras: tiene seis. La correcta está marcada.` } };
+const P6 = { id:'cubitos-escalera', ok:'c', opts:[
+  ['a', `${ES.errores.area.objetoEntero} cuadraditos`, 'RM2', 'parcial'],
+  ['b', `${ES.errores.area.lineal} cuadraditos`, 'RME112', 'hipotesis'],
+  ['c', `${ES.respuestas.area} cuadraditos`],
+  ['d', `${ES.errores.area.otraBase} cuadraditos`, 'RME1', 'hipotesis']],
+  fb:{ c:`¡Bien! Adelante y atrás crecen como 1 + 2 + … + n; arriba, izquierda y derecha, como n. Con n = 20: 2 × 210 + 3 × 20 = ${ES.respuestas.area}.`,
+    a:`Elegiste la A. ${ES.errores.area.objetoEntero} duplica la figura 10. Pero la figura 20 no es dos figuras 10 juntas: sus columnas son el doble de altas y la escalera crece más rápido. La correcta está marcada.`,
+    b:`Elegiste la B. ${ES.errores.area.lineal} supone que cada figura suma lo mismo que de la 1 a la 2 (7). De la 2 a la 3 ya suma 9: el crecimiento no es parejo. La correcta está marcada.`,
+    d:`Elegiste la D. ${ES.errores.area.otraBase} cuenta también los 20 cuadraditos de la base, que tocan la mesa y no se pintan. La correcta está marcada.` } };
+
+// ----- piezas de dibujo -----
+const manijaAbrir = (k, et) => ({ etiqueta:et || 'Abrir', min:0, max:100, paso:1, fmt:v => `${Math.round(v)} %`, leer:E => Math.round((E.prog[k] || 0)*100), poner:(E, v) => { E.prog[k] = v/100; } });
+const V0 = { az:-32, el:28 };
+function dibCubo4(L, E, R){ dibSolido(L, R, { col:E.prog.col > .5, abre:E.prog.abre, modo:'pisos' }); }
+
+const steps = [
+ { k:'Paso 1', t:'Un bloque de cubitos',
+   prep:() => { const R = MC.pintado({ dims:[3, 3, 3] }); E.config({ vista:V0, prog:{ abre:0 }, caja:cajaSolido(R, 1),
+     desc:'Un cubo armado con 27 cubitos, pintado por fuera.',
+     dibujo:(L, E) => dibSolido(L, R, { abre:E.prog.abre, modo:'pisos' }),
+     control:manijaAbrir('abre', 'Abrir por pisos'),
+     ley:[['pin', 'caras pintadas'], ['cubo', 'caras sin pintar']] }); },
+   body:() => `<p class="problem">Este cubo está armado con 27 cubitos iguales, de 3 × 3 × 3. Lo sumergimos en pintura: se pintan las ${V_('pin', 'caras de afuera')}. Las caras que quedan pegadas entre dos cubitos no reciben pintura.</p>
+   <p>Arrastra el dibujo hacia los lados para girarlo. Con el control <b>Abrir por pisos</b> separa los tres pisos y mira las caras de adentro.</p>
+   <p class="hint">En los pasos que siguen vas a contar cubitos según sus caras pintadas, en cubos, en bloques sobre la mesa y en sólidos armados; luego vas a perforar túneles, pasar barras y ver crecer una escalera.</p>` },
+
+ { k:'Paso 2', t:'El cubo de 4 × 4 × 4', gate:P1,
+   prep:() => { const r = !!S.pred[P1.id];
+     E.config({ vista:V0, prog:{ abre:r ? .85 : 0, col:r ? 1 : 0 }, caja:cajaSolido(C4, r ? 1 : 0),
+       desc:'Un cubo de 4 × 4 × 4 cubitos pintado por fuera.',
+       dibujo:(L, E) => dibCubo4(L, E, C4),
+       ley:r ? LEY_CAT : [['pin', 'caras pintadas']], lect:r ? lectCat(C4) : null, control:r ? manijaAbrir('abre', 'Abrir por pisos') : null }); },
+   anima:fin => { E.cfg.ley = LEY_CAT; E.leyenda(); E.cfg.caja = cajaSolido(C4, 1); E.recajar();
+     E.cadena([n => { E.prog.col = 1; E.dibujar(); esperar(500, n); }, n => E.animar('abre', .85, 1500, n)], () => {
+       E.cfg.lect = lectCat(C4); E.cfg.control = manijaAbrir('abre', 'Abrir por pisos'); E.lecturas(); E.control();
+       E.avisar('Cada cubito tomó el color de sus caras pintadas: rojo las 8 esquinas, naranja los 24 de las aristas, turquesa los 24 del centro de las caras y violeta los 8 de adentro. Los cuatro pisos se separaron.'); fin(); }); },
+   body:() => `<p class="problem">Un cubo de 4 × 4 × 4 cubitos se pinta por fuera y se desarma. ¿Cuántos cubitos tienen <b>exactamente dos</b> caras pintadas?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Cada cubito tiene tantas caras pintadas como lados del cubo grande toca. Las ${V_('p3', 'esquinas')} tocan tres; los de las ${V_('p2', 'aristas')}, sin las esquinas, tocan dos; los del ${V_('p1', 'centro de una cara')}, uno; los de ${V_('p0', 'adentro')}, ninguno.</p>
+   <div class="eqs"><div class="eq">${V_('p2', 'dos caras')} = 12 aristas × (4 − 2) = 12 × 2 = ${V_('p2', '24')}</div></div>
+   <p class="hint">Abre el cubo por pisos con el control y busca los ocho de adentro: están en los dos pisos del medio.</p>
+   ${fuenteHip('Meter las esquinas entre los de dos caras o restar una sola esquina por arista')}</div>` },
+
+ { k:'Paso 3', t:'Cuatro lugares, cuatro fórmulas',
+   prep:() => {
+     const R = n => MC.pintado({ dims:[n, n, n] });
+     E.config({ vista:V0, prog:{ n:5 }, caja:cajaSolido(R(7), .6),
+       desc:'Un cubo de n × n × n cubitos pintado, con los pisos un poco separados y cada cubito del color de sus caras pintadas.',
+       dibujo:(L, E) => dibSolido(L, R(E.prog.n), { col:true, abre:.6, modo:'pisos' }),
+       ley:LEY_CAT, lect:E => lectCat(R(E.prog.n)).concat([['ink', 'total n³', E.prog.n ** 3]]),
+       control:{ etiqueta:'Arista n', min:2, max:7, paso:1, fmt:v => `n = ${v}`, leer:E => E.prog.n, poner:(E, v) => { E.prog.n = v; } } }); },
+   body:() => `<p class="problem">Para un cubo de n × n × n pintado por fuera, cada lugar tiene su fórmula. Mueve la arista n y mira cómo cambia cada grupo.</p>
+   <div class="tabla"><table class="formulas"><tr><th>Cubitos con…</th><th>dónde están</th><th>cuántos</th></tr>
+   <tr><th>${V_('p3', 'tres caras')}</th><td>esquinas</td><td>8</td></tr>
+   <tr><th>${V_('p2', 'dos caras')}</th><td>aristas sin esquinas</td><td>12(n − 2)</td></tr>
+   <tr><th>${V_('p1', 'una cara')}</th><td>centro de cada cara</td><td>6(n − 2)²</td></tr>
+   <tr><th>${V_('p0', 'ninguna')}</th><td>el cubo de adentro</td><td>(n − 2)³</td></tr></table></div>
+   <p>Siempre se resta <b>2</b>: una esquina en cada extremo de la arista, una capa a cada lado. Comprueba que los cuatro suman n³.</p>
+   <p>En un bloque de a × b × c es igual, lado por lado: ${V_('p2', 'dos caras')} = 4[(a − 2) + (b − 2) + (c − 2)] y ${V_('p0', 'ninguna')} = (a − 2)(b − 2)(c − 2).</p>
+   <p class="hint">Con n = 2 todos son esquinas; con n = 3 hay un solo cubito escondido en el centro.</p>` },
+
+ { k:'Paso 4', t:'Sobre la mesa y contra la pared', gate:P2,
+   prep:() => { const r = !!S.pred[P2.id];
+     E.config({ vista:{ az:-28, el:26 }, azRango:r ? null : [-75, 75], prog:{ sep:r ? 1 : 0, col:r ? 1 : 0, abre:r ? .6 : 0 }, caja:[[-1, -2, 0], [6, 5.2, 5]],
+       desc:'Un bloque de 5 × 4 × 3 cubitos sobre la mesa, con su cara de atrás pegada a una pared. Está pintado todo lo que se ve.',
+       dibujo:(L, E) => { const pr = E.prog;
+         mesa(L, -1, 6, -2, 4); paredAtras(L, -1, 6, 4, 4.6, 1 - pr.sep);
+         dibSolido(L, MP, { col:pr.col > .5, solo:pr.col > .5 ? [0] : null, abre:pr.abre, mover:[0, -1.6*pr.sep, .0] }); },
+       ley:r ? [['p0', 'ninguna cara pintada'], ['pin', 'caras pintadas']] : [['pin', 'caras pintadas']],
+       lect:r ? [['p0', 'ninguna', MP.respuestas.k], ['ink', 'cubitos', MP.cubitos]] : [['ink', 'cubitos', MP.cubitos]],
+       control:r ? manijaAbrir('abre', 'Abrir por pisos') : null }); },
+   anima:fin => { E.cfg.ley = [['p0', 'ninguna cara pintada'], ['pin', 'caras pintadas']]; E.leyenda();
+     E.cfg.azRango = null;
+     E.cadena([n => E.animar('sep', 1, 1200, n), n => E.animar('az', 150, 1600, n), E.pausa(900), n => E.animar('az', -28, 1400, n),
+       n => { E.prog.col = 1; E.dibujar(); esperar(400, n); }, n => E.animar('abre', .6, 1200, n)], () => {
+       E.cfg.lect = [['p0', 'ninguna', MP.respuestas.k], ['ink', 'cubitos', MP.cubitos]]; E.cfg.control = manijaAbrir('abre', 'Abrir por pisos'); E.lecturas(); E.control();
+       E.avisar('El bloque se separó de la pared y giró: su cara de atrás quedó sin pintar, igual que la de abajo, que estaba sobre la mesa. Se iluminaron los 18 cubitos sin ninguna cara pintada: 3 de ancho, 3 de fondo y 2 de alto.'); fin(); }); },
+   body:() => `<p class="problem">Este bloque de 5 × 4 × 3 cubitos (5 de ancho, 4 de fondo, 3 de alto) está sobre la mesa y pegado a la pared por detrás. Se pinta todo lo que queda a la vista. ¿Cuántos cubitos quedan sin <b>ninguna</b> cara pintada?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">ancho: 5 − 2 = 3<span class="note">se pintan la izquierda y la derecha</span></div>
+   <div class="eq">fondo: 4 − 1 = 3<span class="note">solo se pinta el frente; atrás está la pared</span></div>
+   <div class="eq">alto: 3 − 1 = 2<span class="note">solo se pinta arriba; abajo está la mesa</span></div>
+   <div class="eq">${V_('p0', 'ninguna cara')} = 3 × 3 × 2 = ${V_('p0', MP.respuestas.k)}</div></div>
+   <p>Por cada lado que <b>no</b> se pinta, se quita una capa menos. Lo mismo cambia a las esquinas: con la mesa y la pared, solo las dos de arriba y adelante tienen tres caras pintadas.</p>
+   ${fuenteHip('Pintar también la base o la cara pegada a la pared')}</div>` },
+
+ { k:'Paso 5', t:'Un sólido armado', gate:P3,
+   prep:() => { const r = !!S.pred[P3.id];
+     E.config({ vista:{ az:-38, el:30 }, prog:{ abre:r ? 1 : 0 }, caja:cajaSolido(AR, r ? 1 : 0, 'todo'),
+       desc:`Un sólido de ${AR.cubitos} cubitos pegados sobre la mesa: adelante, columnas de 3, 2 y 1 cubitos; en el medio, de 2, 2 y 1; atrás, de 1, 1 y 1. Está pintado por fuera, menos la base.`,
+       dibujo:(L, E) => { mesa(L, -1, 5.5, -1, 5.5); dibSolido(L, AR, { abre:E.prog.abre, modo:'todo', gap:.7 }); },
+       ley:[['pin', 'caras pintadas'], ['cubo', 'caras sin pintar']],
+       lect:r ? lectSol : [['ink', 'cubitos', AR.cubitos]], control:r ? manijaAbrir('abre', 'Separar') : null }); },
+   anima:fin => { E.cfg.caja = cajaSolido(AR, 1, 'todo'); E.recajar(); E.animar('abre', 1, 1800, () => { E.cfg.lect = lectSol; E.cfg.control = manijaAbrir('abre', 'Separar'); E.lecturas(); E.control();
+     E.avisar(`Los cubitos se separaron: las caras que estaban pegadas y las de la base quedaron sin pintar. Hay ${AR.caras} caras pintadas.`); fin(); }); },
+   body:() => `<p class="problem">Este sólido de ${AR.cubitos} cubitos pegados está sobre la mesa. Adelante tiene columnas de 3, 2 y 1 cubitos; en el medio, de 2, 2 y 1; atrás, de 1, 1 y 1. Se pinta por fuera, menos la base. ¿Cuántas caras de cubito quedan ${V_('pin', 'pintadas')}?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">6 × ${AR.cubitos} = ${6*AR.cubitos}<span class="note">todas las caras de los cubitos</span></div>
+   <div class="eq">− ${6*AR.cubitos - AR.expuestas}<span class="note">caras pegadas (dos por cada par de cubitos que se tocan)</span></div>
+   <div class="eq">− ${AR.expuestas - AR.caras}<span class="note">caras de la base, sobre la mesa</span></div>
+   <div class="eq">= ${V_('pin', AR.caras)} ${V_('pin', 'caras pintadas')}</div></div>
+   <p>Otra forma de contar sin desarmar: mira el sólido desde cada lado (arriba, adelante, atrás, izquierda y derecha) y suma los cuadraditos que se ven, más los escalones que quedan escondidos detrás de una columna más alta.</p>
+   ${fuenteHip('Contar como pintadas las caras pegadas o las de la base')}</div>` },
+
+ { k:'Paso 6', t:'Tres túneles en un cubo', gate:P4,
+   prep:() => { const r = !!S.pred[P4.id];
+     E.config({ vista:{ az:-30, el:28 }, prog:{ saca:r ? 1 : 0, abre:r ? .7 : 0 }, caja:r ? CAJA_TU : [[-.5, -.5, 0], [5.5, 5.5, 5]],
+       desc:'Un cubo de 5 × 5 × 5 cubitos con tres túneles de un cubito de ancho, de cara a cara: de izquierda a derecha, de adelante hacia atrás y de arriba hacia abajo, los tres por el centro.',
+       dibujo:(L, E) => dibTuneles(L, E, TU, 5),
+       ley:r ? [['tun', 'cubitos que se quitan'], ['cr', 'el cubito del cruce']] : [['ink', 'cubitos del cubo']],
+       lect:r ? lectTun : null, control:r ? manijaAbrir('abre', 'Abrir por pisos') : null }); },
+   anima:fin => { E.cfg.ley = [['tun', 'cubitos que se quitan'], ['cr', 'el cubito del cruce']]; E.leyenda(); E.cfg.caja = CAJA_TU; E.recajar();
+     E.cadena([n => E.animar('saca', 1, 2200, n), E.pausa(400), n => E.animar('abre', .7, 1200, n)], () => {
+       E.cfg.lect = lectTun; E.cfg.control = manijaAbrir('abre', 'Abrir por pisos'); E.lecturas(); E.control();
+       E.avisar(`Los cubitos de los túneles salieron del cubo: 4 por cada túnel y el del centro, que es de los tres, una sola vez. Se quitaron ${TU.quitados} y quedan ${TU.quedan}.`); fin(); }); },
+   body:() => `<p class="problem">A un cubo de 5 × 5 × 5 cubitos se le hacen tres túneles rectos de un cubito de ancho, de cara a cara: uno de izquierda a derecha, uno de adelante hacia atrás y uno de arriba hacia abajo. Los tres pasan por el centro. ¿Cuántos cubitos quedan?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">3 túneles × 5 = 15<span class="note">si no se cruzaran</span></div>
+   <div class="eq">${V_('cr', 'el del centro')} está en los 3: se contó 3 veces y es 1 → 15 − 2 = ${V_('tun', TU.quitados)}</div>
+   <div class="eq">quedan 125 − ${V_('tun', TU.quitados)} = ${TU.quedan}</div></div>
+   <p>Primero suma los cubitos de cada túnel; después, en cada ${V_('cr', 'cruce')}, resta las veces que ese cubito se contó de más. Si se cruzan dos túneles, se resta 1; si se cruzan tres en el mismo cubito, se restan 2.</p>
+   ${fuenteHip('Contar el cruce más de una vez, descontarlo por parejas o contar solo los huecos que se ven')}</div>` },
+
+ { k:'Paso 7', t:'Barras que atraviesan', gate:P5,
+   prep:() => { const r = !!S.pred[P5.id];
+     E.config({ vista:{ az:-34, el:24 }, prog:{ abre:r ? 1 : 0, marca:r ? 1 : 0 }, caja:r ? CAJA_BA : [[-1.2, 0, 0], [4.2, 3, 3]],
+       desc:'Un bloque de 4 × 3 × 3 cubitos, transparente, atravesado por tres barras: una de izquierda a derecha, una de adelante hacia atrás y una de arriba hacia abajo, que se cruzan en un mismo cubito.',
+       dibujo:(L, E) => dibBarras(L, E),
+       ley:r ? [['b', 'cubitos atravesados'], ['cr', 'el del cruce'], ['ca', 'caras atravesadas'], ['ink', 'barras', 'linea']] : [['ink', 'barras', 'linea']],
+       lect:r ? lectBar : null, control:r ? manijaAbrir('abre', 'Separar') : null }); },
+   anima:fin => { E.cfg.ley = [['b', 'cubitos atravesados'], ['cr', 'el del cruce'], ['ca', 'caras atravesadas'], ['ink', 'barras', 'linea']]; E.leyenda(); E.cfg.caja = CAJA_BA; E.recajar();
+     E.cadena([n => { E.prog.marca = 1; E.dibujar(); esperar(500, n); }, n => E.animar('abre', 1, 1600, n)], () => {
+       E.cfg.lect = lectBar; E.cfg.control = manijaAbrir('abre', 'Separar'); E.lecturas(); E.control();
+       E.avisar(`Los cubitos se separaron: entre dos cubitos vecinos de una barra hay dos caras atravesadas, una de cada uno. Son ${BA.caras} caras en ${BA.atravesados} cubitos.`); fin(); }); },
+   body:() => `<p class="problem">Tres barras atraviesan este bloque de 4 × 3 × 3 cubitos de cara a cara, una en cada dirección, y se cruzan en un mismo cubito. ¿Cuántas caras de cubito atraviesan en total?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${V_('ca', 'caras')} = 2 × (4 + 3 + 3) = ${V_('ca', BA.caras)}<span class="note">dos por cubito y por barra</span></div>
+   <div class="eq">${V_('b', 'cubitos')} = 4 + 3 + 3 − 2 = ${V_('b', BA.atravesados)}<span class="note">${V_('cr', 'el del cruce')}, una vez</span></div></div>
+   <p>Las preguntas de barras piden a veces <b>caras</b> y a veces <b>cubitos</b>. Las caras se suman barra por barra (el cubito del cruce tiene seis); los cubitos se cuentan como en los túneles, restando los cruces.</p>
+   <p class="hint">Sin atravesar quedan ${BA.libres} de los ${BA.cubitos} cubitos.</p>
+   ${fuenteHip('Dar los cubitos en vez de las caras, contar como una las dos caras que se tocan o dar dos caras al cubito del cruce')}</div>` },
+
+ { k:'Paso 8', t:'Una escalera que crece', gate:P6,
+   prep:() => { const r = !!S.pred[P6.id];
+     E.config({ vista:{ az:-20, el:18 }, prog:{ n:r ? 20 : 3, tres:r ? 0 : 1 }, caja:r ? [[0, -1, 0], [20, 1, 20]] : [[0, -1, 0], [12, 1, 4]],
+       desc:'Las figuras 1, 2 y 3: escaleras de cubitos de un cubito de fondo, sobre la mesa, pintadas por fuera menos la base.',
+       dibujo:(L, E) => dibEscalera(L, E),
+       ley:[['pin', 'cuadraditos pintados'], ['cubo', 'sin pintar']],
+       lect:r ? lectEsc : null, control:r ? manijaEsc : null }); },
+   anima:fin => { E.cfg.caja = [[0, -1, 0], [20, 1, 20]]; E.recajar();
+     E.cadena([n => { E.prog.tres = 0; E.prog.n = 3; E.dibujar(); esperar(300, n); }, n => E.animar('n', 20, 2600, n)], () => {
+       E.prog.n = 20; E.cfg.lect = lectEsc; E.cfg.control = manijaEsc; E.lecturas(); E.control(); E.dibujar();
+       E.avisar(`La escalera creció hasta la figura 20, de 210 cubitos y ${ES.area} cuadraditos pintados. Con el control puedes ver cualquier figura.`); fin(); }); },
+   body:() => `<p class="problem">Las figuras 1, 2 y 3 son escaleras de cubitos de un cubito de fondo, sobre la mesa. Se pinta cada figura por fuera, sin la base. La figura 10 tiene ${ES10.area} cuadraditos pintados. ¿Cuántos tiene la figura 20?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">adelante y atrás: 2 × (1 + 2 + … + n) = n(n + 1)</div>
+   <div class="eq">arriba: n · izquierda: n · derecha: n</div>
+   <div class="eq">${V_('pin', 'pintados')} = n(n + 1) + 3n = n² + 4n → n = 20: ${V_('pin', ES.area)}</div></div>
+   <p>Antes de extender una sucesión de sólidos, mira cómo crece cada lado: lo de adelante y atrás crece como un triángulo de cubitos (n²), y lo demás, como n. Por eso la figura 20 no es el doble de la 10 ni crece de 7 en 7.</p>
+   <p class="fuente">Duplicar un término (la opción A) es el método del «objeto entero», que Stacey (1989) describe como frecuente en sucesiones, incluso en alumnos que antes usaron bien otro método; no da porcentajes. Suponer un crecimiento parejo y contar la base son hipótesis nuestras.</p></div>` },
+
+ { k:'Paso 9', t:'Lo que se cuenta y lo que no',
+   prep:() => { const R = MC.pintado({ dims:[4, 4, 4] }); E.config({ vista:V0, prog:{ abre:.85 }, caja:cajaSolido(R, 1),
+     desc:'El cubo de 4 × 4 × 4, abierto por pisos, con cada cubito del color de sus caras pintadas.',
+     dibujo:(L, E) => dibSolido(L, R, { col:true, abre:E.prog.abre, modo:'pisos' }),
+     ley:LEY_CAT, control:manijaAbrir('abre', 'Abrir por pisos') }); },
+   body:() => `<p class="problem">Para contar cubitos y caras, primero decide <b>qué</b> se cuenta y <b>qué no</b>.</p>
+   <div class="tabla"><table class="formulas"><tr><th>Pregunta</th><th>Cómo se cuenta</th></tr>
+   <tr><th>${V_('p2', 'dos caras')} en n × n × n</th><td>12(n − 2): sin las esquinas</td></tr>
+   <tr><th>sobre la mesa, contra la pared</th><td>esas caras no se pintan: se quita una capa menos</td></tr>
+   <tr><th>${V_('pin', 'caras pintadas')} de un sólido</th><td>6N − pegadas − base</td></tr>
+   <tr><th>${V_('tun', 'túneles')}</th><td>suma de túneles − lo contado de más en los ${V_('cr', 'cruces')}</td></tr>
+   <tr><th>${V_('ca', 'caras atravesadas')}</th><td>2 × cubitos de cada barra, sumados</td></tr>
+   <tr><th>sucesión de sólidos</th><td>cómo crece cada lado, no el doble ni de a poco</td></tr></table></div>
+   <p class="hint">Sigue con «¿Qué pasa si…?»: una esquina del cuarto, otro sólido armado, un cubo con más túneles, una tira que se corta para armar un cubo y el mayor cubo con bloques de dos tamaños.</p>` },
+];
+
+// ----- los dibujos de túneles, barras y escalera -----
+function dibTuneles(L, E, T, n){
+  const pr = E.prog;
+  mesa(L, -3.5, n + 3.5, -3.5, n + 3.5);
+  const cruce = new Set(T.cruceCeldas.map(MC.util.clave)), c0 = (n - 1)/2;
+  for (const p of T.quedanCeldas) L.cubo(abrir(p, pr.abre, 'pisos', .9), {});
+  if (pr.saca > 0){
+    for (const p of T.quitadas){
+      const k = MC.util.clave(p), esCruce = cruce.has(k);
+      // cada cubito sale por su túnel hacia la cara más cercana; el del cruce sube por encima del cubo
+      const base = abrir(p, pr.abre, 'pisos', .9);
+      let q;
+      if (esCruce) q = lerp3(base, [n + 1.5, -2.5, 0], pr.saca);   // el del cruce sale aparte, una sola vez
+      else {
+        const ejes = [0, 1, 2].filter(i => p[i] !== c0), i = ejes.length ? ejes.reduce((a, b) => (Math.abs(p[a] - c0) >= Math.abs(p[b] - c0) ? a : b)) : 2;
+        const d = [0, 0, 0]; d[i] = i === 2 || p[i] > c0 ? 1 : -1;
+        q = add3(base, d.map(v => v*(i === 2 ? n*(1 + .9*pr.abre) - c0 + .5 : 3.2)*pr.saca));
+      }
+      L.cubo(q, { col:esCruce ? 'cr' : 'tun', alfa:.95 });
+    }
+  }
+}
+const lectTun = [['tun', 'quitados', TU.quitados], ['cr', 'cruces', TU.cruces], ['ink', 'quedan', TU.quedan]];
+function dibBarras(L, E){
+  const pr = E.prog, g = .9*pr.abre, pos = p => [p[0]*(1 + g), p[1]*(1 + g), p[2]*(1 + g)];
+  const at = new Map(BA.celdas.map((p, i) => [MC.util.clave(p), BA.perforadas[i]]));
+  const cruce = BA.celdas.filter((p, i) => BA.perforadas[i].length > 2).map(MC.util.clave);
+  for (const p of MC.solido({ dims:[4, 3, 3] })){
+    const k = MC.util.clave(p), m = at.get(k);
+    const col = pr.marca && m ? (cruce.includes(k) ? 'cr' : 'b') : null;
+    L.cubo(pos(p), { transparente:true, col, alfa:col ? .55 : .2, bordeAlfa:col ? .8 : .45, marcas:pr.marca && m ? m : null });
+  }
+  // las barras pasan por el centro de su fila de cubitos
+  const largo = [4, 3, 3];
+  [['x', [1, 1]], ['y', [1, 1]], ['z', [1, 1]]].forEach(([e, en]) => {
+    const i = 'xyz'.indexOf(e), otros = [0, 1, 2].filter(j => j !== i);
+    const a = [0, 0, 0], b = [0, 0, 0];
+    otros.forEach((j, t) => { a[j] = b[j] = (en[t] + .5)*(1 + g) - g/2; });
+    a[i] = -1.2; b[i] = largo[i]*(1 + g) + .2;
+    L.linea(a, b, 'ink', { ancho:3.5, alfa:.9 });
+  });
+}
+const lectBar = [['ca', 'caras', BA.caras], ['b', 'cubitos', BA.atravesados], ['cr', 'cruce', 1]];
+function dibEscalera(L, E){
+  const pr = E.prog;
+  if (pr.tres){
+    // las figuras 1, 2 y 3, una al lado de la otra
+    let x0 = 0;
+    for (const n of [1, 2, 3]){
+      const R = MC.pintado({ celdas:MC.util.celdasFigura('escalera', n), sinPintar:['mesa'] });
+      mesa(L, x0 - .4, x0 + n + .4, -.6, 1.6);
+      R.celdas.forEach((p, i) => L.cubo([p[0] + x0, p[1], p[2]], { caras:R.porCara[i] }));
+      L.texto([x0 + n/2, 0, -.7], `figura ${n}`, 'muted', { dy:10 });
+      x0 += n + 2;
+    }
+    return;
+  }
+  const n = Math.max(1, Math.round(pr.n));
+  const R = MC.pintado({ celdas:MC.util.celdasFigura('escalera', n), sinPintar:['mesa'] });
+  mesa(L, -.6, n + .6, -.8, 1.8);
+  R.celdas.forEach((p, i) => L.cubo(p, { caras:R.porCara[i] }));
+  L.texto([n/2, 0, -.7], `figura ${n}`, 'muted', { dy:10 });
+}
+const lectEsc = E => { const n = Math.max(1, Math.round(E.prog.n)), F = MC.sucesion({ tipo:'escalera', n }); return [['ink', 'figura', n], ['ink', 'cubitos', F.cubitos], ['pin', 'pintados', F.area]]; };
+const manijaEsc = { etiqueta:'Figura', min:1, max:20, paso:1, fmt:v => `n = ${v}`, leer:E => Math.round(E.prog.n), poner:(E, v) => { E.prog.n = v; } };
+var lectSol = [['pin', 'caras pintadas', AR.caras], ['ink', 'pegadas', 6*AR.cubitos - AR.expuestas], ['ink', 'en la mesa', AR.expuestas - AR.caras]];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; li.appendChild(b); dots.appendChild(li);
+  b.addEventListener('click', () => go(k));
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = !!(s.gate && !S.pred[s.gate.id]); Celular.compactar($('m1'), E.compacto);
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (!s.gate) E.avisar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Paso ${k + 1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.setAttribute('aria-label', `Ir al paso ${k + 1}: ${steps[k].t}`); }
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){
+  const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return;
+  if (k > S.max) S.max = Math.min(k, steps.length - 1);
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); E.compactar(false); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; E.ocupado = true; nav(); E.control();
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    const listo = () => { S.ocupado = false; E.ocupado = false; nav(); E.control(); };
+    Celular.alResponder($('cv'), () => s.anima(listo), () => S.step === paso, { siNo:listo });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Una esquina del cuarto, otro sólido armado, un cubo con cuatro túneles y su peso, una tira que se corta para armar un
+   cubo y el mayor cubo con bloques de dos tamaños. La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', 'ctl2', 'izq2', 'der2');
+const ESQ = MC.pintado({ dims:[3, 3, 3], sinPintar:['mesa', 'atras', 'izquierda'], k:3 });
+const SOL2 = [[3, 2, 2], [2, 1, 1], [1, 0, 0]];
+const AR2 = MC.pintado({ alturas:SOL2, sinPintar:['mesa'], k:2 });
+const TUN4 = [{ eje:'x', en:[1, 2] }, { eje:'y', en:[1, 2] }, { eje:'z', en:[1, 1] }, { eje:'z', en:[2, 2] }];
+const PE = MC.agujereado({ n:4, masa:5, tuneles:TUN4 });
+const DI = MC.diseccion({ dims:[32, 2, 1] });
+const MY = MC.mayorCubo({ g:3, grandes:3, chicos:60 });
+const manijaAbrir = (k, et) => ({ etiqueta:et || 'Abrir', min:0, max:100, paso:1, fmt:v => `${Math.round(v)} %`, leer:E => Math.round((E.prog[k] || 0)*100), poner:(E, v) => { E.prog[k] = v/100; } });
+const g = n => `${n} g`;
+const CAJA_T4 = [[-3, -3, 0], [7, 7, 11]];
+
+const EXPS = [
+ { id:'esquina', corto:'En la esquina del cuarto', ok:'b',
+   q:'Un cubo de 3 × 3 × 3 cubitos está en la esquina de un cuarto: sobre el piso, pegado a la pared de atrás y a la de la izquierda. Se pinta todo lo que queda a la vista. ¿Cuántos cubitos quedan con <b>tres</b> caras pintadas?',
+   opts:[['a', `${ESQ.errores.k.conTodas} cubitos`, 'RME1', 'hipotesis'], ['b', `${ESQ.respuestas.k} cubito`], ['c', `${ESQ.errores.k.olvidaPared} cubitos`, 'RME1', 'hipotesis'], ['d', `${ESQ.errores.k.olvidaMesa} cubitos`, 'RME1', 'hipotesis']],
+   fb:{ a:'8 son las esquinas de un cubo pintado entero. Aquí el piso y las dos paredes tapan tres de sus lados.',
+     c:'4 son las esquinas de arriba, como si las paredes también se pintaran. Las de atrás y las de la izquierda pierden una cara.',
+     d:'2 son las esquinas de adelante y a la derecha, como si se pintara también abajo. La de abajo está sobre el piso.' },
+   antes:r => E.config({ vista:{ az:32, el:28 }, azRango:r ? null : [5, 80], prog:{ sep:r ? 1 : 0, col:r ? 1 : 0 }, caja:[[-.5, -2.5, 0], [4.5, 3.5, 4.5]],
+     desc:'Un cubo de 3 × 3 × 3 cubitos en la esquina de un cuarto: sobre el piso, contra la pared de atrás y la de la izquierda, pintado en lo que se ve.',
+     dibujo:(L, E) => { const pr = E.prog; mesa(L, 0, 4.5, -2.5, 3); paredAtras(L, 0, 4.5, 3, 4, 1 - pr.sep); paredIzq(L, 0, -2.5, 3, 4, 1 - pr.sep);
+       dibSolido(L, ESQ, { col:pr.col > .5, solo:pr.col > .5 ? [3] : null, mover:[.8*pr.sep, -1.4*pr.sep, .6*pr.sep] }); },
+     ley:r ? [['p3', 'tres caras pintadas'], ['pin', 'caras pintadas']] : [['pin', 'caras pintadas']],
+     lect:r ? lectCat(ESQ) : null }),
+   despues:fin => { E.cfg.ley = [['p3', 'tres caras pintadas'], ['pin', 'caras pintadas']]; E.leyenda(); E.cfg.azRango = null;
+     E.cadena([n => E.animar('sep', 1, 1300, n), n => E.animar('az', 215, 2200, n), E.pausa(600), n => E.animar('az', 32, 1600, n), n => { E.prog.col = 1; E.dibujar(); esperar(200, n); }], () => { E.cfg.lect = lectCat(ESQ); E.lecturas();
+       E.avisar('El cubo salió de la esquina y giró: sus caras de atrás y de la izquierda quedaron sin pintar, igual que la de abajo. Solo la esquina de arriba, adelante y a la derecha tiene tres caras pintadas.'); fin(); }); },
+   exp:() => `<p>Una esquina tiene tres caras pintadas solo si ninguna de sus tres caras toca el piso o una pared. Con el piso y dos paredes, de las 8 esquinas queda ${V_('p3', '1')}: la de arriba, adelante y a la derecha.</p>
+     <p>Los cubitos sin ninguna cara pintada también cambian: (3 − 1)³ = ${V_('p0', ESQ.cuenta[0])}, porque de cada lado se quita una sola capa.</p>${fuenteHip('Pintar también lo que toca el piso o las paredes')}` },
+
+ { id:'armado', corto:'Otro sólido armado', ok:'b',
+   q:`Este sólido de ${AR2.cubitos} cubitos está sobre la mesa. Adelante tiene columnas de 3, 2 y 2 cubitos; en el medio, de 2, 1 y 1; atrás, una sola columna de 1, a la izquierda. Se pinta por fuera, menos la base. ¿Cuántos cubitos quedan con <b>exactamente dos</b> caras pintadas?`,
+   opts:[['a', `${AR2.errores.k.yLaSiguiente} cubitos`, 'RME4', 'hipotesis'], ['b', `${AR2.respuestas.k} cubitos`], ['c', `${AR2.errores.k.otra} cubitos`, 'RME4', 'hipotesis'], ['d', `${AR2.errores.k.conTodas} cubitos`, 'RME1', 'hipotesis']],
+   fb:{ a:`${AR2.errores.k.yLaSiguiente} junta los de dos caras con los de tres. «Exactamente dos» deja fuera a los de tres.`,
+     c:`${AR2.errores.k.otra} son los que tienen tres caras pintadas, no dos.`,
+     d:`${AR2.errores.k.conTodas} sería si también se pintara la base: entonces los cubitos de abajo tendrían una cara más.` },
+   antes:r => E.config({ vista:{ az:-38, el:30 }, prog:{ abre:r ? 1 : 0, col:r ? 1 : 0 }, caja:cajaSolido(AR2, r ? 1 : 0, 'todo'),
+     desc:`Un sólido de ${AR2.cubitos} cubitos sobre la mesa: adelante, columnas de 3, 2 y 2; en el medio, de 2, 1 y 1; atrás, una columna de 1. Pintado por fuera, menos la base.`,
+     dibujo:(L, E) => { mesa(L, -1, 5.5, -1, 5.5); dibSolido(L, AR2, { col:E.prog.col > .5, abre:E.prog.abre, modo:'todo', gap:.7 }); },
+     ley:r ? LEY_CAT.concat([['pin', 'caras pintadas']]) : [['pin', 'caras pintadas']],
+     lect:r ? lectCat(AR2) : [['ink', 'cubitos', AR2.cubitos]], control:r ? manijaAbrir('abre', 'Separar') : null }),
+   despues:fin => { E.cfg.ley = LEY_CAT.concat([['pin', 'caras pintadas']]); E.leyenda(); E.cfg.caja = cajaSolido(AR2, 1, 'todo'); E.recajar();
+     E.cadena([n => { E.prog.col = 1; E.dibujar(); esperar(300, n); }, n => E.animar('abre', 1, 1500, n)], () => { E.cfg.lect = lectCat(AR2); E.cfg.control = manijaAbrir('abre', 'Separar'); E.lecturas(); E.control();
+       E.avisar(`Cada cubito tomó el color de sus caras pintadas y se separaron. Con dos caras hay ${AR2.respuestas.k}.`); fin(); }); },
+   exp:() => `<p>En un sólido armado no hay fórmula: se mira cada cubito y se cuentan sus caras que quedan al aire, sin las pegadas y sin la base. Separarlos ayuda a verlo. Los de una sola columna sobresalen y tienen más caras pintadas que los del medio.</p>
+     <p class="hint">Las cuentas: ${V_('p3', 'tres o más')}: ${AR2.cuenta[3] + AR2.cuenta[4] + AR2.cuenta[5]} · ${V_('p2', 'dos')}: ${AR2.cuenta[2]} · ${V_('p1', 'una')}: ${AR2.cuenta[1]} · ${V_('p0', 'ninguna')}: ${AR2.cuenta[0]}.</p>${fuenteHip('Contar también los de tres caras, confundir dos con tres o pintar la base')}` },
+
+ { id:'peso', corto:'Cuatro túneles y el peso', ok:'b',
+   q:'Un cubo de 4 × 4 × 4 está hecho con cubitos de 5 g. Se le hacen cuatro túneles de un cubito de ancho, de cara a cara. Uno de izquierda a derecha y otro de adelante hacia atrás, en el tercer piso, que se cruzan. Dos de arriba hacia abajo: uno pasa justo por ese cruce y el otro no toca a ningún túnel. ¿Cuánto pesa lo que queda?',
+   opts:[['a', g(PE.errores.peso.sinCruces), 'RME2', 'hipotesis'], ['b', g(PE.respuestas.peso)], ['c', g(PE.errores.peso.parejas), 'RME110', 'hipotesis'], ['d', g(PE.errores.peso.soloVisibles), 'RME3', 'hipotesis']],
+   fb:{ a:`${g(PE.errores.peso.sinCruces)} resta 4 × 4 = 16 cubitos. El del cruce está en tres túneles y se quita una sola vez.`,
+     c:`${g(PE.errores.peso.parejas)} descuenta los tres pares de túneles que se cruzan, pero los tres se cruzan en el mismo cubito: se descuentan 2.`,
+     d:`${g(PE.errores.peso.soloVisibles)} quita solo los cubitos que se ven en la superficie. Los túneles siguen por dentro.` },
+   antes:r => E.config({ vista:{ az:-30, el:30 }, prog:{ saca:r ? 1 : 0, abre:r ? .7 : 0 }, caja:r ? CAJA_T4 : [[-.5, -.5, 0], [4.5, 4.5, 4]],
+     desc:'Un cubo de 4 × 4 × 4 cubitos con cuatro túneles: uno de izquierda a derecha y otro de adelante hacia atrás en el tercer piso, que se cruzan, y dos de arriba hacia abajo.',
+     dibujo:(L, E) => dibTun4(L, E),
+     ley:r ? [['tun', 'cubitos que se quitan'], ['cr', 'el cubito del cruce']] : [['ink', 'cubitos de 5 g']],
+     lect:r ? [['tun', 'quitados', PE.quitados], ['ink', 'quedan', PE.quedan], ['ink', 'peso', g(PE.peso)]] : null, control:r ? manijaAbrir('abre', 'Abrir por pisos') : null }),
+   despues:fin => { E.cfg.ley = [['tun', 'cubitos que se quitan'], ['cr', 'el cubito del cruce']]; E.leyenda(); E.cfg.caja = CAJA_T4; E.recajar();
+     E.cadena([n => E.animar('saca', 1, 2000, n), n => E.animar('abre', .7, 1100, n)], () => {
+       E.cfg.lect = [['tun', 'quitados', PE.quitados], ['ink', 'quedan', PE.quedan], ['ink', 'peso', g(PE.peso)]]; E.cfg.control = manijaAbrir('abre', 'Abrir por pisos'); E.lecturas(); E.control();
+       E.avisar(`Salieron los ${PE.quitados} cubitos de los túneles; el del cruce, una sola vez. Quedan ${PE.quedan} cubitos, que pesan ${PE.peso} g.`); fin(); }); },
+   exp:() => `<div class="eqs"><div class="eq">4 túneles × 4 = 16 → 16 − 2 = ${V_('tun', PE.quitados)}<span class="note">${V_('cr', 'el cruce')} está en tres túneles</span></div>
+     <div class="eq">quedan 64 − ${V_('tun', PE.quitados)} = ${PE.quedan} → ${PE.quedan} × 5 g = ${g(PE.peso)}</div></div>
+     <p>El túnel que no toca a ninguno se resta entero. En el cubito donde se cruzan tres túneles, hay que devolver 2 de las 3 veces que se restó.</p>${fuenteHip('Contar el cruce varias veces, descontarlo por parejas o restar solo lo que se ve')}` },
+
+ { id:'diseccion', corto:'Una tira que se vuelve cubo', ok:'d',
+   q:'Una tira de madera de 32 × 2 × 1 cm se corta con cortes rectos para armar con todas las piezas un cubo macizo. Entre corte y corte se pueden mover y apilar las piezas, para que un corte las parta a la vez. ¿Cuántos cortes hacen falta como mínimo?',
+   opts:[['a', `${DI.errores.cortes.piezas} cortes`, 'RME113', 'hipotesis'], ['b', `${DI.errores.cortes.sinApilar} cortes`, 'RME118', 'hipotesis'], ['c', `${DI.errores.cortes.mitad} cortes`, 'RME119', 'hipotesis'], ['d', `${DI.respuestas.cortes} cortes`]],
+   fb:{ a:`${DI.errores.cortes.piezas} son las piezas que hacen falta (de 4 × 2 × 1), no los cortes.`,
+     b:`${DI.errores.cortes.sinApilar} serían los cortes sin apilar, uno entre cada dos piezas. Apilando, cada corte parte todas las piezas del montón.`,
+     c:`${DI.errores.cortes.mitad} supone que cada corte suelta dos piezas nuevas. Apilando, cada corte duplica las piezas: 1 → 2 → 4 → 8.` },
+   antes:r => E.config({ vista:{ az:-25, el:30 }, prog:{ t:r ? DI.plan.length - 1 : 0 }, caja:r ? [[-2, -1, 0], [6, 5, 4]] : [[0, 0, 0], [32, 4, 4]],
+     desc:'Una tira de madera de 32 × 2 × 1, larga y baja, sobre la mesa.',
+     dibujo:(L, E) => dibPlan(L, E),
+     ley:r ? [['co', 'corte'], ['ink', 'piezas']] : [['ink', 'la tira de 32 × 2 × 1']],
+     lect:r ? [['co', 'cortes', DI.cortes], ['ink', 'piezas', DI.piezas], ['ink', 'cubo', `${DI.lado} × ${DI.lado} × ${DI.lado}`]] : null }),
+   despues:fin => { E.cfg.ley = [['co', 'corte'], ['ink', 'piezas']]; E.leyenda();
+     const pasos = [];
+     for (let j = 0; j < DI.plan.length - 1; j++) pasos.push(n => { E.prog.t = j; E.prog.corte = 0; E.prog.mueve = 0; E.dibujar(); esperar(200, n); }, n => E.animar('corte', 1, 700, n), n => E.animar('mueve', 1, 1100, n));
+     E.cadena(pasos, () => { E.prog.t = DI.plan.length - 1; E.prog.corte = 0; E.prog.mueve = 0; E.cfg.caja = [[-2, -1, 0], [6, 5, 4]]; E.recajar();
+       E.cfg.lect = [['co', 'cortes', DI.cortes], ['ink', 'piezas', DI.piezas], ['ink', 'cubo', `${DI.lado} × ${DI.lado} × ${DI.lado}`]]; E.lecturas();
+       E.avisar('Tres cortes: la tira se partió en dos y se apiló; las dos piezas se partieron juntas y se apilaron; las cuatro se partieron juntas y se acomodaron en un cubo de 4 × 4 × 4.'); fin(); }); },
+   exp:() => `<div class="eqs"><div class="eq">volumen 32 × 2 × 1 = 64 = 4³ → cubo de 4</div><div class="eq">piezas de 4 de largo: 32 ÷ 4 = 8 → 1 → 2 → 4 → 8: ${V_('co', DI.cortes)} cortes</div></div>
+     <p>Ninguna pieza puede medir más de 4 de largo, así que hacen falta 8 piezas. Cada corte, apilando, a lo más <b>duplica</b> las piezas: con 2 cortes hay a lo más 4. Por eso el mínimo es 3. Sin apilar serían 7.</p>${fuenteHip('Dar las piezas en vez de los cortes, no apilar o creer que cada corte suelta dos piezas')}` },
+
+ { id:'mayor-cubo', corto:'El mayor cubo con dos tamaños', ok:'b',
+   q:'Hay 3 cubos de 3 cm de arista y 60 cubitos de 1 cm. Con ellos se arma el mayor cubo macizo posible, usando la menor cantidad de bloques. ¿Cuántos bloques se usan?',
+   opts:[['a', `${MY.errores.bloques.porVolumen} bloques`, 'RME114', 'hipotesis'], ['b', `${MY.respuestas.bloques} bloques`], ['c', `${MY.errores.bloques.unidades} bloques`, 'RME117', 'hipotesis'], ['d', `${MY.errores.bloques.soloChicos} bloques`, 'RME116', 'hipotesis']],
+   fb:{ a:`${MY.errores.bloques.porVolumen} sale de un cubo de 5, porque el volumen total es ${MY.volumen} ≥ 125. Pero en un cubo de 5 cabe un solo cubo de 3, y faltarían cubitos: no se puede.`,
+     c:`${MY.errores.bloques.unidades} es el volumen del cubo de 4, en cubitos de 1 cm. El cubo grande cuenta como un solo bloque.`,
+     d:`${MY.errores.bloques.soloChicos} es el cubo de 3 hecho solo con cubitos. Usando un cubo grande se arma uno mayor.` },
+   antes:r => E.config({ vista:{ az:-28, el:30 }, prog:{ arma:r ? 1 : 0 }, caja:[[-1, -1, 0], [16, 8, 4]],
+     desc:'Tres cubos de 3 cm de arista en fila y, al lado, una bandeja con 60 cubitos de 1 cm.',
+     dibujo:(L, E) => dibMayor(L, E),
+     ley:[['g', 'cubos de 3 cm'], ['ch', 'cubitos de 1 cm']],
+     lect:r ? lectMayor : null }),
+   despues:fin => E.animar('arma', 1, 2400, () => { E.cfg.lect = lectMayor; E.lecturas();
+     E.avisar(`Se armó un cubo de 4 cm con 1 cubo grande y ${MY.usaChicos} cubitos: ${MY.bloques} bloques. Sobran ${MY.sobranGrandes} cubos grandes y ${MY.sobranChicos} cubitos.`); fin(); }),
+   exp:() => `<div class="eqs"><div class="eq">volumen: 3 × 27 + 60 = ${MY.volumen} → a lo más un cubo de 5</div>
+     <div class="eq">lado 5: cabe ${V_('g', '1')} grande (5 &lt; 6) → faltan 125 − 27 = 98 cubitos; hay 60 ✗</div>
+     <div class="eq">lado 4: ${V_('g', '1')} grande + ${V_('ch', MY.usaChicos)} cubitos = ${MY.bloques} bloques ✓</div></div>
+     <p>El volumen solo dice el tamaño máximo posible. Hay que ver cuántos bloques grandes <b>caben</b> en el cubo: en uno de lado L entran ⌊L/3⌋³ cubos de 3. Y como cada cubo grande reemplaza a 27 cubitos, se usan los más que quepan.</p>${fuenteHip('Fijar el lado solo por el volumen, contar cubitos de volumen en vez de bloques o usar un solo tamaño')}` },
+];
+function dibTun4(L, E){
+  const pr = E.prog, n = 4;
+  mesa(L, -3, n + 3, -3, n + 3);
+  const cruce = new Set(PE.cruceCeldas.map(MC.util.clave));
+  for (const p of PE.quedanCeldas) L.cubo(abrir(p, pr.abre, 'pisos', .9), {});
+  if (pr.saca > 0) PE.quitadas.forEach(p => {
+    const k = MC.util.clave(p), esCruce = cruce.has(k);
+    // el cubito sale por el túnel al que pertenece (el del cruce, hacia arriba)
+    const t = TUN4.find(t => { const i = 'xyz'.indexOf(t.eje), o = [0, 1, 2].filter(j => j !== i); return p[o[0]] === t.en[0] && p[o[1]] === t.en[1]; });
+    const base = abrir(p, pr.abre, 'pisos', .9);
+    if (esCruce) { L.cubo(lerp3(base, [n + 1.5, -2.5, 0], pr.saca), { col:'cr', alfa:.95 }); return; }
+    const i = 'xyz'.indexOf(t.eje), d = [0, 0, 0]; d[i] = i === 2 || p[i] >= 2 ? 1 : -1;
+    L.cubo(add3(base, d.map(v => v*(i === 2 ? n*(1 + .9*pr.abre) + .5 : 2.6)*pr.saca)), { col:'tun', alfa:.95 });
+  });
+}
+function dibPlan(L, E){
+  const pr = E.prog, j = Math.min(Math.round(pr.t), DI.plan.length - 1);
+  mesa(L, -.5, 32.5, -.5, 4.5);
+  const etapa = DI.plan[j], sig = DI.plan[j + 1];
+  if (sig && (pr.corte || pr.mueve)){
+    // corte: un plano por la mitad del lado largo de todas las piezas, luego cada mitad va a su lugar
+    for (const c of sig) L.caja(lerp3(c.antes, c.o, pr.mueve || 0), c.d, { alfa:1 });
+    if (!pr.mueve || pr.mueve < .05){
+      const x = etapa[0].o[0] + etapa[0].d[0]/2, h = Math.max(...etapa.map(c => c.o[2] + c.d[2])) + .6, w = Math.max(...etapa.map(c => c.o[1] + c.d[1])) + .6;
+      L.corte([[x, -.3, -.2], [x, w, -.2], [x, w, h], [x, -.3, h]], 'co', { alfa:.35*(pr.corte || 1) });
+    }
+    return;
+  }
+  for (const c of etapa) L.caja(c.o, c.d, {});
+}
+function dibMayor(L, E){
+  const f = E.prog.arma;
+  mesa(L, -1, 16, -1, 8);
+  // dónde está cada bloque antes (fila de cubos grandes y bandeja de cubitos) y después (el cubo de 4 en x = 0..4)
+  const grandesAntes = [[0, 0, 0], [3.6, 0, 0], [7.2, 0, 0]], grandesDespues = [[0, 0, 0], [5.2, 0, 0], [5.2, 3.8, 0]];
+  for (let i = 0; i < 3; i++) L.caja(lerp3(grandesAntes[i], grandesDespues[i], f), [3, 3, 3], { col:'g', alfa:.85 });
+  const destino = [];
+  for (let z = 0; z < 4; z++) for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) if (!(x < 3 && y < 3 && z < 3)) destino.push([x, y, z]);
+  for (let i = 0; i < 60; i++){
+    const a = [11 + (i % 4), Math.floor(i/4) % 5, Math.floor(i/20)];
+    const j = i - destino.length, d = i < destino.length ? destino[i] : [9.6 + (j % 4), Math.floor(j/4) % 3, Math.floor(j/12)];
+    L.cubo(lerp3(a, d, f), { col:'ch', alfa:.8 });
+  }
+}
+const lectMayor = [['ink', 'arista', `${MY.lado} cm`], ['g', 'grandes', MY.usaGrandes], ['ch', 'cubitos', MY.usaChicos], ['ink', 'bloques', MY.bloques]];
+
+const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k > primeraLibre() || E.ocupado) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  E.compacto = !S.pred[x.id]; Celular.compactar($('m2'), E.compacto);
+  x.antes(!!S.pred[x.id]);
+  E.compactar(!S.pred[x.id]);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2', x.texto)}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { if (E.ocupado) return; ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); E.compactar(false); pintar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    E.ocupado = true; botonesOcupado(true); E.control();
+    const listo = () => { E.ocupado = false; botonesOcupado(false); E.control(); };
+    Celular.alResponder($('cv2'), () => x.despues(() => { if (S.k === k) E.dibujar(); listo(); }), () => S.k === k, { siNo:listo });
+  });
+  pintar();
+}
+// Mientras corre la animación de la respuesta, no se cambia de experimento (se terminaría a medias).
+function botonesOcupado(on){
+  $('exps').querySelectorAll('button').forEach(b => { if (!b.hasAttribute('aria-disabled')) b.disabled = on; });
+  const sig = $('sig2'); if (sig) sig.disabled = on;
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

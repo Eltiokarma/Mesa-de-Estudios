@@ -1,0 +1,581 @@
+{
+ "plantilla": "vistas-cubitos",
+ "unidades": "Cubitos de arista 1 (o con las medidas dadas). Ejes: x a la derecha, y hacia el fondo (y = 0 es la fila del frente), z hacia arriba (z = 0 apoya en la mesa). Un sólido es una lista de pisos de abajo hacia arriba; cada piso es una lista de filas COMO SE VE DESDE ARRIBA (primera fila = la del fondo, última = la del frente) y cada carácter es una columna x («#» hay cubito, «.» no hay). Las vistas son listas de filas tal como se dibujan, de arriba abajo: frontal (columnas x, filas z de arriba abajo), superior (columnas x, filas y del fondo al frente), lateral desde la DERECHA (columnas y del frente al fondo, filas z de arriba abajo).",
+ "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.soloFrontal). Caras = regiones planas maximales de la superficie (cuadraditos coplanares con la misma normal y unidos por un lado), incluida la base. Vértices = puntos donde la superficie no es plana ni una arista recta. El mínimo es de cubitos apilados (cada uno sobre la mesa o sobre otro). Visibles = cubitos con alguna parte de su superficie que se ve desde la dirección (1, −1, 1). En poliedroVistas las vistas son polígonos convexos; el sólido es la intersección de los tres prismas. En cubrir, cada término tapa con un cubito cada cara al aire del anterior salvo las que tocan la mesa; un cubito que toca dos caras cuenta una vez.",
+ "verificacion": "",
+ "tolerancia": 1e-9,
+ "casos": [
+  {
+   "nombre": "Paso 1: las tres vistas de un sólido de 5 cubitos",
+   "fn": "vistas",
+   "args": [
+    [
+     ["###", "#.."],
+     ["#..", "..."]
+    ]
+   ],
+   "espera": {
+    "frontal": ["#..", "###"],
+    "superior": ["###", "#.."],
+    "lateral": [".#", "##"],
+    "areas.frontal": 4,
+    "areas.superior": 4,
+    "areas.lateral": 3
+   },
+   "tambien": [
+    {
+     "fn": "analizar",
+     "args": [
+      [
+       ["###", "#.."],
+       ["#..", "..."]
+      ]
+     ],
+     "espera": {
+      "volumen": 5,
+      "caras": 12,
+      "aristas": 27,
+      "vertices": 17,
+      "euler": 2,
+      "cuadraditos": 22,
+      "visibles": 4
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Predicción 1 (paso 2): la vista superior del sólido dibujado → la superior; los errores son la frontal, la lateral y la superior al revés",
+   "fn": "elegirVista",
+   "args": [
+    [
+     ["##.", "###", "#.."],
+     ["#..", "##.", "..."],
+     ["#..", "...", "..."]
+    ],
+    "superior"
+   ],
+   "espera": {
+    "correcta": ["##.", "###", "#.."],
+    "errores.frontal": ["#..", "##.", "###"],
+    "errores.lateral": ["..#", ".##", "###"],
+    "errores.reflejada": ["#..", "###", "##."]
+   },
+   "tambien": [
+    {
+     "fn": "analizar",
+     "args": [
+      [
+       ["##.", "###", "#.."],
+       ["#..", "##.", "..."],
+       ["#..", "...", "..."]
+      ]
+     ],
+     "espera": {
+      "volumen": 10,
+      "visibles": 8,
+      "ocultos": 2
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Predicción 2 (paso 3): el máximo de cubitos con tres vistas de escalera → 14 (errores: solo la frontal 6, las tres vistas sumadas 21, la caja 27)",
+   "fn": "maximo",
+   "args": [
+    ["#..", "##.", "###"],
+    ["###", "###", "###"],
+    ["..#", ".##", "###"]
+   ],
+   "espera": {
+    "cubitos": 14,
+    "volumen": 14,
+    "coincide": true,
+    "pisos": [
+     ["###", "###", "###"],
+     ["##.", "##.", "..."],
+     ["#..", "...", "..."]
+    ],
+    "errores.soloFrontal": 6,
+    "errores.sumaVistas": 21,
+    "errores.caja": 27
+   }
+  },
+  {
+   "nombre": "Predicción 3 (paso 4): el mínimo de cubitos apilados con las mismas vistas → 12 (errores: uno por cuadradito de la superior 9, el máximo 14, solo la frontal 6)",
+   "fn": "minimo",
+   "args": [
+    ["#..", "##.", "###"],
+    ["###", "###", "###"],
+    ["..#", ".##", "###"]
+   ],
+   "espera": {
+    "volumen": 12,
+    "maximo": 14,
+    "errores.unoPorCuadro": 9,
+    "errores.maximo": 14,
+    "errores.soloFrontal": 6
+   }
+  },
+  {
+   "nombre": "Predicción 4 (paso 5): caras del sólido máximo pintado al sumergirlo → 12 (errores: solo las de las vistas 9, cuadraditos 42, prisma de la frontal 10)",
+   "fn": "maximo",
+   "args": [
+    ["#..", "##.", "###"],
+    ["###", "###", "###"],
+    ["..#", ".##", "###"]
+   ],
+   "espera": {
+    "caras": 12,
+    "carasEnVistas": 9,
+    "cuadraditos": 42,
+    "base": 9,
+    "errores.prismaFrontal": 10,
+    "errores.caraVistas": 9,
+    "errores.caraCuadraditos": 42
+   }
+  },
+  {
+   "nombre": "Predicción 5 (paso 6): vértices del sólido máximo → 20 (errores: prisma de la frontal 16, caja 8, puntos de la cuadrícula en las aristas 38)",
+   "fn": "maximo",
+   "args": [
+    ["#..", "##.", "###"],
+    ["###", "###", "###"],
+    ["..#", ".##", "###"]
+   ],
+   "espera": {
+    "vertices": 20,
+    "aristas": 30,
+    "caras": 12,
+    "euler": 2,
+    "errores.verticesPrismaFrontal": 16,
+    "errores.cajaVertices": 8,
+    "errores.puntosEnAristas": 38
+   }
+  },
+  {
+   "nombre": "Predicción 6 (paso 7): frontal y lateral de casa y superior cuadrada con diagonales → 9 caras (errores: prisma de la frontal 7, regiones de las vistas sumadas 8, solo las que se ven 6)",
+   "fn": "poliedroVistas",
+   "args": [
+    {
+     "frontal": [
+      [0, 0],
+      [2, 0],
+      [2, 2],
+      [1, 3],
+      [0, 2]
+     ],
+     "superior": [
+      [0, 0],
+      [2, 0],
+      [2, 2],
+      [0, 2]
+     ],
+     "lateral": [
+      [0, 0],
+      [2, 0],
+      [2, 2],
+      [1, 3],
+      [0, 2]
+     ]
+    }
+   ],
+   "espera": {
+    "caras": 9,
+    "vertices": 9,
+    "aristas": 16,
+    "euler": 2,
+    "volumen": 9.333333333333,
+    "errores.prismaFrontal": 7,
+    "errores.regionesVistas": 8,
+    "errores.carasEnVistas": 6
+   }
+  },
+  {
+   "nombre": "Predicción 7 (paso 8): cubitos que faltan para el cubo compacto más pequeño → 18 (errores: solo los visibles 20, la caja 3, solo los de frente 22)",
+   "fn": "completarCubo",
+   "args": [
+    [
+     ["###", "###"],
+     ["##.", "#.."]
+    ]
+   ],
+   "espera": {
+    "n": 3,
+    "cubo": 27,
+    "volumen": 9,
+    "faltan": 18,
+    "visibles": 7,
+    "errores.soloVisibles": 20,
+    "errores.caja": 3,
+    "errores.deFrente": 22
+   }
+  },
+  {
+   "nombre": "Predicción 8 (paso 9): sucesión que tapa las caras al aire de dos cubitos → el tercer término agrega 18 (errores: un cubito por cara 28, también bajo la mesa 26, el mismo aumento 8)",
+   "fn": "cubrir",
+   "args": [
+    [
+     ["##"]
+    ],
+    3
+   ],
+   "espera": {
+    "volumen": 28,
+    "agregados": 18,
+    "terminos": [2, 10, 28],
+    "errores.porCara": 28,
+    "errores.conMesa": 26,
+    "errores.mismoAumento": 8
+   },
+   "tambien": [
+    {
+     "fn": "cubrir",
+     "args": [
+      [
+       ["##"]
+      ],
+      2
+     ],
+     "espera": {
+      "volumen": 10,
+      "agregados": 8
+     }
+    },
+    {
+     "fn": "cubrir",
+     "args": [
+      [
+       ["##"]
+      ],
+      1
+     ],
+     "espera": {
+      "volumen": 2,
+      "agregados": 0
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Experimento 1: vistas acotadas, caras del sólido máximo → 12 (errores: cuadraditos 26, solo las de las vistas 7, prisma de la frontal)",
+   "fn": "maximo",
+   "args": [
+    ["#..", "###"],
+    ["###", "#.#"],
+    ["#.", "##"],
+    {
+     "x": [1, 2, 1],
+     "y": [2, 1],
+     "z": [2, 1]
+    }
+   ],
+   "espera": {
+    "cubitos": 6,
+    "volumen": 18,
+    "caras": 12,
+    "vertices": 19,
+    "aristas": 29,
+    "euler": 2,
+    "errores.caraCuadraditos": 26,
+    "errores.caraVistas": 7,
+    "errores.prismaFrontal": 8,
+    "errores.caja": 36
+   }
+  },
+  {
+   "nombre": "Experimento 2: cubitos que faltan en una caja transparente de 3 × 3 × 3 → 19 (errores: solo los de frente 23, solo los visibles 20, solo la superior 21)",
+   "fn": "completarCaja",
+   "args": [
+    [
+     ["##.", "###", "#.."],
+     ["...", "#..", "#.."]
+    ],
+    [3, 3, 3]
+   ],
+   "espera": {
+    "caja": 27,
+    "volumen": 8,
+    "faltan": 19,
+    "visibles": 7,
+    "errores.deFrente": 23,
+    "errores.soloVisibles": 20,
+    "errores.deArriba": 21
+   }
+  },
+  {
+   "nombre": "Experimento 3: copias de una L de 3 cubitos que forman un cubo compacto → arista 3, 9 copias, 24 cubitos adicionales (errores: cubo de 2 sin dividir 5, copias 8, todo el cubo 27)",
+   "fn": "copiasCubo",
+   "args": [
+    [
+     ["##", "#."]
+    ]
+   ],
+   "espera": {
+    "volumen": 3,
+    "n": 3,
+    "copias": 9,
+    "adicionales": 24,
+    "errores.sinDividir": 5,
+    "errores.copiasEnVezDeCubitos": 8,
+    "errores.todoElCubo": 27
+   }
+  },
+  {
+   "nombre": "Experimento 4: la vista lateral (desde la derecha) de un sólido dibujado → la lateral; errores: desde la izquierda, la frontal y la superior",
+   "fn": "elegirVista",
+   "args": [
+    [
+     ["###", "###", "###"],
+     [".##", "...", "###"],
+     ["...", "...", "#.."]
+    ],
+    "lateral"
+   ],
+   "espera": {
+    "correcta": ["#..", "#.#", "###"],
+    "errores.reflejada": ["..#", "#.#", "###"],
+    "errores.frontal": ["#..", "###", "###"],
+    "errores.superior": ["###", "###", "###"]
+   }
+  },
+  {
+   "nombre": "Experimento 5: frontal y lateral triangulares y superior cuadrada → pirámide de 5 vértices (errores: prisma de la frontal 6, caja 8, esquinas de las vistas sumadas 10)",
+   "fn": "poliedroVistas",
+   "args": [
+    {
+     "frontal": [
+      [0, 0],
+      [2, 0],
+      [1, 2]
+     ],
+     "superior": [
+      [0, 0],
+      [2, 0],
+      [2, 2],
+      [0, 2]
+     ],
+     "lateral": [
+      [0, 0],
+      [2, 0],
+      [1, 2]
+     ]
+    }
+   ],
+   "espera": {
+    "vertices": 5,
+    "caras": 5,
+    "aristas": 8,
+    "euler": 2,
+    "volumen": 2.666666666667,
+    "errores.verticesPrismaFrontal": 6,
+    "errores.prismaFrontal": 5,
+    "errores.cajaVertices": 8,
+    "errores.esquinasVistas": 10
+   }
+  },
+  {
+   "nombre": "Techo de dos aguas: frontal triangular, superior y lateral rectangulares → prisma triangular",
+   "fn": "poliedroVistas",
+   "args": [
+    {
+     "frontal": [
+      [0, 0],
+      [2, 0],
+      [1, 2]
+     ],
+     "superior": [
+      [0, 0],
+      [2, 0],
+      [2, 3],
+      [0, 3]
+     ],
+     "lateral": [
+      [0, 0],
+      [3, 0],
+      [3, 2],
+      [0, 2]
+     ]
+    }
+   ],
+   "espera": {
+    "caras": 5,
+    "vertices": 6,
+    "aristas": 9,
+    "volumen": 6
+   }
+  },
+  {
+   "nombre": "Esquina: frontal y lateral de triángulo rectángulo y superior cuadrada → pirámide con la punta sobre una esquina",
+   "fn": "poliedroVistas",
+   "args": [
+    {
+     "frontal": [
+      [0, 0],
+      [2, 0],
+      [0, 2]
+     ],
+     "superior": [
+      [0, 0],
+      [2, 0],
+      [2, 2],
+      [0, 2]
+     ],
+     "lateral": [
+      [0, 0],
+      [2, 0],
+      [0, 2]
+     ]
+    }
+   ],
+   "espera": {
+    "caras": 5,
+    "vertices": 5,
+    "aristas": 8,
+    "volumen": 2.666666666667,
+    "errores.carasEnVistas": 3
+   }
+  },
+  {
+   "nombre": "Un cubito y un cubo de 3 × 3 × 3 con el centro vacío: caras, aristas y vértices",
+   "fn": "analizar",
+   "args": [
+    [
+     ["#"]
+    ]
+   ],
+   "espera": {
+    "caras": 6,
+    "aristas": 12,
+    "vertices": 8,
+    "euler": 2,
+    "cuadraditos": 6
+   },
+   "tambien": [
+    {
+     "fn": "analizar",
+     "args": [
+      [
+       ["###", "###", "###"],
+       ["###", "#.#", "###"],
+       ["###", "###", "###"]
+      ]
+     ],
+     "espera": {
+      "volumen": 26,
+      "caras": 12,
+      "vertices": 16,
+      "aristas": 24,
+      "euler": 4,
+      "visibles": 19,
+      "ocultos": 7
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Tres vistas que no son de ningún sólido: el máximo no las reproduce",
+   "fn": "maximo",
+   "args": [
+    ["#..", "###", "###"],
+    ["#..", "##.", "###"],
+    ["..#", ".##", "###"]
+   ],
+   "espera": {
+    "coincide": false,
+    "cubitos": 10
+   }
+  },
+  {
+   "nombre": "Mínimo con pareos: frontal 3, 1, 3; lateral 1, 3, 3; superior llena de 3 × 3",
+   "fn": "minimo",
+   "args": [
+    ["#.#", "#.#", "###"],
+    ["###", "###", "###"],
+    [".##", ".##", "###"]
+   ],
+   "espera": {
+    "volumen": 13,
+    "maximo": 17,
+    "errores.unoPorCuadro": 9
+   }
+  },
+  {
+   "nombre": "Copias que arman un cubo: dos cubitos en fila y una barra de tres",
+   "fn": "copiasCubo",
+   "args": [
+    [
+     ["##"]
+    ]
+   ],
+   "espera": {
+    "n": 2,
+    "copias": 4,
+    "adicionales": 6
+   },
+   "tambien": [
+    {
+     "fn": "copiasCubo",
+     "args": [
+      [
+       ["###"]
+      ]
+     ],
+     "espera": {
+      "n": 3,
+      "copias": 9,
+      "adicionales": 24
+     }
+    },
+    {
+     "fn": "copiasCubo",
+     "args": [
+      [
+       ["###", "#.."]
+      ]
+     ],
+     "espera": {
+      "n": 4,
+      "copias": 16,
+      "adicionales": 60,
+      "errores.sinDividir": 23
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Cubrir un cubito: términos 1, 6, 19, 44",
+   "fn": "cubrir",
+   "args": [
+    [
+     ["#"]
+    ],
+    4
+   ],
+   "espera": {
+    "volumen": 44,
+    "agregados": 25,
+    "terminos": [1, 6, 19, 44],
+    "errores.porCara": 49,
+    "errores.conMesa": 38,
+    "errores.mismoAumento": 13
+   }
+  },
+  {
+   "nombre": "Volumen con medidas: caja de 4 × 3 × 3 de las vistas acotadas",
+   "fn": "volumenCaja",
+   "args": [
+    {
+     "x": [1, 2, 1],
+     "y": [2, 1],
+     "z": [2, 1]
+    }
+   ],
+   "espera": {
+    "largo": 4,
+    "fondo": 3,
+    "alto": 3,
+    "volumen": 36
+   }
+  }
+ ]
+}

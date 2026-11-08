@@ -1,0 +1,139 @@
+{
+  "titulo": "La hoja que se dobla, se corta y se voltea: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema. Dibuja la hoja en la cuadrícula y desdobla en orden inverso: el último doblez se deshace primero. Cada doblez es un espejo: lo que se corta en el paquete aparece reflejado en cada capa. Antes de contar, fíjate si el corte toca un doblez (ahí las capas se juntan en una sola figura) o el borde de la hoja (ahí se quita borde).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una hoja cuadriculada de 10 cm × 10 cm se dobla por la mitad llevando la derecha sobre la izquierda, y luego otra vez llevando la parte de arriba sobre la de abajo. En el paquete de 5 cm × 5 cm se hace un agujero redondo de radio 1 cm con centro a 2 cm del borde izquierdo y a 3 cm del borde de abajo. Al abrir la hoja, ¿cuántos agujeros hay y dónde están sus centros, si la esquina de abajo a la izquierda es (0; 0)?",
+      "respuesta": "4 agujeros, con centros en (2; 3), (8; 3), (2; 7) y (8; 7).",
+      "pasos": [
+        "El paquete tiene 4 capas: la perforación atraviesa las cuatro y deja 4 agujeros.",
+        "Se deshace el último doblez (el de y = 5): el agujero (2; 3) tiene su reflejo en (2; 7), a la misma distancia del doblez.",
+        "Se deshace el primero (el de x = 5): (2; 3) y (2; 7) se reflejan en (8; 3) y (8; 7).",
+        "Comprobación: los cuatro centros son simétricos respecto de las dos rectas de los dobleces."
+      ],
+      "verificar": [
+        { "fn": "desplegar", "args": [{ "ancho": 10, "alto": 10 }, [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }], [{ "tipo": "circulo", "centro": { "x": 2, "y": 3 }, "r": 1 }]], "espera": { "agujeros": 4, "capas": 4 } },
+        { "fn": "imagen", "args": [{ "x": 2, "y": 3 }, { "tipo": "eje", "recta": { "y": 5 } }], "espera": { "x": 2, "y": 7 } },
+        { "fn": "imagen", "args": [{ "x": 2, "y": 3 }, { "tipo": "eje", "recta": { "x": 5 } }], "espera": { "x": 8, "y": 3 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Una hoja de 12 cm × 8 cm se dobla por la mitad (derecha sobre izquierda) y otra vez por la mitad (arriba sobre abajo). Sobre el doblez horizontal del paquete se recorta un medio círculo de radio 2 cm, con el centro a 3 cm del borde izquierdo. Al abrir, ¿cuántos agujeros quedan y cuál es el perímetro total de la hoja (borde exterior más bordes de los agujeros)?",
+      "respuesta": "2 agujeros redondos enteros de radio 2 cm; perímetro 40 + 8π cm.",
+      "pasos": [
+        "El medio círculo está sobre un doblez: al abrir ese doblez, las dos capas se juntan en un círculo entero.",
+        "El otro doblez (el vertical) lo refleja: hay 2 círculos enteros, en (3; 4) y (9; 4).",
+        "Borde exterior: 2 · (12 + 8) = 40 cm. Cada círculo: 2π · 2 = 4π cm; los dos: 8π cm.",
+        "Perímetro: 40 + 8π cm. Los diámetros sobre el doblez no son borde: ahí el papel se quitó de los dos lados."
+      ],
+      "verificar": [ { "fn": "desplegar", "args": [{ "ancho": 12, "alto": 8 }, [{ "recta": { "x": 6 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }], [{ "tipo": "circulo", "centro": { "x": 3, "y": 4 }, "r": 2 }]], "espera": { "agujeros": 2, "perimetro.exacto": "40 + 8π" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una hoja de 10 cm × 10 cm se dobla en cuatro (dos veces por la mitad). En la esquina del paquete que corresponde al centro de la hoja se recorta un triángulo rectángulo de catetos 1 cm (horizontal) y 3 cm (vertical), con el ángulo recto en esa esquina. Al abrir, ¿qué figura queda como agujero y cuál es el perímetro total de la hoja?",
+      "respuesta": "Un rombo de diagonales 2 cm y 6 cm (lado √10 cm); perímetro 40 + 4√10 cm.",
+      "pasos": [
+        "La esquina recortada es el centro de la hoja, donde se juntan los dos dobleces: las 4 capas se unen en un solo agujero.",
+        "Los catetos están sobre los dobleces: al abrir desaparecen. Queda un rombo de semidiagonales 1 y 3.",
+        "Lado del rombo: √(1² + 3²) = √10 cm. Su perímetro: 4√10 cm.",
+        "Perímetro total: 4 · 10 + 4√10 = 40 + 4√10 cm."
+      ],
+      "verificar": [ { "fn": "desplegar", "args": [{ "ancho": 10, "alto": 10 }, [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }], [{ "tipo": "rombo", "centro": { "x": 5, "y": 5 }, "dx": 1, "dy": 3 }]], "espera": { "agujeros": 1, "perimetro.exacto": "40 + 4√10" } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una tira de 9 cm × 3 cm se dobla en tres partes iguales como un acordeón (en x = 3 y en x = 6), quedando un cuadrado de 3 cm × 3 cm de tres capas. Se corta el paquete de arriba abajo por su mitad. Al abrir, ¿cuántas piezas quedan y cuántas de ellas son cuadradas?",
+      "respuesta": "4 piezas; 2 de ellas son cuadrados de 3 cm × 3 cm.",
+      "pasos": [
+        "El corte atraviesa las 3 capas: al abrir hay 3 tajos, en x = 1,5, x = 4,5 y x = 7,5.",
+        "Tres tajos en una tira la parten en 4 piezas: de 0 a 1,5; de 1,5 a 4,5; de 4,5 a 7,5; y de 7,5 a 9.",
+        "Las dos del medio tienen 3 cm de ancho y contienen un doblez (por eso no se separaron): son cuadrados de 3 × 3.",
+        "No son 6 piezas (dos por capa): las mitades que tocan un doblez siguen unidas."
+      ],
+      "verificar": [ { "fn": "desplegar", "args": [{ "ancho": 9, "alto": 3 }, [{ "recta": { "x": 3 }, "mueve": "izquierda" }, { "recta": { "x": 6 }, "mueve": "derecha" }], [{ "tipo": "linea", "A": { "x": 4.5, "y": -1 }, "B": { "x": 4.5, "y": 4 } }]], "espera": { "piezas": 4, "piezasCuadradas": 2, "areas": [9, 9, 4.5, 4.5] } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un rectángulo ABCD de 16 cm × 12 cm (AB = 16) se dobla de modo que el vértice C caiga sobre el vértice A. El doblez corta AB en E. Halla AE y la longitud del doblez.",
+      "respuesta": "AE = 12,5 cm; el doblez mide 15 cm.",
+      "pasos": [
+        "El doblez es la mediatriz de AC: cada punto de él está a la misma distancia de A y de C. Así, EA = EC.",
+        "Con AE = x: EB = 16 − x y, en el triángulo EBC, x² = (16 − x)² + 12².",
+        "x² = 256 − 32x + x² + 144, así que 32x = 400 y x = 12,5 cm.",
+        "El doblez va de E(12,5; 0) a F(3,5; 12): mide √(9² + 12²) = 15 cm (no es la diagonal, que mide 20)."
+      ],
+      "verificar": [ { "fn": "esquinaSobreEsquina", "args": [16, 12], "espera": { "x": 12.5, "doblez": 15, "diagonal": 20 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Una hoja rectangular de 15 cm de ancho se dobla haciendo coincidir dos vértices opuestos, y el doblez mide 18,75 cm. ¿Cuánto mide el largo de la hoja?",
+      "respuesta": "20 cm.",
+      "pasos": [
+        "Con lados a (largo) y b = 15, el doblez mide b·√(a² + b²)/a (sale de x = (a² + b²)/(2a) y del triángulo que forma el doblez).",
+        "Elevando al cuadrado: 18,75² · a² = 15² · (a² + 15²), es decir, a² · (351,5625 − 225) = 225².",
+        "a² = 50 625/126,5625 = 400, así que a = 20 cm.",
+        "Comprobación: con 20 × 15, AE = (400 + 225)/40 = 15,625 y el doblez mide √((2 · 15,625 − 20)² + 15²) = √(126,5625 + 225) = 18,75."
+      ],
+      "verificar": [ { "fn": "ladoDesdeDoblez", "args": [15, 18.75], "espera": { "a": 20 } }, { "fn": "esquinaSobreEsquina", "args": [20, 15], "espera": { "doblez": 18.75, "x": 15.625 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Una loseta cuadrada de vértices (1; 1), (3; 1), (3; 3) y (1; 3) tiene pintado un triángulo en su esquina (1; 3). Se refleja la loseta respecto de su vértice O(3; 1). ¿Dónde queda la esquina pintada? ¿Qué movimiento hace lo mismo?",
+      "respuesta": "En (5; −1). Es lo mismo que girar la loseta media vuelta (180°) alrededor de O.",
+      "pasos": [
+        "Reflejar respecto de un punto: O es el punto medio entre cada punto y su imagen, P′ = 2O − P.",
+        "(1; 3) va a (2 · 3 − 1; 2 · 1 − 3) = (5; −1).",
+        "La loseta no queda volteada como en un espejo: queda girada media vuelta; el triángulo pasa de arriba a la izquierda a abajo a la derecha.",
+        "Lo mismo se logra reflejando primero en la recta vertical x = 3 y luego en la horizontal y = 1."
+      ],
+      "verificar": [ { "fn": "imagen", "args": [{ "x": 1, "y": 3 }, { "tipo": "central", "O": { "x": 3, "y": 1 } }], "espera": { "x": 5, "y": -1 } }, { "fn": "reflejoEnVertice", "args": [1, 1, { "x": 3, "y": 1 }], "espera": { "correcta.triangulo.x": 5, "correcta.triangulo.y": -1, "igualGiro180": true } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Hay 8 vasos en fila, todos boca arriba. En cada jugada se voltean exactamente 3 vasos cualesquiera. ¿Cuál es el menor número de jugadas para dejarlos todos boca abajo?",
+      "respuesta": "4 jugadas.",
+      "pasos": [
+        "Cada vaso tiene que voltearse un número impar de veces. Con 8 vasos, la suma de 8 impares es par.",
+        "Con 3 jugadas hay 9 volteos: es impar, no alcanza. Con 2 jugadas, 6 volteos: no llega a 8 vasos.",
+        "Con 4 jugadas hay 12 volteos, que es par: dos vasos pueden voltearse 3 veces y los otros seis, una vez (3 + 3 + 6 = 12).",
+        "Una forma, numerando los vasos del 1 al 8: {1, 2, 3}, {1, 2, 4}, {1, 2, 5} y {6, 7, 8}. Los vasos 1 y 2 se voltean 3 veces y los demás, una. El mínimo es 4, no 8 ÷ 3 redondeado (3)."
+      ],
+      "verificar": [ { "fn": "voltear", "args": ["11111111", "00000000", { "k": 3, "contiguas": false }], "espera": { "minimo": 4, "errores.dividir": 3 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Siete cartas en fila muestran, de izquierda a derecha: arriba, abajo, arriba, arriba, abajo, abajo, abajo. En cada jugada se voltean dos cartas vecinas. ¿Se pueden dejar todas boca abajo? Si se puede, ¿con cuántas jugadas como mínimo?",
+      "respuesta": "No se puede.",
+      "pasos": [
+        "Al voltear dos cartas, las boca arriba aumentan en 2, bajan en 2 o quedan igual: su cantidad cambia en un número par.",
+        "Al inicio hay 3 cartas boca arriba (impar). Al final se quieren 0 (par).",
+        "Pasar de impar a par cambiando siempre de dos en dos es imposible: no hay ninguna serie de jugadas que lo logre.",
+        "Este argumento de paridad evita probar jugadas al tanteo."
+      ],
+      "verificar": [ { "fn": "voltear", "args": ["1011000", "0000000", { "k": 2, "contiguas": true }], "espera": { "posible": false, "paridad.iguales": false } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "básico",
+      "enunciado": "Una hoja de 8 cm × 4 cm se dobla por la mitad (queda de 4 × 4, con el doblez a la derecha) y se corta de arriba abajo a 2 cm del borde izquierdo del paquete. Al abrir, ¿cuántas piezas hay?",
+      "respuesta": "3 piezas: dos de 2 × 4 y una de 4 × 4 en el medio.",
+      "pasos": [
+        "El corte atraviesa las 2 capas: al abrir hay 2 tajos, en x = 2 y en x = 6.",
+        "La parte de en medio, de x = 2 a x = 6, contiene el doblez: no se separó. Es una sola pieza de 4 × 4.",
+        "Quedan además las dos puntas, de 2 × 4 cada una: 3 piezas en total, no 4."
+      ],
+      "verificar": [ { "fn": "desplegar", "args": [{ "ancho": 8, "alto": 4 }, [{ "recta": { "x": 4 }, "mueve": "derecha" }], [{ "tipo": "linea", "A": { "x": 2, "y": -1 }, "B": { "x": 2, "y": 5 } }]], "espera": { "piezas": 3, "areas": [16, 8, 8] } } ]
+    }
+  ]
+}

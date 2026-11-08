@@ -1,0 +1,1209 @@
+<!doctype html>
+<html lang="es" data-curso="razonamiento-matematico">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La rueda, el camino y la lámina que gira</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de arreglos-giros/.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   ruedas: el radio de la rueda r índigo, el camino de su centro d verde oscuro, los toques y vueltas n granate;
+   vuelcos: el lado l celeste, el recorrido del punto que se sigue p violeta, el ángulo de cada giro θ ámbar, el radio de
+   giro ρ rojo; prisma: el largo h naranja y la superficie barrida verde; láminas que giran: la región barrida verde (la
+   misma que barre la arista: es lo mismo, «lo que se barre»), ρ y θ como en los vuelcos; plano: la figura girada i
+   magenta. Ningún color nombra dos cosas que salgan juntas.
+   Mínimos de CIEDE2000 entre los que salen juntos (claro / oscuro): ruedas (r, d, n) 32,4 / 26,2; vuelcos (l, p, θ, ρ)
+   23,5 / 30,2; prisma (l, p, h, región) 23,5 / 31,8; láminas (ρ, θ, región, l) 30,0 / 28,2; marco (p, θ) 53,9 / 56,2;
+   plano (i, θ) 42,5 / 49,8. Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %): mínimo 4,56 (claro) y
+   4,87 (oscuro). Los tonos son los de arreglos-giros/ y trazos-rutas/, que ya pasaron esa revisión. */
+
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-r:#3328c4; --c-d:#255c1f; --c-n:#77032c; --c-l:#086a96; --c-p:#6a3fc0; --c-t:#8f5800; --c-q:#c0364a; --c-A:#466d14; --c-h:#a05200; --c-i:#b3246b;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-r:#9f9bff; --c-d:#5fe06a; --c-n:#fdb4ce; --c-l:#25caf4; --c-p:#b49cff; --c-t:#ffc04d; --c-q:#f17384; --c-A:#a3d65e; --c-h:#f0a04a; --c-i:#ff86bd;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-r:#9f9bff; --c-d:#5fe06a; --c-n:#fdb4ce; --c-l:#25caf4; --c-p:#b49cff; --c-t:#ffc04d; --c-q:#f17384; --c-A:#a3d65e; --c-h:#f0a04a; --c-i:#ff86bd;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend:empty{display:none}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.pt{width:12px; height:12px; border-radius:50%}
+.legend i.zona{width:14px; height:12px; border-radius:3px; opacity:.55}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-l{color:var(--c-l); background:color-mix(in srgb, var(--c-l) 8%, transparent)}
+.v-p{color:var(--c-p); background:color-mix(in srgb, var(--c-p) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-q{color:var(--c-q); background:color-mix(in srgb, var(--c-q) 8%, transparent)}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 8%, transparent)}
+.v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
+.v-i{color:var(--c-i); background:color-mix(in srgb, var(--c-i) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em; align-self:stretch; text-align:center}
+.frac > span:last-child{padding:0 .25em}
+.frac > span{white-space:nowrap}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+.msg{margin:0; font-weight:700; min-height:1.5em}
+.msg.mal{color:var(--warn)} .msg.ok{color:var(--ok)}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:center; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.opt svg{flex:none; width:64px; height:64px}
+.opt .num{font-family:var(--mono); font-weight:700; font-variant-numeric:tabular-nums}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn.chico{padding:8px 14px; min-height:40px; font-size:.9rem}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.fila{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+table.tramos{border-collapse:collapse; width:100%; font-size:.9rem}
+table.tramos th, table.tramos td{border-bottom:1px solid var(--line); padding:4px 6px; text-align:left; vertical-align:top}
+table.tramos td.n{font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap}
+table.tramos caption{text-align:left; font-weight:800; padding-bottom:4px}
+.tabla{overflow-x:auto}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+<link rel="stylesheet" href="../../nucleo/pegatina.css">
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Transformaciones de figuras · Problemas tipo admisión</p>
+      <h1>La rueda, el camino y la lámina que gira</h1>
+      <p class="sub">Haz rodar una ficha por bloques y escalones, vuelca polígonos sobre el piso y sobre otros polígonos, gira láminas y cuenta giros dentro de un marco. Primero predices; después el motor dibuja el camino y arma la cuenta por tramos.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: ruedas, polígonos que vuelcan y láminas que giran">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena" tabindex="0"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con ruedas, prismas, cubos y giros">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido" tabindex="0"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/rodamientos">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'rodamientos', unidad: 'razonamiento-matematico.transformaciones-de-figuras', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (recorridos del centro, toques, vuelcos, regiones barridas, láminas, giros en el plano y en el
+   marco) sale de MotorRodamientos (motor.js); aquí solo se pinta, se anima y se toca. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MR = MotorRodamientos;
+const css = Celular.variable;
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  d = d === undefined ? 2 : d;
+  const p = Math.pow(10, d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const VARS = ['r', 'd', 'n', 'l', 'p', 't', 'q', 'A', 'h', 'i'];
+const W_ = {}; VARS.forEach(k => { W_[k] = t => V(k, t); });
+const L = (k, nombre, valor) => () => [k, nombre, valor];
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const num = t => `<span class="num">${t}</span>`;
+
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'), warn:css('--warn'), ok:css('--ok'), font:css('--font') };
+  for (const k of VARS) c[k] = css('--c-' + k);
+  return c;
+}
+// un color mezclado con el papel (para pintar regiones sin que se oscurezcan al superponerse)
+function mezcla(a, b, f){
+  const h = x => { x = x.replace('#', ''); if (x.length === 3) x = x.split('').map(y => y + y).join(''); return [0, 2, 4].map(i => parseInt(x.slice(i, i + 2), 16)); };
+  const A = h(a), B = h(b);
+  return '#' + A.map((v, i) => Math.round(v*f + B[i]*(1 - f)).toString(16).padStart(2, '0')).join('');
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function punto(ctx, x, y, r, relleno, borde, ancho){ ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fillStyle = relleno; ctx.fill(); if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = ancho || 2; ctx.stroke(); } ctx.restore(); }
+function poli(ctx, pts, cerrar){ ctx.beginPath(); pts.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); if (cerrar) ctx.closePath(); }
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// una lámina de n × n casillas en SVG (para las opciones de las predicciones)
+function svgLamina(celdas, n){
+  const s = 60/n, on = new Set(celdas.map(c => c.join(',')));
+  let r = '';
+  for (let f = 0; f < n; f++) for (let c = 0; c < n; c++) r += `<rect x="${2 + c*s}" y="${2 + f*s}" width="${s}" height="${s}" fill="${on.has(c + ',' + f) ? 'var(--ink)' : 'var(--paper)'}" stroke="var(--muted)" stroke-width="1"/>`;
+  return `<svg viewBox="0 0 64 64" aria-hidden="true">${r}<rect x="2" y="2" width="60" height="60" fill="none" stroke="var(--ink)" stroke-width="2"/></svg>`;
+}
+const nombreCeldas = cs => cs.map(([c, f]) => `fila ${f + 1} columna ${c + 1}`).join('; ');
+
+/* ================= La escena =================
+   Modos:
+   'camino'   cam = { R (lo que da MR.recorridoCentro), r, s (lo que avanzó el centro), traza (dibuja el camino del centro
+              hasta s), cerrado (el camino rodea una figura), clavo: { falta, marcas } (un punto pintado en la rueda y,
+              tras responder, dónde tocó el piso), largoPiso (para una recta sola) }.
+   'vuelco'   vol = { fig, piso, vuelcos, t, punto, traza, radios (tras responder: los radios de cada arco), datos (lo que
+              da MR.volcar), prisma: { h } (la figura es la cara de un prisma: se dibuja con profundidad y la superficie que
+              barre la arista), arista: [i, j] (la figura es la cara de un cubo: se pinta la región que barre ese lado) }.
+   'barrido'  bar = { figura, centro, angulo, sentido, prog (0 a 1), lado (o null: toda la lámina), datos, ver }.
+   'laminas'  lam = { n, laminas, final, datos (MR.laminas), etapa: 0 (sin girar) | 1 (girando, f) | 2 (superpuestas) |
+              3 (giro final, f) | 4 (listo), f }.
+   'marco'    mar = { n, lado, ancho, alto, t, pasos (los que pide la pregunta) }.
+   'plano'    pla = { puntos, centro, datos (MR.rotarPuntos), prog, angulo (grados con signo de la animación), ver }.
+   Antes de responder no se dibuja nada de lo que se pregunta. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'camino', lect:[], ley:null, hl:null, alCambiar:null, tok:0, anim:false, compacto:false, desc:'',
+    cam:null, vol:null, bar:null, lam:null, mar:null, pla:null, az:35 };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, Hh = 0;
+  function altoBase(w){
+    const ancho = w >= 560;
+    if (E.modo === 'laminas') return ancho ? 330 : 300;
+    if (E.modo === 'marco') return ancho ? 320 : 280;
+    if (E.modo === 'plano') return ancho ? 340 : 300;
+    if (E.modo === 'camino' && E.cam && E.cam.cerrado) return ancho ? 330 : 290;
+    if (E.modo === 'vuelco' && E.vol && E.vol.piso && E.vol.piso !== 'recta') return ancho ? 360 : 320;
+    return ancho ? 300 : 250;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(altoBase(w), E.compacto, { tope:250 })), dpr = Celular.dpr();
+    if (w === W && h === Hh) { E.dibujar(); return; }
+    W = w; Hh = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  addEventListener('modo', () => { W = 0; resize(); });
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false;
+    Object.assign(E, { modo:'camino', lect:[], ley:null, alCambiar:null, desc:'', cam:null, vol:null, bar:null, lam:null, mar:null, pla:null }, o);
+    if (E.cam) E.cam = Object.assign({ s:0, traza:false, cerrado:false, clavo:null }, E.cam);
+    if (E.vol) E.vol = Object.assign({ t:0, traza:false, radios:false, punto:0, piso:'recta' }, E.vol);
+    if (E.bar) E.bar = Object.assign({ prog:0, ver:false, lado:null, sentido:'antihorario' }, E.bar);
+    if (E.lam) E.lam = Object.assign({ etapa:0, f:0 }, E.lam);
+    if (E.mar) E.mar = Object.assign({ t:0 }, E.mar);
+    if (E.pla) E.pla = Object.assign({ prog:0, ver:false }, E.pla);
+    cache = null;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  const atenuar = k => (E.hl && E.hl !== k ? .45 : 1);
+  // vista: encaja una caja del mundo [x0, x1] × [y0, y1] en el lienzo (y hacia arriba)
+  function vista(x0, x1, y0, y1, pad){
+    pad = pad === undefined ? 18 : pad;
+    const s = Math.min((W - 2*pad)/Math.max(1e-9, x1 - x0), (Hh - 2*pad)/Math.max(1e-9, y1 - y0));
+    const ox = (W - s*(x1 - x0))/2 - s*x0, oy = (Hh + s*(y1 - y0))/2 + s*y0;
+    return { s, P:(x, y) => ({ x:ox + s*x, y:oy - s*y }) };
+  }
+  let cache = null;
+
+  // ----- la rueda por el camino -----
+  function piezaPts(q, N){
+    const out = [];
+    for (let i = 0; i <= N; i++){ const f = i/N;
+      out.push(q.tipo === 'linea' ? [q.a[0] + (q.b[0] - q.a[0])*f, q.a[1] + (q.b[1] - q.a[1])*f] : [q.c[0] + q.radio*Math.cos(q.a0 + (q.a1 - q.a0)*f), q.c[1] + q.radio*Math.sin(q.a0 + (q.a1 - q.a0)*f)]); }
+    return out;
+  }
+  function dibCamino(c){
+    const U = E.cam, R = U.R;
+    if (!cache){
+      const piso = [].concat(...R.piso.map(q => piezaPts(q, q.tipo === 'linea' ? 1 : 40)));
+      const traz = [].concat(...R.trazo.map(q => piezaPts(q, q.tipo === 'linea' ? 1 : 30)));
+      const xs = piso.concat(traz).map(p => p[0]), ys = piso.concat(traz).map(p => p[1]);
+      let x0 = Math.min(...xs) - U.r, x1 = Math.max(...xs) + U.r, y0 = Math.min(...ys) - (U.cerrado ? U.r : .6), y1 = Math.max(...ys) + U.r;
+      cache = { piso, x0, x1, y0, y1 };
+    }
+    let vx0 = cache.x0, vx1 = cache.x1;
+    if (U.ventana){ const cx = MR.puntoEnTrazo({ trazo:R.trazo, s:Math.min(U.s, R.longitud) }).x; vx0 = Math.max(cache.x0, Math.min(cx - U.ventana*.35, cache.x1 - U.ventana)); vx1 = vx0 + U.ventana; }
+    const { s, P } = vista(vx0, vx1, cache.y0, cache.y1, 14);
+    // el suelo o la figura
+    const pts = cache.piso.map(p => P(p[0], p[1]));
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .08;
+    if (U.cerrado) poli(ctx, pts, true);
+    else { poli(ctx, pts.concat([{ x:pts[pts.length - 1].x, y:Hh + 2 }, { x:pts[0].x, y:Hh + 2 }]), true); }
+    ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.lineJoin = 'round'; poli(ctx, pts, U.cerrado); ctx.stroke(); ctx.restore();
+    // el camino del centro, hasta donde va
+    if (U.traza && U.s > 0){
+      ctx.save(); ctx.strokeStyle = c.d; ctx.globalAlpha = atenuar('d'); ctx.lineWidth = grosor('d', 3); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath();
+      let resto = U.s, primero = true;
+      for (const q of R.trazo){
+        if (resto <= 0) break;
+        const f = Math.min(1, resto/Math.max(q.largo, 1e-12)), N = q.tipo === 'linea' ? 1 : Math.max(2, Math.round(30*f));
+        const lado = Object.assign({}, q, q.tipo === 'linea' ? { b:[q.a[0] + (q.b[0] - q.a[0])*f, q.a[1] + (q.b[1] - q.a[1])*f] } : { a1:q.a0 + (q.a1 - q.a0)*f });
+        for (const p of piezaPts(lado, N)){ const Q = P(p[0], p[1]); if (primero){ ctx.moveTo(Q.x, Q.y); primero = false; } else ctx.lineTo(Q.x, Q.y); }
+        resto -= q.largo;
+      }
+      ctx.stroke(); ctx.restore();
+    }
+    // las marcas del clavo
+    if (U.clavo && U.clavo.marcas){
+      for (const m of U.clavo.marcas){ if (m > U.s + 1e-9) continue; const Q = P(m, 0); punto(ctx, Q.x, Q.y, 4, c.n); }
+    }
+    // la rueda
+    const q = MR.puntoEnTrazo({ trazo:R.trazo, s:Math.min(U.s, R.longitud) }), C = P(q.x, q.y), rr = U.r*s, phi = U.s/U.r;
+    ctx.save(); ctx.globalAlpha = atenuar('r');
+    punto(ctx, C.x, C.y, rr, c.paper, c.r, grosor('r', 3));
+    ctx.strokeStyle = c.r; ctx.lineWidth = 1.5; ctx.globalAlpha *= .5;
+    for (let k = 0; k < 3; k++){ const a = phi + k*2*Math.PI/3; ctx.beginPath(); ctx.moveTo(C.x, C.y); ctx.lineTo(C.x + Math.cos(a)*rr*.8, C.y + Math.sin(a)*rr*.8); ctx.stroke(); }
+    ctx.restore();
+    punto(ctx, C.x, C.y, 3, c.ink);
+    if (U.clavo){
+      const a = (-90 + U.clavo.falta)*Math.PI/180 - phi;     // ángulo del clavo (mundo, antihorario)
+      const X = C.x + Math.cos(a)*rr, Y = C.y - Math.sin(a)*rr;
+      punto(ctx, X, Y, 5.5, c.n, c.paper, 1.5);
+      if (U.s === 0) rotulo(ctx, c, X + 12, Y - 10, 'P', c.n, 'left', 800, 13);
+    }
+  }
+
+  // ----- polígonos que vuelcan (y prismas y cubos) -----
+  function dibVuelco(c){
+    const O = E.vol;
+    if (!cache){
+      const N = 36*O.vuelcos, est = [];
+      for (let i = 0; i <= N; i++) est.push(MR.volcarEn({ figura:O.fig, piso:O.piso, t:O.vuelcos*i/N, punto:O.punto }));
+      const todos = [].concat(...est.map(e => e.vertices)).concat(est[0].piso || []);
+      let x0 = Math.min(...todos.map(p => p[0])), x1 = Math.max(...todos.map(p => p[0])), y0 = Math.min(0, ...todos.map(p => p[1])), y1 = Math.max(...todos.map(p => p[1]));
+      if (O.prisma || O.arista){ const k = (O.prisma ? O.prisma.h : 2)*.42; x1 += k*.8; y1 += k*.6; }
+      cache = { est, N, x0, x1, y0:y0 - .2, y1 };
+    }
+    const { s, P } = vista(cache.x0, cache.x1, cache.y0, cache.y1, 22);
+    const prof = O.prisma || O.arista ? (O.prisma ? O.prisma.h : 2)*.42*s : 0, az = E.az*Math.PI/180;
+    const D = { x:prof*Math.cos(az), y:-prof*Math.sin(az) };
+    const k = Math.min(cache.N, Math.round(O.t/O.vuelcos*cache.N));
+    const ahora = MR.volcarEn({ figura:O.fig, piso:O.piso, t:O.t, punto:O.punto });
+    // piso
+    if (!O.piso || O.piso === 'recta'){ const a = P(cache.x0 - 1, 0), b = P(cache.x1 + 1, 0);
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .08; ctx.fillRect(0, a.y, W, Hh - a.y); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(0, a.y); ctx.lineTo(W, b.y); ctx.stroke(); ctx.restore(); }
+    else { const pp = ahora.piso.map(p => P(p[0], p[1]));
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .1; poli(ctx, pp, true); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; poli(ctx, pp, true); ctx.stroke(); ctx.restore(); }
+    // la superficie que barre la arista lateral (prisma) o la región que barre el lado (cubo)
+    const zona = mezcla(c.A, c.paper, .3);
+    if (O.prisma && O.traza && k > 0){
+      ctx.save(); ctx.fillStyle = zona; ctx.globalAlpha = atenuar('A');
+      for (let i = 0; i < k; i++){ const a = P(...cache.est[i].punto), b = P(...cache.est[i + 1].punto);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(b.x + D.x, b.y + D.y); ctx.lineTo(a.x + D.x, a.y + D.y); ctx.closePath(); ctx.fill(); ctx.strokeStyle = zona; ctx.lineWidth = 1; ctx.stroke(); }
+      ctx.restore();
+    }
+    if (O.arista && O.traza && k > 0){
+      const [i0, j0] = O.arista;
+      ctx.save(); ctx.fillStyle = zona; ctx.strokeStyle = zona; ctx.lineWidth = 1; ctx.globalAlpha = atenuar('A');
+      for (let i = 0; i < k; i++){ const u = cache.est[i].vertices, v = cache.est[i + 1].vertices;
+        const a = P(...u[i0]), b = P(...u[j0]), cc = P(...v[j0]), d = P(...v[i0]);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(cc.x, cc.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+      ctx.restore();
+    }
+    // la cara de atrás (prisma o cubo)
+    const pts = ahora.vertices.map(p => P(p[0], p[1]));
+    E.caja = prof ? [Math.min(...pts.map(q => q.x), ...pts.map(q => q.x + D.x)), Math.min(...pts.map(q => q.y), ...pts.map(q => q.y + D.y)), Math.max(...pts.map(q => q.x), ...pts.map(q => q.x + D.x)), Math.max(...pts.map(q => q.y), ...pts.map(q => q.y + D.y))] : null;
+    if (prof){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5;
+      poli(ctx, pts.map(q => ({ x:q.x + D.x, y:q.y + D.y })), true); ctx.stroke();
+      for (const q of pts){ ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.lineTo(q.x + D.x, q.y + D.y); ctx.stroke(); }
+      ctx.restore();
+    }
+    // el camino del punto
+    if (O.traza && k > 0){
+      ctx.save(); ctx.strokeStyle = c.p; ctx.globalAlpha = atenuar('p'); ctx.lineWidth = grosor('p', 3.5); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      poli(ctx, cache.est.slice(0, k + 1).map(e => P(...e.punto)).concat([P(...ahora.punto)])); ctx.stroke(); ctx.restore();
+    }
+    // los radios de los arcos ya hechos
+    if (O.radios && O.datos){
+      const hechos = Math.min(O.vuelcos, Math.floor(O.t + 1e-9));
+      for (let j = 0; j < hechos; j++){
+        if (!(O.datos.radios[j] > 0)) continue;
+        const a = P(...O.datos.pivotes[j]), b = P(...O.datos.posiciones[j]);
+        ctx.save(); ctx.strokeStyle = c.q; ctx.globalAlpha = atenuar('q'); ctx.lineWidth = grosor('q', 1.8); ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.restore();
+        const mx = (a.x + b.x)/2, my = (a.y + b.y)/2;
+        if (!O.sinRotulos) rotulo(ctx, c, mx, my, O.datos.radiosExactos[j], c.q, 'center', 800, 12);
+      }
+    }
+    // el polígono
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .1; poli(ctx, pts, true); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.lineJoin = 'round'; poli(ctx, pts, true); ctx.stroke(); ctx.restore();
+    if (O.arista){ const [i0, j0] = O.arista; ctx.save(); ctx.strokeStyle = c.l; ctx.globalAlpha = atenuar('l'); ctx.lineWidth = grosor('l', 4.5); ctx.beginPath(); ctx.moveTo(pts[i0].x, pts[i0].y); ctx.lineTo(pts[j0].x, pts[j0].y); ctx.stroke(); ctx.restore(); }
+    else if (O.t === 0 && !O.prisma){ ctx.save(); ctx.strokeStyle = c.l; ctx.globalAlpha = atenuar('l'); ctx.lineWidth = grosor('l', 4); ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); ctx.lineTo(pts[1].x, pts[1].y); ctx.stroke(); ctx.restore(); }
+    if (O.prisma){ const Q = P(...ahora.punto); ctx.save(); ctx.strokeStyle = c.p; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(Q.x, Q.y); ctx.lineTo(Q.x + D.x, Q.y + D.y); ctx.stroke(); ctx.restore(); }
+    // letras
+    const cen = pts.reduce((a, q) => ({ x:a.x + q.x/pts.length, y:a.y + q.y/pts.length }), { x:0, y:0 });
+    pts.forEach((q, i) => {
+      const dx = q.x - cen.x, dy = q.y - cen.y, d = Math.hypot(dx, dy) || 1, esP = i === O.punto;
+      if (esP) punto(ctx, q.x, q.y, 5, c.p);
+      rotulo(ctx, c, q.x + dx/d*14, q.y + dy/d*14, 'ABCDEF'[i], esP ? c.p : c.ink, 'center', 800, 13);
+    });
+    if (Array.isArray(O.punto)){ const Q = P(...ahora.punto); punto(ctx, Q.x, Q.y, 5, c.p); }
+    if (ahora.pivote){ const Q = P(...ahora.pivote); punto(ctx, Q.x, Q.y, 4, c.ink); }
+  }
+
+  // ----- la lámina que gira -----
+  function dibBarrido(c){
+    const B = E.bar, sg = B.sentido === 'horario' ? -1 : 1, O = B.figura[B.centro];
+    const copia = a => MR.girarFigura({ puntos:B.figura, centro:O, angulo:sg*a });
+    if (!cache){
+      const todos = []; for (let k = 0; k <= 24; k++) todos.push(...copia(B.angulo*k/24));
+      cache = { x0:Math.min(...todos.map(p => p[0])), x1:Math.max(...todos.map(p => p[0])), y0:Math.min(...todos.map(p => p[1])), y1:Math.max(...todos.map(p => p[1])) };
+    }
+    const { s, P } = vista(cache.x0, cache.x1, cache.y0, cache.y1, 26);
+    const ang = B.angulo*B.prog, zona = mezcla(c.A, c.paper, .32);
+    // la región barrida: copias pintadas con un color ya mezclado (no se oscurece al superponerse)
+    if (B.prog > 0){
+      ctx.save(); ctx.globalAlpha = atenuar('A'); ctx.fillStyle = zona; ctx.strokeStyle = zona; ctx.lineWidth = 1;
+      const K = Math.max(2, Math.round(60*B.prog));
+      if (B.lado){
+        const [i, j] = B.lado;
+        for (let k = 0; k < K; k++){ const u = copia(ang*k/K), v = copia(ang*(k + 1)/K), a = P(...u[i]), b = P(...u[j]), cc = P(...v[j]), d = P(...v[i]);
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(cc.x, cc.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+      } else for (let k = 0; k <= K; k++){ poli(ctx, copia(ang*k/K).map(p => P(...p)), true); ctx.fill(); ctx.stroke(); }
+      ctx.restore();
+    }
+    // la lámina al inicio (a trazos) y ahora
+    const ini = B.figura.map(p => P(...p)), act = copia(ang).map(p => P(...p));
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]); poli(ctx, ini, true); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .12; poli(ctx, act, true); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.lineJoin = 'round'; poli(ctx, act, true); ctx.stroke(); ctx.restore();
+    if (B.lado){ const [i, j] = B.lado; ctx.save(); ctx.strokeStyle = c.l; ctx.globalAlpha = atenuar('l'); ctx.lineWidth = grosor('l', 4.5); ctx.beginPath(); ctx.moveTo(act[i].x, act[i].y); ctx.lineTo(act[j].x, act[j].y); ctx.stroke(); ctx.restore(); }
+    const o = P(...O); punto(ctx, o.x, o.y, 5, c.ink);
+    rotulo(ctx, c, o.x - 12, o.y + 12, 'O', c.ink, 'right', 800, 13);
+    // tras responder: el radio mayor y su arco, y el ángulo
+    if (B.ver && B.datos){
+      const F = B.lado ? (B.datos.lejanoIdx !== undefined ? B.datos.lejanoIdx : null) : B.datos.lejano;
+      const idx = F === null ? null : F;
+      if (idx !== null){
+        const f0 = B.figura[idx], a0 = Math.atan2(f0[1] - O[1], f0[0] - O[0]), rho = Math.hypot(f0[0] - O[0], f0[1] - O[1])*s;
+        ctx.save(); ctx.strokeStyle = c.q; ctx.globalAlpha = atenuar('q'); ctx.lineWidth = grosor('q', 3); ctx.beginPath();
+        ctx.arc(o.x, o.y, rho, -a0, -(a0 + sg*ang*Math.PI/180), sg > 0); ctx.stroke();
+        ctx.setLineDash([5, 4]); ctx.lineWidth = 1.8; const fp = P(...f0); ctx.beginPath(); ctx.moveTo(o.x, o.y); ctx.lineTo(fp.x, fp.y); ctx.stroke(); ctx.restore();
+        const fp = P(...f0); rotulo(ctx, c, (o.x + fp.x)/2, (o.y + fp.y)/2, `ρ = ${B.datos.radioMayorExacto}`, c.q, 'center', 800, 12);
+      }
+      const am = Math.atan2(B.figura[(B.centro + 1) % B.figura.length][1] - O[1], B.figura[(B.centro + 1) % B.figura.length][0] - O[0]);
+      ctx.save(); ctx.strokeStyle = c.t; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(o.x, o.y, 22, -am, -(am + sg*ang*Math.PI/180), sg > 0); ctx.stroke(); ctx.restore();
+      const amid = am + sg*ang*Math.PI/360; rotulo(ctx, c, o.x + 38*Math.cos(amid), o.y - 38*Math.sin(amid), `${fmt(B.angulo)}°`, c.t, 'center', 800, 12);
+    }
+  }
+
+  // ----- láminas que giran y se superponen -----
+  function grilla(c, x, y, cel, n, marcas, ang, color){
+    ctx.save(); ctx.translate(x + cel*n/2, y + cel*n/2); ctx.rotate(ang || 0); ctx.translate(-cel*n/2, -cel*n/2);
+    ctx.fillStyle = c.paper; ctx.fillRect(0, 0, cel*n, cel*n);
+    ctx.fillStyle = color || c.ink;
+    for (const [cc, f] of marcas) ctx.fillRect(cc*cel + 1, f*cel + 1, cel - 2, cel - 2);
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1;
+    for (let k = 1; k < n; k++){ ctx.beginPath(); ctx.moveTo(k*cel, 0); ctx.lineTo(k*cel, cel*n); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, k*cel); ctx.lineTo(cel*n, k*cel); ctx.stroke(); }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.strokeRect(0, 0, cel*n, cel*n);
+    // una muesca en la esquina de arriba a la izquierda, para ver el giro
+    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(cel*.45, 0); ctx.lineTo(0, cel*.45); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+  function dibLaminas(c){
+    const M = E.lam, D = M.datos, n = M.n, k = M.laminas.length;
+    const cel = Math.max(12, Math.min((W - 40)/(k*n + (k - 1)*1.4), (Hh - 100)/(2*n)));
+    const lado = cel*n, gap = cel*1.4, x0 = (W - (k*lado + (k - 1)*gap))/2, y0 = 26;
+    const txt = g => `${g.angulo}° ${g.sentido === 'horario' ? '↻' : '↺'}`;
+    M.laminas.forEach((l, i) => {
+      const x = x0 + i*(lado + gap);
+      const giro = M.etapa === 1 ? M.f*D.reducidos[i].horario : 0;
+      const marcas = M.etapa >= 2 ? D.parciales[i] : l.marcas;
+      grilla(c, x, y0, cel, n, marcas, giro*Math.PI/180, null);
+      rotulo(ctx, c, x + lado/2, y0 - 13, txt(l), c.t, 'center', 800, 12);
+    });
+    // abajo: superpuestas y giro final
+    const y1 = y0 + lado + 34, xs = W/2 - lado - cel, xf = W/2 + cel;
+    rotulo(ctx, c, xs + lado/2, y1 - 13, 'Superpuestas', c.ink, 'center', 700, 12);
+    if (M.etapa >= 2) grilla(c, xs, y1, cel, n, D.superpuesta, 0, null);
+    else { ctx.save(); ctx.strokeStyle = c.line; ctx.setLineDash([4, 4]); ctx.strokeRect(xs, y1, lado, lado); ctx.restore(); }
+    if (M.final) rotulo(ctx, c, xf + lado/2, y1 - 13, `Al final: ${txt(M.final)}`, c.t, 'center', 800, 12);
+    if (M.etapa >= 3) grilla(c, xf, y1, cel, n, M.etapa === 4 ? D.resultado : D.superpuesta, M.etapa === 3 ? M.f*D.final.horario*Math.PI/180 : 0, null);
+    else { ctx.save(); ctx.strokeStyle = c.line; ctx.setLineDash([4, 4]); ctx.strokeRect(xf, y1, lado, lado); ctx.restore();
+      ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(lado*.4)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', xf + lado/2, y1 + lado/2); }
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(xs + lado + 4, y1 + lado/2); ctx.lineTo(xf - 6, y1 + lado/2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(xf - 6, y1 + lado/2); ctx.lineTo(xf - 12, y1 + lado/2 - 4); ctx.lineTo(xf - 12, y1 + lado/2 + 4); ctx.closePath(); ctx.fillStyle = c.muted; ctx.fill(); ctx.restore();
+  }
+
+  // ----- el polígono dentro del marco -----
+  function dibMarco(c){
+    const M = E.mar;
+    const { s, P } = vista(-.08*M.ancho, M.ancho*1.08, -.08*M.alto, M.alto*1.08, 20);
+    const a = P(0, 0), b = P(M.ancho, M.alto);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 4; ctx.strokeRect(a.x, b.y, b.x - a.x, a.y - b.y); ctx.restore();
+    const est = MR.marcoEn({ n:M.n, lado:M.lado, ancho:M.ancho, alto:M.alto, t:M.t }), pts = est.vertices.map(p => P(...p));
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .1; poli(ctx, pts, true); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; poli(ctx, pts, true); ctx.stroke(); ctx.restore();
+    const cen = pts.reduce((a0, q) => ({ x:a0.x + q.x/pts.length, y:a0.y + q.y/pts.length }), { x:0, y:0 });
+    pts.forEach((q, i) => { const dx = cen.x - q.x, dy = cen.y - q.y, d = Math.hypot(dx, dy) || 1;
+      const esA = i === 0; if (esA) punto(ctx, q.x, q.y, 5, c.p);
+      rotulo(ctx, c, q.x + dx/d*16, q.y + dy/d*16, 'ABCDEF'[i], esA ? c.p : c.ink, 'center', 800, 14); });
+    const pv = P(...est.pivote); punto(ctx, pv.x, pv.y, 4, c.ink);
+    void s;
+  }
+
+  // ----- el plano cartesiano -----
+  function dibPlano(c){
+    const Pl = E.pla, D = Pl.datos, todos = Pl.puntos.concat(D.nuevos, [Pl.centro, [0, 0]]);
+    const x0 = Math.min(...todos.map(p => p[0])) - 1, x1 = Math.max(...todos.map(p => p[0])) + 1, y0 = Math.min(...todos.map(p => p[1])) - 1, y1 = Math.max(...todos.map(p => p[1])) + 1;
+    const { s, P } = vista(x0, x1, y0, y1, 16);
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let x = Math.ceil(x0); x <= x1; x++){ const a = P(x, y0), b = P(x, y1); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    for (let y = Math.ceil(y0); y <= y1; y++){ const a = P(x0, y), b = P(x1, y); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; let a = P(x0, 0), b = P(x1, 0); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    a = P(0, y0); b = P(0, y1); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.restore();
+    ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let x = Math.ceil(x0); x <= x1; x++) if (x){ const q = P(x, 0); ctx.fillText(String(x).replace('-', '−'), q.x, q.y + 3); }
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let y = Math.ceil(y0); y <= y1; y++) if (y){ const q = P(0, y); ctx.fillText(String(y).replace('-', '−'), q.x - 4, q.y); }
+    const tri = Pl.puntos.map(p => P(...p));
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .1; poli(ctx, tri, true); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; poli(ctx, tri, true); ctx.stroke(); ctx.restore();
+    if (Pl.prog > 0){
+      const giro = MR.girarFigura({ puntos:Pl.puntos, centro:Pl.centro, angulo:Pl.angulo*Pl.prog }).map(p => P(...p));
+      ctx.save(); ctx.globalAlpha = atenuar('i'); ctx.fillStyle = c.i; ctx.globalAlpha *= .14; poli(ctx, giro, true); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.globalAlpha = atenuar('i'); ctx.strokeStyle = c.i; ctx.lineWidth = grosor('i', 2.6); poli(ctx, giro, true); ctx.stroke(); ctx.restore();
+      if (Pl.ver) D.nuevos.forEach((p, k) => { const q = P(...p); rotulo(ctx, c, q.x + 6, q.y - 11, `(${String(p[0]).replace('-', '−')}, ${String(p[1]).replace('-', '−')})`, c.i, 'left', 800, 11); void k; });
+    }
+    const cc = P(...Pl.centro); punto(ctx, cc.x, cc.y, 5, c.ink);
+    rotulo(ctx, c, cc.x - 8, cc.y + 12, 'C', c.ink, 'right', 800, 13);
+    Pl.puntos.forEach((p, k) => { const q = P(...p); rotulo(ctx, c, q.x + 6, q.y + 11, 'ABC'[k], c.ink, 'left', 800, 12); });
+    void s;
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, Hh); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, Hh);
+    if (E.modo === 'camino' && E.cam) dibCamino(c);
+    else if (E.modo === 'vuelco' && E.vol) dibVuelco(c);
+    else if (E.modo === 'barrido' && E.bar) dibBarrido(c);
+    else if (E.modo === 'laminas' && E.lam) dibLaminas(c);
+    else if (E.modo === 'marco' && E.mar) dibMarco(c);
+    else if (E.modo === 'plano' && E.pla) dibPlano(c);
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const vr = k => k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k;
+    const it = (k, t, f) => `<span style="--k:var(${vr(k)})"><i class="${f || ''}" style="background:var(${vr(k)})"></i>${t}</span>`;
+    document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t, f]) => it(k, t, f)).join('');
+  };
+  E.avisar = () => {
+    const filas = E.lect.map(f => f(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim) document.getElementById(idDesc).textContent = [E.desc, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); E.avisar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+  // girar la vista del prisma o del cubo: arrastrando de lado o con las flechas del teclado
+  const conProfundidad = () => E.modo === 'vuelco' && E.vol && (E.vol.prisma || E.vol.arista);
+  let x0Arr = null, az0 = 0;
+  Celular.arrastre(cv, {
+    activo: conProfundidad,
+    cerca: (p, r) => !!E.caja && p.x > E.caja[0] - r && p.x < E.caja[2] + r && p.y > E.caja[1] - r && p.y < E.caja[3] + r,
+    empezar: p => { x0Arr = p.x; az0 = E.az; },
+    mover: p => { if (x0Arr === null) return; E.az = Math.max(10, Math.min(80, az0 + (p.x - x0Arr)*.4)); E.dibujar(); },
+    soltar: () => { x0Arr = null; },
+  });
+  cv.addEventListener('keydown', e => { if (!conProfundidad()) return; if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ e.preventDefault(); E.az = Math.max(10, Math.min(80, E.az + (e.key === 'ArrowRight' ? 5 : -5))); E.dibujar(); } });
+  return E;
+}
+// un poco de espera entre jugadas de una secuencia (respeta el movimiento reducido)
+function secuencia(E, pasos, fin){
+  let k = 0;
+  const sig = () => { if (k >= pasos.length){ if (fin) fin(); return; } const [dur, paso] = pasos[k++]; E.animar(0, 1, dur, paso, sig); };
+  sig();
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const { r:r_, d:d_, n:n_, l:l_, p:p_, t:t_, q:q_, A:A_ } = W_;
+const S = { step:0, max:0, pred:{}, ocupado:false, cam2:'bloque', r2:1, fig7:'rect', ang7:90, lado7:false };
+
+// Números de la escena: todos salen del motor
+const C = MR.caminos;
+const R1 = MR.recorridoCentro({ r:1, camino:C.bloque });
+const R3 = MR.recorridoCentro({ r:1, camino:C.pizza, cerrado:true });
+const T4 = MR.toquesPiso({ r:2, n:5, falta:180 }), LP4 = 2*Math.PI*2*6;
+const FIG5 = { regular:4, lado:2 }, PISO5 = { regular:6 }, V5 = MR.volcar({ figura:FIG5, piso:PISO5, vuelcos:4, punto:0 });
+const FIG6 = { vertices:MR.figuras.trapecio60 }, V6 = MR.volcar({ figura:FIG6, vuelcos:4, punto:0 });
+const TRAP8 = [[0, 0], [9, 0], [9, 12], [5, 12]], B8 = MR.barridoLamina({ figura:TRAP8, centro:0, angulo:90 });
+const LAM9 = { n:3, laminas:[{ marcas:[[0, 0], [1, 0]], angulo:450, sentido:'horario' }, { marcas:[[2, 2]], angulo:540, sentido:'antihorario' }, { marcas:[[0, 1]], angulo:1170, sentido:'horario' }], final:{ angulo:630, sentido:'antihorario' } };
+const D9 = MR.laminas(LAM9);
+const MAR10 = { n:3, lado:1, ancho:1, alto:1 }, G10d = MR.girosMarco(Object.assign({ pasos:20, esquina:'abajo-izquierda' }, MAR10));
+const cm = t => `${t} cm`;
+
+const G1 = { id:'rodamientos-paso1', ok:'c', opts:[
+  ['a', num(cm(R1.exactos.pista)), 'RME20', 'hipotesis'],
+  ['b', num(cm(R1.exactos.sinArcos)), 'RME20', 'hipotesis'],
+  ['c', num(cm(R1.exacto))],
+  ['d', num(cm(R1.exactos.sinAtajo)), 'RME20', 'hipotesis']],
+  fb:{ c:`¡Bien! El centro va siempre a ${r_('1 cm')} del camino. En las esquinas de arriba (las que salen) da un cuarto de vuelta alrededor de la esquina; en las de abajo (las que entran) toca el piso y la pared a la vez y corta camino.`,
+    a:'Elegiste la A. 15 cm es lo que mide el camino. El centro no va pegado al camino: en las esquinas de arriba da un cuarto de vuelta alrededor de la esquina y en las de abajo corta 1 cm en cada lado. La correcta está marcada.',
+    b:'Elegiste la B. Ese número sí descuenta los cortes de las esquinas de abajo, pero en las dos esquinas de arriba la ficha gira sin avanzar por ningún lado: su centro da dos cuartos de circunferencia de radio 1, que suman π. La correcta está marcada.',
+    d:'Elegiste la D. Sumaste bien los dos cuartos de vuelta de arriba, pero en las esquinas de abajo la ficha no llega al rincón: cuando toca el piso y la pared a la vez, su centro está a 1 cm de cada uno y ahí corta 1 cm en cada lado. La correcta está marcada.' } };
+const G3 = { id:'rodamientos-paso3', ok:'d', opts:[
+  ['a', num(cm(R3.exactos.radioPista)), 'RME21', 'hipotesis'],
+  ['b', num(cm(R3.exactos.pista)), 'RME20', 'hipotesis'],
+  ['c', num(cm(R3.exactos.sinArcos)), 'RME20', 'hipotesis'],
+  ['d', num(cm(R3.exacto))]],
+  fb:{ d:`¡Bien! Junto al arco, el centro va por un arco más grande: radio 4 + ${r_('1')} = 5, no 4. En las tres esquinas gira alrededor de cada una. En total, el perímetro de la porción más una vuelta entera de radio ${r_('1')}: 8 + 2π + 2π.`,
+    a:'Elegiste la A. Contaste las tres esquinas, pero junto al borde curvo el centro no va a 4 cm del centro de la porción: va a 4 + 1 = 5 cm. Ese arco mide 5π/2, no 2π. La correcta está marcada.',
+    b:'Elegiste la B. 8 + 2π es el perímetro de la porción. El centro de la rueda va 1 cm afuera de él: en las tres esquinas da vueltas pequeñas y junto al arco va por un arco más grande. La correcta está marcada.',
+    c:'Elegiste la C. Agrandaste bien el arco (radio 5), pero faltan las tres esquinas: en cada una el centro gira alrededor de la esquina un cuarto de circunferencia de radio 1. La correcta está marcada.' } };
+const G4 = { id:'rodamientos-paso4', ok:'b', opts:[
+  ['a', num(cm(T4.exactos.inicioComoToque)), 'RME131', 'hipotesis'],
+  ['b', num(cm(T4.exacto))],
+  ['c', num(cm(T4.exactos.vueltasN)), 'RME131', 'hipotesis'],
+  ['d', num(cm(T4.exactos.radioDiametro)), 'RME21', 'hipotesis']],
+  fb:{ b:`¡Bien! P empieza arriba: toca el piso por primera vez tras media vuelta, y cada toque siguiente llega una vuelta después. El quinto toque llega tras ${n_('1/2 + 4 = 9/2')} vueltas, y en cada vuelta el centro avanza ${d_('2π · 2 = 4π')} cm.`,
+    a:'Elegiste la A. 16π son 4 vueltas enteras. Pero P no empieza en el piso: empieza arriba y su primer toque llega tras media vuelta. Del primero al quinto hay 4 vueltas más: 4,5 vueltas. La correcta está marcada.',
+    c:'Elegiste la C. 20π son 5 vueltas enteras, como si cada toque necesitara una vuelta completa desde el inicio. El primero llega tras media vuelta, porque P empieza arriba. La correcta está marcada.',
+    d:'Elegiste la D. Contaste bien las 4,5 vueltas, pero en cada vuelta el centro avanza lo que mide el borde de la rueda, 2π · 2 = 4π cm, no 2π. La correcta está marcada.' } };
+const G5 = { id:'rodamientos-paso5', ok:'c', opts:[
+  ['a', num(V5.exactos.anguloInterior + ' dm'), 'RME132', 'hipotesis'],
+  ['b', num(V5.exactos.radioLado + ' dm'), 'RME21', 'hipotesis'],
+  ['c', num(V5.exacto + ' dm')],
+  ['d', num(V5.exactos.cuentaPivote + ' dm'), 'RME133', 'hipotesis']],
+  fb:{ c:`¡Bien! En cada esquina del hexágono el cuadrado gira ${t_('360° − 90° − 120° = 150°')}: los ángulos de las dos figuras se quedan sin girar. A recorre arcos de 150° con radios ${q_('2, 2√2 y 2')}, y en el cuarto vuelco es el pivote.`,
+    a:'Elegiste la A. Así sería sobre una recta, con giros de 90°. Sobre el hexágono el piso dobla en cada esquina: el cuadrado gira 360° − 90° − 120° = 150°. La correcta está marcada.',
+    b:'Elegiste la B. En el segundo vuelco el pivote es la esquina opuesta a A: el radio es la diagonal, 2√2 dm, no el lado. La correcta está marcada.',
+    d:'Elegiste la D. En el cuarto vuelco A es el vértice sobre el que gira el cuadrado: se queda quieto y no suma ningún arco. La correcta está marcada.' } };
+const G6 = { id:'rodamientos-paso6', ok:'a', opts:[
+  ['a', num(V6.exacto + ' m')],
+  ['b', num(V6.exactos.mismoAngulo + ' m'), 'RME22', 'hipotesis'],
+  ['c', num(V6.exactos.radioLado + ' m'), 'RME21', 'hipotesis'],
+  ['d', num(V6.exactos.anguloInterior + ' m'), 'RME138', 'hipotesis']],
+  fb:{ a:`¡Bien! Sobre B y sobre A (ángulos de 60°) el trapecio gira ${t_('120°')}; sobre C y D (ángulos de 120°) gira solo ${t_('60°')}. Los radios de A son ${q_('4, 2√3 y 2')}.`,
+    b:'Elegiste la B. No todos los vuelcos son de 120°: el trapecio gira 180° menos el ángulo del vértice de apoyo. Sobre C y D, que miden 120°, gira solo 60°. La correcta está marcada.',
+    c:'Elegiste la C. Los radios no son siempre el lado que sigue: A está a 4 m de B (la base) y a 2√3 m de C (la diagonal). La correcta está marcada.',
+    d:'Elegiste la D. Usaste los ángulos del trapecio como giros, pero el giro es lo que le falta al ángulo para llegar a 180°: sobre B gira 180° − 60° = 120°, no 60°. La correcta está marcada.' } };
+const G8 = { id:'rodamientos-paso8', ok:'d', opts:[
+  ['a', num(cm(B8.exactos.radioLado)), 'RME21', 'hipotesis'],
+  ['b', num(cm(B8.exactos.sector)), 'RME25', 'hipotesis'],
+  ['c', num(cm(B8.exactos.sinArco)), 'RME25', 'hipotesis'],
+  ['d', num(cm(B8.exacto))]],
+  fb:{ d:`¡Bien! El borde de la región es el borde de la lámina (una parte al inicio y otra al final: 38 cm) más el arco que dibuja el punto más lejano de O: la esquina opuesta, a ${q_('ρ = 15 cm')}. Arco: ${fr('90', '360')} · 2π · 15 = 15π/2.`,
+    a:'Elegiste la A. El arco lo dibuja el punto de la lámina más lejano de O, que es la esquina opuesta: a √(81 + 144) = 15 cm. El lado de 13 cm no es el más lejano. La correcta está marcada.',
+    b:'Elegiste la B. Ese es el borde de un sector de radio 15. Pero la región no es un sector: su borde sigue la lámina en sus posiciones del inicio y del final, que suman 38 cm. La correcta está marcada.',
+    c:'Elegiste la C. 38 cm es el perímetro de la lámina. La región barrida tiene además el arco que dibuja la esquina más lejana de O. La correcta está marcada.' } };
+const letraOpt = { ok:null };
+const opts9 = [['a', D9.errores.sinFinal, 'RME134'], ['b', D9.resultado, null], ['c', D9.errores.finalContrario, 'RME23'], ['d', D9.errores.todasContrarias, 'RME23']];
+const G9 = { id:'rodamientos-paso9', ok:'b', opts:opts9.map(([k, cs, cod], i) => cod ? [k, `${svgLamina(cs, 3)}<span>Figura ${i + 1}<span class="sr">: casillas pintadas en ${nombreCeldas(cs)}</span></span>`, cod, 'hipotesis'] : [k, `${svgLamina(cs, 3)}<span>Figura ${i + 1}<span class="sr">: casillas pintadas en ${nombreCeldas(cs)}</span></span>`]),
+  fb:{ b:`¡Bien! Sin vueltas enteras: 450° horario es ${t_('90° horario')}; 540° antihorario, ${t_('180°')}; 1170° horario, ${t_('90° horario')}; y 630° antihorario, ${t_('270° antihorario = 90° horario')}.`,
+    a:'Elegiste la A. Así quedan las láminas superpuestas, antes del último giro. 630° no deja la lámina igual: son una vuelta y 270° antihorario, que es un cuarto de vuelta horario. La correcta está marcada.',
+    c:'Elegiste la C. El último giro es 630° antihorario: una vuelta y 270° antihorario, que equivale a 90° horario, no antihorario. La correcta está marcada.',
+    d:'Elegiste la D. Giraste todo al revés: 450° horario es una vuelta y 90° en el sentido de las agujas del reloj, no en el contrario. La correcta está marcada.' } };
+void letraOpt;
+const nomEsq = { A:'A', B:'B', C:'C', ninguno:'Ningún vértice' };
+const opts10 = ['A', 'B', 'C', 'ninguno'].map((x, i) => {
+  const e = Object.entries(G10d.errores).find(([, v]) => v === x);
+  const cod = e ? { sinRotacionPropia:'RME137', cicloVertices:'RME137', contrario:'RME23' }[e[0]] : null;
+  return cod ? ['abcd'[i], num(nomEsq[x]), cod, 'hipotesis'] : ['abcd'[i], num(nomEsq[x])];
+});
+const okDe10 = 'abcd'[['A', 'B', 'C', 'ninguno'].indexOf(G10d.respuesta)];
+const G10 = { id:'rodamientos-paso10', ok:okDe10, opts:opts10,
+  fb:{ c:`¡Bien! Cada giro es de ${t_('30°')}. Cada 4 giros vuelve a estar abajo, pero girado 120°: las letras cambian de lugar. Recién a los 12 giros vuelve con cada letra en su sitio. 20 = 12 + 8, y tras 8 giros (dos veces 4) C está en esa esquina.`,
+    a:'Elegiste la A. Es cierto que cada 4 giros el triángulo vuelve a apoyarse abajo, pero girado 120°: no con A en su lugar. Para eso hacen falta 12 giros. 20 = 12 + 8: queda como tras 8 giros. La correcta está marcada.',
+    b:'Elegiste la B. Así quedaría si girara hacia el otro lado. Aquí gira sobre la esquina de abajo a la derecha, en el sentido de las agujas del reloj. La correcta está marcada.',
+    d:'Elegiste la D. Si las letras se repitieran cada 3 giros, 20 = 18 + 2 dejaría el triángulo como tras 2 giros, apoyado arriba. Pero el ciclo es de 12 giros: 20 = 12 + 8, y tras 8 giros el triángulo está abajo, con C en esa esquina. La correcta está marcada.' } };
+
+// ---- configuraciones ----
+function camino1(ya){
+  return { modo:'camino', cam:{ R:R1, r:1, s: ya ? R1.longitud : 0, traza:ya },
+    lect: ya ? [L('r', 'Radio r', '1 cm'), L('ink', 'El camino mide', '15 cm'), L('d', 'Recorrido del centro d', cm(R1.exacto))] : [L('r', 'Radio r', '1 cm'), L('ink', 'El camino mide', '15 cm'), L('d', 'Recorrido del centro d', '?')],
+    ley: ya ? [['r', 'r · la ficha'], ['d', 'd · camino de su centro']] : [['r', 'r · la ficha']],
+    desc:'Una ficha circular de 1 cm de radio sobre un piso con un bloque de 2 cm de alto y 3 cm de ancho, entre dos tramos de 4 cm.' };
+}
+const PRESETS = { bloque:['Un bloque', C.bloque], dosBloques:['Dos bloques', C.dosBloques], escalera:['Escalera', C.escalera], rampa:['Rampa de 60°', C.rampa], canaleta:['Canaleta', C.canaleta] };
+function camino2(){
+  const R = MR.recorridoCentro({ r:S.r2, camino:PRESETS[S.cam2][1] });
+  E.config({ modo:'camino', cam:{ R, r:S.r2, s:R.longitud, traza:true },
+    lect:[L('r', 'Radio r', `${S.r2 === 1 ? '1' : '1/2'} cm`), L('ink', 'El camino mide', cm(R.pistaExacto)), L('d', 'Recorrido del centro d', cm(R.exacto))],
+    ley:[['r', 'r · la ficha'], ['d', 'd · camino de su centro']], desc:`${PRESETS[S.cam2][0]}: la ficha rodó de un extremo al otro.` });
+  return R;
+}
+function tablaTramos(R){
+  const fila = t => {
+    if (t.tipo === 'recta') return `<tr><td>Recta de ${fmt(t.pista)}</td><td class="n">${d_(t.exacto)}</td><td>${t.exacto === String(t.pista) ? 'igual' : 'corta en las esquinas que entran'}</td></tr>`;
+    if (t.tipo === 'esquina' && t.clase === 'sale') return `<tr><td>Esquina que sale (${t.angulo}°)</td><td class="n">${d_(t.exacto)}</td><td>arco de radio ${r_('r')} y ${t.angulo}°</td></tr>`;
+    if (t.tipo === 'esquina') return `<tr><td>Esquina que entra (${t.angulo}°)</td><td class="n">0</td><td>ahorra ${t.corteExacto} entre sus dos rectas</td></tr>`;
+    return `<tr><td>Arco de radio ${fmt(t.R)} (${t.angulo}°, ${t.lado === 'fuera' ? 'por fuera' : 'por dentro'})</td><td class="n">${d_(t.exacto)}</td><td>radio ${fmt(t.R)} ${t.lado === 'fuera' ? '+' : '−'} ${r_('r')}</td></tr>`;
+  };
+  return `<div class="tabla"><table class="tramos"><caption>La cuenta por tramos</caption><thead><tr><th>Tramo del camino</th><th>Centro</th><th>Por qué</th></tr></thead><tbody>${R.tramos.map(fila).join('')}</tbody></table></div>
+    <div class="eqs"><div class="eq">${d_('d')} = ${R.partes.sumaRectas} + ${R.partes.sumaArcos} = ${d_(R.exacto)}<span class="note">rectas (ya cortadas) + arcos</span></div>
+    <div class="eq">rectas del camino − atajos + arcos = ${fmt(R.tramos.filter(t => t.tipo === 'recta').reduce((a, t) => a + t.pista, 0))} − ${R.partes.atajo} + ${R.partes.sumaArcos}</div></div>`;
+}
+function camino3(ya){
+  return { modo:'camino', cam:{ R:R3, r:1, s: ya ? R3.longitud : 0, traza:ya, cerrado:true },
+    lect: ya ? [L('r', 'Radio r', '1 cm'), L('ink', 'Perímetro de la porción', cm(R3.pistaExacto)), L('d', 'Recorrido del centro d', cm(R3.exacto))] : [L('r', 'Radio r', '1 cm'), L('ink', 'Perímetro de la porción', cm(R3.pistaExacto)), L('d', 'Recorrido del centro d', '?')],
+    ley: ya ? [['r', 'r · la rueda'], ['d', 'd · camino de su centro']] : [['r', 'r · la rueda']],
+    desc:'Una porción de torta con forma de cuarto de círculo de 4 cm de radio, y una rueda de 1 cm de radio apoyada en uno de sus lados rectos.' };
+}
+const R4 = MR.recorridoCentro({ r:2, camino:[{ tipo:'recta', largo:LP4 }] });
+function camino4(ya){
+  return { modo:'camino', cam:{ R:R4, r:2, s: ya ? T4.recorrido : 0, traza:ya, ventana:22, clavo:{ falta:180, marcas: ya ? T4.marcas : null } },
+    lect: ya ? [L('r', 'Radio r', '2 cm'), E0 => ['n', 'Toques de P', String(T4.marcas.filter(m => m <= E0.cam.s + 1e-9).length)], L('d', 'Avance del centro', cm(T4.exacto))] : [L('r', 'Radio r', '2 cm'), L('n', 'Toques pedidos', '5'), L('d', 'Avance del centro', '?')],
+    ley: ya ? [['r', 'r · la rueda'], ['n', 'n · cada toque de P', 'pt'], ['d', 'd · camino del centro']] : [['r', 'r · la rueda'], ['n', 'P · el clavo', 'pt']],
+    desc:'Una rueda de 2 cm de radio sobre un piso recto, con un clavo P en lo más alto de su borde.' };
+}
+function vuelco5(ya){
+  return { modo:'vuelco', vol:{ fig:FIG5, piso:PISO5, vuelcos:4, t: ya ? 4 : 0, punto:0, traza:ya, radios:ya, datos:V5 },
+    lect: ya ? [L('l', 'Lado l', '2 dm'), L('t', 'Giro θ en cada esquina', '150°'), L('p', 'Recorrido de A', `${V5.exacto} dm`)] : [L('l', 'Lado l', '2 dm'), L('ink', 'Vuelcos', '4'), L('p', 'Recorrido de A', '?')],
+    ley: ya ? [['p', 'p · el camino de A'], ['q', 'ρ · radio de cada arco']] : [['l', 'l · el lado (el mismo en las dos figuras)']],
+    desc:'Un cuadrado ABCD de 2 dm de lado apoyado sobre el lado de arriba de un hexágono regular fijo de 2 dm de lado, con A a la izquierda.' };
+}
+function vuelco6(ya){
+  return { modo:'vuelco', vol:{ fig:FIG6, vuelcos:4, t: ya ? 4 : 0, punto:0, traza:ya, radios:ya, datos:V6 },
+    lect: ya ? [L('t', 'Giros θ', V6.angulos.slice(0, 3).map(a => a + '°').join(', ')), L('p', 'Recorrido de A', `${V6.exacto} m`)] : [L('l', 'Lados l', '2 m (base 4 m)'), L('p', 'Recorrido de A', '?')],
+    ley: ya ? [['p', 'p · el camino de A'], ['q', 'ρ · radio de cada arco']] : [['l', 'l · base de apoyo']],
+    desc:'Un trapecio isósceles ABCD con base AB de 4 m sobre el piso, lado de arriba CD de 2 m y lados de 2 m, con A a la izquierda.' };
+}
+const FIGS7 = { rect:['Rectángulo de 4 × 3', MR.figuras.rectangulo], trap:['Trapecio de bases 9 y 4', TRAP8], esc:['Escalera de 3 cuadraditos de 1', MR.figuras.escalera3] };
+function barrido7(prog){
+  const f = FIGS7[S.fig7][1], arg = { figura:f, centro:0, angulo:S.ang7 };
+  const D = S.lado7 ? MR.barridoSegmento(Object.assign({ lado:[2, 3] }, arg)) : MR.barridoLamina(arg);
+  if (S.lado7){ const d2 = f.map(p => p[0]*p[0] + p[1]*p[1]); D.lejanoIdx = d2[2] > d2[3] ? 2 : 3; }
+  E.config({ modo:'barrido', bar:{ figura:f, centro:0, angulo:S.ang7, prog, lado: S.lado7 ? [2, 3] : null, datos:D, ver:true },
+    lect:[L('t', 'Giro θ', `${S.ang7}°`), L('q', 'Radio mayor ρ', D.radioMayorExacto), L('A', 'Perímetro de la región', D.exacto || `≈ ${fmt(D.perimetro)}`)],
+    ley:[['A', 'región barrida', 'zona'], ['q', 'ρ · el punto más lejano de O']].concat(S.lado7 ? [['l', 'el lado que barre']] : []),
+    desc:`${FIGS7[S.fig7][0]} que gira ${S.ang7}° alrededor de su vértice O.` });
+  return D;
+}
+function barrido8(ya){
+  return { modo:'barrido', bar:{ figura:TRAP8, centro:0, angulo:90, prog: ya ? 1 : 0, datos:B8, ver:ya },
+    lect: ya ? [L('q', 'Radio mayor ρ', '15 cm'), L('A', 'Perímetro de la región', cm(B8.exacto))] : [L('t', 'Giro θ', '90°'), L('A', 'Perímetro de la región', '?')],
+    ley: ya ? [['A', 'región barrida', 'zona'], ['q', 'ρ · el punto más lejano de O'], ['t', 'θ · el giro']] : [],
+    desc:'Una lámina con forma de trapecio rectángulo: base de abajo de 9 cm, base de arriba de 4 cm y altura de 12 cm, con el lado de 12 cm a la derecha. Va a girar 90° en sentido antihorario alrededor de su vértice O, el de abajo a la izquierda.' };
+}
+function laminas9(ya){
+  return { modo:'laminas', lam:Object.assign({ datos:D9, etapa: ya ? 4 : 0 }, LAM9),
+    lect:[L('t', 'Giro final', '630° ↺')], ley: ya ? [['t', 'θ · los giros']] : [],
+    desc:'Tres láminas transparentes de 3 por 3 casillas, cada una con su giro; abajo, el lugar de las superpuestas y el del resultado, con un signo de pregunta.' };
+}
+function marco10(t, ya){
+  return { modo:'marco', mar:Object.assign({ t }, MAR10),
+    lect:[E0 => ['t', 'Giros hechos', String(Math.floor(E0.mar.t + 1e-9))], L('ink', 'Giros pedidos', '20')].concat(ya ? [L('p', 'Abajo a la izquierda', nomEsq[G10d.respuesta])] : []),
+    ley:[['p', 'A · el vértice de partida', 'pt']], desc:'Un triángulo equilátero ABC de 1 dm de lado dentro de un marco cuadrado de 1 dm de lado, con AB sobre el lado de abajo y A en la esquina de abajo a la izquierda.' };
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: la ficha y el bloque', gate:G1,
+   prep:() => E.config(camino1(!!S.pred[G1.id])),
+   anima:fin => { E.config(camino1(true)); const U = E.cam; U.s = 0; E.animar(0, R1.longitud, 5200, v => { U.s = v; }, fin, true); },
+   body:() => `<p class="problem">Una ficha circular de ${r_('1 cm')} de radio rueda sin resbalar de un extremo al otro de un piso con un bloque: 4 cm de piso, sube 2 cm, cruza 3 cm por arriba, baja 2 cm y sigue 4 cm más. Nunca se separa del camino.</p>
+   <p>¿Qué longitud recorre el centro de la ficha?</p>${opcionesHTML(G1.opts, 'fb')}
+   <div id="tras" class="body" hidden>${tablaTramos(R1)}
+   <p>El centro va siempre a ${r_('1 cm')} del camino. En una esquina que sale, la ficha gira alrededor de la esquina sin avanzar por ningún lado: su centro dibuja un arco de radio ${r_('r')} y del mismo ángulo que dobla el camino. En una esquina que entra, la ficha toca el piso y la pared a la vez y su centro corta camino: ${r_('r')} en cada lado (con esquinas de 90°).</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME20): no encontramos estudios con cifras sobre ruedas que recorren caminos con esquinas.</p></div>` },
+ { k:'Paso 2', t:'Mira el recorrido por tramos', explora:true,
+   prep:() => { const R = camino2(); const d = $('tabla2'); if (d) d.innerHTML = tablaTramos(R); },
+   body:() => `<p>Elige un camino y el tamaño de la ficha. El motor la hace rodar y arma la cuenta tramo por tramo.</p>
+   <div class="seg" id="cams2" role="group" aria-label="Camino">${Object.entries(PRESETS).map(([k, v]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.cam2}">${v[0]}</button>`).join('')}</div>
+   <div class="seg" id="rs2" role="group" aria-label="Radio de la ficha"><button type="button" data-r="1" aria-pressed="${S.r2 === 1}">Radio 1</button><button type="button" data-r="0.5" aria-pressed="${S.r2 === .5}">Radio 1/2</button></div>
+   <div id="tabla2"></div>
+   <p class="aviso">En la canaleta, lo que el centro gana en las dos esquinas de arriba lo pierde dentro de la curva (va a 3 − 1 = 2 del centro, no a 3): ahí el centro recorre lo mismo que el camino. En la rampa, el corte de una esquina de 60° es r · tan 30°.</p>` },
+ { k:'Paso 3', t:'Predice: la rueda alrededor de la porción', gate:G3,
+   prep:() => E.config(camino3(!!S.pred[G3.id])),
+   anima:fin => { E.config(camino3(true)); const U = E.cam; U.s = 0; E.animar(0, R3.longitud, 6000, v => { U.s = v; }, fin, true); },
+   body:() => `<p class="problem">Una porción de torta tiene forma de cuarto de círculo de 4 cm de radio: dos lados rectos de 4 cm y un borde curvo. Una rueda de ${r_('1 cm')} de radio le da una vuelta completa por fuera, rodando pegada a su borde y sin resbalar.</p>
+   <p>¿Qué longitud recorre el centro de la rueda?</p>${opcionesHTML(G3.opts, 'fb')}
+   <div id="tras" class="body" hidden>${tablaTramos(R3)}
+   <p>Junto a un borde curvo por fuera, el centro va por un arco del mismo ángulo pero de radio 4 + ${r_('1')} = 5. En las tres esquinas gira alrededor de cada una. Fíjate: los giros de las esquinas (90° + 90° + 90°) más el del borde curvo (90°) suman una vuelta entera. Por eso, alrededor de una figura sin esquinas que entran, el centro recorre el perímetro más una circunferencia de radio ${r_('r')}.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME20 y RME21).</p></div>` },
+ { k:'Paso 4', t:'Predice: el clavo que toca el piso', gate:G4,
+   prep:() => E.config(camino4(!!S.pred[G4.id])),
+   anima:fin => { E.config(camino4(true)); const U = E.cam; U.s = 0; E.animar(0, T4.recorrido, 6000, v => { U.s = v; }, fin, true); },
+   body:() => `<p class="problem">Una rueda de ${r_('2 cm')} de radio tiene un clavo P en su borde. Al inicio P está en lo más alto. La rueda rueda sin resbalar por un piso recto.</p>
+   <p>¿Cuánto avanzó el centro de la rueda cuando P toca el piso por ${n_('quinta vez')}?</p>${opcionesHTML(G4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">vueltas = ${fr('1', '2')} + 4 = ${n_(T4.vueltasExacto)}<span class="note">media vuelta hasta el primer toque y una por cada toque siguiente</span></div>
+     <div class="eq">avance = ${fr('9', '2')} · 2π · ${r_('2')} = ${d_(T4.exacto + ' cm')}</div></div>
+   <p>Rodando sin resbalar, el centro avanza en cada vuelta lo que mide el borde de la rueda. Cuidado con la posición inicial: si P empezara en el piso, el quinto toque llegaría tras 5 vueltas (o tras 4, si se cuenta el del inicio).</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME131 y RME21).</p></div>` },
+ { k:'Paso 5', t:'Predice: el cuadrado alrededor del hexágono', gate:G5,
+   prep:() => E.config(vuelco5(!!S.pred[G5.id])),
+   anima:fin => { const o = vuelco5(true); o.vol.t = 0; E.config(o); const O = E.vol; E.animar(0, 4, 5600, v => { O.t = v; }, fin, true); },
+   body:() => `<p class="problem">Un cuadrado ABCD de ${l_('2 dm')} de lado está apoyado sobre el lado de arriba de un hexágono regular fijo, también de ${l_('2 dm')} de lado, con A a la izquierda. El cuadrado vuelca hacia la derecha por fuera del hexágono, girando cada vez sobre una esquina, hasta dar 4 vuelcos.</p>
+   <p>¿Qué longitud recorre el vértice A?</p>${opcionesHTML(G5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${t_('θ')} = 360° − 90° − 120° = ${t_('150°')}<span class="note">lo que no ocupan los dos ángulos que se juntan</span></div>
+     <div class="eq">${p_('p')} = ${fr('150', '180')}π(${q_('2')} + ${q_('2√2')} + ${q_('2')} + 0) = ${p_(V5.exacto)} ≈ ${fmt(V5.longitud, 1)} dm</div></div>
+   <p>En cada vuelco, A gira alrededor del vértice de apoyo y se queda a la misma distancia de él: dibuja un arco. En una recta el ángulo de giro sería el exterior del cuadrado, 90°. Sobre otro polígono el piso también dobla, y el giro es 360° menos los dos ángulos interiores que se tocan.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME132, RME21 y RME133).</p></div>` },
+ { k:'Paso 6', t:'Predice: el trapecio que vuelca', gate:G6,
+   prep:() => E.config(vuelco6(!!S.pred[G6.id])),
+   anima:fin => { const o = vuelco6(true); o.vol.t = 0; E.config(o); const O = E.vol; E.animar(0, 4, 5200, v => { O.t = v; }, fin, true); },
+   body:() => `<p class="problem">Una lámina con forma de trapecio isósceles ABCD está apoyada en el piso sobre su base AB, de 4 m, con A a la izquierda. Su lado de arriba, CD, mide 2 m, y sus otros dos lados, 2 m. Vuelca hacia la derecha, girando cada vez sobre su vértice de apoyo de adelante, 4 veces.</p>
+   <p>¿Qué longitud recorre el vértice A?</p>${opcionesHTML(G6.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">giros: ${V6.angulos.map(a => t_(a + '°')).join(', ')}<span class="note">180° menos el ángulo del vértice de apoyo (60°, 120°, 120°, 60°)</span></div>
+     <div class="eq">${p_('p')} = ${fr('120', '180')}π · ${q_('4')} + ${fr('60', '180')}π · ${q_('2√3')} + ${fr('60', '180')}π · ${q_('2')} + 0 = ${p_(V6.exacto)}</div></div>
+   <p>Con una figura que no es regular, cada vuelco tiene su propio ángulo y su propio radio. El radio es la distancia de A al vértice de apoyo: la base, una diagonal y un lado.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME22, RME21 y RME138).</p></div>` },
+ { k:'Paso 7', t:'Gira una lámina', explora:true,
+   prep:() => { const D = barrido7(1); vivo7(D); },
+   body:() => `<p>Elige la lámina, el ángulo y si barre toda la lámina o solo su lado de arriba. Gira alrededor de su vértice O.</p>
+   <div class="seg" id="figs7" role="group" aria-label="Lámina">${Object.entries(FIGS7).map(([k, v]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.fig7}">${v[0]}</button>`).join('')}</div>
+   <div class="seg" id="angs7" role="group" aria-label="Ángulo de giro">${[60, 90, 180].map(a => `<button type="button" data-a="${a}" aria-pressed="${a === S.ang7}">${a}°</button>`).join('')}</div>
+   <div class="seg" id="lado7" role="group" aria-label="Qué barre"><button type="button" data-l="0" aria-pressed="${!S.lado7}">Toda la lámina</button><button type="button" data-l="1" aria-pressed="${S.lado7}">Solo el lado de arriba</button></div>
+   <div class="eqs" id="vivo7"></div>
+   <p>Toda la lámina: el borde de la región es el borde de la lámina (una parte en la posición del inicio y la otra en la del final) más el arco que dibuja el punto más lejano de O. Un solo lado: ese lado al inicio y al final, el arco de su punta más lejana y el de su punta más cercana.</p>` },
+ { k:'Paso 8', t:'Predice: el trapecio que gira', gate:G8,
+   prep:() => E.config(barrido8(!!S.pred[G8.id])),
+   anima:fin => { const o = barrido8(true); o.bar.prog = 0; E.config(o); const B = E.bar; E.animar(0, 1, 3200, v => { B.prog = v; }, fin); },
+   body:() => `<p class="problem">Una lámina con forma de trapecio rectángulo tiene bases de 9 cm (abajo) y 4 cm (arriba) y altura de 12 cm; su lado inclinado mide 13 cm. Gira ${t_('90°')} en sentido antihorario alrededor de su vértice O, el de abajo a la izquierda (donde se juntan la base de 9 cm y el lado de 13 cm).</p>
+   <p>¿Qué perímetro tiene la región que barre la lámina?</p>${opcionesHTML(G8.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${q_('ρ')} = √(9² + 12²) = ${q_('15')}<span class="note">la esquina opuesta a O es el punto más lejano</span></div>
+     <div class="eq">perímetro = 38 + ${fr(t_('90'), '360')} · 2π · ${q_('15')} = ${A_(B8.exacto + ' cm')}</div></div>
+   <p>La región tiene el borde de la lámina en dos partes: lo que queda atrás en la posición del inicio y lo que queda adelante en la del final. Entre las dos, el arco del punto más lejano. Su área es la de la lámina más la del sector: ${B8.areaExacto} cm².</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME21 y RME25).</p></div>` },
+ { k:'Paso 9', t:'Predice: las láminas que se superponen', gate:G9,
+   prep:() => E.config(laminas9(!!S.pred[G9.id])),
+   anima:fin => { E.config(laminas9(false)); const M = E.lam;
+     secuencia(E, [[2400, f => { M.etapa = 1; M.f = f; }], [500, () => { M.etapa = 2; }], [1400, f => { M.etapa = 3; M.f = f; }], [200, () => { M.etapa = 4; }]], () => { E.config(laminas9(true)); fin(); }); },
+   body:() => `<p class="problem">Tres láminas transparentes de 3 × 3 casillas tienen algunas casillas pintadas (en el dibujo, antes de girar; la muesca marca la esquina de arriba a la izquierda). Cada una gira alrededor de su centro: la primera 450° en sentido horario, la segunda 540° en sentido antihorario y la tercera 1170° en sentido horario. Después se superponen, y lo que queda gira 630° en sentido antihorario.</p>
+   <p>¿Qué figura se obtiene?</p>${opcionesHTML(G9.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">450° = 360° + ${t_('90°')}; 540° = 360° + ${t_('180°')}; 1170° = 3 · 360° + ${t_('90°')}</div>
+     <div class="eq">630° ↺ = 360° + ${t_('270° ↺')} = ${t_('90° ↻')}</div></div>
+   <p>Cada vuelta entera deja la lámina igual: solo importa lo que sobra. Y 270° en un sentido es lo mismo que 90° en el otro.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME134 y RME23).</p></div>` },
+ { k:'Paso 10', t:'Predice: el triángulo en el marco', gate:G10,
+   prep:() => E.config(marco10(S.pred[G10.id] ? 20 : 0, !!S.pred[G10.id])),
+   anima:fin => { E.config(marco10(0, false)); const M = E.mar; E.animar(0, 20, RM ? 0 : 9000, v => { M.t = v; }, () => { E.config(marco10(20, true)); fin(); }, true); },
+   body:() => `<p class="problem">Un triángulo equilátero ABC de 1 dm de lado está dentro de un marco cuadrado de 1 dm de lado, con AB sobre el lado de abajo y A en la esquina de abajo a la izquierda. Gira sin resbalar sobre su vértice de abajo a la derecha hasta tocar el marco con otro vértice, y así sigue: cada giro es sobre el vértice que acaba de tocar el marco.</p>
+   <p>Después de 20 giros, ¿qué vértice está en la esquina de abajo a la izquierda del marco?</p>${opcionesHTML(G10.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">cada giro: ${t_('30°')}; cada 4 giros: abajo otra vez, girado 120°</div>
+     <div class="eq">todo como al inicio: 360° ÷ 30° = 12 giros (y 12 es múltiplo de 4)</div>
+     <div class="eq">20 = 12 + 8 → como tras 8 giros</div></div>
+   <p>El triángulo vuelve al mismo lugar cada ${G10d.periodoLugar} giros, pero no con las mismas letras: también giró sobre sí mismo. Para que cada letra vuelva a su sitio hacen falta ${G10d.periodo} giros.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME137 y RME23).</p></div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+const subir = () => { if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = false;
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (k === 1) montar2();
+  if (k === 6) montar7();
+  nav();
+}
+function montar2(){
+  const correr = () => { if (E.anim) return; const R = camino2(); $('tabla2').innerHTML = tablaTramos(R); const U = E.cam, paso = S.step; U.s = 0; E.dibujar();
+    subir(); Celular.alResponder($('cv'), () => E.animar(0, R.longitud, 4800, v => { U.s = v; }, null, true), () => S.step === paso); };
+  $('cams2').querySelectorAll('button').forEach(b => b.onclick = () => { if (E.anim) return; S.cam2 = b.dataset.k; $('cams2').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); correr(); });
+  $('rs2').querySelectorAll('button').forEach(b => b.onclick = () => { if (E.anim) return; S.r2 = +b.dataset.r; $('rs2').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); correr(); });
+}
+function vivo7(D){
+  const d = $('vivo7'); if (!d) return;
+  if (S.lado7) d.innerHTML = `<div class="eq">perímetro = 2 · ${l_(String(D.largo).replace('.', ','))} + arco(${q_(D.radioMayorExacto)}) + arco(${D.radioMenorExacto}) = ${A_(D.exacto || '≈ ' + fmt(D.perimetro))}</div><div class="eq">área = ${fr(t_(S.ang7), '360')} · π(${q_(D.radioMayorExacto)}² − ${D.radioMenorExacto}²) = ${D.areaExacto}</div>`;
+  else d.innerHTML = `<div class="eq">perímetro = ${D.perimetroFiguraExacto} + ${fr(t_(S.ang7), '360')} · 2π · ${q_(D.radioMayorExacto)} = ${A_(D.exacto || '≈ ' + fmt(D.perimetro))}</div>${D.areaExacto ? `<div class="eq">área = lámina + sector = ${D.areaExacto}</div>` : '<div class="eq"><span class="note">esta lámina no es convexa: su región tiene un entrante y el área no sale con una sola fórmula</span></div>'}`;
+}
+function montar7(){
+  const correr = () => { if (E.anim) return; const D = barrido7(0); vivo7(D); const B = E.bar, paso = S.step;
+    subir(); Celular.alResponder($('cv'), () => E.animar(0, 1, 2600, v => { B.prog = v; }), () => S.step === paso); };
+  const grupo = (id, attr, fn) => $(id).querySelectorAll('button').forEach(b => b.onclick = () => { if (E.anim) return; fn(b.dataset[attr]); $(id).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); correr(); });
+  grupo('figs7', 'k', v => { S.fig7 = v; }); grupo('angs7', 'a', v => { S.ang7 = +v; }); grupo('lado7', 'l', v => { S.lado7 = v === '1'; });
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.innerHTML = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos: la escalera, el prisma que rueda, el cubo que vuelca, el giro en el plano y la media vuelta de un lado.
+   La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const { r:r_, d:d_, l:l_, p:p_, t:t_, q:q_, A:A_, h:h_, i:i_ } = W_;
+const Q1 = MR.recorridoCentro({ r:1, camino:MR.caminos.escalera });
+const FIG2 = { regular:6, lado:2 }, Q2 = MR.volcar({ figura:FIG2, vuelcos:6, punto:0, largo:5 });
+const FIG3 = { regular:4, lado:2 }, Q3 = MR.barridoArista({ figura:FIG3, vuelcos:1, lado:[3, 0] }), V3 = MR.volcar({ figura:FIG3, vuelcos:1, punto:3 });
+const PT4 = [[3, 1], [6, 1], [3, 5]], C4 = [2, 1], Q4 = MR.rotarPuntos({ puntos:PT4, angulo:810, sentido:'horario', centro:C4, pide:'xy' });
+const RECT5 = MR.figuras.rectangulo, Q5 = MR.barridoSegmento({ figura:RECT5, centro:0, angulo:180, lado:[2, 3] }); Q5.lejanoIdx = 2;
+const n = t => `<span class="num">${t}</span>`;
+
+const EXPS = [
+  { id:'escalera', corto:'La escalera',
+    q:`La ficha de ${r_('1 cm')} de radio baja ahora una escalera: un descanso de 3 cm y tres peldaños de 2 cm de alto y 3 cm de fondo (el último termina en un piso de 3 cm). ¿Qué longitud recorre su centro?`,
+    opts:[['a', n(Q1.exactos.pista + ' cm'), 'RME20', 'hipotesis'], ['b', n(Q1.exactos.arcoEnEntrante + ' cm'), 'RME130', 'hipotesis'], ['c', n(Q1.exacto + ' cm')], ['d', n(Q1.exactos.sinAtajo + ' cm'), 'RME20', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'18 cm es el borde de la escalera. El centro va a 1 cm de él: en los tres bordes de los peldaños da un cuarto de vuelta, y al pie de cada peldaño corta 1 cm en cada lado.',
+         b:'Al pie de cada peldaño la esquina entra: la ficha no gira alrededor de ella, sino que toca el piso y la pared a la vez. Ahí no hay arco: el centro corta 1 cm en cada lado.',
+         d:'Contaste los tres cuartos de vuelta de los bordes, pero al pie de cada peldaño el centro corta 1 cm en cada lado: 6 cm menos.' },
+    antes:ya => E.config({ modo:'camino', cam:{ R:Q1, r:1, s: ya ? Q1.longitud : 0, traza:ya },
+      lect:[L('r', 'Radio r', '1 cm'), L('ink', 'Borde de la escalera', '18 cm'), L('d', 'Recorrido del centro d', ya ? Q1.exacto + ' cm' : '?')],
+      ley: ya ? [['r', 'r · la ficha'], ['d', 'd · camino del centro']] : [['r', 'r · la ficha']], desc:'Una escalera de tres peldaños que baja hacia la derecha, con una ficha arriba, en el descanso.' }),
+    despues:() => { EXPS[0].antes(true); const U = E.cam; U.s = 0; E.animar(0, Q1.longitud, 5600, v => { U.s = v; }, null, true); },
+    exp:() => `<div class="eqs"><div class="eq">${d_('d')} = 18 − 6 · ${r_('1')} + 3 · ${fr('π · ' + r_('1'), '2')} = ${d_(Q1.exacto + ' cm')}</div></div>
+      <p>Bajando, cada peldaño tiene una esquina que sale (el borde) y una que entra (el pie). El borde suma un cuarto de vuelta; el pie corta ${r_('r')} en cada lado.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME20 y RME130).</p>` },
+  { id:'prisma', corto:'El prisma que rueda',
+    q:`Un prisma recto de base hexagonal regular, de ${l_('2 cm')} de lado y ${h_('5 cm')} de largo, rueda sobre sus caras laterales por una mesa hasta dar una vuelta completa (6 vuelcos). ¿Qué área tiene la superficie que barre una de sus aristas laterales? (Puedes girar el dibujo arrastrando el prisma de lado o con las flechas del teclado.)`,
+    opts:[['a', n(Q2.exactos.avance + ' cm²'), 'RME20', 'hipotesis'], ['b', n(Q2.superficieExacto + ' cm²')], ['c', n(Q2.exactos.radioLado + ' cm²'), 'RME21', 'hipotesis'], ['d', n(Q2.exactos.cuentaPivote + ' cm²'), 'RME133', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'60 cm² sería la cara que queda en la mesa (12 × 5). La arista no avanza en línea recta: sube y baja por arcos de circunferencia, y barre una superficie curva.',
+         c:'No todos los radios miden 2 cm: de frente, el vértice está a 2, 2√3, 4, 2√3 y 2 cm de cada pivote. Solo los dos primeros y el último miden lo que el lado.',
+         d:'En el último vuelco la arista es la que está apoyada: no se mueve y no barre nada.' },
+    antes:ya => E.config({ modo:'vuelco', vol:{ fig:FIG2, vuelcos:6, t: ya ? 6 : 0, punto:0, traza:ya, radios:ya, datos:Q2, prisma:{ h:5 }, sinRotulos:false },
+      lect:[L('l', 'Lado l', '2 cm'), L('h', 'Largo h', '5 cm'), L('A', 'Superficie barrida', ya ? Q2.superficieExacto + ' cm²' : '?')],
+      ley: ya ? [['A', 'superficie barrida', 'zona'], ['p', 'p · camino de la arista (de frente)'], ['q', 'ρ · radios']] : [['p', 'la arista que se sigue']], desc:'Un prisma hexagonal apoyado en la mesa sobre una cara; la arista que se sigue está abajo a la izquierda.' }),
+    despues:() => { EXPS[1].antes(true); const O = E.vol; O.t = 0; E.animar(0, 6, 6000, v => { O.t = v; }, null, true); },
+    exp:() => `<div class="eqs"><div class="eq">de frente: ${p_('p')} = ${fr('60', '180')}π(${q_('2')} + ${q_('2√3')} + ${q_('4')} + ${q_('2√3')} + ${q_('2')}) = ${p_(Q2.exacto)}</div>
+      <div class="eq">${A_('superficie')} = ${p_('p')} · ${h_('5')} = ${A_(Q2.superficieExacto + ' cm²')}</div></div>
+      <p>Mira el prisma de frente: es un hexágono que vuelca y la arista lateral es uno de sus vértices. La arista se mueve entera por el camino de ese vértice, así que barre una superficie curva de ${h_('h')} por el largo del camino.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME20, RME21 y RME133).</p>` },
+  { id:'cubo', corto:'El cubo que vuelca',
+    q:`Un cubo de ${l_('2 dm')} de arista vuelca una vez hacia la derecha sobre su arista de abajo. Mira su cara de frente: ABCD, con A abajo a la izquierda y B abajo a la derecha. ¿Qué perímetro tiene la región que barre la arista ${l_('DA')} (la de la izquierda)?`,
+    opts:[['a', n(Q3.exactos.radioLado + ' dm'), 'RME21', 'hipotesis'], ['b', n(Q3.exactos.sinArcoMenor + ' dm'), 'RME25', 'hipotesis'], ['c', n(Q3.exactos.sinRectos + ' dm'), 'RME25', 'hipotesis'], ['d', n(Q3.exacto + ' dm')]],
+    ok:'d',
+    fb:{ a:'D no está a 2 dm de B: está en la esquina opuesta, a la distancia de la diagonal, 2√2 dm. Su arco es de radio 2√2.',
+         b:'Falta el arco de A: la punta de la arista más cercana a B también se mueve, y su arco (radio 2) es parte del borde.',
+         c:'Faltan las dos posiciones de la arista: al inicio y al final, cada una de 2 dm, también son borde de la región.' },
+    antes:ya => E.config({ modo:'vuelco', vol:{ fig:FIG3, vuelcos:1, t: ya ? 1 : 0, punto:3, traza:ya, radios:false, datos:V3, arista:[3, 0] },
+      lect:[L('l', 'Arista', '2 dm'), L('A', 'Perímetro de la región', ya ? Q3.exacto + ' dm' : '?')],
+      ley: ya ? [['A', 'región que barre DA', 'zona'], ['l', 'la arista DA'], ['p', 'p · camino de D']] : [['l', 'la arista DA']], desc:'Un cubo sobre la mesa, visto en perspectiva; la arista DA de su cara de frente está a la izquierda.' }),
+    despues:() => { EXPS[2].antes(true); const O = E.vol; O.t = 0; E.animar(0, 1, 2400, v => { O.t = v; }); },
+    exp:() => `<div class="eqs"><div class="eq">${q_('ρ mayor')} = BD = ${q_('2√2')}; ρ menor = BA = 2</div>
+      <div class="eq">perímetro = 2 + 2 + ${fr('π', '2')} · ${q_('2√2')} + ${fr('π', '2')} · 2 = ${A_(Q3.exacto + ' dm')}</div></div>
+      <p>La arista gira 90° alrededor de B. Su punta lejana, D, dibuja el arco de afuera; su punta cercana, A, el de adentro. Entre ellos, la arista al inicio y al final.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME21 y RME25).</p>` },
+  { id:'plano', corto:'Giro en el plano',
+    q:`El triángulo de vértices A(3, 1), B(6, 1) y C(3, 5) gira 810° en sentido horario alrededor del punto (2, 1). ¿Cuánto suman todas las coordenadas (las tres abscisas y las tres ordenadas) del triángulo ${i_('girado')}?`,
+    opts:[['a', n(String(Q4.errores.contrario)), 'RME23', 'hipotesis'], ['b', n(String(Q4.respuesta))], ['c', n(String(Q4.errores.origen).replace('-', '−')), 'RME135', 'hipotesis'], ['d', n(String(Q4.errores.intercambio)), 'RME136', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Ese es el giro de 90° en sentido antihorario. 810° horario son dos vueltas y 90° más en el sentido de las agujas del reloj.',
+         c:'Así sale si se gira alrededor del origen. El centro del giro es (2, 1): primero se mide cada punto desde (2, 1), se gira y se vuelve a sumar (2, 1).',
+         d:'Cambiar x por y no es girar: falta el cambio de signo. Un cuarto de vuelta horario lleva (x, y) a (y, −x), medido desde el centro.' },
+    antes:ya => E.config({ modo:'plano', pla:{ puntos:PT4, centro:C4, datos:Q4, angulo:-90, prog: ya ? 1 : 0, ver:ya },
+      lect:[L('t', 'Giro', ya ? '810° ↻ = 2 vueltas + 90° ↻' : '810° ↻'), L('i', 'Suma de coordenadas', ya ? String(Q4.respuesta) : '?')],
+      ley: ya ? [['i', 'i · el triángulo girado']] : [], desc:'Un plano cartesiano con el triángulo A(3, 1), B(6, 1), C(3, 5) y el centro de giro en (2, 1).' }),
+    despues:() => { EXPS[3].antes(true); const P = E.pla; P.prog = 0; P.ver = false; P.angulo = -810; E.animar(0, 1, 3600, v => { P.prog = v; }, () => { EXPS[3].antes(true); }); },
+    exp:() => `<div class="eqs"><div class="eq">810° = 2 · 360° + ${t_('90°')} ↻</div>
+      <div class="eq">desde el centro: (x − 2, y − 1) → (y − 1, −(x − 2))</div>
+      <div class="eq">${i_('(2, 0)')} + ${i_('(2, −3)')} + ${i_('(6, 0)')} → 2 + 0 + 2 − 3 + 6 + 0 = ${i_(String(Q4.respuesta))}</div></div>
+      <p>Las dos vueltas enteras no cambian nada. Un cuarto de vuelta en el sentido de las agujas del reloj lleva (x, y) a (y, −x), con las coordenadas medidas desde el centro del giro.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME23, RME135 y RME136).</p>` },
+  { id:'lado', corto:'Media vuelta de un lado',
+    q:`Una lámina rectangular de 4 cm × 3 cm da media vuelta (180°) alrededor de su vértice O, el de abajo a la izquierda. ¿Qué perímetro tiene la región que barre solo su lado de arriba, el de 4 cm?`,
+    opts:[['a', n(Q5.exacto + ' cm')], ['b', n(Q5.exactos.radioLado + ' cm'), 'RME21', 'hipotesis'], ['c', n(Q5.exactos.sinArcoMenor + ' cm'), 'RME25', 'hipotesis'], ['d', n(Q5.exactos.sectorLleno + ' cm'), 'RME139', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'La punta más lejana de O es la esquina opuesta, a la distancia de la diagonal, 5 cm: su arco es 5π. El lado mide 4, pero no es la distancia a O.',
+         c:'La punta cercana del lado, a 3 cm de O, también dibuja un arco: el borde de adentro de la región, 3π.',
+         d:'La región no llega hasta O: el lado empieza a 3 cm de O, así que barre un medio anillo, no un medio círculo.' },
+    antes:ya => E.config({ modo:'barrido', bar:{ figura:RECT5, centro:0, angulo:180, prog: ya ? 1 : 0, lado:[2, 3], datos:Q5, ver:ya },
+      lect:[L('t', 'Giro θ', '180°'), L('A', 'Perímetro de la región', ya ? Q5.exacto + ' cm' : '?')],
+      ley: ya ? [['A', 'región que barre el lado', 'zona'], ['q', 'ρ · la punta más lejana'], ['l', 'el lado de arriba']] : [['l', 'el lado de arriba']], desc:'Un rectángulo de 4 por 3 con el vértice O abajo a la izquierda y su lado de arriba marcado.' }),
+    despues:() => { EXPS[4].antes(true); const B = E.bar; B.prog = 0; B.ver = false; E.animar(0, 1, 3000, v => { B.prog = v; }, () => EXPS[4].antes(true)); },
+    exp:() => `<div class="eqs"><div class="eq">${q_('ρ mayor')} = √(4² + 3²) = ${q_('5')}; ρ menor = 3</div>
+      <div class="eq">perímetro = 4 + 4 + π · ${q_('5')} + π · 3 = ${A_(Q5.exacto + ' cm')}</div></div>
+      <p>El lado de arriba barre medio anillo: el de afuera lo dibuja la esquina opuesta a O y el de adentro la esquina de arriba a la izquierda. Su área es ${fr('1', '2')}π(5² − 3²) = ${Q5.areaExacto} cm².</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (RME21, RME25 y RME139).</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = false;
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => { x.despues(); E.avisar(); }, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

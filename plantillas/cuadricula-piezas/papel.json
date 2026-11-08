@@ -1,0 +1,126 @@
+{
+  "titulo": "Piezas, perímetros y conteos en la cuadrícula: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja la cuadrícula en tu cuaderno. Al cortar, cuenta los lados de casilla del borde de cada pieza, también los del corte. Al contar, ordena los casos (por tamaño, por orientación o por recta) para no olvidar ninguno ni contar uno dos veces.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un tablero de 3 filas y 4 columnas de casillas se corta por las líneas de la cuadrícula en dos piezas congruentes (iguales en forma y tamaño, aunque haya que girar o voltear una). ¿Cuál es el mayor perímetro que puede tener cada pieza, en lados de casilla?",
+      "respuesta": "14 lados.",
+      "pasos": [
+        "Cada pieza se lleva la mitad del borde del tablero: (3 + 4 + 3 + 4)/2 = 7 lados, más todo el corte, que queda en el borde de las dos.",
+        "Para que el perímetro sea el mayor, el corte tiene que ser el más largo posible. Las piezas iguales salen al cortar de forma simétrica respecto del centro del tablero.",
+        "El corte recto por la mitad mide 3 lados y da piezas de 7 + 3 = 10. El corte más largo que deja piezas iguales mide 7 lados, en escalera alrededor del centro: cada pieza mide 7 + 7 = 14."
+      ],
+      "verificar": [ { "fn": "partirDos", "args": [3, 4], "espera": { "maximo": 14, "recto": 10, "lista.0.corte": 7 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un terreno rectangular está formado por 3 filas de 4 parcelas cuadradas de 20 m de lado. Se reparte entre 4 hermanos en partes congruentes, con cercas por los bordes de las parcelas. ¿Cuál es el perímetro de la parte de cada hermano?",
+      "respuesta": "160 m.",
+      "pasos": [
+        "Hay 12 parcelas: a cada hermano le tocan 12/4 = 3 parcelas unidas.",
+        "Tres parcelas unidas forman una L o una barra recta. Las dos se pueden usar para repartir el terreno, y las dos tienen 8 lados de parcela en su borde: 3 · 4 = 12 lados, menos 2 por cada uno de los 2 lados pegados.",
+        "El perímetro es 8 · 20 = 160 m."
+      ],
+      "verificar": [ { "fn": "partirEn", "args": [[3, 4], 4, 20], "espera": { "area": 3, "formas.0.metros": 160, "formas.1.metros": 160 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un tablero de 9 columnas por 4 filas de casillas se corta por las líneas de la cuadrícula y, sin que sobre ni falte nada, se rearma como un cuadrado. ¿Cuánto mide el lado del cuadrado y cuál es el menor número de trozos?",
+      "respuesta": "Lado de 6 casillas, con 2 trozos.",
+      "pasos": [
+        "Al rearmar se conserva el área, no el perímetro: 9 · 4 = 36 casillas, así que el lado es √36 = 6.",
+        "Con un solo trozo no se puede: el tablero no es cuadrado. Con dos sí: un corte en escalera de 2 escalones de 3 de ancho y 2 de alto.",
+        "Se corre el trozo de arriba un escalón (3 a la izquierda y 2 hacia arriba) y queda el cuadrado de 6 × 6."
+      ],
+      "verificar": [ { "fn": "escalera", "args": [9, 4], "espera": { "lado": 6, "trozos": 2, "k": 2, "w": 3, "h": 2, "encaja": true } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una escalera maciza de 3 peldaños está pegada a una pared. Cada peldaño tiene 30 cm de huella (fondo), 18 cm de contrahuella (alto) y 90 cm de ancho. Se enchapan las huellas, las contrahuellas y los dos costados a S/ 40 el metro cuadrado. ¿Cuánto cuesta?",
+      "respuesta": "S/ 77,76.",
+      "pasos": [
+        "Huellas: 3 · 0,30 · 0,90 = 0,81 m². Contrahuellas: 3 · 0,18 · 0,90 = 0,486 m².",
+        "Cada costado es escalonado: columnas de 0,30 de ancho y de 0,18, 0,36 y 0,54 de alto. Área: 0,30 · 0,18 · (1 + 2 + 3) = 0,324 m². Son dos costados: 0,648 m².",
+        "Total: 0,81 + 0,486 + 0,648 = 1,944 m². Costo: 1,944 · 40 = S/ 77,76."
+      ],
+      "verificar": [ { "fn": "escaleraEnchape", "args": [3, 0.3, 0.18, 0.9, 40], "espera": { "total": 1.944, "costo": 77.76 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Sobre un segmento AB de 12 cm se dibuja una semicircunferencia de diámetro AB. M es un punto de AB con AM = 4 cm, y sobre AM se dibuja otra semicircunferencia, del mismo lado. Quedan dos zonas. ¿Cuánto suman sus perímetros?",
+      "respuesta": "(12 + 10π) cm.",
+      "pasos": [
+        "Zona chica: el arco de diámetro 4 (2π) y el segmento AM (4). Perímetro: 4 + 2π.",
+        "Zona grande: el arco de diámetro 12 (6π), el arco chico otra vez (2π) y el segmento MB (8). Perímetro: 8 + 8π.",
+        "El arco chico está en el borde de las dos zonas: se cuenta dos veces. Suma: 12 + 10π."
+      ],
+      "verificar": [ { "fn": "arcosZonas", "args": [12, 4], "espera": { "suma.a": 12, "suma.b": 10 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En el rectángulo ABCD, M, N y P son los puntos medios de AB, BC y CD. ¿Qué fracción del rectángulo es el triángulo MNP?",
+      "respuesta": "1/4.",
+      "pasos": [
+        "Fuera del triángulo quedan tres piezas: el triángulo MBN, el triángulo NCP y el trapecio AMPD.",
+        "MBN y NCP miden cada uno 1/8 del rectángulo (medio ancho por medio alto, entre 2). El trapecio AMPD es la mitad izquierda: 1/2.",
+        "1 − 1/8 − 1/8 − 1/2 = 1/4. No depende de los lados del rectángulo."
+      ],
+      "verificar": [ { "fn": "fraccionTriangulo", "args": ["AB", "BC", "CD"], "espera": { "num": 1, "den": 4 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Una pieza en forma de L de 3 casillas se coloca sobre un tablero de 3 filas y 4 columnas, cubriendo casillas enteras, y se puede girar o voltear. ¿En cuántas ubicaciones distintas puede quedar?",
+      "respuesta": "24 ubicaciones.",
+      "pasos": [
+        "La L de 3 casillas ocupa 3 de las 4 casillas de un cuadrado de 2 × 2.",
+        "En el tablero hay 2 · 3 = 6 cuadrados de 2 × 2, y en cada uno la L puede quedar de 4 maneras (falta una de sus 4 casillas). Voltearla da una de esas mismas 4.",
+        "6 · 4 = 24."
+      ],
+      "verificar": [ { "fn": "ubicaciones", "args": [[[0,0],[1,0],[1,1]], [3, 4]], "espera": { "total": 24, "orientaciones": 4 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "En un tablero de 10 × 10 se pintan todas las casillas que están en los cuatro lados. ¿Cuántas casillas se pintan?",
+      "respuesta": "36 casillas.",
+      "pasos": [
+        "Cada lado tiene 10 casillas, pero cada esquina está en dos lados a la vez.",
+        "4 · 10 = 40 cuenta las 4 esquinas dos veces: 40 − 4 = 36.",
+        "Otra forma: todo el tablero menos el cuadrado de adentro, 100 − 8 · 8 = 36."
+      ],
+      "verificar": [ { "fn": "casillasBorde", "args": [10, 10], "espera": { "total": 36, "errores.esquinasDosVeces": 40 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "En una recta se marcan 5 puntos y en otra recta paralela, 4 puntos. ¿Cuántos triángulos tienen sus tres vértices entre esos 9 puntos?",
+      "respuesta": "70 triángulos.",
+      "pasos": [
+        "Con 9 puntos hay C(9, 3) = 84 ternas.",
+        "No forman triángulo las ternas de una misma recta: C(5, 3) = 10 en la primera y C(4, 3) = 4 en la segunda.",
+        "84 − 10 − 4 = 70. Otra forma: 2 puntos de una recta y 1 de la otra, C(5, 2) · 4 + C(4, 2) · 5 = 40 + 30 = 70."
+      ],
+      "verificar": [ { "fn": "triangulosPuntos", "args": [[[0,0],[2,0],[4,0],[6,0],[8,0],[1,3],[3,3],[5,3],[7,3]]], "espera": { "total": 70, "ternas": 84 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "En un tablero de 5 × 5 se sombrea solo la casilla del centro. ¿Cuántos cuadrados, de cualquier tamaño y por las líneas del tablero, no tienen ninguna casilla sombreada?",
+      "respuesta": "36 cuadrados.",
+      "pasos": [
+        "De 1 × 1: 25 casillas menos la sombreada, 24.",
+        "De 2 × 2 hay 16; la casilla del centro está en 4 de ellos, así que quedan 12. De 3 × 3 hay 9 y todos tienen el centro. Los de 4 × 4 y el de 5 × 5 también.",
+        "24 + 12 = 36."
+      ],
+      "verificar": [ { "fn": "cuadradosLibres", "args": [5, 5, [[2, 2]]], "espera": { "total": 36, "porLado.1": 24, "porLado.2": 12 } } ]
+    }
+  ]
+}

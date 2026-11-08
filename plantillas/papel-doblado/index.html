@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="es" data-curso="razonamiento-matematico">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La hoja que se dobla, se corta y se voltea</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   la hoja (el papel de partida y su lado a) azul; los dobleces naranja; el corte y los agujeros fucsia; las capas verde;
+   las piezas granate; el lado b oliva; el tramo x turquesa; la loseta reflejada café.
+   Entre las variables que salen juntas, ΔE00 ≥ 20, y con la tinta y el gris también. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-F:#1f5fbf; --c-D:#a05200; --c-C:#a10fbf; --c-K:#1b7530; --c-P:#77032c; --c-B:#5f6f00; --c-X:#0f766e; --c-I:#544c1c;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-F:#7cb0ff; --c-D:#f0a04a; --c-C:#cf6bfa; --c-K:#6fdc8c; --c-P:#ff8fa3; --c-B:#c8dc3c; --c-X:#5ed9c8; --c-I:#f9ee06;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-F:#7cb0ff; --c-D:#f0a04a; --c-C:#cf6bfa; --c-K:#6fdc8c; --c-P:#ff8fa3; --c-B:#c8dc3c; --c-X:#5ed9c8; --c-I:#f9ee06;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.55rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-D{color:var(--c-D); background:color-mix(in srgb, var(--c-D) 8%, transparent)}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 8%, transparent)}
+.v-K{color:var(--c-K); background:color-mix(in srgb, var(--c-K) 8%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
+.v-X{color:var(--c-X); background:color-mix(in srgb, var(--c-X) 8%, transparent)}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 8%, transparent)}
+.opt .v{background:transparent}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opts.figs{grid-template-columns:repeat(2, minmax(0,1fr))}
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt.fig{flex-direction:column; align-items:center; padding:8px}
+.opt.fig svg{width:100%; max-width:150px; height:auto; display:block}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt.fig .l{align-self:flex-start}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.exps{border-radius:20px}
+.ctl{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; padding:10px 12px; border-radius:16px; background:var(--paper); border:1px solid var(--line)}
+.ctl label{display:flex; align-items:center; gap:10px; font-weight:700; font-size:.92rem; flex:1 1 220px}
+.ctl input[type=range]{flex:1; min-width:120px; accent-color:var(--ink); height:32px}
+.cuenta{font-weight:700; font-size:.95rem}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn.chico{padding:8px 14px; min-height:40px; font-size:.88rem}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+<link rel="stylesheet" href="../../nucleo/pegatina.css">
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Papel doblado, reflexiones y volteos · Problemas tipo admisión</p>
+      <h1>La hoja que se dobla, se corta y se voltea</h1>
+      <p class="sub">Una hoja cuadriculada que se dobla, se perfora y se abre después de que predices; un rectángulo con dos esquinas que se juntan, una loseta que se refleja en un vértice y fichas que se voltean en grupo.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del paso">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del paso"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="leg1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="leg2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/papel-doblado">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'papel-doblado', unidad: 'razonamiento-matematico.transformaciones-de-figuras', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+/* ================= Piezas de dibujo compartidas =================
+   Toda la matemática sale de MotorPapel (motor.js): dobleces, capas, agujeros, piezas, perímetros, la loseta y las
+   jugadas de las fichas. Aquí solo se pinta y se pasa de coordenadas de la hoja a píxeles. */
+const M = MotorPapel, AP = M._interno.ap, DENTRO = M._interno.dentroConvexo;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+function fmt(n, d){
+  if (n === null || n === undefined || !Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const CLAVES = ['F','D','C','K','P','B','X','I'];
+function colores(hl){
+  const o = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    font:css('--font'), ok:css('--ok'), warn:css('--warn'), hl };
+  CLAVES.forEach(k => o[k] = css('--c-' + k));
+  return o;
+}
+const LEYENDA = { F:'la hoja', D:'los dobleces', C:'el corte y los agujeros', K:'las capas', P:'las piezas', B:'el lado b', X:'el tramo x', I:'la loseta reflejada' };
+function leyenda(el, claves, textos){ el.innerHTML = (claves || []).map(k => `<span><i style="background:var(--c-${k})"></i>${(textos && textos[k]) || LEYENDA[k]}</span>`).join(''); }
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0, compacto:false };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(Celular.alto(alto(W), L.compacto)), dpr = Celular.dpr();
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === L.compacto) return; L.compacto = on; L.resize(); };
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, tam){
+  ctx.font = `800 ${tam || 12}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function punto(ctx, x, y, r, color){ ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = color; ctx.fill(); }
+function flecha(ctx, x1, y1, x2, y2, color, ancho, curva){
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho || 2.4; ctx.lineCap = 'round';
+  const mx = (x1 + x2)/2 - (y2 - y1)*(curva || 0), my = (y1 + y2)/2 + (x2 - x1)*(curva || 0);
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.quadraticCurveTo(mx, my, x2, y2); ctx.stroke();
+  const a = Math.atan2(y2 - my, x2 - mx), h = 10;
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - h*Math.cos(a - .42), y2 - h*Math.sin(a - .42)); ctx.lineTo(x2 - h*Math.cos(a + .42), y2 - h*Math.sin(a + .42)); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+// Animación con la fracción acotada por los dos lados (en algunos celulares el primer cuadro llega antes que t0).
+function animador(dibujar){
+  let raf = 0, timer = 0;
+  const A = {
+    parar(){ cancelAnimationFrame(raf); clearTimeout(timer); raf = 0; },
+    correr(dur, cada, fin){
+      A.parar();
+      if (RM){ cada(1); dibujar(); fin && fin(); return; }
+      const t0 = performance.now();
+      const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); cada(f); dibujar(); if (f < 1) raf = requestAnimationFrame(tick); else { raf = 0; fin && fin(); } };
+      raf = requestAnimationFrame(tick);
+    },
+    luego(ms, fn){ clearTimeout(timer); timer = setTimeout(fn, RM ? 0 : ms); },
+    // una lista de tramos [dur, cada] uno tras otro
+    serie(tramos, fin){ const k = i => i >= tramos.length ? (fin && fin()) : A.correr(tramos[i][0], tramos[i][1], () => k(i + 1)); k(0); }
+  };
+  return A;
+}
+
+/* ---------- Vista «hoja»: la hoja cuadriculada que se dobla, se corta y se abre ----------
+   V = { tipo:'hoja', hoja, dobleces, dib (lo que da M.desplegar), prog (de 0 = abierta a n = doblada; 2,5 = el tercer
+         doblez a la mitad), huecos (pintar los agujeros y tajos), separar (0 a 1: aparta las piezas), ventana,
+         rotulos:[{ P (en la hoja), t, k, dx, dy }], segs:[{ P, Q, k, dash, ancho, t }] y puntos:[{ P, k, t }] en el plano,
+         arco:{ P, Q, k } (una flecha curva), etiquetas:[{ P, t, k }] (en el plano) } */
+function ventanaHoja(hoja, caja, m){
+  const x0 = Math.min(0, caja[0]), x1 = Math.max(hoja.ancho, caja[1]), y0 = Math.min(0, caja[2]), y1 = Math.max(hoja.alto, caja[3]), g = m === undefined ? 0.7 : m;
+  return [x0 - g, x1 + g, y0 - g, y1 + g];
+}
+function etapaDe(V){ const n = V.dobleces.length, p = clamp(V.prog, 0, n), e = Math.min(n, Math.floor(p + 1e-9)); return { e, t: e >= n ? 0 : p - e, n }; }
+function enBorde(A, B, W, H){ const t = 1e-7; return (Math.abs(A.x) < t && Math.abs(B.x) < t) || (Math.abs(A.x - W) < t && Math.abs(B.x - W) < t) || (Math.abs(A.y) < t && Math.abs(B.y) < t) || (Math.abs(A.y - H) < t && Math.abs(B.y - H) < t); }
+function colineal(A, B, P, Q){ const cr = (U, W2) => (B.x - A.x)*(W2.y - A.y) - (B.y - A.y)*(W2.x - A.x), L = Math.hypot(B.x - A.x, B.y - A.y) || 1; return Math.abs(cr(A, P))/L < 1e-6 && Math.abs(cr(A, Q))/L < 1e-6; }
+function vistaHoja(L, c, V){
+  const { ctx, W, H } = L, [x0, x1, y0, y1] = V.ventana, pad = 10;
+  const s = Math.min((W - 2*pad)/(x1 - x0), (H - 2*pad)/(y1 - y0));
+  const ox = W/2 - s*(x0 + x1)/2, oy = H/2 + s*(y0 + y1)/2;
+  const X = P => ({ x: ox + P.x*s, y: oy - P.y*s });
+  V._X = X; V._s = s;
+  const { e, t, n } = etapaDe(V), HW = V.hoja.ancho, HH = V.hoja.alto, sep = V.separar || 0;
+  const usarTrozos = sep > 0 && V.dib.trozos && V.dib.trozos.length > V.dib.celdas.length;
+  const lista = usarTrozos ? V.dib.trozos.map(z => ({ poli:z.poli, ce:V.dib.celdas[z.celda], pieza:z.pieza })) : V.dib.celdas.map(ce => ({ poli:ce.poli, ce }));
+  // piezas apartadas: cada pieza se corre desde el centro de la hoja
+  const desp = {};
+  if (usarTrozos){
+    const acc = {};
+    for (const it of lista){ const a = Math.abs(M._interno.area(it.poli)), m = it.poli.reduce((q, P) => ({ x:q.x + P.x/it.poli.length, y:q.y + P.y/it.poli.length }), { x:0, y:0 });
+      const q = acc[it.pieza] || (acc[it.pieza] = { a:0, x:0, y:0 }); q.a += a; q.x += a*m.x; q.y += a*m.y; }
+    for (const [k, q] of Object.entries(acc)) desp[k] = { x:(q.x/q.a - HW/2)*0.22*sep, y:(q.y/q.a - HH/2)*0.22*sep };
+  }
+  for (const it of lista){
+    it.m = M.pose(it.ce, V.dobleces, e, t);
+    const z = it.ce.z;
+    it.orden = it.m.mueve ? 1000 + (t < 0.5 ? z[e] : z[Math.min(n, e + 1)]) : z[Math.min(n, e)];
+    it.d = usarTrozos ? desp[it.pieza] : { x:0, y:0 };
+  }
+  lista.sort((a, b) => a.orden - b.orden);
+  const pantalla = (it, P) => { const Q = AP(it.m, P); return X({ x:Q.x + it.d.x, y:Q.y + it.d.y }); };
+  const camino = (it, p) => { p.forEach((P, i) => { const q = pantalla(it, P); i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); }); ctx.closePath(); };
+  const conHuecos = V.huecos && !usarTrozos;
+  const gruesoK = k => (c.hl === k ? 1.7 : 1);
+  for (const it of lista){
+    ctx.save();
+    ctx.beginPath(); camino(it, it.poli);
+    if (conHuecos) for (const h of it.ce.huecos) camino(it, h);
+    ctx.fillStyle = c.card; ctx.fill('evenodd');
+    ctx.globalAlpha = c.hl === 'F' ? .2 : .11; ctx.fillStyle = c.F; ctx.fill('evenodd'); ctx.globalAlpha = 1;
+    // cuadrícula, recortada a la capa
+    ctx.clip('evenodd');
+    ctx.strokeStyle = c.F; ctx.globalAlpha = .2; ctx.lineWidth = 1;
+    for (let x = 1; x < HW; x++){ const a = pantalla(it, { x, y:0 }), b = pantalla(it, { x, y:HH }); linea(ctx, a.x, a.y, b.x, b.y); }
+    for (let y = 1; y < HH; y++){ const a = pantalla(it, { x:0, y }), b = pantalla(it, { x:HW, y }); linea(ctx, a.x, a.y, b.x, b.y); }
+    ctx.restore();
+    // bordes: de la hoja (azul), dobleces (naranja, a trazos) y tajos (fucsia)
+    const p = it.poli;
+    for (let i = 0; i < p.length; i++){
+      const A = p[i], B = p[(i + 1) % p.length], a = pantalla(it, A), b = pantalla(it, B);
+      ctx.save();
+      if (enBorde(A, B, HW, HH)){ ctx.strokeStyle = c.F; ctx.lineWidth = 2.2*gruesoK('F'); }
+      else if (usarTrozos && it.ce.tajos.some(([P, Q]) => colineal(P, Q, A, B))){ ctx.strokeStyle = c.C; ctx.lineWidth = 2.4*gruesoK('C'); }
+      else { ctx.strokeStyle = c.D; ctx.lineWidth = 1.7*gruesoK('D'); ctx.setLineDash([6, 4]); }
+      linea(ctx, a.x, a.y, b.x, b.y); ctx.restore();
+    }
+    if (conHuecos){
+      ctx.save(); ctx.strokeStyle = c.C; ctx.lineWidth = 2.2*gruesoK('C'); ctx.lineJoin = 'round';
+      for (const h of it.ce.huecos){ ctx.beginPath(); camino(it, h); ctx.stroke(); }
+      for (const [P, Q] of it.ce.tajos){ const a = pantalla(it, P), b = pantalla(it, Q); ctx.lineWidth = 2.6*gruesoK('C'); linea(ctx, a.x, a.y, b.x, b.y); }
+      ctx.restore();
+    }
+  }
+  // rótulos que viajan con la hoja (A, B, C, D…)
+  for (const r of V.rotulos || []){
+    const it = lista.find(q => DENTRO(q.poli, r.P, -1e-7)) || lista[0], q = pantalla(it, r.P);
+    rotulo(ctx, c, clamp(q.x + (r.dx || 0), 12, W - 12), clamp(q.y + (r.dy || 0), 10, H - 10), r.t, r.k ? c[r.k] : c.ink, 'center', 13);
+  }
+  for (const g of V.segs || []){
+    const a = X(g.P), b = X(g.Q);
+    ctx.save(); ctx.strokeStyle = c[g.k] || c.ink; ctx.lineWidth = (g.ancho || 3)*gruesoK(g.k); ctx.lineCap = 'round'; if (g.dash) ctx.setLineDash(g.dash); linea(ctx, a.x, a.y, b.x, b.y); ctx.restore();
+    if (g.t) rotulo(ctx, c, clamp((a.x + b.x)/2 + (g.dx || 0), 14, W - 14), clamp((a.y + b.y)/2 + (g.dy || 0), 10, H - 10), g.t, c[g.k] || c.ink, 'center', 13);
+  }
+  if (V.arco){ const a = X(V.arco.P), b = X(V.arco.Q); flecha(ctx, a.x, a.y, b.x, b.y, c.muted, 2, 0.28); }
+  for (const p of V.puntos || []){ const q = X(p.P); punto(ctx, q.x, q.y, 4.5, c[p.k] || c.ink); if (p.t) rotulo(ctx, c, clamp(q.x + (p.dx === undefined ? 12 : p.dx), 12, W - 12), clamp(q.y + (p.dy === undefined ? -12 : p.dy), 10, H - 10), p.t, c[p.k] || c.ink, 'center', 13); }
+  for (const r of V.etiquetas || []){ const q = X(r.P); rotulo(ctx, c, clamp(q.x, 40, W - 40), clamp(q.y, 10, H - 10), r.t, c[r.k] || c.ink, 'center', 13); }
+}
+
+/* ---------- Vista «plano»: la loseta sobre la cuadrícula ----------
+   V = { tipo:'plano', ventana, losetas:[{ L, k, alpha, dash }], puntos:[{ P, k, t, dx, dy }], segs:[{ P, Q, k, dash }],
+         rectas:[{ x } o { y }, k] } */
+function vistaPlano(L, c, V){
+  const { ctx, W, H } = L, [x0, x1, y0, y1] = V.ventana, pad = 10;
+  const s = Math.min((W - 2*pad)/(x1 - x0), (H - 2*pad)/(y1 - y0));
+  const ox = W/2 - s*(x0 + x1)/2, oy = H/2 + s*(y0 + y1)/2, X = P => ({ x: ox + P.x*s, y: oy - P.y*s });
+  ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+  for (let x = Math.ceil(x0); x <= x1; x++){ const a = X({ x, y:y0 }), b = X({ x, y:y1 }); linea(ctx, a.x, 0, b.x, H); }
+  for (let y = Math.ceil(y0); y <= y1; y++){ const a = X({ x:x0, y }); linea(ctx, 0, a.y, W, a.y); }
+  for (const r of V.rectas || []){
+    ctx.save(); ctx.strokeStyle = c[r.k]; ctx.lineWidth = 2.4; ctx.setLineDash([7, 5]);
+    if (r.x !== undefined){ const a = X({ x:r.x, y:0 }); linea(ctx, a.x, 0, a.x, H); } else { const a = X({ x:0, y:r.y }); linea(ctx, 0, a.y, W, a.y); }
+    ctx.restore();
+  }
+  const pol = (p, col, alpha, borde, ancho, dash) => {
+    ctx.save(); ctx.beginPath(); p.forEach((P, i) => { const q = X(P); i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); }); ctx.closePath();
+    if (alpha){ ctx.globalAlpha = alpha; ctx.fillStyle = col; ctx.fill(); ctx.globalAlpha = 1; }
+    if (borde){ ctx.strokeStyle = col; ctx.lineWidth = ancho || 2.4; if (dash) ctx.setLineDash(dash); ctx.lineJoin = 'round'; ctx.stroke(); }
+    ctx.restore();
+  };
+  for (const l of V.losetas || []){
+    const col = c[l.k] || c.ink, a = l.alpha === undefined ? 1 : l.alpha;
+    pol(l.L.borde, col, .08*a, true, 2.6, l.dash);
+    pol(l.L.marcas[0], col, .85*a, false);
+    pol(l.L.marcas[1], col, .45*a, true, 1.6, l.dash);
+  }
+  for (const g of V.segs || []){ const a = X(g.P), b = X(g.Q); ctx.save(); ctx.strokeStyle = c[g.k] || c.muted; ctx.lineWidth = 1.8; if (g.dash) ctx.setLineDash(g.dash); linea(ctx, a.x, a.y, b.x, b.y); ctx.restore(); }
+  for (const p of V.puntos || []){ const q = X(p.P); punto(ctx, q.x, q.y, 5, c[p.k] || c.ink); if (p.t) rotulo(ctx, c, clamp(q.x + (p.dx === undefined ? 14 : p.dx), 12, W - 12), clamp(q.y + (p.dy === undefined ? -12 : p.dy), 10, H - 10), p.t, c[p.k] || c.ink, 'center', 13); }
+  if (V.nota) rotulo(ctx, c, W/2, H/2, V.nota, c.muted, 'center', 13);
+}
+
+/* ---------- Vista «fichas»: cartas o vasos en fila ----------
+   V = { tipo:'fichas', filas:[{ t, estado }], sel (primera ficha del grupo marcado en la fila 0, o null), k, vasos } */
+function vistaFichas(L, c, V){
+  const { ctx, W, H } = L, n = V.filas[0].estado.length, gap = 8;
+  const w = Math.min(56, (W - 32 - gap*(n - 1))/n), h = V.vasos ? w*1.1 : w*1.35, x0 = (W - (n*w + (n - 1)*gap))/2;
+  const alto = V.filas.length*(h + 46), y0 = (H - alto)/2 + 28;
+  V._cartas = [];
+  V.filas.forEach((f, r) => {
+    const y = y0 + r*(h + 46);
+    ctx.font = `800 13px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillText(f.t, x0, y - 6);
+    for (let i = 0; i < n; i++){
+      const x = x0 + i*(w + gap), arriba = f.estado[i] === '1';
+      if (r === 0) V._cartas.push({ x, y, w, h, i });
+      ctx.save(); ctx.beginPath();
+      if (V.vasos){ // vaso: trapecio; boca arriba = abertura arriba
+        const a = w*0.18;
+        if (arriba){ ctx.moveTo(x, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w - a, y + h); ctx.lineTo(x + a, y + h); }
+        else { ctx.moveTo(x + a, y); ctx.lineTo(x + w - a, y); ctx.lineTo(x + w, y + h); ctx.lineTo(x, y + h); }
+        ctx.closePath();
+      } else ctx.roundRect(x, y, w, h, 7);
+      ctx.fillStyle = arriba ? c.card : c.muted; ctx.globalAlpha = arriba ? 1 : .55; ctx.fill(); ctx.globalAlpha = 1;
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke();
+      if (arriba){ // la cara: un círculo; en el vaso, la boca abierta
+        if (V.vasos){ ctx.beginPath(); ctx.ellipse(x + w/2, y, w/2, w*0.12, 0, 0, Math.PI*2); ctx.stroke(); }
+        else { ctx.beginPath(); ctx.arc(x + w/2, y + h/2, w*0.2, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); }
+      } else if (!V.vasos){ ctx.clip(); ctx.strokeStyle = c.card; ctx.lineWidth = 1.5; for (let d = -h; d < w; d += 8) linea(ctx, x + d, y + h, x + d + h, y); }
+      else { ctx.beginPath(); ctx.ellipse(x + w/2, y + h, w/2, w*0.12, 0, 0, Math.PI*2); ctx.strokeStyle = c.ink; ctx.stroke(); }
+      ctx.restore();
+      ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(String(i + 1), x + w/2, y + h + (V.vasos ? w*0.12 : 0) + 4);
+    }
+    if (r === 0 && V.sel !== null && V.sel !== undefined){
+      const xa = x0 + V.sel*(w + gap) - 4, xb = xa + V.k*(w + gap) - gap + 8;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.roundRect(xa, y - 4, xb - xa, h + 8, 10); ctx.stroke(); ctx.restore();
+    }
+  });
+  if (V.nota) rotulo(ctx, c, W/2, H - 14, V.nota, c.ink, 'center', 13);
+}
+function dibujarVista(L, c, V){
+  L.ctx.clearRect(0, 0, L.W, L.H);
+  if (!V) return;
+  ({ hoja: vistaHoja, plano: vistaPlano, fichas: vistaFichas })[V.tipo](L, c, V);
+}
+const ALTOS = { hoja: W => (W >= 560 ? clamp(W*0.7, 320, 470) : 320), plano: W => (W >= 560 ? clamp(W*0.62, 300, 420) : 300), fichas: W => (W >= 560 ? 300 : 260) };
+
+/* ---------- Dibujos chicos para las opciones (SVG) ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+function ruta(p){ return p.map((P, i) => `${i ? 'L' : 'M'}${(+P.x).toFixed(3)} ${(+P.y).toFixed(3)}`).join(' ') + ' Z'; }
+function svgHoja(hoja, huecos, rotulo){
+  const W = hoja.ancho, H = hoja.alto, g = [];
+  for (let x = 1; x < W; x++) g.push(`M${x} 0 L${x} ${H}`);
+  for (let y = 1; y < H; y++) g.push(`M0 ${y} L${W} ${y}`);
+  return `<svg viewBox="-0.4 -0.4 ${W + 0.8} ${H + 0.8}" aria-hidden="true" focusable="false"><g transform="matrix(1 0 0 -1 0 ${H})">
+    <rect x="0" y="0" width="${W}" height="${H}" fill="var(--c-F)" fill-opacity=".1" stroke="var(--c-F)" stroke-width=".09"/>
+    <path d="${g.join(' ')}" stroke="var(--c-F)" stroke-opacity=".22" stroke-width=".04" fill="none"/>
+    ${huecos.map(p => `<path d="${ruta(p)}" fill="var(--paper)" stroke="var(--c-C)" stroke-width=".1" stroke-linejoin="round"/>`).join('')}
+  </g></svg>`;
+}
+function svgLoseta(orig, cand, O, ventana){
+  const [x0, x1, y0, y1] = ventana, g = [];
+  for (let x = Math.ceil(x0); x <= x1; x++) g.push(`M${x} ${y0} L${x} ${y1}`);
+  for (let y = Math.ceil(y0); y <= y1; y++) g.push(`M${x0} ${y} L${x1} ${y}`);
+  const los = (L, col, dash, a) => `<path d="${ruta(L.borde)}" fill="${col}" fill-opacity="${.08*a}" stroke="${col}" stroke-width=".09" ${dash ? 'stroke-dasharray=".2 .15"' : ''}/>
+    <path d="${ruta(L.marcas[0])}" fill="${col}" fill-opacity="${.85*a}"/><path d="${ruta(L.marcas[1])}" fill="${col}" fill-opacity="${.45*a}" stroke="${col}" stroke-width=".05"/>`;
+  return `<svg viewBox="${x0} ${-y1} ${x1 - x0} ${y1 - y0}" aria-hidden="true" focusable="false"><g transform="scale(1 -1)">
+    <path d="${g.join(' ')}" stroke="var(--line)" stroke-width=".04" fill="none"/>
+    ${los(orig, 'var(--c-F)', true, .55)}${los(cand, 'var(--c-I)', false, 1)}
+    <circle cx="${O.x}" cy="${O.y}" r=".16" fill="var(--c-F)"/>
+  </g></svg>`;
+}
+function botonesOpciones(P, figs){
+  return `<div class="opts${figs ? ' figs' : ''}">${P.opts.map(([k, t, , , sr]) => figs
+    ? `<button class="opt fig" type="button" data-k="${k}" aria-label="Opción ${k.toUpperCase()}: ${sr}"><span class="l">${k.toUpperCase()}</span>${t}</button>`
+    : `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const S = { step:0, max:0, pred:{}, hl:null, vista:null, juego:null };
+const L = crearLienzo(cv, W => ALTOS[(S.vista && S.vista.tipo) || 'hoja'](W), draw);
+function draw(){ if (!L.W) return; dibujarVista(L, colores(S.hl), S.vista); }
+const AN = animador(draw);
+
+// ---- Datos de los pasos (todo sale del motor) ----
+const H8 = { ancho:8, alto:8 }, D4 = [{ recta:{ x:4 }, mueve:'derecha' }, { recta:{ y:4 }, mueve:'arriba' }];
+const R1 = M.desplegar(H8, D4, [{ tipo:'poligono', puntos:[{ x:1, y:1 }, { x:3, y:1 }, { x:1, y:2 }] }]);
+const R2 = M.desplegar(H8, D4, [{ tipo:'circulo', centro:{ x:4, y:2 }, r:1 }]);
+const R3 = M.desplegar(H8, D4, [{ tipo:'circulo', centro:{ x:0, y:2 }, r:1 }]);
+const R4 = M.desplegar(H8, D4, [{ tipo:'rombo', centro:{ x:4, y:4 }, dx:2, dy:1 }]);
+const T5 = { ancho:6, alto:2 }, D5 = [{ recta:{ x:2 }, mueve:'izquierda' }, { recta:{ x:4 }, mueve:'derecha' }];
+const R5 = M.desplegar(T5, D5, [{ tipo:'linea', A:{ x:3, y:-1 }, B:{ x:3, y:3 } }]);
+const E6 = M.esquinaSobreEsquina(8, 6), H6 = { ancho:8, alto:6 }, R6 = M.desplegar(H6, E6.dobleces, []);
+const L7 = M.reflejoEnVertice(0, 0, { x:2, y:0 }), O7 = { x:2, y:0 }, VEN7 = [-1.2, 5.2, -3.2, 3.2];
+const F8 = M.voltear('110101', '000000', { k:2, contiguas:true });
+const F9 = M.voltear('00000', '11111', { k:2, contiguas:true });
+const ex = e => e + ' cm';
+const FUENTE = '<p class="fuente">Las opciones incorrectas son errores que suponemos (hipótesis nuestra): el informe de razonamiento espacial describe estos errores en las preguntas del examen de San Marcos, pero no encontramos un estudio con porcentajes para ellos. El lanzamiento en el colegio dirá cuáles aparecen.</p>';
+const H = 'hipotesis';
+
+const P1 = { id:'pd-paso1-desdoblar', ok:'c', figs:true,
+  opts:[['a', svgHoja(H8, R1.dibujoErrores.unaCapa), 'RME40', H, '1 triángulo, en el cuarto de abajo a la izquierda'],
+        ['b', svgHoja(H8, R1.dibujoErrores.corrida), 'RME152', H, '4 triángulos, uno por cuarto, todos con el ángulo recto abajo a la izquierda'],
+        ['c', svgHoja(H8, R1.celdas.flatMap(c => c.huecos)), '', '', '4 triángulos, uno por cuarto, con el ángulo recto hacia la esquina de la hoja que tiene cerca'],
+        ['d', svgHoja(H8, R1.dibujoErrores.soloDoblez[1]), 'RME153', H, '2 triángulos, en los dos cuartos de la izquierda']],
+  fb:{ c:`¡Bien! El paquete tiene ${R1.capas} capas y la perforación pasa por todas: salen ${R1.agujeros} triángulos. Cada doblez es un espejo, así que cada triángulo es el reflejo del de al lado: el ángulo recto mira siempre hacia la esquina de la hoja.`,
+       a:'Elegiste la A. Así sería si solo se perforara una capa. Pero el paquete tiene 4 capas encimadas y la perforación las atraviesa todas: salen 4 triángulos. La correcta está marcada.',
+       b:'Elegiste la B. El número está bien, pero las copias no se copian corridas: cada doblez es un espejo y voltea el triángulo. Al otro lado de un doblez, el ángulo recto queda al otro lado. La correcta está marcada.',
+       d:'Elegiste la D. Eso sale si se deshace solo el último doblez. Falta abrir el primero, que vuelve a reflejar los dos triángulos al lado derecho. La correcta está marcada.' } };
+const P2 = { id:'pd-paso2-sobre-doblez', ok:'b',
+  opts:[['a', `${R2.copias[0]} medios círculos, separados`, 'RME158', H], ['b', `${R2.agujeros} círculos enteros`],
+        ['c', `${R2.errores.enteroPorCapa.agujeros} círculos enteros`, 'RME159', H], ['d', `${R2.errores.soloDoblez[0].agujeros} círculo entero`, 'RME153', H]],
+  fb:{ b:`¡Bien! El medio círculo está sobre el doblez vertical: al abrirlo, las dos capas de cada lado forman un círculo entero. El doblez horizontal lo refleja arriba: ${R2.agujeros} círculos enteros.`,
+       a:'Elegiste la A. Hay 4 capas con un medio círculo cada una, pero sobre el doblez no hay borde: las dos mitades de cada lado son el mismo papel y se juntan en un círculo. Quedan 2 círculos, no 4 mitades. La correcta está marcada.',
+       c:'Elegiste la C. Cada capa no da un círculo entero: da medio. Dos medios, uno a cada lado del doblez, forman un círculo; con 4 capas salen 2 círculos. La correcta está marcada.',
+       d:'Elegiste la D. Al abrir el doblez vertical sale un círculo, sí, pero falta abrir el horizontal, que lo copia arriba. La correcta está marcada.' } };
+const P3 = { id:'pd-paso3-perimetro-borde', ok:'d',
+  opts:[['a', ex(R3.errores.sinRestarBorde.exacto), 'RME43', H], ['b', ex(R3.errores.unaCapa.perimetro.exacto), 'RME40', H],
+        ['c', ex(R3.errores.soloDoblez[1].perimetro.exacto), 'RME153', H], ['d', ex(R3.perimetro.exacto)]],
+  fb:{ d:`¡Bien! Salen 4 muescas de medio círculo en los bordes de la hoja. Cada una pone un arco de π cm y quita 2 cm de borde recto: 32 + 4(π − 2) = ${R3.perimetro.exacto} cm.`,
+       a:'Elegiste la A. Sumaste los 4 arcos, pero cada muesca también se lleva 2 cm del borde recto de la hoja. Hay que restarlos: 32 − 8 + 4π. La correcta está marcada.',
+       b:'Elegiste la B. Así sería con una sola capa. El paquete tiene 4 y el corte las atraviesa todas: al abrir hay 4 muescas. La correcta está marcada.',
+       c:'Elegiste la C. Eso sale abriendo un solo doblez (2 muescas). Abiertos los dos, hay 4. La correcta está marcada.' } };
+const P4 = { id:'pd-paso4-rombo', ok:'a',
+  opts:[['a', ex(R4.perimetro.exacto)], ['b', ex(R4.errores.unaCapa.perimetro.exacto), 'RME40', H],
+        ['c', ex(R4.errores.tramosDelDoblez.exacto), 'RME158', H], ['d', ex(R4.errores.soloDoblez[0].perimetro.exacto), 'RME153', H]],
+  fb:{ a:`¡Bien! La esquina cortada es el centro de la hoja, donde se juntan los dos dobleces: las 4 capas se unen en un solo rombo de lado √(2² + 1²) = √5. Su borde mide 4√5 y la hoja queda con ${R4.perimetro.exacto} cm.`,
+       b:'Elegiste la B. Contaste un solo tramo de √5, el que se ve en el paquete. Hay 4 capas: al abrir, los cuatro tramos forman el rombo entero. La correcta está marcada.',
+       c:'Elegiste la C. Contaste cada pedazo como un triángulo con sus catetos. Pero los catetos están sobre los dobleces: ahí el papel se quitó de los dos lados y no queda borde. Solo cuentan los 4 lados de √5. La correcta está marcada.',
+       d:'Elegiste la D. Abriendo un solo doblez sale medio rombo. Falta el otro doblez, que lo completa. La correcta está marcada.' } };
+const P5 = { id:'pd-paso5-piezas', ok:'c',
+  opts:[['a', `${R5.errores.sinUniones} piezas`, 'RME41', H], ['b', `${R5.errores.cortesComoPiezas} piezas`, 'RME157', H],
+        ['c', `${R5.piezas} piezas`], ['d', `${R5.errores.unaCapa.piezas} piezas`, 'RME40', H]],
+  fb:{ c:`¡Bien! Al abrir hay ${R5.errores.cortesComoPiezas} tajos, y tres tajos parten la tira en ${R5.piezas}. Las dos del medio tienen un doblez adentro: no se separaron y son cuadrados de 2 × 2.`,
+       a:'Elegiste la A. Así sería si cada capa fuera una hoja suelta (3 capas × 2). Pero las capas están unidas por los dobleces: las mitades que tocan un doblez siguen pegadas. La correcta está marcada.',
+       b:'Elegiste la B. Hay 3 tajos, pero las piezas son una más que los tajos en una tira: 3 tajos dan 4 piezas. La correcta está marcada.',
+       d:'Elegiste la D. El paquete se ve en 2 mitades, pero tiene 3 capas: al abrir, el corte aparece 3 veces. La correcta está marcada.' } };
+const P6 = { id:'pd-paso6-doblez', ok:'d',
+  opts:[['a', `${fmt(E6.errores.diagonal)} cm`, 'RME150', H], ['b', `${fmt(E6.errores.ladoCorto)} cm`, 'RME151', H],
+        ['c', `${fmt(E6.errores.mitadDiagonal)} cm`, 'RME150', H], ['d', `${fmt(E6.doblez)} cm`]],
+  fb:{ d:`¡Bien! El doblez es la mediatriz de AC: E queda a la misma distancia de A y de C. Con x = AE, x² = (8 − x)² + 6², x = ${fmt(E6.x)}, y el doblez mide ${fmt(E6.doblez)} cm.`,
+       a:'Elegiste la A. 10 cm es la diagonal AC, la que une los dos vértices que se juntan. El doblez la corta en su punto medio y es perpendicular a ella: es más corto. La correcta está marcada.',
+       b:'Elegiste la B. El doblez no es paralelo al lado corto: tiene que ser perpendicular a la diagonal AC, así que va inclinado y mide más que 6. La correcta está marcada.',
+       c:'Elegiste la C. 5 cm es la mitad de la diagonal. El doblez pasa por el centro, pero sus extremos E y F no están a 2,5 cm de él. La correcta está marcada.' } };
+const P7 = { id:'pd-paso7-loseta', ok:'b', figs:true,
+  opts:[['a', svgLoseta(L7.original, L7.errores.ejeVertical, O7, VEN7), 'RME24', H, 'la loseta volteada como en un espejo vertical, a la derecha de O'],
+        ['b', svgLoseta(L7.original, L7.correcta, O7, VEN7), '', '', 'la loseta abajo a la derecha de O, con el triángulo en su esquina de abajo a la derecha'],
+        ['c', svgLoseta(L7.original, L7.errores.trasladada, O7, VEN7), 'RME152', H, 'la loseta abajo a la derecha de O, con el triángulo en su esquina de arriba a la izquierda'],
+        ['d', svgLoseta(L7.original, L7.errores.ejeHorizontal, O7, VEN7), 'RME24', H, 'la loseta volteada como en un espejo horizontal, debajo de la original']],
+  fb:{ b:'¡Bien! Reflejar respecto de un punto es mandar cada punto al otro lado de O, a la misma distancia: O queda en el medio. Eso es lo mismo que girar media vuelta (180°) alrededor de O: el triángulo pasa de arriba a la izquierda a abajo a la derecha.',
+       a:'Elegiste la A. Eso es reflejar en la recta vertical que pasa por O (un espejo), no en el punto O. En la simetría respecto de un punto, la loseta también baja: cada punto va al otro lado de O. La correcta está marcada.',
+       c:'Elegiste la C. La loseta va al lugar correcto, pero corrida: el triángulo sigue arriba a la izquierda. Reflejar respecto de O la gira media vuelta, así que el triángulo queda abajo a la derecha. La correcta está marcada.',
+       d:'Elegiste la D. Eso es reflejar en la recta horizontal que pasa por O. En la simetría respecto de O la loseta también pasa a la derecha. La correcta está marcada.' } };
+const P8 = { id:'pd-paso8-cartas', ok:'c',
+  opts:[['a', `${F8.errores.dividir} jugadas`, 'RME155', H], ['b', `${F8.errores.unoPorUno} jugadas`, 'RME154', H],
+        ['c', `${F8.minimo} jugadas`], ['d', `${F8.errores.cadaGrupo} jugadas`, 'RME155', H]],
+  fb:{ c:`¡Bien! Las cartas 1 y 2 se voltean juntas. Las 4 y 6 no son vecinas: hay que voltear 4-5 y luego 5-6 (la 5 se voltea dos veces y queda como estaba). Total: ${F8.minimo}.`,
+       a:'Elegiste la A. Hay 4 cartas boca arriba y cada jugada voltea 2, pero solo si son vecinas. La 4 y la 6 no lo son: para juntarlas hace falta voltear la 5 dos veces. La correcta está marcada.',
+       b:'Elegiste la B. Contaste una jugada por carta, pero cada jugada voltea dos a la vez: la 1 y la 2 salen juntas en una sola. La correcta está marcada.',
+       d:'Elegiste la D. Voltear cada par de vecinas una vez no lleva a la meta: las cartas del medio se voltean dos veces y quedan como estaban. La correcta está marcada.' } };
+const P9 = { id:'pd-paso9-paridad', ok:'b',
+  opts:[['a', `${F9.errores.dividir} jugadas`, 'RME155', H], ['b', 'No se puede'], ['c', `${F9.errores.cadaGrupo} jugadas`, 'RME155', H], ['d', `${F9.errores.unoPorUno} jugadas`, 'RME154', H]],
+  fb:{ b:'¡Bien! Cada jugada cambia el número de cartas boca arriba en +2, −2 o 0: siempre en un número par. De 0 (par) nunca se llega a 5 (impar).',
+       a:'Elegiste la A. 5 ÷ 2 redondeado da 3, pero con 3 jugadas se hacen 6 volteos y alguna carta se voltea dos veces (queda como estaba). En realidad no se puede: el número de boca arriba cambia de dos en dos y 5 es impar. La correcta está marcada.',
+       c:'Elegiste la C. Voltear los 4 pares vecinos deja boca arriba solo las dos de las puntas: las del medio se voltean dos veces. Y ninguna otra serie sirve: de 0 boca arriba (par) no se llega a 5 (impar). La correcta está marcada.',
+       d:'Elegiste la D. Cada jugada voltea dos cartas, no una. Y no hay manera: el número de boca arriba cambia de dos en dos y no pasa de 0 a 5. La correcta está marcada.' } };
+
+// ---- Vistas ----
+const vh = (R, hoja, dobleces, o) => Object.assign({ tipo:'hoja', hoja, dobleces, dib:R, prog:dobleces.length, huecos:true, separar:0, ventana:ventanaHoja(hoja, R.caja) }, o || {});
+function capasEtiqueta(R){ const [x0, x1, y0, y1] = R.caja; return [{ P:{ x:(x0 + x1)/2, y:y1 + 0.35 }, t:`${R.capas} capas`, k:'K' }]; }
+function control(n){ return `<div class="ctl"><label for="prog">Abierta <input type="range" id="prog" min="0" max="${n*100}" step="1" value="${n*100}" aria-label="Cuánto está doblada la hoja"> Doblada</label><button type="button" class="btn chico" id="redoblar">Ver cómo se dobla</button></div>`; }
+// en la hoja: doblar (de 0 a n), abrir (de n a 0) y separar las piezas
+function doblarAnimado(fin){ const v = S.vista, n = v.dobleces.length; v.huecos = false; v.etiquetas = []; AN.serie(Array.from({ length:n }, (_, i) => [850, f => { v.prog = i + suave(f); sincronizar(); }]), () => { v.huecos = true; sincronizar(); draw(); describir(); fin && fin(); }); }
+function abrirAnimado(fin){ const v = S.vista, n = v.dobleces.length; v.huecos = true; AN.serie(Array.from({ length:n }, (_, i) => [950, f => { v.prog = n - i - suave(f); sincronizar(); }]), () => { sincronizar(); describir(); fin && fin(); }); }
+function sincronizar(){ const r = $('prog'); if (r && S.vista && S.vista.tipo === 'hoja') r.value = Math.round(S.vista.prog*100); }
+function respondido(){ const s = steps[S.step]; return !s.gate || !!S.pred[s.gate.id]; }
+
+const PASO_HOJA = (R, hoja, dobleces, extra) => ({
+  vista:() => vh(R, hoja, dobleces, extra && extra.vista && extra.vista()),
+  entrar:() => doblarAnimado(),
+  control:dobleces.length
+});
+
+const steps = [
+ Object.assign(PASO_HOJA(R1, H8, D4), { k:'Paso 1', t:'Dos dobleces y una perforación', gate:P1,
+   leg:['F','D','C','K'], legAntes:['F','D','C'],
+   desc:() => descHoja('Una hoja de 8 × 8 doblada por la mitad y otra vez por la mitad, con un agujero triangular en el paquete', R1),
+   body:() => `<p class="problem">Una hoja cuadriculada de 8 cm × 8 cm se dobla por la mitad (la derecha sobre la izquierda) y otra vez (lo de arriba sobre lo de abajo). En el paquete se recorta un ${V('C','triángulo')} con el ángulo recto abajo a la izquierda. ¿Cómo se ve la hoja abierta?</p>
+     ${control(2)}<p class="hint">Mueve la barra para doblar y desdoblar. Antes de responder, el corte se ve solo con la hoja doblada.</p>
+     <p><b>Predice:</b> ¿cuál es la hoja abierta?</p>${botonesOpciones(P1, true)}`,
+   tras:() => `<p>Cada ${V('D','doblez')} es un espejo. Al abrir el último (el horizontal), el triángulo aparece reflejado arriba; al abrir el primero (el vertical), los dos se reflejan a la derecha. Son ${V('K', R1.capas + ' capas')}, así que salen ${V('C', R1.agujeros + ' triángulos')}, y cada uno es el reflejo de su vecino.</p>
+     <p>Para el examen: desdobla en orden inverso, el último doblez primero, y en cada paso refleja lo que ya tienes.</p>`,
+   animar:() => { S.vista.etiquetas = capasEtiqueta(R1); draw(); AN.luego(700, () => { S.vista.etiquetas = []; abrirAnimado(); }); } }),
+
+ Object.assign(PASO_HOJA(R2, H8, D4), { k:'Paso 2', t:'Un corte sobre el doblez', gate:P2,
+   leg:['F','D','C','K'], legAntes:['F','D','C'],
+   desc:() => descHoja('La misma hoja doblada en cuatro, con un medio círculo recortado sobre el doblez de la derecha del paquete', R2),
+   body:() => `<p class="problem">La misma hoja, doblada igual. Ahora se recorta un ${V('C','medio círculo')} de radio 1 cm justo sobre el ${V('D','doblez')} vertical (el borde derecho del paquete).</p>
+     ${control(2)}<p><b>Predice:</b> al abrir, ¿qué agujeros tiene la hoja?</p>${botonesOpciones(P2)}`,
+   tras:() => `<p>Donde el papel está doblado no hay borde: el ${V('C','medio círculo')} de una capa y el de la capa de al lado son el mismo agujero. Por eso un corte sobre un ${V('D','doblez')} se abre en una figura entera (dos medios círculos dan uno entero) y hay menos agujeros que ${V('K','capas')}.</p>
+     <div class="eqs"><div class="eq">${V('K', R2.capas + ' capas')} → ${R2.copias[0]} medios → ${V('C', R2.agujeros + ' círculos')}<span class="note">cada círculo junta 2 capas</span></div></div>`,
+   animar:() => { S.vista.etiquetas = capasEtiqueta(R2); draw(); AN.luego(700, () => { S.vista.etiquetas = []; abrirAnimado(); }); } }),
+
+ Object.assign(PASO_HOJA(R3, H8, D4), { k:'Paso 3', t:'Un corte en el borde y el perímetro', gate:P3,
+   leg:['F','D','C','K'], legAntes:['F','D','C'],
+   desc:() => descHoja('La hoja doblada en cuatro con un medio círculo recortado en el borde izquierdo del paquete, que es borde de la hoja', R3),
+   body:() => `<p class="problem">Otra vez la hoja de 8 × 8 doblada en cuatro. Ahora el ${V('C','medio círculo')} de radio 1 se recorta en el borde izquierdo del paquete, que es borde de la hoja, a 2 cm de abajo.</p>
+     ${control(2)}<p><b>Predice:</b> al abrir, ¿cuál es el perímetro de la hoja (todo su borde, contando el de los cortes)?</p>${botonesOpciones(P3)}`,
+   tras:() => `<p>Cada muesca hace dos cosas: pone un ${V('C','arco de π cm')} y se lleva 2 cm del ${V('F','borde recto')}. Con ${V('K','4 capas')} hay 4 muescas:</p>
+     <div class="eqs"><div class="eq">${V('F','32')} − 4 · ${V('F','2')} + 4 · ${V('C','π')} = ${R3.perimetro.exacto} cm</div></div>`,
+   animar:() => { S.vista.etiquetas = capasEtiqueta(R3); draw(); AN.luego(700, () => { S.vista.etiquetas = []; abrirAnimado(); }); } }),
+
+ Object.assign(PASO_HOJA(R4, H8, D4), { k:'Paso 4', t:'Un corte en la esquina doblada', gate:P4,
+   leg:['F','D','C','K'], legAntes:['F','D','C'],
+   desc:() => descHoja('La hoja doblada en cuatro; se corta la esquina del paquete donde se juntan los dos dobleces, con un corte recto de 2 cm por 1 cm', R4),
+   body:() => `<p class="problem">La hoja de 8 × 8 doblada en cuatro. Se corta en recto la esquina del paquete donde se juntan los dos ${V('D','dobleces')}: el ${V('C','corte')} va de 2 cm por un doblez a 1 cm por el otro.</p>
+     ${control(2)}<p><b>Predice:</b> al abrir, ¿cuál es el perímetro de la hoja?</p>${botonesOpciones(P4)}`,
+   tras:() => `<p>Esa esquina del paquete es el centro de la hoja: las ${V('K','4 capas')} se juntan en un solo agujero, un ${V('C','rombo')} de diagonales 4 y 2. Los catetos del pedazo cortado estaban sobre los ${V('D','dobleces')} y desaparecen al abrir.</p>
+     <div class="eqs"><div class="eq">lado = √(2² + 1²) = √5<span class="note">perímetro: ${V('F','32')} + 4 · ${V('C','√5')} = ${R4.perimetro.exacto} cm</span></div></div>`,
+   animar:() => { S.vista.etiquetas = capasEtiqueta(R4); draw(); AN.luego(700, () => { S.vista.etiquetas = []; abrirAnimado(); }); } }),
+
+ Object.assign(PASO_HOJA(R5, T5, D5), { k:'Paso 5', t:'Tres capas y un tijeretazo', gate:P5,
+   leg:['F','D','C','K','P'], legAntes:['F','D','C'],
+   desc:() => S.vista.separar > 0 ? `La tira abierta con sus ${R5.piezas} piezas apartadas: dos cuadrados de 2 × 2 y dos tiras de 1 × 2.` : descHoja('Una tira de 6 × 2 doblada en tres como un acordeón y cortada de arriba abajo por la mitad del paquete', R5),
+   body:() => `<p class="problem">Una tira de 6 cm × 2 cm se dobla en tres partes iguales, como un acordeón. El paquete (un cuadrado de 2 × 2) se ${V('C','corta')} de arriba abajo por la mitad.</p>
+     ${control(2)}<p><b>Predice:</b> al abrir, ¿cuántas ${V('P','piezas')} quedan?</p>${botonesOpciones(P5)}`,
+   tras:() => `<p>El tijeretazo pasa por las ${V('K','3 capas')}: al abrir hay 3 tajos. Una tira con 3 tajos queda en ${V('P', R5.piezas + ' piezas')}. Las mitades que tocan un ${V('D','doblez')} no se sueltan: por eso las dos del medio son cuadrados de 2 × 2 (${R5.piezasCuadradas} piezas cuadradas).</p>`,
+   animar:() => { S.vista.etiquetas = capasEtiqueta(R5); draw(); AN.luego(700, () => { S.vista.etiquetas = []; abrirAnimado(() => AN.correr(700, f => { S.vista.separar = suave(f); }, describir)); }); } }),
+
+ { k:'Paso 6', t:'Esquina sobre esquina', gate:P6, leg:['F','B','D','X'], legAntes:['F','B'],
+   leyTextos:{ F:'la hoja (lado a = 8)', B:'el lado b = 6', D:'el doblez EF', X:'el tramo x = AE = EC' },
+   vista:() => vh(R6, H6, E6.dobleces, { prog:0, huecos:false, rotulos:rotulosRect(), arco:{ P:{ x:7.6, y:5.6 }, Q:{ x:0.4, y:0.4 } }, segs:ladosRect() }),
+   desc:() => !respondido() ? 'Un rectángulo ABCD de 8 cm por 6 cm. Una flecha indica que el vértice C se llevará sobre el vértice A.' : (S.vista.puntos && S.vista.puntos.length ? `El rectángulo abierto con el doblez EF marcado: mide ${fmt(E6.doblez)} cm. E está en AB con AE = EC = x = ${fmt(E6.x)} cm y EB = 8 − x.` : 'El rectángulo se dobla: C cae sobre A.'),
+   body:() => `<p class="problem">Un rectángulo de papel ABCD tiene ${V('F','a = 8 cm')} y ${V('B','b = 6 cm')}. Se dobla de modo que el vértice C caiga justo sobre el vértice A.</p>
+     <p><b>Predice:</b> ¿cuánto mide el ${V('D','doblez')}?</p>${botonesOpciones(P6)}`,
+   tras:() => `<p>Todo punto del ${V('D','doblez')} queda a la misma distancia de A y de C (es su mediatriz). Para E, en el lado AB: AE = EC = ${V('X','x')} y EB = ${V('F','a')} − ${V('X','x')}. En el triángulo rectángulo EBC:</p>
+     <div class="eqs"><div class="eq">${V('X','x')}² = (${V('F','8')} − ${V('X','x')})² + ${V('B','6')}²<span class="note">16${V('X','x')} = 100, ${V('X','x')} = ${fmt(E6.x)}</span></div>
+     <div class="eq">${V('D','EF')} = √((2 · ${fmt(E6.x)} − 8)² + 6²) = ${V('D', fmt(E6.doblez))} cm<span class="note">o con la fórmula b·√(a² + b²)/a</span></div></div>
+     <p>Al revés: si te dan el doblez y un lado, la misma ecuación da el otro lado (prueba el experimento «Del doblez al lado»).</p>`,
+   animar:() => { const v = S.vista; v.arco = null; v.segs = []; AN.serie([[1300, f => { v.prog = suave(f); }], [600, () => {}], [900, f => { v.prog = 1 - suave(f); }]], () => { finRect(v); describir(); }); } },
+
+ { k:'Paso 7', t:'La loseta y su vértice', gate:P7, leg:['F','I'], legAntes:['F'], leyTextos:{ F:'la loseta de papel y su vértice O' },
+   vista:() => ({ tipo:'plano', ventana:VEN7, losetas:[{ L:L7.original, k:'F' }], puntos:[{ P:O7, k:'F', t:'O', dx:-12, dy:12 }] }),
+   desc:() => S.vista.losetas.length > 1 ? 'La loseta y su simétrica respecto de O: está abajo a la derecha de O, girada media vuelta; el triángulo quedó en su esquina de abajo a la derecha.' : 'Una loseta cuadrada de papel con un triángulo pintado en su esquina de arriba a la izquierda y una barra; O es su vértice de abajo a la derecha.',
+   body:() => `<p class="problem">Una ${V('F','loseta')} cuadrada de papel tiene un triángulo pintado en una esquina y una barra. Se refleja respecto de su vértice ${V('F','O')} (simetría respecto de un punto).</p>
+     <p><b>Predice:</b> ¿dónde queda la ${V('I','loseta reflejada')}?</p>${botonesOpciones(P7, true)}`,
+   tras:() => `<p>Reflejar respecto de un punto O manda cada punto P a P′ = 2O − P: O queda en el medio de PP′. La esquina del triángulo (0; 2) va a (4; −2). Es lo mismo que <b>girar media vuelta</b> alrededor de O: la loseta no se voltea, se gira.</p>
+     <p>Con papel: doblar por la recta vertical que pasa por O y luego por la horizontal que pasa por O da lo mismo (dos espejos perpendiculares hacen media vuelta).</p>`,
+   animar:() => { const v = S.vista; v.losetas = [{ L:L7.original, k:'F', alpha:.45, dash:[5, 4] }, { L:L7.original, k:'I' }];
+     AN.correr(1400, f => { v.losetas[1].L = M.transformar(L7.original, { tipo:'giro', O:O7, grados:180*suave(f) }); },
+       () => { v.losetas[1].L = L7.correcta; v.segs = [{ P:L7.original.triangulo, Q:L7.correcta.triangulo, k:'F', dash:[4, 4] }]; draw(); describir(); }); } },
+
+ { k:'Paso 8', t:'Cartas que se voltean de dos en dos', gate:P8, leg:[], legAntes:[], juego:{ ini:'110101', meta:'000000', k:2 },
+   vista:() => ({ tipo:'fichas', filas:[{ t:'Ahora', estado:'110101' }, { t:'Meta', estado:'000000' }], sel:null, k:2 }),
+   desc:() => descFichas(),
+   body:() => `<p class="problem">Seis cartas en fila. En cada jugada se voltean <b>dos cartas vecinas</b> a la vez. Las cartas 1, 2, 4 y 6 están boca arriba (con el círculo) y las demás boca abajo.</p>
+     <p><b>Predice:</b> ¿cuál es el menor número de jugadas para dejarlas todas boca abajo?</p>${botonesOpciones(P8)}`,
+   tras:() => `<p>Ahora juega tú: toca una carta y se voltea con su vecina de la derecha (la última, con la de su izquierda). También con el teclado: flechas para elegir y Enter para voltear.</p>
+     <div class="ctl"><span class="cuenta" id="cuenta" aria-live="polite"></span><button type="button" class="btn chico" id="reini">Empezar de nuevo</button><button type="button" class="btn chico" id="sol">Ver la solución</button></div>
+     <p>El motor busca en todos los estados posibles (búsqueda en anchura): la menor cantidad es ${F8.minimo}. Una carta que se voltea dos veces queda como estaba; por eso las cartas que no son vecinas «cuestan» más.</p>`,
+   montar:() => montarJuego(),
+   animar:() => {} },
+
+ { k:'Paso 9', t:'Cinco cartas boca abajo', gate:P9, leg:[], legAntes:[], juego:{ ini:'00000', meta:'11111', k:2 },
+   vista:() => ({ tipo:'fichas', filas:[{ t:'Ahora', estado:'00000' }, { t:'Meta', estado:'11111' }], sel:null, k:2 }),
+   desc:() => descFichas(),
+   body:() => `<p class="problem">Cinco cartas boca abajo. En cada jugada se voltean dos cartas vecinas. Se quiere dejarlas todas boca arriba.</p>
+     <p><b>Predice:</b> ¿cuántas jugadas hacen falta como mínimo?</p>${botonesOpciones(P9)}`,
+   tras:() => `<p>Prueba tú: toca una carta. Mira cómo cambia el número de cartas boca arriba.</p>
+     <div class="ctl"><span class="cuenta" id="cuenta" aria-live="polite"></span><button type="button" class="btn chico" id="reini">Empezar de nuevo</button></div>
+     <p>Es un argumento de <b>paridad</b>: al voltear dos cartas, las boca arriba suben 2, bajan 2 o quedan igual. Si empiezas con un número par, siempre tendrás un número par. 5 es impar: no se puede. Con vasos que se voltean de 3 en 3, la paridad cambia en cada jugada; el número de jugadas tiene que tener la paridad de los vasos que hay que cambiar (mira el experimento de los vasos).</p>`,
+   montar:() => montarJuego(),
+   animar:() => {} }
+];
+// ---- piezas del rectángulo ----
+function rotulosRect(){ return [{ P:{ x:0, y:0 }, t:'A', dx:-12, dy:12 }, { P:{ x:8, y:0 }, t:'B', dx:12, dy:12 }, { P:{ x:8, y:6 }, t:'C', dx:12, dy:-12 }, { P:{ x:0, y:6 }, t:'D', dx:-12, dy:-12 }]; }
+function ladosRect(){ return [{ P:{ x:0, y:-0.35 }, Q:{ x:8, y:-0.35 }, k:'F', ancho:2, t:'a = 8', dy:12 }, { P:{ x:8.35, y:0 }, Q:{ x:8.35, y:6 }, k:'B', ancho:2, t:'b = 6', dx:22 }]; }
+function segsRect(){ return [{ P:E6.E, Q:E6.F, k:'D', ancho:3.2, dash:[8, 5], t:`${fmt(E6.doblez)}`, dx:-18 }, { P:{ x:0, y:0.12 }, Q:{ x:E6.E.x, y:0.12 }, k:'X', ancho:4, t:'x', dy:-12 },
+  { P:E6.E, Q:{ x:8, y:6 }, k:'X', ancho:4, t:'x', dx:-12, dy:-4 }, { P:{ x:E6.E.x, y:-0.35 }, Q:{ x:8, y:-0.35 }, k:'F', ancho:2, t:'8 − x', dy:12 }, { P:{ x:8.35, y:0 }, Q:{ x:8.35, y:6 }, k:'B', ancho:2, t:'6', dx:12 }]; }
+// al final: la hoja abierta otra vez, con el doblez marcado y el triángulo EBC de Pitágoras
+function finRect(v){ v.prog = 0; v.arco = null; v.segs = segsRect(); v.puntos = puntosRect(); draw(); }
+function puntosRect(){ return [{ P:E6.E, k:'D', t:'E', dx:6, dy:14 }, { P:E6.F, k:'D', t:'F', dx:-4, dy:-14 }]; }
+function descHoja(antes, R){
+  const v = S.vista, { e, t, n } = etapaDe(v);
+  if (!respondido()) return v.prog < n ? 'La hoja se está doblando.' : antes + '.';
+  if (v.prog >= n) return antes + `. Tiene ${R.capas} capas.`;
+  if (v.prog > 0) return 'La hoja se está abriendo.';
+  const partes = [];
+  if (R.agujeros) partes.push(`${R.agujeros} ${R.agujeros === 1 ? 'agujero' : 'agujeros'}`);
+  if (R.muescas) partes.push(`${R.muescas} muescas en el borde`);
+  if (R.piezas > 1) partes.push(`${R.piezas} piezas`);
+  return `La hoja abierta: ${partes.join(', ') || 'sin cortes'}; perímetro ${R.perimetro.exacto} cm.`;
+}
+// ---- el juego de las cartas ----
+function descFichas(){ const v = S.vista, f = v.filas[0].estado, arr = f.split('').map((x, i) => x === '1' ? i + 1 : 0).filter(Boolean);
+  return `Fila de ${f.length} cartas. Boca arriba: ${arr.length ? arr.join(', ') : 'ninguna'}. Meta: ${v.filas[1].estado.includes('1') ? 'todas boca arriba' : 'todas boca abajo'}.`; }
+function montarJuego(){
+  const s = steps[S.step], J = s.juego, v = S.vista;
+  S.juego = { estado:J.ini, jugadas:0, sel:0 };
+  v.sel = 0; cv.tabIndex = 0;
+  const pintar = () => {
+    v.filas[0].estado = S.juego.estado; v.sel = S.juego.sel;
+    const r = M.voltear(S.juego.estado, J.meta, { k:J.k, contiguas:true }), arriba = S.juego.estado.split('').filter(x => x === '1').length;
+    const el = $('cuenta');
+    if (el) el.textContent = `Jugadas: ${S.juego.jugadas} · boca arriba: ${arriba} · ` + (r.posible ? (r.minimo ? `desde aquí faltan al menos ${r.minimo}` : '¡Llegaste a la meta!') : 'desde aquí no se llega');
+    draw(); describir();
+  };
+  S.juego.pintar = pintar;
+  const re = $('reini'); if (re) re.onclick = () => { AN.parar(); S.juego.estado = J.ini; S.juego.jugadas = 0; pintar(); };
+  const so = $('sol'); if (so) so.onclick = () => {
+    AN.parar(); S.juego.estado = J.ini; S.juego.jugadas = 0; pintar();
+    const cam = M.voltear(J.ini, J.meta, { k:J.k, contiguas:true }).camino, paso = S.step;
+    let i = 0; const sig = () => { if (S.step !== paso || i >= cam.length) return; S.juego.sel = cam[i][0]; pintar(); AN.luego(550, () => { if (S.step !== paso) return; S.juego.estado = M.aplicar(S.juego.estado, cam[i]); S.juego.jugadas++; i++; pintar(); AN.luego(650, sig); }); };
+    sig();
+  };
+  pintar();
+}
+function jugar(i){
+  const s = steps[S.step]; if (!s.juego || !S.juego || !respondido()) return;
+  const n = S.juego.estado.length, a = Math.min(i, n - s.juego.k);
+  S.juego.sel = a; S.juego.estado = M.aplicar(S.juego.estado, [a, a + 1]); S.juego.jugadas++; S.juego.pintar();
+}
+cv.addEventListener('click', e => {
+  const v = S.vista; if (!v || v.tipo !== 'fichas' || !v._cartas) return;
+  const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+  const c = v._cartas.find(q => x >= q.x - 4 && x <= q.x + q.w + 4 && y >= q.y - 6 && y <= q.y + q.h + 6);
+  if (c) jugar(c.i);
+});
+cv.addEventListener('keydown', e => {
+  const s = steps[S.step]; if (!s.juego || !S.juego || !respondido()) return;
+  const n = S.juego.estado.length;
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ S.juego.sel = clamp(S.juego.sel + (e.key === 'ArrowLeft' ? -1 : 1), 0, n - s.juego.k); S.juego.pintar(); e.preventDefault(); }
+  else if (e.key === 'Enter' || e.key === ' '){ jugar(S.juego.sel); e.preventDefault(); }
+});
+
+// ---- Motor de los pasos (como en las otras escenas) ----
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function describir(){ const s = steps[S.step]; const t = s.desc ? s.desc() : ''; $('desc1').textContent = t; cv.setAttribute('aria-label', t || 'Dibujo del paso'); }
+// La leyenda dice solo lo que el dibujo pinta: antes de responder, sin los colores que aún no aparecen.
+function ponerLeyenda(){ const s = steps[S.step], antes = s.gate && !S.pred[s.gate.id]; leyenda($('leg1'), antes ? (s.legAntes || []) : s.leg, s.leyTextos); }
+function armarVista(){
+  const tipoAntes = S.vista && S.vista.tipo;
+  S.vista = steps[S.step].vista();
+  if (S.vista.tipo !== tipoAntes) L.resize(); else draw();
+}
+function conectarControl(){
+  const r = $('prog'), b = $('redoblar'), s = steps[S.step];
+  if (r) r.oninput = () => { AN.parar(); const v = S.vista, n = v.dobleces.length; v.prog = r.value/100; v.separar = 0; v.etiquetas = [];
+    v.huecos = respondido() || v.prog >= n - 1e-9; draw(); describir(); };
+  if (b) b.onclick = () => { AN.parar(); const v = S.vista; v.prog = 0; v.separar = 0; doblarAnimado(() => { if (respondido()) v.huecos = true; }); };
+}
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max) return;
+  AN.parar();
+  const s = steps[k]; S.step = k; S.hl = null; S.juego = null;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body() + (s.gate ? '<div id="tras" class="body"></div>' : '');
+  cv.tabIndex = -1;
+  ponerLeyenda(); pintarDots(); armarVista();
+  if (s.gate) prediccion(s.gate);
+  conectarControl();
+  L.compactar(s.gate && !S.pred[s.gate.id]);
+  nav(); describir(); draw();
+  // al entrar a un paso de la hoja (sin responder todavía), se ve cómo se dobla
+  if (s.entrar && !respondido()){ S.vista.prog = 0; S.vista.huecos = false; sincronizar(); draw(); AN.luego(250, () => { if (S.step === k) s.entrar(); }); }
+  else if (s.entrar && respondido()){ S.vista.prog = 0; S.vista.huecos = true; if (k === 4) S.vista.separar = 1; sincronizar(); draw(); describir(); }
+  else if (k === 5 && respondido()){ finRect(S.vista); describir(); }
+  else if (k === 6 && respondido()){ S.vista.losetas = [{ L:L7.original, k:'F', alpha:.45, dash:[5, 4] }, { L:L7.correcta, k:'I' }]; S.vista.segs = [{ P:L7.original.triangulo, Q:L7.correcta.triangulo, k:'F', dash:[4, 4] }]; draw(); describir(); }
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al paso ${k + 1}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(P){
+  const btns = [...$('stepBody').querySelectorAll('.opt')], s = steps[S.step];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').innerHTML = (s.tras ? s.tras() : '') + FUENTE;
+    if (s.montar) s.montar();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); AN.parar(); pintar(); nav(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    L.compactar(false);
+    // La vista cambia recién al responder: en el celular, primero sube el lienzo y después se anima.
+    Celular.alResponder(L.cv, () => {
+      if (S.vista.tipo === 'hoja' && s.entrar){ S.vista.prog = S.vista.dobleces.length; S.vista.huecos = true; sincronizar(); }
+      ponerLeyenda(); describir();
+      if (s.animar) s.animar();
+    }, () => S.step === paso);
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Cada experimento pide una predicción; el dibujo cambia recién después de responder. Todo sale del motor. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const S = { k:0, pred:{}, t0:Date.now(), vista:null };
+const L = crearLienzo(cv, W => ALTOS[(S.vista && S.vista.tipo) || 'hoja'](W), draw);
+function draw(){ if (!L.W) return; dibujarVista(L, colores(null), S.vista); }
+const AN = animador(draw);
+const H = 'hipotesis';
+const vh = (R, hoja, dobleces, o) => Object.assign({ tipo:'hoja', hoja, dobleces, dib:R, prog:dobleces.length, huecos:true, separar:0, ventana:ventanaHoja(hoja, R.caja) }, o || {});
+const abrir = (fin) => { const v = S.vista, n = v.dobleces.length; v.huecos = true; AN.serie(Array.from({ length:n }, (_, i) => [900, f => { v.prog = n - i - suave(f); }]), () => { describir(); fin && fin(); }); };
+// datos
+const T = { ancho:6, alto:2 }, DT = [{ recta:{ x:2 }, mueve:'izquierda' }, { recta:{ x:4 }, mueve:'derecha' }];
+const E1 = M.desplegar(T, DT, [{ tipo:'linea', A:{ x:1, y:1 }, B:{ x:5, y:1 } }]);
+const E2 = M.voltear('11111', '00000', { k:3, contiguas:false });
+const H6 = { ancho:6, alto:6 }, DD = [{ recta:{ m:1, n:0 }, mueve:'arriba' }, { recta:{ m:-1, n:6 }, mueve:'arriba' }];
+const E3 = M.desplegar(H6, DD, [{ tipo:'poligono', puntos:[{ x:1, y:2 }, { x:5, y:2 }, { x:5, y:4 }, { x:1, y:4 }] }]);
+const E4 = M.ladoDesdeDoblez(6, 7.5), E4b = M.esquinaSobreEsquina(E4.a, 6), R4 = M.desplegar({ ancho:E4.a, alto:6 }, E4b.dobleces, []);
+const L5 = M.reflejoEnVertice(0, 0, { x:2, y:0 }), O5 = { x:2, y:0 }, VEN5 = [-1.2, 5.2, -3.2, 3.2];
+const NOHAY = '<p class="fuente">Las opciones incorrectas son errores que suponemos (hipótesis nuestra); no encontramos un estudio con porcentajes para este tipo de pregunta. El lanzamiento en el colegio dirá cuáles aparecen.</p>';
+const EXPS = [
+  { id:'tira-a-lo-largo', corto:'Cortar a lo largo', ok:'a', leg:['F','D','C','P'], legAntes:['F','D','C'],
+    q:`La misma tira de 6 × 2 doblada en tres como acordeón, pero ahora el ${V('C','corte')} va a lo largo: de izquierda a derecha, por la mitad de la altura del paquete. ¿Cuántas ${V('P','piezas')} quedan al abrir?`,
+    opts:[['a', `${E1.piezas} piezas`], ['b', `${E1.errores.sinUniones} piezas`, 'RME41', H], ['c', `${E1.errores.cortesComoPiezas} piezas`, 'RME157', H]],
+    fb:{ b:'Elegiste la B. Así sería con 3 hojas sueltas. Al abrir, los 3 tajos quedan uno tras otro, en la misma línea: forman un solo corte de punta a punta. La correcta está marcada.',
+         c:'Elegiste la C. Hay 3 tajos, pero están alineados: al abrir son un solo corte largo que parte la tira en dos. La correcta está marcada.' },
+    antes:() => vh(E1, T, DT), despues:() => vh(E1, T, DT),
+    anima:() => abrir(() => AN.correr(700, f => { S.vista.separar = suave(f); }, describir)),
+    desc:v => v.separar > 0 ? `La tira abierta: ${E1.piezas} piezas de 6 × 1.` : (S.pred['tira-a-lo-largo'] && v.prog < 2 ? 'La tira se está abriendo.' : 'Una tira de 6 × 2 doblada en tres, con un corte horizontal que cruza el paquete.'),
+    exp:`<p>Cuando el corte es paralelo a los ${V('D','dobleces')} (de través), cada capa queda cortada en otro lugar. Cuando es perpendicular a ellos (a lo largo), las 3 copias caen en la misma línea y se juntan en un solo tajo de 6 cm: 2 ${V('P','piezas')}.</p>` + NOHAY },
+  { id:'vasos', corto:'Vasos de tres en tres', ok:'c', leg:[], legAntes:[],
+    q:'Cinco vasos en fila, todos boca arriba. En cada jugada se voltean <b>tres vasos cualesquiera</b> (no hace falta que estén juntos). ¿Cuál es el menor número de jugadas para dejarlos todos boca abajo?',
+    opts:[['a', `${E2.errores.dividir} jugadas`, 'RME155', H], ['b', `${E2.errores.unoPorUno} jugadas`, 'RME154', H], ['c', `${E2.minimo} jugadas`], ['d', 'No se puede', 'RME155', H]],
+    fb:{ a:'Elegiste la A. 5 ÷ 3 redondeado da 2, pero 2 jugadas son 6 volteos y cada vaso necesita un número impar: 5 impares suman un número impar, nunca 6. La correcta está marcada.',
+         b:'Elegiste la B. Cada jugada voltea 3 vasos, no uno. La correcta está marcada.',
+         d:'Elegiste la D. Sí se puede: los vasos 1 y 2 se voltean en las tres jugadas (quedan boca abajo, 3 es impar) y cada uno de los otros, en una. La correcta está marcada.' },
+    antes:() => ({ tipo:'fichas', vasos:true, filas:[{ t:'Ahora', estado:'11111' }, { t:'Meta', estado:'00000' }], sel:null, k:3 }),
+    despues:() => ({ tipo:'fichas', vasos:true, filas:[{ t:'Ahora', estado:'11111' }, { t:'Meta', estado:'00000' }], sel:null, k:3 }),
+    anima:() => { const v = S.vista, cam = E2.camino; let e = '11111', i = 0;
+      const sig = () => { if (S.k !== 1 || i >= cam.length) { v.nota = `${E2.minimo} jugadas`; draw(); describir(); return; } v.nota = `Jugada ${i + 1}: vasos ${cam[i].map(j => j + 1).join(', ')}`; e = M.aplicar(e, cam[i]); v.filas[0].estado = e; i++; draw(); describir(); AN.luego(900, sig); };
+      AN.luego(300, sig); },
+    desc:v => `Fila de 5 vasos. Boca arriba: ${v.filas[0].estado.split('').map((x, i) => x === '1' ? i + 1 : 0).filter(Boolean).join(', ') || 'ninguno'}.` + (v.nota ? ' ' + v.nota + '.' : ''),
+    exp:'<p>Cada vaso tiene que voltearse un número impar de veces. Con j jugadas hay 3j volteos, y 5 números impares suman un impar: j tiene que ser impar. j = 1 no alcanza (3 volteos para 5 vasos), así que el mínimo es 3. Un mismo vaso puede voltearse varias veces.</p>' + NOHAY },
+  { id:'diagonales', corto:'Doblar por las diagonales', ok:'b', leg:['F','D','C','K'], legAntes:['F','D','C'],
+    q:`Una hoja cuadrada de 6 × 6 se dobla por una diagonal y luego por la otra: queda un triángulo de 4 capas. Se le ${V('C','corta la punta')} (el centro de la hoja) con un corte recto a 1 cm de ella. ¿Cuál es el perímetro de la hoja abierta?`,
+    opts:[['a', `${E3.errores.unaCapa.perimetro.exacto} cm`, 'RME40', H], ['b', `${E3.perimetro.exacto} cm`], ['c', `${E3.errores.tramosDelDoblez.exacto} cm`, 'RME158', H], ['d', `${E3.errores.soloDoblez[1].perimetro.exacto} cm`, 'RME153', H]],
+    fb:{ a:'Elegiste la A. Sumaste un solo tajo de 2 cm. Hay 4 capas: al abrir, los 4 tajos forman un cuadrado de 2 × 2. La correcta está marcada.',
+         c:'Elegiste la C. Contaste cada pedazo como un triángulo con sus lados inclinados, pero esos lados están sobre las diagonales dobladas: al abrir desaparecen. Queda un cuadrado de borde 8. La correcta está marcada.',
+         d:'Elegiste la D. Abriendo un solo doblez salen 2 tajos. Con los dos abiertos son 4: el cuadrado entero. La correcta está marcada.' },
+    antes:() => vh(E3, H6, DD), despues:() => vh(E3, H6, DD), anima:() => abrir(),
+    desc:v => S.pred.diagonales && v.prog === 0 ? `La hoja abierta: un agujero cuadrado de 2 × 2 en el centro; perímetro ${E3.perimetro.exacto} cm.` : 'Una hoja de 6 × 6 doblada por sus dos diagonales: un triángulo con la punta cortada.',
+    exp:`<p>Los dobleces por las diagonales también son espejos. El tajo de 2 cm se refleja en las ${V('K','4 capas')} y forma un ${V('C','cuadrado')} alrededor del centro: 24 + 4 · 2 = ${E3.perimetro.exacto} cm. Los lados inclinados del pedazo cortado estaban sobre los ${V('D','dobleces')}: no son borde.</p>` + NOHAY },
+  { id:'doblez-al-lado', corto:'Del doblez al lado', ok:'a', leg:['F','B','D'], legAntes:['B'], leyTextos:{ F:'la hoja (lado a)', B:'el lado b = 6', D:'el doblez = 7,5' },
+    q:`Una hoja rectangular de ${V('B','6 cm')} de ancho se dobla haciendo coincidir dos vértices opuestos, y el ${V('D','doblez')} mide 7,5 cm. ¿Cuánto mide el ${V('F','largo a')} de la hoja?`,
+    opts:[['a', `${fmt(E4.a)} cm`], ['b', `${fmt(E4.errores.comoDiagonal)} cm`, 'RME150', H], ['c', '7,5 cm', 'RME151', H]],
+    fb:{ b:'Elegiste la B. Usaste el doblez como si fuera la diagonal (√(7,5² − 6²) = 4,5). Pero el doblez es perpendicular a la diagonal, no es ella; además el largo no puede ser menor que el ancho. La correcta está marcada.',
+         c:'Elegiste la C. El doblez no es paralelo al largo: es la mediatriz de la diagonal, inclinado. La correcta está marcada.' },
+    antes:() => ({ tipo:'plano', ventana:[-1, 11, -1, 7], oculto:true, nota:'El largo es la pregunta: se dibuja al responder.' }),
+    despues:() => vh(R4, { ancho:E4.a, alto:6 }, E4b.dobleces, { prog:0, huecos:false }),
+    anima:() => { const v = S.vista; AN.correr(1300, f => { v.prog = suave(f); }, () => { v.segs = [{ P:E4b.E, Q:E4b.F, k:'D', ancho:3.2, t:'7,5', dx:16 }, { P:{ x:0, y:-0.35 }, Q:{ x:E4.a, y:-0.35 }, k:'F', ancho:2, t:`a = ${fmt(E4.a)}`, dy:12 }]; draw(); describir(); }); },
+    desc:v => v.oculto ? 'Una hoja de 6 cm de ancho y largo desconocido (se dibuja después de responder).' : `La hoja de ${fmt(E4.a)} × 6 doblada con dos vértices opuestos juntos; el doblez mide 7,5.`,
+    exp:`<p>Con la fórmula del paso 6, el doblez mide b·√(a² + b²)/a. Elevando al cuadrado: 7,5² · a² = 6² · (a² + 36), es decir, a² · (56,25 − 36) = 1296 y a² = 64: ${V('F','a = ' + fmt(E4.a))} cm. Comprobación: con 8 × 6, AE = 6,25 y el doblez mide 7,5.</p>` + NOHAY },
+  { id:'dos-dobleces-por-o', corto:'Dos dobleces por O', ok:'a', leg:['F','D','I'], legAntes:['F','D'], leyTextos:{ F:'la loseta de papel y su vértice O', D:'las dos rectas por O (dobleces)' },
+    q:`La ${V('F','loseta')} se refleja primero en la recta vertical que pasa por su vértice O y después en la recta horizontal que pasa por O (dos ${V('D','dobleces')} seguidos). ¿Cómo queda?`,
+    opts:[['a', 'Como en la simetría respecto de O: girada media vuelta'], ['b', 'Como al inicio: los dos reflejos se anulan', 'RME156', H], ['c', 'Como en un espejo: volteada', 'RME24', H]],
+    fb:{ b:'Elegiste la B. Dos reflejos seguidos se anulan solo si son en la misma recta. En dos rectas perpendiculares, el resultado es un giro de 180° alrededor del punto donde se cruzan. La correcta está marcada.',
+         c:'Elegiste la C. Cada reflejo voltea la loseta; dos volteos la dejan derecha otra vez, pero girada: es media vuelta alrededor de O. La correcta está marcada.' },
+    antes:() => ({ tipo:'plano', ventana:VEN5, losetas:[{ L:L5.original, k:'F' }], rectas:[{ x:2, k:'D' }, { y:0, k:'D' }], puntos:[{ P:O5, k:'F', t:'O', dx:-12, dy:12 }] }),
+    despues:() => ({ tipo:'plano', ventana:VEN5, losetas:[{ L:L5.original, k:'F', alpha:.45, dash:[5, 4] }], rectas:[{ x:2, k:'D' }, { y:0, k:'D' }], puntos:[{ P:O5, k:'F', t:'O', dx:-12, dy:12 }] }),
+    anima:() => { const v = S.vista, uno = L5.errores.ejeVertical;
+      v.losetas.push({ L:uno, k:'I', alpha:.5 }); draw();
+      AN.luego(900, () => { if (S.k !== 4) return; v.losetas[1] = { L:L5.correcta, k:'I' }; v.final = true; draw(); describir(); }); },
+    desc:v => v.final ? 'Tras los dos reflejos, la loseta queda abajo a la derecha de O, girada media vuelta: igual que la simetría respecto de O.' : 'La loseta con su vértice O y las dos rectas por O, una vertical y una horizontal.',
+    exp:'<p>El primer reflejo (en la vertical) voltea la loseta hacia la derecha; el segundo (en la horizontal) la voltea hacia abajo. Dos volteos la dejan derecha y girada 180° alrededor de O: es justo la simetría respecto de O. Por eso, con papel, doblar dos veces por rectas perpendiculares que pasan por un punto equivale a reflejar en ese punto.</p>' + NOHAY }
+];
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ponerVista(v){ const antes = S.vista && S.vista.tipo; S.vista = v; if (v.tipo !== antes) L.resize(); else draw(); }
+function describir(){ const x = EXPS[S.k]; if (S.vista){ const t = x.desc(S.vista); $('desc2').textContent = t; cv.setAttribute('aria-label', t); } }
+function ir(k){
+  if (k > primeraLibre()) return;
+  AN.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], hecho = !!S.pred[x.id];
+  ponerVista(hecho ? x.despues() : x.antes());
+  if (hecho && S.vista.tipo === 'hoja'){ S.vista.prog = 0; if (x.id === 'tira-a-lo-largo') S.vista.separar = 1; if (x.id === 'doblez-al-lado'){ S.vista.prog = 1; x.anima(); } }
+  if (hecho && x.id === 'vasos'){ S.vista.filas[0].estado = '00000'; S.vista.nota = `${E2.minimo} jugadas`; }
+  if (hecho && x.id === 'dos-dobleces-por-o'){ S.vista.losetas.push({ L:L5.correcta, k:'I' }); S.vista.final = true; }
+  draw();
+  L.compactar(!hecho);
+  botones();
+  leyenda($('leg2'), hecho ? x.leg : x.legAntes, x.leyTextos);
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>
+    <div class="opts">${x.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
+    <p class="fb" id="fb2"></p><div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira el dibujo para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); pintar(); L.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    // el dibujo cambia recién ahora: en el celular, primero sube el lienzo y después se anima
+    Celular.alResponder(L.cv, () => { ponerVista(x.despues()); leyenda($('leg2'), x.leg, x.leyTextos); describir(); if (x.anima) x.anima(); }, () => S.k === k);
+  });
+  pintar(); describir();
+}
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

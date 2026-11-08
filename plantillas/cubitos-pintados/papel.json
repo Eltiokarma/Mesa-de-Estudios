@@ -1,0 +1,405 @@
+{
+  "titulo": "Cubitos que se pintan, se perforan y se arman: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, piensa en un cubito de cada lugar (una esquina, una arista, el centro de una cara, el interior) y cuenta sus caras al aire. Si el sólido está sobre la mesa o contra la pared, esas caras no se pintan. En los túneles y las barras, marca primero los cubitos donde se cruzan.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un cubo de 5 cm de arista, armado con cubitos de 1 cm, se sumerge en pintura y luego se desarma. ¿Cuántos cubitos tienen exactamente una cara pintada? ¿Y exactamente dos?",
+      "respuesta": "54 con una cara y 36 con dos.",
+      "pasos": [
+        "Con una sola cara pintada están los cubitos del centro de cada cara, sin tocar los bordes: un cuadrado de (5 − 2) × (5 − 2) = 9 por cara.",
+        "El cubo tiene 6 caras: 6 × 9 = 54.",
+        "Con dos caras están los de las aristas sin las dos esquinas: 5 − 2 = 3 por arista, y hay 12 aristas: 12 × 3 = 36. Las 8 esquinas tienen tres caras y no se cuentan aquí."
+      ],
+      "verificar": [
+        {
+          "fn": "pintado",
+          "args": [
+            {
+              "dims": [
+                5,
+                5,
+                5
+              ],
+              "k": 1
+            }
+          ],
+          "espera": {
+            "respuestas.k": 54,
+            "cuenta": [
+              27,
+              54,
+              36,
+              8,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una caja de 6 × 4 × 3, armada con cubitos iguales, se pinta por todas sus caras. ¿Cuántos cubitos no tienen ninguna cara pintada? ¿Cuántos tienen exactamente dos?",
+      "respuesta": "8 sin pintar y 28 con dos caras.",
+      "pasos": [
+        "Los cubitos sin pintar forman el bloque de adentro: se quita una capa por cada lado, (6 − 2) × (4 − 2) × (3 − 2) = 4 × 2 × 1 = 8.",
+        "Los de dos caras están en las aristas, sin las esquinas. Hay 4 aristas de cada largo: 4 × (6 − 2) + 4 × (4 − 2) + 4 × (3 − 2) = 16 + 8 + 4 = 28.",
+        "Compruébalo: con tres caras hay 8 y con una, 28. 8 + 28 + 28 + 8 = 72 = 6 × 4 × 3."
+      ],
+      "verificar": [
+        {
+          "fn": "pintado",
+          "args": [
+            {
+              "dims": [
+                6,
+                4,
+                3
+              ],
+              "k": 0
+            }
+          ],
+          "espera": {
+            "respuestas.k": 8,
+            "cuenta": [
+              8,
+              28,
+              28,
+              8,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un bloque de 4 × 3 × 3 cubitos (4 de ancho, 3 de fondo y 3 de alto) está sobre el piso y pegado a la pared por su cara de atrás. Se pinta todo lo que queda a la vista. ¿Cuántos cubitos quedan con tres caras pintadas? ¿Cuántos sin ninguna?",
+      "respuesta": "2 con tres caras y 8 sin pintar.",
+      "pasos": [
+        "Las caras del piso y de la pared no se pintan. Una esquina tiene tres caras pintadas solo si ninguna de sus tres caras toca el piso o la pared.",
+        "Eso pasa solo en las dos esquinas de arriba y adelante: 2 cubitos. Las de abajo pierden la cara del piso; las de atrás, la de la pared.",
+        "Sin pintar quedan los que no tocan ninguna cara pintada: se quita una capa a la izquierda, a la derecha, adelante y arriba, pero no atrás ni abajo: (4 − 2) × (3 − 1) × (3 − 1) = 8. Si pintaras todo, saldrían (4 − 2)(3 − 2)(3 − 2) = 2."
+      ],
+      "verificar": [
+        {
+          "fn": "pintado",
+          "args": [
+            {
+              "dims": [
+                4,
+                3,
+                3
+              ],
+              "sinPintar": [
+                "mesa",
+                "atras"
+              ],
+              "k": 3
+            }
+          ],
+          "espera": {
+            "respuestas.k": 2,
+            "errores.k.conTodas": 8
+          }
+        },
+        {
+          "fn": "pintado",
+          "args": [
+            {
+              "dims": [
+                4,
+                3,
+                3
+              ],
+              "sinPintar": [
+                "mesa",
+                "atras"
+              ],
+              "k": 0
+            }
+          ],
+          "espera": {
+            "respuestas.k": 8,
+            "errores.k.conTodas": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Con 7 cubitos pegados se arma este sólido sobre la mesa. Adelante hay una fila de 3 columnas con 2, 2 y 1 cubitos; atrás, una fila de 2 columnas con 1 y 1 cubito (detrás de las dos primeras). Se pinta todo el sólido por fuera, menos la base. ¿Cuántas caras de cubito quedan pintadas?",
+      "respuesta": "21 caras.",
+      "pasos": [
+        "Los 7 cubitos tienen 6 × 7 = 42 caras. Hay que quitar las pegadas y las de la base.",
+        "Pegados: 2 arriba-abajo en las columnas de 2, 2 entre las columnas de adelante de abajo, 1 entre las dos de arriba, 1 entre las dos de atrás y 2 entre adelante y atrás: 8 pares, que esconden 16 caras.",
+        "Quedan 42 − 16 = 26 caras al aire, y 5 de ellas tocan la mesa: 26 − 5 = 21 pintadas."
+      ],
+      "verificar": [
+        {
+          "fn": "pintado",
+          "args": [
+            {
+              "alturas": [
+                [
+                  2,
+                  2,
+                  1
+                ],
+                [
+                  1,
+                  1,
+                  0
+                ]
+              ],
+              "sinPintar": [
+                "mesa"
+              ]
+            }
+          ],
+          "espera": {
+            "cubitos": 7,
+            "caras": 21,
+            "expuestas": 26,
+            "errores.caras.pegadas": 37
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "avanzado",
+      "enunciado": "Un cubo de 6 × 6 × 6 está hecho con cubitos de 2 g. Se le hacen cuatro túneles rectos de un cubito de ancho, de cara a cara: dos de arriba hacia abajo, uno de izquierda a derecha y uno de adelante hacia atrás. Cada túnel horizontal corta a uno de los verticales, y los dos horizontales también se cortan entre sí, siempre en cubitos distintos. ¿Cuánto pesa lo que queda?",
+      "respuesta": "390 g.",
+      "pasos": [
+        "Cada túnel pasa por 6 cubitos: 4 × 6 = 24 si no se cruzaran.",
+        "Hay tres cruces y en cada uno un mismo cubito está en dos túneles: se quitó una sola vez, así que se resta 1 por cruce: 24 − 3 = 21 cubitos quitados.",
+        "Quedan 216 − 21 = 195 cubitos, que pesan 195 × 2 = 390 g. Sin descontar los cruces saldrían 384 g."
+      ],
+      "verificar": [
+        {
+          "fn": "agujereado",
+          "args": [
+            {
+              "n": 6,
+              "masa": 2,
+              "tuneles": [
+                {
+                  "eje": "z",
+                  "en": [
+                    2,
+                    2
+                  ]
+                },
+                {
+                  "eje": "z",
+                  "en": [
+                    3,
+                    3
+                  ]
+                },
+                {
+                  "eje": "x",
+                  "en": [
+                    2,
+                    2
+                  ]
+                },
+                {
+                  "eje": "y",
+                  "en": [
+                    3,
+                    2
+                  ]
+                }
+              ]
+            }
+          ],
+          "espera": {
+            "quitados": 21,
+            "quedan": 195,
+            "peso": 390,
+            "cruces": 3,
+            "errores.peso.sinCruces": 384
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un bloque de 5 × 4 × 2 cubitos es atravesado por tres barras rectas. Una va de izquierda a derecha y otra de adelante hacia atrás, a la misma altura, y se cruzan en un cubito; la tercera va de arriba hacia abajo y no toca a las otras. ¿Cuántas caras de cubito atraviesan en total? ¿Cuántos cubitos no son atravesados?",
+      "respuesta": "22 caras; 30 cubitos sin atravesar.",
+      "pasos": [
+        "La barra de izquierda a derecha pasa por 5 cubitos; la de adelante hacia atrás, por 4; la de arriba hacia abajo, por 2.",
+        "En cada cubito, una barra entra por una cara y sale por la opuesta: 2 caras por cubito y por barra. En el cubito del cruce pasan dos barras, así que tiene 4 caras atravesadas. Total: 2 × (5 + 4 + 2) = 22 caras.",
+        "Los cubitos atravesados son 5 + 4 + 2 − 1 = 10, porque el del cruce se cuenta una vez. Quedan 40 − 10 = 30 sin atravesar (no 29)."
+      ],
+      "verificar": [
+        {
+          "fn": "barras",
+          "args": [
+            {
+              "dims": [
+                5,
+                4,
+                2
+              ],
+              "barras": [
+                {
+                  "eje": "x",
+                  "en": [
+                    0,
+                    1
+                  ]
+                },
+                {
+                  "eje": "y",
+                  "en": [
+                    2,
+                    1
+                  ]
+                },
+                {
+                  "eje": "z",
+                  "en": [
+                    4,
+                    3
+                  ]
+                }
+              ]
+            }
+          ],
+          "espera": {
+            "caras": 22,
+            "atravesados": 10,
+            "libres": 30,
+            "errores.libres.sinCruces": 29
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Una sucesión de escaleras de cubitos, de un cubito de fondo: la figura 1 es un cubito; la 2 tiene una columna de 1 y otra de 2; la 3, columnas de 1, 2 y 3; y así. Si se pinta cada figura por fuera, sin la base, ¿cuántos cuadraditos se pintan en la figura 15?",
+      "respuesta": "285 cuadraditos.",
+      "pasos": [
+        "Cuenta por lados. Adelante y atrás se ve la escalera entera: 2 × (1 + 2 + … + 15) = 2 × 120 = 240.",
+        "Desde arriba se ve un cuadradito por columna: 15. Desde la izquierda, uno por escalón (cada columna asoma 1 sobre la anterior): 15. Desde la derecha, la columna de 15: 15.",
+        "Total: 240 + 15 + 15 + 15 = 285, que es 15² + 4 × 15. Las figuras 1, 2, 3 dan 5, 12, 21: no crece lo mismo cada vez, así que no se puede seguir sumando 7."
+      ],
+      "verificar": [
+        {
+          "fn": "sucesion",
+          "args": [
+            {
+              "tipo": "escalera",
+              "n": 15
+            }
+          ],
+          "espera": {
+            "area": 285,
+            "cubitos": 120,
+            "errores.area.lineal": 103
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una pirámide escalonada se arma en la esquina de un cuarto: el piso de abajo es un cuadrado de 10 × 10 cubitos, el de encima de 9 × 9 y así hasta 1 × 1 arriba, todos pegados a las dos paredes. Se saca de la esquina y se pinta entera, con la base. ¿Cuántos cuadraditos se pintan?",
+      "respuesta": "420 cuadraditos.",
+      "pasos": [
+        "Desde arriba se ve toda la planta: 10 × 10 = 100. Desde abajo, la base: otros 100.",
+        "Cada piso de lado k muestra 4 caras de k cuadraditos alrededor: 4 × (10 + 9 + … + 1) = 4 × 55 = 220.",
+        "Total: 100 + 100 + 220 = 420. Sin la base serían 320."
+      ],
+      "verificar": [
+        {
+          "fn": "sucesion",
+          "args": [
+            {
+              "tipo": "piramide",
+              "n": 10,
+              "base": true
+            }
+          ],
+          "espera": {
+            "area": 420,
+            "errores.area.otraBase": 320
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Una barra de madera de 2 × 2 × 16 cm se corta con una sierra, con cortes rectos paralelos a sus caras, para armar con todas las piezas un cubo macizo. Se pueden mover y apilar las piezas entre corte y corte. ¿Cuántos cortes hacen falta como mínimo?",
+      "respuesta": "2 cortes.",
+      "pasos": [
+        "El volumen es 2 × 2 × 16 = 64, así que el cubo es de 4 × 4 × 4.",
+        "Ninguna pieza puede pasar de 4 de largo, así que hacen falta al menos 16 ÷ 4 = 4 piezas de 2 × 2 × 4, que se acomodan de dos en dos.",
+        "Un corte por la mitad da dos de 2 × 2 × 8; se apilan y un segundo corte da las cuatro. Cada corte a lo más duplica las piezas, y con 1 corte habría solo 2: el mínimo es 2. Sin apilar serían 3."
+      ],
+      "verificar": [
+        {
+          "fn": "diseccion",
+          "args": [
+            {
+              "dims": [
+                2,
+                2,
+                16
+              ]
+            }
+          ],
+          "espera": {
+            "lado": 4,
+            "piezas": 4,
+            "cortes": 2,
+            "sinApilar": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Se tienen 10 cubos de 2 cm de arista y 50 cubitos de 1 cm. ¿Cuál es la arista del mayor cubo macizo que se puede armar juntándolos? ¿Cuántos bloques se usan como mínimo?",
+      "respuesta": "Arista 4 cm, con 8 bloques.",
+      "pasos": [
+        "El volumen total es 10 × 8 + 50 = 130, así que el cubo no pasa de 5 (125).",
+        "En un cubo de 5 solo caben 2 × 2 × 2 = 8 cubos de 2 cm (5 no se parte en mitades enteras): 8 × 8 = 64, y faltarían 125 − 64 = 61 cubitos. Solo hay 50: no se puede.",
+        "El de 4 sí: 8 cubos de 2 cm lo llenan (8 × 8 = 64). Se usan 8 bloques, que es lo menos, porque cada bloque grande reemplaza a 8 cubitos."
+      ],
+      "verificar": [
+        {
+          "fn": "mayorCubo",
+          "args": [
+            {
+              "g": 2,
+              "grandes": 10,
+              "chicos": 50
+            }
+          ],
+          "espera": {
+            "lado": 4,
+            "bloques": 8,
+            "usaGrandes": 8,
+            "errores.lado.porVolumen": 5
+          }
+        }
+      ]
+    }
+  ]
+}

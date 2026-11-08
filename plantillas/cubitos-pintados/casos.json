@@ -1,0 +1,1567 @@
+{
+ "plantilla": "cubitos-pintados",
+ "unidades": "Cubitos de arista 1 en celdas [x, y, z] (x a la derecha, y hacia el fondo, z hacia arriba; z = 0 toca la mesa). Masas en gramos.",
+ "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.k.otra, respuestas.k); las listas y objetos se comparan completos. 'tambien' son llamadas extra del mismo caso (con 'fn' propia si la traen). Un error que con esos datos da la respuesta correcta va en 'coinciden'; uno que repite a otro anterior, en 'repetidos'.",
+ "verificacion": "",
+ "casos": [
+  {
+   "nombre": "Paso a paso, predicción 1: cubo de 4 × 4 × 4 pintado por fuera; cubitos con exactamente dos caras pintadas = 24 (con las esquinas: 32; n − 1 por arista: 36; aristas enteras: 48)",
+   "fn": "pintado",
+   "args": [
+    {
+     "dims": [
+      4,
+      4,
+      4
+     ],
+     "k": 2
+    }
+   ],
+   "espera": {
+    "respuestas.k": 24,
+    "cuenta": [
+     8,
+     24,
+     24,
+     8,
+     0,
+     0,
+     0
+    ],
+    "caras": 96,
+    "errores.k.yLaSiguiente": 32,
+    "errores.k.otra": 8,
+    "errores.k.restaUna": 36,
+    "errores.k.sinRestar": 48,
+    "repetidos.caras.todas": "pegadas"
+   }
+  },
+  {
+   "nombre": "Cubo de n × n × n pintado: 8 con tres caras, 12(n − 2) con dos, 6(n − 2)² con una y (n − 2)³ con ninguna, de n = 2 a 6",
+   "fn": "pintado",
+   "args": [
+    {
+     "dims": [
+      5,
+      5,
+      5
+     ]
+    }
+   ],
+   "espera": {
+    "cuenta": [
+     27,
+     54,
+     36,
+     8,
+     0,
+     0,
+     0
+    ],
+    "caras": 150,
+    "cubitos": 125
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "dims": [
+        2,
+        2,
+        2
+       ]
+      }
+     ],
+     "espera": {
+      "cuenta": [
+       0,
+       0,
+       0,
+       8,
+       0,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "args": [
+      {
+       "dims": [
+        3,
+        3,
+        3
+       ]
+      }
+     ],
+     "espera": {
+      "cuenta": [
+       1,
+       6,
+       12,
+       8,
+       0,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "args": [
+      {
+       "dims": [
+        6,
+        6,
+        6
+       ],
+       "k": 0
+      }
+     ],
+     "espera": {
+      "cuenta": [
+       64,
+       96,
+       48,
+       8,
+       0,
+       0,
+       0
+      ],
+      "respuestas.k": 64,
+      "errores.k.restaUna": 125,
+      "errores.k.sinRestar": 216
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Paso a paso, predicción 2: bloque de 5 × 4 × 3 sobre la mesa y contra la pared de atrás; sin ninguna cara pintada = 18 (pintando todo: 6; olvidando la mesa: 9; olvidando la pared: 12)",
+   "fn": "pintado",
+   "args": [
+    {
+     "dims": [
+      5,
+      4,
+      3
+     ],
+     "sinPintar": [
+      "mesa",
+      "atras"
+     ],
+     "k": 0
+    }
+   ],
+   "espera": {
+    "respuestas.k": 18,
+    "cuenta": [
+     18,
+     27,
+     13,
+     2,
+     0,
+     0,
+     0
+    ],
+    "caras": 59,
+    "expuestas": 94,
+    "errores.k.conTodas": 6,
+    "errores.k.olvidaMesa": 9,
+    "errores.k.olvidaPared": 12,
+    "porPiso": [
+     {
+      "z": 0,
+      "cuenta": [
+       9,
+       9,
+       2,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "z": 1,
+      "cuenta": [
+       9,
+       9,
+       2,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "z": 2,
+      "cuenta": [
+       0,
+       9,
+       9,
+       2,
+       0,
+       0,
+       0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "nombre": "Bloque de 6 × 4 × 3 pintado entero: (a − 2)(b − 2)(c − 2) = 8 sin pintar y 4(a + b + c − 6) = 28 con dos caras",
+   "fn": "pintado",
+   "args": [
+    {
+     "dims": [
+      6,
+      4,
+      3
+     ],
+     "k": 2
+    }
+   ],
+   "espera": {
+    "respuestas.k": 28,
+    "cuenta": [
+     8,
+     28,
+     28,
+     8,
+     0,
+     0,
+     0
+    ],
+    "errores.k.yLaSiguiente": 36
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "dims": [
+        6,
+        4,
+        3
+       ],
+       "k": 0
+      }
+     ],
+     "espera": {
+      "respuestas.k": 8
+     }
+    },
+    {
+     "args": [
+      {
+       "dims": [
+        1,
+        1,
+        1
+       ]
+      }
+     ],
+     "espera": {
+      "cuenta": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1
+      ],
+      "caras": 6
+     }
+    },
+    {
+     "args": [
+      {
+       "dims": [
+        4,
+        1,
+        1
+       ]
+      }
+     ],
+     "espera": {
+      "cuenta": [
+       0,
+       0,
+       0,
+       0,
+       2,
+       2,
+       0
+      ],
+      "caras": 18
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "¿Qué pasa si…? 1: cubo de 3 × 3 × 3 en la esquina de un cuarto (mesa, pared de atrás y pared izquierda); con tres caras pintadas = 1 (pintando todo: 8; sin la mesa: 2; sin las paredes: 4)",
+   "fn": "pintado",
+   "args": [
+    {
+     "dims": [
+      3,
+      3,
+      3
+     ],
+     "sinPintar": [
+      "mesa",
+      "atras",
+      "izquierda"
+     ],
+     "k": 3
+    }
+   ],
+   "espera": {
+    "respuestas.k": 1,
+    "cuenta": [
+     8,
+     12,
+     6,
+     1,
+     0,
+     0,
+     0
+    ],
+    "caras": 27,
+    "errores.k.conTodas": 8,
+    "errores.k.olvidaMesa": 2,
+    "errores.k.olvidaPared": 4,
+    "errores.k.otra": 0,
+    "coinciden.k": [
+     "yLaSiguiente",
+     "restaUna",
+     "sinRestar"
+    ]
+   }
+  },
+  {
+   "nombre": "Paso a paso, predicción 3: sólido armado de 14 cubitos (columnas 3, 2, 1 / 2, 2, 1 / 1, 1, 1 de adelante hacia atrás) pintado por fuera sobre la mesa: 33 caras pintadas (con las pegadas: 75; con la base: 42; todas: 84)",
+   "fn": "pintado",
+   "args": [
+    {
+     "alturas": [
+      [
+       3,
+       2,
+       1
+      ],
+      [
+       2,
+       2,
+       1
+      ],
+      [
+       1,
+       1,
+       1
+      ]
+     ],
+     "sinPintar": [
+      "mesa"
+     ]
+    }
+   ],
+   "espera": {
+    "cubitos": 14,
+    "caras": 33,
+    "expuestas": 42,
+    "cuenta": [
+     1,
+     2,
+     4,
+     6,
+     0,
+     1,
+     0
+    ],
+    "errores.caras.pegadas": 75,
+    "errores.caras.conTodas": 42,
+    "errores.caras.todas": 84
+   }
+  },
+  {
+   "nombre": "¿Qué pasa si…? 2: sólido armado de 12 cubitos (3, 2, 2 / 2, 1, 1 / 1, 0, 0) sobre la mesa; con exactamente dos caras pintadas = 4 (con los de tres: 6; los de tres: 2; pintando la base: 3)",
+   "fn": "pintado",
+   "args": [
+    {
+     "alturas": [
+      [
+       3,
+       2,
+       2
+      ],
+      [
+       2,
+       1,
+       1
+      ],
+      [
+       1,
+       0,
+       0
+      ]
+     ],
+     "sinPintar": [
+      "mesa"
+     ],
+     "k": 2
+    }
+   ],
+   "espera": {
+    "cubitos": 12,
+    "respuestas.k": 4,
+    "cuenta": [
+     0,
+     2,
+     4,
+     2,
+     3,
+     1,
+     0
+    ],
+    "errores.k.yLaSiguiente": 6,
+    "errores.k.otra": 2,
+    "errores.k.conTodas": 3
+   }
+  },
+  {
+   "nombre": "Dos cubitos pegados: 10 caras al pintarlos, 8 si están sobre la mesa (el ejemplo de RME1: 12 contando las pegadas)",
+   "fn": "pintado",
+   "args": [
+    {
+     "celdas": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       1,
+       0,
+       0
+      ]
+     ]
+    }
+   ],
+   "espera": {
+    "caras": 10,
+    "errores.caras.pegadas": 12,
+    "repetidos.caras.todas": "pegadas"
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "celdas": [
+        [
+         0,
+         0,
+         0
+        ],
+        [
+         1,
+         0,
+         0
+        ]
+       ],
+       "sinPintar": [
+        "mesa"
+       ]
+      }
+     ],
+     "espera": {
+      "caras": 8,
+      "errores.caras.pegadas": 10,
+      "repetidos.caras": {
+       "conTodas": "pegadas"
+      },
+      "errores.caras.todas": 12
+     }
+    },
+    {
+     "args": [
+      {
+       "celdas": [
+        [
+         0,
+         0,
+         1
+        ],
+        [
+         1,
+         0,
+         1
+        ]
+       ],
+       "sinPintar": [
+        "mesa"
+       ]
+      }
+     ],
+     "espera": {
+      "caras": 10,
+      "coinciden.caras": [
+       "conTodas"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Paso a paso, predicción 4: cubo de 5 × 5 × 5 con tres túneles por el centro, uno por cada eje; quedan 112 (sin descontar el cruce: 110; descontando de a dos: 113; solo los huecos que se ven: 119)",
+   "fn": "agujereado",
+   "args": [
+    {
+     "n": 5,
+     "tuneles": [
+      {
+       "eje": "x",
+       "en": [
+        2,
+        2
+       ]
+      },
+      {
+       "eje": "y",
+       "en": [
+        2,
+        2
+       ]
+      },
+      {
+       "eje": "z",
+       "en": [
+        2,
+        2
+       ]
+      }
+     ]
+    }
+   ],
+   "espera": {
+    "quitados": 13,
+    "quedan": 112,
+    "cruces": 1,
+    "triples": 1,
+    "peso": null,
+    "errores.quedan.sinCruces": 110,
+    "errores.quedan.parejas": 113,
+    "errores.quedan.soloVisibles": 119,
+    "errores.quitados.sinCruces": 15
+   }
+  },
+  {
+   "nombre": "¿Qué pasa si…? 3: cubo de 4 × 4 × 4 de cubitos de 5 g con cuatro túneles (x por y = 1, z = 2; y por x = 1, z = 2; z por (1, 1) y por (2, 2)); el sólido pesa 250 g (240, 255 y 280 con los errores)",
+   "fn": "agujereado",
+   "args": [
+    {
+     "n": 4,
+     "masa": 5,
+     "tuneles": [
+      {
+       "eje": "x",
+       "en": [
+        1,
+        2
+       ]
+      },
+      {
+       "eje": "y",
+       "en": [
+        1,
+        2
+       ]
+      },
+      {
+       "eje": "z",
+       "en": [
+        1,
+        1
+       ]
+      },
+      {
+       "eje": "z",
+       "en": [
+        2,
+        2
+       ]
+      }
+     ]
+    }
+   ],
+   "espera": {
+    "quitados": 14,
+    "quedan": 50,
+    "peso": 250,
+    "cruces": 1,
+    "triples": 1,
+    "quitadas": [
+     [
+      1,
+      1,
+      0
+     ],
+     [
+      2,
+      2,
+      0
+     ],
+     [
+      1,
+      1,
+      1
+     ],
+     [
+      2,
+      2,
+      1
+     ],
+     [
+      1,
+      0,
+      2
+     ],
+     [
+      0,
+      1,
+      2
+     ],
+     [
+      1,
+      1,
+      2
+     ],
+     [
+      2,
+      1,
+      2
+     ],
+     [
+      3,
+      1,
+      2
+     ],
+     [
+      1,
+      2,
+      2
+     ],
+     [
+      2,
+      2,
+      2
+     ],
+     [
+      1,
+      3,
+      2
+     ],
+     [
+      1,
+      1,
+      3
+     ],
+     [
+      2,
+      2,
+      3
+     ]
+    ],
+    "errores.peso.sinCruces": 240,
+    "errores.peso.parejas": 255,
+    "errores.peso.soloVisibles": 280
+   }
+  },
+  {
+   "nombre": "Dos túneles paralelos no se cruzan: la suma ya es la respuesta; con dos túneles que se cruzan, descontar el cruce de a dos ya es correcto",
+   "fn": "agujereado",
+   "args": [
+    {
+     "n": 4,
+     "tuneles": [
+      {
+       "eje": "z",
+       "en": [
+        1,
+        1
+       ]
+      },
+      {
+       "eje": "z",
+       "en": [
+        2,
+        2
+       ]
+      }
+     ]
+    }
+   ],
+   "espera": {
+    "quitados": 8,
+    "quedan": 56,
+    "cruces": 0,
+    "coinciden.quedan": [
+     "sinCruces",
+     "parejas"
+    ],
+    "errores.quedan.soloVisibles": 60
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "n": 3,
+       "tuneles": [
+        {
+         "eje": "x",
+         "en": [
+          1,
+          1
+         ]
+        },
+        {
+         "eje": "z",
+         "en": [
+          1,
+          1
+         ]
+        }
+       ]
+      }
+     ],
+     "espera": {
+      "quitados": 5,
+      "quedan": 22,
+      "errores.quedan.sinCruces": 21,
+      "coinciden.quedan": [
+       "parejas"
+      ],
+      "errores.quedan.soloVisibles": 23
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Cubo de 5 × 5 × 5 con seis túneles (dos por eje) que se cruzan de a tres en (1, 1, 1) y en (3, 3, 3)",
+   "fn": "agujereado",
+   "args": [
+    {
+     "n": 5,
+     "masa": 10,
+     "tuneles": [
+      {
+       "eje": "x",
+       "en": [
+        1,
+        1
+       ]
+      },
+      {
+       "eje": "x",
+       "en": [
+        3,
+        3
+       ]
+      },
+      {
+       "eje": "y",
+       "en": [
+        1,
+        1
+       ]
+      },
+      {
+       "eje": "y",
+       "en": [
+        3,
+        3
+       ]
+      },
+      {
+       "eje": "z",
+       "en": [
+        1,
+        1
+       ]
+      },
+      {
+       "eje": "z",
+       "en": [
+        3,
+        3
+       ]
+      }
+     ]
+    }
+   ],
+   "espera": {
+    "quitados": 26,
+    "quedan": 99,
+    "peso": 990,
+    "cruces": 2,
+    "triples": 2,
+    "errores.quedan.sinCruces": 95,
+    "errores.quedan.parejas": 101
+   }
+  },
+  {
+   "nombre": "Paso a paso, predicción 5: bloque de 4 × 3 × 3 con tres barras que se cruzan en (1, 1, 1); caras atravesadas = 20 (los cubos: 8; una por pared: 13; dos por cubito: 16)",
+   "fn": "barras",
+   "args": [
+    {
+     "dims": [
+      4,
+      3,
+      3
+     ],
+     "barras": [
+      {
+       "eje": "x",
+       "en": [
+        1,
+        1
+       ]
+      },
+      {
+       "eje": "y",
+       "en": [
+        1,
+        1
+       ]
+      },
+      {
+       "eje": "z",
+       "en": [
+        1,
+        1
+       ]
+      }
+     ]
+    }
+   ],
+   "espera": {
+    "largos": [
+     4,
+     3,
+     3
+    ],
+    "caras": 20,
+    "atravesados": 8,
+    "libres": 28,
+    "paredes": 13,
+    "errores.caras.cubos": 8,
+    "errores.caras.paredes": 13,
+    "errores.caras.cruceDos": 16,
+    "errores.atravesados.sinCruces": 10,
+    "errores.libres.sinCruces": 26
+   }
+  },
+  {
+   "nombre": "Una barra por tres cubitos en fila: atraviesa 6 caras de cubitos (el ejemplo de RME6: «3»)",
+   "fn": "barras",
+   "args": [
+    {
+     "dims": [
+      3,
+      1,
+      1
+     ],
+     "barras": [
+      {
+       "eje": "x",
+       "en": [
+        0,
+        0
+       ]
+      }
+     ]
+    }
+   ],
+   "espera": {
+    "caras": 6,
+    "atravesados": 3,
+    "paredes": 4,
+    "errores.caras.cubos": 3,
+    "coinciden.atravesados": [
+     "sinCruces"
+    ]
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "dims": [
+        5,
+        4,
+        2
+       ],
+       "barras": [
+        {
+         "eje": "x",
+         "en": [
+          0,
+          1
+         ]
+        },
+        {
+         "eje": "y",
+         "en": [
+          2,
+          1
+         ]
+        },
+        {
+         "eje": "z",
+         "en": [
+          4,
+          3
+         ]
+        }
+       ]
+      }
+     ],
+     "espera": {
+      "caras": 22,
+      "atravesados": 10,
+      "libres": 30,
+      "errores.libres.sinCruces": 29
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Paso a paso, predicción 6: escalera de 20 escalones de un cubito de fondo, sin la base: 480 cuadraditos (contando pegadas: 1240; con la base: 500; lineal: 138; doble de la figura 10: 280)",
+   "fn": "sucesion",
+   "args": [
+    {
+     "tipo": "escalera",
+     "n": 20,
+     "desde": 10
+    }
+   ],
+   "espera": {
+    "cubitos": 210,
+    "area": 480,
+    "errores.area.pegadas": 1240,
+    "errores.area.otraBase": 500,
+    "errores.area.lineal": 138,
+    "errores.area.objetoEntero": 280
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "tipo": "escalera",
+       "n": 1
+      }
+     ],
+     "espera": {
+      "area": 5
+     }
+    },
+    {
+     "args": [
+      {
+       "tipo": "escalera",
+       "n": 2
+      }
+     ],
+     "espera": {
+      "area": 12
+     }
+    },
+    {
+     "args": [
+      {
+       "tipo": "escalera",
+       "n": 3
+      }
+     ],
+     "espera": {
+      "area": 21
+     }
+    },
+    {
+     "args": [
+      {
+       "tipo": "escalera",
+       "n": 10
+      }
+     ],
+     "espera": {
+      "area": 140
+     }
+    },
+    {
+     "args": [
+      {
+       "tipo": "escalera",
+       "n": 3,
+       "base": true
+      }
+     ],
+     "espera": {
+      "area": 24
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Pirámide escalonada en la esquina, figura 10 con la base: 4n² + 2n = 420 (sin base: 3n² + 2n = 320)",
+   "fn": "sucesion",
+   "args": [
+    {
+     "tipo": "piramide",
+     "n": 10,
+     "base": true,
+     "desde": 5
+    }
+   ],
+   "espera": {
+    "cubitos": 385,
+    "area": 420,
+    "errores.area.otraBase": 320,
+    "errores.area.lineal": 132,
+    "errores.area.objetoEntero": 220,
+    "errores.area.pegadas": 2310
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "tipo": "piramide",
+       "n": 1,
+       "base": true
+      }
+     ],
+     "espera": {
+      "area": 6
+     }
+    },
+    {
+     "args": [
+      {
+       "tipo": "piramide",
+       "n": 2,
+       "base": true
+      }
+     ],
+     "espera": {
+      "area": 20
+     }
+    },
+    {
+     "args": [
+      {
+       "tipo": "fila",
+       "n": 7
+      }
+     ],
+     "espera": {
+      "area": 23,
+      "cubitos": 7,
+      "coinciden.area": [
+       "lineal"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "¿Qué pasa si…? 4: tira de 32 × 2 × 1 que se corta para armar un cubo de 4, apilando: 3 cortes (piezas: 8; sin apilar: 7; la mitad: 4)",
+   "fn": "diseccion",
+   "args": [
+    {
+     "dims": [
+      32,
+      2,
+      1
+     ]
+    }
+   ],
+   "espera": {
+    "lado": 4,
+    "piezas": 8,
+    "cortes": 3,
+    "apilando": 3,
+    "sinApilar": 7,
+    "errores.cortes.piezas": 8,
+    "errores.cortes.sinApilar": 7,
+    "errores.cortes.mitad": 4,
+    "plan": [
+     [
+      {
+       "o": [
+        0,
+        0,
+        0
+       ],
+       "d": [
+        32,
+        2,
+        1
+       ],
+       "antes": [
+        0,
+        0,
+        0
+       ]
+      }
+     ],
+     [
+      {
+       "o": [
+        0,
+        0,
+        0
+       ],
+       "d": [
+        16,
+        2,
+        1
+       ],
+       "antes": [
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "o": [
+        0,
+        0,
+        1
+       ],
+       "d": [
+        16,
+        2,
+        1
+       ],
+       "antes": [
+        16,
+        0,
+        0
+       ]
+      }
+     ],
+     [
+      {
+       "o": [
+        0,
+        0,
+        0
+       ],
+       "d": [
+        8,
+        2,
+        1
+       ],
+       "antes": [
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "o": [
+        0,
+        0,
+        1
+       ],
+       "d": [
+        8,
+        2,
+        1
+       ],
+       "antes": [
+        0,
+        0,
+        1
+       ]
+      },
+      {
+       "o": [
+        0,
+        0,
+        2
+       ],
+       "d": [
+        8,
+        2,
+        1
+       ],
+       "antes": [
+        8,
+        0,
+        0
+       ]
+      },
+      {
+       "o": [
+        0,
+        0,
+        3
+       ],
+       "d": [
+        8,
+        2,
+        1
+       ],
+       "antes": [
+        8,
+        0,
+        1
+       ]
+      }
+     ],
+     [
+      {
+       "o": [
+        0,
+        0,
+        0
+       ],
+       "d": [
+        4,
+        2,
+        1
+       ],
+       "antes": [
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "o": [
+        0,
+        2,
+        0
+       ],
+       "d": [
+        4,
+        2,
+        1
+       ],
+       "antes": [
+        4,
+        0,
+        0
+       ]
+      },
+      {
+       "o": [
+        0,
+        0,
+        1
+       ],
+       "d": [
+        4,
+        2,
+        1
+       ],
+       "antes": [
+        0,
+        0,
+        1
+       ]
+      },
+      {
+       "o": [
+        0,
+        2,
+        1
+       ],
+       "d": [
+        4,
+        2,
+        1
+       ],
+       "antes": [
+        4,
+        0,
+        1
+       ]
+      },
+      {
+       "o": [
+        0,
+        0,
+        2
+       ],
+       "d": [
+        4,
+        2,
+        1
+       ],
+       "antes": [
+        0,
+        0,
+        2
+       ]
+      },
+      {
+       "o": [
+        0,
+        2,
+        2
+       ],
+       "d": [
+        4,
+        2,
+        1
+       ],
+       "antes": [
+        4,
+        0,
+        2
+       ]
+      },
+      {
+       "o": [
+        0,
+        0,
+        3
+       ],
+       "d": [
+        4,
+        2,
+        1
+       ],
+       "antes": [
+        0,
+        0,
+        3
+       ]
+      },
+      {
+       "o": [
+        0,
+        2,
+        3
+       ],
+       "d": [
+        4,
+        2,
+        1
+       ],
+       "antes": [
+        4,
+        0,
+        3
+       ]
+      }
+     ]
+    ]
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "dims": [
+        32,
+        2,
+        1
+       ],
+       "apilar": false
+      }
+     ],
+     "espera": {
+      "cortes": 7,
+      "errores.cortes.piezas": 8,
+      "errores.cortes.mitad": 4
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Disección: 2 × 2 × 16 da un cubo de 4 con 2 cortes apilando (la mitad coincide); 1 × 4 × 16 también; 2 × 4 × 8 con uno; 3 × 3 × 3 con ninguno",
+   "fn": "diseccion",
+   "args": [
+    {
+     "dims": [
+      2,
+      2,
+      16
+     ]
+    }
+   ],
+   "espera": {
+    "lado": 4,
+    "piezas": 4,
+    "cortes": 2,
+    "sinApilar": 3,
+    "coinciden.cortes": [
+     "mitad"
+    ]
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "dims": [
+        1,
+        4,
+        16
+       ]
+      }
+     ],
+     "espera": {
+      "lado": 4,
+      "piezas": 4,
+      "cortes": 2
+     }
+    },
+    {
+     "args": [
+      {
+       "dims": [
+        2,
+        4,
+        8
+       ]
+      }
+     ],
+     "espera": {
+      "lado": 4,
+      "piezas": 2,
+      "cortes": 1,
+      "sinApilar": 1
+     }
+    },
+    {
+     "args": [
+      {
+       "dims": [
+        3,
+        3,
+        3
+       ]
+      }
+     ],
+     "espera": {
+      "lado": 3,
+      "piezas": 1,
+      "cortes": 0
+     }
+    },
+    {
+     "args": [
+      {
+       "dims": [
+        1,
+        1,
+        27
+       ]
+      }
+     ],
+     "espera": {
+      "lado": 3,
+      "piezas": 9,
+      "cortes": 4,
+      "sinApilar": 8
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "¿Qué pasa si…? 5: 3 cubos de arista 3 y 60 cubitos; el mayor cubo compacto es de lado 4, con 1 cubo grande y 37 cubitos: 38 bloques (por volumen: 99; los cubitos del volumen: 64; solo cubitos: 27; solo grandes: 1)",
+   "fn": "mayorCubo",
+   "args": [
+    {
+     "g": 3,
+     "grandes": 3,
+     "chicos": 60
+    }
+   ],
+   "espera": {
+    "lado": 4,
+    "usaGrandes": 1,
+    "usaChicos": 37,
+    "bloques": 38,
+    "sobranGrandes": 2,
+    "sobranChicos": 23,
+    "volumen": 141,
+    "errores.lado.porVolumen": 5,
+    "errores.lado.soloChicos": 3,
+    "repetidos.lado": {
+     "soloGrandes": "soloChicos"
+    },
+    "errores.bloques.porVolumen": 99,
+    "errores.bloques.unidades": 64,
+    "errores.bloques.soloChicos": 27,
+    "errores.bloques.soloGrandes": 1
+   }
+  },
+  {
+   "nombre": "Mayor cubo con 10 cubos de arista 2 y 50 cubitos: el volumen da 5, pero en un cubo de 5 solo caben 8 de arista 2 y faltan cubitos; sale de lado 4 con 8 bloques; con 7 de arista 3 y 27 cubitos no sale el de 4 pero sí el de 6",
+   "fn": "mayorCubo",
+   "args": [
+    {
+     "g": 2,
+     "grandes": 10,
+     "chicos": 50
+    }
+   ],
+   "espera": {
+    "lado": 4,
+    "usaGrandes": 8,
+    "usaChicos": 0,
+    "bloques": 8,
+    "errores.lado.porVolumen": 5,
+    "coinciden.lado": [
+     "soloGrandes"
+    ]
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "g": 2,
+       "grandes": 10,
+       "chicos": 61
+      }
+     ],
+     "espera": {
+      "lado": 5,
+      "usaGrandes": 8,
+      "usaChicos": 61,
+      "bloques": 69
+     }
+    },
+    {
+     "args": [
+      {
+       "g": 2,
+       "grandes": 0,
+       "chicos": 0
+      }
+     ],
+     "espera": {
+      "lado": 0,
+      "bloques": 0
+     }
+    },
+    {
+     "args": [
+      {
+       "g": 3,
+       "grandes": 7,
+       "chicos": 27
+      }
+     ],
+     "espera": {
+      "lado": 6,
+      "usaGrandes": 7,
+      "usaChicos": 27,
+      "bloques": 34
+     }
+    }
+   ]
+  }
+ ]
+}

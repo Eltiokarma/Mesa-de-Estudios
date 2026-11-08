@@ -1,0 +1,1086 @@
+<!doctype html>
+<html lang="es" data-curso="razonamiento-matematico">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El dado en la mesa y las fichas del dominó</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de arreglos-giros/.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   v puntos que se ven (turquesa), o puntos que no se ven (magenta), a cara de arriba (naranja), s pareja de caras
+   opuestas (índigo), T total de puntos (verde), k caras en contacto con suma fija (celeste), r camino del dado
+   (violeta), F fichas del dominó que cumplen (café), x la ficha preguntada de la cadena (azul).
+   Los tonos son los de arreglos-giros/ (allí ya pasaron el contraste AA sobre el papel, la tarjeta y el chip .v).
+   Mínimo de CIEDE2000 entre los que salen juntos (claro y oscuro, docs/metodo/paleta.py): 22,6, con los grupos
+   dados (v, o, a, s, T), contacto (k, o, a, s, T), dado que rueda (a, r, v, o) y dominó (F, T, x, o). */
+
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --mesa:#f3e6da; --dado:#fffdfb;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-v:#0f766e; --c-o:#b3246b; --c-a:#a05200; --c-s:#3328c4; --c-T:#466d14; --c-k:#086a96; --c-r:#6a3fc0; --c-F:#7a4a1e; --c-x:#1f5fbf;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --mesa:#30263c; --dado:#3a3047;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-v:#5ed9c8; --c-o:#ff86bd; --c-a:#f0a04a; --c-s:#9f9bff; --c-T:#a3d65e; --c-k:#25caf4; --c-r:#b49cff; --c-F:#d9a877; --c-x:#7cb0ff;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --mesa:#30263c; --dado:#3a3047;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-v:#5ed9c8; --c-o:#ff86bd; --c-a:#f0a04a; --c-s:#9f9bff; --c-T:#a3d65e; --c-k:#25caf4; --c-r:#b49cff; --c-F:#d9a877; --c-x:#7cb0ff;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+  .mode.pendiente .mandos{gap:4px}
+  .mode.pendiente .mandos .btn{padding:4px 10px; min-height:34px; font-size:.84rem}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend:empty{display:none}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.pt{width:12px; height:12px; border-radius:3px}
+.mandos{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.mandos:empty{display:none}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-o{color:var(--c-o); background:color-mix(in srgb, var(--c-o) 8%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-s{color:var(--c-s); background:color-mix(in srgb, var(--c-s) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.msg{margin:0; font-weight:700; min-height:1.5em}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:center; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb:empty{display:none}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn.chico{padding:7px 13px; min-height:40px; font-size:.88rem}
+.btn[aria-pressed="true"]{border-color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+<link rel="stylesheet" href="../../nucleo/pegatina.css">
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Juegos con dados y dominó · Problemas tipo admisión</p>
+      <h1>El dado en la mesa y las fichas del dominó</h1>
+      <p class="sub">Gira la mesa con el dedo, apila dados, hazlos rodar por un tablero y ordena las fichas del dominó. Primero predices; después el motor prueba todas las posiciones de los dados y todas las fichas.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: dados sobre una mesa o fichas del dominó">
+      <div class="lienzo"><canvas id="cv" role="img" tabindex="0" aria-label="Dibujo de la escena"></canvas></div>
+      <div class="mandos" id="mandos1"></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con dados y dominó">
+      <div class="lienzo"><canvas id="cv2" role="img" tabindex="0" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <div class="mandos" id="mandos2"></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/dados-domino">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'dados-domino', unidad: 'razonamiento-matematico.juegos-recreativos', version: '0.1.0' };
+const U_RUTAS = 'razonamiento-matematico.rutas-y-visualizacion-espacial';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (las 24 posiciones de cada dado, los vuelcos, las caras que se ven, los extremos con condiciones,
+   el cubo marcado, las fichas y las cadenas del dominó, la deducción de puntajes) sale de MotorDados (motor.js); aquí
+   solo se proyecta, se pinta, se gira y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MD = MotorDados;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+const VARS = ['v', 'o', 'a', 's', 'T', 'k', 'r', 'F', 'x'];
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const W_ = {}; VARS.forEach(k => { W_[k] = t => V(k, t); });
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    warn:css('--warn'), mesa:css('--mesa'), dado:css('--dado'), font:css('--font') };
+  for (const k of VARS) c[k] = css('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function rotulo(ctx, c, x, y, t, color, tam, peso){
+  ctx.font = `${peso || 800} ${tam || 12}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x - w/2 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+const L = (k, nombre, valor) => [k, nombre, valor];
+function opcionesHTML(opts, idFb){
+  return `<div class="opts">${opts.map(o => `<button type="button" class="opt" data-k="${o[0]}"><span class="l">${o[0].toUpperCase()}</span><span>${o[1]}</span></button>`).join('')}</div><p class="fb" id="${idFb}" aria-live="polite"></p>`;
+}
+
+// Pone la opción correcta en la letra 'destino' y vuelve a rotular las demás (con su retroalimentación).
+function mover(g, destino){
+  const lista = g.opts.slice(), i = lista.findIndex(o => o[0] === g.ok), [c] = lista.splice(i, 1);
+  lista.splice('abcd'.indexOf(destino), 0, c);
+  const fb = {};
+  g.opts = lista.map((o, n) => { const l = 'abcd'[n]; fb[l] = g.fb[o[0]]; return [l].concat(o.slice(1)); });
+  g.fb = fb; g.ok = destino;
+  return g;
+}
+/* ----- Geometría del dado (solo dibujo): cada cara con su normal n y dos ejes u, v sobre ella ----- */
+const CARA = {
+  arriba:{ n:[0,0,1], u:[1,0,0], v:[0,1,0] }, abajo:{ n:[0,0,-1], u:[1,0,0], v:[0,-1,0] },
+  frente:{ n:[0,-1,0], u:[1,0,0], v:[0,0,1] }, atras:{ n:[0,1,0], u:[-1,0,0], v:[0,0,1] },
+  derecha:{ n:[1,0,0], u:[0,1,0], v:[0,0,1] }, izquierda:{ n:[-1,0,0], u:[0,-1,0], v:[0,0,1] } };
+const PIP = { 1:[[0,0]], 2:[[-1,1],[1,-1]], 3:[[-1,1],[0,0],[1,-1]], 4:[[-1,1],[1,1],[-1,-1],[1,-1]],
+  5:[[-1,1],[1,1],[0,0],[-1,-1],[1,-1]], 6:[[-1,1],[-1,0],[-1,-1],[1,1],[1,0],[1,-1]] };
+const suma3 = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+const por = (a, k) => [a[0]*k, a[1]*k, a[2]*k];
+function girar3(p, eje, ang){      // Rodrigues: gira p alrededor del eje unitario
+  const c = Math.cos(ang), s = Math.sin(ang), [x, y, z] = eje, d = x*p[0] + y*p[1] + z*p[2];
+  return [p[0]*c + (y*p[2] - z*p[1])*s + x*d*(1 - c), p[1]*c + (z*p[0] - x*p[2])*s + y*d*(1 - c), p[2]*c + (x*p[1] - y*p[0])*s + z*d*(1 - c)];
+}
+const DIR = { derecha:[1,0,0], izquierda:[-1,0,0], atras:[0,1,0], frente:[0,-1,0] };
+const ejeVuelco = l => { const d = DIR[l]; return [-d[1], d[0], 0]; };     // arriba × dirección
+
+/* ================= La escena =================
+   Modos:
+   '3d'      dados sobre una mesa. dados: [{ p: [x, y, z] (casilla; el centro va en z + 0,5), d (el dado: puntos de cada
+             cara; null si no se conoce), ver ('todas' o lista de caras con puntos; las demás van en blanco), marca:
+             { cara: variable } (cara teñida con el color de la variable), nombre (letra sobre el dado) }], pared:
+             'atras' (pared del fondo), tablero: { w, h, caminos: [{ casillas, color }], marcas: [{ c: [x, y], t }] }, cam:
+             { yaw, pitch }, sep (0 a 1: los dados se separan para ver las caras ocultas).
+   'domino'  fichas en 2D. dom = { tipo: 'juego' (las 28 en triángulo) | 'cadena' | 'pie', fichas, ocultas (índices boca
+             abajo), marca (índices con el color F), x (índice con el color x), tachada (ficha que se repetiría) }.
+   'puntajes' cuatro dados de frente con su letra. pun = { nombres, valores (null = «?») }.
+   Antes de responder, lo que se pregunta no se dibuja: las caras que no se conocen van en blanco. */
+function crearEscena(cv, idDesc, idLect, idLey, idMandos){
+  const E = { modo:'3d', dados:[], pared:null, tablero:null, cam:{ yaw:-.6, pitch:.55 }, sep:0, abajo:false, lect:[], ley:[], desc:'',
+    hl:null, compacto:false, tok:0, anim:false, dom:null, pun:null, separable:false, alCambiar:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, Hh = 0, caja = null;
+  function altoBase(w){
+    const ancho = w >= 560;
+    if (E.modo === 'domino') return E.dom && E.dom.tipo === 'juego' ? Math.round(Math.min(w, 520)*.56) + 24 : (ancho ? 220 : 190);
+    if (E.modo === 'puntajes') return ancho ? 200 : 170;
+    return ancho ? 360 : 300;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(altoBase(w), E.compacto)), dpr = Celular.dpr();
+    if (w === W && h === Hh) { E.dibujar(); return; }
+    W = w; Hh = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  addEventListener('modo', () => { W = 0; resize(); });
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false;
+    Object.assign(E, { modo:'3d', dados:[], pared:null, tablero:null, cam:{ yaw:-.6, pitch:.55 }, sep:0, abajo:false, lect:[], ley:[], desc:'',
+      dom:null, pun:null, separable:false, holgura:false, alCambiar:null }, o);
+    E.dados = E.dados.map(d => Object.assign({ d:null, ver:'todas', marca:{}, nombre:'' }, d));
+    W = 0; resize(); E.mandos(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+
+  // ----- proyección ortográfica girada: yaw alrededor del eje vertical, pitch hacia abajo -----
+  let cen = [0, 0, 0], esc = 40, ox = 0, oy = 0;
+  function proy(P){
+    const cy = Math.cos(E.cam.yaw), sy = Math.sin(E.cam.yaw), cp = Math.cos(E.cam.pitch), sp = Math.sin(E.cam.pitch);
+    const x = P[0] - cen[0], y = P[1] - cen[1], z = P[2] - cen[2];
+    const x1 = x*cy - y*sy, y1 = x*sy + y*cy;
+    return { x: ox + esc*x1, y: oy - esc*(y1*sp + z*cp), z: -y1*cp + z*sp };
+  }
+  function haciaMi(n){ const cy = Math.cos(E.cam.yaw), sy = Math.sin(E.cam.yaw), y1 = n[0]*sy + n[1]*cy; return -y1*Math.cos(E.cam.pitch) + n[2]*Math.sin(E.cam.pitch); }
+  // centro del dado; con sep > 0 se aleja del medio del grupo (y sube de la mesa) para dejar ver las caras pegadas
+  function centro(D, sep){
+    sep = sep === undefined ? E.sep : sep;
+    let c = [D.p[0], D.p[1], D.p[2] + .5];
+    if (sep){
+      const m = E.medio;
+      c = [c[0] + (c[0] - m[0])*.8*sep, c[1] + (c[1] - m[1])*.8*sep, c[2] + D.p[2]*.7*sep + .35*sep];
+    }
+    if (D.mov) c = suma3(c, D.mov);
+    return c;
+  }
+  function encuadre(){
+    const pts = [], esquinas = c => { for (const s of [-1, 1]) for (const t of [-1, 1]) for (const u of [-1, 1]) pts.push([c[0] + .5*s, c[1] + .5*t, c[2] + .5*u]); };
+    for (const D of E.dados) esquinas([D.p[0], D.p[1], D.p[2] + .5]);
+    if (E.tablero) for (const [x, y] of [[-.5, -.5], [E.tablero.w - .5, E.tablero.h - .5], [-.5, E.tablero.h - .5], [E.tablero.w - .5, -.5]]) pts.push([x, y, 0], [x, y, 1]);
+    let lo = [0, 1, 2].map(i => Math.min(...pts.map(p => p[i]))), hi = [0, 1, 2].map(i => Math.max(...pts.map(p => p[i])));
+    E.medio = [(lo[0] + hi[0])/2, (lo[1] + hi[1])/2, (lo[2] + hi[2])/2];
+    // con holgura, el encuadre ya cuenta con los dados separados: no cambia de tamaño al separarlos
+    if (E.holgura){ for (const D of E.dados) esquinas(centro(D, 1)); lo = [0, 1, 2].map(i => Math.min(...pts.map(p => p[i]))); hi = [0, 1, 2].map(i => Math.max(...pts.map(p => p[i]))); }
+    cen = [(lo[0] + hi[0])/2, (lo[1] + hi[1])/2, (lo[2] + hi[2])/2];
+    const R = Math.max(1, ...pts.map(p => Math.hypot(p[0] - cen[0], p[1] - cen[1], p[2] - cen[2])));
+    esc = Math.min(W/(2*R + .4), Hh/(2*R + .3)) * .98;
+    ox = W/2; oy = Hh/2 + (E.tablero ? 0 : 6);
+  }
+  function poli(pts, fill, stroke, ancho, alfa){
+    ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath();
+    if (fill){ ctx.save(); if (alfa !== undefined) ctx.globalAlpha = alfa; ctx.fillStyle = fill; ctx.fill(); ctx.restore(); }
+    if (stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = ancho || 1.5; ctx.lineJoin = 'round'; ctx.stroke(); }
+  }
+  const atenuar = k => (E.hl && E.hl !== k ? .4 : 1);
+  function dibMesa(c, encima){
+    const xs = E.dados.map(D => D.p[0]), ys = E.dados.map(D => D.p[1]);
+    let x0 = Math.min(...xs) - 1.1, x1 = Math.max(...xs) + 1.1, y0 = Math.min(...ys) - 1.1, y1 = Math.max(...ys) + 1.1;
+    if (E.tablero){ x0 = -.9; y0 = -.9; x1 = E.tablero.w - .1; y1 = E.tablero.h - .1; }
+    if (E.pared === 'atras') y1 = Math.max(...ys) + .5;
+    const q = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]].map(([x, y]) => proy([x, y, 0]));
+    poli(q, c.mesa, encima ? null : c.line, 1.5, encima ? .3 : 1);
+    if (E.tablero && !encima){
+      const T = E.tablero;
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.globalAlpha = .55;
+      for (let i = 0; i <= T.w; i++){ const a = proy([i - .5, -.5, 0]), b = proy([i - .5, T.h - .5, 0]); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+      for (let j = 0; j <= T.h; j++){ const a = proy([-.5, j - .5, 0]), b = proy([T.w - .5, j - .5, 0]); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+      ctx.restore();
+      for (const cam of T.caminos || []){
+        const col = c[cam.color || 'r'];
+        ctx.save(); ctx.globalAlpha = atenuar(cam.color || 'r'); ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = E.hl === (cam.color || 'r') ? 4.5 : 3; ctx.lineCap = 'round'; ctx.setLineDash([7, 5]);
+        ctx.beginPath(); cam.casillas.forEach(([x, y], i) => { const p = proy([x, y, .01]); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); }); ctx.stroke(); ctx.setLineDash([]);
+        // puntas de flecha a mitad de cada tramo
+        for (let i = 1; i < cam.casillas.length; i++){
+          const A = cam.casillas[i - 1], B = cam.casillas[i], m = proy([(A[0] + B[0])/2, (A[1] + B[1])/2, .01]), b = proy([B[0], B[1], .01]);
+          const ang = Math.atan2(b.y - m.y, b.x - m.x), h = 9;
+          ctx.beginPath(); ctx.moveTo(m.x + h*Math.cos(ang), m.y + h*Math.sin(ang)); ctx.lineTo(m.x - h*.7*Math.cos(ang - .6), m.y - h*.7*Math.sin(ang - .6)); ctx.lineTo(m.x - h*.7*Math.cos(ang + .6), m.y - h*.7*Math.sin(ang + .6)); ctx.closePath(); ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+  }
+  function dibPared(c){
+    if (E.pared !== 'atras') return;
+    const xs = E.dados.map(D => D.p[0]), y = Math.max(...E.dados.map(D => D.p[1])) + .5, zt = Math.max(...E.dados.map(D => D.p[2])) + 1.6;
+    const x0 = Math.min(...xs) - 1.1, x1 = Math.max(...xs) + 1.1;
+    const q = [[x0, 0], [x1, 0], [x1, zt], [x0, zt]].map(([x, z]) => proy([x, y, z]));
+    poli(q, c.grid, c.muted, 1.5, .9);
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.globalAlpha = .35; ctx.lineWidth = 1;
+    for (let t = .5; t < x1 - x0; t += .5){ const a = proy([x0 + t, y, 0]), b = proy([x0 + t, y, zt]); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    ctx.restore();
+    const r = proy([x1 - .5, y, zt - .25]); rotulo(ctx, c, r.x, r.y, 'pared', c.muted, 11, 700);
+  }
+  function dibDado(c, D, k){
+    const C = centro(D), rot = D.rot;
+    const T = P => { let q = P; if (rot){ const piv = rot.centro ? C : suma3(C, rot.pivote); q = suma3(piv, girar3([q[0] - piv[0], q[1] - piv[1], q[2] - piv[2]], rot.eje, rot.ang)); } return q; };
+    const Tn = n => (rot ? girar3(n, rot.eje, rot.ang) : n);
+    const caras = Object.keys(CARA).map(f => ({ f, n:Tn(CARA[f].n) })).filter(x => haciaMi(x.n) > 1e-6).sort((a, b) => haciaMi(a.n) - haciaMi(b.n));
+    for (const { f } of caras){
+      const G = CARA[f], ce = suma3(C, por(G.n, .5));
+      const esq = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([s, t]) => proy(T(suma3(ce, suma3(por(G.u, .5*s), por(G.v, .5*t))))));
+      const m = D.marca[f];
+      poli(esq, c.dado, c.ink, 1.6);
+      if (m){ ctx.save(); ctx.globalAlpha = atenuar(m); poli(esq, c[m], null, 0, .2); ctx.globalAlpha = atenuar(m); poli(esq.map(p => p), null, c[m], E.hl === m ? 4.5 : 3); ctx.restore(); }
+      const val = D.d ? D.d[f] : null, ver = D.ver === 'todas' || (Array.isArray(D.ver) && D.ver.includes(f));
+      if (val && ver){
+        ctx.fillStyle = c.ink;
+        for (const [px, py] of PIP[val]){
+          const pc = suma3(ce, suma3(por(G.u, .27*px), por(G.v, .27*py)));
+          ctx.beginPath();
+          for (let i = 0; i < 12; i++){ const a = i/12*Math.PI*2, q = proy(T(suma3(pc, suma3(por(G.u, .085*Math.cos(a)), por(G.v, .085*Math.sin(a)))))); i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); }
+          ctx.closePath(); ctx.fill();
+        }
+      }
+    }
+    if (D.nombre){ const q = proy(T(suma3(C, [0, 0, .95]))); rotulo(ctx, c, q.x, q.y - 4, D.nombre, c.ink, 13, 800); }
+  }
+  function dib3d(c){
+    encuadre();
+    const deAbajo = E.cam.pitch < 0;
+    if (!deAbajo) dibMesa(c, false);
+    dibPared(c);
+    const orden = E.dados.map((D, k) => ({ D, k, z:proy(centro(D)).z })).sort((a, b) => a.z - b.z);
+    if (E.tablero && !deAbajo) for (const m of E.tablero.marcas || []){ const q = proy([m.c[0], m.c[1], 0]); rotulo(ctx, c, q.x, q.y, m.t, c.ink, 11, 800); }
+    for (const { D, k } of orden) dibDado(c, D, k);
+    if (deAbajo) dibMesa(c, true);
+    // caja para el arrastre: lo que ocupan los dados en la pantalla (lejos de ellos, el dedo desplaza la página)
+    const pts = []; for (const D of E.dados) { const C = centro(D); for (const s of [-1, 1]) for (const t of [-1, 1]) for (const u of [-1, 1]) pts.push(proy([C[0] + .5*s, C[1] + .5*t, C[2] + .5*u])); }
+    caja = pts.length ? { x0:Math.min(...pts.map(p => p.x)), x1:Math.max(...pts.map(p => p.x)), y0:Math.min(...pts.map(p => p.y)), y1:Math.max(...pts.map(p => p.y)) } : null;
+  }
+
+  // ----- fichas del dominó y dados de frente (2D) -----
+  function mitad(c, x, y, s, n, color){
+    if (!n) return;
+    ctx.fillStyle = color || c.ink;
+    for (const [px, py] of PIP[n] ){ ctx.beginPath(); ctx.arc(x + s/2 + px*s*.27, y + s/2 - py*s*.27, Math.max(1.6, s*.085), 0, 7); ctx.fill(); }
+  }
+  function ficha(c, x, y, s, f, o){
+    o = o || {};
+    const vert = !!o.vertical, w = vert ? s : 2*s, h = vert ? 2*s : s;
+    ctx.save(); ctx.globalAlpha = o.dim ? .32 : 1;
+    ctx.beginPath(); ctx.roundRect(x, y, w, h, Math.max(3, s*.16));
+    ctx.fillStyle = o.oculta ? c.grid : c.dado; ctx.fill();
+    const col = o.color ? c[o.color] : c.ink;
+    ctx.strokeStyle = col; ctx.lineWidth = o.color ? (E.hl === o.color ? 4 : 3) : 1.5; ctx.stroke();
+    if (o.oculta){ ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(s*.6)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', x + w/2, y + h/2 + 1); }
+    else {
+      ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.beginPath();
+      if (vert){ ctx.moveTo(x + 3, y + s); ctx.lineTo(x + s - 3, y + s); } else { ctx.moveTo(x + s, y + 3); ctx.lineTo(x + s, y + s - 3); }
+      ctx.stroke();
+      mitad(c, x, y, s, f[0]); mitad(c, vert ? x : x + s, vert ? y + s : y, s, f[1]);
+    }
+    if (o.tachada){ ctx.strokeStyle = c.warn; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(x - 2, y - 2); ctx.lineTo(x + w + 2, y + h + 2); ctx.moveTo(x + w + 2, y - 2); ctx.lineTo(x - 2, y + h + 2); ctx.stroke(); }
+    ctx.restore();
+  }
+  function dibDomino(c){
+    const D = E.dom;
+    if (D.tipo === 'juego'){
+      const gap = 4, s = Math.floor(Math.min((W - 16 - 6*gap)/14, (Hh - 30 - 6*gap)/7));
+      const w = 7*2*s + 6*gap, x0 = (W - w)/2, y0 = (Hh - (7*s + 6*gap))/2 + 4;
+      D.fichas.forEach((f, i) => {
+        const [a, b] = f, marca = D.marca && D.marca.includes(i);
+        ficha(c, x0 + b*(2*s + gap), y0 + a*(s + gap), s, f, { color: marca ? 'F' : null, dim: D.marca && !marca });
+      });
+      return;
+    }
+    if (D.tipo === 'cadena'){
+      const n = D.fichas.length, gap = 2, s = Math.floor(Math.min((W - 24 - (n - 1)*gap)/(2*n), 46)), w = n*2*s + (n - 1)*gap, x0 = (W - w)/2, y0 = Hh/2 - s/2 - 12;
+      D.fichas.forEach((f, i) => {
+        const x = x0 + i*(2*s + gap);
+        ficha(c, x, y0, s, f || [0, 0], { oculta: !f, color: D.x === i ? 'x' : null });
+        rotulo(ctx, c, x + s, y0 + s + 16, `${i + 1}.ª`, D.x === i ? c.x : c.muted, 11, 700);
+      });
+      if (D.tachada){ const s2 = Math.round(s*.8), x = W/2 - s2, y = y0 + s + 30; if (y + s2 < Hh){ ficha(c, x, y, s2, D.tachada, { tachada:true }); } }
+      return;
+    }
+    if (D.tipo === 'pie'){
+      const n = D.fichas.length, gap = 12, s = Math.floor(Math.min((W - 30 - (n - 1)*gap)/n, (Hh - 40)/2, 46)), w = n*s + (n - 1)*gap, x0 = (W - w)/2, y0 = (Hh - 2*s)/2;
+      D.fichas.forEach((f, i) => ficha(c, x0 + i*(s + gap), y0, s, f || [0, 0], { vertical:true, oculta:!f }));
+    }
+  }
+  function dibPuntajes(c){
+    const P = E.pun, n = P.nombres.length, gap = 16, s = Math.floor(Math.min((W - 30 - (n - 1)*gap)/n, Hh - 60, 74)), w = n*s + (n - 1)*gap, x0 = (W - w)/2, y0 = (Hh - s)/2 - 10;
+    P.nombres.forEach((nm, i) => {
+      const x = x0 + i*(s + gap), v = P.valores[i];
+      ctx.beginPath(); ctx.roundRect(x, y0, s, s, s*.16); ctx.fillStyle = c.dado; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke();
+      if (v) mitad(c, x, y0, s, v);
+      else { ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(s*.45)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', x + s/2, y0 + s/2 + 1); }
+      rotulo(ctx, c, x + s/2, y0 + s + 18, nm, c.ink, 14, 800);
+    });
+  }
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, Hh); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, Hh);
+    if (E.modo === '3d') dib3d(c); else { caja = null; if (E.modo === 'domino') dibDomino(c); else if (E.modo === 'puntajes') dibPuntajes(c); }
+  };
+
+  // ----- animaciones -----
+  E.animar = (dur, paso, fin) => {
+    const tok = ++E.tok; E.anim = true;
+    const listo = () => { if (tok !== E.tok) return; E.anim = false; E.mandos(); E.avisar(); if (fin) fin(); };
+    if (RM || !dur){ paso(1); E.dibujar(); setTimeout(listo, 0); return; }
+    const t0 = performance.now();
+    const tick = now => { if (tok !== E.tok) return; const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(suave(f)); E.dibujar(); if (f < 1) requestAnimationFrame(tick); else listo(); };
+    requestAnimationFrame(tick);
+  };
+  E.parar = () => { E.tok++; E.anim = false; E.dados.forEach(D => { D.rot = null; D.mov = null; }); };
+  // varias animaciones seguidas: pasos = [(fin) => …]
+  E.serie = (pasos, fin) => { let i = 0; const sig = () => { if (i >= pasos.length){ if (fin) fin(); return; } pasos[i++](sig); }; sig(); };   // si otra animación la corta, el paso cortado no llama a sig
+  // un vuelco animado del dado k hacia 'lado' (enSitio: gira sobre su centro, sin moverse de casilla)
+  E.volcar = (k, lado, dur, fin, enSitio) => {
+    const D = E.dados[k], d = DIR[lado], eje = ejeVuelco(lado);
+    E.animar(RM ? 0 : dur, f => {
+      D.rot = enSitio ? { centro:true, eje, ang:f*Math.PI/2 } : { pivote:[d[0]*.5, d[1]*.5, -.5], eje, ang:f*Math.PI/2 };
+      if (enSitio) D.mov = [0, 0, Math.sin(f*Math.PI)*.35];
+    }, () => {
+      D.rot = null; D.mov = null; D.d = MD.rodar(D.d, lado);
+      if (!enSitio) D.p = [D.p[0] + d[0], D.p[1] + d[1], D.p[2]];
+      E.dibujar(); if (fin) fin();
+    });
+  };
+  E.camara = (yaw, pitch, dur, fin) => { const y0 = E.cam.yaw, p0 = E.cam.pitch; E.animar(dur, f => { E.cam.yaw = y0 + (yaw - y0)*f; E.cam.pitch = p0 + (pitch - p0)*f; }, fin); };
+  E.separar = (on, dur, fin) => { const s0 = E.sep, s1 = on ? 1 : 0; E.animar(dur, f => { E.sep = s0 + (s1 - s0)*f; }, fin); };
+
+  // ----- girar la mesa: dedo, ratón y teclado -----
+  let ini = null;
+  const yawMax = () => (E.pared ? 1.25 : Infinity);
+  Celular.arrastre(cv, {
+    activo: () => E.modo === '3d' && !E.anim,
+    cerca: (p, r) => !!caja && p.x > caja.x0 - r && p.x < caja.x1 + r && p.y > caja.y0 - r && p.y < caja.y1 + r,
+    empezar: p => { ini = { x:p.x, y:p.y, yaw:E.cam.yaw, pitch:E.cam.pitch }; },
+    mover: p => { if (!ini) return; E.cam.yaw = clamp(ini.yaw - (p.x - ini.x)*.011, -yawMax(), yawMax()); E.cam.pitch = clamp(ini.pitch + (p.y - ini.y)*.009, -1.15, 1.35); E.dibujar(); },
+    soltar: () => { ini = null; E.mandos(); },
+  });
+  cv.addEventListener('keydown', e => {
+    if (E.modo !== '3d' || E.anim) return;
+    const m = { ArrowLeft:[.2, 0], ArrowRight:[-.2, 0], ArrowUp:[0, .15], ArrowDown:[0, -.15] }[e.key];
+    if (!m) return;
+    e.preventDefault(); E.cam.yaw = clamp(E.cam.yaw + m[0], -yawMax(), yawMax()); E.cam.pitch = clamp(E.cam.pitch + m[1], -1.15, 1.35); E.dibujar(); E.mandos();
+  });
+  // botones bajo el dibujo (los mismos giros que el dedo)
+  E.mandos = () => {
+    const el = idMandos && document.getElementById(idMandos); if (!el) return;
+    if (E.modo !== '3d'){ el.innerHTML = ''; return; }
+    const abajo = E.cam.pitch < 0;
+    el.innerHTML = `<button type="button" class="btn chico" data-m="izq" aria-label="Girar la mesa a la izquierda">⟲ Girar</button>`
+      + `<button type="button" class="btn chico" data-m="der" aria-label="Girar la mesa a la derecha">Girar ⟳</button>`
+      + `<button type="button" class="btn chico" data-m="abajo" aria-pressed="${abajo}">${abajo ? 'Mirar desde arriba' : 'Mirar desde abajo'}</button>`
+      + (E.separable ? `<button type="button" class="btn chico" data-m="sep" aria-pressed="${E.sep > .5}">${E.sep > .5 ? 'Juntar los dados' : 'Separar los dados'}</button>` : '');
+    el.querySelectorAll('button').forEach(b => { b.disabled = E.anim; b.onclick = () => {
+      if (E.anim) return;
+      const m = b.dataset.m;
+      if (m === 'izq') E.camara(clamp(E.cam.yaw + .6, -yawMax(), yawMax()), E.cam.pitch, 380);
+      else if (m === 'der') E.camara(clamp(E.cam.yaw - .6, -yawMax(), yawMax()), E.cam.pitch, 380);
+      else if (m === 'abajo') E.camara(E.cam.yaw, abajo ? .55 : -.6, 520);
+      else if (m === 'sep') E.separar(E.sep < .5, 600);
+    }; });
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const vr = k => k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k;
+    document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t, f]) => `<span style="--k:var(${vr(k)})"><i class="${f || ''}" style="background:var(${vr(k)})"></i>${t}</span>`).join('');
+  };
+  E.avisar = () => {
+    const filas = E.lect || [];
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = E.desc || { '3d':'Dados sobre una mesa.', domino:'Fichas del dominó.', puntajes:'Cuatro dados vistos de frente.' }[E.modo];
+      const t = [base, ...filas.map(([, a, b]) => `${a}: ${b}.`)].join(' ');
+      document.getElementById(idDesc).textContent = t;
+      cv.setAttribute('aria-label', base);
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  return E;
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1', 'mandos1');
+const { v:v_, o:o_, a:a_, s:s_, T:T_, r:r_, F:F_ } = W_;
+const TORRE = [[0,0,0],[0,0,1],[0,0,2]], FILA = [[0,0,0],[1,0,0],[2,0,0]], ELE = [[0,0,0],[1,0,0],[0,1,0],[0,1,1]];
+
+// --- datos del motor ---
+const D1 = MD.dado({ arriba:2, frente:6, derecha:3 }), P1 = MD.unDado({ arriba:2, frente:6, derecha:3 });
+const P2 = MD.unDado({ arriba:6, pregunta:'visibles' }), D2 = MD.dado({ arriba:6, frente:2 });
+const P3 = MD.optimizarDados({ dados:TORRE, extremo:'min' });
+const P4 = MD.optimizarDados({ dados:FILA, condicion:{ arriba:'impar' } });
+const P5 = MD.optimizarDados({ dados:ELE, pared:['atras'], objetivo:'noVisibles' });
+const INI6 = { arriba:2, frente:1 }, D6 = MD.dado(INI6), P6 = MD.rodarCamino({ inicio:INI6, camino:'DADAD' }), P6v = MD.rodarCamino({ inicio:INI6, camino:'DADAD', pregunta:'visibles' });
+const P7 = MD.circuito({ inicio:INI6, vuelta:'DAIF', vueltas:70 });
+const VISTAS8 = [[1, 2, 3], [6, 2, 1], [5, 4, 3]], P8 = MD.deducirCubo({ vistas:VISTAS8, cara:1 });
+const P9 = MD.mismoDado([1, 2, 3], [3, 2, 1]), DA9 = MD.dado({ arriba:1, frente:2, derecha:3 }), DB9 = MD.dado({ arriba:3, frente:2, derecha:1 });
+const GIRO9 = MD.caminoGiro(DB9, MD.dado({ arriba:1, frente:2, espejo:true }));
+const JUEGO = MD.fichas(), P10 = MD.contarFichas({ condicion:'primo' }), TODAS = MD.contarFichas({});
+const CL3 = P3.clases, CL4 = P4.clases, CL5 = P5.clases;
+// caras de cada dado que no se ven (según el motor) teñidas de o; las que se ven, de v
+const marcar = (cl, k, ocultas, vistas) => { const m = {}; for (const c of MD.CARAS) { if (cl[k][c] === 'vista') { if (vistas) m[c] = 'v'; } else if (ocultas) m[c] = 'o'; } return m; };
+const conOrient = (pos, ej, cl, o) => pos.map((p, k) => ({ p, d:ej ? ej[k] : null, marca: cl ? marcar(cl, k, true, o && o.vistas) : {} }));
+// cámara para cada disposición
+const CAM = { yaw:-.6, pitch:.55 };
+// vista de una sola cara de arriba en un cubo: [arriba, frente, derecha] → objeto con las tres caras
+const vista3 = v => ({ arriba:v[0], frente:v[1], derecha:v[2], abajo:null, atras:null, izquierda:null });
+// el cubo del paso 8, completo, en la posición de cada foto (sale de las opuestas que halló el motor)
+const OP8 = P8.opuestas;
+const cuboEn = v => { const o = vista3(v); o.abajo = OP8[v[0]][0]; o.atras = OP8[v[1]][0]; o.izquierda = OP8[v[2]][0]; return o; };
+const sumaCaras = (cl, ej, cual) => ej.map((d, k) => MD.CARAS.filter(c => cual(cl[k][c])).map(c => d[c]));
+
+const G = {};   // las predicciones
+G[1] = { id:'cara-de-la-mesa', ok:'a',
+  opts:[['a', `${P1.respuesta}: es la cara opuesta a la de arriba`],
+        ['b', `No se puede saber: puede ser ${P1.ocultas.join(', ').replace(/, (\d)$/, ' o $1')}`, 'RME10-abajo-no-se-sabe', 'hipotesis'],
+        ['c', `${P1.errores.laMenor}: abajo queda la que tiene menos puntos de las que no se ven`, 'RME10-abajo-la-menor', 'hipotesis']],
+  fb:{ a:'¡Bien pensado! Mira el dado desde abajo.',
+       b:`Sí se puede: en un dado las caras opuestas suman 7, y la de abajo es la opuesta de la de arriba. Con 2 arriba, abajo hay 7 − 2 = ${P1.respuesta}.`,
+       c:`No hay una regla que ponga la menor abajo. Lo que manda es que las opuestas suman 7: abajo hay 7 − 2 = ${P1.respuesta}.` } };
+G[2] = { id:'vuelta-a-la-mesa', ok:'a',
+  opts:[['a', `${P2.respuesta} puntos`], ['b', `${P2.errores.cuentaAbajo} puntos`, 'RME11-cuenta-la-de-abajo', 'hipotesis'],
+        ['c', `${P2.errores.restaArriba} puntos`, 'RME10-resta-la-de-arriba', 'hipotesis'], ['d', 'Depende de cómo esté girado', 'RME10-depende-del-giro', 'hipotesis']],
+  fb:{ a:'¡Bien pensado! Mira qué cara queda oculta.',
+       b:`21 son todos los puntos del dado, pero la cara que toca la mesa no se ve desde ningún lado. Abajo está el 7 − 6 = 1: se ven 21 − 1 = ${P2.respuesta}.`,
+       c:`La cara de arriba sí se ve; la que no se ve es la de abajo, que tiene 7 − 6 = 1. Se ven 21 − 1 = ${P2.respuesta}.`,
+       d:`Gire como gire sobre la mesa, abajo siempre está la opuesta del 6, que es el 1. Se ven 21 − 1 = ${P2.respuesta}, siempre.` } };
+G[3] = { id:'torre-minimo', ok:'a',
+  opts:[['a', String(P3.respuesta)], ['b', String(P3.errores.contactosVisibles), 'RME11-solo-la-de-la-mesa', 'hipotesis'],
+        ['c', String(P3.errores.sinSiete), 'RME10-sin-pares-de-siete', 'hipotesis'], ['d', String(P3.errores.alReves), 'RME129-el-otro-extremo', 'hipotesis']],
+  fb:{ a:'¡Bien pensado! Separa los dados para ver las caras ocultas.',
+       b:`${P3.errores.contactosVisibles} sale si solo se oculta la cara que toca la mesa. Pero las caras pegadas entre dados tampoco se ven: en los dos dados de abajo se ocultan arriba y abajo, que suman 7. La menor suma es ${P3.respuesta}.`,
+       c:`${P3.errores.sinSiete} sale escondiendo 6 y 5 en los dados de abajo, como si se pudieran poner donde uno quiera. Pero las caras ocultas de esos dados son la de arriba y la de abajo, opuestas: siempre suman 7. La menor suma es ${P3.respuesta}.`,
+       d:`${P3.errores.alReves} es la mayor suma posible, con el 1 abajo del dado de encima. Para la menor, el dado de encima esconde el 6. La menor suma es ${P3.respuesta}.` } };
+G[4] = { id:'fila-impar', ok:'a',
+  opts:[['a', String(P4.respuesta)], ['b', String(P4.errores.sinCondicion), 'RME126-sin-la-condicion', 'hipotesis'],
+        ['c', String(P4.errores.sinSiete), 'RME10-sin-pares-de-siete', 'hipotesis'], ['d', String(P4.errores.contactosVisibles), 'RME11-cuenta-las-pegadas', 'hipotesis']],
+  fb:{ a:'¡Bien pensado! Separa los dados para ver qué se esconde.',
+       b:`${P4.errores.sinCondicion} sale con el 6 arriba de cada dado, pero arriba debe haber un número impar. Con el 5 arriba, abajo queda el 2 en vez del 1. La mayor suma es ${P4.respuesta}.`,
+       c:`${P4.errores.sinSiete} sale escondiendo 1, 2 y 3 en el dado del medio. Pero sus dos caras pegadas son opuestas y suman 7. La mayor suma es ${P4.respuesta}.`,
+       d:`${P4.errores.contactosVisibles} cuenta las caras pegadas entre dados, que no se ven desde ningún lado. La mayor suma es ${P4.respuesta}.` } };
+G[5] = { id:'ele-pared', ok:'a', unidad:U_RUTAS,
+  opts:[['a', String(P5.respuesta)], ['b', String(P5.errores.sinSiete), 'RME10-sin-pares-de-siete', 'hipotesis'],
+        ['c', String(P5.errores.alReves), 'RME129-el-otro-extremo', 'hipotesis'], ['d', String(P5.errores.contactosVisibles), 'RME11-cuenta-las-pegadas', 'hipotesis']],
+  fb:{ a:'¡Bien pensado! Separa los dados y cuenta las caras ocultas.',
+       b:`${P5.errores.sinSiete} sale poniendo 6, 5, 4 y 3 en las cuatro caras ocultas del dado de atrás. Pero esas caras son dos pares de opuestas: arriba y abajo suman 7, y frente y atrás también. La mayor suma es ${P5.respuesta}.`,
+       c:`${P5.errores.alReves} es lo menos que puede quedar oculto: es el total menos lo más que se puede ver. Se pide lo más que puede quedar oculto: ${P5.respuesta}.`,
+       d:`${P5.errores.contactosVisibles} cuenta solo las caras que tocan la mesa. Las pegadas entre dados y las que tocan la pared tampoco se ven. La mayor suma es ${P5.respuesta}.` } };
+G[6] = { id:'dado-rueda', ok:'a', unidad:U_RUTAS,
+  opts:[['a', `${P6.respuesta} puntos`], ['b', `${P6.errores.alReves} puntos`, 'RME13-sube-la-de-adelante', 'hipotesis'], ['c', `${P6.errores.soloArriba} puntos`, 'RME121-solo-la-de-arriba', 'hipotesis']],
+  fb:{ a:'¡Bien pensado! Mira el dado rodar.',
+       b:`${P6.errores.alReves} sale si en cada vuelco sube la cara del lado hacia el que rueda. Es al revés: la cara de arriba cae hacia ese lado y sube la de atrás del movimiento. Al llegar hay ${P6.respuesta} arriba.`,
+       c:`${P6.errores.soloArriba} sale siguiendo solo la cara de arriba y dejando los costados como al inicio. En cada vuelco los costados también cambian: hay que llevar la cuenta de todas las caras. Al llegar hay ${P6.respuesta} arriba.` } };
+G[7] = { id:'circuito-70', ok:'a', unidad:U_RUTAS,
+  opts:[['a', `${P7.respuesta} puntos`], ['b', `${P7.errores.unaVuelta} puntos`, 'RME120-vuelve-igual', 'hipotesis'],
+        ['c', `${P7.errores.periodoCuatro} puntos`, 'RME120-periodo-cuatro', 'hipotesis'], ['d', `${P7.errores.alReves} puntos`, 'RME13-sube-la-de-adelante', 'hipotesis']],
+  fb:{ a:'¡Bien pensado! Mira las primeras vueltas.',
+       b:`${P7.errores.unaVuelta} sería si cada vuelta dejara el dado como empezó. No lo deja: tras una vuelta arriba queda el ${P7.arribas[1]}. El dado vuelve a ser el mismo cada ${P7.periodo} vueltas, y 70 = ${P7.periodo} · ${Math.floor(70/P7.periodo)} + ${70 % P7.periodo}. Arriba queda ${P7.respuesta}.`,
+       c:`${P7.errores.periodoCuatro} sale contando de 4 en 4 vueltas, como el dado que rueda en línea recta. Aquí el dado vuelve a ser el mismo cada ${P7.periodo} vueltas: 70 = ${P7.periodo} · ${Math.floor(70/P7.periodo)} + ${70 % P7.periodo}. Arriba queda ${P7.respuesta}.`,
+       d:`${P7.errores.alReves} sale si en cada vuelco sube la cara del lado hacia el que rueda. Sube la del lado contrario. Arriba queda ${P7.respuesta}.` } };
+G[8] = { id:'cubo-tres-fotos', ok:'a', unidad:U_RUTAS,
+  opts:[['a', `La de ${P8.respuesta} puntos`], ['b', `La de ${P8.errores.siete} puntos`, 'RME124-siete-sin-ser-dado', 'hipotesis'], ['c', `La de ${P8.errores.noJuntas} puntos`, 'RME123-no-salen-juntas', 'hipotesis']],
+  fb:{ a:'¡Bien pensado! Mira el cubo armado.',
+       b:`1 + 6 = 7 vale en un dado de tienda, pero este cubo no lo es. Además, en la segunda foto el 6 y el 1 se ven juntos: son vecinos, no opuestos. Al otro lado del 1 está el ${P8.respuesta}.`,
+       c:`Es cierto que el ${P8.errores.noJuntas} nunca sale junto al 1 en las fotos, pero el ${P8.respuesta} tampoco. No basta con eso: hay que ver el orden de las caras alrededor del 3. Al otro lado del 1 está el ${P8.respuesta}.` } };
+G[9] = { id:'dado-espejo', ok:'b', unidad:U_RUTAS,
+  opts:[['a', 'Sí: tienen los mismos números y en los dos las opuestas suman 7', 'RME122-mismo-dado-por-el-siete', 'hipotesis'],
+        ['b', 'No: B es como A visto en un espejo'],
+        ['c', 'No se puede saber sin ver las otras caras', 'RME10-no-se-sabe-sin-ver', 'hipotesis']],
+  fb:{ b:'¡Bien pensado! Mira B girar hasta parecerse a A.',
+       a:'La regla del 7 no basta. Si B se gira hasta tener el 1 arriba y el 2 al frente, a la derecha le queda el 4, y a A le queda el 3. Ningún giro los iguala: uno es el espejo del otro.',
+       c:'Las otras caras sí se conocen: son las opuestas, que suman 7. Y alcanza con estas tres: girando B hasta tener el 1 arriba y el 2 al frente, a la derecha le queda el 4, y a A el 3. Son espejo uno del otro.' } };
+G[10] = { id:'domino-primos', ok:'a',
+  opts:[['a', `${P10.respuesta} fichas`], ['b', `${P10.errores.ordenadas} fichas`, 'RME12-cuenta-a-b-y-b-a', 'hipotesis'],
+        ['c', `${P10.errores.sinDobles} fichas`, 'RME125-olvida-los-dobles', 'hipotesis'], ['d', `${P10.errores.sinBlanco} fichas`, 'RME127-olvida-el-blanco', 'hipotesis']],
+  fb:{ a:'¡Bien pensado! Mira cuáles son.',
+       b:`${P10.errores.ordenadas} cuenta 2|5 y 5|2 como dos fichas, pero son la misma. Son ${P10.respuesta}.`,
+       c:`${P10.errores.sinDobles} deja fuera la ficha doble 1|1, que suma 2, un primo. Son ${P10.respuesta}.`,
+       d:`${P10.errores.sinBlanco} olvida las fichas con una mitad en blanco (el 0): 0|2, 0|3 y 0|5 suman primos. Son ${P10.respuesta}.` } };
+
+[[1, 'b'], [2, 'c'], [3, 'd'], [4, 'b'], [5, 'c'], [6, 'c'], [7, 'b'], [8, 'b'], [9, 'a'], [10, 'd']].forEach(([k, l]) => mover(G[k], l));
+const S = { step:0, max:0, pred:{}, ocupado:false };
+const ya = k => !!S.pred[G[k].id];
+const FUENTE = '<p class="fuente">Las opciones incorrectas son hipótesis nuestras sobre errores de los postulantes.</p>';
+const lectArriba = (vals) => vals.map((v, i) => i === 0 ? `salida ${v}` : String(v)).join(' → ');
+
+const steps = [
+  { k:'Paso 1', t:'Un dado sobre la mesa', gate:G[1],
+    body:() => `<p class="problem">Este dado está sobre la mesa. Se ven tres caras: ${a_('2 puntos arriba')}, 6 al frente y 3 a la derecha. Arrastra el dibujo para girar la mesa: las caras que no se ven están en blanco. ¿Cuántos puntos tiene la cara que toca la mesa?</p>
+      ${opcionesHTML(G[1].opts, 'fb')}<div id="tras" class="body" hidden>
+      <div class="eqs"><div class="eq">${a_('arriba')} + ${o_('abajo')} = ${s_('7')}<span class="note">caras opuestas</span></div><div class="eq">${o_('abajo')} = ${s_('7')} − ${a_('2')} = ${o_(String(P1.respuesta))}</div></div>
+      <p>En un dado de los de siempre, cada cara tiene al otro lado la que completa 7: el 1 frente al 6, el 2 frente al 5 y el 3 frente al 4. Con eso, tres caras que se ven dicen dónde está cada una de las otras tres.</p>${FUENTE}</div>`,
+    prep:yaR => E.config({ dados:[{ p:[0,0,0], d:D1, ver: yaR ? 'todas' : ['arriba', 'frente', 'derecha'], marca: yaR ? { arriba:'a', abajo:'o' } : { arriba:'a' } }], cam:Object.assign({}, CAM),
+      lect: yaR ? [L('a', 'Arriba', '2'), L('o', 'Abajo', String(P1.respuesta)), L('s', 'Opuestas', '1–6, 2–5, 3–4')] : [L('a', 'Arriba', '2'), L('o', 'Abajo', '?')],
+      ley: yaR ? [['a', 'a · cara de arriba', 'pt'], ['o', 'o · cara que no se ve', 'pt']] : [['a', 'a · cara de arriba', 'pt']], desc:'Un dado sobre la mesa con 2 puntos arriba, 6 al frente y 3 a la derecha; las otras caras en blanco.' }),
+    anima:fin => { const D = E.dados[0]; D.ver = 'todas'; D.marca = { arriba:'a', abajo:'o' }; E.lect = [L('a', 'Arriba', '2'), L('o', 'Abajo', String(P1.respuesta)), L('s', 'Opuestas', '1–6, 2–5, 3–4')];
+      E.ley = [['a', 'a · cara de arriba', 'pt'], ['o', 'o · cara que no se ve', 'pt']]; E.leyenda(); E.camara(-.6, -.7, 1100, fin); } },
+  { k:'Paso 2', t:'Dando la vuelta a la mesa', gate:G[2],
+    body:() => `<p class="problem">Ahora el dado tiene ${a_('6 puntos arriba')}. Caminas alrededor de la mesa y lo miras desde todos los lados, también desde arriba. ¿Cuántos puntos ves en total?</p>
+      ${opcionesHTML(G[2].opts, 'fb')}<div id="tras" class="body" hidden>
+      <div class="eqs"><div class="eq">${T_('total')} = 1 + 2 + 3 + 4 + 5 + 6 = ${T_('21')}</div><div class="eq">${v_('se ven')} = ${T_('21')} − ${o_('abajo')} = ${T_('21')} − (${s_('7')} − ${a_('6')}) = ${v_(String(P2.respuesta))}</div></div>
+      <p>Dando la vuelta se ven cinco caras; solo se esconde la que toca la mesa. Y esa cara se conoce sin levantar el dado: es la opuesta de la de arriba.</p>${FUENTE}</div>`,
+    prep:yaR => E.config({ dados:[{ p:[0,0,0], d:D2, ver: yaR ? 'todas' : ['arriba'], marca: yaR ? { arriba:'v', frente:'v', atras:'v', derecha:'v', izquierda:'v', abajo:'o' } : {} }], cam:Object.assign({}, CAM),
+      lect: yaR ? [L('T', 'Total del dado', '21'), L('o', 'No se ve', '1'), L('v', 'Se ven', String(P2.respuesta))] : [L('T', 'Total del dado', '21'), L('v', 'Se ven', '?')],
+      ley: yaR ? [['v', 'v · caras que se ven', 'pt'], ['o', 'o · cara que no se ve', 'pt']] : [], desc:'Un dado sobre la mesa con 6 puntos arriba; los costados en blanco.' }),
+    anima:fin => { const D = E.dados[0]; D.ver = 'todas'; D.marca = { arriba:'v', frente:'v', atras:'v', derecha:'v', izquierda:'v', abajo:'o' };
+      E.lect = [L('T', 'Total del dado', '21'), L('o', 'No se ve', '1'), L('v', 'Se ven', String(P2.respuesta))]; E.ley = [['v', 'v · caras que se ven', 'pt'], ['o', 'o · cara que no se ve', 'pt']]; E.leyenda();
+      E.serie([f => E.camara(-2.4, .5, 1300, f), f => E.camara(-.6, -.7, 900, f)], fin); } },
+  { k:'Paso 3', t:'La torre de tres dados', gate:G[3],
+    body:() => `<p class="problem">Tres dados forman una torre sobre la mesa y tú das la vuelta alrededor. Puedes girar cada dado como quieras antes de apilarlo. ¿Cuál es la menor suma posible de los puntos que se ven?</p>
+      ${opcionesHTML(G[3].opts, 'fb')}<div id="tras" class="body" hidden>
+      <div class="eqs"><div class="eq">encima: ${T_('21')} − ${o_('6')} = 15<span class="note">esconde solo la cara de abajo: que sea el 6</span></div>
+      <div class="eq">medio y abajo: ${T_('21')} − (${o_('arriba')} + ${o_('abajo')}) = ${T_('21')} − ${s_('7')} = 14<span class="note">siempre, giren como giren</span></div>
+      <div class="eq">${v_('se ven')} = 15 + 14 + 14 = ${v_(String(P3.respuesta))}</div></div>
+      <p>En los dos dados de abajo se esconden la cara de arriba y la de abajo, que son opuestas: suman 7 pase lo que pase. Solo el dado de encima se puede acomodar. El motor probó las 24 posiciones de cada dado.</p>${FUENTE}</div>`,
+    prep:yaR => E.config({ dados:conOrient(TORRE, yaR ? P3.ejemplo : null, yaR ? CL3 : null), cam:Object.assign({}, CAM), holgura:true, separable:yaR, sep: yaR ? 1 : 0,
+      lect: yaR ? [L('T', 'Total', '3 · 21 = 63'), L('o', 'No se ven', String(63 - P3.respuesta)), L('v', 'Se ven (lo menos)', String(P3.respuesta))] : [L('T', 'Total', '3 · 21 = 63'), L('v', 'Se ven (lo menos)', '?')],
+      ley: yaR ? [['o', 'o · caras que no se ven', 'pt']] : [], desc:'Una torre de tres dados con las caras en blanco.' }),
+    anima:fin => { E.dados.forEach((D, k) => { D.d = P3.ejemplo[k]; D.marca = marcar(CL3, k, true); }); E.separable = true;
+      E.lect = [L('T', 'Total', '3 · 21 = 63'), L('o', 'No se ven', String(63 - P3.respuesta)), L('v', 'Se ven (lo menos)', String(P3.respuesta))]; E.ley = [['o', 'o · caras que no se ven', 'pt']]; E.leyenda(); E.mandos();
+      E.serie([f => E.separar(true, 900, f), f => E.camara(-.9, -.45, 1000, f)], fin); } },
+  { k:'Paso 4', t:'En fila, con un impar arriba', gate:G[4],
+    body:() => `<p class="problem">Tres dados están en fila sobre la mesa, pegados. Cada uno tiene ${a_('un número impar de puntos arriba')}. Das la vuelta a la mesa. ¿Cuál es la mayor suma posible de los puntos que se ven?</p>
+      ${opcionesHTML(G[4].opts, 'fb')}<div id="tras" class="body" hidden>
+      <div class="eqs"><div class="eq">cada extremo: ${T_('21')} − (${o_('2')} + ${o_('1')}) = 18<span class="note">${a_('5')} arriba, 2 abajo; la cara pegada, el 1</span></div>
+      <div class="eq">el del medio: ${T_('21')} − (${o_('2')} + ${s_('7')}) = 12<span class="note">sus dos caras pegadas son opuestas</span></div>
+      <div class="eq">${v_('se ven')} = 18 + 12 + 18 = ${v_(String(P4.respuesta))}</div></div>
+      <p>Para ver mucho hay que esconder poco: el mayor impar, el 5, va arriba, y abajo queda el 2. En los extremos, la cara pegada puede ser el 1. En el del medio, las dos caras pegadas suman 7 siempre.</p>${FUENTE}</div>`,
+    prep:yaR => E.config({ dados:conOrient(FILA, yaR ? P4.ejemplo : null, yaR ? CL4 : null), cam:Object.assign({}, CAM), holgura:true, separable:yaR, sep: yaR ? 1 : 0,
+      lect: yaR ? [L('a', 'Arriba', '5, 5 y 5'), L('o', 'No se ven', String(63 - P4.respuesta)), L('v', 'Se ven (lo más)', String(P4.respuesta))] : [L('a', 'Arriba', 'impares'), L('v', 'Se ven (lo más)', '?')],
+      ley: yaR ? [['o', 'o · caras que no se ven', 'pt']] : [], desc:'Tres dados en fila con las caras en blanco.' }),
+    anima:fin => { E.dados.forEach((D, k) => { D.d = P4.ejemplo[k]; D.marca = marcar(CL4, k, true); }); E.separable = true;
+      E.lect = [L('a', 'Arriba', '5, 5 y 5'), L('o', 'No se ven', String(63 - P4.respuesta)), L('v', 'Se ven (lo más)', String(P4.respuesta))]; E.ley = [['o', 'o · caras que no se ven', 'pt']]; E.leyenda(); E.mandos();
+      E.serie([f => E.separar(true, 900, f), f => E.camara(-.35, -.5, 1000, f)], fin); } },
+  { k:'Paso 5', t:'En L, contra la pared', gate:G[5],
+    body:() => `<p class="problem">Hay cuatro dados: tres en forma de L sobre la mesa y el cuarto encima del de atrás. La mesa está pegada a la pared del fondo. Das la vuelta por delante y por los costados. ¿Cuál es la mayor suma posible de los puntos que no se ven?</p>
+      ${opcionesHTML(G[5].opts, 'fb')}<div id="tras" class="body" hidden>
+      <div class="eqs"><div class="eq">esquina: ${o_('6 + 5 + 4')} = 15<span class="note">abajo, atrás y derecha: tres caras vecinas</span></div>
+      <div class="eq">derecha: ${o_('6 + 5')} = 11 · encima: ${o_('6 + 5')} = 11</div>
+      <div class="eq">atrás: ${s_('7')} + ${s_('7')} = 14<span class="note">arriba y abajo, frente y pared: dos pares de opuestas</span></div>
+      <div class="eq">${o_('no se ven')} = 15 + 11 + 14 + 11 = ${o_(String(P5.respuesta))}</div></div>
+      <p>Las caras que tocan la mesa, otro dado o la pared no se ven. Cuando dos de ellas son opuestas, suman 7 sin remedio; cuando son vecinas, se pueden poner las más grandes.</p>${FUENTE}</div>`,
+    prep:yaR => E.config({ dados:conOrient(ELE, yaR ? P5.ejemplo : null, yaR ? CL5 : null), pared:'atras', cam:{ yaw:-.55, pitch:.6 }, holgura:true, separable:yaR, sep: yaR ? 1 : 0,
+      lect: yaR ? [L('T', 'Total', '4 · 21 = 84'), L('o', 'No se ven (lo más)', String(P5.respuesta)), L('v', 'Se ven', String(84 - P5.respuesta))] : [L('T', 'Total', '4 · 21 = 84'), L('o', 'No se ven (lo más)', '?')],
+      ley: yaR ? [['o', 'o · caras que no se ven', 'pt']] : [], desc:'Cuatro dados en blanco: tres en L sobre la mesa y uno encima del de atrás, junto a la pared del fondo.' }),
+    anima:fin => { E.dados.forEach((D, k) => { D.d = P5.ejemplo[k]; D.marca = marcar(CL5, k, true); }); E.separable = true;
+      E.lect = [L('T', 'Total', '4 · 21 = 84'), L('o', 'No se ven (lo más)', String(P5.respuesta)), L('v', 'Se ven', String(84 - P5.respuesta))]; E.ley = [['o', 'o · caras que no se ven', 'pt']]; E.leyenda(); E.mandos();
+      E.serie([f => E.separar(true, 900, f), f => E.camara(-.8, -.4, 1000, f)], fin); } },
+  { k:'Paso 6', t:'El dado que rueda', gate:G[6],
+    body:() => `<p class="problem">El dado empieza en la casilla de salida con ${a_('2 arriba')}, 1 al frente y 4 a la derecha. Rueda volcándose sobre una arista, una casilla a la vez, por el ${r_('camino')}: derecha, fondo, derecha, fondo y derecha. ¿Cuántos puntos tiene la cara de arriba al llegar a la meta?</p>
+      ${opcionesHTML(G[6].opts, 'fb')}<div id="tras" class="body" hidden>
+      <div class="eqs"><div class="eq">al volcar hacia un lado: ${a_('arriba')} pasa a ese lado y sube la cara del lado contrario</div>
+      <div class="eq">${a_('arriba')}: ${P6.arribas.map(a_).join(' → ')}</div>
+      <div class="eq">${v_('se ven al llegar')} = ${T_('21')} − ${o_(String(P6.final.abajo))} = ${v_(String(P6v.respuesta))}<span class="note">la de abajo es la opuesta de la de arriba</span></div></div>
+      <p>No basta con seguir la cara de arriba: en cada vuelco cambian cuatro caras. Lo seguro es anotar las seis (o las tres de una esquina y completar con la regla del 7) después de cada vuelco.</p>${FUENTE}</div>`,
+    prep:yaR => E.config({ dados:[{ p: yaR ? P6.casillas[5].concat([0]) : [0,0,0], d: yaR ? P6.final : D6, ver: yaR ? 'todas' : ['arriba', 'frente', 'derecha'], marca:{ arriba:'a' } }], cam:{ yaw:-.45, pitch:.75 },
+      tablero:{ w:4, h:3, caminos:[{ casillas:P6.casillas, color:'r' }], marcas:[{ c:[0, -.72], t:'salida' }, { c:[3.72, 2], t:'meta' }] },
+      lect: yaR ? [L('a', 'Arriba en cada casilla', lectArriba(P6.arribas)), L('v', 'Se ven al llegar', String(P6v.respuesta))] : [L('a', 'Arriba al llegar', '?')],
+      ley:[['r', 'r · camino del dado'], ['a', 'a · cara de arriba', 'pt']], desc:'Un tablero de 4 por 3 casillas con un camino en escalera y un dado en la salida con 2 arriba, 1 al frente y 4 a la derecha.' }),
+    anima:fin => { const vs = [...'DADAD'].map(ch => ({ D:'derecha', A:'atras' })[ch]);
+      E.dados[0].ver = ['arriba', 'frente', 'derecha'];
+      E.serie(vs.map((l, i) => f => E.volcar(0, l, 520, () => { E.lect = [L('a', 'Arriba en cada casilla', lectArriba(P6.arribas.slice(0, i + 2)))]; E.avisar(); f(); })), () => {
+        E.dados[0].ver = 'todas'; E.lect = [L('a', 'Arriba en cada casilla', lectArriba(P6.arribas)), L('v', 'Se ven al llegar', String(P6v.respuesta))]; E.dibujar(); E.avisar(); fin(); }); } },
+  { k:'Paso 7', t:'La vuelta al bloque', gate:G[7],
+    body:() => `<p class="problem">El mismo dado (${a_('2 arriba')}, 1 al frente, 4 a la derecha) da vueltas a un bloque de cuatro casillas: derecha, fondo, izquierda y frente, y así vuelve a la salida. Da 70 vueltas. ¿Cuántos puntos tiene la cara de arriba al terminar?</p>
+      ${opcionesHTML(G[7].opts, 'fb')}<div id="tras" class="body" hidden>
+      <div class="eqs"><div class="eq">${a_('arriba')} tras 0, 1, 2, 3 vueltas: ${P7.arribas.map(a_).join(', ')}<span class="note">a la tercera vuelta el dado queda como empezó</span></div>
+      <div class="eq">70 = ${P7.periodo} · ${Math.floor(70/P7.periodo)} + ${70 % P7.periodo} → como tras ${70 % P7.periodo} vuelta: ${a_(String(P7.respuesta))}</div></div>
+      <p>Una vuelta al bloque no deja el dado igual: lo gira un tercio de vuelta alrededor de una diagonal. Cuando un movimiento se repite, se busca cada cuántas vueltas el dado queda como al inicio, y se usa el resto de la división.</p>${FUENTE}</div>`,
+    prep:yaR => E.config({ dados:[{ p:[0,0,0], d:D6, ver:['arriba', 'frente', 'derecha'], marca:{ arriba:'a' } }], cam:{ yaw:-.5, pitch:.8 },
+      tablero:{ w:2, h:2, caminos:[{ casillas:[[0,0],[1,0],[1,1],[0,1],[0,0]], color:'r' }], marcas:[{ c:[0, -.72], t:'salida' }] },
+      lect: yaR ? [L('a', 'Arriba tras cada vuelta', P7.arribas.join(' → ')), L('a', 'Tras 70 vueltas', String(P7.respuesta))] : [L('a', 'Tras 70 vueltas', '?')],
+      ley:[['r', 'r · una vuelta'], ['a', 'a · cara de arriba', 'pt']], desc:'Un bloque de 2 por 2 casillas con un camino en círculo y el dado en la salida.' }),
+    anima:fin => { const vs = [...'DAIF'.repeat(P7.periodo)].map(ch => ({ D:'derecha', A:'atras', I:'izquierda', F:'frente' })[ch]);
+      E.serie(vs.map((l, i) => f => E.volcar(0, l, 340, () => { if ((i + 1) % 4 === 0){ E.lect = [L('a', 'Arriba tras cada vuelta', P7.arribas.slice(0, (i + 1)/4 + 1).join(' → '))]; E.avisar(); } f(); })), () => {
+        E.lect = [L('a', 'Arriba tras cada vuelta', P7.arribas.join(' → ')), L('a', 'Tras 70 vueltas', String(P7.respuesta))]; E.avisar(); fin(); }); } },
+  { k:'Paso 8', t:'Un cubo, tres fotos', gate:G[8],
+    body:() => `<p class="problem">Este cubo tiene caras con 1 a 6 puntos, pero <b>no</b> es un dado de los de siempre. Son tres fotos del mismo cubo, cada una con la cara de arriba, la del frente y la de la derecha. ¿Qué cara está al otro lado de la de 1 punto?</p>
+      ${opcionesHTML(G[8].opts, 'fb')}<div id="tras" class="body" hidden>
+      <div class="eqs"><div class="eq">alrededor del 3: 1, 2, 4 y 5<span class="note">fotos 1 y 3; así el 6 queda frente al 3</span></div>
+      <div class="eq">girando sobre el 3: 1 → 2 (foto 1) y 5 → 4 (foto 3): la vuelta es 1, 2, 5, 4</div>
+      <div class="eq">${s_('1')} frente a ${s_(String(P8.respuesta))} · 2 frente a 4 · 3 frente a 6</div></div>
+      <p>Dos caras que nunca salen juntas pueden ser opuestas, pero no siempre: aquí el 4 y el 5 nunca salen junto al 1, y solo uno de los dos es su opuesto. Lo que decide es el orden de las caras alrededor de una que se repite en dos fotos. El motor probó las 720 formas de marcar el cubo: solo una da las tres fotos.</p>${FUENTE}</div>`,
+    prep:yaR => E.config({ dados:VISTAS8.map((v, i) => ({ p:[i*1.8, 0, 0], d: yaR ? cuboEn(v) : vista3(v), ver: yaR ? 'todas' : ['arriba', 'frente', 'derecha'], nombre:`foto ${i + 1}`,
+        marca: yaR ? Object.fromEntries(MD.CARAS.filter(c => [1, P8.respuesta].includes(cuboEn(v)[c])).map(c => [c, 's'])) : {} })), cam:{ yaw:-.6, pitch:.5 },
+      lect: yaR ? [L('s', 'Opuesta del 1', String(P8.respuesta)), L('ink', 'Cubos posibles', String(P8.cubos))] : [L('s', 'Opuesta del 1', '?')],
+      ley: yaR ? [['s', 's · el 1 y su opuesta', 'pt']] : [], desc:'Tres fotos de un mismo cubo: 1 arriba, 2 al frente y 3 a la derecha; 6 arriba, 2 al frente y 1 a la derecha; 5 arriba, 4 al frente y 3 a la derecha.' }),
+    anima:fin => { E.dados.forEach((D, i) => { D.d = cuboEn(VISTAS8[i]); D.ver = 'todas'; D.marca = Object.fromEntries(MD.CARAS.filter(c => [1, P8.respuesta].includes(D.d[c])).map(c => [c, 's'])); });
+      E.lect = [L('s', 'Opuesta del 1', String(P8.respuesta)), L('ink', 'Cubos posibles', String(P8.cubos))]; E.ley = [['s', 's · el 1 y su opuesta', 'pt']]; E.leyenda();
+      E.serie([f => E.camara(-2.2, -.5, 1500, f), f => E.camara(-.6, .5, 900, f)], fin); } },
+  { k:'Paso 9', t:'¿El mismo dado?', gate:G[9],
+    body:() => `<p class="problem">Los dos dados tienen las caras opuestas que suman 7. El dado A muestra 1 arriba, 2 al frente y 3 a la derecha. El dado B muestra 3 arriba, 2 al frente y 1 a la derecha. ¿Son el mismo dado, solo que girado?</p>
+      ${opcionesHTML(G[9].opts, 'fb')}<div id="tras" class="body" hidden>
+      <div class="eqs"><div class="eq">A con 1 arriba y 2 al frente: 3 a la derecha</div><div class="eq">B con 1 arriba y 2 al frente: ${MD.dado({ arriba:1, frente:2, espejo:true }).derecha} a la derecha</div></div>
+      <p>Con la misma regla del 7 hay dos dados distintos, uno espejo del otro: alrededor de la esquina del 1, el 2 y el 3, uno los tiene en el sentido de las agujas del reloj y el otro al revés. Por eso en los problemas se mira dónde está cada número en el dibujo, no solo que las opuestas sumen 7.</p>${FUENTE}</div>`,
+    prep:yaR => { const B = yaR ? MD.dado({ arriba:1, frente:2, espejo:true }) : DB9;
+      E.config({ dados:[{ p:[0,0,0], d:DA9, ver: yaR ? 'todas' : ['arriba', 'frente', 'derecha'], nombre:'A', marca: yaR ? { derecha:'ink' } : {} }, { p:[2,0,0], d:B, ver: yaR ? 'todas' : ['arriba', 'frente', 'derecha'], nombre:'B', marca: yaR ? { derecha:'ink' } : {} }], cam:{ yaw:-.5, pitch:.5 },
+        lect: yaR ? [L('ink', 'Derecha de A', '3'), L('ink', 'Derecha de B', String(B.derecha))] : [L('ink', '¿Iguales?', '?')], ley: yaR ? [['ink', 'cara de la derecha', 'pt']] : [],
+        desc:'Dos dados: A con 1 arriba, 2 al frente y 3 a la derecha; B con 3 arriba, 2 al frente y 1 a la derecha.' }); },
+    anima:fin => { E.dados.forEach(D => { D.ver = 'todas'; });
+      E.serie(GIRO9.map(l => f => E.volcar(1, l, 700, f, true)), () => { E.dados.forEach(D => { D.marca = { derecha:'ink' }; });
+        E.lect = [L('ink', 'Derecha de A', String(E.dados[0].d.derecha)), L('ink', 'Derecha de B', String(E.dados[1].d.derecha))]; E.ley = [['ink', 'cara de la derecha', 'pt']]; E.leyenda(); E.dibujar(); E.avisar(); fin(); }); } },
+  { k:'Paso 10', t:'Las fichas del dominó', gate:G[10],
+    body:() => `<p class="problem">Un dominó del 0 al 6 tiene una sola ficha por cada pareja de números: la 2|5 es la misma que la 5|2, y hay dobles como la 3|3. El 0 es la mitad en blanco. ¿Cuántas fichas tienen una suma de puntos que es un número primo?</p>
+      ${opcionesHTML(G[10].opts, 'fb')}<div id="tras" class="body" hidden>
+      <div class="eqs"><div class="eq">fichas: 7 + 6 + 5 + 4 + 3 + 2 + 1 = ${TODAS.respuesta}<span class="note">cada fila empieza en su doble</span></div>
+      <div class="eq">suma 2: 0|2, 1|1 · suma 3: 0|3, 1|2 · suma 5: 0|5, 1|4, 2|3</div>
+      <div class="eq">suma 7: 1|6, 2|5, 3|4 · suma 11: 5|6 → ${F_(String(P10.respuesta))} fichas</div></div>
+      <p>Para no repetir ni olvidar fichas, se ordenan con el número menor primero: la fila del 0 tiene 7 fichas, la del 1 tiene 6, y así hasta el 6|6. Con todas las fichas a la vista se cuentan sin perder ninguna.</p>${FUENTE}</div>`,
+    prep:yaR => E.config({ modo:'domino', dom:{ tipo:'juego', fichas:JUEGO, marca: yaR ? P10.fichas.map(f => JUEGO.findIndex(g => g[0] === f[0] && g[1] === f[1])) : null },
+      lect: yaR ? [L('ink', 'Fichas del juego', String(TODAS.respuesta)), L('F', 'Con suma prima', String(P10.respuesta))] : [L('F', 'Con suma prima', '?')],
+      ley: yaR ? [['F', 'F · suma prima', 'pt']] : [], desc:'Las fichas del dominó del 0 al 6 ordenadas en un triángulo: una fila por cada número menor.' }),
+    anima:fin => { const idx = P10.fichas.map(f => JUEGO.findIndex(g => g[0] === f[0] && g[1] === f[1])); E.dom.marca = [];
+      E.lect = [L('ink', 'Fichas del juego', String(TODAS.respuesta)), L('F', 'Con suma prima', '0')]; E.ley = [['F', 'F · suma prima', 'pt']]; E.leyenda();
+      E.serie(idx.map((j, n) => f => E.animar(160, () => {}, () => { E.dom.marca.push(j); E.lect[1] = L('F', 'Con suma prima', String(n + 1)); E.dibujar(); E.avisar(); f(); })), fin); } },
+];
+
+/* ----- navegación ----- */
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = false;
+  s.prep(!!S.pred[s.gate.id]);
+  pintarDots();
+  E.compactar(!S.pred[s.gate.id]);
+  prediccion(s);
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = !S.pred[s.gate.id] || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = p === P.ok ? P.fb[p] : `Elegiste la ${p.toUpperCase()}. ${P.fb[p]} La correcta está marcada.`; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { if (S.step !== paso) return; S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (!S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos: caras pegadas que suman 8, el producto de arriba, dos dados que ruedan, la cadena del dominó y cuatro
+   dados con tres pistas. La escena cambia recién después de responder. Un experimento se abre solo si los anteriores
+   ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', 'mandos2');
+const { v:v_, o:o_, a:a_, s:s_, T:T_, k:k_, r:r_, x:x_ } = W_;
+const TORRE = [[0,0,0],[0,0,1],[0,0,2]], FILA = [[0,0,0],[1,0,0],[2,0,0]];
+const Q1 = MD.optimizarDados({ dados:TORRE, condicion:{ contacto:8 }, objetivo:[[0, 'abajo'], [2, 'abajo']], extremo:'min' });
+const Q2 = MD.optimizarDados({ dados:FILA, condicion:{ productoArriba:36 }, objetivo:'mesa', extremo:'min' });
+const IA = { arriba:2, frente:3 }, IB = { arriba:6, frente:4 }, CA = 'DDA', CB = 'ADD';
+const Q3 = MD.rodarDos({ a:{ inicio:IA, camino:CA }, b:{ inicio:IB, camino:CB } });
+const RA = MD.rodarCamino({ inicio:IA, camino:CA }), RB = MD.rodarCamino({ inicio:IB, camino:CB });
+const CAD = [[2, 5], null, null, [3, 6], null], Q4 = MD.cadenaDomino({ cadena:CAD, total:40, ficha:2 });
+const CONDS = [{ id:'sumas', suma:['A', 'D'], igual:['B', 'C'] }, { id:'parB', par:'B' }, { id:'doble', doble:['A', 'D'] }];
+const Q5 = MD.deducirPuntajes({ nombres:['A', 'B', 'C', 'D'], condiciones:CONDS, pregunta:'D' });
+const caso = s => `A = ${s.A}, B = ${s.B}, C = ${s.C}, D = ${s.D}`;
+const marcarK = (cl, k) => { const m = {}; for (const c of MD.CARAS) if (cl[k][c] === 'dado') m[c] = 'k'; return m; };
+const FUENTE = '<p class="fuente">Las opciones incorrectas son hipótesis nuestras sobre errores de los postulantes.</p>';
+const LT = (k, nombre, valor) => [k, nombre, valor];
+const DIRL = { D:'derecha', I:'izquierda', A:'atras', F:'frente' };
+// posiciones de salida en el tablero del experimento 3
+const OA = [0, 0], OB = [0, 2];
+const enTablero = (o, cas) => cas.map(([x, y]) => [x + o[0], y + o[1]]);
+
+const EXPS = [
+  { id:'contacto-ocho', corto:'Caras pegadas que suman 8',
+    q:`Tres dados forman una torre. Cada par de ${k_('caras pegadas')} suma 8 puntos. ¿Cuál es la menor suma posible entre la cara que toca la mesa y la cara de abajo del dado de encima?`,
+    opts:[['a', String(Q1.errores.sinSiete), 'RME10-sin-pares-de-siete', 'hipotesis'], ['b', String(Q1.respuesta)],
+          ['c', String(Q1.errores.alReves), 'RME129-el-otro-extremo', 'hipotesis'], ['d', String(Q1.errores.sinCondicion), 'RME126-sin-la-condicion', 'hipotesis']],
+    ok:'b',
+    fb:{ a:`${Q1.errores.sinSiete} sale eligiendo las caras como si cada una fuera libre. Pero en el dado del medio la cara de arriba y la de abajo son opuestas y suman 7, y en el de abajo la que toca la mesa es la opuesta de la de arriba. La menor suma es ${Q1.respuesta}.`,
+         c:`${Q1.errores.alReves} es la mayor suma posible. La menor es ${Q1.respuesta}.`,
+         d:`${Q1.errores.sinCondicion} sale olvidando que las caras pegadas suman 8. Con esa regla, la menor suma es ${Q1.respuesta}.` },
+    antes:ya => E.config({ dados:TORRE.map((p, k) => ({ p, d: ya ? Q1.ejemplo[k] : null, marca: ya ? Object.assign(marcarK(Q1.clases, k), k === 0 ? { abajo:'o' } : k === 2 ? { abajo:'o' } : {}) : {} })), cam:{ yaw:-.6, pitch:.5 }, holgura:true, separable:ya, sep: ya ? 1 : 0,
+      lect: ya ? [LT('k', 'Pegadas', `${Q1.ejemplo[0].arriba} + ${Q1.ejemplo[1].abajo} = 8 · ${Q1.ejemplo[1].arriba} + ${Q1.ejemplo[2].abajo} = 8`), LT('o', 'Las dos caras', `${Q1.ejemplo[0].abajo} + ${Q1.ejemplo[2].abajo} = ${Q1.respuesta}`)] : [LT('k', 'Cada par pegado', '8'), LT('o', 'Lo menos', '?')],
+      ley: ya ? [['k', 'k · caras pegadas', 'pt'], ['o', 'o · las dos caras de la pregunta', 'pt']] : [], desc:'Una torre de tres dados con las caras en blanco.' }),
+    despues:fin => { const x = EXPS[0]; x.antes(true); E.sep = 0; E.serie([f => E.separar(true, 900, f), f => E.camara(-.9, -.45, 1000, f)], fin); },
+    exp:() => `<div class="eqs"><div class="eq">${a_('a')} + (8 − ${a_('a')}) → medio: abajo 8 − ${a_('a')}, arriba ${s_('7')} − (8 − ${a_('a')}) = ${a_('a')} − 1</div>
+      <div class="eq">encima: abajo = 8 − (${a_('a')} − 1) = 9 − ${a_('a')}<span class="note">${a_('a')}: la cara de arriba del dado de abajo</span></div>
+      <div class="eq">${o_('mesa')} + ${o_('abajo de encima')} = (${s_('7')} − ${a_('a')}) + (9 − ${a_('a')}) = 16 − 2${a_('a')}</div>
+      <div class="eq">${a_('a')} = 6 → ${o_('1')} + ${o_('3')} = ${o_(String(Q1.respuesta))}</div></div>
+      <p>La regla del 7 encadena todo: con la cara de arriba del dado de abajo se conocen todas las caras ocultas de la torre. El motor probó las 24 posiciones de cada dado.</p>${FUENTE}` },
+  { id:'producto-arriba', corto:'El producto de arriba',
+    q:`Tres dados están en fila sobre la mesa. Al multiplicar los puntos de sus caras de arriba se obtiene 36. ¿Cuál es la menor suma posible de los puntos de las caras que tocan la mesa?`,
+    opts:[['a', String(Q2.errores.alReves), 'RME129-el-otro-extremo', 'hipotesis'], ['b', String(Q2.errores.sinSiete), 'RME10-abajo-cualquiera', 'hipotesis'], ['c', String(Q2.respuesta)]],
+    ok:'c',
+    fb:{ a:`${Q2.errores.alReves} sale con 4, 3 y 3 arriba, la menor suma arriba. Para que abajo haya poco, arriba debe haber mucho: 6, 6 y 1. Abajo quedan 1, 1 y 6: ${Q2.respuesta}.`,
+         b:`${Q2.errores.sinSiete} pone 1 abajo de cada dado sin mirar qué hay arriba. Pero abajo está la opuesta: 7 menos la de arriba. La menor suma es ${Q2.respuesta}.` },
+    antes:ya => E.config({ dados:FILA.map((p, k) => ({ p, d: ya ? Q2.ejemplo[k] : null, marca: ya ? { arriba:'a', abajo:'o' } : {} })), cam:{ yaw:-.6, pitch:.5 },
+      lect: ya ? [LT('a', 'Arriba', Q2.ejemplo.map(d => d.arriba).join(' · ') + ' = 36'), LT('o', 'Abajo', Q2.ejemplo.map(d => d.abajo).join(' + ') + ' = ' + Q2.respuesta)] : [LT('a', 'Producto de arriba', '36'), LT('o', 'Abajo, lo menos', '?')],
+      ley: ya ? [['a', 'a · caras de arriba', 'pt'], ['o', 'o · caras sobre la mesa', 'pt']] : [], desc:'Tres dados en fila con las caras en blanco.' }),
+    despues:fin => { const x = EXPS[1]; x.antes(true); E.serie([f => E.camara(-.6, -.6, 1100, f)], fin); },
+    exp:() => `<div class="eqs"><div class="eq">${o_('abajo')} = ${s_('7')} − ${a_('arriba')} → suma de abajo = 21 − suma de ${a_('arriba')}</div>
+      <div class="eq">36 = 6 · 6 · 1 = 6 · 3 · 2 = 4 · 3 · 3 → la mayor suma arriba: 6 + 6 + 1 = 13</div>
+      <div class="eq">${o_('abajo')} = 21 − 13 = ${o_(String(Q2.respuesta))}</div></div>
+      <p>Una condición sobre las caras de arriba es una condición sobre las de abajo, porque cada una es 7 menos la otra.</p>${FUENTE}` },
+  { id:'dos-dados-ruedan', corto:'Dos dados que ruedan', unidad:'razonamiento-matematico.rutas-y-visualizacion-espacial',
+    q:`Dos dados ruedan por un tablero. El dado A sale con ${a_('2 arriba')}, 3 al frente y 1 a la derecha, y rueda derecha, derecha, fondo. El dado B sale con ${a_('6 arriba')}, 4 al frente y 5 a la derecha, y rueda fondo, derecha, derecha. ¿Cuánto suman las caras de arriba de los dos al terminar?`,
+    opts:[['a', String(Q3.errores.soloArriba), 'RME121-solo-la-de-arriba', 'hipotesis'], ['b', String(Q3.errores.alReves), 'RME13-sube-la-de-adelante', 'hipotesis'], ['c', String(Q3.respuesta)]],
+    ok:'c',
+    fb:{ a:`${Q3.errores.soloArriba} sale siguiendo solo la cara de arriba y dejando los costados como al inicio. Los costados cambian en cada vuelco. Al final, arriba hay ${Q3.arribaA} y ${Q3.arribaB}: ${Q3.respuesta}.`,
+         b:`${Q3.errores.alReves} sale si en cada vuelco sube la cara del lado hacia el que rueda. Sube la del lado contrario. Al final, arriba hay ${Q3.arribaA} y ${Q3.arribaB}: ${Q3.respuesta}.` },
+    antes:ya => E.config({ dados:[{ p: (ya ? enTablero(OA, RA.casillas)[3] : OA).concat([0]), d: ya ? RA.final : MD.dado(IA), ver: ya ? 'todas' : ['arriba', 'frente', 'derecha'], nombre:'A', marca:{ arriba:'a' } },
+        { p: (ya ? enTablero(OB, RB.casillas)[3] : OB).concat([0]), d: ya ? RB.final : MD.dado(IB), ver: ya ? 'todas' : ['arriba', 'frente', 'derecha'], nombre:'B', marca:{ arriba:'a' } }],
+      cam:{ yaw:-.45, pitch:.8 }, tablero:{ w:3, h:4, caminos:[{ casillas:enTablero(OA, RA.casillas) }, { casillas:enTablero(OB, RB.casillas) }] },
+      lect: ya ? [LT('a', 'Arriba de A', RA.arribas.join(' → ')), LT('a', 'Arriba de B', RB.arribas.join(' → ')), LT('a', 'Suma al final', String(Q3.respuesta))] : [LT('a', 'Suma de arriba al final', '?')],
+      ley:[['r', 'r · camino de cada dado'], ['a', 'a · caras de arriba', 'pt']], desc:'Un tablero de 3 por 4 casillas con dos dados, A y B, y sus caminos.' }),
+    despues:fin => { const x = EXPS[2]; x.antes(false); E.dados.forEach(D => { D.ver = ['arriba', 'frente', 'derecha']; });
+      const pasos = [...CA].map(ch => f => E.volcar(0, DIRL[ch], 480, f)).concat([...CB].map(ch => f => E.volcar(1, DIRL[ch], 480, f)));
+      E.serie(pasos, () => { x.antes(true); fin(); }); },
+    exp:() => `<div class="eqs"><div class="eq">A: ${RA.arribas.map(a_).join(' → ')}</div><div class="eq">B: ${RB.arribas.map(a_).join(' → ')}</div>
+      <div class="eq">${a_(String(Q3.arribaA))} + ${a_(String(Q3.arribaB))} = ${a_(String(Q3.respuesta))}</div></div>
+      <p>Con dos dados se sigue a cada uno por separado: tres caras de una esquina, completadas con la regla del 7, y en cada vuelco sube la del lado contrario al movimiento.</p>${FUENTE}` },
+  { id:'cadena-domino', corto:'La cadena del dominó',
+    q:`Una cadena tiene cinco fichas en fila; las mitades que se tocan tienen los mismos puntos. Se ven la 1.ª (2|5) y la 4.ª (3|6); las otras tres están boca abajo. Las cinco fichas suman 40 puntos. ¿Cuál es la menor cantidad de puntos que puede tener la ${x_('3.ª ficha')}?`,
+    opts:[['a', String(Q4.errores.repite), 'RME12-repite-ficha', 'hipotesis'], ['b', String(Q4.respuesta)],
+          ['c', String(Q4.errores.sinEmpalme), 'RME128-sin-empalme', 'hipotesis'], ['d', String(Q4.errores.alReves), 'RME129-el-otro-extremo', 'hipotesis']],
+    ok:'b',
+    fb:{ a:`${Q4.errores.repite} sale con la 3.ª ficha 2|3, pero entonces la 2.ª sería 5|2, que es la misma ficha que la 1.ª (2|5). Las fichas no se repiten. Lo menos es ${Q4.respuesta}.`,
+         c:`${Q4.errores.sinEmpalme} sale eligiendo cada ficha oculta sin mirar a sus vecinas. Pero la 3.ª ficha termina en 3, porque toca a la 4.ª (3|6). Lo menos es ${Q4.respuesta}.`,
+         d:`${Q4.errores.alReves} es lo más que puede tener. Lo menos es ${Q4.respuesta}.` },
+    antes:ya => E.config({ modo:'domino', dom:{ tipo:'cadena', fichas: ya ? Q4.ejemplo : CAD, x:2, tachada: ya ? [5, 2] : null },
+      lect: ya ? [LT('T', 'Total', '40'), LT('x', '3.ª ficha (lo menos)', `${Q4.ejemplo[2].join('|')} = ${Q4.respuesta}`), LT('ink', 'Cadenas posibles', String(Q4.cadenas))] : [LT('T', 'Total', '40'), LT('x', '3.ª ficha (lo menos)', '?')],
+      ley:[['x', 'x · la ficha de la pregunta', 'pt']], desc:'Una cadena de cinco fichas: la 1.ª es 2|5, la 4.ª es 3|6 y las otras tres están boca abajo.' }),
+    despues:fin => { const x = EXPS[3]; x.antes(false); const F = E.dom.fichas = CAD.slice();
+      E.serie([1, 2, 4].map(i => f => E.animar(450, () => {}, () => { F[i] = Q4.ejemplo[i]; E.dibujar(); f(); })), () => { x.antes(true); fin(); }); },
+    exp:() => `<div class="eqs"><div class="eq">2|5 · 5|y · y|3 · 3|6 · 6|z<span class="note">las mitades que se tocan son iguales</span></div>
+      <div class="eq">${T_('40')} = 7 + (5 + y) + (y + 3) + 9 + (6 + z) = 30 + 2y + z → 2y + z = 10</div>
+      <div class="eq">y = 2 → 5|2 repite la 2|5 ✗ · y = 3 → z = 4: ${x_('3|3')} = ${x_(String(Q4.respuesta))}</div></div>
+      <p>Abajo del dibujo está tachada la ficha 5|2: es la que haría falta para que la 3.ª valga 5, y ya está en la cadena como 2|5. El motor probó todas las cadenas: hay ${Q4.cadenas} que suman 40.</p>${FUENTE}` },
+  { id:'cuatro-dados-pistas', corto:'Cuatro dados y tres pistas',
+    q:'Se lanzan cuatro dados, A, B, C y D, y salen cuatro puntajes distintos. Se sabe que A + D = B + C, que B es par y que A es el doble de D. ¿Cuántos puntos tiene D?',
+    opts:[['a', `${Q5.errores.conRepetidos} (con ${caso(Q5.casos.conRepetidos)})`, 'AR19-repite-puntajes', 'parcial'],
+          ['b', `${Q5.errores.sin_parB} (con ${caso(Q5.casos.sin_parB)})`, 'RME126-olvida-la-paridad', 'hipotesis'],
+          ['c', `${Q5.respuesta} (con ${caso(Q5.valores)})`],
+          ['d', `${Q5.errores.sin_doble} (con ${caso(Q5.casos.sin_doble)})`, 'RME126-olvida-el-doble', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Ese caso cumple las tres pistas, pero repite puntajes (A y B son 2; C y D son 1), y los cuatro deben ser distintos.',
+         b:'Ese caso cumple que A + D = B + C y que A es el doble de D, pero B es impar.',
+         d:'Ese caso cumple que A + D = B + C y que B es par, pero A no es el doble de D.' },
+    antes:ya => E.config({ modo:'puntajes', pun:{ nombres:['A', 'B', 'C', 'D'], valores: ya ? ['A', 'B', 'C', 'D'].map(n => Q5.valores[n]) : [null, null, null, null] },
+      lect: ya ? [LT('ink', 'A + D', `${Q5.valores.A} + ${Q5.valores.D} = ${Q5.valores.A + Q5.valores.D}`), LT('ink', 'B + C', `${Q5.valores.B} + ${Q5.valores.C} = ${Q5.valores.B + Q5.valores.C}`)] : [LT('ink', 'D', '?')],
+      desc:'Cuatro dados, A, B, C y D, con los puntajes ocultos.' }),
+    despues:fin => { const x = EXPS[4]; x.antes(false); const vals = E.pun.valores;
+      E.serie(['D', 'A', 'B', 'C'].map(n => f => E.animar(420, () => {}, () => { vals[['A', 'B', 'C', 'D'].indexOf(n)] = Q5.valores[n]; E.dibujar(); f(); })), () => { x.antes(true); fin(); }); },
+    exp:() => `<div class="eqs"><div class="eq">A = 2D → (A, D) = (2, 1), (4, 2) o (6, 3)</div>
+      <div class="eq">(2, 1): B + C = 3 con B par → B = 2, repite A ✗ · (4, 2): B + C = 6 con B par y sin 2 ni 4 → B = 6, C = 0 ✗</div>
+      <div class="eq">(6, 3): B + C = 9 con B par y sin 6 → B = 4, C = 5 ✓ → D = ${Q5.respuesta}</div></div>
+      <p>Se empieza por la pista que deja menos casos (A = 2D) y se revisan todos: el primer caso que parece funcionar puede romper otra pista. El motor probó las 360 formas de dar puntajes distintos a los cuatro dados: solo una cumple todo.</p>
+      <p class="fuente">La opción A es un error de repetición que un estudio de combinatoria describió y observó, sin dar su frecuencia (Navarro-Pelayo y otros); las demás opciones incorrectas son hipótesis nuestras.</p>` },
+];
+[['contacto-ocho', 'b'], ['producto-arriba', 'c'], ['dos-dados-ruedan', 'a'], ['cadena-domino', 'b'], ['cuatro-dados-pistas', 'c']].forEach(([id, l]) => mover(EXPS.find(x => x.id === id), l));
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = false;
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => x.despues(() => E.avisar()), () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    Celular.alResponder($('cv2'), () => x.despues(() => E.avisar()), () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

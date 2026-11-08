@@ -1,0 +1,1271 @@
+<!doctype html>
+<html lang="es" data-curso="razonamiento-matematico">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El tablero que se parte en piezas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), cada uno con UN significado:
+   A azul: la pieza o zona que se mide (la pieza original, la que va como en el dibujo, el triángulo, el cuadrado libre);
+   B naranja: la otra pieza o zona (la copia girada o volteada, lo que se resta);
+   K fucsia: lo que comparten dos piezas o dos lados (el corte, el arco común, las esquinas de dos lados);
+   R turquesa: los tramos rectos de un borde con arcos; N rojo: lo que no cuenta (ternas alineadas, cuadrados con sombra);
+   en la escalera, H verde las huellas, C violeta las contrahuellas y S café los costados. El total va en tinta.
+   ΔE00 ≥ 25 entre los que salen juntos (A, B, K, R / A, B, K / A, N / H, C, S); contraste AA en claro y oscuro. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#ecdfd6;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-A:#1f5fbf; --c-B:#a65300; --c-K:#b3246b; --c-R:#0f766e; --c-N:#c0364a; --c-H:#46701a; --c-C:#6b3dbd; --c-S:#8f5800;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#3a2f48;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-K:#ff86bd; --c-R:#5ed9c8; --c-N:#f17384; --c-H:#a3d65e; --c-C:#b48cff; --c-S:#ffc04d;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#3a2f48;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-K:#ff86bd; --c-R:#5ed9c8; --c-N:#f17384; --c-H:#a3d65e; --c-C:#b48cff; --c-S:#ffc04d;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 8%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
+.v-K{color:var(--c-K); background:color-mix(in srgb, var(--c-K) 8%, transparent)}
+.v-R{color:var(--c-R); background:color-mix(in srgb, var(--c-R) 8%, transparent)}
+.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 8%, transparent)}
+.v-H{color:var(--c-H); background:color-mix(in srgb, var(--c-H) 8%, transparent)}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 8%, transparent)}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
+.opt .v{background:transparent}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:block; line-height:2.1; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; line-height:1.4; font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.6em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em; align-self:stretch; text-align:center}
+.frac > span:last-child{padding:0 .25em}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:20px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.ctl{display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px}
+.ctl label{font-weight:700; font-size:.92rem}
+.ctl input[type=range]{flex:1 1 160px; min-width:0; accent-color:var(--ink); min-height:32px}
+.refl{display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px 10px; border-radius:16px; background:var(--paper); border:1px solid var(--line)}
+.refl button, .mini{font:700 .9rem var(--font); min-height:40px; min-width:40px; padding:6px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer}
+.refl button:disabled, .mini:disabled{opacity:.45; cursor:not-allowed}
+.refl .rn{font-weight:700; font-size:.92rem; font-variant-numeric:tabular-nums; flex:1 1 14ch}
+.lectura{font-weight:700; font-size:.95rem; padding:8px 12px; border-radius:14px; background:var(--paper); border:1px dashed var(--line); margin:0}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+<link rel="stylesheet" href="../../nucleo/pegatina.css">
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Trazos y perímetros · Problemas tipo admisión</p>
+      <h1>El tablero que se parte en piezas</h1>
+      <p class="sub">Cortes por la cuadrícula, piezas que se giran y se voltean, escaleras, arcos y puntos. Primero predices; después el dibujo se colorea y recorre los casos uno por uno.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del paso">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del paso" tabindex="0"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="leg1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido" tabindex="0"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="leg2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/cuadricula-piezas">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'cuadricula-piezas', unidad: 'razonamiento-matematico.trazos-y-perimetros', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Todo lo que se cuenta o se mide sale de MotorPiezas (motor.js): piezas, cortes, congruencias, particiones,
+   rearmados, áreas, perímetros con arcos, fracciones y las listas que recorre el reflector. Aquí solo se pinta. */
+const M = MotorPiezas;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = Celular.variable;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+function fmt(n, d){
+  if (n === null || n === undefined || !Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const pi = (x) => (x.a ? fmt(x.a) + (x.b ? ' + ' : '') : '') + (x.b ? (x.b === 1 ? '' : fmt(x.b)) + 'π' : (x.a ? '' : '0'));
+const fq = x => `${x.num}/${x.den}`;
+const CLAVES = ['A','B','K','R','N','H','C','S'];
+function colores(hl){
+  const o = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'), font:css('--font'), hl };
+  CLAVES.forEach(k => o[k] = css('--c-' + k));
+  return o;
+}
+const LEYENDA = { A:'la pieza o zona que se mide', B:'la otra pieza, girada o volteada', K:'lo compartido: el corte o el arco común', R:'tramos rectos',
+  N:'lo que no cuenta', H:'huellas', C:'contrahuellas', S:'costados', L:'la figura' };
+function leyenda(el, claves, textos){ el.innerHTML = (claves || []).map(k => `<span><i style="background:${k === 'L' ? 'var(--ink)' : 'var(--c-' + k + ')'}"></i>${(textos && textos[k]) || LEYENDA[k]}</span>`).join(''); }
+const NOMBRE_ISO = { identidad:'como en el dibujo', giro90:'girada 90°', giro180:'girada 180°', giro270:'girada 270°', reflejo:'volteada',
+  'reflejo-giro90':'volteada y girada 90°', 'reflejo-giro180':'volteada y girada 180°', 'reflejo-giro270':'volteada y girada 270°' };
+const COMO = { identidad:'la B es la A corrida, sin girar', giro90:'la B es la A girada 90°', giro180:'la B es la A girada media vuelta', giro270:'la B es la A girada 270°',
+  reflejo:'la B es la A volteada', 'reflejo-giro90':'la B es la A volteada y girada 90°', 'reflejo-giro180':'la B es la A volteada y girada media vuelta', 'reflejo-giro270':'la B es la A volteada y girada 270°' };
+
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0, compacto:false };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(Celular.alto(alto(W), L.compacto)), dpr = Celular.dpr();
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === L.compacto) return; L.compacto = on; L.resize(); };
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+const ALTO = W => (W >= 560 ? clamp(W*0.62, 320, 440) : 320);
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, tam){
+  ctx.font = `800 ${tam || 12}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+function contador(ctx, c, t, color){
+  if (!t) return;
+  ctx.font = `800 14px ${c.font}`; const w = ctx.measureText(t).width;
+  ctx.save(); ctx.fillStyle = c.card; ctx.globalAlpha = .94; ctx.beginPath(); ctx.roundRect(8, 8, w + 20, 28, 14); ctx.fill(); ctx.restore();
+  ctx.fillStyle = color || c.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(t, 18, 22);
+}
+const grueso = (c, k) => (c.hl && c.hl === k ? 1.6 : 1);
+const realce = (c, k) => (c.hl && c.hl === k ? 1.5 : 1);
+
+/* ---------- Vista «tablero»: casillas, piezas, cortes, sombra ----------
+   V = { tipo:'tablero', m, n, region (casillas; por defecto todo el tablero), caja:{ f0, f1, c0, c1 },
+         piezas:[{ celdas, k, df, dc, a }], cortes:[[x1, y1, x2, y2]], kCorte, sombra:[casillas], marcos:[{ f, c, k, col }],
+         esquinas:[casillas], aparte:{ celdas, t }, cursor:{ x, y, lapiz }, puntos (muestra los puntos de la cuadrícula),
+         cuenta:{ t, k }, rotulos:[{ x, y, t, k }] } */
+function geomTablero(L, V){
+  const caja = V.caja || { f0:0, f1:V.m, c0:0, c1:V.n };
+  const anchoAparte = V.aparte ? 0.34 : 0;
+  const padX = 22, padTop = V.cuenta ? 46 : 24, padBot = 24;
+  const Wd = L.W*(1 - anchoAparte) - 2*padX, Hd = L.H - padTop - padBot;
+  const s = Math.min(Wd/(caja.c1 - caja.c0), Hd/(caja.f1 - caja.f0), V.maxEscala || 64);
+  const ox = padX + (Wd - s*(caja.c1 - caja.c0))/2 - caja.c0*s, oy = padTop + (Hd - s*(caja.f1 - caja.f0))/2 - caja.f0*s;
+  return { s, ox, oy, X: x => ox + x*s, Y: y => oy + y*s, de: (px, py) => ({ x:(px - ox)/s, y:(py - oy)/s }) };
+}
+function contorno(ctx, G, celdas, df, dc){
+  const S = new Set(celdas.map(q => q[0] + ',' + q[1]));
+  ctx.beginPath();
+  for (const [f, c] of celdas){
+    const y = f + df, x = c + dc;
+    if (!S.has((f - 1) + ',' + c)){ ctx.moveTo(G.X(x), G.Y(y)); ctx.lineTo(G.X(x + 1), G.Y(y)); }
+    if (!S.has((f + 1) + ',' + c)){ ctx.moveTo(G.X(x), G.Y(y + 1)); ctx.lineTo(G.X(x + 1), G.Y(y + 1)); }
+    if (!S.has(f + ',' + (c - 1))){ ctx.moveTo(G.X(x), G.Y(y)); ctx.lineTo(G.X(x), G.Y(y + 1)); }
+    if (!S.has(f + ',' + (c + 1))){ ctx.moveTo(G.X(x + 1), G.Y(y)); ctx.lineTo(G.X(x + 1), G.Y(y + 1)); }
+  }
+  ctx.stroke();
+}
+function vistaTablero(L, c, V){
+  const { ctx } = L, G = geomTablero(L, V); V._G = G;
+  const region = V.region || (() => { const o = []; for (let f = 0; f < V.m; f++) for (let k = 0; k < V.n; k++) o.push([f, k]); return o; })();
+  const s = G.s;
+  // fondo de la región y su cuadrícula
+  ctx.fillStyle = c.card; for (const [f, k] of region) ctx.fillRect(G.X(k), G.Y(f), s, s);
+  // sombra (rayada)
+  for (const [f, k] of V.sombra || []){
+    ctx.save(); ctx.fillStyle = c.muted; ctx.globalAlpha = .45; ctx.fillRect(G.X(k), G.Y(f), s, s); ctx.restore();
+    ctx.save(); ctx.beginPath(); ctx.rect(G.X(k), G.Y(f), s, s); ctx.clip(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .35; ctx.lineWidth = 1.5;
+    for (let t = -s; t < s; t += 7) linea(ctx, G.X(k) + t, G.Y(f) + s, G.X(k) + t + s, G.Y(f)); ctx.restore();
+  }
+  // piezas
+  for (const p of V.piezas || []){
+    const col = p.k ? c[p.k] : c.muted, df = p.df || 0, dc = p.dc || 0;
+    ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = (p.a === undefined ? .32 : p.a)*(p.k ? realce(c, p.k) : 1);
+    for (const [f, k] of p.celdas) ctx.fillRect(G.X(k + dc), G.Y(f + df), s, s); ctx.restore();
+  }
+  for (const [f, k] of V.esquinas || []){ ctx.save(); ctx.fillStyle = c.K; ctx.globalAlpha = .42*realce(c, 'K'); ctx.fillRect(G.X(k), G.Y(f), s, s); ctx.restore(); }
+  // cuadrícula
+  ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+  for (const [f, k] of region) ctx.strokeRect(G.X(k), G.Y(f), s, s);
+  for (const p of V.piezas || []){
+    if (!p.df && !p.dc) continue;
+    ctx.strokeStyle = c.grid; for (const [f, k] of p.celdas) ctx.strokeRect(G.X(k + p.dc), G.Y(f + p.df), s, s);
+  }
+  // borde de la región
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  if (!V.sinBorde) contorno(ctx, G, region, 0, 0);
+  // contornos de las piezas
+  for (const p of V.piezas || []){
+    if (p.sinContorno) continue;
+    ctx.save(); ctx.strokeStyle = p.k ? c[p.k] : c.ink; ctx.lineWidth = (p.k ? 3 : 2)*(p.k ? grueso(c, p.k) : 1); contorno(ctx, G, p.celdas, p.df || 0, p.dc || 0); ctx.restore();
+  }
+  // cortes
+  if (V.cortes && V.cortes.length){
+    ctx.save(); ctx.strokeStyle = c[V.kCorte || 'K']; ctx.lineWidth = 5*grueso(c, V.kCorte || 'K'); ctx.lineCap = 'round';
+    for (const [x1, y1, x2, y2] of V.cortes) linea(ctx, G.X(x1), G.Y(y1), G.X(x2), G.Y(y2));
+    ctx.restore();
+  }
+  // marcos (cuadrados del reflector)
+  for (const q of V.marcos || []){
+    ctx.save(); ctx.fillStyle = c[q.k]; ctx.globalAlpha = .26*realce(c, q.k); ctx.fillRect(G.X(q.c), G.Y(q.f), q.l*s, q.l*s); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c[q.k]; ctx.lineWidth = 4*grueso(c, q.k); ctx.strokeRect(G.X(q.c) + 2, G.Y(q.f) + 2, q.l*s - 4, q.l*s - 4); ctx.restore();
+  }
+  // puntos de la cuadrícula (para cortar)
+  if (V.puntos){
+    ctx.fillStyle = c.ink;
+    for (let y = 0; y <= V.m; y++) for (let x = 0; x <= V.n; x++){ ctx.beginPath(); ctx.arc(G.X(x), G.Y(y), 2.6, 0, Math.PI*2); ctx.fill(); }
+  }
+  if (V.cursor){
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(G.X(V.cursor.x), G.Y(V.cursor.y), 9, 0, Math.PI*2); ctx.stroke();
+    if (V.cursor.lapiz){ ctx.fillStyle = c.K; ctx.beginPath(); ctx.arc(G.X(V.cursor.x), G.Y(V.cursor.y), 5, 0, Math.PI*2); ctx.fill(); }
+    ctx.restore();
+  }
+  // la pieza aparte (a la derecha)
+  if (V.aparte){
+    const cs = V.aparte.celdas, h = Math.max(...cs.map(q => q[0])) + 1, w = Math.max(...cs.map(q => q[1])) + 1;
+    const sz = Math.min(s*0.8, (L.W*0.3 - 20)/w, (L.H - 90)/h), x0 = L.W*0.83 - w*sz/2, y0 = L.H/2 - h*sz/2 + 8;
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .14; for (const [f, k] of cs) ctx.fillRect(x0 + k*sz, y0 + f*sz, sz, sz); ctx.restore();
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; for (const [f, k] of cs) ctx.strokeRect(x0 + k*sz, y0 + f*sz, sz, sz);
+    rotulo(ctx, c, x0 + w*sz/2, y0 - 16, V.aparte.t || 'la pieza', c.ink, 'center', 12);
+  }
+  for (const r of V.rotulos || []) rotulo(ctx, c, G.X(r.x), G.Y(r.y), r.t, r.k ? c[r.k] : c.ink, r.align || 'center', r.tam || 12);
+  if (V.cuenta) contador(ctx, c, V.cuenta.t, V.cuenta.k ? c[V.cuenta.k] : c.ink);
+}
+
+/* ---------- Vista «escalera»: la escalera maciza en 3D, con giro ----------
+   V = { tipo:'escalera', p, d (huella), a (contrahuella), b (ancho), yaw (grados), colorear } */
+function vistaEscalera(L, c, V){
+  const { ctx, W, H } = L, p = V.p, d = V.d, a = V.a, b = V.b;
+  const th = V.yaw*Math.PI/180, ph = 28*Math.PI/180, ct = Math.cos(th), st = Math.sin(th);
+  // centro de la escalera en el origen
+  const cx = p*d/2, cy = p*a/2, cz = b/2;
+  const rot = (x, y, z) => { x -= cx; y -= cy; z -= cz; const xr = x*ct + z*st, zr = -x*st + z*ct; return { u: zr, v: y*Math.cos(ph) + xr*Math.sin(ph), prof: xr*Math.cos(ph) - y*Math.sin(ph) }; };
+  const cam = [-Math.cos(ph), Math.sin(ph)];
+  const ve = n => { const nx = n[0]*ct + n[2]*st; return cam[0]*nx + cam[1]*n[1] > 1e-9; };
+  // escala: que quepa todo
+  const esq = []; for (const x of [0, p*d]) for (const y of [0, p*a]) for (const z of [0, b]) esq.push(rot(x, y, z));
+  const us = esq.map(q => q.u), vs = esq.map(q => q.v);
+  const s = Math.min((W - 60)/(Math.max(...us) - Math.min(...us)), (H - 80)/(Math.max(...vs) - Math.min(...vs)));
+  const mx = (Math.max(...us) + Math.min(...us))/2, my = (Math.max(...vs) + Math.min(...vs))/2;
+  const P = (x, y, z) => { const q = rot(x, y, z); return [W/2 + (q.u - mx)*s, H/2 + 6 - (q.v - my)*s]; };
+  // pared del fondo y piso
+  const pared = [[p*d, 0, 0], [p*d, 0, b], [p*d, p*a*1.08, b], [p*d, p*a*1.08, 0]];
+  if (ve([-1, 0, 0])){ ctx.save(); ctx.fillStyle = c.line; ctx.globalAlpha = .8; ctx.beginPath(); pared.forEach((q, i) => { const r = P(...q); i ? ctx.lineTo(r[0], r[1]) : ctx.moveTo(r[0], r[1]); }); ctx.closePath(); ctx.fill(); ctx.restore(); }
+  // bloques d × a × b, ordenados de atrás hacia adelante
+  const bloques = [];
+  for (let i = 0; i < p; i++) for (let j = 0; j <= i; j++) bloques.push({ i, j, prof: rot((i + .5)*d, (j + .5)*a, b/2).prof });
+  bloques.sort((x, y) => y.prof - x.prof);
+  const tono = (k, base) => (V.colorear && k ? c[k] : base);
+  for (const B of bloques){
+    const x0 = B.i*d, x1 = x0 + d, y0 = B.j*a, y1 = y0 + a;
+    const caras = [
+      { n:[0, 1, 0], q:[[x0,y1,0],[x1,y1,0],[x1,y1,b],[x0,y1,b]], k: B.j === B.i ? 'H' : null, base:.10 },
+      { n:[-1, 0, 0], q:[[x0,y0,0],[x0,y1,0],[x0,y1,b],[x0,y0,b]], k: B.j === B.i ? 'C' : null, base:.24 },
+      { n:[0, 0, -1], q:[[x0,y0,0],[x1,y0,0],[x1,y1,0],[x0,y1,0]], k:'S', base:.38 },
+      { n:[0, 0, 1], q:[[x0,y0,b],[x1,y0,b],[x1,y1,b],[x0,y1,b]], k:'S', base:.38 },
+    ];
+    for (const f of caras){
+      if (!ve(f.n)) continue;
+      ctx.beginPath(); f.q.forEach((q, i) => { const r = P(...q); i ? ctx.lineTo(r[0], r[1]) : ctx.moveTo(r[0], r[1]); }); ctx.closePath();
+      ctx.fillStyle = c.card; ctx.fill();
+      ctx.save(); ctx.fillStyle = tono(f.k, c.ink); ctx.globalAlpha = V.colorear && f.k ? .42*realce(c, f.k) : f.base; ctx.fill(); ctx.restore();
+      ctx.strokeStyle = V.colorear && f.k ? c[f.k] : c.ink; ctx.lineWidth = V.colorear && f.k ? 1.8*grueso(c, f.k) : 1.2; ctx.stroke();
+    }
+  }
+  // manija de giro
+  const hx = W/2, hy = H - 20;
+  ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 2; linea(ctx, hx - 70, hy, hx + 70, hy);
+  const kx = hx + clamp(V.yaw/70, -1, 1)*70;
+  ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(kx, hy, 11, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('↔', kx, hy + 1);
+  ctx.restore();
+  V._manija = { x: kx, y: hy, x0: hx - 70, x1: hx + 70 };
+  if (V.cuenta) contador(ctx, c, V.cuenta.t);
+}
+
+/* ---------- Vista «arcos»: zonas limitadas por semicircunferencias ----------
+   V = { tipo:'arcos', forma:'dos' | 's', AB, AM, colorear, cuenta } */
+function vistaArcos(L, c, V){
+  const { ctx, W, H } = L, AB = V.AB, AM = V.AM, MB = AB - AM;
+  const s = V.forma === 's' ? Math.min((W - 60)/AB, (H - 70)/AB) : Math.min((W - 60)/AB, (H - 80)/(AB/2));
+  const xA = W/2 - AB*s/2, yAB = V.forma === 's' ? H/2 + 6 : H - 46, xM = xA + AM*s, xB = xA + AB*s;
+  const R = AB*s/2, r1 = AM*s/2, r2 = MB*s/2, cx = xA + R, c1 = xA + r1, c2 = xM + r2;
+  const col = V.colorear;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  if (V.forma === 'dos'){
+    // zona 2: el medio círculo grande sin el chico; zona 1: el medio círculo chico
+    if (col){
+      ctx.save(); ctx.fillStyle = c.B; ctx.globalAlpha = .26*realce(c, 'B'); ctx.beginPath(); ctx.arc(cx, yAB, R, Math.PI, 0, false); ctx.closePath(); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.card; ctx.beginPath(); ctx.arc(c1, yAB, r1, Math.PI, 0, false); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = c.A; ctx.globalAlpha = .3*realce(c, 'A'); ctx.fill(); ctx.restore();
+    }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4;
+    ctx.beginPath(); ctx.arc(cx, yAB, R, Math.PI, 0, false); ctx.stroke();
+    ctx.save(); ctx.strokeStyle = col ? c.K : c.ink; ctx.lineWidth = col ? 5*grueso(c, 'K') : 2.4; ctx.beginPath(); ctx.arc(c1, yAB, r1, Math.PI, 0, false); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = col ? c.R : c.ink; ctx.lineWidth = col ? 5*grueso(c, 'R') : 2.4; linea(ctx, xA, yAB, xB, yAB); ctx.restore();
+    if (col){ rotulo(ctx, c, c1, yAB - r1*0.45, 'zona 1', c.A, 'center', 12); rotulo(ctx, c, xM + r2*0.9, yAB - R*0.55, 'zona 2', c.B, 'center', 12); }
+  } else {
+    if (col){
+      ctx.save(); ctx.fillStyle = c.B; ctx.globalAlpha = .26*realce(c, 'B'); ctx.beginPath(); ctx.arc(cx, yAB, R, 0, Math.PI*2); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.beginPath(); ctx.arc(cx, yAB, R, Math.PI, 0, false); ctx.arc(c2, yAB, r2, 0, Math.PI, false); ctx.arc(c1, yAB, r1, 0, Math.PI, true); ctx.closePath();
+      ctx.fillStyle = c.card; ctx.fill(); ctx.fillStyle = c.A; ctx.globalAlpha = .3*realce(c, 'A'); ctx.fill(); ctx.restore();
+    }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(cx, yAB, R, 0, Math.PI*2); ctx.stroke();
+    ctx.save(); ctx.strokeStyle = col ? c.K : c.ink; ctx.lineWidth = col ? 5*grueso(c, 'K') : 2.4;
+    ctx.beginPath(); ctx.arc(c1, yAB, r1, Math.PI, 0, false); ctx.stroke(); ctx.beginPath(); ctx.arc(c2, yAB, r2, Math.PI, 0, true); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([4, 5]); ctx.lineWidth = 1.2; linea(ctx, xA, yAB, xB, yAB); ctx.restore();
+  }
+  ctx.fillStyle = c.ink; for (const x of [xA, xM, xB]){ ctx.beginPath(); ctx.arc(x, yAB, 4, 0, Math.PI*2); ctx.fill(); }
+  const yl = yAB + 18;
+  rotulo(ctx, c, xA, yl, 'A', c.ink, 'center', 13); rotulo(ctx, c, xM, yl, 'M', c.ink, 'center', 13); rotulo(ctx, c, xB, yl, 'B', c.ink, 'center', 13);
+  if (V.forma === 'dos'){ rotulo(ctx, c, (xA + xM)/2, yl, fmt(AM), c.ink, 'center', 12); rotulo(ctx, c, (xM + xB)/2, yl, fmt(MB), c.ink, 'center', 12); }
+  else { rotulo(ctx, c, (xA + xM)/2, yAB + 14, fmt(AM), c.ink, 'center', 12); rotulo(ctx, c, (xM + xB)/2, yAB - 14, fmt(MB), c.ink, 'center', 12); }
+  V._M = { x: xM, y: yAB, de: px => (px - xA)/s };
+  if (V.cuenta) contador(ctx, c, V.cuenta.t, V.cuenta.k ? c[V.cuenta.k] : c.ink);
+}
+
+/* ---------- Vista «rect»: el rectángulo ABCD con puntos medios ----------
+   V = { tipo:'rect', W, H, tri:[P, Q, R], colorear, manija } (las medidas salen de M.trianguloEn) */
+function vistaRect(L, c, V){
+  const { ctx, W: AW, H: AH } = L, T = M.trianguloEn(V.W, V.H, ...V.tri);
+  const s = Math.min((AW - 70)/12, (AH - 70)/10);
+  const ox = AW/2 - V.W*s/2, oy = AH/2 + V.H*s/2;
+  const X = x => ox + x*s, Y = y => oy - y*s;
+  // cuadrícula de unidades
+  ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+  for (let x = 0; x <= V.W; x++) linea(ctx, X(x), Y(0), X(x), Y(V.H));
+  for (let y = 0; y <= V.H; y++) linea(ctx, X(0), Y(y), X(V.W), Y(y));
+  const poli = (pts, fill, a, stroke, w) => {
+    ctx.beginPath(); pts.forEach((q, i) => (i ? ctx.lineTo(X(q.x), Y(q.y)) : ctx.moveTo(X(q.x), Y(q.y)))); ctx.closePath();
+    if (fill){ ctx.save(); ctx.fillStyle = fill; ctx.globalAlpha = a; ctx.fill(); ctx.restore(); }
+    if (stroke){ ctx.save(); ctx.strokeStyle = stroke; ctx.lineWidth = w; ctx.lineJoin = 'round'; ctx.stroke(); ctx.restore(); }
+  };
+  if (V.colorear){
+    ctx.save(); ctx.fillStyle = c.B; ctx.globalAlpha = .22*realce(c, 'B'); ctx.fillRect(X(0), Y(V.H), V.W*s, V.H*s); ctx.restore();
+    poli(T.vertices, c.card, 1); poli(T.vertices, c.A, .34*realce(c, 'A'), c.A, 3*grueso(c, 'A'));
+  } else poli(T.vertices, null, 0, c.ink, 2.4);
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.strokeRect(X(0), Y(V.H), V.W*s, V.H*s);
+  const P = T.puntos, et = { A:'A', B:'B', C:'C', D:'D' };
+  const nombres = V.nombres || {};
+  for (const [k, q] of Object.entries(P)){
+    if (!(k in et) && !(k in nombres)) continue;
+    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(X(q.x), Y(q.y), 4, 0, Math.PI*2); ctx.fill();
+    const dx = q.x === 0 ? -14 : q.x === V.W ? 14 : 0, dy = q.y === 0 ? 14 : q.y === V.H ? -14 : 0;
+    rotulo(ctx, c, X(q.x) + dx, Y(q.y) + dy, et[k] || nombres[k], c.ink, 'center', 13);
+  }
+  if (V.colorear && V.fracciones) for (const f of V.fracciones) rotulo(ctx, c, X(f.x*V.W), Y(f.y*V.H), f.t, c[f.k], 'center', 12);
+  if (V.manija){
+    const q = P.C; ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(X(q.x), Y(q.y), 10, 0, Math.PI*2); ctx.fill(); ctx.stroke(); ctx.restore();
+  }
+  V._G = { X, Y, s, de: (px, py) => ({ x:(px - ox)/s, y:(oy - py)/s }), C: { x: X(P.C.x), y: Y(P.C.y) } };
+  if (V.cuenta) contador(ctx, c, V.cuenta.t, V.cuenta.k ? c[V.cuenta.k] : c.ink);
+}
+
+/* ---------- Vista «puntos»: puntos, rectas con ternas alineadas y un triángulo ----------
+   V = { tipo:'puntos', pts:[[x, y]], rectas:[[i, j]] (de punta a punta), luz:[i, j, k], cuenta } */
+function vistaPuntos(L, c, V){
+  const { ctx, W, H } = L, P = V.pts;
+  const xs = P.map(q => q[0]), ys = P.map(q => q[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const padTop = V.cuenta ? 54 : 34;
+  const s = Math.min((W - 70)/Math.max(x1 - x0, 1), (H - padTop - 34)/Math.max(y1 - y0, 1), 120);
+  const ox = W/2 - s*(x0 + x1)/2, oy = padTop + (H - padTop - 34)/2 - s*(y0 + y1)/2;
+  const X = q => ox + q[0]*s, Y = q => oy + q[1]*s;
+  for (const [i, j] of V.rectas || []){
+    ctx.save(); ctx.strokeStyle = c.N; ctx.lineWidth = 6*grueso(c, 'N'); ctx.globalAlpha = .7; ctx.lineCap = 'round';
+    const A = P[i], B = P[j], ex = (B[0] - A[0]), ey = (B[1] - A[1]), lg = Math.hypot(ex, ey) || 1, e = 14/s;
+    linea(ctx, X([A[0] - ex/lg*e, 0]), Y([0, A[1] - ey/lg*e]), X([B[0] + ex/lg*e, 0]), Y([0, B[1] + ey/lg*e])); ctx.restore();
+  }
+  if (V.luz){
+    const q = V.luz.map(i => P[i]);
+    ctx.save(); ctx.beginPath(); q.forEach((r, i) => (i ? ctx.lineTo(X(r), Y(r)) : ctx.moveTo(X(r), Y(r)))); ctx.closePath();
+    ctx.fillStyle = c.A; ctx.globalAlpha = .28*realce(c, 'A'); ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = c.A; ctx.lineWidth = 3*grueso(c, 'A'); ctx.lineJoin = 'round'; ctx.stroke(); ctx.restore();
+  }
+  for (const q of P){ ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(X(q), Y(q), 5.5, 0, Math.PI*2); ctx.fill(); }
+  if (V.cuenta) contador(ctx, c, V.cuenta.t, V.cuenta.k ? c[V.cuenta.k] : c.ink);
+}
+function dibujarVista(L, c, V){
+  L.ctx.clearRect(0, 0, L.W, L.H);
+  if (!V) return;
+  ({ tablero:vistaTablero, escalera:vistaEscalera, arcos:vistaArcos, rect:vistaRect, puntos:vistaPuntos })[V.tipo](L, c, V);
+}
+
+/* ---------- El reflector: recorre una lista del motor, un caso por vez ---------- */
+function htmlReflector(id, que){
+  return `<div class="refl" id="${id}" role="group" aria-label="Reflector: ${que || 'un caso'} por vez">
+    <button type="button" data-r="prev" aria-label="Caso anterior">◀</button>
+    <span class="rn" data-r="n" aria-live="polite"></span>
+    <button type="button" data-r="next" aria-label="Caso siguiente">▶</button>
+    <button type="button" data-r="play">Recorrer todos</button></div>`;
+}
+function crearReflector(){
+  const R = { lista:[], i:-1, tid:null, el:null, pintar:null, etiqueta:null };
+  R.parar = () => { clearTimeout(R.tid); R.tid = null; R.marcar(); };
+  R.ir = i => { if (!R.lista.length) return; R.i = clamp(i, 0, R.lista.length - 1); R.pintar && R.pintar(); R.marcar(); };
+  R.marcar = () => {
+    if (!R.el || !document.body.contains(R.el)) return;
+    const n = R.lista.length;
+    R.el.querySelector('[data-r="n"]').textContent = n ? (R.i >= 0 ? `${R.i + 1} de ${n}${R.etiqueta ? ' · ' + R.etiqueta(R.lista[R.i], R.i) : ''}` : `${n} en total`) : 'No hay ninguno';
+    R.el.querySelector('[data-r="prev"]').disabled = !n || R.i <= 0;
+    R.el.querySelector('[data-r="next"]').disabled = !n || R.i >= n - 1;
+    R.el.querySelector('[data-r="play"]').textContent = R.tid ? 'Detener' : 'Recorrer todos';
+    R.el.querySelector('[data-r="play"]').disabled = !n;
+  };
+  R.recorrer = (vigente, fin) => {
+    clearTimeout(R.tid); R.tid = null;
+    const n = R.lista.length; if (!n) return;
+    if (RM){ R.ir(n - 1); fin && fin(); return; }
+    const paso = clamp(6000/n, 160, 700);
+    let i = 0;
+    const tic = () => { if (vigente && !vigente()) { R.tid = null; return; } R.i = i; R.pintar && R.pintar(); i++; if (i < n) R.tid = setTimeout(tic, paso); else { R.tid = null; fin && fin(); } R.marcar(); };
+    R.tid = 1; tic();
+  };
+  R.montar = (el, vigente) => {
+    R.el = el; if (!el) return;
+    const toque = () => R.alTocar && R.alTocar();
+    el.querySelector('[data-r="prev"]').onclick = () => { R.parar(); R.ir(R.i - 1); toque(); };
+    el.querySelector('[data-r="next"]').onclick = () => { R.parar(); R.ir(R.i + 1); toque(); };
+    el.querySelector('[data-r="play"]').onclick = () => { if (R.tid) R.parar(); else { R.recorrer(vigente); toque(); } };
+    R.marcar();
+  };
+  return R;
+}
+
+/* ---------- El editor de cortes: arrastrar por las líneas de la cuadrícula ----------
+   E = crearEditor(cv, () => vista actual, alCambiar); E.cortes (Map de tramos), E.activo, E.lista(), E.borrar(), E.deshacer() */
+function crearEditor(cv, vista, alCambiar){
+  const E = { cortes:new Map(), activo:false, ultimo:null, modo:null, cursor:null, lapiz:false, historia:[] };
+  const clave = (x1, y1, x2, y2) => (x1 < x2 || (x1 === x2 && y1 < y2)) ? `${x1},${y1},${x2},${y2}` : `${x2},${y2},${x1},${y1}`;
+  E.lista = () => [...E.cortes.keys()].map(k => k.split(',').map(Number));
+  const dentro = (V, a, b) => { // tramo interior del tablero (los del borde no cortan nada)
+    if (a.x === b.x) return a.x > 0 && a.x < V.n;
+    return a.y > 0 && a.y < V.m;
+  };
+  const tocar = (a, b) => {
+    const V = vista(); if (!dentro(V, a, b)) return;
+    const k = clave(a.x, a.y, b.x, b.y);
+    if (E.modo === null) E.modo = E.cortes.has(k) ? 'borrar' : 'poner';
+    if (E.modo === 'poner') E.cortes.set(k, 1); else E.cortes.delete(k);
+  };
+  const cercano = p => { const V = vista(), G = V && V._G; if (!G) return null; const q = G.de(p.x, p.y); return { x: clamp(Math.round(q.x), 0, V.n), y: clamp(Math.round(q.y), 0, V.m), d: Math.hypot(q.x - Math.round(q.x), q.y - Math.round(q.y))*G.s }; };
+  const avanzar = q => {
+    let a = E.ultimo;
+    while (a && (a.x !== q.x || a.y !== q.y)){
+      const b = Math.abs(q.x - a.x) >= Math.abs(q.y - a.y) ? { x: a.x + Math.sign(q.x - a.x), y: a.y } : { x: a.x, y: a.y + Math.sign(q.y - a.y) };
+      tocar(a, b); a = b;
+    }
+    E.ultimo = q;
+  };
+  const guardar = () => { E.historia.push(new Map(E.cortes)); if (E.historia.length > 40) E.historia.shift(); };
+  Celular.arrastre(cv, {
+    activo: () => E.activo,
+    cerca: (p, r) => { const q = cercano(p); return !!q && q.d <= r; },
+    empezar: p => { guardar(); E.modo = null; E.ultimo = cercano(p); E.cursor = { x: E.ultimo.x, y: E.ultimo.y }; alCambiar(); },
+    mover: p => {
+      const V = vista(), G = V && V._G; if (!G) return;
+      const q = G.de(p.x, p.y), r = { x: clamp(Math.round(q.x), 0, V.n), y: clamp(Math.round(q.y), 0, V.m) };
+      if (Math.hypot(q.x - r.x, q.y - r.y) > 0.38) return;
+      if (r.x !== E.ultimo.x || r.y !== E.ultimo.y){ avanzar(r); E.cursor = { x: r.x, y: r.y }; alCambiar(); }
+    },
+    soltar: () => { E.ultimo = null; alCambiar(true); },
+  });
+  // teclado: flechas mueven el cursor; Espacio levanta o baja el lápiz (con el lápiz abajo, moverse corta o borra)
+  cv.addEventListener('keydown', e => {
+    if (!E.activo) return;
+    const V = vista(); if (!V) return;
+    const d = { ArrowLeft:[-1, 0], ArrowRight:[1, 0], ArrowUp:[0, -1], ArrowDown:[0, 1] }[e.key];
+    if (!E.cursor) E.cursor = { x: Math.floor(V.n/2), y: 0 };
+    if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); E.lapiz = !E.lapiz; if (E.lapiz){ guardar(); E.modo = null; } alCambiar(!E.lapiz); return; }
+    if (!d) return;
+    e.preventDefault();
+    const a = { x: E.cursor.x, y: E.cursor.y }, b = { x: clamp(a.x + d[0], 0, V.n), y: clamp(a.y + d[1], 0, V.m) };
+    if (E.lapiz && (a.x !== b.x || a.y !== b.y)) tocar(a, b);
+    E.cursor = b; alCambiar();
+  });
+  E.borrar = () => { guardar(); E.cortes.clear(); alCambiar(true); };
+  E.deshacer = () => { if (E.historia.length){ E.cortes = E.historia.pop(); alCambiar(true); } };
+  return E;
+}
+function htmlEditor(id){
+  return `<div class="ctl" id="${id}" role="group" aria-label="Cortar el tablero">
+    <button type="button" class="mini" data-e="cortar" aria-pressed="false">Cortar yo</button>
+    <button type="button" class="mini" data-e="deshacer">Deshacer</button>
+    <button type="button" class="mini" data-e="borrar">Borrar cortes</button></div>
+    <p class="hint">Con «Cortar yo», arrastra el dedo por las líneas, de un punto de la cuadrícula al vecino; pasar otra vez por un corte lo borra. Con teclado: flechas para moverte y Espacio para bajar o levantar el lápiz.</p>
+    <p class="lectura" id="${id}-lec" aria-live="polite"></p>`;
+}
+// Lo que dice el motor de los cortes del alumno
+function leerCortes(m, n, cortes){
+  const r = M.piezas(m, n, cortes);
+  if (r.total === 1) return { r, t: cortes.length ? 'Todavía es una sola pieza: el corte tiene que ir de borde a borde (o cerrarse).' : 'Sin cortes: el tablero entero es una sola pieza.' };
+  if (r.total === 2){
+    const t = `2 piezas · áreas ${r.areas.join(' y ')} · perímetros ${r.perimetros.join(' y ')} · ` + (r.congruentes ? `congruentes: ${COMO[r.como]}.` : 'no son congruentes.');
+    return { r, t: t + (r.sueltos ? ` (${r.sueltos} ${r.sueltos === 1 ? 'tramo cortado no separa' : 'tramos cortados no separan'} nada)` : '') };
+  }
+  return { r, t: `${r.total} piezas · áreas ${r.areas.join(', ')} · perímetros ${r.perimetros.join(', ')}` + (r.congruentes ? ' · todas congruentes.' : '.') };
+}
+const NOTA_AR18 = 'Quedarse con el mejor de unos pocos casos probados al tanteo, u olvidar algunos al contar, es la enumeración sin sistema (AR18 del informe de aritmética y razonamiento): según resúmenes, en un estudio con 720 alumnos españoles de 14 y 15 años (Navarro-Pelayo, Batanero y Godino, 1996, según la tesis de Roa, 2000) fue el error más frecuente entre los que no habían estudiado combinatoria; la cifra está por confirmar en el original. Ese estudio no tenía figuras: que pase lo mismo aquí es una suposición nuestra.';
+const NOTA_AR17 = 'Contar ABC y BAC como triángulos distintos es el error de orden (AR17 del informe de aritmética y razonamiento): en un estudio con 720 alumnos españoles fue el error más frecuente entre los que ya habían estudiado combinatoria (Navarro-Pelayo, Batanero y Godino, 1996, según la tesis de Roa, 2000; cifra por confirmar).';
+const NOTA_HIP = 'Las demás opciones incorrectas salen de las trampas que dejan ver las alternativas de exámenes de admisión; no tienen dato publicado: son hipótesis nuestras.';
+const fuente = t => `<p class="fuente">${t}</p>`;
+function opcionesHTML(opts){ return `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>`; }
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const S = { step:0, max:0, pred:{}, hl:null, vista:null, extra:{} };
+let anim = null;
+const L = crearLienzo(cv, ALTO, draw);
+function draw(){ if (!L.W) return; dibujarVista(L, colores(S.hl), S.vista); }
+function animar(dur, cada, fin){
+  cancelAnimationFrame(anim);
+  if (RM){ cada(1); draw(); fin && fin(); return; }
+  const ini = performance.now();
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - ini)/dur)); cada(f); draw(); if (f < 1) anim = requestAnimationFrame(tick); else fin && fin(); };
+  anim = requestAnimationFrame(tick);
+}
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const R = crearReflector();
+const n0 = x => fmt(x);
+const pago = x => `S/ ${fmt(x)}`;
+
+// ---- Datos de los pasos (todo sale del motor) ----
+const D1 = M.partirDos(4, 4);
+const REG2 = M.regionL(2), D2 = M.partirEn(REG2, 4, 15), PER2 = M.perimetro(REG2), T2 = D2.lista[0];
+const D3 = M.escalera(16, 9), TR3 = M.tiras(16, 9);
+const D5 = M.escaleraEnchape(4, 0.3, 0.2, 1, 50);
+const D6 = M.arcosZonas(8, 4);
+const D7 = M.fraccionTriangulo('A', 'BC', 'CD'), T7 = M.trianguloEn(8, 6, 'A', 'BC', 'CD');
+const PZ8 = [[0,0],[1,0],[2,0],[2,1]], D8 = M.ubicaciones(PZ8, [3, 3]), OR8 = M.orientaciones(PZ8);
+const PT9 = M.dosRectas(4, 3), D9 = M.triangulosPuntos(PT9);
+const D10 = M.diagonal(5);
+
+const P1 = { id:'cp-paso1-dos-piezas', ok:'c',
+  opts:[['a', `${n0(D1.errores.corteRecto)} lados`, 'RME42-corte-recto', 'hipotesis'], ['b', `${n0(D1.errores.segundo)} lados`, 'AR18-mejor-de-unos-pocos', 'parcial'],
+        ['c', `${n0(D1.maximo)} lados`], ['d', `${n0(D1.errores.mitadTablero)} lados`, 'RME165-reparte-el-borde', 'hipotesis']],
+  fb:{ c:'¡Bien! Cada pieza se lleva la mitad del borde del tablero (8 lados) y todo el corte. El corte más largo que deja dos piezas iguales mide 10: 8 + 10 = 18.',
+       a:'Elegiste la A. Ese es el corte recto por la mitad: 8 lados de borde más 4 de corte. Un corte en zigzag, simétrico respecto del centro, es más largo y también deja dos piezas iguales. La correcta está marcada.',
+       b:'Elegiste la B. Ese corte en escalera mide 8 y sí deja piezas iguales, pero hay cortes todavía más quebrados, de 10 lados. Para estar seguro hay que revisar todos los cortes posibles: son 22. La correcta está marcada.',
+       d:'Elegiste la D. 8 es la mitad del borde del tablero, pero el corte también queda en el borde de cada pieza: hay que sumarlo. La correcta está marcada.' } };
+const P2 = { id:'cp-paso2-terreno', ok:'b',
+  opts:[['a', `${n0(PER2/4*15)} m`, 'RME165-reparte-el-borde', 'hipotesis'], ['b', `${n0(D2.formas[0].metros)} m`],
+        ['c', `${n0(3*4*15)} m`, 'RME165-suma-lados-pegados', 'hipotesis'], ['d', `${n0(3*15)} m`, 'RME160-cuenta-parcelas', 'hipotesis']],
+  fb:{ b:'¡Bien! A cada parte le tocan 12/4 = 3 parcelas. Tres parcelas en L tienen 8 lados de parcela en su borde: 8 · 15 = 120 m.',
+       a:'Elegiste la A. Repartiste el borde del terreno (16 lados) entre las 4 partes. Pero cada parte también tiene borde por dentro, donde va la cerca que la separa de las otras. La correcta está marcada.',
+       c:'Elegiste la C. Contaste los 4 lados de cada una de las 3 parcelas: 12 lados. Los lados que pegan dos parcelas de la misma parte quedan adentro y no son borde. La correcta está marcada.',
+       d:'Elegiste la D. 3 · 15 cuenta parcelas, no lados: eso tiene que ver con el área. El perímetro es lo que mide la cerca alrededor. La correcta está marcada.' } };
+const P3 = { id:'cp-paso3-lado', ok:'a',
+  opts:[['a', `${n0(D3.lado)} casillas`], ['b', `${fmt(D3.errores.mismoPerimetro, 1)} casillas`, 'RME160-conserva-perimetro', 'hipotesis'],
+        ['c', `${n0(D3.errores.cuartoDelArea)} casillas`, 'RME160-cuarto-del-area', 'hipotesis'], ['d', `${n0(16*9)} casillas`, 'RME160-area-como-lado', 'hipotesis']],
+  fb:{ a:'¡Bien! Al rearmar no sobra ni falta ninguna casilla: el cuadrado tiene 16 · 9 = 144 casillas, y su lado es √144 = 12.',
+       b:'Elegiste la B. Así el cuadrado tendría el mismo perímetro que el rectángulo (50). Pero al cortar y rearmar lo que se conserva es el área: con lado 12,5 harían falta 156,25 casillas, y solo hay 144. La correcta está marcada.',
+       c:'Elegiste la C. 144/4 = 36 sería el lado si 144 fuera el perímetro. 144 es el área: el lado es el número que multiplicado por sí mismo da 144. La correcta está marcada.',
+       d:'Elegiste la D. 144 es el área, las casillas que hay; el lado es √144. La correcta está marcada.' } };
+const P4 = { id:'cp-paso4-trozos', ok:'b',
+  opts:[['a', 'Con 3 trozos', 'RME161-tira-y-mitades', 'hipotesis'], ['b', 'Con 2 trozos'],
+        ['c', 'Con 4 trozos', 'RME161-tiras-rectas', 'hipotesis'], ['d', 'No se puede: 16 y 9 no se reparten bien', 'RME161-no-se-puede', 'hipotesis']],
+  fb:{ b:'¡Bien! Un solo corte en escalera, de 3 escalones de 4 de ancho y 3 de alto, parte el rectángulo en 2 trozos iguales. Se corre uno un escalón y queda el cuadrado.',
+       a:'Elegiste la A. Una franja y dos mitades sirve para otros rectángulos, como el de 9 × 4. Aquí, con cortes rectos, la franja de 4 × 9 tiene que partirse en 3 tiras. Y hay una manera con menos trozos. La correcta está marcada.',
+       c:'Elegiste la C. Con cortes rectos sí salen 4 trozos: la franja de 4 × 9 partida en 3 tiras de 4 × 3. Pero un corte en escalera lo hace con solo 2. La correcta está marcada.',
+       d:'Elegiste la D. Sí se puede: el área es 144 = 12 · 12, y un corte en escalera lo logra. La correcta está marcada.' } };
+const P5 = { id:'cp-paso5-escalera', ok:'d',
+  opts:[['a', pago(D5.errores.sinCostados), 'RME162-sin-costados', 'hipotesis'], ['b', pago(D5.errores.unCostado), 'RME162-un-costado', 'hipotesis'],
+        ['c', pago(D5.errores.costadoRectangulo), 'RME163-costado-rectangulo', 'hipotesis'], ['d', pago(D5.costo)]],
+  fb:{ d:'¡Bien! Huellas 1,2 m², contrahuellas 0,8 m² y dos costados de 0,6 m²: 3,2 m² · S/ 50 = S/ 160.',
+       a:'Elegiste la A. Sumaste las huellas y las contrahuellas, pero los dos costados también se enchapan. La correcta está marcada.',
+       b:'Elegiste la B. Contaste un solo costado, el que se ve en el dibujo. La escalera tiene dos: gira el dibujo para ver el otro. La correcta está marcada.',
+       c:'Elegiste la C. Tomaste cada costado como el rectángulo de 1,2 m × 0,8 m. El costado es escalonado: le falta el triángulo de escalones de arriba. La correcta está marcada.' } };
+const P6 = { id:'cp-paso6-arcos', ok:'a',
+  opts:[['a', pi(D6.suma)], ['b', pi(D6.errores.compartidoUnaVez), 'RME43-arco-compartido-una-vez', 'hipotesis'],
+        ['c', pi(D6.errores.sinRectos), 'RME43-sin-tramos-rectos', 'hipotesis'], ['d', pi(D6.errores.sinRectosNiCompartido), 'RME43-sin-rectos-ni-compartido', 'hipotesis']],
+  fb:{ a:'¡Bien! Zona 1: 2π + 4. Zona 2: 4π + 2π + 4. El arco chico está en el borde de las dos zonas y se suma dos veces: 8 + 8π.',
+       b:'Elegiste la B. Sumaste el arco chico una sola vez, pero es borde de las dos zonas: entra en los dos perímetros. La correcta está marcada.',
+       c:'Elegiste la C. Sumaste los arcos, pero el borde de cada zona también tiene un tramo recto: AM en la zona 1 y MB en la zona 2. La correcta está marcada.',
+       d:'Elegiste la D. Faltan los tramos rectos AM y MB, y el arco chico se suma dos veces, una por cada zona. La correcta está marcada.' } };
+const P7 = { id:'cp-paso7-fraccion', ok:'c',
+  opts:[['a', fq(D7.errores.olvidaUna), 'RME168-olvida-la-esquina-chica', 'hipotesis'], ['b', fq(D7.errores.todasIguales), 'RME168-esquinas-iguales', 'hipotesis'],
+        ['c', fq(D7)], ['d', fq(D7.errores.loQueSobra), 'RME168-lo-que-sobra', 'hipotesis']],
+  fb:{ c:'¡Bien! Fuera del triángulo quedan tres triángulos: ABM y ADN de 1/4 cada uno, y MCN de 1/8. 1 − 1/4 − 1/4 − 1/8 = 3/8.',
+       a:'Elegiste la A. Restaste los dos triángulos grandes, de 1/4, pero falta el chico de la esquina C, que mide 1/8. La correcta está marcada.',
+       b:'Elegiste la B. Restaste tres triángulos de 1/4. El de la esquina C es más chico: tiene la mitad del ancho y la mitad del alto, y mide 1/8. La correcta está marcada.',
+       d:'Elegiste la D. 5/8 es lo que queda fuera del triángulo: los tres triángulos de las esquinas. El triángulo AMN es el resto. La correcta está marcada.' } };
+const P8 = { id:'cp-paso8-ubicaciones', ok:'d',
+  opts:[['a', `${n0(D8.errores.comoDibujo)} ubicaciones`, 'RME45-solo-como-el-dibujo', 'hipotesis'], ['b', `${n0(D8.errores.soloGiros)} ubicaciones`, 'RME45-sin-reflejos', 'hipotesis'],
+        ['c', `${n0(D8.errores.marcos)} ubicaciones`, 'RME163-cuenta-marcos', 'hipotesis'], ['d', `${n0(D8.total)} ubicaciones`]],
+  fb:{ d:'¡Bien! La L tiene 8 posiciones distintas (4 giros, y otros 4 al voltearla), y cada una cabe de 2 maneras en el tablero: 8 · 2 = 16.',
+       a:'Elegiste la A. Así, como en el dibujo, la L cabe en 2 lugares. Pero se puede girar y voltear. La correcta está marcada.',
+       b:'Elegiste la B. Contaste los 4 giros, cada uno en 2 lugares. Al voltear la L salen otras 4 posiciones que no se logran girando. La correcta está marcada.',
+       c:'Elegiste la C. Contaste los lugares del rectángulo de 3 × 2 (acostado o parado) donde entra la L. En cada rectángulo la L cabe de 4 maneras distintas. La correcta está marcada.' } };
+const P9 = { id:'cp-paso9-triangulos', ok:'b',
+  opts:[['a', `${n0(D9.errores.sinRestar)} triángulos`, 'RME169-no-resta-alineadas', 'hipotesis'], ['b', `${n0(D9.total)} triángulos`],
+        ['c', `${n0(D9.errores.unaPorRecta)} triángulos`, 'RME169-una-por-recta', 'hipotesis'], ['d', `${n0(D9.errores.conOrden)} triángulos`, 'AR17-cuenta-con-orden', 'parcial']],
+  fb:{ b:'¡Bien! C(7, 3) = 35 ternas; las de una misma recta no forman triángulo: C(4, 3) = 4 arriba y C(3, 3) = 1 abajo. 35 − 4 − 1 = 30.',
+       a:'Elegiste la A. 35 son todas las ternas de puntos. Tres puntos de una misma recta no forman triángulo: hay que restarlas. La correcta está marcada.',
+       c:'Elegiste la C. Restaste una terna por cada recta. En la recta de 4 puntos hay C(4, 3) = 4 ternas alineadas, no una. La correcta está marcada.',
+       d:'Elegiste la D. Así contaste cada triángulo 6 veces, una por cada orden de sus vértices. ABC y BCA son el mismo triángulo. La correcta está marcada.' } };
+const P10 = { id:'cp-paso10-sombra', ok:'a',
+  opts:[['a', `${n0(D10.total)} cuadrados`], ['b', `${n0(D10.errores.patronDoble)} cuadrados`, 'RME167-patron-sin-comprobar', 'hipotesis'],
+        ['c', `${n0(D10.errores.todos)} cuadrados`, 'RME166-cuenta-los-que-tienen-sombra', 'hipotesis'], ['d', `${n0(D10.errores.soloCasillas)} cuadrados`, 'AR18-solo-casillas', 'parcial']],
+  fb:{ a:'¡Bien! 20 casillas sin sombra y 6 cuadrados de 2 × 2 en las dos esquinas libres (3 arriba a la derecha y 3 abajo a la izquierda). Los de 3 × 3 o más siempre tocan la diagonal: 20 + 6 = 26.',
+       b:'Elegiste la B. Las diferencias de 0, 2, 6 y 14 son 2, 4 y 8, y parecen duplicarse, pero eso no está garantizado: hay que contar en la figura 5. Ahí la diferencia es 12, no 16. La correcta está marcada.',
+       c:'Elegiste la C. 55 son todos los cuadrados del tablero de 5 × 5, también los que tienen casillas sombreadas. La correcta está marcada.',
+       d:'Elegiste la D. Esas son las casillas sin sombra, los cuadrados de 1 × 1. También hay cuadrados de 2 × 2 sin sombra. La correcta está marcada.' } };
+
+// ---- Vistas de cada paso ----
+const cuentaDe = (k) => (R.i >= 0 && R.lista.length ? { t:`${R.i + 1} de ${R.lista.length}`, k } : null);
+const ED = { m:4, n:4 };
+const E = crearEditor(cv, () => S.vista, fin => { const s = steps[S.step]; if (s.trasEditar) s.trasEditar(fin); });
+E.activo = false;
+function vista1(){
+  const V = { tipo:'tablero', m:4, n:4, maxEscala:70 };
+  if (!S.pred[P1.id]) return V;
+  if (S.extra.editar){ const lc = leerCortes(4, 4, E.lista()); V.cortes = E.lista(); V.puntos = true; V.cursor = E.cursor ? Object.assign({ lapiz:E.lapiz }, E.cursor) : null;
+    if (lc.r.total >= 2) V.piezas = lc.r.piezas.map((p, i) => ({ celdas:p.celdas, k: i === 0 ? 'A' : i === 1 ? 'B' : null, sinContorno:true }));
+    return V; }
+  const p = R.lista[R.i]; if (!p) return V;
+  V.piezas = [{ celdas:p.A, k:'A', sinContorno:true }, { celdas:p.B, k:'B', sinContorno:true }]; V.cortes = M.cortesEntre(p.A, p.B); V.cuenta = cuentaDe('K');
+  return V;
+}
+function vista2(){
+  const V = { tipo:'tablero', m:4, n:4, region:REG2, maxEscala:70 };
+  if (!S.pred[P2.id]) return V;
+  const cortes = [];
+  for (let i = 0; i < T2.length; i++) for (let j = i + 1; j < T2.length; j++) cortes.push(...M.cortesEntre(T2[i], T2[j]));
+  V.cortes = cortes; V.piezas = T2.map((p, i) => ({ celdas:p, k: i === R.i ? 'A' : null, a: i === R.i ? .34 : .06, sinContorno: i !== R.i }));
+  V.cuenta = cuentaDe('A');
+  return V;
+}
+const CAJA3 = { f0:-3, f1:9, c0:0, c1:16 };
+function vista3(f){
+  const V = { tipo:'tablero', m:9, n:16, caja:CAJA3, sinBorde:false, maxEscala:30 };
+  if (!S.pred[P3.id]) return V;
+  V.marcos = [{ f:-3, c:0, l:12, k:'A' }];
+  V.rotulos = [{ x:6, y:-1.5, t:'12 × 12 = 144', k:'A', tam:13 }];
+  return V;
+}
+function vista4(f){
+  const V = { tipo:'tablero', m:9, n:16, caja:CAJA3, maxEscala:30 };
+  if (!S.pred[P4.id]) return V;
+  const t = f === undefined ? 1 : f;
+  if (S.extra.tiras){
+    V.sinBorde = true;
+    V.region = TR3.piezas[0].concat(...TR3.piezas.slice(1));
+    // el trozo grande se queda; las tiras van a su lugar del cuadrado (el motor arma el cuadrado con el trozo grande corrido)
+    const base = TR3.armadas[0][0][0] - TR3.piezas[0][0][0];
+    V.piezas = TR3.piezas.map((p, i) => {
+      if (i === 0) return { celdas:p, k:'A' };
+      const q = TR3.armadas[i], df = (q[0][0] - p[0][0] - base)*t, dc = (q[0][1] - p[0][1])*t;
+      return { celdas:p, k:'B', df, dc };
+    });
+    return V;
+  }
+  V.sinBorde = t > 0;
+  V.piezas = [{ celdas:D3.A, k:'A' }, { celdas:D3.B, k:'B', df:D3.mover.df*t, dc:D3.mover.dc*t }];
+  if (t === 0) V.cortes = D3.corte;
+  return V;
+}
+function vista5(){ return { tipo:'escalera', p:4, d:0.3, a:0.2, b:1, yaw:S.extra.yaw, colorear:!!S.pred[P5.id] }; }
+function vista6(){ return { tipo:'arcos', forma:'dos', AB:8, AM: S.pred[P6.id] ? S.extra.am : 4, colorear:!!S.pred[P6.id] }; }
+function vista7(){
+  const ok = !!S.pred[P7.id], W = ok ? S.extra.W : 8, H = ok ? S.extra.H : 6;
+  return { tipo:'rect', W, H, tri:['A','BC','CD'], nombres:{ BC:'M', CD:'N' }, colorear:ok, manija:ok,
+    fracciones:[{ x:.75, y:.25, t:'1/4', k:'B' }, { x:.85, y:.85, t:'1/8', k:'B' }, { x:.2, y:.72, t:'1/4', k:'B' }] };
+}
+function vista8(){
+  const V = { tipo:'tablero', m:3, n:3, aparte:{ celdas:PZ8, t:'la pieza' }, maxEscala:70 };
+  if (!S.pred[P8.id]) return V;
+  const u = R.lista[R.i]; if (u){ V.piezas = [{ celdas:u.celdas, k: u.comoDibujo ? 'A' : 'B', a:.4 }]; V.cuenta = cuentaDe(u.comoDibujo ? 'A' : 'B'); }
+  return V;
+}
+function vista9(){
+  const V = { tipo:'puntos', pts:PT9 };
+  if (!S.pred[P9.id]) return V;
+  V.rectas = [[0, 3], [4, 6]];
+  const t = R.lista[R.i]; if (t){ V.luz = t; V.cuenta = cuentaDe('A'); }
+  return V;
+}
+function vista10(){
+  const t = S.pred[P10.id] ? S.extra.t : 5, Dt = M.diagonal(t);
+  const V = { tipo:'tablero', m:t, n:t, sombra:Dt.sombreadas, maxEscala:60 };
+  if (!S.pred[P10.id]) return V;
+  const q = R.lista[R.i]; if (q){ V.marcos = [{ f:q.f, c:q.c, l:q.k, k:'A' }]; V.cuenta = cuentaDe('A'); }
+  return V;
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: dos piezas iguales, el borde más largo', gate:P1, leg:['A','B','K'], legAntes:['L'], leyTextos:{ L:'el tablero', A:'pieza A', B:'pieza B, la A girada o volteada', K:'el corte' },
+   lista:() => { R.lista = D1.lista; R.etiqueta = p => `perímetro ${p.perimetro} · corte de ${p.corte}`; },
+   vista:vista1,
+   desc:() => 'Un tablero de 4 por 4 casillas.' + (S.pred[P1.id] ? (S.extra.editar ? ' ' + leerCortes(4, 4, E.lista()).t : (R.lista[R.i] ? ` Partición ${R.i + 1} de ${R.lista.length}: cada pieza tiene perímetro ${R.lista[R.i].perimetro}.` : '')) : ''),
+   body:() => `<p class="problem">Un tablero de ${V('A','4 × 4')} casillas se corta por las líneas de la cuadrícula en dos piezas congruentes: iguales en forma y tamaño, aunque haya que girar o voltear una. ¿Cuál es el mayor perímetro que puede tener cada pieza, en lados de casilla?</p>
+     <p>Antes de que el motor pruebe todos los cortes, elige.</p>${opcionesHTML(P1.opts)}<p class="fb" id="fb"></p>`,
+   tras:() => `<div class="eqs"><div class="eq">perímetro de cada pieza = ${fr('16', '2')} + ${V('K','corte')}<span class="note">media vuelta de borde, más todo el corte</span></div>
+       <div class="eq">corte recto: 8 + ${V('K','4')} = 12 · corte más largo: 8 + ${V('K','10')} = <b>${n0(D1.maximo)}</b></div></div>
+     <p>El corte queda en el borde de las dos piezas. Por eso el mayor perímetro sale con el corte más largo, el más quebrado. El motor probó todas las maneras de partir el tablero en dos piezas iguales: hay ${n0(D1.total)}, y en las que tienen el corte quebrado la pieza ${V('B','B')} es la ${V('A','A')} girada media vuelta alrededor del centro. Truco: traza el corte simétrico respecto del centro del tablero.</p>
+     ${htmlReflector('r1', 'una partición')}${htmlEditor('ed1')}${fuente(NOTA_AR18 + ' ' + NOTA_HIP)}`,
+   montar:() => montarEditor(1),
+   trasEditar: fin => { $('ed1-lec') && ($('ed1-lec').textContent = leerCortes(4, 4, E.lista()).t); S.vista = vista1(); draw(); if (fin) describir(); },
+   animar:() => R.recorrer(() => S.step === 0) },
+ { k:'Paso 2', t:'Predice: el terreno de parcelas', gate:P2, leg:['A','K'], legAntes:['L'], leyTextos:{ L:'el terreno', A:'una de las partes', K:'cercas entre partes' },
+   lista:() => { R.lista = T2; R.etiqueta = () => `3 parcelas · perímetro 8 lados`; },
+   vista:vista2,
+   desc:() => 'Un terreno en forma de L hecho de 12 parcelas cuadradas.' + (S.pred[P2.id] && R.lista[R.i] ? ` Se ilumina la parte ${R.i + 1} de 4, una L de 3 parcelas.` : ''),
+   body:() => `<p class="problem">El terreno del dibujo tiene 12 parcelas cuadradas de ${V('A','15 m')} de lado. Se reparte en 4 partes congruentes, con cercas por los bordes de las parcelas. ¿Cuál es el perímetro de cada parte?</p>${opcionesHTML(P2.opts)}<p class="fb" id="fb"></p>`,
+   tras:() => `<div class="eqs"><div class="eq">${fr('12 parcelas', '4 partes')} = 3 parcelas por parte</div>
+       <div class="eq">3 · 4 − 2 · 2 = 8 lados · 8 · ${V('A','15')} = <b>${n0(D2.formas[0].metros)} m</b><span class="note">cada lado pegado se resta dos veces</span></div></div>
+     <p>La L se parte en 4 L de 3 parcelas, iguales a ella pero más chicas. El motor probó todas las formas posibles de 3 parcelas: solo la L reparte este terreno, y de una sola manera. Las ${V('K','cercas')} de adentro son borde de dos partes a la vez.</p>${htmlReflector('r1', 'una parte')}${fuente(NOTA_HIP)}`,
+   animar:() => R.recorrer(() => S.step === 1) },
+ { k:'Paso 3', t:'Predice: el lado del cuadrado', gate:P3, leg:['A'], legAntes:['L'], leyTextos:{ L:'el tablero', A:'el cuadrado' },
+   vista:vista3,
+   desc:() => 'Un tablero de 16 columnas por 9 filas de casillas.' + (S.pred[P3.id] ? ' Encima, el contorno de un cuadrado de 12 por 12.' : ''),
+   body:() => `<p class="problem">Un tablero de 16 × 9 casillas se corta por las líneas de la cuadrícula y, sin que sobre ni falte nada, se rearma como un cuadrado. ¿Cuánto mide el lado del ${V('A','cuadrado')}?</p>${opcionesHTML(P3.opts)}<p class="fb" id="fb"></p>`,
+   tras:() => `<div class="eqs"><div class="eq">16 · 9 = 144 casillas = ${V('A','lado')} · ${V('A','lado')} → ${V('A','lado')} = √144 = <b>${n0(D3.lado)}</b></div>
+       <div class="eq">perímetros: 2(16 + 9) = 50 · 4 · 12 = 48<span class="note">el perímetro cambia; el área no</span></div></div>
+     <p>Cortar y rearmar conserva el área. El perímetro puede cambiar: aquí baja de 50 a 48.</p>${fuente(NOTA_HIP)}` },
+ { k:'Paso 4', t:'Predice: cuántos trozos hacen falta', gate:P4, leg:['A','B','K'], legAntes:['L'], leyTextos:{ L:'el tablero', A:'el trozo que se queda', B:'el trozo que se mueve', K:'el corte' },
+   vista:() => vista4(S.pred[P4.id] ? 1 : 0),
+   desc:() => 'El tablero de 16 por 9.' + (S.pred[P4.id] ? (S.extra.tiras ? ' Con cortes rectos: la franja de la derecha, partida en tres tiras de 4 por 3, sube encima.' : ' El corte en escalera parte el tablero en dos trozos; el de la derecha se corre 4 casillas a la izquierda y 3 hacia arriba y forma el cuadrado de 12 por 12.') : ''),
+   body:() => `<p class="problem">Para rearmar el tablero de 16 × 9 como el cuadrado de 12 × 12, cortando solo por las líneas de la cuadrícula, ¿cuál es el menor número de trozos?</p>${opcionesHTML(P4.opts)}<p class="fb" id="fb"></p>`,
+   tras:() => `<div class="eqs"><div class="eq">ancho: 16 = 4 · 4 · alto: 9 = 3 · 3<span class="note">escalones de 4 de ancho y 3 de alto</span></div>
+       <div class="eq">el trozo ${V('B','B')} se corre 4 a la izquierda y 3 arriba → 12 × 12</div></div>
+     <p>El ${V('K','corte')} en escalera tiene 3 escalones de 4 de ancho y 3 de alto. Al subir un escalón, el trozo ${V('B','B')} pierde 4 de ancho y gana 3 de alto: de 16 × 9 a 12 × 12. Con un solo trozo no se puede (no es cuadrado), así que 2 es el mínimo. Esta escalera funciona cuando los lados son como 16 = 4² y 9 = 3² (o 9 × 4, 25 × 16…).</p>
+     <div class="ctl"><button type="button" class="mini" id="b4-esc" aria-pressed="true">Corte en escalera (2 trozos)</button><button type="button" class="mini" id="b4-tiras" aria-pressed="false">Cortes rectos (4 trozos)</button><button type="button" class="mini" id="b4-otra">Ver otra vez</button></div>${fuente(NOTA_HIP)}`,
+   montar:() => {
+     const ver = tiras => { S.extra.tiras = tiras; $('b4-esc').setAttribute('aria-pressed', !tiras); $('b4-tiras').setAttribute('aria-pressed', tiras); steps[3].animar(); describir(); verLienzo(); };
+     $('b4-esc').onclick = () => ver(false); $('b4-tiras').onclick = () => ver(true); $('b4-otra').onclick = () => { steps[3].animar(); verLienzo(); };
+   },
+   animar:() => { const paso = S.step; S.vista = vista4(0); draw(); setTimeout(() => { if (S.step === paso) animar(1400, f => { S.vista = vista4(suave(f)); if (!S.extra.tiras && f < .02) S.vista.cortes = D3.corte; }); }, RM ? 0 : 500); } },
+ { k:'Paso 5', t:'Predice: enchapar la escalera', gate:P5, leg:['H','C','S'], legAntes:['L'], leyTextos:{ L:'la escalera (gírala con la manija)' },
+   vista:vista5,
+   desc:() => `Una escalera maciza de 4 peldaños apoyada en la pared, vista desde ${S.extra.yaw > 0 ? 'la izquierda' : S.extra.yaw < 0 ? 'la derecha' : 'el frente'}.` + (S.pred[P5.id] ? ' Las huellas, las contrahuellas y los costados están coloreados.' : ''),
+   body:() => `<p class="problem">Una escalera maciza de 4 peldaños está pegada a la pared. Cada peldaño tiene ${V('H','0,3 m')} de huella (fondo), ${V('C','0,2 m')} de contrahuella (alto) y 1 m de ancho. Se enchapan las huellas, las contrahuellas y los costados a S/ 50 el m². ¿Cuánto cuesta?</p>
+     <div class="ctl"><button type="button" class="mini" id="g-izq" aria-label="Girar la escalera a la izquierda">◀ Girar</button><button type="button" class="mini" id="g-der" aria-label="Girar la escalera a la derecha">Girar ▶</button></div>
+     ${opcionesHTML(P5.opts)}<p class="fb" id="fb"></p>`,
+   tras:() => `<div class="eqs"><div class="eq">${V('H','huellas')}: 4 · 0,3 · 1 = 1,2 · ${V('C','contrahuellas')}: 4 · 0,2 · 1 = 0,8</div>
+       <div class="eq">${V('S','un costado')}: 0,3 · 0,2 · (1 + 2 + 3 + 4) = 0,6 · dos: 1,2</div>
+       <div class="eq">1,2 + 0,8 + 1,2 = 3,2 m² · 3,2 · 50 = <b>${pago(D5.costo)}</b></div></div>
+     <p>El ${V('S','costado')} es escalonado: se parte en columnas de 0,3 de ancho y de 0,2, 0,4, 0,6 y 0,8 de alto (rectángulos). La espalda va contra la pared y la base en el piso: esas no se enchapan.</p>${fuente(NOTA_HIP)}` },
+ { k:'Paso 6', t:'Predice: dos zonas con arcos', gate:P6, leg:['A','B','K','R'], legAntes:['L'], leyTextos:{ L:'las dos semicircunferencias', A:'zona 1', B:'zona 2', K:'el arco que comparten', R:'tramos rectos' },
+   vista:vista6,
+   desc:() => `Una semicircunferencia de diámetro AB = 8 y, adentro, otra de diámetro AM = ${fmt(S.pred[P6.id] ? S.extra.am : 4)}.` + (S.pred[P6.id] ? ` Suma de perímetros: ${pi(M.arcosZonas(8, S.extra.am).suma)}.` : ''),
+   body:() => `<p class="problem">Sobre AB = 8 se dibuja una semicircunferencia, y sobre AM = 4, otra del mismo lado. Quedan dos zonas. ¿Cuánto suman sus perímetros?</p>${opcionesHTML(P6.opts)}<p class="fb" id="fb"></p>`,
+   tras:() => `<div class="eqs"><div class="eq">${V('A','zona 1')}: ${V('K','2π')} + ${V('R','4')} · ${V('B','zona 2')}: 4π + ${V('K','2π')} + ${V('R','4')}</div>
+       <div class="eq">suma = ${V('R','8')} + 8π<span class="note">el arco compartido, dos veces</span></div></div>
+     <p>Una semicircunferencia de diámetro d mide πd/2. El ${V('K','arco chico')} es borde de las dos zonas, y los ${V('R','tramos rectos')} AM y MB también son borde. Mueve M:</p>
+     <div class="ctl"><label for="am6">AM</label><input id="am6" type="range" min="1" max="7" step="1" value="${S.extra.am}"><output id="am6o"></output></div>
+     <p class="lectura" id="lec6" aria-live="polite"></p>${fuente(NOTA_HIP)}`,
+   montar:() => { const r = $('am6'), pon = () => { S.extra.am = +r.value; const z = M.arcosZonas(8, S.extra.am); $('am6o').textContent = fmt(S.extra.am); $('lec6').textContent = `Zona 1: ${pi(z.zonas[0])} · zona 2: ${pi(z.zonas[1])} · suma: ${pi(z.suma)}`; S.vista = vista6(); draw(); describir(); }; r.oninput = pon; pon(); } },
+ { k:'Paso 7', t:'Predice: el triángulo de los puntos medios', gate:P7, leg:['A','B'], legAntes:['L'], leyTextos:{ L:'el rectángulo y el triángulo', A:'el triángulo AMN', B:'lo que se resta' },
+   vista:vista7,
+   desc:() => { const W = S.pred[P7.id] ? S.extra.W : 8, H = S.pred[P7.id] ? S.extra.H : 6, t = M.trianguloEn(W, H, 'A', 'BC', 'CD');
+     return `Un rectángulo ABCD de ${W} por ${H} cuadritos; M es el punto medio de BC y N el de CD; está dibujado el triángulo AMN.` + (S.pred[P7.id] ? ` El triángulo tiene ${fmt(t.area)} de ${t.total} cuadritos.` : ''); },
+   body:() => `<p class="problem">En el rectángulo ABCD, M es el punto medio de BC y N el de CD. ¿Qué fracción del rectángulo es el triángulo ${V('A','AMN')}?</p>${opcionesHTML(P7.opts)}<p class="fb" id="fb"></p>`,
+   tras:() => `<div class="eqs"><div class="eq">1 − ${V('B','1/4')} − ${V('B','1/4')} − ${V('B','1/8')} = <b>${fq(D7)}</b><span class="note">ABM, ADN y MCN</span></div></div>
+     <p>Para un triángulo con vértices en el borde, lo más seguro es restar las piezas que sobran, cada una con su medida. Arrastra la esquina C (o usa las barras): la fracción no cambia.</p>
+     <div class="ctl"><label for="w7">ancho</label><input id="w7" type="range" min="2" max="12" step="2" value="${S.extra.W}"><label for="h7">alto</label><input id="h7" type="range" min="2" max="10" step="2" value="${S.extra.H}"></div>
+     <p class="lectura" id="lec7" aria-live="polite"></p>${fuente(NOTA_HIP)}`,
+   montar:() => { const w = $('w7'), h = $('h7'); w.oninput = () => { S.extra.W = +w.value; pon7(); }; h.oninput = () => { S.extra.H = +h.value; pon7(); }; pon7(); } },
+ { k:'Paso 8', t:'Predice: ¿cuántas veces cabe la pieza?', gate:P8, leg:['A','B'], legAntes:['L'], leyTextos:{ L:'el tablero y la pieza', A:'ubicación como en el dibujo', B:'ubicación girada o volteada' },
+   lista:() => { R.lista = D8.lista; R.etiqueta = u => NOMBRE_ISO[OR8.nombres[u.orientacion]]; },
+   vista:vista8,
+   desc:() => 'Un tablero de 3 por 3 casillas y, al lado, una pieza en forma de L de 4 casillas.' + (S.pred[P8.id] && R.lista[R.i] ? ` Ubicación ${R.i + 1} de ${R.lista.length}: ${NOMBRE_ISO[OR8.nombres[R.lista[R.i].orientacion]]}.` : ''),
+   body:() => `<p class="problem">La pieza del dibujo se coloca sobre el tablero de 3 × 3 cubriendo casillas enteras, sin salirse. Se puede girar y voltear. ¿En cuántas ubicaciones distintas puede quedar?</p>${opcionesHTML(P8.opts)}<p class="fb" id="fb"></p>`,
+   tras:() => `<div class="eqs"><div class="eq">4 giros × 2 (volteada o no) = 8 posiciones · 8 · 2 lugares = <b>${n0(D8.total)}</b></div></div>
+     <p>Cada posición de la L ocupa un rectángulo de 3 × 2 o de 2 × 3, y en el tablero cada uno entra en 2 lugares. Las ${V('A','azules')} van como en el dibujo; las ${V('B','naranjas')}, giradas o volteadas.</p>${htmlReflector('r1', 'una ubicación')}${fuente(NOTA_HIP)}`,
+   animar:() => R.recorrer(() => S.step === 7) },
+ { k:'Paso 9', t:'Predice: triángulos con siete puntos', gate:P9, leg:['A','N'], legAntes:['L'], leyTextos:{ L:'los puntos', A:'un triángulo', N:'ternas alineadas: no son triángulo' },
+   lista:() => { R.lista = D9.lista; R.etiqueta = () => 'un triángulo'; },
+   vista:vista9,
+   desc:() => 'Cuatro puntos en una recta y tres en otra recta paralela.' + (S.pred[P9.id] && R.lista[R.i] ? ` Triángulo ${R.i + 1} de ${R.lista.length}.` : ''),
+   body:() => `<p class="problem">En una recta hay 4 puntos y en otra paralela, 3. ¿Cuántos triángulos tienen sus tres vértices entre esos 7 puntos?</p>${opcionesHTML(P9.opts)}<p class="fb" id="fb"></p>`,
+   tras:() => `<div class="eqs"><div class="eq">C(7, 3) − ${V('N','C(4, 3)')} − ${V('N','C(3, 3)')} = 35 − ${V('N','4')} − ${V('N','1')} = <b>${n0(D9.total)}</b></div>
+       <div class="eq">otra forma: C(4, 2) · 3 + C(3, 2) · 4 = 18 + 12 = <b>${n0(D9.total)}</b><span class="note">2 de una recta y 1 de la otra</span></div></div>
+     <p>Un triángulo queda fijo al elegir sus 3 vértices, sin orden. Las ${V('N','ternas de una misma recta')} no forman triángulo.</p>${htmlReflector('r1', 'un triángulo')}${fuente(NOTA_AR17 + ' ' + NOTA_HIP)}`,
+   animar:() => R.recorrer(() => S.step === 8) },
+ { k:'Paso 10', t:'Predice: cuadrados lejos de la sombra', gate:P10, leg:['A'], legAntes:['L'], leyTextos:{ L:'la figura 5', A:'un cuadrado sin sombra' },
+   lista:() => { R.lista = M.diagonal(S.extra.t).lista; R.etiqueta = q => `cuadrado de ${q.k} × ${q.k}`; },
+   vista:vista10,
+   desc:() => { const t = S.pred[P10.id] ? S.extra.t : 5; return `Figura ${t}: un tablero de ${t} por ${t} con la diagonal sombreada.` + (S.pred[P10.id] && R.lista[R.i] ? ` Se ilumina un cuadrado de ${R.lista[R.i].k} por ${R.lista[R.i].k}.` : ''); },
+   body:() => `<p class="problem">La figura t es un tablero de t × t casillas con la diagonal sombreada. Las figuras 1, 2, 3 y 4 tienen ${D10.terminos.slice(0, 4).join(', ')} cuadrados (de cualquier tamaño) sin ninguna casilla sombreada. ¿Cuántos tiene la figura 5, la del dibujo?</p>${opcionesHTML(P10.opts)}<p class="fb" id="fb"></p>`,
+   tras:() => `<div class="eqs"><div class="eq">1 × 1: 25 − 5 = 20 · 2 × 2: 3 + 3 = 6 · 3 × 3 o más: 0 → <b>${n0(D10.total)}</b></div></div>
+     <p>Un cuadrado no toca la diagonal si sus filas y sus columnas no se cruzan: tiene que estar entero arriba a la derecha o entero abajo a la izquierda. La sucesión sigue 0, 2, 6, 14, 26, 44…: las diferencias no se duplican. Mira otras figuras:</p>
+     <div class="seg" id="t10" role="group" aria-label="Figura de la sucesión">${[1,2,3,4,5,6].map(t => `<button type="button" data-t="${t}" aria-pressed="${t === S.extra.t}">Figura ${t}</button>`).join('')}</div>
+     <p class="lectura" id="lec10" aria-live="polite"></p>${htmlReflector('r1', 'un cuadrado')}${fuente(NOTA_AR18 + ' ' + NOTA_HIP)}`,
+   montar:() => { $('t10').querySelectorAll('button').forEach(b => b.onclick = () => { S.extra.t = +b.dataset.t; $('t10').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); R.parar(); steps[9].lista(); R.i = -1; R.montar($('r1'), () => S.step === 9); pon10(); R.recorrer(() => S.step === 9); verLienzo(); }); pon10(); },
+   animar:() => R.recorrer(() => S.step === 9) },
+];
+S.extra = { yaw:32, am:4, W:8, H:6, t:5, tiras:false, editar:false };
+function pon7(){ const t = M.trianguloEn(S.extra.W, S.extra.H, 'A', 'BC', 'CD'); const el = $('lec7'); if (el) el.textContent = `Rectángulo de ${S.extra.W} × ${S.extra.H} = ${t.total} cuadritos · triángulo AMN: ${fmt(t.area)} cuadritos · ${fmt(t.area)}/${t.total} = ${t.num}/${t.den}`; S.vista = vista7(); draw(); describir(); }
+function pon10(){ const d = M.diagonal(S.extra.t), el = $('lec10'); if (el) el.textContent = `Figura ${S.extra.t}: ${d.total} cuadrados sin sombra de ${d.todos} en total.`; S.vista = vista10(); draw(); describir(); }
+function montarEditor(k){
+  const box = $('ed' + k); if (!box) return;
+  const b = box.querySelector('[data-e="cortar"]');
+  const pon = on => { S.extra.editar = on; E.activo = on; b.setAttribute('aria-pressed', on); b.textContent = on ? 'Ver las particiones' : 'Cortar yo';
+    if (on){ R.parar(); E.cursor = null; cv.focus({ preventScroll:true }); verLienzo(); }
+    $('ed' + k + '-lec').textContent = on ? leerCortes(4, 4, E.lista()).t : '';
+    S.vista = vista1(); draw(); describir(); };
+  b.onclick = () => pon(!S.extra.editar);
+  box.querySelector('[data-e="borrar"]').onclick = () => { if (!S.extra.editar) pon(true); E.borrar(); };
+  box.querySelector('[data-e="deshacer"]').onclick = () => { if (!S.extra.editar) pon(true); E.deshacer(); };
+  R.alTocar = () => { if (S.extra.editar) pon(false); verLienzo(); };
+  if (S.extra.editar) pon(true);
+}
+const VISTAS = steps.map(s => s.vista);
+R.pintar = () => { const f = VISTAS[S.step]; if (!f) return; S.vista = f(); draw(); describir(); };
+
+// manija de la escalera (paso 5) y esquina C (paso 7)
+Celular.arrastre(cv, {
+  activo: () => (S.step === 4) || (S.step === 6 && !!S.pred[P7.id]),
+  cerca: (p, r) => {
+    const V = S.vista; if (!V) return false;
+    if (V.tipo === 'escalera' && V._manija) return Math.abs(p.y - V._manija.y) <= r && p.x >= V._manija.x0 - r && p.x <= V._manija.x1 + r;
+    if (V.tipo === 'rect' && V._G) return Math.hypot(p.x - V._G.C.x, p.y - V._G.C.y) <= r;
+    return false;
+  },
+  mover: p => {
+    const V = S.vista;
+    if (V.tipo === 'escalera'){ const m = V._manija; S.extra.yaw = Math.round(clamp((p.x - (m.x0 + m.x1)/2)/70, -1, 1)*70); S.vista = vista5(); draw(); describir(); }
+    else if (V.tipo === 'rect'){ const q = V._G.de(p.x, p.y); S.extra.W = clamp(2*Math.round(q.x/2), 2, 12); S.extra.H = clamp(2*Math.round(q.y/2), 2, 10); const w = $('w7'), h = $('h7'); if (w){ w.value = S.extra.W; h.value = S.extra.H; } pon7(); }
+  },
+});
+cv.addEventListener('keydown', e => {
+  if (S.step !== 4) return;
+  const d = { ArrowLeft:-10, ArrowRight:10 }[e.key]; if (!d) return;
+  e.preventDefault(); girar(d);
+});
+function girar(d){ S.extra.yaw = clamp(S.extra.yaw + d, -70, 70); S.vista = vista5(); draw(); describir(); }
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function describir(){ const s = steps[S.step]; const t = s.desc ? s.desc() : ''; $('desc1').textContent = t; cv.setAttribute('aria-label', t || 'Dibujo del paso'); }
+function ponerLeyenda(){ const s = steps[S.step], antes = s.gate && !S.pred[s.gate.id]; leyenda($('leg1'), antes ? (s.legAntes || []) : s.leg, s.leyTextos); }
+function parar(){ cancelAnimationFrame(anim); R.parar(); }
+function verLienzo(){
+  if (innerWidth >= 900) return;
+  const r = cv.getBoundingClientRect();
+  if (r.top < 0 || r.bottom > innerHeight) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+}
+if (!R.alTocar) R.alTocar = verLienzo;
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max) return;
+  parar();
+  const s = steps[k]; S.step = k; S.hl = null;
+  R.lista = []; R.i = -1; R.el = null; R.etiqueta = null; R.alTocar = verLienzo;
+  S.extra.editar = false; E.activo = false;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body() + '<div id="tras" class="body"></div>';
+  ponerLeyenda();
+  pintarDots();
+  if (s.lista && S.pred[s.gate.id]){ s.lista(); R.i = R.lista.length - 1; }
+  S.vista = s.vista();
+  prediccion(s.gate);
+  const gi = $('g-izq'), gd = $('g-der'); if (gi){ gi.onclick = () => { girar(-10); verLienzo(); }; gd.onclick = () => { girar(10); verLienzo(); }; }
+  L.compactar(!S.pred[s.gate.id]);
+  nav(); describir(); draw();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || !S.pred[s.gate.id];
+  $('next').textContent = !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al paso ${k + 1}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(P){
+  const btns = [...$('stepBody').querySelectorAll('.opt')], s = steps[S.step], paso = S.step;
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').innerHTML = s.tras ? s.tras() : '';
+    if (s.montar) s.montar();
+    R.montar($('r1'), () => S.step === paso);
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1);
+    if (s.lista) s.lista();
+    pintar(); nav(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    L.compactar(false);
+    // La vista cambia recién al responder: en el celular, primero sube el lienzo y después se anima.
+    Celular.alResponder(L.cv, () => {
+      S.vista = s.vista(); draw();
+      if (s.animar) s.animar();
+      describir(); ponerLeyenda();
+    }, () => S.step === paso);
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Cada experimento pide una predicción; el dibujo cambia recién después de responder. Todo sale del motor. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const S = { k:0, pred:{}, t0:Date.now(), vista:null, am:6, editar:false };
+const L = crearLienzo(cv, ALTO, draw);
+function draw(){ if (!L.W) return; dibujarVista(L, colores(null), S.vista); }
+const R = crearReflector();
+const n0 = x => fmt(x);
+
+const E1 = M.casillasBorde(7, 9, 2);
+const PT = [[0,0],[0,1],[0,2],[1,1]], E2 = M.ubicaciones(PT, [3, 4]), ORT = M.orientaciones(PT);
+const E3 = M.curvaS(10, 6);
+const RED = M.red(3, 3), E4 = M.triangulosPuntos(RED);
+const E5 = M.partirDos(3, 6);
+// rectas de la red de 3 × 3 con 3 puntos: filas, columnas y diagonales (índices de punta a punta)
+const RECTAS_RED = [[0,2],[3,5],[6,8],[0,6],[1,7],[2,8],[0,8],[2,6]];
+function marco(g){ const o = [], esq = []; for (let f = 0; f < 7; f++) for (let c = 0; c < 9; c++){ const borde = f < g || c < g || f >= 7 - g || c >= 9 - g; if (!borde) continue; ((f < g || f >= 7 - g) && (c < g || c >= 9 - g) ? esq : o).push([f, c]); } return { lados:o, esquinas:esq }; }
+const MARCO = marco(2);
+const editor = crearEditor(cv, () => S.vista, fin => { const el = $('ed2-lec'); if (el) el.textContent = leerCortes(3, 6, editor.lista()).t; S.vista = EXPS[S.k].despues(); draw(); if (fin) describir(); });
+
+const EXPS = [
+  { id:'marco', corto:'El marco grueso', leg:['A','K'], legAntes:['L'], leyTextos:{ L:'el tablero', A:'casillas del marco', K:'esquinas: están en dos lados' },
+    q:'En un tablero de 7 × 9 casillas se pintan todas las que están a una o dos casillas del borde: un marco de 2 casillas de grosor. ¿Cuántas casillas se pintan?',
+    opts:[['a', `${n0(E1.total)} casillas`], ['b', `${n0(E1.errores.esquinasDosVeces)} casillas`, 'RME44-esquinas-dos-veces', 'hipotesis'],
+          ['c', `${n0(E1.errores.sinEsquinas)} casillas`, 'RME44-sin-esquinas', 'hipotesis'], ['d', `${n0(E1.errores.anillosIguales)} casillas`, 'RME44-anillos-iguales', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Elegiste la B. Sumaste dos filas por cada lado: 2 · 9 + 2 · 9 + 2 · 7 + 2 · 7 = 64. Pero los bloques de 2 × 2 de las esquinas quedaron contados dos veces. La correcta está marcada.',
+         c:'Elegiste la C. Quitaste las esquinas del todo. Las esquinas sí se pintan: solo no hay que contarlas dos veces. La correcta está marcada.',
+         d:'Elegiste la D. Contaste dos anillos de 28. El de adentro es más chico, de 5 × 7: tiene 20 casillas. 28 + 20 = 48. La correcta está marcada.' },
+    antes:() => ({ tipo:'tablero', m:7, n:9, maxEscala:50 }),
+    despues:() => ({ tipo:'tablero', m:7, n:9, maxEscala:50, piezas:[{ celdas:MARCO.lados, k:'A', sinContorno:true }], esquinas:MARCO.esquinas }),
+    desc:() => 'Un tablero de 7 por 9 casillas.' + (S.pred.marco ? ' El marco de 2 casillas de grosor está pintado; los cuatro bloques de las esquinas, de otro color.' : ''),
+    exp:`<div class="eqs"><div class="eq">7 · 9 − 3 · 5 = 63 − 15 = <b>${n0(E1.total)}</b><span class="note">todo menos el centro sin pintar</span></div>
+      <div class="eq">2 · 9 · 2 + 2 · 7 · 2 − 4 · ${V('K','4')} = 64 − 16 = <b>${n0(E1.total)}</b><span class="note">las esquinas se restan una vez</span></div></div>
+      <p>Cada ${V('K','bloque de esquina')} (2 × 2) está a la vez en una fila y en una columna del marco. Lo más seguro: todo el tablero menos lo que no se pinta.</p>${fuente(NOTA_HIP)}` },
+  { id:'te', corto:'La T en el tablero', leg:['A','B'], legAntes:['L'], leyTextos:{ L:'el tablero y la pieza', A:'como en el dibujo', B:'girada' },
+    q:'La pieza en forma de T del dibujo se coloca sobre un tablero de 3 × 4 cubriendo casillas enteras. Se puede girar y voltear. ¿En cuántas ubicaciones distintas puede quedar?',
+    opts:[['a', `${n0(E2.errores.ochoVeces)} ubicaciones`, 'RME164-ocho-posiciones', 'hipotesis'], ['b', `${n0(E2.errores.comoDibujo)} ubicaciones`, 'RME45-solo-como-el-dibujo', 'hipotesis'],
+          ['c', `${n0(E2.total)} ubicaciones`], ['d', `${n0(E2.errores.marcos)} ubicaciones`, 'RME163-cuenta-marcos', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Elegiste la A. Contaste 8 posiciones, como en la L. Pero la T es simétrica: volteada queda igual que girada. Solo tiene 4 posiciones distintas, y cada ubicación quedó contada dos veces. La correcta está marcada.',
+         b:'Elegiste la B. Así, como en el dibujo, la T cabe en 4 lugares. Girada cabe en otros. La correcta está marcada.',
+         d:'Elegiste la D. Contaste los rectángulos de 3 × 2 y de 2 × 3 donde entra la T. En cada uno la T cabe de 2 maneras. La correcta está marcada.' },
+    lista:() => { R.lista = E2.lista; R.etiqueta = u => NOMBRE_ISO[ORT.nombres[u.orientacion]]; },
+    antes:() => ({ tipo:'tablero', m:3, n:4, aparte:{ celdas:PT }, maxEscala:64 }),
+    despues:() => { const u = R.lista[R.i], V = { tipo:'tablero', m:3, n:4, aparte:{ celdas:PT }, maxEscala:64 }; if (u){ V.piezas = [{ celdas:u.celdas, k: u.comoDibujo ? 'A' : 'B', a:.4 }]; V.cuenta = { t:`${R.i + 1} de ${R.lista.length}`, k: u.comoDibujo ? 'A' : 'B' }; } return V; },
+    desc:() => 'Un tablero de 3 por 4 y una pieza en forma de T de 4 casillas.' + (S.pred.te && R.lista[R.i] ? ` Ubicación ${R.i + 1} de ${R.lista.length}.` : ''),
+    exp:`<div class="eqs"><div class="eq">4 posiciones distintas · 4 + 3 + 4 + 3 = <b>${n0(E2.total)}</b><span class="note">acostada: 2 · 2 lugares; parada: 3 · 1</span></div></div>
+      <p>Antes de multiplicar por 8, mira si la pieza es simétrica: si al voltearla queda igual que una girada, esas ubicaciones ya están contadas.</p>${fuente(NOTA_HIP)}` },
+  { id:'ese', corto:'La S en el círculo', leg:['A','B','K'], legAntes:['L'], leyTextos:{ L:'el círculo y la S', A:'gota de arriba', B:'gota de abajo', K:'la S, que comparten' },
+    q:'Un círculo de diámetro AB = 10 se parte con una S: una semicircunferencia de diámetro AM = 6 hacia arriba y otra de diámetro MB = 4 hacia abajo. Quedan dos gotas. ¿Cuánto suman sus perímetros?',
+    opts:[['a', `${n0(E3.errores.compartidoUnaVez.b)}π`, 'RME43-arco-compartido-una-vez', 'hipotesis'], ['b', '10π', 'RME43-sin-la-s', 'hipotesis'],
+          ['c', '40π', 'semicircunferencia-como-circunferencia', 'hipotesis'], ['d', `${n0(E3.suma.b)}π`]],
+    ok:'d',
+    fb:{ a:'Elegiste la A. Sumaste la circunferencia (10π) y la S una sola vez (5π). La S es borde de las dos gotas: entra en los dos perímetros. La correcta está marcada.',
+         b:'Elegiste la B. 10π es la circunferencia grande. Falta la S, que es borde de las dos gotas. La correcta está marcada.',
+         c:'Elegiste la C. Tomaste cada semicircunferencia como si fuera la circunferencia entera (π · d). Una semicircunferencia de diámetro d mide πd/2. La correcta está marcada.' },
+    antes:() => ({ tipo:'arcos', forma:'s', AB:10, AM:6 }),
+    despues:() => ({ tipo:'arcos', forma:'s', AB:10, AM:S.am, colorear:true }),
+    desc:() => `Un círculo de diámetro AB = 10 partido por una S que pasa por M, con AM = ${S.pred.ese ? S.am : 6}.` + (S.pred.ese ? ` Cada gota mide ${pi(M.curvaS(10, S.am).zonas[0])}.` : ''),
+    exp:`<div class="eqs"><div class="eq">cada gota: 5π + ${V('K','3π + 2π')} = 10π · suma = <b>20π</b></div></div>
+      <p>Cada gota tiene media circunferencia grande y la ${V('K','S entera')}. Y la S mide lo mismo que media circunferencia grande, esté donde esté M: π · AM/2 + π · MB/2 = π · AB/2. Mueve M:</p>
+      <div class="ctl"><label for="am2">AM</label><input id="am2" type="range" min="1" max="9" step="1" value="6"><output id="am2o">6</output></div>
+      <p class="lectura" id="lec2" aria-live="polite"></p>${fuente(NOTA_HIP)}`,
+    montar:() => { const r = $('am2'), pon = () => { S.am = +r.value; const z = M.curvaS(10, S.am); $('am2o').textContent = S.am; $('lec2').textContent = `Gota de arriba: ${pi(z.zonas[0])} · gota de abajo: ${pi(z.zonas[1])} · suma: ${pi(z.suma)}`; S.vista = EXPS[2].despues(); draw(); describir(); }; r.value = S.am; r.oninput = pon; pon(); } },
+  { id:'red', corto:'La red de puntos', leg:['A','N'], legAntes:['L'], leyTextos:{ L:'los puntos', A:'un triángulo', N:'rectas con 3 puntos' },
+    q:'Con los 9 puntos de una red de 3 × 3, ¿cuántos triángulos se pueden formar con vértices en esos puntos?',
+    opts:[['a', `${n0(E4.errores.sinRestar)} triángulos`, 'RME169-no-resta-alineadas', 'hipotesis'], ['b', `${n0(E4.total)} triángulos`],
+          ['c', `${n0(E4.errores.soloFilasColumnas)} triángulos`, 'AR18-olvida-diagonales', 'parcial'], ['d', `${n0(E4.errores.conOrden)} triángulos`, 'AR17-cuenta-con-orden', 'parcial']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. 84 son todas las ternas. Las de tres puntos alineados no son triángulos: 3 filas, 3 columnas y 2 diagonales. La correcta está marcada.',
+         c:'Elegiste la C. Restaste las 3 filas y las 3 columnas, pero las 2 diagonales también tienen 3 puntos alineados. La correcta está marcada.',
+         d:'Elegiste la D. Contaste cada triángulo 6 veces, una por cada orden de sus vértices. La correcta está marcada.' },
+    lista:() => { R.lista = E4.lista; R.etiqueta = () => 'un triángulo'; },
+    antes:() => ({ tipo:'puntos', pts:RED }),
+    despues:() => { const V = { tipo:'puntos', pts:RED, rectas:RECTAS_RED }, t = R.lista[R.i]; if (t){ V.luz = t; V.cuenta = { t:`${R.i + 1} de ${R.lista.length}`, k:'A' }; } return V; },
+    desc:() => 'Nueve puntos en una red de 3 filas y 3 columnas.' + (S.pred.red && R.lista[R.i] ? ` Triángulo ${R.i + 1} de ${R.lista.length}.` : ''),
+    exp:`<div class="eqs"><div class="eq">C(9, 3) − ${V('N','8')} · C(3, 3) = 84 − ${V('N','8')} = <b>${n0(E4.total)}</b><span class="note">3 filas, 3 columnas y 2 diagonales</span></div></div>
+      <p>Las ${V('N','rectas con tres puntos')} no siempre se ven a primera vista: busca también en diagonal.</p>${fuente(NOTA_AR18 + ' ' + NOTA_AR17 + ' ' + NOTA_HIP)}` },
+  { id:'largo', corto:'Un tablero alargado', leg:['A','B','K'], legAntes:['L'], leyTextos:{ L:'el tablero', A:'pieza A', B:'pieza B', K:'el corte' },
+    q:'Un tablero de 3 × 6 casillas se corta por las líneas de la cuadrícula en dos piezas congruentes. ¿Cuál es el mayor perímetro que puede tener cada pieza?',
+    opts:[['a', `${n0(E5.errores.corteRecto)} lados`, 'RME42-corte-recto', 'hipotesis'], ['b', `${n0(E5.errores.mitadTablero)} lados`, 'RME165-reparte-el-borde', 'hipotesis'],
+          ['c', `${n0(E5.errores.segundo)} lados`, 'AR18-mejor-de-unos-pocos', 'parcial'], ['d', `${n0(E5.maximo)} lados`]],
+    ok:'d',
+    fb:{ a:'Elegiste la A. Ese es el corte recto que parte el 6 por la mitad: 9 lados de borde más 3 de corte. Un corte quebrado, simétrico respecto del centro, es más largo. La correcta está marcada.',
+         b:'Elegiste la B. 9 es la mitad del borde del tablero; falta sumar el corte, que también es borde de cada pieza. La correcta está marcada.',
+         c:'Elegiste la C. Hay cortes de 9 lados que dejan piezas iguales; el más largo mide 11. La correcta está marcada.' },
+    lista:() => { R.lista = E5.lista; R.etiqueta = p => `perímetro ${p.perimetro} · corte de ${p.corte}`; },
+    antes:() => ({ tipo:'tablero', m:3, n:6, maxEscala:60 }),
+    despues:() => {
+      const V = { tipo:'tablero', m:3, n:6, maxEscala:60 };
+      if (S.editar){ const lc = leerCortes(3, 6, editor.lista()); V.cortes = editor.lista(); V.puntos = true; V.cursor = editor.cursor ? Object.assign({ lapiz:editor.lapiz }, editor.cursor) : null; if (lc.r.total >= 2) V.piezas = lc.r.piezas.map((p, i) => ({ celdas:p.celdas, k: i === 0 ? 'A' : i === 1 ? 'B' : null, sinContorno:true })); return V; }
+      const p = R.lista[R.i]; if (p){ V.piezas = [{ celdas:p.A, k:'A', sinContorno:true }, { celdas:p.B, k:'B', sinContorno:true }]; V.cortes = M.cortesEntre(p.A, p.B); V.cuenta = { t:`${R.i + 1} de ${R.lista.length}`, k:'K' }; }
+      return V;
+    },
+    desc:() => 'Un tablero de 3 por 6 casillas.' + (S.pred.largo ? (S.editar ? ' ' + leerCortes(3, 6, editor.lista()).t : (R.lista[R.i] ? ` Partición ${R.i + 1} de ${R.lista.length}: perímetro ${R.lista[R.i].perimetro}.` : '')) : ''),
+    exp:`<div class="eqs"><div class="eq">${fr('18', '2')} + ${V('K','11')} = <b>${n0(E5.maximo)}</b><span class="note">medio borde más el corte más largo</span></div></div>
+      <p>El motor probó las ${n0(E5.total)} maneras de partir este tablero en dos piezas iguales. Corta tú y compara.</p>${htmlEditor('ed2')}${fuente(NOTA_AR18 + ' ' + NOTA_HIP)}`,
+    montar:() => {
+      const box = $('ed2'), b = box.querySelector('[data-e="cortar"]');
+      const pon = on => { S.editar = on; editor.activo = on; b.setAttribute('aria-pressed', on); b.textContent = on ? 'Ver las particiones' : 'Cortar yo';
+        if (on){ R.parar(); editor.cursor = null; cv.focus({ preventScroll:true }); verLienzo(); }
+        $('ed2-lec').textContent = on ? leerCortes(3, 6, editor.lista()).t : ''; S.vista = EXPS[4].despues(); draw(); describir(); };
+      b.onclick = () => pon(!S.editar);
+      box.querySelector('[data-e="borrar"]').onclick = () => { if (!S.editar) pon(true); editor.borrar(); };
+      box.querySelector('[data-e="deshacer"]').onclick = () => { if (!S.editar) pon(true); editor.deshacer(); };
+      R.alTocar = () => { if (S.editar) pon(false); verLienzo(); };
+    } },
+];
+function verLienzo(){
+  if (innerWidth >= 900) return;
+  const r = cv.getBoundingClientRect();
+  if (r.top < 0 || r.bottom > innerHeight) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+}
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function describir(){ const x = EXPS[S.k]; const t = x.desc(); $('desc2').textContent = t; cv.setAttribute('aria-label', t); }
+R.pintar = () => { const x = EXPS[S.k]; if (!S.pred[x.id]) return; S.vista = x.despues(); draw(); describir(); };
+function ir(k){
+  if (k > primeraLibre()) return;
+  R.parar();
+  S.k = k; S.t0 = Date.now(); S.editar = false; editor.activo = false;
+  const x = EXPS[k], hecho = !!S.pred[x.id];
+  R.lista = []; R.i = -1; R.el = null; R.etiqueta = null; R.alTocar = verLienzo;
+  if (hecho && x.lista){ x.lista(); R.i = R.lista.length - 1; }
+  S.vista = hecho ? x.despues() : x.antes(); draw();
+  L.compactar(!hecho);
+  botones();
+  leyenda($('leg2'), hecho ? x.leg : x.legAntes, x.leyTextos);
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts)}<p class="fb" id="fb2"></p><div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : x.fb[p];
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = (x.lista ? htmlReflector('r2', 'un caso') : '') + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    if (x.lista) R.montar($('r2'), () => S.k === k);
+    if (x.montar) x.montar();
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0];
+    if (x.lista) x.lista();
+    botones(); pintar(); L.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder(L.cv, () => {
+      leyenda($('leg2'), x.leg, x.leyTextos);
+      S.vista = x.despues(); draw();
+      if (x.lista) R.recorrer(() => S.k === k);
+      describir();
+    }, () => S.k === k);
+  });
+  pintar(); describir();
+}
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

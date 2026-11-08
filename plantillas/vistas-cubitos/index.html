@@ -1,0 +1,1286 @@
+<!doctype html>
+<html lang="es" data-curso="razonamiento-matematico">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Los cubitos que giran: vistas y huecos</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de geometria-espacio.
+   Dentro del dibujo, de las vistas y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   F azul: la vista frontal y las caras que miran al frente; T naranja: la vista superior y las caras de arriba;
+   L turquesa: la vista lateral (desde la derecha) y las caras que miran a la derecha; oc magenta: los cubitos ocultos
+   (o los que sobran); c rojo: las caras que se cuentan (C); v verde bosque: los vértices (V); n oliva: los cubitos que
+   se agregan (los que faltan, las copias, los que tapan). Las aristas (A), los cubitos sin color y la caja van en tinta.
+   Elegidos con CIEDE2000 (script en el scratchpad del constructor, sobre docs/metodo/paleta.py): ΔE00 ≥ 21,3 entre
+   todos los pares y con la tinta, en claro y en oscuro (el par más cercano es L y v). Contraste AA ≥ 4,5:1 sobre el
+   papel y sobre el chip .v (fondo al 8 %) en los dos temas. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-F:#1f5fbf; --c-T:#a05200; --c-L:#0f766e; --c-oc:#a10fbf; --c-c:#c0364a; --c-v:#17451e; --c-n:#6b6b0f;
+  --sombra-cara:.07;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-F:#7cb0ff; --c-T:#f0a04a; --c-L:#5ed9c8; --c-oc:#cf6bfa; --c-c:#f17384; --c-v:#40bf59; --c-n:#e2e25a;
+  --sombra-cara:.1; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-F:#7cb0ff; --c-T:#f0a04a; --c-L:#5ed9c8; --c-oc:#cf6bfa; --c-c:#f17384; --c-v:#40bf59; --c-n:#e2e25a;
+  --sombra-cara:.1; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+/* Celular con una predicción pendiente: el dibujo y las vistas más bajos y pegados arriba. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend, .mode.pendiente .lecturas, .mode.pendiente .giro{display:none}
+  .mode.pendiente .vistas figcaption{font-size:.72rem}
+  .mode.pendiente .vistas svg{max-height:74px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none; cursor:grab}
+canvas:active{cursor:grabbing}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:12px; height:12px; border-radius:3px; display:inline-block; border:2px solid; opacity:.9}
+.giro{margin:0; padding:0 8px; font-size:.8rem; color:var(--muted)}
+.mode.pendiente .giro .libre, .mode:not(.pendiente) .giro .espera{display:none}
+
+/* Las tres vistas, cada una con el color de su variable */
+.vistas{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:6px}
+.vistas:empty{display:none}
+.vistas figure{margin:0; background:var(--paper); border:1px solid var(--line); border-top:4px solid var(--k); border-radius:14px; padding:4px 4px 2px;
+  display:grid; justify-items:center; gap:0; min-width:0}
+.vistas figcaption{font-size:.78rem; font-weight:800; color:var(--k); text-align:center; line-height:1.2}
+.vistas figcaption small{display:block; font-weight:600; color:var(--muted); font-size:.72rem}
+.vistas figcaption.cambio{color:var(--warn)}
+.vistas svg{display:block; width:100%; max-width:118px; height:auto; max-height:104px}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-L{color:var(--c-L); background:color-mix(in srgb, var(--c-L) 8%, transparent)}
+.v-oc{color:var(--c-oc); background:color-mix(in srgb, var(--c-oc) 8%, transparent)}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-ink{color:var(--ink); background:color-mix(in srgb, var(--ink) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{font-family:var(--mono); font-size:1.0rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+table.formulas{border-collapse:collapse; font-size:.92rem; width:100%}
+table.formulas th, table.formulas td{border-bottom:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top}
+.tabla{overflow-x:auto}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opts.grilla{grid-template-columns:repeat(2, minmax(0,1fr))}
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums; padding-top:1px}
+.opt .m.t{font-family:inherit}
+.opt .m svg{display:block; width:78px; height:auto}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.btns{display:flex; flex-wrap:wrap; gap:8px}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(104px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.0rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+<link rel="stylesheet" href="../../nucleo/pegatina.css">
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Cubos, sólidos y vistas · Problemas tipo admisión</p>
+      <h1>Los cubitos que giran</h1>
+      <p class="sub">Sólidos de cubitos que se giran con el dedo, sus tres vistas al lado y lo que no se ve desde afuera.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del sólido">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del sólido"></canvas></div>
+      <div class="vistas" id="vistas1"></div>
+      <p class="giro"><span class="libre">Arrastra el dibujo hacia los lados para girarlo (con teclado: tócalo y usa las flechas).</span><span class="espera">Responde primero; luego podrás girar el sólido.</span></p>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <div class="vistas" id="vistas2"></div>
+      <p class="giro"><span class="libre">Arrastra el dibujo hacia los lados para girarlo.</span><span class="espera">Responde primero; luego podrás girar el dibujo.</span></p>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/vistas-cubitos">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'vistas-cubitos', unidad: 'razonamiento-matematico.rutas-y-visualizacion-espacial', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (vistas, sólido máximo y mínimo, caras, aristas, vértices, visibles, cubitos que faltan, copias,
+   la sucesión que tapa y el poliedro de vistas convexas, y lo que da cada error típico) sale de MotorVistas (motor.js).
+   Aquí solo se proyecta, se pinta y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MV = MotorVistas;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+const fmt = (n, d) => { if (!Number.isFinite(n)) return '—'; const p = Math.pow(10, d === undefined ? 2 : d); const r = Math.round(n*p)/p + 0; return (r < 0 ? '−' : '') + String(Math.abs(r)).replace('.', ','); };
+const V_ = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const F_ = t => V_('F', t), T_ = t => V_('T', t), L_ = t => V_('L', t), oc_ = t => V_('oc', t), c_ = t => V_('c', t), v_ = t => V_('v', t), n_ = t => V_('n', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const opcionesHTML = (opts, idFb, texto, grilla) => `<div class="opts${grilla ? ' grilla' : ''}">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m${texto ? ' t' : ''}">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const fuenteHip = que => `<p class="fuente">${que}: son hipótesis nuestras, tomadas de las trampas que se repiten en los exámenes de admisión y en los problemas de academia; no encontramos estudios con datos para estos errores. Lo que marquen los alumnos dirá cuáles aparecen.</p>`;
+const fuenteOcultos = `<p class="fuente">Olvidar los cubitos que no se ven es hipótesis nuestra para estos problemas. Se parece a un error descrito: al contar los cubitos de un sólido dibujado, lo más frecuente fue contar solo las caras o los cubitos visibles, y menos de la mitad de los alumnos de 5.° a 8.° grado resolvió esos problemas (Ben-Chaim, Lappan y Houang, 1985, según autores que lo citan).</p>`;
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), warn:g('--warn'),
+    F:g('--c-F'), T:g('--c-T'), L:g('--c-L'), oc:g('--c-oc'), c:g('--c-c'), v:g('--c-v'), n:g('--c-n'),
+    sombra:Number(g('--sombra-cara')) || .07, font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function rotulo(ctx, c, x, y, t, color, tam, fondo){
+  ctx.font = `800 ${tam || 13}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width;
+  ctx.save(); ctx.fillStyle = fondo || c.paper; ctx.globalAlpha = .88; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x - w/2 - 4, y - 9, w + 8, 18, 6) : ctx.rect(x - w/2 - 4, y - 9, w + 8, 18); ctx.fill(); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ----- los sólidos de la escena (todos propios) ----- */
+const D = {
+  P1: [['###', '#..'], ['#..', '...']],
+  P2: [['##.', '###', '#..'], ['#..', '##.', '...'], ['#..', '...', '...']],
+  F: ['#..', '##.', '###'], T: ['###', '###', '###'], L: ['..#', '.##', '###'],
+  CASA: { frontal: [[0, 0], [2, 0], [2, 2], [1, 3], [0, 2]], superior: [[0, 0], [2, 0], [2, 2], [0, 2]], lateral: [[0, 0], [2, 0], [2, 2], [1, 3], [0, 2]] },
+  PIR: { frontal: [[0, 0], [2, 0], [1, 2]], superior: [[0, 0], [2, 0], [2, 2], [0, 2]], lateral: [[0, 0], [2, 0], [1, 2]] },
+  COMP: [['###', '###'], ['##.', '#..']],
+  CUB: [['##']],
+  AF: ['#..', '###'], AT: ['###', '#.#'], AL: ['#.', '##'], AM: { x: [1, 2, 1], y: [2, 1], z: [2, 1] },
+  CAJA: [['##.', '###', '#..'], ['...', '#..', '#..']],
+  COP: [['##', '#.']],
+  LAT: [['###', '###', '###'], ['.##', '...', '###'], ['...', '...', '#..']],
+};
+const celdasDe = p => MV.leer(p).celdas;
+const DIRS = [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]];
+const k3 = c => c[0] + ',' + c[1] + ',' + c[2];
+const ISO = { az:45, el:35.26 };
+const VISTA_CASA = { az:30, el:50 }, VISTA_PIR = { az:28, el:24 };
+const haciaQuienMira = v => { const a = v.az*Math.PI/180, e = v.el*Math.PI/180; return [Math.sin(a)*Math.cos(e), -Math.cos(a)*Math.cos(e), Math.sin(e)]; };
+// orden en que el reflector enciende las caras: arriba, frente, derecha (las que se ven) y luego izquierda, fondo y abajo
+const PRIO = [2, 4, 3, 0, 1, 5];   // índice en DIRS → orden: +z, −y, +x, −x, +y, −z
+const ordenDir = n => [[0,0,1], [0,-1,0], [1,0,0], [-1,0,0], [0,1,0], [0,0,-1]].findIndex(d => d[0] === n[0] && d[1] === n[1] && d[2] === n[2]);
+function carasOrdenadas(lista){
+  return lista.map(f => f).sort((a, b) => ordenDir(a.normal) - ordenDir(b.normal) || centro(a)[2]*ordenDir(a.normal) - centro(b)[2]*ordenDir(b.normal));
+}
+function centro(f){ const s = [0, 0, 0]; for (const q of f.cuadros) { s[0] += q[0]; s[1] += q[1]; s[2] += q[2]; } return s.map(v => v/f.cuadros.length); }
+
+/* ================= Las vistas (SVG) =================
+   v: lista de textos (cuadraditos) o { pol:[[a,b]], lineas:[[[a,b],[c,d]]] } (vista de un poliedro convexo).
+   o: { col (variable), anchos, altos (medidas de columnas y filas, filas de arriba abajo), cotas, dif (Set "fila,col"), max } */
+function svgVista(v, o){
+  o = o || {};
+  const col = `var(--c-${o.col}, var(--ink))`, max = o.max || 96, pad = o.cotas ? 16 : 5;
+  if (Array.isArray(v)) {
+    const nc = Math.max(...v.map(f => f.length)), nr = v.length;
+    const cw = o.anchos || Array(nc).fill(1), rh = o.altos || Array(nr).fill(1);
+    const TW = cw.reduce((a, b) => a + b, 0), TH = rh.reduce((a, b) => a + b, 0), s = Math.min(26, max/Math.max(TW, TH));
+    const W = TW*s + 2*pad, H = TH*s + 2*pad + (o.pie ? 12 : 0) + (o.cotas ? 4 : 0);
+    let x0s = [0]; cw.forEach(w => x0s.push(x0s[x0s.length - 1] + w));
+    let y0s = [0]; rh.forEach(h => y0s.push(y0s[y0s.length - 1] + h));
+    let out = '';
+    for (let r = 0; r < nr; r++) for (let c = 0; c < nc; c++) {
+      const x = pad + x0s[c]*s, y = pad + y0s[r]*s, w = cw[c]*s, h = rh[r]*s, lleno = v[r][c] === '#', mal = o.dif && o.dif.has(r + ',' + c);
+      if (lleno) out += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${col}" fill-opacity=".22" stroke="${col}" stroke-width="1.6"/>`;
+      else out += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 3"/>`;
+      if (mal) out += `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" fill="var(--warn)" fill-opacity=".25" stroke="var(--warn)" stroke-width="2" stroke-dasharray="4 3"/>`;
+    }
+    if (o.cotas) {
+      cw.forEach((w, c) => { out += `<text x="${pad + (x0s[c] + w/2)*s}" y="${pad + TH*s + 11}" font-size="11.5" font-weight="800" text-anchor="middle" fill="var(--muted)">${fmt(w)}</text>`; });
+      rh.forEach((h, r) => { out += `<text x="${pad - 5}" y="${pad + (y0s[r] + h/2)*s + 3.5}" font-size="11.5" font-weight="800" text-anchor="end" fill="var(--muted)">${fmt(h)}</text>`; });
+    }
+    if (o.pie) out += `<text x="${o.pie.lado === 'izq' ? pad : W/2}" y="${H - 2}" font-size="9.5" font-weight="700" text-anchor="${o.pie.lado === 'izq' ? 'start' : 'middle'}" fill="var(--muted)">${o.pie.t}</text>`;
+    return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true">${out}</svg>`;
+  }
+  const P = v.pol, as = P.map(p => p[0]), bs = P.map(p => p[1]);
+  const a0 = Math.min(...as), a1 = Math.max(...as), b0 = Math.min(...bs), b1 = Math.max(...bs);
+  const s = Math.min(30, max/Math.max(a1 - a0, b1 - b0)), W = (a1 - a0)*s + 2*pad, H = (b1 - b0)*s + 2*pad + (o.pie ? 12 : 0);
+  const X = a => pad + (a - a0)*s, Y = b => pad + (b1 - b)*s;
+  let out = `<polygon points="${P.map(p => X(p[0]) + ',' + Y(p[1])).join(' ')}" fill="${col}" fill-opacity=".22" stroke="${col}" stroke-width="1.8" stroke-linejoin="round"/>`;
+  for (const [p, q] of v.lineas || []) out += `<line x1="${X(p[0])}" y1="${Y(p[1])}" x2="${X(q[0])}" y2="${Y(q[1])}" stroke="${col}" stroke-width="1.4"/>`;
+  if (o.pie) out += `<text x="${o.pie.lado === 'izq' ? pad : W/2}" y="${H - 2}" font-size="9.5" font-weight="700" text-anchor="${o.pie.lado === 'izq' ? 'start' : 'middle'}" fill="var(--muted)">${o.pie.t}</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true">${out}</svg>`;
+}
+// Descripción para el lector de pantalla: cada fila, de arriba abajo
+function decirVista(v){
+  if (!Array.isArray(v)) return 'un polígono';
+  return v.map((f, i) => `fila ${i + 1}: ${[...f].map(ch => ch === '#' ? 'lleno' : 'vacío').join(', ')}`).join('; ');
+}
+// Las tres vistas de un poliedro convexo: el contorno y las aristas proyectadas
+function vistasPoliedro(o, R){
+  const proy = (i, j) => R.listaAristas.map(([a, b]) => [[R.listaVertices[a][i], R.listaVertices[a][j]], [R.listaVertices[b][i], R.listaVertices[b][j]]])
+    .filter(([p, q]) => Math.hypot(p[0] - q[0], p[1] - q[1]) > 1e-9);
+  return { F:{ pol:o.frontal, lineas:proy(0, 2) }, T:{ pol:o.superior, lineas:proy(0, 1) }, L:{ pol:o.lateral, lineas:proy(1, 2) } };
+}
+function vistasHTML(cfg){
+  if (!cfg) return '';
+  const pies = { F:null, T:{ t:'frente ↓' }, L:{ t:'← frente', lado:'izq' } };
+  const nombre = { F:'Frontal', T:'Superior', L:'Lateral' }, sub = { F:'de frente', T:'desde arriba', L:'desde la derecha' };
+  return ['F', 'T', 'L'].map(k => {
+    const v = cfg[k]; if (!v) return '';
+    const o = Object.assign({ col:k, pie:pies[k] }, (cfg.opc && cfg.opc[k]) || {});
+    const cambio = cfg.cambio && cfg.cambio[k];
+    return `<figure style="--k:var(--c-${k})" role="img" aria-label="Vista ${nombre[k].toLowerCase()} (${sub[k]}): ${decirVista(v)}${cambio ? '. Cambió' : ''}">${svgVista(v, o)}<figcaption${cambio ? ' class="cambio"' : ''}>${nombre[k]}${cambio ? ' · cambió' : ''}<small>${sub[k]}</small></figcaption></figure>`;
+  }).join('');
+}
+
+/* ================= La escena 3D =================
+   cfg.escena(E) devuelve lo que se pinta en cada cuadro:
+   { cubos:[{ c:[x,y,z], col, alfa, tinte (caras del color de su vista), borde }], polis:[{ R (poliedro del motor), col, alfa,
+     luz (caras encendidas), orden, aristas }], puntos:[{ p:[x,y,z], col, et }], aristas:[[p, q]], luz:{ caras (lista del
+     motor, ya ordenada), n (cuántas encendidas) }, caja:[[x0,x1],[y0,y1],[z0,z1]], mesa:[[x0,x1],[y0,y1]], textos:[{ p, t, col }],
+     gap (separación de los pisos), med (medidas de columnas, filas y pisos) }.
+   cfg.marco: caja que tiene que caber al girar. cfg.fija: no se gira. cfg.alTocar(c): toque sobre un cubito. */
+function crearEscena(cv, idDesc, idLect, idLey, idVistas){
+  const E = { cfg:{}, prog:{}, az:ISO.az, el:ISO.el, hl:null, gen:0, compacto:false, ocupado:false };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, encuadre = null, caras2d = [];
+
+  function altoDe(w){
+    const h = innerWidth >= 900 ? clamp(w*.62, 300, Math.max(300, Math.min(470, innerHeight - 330))) : clamp(w*.78, 250, 360);
+    return Math.round(Celular.alto(h, E.compacto, { tope:E.cfg.vistas ? 200 : 240 }));
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = altoDe(w), dpr = Celular.dpr();
+    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); encuadre = null; }
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  addEventListener('modo', () => { W = 0; resize(); });
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.gen++;
+    E.cfg = o; E.prog = Object.assign({}, o.prog);
+    const v = o.vista || ISO; E.az = v.az; E.el = v.el;
+    encuadre = null;
+    cv.setAttribute('aria-label', o.desc || 'Dibujo de la escena');
+    W = 0; resize(); E.lecturas(); E.leyenda(); E.vistas();
+    document.getElementById(idDesc).textContent = '';
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const leer = k => (k === 'az' || k === 'el' ? E[k] : E.prog[k]);
+  const poner = (k, v) => { if (k === 'az' || k === 'el') E[k] = v; else E.prog[k] = v; };
+  E.animar = (k, hasta, dur, fin) => {
+    const gen = E.gen, de = leer(k);
+    if (RM || !dur){ poner(k, hasta); E.dibujar(); E.lecturas(); if (fin) setTimeout(() => { if (E.gen === gen) fin(); }, 0); return; }
+    const t0 = performance.now();
+    const tick = now => {
+      if (E.gen !== gen) return;
+      const f = Math.max(0, Math.min(1, (now - t0)/dur)); poner(k, de + (hasta - de)*suave(f)); E.dibujar(); E.lecturas();
+      if (f < 1) requestAnimationFrame(tick); else if (fin) fin();
+    };
+    requestAnimationFrame(tick);
+  };
+  // varias a la vez: [[k, hasta], …]
+  E.animarVarias = (pares, dur, fin) => { let n = pares.length; pares.forEach(([k, h]) => E.animar(k, h, dur, () => { if (--n === 0 && fin) fin(); })); };
+  E.cadena = (pasos, fin) => {
+    const gen = E.gen; let i = 0;
+    const sigue = () => { if (E.gen !== gen) return; if (i >= pasos.length) { if (fin) fin(); return; } pasos[i++](sigue); };
+    sigue();
+  };
+  E.pausa = ms => n => esperar(ms, n);
+  E.avisar = t => { document.getElementById(idDesc).textContent = t || ''; };
+  E.lecturas = () => {
+    const el = document.getElementById(idLect); if (!el) return;
+    const out = (typeof E.cfg.lect === 'function' ? E.cfg.lect(E) : E.cfg.lect) || [];
+    const html = out.map(([k, t, v]) => `<div class="lectura" style="--k:var(--c-${k}, var(--ink))"><b>${v}</b><span>${t}</span></div>`).join('');
+    if (el.dataset.h !== html){ el.dataset.h = html; el.innerHTML = html; }
+  };
+  E.leyenda = () => {
+    const l = (typeof E.cfg.ley === 'function' ? E.cfg.ley(E) : E.cfg.ley) || [];
+    document.getElementById(idLey).innerHTML = l.map(([k, t]) => `<span><i style="border-color:var(--c-${k}, var(--${k}, var(--ink))); background:color-mix(in srgb, var(--c-${k}, var(--${k}, var(--ink))) 22%, transparent)"></i>${t}</span>`).join('');
+  };
+  E.vistas = () => {
+    const v = typeof E.cfg.vistas === 'function' ? E.cfg.vistas(E) : E.cfg.vistas;
+    const el = document.getElementById(idVistas), html = vistasHTML(v);
+    if (el.dataset.h !== html){ el.dataset.h = html; el.innerHTML = html; }
+  };
+
+  // ----- girar con el dedo o el ratón (hacia los lados: lo vertical sigue moviendo la página); tocar un cubito -----
+  let giro = null;
+  const puedeGirar = () => !E.compacto && !E.cfg.fija && !E.ocupado;
+  cv.addEventListener('pointerdown', e => { giro = { x:e.clientX, y:e.clientY, az:E.az, el:E.el, id:e.pointerId, raton:e.pointerType === 'mouse', movio:false }; });
+  cv.addEventListener('pointermove', e => {
+    if (!giro || e.pointerId !== giro.id || !puedeGirar()) return;
+    const dx = e.clientX - giro.x, dy = e.clientY - giro.y;
+    if (Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+    giro.movio = true;
+    E.az = giro.az + dx*.45;
+    if (giro.raton) E.el = clamp(giro.el + dy*.3, 5, 88);
+    E.dibujar();
+  });
+  cv.addEventListener('pointerup', e => {
+    if (giro && !giro.movio && E.cfg.alTocar && !E.compacto && !E.ocupado){
+      const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      for (let i = caras2d.length - 1; i >= 0; i--) if (dentroPol(x, y, caras2d[i].q)) { E.cfg.alTocar(caras2d[i].c); break; }
+    }
+    giro = null;
+  });
+  cv.addEventListener('pointercancel', () => { giro = null; });
+  cv.addEventListener('pointerleave', () => { giro = null; });
+  cv.tabIndex = 0;
+  cv.addEventListener('keydown', e => {
+    const k = { ArrowLeft:[-6, 0], ArrowRight:[6, 0], ArrowUp:[0, 4], ArrowDown:[0, -4] }[e.key];
+    if (!k || !puedeGirar()) return;
+    e.preventDefault(); E.az += k[0]; E.el = clamp(E.el + k[1], 5, 88); E.dibujar();
+  });
+
+  // ----- proyección ortográfica: d hacia quien mira, u a la derecha y arriba en la pantalla -----
+  function base(az, el){
+    const a = az*Math.PI/180, e = el*Math.PI/180;
+    const d = [Math.sin(a)*Math.cos(e), -Math.cos(a)*Math.cos(e), Math.sin(e)], u = [Math.cos(a), Math.sin(a), 0];
+    const up = [d[1]*u[2] - d[2]*u[1], d[2]*u[0] - d[0]*u[2], d[0]*u[1] - d[1]*u[0]];
+    return { d, u, up };
+  }
+  const dot = (a, b) => a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+  function calcularEncuadre(){
+    const m = E.cfg.marco || [[0, 3], [0, 3], [0, 3]], pts = [];
+    for (const x of m[0]) for (const y of m[1]) for (const z of m[2]) pts.push([x, y, z]);
+    const c3 = [(m[0][0] + m[0][1])/2, (m[1][0] + m[1][1])/2, (m[2][0] + m[2][1])/2];
+    let mx = 1e-6, arriba = 1e-6, abajo = 1e-6;
+    const els = [5, 20, ISO.el, 50, 70, 88].concat(E.cfg.elMin !== undefined ? [E.cfg.elMin, 0] : []);
+    for (const el of els) for (let az = 0; az < 360; az += 15){
+      const V = base(az, el), cx = dot(c3, V.u), cy = dot(c3, V.up);
+      for (const p of pts){ const x = dot(p, V.u) - cx, y = dot(p, V.up) - cy; mx = Math.max(mx, Math.abs(x)); arriba = Math.max(arriba, y); abajo = Math.max(abajo, -y); }
+    }
+    const pad = { x:16, t:16, b:16 };
+    const s = Math.min((W - 2*pad.x)/(2*mx), (H - pad.t - pad.b)/(arriba + abajo));
+    return { s, c3, y0: pad.t + s*arriba + ((H - pad.t - pad.b) - s*(arriba + abajo))/2 };
+  }
+  E.proyector = () => {
+    if (!encuadre) encuadre = calcularEncuadre();
+    const V = base(E.az, E.el), K = encuadre, cx = dot(K.c3, V.u), cy = dot(K.c3, V.up);
+    const f = p => [W/2 + K.s*(dot(p, V.u) - cx), K.y0 - K.s*(dot(p, V.up) - cy)];
+    f.V = V; f.s = K.s; return f;
+  };
+  E.recajar = () => { encuadre = null; E.dibujar(); };
+
+  E.dibujar = () => {
+    if (!W || !E.cfg || !E.cfg.escena) return;
+    const c = colores(), P = E.proyector();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    caras2d = pintar(ctx, c, E, P, E.cfg.escena(E));
+  };
+  return E;
+}
+function dentroPol(x, y, q){
+  let s = 0;
+  for (let i = 0; i < q.length; i++){ const [a, b] = q[i], [c, d] = q[(i + 1) % q.length]; const z = (c - a)*(y - b) - (d - b)*(x - a); if (Math.abs(z) < 1e-9) continue; if (!s) s = Math.sign(z); else if (Math.sign(z) !== s) return false; }
+  return true;
+}
+// medidas (vistas acotadas): la columna i va de X[i] a X[i + 1]
+function acum(l){ const r = [0]; for (const v of l) r.push(r[r.length - 1] + v); return r; }
+function eje(arr, i){ if (!arr) return i; const n = arr.length - 1; if (i <= 0) return arr[0] + i; if (i >= n) return arr[n] + (i - n); const f = Math.floor(i); return arr[f] + (i - f)*(arr[f + 1] - arr[f]); }
+function aMundo(p, med){ return med ? [eje(med.X, p[0]), eje(med.Y, p[1]), eje(med.Z, p[2])] : p; }
+function caraCubo(b, k){
+  const [x0, x1, y0, y1, z0, z1] = b;
+  return [[[x1,y0,z0],[x1,y1,z0],[x1,y1,z1],[x1,y0,z1]], [[x0,y0,z0],[x0,y0,z1],[x0,y1,z1],[x0,y1,z0]], [[x0,y1,z0],[x0,y1,z1],[x1,y1,z1],[x1,y1,z0]],
+    [[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1]], [[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]], [[x0,y0,z0],[x0,y1,z0],[x1,y1,z0],[x1,y0,z0]]][k];
+}
+// ¿Se ve el punto p (en la cuadrícula, sin medidas) desde d? Rayos con pasos cortos (solo para poner o no un rótulo).
+function puntoVisible(p, lleno, d, salida){
+  const n = Math.hypot(...d), u = d.map(v => v/n), q0 = [p[0] + (salida ? salida[0] : 0), p[1] + (salida ? salida[1] : 0), p[2] + (salida ? salida[2] : 0)];
+  for (let t = 0.03; t < 14; t += 0.05){
+    const q = [q0[0] + u[0]*t + 3.7e-3, q0[1] + u[1]*t + 2.1e-3, q0[2] + u[2]*t + 1.3e-3];
+    if (lleno.has(Math.floor(q[0]) + ',' + Math.floor(q[1]) + ',' + Math.floor(q[2]))) return false;
+  }
+  return true;
+}
+function pintar(ctx, c, E, P, S){
+  const V = P.V, d = V.d, col = k => c[k] || c.ink, fuerte = k => E.hl && E.hl === k;
+  const camino = pts => { ctx.beginPath(); pts.forEach((p, j) => { const q = P(p); j ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); }); ctx.closePath(); };
+  const med = S.med ? { X:acum(S.med.x), Y:acum(S.med.y), Z:acum(S.med.z) } : null, gap = S.gap || 0;
+  const salida = [];
+  // la mesa
+  if (S.mesa && E.el > 1){
+    const [[x0, x1], [y0, y1]] = S.mesa, a = aMundo([x0, y0, 0], med), b = aMundo([x1, y1, 0], med);
+    const esq = [[a[0], a[1], 0], [b[0], a[1], 0], [b[0], b[1], 0], [a[0], b[1], 0]];
+    ctx.save(); camino(esq); ctx.fillStyle = c.ink; ctx.globalAlpha = .045; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.beginPath();
+    for (let x = Math.ceil(x0); x <= x1; x++){ const p = P(aMundo([x, y0, 0], med)), q = P(aMundo([x, y1, 0], med)); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); }
+    for (let y = Math.ceil(y0); y <= y1; y++){ const p = P(aMundo([x0, y, 0], med)), q = P(aMundo([x1, y, 0], med)); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); }
+    ctx.stroke(); ctx.globalAlpha = .6; ctx.strokeStyle = c.muted; camino(esq); ctx.stroke(); ctx.restore();
+    if (S.mesaRotulos !== false){
+      const f = P([(a[0] + b[0])/2, a[1] + .28, 0]), r = P([b[0] - .28, (a[1] + b[1])/2, 0]);
+      salida.push(() => { rotulo(ctx, c, f[0], f[1], 'frente', c.muted, 11); rotulo(ctx, c, r[0], r[1], 'derecha', c.muted, 11); });
+    }
+  }
+  // la caja de alambre: aristas de atrás antes de los cubitos, las de adelante después
+  const cajaAristas = [];
+  if (S.caja){
+    const [[x0, x1], [y0, y1], [z0, z1]] = S.caja, A = aMundo([x0, y0, z0], med), B = aMundo([x1, y1, z1], med);
+    const p = (i, j, k) => [i ? B[0] : A[0], j ? B[1] : A[1], k ? B[2] : A[2]];
+    for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) {
+      cajaAristas.push([p(0, i, j), p(1, i, j), [0, i, j]], [p(i, 0, j), p(i, 1, j), [1, i, j]], [p(i, j, 0), p(i, j, 1), [2, i, j]]);
+    }
+  }
+  const aristaDelante = (a) => { // la arista está adelante si alguna de sus dos caras de la caja mira hacia quien ve
+    const [ej, i, j] = a[2], otros = [0, 1, 2].filter(k => k !== ej), n1 = [0, 0, 0], n2 = [0, 0, 0];
+    n1[otros[0]] = i ? 1 : -1; n2[otros[1]] = j ? 1 : -1;
+    return n1[0]*d[0] + n1[1]*d[1] + n1[2]*d[2] > 0 || n2[0]*d[0] + n2[1]*d[1] + n2[2]*d[2] > 0;
+  };
+  const trazarCaja = delante => { for (const a of cajaAristas) if (aristaDelante(a) === delante){ const p = P(a[0]), q = P(a[1]); ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = delante ? .7 : .4; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke(); ctx.restore(); } };
+  trazarCaja(false);
+
+  // los cubitos: de atrás hacia adelante (recorrido por ejes, de lejos a cerca: válido en proyección ortográfica)
+  const cubos = S.cubos || [], sg = d.map(v => (v >= 0 ? 1 : -1));
+  const opacos = new Set(cubos.filter(q => (q.alfa === undefined ? 1 : q.alfa) >= .999).map(q => k3(q.c)));
+  const luzDe = new Map();
+  if (S.luz) S.luz.caras.forEach((f, i) => { for (const q of f.cuadros) luzDe.set(q[0] + ',' + q[1] + ',' + q[2] + ',' + q[3], i); });
+  const orden = cubos.slice().sort((a, b) => a.c[2]*sg[2] - b.c[2]*sg[2] || a.c[1]*sg[1] - b.c[1]*sg[1] || a.c[0]*sg[0] - b.c[0]*sg[0]);
+  const caras2d = [];
+  for (const q of orden){
+    const [x, y, z] = q.c, alfa = q.alfa === undefined ? 1 : q.alfa;
+    if (alfa <= .01) continue;
+    const A = aMundo([x, y, z], med), B = aMundo([x + 1, y + 1, z + 1], med);
+    const b = [A[0], B[0], A[1], B[1], A[2] + gap*z, B[2] + gap*z];
+    const opaco = alfa >= .999, ks = [0, 1, 2, 3, 4, 5].filter(k => {
+      const n = DIRS[k], vis = n[0]*d[0] + n[1]*d[1] + n[2]*d[2] > 1e-9;
+      if (opaco && !vis) return false;
+      if (opaco){ const vec = k3([x + n[0], y + n[1], z + n[2]]); if (opacos.has(vec) && !(gap > .01 && n[2] !== 0)) return false; }
+      return true;
+    });
+    // los transparentes: primero las caras de atrás
+    ks.sort((a, b) => (DIRS[a][0]*d[0] + DIRS[a][1]*d[1] + DIRS[a][2]*d[2]) - (DIRS[b][0]*d[0] + DIRS[b][1]*d[1] + DIRS[b][2]*d[2]));
+    for (const k of ks){
+      const pts = caraCubo(b, k), n = DIRS[k], vis = n[0]*d[0] + n[1]*d[1] + n[2]*d[2] > 1e-9;
+      ctx.save(); ctx.globalAlpha = alfa;
+      camino(pts);
+      if (opaco){ ctx.fillStyle = c.card; ctx.fill(); }
+      // sombra suave según la cara (arriba más clara)
+      ctx.fillStyle = c.ink; ctx.globalAlpha = alfa*(n[2] === 1 ? .02 : n[2] === -1 ? .2 : n[0] !== 0 ? c.sombra*2.2 : c.sombra*1.3); ctx.fill();
+      let tinte = null;
+      if (q.tinte) tinte = n[1] === -1 ? 'F' : n[2] === 1 ? 'T' : n[0] === 1 ? 'L' : null;
+      if (q.col) tinte = q.col;
+      const il = luzDe.get(x + ',' + y + ',' + z + ',' + k);
+      if (il !== undefined && il < (S.luz.n || 0)) tinte = 'c';
+      if (tinte){ ctx.fillStyle = col(tinte); ctx.globalAlpha = alfa*((il !== undefined && tinte === 'c') ? (il === Math.ceil(S.luz.n) - 1 ? .62 : .4) : opaco ? .34 : .2)*(fuerte(tinte) ? 1.6 : 1); ctx.fill(); }
+      ctx.globalAlpha = opaco ? (S.finas ? .16 : .55) : Math.min(1, alfa*1.6)*(vis ? .8 : .35); ctx.strokeStyle = q.borde ? col(q.borde) : c.ink; ctx.lineWidth = q.borde ? 1.6 : 1;
+      if (!opaco) ctx.setLineDash(vis ? [4, 3] : [2, 3]);
+      ctx.stroke(); ctx.restore();
+      if (vis) caras2d.push({ q:pts.map(p => P(p)), c:q.c });
+    }
+  }
+  // los poliedros convexos (los prismas de una vista y el sólido)
+  for (const po of S.polis || []){
+    const R = po.R, alfa = po.alfa === undefined ? 1 : po.alfa;
+    if (alfa <= .01) continue;
+    const vis = f => f.normal[0]*d[0] + f.normal[1]*d[1] + f.normal[2]*d[2] > 1e-9;
+    const caras = R.listaCaras.map((f, i) => ({ f, i })).sort((a, b) => (vis(a.f) ? 1 : 0) - (vis(b.f) ? 1 : 0));
+    for (const { f, i } of caras){
+      const delante = vis(f);
+      if (alfa >= .999 && !delante) continue;
+      const pts = f.vertices.map(j => R.listaVertices[j]), n = f.normal;
+      ctx.save(); ctx.globalAlpha = alfa; camino(pts);
+      if (alfa >= .999){ ctx.fillStyle = c.card; ctx.fill(); }
+      ctx.fillStyle = c.ink; ctx.globalAlpha = alfa*(n[2] > .9 ? .02 : n[2] < -.9 ? .2 : c.sombra*(1.3 + Math.abs(n[0]))); ctx.fill();
+      const lit = po.orden ? po.orden.indexOf(i) : -1, encendida = lit >= 0 && lit < (po.luz || 0);
+      const tinte = encendida ? 'c' : po.col;
+      if (tinte){ ctx.fillStyle = col(tinte); ctx.globalAlpha = alfa*(encendida ? (lit === Math.ceil(po.luz) - 1 ? .62 : .4) : .22); ctx.fill(); }
+      ctx.globalAlpha = delante ? .75 : .3; ctx.strokeStyle = po.col && !encendida ? col(po.col) : c.ink; ctx.lineWidth = delante ? 1.6 : 1; if (!delante) ctx.setLineDash([3, 3]);
+      ctx.stroke(); ctx.restore();
+      if (encendida && delante){ const m = pts.reduce((s, p) => [s[0] + p[0]/pts.length, s[1] + p[1]/pts.length, s[2] + p[2]/pts.length], [0, 0, 0]), q = P(m); salida.push(() => rotulo(ctx, c, q[0], q[1], String(lit + 1), c.c, 13)); }
+    }
+    if (po.puntos) po.puntos.slice(0, Math.ceil(po.puntos.n || 0)).forEach((p, j) => {
+      const q = P(p); salida.push(() => { ctx.save(); ctx.fillStyle = c.v; ctx.beginPath(); ctx.arc(q[0], q[1], 5.5, 0, 2*Math.PI); ctx.fill(); ctx.restore(); rotulo(ctx, c, q[0] + 13, q[1] - 11, String(j + 1), c.v, 12); });
+    });
+  }
+  trazarCaja(true);
+  // aristas del sólido (tinta gruesa)
+  // (solo los tramos que se ven: cada arista se parte en pedacitos y se prueba el centro de cada uno)
+  if (S.aristas && S.aristas.length){
+    const lleno = new Set(cubos.filter(q => (q.alfa === undefined ? 1 : q.alfa) >= .999).map(q => k3(q.c))), off = [d[0]*.03, d[1]*.03, d[2]*.03];
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.globalAlpha = .9; ctx.beginPath();
+    for (const [p, q] of S.aristas){
+      const L = Math.max(1, Math.round(Math.hypot(q[0] - p[0], q[1] - p[1], q[2] - p[2])*6));
+      for (let i = 0; i < L; i++){
+        const t0 = i/L, t1 = (i + 1)/L, tm = (t0 + t1)/2, en = t => [p[0] + (q[0] - p[0])*t, p[1] + (q[1] - p[1])*t, p[2] + (q[2] - p[2])*t];
+        if (!puntoVisible(en(tm), lleno, d, off)) continue;
+        const a = P(aMundo(en(t0), med)), b = P(aMundo(en(t1), med)); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]);
+      }
+    }
+    ctx.stroke(); ctx.restore();
+  }
+  // números de las caras encendidas (en el cuadradito más cercano al centro de cada cara, si se ve)
+  if (S.luz && S.luz.n){
+    const lleno = new Set(cubos.filter(q => (q.alfa === undefined ? 1 : q.alfa) >= .999).map(q => k3(q.c)));
+    S.luz.caras.slice(0, Math.ceil(S.luz.n)).forEach((f, i) => {
+      const n = f.normal; if (n[0]*d[0] + n[1]*d[1] + n[2]*d[2] <= .05) return;
+      const m = centro(f);
+      let mejor = f.cuadros[0], dm = Infinity;
+      for (const q of f.cuadros){ const dd = Math.hypot(q[0] - m[0], q[1] - m[1], q[2] - m[2]); if (dd < dm){ dm = dd; mejor = q; } }
+      const p = [mejor[0] + .5 + n[0]*.5, mejor[1] + .5 + n[1]*.5, mejor[2] + .5 + n[2]*.5];
+      if (!puntoVisible(p, lleno, d, n.map(v => v*.02))) return;
+      const s = P(aMundo(p, med)); rotulo(ctx, c, s[0], s[1], String(i + 1), c.c, 13);
+    });
+  }
+  // puntos (vértices) y textos
+  if (S.puntos){
+    const lleno = new Set(cubos.filter(q => (q.alfa === undefined ? 1 : q.alfa) >= .999).map(q => k3(q.c)));
+    for (const pt of S.puntos){
+      if (pt.oculto === undefined ? !puntoVisible(pt.p, lleno, d, [d[0]*.03, d[1]*.03, d[2]*.03]) : pt.oculto) continue;
+      const q = P(aMundo(pt.p, med));
+      ctx.save(); ctx.fillStyle = col(pt.col || 'v'); ctx.globalAlpha = pt.alfa === undefined ? 1 : pt.alfa; ctx.beginPath(); ctx.arc(q[0], q[1], fuerte(pt.col || 'v') ? 7 : 5.5, 0, 2*Math.PI); ctx.fill(); ctx.restore();
+      if (pt.et) rotulo(ctx, c, q[0] + 13, q[1] - 11, pt.et, col(pt.col || 'v'), 12);
+    }
+  }
+  for (const t of S.textos || []){ const q = P(aMundo(t.p, med)); rotulo(ctx, c, q[0], q[1], t.t, col(t.col || 'ink'), t.tam || 14); }
+  salida.forEach(f => f());
+  return caras2d;
+}
+const cubosDe = (celdas, o) => celdas.map(c => Object.assign({ c }, o || {}));
+const mesaDe = (nx, ny) => [[-0.6, nx + 0.6], [-0.6, ny + 0.6]];
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1', 'vistas1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+
+// ----- los datos de cada predicción, del motor -----
+const V1 = MV.vistas(D.P1), A1 = MV.analizar(D.P1);
+const EV = MV.elegirVista(D.P2, 'superior');
+const MX = MV.maximo(D.F, D.T, D.L), MN = MV.minimo(D.F, D.T, D.L);
+const CASA = MV.poliedroVistas(D.CASA), VCASA = vistasPoliedro(D.CASA, CASA);
+const PRISMA_CASA = MV.interseccion({ frontal:D.CASA.frontal }, [[0, 2], [0, 2], [0, 3]]);
+const CO = MV.completarCubo(D.COMP), CU2 = MV.cubrir(D.CUB, 2), CU3 = MV.cubrir(D.CUB, 3);
+const celMX = celdasDe(MX.pisos), celMN = celdasDe(MN.pisos), setMN = new Set(celMN.map(k3));
+const CARAS_MX = carasOrdenadas(MX.listaCaras);
+const vistaOpc = v => `${svgVista(v, { col:'ink', max:60 })}<span class="sr">${decirVista(v)}</span>`;
+
+const P1 = { id:'vistas-superior', ok:'c', opts:[
+  ['a', vistaOpc(EV.errores.frontal), 'RME5', 'hipotesis'],
+  ['b', vistaOpc(EV.errores.reflejada), 'RME100', 'hipotesis'],
+  ['c', vistaOpc(EV.correcta)],
+  ['d', vistaOpc(EV.errores.lateral), 'RME5', 'hipotesis']],
+  fb:{ c:'¡Bien! Desde arriba se ve la huella del sólido: un cuadradito por cada columna con cubitos, sin importar lo alta que sea. La fila del fondo va arriba en el dibujo.',
+    a:'Elegiste la A. Esa es la vista frontal: tiene pisos (alturas). La superior no tiene alturas: es la huella que el sólido deja en la mesa. La correcta está marcada.',
+    b:'Elegiste la B. Es la huella correcta, pero al revés: la dibujaste con la fila del frente arriba. En la vista superior, el frente queda abajo en el dibujo. La correcta está marcada.',
+    d:'Elegiste la D. Esa es la vista lateral, desde la derecha: también tiene alturas. La superior es la huella, sin alturas. La correcta está marcada.' } };
+const P2 = { id:'vistas-maximo', ok:'b', opts:[
+  ['a', `${MX.errores.soloFrontal} cubitos`, 'RME5', 'hipotesis'],
+  ['b', `${MX.cubitos} cubitos`],
+  ['c', `${MX.errores.sumaVistas} cubitos`, 'RME101', 'hipotesis'],
+  ['d', `${MX.errores.caja} cubitos`, 'RME102', 'hipotesis']],
+  fb:{ b:`¡Bien! En el máximo, cada cubito de la caja se queda si las tres vistas lo permiten: ${MX.cubitos}.`,
+    a:`Elegiste la A. ${MX.errores.soloFrontal} son los cuadraditos de la vista frontal: detrás de cada uno puede haber varios cubitos en fila. La correcta está marcada.`,
+    c:`Elegiste la C. Sumar los cuadraditos de las tres vistas cuenta varias veces el mismo cubito (sale en la frontal, en la superior y en la lateral). La correcta está marcada.`,
+    d:`Elegiste la D. ${MX.errores.caja} es la caja entera de 3 × 3 × 3. La frontal y la lateral borran los cubitos de las esquinas que no tienen altura. La correcta está marcada.` } };
+const P3 = { id:'vistas-minimo', ok:'d', opts:[
+  ['a', `${MN.errores.unoPorCuadro} cubitos`, 'RME103', 'hipotesis'],
+  ['b', `${MN.errores.maximo} cubitos`, 'RME5', 'hipotesis'],
+  ['c', `${MN.errores.soloFrontal} cubitos`, 'RME5', 'hipotesis'],
+  ['d', `${MN.volumen} cubitos`]],
+  fb:{ d:`¡Bien! Basta una torre de 3 en la esquina del fondo a la izquierda y una de 2 en el centro; los demás cuadraditos de la superior llevan 1: ${MN.volumen}.`,
+    a:`Elegiste la A. Con un cubito por cuadradito de la superior (${MN.errores.unoPorCuadro}), la frontal y la lateral quedarían de un solo piso. Faltan las torres que dan sus alturas. La correcta está marcada.`,
+    b:`Elegiste la B. ${MN.errores.maximo} es el máximo del paso anterior. Se pueden quitar cubitos sin que ninguna vista cambie. La correcta está marcada.`,
+    c:`Elegiste la C. ${MN.errores.soloFrontal} cubitos dan la frontal, pero no la superior: la huella pide 9 columnas con al menos un cubito. La correcta está marcada.` } };
+const P4 = { id:'vistas-caras-pintadas', ok:'a', opts:[
+  ['a', `${MX.caras} caras`],
+  ['b', `${MX.carasEnVistas} caras`, 'RME3', 'hipotesis'],
+  ['c', `${MX.cuadraditos} caras`, 'RME104', 'hipotesis'],
+  ['d', `${MX.errores.prismaFrontal} caras`, 'RME5', 'hipotesis']],
+  fb:{ a:`¡Bien! Al sumergirlo se pintan todas: también las de atrás, la de la izquierda y la de abajo. Son ${MX.caras}.`,
+    b:`Elegiste la B. ${MX.carasEnVistas} son las caras que miran al frente, arriba o a la derecha (las que salen en las vistas). Sumergido, se pintan también las de atrás, la izquierda y la base. La correcta está marcada.`,
+    c:`Elegiste la C. ${MX.cuadraditos} son los cuadraditos de la superficie. Una cara es una región plana entera: varios cuadraditos en un mismo plano y pegados forman una sola cara. La correcta está marcada.`,
+    d:`Elegiste la D. ${MX.errores.prismaFrontal} caras tendría el prisma que sale de la vista frontal sola. La lateral también pone escalones, hacia el fondo. La correcta está marcada.` } };
+const P5 = { id:'vistas-vertices', ok:'c', opts:[
+  ['a', `${MX.errores.verticesPrismaFrontal} vértices`, 'RME5', 'hipotesis'],
+  ['b', `${MX.errores.cajaVertices} vértices`, 'RME105', 'hipotesis'],
+  ['c', `${MX.vertices} vértices`],
+  ['d', `${MX.errores.puntosEnAristas} vértices`, 'RME104', 'hipotesis']],
+  fb:{ c:`¡Bien! Son ${MX.vertices}: los puntos donde se juntan tres caras o más. Euler lo confirma: ${MX.vertices} − ${MX.aristas} + ${MX.caras} = 2.`,
+    a:`Elegiste la A. ${MX.errores.verticesPrismaFrontal} tendría el prisma de la vista frontal sola (8 adelante y 8 atrás). Los escalones hacia el fondo agregan vértices. La correcta está marcada.`,
+    b:'Elegiste la B. 8 son los vértices de una caja. Cada escalón tiene sus propias esquinas. La correcta está marcada.',
+    d:`Elegiste la D. ${MX.errores.puntosEnAristas} son todos los puntos de la cuadrícula que caen sobre las aristas. Un punto en medio de una arista recta no es vértice. La correcta está marcada.` } };
+const P6 = { id:'vistas-casa', ok:'b', opts:[
+  ['a', `${CASA.errores.prismaFrontal} caras`, 'RME5', 'hipotesis'],
+  ['b', `${CASA.caras} caras`],
+  ['c', `${CASA.errores.regionesVistas} caras`, 'RME101', 'hipotesis'],
+  ['d', `${CASA.errores.carasEnVistas} caras`, 'RME3', 'hipotesis']],
+  fb:{ b:`¡Bien! Cuatro paredes, la base y cuatro faldones del techo: ${CASA.caras}.`,
+    a:`Elegiste la A. ${CASA.errores.prismaFrontal} caras tiene la casa de techo a dos aguas: es el prisma de la frontal sola. La lateral también tiene techo, así que el techo baja por los cuatro lados. La correcta está marcada.`,
+    c:`Elegiste la C. Sumaste las regiones de las tres vistas (2 + 4 + 2). Los faldones del frente y de la derecha salen en dos vistas cada uno, y las caras de atrás, de la izquierda y de abajo no salen en ninguna. La correcta está marcada.`,
+    d:`Elegiste la D. ${CASA.errores.carasEnVistas} son las caras que se ven desde el frente, arriba o la derecha. Faltan la pared de atrás, la de la izquierda y la base. La correcta está marcada.` } };
+const P7 = { id:'vistas-completar-cubo', ok:'a', opts:[
+  ['a', `${CO.faltan} cubitos`],
+  ['b', `${CO.errores.soloVisibles} cubitos`, 'RME3', 'hipotesis'],
+  ['c', `${CO.errores.caja} cubitos`, 'RME106', 'hipotesis'],
+  ['d', `${CO.errores.deFrente} cubitos`, 'RME5', 'hipotesis']],
+  fb:{ a:`¡Bien! El cubo más pequeño es de 3 × 3 × 3 = 27 y el sólido tiene ${CO.volumen} cubitos, aunque solo se vean ${CO.visibles}: faltan ${CO.faltan}.`,
+    b:`Elegiste la B. Contaste solo los ${CO.visibles} cubitos que se ven. Hay ${CO.volumen - CO.visibles} escondidos debajo y detrás. La correcta está marcada.`,
+    c:`Elegiste la C. Llenaste la caja de 3 × 2 × 2 que lo envuelve. Esa caja no es un cubo: el cubo necesita la medida mayor (3) en las tres direcciones. La correcta está marcada.`,
+    d:`Elegiste la D. Contaste solo los cubitos de la vista frontal (5). Detrás de la fila del frente hay otra. La correcta está marcada.` } };
+const P8 = { id:'vistas-cubrir', ok:'d', opts:[
+  ['a', `${CU3.errores.porCara} cubitos`, 'RME6', 'hipotesis'],
+  ['b', `${CU3.errores.conMesa} cubitos`, 'RME1', 'hipotesis'],
+  ['c', `${CU3.errores.mismoAumento} cubitos`, 'RME107', 'hipotesis'],
+  ['d', `${CU3.agregados} cubitos`]],
+  fb:{ d:`¡Bien! Se agregan ${CU3.agregados}: el término 3 tiene ${CU3.volumen} cubitos. Un cubito en una esquina entrante tapa dos caras a la vez.`,
+    a:`Elegiste la A. ${CU3.errores.porCara} son las caras al aire del término 2. En las esquinas entrantes, un mismo cubito tapa dos caras: se cuentan cubitos, no caras. La correcta está marcada.`,
+    b:`Elegiste la B. Tapaste también las caras que tocan la mesa (no se pueden tapar: el cubito tendría que ir debajo de la mesa). La correcta está marcada.`,
+    c:`Elegiste la C. ${CU3.errores.mismoAumento} es lo que se agregó del término 1 al 2. Cada término es más grande, así que hay más caras que tapar. La correcta está marcada.` } };
+
+// ----- piezas de dibujo -----
+const vistasMax = (dif) => ({ F:D.F, T:D.T, L:D.L, opc:dif ? dif.opc : null, cambio:dif ? dif.cambio : null });
+const ley3 = [['F', 'vista frontal y caras del frente'], ['T', 'vista superior y caras de arriba'], ['L', 'vista lateral y caras de la derecha']];
+const MARCO3 = [[-0.6, 3.6], [-0.6, 3.6], [0, 3]];
+// los cubitos de la caja de 3 × 3 × 3 y la vista que borra a cada uno (para la animación del máximo)
+const CAJA27 = []; for (let z = 0; z < 3; z++) for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) CAJA27.push([x, y, z]);
+const enVista = (v, fila, col) => (v[fila] || '')[col] === '#';
+const borra = c => !enVista(D.F, 2 - c[2], c[0]) ? 'F' : !enVista(D.T, 2 - c[1], c[0]) ? 'T' : !enVista(D.L, 2 - c[2], c[1]) ? 'L' : null;
+// Arma tú: cubitos que el alumno deja o quita (dentro del máximo)
+const ARMA = { set:new Set(celMX.map(k3)) };
+function vistasArma(){
+  const celdas = [...ARMA.set].map(s => s.split(',').map(Number));
+  if (!celdas.length) return { F:['...', '...', '...'], T:['...', '...', '...'], L:['...', '...', '...'], cambio:{ F:1, T:1, L:1 } };
+  const pisos = MV.aPisos(celdas, [3, 3, 3]), v = MV.vistas(pisos), cambio = {}, opc = {};
+  for (const [k, n] of [['F', 'frontal'], ['T', 'superior'], ['L', 'lateral']]){
+    const obj = D[k], dif = new Set();
+    obj.forEach((f, r) => [...f].forEach((ch, cc) => { if (v[n][r][cc] !== ch) dif.add(r + ',' + cc); }));
+    if (dif.size){ cambio[k] = true; opc[k] = { dif }; }
+  }
+  return { F:v.frontal, T:v.superior, L:v.lateral, cambio, opc };
+}
+function flotan(){ let n = 0; for (const s of ARMA.set){ const [x, y, z] = s.split(',').map(Number); if (z > 0 && !ARMA.set.has(k3([x, y, z - 1]))) n++; } return n; }
+// vértices del máximo: primero los que se ven desde la vista inicial
+const llenoMX = new Set(celMX.map(k3));
+const VERTS_MX = (() => {
+  const d0 = [Math.sin(45*Math.PI/180)*Math.cos(ISO.el*Math.PI/180), -Math.cos(45*Math.PI/180)*Math.cos(ISO.el*Math.PI/180), Math.sin(ISO.el*Math.PI/180)];
+  const ve = MX.listaVertices.filter(p => puntoVisible(p, llenoMX, d0, d0.map(v => v*.03)));
+  const no = MX.listaVertices.filter(p => !ve.includes(p));
+  return { lista:ve.concat(no), nVisibles:ve.length };
+})();
+
+const steps = [
+ { k:'Paso 1', t:'Un sólido y sus tres vistas',
+   prep:() => E.config({ desc:'Un sólido de cinco cubitos sobre la mesa: abajo una fila de tres en el fondo y uno delante a la izquierda; encima, un cubito en la esquina del fondo a la izquierda. Al lado, sus tres vistas.',
+     marco:[[-0.6, 3.6], [-0.6, 2.6], [0, 2]], vistas:{ F:V1.frontal, T:V1.superior, L:V1.lateral },
+     escena:() => ({ cubos:cubosDe(celdasDe(D.P1), { tinte:true }), mesa:mesaDe(3, 2) }),
+     lect:[['ink', 'cubitos', String(A1.volumen)], ['F', 'cuadraditos de la frontal', String(V1.areas.frontal)], ['T', 'de la superior', String(V1.areas.superior)], ['L', 'de la lateral', String(V1.areas.lateral)]],
+     ley:ley3 }),
+   body:() => `<p class="problem">Cada vista es lo que se ve mirando el sólido de lejos y de frente a una cara de la caja: la ${F_('frontal')} desde el frente, la ${T_('superior')} desde arriba y la ${L_('lateral')} desde la derecha.</p>
+   <p>Gira el sólido y compara: cada cara del dibujo tiene el color de la vista en la que aparece. Un cuadradito de una vista está pintado si <b>al menos un cubito</b> queda en esa línea de mirada, aunque haya varios en fila.</p>
+   <p class="hint">En la superior, el frente queda abajo en el dibujo. En la lateral, mirando desde la derecha, el frente queda a la izquierda.</p>
+   <p>Fíjate: este sólido tiene ${A1.volumen} cubitos y ningún dibujo los muestra todos a la vez. En los pasos que siguen vas a elegir vistas, reconstruir un sólido desde sus vistas, contarle caras y vértices, y completarlo.</p>` },
+
+ { k:'Paso 2', t:'¿Cuál es la vista desde arriba?', gate:P1,
+   prep:() => { const r = !!S.pred[P1.id];
+     E.config({ desc:'Un sólido de cubitos de tres pisos, dibujado desde una esquina de adelante, a la derecha y arriba.',
+       marco:MARCO3, vistas:r ? { F:EV.errores.frontal, T:EV.correcta, L:EV.errores.lateral } : null,
+       escena:E => ({ cubos:cubosDe(celdasDe(D.P2), { tinte:!!E.prog.tinte }), mesa:mesaDe(3, 3) }), prog:{ tinte:r ? 1 : 0 },
+       ley:r ? ley3 : [['ink', 'el sólido (10 cubitos)']] }); },
+   anima:fin => { E.prog.tinte = 1; E.cfg.ley = ley3; E.leyenda();
+     E.cadena([n => E.animar('el', 88, 1400, n), E.pausa(1300), n => E.animar('el', ISO.el, 1100, n)], () => {
+       E.cfg.vistas = { F:EV.errores.frontal, T:EV.correcta, L:EV.errores.lateral }; E.vistas(); E.recajar();
+       E.avisar('El sólido giró hasta verse desde arriba: quedó la huella, una fila de tres al fondo, tres en el medio y una adelante a la izquierda. Al lado aparecen sus tres vistas.'); fin(); }); },
+   body:() => `<p class="problem">Este sólido está dibujado desde una esquina. ¿Cuál es su vista ${T_('superior')} (la fila del fondo arriba, el frente abajo)?</p>${opcionesHTML(P1.opts, 'fb', false, true)}
+   <div id="tras" class="body" hidden>
+   <p>Desde arriba no se ven alturas: cada columna con cubitos deja un cuadradito, tenga uno o tres pisos. Las alturas salen en la ${F_('frontal')} y en la ${L_('lateral')}.</p>
+   <p class="aviso">Antes de elegir, ubica el frente: en la superior va abajo; en la lateral derecha va a la izquierda.</p>
+   ${fuenteHip('Confundir la vista superior con la frontal o con la lateral, o dibujarla con el frente arriba')}</div>` },
+
+ { k:'Paso 3', t:'Tres vistas: el sólido más grande', gate:P2,
+   prep:() => { const r = !!S.pred[P2.id];
+     E.config({ desc:r ? `El sólido de volumen máximo con esas vistas: ${MX.cubitos} cubitos.` : 'Una caja vacía de 3 × 3 × 3 sobre la mesa. Al lado, las tres vistas de un sólido.',
+       marco:MARCO3, vistas:vistasMax(),
+       escena:E => {
+         if (!r && !E.prog.anim) return { caja:[[0, 3], [0, 3], [0, 3]], mesa:mesaDe(3, 3), textos:[{ p:[1.5, 1.5, 1.5], t:'?', tam:22, col:'muted' }] };
+         if (r && !E.prog.anim) return { cubos:cubosDe(celMX, { tinte:true }), mesa:mesaDe(3, 3), gap:E.prog.gap };
+         const et = E.prog.etapa, f = E.prog.f;
+         const cubos = CAJA27.map(c => { const b = borra(c), ord = { F:1, T:2, L:3 }[b] || 9;
+           if (ord < et) return null;
+           if (ord === et) return { c, col:b, alfa:1 - f };
+           return { c, tinte:false };
+         }).filter(Boolean);
+         return { cubos, mesa:mesaDe(3, 3) };
+       },
+       prog:{ gap:0 },
+       lect:E => (r || E.prog.anim) ? [['ink', 'cubitos', String(E.prog.anim ? CAJA27.filter(c => { const b = borra(c), o = { F:1, T:2, L:3 }[b] || 9; return o > E.prog.etapa || (o === E.prog.etapa && E.prog.f < .5); }).length : MX.cubitos)]] : [],
+       ley:ley3 }); },
+   anima:fin => { E.prog.anim = 1; E.prog.etapa = 0; E.prog.f = 0; E.dibujar(); E.lecturas();
+     E.cadena([E.pausa(500), n => { E.prog.etapa = 1; E.prog.f = 0; E.animar('f', 1, 1300, n); }, E.pausa(400),
+       n => { E.prog.etapa = 2; E.prog.f = 0; E.animar('f', 1, 600, n); },
+       n => { E.prog.etapa = 3; E.prog.f = 0; E.animar('f', 1, 1300, n); }, E.pausa(400),
+       n => { E.prog.anim = 0; E.dibujar(); E.lecturas(); E.animar('gap', .7, 900, n); }, E.pausa(1500), n => E.animar('gap', 0, 800, n)], () => {
+       E.avisar(`De la caja de 27 cubitos, la frontal borró los de las columnas sin altura, la superior no borró nada y la lateral borró los de las filas sin altura. Quedaron ${MX.cubitos}: 9 en el piso de abajo, 4 en el segundo y 1 en el tercero.`); fin(); }); },
+   body:() => `<p class="problem">Estas son las vistas ${F_('frontal')}, ${T_('superior')} y ${L_('lateral')} de un sólido de cubitos. ¿Cuántos cubitos puede tener <b>como máximo</b>?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Se empieza con la caja llena (3 × 3 × 3) y cada vista borra lo que no puede estar: un cubito se queda solo si su cuadradito está pintado en <b>las tres</b> vistas.</p>
+   <div class="eqs"><div class="eq">altura de cada columna = mín(${F_('frontal')}, ${L_('lateral')})</div><div class="eq">pisos: 9 + 4 + 1 = ${MX.cubitos}</div></div>
+   <p class="aviso">El máximo es la intersección de las tres «sombras» estiradas. Para contarlo, arma la tabla de alturas sobre la superior.</p>
+   ${fuenteHip('Contar los cuadraditos de una sola vista, sumar los de las tres o tomar la caja entera')}</div>` },
+
+ { k:'Paso 4', t:'Las mismas vistas con menos cubitos', gate:P3,
+   prep:() => { const r = !!S.pred[P3.id];
+     if (r) ARMA.set = new Set(celMN.map(k3));
+     E.config({ desc:r ? 'Un sólido con esas tres vistas. Toca un cubito del dibujo para quitarlo o ponerlo.' : `El sólido de volumen máximo del paso anterior, de ${MX.cubitos} cubitos, con sus tres vistas.`,
+       marco:MARCO3, vistas:r ? () => vistasArma() : vistasMax(),
+       escena:E => {
+         if (E.prog.anim) return { cubos:celMX.map(c => setMN.has(k3(c)) ? { c, tinte:true } : { c, col:'oc', alfa:1 - E.prog.f }), mesa:mesaDe(3, 3) };
+         if (r){ const sobra = CAJA27.filter(c => llenoMX.has(k3(c)) && !ARMA.set.has(k3(c)));
+           return { cubos:[...ARMA.set].map(s => ({ c:s.split(',').map(Number), tinte:true })).concat(sobra.map(c => ({ c, alfa:.18, col:'oc' }))), mesa:mesaDe(3, 3) }; }
+         return { cubos:cubosDe(celMX, { tinte:true }), mesa:mesaDe(3, 3) };
+       },
+       alTocar:r ? (c => { const s = k3(c);
+         if (!llenoMX.has(s)) return;
+         if (ARMA.set.has(s)) ARMA.set.delete(s); else ARMA.set.add(s);
+         E.vistas(); E.lecturas(); E.dibujar();
+         const v = vistasArma(), cambio = Object.keys(v.cambio || {}).length;
+         E.avisar(`${ARMA.set.size} cubitos. ${cambio ? 'Alguna vista cambió.' : 'Las tres vistas siguen iguales.'}${flotan() ? ' Hay cubitos en el aire.' : ''}`);
+       }) : null,
+       lect:E => r ? [['ink', 'cubitos', String(ARMA.set.size)], ['ink', 'vistas', Object.keys(vistasArma().cambio || {}).length ? 'cambiaron' : 'iguales'], ['oc', 'en el aire', String(flotan())]] : [['ink', 'cubitos', String(MX.cubitos)]],
+       ley:r ? ley3.concat([['oc', 'lugares del máximo sin cubito']]) : ley3 }); },
+   anima:fin => { ARMA.set = new Set(celMN.map(k3)); E.prog.anim = 1; E.prog.f = 0;
+     E.cadena([E.pausa(500), n => E.animar('f', 1, 1500, n)], () => { E.prog.anim = 0; S.prep4(); fin();
+       E.avisar(`Se quitaron ${MX.cubitos - MN.volumen} cubitos del máximo y las tres vistas no cambiaron: quedan ${MN.volumen}. Ahora puedes tocar cubitos para quitar o poner.`); }); },
+   body:() => `<p class="problem">Con las mismas tres vistas, ¿cuántos cubitos tiene <b>como mínimo</b> el sólido, si cada cubito está sobre la mesa o sobre otro?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Cada cuadradito de la ${T_('superior')} necesita al menos un cubito (9). La ${F_('frontal')} pide una columna de 3 a la izquierda y la ${L_('lateral')} una fila de 3 al fondo: <b>una sola torre</b> en la esquina del fondo a la izquierda cumple las dos. Lo mismo con las alturas 2: una torre en el centro.</p>
+   <div class="eqs"><div class="eq">9 + 2 (la torre de 3) + 1 (la torre de 2) = ${MN.volumen}</div></div>
+   <p><b>Arma tú:</b> toca los cubitos del dibujo para quitarlos o ponerlos. Si una vista cambia, se marca en rojo. Busca otro sólido de ${MN.volumen} cubitos con las mismas vistas.</p>
+   ${fuenteHip('Poner un cubito por cuadradito de la superior, quedarse con el máximo o leer solo la frontal')}</div>` },
+
+ { k:'Paso 5', t:'Al sumergirlo en pintura', gate:P4,
+   prep:() => { const r = !!S.pred[P4.id];
+     E.config({ desc:`El sólido de volumen máximo, de ${MX.cubitos} cubitos.`, marco:MARCO3, elMin:-30,
+       escena:E => ({ cubos:cubosDe(celMX), mesa:mesaDe(3, 3), luz:{ caras:CARAS_MX, n:E.prog.luz }, finas:E.prog.luz > 0, aristas:E.prog.luz > 0 ? MX.listaAristas : [] }), prog:{ luz:r ? CARAS_MX.length : 0 },
+       lect:E => r || E.prog.luz ? [['c', 'caras pintadas C', String(Math.ceil(E.prog.luz))]] : [],
+       ley:r ? [['c', 'caras contadas']] : [['ink', `el sólido máximo (${MX.cubitos} cubitos)`]] }); },
+   anima:fin => { E.prog.luz = 0; E.cfg.ley = [['c', 'caras contadas']]; E.leyenda();
+     E.cadena([E.pausa(300), n => E.animar('luz', MX.carasEnVistas, RM ? 0 : 3200, n), E.pausa(500),
+       n => E.animarVarias([['az', 225], ['el', -28]], 1600, n), n => E.animar('luz', MX.caras, RM ? 0 : 1500, n), E.pausa(900),
+       n => E.animarVarias([['az', ISO.az + 360], ['el', ISO.el]], 1500, n)], () => { E.az = ISO.az;
+       E.avisar(`El reflector encendió una por una las ${MX.carasEnVistas} caras de arriba, del frente y de la derecha. Después el sólido giró para mostrar las de la izquierda, el fondo y la base: en total ${MX.caras}.`); fin(); }); },
+   body:() => `<p class="problem">El sólido de volumen máximo del paso 3 se sumerge entero en un balde de pintura. ¿Cuántas <b>caras</b> quedan pintadas? (Una cara es una región plana entera, no cada cuadradito.)</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Arriba hay 3 ${c_('caras')} (una por altura), al frente 3 y a la derecha 3: las ${MX.carasEnVistas} que salen en las vistas. Al sumergirlo también se pintan la de la izquierda y la del fondo (las dos con forma de escalera) y la base.</p>
+   <div class="eqs"><div class="eq">${c_('C')} = 3 + 3 + 3 + 1 + 1 + 1 = ${c_(MX.caras)}</div></div>
+   <p class="hint">Una cara con forma de escalera sigue siendo una sola cara: todos sus cuadraditos están en un mismo plano y pegados.</p>
+   ${fuenteHip('Contar solo las caras de las vistas, contar cuadraditos o leer una sola vista')}</div>` },
+
+ { k:'Paso 6', t:'Las esquinas del sólido', gate:P5,
+   prep:() => { const r = !!S.pred[P5.id];
+     E.config({ desc:`El mismo sólido de ${MX.cubitos} cubitos.`, marco:MARCO3, elMin:-30,
+       escena:E => ({ cubos:cubosDe(celMX), mesa:mesaDe(3, 3), aristas:E.prog.aristas ? MX.listaAristas : [],
+         puntos:VERTS_MX.lista.slice(0, Math.ceil(E.prog.v)).map((p, i) => ({ p, col:'v', et:String(i + 1) })) }), prog:{ v:r ? MX.vertices : 0, aristas:r ? 1 : 0 },
+       lect:E => r || E.prog.v ? [['v', 'vértices V', String(Math.ceil(E.prog.v))], ['ink', 'aristas A', E.prog.aristas ? String(MX.aristas) : '…'], ['c', 'caras C', String(MX.caras)]] : [],
+       ley:r ? [['v', 'vértices'], ['ink', 'aristas (en tinta)']] : [['ink', 'el sólido máximo']] }); },
+   anima:fin => { E.prog.v = 0; E.cfg.ley = [['v', 'vértices'], ['ink', 'aristas (en tinta)']]; E.leyenda();
+     E.cadena([E.pausa(300), n => E.animar('v', VERTS_MX.nVisibles, RM ? 0 : 3600, n), E.pausa(400),
+       n => E.animarVarias([['az', 225], ['el', -28]], 1600, n), n => E.animar('v', MX.vertices, RM ? 0 : 1600, n), E.pausa(700),
+       n => E.animarVarias([['az', ISO.az + 360], ['el', ISO.el]], 1500, n), n => { E.az = ISO.az; E.prog.aristas = 1; E.dibujar(); E.lecturas(); n(); }], () => {
+       E.avisar(`Se marcaron los ${VERTS_MX.nVisibles} vértices que se ven y, al girar, los de atrás y abajo: ${MX.vertices}. Las ${MX.aristas} aristas quedaron en tinta.`); fin(); }); },
+   body:() => `<p class="problem">¿Cuántos <b>vértices</b> tiene ese sólido? (Un vértice es una esquina: un punto donde se juntan tres caras o más.)</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Se cuentan como los cubitos: también los de atrás y los de abajo. Un punto en medio de una arista recta no es vértice: ahí solo se juntan dos caras.</p>
+   <div class="eqs"><div class="eq">${v_('V')} − A + ${c_('C')} = ${v_(MX.vertices)} − ${MX.aristas} + ${c_(MX.caras)} = ${MX.euler}</div></div>
+   <p class="aviso">Relación de Euler: en un sólido de una pieza y sin túneles, vértices − aristas + caras = 2. Si tu cuenta no da 2, te falta o te sobra algo.</p>
+   ${fuenteHip('Tomarlo como el prisma de una vista, como una caja o contar todos los puntos de la cuadrícula en las aristas')}</div>` },
+
+ { k:'Paso 7', t:'Vistas con diagonales', gate:P6,
+   prep:() => { const r = !!S.pred[P6.id];
+     E.config({ desc:r ? `El sólido de volumen máximo con esas vistas: una casa con techo de cuatro faldones, de ${CASA.caras} caras.` : 'Una caja vacía de 2 × 2 × 3 sobre la mesa. Al lado, las tres vistas de un sólido; algunas tienen líneas inclinadas.',
+       marco:[[-1, 3], [-1, 3], [0, 3]], elMin:-30, vistas:VCASA, vista:VISTA_CASA,
+       escena:E => {
+         const et = E.prog.etapa;
+         const m = [[-1, 3], [-1, 3]];
+         if (!et) return { caja:[[0, 2], [0, 2], [0, 3]], mesa:m, textos:[{ p:[1, 1, 1.5], t:'?', tam:22, col:'muted' }] };
+         if (et === 1) return { polis:[{ R:PRISMA_CASA, col:'F', alfa:Math.max(.05, E.prog.f*.85) }], mesa:m, caja:[[0, 2], [0, 2], [0, 3]] };
+         if (et === 2) return { polis:[{ R:PRISMA_CASA, col:'F', alfa:.85*(1 - E.prog.f) }, { R:CASA, col:'L', alfa:Math.max(.05, E.prog.f) }], mesa:m };
+         return { polis:[{ R:CASA, alfa:1, orden:CASA_ORDEN, luz:E.prog.luz }], mesa:m };
+       }, prog:{ etapa:r ? 3 : 0, f:0, luz:r ? CASA.caras : 0 },
+       lect:E => E.prog.etapa === 3 ? [['c', 'caras C', String(Math.ceil(E.prog.luz))], ['ink', 'vértices', String(CASA.vertices)], ['ink', 'aristas', String(CASA.aristas)]] : [],
+       ley:r ? [['c', 'caras contadas'], ['F', 'prisma de la frontal'], ['L', 'cortado por la lateral']] : ley3 }); },
+   anima:fin => { E.cfg.ley = [['F', 'prisma de la frontal'], ['L', 'cortado por la lateral'], ['c', 'caras contadas']]; E.leyenda();
+     E.cadena([n => { E.prog.etapa = 1; E.prog.f = 0; E.animar('f', 1, 1100, n); }, E.pausa(800), n => { E.prog.etapa = 2; E.prog.f = 0; E.animar('f', 1, 1300, n); }, E.pausa(500),
+       n => { E.prog.etapa = 3; E.prog.luz = 0; E.animar('luz', CASA.errores.carasEnVistas, RM ? 0 : 2600, n); }, E.pausa(400),
+       n => E.animarVarias([['az', 225], ['el', -28]], 1600, n), n => E.animar('luz', CASA.caras, RM ? 0 : 1300, n), E.pausa(800),
+       n => E.animarVarias([['az', VISTA_CASA.az + 360], ['el', VISTA_CASA.el]], 1500, n)], () => { E.az = VISTA_CASA.az; E.lecturas();
+       E.avisar(`La frontal da un prisma con techo a dos aguas; la lateral lo corta y el techo baja por los cuatro lados. Se encendieron las ${CASA.caras} caras: cuatro paredes, la base y cuatro faldones.`); fin(); }); },
+   body:() => `<p class="problem">La ${F_('frontal')} y la ${L_('lateral')} son una casita (cuadrado con techo) y la ${T_('superior')} es un cuadrado con sus dos diagonales. ¿Cuántas caras tiene el sólido de volumen máximo?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Cada vista se estira en su dirección y forma un prisma; el sólido máximo es lo que queda dentro de los tres. La ${F_('frontal')} sola da una casa de techo a dos aguas (${CASA.errores.prismaFrontal} caras). La ${L_('lateral')} corta el techo por los lados. Las diagonales de la ${T_('superior')} son las aristas donde se juntan los faldones.</p>
+   <div class="eqs"><div class="eq">${c_('C')} = 4 paredes + 1 base + 4 faldones = ${c_(CASA.caras)}</div><div class="eq">V − A + ${c_('C')} = ${CASA.vertices} − ${CASA.aristas} + ${c_(CASA.caras)} = ${CASA.euler}</div></div>
+   ${fuenteHip('Leer solo la frontal, sumar las regiones de las vistas o contar solo las caras que se ven')}</div>` },
+
+ { k:'Paso 8', t:'Hasta el cubo compacto', gate:P7,
+   prep:() => { const r = !!S.pred[P7.id];
+     const cel = celdasDe(D.COMP), set = new Set(cel.map(k3)), visibles = new Set(MV.analizar(D.COMP).listaVisibles.map(k3));
+     const faltan = CAJA27.filter(c => !set.has(k3(c)));
+     E.config({ desc:r ? `El sólido completado hasta el cubo de 3 × 3 × 3.` : 'Un sólido de cubitos de dos pisos sobre la mesa, de 3 columnas y 2 filas.',
+       marco:MARCO3, vista:{ az:ISO.az, el:ISO.el },
+       escena:E => ({ mesa:mesaDe(3, 3), gap:E.prog.gap,
+         cubos:cel.map(c => ({ c, col:E.prog.oc && !visibles.has(k3(c)) ? 'oc' : null }))
+           .concat(faltan.slice(0, Math.ceil(E.prog.n)).map(c => ({ c, col:'n', alfa:.42, borde:'n' }))) }),
+       prog:{ gap:0, oc:r ? 1 : 0, n:r ? faltan.length : 0 },
+       lect:E => (r || E.prog.oc) ? [['ink', 'en el sólido', String(CO.volumen)], ['oc', 'ocultos', String(CO.volumen - CO.visibles)], ['n', 'que faltan', String(Math.ceil(E.prog.n))]] : [],
+       ley:r ? [['oc', 'cubitos que no se ven'], ['n', 'cubitos que faltan']] : [['ink', 'el sólido']] }); },
+   anima:fin => { E.cfg.ley = [['oc', 'cubitos que no se ven'], ['n', 'cubitos que faltan']]; E.leyenda();
+     E.cadena([n => { E.prog.oc = 1; E.animar('gap', .8, 1000, n); }, E.pausa(1500), n => E.animar('gap', 0, 800, n), E.pausa(300), n => E.animar('n', CO.faltan, RM ? 0 : 2600, n)], () => {
+       E.avisar(`Al separar los pisos aparecieron ${CO.volumen - CO.visibles} cubitos que no se veían. El cubo más pequeño es de 3 × 3 × 3: se agregaron ${CO.faltan}.`); fin(); }); },
+   body:() => `<p class="problem">¿Cuántos cubitos faltan, como mínimo, para convertir este sólido en un cubo compacto?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Primero, cuántos hay: abajo 6 (dos filas de 3) y arriba 3, aunque desde la esquina solo se vean ${CO.visibles}: hay ${oc_(CO.volumen - CO.visibles + ' ocultos')}. Después, el cubo: la medida mayor es 3, así que el cubo es de 3 × 3 × 3.</p>
+   <div class="eqs"><div class="eq">${n_('faltan')} = 3³ − ${CO.volumen} = 27 − ${CO.volumen} = ${n_(CO.faltan)}</div></div>
+   ${fuenteOcultos}
+   ${fuenteHip('Llenar la caja que lo envuelve en vez del cubo, o contar solo la vista frontal')}</div>` },
+
+ { k:'Paso 9', t:'Cubitos que tapan al anterior', gate:P8,
+   prep:() => { const r = !!S.pred[P8.id];
+     const c1 = celdasDe(D.CUB), c2 = celdasDe(CU2.pisos), c3 = celdasDe(CU3.pisos);
+     // los pisos de cubrir vienen corridos a la esquina: se alinean por el primer término
+     // cubrir devuelve sus pisos corridos a la esquina: cada término crece 1 hacia cada lado, así que se corre k − 1
+     const off2 = [1, 1], off3 = [2, 2];
+     const t1 = new Set(c1.map(k3)), t2 = c2.map(c => [c[0] - off2[0], c[1] - off2[1], c[2]]), s2 = new Set(t2.map(k3));
+     const t3 = c3.map(c => [c[0] - off3[0], c[1] - off3[1], c[2]]).filter(c => !s2.has(k3(c)));
+     t3.sort((a, b) => a[2] - b[2] || a[1] - b[1] || a[0] - b[0]);
+     E.config({ desc:r ? `El término 3: ${CU3.volumen} cubitos.` : `El término 1 son dos cubitos en fila sobre la mesa. El término 2 los tapa por arriba y por los lados: ${CU2.volumen} cubitos.`,
+       marco:[[-2.6, 4.6], [-2.6, 3.6], [0, 3]],
+       escena:E => ({ mesa:[[-2.6, 4.6], [-2.6, 3.6]], mesaRotulos:false, gap:E.prog.gap,
+         cubos:t2.filter(c => t1.has(k3(c)) || E.prog.t2 > .01).map(c => t1.has(k3(c)) ? { c } : { c, col:E.prog.t3 > 0 ? null : 'n', alfa:Math.min(1, E.prog.t2) })
+           .concat(t3.slice(0, Math.ceil(E.prog.t3)).map(c => ({ c, col:'n' }))) }),
+       prog:{ t2:r ? 1 : 0, t3:r ? t3.length : 0, gap:0 },
+       lect:E => [['ink', 'término', E.prog.t3 > 0 ? '3' : E.prog.t2 > .5 ? '2' : '1'], ['n', 'agregados', String(E.prog.t3 > 0 ? Math.ceil(E.prog.t3) : E.prog.t2 > .5 ? CU2.agregados : 0)]],
+       ley:[['ink', 'término anterior'], ['n', 'cubitos que se agregan']] });
+     S.t3 = t3.length; },
+   entrar:() => { if (S.pred[P8.id]) return; E.cadena([E.pausa(700), n => E.animar('t2', 1, 1400, n)], () => E.avisar(`Del término 1 al 2 se agregaron ${CU2.agregados} cubitos: 2 encima y 6 alrededor. Ninguno debajo, porque abajo está la mesa.`)); },
+   anima:fin => { E.prog.t2 = 1; E.prog.t3 = 0;
+     E.cadena([E.pausa(300), n => E.animar('t3', S.t3, RM ? 0 : 3600, n), E.pausa(500), n => E.animar('gap', .9, 1000, n), E.pausa(1800), n => E.animar('gap', 0, 900, n)], () => {
+       E.avisar(`Del término 2 al 3 se agregaron ${CU3.agregados} cubitos: rodean al término 2 por arriba y por los lados, sin bajar de la mesa. Al separar los pisos se ve el término 2 adentro.`); fin(); }); },
+   body:() => `<p class="problem">Dos cubitos en fila sobre la mesa son el término 1. El término 2 se forma tapando con un cubito cada cara al aire del término 1, menos las que tocan la mesa: se agregaron ${n_(CU2.agregados)}. Si se repite la regla, ¿cuántos cubitos se agregan para formar el término 3?</p>${opcionesHTML(P8.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Por pisos: en el de abajo el término 2 tiene 8 cubitos y se rodea con 10 más; en el segundo hay 2 y se rodean con 6; arriba de todo van 2. Un cubito en una esquina entrante tapa dos caras a la vez.</p>
+   <div class="eqs"><div class="eq">${n_('agregados')} = 10 + 6 + 2 = ${n_(CU3.agregados)}</div><div class="eq">términos: ${CU3.terminos.join(', ')}</div></div>
+   <p class="hint">La cara que se apoya en la mesa nunca se tapa: no hay lugar para un cubito debajo.</p>
+   ${fuenteHip('Contar caras en vez de cubitos, tapar también la base o suponer que siempre se agrega lo mismo')}</div>` },
+
+ { k:'Paso 10', t:'El método en una tabla',
+   prep:() => E.config({ desc:`El sólido de volumen máximo del paso 3, de ${MX.cubitos} cubitos, con sus tres vistas.`, marco:MARCO3, vistas:vistasMax(),
+     escena:() => ({ cubos:cubosDe(celMX, { tinte:true }), mesa:mesaDe(3, 3) }), ley:ley3 }),
+   body:() => `<div class="tabla"><table class="formulas">
+     <tr><th>Te piden</th><th>Cómo se hace</th></tr>
+     <tr><td>Una vista</td><td>Ubica el frente. La superior es la huella (sin alturas); la frontal y la lateral, las alturas mayores de cada columna o fila.</td></tr>
+     <tr><td>El máximo con tres vistas</td><td>Tabla de alturas sobre la superior: en cada cuadradito, mín(${F_('frontal')}, ${L_('lateral')}).</td></tr>
+     <tr><td>El mínimo</td><td>Un cubito por cuadradito de la superior, y una sola torre donde una altura de la frontal y una de la lateral coinciden.</td></tr>
+     <tr><td>Caras y vértices</td><td>Regiones planas enteras y esquinas, también atrás y abajo. Comprueba con V − A + C = 2.</td></tr>
+     <tr><td>Vistas con diagonales</td><td>Estira cada vista en un prisma; el sólido es lo que queda dentro de los tres.</td></tr>
+     <tr><td>Completar</td><td>Cuenta todos los cubitos (piso por piso, con los ocultos) y resta del cubo de la medida mayor o de la caja.</td></tr>
+     <tr><td>Tapar caras</td><td>Cuenta cubitos, no caras, y nunca debajo de la mesa.</td></tr></table></div>
+   <p class="hint">En «¿Qué pasa si…?» hay vistas con medidas, una caja transparente, copias que arman un cubo, la vista lateral y vistas triangulares.</p>` },
+];
+const CASA_ORDEN = (() => { // primero las caras que se ven desde la vista inicial
+  const d0 = haciaQuienMira(VISTA_CASA);
+  const ids = CASA.listaCaras.map((f, i) => i), ve = i => { const n = CASA.listaCaras[i].normal; return n[0]*d0[0] + n[1]*d0[1] + n[2]*d0[2] > 1e-9; };
+  return ids.filter(ve).concat(ids.filter(i => !ve(i)));
+})();
+S.prep4 = () => { if (S.step === 3) steps[3].prep(); };
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; li.appendChild(b); dots.appendChild(li);
+  b.addEventListener('click', () => go(k));
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = !!(s.gate && !S.pred[s.gate.id]); Celular.compactar($('m1'), E.compacto);
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.entrar) s.entrar();
+  if (!s.gate) E.avisar('');
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Paso ${k + 1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.setAttribute('aria-label', `Ir al paso ${k + 1}: ${steps[k].t}`); }
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){
+  const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return;
+  if (k > S.max) S.max = Math.min(k, steps.length - 1);
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); E.compactar(false); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; E.ocupado = true; nav();
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.ocupado = false; nav(); }),
+      () => S.step === paso, { siNo:() => { S.ocupado = false; E.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Vistas con medidas, una caja transparente, copias que arman un cubo, la vista lateral y vistas triangulares.
+   La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', 'vistas2');
+const AC = MV.maximo(D.AF, D.AT, D.AL, D.AM), celAC = celdasDe(AC.pisos), CARAS_AC = carasOrdenadas(AC.listaCaras);
+const CJ = MV.completarCaja(D.CAJA, [3, 3, 3]), celCJ = celdasDe(D.CAJA), visCJ = new Set(MV.analizar(D.CAJA).listaVisibles.map(k3));
+const CP = MV.copiasCubo(D.COP);
+const EL = MV.elegirVista(D.LAT, 'lateral'), VL = MV.vistas(D.LAT);
+const PIR = MV.poliedroVistas(D.PIR), VPIR = vistasPoliedro(D.PIR, PIR), PRISMA_PIR = MV.interseccion({ frontal:D.PIR.frontal }, [[0, 2], [0, 2], [0, 2]]);
+const vistaOpc = v => `${svgVista(v, { col:'ink', max:60 })}<span class="sr">${decirVista(v)}</span>`;
+const CAJA27 = []; for (let z = 0; z < 3; z++) for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) CAJA27.push([x, y, z]);
+// vistas acotadas: anchos de columnas y altos de filas tal como se dibuja cada vista
+const opcAC = { F:{ anchos:D.AM.x, altos:D.AM.z.slice().reverse(), cotas:true }, T:{ anchos:D.AM.x, altos:D.AM.y.slice().reverse(), cotas:true }, L:{ anchos:D.AM.y, altos:D.AM.z.slice().reverse(), cotas:true } };
+const PIR_ORDEN_V = (() => {
+  const d0 = haciaQuienMira(VISTA_PIR);
+  // un vértice se ve si está en alguna cara que mira hacia quien ve
+  const ve = PIR.listaVertices.map((p, i) => PIR.listaCaras.some(f => f.vertices.includes(i) && f.normal[0]*d0[0] + f.normal[1]*d0[1] + f.normal[2]*d0[2] > 1e-9));
+  return PIR.listaVertices.map((p, i) => i).sort((a, b) => (ve[b] ? 1 : 0) - (ve[a] ? 1 : 0));
+})();
+
+const EXPS = [
+  { id:'acotadas', corto:'Vistas con medidas',
+    q:`Las tres vistas ahora tienen medidas: las columnas, las filas y los pisos no miden todos 1. ¿Cuántas caras tiene el sólido de volumen máximo?`,
+    opts:[['a', `${AC.errores.caraVistas} caras`, 'RME3', 'hipotesis'], ['b', `${AC.errores.caraCuadraditos} caras`, 'RME104', 'hipotesis'], ['c', `${AC.caras} caras`], ['d', `${AC.errores.prismaFrontal} caras`, 'RME5', 'hipotesis']], ok:'c',
+    fb:{ a:`Son las que miran al frente, arriba o a la derecha. Faltan las de atrás, la izquierda y abajo.`, b:`Son los cuadraditos de la superficie contando cada celda: una cara es la región plana entera, mida lo que mida.`, d:`Es el prisma de la frontal sola: la superior tiene un hueco al frente y la lateral pone la parte alta adelante.` },
+    antes:r => E.config({ desc:r ? `El sólido de volumen máximo con esas vistas acotadas: ${AC.cubitos} bloques, ${AC.caras} caras.` : 'Una caja vacía sobre la mesa. Al lado, tres vistas con sus medidas.',
+      marco:[[-0.6, 4.6], [-0.6, 3.6], [0, 3]], elMin:-30, vistas:{ F:D.AF, T:D.AT, L:D.AL, opc:opcAC },
+      escena:E => r || E.prog.ver ? { cubos:cubosDe(celAC), med:D.AM, mesa:[[-0.6, 3.4], [-0.6, 2.4]], luz:{ caras:CARAS_AC, n:E.prog.luz }, finas:true, aristas:AC.listaAristas }
+        : { caja:[[0, 3], [0, 2], [0, 2]], med:D.AM, mesa:[[-0.6, 3.4], [-0.6, 2.4]], textos:[{ p:[1.5, 1, 1], t:'?', tam:22, col:'muted' }] },
+      prog:{ luz:r ? AC.caras : 0, ver:r ? 1 : 0 },
+      lect:E => (r || E.prog.ver) ? [['c', 'caras C', String(Math.ceil(E.prog.luz))], ['ink', 'volumen', fmt(AC.volumen)]] : [],
+      ley:r ? [['c', 'caras contadas']] : [['F', 'frontal'], ['T', 'superior'], ['L', 'lateral']] }),
+    despues:fin => { E.prog.ver = 1; E.prog.luz = 0; E.cfg.ley = [['c', 'caras contadas']]; E.leyenda();
+      E.cadena([E.pausa(300), n => E.animar('luz', AC.carasEnVistas, RM ? 0 : 2600, n), E.pausa(400), n => E.animarVarias([['az', 225], ['el', -28]], 1600, n),
+        n => E.animar('luz', AC.caras, RM ? 0 : 1400, n), E.pausa(700), n => E.animarVarias([['az', ISO.az + 360], ['el', ISO.el]], 1500, n)], () => { E.az = ISO.az; E.lecturas();
+        E.avisar(`El sólido se armó con las medidas de las vistas y se encendieron sus ${AC.caras} caras. Las medidas cambian el volumen (${fmt(AC.volumen)}), no el número de caras.`); fin(); }); },
+    exp:() => `<p>Con medidas, la cuadrícula ya no es de cuadraditos iguales, pero se trabaja igual: cada línea de una vista corta el sólido en la misma posición en las otras. El máximo sigue siendo lo que permiten las tres vistas a la vez.</p>
+      <div class="eqs"><div class="eq">${c_('C')} = ${AC.caras} · volumen = ${fmt(AC.volumen)} (con las medidas)</div><div class="eq">V − A + ${c_('C')} = ${AC.vertices} − ${AC.aristas} + ${c_(AC.caras)} = ${AC.euler}</div></div>
+      ${fuenteHip('Contar cuadraditos, solo las caras de las vistas o leer una sola vista')}` },
+  { id:'caja-transparente', corto:'Caja transparente',
+    q:`En una caja transparente de 3 × 3 × 3 hay algunos cubitos. ¿Cuántos faltan para llenarla?`,
+    opts:[['a', `${CJ.errores.deFrente} cubitos`, 'RME3', 'hipotesis'], ['b', `${CJ.faltan} cubitos`], ['c', `${CJ.errores.soloVisibles} cubitos`, 'RME3', 'hipotesis'], ['d', `${CJ.errores.deArriba} cubitos`, 'RME5', 'hipotesis']], ok:'b',
+    fb:{ a:'Contaste solo los cubitos que se ven de frente: detrás hay más.', c:`Contaste los ${CJ.visibles} que se ven desde la esquina: uno queda escondido.`, d:'Contaste un cubito por cada cuadradito de la superior: hay columnas de dos pisos.' },
+    antes:r => E.config({ desc:r ? `La caja llena: había ${CJ.volumen} cubitos y se agregaron ${CJ.faltan}.` : 'Una caja transparente de 3 × 3 × 3 con algunos cubitos adentro, vista desde una esquina.',
+      marco:[[-0.6, 3.6], [-0.6, 3.6], [0, 3]],
+      escena:E => ({ caja:[[0, 3], [0, 3], [0, 3]], mesa:mesaDe(3, 3), gap:E.prog.gap,
+        cubos:celCJ.map(c => ({ c, col:E.prog.oc && !visCJ.has(k3(c)) ? 'oc' : null }))
+          .concat(E.prog.gap < .01 ? CAJA27.filter(c => !celCJ.some(q => k3(q) === k3(c))).slice(0, Math.ceil(E.prog.n)).map(c => ({ c, col:'n', alfa:.4, borde:'n' })) : []) }),
+      prog:{ gap:0, oc:r ? 1 : 0, n:r ? CJ.faltan : 0 },
+      lect:E => (r || E.prog.oc) ? [['ink', 'hay', String(CJ.volumen)], ['oc', 'escondidos', String(CJ.volumen - CJ.visibles)], ['n', 'faltan', String(Math.ceil(E.prog.n))]] : [],
+      ley:r ? [['oc', 'cubitos que no se ven'], ['n', 'cubitos que faltan']] : [['ink', 'los cubitos y la caja']] }),
+    despues:fin => { E.cfg.ley = [['oc', 'cubitos que no se ven'], ['n', 'cubitos que faltan']]; E.leyenda();
+      E.cadena([n => { E.prog.oc = 1; E.animar('gap', .8, 1000, n); }, E.pausa(1400), n => E.animar('gap', 0, 800, n), n => E.animar('n', CJ.faltan, RM ? 0 : 2400, n)], () => {
+        E.avisar(`Al separar los pisos apareció el cubito escondido: había ${CJ.volumen}. Se llenó la caja con ${CJ.faltan}.`); fin(); }); },
+    exp:() => `<p>Se cuenta piso por piso: abajo ${MV.leer([D.CAJA[0]]).celdas.length}, arriba ${MV.leer([D.CAJA[1]]).celdas.length}. Los de frente (la vista ${F_('frontal')}) o los que se ven desde la esquina no son todos.</p>
+      <div class="eqs"><div class="eq">${n_('faltan')} = 27 − ${CJ.volumen} = ${n_(CJ.faltan)}</div></div>${fuenteOcultos}` },
+  { id:'copias', corto:'Copias que arman un cubo',
+    q:`Con copias iguales de esta pieza en L de 3 cubitos (se pueden girar) se arma el cubo compacto más pequeño posible. ¿Cuántos cubitos hay que agregar a la pieza?`,
+    opts:[['a', `${CP.errores.sinDividir} cubitos`, 'RME108', 'hipotesis'], ['b', `${CP.errores.copiasEnVezDeCubitos} cubitos`, 'RME109', 'hipotesis'], ['c', `${CP.errores.todoElCubo} cubitos`, 'RME109', 'hipotesis'], ['d', `${CP.adicionales} cubitos`]], ok:'d',
+    fb:{ a:'Es el cubo de 2 × 2 × 2 menos la pieza: 8 no es múltiplo de 3, así que con copias enteras no se puede.', b:`Son las copias que se agregan (${CP.errores.copiasEnVezDeCubitos}), no los cubitos: cada copia trae 3.`, c:'Es el cubo entero: la pieza ya pone 3 cubitos.' },
+    antes:r => E.config({ desc:r ? `El cubo de ${CP.n} × ${CP.n} × ${CP.n} armado con ${CP.copias} copias de la pieza.` : 'Una pieza en L de tres cubitos sobre la mesa.',
+      marco:[[-0.6, 3.6], [-0.6, 3.6], [0, 3]],
+      escena:E => ({ mesa:mesaDe(3, 3), cubos:CP.colocaciones.slice(0, Math.max(1, Math.ceil(E.prog.k))).flatMap((cs, i) => cs.map(c => ({ c, col:i % 2 ? 'n' : null, borde:i > 0 && i % 2 === 0 ? 'n' : null }))) }),
+      prog:{ k:r ? CP.copias : 1 },
+      lect:E => (r || E.prog.k > 1) ? [['ink', 'copias', String(Math.max(1, Math.ceil(E.prog.k)))], ['n', 'cubitos agregados', String((Math.max(1, Math.ceil(E.prog.k)) - 1)*CP.volumen)]] : [],
+      ley:r ? [['ink', 'la pieza'], ['n', 'las copias que se agregan']] : [['ink', 'la pieza']] }),
+    despues:fin => { E.cfg.ley = [['ink', 'la pieza'], ['n', 'las copias que se agregan']]; E.leyenda();
+      E.cadena([E.pausa(300), n => E.animar('k', CP.copias, RM ? 0 : 4000, n)], () => { E.avisar(`Las ${CP.copias} copias llenaron el cubo de ${CP.n} × ${CP.n} × ${CP.n}: se agregaron ${CP.adicionales} cubitos a la pieza.`); fin(); }); },
+    exp:() => `<p>El cubo más chico que contiene la pieza sería de 2 × 2 × 2 = 8, pero 8 no se reparte en piezas de 3. El siguiente, 3 × 3 × 3 = 27, sí: 27 / 3 = ${CP.copias} copias, y la escena muestra una manera de acomodarlas.</p>
+      <div class="eqs"><div class="eq">${n_('agregados')} = ${CP.n}³ − 3 = ${n_(CP.adicionales)} (${CP.copias - 1} copias más)</div></div>
+      ${fuenteHip('No comprobar que el cubo se pueda llenar con copias enteras, o confundir copias con cubitos')}` },
+  { id:'lateral', corto:'La vista lateral',
+    q:`¿Cuál es la vista ${L_('lateral')} de este sólido, mirándolo desde la derecha (el frente queda a la izquierda)?`, grilla:true,
+    opts:[['a', vistaOpc(EL.errores.reflejada), 'RME100', 'hipotesis'], ['b', vistaOpc(EL.errores.frontal), 'RME5', 'hipotesis'], ['c', vistaOpc(EL.correcta)], ['d', vistaOpc(EL.errores.superior), 'RME5', 'hipotesis']], ok:'c', html:true,
+    fb:{ a:'Es la lateral vista desde la izquierda: el frente quedó a la derecha.', b:'Es la vista frontal.', d:'Es la vista superior: no tiene alturas.' },
+    antes:r => E.config({ desc:r ? 'El sólido visto desde la derecha, con sus tres vistas.' : 'Un sólido de cubitos de tres pisos, dibujado desde una esquina de adelante, a la derecha y arriba.',
+      marco:[[-0.6, 3.6], [-0.6, 3.6], [0, 3]], vistas:r ? { F:VL.frontal, T:VL.superior, L:VL.lateral } : null,
+      escena:E => ({ cubos:cubosDe(celdasDe(D.LAT), { tinte:!!E.prog.tinte }), mesa:mesaDe(3, 3) }), prog:{ tinte:r ? 1 : 0 },
+      ley:r ? [['F', 'frontal'], ['T', 'superior'], ['L', 'lateral']] : [['ink', 'el sólido']] }),
+    despues:fin => { E.prog.tinte = 1; E.cfg.ley = [['F', 'frontal'], ['T', 'superior'], ['L', 'lateral']]; E.leyenda();
+      E.cadena([n => E.animarVarias([['az', 90], ['el', 3]], 1500, n), E.pausa(1300), n => E.animarVarias([['az', ISO.az], ['el', ISO.el]], 1200, n)], () => {
+        E.cfg.vistas = { F:VL.frontal, T:VL.superior, L:VL.lateral }; E.vistas(); E.recajar();
+        E.avisar('El sólido giró hasta verse desde la derecha: el frente quedó a la izquierda. Al lado aparecen sus tres vistas.'); fin(); }); },
+    exp:() => `<p>Desde la derecha, cada fila (del frente al fondo) se ve con su columna más alta. El frente, que está cerca de tus ojos cuando miras de frente, queda ahora a tu izquierda.</p>${fuenteHip('Dibujar la lateral desde el lado contrario o confundirla con otra vista')}` },
+  { id:'piramide', corto:'Dos triángulos y un cuadrado',
+    q:`La ${F_('frontal')} y la ${L_('lateral')} son triángulos y la ${T_('superior')} es un cuadrado con sus diagonales. ¿Cuántos vértices tiene el sólido de volumen máximo?`,
+    opts:[['a', `${PIR.errores.verticesPrismaFrontal} vértices`, 'RME5', 'hipotesis'], ['b', `${PIR.vertices} vértices`], ['c', `${PIR.errores.cajaVertices} vértices`, 'RME105', 'hipotesis'], ['d', `${PIR.errores.esquinasVistas} vértices`, 'RME101', 'hipotesis']], ok:'b',
+    fb:{ a:'Es el prisma de la frontal sola: la lateral corta la arista de arriba hasta dejar un punto.', c:'Son los vértices de una caja.', d:'Sumaste las esquinas de las tres vistas (3 + 3 + 4): cada vértice del sólido sale en varias vistas.' },
+    antes:r => E.config({ desc:r ? `El sólido de volumen máximo: una pirámide de base cuadrada, de ${PIR.vertices} vértices.` : 'Una caja vacía de 2 × 2 × 2 sobre la mesa. Al lado, las tres vistas de un sólido.',
+      marco:[[-1, 3], [-1, 3], [0, 2]], vistas:VPIR, vista:VISTA_PIR,
+      escena:E => {
+        const et = E.prog.etapa, pts = PIR_ORDEN_V.map(i => PIR.listaVertices[i]); pts.n = E.prog.v;
+        const m = [[-1, 3], [-1, 3]];
+        if (!et) return { caja:[[0, 2], [0, 2], [0, 2]], mesa:m, textos:[{ p:[1, 1, 1], t:'?', tam:22, col:'muted' }] };
+        if (et === 1) return { polis:[{ R:PRISMA_PIR, col:'F', alfa:Math.max(.05, E.prog.f*.85) }], mesa:m, caja:[[0, 2], [0, 2], [0, 2]] };
+        if (et === 2) return { polis:[{ R:PRISMA_PIR, col:'F', alfa:.85*(1 - E.prog.f) }, { R:PIR, col:'L', alfa:Math.max(.05, E.prog.f) }], mesa:m };
+        return { polis:[{ R:PIR, alfa:.55, puntos:pts }], mesa:m };
+      }, prog:{ etapa:r ? 3 : 0, f:0, v:r ? PIR.vertices : 0 },
+      lect:E => E.prog.etapa === 3 ? [['v', 'vértices V', String(Math.ceil(E.prog.v))], ['ink', 'aristas A', String(PIR.aristas)], ['c', 'caras C', String(PIR.caras)]] : [],
+      ley:r ? [['v', 'vértices'], ['F', 'prisma de la frontal'], ['L', 'cortado por la lateral']] : [['F', 'frontal'], ['T', 'superior'], ['L', 'lateral']] }),
+    despues:fin => { E.cfg.ley = [['F', 'prisma de la frontal'], ['L', 'cortado por la lateral'], ['v', 'vértices']]; E.leyenda();
+      E.cadena([n => { E.prog.etapa = 1; E.prog.f = 0; E.animar('f', 1, 1100, n); }, E.pausa(700), n => { E.prog.etapa = 2; E.prog.f = 0; E.animar('f', 1, 1300, n); }, E.pausa(400),
+        n => { E.prog.etapa = 3; E.prog.v = 0; E.animar('v', PIR.vertices, RM ? 0 : 2000, n); }], () => { E.lecturas();
+        E.avisar(`La frontal da un prisma triangular (${PIR.errores.verticesPrismaFrontal} vértices); la lateral lo corta y deja una pirámide de base cuadrada: ${PIR.vertices} vértices.`); fin(); }); },
+    exp:() => `<p>La ${F_('frontal')} se estira hacia el fondo en un prisma de techo a dos aguas; la ${L_('lateral')}, también triangular, corta ese techo por los lados hasta dejar una sola punta. Las diagonales de la ${T_('superior')} son las aristas que bajan de la punta.</p>
+      <div class="eqs"><div class="eq">${v_('V')} − A + ${c_('C')} = ${v_(PIR.vertices)} − ${PIR.aristas} + ${c_(PIR.caras)} = ${PIR.euler}</div></div>${fuenteHip('Leer solo la frontal, tomarlo como una caja o sumar las esquinas de las vistas')}` },
+];
+
+const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k > primeraLibre() || E.ocupado) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  E.compacto = !S.pred[x.id]; Celular.compactar($('m2'), E.compacto);
+  x.antes(!!S.pred[x.id]);
+  E.compactar(!S.pred[x.id]);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2', false, x.grilla)}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { if (E.ocupado) return; ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    if (E.ocupado) botonesOcupado(true);
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; E.ocupado = true; botones(); E.compactar(false); pintar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    botonesOcupado(true);
+    const listo = () => { E.ocupado = false; botonesOcupado(false); };
+    Celular.alResponder($('cv2'), () => x.despues(() => { if (S.k === k) E.dibujar(); listo(); }), () => S.k === k, { siNo:listo });
+  });
+  pintar();
+}
+// Mientras corre la animación de la respuesta, no se cambia de experimento (se terminaría a medias).
+function botonesOcupado(on){
+  $('exps').querySelectorAll('button').forEach(b => { if (!b.hasAttribute('aria-disabled')) b.disabled = on; });
+  const sig = $('sig2'); if (sig) sig.disabled = on;
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "id": "rutas-espacio",
+  "titulo": "La hormiga en el alambre: rutas en el espacio y en el cilindro",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.rutas-y-visualizacion-espacial",
+    "razonamiento-matematico.trazos-y-perimetros"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

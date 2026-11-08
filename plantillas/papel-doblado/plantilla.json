@@ -1,0 +1,15 @@
+{
+  "id": "papel-doblado",
+  "titulo": "La hoja que se dobla, se corta y se voltea",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.transformaciones-de-figuras"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
