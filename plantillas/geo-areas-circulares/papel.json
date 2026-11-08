@@ -1,0 +1,180 @@
+{
+  "titulo": "Coronas, sectores y regiones con arcos",
+  "indicacion": "Resuelve en tu cuaderno. Haz primero un dibujo con los datos y deja la respuesta con π cuando aparezca.",
+  "problemas": [
+    {
+      "id": "pp1",
+      "nivel": "básico",
+      "enunciado": "Un disco de vinilo tiene 30 cm de diámetro y una etiqueta circular de 10 cm de diámetro en el centro. ¿Cuál es el área del disco que no cubre la etiqueta?",
+      "respuesta": "200π cm²",
+      "pasos": [
+        "Radios: 15 cm y 5 cm.",
+        "Corona: π(15² − 5²) = π(225 − 25).",
+        "Área = 200π cm²."
+      ],
+      "verificar": [
+        {
+          "fn": "coronaDiametros",
+          "args": [
+            30,
+            10
+          ],
+          "espera": 628.3185307179587
+        }
+      ]
+    },
+    {
+      "id": "pp2",
+      "nivel": "intermedio",
+      "enunciado": "Los radios de dos circunferencias concéntricas están en la razón 2 : 7 y su diferencia es 15 m. ¿Cuál es el área de la corona que limitan?",
+      "respuesta": "405π m²",
+      "pasos": [
+        "Radios 2k y 7k; 7k − 2k = 5k = 15, así k = 3.",
+        "r = 6 m y R = 21 m.",
+        "Área = π(441 − 36) = 405π m²."
+      ],
+      "verificar": [
+        {
+          "fn": "corona",
+          "args": [
+            21,
+            6
+          ],
+          "espera": 1272.345024703866
+        }
+      ]
+    },
+    {
+      "id": "pp3",
+      "nivel": "intermedio",
+      "enunciado": "En una corona circular, una cuerda de la circunferencia mayor que toca a la menor en un solo punto mide 18 cm. ¿Cuál es el área de la corona?",
+      "respuesta": "81π cm²",
+      "pasos": [
+        "El radio al punto de contacto es perpendicular a la cuerda y la parte en dos mitades de 9 cm.",
+        "Pitágoras: R² − r² = 9² = 81.",
+        "Área = π(R² − r²) = 81π cm²."
+      ],
+      "verificar": [
+        {
+          "fn": "coronaCuerda",
+          "args": [
+            18
+          ],
+          "espera": 254.46900494077323
+        }
+      ]
+    },
+    {
+      "id": "pp4",
+      "nivel": "básico",
+      "enunciado": "Una porción de queso tiene forma de sector circular de radio 9 cm y ángulo central 40°. ¿Cuánto mide el contorno completo de la porción?",
+      "respuesta": "(18 + 2π) cm",
+      "pasos": [
+        "Arco: (40/360)·2π·9 = 2π cm.",
+        "Se suman los dos radios: 2·9 = 18 cm.",
+        "Contorno = (18 + 2π) cm."
+      ],
+      "verificar": [
+        {
+          "fn": "perimetroSector",
+          "args": [
+            9,
+            40
+          ],
+          "espera": 24.283185307179586
+        }
+      ]
+    },
+    {
+      "id": "pp5",
+      "nivel": "intermedio",
+      "enunciado": "Una diana tiene tres circunferencias concéntricas de radios 2 dm, 4 dm y 5 dm, y está dividida por radios en 10 sectores iguales. Se pintan 4 piezas del círculo central, 1 del anillo del medio y 3 del anillo exterior. ¿Cuál es el área pintada?",
+      "respuesta": "11π/2 dm²",
+      "pasos": [
+        "Pieza central: π·2²/10 = 4π/10. Pieza del medio: π(4² − 2²)/10 = 12π/10. Pieza exterior: π(5² − 4²)/10 = 9π/10.",
+        "Pintado: (4·4 + 1·12 + 3·9)π/10 = 55π/10.",
+        "Área = 11π/2 dm²."
+      ],
+      "verificar": [
+        {
+          "fn": "concentricas",
+          "args": [
+            [
+              2,
+              4,
+              5
+            ],
+            10,
+            [
+              4,
+              1,
+              3
+            ]
+          ],
+          "espera": 17.27875959474386
+        }
+      ]
+    },
+    {
+      "id": "pp6",
+      "nivel": "intermedio",
+      "enunciado": "Una alfombra rectangular de 20 dm por 10 dm tiene bordado un círculo en el centro que toca los dos lados largos, y sobre cada lado corto un semicírculo que tiene ese lado como diámetro; los semicírculos tocan al círculo. ¿Qué área de la alfombra queda sin bordar?",
+      "respuesta": "(200 − 50π) dm²",
+      "pasos": [
+        "El círculo toca los lados largos: su diámetro es 10 dm y su radio 5 dm. Los semicírculos tienen el mismo radio.",
+        "Dos semicírculos forman un círculo: bordado = 2·π·5² = 50π dm².",
+        "Sin bordar = 20·10 − 50π = (200 − 50π) dm²."
+      ],
+      "verificar": [
+        {
+          "fn": "rectTres",
+          "args": [
+            5
+          ],
+          "espera": 42.920367320510344
+        }
+      ]
+    },
+    {
+      "id": "pp7",
+      "nivel": "avanzado",
+      "enunciado": "En un cuadrado PQRS de lado 6 m se trazan dos arcos de radio 6 m: uno con centro en P, de Q a S, y otro con centro en R, de Q a S. ¿Cuál es el área de la región que queda entre los dos arcos?",
+      "respuesta": "(18π − 36) m²",
+      "pasos": [
+        "Cada cuadrante mide π·36/4 = 9π.",
+        "Los dos cuadrantes cubren el cuadrado y cuentan dos veces la región común.",
+        "Región = 2·9π − 36 = (18π − 36) m²."
+      ],
+      "verificar": [
+        {
+          "fn": "dosCuadrantes",
+          "args": [
+            6
+          ],
+          "espera": 20.548667764616276
+        }
+      ]
+    },
+    {
+      "id": "pp8",
+      "nivel": "avanzado",
+      "enunciado": "Una llanta de radio 30 cm rueda sin resbalar y su centro avanza 150π cm. Un punto del borde que empezó tocando el piso recorre una cicloide, de longitud 8 veces el radio en cada vuelta y 4 veces el radio en cada media vuelta. ¿Qué longitud recorre ese punto?",
+      "respuesta": "600 cm",
+      "pasos": [
+        "En una vuelta el centro avanza 2π·30 = 60π cm; 150π ÷ 60π = 2,5 vueltas.",
+        "Por vuelta el punto recorre 8·30 = 240 cm.",
+        "Longitud = 240·2,5 = 600 cm."
+      ],
+      "verificar": [
+        {
+          "fn": "rueda",
+          "args": [
+            30,
+            2.5
+          ],
+          "espera": 600
+        }
+      ]
+    }
+  ]
+}
