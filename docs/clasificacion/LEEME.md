@@ -30,3 +30,4 @@ Gerson va a pasar, uno por uno, los compendios de academia con problemas tipo UN
 | Libro | Tema | Mapa | Estado |
 | --- | --- | --- | --- |
 | Tarazona, *Análisis vectorial* (Cuzcano, 2005), dos PDF que cubren las 128 páginas | Vectores | `compendio-vectores.md` | Mapa hecho; vectores 0.2.0 y generadores en `rutina/vectores` |
+| Tarazona, *Movimiento circunferencial* (Cuzcano, 2006; 2.ª ed. 2015), PDF de las páginas 1 a 90 (resueltos 1 a 120; faltan gráficas, centro instantáneo, miscelánea y propuestos) | Movimiento circular (MCU, MCUV, transmisión) | `compendio-movimiento-circunferencial.md` | Mapa hecho (páginas 1 a 90) |
