@@ -2,7 +2,7 @@
   "plantilla": "trig-inversas",
   "tolerancia": 0.000001,
   "nota": "Rangos principales de la cabecera de generador.js. Fracciones de _datos como [n, d] = n/d; en interseccion, m = [n, d, r] = (n/d)·√r. En lugar-recta y transformacion la respuesta es una clave de texto (y = m·x + n; rango en cuartos de π y sentido).",
-  "verificacion": "",
+  "verificacion": "Verificación a ciegas (subagente verificador, 8 nov 2026): los 24 casos se resolvieron desde el enunciado con las identidades complementarias y los rangos principales, y se comprobó que cada ecuación tiene raíz única buscando todas sus raíces numéricamente en su dominio; rangos por límites, lugares geométricos comprobados punto por punto. Coinciden los 24, incluidas las claves de texto de recta y transformación.",
   "casos": [
     {
       "semilla": "entrada-1",
