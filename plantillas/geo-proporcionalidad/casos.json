@@ -2,7 +2,7 @@
   "plantilla": "geo-proporcionalidad",
   "tolerancia": 0.000001,
   "nota": "Longitudes en cm, m o km; las respuestas son enteros, fracciones p/q o a√b. Los _datos traen todos los datos del enunciado (u es la unidad).",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026): resolvió los 22 casos desde el enunciado, sin ver el generador, con coordenadas (bisectrices por vectores unitarios, incentro baricéntrico, intersecciones de rectas, circunferencia construida) y forma exacta con fracciones. Coinciden los 22 en respuesta y exacta.",
   "casos": [
     {
       "semilla": 0,

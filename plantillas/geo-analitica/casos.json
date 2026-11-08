@@ -2,7 +2,7 @@
   "plantilla": "geo-analitica",
   "tolerancia": 0.000001,
   "nota": "Respuestas como claves de Predicciones: vec: punto (fracciones n/d), fr: fracción, recta:p,q,r para px + qy + r = 0 normalizada; parábolas: volumen numérico (múltiplo de π).",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas el 8 nov 2026 por un subagente verificador independiente (segunda vuelta, tras las correcciones de la revisión). Resolvió cada enunciado con fracciones exactas en Python: completó cuadrados desde la forma general de la elipse, revisó que el rectángulo lo fuera, calculó la tangente con producto cruz y producto punto y la contrastó con atan2. 22 de 22 casos coinciden y no hay defectos de enunciado.",
   "casos": [
     {
       "semilla": "entrada-1",
