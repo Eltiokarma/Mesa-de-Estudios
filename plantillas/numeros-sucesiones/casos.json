@@ -2,7 +2,7 @@
   "plantilla": "numeros-sucesiones",
   "tolerancia": 0.000001,
   "nota": "Respuestas enteras, salvo en fracciones (clave frac:n/d) y grifos (clave h:n/d, en horas). En grifos, a y n son cifras desconocidas; las bases van en los numerales. En divisores, los divisores propios son todos menos el mismo N, y los compuestos excluyen el 1 y los primos.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 19 casos con aritmética exacta en Python (Fraction), enumerando las bases válidas y los divisores, intersectando los conjuntos de las progresiones, armando las sucesiones intercaladas término a término y sumando término a término. Coinciden los 19; no se halló ninguna alternativa defendible distinta de la clave.",
   "casos": [
     {
       "semilla": 0,
