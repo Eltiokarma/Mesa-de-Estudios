@@ -1,0 +1,278 @@
+{
+  "plantilla": "cubitos-conteo",
+  "nota": "Bloque a × b × c: a de largo (izquierda a derecha), b de fondo (frente hacia atrás), c de alto. Túneles: eje x (p = capa desde el frente, q = fila desde abajo), eje y (p = columna desde la izquierda, q = fila desde abajo), eje z (p = columna desde la izquierda, q = capa desde el frente). Escalera: área exterior en caras de cubito, con o sin la base apoyada en la mesa.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin leer generador.js, generador.test.js ni casos.json: resolvió cada enunciado solo desde el texto, armando la grilla de cubitos y contando caras sin vecino (escaleras, pirámides, pintado con mesa, pared o rincón), quitando los túneles como conjuntos y usando el MCM o la mayor medida para formar el cubo. Los 15 casos y 30 problemas nuevos coinciden; una sola alternativa correcta en cada uno.",
+  "casos": [
+    {
+      "semilla": 0,
+      "tipo": "escalera",
+      "entrada": {
+        "tipo": "escalera",
+        "regla": "escalera",
+        "d": 1,
+        "N": 13,
+        "base": true
+      },
+      "esperado": {
+        "respuesta": 234,
+        "exacta": "234 cuadraditos"
+      }
+    },
+    {
+      "semilla": 1,
+      "tipo": "pintados",
+      "entrada": {
+        "tipo": "pintados",
+        "a": 6,
+        "b": 3,
+        "c": 6,
+        "k": 1,
+        "apoyo": "todo"
+      },
+      "esperado": {
+        "respuesta": 48,
+        "exacta": "48 cubitos"
+      }
+    },
+    {
+      "semilla": 2,
+      "tipo": "pintados",
+      "entrada": {
+        "tipo": "pintados",
+        "a": 7,
+        "b": 7,
+        "c": 7,
+        "k": 2,
+        "apoyo": "pared"
+      },
+      "esperado": {
+        "respuesta": 29,
+        "exacta": "29 cubitos"
+      }
+    },
+    {
+      "semilla": 3,
+      "tipo": "escalera",
+      "entrada": {
+        "tipo": "escalera",
+        "regla": "escalera",
+        "d": 3,
+        "N": 19,
+        "base": false
+      },
+      "esperado": {
+        "respuesta": 551,
+        "exacta": "551 cuadraditos"
+      }
+    },
+    {
+      "semilla": 4,
+      "tipo": "copias",
+      "entrada": {
+        "tipo": "copias",
+        "a": 4,
+        "b": 4,
+        "c": 7
+      },
+      "esperado": {
+        "respuesta": 196,
+        "exacta": "196 ladrillos"
+      }
+    },
+    {
+      "semilla": 5,
+      "tipo": "completar",
+      "entrada": {
+        "tipo": "completar",
+        "a": 3,
+        "b": 7,
+        "c": 2
+      },
+      "esperado": {
+        "respuesta": 301,
+        "exacta": "301 cubitos"
+      }
+    },
+    {
+      "semilla": 6,
+      "tipo": "copias",
+      "entrada": {
+        "tipo": "copias",
+        "a": 7,
+        "b": 2,
+        "c": 4
+      },
+      "esperado": {
+        "respuesta": 392,
+        "exacta": "392 ladrillos"
+      }
+    },
+    {
+      "semilla": 7,
+      "tipo": "tuneles",
+      "entrada": {
+        "tipo": "tuneles",
+        "n": 6,
+        "tuneles": [
+          {
+            "eje": "z",
+            "p": 4,
+            "q": 2
+          },
+          {
+            "eje": "y",
+            "p": 4,
+            "q": 4
+          },
+          {
+            "eje": "z",
+            "p": 4,
+            "q": 1
+          },
+          {
+            "eje": "x",
+            "p": 1,
+            "q": 4
+          }
+        ]
+      },
+      "esperado": {
+        "respuesta": 195,
+        "exacta": "195 cubitos"
+      }
+    },
+    {
+      "semilla": 8,
+      "tipo": "tuneles",
+      "entrada": {
+        "tipo": "tuneles",
+        "n": 5,
+        "tuneles": [
+          {
+            "eje": "y",
+            "p": 5,
+            "q": 4
+          },
+          {
+            "eje": "z",
+            "p": 5,
+            "q": 2
+          },
+          {
+            "eje": "z",
+            "p": 1,
+            "q": 4
+          }
+        ]
+      },
+      "esperado": {
+        "respuesta": 111,
+        "exacta": "111 cubitos"
+      }
+    },
+    {
+      "semilla": 9,
+      "tipo": "pintados",
+      "entrada": {
+        "tipo": "pintados",
+        "a": 5,
+        "b": 5,
+        "c": 3,
+        "k": 2,
+        "apoyo": "rincon"
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10 cubitos"
+      }
+    },
+    {
+      "semilla": 10,
+      "tipo": "tuneles",
+      "entrada": {
+        "tipo": "tuneles",
+        "n": 3,
+        "tuneles": [
+          {
+            "eje": "z",
+            "p": 3,
+            "q": 2
+          },
+          {
+            "eje": "y",
+            "p": 3,
+            "q": 3
+          },
+          {
+            "eje": "x",
+            "p": 3,
+            "q": 1
+          }
+        ]
+      },
+      "esperado": {
+        "respuesta": 19,
+        "exacta": "19 cubitos"
+      }
+    },
+    {
+      "semilla": 12,
+      "tipo": "escalera",
+      "entrada": {
+        "tipo": "escalera",
+        "regla": "piramide",
+        "d": 1,
+        "N": 6,
+        "base": false
+      },
+      "esperado": {
+        "respuesta": 265,
+        "exacta": "265 cuadraditos"
+      }
+    },
+    {
+      "semilla": 15,
+      "tipo": "completar",
+      "entrada": {
+        "tipo": "completar",
+        "a": 6,
+        "b": 2,
+        "c": 5
+      },
+      "esperado": {
+        "respuesta": 156,
+        "exacta": "156 cubitos"
+      }
+    },
+    {
+      "semilla": 29,
+      "tipo": "caras",
+      "entrada": {
+        "tipo": "caras",
+        "a": 6,
+        "b": 4,
+        "c": 5,
+        "apoyo": "rincon"
+      },
+      "esperado": {
+        "respuesta": 74,
+        "exacta": "74 caras"
+      }
+    },
+    {
+      "semilla": 54,
+      "tipo": "caras",
+      "entrada": {
+        "tipo": "caras",
+        "a": 6,
+        "b": 6,
+        "c": 6,
+        "apoyo": "mesa"
+      },
+      "esperado": {
+        "respuesta": 180,
+        "exacta": "180 caras"
+      }
+    }
+  ]
+}

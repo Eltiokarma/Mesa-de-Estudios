@@ -1,0 +1,232 @@
+{
+  "plantilla": "dados-caras",
+  "nota": "Dados comunes: caras opuestas suman 7. Visibles: lo que se ve alrededor de la mesa; ocultas: las que tocan la mesa, otro dado o la pared. Torre: el dado 0 toca la mesa. Fila: de izquierda a derecha, pegados; con pared, la cara de atrás toca la pared. Dominó del 0 al m: pares (a, b) con a ≤ b, dobles incluidos.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin leer generador.js, generador.test.js ni casos.json: enumeró las 24 rotaciones del dado común (y las 24 de su imagen en espejo, con el mismo resultado) en todas las combinaciones de torre, contacto, fila y producto, y listó las fichas del dominó. Los 14 casos y 30 problemas nuevos coinciden; una sola alternativa correcta en cada uno.",
+  "casos": [
+    {
+      "semilla": 0,
+      "tipo": "domino",
+      "entrada": {
+        "tipo": "domino",
+        "m": 6,
+        "pide": "suma",
+        "cond": null
+      },
+      "esperado": {
+        "respuesta": 168,
+        "exacta": "168 puntos"
+      }
+    },
+    {
+      "semilla": 1,
+      "tipo": "producto",
+      "entrada": {
+        "tipo": "producto",
+        "k": 3,
+        "P": 20,
+        "extremo": "max"
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 puntos"
+      }
+    },
+    {
+      "semilla": 2,
+      "tipo": "domino",
+      "entrada": {
+        "tipo": "domino",
+        "m": 6,
+        "pide": "cuantas",
+        "cond": {
+          "tipo": "menor",
+          "q": 10
+        }
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24 fichas"
+      }
+    },
+    {
+      "semilla": 3,
+      "tipo": "domino",
+      "entrada": {
+        "tipo": "domino",
+        "m": 6,
+        "pide": "cuantas",
+        "cond": {
+          "tipo": "multiplo",
+          "q": 5
+        }
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "5 fichas"
+      }
+    },
+    {
+      "semilla": 4,
+      "tipo": "contacto",
+      "entrada": {
+        "tipo": "contacto",
+        "k": 2,
+        "pide": "ocultos",
+        "extremo": "min",
+        "regla": {
+          "tipo": "suma",
+          "S": 10
+        }
+      },
+      "esperado": {
+        "respuesta": 11,
+        "exacta": "11 puntos"
+      }
+    },
+    {
+      "semilla": 5,
+      "tipo": "torre",
+      "entrada": {
+        "tipo": "torre",
+        "k": 2,
+        "pide": "visibles",
+        "extremo": "min",
+        "condicion": {
+          "tipo": "paridad",
+          "par": false
+        }
+      },
+      "esperado": {
+        "respuesta": 29,
+        "exacta": "29 puntos"
+      }
+    },
+    {
+      "semilla": 6,
+      "tipo": "torre",
+      "entrada": {
+        "tipo": "torre",
+        "k": 5,
+        "pide": "visibles",
+        "extremo": "min",
+        "condicion": {
+          "tipo": "valor",
+          "t": 2
+        }
+      },
+      "esperado": {
+        "respuesta": 72,
+        "exacta": "72 puntos"
+      }
+    },
+    {
+      "semilla": 7,
+      "tipo": "fila",
+      "entrada": {
+        "tipo": "fila",
+        "k": 3,
+        "pared": false,
+        "pide": "visibles",
+        "extremo": "max"
+      },
+      "esperado": {
+        "respuesta": 49,
+        "exacta": "49 puntos"
+      }
+    },
+    {
+      "semilla": 8,
+      "tipo": "torre",
+      "entrada": {
+        "tipo": "torre",
+        "k": 4,
+        "pide": "visibles",
+        "extremo": "max",
+        "condicion": {
+          "tipo": "valor",
+          "t": 4
+        }
+      },
+      "esperado": {
+        "respuesta": 60,
+        "exacta": "60 puntos"
+      }
+    },
+    {
+      "semilla": 12,
+      "tipo": "producto",
+      "entrada": {
+        "tipo": "producto",
+        "k": 2,
+        "P": 12,
+        "extremo": "max"
+      },
+      "esperado": {
+        "respuesta": 7,
+        "exacta": "7 puntos"
+      }
+    },
+    {
+      "semilla": 13,
+      "tipo": "producto",
+      "entrada": {
+        "tipo": "producto",
+        "k": 3,
+        "P": 36,
+        "extremo": "min"
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 puntos"
+      }
+    },
+    {
+      "semilla": 16,
+      "tipo": "fila",
+      "entrada": {
+        "tipo": "fila",
+        "k": 3,
+        "pared": true,
+        "pide": "visibles",
+        "extremo": "min"
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15 puntos"
+      }
+    },
+    {
+      "semilla": 19,
+      "tipo": "fila",
+      "entrada": {
+        "tipo": "fila",
+        "k": 4,
+        "pared": true,
+        "pide": "visibles",
+        "extremo": "max"
+      },
+      "esperado": {
+        "respuesta": 52,
+        "exacta": "52 puntos"
+      }
+    },
+    {
+      "semilla": 24,
+      "tipo": "contacto",
+      "entrada": {
+        "tipo": "contacto",
+        "k": 2,
+        "pide": "ocultos",
+        "extremo": "max",
+        "regla": {
+          "tipo": "suma",
+          "S": 6
+        }
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 puntos"
+      }
+    }
+  ]
+}

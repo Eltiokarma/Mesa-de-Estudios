@@ -95,7 +95,7 @@
       "universidades": {"unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["probabilidad-dados"],
+      "plantillas": ["probabilidad-dados", "dados-caras"],
       "investigacion": null
     },
     {
@@ -208,7 +208,7 @@
       "universidades": {"unmsm": {"temas": [15, 16]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["trazos-rutas", "rutas-tramos"],
+      "plantillas": ["trazos-rutas", "rutas-tramos", "cubitos-conteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
