@@ -36,6 +36,14 @@
 - Lo que dice un estudio (Panasuk y Horton, 2013; encuesta a 367 profesores de matemática de secundaria de un estado de EE. UU., leído completo el 8 nov 2026): el 61 % de los que respondieron dice que ya usa la historia. Los que no la usan dan como razones principales que no viene en el examen, que no hay tiempo, que no saben cómo enseñarla y que no hay materiales. Lección para nosotros: la historia solo entra si es corta, está pegada al problema de examen y viene ya hecha dentro de la escena, sin trabajo extra para el profesor.
 - Ganchos que ya tenemos a la mano: la «falsa posición» egipcia es el método de falsa suposición de `razonamiento-numerico`; Descartes llamó «falsas» a las raíces negativas y Pascal veía absurdo restarle algo a 0, lo que viene bien en el radar (`coordenadas-polares`), donde r es negativo.
 
+- **Decisión de Gerson (8 nov 2026): la historia se integra, no se esparce.** Hay tiempo para el alumno que quiere (3.º y 4.º sobre todo). Se integra de tres formas, de más a menos integrada:
+  - (A) como planteamiento de la escena, con el problema real que alguien resolvió;
+  - (B) como lecturas de razonamiento verbal que conectan con el curso;
+  - (C) como «¿Sabías que…?», solo para lo corto.
+
+  Regla: fuente verificada o no entra; los mitos se marcan como leyenda. El catálogo lo arma la rutina `rutina/historia` (`docs/investigacion/historia-ganchos.md`).
+- **Ejercicios resueltos (8 nov 2026).** Gerson traerá compendios resueltos. Sirven como mapa (qué tipos salen y cuánto, y dónde están las trampas) y nunca se copian (regla 5). Cada tipo frecuente se vuelve un generador (`nucleo/predicciones.js`): problemas propios con números nuevos, la respuesta del motor, distractores de errores típicos y la resolución animada paso a paso. Remotion y YouTube van por otro frente.
+
 ## 5. Votación en vivo en clase
 
 - El profesor proyecta una predicción, todos responden desde su celular y el salón ve en el momento cómo se repartieron las respuestas. Luego discuten con el compañero antes de ver la correcta («peer instruction», Mazur 1997).
