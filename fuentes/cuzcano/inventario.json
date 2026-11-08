@@ -1,0 +1,1590 @@
+{
+  "fuente": "https://universetostudy.com/biblioteca/cuzcano/",
+  "fecha_consulta": "2026-11-08",
+  "libros": [
+    {
+      "id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "titulo": "Álgebra",
+      "coleccion": "PREUNI",
+      "seccion": "Tipo Admisión",
+      "autor": "Ing. Luis Manrique L.",
+      "url": "https://drive.google.com/file/d/1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44/view?usp=drive_link"
+    },
+    {
+      "id": "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb",
+      "titulo": "Física",
+      "coleccion": "PREUNI",
+      "seccion": "Tipo Admisión",
+      "autor": "Ing. Jorge Atalaya Z.",
+      "url": "https://drive.google.com/file/d/1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb/view?usp=drive_link"
+    },
+    {
+      "id": "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl",
+      "titulo": "Química",
+      "coleccion": "PREUNI",
+      "seccion": "Tipo Admisión",
+      "autor": "Ing. Joel Rojas Mendoza",
+      "url": "https://drive.google.com/file/d/13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl/view?usp=drive_link"
+    },
+    {
+      "id": "180G0ufWjo0upKFwSWpMhNuOAqynExsll",
+      "titulo": "Solucionario 1",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Química",
+      "autor": "Prof. Joel K. Rojas Mendoza",
+      "url": "https://drive.google.com/file/d/180G0ufWjo0upKFwSWpMhNuOAqynExsll/view?usp=drive_link"
+    },
+    {
+      "id": "1wj1ykr6aGFFkO3GZue28CCt-jkcpNQVT",
+      "titulo": "Solucionario 2",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Química",
+      "autor": "Prof. Joel K. Rojas Mendoza",
+      "url": "https://drive.google.com/file/d/1wj1ykr6aGFFkO3GZue28CCt-jkcpNQVT/view?usp=drive_link"
+    },
+    {
+      "id": "15kK8hXhYrHbEpAUHVnYzf4855ROhBFsn",
+      "titulo": "Solucionario 3",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Química",
+      "autor": "Prof. Joel K. Rojas Mendoza",
+      "url": "https://drive.google.com/file/d/15kK8hXhYrHbEpAUHVnYzf4855ROhBFsn/view?usp=drive_link"
+    },
+    {
+      "id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "titulo": "Solucionario 4",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Química",
+      "autor": "Prof. Joel K. Rojas Mendoza",
+      "url": "https://drive.google.com/file/d/1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl/view?usp=drive_link"
+    },
+    {
+      "id": "1b1gIlTeuWkCHor3xmq40yswoVTiEppas",
+      "titulo": "Solucionario 5",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Química",
+      "autor": "Prof. Joel K. Rojas Mendoza",
+      "url": "https://drive.google.com/file/d/1b1gIlTeuWkCHor3xmq40yswoVTiEppas/view?usp=drive_link"
+    },
+    {
+      "id": "1l8_QvPBwxU8_OSYtVmllfdU0FQ61k4b2",
+      "titulo": "Solucionario 6",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Química",
+      "autor": "Prof. Joel K. Rojas Mendoza",
+      "url": "https://drive.google.com/file/d/1l8_QvPBwxU8_OSYtVmllfdU0FQ61k4b2/view?usp=drive_link"
+    },
+    {
+      "id": "1PPyvmLQDo-_kaMlVxK91147aZDH_QBtV",
+      "titulo": "Solucionario 1",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Trigonometría",
+      "autor": "Prof. Glomar Rojas Mena",
+      "url": "https://drive.google.com/file/d/1PPyvmLQDo-_kaMlVxK91147aZDH_QBtV/view?usp=drive_link"
+    },
+    {
+      "id": "1iWZBvAQbVaDMNhcoNlOYKijQ-zqVd_G9",
+      "titulo": "Solucionario 2",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Trigonometría",
+      "autor": "Prof. Glomar Rojas Mena",
+      "url": "https://drive.google.com/file/d/1iWZBvAQbVaDMNhcoNlOYKijQ-zqVd_G9/view?usp=drive_link"
+    },
+    {
+      "id": "1ZytfSLpbtV0APpgMM4wyf_a4JKuWUDEj",
+      "titulo": "Solucionario 3",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Trigonometría",
+      "autor": "Prof. Glomar Rojas Mena",
+      "url": "https://drive.google.com/file/d/1ZytfSLpbtV0APpgMM4wyf_a4JKuWUDEj/view?usp=drive_link"
+    },
+    {
+      "id": "1FAQE4NeOPpvDniucYUa1Xq-uQJx2A9P7",
+      "titulo": "Solucionario 4",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Trigonometría",
+      "autor": "Prof. Glomar Rojas Mena",
+      "url": "https://drive.google.com/file/d/1FAQE4NeOPpvDniucYUa1Xq-uQJx2A9P7/view?usp=drive_link"
+    },
+    {
+      "id": "1XkVfIGCk4Ntk7FyQKmfUWRRC4nWMQS8q",
+      "titulo": "Solucionario 5",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Trigonometría",
+      "autor": "Prof. Glomar Rojas Mena",
+      "url": "https://drive.google.com/file/d/1XkVfIGCk4Ntk7FyQKmfUWRRC4nWMQS8q/view?usp=drive_link"
+    },
+    {
+      "id": "15NfYUMNgJxpc9TgHXSXQna7-eUS6B5un",
+      "titulo": "Solucionario 6",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Trigonometría",
+      "autor": "Prof. Glomar Rojas Mena",
+      "url": "https://drive.google.com/file/d/15NfYUMNgJxpc9TgHXSXQna7-eUS6B5un/view?usp=drive_link"
+    },
+    {
+      "id": "1VKgltzV7S4Cv61NhaNX5t9M70J49SVSJ",
+      "titulo": "Solucionario 1",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Álgebra",
+      "autor": "Prof. Luis Manrique L.",
+      "url": "https://drive.google.com/file/d/1VKgltzV7S4Cv61NhaNX5t9M70J49SVSJ/view?usp=drive_link"
+    },
+    {
+      "id": "1Ymx1iaGMFZFvm1rwoDaiIhGwXMirQuC2",
+      "titulo": "Solucionario 2",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Álgebra",
+      "autor": "Prof. Luis Manrique L.",
+      "url": "https://drive.google.com/file/d/1Ymx1iaGMFZFvm1rwoDaiIhGwXMirQuC2/view?usp=drive_link"
+    },
+    {
+      "id": "1EzLpeF5LAAXI5a13TkVi2yBsObmDf2F3",
+      "titulo": "Solucionario 3",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Álgebra",
+      "autor": "Prof. Luis Manrique L.",
+      "url": "https://drive.google.com/file/d/1EzLpeF5LAAXI5a13TkVi2yBsObmDf2F3/view?usp=drive_link"
+    },
+    {
+      "id": "1ntfbYjq6vjw7ULSfxSGZ6KSMAwMuC_BV",
+      "titulo": "Solucionario 4",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Álgebra",
+      "autor": "Prof. Luis Manrique L.",
+      "url": "https://drive.google.com/file/d/1ntfbYjq6vjw7ULSfxSGZ6KSMAwMuC_BV/view?usp=drive_link"
+    },
+    {
+      "id": "1Rd8XRt8tsHV2mvD2JmCtP2kqle3Jkidi",
+      "titulo": "Solucionario 5",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Álgebra",
+      "autor": "Prof. Luis Manrique L.",
+      "url": "https://drive.google.com/file/d/1Rd8XRt8tsHV2mvD2JmCtP2kqle3Jkidi/view?usp=drive_link"
+    },
+    {
+      "id": "1D4cQ5hezU0lspCcTo-wvs7lCTPWIXRxN",
+      "titulo": "Solucionario 6",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Álgebra",
+      "autor": "Prof. Luis Manrique L.",
+      "url": "https://drive.google.com/file/d/1D4cQ5hezU0lspCcTo-wvs7lCTPWIXRxN/view?usp=drive_link"
+    },
+    {
+      "id": "1PKJCS_HtBgi7zzbtOlIO6gzEQSRqko8r",
+      "titulo": "Material de estudio 1",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Álgebra",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1PKJCS_HtBgi7zzbtOlIO6gzEQSRqko8r/view?usp=drive_link"
+    },
+    {
+      "id": "1CceLWwUPFEMDssGhAe_OUo9g50mOInHe",
+      "titulo": "Aritmética",
+      "coleccion": "PREUNI",
+      "seccion": "Tipo Admisión",
+      "autor": "Ing. Jimmy García Ch.",
+      "url": "https://drive.google.com/file/d/1CceLWwUPFEMDssGhAe_OUo9g50mOInHe/view?usp=drive_link"
+    },
+    {
+      "id": "1kl9m1rcpPHti15E7oeKWq1niBOpp33El",
+      "titulo": "Geometría",
+      "coleccion": "PREUNI",
+      "seccion": "Tipo Admisión",
+      "autor": "Ing. A. V. Luyo",
+      "url": "https://drive.google.com/file/d/1kl9m1rcpPHti15E7oeKWq1niBOpp33El/view?usp=drive_link"
+    },
+    {
+      "id": "11vxcQ3FU0RxqE_2S0aSJtir5WSh9Gksj",
+      "titulo": "Trigonometría",
+      "coleccion": "PREUNI",
+      "seccion": "Tipo Admisión",
+      "autor": "Ing. Rubén Huillca G.",
+      "url": "https://drive.google.com/file/d/11vxcQ3FU0RxqE_2S0aSJtir5WSh9Gksj/view?usp=drive_link"
+    },
+    {
+      "id": "1GcIkkRVsWbv5SCVGeUktgnDlHTDX4xZD",
+      "titulo": "Solucionario 1",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Geometría",
+      "autor": "Prof. Julio Orihuela B.",
+      "url": "https://drive.google.com/file/d/1GcIkkRVsWbv5SCVGeUktgnDlHTDX4xZD/view?usp=drive_link"
+    },
+    {
+      "id": "1CSlIJdkogvxdpLeRNvXsQPXFInkvJUNp",
+      "titulo": "Solucionario 2",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Geometría",
+      "autor": "Prof. Justo Orhuela B.",
+      "url": "https://drive.google.com/file/d/1CSlIJdkogvxdpLeRNvXsQPXFInkvJUNp/view?usp=drive_link"
+    },
+    {
+      "id": "1Lxs7bdQCiNmSzTRCw7tN8trfZ42RsEwK",
+      "titulo": "Solucionario 3",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Geometría",
+      "autor": "Prof. Julio Orihuela B.",
+      "url": "https://drive.google.com/file/d/1Lxs7bdQCiNmSzTRCw7tN8trfZ42RsEwK/view?usp=drive_link"
+    },
+    {
+      "id": "1Gb720i_3nsJnzhxLF42vSwLrHFoz6LQr",
+      "titulo": "Solucionario 4",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Geometría",
+      "autor": "Prof. Julio Orihuela B.",
+      "url": "https://drive.google.com/file/d/1Gb720i_3nsJnzhxLF42vSwLrHFoz6LQr/view?usp=drive_link"
+    },
+    {
+      "id": "1bxL05hrWy_7bRYO1dePRSEYGduMmIidg",
+      "titulo": "Solucionario 5",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Geometría",
+      "autor": "Prof. Arnao Astronetta M.",
+      "url": "https://drive.google.com/file/d/1bxL05hrWy_7bRYO1dePRSEYGduMmIidg/view?usp=drive_link"
+    },
+    {
+      "id": "1Xm5zigX-QaNr6d6064gqKil8zk0HEoi0",
+      "titulo": "Solucionario 6",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Geometría",
+      "autor": "Prof. Julio Orihuela B.",
+      "url": "https://drive.google.com/file/d/1Xm5zigX-QaNr6d6064gqKil8zk0HEoi0/view?usp=drive_link"
+    },
+    {
+      "id": "1R83WlbJZDWwsyDXqLg0ESp8BacLfhhQK",
+      "titulo": "Solucionario 1",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Aritmética",
+      "autor": "Prof. Jimmy García Ch.",
+      "url": "https://drive.google.com/file/d/1R83WlbJZDWwsyDXqLg0ESp8BacLfhhQK/view?usp=drive_link"
+    },
+    {
+      "id": "1onW2u9HVT3vs_DEtu-Homv6SGIafac4C",
+      "titulo": "Solucionario 2",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Aritmética",
+      "autor": "Prof. Jimmy García Ch.",
+      "url": "https://drive.google.com/file/d/1onW2u9HVT3vs_DEtu-Homv6SGIafac4C/view?usp=drive_link"
+    },
+    {
+      "id": "1Em7LMvEh8B4nkWRM0SQbSZSQP1cvmOQ4",
+      "titulo": "Solucionario 3",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Aritmética",
+      "autor": "Prof. Jimmy García Ch.",
+      "url": "https://drive.google.com/file/d/1Em7LMvEh8B4nkWRM0SQbSZSQP1cvmOQ4/view?usp=drive_link"
+    },
+    {
+      "id": "1aBxjSBcH2tDloWnWaKY6TCiYPf5maTEC",
+      "titulo": "Solucionario 4",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Aritmética",
+      "autor": "Prof. Jimmy García Ch.",
+      "url": "https://drive.google.com/file/d/1aBxjSBcH2tDloWnWaKY6TCiYPf5maTEC/view?usp=drive_link"
+    },
+    {
+      "id": "1pvKXSBsVkf7ISqsHJ-L0xHZ0NjECiSm_",
+      "titulo": "Solucionario 5",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Aritmética",
+      "autor": "Prof. Jimmy García Ch.",
+      "url": "https://drive.google.com/file/d/1pvKXSBsVkf7ISqsHJ-L0xHZ0NjECiSm_/view?usp=drive_link"
+    },
+    {
+      "id": "1-1n812R-VY1YwB7uOdmqUT1eCton8Yr4",
+      "titulo": "Solucionario 6",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Aritmética",
+      "autor": "Prof. Jimmy García Ch.",
+      "url": "https://drive.google.com/file/d/1-1n812R-VY1YwB7uOdmqUT1eCton8Yr4/view?usp=drive_link"
+    },
+    {
+      "id": "18c02NWbmlln9C4GCUhS1SIrPbS5Ditn6",
+      "titulo": "Solucionario 1",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Física",
+      "autor": "Prof. Jorge Atalaya Z.",
+      "url": "https://drive.google.com/file/d/18c02NWbmlln9C4GCUhS1SIrPbS5Ditn6/view?usp=drive_link"
+    },
+    {
+      "id": "1Sm3oNp06JcENoORsxcy8mbP8CbLvQ7R0",
+      "titulo": "Solucionario 2",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Física",
+      "autor": "Prof. Jorge Atalaya Z.",
+      "url": "https://drive.google.com/file/d/1Sm3oNp06JcENoORsxcy8mbP8CbLvQ7R0/view?usp=drive_link"
+    },
+    {
+      "id": "19Gt6mzvU1mMVI2FJYiMaNWYIWQBOZdU_",
+      "titulo": "Solucionario 3",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Física",
+      "autor": "Prof. Jorge Atalaya Z.",
+      "url": "https://drive.google.com/file/d/19Gt6mzvU1mMVI2FJYiMaNWYIWQBOZdU_/view?usp=drive_link"
+    },
+    {
+      "id": "1aSrtK86JHruGEeyYWWTOyNihgSsU1Llk",
+      "titulo": "Solucionario 4",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Física",
+      "autor": "Prof. Jorge Atalaya Z.",
+      "url": "https://drive.google.com/file/d/1aSrtK86JHruGEeyYWWTOyNihgSsU1Llk/view?usp=drive_link"
+    },
+    {
+      "id": "16dhMW7FI8E3SsplRJJseIt6fhXi_LqSl",
+      "titulo": "Solucionario 5",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Física",
+      "autor": "Prof. Jorge Atalaya Z.",
+      "url": "https://drive.google.com/file/d/16dhMW7FI8E3SsplRJJseIt6fhXi_LqSl/view?usp=drive_link"
+    },
+    {
+      "id": "1LBGYqm7MOIKXyRSWCJCAeteHNenplehn",
+      "titulo": "Solucionario 6",
+      "coleccion": "SOLUCIONARIOS CEPREUNI 2015-2",
+      "seccion": "Física",
+      "autor": "Prof. Jorge Atalaya Z.",
+      "url": "https://drive.google.com/file/d/1LBGYqm7MOIKXyRSWCJCAeteHNenplehn/view?usp=drive_link"
+    },
+    {
+      "id": "1O4cBSioAQ1yFR_7h4e7RIFSrsnhny9tC",
+      "titulo": "Fascículo 1: Análisis dimensional",
+      "coleccion": "FASCÍCULOS DE FÍSICA",
+      "seccion": "Problemas de Física",
+      "autor": "Efraín Tarazona T.",
+      "url": "https://drive.google.com/file/d/1O4cBSioAQ1yFR_7h4e7RIFSrsnhny9tC/view?usp=drive_link"
+    },
+    {
+      "id": "1Ot4JkySCtdDcyBV4sjvA0b4nV9yWjYbf",
+      "titulo": "Fascículo 2: Análisis vectorial",
+      "coleccion": "FASCÍCULOS DE FÍSICA",
+      "seccion": "Problemas de Física",
+      "autor": "Efraín Tarazona T.",
+      "url": "https://drive.google.com/file/d/1Ot4JkySCtdDcyBV4sjvA0b4nV9yWjYbf/view?usp=drive_link"
+    },
+    {
+      "id": "1kFY9irWVdV9vwjBSM_N66ReZhqtJR5Uk",
+      "titulo": "Fascículo 4: Cinemática II",
+      "coleccion": "FASCÍCULOS DE FÍSICA",
+      "seccion": "Problemas de Física",
+      "autor": "Efraín Tarazona T.",
+      "url": "https://drive.google.com/file/d/1kFY9irWVdV9vwjBSM_N66ReZhqtJR5Uk/view?usp=drive_link"
+    },
+    {
+      "id": "1hDN04WCX2304ub2YptsRsDSKjFNdtt54",
+      "titulo": "Fascículo 5: Gráficas del movimiento mecánico",
+      "coleccion": "FASCÍCULOS DE FÍSICA",
+      "seccion": "Problemas de Física",
+      "autor": "Efraín Tarazona T.",
+      "url": "https://drive.google.com/file/d/1hDN04WCX2304ub2YptsRsDSKjFNdtt54/view?usp=drive_link"
+    },
+    {
+      "id": "1kVRKh4BBZIvcr1-64O8XdbKCgLptLvof",
+      "titulo": "Fascículo 8: Dinámica",
+      "coleccion": "FASCÍCULOS DE FÍSICA",
+      "seccion": "Problemas de Física",
+      "autor": "Efraín Tarazona T.",
+      "url": "https://drive.google.com/file/d/1kVRKh4BBZIvcr1-64O8XdbKCgLptLvof/view?usp=drive_link"
+    },
+    {
+      "id": "1t0O57suOk0lj0pU5nwpozCEzfgPexm5v",
+      "titulo": "Fascículo 9: Sistemas de referencia y gravitación universal",
+      "coleccion": "FASCÍCULOS DE FÍSICA",
+      "seccion": "Problemas de Física",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1t0O57suOk0lj0pU5nwpozCEzfgPexm5v/view?usp=drive_link"
+    },
+    {
+      "id": "1MjMFIO8Y0M6TD8I_f4Qzgk5WUZ7PYQAD",
+      "titulo": "Fascículo 11: Cantidad de movimiento, impulsión y choques",
+      "coleccion": "FASCÍCULOS DE FÍSICA",
+      "seccion": "Problemas de Física",
+      "autor": "Efraín Tarazona T.",
+      "url": "https://drive.google.com/file/d/1MjMFIO8Y0M6TD8I_f4Qzgk5WUZ7PYQAD/view?usp=drive_link"
+    },
+    {
+      "id": "1LiwSmLUHAYpFRHKc__n5ZaXl3jqBfaKr",
+      "titulo": "Fascículo 13: Ondas mecánicas",
+      "coleccion": "FASCÍCULOS DE FÍSICA",
+      "seccion": "Problemas de Física",
+      "autor": "Efraín Tarazona T.",
+      "url": "https://drive.google.com/file/d/1LiwSmLUHAYpFRHKc__n5ZaXl3jqBfaKr/view?usp=drive_link"
+    },
+    {
+      "id": "1EuNZlO9GW8BN_Bt9mkuuu_xexUCfC6Px",
+      "titulo": "Análisis dimensional",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1EuNZlO9GW8BN_Bt9mkuuu_xexUCfC6Px/view?usp=drive_link"
+    },
+    {
+      "id": "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX",
+      "titulo": "Análisis vectorial",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX/view?usp=drive_link"
+    },
+    {
+      "id": "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i",
+      "titulo": "Cinemática I (MRU y MRUV)",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i/view?usp=drive_link"
+    },
+    {
+      "id": "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK",
+      "titulo": "Cinemática II (MVCL y MPCL)",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK/view?usp=drive_link"
+    },
+    {
+      "id": "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1",
+      "titulo": "Análisis de gráficas del movimiento mecánico",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1/view?usp=drive_link"
+    },
+    {
+      "id": "1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM",
+      "titulo": "Movimiento circunferencial",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM/view?usp=drive_link"
+    },
+    {
+      "id": "1MJeqtWYXNOsvkW2vZJkkl8DaPAS0wEym",
+      "titulo": "Estática",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1MJeqtWYXNOsvkW2vZJkkl8DaPAS0wEym/view?usp=drive_link"
+    },
+    {
+      "id": "1ZZh2gAD4UREhXMTwyhFFE0WYlXGjhLEb",
+      "titulo": "Dinámica",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1ZZh2gAD4UREhXMTwyhFFE0WYlXGjhLEb/view?usp=drive_link"
+    },
+    {
+      "id": "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4",
+      "titulo": "Gravitación universal",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4/view?usp=drive_link"
+    },
+    {
+      "id": "1MeJQ7JYmmpfE5_oFxVwDQN5vMfIWyHbJ",
+      "titulo": "Trabajo mecánico, energía y potencia",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1MeJQ7JYmmpfE5_oFxVwDQN5vMfIWyHbJ/view?usp=drive_link"
+    },
+    {
+      "id": "131mLtvzNI6qUaVasTwk2hOiFg5aNxTTG",
+      "titulo": "Cantidad de movimiento, impulso y choques",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/131mLtvzNI6qUaVasTwk2hOiFg5aNxTTG/view?usp=drive_link"
+    },
+    {
+      "id": "1-KPdmc12ux3xfY_5IkgDm5rZ7EHlst8b",
+      "titulo": "Oscilaciones mecánicas",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1-KPdmc12ux3xfY_5IkgDm5rZ7EHlst8b/view?usp=drive_link"
+    },
+    {
+      "id": "1088xstWyVL8UmHyMGX0_RyyCKhVySsDS",
+      "titulo": "Ondas mecánicas",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Efraín Tarazona",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1088xstWyVL8UmHyMGX0_RyyCKhVySsDS/view?usp=drive_link"
+    },
+    {
+      "id": "1gIzvcBRjbIAY5B1A_xgfQSa6AtesRbme",
+      "titulo": "Mecánica de fluidos",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Alejandro Vera",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1gIzvcBRjbIAY5B1A_xgfQSa6AtesRbme/view?usp=drive_link"
+    },
+    {
+      "id": "1nV5SPoE5gwvmA424g7daGo2-KeEU7OX6",
+      "titulo": "Calor",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Alejandro Vera",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1nV5SPoE5gwvmA424g7daGo2-KeEU7OX6/view?usp=drive_link"
+    },
+    {
+      "id": "1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS",
+      "titulo": "Termodinámica",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Alejandro Vera",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS/view?usp=drive_link"
+    },
+    {
+      "id": "1pFrF7WW44gFDfINYBsXfQZS3emQ4UB3g",
+      "titulo": "Electrostática",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Marcoantonio Salvador",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1pFrF7WW44gFDfINYBsXfQZS3emQ4UB3g/view?usp=drive_link"
+    },
+    {
+      "id": "1GnvSEjr1gndPCcaYBQBTQJpl01GFfaPc",
+      "titulo": "Electrodinámica",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Marcoantonio Salvador",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1GnvSEjr1gndPCcaYBQBTQJpl01GFfaPc/view?usp=drive_link"
+    },
+    {
+      "id": "1mP9CGMqyXDKEMlAIqIBWOJE9afVG9vVx",
+      "titulo": "Electromagnetismo",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Marcoantonio Salvador",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1mP9CGMqyXDKEMlAIqIBWOJE9afVG9vVx/view?usp=drive_link"
+    },
+    {
+      "id": "1JtNLsddpMNJ_JzpUtFWfoeczpkAk0_Rx",
+      "titulo": "Óptica",
+      "coleccion": "Física · Teoría y práctica",
+      "seccion": "Marcoantonio Salvador",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1JtNLsddpMNJ_JzpUtFWfoeczpkAk0_Rx/view?usp=drive_link"
+    },
+    {
+      "id": "1HkP030a93NG5HLm_LXPzIAc7apVIoxvD",
+      "titulo": "Hidrostática",
+      "coleccion": "Física · Teoría y problemas",
+      "seccion": "Alejandro Vera",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1HkP030a93NG5HLm_LXPzIAc7apVIoxvD/view?usp=drive_link"
+    },
+    {
+      "id": "1fHZsH514PUbAcLZwCZisSuLEaUM-TuQ0",
+      "titulo": "Calor",
+      "coleccion": "Física · Teoría y problemas",
+      "seccion": "Alejandro Vera",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1fHZsH514PUbAcLZwCZisSuLEaUM-TuQ0/view?usp=drive_link"
+    },
+    {
+      "id": "1Fhk6_hQEOmne_DAFlchm9eCOu7UaIxjD",
+      "titulo": "Termodinámica",
+      "coleccion": "Física · Teoría y problemas",
+      "seccion": "Alejandro Vera",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1Fhk6_hQEOmne_DAFlchm9eCOu7UaIxjD/view?usp=drive_link"
+    },
+    {
+      "id": "1_0S0TpyldUHunNEXsOe0LNWvnpf-hrU-",
+      "titulo": "Hidrostática e hidrodinámica",
+      "coleccion": "Física · Teoría y problemas",
+      "seccion": "Alejandro Vera",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1_0S0TpyldUHunNEXsOe0LNWvnpf-hrU-/view?usp=drive_link"
+    },
+    {
+      "id": "1XZHi26mc_VB0Ko8UGFbjq08u8OCH8UKm",
+      "titulo": "Estática",
+      "coleccion": "Física · Teoría y problemas",
+      "seccion": "Marcoantonio Salvador",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1XZHi26mc_VB0Ko8UGFbjq08u8OCH8UKm/view?usp=drive_link"
+    },
+    {
+      "id": "1rHM3QWGzIRQYmRIzqkWqa-dL2Hz6d2W-",
+      "titulo": "Condensadores",
+      "coleccion": "Física · Teoría y problemas",
+      "seccion": "Marcoantonio Salvador",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1rHM3QWGzIRQYmRIzqkWqa-dL2Hz6d2W-/view?usp=drive_link"
+    },
+    {
+      "id": "1-u8Lo79goClEw-VgMgv7_zQu7cGuXi-S",
+      "titulo": "Ondas electromagnéticas",
+      "coleccion": "Física · Teoría y problemas",
+      "seccion": "Marcoantonio Salvador",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1-u8Lo79goClEw-VgMgv7_zQu7cGuXi-S/view?usp=drive_link"
+    },
+    {
+      "id": "1kBqOrTSBKIZbAjFP1gx_j8xRB4lH0PDN",
+      "titulo": "Física moderna",
+      "coleccion": "Física · Teoría y problemas",
+      "seccion": "Carlos de la Cruz",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1kBqOrTSBKIZbAjFP1gx_j8xRB4lH0PDN/view?usp=drive_link"
+    },
+    {
+      "id": "1SnglsLBxsYQSfSIxQETSboTzCI9a1buw",
+      "titulo": "Teoría de las ecuaciones",
+      "coleccion": "Álgebra · Teoría y práctica",
+      "seccion": "Armando Quispe",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1SnglsLBxsYQSfSIxQETSboTzCI9a1buw/view?usp=drive_link"
+    },
+    {
+      "id": "1hs1_5FLE2jr9bKHfVuFjzLsHHaOm2acQ",
+      "titulo": "Desigualdades e inecuaciones",
+      "coleccion": "Álgebra · Teoría y práctica",
+      "seccion": "Alejandro Flores",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1hs1_5FLE2jr9bKHfVuFjzLsHHaOm2acQ/view?usp=drive_link"
+    },
+    {
+      "id": "1Kwr0awgPKLd6iP8aCEYrJAT1nt7L3gJq",
+      "titulo": "Relaciones y funciones I",
+      "coleccion": "Álgebra · Teoría y práctica",
+      "seccion": "Armando Quispe",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1Kwr0awgPKLd6iP8aCEYrJAT1nt7L3gJq/view?usp=drive_link"
+    },
+    {
+      "id": "1zjD8qtX1DHS1J1AhoHQv_kEp8kDfVVGm",
+      "titulo": "Relaciones y funciones I",
+      "coleccion": "Álgebra · Teoría y práctica",
+      "seccion": "Armando Quispe",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1zjD8qtX1DHS1J1AhoHQv_kEp8kDfVVGm/view?usp=drive_link"
+    },
+    {
+      "id": "1Vl8B7wo23MzGTU58WSmP2RaAif16cPh_",
+      "titulo": "Relaciones y funciones II",
+      "coleccion": "Álgebra · Teoría y práctica",
+      "seccion": "Armando Quispe",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1Vl8B7wo23MzGTU58WSmP2RaAif16cPh_/view?usp=drive_link"
+    },
+    {
+      "id": "1FD6VVJj3IJEEeLIcsuEUoap-gc2DzPSc",
+      "titulo": "Logaritmos",
+      "coleccion": "Álgebra · Teoría y práctica",
+      "seccion": "Armando Quispe",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1FD6VVJj3IJEEeLIcsuEUoap-gc2DzPSc/view?usp=drive_link"
+    },
+    {
+      "id": "1ZxWhs-nGsKQ4Qk8kmDkT2eeDSf7nyMN7",
+      "titulo": "Logaritmos",
+      "coleccion": "Álgebra · Teoría y práctica",
+      "seccion": "Armando Quispe",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1ZxWhs-nGsKQ4Qk8kmDkT2eeDSf7nyMN7/view?usp=drive_link"
+    },
+    {
+      "id": "1N9QcaSHrsQ8lcmzJz-8cqqiT13quSHFl",
+      "titulo": "Matrices, determinantes y sistemas de ecuaciones lineales",
+      "coleccion": "Álgebra · Teoría y práctica",
+      "seccion": "Armando Quispe",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1N9QcaSHrsQ8lcmzJz-8cqqiT13quSHFl/view?usp=drive_link"
+    },
+    {
+      "id": "1LbfwsQElTZuMEDxTt0QNYXjMIaYSOvsc",
+      "titulo": "Binomio de Newton",
+      "coleccion": "Álgebra · Teoría y práctica",
+      "seccion": "Armando Quispe",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1LbfwsQElTZuMEDxTt0QNYXjMIaYSOvsc/view?usp=drive_link"
+    },
+    {
+      "id": "1BvswxsPjlJQyJs3JkSzLM-UGiexbyGWF",
+      "titulo": "Razonamiento lógico",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1BvswxsPjlJQyJs3JkSzLM-UGiexbyGWF/view?usp=drive_link"
+    },
+    {
+      "id": "1Aexs1HGuPakjuZPx6olqjCT4xePc2I6o",
+      "titulo": "Inductivo y deductivo",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1Aexs1HGuPakjuZPx6olqjCT4xePc2I6o/view?usp=drive_link"
+    },
+    {
+      "id": "1fuIgQ721-InyMUxqcM2NQrU7KtYxtBfF",
+      "titulo": "Planteo de ecuaciones",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1fuIgQ721-InyMUxqcM2NQrU7KtYxtBfF/view?usp=drive_link"
+    },
+    {
+      "id": "1uYzQAAUkPJGBRly-aL8emOp4QDvraEG9",
+      "titulo": "Edades y móviles",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1uYzQAAUkPJGBRly-aL8emOp4QDvraEG9/view?usp=drive_link"
+    },
+    {
+      "id": "1WOmnStgONQrcJ9-b5D36E_oyT1_Tvp1I",
+      "titulo": "Cronometría (relojes)",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1WOmnStgONQrcJ9-b5D36E_oyT1_Tvp1I/view?usp=drive_link"
+    },
+    {
+      "id": "156CP-4oWOzMFLDN6nbxGP5-Jfl9p5X_z",
+      "titulo": "Operaciones matemáticas",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/156CP-4oWOzMFLDN6nbxGP5-Jfl9p5X_z/view?usp=drive_link"
+    },
+    {
+      "id": "1R90ciBfEv2Ag6iOzw7HFS1RISV89TltS",
+      "titulo": "Comparación de magnitudes",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1R90ciBfEv2Ag6iOzw7HFS1RISV89TltS/view?usp=drive_link"
+    },
+    {
+      "id": "1LiZP_28QThiIWhGjzMdpnF3UlHhDnR1S",
+      "titulo": "Fracciones",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1LiZP_28QThiIWhGjzMdpnF3UlHhDnR1S/view?usp=drive_link"
+    },
+    {
+      "id": "17ISMXQ_vK6R4IjOy_NoaxlKrCq5_QUA6",
+      "titulo": "Tanto por ciento",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/17ISMXQ_vK6R4IjOy_NoaxlKrCq5_QUA6/view?usp=drive_link"
+    },
+    {
+      "id": "1wleTpPn7ZB9L4iyAUDVMokTlKYurGt60",
+      "titulo": "Sucesiones",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1wleTpPn7ZB9L4iyAUDVMokTlKYurGt60/view?usp=drive_link"
+    },
+    {
+      "id": "1XddMtDov7rABYep7dkio8rNdWXCiR794",
+      "titulo": "Series",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1XddMtDov7rABYep7dkio8rNdWXCiR794/view?usp=drive_link"
+    },
+    {
+      "id": "12szkZ06QNc_u_XotXmwArWpVIqTbNmoN",
+      "titulo": "Conteo de figuras y recorridos eulerianos",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/12szkZ06QNc_u_XotXmwArWpVIqTbNmoN/view?usp=drive_link"
+    },
+    {
+      "id": "1hg5FzCpcHnGkrNKqRbly__5tB09MFJla",
+      "titulo": "Análisis combinatorio",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1hg5FzCpcHnGkrNKqRbly__5tB09MFJla/view?usp=drive_link"
+    },
+    {
+      "id": "1Kyc79hnxzn-VdnfogG95wMkwpEBa6z80",
+      "titulo": "Cálculo de probabilidades",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1Kyc79hnxzn-VdnfogG95wMkwpEBa6z80/view?usp=drive_link"
+    },
+    {
+      "id": "1KF7gO2gApk2EFNuTKrtndmsVJPkWG8KR",
+      "titulo": "Razonamiento geométrico",
+      "coleccion": "Razonamiento Matemático · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1KF7gO2gApk2EFNuTKrtndmsVJPkWG8KR/view?usp=drive_link"
+    },
+    {
+      "id": "1oF3Q2WZz1ucFMbmvHZ2Etnf3Tp2TmP52",
+      "titulo": "Línea recta y ángulos",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1oF3Q2WZz1ucFMbmvHZ2Etnf3Tp2TmP52/view?usp=drive_link"
+    },
+    {
+      "id": "1gbC3Wo-HqPygE9iIEnORDBa7VWCTn1gz",
+      "titulo": "Triángulos y congruencia",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1gbC3Wo-HqPygE9iIEnORDBa7VWCTn1gz/view?usp=drive_link"
+    },
+    {
+      "id": "1l72XWAPu1zctLbrJKMvKMDMiy1onOc31",
+      "titulo": "Polígonos",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1l72XWAPu1zctLbrJKMvKMDMiy1onOc31/view?usp=drive_link"
+    },
+    {
+      "id": "1y8o_NmQCAwGxNNd2e1GFXC_awcJ_vrJo",
+      "titulo": "Cuadriláteros",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1y8o_NmQCAwGxNNd2e1GFXC_awcJ_vrJo/view?usp=drive_link"
+    },
+    {
+      "id": "1xxgmOrXSkn6YgTMOYy2CJwi9eo7GVqng",
+      "titulo": "Circunferencia",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1xxgmOrXSkn6YgTMOYy2CJwi9eo7GVqng/view?usp=drive_link"
+    },
+    {
+      "id": "1Eajd3SVByjANZLFFR6YniTLw4KcPo614",
+      "titulo": "Puntos notables",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1Eajd3SVByjANZLFFR6YniTLw4KcPo614/view?usp=drive_link"
+    },
+    {
+      "id": "1kIDLUYyFrhYnCMP7Y8VtOW9EOW3kUBVL",
+      "titulo": "Proporcionalidad y semejanza",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1kIDLUYyFrhYnCMP7Y8VtOW9EOW3kUBVL/view?usp=drive_link"
+    },
+    {
+      "id": "1pcyzCDIvEwOD0aRRyXoW3jR0gLT9x30L",
+      "titulo": "Relaciones métricas",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1pcyzCDIvEwOD0aRRyXoW3jR0gLT9x30L/view?usp=drive_link"
+    },
+    {
+      "id": "1QigyLtuMN4BQh3cmRhRVNuAtzzhTRA07",
+      "titulo": "Polígonos regulares",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1QigyLtuMN4BQh3cmRhRVNuAtzzhTRA07/view?usp=drive_link"
+    },
+    {
+      "id": "13YKX8jKjZ_EQFgQ5EnhNLbOk1aczxLRn",
+      "titulo": "Áreas de regiones poligonales y circulares",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/13YKX8jKjZ_EQFgQ5EnhNLbOk1aczxLRn/view?usp=drive_link"
+    },
+    {
+      "id": "1lQzONRTyrUcW_Opx6KjuMnThB_WayiDQ",
+      "titulo": "Rectas y planos",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría del espacio",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1lQzONRTyrUcW_Opx6KjuMnThB_WayiDQ/view?usp=drive_link"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "titulo": "Prisma y cilindro",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría del espacio",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj/view?usp=drive_link"
+    },
+    {
+      "id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "titulo": "Pirámide y cono",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría del espacio",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l/view?usp=drive_link"
+    },
+    {
+      "id": "1HNv4L4_fKaz-YA71iIOnAOdLkVNdtsko",
+      "titulo": "Esfera",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría del espacio",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1HNv4L4_fKaz-YA71iIOnAOdLkVNdtsko/view?usp=drive_link"
+    },
+    {
+      "id": "1MpT0ff6DLOhmg11O9EorLVtz66AOV1Rt",
+      "titulo": "La recta",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría analítica",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1MpT0ff6DLOhmg11O9EorLVtz66AOV1Rt/view?usp=drive_link"
+    },
+    {
+      "id": "194CdROPFH6LSsBuSzX_O6CIcz7Uy8LBm",
+      "titulo": "Circunferencia y parábola",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría analítica",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/194CdROPFH6LSsBuSzX_O6CIcz7Uy8LBm/view?usp=drive_link"
+    },
+    {
+      "id": "1Jx6iNNEHGJczhZ7apSbDxZAYGPOILibJ",
+      "titulo": "Elipse e hipérbola",
+      "coleccion": "Geometría · Teoría y práctica",
+      "seccion": "Geometría analítica",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1Jx6iNNEHGJczhZ7apSbDxZAYGPOILibJ/view?usp=drive_link"
+    },
+    {
+      "id": "1D8_YP2Q25FmZpVBgX6Qip_GBPa2Ue3Db",
+      "titulo": "Triángulos",
+      "coleccion": "Geometría",
+      "seccion": "Julio Orihuela",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1D8_YP2Q25FmZpVBgX6Qip_GBPa2Ue3Db/view?usp=drive_link"
+    },
+    {
+      "id": "1TVm6_ggA6LRguEYLHlRL0a-j2h0phV8F",
+      "titulo": "Congruencia de triángulos",
+      "coleccion": "Geometría",
+      "seccion": "Julio Orihuela",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1TVm6_ggA6LRguEYLHlRL0a-j2h0phV8F/view?usp=drive_link"
+    },
+    {
+      "id": "1sjIZ9lagOmOOAUJSCBn2uF25Jczm8kRM",
+      "titulo": "Cuadriláteros",
+      "coleccion": "Geometría",
+      "seccion": "Julio Orihuela",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1sjIZ9lagOmOOAUJSCBn2uF25Jczm8kRM/view?usp=drive_link"
+    },
+    {
+      "id": "1mKbwIKUZZGEtDiuMX2hGRednn1EzvNYs",
+      "titulo": "Circunferencia",
+      "coleccion": "Geometría",
+      "seccion": "Julio Orihuela",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1mKbwIKUZZGEtDiuMX2hGRednn1EzvNYs/view?usp=drive_link"
+    },
+    {
+      "id": "1abepztIdr4FKnUv8BgOPJAeH7R14OxWr",
+      "titulo": "Puntos notables",
+      "coleccion": "Geometría",
+      "seccion": "Julio Orihuela",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1abepztIdr4FKnUv8BgOPJAeH7R14OxWr/view?usp=drive_link"
+    },
+    {
+      "id": "122112TjoS7L4GWaHyiTttNTzD-WVUJSc",
+      "titulo": "Proporcionalidad de segmentos y semejanza de triángulos",
+      "coleccion": "Geometría",
+      "seccion": "Julio Orihuela",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/122112TjoS7L4GWaHyiTttNTzD-WVUJSc/view?usp=drive_link"
+    },
+    {
+      "id": "19HCunUsf55YlGstD13zlaHQSLuUucN1t",
+      "titulo": "Relaciones métricas",
+      "coleccion": "Geometría",
+      "seccion": "Julio Orihuela",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/19HCunUsf55YlGstD13zlaHQSLuUucN1t/view?usp=drive_link"
+    },
+    {
+      "id": "1FE4KdJUv1e-LFs2knpVc7U3AAmUQwcwy",
+      "titulo": "Áreas de regiones planas",
+      "coleccion": "Geometría",
+      "seccion": "Julio Orihuela",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1FE4KdJUv1e-LFs2knpVc7U3AAmUQwcwy/view?usp=drive_link"
+    },
+    {
+      "id": "1KDKD6FexefQMqIdIn3f1DEg_88O73wTX",
+      "titulo": "Línea recta y ángulos",
+      "coleccion": "Geometría",
+      "seccion": "Luis Ubaldo · Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1KDKD6FexefQMqIdIn3f1DEg_88O73wTX/view?usp=drive_link"
+    },
+    {
+      "id": "11DRBIQrbGVVBXfHmwblmj3D2FFrhsUFE",
+      "titulo": "Triángulos",
+      "coleccion": "Geometría",
+      "seccion": "Luis Ubaldo · Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/11DRBIQrbGVVBXfHmwblmj3D2FFrhsUFE/view?usp=drive_link"
+    },
+    {
+      "id": "1Me2M5fuB7pnEsC_WAmitbHpIsn7i91aV",
+      "titulo": "Polígonos",
+      "coleccion": "Geometría",
+      "seccion": "Luis Ubaldo · Geometría plana",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1Me2M5fuB7pnEsC_WAmitbHpIsn7i91aV/view?usp=drive_link"
+    },
+    {
+      "id": "1eujgopll599M9JUf4vIMqp36oVu2DCQ1",
+      "titulo": "Nociones generales",
+      "coleccion": "Geometría",
+      "seccion": "Luis Ubaldo · Geometría analítica",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1eujgopll599M9JUf4vIMqp36oVu2DCQ1/view?usp=drive_link"
+    },
+    {
+      "id": "1qtm8yXLFENRa0Uh5F0pKotRn_5v26mfJ",
+      "titulo": "La línea recta",
+      "coleccion": "Geometría",
+      "seccion": "Luis Ubaldo · Geometría analítica",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1qtm8yXLFENRa0Uh5F0pKotRn_5v26mfJ/view?usp=drive_link"
+    },
+    {
+      "id": "17w3zBc5YZXjtuMhipibKILv2jJhik2HO",
+      "titulo": "Circunferencia y parábola",
+      "coleccion": "Geometría",
+      "seccion": "Luis Ubaldo · Geometría analítica",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/17w3zBc5YZXjtuMhipibKILv2jJhik2HO/view?usp=drive_link"
+    },
+    {
+      "id": "1HVlloW4C09NoRU6q-CxoMqTDzhtp2zKU",
+      "titulo": "Elipse e hipérbola",
+      "coleccion": "Geometría",
+      "seccion": "Luis Ubaldo · Geometría analítica",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1HVlloW4C09NoRU6q-CxoMqTDzhtp2zKU/view?usp=drive_link"
+    },
+    {
+      "id": "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA",
+      "titulo": "Geometría vectorial",
+      "coleccion": "Geometría",
+      "seccion": "Luis Ubaldo · Geometría analítica",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA/view?usp=drive_link"
+    },
+    {
+      "id": "15Hk-nyrMKQmLiPm8BkVShMqDe205cQ9n",
+      "titulo": "Transformación de coordenadas",
+      "coleccion": "Geometría",
+      "seccion": "Luis Ubaldo · Geometría analítica",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/15Hk-nyrMKQmLiPm8BkVShMqDe205cQ9n/view?usp=drive_link"
+    },
+    {
+      "id": "1lLEy_lq9wVsF-jVCnjI1XnG3YEbw475x",
+      "titulo": "Geometría del espacio I",
+      "coleccion": "Geometría",
+      "seccion": "Teoría y problemas",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1lLEy_lq9wVsF-jVCnjI1XnG3YEbw475x/view?usp=drive_link"
+    },
+    {
+      "id": "1t6jt4TYBbO4IAp07XesGDe2nKatJ6qxL",
+      "titulo": "Geometría del espacio II",
+      "coleccion": "Geometría",
+      "seccion": "Teoría y problemas",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1t6jt4TYBbO4IAp07XesGDe2nKatJ6qxL/view?usp=drive_link"
+    },
+    {
+      "id": "1b0Codrz3HHq2hR42uE0hMhMQYOXHI85r",
+      "titulo": "Áreas de regiones poligonales y circulares",
+      "coleccion": "Geometría",
+      "seccion": "Teoría y problemas",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1b0Codrz3HHq2hR42uE0hMhMQYOXHI85r/view?usp=drive_link"
+    },
+    {
+      "id": "1eY8lZQwaof1GhnNeF6QZRIFul5m1Ew5a",
+      "titulo": "Prisma y cilindro",
+      "coleccion": "Geometría",
+      "seccion": "Teoría y problemas",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1eY8lZQwaof1GhnNeF6QZRIFul5m1Ew5a/view?usp=drive_link"
+    },
+    {
+      "id": "1mYDkK85haVG4aMEdEVhPCEzkwrHy8pDx",
+      "titulo": "Sistemas de medición angular y longitud de arco",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1mYDkK85haVG4aMEdEVhPCEzkwrHy8pDx/view?usp=drive_link"
+    },
+    {
+      "id": "17SwFs9cEPKxMyr5aoWpf9A2JWsXWjC2p",
+      "titulo": "Razones trigonométricas de un ángulo agudo",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/17SwFs9cEPKxMyr5aoWpf9A2JWsXWjC2p/view?usp=drive_link"
+    },
+    {
+      "id": "17oV6Nqu3psLv0PoWgYNWqL9xLu0ubPb3",
+      "titulo": "Razones trigonométricas de un ángulo en posición normal",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/17oV6Nqu3psLv0PoWgYNWqL9xLu0ubPb3/view?usp=drive_link"
+    },
+    {
+      "id": "1OB_Qmt_rnYIqz4EHNWBI9AgT0ffrPV06",
+      "titulo": "Circunferencia trigonométrica",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1OB_Qmt_rnYIqz4EHNWBI9AgT0ffrPV06/view?usp=drive_link"
+    },
+    {
+      "id": "1IPKJY3Wlm1Ws79onJ1Ckk14HbwCHABQj",
+      "titulo": "Identidades trigonométricas fundamentales",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1IPKJY3Wlm1Ws79onJ1Ckk14HbwCHABQj/view?usp=drive_link"
+    },
+    {
+      "id": "17okmAXVcVmUDiXIskOkdieub5WoW25_u",
+      "titulo": "Identidades de arcos compuestos",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/17okmAXVcVmUDiXIskOkdieub5WoW25_u/view?usp=drive_link"
+    },
+    {
+      "id": "1qODqmSr6hI-PLO8sDzDKokzhKCIxo0f0",
+      "titulo": "Identidades de arcos múltiples",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1qODqmSr6hI-PLO8sDzDKokzhKCIxo0f0/view?usp=drive_link"
+    },
+    {
+      "id": "1XNaOh4lMSXxIxw8lZUyNGPEt3jcpCBK4",
+      "titulo": "Transformaciones trigonométricas",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1XNaOh4lMSXxIxw8lZUyNGPEt3jcpCBK4/view?usp=drive_link"
+    },
+    {
+      "id": "1ne6aqiTwSDEDyjiFK8nU_GW8Mlh-aKsm",
+      "titulo": "Funciones trigonométricas directas",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1ne6aqiTwSDEDyjiFK8nU_GW8Mlh-aKsm/view?usp=drive_link"
+    },
+    {
+      "id": "1ek9MxIJNzTlTp_BsShS8dgc-AOK2_jMz",
+      "titulo": "Funciones trigonométricas inversas",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1ek9MxIJNzTlTp_BsShS8dgc-AOK2_jMz/view?usp=drive_link"
+    },
+    {
+      "id": "1KpLBzDT6hJ0NXkW5QBf092-NGJvDKFkF",
+      "titulo": "Ecuaciones e inecuaciones trigonométricas",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1KpLBzDT6hJ0NXkW5QBf092-NGJvDKFkF/view?usp=drive_link"
+    },
+    {
+      "id": "1xhKMUXBu6I3Rpxdbj0Yus1vNywmicZxe",
+      "titulo": "Resolución de triángulos oblicuángulos",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1xhKMUXBu6I3Rpxdbj0Yus1vNywmicZxe/view?usp=drive_link"
+    },
+    {
+      "id": "1Zjda6S3V359ZUYgsIFKLexIM_fe2QO2J",
+      "titulo": "Números complejos",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Colección numerada",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1Zjda6S3V359ZUYgsIFKLexIM_fe2QO2J/view?usp=drive_link"
+    },
+    {
+      "id": "1e2jkKptOdrNUloAF1b3wUD5WxBBwrkuN",
+      "titulo": "Circunferencia trigonométrica",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Jorge Quispe",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1e2jkKptOdrNUloAF1b3wUD5WxBBwrkuN/view?usp=drive_link"
+    },
+    {
+      "id": "1FBgIsZFe_TKvWOARdZJLK-b7mV07GqG3",
+      "titulo": "Funciones trigonométricas",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Jorge Quispe",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1FBgIsZFe_TKvWOARdZJLK-b7mV07GqG3/view?usp=drive_link"
+    },
+    {
+      "id": "182MTfaVXa6VtOvQv_aduJzTtC_-45SpH",
+      "titulo": "Arcos múltiples: doble, mitad y triple",
+      "coleccion": "Trigonometría · Teoría y problemas",
+      "seccion": "Jorge Quispe",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/182MTfaVXa6VtOvQv_aduJzTtC_-45SpH/view?usp=drive_link"
+    },
+    {
+      "id": "15gtoPyKcTraE9CLtv7EWPb_mkKz_JsEM",
+      "titulo": "Teoría de conjuntos",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/15gtoPyKcTraE9CLtv7EWPb_mkKz_JsEM/view?usp=drive_link"
+    },
+    {
+      "id": "17CMpXWlubXXX9ij38v0s4iIklldij07U",
+      "titulo": "Numeración",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/17CMpXWlubXXX9ij38v0s4iIklldij07U/view?usp=drive_link"
+    },
+    {
+      "id": "1IVlHGJPjQC0CT1AKON8xemKLycpmqo2K",
+      "titulo": "Numeración",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1IVlHGJPjQC0CT1AKON8xemKLycpmqo2K/view?usp=drive_link"
+    },
+    {
+      "id": "1yfBJqVdqHWIhUUiHKUpfkNEdhZi-tHhu",
+      "titulo": "Razones y proporciones",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1yfBJqVdqHWIhUUiHKUpfkNEdhZi-tHhu/view?usp=drive_link"
+    },
+    {
+      "id": "1gOyKtE3YOZZBAewN1Hf_GLzJjkLCh7Dg",
+      "titulo": "Magnitudes proporcionales",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1gOyKtE3YOZZBAewN1Hf_GLzJjkLCh7Dg/view?usp=drive_link"
+    },
+    {
+      "id": "1mFLqR0d-ena0IbsmyY-2RPpuVelz8EaX",
+      "titulo": "Reparto proporcional",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1mFLqR0d-ena0IbsmyY-2RPpuVelz8EaX/view?usp=drive_link"
+    },
+    {
+      "id": "1ymDC3Q94sUQG855HCM-U06Ryz8DY34Gj",
+      "titulo": "Regla de tres",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1ymDC3Q94sUQG855HCM-U06Ryz8DY34Gj/view?usp=drive_link"
+    },
+    {
+      "id": "1TWZCLSsKY0qRlCP_eeCMchPKdbEBCpKi",
+      "titulo": "Tanto por ciento",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1TWZCLSsKY0qRlCP_eeCMchPKdbEBCpKi/view?usp=drive_link"
+    },
+    {
+      "id": "1ZWLZBB-dNdvWSjImHwGoOr5eIJkiuNaz",
+      "titulo": "Regla de mezcla",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1ZWLZBB-dNdvWSjImHwGoOr5eIJkiuNaz/view?usp=drive_link"
+    },
+    {
+      "id": "1NB-KNEZZ0UxxrE_-VSDiqLahhSLonu9V",
+      "titulo": "Regla de mezcla y aleación",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1NB-KNEZZ0UxxrE_-VSDiqLahhSLonu9V/view?usp=drive_link"
+    },
+    {
+      "id": "1A6z2QnUVFCtRaFrPvI1B0Ttdnpzgooe3",
+      "titulo": "Regla de interés",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1A6z2QnUVFCtRaFrPvI1B0Ttdnpzgooe3/view?usp=drive_link"
+    },
+    {
+      "id": "1lRpmOqj89cIwTGNLKqobGdgQAtz8vFVn",
+      "titulo": "Regla de interés",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1lRpmOqj89cIwTGNLKqobGdgQAtz8vFVn/view?usp=drive_link"
+    },
+    {
+      "id": "14U2woUNzwuLOr2rNC0QURrwWlO5FnQhn",
+      "titulo": "Regla de descuento",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/14U2woUNzwuLOr2rNC0QURrwWlO5FnQhn/view?usp=drive_link"
+    },
+    {
+      "id": "1wHYFbIYJFKvsltDxi8mB5ZIBLC8PvjjO",
+      "titulo": "Divisibilidad",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1wHYFbIYJFKvsltDxi8mB5ZIBLC8PvjjO/view?usp=drive_link"
+    },
+    {
+      "id": "1aOHVp4-tKrBVjvvJMvH0zKo-ajpVuG3K",
+      "titulo": "Números primos",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1aOHVp4-tKrBVjvvJMvH0zKo-ajpVuG3K/view?usp=drive_link"
+    },
+    {
+      "id": "1ouxTBsC0-YxuAO2489v_HSZZs4Lv9gvf",
+      "titulo": "MCD y MCM",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1ouxTBsC0-YxuAO2489v_HSZZs4Lv9gvf/view?usp=drive_link"
+    },
+    {
+      "id": "1Mme2TTvt6wE0lZl3njVn13qtXCTEALdx",
+      "titulo": "Potenciación y radicación",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Carlos Velásquez",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1Mme2TTvt6wE0lZl3njVn13qtXCTEALdx/view?usp=drive_link"
+    },
+    {
+      "id": "187pckSkntGMy-qTK_u1Z7LOum5vsAwFx",
+      "titulo": "Lógica proposicional",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Javier Tasaico",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/187pckSkntGMy-qTK_u1Z7LOum5vsAwFx/view?usp=drive_link"
+    },
+    {
+      "id": "1lFZCTumyI_Z54wHSsdrBzD-bPy4IKLSi",
+      "titulo": "Conteo y paginación",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Javier Tasaico",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1lFZCTumyI_Z54wHSsdrBzD-bPy4IKLSi/view?usp=drive_link"
+    },
+    {
+      "id": "1eczODi0lNuNubOANBeNigAnyvRwI5UWW",
+      "titulo": "Números racionales",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Javier Tasaico",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1eczODi0lNuNubOANBeNigAnyvRwI5UWW/view?usp=drive_link"
+    },
+    {
+      "id": "1c8VrK4blZpr4EXGM78eTT_CAaY8-5z4F",
+      "titulo": "Estadística",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Javier Tasaico",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1c8VrK4blZpr4EXGM78eTT_CAaY8-5z4F/view?usp=drive_link"
+    },
+    {
+      "id": "1yAWSsigXDyMsVjlZeElVoZZoJ-F-c86u",
+      "titulo": "Análisis combinatorio y teoría de probabilidades",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Javier Tasaico",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1yAWSsigXDyMsVjlZeElVoZZoJ-F-c86u/view?usp=drive_link"
+    },
+    {
+      "id": "1g5xP0XVxeqpUkbZpR8mR4oDbik_KrE1Q",
+      "titulo": "Estadística",
+      "coleccion": "Aritmética · Teoría y problemas",
+      "seccion": "Hugo Mas Fernández",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1g5xP0XVxeqpUkbZpR8mR4oDbik_KrE1Q/view?usp=drive_link"
+    },
+    {
+      "id": "1tPq0Up5gKEv-ON_LrawB7n7XESuwsfcA",
+      "titulo": "Unidades químicas de masa",
+      "coleccion": "Química · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1tPq0Up5gKEv-ON_LrawB7n7XESuwsfcA/view?usp=drive_link"
+    },
+    {
+      "id": "1WBv_rYDk-0Hr0xJ3te9P0jRa10Wb0Ct5",
+      "titulo": "Estado gaseoso y mezcla gaseosa",
+      "coleccion": "Química · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1WBv_rYDk-0Hr0xJ3te9P0jRa10Wb0Ct5/view?usp=drive_link"
+    },
+    {
+      "id": "1jJZF_8yB0jpqcyge4gvHYtwvklz7lpxC",
+      "titulo": "Ácidos y bases",
+      "coleccion": "Química · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1jJZF_8yB0jpqcyge4gvHYtwvklz7lpxC/view?usp=drive_link"
+    },
+    {
+      "id": "1zRF5pCRuTv91slxspTgiOWmw7sIeGUBi",
+      "titulo": "Química I",
+      "coleccion": "Química · Teoría y problemas",
+      "seccion": "",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1zRF5pCRuTv91slxspTgiOWmw7sIeGUBi/view?usp=drive_link"
+    },
+    {
+      "id": "1EALVDRdCLkZAxoFNtiCDQo8ZEyJgw_kQ",
+      "titulo": "Geometría I",
+      "coleccion": "Ciclo Repaso UNI",
+      "seccion": "Geometría",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1EALVDRdCLkZAxoFNtiCDQo8ZEyJgw_kQ/view?usp=drive_link"
+    },
+    {
+      "id": "1_ZCaYRXn8_CjDkLrUaZqv8MKCTKpoiV1",
+      "titulo": "Geometría II",
+      "coleccion": "Ciclo Repaso UNI",
+      "seccion": "Geometría",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1_ZCaYRXn8_CjDkLrUaZqv8MKCTKpoiV1/view?usp=drive_link"
+    },
+    {
+      "id": "1CCRwwojyUuhTm4wi3V0Ung-XsiTtVblc",
+      "titulo": "Trigonometría",
+      "coleccion": "Ciclo Repaso UNI",
+      "seccion": "Trigonometría",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1CCRwwojyUuhTm4wi3V0Ung-XsiTtVblc/view?usp=drive_link"
+    },
+    {
+      "id": "1O70Ank24ypGrtJ33vDz2X_KOAasLF6Ka",
+      "titulo": "Trigonometría",
+      "coleccion": "Ciclo Repaso UNI",
+      "seccion": "Trigonometría",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1O70Ank24ypGrtJ33vDz2X_KOAasLF6Ka/view?usp=drive_link"
+    },
+    {
+      "id": "1mzR3yovF3NC5x6n-xgu3c_WQuylk9BG1",
+      "titulo": "Aritmética I",
+      "coleccion": "Ciclo Repaso UNI",
+      "seccion": "Aritmética",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1mzR3yovF3NC5x6n-xgu3c_WQuylk9BG1/view?usp=drive_link"
+    },
+    {
+      "id": "19ZaD9nO_VUcBIiB6wT0sr9wVdRqyR4ea",
+      "titulo": "Aritmética II",
+      "coleccion": "Ciclo Repaso UNI",
+      "seccion": "Aritmética",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/19ZaD9nO_VUcBIiB6wT0sr9wVdRqyR4ea/view?usp=drive_link"
+    },
+    {
+      "id": "1np7cB2tXaO5pqfaRiCHz5_0aIQUnJve1",
+      "titulo": "Química I",
+      "coleccion": "Ciclo Repaso UNI",
+      "seccion": "Química",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1np7cB2tXaO5pqfaRiCHz5_0aIQUnJve1/view?usp=drive_link"
+    },
+    {
+      "id": "1gwiXyWChtHi54xpcbRPy8UyQRLCgTj-u",
+      "titulo": "Química II",
+      "coleccion": "Ciclo Repaso UNI",
+      "seccion": "Química",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1gwiXyWChtHi54xpcbRPy8UyQRLCgTj-u/view?usp=drive_link"
+    },
+    {
+      "id": "1EwhlT-QHVFGGjOpFhm-AsYc7pSumvD5W",
+      "titulo": "Solucionario de Física",
+      "coleccion": "Compendios · Solucionarios",
+      "seccion": "Compendio de Ciencias",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1EwhlT-QHVFGGjOpFhm-AsYc7pSumvD5W/view?usp=drive_link"
+    },
+    {
+      "id": "1E3buiExU-xpBCX4QXAL19ZphhQ5hMz8e",
+      "titulo": "Solucionario de Química",
+      "coleccion": "Compendios · Solucionarios",
+      "seccion": "Compendio de Ciencias",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1E3buiExU-xpBCX4QXAL19ZphhQ5hMz8e/view?usp=drive_link"
+    },
+    {
+      "id": "1hW5EB9iA8eweTYIlYMzboBYIashRev2P",
+      "titulo": "Solucionario de Geometría",
+      "coleccion": "Compendios · Solucionarios",
+      "seccion": "Compendio de Matemática",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1hW5EB9iA8eweTYIlYMzboBYIashRev2P/view?usp=drive_link"
+    },
+    {
+      "id": "14G16ZfehQ5g1_anfllbtSknEQzzb5MME",
+      "titulo": "Solucionario de Trigonometría",
+      "coleccion": "Compendios · Solucionarios",
+      "seccion": "Compendio de Matemática",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/14G16ZfehQ5g1_anfllbtSknEQzzb5MME/view?usp=drive_link"
+    },
+    {
+      "id": "1UrK4ZSSLWe51O-BLmFZ6HqyXmbasYv4d",
+      "titulo": "Solucionario de Álgebra",
+      "coleccion": "Compendios · Solucionarios",
+      "seccion": "Compendio de Matemática",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/1UrK4ZSSLWe51O-BLmFZ6HqyXmbasYv4d/view?usp=drive_link"
+    },
+    {
+      "id": "13Xzh_EV0raCTV2wkk2IG5tQ-Hea5zbzX",
+      "titulo": "Solucionario de Aritmética",
+      "coleccion": "Compendios · Solucionarios",
+      "seccion": "Compendio de Matemática",
+      "autor": "Editorial Cuzcano",
+      "url": "https://drive.google.com/file/d/13Xzh_EV0raCTV2wkk2IG5tQ-Hea5zbzX/view?usp=drive_link"
+    }
+  ]
+}

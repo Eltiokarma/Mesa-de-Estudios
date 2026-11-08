@@ -1,3 +1,12 @@
 fuentes/**/*.pdf
 .DS_Store
 node_modules/
+.ocr-deps/
+.tessdata/
+fuentes/ocr-local/
+*.part
+__pycache__/
+platform.json
+cuzcano-source.html
+catalogo.js
+piloto*
