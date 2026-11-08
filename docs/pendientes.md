@@ -40,6 +40,19 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 ## Pendientes, en orden de prioridad
 
+### 0. Huecos que mide la admisión real de San Marcos (8 nov 2026)
+
+Fuente: `docs/clasificacion-unmsm-admision.md` (2550 preguntas de 50 exámenes, 14 periodos de 2019-I a 2027-I). La cobertura de la app es 57 % «sí», 42 % «a medias» y 1 % «no». En orden:
+1. **Textos A/B** (dos autores en debate): 240 preguntas, salen en los 14 periodos y la app no tiene ni un par. Hace falta un código RV para «atribuir a un autor la postura del otro».
+2. **RM visual y espacial**: cubos y vistas, dados, rutas en 3D, rumbos, trasvases, rodamientos, certezas y diagramas de flujo (estos últimos sin unidad en el catálogo).
+3. **Geometría y trigonometría**: relaciones métricas, sólidos de revolución y troncos, áreas circulares, ángulos verticales con dos observaciones y ecuaciones en un intervalo.
+4. **Química**: biomoléculas en moléculas grandes (contar sp2, enlaces pi y grupos).
+5. **Física**: tipos que faltan en escenas que ya existen (Bernoulli y caudal, Snell y ángulo límite, condensadores en asociación, Kirchhoff con dos fuentes, Joule, P = Fv, ecuación horaria del MAS).
+6. **Lectura en inglés**: más allá de la idea principal.
+7. **Trampas de cálculo sin código**: unidades sin convertir, proporcionalidad sin el cuadrado o la raíz, diámetro por radio.
+
+Ojo: en verbal, analogías, conectores, eliminación y plan de redacción no salen en ningún examen de San Marcos; se mantienen por la UNI. Las trampas son inferidas de las alternativas, así que son hipótesis.
+
 ### 1. Contenido para el lanzamiento (lo más importante)
 
 Cada módulo nuevo sigue el molde de `plantillas/circuitos-cc/`:
