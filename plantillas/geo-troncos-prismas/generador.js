@@ -39,6 +39,9 @@
  *   tronco-prisma    prisma triangular recto cortado por un plano oblicuo; aristas laterales a, b, c.
  *     sub 'volumen':   la base es un triángulo rectángulo de catetos p y q. Pide el volumen.
  *     sub 'lateral':   la base es un triángulo equilátero de lado s. Pide el área lateral.
+ *     sub 'minima':    base equilátera de lado entero s (desconocido); las aristas laterales suman «suma»; el
+ *                      perímetro de la base debe ser MAYOR que P0 (desigualdad estricta). Pide la menor área
+ *                      lateral posible (AL = s·suma con el menor s entero que cumple 3s > P0).
  *
  * Errores: GE2 (parcial) y GE20, GE21 de docs/investigacion/geometria-ideas-erroneas.md (los dos
  * últimos son hipótesis en el informe); los códigos GE-<nombre> son hipótesis nuestras.
@@ -367,7 +370,7 @@
 
   // ---------- Tronco de prisma triangular ----------
   function troncoPrisma(rng) {
-    const sub = rng.elegir(['volumen', 'volumen', 'lateral']);
+    const sub = rng.elegir(['volumen', 'volumen', 'lateral', 'minima']);
     const u = 'cm';
     const tres = () => { for (;;) { const a = rng.entero(2, 15), b = rng.entero(2, 15), c = rng.entero(2, 15); if (a !== b && b !== c && a !== c) return [a, b, c]; } };
     const [a, b, c] = tres();
@@ -389,6 +392,25 @@
         [`V = ${f(A)}·${tq((a + b + c) / 3)} = `, v('X', tq(V, 'cm³')), '.'],
       ];
       return { forma: 'q', unidad: 'cm³', correcta: V, errores, variables, enunciado, pregunta: ['¿Cuál es el volumen del bloque?'], solucion, datos: { sub, p, q, a, b, c } };
+    }
+    if (sub === 'minima') {
+      const suma = a + b + c, P0 = 3 * rng.entero(2, 9), lim = P0 / 3, smin = lim + 1;
+      const AL = smin * suma;
+      const vars = { S: { nombre: 'suma de aristas laterales', color: 'i' }, P: { nombre: 'condición del perímetro', color: 'h' }, s: { nombre: 'lado de la base', color: 'o' }, X: { nombre: 'área lateral mínima', color: 'd' } };
+      const enunciado = ['Se va a construir un tronco de prisma triangular regular recto: la base es un triángulo equilátero y las tres aristas laterales son perpendiculares a ella. Las tres aristas laterales suman ', v('S', `${suma} ${u}`), ', el lado de la base debe ser un número entero de centímetros y el perímetro de la base debe ser ', v('P', `mayor que ${P0} ${u}`), '.'];
+      const errores = [
+        h_('GE-limite-estricto', lim * suma, `Tomaste lado ${lim}: con él el perímetro es exactamente ${P0}, y debe ser mayor. El menor lado entero que cumple es ${smin}.`),
+        h_('GE-tronco-prisma-cada-arista-una-vez', AL / 2, 'Contaste cada arista en una sola cara. Cada arista lateral es lado de dos caras: AL = s·(a + b + c).'),
+        h_('GE-tronco-prisma-perimetro-por-suma', 3 * AL, 'Multiplicaste el perímetro por la suma de aristas. Cada cara es un trapecio de altura s con dos aristas: sumando las tres, sale s·(a + b + c).'),
+        h_('GE-tronco-prisma-altura-media', AL / 3, 'Usaste la altura media (a + b + c)/3, que sirve para el volumen. El área lateral suma tres trapecios: s·(a + b + c).'),
+      ];
+      const solucion = [
+        ['Cada cara lateral es un trapecio de altura s; al sumar las tres, cada arista aparece dos veces: AL = s·(a + b + c) = s·', v('S', `${suma}`), '.'],
+        ['AL crece con s: hay que tomar el menor lado posible. Perímetro 3s ', v('P', `> ${P0}`), ` → s > ${lim}.`],
+        [`Como la desigualdad es estricta, s = ${lim} no sirve: el menor entero es `, v('s', `s = ${smin} ${u}`), '.'],
+        [`AL mínima = ${smin}·${suma} = `, v('X', tq(AL, 'cm²')), '.'],
+      ];
+      return { forma: 'q', unidad: 'cm²', correcta: AL, errores, variables: vars, enunciado, pregunta: ['¿Cuál es la menor área lateral posible?'], solucion, datos: { sub, suma, P0 } };
     }
     const s = rng.entero(2, 10);
     const AL = calc.lateralTroncoPrisma(s, a, b, c);

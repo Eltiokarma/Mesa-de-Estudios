@@ -92,6 +92,17 @@ function recalcular(p) {
         const z = (x, y) => d.a + (d.b - d.a) * x / d.p + (d.c - d.a) * y / d.q;
         return simpson(x => simpson(y => z(x, y), 0, d.q * (1 - x / d.p), 40), 0, d.p, 40);
       }
+      if (d.sub === 'minima') {
+        // Fuerza bruta: cada lado entero que cumple la condición, con un reparto cualquiera de la suma.
+        let mejor = Infinity;
+        for (let s = 1; s <= 200; s++) if (3 * s > d.P0) {
+          const B = [[0, 0, 0], [s, 0, 0], [s / 2, s * R3 / 2, 0]], al = [1, 2, d.suma - 3];
+          const T = B.map((q, i) => [q[0], q[1], al[i]]);
+          let A = 0; for (let i = 0; i < 3; i++) A += areaCuad(B[i], B[(i + 1) % 3], T[(i + 1) % 3], T[i]);
+          mejor = Math.min(mejor, A);
+        }
+        return mejor;
+      }
       const B = [[0, 0, 0], [d.s, 0, 0], [d.s / 2, d.s * R3 / 2, 0]], al = [d.a, d.b, d.c];
       const T = B.map((q, i) => [q[0], q[1], al[i]]);
       let s = 0;
@@ -119,7 +130,7 @@ test('salen todos los tipos y todas las variantes', () => {
   const tipos = new Set(), subs = new Set();
   for (let s = 0; s < 1000; s++) { const d = gen.generar(s)._datos; tipos.add(d.tipo); subs.add(d.tipo + '/' + d.sub + (d.dato ? '/' + d.dato : '')); }
   assert.equal(tipos.size, gen.TIPOS.length);
-  assert.equal(subs.size, 14);
+  assert.equal(subs.size, 15);
 });
 
 test('cada problema: a lo más 4 colores, distintos, y la correcta se escribe como sus distractores', () => {

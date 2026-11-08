@@ -96,15 +96,28 @@
       "semilla": 9,
       "entrada": {
         "tipo": "tronco-prisma",
-        "sub": "lateral",
-        "s": 6,
-        "a": 4,
-        "b": 5,
-        "c": 2
+        "sub": "minima",
+        "suma": 11,
+        "P0": 15
       },
       "esperado": {
         "respuesta": 66,
         "exacta": "66 cm²"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "tronco-prisma",
+        "sub": "lateral",
+        "s": 9,
+        "a": 3,
+        "b": 13,
+        "c": 8
+      },
+      "esperado": {
+        "respuesta": 216,
+        "exacta": "216 cm²"
       }
     },
     {
