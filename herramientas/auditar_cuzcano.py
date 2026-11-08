@@ -5,6 +5,7 @@ import re
 from collections import Counter
 from datetime import datetime, timezone
 from cuzcano import ROOT, save
+from estado_revision_visual import resolved
 
 
 def read(path):
@@ -61,19 +62,22 @@ def main():
     status = read(catalog / 'estado.json')['resumen']
     assert status['paginas_procesadas'] == counts['paginas'] == status['paginas_descargadas']
     assert status['libros_procesados'] == len(books)
-    reviewed_keys, resolved_keys = set(), set()
+    reviewed_keys, resolved_keys, blank_keys = set(), set(), set()
     for path in (ROOT / 'fuentes/ocr-local/cuzcano').glob('*/revision-*.json'):
         review = read(path)
         key = (path.parent.name, review['pagina_pdf'])
         reviewed_keys.add(key)
         if review.get('estado') == 'sin_texto_principal':
+            blank_keys.add(key)
+        if resolved(path):
             resolved_keys.add(key)
     queue = read(ROOT / 'fuentes/ocr-local/cuzcano/cola-revision.json')
     queue_keys = {(r['id'], r['pagina_pdf']) for r in queue}
     assert len(queue) == len(queue_keys) and queue_keys == low_keys - resolved_keys, 'Cola de revisión inconsistente'
     counts['paginas_en_cola_revision'] = len(queue_keys)
     counts['paginas_con_algun_cotejo'] = len(reviewed_keys)
-    counts['paginas_sin_texto_principal_cotejadas'] = len(resolved_keys)
+    counts['paginas_sin_texto_principal_cotejadas'] = len(blank_keys)
+    counts['paginas_texto_completo_cotejado'] = len(resolved_keys - blank_keys)
     report = {'generado_utc': datetime.now(timezone.utc).isoformat(),
               'estado': 'integridad_verificada', 'libros': len(books), **dict(counts),
               'alcance': 'Identidad de archivos, continuidad de páginas, JSON y concordancia de registros. No certifica exactitud del OCR ni fórmulas.'}

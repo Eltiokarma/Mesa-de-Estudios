@@ -22,9 +22,10 @@ No se identifica un título de razonamiento verbal en este catálogo.
 
 - 198 entradas descargadas y procesadas; 197 contenidos PDF distintos.
 - 21 522 páginas: 21 462 con OCR nuevo en español y 60 con capa textual previa aprovechable.
-- Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las seis pruebas de herramientas están aprobadas.
-- 12 páginas con algún cotejo visual, sin certificar libros completos; siete correcciones puntuales aplicadas en la muestra de química.
-- 13 732 páginas siguen en la cola de baja confianza, después de apartar dos páginas identificadas visualmente sin texto principal.
+- Cero libros con fallo de procesamiento. La auditoría de integridad pasó y las once pruebas de herramientas están aprobadas.
+- 36 páginas con algún cotejo visual: seis con texto completo cotejado, seis sin texto principal y 24 parcialmente revisadas. Ningún libro completo certificado.
+- 19 copias corregidas locales: 17 reconstrucciones visuales y dos páginas con nueve reemplazos puntuales en total.
+- 13 722 páginas siguen en la cola de baja confianza. El nuevo lote examinó 24 páginas de confianza cero y resolvió diez entradas de la cola: seis transcripciones completas y cuatro páginas sin texto principal.
 
 `auditoria.json` conserva las comprobaciones y recuentos; `entorno-ocr.json`, las versiones de Python, bibliotecas y motor, y el hash del modelo de español. La integridad del lote no equivale a exactitud del OCR: la revisión visual del resto está pendiente.
 
@@ -77,11 +78,33 @@ Todas las páginas parten de `revision_visual: pendiente`. La confianza de Tesse
 
 Prioridad solicitada por Gerson: revisar primero las páginas de baja confianza. `python herramientas/cola_revision_ocr.py` genera una cola local ordenada, separando las que ya tienen un cotejo parcial. Una página sin texto reconocido puede ser una portada, una página en blanco o un fallo: comprobarlo en la imagen.
 
-Las páginas clasificadas visualmente como `sin_texto_principal` salen de esa cola. En páginas dobles se registra la menor confianza de las dos mitades; una mitad en blanco puede producir cero aunque la otra tenga texto legible.
+Las páginas clasificadas visualmente como `sin_texto_principal` salen de esa cola. También salen las de `estado: texto_cotejado`, `alcance: texto_completo` y `pendientes: []`, siempre que exista una copia corregida vinculada al mismo registro y al hash vigente del OCR original. Un cotejo textual completo no certifica exactitud matemática. En páginas dobles se registra la menor confianza de las dos mitades; una mitad en blanco puede producir cero aunque la otra tenga texto legible.
 
 Conservar el OCR crudo. Guardar correcciones en un archivo local separado, con identificador de libro, página PDF, fragmento original, corrección y motivo. No completar texto ilegible por conjetura. Registrar explícitamente si una revisión fue parcial; no contarla como revisión integral.
 
 `python herramientas/aplicar_correcciones_ocr.py <registro-local.json>` aplica correcciones con campos `original` y `correccion` únicamente si cada fragmento aparece una sola vez. Produce un archivo `.corregido.json` separado, ligado al SHA-256 del OCR original. Si se vuelve a reconocer la página, verificar ese SHA y volver a cotejar las correcciones; no reutilizarlas ciegamente.
+
+Cuando el OCR está vacío o resulta inservible, el registro puede proporcionar `texto_reconstruido` y `sha256_ocr_original`. Esta modalidad es excluyente con los reemplazos y también conserva el original. Las reconstrucciones parciales deben identificar expresamente su alcance y los segmentos pendientes; no equivalen a una transcripción completa.
+
+`python herramientas/preparar_revision_visual.py --inicio 0 --cantidad 8` prepara imágenes y OCR de un lote para cotejo. La identidad del lote depende de sus páginas, por lo que regenerar la cola no sobrescribe evidencia de otro lote. Después de revisar:
+
+```sh
+python herramientas/cola_revision_ocr.py
+python herramientas/resumir_revision_visual.py
+python herramientas/auditar_cuzcano.py
+python herramientas/exportar_revision_cuzcano.py
+python -m unittest discover -s herramientas -p 'test_*.py'
+```
+
+## Entrega y futura integración con la app
+
+La entrega local está en `fuentes/ocr-local/cuzcano/entrega/`: `index.html` permite leer y comparar, `paginas-corregidas.jsonl` guarda un registro por página y `revision-cuzcano.zip` reúne ambos con un manifiesto de hashes. El paquete es un avance, no toda la colección corregida. No contiene los PDF. Cada registro incluye referencia al libro y página, OCR original, texto corregido, estado del cotejo, pendientes y validación matemática pendiente. `formulas_latex` contiene únicamente las expresiones ya normalizadas; no se promete cobertura total.
+
+Para el producto se propone JSON por ejercicio propio, con datos tipados, unidades, dominio, fórmulas LaTeX, figura paramétrica, referencia al motor y casos de prueba independientes. El OCR es material de consulta; no se conecta directamente como banco de ejercicios del alumno. Las fuentes sirven para detectar familias y dificultades, de las que se crearán enunciados y figuras propios.
+
+`motores-candidatos.json` registra seis familias observadas y sus comprobaciones necesarias. Es una lista para diseño posterior, no motores implementados ni una nueva prioridad de la hoja de ruta. Respeta el patrón existente `motor.js` + `casos.json` + `motor.test.js`: el código calcula; el modelo ayuda a interpretar. Para pH, consultar primero el pendiente qu3; para nuevas áreas, investigar ideas erróneas antes de construir la escena.
+
+Los cotejos detectaron posibles errores de la fuente y convenciones particulares. Se anotan sin alterar silenciosamente el libro: dominios de radicales, redondeos de ángulos y reglas lógicas que no deben generalizarse como probabilidades.
 
 Cuando el cotejo confirme columnas de igual anchura, `python herramientas/reordenar_columnas_ocr.py <pagina.json> --columnas 2` genera una lectura alternativa sin repetir el OCR. El número indicado corresponde a cada región reconocida: dos columnas por cada mitad de una doble página producen cuatro columnas. Conserva palabras y coordenadas; no corrige fórmulas ni garantiza el orden de títulos que ocupan varias columnas.
 

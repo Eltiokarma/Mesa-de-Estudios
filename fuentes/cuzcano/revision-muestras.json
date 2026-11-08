@@ -1,160 +1,436 @@
 {
-  "fecha": "2026-11-08",
-  "alcance": "Muestras parciales; no certifica la colección ni las páginas completas",
+  "generado_utc": "2026-11-08T16:27:38.526203+00:00",
+  "alcance": "Cotejo visual por página. No certifica libros completos ni exactitud matemática.",
+  "prioridad_solicitada": "Páginas de baja confianza, primero sin cotejo previo",
+  "paginas_con_algun_cotejo": 36,
+  "paginas_pendientes_baja_confianza": 13722,
+  "paginas_excluidas_sin_texto_principal": 6,
+  "paginas_texto_completo_cotejado": 6,
+  "paginas_cotejo_parcial": 24,
+  "copias_corregidas_locales": 19,
+  "reconstrucciones_visuales": 17,
+  "reemplazos_puntuales": 9,
   "muestras": [
-    {
-      "id": "180G0ufWjo0upKFwSWpMhNuOAqynExsll",
-      "pagina_pdf": 3,
-      "hallazgos": [
-        "Mezcla de columnas",
-        "Letras de alternativas confundidas",
-        "Subíndices y fórmulas químicas mal reconocidos"
-      ],
-      "correcciones_locales_documentadas": 7,
-      "accion": "Separar páginas enfrentadas y conservar correcciones parciales aparte del OCR crudo",
-      "tipo_revision": "revision_parcial",
-      "pendiente": "Orden de columnas, diagrama y cotejo íntegro; no validado para uso automático."
-    },
     {
       "id": "1-u8Lo79goClEw-VgMgv7_zQu7cGuXi-S",
       "pagina_pdf": 10,
-      "confianza_ocr": 95,
+      "estado": "parcial",
       "hallazgos": [
         "El OCR con confianza 95 omitió la definición en el recuadro sombreado y varios rótulos del dibujo.",
         "El encabezado de la página quedó fragmentado."
       ],
-      "accion": "Revisar recuadros y figuras también en páginas de confianza alta",
-      "tipo_revision": "parcial"
-    },
-    {
-      "id": "15NfYUMNgJxpc9TgHXSXQna7-eUS6B5un",
-      "pagina_pdf": 26,
-      "hallazgos": [
-        "Franja tramada sobre fórmulas",
-        "Mitad derecha en blanco",
-        "Franja tramada vertical superpuesta; mitad derecha en blanco."
-      ],
-      "accion": "Cinco expresiones matemáticas cotejadas y registradas localmente; revisión parcial",
-      "tipo_revision": "parcial",
-      "pendiente": "No usar el resto del OCR como transcripción validada.",
-      "expresiones_cotejadas_count": 5
-    },
-    {
-      "id": "13Xzh_EV0raCTV2wkk2IG5tQ-Hea5zbzX",
-      "pagina_pdf": 127,
-      "hallazgos": [
-        "Soluciones manuscritas",
-        "Bases y exponentes mal reconocidos",
-        "Solucionario manuscrito de aritmética; el OCR no conserva bases, exponentes ni columnas."
-      ],
-      "accion": "Cotejo parcial de la resolución 18; revisar páginas contiguas antes de clasificar",
-      "tipo_revision": "parcial",
-      "pendiente": "Revisar el enunciado en páginas anteriores y transcribir manualmente las resoluciones 19 y 20.",
-      "expresiones_cotejadas_count": 3
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
     },
     {
       "id": "1-u8Lo79goClEw-VgMgv7_zQu7cGuXi-S",
       "pagina_pdf": 112,
-      "tipo_revision": "clasificacion_visual",
       "estado": "sin_texto_principal",
-      "hallazgos": [
-        "Página de reverso con transparencia tenue del dorso; no hay texto principal que recuperar."
-      ]
+      "hallazgos": [],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "13Xzh_EV0raCTV2wkk2IG5tQ-Hea5zbzX",
+      "pagina_pdf": 127,
+      "estado": "parcial",
+      "hallazgos": [],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "15NfYUMNgJxpc9TgHXSXQna7-eUS6B5un",
+      "pagina_pdf": 26,
+      "estado": "parcial",
+      "hallazgos": [],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
     },
     {
       "id": "17w3zBc5YZXjtuMhipibKILv2jJhik2HO",
       "pagina_pdf": 62,
-      "tipo_revision": "clasificacion_visual",
       "estado": "sin_texto_principal",
-      "hallazgos": [
-        "Página en blanco con sombras de encuadernación."
-      ]
+      "hallazgos": [],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "180G0ufWjo0upKFwSWpMhNuOAqynExsll",
+      "pagina_pdf": 3,
+      "estado": "parcial",
+      "hallazgos": [],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 7,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
     },
     {
       "id": "180G0ufWjo0upKFwSWpMhNuOAqynExsll",
       "pagina_pdf": 26,
-      "tipo_revision": "clasificacion_visual",
-      "estado": "pendiente_transcripcion",
-      "hallazgos": [
-        "Mitad derecha vacía; izquierda con recuadro tramado que dificulta configuraciones electrónicas."
-      ]
+      "estado": "parcial",
+      "hallazgos": [],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
     },
     {
       "id": "18c02NWbmlln9C4GCUhS1SIrPbS5Ditn6",
       "pagina_pdf": 28,
-      "tipo_revision": "clasificacion_visual",
-      "estado": "pendiente_transcripcion",
-      "hallazgos": [
-        "Mitad derecha vacía; izquierda con franja tramada, diagramas y vectores que requieren cotejo ampliado."
-      ]
+      "estado": "parcial",
+      "hallazgos": [],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
     },
     {
       "id": "19ZaD9nO_VUcBIiB6wT0sr9wVdRqyR4ea",
       "pagina_pdf": 8,
-      "tipo_revision": "parcial",
-      "temas_observados": [
-        "proporcionalidad",
-        "media armónica",
-        "volumen de conos"
-      ],
+      "estado": "parcial",
       "hallazgos": [
         "Fórmulas manuscritas y diagrama de conos requieren lectura visual"
       ],
-      "pendiente": "Resto de las resoluciones no validado íntegramente.",
-      "expresiones_cotejadas_count": 4
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
     },
     {
-      "id": "1aBxjSBcH2tDloWnWaKY6TCiYPf5maTEC",
-      "pagina_pdf": 14,
-      "tipo_revision": "parcial",
-      "temas_observados": [
-        "complemento aritmético",
-        "numerales",
-        "multiplicación",
-        "división"
-      ],
+      "id": "19ZaD9nO_VUcBIiB6wT0sr9wVdRqyR4ea",
+      "pagina_pdf": 32,
+      "estado": "parcial",
       "hallazgos": [
-        "Manuscrito legible visualmente, pero barras de numerales y disposición de operaciones no se conservan en OCR"
+        "OCR omitió casi toda la solución manuscrita. Mitad derecha en blanco; trama sobre dos columnas."
       ],
-      "pendiente": "Cotejo íntegro de las demás resoluciones.",
-      "expresiones_cotejadas_count": 3
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
     },
     {
-      "id": "1bxL05hrWy_7bRYO1dePRSEYGduMmIidg",
-      "pagina_pdf": 11,
-      "tipo_revision": "parcial",
-      "temas_observados": [
-        "poliedros",
-        "relación de Euler",
-        "diagonales",
-        "ángulos diedros"
-      ],
+      "id": "1Aexs1HGuPakjuZPx6olqjCT4xePc2I6o",
+      "pagina_pdf": 2,
+      "estado": "texto_cotejado",
       "hallazgos": [
-        "Tramado y bajo contraste en ambas páginas",
-        "Figuras y fórmulas no recuperadas íntegramente"
+        "Portadilla con mitad izquierda en blanco; nombre de autor y título mal reconocidos."
       ],
-      "estado": "requiere_cotejo_ampliado; no reconstruir pasos dudosos"
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb",
+      "pagina_pdf": 110,
+      "estado": "texto_cotejado",
+      "hallazgos": [
+        "Portada con OCR vacío; título y sello editorial visibles."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1CCRwwojyUuhTm4wi3V0Ung-XsiTtVblc",
+      "pagina_pdf": 2,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido girado 90 grados; mitad izquierda en blanco. Tras girar se ven cuatro columnas y diagramas."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1CCRwwojyUuhTm4wi3V0Ung-XsiTtVblc",
+      "pagina_pdf": 38,
+      "estado": "parcial",
+      "hallazgos": [
+        "Fórmulas manuscritas y orden de columnas perdidos; publicidad inferior omitida."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
     },
     {
       "id": "1D4cQ5hezU0lspCcTo-wvs7lCTPWIXRxN",
       "pagina_pdf": 9,
-      "tipo_revision": "parcial",
-      "temas_observados": [
-        "sucesiones",
-        "acotación",
-        "convergencia",
-        "límites"
-      ],
+      "estado": "parcial",
       "hallazgos": [
         "Manuscrito y franja tramada",
         "Confusión de subíndices, radicales y signos"
       ],
-      "pendiente": "Resto de las resoluciones y fórmulas de la mitad derecha sin validación integral.",
-      "expresiones_cotejadas_count": 4
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1EALVDRdCLkZAxoFNtiCDQo8ZEyJgw_kQ",
+      "pagina_pdf": 32,
+      "estado": "parcial",
+      "hallazgos": [
+        "Solución manuscrita, dos columnas entremezcladas y seis diagramas."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 2,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "pagina_pdf": 28,
+      "estado": "texto_cotejado",
+      "hallazgos": [
+        "OCR confundió Cl con CI, perdió cargas, exponentes, constantes y claves. Mitad derecha en blanco."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1Em7LMvEh8B4nkWRM0SQbSZSQP1cvmOQ4",
+      "pagina_pdf": 22,
+      "estado": "texto_cotejado",
+      "hallazgos": [
+        "OCR destruyó dos tablas y fórmulas de mediana, moda y media; mitad derecha en blanco."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "pagina_pdf": 361,
+      "estado": "texto_cotejado",
+      "hallazgos": [
+        "OCR vacío; se reconstruyeron las 300 claves de la tabla, en orden numérico."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1LBGYqm7MOIKXyRSWCJCAeteHNenplehn",
+      "pagina_pdf": 28,
+      "estado": "parcial",
+      "hallazgos": [
+        "Trama sobre texto y fórmulas; OCR omitió casi toda la página. Mitad derecha en blanco."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1LiZP_28QThiIWhGjzMdpnF3UlHhDnR1S",
+      "pagina_pdf": 2,
+      "estado": "texto_cotejado",
+      "hallazgos": [
+        "Portadilla con mitad izquierda en blanco; sello y marca superior omitidos por OCR."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1LiwSmLUHAYpFRHKc__n5ZaXl3jqBfaKr",
+      "pagina_pdf": 3,
+      "estado": "sin_texto_principal",
+      "hallazgos": [
+        "Página sin texto principal visible; sólo marcas pequeñas del escaneo."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1LiwSmLUHAYpFRHKc__n5ZaXl3jqBfaKr",
+      "pagina_pdf": 100,
+      "estado": "sin_texto_principal",
+      "hallazgos": [
+        "Página sin texto principal visible; sólo marcas pequeñas del escaneo."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1LiwSmLUHAYpFRHKc__n5ZaXl3jqBfaKr",
+      "pagina_pdf": 110,
+      "estado": "sin_texto_principal",
+      "hallazgos": [
+        "Página sin texto principal visible; sólo marcas pequeñas del escaneo."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1Lxs7bdQCiNmSzTRCw7tN8trfZ42RsEwK",
+      "pagina_pdf": 26,
+      "estado": "parcial",
+      "hallazgos": [
+        "Trama sobre fórmulas geométricas, OCR casi vacío y mitad derecha en blanco."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1N9QcaSHrsQ8lcmzJz-8cqqiT13quSHFl",
+      "pagina_pdf": 7,
+      "estado": "parcial",
+      "hallazgos": [
+        "Matrices, índices y sumatorias perdidos; se cotejaron los ejemplos numéricos 10 y 12."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1O70Ank24ypGrtJ33vDz2X_KOAasLF6Ka",
+      "pagina_pdf": 24,
+      "estado": "parcial",
+      "hallazgos": [
+        "Fórmulas de cónicas y dos figuras omitidas; mitad derecha en blanco."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1PKJCS_HtBgi7zzbtOlIO6gzEQSRqko8r",
+      "pagina_pdf": 22,
+      "estado": "parcial",
+      "hallazgos": [
+        "Solución manuscrita de lógica y conjuntos; mismo contenido visual en dos entradas del catálogo."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1PPyvmLQDo-_kaMlVxK91147aZDH_QBtV",
+      "pagina_pdf": 26,
+      "estado": "parcial",
+      "hallazgos": [
+        "Tres columnas manuscritas y figuras; el OCR perdió signos y mezcló resoluciones."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1VKgltzV7S4Cv61NhaNX5t9M70J49SVSJ",
+      "pagina_pdf": 22,
+      "estado": "parcial",
+      "hallazgos": [
+        "Solución manuscrita de lógica y conjuntos; mismo contenido visual en dos entradas del catálogo."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1Ymx1iaGMFZFvm1rwoDaiIhGwXMirQuC2",
+      "pagina_pdf": 22,
+      "estado": "parcial",
+      "hallazgos": [
+        "Composición de funciones e inversas manuscritas; se perdieron radicales, conjuntos y exponentes."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1ZZh2gAD4UREhXMTwyhFFE0WYlXGjhLEb",
+      "pagina_pdf": 217,
+      "estado": "sin_texto_principal",
+      "hallazgos": [
+        "Reverso del papel con transparencia de tinta; no hay texto principal en esta cara."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1_ZCaYRXn8_CjDkLrUaZqv8MKCTKpoiV1",
+      "pagina_pdf": 2,
+      "estado": "parcial",
+      "hallazgos": [
+        "Contenido girado 90 grados en la mitad derecha; cuatro columnas con ejercicios y diagramas geométricos."
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1_ZCaYRXn8_CjDkLrUaZqv8MKCTKpoiV1",
+      "pagina_pdf": 36,
+      "estado": "parcial",
+      "hallazgos": [
+        "Publicidad editorial con títulos omitidos; no contiene ejercicios."
+      ],
+      "copia_corregida_local": true,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": true,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1aBxjSBcH2tDloWnWaKY6TCiYPf5maTEC",
+      "pagina_pdf": 14,
+      "estado": "parcial",
+      "hallazgos": [
+        "Manuscrito legible visualmente, pero barras de numerales y disposición de operaciones no se conservan en OCR"
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
+    },
+    {
+      "id": "1bxL05hrWy_7bRYO1dePRSEYGduMmIidg",
+      "pagina_pdf": 11,
+      "estado": "parcial",
+      "hallazgos": [
+        "Tramado y bajo contraste en ambas páginas",
+        "Figuras y fórmulas no recuperadas íntegramente"
+      ],
+      "copia_corregida_local": false,
+      "reemplazos_puntuales": 0,
+      "reconstruccion_visual": false,
+      "validacion_matematica": "no_certificada"
     }
-  ],
-  "prioridad_solicitada": "Páginas de baja confianza",
-  "paginas_con_algun_cotejo": 12,
-  "paginas_pendientes_baja_confianza": 13732,
-  "paginas_excluidas_sin_texto_principal": 2
+  ]
 }

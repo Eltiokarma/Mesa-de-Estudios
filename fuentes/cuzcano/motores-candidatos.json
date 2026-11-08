@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "estado": "observaciones_para_diseno_posterior",
+  "alcance": "Necesidades detectadas durante cotejos parciales. No implementa motores, no cambia prioridades de la hoja de ruta y no contiene ejercicios del libro.",
+  "formato_futuro_ejercicio_propio": {
+    "identidad": ["id", "version", "curso", "unidad", "familia"],
+    "origen": ["autoria_propia", "referencias_de_consulta_por_libro_y_pagina"],
+    "contenido": ["enunciado_propio", "datos_tipados", "incognitas", "unidades", "dominio", "formulas_latex", "figura_parametrica_propia"],
+    "motor": ["id_motor", "version_motor", "parametros", "resultado", "pasos", "tolerancia"],
+    "calidad": ["estado_revision", "casos_verificados_independientemente", "supuestos", "errores_tipicos_con_respaldo_o_marcados_como_hipotesis"]
+  },
+  "familias": [
+    {
+      "id": "matrices-producto",
+      "curso": "algebra",
+      "referencias": [{"libro_id": "1N9QcaSHrsQ8lcmzJz-8cqqiT13quSHFl", "pagina_pdf": 7}],
+      "entradas": ["matrices rectangulares", "modo exacto o aproximado"],
+      "salidas": ["producto", "dimensiones", "operaciones fila por columna"],
+      "comprobaciones_necesarias": ["dimensiones compatibles", "datos finitos", "matriz identidad y cero", "casos calculados por un segundo método"]
+    },
+    {
+      "id": "estadistica-agrupada",
+      "curso": "aritmetica",
+      "referencias": [{"libro_id": "1Em7LMvEh8B4nkWRM0SQbSZSQP1cvmOQ4", "pagina_pdf": 22}],
+      "entradas": ["intervalos", "frecuencias", "convención de extremos"],
+      "salidas": ["frecuencias acumuladas", "media", "estimaciones de mediana y moda"],
+      "comprobaciones_necesarias": ["total positivo", "frecuencias no negativas", "intervalos sin superposición", "clases de distinta amplitud", "modas no únicas", "distinguir estimación de valor exacto"]
+    },
+    {
+      "id": "funciones-composicion-inversa",
+      "curso": "algebra",
+      "referencias": [{"libro_id": "1Ymx1iaGMFZFvm1rwoDaiIhGwXMirQuC2", "pagina_pdf": 22}],
+      "entradas": ["funciones o relaciones finitas", "dominio", "codominio", "rama"],
+      "salidas": ["composición", "dominio efectivo", "inversa cuando exista"],
+      "comprobaciones_necesarias": ["inyectividad", "dominio de radicales", "denominadores distintos de cero", "convención de inversa frente a recíproco", "no inferir dominio desde OCR"]
+    },
+    {
+      "id": "equilibrio-acido-base",
+      "curso": "quimica",
+      "referencias": [{"libro_id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl", "pagina_pdf": 28}],
+      "entradas": ["concentración", "constantes", "temperatura o Kw declarado", "supuestos del modelo"],
+      "salidas": ["concentraciones de equilibrio", "pH", "pOH", "comprobación de aproximaciones"],
+      "comprobaciones_necesarias": ["unidades", "cargas y subíndices", "raíz físicamente admisible", "autoprotólisis cuando corresponda", "no fijar neutralidad universalmente en pH 7"],
+      "relacion_hoja_de_ruta": "Consultar qu3 en docs/pendientes.md antes de crear un módulo nuevo."
+    },
+    {
+      "id": "conjuntos-y-logica",
+      "curso": "razonamiento-matematico",
+      "referencias": [{"libro_id": "1PKJCS_HtBgi7zzbtOlIO6gzEQSRqko8r", "pagina_pdf": 22}],
+      "entradas": ["conjuntos", "proposiciones", "semántica explícita de operadores"],
+      "salidas": ["cardinalidades", "tablas de verdad", "transformaciones justificadas"],
+      "comprobaciones_necesarias": ["inclusión-exclusión", "diferencia simétrica", "separar lógica booleana de reglas particulares del ejercicio", "no convertir una regla de máximo en probabilidad general"]
+    },
+    {
+      "id": "geometria-analitica",
+      "curso": "geometria",
+      "referencias": [{"libro_id": "1O70Ank24ypGrtJ33vDz2X_KOAasLF6Ka", "pagina_pdf": 24}],
+      "entradas": ["ecuaciones", "puntos", "restricciones geométricas"],
+      "salidas": ["intersecciones", "pendientes", "figura paramétrica", "pasos algebraicos"],
+      "comprobaciones_necesarias": ["casos verticales", "degeneraciones", "redondeos angulares", "coherencia entre dibujo y ecuación", "no completar datos ocultos de una figura por apariencia"]
+    }
+  ]
+}

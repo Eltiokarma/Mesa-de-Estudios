@@ -1,5 +1,5 @@
 {
-  "generado_utc": "2026-11-08T16:06:56.614667+00:00",
+  "generado_utc": "2026-11-08T16:27:59.063050+00:00",
   "estado": "integridad_verificada",
   "libros": 198,
   "paginas": 21522,
@@ -7,10 +7,11 @@
   "caracteres": 22551771,
   "paginas_texto_menor_100_caracteres": 542,
   "paginas_confianza_menor_80": 13734,
-  "copias_corregidas_vigentes": 1,
+  "copias_corregidas_vigentes": 19,
   "capa_texto_existente": 60,
-  "paginas_en_cola_revision": 13732,
-  "paginas_con_algun_cotejo": 12,
-  "paginas_sin_texto_principal_cotejadas": 2,
+  "paginas_en_cola_revision": 13722,
+  "paginas_con_algun_cotejo": 36,
+  "paginas_sin_texto_principal_cotejadas": 6,
+  "paginas_texto_completo_cotejado": 6,
   "alcance": "Identidad de archivos, continuidad de páginas, JSON y concordancia de registros. No certifica exactitud del OCR ni fórmulas."
 }
