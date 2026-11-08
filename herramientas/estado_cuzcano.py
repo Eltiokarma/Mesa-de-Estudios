@@ -25,6 +25,8 @@ def main():
             except Exception as error:
                 row['error_pdf'] = str(error)
         for page in folder.glob('p-*.json'):
+            if '.corregido.' in page.name:
+                continue
             try:
                 if json.loads(page.read_text(encoding='utf-8')).get('layout_version') == 2:
                     row['paginas_procesadas'] += 1

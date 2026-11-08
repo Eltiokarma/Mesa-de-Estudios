@@ -45,4 +45,6 @@ Todas las páginas parten de `revision_visual: pendiente`. La confianza de Tesse
 
 Conservar el OCR crudo. Guardar correcciones en un archivo local separado, con identificador de libro, página PDF, fragmento original, corrección y motivo. No completar texto ilegible por conjetura. Registrar explícitamente si una revisión fue parcial; no contarla como revisión integral.
 
+`python herramientas/aplicar_correcciones_ocr.py <registro-local.json>` aplica correcciones con campos `original` y `correccion` únicamente si cada fragmento aparece una sola vez. Produce un archivo `.corregido.json` separado, ligado al SHA-256 del OCR original. Si se vuelve a reconocer la página, verificar ese SHA y volver a cotejar las correcciones; no reutilizarlas ciegamente.
+
 La prueba inicial con el Solucionario 1 de Química CEPREUNI 2015-2 mostró mezcla de columnas y confusiones en letras de alternativas y fórmulas. Motivó la lectura separada de páginas enfrentadas. Una segunda muestra (Ondas electromagnéticas, página PDF 10) omitió un recuadro sombreado y rótulos de una figura aunque tenía confianza 95. La colección no debe considerarse un corpus validado mientras quede revisión pendiente.
