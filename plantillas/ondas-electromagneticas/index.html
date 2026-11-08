@@ -17,14 +17,18 @@
    Elegidos con CIEDE2000 (docs/metodo/paleta.py); salen juntos casi siempre (la onda con la regla: λ, f, E,
    campo eléctrico, B y c; el agua: λ, f, v y n). ΔE00 mínimo entre todos los pares: 21,1 en claro (f con B) y 21,9 en
    oscuro (f con B). Todos pasan AA (≥ 4,5) sobre el papel y sobre su chip (.v, fondo al 8 %), en claro y en oscuro;
-   el más justo es c/v claro #c0364a, 4,56 sobre su chip. */
+   el más justo es c/v claro #c0364a, 4,56 sobre su chip.
+   Pestaña «El rayo que cambia de medio» (0.2.0, 8 nov 2026): el ángulo de incidencia i ciruela (#80004c / #fdaaec)
+   y el de refracción r ladrillo (#571a0f / #f95a24); el ángulo de reflexión es igual a i y lleva su color. El ángulo
+   límite L va en tinta (raya cortada), para no gastar un tercer color. Salen junto a n: ΔE00 mínimo 20,1 en claro
+   (i con r y r con c/v) y 20,6 en oscuro, contra los siete colores de la escena y la tinta; AA sobre papel y chip. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
   --c-lam:#0d6b78; --c-f:#5c531f; --c-E:#a55412; --c-el:#1f5fbf; --c-B:#2a7638; --c-v:#c0364a;
-  --c-n:#7614b8;
+  --c-n:#7614b8; --c-i:#80004c; --c-r:#571a0f;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -34,14 +38,14 @@
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-lam:#24e4f9; --c-f:#fdf2b4; --c-E:#ffa64d; --c-el:#7cb0ff; --c-B:#7fd67f; --c-v:#f17384;
-  --c-n:#aa74fb;
+  --c-n:#aa74fb; --c-i:#fdaaec; --c-r:#f95a24;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-lam:#24e4f9; --c-f:#fdf2b4; --c-E:#ffa64d; --c-el:#7cb0ff; --c-B:#7fd67f; --c-v:#f17384;
-  --c-n:#aa74fb;
+  --c-n:#aa74fb; --c-i:#fdaaec; --c-r:#f95a24;
   color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -54,7 +58,7 @@ body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font
 h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
 .sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
 
-.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs{display:flex; flex-wrap:wrap; gap:4px; padding:5px; border-radius:20px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
 .tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
 .tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
 .tabs a:hover:not([aria-current]){color:var(--ink)}
@@ -99,6 +103,8 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
 .v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
 .v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-i{color:var(--c-i); background:color-mix(in srgb, var(--c-i) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
 .v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
@@ -179,6 +185,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
       <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+      <a href="#rayo" id="tab3">El rayo que cambia de medio</a>
     </nav>
   </div>
 
@@ -224,6 +231,24 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
     </section>
   </div>
 
+  <!-- ===== MODO 3: el rayo que cambia de medio ===== -->
+  <div id="m3" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del rayo">
+      <div class="lienzo"><canvas id="cv3" role="img" aria-label="Un rayo de luz llega a la superficie entre dos medios"></canvas></div>
+      <p class="sr" id="desc3" aria-live="polite"></p>
+      <div class="controles" id="ctl3"></div>
+      <div class="lecturas" id="lect3"></div>
+      <div class="legend" id="leyenda3"></div>
+    </section>
+    <section class="guide">
+      <div aria-live="polite">
+        <p class="step-k" id="k3"></p>
+        <h2 class="step-t" id="t3"></h2>
+      </div>
+      <div id="body3" class="body"></div>
+    </section>
+  </div>
+
   <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/ondas-electromagneticas">Problemas para lápiz y papel</a></p>
 </main>
 
@@ -240,7 +265,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
-const PLANTILLA = { id: 'ondas-electromagneticas', unidad: 'fisica.ondas-electromagneticas', version: '0.1.0' };
+const PLANTILLA = { id: 'ondas-electromagneticas', unidad: 'fisica.ondas-electromagneticas', version: '0.2.0' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
   Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
@@ -1171,9 +1196,281 @@ ir(0);
 </script>
 
 <script>
+/* ================= MODO 3: el rayo que cambia de medio =================
+   Toda la refracción (Snell, el ángulo límite y cuánta luz se refleja, por Fresnel) sale de MO.snell y
+   MO.anguloLimite (motor.js); aquí solo se dibuja y se arrastra el rayo.
+   Dos predicciones que bloquean: el rayo que sale del agua con 37° (opciones del informe, Fyttas y otros 2013:
+   R5 sin desviarse, R3 se acerca a la normal y R4 no sale «porque el agua es más densa», 'parcial') y el mismo
+   rayo con 50°, más que el ángulo límite (R3 y R5 'parcial'; «siempre sale» es hipótesis nuestra). Mientras una
+   está pendiente, el rayo queda quieto, no se dibuja lo que pasa después de la superficie y las lecturas que darían
+   la respuesta van con «?». Después se arrastra el rayo (o se usa el deslizador), se cambia el medio y el sentido.
+   Los ángulos se miden siempre desde la normal (la raya vertical); el rayo reflejado se dibuja siempre, más tenue
+   mientras pasa casi toda la luz, para no reforzar «la luz rebota en lo más denso» (R2). */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv3'), ctx = cv.getContext('2d');
+const i_ = t => V_('i', t), r_ = t => V_('r', t);
+const MEDIOS = { agua:{ n:4/3, nombre:'agua', nTxt:'4/3' }, vidrio:{ n:3/2, nombre:'vidrio', nTxt:'3/2' } };
+const S = { fase:0, pred:{}, t0:Date.now(), medio:'agua', sale:true, i:37, ver:0, hl:null, mostrar:false, total:false };
+let W = 0, H = 0;
+const yo = { hl:null, dibujar:() => dibujar() };
+ESCENAS.push(yo);
+
+const n1 = () => (S.sale ? MEDIOS[S.medio].n : 1), n2 = () => (S.sale ? 1 : MEDIOS[S.medio].n);
+const calc = () => MO.snell(n1(), n2(), S.i);
+const grad = x => `${fmt(x, 0)}°`;
+const deg = x => x * Math.PI / 180;
+
+// ----- tamaño -----
+function altoVista(w){ return w < 560 ? 280 : 330; }
+function resize(){
+  const w = cv.clientWidth; if (!w) return;
+  const h = Math.round(Celular.alto(altoVista(w), !!S.compacto, { tope:250 }));
+  const dpr = Celular.dpr();
+  if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
+  dibujar();
+}
+new ResizeObserver(resize).observe(cv);
+alRedibujarTema(() => dibujar());
+function compactar(on){ S.compacto = !!on; Celular.compactar($('m3'), on); W = 0; resize(); }
+
+// ----- geometría: la superficie es horizontal; O en el centro; el medio de donde viene el rayo, abajo -----
+function geo(){
+  const O = { x:W/2, y:H*0.5 }, rho = Math.min(W*0.42, H*0.44);
+  return { O, rho };
+}
+// Punto a la distancia d de O, en el lado de abajo (abajo = +1) o de arriba, a un ángulo a de la normal; lado −1 izquierda.
+const punto = (O, d, a, abajo, lado) => ({ x:O.x + lado*d*Math.sin(deg(a)), y:O.y + (abajo ? 1 : -1)*d*Math.cos(deg(a)) });
+
+function flechaRayo(P, Q, color, ancho, alfa){
+  ctx.save(); ctx.globalAlpha = alfa; ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(P.x, P.y); ctx.lineTo(Q.x, Q.y); ctx.stroke();
+  // punta de flecha a mitad de camino, en el sentido de la luz
+  const mx = (P.x + Q.x)/2, my = (P.y + Q.y)/2, a = Math.atan2(Q.y - P.y, Q.x - P.x), s = 7 + ancho;
+  ctx.beginPath(); ctx.moveTo(mx + s*Math.cos(a), my + s*Math.sin(a));
+  ctx.lineTo(mx + s*Math.cos(a + 2.5), my + s*Math.sin(a + 2.5)); ctx.lineTo(mx + s*Math.cos(a - 2.5), my + s*Math.sin(a - 2.5)); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+// Arco del ángulo a desde la normal (de arriba o de abajo), hacia el lado dado.
+function arco(O, rad, a, abajo, lado, color, texto, grueso){
+  if (a < 0.5) return;
+  const base = abajo ? Math.PI/2 : -Math.PI/2;
+  const fin = base + (abajo ? -1 : 1)*lado*deg(a);
+  ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = grueso ? 4 : 2.5;
+  ctx.beginPath(); ctx.arc(O.x, O.y, rad, Math.min(base, fin), Math.max(base, fin)); ctx.stroke();
+  const m = (base + fin)/2, tx = O.x + (rad + 14)*Math.cos(m), ty = O.y + (rad + 14)*Math.sin(m);
+  ctx.fillStyle = color; ctx.font = `800 ${W < 560 ? 13 : 14}px ${css('--font')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(texto, tx, ty);
+  ctx.restore();
+}
+
+function dibujar(){
+  if (!W) return;
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), line:css('--line'), n:css('--c-n'), i:css('--c-i'), r:css('--c-r'), font:css('--font') };
+  const { O, rho } = geo(), R = calc(), chico = W < 560;
+  ctx.clearRect(0, 0, W, H);
+  // medio de abajo (de donde viene el rayo si sale) con un tono, aire arriba en blanco
+  const denso = S.sale ? 'abajo' : 'arriba';
+  ctx.fillStyle = c.grid; ctx.globalAlpha = 0.75;
+  if (denso === 'abajo') ctx.fillRect(0, O.y, W, H - O.y); else ctx.fillRect(0, 0, W, O.y);
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:0, y:O.y }, { x:W, y:O.y });
+  // rótulos de los medios, con el índice en su color
+  ctx.font = `700 ${chico ? 12 : 13}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  const med = MEDIOS[S.medio], rotAbajo = S.sale ? `${med.nombre}  n = ${med.nTxt}` : 'aire  n = 1', rotArriba = S.sale ? 'aire  n = 1' : `${med.nombre}  n = ${med.nTxt}`;
+  const hlN = yo.hl === 'n';
+  ctx.fillStyle = c.n; ctx.fillText(rotArriba, 10, 16); ctx.fillText(rotAbajo, 10, H - 14);
+  if (hlN){ ctx.strokeStyle = c.n; ctx.lineWidth = 1.5; ctx.strokeRect(6, 6, ctx.measureText(rotArriba).width + 8, 20); ctx.strokeRect(6, H - 24, ctx.measureText(rotAbajo).width + 8, 20); }
+  // la normal
+  ctx.save(); ctx.setLineDash([6, 5]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; linea(ctx, { x:O.x, y:8 }, { x:O.x, y:H - 8 }); ctx.restore();
+  ctx.fillStyle = c.muted; ctx.font = `600 ${chico ? 11 : 12}px ${c.font}`; ctx.textAlign = 'left'; ctx.fillText('normal', O.x + 6, 14);
+  // el ángulo límite (solo si existe y ya se respondió la segunda predicción)
+  if (R.L !== null && S.fase >= 2){
+    const PL = punto(O, rho, R.L, true, -1);
+    ctx.save(); ctx.setLineDash([3, 4]); ctx.strokeStyle = c.ink; ctx.globalAlpha = 0.7; ctx.lineWidth = 1.5; linea(ctx, PL, O); ctx.restore();
+    ctx.fillStyle = c.ink; ctx.font = `700 ${chico ? 11 : 12}px ${c.font}`; ctx.textAlign = 'right'; ctx.fillText(`límite L = ${grad(R.L)}`, PL.x - 4, PL.y);
+  }
+  // rayos: incidente (arrastrable), reflejado y refractado
+  const P = punto(O, rho, S.i, true, -1);
+  const mostrar = S.mostrar, f = S.ver;
+  if (mostrar){
+    const Rf = punto(O, rho*Math.max(0.05, f), S.i, true, 1);
+    flechaRayo(O, Rf, c.ink, 3, 0.22 + 0.78*R.R);
+    if (!R.total){
+      const Q = punto(O, rho*1.15*Math.max(0.05, f), R.r, false, 1);
+      flechaRayo(O, Q, c.ink, 3, 0.25 + 0.75*R.T);
+    }
+  } else {
+    ctx.fillStyle = c.muted; ctx.font = `800 ${chico ? 26 : 30}px ${c.font}`; ctx.textAlign = 'center'; ctx.fillText('?', O.x + rho*0.45, O.y - rho*0.45);
+  }
+  flechaRayo(P, O, c.ink, 3, 1);
+  // ángulos desde la normal
+  const hi = yo.hl === 'i', hr = yo.hl === 'r';
+  arco(O, chico ? 34 : 42, S.i, true, -1, c.i, 'i', hi);
+  if (mostrar && f > 0.6){
+    arco(O, chico ? 30 : 36, S.i, true, 1, c.i, 'i', hi);
+    if (!R.total) arco(O, chico ? 40 : 50, R.r, false, 1, c.r, 'r', hr);
+  }
+  // los senos como segmentos de color, en la exploración: n₁·(segmento de i) = n₂·(segmento de r)
+  if (S.fase >= 2){
+    ctx.save(); ctx.lineWidth = 4; ctx.lineCap = 'round';
+    ctx.strokeStyle = c.i; linea(ctx, P, { x:O.x, y:P.y });
+    if (!R.total){ const Q = punto(O, rho, R.r, false, 1); ctx.strokeStyle = c.r; linea(ctx, Q, { x:O.x, y:Q.y }); }
+    ctx.restore();
+  }
+  // manija
+  if (S.fase >= 2){
+    ctx.beginPath(); ctx.arc(P.x, P.y, 11, 0, 2*Math.PI); ctx.fillStyle = c.paper; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = c.i; ctx.stroke();
+    ctx.beginPath(); ctx.arc(P.x, P.y, 4, 0, 2*Math.PI); ctx.fillStyle = c.i; ctx.fill();
+  }
+  if (mostrar && R.total && f >= 1){
+    ctx.fillStyle = c.ink; ctx.font = `800 ${chico ? 13 : 14}px ${c.font}`; ctx.textAlign = 'center';
+    ctx.fillText('no pasa: reflexión total', O.x + rho*0.5, O.y - 24);
+  }
+}
+
+// ----- lecturas, leyenda y descripción -----
+function lecturas(){
+  const R = calc(), ya = S.mostrar;
+  const L = [['i', 'Incidencia i', grad(S.i)],
+    ['r', 'Refracción r', !ya ? '?' : (R.total ? 'no hay' : grad(R.r))]];
+  if (S.fase >= 2){ L.push(['ink', 'Ángulo límite L', R.L === null ? 'no hay' : grad(R.L)]); L.push(['ink', 'Luz que se refleja', `${fmt(100*R.R, 0)} %`]); }
+  $('lect3').innerHTML = L.map(([k, t, v]) => `<div class="lectura${v === '?' ? ' q' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
+  const med = MEDIOS[S.medio];
+  $('desc3').textContent = `Un rayo de luz va ${S.sale ? `del ${med.nombre} al aire` : `del aire al ${med.nombre}`} y llega a la superficie con ${grad(S.i)} respecto a la normal.` +
+    (!ya ? '' : R.total ? ' No pasa al otro medio: se refleja todo.' : ` Pasa y forma ${grad(R.r)} con la normal; una parte se refleja.`);
+}
+function leyenda(){
+  const it = (k, t) => `<span><i style="background:var(--c-${k})"></i><span>${t}</span></span>`;
+  $('leyenda3').innerHTML = it('i', 'ángulo de incidencia i (y de reflexión, igual)') + it('r', 'ángulo de refracción r') + it('n', 'índice n de cada medio') +
+    `<span><i style="background:var(--ink)"></i><span>rayo de luz (más tenue, menos luz)</span></span>` + (S.fase >= 2 ? `<span><i style="background:var(--ink);opacity:.6"></i><span>ángulo límite L, raya cortada</span></span>` : '');
+}
+function cambio(){ lecturas(); dibujar(); }
+
+// ----- arrastre y deslizador (solo en la exploración) -----
+const libre = () => S.fase >= 2;
+Celular.arrastre(cv, {
+  activo: libre,
+  cerca: (p, r) => { const { O, rho } = geo(), P = punto(O, rho, S.i, true, -1); return Math.hypot(p.x - P.x, p.y - P.y) <= r; },
+  mover: p => { const { O } = geo(); const dx = O.x - p.x, dy = p.y - O.y; S.i = clamp(Math.round(Math.atan2(Math.max(0, dx), Math.max(0.01, dy))*180/Math.PI), 0, 89); sincronizar(); cambio(); },
+  soltar: () => {},
+});
+function controles(){
+  if (!libre()){ $('ctl3').innerHTML = ''; return; }
+  const med = Object.keys(MEDIOS).map(k => `<button type="button" aria-pressed="${S.medio === k}" data-m="${k}">${MEDIOS[k].nombre}</button>`).join('');
+  $('ctl3').innerHTML = `<label class="ctl" style="--k:var(--c-i)" for="angI"><span>Ángulo de incidencia ${i_('i')}</span><output id="oI">${grad(S.i)}</output>
+      <input id="angI" type="range" min="0" max="89" step="1" value="${S.i}" aria-valuetext="${grad(S.i)}"></label>
+    <div class="seg" role="group" aria-label="Medio">${med}</div>
+    <div class="seg" role="group" aria-label="Sentido del rayo"><button type="button" aria-pressed="${S.sale}" data-s="1">sale al aire</button><button type="button" aria-pressed="${!S.sale}" data-s="0">entra desde el aire</button></div>`;
+  $('angI').oninput = e => { S.i = +e.target.value; sincronizar(); cambio(); };
+  $('ctl3').querySelectorAll('[data-m]').forEach(b => b.onclick = () => { S.medio = b.dataset.m; controles(); cambio(); });
+  $('ctl3').querySelectorAll('[data-s]').forEach(b => b.onclick = () => { S.sale = b.dataset.s === '1'; controles(); cambio(); });
+}
+function sincronizar(){ const a = $('angI'); if (a){ a.value = S.i; a.setAttribute('aria-valuetext', grad(S.i)); $('oI').textContent = grad(S.i); } }
+
+// ----- animación al responder -----
+function crecer(fin){
+  const fase = S.fase;
+  S.mostrar = true;
+  if (RM){ S.ver = 1; cambio(); if (fin) fin(); return; }
+  S.ver = 0; const t0 = performance.now(), dur = 900;
+  const tick = now => {
+    if (S.fase !== fase) return;
+    const f = Math.max(0, Math.min(1, (now - t0)/dur)); S.ver = suave(f); dibujar();
+    if (f < 1) requestAnimationFrame(tick); else { S.ver = 1; cambio(); if (fin) fin(); }
+  };
+  requestAnimationFrame(tick);
+}
+
+// ----- las dos predicciones -----
+const PRED = [
+  { id:'rayo-sale-del-agua', i:37, corto:'Del agua al aire, con 37°',
+    q:() => `Un rayo de luz viaja por el agua (${n_('n = 4/3')}) y llega a la superficie con el aire (${n_('n = 1')}) con ${i_('i = 37°')} respecto a la normal. ¿Cómo sigue el rayo?`,
+    opts:[['a', 'Sale al aire sin desviarse: sigue la misma recta, a 37° de la normal', 'R5-no-se-desvia', 'parcial'],
+          ['b', 'Sale al aire y se acerca a la normal, a menos de 37°', 'R3-desviacion-al-reves', 'parcial'],
+          ['c', 'Sale al aire y se aleja de la normal, a unos 53°'],
+          ['d', 'No sale al aire: se refleja todo, porque el agua es más densa', 'R4-no-sale-por-denso', 'parcial']],
+    ok:'c',
+    fb:{ a:'Sigue recto solo si llega perpendicular (i = 0°). Con 37° se desvía: al pasar a un medio de menor índice, se aleja de la normal.',
+      b:'Es al revés: se acerca a la normal cuando entra a un medio de MAYOR índice. Al salir al aire, que tiene menor índice, se aleja.',
+      d:'Una parte se refleja, pero la mayor parte sale. Para que no salga nada, el ángulo tiene que pasar el ángulo límite, y 37° no lo pasa.' },
+    exp:() => {
+      const R = MO.snell(4/3, 1, 37);
+      return `<div class="eqs"><div class="eq">${n_('n₁')} · sen ${i_('i')} = ${n_('n₂')} · sen ${r_('r')}<span class="note">los ángulos, desde la normal</span></div>
+        <div class="eq">${n_('4/3')} · sen ${i_('37°')} = ${n_('1')} · sen ${r_('r')} → sen ${r_('r')} ≈ (4/3) · 0,6 = 0,8 → ${r_('r ≈ 53°')}</div></div>
+        <p>El rayo sale y se aleja de la normal: ${r_('r')} es mayor que ${i_('i')}. Con calculadora, sen 37° = 0,602 y ${r_('r')} sale ${fmt(R.r, 1)}°; con sen 37° = 3/5 de los exámenes, 53°. El rayo tenue que vuelve al agua es la parte que se refleja: aquí, cerca del ${fmt(100*R.R, 0)} % de la luz.</p>
+        <p class="fuente">En un estudio con 213 escolares de 14 y 15 años que ya habían visto la ley de Snell (Fyttas y otros, 2013), más de la mitad dibujó este rayo sin desviarse (A), alrededor de uno de cada diez lo acercó a la normal (B) y más o menos uno de cada siete dijo que no sale «porque el agua es más densa» (D); solo uno de cada cinco lo dibujó bien. Son alumnos más jóvenes que un postulante, y las cifras salen del informe, por verificar.</p>`; } },
+  { id:'rayo-a-50', i:50, corto:'Del agua al aire, con 50°',
+    q:() => `Ahora el mismo rayo llega desde el agua (${n_('n = 4/3')}) a la superficie con ${i_('i = 50°')}. ¿Qué pasa en la superficie?`,
+    opts:[['a', 'Sale al aire y se aleja todavía más de la normal, a unos 70°', 'R-siempre-sale', 'hipotesis'],
+          ['b', 'Sale al aire sin desviarse, a 50° de la normal', 'R5-no-se-desvia', 'parcial'],
+          ['c', 'No sale al aire: se refleja todo dentro del agua'],
+          ['d', 'Sale al aire y se acerca a la normal, a unos 35°', 'R3-desviacion-al-reves', 'parcial']],
+    ok:'c',
+    fb:{ a:'Con la ley de Snell, sen r = (4/3) · sen 50° ≈ 1,02, y ningún ángulo tiene seno mayor que 1: no hay rayo que salga.',
+      b:'Para salir sin desviarse tendría que llegar perpendicular. Y con 50° ya no sale: se pasa del ángulo límite.',
+      d:'Ese resultado sale de poner los índices al revés. Con los índices en su sitio, sen r sería mayor que 1: no sale.' },
+    exp:() => {
+      const R = MO.snell(4/3, 1, 50), Lm = MO.anguloLimite(4/3, 1);
+      return `<div class="eqs"><div class="eq">sen ${r_('r')} = ${n_('4/3')} · sen ${i_('50°')} ≈ ${fmt(R.senR, 2)}<span class="note">mayor que 1: no hay ángulo r</span></div>
+        <div class="eq">ángulo límite: ${n_('4/3')} · sen L = ${n_('1')} · sen 90° → sen L = 3/4 → L ≈ ${fmt(Lm.L, 1)}°</div></div>
+        <p>Al crecer ${i_('i')}, el rayo que sale se acerca a la superficie; en el ángulo límite sale rozándola (${r_('r')} = 90°). Más allá ya no sale: toda la luz se refleja dentro del agua. Es la reflexión total, el final de la refracción, no una regla aparte. Solo pasa al ir hacia un medio de menor índice.</p>
+        <p class="hint">Arrastra el rayo (o usa el deslizador), cambia el medio y el sentido. Mira los dos segmentos de color: el de ${i_('i')} por ${n_('n₁')} da lo mismo que el de ${r_('r')} por ${n_('n₂')}.</p>
+        <p class="fuente">«Siempre sale, cada vez más inclinado» (A) es hipótesis nuestra; B y D son las mismas ideas del estudio de Fyttas y otros (2013), que no midió la reflexión total.</p>`; } },
+];
+
+function pintarPred(P, k){
+  const p = S.pred[P.id], btns = [...$('body3').querySelectorAll('.opt')];
+  if (!p) return;
+  btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+  const fb = $('fb3');
+  fb.textContent = p === P.ok ? '¡Bien pensado! Mira el dibujo.' : `Elegiste la opción ${p.toUpperCase()}. ${P.fb[p]} La correcta está marcada.`;
+  fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+  $('res3').innerHTML = sinCorte(P.exp()) + `<div class="nav"><span></span><button type="button" class="btn primary" id="sig3">${k === 0 ? 'Siguiente: con 50°' : 'Explorar el rayo'}</button></div>`;
+  $('sig3').onclick = () => { abrir(k + 1); $('m3').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+}
+function abrir(k){
+  S.t0 = Date.now();
+  if (k >= PRED.length){ explorar(); return; }
+  const P = PRED[k], ya = !!S.pred[P.id];
+  S.fase = k; S.medio = 'agua'; S.sale = true; S.i = P.i; S.mostrar = ya; S.ver = ya ? 1 : 0;
+  compactar(!ya); controles(); leyenda(); cambio();
+  $('k3').textContent = `El rayo que cambia de medio · predicción ${k + 1} de ${PRED.length}`;
+  $('t3').textContent = P.corto;
+  $('body3').innerHTML = `<p>${sinCorte(P.q())}</p>${opcionesHTML(P.opts, 'fb3')}<div id="res3" class="body"></div>`;
+  $('body3').querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; pintarPred(P, k);
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', S.t0);
+    compactar(false);
+    Celular.alResponder(cv, () => crecer(), () => S.fase === k);
+  });
+  pintarPred(P, k);
+}
+function explorar(){
+  S.fase = 2; S.mostrar = true; S.ver = 1; S.i = 30;
+  compactar(false); controles(); leyenda(); cambio();
+  $('k3').textContent = 'El rayo que cambia de medio · explora';
+  $('t3').textContent = 'Arrastra el rayo';
+  $('body3').innerHTML = `<p>Arrastra el círculo del rayo (o usa el deslizador). Prueba:</p>
+    <ul><li>Del agua al aire, sube ${i_('i')} hasta que el rayo que sale roce la superficie: ese ${i_('i')} es el ángulo límite L.</li>
+    <li>Pasa L: el rayo ya no sale, y la luz reflejada llega al 100&nbsp;%.</li>
+    <li>Cambia a «entra desde el aire»: el rayo se acerca a la normal y nunca hay reflexión total.</li>
+    <li>Con ${i_('i = 0°')} el rayo sigue recto en cualquier sentido.</li></ul>
+    <div class="eqs"><div class="eq">${n_('n₁')} · sen ${i_('i')} = ${n_('n₂')} · sen ${r_('r')}</div><div class="eq">sen L = ${n_('n₂')}/${n_('n₁')}<span class="note">solo si n₁ es mayor que n₂</span></div></div>
+    <div class="nav"><button type="button" class="btn" id="otra3">Volver a las predicciones</button><span></span></div>`;
+  $('otra3').onclick = () => abrir(0);
+}
+addEventListener('modo', () => { if (!$('m3').hidden){ W = 0; resize(); } });
+abrir(0);
+})();
+</script>
+
+<script>
 /* ================= Pestañas ================= */
 (function(){
-  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2'], ['#rayo', 'm3', 'tab3']];
   function route(){
     const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
     modos.forEach(([, m, t], j) => {

@@ -310,7 +310,7 @@
       "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "bajo",
       "grado": 5,
-      "plantillas": ["ondas-electromagneticas"],
+      "plantillas": ["ondas-electromagneticas", "refraccion-snell"],
       "investigacion": "docs/investigacion/ondas-electromagneticas-ideas-erroneas.md"
     },
     {
@@ -327,7 +327,7 @@
       "universidades": {"uni": {"semanas": [19]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["optica-lente-delgada", "optica-espejo-esferico"],
+      "plantillas": ["optica-lente-delgada", "optica-espejo-esferico", "refraccion-snell", "ondas-electromagneticas"],
       "investigacion": "docs/investigacion/optica-ideas-erroneas.md"
     },
     {
@@ -345,7 +345,7 @@
       "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": ["fisica-moderna"],
+      "plantillas": ["fisica-moderna", "relatividad"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     }
   ]

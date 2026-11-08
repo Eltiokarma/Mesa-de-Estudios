@@ -1,0 +1,178 @@
+{
+  "plantilla": "relatividad",
+  "tolerancia": 1e-06,
+  "nota": "Tolerancia relativa. beta = v/c; tiempo/hora en minutos desde las 0:00 (inicio y dt0 en min); dt en años; l en m; m en kg; energías en J; dv en m/s y dx en m; esfera: E y phi en eV, r en m, carga en C (se muestra en pC) y potencial en V. En energia/igual, k es la razón K/E₀.",
+  "verificacion": "PENDIENTE",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "incertidumbre",
+        "sub": "posicion",
+        "m": 0.005,
+        "v": 500,
+        "dv": 0.02
+      },
+      "esperado": {
+        "respuesta": 5.275986363496329e-31,
+        "exacta": "5,3 × 10⁻³¹ m"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "cinetica",
+        "beta": 0.6,
+        "m": 1e-28
+      },
+      "esperado": {
+        "respuesta": 2.25e-12,
+        "exacta": "2,25 × 10⁻¹² J"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "tiempo",
+        "sub": "propio",
+        "beta": 0.28,
+        "dt": 30
+      },
+      "esperado": {
+        "respuesta": 28.799999999999997,
+        "exacta": "28,8 años"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "tiempo",
+        "sub": "rapidez",
+        "gamma": 3.5714285714285716
+      },
+      "esperado": {
+        "respuesta": 0.96,
+        "exacta": "0,96c"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "igual",
+        "k": 2
+      },
+      "esperado": {
+        "respuesta": 0.9428090415820634,
+        "exacta": "(2√2/3)c"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "esfera",
+        "sub": "carga",
+        "E": 5,
+        "phi": 4.3,
+        "r": 0.045,
+        "diametro": true
+      },
+      "esperado": {
+        "respuesta": 3.500000000000001e-12,
+        "exacta": "3,5 pC"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "razon",
+        "beta": 0.8
+      },
+      "esperado": {
+        "respuesta": 0.47999999999999987,
+        "exacta": "0,48"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "longitud",
+        "sub": "propia",
+        "beta": 0.6,
+        "l": 10
+      },
+      "esperado": {
+        "respuesta": 12.5,
+        "exacta": "12,5 m"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "incertidumbre",
+        "sub": "momento",
+        "dx": 1.6000000000000003e-09
+      },
+      "esperado": {
+        "respuesta": 3.297491477185206e-26,
+        "exacta": "3,3 × 10⁻²⁶ kg·m/s"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "esfera",
+        "sub": "potencial",
+        "E": 4,
+        "phi": 2.3,
+        "r": 0.018000000000000002
+      },
+      "esperado": {
+        "respuesta": 1.7000000000000002,
+        "exacta": "1,7 V"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "tiempo",
+        "sub": "hora",
+        "beta": 0.6,
+        "inicio": 360,
+        "dt0": 60
+      },
+      "esperado": {
+        "respuesta": 435.0,
+        "exacta": "7:15 h"
+      }
+    },
+    {
+      "semilla": 48,
+      "entrada": {
+        "tipo": "energia",
+        "sub": "total",
+        "beta": 0.9230769230769231,
+        "m": 2e-27
+      },
+      "esperado": {
+        "respuesta": 4.680000000000002e-10,
+        "exacta": "4,68 × 10⁻¹⁰ J"
+      }
+    },
+    {
+      "semilla": 57,
+      "entrada": {
+        "tipo": "longitud",
+        "sub": "observada",
+        "beta": 0.8,
+        "l": 25
+      },
+      "esperado": {
+        "respuesta": 14.999999999999998,
+        "exacta": "15 m"
+      }
+    }
+  ]
+}

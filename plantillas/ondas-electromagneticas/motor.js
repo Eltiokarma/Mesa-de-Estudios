@@ -65,6 +65,14 @@
  *                                   ([0, 1, 0] si se omite) }. Da lambda = 2π/k (m), f = ω/(2π) (Hz), v = ω/k (m/s),
  *                                   la región, B0 = E0/v (T), avance y dirB (vectores) e I (W/m²), con errores
  *   intensidad(E0)                  intensidad media I = c·ε₀·E0²/2 (W/m²), con ε₀ = 8,85 × 10⁻¹² C²/(N·m²)
+ *   snell(n1, n2, i)                un rayo que viaja por un medio de índice n1 llega a otro de índice n2 con un ángulo
+ *                                   de incidencia i (grados, desde la normal, 0 a 90): n1·sen i = n2·sen r. Da r
+ *                                   (grados; null si no hay rayo refractado), senR (lo que valdría sen r, aunque pase de
+ *                                   1), total (reflexión total), seAcerca (el rayo se acerca a la normal), L (ángulo
+ *                                   límite, o null si n1 ≤ n2), el ángulo de reflexión (igual a i), la fracción de luz
+ *                                   que se refleja R y la que pasa T (Fresnel, luz sin polarizar; con reflexión total,
+ *                                   R = 1), y los errores (abajo). Trigonometría exacta, sin la convención sen 37° = 3/5
+ *   anguloLimite(n1, n2)            sen L = n2/n1 (grados): { existe, L, senL } (existe es false si n1 ≤ n2), con errores
  *   azar(semilla)                   números al azar con semilla
  *
  * Tabla de «qué atraviesa qué» (simplificada, de lo que se ve en la vida diaria; 'parcial' = pasa una parte):
@@ -108,6 +116,17 @@
  *                        avanceAlReves  el signo leído al revés: avance −avance y B −dirB.
  *                        BIgual         OE15: B0 = E0.
  *   intensidad.errores (W/m²): sinMitad c·ε₀·E0²; sinCuadrado c·ε₀·E0/2.
+ *   snell.errores:       noSeDesvia   R1 (al entrar a un medio de mayor índice) y R5 (al salir a uno de menor): el rayo
+ *                                     sigue recto, { r: i }.
+ *                        alReves      R3: los índices al revés (n2·sen i = n1·sen r): { r, total } con esa cuenta; el
+ *                                     rayo se desvía hacia el otro lado.
+ *                        desdeSuperficie  el ángulo medido desde la superficie (trampa 17 de la admisión de San Marcos,
+ *                                     hipótesis nuestra): { r: 90 − r } (null si hay reflexión total).
+ *                        noPasa       R4 (no sale «porque el agua es más densa») y R2 (no entra al medio más denso):
+ *                                     { total: true }.
+ *   anguloLimite.errores: invertido  sen L = n1/n2 (los índices al revés): { existe, L } con esa cuenta.
+ *                        desdeSuperficie  { L: 90 − L }, el ángulo con la superficie (hipótesis nuestra).
+ *                        rozando     { L: 90 }, el ángulo del rayo que sale rozando, no el de incidencia (hipótesis nuestra).
  *   ionizante(f)         si un fotón de frecuencia f ioniza (E ≥ 10 eV, borde de academia: λ ≤ 124 nm, en el
  *                        ultravioleta alto) y lo que espera OE18: { potente: { ioniza: true } } (con la potencia basta).
  */
@@ -354,11 +373,44 @@
       } });
   }
 
+  // ---------- Refracción: el rayo que cambia de medio ----------
+  const RAD = Math.PI / 180;
+  const grados = x => limpio(Math.asin(Math.min(1, x)) / RAD);
+  function indice(n, que) { positivo(n, que); if (n < 1) throw new Error(`${que} no puede ser menor que 1`); return n; }
+  function anguloLimite(n1, n2) {
+    indice(n1, 'el índice n1'); indice(n2, 'el índice n2');
+    const L = n1 > n2 ? grados(n2 / n1) : null;
+    const inv = n1 / n2, existeInv = n2 > n1; // con los índices al revés, sen L = n1/n2
+    return { existe: n1 > n2, L, senL: n1 > n2 ? limpio(n2 / n1) : null,
+      errores: { invertido: { existe: existeInv, L: existeInv ? grados(n1 / n2) : null, senL: limpio(inv) },
+        desdeSuperficie: { L: L === null ? null : limpio(90 - L) }, rozando: { L: 90 } } };
+  }
+  // Fresnel para luz sin polarizar: fracción de la potencia que se refleja.
+  function reflejada(n1, n2, i, r) {
+    if (r === null) return 1;
+    const ci = Math.cos(i * RAD), cr = Math.cos(r * RAD);
+    const rs = (n1 * ci - n2 * cr) / (n1 * ci + n2 * cr), rp = (n1 * cr - n2 * ci) / (n1 * cr + n2 * ci);
+    return limpio((rs * rs + rp * rp) / 2);
+  }
+  function snell(n1, n2, i) {
+    indice(n1, 'el índice n1'); indice(n2, 'el índice n2'); numero(i, 'el ángulo de incidencia');
+    if (i < 0 || i > 90) throw new Error('el ángulo de incidencia va de 0° a 90°, medido desde la normal');
+    const senR = limpio(n1 * Math.sin(i * RAD) / n2);
+    const total = senR > 1;
+    const r = total ? null : grados(senR);
+    const senInv = n2 * Math.sin(i * RAD) / n1, totalInv = senInv > 1 + 1e-12;
+    const R = reflejada(n1, n2, i, r);
+    return { n1, n2, i, r, senR, total, seAcerca: !total && r < i, reflejado: i, R, T: limpio(1 - R), L: anguloLimite(n1, n2).L,
+      errores: { noSeDesvia: { r: i }, alReves: { r: totalInv ? null : grados(senInv), total: totalInv },
+        desdeSuperficie: { r: total ? null : limpio(90 - r) }, noPasa: { total: true } } };
+  }
+
   function azar(sem) { let s = (sem >>> 0) || 1; return () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296; }
 
   return {
     C, HC_EV_NM, E_CARGA, H_EV, V_SONIDO, E_IONIZA, EPS0,
     aHz, aMetros, region, regiones, onda, ondaDeLambda, foton, campos, campoDeB, direccionB, producto, punto, instante,
-    viaje, eco, medio, atraviesa, materiales, posicion, frecuenciaEn, referencias, carrera, colorLuz, ionizante, intensidad, leerOnda, azar,
+    viaje, eco, medio, atraviesa, materiales, posicion, frecuenciaEn, referencias, carrera, colorLuz, ionizante, intensidad, leerOnda,
+    snell, anguloLimite, azar,
   };
 });

@@ -3,10 +3,11 @@
   "titulo": "La antena y el arcoíris: ondas electromagnéticas",
   "formato": "escena",
   "unidades": [
-    "fisica.ondas-electromagneticas"
+    "fisica.ondas-electromagneticas",
+    "fisica.optica-geometrica"
   ],
   "estado": "borrador",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "escena": "index.html",
   "motor": "motor.js",
   "casos": "casos.json",
