@@ -119,7 +119,8 @@
       "circular-encuentros",
       "circular-mcu",
       "circular-horaria",
-      "circular-grafica"
+      "circular-grafica",
+      "circular-aceleracion-total"
      ]
     },
     {
@@ -4557,6 +4558,21 @@
     "/plantillas/circuitos-cc/index.html",
     "/plantillas/circuitos-cc/motor.js",
     "/plantillas/circuitos-cc/papel.json"
+   ]
+  },
+  "circular-aceleracion-total": {
+   "id": "circular-aceleracion-total",
+   "titulo": "El triángulo de aceleraciones",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "#/practica/circular-aceleracion-total",
+   "papel": null,
+   "archivos": [
+    "/plantillas/circular-aceleracion-total/generador.js"
    ]
   },
   "circular-encuentros": {

@@ -53,7 +53,7 @@
       "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["tiro-parabolico", "movimiento-circular", "circular-transmision", "circular-mcuv", "circular-enesimo-segundo", "circular-encuentros", "circular-mcu", "circular-horaria", "circular-grafica"],
+      "plantillas": ["tiro-parabolico", "movimiento-circular", "circular-transmision", "circular-mcuv", "circular-enesimo-segundo", "circular-encuentros", "circular-mcu", "circular-horaria", "circular-grafica", "circular-aceleracion-total"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
     {

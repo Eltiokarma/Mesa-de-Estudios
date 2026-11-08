@@ -1,0 +1,165 @@
+{
+  "plantilla": "circular-aceleracion-total",
+  "tolerancia": 0.000001,
+  "nota": "El ángulo dado es el de la aceleración total con la velocidad: tan θ = acp/aT. Con 37° y 53° se usan los valores de academia (triángulo 3-4-5); con 30°, 45° y 60°, los exactos (las respuestas pueden llevar raíz).",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió las 11 semillas en exacto; en el caso de las dos aceleraciones usó acp/aT = 2θ, que no depende de α ni de r, y en el del ángulo, la tangente entre catetos con 37° y 53° de academia. Coinciden las 11, incluidas las cuatro regeneradas (3, 9, 11 y 19); en las semillas 200 a 229, correctas y distractores bien.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "reposo",
+        "sub": "theta",
+        "r": 0.2,
+        "alfa": 8,
+        "razon": 1
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "exacta": "0,5 rad"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "reposo",
+        "sub": "theta",
+        "r": 0.5,
+        "alfa": 4,
+        "razon": 6
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 rad"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "reposo",
+        "sub": "theta",
+        "r": 0.25,
+        "alfa": 2,
+        "razon": 2
+      },
+      "esperado": {
+        "respuesta": 1,
+        "exacta": "1 rad"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "radio",
+        "angulo": 37,
+        "v": 12,
+        "at": 3
+      },
+      "esperado": {
+        "respuesta": 64,
+        "exacta": "64 m"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "radio",
+        "angulo": 53,
+        "v": 12,
+        "at": 3
+      },
+      "esperado": {
+        "respuesta": 36,
+        "exacta": "36 m"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "inicial",
+        "sub": "instante",
+        "omega0": 4,
+        "alfa": 0.5,
+        "t": 1,
+        "r": 0.2
+      },
+      "esperado": {
+        "respuesta": 4.05,
+        "exacta": "4,05 m/s²"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "componentes",
+        "pide": "at",
+        "angulo": 53,
+        "v": 4,
+        "r": 10,
+        "diametro": true
+      },
+      "esperado": {
+        "respuesta": 1.2000000000000002,
+        "exacta": "1,2 m/s²"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "componentes",
+        "pide": "a",
+        "angulo": 45,
+        "v": 8,
+        "r": 16,
+        "diametro": true
+      },
+      "esperado": {
+        "respuesta": 5.65685424949238,
+        "exacta": "4√2 m/s²"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "inicial",
+        "sub": "modulo",
+        "r": 2,
+        "v0": 1,
+        "at": 0.6,
+        "theta": 0.25000000000000006
+      },
+      "esperado": {
+        "respuesta": 1,
+        "exacta": "1 m/s²"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "reposo",
+        "sub": "tangente",
+        "r": 0.2,
+        "alfa": 5,
+        "theta": 2
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "inicial",
+        "sub": "acp",
+        "r": 8,
+        "v0": 4,
+        "at": 1,
+        "theta": 1.5
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "5 m/s²"
+      }
+    }
+  ]
+}
