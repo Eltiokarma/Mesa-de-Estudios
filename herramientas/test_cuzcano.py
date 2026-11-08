@@ -4,11 +4,21 @@ import json
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
-from cuzcano import open_pdf
+from cuzcano import open_pdf, download
 from reordenar_columnas_ocr import reorder
 
 
 class DescargasTest(unittest.TestCase):
+    def test_descarga_truncada_no_se_guarda_como_pdf_completo(self):
+        class Response(io.BytesIO):
+            headers = {'Content-Length': '100'}
+        with tempfile.TemporaryDirectory(dir=Path(__file__).resolve().parent) as directory:
+            with patch('cuzcano.ROOT', Path(directory)), patch('cuzcano.time.sleep'), \
+                 patch('cuzcano.open_pdf', side_effect=lambda url: (Response(b'corto'), b'%PDF-1.7\n')):
+                result = download({'id': 'prueba', 'titulo': 'Prueba truncada'})
+                self.assertEqual(result['estado'], 'error')
+                self.assertFalse((Path(directory) / 'fuentes/libros/cuzcano/prueba.pdf').exists())
+
     def test_pdf_directo(self):
         with patch('urllib.request.urlopen', return_value=io.BytesIO(b'%PDF-1.7\ncontenido')):
             response, first = open_pdf('https://drive.google.com/uc?id=ejemplo')
@@ -43,7 +53,7 @@ class ColumnasTest(unittest.TestCase):
                 '5\t1\t1\t1\t1\t2\t60\t10\t10\t10\t90\tB',
                 '5\t1\t1\t1\t2\t1\t10\t30\t10\t10\t90\tC',
                 '5\t1\t1\t1\t2\t2\t60\t30\t10\t10\t90\tD']
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=Path(__file__).resolve().parent) as directory:
             path = Path(directory) / 'p-0001.json'
             path.write_text(json.dumps({'archivo': 'prueba.pdf', 'pagina_pdf': 1,
                 'regiones': [{'caja_px': [0, 0, 100, 100], 'tsv': '\n'.join(rows)}]}), encoding='utf-8')

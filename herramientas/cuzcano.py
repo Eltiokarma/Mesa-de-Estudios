@@ -5,6 +5,9 @@ import hashlib
 import json
 import re
 import time
+import unicodedata
+from collections import Counter, defaultdict
+from datetime import datetime, timezone
 import urllib.request
 import urllib.parse
 from html.parser import HTMLParser
@@ -60,6 +63,32 @@ def save(path, data):
     temp.replace(path)
 
 
+def coverage(books):
+    courses = ['razonamiento matematico', 'fisica', 'quimica', 'aritmetica',
+               'algebra', 'geometria', 'trigonometria', 'razonamiento verbal']
+    rows = []
+    for book in books:
+        title = ' '.join(book[k] for k in ('coleccion', 'seccion', 'titulo'))
+        normalized = ''.join(c for c in unicodedata.normalize('NFD', title.lower()) if not unicodedata.combining(c))
+        found = [course.replace(' ', '-') for course in courses if course in normalized]
+        rows.append({'id': book['id'], 'curso_inferido': found[0] if len(found) == 1 else None})
+    counts = Counter(row['curso_inferido'] for row in rows)
+    save(ROOT / 'fuentes/cuzcano/cobertura-catalogo.json', {
+        'metodo': 'Inferencia desde título, sección y colección; no clasifica el contenido completo',
+        'conteo': {course.replace(' ', '-'): counts[course.replace(' ', '-')] for course in courses},
+        'sin_clasificar': counts[None], 'libros': rows})
+
+
+def duplicates(results):
+    groups = defaultdict(list)
+    for result in results:
+        if result['estado'] == 'descargado':
+            groups[result['sha256']].append(result['id'])
+    save(ROOT / 'fuentes/cuzcano/duplicados.json', {
+        'entradas': len(results), 'contenidos_pdf_unicos': len(groups),
+        'duplicados': [{'sha256': sha, 'ids': ids} for sha, ids in groups.items() if len(ids) > 1]})
+
+
 def inventory(platform):
     rows = json.loads(Path(platform).read_text(encoding='utf-8'))['catalogs']['cuzcano']
     books = []
@@ -71,7 +100,8 @@ def inventory(platform):
                       'coleccion': row['catalog'], 'seccion': row.get('section', ''),
                       'autor': row.get('author', ''), 'url': row['url']})
     save(ROOT / 'fuentes/cuzcano/inventario.json',
-         {'fuente': SOURCE, 'fecha_consulta': '2026-11-08', 'libros': books})
+         {'fuente': SOURCE, 'fecha_consulta': datetime.now(timezone.utc).date().isoformat(), 'libros': books})
+    coverage(books)
     print(f'{len(books)} entradas; {len(set(b["id"] for b in books))} archivos únicos', flush=True)
 
 
@@ -86,9 +116,15 @@ def download(book):
                     url = 'https://drive.google.com/uc?export=download&id=' + book['id']
                     response, first = open_pdf(url)
                     with response, part.open('wb') as output:
+                        length = response.headers.get('Content-Length', '')
+                        expected = int(length) if length.isdigit() else None
+                        written = len(first)
                         output.write(first)
                         while chunk := response.read(1024 * 1024):
                             output.write(chunk)
+                            written += len(chunk)
+                        if expected is not None and written != expected:
+                            raise IOError(f'Descarga truncada: {written} de {expected} bytes')
                     part.replace(dest)
                     break
                 except Exception:
@@ -120,6 +156,7 @@ def main():
             for result in executor.map(download, unique):
                 results.append(result)
                 save(ROOT / 'fuentes/cuzcano/descargas.json', results)
+        duplicates(results)
         if any(r['estado'] == 'error' for r in results):
             raise SystemExit(1)
 

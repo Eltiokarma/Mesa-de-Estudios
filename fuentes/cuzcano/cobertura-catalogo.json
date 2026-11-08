@@ -1,0 +1,808 @@
+{
+  "metodo": "Inferencia desde título, sección y colección; no clasifica el contenido completo",
+  "conteo": {
+    "razonamiento-matematico": 15,
+    "fisica": 44,
+    "quimica": 14,
+    "aritmetica": 33,
+    "algebra": 18,
+    "geometria": 48,
+    "trigonometria": 26,
+    "razonamiento-verbal": 0
+  },
+  "sin_clasificar": 0,
+  "libros": [
+    {
+      "id": "1GQxXnXKRDrb8SFKemkA-ggcOGep1KE44",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1C9wCW-5MAcPnWacMet9fJSwiP9Fmpcqb",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "13Ha3JNiQ_YwB_MUx6OIniThhMgfcRqvl",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "180G0ufWjo0upKFwSWpMhNuOAqynExsll",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1wj1ykr6aGFFkO3GZue28CCt-jkcpNQVT",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "15kK8hXhYrHbEpAUHVnYzf4855ROhBFsn",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1EN0I_nCIO_ELsQ2nY_CKaKYCTbGDCRpl",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1b1gIlTeuWkCHor3xmq40yswoVTiEppas",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1l8_QvPBwxU8_OSYtVmllfdU0FQ61k4b2",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1PPyvmLQDo-_kaMlVxK91147aZDH_QBtV",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1iWZBvAQbVaDMNhcoNlOYKijQ-zqVd_G9",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1ZytfSLpbtV0APpgMM4wyf_a4JKuWUDEj",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1FAQE4NeOPpvDniucYUa1Xq-uQJx2A9P7",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1XkVfIGCk4Ntk7FyQKmfUWRRC4nWMQS8q",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "15NfYUMNgJxpc9TgHXSXQna7-eUS6B5un",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1VKgltzV7S4Cv61NhaNX5t9M70J49SVSJ",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1Ymx1iaGMFZFvm1rwoDaiIhGwXMirQuC2",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1EzLpeF5LAAXI5a13TkVi2yBsObmDf2F3",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1ntfbYjq6vjw7ULSfxSGZ6KSMAwMuC_BV",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1Rd8XRt8tsHV2mvD2JmCtP2kqle3Jkidi",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1D4cQ5hezU0lspCcTo-wvs7lCTPWIXRxN",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1PKJCS_HtBgi7zzbtOlIO6gzEQSRqko8r",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1CceLWwUPFEMDssGhAe_OUo9g50mOInHe",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1kl9m1rcpPHti15E7oeKWq1niBOpp33El",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "11vxcQ3FU0RxqE_2S0aSJtir5WSh9Gksj",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1GcIkkRVsWbv5SCVGeUktgnDlHTDX4xZD",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1CSlIJdkogvxdpLeRNvXsQPXFInkvJUNp",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1Lxs7bdQCiNmSzTRCw7tN8trfZ42RsEwK",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1Gb720i_3nsJnzhxLF42vSwLrHFoz6LQr",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1bxL05hrWy_7bRYO1dePRSEYGduMmIidg",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1Xm5zigX-QaNr6d6064gqKil8zk0HEoi0",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1R83WlbJZDWwsyDXqLg0ESp8BacLfhhQK",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1onW2u9HVT3vs_DEtu-Homv6SGIafac4C",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1Em7LMvEh8B4nkWRM0SQbSZSQP1cvmOQ4",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1aBxjSBcH2tDloWnWaKY6TCiYPf5maTEC",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1pvKXSBsVkf7ISqsHJ-L0xHZ0NjECiSm_",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1-1n812R-VY1YwB7uOdmqUT1eCton8Yr4",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "18c02NWbmlln9C4GCUhS1SIrPbS5Ditn6",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1Sm3oNp06JcENoORsxcy8mbP8CbLvQ7R0",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "19Gt6mzvU1mMVI2FJYiMaNWYIWQBOZdU_",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1aSrtK86JHruGEeyYWWTOyNihgSsU1Llk",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "16dhMW7FI8E3SsplRJJseIt6fhXi_LqSl",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1LBGYqm7MOIKXyRSWCJCAeteHNenplehn",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1O4cBSioAQ1yFR_7h4e7RIFSrsnhny9tC",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1Ot4JkySCtdDcyBV4sjvA0b4nV9yWjYbf",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1kFY9irWVdV9vwjBSM_N66ReZhqtJR5Uk",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1hDN04WCX2304ub2YptsRsDSKjFNdtt54",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1kVRKh4BBZIvcr1-64O8XdbKCgLptLvof",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1t0O57suOk0lj0pU5nwpozCEzfgPexm5v",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1MjMFIO8Y0M6TD8I_f4Qzgk5WUZ7PYQAD",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1LiwSmLUHAYpFRHKc__n5ZaXl3jqBfaKr",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1EuNZlO9GW8BN_Bt9mkuuu_xexUCfC6Px",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1zNo6sl3gzyrBdpQSDfw0F-nw8JdlEupX",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1TlmVujp_wq_QeoIUBXp-qgmijkZw5o-i",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1Dfq-SmKDQsGHtG0GV7vlxn_yLmZ8AxZK",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1aECkw1cTEgfeygM2WxBTtoxn_RyYlAd1",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1hgtrWQyoC522F6N9fTap3ZJ6wf2UkPOM",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1MJeqtWYXNOsvkW2vZJkkl8DaPAS0wEym",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1ZZh2gAD4UREhXMTwyhFFE0WYlXGjhLEb",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1HGPsNVTPafEaIIB6pjYeB24Kz0gRa0c4",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1MeJQ7JYmmpfE5_oFxVwDQN5vMfIWyHbJ",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "131mLtvzNI6qUaVasTwk2hOiFg5aNxTTG",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1-KPdmc12ux3xfY_5IkgDm5rZ7EHlst8b",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1088xstWyVL8UmHyMGX0_RyyCKhVySsDS",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1gIzvcBRjbIAY5B1A_xgfQSa6AtesRbme",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1nV5SPoE5gwvmA424g7daGo2-KeEU7OX6",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1VEob-ekrzJ_R3Uub3AQV5d4zqhuo4NCS",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1pFrF7WW44gFDfINYBsXfQZS3emQ4UB3g",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1GnvSEjr1gndPCcaYBQBTQJpl01GFfaPc",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1mP9CGMqyXDKEMlAIqIBWOJE9afVG9vVx",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1JtNLsddpMNJ_JzpUtFWfoeczpkAk0_Rx",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1HkP030a93NG5HLm_LXPzIAc7apVIoxvD",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1fHZsH514PUbAcLZwCZisSuLEaUM-TuQ0",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1Fhk6_hQEOmne_DAFlchm9eCOu7UaIxjD",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1_0S0TpyldUHunNEXsOe0LNWvnpf-hrU-",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1XZHi26mc_VB0Ko8UGFbjq08u8OCH8UKm",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1rHM3QWGzIRQYmRIzqkWqa-dL2Hz6d2W-",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1-u8Lo79goClEw-VgMgv7_zQu7cGuXi-S",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1kBqOrTSBKIZbAjFP1gx_j8xRB4lH0PDN",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1SnglsLBxsYQSfSIxQETSboTzCI9a1buw",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1hs1_5FLE2jr9bKHfVuFjzLsHHaOm2acQ",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1Kwr0awgPKLd6iP8aCEYrJAT1nt7L3gJq",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1zjD8qtX1DHS1J1AhoHQv_kEp8kDfVVGm",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1Vl8B7wo23MzGTU58WSmP2RaAif16cPh_",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1FD6VVJj3IJEEeLIcsuEUoap-gc2DzPSc",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1ZxWhs-nGsKQ4Qk8kmDkT2eeDSf7nyMN7",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1N9QcaSHrsQ8lcmzJz-8cqqiT13quSHFl",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1LbfwsQElTZuMEDxTt0QNYXjMIaYSOvsc",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "1BvswxsPjlJQyJs3JkSzLM-UGiexbyGWF",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1Aexs1HGuPakjuZPx6olqjCT4xePc2I6o",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1fuIgQ721-InyMUxqcM2NQrU7KtYxtBfF",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1uYzQAAUkPJGBRly-aL8emOp4QDvraEG9",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1WOmnStgONQrcJ9-b5D36E_oyT1_Tvp1I",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "156CP-4oWOzMFLDN6nbxGP5-Jfl9p5X_z",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1R90ciBfEv2Ag6iOzw7HFS1RISV89TltS",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1LiZP_28QThiIWhGjzMdpnF3UlHhDnR1S",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "17ISMXQ_vK6R4IjOy_NoaxlKrCq5_QUA6",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1wleTpPn7ZB9L4iyAUDVMokTlKYurGt60",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1XddMtDov7rABYep7dkio8rNdWXCiR794",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "12szkZ06QNc_u_XotXmwArWpVIqTbNmoN",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1hg5FzCpcHnGkrNKqRbly__5tB09MFJla",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1Kyc79hnxzn-VdnfogG95wMkwpEBa6z80",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1KF7gO2gApk2EFNuTKrtndmsVJPkWG8KR",
+      "curso_inferido": "razonamiento-matematico"
+    },
+    {
+      "id": "1oF3Q2WZz1ucFMbmvHZ2Etnf3Tp2TmP52",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1gbC3Wo-HqPygE9iIEnORDBa7VWCTn1gz",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1l72XWAPu1zctLbrJKMvKMDMiy1onOc31",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1y8o_NmQCAwGxNNd2e1GFXC_awcJ_vrJo",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1xxgmOrXSkn6YgTMOYy2CJwi9eo7GVqng",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1Eajd3SVByjANZLFFR6YniTLw4KcPo614",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1kIDLUYyFrhYnCMP7Y8VtOW9EOW3kUBVL",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1pcyzCDIvEwOD0aRRyXoW3jR0gLT9x30L",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1QigyLtuMN4BQh3cmRhRVNuAtzzhTRA07",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "13YKX8jKjZ_EQFgQ5EnhNLbOk1aczxLRn",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1lQzONRTyrUcW_Opx6KjuMnThB_WayiDQ",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1wH4TBLudBLJaHFOO7KG7ZCqvGGBG0nZj",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1F0RSVnmX30eTsDbWsJwNeirOGdSpy55l",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1HNv4L4_fKaz-YA71iIOnAOdLkVNdtsko",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1MpT0ff6DLOhmg11O9EorLVtz66AOV1Rt",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "194CdROPFH6LSsBuSzX_O6CIcz7Uy8LBm",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1Jx6iNNEHGJczhZ7apSbDxZAYGPOILibJ",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1D8_YP2Q25FmZpVBgX6Qip_GBPa2Ue3Db",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1TVm6_ggA6LRguEYLHlRL0a-j2h0phV8F",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1sjIZ9lagOmOOAUJSCBn2uF25Jczm8kRM",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1mKbwIKUZZGEtDiuMX2hGRednn1EzvNYs",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1abepztIdr4FKnUv8BgOPJAeH7R14OxWr",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "122112TjoS7L4GWaHyiTttNTzD-WVUJSc",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "19HCunUsf55YlGstD13zlaHQSLuUucN1t",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1FE4KdJUv1e-LFs2knpVc7U3AAmUQwcwy",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1KDKD6FexefQMqIdIn3f1DEg_88O73wTX",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "11DRBIQrbGVVBXfHmwblmj3D2FFrhsUFE",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1Me2M5fuB7pnEsC_WAmitbHpIsn7i91aV",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1eujgopll599M9JUf4vIMqp36oVu2DCQ1",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1qtm8yXLFENRa0Uh5F0pKotRn_5v26mfJ",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "17w3zBc5YZXjtuMhipibKILv2jJhik2HO",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1HVlloW4C09NoRU6q-CxoMqTDzhtp2zKU",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1i0bsRvX9gNwX3zs4ukTaPTCDSLOxVTsA",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "15Hk-nyrMKQmLiPm8BkVShMqDe205cQ9n",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1lLEy_lq9wVsF-jVCnjI1XnG3YEbw475x",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1t6jt4TYBbO4IAp07XesGDe2nKatJ6qxL",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1b0Codrz3HHq2hR42uE0hMhMQYOXHI85r",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1eY8lZQwaof1GhnNeF6QZRIFul5m1Ew5a",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1mYDkK85haVG4aMEdEVhPCEzkwrHy8pDx",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "17SwFs9cEPKxMyr5aoWpf9A2JWsXWjC2p",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "17oV6Nqu3psLv0PoWgYNWqL9xLu0ubPb3",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1OB_Qmt_rnYIqz4EHNWBI9AgT0ffrPV06",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1IPKJY3Wlm1Ws79onJ1Ckk14HbwCHABQj",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "17okmAXVcVmUDiXIskOkdieub5WoW25_u",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1qODqmSr6hI-PLO8sDzDKokzhKCIxo0f0",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1XNaOh4lMSXxIxw8lZUyNGPEt3jcpCBK4",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1ne6aqiTwSDEDyjiFK8nU_GW8Mlh-aKsm",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1ek9MxIJNzTlTp_BsShS8dgc-AOK2_jMz",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1KpLBzDT6hJ0NXkW5QBf092-NGJvDKFkF",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1xhKMUXBu6I3Rpxdbj0Yus1vNywmicZxe",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1Zjda6S3V359ZUYgsIFKLexIM_fe2QO2J",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1e2jkKptOdrNUloAF1b3wUD5WxBBwrkuN",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1FBgIsZFe_TKvWOARdZJLK-b7mV07GqG3",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "182MTfaVXa6VtOvQv_aduJzTtC_-45SpH",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "15gtoPyKcTraE9CLtv7EWPb_mkKz_JsEM",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "17CMpXWlubXXX9ij38v0s4iIklldij07U",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1IVlHGJPjQC0CT1AKON8xemKLycpmqo2K",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1yfBJqVdqHWIhUUiHKUpfkNEdhZi-tHhu",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1gOyKtE3YOZZBAewN1Hf_GLzJjkLCh7Dg",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1mFLqR0d-ena0IbsmyY-2RPpuVelz8EaX",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1ymDC3Q94sUQG855HCM-U06Ryz8DY34Gj",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1TWZCLSsKY0qRlCP_eeCMchPKdbEBCpKi",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1ZWLZBB-dNdvWSjImHwGoOr5eIJkiuNaz",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1NB-KNEZZ0UxxrE_-VSDiqLahhSLonu9V",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1A6z2QnUVFCtRaFrPvI1B0Ttdnpzgooe3",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1lRpmOqj89cIwTGNLKqobGdgQAtz8vFVn",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "14U2woUNzwuLOr2rNC0QURrwWlO5FnQhn",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1wHYFbIYJFKvsltDxi8mB5ZIBLC8PvjjO",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1aOHVp4-tKrBVjvvJMvH0zKo-ajpVuG3K",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1ouxTBsC0-YxuAO2489v_HSZZs4Lv9gvf",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1Mme2TTvt6wE0lZl3njVn13qtXCTEALdx",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "187pckSkntGMy-qTK_u1Z7LOum5vsAwFx",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1lFZCTumyI_Z54wHSsdrBzD-bPy4IKLSi",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1eczODi0lNuNubOANBeNigAnyvRwI5UWW",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1c8VrK4blZpr4EXGM78eTT_CAaY8-5z4F",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1yAWSsigXDyMsVjlZeElVoZZoJ-F-c86u",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1g5xP0XVxeqpUkbZpR8mR4oDbik_KrE1Q",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1tPq0Up5gKEv-ON_LrawB7n7XESuwsfcA",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1WBv_rYDk-0Hr0xJ3te9P0jRa10Wb0Ct5",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1jJZF_8yB0jpqcyge4gvHYtwvklz7lpxC",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1zRF5pCRuTv91slxspTgiOWmw7sIeGUBi",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1EALVDRdCLkZAxoFNtiCDQo8ZEyJgw_kQ",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1_ZCaYRXn8_CjDkLrUaZqv8MKCTKpoiV1",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "1CCRwwojyUuhTm4wi3V0Ung-XsiTtVblc",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1O70Ank24ypGrtJ33vDz2X_KOAasLF6Ka",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1mzR3yovF3NC5x6n-xgu3c_WQuylk9BG1",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "19ZaD9nO_VUcBIiB6wT0sr9wVdRqyR4ea",
+      "curso_inferido": "aritmetica"
+    },
+    {
+      "id": "1np7cB2tXaO5pqfaRiCHz5_0aIQUnJve1",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1gwiXyWChtHi54xpcbRPy8UyQRLCgTj-u",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1EwhlT-QHVFGGjOpFhm-AsYc7pSumvD5W",
+      "curso_inferido": "fisica"
+    },
+    {
+      "id": "1E3buiExU-xpBCX4QXAL19ZphhQ5hMz8e",
+      "curso_inferido": "quimica"
+    },
+    {
+      "id": "1hW5EB9iA8eweTYIlYMzboBYIashRev2P",
+      "curso_inferido": "geometria"
+    },
+    {
+      "id": "14G16ZfehQ5g1_anfllbtSknEQzzb5MME",
+      "curso_inferido": "trigonometria"
+    },
+    {
+      "id": "1UrK4ZSSLWe51O-BLmFZ6HqyXmbasYv4d",
+      "curso_inferido": "algebra"
+    },
+    {
+      "id": "13Xzh_EV0raCTV2wkk2IG5tQ-Hea5zbzX",
+      "curso_inferido": "aritmetica"
+    }
+  ]
+}

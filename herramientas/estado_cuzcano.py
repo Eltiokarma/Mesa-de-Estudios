@@ -12,12 +12,16 @@ from cuzcano import save
 
 def main():
     inventory = json.loads((ROOT / 'fuentes/cuzcano/inventario.json').read_text(encoding='utf-8'))
+    errors_path = ROOT / 'fuentes/cuzcano/errores-ocr.json'
+    errors = {r['id']: r['error'] for r in json.loads(errors_path.read_text(encoding='utf-8'))} if errors_path.exists() else {}
     rows = []
     for book in inventory['libros']:
         pdf = ROOT / 'fuentes/libros/cuzcano' / (book['id'] + '.pdf')
         folder = ROOT / 'fuentes/ocr-local/cuzcano' / book['id']
         row = {'id': book['id'], 'titulo': book['titulo'], 'descargado': pdf.exists(),
                'paginas': None, 'paginas_procesadas': 0, 'revision_visual_completa': False}
+        if book['id'] in errors:
+            row['error_ocr'] = errors[book['id']]
         if pdf.exists():
             try:
                 with pymupdf.open(pdf) as document:
@@ -36,7 +40,8 @@ def main():
     summary = {'libros_catalogados': len(rows), 'libros_descargados': sum(r['descargado'] for r in rows),
                'paginas_descargadas': sum(r['paginas'] or 0 for r in rows),
                'paginas_procesadas': sum(r['paginas_procesadas'] for r in rows),
-               'libros_procesados': sum(r['paginas'] is not None and r['paginas_procesadas'] == r['paginas'] for r in rows),
+               'libros_procesados': sum(r['paginas'] is not None and r['paginas_procesadas'] == r['paginas'] and 'error_ocr' not in r for r in rows),
+               'libros_con_error_ocr': len(errors),
                'libros_revisados_integramente': 0}
     save(ROOT / 'fuentes/cuzcano/estado.json', {'generado_utc': datetime.now(timezone.utc).isoformat(), 'resumen': summary, 'libros': rows})
     print(json.dumps(summary, ensure_ascii=False, indent=2))

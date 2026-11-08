@@ -4,9 +4,12 @@ node_modules/
 .ocr-deps/
 .tessdata/
 fuentes/ocr-local/
+/fuentes/cuzcano/procesamiento.json
+/fuentes/cuzcano/errores-ocr.json
 *.part
 __pycache__/
-platform.json
-cuzcano-source.html
-catalogo.js
-piloto*
+/platform.json
+/cuzcano-source.html
+/catalogo.js
+/drive-respuesta.html
+/piloto*

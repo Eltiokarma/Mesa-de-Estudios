@@ -10,38 +10,151 @@
         "Letras de alternativas confundidas",
         "Subíndices y fórmulas químicas mal reconocidos"
       ],
-      "correcciones_locales_documentadas": 4,
-      "accion": "Separar páginas enfrentadas y conservar correcciones parciales aparte del OCR crudo"
+      "correcciones_locales_documentadas": 7,
+      "accion": "Separar páginas enfrentadas y conservar correcciones parciales aparte del OCR crudo",
+      "tipo_revision": "revision_parcial",
+      "pendiente": "Orden de columnas, diagrama y cotejo íntegro; no validado para uso automático."
     },
     {
       "id": "1-u8Lo79goClEw-VgMgv7_zQu7cGuXi-S",
       "pagina_pdf": 10,
       "confianza_ocr": 95,
       "hallazgos": [
-        "Definición en recuadro sombreado omitida",
-        "Rótulos de figura omitidos",
-        "Encabezado fragmentado"
+        "El OCR con confianza 95 omitió la definición en el recuadro sombreado y varios rótulos del dibujo.",
+        "El encabezado de la página quedó fragmentado."
       ],
-      "accion": "Revisar recuadros y figuras también en páginas de confianza alta"
+      "accion": "Revisar recuadros y figuras también en páginas de confianza alta",
+      "tipo_revision": "parcial"
     },
     {
       "id": "15NfYUMNgJxpc9TgHXSXQna7-eUS6B5un",
       "pagina_pdf": 26,
       "hallazgos": [
         "Franja tramada sobre fórmulas",
-        "Mitad derecha en blanco"
+        "Mitad derecha en blanco",
+        "Franja tramada vertical superpuesta; mitad derecha en blanco."
       ],
-      "accion": "Cinco expresiones matemáticas cotejadas y registradas localmente; revisión parcial"
+      "accion": "Cinco expresiones matemáticas cotejadas y registradas localmente; revisión parcial",
+      "tipo_revision": "parcial",
+      "pendiente": "No usar el resto del OCR como transcripción validada.",
+      "expresiones_cotejadas_count": 5
     },
     {
       "id": "13Xzh_EV0raCTV2wkk2IG5tQ-Hea5zbzX",
       "pagina_pdf": 127,
       "hallazgos": [
         "Soluciones manuscritas",
-        "Bases y exponentes mal reconocidos"
+        "Bases y exponentes mal reconocidos",
+        "Solucionario manuscrito de aritmética; el OCR no conserva bases, exponentes ni columnas."
       ],
-      "accion": "Cotejo parcial de la resolución 18; revisar páginas contiguas antes de clasificar"
+      "accion": "Cotejo parcial de la resolución 18; revisar páginas contiguas antes de clasificar",
+      "tipo_revision": "parcial",
+      "pendiente": "Revisar el enunciado en páginas anteriores y transcribir manualmente las resoluciones 19 y 20.",
+      "expresiones_cotejadas_count": 3
+    },
+    {
+      "id": "1-u8Lo79goClEw-VgMgv7_zQu7cGuXi-S",
+      "pagina_pdf": 112,
+      "tipo_revision": "clasificacion_visual",
+      "estado": "sin_texto_principal",
+      "hallazgos": [
+        "Página de reverso con transparencia tenue del dorso; no hay texto principal que recuperar."
+      ]
+    },
+    {
+      "id": "17w3zBc5YZXjtuMhipibKILv2jJhik2HO",
+      "pagina_pdf": 62,
+      "tipo_revision": "clasificacion_visual",
+      "estado": "sin_texto_principal",
+      "hallazgos": [
+        "Página en blanco con sombras de encuadernación."
+      ]
+    },
+    {
+      "id": "180G0ufWjo0upKFwSWpMhNuOAqynExsll",
+      "pagina_pdf": 26,
+      "tipo_revision": "clasificacion_visual",
+      "estado": "pendiente_transcripcion",
+      "hallazgos": [
+        "Mitad derecha vacía; izquierda con recuadro tramado que dificulta configuraciones electrónicas."
+      ]
+    },
+    {
+      "id": "18c02NWbmlln9C4GCUhS1SIrPbS5Ditn6",
+      "pagina_pdf": 28,
+      "tipo_revision": "clasificacion_visual",
+      "estado": "pendiente_transcripcion",
+      "hallazgos": [
+        "Mitad derecha vacía; izquierda con franja tramada, diagramas y vectores que requieren cotejo ampliado."
+      ]
+    },
+    {
+      "id": "19ZaD9nO_VUcBIiB6wT0sr9wVdRqyR4ea",
+      "pagina_pdf": 8,
+      "tipo_revision": "parcial",
+      "temas_observados": [
+        "proporcionalidad",
+        "media armónica",
+        "volumen de conos"
+      ],
+      "hallazgos": [
+        "Fórmulas manuscritas y diagrama de conos requieren lectura visual"
+      ],
+      "pendiente": "Resto de las resoluciones no validado íntegramente.",
+      "expresiones_cotejadas_count": 4
+    },
+    {
+      "id": "1aBxjSBcH2tDloWnWaKY6TCiYPf5maTEC",
+      "pagina_pdf": 14,
+      "tipo_revision": "parcial",
+      "temas_observados": [
+        "complemento aritmético",
+        "numerales",
+        "multiplicación",
+        "división"
+      ],
+      "hallazgos": [
+        "Manuscrito legible visualmente, pero barras de numerales y disposición de operaciones no se conservan en OCR"
+      ],
+      "pendiente": "Cotejo íntegro de las demás resoluciones.",
+      "expresiones_cotejadas_count": 3
+    },
+    {
+      "id": "1bxL05hrWy_7bRYO1dePRSEYGduMmIidg",
+      "pagina_pdf": 11,
+      "tipo_revision": "parcial",
+      "temas_observados": [
+        "poliedros",
+        "relación de Euler",
+        "diagonales",
+        "ángulos diedros"
+      ],
+      "hallazgos": [
+        "Tramado y bajo contraste en ambas páginas",
+        "Figuras y fórmulas no recuperadas íntegramente"
+      ],
+      "estado": "requiere_cotejo_ampliado; no reconstruir pasos dudosos"
+    },
+    {
+      "id": "1D4cQ5hezU0lspCcTo-wvs7lCTPWIXRxN",
+      "pagina_pdf": 9,
+      "tipo_revision": "parcial",
+      "temas_observados": [
+        "sucesiones",
+        "acotación",
+        "convergencia",
+        "límites"
+      ],
+      "hallazgos": [
+        "Manuscrito y franja tramada",
+        "Confusión de subíndices, radicales y signos"
+      ],
+      "pendiente": "Resto de las resoluciones y fórmulas de la mitad derecha sin validación integral.",
+      "expresiones_cotejadas_count": 4
     }
   ],
-  "prioridad_solicitada": "Páginas de baja confianza"
+  "prioridad_solicitada": "Páginas de baja confianza",
+  "paginas_con_algun_cotejo": 12,
+  "paginas_pendientes_baja_confianza": 13732,
+  "paginas_excluidas_sin_texto_principal": 2
 }

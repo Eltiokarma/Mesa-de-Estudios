@@ -15,6 +15,8 @@ def main():
             continue
         page = data['pagina_pdf']
         reviewed = list(path.parent.glob(f'revision-*-p{page:04d}.json'))
+        if any(json.loads(p.read_text(encoding='utf-8')).get('estado') == 'sin_texto_principal' for p in reviewed):
+            continue
         queue.append({'id': path.parent.name, 'pagina_pdf': page,
                       'confianza': confidence, 'caracteres': len(data['texto'].strip()),
                       'revision_parcial_existente': bool(reviewed),
