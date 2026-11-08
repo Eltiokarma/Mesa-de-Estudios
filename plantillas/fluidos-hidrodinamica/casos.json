@@ -1,0 +1,228 @@
+{
+  "plantilla": "fluidos-hidrodinamica",
+  "tolerancia": 1e-06,
+  "nota": "g = 10 m/s², agua 1000 kg/m³, mercurio 13 600 kg/m³, π = 3 en las áreas con diámetro o radio. Presiones en kPa (las de bernoulli son absolutas). En torricelli, H es la altura del agua sobre el piso e y la del orificio; la profundidad del orificio es H − y. En barometro/comparar el aire tiene densidad constante rhoAire (modelo declarado en el enunciado). Los esperados se calcularon aparte, en Python, con las fórmulas cerradas (el generador y la prueba usan otros caminos).",
+  "verificacion": "PENDIENTE",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "peso-especifico",
+        "m_g": 200,
+        "V_cm3": 250
+      },
+      "esperado": {
+        "respuesta": 8000.0,
+        "exacta": "8 000 N/m³"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "torricelli",
+        "sub": "rapidez",
+        "H": 2,
+        "y": 0.2
+      },
+      "esperado": {
+        "respuesta": 6.0,
+        "exacta": "6 m/s"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "torricelli",
+        "sub": "llegada",
+        "H": 1.25,
+        "y": 0.8
+      },
+      "esperado": {
+        "respuesta": 5.0,
+        "exacta": "5 m/s"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "bernoulli",
+        "sub": "velocidad",
+        "P1": 120,
+        "P2": 106.5,
+        "razonAreas": 2
+      },
+      "esperado": {
+        "respuesta": 6.0,
+        "exacta": "6 m/s"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "bernoulli",
+        "sub": "caudal",
+        "P1": 150,
+        "Q_Ls": 8,
+        "A1_cm2": 40,
+        "A2_cm2": 20
+      },
+      "esperado": {
+        "respuesta": 144.0,
+        "exacta": "144 kPa"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "caudal",
+        "sub": "rapidez",
+        "D_cm": 10,
+        "Q": 60,
+        "uQ": "L/s",
+        "pi": 3
+      },
+      "esperado": {
+        "respuesta": 8.0,
+        "exacta": "8 m/s"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "caudal",
+        "sub": "llenado",
+        "D_cm": 4,
+        "v": 1,
+        "V_L": 360,
+        "pi": 3
+      },
+      "esperado": {
+        "respuesta": 5.0,
+        "exacta": "5 min"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "torricelli",
+        "sub": "angulo",
+        "H": 1.2,
+        "y": 0.9
+      },
+      "esperado": {
+        "respuesta": 60.0,
+        "exacta": "60°"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "continuidad",
+        "sub": "diametros",
+        "D1_cm": 3,
+        "D2_cm": 9,
+        "v1": 18
+      },
+      "esperado": {
+        "respuesta": 2.0,
+        "exacta": "2 m/s"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "bernoulli",
+        "sub": "presion",
+        "P1": 160,
+        "v1": 1,
+        "razonAreas": 4,
+        "porDiametro": true
+      },
+      "esperado": {
+        "respuesta": 152.5,
+        "exacta": "152,5 kPa"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "caudal",
+        "sub": "ducto",
+        "D_cm": 20,
+        "V_m3": 54,
+        "t_min": 12,
+        "pi": 3
+      },
+      "esperado": {
+        "respuesta": 2.5,
+        "exacta": "2,5 m/s"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "barometro",
+        "sub": "comparar",
+        "h0_cm": 76,
+        "z_m": 3800,
+        "rhoAire": 0.85
+      },
+      "esperado": {
+        "respuesta": 52.25,
+        "exacta": "52,25 cm"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "barometro",
+        "sub": "absoluta",
+        "h_cm": 51,
+        "Pman_kPa": 250
+      },
+      "esperado": {
+        "respuesta": 319.36,
+        "exacta": "319,36 kPa"
+      }
+    },
+    {
+      "semilla": 36,
+      "entrada": {
+        "tipo": "torricelli",
+        "sub": "alcance",
+        "H": 2,
+        "y": 0.2
+      },
+      "esperado": {
+        "respuesta": 1.2,
+        "exacta": "1,2 m"
+      }
+    },
+    {
+      "semilla": 43,
+      "entrada": {
+        "tipo": "barometro",
+        "sub": "columna",
+        "P_Pa": 65280
+      },
+      "esperado": {
+        "respuesta": 48.0,
+        "exacta": "48 cm"
+      }
+    },
+    {
+      "semilla": 98,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "densidad",
+        "W_N": 36,
+        "V_L": 4
+      },
+      "esperado": {
+        "respuesta": 900.0,
+        "exacta": "900 kg/m³"
+      }
+    }
+  ]
+}

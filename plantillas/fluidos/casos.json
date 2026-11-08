@@ -2,6 +2,7 @@
   "plantilla": "fluidos",
   "unidades": "SI: kg, m, m², m³, N, Pa, J; g = 10 m/s², agua 1000 kg/m³ y P₀ = 100 000 Pa salvo que se diga otra cosa",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' (una lista) y compara 'espera'. Los campos anidados van con punto (errores.sinP0, niveles.0); los números se comparan con la tolerancia relativa; los textos y los booleanos, exactos. 'presionEn' es recipiente(o).presionEn(x, y), con x medido desde el eje del recipiente e y desde el fondo. La profundidad h se mide en vertical hacia abajo desde la superficie libre. Las presiones 'Pman' (o 'P' en presionEn) son manométricas; 'Pabs', absolutas. Los recipientes tienen 1 m de fondo hacia dentro: el área de cada tramo vale su ancho. En 'balanza', 'bajada' es cuánto está el fondo del bloque cúbico bajo la superficie inicial del líquido; T es lo que marca el dinamómetro y N lo que marca la balanza.",
+  "verificacion_0_2_0": "PENDIENTE: los cuatro casos nuevos de la versión 0.2.0 (continuidad con radios, caudal, torricelli y estrechamiento) los calculó a mano el constructor (8 nov 2026); falta un verificador a ciegas.",
   "verificacion": "Verificado por un subagente independiente (7 nov 2026), sin leer el motor, casos.json ni las pruebas (solo la cabecera de motor.js): fracciones exactas en Python por otros caminos (prensa por trabajo, balanza por balance de fuerzas del sistema, tubo en U igualando presiones y paradoja con fuerza en el fondo = peso del agua + fuerza del techo). Coinciden 131 campos; las diferencias fueron de nombre o interpretación (mismaSuperficie, hilo, Wvaso). Los recipientes y presionEn se comprobaron por consistencia con la geometría que se deduce de los números.",
   "tolerancia": 1e-9,
   "casos": [
@@ -78,6 +79,26 @@
     { "nombre": "Bernoulli en un tubo horizontal: 200 000 Pa a 2 m/s, se angosta a la mitad → 4 m/s y 194 000 Pa (más rápido, menos presión; el error da 206 000 Pa)",
       "fn": "bernoulli", "args": [{ "P1": 200000, "v1": 2, "A1": 0.02, "A2": 0.01 }],
       "espera": { "v2": 4, "P2": 194000, "errores.masRapidoMasPresion": 206000 },
-      "tambien": [ { "args": [{ "P1": 150000, "v1": 1, "v2": 3, "h1": 0, "h2": 2 }], "espera": { "P2": 126000, "errores.sinAltura": 146000 } } ] }
+      "tambien": [ { "args": [{ "P1": 150000, "v1": 1, "v2": 3, "h1": 0, "h2": 2 }], "espera": { "P2": 126000, "errores.sinAltura": 146000 } } ] },
+    { "nombre": "Continuidad con radios: de 2 cm a 1 cm con 0,5 m/s → 2 m/s (con la razón de radios sin elevar: 1 m/s)",
+      "fn": "continuidad", "args": [{ "r1": 0.02, "r2": 0.01, "v1": 0.5 }],
+      "espera": { "v2": 2, "errores.razonRadios": 1, "errores.invertido": 0.125, "errores.igual": 0.5 } },
+    { "nombre": "Caudal con π = 3: manguera de 2 cm de diámetro con 0,9 L/s → 3 m/s (diámetro como radio: 0,75 m/s; litros entre 100: 30 m/s); a 3 m/s llena 18 L en 20 s",
+      "fn": "caudal", "args": [{ "D": 0.02, "Q": 0.0009, "pi": 3 }],
+      "espera": { "A": 0.0003, "v": 3, "QLs": 0.9, "QLmin": 54, "errores.diametroComoRadio": 0.75, "errores.litrosEntre100": 30, "errores.sinCuadrado": 0.03 },
+      "tambien": [ { "args": [{ "D": 0.02, "v": 3, "V": 0.018, "pi": 3 }], "espera": { "Q": 0.0009, "t": 20, "errores.diametroComoRadio": 0.0036 } },
+                   { "args": [{ "A": 0.004, "v": 2 }], "espera": { "Q": 0.008, "QLs": 8 } } ] },
+    { "nombre": "Torricelli: agua hasta 1,25 m, orificio a 0,45 m del piso → h = 0,8 m, sale a 4 m/s, cae en 0,3 s a 1,2 m, llega a 5 m/s con tan θ = 3/4 (con toda la altura saldría a 5 m/s)",
+      "fn": "torricelli", "args": [{ "H": 1.25, "y": 0.45 }],
+      "espera": { "h": 0.8, "v": 4, "t": 0.3, "x": 1.2, "vy": 3, "vLlegada": 5, "angulo": 36.86989764584402,
+                  "errores.profundidadTotal": 5, "errores.alturaDelOrificio": 3, "errores.sinRaiz": 16, "errores.alcanceConH": 1.5, "errores.sumaEscalar": 7 },
+      "tambien": [ { "args": [{ "h": 1.8 }], "espera": { "v": 6, "errores.sinRaiz": 36 } } ] },
+    { "nombre": "Tubo con estrechamiento: radio de 2 cm a 1 cm, 0,5 m/s y 6000 Pa manométricos en el ancho → 2 m/s y 4125 Pa en el angosto; tubitos de 60 cm y 41,25 cm (si la presión subiera con la rapidez: 7875 Pa y 78,75 cm)",
+      "fn": "estrechamiento", "args": [{ "r1": 0.02, "r2": 0.01, "v1": 0.5, "P1": 6000 }],
+      "espera": { "v2": 2, "P2": 4125, "dP": 1875, "h1": 0.6, "h2": 0.4125,
+                  "errores.masRapidoMasPresion": 7875, "errores.hMasRapidoMasPresion": 0.7875, "errores.presionIgual": 6000, "errores.hIgual": 0.6,
+                  "errores.v2RadioLineal": 1, "errores.v2Invertida": 0.125, "errores.v2Igual": 0.5 },
+      "tambien": [ { "args": [{ "r1": 0.02, "r2": 0.02, "v1": 0.5, "P1": 6000 }], "espera": { "v2": 0.5, "P2": 6000, "h2": 0.6 } },
+                   { "args": [{ "r1": 0.02, "r2": 0.008, "v1": 0.5, "P1": 6000 }], "espera": { "v2": 3.125, "P2": 1242.1875, "h2": 0.12421875 } } ] }
   ]
 }

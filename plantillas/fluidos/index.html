@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Fluidos: presión, Pascal y Arquímedes</title>
+<title>Fluidos: presión, Pascal, Arquímedes y el tubo que se angosta</title>
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4). Las fuerzas que ya tienen
@@ -13,6 +13,11 @@
      E  empuje del líquido        turquesa  #0f766e / #5ed9c8
      P  presión (manométrica)     naranja   #a35700 / #ef6f06
      h  profundidad               sepia     #392f0e / #f9bd0b
+   Nuevo en 0.2.0 (pestaña «El tubo con estrechamiento»), con el mismo script (ΔE00 ≥ 21 contra los siete, la tinta y el
+   gris, en claro y en oscuro; AA sobre el papel y sobre el chip .v):
+     v  rapidez del agua           granate   #57120f / #fabea3
+   Allí la h es la altura del agua en cada tubito sobre el eje del tubo: la profundidad del eje bajo esa superficie.
+   Los radios y el caudal van en tinta, como las áreas.
    Las densidades, volúmenes, masas, áreas y recorridos van en tinta. Los líquidos se pintan con rellenos pálidos
    (agua, aceite, mercurio), que no son variables. El morado de marca no se usa aquí. */
 [hidden]{display:none!important}
@@ -20,7 +25,7 @@
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-W:#1f5fbf; --c-N:#4f7a17; --c-T:#c0364a; --c-F:#a10fbf; --c-E:#0f766e; --c-P:#a35700; --c-h:#392f0e;
+  --c-W:#1f5fbf; --c-N:#4f7a17; --c-T:#c0364a; --c-F:#a10fbf; --c-E:#0f766e; --c-P:#a35700; --c-h:#392f0e; --c-v:#57120f;
   --agua:#d4eaf3; --aceite:#f3e5ad; --mercurio:#c9c8d0; --suelo:#d9c8bb; --bloque:#d8dbe2; --madera:#e6cfb4; --vidrio:#8c8296;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -30,13 +35,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-W:#7cb0ff; --c-N:#a3d65e; --c-T:#f17384; --c-F:#cf6bfa; --c-E:#5ed9c8; --c-P:#ef6f06; --c-h:#f9bd0b;
+  --c-W:#7cb0ff; --c-N:#a3d65e; --c-T:#f17384; --c-F:#cf6bfa; --c-E:#5ed9c8; --c-P:#ef6f06; --c-h:#f9bd0b; --c-v:#fabea3;
   --agua:#22394d; --aceite:#463f24; --mercurio:#5b5968; --suelo:#4a3d55; --bloque:#5f6472; --madera:#6b5468; --vidrio:#9d90ad; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-W:#7cb0ff; --c-N:#a3d65e; --c-T:#f17384; --c-F:#cf6bfa; --c-E:#5ed9c8; --c-P:#ef6f06; --c-h:#f9bd0b;
+  --c-W:#7cb0ff; --c-N:#a3d65e; --c-T:#f17384; --c-F:#cf6bfa; --c-E:#5ed9c8; --c-P:#ef6f06; --c-h:#f9bd0b; --c-v:#fabea3;
   --agua:#22394d; --aceite:#463f24; --mercurio:#5b5968; --suelo:#4a3d55; --bloque:#5f6472; --madera:#6b5468; --vidrio:#9d90ad; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -49,10 +54,11 @@ body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font
 h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
 .sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
 
-.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs{display:flex; flex-wrap:wrap; gap:4px; padding:5px; border-radius:20px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
 .tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
 .tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
 .tabs a:hover:not([aria-current]){color:var(--ink)}
+@media (max-width:480px){ .tabs a{padding:8px 12px; font-size:.88rem} }
 
 .mode{display:grid; gap:16px; min-width:0; align-items:start}
 .bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
@@ -92,6 +98,8 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .v-E{color:var(--c-E); background:color-mix(in srgb, var(--c-E) 8%, transparent)}
 .v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
 .v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-hT{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
 .v-m{color:var(--ink); background:color-mix(in srgb, var(--ink) 7%, transparent)}
 .v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
 
@@ -159,11 +167,12 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <header>
       <p class="eyebrow">Física · Fluidos · Problemas tipo admisión</p>
       <h1>Presión, Pascal y Arquímedes</h1>
-      <p class="sub">En un líquido quieto, ¿de qué depende la presión? Mira cómo los líquidos sostienen, transmiten fuerzas y empujan hacia arriba lo que se hunde en ellos.</p>
+      <p class="sub">En un líquido quieto, ¿de qué depende la presión? Mira cómo los líquidos sostienen, transmiten fuerzas y empujan hacia arriba lo que se hunde en ellos, y qué cambia cuando corren por un tubo.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
       <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+      <a href="#tubo" id="tab3">El tubo con estrechamiento</a>
     </nav>
   </div>
 
@@ -207,6 +216,28 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     </section>
   </div>
 
+  <!-- ===== MODO 3: el tubo con estrechamiento (0.2.0) ===== -->
+  <div id="m3" class="mode" hidden>
+    <section class="bench" aria-label="Tubo horizontal con un estrechamiento">
+      <div class="lienzo"><canvas id="cv3" tabindex="-1" role="img" aria-label="Tubo horizontal con un estrechamiento y dos tubitos verticales"></canvas></div>
+      <div class="lecturas" id="lect3" aria-hidden="true"></div>
+      <p class="sr" id="desc3" aria-live="polite"></p>
+      <div class="legend" id="ley3"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots3"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="k3"></p>
+        <h2 class="step-t" id="t3" tabindex="-1"></h2>
+      </div>
+      <div id="body3" class="body"></div>
+      <div class="nav">
+        <button id="prev3" type="button" class="btn">Anterior</button>
+        <button id="next3" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
   <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/fluidos">Problemas para lápiz y papel</a></p>
 </main>
 
@@ -223,7 +254,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
-const PLANTILLA = { id: 'fluidos', unidad: 'fisica.fluidos', version: '0.1.0' };
+const PLANTILLA = { id: 'fluidos', unidad: 'fisica.fluidos', version: '0.2.0' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
   Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
@@ -290,7 +321,7 @@ function rotulo(ctx, c, x, y, t, color, align, peso, W, H){
 function colores(W){
   const g = n => css(n);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
-    W:g('--c-W'), N:g('--c-N'), T:g('--c-T'), F:g('--c-F'), E:g('--c-E'), P:g('--c-P'), h:g('--c-h'),
+    W:g('--c-W'), N:g('--c-N'), T:g('--c-T'), F:g('--c-F'), E:g('--c-E'), P:g('--c-P'), h:g('--c-h'), v:g('--c-v'),
     agua:g('--agua'), aceite:g('--aceite'), mercurio:g('--mercurio'), suelo:g('--suelo'), bloque:g('--bloque'), madera:g('--madera'), vidrio:g('--vidrio'),
     mono:g('--mono'), font:g('--font'), chico: W < 480 };
 }
@@ -332,7 +363,8 @@ const rot = (sim, F, quien, oculta) => `${sim} = ${oculta ? '?' : N1(F) + ' N'} 
 const NOMBRES = {
   P:'P · presión del líquido (sobre la atmosférica)', h:'h · profundidad, en vertical hasta el nivel de la superficie libre',
   Nw:'N · el techo empuja el agua', Nb:'N · lo que marca la balanza (el plato empuja el vaso)', Nf:'N · el fondo empuja el bloque',
-  T:'T · lo que marca el dinamómetro (la tensión del hilo)', E:'E · empuje (el líquido)', W:'W · peso (la Tierra)', F:'F · fuerza de la mano' };
+  T:'T · lo que marca el dinamómetro (la tensión del hilo)', E:'E · empuje (el líquido)', W:'W · peso (la Tierra)', F:'F · fuerza de la mano',
+  v:'v · rapidez del agua', hT:'h · altura del agua en el tubito, sobre el eje del tubo' };
 function leyenda(el, claves){
   el.innerHTML = claves.map(k => `<span><i style="background:var(--c-${k[0]})"></i>${NOMBRES[k]}</span>`).join('');
 }
@@ -1228,9 +1260,280 @@ L.resize(); ir(0);
 </script>
 
 <script>
+/* ================= MODO 3: el tubo con estrechamiento (0.2.0) =================
+   Un tubo horizontal de radio r₁ = 2 cm se angosta a r₂ (se arrastra, de 0,8 a 2 cm). Partículas que avanzan con la
+   rapidez de cada tramo y dos tubitos verticales (manómetros abiertos) cuya altura es P/(ρg) sobre el eje del tubo.
+   Toda la física sale de MotorFluidos.estrechamiento; aquí solo se pinta. Dos predicciones bloquean el avance: la rapidez
+   en lo angosto (PR1, PR4) y en qué tubito sube más el agua (la trampa «más rapidez, más presión» de la admisión). */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv3');
+const TUBO = { r1:0.02, v1:0.5, P1:6000 }, R2_0 = 0.01, R2_MIN = 0.008, R2_MAX = 0.02;
+const est = r2 => M.estrechamiento(Object.assign({ r2 }, TUBO));
+const E0 = est(R2_0);
+const S = { step:0, max:0, pred:{}, r2:R2_0, crece:1, ocupado:false, sobre:false, hl:null };
+let parar = () => {};
+const L = crearLienzo(cv, W => W >= 560 ? clamp(W*0.58, 320, 430) : clamp(W*0.95, 320, 400), draw);
+const cm = m => `${N2(m*100)} cm`;
+const N3 = n => fmt(n, Math.abs(n*100 - Math.round(n*100)) < 1e-7 ? 2 : 3).replace(/,(\d*?)0+$/, (m, d) => d ? ',' + d : '');
+const ms = v => `${N3(v)} m/s`;
+
+const PV = { id:'tubo-rapidez', ok:'b',
+  opts:[['a','1 m/s, porque el radio se reduce a la mitad y la rapidez se duplica.','PR1-radio-lineal','hipotesis'],
+        ['b','2 m/s, porque el área se reduce a la cuarta parte y la rapidez se cuadruplica.',null,''],
+        ['c','0,125 m/s, porque por lo angosto cabe menos agua y pasa cuatro veces más lenta.','PR4-invertida','hipotesis'],
+        ['d','0,5 m/s, porque el agua no se comprime y va igual en todo el tubo.','FH-misma-rapidez','hipotesis']],
+  fb:{ b:'¡Bien! El mismo caudal pasa por un área cuatro veces menor: tiene que ir cuatro veces más rápido.',
+       a:'Elegiste la A. La rapidez no va con el radio sino con el área, que va con el radio al cuadrado: con la mitad del radio, la cuarta parte del área. La correcta está marcada.',
+       c:'Elegiste la C. Es al revés: el agua que entra por lo ancho tiene que salir por lo angosto en el mismo tiempo, así que ahí corre más rápido. La correcta está marcada.',
+       d:'Elegiste la D. Que el agua no se comprima es justo lo que obliga a que corra más rápido: el mismo volumen por segundo pasa por un hueco más chico. La correcta está marcada.' } };
+const PP = { id:'tubo-tubitos', ok:'b',
+  opts:[['a','En el del tramo angosto, porque ahí el agua va más rápido y empuja con más fuerza.','FH-mas-rapido-mas-presion','hipotesis'],
+        ['b','En el del tramo ancho, porque el agua necesita más presión detrás para acelerar.',null,''],
+        ['c','Sube lo mismo en los dos, porque es el mismo tubo y pasa el mismo caudal.','FH-presion-igual','hipotesis'],
+        ['d','En el del tramo angosto, porque ahí las paredes aprietan más el agua.','F3-encerrado-mas-presion','parcial']],
+  fb:{ b:'¡Bien! El agua acelera al entrar en lo angosto, y lo que la empuja hacia adelante es que detrás hay más presión que delante. Por eso el tubito del tramo angosto queda más bajo.',
+       a:'Elegiste la A. Que el agua vaya más rápido no quiere decir que empuje más hacia los costados. Para acelerar, la empujan desde atrás, donde hay más presión: en lo angosto la presión es menor. La correcta está marcada.',
+       c:'Elegiste la C. El caudal sí es el mismo, pero la presión no: cuando el agua corre, cambia de un tramo a otro. La correcta está marcada.',
+       d:'Elegiste la D. Las paredes no aprietan más por estar más cerca; en un líquido quieto, la presión no depende del ancho. Y aquí el agua corre: en lo angosto la presión baja. La correcta está marcada.' } };
+
+const steps = [
+ { k:'Paso 1', t:'¿Qué tan rápido en lo angosto?', gate:PV, ley:['v'],
+   body:() => `<p class="problem">Por un tubo horizontal de radio r₁ = 2 cm corre agua a ${V('v','v₁ = 0,5 m/s')}. Más adelante, el tubo se angosta a r₂ = 1 cm, la mitad del radio. El tubo va siempre lleno y el agua no se comprime.</p>
+     <p>¿Con qué ${V('v','rapidez')} pasa el agua por la parte angosta?</p>${opcionesHTML(PV.opts, 'fb3')}<div id="res3" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">caudal: π · r₁² · ${V('v','v₁')} = π · r₂² · ${V('v','v₂')}<span class="note">lo que entra por segundo, sale por segundo</span></div>
+       <div class="eq">${V('v','v₂')} = ${V('v','0,5')} · (2/1)² = ${V('v','0,5')} · 4 = ${V('v','2 m/s')}</div></div>
+     <p>Mira las partículas: en la parte angosta avanzan cuatro veces más rápido. El área de un círculo va con el radio al cuadrado, así que con la mitad del radio queda la cuarta parte del área.</p>
+     ${fuente('Las tres opciones incorrectas son errores que suponemos: no encontramos un estudio que los mida. Hacer la rapidez proporcional al radio o al diámetro, en vez de a su cuadrado, es una trampa que se repite en la admisión de San Marcos.')}` },
+ { k:'Paso 2', t:'¿En qué tubito sube más?', gate:PP, ley:['v','P','hT'],
+   body:() => `<p>Sobre cada tramo hay un tubito vertical, abierto arriba. El agua del tubo sube por cada tubito hasta que el peso de su columna equilibra la ${V('P','presión')} del agua en ese tramo. En el tubito del tramo ancho, el agua sube ${V('hT','h₁ = 60 cm')} sobre el eje del tubo.</p>
+     <p>¿En qué tubito sube más el agua?</p>${opcionesHTML(PP.opts, 'fb3')}<div id="res3" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('P','P₁')} = ρ · g · ${V('hT','h₁')} = 1000 · 10 · ${V('hT','0,6')} = ${V('P','6000 Pa')}<span class="note">sobre la atmosférica</span></div>
+       <div class="eq">${V('P','P₁')} + ½ · ρ · ${V('v','v₁')}² = ${V('P','P₂')} + ½ · ρ · ${V('v','v₂')}²<span class="note">Bernoulli, tubo horizontal</span></div>
+       <div class="eq">${V('P','P₂')} = 6000 − 500 · (${V('v','2')}² − ${V('v','0,5')}²) = 6000 − ${fmt(E0.dP, 0)} = ${V('P', Pa(E0.P2))}</div>
+       <div class="eq">${V('hT','h₂')} = ${V('P','P₂')}/(ρ · g) = ${V('hT', cm(E0.h2))}</div></div>
+     <p>Al entrar en lo angosto, el agua acelera de 0,5 a 2 m/s. Para acelerar, algo tiene que empujarla hacia adelante: el agua de atrás, que está a más ${V('P','presión')} que la de adelante. Por eso, donde el agua va más rápido, la presión es menor, y su tubito queda más bajo.</p>
+     ${fuente('Que la presión sube donde el agua va más rápido es una trampa que se repite en la admisión de San Marcos; no encontramos un estudio que mida cuántos la eligen, así que la A y la C son errores que suponemos. La D trae al agua que corre una idea medida en líquidos quietos: entre el 36 % y el 52 % de unos universitarios de Estados Unidos, antes de estudiar el tema, creyó que un punto «encerrado» tiene más presión (Goszewski y otros, 2012).')}` },
+ { k:'Paso 3', t:'Ajusta el estrechamiento', ley:['v','P','hT'], explora:true,
+   body:() => `<p>Arrastra el borde de la parte angosta para cambiar su radio r₂ (o usa el control). Mira las partículas y los dos tubitos.</p>
+     <div class="slider"><label for="r2-3"><span>Radio de la parte angosta, r₂</span><output id="r2-3-o"></output></label><input id="r2-3" type="range" min="${R2_MIN*100}" max="${R2_MAX*100}" step="0.05" value="${S.r2*100}"></div>
+     <div id="vivo3" class="eqs"></div>
+     <p>Si r₂ llega a 2 cm, el tubo ya no se angosta: la rapidez y los dos tubitos quedan iguales. Cuanto más angosto, más rápido va el agua y más baja su tubito. Así funcionan el atomizador de perfume y el medidor de Venturi.</p>` },
+];
+
+// ---------- Dibujo ----------
+// Geometría en pantalla: eje del tubo, radios en px, tramos en x, tubitos y escala de alturas.
+function geo(W, H, r2){
+  const R1 = clamp(H*0.085, 15, 30), y0 = H - R1 - 46, kr = R1/TUBO.r1, R2 = r2*kr;
+  const xa = W*0.34, xb = W*0.44, xc = W*0.7, xd = W*0.8;
+  const xt1 = W*0.17, xt2 = (xb + xc)/2, top = 30, ks = (y0 - top)/0.82;   // px por metro de columna
+  const radio = x => x <= xa || x >= xd ? R1 : x < xb ? R1 + (R2 - R1)*(x - xa)/(xb - xa) : x <= xc ? R2 : R2 + (R1 - R2)*(x - xc)/(xd - xc);
+  return { y0, R1, R2, kr, xa, xb, xc, xd, xt1, xt2, top, ks, radio, wt: clamp(W*0.035, 10, 16) };
+}
+// Partículas: posición a lo largo del tubo (px) y altura relativa (−1 a 1). Avanzan a v(x) = v₁·(r₁/r(x))², calculada
+// con el caudal del motor.
+const PART = [];
+(function(){ let a = 0.137; for (let i = 0; i < 70; i++){ a = (a*9301 + 49297) % 233280; const u = a/233280; a = (a*9301 + 49297) % 233280; PART.push({ s:u, f:(a/233280)*1.7 - 0.85 }); } })();
+const moviendo = () => !!S.pred[PV.id] && !RM && !$('m3').hidden;
+let ultimoW = 0;
+const bucle = Celular.bucle(cv, dt => {
+  if (!moviendo() || !L.W) return false;
+  const g = geo(L.W, L.H, S.r2), e = est(S.r2), kv = clamp(L.W*0.11, 34, 80);   // px por (m/s)
+  dt = Math.min(dt, 0.05);
+  for (const p of PART){ const x = p.s*L.W, r = g.radio(x), vx = e.Q/(Math.PI*Math.pow(r/g.kr, 2)); p.s = (p.s + vx*kv*dt/L.W) % 1; }
+  draw();
+  return true;
+});
+function draw(){
+  if (!L.W) return;
+  const { ctx, W, H } = L, c = colores(W), e = est(S.r2), g = geo(W, H, S.r2);
+  ctx.clearRect(0, 0, W, H);
+  const verV = !!S.pred[PV.id], verP = S.step >= 1, verH2 = !!S.pred[PP.id], cr = verH2 ? (S.step === 1 ? S.crece : 1) : 0;
+  // Agua dentro del tubo (contorno arriba y abajo con el radio de cada x)
+  const xs = [0, g.xa, g.xb, g.xc, g.xd, W];
+  ctx.save(); ctx.beginPath(); xs.forEach((x, i) => { const y = g.y0 - g.radio(x); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); });
+  [...xs].reverse().forEach(x => ctx.lineTo(x, g.y0 + g.radio(x))); ctx.closePath(); ctx.fillStyle = c.agua; ctx.fill(); ctx.restore();
+  // Tubitos: el agua sube hasta h = P/(ρg) sobre el eje. Antes de responder, el del angosto va con «?».
+  const tubito = (x, R, h, ver, nombre, idx) => {
+    const yb = g.y0 - R, w = g.wt;
+    if (ver){ const yTop = g.y0 - h*g.ks; ctx.save(); ctx.fillStyle = c.agua; ctx.fillRect(x - w/2, Math.min(yTop, yb), w, Math.max(0, yb - yTop) + 2); ctx.restore();
+      if (yTop < yb) superficie(ctx, c, x - w/2, x + w/2, yTop); }
+    ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2; linea(ctx, x - w/2, g.top - 6, x - w/2, yb); linea(ctx, x + w/2, g.top - 6, x + w/2, yb); ctx.restore();
+    const lado = idx === 1 ? 'left' : 'right', xl = idx === 1 ? x + w/2 + 8 : x - w/2 - 8;
+    if (ver){
+      const yTop = g.y0 - h*g.ks;
+      cotaV(ctx, c, idx === 1 ? x - w/2 - 8 : x + w/2 + 8, yTop, g.y0, c.h, '', 'left', W, H);
+      rotulo(ctx, c, xl, Math.max(14, yTop - 4), `h${idx === 1 ? '₁' : '₂'} = ${cm(h)}`, c.h, lado, S.hl === 'hT' ? 900 : 800, W, H);
+    } else rotulo(ctx, c, x, g.top + 26, '?', c.ink, 'center', 800, W, H);
+    if (nombre) rotulo(ctx, c, x, g.top - 16, nombre, c.muted, 'center', 700, W, H);
+  };
+  if (verP){
+    tubito(g.xt1, g.R1, e.h1, true, 'tubito 1', 1);
+    tubito(g.xt2, g.R2, verH2 ? e.h1 + (e.h2 - e.h1)*suave(cr) : 0, verH2 && cr > 0.02, 'tubito 2', 2);
+    if (verH2 && cr > 0.98){ ctx.save(); ctx.strokeStyle = c.h; ctx.globalAlpha = .55; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.2;
+      const y1 = g.y0 - e.h1*g.ks; linea(ctx, g.xt1 + g.wt/2, y1, g.xt2 + g.wt/2 + 4, y1); ctx.restore(); }
+  }
+  // Paredes del tubo
+  ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2.6; ctx.lineJoin = 'round';
+  [-1, 1].forEach(sg => { ctx.beginPath(); xs.forEach((x, i) => { const y = g.y0 + sg*g.radio(x); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }); ctx.stroke(); });
+  // Huecos de los tubitos en la pared de arriba
+  if (verP){ ctx.strokeStyle = c.agua; ctx.lineWidth = 3.4; [[g.xt1, g.R1], [g.xt2, g.R2]].forEach(([x, R]) => linea(ctx, x - g.wt/2 + 2, g.y0 - R, x + g.wt/2 - 2, g.y0 - R)); }
+  ctx.restore();
+  // Partículas
+  ctx.save(); ctx.fillStyle = c.v; ctx.globalAlpha = .75;
+  for (const p of PART){ const x = p.s*W, r = g.radio(x); ctx.beginPath(); ctx.arc(x, g.y0 + p.f*(r - 3), 1.9, 0, Math.PI*2); ctx.fill(); }
+  ctx.restore();
+  // Flechas de rapidez (después de responder la primera predicción)
+  if (verV){
+    const kA = Math.min(36, (g.xc - g.xb)*0.85/3.2), w = S.hl === 'v' ? 3.6 : 2.6;
+    const x1 = g.xa*0.55 - e.v1*kA/2, x2 = (g.xb + g.xc)/2 - e.v2*kA/2;
+    flecha(ctx, x1, g.y0, x1 + e.v1*kA, g.y0, c.v, w);
+    flecha(ctx, x2, g.y0, x2 + e.v2*kA, g.y0, c.v, w);
+    rotulo(ctx, c, g.xa*0.55, g.y0 + g.R1 + 14, `v₁ = ${ms(e.v1)}`, c.v, 'center', 800, W, H);
+    rotulo(ctx, c, (g.xb + g.xc)/2, g.y0 + g.R1 + 14, `v₂ = ${ms(e.v2)}`, c.v, 'center', 800, W, H);
+  } else {
+    rotulo(ctx, c, g.xa*0.55, g.y0 + g.R1 + 14, 'v₁ = 0,5 m/s', c.v, 'center', 800, W, H);
+    rotulo(ctx, c, (g.xb + g.xc)/2, g.y0 + g.R1 + 14, 'v₂ = ?', c.v, 'center', 800, W, H);
+  }
+  // Radios en tinta, a la derecha; presiones bajo cada tramo (desde el paso 2)
+  rotulo(ctx, c, W - 4, g.y0 + g.R1 + 14, 'r₁ = 2 cm', c.ink, 'right', 700, W, H);
+  rotulo(ctx, c, W - 4, g.y0 + g.R1 + 32, `r₂ = ${cm(S.r2)}`, c.ink, 'right', 700, W, H);
+  if (verP){
+    rotulo(ctx, c, g.xa*0.55, g.y0 + g.R1 + 32, `P₁ = ${Pa(e.P1)}`, c.P, 'center', S.hl === 'P' ? 900 : 800, W, H);
+    rotulo(ctx, c, (g.xb + g.xc)/2, g.y0 + g.R1 + 32, verH2 && cr > 0.98 ? `P₂ = ${Pa(e.P2)}` : 'P₂ = ?', c.P, 'center', S.hl === 'P' ? 900 : 800, W, H);
+  }
+  // Asa para arrastrar el borde de lo angosto (paso 3)
+  if (steps[S.step].explora){
+    const ax = (g.xb + g.xc)/2 + (g.xc - g.xb)*0.28, ay = g.y0 - g.R2;
+    ctx.save(); ctx.beginPath(); ctx.arc(ax, ay, S.sobre ? 9 : 7.5, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke();
+    ctx.setLineDash([3, 2]); ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(ax, ay, 13, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, ax + 16, ay, '↕', c.ink, 'left', 800, W, H);
+  }
+  lecturas($('lect3'), lect(e, verV, verH2 && cr > 0.98));
+  decir($('desc3'), desc(e, verV, verP, verH2));
+}
+function lect(e, verV, verH2){
+  const l = [];
+  if (verV) l.push(['v', `v₁ = ${ms(e.v1)}`], ['v', `v₂ = ${ms(e.v2)}`]);
+  if (S.step >= 1) l.push(['h', `h₁ = ${cm(e.h1)}`]);
+  if (verH2) l.push(['h', `h₂ = ${cm(e.h2)}`]);
+  return l;
+}
+function desc(e, verV, verP, verH2){
+  let t = `Tubo horizontal de 2 centímetros de radio que se angosta a ${N2(S.r2*100)}. `;
+  t += verV ? `El agua va a ${N2(e.v1)} metros por segundo en lo ancho y a ${N2(e.v2)} en lo angosto. ` : 'En lo ancho va a 0,5 metros por segundo; en lo angosto, todavía no se muestra. ';
+  if (verP) t += verH2 ? `En el tubito del tramo ancho el agua sube ${N2(e.h1*100)} centímetros; en el del angosto, ${N2(e.h2*100)}.` : 'En el tubito del tramo ancho el agua sube 60 centímetros; el del angosto todavía no se muestra.';
+  return t;
+}
+
+// ---------- Pasos y predicciones ----------
+const dots = $('dots3');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1;
+  b.addEventListener('click', () => go(n, true)); li.appendChild(b); dots.appendChild(li);
+});
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al paso ${k + 1}: ${steps[k].t}`);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function detener(){ parar(); parar = () => {}; if (S.ocupado){ S.ocupado = false; S.crece = 1; nav(); draw(); } }
+function nav(){
+  const s = steps[S.step], falta = s.gate && !S.pred[s.gate.id];
+  $('prev3').disabled = S.step === 0;
+  $('next3').disabled = S.step === steps.length - 1 || falta || S.ocupado;
+  $('next3').textContent = falta ? 'Elige una opción' : 'Siguiente';
+}
+function go(n, enfocar){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  detener();
+  const s = steps[n]; S.step = n; S.crece = 1; S.sobre = false; S.hl = null;
+  cv.tabIndex = s.explora ? 0 : -1;
+  cv.setAttribute('aria-label', s.explora ? 'Tubo con un estrechamiento: con las flechas ↑ ↓ cambias el radio de la parte angosta' : 'Tubo horizontal con un estrechamiento y dos tubitos verticales');
+  $('k3').textContent = `${s.k} de ${steps.length}`;
+  $('t3').textContent = s.t;
+  $('body3').innerHTML = s.body();
+  leyenda($('ley3'), s.ley);
+  pintarDots();
+  L.compactar(!!(s.gate && !S.pred[s.gate.id]));
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar();
+  nav(); draw(); bucle.despertar();
+  if (enfocar) $('t3').focus({ preventScroll:true });
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('body3').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb3'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('res3').innerHTML = s.exp();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; if (S.max < S.step + 1) S.max = S.step + 1;
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; S.crece = 0;
+    pintar(); pintarDots(); nav();
+    $('fb3').focus({ preventScroll:true });
+    const paso = S.step;
+    L.compactar(false); draw();
+    // En el celular, el dibujo sube a la vista y la escena cambia un momento después (nucleo/celular.js).
+    Celular.alResponder(L.cv, () => {
+      bucle.despertar();
+      parar = animarValor(900, f => { S.crece = f; draw(); }, () => { parar = () => {}; S.ocupado = false; S.crece = 1; nav(); draw(); });
+    }, () => S.step === paso && !$('m3').hidden, { siNo: () => { S.ocupado = false; S.crece = 1; nav(); draw(); } });
+  }));
+  pintar();
+}
+function vivo(){
+  const e = est(S.r2), o = $('r2-3-o'); if (!o) return;
+  o.textContent = cm(S.r2); $('r2-3').value = String(Math.round(S.r2*2000)/20);
+  $('vivo3').innerHTML = `<div class="eq">${V('v','v₂')} = ${V('v','0,5')} · (2/${N2(S.r2*100)})² = ${V('v', ms(e.v2))}<span class="note">el mismo caudal</span></div>
+    <div class="eq">${V('P','P₂')} = 6000 − 500 · (${V('v', N3(e.v2))}² − ${V('v','0,5')}²) = ${V('P', Pa(e.P2))}</div>
+    <div class="eq">${V('hT','h₂')} = ${V('P', fmt(e.P2, 0))}/(1000 · 10) = ${V('hT', cm(e.h2))}<span class="note">el tubito 1 sigue en 60 cm</span></div>`;
+  draw();
+}
+function explorar(){ $('r2-3').addEventListener('input', () => { S.r2 = clamp(+$('r2-3').value/100, R2_MIN, R2_MAX); vivo(); bucle.despertar(); }); vivo(); }
+const fijar = r => { const n = clamp(Math.round(r*2000)/2000, R2_MIN, R2_MAX); if (n !== S.r2){ S.r2 = n; vivo(); bucle.despertar(); } };
+function asa(){ const g = geo(L.W, L.H, S.r2); return { x:(g.xb + g.xc)/2 + (g.xc - g.xb)*0.28, y:g.y0 - g.R2 }; }
+Celular.arrastre(cv, {
+  activo: () => !!steps[S.step].explora && !$('m3').hidden,
+  cerca: (p, r) => { const a = asa(); return Math.hypot(p.x - a.x, p.y - a.y) < r + 6; },
+  empezar: () => { S.sobre = true; draw(); },
+  mover: p => { const g = geo(L.W, L.H, S.r2); fijar((g.y0 - p.y)/g.kr); },
+  soltar: () => { S.sobre = false; draw(); },
+  sobre: b => { S.sobre = b; draw(); }
+});
+cv.addEventListener('keydown', e => {
+  if (!steps[S.step].explora) return;
+  const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (d === undefined) return;
+  e.preventDefault(); fijar(S.r2 + d*0.0005);
+});
+$('next3').addEventListener('click', () => go(S.step + 1, true));
+$('prev3').addEventListener('click', () => go(S.step - 1, true));
+function marcar(k){ S.hl = k; document.querySelectorAll('#m3 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k)); draw(); }
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m3 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m3 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m3 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m3 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+addEventListener('modo', () => { if ($('m3').hidden) detener(); else { L.resize(); bucle.despertar(); } });
+L.resize(); go(0);
+})();
+</script>
+
+<script>
 /* ================= Pestañas ================= */
 (function(){
-  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2'], ['#tubo', 'm3', 'tab3']];
   function route(){
     const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
     modos.forEach(([, m, t], j) => {

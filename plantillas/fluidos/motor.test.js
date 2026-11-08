@@ -8,7 +8,8 @@
 //    mismo en ramas de distinto ancho (F1); el empuje no depende de la masa (F10) ni de la profundidad una vez
 //    sumergido (F12); dos cuerpos iguales que flotan en líquidos distintos tienen el mismo empuje (F13); solo hay
 //    tres destinos para un cuerpo suelto (F11); dinamómetro más balanza suman siempre lo mismo; la prensa no crea
-//    trabajo.
+//    trabajo. En movimiento (0.2.0): caudal y P + ½ρv² se conservan en el tubo con estrechamiento y el tubito del
+//    angosto nunca sube más que el del ancho; el chorro de Torricelli, simulado paso a paso, cae donde dice el motor.
 // 4. Errores de entrada.
 // 5. Cada problema de papel.json coincide con el motor.
 
@@ -152,6 +153,37 @@ test('continuidad y Bernoulli: el caudal se conserva; más rápido, menos presi�
   }
 });
 
+test('tubo con estrechamiento: el caudal y P + ½ρv² se conservan; más angosto, más rápido y el tubito más bajo', () => {
+  let hPrev = -1;
+  for (let r2 = 0.008; r2 <= 0.02 + 1e-12; r2 += 0.0005) {
+    const e = motor.estrechamiento({ r1: 0.02, r2, v1: 0.5, P1: 6000 });
+    cerca(e.A2 * e.v2, e.A1 * e.v1, 'caudal');
+    cerca(e.P2 + 500 * e.v2 * e.v2, 6000 + 500 * 0.25, 'Bernoulli');
+    cerca(1000 * 10 * e.h2, e.P2, 'el tubito sube P/(ρg)');
+    assert.ok(e.h2 <= e.h1 + 1e-12, 'el tubito del angosto nunca sube más que el del ancho');
+    assert.ok(e.h2 > hPrev, 'al abrir el estrechamiento, su tubito sube'); hPrev = e.h2;
+    assert.ok(e.errores.hMasRapidoMasPresion >= e.h1 - 1e-12);
+  }
+});
+test('Torricelli: la rapidez es la de una caída libre desde la superficie; el chorro, simulado paso a paso, cae donde dice el motor', () => {
+  for (const H of [0.8, 1.25, 2]) for (const y of [0.1, 0.3, 0.6]) {
+    const r = motor.torricelli({ H, y });
+    cerca(r.v * r.v, 2 * 10 * (H - y), 'v² = 2gh');
+    cerca(r.vLlegada * r.vLlegada, 2 * 10 * H, 'al piso llega como si cayera desde la superficie');
+    // Chorro simulado en pasos cortos con aceleración constante; el último paso se corta justo en el piso.
+    let x = 0, yy = y, vy = 0; const dt = 1e-4;
+    while (yy > 1e-15) { const paso = Math.min(dt, (-vy + Math.sqrt(vy * vy + 20 * yy)) / 10); x += r.v * paso; yy -= vy * paso + 5 * paso * paso; vy += 10 * paso; }
+    cerca(x, r.x, `alcance H=${H} y=${y}`, 1e-6);
+  }
+});
+test('caudal: Q = A·v con diámetro o con radio; el tiempo de llenado es V/Q', () => {
+  for (const D of [0.01, 0.02, 0.05]) for (const v of [0.5, 2, 3]) {
+    const a = motor.caudal({ D, v }), b = motor.caudal({ r: D / 2, v });
+    cerca(a.Q, b.Q, 'mismo tubo'); cerca(a.Q, Math.PI * D * D / 4 * v, 'Q = A·v');
+    const c = motor.caudal({ D, Q: a.Q, V: 0.1 }); cerca(c.v, v, 'de ida y vuelta'); cerca(c.t * c.Q, 0.1, 'llenado');
+  }
+});
+
 // 4. Errores de entrada
 test('errores de entrada', () => {
   assert.throws(() => motor.presion({ h: -1 }), /negativo/);
@@ -167,6 +199,10 @@ test('errores de entrada', () => {
   assert.throws(() => motor.balanza({ m: 2, V: 0.0005, Avaso: 0.02, hLiq: 0.15, bajada: 0.2 }), /tocaría el fondo/);
   assert.throws(() => motor.balanza({ m: 2, V: 0.03, Avaso: 0.02, hLiq: 0.15 }), /no cabe/);
   assert.throws(() => motor.presion({ h: 'hondo' }), /inválido/);
+  assert.throws(() => motor.estrechamiento({ r1: 0.01, r2: 0.02, v1: 1, P1: 6000 }), /más ancha/);
+  assert.throws(() => motor.estrechamiento({ r1: 0.02, r2: 0.005, v1: 1, P1: 6000 }), /atmosférica/);
+  assert.throws(() => motor.torricelli({ H: 1, y: 1.2 }), /bajo la superficie/);
+  assert.throws(() => motor.caudal({ D: 0.02 }), /inválido/);
 });
 
 // 5. Problemas de papel (regla 6)
