@@ -42,6 +42,7 @@
  *   grasa      { grasa, V (mL de glicerol), rendimiento } → g de triglicérido.
  * Ids de las tablas:
  *   metal (flotación): Cu 63,5 · Zn 65 · Pb 207 (g/mol = kg/kmol).
+ *   (con argentita el enunciado habla de un concentrado, no de una mena; el cálculo es el mismo.)
  *   mineral: calcosina Cu₂S · calcopirita CuFeS₂ · galena PbS · esfalerita ZnS · hematita Fe₂O₃ · magnetita Fe₃O₄ ·
  *     argentita Ag₂S (masa molar con las masas atómicas de arriba).
  *   fuente (átomos → gas): pirita FeS₂ → SO₂ · calcopirita CuFeS₂ → SO₂ · dolomita CaMg(CO₃)₂ → CO₂ · esfalerita ZnS → SO₂ ·
@@ -53,9 +54,12 @@
  *   reaccion (redox, con dicromato en medio ácido; mol de alcohol : mol de Cr³⁺ en la ecuación iónica):
  *     etanol-acido C₂H₅OH → CH₃COOH, 3 : 4 · etanol-aldehido C₂H₅OH → CH₃CHO, 3 : 2 · metanol CH₃OH → HCHO, 3 : 2 ·
  *     isopropanol CH₃CHOHCH₃ → CH₃COCH₃, 3 : 2. Masas molares: etanol 46, metanol 32, 2-propanol 60.
- *   oxido: Na2O (→ 2 NaOH) · K2O (→ 2 KOH) · Li2O (→ 2 LiOH) · CaO (→ Ca(OH)₂) · BaO (→ Ba(OH)₂).
- *   grasa: triestearina C₅₇H₁₁₀O₆ 890 · tripalmitina C₅₁H₉₈O₆ 806 · trioleina C₅₇H₁₀₄O₆ 884 (g/mol).
- * Errores: ES6, ES19, ES20 y ES21 del informe de estequiometría; los QA-* son hipótesis nuestras.
+ *   oxido: Na2O (→ 2 NaOH) · K2O (→ 2 KOH) · Li2O (→ 2 LiOH) · CaO (→ Ca(OH)₂) · BaO (→ Ba(OH)₂); en hidroxido:iones
+ *     solo salen Na2O, K2O y Li2O.
+ *   grasa: triestearina C₅₇H₁₁₀O₆ 890 · tripalmitina C₅₁H₉₈O₆ 806 · trioleina (trioleína) C₅₇H₁₀₄O₆ 884 (g/mol).
+ * Errores: ES6, ES19, ES20 y ES21 del informe de estequiometría (todos 'parcial'); los QA-* son hipótesis nuestras.
+ * Cuando dos errores dan el mismo número, la alternativa lleva la etiqueta del que va primero en la lista; en
+ * termo:limitante el orden es ES20, ES21 y luego el cálculo con el reactivo en exceso (QA-calcula-con-exceso).
  * FIN DE LA CABECERA: con esto basta para recalcular cada caso de casos.json sin leer el código.
  */
 (function (root, fabrica) {
@@ -78,8 +82,8 @@
 
   // ---------- Tablas ----------
   const METALES = {
-    Cu: { s: 'Cu', nombre: 'cobre', M: 63.5 }, Zn: { s: 'Zn', nombre: 'zinc', M: 65 },
-    Pb: { s: 'Pb', nombre: 'plomo', M: 207 }, Fe: { s: 'Fe', nombre: 'hierro', M: 56 }, Ag: { s: 'Ag', nombre: 'plata', M: 108 },
+    Cu: { s: 'Cu', nombre: 'cobre', del: 'del cobre', M: 63.5 }, Zn: { s: 'Zn', nombre: 'zinc', del: 'del zinc', M: 65 },
+    Pb: { s: 'Pb', nombre: 'plomo', del: 'del plomo', M: 207 }, Fe: { s: 'Fe', nombre: 'hierro', del: 'del hierro', M: 56 }, Ag: { s: 'Ag', nombre: 'plata', del: 'de la plata', M: 108 },
   };
   // n: átomos del metal en la fórmula.
   const MINERALES = [
@@ -93,17 +97,17 @@
   ];
   // n: átomos de S (o C) en la fórmula, que terminan en el gas.
   const FUENTES = [
-    { id: 'pirita', f: 'FeS₂', M: 120, X: 'azufre', gas: 'SO₂', Mg: 64, n: 2, proceso: 'tuestan', sale: 'sale como' },
-    { id: 'calcopirita', f: 'CuFeS₂', M: 183.5, X: 'azufre', gas: 'SO₂', Mg: 64, n: 2, proceso: 'tuestan', sale: 'sale como' },
-    { id: 'dolomita', f: 'CaMg(CO₃)₂', M: 184, X: 'carbono', gas: 'CO₂', Mg: 44, n: 2, proceso: 'calcinan', sale: 'sale como' },
-    { id: 'esfalerita', f: 'ZnS', M: 97, X: 'azufre', gas: 'SO₂', Mg: 64, n: 1, proceso: 'tuestan', sale: 'sale como' },
-    { id: 'caliza', f: 'CaCO₃', M: 100, X: 'carbono', gas: 'CO₂', Mg: 44, n: 1, proceso: 'calcinan', sale: 'sale como' },
+    { id: 'pirita', f: 'FeS₂', M: 120, X: 'azufre', gas: 'SO₂', Mg: 64, n: 2, proceso: 'tuestan', sale: 'sale como', nombre: 'pirita', de: 'del sulfuro' },
+    { id: 'calcopirita', f: 'CuFeS₂', M: 183.5, X: 'azufre', gas: 'SO₂', Mg: 64, n: 2, proceso: 'tuestan', sale: 'sale como', nombre: 'calcopirita', de: 'del sulfuro' },
+    { id: 'dolomita', f: 'CaMg(CO₃)₂', M: 184, X: 'carbono', gas: 'CO₂', Mg: 44, n: 2, proceso: 'calcinan', sale: 'sale como', nombre: 'dolomita', de: 'del carbonato' },
+    { id: 'esfalerita', f: 'ZnS', M: 97, X: 'azufre', gas: 'SO₂', Mg: 64, n: 1, proceso: 'tuestan', sale: 'sale como', nombre: 'esfalerita', de: 'del sulfuro' },
+    { id: 'caliza', f: 'CaCO₃', M: 100, X: 'carbono', gas: 'CO₂', Mg: 44, n: 1, proceso: 'calcinan', sale: 'sale como', nombre: 'caliza', de: 'del carbonato' },
   ];
   // A + B → productos; c: coeficiente; dH en kJ por la ecuación tal como está escrita.
   const TERMO = [
     { id: 'agua', A: { f: 'H₂', M: 2, c: 2 }, B: { f: 'O₂', M: 32, c: 1 }, prods: [{ f: 'H₂O', M: 18, c: 2 }], dH: -572, contexto: 'En una celda de combustible' },
     { id: 'metano', A: { f: 'CH₄', M: 16, c: 1 }, B: { f: 'O₂', M: 32, c: 2 }, prods: [{ f: 'CO₂', M: 44, c: 1 }, { f: 'H₂O', M: 18, c: 2 }], dH: -890, contexto: 'En una cocina a gas natural' },
-    { id: 'propano', A: { f: 'C₃H₈', M: 44, c: 1 }, B: { f: 'O₂', M: 32, c: 5 }, prods: [{ f: 'CO₂', M: 44, c: 3 }, { f: 'H₂O', M: 18, c: 4 }], dH: -2220, contexto: 'En un balón de gas doméstico' },
+    { id: 'propano', A: { f: 'C₃H₈', M: 44, c: 1 }, B: { f: 'O₂', M: 32, c: 5 }, prods: [{ f: 'CO₂', M: 44, c: 3 }, { f: 'H₂O', M: 18, c: 4 }], dH: -2220, contexto: 'En la hornilla de una cocina a GLP' },
     { id: 'monoxido', A: { f: 'CO', M: 28, c: 2 }, B: { f: 'O₂', M: 32, c: 1 }, prods: [{ f: 'CO₂', M: 44, c: 2 }], dH: -566, contexto: 'En el convertidor catalítico de un auto' },
     { id: 'amoniaco', A: { f: 'N₂', M: 28, c: 1 }, B: { f: 'H₂', M: 2, c: 3 }, prods: [{ f: 'NH₃', M: 17, c: 2 }], dH: -92, contexto: 'En un reactor de amoniaco' },
     { id: 'etanol', A: { f: 'C₂H₅OH', M: 46, c: 1 }, B: { f: 'O₂', M: 32, c: 3 }, prods: [{ f: 'CO₂', M: 44, c: 2 }, { f: 'H₂O', M: 18, c: 3 }], dH: -1367, contexto: 'En un mechero de alcohol' },
@@ -138,9 +142,9 @@
     { id: 'BaO', f: 'BaO', M: 153, hid: 'Ba(OH)₂', Mh: 171, nh: 1, oh: 2, cat: 'Ba²⁺' },
   ];
   const GRASAS = [
-    { id: 'triestearina', f: 'C₅₇H₁₁₀O₆', M: 890, acido: 'ácido esteárico' },
-    { id: 'tripalmitina', f: 'C₅₁H₉₈O₆', M: 806, acido: 'ácido palmítico' },
-    { id: 'trioleina', f: 'C₅₇H₁₀₄O₆', M: 884, acido: 'ácido oleico' },
+    { id: 'triestearina', nombre: 'triestearina', f: 'C₅₇H₁₁₀O₆', M: 890, acido: 'ácido esteárico' },
+    { id: 'tripalmitina', nombre: 'tripalmitina', f: 'C₅₁H₉₈O₆', M: 806, acido: 'ácido palmítico' },
+    { id: 'trioleina', nombre: 'trioleína', f: 'C₅₇H₁₀₄O₆', M: 884, acido: 'ácido oleico' },
   ];
   const D_GLI = 1.26, M_GLI = 92;
   const buscar = (tabla, id) => { const x = tabla.find(t => t.id === id); if (!x) throw new Error(`${id}: no está en la tabla`); return x; };
@@ -223,6 +227,7 @@
     if (!limpio(conc) || !limpio(relave, 3) || conc >= mena / 4) return null;
     const variables = { mena: { nombre: 'masa de mena', color: 'o' }, conc: { nombre: 'concentrado', color: 'i' },
       rel: { nombre: 'relave', color: 'h' }, ley: { nombre: 'ley', color: 'd' } };
+    if (sub === 'recuperacion') { delete variables.ley; variables.rec = { nombre: 'recuperación', color: 'd' }; }
     const enConc = [v('conc', `${f(conc)} t de concentrado con ${f(leyConc)} % de ${met.s}`)];
     if (sub === 'ley') {
       const r = flotacion({ mena, conc, leyConc, relave, M: met.M });
@@ -247,7 +252,7 @@
     const r = flotacion({ mena, conc, leyConc, leyMena, M: met.M });
     const enunciado = [`Una planta procesa `, v('mena', `${f(mena)} t de mena con una ley de ${f(leyMena)} % de ${met.s}`),
       '. Por flotación se obtienen ', ...enConc, '; lo demás sale como ', v('rel', 'relave'), '.'];
-    const datos = `Masa molar: ${met.s} = ${f(met.M, 1)} g/mol = ${f(met.M, 1)} kg/kmol. 1 t = 1000 kg.`;
+    const datos = `Masa molar (g/mol = kg/kmol): ${met.s} = ${f(met.M, 1)}. 1 t = 1000 kg.`;
     if (sub === 'relave') {
       const correcta = r.kmolRelave;
       const pregunta = ['¿Cuántos kilomoles de ', met.nombre, ' quedan en el ', v('rel', 'relave'), '?'];
@@ -256,7 +261,7 @@
         h('QA-metal-del-concentrado', r.metalConc * 1000 / met.M, `Calculaste el ${met.s} que se fue con el concentrado. Lo que queda en el relave es la diferencia entre el metal de la mena y el del concentrado.`),
         h('QA-metal-total', r.metalTotal * 1000 / met.M, `Ese es todo el ${met.s} de la mena. Una parte salió en el concentrado; hay que restarla.`),
         h('QA-relave-con-ley-de-mena', (mena - conc) * leyMena / 100 * 1000 / met.M, `Tomaste la masa del relave (${f(mena - conc)} t) con la ley de la mena. El relave no tiene la ley de la mena: la flotación le quitó casi todo el metal.`),
-        h('QA-potencia-diez', r.metalRelave / met.M * 1000 * 1000, 'Pasaste dos veces de toneladas a kilogramos (× 1000 × 1000). 1 t son 1000 kg, y 1 kmol de metal pesa su masa molar en kilogramos.'),
+        h('QA-potencia-diez-x1000', r.metalRelave / met.M * 1000 * 1000, 'Pasaste dos veces de toneladas a kilogramos (× 1000 × 1000). 1 t son 1000 kg, y 1 kmol de metal pesa su masa molar en kilogramos.'),
       ];
       const solucion = [
         [`${met.s} en la mena: `, v('mena', `${f(mena)} t × ${f(leyMena / 100, 3)}`), ` = ${f(r.metalTotal, 3)} t.`],
@@ -268,7 +273,7 @@
         _datos: { tipo: 'flotacion', sub, mena, leyMena, conc, leyConc, metal: met.s } });
     }
     const correcta = r.recuperacion;
-    const pregunta = ['¿Qué porcentaje del ', met.nombre, ' de la mena se recupera en el concentrado?'];
+    const pregunta = ['¿Qué ', v('rec', `porcentaje ${met.del}`), ' de la mena se recupera en el concentrado?'];
     const errores = [
       h('QA-razon-de-masas', conc / mena * 100, `Dividiste la masa del concentrado entre la de la mena. La recuperación compara metal con metal: el ${met.s} del concentrado entre el ${met.s} de la mena.`),
       h('QA-olvida-ley-mena', conc * leyConc / mena, `Dividiste el ${met.s} del concentrado entre toda la mena, sin su ley. La mena no es metal puro: solo ${f(leyMena)} % es ${met.s}.`),
@@ -278,7 +283,7 @@
     const solucion = [
       [`${met.s} en la mena: `, v('mena', `${f(mena)} t × ${f(leyMena / 100, 3)}`), ` = ${f(r.metalTotal, 3)} t.`],
       [`${met.s} en el concentrado: `, v('conc', `${f(conc)} t × ${f(leyConc / 100)}`), ` = ${f(r.metalConc, 3)} t.`],
-      [`Recuperación = ${f(r.metalConc, 3)} ÷ ${f(r.metalTotal, 3)} × 100 = `, v('ley', `${f(correcta, 1)} %`), '. El resto se va en el ', v('rel', 'relave'), '.'],
+      [v('rec', 'Recuperación'), ` = ${f(r.metalConc, 3)} ÷ ${f(r.metalTotal, 3)} × 100 = `, v('rec', `${f(correcta, 1)} %`), '. El resto se va en el ', v('rel', 'relave'), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, unidad: '%', decimales: 1, variables, enunciado, pregunta, solucion, datos,
       _datos: { tipo: 'flotacion', sub, mena, leyMena, conc, leyConc, metal: met.s } });
@@ -293,20 +298,21 @@
     const r = metalDeMineral({ mena, pct, mineral: m, rendimiento });
     const correcta = r.metal, eta = rendimiento / 100;
     const frac = m.n * met.M / m.M;
-    const variables = { mena: { nombre: 'masa de mena', color: 'o' }, pct: { nombre: 'porcentaje del mineral', color: 'i' },
+    const variables = { mena: { nombre: m.id === 'argentita' ? 'masa de concentrado' : 'masa de mena', color: 'o' }, pct: { nombre: 'porcentaje del mineral', color: 'i' },
       eta: { nombre: 'rendimiento', color: 'h' }, met: { nombre: 'masa de metal', color: 'd' } };
-    const enunciado = ['Se procesan ', v('mena', `${f(mena)} t de mena`), ' que contiene ', v('pct', `${f(pct)} % de ${m.id} (${m.f})`),
-      ...(rendimiento < 100 ? ['. El proceso recupera ', v('eta', `el ${f(rendimiento)} % del ${met.nombre}`), '.'] : [`. Todo el ${met.nombre} del mineral se recupera.`])];
+    const queEs = m.id === 'argentita' ? 'de un concentrado' : 'de mena';
+    const enunciado = ['Se procesan ', v('mena', `${f(mena)} t ${queEs}`), ' que contiene ', v('pct', `${f(pct)} % de ${m.id} (${m.f})`),
+      ...(rendimiento < 100 ? ['. El proceso recupera ', v('eta', `el ${f(rendimiento)} % ${met.del}`), '.'] : [`. Todo ${met.del.slice(3)} del mineral se recupera.`])];
     const pregunta = ['¿Cuántos kilogramos de ', v('met', met.nombre), ' se obtienen?'];
     const errores = [
       h('QA-ley-como-metal', r.mineral * eta, `Tomaste el ${f(pct)} % como si fuera de ${met.nombre}. Es de ${m.f}: dentro del mineral, el ${met.s} es solo una parte de la masa.`),
-      h('QA-olvida-ley', mena * 1000 * frac * eta, `Usaste toda la mena como si fuera ${m.f}. Solo el ${f(pct)} % de la mena es mineral; el resto es ganga.`),
+      h('QA-olvida-ley', mena * 1000 * frac * eta, `Usaste todo el material como si fuera ${m.f}. Solo el ${f(pct)} % es ese mineral; el resto es ganga.`),
       h('QA-fraccion-invertida', r.mineral * m.M / (m.n * met.M) * eta, `Invertiste la fracción del metal: es ${m.n > 1 ? m.n + ' × ' : ''}${f(met.M, 1)} ÷ ${f(m.M, 1)}, menor que 1, porque el metal pesa menos que el mineral que lo contiene.`),
     ];
     if (m.n > 1) errores.unshift(es('ES6', correcta / m.n, `Contaste un solo átomo de ${met.s} por fórmula. En ${m.f} hay ${m.n}: cada mol del mineral trae ${m.n} mol de ${met.s}.`, 'parcial'));
     if (rendimiento < 100) {
-      errores.push(h('QA-olvida-rendimiento', correcta / eta, `Te olvidaste del rendimiento: el proceso solo recupera el ${f(rendimiento)} % del ${met.nombre}.`));
-      errores.push(h('QA-divide-rendimiento', correcta / eta / eta, `Dividiste entre el rendimiento. Si solo se recupera el ${f(rendimiento)} %, se obtiene menos, no más: se multiplica por ${f(eta)}.`));
+      errores.push(h('QA-olvida-rendimiento', correcta / eta, `Te olvidaste del rendimiento: el proceso solo recupera el ${f(rendimiento)} % ${met.del}.`));
+      errores.push(h('QA-rendimiento-al-reves', correcta / eta / eta, `Dividiste entre el rendimiento. Si solo se recupera el ${f(rendimiento)} %, se obtiene menos, no más: se multiplica por ${f(eta)}.`));
     }
     const solucion = [
       ['Masa de mineral: ', v('mena', `${f(mena)} t = ${f(mena * 1000)} kg`), ' × ', v('pct', f(pct / 100)), ` = ${f(r.mineral, 1)} kg de ${m.f}.`],
@@ -333,8 +339,9 @@
     const variables = { m: { nombre: 'masa de la muestra', color: 'o' }, p: { nombre: 'pureza', color: 'i' },
       at: { nombre: `átomos de ${x.X === 'azufre' ? 'S' : 'C'} por fórmula`, color: 'h' }, V: { nombre: `volumen de ${x.gas}`, color: 'd' } };
     const s = x.X === 'azufre' ? 'S' : 'C';
-    const enunciado = ['Se ', x.proceso, ' ', v('m', `${f(masa, 1)} ${um} de un mineral`), pureza < 100 ? [' con ', v('p', `${f(pureza)} % de ${x.f}`)] : [' de ', v('p', `${x.f} puro`)],
-      ` (${x.id}). Todo el ${x.X} del mineral ${x.sale} ${x.gas}.`].flat();
+    const enunciado = pureza < 100
+      ? ['Se ', x.proceso, ' ', v('m', `${f(masa, 1)} ${um} de un mineral`), ' con ', v('p', `${f(pureza)} % de ${x.nombre} (${x.f})`), `. Todo el ${x.X} ${x.de} ${x.sale} ${x.gas}.`]
+      : ['Se ', x.proceso, ' ', v('m', `${f(masa, 1)} ${um} de ${x.nombre}`), ' ', v('p', `pura (${x.f})`), `. Todo el ${x.X} ${x.de} ${x.sale} ${x.gas}.`];
     const pregunta = ['¿Qué ', v('V', `volumen de ${x.gas}`), ` se obtiene, medido en condiciones normales, en ${uv}?`];
     const errores = [
       h('QA-olvida-pureza', correcta / (pureza / 100), `Usaste toda la muestra como si fuera ${x.f}. Solo el ${f(pureza)} % lo es.`),
@@ -343,8 +350,8 @@
     ];
     if (pureza === 100) errores[0] = h('QA-divide-entre-22-4', r.nGas / VN, `Dividiste entre 22,4. El volumen molar multiplica: cada ${umol} de gas ocupa 22,4 ${uv}.`);
     if (x.n > 1) errores.unshift(es('ES6', correcta / x.n, `Contaste un solo átomo de ${s} por fórmula. En ${x.f} hay ${x.n}: cada ${umol} de mineral da ${x.n} ${umol} de ${x.gas}.`, 'parcial'));
-    if (kilo) errores.push(h('QA-potencia-diez', correcta * 1000, `Ese número son litros: los ${f(r.nGas)} kmol son ${f(r.nGas * 1000)} mol, y por 22,4 L dan litros. En m³, 1 kmol ocupa 22,4 m³.`));
-    else errores.push(h('QA-potencia-diez', correcta / 1000, 'Pasaste a m³ un volumen que ya estaba en litros. Con gramos y mol, el volumen molar es 22,4 L/mol.'));
+    if (kilo) errores.push(h('QA-potencia-diez-x1000', correcta * 1000, `Ese número son litros: los ${f(r.nGas)} kmol son ${f(r.nGas * 1000)} mol, y por 22,4 L dan litros. En m³, 1 kmol ocupa 22,4 m³.`));
+    else errores.push(h('QA-potencia-diez-entre1000', correcta / 1000, 'Pasaste a m³ un volumen que ya estaba en litros. Con gramos y mol, el volumen molar es 22,4 L/mol.'));
     const solucion = [
       [pureza < 100 ? [v('m', `${f(masa, 1)} ${um}`), ' × ', v('p', f(pureza / 100)), ` = ${f(masa * pureza / 100, 1)} ${um} de ${x.f}; `] : [v('m', `${f(masa, 1)} ${um}`), ` de ${x.f}; `],
         `÷ ${f(x.M, 1)} = ${f(r.n)} ${umol} de ${x.f}.`].flat(),
@@ -360,14 +367,14 @@
   const textoCalor = x => (x > 0 ? 'Se liberan ' : 'Se absorben ') + f(Math.abs(x), 1) + ' kJ';
   const ecuacionTermo = r => {
     const t = s => (s.c > 1 ? s.c + ' ' : '') + s.f;
-    return `${t(r.A)} + ${t(r.B)} → ${r.prods.map(t).join(' + ')}   ΔH = −${f(Math.abs(r.dH))} kJ`;
+    return `${t(r.A)} + ${t(r.B)} → ${r.prods.map(x => t(x) + (x.f === 'H₂O' ? '(l)' : '')).join(' + ')}   ΔH = −${f(Math.abs(r.dH))} kJ`;
   };
   function tTermo(rng, semilla) {
     const r = rng.elegir(TERMO), dH = Math.abs(r.dH);
     const sub = rng.elegir(['producto', 'limitante', 'limitante']);
     const variables = { mA: { nombre: `masa de ${r.A.f}`, color: 'o' }, mB: { nombre: `masa de ${r.B.f}`, color: 'i' },
       mP: { nombre: 'masa de producto', color: 'h' }, Q: { nombre: 'calor', color: 'd' } };
-    const pregunta = ['¿Qué pasa con la ', v('Q', 'energía'), '?'];
+    const pregunta = ['¿Cuánta ', v('Q', 'energía'), ' se intercambia, y se libera o se absorbe?'];
     if (sub === 'producto') {
       const p = rng.elegir(r.prods.filter(x => x.c > 1));
       const k = rng.elegir([0.25, 0.5, 1.5, 2, 2.5, 3, 4]);
@@ -377,9 +384,9 @@
       const enunciado = [`${r.contexto} ocurre la reacción `, { t: ecuacionTermo(r), formula: true }, '. Se forman ', v('mP', `${f(masaProducto, 1)} g de ${p.f}`), '.'];
       const errores = [
         h('QA-dh-negativo-absorbe', -correcta, 'El valor está bien, pero el sentido no: ΔH negativo quiere decir que los productos tienen menos energía que los reactivos. La diferencia sale al ambiente: se libera.'),
-        h('QA-dh-por-mol-de-producto', nP * dH, `Multiplicaste los ${f(nP)} mol de ${p.f} por ${f(dH)} kJ. Esos ${f(dH)} kJ corresponden a la ecuación completa, que forma ${p.c} mol de ${p.f}: hay que dividir entre ${p.c}.`),
-        h('QA-dh-sin-escalar', dH, `Diste el ΔH de la ecuación tal cual. Ese valor es para ${p.c} mol de ${p.f}; aquí se forman ${f(nP)} mol.`),
-        h('QA-dh-negativo-absorbe', -nP * dH, `Dos errores juntos: no dividiste entre el coeficiente ${p.c} y leíste el ΔH negativo como energía absorbida.`),
+        h('QA-calor-sin-coeficiente', nP * dH, `Multiplicaste los ${f(nP)} mol de ${p.f} por ${f(dH)} kJ. Esos ${f(dH)} kJ corresponden a la ecuación completa, que forma ${p.c} mol de ${p.f}: hay que dividir entre ${p.c}.`),
+        h('QA-calor-de-la-ecuacion', dH, `Diste el ΔH de la ecuación tal cual. Ese valor es para ${p.c} mol de ${p.f}; aquí se forman ${f(nP)} mol.`),
+        h('QA-dh-negativo-absorbe-sin-coeficiente', -nP * dH, `Dos errores juntos: no dividiste entre el coeficiente ${p.c} y leíste el ΔH negativo como energía absorbida.`),
         h('QA-dh-entre-moles', dH / nP, `Dividiste ${f(dH)} kJ entre los moles. El calor es proporcional a lo que reacciona: más producto, más calor.`),
       ];
       const solucion = [
@@ -419,13 +426,13 @@
       h('QA-dh-negativo-absorbe', -correcta, 'El valor está bien, pero ΔH negativo significa que la reacción libera energía al ambiente; no la absorbe.'),
       h('QA-calcula-con-exceso', kDe(exc) * eta * dH, `Calculaste con el ${r[exc].f}, que está en exceso. La reacción se detiene cuando se acaba el ${r[lim].f}.`),
     ];
-    if (menosMoles !== lim) errores.unshift(es('ES20', kDe(menosMoles) * eta * dH, `Tomaste como limitante al ${r[menosMoles].f} porque hay menos moles (${f(menosMoles === 'A' ? nA : nB)} contra ${f(menosMoles === 'A' ? nB : nA)}). Antes de comparar hay que dividir cada cantidad entre su coeficiente.`, 'documentado'));
-    if (menorCoef && menorCoef !== lim && menorCoef !== menosMoles) errores.push(es('ES21', kDe(menorCoef) * eta * dH, `Tomaste como limitante al ${r[menorCoef].f} porque su coeficiente es el menor. El coeficiente es la receta; hay que compararla con lo que de verdad hay.`, 'parcial'));
+    if (menorCoef && menorCoef !== lim && menorCoef !== menosMoles) errores.splice(1, 0, es('ES21', kDe(menorCoef) * eta * dH, `Tomaste como limitante al ${r[menorCoef].f} porque su coeficiente es el menor. El coeficiente es la receta; hay que compararla con lo que de verdad hay.`, 'parcial'));
+    if (menosMoles !== lim) errores.unshift(es('ES20', kDe(menosMoles) * eta * dH, `Tomaste como limitante al ${r[menosMoles].f} porque hay menos moles (${f(menosMoles === 'A' ? nA : nB)} contra ${f(menosMoles === 'A' ? nB : nA)}). Antes de comparar hay que dividir cada cantidad entre su coeficiente.`, 'parcial'));
     if (rendimiento < 100) {
       errores.push(h('QA-olvida-rendimiento', correcta / eta, `Te olvidaste del rendimiento: solo reacciona el ${rendimiento} % de lo que permite el limitante.`));
-      errores.push(h('QA-divide-rendimiento', correcta / eta / eta, `Dividiste entre el rendimiento. Con un rendimiento de ${rendimiento} % reacciona menos y sale menos calor: se multiplica por ${f(eta)}.`));
+      errores.push(h('QA-rendimiento-al-reves', correcta / eta / eta, `Dividiste entre el rendimiento. Con un rendimiento de ${rendimiento} % reacciona menos y sale menos calor: se multiplica por ${f(eta)}.`));
     }
-    errores.push(h('QA-dh-por-mol-de-limitante', (lim === 'A' ? nA : nB) * eta * dH, `Multiplicaste los moles del ${r[lim].f} por ${f(dH)} kJ, sin dividir entre su coeficiente ${r[lim].c}. El ΔH es para la ecuación completa.`));
+    errores.push(h('QA-calor-sin-coeficiente', (lim === 'A' ? nA : nB) * eta * dH, `Multiplicaste los moles del ${r[lim].f} por ${f(dH)} kJ, sin dividir entre su coeficiente ${r[lim].c}. El ΔH es para la ecuación completa.`));
     const solucion = [
       ['Moles: ', v('mA', `${f(mA, 1)} g`), ` ÷ ${r.A.M} = ${f(nA)} mol de ${r.A.f}; `, v('mB', `${f(mB, 1)} g`), ` ÷ ${r.B.M} = ${f(nB)} mol de ${r.B.f}.`],
       [`Entre los coeficientes: ${f(nA)} ÷ ${r.A.c} = ${f(kA)} y ${f(nB)} ÷ ${r.B.c} = ${f(kB)}. El limitante es el ${r[lim].f}${menosMoles !== lim ? ', aunque tenga más moles' : ''}.`],
@@ -452,7 +459,7 @@
       h('QA-sin-coeficientes', c * V / 1000 * r.M, `Tomaste un mol de ${r.nombre} por cada mol de Cr³⁺. La ecuación dice ${r.alc} a ${r.cr}.`),
       h('QA-razon-invertida', c * V / 1000 * r.cr / r.alc * r.M, `Invertiste la proporción: son ${r.alc} mol de ${r.nombre} por cada ${r.cr} mol de Cr³⁺, no al revés.`),
       h('QA-ml-sin-pasar', correcta * 1000, `Multiplicaste la concentración por ${V} sin pasar los mL a litros. La molaridad es mol por litro: ${V} mL = ${f(V / 1000, 3)} L.`),
-      h('QA-masa-del-producto', x.nAlcohol * r.Mp, `Los moles están bien, pero los pasaste a gramos con la masa molar del ${r.nombreProd} (${r.Mp}). Se pide la masa del ${r.nombre} (${r.M} g/mol).`),
+      h('QA-masa-del-producto-molar', x.nAlcohol * r.Mp, `Los moles están bien, pero los pasaste a gramos con la masa molar del ${r.nombreProd} (${r.Mp}). Se pide la masa del ${r.nombre} (${r.M} g/mol).`),
     ];
     const solucion = [
       ['Moles de Cr³⁺: ', v('c', `${f(c)} mol/L`), ' × ', v('V', `${f(V / 1000, 3)} L`), ` = ${f(x.nCr, 4)} mol.`],
@@ -465,8 +472,8 @@
 
   // 6. Hidróxido desde la masa del óxido: moles, agua e iones.
   function tHidroxido(rng, semilla) {
-    const o = rng.elegir(OXIDOS);
     const sub = rng.elegir(['moles', 'agua', 'iones']);
+    const o = rng.elegir(sub === 'iones' ? OXIDOS.filter(x => x.nh === 2) : OXIDOS);
     const n = rng.elegir([0.2, 0.25, 0.4, 0.5, 1, 1.5, 2, 2.5, 3]);
     const masa = n * o.M;
     const x = hidroxido({ oxido: o, masa });
@@ -474,16 +481,17 @@
       w: { nombre: 'agua', color: 'i' }, r: { nombre: 'lo que se pide', color: 'd' } };
     const ec = o.nh === 2 ? `${o.f} + H₂O → 2 ${o.hid}` : `${o.f} + H₂O → ${o.hid}`;
     const dis = o.oh === 1 ? `${o.hid} → ${o.cat} + OH⁻` : `${o.hid} → ${o.cat} + 2 OH⁻`;
-    const enunciado = ['Se agregan ', v('m', `${f(masa, 1)} g de ${o.f}`), ` a agua suficiente. El óxido reacciona con el `, v('w', 'agua'), ` y forma ${o.hid}`,
+    const enunciado = ['Se agregan ', v('m', `${f(masa, 2)} g de ${o.f}`), ` a agua suficiente. El óxido reacciona con el `, v('w', 'agua'), ` y forma ${o.hid}`,
       sub === 'iones' ? ', que se disocia por completo.' : '.'];
-    const paso1 = [v('m', `${f(masa, 1)} g`), ` ÷ ${o.M} g/mol = ${f(x.nOxido)} mol de ${o.f}. Ecuación: `, v('k', ec), '.'];
+    const paso1 = [v('m', `${f(masa, 2)} g`), ` ÷ ${o.M} g/mol = ${f(x.nOxido)} mol de ${o.f}. Ecuación: `, v('k', ec), '.'];
     let correcta, unidad, pregunta, errores, solucion;
     if (sub === 'moles') {
       correcta = x.nHidroxido; unidad = 'mol';
       pregunta = ['¿Cuántos ', v('r', `mol de ${o.hid}`), ' se forman?'];
       errores = [
-        es('ES19', masa / o.Mh * (o.nh === 2 ? 1 : 2), `Dividiste la masa del ${o.f} entre la masa molar del ${o.hid}${o.nh === 1 ? ' y contaste los OH⁻' : ''}. Primero se cuentan los moles del óxido con su propia masa molar (${o.M}).`, 'parcial'),
-        h('QA-masa-del-producto', x.nHidroxido * o.Mh, `Esa es la masa del ${o.hid} en gramos. Se piden los moles.`),
+        o.nh === 2 ? es('ES19', masa / o.Mh, `Dividiste la masa del ${o.f} entre la masa molar del ${o.hid}. Primero se cuentan los moles del óxido con su propia masa molar (${o.M}).`, 'parcial')
+          : h('QA-masa-molar-ajena-y-cuenta-oh', masa / o.Mh * 2, `Dos errores: dividiste la masa del ${o.f} entre la masa molar del ${o.hid} y además contaste los OH⁻. Los moles del óxido salen con su propia masa molar (${o.M}), y cada ${o.f} da un solo ${o.hid}.`),
+        h('QA-masa-del-producto-en-vez-de-moles', x.nHidroxido * o.Mh, `Esa es la masa del ${o.hid} en gramos. Se piden los moles.`),
       ];
       if (o.nh === 2) {
         errores.push(h('QA-sin-balancear', x.nOxido, `Tomaste un ${o.hid} por cada ${o.f}. Balancea: el ${o.f} tiene 2 átomos de ${o.hid.slice(0, -2)}, así que da 2 ${o.hid}.`));
@@ -495,25 +503,24 @@
       solucion = [paso1, ['Por cada ', v('k', `${o.f}`), ' se forma', o.nh === 2 ? 'n ' : ' ', v('k', `${o.nh} ${o.hid}`), `: ${f(x.nOxido)} × ${o.nh} = `, v('r', `${f(correcta)} mol`), '.']];
     } else if (sub === 'agua') {
       correcta = x.masaAgua; unidad = 'g';
-      pregunta = ['¿Qué masa de ', v('w', 'agua'), ' reacciona como mínimo?'];
+      pregunta = ['¿Qué masa de ', v('w', 'agua'), ' reacciona?'];
       errores = [
         h('QA-agua-por-oh', x.nOxido * 2 * 18, `Pusiste un H₂O por cada OH⁻. Basta uno por ${o.f}: el H₂O aporta un O y dos H, y con el O del óxido se forman los dos OH⁻.`),
-        h('QA-moles-por-gramos', x.nOxido, 'Diste los moles de agua. Se pide la masa: se multiplica por 18 g/mol.'),
-        h('QA-masa-del-producto', x.nHidroxido * o.Mh, `Esa es la masa del ${o.hid} que se forma, no la del agua que reacciona.`),
+        h('QA-moles-como-masa', x.nOxido, 'Diste los moles de agua. Se pide la masa: se multiplica por 18 g/mol.'),
+        h('QA-masa-del-producto-en-vez-de-agua', x.nHidroxido * o.Mh, `Esa es la masa del ${o.hid} que se forma, no la del agua que reacciona.`),
         h('QA-misma-masa', masa, `Pusiste la misma masa de agua que de óxido. Los coeficientes son de moles, no de gramos: 1 mol de ${o.f} (${o.M} g) con 1 mol de agua (18 g).`),
       ];
-      solucion = [paso1, ['Por cada mol de óxido reacciona ', v('w', '1 mol de agua'), `: ${f(x.nOxido)} mol × 18 g/mol = `, v('r', `${f(correcta, 1)} g`), '.'],
-        [`Control: masa de ${o.hid} − masa de ${o.f} = ${f(x.nHidroxido * o.Mh, 1)} − ${f(masa, 1)} = ${f(correcta, 1)} g.`]];
+      solucion = [paso1, ['Por cada mol de óxido reacciona ', v('w', '1 mol de agua'), `: ${f(x.nOxido)} mol × 18 g/mol = `, v('w', `${f(correcta, 1)} g de agua`), '.'],
+        [`Control: masa de ${o.hid} − masa de ${o.f} = ${f(x.nHidroxido * o.Mh, 1)} − ${f(masa, 2)} = ${f(correcta, 1)} g.`]];
     } else {
       correcta = x.molesIones; unidad = 'mol de iones';
       pregunta = ['¿Cuántos ', v('r', 'moles de iones'), ` en total (${o.cat} y OH⁻) quedan en la solución?`];
       errores = [
-        h('QA-solo-aniones', x.nHidroxido * o.oh, 'Contaste solo los OH⁻. Al disociarse, cada fórmula suelta también su catión, y se piden todos los iones.'),
-        h('QA-solo-cationes', x.nHidroxido, `Contaste solo los ${o.cat}. Faltan los OH⁻.`),
-        h('QA-formulas-como-iones', x.nOxido * (1 + o.oh), `Disociaste un ${o.hid} por cada ${o.f}. Pero cada ${o.f} da ${o.nh} ${o.hid}; primero balancea la reacción con el agua.`),
-        h('QA-cuenta-atomos', x.nHidroxido * (o.oh * 2 + 1), 'Contaste átomos (cada OH tiene dos). El OH⁻ es un solo ion.'),
+        h('QA-solo-aniones', x.nHidroxido, 'Contaste solo los OH⁻. Al disociarse, cada fórmula suelta también su catión, y se piden todos los iones.'),
+        h('QA-oxido-disociado', x.nOxido * 3, `Disociaste el óxido como si diera 2 ${o.cat} y un O²⁻. En agua se forma ${o.hid}, y lo que se disocia es el hidróxido: ${dis}.`),
+        h('QA-cuenta-oxido', x.nOxido, `Contaste los moles de ${o.f}, no los iones. Cada ${o.f} da 2 ${o.hid}, y cada ${o.hid} da 2 iones.`),
+        h('QA-cuenta-atomos', x.nHidroxido * 3, `Contaste átomos (${o.cat.replace('⁺', '')}, O y H). El OH⁻ es un solo ion: cada ${o.hid} da 2 iones.`),
       ];
-      if (o.nh === 1) errores[2] = h('QA-oxido-disociado', x.nOxido * 2, `Disociaste el óxido como si diera ${o.cat} y O²⁻. En agua se forma ${o.hid}, que suelta 1 ${o.cat} y 2 OH⁻.`);
       solucion = [paso1, [`Se forman ${f(x.nHidroxido)} mol de ${o.hid}. Disociación: `, v('k', dis), `: ${1 + o.oh} iones por fórmula.`],
         [`${f(x.nHidroxido)} × ${1 + o.oh} = `, v('r', `${f(correcta)} mol de iones`), '.']];
     }
@@ -530,9 +537,9 @@
     const correcta = x.masaGrasa, eta = rendimiento / 100;
     const variables = { V: { nombre: 'volumen de glicerol', color: 'o' }, d: { nombre: 'densidad', color: 'i' },
       eta: { nombre: 'rendimiento', color: 'h' }, m: { nombre: 'masa de grasa', color: 'd' } };
-    const enunciado = [`La hidrólisis de la ${g.id} (${g.f}) da glicerol (C₃H₈O₃) y ${g.acido}. Se quiere obtener `, v('V', `${V} mL de glicerol`),
+    const enunciado = [`La hidrólisis de la ${g.nombre} (${g.f}) da glicerol (C₃H₈O₃) y ${g.acido}. Se quiere obtener `, v('V', `${V} mL de glicerol`),
       ' (', v('d', 'densidad 1,26 g/mL'), ')', rendimiento < 100 ? [' y la hidrólisis rinde ', v('eta', `${rendimiento} %`), '.'] : '.'].flat();
-    const pregunta = ['¿Qué ', v('m', `masa de ${g.id}`), ' se necesita?'];
+    const pregunta = ['¿Qué ', v('m', `masa de ${g.nombre}`), ' se necesita?'];
     const errores = [
       h('QA-volumen-como-masa', V / M_GLI * g.M / eta, `Usaste los ${V} mL como si fueran gramos. Primero se pasa a masa con la densidad: ${V} mL × 1,26 g/mL.`),
       h('QA-divide-densidad', V / D_GLI / M_GLI * g.M / eta, 'Dividiste entre la densidad. La masa es volumen por densidad: m = V × d.'),
@@ -540,10 +547,10 @@
       h('QA-tres-trigliceridos', correcta * 3, 'Pusiste tres triglicéridos por cada glicerol. Cada triglicérido tiene un glicerol; el 3 de la ecuación es del agua y de los ácidos grasos.'),
       h('QA-masa-de-glicerol', x.masaGlicerol, 'Esa es la masa del glicerol. Se pide la de la grasa que hay que hidrolizar.'),
     ];
-    if (rendimiento < 100) errores.splice(2, 0, h('QA-multiplica-rendimiento', correcta * eta * eta, `Multiplicaste por el rendimiento. Si solo rinde el ${rendimiento} %, hace falta más grasa: se divide entre ${f(eta)}.`));
+    if (rendimiento < 100) errores.splice(2, 0, h('QA-rendimiento-al-reves', correcta * eta * eta, `Multiplicaste por el rendimiento. Si solo rinde el ${rendimiento} %, hace falta más grasa: se divide entre ${f(eta)}.`));
     const solucion = [
       ['Masa de glicerol: ', v('V', `${V} mL`), ' × ', v('d', '1,26 g/mL'), ` = ${f(x.masaGlicerol, 1)} g; ÷ 92 g/mol = ${f(x.nGlicerol, 3)} mol.`],
-      [`Un triglicérido da un glicerol: hacen falta ${f(x.nGlicerol, 3)} mol de ${g.id} × ${g.M} g/mol = ${f(x.nGlicerol * g.M, 1)} g.`],
+      [`Un triglicérido da un glicerol: hacen falta ${f(x.nGlicerol, 3)} mol de ${g.nombre} × ${g.M} g/mol = ${f(x.nGlicerol * g.M, 1)} g.`],
       rendimiento < 100 ? ['Con el rendimiento: ', `${f(x.nGlicerol * g.M, 1)} ÷ `, v('eta', f(eta)), ' = ', v('m', `${f(correcta, 1)} g`), '.'] : ['Respuesta: ', v('m', `${f(correcta, 1)} g`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, unidad: 'g', decimales: 1, variables, enunciado, pregunta, solucion,

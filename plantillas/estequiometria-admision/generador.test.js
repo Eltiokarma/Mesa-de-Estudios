@@ -154,6 +154,20 @@ test('salen los siete tipos, y el error ES20 aparece cuando el limitante tiene m
   assert.ok(es20 > 20, `ES20 solo apareció ${es20} veces`);
 });
 
+test('ningún id de error se repite dentro de un mismo problema', () => {
+  for (let s = 0; s < 1000; s++) {
+    const ids = gen.generar(s).alternativas.filter(a => a.error).map(a => a.error.id);
+    assert.equal(new Set(ids).size, ids.length, `semilla ${s}: ${ids}`);
+  }
+});
+
+test('salen todos los errores con nombre: ES21 y los iones de los óxidos', () => {
+  const vistos = new Set();
+  for (let s = 0; s < 3000; s++) for (const a of gen.generar(s).alternativas) if (a.error) vistos.add(a.error.id);
+  for (const id of ['ES6', 'ES19', 'ES20', 'ES21', 'QA-solo-aniones', 'QA-oxido-disociado', 'QA-cuenta-oxido', 'QA-cuenta-atomos', 'QA-dh-negativo-absorbe-sin-coeficiente'])
+    assert.ok(vistos.has(id), `no salió ${id}`);
+});
+
 test('en termoquímica siempre está la opción del signo al revés (se absorbe)', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);

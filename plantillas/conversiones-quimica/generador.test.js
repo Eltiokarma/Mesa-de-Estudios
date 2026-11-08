@@ -85,6 +85,25 @@ test('las alternativas van con coma decimal y la misma unidad', () => {
   }
 });
 
+test('ningún id de error se repite dentro de un mismo problema, y no hay kelvin negativos', () => {
+  for (let s = 0; s < 1000; s++) {
+    const p = gen.generar(s);
+    const ids = p.alternativas.filter(a => a.error).map(a => a.error.id);
+    assert.equal(new Set(ids).size, ids.length, `semilla ${s}: ${ids}`);
+    for (const a of p.alternativas) assert.ok(!/^−.* K$/.test(a.texto), `semilla ${s}: ${a.texto}`);
+  }
+});
+
+test('los datos de temperatura caen en un rango creíble para cada objeto y lugar', () => {
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), d = p._datos, txt = p.enunciado.map(x => typeof x === 'string' ? x : x.t).join('');
+    if (d.tipo === 'delta' && /agua/.test(txt) && d.sub !== 'f-c') for (const T of d.temps || [d.T1, d.T2]) assert.ok(T >= 0 && T <= 100, `semilla ${s}: ${T}`);
+    if (d.tipo === 'lectura' && /congelador/.test(txt)) { const C = gen.convertir(d.valor, d.sub[0].toUpperCase(), 'C'); assert.ok(C >= -40 && C <= -10, `semilla ${s}: ${C}`); }
+    if (d.tipo === 'lectura' && /horno/.test(txt)) { const C = gen.convertir(d.valor, d.sub[0].toUpperCase(), 'C'); assert.ok(C >= 150 && C <= 250, `semilla ${s}: ${C}`); }
+    if (d.tipo === 'densidad' && d.sub === 'volumen') assert.ok(d.masa <= 15000, `semilla ${s}`);
+  }
+});
+
 test('notación científica: tres cifras y potencia de diez', () => {
   assert.equal(gen.cient(1.28e-10), '1,28 × 10⁻¹⁰');
   assert.equal(gen.cient(0.0005), '5 × 10⁻⁴');

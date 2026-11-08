@@ -5,7 +5,8 @@
   "unidades": [
     "quimica.estequiometria",
     "quimica.recursos-naturales",
-    "quimica.nomenclatura-inorganica"
+    "quimica.biomoleculas-y-productos-naturales",
+    "quimica.electroquimica"
   ],
   "estado": "borrador",
   "version": "0.1.0",

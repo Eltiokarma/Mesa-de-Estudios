@@ -2,7 +2,7 @@
   "plantilla": "estequiometria-admision",
   "tolerancia": 0.000001,
   "nota": "Tolerancia relativa. Masas en t, kg o g según el tipo (ver la cabecera del generador); calor en kJ liberados; volúmenes de gas en CN (22,4 L/mol o 22,4 m³/kmol). exacta es el texto de la alternativa correcta, con 1 o 2 decimales.",
-  "verificacion": "",
+  "verificacion": "Verificación a ciegas (subagente verificador, 8 nov 2026): se recalcularon los 23 casos con fracciones exactas, por moles y factores de conversión, sin leer el código, y 27 semillas extra (100 a 139) de todos los tipos. Coinciden 23/23 y 27/27, con una sola alternativa correcta en cada uno. Los casos que cambiaron tras la revisión los recalculó la conversación principal.",
   "casos": [
     {
       "semilla": 0,
@@ -51,13 +51,13 @@
       "semilla": 3,
       "entrada": {
         "tipo": "hidroxido",
-        "sub": "agua",
-        "oxido": "Na2O",
-        "masa": 15.5
+        "sub": "moles",
+        "oxido": "K2O",
+        "masa": 23.5
       },
       "esperado": {
-        "respuesta": 4.5,
-        "exacta": "4,5 g"
+        "respuesta": 0.5,
+        "exacta": "0,5 mol"
       }
     },
     {
@@ -150,12 +150,12 @@
       "entrada": {
         "tipo": "hidroxido",
         "sub": "iones",
-        "oxido": "CaO",
-        "masa": 22.400000000000002
+        "oxido": "Li2O",
+        "masa": 12
       },
       "esperado": {
-        "respuesta": 1.2000000000000002,
-        "exacta": "1,2 mol de iones"
+        "respuesta": 1.6,
+        "exacta": "1,6 mol de iones"
       }
     },
     {
@@ -234,26 +234,26 @@
       "semilla": 24,
       "entrada": {
         "tipo": "hidroxido",
-        "sub": "iones",
-        "oxido": "CaO",
-        "masa": 14
+        "sub": "agua",
+        "oxido": "BaO",
+        "masa": 38.25
       },
       "esperado": {
-        "respuesta": 0.75,
-        "exacta": "0,75 mol de iones"
+        "respuesta": 4.5,
+        "exacta": "4,5 g"
       }
     },
     {
       "semilla": 26,
       "entrada": {
         "tipo": "hidroxido",
-        "sub": "moles",
-        "oxido": "CaO",
-        "masa": 84
+        "sub": "iones",
+        "oxido": "Na2O",
+        "masa": 93
       },
       "esperado": {
-        "respuesta": 1.5,
-        "exacta": "1,5 mol"
+        "respuesta": 6,
+        "exacta": "6 mol de iones"
       }
     },
     {
