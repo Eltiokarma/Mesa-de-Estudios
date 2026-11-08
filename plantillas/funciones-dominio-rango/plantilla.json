@@ -1,0 +1,16 @@
+{
+  "id": "funciones-dominio-rango",
+  "titulo": "Dominio, rango y composición de funciones",
+  "formato": "predicciones",
+  "unidades": [
+    "algebra.funciones",
+    "algebra.tipos-de-funciones-e-inversa",
+    "algebra.exponenciales-y-logaritmos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
