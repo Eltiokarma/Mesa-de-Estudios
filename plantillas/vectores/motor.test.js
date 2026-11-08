@@ -6,6 +6,10 @@
 //    asociativa (polígono = paralelogramo); las componentes cumplen Pitágoras; el unitario mide 1; el producto
 //    escalar es |u||v|cos θ y el vectorial es perpendicular a los dos; los notables 37° y 53° son aproximados
 //    (menos de 0,3 % de error); la homogeneidad y el despeje de exponentes con fórmulas armadas al azar.
+//    0.2.0: división con m = n da el punto medio y pesos cruzados; el baricentro a 2/3 de cada mediana; MN del
+//    trapecio es la semidiferencia; una figura con k caminos da k·c; un ciclo cerrado de aristas de una caja suma 0;
+//    el θ del inverso cumple |a + b| = k|a − b|; girar los ejes no cambia módulos; sombra² + (área/|v|)² = |u|²; el
+//    vector de módulo dado y los dos sentidos.
 // 3. Errores de entrada.
 // 4. Cada problema de papel.json coincide con el motor.
 
@@ -41,7 +45,7 @@ function comprobar(fn, args, espera, que) {
 // 1. casos.json
 test('casos.json: formato', () => {
   assert.equal(datos.plantilla, 'vectores');
-  assert.ok(datos.casos.length >= 15 && datos.casos.length <= 20);
+  assert.ok(datos.casos.length >= 30 && datos.casos.length <= 45);
   for (const c of datos.casos) assert.ok(c.nombre && c.fn && Array.isArray(c.args) && c.espera, JSON.stringify(c).slice(0, 80));
 });
 for (const c of datos.casos) test(c.nombre, () => {
@@ -168,6 +172,173 @@ test('análisis dimensional: homogeneidad, constantes y exponentes con fórmulas
   assert.equal(motor.exponentes({ M: 1 }, [{ nombre: 'α', dim: 'longitud' }]).compatible, false);
   // las siete fundamentales del SI
   assert.equal(Object.values(motor.MAGNITUDES).filter(m => m.fundamental).length, 7);
+});
+
+// 2b. Propiedades de la 0.2.0 (figuras, sólidos y componentes)
+const ent = (a, b) => Math.floor(al(a, b + 1));
+const P2 = () => ({ x: ent(-9, 9), y: ent(-9, 9) });
+test('división: con m = n da el punto medio; los pesos suman 1, son cruzados y P queda sobre AB con AP : PB = m : n', () => {
+  for (let k = 0; k < N; k++) {
+    const A = V(), B = V(), m = al(0.1, 9), n = al(0.1, 9), d = motor.division(A, B, m, n);
+    cerca(d.pesoA + d.pesoB, 1, 'pesos'); cerca(d.pesoA, n / (m + n), 'cruzado');
+    cerca(d.AP / (d.AP + d.PB), m / (m + n), 'razón', 1e-7);
+    cerca(d.AP + d.PB, Math.hypot(B.x - A.x, B.y - A.y), 'sobre el segmento', 1e-7);
+    const e = motor.division(A, B, m, m); cerca(e.x, (A.x + B.x) / 2, 'medio x'); cerca(e.y, (A.y + B.y) / 2, 'medio y');
+    cerca(e.errores.derechos.x, e.x, 'con m = n los derechos coinciden');
+    const r = motor.division(A, B, n, m); cerca(d.errores.derechos.x, r.x, 'derechos = la razón al revés', 1e-8);
+  }
+});
+test('baricentro: está a 2/3 de cada mediana y GP + GQ + GR = 0', () => {
+  for (let k = 0; k < N; k++) {
+    const P = V(), Q = V(), R = V();
+    if (Math.abs((Q.x - P.x) * (R.y - P.y) - (Q.y - P.y) * (R.x - P.x)) < 1) continue;
+    const g = motor.baricentro(P, Q, R), g2 = motor.baricentro(Q, R, P), g3 = motor.baricentro(R, P, Q);
+    cerca(g.fraccion, 2 / 3, 'PG/PM'); cerca(g2.x, g.x, 'la misma G'); cerca(g3.y, g.y, 'la misma G');
+    cerca(P.x - g.x + Q.x - g.x + R.x - g.x, 0, 'suma x', 1e-8);
+    cerca(g.errores.invertido.x, P.x + g.mediana.x / 3, 'un tercio', 1e-8);
+  }
+});
+test('trapecio: MN es paralelo a las bases y mide la semidiferencia; la base media mide la semisuma', () => {
+  for (let k = 0; k < N; k++) {
+    const A = P2(), u = { x: ent(1, 6), y: ent(-3, 3) }, l1 = ent(2, 5), l2 = ent(1, 4), h = { x: ent(-3, 3), y: ent(1, 5) };
+    const B = { x: A.x + l1 * u.x, y: A.y + l1 * u.y }, D = { x: A.x + h.x, y: A.y + h.y }, C = { x: D.x + l2 * u.x, y: D.y + l2 * u.y };
+    const t = motor.trapecio(A, B, C, D);
+    cerca(t.MN.modulo, Math.abs(l1 - l2) * Math.hypot(u.x, u.y) / 2, '|MN|', 1e-8);
+    cerca(t.MN.x * u.y - t.MN.y * u.x, 0, 'paralelo', 1e-8);
+    cerca(t.mediana.modulo, (l1 + l2) * Math.hypot(u.x, u.y) / 2, 'semisuma', 1e-8);
+    // los puntos medios de los lados no paralelos dan la semisuma
+    const P = { x: (A.x + D.x) / 2, y: (A.y + D.y) / 2 }, Q = { x: (B.x + C.x) / 2, y: (B.y + C.y) / 2 };
+    cerca(Q.x - P.x, t.mediana.x, 'base media x', 1e-8);
+  }
+});
+test('reducción: una figura armada con k caminos de la cola a la punta del marcado da R = k·c', () => {
+  for (let k = 0; k < 150; k++) {
+    const caminos = ent(1, 4), Q = [ent(2, 9), ent(-3, 3)], puntos = { P: [0, 0], Q }, vectores = [['P', 'Q']];
+    let id = 0;
+    for (let c = 0; c < caminos; c++) {
+      const largo = ent(1, 3); let ant = 'P';
+      for (let j = 0; j < largo; j++) { const n = 'X' + (id++); puntos[n] = [ent(-9, 9), ent(-9, 9)]; vectores.push([ant, n]); ant = n; }
+      vectores.push([ant, 'Q']);
+    }
+    const r = motor.reduccion({ puntos, vectores, marcado: ['P', 'Q'] });
+    assert.equal(r.k, caminos + 1); cerca(r.modulo, (caminos + 1) * Math.hypot(Q[0], Q[1]), '|R|', 1e-8);
+    assert.equal(r.grupos.length, caminos + 1); assert.equal(r.sobran.length, 0);
+    for (const g of r.grupos) { const s = motor.suma(g.vectores.map(i => r.vectores[i])); cerca(s.x, Q[0], 'cada camino vale c', 1e-8); }
+    cerca(r.errores.masUno - r.errores.menosUno, 2 * r.c.modulo, 'k ± 1');
+  }
+});
+test('sólidos: un ciclo cerrado de aristas suma 0; las aristas paralelas son el mismo vector; tres aristas desde un vértice dan la diagonal', () => {
+  for (let k = 0; k < 150; k++) {
+    const a = ent(1, 9), b = ent(1, 9), c = ent(1, 9), s = motor.caja(a, b, c);
+    // camino cerrado al azar por las aristas (ida o vuelta)
+    let v = 'A'; const pares = [];
+    for (let j = 0; j < 8; j++) {
+      const op = s.aristas.filter(r => r.de === v || r.a === v), r = op[ent(0, op.length - 1)], w = r.de === v ? r.a : r.de;
+      pares.push([v, w]); v = w;
+    }
+    // volver a A por las aristas: x, y y z hasta el origen
+    const P = s.vertices[v];
+    const camino = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].find(n => { const q = s.vertices[n]; return q.x === 0 && q.y === P.y && q.z === P.z; });
+    if (camino !== v) pares.push([v, camino]);
+    const q1 = s.vertices[camino], baja = Object.keys(s.vertices).find(n => { const q = s.vertices[n]; return q.x === 0 && q.y === 0 && q.z === q1.z; });
+    if (baja !== camino) pares.push([camino, baja]);
+    if (baja !== 'A') pares.push([baja, 'A']);
+    const t = motor.sumaSolido(s, pares);
+    cerca(t.modulo, 0, 'ciclo cerrado', 1e-9);
+    const g = motor.sumaSolido(s, [['A', 'B'], ['A', 'D'], ['A', 'E']]);
+    cerca(g.modulo, s.diagonal, 'diagonal'); cerca(g.x, a, 'G.x'); cerca(g.z, c, 'G.z');
+    const p1 = motor.sumaSolido(s, [['A', 'B']]), p2 = motor.sumaSolido(s, [['H', 'G']]);
+    assert.deepEqual([p1.x, p1.y, p1.z], [p2.x, p2.y, p2.z], 'AB = HG');
+    for (const r of s.aristas) { const d = motor.sumaSolido(s, [[r.de, r.a]]); assert.equal(['x', 'y', 'z'].filter(e => d[e] !== 0).join(''), r.direccion); }
+    assert.ok(g.errores.sumaModulos >= g.modulo - 1e-9, 'desigualdad triangular');
+    cerca(motor.sumaSolido(s, [['A', 'G'], ['G', 'A']]).modulo, 0, 'AG + GA = 0');
+  }
+  const c = motor.cubo(3); assert.equal(c.tipo, 'cubo'); cerca(c.diagonal, 3 * Math.sqrt(3), 'cubo');
+});
+test('inverso de suma y diferencia: con el θ que da el motor, |a + b| = k·|a − b| para dos vectores iguales', () => {
+  for (let k = 0; k < N; k++) {
+    const K = al(0.05, 12), a = al(0.5, 20), r = motor.inversoSumaDiferencia(K);
+    const S = motor.resultante(a, a, r.theta, { exacto: true }).R, D = motor.resultante(a, a, 180 - r.theta, { exacto: true }).R;
+    cerca(S / D, K, 'k', 1e-7);
+    cerca(Math.tan(r.theta * Math.PI / 360), 1 / K, 'tan(θ/2) = 1/k', 1e-9);
+  }
+  // con el notable de academia (3-4-5) la relación sale exacta
+  const n = motor.inversoSumaDiferencia(2);
+  cerca(motor.resultante(5, 5, n.academia).R / motor.resultante(5, 5, 180 - n.academia).R, 2, 'notable');
+});
+test('girar los ejes: los módulos y la resultante no cambian; girar φ y luego −φ deja todo igual', () => {
+  for (let k = 0; k < N; k++) {
+    const lista = [V(), V(), V()], phi = al(-360, 360), g = motor.girarEjes(lista, phi), s = motor.suma(lista);
+    cerca(g.resultante.modulo, s.modulo, '|R|', 1e-8);
+    g.vectores.forEach((v, i) => cerca(v.modulo, Math.hypot(lista[i].x, lista[i].y), 'módulo', 1e-8));
+    const h = motor.girarEjes(g.vectores, -phi);
+    h.vectores.forEach((v, i) => { cerca(v.x, lista[i].x, 'vuelta x', 1e-7); cerca(v.y, lista[i].y, 'vuelta y', 1e-7); });
+    cerca(motor.escalar(g.vectores[0], g.vectores[1]), motor.escalar(lista[0], lista[1]), 'el producto escalar no cambia', 1e-7);
+  }
+});
+test('proyección y área: sombra² + (área/|v|)² = |u|²; la sombra es 0 y el área es máxima con 90°; el triángulo es la mitad', () => {
+  for (let k = 0; k < N; k++) {
+    const u = V(), v = V(), p = motor.proyeccion(u, v), A = motor.area(v, u), mv = Math.hypot(v.x, v.y);
+    cerca(p.escalar ** 2 + (A.paralelogramo / mv) ** 2, u.x ** 2 + u.y ** 2, 'Pitágoras', 1e-7);
+    cerca(p.escalar * mv, motor.escalar(u, v), 'u·v = |v|·sombra', 1e-7);
+    cerca(A.triangulo * 2, A.paralelogramo, 'mitad');
+    assert.equal(motor.area(u, v).sentido, A.errores.manoInvertida, 'u × v = −v × u');
+    const perp = { x: -v.y, y: v.x };
+    cerca(motor.proyeccion(perp, v).escalar, 0, 'perpendicular', 1e-9);
+    cerca(motor.area(v, perp).paralelogramo, mv * mv, 'área máxima', 1e-8);
+    assert.ok(motor.area(v, { x: v.x * 0.5 + perp.x * 0.3, y: v.y * 0.5 + perp.y * 0.3 }).paralelogramo <= motor.area(v, perp).paralelogramo + 1e-9);
+  }
+});
+test('vector de módulo dado: mide eso, es paralelo a v con el mismo sentido y el antiparalelo es el opuesto', () => {
+  for (let k = 0; k < N; k++) {
+    const v = V(), m = al(0.1, 30), w = motor.unitarioConModulo(v, m);
+    cerca(Math.hypot(w.x, w.y), m, 'módulo'); cerca(motor.anguloEntre(w, v), 0, 'paralelo', 1e-5);
+    cerca(w.antiparalelo.x, -w.x, 'antiparalelo');
+    const u = motor.unitario(w); cerca(u.x, w.unitario.x, 'el unitario de w es el de v');
+    cerca(Math.hypot(w.errores.escalado.x, w.errores.escalado.y), w.factor, 'el «escalado» no mide 1');
+  }
+});
+test('dos sentidos: cada solución pone R sobre el eje con el módulo pedido, una en cada sentido', () => {
+  for (let k = 0; k < N; k++) {
+    const eje = rnd() < 0.5 ? 'x' : 'y', e = eje === 'x' ? 0 : 1, o = 1 - e, m = ent(1, 20);
+    const A = [ent(-9, 9), ent(-9, 9)], B = [ent(-9, 9), ent(-9, 9)];
+    if (rnd() < 0.5) A[e] = null; else B[e] = null;
+    if (rnd() < 0.5) A[o] = null; else B[o] = null;
+    const r = motor.dosSentidos(A, B, eje, m);
+    assert.equal(r.soluciones.length, 2);
+    r.soluciones.forEach((s, i) => {
+      cerca(s.R[o], 0, 'sobre el eje'); cerca(Math.abs(s.R[e]), m, 'módulo');
+      assert.equal(Math.sign(s.R[e]), i === 0 ? 1 : -1);
+      cerca(s.A[0] + s.B[0], s.R[0], 'R = A + B');
+    });
+    cerca(r.soluciones[0].incognitaEje - r.soluciones[1].incognitaEje, 2 * m, 'las dos raíces de (… + U)² = m²');
+  }
+});
+test('radical: reconoce k√n y p + q√n', () => {
+  for (let k = 0; k < 200; k++) {
+    const kk = ent(1, 12), n = [2, 3, 5, 6, 7, 10, 13][ent(0, 6)];
+    assert.equal(motor.radical(kk * Math.sqrt(n)), `${kk === 1 ? '' : kk}√${n}`);
+  }
+  assert.equal(motor.radical(2 + 2 * Math.sqrt(2)), '2 + 2√2');
+  assert.equal(motor.radical(-3), '−3');
+  assert.equal(motor.radical(Math.PI), null);
+});
+test('errores de entrada de la 0.2.0', () => {
+  assert.throws(() => motor.division([0, 0], [1, 1], 0, 1), /mayor que cero/);
+  assert.throws(() => motor.baricentro([0, 0], [1, 1], [2, 2]), /alineados/);
+  assert.throws(() => motor.trapecio([0, 0], [4, 0], [3, 2], [1, 3]), /paralelos/);
+  assert.throws(() => motor.trapecio([0, 0], [4, 0], [1, 2], [3, 2]), /sentido/);
+  assert.throws(() => motor.reduccion({ puntos: { P: [0, 0] }, vectores: [], marcado: ['P', 'P'] }), /nulo/);
+  assert.throws(() => motor.reduccion({ puntos: { P: [0, 0] }, vectores: [['P', 'Z']], marcado: ['P', 'P'] }), /punto Z/);
+  assert.throws(() => motor.caja(1, 0, 1), /mayor que cero/);
+  assert.throws(() => motor.sumaSolido({ tipo: 'cubo', a: 1 }, [['A', 'Z']]), /desconocido/);
+  assert.throws(() => motor.sumaSolido({ tipo: 'prisma', a: 1 }, [['A', 'B']]), /no conozco/);
+  assert.throws(() => motor.inversoSumaDiferencia(0), /mayor que cero/);
+  assert.throws(() => motor.girarEjes([], 10), /faltan/);
+  assert.throws(() => motor.proyeccion([1, 1], [0, 0]), /nulo/);
+  assert.throws(() => motor.unitarioConModulo([0, 0], 3), /nulo/);
+  assert.throws(() => motor.dosSentidos([null, 1], [1, 1], 'x', 5), /incógnita/);
+  assert.throws(() => motor.dosSentidos([null, 1], [1, null], 'z', 5), /eje/);
 });
 
 // 3. Errores de entrada
