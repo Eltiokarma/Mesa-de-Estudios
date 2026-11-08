@@ -1,0 +1,51 @@
+{
+  "id": "e018",
+  "version": 1,
+  "tipo": "oracion-incompleta",
+  "unidad": "razonamiento-verbal.sentido-contextual",
+  "grado": 5,
+  "dificultad": 2,
+  "cuerpo": {
+    "oracion": "Aunque la mina promete empleo, muchos comuneros ___ que los relaves contaminen el río y causen un ___ a sus cultivos."
+  },
+  "previo": {
+    "tipo": "relacion",
+    "pide": "Antes de ver las alternativas: ¿qué relación hay entre \"la mina promete empleo\" y lo que sienten los comuneros?",
+    "aceptada": "oposicion",
+    "codigos": {
+      "suma": "RV26",
+      "causa": "RV24"
+    },
+    "explicacion": "El empleo es algo bueno, y los comuneros sienten preocupación: las dos partes se oponen, y por eso la oración empieza con \"aunque\".",
+    "explicaciones": {
+      "suma": "Lo que sienten los comuneros no es otra ventaja de la mina: es una preocupación que va en contra de ella.",
+      "causa": "Que la mina prometa empleo no causa la preocupación de los comuneros; la preocupación viene de los relaves."
+    }
+  },
+  "enunciado": "Elige las palabras que completan mejor la oración.",
+  "alternativas": [
+    {
+      "t": "temen – perjuicio",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "La mina ofrece algo bueno, pero (\"aunque\") los comuneros tienen miedo de un daño (\"perjuicio\") a sus cultivos."
+    },
+    {
+      "t": "celebran – perjuicio",
+      "codigo": "RV24",
+      "explicacion": "Se lee como si el empleo fuera la razón de lo que sigue; pero con \"aunque\" lo que sigue va en contra de lo bueno de la mina, y nadie celebra que le contaminen el río."
+    },
+    {
+      "t": "temen – prejuicio",
+      "codigo": "RV20",
+      "explicacion": "\"Prejuicio\" se parece en la forma, pero es una opinión formada antes de conocer algo; el daño es un \"perjuicio\"."
+    },
+    {
+      "t": "temen – beneficio",
+      "codigo": "RV23",
+      "explicacion": "\"Causen un beneficio\" suena bien por sí solo, pero nadie teme que el río contaminado beneficie sus cultivos."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07"
+}

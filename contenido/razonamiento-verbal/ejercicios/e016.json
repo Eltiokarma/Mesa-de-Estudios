@@ -1,0 +1,51 @@
+{
+  "id": "e016",
+  "version": 1,
+  "tipo": "oracion-incompleta",
+  "unidad": "razonamiento-verbal.sentido-contextual",
+  "grado": 3,
+  "dificultad": 2,
+  "cuerpo": {
+    "oracion": "Aunque Rosa nunca había estudiado música, el profesor notó en ella una gran ___ para el canto y la invitó al ___ del colegio."
+  },
+  "previo": {
+    "tipo": "relacion",
+    "pide": "Antes de ver las alternativas: ¿qué relación hay entre \"nunca había estudiado música\" y lo que el profesor notó en ella?",
+    "aceptada": "oposicion",
+    "codigos": {
+      "suma": "RV26",
+      "causa": "RV24"
+    },
+    "explicacion": "Quien nunca estudió música no suele cantar bien, y aquí el profesor nota lo contrario: las dos partes se oponen, y por eso empieza con \"aunque\".",
+    "explicaciones": {
+      "suma": "No se suman dos ideas en la misma dirección: no haber estudiado y destacar en el canto van en sentidos contrarios.",
+      "causa": "No haber estudiado no es la causa de lo que notó el profesor: lo que notó ocurre a pesar de eso."
+    }
+  },
+  "enunciado": "Elige las palabras que completan mejor la oración.",
+  "alternativas": [
+    {
+      "t": "aptitud – coro",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "\"Aunque\" anuncia algo inesperado: sin estudios, tenía talento (\"aptitud\") para cantar, y por eso la invitan al coro."
+    },
+    {
+      "t": "actitud – coro",
+      "codigo": "RV20",
+      "explicacion": "\"Actitud\" se parece en la forma, pero es la manera de comportarse; el talento para algo es la \"aptitud\"."
+    },
+    {
+      "t": "dificultad – coro",
+      "codigo": "RV24",
+      "explicacion": "Que no hubiera estudiado haría esperar dificultad: con \"aunque\", lo que sigue tiene que ir en contra de eso, no confirmarlo."
+    },
+    {
+      "t": "aptitud – recreo",
+      "codigo": "RV23",
+      "explicacion": "\"Invitó al recreo\" suena bien por sí solo, pero no tiene que ver con el canto: la segunda palabra tiene que seguir el sentido de toda la oración."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07"
+}

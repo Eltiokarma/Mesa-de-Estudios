@@ -1,0 +1,50 @@
+{
+  "id": "e020",
+  "version": 1,
+  "tipo": "analogia",
+  "unidad": "razonamiento-verbal.analogias",
+  "grado": 4,
+  "dificultad": 2,
+  "cuerpo": {
+    "base": [
+      "VIRUS",
+      "FIEBRE"
+    ]
+  },
+  "previo": {
+    "tipo": "relacion-analogia",
+    "pide": "Antes de ver las alternativas: ¿qué relación hay entre las dos palabras?",
+    "aceptada": "a-causa-b",
+    "explicacion": "Cuando un virus infecta el cuerpo, una de las reacciones es la fiebre: el virus es la causa.",
+    "explicaciones": {
+      "b-causa-a": "Es al revés: el virus causa la fiebre; la fiebre no causa el virus.",
+      "a-produce-b": "El virus no fabrica la fiebre como la vaca da la leche: la fiebre es la reacción del cuerpo que el virus provoca."
+    }
+  },
+  "enunciado": "VIRUS : FIEBRE ::",
+  "alternativas": [
+    {
+      "t": "picadura : hinchazón",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Lo primero causa lo segundo, en el mismo orden: el virus causa la fiebre y la picadura causa la hinchazón."
+    },
+    {
+      "t": "tos : resfrío",
+      "codigo": "RV16",
+      "explicacion": "Es la relación de causa, pero al revés: el resfrío causa la tos, y en la pareja base la causa va primero."
+    },
+    {
+      "t": "pastilla : farmacia",
+      "codigo": "RV15",
+      "explicacion": "Recuerda a la enfermedad, pero la farmacia no es un efecto de la pastilla: es donde se vende."
+    },
+    {
+      "t": "médico : estetoscopio",
+      "codigo": "RV17",
+      "explicacion": "El médico usa el estetoscopio: es una persona y su herramienta, no una causa y su efecto."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07"
+}

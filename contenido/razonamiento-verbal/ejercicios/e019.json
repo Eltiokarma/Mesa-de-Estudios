@@ -1,0 +1,56 @@
+{
+  "id": "e019",
+  "version": 1,
+  "tipo": "analogia",
+  "unidad": "razonamiento-verbal.analogias",
+  "grado": 3,
+  "dificultad": 1,
+  "cuerpo": {
+    "base": [
+      "LLUVIA",
+      "HUAICO"
+    ]
+  },
+  "previo": {
+    "tipo": "relacion-analogia",
+    "pide": "Antes de ver las alternativas: ¿qué relación hay entre las dos palabras?",
+    "aceptada": "a-causa-b",
+    "explicacion": "Las lluvias fuertes en la sierra arrastran lodo y piedras por las quebradas: eso es el huaico.",
+    "explicaciones": {
+      "b-causa-a": "Es al revés: la lluvia causa el huaico, no el huaico a la lluvia.",
+      "a-produce-b": "La lluvia no fabrica ni da el huaico como la vaca da la leche: lo provoca, es su causa."
+    }
+  },
+  "enunciado": "LLUVIA : HUAICO ::",
+  "alternativas": [
+    {
+      "t": "sismo : tsunami",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Lo primero causa lo segundo, en el mismo orden: la lluvia fuerte causa el huaico y el sismo en el mar causa el tsunami."
+    },
+    {
+      "t": "incendio : chispa",
+      "codigo": "RV16",
+      "explicacion": "Es una causa y su efecto, pero al revés: la chispa causa el incendio, y en la pareja base la causa va primero."
+    },
+    {
+      "t": "paraguas : techo",
+      "codigo": "RV15",
+      "explicacion": "Las dos palabras recuerdan la lluvia, pero entre ellas no hay causa y efecto: las dos protegen del agua."
+    },
+    {
+      "t": "río : cauce",
+      "codigo": "RV17",
+      "explicacion": "El río corre por el cauce: es un lugar, no una causa y su efecto."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "Los huaicos son flujos de lodo y piedras que bajan por las quebradas después de lluvias intensas; un sismo bajo el mar puede causar un tsunami.",
+      "fuente": "INDECI e INGEMMET, información sobre peligros geológicos; IGP."
+    }
+  ]
+}

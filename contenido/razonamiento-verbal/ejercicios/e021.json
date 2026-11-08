@@ -1,0 +1,50 @@
+{
+  "id": "e021",
+  "version": 1,
+  "tipo": "analogia",
+  "unidad": "razonamiento-verbal.analogias",
+  "grado": 4,
+  "dificultad": 2,
+  "cuerpo": {
+    "base": [
+      "FRICCIÓN",
+      "CALOR"
+    ]
+  },
+  "previo": {
+    "tipo": "relacion-analogia",
+    "pide": "Antes de ver las alternativas: ¿qué relación hay entre las dos palabras?",
+    "aceptada": "a-causa-b",
+    "explicacion": "Al frotarse las manos se calientan: la fricción causa calor.",
+    "explicaciones": {
+      "b-causa-a": "Es al revés: la fricción causa el calor, no el calor la fricción.",
+      "a-usa-b": "La fricción no es alguien que use el calor: el calor es lo que resulta de ella."
+    }
+  },
+  "enunciado": "FRICCIÓN : CALOR ::",
+  "alternativas": [
+    {
+      "t": "golpe : moretón",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Lo primero causa lo segundo, en el mismo orden: frotar causa calor y el golpe causa el moretón."
+    },
+    {
+      "t": "humo : fuego",
+      "codigo": "RV16",
+      "explicacion": "Es una causa y su efecto, pero al revés: el fuego causa el humo, y en la pareja base la causa va primero."
+    },
+    {
+      "t": "fósforo : vela",
+      "codigo": "RV15",
+      "explicacion": "Las dos recuerdan el calor y el fuego, pero el fósforo no causa la vela: solo sirve para encenderla."
+    },
+    {
+      "t": "mango : sartén",
+      "codigo": "RV17",
+      "explicacion": "El mango es una parte de la sartén, no un efecto de ella."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07"
+}
