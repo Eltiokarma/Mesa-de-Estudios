@@ -238,7 +238,7 @@ test('papel.json: entre 5 y 10 problemas con respuesta, pasos y verificación', 
   assert.ok(papel.problemas.length >= 5 && papel.problemas.length <= 10);
   for (const p of papel.problemas) {
     assert.ok(p.id && p.enunciado && p.respuesta && p.pasos.length && p.verificar.length, p.id);
-    assert.ok(!/\d\.\d/.test(p.enunciado + p.respuesta + p.pasos.join('')), `${p.id}: coma decimal`);
+    assert.ok(!/\d\.\d/.test(p.enunciado + ' ' + p.respuesta + ' ' + p.pasos.join(' ')), `${p.id}: coma decimal`);
   }
 });
 for (const p of papel.problemas) test(`papel ${p.id}`, () => {

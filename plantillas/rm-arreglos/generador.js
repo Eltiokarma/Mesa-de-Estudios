@@ -35,6 +35,8 @@
  *   magicoDesde(a, b, c)          exponentes del cuadrado mágico aditivo de centro c (los 9, por filas)
  *   completarMultiplicativo(d)    todas las formas de completar el cuadro con los dados (búsqueda en una familia amplia)
  *   sumasVertices(numeros)        { [S]: un arreglo } con todas las sumas comunes posibles
+ *   extremoVertices(numeros, pide) { S, posibles }
+ *   sumaFila({ n, k, primero, ultimo, total })  { S, grupos, sobran }
  *   cima(base), coeficientes(n)   la cima de la pirámide y sus coeficientes (de Pascal)
  *   resolverLatino(n, diag, dados, tope, reglas)  soluciones (hasta tope) con las reglas { filas, columnas, diagonales }
  *   columnaExtrema(r, c, j, pide) suma extrema de la columna j con 1…rc (en posiciones)
@@ -337,6 +339,16 @@
       _datos: d,
     };
   }
+  function extremoVertices(numeros, pide) {
+    const Ss = Object.keys(sumasVertices(numeros)).map(Number);
+    return { S: pide === 'max' ? Math.max(...Ss) : Math.min(...Ss), posibles: Ss.sort((a, b) => a - b) };
+  }
+  // Suma común de la fila: T = q · S + (las casillas que sobran, que repiten el comienzo del patrón).
+  function sumaFila({ n, k, primero, ultimo, total }) {
+    const q = Math.floor(n / k), s = n % k;
+    if (s !== 1 && s !== 2) return null;
+    return { S: (total - primero - (s === 2 ? ultimo : 0)) / q, grupos: q, sobran: s };
+  }
   function buscarConCentro(n, e) { // todas las S con e fijo al centro
     const res = new Set(), usa = new Set([e]);
     const libre = x => n.includes(x) && !usa.has(x);
@@ -465,7 +477,7 @@
     const sumaSob = sobrantes.reduce((a, b) => a + b, 0);
     const errores = [];
     errores.push(h('RMP61-sin-dividir', total - sumaSob, `Llegaste a ${q}S = ${total - sumaSob}, pero te faltó dividir entre ${q}.`));
-    if (ent(total / q)) errores.push(h('RMP1-sin-sobrantes', total / q, `Dividiste el total entre ${q} grupos, pero ${s === 1 ? 'sobra una casilla' : `sobran ${s} casillas`} que no forman un grupo completo: hay que restarlas antes.`));
+    if (ent(total / q)) errores.push(h('RMP1-sin-sobrantes', total / q, `Dividiste el total entre ${q} grupos, pero ${s === 1 ? 'sobra una casilla que no forma un grupo completo: hay que restarla antes.' : `sobran ${s} casillas que no forman un grupo completo: hay que restarlas antes.`}`));
     if (s === 1 && ent((total - primero - ultimo) / q)) errores.push(h('RMP1-resta-extremos', (total - primero - ultimo) / q, `Restaste la primera y la última como si las dos sobraran. Con ${n} casillas en grupos de ${k} sobra una sola, y la última es igual a la primera.`));
     if (s === 2 && ent((total - primero) / q)) errores.push(h('RMP1-un-sobrante', (total - primero) / q, `Restaste solo la primera casilla; con ${n} casillas en grupos de ${k} sobran dos.`));
     const ventanas = n - k + 1;
@@ -633,7 +645,7 @@
     const numeros = Array.from({ length: N }, (_, i) => map(i + 1));
     const errores = [];
     const extremos = pide === 'max' ? Array.from({ length: r }, (_, t) => N - t) : Array.from({ length: r }, (_, t) => t + 1);
-    errores.push(h('RMP63-sin-orden', sumaMap(extremos), `Pusiste en la columna los ${r} números ${pide === 'max' ? 'mayores' : 'menores'}, pero cada fila debe crecer: a la ${pide === 'max' ? 'derecha' : 'izquierda'} de cada uno tienen que caber ${pide === 'max' ? c - j : j - 1} números ${pide === 'max' ? 'mayores' : 'menores'}.`));
+    errores.push(h('RMP63-sin-orden', sumaMap(extremos), `Pusiste en la columna los ${r} números ${pide === 'max' ? 'mayores' : 'menores'}, pero cada fila debe crecer: a la ${pide === 'max' ? 'derecha' : 'izquierda'} de cada uno tiene${(pide === 'max' ? c - j : j - 1) === 1 ? '' : 'n'} que caber ${pide === 'max' ? c - j : j - 1} ${(pide === 'max' ? c - j : j - 1) === 1 ? 'número' : 'números'} ${pide === 'max' ? 'mayor' : 'menor'}${(pide === 'max' ? c - j : j - 1) === 1 ? '' : 'es'}.`));
     const vecina = pide === 'max' ? (j < c ? columnaExtrema(r, c, j + 1, 'max').vals : null) : (j > 1 ? columnaExtrema(r, c, j - 1, 'min').vals : null);
     const lug = k => `${k} ${k === 1 ? 'lugar' : 'lugares'}`;
     if (vecina) errores.push(h('RMP1-un-lugar', sumaMap(vecina), `Dejaste ${lug(pide === 'max' ? c - j - 1 : j - 2)} a la ${pide === 'max' ? 'derecha' : 'izquierda'} en vez de ${pide === 'max' ? c - j : j - 1}: contaste mal las casillas que quedan en la fila.`));
@@ -796,7 +808,7 @@
     const correcta = numeroEn(c, otra, pos);
     const errores = [
       h('RMP67-valor', pide === 'detras' ? n + 1 : n - 1, `Ese es el número ${pide === 'detras' ? 'siguiente' : 'anterior'} a ${n}, el más cercano en valor; está al costado, en la misma fila, no ${pide === 'detras' ? 'detrás' : 'delante'}.`),
-      h('RMP63-sin-zigzag', pide === 'detras' ? n + c : n - c, `Sumaste ${c}${pide === 'detras' ? '' : ' (restaste)'} como si todas las filas se numeraran de izquierda a derecha. La numeración va en zigzag: una fila sí y otra no, se cuenta de derecha a izquierda.`),
+      h('RMP63-sin-zigzag', pide === 'detras' ? n + c : n - c, `${pide === 'detras' ? 'Sumaste' : 'Restaste'} ${c} como si todas las filas se numeraran de izquierda a derecha. La numeración va en zigzag: una fila sí y otra no, se cuenta de derecha a izquierda.`),
       h('RMP64-sentido', numeroEn(c, contra, pos), `Ese número está ${pide === 'detras' ? 'delante' : 'detrás'} de ${n}, no ${pide === 'detras' ? 'detrás' : 'delante'}. La fila 1 es la más cercana al escenario.`),
       h('RMP1-reflejo', numeroEn(c, otra, pos) + (otra % 2 === 0 ? 1 : -1), 'Hiciste bien el zigzag, pero te corriste una butaca al reflejar la fila: cuenta la posición desde el mismo borde.'),
     ];
@@ -809,7 +821,7 @@
       fig += caja(x0 + 1, y0, ancho - 2, 28);
       fig += texto(x0 + ancho / 2, y0 + 19, String(numeroEn(c, fl, p)), 14);
     }
-    fig += texto(10 + c * ancho / 2, 34 + 3 * 34 + 14, '⋮', 18);
+    for (const dy of [0, 7, 14]) fig += `<circle cx="${10 + c * ancho / 2}" cy="${34 + 3 * 34 + 4 + dy}" r="2" style="fill:currentColor"/>`;
     const filaTxt = fl => `fila ${fl}: ` + Array.from({ length: c }, (_, p) => numeroEn(c, fl, p + 1)).join(', ');
     return {
       id: `rm-arreglos#${semilla}`,
@@ -844,6 +856,6 @@
 
   return {
     id: 'rm-arreglos', titulo: 'Cuadros, pirámides y filas de números', generar,
-    calc: { magicoDesde, completarMultiplicativo, sumasVertices, cima, coeficientes, resolverLatino, columnaExtrema, maxPares, butaca, numeroEn },
+    calc: { magicoDesde, completarMultiplicativo, sumasVertices, extremoVertices, cima, coeficientes, sumaFila, resolverLatino, columnaExtrema, maxPares, butaca, numeroEn },
   };
 });

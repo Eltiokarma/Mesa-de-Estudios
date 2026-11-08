@@ -65,7 +65,13 @@ function recalcularVertices(d) {
     const S = new Set(), a = d.numeros.slice(), g = Array(9), usado = Array(9).fill(false);
     const rec = t => {
       if (t === 9) { const b = [[0, 1, 3, 4], [1, 2, 4, 5], [3, 4, 6, 7], [4, 5, 7, 8]].map(B => B.reduce((s, i) => s + g[i], 0)); if (b.every(x => x === b[0])) S.add(b[0]); return; }
-      for (let i = 0; i < 9; i++) if (!usado[i]) { usado[i] = true; g[t] = a[i]; rec(t + 1); usado[i] = false; }
+      for (let i = 0; i < 9; i++) if (!usado[i]) {
+        g[t] = a[i];
+        // Poda: en cuanto un grupo está completo se compara con el primero.
+        if (t === 5 && g[1] + g[2] + g[4] + g[5] !== g[0] + g[1] + g[3] + g[4]) continue;
+        if (t === 7 && g[3] + g[4] + g[6] + g[7] !== g[0] + g[1] + g[3] + g[4]) continue;
+        usado[i] = true; rec(t + 1); usado[i] = false;
+      }
     };
     rec(0);
     CACHE_V.set(k, [...S]);
@@ -95,6 +101,9 @@ function recalcularFila(d) {
       if (celdas[0] === primero && celdas[n - 1] === ultimo && celdas.reduce((a, b) => a + b, 0) === total) Ss.add(p.reduce((a, b) => a + b, 0));
       return;
     }
+    // La primera y la última casilla se ven en el dibujo: esas posiciones del patrón no se prueban.
+    if (i === 0) { p[0] = primero; return rec(1); }
+    if (i === (n - 1) % k) { p[i] = ultimo; return rec(i + 1); }
     for (let x = 0; x <= 40; x++) { p[i] = x; rec(i + 1); }
   };
   rec(0);
@@ -214,7 +223,7 @@ test('papel.json: entre 5 y 10 problemas con respuesta, pasos y verificación', 
   assert.ok(papel.problemas.length >= 5 && papel.problemas.length <= 10);
   for (const p of papel.problemas) {
     assert.ok(p.id && p.enunciado && p.respuesta && p.pasos.length && p.verificar.length, p.id);
-    assert.ok(!/\d\.\d/.test(p.enunciado + p.respuesta + p.pasos.join('')), `${p.id}: coma decimal`);
+    assert.ok(!/\d\.\d/.test(p.enunciado + ' ' + p.respuesta + ' ' + p.pasos.join(' ')), `${p.id}: coma decimal`);
   }
 });
 for (const p of papel.problemas) test(`papel ${p.id}`, () => {

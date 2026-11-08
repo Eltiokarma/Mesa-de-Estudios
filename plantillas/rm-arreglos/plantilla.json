@@ -1,0 +1,14 @@
+{
+  "id": "rm-arreglos",
+  "titulo": "Cuadros, pirámides y filas de números",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.arreglos-numericos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

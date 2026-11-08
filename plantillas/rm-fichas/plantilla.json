@@ -1,0 +1,16 @@
+{
+  "id": "rm-fichas",
+  "titulo": "Fichas, piezas y figuras que crecen",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.transformaciones-de-figuras",
+    "razonamiento-matematico.maximos-y-minimos",
+    "razonamiento-matematico.razonamiento-inductivo"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
