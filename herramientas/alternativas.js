@@ -17,7 +17,8 @@ const RAIZ = path.join(__dirname, '..');
 // «Un puesto que merecía» no es «puesto que». También los conectores de consecuencia («por eso», «de modo que»): dan la razón igual que «porque».
 const JUSTIFICA = /(?<!\p{L})(porque|ya que|(?<!\b(?:un|el|su|del|al|mi|tu|ese|este) )puesto que|dado que|debido a que|pues|por eso|por ello|por lo que|así que|de modo que|de manera que)(?!\p{L})|:\s+\p{L}/iu;
 const MARCAS = /\*\*|__|<\/?(b|strong|em|i|mark|u)\b|[✓✔★☆]|\*[^*\s][^*]*\*/i;
-const UMBRAL = { largo: 0.35, minLargo: 20, letra: 0.5, semillas: 300 };
+// justifica: al azar casi nunca pasa que una sola opción explique su porqué, así que el umbral es bajo.
+const UMBRAL = { largo: 0.35, minLargo: 20, justifica: 0.1, letra: 0.5, semillas: 300 };
 
 // items: [{ id, opciones: [texto], correcta: índice, letra? }]
 function medir(items) {
@@ -102,7 +103,7 @@ function problemas(f, m) {
   const pct = x => `${Math.round(x * 100)} %`;
   if (m.n >= UMBRAL.minLargo && m.largo > UMBRAL.largo) mal.push(`${f.fuente}: la correcta es la más larga, sola, en el ${pct(m.largo)} de ${m.n} ítems (umbral ${pct(UMBRAL.largo)})`);
   if (m.marcas) mal.push(`${f.fuente}: la correcta es la única con marcas en ${m.marcas} ítem(s): ${m.casosMarcas.slice(0, 5).join(', ')}`);
-  if (m.n >= UMBRAL.minLargo && m.justifica / m.n > UMBRAL.largo) mal.push(`${f.fuente}: la correcta es la única que justifica en el ${pct(m.justifica / m.n)} de los ítems`);
+  if (m.n >= UMBRAL.minLargo && m.justifica / m.n > UMBRAL.justifica) mal.push(`${f.fuente}: la correcta es la única que justifica en el ${pct(m.justifica / m.n)} de los ítems (umbral ${pct(UMBRAL.justifica)}): ${m.casosJustifica.slice(0, 5).join(', ')}`);
   if (f.tipo === 'generador' && m.letraMax && m.letraMax.tasa > UMBRAL.letra) mal.push(`${f.fuente}: la correcta cae en la ${m.letraMax.letra} el ${pct(m.letraMax.tasa)} de las veces`);
   return mal;
 }

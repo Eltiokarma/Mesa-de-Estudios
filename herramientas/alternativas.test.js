@@ -1,6 +1,6 @@
 // La correcta no debe verse distinta de las demás (herramientas/alternativas.js).
 // Falla si en una fuente con al menos 20 ítems la correcta es la más larga, sola, en más del 35 %;
-// si es la única que justifica en más del 35 %; si alguna vez es la única con negrita o marcas;
+// si es la única que justifica en más del 10 %; si alguna vez es la única con negrita o marcas;
 // o si en un generador cae en la misma letra más de la mitad de las veces.
 const test = require('node:test');
 const assert = require('node:assert');
