@@ -309,7 +309,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
-const PLANTILLA = { id: 'movimiento-circular', unidad: 'fisica.movimiento-parabolico-y-circular', version: '0.1.0' };
+const PLANTILLA = { id: 'movimiento-circular', unidad: 'fisica.movimiento-parabolico-y-circular', version: '0.2.0' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
   Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
@@ -1119,6 +1119,8 @@ function tangentes(x1, y1, r1, x2, y2, r2){
 const P16 = M.poleaMovil({ v1:4, v2:2, r:0.1 });
 const T17 = M.transmisionMCUV({ r1:0.1, r2:0.3, alfa1:6, tipo:'faja' });
 const R18 = M.rodadura({ r:0.3, v:5 });
+const B18 = M.rodadura({ r:0.3, v:1, rApoyo:0.1 });
+const E18 = M.barraResbala({ L:5, angulo:53, vA:3 });
 
 const pasos = [
  { id:'mc-p16', t:'La polea móvil', ley:['v','w'],
@@ -1209,6 +1211,81 @@ const pasos = [
      else rotulo(ctx, c, cx, cy - R - 16, '¿?', c.v, 'center', 800, W);
    },
    desc:(E, r) => r ? 'La rueda avanza girando: el punto más alto va a 10 metros por segundo, el de adelante a unos 7,1 y el de apoyo está quieto.' : 'Una rueda sobre el piso con su centro avanzando a 5 metros por segundo; están marcados el punto más alto, el de adelante y el de apoyo.' },
+ { id:'mc-p18b', t:'La bobina', ley:['v','w'],
+   antes:E => { E.t = 0; },
+   q:() => `Un carrete de hilo tiene dos discos de 30 cm de radio unidos por un cilindro de 10 cm de radio. Está apoyado por el cilindro sobre dos rieles y rueda sin resbalar; su centro avanza a ${V('v','1 m/s')}. Los discos grandes bajan por fuera de los rieles. ¿Qué velocidad tiene P, el punto más bajo de un disco grande?`,
+   opts:[['a','2 m/s hacia atrás',null,''], ['b','1 m/s hacia adelante','CI-cir-todos-a-v','hipotesis'], ['c','2 m/s hacia adelante','CI-bobina-adelante','hipotesis'], ['d','0 m/s','CI-cir-abajo-quieto','hipotesis']],
+   ok:'a',
+   fb:{ a:'El carrete gira alrededor del punto donde el cilindro toca el riel, con ω = 1/0,1 = 10 rad/s. P está 20 cm debajo de ese punto: va a 10·0,2 = 2 m/s, y como está del otro lado, hacia atrás.',
+        b:'1 m/s es la velocidad del centro. Además de avanzar, el carrete gira, y en P el giro va hacia atrás y gana.',
+        c:'La rapidez es esa, pero P está debajo del punto de apoyo: del otro lado del centro instantáneo, así que se mueve hacia atrás.',
+        d:'Quieto está solo el punto que toca el riel, en el cilindro chico. P está 20 cm más abajo y se mueve.' },
+   despues:(E, A) => A.animar(3600, f => { E.t = f; }),
+   exp:() => `<div class="eqs"><div class="eq">${V('w','ω')} = ${fr(V('v','v'), 'r cilindro')} = ${fr('1', '0,1')} = ${V('w', fmt(B18.omega, 0) + ' rad/s')}</div>
+     <div class="eq">${V('v','vP')} = ${V('w','ω')}·0,2 = ${V('v', fmt(B18.abajo.modulo, 0) + ' m/s')} hacia atrás</div><div class="eq">${V('v','v arriba')} = ${V('w','ω')}·0,4 = ${V('v', fmt(B18.arriba.vx, 0) + ' m/s')}</div></div>
+     <p>Todo el carrete gira alrededor del punto donde el cilindro chico toca el riel. Los puntos que están por encima de él van hacia adelante; los que están por debajo, hacia atrás. Por eso una bobina que rueda «arrastra hacia atrás» el borde de abajo.</p>${fuente(HIP)}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, Rg = Math.min(W*0.18, H*0.26), rc = Rg/3, yR = H*0.5, recorre = W*0.2;
+     const cx = W*0.32 + recorre*E.t, cy = yR - rc, giro = -(recorre*E.t)/rc, k = Rg*0.33;
+     disco(ctx, c, cx, cy, Rg, giro, { marca:false, rayos:6 });
+     ctx.save(); circulo(ctx, cx, cy, rc); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 4; linea(ctx, 0, yR, W, yR); ctx.restore();
+     rotulo(ctx, c, W - 8, yR - 12, 'riel', c.ink, 'right', 700, W);
+     const P = [cx, cy + Rg];
+     ctx.save(); circulo(ctx, P[0], P[1], 5.5); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+     rotulo(ctx, c, P[0] + 12, P[1] + 12, 'P', c.ink, 'left', 800, W);
+     flechaHalo(ctx, c, cx, cy, cx + B18.v*k, cy, c.v, 3);
+     rotulo(ctx, c, cx + B18.v*k + 6, cy - 12, '1 m/s', c.v, 'left', 800, W);
+     if (r){
+       ctx.save(); circulo(ctx, cx, yR, 5); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+       ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.2; linea(ctx, cx, yR, cx, cy - Rg); linea(ctx, cx, yR, P[0], P[1]); ctx.restore();
+       flechaHalo(ctx, c, cx, cy - Rg, cx + B18.arriba.vx*k, cy - Rg, c.v, 3);
+       rotulo(ctx, c, cx + B18.arriba.vx*k + 6, cy - Rg - 12, `${fmt(B18.arriba.vx, 0)} m/s`, c.v, 'left', 800, W);
+       flechaHalo(ctx, c, P[0], P[1], P[0] + B18.abajo.vx*k, P[1], c.v, 3.4);
+       rotulo(ctx, c, P[0] + B18.abajo.vx*k - 6, P[1] + 14, `${fmt(B18.abajo.modulo, 0)} m/s`, c.v, 'right', 800, W);
+       rotulo(ctx, c, cx + 10, yR + 14, 'apoyo', c.ink, 'left', 700, W);
+     }
+   },
+   desc:(E, r) => r ? 'El carrete gira alrededor del punto donde el cilindro toca el riel: arriba va a 4 metros por segundo hacia adelante y P, abajo, a 2 hacia atrás.' : 'Un carrete apoyado por su cilindro chico sobre un riel; su centro avanza a 1 metro por segundo y P es el punto más bajo de un disco grande.' },
+ { id:'mc-p18c', t:'La escalera que resbala', ley:['v','w'],
+   antes:E => { E.f = 0; },
+   q:() => `Una escalera de 5 m está apoyada en una pared lisa y en el piso, y forma 53° con el piso. Resbala: su extremo de arriba, A, baja por la pared a ${V('v','3 m/s')}. En ese instante, ¿con qué rapidez se aleja de la pared su extremo de abajo, B? (sen 53° = 4/5)`,
+   opts:[['a','4 m/s',null,''], ['b','3 m/s','CI-vb-igual-va','hipotesis'], ['c','2,25 m/s','VE-sen-cos-cambiados','hipotesis'], ['d','0 m/s','CI-cir-en-la-barra','hipotesis']],
+   ok:'a',
+   fb:{ a:'El centro instantáneo es el corte de la horizontal por A con la vertical por B: está a 3 m de A y a 4 m de B. ω = 3/3 = 1 rad/s y vB = 1·4 = 4 m/s.',
+        b:'Los dos extremos irían igual de rápido si el centro instantáneo estuviera en el medio de la escalera. Está fuera de ella, más lejos de B que de A.',
+        c:'2,25 = 3·cos 53°/sen 53° cambia seno y coseno. A está a L·sen 53° = 4 m del piso y B a L·cos 53° = 3 m de la pared: vB = vA·tan 53° = 4 m/s.',
+        d:'B no está quieto: se desliza por el piso. El centro instantáneo no está en la escalera, sino donde se cortan las dos perpendiculares.' },
+   despues:(E, A) => A.animar(3200, f => { E.f = f; }),
+   exp:() => `<div class="eqs"><div class="eq">centro instantáneo: (${fmt(E18.cir.x, 0)}; ${fmt(E18.cir.y, 0)}) m<span class="note">a ${fmt(E18.dA, 0)} m de A y a ${fmt(E18.dB, 0)} m de B</span></div>
+     <div class="eq">${V('w','ω')} = ${fr(V('v','3'), '3')} = ${V('w', fmt(E18.omega, 0) + ' rad/s')}</div><div class="eq">${V('v','vB')} = ${V('w','ω')}·4 = ${V('v', fmt(E18.vB, 0) + ' m/s')}</div></div>
+     <p>Cada extremo se mueve a lo largo de su apoyo: A, vertical; B, horizontal. La escalera gira, en ese instante, alrededor del punto donde se cortan las perpendiculares a esas velocidades. Ese punto queda fuera de la escalera, y cambia de lugar mientras resbala. El punto medio va a ${fmt(E18.vMedio, 1)} m/s.</p>${fuente(HIP)}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, s = Math.min((W - 90)/4.6, (H - 56)/5), ox = 46, oy = H - 30, X = x => ox + x*s, Y = y => oy - y*s, k = s*0.32;
+     ctx.save(); ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(ox - 14, Y(5.1), 14, oy - Y(5.1)); ctx.fillRect(ox - 14, oy, W - ox + 14, 10); ctx.restore();
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, ox, Y(5.1), ox, oy); linea(ctx, ox, oy, W - 6, oy); ctx.restore();
+     const A = [X(E18.A.x), Y(E18.A.y)], B = [X(E18.B.x), Y(E18.B.y)];
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 6; ctx.lineCap = 'round'; linea(ctx, A[0], A[1], B[0], B[1]); ctx.restore();
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(B[0], B[1], 28, PI, PI + 53*PI/180); ctx.stroke(); ctx.restore();
+     rotulo(ctx, c, B[0] - 44, B[1] - 12, '53°', c.ink, 'right', 800, W);
+     [[A, 'A', -14, 0], [B, 'B', 0, 16]].forEach(([q, t, dx, dy]) => { ctx.save(); circulo(ctx, q[0], q[1], 5.5); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore(); rotulo(ctx, c, q[0] + 12 + dx*-1, q[1] + dy - 2, t, c.ink, 'left', 800, W); });
+     flechaHalo(ctx, c, A[0] + 10, A[1], A[0] + 10, A[1] + E18.vA*k, c.v, 3);
+     rotulo(ctx, c, A[0] + 18, A[1] + E18.vA*k*0.6, '3 m/s', c.v, 'left', 800, W);
+     if (!r){ rotulo(ctx, c, B[0] + 26, B[1] - 14, 'vB = ?', c.v, 'left', 800, W); return; }
+     const f = E.f, I = [X(E18.cir.x), Y(E18.cir.y)];
+     ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([6, 4]); ctx.lineWidth = 1.6;
+     linea(ctx, A[0], A[1], A[0] + (I[0] - A[0])*f, A[1]); linea(ctx, B[0], B[1], B[0], B[1] + (I[1] - B[1])*f); ctx.restore();
+     if (f >= 1){
+       ctx.save(); circulo(ctx, I[0], I[1], 7); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.stroke(); ctx.restore();
+       rotulo(ctx, c, I[0] + 12, I[1] - 14, 'centro instantáneo', c.ink, 'left', 800, W);
+       rotulo(ctx, c, (A[0] + I[0])/2, A[1] - 12, `${fmt(E18.dA, 0)} m`, c.ink, 'center', 800, W);
+       rotulo(ctx, c, I[0] + 8, (B[1] + I[1])/2, `${fmt(E18.dB, 0)} m`, c.ink, 'left', 800, W);
+       flechaHalo(ctx, c, B[0], B[1] - 8, B[0] + E18.vB*k, B[1] - 8, c.v, 3.4);
+       rotulo(ctx, c, B[0] + E18.vB*k + 6, B[1] - 22, `vB = ${fmt(E18.vB, 0)} m/s`, c.v, 'left', 800, W);
+       rotulo(ctx, c, 12, 16, `ω = ${fmt(E18.omega, 0)} rad/s`, c.w, 'left', 800, W);
+     }
+   },
+   desc:(E, r) => r ? 'La horizontal por A y la vertical por B se cortan fuera de la escalera, a 3 metros de A y a 4 de B: B se aleja a 4 metros por segundo.' : 'Una escalera apoyada en la pared y el piso, a 53 grados; su extremo de arriba baja a 3 metros por segundo.' },
 ];
 montar({ n:4, modo:'m4', pasos });
 })();

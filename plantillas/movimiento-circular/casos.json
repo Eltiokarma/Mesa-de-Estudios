@@ -2,7 +2,7 @@
  "plantilla": "movimiento-circular",
  "unidades": "SI: m, s, rad, rad/s, rad/s², m/s y m/s². Ángulos de entrada en grados donde lo dice la cabecera de motor.js (anguloAV, desfase, lambda, theta0, angulo); ángulos girados (theta, neto, recorrido) en radianes. π se pasa como número (por ejemplo, 4π = 12.566370614359172).",
  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.aSuma, puntos.1.v, 2.omega para la tercera rueda de tren); los booleanos se comparan exactos. Ningún caso sale de una clave de un libro: todos los números son propios.",
- "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin leer el código del motor más allá de su cabecera ni casos.json: recalculó los 45 casos con fracciones exactas y π como coeficiente; los vectoriales y de rodadura con números complejos, las gráficas ω-t por integración numérica y los reencuentros por barrido de tiempos racionales. Coinciden los 284 campos (solo difiere el formato del sentido, 1/−1 contra texto). Tras la revisión cambiaron seis casos (gráfica ω-t de 6 a −6 rad/s, la gota con r = 0,5 m, comoLateral en rodadura, diametroPorRadio y msSinConvertir en atraviesa, y dos errores repetidos quitados); la conversación principal los recalculó a mano: neto 0 y recorrido 18 rad, ω² = πg/r = 20π, 5√2, 100π y π/5 rad/s.",
+ "verificacion": " En 0.2.0 entraron tres casos (bobina con r = 0,3 m apoyada en 0,1 m, y la escalera de 5 m a 53° y de 4 m a 30°); la conversación principal los recalculó a mano con el centro instantáneo: ω = 10 rad/s y 2 m/s hacia atrás; CIR (3; 4), ω = 1 rad/s, vB = 4 m/s y vMedio = 2,5 m/s; ω = 1/√3 rad/s y vB = vMedio = 2/√3 m/s.",
  "tolerancia": 1e-9,
  "casos": [
   { "nombre": "Paso 6: 180 rpm en un disco de 40 cm de diámetro → ω = 6π rad/s, v = 1,2π m/s (CI-rpm-sin-2pi: 0,6; CI-rpm-sin-60: 72π; CI-diametro-por-radio: 2,4π)", "fn": "convertir", "args": [ { "rpm": 180, "d": 0.4 } ], "espera": { "omega": 18.8495559215388, "omegaPi": 6, "f": 3, "periodo": 0.333333333333333, "r": 0.2, "v": 3.76991118430775, "vPi": 1.2, "errores.omegaSin2pi": 3, "errores.omegaSin60": 1130.97335529233, "errores.vSin2pi": 0.6, "errores.vSin60": 226.194671058465, "errores.vConDiametro": 7.5398223686155 }
@@ -63,6 +63,12 @@
   },
   { "nombre": "Bobina: radio 20 cm apoyada en un eje de 10 cm, centro a 1 m/s → arriba 3 m/s, abajo −1 m/s (hacia atrás)", "fn": "rodadura", "args": [ { "r": 0.2, "v": 1, "rApoyo": 0.1 } ], "espera": { "omega": 10, "arriba.vx": 3, "abajo.vx": -1, "abajo.modulo": 1 }
   },
+  { "nombre": "Paso 18b, la bobina: disco de 30 cm apoyado en un cilindro de 10 cm, centro a 1 m/s → ω = 10 rad/s; el punto más bajo del disco va a 2 m/s hacia atrás (adelante con esa rapidez: 2; quieto: 0)", "fn": "rodadura", "args": [ { "r": 0.3, "v": 1, "rApoyo": 0.1 } ], "espera": { "omega": 10, "abajo.vx": -2, "abajo.modulo": 2, "abajo.distanciaApoyo": 0.2, "arriba.vx": 4, "errores.todosAv": 1, "errores.abajoAdelante": 2, "errores.abajoCero": 0 }
+  },
+  { "nombre": "Paso 18c, la escalera: L = 5 m a 53° del piso, A baja a 3 m/s → centro instantáneo en (3; 4), ω = 1 rad/s, vB = 4 m/s (centro en el medio: 3; en B: 0; seno y coseno cambiados: 2,25)", "fn": "barraResbala", "args": [ { "L": 5, "angulo": 53, "vA": 3 } ], "espera": { "A.y": 4, "B.x": 3, "cir.x": 3, "cir.y": 4, "dA": 3, "dB": 4, "omega": 1, "vB": 4, "vMedio": 2.5, "errores.vbIgualVa": 3, "errores.cirEnExtremo": 0, "errores.senCosCambiados": 2.25 }
+  },
+  { "nombre": "Escalera a 30° del piso: L = 4 m, A baja a 2 m/s → dA = 2√3, ω = 1/√3 rad/s, vB = 2/√3 m/s", "fn": "barraResbala", "args": [ { "L": 4, "angulo": 30, "vA": 2 } ], "espera": { "dA": 3.46410161513775, "dB": 2, "omega": 0.577350269189626, "vB": 1.15470053837925, "vMedio": 1.15470053837925, "errores.senCosCambiados": 3.46410161513775 }
+  },
   { "nombre": "Paso 4: α = 4π rad/s² desde el reposo: en el 3.er segundo gira 5 veces lo del primero (10π rad = 5 vueltas); en 3 s, 9 vueltas", "fn": "enesimoSegundo", "args": [ { "alfa": 12.566370614359172, "n": 3 } ], "espera": { "thetaN": 31.4159265358979, "vueltasN": 5, "theta1": 6.28318530717959, "thetaHasta": 56.5486677646163, "vueltasHasta": 9, "razon": 5, "segundos.1": 18.8495559215388, "errores.razonN": 3, "errores.razonCuadrado": 9 }
   },
   { "nombre": "n-ésimo segundo desde ω0: ω0 = 2 rad/s y α = 2 rad/s², en el 4.º segundo gira 9 rad", "fn": "enesimoSegundo", "args": [ { "omega0": 2, "alfa": 2, "n": 4 } ], "espera": { "thetaN": 9, "theta1": 3, "thetaHasta": 24 }
@@ -87,7 +93,7 @@
   },
   { "nombre": "Encuentro angular: 3 rad/s y 1 rad/s, mismo sentido, B 90° adelante → t = π/4 s", "fn": "encuentroPista", "args": [ { "omega1": 3, "omega2": 1, "theta0": 90, "sentido": "mismo" } ], "espera": { "t": 0.785398163397448, "brecha": 1.5707963267949, "vRel": 2, "errores.tConSuma": 0.392699081698724 }
   },
-  { "nombre": "Paso 19: cascarón de 1 m de diámetro y bala a 200 m/s → media vuelta en 5 ms: ω mínima 200π rad/s (una vuelta: 400π; 180° entre 5 ms: 36 000)", "fn": "atraviesa", "args": [ { "L": 1, "v": 200, "modo": "cascaron" } ], "espera": { "t": 0.005, "omega": 628.318530717959, "omegaPi": 200, "f": 100, "errores.vueltaEntera": 1256.63706143592, "errores.omegaComoVueltas": 100, "errores.gradosSinRadianes": 36000, "errores.diametroPorRadio": 314.159265358979, "errores.msSinConvertir": 0.628318530717959 }
+  { "nombre": "Paso 19: cascarón de 1 m de diámetro y bala a 200 m/s → media vuelta en 5 ms: ω mínima 200π rad/s (una vuelta: 400π; 180° entre 5 ms: 36 000)", "fn": "atraviesa", "args": [ { "L": 1, "v": 200, "modo": "cascaron" } ], "espera": { "t": 0.005, "omega": 628.318530717959, "omegaPi": 200, "f": 100, "errores.vueltaEntera": 1256.63706143592, "errores.omegaComoVueltas": 100, "errores.gradosSinRadianes": 36000 }
   },
   { "nombre": "Dos discos a 0,6 m con desfase de 60° y bala a 300 m/s → ω mínima 500π/3 rad/s", "fn": "atraviesa", "args": [ { "L": 0.6, "v": 300, "modo": "discos", "desfase": 60 } ], "espera": { "t": 0.002, "omega": 523.598775598299, "omegaPi": 166.666666666667, "errores.vueltaEntera": 3665.19142918809 }
   },
