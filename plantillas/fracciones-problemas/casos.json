@@ -2,7 +2,7 @@
   "plantilla": "fracciones-problemas",
   "tolerancia": 0.000001,
   "nota": "Respuestas numéricas (cantidades, soles, horas, cm) o de texto (fracción con sus términos, cifras del periodo, cifras no periódicas y periódicas). Los periódicos se escriben con puntos suspensivos y el bloque repetido. En euclides, «exceso» es el número de la división (1.ª o 2.ª) que se hizo por exceso.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 19 problemas con aritmética exacta en Python (Fraction), recorriendo todos los valores posibles en MCM, cotas, conteo de equivalentes, pares irreductibles, edades y Euclides por exceso, y con división larga y detección de restos para los decimales. Las 19 respuestas coinciden con esperado.respuesta y esperado.exacta; ninguna otra alternativa es defendible.",
   "casos": [
     {
       "semilla": 0,

@@ -2,7 +2,7 @@
   "plantilla": "ecuaciones-polinomiales",
   "tolerancia": 0.000001,
   "nota": "Respuestas racionales exactas (respuesta = su valor numérico; exacta = el texto que ve el alumno) o conjuntos (respuesta = clave set:… con los elementos en orden creciente). Una semilla por tipo y subtipo, más entrada-1 y salida-1.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 18 casos con Python (Fraction y fuerza bruta sobre raíces racionales, ternas enteras y lados enteros); para las raíces conjugadas usó el factor cuadrático y para las sumas de potencias, las relaciones de Vieta. Los 18 valores coinciden con esperado; no hay discrepancias ni alternativas defendibles.",
   "casos": [
     {
       "semilla": 0,

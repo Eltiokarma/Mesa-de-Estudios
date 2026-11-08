@@ -2,7 +2,7 @@
  "plantilla": "funciones-dominio-rango",
  "tolerancia": 0.000001,
  "nota": "Respuesta numérica en su unidad, o el texto del conjunto, la expresión o la secuencia V/F tal como lo escribe el generador; exacta es el texto de la alternativa correcta.",
- "verificacion": "",
+ "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 24 casos con aritmética exacta (Fraction), áreas por tramos para |x| − ⟦x⟧, muestreo de dominios y rangos, y conteo directo de cifras de 2⁵⁰. Los 24 coinciden con esperado; no hay ambigüedades ni distractores defendibles.",
  "casos": [
   {
    "semilla": 0,

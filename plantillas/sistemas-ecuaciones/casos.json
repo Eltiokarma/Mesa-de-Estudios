@@ -2,7 +2,7 @@
   "plantilla": "sistemas-ecuaciones",
   "tolerancia": 0.000001,
   "nota": "Una semilla por tipo y subtipo, más entrada-1 y salida-1. Las respuestas numéricas van como número; las de texto, con su clave canónica: num:n/d (fracción reducida), int:(a;b) con [ ] para extremos cerrados y inf para infinito, y ec:A,B,C para Ax² + Bx + C = 0 con enteros primitivos y A > 0.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 22 casos con aritmética exacta en Python (fracciones, fuerza bruta en enteros y jornadas, Cramer comprobado por sustitución, bisección para el ancho de la vereda, potencias de matriz por multiplicación y Vieta recompuesta desde las raíces). Los 22 coinciden con esperado, con una sola alternativa correcta en cada uno y ningún distractor defendible.",
   "casos": [
     {
       "semilla": 6,

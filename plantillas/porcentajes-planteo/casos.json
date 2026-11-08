@@ -2,7 +2,7 @@
   "plantilla": "porcentajes-planteo",
   "tolerancia": 0.000001,
   "nota": "Porcentajes con coma decimal; los periódicos con raya (41,6̅ % = 5/12). Las razones se dan como clave razon:p/q y texto «p : q»; los conjuntos, con la clave conj:<regiones> (bit k = región k, con A = bit 0, B = bit 1 y C = bit 2) y el texto de la expresión simplificada. En sistema, a es el descuento del primer artículo y b el del segundo en la primera compra (T1); en T2 se cruzan.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 19 problemas solo con su enunciado, con aritmética exacta (fracciones) y búsqueda por fuerza bruta de las incógnitas enteras; el problema de conjuntos se comprobó con todas las ternas válidas de un universo de 4 elementos. Las 19 respuestas coinciden con esperado; no hay distractores defendibles ni datos contradictorios.",
   "casos": [
     {
       "semilla": 0,
