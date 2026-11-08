@@ -2,7 +2,7 @@
   "plantilla": "geo-poligonos",
   "tolerancia": 0.000001,
   "nota": "Ángulos en grados; notable 37°/53° con lados 3-4-5. En el dodecágono con apotema, la respuesta es la clave dod:N:- que significa N(2 − √3).",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas por un subagente (8 nov 2026): 25 casos resueltos desde el enunciado con coordenadas complejas (cierre vectorial del hexágono equiángulo, cortes de diagonales, ángulos numéricos, área por vértices) y fracciones exactas en trapecios y cuadrados encajados. Los 25 coinciden con esperado.respuesta y exacta; sin discrepancias.",
   "casos": [
     {
       "semilla": "entrada-1",

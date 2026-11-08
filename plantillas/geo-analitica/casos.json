@@ -2,7 +2,7 @@
   "plantilla": "geo-analitica",
   "tolerancia": 0.000001,
   "nota": "Respuestas como claves de Predicciones: vec: punto (fracciones n/d), fr: fracción, recta:p,q,r para px + qy + r = 0 normalizada; parábolas: volumen numérico (múltiplo de π).",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas por un subagente (8 nov 2026): 20 casos resueltos desde el enunciado con fracciones exactas: elipses reconstruidas completando cuadrados (h, k, a, b, c y eje mayor contrastados con _datos), rectas por V₁ normalizadas, tangentes por producto cruz y punto (y atan2), baricentros y el cilindro de las parábolas. Los 20 coinciden con esperado.respuesta y exacta; sin discrepancias.",
   "casos": [
     {
       "semilla": "entrada-1",
