@@ -45,18 +45,6 @@
   const W_RPM = [30, 45, 60, 90, 120, 150, 180, 240, 300, 360, 450, 600, 720, 900, 1200];
   const INVIERTE = { faja: false, cruzada: true, engranaje: true, eje: false };
 
-  // Fracción p/q (q ≤ qmax) de un número, o null.
-  function fraccion(c, qmax = 12) {
-    for (let q = 1; q <= qmax; q++) { const p = c * q; if (Math.abs(p - Math.round(p)) < 1e-9) return [Math.round(p), q]; }
-    return null;
-  }
-  // Un múltiplo de π como texto: «π», «3π», «π/2», «5π/6». null si no sale limpio.
-  function piTexto(x, qmax = 12) {
-    const fr = fraccion(x / Math.PI, qmax);
-    if (!fr || fr[0] <= 0 || fr[0] > 9999) return null;
-    const [p, q] = fr;
-    return (p === 1 ? '' : p) + 'π' + (q === 1 ? '' : '/' + q);
-  }
   const corto = (x, dec = 2) => x > 0 && Math.abs(x * 10 ** dec - Math.round(x * 10 ** dec)) < 1e-7 && x < 1e5;
 
   function generar(semilla) {
@@ -119,7 +107,7 @@
     const pi = modoF === 'rpm-rad';
     const conv = w => (pi ? w * Math.PI / 30 : w);
     const correctaMag = conv(wn);
-    if (pi ? !piTexto(correctaMag, 4) : !corto(correctaMag, modoF === 'rpm' ? 1 : 2)) return null;
+    if (pi ? !P.pi(correctaMag, '', 4) : !corto(correctaMag, modoF === 'rpm' ? 1 : 2)) return null;
     const ultimo = NOMBRES[n - 1];
     const variables = {};
     ruedas.forEach((q, k) => { variables[NOMBRES[k]] = { nombre: `rueda ${NOMBRES[k]}`, color: COLORES[k] }; });
@@ -182,8 +170,8 @@
         h('CI-rpm-sin-60', wn * 2 * Math.PI, 'Pasaste de rpm a rad/s sin dividir entre 60: las rpm son vueltas por minuto, y un minuto tiene 60 s.'),
         h('CI-rpm-sin-2pi', wn * Math.PI / 60, 'Multiplicaste por π en vez de 2π: una vuelta son 2π rad.'),
         ...enLaCadena.map(e => ({ ...e, valor: conv(e.valor) })),
-      ].filter(e => piTexto(e.valor));
-      texto = x => `${piTexto(x)} rad/s`;
+      ];
+      texto = x => P.pi(x, 'rad/s');
     } else {
       correcta = wn;
       errores = enLaCadena.filter(e => corto(e.valor, 2));
@@ -208,7 +196,7 @@
     if (pi) solucion.push([`Se pasa a rad/s: ${f(wn)} rpm = ${f(wn)} · 2π/60 rad/s = `, v(ultimo, texto(correcta)), '.']);
     else solucion.push(['Respuesta: ', v(ultimo, texto(correcta)), '.']);
 
-    const alternativas = P.armar({ correcta, errores, rng, texto, negativos });
+    const alternativas = P.armar({ correcta, errores, rng, texto, negativos, formato: pi ? 'pi' : null });
     // En «sentido», al menos una alternativa tiene que girar al otro lado.
     if (sentidoA && !alternativas.some(a => Math.sign(a.valor) !== Math.sign(correcta))) return null;
     return {
@@ -231,8 +219,7 @@
     const vDe = (wA, rf, rb) => aRad(wA) * rA / rf * rb / 100; // m/s
     const correcta = vDe(w1, g1, g2);
     const pi = modo === 'rpm';
-    const limpio = x => (pi ? !!piTexto(x, 12) : corto(x, 2));
-    if (pi ? !piTexto(correcta, 6) : !corto(correcta, 2)) return null;
+    if (pi ? !P.pi(correcta, '', 6) : !corto(correcta, 2)) return null;
     if (correcta > 12) return null; // un bloque que sube a más de 12 m/s no es creíble
     const med = x => (diam ? `${2 * x} cm de diámetro` : `${x} cm de radio`);
     const variables = { A: { nombre: 'polea A', color: 'o' }, B: { nombre: 'polea B', color: 'i' }, v: { nombre: 'rapidez del bloque', color: 'h' } };
@@ -250,16 +237,16 @@
     if (diam) errores.unshift(h('CI-diametro-por-radio', 2 * correcta, 'Usaste el diámetro donde va el radio: v = ω·r, y el radio es la mitad del diámetro.'));
     if (pi) errores.push(h('CI-rpm-sin-60', correcta * 60, 'Pasaste de rpm a rad/s sin dividir entre 60: las rpm son vueltas por minuto.'),
       h('CI-rpm-sin-2pi', correcta / 2, 'Multiplicaste por π en vez de 2π: una vuelta son 2π rad.'));
-    const texto = x => (pi ? `${piTexto(x)} m/s` : `${f(x)} m/s`);
+    const texto = x => (pi ? P.pi(x, 'm/s') : `${f(x)} m/s`);
     const wA = aRad(w1), wB = wA * rA / g1;
-    const wTxt = w => (pi ? `${piTexto(w)} rad/s` : `${f(w)} rad/s`);
+    const wTxt = w => (pi ? P.pi(w, 'rad/s') : `${f(w)} rad/s`);
     const solucion = [
       ...(pi ? [[v('A', `ωA = ${w1} rpm`), ` = ${w1} · 2π/60 rad/s = ${wTxt(wA)}.`]] : []),
       ...(diam ? [['Los radios son la mitad de los diámetros: ' + `A, ${rA} cm; B, ${R} cm y ${r} cm.`]] : []),
       ['La faja une el borde de A con la garganta de radio ', `${g1} cm`, ': misma v, así que ', v('B', 'ωB'), ` = ωA · ${rA}/${g1} = ${wTxt(wB)}.`],
       ['Las dos gargantas de B giran juntas (mismo eje). La cuerda del bloque sale de la garganta de radio ', `${g2} cm = ${f(g2 / 100)} m`, ': ', v('v', 'v'), ` = ωB · r = ${wTxt(wB)} · ${f(g2 / 100)} m = `, v('v', texto(correcta)), '.'],
     ];
-    const alternativas = P.armar({ correcta, errores: errores.filter(e => limpio(e.valor)), rng, texto });
+    const alternativas = P.armar({ correcta, errores: pi ? errores : errores.filter(e => corto(e.valor, 2)), rng, texto, formato: pi ? 'pi' : null });
     return {
       id: `circular-transmision#${semilla}`, variables, enunciado, pregunta, datos: '', alternativas, solucion,
       respuesta: { valor: correcta, unidad: 'm/s' },
@@ -306,5 +293,5 @@
     };
   }
 
-  return { id: 'circular-transmision', titulo: 'Ruedas, fajas y poleas', generar, _piTexto: piTexto };
+  return { id: 'circular-transmision', titulo: 'Ruedas, fajas y poleas', generar };
 });

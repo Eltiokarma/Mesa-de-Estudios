@@ -50,7 +50,8 @@
   const PERIODOS = [2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 18, 20, 24, 30, 36, 40, 45, 60];
   const RPM = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 30];
   const GRADOS = [30, 45, 60, 90, 120, 135, 150, 180];
-  const piFr = ([p, q], u = 'rad/s') => `${p === 1 ? '' : p}π${q === 1 ? '' : '/' + q} ${u}`;
+  // Los coeficientes de π se guardan como fracción [p, q]; el texto lo escribe el núcleo (P.pi).
+  const piDe = ([p, q], u = 'rad/s') => P.pi(p / q * Math.PI, u, q);
 
   function generar(semilla) {
     const rng = Azar.crear('circular-encuentros|' + semilla);
@@ -64,7 +65,7 @@
 
   // Una rapidez en el modo del problema: devuelve el dato (para _datos), su texto y vueltas por segundo.
   function rapidez(rng, modo) {
-    if (modo === 'pi') { const c = rng.elegir(COEF); return { dato: c, texto: `gira con rapidez angular constante de ${piFr(c)}`, corto: piFr(c), n: c[0] / c[1] / 2 }; }
+    if (modo === 'pi') { const c = rng.elegir(COEF); return { dato: c, texto: `gira con rapidez angular constante de ${piDe(c)}`, corto: piDe(c), n: c[0] / c[1] / 2 }; }
     if (modo === 'periodo') { const T = rng.elegir(PERIODOS); return { dato: T, texto: `da una vuelta cada ${T} s`, corto: `T = ${T} s`, n: 1 / T }; }
     const N = rng.elegir(RPM); return { dato: N, texto: `gira a ${N} rpm`, corto: `${N} rpm`, n: N / 60 };
   }
@@ -198,7 +199,7 @@
     let TA, TB, datoA, datoB, txtA, txtB;
     if (modo === 'periodo') { TA = rng.elegir(PERIODOS.slice(0, 14)); TB = rng.elegir(PERIODOS.slice(0, 14)); datoA = TA; datoB = TB; txtA = `da una vuelta cada ${TA} s`; txtB = `da una vuelta cada ${TB} s`; }
     else if (modo === 'rpm') { const NA = rng.elegir([2, 3, 4, 5, 6, 10, 12, 15, 20, 30]), NB = rng.elegir([2, 3, 4, 5, 6, 10, 12, 15, 20, 30]); TA = 60 / NA; TB = 60 / NB; datoA = NA; datoB = NB; txtA = `gira a ${NA} rpm`; txtB = `gira a ${NB} rpm`; }
-    else { TA = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]); TB = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]); const cA = [2 / gcd(2, TA), TA / gcd(2, TA)], cB = [2 / gcd(2, TB), TB / gcd(2, TB)]; datoA = cA; datoB = cB; txtA = `gira con rapidez angular constante de ${piFr(cA)}`; txtB = `gira con rapidez angular constante de ${piFr(cB)}`; }
+    else { TA = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]); TB = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]); const cA = [2 / gcd(2, TA), TA / gcd(2, TA)], cB = [2 / gcd(2, TB), TB / gcd(2, TB)]; datoA = cA; datoB = cB; txtA = `gira con rapidez angular constante de ${piDe(cA)}`; txtB = `gira con rapidez angular constante de ${piDe(cB)}`; }
     if (TA === TB || !Number.isInteger(TA) || !Number.isInteger(TB)) return null;
     const L = TA * TB / gcd(TA, TB);
     if (L === Math.max(TA, TB) || L > 600) return null;
@@ -214,7 +215,7 @@
       h('CI-suma-periodos', TA + TB, 'Sumaste los periodos. Los dos están en P a la vez en un múltiplo común de los dos periodos.'),
     ];
     const pasoT = modo === 'periodo' ? ['Cada uno pasa por P al final de cada vuelta: A cada ', v('A', `${TA} s`), ' y B cada ', v('B', `${TB} s`), '.']
-      : ['Periodos (lo que tarda cada uno en dar una vuelta): ', v('A', `TA = ${modo === 'rpm' ? `60/${datoA}` : `2π/(${piFr(datoA, '').trim()})`} = ${TA} s`), ' y ', v('B', `TB = ${modo === 'rpm' ? `60/${datoB}` : `2π/(${piFr(datoB, '').trim()})`} = ${TB} s`), '.'];
+      : ['Periodos (lo que tarda cada uno en dar una vuelta): ', v('A', `TA = ${modo === 'rpm' ? `60/${datoA}` : `2π/(${piDe(datoA, '')})`} = ${TA} s`), ' y ', v('B', `TB = ${modo === 'rpm' ? `60/${datoB}` : `2π/(${piDe(datoB, '')})`} = ${TB} s`), '.'];
     const solucion = [pasoT,
       ['Están juntos en P cuando el tiempo es múltiplo de los dos periodos. El sentido de giro no importa. El primero es el mínimo común múltiplo: ', v('t', `mcm(${TA}; ${TB}) = ${L} s`), '.']];
     if (!pideVueltas) {
@@ -250,7 +251,7 @@
       correcta = 2 * W / A;
       // A no debe sacarle una vuelta entera a B antes de que B lo alcance: la ventaja máxima es W²/(2A) < 2π.
       if (W * W / (2 * A) >= 2 * Math.PI - 1e-9 || !corto(correcta) || correcta > 60) return null;
-      enunciado.push(v('A', 'A'), ` gira con rapidez angular constante de ${piFr(w)}. Justo cuando A pasa por un punto P, `, v('B', 'B'), ` parte del reposo desde P, en el mismo sentido, con aceleración angular constante de ${piFr(al, 'rad/s²')}.`);
+      enunciado.push(v('A', 'A'), ` gira con rapidez angular constante de ${piDe(w)}. Justo cuando A pasa por un punto P, `, v('B', 'B'), ` parte del reposo desde P, en el mismo sentido, con aceleración angular constante de ${piDe(al, 'rad/s²')}.`);
       pregunta = ['¿Al cabo de cuánto tiempo B alcanza a A?'];
       errores = [
         h('CI-misma-rapidez-encuentro', W / A, 'En ese instante B llega a la rapidez de A, pero todavía está detrás: hasta ahí A se le adelantó. B lo alcanza recién cuando los dos han girado el mismo ángulo.'),
@@ -260,7 +261,7 @@
       ];
       solucion = [
         ['Desde P, A gira ', v('A', 'θA = ω·t'), ' y B gira ', v('B', 'θB = ½·α·t²'), '. B alcanza a A cuando han girado lo mismo.'],
-        ['ω·t = ½·α·t² da ', v('t', 't = 2ω/α'), ` = 2 · (${piFr(w, '').trim()}) ÷ (${piFr(al, '').trim()}) = `, v('t', segundos(correcta)), '.'],
+        ['ω·t = ½·α·t² da ', v('t', 't = 2ω/α'), ` = 2 · (${piDe(w, '')}) ÷ (${piDe(al, '')}) = `, v('t', segundos(correcta)), '.'],
         [`Antes de eso, A nunca le saca una vuelta entera a B: la mayor ventaja de A es ω²/(2α) = ${fr(W * W / (2 * A) / (2 * Math.PI))} de vuelta.`],
       ];
       datos = { tipo: 'mcuv', sub, w, alfaB: al };
@@ -275,7 +276,7 @@
       if (!aA) return null;
       correcta = tt;
       enunciado.push('Los dos parten del reposo desde el mismo punto y al mismo tiempo, ', mismo ? 'en el mismo sentido' : 'en sentidos contrarios', ', con aceleraciones angulares constantes: ',
-        v('A', `A, ${piFr(aA, 'rad/s²')}`), ' y ', v('B', `B, ${piFr(aB, 'rad/s²')}`), '.');
+        v('A', `A, ${piDe(aA, 'rad/s²')}`), ' y ', v('B', `B, ${piDe(aB, 'rad/s²')}`), '.');
       pregunta = [mismo ? '¿Al cabo de cuánto tiempo A le saca una vuelta de ventaja a B?' : '¿Al cabo de cuánto tiempo se encuentran por primera vez?'];
       errores = [
         mismo
@@ -287,8 +288,8 @@
         ...(mismo ? [h('CI-vuelta-del-lento', Math.sqrt(4 / Math.min(cA, cB)), 'Ese es el tiempo que tarda B en dar una vuelta entera. A le saca una vuelta de ventaja cuando la diferencia de lo girado llega a 2π rad.')] : []),
       ];
       solucion = [
-        [mismo ? 'Van en el mismo sentido: la ventaja de A es ' : 'Van en sentidos contrarios: lo que cubren entre los dos es ', v('t', `½·(${mismo ? 'αA − αB' : 'αA + αB'})·t²`), `, con ${mismo ? 'αA − αB' : 'αA + αB'} = ${piFr(fraccion(rel), 'rad/s²')}.`],
-        [mismo ? 'Una vuelta de ventaja son 2π rad: ' : 'Se encuentran cuando cubren una vuelta, 2π rad: ', `½ · ${piFr(fraccion(rel), '').trim()} · t² = 2π, así que t² = ${f(4 / rel)} y `, v('t', `t = ${segundos(correcta)}`), '.'],
+        [mismo ? 'Van en el mismo sentido: la ventaja de A es ' : 'Van en sentidos contrarios: lo que cubren entre los dos es ', v('t', `½·(${mismo ? 'αA − αB' : 'αA + αB'})·t²`), `, con ${mismo ? 'αA − αB' : 'αA + αB'} = ${piDe(fraccion(rel), 'rad/s²')}.`],
+        [mismo ? 'Una vuelta de ventaja son 2π rad: ' : 'Se encuentran cuando cubren una vuelta, 2π rad: ', `½ · ${piDe(fraccion(rel), '')} · t² = 2π, así que t² = ${f(4 / rel)} y `, v('t', `t = ${segundos(correcta)}`), '.'],
       ];
       datos = { tipo: 'mcuv', sub, alfaA: aA, alfaB: aB };
     }

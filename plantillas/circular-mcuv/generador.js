@@ -35,13 +35,12 @@
   const f = x => P.formatear(x, 2);
   const v = P.v;
   const corto = (x, dec = 2) => Number.isFinite(x) && x > 0 && Math.abs(x * 10 ** dec - Math.round(x * 10 ** dec)) < 1e-7 && x < 1e5;
-  const piC = a => { if (a === 1) return 'π'; if (Number.isInteger(a)) return a + 'π'; return f(a) + 'π'; };
   const OBJ = [['Un disco', 'el disco'], ['Una rueda', 'la rueda'], ['Un ventilador', 'el ventilador'], ['Una polea', 'la polea'], ['Un esmeril', 'el esmeril']];
   const vueltasTxt = x => `${f(x)} ${Math.abs(x - 1) < 1e-9 ? 'vuelta' : 'vueltas'}`;
   const vps = x => `${f(x)} ${Math.abs(x - 1) < 1e-9 ? 'vuelta' : 'vueltas'}/s`;
 
   // Cómo se escribe una rapidez angular dada en el modo del problema.
-  const W = (modo, x) => (modo === 'rad' ? `${f(x)} rad/s` : modo === 'rpm' ? `${f(x)} rpm` : `${piC(x)} rad/s`);
+  const W = (modo, x) => (modo === 'rad' ? `${f(x)} rad/s` : modo === 'rpm' ? `${f(x)} rpm` : `${P.pi(x * Math.PI)} rad/s`);
   // Lo girado, en las unidades en que se pregunta: rad en el modo rad, vueltas en los otros.
   const TH = (modo, x) => (modo === 'rad' ? `${f(x)} rad` : vueltasTxt(x));
   // Una rapidez angular del modo, pasada a «unidades de ángulo por segundo» del modo
@@ -136,7 +135,7 @@
     const sinFrenar = pS * t - aS * t * t / 2;
     const variables = { w0: { nombre: 'rapidez angular inicial', color: 'o' }, al: { nombre: 'desaceleración angular', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, th: { nombre: 'ángulo girado', color: 'd' } };
     const enunciado = [`${Obj} gira a `, v('w0', W(modo, w0)), '. Se aplica un freno y su rapidez angular disminuye de manera uniforme a razón de ',
-      v('al', modo === 'rad' ? `${al} rad/s²` : `${piC(al)} rad/s²`), '. Cuando se detiene, ya no vuelve a girar.'];
+      v('al', modo === 'rad' ? `${al} rad/s²` : `${P.pi(al * Math.PI)} rad/s²`), '. Cuando se detiene, ya no vuelve a girar.'];
     const pregunta = [`${modo === 'rad' ? '¿Qué ángulo gira' : '¿Cuántas vueltas da'} ${obj} en los primeros `, v('t', `${t} s`), ' desde que empieza a frenar?'];
     const errores = [
       h('mcuv-sin-frenar', sinFrenar, `Usaste θ = ω0·t − ½·α·t² con t = ${t} s, pero ${obj} se detiene antes, a los ${ts} s; después ya no gira. La ecuación no sabe que el freno no lo hace retroceder.`, CIN),
@@ -146,7 +145,7 @@
     ];
     if (modo === 'pi') errores.unshift(h('vueltas-sin-2pi', 2 * correcta, 'Tomaste π rad como una vuelta. Una vuelta son 2π rad.'));
     const solucion = [
-      ['Primero, cuándo se detiene: ', v('w0', 'ω0'), '/', v('al', 'α'), ` = ${modo === 'rad' ? `${w0}/${al}` : `${w0}π/${piC(al)}`} = ${ts} s. Es menos que `, v('t', `${t} s`), ': después ya no gira.'],
+      ['Primero, cuándo se detiene: ', v('w0', 'ω0'), '/', v('al', 'α'), ` = ${modo === 'rad' ? `${w0}/${al}` : `${P.pi(w0 * Math.PI)}/${P.pi(al * Math.PI)}`} = ${ts} s. Es menos que `, v('t', `${t} s`), ': después ya no gira.'],
       ...(modo === 'pi' ? [['En vueltas por segundo, ', v('w0', W(modo, w0)), ` = ${vps(pS)}.`]] : []),
       [`Lo girado es el área del triángulo bajo ω-t hasta los ${ts} s: `, v('th', 'θ'), ` = ${f(pS)} · ${ts}/2 = `, v('th', TH(modo, correcta)), '.'],
     ];
@@ -254,7 +253,7 @@
     const correcta = pm * (t1 + 2 * t2 + t3) / 2, T = t1 + t2 + t3;
     if (!corto(correcta, 1)) return null;
     const variables = { al: { nombre: 'aceleración angular del arranque', color: 'o' }, wm: { nombre: 'rapidez angular máxima', color: 'i' }, t: { nombre: 'tiempos de cada tramo', color: 'h' }, th: { nombre: 'ángulo girado', color: 'd' } };
-    const enunciado = [`${Obj} parte del reposo y acelera de manera uniforme con `, v('al', modo === 'rad' ? `${a1} rad/s²` : `${piC(a1)} rad/s²`), ' durante ', v('t', `${t1} s`),
+    const enunciado = [`${Obj} parte del reposo y acelera de manera uniforme con `, v('al', modo === 'rad' ? `${a1} rad/s²` : `${P.pi(a1 * Math.PI)} rad/s²`), ' durante ', v('t', `${t1} s`),
       '; luego gira con rapidez constante durante ', v('t', `${t2} s`), ' y, al final, frena de manera uniforme hasta detenerse en ', v('t', `${t3} s`), '.'];
     const pregunta = [modo === 'rad' ? `¿Qué ángulo gira ${obj} en total?` : `¿Cuántas vueltas da ${obj} en total?`];
     const errores = [];
@@ -266,7 +265,7 @@
       h('CI-tramo-olvidado', pm * (t1 / 2 + t2), 'Te olvidaste del frenado: también gira mientras frena, hasta detenerse.'),
     );
     const solucion = [
-      ['Rapidez máxima, al final del arranque: ', v('wm', 'ωmáx'), ' = ', v('al', 'α'), ' · t1 = ', modo === 'rad' ? `${a1} · ${t1} = ${wm} rad/s` : `${piC(a1)} · ${t1} = ${piC(wm)} rad/s = ${vps(pm)}`, '.'],
+      ['Rapidez máxima, al final del arranque: ', v('wm', 'ωmáx'), ' = ', v('al', 'α'), ' · t1 = ', modo === 'rad' ? `${a1} · ${t1} = ${wm} rad/s` : `${P.pi(a1 * Math.PI)} · ${t1} = ${P.pi(wm * Math.PI)} rad/s = ${vps(pm)}`, '.'],
       ['Lo girado es el área bajo ω-t: un trapecio con dos triángulos (arranque y frenado) y un rectángulo (el tramo constante).'],
       [v('th', 'θ'), ` = ${f(pm)} · ${t1}/2 + ${f(pm)} · ${t2} + ${f(pm)} · ${t3}/2 = `, v('th', TH(modo, correcta)), '.'],
     ];
