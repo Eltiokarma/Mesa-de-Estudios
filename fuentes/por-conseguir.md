@@ -186,9 +186,14 @@ Para diseñar plantillas y escribir problemas propios, no para copiar (ver "Uso 
 | [ ] | B | Küchemann (1981), «Reflections and rotations», en Hart (ed.), *Children's Understanding of Mathematics: 11–16* (proyecto CSMS), John Murray | Errores de simetría con datos de escolares, para pasar a documentado las predicciones de `plantillas/simetria/` |
 | [ ] | C | Manuales de academia (Lumbreras, cepres, separatas) que tengas a mano | Saber qué y cómo se pregunta en Perú. Solo para mapear temas y errores, nunca para copiar. También fija la jerarquía de Δ (disyunción exclusiva) en lógica |
 
+### Enseñanza en el aula (8 nov 2026)
+
+| [ ] | B | Mazur (1997), *Peer Instruction: A User's Manual*, Prentice Hall | Votar y discutir con el compañero antes de ver la respuesta; base de la idea de votación en vivo (`docs/vision-futura.md`, sección 5) |
+| [ ] | B | Crouch y Mazur (2001), «Peer Instruction: Ten years of experience and results», *American Journal of Physics* 69(9): 970–977 | Diez años de datos de aprendizaje en Harvard con ese método; es la evidencia que Sarvary y Gifford (2017) solo citan |
+
 ## 4. Ya leídos completos (no hace falta conseguirlos)
 
-Wörner y otros (2022); John, Molepo y Chirwa (2017); Singh y Schunn (2016); Handayani y Arifin (2021); Taşlıdere y Eryılmaz (2015); Horn y Mikelskis (2001); Beichner (1994); Thornton y Sokoloff (1998); Prescott y Mitchelmore (2005); Carrascosa, Gil Pérez y Valdés (2004); Castillo, Moscoso, Phan y Quiroz (2013); Mora y Herrera (2009); Bao, Hogg y Zollman (2002); Mahajan (2005). Los enlaces están en cada informe de `docs/investigacion/`.
+Wörner y otros (2022); John, Molepo y Chirwa (2017); Singh y Schunn (2016); Handayani y Arifin (2021); Taşlıdere y Eryılmaz (2015); Horn y Mikelskis (2001); Beichner (1994); Thornton y Sokoloff (1998); Prescott y Mitchelmore (2005); Carrascosa, Gil Pérez y Valdés (2004); Castillo, Moscoso, Phan y Quiroz (2013); Mora y Herrera (2009); Bao, Hogg y Zollman (2002); Mahajan (2005); Sarvary y Gifford (2017); Panasuk y Horton (2013). Los enlaces están en cada informe de `docs/investigacion/`.
 
 ## 5. Matemática avanzada (7 nov 2026, rutina de investigación de matemática)
 

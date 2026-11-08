@@ -33,6 +33,15 @@
 - Casi todo el contenido tiene un **contexto histórico**: se creó, se descubrió o se propuso en una fecha, por alguien.
 - Ese contexto puede sorprender al alumno y hacer que le guste más un curso. Ejemplo: al padre de la química moderna, Antoine Lavoisier, lo ejecutaron en la guillotina en 1794, durante la Revolución Francesa.
 - Hay muchas formas de sorprender, y en la era de la inteligencia artificial se pueden **condensar en la aplicación**: historia, videos, experimentos reales, escenas interactivas.
+- Lo que dice un estudio (Panasuk y Horton, 2013; encuesta a 367 profesores de matemática de secundaria de un estado de EE. UU., leído completo el 8 nov 2026): el 61 % de los que respondieron dice que ya usa la historia. Los que no la usan dan como razones principales que no viene en el examen, que no hay tiempo, que no saben cómo enseñarla y que no hay materiales. Lección para nosotros: la historia solo entra si es corta, está pegada al problema de examen y viene ya hecha dentro de la escena, sin trabajo extra para el profesor.
+- Ganchos que ya tenemos a la mano: la «falsa posición» egipcia es el método de falsa suposición de `razonamiento-numerico`; Descartes llamó «falsas» a las raíces negativas y Pascal veía absurdo restarle algo a 0, lo que viene bien en el radar (`coordenadas-polares`), donde r es negativo.
+
+## 5. Votación en vivo en clase
+
+- El profesor proyecta una predicción, todos responden desde su celular y el salón ve en el momento cómo se repartieron las respuestas. Luego discuten con el compañero antes de ver la correcta («peer instruction», Mazur 1997).
+- Encaja con las predicciones que ya existen, pero necesita servidor y buena señal, y hoy la app funciona sin internet y sin servidor. Va después del piloto.
+- Fuente leída: Sarvary y Gifford (2017), *J. Undergrad. Neurosci. Educ.* 15(2): E13–E16. Es un artículo de opinión: compara iClicker con Poll Everywhere en Cornell y solo cuenta con qué aparatos responden los alumnos (51 % laptop, 42 % celular); no mide aprendizaje. La evidencia de aprendizaje está en Mazur (1997) y en Crouch y Mazur (2001) (ver `fuentes/por-conseguir.md`).
+- Aviso para el piloto: en 2015 solo el 31 % de los profesores de EE. UU. permitía celulares en clase, por miedo a la distracción (según ese artículo). Hay que preguntar al colegio si permite celulares en el aula o si se usa el laboratorio de cómputo.
 
 ## Cómo encaja con lo que ya existe
 
