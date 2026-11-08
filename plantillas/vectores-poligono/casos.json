@@ -1,0 +1,176 @@
+{
+  "plantilla": "vectores-poligono",
+  "tolerancia": 0.000001,
+  "nota": "Módulo como número; texto como lo ve el alumno.",
+  "verificacion": "Verificado aparte (subagente, 8 nov 2026) sin ver el generador ni el núcleo, ubicando los vértices con trigonometría (R = L/(2 sen(π/n))) y sumando componentes; el módulo numérico se comparó con el cuadrado exacto de k√n. Los 14 casos coinciden.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "desde-vertice",
+        "n": 3,
+        "L": 12
+      },
+      "esperado": {
+        "respuesta": 20.784609690826528,
+        "texto": "12√3 cm"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "centro-menos-uno",
+        "n": 6,
+        "L": 3
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 cm"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "desde-vertice",
+        "n": 6,
+        "L": 9
+      },
+      "esperado": {
+        "respuesta": 54,
+        "texto": "54 u"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "centro-menos-uno",
+        "n": 3,
+        "L": 15
+      },
+      "esperado": {
+        "respuesta": 8.660254037844386,
+        "texto": "5√3 u"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "centro-menos-uno",
+        "n": 4,
+        "L": 4
+      },
+      "esperado": {
+        "respuesta": 2.8284271247461903,
+        "texto": "2√2 cm"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "desde-vertice",
+        "n": 4,
+        "L": 6
+      },
+      "esperado": {
+        "respuesta": 16.970562748477143,
+        "texto": "12√2 cm"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "lados-menos-uno",
+        "n": 3,
+        "L": 4
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 m"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "lados-menos-uno",
+        "n": 6,
+        "L": 12
+      },
+      "esperado": {
+        "respuesta": 12,
+        "texto": "12 m"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "lados-menos-uno",
+        "n": 8,
+        "L": 6
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 cm"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "lados-menos-uno",
+        "n": 4,
+        "L": 7
+      },
+      "esperado": {
+        "respuesta": 7,
+        "texto": "7 m"
+      }
+    },
+    {
+      "semilla": 34,
+      "entrada": {
+        "tipo": "lados-menos-uno",
+        "n": 5,
+        "L": 10
+      },
+      "esperado": {
+        "respuesta": 10,
+        "texto": "10 cm"
+      }
+    },
+    {
+      "semilla": 35,
+      "entrada": {
+        "tipo": "lados-menos-uno",
+        "n": 7,
+        "L": 8
+      },
+      "esperado": {
+        "respuesta": 8,
+        "texto": "8 m"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "centro-menos-uno",
+        "n": 3,
+        "L": 6
+      },
+      "esperado": {
+        "respuesta": 3.4641016151377544,
+        "texto": "2√3 m"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "centro-menos-uno",
+        "n": 4,
+        "L": 2
+      },
+      "esperado": {
+        "respuesta": 1.4142135623730951,
+        "texto": "√2 m"
+      }
+    }
+  ]
+}

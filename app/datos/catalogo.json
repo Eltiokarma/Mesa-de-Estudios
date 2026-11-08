@@ -50,7 +50,11 @@
       "vectores",
       "vectores-ley-cosenos",
       "vectores-componentes",
-      "vectores-productos"
+      "vectores-productos",
+      "vectores-unitario",
+      "vectores-combinacion",
+      "vectores-division",
+      "vectores-poligono"
      ]
     },
     {
@@ -6201,6 +6205,21 @@
     "/plantillas/vectores/papel.json"
    ]
   },
+  "vectores-combinacion": {
+   "id": "vectores-combinacion",
+   "titulo": "Combinación lineal y condiciones",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "#/practica/vectores-combinacion",
+   "papel": null,
+   "archivos": [
+    "/plantillas/vectores-combinacion/generador.js"
+   ]
+  },
   "vectores-componentes": {
    "id": "vectores-componentes",
    "titulo": "Componentes con triángulos notables",
@@ -6214,6 +6233,21 @@
    "papel": null,
    "archivos": [
     "/plantillas/vectores-componentes/generador.js"
+   ]
+  },
+  "vectores-division": {
+   "id": "vectores-division",
+   "titulo": "Un vector en función de otros",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "#/practica/vectores-division",
+   "papel": null,
+   "archivos": [
+    "/plantillas/vectores-division/generador.js"
    ]
   },
   "vectores-ley-cosenos": {
@@ -6231,6 +6265,21 @@
     "/plantillas/vectores-ley-cosenos/generador.js"
    ]
   },
+  "vectores-poligono": {
+   "id": "vectores-poligono",
+   "titulo": "Vectores en un polígono regular",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "#/practica/vectores-poligono",
+   "papel": null,
+   "archivos": [
+    "/plantillas/vectores-poligono/generador.js"
+   ]
+  },
   "vectores-productos": {
    "id": "vectores-productos",
    "titulo": "Producto escalar y producto vectorial",
@@ -6244,6 +6293,21 @@
    "papel": null,
    "archivos": [
     "/plantillas/vectores-productos/generador.js"
+   ]
+  },
+  "vectores-unitario": {
+   "id": "vectores-unitario",
+   "titulo": "El vector unitario",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "#/practica/vectores-unitario",
+   "papel": null,
+   "archivos": [
+    "/plantillas/vectores-unitario/generador.js"
    ]
   }
  }
