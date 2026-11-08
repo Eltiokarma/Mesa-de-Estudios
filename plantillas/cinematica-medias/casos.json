@@ -1,0 +1,262 @@
+{
+  "plantilla": "cinematica-medias",
+  "tolerancia": 1e-06,
+  "nota": "Unidades: km/h en la rapidez media de viajes; m, s y m/s en la tabla, la gráfica v-t y las ecuaciones; km y km/h en la Tierra (R = 6400 km, T = 24 h, π = 3; cos 12° = 0,98 y cos 16° = 24/25 por convención). x = x0 + b·t + c·t² con coef = [x0, b, c]; y = y0 + vy·t − 5t². En idavuelta, t y x son las columnas de la tabla.",
+  "verificacion": "PENDIENTE",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "ecuacion",
+        "sub": "velocidad",
+        "coef": [
+          -19,
+          3,
+          -1
+        ],
+        "t": 5
+      },
+      "esperado": {
+        "respuesta": -7.0,
+        "exacta": "−7 m/s"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "idavuelta",
+        "sub": "velocidad",
+        "t": [
+          0,
+          30,
+          30,
+          50
+        ],
+        "x": [
+          0,
+          240,
+          240,
+          90
+        ]
+      },
+      "esperado": {
+        "respuesta": 1.8,
+        "exacta": "1,8 m/s"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "idavuelta",
+        "sub": "rapidez",
+        "t": [
+          0,
+          10,
+          15,
+          40
+        ],
+        "x": [
+          50,
+          290,
+          290,
+          230
+        ]
+      },
+      "esperado": {
+        "respuesta": 7.5,
+        "exacta": "7,5 m/s"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "media",
+        "sub": "distancia",
+        "v1": 12,
+        "v2": 24,
+        "D": 32
+      },
+      "esperado": {
+        "respuesta": 16.0,
+        "exacta": "16 km/h"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "xy",
+        "sub": "altura",
+        "x0": 5,
+        "vx": 3,
+        "y0": 20,
+        "vy": 10
+      },
+      "esperado": {
+        "respuesta": 25.0,
+        "exacta": "25 m"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "media",
+        "sub": "duraciones",
+        "v1": 36,
+        "v2": 30,
+        "t1": 15,
+        "t2": 45,
+        "tp": 30
+      },
+      "esperado": {
+        "respuesta": 21.0,
+        "exacta": "21 km/h"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "ecuacion",
+        "sub": "origen",
+        "coef": [
+          -48,
+          10,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 3.0,
+        "exacta": "3 s"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "vt",
+        "sub": "tope",
+        "d": 384,
+        "a": 3,
+        "b": 3,
+        "vt": 12
+      },
+      "esperado": {
+        "respuesta": 36.0,
+        "exacta": "36 s"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "media",
+        "sub": "mixta",
+        "v1": 36,
+        "v2": 72,
+        "v3": 18
+      },
+      "esperado": {
+        "respuesta": 40.0,
+        "exacta": "40 km/h"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "ecuacion",
+        "sub": "parada",
+        "coef": [
+          12,
+          5,
+          -0.5
+        ]
+      },
+      "esperado": {
+        "respuesta": 5.0,
+        "exacta": "5 s"
+      }
+    },
+    {
+      "semilla": 34,
+      "entrada": {
+        "tipo": "vt",
+        "sub": "tmin",
+        "d": 180,
+        "a": 2.5,
+        "b": 2
+      },
+      "esperado": {
+        "respuesta": 18.0,
+        "exacta": "18 s"
+      }
+    },
+    {
+      "semilla": 50,
+      "entrada": {
+        "tipo": "xy",
+        "sub": "distancia",
+        "x0": 3,
+        "vx": 12,
+        "y0": 4,
+        "vy": 21,
+        "t": 1
+      },
+      "esperado": {
+        "respuesta": 25.0,
+        "exacta": "25 m"
+      }
+    },
+    {
+      "semilla": 52,
+      "entrada": {
+        "tipo": "ecuacion",
+        "sub": "desplazamiento",
+        "coef": [
+          2,
+          6,
+          2
+        ],
+        "t1": 3,
+        "t2": 4
+      },
+      "esperado": {
+        "respuesta": 20.0,
+        "exacta": "20 m"
+      }
+    },
+    {
+      "semilla": 55,
+      "entrada": {
+        "tipo": "vt",
+        "sub": "vmax",
+        "d": 1350,
+        "t": 100
+      },
+      "esperado": {
+        "respuesta": 27.0,
+        "exacta": "27 m/s"
+      }
+    },
+    {
+      "semilla": 60,
+      "entrada": {
+        "tipo": "latitud",
+        "sub": "rapidez",
+        "lat": 0
+      },
+      "esperado": {
+        "respuesta": 1600.0,
+        "exacta": "1 600 km/h"
+      }
+    },
+    {
+      "semilla": 173,
+      "entrada": {
+        "tipo": "latitud",
+        "sub": "radio",
+        "lat": 12
+      },
+      "esperado": {
+        "respuesta": 6272.0,
+        "exacta": "6 272 km"
+      }
+    }
+  ]
+}

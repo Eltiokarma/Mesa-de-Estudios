@@ -1,0 +1,109 @@
+{
+  "titulo": "Condensadores en fila y en paralelo: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema. Ojo: los condensadores van al revés que las resistencias. En paralelo, las capacidades se suman y todos tienen el mismo voltaje. En serie, 1/Ceq = 1/C1 + 1/C2 + … y todos tienen la misma carga. La energía guardada es U = ½·C·V². Un condensador plano tiene C = ε0·A/d, con ε0 = 8,85 × 10⁻¹² C²/(N·m²), A en m² (1 m² = 10 000 cm²) y d en m.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos condensadores de 4 µF y 12 µF se conectan en serie. ¿Cuál es la capacidad equivalente?",
+      "respuesta": "3 µF",
+      "pasos": [
+        "En serie se usan inversos: 1/Ceq = 1/4 + 1/12 = 3/12 + 1/12 = 4/12.",
+        "Ceq = 12/4 = 3 µF. Sale menor que el más chico de los dos, como debe ser en serie."
+      ],
+      "verificar": [{ "tipo": "serie", "args": [[4, 12]], "espera": 3 }]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Tres condensadores de 2 µF, 3 µF y 5 µF se conectan en paralelo. ¿Cuál es la capacidad equivalente?",
+      "respuesta": "10 µF",
+      "pasos": [
+        "En paralelo las capacidades se suman (es al revés que con resistencias).",
+        "Ceq = 2 + 3 + 5 = 10 µF."
+      ],
+      "verificar": [{ "tipo": "paralelo", "args": [[2, 3, 5]], "espera": 10 }]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "C1 = 6 µF y C2 = 3 µF están en serie, y ese par está en paralelo con C3 = 4 µF. ¿Cuál es la capacidad equivalente de la asociación?",
+      "respuesta": "6 µF",
+      "pasos": [
+        "El par en serie: C12 = 6·3/(6 + 3) = 18/9 = 2 µF.",
+        "En paralelo con C3 se suman: Ceq = 2 + 4 = 6 µF."
+      ],
+      "verificar": [{ "tipo": "red", "args": ["T1", [6, 3, 4]], "espera": 6 }]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Dos condensadores de 2 µF y 6 µF se conectan en serie a una batería de 24 V. ¿Qué voltaje tiene cada uno?",
+      "respuesta": "18 V el de 2 µF y 6 V el de 6 µF",
+      "pasos": [
+        "Ceq = 2·6/(2 + 6) = 1,5 µF.",
+        "En serie la carga es la misma en los dos: Q = 1,5 · 24 = 36 µC.",
+        "V = Q/C: 36/2 = 18 V y 36/6 = 6 V. Suman 24 V. El de menor capacidad se lleva más voltaje: no se reparte en partes iguales."
+      ],
+      "verificar": [
+        { "tipo": "voltaje-serie", "args": [[2, 6], 24, 0], "espera": 18 },
+        { "tipo": "voltaje-serie", "args": [[2, 6], 24, 1], "espera": 6 }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Un condensador de 50 µF se carga a 200 V. ¿Cuánta energía guarda?",
+      "respuesta": "1 J",
+      "pasos": [
+        "Se pasa a faradios: 50 µF = 50 × 10⁻⁶ F.",
+        "U = ½·C·V² = ½ · 50 × 10⁻⁶ · 200² = ½ · 50 × 10⁻⁶ · 40 000 = 1 J. Sin el ½ saldría 2 J, y con V sin elevar al cuadrado, 0,005 J."
+      ],
+      "verificar": [{ "tipo": "energia-uJ", "args": [50, 200], "espera": 1000000 }]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un condensador de placas paralelas tiene placas de 250 cm² separadas 0,5 mm por aire. ¿Cuál es su capacidad, en pF?",
+      "respuesta": "442,5 pF",
+      "pasos": [
+        "Se pasa al SI: 250 cm² = 250/10 000 m² = 0,025 m² (no se divide entre 100) y 0,5 mm = 0,0005 m.",
+        "C = ε0·A/d = 8,85 × 10⁻¹² · 0,025/0,0005 = 8,85 × 10⁻¹² · 50 = 442,5 × 10⁻¹² F = 442,5 pF."
+      ],
+      "verificar": [{ "tipo": "plano-pF", "args": [250, 0.5], "espera": 442.5 }]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El flash de una cámara emite 1,2 J de luz en cada destello. Solo el 40 % de la energía guardada en su condensador se vuelve luz. Si el condensador se carga a 200 V, ¿cuál es su capacidad?",
+      "respuesta": "150 µF",
+      "pasos": [
+        "La luz es solo una parte de lo guardado, así que se divide entre la eficiencia: U = 1,2/0,4 = 3 J (no 1,2 · 0,4).",
+        "De U = ½·C·V²: C = 2U/V² = 6/40 000 = 1,5 × 10⁻⁴ F = 150 µF."
+      ],
+      "verificar": [{ "tipo": "capacidad-flash-uF", "args": [1.2, 0.4, 200], "espera": 150 }]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Cuatro condensadores iguales, conectados todos en paralelo, dan 32 µF. ¿Qué capacidad dan si tres de ellos van en paralelo y ese grupo va en serie con el cuarto?",
+      "respuesta": "6 µF",
+      "pasos": [
+        "En paralelo, cuatro iguales dan 4C: C = 32/4 = 8 µF.",
+        "Los tres en paralelo: 3 · 8 = 24 µF. En serie con el cuarto: 24·8/(24 + 8) = 192/32 = 6 µF."
+      ],
+      "verificar": [{ "tipo": "red", "args": ["A4a", 8], "espera": 6 }]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Cinco condensadores iguales se conectan primero en serie a una batería y luego en paralelo a la misma batería. ¿Cuántas veces más energía guardan en paralelo que en serie?",
+      "respuesta": "25 veces",
+      "pasos": [
+        "En serie, cinco iguales dan C/5; en paralelo, 5C.",
+        "Con el mismo voltaje, la energía ½·C·V² es proporcional a la capacidad: 5C ÷ (C/5) = 5² = 25. No es 5: la razón va con n²."
+      ],
+      "verificar": [{ "tipo": "razon-energias", "args": [5], "espera": 25 }]
+    }
+  ]
+}

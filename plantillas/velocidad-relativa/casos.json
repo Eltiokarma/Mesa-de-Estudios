@@ -1,0 +1,234 @@
+{
+  "plantilla": "velocidad-relativa",
+  "tolerancia": 1e-06,
+  "nota": "Velocidades con signo donde el enunciado da sentidos (vB < 0: va al sur u oeste; v2 < 0 en cruce: va hacia el otro). Bote: u respecto al agua, c corriente, W ancho, d > 0 río abajo; la respuesta de «angulo» y «linea» es la clave de la proa (grados desde la perpendicular y lado). Botes: M bote con tripulante, m cada saco, u rapidez del saco respecto al bote ya en movimiento.",
+  "verificacion": "PENDIENTE",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "bote",
+        "sub": "linea",
+        "u": 4,
+        "c": 4,
+        "W": 96,
+        "d": 128
+      },
+      "esperado": {
+        "respuesta": "proa:16:abajo",
+        "exacta": "16° río abajo de la perpendicular"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "marco",
+        "sub": "combis",
+        "vA": 108,
+        "vB": 18
+      },
+      "esperado": {
+        "respuesta": 25.0,
+        "exacta": "25 m/s"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "cruce",
+        "sub": "encuentro",
+        "v1": 24,
+        "v2": -6,
+        "D": 360
+      },
+      "esperado": {
+        "respuesta": 12.0,
+        "exacta": "12 s"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "botes",
+        "sub": "recibe",
+        "M": 140,
+        "m": 20,
+        "u": 2,
+        "M2": 80
+      },
+      "esperado": {
+        "respuesta": 0.35,
+        "exacta": "0,35 m/s"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "bote",
+        "sub": "tmin",
+        "u": 8,
+        "c": 6,
+        "W": 36
+      },
+      "esperado": {
+        "respuesta": 4.5,
+        "exacta": "4,5 s"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "bote",
+        "sub": "deriva",
+        "u": 4,
+        "c": 3,
+        "W": 96
+      },
+      "esperado": {
+        "respuesta": 72.0,
+        "exacta": "72 m"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "idavuelta",
+        "sub": "tren",
+        "u": 2.5,
+        "V": 10,
+        "L": 40
+      },
+      "esperado": {
+        "respuesta": 32.0,
+        "exacta": "32 s"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "idavuelta",
+        "sub": "nadador",
+        "V": 1,
+        "L": 12,
+        "T": 16
+      },
+      "esperado": {
+        "respuesta": 2.0,
+        "exacta": "2 m/s"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "bote",
+        "sub": "angulo",
+        "u": 8,
+        "c": 4,
+        "W": 100
+      },
+      "esperado": {
+        "respuesta": "proa:30:arriba",
+        "exacta": "30° río arriba de la perpendicular"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "botes",
+        "sub": "objeto",
+        "M": 240,
+        "m": 10,
+        "u": 2
+      },
+      "esperado": {
+        "respuesta": 1.92,
+        "exacta": "1,92 m/s"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "botes",
+        "sub": "lanza",
+        "M": 90,
+        "m": 30,
+        "u": 6
+      },
+      "esperado": {
+        "respuesta": 1.5,
+        "exacta": "1,5 m/s"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "bote",
+        "sub": "recto",
+        "u": 10,
+        "c": 6,
+        "W": 80
+      },
+      "esperado": {
+        "respuesta": 10.0,
+        "exacta": "10 s"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "marco",
+        "sub": "placas",
+        "vA": 2,
+        "vB": 3,
+        "N": 2000
+      },
+      "esperado": {
+        "respuesta": 20.0,
+        "exacta": "20 m"
+      }
+    },
+    {
+      "semilla": 38,
+      "entrada": {
+        "tipo": "botes",
+        "sub": "dos",
+        "M": 90,
+        "m": 30,
+        "u": 2
+      },
+      "esperado": {
+        "respuesta": 0.1,
+        "exacta": "0,1 m/s"
+      }
+    },
+    {
+      "semilla": 43,
+      "entrada": {
+        "tipo": "idavuelta",
+        "sub": "columna",
+        "u": 5,
+        "V": 3,
+        "L": 100
+      },
+      "esperado": {
+        "respuesta": 62.5,
+        "exacta": "62,5 s"
+      }
+    },
+    {
+      "semilla": 67,
+      "entrada": {
+        "tipo": "cruce",
+        "sub": "trenes",
+        "v1": 12,
+        "v2": 11,
+        "L1": 80,
+        "L2": 150
+      },
+      "esperado": {
+        "respuesta": 230.0,
+        "exacta": "230 s"
+      }
+    }
+  ]
+}

@@ -121,6 +121,25 @@ test('salen todos los tipos y subtipos; las alternativas numéricas llevan la mi
   for (const [n, c] of Object.entries({ comprime, estira, izq, der, conT })) assert.ok(c > 3, `pocos casos de ${n}`);
 });
 
+test('en media/vm, media/omega, instante/v y flotante/periodo todas las alternativas van en el mismo formato (con π o sin π)', () => {
+  const conPi = { 'media/vm': false, 'media/omega': false, 'instante/v': true, 'flotante/periodo': true };
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), k = p._datos.tipo + '/' + p._datos.sub;
+    if (!(k in conPi)) continue;
+    for (const a of p.alternativas) {
+      if (a.texto.startsWith('0 ')) continue;
+      assert.equal(a.texto.includes('π'), conPi[k], `semilla ${s} (${k}): ${p.alternativas.map(x => x.texto)}`);
+    }
+    if (k === 'flotante/periodo') assert.ok(!p.alternativas.some(a => a.error && a.error.id === 'MAS-gravedad-como-k'));
+  }
+});
+
+test('hay variedad: en 600 semillas casi no se repiten los datos', () => {
+  const vistos = new Map(); let repetidos = 0;
+  for (let s = 0; s < 600; s++) { const k = JSON.stringify(gen.generar(s)._datos); if (vistos.has(k)) repetidos++; vistos.set(k, s); }
+  assert.ok(repetidos < 30, `${repetidos} repetidos`);
+});
+
 test('en «escribir/extremo» comprimido, la fase es 3π/2 y φ = 0 siempre sale como trampa', () => {
   for (let s = 0; s < 800; s++) {
     const p = gen.generar(s), d = p._datos;

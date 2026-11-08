@@ -43,6 +43,7 @@
   const f = (x, d = 2) => P.formatear(x, d);
   const par = x => (x < 0 ? `(${f(x)})` : f(x));
   const v = P.v;
+  const decs = x => { for (let k = 0; k <= 6; k++) if (limpio(x, k)) return k; return 99; };
   const limpio = (x, dec = 2) => Number.isFinite(x) && Math.abs(x * 10 ** dec - Math.round(x * 10 ** dec)) < 1e-6 && Math.abs(x) < 1e7;
   const g = 10;
   // Potencia de diez con superíndices: 1,8 × 10⁻⁴.
@@ -77,7 +78,18 @@
     } else {
       const dec = o.decimales || 2;
       const txt = x => f(x, dec) + (o.unidad ? ' ' + o.unidad : '');
-      const errores = o.errores.filter(e => Number.isFinite(e.valor) && Math.abs(e.valor) < 1e7 && (o.negativos || (e.valor > 0 && f(e.valor, dec) !== '0')));
+      // Las incorrectas no pueden delatarse: ni con más decimales (hasta 1 si la correcta tiene 0 o 1; nunca más de 2) ni fuera de escala
+      // (entre 1/20 y 20 veces la correcta, y dentro del rango físico del problema si lo hay).
+      const maxDec = Math.min(decs(o.correcta) <= 1 ? 1 : 2, dec);
+      const errores = o.errores.filter(e => {
+        if (!Number.isFinite(e.valor) || (!o.negativos && e.valor <= 0) || decs(e.valor) > maxDec) return false;
+        const r = Math.abs(e.valor) / Math.abs(o.correcta);
+        if (!(r >= 1 / 20 && r <= 20)) return false;
+        return !o.rango || (e.valor >= o.rango[0] && e.valor <= o.rango[1]);
+      });
+      // Primero las que tienen a lo más los decimales de la correcta: así casi nunca se nota cuál es.
+      const dc = decs(o.correcta);
+      errores.sort((a, b) => (decs(a.valor) > dc) - (decs(b.valor) > dc));
       alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: txt, negativos: !!o.negativos });
       respuesta = { valor: o.correcta, unidad: o.unidad };
     }
@@ -239,7 +251,7 @@
         : ['El horno de una panadería, con un termómetro en °F, pasa de ', v('T', `${f(T1)} °F`), ' a ', v('T', `${f(T2)} °F`), '.'];
       const pregunta = ['¿Cuánto ', v('x', 'subió su temperatura en grados Celsius'), '?'];
       const errores = [
-        h('U8-restar-32', (dF - 32) / 1.8, 'Le restaste 32 a la variación (trampa 18). El 32 corre el cero de la escala y se cancela al restar dos lecturas: una variación solo se divide entre 1,8.', TRV),
+        h('U8-restar-32', (dF - 32) / 1.8, 'Le restaste 32 a la variación. El 32 corre el cero de la escala y se cancela al restar dos lecturas: una variación solo se divide entre 1,8.', TRV),
         h('CE-factor-invertido', 1.8 * dF, 'Multiplicaste por 1,8. El grado Fahrenheit es más chico: la variación en °C es menor, se divide entre 1,8.'),
         h('CE-misma-variacion', dF, 'Usaste la misma variación. El grado Celsius es 1,8 veces más grande que el Fahrenheit.'),
         h('CE-final-por-variacion', aC(T2), 'Esa es la temperatura final en °C. Se pedía cuánto subió.'),
@@ -269,7 +281,7 @@
       const enunciado = ['En Juliaca, un día de invierno, el termómetro marca ', v('T', `${f(T1)} °C`), ' al amanecer y ', v('T', `${f(T2)} °C`), ' a mediodía.'];
       const pregunta = ['¿Cuánto ', v('x', 'subió la temperatura en grados Fahrenheit'), '?'];
       const errores = [
-        h('U8-sumar-32', dF + 32, 'Le sumaste 32 a la variación (trampa 18). El 32 corre el cero y se cancela al restar dos lecturas: una variación solo se multiplica por 1,8.', TRV),
+        h('U8-sumar-32', dF + 32, 'Le sumaste 32 a la variación. El 32 corre el cero y se cancela al restar dos lecturas: una variación solo se multiplica por 1,8.', TRV),
         h('CE-factor-invertido', dC / 1.8, 'Dividiste entre 1,8. El grado Fahrenheit es más chico: la misma variación da un número mayor en °F.'),
         h('CE-misma-variacion', dC, 'Usaste la misma variación. Un grado Celsius vale 1,8 Fahrenheit.'),
         h('CE-final-por-variacion', aF(T2), 'Esa es la temperatura de mediodía en °F. Se pedía cuánto subió.'),
@@ -470,7 +482,7 @@
       const pregunta = ['¿Qué ', v('x', 'volumen de sudor'), ` debe evaporarse para que su temperatura baje ${f(dT)} °C?`];
       const errores = [
         pa('Q7-sin-latente', Q / (ca * 63) * 1000, 'Calentaste el sudor de 37 °C a 100 °C con el calor específico, sin evaporarlo. Lo que enfría es el cambio de fase: el sudor se evapora a la temperatura de la piel y se lleva el calor latente, 2450 kJ por kilogramo.', CAL),
-        h('U8-kelvin', M * cc * (dT + 273) / Lv * 1000, `Pasaste la variación a kelvin sumando 273 (trampa 18). Una variación de ${f(dT)} °C es una variación de ${f(dT)} K.`, TRV),
+        h('U8-kelvin', M * cc * (dT + 273) / Lv * 1000, `Pasaste la variación a kelvin sumando 273. Una variación de ${f(dT)} °C es una variación de ${f(dT)} K.`, TRV),
         h('U4-kg-por-g', mg / 1000, `Esa cuenta da kilogramos (${f(mg / 1000, 3)} kg). En gramos, o en mL, hay que multiplicar por 1000.`, TRV),
         h('CE-calor-del-agua', M * ca * dT / Lv * 1000, 'Usaste el calor específico del agua (4200) para el cuerpo. El dato del cuerpo es 3500 J/(kg·°C).'),
         pa('Q7-fusion', Q / Lf * 1000, 'Usaste el calor latente de fusión del hielo. El sudor no se derrite: se evapora, con el calor latente de vaporización.', CAL),

@@ -102,15 +102,15 @@
 
   function fvHorizontal(rng, semilla) {
     const conMu = rng.moneda();
-    const vk = conMu ? rng.elegir([9, 18, 27, 36]) : rng.elegir([18, 36, 54, 72, 90]), vs = vk / 3.6; // un tractor no va a 72 km/h
+    const vk = conMu ? rng.elegir([9, 10.8, 14.4, 18, 21.6, 27, 36]) : rng.elegir([18, 27, 36, 45, 54, 63, 72, 81, 90]), vs = vk / 3.6; // un tractor no va a 72 km/h
     let F, m = null, mu = null, enunciado;
     if (conMu) {
-      m = rng.elegir([400, 500, 600, 800, 1000, 1200]); mu = rng.elegir([0.05, 0.1, 0.15, 0.2, 0.25]);
+      m = rng.elegir([300, 400, 500, 600, 800, 1000, 1200, 1500]); mu = rng.elegir([0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4]);
       F = mu * m * G;
       enunciado = [`Un tractor arrastra una carreta de ${f(m)} kg por un camino horizontal, con una cuerda horizontal, a una `, v('v', `rapidez constante de ${vk} km/h`),
         `. El coeficiente de rozamiento entre la carreta y el camino es ${f(mu)} (g = 10 m/s²).`];
     } else {
-      F = rng.elegir([400, 500, 600, 800, 1000, 1200, 1500, 2000]);
+      F = rng.elegir([300, 400, 500, 600, 750, 800, 900, 1000, 1200, 1500, 1800, 2000, 2500]);
       enunciado = ['Una grúa remolca un auto averiado por una pista horizontal, a una ', v('v', `rapidez constante de ${vk} km/h`),
         '. El cable va horizontal y jala al auto con una ', v('F', `fuerza de ${f(F)} N`), '.'];
     }
@@ -124,7 +124,7 @@
     ];
     if (conMu) {
       errores.unshift(h('EP-peso-como-fuerza', m * G * vs / 1000, `Usaste el peso de la carreta (${f(m * G)} N) como la fuerza de la cuerda. En un camino horizontal a rapidez constante, la cuerda solo tiene que igualar al rozamiento: μ·m·g = ${f(F)} N.`));
-      errores.splice(2, 0, pa('W15-energia', 0.5 * m * vs * vs / 1000, `Calculaste la energía cinética, ½·m·v². La potencia no es una energía: es el trabajo que se hace en cada segundo, P = F·v.`));
+      errores.splice(2, 0, h('EP-sin-g', mu * m * vs / 1000, `Tomaste μ·m = ${f(mu * m)} como el rozamiento, sin multiplicar por g. El rozamiento es μ·m·g = ${f(F)} N.`));
     }
     const solucion = [
       ['Rapidez en m/s: ', v('v', `v = ${vk}/3,6 = ${f(vs)} m/s`), '.'],
@@ -170,8 +170,8 @@
   }
 
   function fvVelocidad(rng, semilla) {
-    const r = rampa(rng, [500, 800, 1000, 1200, 1500, 2000]);
-    const correcta = rng.elegir([1.5, 2, 2.5, 3, 4, 5, 6]);
+    const r = rampa(rng, [400, 500, 600, 750, 800, 1000, 1200, 1500, 1800, 2000, 2500]);
+    const correcta = rng.elegir([1.2, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 8]);
     const Fm = r.Fp + r.Fr, Pw = Fm * correcta;
     if (!limpio(Pw / 1000, 1)) return null;
     const enunciado = [`Un tractor sube un remolque de ${f(r.m)} kg por un camino inclinado ${r.ang}°, jalándolo con un cable paralelo al camino. El coeficiente de rozamiento entre el remolque y el camino es ${f(r.mu)}. El tractor entrega al remolque una `,
@@ -193,13 +193,15 @@
   }
 
   function fvEficiencia(rng, semilla) {
-    const Pc = rng.elegir([30, 40, 50, 60, 75, 80, 100]), eta = rng.elegir([0.6, 0.75, 0.8, 0.9]);
-    const vk = rng.elegir([36, 54, 72, 90, 108]), vs = vk / 3.6;
+    const Pc = rng.elegir([20, 24, 30, 36, 40, 45, 48, 50, 60, 72, 75, 80, 90, 100, 120]), eta = rng.elegir([0.5, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9]);
+    const vk = rng.elegir([18, 36, 54, 72, 90, 108]), vs = vk / 3.6;
     const correcta = eta * Pc * 1000 / vs;
     if (!limpio(correcta, 0)) return null;
-    const enunciado = ['El motor de un auto ', v('F', `consume ${f(Pc)} kW`), ` y su rendimiento es de ${pct(eta)}. El auto parte del reposo y acelera por una pista horizontal. En el instante en que su `,
+    const [veh, Veh] = rng.elegir([['un auto', 'El auto'], ['una combi', 'La combi'], ['un camión', 'El camión'], ['una mototaxi', 'La mototaxi']]);
+    if (veh === 'una mototaxi' && Pc > 30) return null;
+    const enunciado = [`El motor de ${veh} `, v('F', `consume ${f(Pc)} kW`), ` y su rendimiento es de ${pct(eta)}. ${Veh} parte del reposo y acelera por una pista horizontal. En el instante en que su `,
       v('v', `rapidez es ${vk} km/h`), ', el motor trabaja con esa potencia.'];
-    const pregunta = ['¿Qué ', v('x', 'fuerza'), ' impulsa al auto en ese instante?'];
+    const pregunta = ['¿Qué ', v('x', 'fuerza'), ` impulsa ${veh.replace(/^un /, 'al ').replace(/^una /, 'a la ')} en ese instante?`];
     const errores = [
       h('EP-rapidez-media', 2 * correcta, `Usaste la rapidez media del arranque (${f(vs / 2)} m/s, la mitad). En P = F·v va la rapidez del instante: la potencia de ese momento con la rapidez de ese momento, ${f(vs)} m/s.`, TRA),
       h('EF-sin-rendimiento', Pc * 1000 / vs, `Usaste toda la potencia que consume el motor. Solo el ${pct(eta)} se convierte en trabajo útil: P útil = ${f(eta)} · ${f(Pc)} kW = ${f(eta * Pc)} kW.`),
@@ -218,8 +220,8 @@
   const VPE = { m: { nombre: 'masa', color: 'o' }, hh: { nombre: 'altura que gana', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, x: { nombre: 'potencia', color: 'd' } };
 
   function grua(rng, semilla) {
-    const m = rng.elegir([150, 200, 300, 400, 500, 600, 800, 1000, 1200]);
-    const H = rng.elegir([6, 8, 10, 12, 15, 18, 20, 24, 30]);
+    const m = rng.elegir([120, 150, 200, 250, 300, 400, 450, 500, 600, 750, 800, 900, 1000, 1200, 1500]);
+    const H = rng.elegir([4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 25, 30, 36, 40]);
     const enMin = rng.entero(0, 2) === 0;
     const tmin = enMin ? rng.elegir([0.5, 1, 1.5, 2]) : null;
     const ts = enMin ? tmin * 60 : rng.elegir([4, 5, 6, 8, 10, 12, 15, 20, 30]);
@@ -288,8 +290,8 @@
 
   function bomba(rng, semilla, sub) {
     const consumida = sub === 'consumida';
-    const Q = consumida ? rng.elegir([300, 600, 900, 1200, 1500, 1800]) : rng.elegir([60, 120, 180, 240, 300, 360, 600, 900]);
-    const H = rng.elegir([5, 6, 8, 10, 12, 15, 20, 25, 30]);
+    const Q = consumida ? rng.elegir([240, 300, 360, 480, 600, 720, 900, 1200, 1500, 1800, 2400]) : rng.elegir([60, 120, 180, 240, 300, 360, 420, 480, 600, 720, 900]);
+    const H = rng.elegir([4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 25, 30, 40]);
     const mt = Q / 60, Pu = mt * G * H;
     const surtidor = !consumida && rng.moneda();
     let enunciado, pregunta, errores, correcta, unidad, solucion, datos;
@@ -373,11 +375,12 @@
 
   // ---------------- rebotes ----------------
   function rebotes(rng, semilla, sub) {
-    const H = rng.elegir([2, 4, 5, 8, 10, 12, 16, 20, 25, 32, 40, 50, 64, 80, 100, 125]);
-    const n = rng.elegir([2, 3]), p = sub === 'rapidez' ? rng.elegir([0.1, 0.2, 0.5]) : rng.elegir([0.1, 0.2, 0.25, 0.4, 0.5]);
+    const H = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12, 15, 16, 18, 20, 24, 25, 30, 32, 40, 45, 50, 60, 64, 75, 80, 100, 125, 128, 160, 200, 250]);
+    const n = rng.elegir([2, 3]), p = sub === 'rapidez' ? rng.elegir([0.1, 0.2, 0.3, 0.4, 0.5]) : rng.elegir([0.1, 0.2, 0.25, 0.3, 0.36, 0.4, 0.5, 0.6, 0.75]);
     const q = 1 - p, exp = sub === 'choque' ? n : 2 * n;
     const correcta = H * q ** exp;
-    if (!limpio(correcta)) return null;
+    const exacto = limpio(correcta);                   // si no sale con dos decimales, se pide aproximada
+    if (!exacto && correcta < 0.5) return null;
     const ord = n === 2 ? 'segundo' : 'tercer';
     const VAR = { hh: { nombre: 'altura inicial', color: 'o' }, p: { nombre: 'pérdida', color: 'h' }, x: { nombre: 'altura final', color: 'd' } };
     const regla = {
@@ -386,7 +389,7 @@
       rapidez: ['En cada choque con el piso sale con una rapidez un ', v('p', `${pct(p)} menor`), ' que la rapidez con que llegó; en el aire no pierde nada.'],
     }[sub];
     const enunciado = ['Se suelta una pelota desde ', v('hh', `${f(H)} m de altura`), '. ', ...regla];
-    const pregunta = ['¿Hasta qué ', v('x', 'altura'), ` sube después del ${ord} rebote?`];
+    const pregunta = ['¿Hasta qué ', v('x', 'altura'), ` sube después del ${ord} rebote${exacto ? '' : ', aproximadamente'}?`];
     const errores = sub === 'choque' ? [
       h('EP-resta-lineal', H * (1 - n * p), `Restaste ${n} veces el ${pct(p)} de la altura inicial. Cada pérdida es un porcentaje de lo que quedaba, no de lo inicial: se multiplica ${n} veces por ${f(q)}.`),
       h('EP-una-vez', H * q, `Aplicaste la pérdida una sola vez. Hasta el ${ord} rebote hay ${n} choques, y en cada uno queda el ${pct(q)}.`),
@@ -398,20 +401,20 @@
       h('EP-resta-lineal', H * (1 - 2 * n * p), `Restaste ${2 * n} veces el ${pct(p)} de la altura inicial. Cada pérdida es un porcentaje de lo que quedaba: se multiplica ${2 * n} veces por ${f(q)}.`),
       h('EP-pierde-por-queda', H * p ** (2 * n), `Multiplicaste por lo que se pierde. En cada tramo queda el ${pct(q)}.`),
     ] : [
-      u('PR1-cuadrado', H * q ** n, `Aplicaste a la altura lo que pasa con la rapidez. La altura va con el cuadrado de la rapidez (h = v²/2g): en cada choque la altura queda multiplicada por ${f(q)}² = ${f(q * q, 4)}.`),
+      u('PR1-cuadrado', H * q ** n, `Multiplicaste la altura por ${f(q)} en cada choque, como si bajara lo mismo que la rapidez. La altura va con el cuadrado de la rapidez (h = v²/2g): en cada choque queda multiplicada por ${f(q)}² = ${f(q * q, 4)}.`),
       h('EP-resta-lineal', H * (1 - n * p), `Restaste ${n} veces el ${pct(p)} de la altura. La pérdida es de rapidez, y cada una es un porcentaje de lo que quedaba.`),
-      u('PR2-raiz', H * q ** (n / 2), `Sacaste raíz donde va cuadrado. La rapidez va con la raíz de la altura, así que la altura va con el cuadrado de la rapidez: factor ${f(q)}² por choque.`),
+      h('EP-choque-de-mas', H * q ** (2 * n + 2), `Contaste un choque de más. Hasta el ${ord} rebote la pelota choca ${n} veces con el piso: el factor ${f(q * q, 4)} se aplica ${n} veces.`),
       h('EP-pierde-por-queda', H * p ** (2 * n), 'Multiplicaste por lo que se pierde. En cada choque queda la rapidez multiplicada por ' + f(q) + '.'),
     ];
     const solucion = sub === 'choque' ? [
       ['La altura a la que sube es proporcional a su energía (Ep = m·g·h). En cada choque queda el ', v('p', `${pct(q)}`), ' de la energía.'],
-      [`Hasta el ${ord} rebote hay ${n} choques: `, v('x', 'h'), ' = ', v('hh', f(H)), ` · ${f(q)}^${n} = `, v('x', `${f(correcta)} m`), '.'],
+      [`Hasta el ${ord} rebote hay ${n} choques: `, v('x', 'h'), ' = ', v('hh', f(H)), ` · ${f(q)}^${n} ${exacto ? '=' : '≈'} `, v('x', `${f(correcta)} m`), '.'],
     ] : sub === 'tramo' ? [
       ['La altura es proporcional a la energía. En cada tramo queda el ', v('p', pct(q)), '.'],
-      [`Hasta subir después del ${ord} rebote hay ${n} bajadas y ${n} subidas, ${2 * n} tramos: `, v('x', 'h'), ' = ', v('hh', f(H)), ` · ${f(q)}^${2 * n} = `, v('x', `${f(correcta)} m`), '.'],
+      [`Hasta subir después del ${ord} rebote hay ${n} bajadas y ${n} subidas, ${2 * n} tramos: `, v('x', 'h'), ' = ', v('hh', f(H)), ` · ${f(q)}^${2 * n} ${exacto ? '=' : '≈'} `, v('x', `${f(correcta)} m`), '.'],
     ] : [
       ['La altura va con el cuadrado de la rapidez (h = v²/2g). Si la rapidez queda multiplicada por ', v('p', f(q)), `, la altura queda multiplicada por ${f(q)}² = ${f(q * q, 4)}.`],
-      [`Con ${n} choques: `, v('x', 'h'), ' = ', v('hh', f(H)), ` · ${f(q * q, 4)}^${n} = `, v('x', `${f(correcta)} m`), '.'],
+      [`Con ${n} choques: `, v('x', 'h'), ' = ', v('hh', f(H)), ` · ${f(q * q, 4)}^${n} ${exacto ? '=' : '≈'} `, v('x', `${f(correcta)} m`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, unidad: 'm', variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'rebotes', sub, h: H, p, n } });
@@ -428,7 +431,7 @@
     let F, m = null, correcta, unidad;
     const VAR = { F: { nombre: 'fuerza en la cuerda', color: 'o' }, L: { nombre: 'largo del tramo de cuerda', color: 'i' }, dx: { nombre: 'desplazamiento del collarín', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     if (sub === 'trabajo') {
-      F = rng.elegir([10, 15, 20, 25, 30, 40, 50, 60, 80, 100]);
+      F = rng.elegir([10, 12, 15, 18, 20, 24, 25, 30, 35, 40, 45, 50, 60, 70, 75, 80, 90, 100, 120]);
       correcta = F * dL; unidad = 'J';
       if (!limpio(correcta)) return null;
     } else {

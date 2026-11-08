@@ -1,0 +1,195 @@
+{
+  "titulo": "La combi y el río: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema. Antes de calcular, decide desde dónde miras: ¿desde la pista, desde el agua o desde el otro móvil? Una rapidez «respecto a» algo solo se suma o se resta con otra si van en la misma línea; si son perpendiculares, se combinan con Pitágoras.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Por una carretera recta, un bus va a 25 m/s hacia el sur y una moto a 15 m/s hacia el norte. ¿Con qué rapidez ve acercarse el bus un pasajero de la moto? ¿Y si los dos fueran hacia el sur?",
+      "respuesta": "40 m/s; 10 m/s.",
+      "pasos": [
+        "Con el sur positivo: bus +25 m/s, moto −15 m/s. Velocidad del bus respecto a la moto: 25 − (−15) = 40 m/s.",
+        "Si los dos van al sur: 25 − 15 = 10 m/s. En el mismo sentido se restan; en sentidos opuestos, se suman."
+      ],
+      "verificar": [
+        {
+          "tipo": "relativa",
+          "args": [
+            25,
+            -15
+          ],
+          "espera": 40
+        },
+        {
+          "tipo": "relativa",
+          "args": [
+            25,
+            15
+          ],
+          "espera": 10
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una combi y un mototaxi están a 450 m y avanzan uno hacia el otro: la combi a 20 m/s y el mototaxi a 10 m/s. ¿En cuánto tiempo se cruzan?",
+      "respuesta": "15 s",
+      "pasos": [
+        "Visto desde el mototaxi, la combi se le acerca a 20 + 10 = 30 m/s.",
+        "t = 450/30 = 15 s. Con 450/20 o 450/10 se olvida que el otro también se mueve."
+      ],
+      "verificar": [
+        {
+          "tipo": "encuentro",
+          "args": [
+            450,
+            20,
+            -10
+          ],
+          "espera": 15
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una fila de llamas de 90 m camina por un camino recto a 1 m/s. Un pastor que va de la cola a la cabeza y vuelve a la cola corre siempre a 4 m/s respecto al suelo. ¿Cuánto tarda en total?",
+      "respuesta": "48 s",
+      "pasos": [
+        "Respecto a la fila, a la ida el pastor solo gana 4 − 1 = 3 m/s: 90/3 = 30 s.",
+        "A la vuelta van en sentidos opuestos: se acercan a 4 + 1 = 5 m/s: 90/5 = 18 s.",
+        "Total: 48 s. No es 180/4 = 45 s: la fila también se mueve."
+      ],
+      "verificar": [
+        {
+          "tipo": "idaVueltaTierra",
+          "args": [
+            90,
+            1,
+            4,
+            4
+          ],
+          "espera": 48
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un tren que va a 20 m/s, una vendedora camina a 1,5 m/s respecto al vagón, de un extremo a otro de un vagón de 18 m, y vuelve. ¿Cuánto tarda?",
+      "respuesta": "24 s",
+      "pasos": [
+        "Dentro del vagón, la vendedora va a 1,5 m/s en los dos sentidos: el tren no cambia nada de lo que pasa dentro.",
+        "t = 2·18/1,5 = 24 s."
+      ],
+      "verificar": [
+        {
+          "tipo": "idaVueltaTierra",
+          "args": [
+            18,
+            20,
+            21.5,
+            -18.5
+          ],
+          "espera": 24
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un bote avanza a 5 m/s respecto al agua en un río de 60 m de ancho con una corriente de 4 m/s. a) Si apunta la proa perpendicular a la orilla, ¿cuánto tarda en cruzar y cuánto lo lleva la corriente río abajo? b) Si quiere llegar justo enfrente, ¿hacia dónde apunta y cuánto tarda?",
+      "respuesta": "a) 12 s y 48 m río abajo. b) 53° río arriba de la perpendicular; 20 s.",
+      "pasos": [
+        "a) Lo que cruza es la componente perpendicular, 5 m/s: t = 60/5 = 12 s. La corriente lo lleva 4·12 = 48 m.",
+        "b) La componente río arriba del bote debe anular la corriente: 5·sen θ = 4, sen θ = 4/5, θ = 53° desde la perpendicular, río arriba.",
+        "Lo que queda para cruzar: √(5² − 4²) = 3 m/s; t = 60/3 = 20 s. Ir recto es más lento que el tiempo mínimo del caso a)."
+      ],
+      "verificar": [
+        {
+          "tipo": "deriva",
+          "args": [
+            60,
+            5,
+            4
+          ],
+          "espera": 48
+        },
+        {
+          "tipo": "rumboGrados",
+          "args": [
+            5,
+            4,
+            0
+          ],
+          "espera": 53.13010235415598
+        },
+        {
+          "tipo": "cruceRecto",
+          "args": [
+            60,
+            5,
+            4
+          ],
+          "espera": 20
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Un bote avanza a 10 m/s respecto al agua en un río de 60 m de ancho con corriente de 2 m/s. El botero quiere llegar, en línea recta, a un muelle de la otra orilla que está 30 m río abajo del punto de enfrente. ¿Hacia dónde apunta la proa? Usa sen 16° = 7/25 y cos 16° = 24/25. (Pista: no apunta al muelle.)",
+      "respuesta": "16° río abajo de la perpendicular.",
+      "pasos": [
+        "La velocidad respecto a tierra (bote + corriente) debe ir hacia el muelle: por cada 60 m que cruza, baja 30 m; la componente río abajo es la mitad de la que cruza.",
+        "Con la proa a θ río abajo: componente río abajo 2 + 10·sen θ; componente que cruza 10·cos θ.",
+        "Con θ = 16°: río abajo 2 + 2,8 = 4,8 m/s; cruzando 9,6 m/s. Y 4,8 es la mitad de 9,6: llega al muelle.",
+        "Si apuntara directo al muelle, la corriente lo correría más abajo: la proa va menos inclinada que la línea al muelle porque la corriente pone su parte."
+      ],
+      "verificar": [
+        {
+          "tipo": "rumboGrados",
+          "args": [
+            10,
+            2,
+            0.5
+          ],
+          "espera": -16.26020470831196
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "En una laguna quieta, una pescadora en su bote (180 kg en total) lanza hacia la orilla una caja de 20 kg con una rapidez de 5 m/s respecto al bote. ¿Con qué rapidez retrocede el bote? Otro bote en reposo, de 80 kg con su tripulante, atrapa la caja: ¿con qué rapidez sale?",
+      "respuesta": "0,5 m/s; 0,9 m/s.",
+      "pasos": [
+        "Si el bote retrocede con V, la caja va a 5 − V respecto al agua. Cantidad de movimiento: 180·V = 20·(5 − V), así que 200·V = 100 y V = 0,5 m/s.",
+        "La caja va a 5 − 0,5 = 4,5 m/s respecto al agua. Tomar 5 m/s como si fuera respecto al agua da V = 20·5/180 ≈ 0,56 m/s, que está mal.",
+        "El otro bote la atrapa: 20·4,5 = (80 + 20)·V₂, V₂ = 0,9 m/s."
+      ],
+      "verificar": [
+        {
+          "tipo": "lanzaBote",
+          "args": [
+            180,
+            20,
+            5
+          ],
+          "espera": 0.5
+        },
+        {
+          "tipo": "recibe",
+          "args": [
+            180,
+            20,
+            5,
+            80
+          ],
+          "espera": 0.9
+        }
+      ]
+    }
+  ]
+}

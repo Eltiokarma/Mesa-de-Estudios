@@ -1,0 +1,289 @@
+{
+  "plantilla": "induccion-flujo",
+  "tolerancia": 1e-09,
+  "nota": "SI. Tolerancia relativa. Carga en mC; flujo en un instante en mWb, con signo; fem en V; frecuencia en Hz. En «expresion» la respuesta es «función:amplitud en Wb:ω en rad/s». Esperados calculados a mano con Q = N·ΔΦ/R (ΔΦ = 2BA al invertir), Φ = BA·cos ωt o BA·sen ωt según el arranque, ε máx = NBAω con ω = 2π·rpm/60, f = ω/2π y ε = N|ΔΦ|/Δt, sin mirar la salida del generador.",
+  "verificacion": "PENDIENTE",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "carga",
+        "sub": "invertir",
+        "modo": "campo",
+        "N": 100,
+        "A": 0.01,
+        "cm2": false,
+        "B": 0.2,
+        "R": 2,
+        "dt": 0.2
+      },
+      "esperado": {
+        "respuesta": 200,
+        "exacta": "200 mC"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "armonico",
+        "sub": "instante",
+        "inicio": "perpendicular",
+        "A": 0.008,
+        "cm2": true,
+        "B": 1,
+        "forma": "rps",
+        "rpm": null,
+        "f": 50,
+        "t": 0.006666666666666666
+      },
+      "esperado": {
+        "respuesta": -4,
+        "exacta": "−4 mWb"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "armonico",
+        "sub": "femmax",
+        "N": 500,
+        "A": 0.02,
+        "cm2": true,
+        "B": 0.1,
+        "forma": "rpm",
+        "rpm": 60,
+        "f": null
+      },
+      "esperado": {
+        "respuesta": 6.283185307179586,
+        "exacta": "2π V"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "armonico",
+        "sub": "frecuencia",
+        "modo": "phi",
+        "k": 4,
+        "amp": 0.4
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2 Hz"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "armonico",
+        "sub": "expresion",
+        "inicio": "perpendicular",
+        "A": 0.02,
+        "cm2": true,
+        "B": 0.1,
+        "forma": "rad",
+        "rpm": null,
+        "f": null,
+        "w": 15.707963267948966
+      },
+      "esperado": {
+        "respuesta": "cos:0.002:15.707963267948966",
+        "exacta": "Φ = 2 × 10⁻³·cos(5πt) Wb"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "femmedia",
+        "sub": "giro",
+        "modo": 180,
+        "N": 10,
+        "A": 0.005,
+        "cm2": true,
+        "B": 0.4,
+        "dt": 0.04
+      },
+      "esperado": {
+        "respuesta": 1,
+        "exacta": "1 V"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "femmedia",
+        "sub": "giro",
+        "modo": 90,
+        "N": 10,
+        "A": 0.1,
+        "cm2": false,
+        "B": 0.25,
+        "dt": 0.04
+      },
+      "esperado": {
+        "respuesta": 6.25,
+        "exacta": "6,25 V"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "carga",
+        "sub": "anular",
+        "modo": "giro90",
+        "N": 500,
+        "A": 0.002,
+        "cm2": true,
+        "B": 1,
+        "R": 2,
+        "dt": 0.2
+      },
+      "esperado": {
+        "respuesta": 500,
+        "exacta": "500 mC"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "armonico",
+        "sub": "instante",
+        "inicio": "paralelo",
+        "A": 0.008,
+        "cm2": true,
+        "B": 2,
+        "forma": "rpm",
+        "rpm": 1200,
+        "f": null,
+        "t": 0.0125
+      },
+      "esperado": {
+        "respuesta": 16,
+        "exacta": "16 mWb"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "carga",
+        "sub": "anular",
+        "modo": "saca",
+        "N": 200,
+        "A": 0.05,
+        "cm2": true,
+        "B": 0.4,
+        "R": 20,
+        "dt": 0.1
+      },
+      "esperado": {
+        "respuesta": 200,
+        "exacta": "200 mC"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "armonico",
+        "sub": "frecuencia",
+        "modo": "rpm",
+        "rpm": 900
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15 Hz"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "femmedia",
+        "sub": "campo",
+        "modo": "baja",
+        "N": 500,
+        "A": 0.04,
+        "cm2": true,
+        "B1": 0.4,
+        "B2": 0.1,
+        "dt": 0.02
+      },
+      "esperado": {
+        "respuesta": 300,
+        "exacta": "300 V"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "armonico",
+        "sub": "expresion",
+        "inicio": "paralelo",
+        "A": 0.05,
+        "cm2": false,
+        "B": 0.8,
+        "forma": "rad",
+        "rpm": null,
+        "f": null,
+        "w": 18.84955592153876
+      },
+      "esperado": {
+        "respuesta": "sen:0.04:18.84955592153876",
+        "exacta": "Φ = 0,04·sen(6πt) Wb"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "carga",
+        "sub": "anular",
+        "modo": "apaga",
+        "N": 200,
+        "A": 0.05,
+        "cm2": true,
+        "B": 1,
+        "R": 8,
+        "dt": 2
+      },
+      "esperado": {
+        "respuesta": 1250,
+        "exacta": "1 250 mC"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "carga",
+        "sub": "invertir",
+        "modo": "giro180",
+        "N": 500,
+        "A": 0.005,
+        "cm2": true,
+        "B": 0.4,
+        "R": 25,
+        "dt": 0.1
+      },
+      "esperado": {
+        "respuesta": 80,
+        "exacta": "80 mC"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "femmedia",
+        "sub": "campo",
+        "modo": "invierte",
+        "N": 10,
+        "A": 0.04,
+        "cm2": true,
+        "B1": 0.4,
+        "B2": 0.4,
+        "dt": 0.01
+      },
+      "esperado": {
+        "respuesta": 32,
+        "exacta": "32 V"
+      }
+    }
+  ]
+}

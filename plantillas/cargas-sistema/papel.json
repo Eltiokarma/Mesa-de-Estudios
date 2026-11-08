@@ -1,0 +1,108 @@
+{
+  "titulo": "Tres cargas en el plano: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema. Usa k = 9 × 10⁹ N·m²/C², pasa los µC y los nC a C y los cm a m. La energía de un sistema es la suma de k·qi·qj/r sobre todos los pares, cada par una sola vez y con el signo de sus cargas. El potencial de una carga puntual es kq/r (sin cuadrado); el campo, kq/r². Los campos son flechas: se suman por componentes, y lo que se opone se cancela.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos cargas puntuales de +2 µC y −3 µC están a 30 cm una de la otra. ¿Cuál es la energía potencial eléctrica del sistema?",
+      "respuesta": "−180 mJ (−0,18 J)",
+      "pasos": [
+        "Un solo par: U = k·q1·q2/r = 9 × 10⁹ · (2 × 10⁻⁶) · (−3 × 10⁻⁶)/0,3.",
+        "U = 9 × 10⁹ · (−6 × 10⁻¹²)/0,3 = −0,054/0,3 = −0,18 J = −180 mJ. Es negativa porque las cargas se atraen."
+      ],
+      "verificar": [{ "tipo": "energia-mJ", "args": [[2, -3], [[0, 0], [30, 0]]], "espera": -180 }]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Sobre una recta hay tres cargas en este orden: +1 µC en A, +2 µC en B y +3 µC en C, con AB = 10 cm y BC = 20 cm. ¿Cuál es la energía potencial eléctrica del sistema?",
+      "respuesta": "540 mJ",
+      "pasos": [
+        "Hay tres pares: A–B a 0,1 m, B–C a 0,2 m y A–C a 0,3 m (el de los extremos también cuenta).",
+        "Con q en µC y r en m, cada par da 9·qi·qj/r en mJ: 9·2/0,1 = 180, 9·6/0,2 = 270 y 9·3/0,3 = 90.",
+        "U = 180 + 270 + 90 = 540 mJ. Cada par se cuenta una sola vez."
+      ],
+      "verificar": [{ "tipo": "energia-mJ", "args": [[1, 2, 3], [[0, 0], [10, 0], [30, 0]]], "espera": 540 }]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "En los vértices de un triángulo equilátero de 30 cm de lado hay cargas de +2 µC, +2 µC y −1 µC. ¿Cuál es la energía potencial eléctrica del sistema?",
+      "respuesta": "0",
+      "pasos": [
+        "Los tres pares están a la misma distancia, 0,3 m. Los productos de cargas son (+2)(+2) = 4, (+2)(−1) = −2 y (+2)(−1) = −2.",
+        "La suma de los productos es 4 − 2 − 2 = 0, así que U = 0. Si se olvidan los signos, sale 9·8/0,3 = 240 mJ, que está mal."
+      ],
+      "verificar": [{ "tipo": "energia-mJ", "args": [[2, 2, -1], [[0, 0], [30, 0], [15, 25.98076211353316]]], "espera": 0 }]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "Tres cargas están alineadas e igualmente espaciadas: q en A, Q en B (en medio) y q en C, con q > 0. ¿Cuánto debe valer Q/q para que la energía potencial eléctrica del sistema sea cero?",
+      "respuesta": "Q/q = −1/4",
+      "pasos": [
+        "Con AB = BC = d, el par de los extremos está a 2d. La suma de los tres pares es k·(q·Q/d + Q·q/d + q·q/(2d)) = 0.",
+        "Se simplifica k·q/d: 2Q + q/2 = 0, así que Q = −q/4. Si se olvida el par A–C, sale Q = 0; si se usa d en vez de 2d, sale −1/2."
+      ],
+      "verificar": [{ "tipo": "razon-nula", "args": [1, 1, 1], "espera": -0.25 }]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "La gráfica del potencial V contra la distancia r a una carga puntual positiva pasa por el punto (0,4 m; 450 V). ¿Cuánto vale el potencial a 1,2 m de la carga?",
+      "respuesta": "150 V",
+      "pasos": [
+        "V = kq/r: el producto V·r es constante. En el punto leído, V·r = 450 · 0,4 = 180 V·m.",
+        "A 1,2 m: V = 180/1,2 = 150 V. Si se toma V con 1/r², sale 50 V, que es un error."
+      ],
+      "verificar": [{ "tipo": "v-en", "args": [0.4, 450, 1.2], "espera": 150 }]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Con la misma gráfica del problema anterior, ¿cuánto vale el campo eléctrico a 1,2 m de la carga?",
+      "respuesta": "125 N/C",
+      "pasos": [
+        "kq = V·r = 180 V·m, leído en la gráfica.",
+        "E = kq/r² = 180/1,2² = 180/1,44 = 125 N/C. No confundir con el potencial en ese punto, que es 150 V."
+      ],
+      "verificar": [{ "tipo": "e-en", "args": [0.4, 450, 1.2], "espera": 125 }]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "La gráfica V–r de una carga puntual pasa por (40 cm; 450 V). ¿Cuál es el valor de la carga?",
+      "respuesta": "20 nC",
+      "pasos": [
+        "Se pasa a metros: r = 0,4 m.",
+        "De V = kq/r: q = V·r/k = 450 · 0,4/(9 × 10⁹) = 2 × 10⁻⁸ C = 20 nC."
+      ],
+      "verificar": [{ "tipo": "carga-nC", "args": [0.4, 450], "espera": 20 }]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En los vértices de un cuadrado ABCD de 30 cm de lado hay cargas de +1 µC en A y en B, y de −1 µC en C y en D. ¿Cuál es el módulo del campo eléctrico en el centro del cuadrado?",
+      "respuesta": "4√2 × 10⁵ N/C (unos 5,66 × 10⁵ N/C)",
+      "pasos": [
+        "Cada carga está a media diagonal del centro: r² = a²/2 = 0,045 m². Cada campo vale kq/r² = 9 × 10⁹ · 10⁻⁶/0,045 = 2 × 10⁵ N/C.",
+        "A (+) y C (−) son opuestos: sus dos campos apuntan de A hacia C y se suman, 4 × 10⁵ N/C. Igual B y D: 4 × 10⁵ N/C de B hacia D.",
+        "Esas dos diagonales son perpendiculares: E = √(4² + 4²) × 10⁵ = 4√2 × 10⁵ N/C. Sumar los cuatro módulos daría 8 × 10⁵ N/C, que está mal."
+      ],
+      "verificar": [{ "tipo": "campo-NC", "args": [[1, 1, -1, -1], [[0, 0, 0], [30, 0, 0], [30, 30, 0], [0, 30, 0]], [15, 15, 0]], "espera": 565685.4249492381 }]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un cubo tiene 30 cm de arista. En los cuatro vértices de su cara de arriba hay cargas de +1 µC. ¿Cuál es el módulo del campo eléctrico en el centro de la cara de abajo?",
+      "respuesta": "(8√6/9) × 10⁵ N/C (unos 2,18 × 10⁵ N/C), hacia abajo",
+      "pasos": [
+        "Cada carga está a r² = a²/2 + a² = 3a²/2 = 0,135 m² del punto. Cada campo vale kq/r² = 9 × 10⁹ · 10⁻⁶/0,135 = (2/3) × 10⁵ N/C.",
+        "Las componentes horizontales se cancelan de dos en dos. Cada vertical es el campo por cos = a/r = √(2/3).",
+        "E = 4 · (2/3) × 10⁵ · √(2/3) = (8√6/9) × 10⁵ N/C. Sumar los módulos sin descomponer daría (8/3) × 10⁵ N/C."
+      ],
+      "verificar": [{ "tipo": "campo-NC", "args": [[1, 1, 1, 1], [[0, 0, 30], [30, 0, 30], [30, 30, 30], [0, 30, 30]], [15, 15, 0]], "espera": 217732.42158072695 }]
+    }
+  ]
+}

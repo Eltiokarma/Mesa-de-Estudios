@@ -1,0 +1,190 @@
+{
+  "titulo": "El temblor y el trueno: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema. Cuando dos ondas salen juntas del mismo foco, las dos recorren la misma distancia: lo que se resta son los tiempos, no las rapideces. Al cambiar de medio, la frecuencia se queda (la pone la fuente) y cambian la rapidez y la longitud de onda. En y = A·sen(kx − ωt), la rapidez es ω/k.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una tarde de lluvia en Puno ves un relámpago y cuentas 4,5 s hasta oír el trueno. El sonido viaja a 340 m/s y la luz llega casi al instante. ¿A qué distancia cayó el rayo?",
+      "respuesta": "1530 m (1,53 km).",
+      "pasos": [
+        "La luz llega casi al instante: los 4,5 s son lo que tarda el sonido en venir del rayo hasta ti.",
+        "d = v·t = 340 · 4,5 = 1530 m.",
+        "Si dividiste entre 2, pensaste en un eco: el trueno viaja una sola vez."
+      ],
+      "verificar": [
+        {
+          "tipo": "distancia-mru",
+          "args": [
+            340,
+            4.5
+          ],
+          "espera": 1530
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Un temblor produce ondas P que viajan a 7 km/s y ondas S que viajan a 4 km/s. En una estación, la onda S llega 12 s después que la onda P. ¿A qué distancia del foco está la estación y cuánto tardó la onda P?",
+      "respuesta": "112 km; la onda P tardó 16 s.",
+      "pasos": [
+        "Las dos recorren la misma distancia d: tS − tP = d/4 − d/7 = 12.",
+        "d·(7 − 4)/28 = 12, así que d = 12 · 28/3 = 112 km.",
+        "tP = 112/7 = 16 s (y tS = 112/4 = 28 s: la diferencia es 12 s, como debe ser).",
+        "Si hiciste 12 · (7 − 4) = 36 km, trataste el problema como una persecución: aquí no se pregunta cuándo se alcanzan."
+      ],
+      "verificar": [
+        {
+          "tipo": "dos-ondas",
+          "args": [
+            7,
+            4,
+            12
+          ],
+          "espera": 112
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una niña pega el oído a un riel de acero y su amigo golpea el riel en el otro extremo. Ella oye el golpe por el riel y, 2,8 s después, por el aire. En el acero el sonido viaja a 5100 m/s y en el aire a 340 m/s. ¿Qué largo tiene el tramo de riel?",
+      "respuesta": "1020 m.",
+      "pasos": [
+        "Por el aire tarda L/340 y por el acero L/5100; la diferencia es 2,8 s.",
+        "L·(1/340 − 1/5100) = 2,8. Como 5100 = 15 · 340, eso es L·14/5100 = 2,8.",
+        "L = 2,8 · 5100/14 = 1020 m. Comprueba: 1020/340 = 3 s y 1020/5100 = 0,2 s."
+      ],
+      "verificar": [
+        {
+          "tipo": "dos-ondas",
+          "args": [
+            5100,
+            340,
+            2.8
+          ],
+          "espera": 1020
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "Se golpea un extremo de un tubo de cobre de 850 m. En el otro extremo el golpe se oye primero por el cobre y 2,25 s después por el aire (340 m/s). El sonido del golpe tiene una frecuencia de 500 Hz. ¿Cuál es su longitud de onda en el aire y en el cobre?",
+      "respuesta": "0,68 m en el aire y 6,8 m en el cobre.",
+      "pasos": [
+        "Por el aire tarda 850/340 = 2,5 s; por el cobre, 2,5 − 2,25 = 0,25 s.",
+        "Rapidez en el cobre: 850/0,25 = 3400 m/s.",
+        "La frecuencia no cambia al pasar de un medio a otro: 500 Hz en los dos.",
+        "λ en el aire = 340/500 = 0,68 m; λ en el cobre = 3400/500 = 6,8 m. El medio diez veces más rápido tiene la λ diez veces más larga."
+      ],
+      "verificar": [
+        {
+          "tipo": "lambda-medio",
+          "args": [
+            850,
+            2.25,
+            340,
+            500
+          ],
+          "espera": 6.8
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una onda en una cuerda tiene la ecuación y = 0,03·sen(2πx − 50πt), con x e y en metros y t en segundos. Halla su longitud de onda, su frecuencia, su rapidez y cuánto avanza en 0,4 s.",
+      "respuesta": "λ = 1 m, f = 25 Hz, v = 25 m/s y avanza 10 m.",
+      "pasos": [
+        "Comparando con y = A·sen(kx − ωt): k = 2π rad/m y ω = 50π rad/s.",
+        "λ = 2π/k = 1 m; f = ω/2π = 25 Hz.",
+        "v = ω/k = 50π/2π = 25 m/s (o v = λ·f = 1 · 25).",
+        "En 0,4 s avanza 25 · 0,4 = 10 m. Si usaste k = 2π como rapidez, te salió otra cosa: k está en rad/m."
+      ],
+      "verificar": [
+        {
+          "tipo": "lambda-onda",
+          "args": [
+            6.283185307179586
+          ],
+          "espera": 1
+        },
+        {
+          "tipo": "frecuencia-onda",
+          "args": [
+            157.07963267948966
+          ],
+          "espera": 25
+        },
+        {
+          "tipo": "rapidez-onda",
+          "args": [
+            6.283185307179586,
+            157.07963267948966
+          ],
+          "espera": 25
+        },
+        {
+          "tipo": "distancia-mru",
+          "args": [
+            25,
+            0.4
+          ],
+          "espera": 10
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "La ecuación de una onda es y = 0,05·sen(4x + 20t), en unidades del SI. ¿Hacia dónde se propaga y con qué rapidez?",
+      "respuesta": "Hacia −x, a 5 m/s.",
+      "pasos": [
+        "k = 4 rad/m y ω = 20 rad/s: v = ω/k = 5 m/s.",
+        "kx y ωt tienen el mismo signo. Para seguir una cresta, 4x + 20t debe quedar fijo: si t crece, x tiene que bajar. La onda va hacia −x.",
+        "El signo + no quiere decir «hacia +x»: lo que manda es si kx y ωt tienen signos iguales u opuestos."
+      ],
+      "verificar": [
+        {
+          "tipo": "rapidez-onda",
+          "args": [
+            4,
+            20
+          ],
+          "espera": 5
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Un parlante sumergido en una piscina emite un tono de 500 Hz. El sonido viaja a 340 m/s en el aire y a 1500 m/s en el agua. ¿Cuál es la longitud de onda en cada medio? ¿Cambia la frecuencia al salir del agua?",
+      "respuesta": "0,68 m en el aire y 3 m en el agua; la frecuencia sigue siendo 500 Hz.",
+      "pasos": [
+        "La frecuencia la fija el parlante: no cambia al pasar al aire.",
+        "λ = v/f: en el agua 1500/500 = 3 m; en el aire 340/500 = 0,68 m.",
+        "Cambian la rapidez y la longitud de onda, en la misma proporción."
+      ],
+      "verificar": [
+        {
+          "tipo": "lambda-v-f",
+          "args": [
+            1500,
+            500
+          ],
+          "espera": 3
+        },
+        {
+          "tipo": "lambda-v-f",
+          "args": [
+            340,
+            500
+          ],
+          "espera": 0.68
+        }
+      ]
+    }
+  ]
+}

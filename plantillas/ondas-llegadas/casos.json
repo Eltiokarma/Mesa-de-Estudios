@@ -1,0 +1,204 @@
+{
+  "plantilla": "ondas-llegadas",
+  "tolerancia": 1e-06,
+  "nota": "Distancias en km (sismo, trueno) o m (riel); sonido en el aire a 340 m/s; en y(x, t), SI. Las respuestas de texto son claves de armarTexto: sent:<sentido>|<rapidez en µm/s> y vf:<secuencia>.",
+  "verificacion": "PENDIENTE",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "particulas",
+        "sub": "vf",
+        "props": [
+          "S1",
+          "V2",
+          "R1"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FVF",
+        "exacta": "FVF"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "medio",
+        "sub": "lambda",
+        "L": 102,
+        "dt": 0.28,
+        "va": 340,
+        "f": 850,
+        "dato": "lambda"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 m"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "llegadas",
+        "sub": "riel",
+        "v1": 5440,
+        "v2": 340,
+        "dt": 3
+      },
+      "esperado": {
+        "respuesta": 1088,
+        "exacta": "1 088 m"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "llegadas",
+        "sub": "sismo-tp",
+        "v1": 8,
+        "v2": 6,
+        "dt": 9
+      },
+      "esperado": {
+        "respuesta": 27,
+        "exacta": "27 s"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "funcion",
+        "sub": "lambda",
+        "A": 0.1,
+        "k": 1.5707963267948966,
+        "w": 12.566370614359172,
+        "forma": "kx-wt"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 m"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "funcion",
+        "sub": "distancia",
+        "A": 0.2,
+        "k": 31.41592653589793,
+        "w": 1570.7963267948965,
+        "forma": "kx-wt",
+        "t": 2
+      },
+      "esperado": {
+        "respuesta": 100,
+        "exacta": "100 m"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "llegadas",
+        "sub": "sismo",
+        "v1": 9,
+        "v2": 6,
+        "dt": 5
+      },
+      "esperado": {
+        "respuesta": 90,
+        "exacta": "90 km"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "funcion",
+        "sub": "frecuencia",
+        "A": 0.1,
+        "k": 31.41592653589793,
+        "w": 785.3981633974482,
+        "forma": "kx-wt"
+      },
+      "esperado": {
+        "respuesta": 125,
+        "exacta": "125 Hz"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "llegadas",
+        "sub": "trueno",
+        "v1": null,
+        "v2": 340,
+        "dt": 9
+      },
+      "esperado": {
+        "respuesta": 3.06,
+        "exacta": "3,06 km"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "funcion",
+        "sub": "sentido",
+        "A": 0.02,
+        "k": 0.5,
+        "w": 10,
+        "forma": "wt+kx"
+      },
+      "esperado": {
+        "respuesta": "sent:-|20000000",
+        "exacta": "hacia −x, a 20 m/s"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "medio",
+        "sub": "lambda",
+        "L": 255,
+        "dt": 0.7000000000000001,
+        "va": 340,
+        "f": 680,
+        "dato": "f"
+      },
+      "esperado": {
+        "respuesta": 7.5,
+        "exacta": "7,5 m"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "funcion",
+        "sub": "sentido",
+        "A": 0.1,
+        "k": 20,
+        "w": 800,
+        "forma": "wt-kx"
+      },
+      "esperado": {
+        "respuesta": "sent:+|40000000",
+        "exacta": "hacia +x, a 40 m/s"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "particulas",
+        "sub": "vf",
+        "props": [
+          "R2",
+          "V2",
+          "S3"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VVF",
+        "exacta": "VVF"
+      }
+    }
+  ]
+}

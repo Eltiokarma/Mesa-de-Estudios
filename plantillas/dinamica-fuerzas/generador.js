@@ -52,6 +52,7 @@
   const ht = (id, clave, texto, explicacion, respaldo = 'hipotesis', fuente = TRA) => ({ id, clave, texto, explicacion, respaldo, fuente });
   const f = (x, d = 2) => P.formatear(x, d);
   const v = P.v;
+  const decs = x => { for (let k = 0; k <= 6; k++) if (limpio(x, k)) return k; return 99; };
   const limpio = (x, dec = 2) => Number.isFinite(x) && Math.abs(x * 10 ** dec - Math.round(x * 10 ** dec)) < 1e-6 && Math.abs(x) < 1e6;
   const TRIG = { 37: { s: 0.6, c: 0.8, t: 0.75 }, 53: { s: 0.8, c: 0.6, t: 4 / 3 }, 60: { s: Math.sqrt(3) / 2, c: 0.5, t: Math.sqrt(3) } };
   const NOTABLES = 'Usa sen 37° = 3/5 y cos 37° = 4/5 (sen 53° = 4/5, cos 53° = 3/5)';
@@ -83,7 +84,18 @@
     } else {
       const dec = o.decimales || 2;
       const txt = x => f(x, dec) + (o.unidad ? ' ' + o.unidad : '');
-      const errores = o.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && e.valor < 1e6 && f(e.valor, dec) !== '0');
+      // Las incorrectas no pueden delatarse: ni con más decimales (hasta 1 si la correcta tiene 0 o 1; nunca más de 2) ni fuera de escala
+      // (entre 1/20 y 20 veces la correcta, y dentro del rango físico del problema si lo hay).
+      const maxDec = Math.min(decs(o.correcta) <= 1 ? 1 : 2, dec);
+      const errores = o.errores.filter(e => {
+        if (!Number.isFinite(e.valor) || (!o.negativos && e.valor <= 0) || decs(e.valor) > maxDec) return false;
+        const r = Math.abs(e.valor) / Math.abs(o.correcta);
+        if (!(r >= 1 / 20 && r <= 20)) return false;
+        return !o.rango || (e.valor >= o.rango[0] && e.valor <= o.rango[1]);
+      });
+      // Primero las que tienen a lo más los decimales de la correcta: así casi nunca se nota cuál es.
+      const dc = decs(o.correcta);
+      errores.sort((a, b) => (decs(a.valor) > dc) - (decs(b.valor) > dc));
       alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: txt });
       respuesta = { valor: o.correcta, unidad: o.unidad };
     }
@@ -97,17 +109,20 @@
   const OBJ_PLAT = [
     { Obj: 'Un niño está parado sobre un juego giratorio del parque', obj: 'el niño', de: 'del niño', a: 'al niño', pl: 'el juego', dpl: 'del juego', moneda: false },
     { Obj: 'Una caja de mangos descansa sobre una plataforma giratoria de la feria', obj: 'la caja', de: 'de la caja', a: 'a la caja', pl: 'la plataforma', dpl: 'de la plataforma', moneda: false },
+    { Obj: 'Una vendedora está parada sobre la plataforma giratoria de un carrusel de la feria', obj: 'la vendedora', de: 'de la vendedora', a: 'a la vendedora', pl: 'la plataforma', dpl: 'de la plataforma', moneda: false },
+    { Obj: 'Un perro se echa sobre un juego giratorio del parque', obj: 'el perro', de: 'del perro', a: 'al perro', pl: 'el juego', dpl: 'del juego', moneda: false },
     { Obj: 'Una moneda descansa sobre el plato de un tocadiscos', obj: 'la moneda', de: 'de la moneda', a: 'a la moneda', pl: 'el plato', dpl: 'del plato', moneda: true },
   ];
   function plataforma(rng, semilla, sub) {
     const o = rng.elegir(OBJ_PLAT);
-    const w = o.moneda ? rng.elegir([2, 3, 4, 5, 6]) : rng.elegir([0.5, 1, 1.5, 2, 2.5, 3]);
-    const r = o.moneda ? rng.elegir([0.05, 0.08, 0.1, 0.12]) : rng.elegir([0.4, 0.5, 0.8, 1, 1.2, 1.5, 2, 2.5, 3, 4]);
-    const mu = w * w * r / g;
-    if (!limpio(mu) || mu < 0.1 || mu > 0.9) return null;
-    // Radio del plato o de la plataforma: mayor que la distancia del objeto al eje.
-    const Rp = o.moneda ? 0.15 : rng.elegir([2, 2.5, 3, 4, 5].filter(x => x > r));
-    if (!Rp || Rp <= r) return null;
+    const om = sub === 'omega';
+    const w = om ? rng.elegir(o.moneda ? [2, 4, 6] : [1, 2, 3, 4, 6]) : rng.elegir(o.moneda ? [2, 2.5, 3, 4, 5, 6] : [0.5, 1, 1.5, 2, 2.5, 3, 4]);
+    const mu = rng.elegir(om ? [0.16, 0.25, 0.36, 0.64] : [0.16, 0.2, 0.24, 0.25, 0.3, 0.32, 0.36, 0.4, 0.45, 0.48, 0.5, 0.6, 0.64, 0.72, 0.75, 0.8]);
+    const r = mu * g / (w * w);
+    if (!limpio(r) || (o.moneda ? (r < 0.03 || r > 0.1) : (r < 0.3 || r > 2.5))) return null;
+    // Radio del plato o de la plataforma: k veces la distancia del objeto al eje.
+    const Rp = r * (om ? 4 : rng.elegir([2, 2.5, 3, 4]));
+    if (!limpio(Rp) || Rp > (o.moneda ? 0.2 : 6)) return null;
     const diam = 2 * Rp, uDiam = o.moneda ? `${f(diam * 100)} cm` : `${f(diam)} m`;
     const VAR = { w: { nombre: 'rapidez angular', color: 'o' }, r: { nombre: 'distancia al eje', color: 'i' }, mu: { nombre: 'coeficiente de rozamiento estático', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     const base = [`${o.Obj}, de ${uDiam} de diámetro. `];
@@ -136,6 +151,7 @@
         h('DF-despeje-invertido', g / (w * w * r), 'Despejaste al revés: de μs·g = ω²·r sale μs = ω²·r/g.'),
         h('DF-radio-de-la-plataforma', w * w * Rp / g, `Usaste el radio ${o.dpl} (${f(Rp)} m). Lo que cuenta es la distancia ${o.de} al eje, ${f(r)} m.`),
         h('DF-sin-g', w * w * r, 'Te faltó dividir entre g: el tope del roce es μs·m·g, así que μs = ω²·r/g.'),
+        h('DF-sin-radio', w * w / g, `Te olvidaste de la distancia al eje: la fuerza que hace falta es m·ω²·r, con r = ${f(r)} m.`),
       ];
       solucion = [ley, tope, [v('x', 'μs'), ' = ', v('w', 'ω'), '²·', v('r', 'r'), `/g = ${f(w)}² · ${f(r)} / 10 = `, v('x', f(mu)), '.']];
     } else {
@@ -146,13 +162,14 @@
         h('PR1-cuadrado', mu * g / w, 'Pusiste ω sin elevarla al cuadrado. La fuerza centrípeta es m·ω²·r.', TRV),
         h('DF-radio-invertido', w * w / (mu * g), 'Invertiste la relación: de ω²·r = μs·g sale r = μs·g/ω². A ω fija, la fuerza que hace falta crece con r.'),
         h('DF-sin-mu', g / (w * w), 'Igualaste la fuerza centrípeta al peso entero. El roce estático solo llega hasta μs·m·g.'),
-        h('DF-radio-invertido', Rp, `Respondiste con el borde, como si lejos del eje hiciera falta menos fuerza. Con la misma ω, la fuerza que hace falta, m·ω²·r, crece con r: lejos del eje resbala antes.`),
+        h('DF-borde-mas-seguro', Rp, `Respondiste con el borde, como si lejos del eje hiciera falta menos fuerza. Con la misma ω, la fuerza que hace falta, m·ω²·r, crece con r: lejos del eje resbala antes.`),
       ];
       solucion = [ley, tope, ['A ω fija, la fuerza que hace falta crece con la distancia al eje: hay una distancia máxima.'],
         [v('x', 'r'), ' = ', v('mu', 'μs'), '·g/', v('w', 'ω'), `² = ${f(mu)} · 10 / ${f(w)}² = `, v('x', `${f(r)} m`), '.']];
     }
-    return cerrar(rng, semilla, { correcta, errores, unidad, variables: VAR, enunciado, pregunta, solucion,
-      datos: { tipo: 'plataforma', sub, w, r, mu, radioPlataforma: Rp } });
+    const rango = sub === 'mu' ? [0, 1.5] : sub === 'radio' ? [0, Rp] : null;
+    return cerrar(rng, semilla, { correcta, errores, unidad, rango, variables: VAR, enunciado, pregunta, solucion,
+      datos: { tipo: 'plataforma', sub, objeto: OBJ_PLAT.indexOf(o), w, r, mu, radioPlataforma: Rp } });
   }
 
   // ---------------- motriz: el roce del piso sobre las ruedas ----------------
@@ -298,7 +315,7 @@
       const enunciado = ['Una bolita de ', v('m', `${f(m)} kg`), ' gira sin rozamiento por dentro de un cuenco semiesférico de ', v('R', `${f(R)} m`), ' de radio, en una circunferencia horizontal. El radio del cuenco que llega a la bolita forma ', v('th', `${th}°`), ` con la vertical. ${notables}; g = 10 m/s².`];
       const pregunta = ['¿Cuánto vale la ', v('x', 'fuerza normal'), ' del cuenco sobre la bolita?'];
       const errores = [
-        h('DF-normal-igual-peso', m * g, 'Igualaste la normal al peso (trampa 7). La normal está inclinada: solo su componente vertical, N·cos θ, equilibra el peso, así que N es mayor que m·g.', TRA),
+        h('DF-normal-igual-peso', m * g, 'Igualaste la normal al peso. La normal está inclinada: solo su componente vertical, N·cos θ, equilibra el peso, así que N es mayor que m·g.', TRA),
         h('DF-seno-coseno', m * g * T.c, 'Multiplicaste el peso por cos θ, como en un plano inclinado. Aquí es al revés: N·cos θ = m·g, así que N = m·g/cos θ.'),
         h('DF-seno-coseno', m * g / T.s, 'Usaste sen θ. Como θ se mide desde la vertical, la componente vertical de la normal es N·cos θ.'),
         h('DF-centripeta-por-normal', m * g * T.t, 'Esa es la fuerza centrípeta, la componente horizontal de la normal (m·g·tan θ). La normal entera es la hipotenusa.'),
@@ -394,7 +411,7 @@
       const enunciado = [`En una base en ${lugar}, una astronauta empuja un carrito de `, v('m', `${f(m)} kg`), ' sobre un riel horizontal sin rozamiento, con una fuerza horizontal de ', v('F', `${f(F)} N`), `. La gravedad en ${lugar} es `, v('gA', `${f(gA)} m/s²`), ' y en la Tierra, 10 m/s².'];
       const pregunta = ['¿Qué ', v('x', 'aceleración'), ' tiene el carrito?'];
       const errores = [
-        pa('G4-misma-fuerza-acelera-mas', a * g / gA, `Creíste que, con menos gravedad, la misma fuerza acelera más (trampa 23). El empuje es horizontal y sin roce: solo cuenta la masa, que es la misma que en la Tierra. a = F/m.`, GRA),
+        pa('G4-misma-fuerza-acelera-mas', a * g / gA, `Creíste que, con menos gravedad, la misma fuerza acelera más. El empuje es horizontal y sin roce: solo cuenta la masa, que es la misma que en la Tierra. a = F/m.`, GRA),
         pa('G4-misma-fuerza-acelera-mas', a * gA / g, `Corregiste la aceleración por la gravedad de ${lugar}. La masa no cambia y la gravedad no entra en un empuje horizontal sin roce: a = F/m.`, GRA),
         h('DF-fuerza-entre-peso', F / (m * gA), `Dividiste la fuerza entre el peso en ${lugar}. La segunda ley usa la masa, no el peso: a = F/m.`),
         h('DF-fuerza-entre-peso', F / (m * g), 'Dividiste la fuerza entre el peso en la Tierra. La segunda ley usa la masa: a = F/m.'),

@@ -32,8 +32,10 @@
  * (docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md) solo documenta O1 a O4, que son
  * conceptuales (amplitud, masa y largo del péndulo) y no calzan con estas cuentas; los MAS-* son
  * hipótesis nuestras sacadas de la columna TRAMPA de los huecos (fase cero desde el extremo
- * negativo, amplitud como posición inicial, velocidad máxima por velocidad media, la gravedad como
- * fuerza restauradora del flotador, la frecuencia en el bloque apilado).
+ * negativo, amplitud como posición inicial, velocidad máxima por velocidad media, la frecuencia en
+ * el bloque apilado).
+ * Formato: en cada problema todas las alternativas van igual, con π (instante/v, flotante/periodo)
+ * o en decimales (media/vm, media/omega), para que la forma no delate a la correcta.
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -90,7 +92,6 @@
   }
   // Seno o coseno exacto de un múltiplo de π/6: «1/2», «−√3/2», «1».
   const trig = x => (Math.abs(Math.abs(x) - 0.5) < 1e-9 ? (x < 0 ? '−' : '') + '1/2' : P.radical(x));
-  const piTexto = (unidad, qmax = 12) => x => P.pi(x, unidad, qmax) || `${f(x)} ${unidad}`;
 
   const TIPOS = [['leer', 'k'], ['leer', 'x0'], ['leer', 'x0'], ['leer', 'periodo'], ['leer', 'frecuencia'],
     ['escribir', 'extremo'], ['escribir', 'extremo'], ['escribir', 'extremo'], ['escribir', 'centro'], ['escribir', 'centro'],
@@ -119,7 +120,7 @@
   function cerrar(rng, semilla, o) {
     const errores = o.errores.filter(e => e && Number.isFinite(e.valor) && (o.negativos || e.valor > 0))
       .map(e => (Math.abs(e.valor) < 1e-9 ? { ...e, valor: 0 } : e));
-    const alternativas = P.armar({ correcta: o.correcta, errores, rng, unidad: o.unidad, texto: o.texto || null, negativos: !!o.negativos });
+    const alternativas = P.armar({ correcta: o.correcta, errores, rng, unidad: o.unidad, texto: o.texto || null, negativos: !!o.negativos, formato: o.formato || null, qmax: o.qmax || 12 });
     return {
       id: `mas-horaria#${semilla}`, variables: o.variables || VAR, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o.datos,
@@ -132,11 +133,11 @@
   function leer(rng, semilla, sub) {
     const [Obj, obj] = rng.elegir(OBJ);
     if (sub === 'k') {
-      const A = rng.elegir([0.1, 0.2, 0.25, 0.3, 0.4, 0.5]), w = rng.elegir([2, 3, 4, 5, 6, 8, 10]), m = rng.elegir([0.2, 0.4, 0.5, 1, 1.5, 2, 4]);
+      const A = rng.elegir([0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5]), w = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12, 20]), m = rng.elegir([0.1, 0.2, 0.25, 0.4, 0.5, 0.8, 1, 1.5, 2, 3, 4]);
       const ph = rng.elegir([0, PI / 6, PI / 3, PI / 2, PI, 3 * PI / 2]);
       const correcta = m * w * w;
       if (!limpio(correcta)) return null;
-      const enunciado = [`${Obj} de ${f(m)} kg, unido a un resorte sobre un piso liso, oscila según `, ...ecuacion(A, w, ph, 'm'), ', con t en s.'];
+      const enunciado = [`${Obj} de ${f(m)} kg, unido a un resorte sobre un piso liso, oscila según `, ...ecuacion(A, w, ph, 'm'), ', con t en s.', CONV];
       const pregunta = ['¿Cuál es la ', v('x', 'constante del resorte'), '?'];
       const errores = [
         u('PR1-cuadrado', m * w, `Multiplicaste la masa por ω sin elevarla al cuadrado. De ω = √(k/m) sale k = m·ω² = ${f(m)} · ${w}².`),
@@ -151,10 +152,10 @@
       return cerrar(rng, semilla, { correcta, errores, unidad: 'N/m', enunciado, pregunta, solucion, datos: { tipo: 'leer', sub, A, w, fase: ph / PI, m } });
     }
     if (sub === 'x0') {
-      const A = rng.elegir([4, 6, 8, 10, 12, 16, 20]), w = rng.elegir([2, 4, 5, 10, PI, 2 * PI]);
+      const A = rng.elegir([2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 30]), w = rng.elegir([2, 3, 4, 5, 6, 10, PI, 2 * PI, 4 * PI]);
       const ph = rng.elegir([1, 2, 3, 4, 5, 7, 8, 9, 10, 11].map(k => k * PI / 6));
       const correcta = A * Math.sin(ph);
-      const enunciado = [`${Obj} oscila con MAS según `, ...ecuacion(A, w, ph, 'cm'), ', con t en s.'];
+      const enunciado = [`${Obj} oscila con MAS según `, ...ecuacion(A, w, ph, 'cm'), ', con t en s.', CONV];
       const pregunta = ['¿Cuál es la ', v('x', 'posición inicial'), ` ${obj === 'la esfera' ? 'de la esfera' : 'del ' + obj.slice(3)} (en t = 0)?`];
       const errores = [
         h('MAS-amplitud-como-x0', A, `Esa es la amplitud, la posición más lejana. En t = 0 la posición es A·sen φ: depende de la fase inicial, ${P.pi(ph)}.`),
@@ -170,10 +171,10 @@
         datos: { tipo: 'leer', sub, A, w, fase: ph / PI } });
     }
     // periodo o frecuencia, con ω = nπ
-    const n = rng.elegir([1, 2, 4, 5, 8, 10]), w = n * PI, A = rng.elegir([0.1, 0.2, 0.3, 0.5]);
-    const ph = rng.elegir([0, PI / 6, PI / 3, PI / 2, PI, 3 * PI / 2]);
+    const n = rng.elegir([1, 2, 4, 5, 8, 10, 20]), w = n * PI, A = rng.elegir([0.02, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5]);
+    const ph = rng.elegir([0, PI / 6, PI / 4, PI / 3, PI / 2, 2 * PI / 3, PI, 4 * PI / 3, 3 * PI / 2, 5 * PI / 3]);
     const T = 2 / n, fr = n / 2;
-    const enunciado = [`${Obj} oscila con MAS según `, ...ecuacion(A, w, ph, 'm'), ', con t en s.'];
+    const enunciado = [`${Obj} oscila con MAS según `, ...ecuacion(A, w, ph, 'm'), ', con t en s.', CONV];
     let correcta, unidad, errores, pregunta, solucion;
     if (sub === 'periodo') {
       correcta = T; unidad = 's';
@@ -204,13 +205,13 @@
     const conT = sub === 'extremo' && rng.entero(0, 2) === 0; // en «centro» la rapidez con π no sale limpia
     let w, m = null, k = null, T = null;
     if (conT) { T = rng.elegir([0.25, 0.4, 0.5, 1, 2]); w = 2 * PI / T; }
-    else { w = rng.elegir([2, 4, 5, 10, 20]); m = rng.elegir([0.1, 0.2, 0.25, 0.5, 1, 2]); k = m * w * w; if (!limpio(k)) return null; }
+    else { w = rng.elegir([2, 3, 4, 5, 6, 8, 10, 20]); m = rng.elegir([0.1, 0.2, 0.25, 0.4, 0.5, 1, 2, 4]); k = m * w * w; if (!limpio(k)) return null; }
     const datoW = conT ? `Su periodo es de ${f(T)} s.` : `La masa es de ${f(m)} kg y la constante del resorte, ${f(k)} N/m.`;
     let x0, v0, enunciado, errores, ph, A;
     const malW = conT ? [u('U7-f-como-omega', 1 / T, 'Pusiste la frecuencia f = 1/T donde va ω. Dentro del seno va ω = 2π/T, en rad/s.')]
       : [u('PR2-raiz', k / m, 'Usaste ω = k/m, sin la raíz. En el resorte ω = √(k/m).')];
     if (sub === 'extremo') {
-      const d = rng.elegir([2, 4, 5, 8, 10, 15, 20]); A = d / 100;
+      const d = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25]); A = d / 100;
       const comprime = rng.entero(0, 2) > 0;
       x0 = comprime ? -A : A; v0 = 0; ph = comprime ? 3 * PI / 2 : PI / 2;
       enunciado = ['Un bloque unido a un resorte horizontal oscila sobre un piso liso. ', datoW, ` Se ${comprime ? 'comprime' : 'estira'} el resorte `, v('A', `${d} cm`), ` (el bloque queda a la ${comprime ? 'izquierda' : 'derecha'} del equilibrio) y en t = 0 se lo suelta desde el reposo.`, CONV];
@@ -226,7 +227,7 @@
       errores[3] = { ...errores[3], respaldo: malW[0].respaldo, fuente: malW[0].fuente };
     } else {
       const izq = rng.moneda();
-      const Acm = rng.elegir([2, 4, 5, 8, 10, 20]); A = Acm / 100;
+      const Acm = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12, 15, 20]); A = Acm / 100;
       const vel = A * w; if (!conT && !limpio(vel, 3)) return null;
       x0 = 0; v0 = izq ? -vel : vel; ph = izq ? PI : 0;
       enunciado = ['Un bloque unido a un resorte horizontal oscila sobre un piso liso. ', datoW, ' En t = 0 pasa por la posición de equilibrio ', v('ph', `moviéndose hacia la ${izq ? 'izquierda' : 'derecha'}`), ' con una ', v('A', `rapidez de ${conT ? P.pi(vel, 'm/s') || f(vel, 3) + ' m/s' : f(vel, 3) + ' m/s'}`), '.', CONV];
@@ -293,7 +294,7 @@
     const errores = [
       h('MAS-vmax', A * w, `Esa es la rapidez máxima, A·ω, la que tiene al pasar por el equilibrio. En t = ${t} s la velocidad es A·ω·cos(ωt + φ).`),
       h('MAS-seno-en-v', A * w * s, 'Usaste seno en la velocidad. Si x = A·sen(ωt + φ), la velocidad es v = A·ω·cos(ωt + φ).'),
-      h('MAS-sin-omega', A * c, 'Te faltó multiplicar por ω. La velocidad es v = A·ω·cos(ωt + φ): ω sale al derivar.'),
+      h('MAS-sin-fase', A * w * Math.cos(w * t), `Olvidaste la fase inicial. Dentro del coseno va ωt + φ, con φ = ${P.pi(ph)}.`),
       h('MAS-signo', -correcta, `Te salió el signo cambiado: cos ${ang} es ${c > 0 ? 'positivo' : 'negativo'}.`),
     ];
     const solucion = [
@@ -307,7 +308,7 @@
   // ---------------- media ----------------
   function mediaVm(rng, semilla) {
     const kk = rng.elegir([1, 2, 4]), w = PI / kk, paso = kk / 2;
-    const A = rng.elegir([2, 4, 5, 6, 8, 10, 12, 15, 20]);
+    const A = rng.elegir([2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 30]);
     const ph = rng.entero(0, 3) * PI / 2;
     const i1 = rng.entero(0, 3), i2 = i1 + rng.entero(1, 4);
     const t1 = i1 * paso, t2 = i2 * paso;
@@ -332,13 +333,14 @@
       [`x(${f(t1)}) = ${f(A)} · sen ${P.pi(norm(w * t1 + ph))} = ${f(X(t1))} cm y x(${f(t2)}) = ${f(A)} · sen ${P.pi(norm(w * t2 + ph))} = ${f(X(t2))} cm.`],
       [v('x', 'v media'), ` = Δx/Δt = (${f(X(t2))} − ${f(X(t1))})/(${f(t2)} − ${f(t1)}) = `, v('x', `${f(correcta)} cm/s`), '.'],
     ];
-    return cerrar(rng, semilla, { negativos: true, correcta, errores, unidad: 'cm/s', texto: conPi('cm/s'), enunciado, pregunta, solucion,
+    // Todas en decimales: la correcta (Δx/Δt) no lleva π, así que las que llevan π tampoco se escriben con π.
+    return cerrar(rng, semilla, { negativos: true, correcta, errores, unidad: 'cm/s', texto: x => `${f(x)} cm/s`, enunciado, pregunta, solucion,
       datos: { tipo: 'media', sub: 'vm', A, w, fase: ph / PI, t1, t2 } });
   }
 
   function mediaOmega(rng, semilla) {
-    const c = rng.elegir([0.5, 1, 2, 3, 4, 5]), w = c * PI;
-    const A = rng.elegir([2, 4, 5, 6, 8, 10, 12, 20]);
+    const c = rng.elegir([0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6]), w = c * PI;
+    const A = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12, 15, 16, 20, 24, 30]);
     const mitad = rng.moneda();
     const vm = mitad ? 3 * A * c : 2 * A * c;
     if (!limpio(vm)) return null;
@@ -352,14 +354,16 @@
       h('MAS-promedio-velocidades', mitad ? 2 * vm / (A * (1 + Math.sqrt(3) / 2)) : 2 * vm / A, 'Promediaste la velocidad inicial y la final. En el MAS la aceleración cambia, así que la media no es el promedio: es Δx/Δt.'),
       mitad ? h('MAS-cuarto-de-periodo', PI * vm / A, 'Tomaste T/4 como el tiempo hasta A/2. En un cuarto de periodo llega hasta A; hasta A/2 tarda menos: sen(ωt) = 1/2 da ωt = π/6, es decir, T/12.')
         : u('PR7-medio-periodo', PI * vm / A, 'Tomaste medio periodo como el tiempo hasta x = A. Del equilibrio al extremo es un cuarto de periodo: ωt = π/2.'),
+      mitad ? h('MAS-angulo-coseno', 2 * PI * vm / (3 * A), 'Usaste ωt = π/3, el ángulo cuyo coseno es 1/2. Con x = A·sen(ωt), llegar a A/2 pide sen(ωt) = 1/2: ωt = π/6.') : null,
       u('U7-f-como-omega', w / (2 * PI), `Esa es la frecuencia f = ω/2π, en Hz. Te piden la frecuencia angular, ω = 2π·f.`),
     ];
     const solucion = [
       [`Llega a x = ${meta} cuando sen(ωt) = ${mitad ? '1/2' : '1'}: ωt = ${mitad ? 'π/6' : 'π/2'}, así que t = ${mitad ? 'π/(6ω)' : 'π/(2ω)'}.`],
       [`Velocidad media: ${mitad ? `(${f(A / 2)} cm)/(π/(6ω)) = 3·A·ω/π` : `(${f(A)} cm)/(π/(2ω)) = 2·A·ω/π`} = ${f(vm)} cm/s.`],
-      [v('x', 'ω'), ` = ${mitad ? `π · ${f(vm)}/(3 · ${f(A)})` : `π · ${f(vm)}/(2 · ${f(A)})`} = `, v('x', P.pi(w, 'rad/s')), '.'],
+      [v('x', 'ω'), ` = ${mitad ? `π · ${f(vm)}/(3 · ${f(A)})` : `π · ${f(vm)}/(2 · ${f(A)})`} = ${P.pi(w)} ≈ `, v('x', `${f(w)} rad/s`), '.'],
     ];
-    return cerrar(rng, semilla, { correcta: w, errores, unidad: 'rad/s', texto: piTexto('rad/s'), enunciado, pregunta, solucion,
+    // Todas en decimales: el error más buscado (ω = v media/A) no lleva π.
+    return cerrar(rng, semilla, { correcta: w, errores, unidad: 'rad/s', texto: x => `${f(x)} rad/s`, enunciado, pregunta, solucion,
       variables: { ...VAR, x: { nombre: 'frecuencia angular', color: 'd' } },
       datos: { tipo: 'media', sub: 'omega', A, vm, meta: mitad ? 0.5 : 1 } });
   }
@@ -390,27 +394,30 @@
       return cerrar(rng, semilla, { correcta, errores, unidad: 'cm', variables: VA, enunciado, pregunta, solucion, datos: { tipo: 'apilado', sub, m, M, mu, k } });
     }
     const correcta = mu * G;
-    const pregunta = ['¿Cuál es la ', v('x', 'mayor aceleración'), ' que puede tener el sistema sin que el bloque de arriba resbale?'];
+    const A0 = rng.elegir([1, 2, 3, 4, 5, 6, 8]), a0 = w * w * A0 / 100;   // con la amplitud de ahora no resbala
+    if (!limpio(a0) || a0 >= correcta) return null;
+    enunciado.push(' Ahora oscilan juntos con una ', v('A', `amplitud de ${A0} cm`), '.');
+    const pregunta = ['Si se aumenta la amplitud, ¿cuál es la ', v('x', 'mayor aceleración'), ' que puede llegar a tener el sistema sin que el bloque de arriba resbale?'];
     const errores = [
       h('MAS-reparte-roce', mu * G * m / (m + M), 'Repartiste el rozamiento entre la masa de los dos. El rozamiento solo empuja al de arriba: a máx = μs·m·g/m = μs·g.'),
       h('MAS-masa-total', mu * G * (m + M) / m, 'Pusiste la masa de los dos sobre el rozamiento del de arriba. Para el bloque de arriba: μs·m·g = m·a, así que a = μs·g.'),
-      h('MAS-con-frecuencia', mu * G / (w * w), `Dividiste entre ω² = ${f(w * w)}: eso da la amplitud máxima en metros. El límite de la aceleración lo pone solo el rozamiento: μs·g.`),
+      h('MAS-con-frecuencia', a0, `Esa es la aceleración máxima con la amplitud de ahora, ω²·A = ${f(w * w)} · ${f(A0 / 100)}. Al aumentar la amplitud crece; el límite para que no resbale no depende de la amplitud ni de la frecuencia: lo pone el rozamiento, μs·g.`),
       h('MAS-g-sin-mu', G, 'Usaste g como aceleración máxima. El rozamiento estático solo da hasta μs·m·g, así que el límite es μs·g.'),
     ];
     const solucion = [
       ['Al bloque de arriba solo lo acelera el rozamiento estático, que vale como mucho ', v('ph', 'μs·m·g'), '.'],
       ['Con m·a ≤ μs·m·g, la masa se cancela: ', v('x', 'a máx'), ` = μs·g = ${f(mu)} · 10 = `, v('x', `${f(correcta)} m/s²`), '. La constante del resorte y la frecuencia no cambian este límite.'],
     ];
-    return cerrar(rng, semilla, { correcta, errores, unidad: 'm/s²', variables: VA, enunciado, pregunta, solucion, datos: { tipo: 'apilado', sub, m, M, mu, k } });
+    return cerrar(rng, semilla, { correcta, errores, unidad: 'm/s²', variables: VA, enunciado, pregunta, solucion, datos: { tipo: 'apilado', sub, m, M, mu, k, A: A0 } });
   }
 
   // ---------------- flotante ----------------
   function flotante(rng, semilla, sub) {
-    const liq = rng.elegir([['agua', 1000], ['agua', 1000], ['aceite', 800]]);
-    const rho = liq[1], S = rng.elegir([10, 20, 25, 40, 50, 80, 100]), n = rng.elegir([2, 4, 5, 10]);
+    const liq = rng.elegir([['agua', 1000], ['agua', 1000], ['aceite', 800], ['glicerina', 1250]]);
+    const rho = liq[1], S = rng.elegir([8, 10, 12, 15, 16, 18, 20, 24, 25, 30, 32, 36, 40, 45, 48, 50, 60, 64, 72, 75, 80, 90, 100, 120, 150]), n = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]);
     const k = rho * G * S / 10000, m = k / (n * n), T = 2 * PI / n;
     const sumergido = m / (rho * S / 10000);           // largo bajo el líquido en equilibrio, en m
-    if (!limpio(k) || !limpio(m, 3) || m < 0.05 || sumergido < 0.03 || sumergido > 1.2) return null;
+    if (!limpio(k) || !limpio(m, 3) || m < 0.05 || sumergido < 0.02 || sumergido > 1.5) return null;
     const VF = { A: { nombre: 'sección', color: 'o' }, w: { nombre: 'masa', color: 'i' }, ph: { nombre: 'densidad del líquido', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     const [cuerpo, lastre] = m >= 2 ? rng.elegir([['Una boya cilíndrica', ''], ['Un tambor cilíndrico', ', con lastre,']])
       : rng.elegir([['Un tubo de ensayo', ', con perdigones en el fondo,'], ['Un frasco cilíndrico', ', con arena en el fondo,']]);
@@ -424,17 +431,19 @@
     if (sub === 'periodo') {
       const pregunta = ['¿Cuál es el ', v('x', 'periodo'), ' de su oscilación?'];
       const errores = [
-        h('MAS-gravedad-como-k', 2 * PI * Math.sqrt(m / G), 'Usaste la gravedad como si fuera la constante restauradora. El peso no cambia al hundirlo; lo que cambia es el empuje: k = ρ·g·S.'),
         u('PR4-invierte', 2 * PI * Math.sqrt(k / m), 'Invertiste el cociente: el periodo es 2π·√(m/k). A más masa, oscila más lento.'),
         u('PR2-raiz', 2 * PI * m / k, 'Te faltó la raíz: T = 2π·√(m/k).'),
         u('U3-cm2', 2 * PI * Math.sqrt(m / (k * 100)), `Pasaste cm² a m² dividiendo entre 100. Un metro cuadrado tiene 10 000 cm²: ${f(S)} cm² = ${f(sm2, 4)} m².`),
+        h('MAS-sin-dos', PI * Math.sqrt(m / k), 'Usaste T = π·√(m/k). Una oscilación completa es una vuelta de 2π: T = 2π·√(m/k).'),
+        u('U3-sin-convertir', 2 * PI * Math.sqrt(m / (k * 10000)), `Usaste la sección en cm² sin pasarla a m². En k = ρ·g·S la sección va en m²: ${f(S)} cm² = ${f(sm2, 4)} m².`),
       ];
       const solucion = [...solBase, [v('x', 'T'), ' = 2π·√(', v('w', 'm'), `/k) = 2π·√(${f(m, 3)}/${f(k)}) = 2π/${n} = `, v('x', P.pi(T, 's')), '.']];
-      return cerrar(rng, semilla, { correcta: T, errores, unidad: 's', texto: piTexto('s', 100), variables: VF, enunciado, pregunta, solucion, datos: { tipo: 'flotante', sub, rho, S, m } });
+      // Todas con π: los errores que no salen como múltiplo limpio de π se descartan.
+      return cerrar(rng, semilla, { correcta: T, errores, unidad: 's', formato: 'pi', qmax: 1000, variables: VF, enunciado, pregunta, solucion, datos: { tipo: 'flotante', sub, rho, S, m } });
     }
     const pregunta = ['¿Cuál es la ', v('x', 'masa'), ' del cuerpo?'];
     const errores = [
-      h('MAS-gravedad-como-k', G / (n * n), 'Usaste la gravedad como si fuera la constante restauradora. Lo que lo devuelve es el empuje extra: k = ρ·g·S.'),
+      u('PR7-medio-periodo', 4 * k / (n * n), `Usaste ω = π/T = ${f(n / 2)} rad/s. Una oscilación completa es una vuelta de 2π: ω = 2π/T = ${n} rad/s.`),
       u('PR1-cuadrado', k / n, `Dividiste entre ω sin elevarla al cuadrado. ω = 2π/T = ${n} rad/s y m = k/ω².`),
       u('U3-cm2', k * 100 / (n * n), `Pasaste cm² a m² dividiendo entre 100. ${f(S)} cm² = ${f(sm2, 4)} m² (se divide entre 10 000).`),
       h('MAS-sin-g', rho * sm2 / (n * n), 'Te faltó la g en la constante: el empuje extra es ρ·g·S·y, así que k = ρ·g·S.'),

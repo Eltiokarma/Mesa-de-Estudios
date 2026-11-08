@@ -1,0 +1,14 @@
+{
+  "id": "carga-en-campo",
+  "titulo": "La carga que gira en el imán",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.magnetismo"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

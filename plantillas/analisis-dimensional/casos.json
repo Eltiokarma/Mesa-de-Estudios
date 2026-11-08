@@ -1,0 +1,294 @@
+{
+  "plantilla": "analisis-dimensional",
+  "tolerancia": 1e-09,
+  "nota": "Claves de dimensión: dim:<M>,<L>,<T>,<Θ> con los exponentes. Exponentes: respuesta numérica (x, o la suma de los exponentes). Proposiciones: vf:<secuencia>. Las magnitudes van por su clave (Pot = potencia, rho = densidad, S = área, Per = periodo, K = constante del resorte, d = deformación).",
+  "verificacion": "PENDIENTE",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "proposiciones",
+        "sub": "vf",
+        "props": [
+          "U1",
+          "F2",
+          "N3"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:FFF",
+        "exacta": "FFF"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "proposiciones",
+        "sub": "vf",
+        "props": [
+          "S3",
+          "U2",
+          "H3"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VVV",
+        "exacta": "VVV"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "constante",
+        "sub": "suma",
+        "miembro": "q",
+        "t1": {
+          "fs": [
+            "t"
+          ],
+          "ex": [
+            1
+          ]
+        },
+        "t2": {
+          "fs": [
+            "f"
+          ],
+          "ex": [
+            1
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "dim:1,1,−2,0",
+        "exacta": "MLT⁻²"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "exponentes",
+        "sub": "uno",
+        "q": "F",
+        "fs": [
+          "m",
+          "v",
+          "R"
+        ],
+        "j": 2
+      },
+      "esperado": {
+        "respuesta": -1,
+        "exacta": "−1"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "constante",
+        "sub": "argumento",
+        "miembro": "Pot",
+        "fun": "exp",
+        "x": "x",
+        "a": 2,
+        "pide": "AB"
+      },
+      "esperado": {
+        "respuesta": "dim:1,0,−3,0",
+        "exacta": "MT⁻³"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "constante",
+        "sub": "suma",
+        "miembro": "E",
+        "t1": {
+          "fs": [
+            "m"
+          ],
+          "ex": [
+            -1
+          ]
+        },
+        "t2": {
+          "fs": [
+            "F",
+            "v"
+          ],
+          "ex": [
+            1,
+            2
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "dim:2,2,−2,0",
+        "exacta": "M²L²T⁻²"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "exponentes",
+        "sub": "uno",
+        "q": "Pot",
+        "fs": [
+          "rho",
+          "A",
+          "v"
+        ],
+        "j": 1
+      },
+      "esperado": {
+        "respuesta": 1,
+        "exacta": "1"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "constante",
+        "sub": "argumento",
+        "miembro": "Pot",
+        "fun": "exp",
+        "x": "h",
+        "a": 1,
+        "pide": "AB"
+      },
+      "esperado": {
+        "respuesta": "dim:1,1,−3,0",
+        "exacta": "MLT⁻³"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "constante",
+        "sub": "combinada",
+        "miembro": "Pot",
+        "t1": {
+          "fs": [
+            "a",
+            "t"
+          ],
+          "ex": [
+            2,
+            3
+          ]
+        },
+        "t2": {
+          "fs": [
+            "S"
+          ],
+          "ex": [
+            1
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "dim:0,0,1,0",
+        "exacta": "T"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "exponentes",
+        "sub": "suma",
+        "q": "F",
+        "fs": [
+          "rho",
+          "v",
+          "A"
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "exponentes",
+        "sub": "suma",
+        "q": "E",
+        "fs": [
+          "K",
+          "d"
+        ]
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3"
+      }
+    },
+    {
+      "semilla": 41,
+      "entrada": {
+        "tipo": "constante",
+        "sub": "combinada",
+        "miembro": "v",
+        "t1": {
+          "fs": [
+            "F",
+            "S"
+          ],
+          "ex": [
+            1,
+            1
+          ]
+        },
+        "t2": {
+          "fs": [
+            "V",
+            "a"
+          ],
+          "ex": [
+            1,
+            1
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "dim:−1,1,0,0",
+        "exacta": "M⁻¹L"
+      }
+    },
+    {
+      "semilla": 50,
+      "entrada": {
+        "tipo": "constante",
+        "sub": "argumento",
+        "miembro": "E",
+        "fun": "exp",
+        "x": "x",
+        "a": 1,
+        "pide": "B"
+      },
+      "esperado": {
+        "respuesta": "dim:0,−1,0,0",
+        "exacta": "L⁻¹"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "tipo": "exponentes",
+        "sub": "uno",
+        "q": "Per",
+        "fs": [
+          "L",
+          "g"
+        ],
+        "j": 1
+      },
+      "esperado": {
+        "respuesta": -0.5,
+        "exacta": "−1/2"
+      }
+    }
+  ]
+}

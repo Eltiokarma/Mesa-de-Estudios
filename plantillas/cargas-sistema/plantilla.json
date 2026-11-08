@@ -1,0 +1,14 @@
+{
+  "id": "cargas-sistema",
+  "titulo": "Tres cargas en el plano",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.electrostatica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -127,6 +127,12 @@ test('las variantes internas salen: con μ y con fuerza, km/h, minutos, escalone
   for (const m of ['fuerza', 'mu', 'kmh', 'escalones', 'rampa', 'kW', 'HP', 'surtidor', 'pozo', 'personas', 'sacos']) assert.ok(marcas.has(m), `no sale ${m}`);
 });
 
+test('hay variedad: en 600 semillas casi no se repiten los datos', () => {
+  const vistos = new Set(); let repetidos = 0;
+  for (let s = 0; s < 600; s++) { const k = JSON.stringify(gen.generar(s)._datos); if (vistos.has(k)) repetidos++; vistos.add(k); }
+  assert.ok(repetidos < 30, `${repetidos} repetidos`);
+});
+
 test('los textos no dicen «de el» ni «a el»', () => {
   const plano = seg => seg.map(x => (typeof x === 'string' ? x : x.t)).join('');
   for (let s = 0; s < 1000; s++) {
