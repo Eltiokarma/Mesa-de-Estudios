@@ -56,10 +56,14 @@ const FORMAS_MANO = {
   'plata-cloruro': 'doble precipitacion', 'lluvia-oro': 'doble precipitacion', ablandar: 'doble precipitacion',
   'hierro-hidroxido': 'doble precipitacion', 'neutra-hcl': 'doble neutralizacion', 'neutra-sulfurico': 'doble neutralizacion',
   'sal-acida-carbonato': 'doble neutralizacion', 'sal-acida-sulfato': 'doble neutralizacion',
-  'cal-dureza': 'doble neutralizacion precipitacion', 'bario-neutra': 'doble neutralizacion precipitacion',
+  'cal-dureza': 'doble precipitacion | neutralizacion', 'bario-neutra': 'doble neutralizacion precipitacion',
   'caliza-acido': 'doble | neutralizacion', 'bicarbonato-acido': 'doble | neutralizacion', vinagre: 'doble | neutralizacion',
   fenton: '', 'dioxido-nitrogeno': '', lejia: '', azufre: '', fotosintesis: '', 'cobre-nitrico': '', 'cloro-lab': '',
 };
+// Con →, pero solo porque un gas se escapa (o el sólido se separa): ni «reversible» ni «irreversible» sin dudas.
+const REVERSIBLE_AMBIGUA = new Set(['sarro', 'caliza-disuelta', 'caliza', 'bicarbonato', 'cloruro-amonio']);
+// Qué ecuación explica cada pregunta del agua dura.
+const AGUA_MANO = { sarro: 'sarro', bicarbonato: 'caliza-disuelta' };
 const FORMAS = ['adicion', 'descomposicion', 'simple', 'doble', 'combustion', 'neutralizacion', 'precipitacion'];
 function formasMano(id) {
   const [si, amb = ''] = FORMAS_MANO[id].split('|').map(x => x.trim().split(/\s+/).filter(Boolean));
@@ -119,7 +123,7 @@ function claseMano(id, k) {
   const r = id2r(id);
   if (FORMAS.includes(k)) { const f = formasMano(id); return f.si.has(k) ? 'si' : f.amb.has(k) ? 'ambigua' : 'no'; }
   if (k === 'redox') return esRedox(id) ? 'si' : 'no';
-  if (k === 'reversible') return r.ec.includes('<=>') ? 'si' : 'no';
+  if (k === 'reversible') return r.ec.includes('<=>') ? 'si' : REVERSIBLE_AMBIGUA.has(id) ? 'ambigua' : 'no';
   if (k === 'dismutacion') return DISMUTA[id] ? 'si' : 'no';
   if (r.dH == null) return 'ambigua';
   return (k === 'exotermica') === (r.dH < 0) ? 'si' : 'no';
@@ -136,6 +140,7 @@ function recalcular(p) {
     case 'redoxSet': return 'set:' + ids.map((id, j) => esRedox(id) ? ROM[j] : null).filter(Boolean).join(',');
     case 'rol': { const r = rolesMano(ids[0])[d.sub]; return r.length === 1 ? 'esp:' + r[0] : 'esp:?'; }
     case 'dismutacion': return 'dis:' + DISMUTA[ids[0]];
+    case 'aguaDura': return 'agua:' + AGUA_MANO[d.sub];
     case 'calor': {
       const r = id2r(ids[0]), { R, P } = leer(r.ec), t = [...R, ...P].find(x => x.f === d.sustancia);
       const M = Object.entries(contarAtomos(t.f)).reduce((s, [e, n]) => s + MM[e] * n, 0);
@@ -148,7 +153,7 @@ function recalcular(p) {
       const id = ids[0], rl = rolesMano(id);
       return 'vf:' + d.afirmaciones.map(a => {
         if (a === 'Es una reacción redox.') return esRedox(id);
-        if (a === 'Es reversible.') return claseMano(id, 'reversible') === 'si';
+        if (a === 'Es reversible.') { assert.notEqual(claseMano(id, 'reversible'), 'ambigua', id); return claseMano(id, 'reversible') === 'si'; }
         if (a.startsWith('Libera calor')) return id2r(id).dH < 0;
         if (a.startsWith('Absorbe calor')) return id2r(id).dH > 0;
         let m = a.match(/^El (.+) es el agente oxidante\.$/); if (m) return rl.agenteOxidante.length === 1 && sub(rl.agenteOxidante[0]) === m[1];
@@ -243,14 +248,30 @@ test('ninguna opción incorrecta es defendible (2000 problemas)', () => {
   }
 });
 
-test('salen los nueve tipos y los seis papeles redox; hay combustiones en V/F y en redox', () => {
+test('la comproporción del azufre no se llama dismutación y se explica como comproporción', () => {
+  const a = gen.analizar(id2r('azufre'));
+  assert.equal(a.clases.dismutacion, 'no'); assert.equal(a.clases.redox, 'si');
+  const t = gen.porQueNo('dismutacion', a);
+  assert.match(t, /comproporción/); assert.match(t, /−2 → 0/); assert.match(t, /\+4 → 0/);
+});
+
+test('en rol las opciones llevan su estado y nunca el radical •OH; el calor del enunciado va coloreado', () => {
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), d = p._datos;
+    if (d.tipo === 'rol') for (const a of p.alternativas) { assert.match(a.texto, /\((s|l|g|ac)\)$/, `semilla ${s}: ${a.texto}`); assert.ok(!a.texto.startsWith('•'), `semilla ${s}`); }
+    const calor = d.reacciones.some(r => r.calor) && d.tipo !== 'aLaVez';
+    if (calor) { assert.ok(p.enunciado.some(x => x && x.v === 'dH'), `semilla ${s}: el calor sin color`); assert.ok(p.variables.dH, `semilla ${s}: falta la variable dH`); }
+  }
+});
+
+test('salen los diez tipos y los seis papeles redox; hay combustiones en V/F y en redox', () => {
   const tipos = new Set(), subs = new Set(), ids = new Set();
   for (let s = 0; s < 1500; s++) { const p = gen.generar(s); tipos.add(p._datos.tipo); if (p._datos.sub) subs.add(p._datos.sub);
     for (const a of p.alternativas) if (a.error) ids.add(a.error.id); }
-  assert.deepEqual([...tipos].sort(), ['aLaVez', 'calor', 'dismutacion', 'redoxSet', 'relacionar', 'rol', 'tipo', 'tipoEnergia', 'vf']);
-  assert.equal(subs.size, 6);
+  assert.deepEqual([...tipos].sort(), ['aLaVez', 'aguaDura', 'calor', 'dismutacion', 'redoxSet', 'relacionar', 'rol', 'tipo', 'tipoEnergia', 'vf']);
+  assert.equal(subs.size, 8);
   for (const id of ['QA-combustion-no-redox', 'QA-acido-base-redox', 'QA-tipo-simple', 'QA-tipo-doble', 'QA-agente-cruzado', 'EC9-definiciones-al-reves',
-    'QA-dismutacion-un-sentido', 'QA-calor-en-productos-absorbido', 'QA-descomposicion-reversible', 'EC9-oxidar-es-ganar-oxigeno'])
+    'QA-dismutacion-un-sentido', 'QA-calor-en-productos-absorbido', 'QA-descomposicion-reversible', 'EC9-oxidar-es-ganar-oxigeno', 'QA-calentar-endotermica', 'QA-sentido-invertido', 'QA-redox-sin-cambio'])
     assert.ok(ids.has(id), `no aparece ${id}`);
 });
 

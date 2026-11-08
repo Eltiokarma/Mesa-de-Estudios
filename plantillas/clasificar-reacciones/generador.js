@@ -11,7 +11,8 @@
  * Ag 108, I 127, Ba 137, Hg 200,6, Pb 207.
  *
  * NÚMEROS DE OXIDACIÓN (por especie; si un elemento aparece varias veces en una fórmula, se da el promedio,
- * como el C de C₃H₈ = −8/3), reglas escolares en este orden:
+ * como el C de C₃H₈ = −8/3; en pantalla los C de orgánicos con varios C llevan «(promedio)»), reglas
+ * escolares en este orden:
  *   1. Una sola clase de átomo: carga ÷ número de átomos (elemento libre 0; ion monoatómico, su carga).
  *   2. Excepciones: H₂O₂, Na₂O₂ y BaO₂ (peróxidos) tienen O −1; el radical •OH tiene O −1 y H +1;
  *      en un hidruro metálico (solo metal e H) el H es −1.
@@ -52,7 +53,11 @@
  *   exotérmica / endotérmica  ΔH < 0 / ΔH > 0; sin ΔH en el banco, las dos son ambiguas. En pantalla el calor
  *                  sale como «ΔH = …» o como término «+ Q kJ»: del lado de los productos si se libera
  *                  (exotérmica), del lado de los reactivos si se absorbe (endotérmica).
- *   reversible     doble flecha.
+ *   reversible     doble flecha. Ambigua, marcada a mano en el banco, en las que con → solo van en un sentido
+ *                  porque un gas se escapa (horno de cal, bicarbonato al hornear, sarro, caliza disuelta) y en
+ *                  NH₃ + HCl → NH₄Cl. También se deja ambigua a mano la neutralización de Ca(HCO₃)₂ + Ca(OH)₂.
+ *   comproporción  (2H₂S + SO₂ → 3S + 2H₂O): el mismo elemento parte de dos valores y llega a uno; es redox,
+ *                  pero no dismutación.
  *
  * TIPOS de problema (_datos.tipo) y clave de la respuesta (respuesta.valor):
  *   tipo          una ecuación; ¿de qué clase es? (entre adición, descomposición, desplazamiento simple,
@@ -61,7 +66,7 @@
  *                 otras tres. Clave 'rel:' + letras en el orden I, II, III, IV (p. ej. 'rel:bdac').
  *   redoxSet      cuatro ecuaciones; ¿cuáles son redox? Clave 'set:' + números romanos separados por comas
  *                 ('set:' solo si ninguna).
- *   rol           una redox sin dismutación; sub = agenteOxidante | agenteReductor | seOxida | seReduce |
+ *   rol           una redox sin dismutación (opciones con su estado, sin el radical •OH); sub = agenteOxidante | agenteReductor | seOxida | seReduce |
  *                 formaOxidada | formaReducida. Clave 'esp:<fórmula>' (fórmula como en el banco).
  *   dismutacion   una dismutación; ¿qué pasa con el número de oxidación? Clave 'dis:<elemento>'.
  *   calor         una ecuación con ΔH; se dan n mol (en gramos, m = n·M) de una sustancia; ¿cuánto calor y en
@@ -71,6 +76,10 @@
  *   aLaVez        dos propiedades X e Y y cuatro o cinco ecuaciones; solo una es «sí» en las dos. Clave
  *                 'una:<id de la reacción>'.
  *   vf            tres afirmaciones sobre una ecuación; clave 'vf:' + V/F en orden (p. ej. 'vf:VVF').
+ *   aguaDura      sub = sarro: al hervir agua dura sin agregar nada queda una costra; ¿qué ecuación la explica?
+ *                 Clave 'agua:sarro' (Ca(HCO₃)₂ → CaCO₃ + CO₂ + H₂O). sub = bicarbonato: lluvia con CO₂ sobre
+ *                 caliza; clave 'agua:caliza-disuelta' (CaCO₃ + CO₂ + H₂O → Ca(HCO₃)₂). El sentido lo decide
+ *                 el CO₂ (si sobra, disuelve; si se escapa al hervir, precipita).
  *
  * Convenciones: coma decimal en pantalla; los gramos con hasta 1 decimal; Q con hasta 1 decimal.
  * Errores: EC9 (docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md) y códigos QA-…
@@ -93,8 +102,9 @@
     Fe: 56, Cu: 63.5, Zn: 65, Br: 80, Ag: 108, I: 127, Ba: 137, Hg: 200.6, Pb: 207 };
   const METALES = ['Li', 'Na', 'K', 'Mg', 'Ca', 'Ba', 'Al', 'Zn', 'Fe', 'Cu', 'Ag', 'Pb', 'Hg', 'Mn'];
 
-  // ---------- Banco: [id, ecuación, ΔH en kJ o null, contexto] ----------
-  const B = (id, ec, dH, contexto) => ({ id, ec, dH, contexto });
+  // ---------- Banco: [id, ecuación, ΔH en kJ o null, contexto, extra] ----------
+  // extra.ambiguas: clases que se dejan ambiguas a mano; extra.agua: papel en el agua dura.
+  const B = (id, ec, dH, contexto, extra = {}) => ({ id, ec, dH, contexto, ambiguas: extra.ambiguas || [], agua: extra.agua || null });
   const BANCO = [
     // Combustiones
     B('metano', 'CH4(g) + 2O2(g) -> CO2(g) + 2H2O(l)', -890, 'En la hornilla de una cocina a gas natural'),
@@ -110,27 +120,27 @@
     B('trioxido', '2SO2(g) + O2(g) <=> 2SO3(g)', -198, 'En una fábrica de ácido sulfúrico'),
     B('cal-apagada', 'CaO(s) + H2O(l) -> Ca(OH)2(s)', -65, 'Al apagar cal viva en una obra'),
     B('acido-sulfurico', 'SO3(g) + H2O(l) -> H2SO4(ac)', null, 'En la lluvia ácida'),
-    B('acido-carbonico', 'CO2(g) + H2O(l) <=> H2CO3(ac)', null, 'En una botella de agua con gas'),
+    B('acido-carbonico', 'CO2(g) + H2O(l) <=> H2CO3(ac)', null, 'En una botella de agua con gas', { agua: 'gas' }),
     B('magnesio', '2Mg(s) + O2(g) -> 2MgO(s)', -1202, 'Al encender una cinta de magnesio'),
     B('herrumbre', '4Fe(s) + 3O2(g) -> 2Fe2O3(s)', -1648, 'En una reja que se oxida'),
     B('cloruro-hidrogeno', 'H2(g) + Cl2(g) -> 2HCl(g)', -185, 'En un reactor de síntesis'),
     B('metanol', 'CO(g) + 2H2(g) <=> CH3OH(g)', -91, 'En una planta de metanol'),
     B('dimero', '2NO2(g) <=> N2O4(g)', -57, 'En una ampolla cerrada con gas pardo'),
     B('sal', '2Na(s) + Cl2(g) -> 2NaCl(s)', -822, 'En una demostración de laboratorio'),
-    B('cloruro-amonio', 'NH3(g) + HCl(g) -> NH4Cl(s)', -176, 'Cuando se acercan dos frascos abiertos'),
-    B('caliza-disuelta', 'CaCO3(s) + CO2(g) + H2O(l) -> Ca(HCO3)2(ac)', null, 'En una cueva de roca caliza'),
+    B('cloruro-amonio', 'NH3(g) + HCl(g) -> NH4Cl(s)', -176, 'Cuando se acercan dos frascos abiertos, de amoniaco y de ácido clorhídrico', { ambiguas: ['reversible'] }),
+    B('caliza-disuelta', 'CaCO3(s) + CO2(g) + H2O(l) -> Ca(HCO3)2(ac)', null, 'En una cueva de roca caliza', { ambiguas: ['reversible'], agua: 'disuelve' }),
     // Descomposición
-    B('caliza', 'CaCO3(s) -> CaO(s) + CO2(g)', 178, 'En un horno de cal'),
+    B('caliza', 'CaCO3(s) -> CaO(s) + CO2(g)', 178, 'En un horno de cal', { ambiguas: ['reversible'] }),
     B('oxido-mercurio', '2HgO(s) -> 2Hg(l) + O2(g)', 182, 'Al calentar un polvo rojo en un tubo'),
     B('electrolisis', '2H2O(l) -> 2H2(g) + O2(g)', 572, 'En una celda de electrólisis'),
     B('clorato', '2KClO3(s) -> 2KCl(s) + 3O2(g)', -78, 'Al calentar clorato de potasio'),
     B('peroxido', '2H2O2(l) -> 2H2O(l) + O2(g)', -196, 'En un frasco de agua oxigenada'),
-    B('bicarbonato', '2NaHCO3(s) -> Na2CO3(s) + H2O(g) + CO2(g)', 136, 'Al hornear un queque'),
-    B('sarro', 'Ca(HCO3)2(ac) -> CaCO3(s) + CO2(g) + H2O(l)', null, 'Dentro de una tetera con agua dura'),
+    B('bicarbonato', '2NaHCO3(s) -> Na2CO3(s) + H2O(g) + CO2(g)', 136, 'Al hornear un queque', { ambiguas: ['reversible'] }),
+    B('sarro', 'Ca(HCO3)2(ac) -> CaCO3(s) + CO2(g) + H2O(l)', null, 'Dentro de una tetera con agua dura', { ambiguas: ['reversible'], agua: 'sarro' }),
     B('pentacloruro', 'PCl5(g) <=> PCl3(g) + Cl2(g)', 88, 'En un recipiente cerrado y caliente'),
     B('perclorato', '4KClO3(s) -> 3KClO4(s) + KCl(s)', -144, 'Al calentar con cuidado clorato de potasio'),
     B('nitroso', '3HNO2(ac) -> HNO3(ac) + 2NO(g) + H2O(l)', null, 'En una disolución de ácido nitroso'),
-    B('fermentacion', 'C6H12O6(ac) -> 2C2H5OH(ac) + 2CO2(g)', -69, 'En la fermentación de la chicha'),
+    B('fermentacion', 'C6H12O6(s) -> 2C2H5OH(l) + 2CO2(g)', -69, 'En la fermentación de la chicha'),
     // Desplazamiento simple
     B('zinc-cobre', 'Zn(s) + CuSO4(ac) -> ZnSO4(ac) + Cu(s)', -218, 'Al sumergir una lámina de zinc'),
     B('hierro-cobre', 'Fe(s) + CuSO4(ac) -> FeSO4(ac) + Cu(s)', -154, 'Al dejar un clavo en sulfato de cobre'),
@@ -143,14 +153,14 @@
     // Doble desplazamiento y precipitación
     B('plata-cloruro', 'AgNO3(ac) + NaCl(ac) -> AgCl(s) + NaNO3(ac)', -65, 'Al mezclar dos disoluciones incoloras'),
     B('lluvia-oro', 'Pb(NO3)2(ac) + 2KI(ac) -> PbI2(s) + 2KNO3(ac)', null, 'Al mezclar dos disoluciones en un tubo'),
-    B('ablandar', 'CaCl2(ac) + Na2CO3(ac) -> CaCO3(s) + 2NaCl(ac)', null, 'Al ablandar agua dura con soda'),
+    B('ablandar', 'CaCl2(ac) + Na2CO3(ac) -> CaCO3(s) + 2NaCl(ac)', null, 'Al ablandar agua dura con soda', { agua: 'ablanda' }),
     B('hierro-hidroxido', 'FeCl3(ac) + 3NaOH(ac) -> Fe(OH)3(s) + 3NaCl(ac)', null, 'Al agregar soda cáustica a una sal de hierro'),
     // Neutralización (ácido-base)
     B('neutra-hcl', 'HCl(ac) + NaOH(ac) -> NaCl(ac) + H2O(l)', -57, 'En una titulación'),
     B('neutra-sulfurico', 'H2SO4(ac) + 2KOH(ac) -> K2SO4(ac) + 2H2O(l)', -114, 'Al neutralizar un derrame de ácido'),
     B('sal-acida-carbonato', 'NaHCO3(ac) + NaOH(ac) -> Na2CO3(ac) + H2O(l)', null, 'Al agregar soda cáustica a agua con bicarbonato'),
     B('sal-acida-sulfato', 'NaHSO4(ac) + NaOH(ac) -> Na2SO4(ac) + H2O(l)', null, 'Al neutralizar un limpiador de baños'),
-    B('cal-dureza', 'Ca(HCO3)2(ac) + Ca(OH)2(ac) -> 2CaCO3(s) + 2H2O(l)', null, 'Al tratar agua dura con cal'),
+    B('cal-dureza', 'Ca(HCO3)2(ac) + Ca(OH)2(ac) -> 2CaCO3(s) + 2H2O(l)', null, 'Al tratar agua dura con cal', { ambiguas: ['neutralizacion'], agua: 'ablanda' }),
     B('bario-neutra', 'H2SO4(ac) + Ba(OH)2(ac) -> BaSO4(s) + 2H2O(l)', null, 'Al mezclar un ácido con agua de barita'),
     // Ácido con carbonato o bicarbonato
     B('caliza-acido', 'CaCO3(s) + 2HCl(ac) -> CaCl2(ac) + CO2(g) + H2O(l)', null, 'Al echar ácido sobre una piedra caliza'),
@@ -216,7 +226,7 @@
   function textoEcuacion(r, calor = null) {
     const ec = ecuacion(r.ec);
     const izq = ec.reactivos.map(t => terminoTexto(t)), der = ec.productos.map(t => terminoTexto(t));
-    if (calor === 'termino') (r.dH < 0 ? der : izq).push(`${P.formatear(Math.abs(r.dH), 1)} kJ`);
+    if (calor === 'termino') { const q = `${P.formatear(Math.abs(r.dH), 1)} kJ`; if (r.dH < 0) der.push(q); else izq.unshift(q); }
     let s = `${izq.join(' + ')} ${ec.reversible ? '⇌' : '→'} ${der.join(' + ')}`;
     if (calor === 'dH') s += `   ΔH = ${dHTexto(r.dH)}`;
     return s;
@@ -328,6 +338,7 @@
     c.reversible = ec.reversible ? 'si' : 'no';
     c.exotermica = r.dH == null ? 'ambigua' : r.dH < 0 ? 'si' : 'no';
     c.endotermica = r.dH == null ? 'ambigua' : r.dH > 0 ? 'si' : 'no';
+    for (const k of r.ambiguas || []) c[k] = 'ambigua';
     const a = { r, ec, eo, estados, sube, baja, redox, dism, roles, clases: c };
     cache.set(r.id, a);
     return a;
@@ -346,13 +357,21 @@
   const F = f => bonita(f);
   const listaY = l => l.length <= 1 ? l.join('') : l.slice(0, -1).join(', ') + ' y ' + l[l.length - 1];
 
+  // Número de oxidación x del elemento e con su texto; en los orgánicos con varios C se avisa que es promedio.
+  const promedio = (s, e) => e === 'C' && s.atomos.C > 1 && s.atomos.H;
+  function eoDe(a, e, x) {
+    const ss = [...a.ec.reactivos, ...a.ec.productos].filter(s => s.atomos[e] && Math.abs(num(a.eo.get(s.f)[e]) - x) < 1e-9);
+    if (!ss.length) return String(x);
+    return eoTexto(a.eo.get(ss[0].f)[e]) + (ss.every(s => promedio(s, e)) ? ' (promedio)' : '');
+  }
+  const plural = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
   // Cambios de número de oxidación: «el Zn pasa de 0 a +2; el Cu, de +2 a 0».
   const cambioDe = (a, e) => cambios(a, [e]);
   function cambios(a, cuales = null) {
     const partes = [];
     for (const e of cuales || [...new Set([...a.sube, ...a.baja])]) {
       const desde = a.estados[e].L, hasta = a.estados[e].D;
-      const t = x => { for (const s of [...a.ec.reactivos, ...a.ec.productos]) if (s.atomos[e] && Math.abs(num(a.eo.get(s.f)[e]) - x) < 1e-9) return eoTexto(a.eo.get(s.f)[e]); return String(x); };
+      const t = x => eoDe(a, e, x);
       partes.push(`el ${e} pasa de ${listaY(desde.map(t))} a ${listaY(hasta.map(t))}`);
     }
     return partes.join('; ');
@@ -361,11 +380,11 @@
     const n = a.ec.reactivos.length, m = a.ec.productos.length;
     switch (k) {
       case 'adicion': return `${n} sustancias se juntan en un solo producto`;
-      case 'descomposicion': return `una sola sustancia se rompe en ${m}`;
+      case 'descomposicion': return `una sola sustancia se rompe en ${m} sustancias`;
       case 'simple': { const e = a.ec.reactivos.find(esElemento), s = a.ec.productos.find(esElemento); return `el elemento libre ${F(e.f)} toma el lugar del ${F(s.f)} en su compuesto y lo deja libre`; }
       case 'doble': return 'dos compuestos intercambian sus partes (sus iones) y nadie cambia su número de oxidación';
-      case 'combustion': return `el ${F(a.ec.reactivos.find(t => t.base !== 'O2').f)} arde con O₂ y da solo ${listaY([...new Set(a.ec.productos.map(t => F(t.base)))])}`;
-      case 'neutralizacion': return `un ácido (${listaY(a.ec.reactivos.filter(t => esAcido(t) || esSalAcida(t)).map(t => F(t.f)))}) reacciona con un hidróxido y sale agua`;
+      case 'combustion': return `el ${F(a.ec.reactivos.find(t => t.base !== 'O2').f)} arde con O₂ y da solo ${listaY([...new Set(a.ec.productos.map(t => F(t.base)))])}${a.r.id === 'glucosa' ? ' (en la célula es una combustión lenta, por pasos, sin llama)' : ''}`;
+      case 'neutralizacion': return `${listaY(a.ec.reactivos.filter(t => esAcido(t) || esSalAcida(t)).map(t => (esSalAcida(t) ? 'una sal ácida' : 'un ácido') + ` (${F(t.f)})`))} reacciona con un hidróxido y sale agua`;
       case 'precipitacion': return `de disoluciones (ac) sale un sólido (s): ${listaY(a.ec.productos.filter(t => t.estado === 's').map(t => F(t.f)))}`;
       case 'redox': return `cambian números de oxidación: ${cambios(a)}`;
       case 'reversible': return 'se escribe con doble flecha: va en los dos sentidos';
@@ -377,7 +396,7 @@
   function porQueNo(k, a) {
     const R = a.ec.reactivos, Pr = a.ec.productos;
     switch (k) {
-      case 'adicion': return `En la adición varias sustancias se juntan en un solo producto; aquí salen ${Pr.length} productos${R.length === 1 ? ' de un solo reactivo' : ''}.`;
+      case 'adicion': return `En la adición varias sustancias se juntan en un solo producto; aquí ${Pr.length === 1 ? 'sale 1 producto, pero de un solo reactivo' : `salen ${Pr.length} productos`}${R.length === 1 && Pr.length > 1 ? ' de un solo reactivo' : ''}.`;
       case 'descomposicion': return `En la descomposición una sola sustancia se rompe en varias; aquí reaccionan ${R.length} sustancias.`;
       case 'simple': {
         const e = R.filter(esElemento);
@@ -385,7 +404,7 @@
           : 'En el desplazamiento simple un elemento libre (solo, sin combinar) entra a un compuesto y deja libre a otro; aquí no reacciona ningún elemento libre.';
       }
       case 'doble': return a.redox ? `En el doble desplazamiento dos compuestos solo intercambian sus iones, sin cambiar números de oxidación; aquí ${cambios(a)}.`
-        : `En el doble desplazamiento reaccionan dos compuestos que intercambian sus partes; aquí ${R.length !== 2 ? `reaccionan ${R.length === 1 ? 'una sola sustancia' : R.length + ' sustancias'}` : Pr.length < 2 ? 'sale un solo producto' : 'no todas las sustancias son compuestos'}.`;
+        : `En el doble desplazamiento reaccionan dos compuestos que intercambian sus partes; aquí ${R.length !== 2 ? `${R.length === 1 ? 'reacciona una sola sustancia' : 'reaccionan ' + R.length + ' sustancias'}` : Pr.length < 2 ? 'sale un solo producto' : 'no todas las sustancias son compuestos'}.`;
       case 'combustion': return R.some(t => t.base === 'O2') ? 'En una combustión un combustible con carbono arde con O₂ y da CO₂, CO o H₂O; aquí no es así.'
         : Pr.some(t => t.base === 'O2') ? 'En una combustión el O₂ se consume; aquí el O₂ sale como producto.' : 'En una combustión algo arde con O₂; aquí no reacciona O₂.';
       case 'neutralizacion': return 'En la neutralización un ácido reacciona con un hidróxido y se forman sal y agua; aquí no hay ese par.';
@@ -395,7 +414,13 @@
       case 'reversible': return 'Se escribe con una sola flecha (→): en estas condiciones va en un solo sentido.';
       case 'exotermica': return `ΔH = ${dHTexto(a.r.dH)} es positivo: la reacción absorbe calor.`;
       case 'endotermica': return `ΔH = ${P.formatear(a.r.dH, 1)} kJ es negativo: la reacción libera calor.`;
-      case 'dismutacion': return a.redox ? 'Hay redox, pero el elemento que se oxida no es el mismo que se reduce.' : 'Ni siquiera es redox: ningún número de oxidación cambia.';
+      case 'dismutacion': {
+        if (!a.redox) return 'Ni siquiera es redox: ningún número de oxidación cambia.';
+        const e = a.sube.find(x => a.baja.includes(x) && a.estados[x].L.length >= 2 && a.estados[x].D.length === 1);
+        if (e) { const L = [...a.estados[e].L].sort((x, y) => x - y), d = a.estados[e].D[0], t = x => eoDe(a, e, x);
+          return `El ${e} se oxida (${t(L[0])} → ${t(d)}) y se reduce (${t(L[L.length - 1])} → ${t(d)}), pero parte de dos números de oxidación distintos y llega a uno solo: es una comproporción, lo contrario de la dismutación.`; }
+        return 'Hay redox, pero el elemento que se oxida no es el mismo que se reduce.';
+      }
     }
   }
   // Código del error de quien le pone a la reacción `a` la propiedad k que no tiene (o le niega la que tiene).
@@ -407,23 +432,34 @@
         if (c.neutralizacion !== 'no') return H('QA-acido-base-redox', `Llamaste redox a una reacción ácido-base. ${porQueNo('redox', a)} El H⁺ pasa de una sustancia a otra, pero sigue con +1.`);
         if (c.adicion === 'si' && a.ec.reactivos.some(t => t.atomos.O)) return { id: 'EC9-oxidar-es-ganar-oxigeno', respaldo: 'parcial', fuente: FUENTE_EC,
           explicacion: `Se une a un compuesto con oxígeno y parece que «se oxida». Oxidarse no es ganar oxígeno: es perder electrones, y aquí ningún número de oxidación cambia.` };
+        if (c.descomposicion === 'si' && a.ec.productos.some(t => t.estado === 'g' && t.atomos.O)) return { id: 'EC9-oxidar-es-ganar-oxigeno', respaldo: 'parcial', fuente: FUENTE_EC,
+          explicacion: `Suelta ${listaY(a.ec.productos.filter(t => t.estado === 'g' && t.atomos.O).map(t => F(t.f)))}, ${a.ec.productos.filter(t => t.estado === 'g' && t.atomos.O).length > 1 ? 'que llevan' : 'que lleva'} oxígeno, y parece que algo «se reduce» al perderlo. Reducirse no es perder oxígeno: es ganar electrones, y aquí ningún número de oxidación cambia.` };
         if (c.descomposicion === 'si') return H('QA-descomposicion-redox', `No toda descomposición es redox. ${porQueNo('redox', a)}`);
-        return H('QA-doble-redox', `${porQueNo('redox', a)} Que cambien de pareja los iones no es redox.`);
+        if (a.ec.reactivos.length === 1 && a.ec.productos.length === 1) {
+          const t = a.ec.reactivos[0], igual = Object.keys(t.atomos).map(e => `el ${e} sigue en ${eoTexto(a.eo.get(t.f)[e])}`);
+          return H('QA-redox-sin-cambio', `${t.coef === 2 ? 'Dos' : t.coef} moléculas de ${F(t.f)} se unen; ${listaY(igual)}. No es redox.`);
+        }
+        if (c.doble === 'si') return H('QA-doble-redox', `${porQueNo('redox', a)} Que cambien de pareja los iones no es redox.`);
+        return H('QA-redox-sin-cambio', porQueNo('redox', a));
       }
       if (c.combustion === 'si') return H('QA-combustion-no-redox', `Toda combustión es redox: ${cambios(a)}. El O₂ se reduce y el combustible se oxida.`);
       if (a.dism.length) return H('QA-dismutacion-no-redox', `Sí es redox aunque cambie un solo elemento: ${cambios(a)}.`);
+      if (![...a.sube, ...a.baja].includes('O')) { const e = a.sube[0], L = a.estados[e].L, D = a.estados[e].D;
+        return { id: 'EC9-oxidar-es-ganar-oxigeno', respaldo: 'parcial', fuente: FUENTE_EC,
+          explicacion: `Oxidarse no es ganar oxígeno: es perder electrones. Aquí no se gana ni se pierde oxígeno, pero el ${e} pierde electrones (${eoDe(a, e, L[0])} → ${eoDe(a, e, Math.max(...D))}). Es redox: ${cambios(a)}.` }; }
       if (c.simple === 'si') return H('QA-desplazamiento-no-redox', `Todo desplazamiento simple es redox: ${cambios(a)}.`);
       return H('QA-redox-no-visto', `Sí es redox: ${cambios(a)}.`);
     }
     if (k === 'reversible') {
       if (afirma) return c.descomposicion === 'si' || a.dism.length
-        ? H('QA-descomposicion-reversible', `No toda descomposición o dismutación es reversible. ${porQueNo('reversible', a)}`)
+        ? H('QA-descomposicion-reversible', `No toda descomposición o dismutación es reversible. Con → va en un solo sentido en estas condiciones${a.ec.productos.some(t => t.estado === 'g') ? `: el ${listaY(a.ec.productos.filter(t => t.estado === 'g').map(t => F(t.f)))} se escapa como gas` : ''}. Si en un recipiente cerrado esa reacción llegara al equilibrio, se escribiría con ⇌.`)
         : H('QA-reversible-sin-doble-flecha', porQueNo('reversible', a));
       return H('QA-reversible-sin-doble-flecha', `Es reversible: ${porQueSi('reversible', a)}.`);
     }
     if (k === 'exotermica' || k === 'endotermica') {
       const exo = a.r.dH < 0;
       const txt = exo ? `ΔH = ${P.formatear(a.r.dH, 1)} kJ: libera calor (exotérmica)` : `ΔH = ${dHTexto(a.r.dH)}: absorbe calor (endotérmica)`;
+      if (exo && /calentar/i.test(a.r.contexto || '')) return H('QA-calentar-endotermica', `Que haya que calentarla para que empiece no la vuelve endotérmica: el calor de arranque solo la enciende. Una vez en marcha libera más de lo que recibió: ${txt}.`);
       if (calor === 'termino') return exo
         ? H('QA-calor-en-productos-absorbido', `El calor escrito del lado de los productos es calor que sale: la reacción lo libera, como un producto más. Es exotérmica, con ΔH = ${dHTexto(a.r.dH)}.`)
         : H('QA-calor-en-reactivos-liberado', `El calor escrito del lado de los reactivos es calor que entra: la reacción lo absorbe, como un reactivo más. Es endotérmica, con ΔH = ${dHTexto(a.r.dH)}.`);
@@ -439,7 +475,15 @@
   // ---------- Utilidades ----------
   const ROM = ['I', 'II', 'III', 'IV', 'V'];
   const LET = ['a', 'b', 'c', 'd'];
-  const ecParte = (r, calor) => ({ t: textoEcuacion(r, calor), formula: true });
+  // La ecuación como fórmula; el calor (ΔH o «Q kJ»), aparte y con el color de la variable dH (regla 4).
+  function ecParte(r, calor) {
+    const eq = { t: textoEcuacion(r), formula: true };
+    if (!calor) return [eq];
+    if (calor === 'dH') return [eq, '   ', v('dH', `ΔH = ${dHTexto(r.dH)}`)];
+    const q = v('dH', `${P.formatear(Math.abs(r.dH), 1)} kJ`);
+    return r.dH < 0 ? [eq, ' + ', q] : [q, ' + ', eq];
+  }
+  const VAR_DH = { dH: { nombre: 'calor de la ecuación', color: 'h' } };
   const contexto = r => r.contexto ? `${r.contexto} ocurre la reacción ` : 'Ocurre la reacción ';
   const datosEc = (r, calor) => ({ id: r.id, ec: r.ec, dH: r.dH, ...(calor ? { calor } : {}) });
 
@@ -457,10 +501,10 @@
     const k = rng.elegir(si);
     const errores = rng.barajar(no).map(x => ({ ...errorClase(x, a, true), clave: 'tipo:' + x, texto: NOMBRE[x] }));
     return cerrar(rng, semilla, {
-      enunciado: [contexto(r), ecParte(r), '.'],
+      enunciado: [contexto(r), ...ecParte(r), '.'],
       pregunta: ['¿De qué tipo es esta reacción?'],
       correcta: { clave: 'tipo:' + k, texto: NOMBRE[k] }, errores,
-      solucion: [[`Cuenta reactivos y productos y fíjate si hay elementos libres: ${a.ec.reactivos.length} reactivo(s) y ${a.ec.productos.length} producto(s).`],
+      solucion: [[`Cuenta reactivos y productos y fíjate si hay elementos libres: ${plural(a.ec.reactivos.length, 'reactivo', 'reactivos')} y ${plural(a.ec.productos.length, 'producto', 'productos')}.`],
         [`${esClase(k).replace(/^e/, 'E')}: ${porQueSi(k, a)}.`],
         ...(si.length > 1 ? [[`Además es de ${listaY(si.filter(x => x !== k).map(nombreMin))}: una reacción puede caer en dos clases a la vez.`]] : []),
         [a.redox ? `Por los números de oxidación es redox: ${cambios(a)}.` : 'No es redox: ningún número de oxidación cambia.']],
@@ -497,10 +541,10 @@
         explicacion: `Cruzaste ${ROM[i]} y ${ROM[j]}. ${ROM[i]} ${esClase(cls[i])}: ${porQueSi(cls[i], ai)}. ${ROM[j]} ${esClase(cls[j])}: ${porQueSi(cls[j], aj)}.` });
     }
     const enunciado = ['Relaciona cada ecuación con su tipo de reacción. '];
-    ecs.forEach((r, j) => enunciado.push(`${ROM[j]}. `, ecParte(r, conCalor ? 'dH' : null), j < 3 ? '   ' : ''));
+    ecs.forEach((r, j) => enunciado.push(`${ROM[j]}. `, ...ecParte(r, conCalor ? 'dH' : null), j < 3 ? '   ' : ''));
     enunciado.push('   Tipos: ' + LET.map((l, i) => `${l}) ${nombreMin(clases[letras[i]])}`).join('; ') + '.');
     return cerrar(rng, semilla, {
-      enunciado, pregunta: ['¿Cuál es la relación correcta?'],
+      variables: conCalor ? VAR_DH : {}, enunciado, pregunta: ['¿Cuál es la relación correcta?'],
       correcta: { clave: 'rel:' + correcta.join(''), texto: texto(correcta) }, errores,
       solucion: ecs.map((r, j) => [`${ROM[j]} → ${correcta[j]}) ${nombreMin(cls[j])}: ${porQueSi(cls[j], analizar(r))}.`]),
       _datos: { tipo: 'relacionar', reacciones: ecs.map(r => datosEc(r, conCalor ? 'dH' : null)), clases: LET.map((l, i) => clases[letras[i]]) },
@@ -514,6 +558,8 @@
     const red = rng.barajar(BANCO.filter(r => analizar(r).redox)), no = rng.barajar(BANCO.filter(r => !analizar(r).redox));
     // Que haya al menos una trampa: una combustión o dismutación entre las redox, o una ácido-base entre las otras.
     const ecs = rng.barajar([...red.slice(0, nRedox), ...no.slice(0, 4 - nRedox)]);
+    const trampa = ecs.some(r => { const a = analizar(r); return a.redox ? a.clases.combustion === 'si' || a.dism.length > 0 : a.clases.neutralizacion !== 'no'; });
+    if (!trampa) return null;
     const set = ecs.map((r, j) => analizar(r).redox ? ROM[j] : null).filter(Boolean);
     const errores = ecs.map((r, j) => {
       const a = analizar(r), s = a.redox ? set.filter(x => x !== ROM[j]) : ROM.slice(0, 4).filter(x => set.includes(x) || x === ROM[j]);
@@ -521,7 +567,7 @@
       return { ...e, clave: 'set:' + s.join(','), texto: textoSet(s), explicacion: `${a.redox ? `Dejaste fuera la ${ROM[j]}` : `Contaste la ${ROM[j]}`}. ${e.explicacion}` };
     });
     const enunciado = ['Observa estas ecuaciones. '];
-    ecs.forEach((r, j) => enunciado.push(`${ROM[j]}. `, ecParte(r), j < 3 ? '   ' : ''));
+    ecs.forEach((r, j) => enunciado.push(`${ROM[j]}. `, ...ecParte(r), j < 3 ? '   ' : ''));
     return cerrar(rng, semilla, {
       enunciado, pregunta: ['¿Cuáles son reacciones redox?'],
       correcta: { clave: 'set:' + set.join(','), texto: textoSet(set) }, errores,
@@ -532,10 +578,13 @@
   }
 
   // ---- rol: agente oxidante, reductor, sustancia que se oxida o se reduce, formas oxidada y reducida ----
-  const PREG_ROL = { agenteOxidante: '¿Cuál es el agente oxidante?', agenteReductor: '¿Cuál es el agente reductor?',
-    seOxida: '¿Qué sustancia se oxida?', seReduce: '¿Qué sustancia se reduce?',
-    formaOxidada: '¿Cuál es la forma oxidada, es decir, el producto que se forma por oxidación?',
-    formaReducida: '¿Cuál es la forma reducida, es decir, el producto que se forma por reducción?' };
+  // Se pregunta por un reactivo o un producto tal como está escrito (con su estado), para que «se reduce el
+  // cobre» no vuelva defendible el Cu(s) cuando se pide el CuSO₄(ac). Con iones, «especie».
+  const PREG_ROL = {
+    agenteOxidante: q => `¿Qué ${q.reac} es el agente oxidante?`, agenteReductor: q => `¿Qué ${q.reac} es el agente reductor?`,
+    seOxida: q => `¿Qué ${q.reac} se oxida?`, seReduce: q => `¿Qué ${q.reac} se reduce?`,
+    formaOxidada: q => `¿Qué ${q.prod} es la forma oxidada, es decir, la que se forma por oxidación?`,
+    formaReducida: q => `¿Qué ${q.prod} es la forma reducida, es decir, la que se forma por reducción?` };
   const ES_REAC = { agenteOxidante: true, agenteReductor: true, seOxida: true, seReduce: true, formaOxidada: false, formaReducida: false };
     function rolDe(a, f) {
     const R = a.roles;
@@ -552,7 +601,11 @@
     const subs = Object.keys(PREG_ROL).filter(s => a.roles[s].length === 1 && !(s.startsWith('forma') && a.roles.formaOxidada.some(f => a.roles.formaReducida.includes(f))));
     const sub = rng.elegir(subs);
     const correcta = a.roles[sub][0];
-    const todas = [...new Set([...a.ec.reactivos, ...a.ec.productos].map(t => t.f))].filter(f => f !== correcta);
+    const todas = [...new Set([...a.ec.reactivos, ...a.ec.productos].map(t => t.f))].filter(f => f !== correcta && !f.startsWith('•'));
+    const term = new Map([...a.ec.reactivos, ...a.ec.productos].map(t => [t.f, t]));
+    const T = f => terminoTexto({ ...term.get(f), coef: 1 });
+    const iones = [...a.ec.reactivos, ...a.ec.productos].some(t => t.carga !== 0);
+    const q = iones ? { reac: 'especie de los reactivos', prod: 'especie de los productos' } : { reac: 'reactivo', prod: 'producto' };
     const ox = a.roles.seOxida[0], rd = a.roles.seReduce[0];
     const errores = todas.map(f => {
       const ro = rolDe(a, f);
@@ -566,22 +619,22 @@
         e = { id: 'EC9-definiciones-al-reves', respaldo: 'parcial', fuente: FUENTE_EC,
           explicacion: `El ${F(f)} es la forma ${ro === 'oxP' ? 'oxidada' : 'reducida'}: ahí el elemento quedó con un número de oxidación ${ro === 'oxP' ? 'mayor' : 'menor'}. Oxidarse es subir; reducirse, bajar.` };
       } else if (ES_REAC[sub] && (ro === 'oxP' || ro === 'redP')) {
-        e = H('QA-producto-por-reactivo', `El ${F(f)} es un producto (la forma ${ro === 'oxP' ? 'oxidada' : 'reducida'}). Los agentes y las sustancias que se oxidan o se reducen son reactivos: los que entran a la reacción.`);
+        e = H('QA-producto-por-reactivo', `El ${F(f)} es un producto (${a.roles.formaOxidada.includes(f) && a.roles.formaReducida.includes(f) ? 'forma oxidada y también reducida' : 'la forma ' + (ro === 'oxP' ? 'oxidada' : 'reducida')}). Los agentes y las sustancias que se oxidan o se reducen son reactivos: los que entran a la reacción.`);
       } else if (!ES_REAC[sub] && (ro === 'oxR' || ro === 'redR')) {
         e = H('QA-reactivo-por-producto', `El ${F(f)} es un reactivo (${ro === 'oxR' ? 'el que se oxida' : 'el que se reduce'}). Se pide el producto en que termina el elemento después del cambio.`);
       } else {
         e = H('QA-especie-sin-cambio', `En el ${F(f)} ningún elemento cambió su número de oxidación respecto de los reactivos: no participa en el paso de electrones.`);
       }
-      return { ...e, clave: 'esp:' + f, texto: F(f) };
+      return { ...e, clave: 'esp:' + f, texto: T(f) };
     });
     return cerrar(rng, semilla, {
       variables: { ox: { nombre: 'lo que se oxida', color: 'i' }, red: { nombre: 'lo que se reduce', color: 'o' } },
-      enunciado: [contexto(r), ecParte(r), '.'],
-      pregunta: [PREG_ROL[sub]],
-      correcta: { clave: 'esp:' + correcta, texto: F(correcta) }, errores: rng.barajar(errores),
+      enunciado: [contexto(r), ...ecParte(r), '.'],
+      pregunta: [PREG_ROL[sub](q)],
+      correcta: { clave: 'esp:' + correcta, texto: T(correcta) }, errores: rng.barajar(errores),
       solucion: [['Números de oxidación que cambian: ', ...a.sube.flatMap((e, i) => [i ? '; ' : '', v('ox', cambioDe(a, e))]), '; ', ...a.baja.flatMap((e, i) => [i ? '; ' : '', v('red', cambioDe(a, e))]), '.'],
         ['Se oxida (sube, pierde electrones) el ', v('ox', F(ox)), ': es el agente reductor. Se reduce (baja, gana electrones) el ', v('red', F(rd)), ': es el agente oxidante.'],
-        [`Formas que se producen: oxidada, ${listaY(a.roles.formaOxidada.map(F))}; reducida, ${listaY(a.roles.formaReducida.map(F))}.`]],
+        ['Formas que se producen: oxidada, ', v('ox', listaY(a.roles.formaOxidada.map(F))), '; reducida, ', v('red', listaY(a.roles.formaReducida.map(F))), '.']],
       _datos: { tipo: 'rol', sub, reacciones: [datosEc(r)] },
     });
   }
@@ -590,7 +643,7 @@
   function dismutacion(rng, semilla) {
     const r = rng.elegir(BANCO.filter(x => analizar(x).dism.length === 1 && analizar(x).sube.length === 1 && analizar(x).baja.length === 1));
     const a = analizar(r), E = a.dism[0];
-    const t = x => { for (const s of [...a.ec.reactivos, ...a.ec.productos]) if (s.atomos[E] && Math.abs(num(a.eo.get(s.f)[E]) - x) < 1e-9) return eoTexto(a.eo.get(s.f)[E]); };
+    const t = x => eoDe(a, E, x);
     const v0 = a.estados[E].L[0], arriba = Math.max(...a.estados[E].D), abajo = Math.min(...a.estados[E].D);
     const otro = rng.elegir([...new Set([...a.ec.reactivos, ...a.ec.productos].flatMap(s => Object.keys(s.atomos)))].filter(e => e !== E));
     const correcta = { clave: 'dis:' + E, texto: `El ${E} se oxida y se reduce a la vez: pasa de ${t(v0)} a ${t(arriba)} y a ${t(abajo)}.` };
@@ -602,12 +655,13 @@
     ]);
     return cerrar(rng, semilla, {
       variables: { ox: { nombre: 'lo que se oxida', color: 'i' }, red: { nombre: 'lo que se reduce', color: 'o' } },
-      enunciado: [contexto(r), ecParte(r), '.'],
+      enunciado: [contexto(r), ...ecParte(r), '.'],
       pregunta: ['¿Qué pasa con los números de oxidación?'],
       correcta, errores,
       solucion: [[`Calcula el número de oxidación del ${E} en cada sustancia. En los reactivos tiene ${t(v0)}.`],
         ['En los productos una parte sube a ', v('ox', t(arriba)), ' (se oxida) y otra baja a ', v('red', t(abajo)), ' (se reduce).'],
-        [`Es una dismutación (desproporción): el ${E} es a la vez agente oxidante y reductor.`]],
+        [`Es una dismutación (desproporción): el ${E} es a la vez agente oxidante y reductor.`],
+        ...(E === 'C' ? [['En los compuestos orgánicos se usa el promedio de los C: en la glucosa cada C tiene su propio número de oxidación, pero el promedio es 0; en el etanol el promedio es −2, y en el CO₂ el C tiene +4.']] : [])],
       _datos: { tipo: 'dismutacion', reacciones: [datosEc(r)] },
     });
   }
@@ -635,7 +689,7 @@
     const verbo = m === 1 ? (esReac ? 'reacciona' : 'se forma') : (esReac ? 'reaccionan' : 'se forman');
     return cerrar(rng, semilla, {
       variables: { dH: { nombre: 'calor de la ecuación', color: 'h' }, m: { nombre: 'masa', color: 'o' }, Q: { nombre: 'calor pedido', color: 'd' } },
-      enunciado: [contexto(r), ecParte(r, forma), '. En un ensayo ', verbo, ' ', v('m', `${P.formatear(m, 1)} g de ${F(t.f)}`), '.'],
+      enunciado: [contexto(r), ...ecParte(r, forma), '. En un ensayo ', verbo, ' ', v('m', `${P.formatear(m, 1)} g de ${F(t.f)}`), '.'],
       pregunta: ['¿Cuánto calor interviene y en qué sentido?'],
       datos: `Masa molar del ${F(t.f)}: ${P.formatear(M, 1)} g/mol.`,
       correcta: op(sent, Q), errores,
@@ -664,7 +718,7 @@
     ];
     return cerrar(rng, semilla, {
       variables: { dH: { nombre: 'calor de la ecuación', color: 'h' } },
-      enunciado: [contexto(r), ecParte(r, forma), '.'],
+      enunciado: [contexto(r), ...ecParte(r, forma), '.'],
       pregunta: ['¿Cómo se clasifica por su forma y por la energía?'],
       correcta: T(k, en), errores,
       solucion: [[`Por la forma: ${nombreMin(k)}, porque ${porQueSi(k, a)}.`],
@@ -719,7 +773,7 @@
       const e = rng.moneda() ? 'exotermica' : 'endotermica';
       add('energia', e === 'exotermica' ? 'Libera calor: es exotérmica.' : 'Absorbe calor: es endotérmica.', c[e] === 'si', errorClase(e, a, c[e] !== 'si', forma));
     }
-    add('reversible', 'Es reversible.', a.ec.reversible, errorClase('reversible', a, !a.ec.reversible));
+    if (c.reversible !== 'ambigua') add('reversible', 'Es reversible.', a.ec.reversible, errorClase('reversible', a, !a.ec.reversible));
     if (a.redox && !a.dism.length && a.roles.seOxida.length === 1 && a.roles.seReduce.length === 1 && a.roles.seOxida[0] !== a.roles.seReduce[0]) {
       const ox = a.roles.seOxida[0], rd = a.roles.seReduce[0], verdad = rng.moneda();
       add('agente', `El ${F(verdad ? rd : ox)} es el agente oxidante.`, verdad,
@@ -740,18 +794,57 @@
     });
     const w = ok.map(x => !x);
     errores.push({ ...elegidas[0].err, clave: 'vf:' + sec(w), texto: sec(w), explicacion: `Las tres están al revés. ${elegidas.map((s, i) => `${ROM[i]} es ${s.verdad ? 'verdadera' : 'falsa'}`).join('; ')}. ${elegidas[0].err.explicacion}` });
-    const enunciado = [contexto(r), ecParte(r, r.dH != null ? forma : null), '. Indica si cada afirmación es verdadera (V) o falsa (F): '];
+    const enunciado = [contexto(r), ...ecParte(r, r.dH != null ? forma : null), '. Indica si cada afirmación es verdadera (V) o falsa (F): '];
     elegidas.forEach((s, i) => enunciado.push(`${ROM[i]}. ${s.texto} `));
     return cerrar(rng, semilla, {
-      variables: {}, enunciado, pregunta: ['¿Cuál es la secuencia correcta?'],
+      variables: r.dH != null ? VAR_DH : {}, enunciado, pregunta: ['¿Cuál es la secuencia correcta?'],
       correcta: { clave: 'vf:' + sec(ok), texto: sec(ok) }, errores,
       solucion: elegidas.map((s, i) => [`${ROM[i]}. ${s.verdad ? 'V' : 'F'}: ${s.verdad ? s.err.explicacion.replace(/^Sí /, 'Sí ') : s.err.explicacion}`]),
       _datos: { tipo: 'vf', reacciones: [datosEc(r, r.dH != null ? forma : null)], afirmaciones: elegidas.map(s => s.texto) },
     });
   }
 
-  const TIPOS = { tipo, relacionar, redoxSet, rol, dismutacion, calor, tipoEnergia, aLaVez, vf };
-  const PESOS = ['tipo', 'tipo', 'relacionar', 'relacionar', 'redoxSet', 'redoxSet', 'rol', 'rol', 'dismutacion',
+  // ---- aguaDura: qué ecuación explica el sarro o el bicarbonato del agua dura ----
+  // El sentido lo decide el CO₂: con CO₂ disuelto la caliza se disuelve como Ca(HCO₃)₂; al hervir, el CO₂ se
+  // escapa y el Ca(HCO₃)₂ vuelve a CaCO₃ (sarro).
+  function aguaDura(rng, semilla) {
+    const sub = rng.elegir(['sarro', 'bicarbonato']);
+    const E = id => porId(id), Te = id => textoEcuacion(E(id));
+    const op = (id, err) => ({ ...err, clave: 'agua:' + id, texto: Te(id) });
+    const CO2 = 'El sentido lo decide el CO₂: con CO₂ disuelto, CaCO₃ + CO₂ + H₂O → Ca(HCO₃)₂ (la caliza se disuelve); al hervir, el CO₂ se escapa y va al revés, Ca(HCO₃)₂ → CaCO₃ + CO₂ + H₂O (el sarro).';
+    let enunciado, pregunta, correcta, errores, solucion;
+    if (sub === 'sarro') {
+      const abl = rng.elegir(BANCO.filter(r => r.agua === 'ablanda')).id;
+      enunciado = ['Al hervir agua dura en una tetera, sin agregar nada, queda una costra blanca en el fondo.'];
+      pregunta = ['¿Qué ecuación la explica?'];
+      correcta = { clave: 'agua:sarro', texto: Te('sarro') };
+      errores = [
+        op('caliza-disuelta', H('QA-sentido-invertido', `Es la reacción al revés: así se disuelve la caliza cuando el agua tiene CO₂ de sobra. Al hervir, el CO₂ se escapa y el Ca(HCO₃)₂ disuelto se vuelve CaCO₃ sólido: la costra. ${CO2}`)),
+        op('caliza', H('QA-descompone-el-sarro', 'Esa es la descomposición de la caliza en un horno a unos 900 °C, que da cal viva (CaO). En la tetera no se forma CaO: la costra es el mismo CaCO₃, que sale del Ca(HCO₃)₂ disuelto.')),
+        op(abl, H('QA-ablandar-no-es-hervir', `Ahí se agrega ${abl === 'ablandar' ? 'soda (Na₂CO₃)' : 'cal (Ca(OH)₂)'} para ablandar el agua. En la tetera no se agregó nada: la costra sale del Ca(HCO₃)₂ que ya estaba disuelto, al perder su CO₂.`)),
+        op('acido-carbonico', H('QA-sin-solido', 'Esa ecuación forma ácido carbónico a partir del CO₂ y el agua: no tiene calcio ni da ningún sólido.')),
+      ];
+      solucion = [['La costra es CaCO₃, un sólido. En el agua dura el calcio está disuelto como Ca(HCO₃)₂.'], [CO2],
+        ['Por eso la que explica la costra es ', { t: Te('sarro'), formula: true }, ', una descomposición.']];
+    } else {
+      enunciado = ['El agua de lluvia lleva CO₂ disuelto. Al pasar por roca caliza (CaCO₃), sale cargada de iones Ca²⁺ y HCO₃⁻: es agua dura.'];
+      pregunta = ['¿Qué ecuación explica que se forme el bicarbonato?'];
+      correcta = { clave: 'agua:caliza-disuelta', texto: Te('caliza-disuelta') };
+      errores = [
+        op('sarro', H('QA-sentido-invertido', `Es la reacción al revés: así se forma el sarro cuando el CO₂ se escapa al hervir. Con CO₂ disuelto de sobra, la caliza se disuelve. ${CO2}`)),
+        op('caliza-acido', H('QA-caliza-con-acido-fuerte', 'Con ácido clorhídrico la caliza también se disuelve, pero da CaCl₂ y suelta el CO₂: no forma bicarbonato. La lluvia trae CO₂, no HCl.')),
+        op('acido-carbonico', H('QA-acido-por-anion', 'Esa forma el ácido carbónico (H₂CO₃), no el ion bicarbonato junto al calcio: falta la caliza, que aporta el Ca²⁺ y el CO₃²⁻.')),
+        op('bicarbonato', H('QA-bicarbonato-se-descompone', 'Esa es la descomposición del bicarbonato de sodio al hornear: lo destruye, no lo forma. Además la roca es de calcio, no de sodio.')),
+      ];
+      solucion = [['La caliza es CaCO₃ y casi no se disuelve en agua pura.'], [CO2],
+        ['Por eso la que explica el bicarbonato es ', { t: Te('caliza-disuelta'), formula: true }, ', una adición.']];
+    }
+    return cerrar(rng, semilla, { enunciado, pregunta, correcta, errores: rng.barajar(errores), solucion,
+      _datos: { tipo: 'aguaDura', sub, reacciones: [correcta.clave.slice(5), ...errores.map(e => e.clave.slice(5))].map(id => datosEc(E(id))) } });
+  }
+
+  const TIPOS = { tipo, relacionar, redoxSet, rol, dismutacion, calor, tipoEnergia, aLaVez, vf, aguaDura };
+  const PESOS = ['tipo', 'aguaDura', 'relacionar', 'relacionar', 'redoxSet', 'redoxSet', 'rol', 'rol', 'dismutacion',
     'calor', 'calor', 'tipoEnergia', 'aLaVez', 'aLaVez', 'vf', 'vf'];
   function generar(semilla) {
     const rng = Azar.crear('clasificar-reacciones|' + semilla);
@@ -764,5 +857,5 @@
   }
 
   return { id: 'clasificar-reacciones', titulo: '¿Qué clase de reacción es?', generar, BANCO, analizar, oxidacion, ecuacion,
-    textoEcuacion, masaMolar, FORMAS };
+    textoEcuacion, masaMolar, FORMAS, porQueNo, porQueSi };
 });

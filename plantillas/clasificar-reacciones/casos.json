@@ -1,7 +1,7 @@
 {
   "plantilla": "clasificar-reacciones",
   "nota": "Claves: ver la cabecera de generador.js (tipos y claves). La correcta se recalcula desde _datos (ecuaciones y ΔH) con las reglas de la cabecera.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente a ciegas (subagente, 8 nov 2026): resolvió los 24 casos y 40 semillas más (100–139) solo con la cabecera, con un script propio en Python (fracciones) que comprueba el balance de átomos y carga de las 92 ecuaciones y recalcula los números de oxidación. 64/64 coinciden, cada uno con una sola alternativa correcta. Los casos que cambiaron o se agregaron tras la revisión los recalculó la conversación principal.",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -14,7 +14,7 @@
         "reacciones": [
           {
             "id": "fermentacion",
-            "ec": "C6H12O6(ac) -> 2C2H5OH(ac) + 2CO2(g)",
+            "ec": "C6H12O6(s) -> 2C2H5OH(l) + 2CO2(g)",
             "dH": -69
           },
           {
@@ -41,7 +41,7 @@
       },
       "esperado": {
         "clave": "una:fermentacion",
-        "texto": "C₆H₁₂O₆(ac) → 2C₂H₅OH(ac) + 2CO₂(g)"
+        "texto": "C₆H₁₂O₆(s) → 2C₂H₅OH(l) + 2CO₂(g)"
       }
     },
     {
@@ -238,7 +238,7 @@
           },
           {
             "id": "fermentacion",
-            "ec": "C6H12O6(ac) -> 2C2H5OH(ac) + 2CO2(g)",
+            "ec": "C6H12O6(s) -> 2C2H5OH(l) + 2CO2(g)",
             "dH": -69,
             "calor": "dH"
           },
@@ -305,7 +305,7 @@
       },
       "esperado": {
         "clave": "esp:C6H12O6",
-        "texto": "C₆H₁₂O₆"
+        "texto": "C₆H₁₂O₆(s)"
       }
     },
     {
@@ -314,30 +314,30 @@
         "tipo": "redoxSet",
         "reacciones": [
           {
-            "id": "cloruro-hidrogeno",
-            "ec": "H2(g) + Cl2(g) -> 2HCl(g)",
-            "dH": -185
+            "id": "clorato",
+            "ec": "2KClO3(s) -> 2KCl(s) + 3O2(g)",
+            "dH": -78
           },
           {
-            "id": "fotosintesis",
-            "ec": "6CO2(g) + 6H2O(l) -> C6H12O6(ac) + 6O2(g)",
-            "dH": 2800
+            "id": "fenton",
+            "ec": "Fe^2+(ac) + H2O2(ac) -> Fe^3+(ac) + OH^-(ac) + •OH(ac)",
+            "dH": null
           },
           {
-            "id": "cal-apagada",
-            "ec": "CaO(s) + H2O(l) -> Ca(OH)2(s)",
-            "dH": -65
+            "id": "metano-incompleta",
+            "ec": "2CH4(g) + 3O2(g) -> 2CO(g) + 4H2O(l)",
+            "dH": -1214
           },
           {
-            "id": "acido-carbonico",
-            "ec": "CO2(g) + H2O(l) <=> H2CO3(ac)",
+            "id": "vinagre",
+            "ec": "CH3COOH(ac) + NaHCO3(s) -> CH3COONa(ac) + CO2(g) + H2O(l)",
             "dH": null
           }
         ]
       },
       "esperado": {
-        "clave": "set:I,II",
-        "texto": "Solo I y II"
+        "clave": "set:I,II,III",
+        "texto": "I, II y III"
       }
     },
     {
@@ -355,7 +355,7 @@
       },
       "esperado": {
         "clave": "esp:C6H12O6",
-        "texto": "C₆H₁₂O₆"
+        "texto": "C₆H₁₂O₆(s)"
       }
     },
     {
@@ -462,7 +462,7 @@
       },
       "esperado": {
         "clave": "esp:Cl2",
-        "texto": "Cl₂"
+        "texto": "Cl₂(g)"
       }
     },
     {
@@ -498,25 +498,45 @@
       },
       "esperado": {
         "clave": "esp:O2",
-        "texto": "O₂"
+        "texto": "O₂(g)"
       }
     },
     {
       "semilla": 25,
       "entrada": {
-        "tipo": "tipo",
+        "tipo": "aguaDura",
+        "sub": "bicarbonato",
         "reacciones": [
+          {
+            "id": "caliza-disuelta",
+            "ec": "CaCO3(s) + CO2(g) + H2O(l) -> Ca(HCO3)2(ac)",
+            "dH": null
+          },
+          {
+            "id": "sarro",
+            "ec": "Ca(HCO3)2(ac) -> CaCO3(s) + CO2(g) + H2O(l)",
+            "dH": null
+          },
           {
             "id": "caliza-acido",
             "ec": "CaCO3(s) + 2HCl(ac) -> CaCl2(ac) + CO2(g) + H2O(l)",
             "dH": null
+          },
+          {
+            "id": "acido-carbonico",
+            "ec": "CO2(g) + H2O(l) <=> H2CO3(ac)",
+            "dH": null
+          },
+          {
+            "id": "bicarbonato",
+            "ec": "2NaHCO3(s) -> Na2CO3(s) + H2O(g) + CO2(g)",
+            "dH": 136
           }
-        ],
-        "clase": "doble"
+        ]
       },
       "esperado": {
-        "clave": "tipo:doble",
-        "texto": "Doble desplazamiento (metátesis)"
+        "clave": "agua:caliza-disuelta",
+        "texto": "CaCO₃(s) + CO₂(g) + H₂O(l) → Ca(HCO₃)₂(ac)"
       }
     },
     {
@@ -595,6 +615,82 @@
       "esperado": {
         "clave": "te:adicion:exo",
         "texto": "Adición (síntesis) y exotérmica"
+      }
+    },
+    {
+      "semilla": 42,
+      "entrada": {
+        "tipo": "aguaDura",
+        "sub": "bicarbonato",
+        "reacciones": [
+          {
+            "id": "caliza-disuelta",
+            "ec": "CaCO3(s) + CO2(g) + H2O(l) -> Ca(HCO3)2(ac)",
+            "dH": null
+          },
+          {
+            "id": "sarro",
+            "ec": "Ca(HCO3)2(ac) -> CaCO3(s) + CO2(g) + H2O(l)",
+            "dH": null
+          },
+          {
+            "id": "caliza-acido",
+            "ec": "CaCO3(s) + 2HCl(ac) -> CaCl2(ac) + CO2(g) + H2O(l)",
+            "dH": null
+          },
+          {
+            "id": "acido-carbonico",
+            "ec": "CO2(g) + H2O(l) <=> H2CO3(ac)",
+            "dH": null
+          },
+          {
+            "id": "bicarbonato",
+            "ec": "2NaHCO3(s) -> Na2CO3(s) + H2O(g) + CO2(g)",
+            "dH": 136
+          }
+        ]
+      },
+      "esperado": {
+        "clave": "agua:caliza-disuelta",
+        "texto": "CaCO₃(s) + CO₂(g) + H₂O(l) → Ca(HCO₃)₂(ac)"
+      }
+    },
+    {
+      "semilla": 56,
+      "entrada": {
+        "tipo": "aguaDura",
+        "sub": "sarro",
+        "reacciones": [
+          {
+            "id": "sarro",
+            "ec": "Ca(HCO3)2(ac) -> CaCO3(s) + CO2(g) + H2O(l)",
+            "dH": null
+          },
+          {
+            "id": "caliza-disuelta",
+            "ec": "CaCO3(s) + CO2(g) + H2O(l) -> Ca(HCO3)2(ac)",
+            "dH": null
+          },
+          {
+            "id": "caliza",
+            "ec": "CaCO3(s) -> CaO(s) + CO2(g)",
+            "dH": 178
+          },
+          {
+            "id": "cal-dureza",
+            "ec": "Ca(HCO3)2(ac) + Ca(OH)2(ac) -> 2CaCO3(s) + 2H2O(l)",
+            "dH": null
+          },
+          {
+            "id": "acido-carbonico",
+            "ec": "CO2(g) + H2O(l) <=> H2CO3(ac)",
+            "dH": null
+          }
+        ]
+      },
+      "esperado": {
+        "clave": "agua:sarro",
+        "texto": "Ca(HCO₃)₂(ac) → CaCO₃(s) + CO₂(g) + H₂O(l)"
       }
     }
   ]
