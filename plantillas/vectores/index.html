@@ -342,6 +342,8 @@ function dimHTML(d){
   }).join('');
 }
 const SUB = '<sub>x</sub>', SUBY = '<sub>y</sub>';
+// θ del triángulo 3-4-5: el alumno lo conoce como 53° o 37° (convención de academia), no como 53,1° o 36,9°.
+const angTxt = th => (Math.abs(th - 53.1301) < .01 ? '≈ 53' : Math.abs(th - 36.8699) < .01 ? '≈ 37' : '= ' + fmt(th, 1));
 // α, β y γ con fuente matemática: en la letra redondeada, γ se confunde con y y α con a.
 const MATF = '"Cambria Math","STIX Two Math",Georgia,serif';
 const mat = t => String(t).replace(/[αβγ]/g, ch => `<span class="mat">${ch}</span>`);
@@ -412,7 +414,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
 
   E.config = o => {
     E.tok++; E.ocupado = false;   // una animación vieja no sigue moviendo el dibujo nuevo
-    Object.assign(E, { vista:'vec', arr:{ a:false, b:false, giro:false }, lect:[], alCambiar:null, dim:null, hex:null, lado:{}, snap:1, thR:null, cajaH:null }, o);
+    Object.assign(E, { vista:'vec', arr:{ a:false, b:false, giro:false }, lect:[], alCambiar:null, dim:null, hex:null, lado:{}, snap:1, thR:null, cajaH:null, tR:null }, o);
     E.a = { ...(o.a || { x:3, y:0 }) }; E.b = { ...(o.b || { x:0, y:4 }) };
     E.caja = Object.assign({ x0:-1, x1:7, y0:-1, y1:5 }, o.caja);
     E.ver = Object.assign({ ...VER0 }, o.ver);
@@ -564,7 +566,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       const d = dirPantalla(m);
       const th = MV.anguloEntre(E.a, E.b);
       const rr = enCola ? 40 : (E.thR || 44);
-      rotulo(ctx, c, P.x + d.x*rr, P.y + d.y*rr, 'θ', c.th, 'center', 800, 14, '', E.ver.medidas ? ` = ${fmt(th, 1)}°` : '');
+      rotulo(ctx, c, P.x + d.x*rr, P.y + d.y*rr, 'θ', c.th, 'center', 800, 14, '', E.ver.medidas ? ` ${angTxt(th)}°` : '');
     }
     // 0.2.0: el área (paralelogramo o triángulo), la sombra de b sobre a, el ángulo en tinta, la diferencia y a × b
     const ABp = aP({ x:E.a.x + E.b.x, y:E.a.y + E.b.y }, s), fa = E.prog.area;
@@ -573,7 +575,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       ctx.save(); ctx.fillStyle = c.ar; ctx.strokeStyle = c.ar; ctx.lineWidth = 1.6;
       const poli = q => { ctx.beginPath(); q.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath(); };
       if (E.ver.area){ poli([O, A, ABp, Bo]); ctx.globalAlpha = (E.ver.tri ? .07 : .17)*fa; ctx.fill(); ctx.globalAlpha = .85*fa; ctx.setLineDash([5, 4]); ctx.stroke(); ctx.setLineDash([]); }
-      if (E.ver.tri){ poli([O, A, Bo]); ctx.globalAlpha = .24*fa; ctx.fill(); ctx.globalAlpha = fa; ctx.stroke(); }
+      if (E.ver.tri){ ctx.fillStyle = c.ink; ctx.strokeStyle = c.ink; poli([O, A, Bo]); ctx.globalAlpha = .16*fa; ctx.fill(); ctx.globalAlpha = fa; ctx.stroke(); }
       ctx.restore();
     }
     if (E.ver.proy && pa.modulo > 0 && pb.modulo > 0){
@@ -602,7 +604,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       const col = thR < 1 || thR > 179, u = unit(O, Rp), off = col ? 7*(E.lado.R || 1) : 0;
       const O2 = { x:O.x + u.y*off, y:O.y - u.x*off }, R2 = { x:Rp.x + u.y*off, y:Rp.y - u.x*off };
       flecha(O2, { x:O2.x + (R2.x - O2.x)*f, y:O2.y + (R2.y - O2.y)*f }, c.R, grosor('R', 4.5));
-      if (f >= 1) rotuloFlecha(O2, R2, 'R', c.R, E.lado.R || 1, '', E.ver.medidas ? ` = ${fmt(Rv.modulo, 2)}` : '', .55);
+      if (f >= 1) rotuloFlecha(O2, R2, 'R', c.R, E.lado.R || 1, '', E.ver.medidas ? ` = ${fmt(Rv.modulo, 2)}` : '', E.tR || .55);
     }
     // la diferencia a − b: de la punta de b a la punta de a (la otra diagonal del paralelogramo)
     if (E.ver.dif && E.prog.dif > 0){
@@ -775,7 +777,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
       if (v.para) l.push('<span>- - - copias para el paralelogramo</span>');
       if (v.dif) l.push(it('D', 'a − b · diferencia'));
       if (v.proy) l.push(it('sb', 'sombra de b sobre a'));
-      if (v.area || v.tri) l.push(it('ar', v.tri ? 'triángulo de a y b' : 'paralelogramo de a y b', true));
+      if (v.area) l.push(it('ar', v.tri ? '▱ paralelogramo (a trazos)' : 'paralelogramo de a y b', true));
+      if (v.tri) l.push('<span><i class="sq" style="background:var(--ink)"></i><span>△ triángulo de a y b</span></span>');
       if (v.cruz) l.push('<span>⊙ a × b sale de la pantalla · ⊗ entra</span>');
     }
     return l.join('');
@@ -788,7 +791,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const L = {
       a: ['a', '|a|', fmt(pa.modulo, 2), `a mide ${fmt(pa.modulo, 2)}`],
       b: ['b', '|b|', fmt(pb.modulo, 2), `b mide ${fmt(pb.modulo, 2)}`],
-      th: ['th', 'Ángulo θ', `${fmt(th, 1)}°`, `θ = ${fmt(th, 1)}°`],
+      th: ['th', 'Ángulo θ', `${angTxt(th).replace('= ', '')}°`, `θ ${angTxt(th).replace('≈', 'cerca de')}°`],
       R: ['R', '|R|', fmt(Rv.modulo, 2), `R mide ${fmt(Rv.modulo, 2)}`],
       dirA: ['ink', 'Ángulo de a', `${fmt(pa.angulo, 0)}°`, `a forma ${fmt(pa.angulo, 0)}° con el eje x`],
       ax: ['x', 'a<sub>x</sub>', fmt(E.a.x, 2), `sombra en x ${fmt(E.a.x, 2)}`],
@@ -804,7 +807,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
         ang: ['ink', 'Ángulo', `${fmt(th, 1)}°`, `a y b forman ${fmt(th, 1)}°`],
         sb: ['sb', 'Sombra de b', fmt(pr.escalar, 2), `la sombra de b sobre a mide ${fmt(pr.escalar, 2)}`],
         ar: ['ar', 'Área ▱', fmt(ar.paralelogramo, 2), `el paralelogramo mide ${fmt(ar.paralelogramo, 2)}`],
-        tri: ['ar', 'Área △', fmt(ar.triangulo, 2), `el triángulo mide ${fmt(ar.triangulo, 2)}`],
+        tri: ['ink', 'Área △', fmt(ar.triangulo, 2), `el triángulo mide ${fmt(ar.triangulo, 2)}`],
         sent: ['ar', 'a × b', ar.sentido === 'ninguno' ? 'nulo' : ar.sentido, ar.sentido === 'sale' ? 'a por b sale de la pantalla' : ar.sentido === 'entra' ? 'a por b entra en la pantalla' : 'a por b es nulo'],
       });
     }
@@ -1217,7 +1220,7 @@ const EXPS = [
       b:'Las diagonales de un rombo son perpendiculares con cualquier ángulo. Con 90° el rombo es un cuadrado y sus dos diagonales miden lo mismo: la suma no es el doble.',
       d:`${fmt(IS.errores.conResultante, 1)}° es la mitad: el ángulo entre a y la suma a + b. Como a y b miden lo mismo, la suma parte θ en dos mitades iguales.` },
     antes:ya => E.config({ a:{ x:5, y:0 }, b: ya ? { x:3, y:4 } : MV.vector(5, 120, { exacto:true }), caja:{ x0:-3.6, x1:8.6, y0:-1.2, y1:5.2 },
-      ver:{ th:true, R:true, dif:true, para:true, recto:ya }, lado:{ a:-1, D:-1 }, lect: ya ? ['a','b','th','R','D','razon'] : ['a','b','th'] }),
+      ver:{ th:true, R:true, dif:true, para:true, recto:ya }, lado:{ a:-1, D:-1, R:-1 }, tR:.8, lect: ya ? ['a','b','th','R','D','razon'] : ['a','b','th'] }),
     despues:() => { E.girarB(Math.atan2(4, 3)*180/Math.PI, 1500, () => { E.ver.recto = true; E.lect = ['a','b','th','R','D','razon']; E.leyenda(); E.dibujar(); E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq">${R_('|a + b|')} = 2 · 5 · cos(${th_('θ')}/2) y ${D_('|a − b|')} = 2 · 5 · sen(${th_('θ')}/2)<span class="note">las mitades de las diagonales forman un triángulo rectángulo</span></div>
       <div class="eq">${R_('|a + b|')} = 2 · ${D_('|a − b|')} → tan(${th_('θ')}/2) = 1/2 → cos ${th_('θ')} = (2² − 1)/(2² + 1) = 3/5 → ${th_('θ')} = ${fmt(IS.academia, 0)}°</div></div>
@@ -1258,7 +1261,8 @@ const EXPS = [
         lect: ya ? ['a','b','ang','ar','tri','sent'] : ['a','b','ang'] }),
       despues:() => { E.ver.triBorde = false; E.ver.tri = true; E.ver.area = true; E.leyenda(); E.crecer('area', 800, () => { E.ver.cruz = true; E.lect = ['a','b','ang','ar','tri','sent']; E.leyenda(); E.permitir({ a:true, b:true }); E.avisar(); }); },
       exp:() => `<div class="eqs"><div class="eq">a × b = (a<sub>x</sub>·b<sub>y</sub> − a<sub>y</sub>·b<sub>x</sub>) k̂ = (4 · 3 − 0 · 1) k̂ = ${ar_(fmt(AR.z, 0) + ' k̂')}</div>
-        <div class="eq">${ar_('triángulo')} = |a × b| / 2 = ${fmt(AR.paralelogramo, 0)} / 2 = ${ar_(fmt(AR.triangulo, 0))}</div></div>
+        <div class="eq">${ar_('paralelogramo')} = |a × b| = ${ar_(fmt(AR.paralelogramo, 0))}</div>
+        <div class="eq">triángulo = |a × b| / 2 = ${fmt(AR.paralelogramo, 0)} / 2 = ${fmt(AR.triangulo, 0)}</div></div>
         <p><b>Mano derecha:</b> los dedos van de ${a_('a')} hacia ${b_('b')} por el camino corto. Aquí giran en sentido antihorario, así que el pulgar sale de la pantalla (⊙, +k̂). Arrastra ${b_('b')} por debajo de ${a_('a')}: el giro se vuelve horario y a × b entra (⊗). Por eso a × b = −(b × a).</p>
         <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` } },
 ];
@@ -1424,6 +1428,10 @@ function crearLienzo(cv, idDesc, idLect, idLey){
     g.flecha = (p, q, color, ancho, o = {}) => {
       const f = o.f === undefined ? 1 : o.f;
       const A = P(p), B0 = P(q), B = { x:A.x + (B0.x - A.x)*f, y:A.y + (B0.y - A.y)*f };
+      g.flechaPx(A, B, color, ancho, o);
+    };
+    // La misma flecha, con puntos de la pantalla.
+    g.flechaPx = (A, B, color, ancho, o = {}) => {
       const Lp = Math.hypot(B.x - A.x, B.y - A.y); if (Lp < 3) return;
       const u = unitP(A, B), n = { x:-u.y, y:u.x }, cab = Math.min(Lp*.45, 9 + ancho*1.6), base = { x:B.x - u.x*cab, y:B.y - u.y*cab };
       ctx.save(); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa; ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round';
@@ -1476,7 +1484,9 @@ function crearLienzo(cv, idDesc, idLect, idLey){
     const g = herramientas(c, escala());
     if (L.rejilla) g.rejilla();
     L.dibujo(g);
-    if (L.arr && !L.ocupado) for (const p of L.arr.puntos()) g.manija(p, arrastrando === p.id);
+    // la manija puede ir corrida del punto (mx, my) para no tapar el dibujo; se une a él con un trazo
+    if (L.arr && !L.ocupado) for (const p of L.arr.puntos()){ const m = { x:p.mx === undefined ? p.x : p.mx, y:p.my === undefined ? p.y : p.my };
+      if (m.x !== p.x || m.y !== p.y) g.linea(p, m, c.muted, 1.4, [3, 3]); g.manija(m, arrastrando === p.id); }
   };
   const it = (k, t, sq) => `<span><i class="${sq ? 'sq' : ''}" style="background:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"></i><span>${t}</span></span>`;
   // Lecturas: [[color, rótulo, valor, ancha], …], o una función que las da (en vivo). La descripción va al lector de pantalla.
@@ -1491,7 +1501,7 @@ function crearLienzo(cv, idDesc, idLect, idLey){
   function cual(p, r){
     if (!L.arr || L.ocupado) return null;
     const s = escala(); let mejor = null, dm = r;
-    for (const q of L.arr.puntos()){ const X = s.ox + s.k*q.x, Y = s.oy - s.k*q.y, d = Math.hypot(p.x - X, p.y - Y); if (d < dm){ dm = d; mejor = q.id; } }
+    for (const q of L.arr.puntos()){ const X = s.ox + s.k*(q.mx === undefined ? q.x : q.mx), Y = s.oy - s.k*(q.my === undefined ? q.y : q.my), d = Math.hypot(p.x - X, p.y - Y); if (d < dm){ dm = d; mejor = q.id; } }
     return mejor;
   }
   Celular.arrastre(cv, {
@@ -1640,7 +1650,7 @@ const F1 = { id:'vectores-figuras-1', ok:'b',
     pasos.push([500, f => { st.R = f; }]);
     L.serie(pasos, () => { st.fin = true; L.avisar(); fin(); });
   },
-  tras:() => `<p>Cada camino de flechas, cola con punta, que sale de P y llega a Q vale lo mismo que ${c_('c')}: forma con ${c_('c')} un polígono cerrado (sombreado). En la figura hay dos caminos, más ${c_('c')} misma.</p>
+  tras:() => `<p><b>¿Cuántas veces queda ${c_('c')}?</b> Cada camino de flechas, cola con punta, que sale de P y llega a Q vale lo mismo que ${c_('c')}: forma con ${c_('c')} un polígono cerrado (sombreado). En la figura hay dos caminos, más ${c_('c')} misma.</p>
     <div class="eqs"><div class="eq">camino de arriba = ${c_('c')} · camino de abajo = ${c_('c')}</div>
     <div class="eq">${R_('R')} = ${c_('c')} + ${c_('c')} + ${c_('c')} = 3${c_('c')} → |${R_('R')}| = 3 · ${fmt(cF.modulo, 0)} = ${R_(fmt(RF.modulo, 0))}</div></div>
     <p class="aviso">En las figuras de academia casi nunca hace falta un ángulo: se buscan caminos que empiezan y terminan en los mismos puntos.</p>
@@ -1681,7 +1691,7 @@ const F2 = { id:'vectores-figuras-2', ok:'c',
         ['c', `|R| = ${rad(SC.modulo)}`],
         ['d', `|R| = ${rad(SC.errores.sinProfundidad)}`, 'VE-sin-profundidad', 'hipotesis']],
   fb:{ c:'Cada vector se puede trasladar a una arista paralela: FG va a BC y DH va a CG. Así quedan cola con punta, de A hasta G, la diagonal del cubo.',
-    a:`${rad(SC.errores.plano)} sale de medir en el dibujo como si fuera plano, con FG inclinada 45°. En el cubo, FG es perpendicular a AB y a DH: la inclinación es solo del dibujo.`,
+    a:`${rad(SC.errores.plano)} sale de sumar como si FG estuviera en el papel, inclinada 45° y con su largo de 2. En el cubo, FG es perpendicular a AB y a DH.`,
     b:'6 es 2 + 2 + 2, como si las tres flechas apuntaran hacia el mismo lado. Apuntan en tres direcciones perpendiculares.',
     d:`${rad(SC.errores.sinProfundidad)} es la diagonal de una cara: olvida FG, que va hacia el fondo.` },
   anima:(L, fin) => {
@@ -1721,7 +1731,10 @@ function dibujoSolido(L, S0, pares){
   const P3 = v => proyectar3({ x:v.x - cen.x, y:v.y - cen.y, z:v.z - cen.z }, V);
   return g => {
     const c = g.c, Vt = S0.vertices, col = d => ({ x:c.x, y:c.y, z:c.z })[d];
-    for (const r of S0.aristas) g.linea(P3(Vt[r.de]), P3(Vt[r.a]), st.colores ? col(r.direccion) : c.muted, st.colores ? 2 : 1.4, false, st.colores ? .55 : 1);
+    // Aristas ocultas a trazos: las dos caras que se juntan en ellas miran hacia atrás.
+    const az = V.az*RAD, el = V.el*RAD, haciaMi = { x:Math.sin(az)*Math.cos(el), y:-Math.cos(az)*Math.cos(el), z:Math.sin(el) };
+    const oculta = r => ['x', 'y', 'z'].filter(e => e !== r.direccion).every(e => (Vt[r.de][e] === 0 ? -1 : 1)*haciaMi[e] < 0);
+    for (const r of S0.aristas) g.linea(P3(Vt[r.de]), P3(Vt[r.a]), st.colores ? col(r.direccion) : c.muted, st.colores ? 2 : 1.4, oculta(r) ? [5, 4] : false, st.colores ? .55 : 1);
     const vs = MV.sumaSolido(S0, pares).vectores;
     vs.forEach((v, i) => {
       const P = Vt[v.de], Q = Vt[v.a];
@@ -1736,10 +1749,24 @@ function dibujoSolido(L, S0, pares){
     });
     if (st.R > 0){ const R = MV.sumaSolido(S0, pares), A = Vt.A; g.flecha(P3(A), P3({ x:A.x + R.x, y:A.y + R.y, z:A.z + R.z }), c.R, g.ancho('R', 4.5), { f:st.R }); }
     const G = P3(cen);
+    // Si R pasa por encima del rótulo de un vértice, el rótulo se corre hacia afuera de R.
+    const Rv = st.R > 0 ? MV.sumaSolido(S0, pares) : null;
+    const RA = Rv ? g.P(P3(Vt.A)) : null, RB = Rv ? g.P(P3({ x:Vt.A.x + Rv.x, y:Vt.A.y + Rv.y, z:Vt.A.z + Rv.z })) : null;
+    const correr = (X, Y) => {
+      if (!Rv) return [0, 0];
+      const dx = RB.x - RA.x, dy = RB.y - RA.y, L2 = dx*dx + dy*dy || 1, t = clamp(((X - RA.x)*dx + (Y - RA.y)*dy)/L2, 0, 1);
+      const qx = RA.x + t*dx, qy = RA.y + t*dy, d = Math.hypot(X - qx, Y - qy);
+      if (d > 26) return [0, 0];
+      let nx = X - qx, ny = Y - qy; if (d < 1e-6){ nx = -dy; ny = dx; } const m = Math.hypot(nx, ny) || 1;
+      return [nx/m*(30 - d), ny/m*(30 - d)];
+    };
     for (const [nom, v] of Object.entries(Vt)){
-      const p = P3(v), u = { x:p.x - G.x, y:p.y - G.y }, m = Math.hypot(u.x, u.y) || 1;
-      g.rot(p, nom, c.ink, { dx:u.x/m*15, dy:-u.y/m*15, tam:13, peso:800 });
-      if (st.coord > 0 && (!st.coordDe || st.coordDe.includes(nom))) g.rot(p, `(${fmt(v.x, 0)}; ${fmt(v.y, 0)}; ${fmt(v.z, 0)})`, c.muted, { dx:u.x/m*15, dy:-u.y/m*15 + 14, tam:10, peso:700 });
+      const p = P3(v), u = { x:p.x - G.x, y:p.y - G.y }, m = Math.hypot(u.x, u.y) || 1, S = g.P(p);
+      const pon = !(st.coord > 0 && (!st.coordDe || st.coordDe.includes(nom)));
+      let dx = u.x/m*15, dy = -u.y/m*15;
+      const [ex, ey] = correr(S.x + dx, S.y + dy + (pon ? 0 : 7)); dx += ex; dy += ey;
+      g.rot(p, nom, c.ink, { dx, dy, tam:13, peso:800 });
+      if (!pon) g.rot(p, `(${fmt(v.x, 0)}; ${fmt(v.y, 0)}; ${fmt(v.z, 0)})`, c.muted, { dx, dy:dy + 14, tam:10, peso:700 });
     }
   };
 }
@@ -1751,7 +1778,7 @@ const F3 = { id:'vectores-figuras-3', ok:'b',
   q:() => `<p>${a_('a')} = OA y ${b_('b')} = OB. El punto P está sobre el segmento AB y lo parte en dos trozos con AP : PB = 1 : 2 (las marcas parten AB en tres partes iguales). ¿Cómo se escribe ${R_('OP')} con ${a_('a')} y ${b_('b')}?</p>`,
   opts:[['a', `OP = (a + 2b)/3`, 'VE-pesos-derechos', 'hipotesis'],
         ['b', `OP = (2a + b)/3`],
-        ['c', `OP = (a + b)/2`, 'VE-semisuma-por-semidiferencia', 'hipotesis'],
+        ['c', `OP = (a + b)/2`, 'VE-pesos-mitades', 'hipotesis'],
         ['d', `OP = 2a + b`, 'VE-pesos-sin-dividir', 'hipotesis']],
   fb:{ b:'P está más cerca de A, así que a pesa más. Cada extremo pesa el trozo opuesto: A pesa 2 (el trozo PB) y B pesa 1 (el trozo AP).',
     a:'Esos son los pesos derechos: con a + 2b, P quedaría más cerca de B. Cada extremo pesa el trozo del otro lado.',
@@ -1815,13 +1842,13 @@ function arr4(L){
 }
 function arr4b(L){
   const st = L.st;
-  return { puntos:() => ['D', 'C'].map(k => ({ id:k, x:st.Z[k][0], y:3 })),
+  return { puntos:() => ['D', 'C'].map(k => ({ id:k, x:st.Z[k][0], y:3, my:3.9 })),
     mover:(id, w) => { const x = clamp(Math.round(w.x), -1, 9), Z = { ...st.Z, [id]:[x, 3] }; if (Z.C[0] - Z.D[0] < 1) return; st.Z = Z; } };
 }
 
 const pasos = [
- { k:'Paso 1', t:'¿Cuántas veces queda?', preds:[F1],
-   intro:() => `<p>Muchas figuras de examen traen varias flechas que se reducen a «tantas veces» una flecha conocida. El truco es mirar por dónde empieza y dónde termina cada camino de flechas, cola con punta.</p>`,
+ { k:'Paso 1', t:'Seis flechas entre P y Q', preds:[F1],
+   intro:() => `<p>Muchas figuras de examen traen varias flechas y piden su resultante.</p>`,
    prep:(L, S) => {
      const ya = !!S.pred[F1.id];
      L.config({ caja:{ x0:-1.4, x1:9.4, y0:-5.4, y1:4.4 }, rejilla:false,
@@ -1898,7 +1925,7 @@ const pasos = [
          for (const k of ['A', 'B', 'C']){ const cx = (T.A.x + T.B.x + T.C.x)/3, cy = (T.A.y + T.B.y + T.C.y)/3, u = { x:T[k].x - cx, y:T[k].y - cy }, m = Math.hypot(u.x, u.y) || 1; g.rot(T[k], k, c.ink, { dx:u.x/m*16, dy:-u.y/m*16, tam:13 }); }
        };
      } else {
-       L.config({ caja:{ x0:-1.4, x1:9.4, y0:-1.6, y1:4.4 }, st:{ Z:{ D:[2, 3], C:[6, 3] }, MN: ya ? 1 : 0, pol1: ya ? 1 : 0, pol2: ya ? 1 : 0, media: ya ? 1 : 0 },
+       L.config({ caja:{ x0:-1.4, x1:9.4, y0:-1.6, y1:4.8 }, st:{ Z:{ D:[2, 3], C:[6, 3] }, MN: ya ? 1 : 0, pol1: ya ? 1 : 0, pol2: ya ? 1 : 0, media: ya ? 1 : 0 },
          ley:[['a', 'a = AB'], ['b', 'b = DC'], ...(ya ? [['k', 'MN'], ['ink', '- - - diagonales y base media']] : [['ink', '- - - diagonales']])],
          desc:'Trapecio ABCD con las bases a = AB y b = DC y las diagonales AC y BD a trazos.',
          lect:() => { if (!L.st.MN) return []; const Z = L.st.Z, t = MV.trapecio([0, 0], [8, 0], Z.C, Z.D); return [['a', '|a|', fmt(t.a.modulo, 0)], ['b', '|b|', fmt(t.b.modulo, 0)], ['k', '|MN|', fmt(t.MN.modulo, 1)], ['ink', 'base media', fmt(t.mediana.modulo, 1)]]; } });
@@ -1942,7 +1969,7 @@ const C1 = { id:'vectores-componentes-1', ok:'a',
   anima:(L, fin) => { const st = L.st; L.serie([[600, f => { st.b = f; }], [800, f => { st.s1 = f; }], [800, f => { st.s2 = f; }]], () => { L.avisar(); fin(); }); },
   tras:() => `<div class="eqs"><div class="eq">${R_('R')} = (p + 2; 3 + q)</div><div class="eq">sobre el eje x: 3 + q = 0 → q = ${fmt(S1.incognitaOtra, 0)}</div>
     <div class="eq">|${R_('R')}| = 5: (p + 2)² = 25 → p + 2 = 5 o p + 2 = −5 → p = ${fmt(S1.incognitaEje, 0)} o p = ${fmt(S2.incognitaEje, 0)}</div></div>
-    <p>El dibujo muestra las dos: con ${a_('a')} = (${fmt(S1.incognitaEje, 0)}; 3), ${R_('R')} = (5; 0); con ${a_('a')} = (${fmt(S2.incognitaEje, 0)}; 3), ${R_('R')} = (−5; 0). Las dos puntas de ${R_('R')} están en la circunferencia de radio 5 y sobre el eje x.</p>
+    <p>Las dos puntas de ${R_('R')} están en la circunferencia de radio 5 y sobre el eje x.</p>
     <p class="aviso">Cuando una condición fija el módulo y la recta, hay dos sentidos. Antes de descartar uno, revisa si el enunciado lo prohíbe.</p>` };
 const C1b = { id:'vectores-componentes-1b', ok:'b',
   q:() => `<p>Ahora, además, ${R_('R')} tiene que apuntar hacia la izquierda (hacia −x). ¿Qué valores de p sirven?</p>`,
@@ -1955,7 +1982,8 @@ const C1b = { id:'vectores-componentes-1b', ok:'b',
     c:`Las dos raíces salen de la ecuación, pero solo una cumple la condición nueva: hay que revisarlas.`,
     d:`Sí hay uno: con p = ${fmt(S2.incognitaEje, 0)}, R = (−5; 0).` },
   anima:(L, fin) => { const st = L.st; L.serie([[700, f => { st.apaga = f; }]], () => { L.avisar(); fin(); }); },
-  tras:() => `<p>De las dos raíces de (p + 2)² = 25, la condición «hacia −x» descarta p = ${fmt(S1.incognitaEje, 0)}. Sin esa condición, las dos valen.</p>
+  tras:() => `<p>El dibujo muestra las dos: con ${a_('a')} = (${fmt(S1.incognitaEje, 0)}; 3), ${R_('R')} = (5; 0); con ${a_('a')} = (${fmt(S2.incognitaEje, 0)}; 3), ${R_('R')} = (−5; 0).</p>
+    <p>De las dos raíces de (p + 2)² = 25, la condición «hacia −x» descarta p = ${fmt(S1.incognitaEje, 0)}. Sin esa condición, las dos valen.</p>
     <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` };
 
 // ---- Paso 2: el vector de largo dado ----
@@ -1972,7 +2000,7 @@ const C2 = { id:'vectores-componentes-2', ok:'c',
     d:'Ese mide 10, pero apunta al revés: es el antiparalelo.' },
   anima:(L, fin) => { const st = L.st; L.serie([[700, f => { st.u = f; }], [900, f => { st.w = f; }], [500, f => { st.anti = f; }]], () => { L.avisar(); fin(); }); },
   tras:() => `<div class="eqs"><div class="eq">${u_('û')} = ${a_('a')}/|${a_('a')}| = (4; 3)/5 = ${u_(pv(UA))}</div><div class="eq">${w_('w')} = 10 · ${u_('û')} = ${w_(pv(UW))}<span class="note">el antiparalelo: −${w_('w')} = ${pv(UW.antiparalelo)}</span></div></div>
-    <p>El unitario da la dirección y el sentido; el número de adelante da el largo. «Paralelo» pide el mismo ${u_('û')}; «antiparalelo», el opuesto.</p>` };
+` };
 const C2b = { id:'vectores-componentes-2b', ok:'b',
   q:() => `<p>Como |${a_('a')}| = 5, resulta que ${w_('w')} = 2${a_('a')}. ¿Cuál es el vector unitario de ${w_('w')}?</p>`,
   opts:[['a', `unitario de w = ${pv(UW.errores.escalado)}`, 'VE-unitario-escalado', 'hipotesis'],
@@ -1985,6 +2013,7 @@ const C2b = { id:'vectores-componentes-2b', ok:'b',
     d:'Ese apunta al revés de w: es el unitario de −w.' },
   anima:(L, fin) => { const st = L.st; L.serie([[900, f => { st.encoge = f; }]], () => { L.avisar(); fin(); }); },
   tras:() => `<div class="eqs"><div class="eq">unitario de ${w_('w')} = ${w_('w')}/|${w_('w')}| = (8; 6)/10 = ${u_(pv(UW2))} = ${u_('û')}</div></div>
+    <p>El unitario da la dirección y el sentido; el número de adelante da el largo. «Paralelo» pide el mismo ${u_('û')}; «antiparalelo», el opuesto.</p>
     <p>${a_('a')} y ${w_('w')} encogen hasta el mismo punto de la circunferencia de radio 1. Un vector y cualquier múltiplo positivo suyo tienen el mismo unitario.</p>
     <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` };
 
@@ -1992,11 +2021,11 @@ const C2b = { id:'vectores-componentes-2b', ok:'b',
 const A3 = MV.vector(12, 200, { exacto:true }), B3 = MV.girarEjes([{ x:6, y:8 }], -20).vectores[0], PHI = 20;
 const GE = MV.girarEjes([A3, B3], PHI);
 const C3 = { id:'vectores-componentes-3', ok:'b',
-  q:() => `<p>${a_('a')} mide 12 y ${b_('b')} mide 10, con ángulos que no son notables. La perilla (se activa al responder) gira los ejes x′ e y′. Al girarlos, ¿qué pasa con la ${R_('resultante')} de ${a_('a')} y ${b_('b')}?</p>`,
-  opts:[['a', 'Su módulo cambia, y sus componentes también', 'VE-componente-vs-modulo', 'hipotesis'],
+  q:() => `<p>${a_('a')} mide 12 y ${b_('b')} mide 10, con ángulos que no son notables. Al responder, los ejes x′ e y′ giran. Al girarlos, ¿qué pasa con la ${R_('resultante')} de ${a_('a')} y ${b_('b')}?</p>`,
+  opts:[['a', 'Su módulo cambia, y sus componentes también', 'VE-modulo-depende-de-ejes', 'hipotesis'],
         ['b', 'Su módulo no cambia, pero sus componentes sí'],
         ['c', 'Su módulo no cambia, y sus componentes tampoco', 'VE-componentes-fijas', 'hipotesis'],
-        ['d', 'Su módulo cambia, pero sus componentes no', 'VE-modulo-depende-de-ejes', 'hipotesis']],
+        ['d', 'Su módulo cambia, pero sus componentes no', 'VE-componente-vs-modulo', 'hipotesis']],
   fb:{ b:'Las flechas no se mueven: solo cambia desde dónde se miden. El largo de R es el mismo; sus sombras sobre los ejes nuevos, no.',
     a:'Girar los ejes no estira ninguna flecha: el módulo sigue igual. Solo cambian las componentes.',
     c:'Las componentes sí cambian: son las sombras sobre x′ e y′, y los ejes se movieron.',
@@ -2037,10 +2066,10 @@ const pasos = [
    intro:() => `<p>A veces faltan componentes y una condición las fija: que la resultante esté sobre un eje, que mida tanto o que sea nula. Cada condición da una ecuación.</p>`,
    prep:(L, S) => {
      const y1 = !!S.pred[C1.id], y2 = !!S.pred[C1b.id];
-     L.config({ caja:{ x0:-8.6, x1:6.6, y0:-4.6, y1:4.6 }, st:{ b: y1 ? 1 : 0, s1: y1 ? 1 : 0, s2: y1 ? 1 : 0, apaga: y2 ? 1 : 0 },
+     L.config({ caja:{ x0:-8.6, x1:6.6, y0:-4.6, y1:4.6 }, st:{ b: y1 ? 1 : 0, s1: y1 ? 1 : 0, s2: y1 ? 1 : 0, apaga: y2 ? 1 : 0, rotulos: y2 },
        ley:[['a', 'a = (p; 3)'], ['b', 'b = (2; q)'], ...(y1 ? [['R', 'R · resultante']] : [])],
        desc:'Ejes con números. La punta de a está en la recta horizontal y = 3; la de b, en la recta vertical x = 2.',
-       lect:() => (L.st.s2 >= 1 ? [['b', 'q', fmt(S1.incognitaOtra, 0)], ['a', 'p', `${fmt(S1.incognitaEje, 0)} o ${fmt(S2.incognitaEje, 0)}`], ['R', '|R|', '5']] : []) });
+       lect:() => (L.st.s2 >= 1 ? [['b', 'q', fmt(S1.incognitaOtra, 0)], ...(S.pred[C1b.id] ? [['a', 'p', `${fmt(S1.incognitaEje, 0)} o ${fmt(S2.incognitaEje, 0)}`]] : []), ['R', '|R|', '5']] : []) });
      L.dibujo = g => {
        const c = g.c, st = L.st, O = { x:0, y:0 };
        g.ejes();
@@ -2050,7 +2079,7 @@ const pasos = [
        [S1, S2].forEach((s, i) => {
          const f = i ? st.s2 : st.s1; if (!(f > 0)) return;
          const alfa = i === 0 ? 1 - .7*st.apaga : 1, A = { x:s.A[0], y:s.A[1] }, R = { x:s.R[0], y:s.R[1] };
-         g.flecha(O, A, c.a, g.ancho('a', 3.6), { f, alfa }); if (f >= 1){ g.flecha(A, R, c.b, g.ancho('b', 3.6), { alfa }); g.flecha(O, R, c.R, g.ancho('R', 4.2), { alfa }); g.rot(A, `p = ${fmt(s.incognitaEje, 0)}`, c.a, { dy:-14, tam:13 }); }
+         g.flecha(O, A, c.a, g.ancho('a', 3.6), { f, alfa }); if (f >= 1){ g.flecha(A, R, c.b, g.ancho('b', 3.6), { alfa }); g.flecha(O, R, c.R, g.ancho('R', 4.2), { alfa }); if (st.rotulos) g.rot(A, `p = ${fmt(s.incognitaEje, 0)}`, c.a, { dy:-14, tam:13 }); }
        });
        if (st.b > 0 && !(st.s1 >= 1)) g.flecha(O, { x:2, y:-3 }, c.b, 3.6, { f:st.b });
      };
@@ -2063,7 +2092,7 @@ const pasos = [
      L.config({ caja:{ x0:-9.4, x1:9.4, y0:-7.4, y1:7.4 }, tope:260, st:{ u: y1 ? 1 : 0, w: y1 ? 1 : 0, anti: y1 ? 1 : 0, encoge: y2 ? 1 : 0 },
        ley:[['a', 'a'], ['ink', '- - - circunferencia de radio 1'], ...(y1 ? [['u', 'û · unitario'], ['w', 'w y −w (a trazos)']] : [])],
        desc:'Ejes con números; a = (4; 3) desde el origen y la circunferencia de radio 1.',
-       lect:() => [['a', '|a|', '5'], ...(L.st.u >= 1 ? [['u', 'û', pv(UA), true]] : []), ...(L.st.w >= 1 ? [['w', 'w', pv(UW)], ['w', '|w|', '10']] : [])] });
+       lect:() => [['a', '|a|', '5'], ...(L.st.u >= 1 && S.pred[C2b.id] ? [['u', 'û', pv(UA), true]] : []), ...(L.st.w >= 1 ? [['w', 'w', pv(UW)], ['w', '|w|', '10']] : [])] });
      L.dibujo = g => {
        const c = g.c, st = L.st, O = { x:0, y:0 }, P = g.P(O);
        g.ejes();
@@ -2076,6 +2105,15 @@ const pasos = [
        g.flecha(O, { x:UA.x*eA, y:UA.y*eA }, c.a, g.ancho('a', 4)); g.rotF(O, a2, 'a', c.a, -1, .6);
        if (st.u > 0){ const k = st.w > 0 ? 1 : 5 - 4*st.u; g.flecha(O, { x:UA.x*k, y:UA.y*k }, c.u, g.ancho('u', 5)); if (st.u >= 1) g.rot(UA, 'û', c.u, { dx:-14, dy:-6, tam:15 }); }
        if (st.anti >= 1) g.rotF(O, UW.antiparalelo, '−w', c.w, 1, .7);
+       // lupa: la circunferencia de radio 1 vista de cerca, para que û se vea
+       if (st.u >= 1){
+         const r = 34, C0 = { x:12 + r + 8, y:12 + r + 8 }, X = g.ctx;
+         X.save(); X.fillStyle = c.paper; X.strokeStyle = c.muted; X.lineWidth = 1.4; X.beginPath(); X.arc(C0.x, C0.y, r + 8, 0, 7); X.fill(); X.stroke();
+         X.strokeStyle = c.ink; X.lineWidth = 1.1; X.setLineDash([3, 3]); X.beginPath(); X.arc(C0.x, C0.y, r, 0, 7); X.stroke(); X.restore();
+         g.flechaPx(C0, { x:C0.x + UA.x*r, y:C0.y - UA.y*r }, c.u, g.ancho('u', 3.6));
+         g.texto(C0.x + UA.x*r + 6, C0.y - UA.y*r - 10, 'û', c.u, 'left', 14, 800);
+         g.texto(C0.x, C0.y + r + 18, 'lupa · radio 1', c.muted, 'center', 11, 700);
+       }
      };
      L.dibujar();
    } },
@@ -2083,10 +2121,10 @@ const pasos = [
    intro:() => `<p>Los ejes x e y no son sagrados: se pueden girar. Con ángulos que no son notables, a veces conviene elegir otros ejes.</p>`,
    prep:(L, S) => {
      const y1 = !!S.pred[C3.id], y2 = !!S.pred[C3b.id];
-     L.config({ caja:{ x0:-13.4, x1:6.4, y0:-6.4, y1:11.4 }, rejilla:false, tope:260, st:{ phi: y1 ? PHI : 0, notable: y1, R: y2 ? 1 : 0, arco: y2 ? 1 : 0 },
+     L.config({ caja:{ x0:-13.4, x1:6.4, y0:-6.4, y1:11.4 }, rejilla:false, tope:210, st:{ phi: y1 ? PHI : 0, notable: y1, R: y2 ? 1 : 0, arco: y2 ? 1 : 0 },
        ley:[['a', 'a'], ['b', 'b'], ['ink', 'ejes x′ e y′ (girados)'], ...(y2 ? [['R', 'R · resultante']] : [])],
        desc:'Vectores a y b desde el origen, con los ejes x′ e y′ encima de los de siempre.',
-       lect:() => { if (!y1 && !S.pred[C3.id]) return [['a', '|a|', '12'], ['b', '|b|', '10']];
+       lect:() => { if (!y1 && !S.pred[C3.id]) return [];
          const G = MV.girarEjes([A3, B3], L.st.phi); return [['ink', 'giro', `${fmt(L.st.phi, 0)}°`], ['x', 'R′x', fmt(G.resultante.x, 2)], ['y', 'R′y', fmt(G.resultante.y, 2)], ['R', '|R|', fmt(G.resultante.modulo, 2)]]; } });
      L.dibujo = g => {
        const c = g.c, st = L.st, O = { x:0, y:0 };

@@ -48,7 +48,7 @@
       "tambien": [ { "args": [5, 217], "espera": { "x": -4, "y": -3 } }, { "args": [10, 323], "espera": { "x": 8, "y": -6 } },
                    { "args": [5, 53], "espera": { "x": 3, "y": 4 } }, { "args": [2, 90], "espera": { "x": 0, "y": 2 } }, { "args": [2, -90], "espera": { "x": 0, "y": -2, "angulo": 270 } } ] },
 
-    { "nombre": "Papel p4 y suma por componentes: 10 a 53° más 6 hacia la izquierda → R = (0, 8), módulo 8 (sumar módulos: 16; olvidar el signo de −6: (12, 8), √208)",
+    { "nombre": "Papel p3 y suma por componentes: 10 a 53° más 6 hacia la izquierda → R = (0, 8), módulo 8 (sumar módulos: 16; olvidar el signo de −6: (12, 8), √208)",
       "fn": "suma", "args": [[{ "x": 6, "y": 8 }, { "x": -6, "y": 0 }]],
       "espera": { "x": 0, "y": 8, "modulo": 8, "angulo": 90, "errores.sumaModulos": 16 },
       "tambien": [ { "args": [[{ "x": 6, "y": 8 }, { "x": 6, "y": 0 }]], "espera": { "modulo": 14.422205101855956 } } ] },
