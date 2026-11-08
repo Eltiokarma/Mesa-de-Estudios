@@ -2,7 +2,7 @@
   "plantilla": "geo-areas-triangulares",
   "tolerancia": 0.000001,
   "nota": "Respuestas exactas q + p·√3; «respuesta» es su valor numérico. Ver la cabecera de generador.js para el significado de cada campo de «entrada».",
-  "verificacion": "",
+  "verificacion": "Verificado a ciegas por un subagente verificador independiente (8 nov 2026, segunda vuelta tras la revisión): los 23 casos se resolvieron desde el enunciado con coordenadas y la fórmula del zapatero en aritmética exacta q + p√3, y se contrastaron con una fórmula de academia distinta (k², razones de bases, recorrido del hexágono con giros de 60°, ley de cosenos). Los 23 coinciden en respuesta y forma exacta; sin defectos de enunciado.",
   "casos": [
     {
       "semilla": "entrada-1",
