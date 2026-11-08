@@ -45,6 +45,7 @@ plantillas/<tema>/motor.test.js  corre casos.json contra el motor (npm test o no
 fuentes/por-conseguir.md       lista de libros, tesis y artículos que faltan, con prioridad
 herramientas/                  OCR de PDF escaneados, esquema y script de clasificación de preguntas
 docs/clasificacion-unmsm.md    qué pregunta San Marcos en física y química (datos en docs/datos/)
+docs/clasificacion-unmsm-admision.md  exámenes de admisión de San Marcos 2019-I a 2027-I, los ocho cursos: temas, cobertura de la app y huecos (datos en docs/datos/admision-unmsm.csv)
 fuentes/drive.tsv + descargar.sh  PDF de Google Drive (simulacros y temarios de San Marcos); en una sesión nueva: bash fuentes/descargar.sh
 fuentes/prospectos/            prospectos y temarios oficiales (no se versionan si son pesados o con derechos; ver .gitignore)
 fuentes/examenes/              exámenes pasados

@@ -2,6 +2,8 @@
 
 4 de noviembre de 2026 · Tarea 3 de `CLAUDE.md`, primera medición de cobertura
 
+> La medición con los exámenes de admisión reales (2019-I a 2027-I, los ocho cursos) está en `docs/clasificacion-unmsm-admision.md`.
+
 **Datos:** 39 exámenes de simulacro de San Marcos (`fuentes/examenes/unmsm-simulacros/`), pasados por OCR y clasificados pregunta por pregunta según `herramientas/esquema-clasificacion.md`. La tabla completa está en `docs/datos/clasificacion-unmsm.csv`, con descripciones propias y sin copiar enunciados (regla 5 de `CLAUDE.md`).
 
 ## Resumen en seis líneas
