@@ -1,6 +1,6 @@
 {
   "id": "t053",
-  "version": 1,
+  "version": 2,
   "titulo": "A Morning at Belén Market",
   "tema": "Lectura en inglés · el mercado de Belén en Iquitos",
   "grado": 4,
@@ -113,7 +113,7 @@
           "explicacion": "Es demasiado amplio: el texto no habla de toda la Amazonía, sino de un mercado de Iquitos y de su relación con el río."
         },
         {
-          "t": "En el mercado de Belén se vende la comida que llega a Iquitos por el río.",
+          "t": "El mercado de Belén es un lugar de compras: ahí se vende la comida que llega a Iquitos por el río.",
           "codigo": "RV3",
           "origen": "o2",
           "explicacion": "Es verdad (oración 2), pero deja fuera lo esencial: que el mercado es más que eso, porque muestra cómo vive la ciudad con el río."
@@ -253,6 +253,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "Coincidió a ciegas con todas las claves. Cambios: o7 sitúa el barrio «down by the river» (Bajo Belén); el hecho de Belén quedó más general y con fuente concreta en lugar de «por confirmar»."
+    "notas": "Coincidió a ciegas con todas las claves. Cambios: o7 sitúa el barrio «down by the river» (Bajo Belén); el hecho de Belén quedó más general y con fuente concreta en lugar de «por confirmar». 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido."
   }
 }
