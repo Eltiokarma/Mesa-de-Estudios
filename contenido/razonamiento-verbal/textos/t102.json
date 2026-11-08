@@ -251,8 +251,8 @@
         },
         {
           "t": "el quechua y el aimara deben seguir vivos en la casa y en la comunidad.",
-          "codigo": "RV59",
-          "explicacion": "Eso ya lo concede el texto B (oración 9); no es una objeción que la autora del texto A le haría a su propuesta.",
+          "codigo": "RV61",
+          "explicacion": "En eso los dos están de acuerdo: el texto B lo concede en la oración 9. Un punto común no sirve como objeción de la autora del texto A a la propuesta del B.",
           "origen": "o9"
         },
         {
@@ -293,9 +293,9 @@
           "explicacion": "Estudiar es del mismo campo (aprender), pero el niño no estudia esa lengua en clase: la trae de su casa."
         },
         {
-          "t": "prefiere usar.",
-          "codigo": "RV19",
-          "explicacion": "Quien maneja bien una lengua suele preferirla, pero dominar no significa preferir: aquí se habla de la lengua que el niño ya maneja y entiende (oración 4)."
+          "t": "se habla en su domicilio.",
+          "codigo": "RV20",
+          "explicacion": "«Domina» y «domicilio» se parecen en la forma, y es cierto que esa lengua se habla en casa (oración 1), pero el verbo no dice dónde se habla: dice que el niño la maneja bien y entiende lo que lee en ella (oración 4)."
         }
       ]
     }
@@ -307,6 +307,6 @@
     "por": "subagente (revisor a ciegas)",
     "fecha": "2026-11-08",
     "veredicto": "aprobado",
-    "notas": "5 de 5 a ciegas (con los previos). Se reforzaron dos distractores del diálogo (una concesión del texto B y un absoluto) y se cambió «doma» por «prefiere usar» en el sentido contextual."
+    "notas": "5 de 5 a ciegas (con los previos). Se reforzaron dos distractores del diálogo (un punto común leído como objeción y un absoluto) y se cambió «doma» por «se habla en su domicilio» en el sentido contextual."
   }
 }
