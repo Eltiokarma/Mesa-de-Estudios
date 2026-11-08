@@ -13,8 +13,9 @@
  *                  escrita como N(2 − √3); la respuesta es la clave 'dod:N:-'.
  *   soporte        polígono regular de n lados con vértices consecutivos A, B, C, D; dentro se marca F
  *                  con ABF equilátero. pedido 'BFC' (ángulo BFC) o 'FCD' (ángulo FCD).
- *   diagonales     pentágono regular ABCDE; P es el corte de la diagonal AC con la diagonal BX
- *                  (X = 'D' o 'E'); pedido 'APB' o 'BPC' (ángulo en P).
+ *   diagonales     polígono regular de n lados (5, 6, 9, 10 o 12) con vértices A, B, C, … en orden;
+ *                  P es el corte de la diagonal A–V(p) con la diagonal B–V(q), donde V(i) es el vértice
+ *                  i-ésimo contando A = 0 (1 < p < q < n). pedido 'APB' o 'BPX' (ángulo B P V(p)).
  *   hexagono       hexágono regular ABCDEF inscrito en una circunferencia. Se da la longitud s de un
  *                  segmento (s se guarda como número; s2 = s²): seg 'BP' o 'PD' con P = AC ∩ BD;
  *                  seg 'BM', 'AM' o 'ME' con M = AC ∩ BE. Se pide el radio de la circunferencia.
@@ -23,15 +24,17 @@
  *                  mayor. sub 'altura': bases B y b, lados no paralelos c = AB y d = CD (trapecio
  *                  convexo ABCD con BC ∥ AD, AD = B, BC = b); se pide la distancia entre las bases.
  *   encajados      cuadrado exterior ABCD y cuadrado interior PQRS con P en AB, Q en BC, R en CD y
- *                  S en DA; el ángulo APS mide 37° (notable 3-4-5). dato 'exterior' (valor = AB) o
+ *                  S en DA; el ángulo APS mide angulo (37° o 53° con el notable 3-4-5; 16° o 74° con el
+ *                  notable 7-24-25; en P el cateto AP es el adyacente). dato 'exterior' (valor = AB) o
  *                  'interior' (valor = PQ). Se pide el alambre total: perímetro de los dos cuadrados.
  *   rombo          rombo ABCD con ángulo ABC = beta (entre 60° y 120°); E dentro del rombo con BEC
- *                  equilátero. pedido 'EAD', 'BAE' o 'AED'.
- *   cuadrados      hoja cuadrada ABCD (antihoraria) y hoja cuadrada ACEF construida sobre la diagonal AC
- *                  como lado, del mismo lado de AC que D. pedido 'BCE', 'BDE', 'CDE' o 'DEC'.
+ *                  equilátero. pedido 'EAD', 'BAE', 'CED', 'AEC' o 'AED'.
+ *   cuadrados      hoja cuadrada ABCD de lado L (antihoraria) y hoja cuadrada ACEF construida sobre la
+ *                  diagonal AC como lado, del mismo lado de AC que D. pedido: ángulo 'BCE', 'BDE' o 'CDE';
+ *                  longitud 'DE', 'CE' o 'BE'; o 'area' (área del triángulo CDE).
  *
- * Errores: GE11 (Pitágoras mal aplicado, parcial) y GE23 (suma de ángulos con n mal, hipótesis) de
- * docs/investigacion/geometria-ideas-erroneas.md; GE21 (apotema por lado o radio) como hipótesis;
+ * Errores: GE11 (Pitágoras mal aplicado) y GE7 (un lado inclinado tomado como altura), parciales, y
+ * GE23 (suma de ángulos interiores como 180°·n), hipótesis, de docs/investigacion/geometria-ideas-erroneas.md; GE21 (apotema por lado o radio) como hipótesis;
  * el resto, códigos nuevos con prefijo (EQ, AR, PO, HX, TP, CE, RO, CS), todos hipótesis.
  * calc: funciones puras de cálculo (las usa papel.json).
  */
@@ -69,9 +72,9 @@
       const i = 180 * (n - 2) / n, base = (240 - i) / 2;
       return { interior: i, apice: i - 60, BFC: base, FCD: i - base };
     },
-    diagonalesPentagono(X, pedido) {
-      const arcoCX = X === 'D' ? 72 : 144;
-      const APB = (72 + arcoCX) / 2;
+    // Polígono regular de n lados: la diagonal A–V(p) corta a la diagonal B–V(q) (1 < p < q < n) en P.
+    diagonales(n, p, q, pedido) {
+      const APB = 180 * (1 + q - p) / n;
       return pedido === 'APB' ? APB : 180 - APB;
     },
     hexagonoRadio: (seg, s) => s / FACTOR_HEX[seg],
@@ -82,12 +85,16 @@
       const area = Math.sqrt(Math.max(0, s * (s - c) * (s - d) * (s - x)));
       return 2 * area / x;
     },
-    encajados(dato, valor) {
-      const L = dato === 'exterior' ? valor : valor * 7 / 5, s = dato === 'exterior' ? valor * 5 / 7 : valor;
+    // angulo = ángulo APS (37, 53, 16 o 74): el lado exterior es (AP + AS)k y el interior PS·k.
+    encajados(dato, valor, angulo = 37) {
+      const t = { 37: [4, 3, 5], 53: [3, 4, 5], 16: [24, 7, 25], 74: [7, 24, 25] }[angulo];
+      const k = dato === 'exterior' ? valor / (t[0] + t[1]) : valor / t[2];
+      const L = (t[0] + t[1]) * k, s = t[2] * k;
       return { exterior: L, interior: s, total: 4 * (L + s) };
     },
-    rombo: beta => ({ BAE: 120 - beta / 2, EAD: 60 - beta / 2, AED: 150, CED: 30 + beta / 2, ABE: beta - 60 }),
-    cuadrados: pedido => ({ BCE: 135, BDE: 135, CDE: 90, DEC: 45 })[pedido],
+    rombo: beta => ({ BAE: 120 - beta / 2, EAD: 60 - beta / 2, AED: 150, CED: 30 + beta / 2, ECD: 120 - beta, AEC: 180 - beta / 2, ABE: beta - 60 }),
+    // Hoja ABCD de lado L y hoja ACEF sobre la diagonal AC: ángulos o longitudes.
+    cuadrados: (pedido, L = 1) => ({ BCE: 135, BDE: 135, CDE: 90, DE: L, CE: L * Math.SQRT2, BE: L * Math.sqrt(5), area: L * L / 2 })[pedido],
   };
 
   function generar(semilla) {
@@ -230,7 +237,8 @@
     const t = (n, s) => ({ clave: `dod:${n}:${s}`, texto: `${f(n)}(2 ${s === '-' ? '−' : '+'} √3) ${u}²` });
     const e = (id, n, s, explicacion) => ({ id, ...t(n, s), explicacion, respaldo: 'hipotesis', fuente: null });
     return {
-      variables, unidad: `${u}²`, claves: true, correcta: t(N, '-'),
+      variables: { ap: { nombre: 'apotema', color: 'i' }, ml: { nombre: 'medio lado', color: 'h' }, A: { nombre: 'área', color: 'd' } },
+      unidad: `${u}²`, claves: true, correcta: t(N, '-'),
       enunciado: [`${ctx.que} tiene forma de dodecágono regular (12 lados). Su apotema mide `, v('ap', `${ap} ${u}`), '. Usa tan 15° = 2 − √3.'],
       pregunta: [`¿Cuál es el área ${ctx.cosa}?`],
       errores: [
@@ -241,7 +249,7 @@
       ],
       solucion: [
         ['El ángulo central es 360°/12 = 30°. La apotema lo parte en dos de 15° y cae en el punto medio del lado.'],
-        ['Medio lado = ', v('ap', ap), ' · tan 15° = ', v('l', `${ap}(2 − √3)`), `; perímetro = 24 · ${ap}(2 − √3).`],
+        ['Medio lado = ', v('ap', ap), ' · tan 15° = ', v('ml', `${ap}(2 − √3)`), `; perímetro = 24 · ${ap}(2 − √3).`],
         ['Área = semiperímetro × apotema = ', `12 · ${ap}(2 − √3) · `, v('ap', ap), ' = ', v('A', t(N, '-').texto), '.'],
       ],
       datos: { tipo: 'area-regular', sub, ap },
@@ -282,34 +290,48 @@
     };
   }
 
-  // ---------- Diagonales del pentágono regular ----------
+  // ---------- Diagonales que se cortan dentro de un polígono regular ----------
+  // Vértices consecutivos A, B, C, …; la diagonal A–V(p) y la diagonal B–V(q) se cortan en P (1 < p < q < n).
+  const LETRAS = 'ABCDEFGHIJKL';
+  const NOMBRE_N = { 5: 'pentágono', 6: 'hexágono', 9: 'eneágono', 10: 'decágono', 12: 'dodecágono' };
   function diagonales(rng) {
-    const X = rng.elegir(['D', 'E']), pedido = rng.elegir(['APB', 'BPC']);
-    const correcta = calc.diagonalesPentagono(X, pedido);
-    const arcoCX = X === 'D' ? 72 : 144;
-    const APB = (72 + arcoCX) / 2;
-    const ctx = rng.elegir(['Una estrella se dibuja dentro de un pentágono regular ABCDE trazando sus diagonales.', 'Se tiene un pentágono regular ABCDE.']);
-    const variables = { arco: { nombre: 'arco de cada lado', color: 'o' }, x: { nombre: `ángulo ${pedido}`, color: 'd' } };
-    return {
-      variables, unidad: '°', correcta, texto: g, filtro: x => esEntero(x) && x < 180,
-      enunciado: [`${ctx} Las diagonales AC y B${X} se cortan en el punto P.`],
-      pregunta: [`¿Cuánto mide el ángulo ${pedido}?`],
-      errores: [
-        h('PO-suplemento', 180 - correcta, `Ese es el ángulo ${pedido === 'APB' ? 'BPC' : 'APB'}, su suplemento. Fíjate qué arcos abarca el ángulo que se pide.`),
-        h('PO-angulo-isosceles', 36, 'Ese es el ángulo BAC del triángulo isósceles ABC (lados AB = BC y ángulo B de 108°). Se pide el ángulo en P, donde se cortan las diagonales.'),
-        h('PO-sin-mitad', pedido === 'APB' ? 72 + arcoCX : 360 - 72 - arcoCX, 'Sumaste los arcos y no dividiste entre 2. Un ángulo con vértice dentro de la circunferencia mide la semisuma de los arcos que abarca.'),
-        h('PO-semidiferencia', Math.abs(arcoCX - 72) / 2, 'Restaste los arcos: así se mide un ángulo con vértice fuera de la circunferencia. Con el vértice dentro, se suman.'),
-        h('PO-interior', 108, 'Ese es el ángulo interior del pentágono. El ángulo entre las diagonales en P no tiene por qué ser igual.'),
-        h('PO-todo-equilatero', 60, 'Supusiste un triángulo equilátero en P. Los triángulos del pentágono tienen ángulos de 36°, 72° y 108°.'),
-      ],
-      solucion: [
-        ['Se dibuja la circunferencia que pasa por los cinco vértices: cada lado abarca un arco de 360°/5 = ', v('arco', '72°'), '.'],
-        [`El ángulo APB abarca el arco AB (`, v('arco', '72°'), `) y su opuesto CP${X} abarca el arco C${X} (${arcoCX}°).`],
-        [`Ángulo con vértice dentro: APB = (72° + ${arcoCX}°)/2 = ${g(APB)}.`],
-        pedido === 'APB' ? ['Ángulo APB = ', v('x', g(correcta)), '.'] : ['BPC es su suplemento: 180° − ', `${g(APB)} = `, v('x', g(correcta)), '.'],
-      ],
-      datos: { tipo: 'diagonales', X, pedido },
-    };
+    for (;;) {
+      const n = rng.elegir([5, 5, 6, 6, 9, 10, 12]);
+      const p = rng.entero(2, n - 2), q = rng.entero(p + 1, n - 1);
+      if (n === 5 && p === 2 && q === 3 && rng.moneda()) continue; // que el par más visto no domine
+      const pedido = rng.elegir(['APB', 'BPX']);
+      const arco = 360 / n, Xp = LETRAS[p], Xq = LETRAS[q];
+      const APB = calc.diagonales(n, p, q, 'APB');
+      const correcta = calc.diagonales(n, p, q, pedido);
+      if (!esEntero(correcta) || q - p === 0) continue;
+      const nombre = pedido === 'APB' ? 'APB' : `BP${Xp}`;
+      const otro = pedido === 'APB' ? `BP${Xp}` : 'APB';
+      const verts = LETRAS.slice(0, n);
+      const ctx = rng.elegir([`Un vitral tiene forma de ${NOMBRE_N[n]} regular ${verts}.`, `Se tiene un ${NOMBRE_N[n]} regular ${verts}.`, `El piso de una glorieta es un ${NOMBRE_N[n]} regular ${verts}.`]);
+      const variables = { arco: { nombre: 'arco de cada lado', color: 'o' }, x: { nombre: `ángulo ${nombre}`, color: 'd' } };
+      const k1 = 1, k2 = q - p; // lados que abarca cada arco del ángulo APB
+      const sinMitad = pedido === 'APB' ? (k1 + k2) * arco : 360 - (k1 + k2) * arco;
+      return {
+        variables, unidad: '°', correcta, texto: g, filtro: x => esEntero(x) && x < 180,
+        enunciado: [`${ctx} Las diagonales A${Xp} y B${Xq} se cortan en el punto P.`],
+        pregunta: [`¿Cuánto mide el ángulo ${nombre}?`],
+        errores: [
+          h('PO-suplemento', 180 - correcta, `Ese es el ángulo ${otro}, su suplemento. Fíjate qué arcos abarca el ángulo que se pide.`),
+          h('PO-sin-mitad', sinMitad, 'Sumaste los arcos y no dividiste entre 2. Un ángulo con vértice dentro de la circunferencia mide la semisuma de los arcos que abarca.'),
+          h('PO-semidiferencia', Math.abs(k2 - k1) * arco / 2, 'Restaste los arcos: así se mide un ángulo con vértice fuera de la circunferencia. Con el vértice dentro, se suman.'),
+          h('PO-interior', calc.anguloInterior(n), `Ese es el ángulo interior del ${NOMBRE_N[n]}. El ángulo entre dos diagonales en P no tiene por qué ser igual.`),
+          h('PO-angulo-central', arco, `Ese es el ángulo central (360°/${n}), el arco de un solo lado. El ángulo en P abarca dos arcos.`),
+          h('PO-inscrito', arco / 2, 'Ese es el ángulo inscrito que abarca un lado (la mitad de un arco). En P se juntan dos arcos: el de AB y el de enfrente.'),
+        ],
+        solucion: [
+          [`Se dibuja la circunferencia que pasa por los ${n} vértices: cada lado abarca un arco de 360°/${n} = `, v('arco', g(arco)), '.'],
+          ['El ángulo APB abarca el arco AB (', v('arco', g(arco)), `) y su opuesto ${Xp}P${Xq} abarca el arco ${Xp}${Xq} (${k2} ${k2 === 1 ? 'lado' : 'lados'}: ${g(k2 * arco)}).`],
+          [`Ángulo con vértice dentro: APB = (${g(arco)} + ${g(k2 * arco)})/2 = ${g(APB)}.`],
+          pedido === 'APB' ? ['Ángulo APB = ', v('x', g(correcta)), '.'] : [`${nombre} es su suplemento: 180° − ${g(APB)} = `, v('x', g(correcta)), '.'],
+        ],
+        datos: { tipo: 'diagonales', n, p, q, pedido },
+      };
+    }
   }
 
   // ---------- Hexágono regular inscrito y sus diagonales ----------
@@ -379,7 +401,7 @@
       const errores = [
         h('TP-isosceles', Math.sqrt(c * c - (x / 2) ** 2), `Repartiste ${x} en dos partes iguales, como si el trapecio fuera isósceles. Los lados no paralelos miden distinto (${c} y ${d}): sus proyecciones también son distintas.`),
         par('GE7-lado-como-altura', Math.min(c, d), 'Tomaste un cable como si fuera perpendicular a las orillas. Los cables están inclinados: el ancho es la altura del trapecio, menor que los dos.'),
-        par('GE11-proyeccion-completa', Math.sqrt(Math.max(c, d) ** 2 - x * x), `Usaste toda la diferencia de bases (${x}) como proyección del cable más largo. Esa diferencia se reparte entre las proyecciones de los dos cables.`),
+        h('GE11-proyeccion-completa', Math.sqrt(Math.max(c, d) ** 2 - x * x), `Usaste toda la diferencia de bases (${x}) como proyección del cable más largo. Esa diferencia se reparte entre las proyecciones de los dos cables.`),
         h('TP-sin-raiz', correcta * correcta, `Llegaste a h² = ${f(correcta * correcta)} y olvidaste sacar la raíz.`),
         par('GE11-suma', Math.sqrt(c * c + p * p), 'Sumaste los cuadrados en Pitágoras. La altura es un cateto: h² = cable² − proyección².'),
       ];
@@ -402,7 +424,9 @@
       { u: 'cm', que: 'Una ventana tiene forma de trapecio ABCD' }, { u: 'u', que: 'Se tiene un trapecio ABCD' },
     ]);
     const u = ctx.u;
-    const variables = { B: { nombre: 'base mayor', color: 'o' }, b: { nombre: 'base menor', color: 'i' }, m: { nombre: 'mediana', color: 'h' }, x: { nombre: 'pedido', color: 'd' } };
+    const variables = sub === 'segmento'
+      ? { B: { nombre: 'base mayor', color: 'o' }, b: { nombre: 'base menor', color: 'i' }, m: { nombre: 'mediana', color: 'h' }, x: { nombre: 'MN', color: 'd' } }
+      : { m: { nombre: 'mediana', color: 'h' }, s: { nombre: 'segmento entre los puntos medios de las diagonales', color: 'i' }, x: { nombre: 'base mayor AD', color: 'd' } };
     if (sub === 'segmento') {
       let B, b;
       do { b = rng.entero(3, 20); B = b + 2 * rng.entero(2, 10); } while (B === 3 * b);
@@ -430,7 +454,7 @@
     const { mayor } = calc.trapecioBases(m, s);
     return {
       variables, unidad: u, correcta: mayor, texto: x => `${f(x)} ${u}`, filtro: esEntero,
-      enunciado: [`${ctx.que}, con BC paralelo a AD y AD mayor que BC. Su mediana mide `, v('m', `${m} ${u}`), ' y el segmento que une los puntos medios de sus diagonales mide ', v('x', `${s} ${u}`), '.'],
+      enunciado: [`${ctx.que}, con BC paralelo a AD y AD mayor que BC. Su mediana mide `, v('m', `${m} ${u}`), ' y el segmento que une los puntos medios de sus diagonales mide ', v('s', `${s} ${u}`), '.'],
       pregunta: ['¿Cuánto mide la base mayor AD?'],
       errores: [
         h('TP-bases-cambiadas', m - s, 'Esa es la base menor BC. La mayor es la mediana más el segmento.'),
@@ -440,67 +464,87 @@
       ],
       solucion: [
         ['Mediana: (AD + BC)/2 = ', v('m', m), ' → AD + BC = ', `${2 * m}.`],
-        ['Segmento entre los puntos medios de las diagonales: (AD − BC)/2 = ', v('x', s), ' → AD − BC = ', `${2 * s}.`],
-        ['Sumando: 2·AD = ', `${2 * m + 2 * s} → AD = ${mayor} ${u}.`],
+        ['Segmento entre los puntos medios de las diagonales: (AD − BC)/2 = ', v('s', s), ' → AD − BC = ', `${2 * s}.`],
+        ['Sumando: 2·AD = ', `${2 * m + 2 * s} → AD = `, v('x', `${mayor} ${u}`), '.'],
       ],
       datos: { tipo: 'trapecio', sub, m, s },
     };
   }
 
-  // ---------- Cuadrados encajados con 37° ----------
+  // ---------- Cuadrados encajados con un notable ----------
+  // angulo = ángulo APS; AP y AS son los catetos (en unidades de k) y PS la hipotenusa.
+  const NOTABLES = {
+    37: { AP: 4, AS: 3, PS: 5, nota: '37° y 53° (lados 3, 4 y 5)' }, 53: { AP: 3, AS: 4, PS: 5, nota: '37° y 53° (lados 3, 4 y 5)' },
+    16: { AP: 24, AS: 7, PS: 25, nota: '16° y 74° (lados 7, 24 y 25)' }, 74: { AP: 7, AS: 24, PS: 25, nota: '16° y 74° (lados 7, 24 y 25)' },
+  };
   function encajados(rng) {
-    const k = rng.elegir([5, 10, 15, 20]);
+    const angulo = rng.elegir([37, 53, 37, 53, 16, 74]);
+    const t = NOTABLES[angulo];
+    const k = angulo === 16 || angulo === 74 ? rng.entero(1, 4) : rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]);
     const dato = rng.elegir(['exterior', 'interior']);
-    const L = 7 * k, s = 5 * k, u = 'cm';
+    const L = (t.AP + t.AS) * k, s = t.PS * k, u = 'cm';
     const valor = dato === 'exterior' ? L : s;
-    const { total } = calc.encajados(dato, valor);
+    const { total } = calc.encajados(dato, valor, angulo);
     const variables = { L: { nombre: 'lado exterior AB', color: 'o' }, s: { nombre: 'lado interior PQ', color: 'i' }, t: { nombre: 'ángulo APS', color: 'h' }, T: { nombre: 'alambre total', color: 'd' } };
     const ctx = rng.elegir(['Un artesano dobla alambre para armar un adorno', 'Con alambre se arma el marco de una ventana decorativa', 'Con alambre se arma un llavero']);
+    const AP = t.AP * k, AS = t.AS * k;
     const errores = dato === 'exterior' ? [
       h('CE-solo-exterior', 4 * L, 'Contaste solo el cuadrado exterior. El alambre forma los dos cuadrados.'),
-      h('CE-lado-como-hipotenusa', 4 * L + 4 * (4 * L / 5), `Tomaste AB = ${L} como hipotenusa (PQ = AB·cos 37°). AB está formado por dos catetos de triángulos distintos: AP = 4k y PB = 3k.`),
       h('CE-iguales', 8 * L, 'Supusiste que los dos cuadrados tienen el mismo lado. El interior es más pequeño: su lado es la hipotenusa de los triángulos de las esquinas.'),
-      h('CE-un-cateto', 4 * L + 4 * (3 * L / 5), 'Calculaste PQ con la razón 3/5 aplicada a todo AB. AB = AP + PB no es la hipotenusa de un solo triángulo.'),
+      h('CE-cateto-como-lado', 4 * L + 4 * AP, `Tomaste el lado interior igual al cateto AP = ${AP}. El lado interior es la hipotenusa PS del triángulo de la esquina.`),
+      h('CE-diferencia', 4 * (L - s), 'Calculaste cuánto más alambre lleva el cuadrado exterior que el interior. Se pide el total: se suman los dos perímetros.'),
     ] : [
       h('CE-solo-interior', 4 * s, 'Contaste solo el cuadrado interior. El alambre forma los dos cuadrados.'),
       h('CE-iguales', 8 * s, 'Supusiste que los dos cuadrados tienen el mismo lado. El exterior es más grande: cada lado suma dos catetos.'),
-      h('CE-un-cateto', 4 * s + 4 * (4 * s / 5), `Tomaste AB igual a un solo cateto (AP = ${4 * k}). AB también incluye PB = ${3 * k}.`),
-      h('CE-suma-hipotenusas', 4 * s + 4 * (2 * s), 'Sumaste dos hipotenusas para AB. AB se forma con dos catetos: AP y PB.'),
+      h('CE-un-cateto', 4 * s + 4 * AP, `Tomaste AB igual a un solo cateto (AP = ${AP}). AB también incluye PB = AS = ${AS}.`),
+      h('CE-diferencia', 4 * (L - s), 'Calculaste cuánto más alambre lleva el cuadrado exterior que el interior. Se pide el total: se suman los dos perímetros.'),
     ];
     return {
       variables, unidad: u, correcta: total, errores, texto: x => `${f(x)} ${u}`, filtro: esEntero,
-      enunciado: [`${ctx}: un cuadrado exterior ABCD y un cuadrado interior PQRS, con P en AB, Q en BC, R en CD y S en DA. El ángulo APS mide `, v('t', '37°'),
-        dato === 'exterior' ? ' y el lado AB mide ' : ' y el lado PQ mide ', dato === 'exterior' ? v('L', `${L} ${u}`) : v('s', `${s} ${u}`), '. Usa el triángulo notable de 37° y 53° (lados 3, 4 y 5).'],
+      enunciado: [`${ctx}: un cuadrado exterior ABCD y un cuadrado interior PQRS, con P en AB, Q en BC, R en CD y S en DA. El ángulo APS mide `, v('t', `${angulo}°`),
+        dato === 'exterior' ? ' y el lado AB mide ' : ' y el lado PQ mide ', dato === 'exterior' ? v('L', `${L} ${u}`) : v('s', `${s} ${u}`), `. Usa el triángulo notable de ${t.nota}.`],
       pregunta: ['¿Cuánto alambre se usa en total para los dos cuadrados?'],
       solucion: [
-        ['En la esquina A, el triángulo APS es rectángulo con hipotenusa PS = lado interior y ángulo ', v('t', '37°'), ' en P: AP = 4k, AS = 3k, PS = 5k.'],
-        ['Por la simetría del cuadrado interior, PB = AS = 3k: el lado exterior es AB = AP + PB = 7k.'],
-        dato === 'exterior' ? ['7k = ', v('L', L), ` → k = ${k} y `, v('s', `PQ = 5k = ${s}`), '.'] : ['5k = ', v('s', s), ` → k = ${k} y `, v('L', `AB = 7k = ${L}`), '.'],
+        ['En la esquina A, el triángulo APS es rectángulo, con hipotenusa PS = lado interior y ángulo ', v('t', `${angulo}°`), ` en P: AP = ${t.AP}k, AS = ${t.AS}k y PS = ${t.PS}k.`],
+        [`Por la simetría del cuadrado interior, PB = AS = ${t.AS}k: el lado exterior es AB = AP + PB = ${t.AP + t.AS}k.`],
+        dato === 'exterior' ? [`${t.AP + t.AS}k = `, v('L', L), ` → k = ${k} y `, v('s', `PQ = ${t.PS}k = ${s}`), '.'] : [`${t.PS}k = `, v('s', s), ` → k = ${k} y `, v('L', `AB = ${t.AP + t.AS}k = ${L}`), '.'],
         ['Alambre: 4·', v('L', L), ' + 4·', v('s', s), ' = ', v('T', `${total} ${u}`), '.'],
       ],
-      datos: { tipo: 'encajados', dato, valor },
+      datos: { tipo: 'encajados', angulo, dato, valor },
     };
   }
 
   // ---------- Rombo con un triángulo equilátero dentro ----------
   function rombo(rng) {
     const beta = rng.elegir([70, 76, 80, 84, 100, 104, 110]);
-    const pedido = rng.elegir(['EAD', 'BAE', 'AED']);
+    const pedido = rng.elegir(['EAD', 'BAE', 'CED', 'AEC', 'EAD', 'BAE', 'AED']);
     const r = calc.rombo(beta), correcta = r[pedido];
     const ctx = rng.elegir(['Un terreno tiene forma de rombo ABCD', 'Una cometa tiene forma de rombo ABCD', 'Se tiene un rombo ABCD']);
-    const variables = { b: { nombre: 'ángulo ABC', color: 'o' }, e: { nombre: 'ángulo ABE', color: 'i' }, a: { nombre: 'ángulo BAE', color: 'h' }, x: { nombre: `ángulo ${pedido}`, color: 'd' } };
+    const variables = { b: { nombre: 'ángulo ABC', color: 'o' }, e: { nombre: pedido === 'CED' ? 'ángulo ECD' : 'ángulo ABE', color: 'i' }, a: { nombre: pedido === 'CED' ? 'ángulo CED' : 'ángulo BAE = BEA', color: 'h' }, x: { nombre: `ángulo ${pedido}`, color: 'd' } };
     const errores = {
       EAD: [
         h('RO-angulo-base', r.BAE, 'Ese es el ángulo BAE. El ángulo EAD es lo que falta para completar el ángulo BAD del rombo.'),
         h('RO-apice', r.ABE, 'Ese es el ángulo ABE, en el vértice B. Se pide un ángulo en A.'),
         h('RO-angulo-rombo', 180 - beta, 'Ese es el ángulo BAD completo. Hay que quitarle el ángulo BAE.'),
-        h('RO-sin-equilatero', (180 - beta) - (180 - beta) / 2, 'Partiste el ángulo A en dos mitades iguales, como si AE fuera la diagonal. E no está sobre la diagonal AC.'),
+        h('RO-diagonal', (180 - beta) / 2, 'Partiste el ángulo A en dos mitades iguales, como si AE fuera la diagonal. E no está sobre la diagonal AC.'),
       ],
       BAE: [
         h('RO-apice', r.ABE, 'Ese es el ángulo ABE, en el vértice B. El triángulo ABE es isósceles (BA = BE) y se pide un ángulo de su base.'),
-        h('RO-sin-restar-60', (180 - beta) / 2, 'Usaste el ángulo ABC completo como vértice del triángulo isósceles. Al ángulo ABC hay que quitarle los 60° del equilátero.'),
+        h('RO-sin-restar-60', beta / 2, 'Usaste el ángulo ABC completo como vértice del triángulo isósceles. Al ángulo ABC hay que quitarle los 60° del equilátero.'),
         h('RO-resto', r.EAD, 'Ese es el ángulo EAD, lo que queda del ángulo A del rombo.'),
         h('RO-todo-equilatero', 60, 'Supusiste que ABE es equilátero. Solo es isósceles (BA = BE).'),
+      ],
+      CED: [
+        h('RO-apice', r.ECD, 'Ese es el ángulo ECD, en el vértice C. El triángulo ECD es isósceles (CE = CD) y se pide un ángulo de su base.'),
+        h('RO-sin-restar-60', beta / 2, 'Usaste el ángulo BCD completo como vértice del triángulo isósceles. Al ángulo BCD hay que quitarle los 60° del equilátero.'),
+        h('RO-lado-equivocado', r.BAE, 'Ese es el ángulo BEA, del triángulo isósceles del otro lado (ABE). En C el ángulo del vértice es otro: ECD = BCD − 60°.'),
+        h('RO-todo-equilatero', 60, 'Supusiste que ECD es equilátero. Solo es isósceles (CE = CD).'),
+      ],
+      AEC: [
+        h('RO-solo-BEA', r.BAE, 'Ese es solo el ángulo BEA. Falta sumarle el ángulo BEC de 60° del equilátero.'),
+        h('RO-suplemento', 60 + beta / 2, 'Ese es el suplemento de BEA. El ángulo AEC se forma sumando BEA y BEC.'),
+        h('RO-doble-60', 120, 'Sumaste dos ángulos de 60°. BEA no mide 60°: el triángulo ABE es isósceles, no equilátero.'),
+        h('RO-apice', r.ABE, 'Ese es el ángulo ABE, en el vértice B. Se pide un ángulo en E.'),
       ],
       AED: [
         h('RO-sin-equilatero', 360 - r.BAE - r.CED, 'Olvidaste restar el ángulo BEC de 60° del triángulo equilátero al completar la vuelta alrededor de E.'),
@@ -509,15 +553,20 @@
         h('RO-doble-60', 120, 'Tomaste AED como el doble del ángulo del equilátero. Hay que completar la vuelta de 360° alrededor de E con los ángulos de los triángulos isósceles.'),
       ],
     }[pedido];
-    const sol = [
-      ['BE = BC = BA (lados del rombo y del equilátero). El ángulo ABE = ', v('b', `${beta}°`), ' − 60° = ', v('e', g(r.ABE)), '.'],
-      ['El triángulo ABE es isósceles: BAE = BEA = (180° − ', v('e', g(r.ABE)), ') / 2 = ', v('a', g(r.BAE)), '.'],
-    ];
+    const sol = [];
+    if (pedido === 'CED') {
+      sol.push(['CE = CB = CD (lados del rombo y del equilátero). El ángulo BCD del rombo mide 180° − ', v('b', `${beta}°`), ` = ${g(180 - beta)}, así que ECD = ${g(180 - beta)} − 60° = `, v('e', g(r.ECD)), '.']);
+      sol.push(['El triángulo ECD es isósceles: CED = CDE = (180° − ', v('e', g(r.ECD)), ') / 2 = ', v('x', g(correcta)), '.']);
+    } else {
+      sol.push(['BE = BC = BA (lados del rombo y del equilátero). El ángulo ABE = ', v('b', `${beta}°`), ' − 60° = ', v('e', g(r.ABE)), '.']);
+      sol.push(['El triángulo ABE es isósceles: BAE = BEA = (180° − ', v('e', g(r.ABE)), ') / 2 = ', v('a', g(r.BAE)), '.']);
+    }
     if (pedido === 'EAD') sol.push(['El ángulo BAD del rombo mide 180° − ', v('b', `${beta}°`), ` = ${g(180 - beta)}. EAD = ${g(180 - beta)} − `, v('a', g(r.BAE)), ' = ', v('x', g(correcta)), '.']);
     if (pedido === 'BAE') sol.push(['Ángulo BAE = ', v('x', g(correcta)), '.']);
+    if (pedido === 'AEC') sol.push(['AEC = BEA + BEC = ', v('a', g(r.BAE)), ' + 60° = ', v('x', g(correcta)), '.']);
     if (pedido === 'AED') {
-      sol.push(['Igual en C: ECD = (180° − ', v('b', `${beta}°`), `) − 60° = ${g(120 - beta)} y el triángulo ECD es isósceles: CED = ${g(r.CED)}.`]);
-      sol.push(['Alrededor de E: AED = 360° − ', v('a', g(r.BAE)), ` − 60° − ${g(r.CED)} = `, v('x', g(correcta)), '.']);
+      sol.push(['Igual en C: ECD = (180° − ', v('b', `${beta}°`), `) − 60° = ${g(r.ECD)} y el triángulo ECD es isósceles: CED = ${g(r.CED)}.`]);
+      sol.push(['Alrededor de E: AED = 360° − BEA − BEC − CED = 360° − ', v('a', g(r.BAE)), ` − 60° − ${g(r.CED)} = `, v('x', g(correcta)), '.']);
     }
     return {
       variables, unidad: '°', correcta, errores, texto: g, filtro: x => esEntero(x) && x < 180,
@@ -529,28 +578,42 @@
   }
 
   // ---------- Dos hojas cuadradas: una sobre la diagonal de la otra ----------
+  // Con A(0; 0), B(L; 0), C(L; L), D(0; L): E(0; 2L) y F(−L; L). D es el centro de ACEF; A, D y E están alineados.
   function cuadrados(rng) {
-    const pedido = rng.elegir(['BCE', 'BDE', 'CDE', 'DEC']);
-    const correcta = calc.cuadrados(pedido);
-    const variables = { d: { nombre: 'ángulo entre lado y diagonal (45°)', color: 'o' }, r: { nombre: 'ángulo recto', color: 'i' }, x: { nombre: `ángulo ${pedido}`, color: 'd' } };
+    const pedido = rng.elegir(['BCE', 'BDE', 'CDE', 'DE', 'CE', 'BE', 'area']);
+    const L = rng.elegir([2, 4, 6, 8, 10, 12]);
+    const u = 'cm';
+    const angular = ['BCE', 'BDE', 'CDE'].includes(pedido);
+    const correcta = angular ? calc.cuadrados(pedido) : calc.cuadrados(pedido, L);
+    const variables = { L: { nombre: 'lado AB', color: 'o' }, d: { nombre: 'ángulo entre lado y diagonal (45°)', color: 'i' }, r: { nombre: 'ángulo recto', color: 'h' }, x: { nombre: pedido === 'area' ? 'área de CDE' : pedido, color: 'd' } };
+    const centro = ['El centro del cuadrado ACEF está a la distancia AC/√2 de A y de C, y desde él AC se ve con ángulo recto. D cumple lo mismo (DA = DC = AC/√2 y el ángulo ADC es recto): D es el centro de ACEF.'];
     const sol = {
       BCE: [['La diagonal AC forma ', v('d', '45°'), ' con el lado BC: ángulo BCA = 45°.'], ['ACEF es cuadrado: ángulo ACE = ', v('r', '90°'), '.'], ['BCE = BCA + ACE = 45° + 90° = ', v('x', '135°'), '.']],
-      BDE: [['El centro del cuadrado ACEF está a la distancia AC/√2 de A y de C, y desde él AC se ve con ángulo recto. D cumple lo mismo (DA = DC = AC/√2 y el ángulo ADC es recto): D es el centro de ACEF.'], ['Así A, D y E están alineados (D es el punto medio de la diagonal AE) y el ángulo CDE es ', v('r', '90°'), '.'], ['El ángulo BDC mide ', v('d', '45°'), ' (la diagonal BD con el lado DC). BDE = BDC + CDE = 45° + 90° = ', v('x', '135°'), '.']],
-      CDE: [['En el cuadrado ACEF, su centro es el punto medio de la diagonal AE y de la diagonal CF; está a distancia AC/√2 de A y de C, con ángulo recto entre ellos.'], ['D cumple lo mismo: DA = DC = AC/√2 y el ángulo ADC es recto. D es el centro del cuadrado ACEF.'], ['Las diagonales de un cuadrado son perpendiculares: CDE = ', v('r', '90°'), ' = ', v('x', '90°'), '.']],
-      DEC: [['D es el centro del cuadrado ACEF (DA = DC = AC/√2 y el ángulo ADC es recto), así que ED es media diagonal de ACEF.'], ['La diagonal de un cuadrado forma ', v('d', '45°'), ' con cada lado.'], ['DEC = ', v('x', '45°'), '.']],
+      BDE: [centro, ['Así A, D y E están alineados (D es el punto medio de la diagonal AE) y el ángulo CDE es ', v('r', '90°'), '.'], ['El ángulo BDC mide ', v('d', '45°'), ' (la diagonal BD con el lado DC). BDE = BDC + CDE = 45° + 90° = ', v('x', '135°'), '.']],
+      CDE: [centro, ['Las diagonales de un cuadrado se cortan en su centro y son perpendiculares.'], ['CDE = ', v('x', '90°'), '.']],
+      DE: [centro, ['D es el punto medio de la diagonal AE de ACEF, así que DE = DA.'], ['DA es un lado de la hoja pequeña: DE = ', v('x', `${L} ${u}`), '.']],
+      CE: [['CE es un lado de la hoja grande, igual a su lado AC.'], ['AC es la diagonal de la hoja pequeña: AC = ', v('L', L), '·√2.'], ['CE = ', v('x', `${P.radical(correcta)} ${u}`), '.']],
+      BE: [centro, ['A, D y E están alineados y AE = 2·AD = ', `${2 * L}. Además AE ⊥ AB, porque AE sigue al lado AD.`], ['En el triángulo rectángulo BAE: BE² = ', v('L', L), `² + ${2 * L}² = ${5 * L * L}.`], ['BE = ', v('x', `${P.radical(correcta)} ${u}`), '.']],
+      area: [centro, ['Las dos diagonales de ACEF lo parten en cuatro triángulos iguales; CDE es uno de ellos.'], ['Área de ACEF = AC² = (', v('L', L), `√2)² = ${2 * L * L}; área de CDE = ${2 * L * L}/4 = `, v('x', `${f(correcta)} ${u}²`), '.']],
     }[pedido];
     const errores = {
-      BCE: [h('CS-solo-recto', 90, 'Tomaste solo el ángulo recto ACE de la hoja grande. Falta el ángulo BCA entre el lado y la diagonal de la hoja pequeña.'), h('CS-solo-diagonal', 45, 'Tomaste solo el ángulo BCA. Falta sumar el ángulo recto ACE.'), h('CS-dos-rectos', 180, 'Tomaste el ángulo BCA como recto. La diagonal AC forma 45° con el lado BC, no 90°.'), h('CS-equilatero', 60, 'Supusiste que las hojas forman un triángulo equilátero. No hay ningún triángulo equilátero: los ángulos salen de 45° y 90°.')],
-      BDE: [h('CS-solo-recto', 90, 'Tomaste solo el ángulo CDE. Falta sumar el ángulo BDC entre la diagonal BD y el lado DC.'), h('CS-solo-diagonal', 45, 'Tomaste solo el ángulo BDC. Falta sumar el ángulo recto CDE.'), h('CS-alineados', 180, 'Supusiste que B, D y E están alineados. Los alineados son A, D y E.'), h('CS-equilatero', 60, 'Supusiste un triángulo equilátero. Los ángulos salen de 45° y 90°.')],
-      CDE: [h('CS-solo-diagonal', 45, 'Ese es el ángulo entre un lado y una diagonal. D es el centro de la hoja grande, y en el centro las diagonales forman 90°.'), h('CS-dos-angulos', 135, 'Sumaste 45° de más. D es el centro de la hoja grande: DC y DE son medias diagonales perpendiculares.'), h('CS-equilatero', 60, 'Supusiste un triángulo equilátero CDE. Es isósceles rectángulo.'), h('CS-tres-partes', 120, 'Repartiste la vuelta en tres partes iguales alrededor de D. Alrededor del centro de un cuadrado hay cuatro ángulos rectos.')],
-      DEC: [h('CS-solo-recto', 90, 'Ese es el ángulo CEF de la hoja grande. ED es media diagonal: forma 45° con el lado EC.'), h('CS-dos-angulos', 135, 'Sumaste el ángulo recto y el de 45°. Se pide solo el ángulo entre la media diagonal ED y el lado EC.'), h('CS-equilatero', 60, 'Supusiste un triángulo equilátero DEC. Es isósceles rectángulo.'), h('CS-mitad', 22.5, 'Partiste 45° por la mitad. La diagonal de un cuadrado parte el ángulo recto en dos de 45°.')],
+      BCE: [h('CS-solo-recto', 90, 'Tomaste solo el ángulo recto ACE de la hoja grande. Falta el ángulo BCA entre el lado y la diagonal de la hoja pequeña.'), h('CS-solo-diagonal', 45, 'Tomaste solo el ángulo BCA. Falta sumar el ángulo recto ACE.'), h('CS-dos-rectos', 180, 'Tomaste el ángulo BCA como recto. La diagonal AC forma 45° con el lado BC, no 90°.')],
+      BDE: [h('CS-solo-recto', 90, 'Tomaste solo el ángulo CDE. Falta sumar el ángulo BDC entre la diagonal BD y el lado DC.'), h('CS-solo-diagonal', 45, 'Tomaste solo el ángulo BDC. Falta sumar el ángulo recto CDE.'), h('CS-alineados', 180, 'Supusiste que B, D y E están alineados. Los alineados son A, D y E.')],
+      CDE: [h('CS-solo-diagonal', 45, 'Ese es el ángulo entre un lado y una diagonal. D es el centro de la hoja grande, y en el centro las diagonales forman 90°.'), h('CS-dos-angulos', 135, 'Sumaste 45° de más. D es el centro de la hoja grande: DC y DE son medias diagonales perpendiculares.'), h('CS-tres-partes', 120, 'Repartiste la vuelta en tres partes iguales alrededor de D. Alrededor del centro de un cuadrado hay cuatro ángulos rectos.')],
+      DE: [h('CS-lado-grande', L * Math.SQRT2, 'Ese es el lado de la hoja grande (AC = L√2). D es su centro: DE es media diagonal de la hoja grande.'), h('CS-diagonal-entera', 2 * L, 'Esa es la diagonal AE completa de la hoja grande. D es su punto medio.'), h('CS-mitad-lado', L / 2, 'Tomaste la mitad del lado. DE es media diagonal de la hoja grande, igual a un lado de la pequeña.'), h('CS-media-diagonal-pequena', L * Math.SQRT2 / 2, 'Esa es media diagonal de la hoja pequeña. DE es media diagonal de la hoja grande.')],
+      CE: [h('CS-lado-pequeno', L, 'Ese es el lado de la hoja pequeña. CE es lado de la hoja grande, cuyo lado es la diagonal AC.'), h('CS-diagonal-entera', 2 * L, 'Esa es la diagonal AE de la hoja grande, no su lado.'), h('CS-doble-diagonal', 2 * L * Math.SQRT2, 'Duplicaste la diagonal AC. El lado de la hoja grande es AC = L√2.')],
+      BE: [par('GE11-no-rectangulo', L * Math.sqrt(3), 'Usaste Pitágoras con BC y CE en el triángulo BCE, pero el ángulo BCE mide 135°, no 90°. El triángulo rectángulo es BAE, con el ángulo recto en A.'), h('CS-diagonal-entera', 2 * L, 'Esa es la diagonal AE. BE es la hipotenusa del triángulo rectángulo BAE.'), h('CS-catetos-iguales', L * Math.SQRT2, 'Tomaste AE = L. AE es la diagonal de la hoja grande: mide 2L.'), h('CS-sin-raiz', 5 * L * L, `Llegaste a BE² = ${5 * L * L} y olvidaste sacar la raíz.`)],
+      area: [h('CS-sin-mitad', L * L, 'Ese es el área de la mitad de la hoja grande. CDE es la cuarta parte.'), h('CS-hoja-grande', 2 * L * L, 'Ese valor es el área de toda la hoja grande ACEF. CDE es la cuarta parte.'), h('CS-cuarta-pequena', L * L / 4, 'Tomaste la cuarta parte de la hoja pequeña. CDE es la cuarta parte de la hoja grande, cuyo lado es AC = L√2.')],
     }[pedido];
+    const preguntas = { BCE: '¿Cuánto mide el ángulo BCE?', BDE: '¿Cuánto mide el ángulo BDE?', CDE: '¿Cuánto mide el ángulo CDE?', DE: '¿Cuánto mide DE?', CE: '¿Cuánto mide CE?', BE: '¿Cuánto mide BE?', area: '¿Cuál es el área del triángulo CDE?' };
     return {
-      variables, unidad: '°', correcta, errores, texto: g, filtro: x => x < 180 + 1e-9,
-      enunciado: ['Una hoja de papel cuadrada ABCD (vértices en sentido antihorario) está sobre la mesa. Sobre su diagonal AC, tomada como lado, se coloca otra hoja cuadrada ACEF, más grande, que queda del mismo lado de AC que el vértice D.'],
-      pregunta: [`¿Cuánto mide el ángulo ${pedido}?`],
+      variables, unidad: angular ? '°' : (pedido === 'area' ? `${u}²` : u), correcta, errores,
+      texto: angular ? g : (pedido === 'area' ? (x => `${f(x)} ${u}²`) : (x => `${P.radical(x)} ${u}`)),
+      filtro: angular ? (x => x <= 180) : (pedido === 'area' ? esEntero : conRaiz),
+      enunciado: ['Una hoja de papel cuadrada ABCD, de lado ', v('L', `${L} ${u}`), ', con vértices en sentido antihorario, está sobre la mesa. Sobre su diagonal AC, tomada como lado, se coloca otra hoja cuadrada ACEF, más grande, que queda del mismo lado de AC que el vértice D.'],
+      pregunta: [preguntas[pedido]],
       solucion: sol,
-      datos: { tipo: 'cuadrados', pedido },
+      datos: { tipo: 'cuadrados', L, pedido },
     };
   }
 

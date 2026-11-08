@@ -51,9 +51,9 @@ function recalcular(pr) {
     return Math.round((d.pedido === 'BFC' ? ang(Fd, B, C) : ang(C, Fd, D)) * 1e6) / 1e6;
   }
   if (d.tipo === 'diagonales') {
-    const [A, B, C, D, E] = regular(5), X = d.X === 'D' ? D : E;
-    const Pp = corte(A, C, B, X);
-    return Math.round((d.pedido === 'APB' ? ang(Pp, A, B) : ang(Pp, B, C)) * 1e6) / 1e6;
+    const V = regular(d.n), A = V[0], B = V[1];
+    const Pp = corte(A, V[d.p], B, V[d.q]);
+    return Math.round((d.pedido === 'APB' ? ang(Pp, A, B) : ang(Pp, B, V[d.p])) * 1e6) / 1e6;
   }
   if (d.tipo === 'hexagono') {
     const [A, B, C, D, E] = regular(6);
@@ -85,23 +85,26 @@ function recalcular(pr) {
     return Math.round(mejor * 1e8) / 1e8;
   }
   if (d.tipo === 'encajados') {
-    // k desconocido: se arma la figura con lado exterior 7 y se escala.
-    const L = 7, Pp = [4, 0], S = [0, 3];
-    const lado = largo(sub(Pp, S)); // 5
+    // Se arma la esquina con PS = 1 y el ángulo APS en P (con cos y sen de la calculadora, redondeados al
+    // notable de academia: 37° → 4/5 y 3/5, 16° → 24/25 y 7/25), y se escala con el dato.
+    const t = d.angulo * Math.PI / 180;
+    const redondea = x => { for (const q of [5, 25]) { const r = Math.round(x * q) / q; if (Math.abs(r - x) < 0.01) return r; } return x; };
+    const AP = redondea(Math.cos(t)), AS = redondea(Math.sin(t));
+    const Pp = [AP, 0], S = [0, AS], lado = largo(sub(Pp, S)), L = AP + AS;
     const esc = d.dato === 'exterior' ? d.valor / L : d.valor / lado;
-    return 4 * (L + lado) * esc;
+    return Math.round(4 * (L + lado) * esc * 1e6) / 1e6;
   }
   if (d.tipo === 'rombo') {
     const B = [0, 0], C = [1, 0], A = giro([1, 0], d.beta), D = mas(A, C);
     const E = equilatero(B, C); // sobre BC, hacia el lado de A
-    const val = { EAD: ang(A, E, D), BAE: ang(A, B, E), AED: ang(E, A, D) }[d.pedido];
+    const val = { EAD: ang(A, E, D), BAE: ang(A, B, E), AED: ang(E, A, D), CED: ang(E, C, D), AEC: ang(E, A, C) }[d.pedido];
     return Math.round(val * 1e6) / 1e6;
   }
   if (d.tipo === 'cuadrados') {
-    const A = [0, 0], B = [1, 0], C = [1, 1], D = [0, 1];
+    const L = d.L, A = [0, 0], B = [L, 0], C = [L, L], D = [0, L];
     const w = giro(sub(C, A), 90), E = mas(C, w), F = mas(A, w);
-    assert.ok(largo(sub(F, D)) < 2); // F del lado de D
-    const val = { BCE: ang(C, B, E), BDE: ang(D, B, E), CDE: ang(D, C, E), DEC: ang(E, D, C) }[d.pedido];
+    assert.ok(largo(sub(F, D)) < 2 * L); // F del lado de D
+    const val = { BCE: ang(C, B, E), BDE: ang(D, B, E), CDE: ang(D, C, E), DE: largo(sub(D, E)), CE: largo(sub(C, E)), BE: largo(sub(B, E)), area: areaCordon([C, D, E]) }[d.pedido];
     return Math.round(val * 1e6) / 1e6;
   }
   return NaN;

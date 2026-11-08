@@ -90,7 +90,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Las parábolas y = x² + 2 y y = 14 − 2x² se cortan en dos puntos. Un cilindro recto tiene su eje sobre el eje Y, su base inferior en el eje X y el borde de su base superior pasa por los dos puntos de corte. Halla su volumen.",
+      "enunciado": "Las parábolas y = x² + 2 y y = 14 − 2x² están en el plano XY y se cortan en dos puntos. Un cilindro recto tiene su eje sobre el eje Y y su base inferior en el plano y = 0; la circunferencia de su base superior pasa por los dos puntos de corte. Halla su volumen.",
       "respuesta": "24π u³.",
       "pasos": [
         "x² + 2 = 14 − 2x² → 3x² = 12 → x = ±2; y = 6.",

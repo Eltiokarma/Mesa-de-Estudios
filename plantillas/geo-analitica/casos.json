@@ -2,7 +2,7 @@
   "plantilla": "geo-analitica",
   "tolerancia": 0.000001,
   "nota": "Respuestas como claves de Predicciones: vec: punto (fracciones n/d), fr: fracción, recta:p,q,r para px + qy + r = 0 normalizada; parábolas: volumen numérico (múltiplo de π).",
-  "verificacion": "Verificado a ciegas por un subagente (8 nov 2026): 20 casos resueltos desde el enunciado con fracciones exactas: elipses reconstruidas completando cuadrados (h, k, a, b, c y eje mayor contrastados con _datos), rectas por V₁ normalizadas, tangentes por producto cruz y punto (y atan2), baricentros y el cilindro de las parábolas. Los 20 coinciden con esperado.respuesta y exacta; sin discrepancias.",
+  "verificacion": "",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -35,21 +35,21 @@
         "tipo": "baricentro",
         "sub": "general",
         "A": [
-          5,
-          -2
+          -3,
+          -3
         ],
         "B": [
-          -5,
+          -3,
           -1
         ],
         "C": [
-          -3,
-          6
+          5,
+          7
         ]
       },
       "esperado": {
-        "respuesta": "vec:-1/1,1/1",
-        "exacta": "(−1; 1)"
+        "respuesta": "vec:-1/3,1/1",
+        "exacta": "(−1/3; 1)"
       }
     },
     {
@@ -103,21 +103,21 @@
         "tipo": "baricentro",
         "sub": "general",
         "A": [
-          2,
-          -5
+          -6,
+          6
         ],
         "B": [
           4,
-          0
+          -2
         ],
         "C": [
-          -3,
-          2
+          3,
+          -2
         ]
       },
       "esperado": {
-        "respuesta": "vec:1/1,-1/1",
-        "exacta": "(1; −1)"
+        "respuesta": "vec:1/3,2/3",
+        "exacta": "(1/3; 2/3)"
       }
     },
     {
@@ -151,25 +151,25 @@
         "tipo": "angulo",
         "sub": "rectangulo",
         "A": [
-          0,
+          -5,
           -2
         ],
         "B": [
-          4,
-          2
+          3,
+          14
         ],
         "C": [
-          -2,
-          8
+          -1,
+          16
         ],
         "D": [
-          -6,
-          4
+          -9,
+          0
         ]
       },
       "esperado": {
-        "respuesta": "fr:12/5",
-        "exacta": "12/5"
+        "respuesta": "fr:-8/15",
+        "exacta": "−8/15"
       }
     },
     {
@@ -465,6 +465,56 @@
       "esperado": {
         "respuesta": "vec:-1/1,-1/1",
         "exacta": "(−1; −1)"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "angulo",
+        "sub": "rectangulo",
+        "A": [
+          0,
+          -5
+        ],
+        "B": [
+          2,
+          -1
+        ],
+        "C": [
+          -14,
+          7
+        ],
+        "D": [
+          -16,
+          3
+        ]
+      },
+      "esperado": {
+        "respuesta": "fr:8/15",
+        "exacta": "8/15"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "baricentro",
+        "sub": "general",
+        "A": [
+          0,
+          2
+        ],
+        "B": [
+          -6,
+          -3
+        ],
+        "C": [
+          4,
+          -2
+        ]
+      },
+      "esperado": {
+        "respuesta": "vec:-2/3,-1/1",
+        "exacta": "(−2/3; −1)"
       }
     }
   ]

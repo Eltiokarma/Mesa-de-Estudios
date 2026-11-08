@@ -8,7 +8,7 @@
       "enunciado": "Un hexágono ABCDEF tiene sus seis ángulos interiores de 120°. Si AB = 5, BC = 4, CD = 6 y DE = 3, halla EF, FA y el perímetro.",
       "respuesta": "EF = 6, FA = 4 y el perímetro es 28.",
       "pasos": [
-        "Al prolongar AB, CD y EF se forma un triángulo equilátero; en sus esquinas quedan triángulos equiláteros de lados BC, DE y FA.",
+        "Al prolongar BC, DE y FA se forma un triángulo equilátero; en sus esquinas quedan triángulos equiláteros de lados AB, CD y EF.",
         "Lado del triángulo grande: AB + BC + CD = 5 + 4 + 6 = 15.",
         "CD + DE + EF = 15 → EF = 15 − 6 − 3 = 6.",
         "EF + FA + AB = 15 → FA = 15 − 6 − 5 = 4.",

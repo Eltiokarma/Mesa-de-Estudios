@@ -8,7 +8,7 @@
  *                y la punta a d unidades a la derecha del eje (la punta está a la altura del punto medio
  *                de la base, por ser isósceles). sub 'base-x': base sobre el eje X, de (x1; 0) a (x2; 0),
  *                y la punta a la altura hgt sobre el punto medio de la base. sub 'general': vértices
- *                A, B, C dados como [x, y]. Se pide el baricentro; respuesta: clave 'vec:x/1,y/1' de
+ *                A, B, C dados como [x, y] (el baricentro puede tener tercios). Se pide el baricentro; respuesta: clave 'vec:x/1,y/1' de
  *                Predicciones.vector (fracciones exactas).
  *   angulo       sub 'rectangulo': rectángulo ABCD (A, B, C, D dados como [x, y], en orden), O = corte de
  *                las diagonales; se pide tan del ángulo AOB (puede ser negativa: ángulo obtuso).
@@ -27,7 +27,7 @@
  *                (o p = 0 y q > 0); respuesta: clave 'recta:p,q,r'.
  *   parabolas    P1: y = a·x² + c1 (a > 0) y P2: y = −b·x² + c2 (b > 0); a y b se guardan como
  *                [num, den]. Un cilindro recto tiene su eje sobre el eje Y, su base inferior en el plano
- *                y = 0 y el borde de su base superior pasa por los dos puntos de corte de P1 y P2.
+ *                y = 0 y la circunferencia de su base superior pasa por los dos puntos de corte de P1 y P2.
  *                Se pide su volumen (múltiplo de π).
  *
  * Errores: CO1, CO7, CO8 y CO18 de docs/investigacion/matematica-avanzada-ideas-erroneas.md (todos
@@ -142,9 +142,10 @@
       for (;;) {
         A = [rng.entero(-6, 8), rng.entero(-6, 8)]; B = [rng.entero(-6, 8), rng.entero(-6, 8)]; C = [rng.entero(-6, 8), rng.entero(-6, 8)];
         const area2 = (B[0] - A[0]) * (C[1] - A[1]) - (B[1] - A[1]) * (C[0] - A[0]);
-        if (area2 !== 0 && (A[0] + B[0] + C[0]) % 3 === 0 && (A[1] + B[1] + C[1]) % 3 === 0) break;
+        // La correcta puede tener tercios (como los distractores, que tienen medios o sextos).
+        if (area2 !== 0) break;
       }
-      enunciado = ['Tres antenas están en los puntos ', v('A', pto(...A)), ', ', v('B', pto(...B)), ' y ', v('C', pto(...C)), ' de un plano. Se quiere poner un repetidor en el baricentro del triángulo que forman.'];
+      enunciado = ['Tres antenas están en los puntos ', v('A', `A${pto(...A)}`), ', ', v('B', `B${pto(...B)}`), ' y ', v('C', `C${pto(...C)}`), ' de un plano. Se quiere poner un repetidor en el baricentro del triángulo que forman.'];
       datos = { tipo: 'baricentro', sub, A, B, C };
     }
     const sx = A[0] + B[0] + C[0], sy = A[1] + B[1] + C[1];
@@ -178,8 +179,8 @@
     if (sub === 'rectangulo') {
       for (;;) {
         const u = rng.elegir([[1, 0], [0, 1], [1, 1], [2, 1], [1, 2], [1, -1], [2, -1], [1, -2]]);
-        const [s1, s2] = rng.elegir([[1, 2], [2, 1], [1, 3], [3, 1], [2, 3], [3, 2]]);
-        const esc = rng.elegir([1, 2]);
+        const [s1, s2] = rng.elegir([[1, 2], [2, 1], [1, 3], [3, 1], [2, 3], [3, 2], [1, 4], [4, 1], [3, 4], [4, 3], [2, 5], [5, 2]]);
+        const esc = s1 + s2 > 6 ? 1 : rng.elegir([1, 2]);
         const U = [esc * s1 * u[0], esc * s1 * u[1]], W = [-esc * s2 * u[1], esc * s2 * u[0]];
         const A = [rng.entero(-5, 4), rng.entero(-5, 4)];
         const B = [A[0] + U[0], A[1] + U[1]], C = [B[0] + W[0], B[1] + W[1]], D = [A[0] + W[0], A[1] + W[1]];
@@ -325,7 +326,7 @@
       pregunta: [`¿Cuál es la ecuación de la recta que pasa por V₁ y es ${rel} al segmento F₂B₁?`],
       solucion: [
         ...pasoCentro,
-        [`V₁ = ${pto(...ok.V1)}, F₂ = ${pto(...ok.F2)} y B₁ = ${pto(...ok.B1)}. Pendiente de F₂B₁: ${dy}/${dx}${`${dy}/${dx}` === mTxt ? '' : ` = ${mTxt}`}.`],
+        [`V₁ = ${pto(...ok.V1)}, F₂ = ${pto(...ok.F2)} y B₁ = ${pto(...ok.B1)}. Pendiente de F₂B₁: ${n(dy)}/${n(dx)}${`${n(dy)}/${n(dx)}` === mTxt ? '' : ` = ${mTxt}`}.`],
         [rel === 'paralela' ? `La paralela tiene la misma pendiente, ${mTxt}` : `La perpendicular tiene pendiente −1/m = ${P.textoFraccion([-dx, dy])}`, `; por V₁${pto(...ok.V1)}: `, v('R', correcta.texto), '.'],
       ],
       datos: { tipo: 'elipse', sub, general: G, eje, h: hh, k, a, b, c, rel },
@@ -357,15 +358,15 @@
           if (!(xx > 0)) return null;
           return { id: 'GA-signo-al-igualar', valor: Math.PI * xx * (a * xx + c1), explicacion: 'Al igualar las dos expresiones restaste los coeficientes de x² en vez de sumarlos: el término −x² de la segunda pasa al otro lado con signo +.', respaldo: 'hipotesis', fuente: null };
         })() : null,
-        { id: 'GE20-tercio-de-mas', valor: V / 3, explicacion: 'Multiplicaste por 1/3, como en el cono. El cilindro no lleva el 1/3.', respaldo: 'hipotesis', fuente: null },
+        { id: 'GA-tercio-de-mas', valor: V / 3, explicacion: 'Multiplicaste por 1/3, como en el cono. El cilindro no lleva el 1/3.', respaldo: 'hipotesis', fuente: null },
       ].filter(Boolean);
       const sumaTxt = A[1] === 1 && B[1] === 1 ? `${a + b}` : P.textoFraccion(P.frac(A[0] * B[1] + B[0] * A[1], A[1] * B[1]));
       return {
         variables, unidad: 'u³', correcta: V, errores,
-        enunciado: ['En un plano, las parábolas P₁: ', p1, ' y P₂: ', p2, ' se cortan en dos puntos. Un cilindro recto tiene su eje sobre el eje Y, su base inferior en el eje X (y = 0) y el borde de su base superior pasa por los dos puntos de corte.'],
+        enunciado: ['Las parábolas P₁: ', p1, ' y P₂: ', p2, ' están en el plano XY y se cortan en dos puntos. Un cilindro recto tiene su eje sobre el eje Y y su base inferior en el plano y = 0; la circunferencia de su base superior pasa por los dos puntos de corte.'],
         pregunta: ['¿Cuál es el volumen del cilindro?'],
         solucion: [
-          ['Se igualan: ', `${coefTxt(A, 'x²')} ${c1 < 0 ? '−' : '+'} ${Math.abs(c1)} = ${c2} − ${coefTxt(B, 'x²')} → ${sumaTxt === '1' ? '' : `(${sumaTxt})`}x² = ${c2 - c1}.`],
+          ['Se igualan: ', `${coefTxt(A, 'x²')} ${c1 < 0 ? '−' : '+'} ${Math.abs(c1)} = ${c2} − ${coefTxt(B, 'x²')} → ${sumaTxt === '1' ? '' : sumaTxt.includes('/') ? `(${sumaTxt})` : sumaTxt}x² = ${c2 - c1}.`],
           ['x² = ', `${x0 * x0} → `, v('x', `x = ±${x0}`), '; y = ', v('y', `${y0}`), '.'],
           ['Radio = distancia del punto de corte al eje Y = ', v('x', `${x0}`), '; altura = ', v('y', `${y0}`), '.'],
           ['V = π·', v('x', x0), '²·', v('y', y0), ' = ', v('V', P.pi(V, 'u³')), '.'],

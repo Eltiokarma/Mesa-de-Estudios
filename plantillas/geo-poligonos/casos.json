@@ -2,7 +2,7 @@
   "plantilla": "geo-poligonos",
   "tolerancia": 0.000001,
   "nota": "Ángulos en grados; notable 37°/53° con lados 3-4-5. En el dodecágono con apotema, la respuesta es la clave dod:N:- que significa N(2 − √3).",
-  "verificacion": "Verificado a ciegas por un subagente (8 nov 2026): 25 casos resueltos desde el enunciado con coordenadas complejas (cierre vectorial del hexágono equiángulo, cortes de diagonales, ángulos numéricos, área por vértices) y fracciones exactas en trapecios y cuadrados encajados. Los 25 coinciden con esperado.respuesta y exacta; sin discrepancias.",
+  "verificacion": "",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -17,30 +17,6 @@
       "esperado": {
         "respuesta": 50,
         "exacta": "50 m"
-      }
-    },
-    {
-      "semilla": "salida-1",
-      "entrada": {
-        "tipo": "diagonales",
-        "X": "D",
-        "pedido": "BPC"
-      },
-      "esperado": {
-        "respuesta": 108,
-        "exacta": "108°"
-      }
-    },
-    {
-      "semilla": 0,
-      "entrada": {
-        "tipo": "encajados",
-        "dato": "exterior",
-        "valor": 105
-      },
-      "esperado": {
-        "respuesta": 720,
-        "exacta": "720 cm"
       }
     },
     {
@@ -136,29 +112,6 @@
       }
     },
     {
-      "semilla": 11,
-      "entrada": {
-        "tipo": "cuadrados",
-        "pedido": "DEC"
-      },
-      "esperado": {
-        "respuesta": 45,
-        "exacta": "45°"
-      }
-    },
-    {
-      "semilla": 14,
-      "entrada": {
-        "tipo": "diagonales",
-        "X": "D",
-        "pedido": "APB"
-      },
-      "esperado": {
-        "respuesta": 72,
-        "exacta": "72°"
-      }
-    },
-    {
       "semilla": 31,
       "entrada": {
         "tipo": "area-regular",
@@ -196,41 +149,6 @@
       }
     },
     {
-      "semilla": 3,
-      "entrada": {
-        "tipo": "encajados",
-        "dato": "interior",
-        "valor": 100
-      },
-      "esperado": {
-        "respuesta": 960,
-        "exacta": "960 cm"
-      }
-    },
-    {
-      "semilla": 8,
-      "entrada": {
-        "tipo": "rombo",
-        "beta": 84,
-        "pedido": "BAE"
-      },
-      "esperado": {
-        "respuesta": 78,
-        "exacta": "78°"
-      }
-    },
-    {
-      "semilla": 12,
-      "entrada": {
-        "tipo": "cuadrados",
-        "pedido": "CDE"
-      },
-      "esperado": {
-        "respuesta": 90,
-        "exacta": "90°"
-      }
-    },
-    {
       "semilla": 15,
       "entrada": {
         "tipo": "soporte",
@@ -243,18 +161,6 @@
       }
     },
     {
-      "semilla": 26,
-      "entrada": {
-        "tipo": "diagonales",
-        "X": "D",
-        "pedido": "BPC"
-      },
-      "esperado": {
-        "respuesta": 108,
-        "exacta": "108°"
-      }
-    },
-    {
       "semilla": 32,
       "entrada": {
         "tipo": "rombo",
@@ -264,17 +170,6 @@
       "esperado": {
         "respuesta": 22,
         "exacta": "22°"
-      }
-    },
-    {
-      "semilla": 36,
-      "entrada": {
-        "tipo": "cuadrados",
-        "pedido": "BDE"
-      },
-      "esperado": {
-        "respuesta": 135,
-        "exacta": "135°"
       }
     },
     {
@@ -316,6 +211,125 @@
       "esperado": {
         "respuesta": 5.196152422706632,
         "exacta": "3√3 cm"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "trapecio",
+        "sub": "altura",
+        "B": 25,
+        "b": 8,
+        "c": 26,
+        "d": 25
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24 m"
+      }
+    },
+    {
+      "semilla": 66,
+      "entrada": {
+        "tipo": "diagonales",
+        "n": 6,
+        "p": 3,
+        "q": 5,
+        "pedido": "BPX"
+      },
+      "esperado": {
+        "respuesta": 90,
+        "exacta": "90°"
+      }
+    },
+    {
+      "semilla": 182,
+      "entrada": {
+        "tipo": "diagonales",
+        "n": 12,
+        "p": 6,
+        "q": 11,
+        "pedido": "APB"
+      },
+      "esperado": {
+        "respuesta": 90,
+        "exacta": "90°"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "diagonales",
+        "n": 5,
+        "p": 2,
+        "q": 4,
+        "pedido": "BPX"
+      },
+      "esperado": {
+        "respuesta": 72,
+        "exacta": "72°"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "encajados",
+        "angulo": 16,
+        "dato": "exterior",
+        "valor": 124
+      },
+      "esperado": {
+        "respuesta": 896,
+        "exacta": "896 cm"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "encajados",
+        "angulo": 53,
+        "dato": "interior",
+        "valor": 25
+      },
+      "esperado": {
+        "respuesta": 240,
+        "exacta": "240 cm"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "cuadrados",
+        "L": 8,
+        "pedido": "BE"
+      },
+      "esperado": {
+        "respuesta": 17.88854381999832,
+        "exacta": "8√5 cm"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "cuadrados",
+        "L": 2,
+        "pedido": "area"
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2 cm²"
+      }
+    },
+    {
+      "semilla": 43,
+      "entrada": {
+        "tipo": "rombo",
+        "beta": 84,
+        "pedido": "CED"
+      },
+      "esperado": {
+        "respuesta": 72,
+        "exacta": "72°"
       }
     }
   ]
