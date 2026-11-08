@@ -1,0 +1,471 @@
+{
+  "plantilla": "geo-analitica",
+  "tolerancia": 0.000001,
+  "nota": "Respuestas como claves de Predicciones: vec: punto (fracciones n/d), fr: fracción, recta:p,q,r para px + qy + r = 0 normalizada; parábolas: volumen numérico (múltiplo de π).",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "recta",
+        "general": [
+          16,
+          25,
+          -96,
+          -50,
+          -231
+        ],
+        "eje": "x",
+        "h": 3,
+        "k": 1,
+        "a": 5,
+        "b": 4,
+        "c": 3,
+        "rel": "perpendicular"
+      },
+      "esperado": {
+        "respuesta": "recta:3,4,-28",
+        "exacta": "3x + 4y − 28 = 0"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "baricentro",
+        "sub": "general",
+        "A": [
+          5,
+          -2
+        ],
+        "B": [
+          -5,
+          -1
+        ],
+        "C": [
+          -3,
+          6
+        ]
+      },
+      "esperado": {
+        "respuesta": "vec:-1/1,1/1",
+        "exacta": "(−1; 1)"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "parabolas",
+        "a": [
+          1,
+          2
+        ],
+        "c1": 6,
+        "b": [
+          1,
+          2
+        ],
+        "c2": 10
+      },
+      "esperado": {
+        "respuesta": 100.53096491487338,
+        "exacta": "32π u³"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "recta",
+        "general": [
+          16,
+          25,
+          64,
+          250,
+          289
+        ],
+        "eje": "x",
+        "h": -2,
+        "k": -5,
+        "a": 5,
+        "b": 4,
+        "c": 3,
+        "rel": "perpendicular"
+      },
+      "esperado": {
+        "respuesta": "recta:3,4,11",
+        "exacta": "3x + 4y + 11 = 0"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "baricentro",
+        "sub": "general",
+        "A": [
+          2,
+          -5
+        ],
+        "B": [
+          4,
+          0
+        ],
+        "C": [
+          -3,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": "vec:1/1,-1/1",
+        "exacta": "(1; −1)"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "recta",
+        "general": [
+          25,
+          16,
+          200,
+          32,
+          -1184
+        ],
+        "eje": "y",
+        "h": -4,
+        "k": -1,
+        "a": 10,
+        "b": 8,
+        "c": 6,
+        "rel": "perpendicular"
+      },
+      "esperado": {
+        "respuesta": "recta:4,3,-11",
+        "exacta": "4x + 3y − 11 = 0"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "angulo",
+        "sub": "rectangulo",
+        "A": [
+          0,
+          -2
+        ],
+        "B": [
+          4,
+          2
+        ],
+        "C": [
+          -2,
+          8
+        ],
+        "D": [
+          -6,
+          4
+        ]
+      },
+      "esperado": {
+        "respuesta": "fr:12/5",
+        "exacta": "12/5"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "angulo",
+        "sub": "rectas",
+        "l1": [
+          1,
+          -3,
+          1
+        ],
+        "l2": [
+          2,
+          -3,
+          -7
+        ]
+      },
+      "esperado": {
+        "respuesta": "fr:3/11",
+        "exacta": "3/11"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "baricentro",
+        "sub": "banderin",
+        "y1": 4,
+        "y2": 12,
+        "d": 4
+      },
+      "esperado": {
+        "respuesta": "vec:4/3,8/1",
+        "exacta": "(4/3; 8)"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "recta",
+        "general": [
+          25,
+          9,
+          -250,
+          -18,
+          409
+        ],
+        "eje": "y",
+        "h": 5,
+        "k": 1,
+        "a": 5,
+        "b": 3,
+        "c": 4,
+        "rel": "perpendicular"
+      },
+      "esperado": {
+        "respuesta": "recta:3,4,-39",
+        "exacta": "3x + 4y − 39 = 0"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "recta",
+        "general": [
+          16,
+          25,
+          -64,
+          250,
+          -911
+        ],
+        "eje": "x",
+        "h": 2,
+        "k": -5,
+        "a": 10,
+        "b": 8,
+        "c": 6,
+        "rel": "paralela"
+      },
+      "esperado": {
+        "respuesta": "recta:4,-3,-63",
+        "exacta": "4x − 3y − 63 = 0"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "baricentro",
+        "sub": "base-x",
+        "x1": 2,
+        "x2": 10,
+        "hgt": 6
+      },
+      "esperado": {
+        "respuesta": "vec:6/1,2/1",
+        "exacta": "(6; 2)"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "foco",
+        "general": [
+          25,
+          9,
+          200,
+          36,
+          211
+        ],
+        "eje": "y",
+        "h": -4,
+        "k": -2,
+        "a": 5,
+        "b": 3,
+        "c": 4
+      },
+      "esperado": {
+        "respuesta": "vec:-4/1,2/1",
+        "exacta": "(−4; 2)"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "foco",
+        "general": [
+          16,
+          25,
+          -96,
+          -50,
+          -1431
+        ],
+        "eje": "x",
+        "h": 3,
+        "k": 1,
+        "a": 10,
+        "b": 8,
+        "c": 6
+      },
+      "esperado": {
+        "respuesta": "vec:9/1,1/1",
+        "exacta": "(9; 1)"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "recta",
+        "general": [
+          25,
+          9,
+          -100,
+          -90,
+          100
+        ],
+        "eje": "y",
+        "h": 2,
+        "k": 5,
+        "a": 5,
+        "b": 3,
+        "c": 4,
+        "rel": "paralela"
+      },
+      "esperado": {
+        "respuesta": "recta:4,-3,22",
+        "exacta": "4x − 3y + 22 = 0"
+      }
+    },
+    {
+      "semilla": 38,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "foco",
+        "general": [
+          25,
+          9,
+          100,
+          -90,
+          -575
+        ],
+        "eje": "y",
+        "h": -2,
+        "k": 5,
+        "a": 10,
+        "b": 6,
+        "c": 8
+      },
+      "esperado": {
+        "respuesta": "vec:-2/1,13/1",
+        "exacta": "(−2; 13)"
+      }
+    },
+    {
+      "semilla": 49,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "recta",
+        "general": [
+          16,
+          25,
+          128,
+          -250,
+          481
+        ],
+        "eje": "x",
+        "h": -4,
+        "k": 5,
+        "a": 5,
+        "b": 4,
+        "c": 3,
+        "rel": "paralela"
+      },
+      "esperado": {
+        "respuesta": "recta:4,-3,11",
+        "exacta": "4x − 3y + 11 = 0"
+      }
+    },
+    {
+      "semilla": 58,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "recta",
+        "general": [
+          9,
+          25,
+          -54,
+          200,
+          -419
+        ],
+        "eje": "x",
+        "h": 3,
+        "k": -4,
+        "a": 10,
+        "b": 6,
+        "c": 8,
+        "rel": "perpendicular"
+      },
+      "esperado": {
+        "respuesta": "recta:4,3,-40",
+        "exacta": "4x + 3y − 40 = 0"
+      }
+    },
+    {
+      "semilla": 94,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "recta",
+        "general": [
+          25,
+          9,
+          250,
+          18,
+          -266
+        ],
+        "eje": "y",
+        "h": -5,
+        "k": -1,
+        "a": 10,
+        "b": 6,
+        "c": 8,
+        "rel": "paralela"
+      },
+      "esperado": {
+        "respuesta": "recta:4,-3,47",
+        "exacta": "4x − 3y + 47 = 0"
+      }
+    },
+    {
+      "semilla": 134,
+      "entrada": {
+        "tipo": "elipse",
+        "sub": "foco",
+        "general": [
+          9,
+          25,
+          90,
+          50,
+          25
+        ],
+        "eje": "x",
+        "h": -5,
+        "k": -1,
+        "a": 5,
+        "b": 3,
+        "c": 4
+      },
+      "esperado": {
+        "respuesta": "vec:-1/1,-1/1",
+        "exacta": "(−1; −1)"
+      }
+    }
+  ]
+}
