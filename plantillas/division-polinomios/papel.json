@@ -82,12 +82,12 @@
     {
       "id": "p8",
       "nivel": "intermedio",
-      "enunciado": "De una plancha de cartón de 30 cm de ancho y L cm de largo se recortan en las esquinas cuadrados de x cm de lado para armar una caja sin tapa, de volumen V(x). El resto de dividir V(x) entre x − 5 es 1 200. ¿Cuánto mide L?",
-      "respuesta": "L = 22 cm.",
+      "enunciado": "De una plancha de cartón de 20 cm de ancho y L cm de largo se recortan en las esquinas cuadrados de x cm de lado para armar una caja sin tapa, de volumen V(x). El resto de dividir V(x) entre x − 5 es 1 200. ¿Cuánto mide L?",
+      "respuesta": "L = 34 cm.",
       "pasos": [
-        "V(x) = x(30 − 2x)(L − 2x): el fondo pierde dos recortes en cada lado y la altura es x.",
-        "Teorema del resto: el resto entre x − 5 es V(5) = 5·20·(L − 10) = 100(L − 10).",
-        "100(L − 10) = 1 200, L − 10 = 12 y L = 22 cm. (12 cm es el largo del fondo, no el de la plancha.)"
+        "V(x) = x(20 − 2x)(L − 2x): el fondo pierde dos recortes en cada lado y la altura es x.",
+        "Teorema del resto: el resto entre x − 5 es V(5) = 5·10·(L − 10) = 50(L − 10).",
+        "50(L − 10) = 1 200, L − 10 = 24 y L = 34 cm. (24 cm es el largo del fondo, no el de la plancha.)"
       ]
     },
     {

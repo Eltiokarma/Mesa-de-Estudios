@@ -2,7 +2,7 @@
   "plantilla": "division-polinomios",
   "tolerancia": 0.000001,
   "nota": "Respuestas exactas: enteros, o texto (un monomio con su signo o un resto px + q). Cocientes notables (xᴺʳ ± yᴺˢ)/(xʳ ± yˢ) con término de lugar k igual a ±(xʳ)ᴺ⁻ᵏ(yˢ)ᵏ⁻¹.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 18 casos con aritmética exacta en Python (Fraction): división larga de polinomios, fuerza bruta sobre enteros para restos y coeficientes, MCD y MCM por raíces con multiplicidad y suma numérica de cada cociente notable en (2, 3). Los 18 coinciden con esperado. Tras la revisión cambió la semilla 31 (MCM mónico = 24), recalculada aparte por la conversación principal: B = (x − 1)(x − 2)(x − 4) y MCM(5) = 4·3·2·1 = 24.",
   "casos": [
     {
       "semilla": 0,
@@ -241,21 +241,21 @@
         "sub": "mcm-dado",
         "D": [
           1,
-          -1,
-          -6
+          -3,
+          2
         ],
         "A": [
           1,
-          -3,
-          -4,
-          12
+          -6,
+          11,
+          -6
         ],
-        "cB": 6,
-        "x": 0
+        "cB": -8,
+        "x": 5
       },
       "esperado": {
-        "respuesta": -12,
-        "exacta": "−12"
+        "respuesta": 24,
+        "exacta": "24"
       }
     },
     {

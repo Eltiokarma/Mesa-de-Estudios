@@ -237,8 +237,8 @@ test('papel.json: respuestas recalculadas', () => {
   // p7: x³ + ax² + bx + 18 divisible entre x² − x − 6.
   { const sol = []; for (let a = -40; a <= 40; a++) for (let b = -40; b <= 40; b++) if (dividir([1, a, b, 18], [1, -1, -6]).r.every(x => x === 0)) sol.push([a, b]);
     assert.deepEqual(sol, [[-4, -3]]); tiene('p7', 'a = −4'); tiene('p7', 'b = −3'); }
-  // p8: caja de 30 cm de ancho, resto 1 200 entre x − 5: largo.
-  { const L = []; for (let l = 11; l <= 200; l++) if (dividir(mul([1, 0], mul([-2, 30], [-2, l])), [1, -5]).r[0] === 1200) L.push(l); assert.deepEqual(L, [22]); tiene('p8', '22 cm'); }
+  // p8: caja de 20 cm de ancho, resto 1 200 entre x − 5: largo.
+  { const L = []; for (let l = 11; l <= 200; l++) if (dividir(mul([1, 0], mul([-2, 20], [-2, l])), [1, -5]).r[0] === 1200) L.push(l); assert.deepEqual(L, [34]); tiene('p8', '34 cm'); }
   // p9: MCD y MCM de x³ − 3x² + 4 y x³ − 4x² + 4x.
   { const { mcd, mcm } = mcdMcm([1, -3, 0, 4], [1, -4, 4, 0]); assert.deepEqual(mcd, [1, -4, 4]); assert.equal(mcm.length - 1, 4); assert.equal(evalP(mcm, 1), 2);
     tiene('p9', '(x − 2)²'); tiene('p9', 'grado 4'); tiene('p9', 'MCM(1) = 2'); }

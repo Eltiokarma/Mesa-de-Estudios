@@ -71,6 +71,9 @@
   // «3p + q», «−p + q», «q»: el valor de px + q en x = r, escrito para la solución.
   const enR = r => (r === 0 ? 'q' : `${r === 1 ? '' : r === -1 ? '−' : n(r)}p + q`);
   const sgn = c => (c < 0 ? `− ${n(-c)}` : `+ ${n(c)}`);
+  // (x³)ᴺ⁻ᵏ, o xᴺ⁻ᵏ si el exponente es 1; y «36/4 = 45/5 = 9» (una sola división si r = s).
+  const base = (b, e) => (e === 1 ? b : `(${pot(b, e)})`);
+  const divs = (r, s, N) => (r === s ? `${r * N}/${r} = ${N}` : `${r * N}/${r} = ${s * N}/${s} = ${N}`);
   const lineal = (p, q) => ({ clave: `pol:${p},${q}`, texto: polTxt([p, q]) });
   // Monomio c·xᵃyᵇ con su signo: «−x¹⁵y⁶».
   function mono(c, a, b) {
@@ -128,7 +131,7 @@
       alternativas = P.armarTexto({ correcta: o.correcta, errores: o.errores.filter(Boolean), rng });
       respuesta = { valor: o.correcta.clave, texto: o.correcta.texto, unidad: '' };
     } else {
-      const errores = o.errores.filter(e => ent(e.valor) && Math.abs(e.valor) < 1e6 && (o.negativos || e.valor > 0));
+      const errores = o.errores.filter(e => ent(e.valor) && Math.abs(e.valor) < 1e6 && (o.negativos || e.valor > 0) && !(tipo === 'mcdmcm' && e.valor === -o.correcta));
       alternativas = P.armar({ correcta: o.correcta, errores, rng, negativos: true, decimales: 0, unidad: o.unidad || '' });
       respuesta = { valor: o.correcta, unidad: o.unidad || '' };
     }
@@ -160,7 +163,7 @@
         h('cn-solo-m', r * N, `Esa es solo m. Falta sumar n = ${s}·${N} = ${s * N}.`),
       ];
       const solucion = [
-        [`En (xᵐ − yⁿ)/(${pot('x', r)} − ${pot('y', s)}) con `, v('N', 'N'), ' términos, el término de lugar ', v('k', 'k'), ` es (${pot('x', r)})ᴺ⁻ᵏ·(${pot('y', s)})ᵏ⁻¹.`],
+        [`En (xᵐ − yⁿ)/(${pot('x', r)} − ${pot('y', s)}) con `, v('N', 'N'), ' términos, el término de lugar ', v('k', 'k'), ` es ${base('x', r)}ᴺ⁻ᵏ·${base('y', s)}ᵏ⁻¹.`],
         ['Exponente de y: ', `${s}·(k − 1) = ${B} → `, v('k', `k = ${k}`), '.'],
         ['Exponente de x: ', `${r}·(N − ${k}) = ${A} → `, v('N', `N = ${N}`), ' términos.'],
         [`Como m/${r} = n/${s} = ${N}: m = ${r * N} y n = ${s * N}, así que `, v('S', `m + n = ${correcta}`), '.'],
@@ -185,9 +188,9 @@
         h('cn-grado-por-lugar', (r + s) * kc, `Multiplicaste el grado del divisor (${r + s}) por el lugar central. Los exponentes de x bajan y los de y suben: hay que calcular cada uno.`),
       ];
       const solucion = [
-        ...(dado ? [] : [[`Número de términos: ${r * N}/${r} = ${s * N}/${s} = `, v('N', `${N}`), '.']]),
+        ...(dado ? [] : [[`Número de términos: ${divs(r, s, N).replace(/ = \d+$/, ' = ')}`, v('N', `${N}`), '.']]),
         ['Con ', v('N', `${N} términos`), ', el central es el de lugar ', v('c', `(${N} + 1)/2 = ${kc}`), '.'],
-        [`Término de lugar ${kc}: (${pot('x', r)})^${N - kc}·(${pot('y', s)})^${kc - 1} = ${mono(1, r * (N - kc), s * (kc - 1)).texto}.`.replace(/\^(\d+)/g, (_, e) => sup(e))],
+        [`Término de lugar ${kc}: ${base('x', r)}${sup(N - kc)}·${base('y', s)}${sup(kc - 1)} = ${mono(1, r * (N - kc), s * (kc - 1)).texto}.`],
         ['Grado absoluto: ', `${r * (N - kc)} + ${s * (kc - 1)} = `, v('g', `${correcta}`), '.'],
       ];
       return { correcta, errores, variables, enunciado, pregunta, solucion, datos: { r, s, N, dado } };
@@ -204,10 +207,10 @@
         h('cn-fila-cuenta-al-del-centro', (N + 1) / 2, `${(N + 1) / 2} es el lugar de ${nombre}. Delante hay uno menos: a ${nombre} no se le cuenta entre los de delante.`),
         h('cn-fila-todos-menos-uno', N - 1, `${N - 1} son todos los demás de la fila, delante y detrás. Delante solo está la mitad.`),
         h('cn-responde-terminos', N, `${N} es el total de alumnos de la fila. Se pregunta solo por los de delante.`),
-        h('cn-terminos-exponente', (r * N - 1) / 2, `Tomaste el exponente ${r * N} como número de términos. El número de términos es ${r * N}/${r} = ${N}.`),
+        h('cn-terminos-exponente', (r * N - 1) / 2, `Tomaste el exponente ${r * N} como número de términos: con ${r * N}, el del centro sería el ${(r * N + 1) / 2} y delante habría ${(r * N - 1) / 2}. El número de términos es ${r * N}/${r} = ${N}.`),
       ];
       const solucion = [
-        [`Número de términos: ${r * N}/${r} = ${s * N}/${s} = `, v('N', `${N}`), ' alumnos.'],
+        [`Número de términos: ${divs(r, s, N).replace(/ = \d+$/, ' = ')}`, v('N', `${N}`), ' alumnos.'],
         [`${nombre} está en el lugar `, v('c', `(${N} + 1)/2 = ${(N + 1) / 2}`), '.'],
         ['Delante quedan los lugares 1 a ', `${(N - 1) / 2}`, ': ', v('d', `${correcta} alumnos`), '.'],
       ];
@@ -232,14 +235,14 @@
         ht('cn-signo-alternado-mal', mono(forma === 'mm' ? (k % 2 === 1 ? 1 : -1) : -sg, r * (N - k), s * (k - 1)), otroSigno),
         ht('cn-lugar-corrido', mono(sg, r * (N - k), s * k), `Pusiste a y el exponente ${s}·${k}. En el lugar k, y lleva ${s}·(k − 1): el primer término no tiene y.`),
         ht('cn-empieza-en-dividendo', mono(sg, r * (N - k + 1), s * (k - 1)), `Empezaste con x elevado a ${r * N}, el exponente del dividendo. El primer término es ${pot('x', r * (N - 1))}: x pierde ${r} en cada lugar.`),
-        ht('cn-cuenta-desde-el-final', mono(sg, r * (k - 1), s * (N - k)), `Contaste los lugares desde el final. El primer término es el que lleva la mayor potencia de x.`),
+        ht('cn-cuenta-desde-el-final', mono(signoK(forma, N - k + 1), r * (k - 1), s * (N - k)), `Contaste los lugares desde el final. El primer término es el que lleva la mayor potencia de x.`),
         ht('cn-signo-y-lugar', mono(-sg, r * (N - k), s * k), `Hay dos errores: el exponente de y es ${s}·(k − 1), no ${s}·k, y el signo del lugar ${k} es ${sg > 0 ? '+' : '−'}.`),
       ];
       const regla = forma === 'mm' ? 'Con un menos arriba y abajo, todos los términos son positivos.'
         : 'Con divisor xʳ + yˢ los signos se alternan: + en los lugares impares y − en los pares.';
       const solucion = [
-        [`Número de términos: ${r * N}/${r} = ${s * N}/${s} = `, v('N', `${N}`), '.'],
-        ['Término de lugar ', v('k', 'k'), `: (${pot('x', r)})ᴺ⁻ᵏ·(${pot('y', s)})ᵏ⁻¹, con su signo. ${regla}`],
+        [`Número de términos: ${divs(r, s, N).replace(/ = \d+$/, ' = ')}`, v('N', `${N}`), '.'],
+        ['Término de lugar ', v('k', 'k'), `: ${base('x', r)}ᴺ⁻ᵏ·${base('y', s)}ᵏ⁻¹, con su signo. ${regla}`],
         [`Con k = ${k}: x lleva ${r}·(${N} − ${k}) = ${r * (N - k)} e y lleva ${s}·(${k} − 1) = ${s * (k - 1)}. El término es `, v('t', correcta.texto), '.'],
       ];
       return { textual: true, correcta, errores, variables, enunciado, pregunta, solucion, datos: { forma, r, s, N, k } };
@@ -260,7 +263,7 @@
         ? 'Pusiste signos alternados. Con x − a abajo y un menos arriba, todos los términos son positivos.'
         : `Te equivocaste de signo. Con x + a abajo los signos se alternan empezando por +: el lugar ${k} va con ${sg > 0 ? '+' : '−'}.`),
       h('cn-lugar-corrido', sg * a ** k, `Elevaste ${a} a ${k}. En el lugar k, el número del divisor va elevado a k − 1 = ${k - 1}: el primer término es solo una potencia de x.`),
-      h('cn-cuenta-desde-el-final', sg * a ** (N - k), `Contaste los lugares desde el final. El primer término es ${pot('x', N - 1)}, sin ${a}.`),
+      h('cn-cuenta-desde-el-final', signoK(forma, N - k + 1) * a ** (N - k), `Contaste los lugares desde el final. El primer término es ${pot('x', N - 1)}, sin ${a}.`),
       h('potencia-como-producto', sg * a * (k - 1), `Multiplicaste ${a}·${k - 1}. ${pot(String(a), k - 1)} es ${a} multiplicado por sí mismo ${k - 1} veces.`),
     ];
     const solucion = [
@@ -287,25 +290,26 @@
     if (!ok || ok.p === 0) return null;
     const correcta = lineal(ok.p, ok.q);
     const PP = Pc ? polTxt(Pc) : 'P(x)';
-    const variables = { r: { nombre: 'raíces del divisor', color: 'o' }, R: { nombre: 'restos parciales', color: 'i' }, X: { nombre: 'resto pedido', color: 'd' } };
+    const variables = { R1: { nombre: `resto entre ${factor(r1)}`, color: 'i' }, R2: { nombre: `resto entre ${factor(r2)}`, color: 'h' }, X: { nombre: 'resto pedido', color: 'd' } };
+    const prod = (r1 === 0 ? `x(${factor(r2)})` : r2 === 0 ? `x(${factor(r1)})` : `(${factor(r1)})(${factor(r2)})`);
+    const rr = r1 !== 0 ? r1 : r2;
     const enunciado = sub === 'condiciones'
-      ? ['Un polinomio P(x) deja resto ', v('R', n(R1)), ` al dividirlo entre ${factor(r1)} y resto `, v('R', n(R2)), ` al dividirlo entre ${factor(r2)}.`]
+      ? ['Un polinomio P(x) deja resto ', v('R1', n(R1)), ` al dividirlo entre ${factor(r1)} y resto `, v('R2', n(R2)), ` al dividirlo entre ${factor(r2)}.`]
       : [`Sea P(x) = ${PP}.`];
     const pregunta = ['¿Cuál es el ', v('X', 'resto'), ` de dividir P(x) entre ${polTxt(div)}?`];
     const mal = recta(-r1, sub === 'condiciones' ? R1 : evalP(Pc, -r1), -r2, sub === 'condiciones' ? R2 : evalP(Pc, -r2));
     const cruz = recta(r1, R2, r2, R1);
     const errores = [
-      ht('PO8-raiz-signo-cambiado', mal && lineal(mal.p, mal.q), `Usaste las raíces con el signo cambiado (${n(-r1)} y ${n(-r2)}). La raíz de ${factor(r1)} es ${n(r1)}: el número que lo hace cero.`),
+      ht('PO8-raiz-signo-cambiado', mal && lineal(mal.p, mal.q), `Usaste las raíces con el signo cambiado (${n(-r1)} y ${n(-r2)}). La raíz de ${factor(rr)} es ${n(rr)}: el número que lo hace cero.`),
       ht('resto-suma-de-restos', { clave: `pol:0,${R1 + R2}`, texto: n(R1 + R2) }, 'Sumaste los dos restos. Entre un divisor de segundo grado el resto es de la forma px + q: se hallan p y q con los dos restos.'),
       ht('resto-restos-como-coeficientes', lineal(R1, R2), `Pusiste los restos como coeficientes (${polTxt([R1, R2])}). Hay que pedir que px + q valga ${n(R1)} en x = ${n(r1)} y ${n(R2)} en x = ${n(r2)}.`),
       ht('resto-restos-cruzados', cruz && lineal(cruz.p, cruz.q), `Cruzaste los restos: le diste a x = ${n(r1)} el resto que corresponde a x = ${n(r2)}.`),
       ht('resto-producto-de-restos', { clave: `pol:0,${R1 * R2}`, texto: n(R1 * R2) }, 'Multiplicaste los restos, como se multiplican los factores del divisor. El resto es px + q y se halla evaluando en cada raíz.'),
     ];
     const solucion = [
-      [`El divisor ${polTxt(div)} = (${factor(r1)})(${factor(r2)}) es de grado 2, así que el resto es de grado 1 o menos: R(x) = px + q.`],
-      ...(sub === 'explicito' ? [['Teorema del resto en cada raíz: ', v('R', `P(${n(r1)}) = ${n(R1)}`), ' y ', v('R', `P(${n(r2)}) = ${n(R2)}`), '.']] : []),
-      ['De P(x) = (', polTxt(div), ')·Q(x) + px + q, evaluando en las raíces ', v('r', `${n(r1)} y ${n(r2)}`), ': ',
-        `${enR(r1)} = ${n(R1)} y ${enR(r2)} = ${n(R2)}.`],
+      [`El divisor ${polTxt(div)} = ${prod} es de grado 2, así que el resto es de grado 1 o menos: R(x) = px + q.`],
+      ...(sub === 'explicito' ? [['Teorema del resto en cada raíz: ', v('R1', `P(${n(r1)}) = ${n(R1)}`), ' y ', v('R2', `P(${n(r2)}) = ${n(R2)}`), '.']] : []),
+      ['De P(x) = (', polTxt(div), ')·Q(x) + px + q, evaluando en las raíces ', `${n(r1)} y ${n(r2)}: ${enR(r1)} = `, v('R1', n(R1)), ` y ${enR(r2)} = `, v('R2', n(R2)), '.'],
       [`Restando: p = ${n(ok.p)} y q = ${n(ok.q)}. El resto es `, v('X', correcta.texto), '.'],
     ];
     return { textual: true, correcta, errores, variables, enunciado, pregunta, solucion,
@@ -381,9 +385,9 @@
     const pregunta = ['¿Cuál es el ', v('X', 'término independiente'), ' de P(x)?'];
     const errores = [
       h('valor-en-uno-por-cero', P1, 'Esa es la suma de coeficientes, P(1). El término independiente es P(0).'),
-      h('PO8-raiz-signo-cambiado', r + a * sMal, `Escribiste P(x) = (${factor(-a)})·Q(x) ${sgn(r)}, con el signo de ${n(a)} cambiado. Dividir entre ${factor(a)} da P(x) = (${factor(a)})·Q(x) ${sgn(r)}.`),
+      h('PO8-raiz-signo-cambiado', r + a * sMal, `Escribiste P(x) = (${factor(-a)})·Q(x) ${sgn(r)}: cambiaste ${factor(a)} por ${factor(-a)}. Dividir entre ${factor(a)} da P(x) = (${factor(a)})·Q(x) ${sgn(r)}.`),
       h('identidad-sin-resto', -a * s, `Olvidaste el resto: P(x) = (${factor(a)})·Q(x) ${sgn(r)}, y el ${n(r)} también entra en el término independiente.`),
-      { ...h('AL16', r - a * sDes, `Al despejar perdiste un signo: de ${n(k)}·(s + ${n(k)} ${a < 0 ? '− ' + n(-a) : '+ ' + n(a)}) ${sgn(r)} = 0 sale s + ${n(k)} ${a < 0 ? '− ' + n(-a) : '+ ' + n(a)} = ${n(-r / k)}, no ${n(r / k)}.`), fuente: AL16 },
+      { ...h('AL16', r - a * sDes, `Al despejar perdiste un signo: de ${k === 1 ? '' : n(k) + '·'}(s + ${n(k)} ${a < 0 ? '− ' + n(-a) : '+ ' + n(a)}) ${sgn(r)} = 0 sale s + ${n(k)} ${a < 0 ? '− ' + n(-a) : '+ ' + n(a)} = ${n(-r / k)}, no ${n(r / k)}.`), fuente: AL16 },
     ];
     const ra = `(${factor(a)})`;
     const solucion = [
@@ -406,7 +410,7 @@
       const pregunta = ['¿Cuántos centímetros mide el ', v('L', 'largo'), ' de la plancha?'];
       const errores = [
         h('caja-sin-sumar-recortes', base, `${n(base)} cm es el largo del fondo de la caja. La plancha es más larga: se le quitaron dos recortes de ${k} cm.`),
-        h('caja-un-solo-recorte', R / (k * (a - k)) + k, `Restaste un solo recorte a cada medida. Se recorta en las dos puntas de cada lado: el fondo mide ${a} − 2x por L − 2x.`),
+        h('caja-un-solo-recorte', R / (k * (a - k)) + k, `Restaste un solo recorte a cada medida. Se recorta en las dos puntas de cada lado: el fondo mide (${a} − 2x) por (L − 2x).`),
         { ...h('AL16', base - 2 * k, `Al despejar restaste ${2 * k} en vez de sumarlo. Si L − ${2 * k} = ${n(base)}, entonces L = ${n(base)} + ${2 * k}.`), fuente: AL16 },
         h('caja-sin-altura', R / (a - 2 * k) + 2 * k, `Usaste solo el área del fondo. El volumen es fondo por altura, y la altura es x = ${k}.`),
       ];
@@ -420,8 +424,8 @@
     const b = rng.elegir([16, 20, 24, 30]);
     if (b >= a) return null;
     const V = x => x * (a - 2 * x) * (b - 2 * x), correcta = V(k);
-    const variables = { x: { nombre: 'lado del recorte', color: 'o' }, a: { nombre: 'medidas de la plancha', color: 'i' }, R: { nombre: 'resto', color: 'd' } };
-    const enunciado = [`${lugar}, de una plancha de cartón de `, v('a', `${a} cm por ${b} cm`), ' se recortan en las cuatro esquinas cuadrados de ', v('x', 'x cm'), ' de lado y se doblan los bordes para formar una caja sin tapa. Su volumen V(x), en cm³, es un polinomio en x.'];
+    const variables = { x: { nombre: 'lado del recorte', color: 'o' }, a: { nombre: 'largo de la plancha', color: 'i' }, b: { nombre: 'ancho de la plancha', color: 'h' }, R: { nombre: 'resto', color: 'd' } };
+    const enunciado = [`${lugar}, de una plancha de cartón de `, v('a', `${a} cm`), ' por ', v('b', `${b} cm`), ' se recortan en las cuatro esquinas cuadrados de ', v('x', 'x cm'), ' de lado y se doblan los bordes para formar una caja sin tapa. Su volumen V(x), en cm³, es un polinomio en x.'];
     const pregunta = ['¿Cuál es el ', v('R', 'resto'), ' de dividir V(x) entre x − ', v('x', String(k)), '?'];
     const errores = [
       h('PO8-raiz-signo-cambiado', V(-k), `Evaluaste en x = −${k}. La raíz de x − ${k} es ${k}: el resto es V(${k}).`),
@@ -430,7 +434,7 @@
       h('caja-sin-altura', (a - 2 * k) * (b - 2 * k), `Calculaste solo el área del fondo. El volumen se multiplica por la altura, x = ${k}.`),
     ];
     const solucion = [
-      ['El fondo mide (', v('a', String(a)), ' − 2x) por (', v('a', String(b)), ' − 2x) y la altura es x: V(x) = x(', v('a', String(a)), ' − 2x)(', v('a', String(b)), ' − 2x).'],
+      ['El fondo mide (', v('a', String(a)), ' − 2x) por (', v('b', String(b)), ' − 2x) y la altura es x: V(x) = x(', v('a', String(a)), ' − 2x)(', v('b', String(b)), ' − 2x).'],
       ['Teorema del resto: el resto entre x − ', v('x', String(k)), ' es V(', v('x', String(k)), ').'],
       [`V(${k}) = ${k}·${a - 2 * k}·${b - 2 * k} = `, v('R', n(correcta)), '. (Es el volumen de la caja con recortes de ', v('x', `${k} cm`), '.)'],
     ];
@@ -447,9 +451,9 @@
       const A = deRaices([r1, r1, r2]), B = deRaices([r1, r2, r3]);
       const [X, Y] = rng.moneda() ? [A, B] : [B, A];
       const mcd = (kx - r1) * (kx - r2), mcm = (kx - r1) ** 2 * (kx - r2) * (kx - r3);
-      const variables = { x: { nombre: 'valor de x', color: 'o' }, M: { nombre: 'MCD', color: 'd' }, c: { nombre: 'factores comunes', color: 'i' } };
+      const variables = { x: { nombre: 'valor de x', color: 'o' }, M: { nombre: 'MCD', color: 'd' }, c: { nombre: 'MCD factorizado', color: 'i' } };
       const enunciado = [`Sean A(x) = ${polTxt(X)} y B(x) = ${polTxt(Y)}.`];
-      const pregunta = ['¿Cuál es el valor numérico del ', v('M', 'MCD'), ' de A(x) y B(x) para ', v('x', `x = ${n(kx)}`), '?'];
+      const pregunta = ['¿Cuál es el valor numérico del ', v('M', 'MCD mónico'), ' de A(x) y B(x) para ', v('x', `x = ${n(kx)}`), '?'];
       const errores = [
         h('mcd-mayor-potencia', (kx - r1) ** 2 * (kx - r2), `Tomaste el factor (${factor(r1)}) con su mayor exponente. En el MCD cada factor común va con su menor exponente.`),
         h('mcd-por-mcm', mcm, 'Ese es el MCM: todos los factores con su mayor exponente. El MCD lleva solo los comunes, con su menor exponente.'),
@@ -472,18 +476,18 @@
       const cB = B[3], Dk = evalP(D, kx);
       const correcta = Dk * (kx - s) * (kx - t);
       const variables = { D: { nombre: 'MCD', color: 'i' }, c: { nombre: 'término independiente de B', color: 'o' }, t: { nombre: 'factor que falta de B', color: 'h' }, M: { nombre: 'MCM', color: 'd' } };
-      const enunciado = ['El ', v('D', 'MCD'), ' de A(x) y B(x) es ', v('D', polTxt(D)), `. Se sabe que A(x) = ${polTxt(A)} y que B(x) es un polinomio cúbico mónico cuyo término independiente es `, v('c', n(cB)), '.'];
-      const pregunta = ['¿Cuál es el valor numérico del ', v('M', 'MCM'), ` de A(x) y B(x) para x = ${n(kx)}?`];
+      const enunciado = ['El ', v('D', 'MCD mónico'), ' de A(x) y B(x) es ', v('D', polTxt(D)), `. Se sabe que A(x) = ${polTxt(A)} y que B(x) es un polinomio cúbico mónico cuyo término independiente es `, v('c', n(cB)), '.'];
+      const pregunta = ['¿Cuál es el valor numérico del ', v('M', 'MCM mónico'), ` de A(x) y B(x) para x = ${n(kx)}?`];
       const errores = [
         h('mcm-producto', evalP(A, kx) * evalP(B, kx), 'Multiplicaste A·B. Así el MCD queda contado dos veces: el MCM es A·B dividido entre el MCD.'),
-        h('mcd-por-mcm', Dk, 'Ese es el valor del MCD. El MCM lleva además los factores que no son comunes.'),
-        { ...h('AL16', Dk * (kx - s) * (kx + t), `Despejaste mal el signo del factor que falta de B. Su término independiente es ${n(D[2])}·(−t) = ${n(cB)}: t = ${n(t)}, y el factor es ${factor(t)}.`), fuente: AL16 },
+        h('mcd-por-mcm', Dk, `Ese es el valor del MCD en x = ${n(kx)}. El MCM lleva además los factores que no son comunes.`),
+        { ...h('AL16', [r1, r2, s].includes(-t) ? NaN : Dk * (kx - s) * (kx + t), `Despejaste mal el signo del factor que falta de B. Su término independiente es ${n(D[2])}·(−t) = ${n(cB)}: t = ${n(t)}, y el factor es ${factor(t)}.`), fuente: AL16 },
         h('mcm-sin-completar', evalP(A, kx), `Ese es A(${n(kx)}). Al MCM le falta el factor de B que no está en A.`),
       ];
       const solucion = [
         ['B(x) contiene al ', v('D', 'MCD'), ' y es cúbico mónico: B(x) = (', v('D', polTxt(D)), ')(x − t).'],
         ['Término independiente: ', `${n(D[2])}·(−t) = `, v('c', n(cB)), ' → ', v('t', `t = ${n(t)}`), '.'],
-        [`Dividiendo A(x) entre el MCD queda ${factor(s)}. El MCM es (${polTxt(D)})(${factor(s)})(`, v('t', factor(t)), ').'],
+        [`Dividiendo A(x) entre el MCD queda ${factor(s)}. El MCM es (${polTxt(D)})(${factor(s)})(${factor(t)}).`],
         [`En x = ${n(kx)}: ${n(Dk)}·(${n(kx - s)})·(${n(kx - t)}) = `, v('M', n(correcta)), '.'],
       ];
       if (correcta === 0) return null;

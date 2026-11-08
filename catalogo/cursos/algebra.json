@@ -130,7 +130,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7, 10]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": ["polinomios"],
+      "plantillas": ["polinomios", "division-polinomios"],
       "investigacion": null
     },
     {
@@ -146,7 +146,7 @@
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": ["cuadrado-crece"],
+      "plantillas": ["cuadrado-crece", "division-polinomios"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
