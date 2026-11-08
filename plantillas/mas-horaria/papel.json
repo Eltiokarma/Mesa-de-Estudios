@@ -1,0 +1,83 @@
+{
+  "titulo": "La ecuación del resorte: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa x = A·sen(ωt + φ), con x positiva hacia la derecha; la velocidad es v = A·ω·cos(ωt + φ). En el resorte ω = √(k/m); T = 2π/ω y f = 1/T. Para escribir la ecuación, mira dónde está y hacia dónde va en t = 0: x(0) = A·sen φ y v(0) = A·ω·cos φ. La velocidad media es desplazamiento entre tiempo. Toma g = 10 m/s².",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un bloque de 2 kg unido a un resorte oscila según x = 0,3 sen(5t + π/2) m. ¿Cuánto valen la amplitud, ω, el periodo, la constante del resorte y la posición inicial?",
+      "respuesta": "A = 0,3 m; ω = 5 rad/s; T = 2π/5 ≈ 1,26 s; k = 50 N/m; x(0) = 0,3 m.",
+      "pasos": ["Comparando con x = A·sen(ωt + φ): A = 0,3 m, ω = 5 rad/s y φ = π/2.", "T = 2π/ω = 2π/5 ≈ 1,26 s; k = m·ω² = 2 · 25 = 50 N/m.", "x(0) = 0,3 · sen(π/2) = 0,3 m: aquí sí coincide con la amplitud, porque sen(π/2) = 1. Con otra fase no coincidiría."],
+      "verificar": [
+        { "tipo": "k", "args": { "m": 2, "w": 5 }, "espera": 50 },
+        { "tipo": "periodo", "args": { "w": 5 }, "espera": 1.2566370614359172 },
+        { "tipo": "x0", "args": { "A": 0.3, "fase": 0.5 }, "espera": 0.3 }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una esfera oscila según x = 0,1 sen(4πt + π/6) m. ¿Cuál es su frecuencia y cuál su periodo? ¿Dónde está en t = 0?",
+      "respuesta": "f = 2 Hz, T = 0,5 s y x(0) = 0,05 m.",
+      "pasos": ["ω = 4π rad/s. f = ω/2π = 2 Hz: el 4 que acompaña a π no es la frecuencia.", "T = 1/f = 0,5 s.", "x(0) = 0,1 · sen(π/6) = 0,1 · 1/2 = 0,05 m, no 0,1 m."],
+      "verificar": [
+        { "tipo": "periodo", "args": { "w": 12.566370614359172 }, "espera": 0.5 },
+        { "tipo": "x0", "args": { "A": 0.1, "fase": 0.16666666666666666 }, "espera": 0.05 }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un bloque de 0,5 kg está unido a un resorte de 50 N/m sobre un piso liso. Se comprime el resorte 4 cm y en t = 0 se suelta el bloque desde el reposo. Escribe su ecuación de posición con 0 ≤ φ < 2π.",
+      "respuesta": "x = 0,04 sen(10t + 3π/2) m",
+      "pasos": ["ω = √(50/0,5) = 10 rad/s.", "Parte del reposo en un extremo: A = 0,04 m. Al comprimir, queda a la izquierda: x(0) = −0,04 m.", "sen φ = −1, así que φ = 3π/2. Con φ = 0 empezaría en el centro, que no es lo que pasa."],
+      "verificar": [
+        { "tipo": "fase", "args": { "x0": -0.04, "v0": 0, "w": 10 }, "espera": 1.5 },
+        { "tipo": "amplitud", "args": { "x0": -0.04, "v0": 0, "w": 10 }, "espera": 0.04 }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un bloque de 0,2 kg unido a un resorte de 80 N/m pasa, en t = 0, por la posición de equilibrio moviéndose hacia la izquierda a 0,6 m/s. Escribe su ecuación de posición con 0 ≤ φ < 2π.",
+      "respuesta": "x = 0,03 sen(20t + π) m",
+      "pasos": ["ω = √(80/0,2) = 20 rad/s.", "En el equilibrio la rapidez es la máxima, A·ω: A = 0,6/20 = 0,03 m.", "x(0) = 0 da φ = 0 o π. Va hacia la izquierda, así que v(0) = A·ω·cos φ < 0: φ = π."],
+      "verificar": [
+        { "tipo": "fase", "args": { "x0": 0, "v0": -0.6, "w": 20 }, "espera": 1 },
+        { "tipo": "amplitud", "args": { "x0": 0, "v0": -0.6, "w": 20 }, "espera": 0.03 }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un carrito oscila según x = 8 sen(πt/2 + π/3) cm. ¿Cuál es su velocidad en t = 1 s?",
+      "respuesta": "v = −2π√3 cm/s, cerca de −10,9 cm/s (va hacia la izquierda).",
+      "pasos": ["Ángulo: π/2 + π/3 = 5π/6.", "v = A·ω·cos(ωt + φ) = 8 · (π/2) · cos(5π/6) = 4π · (−√3/2).", "v = −2π√3 cm/s ≈ −10,9 cm/s. No es la rapidez máxima, 4π cm/s: esa solo la tiene en el centro."],
+      "verificar": [{ "tipo": "velocidad", "args": { "A": 8, "w": 1.5707963267948966, "fase": 0.3333333333333333, "t": 1 }, "espera": -10.882796185405306 }]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una esfera oscila según x = 10 sen(πt) cm. ¿Cuál es su velocidad media entre t = 0 y t = 0,5 s? Compárala con su rapidez máxima y con el promedio de sus velocidades en esos dos instantes.",
+      "respuesta": "20 cm/s. La rapidez máxima es 10π ≈ 31,4 cm/s y el promedio de las velocidades da 5π ≈ 15,7 cm/s: ninguna de las dos es la velocidad media.",
+      "pasos": ["x(0) = 0 y x(0,5) = 10 · sen(π/2) = 10 cm.", "Velocidad media: (10 − 0)/0,5 = 20 cm/s.", "Promediar v(0) = 10π y v(0,5) = 0 solo valdría con aceleración constante, y en el MAS no lo es."],
+      "verificar": [{ "tipo": "media", "args": { "A": 10, "w": 3.141592653589793, "fase": 0, "t1": 0, "t2": 0.5 }, "espera": 20 }]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un bloque de 3 kg, unido a un resorte de 100 N/m, oscila sobre un piso liso. Encima lleva un bloque de 1 kg; el coeficiente de rozamiento estático entre ellos es 0,4. ¿Cuál es la mayor amplitud con que pueden oscilar sin que el de arriba resbale?",
+      "respuesta": "16 cm",
+      "pasos": ["El de arriba solo se acelera por el rozamiento: su aceleración no pasa de μs·g = 4 m/s².", "Oscilan juntos: ω² = k/(m + M) = 100/4 = 25 (rad/s)².", "La aceleración máxima del MAS es ω²·A: A = 4/25 = 0,16 m = 16 cm. Con solo la masa de abajo saldría 12 cm, de menos."],
+      "verificar": [{ "tipo": "apilado", "args": { "mu": 0.4, "m": 1, "M": 3, "k": 100 }, "espera": 16 }]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un tubo de ensayo de 0,2 kg, con perdigones en el fondo, flota vertical en agua. Su sección es de 20 cm². Se lo empuja un poco hacia abajo y se lo suelta. ¿Cuál es el periodo de su oscilación?",
+      "respuesta": "T = π/5 s, cerca de 0,63 s.",
+      "pasos": ["Si se hunde y más, el empuje crece ρ·g·S·y: es un resorte de k = 1000 · 10 · 0,002 = 20 N/m (20 cm² = 0,002 m²).", "El peso no cambia al hundirlo: no es él el que lo devuelve.", "T = 2π·√(m/k) = 2π·√(0,2/20) = 2π/10 = π/5 s ≈ 0,63 s."],
+      "verificar": [{ "tipo": "flotador", "args": { "m": 0.2, "rho": 1000, "S": 20 }, "espera": 0.6283185307179586 }]
+    }
+  ]
+}

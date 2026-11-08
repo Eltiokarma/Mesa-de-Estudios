@@ -1,0 +1,78 @@
+{
+  "titulo": "La bomba y el ascensor: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. A rapidez constante, la fuerza del motor iguala a la suma de las que se oponen, y P = F·v con v en m/s (km/h entre 3,6). Contra el peso, P = m·g·h/t con h la altura que se gana, no el largo del camino. En una bomba, la masa por segundo sale del caudal (1 L de agua = 1 kg). Rendimiento: útil = η·consumida, así que la consumida es útil/η. Toma g = 10 m/s², sen 37° = 0,6 y cos 37° = 0,8, y 1 HP = 746 W.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un tractor jala un arado por la chacra, a rapidez constante de 7,2 km/h, con una fuerza horizontal de 1 500 N. ¿Qué potencia entrega el tractor al arado, en kW?",
+      "respuesta": "3 kW",
+      "pasos": ["Rapidez en m/s: 7,2/3,6 = 2 m/s.", "P = F·v = 1 500 · 2 = 3 000 W.", "En kilowatts: 3 000/1000 = 3 kW. Si usabas 7,2 directamente, salía 10,8 kW: la rapidez va en m/s."],
+      "verificar": [{ "tipo": "fv", "args": { "F": 1500, "vkmh": 7.2 }, "espera": 3 }]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una grúa sube una viga de 400 kg a una altura de 15 m en 20 s, a rapidez constante. ¿Qué potencia desarrolla?",
+      "respuesta": "3 000 W (3 kW)",
+      "pasos": ["A rapidez constante, el cable iguala al peso: 400 · 10 = 4 000 N.", "Trabajo: 4 000 · 15 = 60 000 J.", "Potencia: 60 000/20 = 3 000 W. Los 60 000 J son el trabajo, no la potencia."],
+      "verificar": [{ "tipo": "peso", "args": { "m": 400, "h": 15, "t": 20 }, "espera": 3000 }]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una estudiante de 60 kg sube tres pisos de 3 m cada uno en 30 s. ¿Qué potencia media desarrolla contra su peso? Compárala con la de un foco de 100 W.",
+      "respuesta": "180 W, casi el doble de lo que consume un foco de 100 W.",
+      "pasos": ["Altura que gana: 3 · 3 = 9 m.", "Trabajo contra el peso: 60 · 10 · 9 = 5 400 J.", "P = 5 400/30 = 180 W."],
+      "verificar": [{ "tipo": "peso", "args": { "m": 60, "h": 9, "t": 30 }, "espera": 180 }]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un winche sube una carretilla de 120 kg por una rampa inclinada 37°, con un cable paralelo a la rampa y a rapidez constante de 1,5 m/s. El coeficiente de rozamiento entre la carretilla y la rampa es 0,5. ¿Qué potencia desarrolla el winche?",
+      "respuesta": "1 800 W",
+      "pasos": ["Parte del peso a lo largo de la rampa: 120 · 10 · 0,6 = 720 N.", "Normal: 120 · 10 · 0,8 = 960 N (no el peso entero); rozamiento: 0,5 · 960 = 480 N.", "Fuerza del cable: 720 + 480 = 1 200 N.", "P = 1 200 · 1,5 = 1 800 W."],
+      "verificar": [{ "tipo": "rampa", "args": { "m": 120, "ang": 37, "mu": 0.5, "v": 1.5 }, "espera": 1800 }]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una bomba sube 480 litros de agua por minuto desde un canal hasta un reservorio que está 9 m más arriba. Su rendimiento es del 60 %. ¿Qué potencia consume, en W y en HP?",
+      "respuesta": "1 200 W, cerca de 1,61 HP",
+      "pasos": ["Masa por segundo: 480/60 = 8 L, es decir, 8 kg de agua por segundo.", "Potencia útil: 8 · 10 · 9 = 720 W.", "Consumida: 720/0,6 = 1 200 W. Multiplicar por 0,6 daría 432 W, menos que lo útil: imposible.", "En HP: 1 200/746 ≈ 1,61 HP."],
+      "verificar": [{ "tipo": "bomba", "args": { "Q": 480, "h": 9, "eta": 0.6 }, "espera": 1200 }]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "El motor de una combi consume 60 kW y su rendimiento es del 75 %. La combi arranca desde el reposo por una pista horizontal. En el instante en que va a 54 km/h, el motor trabaja con esa potencia. ¿Qué fuerza impulsa a la combi en ese instante?",
+      "respuesta": "3 000 N",
+      "pasos": ["Potencia útil: 0,75 · 60 = 45 kW = 45 000 W.", "Rapidez del instante: 54/3,6 = 15 m/s.", "F = P/v = 45 000/15 = 3 000 N. Con la rapidez media del arranque (7,5 m/s) saldría el doble: P = F·v se usa con la rapidez de ese instante."],
+      "verificar": [{ "tipo": "eficiencia", "args": { "Pc": 60, "eta": 0.75, "vkmh": 54 }, "espera": 3000 }]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Se suelta una pelota desde 5 m de altura. En cada choque con el piso pierde el 36 % de su energía. ¿Hasta qué altura sube después del tercer rebote? Luego, otra pelota que en cada choque pierde el 20 % de su rapidez: ¿sube más, menos o igual?",
+      "respuesta": "Unos 1,31 m. La segunda sube igual: perder el 20 % de la rapidez es quedarse con 0,8² = 0,64 de la energía, que es perder el 36 %.",
+      "pasos": ["En cada choque queda el 64 % de la energía, y la altura es proporcional a la energía.", "Tras tres choques: 5 · 0,64³ = 5 · 0,262144 ≈ 1,31 m. Restar 3 · 36 % = 108 % no tiene sentido: cada pérdida es de lo que quedaba.", "Con la rapidez: la altura va con v², así que cada choque deja 0,8² = 0,64 de la altura. Es el mismo factor."],
+      "verificar": [{ "tipo": "rebote", "args": { "h": 5, "queda": 0.64, "veces": 3 }, "espera": 1.31072 }]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un ascensor de 500 kg sube desde el primer piso con 6 personas de 70 kg cada una. En el segundo, el tercero y el cuarto piso bajan 2 personas en cada uno. Cada piso mide 3 m. Si sube a rapidez constante, ¿cuánto trabajo hace el motor desde el primer piso hasta el cuarto?",
+      "respuesta": "70 200 J (70,2 kJ)",
+      "pasos": ["Tramo 1 → 2: 500 + 6 · 70 = 920 kg. Tramo 2 → 3: 500 + 4 · 70 = 780 kg. Tramo 3 → 4: 500 + 2 · 70 = 640 kg.", "Cada tramo: masa · 10 · 3. Suma: (920 + 780 + 640) · 30 = 70 200 J.", "Con la carga inicial en todo el recorrido saldría 920 · 10 · 9 = 82 800 J, de más."],
+      "verificar": [{ "tipo": "pisos", "args": { "M": 500, "carga": 70, "cantidad": 6, "porPiso": 2, "h": 3 }, "espera": 70200 }]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un collarín de 4 kg, en reposo, puede deslizarse por una varilla horizontal lisa. Una cuerda atada al collarín pasa por una polea pequeña fija 1,2 m por encima de la varilla. Al inicio el collarín está a 1,6 m (en horizontal) de la vertical de la polea. Se jala el extremo libre con una fuerza constante de 40 N hasta que el collarín queda justo debajo de la polea. ¿Con qué rapidez llega?",
+      "respuesta": "4 m/s",
+      "pasos": ["Tramo de cuerda entre polea y collarín: al inicio √(1,2² + 1,6²) = 2 m; al final 1,2 m.", "El extremo libre baja 2 − 1,2 = 0,8 m (el collarín avanza 1,6 m, pero eso no es lo que recorre la fuerza).", "Trabajo: 40 · 0,8 = 32 J. Todo va a energía cinética: ½ · 4 · v² = 32, v = 4 m/s."],
+      "verificar": [{ "tipo": "cuerda", "args": { "b": 1.2, "x1": 1.6, "x2": 0, "F": 40, "m": 4 }, "espera": 4 }]
+    }
+  ]
+}
