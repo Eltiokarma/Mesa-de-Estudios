@@ -2,7 +2,7 @@
   "plantilla": "trig-extremos",
   "tolerancia": 0.000001,
   "nota": "Ángulos en grados en entrada. respuesta es un número, salvo en racional/simplifica (clave del intervalo int:inf:sup:cerradoIzq:cerradoDer) y en area-ct (clave area:c0|cs|cc|csc|ct).",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026): los 25 casos se resolvieron desde el enunciado. Extremos por muestreo denso con bordes y a mano, rangos con análisis del dominio (cos x ≠ 1), senoides por raíces y áreas de la C.T. por coordenadas con ajuste exacto en la base [1, sen θ, cos θ, sen θ cos θ, tan θ]. Coinciden los 25 en respuesta y exacta; sin discrepancias.",
   "casos": [
     {
       "semilla": 0,
