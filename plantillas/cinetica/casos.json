@@ -2,9 +2,9 @@
   "plantilla": "cinetica",
   "unidades": "mol/L, s, K, J/mol (kJ/mol en el perfil)",
   "constantes": "R = 8,314 J/(mol·K); T(K) = T(°C) + 273; ln 2 sin redondear en los casos (0,693 solo en los textos).",
-  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (ordenes.A); un número suelto, como 'valor'. Los textos ('unidades', 'tipo') se comparan tal cual.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (ordenes.A); un número suelto, como 'valor'. Los textos ('unidades', 'tipo'), las listas y los verdadero/falso se comparan tal cual. Los casos con \"nuevo\": \"0.3.0\" (mec-01 a mec-14, mecanismos, perfil de dos etapas y velocidad media) llevan su propio campo \"verificacion\", vacío hasta que los verifique otro subagente; las etapas se numeran desde 1.",
   "verificacion": "Recalculados el 6 de noviembre de 2026 por un subagente que no leyó el motor ni este archivo: en Python con fractions.Fraction para lo racional, y con Decimal de 30 dígitos más una segunda vía para logaritmos y exponenciales (series propias de ln y exp, conteo de vidas medias y la ley diferencial integrada con RK4 de 200 000 pasos). La k de la tabla de velocidades iniciales reproduce las tres filas. Ojo: se usa T + 273, no 273,15; con 273,15 las Ea cambian en unas decenas de J/mol. Casos 13 a 16 verificados por un subagente independiente (7 nov 2026), sin leer motor.js más allá de su cabecera. Recalculó con fracciones exactas: órdenes por log(fv)/log(fc) con potencias exactas y k igual en los tres experimentos, y vidas medias integrando la ley (ln(C₀/C)/k y (1/C − 1/C₀)/k) en vez de la fórmula de t½. Los 32 campos coinciden, errores típicos incluidos. También se verificó el problema p10 de papel.json.",
-  "tolerancia": 1e-09,
+  "tolerancia": 1e-9,
   "casos": [
     {
       "nombre": "Ley de velocidad: v = 0,5·[A]·[B]² con [A] = 0,2 y [B] = 0,1 da 0,001 mol/(L·s)",
@@ -413,6 +413,727 @@
         "errores.restando": 0,
         "errores.dividiendo": 0.13333333333333333,
         "errores.vidaMediaCrece": 0.2
+      }
+    },
+    {
+      "id": "mec-01",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "Mecanismo del H₂O₂ con yoduro: H₂O₂ + I⁻ → H₂O + IO⁻ y H₂O₂ + IO⁻ → H₂O + O₂ + I⁻ suman 2 H₂O₂ → 2 H₂O + O₂; IO⁻ es intermediario (se forma y se gasta) e I⁻ catalizador (entra y se regenera)",
+      "fn": "mecanismo",
+      "args": [
+        [
+          {
+            "r": {
+              "H2O2": 1,
+              "I-": 1
+            },
+            "p": {
+              "H2O": 1,
+              "IO-": 1
+            }
+          },
+          {
+            "r": {
+              "H2O2": 1,
+              "IO-": 1
+            },
+            "p": {
+              "H2O": 1,
+              "O2": 1,
+              "I-": 1
+            }
+          }
+        ],
+        {
+          "r": {
+            "H2O2": 2
+          },
+          "p": {
+            "H2O": 2,
+            "O2": 1
+          }
+        }
+      ],
+      "espera": {
+        "global.r.H2O2": 2,
+        "global.p.H2O": 2,
+        "global.p.O2": 1,
+        "intermediarios": [
+          "IO-"
+        ],
+        "catalizadores": [
+          "I-"
+        ],
+        "reactivos": [
+          "H2O2"
+        ],
+        "productos": [
+          "H2O",
+          "O2"
+        ],
+        "clase.I-": "catalizador",
+        "clase.IO-": "intermediario",
+        "tachadas.I-": 1,
+        "tachadas.IO-": 1,
+        "coincide": true,
+        "errores.intercambio.intermediarios": [
+          "I-"
+        ],
+        "errores.intercambio.catalizadores": [
+          "IO-"
+        ],
+        "errores.enVariasEtapas": [
+          "H2O2",
+          "H2O"
+        ],
+        "errores.sinCancelar.r.H2O2": 2,
+        "errores.sinCancelar.p.I-": 1
+      }
+    },
+    {
+      "id": "mec-02",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "Ozono con cloro: Cl + O₃ → ClO + O₂ y ClO + O → Cl + O₂ suman O₃ + O → 2 O₂; Cl es catalizador y ClO intermediario; O₂ sale en las dos etapas sin cancelarse",
+      "fn": "mecanismo",
+      "args": [
+        [
+          {
+            "r": {
+              "Cl": 1,
+              "O3": 1
+            },
+            "p": {
+              "ClO": 1,
+              "O2": 1
+            }
+          },
+          {
+            "r": {
+              "ClO": 1,
+              "O": 1
+            },
+            "p": {
+              "Cl": 1,
+              "O2": 1
+            }
+          }
+        ],
+        {
+          "r": {
+            "O3": 1,
+            "O": 1
+          },
+          "p": {
+            "O2": 2
+          }
+        }
+      ],
+      "espera": {
+        "global.r.O3": 1,
+        "global.r.O": 1,
+        "global.p.O2": 2,
+        "intermediarios": [
+          "ClO"
+        ],
+        "catalizadores": [
+          "Cl"
+        ],
+        "tachadas.Cl": 1,
+        "tachadas.ClO": 1,
+        "coincide": true,
+        "errores.enVariasEtapas": [
+          "O2"
+        ],
+        "errores.intercambio.catalizadores": [
+          "ClO"
+        ]
+      }
+    },
+    {
+      "id": "mec-03",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "NO₂ + CO en dos etapas: 2 NO₂ → NO₃ + NO y NO₃ + CO → NO₂ + CO₂ suman NO₂ + CO → NO + CO₂; NO₃ es intermediario, no hay catalizador y se tacha un NO₂ a cada lado",
+      "fn": "mecanismo",
+      "args": [
+        [
+          {
+            "r": {
+              "NO2": 2
+            },
+            "p": {
+              "NO3": 1,
+              "NO": 1
+            }
+          },
+          {
+            "r": {
+              "NO3": 1,
+              "CO": 1
+            },
+            "p": {
+              "NO2": 1,
+              "CO2": 1
+            }
+          }
+        ],
+        {
+          "r": {
+            "NO2": 1,
+            "CO": 1
+          },
+          "p": {
+            "NO": 1,
+            "CO2": 1
+          }
+        }
+      ],
+      "espera": {
+        "global.r.NO2": 1,
+        "global.r.CO": 1,
+        "global.p.NO": 1,
+        "global.p.CO2": 1,
+        "intermediarios": [
+          "NO3"
+        ],
+        "catalizadores": [],
+        "tachadas.NO2": 1,
+        "tachadas.NO3": 1,
+        "coincide": true
+      }
+    },
+    {
+      "id": "mec-04",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "La suma del mecanismo del H₂O₂ no coincide con H₂O₂ → H₂O + O₂ (sin balancear): coincide = false",
+      "fn": "mecanismo",
+      "args": [
+        [
+          {
+            "r": {
+              "H2O2": 1,
+              "I-": 1
+            },
+            "p": {
+              "H2O": 1,
+              "IO-": 1
+            }
+          },
+          {
+            "r": {
+              "H2O2": 1,
+              "IO-": 1
+            },
+            "p": {
+              "H2O": 1,
+              "O2": 1,
+              "I-": 1
+            }
+          }
+        ],
+        {
+          "r": {
+            "H2O2": 1
+          },
+          "p": {
+            "H2O": 1,
+            "O2": 1
+          }
+        }
+      ],
+      "espera": {
+        "coincide": false
+      }
+    },
+    {
+      "id": "mec-05",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "Ley del mecanismo del H₂O₂ con la etapa 1 lenta: v = k[H₂O₂][I⁻], orden 2. Con los coeficientes de la global: k[H₂O₂]²; con la etapa rápida: k[H₂O₂][IO⁻]; sumando las etapas: k[H₂O₂]²[I⁻], orden 3; sin el catalizador: k[H₂O₂], orden 1",
+      "fn": "leyVelocidad",
+      "args": [
+        [
+          {
+            "r": {
+              "H2O2": 1,
+              "I-": 1
+            },
+            "p": {
+              "H2O": 1,
+              "IO-": 1
+            }
+          },
+          {
+            "r": {
+              "H2O2": 1,
+              "IO-": 1
+            },
+            "p": {
+              "H2O": 1,
+              "O2": 1,
+              "I-": 1
+            }
+          }
+        ],
+        1
+      ],
+      "espera": {
+        "ordenes.H2O2": 1,
+        "ordenes.I-": 1,
+        "ordenTotal": 2,
+        "constante": "k",
+        "etapaLenta": 1,
+        "errores.coeficientes.ordenes.H2O2": 2,
+        "errores.coeficientes.ordenTotal": 2,
+        "errores.otraEtapa.ordenes.IO-": 1,
+        "errores.otraEtapa.ordenes.H2O2": 1,
+        "errores.sumaEtapas.ordenes.H2O2": 2,
+        "errores.sumaEtapas.ordenes.I-": 1,
+        "errores.sumaEtapas.ordenTotal": 3,
+        "errores.sinCatalizador.ordenes.H2O2": 1,
+        "errores.sinCatalizador.ordenTotal": 1
+      }
+    },
+    {
+      "id": "mec-06",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "Ley del NO₂ + CO con la etapa 1 lenta: v = k[NO₂]², orden 2 (no k[NO₂][CO], que dan los coeficientes de la global; ni k[NO₃][CO], de la etapa rápida; ni k[NO₂]²[CO], orden 3, sumando etapas)",
+      "fn": "leyVelocidad",
+      "args": [
+        [
+          {
+            "r": {
+              "NO2": 2
+            },
+            "p": {
+              "NO3": 1,
+              "NO": 1
+            }
+          },
+          {
+            "r": {
+              "NO3": 1,
+              "CO": 1
+            },
+            "p": {
+              "NO2": 1,
+              "CO2": 1
+            }
+          }
+        ],
+        1
+      ],
+      "espera": {
+        "ordenes.NO2": 2,
+        "ordenTotal": 2,
+        "errores.coeficientes.ordenes.NO2": 1,
+        "errores.coeficientes.ordenes.CO": 1,
+        "errores.otraEtapa.ordenes.NO3": 1,
+        "errores.otraEtapa.ordenes.CO": 1,
+        "errores.sumaEtapas.ordenes.NO2": 2,
+        "errores.sumaEtapas.ordenes.CO": 1,
+        "errores.sumaEtapas.ordenTotal": 3
+      }
+    },
+    {
+      "id": "mec-07",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "Ozono con equilibrio rápido previo: O₃ ⇌ O₂ + O (rápida) y O + O₃ → 2 O₂ (lenta). [O] = K₁[O₃]/[O₂], así que v = k·K₁·[O₃]²/[O₂]: orden 2 en O₃, −1 en O₂, total 1 (sin sustituir: k[O][O₃])",
+      "fn": "leyVelocidad",
+      "args": [
+        [
+          {
+            "r": {
+              "O3": 1
+            },
+            "p": {
+              "O2": 1,
+              "O": 1
+            }
+          },
+          {
+            "r": {
+              "O": 1,
+              "O3": 1
+            },
+            "p": {
+              "O2": 2
+            }
+          }
+        ],
+        2
+      ],
+      "espera": {
+        "ordenes.O3": 2,
+        "ordenes.O2": -1,
+        "ordenTotal": 1,
+        "constante": "k·K₁",
+        "sustituidas.0.especie": "O",
+        "sustituidas.0.etapa": 1,
+        "errores.sinSustituir.ordenes.O": 1,
+        "errores.sinSustituir.ordenes.O3": 1,
+        "errores.coeficientes.ordenes.O3": 2
+      }
+    },
+    {
+      "id": "mec-08",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "2 NO ⇌ N₂O₂ (rápida) y N₂O₂ + O₂ → 2 NO₂ (lenta): [N₂O₂] = K₁[NO]², así que v = k·K₁·[NO]²·[O₂], orden 3",
+      "fn": "leyVelocidad",
+      "args": [
+        [
+          {
+            "r": {
+              "NO": 2
+            },
+            "p": {
+              "N2O2": 1
+            }
+          },
+          {
+            "r": {
+              "N2O2": 1,
+              "O2": 1
+            },
+            "p": {
+              "NO2": 2
+            }
+          }
+        ],
+        2
+      ],
+      "espera": {
+        "ordenes.NO": 2,
+        "ordenes.O2": 1,
+        "ordenTotal": 3,
+        "constante": "k·K₁",
+        "mecanismo.intermediarios": [
+          "N2O2"
+        ],
+        "errores.sinSustituir.ordenes.N2O2": 1
+      }
+    },
+    {
+      "id": "mec-09",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "La ley medida v = k[NO₂]² concuerda con el mecanismo del NO₂ + CO si la etapa 1 es la lenta, y no si lo es la etapa 2 (daría k[NO₃][CO])",
+      "fn": "coincideLey",
+      "args": [
+        [
+          {
+            "r": {
+              "NO2": 2
+            },
+            "p": {
+              "NO3": 1,
+              "NO": 1
+            }
+          },
+          {
+            "r": {
+              "NO3": 1,
+              "CO": 1
+            },
+            "p": {
+              "NO2": 1,
+              "CO2": 1
+            }
+          }
+        ],
+        1,
+        {
+          "NO2": 2
+        },
+        {
+          "r": {
+            "NO2": 1,
+            "CO": 1
+          },
+          "p": {
+            "NO": 1,
+            "CO2": 1
+          }
+        }
+      ],
+      "espera": {
+        "valor": true,
+        "ley": true,
+        "suma": true
+      },
+      "tambien": [
+        {
+          "args": [
+            [
+              {
+                "r": {
+                  "NO2": 2
+                },
+                "p": {
+                  "NO3": 1,
+                  "NO": 1
+                }
+              },
+              {
+                "r": {
+                  "NO3": 1,
+                  "CO": 1
+                },
+                "p": {
+                  "NO2": 1,
+                  "CO2": 1
+                }
+              }
+            ],
+            2,
+            {
+              "NO2": 2
+            },
+            {
+              "r": {
+                "NO2": 1,
+                "CO": 1
+              },
+              "p": {
+                "NO": 1,
+                "CO2": 1
+              }
+            }
+          ],
+          "espera": {
+            "valor": false,
+            "ley": false,
+            "suma": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "mec-10",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "Perfil de dos etapas de la escena (kJ/mol): reactivos 40, cima 1 en 100, valle en −10, cima 2 en 75, productos −50. Ea₁ = 60 y Ea₂ = 85 (desde su valle): la lenta es la 2, aunque la cima 1 es la más alta; ΔH = −90",
+      "fn": "perfilDosEtapas",
+      "args": [
+        {
+          "R": 40,
+          "TS1": 100,
+          "I": -10,
+          "TS2": 75,
+          "P": -50
+        }
+      ],
+      "espera": {
+        "Ea1": 60,
+        "Ea2": 85,
+        "EaInv1": 110,
+        "EaInv2": 125,
+        "dH": -90,
+        "dH1": -50,
+        "dH2": -40,
+        "lenta": 2,
+        "EaLenta": 85,
+        "cimaMasAlta": 1,
+        "valleBajo": true,
+        "tipo": "exotérmica",
+        "queHay.valle": "intermediario",
+        "queHay.cimas": "complejo activado",
+        "errores.desdeCero.Ea1": 100,
+        "errores.desdeCero.Ea2": 75,
+        "errores.desdeCero.lenta": 1,
+        "errores.desdeReactivos.Ea2": 35,
+        "errores.desdeReactivos.lenta": 1,
+        "errores.inversa.Ea1": 110,
+        "errores.inversa.Ea2": 125,
+        "errores.inversa.lenta": 2,
+        "errores.dHdesdeCero": -50
+      }
+    },
+    {
+      "id": "mec-11",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "Perfil endotérmico: reactivos 0, cima 1 en 70, valle en −20, cima 2 en 80, productos 30. Ea₁ = 70, Ea₂ = 100: la lenta es la 2; ΔH = +30; leída hacia abajo (inversa), daría 90 y 50 y la lenta sería la 1",
+      "fn": "perfilDosEtapas",
+      "args": [
+        {
+          "R": 0,
+          "TS1": 70,
+          "I": -20,
+          "TS2": 80,
+          "P": 30
+        }
+      ],
+      "espera": {
+        "Ea1": 70,
+        "Ea2": 100,
+        "dH": 30,
+        "lenta": 2,
+        "cimaMasAlta": 2,
+        "tipo": "endotérmica",
+        "valleBajo": true,
+        "errores.inversa.Ea1": 90,
+        "errores.inversa.Ea2": 50,
+        "errores.inversa.lenta": 1,
+        "errores.desdeReactivos.lenta": 2
+      }
+    },
+    {
+      "id": "mec-12",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "Curva de un medicamento en la sangre (mg/mL contra h): máximo 0,12 mg/mL a las 2 h; entre las 2 h y las 5 h baja de 0,12 a 0,06: −0,02 kg/(m³·h), porque 1 mg/mL = 1 kg/m³ (pasar solo los mg a kg da −2 × 10⁻⁸; solo los mL a m³, −2 × 10⁴; sin dividir entre el tiempo, −0,06)",
+      "fn": "velocidadMedia",
+      "args": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0.08
+          ],
+          [
+            2,
+            0.12
+          ],
+          [
+            3,
+            0.09
+          ],
+          [
+            4,
+            0.07
+          ],
+          [
+            5,
+            0.06
+          ],
+          [
+            6,
+            0.05
+          ]
+        ],
+        2,
+        5,
+        {
+          "de": "mg/mL",
+          "a": "kg/m3",
+          "tiempo": "h"
+        }
+      ],
+      "espera": {
+        "c1": 0.12,
+        "c2": 0.06,
+        "dc": -0.06,
+        "dt": 3,
+        "valor": -0.02,
+        "rapidez": 0.02,
+        "factor": 1,
+        "cMax": 0.12,
+        "tMax": 2,
+        "errores.soloMasa": -2e-8,
+        "errores.soloVolumen": -20000,
+        "errores.porMil": -20,
+        "errores.entreMil": -0.00002,
+        "errores.sinTiempo": -0.06
+      }
+    },
+    {
+      "id": "mec-13",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "Entre puntos se interpola en línea recta: con 0, 40 y 30 mg/L a los 0, 10 y 20 min, de t = 5 a t = 15 min la concentración pasa de 20 a 35 mg/L: 1,5 mg/(L·min) = 2,5 × 10⁻⁵ g/(L·s)",
+      "fn": "velocidadMedia",
+      "args": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            40
+          ],
+          [
+            20,
+            30
+          ]
+        ],
+        5,
+        15,
+        {
+          "de": "mg/L",
+          "a": "g/L",
+          "tiempo": "min",
+          "tiempoA": "s"
+        }
+      ],
+      "espera": {
+        "c1": 20,
+        "c2": 35,
+        "dc": 15,
+        "dt": 10,
+        "valor": 0.000025,
+        "factor": 0.001
+      }
+    },
+    {
+      "id": "mec-14",
+      "nuevo": "0.3.0",
+      "verificacion": "",
+      "nombre": "Curva del medicamento, subida: de 0 h a 2 h pasa de 0 a 0,12 mg/mL: 0,06 g/(L·h) = 0,001 g/(L·min)",
+      "fn": "velocidadMedia",
+      "args": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0.08
+          ],
+          [
+            2,
+            0.12
+          ],
+          [
+            3,
+            0.09
+          ],
+          [
+            4,
+            0.07
+          ],
+          [
+            5,
+            0.06
+          ],
+          [
+            6,
+            0.05
+          ]
+        ],
+        0,
+        2,
+        {
+          "de": "mg/mL",
+          "a": "g/L",
+          "tiempo": "h",
+          "tiempoA": "min"
+        }
+      ],
+      "espera": {
+        "valor": 0.001,
+        "dc": 0.12
       }
     }
   ]

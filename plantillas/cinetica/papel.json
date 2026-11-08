@@ -1,17 +1,20 @@
 {
   "titulo": "Cinética química: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En la ley de velocidad v = k·[A]^m·[B]^n, los órdenes m y n salen de los experimentos, no de los coeficientes de la ecuación (salvo en una reacción elemental). Cada concentración se eleva a su orden. Vida media: orden 1, t½ = ln 2/k (no depende de la concentración); orden 2, t½ = 1/(k·[A]₀); orden 0, t½ = [A]₀/(2k). Temperaturas en kelvin: T(K) = T(°C) + 273. R = 8,314 J/(mol·K); ln 2 ≈ 0,693. Un catalizador baja la energía de activación pero no cambia ΔH.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En la ley de velocidad v = k·[A]^m·[B]^n, los órdenes m y n salen de los experimentos, no de los coeficientes de la ecuación (salvo en una reacción elemental). Cada concentración se eleva a su orden. Vida media: orden 1, t½ = ln 2/k (no depende de la concentración); orden 2, t½ = 1/(k·[A]₀); orden 0, t½ = [A]₀/(2k). Temperaturas en kelvin: T(K) = T(°C) + 273. R = 8,314 J/(mol·K); ln 2 ≈ 0,693. Un catalizador baja la energía de activación pero no cambia ΔH. En un mecanismo por etapas, la etapa lenta es la que fija la velocidad.",
   "problemas": [
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "La reacción 2 NO(g) + O₂(g) → 2 NO₂(g) tiene la ley de velocidad v = k·[NO]²·[O₂]. Si la concentración de NO se duplica y la de O₂ se reduce a la mitad, ¿qué pasa con la velocidad?",
-      "respuesta": "Se duplica (se multiplica por 2).",
+      "enunciado": "La reacción 2 NO(g) + O₂(g) → 2 NO₂(g) tiene la ley de velocidad v = k·[NO]²·[O₂]. a) Si la concentración de NO se duplica y la de O₂ se reduce a la mitad, ¿qué pasa con la velocidad? b) Cuando [NO] = 0,2 mol/L y [O₂] = 0,1 mol/L, la velocidad es 0,004 mol/(L·s). Calcula k y sus unidades.",
+      "respuesta": "a) Se duplica (se multiplica por 2). b) k = 1 L²/(mol²·s).",
       "pasos": [
-        "Cada concentración entra elevada a su orden: el NO a 2 y el O₂ a 1.",
+        "a) Cada concentración entra elevada a su orden: el NO a 2 y el O₂ a 1.",
         "Factor del NO: 2² = 4. Factor del O₂: (1/2)¹ = 1/2.",
         "La velocidad se multiplica por 4 · 1/2 = 2.",
-        "Si olvidas los exponentes, sale 2 · 1/2 = 1 («no cambia»): está mal, porque [NO] va al cuadrado."
+        "Si olvidas los exponentes, sale 2 · 1/2 = 1 («no cambia»): está mal, porque [NO] va al cuadrado.",
+        "b) Despeja k: k = v / ([NO]²·[O₂]) = 0,004 / (0,04 · 0,1) = 0,004/0,004 = 1.",
+        "Orden total: 2 + 1 = 3. Las unidades de k son las que hacen que v salga en mol/(L·s): (mol/L)^(1−3)·s⁻¹ = L²/(mol²·s).",
+        "Las unidades de k cambian con el orden total: s⁻¹ para orden 1, L/(mol·s) para orden 2."
       ],
       "verificar": [
         {
@@ -30,20 +33,7 @@
             "valor": 2,
             "sinExponentes": 1
           }
-        }
-      ]
-    },
-    {
-      "id": "p2",
-      "nivel": "básico",
-      "enunciado": "Para la misma reacción, v = k·[NO]²·[O₂]. Cuando [NO] = 0,2 mol/L y [O₂] = 0,1 mol/L, la velocidad es 0,004 mol/(L·s). Calcula k y sus unidades.",
-      "respuesta": "k = 1 L²/(mol²·s).",
-      "pasos": [
-        "Despeja k: k = v / ([NO]²·[O₂]) = 0,004 / (0,04 · 0,1) = 0,004/0,004 = 1.",
-        "Orden total: 2 + 1 = 3. Las unidades de k son las que hacen que v salga en mol/(L·s): (mol/L)^(1−3)·s⁻¹ = L²/(mol²·s).",
-        "Las unidades de k cambian con el orden total: s⁻¹ para orden 1, L/(mol·s) para orden 2."
-      ],
-      "verificar": [
+        },
         {
           "fn": "velocidad",
           "args": [
@@ -124,14 +114,17 @@
     },
     {
       "id": "p4",
-      "nivel": "básico",
-      "enunciado": "Una sustancia se descompone con cinética de primer orden y su vida media es de 5 minutos. Si al inicio hay 80 g, ¿cuántos gramos quedan a los 20 minutos?",
-      "respuesta": "5 g.",
+      "nivel": "intermedio",
+      "enunciado": "a) Una sustancia se descompone con cinética de primer orden y su vida media es de 5 minutos. Si al inicio hay 80 g, ¿cuántos gramos quedan a los 20 minutos? b) Otra reacción de primer orden tiene k = 0,02 s⁻¹. ¿Cuál es su vida media? ¿Cuánto tarda la concentración en bajar de 0,5 M a 0,125 M? (ln 2 ≈ 0,693)",
+      "respuesta": "a) 5 g. b) Unos 34,7 s de vida media; unos 69,3 s para bajar a 0,125 M.",
       "pasos": [
-        "20 minutos son 20/5 = 4 vidas medias.",
+        "a) 20 minutos son 20/5 = 4 vidas medias.",
         "En cada vida media queda la mitad: 80 → 40 → 20 → 10 → 5 g. Queda (1/2)⁴ = 1/16 de lo inicial.",
         "No se acaba en dos vidas medias: la segunda mitad no se gasta en el mismo tiempo que la primera, porque cada vez queda menos que reaccione.",
-        "En primer orden, la vida media no depende de cuánto haya: siempre son 5 minutos."
+        "En primer orden, la vida media no depende de cuánto haya: siempre son 5 minutos.",
+        "b) En primer orden, t½ = ln 2 / k = 0,693 / 0,02 ≈ 34,7 s.",
+        "De 0,5 a 0,125 M queda la cuarta parte: son 2 vidas medias, 2 · 34,7 ≈ 69,3 s.",
+        "Con la ley integrada: t = ln(0,5/0,125)/k = ln 4 / 0,02 = 1,386/0,02 ≈ 69,3 s. Sale lo mismo."
       ],
       "verificar": [
         {
@@ -154,20 +147,7 @@
           "espera": {
             "valor": 0.0625
           }
-        }
-      ]
-    },
-    {
-      "id": "p5",
-      "nivel": "intermedio",
-      "enunciado": "Una reacción de primer orden tiene k = 0,02 s⁻¹. a) ¿Cuál es su vida media? b) ¿Cuánto tarda la concentración en bajar de 0,5 M a 0,125 M? (ln 2 ≈ 0,693)",
-      "respuesta": "a) Unos 34,7 s. b) Unos 69,3 s.",
-      "pasos": [
-        "a) En primer orden, t½ = ln 2 / k = 0,693 / 0,02 ≈ 34,7 s.",
-        "b) De 0,5 a 0,125 M queda la cuarta parte: son 2 vidas medias, 2 · 34,7 ≈ 69,3 s.",
-        "Con la ley integrada: t = ln(0,5/0,125)/k = ln 4 / 0,02 = 1,386/0,02 ≈ 69,3 s. Sale lo mismo."
-      ],
-      "verificar": [
+        },
         {
           "fn": "vidaMedia",
           "args": [
@@ -194,14 +174,18 @@
     },
     {
       "id": "p6",
-      "nivel": "intermedio",
-      "enunciado": "Según la regla práctica, la velocidad de una reacción se duplica por cada 10 °C de aumento. Si a 20 °C la reacción tarda 40 minutos, ¿cuánto tarda a 50 °C?",
-      "respuesta": "5 minutos (la velocidad se multiplica por 8).",
+      "nivel": "avanzado",
+      "enunciado": "a) Según la regla práctica, la velocidad de una reacción se duplica por cada 10 °C de aumento. Si a 20 °C la reacción tarda 40 minutos, ¿cuánto tarda a 50 °C? b) La constante de velocidad de otra reacción se triplica al pasar de 27 °C a 47 °C. Calcula su energía de activación. (R = 8,314 J/(mol·K); ln 3 ≈ 1,1)",
+      "respuesta": "a) 5 minutos (la velocidad se multiplica por 8). b) Unos 44 kJ/mol (43,8 kJ/mol con ln 3 = 1,0986).",
       "pasos": [
-        "De 20 °C a 50 °C hay 30 °C, es decir, tres aumentos de 10 °C.",
+        "a) De 20 °C a 50 °C hay 30 °C, es decir, tres aumentos de 10 °C.",
         "La velocidad se multiplica por 2 · 2 · 2 = 2³ = 8, no por 2 · 3 = 6.",
         "Si va 8 veces más rápido, tarda 8 veces menos: 40/8 = 5 minutos.",
-        "Es una regla aproximada: vale para reacciones con energías de activación típicas cerca de la temperatura ambiente."
+        "Es una regla aproximada: vale para reacciones con energías de activación típicas cerca de la temperatura ambiente.",
+        "b) Temperaturas en kelvin: 300 K y 320 K.",
+        "Arrhenius con dos temperaturas: ln(k₂/k₁) = (Ea/R)·(1/T₁ − 1/T₂).",
+        "1/300 − 1/320 = 20/96 000 = 1/4800. Entonces ln 3 = Ea/(8,314 · 4800).",
+        "Ea = 8,314 · 4800 · 1,1 ≈ 43 900 J/mol ≈ 44 kJ/mol. Con °C en vez de kelvin la cuenta no tiene sentido (1/27 − 1/47)."
       ],
       "verificar": [
         {
@@ -213,21 +197,7 @@
             "valor": 8,
             "lineal": 6
           }
-        }
-      ]
-    },
-    {
-      "id": "p7",
-      "nivel": "avanzado",
-      "enunciado": "La constante de velocidad de una reacción se triplica al pasar de 27 °C a 47 °C. Calcula la energía de activación. (R = 8,314 J/(mol·K); ln 3 ≈ 1,1)",
-      "respuesta": "Unos 44 kJ/mol (43,8 kJ/mol con ln 3 = 1,0986).",
-      "pasos": [
-        "Temperaturas en kelvin: 300 K y 320 K.",
-        "Arrhenius con dos temperaturas: ln(k₂/k₁) = (Ea/R)·(1/T₁ − 1/T₂).",
-        "1/300 − 1/320 = 20/96 000 = 1/4800. Entonces ln 3 = Ea/(8,314 · 4800).",
-        "Ea = 8,314 · 4800 · 1,1 ≈ 43 900 J/mol ≈ 44 kJ/mol. Con °C en vez de kelvin la cuenta no tiene sentido (1/27 − 1/47)."
-      ],
-      "verificar": [
+        },
         {
           "fn": "energiaActivacion",
           "args": [
@@ -388,6 +358,416 @@
           "espera": {
             "valor": 0.15,
             "errores.restando": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "p11",
+      "nivel": "intermedio",
+      "enunciado": "En la alta atmósfera, el monóxido de nitrógeno acelera la destrucción del ozono en dos etapas. Etapa 1: NO + O₃ → NO₂ + O₂. Etapa 2: NO₂ + O → NO + O₂. En el perfil de energía, los niveles son (en kJ/mol): reactivos 30, primera cima 95, valle 10, segunda cima 55, productos −60. a) ¿Cuál es la reacción global? b) ¿Qué especie es el intermediario y cuál el catalizador? c) ¿Cuál es la energía de activación de cada etapa y cuál es la lenta? d) Escribe la ley de velocidad y su orden global.",
+      "respuesta": "a) O₃ + O → 2 O₂. b) Intermediario: NO₂. Catalizador: NO. c) Ea₁ = 65 kJ/mol y Ea₂ = 45 kJ/mol: la lenta es la etapa 1. d) v = k·[NO]·[O₃], orden global 2.",
+      "pasos": [
+        "a) Suma las dos etapas y tacha lo que aparece igual a los dos lados: NO + O₃ + NO₂ + O → NO₂ + O₂ + NO + O₂. Se tachan NO y NO₂. Queda O₃ + O → 2 O₂.",
+        "b) El NO₂ se forma en la etapa 1 y se gasta en la 2: es intermediario. El NO entra en la etapa 1 y vuelve a salir en la 2: es catalizador. Los dos se tachan, pero en orden contrario.",
+        "c) Cada energía de activación se mide desde el valle donde empieza su etapa: Ea₁ = 95 − 30 = 65 kJ/mol; Ea₂ = 55 − 10 = 45 kJ/mol. La de mayor Ea es la más lenta: la etapa 1.",
+        "Leer las Ea desde el cero del eje (95 y 55) o desde la cima hacia abajo no sirve: la barrera de cada etapa empieza en su propio valle.",
+        "d) La etapa lenta fija la velocidad, y como es una etapa elemental, sus coeficientes son los órdenes: v = k·[NO]·[O₃]. Orden global: 1 + 1 = 2.",
+        "Con los coeficientes de la global saldría v = k·[O₃]·[O], que no es: los órdenes de una reacción en varias etapas no salen de su ecuación global. El catalizador sí aparece en la ley, aunque no esté en la ecuación global."
+      ],
+      "verificar": [
+        {
+          "fn": "mecanismo",
+          "args": [
+            [
+              {
+                "r": {
+                  "NO": 1,
+                  "O3": 1
+                },
+                "p": {
+                  "NO2": 1,
+                  "O2": 1
+                }
+              },
+              {
+                "r": {
+                  "NO2": 1,
+                  "O": 1
+                },
+                "p": {
+                  "NO": 1,
+                  "O2": 1
+                }
+              }
+            ],
+            {
+              "r": {
+                "O3": 1,
+                "O": 1
+              },
+              "p": {
+                "O2": 2
+              }
+            }
+          ],
+          "espera": {
+            "coincide": true,
+            "intermediarios": [
+              "NO2"
+            ],
+            "catalizadores": [
+              "NO"
+            ]
+          }
+        },
+        {
+          "fn": "perfilDosEtapas",
+          "args": [
+            {
+              "R": 30,
+              "TS1": 95,
+              "I": 10,
+              "TS2": 55,
+              "P": -60
+            }
+          ],
+          "espera": {
+            "Ea1": 65,
+            "Ea2": 45,
+            "lenta": 1,
+            "dH": -90
+          }
+        },
+        {
+          "fn": "leyVelocidad",
+          "args": [
+            [
+              {
+                "r": {
+                  "NO": 1,
+                  "O3": 1
+                },
+                "p": {
+                  "NO2": 1,
+                  "O2": 1
+                }
+              },
+              {
+                "r": {
+                  "NO2": 1,
+                  "O": 1
+                },
+                "p": {
+                  "NO": 1,
+                  "O2": 1
+                }
+              }
+            ],
+            1
+          ],
+          "espera": {
+            "ordenes.NO": 1,
+            "ordenes.O3": 1,
+            "ordenTotal": 2,
+            "errores.coeficientes.ordenes.O3": 1,
+            "errores.coeficientes.ordenes.O": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "p12",
+      "nivel": "avanzado",
+      "enunciado": "Para 2 NO(g) + Br₂(g) → 2 NOBr(g) se midió la ley v = k·[NO]²·[Br₂]. Se proponen dos mecanismos con las mismas etapas. Mecanismo I: NO + Br₂ → NOBr₂ (lenta) y luego NOBr₂ + NO → 2 NOBr (rápida). Mecanismo II: NO + Br₂ ⇌ NOBr₂ (rápida, en equilibrio) y luego NOBr₂ + NO → 2 NOBr (lenta). ¿Cuál concuerda con la ley medida?",
+      "respuesta": "El mecanismo II. El I daría v = k·[NO]·[Br₂], de orden 2, y la medida es de orden 3.",
+      "pasos": [
+        "Primero, los dos suman bien: NO + Br₂ + NOBr₂ + NO → NOBr₂ + 2 NOBr; se tacha el NOBr₂ (intermediario) y queda 2 NO + Br₂ → 2 NOBr.",
+        "Mecanismo I: la etapa lenta es NO + Br₂ → NOBr₂. Su ley es v = k·[NO]·[Br₂], orden 2. No concuerda.",
+        "Mecanismo II: la etapa lenta es NOBr₂ + NO → 2 NOBr, con v = k₂·[NOBr₂]·[NO]. Pero el NOBr₂ es intermediario: no se mide, se reemplaza.",
+        "Como la etapa 1 es rápida y está en equilibrio: K₁ = [NOBr₂] / ([NO]·[Br₂]), así que [NOBr₂] = K₁·[NO]·[Br₂].",
+        "Entonces v = k₂·K₁·[NO]·[Br₂]·[NO] = k·[NO]²·[Br₂], con k = k₂·K₁. Orden 3: concuerda.",
+        "Ojo: que el orden coincida con los coeficientes (2 y 1) no prueba que la reacción sea de una sola etapa. La ley no la dicta la ecuación global; la dicta la etapa lenta."
+      ],
+      "verificar": [
+        {
+          "fn": "coincideLey",
+          "args": [
+            [
+              {
+                "r": {
+                  "NO": 1,
+                  "Br2": 1
+                },
+                "p": {
+                  "NOBr2": 1
+                }
+              },
+              {
+                "r": {
+                  "NOBr2": 1,
+                  "NO": 1
+                },
+                "p": {
+                  "NOBr": 2
+                }
+              }
+            ],
+            1,
+            {
+              "NO": 2,
+              "Br2": 1
+            },
+            {
+              "r": {
+                "NO": 2,
+                "Br2": 1
+              },
+              "p": {
+                "NOBr": 2
+              }
+            }
+          ],
+          "espera": {
+            "valor": false,
+            "ley": false,
+            "suma": true
+          }
+        },
+        {
+          "fn": "coincideLey",
+          "args": [
+            [
+              {
+                "r": {
+                  "NO": 1,
+                  "Br2": 1
+                },
+                "p": {
+                  "NOBr2": 1
+                }
+              },
+              {
+                "r": {
+                  "NOBr2": 1,
+                  "NO": 1
+                },
+                "p": {
+                  "NOBr": 2
+                }
+              }
+            ],
+            2,
+            {
+              "NO": 2,
+              "Br2": 1
+            },
+            {
+              "r": {
+                "NO": 2,
+                "Br2": 1
+              },
+              "p": {
+                "NOBr": 2
+              }
+            }
+          ],
+          "espera": {
+            "valor": true,
+            "ley": true,
+            "suma": true
+          }
+        },
+        {
+          "fn": "leyVelocidad",
+          "args": [
+            [
+              {
+                "r": {
+                  "NO": 1,
+                  "Br2": 1
+                },
+                "p": {
+                  "NOBr2": 1
+                }
+              },
+              {
+                "r": {
+                  "NOBr2": 1,
+                  "NO": 1
+                },
+                "p": {
+                  "NOBr": 2
+                }
+              }
+            ],
+            1
+          ],
+          "espera": {
+            "ordenes.NO": 1,
+            "ordenes.Br2": 1,
+            "ordenTotal": 2
+          }
+        },
+        {
+          "fn": "leyVelocidad",
+          "args": [
+            [
+              {
+                "r": {
+                  "NO": 1,
+                  "Br2": 1
+                },
+                "p": {
+                  "NOBr2": 1
+                }
+              },
+              {
+                "r": {
+                  "NOBr2": 1,
+                  "NO": 1
+                },
+                "p": {
+                  "NOBr": 2
+                }
+              }
+            ],
+            2
+          ],
+          "espera": {
+            "ordenes.NO": 2,
+            "ordenes.Br2": 1,
+            "ordenTotal": 3,
+            "constante": "k·K₁"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p13",
+      "nivel": "intermedio",
+      "enunciado": "Un colorante se decolora en un tanque. Su concentración, en mg/mL, se midió a los 0, 5, 10, 15 y 20 minutos: 0,50; 0,38; 0,29; 0,22 y 0,17. a) ¿Cuál es la velocidad media con que se gasta el colorante entre los 5 y los 15 minutos, en kg/(m³·min)? b) Exprésala en g/(L·s). c) Entre los 0 y los 10 minutos, ¿la velocidad media es mayor o menor que entre los 5 y los 15?",
+      "respuesta": "a) 0,016 kg/(m³·min). b) Unos 2,7 × 10⁻⁴ g/(L·s). c) Mayor: 0,021 kg/(m³·min).",
+      "pasos": [
+        "a) Velocidad media = −Δc/Δt = −(0,22 − 0,38)/(15 − 5) = 0,16/10 = 0,016 mg/(mL·min).",
+        "Cambio de unidades: 1 mg/mL = 10⁻⁶ kg / 10⁻⁶ m³ = 1 kg/m³. Las dos potencias de diez se cancelan: 0,016 kg/(m³·min).",
+        "Si solo pasas los mg a kg (10⁻⁶) y olvidas que los mL también cambian, te sale 1,6 × 10⁻⁸: está mal por un millón.",
+        "b) 1 kg/m³ = 1 g/L, y un minuto son 60 s: 0,016/60 ≈ 2,7 × 10⁻⁴ g/(L·s).",
+        "c) Entre 0 y 10 min: (0,50 − 0,29)/10 = 0,021 kg/(m³·min). Es mayor: al principio hay más colorante y se gasta más rápido; la velocidad baja con el tiempo."
+      ],
+      "verificar": [
+        {
+          "fn": "velocidadMedia",
+          "args": [
+            [
+              [
+                0,
+                0.5
+              ],
+              [
+                5,
+                0.38
+              ],
+              [
+                10,
+                0.29
+              ],
+              [
+                15,
+                0.22
+              ],
+              [
+                20,
+                0.17
+              ]
+            ],
+            5,
+            15,
+            {
+              "de": "mg/mL",
+              "a": "kg/m3",
+              "tiempo": "min"
+            }
+          ],
+          "espera": {
+            "valor": -0.016,
+            "rapidez": 0.016,
+            "errores.soloMasa": -1.6e-08
+          }
+        },
+        {
+          "fn": "velocidadMedia",
+          "args": [
+            [
+              [
+                0,
+                0.5
+              ],
+              [
+                5,
+                0.38
+              ],
+              [
+                10,
+                0.29
+              ],
+              [
+                15,
+                0.22
+              ],
+              [
+                20,
+                0.17
+              ]
+            ],
+            5,
+            15,
+            {
+              "de": "mg/mL",
+              "a": "g/L",
+              "tiempo": "min",
+              "tiempoA": "s"
+            }
+          ],
+          "espera": {
+            "rapidez": 0.0002666666666666667
+          }
+        },
+        {
+          "fn": "velocidadMedia",
+          "args": [
+            [
+              [
+                0,
+                0.5
+              ],
+              [
+                5,
+                0.38
+              ],
+              [
+                10,
+                0.29
+              ],
+              [
+                15,
+                0.22
+              ],
+              [
+                20,
+                0.17
+              ]
+            ],
+            0,
+            10,
+            {
+              "de": "mg/mL",
+              "a": "kg/m3",
+              "tiempo": "min"
+            }
+          ],
+          "espera": {
+            "rapidez": 0.021
           }
         }
       ]

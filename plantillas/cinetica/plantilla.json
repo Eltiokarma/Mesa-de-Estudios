@@ -6,7 +6,7 @@
     "quimica.cinetica-quimica"
   ],
   "estado": "borrador",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "escena": "index.html",
   "motor": "motor.js",
   "casos": "casos.json",

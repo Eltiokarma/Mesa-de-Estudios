@@ -26,7 +26,57 @@
  *   vidasMedias(orden, k, C0, n) las n primeras vidas medias seguidas: cuánto dura cada una y dónde empieza.
  *   primerOrdenQueda(C0, t½, t)  cuánto queda en primer orden y 'errores': "se acaba en dos vidas medias" (restar la
  *                                mitad cada vez), 1/(2n) y la vida media que depende de [A]₀ (como en segundo orden).
- * CABECERA: líneas 1 a 30 (qué calcula, datos, partículas y los huecos llenados el 7 nov 2026).
+ *
+ * Mecanismos (0.3.0, 8 nov 2026), para la pestaña «Mecanismos». Convenciones:
+ *   Especies con nombres ASCII: 'H2O2', 'I-', 'IO-', 'O3', 'Cl', 'ClO', 'NO2', 'NO3'... (la carga va con + o -).
+ *   Una etapa es { r: { especie: coeficiente }, p: { especie: coeficiente } } (reactivos y productos de esa etapa).
+ *   Las etapas se numeran desde 1 (etapa 1 = la primera de la lista). Una especie no puede estar a los dos lados
+ *   de una misma etapa.
+ *   mecanismo(etapas, global)    suma las etapas: neto = Σ(productos) − Σ(reactivos) de cada especie. Neto < 0:
+ *                                reactivo de la global; > 0: producto; = 0: se cancela, y entonces es catalizador si
+ *                                aparece por primera vez (recorriendo las etapas en orden) como reactivo (entra y
+ *                                se regenera) o intermediario si aparece primero como producto (se forma y se
+ *                                consume). Devuelve global = { r, p } (coeficientes netos), reactivos, productos,
+ *                                intermediarios y catalizadores (listas en el orden de primera aparición), clase
+ *                                { especie: 'reactivo'|'producto'|'intermediario'|'catalizador' }, tachadas
+ *                                { especie: n } = min(Σ a la izquierda, Σ a la derecha) (fichas que se tachan a cada
+ *                                lado al sumar) y, si se da 'global' ({ r, p }), coincide = true si la suma da
+ *                                exactamente esos coeficientes. errores: intercambio (catalizadores e intermediarios
+ *                                cambiados), sinCancelar (la suma sin tachar nada), enVariasEtapas (especies que no se
+ *                                cancelan pero salen en más de una etapa) y productosDeEtapa (especies que alguna
+ *                                etapa forma y que quedan como productos de la global).
+ *   leyVelocidad(etapas, lenta)  la ley es la de la etapa lenta, tomada como elemental: cada reactivo de esa etapa con
+ *                                su coeficiente como orden. Si la etapa lenta tiene un intermediario, se sustituye con
+ *                                el equilibrio rápido de la última etapa anterior que lo forma: si esa etapa es
+ *                                Σ aᵢ·Rᵢ ⇌ n·X + Σ bⱼ·Pⱼ, entonces [X] = (K·Π[Rᵢ]^aᵢ / Π[Pⱼ]^bⱼ)^(1/n) (se repite si
+ *                                aparece otro intermediario). Devuelve ordenes, ordenTotal, constante ('k' o 'k·K₁'...),
+ *                                sustituidas [{ especie, etapa }] y errores, cada uno { ordenes, ordenTotal }:
+ *                                coeficientes (los de los reactivos de la global, CI9), otraEtapa (la primera etapa que
+ *                                no es la lenta, como elemental y sin sustituir, CI11), sumaEtapas (Σ de los coeficientes
+ *                                de cada especie no intermediaria entre los reactivos de todas las etapas), y, cuando
+ *                                cambian algo, sinSustituir (la lenta con el intermediario adentro) y sinCatalizador
+ *                                (la ley correcta sin los catalizadores).
+ *   coincideLey(etapas, lenta, ordenes, global)  { valor, ley, suma }: ley = true si la de la etapa lenta da esos órdenes;
+ *                                suma = true si la suma de las etapas da 'global' (true si no se da); valor = las dos.
+ *   perfilDosEtapas({ R, TS1, I, TS2, P })  niveles de energía leídos en el eje (kJ/mol): reactivos, cima 1, valle,
+ *                                cima 2 y productos. Ea1 = TS1 − R; Ea2 = TS2 − I (cada Ea desde su propio valle);
+ *                                EaInv1 = TS1 − I; EaInv2 = TS2 − P; dH = P − R; dH1 = I − R; dH2 = P − I. lenta = la de
+ *                                mayor Ea desde su propio valle (1 o 2; 0 si empatan). Convención de academia: coincide
+ *                                con la barrera real cuando el valle queda por debajo de los reactivos (valleBajo = true),
+ *                                que es como están armados los perfiles de la escena. cimaMasAlta: 1 o 2 (la cima más alta en el eje).
+ *                                tipo: 'exotérmica'|'endotérmica'|'neutra'. queHay = { cimas:
+ *                                'complejo activado', valle: 'intermediario' }. errores, cada uno { Ea1, Ea2, lenta }:
+ *                                desdeCero (Ea = altura de la cima en el eje), desdeReactivos (las dos desde R) e
+ *                                inversa (Ea leída de la cima hacia el valle de después); y dHdesdeCero = P.
+ *   velocidadMedia(puntos, t1, t2, o)  puntos = [[t, c], ...] de una curva concentración-tiempo, t crecientes; entre
+ *                                puntos, interpolación lineal. o = { de, a, tiempo, tiempoA }: unidades de concentración
+ *                                ('mg/mL', 'g/L', 'kg/m3', 'mg/L', 'ug/mL', 'g/mL', 'mg/dL', 'g/cm3') y de tiempo ('s',
+ *                                'min', 'h'); 1 mg/mL = 1 g/L = 1 kg/m³. Devuelve c1, c2 (en 'de'), dc = c2 − c1, dt,
+ *                                valor = dc/dt en a/tiempoA (con signo: negativo si baja), rapidez = |valor|, factor (de →
+ *                                a), cMax y tMax (el mayor de los puntos) y errores (con el signo de valor): soloMasa (se
+ *                                pasan mg a kg pero no mL a m³: × 10⁻⁶), soloVolumen (× 10⁶), porMil (× 10³), entreMil
+ *                                (× 10⁻³) y sinTiempo (dc en 'a', sin dividir entre el tiempo).
+ * CABECERA: líneas 1 a 80 (qué calcula, datos, partículas, los huecos del 7 nov 2026 y los mecanismos del 8 nov 2026).
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -191,6 +241,121 @@
       r.EaCat = c; r.EaVueltaCat = c - dH; r.dHCat = dH; r.baja = Ea - c;
     }
     return r;
+  }
+
+  // ---------- Mecanismos (0.3.0) ----------
+  const red = x => { const r = Math.round(x * 1e9) / 1e9; return Object.is(r, -0) ? 0 : r; };
+  function etapasValidas(etapas) {
+    if (!Array.isArray(etapas) || !etapas.length) throw new Error('hace falta al menos una etapa');
+    etapas.forEach((e, i) => {
+      if (!e || typeof e.r !== 'object' || typeof e.p !== 'object') throw new Error(`etapa ${i + 1} sin reactivos o productos`);
+      for (const [sp, n] of [...Object.entries(e.r), ...Object.entries(e.p)]) positivo(n, `coeficiente de ${sp} en la etapa ${i + 1}`);
+      for (const sp of Object.keys(e.r)) if (e.p[sp] !== undefined) throw new Error(`${sp} está a los dos lados de la etapa ${i + 1}`);
+    });
+    return etapas;
+  }
+  function mecanismo(etapas, global) {
+    etapasValidas(etapas);
+    const izq = {}, der = {}, neto = {}, primera = {}, etapasDe = {}, orden = [];
+    const ver = (sp, i, lado) => { if (!(sp in primera)) { primera[sp] = lado; orden.push(sp); } (etapasDe[sp] = etapasDe[sp] || new Set()).add(i); };
+    etapas.forEach((e, i) => {
+      for (const [sp, n] of Object.entries(e.r)) { ver(sp, i, 'r'); izq[sp] = (izq[sp] || 0) + n; neto[sp] = (neto[sp] || 0) - n; }
+      for (const [sp, n] of Object.entries(e.p)) { ver(sp, i, 'p'); der[sp] = (der[sp] || 0) + n; neto[sp] = (neto[sp] || 0) + n; }
+    });
+    const clase = {}, g = { r: {}, p: {} }, tachadas = {};
+    const L = { reactivo: [], producto: [], intermediario: [], catalizador: [] };
+    for (const sp of orden) {
+      const n = red(neto[sp]);
+      clase[sp] = n < 0 ? 'reactivo' : n > 0 ? 'producto' : primera[sp] === 'r' ? 'catalizador' : 'intermediario';
+      L[clase[sp]].push(sp);
+      if (n < 0) g.r[sp] = -n; else if (n > 0) g.p[sp] = n;
+      const t = Math.min(izq[sp] || 0, der[sp] || 0); if (t) tachadas[sp] = t;
+    }
+    const r = { global: g, reactivos: L.reactivo, productos: L.producto, intermediarios: L.intermediario, catalizadores: L.catalizador,
+      clase, tachadas, especies: orden,
+      errores: { intercambio: { intermediarios: L.catalizador.slice(), catalizadores: L.intermediario.slice() },
+        sinCancelar: { r: { ...izq }, p: { ...der } },
+        enVariasEtapas: orden.filter(sp => (clase[sp] === 'reactivo' || clase[sp] === 'producto') && etapasDe[sp].size > 1),
+        productosDeEtapa: L.producto.slice() } };
+    if (global) {
+      const igual = (a, b) => { const ka = Object.keys(a || {}), kb = Object.keys(b || {}); return ka.length === kb.length && ka.every(k => b[k] !== undefined && Math.abs(a[k] - b[k]) < 1e-9); };
+      r.coincide = igual(g.r, global.r) && igual(g.p, global.p);
+    }
+    return r;
+  }
+  const conOrden = o => { const ord = {}; for (const [sp, m] of Object.entries(o)) { const x = red(m); if (x !== 0) ord[sp] = x; } return { ordenes: ord, ordenTotal: red(ordenTotal(ord)) }; };
+  function leyVelocidad(etapas, lenta) {
+    const M = mecanismo(etapas), L = num(lenta, 'etapa lenta');
+    if (!Number.isInteger(L) || L < 1 || L > etapas.length) throw new Error(`etapa lenta inválida: ${lenta}`);
+    const ord = { ...etapas[L - 1].r }, sustituidas = [], constante = ['k'];
+    const esInter = sp => M.clase[sp] === 'intermediario';
+    for (let vuelta = 0; vuelta < 20; vuelta++) {
+      const X = Object.keys(ord).find(sp => esInter(sp) && ord[sp] !== 0); if (!X) break;
+      let j = -1; for (let q = L - 2; q >= 0; q--) if (etapas[q].p[X] !== undefined) { j = q; break; }
+      if (j < 0) throw new Error(`ninguna etapa anterior a la ${L} forma ${X}`);
+      const m = ord[X], n = etapas[j].p[X], f = m / n; delete ord[X];
+      for (const [sp, c] of Object.entries(etapas[j].r)) ord[sp] = (ord[sp] || 0) + f * c;
+      for (const [sp, c] of Object.entries(etapas[j].p)) if (sp !== X) ord[sp] = (ord[sp] || 0) - f * c;
+      sustituidas.push({ especie: X, etapa: j + 1 });
+      constante.push(`K${'₀₁₂₃₄₅₆₇₈₉'[j + 1] || j + 1}` + (f === 1 ? '' : `^${red(f)}`));
+      if (vuelta === 19) throw new Error('la sustitución no termina');
+    }
+    const correcta = conOrden(ord);
+    const otra = etapas.findIndex((e, i) => i !== L - 1);
+    const suma = {}; for (const e of etapas) for (const [sp, c] of Object.entries(e.r)) if (!esInter(sp)) suma[sp] = (suma[sp] || 0) + c;
+    const errores = { coeficientes: conOrden(M.global.r), sumaEtapas: conOrden(suma) };
+    if (otra >= 0) errores.otraEtapa = conOrden(etapas[otra].r);
+    if (sustituidas.length) errores.sinSustituir = conOrden(etapas[L - 1].r);
+    if (M.catalizadores.some(sp => correcta.ordenes[sp] !== undefined)) {
+      const s2 = { ...correcta.ordenes }; for (const sp of M.catalizadores) delete s2[sp]; errores.sinCatalizador = conOrden(s2);
+    }
+    return { ...correcta, etapaLenta: L, constante: constante.join('·'), sustituidas, mecanismo: M, errores };
+  }
+  function coincideLey(etapas, lenta, ordenes, global) {
+    const l = leyVelocidad(etapas, lenta), o = conOrden(ordenes).ordenes;
+    const ka = Object.keys(l.ordenes), kb = Object.keys(o);
+    const ley = ka.length === kb.length && ka.every(k => o[k] !== undefined && Math.abs(o[k] - l.ordenes[k]) < 1e-9);
+    const suma = global ? mecanismo(etapas, global).coincide : true;
+    return { valor: ley && suma, ley, suma };
+  }
+  // Perfil de dos etapas: niveles de energía en el eje (kJ/mol).
+  function perfilDosEtapas(o) {
+    const R = num(o.R, 'reactivos'), T1 = num(o.TS1, 'cima 1'), I = num(o.I, 'valle'), T2 = num(o.TS2, 'cima 2'), P = num(o.P, 'productos');
+    if (!(T1 > R && T1 > I)) throw new Error('la cima 1 debe quedar por encima de los reactivos y del valle');
+    if (!(T2 > I && T2 > P)) throw new Error('la cima 2 debe quedar por encima del valle y de los productos');
+    const cual = (a, b) => (a > b ? 1 : b > a ? 2 : 0);
+    const Ea1 = red(T1 - R), Ea2 = red(T2 - I), dH = red(P - R);
+    const lectura = (a, b) => ({ Ea1: red(a), Ea2: red(b), lenta: cual(a, b) });
+    return { Ea1, Ea2, EaInv1: red(T1 - I), EaInv2: red(T2 - P), dH, dH1: red(I - R), dH2: red(P - I),
+      lenta: cual(Ea1, Ea2), EaLenta: Math.max(Ea1, Ea2), cimaMasAlta: cual(T1, T2),
+      valleBajo: I < R, tipo: dH < 0 ? 'exotérmica' : dH > 0 ? 'endotérmica' : 'neutra',
+      queHay: { cimas: 'complejo activado', valle: 'intermediario' },
+      errores: { desdeCero: lectura(T1, T2), desdeReactivos: lectura(T1 - R, T2 - R), inversa: lectura(T1 - I, T2 - P), dHdesdeCero: P } };
+  }
+  // Velocidad media en una curva concentración-tiempo, con cambio de unidades.
+  const UNI_C = { 'kg/m3': 1, 'g/L': 1, 'mg/mL': 1, 'mg/L': 1e-3, 'ug/mL': 1e-3, 'g/mL': 1e3, 'g/cm3': 1e3, 'mg/dL': 1e-2 };
+  const UNI_T = { s: 1, min: 60, h: 3600 };
+  function enCurva(puntos, t) {
+    const tt = num(t, 'tiempo');
+    if (tt < puntos[0][0] - 1e-12 || tt > puntos[puntos.length - 1][0] + 1e-12) throw new Error(`t = ${t} está fuera de la curva`);
+    for (let i = 0; i < puntos.length; i++) if (Math.abs(puntos[i][0] - tt) < 1e-12) return puntos[i][1];
+    for (let i = 1; i < puntos.length; i++) if (puntos[i][0] > tt) { const [ta, ca] = puntos[i - 1], [tb, cb] = puntos[i]; return ca + (cb - ca) * (tt - ta) / (tb - ta); }
+    return puntos[puntos.length - 1][1];
+  }
+  function velocidadMedia(puntos, t1, t2, o) {
+    if (!Array.isArray(puntos) || puntos.length < 2) throw new Error('hacen falta al menos dos puntos');
+    for (let i = 0; i < puntos.length; i++) { num(puntos[i][0], 'tiempo'); noNegativo(puntos[i][1], 'concentración'); if (i && !(puntos[i][0] > puntos[i - 1][0])) throw new Error('los tiempos deben crecer'); }
+    o = o || {};
+    const de = o.de || 'mol/L', a = o.a || de, td = o.tiempo || 's', ta = o.tiempoA || td;
+    let factor = 1;
+    if (de !== a) { if (UNI_C[de] === undefined || UNI_C[a] === undefined) throw new Error(`no sé pasar de ${de} a ${a}`); factor = UNI_C[de] / UNI_C[a]; }
+    if (UNI_T[td] === undefined || UNI_T[ta] === undefined) throw new Error('unidad de tiempo desconocida');
+    const T1 = num(t1, 't₁'), T2 = num(t2, 't₂'); if (T1 === T2) throw new Error('los dos tiempos deben ser distintos');
+    const c1 = enCurva(puntos, T1), c2 = enCurva(puntos, T2), dc = c2 - c1, dt = T2 - T1;
+    const valor = dc / dt * factor * (UNI_T[ta] / UNI_T[td]);
+    let iM = 0; puntos.forEach((p, i) => { if (p[1] > puntos[iM][1]) iM = i; });
+    return { c1, c2, dc, dt, valor, rapidez: Math.abs(valor), factor, cMax: puntos[iM][1], tMax: puntos[iM][0],
+      errores: { soloMasa: valor * 1e-6, soloVolumen: valor * 1e6, porMil: valor * 1e3, entreMil: valor * 1e-3, sinTiempo: dc * factor } };
   }
 
   // ---------- Partículas ----------
@@ -376,5 +541,6 @@
   }
 
   return { R, K0, kelvin, velocidad, factor, ordenTotal, unidadesK, ordenes, concentracion, tiempo, vidaMedia, vidasMedias, fraccionQueda, primerOrdenQueda,
-    arrhenius, razonK, energiaActivacion, regla10, fraccionEficaz, perfil, caja };
+    arrhenius, razonK, energiaActivacion, regla10, fraccionEficaz, perfil, caja,
+    mecanismo, leyVelocidad, coincideLey, perfilDosEtapas, velocidadMedia };
 });
