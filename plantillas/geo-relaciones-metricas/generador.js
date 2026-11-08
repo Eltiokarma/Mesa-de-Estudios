@@ -246,10 +246,11 @@
         } else {
           correcta = a * a / c;
           errores = [
+            h('RM-proyeccion-es-cateto', a, `Tomaste la proyección igual al cateto AB. AB va inclinado respecto de AC; su sombra sobre AC es más corta: AB² = AC·AH.`),
+            h('RM-proyeccion-diferencia', (b * b - a * a) / c, `Restaste las dos proyecciones (HC − AH). AH sale de AB² = AC·AH.`),
             pa('GE8-pie-en-punto-medio', c / 2, `Supusiste que H es el punto medio de AC. Eso solo pasa si los catetos son iguales; aquí AB y BC son distintos.`),
             h('RM-proyeccion-por-altura', a * b / c, `Calculaste la altura BH, no la proyección AH.`),
             h('RM-proyeccion-cruzada', b * b / c, `Usaste BC² = AC·HC: esa es la proyección HC del otro cateto. Para AH va el cateto que toca a A: AB² = AC·AH.`),
-            h('RM-proyeccion-diferencia', (b * b - a * a) / c, `Restaste las dos proyecciones (HC − AH). AH sale de AB² = AC·AH.`),
             h('RM-proyeccion-resta', c - a, `Restaste AC − AB. AB es inclinado respecto de AC; su proyección sale de AB² = AC·AH.`),
           ];
           ultimo = [['AB² = AC·AH: ', `${a}² = ${c}·AH, y AH = ${a * a}/${c} = `, v('x', L(correcta, u)), '.']];
@@ -414,10 +415,10 @@
             h('RM-euclides-signo', sq(b * b + c * c - s * 2 * c * m), obtuso
               ? 'Usaste el signo menos, que va con el ángulo agudo. Con el ángulo obtuso en A, el lado opuesto es más largo que con Pitágoras: va + 2·AB·m.'
               : 'Usaste el signo más, que va con el ángulo obtuso. Con el ángulo agudo en A, el lado opuesto es más corto que con Pitágoras: va − 2·AB·m.'),
+            h('RM-euclides-doble-termino', sq(b * b + c * c + s * 4 * c * m), `Pusiste 4·AB·m: el término del teorema es 2·AB·m, una sola vez.`),
             pa('GE11-pitagoras-sin-angulo-recto', sq(b * b + c * c), `Usaste Pitágoras, pero el ángulo en A no es recto: falta el término 2·AB·m.`),
             h('RM-euclides-sin-lado', sq(b * b + c * c + s * 2 * m), `En el término 2·AB·m olvidaste multiplicar por AB: pusiste solo 2·m.`),
             h('RM-euclides-sin-doble', sq(b * b + c * c + s * c * m), `Olvidaste el 2 del término 2·AB·m.`),
-            h('RM-euclides-doble-termino', sq(b * b + c * c + s * 4 * c * m), `Pusiste 4·AB·m: el término del teorema es 2·AB·m, una sola vez.`),
           ],
           solucion: [
             [`Teorema de Euclides (de la proyección): el lado opuesto a un ángulo ${obtuso ? 'obtuso' : 'agudo'} cumple BC² = AB² + AC² ${obtuso ? '+' : '−'} 2·AB·m, con m la proyección de AC sobre la recta AB.`],
