@@ -1,0 +1,86 @@
+{
+ "plantilla": "molecula-grande",
+ "unidades": "Las moléculas van por su id de la biblioteca (moleculas.js: el SMILES de cada una está ahí) o como SMILES. Índices de átomo desde 0 en el orden en que aparecen los átomos en el SMILES, sin contar los H; índices de enlace desde 0 en el orden en que el SMILES los cierra (cada átomo cierra su enlace con el anterior; un dígito de anillo, al aparecer por segunda vez). Masas molares en g/mol con las masas de academia (H 1, C 12, N 14, O 16, S 32, I 127).",
+ "convencion": "Cada caso llama a la función fn de motor.js con args y compara espera; tambien agrega llamadas del mismo caso. Los campos anidados van con punto (errores.sinCarbonilo, porElemento.O, atomos.3.electrones); las listas se comparan completas y en orden; los textos, exactos. Hibridación escolar del carbono por sus enlaces; enlaces polares con ΔEN de Pauling ≥ 0,4, contados como pares de electrones (un doble cuenta 2); aromático por Hückel (el C de un C=O del anillo pone 0 electrones); carbono quiral: sp³ con cuatro sustituyentes distintos comparando el grupo entero. Las demás convenciones están en la cabecera de motor.js (termina en la línea «FIN DE LA CABECERA»).",
+ "verificacion": "",
+ "casos": [{ "nombre": "Fórmula y masa molar de la fenilalanina (masas de academia)", "fn": "formula", "args": [ "fenilalanina" ], "espera": { "texto": "C9H11NO2", "masa": 165, "hidrocarburo": false }
+  },
+  { "nombre": "El β-caroteno es un hidrocarburo: solo C y H", "fn": "formula", "args": [ "beta-caroteno" ], "espera": { "texto": "C40H56", "masa": 536, "hidrocarburo": true }
+  },
+  { "nombre": "Fórmula y masa molar de la tiroxina, con sus cuatro yodos", "fn": "formula", "args": [ "tiroxina" ], "espera": { "texto": "C15H11I4NO4", "masa": 777, "conteo.I": 4 }
+  },
+  { "nombre": "Paso 1: carbonos sp² de la fenilalanina (6 del anillo y el del carboxilo) y lo que da cada error", "fn": "lupa", "args": [ "fenilalanina", "sp2" ], "espera": { "valor": 7, "atomos": [ 3, 4, 5, 6, 7, 8, 9 ], "errores.sinCarbonilo": 6, "errores.comoDobles": 4, "errores.todosLosC": 9 }
+  },
+  { "nombre": "Hibridación de los carbonos del β-caroteno", "fn": "hibridacion", "args": [ "beta-caroteno" ], "espera": { "cuenta.sp": 0, "cuenta.sp2": 22, "cuenta.sp3": 18 }
+  },
+  { "nombre": "El ácido tarírico: dos carbonos sp en su triple enlace y uno sp² en el carboxilo", "fn": "hibridacion", "args": [ "acido-taririco" ], "espera": { "cuenta.sp": 2, "cuenta.sp2": 1, "cuenta.sp3": 15, "carbonos.sp": [ 11, 12 ] }
+  },
+  { "nombre": "Ácido cítrico: los tres C de los carboxilos son sp²", "fn": "lupa", "args": [ "acido-citrico", "sp2" ], "espera": { "valor": 3, "errores.sinCarbonilo": 0 }
+  },
+  { "nombre": "Paso 2: enlaces π y electrones π del β-caroteno, y los errores", "fn": "enlaces", "args": [ "beta-caroteno" ], "espera": { "pi": 11, "electronesPi": 22, "dobles": 11, "sigma": 97, "errores.electronesPi.comoEnlaces": 11, "errores.electronesPi.cuatroPorDoble": 44, "errores.electronesPi.sinAnillos": 18 }
+  },
+  { "nombre": "Curcumina: enlaces σ y π", "fn": "enlaces", "args": [ "curcumina" ], "espera": { "sigma": 48, "pi": 10, "electronesPi": 20, "dobles": 10 }
+  },
+  { "nombre": "Ácido tarírico: un triple enlace aporta 2 π", "fn": "enlaces", "args": [ "acido-taririco" ], "espera": { "pi": 3, "dobles": 1, "triples": 1, "electronesPi": 6 }
+  },
+  { "nombre": "Enlaces polares de la fenilalanina (el C=O cuenta 2; los C–H son apolares)", "fn": "enlaces", "args": [ "fenilalanina" ], "espera": { "polares": 7, "apolares": 20, "conexionesPolares": 6, "errores.polares.conCH": 15, "errores.polares.dobleComoUno": 6 }
+  },
+  { "nombre": "Alicina: el S=O es el único polar; C–S y S–S son apolares", "fn": "enlaces", "args": [ "alicina" ], "espera": { "polares": 2, "apolares": 19, "conexionesPolares": 1 }
+  },
+  { "nombre": "Tiroxina: los C–I son apolares con el corte de 0,4", "fn": "enlaces", "args": [ "tiroxina" ], "espera": { "polares": 11, "conexionesPolares": 10 }
+  },
+  { "nombre": "Paso 6: pares libres de la tiroxina y los errores", "fn": "pares", "args": [ "tiroxina" ], "espera": { "total": 21, "porElemento.O": 8, "porElemento.N": 1, "porElemento.I": 12, "errores.sinHalogenos": 9, "errores.sinO": 13, "errores.comoElectrones": 42 }
+  },
+  { "nombre": "Pares libres de la cafeína (dos O y cuatro N)", "fn": "pares", "args": [ "cafeina" ], "espera": { "total": 8, "porElemento.O": 4, "porElemento.N": 4 }
+  },
+  { "nombre": "Pares libres de la tirosina a pH 7,4: el NH₃⁺ no tiene par y el O⁻ tiene 3", "fn": "pares", "args": [ "[NH3+]C(CC1=CC=C(O)C=C1)C(=O)[O-]" ], "espera": { "total": 7, "porElemento.O": 7, "porElemento.N": 0 }
+  },
+  { "nombre": "Octeto en la alicina: el S unido al O queda con 10 electrones", "fn": "octeto", "args": [ "alicina" ], "espera": { "valor": 1, "noCumplen": [ 3 ], "atomos.3.electrones": 10, "atomos.5.electrones": 8, "errores.tercerPeriodoCumple": 0 }
+  },
+  { "nombre": "Penicilina G: su S (dos enlaces simples, dos pares) cumple el octeto", "fn": "octeto", "args": [ "penicilina-g" ], "espera": { "valor": 0, "todosCumplen": true }
+  },
+  { "nombre": "Paso 3: la testosterona tiene cuatro anillos y ninguno es aromático", "fn": "anillos", "args": [ "testosterona" ], "espera": { "total": 4, "aromaticos": 0, "errores.todoAnillo": 4, "errores.seisLados": 3, "errores.conDoble": 2 }
+  },
+  { "nombre": "El estradiol sí tiene un anillo aromático (el A)", "fn": "anillos", "args": [ "estradiol" ], "espera": { "total": 4, "aromaticos": 1, "atomos": [ 8, 9, 10, 12, 13, 14 ] }
+  },
+  { "nombre": "Quercetina: tres anillos aromáticos con Hückel; uno lleva C=O", "fn": "anillos", "args": [ "quercetina" ], "espera": { "total": 3, "aromaticos": 3, "errores.sinCarbonilo": 2 }
+  },
+  { "nombre": "Cafeína y triptófano: dos anillos aromáticos cada uno", "fn": "anillos", "args": [ "cafeina" ], "espera": { "aromaticos": 2, "errores.sinCarbonilo": 1 }, "tambien": [ { "fn": "anillos", "args": [ "triptofano" ], "espera": { "aromaticos": 2, "total": 2 } } ]
+  },
+  { "nombre": "Vitamina E y vitamina A: el anillo con un C sp³ no es aromático", "fn": "anillos", "args": [ "vitamina-e" ], "espera": { "total": 2, "aromaticos": 1 }, "tambien": [ { "fn": "anillos", "args": [ "retinol" ], "espera": { "total": 1, "aromaticos": 0 } } ]
+  },
+  { "nombre": "Paso 5: carbonos quirales de la glucosa abierta y los errores", "fn": "quirales", "args": [ "glucosa-abierta" ], "espera": { "valor": 4, "atomos": [ 2, 4, 6, 8 ], "errores.soloVecinos": 0, "errores.conHeteroatomo": 5, "errores.todosLosC": 6 }
+  },
+  { "nombre": "Al cerrarse, la glucosa gana un carbono quiral (el C1)", "fn": "quirales", "args": [ "glucosa-ciclica" ], "espera": { "valor": 5, "atomos": [ 2, 4, 6, 8, 10 ] }
+  },
+  { "nombre": "Carbonos quirales del colesterol y de la sacarosa", "fn": "quirales", "args": [ "colesterol" ], "espera": { "valor": 8 }, "tambien": [ { "fn": "quirales", "args": [ "sacarosa" ], "espera": { "valor": 9 } }, { "fn": "quirales", "args": [ "penicilina-g" ], "espera": { "valor": 3 } } ]
+  },
+  { "nombre": "Ácido cítrico: su C central tiene dos grupos CH₂COOH iguales: no es quiral", "fn": "quirales", "args": [ "acido-citrico" ], "espera": { "valor": 0, "errores.dosIguales": 1 }
+  },
+  { "nombre": "Paso 4: la vitamina C es una lactona con dos OH de enol y dos de alcohol", "fn": "grupos", "args": [ "vitamina-c" ], "espera": { "principal.tipo": "lactona", "cuenta.lactona": 1, "cuenta.enol": 2, "cuenta.alcohol": 2, "errores.lactonaComoLactama": "lactama", "errores.esterComoEter": "éter" }
+  },
+  { "nombre": "Fenilalanina: manda el ácido carboxílico, no la amina", "fn": "grupos", "args": [ "fenilalanina" ], "espera": { "principal.tipo": "acido", "cuenta.acido": 1, "cuenta.amina": 1, "cuenta.aromatico": 1, "errores.porSecundaria": "amina", "errores.carboxiloComoCetonaAlcohol": "cetona y alcohol" }
+  },
+  { "nombre": "Tirosina: el OH del anillo es un fenol", "fn": "grupos", "args": [ "tirosina" ], "espera": { "cuenta.fenol": 1, "errores.fenolComoAlcohol": "alcohol" }
+  },
+  { "nombre": "Glucosa abierta: un aldehído, un alcohol primario y cuatro secundarios", "fn": "grupos", "args": [ "glucosa-abierta" ], "espera": { "principal.tipo": "aldehido", "cuenta.aldehido": 1, "alcoholes.primario": 1, "alcoholes.secundario": 4 }
+  },
+  { "nombre": "Glucosa cíclica (hemiacetal) y sacarosa (dos acetales: no reductora)", "fn": "grupos", "args": [ "glucosa-ciclica" ], "espera": { "cuenta.hemiacetal": 1, "cuenta.alcohol": 4, "principal.tipo": "alcohol" }, "tambien": [ { "fn": "grupos", "args": [ "sacarosa" ], "espera": { "cuenta.acetal": 2, "cuenta.alcohol": 8 } } ]
+  },
+  { "nombre": "Ácido cítrico: tres carboxilos y un alcohol terciario", "fn": "grupos", "args": [ "acido-citrico" ], "espera": { "cuenta.acido": 3, "cuenta.alcohol": 1, "alcoholes.terciario": 1 }
+  },
+  { "nombre": "Penicilina G: lactama, amida, sulfuro y ácido", "fn": "grupos", "args": [ "penicilina-g" ], "espera": { "principal.tipo": "acido", "cuenta.lactama": 1, "cuenta.amida": 1, "cuenta.sulfuro": 1, "cuenta.aromatico": 1 }
+  },
+  { "nombre": "Tiroxina: ácido, fenol, éter (no lactona), amina y cuatro halogenuros", "fn": "grupos", "args": [ "tiroxina" ], "espera": { "principal.tipo": "acido", "cuenta.halogenuro": 4, "cuenta.eter": 1, "cuenta.fenol": 1, "cuenta.amina": 1 }
+  },
+  { "nombre": "Alicina: tiosulfinato y dos alquenos", "fn": "grupos", "args": [ "alicina" ], "espera": { "principal.tipo": "tiosulfinato", "cuenta.tiosulfinato": 1, "cuenta.alqueno": 2 }
+  },
+  { "nombre": "Paso 7: número de oxidación del C del grupo (átomo 19) en retinol, retinal y ácido retinoico", "fn": "numeroOxidacion", "args": [ "retinol", 19 ], "espera": { "valor": -1, "errores.signoAlReves": 1 }, "tambien": [ { "fn": "numeroOxidacion", "args": [ "retinal", 19 ], "espera": { "valor": 1, "errores.signoAlReves": -1 } }, { "fn": "numeroOxidacion", "args": [ "acido-retinoico", 19 ], "espera": { "valor": 3 } } ]
+  },
+  { "nombre": "Paso 8: la fenilalanina a pH 7,4 (zwitterión), 1 y 12; la tirosina a pH 12 (carga −2)", "fn": "ionizar", "args": [ "fenilalanina", 7.4 ], "espera": { "forma": "zwitterión", "carga": 0, "estado.amino": "NH₃⁺", "estado.carboxilo": "COO⁻" }, "tambien": [ { "fn": "ionizar", "args": [ "fenilalanina", 1 ], "espera": { "forma": "catión", "carga": 1 } }, { "fn": "ionizar", "args": [ "fenilalanina", 12 ], "espera": { "forma": "anión", "carga": -1 } }, { "fn": "ionizar", "args": [ "tirosina", 12 ], "espera": { "forma": "anión", "carga": -2, "estado.fenol": "O⁻" } } ]
+  },
+  { "nombre": "Experimento 1: hidrogenar el doble enlace del ácido oleico (enlace 8) da el esteárico", "fn": "hidrogenar", "args": [ "acido-oleico", 8 ], "espera": { "smiles": "CCCCCCCCCCCCCCCCCC(=O)O" }
+  },
+  { "nombre": "Experimento 2: ácido pirúvico (C2 con +2) y su C2 tras hidrogenar el C=O (enlace 1): ácido láctico", "fn": "numeroOxidacion", "args": [ "acido-piruvico", 1 ], "espera": { "valor": 2 }, "tambien": [ { "fn": "numeroOxidacion", "args": [ "CC(O)C(=O)O", 1 ], "espera": { "valor": 0 } }, { "fn": "quirales", "args": [ "CC(O)C(=O)O" ], "espera": { "valor": 1 } } ]
+  }]
+}

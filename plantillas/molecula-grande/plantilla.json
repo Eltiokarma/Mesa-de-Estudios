@@ -1,0 +1,17 @@
+{
+  "id": "molecula-grande",
+  "titulo": "La lupa de las moléculas grandes",
+  "formato": "escena",
+  "unidades": [
+    "quimica.biomoleculas-y-productos-naturales",
+    "quimica.funciones-organicas",
+    "quimica.hidrocarburos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

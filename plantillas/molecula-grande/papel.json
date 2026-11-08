@@ -1,0 +1,151 @@
+{
+  "titulo": "Moléculas grandes: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 o 3 minutos por problema. Dibuja primero la molécula con todos sus enlaces (también los C–H y los O–H que la fórmula no muestra) y marca cada átomo que cuentes. Convenciones: un carbono es sp³ si solo tiene enlaces simples, sp² si tiene un doble y sp si tiene un triple; cada par de átomos unidos tiene un enlace σ, el doble suma un π y el triple dos; un enlace es polar si la diferencia de electronegatividad (Pauling) es 0,4 o más, y un doble enlace polar cuenta como dos enlaces. Masas: H 1, C 12, N 14, O 16, S 32, I 127.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El ácido oleico del aceite de oliva es CH₃(CH₂)₇CH=CH(CH₂)₇COOH. ¿Cuántos de sus carbonos son sp² y cuántos sp³?",
+      "respuesta": "3 sp² y 15 sp³.",
+      "pasos": [
+        "Cuenta los carbonos: 1 (CH₃) + 7 + 2 (CH=CH) + 7 + 1 (COOH) = 18.",
+        "Los dos carbonos del CH=CH tienen un doble enlace: sp².",
+        "El carbono del COOH tiene un doble enlace con un O: también es sp². Es el que más se olvida.",
+        "Los otros 18 − 3 = 15 solo tienen enlaces simples: sp³."
+      ],
+      "verificar": [
+        { "fn": "hibridacion", "args": ["acido-oleico"], "espera": { "cuenta.sp2": 3, "cuenta.sp3": 15, "cuenta.sp": 0 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "El β-caroteno de la zanahoria, C₄₀H₅₆, tiene 11 dobles enlaces C=C (9 en la cadena y uno en cada anillo) y ningún otro enlace múltiple. ¿Cuántos enlaces π y cuántos electrones π tiene? ¿Es un hidrocarburo? ¿Cuál es su masa molar?",
+      "respuesta": "11 enlaces π y 22 electrones π; sí es un hidrocarburo (solo C y H); 536 g/mol.",
+      "pasos": [
+        "Cada doble enlace tiene un σ y un π: 11 dobles dan 11 enlaces π.",
+        "Cada enlace π tiene 2 electrones: 11 × 2 = 22 electrones π (no 11, que son los enlaces; ni 44, que serían los 4 electrones de cada doble contando el σ).",
+        "Solo tiene C y H: es un hidrocarburo, aunque sea un pigmento natural.",
+        "Masa: 40 × 12 + 56 × 1 = 480 + 56 = 536 g/mol."
+      ],
+      "verificar": [
+        { "fn": "enlaces", "args": ["beta-caroteno"], "espera": { "pi": 11, "electronesPi": 22 } },
+        { "fn": "formula", "args": ["beta-caroteno"], "espera": { "hidrocarburo": true, "masa": 536 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "La alicina del ajo es CH₂=CH–CH₂–S(=O)–S–CH₂–CH=CH₂. Cuenta sus enlaces σ y π, sus enlaces polares y di qué átomo no cumple el octeto.",
+      "respuesta": "18 σ y 3 π; 2 enlaces polares (los dos del S=O); el S unido al O tiene 10 electrones (octeto expandido).",
+      "pasos": [
+        "Átomos sin los H: 6 C, 2 S y 1 O. Enlaces entre ellos: C=C, C–C, C–S, S–S, S=O, S–C, C–C, C=C: 8 pares de átomos unidos. Los H: la fórmula C₆H₁₀OS₂ tiene 10 C–H.",
+        "σ: 8 + 10 = 18. π: uno en cada C=C y uno en el S=O: 3.",
+        "Polares (ΔEN ≥ 0,4): solo el S=O (3,44 − 2,58 = 0,86), que cuenta como 2 enlaces. C–H (0,35), C–S (0,03), S–S (0) y C–C son apolares.",
+        "Octeto del S del medio: 3 enlaces σ (C, O, S) y 1 π son 4 pares compartidos = 8 electrones, más 1 par libre = 10. Es del tercer período: puede pasar de 8. El otro S (dos enlaces simples y dos pares libres) tiene 8."
+      ],
+      "verificar": [
+        { "fn": "enlaces", "args": ["alicina"], "espera": { "sigma": 18, "pi": 3, "polares": 2 } },
+        { "fn": "octeto", "args": ["alicina"], "espera": { "noCumplen": [3], "atomos.3.electrones": 10, "atomos.5.electrones": 8 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La glucosa abierta es CHO–CHOH–CHOH–CHOH–CHOH–CH₂OH. ¿Cuántos carbonos quirales tiene? ¿Qué grupos funcionales tiene y cuál es el principal?",
+      "respuesta": "4 carbonos quirales (C2 a C5); un aldehído (el principal) y cinco alcoholes: uno primario (C6) y cuatro secundarios.",
+      "pasos": [
+        "C1 (CHO) tiene un doble enlace: no puede tener cuatro grupos distintos. C6 (CH₂OH) tiene dos H iguales: tampoco.",
+        "C2: H, OH, el grupo CHO y el resto de la cadena hacia abajo: cuatro distintos. Lo mismo C3, C4 y C5 (arriba y abajo de cada uno la cadena es distinta).",
+        "No basta mirar el primer átomo de cada lado (los dos son C): hay que comparar el grupo entero.",
+        "Grupos: CHO es aldehído y manda sobre el alcohol. Los OH: el del C6 está en un carbono unido a un solo C (primario); los de C2 a C5, en carbonos unidos a dos C (secundarios)."
+      ],
+      "verificar": [
+        { "fn": "quirales", "args": ["glucosa-abierta"], "espera": { "valor": 4, "atomos": [2, 4, 6, 8] } },
+        { "fn": "grupos", "args": ["glucosa-abierta"], "espera": { "principal.tipo": "aldehido", "alcoholes.primario": 1, "alcoholes.secundario": 4 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "El ácido cítrico es HOOC–CH₂–C(OH)(COOH)–CH₂–COOH. ¿Su carbono central es quiral? ¿Qué clase de alcohol tiene y cuántos carbonos sp² hay?",
+      "respuesta": "No es quiral; es un alcohol terciario; 3 carbonos sp² (los de los tres COOH).",
+      "pasos": [
+        "El C central tiene OH, COOH y dos CH₂COOH. Los dos CH₂COOH son iguales: solo hay tres grupos distintos, así que no es quiral.",
+        "Ese C está unido a tres carbonos (los dos CH₂ y el C del COOH): su OH es de un alcohol terciario.",
+        "Cada COOH tiene un C con doble enlace a O: sp². Son 3. Los dos CH₂ y el C central son sp³."
+      ],
+      "verificar": [
+        { "fn": "quirales", "args": ["acido-citrico"], "espera": { "valor": 0 } },
+        { "fn": "grupos", "args": ["acido-citrico"], "espera": { "cuenta.acido": 3, "alcoholes.terciario": 1 } },
+        { "fn": "lupa", "args": ["acido-citrico", "sp2"], "espera": { "valor": 3 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "La vitamina A pasa de retinol (termina en –CH₂OH) a retinal (–CHO) y a ácido retinoico (–COOH). Halla el número de oxidación del carbono del grupo en cada uno y di si cada paso es oxidación o reducción.",
+      "respuesta": "−1, +1 y +3. Los dos pasos son oxidaciones.",
+      "pasos": [
+        "En –CH₂OH el carbono tiene un enlace con C (0), dos con H (−1 cada uno, el H es menos electronegativo) y uno con O (+1): −2 + 1 = −1.",
+        "En –CHO: C (0), un H (−1) y un doble enlace con O (+2): +1.",
+        "En –COOH: C (0), doble enlace con O (+2) y un enlace con el O del OH (+1): +3.",
+        "El número de oxidación sube en cada paso: −1 → +1 → +3. Que suba es oxidación (el carbono pierde electrones), aunque en el primer paso no entre ningún O nuevo: se van dos H."
+      ],
+      "verificar": [
+        { "fn": "numeroOxidacion", "args": ["retinol", 19], "espera": { "valor": -1 } },
+        { "fn": "numeroOxidacion", "args": ["retinal", 19], "espera": { "valor": 1 } },
+        { "fn": "numeroOxidacion", "args": ["acido-retinoico", 19], "espera": { "valor": 3 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En el músculo sin oxígeno, el ácido pirúvico, CH₃–CO–COOH, se convierte en ácido láctico, CH₃–CH(OH)–COOH. ¿Qué le pasa al número de oxidación del carbono del medio? ¿Aparece algún carbono quiral?",
+      "respuesta": "Pasa de +2 a 0: es una reducción. Sí: el carbono del medio del ácido láctico es quiral.",
+      "pasos": [
+        "En el pirúvico, el C del medio (C=O) está unido a dos C (0) y tiene un doble enlace con O (+2): +2.",
+        "En el láctico, el mismo C tiene un C, otro C, un H (−1) y un OH (+1): 0.",
+        "Baja de +2 a 0: gana electrones, es una reducción (entran 2 H, como al hidrogenar el C=O).",
+        "En el láctico ese C tiene H, OH, CH₃ y COOH: cuatro grupos distintos, es quiral. En el pirúvico era sp² y no podía serlo."
+      ],
+      "verificar": [
+        { "fn": "numeroOxidacion", "args": ["acido-piruvico", 1], "espera": { "valor": 2 } },
+        { "fn": "numeroOxidacion", "args": ["CC(O)C(=O)O", 1], "espera": { "valor": 0 } },
+        { "fn": "quirales", "args": ["CC(O)C(=O)O"], "espera": { "valor": 1, "atomos": [1] } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "La fenilalanina es C₆H₅–CH₂–CH(NH₂)–COOH, con pKa 1,83 (carboxilo) y 9,13 (amino). ¿Qué forma predomina y qué carga tiene a pH 1, a pH 7,4 (la sangre) y a pH 12?",
+      "respuesta": "pH 1: catión (NH₃⁺ y COOH), +1. pH 7,4: zwitterión (NH₃⁺ y COO⁻), 0. pH 12: anión (NH₂ y COO⁻), −1.",
+      "pasos": [
+        "Regla: si el pH es menor que el pKa, el grupo conserva su H; si es mayor, lo pierde.",
+        "pH 1: menor que 1,83 y que 9,13. El COOH no se disocia y el NH₂ toma un H⁺: NH₃⁺. Carga +1.",
+        "pH 7,4: mayor que 1,83 (COO⁻) pero menor que 9,13 (NH₃⁺). Carga total 0, pero con una carga + y una −: es un ion dipolar (zwitterión), no la forma neutra sin cargas.",
+        "pH 12: mayor que los dos pKa: COO⁻ y NH₂. Carga −1."
+      ],
+      "verificar": [
+        { "fn": "ionizar", "args": ["fenilalanina", 1], "espera": { "forma": "catión", "carga": 1 } },
+        { "fn": "ionizar", "args": ["fenilalanina", 7.4], "espera": { "forma": "zwitterión", "carga": 0 } },
+        { "fn": "ionizar", "args": ["fenilalanina", 12], "espera": { "forma": "anión", "carga": -1 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "La tiroxina, C₁₅H₁₁I₄NO₄, tiene un grupo COOH, un NH₂, un OH unido a un anillo aromático, un O que une dos anillos (éter) y cuatro I unidos a carbonos del anillo. ¿Cuántos pares de electrones libres tiene en total?",
+      "respuesta": "21 pares libres: 8 de los oxígenos, 1 del nitrógeno y 12 de los yodos.",
+      "pasos": [
+        "Cada O con dos enlaces (C=O, C–O–H, C–O–C) tiene 2 pares libres. Hay 4 O: 8 pares.",
+        "El N del NH₂ tiene tres enlaces y 1 par libre.",
+        "Cada I tiene 7 electrones de valencia, usa 1 en su enlace con el C y le quedan 6: 3 pares. Cuatro I: 12 pares.",
+        "Total: 8 + 1 + 12 = 21. Si olvidas los yodos te salen 9; si cuentas electrones en vez de pares, 42."
+      ],
+      "verificar": [
+        { "fn": "pares", "args": ["tiroxina"], "espera": { "total": 21, "porElemento.O": 8, "porElemento.N": 1, "porElemento.I": 12 } }
+      ]
+    }
+  ]
+}
