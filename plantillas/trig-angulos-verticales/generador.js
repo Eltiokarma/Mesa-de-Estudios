@@ -45,6 +45,11 @@
  *                     y AB = L (A entre O y B); el camino se ve bajo θ con tan θ = t; el dron vuela más alto que X m.
  *                     { p, L, t, X }. Las alturas posibles cumplen t·h² − L·h + t·p(p + L) = 0; respuesta: la que
  *                     supera X.
+ *   puente-simbolico  (sale en cerca del 11 % de las semillas, por un sorteo aparte) Pilar BT de altura h sobre el
+ *                     tablero de un puente; un tirante une T con P del tablero, y desde P se ve T con elevación angulo
+ *                     ('α' o '2θ'). { sub, angulo }. sub 'suma': recorrido BP + PT = h(cot + csc) = h·cot(mitad);
+ *                     sub 'resta': PT − BP = h(csc − cot) = h·tan(mitad). Respuesta simbólica (texto, armarTexto),
+ *                     p. ej. «h·cot(α/2)» o «h·tan θ».
  *   condicion-angulo  Elevación θ con una condición: { cond, valor, mayor45, d, pide }. cond 'suma' (sen θ + cos θ),
  *                     'producto' (sen θ·cos θ), 'tancot' (tan θ + cot θ) o 'doble' (sen 2θ) = valor; mayor45 dice si
  *                     θ > 45°. d: distancia horizontal del observador a la base de la torre. pide 'visual': distancia del
@@ -155,6 +160,8 @@
   }
 
   function generar(semilla) {
+    // Un sorteo aparte decide si sale el problema simbólico; así el resto de semillas no cambia.
+    if (Azar.crear(ID + '|simbolico|' + semilla).sig() < 0.11) return puenteSimbolico(semilla);
     const rng = Azar.crear(ID + '|' + semilla);
     const tipo = rng.elegir(TIPOS), pref = rng.sig();   // pref fija el subtipo en todos los intentos
     for (let intento = 0; intento < 200; intento++) {
@@ -200,6 +207,52 @@
     return {
       id: `${ID}#${semilla}`, variables: r.variables, enunciado: r.enunciado, pregunta: r.pregunta, datos: '',
       alternativas, solucion: r.solucion, respuesta: { valor: correcta, unidad }, _datos: { tipo, ...r.datos },
+    };
+  }
+
+
+  // ---------- Problema simbólico: el recorrido en el puente (cot y csc que se simplifican) ----------
+  // csc x + cot x = (1 + cos x)/sen x = cot(x/2)   y   csc x − cot x = (1 − cos x)/sen x = tan(x/2).
+  const razonTxt = (fn, arg) => (arg.includes('/') ? `${fn}(${arg})` : `${fn} ${arg}`);
+  function puenteSimbolico(semilla) {
+    const rng = Azar.crear(ID + '|simbolico|' + semilla + '|problema');
+    const sub = rng.moneda() ? 'suma' : 'resta';
+    const angulo = rng.moneda() ? 'α' : '2θ';
+    const [mitad, entero, doble] = angulo === 'α' ? ['α/2', 'α', '2α'] : ['θ', '2θ', '4θ'];
+    const T = (fn, arg) => { const t = `h·${razonTxt(fn, arg)}`; return { clave: t, texto: t }; };
+    const e = (id, fn, arg, explicacion) => ({ id, ...T(fn, arg), explicacion, respaldo: 'hipotesis', fuente: null });
+    const suma = sub === 'suma';
+    const correcta = T(suma ? 'cot' : 'tan', mitad);
+    const errores = suma ? [
+      e('AV-mitad-invertida', 'tan', mitad, `Cambiaste las dos identidades: csc x + cot x = cot(x/2), y es csc x − cot x la que da tan(x/2).`),
+      e('AV-sin-mitad', 'cot', entero, `Sumar csc ${entero} no deja igual a cot ${entero}: (1 + cos x)/sen x se simplifica con el ángulo mitad, 1 + cos x = 2cos²(x/2) y sen x = 2 sen(x/2) cos(x/2).`),
+      e('AV-angulo-doble', 'cot', doble, 'Usaste el ángulo doble en vez del mitad. Al escribir 1 + cos x = 2cos²(x/2), el ángulo se parte en dos, no se duplica.'),
+      e('AV-funcion-cambiada', 'csc', mitad, 'Al simplificar, cos(x/2) queda arriba y sen(x/2) abajo: eso es cot(x/2), no csc(x/2).'),
+    ] : [
+      e('AV-mitad-invertida', 'cot', mitad, 'Cambiaste las dos identidades: csc x − cot x = tan(x/2), y es csc x + cot x la que da cot(x/2).'),
+      e('AV-sin-mitad', 'tan', entero, '(1 − cos x)/sen x no es tan x: con 1 − cos x = 2sen²(x/2) y sen x = 2 sen(x/2) cos(x/2) queda el ángulo mitad.'),
+      e('AV-angulo-doble', 'tan', doble, 'Usaste el ángulo doble en vez del mitad. Al escribir 1 − cos x = 2sen²(x/2), el ángulo se parte en dos, no se duplica.'),
+      e('AV-funcion-cambiada', 'sen', mitad, 'Al simplificar queda sen(x/2) arriba y cos(x/2) abajo: eso es tan(x/2), no sen(x/2).'),
+    ];
+    const variables = {
+      h: { nombre: 'altura del pilar', color: 'o' }, a: { nombre: 'ángulo de elevación', color: 'i' },
+      r: { nombre: suma ? 'recorrido' : 'diferencia de longitudes', color: 'h' },
+    };
+    const enunciado = ['Sobre el tablero horizontal de un puente se levanta un pilar vertical BT de altura ', v('h', 'h'),
+      ' (B está en el tablero). Un tirante recto une la punta T con un punto P del tablero, y desde P la punta T se ve con un ángulo de elevación ', v('a', angulo), '.',
+      suma ? ' Un inspector camina por el tablero de B a P y luego sube por el tirante de P a T.' : ''];
+    const pregunta = [suma ? '¿Cuál es la expresión más simple del recorrido del inspector?' : '¿Cuánto más largo es el tirante PT que el tramo BP del tablero? Da la expresión más simple.'];
+    const solucion = [
+      ['En el triángulo rectángulo PBT: BP = ', v('h', 'h'), `·cot ${angulo} y PT = `, v('h', 'h'), `·csc ${angulo}.`],
+      [suma ? `BP + PT = h(cot ${angulo} + csc ${angulo}) = h(cos ${angulo} + 1)/sen ${angulo}.` : `PT − BP = h(csc ${angulo} − cot ${angulo}) = h(1 − cos ${angulo})/sen ${angulo}.`],
+      [suma ? `1 + cos ${angulo} = 2cos²${mitad.includes('/') ? `(${mitad})` : mitad} y sen ${angulo} = 2 sen${mitad.includes('/') ? `(${mitad})` : ' ' + mitad}·cos${mitad.includes('/') ? `(${mitad})` : ' ' + mitad}.`
+            : `1 − cos ${angulo} = 2sen²${mitad.includes('/') ? `(${mitad})` : mitad} y sen ${angulo} = 2 sen${mitad.includes('/') ? `(${mitad})` : ' ' + mitad}·cos${mitad.includes('/') ? `(${mitad})` : ' ' + mitad}.`],
+      ['Se cancela el 2 y un factor: ', v('r', correcta.texto), '.'],
+    ];
+    const alternativas = P.armarTexto({ correcta, errores, rng });
+    return {
+      id: `${ID}#${semilla}`, variables, enunciado, pregunta, datos: '', alternativas, solucion,
+      respuesta: { valor: correcta.clave, unidad: '' }, _datos: { tipo: 'puente-simbolico', sub, angulo },
     };
   }
 

@@ -14,6 +14,10 @@
  *                 sub 'punto-interior': P está dentro del triángulo ABC; PA = p, PB = q, AB = c; el
  *                 perímetro de ABC es entero. Se pide el menor perímetro posible.
  *                 sub 'doble-angulo': en ABC, ∠A = 2·∠C y AB = c; BC es entero; pide 'max' | 'min'.
+ *                 sub 'punto-dos': P dentro de ABC con PA = p y PB = q (no se da AB); perímetro
+ *                 entero; se pide el menor perímetro posible (> PA + PB + |PA − PB| = 2·máx).
+ *                 sub 'isosceles-ceviana': D en AC con ∠DBC = ∠DCB (así DC = BD); AB = c, BD = m; AC
+ *                 es entero; se pide el menor AC.
  *                 sub 'contar': N es el perímetro; se pide cuántos triángulos distintos (no
  *                 congruentes) tienen lados enteros y ese perímetro.
  *   obtusangulo   dos lados a < b y el tercero x entero.
@@ -23,6 +27,8 @@
  *                 la diferencia de costo entre el cerco de perímetro máximo y el de perímetro mínimo.
  *                 sub 'opuesto-cuantos': el ángulo opuesto al lado b es obtuso; cuántos x.
  *                 sub 'acutangulo': el triángulo es acutángulo; cuántos x.
+ *                 sub 'relacion': AB = a, AC = b, ∠B obtuso y ∠A > ∠C; BC es entero y queda un solo
+ *                 valor; se pide BC.
  *   angulos       sub 'incentro' (∠BIC, bisectrices interiores de B y C), 'excentro' (∠BEC,
  *                 bisectrices exteriores de B y C), 'int-ext' (∠BEC, interior de B y exterior de C),
  *                 'ortocentro' (∠BHC), 'circuncentro' (∠BOC): se da A (∠BAC). En los dos últimos el
@@ -69,6 +75,9 @@
     tercerLado: (a, b) => rango(Math.abs(a - b) + 1, a + b - 1),
     diagonal: (p, q, r, s) => rango(Math.max(Math.abs(p - q), Math.abs(r - s)) + 1, Math.min(p + q, r + s) - 1),
     perimetroInterior: (p, q, c) => c + p + q + 1,
+    perimetroDosDistancias: (p, q) => 2 * Math.max(p, q) + 1,
+    isoscelesCeviana: (c, m) => rango(m + Math.abs(c - m) + 1, c + 2 * m - 1),
+    obtusoRelacion: (c, b) => rango(Math.max(c, b - c) + 1, mayorMenorQueRaiz(b * b - c * c)),
     dobleAngulo: c => rango(c + 1, 2 * c - 1),
     contarTriangulos: N => {
       let n = 0;
@@ -107,8 +116,8 @@
   const entero = x => Number.isInteger(x) && x > 0;
 
   const SUBS = {
-    desigualdad: ['max', 'min', 'cuantos', 'diagonal', 'punto-interior', 'doble-angulo', 'contar'],
-    obtusangulo: ['entre-cuantos', 'entre-max', 'entre-min', 'perimetros', 'opuesto-cuantos', 'acutangulo'],
+    desigualdad: ['max', 'min', 'cuantos', 'diagonal', 'punto-interior', 'punto-dos', 'doble-angulo', 'isosceles-ceviana', 'contar'],
+    obtusangulo: ['entre-cuantos', 'entre-max', 'entre-min', 'perimetros', 'opuesto-cuantos', 'acutangulo', 'relacion'],
     angulos: ['incentro', 'excentro', 'int-ext', 'ortocentro', 'circuncentro', 'orto-incentro', 'orto-incentro', 'pies-alturas'],
   };
   const PIDES = { diagonal: ['max', 'min', 'cuantos'], 'doble-angulo': ['max', 'min'], 'pies-alturas': ['AEF', 'AO-EF'], ortocentro: ['CF', 'AC'], arco: ['AE', 'IE'] };
@@ -262,6 +271,49 @@
       ];
       return { correcta: R[pide], unidad: u, errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'desigualdad', sub, pide, c, u } };
     }
+    if (sub === 'punto-dos') {
+      const p = rng.entero(2, 15), q = rng.entero(2, 15);
+      if (p === q) return null;
+      u = 'm';
+      const M = Math.max(p, q), m = Math.min(p, q), correcta = calc.perimetroDosDistancias(p, q);
+      const variables = { p: { nombre: 'PA', color: 'o' }, q: { nombre: 'PB', color: 'i' }, x: { nombre: 'perímetro', color: 'd' } };
+      const enunciado = ['Un terreno tiene forma de triángulo ABC. Dentro del terreno hay un pozo P que está a ', v('p', `${p} m`), ' de la esquina A y a ', v('q', `${q} m`), ' de la esquina B. El perímetro del terreno es un número entero de metros.'];
+      const pregunta = ['¿Cuál es el menor valor que puede tener el ', v('x', 'perímetro'), '?'];
+      const errores = [
+        h('GT-limite-incluido', 2 * M, `Tomaste el valor límite ${2 * M}. Para llegar a él, A, P y B tendrían que estar en una recta y C sobre P: P ya no estaría dentro. La desigualdad es estricta.`),
+        h('GT-olvida-lado', p + q + 1, `Encontraste bien que CA + CB > ${p + q}, pero olvidaste sumar el lado AB, que mide más de ${M} − ${m} = ${M - m}.`),
+        h('GT-cota-equivocada', 2 * (p + q) + 1, `Usaste AB > PA + PB. Es al revés: en el triángulo APB, AB < PA + PB; la cota inferior de AB es PA − PB.`),
+        h('GT-ab-minimo-uno', p + q + 2, 'Tomaste AB como 1, el menor entero. Los lados no tienen por qué ser enteros (solo el perímetro), y además AB es mayor que la diferencia de PA y PB.'),
+      ];
+      const solucion = [
+        ['Como P está dentro: CA + CB > PA + PB = ', v('p', `${p}`), ' + ', v('q', `${q}`), ` = ${p + q} (se prolonga AP hasta BC y se usa dos veces la desigualdad triangular).`],
+        ['En el triángulo APB: AB > ', `${M} − ${m} = ${M - m}`, '.'],
+        [v('x', 'Perímetro'), ` = AB + CA + CB > ${M - m} + ${p + q} = ${2 * M}. El valor ${2 * M} no se alcanza, pero se acerca tanto como se quiera (A, P y B casi en línea y C muy cerca de P).`],
+        ['El menor entero es ', v('x', `${correcta} m`), '.'],
+      ];
+      return { correcta, unidad: 'm', errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'desigualdad', sub, p, q, u } };
+    }
+    if (sub === 'isosceles-ceviana') {
+      const c = rng.entero(3, 15), m = rng.entero(2, 15);
+      if (c === m) return null;
+      const R = calc.isoscelesCeviana(c, m), lo = Math.abs(c - m);
+      const variables = { c: { nombre: 'AB', color: 'o' }, m: { nombre: 'BD', color: 'i' }, x: { nombre: 'AC', color: 'd' } };
+      const enunciado = ['En el triángulo ABC se ubica el punto D en el lado AC de modo que el ángulo DBC mide lo mismo que el ángulo DCB. Se sabe que ', v('c', `AB = ${L(c)}`), ' y ', v('m', `BD = ${L(m)}`), '. El lado ', v('x', 'AC'), ' mide un número entero.'];
+      const pregunta = ['¿Cuál es el ', v('x', 'menor valor'), ' que puede tener AC?'];
+      const errores = [
+        h('GT-limite-incluido', R.min - 1, `Tomaste AD = ${lo}, el valor límite. Con él, A, B y D quedan en una recta: la desigualdad es estricta.`),
+        h('GT-sin-isosceles', lo + 1, `Ese es el menor valor de AD, no de AC. Falta sumar DC, que mide lo mismo que BD (${m}) porque el triángulo DBC es isósceles.`),
+        h('GT-cota-equivocada', R.max, 'Ese es el mayor valor posible de AC, no el menor.'),
+        h('GT-un-solo-triangulo', Math.abs(c - 2 * m) + 1 > 0 && Math.abs(c - 2 * m) + 1 !== R.min ? Math.abs(c - 2 * m) + 1 : -1, 'Aplicaste la desigualdad en el triángulo ABC con BC = 2·BD. BC no mide eso: en el isósceles DBC, BC es menor que BD + DC.'),
+      ];
+      const solucion = [
+        ['Como los ángulos DBC y DCB son iguales, el triángulo DBC es isósceles: DC = BD = ', v('m', `${m}`), '.'],
+        ['En el triángulo ABD: ', `${lo} < AD < ${c + m}`, '.'],
+        [v('x', 'AC'), ` = AD + DC, así que ${lo + m} < AC < ${c + 2 * m}.`],
+        ['El menor entero es ', v('x', L(R.min)), '.'],
+      ];
+      return { correcta: R.min, unidad: u, errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'desigualdad', sub, c, m, u } };
+    }
     // contar
     const N = rng.entero(7, 24), correcta = calc.contarTriangulos(N);
     let conDeg = 0, todas = 0, ordenadas = 0, escalenos = 0;
@@ -382,6 +434,30 @@
         ['Las dos a la vez: x va de ', `${R.min}`, ' a ', `${R.max}`, ': ', v('x', `${R.cuantos}`), ' valores.'],
       ];
       return { correcta: R.cuantos, unidad: '', errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'obtusangulo', sub, a, b, u } };
+    }
+    if (sub === 'relacion') {
+      // Lados AB = a (dato menor) y AC = b; ∠B obtuso y ∠A > ∠C; BC = x entero y único.
+      const R = calc.obtusoRelacion(a, b);
+      if (R.cuantos !== 1 || a <= b - a) return null; // la relación de ángulos tiene que pesar
+      const sinRel = rango(b - a + 1, mayorMenorQueRaiz(D2));
+      const variables = { a: { nombre: 'AB', color: 'o' }, b: { nombre: 'AC', color: 'i' }, x: { nombre: 'BC', color: 'd' } };
+      const enunciado = ['En el triángulo ABC, ', v('a', `AB = ${L(a)}`), ' y ', v('b', `AC = ${L(b)}`), '. El ángulo B es obtuso y el ángulo A es mayor que el ángulo C. El lado ', v('x', 'BC'), ' mide un número entero.'];
+      const pregunta = ['¿Cuánto mide ', v('x', 'BC'), '?'];
+      const errores = [
+        h('GT-sin-relacion-angulos', sinRel.min, `Usaste el ángulo obtuso y la desigualdad triangular, pero no la relación de ángulos. Como A > C, el lado opuesto a A (BC) es mayor que el opuesto a C (AB = ${a}).`),
+        h('GT-limite-incluido', a, `Con BC = ${a} el triángulo sería isósceles y A sería igual a C. Como A > C, BC > ${a} estrictamente.`),
+        h('GT-sin-condicion-obtuso', b + a - 1, `Usaste solo BC < AB + AC. Con el ángulo B obtuso, AC es el lado mayor y AC² > AB² + BC².`),
+        cuadD ? h('GT-limite-incluido-recto', rD, `Con BC = ${rD}, ${b}² = ${a}² + ${rD}²: el ángulo B es recto, no obtuso. La desigualdad es estricta.`)
+              : h('GT-redondeo-arriba', rD + 1, `Redondeaste √${D2} hacia arriba. BC tiene que ser menor que √${D2}; con ${rD + 1} el ángulo B ya no es obtuso.`),
+        h('GT-relacion-invertida', sinRel.min <= a - 1 ? a - 1 : -1, 'Pusiste la relación al revés: al ángulo mayor se opone el lado mayor, así que BC > AB.'),
+      ];
+      const solucion = [
+        ['Al ángulo mayor se opone el lado mayor: como A > C, BC > AB = ', v('a', `${a}`), '.'],
+        ['El ángulo B es obtuso: AC² > AB² + BC², es decir, ', `${b}² > ${a}² + BC²`, `, BC² < ${D2} y BC < ${raizD}.`],
+        ['La desigualdad triangular pide además BC > ', `${b} − ${a} = ${b - a}`, '. Juntando todo: ', `${Math.max(a, b - a)} < BC < ${raizD}`, '.'],
+        ['El único entero es ', v('x', L(R.min)), '.'],
+      ];
+      return { correcta: R.min, unidad: u, errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'obtusangulo', sub, a, b, u } };
     }
     // acutángulo
     const R = calc.acutangulo(a, b);

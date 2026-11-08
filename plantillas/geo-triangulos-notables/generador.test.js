@@ -62,6 +62,31 @@ function recalcular(p) {
       for (let C = 0.01; C < 60; C += 0.01) { const x = d.c * Math.sin(2 * C * RAD) / Math.sin(C * RAD); lo = Math.min(lo, x); hi = Math.max(hi, x); }
       return d.pide === 'max' ? Math.ceil(hi) - 1 : Math.floor(lo) + 1;
     }
+    if (d.sub === 'isosceles-ceviana') {
+      // Se arma ABD con AD = x − BD y se prolonga AD hasta C con DC = BD; se comprueba ∠DBC = ∠DCB.
+      return Math.min(...enteros(x => {
+        const t = porLados(d.m, x - d.m, d.c); // BD = m (lado "a" del triángulo B–D), AD, AB
+        if (!t || x - d.m <= 0) return false;
+        const A = t.A, B = t.B, D = t.C, C = sum(D, esc(uni(sub(D, A)), d.m));
+        return Math.abs(angulo(B, D, C) - angulo(C, D, B)) < 1e-9 && Math.abs(dist(A, C) - x) < 1e-9;
+      }));
+    }
+    if (d.sub === 'punto-dos') {
+      // Se busca A, B (ángulo APB variable) y C cerca de P con P dentro; menor perímetro visto.
+      const Pp = [0, 0], A = [d.p, 0];
+      let mejor = Infinity;
+      for (const del of [1e-4, 1e-3, 0.01, 0.1, 0.5, 1, 2, 3]) {
+        const B = esc([Math.cos(del), Math.sin(del)], d.q);
+        for (const eps of [1e-6, 1e-4, 1e-2]) for (let k = 0; k < 360; k++) {
+          const C = esc([Math.cos(k * Math.PI / 180), Math.sin(k * Math.PI / 180)], eps);
+          const s1 = cruz(sub(B, A), sub(Pp, A)), s2 = cruz(sub(C, B), sub(Pp, B)), s3 = cruz(sub(A, C), sub(Pp, C));
+          if ((s1 > 0 && s2 > 0 && s3 > 0) || (s1 < 0 && s2 < 0 && s3 < 0)) mejor = Math.min(mejor, dist(A, B) + dist(B, C) + dist(C, A));
+        }
+      }
+      const M = Math.max(d.p, d.q);
+      assert.ok(mejor > 2 * M && mejor < 2 * M + 1, `mejor ${mejor}`);
+      return Math.floor(mejor) + 1;
+    }
     // punto interior: se busca C que deje a P dentro y dé el menor perímetro.
     const A = [0, 0], B = [d.c, 0], x = (d.p * d.p - d.q * d.q + d.c * d.c) / (2 * d.c), Pp = [x, Math.sqrt(d.p * d.p - x * x)];
     const dentro = C => { const s1 = cruz(sub(B, A), sub(Pp, A)), s2 = cruz(sub(C, B), sub(Pp, B)), s3 = cruz(sub(A, C), sub(Pp, C)); return (s1 > 0 && s2 > 0 && s3 > 0) || (s1 < 0 && s2 < 0 && s3 < 0); };
@@ -77,6 +102,12 @@ function recalcular(p) {
     // Lados: AB = a, AC = b, BC = x. El ángulo entre a y b está en A; el opuesto a b, en B.
     const T = x => porLados(x, d.b, d.a);
     const obtusoEnA = x => { const t = T(x); return t && punto(sub(t.B, t.A), sub(t.C, t.A)) < 0; };
+    if (d.sub === 'relacion') {
+      // AB = a, AC = b, BC = x: ∠B obtuso y ∠A > ∠C, medidos con coordenadas; debe quedar uno solo.
+      const xs = enteros(x => { const t = T(x); return t && punto(sub(t.A, t.B), sub(t.C, t.B)) < 0 && angulo(t.A, t.B, t.C) > angulo(t.C, t.A, t.B) + 1e-9; });
+      assert.equal(xs.length, 1);
+      return xs[0];
+    }
     if (d.sub === 'opuesto-cuantos') return enteros(x => { const t = T(x); return t && punto(sub(t.A, t.B), sub(t.C, t.B)) < 0; }).length;
     if (d.sub === 'acutangulo') return enteros(x => { const t = T(x); return t && [[t.A, t.B, t.C], [t.B, t.A, t.C], [t.C, t.A, t.B]].every(([V, X, Y]) => punto(sub(X, V), sub(Y, V)) > 1e-9); }).length;
     const r = resumen(enteros(obtusoEnA));
@@ -192,7 +223,7 @@ test('salen todos los tipos y subtipos; misma forma y misma unidad en las altern
   }
   const esperados = ['desigualdad/max', 'desigualdad/min', 'desigualdad/cuantos', 'desigualdad/diagonal/max', 'desigualdad/diagonal/min',
     'desigualdad/diagonal/cuantos', 'desigualdad/punto-interior', 'desigualdad/doble-angulo/max', 'desigualdad/doble-angulo/min',
-    'desigualdad/contar', 'obtusangulo/entre-cuantos', 'obtusangulo/entre-max', 'obtusangulo/entre-min', 'obtusangulo/perimetros',
+    'desigualdad/contar', 'desigualdad/punto-dos', 'desigualdad/isosceles-ceviana', 'obtusangulo/relacion', 'obtusangulo/entre-cuantos', 'obtusangulo/entre-max', 'obtusangulo/entre-min', 'obtusangulo/perimetros',
     'obtusangulo/opuesto-cuantos', 'obtusangulo/acutangulo', 'angulos/incentro', 'angulos/excentro', 'angulos/int-ext',
     'angulos/ortocentro', 'angulos/circuncentro', 'angulos/orto-incentro', 'angulos/pies-alturas/AEF', 'angulos/pies-alturas/AO-EF',
     'ortocentro/CF', 'ortocentro/AC', 'mitades', 'arco/AE', 'arco/IE'];

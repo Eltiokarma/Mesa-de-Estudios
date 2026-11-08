@@ -95,16 +95,16 @@
       }
     },
     {
-      "semilla": 7,
+      "semilla": 3008,
       "entrada": {
         "tipo": "doblez",
         "sub": "coseno",
-        "L": 10,
-        "W": 4
+        "L": 12,
+        "W": 9
       },
       "esperado": {
-        "respuesta": -0.7241379310344828,
-        "exacta": "−21/29"
+        "respuesta": -0.28,
+        "exacta": "−7/25"
       }
     },
     {
@@ -122,13 +122,13 @@
       }
     },
     {
-      "semilla": 12,
+      "semilla": 3005,
       "entrada": {
         "tipo": "ceviana",
-        "a": 16,
-        "b2": 144,
-        "c": 20,
-        "d": 15,
+        "a": 26,
+        "b2": 1369,
+        "c": 15,
+        "d": 20,
         "pide": "BD"
       },
       "esperado": {
@@ -198,22 +198,22 @@
       }
     },
     {
-      "semilla": 28,
+      "semilla": 3036,
       "entrada": {
         "tipo": "faro",
         "sub": "depresion",
-        "theta": 90,
-        "p": 96,
-        "q": 36,
-        "h": 72,
-        "tA": 0.75,
-        "tB": 2,
+        "theta": 37,
+        "p": 144,
+        "q": 45,
+        "h": 60,
+        "tA": 0.4166666666666667,
+        "tB": 1.3333333333333333,
         "L1": null,
         "L2": null
       },
       "esperado": {
-        "respuesta": 102.52804494381037,
-        "exacta": "12√73 m"
+        "respuesta": 111.32385189167684,
+        "exacta": "27√17 m"
       }
     },
     {
@@ -247,27 +247,86 @@
     {
       "semilla": "entrada-1",
       "entrada": {
-        "tipo": "doblez",
-        "sub": "coseno",
-        "L": 15,
-        "W": 9
+        "tipo": "ley-tangentes",
+        "sub": "constante",
+        "forma": "(a − b)·cot((A − B)/2) = k·(a + b)"
       },
       "esperado": {
-        "respuesta": -0.47058823529411764,
-        "exacta": "−8/17"
+        "respuesta": "tan(C/2)",
+        "exacta": "tan(C/2)"
       }
     },
     {
       "semilla": "salida-1",
       "entrada": {
-        "tipo": "doblez",
-        "sub": "longitud",
-        "L": 54,
-        "W": 36
+        "tipo": "circunradio",
+        "sub": "en-funcion",
+        "pide": "radio"
       },
       "esperado": {
-        "respuesta": 39,
-        "exacta": "39 cm"
+        "respuesta": "p/(1 + senθ + cosθ)",
+        "exacta": "p/(1 + senθ + cosθ)"
+      }
+    },
+    {
+      "semilla": 3001,
+      "entrada": {
+        "tipo": "circunradio",
+        "sub": "en-funcion",
+        "pide": "area"
+      },
+      "esperado": {
+        "respuesta": "p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))",
+        "exacta": "p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))"
+      }
+    },
+    {
+      "semilla": 3018,
+      "entrada": {
+        "tipo": "circunradio",
+        "sub": "en-funcion",
+        "pide": "radio"
+      },
+      "esperado": {
+        "respuesta": "p/(1 + senθ + cosθ)",
+        "exacta": "p/(1 + senθ + cosθ)"
+      }
+    },
+    {
+      "semilla": 3029,
+      "entrada": {
+        "tipo": "ley-tangentes",
+        "sub": "constante",
+        "forma": "(a − b)/(a + b) = k·tan((A − B)/2)"
+      },
+      "esperado": {
+        "respuesta": "tan(C/2)",
+        "exacta": "tan(C/2)"
+      }
+    },
+    {
+      "semilla": 3019,
+      "entrada": {
+        "tipo": "ley-tangentes",
+        "sub": "constante",
+        "forma": "(a + b)·tan((A − B)/2) = k·(a − b)"
+      },
+      "esperado": {
+        "respuesta": "cot(C/2)",
+        "exacta": "cot(C/2)"
+      }
+    },
+    {
+      "semilla": 3003,
+      "entrada": {
+        "tipo": "doblez",
+        "sub": "longitud",
+        "L": 50,
+        "W": 20
+      },
+      "esperado": {
+        "respuesta": 29,
+        "exacta": "29 cm"
       }
     }
   ]

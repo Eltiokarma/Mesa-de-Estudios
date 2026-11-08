@@ -40,8 +40,38 @@ function porAngulos(B, C) {
   return [[x, x * tB], [0, 0], [1, 0]];
 }
 
+// Simbólicos: se evalúa el texto de cada alternativa con un θ (o un triángulo) concreto, y se devuelve la única
+// alternativa que coincide con lo medido por coordenadas.
+function evaluar(texto, vars) {
+  let e = texto.replace(/p²/g, '(p*p)').replace(/senθ/g, 'S').replace(/cosθ/g, 'K').replace(/·/g, '*')
+    .replace(/(\d)\(/g, '$1*(').replace(/(\d)p/g, '$1*p').replace(/\)\(/g, ')*(');
+  e = e.replace(/(sen|cos|tan|cot)\(C\/2\)/g, (m, f) => `F.${f}(c/2)`).replace(/(sen|cos|tan|cot) C/g, (m, f) => `F.${f}(c)`);
+  const F = { sen: Math.sin, cos: Math.cos, tan: Math.tan, cot: x => 1 / Math.tan(x) };
+  return Function('p', 'S', 'K', 'c', 'F', `return ${e};`)(vars.p, vars.S, vars.K, vars.c, F);
+}
+function unicaQueVale(p, objetivo, vars) {
+  const buenas = p.alternativas.filter(a => cerca(evaluar(a.texto, vars), objetivo));
+  assert.equal(buenas.length, 1, `una sola alternativa vale ${objetivo}`);
+  return buenas[0].valor;
+}
 function recalcular(p) {
   const d = p._datos;
+  if (d.sub === 'en-funcion') {
+    // θ = 35° y p = 3: triángulo con hipotenusa 1, escalado hasta perímetro 2p; R es media hipotenusa.
+    const t = 35 * Math.PI / 180, V = [[0, 0], [Math.cos(t), 0], [Math.cos(t), Math.sin(t)]];
+    const per = dist(V[0], V[1]) + dist(V[1], V[2]) + dist(V[2], V[0]), k = 6 / per;
+    const objetivo = d.pide === 'area' ? area(...V) * k * k : dist(V[0], V[2]) * k / 2;
+    return unicaQueVale(p, objetivo, { p: 3, S: Math.sin(t), K: Math.cos(t) });
+  }
+  if (d.sub === 'constante') {
+    // Triángulo con a = 7, b = 4 y C = 70°: se miden A y B, y k sale de despejar la forma dada.
+    const C = 70 * Math.PI / 180, Cv = [0, 0], Bv = [7, 0], Av = [4 * Math.cos(C), 4 * Math.sin(C)];
+    const A = anguloEn(Av, Bv, Cv), B = anguloEn(Bv, Av, Cv), a = 7, b = 4, td = Math.tan((A - B) / 2);
+    const k = { '(a − b)/(a + b) = k·tan((A − B)/2)': (a - b) / (a + b) / td, 'tan((A − B)/2) = k·(a − b)/(a + b)': td / ((a - b) / (a + b)),
+      '(a + b)·tan((A − B)/2) = k·(a − b)': (a + b) * td / (a - b), '(a − b)·cot((A − B)/2) = k·(a + b)': (a - b) / td / (a + b) }[d.forma];
+    assert.ok(Number.isFinite(k), 'forma desconocida');
+    return unicaQueVale(p, k, { c: C });
+  }
   if (d.tipo === 'ceviana') {
     const B = [0, 0], C = [d.a, 0];
     const ax = (d.c * d.c - d.b2 + d.a * d.a) / (2 * d.a), A = [ax, Math.sqrt(d.c * d.c - ax * ax)];  // corte de dos circunferencias
@@ -94,13 +124,14 @@ function recalcular(p) {
   }
   throw new Error('tipo desconocido ' + d.tipo);
 }
-probarGenerador(gen, { semillas: 600, recalcular, igual: (a, b) => Math.abs(a - b) < 1e-6 * Math.max(1, Math.abs(b)) });
+probarGenerador(gen, { semillas: 600, recalcular, igual: (a, b) => (typeof b === 'string' ? a === b : Math.abs(a - b) < 1e-6 * Math.max(1, Math.abs(b))) });
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {
     const p = gen.generar(c.semilla);
     assert.deepEqual(p._datos, c.entrada, 'el generador cambió: recalcula casos.json');
-    assert.ok(Math.abs(p.respuesta.valor - c.esperado.respuesta) <= casos.tolerancia, `da ${p.respuesta.valor}`);
+    if (typeof c.esperado.respuesta === 'string') assert.equal(p.respuesta.valor, c.esperado.respuesta);
+    else assert.ok(Math.abs(p.respuesta.valor - c.esperado.respuesta) <= casos.tolerancia, `da ${p.respuesta.valor}`);
     assert.equal(p.alternativas.find(a => a.correcta).texto, c.esperado.exacta);
   });
 }
@@ -108,7 +139,7 @@ for (const c of casos.casos) {
 test('salen los siete tipos y sus subtipos', () => {
   const vistos = new Set();
   for (let s = 0; s < 600; s++) { const d = gen.generar(s)._datos; vistos.add(d.tipo); vistos.add(`${d.tipo}/${d.sub || d.pide}`); }
-  for (const t of ['ceviana/BD', 'ceviana/DC', 'faro/directo', 'faro/depresion', 'faro/visuales', 'ley-tangentes/semidiferencia', 'ley-tangentes/rectangulo',
+  for (const t of ['circunradio/en-funcion', 'ley-tangentes/constante', 'ceviana/BD', 'ceviana/DC', 'faro/directo', 'faro/depresion', 'faro/visuales', 'ley-tangentes/semidiferencia', 'ley-tangentes/rectangulo',
     'areas/area', 'areas/bisectriz', 'circunradio/area-R', 'circunradio/lado-R', 'circunradio/perimetro', 'lado-minimo/valor', 'lado-minimo/lados',
     'doblez/coseno', 'doblez/longitud']) assert.ok(vistos.has(t), `no sale ${t}`);
 });
@@ -117,6 +148,7 @@ test('alternativas sin decimales, con una sola unidad y colores válidos', () =>
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);
     for (const a of p.alternativas) assert.ok(!/,\d/.test(a.texto), `semilla ${s}: decimal en ${a.texto}`);
+    if (typeof p.respuesta.valor === 'string') continue;   // simbólicos: se revisan en recalcular
     const unidades = new Set(p.alternativas.map(a => (a.texto.match(/[a-z²]+$/) || [''])[0]));
     assert.equal(unidades.size, 1, `semilla ${s}: mezcla unidades`);
     const colores = Object.values(p.variables).map(x => x.color);

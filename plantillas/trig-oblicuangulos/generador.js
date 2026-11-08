@@ -25,6 +25,12 @@
  *   circunradio    { sub, R, A, B, a, p }. sub 'area-R': circunradio R y dos ángulos A y B (C = 180° − A − B);
  *                  respuesta S = 2R²·sen A·sen B·sen C. sub 'lado-R': lado a y su ángulo opuesto A; respuesta
  *                  R = a/(2 sen A). sub 'perimetro': perímetro p y ángulos A, B; respuesta el área.
+ *   circunradio, sub 'en-funcion' (sale en cerca del 11 % de las semillas, por un sorteo aparte): triángulo ABC
+ *                  recto en C con perímetro 2p y ángulo agudo θ en A. { sub, pide }: pide 'area' (respuesta
+ *                  «p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))») o 'radio' («p/(1 + senθ + cosθ)»). Respuesta en texto.
+ *   ley-tangentes, sub 'constante' (otro 11 %, sorteo aparte): { sub, forma }, forma es la identidad escrita con
+ *                  una constante k (p. ej. «(a − b)/(a + b) = k·tan((A − B)/2)»); respuesta k en función de C, en texto
+ *                  («tan(C/2)», «cot(C/2)»…).
  *   lado-minimo    Ángulo A y área S fijos; los lados b y c varían. { sub, A, k, S }. S está en m² (S = k²·sen A / 2).
  *                  sub 'valor': el menor valor posible de a. sub 'lados': cuánto miden b y c cuando a es mínimo
  *                  (b = c = k).
@@ -130,6 +136,9 @@
 
   const TIPOS = ['ceviana', 'faro', 'ley-tangentes', 'areas', 'circunradio', 'lado-minimo', 'doblez'];
   function generar(semilla) {
+    // Un sorteo aparte decide si sale un problema simbólico; así el resto de semillas no cambia.
+    const simb = Azar.crear(ID + '|simbolico|' + semilla).sig();
+    if (simb < 0.22) return simb < 0.11 ? circunradioSimbolico(semilla) : tangentesSimbolico(semilla);
     const rng = Azar.crear(ID + '|' + semilla);
     const tipo = rng.elegir(TIPOS), pref = rng.sig();   // pref fija el subtipo en todos los intentos
     for (let intento = 0; intento < 200; intento++) {
@@ -536,6 +545,87 @@
         : ['AE = ', v('r', `${ex(correcta)} cm`), '.'],
     ];
     return { correcta, errores, variables, enunciado, pregunta, solucion, unidad: sub === 'coseno' ? '' : 'cm', forma: sub === 'coseno' ? 'fraccion' : 'longitud', negativos: sub === 'coseno', datos: { sub, L, W } };
+  }
+
+
+  // ---------- Problemas simbólicos (respuesta en texto, armarTexto) ----------
+  const simbolico = (semilla, tipo, datos, partes) => {
+    const rng = Azar.crear(ID + '|simbolico|' + semilla + '|problema');
+    const r = partes(rng);
+    const alternativas = P.armarTexto({ correcta: r.correcta, errores: r.errores, rng });
+    return {
+      id: `${ID}#${semilla}`, variables: r.variables, enunciado: r.enunciado, pregunta: r.pregunta, datos: '', alternativas,
+      solucion: r.solucion, respuesta: { valor: r.correcta.clave, unidad: '' }, _datos: { tipo, ...datos(r) },
+    };
+  };
+  const X = (id, texto, explicacion) => ({ id, clave: texto, texto, explicacion, respaldo: 'hipotesis', fuente: null });
+
+  // Triángulo rectángulo con perímetro 2p y un ángulo agudo θ: lados 2R·senθ, 2R·cosθ y 2R.
+  function circunradioSimbolico(semilla) {
+    return simbolico(semilla, 'circunradio', r => ({ sub: 'en-funcion', pide: r.pide }), rng => {
+      const pide = rng.sig() < 0.6 ? 'area' : 'radio';
+      const variables = { p: { nombre: 'semiperímetro', color: 'o' }, t: { nombre: 'ángulo agudo', color: 'i' }, R: { nombre: 'circunradio', color: 'd' }, S: { nombre: pide === 'area' ? 'área' : 'circunradio', color: 'h' } };
+      const enunciado = ['Un terreno tiene forma de triángulo ABC, recto en C. Su perímetro es fijo e igual a ', v('p', '2p'), ', y su ángulo agudo en A mide ', v('t', 'θ'), '. Sea R el radio de la circunferencia que pasa por A, B y C.'];
+      let correcta, errores, pregunta;
+      if (pide === 'area') {
+        correcta = { clave: 'p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))', texto: 'p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))' };
+        pregunta = ['¿Cuál es el área del terreno en función de θ?'];
+        errores = [
+          X('OB-area-sin-mitad', '2p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))', 'Te faltó el 1/2 del área: S = (1/2)·a·b = 2R²·senθ·cosθ, no 4R²·senθ·cosθ.'),
+          X('OB-perimetro-como-semiperimetro', 'p²·senθ·cosθ/(4·(1 + senθ)·(1 + cosθ))', 'Tomaste p como el perímetro. El perímetro es 2p: 2R(1 + senθ + cosθ) = 2p.'),
+          X('OB-sin-cuadrado', '2p²·senθ·cosθ/(1 + senθ + cosθ)', 'R lleva (1 + senθ + cosθ) en el denominador y en el área va R²: ese factor también se eleva al cuadrado.'),
+          X('OB-cuadrado-repartido', 'p²·senθ·cosθ', '(1 + senθ + cosθ)² no es 1 + sen²θ + cos²θ: faltan los dobles productos. Se cumple (1 + senθ + cosθ)² = 2(1 + senθ)(1 + cosθ).'),
+        ];
+      } else {
+        correcta = { clave: 'p/(1 + senθ + cosθ)', texto: 'p/(1 + senθ + cosθ)' };
+        pregunta = ['¿Cuánto mide R en función de θ?'];
+        errores = [
+          X('OB-senos-sin-2R', '2p/(1 + senθ + cosθ)', 'Tomaste cada lado como R·sen del ángulo opuesto. La ley de senos da a = 2R·sen A: la hipotenusa es el diámetro, 2R.'),
+          X('OB-perimetro-como-semiperimetro', 'p/(2·(1 + senθ + cosθ))', 'Tomaste p como el perímetro. El perímetro es 2p.'),
+          X('OB-sin-hipotenusa', 'p/(senθ + cosθ)', 'Sumaste solo los catetos. El perímetro también lleva la hipotenusa, 2R·sen 90° = 2R.'),
+        ];
+      }
+      const solucion = [
+        ['Ley de senos: BC = 2R·sen ', v('t', 'θ'), ', AC = 2R·cos θ (el ángulo B es 90° − θ) y AB = 2R·sen 90° = 2R: la hipotenusa es el diámetro.'],
+        ['Perímetro: 2R(1 + senθ + cosθ) = ', v('p', '2p'), ' → ', v('R', 'R = p/(1 + senθ + cosθ)'), '.'],
+        ...(pide === 'area' ? [
+          ['Área: (1/2)·BC·AC = 2R²·senθ·cosθ = 2p²·senθ·cosθ/(1 + senθ + cosθ)².'],
+          ['Con (1 + senθ + cosθ)² = 1 + sen²θ + cos²θ + 2senθ + 2cosθ + 2senθcosθ = 2(1 + senθ)(1 + cosθ): S = ', v('S', correcta.texto), '.'],
+        ] : [['R = ', v('S', correcta.texto), '.']]),
+      ];
+      return { correcta, errores, variables, enunciado, pregunta, solucion, pide };
+    });
+  }
+
+  // La «constante» de una forma de la ley de tangentes: (a − b)/(a + b) = tan((A − B)/2)·tan(C/2).
+  const FORMAS_TAN = [
+    { forma: '(a − b)/(a + b) = k·tan((A − B)/2)', k: 'tan' },
+    { forma: 'tan((A − B)/2) = k·(a − b)/(a + b)', k: 'cot' },
+    { forma: '(a + b)·tan((A − B)/2) = k·(a − b)', k: 'cot' },
+    { forma: '(a − b)·cot((A − B)/2) = k·(a + b)', k: 'tan' },
+  ];
+  function tangentesSimbolico(semilla) {
+    return simbolico(semilla, 'ley-tangentes', r => ({ sub: 'constante', forma: r.forma }), rng => {
+      const F = rng.elegir(FORMAS_TAN);
+      const otra = F.k === 'tan' ? 'cot' : 'tan';
+      const t = (fn, arg) => (arg === 'C' ? `${fn} C` : `${fn}(C/2)`);
+      const correcta = { clave: t(F.k, 'C/2'), texto: t(F.k, 'C/2') };
+      const errores = [
+        X('OB-tangentes-invertida', t(otra, 'C/2'), `Al despejar, tan((A + B)/2) = cot(C/2) quedó del lado equivocado: dividir entre cot(C/2) es multiplicar por tan(C/2).`),
+        X('OB-angulo-sin-mitad', t(F.k, 'C'), 'En la ley de tangentes van los semiángulos: (A + B)/2 = 90° − C/2, no 90° − C.'),
+        X('OB-sin-semisuma', '1', 'Te olvidaste de tan((A + B)/2). Vale 1 solo si C = 90°; en general es cot(C/2).'),
+        X('OB-funcion-cambiada', t(F.k === 'tan' ? 'sen' : 'cos', 'C/2'), `tan(90° − C/2) es cot(C/2): la co-razón de la tangente es la cotangente, no el ${F.k === 'tan' ? 'seno' : 'coseno'}.`),
+      ];
+      const variables = { k: { nombre: 'constante k', color: 'h' }, d: { nombre: 'semidiferencia (A − B)/2', color: 'o' }, s: { nombre: 'semisuma (A + B)/2', color: 'i' } };
+      const enunciado = ['En todo triángulo ABC, con a, b y c opuestos a A, B y C, se cumple ', F.forma, ', donde k depende solo del ángulo ', 'C', '.'];
+      const pregunta = ['¿Qué es k?'];
+      const solucion = [
+        ['Ley de tangentes: (a − b)/(a + b) = tan', v('d', '((A − B)/2)'), ' / tan', v('s', '((A + B)/2)'), '.'],
+        ['Como A + B = 180° − C, ', v('s', '(A + B)/2 = 90° − C/2'), ' y tan((A + B)/2) = cot(C/2).'],
+        ['Así, (a − b)/(a + b) = tan((A − B)/2)·tan(C/2). Llevada a la forma dada: ', F.forma.replace('k', correcta.texto), ', es decir, ', v('k', `k = ${correcta.texto}`), '.'],
+      ];
+      return { correcta, errores, variables, enunciado, pregunta, solucion, forma: F.forma };
+    });
   }
 
   return { id: ID, titulo: 'Triángulos oblicuángulos: cosenos, senos, tangentes y áreas', generar, calc, exacto };

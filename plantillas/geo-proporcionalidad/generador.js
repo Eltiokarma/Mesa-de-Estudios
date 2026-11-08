@@ -83,10 +83,10 @@
     mastil: (a, b, c, H) => { const BD = a * c / (b + c), DC = a * b / (b + c); return { BD, DC, TB: sq(BD * BD + H * H), TC: sq(DC * DC + H * H) }; },
   };
 
-  // ---------- texto exacto: entero, fracción p/q (q ≤ 24) o a√b ----------
+  // ---------- texto exacto: entero, fracción p/q (q ≤ 12) o a√b ----------
   function exacto(x) {
     if (!Number.isFinite(x) || x <= 0 || x > 1e5) return null;
-    for (let q = 1; q <= 24; q++) {
+    for (let q = 1; q <= 12; q++) {
       const p = x * q, r = Math.round(p);
       if (Math.abs(p - r) < 1e-9 * Math.max(1, r)) return q === 1 ? P.formatear(r) : `${r}/${q}`;
     }
@@ -125,7 +125,8 @@
     if (!o) return null;
     const conU = o.unidad === undefined ? o.datos.u : o.unidad;
     const texto = x => { const t = exacto(x); return conU ? `${t} ${conU}` : t; };
-    if (!exacto(o.correcta)) return null;
+    // Respuesta «de academia»: entera, a√b o fracción de denominador 8 como mucho (nada de 63/10).
+    if (!exacto(o.correcta) || (!exacto(o.correcta).includes('√') && !simple(o.correcta, 8))) return null;
     // Misma forma: si la correcta no lleva raíz, tampoco sus distractores.
     const conRaiz = exacto(o.correcta).includes('√');
     const errores = o.errores.filter(e => exacto(e.valor) !== null && (conRaiz || !exacto(e.valor).includes('√')));

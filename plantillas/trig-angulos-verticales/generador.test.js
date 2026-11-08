@@ -27,8 +27,27 @@ function raices(f, x0, x1, paso) {
 }
 function biseccion(f, lo, hi) { for (let k = 0; k < 200; k++) { const m = (lo + hi) / 2; if (f(lo) * f(m) <= 0) hi = m; else lo = m; } return (lo + hi) / 2; }
 
+// Simbólico: con h = 1 y una elevación de 50° se miden BP y PT por coordenadas; luego se evalúa el texto de cada
+// alternativa («h·cot(α/2)», «h·tan 2θ»…) y se devuelve la única que da ese número.
+const FN = { sen: Math.sin, cos: Math.cos, tan: Math.tan, cot: x => 1 / Math.tan(x), sec: x => 1 / Math.cos(x), csc: x => 1 / Math.sin(x) };
+function evaluarPuente(texto, angulo) {
+  const m = texto.match(/^h·(sen|cos|tan|cot|sec|csc)(?: (\S+)|\((\S+)\))$/);
+  assert.ok(m, `no se entiende «${texto}»`);
+  const arg = m[2] || m[3];               // α = 50°, o θ = 25° (2θ = 50°)
+  const valor = { 'α/2': 25, 'α': 50, '2α': 100, 'θ': 25, '2θ': 50, '4θ': 100 }[arg];
+  assert.ok(valor !== undefined && (angulo === 'α') === arg.includes('α'), `argumento ${arg}`);
+  return FN[m[1]](valor * Math.PI / 180);
+}
 function recalcular(p) {
   const d = p._datos;
+  if (d.tipo === 'puente-simbolico') {
+    const B = [0, 0], T = [0, 1], P = [1 / Math.tan(50 * Math.PI / 180), 0];
+    const BP = Math.hypot(P[0] - B[0], P[1] - B[1]), PT = Math.hypot(T[0] - P[0], T[1] - P[1]);
+    const objetivo = d.sub === 'suma' ? BP + PT : PT - BP;
+    const buenas = p.alternativas.filter(a => cerca(evaluarPuente(a.texto, d.angulo), objetivo));
+    assert.equal(buenas.length, 1, 'una sola alternativa vale lo pedido');
+    return buenas[0].valor;
+  }
   if (d.tipo === 'mismo-lado') {
     const { H, x } = alturaMismoLado(d.d, at(d.tA), at(d.tB));
     return d.pide === 'altura' ? H + d.h0 : x;
@@ -71,13 +90,14 @@ function recalcular(p) {
   }
   throw new Error('tipo desconocido ' + d.tipo);
 }
-probarGenerador(gen, { semillas: 600, recalcular, igual: cerca });
+probarGenerador(gen, { semillas: 600, recalcular, igual: (a, b) => (typeof b === 'string' ? a === b : cerca(a, b)) });
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {
     const p = gen.generar(c.semilla);
     assert.deepEqual(p._datos, c.entrada, 'el generador cambió: recalcula casos.json');
-    assert.ok(Math.abs(p.respuesta.valor - c.esperado.respuesta) <= casos.tolerancia, `da ${p.respuesta.valor}`);
+    if (typeof c.esperado.respuesta === 'string') assert.equal(p.respuesta.valor, c.esperado.respuesta);
+    else assert.ok(Math.abs(p.respuesta.valor - c.esperado.respuesta) <= casos.tolerancia, `da ${p.respuesta.valor}`);
     assert.equal(p.alternativas.find(a => a.correcta).texto, c.esperado.exacta);
   });
 }
@@ -85,7 +105,7 @@ for (const c of casos.casos) {
 test('salen los ocho tipos y sus subtipos', () => {
   const vistos = new Set();
   for (let s = 0; s < 600; s++) { const d = gen.generar(s)._datos; vistos.add(d.tipo); if (d.sub) vistos.add(`${d.tipo}/${d.sub}`); }
-  for (const t of ['mismo-lado', 'ambos-lados', 'movimiento', 'entre-edificios', 'mitad-cima', 'objeto-elevado', 'dron-camino', 'condicion-angulo',
+  for (const t of ['puente-simbolico', 'puente-simbolico/suma', 'puente-simbolico/resta', 'mismo-lado', 'ambos-lados', 'movimiento', 'entre-edificios', 'mitad-cima', 'objeto-elevado', 'dron-camino', 'condicion-angulo',
     'movimiento/auto', 'movimiento/dron', 'movimiento/camara', 'movimiento/avioneta', 'entre-edificios/muro', 'entre-edificios/otro',
     'objeto-elevado/tan', 'objeto-elevado/altura', 'objeto-elevado/pura', 'objeto-elevado/distancia']) assert.ok(vistos.has(t), `no sale ${t}`);
 });
@@ -94,6 +114,10 @@ test('alternativas sin decimales y con la misma unidad', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);
     for (const a of p.alternativas) assert.ok(!/,\d/.test(a.texto), `semilla ${s}: decimal en ${a.texto}`);
+    if (typeof p.respuesta.valor === 'string') {   // simbólico: todas con la forma h·razón(ángulo)
+      assert.ok(p.alternativas.every(a => /^h·(sen|cos|tan|cot|sec|csc)[ (]/.test(a.texto)), `semilla ${s}: forma`);
+      continue;
+    }
     const unidades = new Set(p.alternativas.map(a => a.texto.split(' ').pop().replace(/[\d/√]/g, '')));
     assert.equal(unidades.size, 1, `semilla ${s}: mezcla unidades`);
     // Colores: como mucho 4 variables, cada una con un color distinto de la app.

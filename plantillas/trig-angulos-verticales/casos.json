@@ -207,31 +207,31 @@
       }
     },
     {
-      "semilla": 22,
+      "semilla": 3023,
       "entrada": {
         "tipo": "objeto-elevado",
         "sub": "tan",
-        "a": 15,
-        "b": 3,
-        "D": 21
+        "a": 11,
+        "b": 13,
+        "D": 26
       },
       "esperado": {
-        "respuesta": 0.6363636363636364,
-        "exacta": "7/11"
+        "respuesta": 0.2894736842105263,
+        "exacta": "11/38"
       }
     },
     {
-      "semilla": 25,
+      "semilla": 3057,
       "entrada": {
         "tipo": "objeto-elevado",
         "sub": "pura",
-        "b": 24,
+        "b": 6,
         "D": 12,
-        "t": 0.16666666666666666
+        "t": 0.75
       },
       "esperado": {
-        "respuesta": 14.999999999999993,
-        "exacta": "15 cm"
+        "respuesta": 18,
+        "exacta": "18 cm"
       }
     },
     {
@@ -382,6 +382,30 @@
       "esperado": {
         "respuesta": 87,
         "exacta": "87 m"
+      }
+    },
+    {
+      "semilla": 3051,
+      "entrada": {
+        "tipo": "puente-simbolico",
+        "sub": "suma",
+        "angulo": "α"
+      },
+      "esperado": {
+        "respuesta": "h·cot(α/2)",
+        "exacta": "h·cot(α/2)"
+      }
+    },
+    {
+      "semilla": 3021,
+      "entrada": {
+        "tipo": "puente-simbolico",
+        "sub": "resta",
+        "angulo": "2θ"
+      },
+      "esperado": {
+        "respuesta": "h·tan θ",
+        "exacta": "h·tan θ"
       }
     }
   ]
