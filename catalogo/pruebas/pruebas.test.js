@@ -200,6 +200,21 @@ test('presentar baraja las opciones siempre igual para el mismo alumno y conserv
   assert.deepEqual(Pruebas.corregir(elegida), { opcion: elegida.letra, correcta: false, error: elegida.error });
 });
 
+test('«No sé» no es acierto ni error de un código, y no cambia el orden A→B / B→A ni las opciones', () => {
+  assert.deepEqual(Pruebas.corregir(null), { opcion: '', correcta: false, error: '', nose: true });
+  assert.deepEqual(Pruebas.corregir({ nose: true }), Pruebas.noSe());
+  assert.equal(Pruebas.NOSE_TEXTO, 'No sé');
+  assert.ok(!Pruebas.LETRAS.includes(Pruebas.NOSE_MARCA), 'la marca de «No sé» no se confunde con una letra');
+  // El orden y las formas dependen solo del alumno y del curso: responder «No sé» no los toca.
+  for (const al of ['a1', 'a2', 'a3', 'a4']) {
+    const o = Pruebas.orden(al, 'fisica');
+    assert.notEqual(Pruebas.formaDe(o, 'entrada'), Pruebas.formaDe(o, 'salida'));
+  }
+  // «No sé» no es una opción del banco: presentar no la agrega ni cambia cuántas hay.
+  const [it] = Pruebas.items(bancos[0], 'A');
+  assert.equal(Pruebas.presentar(it, 'a1').length, it.opciones.length);
+});
+
 test('validar avisa si las formas no son paralelas', () => {
   const b = JSON.parse(JSON.stringify(bancos[0]));
   b.pares[0].B.opciones = b.pares[0].B.opciones.slice(0, 3).concat([{ texto: 'otra', error: 'inventado' }]);

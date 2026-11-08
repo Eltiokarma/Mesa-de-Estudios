@@ -105,8 +105,8 @@ test('el informe incluye la tabla por curso y los errores con su descripción', 
   // unir no confunde dos ítems respondidos en el mismo milisegundo
   assert.equal(unir([[{ ...cursoEv[1], t: 'z' }, { ...cursoEv[2], t: 'z' }]]).length, 2);
   // el CSV lleva las columnas nuevas al final
-  assert.deepEqual(M.COLUMNAS.slice(-13, -1), ['curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion']);
-  assert.equal(M.COLUMNAS[M.COLUMNAS.length - 1], 'respuestas');
+  assert.deepEqual(M.COLUMNAS.slice(-14, -2), ['curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion']);
+  assert.deepEqual(M.COLUMNAS.slice(-2), ['respuestas', 'nose']);
   assert.match(M.aCSV([cursoEv[0]]), /fisica,A,AB,,,,,,0,,,/);
   // Las habilitaciones del profesor y el cambio de alumno no entran al resumen por curso.
   assert.equal(M.resumirCursos([...cursoEv, { t: 'h', alumno: 'a', tipo: 'habilitacion', que: 'salida', curso: 'fisica', origen: 'profesor' }])[0].alumnosEntrada, 3);
@@ -181,4 +181,52 @@ test('el informe no repite los errores de lectura en "Errores elegidos"', () => 
   assert.doesNotMatch(md, /## Errores elegidos en lectura-verbal/);
   assert.match(md, /## Errores por código RV en lectura-verbal/);
   assert.match(informe(datos), /## Errores elegidos en m1/);
+});
+
+// ---------- «No sé» ----------
+test('«No sé» por módulo: porcentaje en entrada, salida y práctica, y confianza calibrada', () => {
+  const e = (alumno, t, extra) => ({ t, alumno, modulo: 'm2', ...extra });
+  const l = [
+    e('a', '1', { tipo: 'prueba', fase: 'entrada', aciertos: 1, total: 3, nose: 2 }),  // 1 de 1 intentada
+    e('b', '2', { tipo: 'prueba', fase: 'entrada', aciertos: 1, total: 3 }),           // dato de antes: sin campo
+    e('a', '3', { tipo: 'prueba', fase: 'salida', aciertos: 2, total: 3, nose: 0 }),
+    e('a', '4', { tipo: 'prediccion', problema: 'p1', opcion: '', correcta: false, error: '', nose: true }),
+    e('a', '5', { tipo: 'prediccion', problema: 'p2', opcion: 'A', correcta: true, error: '' }),
+    e('a', '6', { tipo: 'prediccion', problema: 'p3', opcion: 'B', correcta: false, error: 'X1' }),
+  ];
+  const [r] = M.resumir(l);
+  assert.ok(Math.abs(r.nose.entrada - 2 / 6) < 1e-12);
+  assert.equal(r.nose.salida, 0);
+  assert.ok(Math.abs(r.nose.practica - 1 / 3) < 1e-12);
+  assert.ok(Math.abs(r.confianza.entrada - 2 / 4) < 1e-12);
+  assert.ok(Math.abs(r.confianza.practica - 1 / 2) < 1e-12);
+  assert.ok(Math.abs(r.acierto - 1 / 3) < 1e-12, '«No sé» cuenta como no acierto');
+  assert.deepEqual(r.errores, [{ id: 'X1', n: 1 }], '«No sé» no es un error');
+  // Ganancia: «No sé» como no acierto (a: 1/3 → 2/3).
+  assert.ok(Math.abs(r.ganancia - 1 / 3) < 1e-12);
+});
+
+test('«No sé» por curso: no es error, cuenta como no acierto en Hake y sale de la confianza', () => {
+  const it = (alumno, fase, k, extra) => ({ t: `${alumno}${fase}${k}`, alumno, tipo: 'item', fase, curso: 'q', forma: 'A', orden: 'AB', plantilla: 'gases', ...extra });
+  const l = [
+    it('a', 'entrada', 1, { correcta: false, error: '', opcion: '', nose: true }),
+    it('a', 'entrada', 2, { correcta: true, error: '' }),
+    it('a', 'entrada', 3, { correcta: false, error: 'E1' }),
+    it('a', 'entrada', 4, { correcta: false, error: 'E2', nose: undefined }), // dato de antes
+    { t: 'az', alumno: 'a', tipo: 'prueba', fase: 'entrada', curso: 'q', forma: 'A', aciertos: 1, total: 4, nose: 1 },
+    it('a', 'salida', 1, { correcta: true, error: '' }),
+    it('a', 'salida', 2, { correcta: true, error: '' }),
+    it('a', 'salida', 3, { correcta: false, error: '', nose: true }),
+    it('a', 'salida', 4, { correcta: true, error: '' }),
+    { t: 'bz', alumno: 'a', tipo: 'prueba', fase: 'salida', curso: 'q', forma: 'B', aciertos: 3, total: 4, nose: 1 },
+  ];
+  const [c] = M.resumirCursos(l);
+  assert.equal(c.nose.entrada, 1 / 4); assert.equal(c.nose.salida, 1 / 4);
+  assert.ok(Math.abs(c.confianza.entrada - 1 / 3) < 1e-12); assert.equal(c.confianza.salida, 1);
+  assert.ok(Math.abs(c.hake - (3 / 4 - 1 / 4) / (1 - 1 / 4)) < 1e-12);
+  assert.deepEqual(c.errores.map(e => e.id).sort(), ['E1', 'E2']);
+  assert.equal(c.plantillas[0].noseEntrada, 1 / 4);
+  const md = informeCursos(l, {});
+  assert.match(md, /\| 25 % \/ 25 % \| 33 % \/ 100 % \|/);
+  assert.match(informe(l), /Confianza calibrada/);
 });

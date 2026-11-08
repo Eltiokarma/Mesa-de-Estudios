@@ -71,9 +71,17 @@
   }
 
   // Lo que se registra de una respuesta (sin el texto: el banco lo tiene).
+  // «No sé» (opcion null o { nose: true }): ni acierto ni error de un código; se marca con nose: true.
   function corregir(opcion) {
+    if (!opcion || opcion.nose) return noSe();
     return { opcion: opcion.letra, correcta: !!opcion.correcta, error: opcion.correcta ? '' : (opcion.error || '') };
   }
+
+  // «No sé»: la opción que va siempre al final, sin letra. Separa la respuesta honesta de la adivinanza:
+  // en la ganancia de Hake cuenta como no acierto, y la «confianza calibrada» (aciertos sobre lo intentado)
+  // la deja fuera (nucleo/medicion.js). En la cadena de respuestas de la prueba se escribe NOSE_MARCA.
+  const NOSE_TEXTO = 'No sé', NOSE_MARCA = '0';
+  function noSe() { return { opcion: '', correcta: false, error: '', nose: true }; }
 
   // Revisa el formato del banco y la equivalencia de las formas. Devuelve una lista de problemas (vacía si está bien).
   // No comprueba las respuestas: eso lo hace catalogo/pruebas/pruebas.test.js con los motores.
@@ -129,5 +137,5 @@
     return mal;
   }
 
-  return { FORMAS, FASES, LETRAS, JUSTIFICA, orden, formaDe, items, presentar, corregir, validar, ocultar, revelar };
+  return { FORMAS, FASES, LETRAS, JUSTIFICA, NOSE_TEXTO, NOSE_MARCA, orden, formaDe, items, presentar, corregir, noSe, validar, ocultar, revelar };
 });

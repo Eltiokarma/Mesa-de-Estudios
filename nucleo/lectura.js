@@ -271,6 +271,12 @@
     return { alternativa: a, correcta: a.correcta, error: a.correcta ? null : a.codigo, pos: a.pos, letra: a.letra, clave: correcta };
   }
 
+  // «No sé» en las pruebas de entrada y salida: no elige ninguna alternativa, no es acierto ni error de un código.
+  // En la cadena de respuestas de la prueba va como 0 (las posiciones del banco van de 1 a 5).
+  function noSe(pregunta) {
+    return { alternativa: null, correcta: false, error: null, pos: 0, letra: '', nose: true, clave: pregunta.alternativas.find(x => x.correcta) };
+  }
+
   // Respaldo de un código (codigos.json, generado del informe por herramientas/codigos-verbal.js).
   const respaldo = (codigo, codigos) => (codigo && codigos && codigos[codigo] ? codigos[codigo].respaldo : '');
 
@@ -400,12 +406,13 @@
     // Pruebas de entrada y salida: un 'item' por pregunta y una 'prueba' al final, con los campos de las pruebas
     // por curso (nucleo/medicion.js), para que resumirCursos dé la ganancia de Hake y los errores RV antes y después.
     item: ({ fase, curso, modulo, forma, orden, pregunta, resultado, codigos, ms }) => ({ tipo: 'item', fase, curso, forma, orden, banco: 'lectura',
-      item: pregunta.problema, par: pregunta.id, plantilla: modulo, unidad: pregunta.unidad, opcion: String(resultado.pos), correcta: resultado.correcta,
-      error: resultado.error || '', respaldo: respaldo(resultado.error, codigos), ms }),
-    // En "respuestas", la posición en el banco de cada respuesta, una por pregunta ("215").
+      item: pregunta.problema, par: pregunta.id, plantilla: modulo, unidad: pregunta.unidad, opcion: resultado.nose ? '' : String(resultado.pos), correcta: resultado.correcta,
+      error: resultado.error || '', respaldo: respaldo(resultado.error, codigos), ...(resultado.nose ? { nose: true } : {}), ms }),
+    // En "respuestas", la posición en el banco de cada respuesta, una por pregunta ("215"); «No sé» es 0 ("205").
     prueba: ({ fase, curso, forma, orden, modulo, unidad, item, resultados, ms }) => ({ tipo: 'prueba', fase, ...(curso ? { curso, forma, orden, banco: 'lectura' } : {}),
       modulo, unidad, problema: problemaTexto(item),
-      aciertos: resultados.filter(r => r.correcta).length, total: resultados.length, respuestas: resultados.map(r => r.pos).join(''), ms }),
+      aciertos: resultados.filter(r => r.correcta).length, total: resultados.length, respuestas: resultados.map(r => (r.nose ? 0 : r.pos)).join(''),
+      nose: resultados.filter(r => r.nose).length, ms }),
   };
 
   // ---------- Validación (lo que la app necesita para mostrar un ítem) ----------
@@ -466,7 +473,7 @@
     return errores;
   }
 
-  return { LETRAS, CLASES, RELACIONES, PROPOSITOS, ANALOGIAS, ATRIBUCIONES, autores, autorDe, TIPOS_PREVIO, NOMBRE_EJERCICIO,
+  return { LETRAS, noSe, CLASES, RELACIONES, PROPOSITOS, ANALOGIAS, ATRIBUCIONES, autores, autorDe, TIPOS_PREVIO, NOMBRE_EJERCICIO,
     TIPOS_FIGURA, figuras, elementos, referencias, etiquetaRef, citas,
     normalizar, oraciones, numero, problema, problemaTexto, codigoOracion, opcionesPrevio, calificarPrevio,
     preparar, calificar, respaldo, pintura, etiquetaPrevio, textoAnalogia, correccionPrevio, FRASE_NO_APLICA, avisos, formaPrueba, lista, siguiente, ev, validar };

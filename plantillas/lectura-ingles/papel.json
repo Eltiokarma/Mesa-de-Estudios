@@ -67,19 +67,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "La Amazonía peruana tiene muchos ríos y una enorme variedad de frutas y plantas."
+              "t": "Iquitos es la ciudad más grande del mundo a la que no se puede llegar por carretera."
             },
             {
               "letra": "B",
-              "t": "En el mercado de Belén se vende la comida que llega a Iquitos por el río."
+              "t": "El mercado de Belén es un lugar de compras: ahí se vende la comida que llega a Iquitos por el río."
             },
             {
               "letra": "C",
-              "t": "En algunos puestos del mercado venden aguaje, el fruto de una palmera, que se come o se toma en jugo."
+              "t": "La Amazonía peruana tiene muchos ríos y una enorme variedad de frutas y plantas."
             },
             {
               "letra": "D",
-              "t": "Iquitos es la ciudad más grande del mundo a la que no se puede llegar por carretera."
+              "t": "En algunos puestos del mercado venden aguaje, el fruto de una palmera, que se come o se toma en jugo."
             },
             {
               "letra": "E",
@@ -93,19 +93,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "realizan."
-            },
-            {
-              "letra": "B",
-              "t": "se dan cuenta."
-            },
-            {
-              "letra": "C",
               "t": "visitan."
             },
             {
-              "letra": "D",
+              "letra": "B",
               "t": "se preguntan si."
+            },
+            {
+              "letra": "C",
+              "t": "se dan cuenta."
+            },
+            {
+              "letra": "D",
+              "t": "realizan."
             }
           ]
         },
@@ -115,11 +115,11 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Espera que el mercado se vaya a un edificio nuevo, lejos del río."
+              "t": "Está segura de que muy pronto el mercado se mudará a un edificio nuevo."
             },
             {
               "letra": "B",
-              "t": "Está segura de que muy pronto el mercado se mudará a un edificio nuevo."
+              "t": "Espera que el mercado se vaya a un edificio nuevo, lejos del río."
             },
             {
               "letra": "C",
@@ -137,30 +137,30 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Las familias de Belén viven todo el año dentro de sus canoas."
+              "t": "Durante varios meses del año, el agua del río llega hasta sus calles."
             },
             {
               "letra": "B",
-              "t": "Sus calles se inundan porque en Iquitos llueve mucho más que en Lima."
-            },
-            {
-              "letra": "C",
               "t": "Los vendedores del mercado llegan cada mañana en canoa desde ese barrio."
             },
             {
+              "letra": "C",
+              "t": "Sus calles se inundan porque en Iquitos llueve mucho más que en Lima."
+            },
+            {
               "letra": "D",
-              "t": "Durante varios meses del año, el agua del río llega hasta sus calles."
+              "t": "Las familias de Belén viven todo el año dentro de sus canoas."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: E · 2: B · 3: C · 4: D.",
+      "respuesta": "Clave: 1: E · 2: C · 3: C · 4: A.",
       "pasos": [
         "Pregunta 1. Antes de las alternativas: la oración 6. La oración 6 junta todo: el mercado es más que un lugar para comprar comida, porque muestra cómo la ciudad vive con el río. Lo demás (los botes, el aguaje, las casas sobre postes, la canoa) son ejemplos de esa vida con el río.",
         "Pregunta 1. Clave E. Es lo que dice la oración 6 («more than a place to buy food: it shows how the whole city lives with the river»), y el resto del texto lo muestra con ejemplos.",
-        "Pregunta 2. Clave B. «Realize» quiere decir darse cuenta: al poco tiempo, los visitantes notan que el mercado es más que un lugar para comprar comida.",
+        "Pregunta 2. Clave C. «Realize» quiere decir darse cuenta: al poco tiempo, los visitantes notan que el mercado es más que un lugar para comprar comida.",
         "Pregunta 3. Clave C. «The market may move» dice que es posible, no seguro; y «she hopes it will not leave the river» dice que ella espera que no se aleje del río.",
-        "Pregunta 4. Clave D. Si cuando el río crece la gente se mueve en canoa (oración 8), el agua cubre por donde antes se caminaba. Eso explica también las casas sobre postes altos (oración 7)."
+        "Pregunta 4. Clave A. Si cuando el río crece la gente se mueve en canoa (oración 8), el agua cubre por donde antes se caminaba. Eso explica también las casas sobre postes altos (oración 7)."
       ]
     },
     {

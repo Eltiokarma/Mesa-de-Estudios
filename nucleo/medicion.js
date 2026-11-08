@@ -27,6 +27,11 @@
  *   Pruebas de entrada y salida del módulo: como las de curso (curso: 'razonamiento-verbal', banco: 'lectura',
  *   forma A = indice.entrada, B = indice.salida, orden AB o BA), un 'item' por pregunta (item: 't000av1.p1',
  *   par: 'p1', plantilla: el módulo, opcion: posición en el banco) y una 'prueba' al final con respuestas en posiciones.
+ * «No sé» (pruebas de entrada y salida, y práctica con generadores): el 'item' o la 'prediccion' llevan nose: true,
+ *   opcion '' y error '' (nunca es acierto ni error de un código); la 'prueba' lleva nose (cuántas marcó) y, en
+ *   respuestas, un 0 en su lugar. Los eventos sin el campo (datos de antes) se leen como sin «No sé».
+ *   Para la ganancia de Hake, «No sé» cuenta como no acierto. La «confianza calibrada» es la tasa de aciertos
+ *   sobre lo intentado: aciertos / (respondidas − «No sé»).
  * Todos llevan además: t (fecha ISO), alumno (id anónimo), grado, colegio, version.
  */
 (function (root, fabrica) {
@@ -40,7 +45,13 @@
     // Pruebas por curso (al final, para no mover las columnas de los archivos ya exportados).
     'curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion',
     // Respuestas de cada prueba (letras en predicciones, posiciones en el banco en lectura).
-    'respuestas'];
+    'respuestas',
+    // «No sé»: true en un item o una predicción; en una prueba, cuántas marcó.
+    'nose'];
+
+  // «No sé» de un evento: true o un número en los nuevos; nada en los de antes (cuenta como 0).
+  const noseDe = e => (e.nose === true || e.nose === 'true' ? 1 : Number(e.nose) || 0);
+  const tasa = (a, n) => (n ? a / n : null);
 
   function aCSV(eventos) {
     const celda = x => { if (x === undefined || x === null) return ''; const s = String(x); return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
@@ -51,21 +62,26 @@
   // predicciones hechas, porcentaje de acierto y qué errores se eligieron cuántas veces.
   function resumir(eventos) {
     const por = {};
-    const m = id => (por[id] = por[id] || { modulo: id, alumnos: new Set(), entrada: {}, salida: {}, predicciones: 0, aciertos: 0, errores: {} });
+    const m = id => (por[id] = por[id] || { modulo: id, alumnos: new Set(), entrada: {}, salida: {}, crudo: { entrada: {}, salida: {} }, predicciones: 0, aciertos: 0, nose: 0, errores: {} });
     for (const e of eventos) {
       if (!e.modulo) continue;
       const r = m(e.modulo); r.alumnos.add(e.alumno);
       if (e.tipo === 'prediccion') {
         r.predicciones++;
-        if (e.correcta) r.aciertos++;
+        if (noseDe(e)) r.nose++;
+        else if (e.correcta) r.aciertos++;
         else if (e.error) r.errores[e.error] = (r.errores[e.error] || 0) + 1;
       } else if (e.tipo === 'prueba' && (e.fase === 'entrada' || e.fase === 'salida') && e.total) {
         r[e.fase][e.alumno] = e.aciertos / e.total; // si repite, vale la última
+        r.crudo[e.fase][e.alumno] = { aciertos: Number(e.aciertos) || 0, total: Number(e.total), nose: noseDe(e) };
       }
     }
     const prom = o => { const v = Object.values(o); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
     return Object.values(por).map(r => {
       const ambos = Object.keys(r.entrada).filter(a => a in r.salida);
+      // «No sé» y confianza calibrada por fase, con la última prueba de cada alumno.
+      const suma = f => Object.values(r.crudo[f]).reduce((t, x) => ({ a: t.a + x.aciertos, n: t.n + x.total, ns: t.ns + x.nose }), { a: 0, n: 0, ns: 0 });
+      const se = suma('entrada'), ss = suma('salida');
       return {
         modulo: r.modulo, alumnos: r.alumnos.size,
         entrada: prom(r.entrada), salida: prom(r.salida),
@@ -74,6 +90,9 @@
         ganancia: ambos.length ? ambos.reduce((s, a) => s + r.salida[a] - r.entrada[a], 0) / ambos.length : null,
         predicciones: r.predicciones,
         acierto: r.predicciones ? r.aciertos / r.predicciones : null,
+        // Proporción de «No sé» y confianza calibrada (aciertos sobre lo intentado) en la entrada, la salida y la práctica.
+        nose: { entrada: tasa(se.ns, se.n), salida: tasa(ss.ns, ss.n), practica: tasa(r.nose, r.predicciones) },
+        confianza: { entrada: tasa(se.a, se.n - se.ns), salida: tasa(ss.a, ss.n - ss.ns), practica: tasa(r.aciertos, r.predicciones - r.nose) },
         errores: Object.entries(r.errores).sort((a, b) => b[1] - a[1]).map(([id, n]) => ({ id, n })),
       };
     });
@@ -90,7 +109,7 @@
   function resumirCursos(eventos) {
     const por = {};
     const c = id => (por[id] = por[id] || { curso: id, entrada: {}, salida: {}, forma: { entrada: {}, salida: {} }, errores: { entrada: {}, salida: {} },
-      plantillas: {}, previas: {} });
+      plantillas: {}, previas: {}, items: { entrada: { n: 0, bien: 0, nose: 0 }, salida: { n: 0, bien: 0, nose: 0 } } });
     for (const e of eventos) {
       if (!e.curso || (e.fase !== 'entrada' && e.fase !== 'salida')) continue;
       const r = c(e.curso);
@@ -99,10 +118,12 @@
         r.forma[e.fase][e.alumno] = e.forma;
         if (e.fase === 'entrada') r.previas[e.alumno] = Number(e.previas) || 0;
       } else if (e.tipo === 'item') {
-        if (!e.correcta && e.error) ((r.errores[e.fase][e.error] = r.errores[e.fase][e.error] || new Set())).add(e.alumno);
+        const ns = noseDe(e), bien = !ns && e.correcta ? 1 : 0;
+        if (!ns && !e.correcta && e.error) ((r.errores[e.fase][e.error] = r.errores[e.fase][e.error] || new Set())).add(e.alumno);
+        const it = r.items[e.fase]; it.n++; it.bien += bien; it.nose += ns;
         if (e.plantilla) {
-          const p = (r.plantillas[e.plantilla] = r.plantillas[e.plantilla] || { entrada: [0, 0], salida: [0, 0] });
-          p[e.fase][0] += e.correcta ? 1 : 0; p[e.fase][1]++;
+          const p = (r.plantillas[e.plantilla] = r.plantillas[e.plantilla] || { entrada: [0, 0, 0], salida: [0, 0, 0] });
+          p[e.fase][0] += bien; p[e.fase][1]++; p[e.fase][2] = (p[e.fase][2] || 0) + ns;
         }
       }
     }
@@ -127,11 +148,16 @@
         hake: pre === null ? null : pre >= 1 ? null : (post - pre) / (1 - pre),
         hakeIndividual: prom(gi),
         entradaConPrevias: Object.values(r.previas).filter(n => n > 0).length,
+        // «No sé» y confianza calibrada, por pregunta respondida (eventos 'item').
+        nose: { entrada: tasa(r.items.entrada.nose, r.items.entrada.n), salida: tasa(r.items.salida.nose, r.items.salida.n) },
+        confianza: { entrada: tasa(r.items.entrada.bien, r.items.entrada.n - r.items.entrada.nose), salida: tasa(r.items.salida.bien, r.items.salida.n - r.items.salida.nose) },
         porForma: formas,
         errores: [...ids].map(id => ({ id, antes: cuenta('entrada', id), despues: cuenta('salida', id),
           antesTodos: (r.errores.entrada[id] || new Set()).size, despuesTodos: (r.errores.salida[id] || new Set()).size }))
           .sort((a, b) => b.antes - a.antes || b.despues - a.despues || a.id.localeCompare(b.id)),
-        plantillas: Object.entries(r.plantillas).map(([id, p]) => ({ id, entrada: p.entrada[1] ? p.entrada[0] / p.entrada[1] : null, salida: p.salida[1] ? p.salida[0] / p.salida[1] : null }))
+        plantillas: Object.entries(r.plantillas).map(([id, p]) => ({ id, entrada: p.entrada[1] ? p.entrada[0] / p.entrada[1] : null, salida: p.salida[1] ? p.salida[0] / p.salida[1] : null,
+          noseEntrada: tasa(p.entrada[2] || 0, p.entrada[1]), noseSalida: tasa(p.salida[2] || 0, p.salida[1]),
+          confianzaEntrada: tasa(p.entrada[0], p.entrada[1] - (p.entrada[2] || 0)), confianzaSalida: tasa(p.salida[0], p.salida[1] - (p.salida[2] || 0)) }))
           .sort((a, b) => a.id.localeCompare(b.id)),
       };
     });

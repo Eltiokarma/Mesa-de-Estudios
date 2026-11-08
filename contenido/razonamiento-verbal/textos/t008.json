@@ -1,6 +1,6 @@
 {
   "id": "t008",
-  "version": 1,
+  "version": 2,
   "titulo": "Hervir no es lo mismo que cocinar",
   "tema": "Ciencia de todos los días · el calor y la altura",
   "grado": 3,
@@ -104,7 +104,7 @@
           "explicacion": "Es demasiado general: el texto habla de cómo se cocina en la altura, no de todo lo que cambia."
         },
         {
-          "t": "Subir el fuego hace que el agua hierva con más fuerza, pero no la calienta más.",
+          "t": "Subir el fuego no sirve: el agua hierve con más fuerza, pero no se calienta más.",
           "codigo": "RV3",
           "origen": "o6",
           "explicacion": "Es una parte del texto, pero deja fuera la razón: lo que cocina es la temperatura del agua, que en la altura es menor."
@@ -244,6 +244,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 6 de 6. Cambios: \"hierve más fría\" por \"a menor temperatura\"; distractor de referente que era una inferencia hacia adelante cambiado por uno de saber del mundo (RV8); explicaciones del referente y de \"explica\" corregidas. Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+    "notas": "A ciegas: 6 de 6. Cambios: \"hierve más fría\" por \"a menor temperatura\"; distractor de referente que era una inferencia hacia adelante cambiado por uno de saber del mundo (RV8); explicaciones del referente y de \"explica\" corregidas. Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado. 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido."
   }
 }

@@ -27,9 +27,10 @@ function informe(eventos) {
   const grados = {}; const vistoAl = new Set();
   for (const e of eventos) if (!vistoAl.has(e.alumno)) { vistoAl.add(e.alumno); grados[e.grado || '?'] = (grados[e.grado || '?'] || 0) + 1; }
   let md = `# Resultados del lanzamiento\n\n${eventos.length} eventos · ${alumnos} alumnos · colegio: ${colegios} · grados: ${Object.entries(grados).map(([g, n]) => `${g} (${n})`).join(', ')}\n\n`;
-  md += '| Módulo | Alumnos | Entrada | Salida | Ganancia (pareados) | Predicciones | Acierto |\n| --- | --- | --- | --- | --- | --- | --- |\n';
+  md += '| Módulo | Alumnos | Entrada | Salida | Ganancia (pareados) | Predicciones | Acierto | «No sé» entrada / salida / práctica | Confianza calibrada entrada / salida / práctica |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n';
   const r = Medicion.resumir(eventos);
-  for (const m of r) md += `| ${m.modulo} | ${m.alumnos} | ${pct(m.entrada)} | ${pct(m.salida)} | ${m.ganancia === null ? '—' : `${m.ganancia >= 0 ? '+' : ''}${Math.round(m.ganancia * 100)} pts (${m.pareados})`} | ${m.predicciones} | ${pct(m.acierto)} |\n`;
+  const tres = o => `${pct(o.entrada)} / ${pct(o.salida)} / ${pct(o.practica)}`;
+  for (const m of r) md += `| ${m.modulo} | ${m.alumnos} | ${pct(m.entrada)} | ${pct(m.salida)} | ${m.ganancia === null ? '—' : `${m.ganancia >= 0 ? '+' : ''}${Math.round(m.ganancia * 100)} pts (${m.pareados})`} | ${m.predicciones} | ${pct(m.acierto)} | ${tres(m.nose)} | ${tres(m.confianza)} |\n`;
   // Los módulos de lectura tienen su propia tabla de errores (paso previo y respuesta), en informeLectura.
   const deLectura = new Set(Medicion.resumirLectura(eventos).map(m => m.modulo));
   for (const m of r) if (m.errores.length && !deLectura.has(m.modulo)) {
@@ -37,6 +38,7 @@ function informe(eventos) {
     for (const e of m.errores) md += `| ${e.id} | ${e.n} | ${respaldo[`${m.modulo}|${e.id}`] || '?'} |\n`;
   }
   md += '\nLa ganancia se calcula solo con quienes hicieron la prueba de entrada y la de salida. Con pocos alumnos, las diferencias pueden ser azar.\n';
+  md += '«No sé» cuenta como no acierto en la entrada, la salida y la ganancia. La confianza calibrada es la tasa de aciertos sobre lo intentado, sin contar los «No sé»: si sube mucho más que el acierto, el alumno adivina menos y sabe cuándo no sabe.\n';
   md += informeLectura(eventos);
   md += informeCursos(eventos);
   return md;
@@ -82,8 +84,8 @@ function informeCursos(eventos, bancos) {
   const pct = x => x === null || x === undefined ? '—' : `${Math.round(x * 100)} %`;
   const g = x => x === null || x === undefined ? '—' : x.toFixed(2).replace('.', ',');
   let md = '\n# Pruebas de entrada y salida por curso\n\n';
-  md += '| Curso | Entrada (alumnos) | Salida (alumnos) | Pareados | Entrada pareados | Salida pareados | Ganancia normalizada ⟨g⟩ | g individual promedio | Forma A / B en la entrada |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n';
-  for (const c of r) md += `| ${c.curso} | ${pct(c.entrada)} (${c.alumnosEntrada}) | ${pct(c.salida)} (${c.alumnosSalida}) | ${c.pareados} | ${pct(c.entradaPareados)} | ${pct(c.salidaPareados)} | ${g(c.hake)} | ${g(c.hakeIndividual)} | ${pct(c.porForma.A.entrada)} (${c.porForma.A.alumnos}) / ${pct(c.porForma.B.entrada)} (${c.porForma.B.alumnos}) |\n`;
+  md += '| Curso | Entrada (alumnos) | Salida (alumnos) | Pareados | Entrada pareados | Salida pareados | Ganancia normalizada ⟨g⟩ | g individual promedio | Forma A / B en la entrada | «No sé» entrada / salida | Confianza calibrada entrada / salida |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n';
+  for (const c of r) md += `| ${c.curso} | ${pct(c.entrada)} (${c.alumnosEntrada}) | ${pct(c.salida)} (${c.alumnosSalida}) | ${c.pareados} | ${pct(c.entradaPareados)} | ${pct(c.salidaPareados)} | ${g(c.hake)} | ${g(c.hakeIndividual)} | ${pct(c.porForma.A.entrada)} (${c.porForma.A.alumnos}) / ${pct(c.porForma.B.entrada)} (${c.porForma.B.alumnos}) | ${pct(c.nose.entrada)} / ${pct(c.nose.salida)} | ${pct(c.confianza.entrada)} / ${pct(c.confianza.salida)} |\n`;
   for (const c of r) {
     const dic = (bancos[c.curso] || {}).errores || {};
     if (c.errores.length) {
@@ -91,11 +93,12 @@ function informeCursos(eventos, bancos) {
       for (const e of c.errores) md += `| ${e.id} | ${(dic[e.id] || {}).describe || '?'} | ${(dic[e.id] || {}).respaldo || '?'} | ${e.antes} | ${e.despues} | ${e.despues - e.antes >= 0 ? '+' : ''}${e.despues - e.antes} |\n`;
     }
     if (c.plantillas.length) {
-      md += `\n| Plantilla (${c.curso}) | Acierto en la entrada | Acierto en la salida |\n| --- | --- | --- |\n`;
-      for (const p of c.plantillas) md += `| ${p.id} | ${pct(p.entrada)} | ${pct(p.salida)} |\n`;
+      md += `\n| Plantilla (${c.curso}) | Acierto en la entrada | Acierto en la salida | «No sé» entrada / salida | Confianza calibrada entrada / salida |\n| --- | --- | --- | --- | --- |\n`;
+      for (const p of c.plantillas) md += `| ${p.id} | ${pct(p.entrada)} | ${pct(p.salida)} | ${pct(p.noseEntrada)} / ${pct(p.noseSalida)} | ${pct(p.confianzaEntrada)} / ${pct(p.confianzaSalida)} |\n`;
     }
     if (c.entradaConPrevias) md += `\n${c.entradaConPrevias} alumno(s) hicieron la entrada de ${c.curso} después de abrir alguna unidad del curso: su entrada no fue en frío.\n`;
   }
+  md += '\n«No sé» cuenta como no acierto: no sube ni baja ⟨g⟩ por sí solo. La confianza calibrada (aciertos sobre lo intentado) se calcula por pregunta, sin los «No sé».\n';
   md += '\n⟨g⟩ = (salida − entrada) / (1 − entrada), con los promedios de los pareados (Hake, 1998). Como referencia, Hake midió 0,23 en cursos tradicionales y 0,48 en cursos de participación activa. Si la forma A y la B dan promedios muy distintos en la entrada, las formas no son equivalentes y hay que revisar el banco.\n';
   return md;
 }

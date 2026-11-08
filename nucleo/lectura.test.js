@@ -401,3 +401,23 @@ test('par A/B: validar avisa de autores mal puestos y de un atribuir sin par', (
   const sinSonda = { ...PAR, preguntas: [{ ...PAR.preguntas[0], previo: { ...PAR.preguntas[0].previo, sonda: '' } }] };
   assert.ok(L.validar(sinSonda).some(e => /atribuir necesita "sonda"/.test(e)));
 });
+
+// ---------- «No sé» en las pruebas de entrada y salida ----------
+test('«No sé» en la prueba de lectura: ni acierto ni código, 0 en las respuestas', () => {
+  const M = require('./medicion.js');
+  const t = TEXTOS[0], it = L.preparar(t, 'prueba-A'), q = it.preguntas[0];
+  const r = L.noSe(q);
+  assert.equal(r.nose, true); assert.equal(r.correcta, false); assert.equal(r.error, null); assert.equal(r.pos, 0);
+  const e = L.ev.item({ fase: 'entrada', curso: 'razonamiento-verbal', modulo: 'lectura-verbal', forma: 'A', orden: 'AB', pregunta: q, resultado: r, codigos: CODIGOS, ms: 3 });
+  assert.equal(e.nose, true); assert.equal(e.opcion, ''); assert.equal(e.error, ''); assert.equal(e.respaldo, '');
+  const sinNose = L.ev.item({ fase: 'entrada', curso: 'razonamiento-verbal', modulo: 'lectura-verbal', forma: 'A', orden: 'AB', pregunta: q, resultado: L.calificar(q, 'A'), codigos: CODIGOS, ms: 3 });
+  assert.ok(!('nose' in sinNose), 'una respuesta normal no lleva el campo');
+  const rs = it.preguntas.map((x, k) => (k === 0 ? L.noSe(x) : L.calificar(x, x.alternativas.find(a => a.correcta).letra)));
+  const p = L.ev.prueba({ fase: 'entrada', curso: 'razonamiento-verbal', forma: 'A', orden: 'AB', modulo: 'lectura-verbal', unidad: 'u', item: it, resultados: rs, ms: 9 });
+  assert.equal(p.respuestas[0], '0');
+  assert.equal(p.nose, 1);
+  assert.equal(p.aciertos, it.preguntas.length - 1);
+  // En el resumen por curso, «No sé» no aparece como error RV.
+  const [c] = M.resumirCursos([{ alumno: 'x', ...e }]);
+  assert.deepEqual(c.errores, []);
+});

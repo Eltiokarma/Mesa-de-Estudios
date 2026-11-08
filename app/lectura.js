@@ -330,17 +330,21 @@ async function vista(ctx, id, unidad) {
   const pide = t => { const x = String(t).replace(/^antes de ver las alternativas\s*[,:]?\s*/i, ''); return x.charAt(0).toUpperCase() + x.slice(1); };
   const etqPregunta = q => `<div class="etq-p">${q.numero ? `Pregunta ${q.numero} de ${q.total}` : 'Pregunta'}</div>`;
   // Una pregunta con "idioma" (inglés, como en el examen de San Marcos) marca su enunciado y sus alternativas con lang.
-  const altsHTML = q => `<p class="preg" tabindex="-1"${q.idioma ? ` lang="${esc(q.idioma)}"` : ''}>${esc(q.enunciado)}</p>
+  // conNose: las pruebas de entrada y salida traen «No sé» al final, sin letra (la práctica no).
+  const altsHTML = (q, conNose) => `<p class="preg" tabindex="-1"${q.idioma ? ` lang="${esc(q.idioma)}"` : ''}>${esc(q.enunciado)}</p>
     <div class="alts lec-alts" role="group" aria-label="Alternativas"${q.idioma ? ` lang="${esc(q.idioma)}"` : ''}>${q.alternativas.map(a =>
-      `<button type="button" class="alt" data-letra="${a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.t)}</span></button>`).join('')}</div>
-    <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>${q.alternativas[q.alternativas.length - 1].letra}</kbd> o <kbd>1</kbd>–<kbd>${q.alternativas.length}</kbd> para elegir, <kbd>Enter</kbd> para seguir.</p>`;
+      `<button type="button" class="alt" data-letra="${a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.t)}</span></button>`).join('')}${conNose
+      ? '<button type="button" class="alt nose" data-nose="1" lang="es">No sé</button>' : ''}</div>
+    <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>${q.alternativas[q.alternativas.length - 1].letra}</kbd> o <kbd>1</kbd>–<kbd>${q.alternativas.length}</kbd> para elegir${conNose ? ', <kbd>0</kbd> o <kbd>N</kbd> para «No sé»' : ''}, <kbd>Enter</kbd> para seguir.</p>`;
   function esperarAlternativa(q) {
     return new Promise(listo => {
       const t0 = Date.now();
       const bts = [...document.querySelectorAll('.lec-alts .alt')];
-      const elegir = letra => { if (bts[0].disabled) return; bts.forEach(x => { x.disabled = true; }); actual = null; listo({ letra, ms: Date.now() - t0 }); };
-      bts.forEach(bt => bt.onclick = () => elegir(bt.dataset.letra));
-      actual = { tipo: 'alternativas', letra: l => { if (bts.some(x => x.dataset.letra === l)) elegir(l); } };
+      // «No sé» (solo en las pruebas): letra null y nose true.
+      const elegir = (letra, bt) => { if (bts[0].disabled) return; bts.forEach(x => { x.disabled = true; }); if (bt) bt.classList.add('elegida'); actual = null; listo({ letra, nose: !letra, ms: Date.now() - t0 }); };
+      bts.forEach(bt => bt.onclick = () => elegir(bt.dataset.nose ? null : bt.dataset.letra, bt.dataset.nose ? bt : null));
+      const bn = bts.find(x => x.dataset.nose);
+      actual = { tipo: 'alternativas', letra: l => { if (bts.some(x => x.dataset.letra === l)) elegir(l); }, nose: bn ? () => elegir(null, bn) : null };
     });
   }
 
@@ -367,7 +371,7 @@ async function vista(ctx, id, unidad) {
     if (!it0) return faseP === 'entrada' ? practica() : resultado();
     const it = L().preparar(it0, `prueba-${forma}`);
     const raiz = armar(it, faseP === 'entrada'
-      ? 'Antes de empezar: un texto con preguntas para saber de dónde partes. No cuenta para nada; responde lo que creas.'
+      ? 'Antes de empezar: un texto con preguntas para saber de dónde partes. No cuenta para nada. Si no lo sabes, marca «No sé»: nos ayuda más que adivinar.'
       : 'Prueba final: un texto parecido al del inicio, para ver cuánto avanzaste.', faseP === 'entrada' ? 'Prueba de entrada' : 'Prueba de salida');
     const t0 = Date.now();
     const ms = await leer(it, raiz);
@@ -376,15 +380,15 @@ async function vista(ctx, id, unidad) {
     const resultados = [];
     for (const [k, q0] of it.preguntas.entries()) {
       const q = { ...q0, numero: k + 1, total: it.preguntas.length };
-      document.getElementById('lecPanel').innerHTML = `<div class="card practica">${etqPregunta(q)}${altsHTML(q)}</div>`;
+      document.getElementById('lecPanel').innerHTML = `<div class="card practica">${etqPregunta(q)}${altsHTML(q, true)}</div>`;
       vivo(`Pregunta ${q.numero} de ${q.total}`);
       window.scrollTo(0, 0);
-      const { letra, ms: msq } = await esperarAlternativa(q);
-      const r = L().calificar(q, letra);
+      const { letra, nose, ms: msq } = await esperarAlternativa(q);
+      const r = nose ? L().noSe(q) : L().calificar(q, letra);
       resultados.push(r);
       registrar(L().ev.item({ fase: faseP, curso: CURSO, modulo: id, forma, orden, pregunta: q, resultado: r, codigos: b.codigos, ms: msq }));
     }
-    st[faseP] = { aciertos: resultados.filter(r => r.correcta).length, total: resultados.length, forma }; guardar();
+    st[faseP] = { aciertos: resultados.filter(r => r.correcta).length, total: resultados.length, nose: resultados.filter(r => r.nose).length, forma }; guardar();
     registrar(L().ev.prueba({ fase: faseP, curso: CURSO, forma, orden, modulo: id, unidad: it.preguntas[0].unidad, item: it, resultados, ms: Date.now() - t0 }));
     return faseP === 'entrada' ? practica() : resultado();
   }
@@ -573,7 +577,7 @@ async function vista(ctx, id, unidad) {
   else practica();
 }
 
-// Teclado (laboratorio de cómputo), solo en la ruta de lectura. A–E o 1–5 eligen una alternativa;
+// Teclado (laboratorio de cómputo), solo en la ruta de lectura. A–E o 1–5 eligen una alternativa (0 o N, «No sé» en las pruebas);
 // en el paso previo, 1–9 eligen una opción; Enter sigue o confirma; Esc cierra la hoja del texto.
 document.addEventListener('keydown', e => {
   if (!location.hash.startsWith('#/lectura') || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
@@ -586,6 +590,7 @@ document.addEventListener('keydown', e => {
   if (actual.tipo === 'alternativas') {
     const letra = /^[A-E]$/.test(k) ? k : /^[1-5]$/.test(k) ? 'ABCDE'[+k - 1] : null;
     if (letra) { e.preventDefault(); actual.letra(letra); }
+    else if ((k === '0' || k === 'N') && actual.nose) { e.preventDefault(); actual.nose(); }
     return;
   }
   if (actual.tipo === 'opciones' && /^[1-9]$/.test(k)) { e.preventDefault(); actual.numero(+k); return; }

@@ -219,7 +219,7 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "En la altura la comida tarda más porque el agua hierve a menor temperatura, y eso no se arregla con más fuego."
+              "t": "Todas las familias de la sierra deberían cocinar con olla a presión."
             },
             {
               "letra": "B",
@@ -227,15 +227,15 @@
             },
             {
               "letra": "C",
-              "t": "La altura cambia muchas cosas en la vida diaria de las personas."
+              "t": "En la altura la comida tarda más porque el agua hierve a menor temperatura, y eso no se arregla con más fuego."
             },
             {
               "letra": "D",
-              "t": "Subir el fuego hace que el agua hierva con más fuerza, pero no la calienta más."
+              "t": "La altura cambia muchas cosas en la vida diaria de las personas."
             },
             {
               "letra": "E",
-              "t": "Todas las familias de la sierra deberían cocinar con olla a presión."
+              "t": "Subir el fuego no sirve: el agua hierve con más fuerza, pero no se calienta más."
             }
           ]
         },
@@ -245,19 +245,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "A que en Juliaca el agua hierve a menor temperatura que en Lima."
-            },
-            {
-              "letra": "B",
-              "t": "A que el agua se convierte en vapor cuando se calienta."
-            },
-            {
-              "letra": "C",
               "t": "A que en Juliaca hace más frío que en Lima."
             },
             {
-              "letra": "D",
+              "letra": "B",
+              "t": "A que en Juliaca el agua hierve a menor temperatura que en Lima."
+            },
+            {
+              "letra": "C",
               "t": "A los más de 3800 metros de altura a los que está Juliaca."
+            },
+            {
+              "letra": "D",
+              "t": "A que el agua se convierte en vapor cuando se calienta."
             }
           ]
         },
@@ -272,15 +272,15 @@
             },
             {
               "letra": "B",
-              "t": "Además,"
-            },
-            {
-              "letra": "C",
               "t": "Dicho de otro modo,"
             },
             {
-              "letra": "D",
+              "letra": "C",
               "t": "Pero"
+            },
+            {
+              "letra": "D",
+              "t": "Además,"
             }
           ]
         },
@@ -290,31 +290,31 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "soluciona."
-            },
-            {
-              "letra": "B",
-              "t": "calienta más."
-            },
-            {
-              "letra": "C",
               "t": "explica."
             },
             {
-              "letra": "D",
+              "letra": "B",
+              "t": "soluciona."
+            },
+            {
+              "letra": "C",
               "t": "ordena."
+            },
+            {
+              "letra": "D",
+              "t": "calienta más."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: A · 2: A · 3: D · 4: A.",
+      "respuesta": "Clave: 1: C · 2: B · 3: C · 4: B.",
       "pasos": [
         "Pregunta 1. Antes de las alternativas: la oración 4 o la oración 8. La oración 4 dice lo esencial (cocina la temperatura, no el burbujeo) y la 8 lo resume para la altura.",
-        "Pregunta 1. Clave A. Junta las dos ideas que el texto sostiene: lo que cocina es la temperatura del agua (oración 4) y en la altura hay que lograr que esté más caliente, no hervir más fuerte (oración 8).",
-        "Pregunta 2. Clave A. \"Esto\" retoma lo que dice la oración 1: la diferencia entre la temperatura a la que hierve el agua en Lima y en Juliaca. La oración 2 explica por qué ocurre.",
+        "Pregunta 1. Clave C. Junta las dos ideas que el texto sostiene: lo que cocina es la temperatura del agua (oración 4) y en la altura hay que lograr que esté más caliente, no hervir más fuerte (oración 8).",
+        "Pregunta 2. Clave B. \"Esto\" retoma lo que dice la oración 1: la diferencia entre la temperatura a la que hierve el agua en Lima y en Juliaca. La oración 2 explica por qué ocurre.",
         "Pregunta 3. Antes de las alternativas: Oposición. La oración 3 cuenta lo que mucha gente cree, y la 4 dice que no es así: se oponen.",
-        "Pregunta 3. Clave D. La oración 3 presenta lo que mucha gente cree, y la 4 lo corrige: se oponen, y \"pero\" marca esa oposición.",
-        "Pregunta 4. Clave A. La oración dice que subir el fuego no resuelve el problema de que el agua esté menos caliente: no lo soluciona."
+        "Pregunta 3. Clave C. La oración 3 presenta lo que mucha gente cree, y la 4 lo corrige: se oponen, y \"pero\" marca esa oposición.",
+        "Pregunta 4. Clave B. La oración dice que subir el fuego no resuelve el problema de que el agua esté menos caliente: no lo soluciona."
       ]
     },
     {
