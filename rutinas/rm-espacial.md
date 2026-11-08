@@ -1,0 +1,5 @@
+# Rutina rm-espacial: pausa por límite de uso (8 nov 2026)
+- Terminado y en la rama, verificado a ciegas y con npm test en verde: generadores poleas-giros, rutas-tramos, cubitos-conteo y dados-caras (en el catálogo); informe docs/investigacion/razonamiento-espacial-ideas-erroneas.md (RME1-45, RME170-189).
+- Escenas construidas, falta verificar, revisar e integrar: cuadricula-piezas (verificada: 21/21; falta aclarar en la cabecera «congruentes» con una sola pieza y el orden de «sobrantes», y la revisión), vistas-cubitos y rutas-espacio (sin verificar ni revisar). Faltan en el informe RME100-109, RME140-149 y RME160-169.
+- A medias (WIP en el commit, aún no pasan npm test): cubitos-pintados (2 pruebas rojas), dados-domino, rodamientos (sin index.html) y papel-doblado (sin index.html).
+- Ibas en: verificador y revisor de vistas-cubitos y rutas-espacio; CSV sin tocar (script de cobertura en el scratchpad, se rehace fácil: mapear familia/tema → módulo y pasar a «si» solo los módulos integrados).
