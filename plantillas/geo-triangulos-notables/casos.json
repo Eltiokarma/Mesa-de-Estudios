@@ -1,0 +1,349 @@
+{
+  "plantilla": "geo-triangulos-notables",
+  "tolerancia": 0.000001,
+  "nota": "Longitudes en cm o m, ángulos en grados, costos en soles. Las respuestas de lados enteros son enteros; mitades usa tan 37° = 3/4 y tan 53° = 4/3 (academia). Los _datos traen todos los datos del enunciado (u es la unidad).",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "angulos",
+        "sub": "circuncentro",
+        "A": 42
+      },
+      "esperado": {
+        "respuesta": 84,
+        "exacta": "84°"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "angulos",
+        "sub": "pies-alturas",
+        "pide": "AO-EF",
+        "B": 49,
+        "C": 46
+      },
+      "esperado": {
+        "respuesta": 90,
+        "exacta": "90°"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "arco",
+        "pide": "AE",
+        "p": 4,
+        "q": 10,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24 cm"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "angulos",
+        "sub": "orto-incentro",
+        "theta": 118
+      },
+      "esperado": {
+        "respuesta": 121,
+        "exacta": "121°"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "desigualdad",
+        "sub": "punto-interior",
+        "p": 4,
+        "q": 10,
+        "c": 12,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 27,
+        "exacta": "27 m"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "angulos",
+        "sub": "excentro",
+        "A": 122
+      },
+      "esperado": {
+        "respuesta": 29,
+        "exacta": "29°"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "ortocentro",
+        "pide": "AC",
+        "AF": 18,
+        "FB": 7,
+        "u": "m",
+        "BC": 25
+      },
+      "esperado": {
+        "respuesta": 30,
+        "exacta": "30 m"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "obtusangulo",
+        "sub": "entre-cuantos",
+        "a": 6,
+        "b": 17,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "desigualdad",
+        "sub": "min",
+        "a": 3,
+        "b": 10,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 m"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "mitades",
+        "A": 37,
+        "C": 53,
+        "h": 24,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 1.666666666666666,
+        "exacta": "5/3 cm"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "desigualdad",
+        "sub": "max",
+        "a": 13,
+        "b": 11,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 23,
+        "exacta": "23 m"
+      }
+    },
+    {
+      "semilla": 25,
+      "entrada": {
+        "tipo": "desigualdad",
+        "sub": "diagonal",
+        "pide": "min",
+        "p": 5,
+        "q": 11,
+        "r": 15,
+        "s": 3,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 13,
+        "exacta": "13 m"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "obtusangulo",
+        "sub": "acutangulo",
+        "a": 6,
+        "b": 10,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "desigualdad",
+        "sub": "cuantos",
+        "a": 4,
+        "b": 15,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 7,
+        "exacta": "7"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "tipo": "desigualdad",
+        "sub": "doble-angulo",
+        "pide": "min",
+        "c": 12,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 13,
+        "exacta": "13 cm"
+      }
+    },
+    {
+      "semilla": 35,
+      "entrada": {
+        "tipo": "obtusangulo",
+        "sub": "opuesto-cuantos",
+        "a": 11,
+        "b": 12,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3"
+      }
+    },
+    {
+      "semilla": 38,
+      "entrada": {
+        "tipo": "ortocentro",
+        "pide": "CF",
+        "AF": 5,
+        "FB": 16,
+        "u": "m",
+        "AC": 13
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 m"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "desigualdad",
+        "sub": "contar",
+        "N": 13
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "5"
+      }
+    },
+    {
+      "semilla": 57,
+      "entrada": {
+        "tipo": "angulos",
+        "sub": "ortocentro",
+        "A": 44
+      },
+      "esperado": {
+        "respuesta": 136,
+        "exacta": "136°"
+      }
+    },
+    {
+      "semilla": 61,
+      "entrada": {
+        "tipo": "obtusangulo",
+        "sub": "entre-min",
+        "a": 10,
+        "b": 19,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 22,
+        "exacta": "22 m"
+      }
+    },
+    {
+      "semilla": 63,
+      "entrada": {
+        "tipo": "angulos",
+        "sub": "int-ext",
+        "A": 144
+      },
+      "esperado": {
+        "respuesta": 72,
+        "exacta": "72°"
+      }
+    },
+    {
+      "semilla": 64,
+      "entrada": {
+        "tipo": "angulos",
+        "sub": "incentro",
+        "A": 48
+      },
+      "esperado": {
+        "respuesta": 114,
+        "exacta": "114°"
+      }
+    },
+    {
+      "semilla": 80,
+      "entrada": {
+        "tipo": "obtusangulo",
+        "sub": "perimetros",
+        "a": 4,
+        "b": 5,
+        "k": 50,
+        "u": "m"
+      },
+      "esperado": {
+        "respuesta": 50,
+        "exacta": "S/ 50"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "arco",
+        "pide": "IE",
+        "p": 10,
+        "q": 4,
+        "u": "cm"
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 cm"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "angulos",
+        "sub": "orto-incentro",
+        "theta": 112
+      },
+      "esperado": {
+        "respuesta": 124,
+        "exacta": "124°"
+      }
+    }
+  ]
+}

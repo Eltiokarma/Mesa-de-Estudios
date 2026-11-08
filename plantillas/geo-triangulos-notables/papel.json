@@ -1,0 +1,104 @@
+{
+  "titulo": "Lados posibles y puntos notables: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con 2 a 3 minutos por problema. En los de lados enteros, escribe primero el intervalo con desigualdades estrictas y revisa los extremos: el valor límite casi nunca entra. En los de ángulos, dibuja el triángulo y pregúntate si el punto queda dentro o fuera: eso decide si el ángulo es obtuso o agudo.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos lados de un triángulo miden 5 cm y 9 cm. Si el tercer lado mide un número entero de centímetros, ¿cuántos valores puede tener?",
+      "respuesta": "9 valores (de 5 cm a 13 cm).",
+      "pasos": [
+        "Desigualdad triangular: 9 − 5 < x < 9 + 5, es decir, 4 < x < 14.",
+        "Los enteros van de 5 a 13: son 13 − 5 + 1 = 9.",
+        "Con x = 4 o x = 14 los lados quedan sobre una recta: no hay triángulo."
+      ],
+      "verificar": [ { "fn": "tercerLado", "args": [5, 9], "espera": { "min": 5, "max": 13, "cuantos": 9 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En un triángulo ABC el ángulo A mide 70°. ¿Cuánto mide el ángulo que forman las bisectrices interiores de B y C? ¿Y el que forman las bisectrices exteriores de B y C?",
+      "respuesta": "125° y 55°.",
+      "pasos": [
+        "Interiores: el punto I queda dentro y el ángulo BIC = 180° − (B + C)/2 = 90° + A/2 = 90° + 35° = 125°.",
+        "Exteriores: el punto E queda fuera y el ángulo BEC = (B + C)/2 = 90° − A/2 = 55°.",
+        "Los dos suman 180°: el cuadrilátero BICE tiene ángulos rectos en B y en C."
+      ],
+      "verificar": [ { "fn": "angulo", "args": ["incentro", 70], "espera": 125 }, { "fn": "angulo", "args": ["excentro", 70], "espera": 55 } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un triángulo tiene dos lados de 8 m y 15 m, y el ángulo que forman es obtuso. Si el tercer lado es entero, ¿qué valores puede tener?",
+      "respuesta": "18, 19, 20, 21 y 22 m (5 valores).",
+      "pasos": [
+        "Desigualdad triangular: 7 < x < 23.",
+        "El ángulo entre 8 y 15 es obtuso: x² > 8² + 15² = 289, o sea x > 17.",
+        "Con x = 17 el ángulo es recto, no obtuso. Quedan 18, 19, 20, 21 y 22.",
+        "Si solo usas la desigualdad triangular, contarías 15 valores: la mayoría dan un ángulo agudo."
+      ],
+      "verificar": [ { "fn": "obtusoEntre", "args": [8, 15], "espera": { "min": 18, "max": 22, "cuantos": 5 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un terreno tiene forma de cuadrilátero ABCD con AB = 6 m, BC = 9 m, CD = 12 m y DA = 4 m. La diagonal AC mide un número entero de metros. ¿Cuántos valores puede tener?",
+      "respuesta": "6 valores (de 9 m a 14 m).",
+      "pasos": [
+        "Triángulo ABC: 3 < AC < 15.",
+        "Triángulo ACD: 8 < AC < 16.",
+        "Las dos a la vez: 8 < AC < 15, de 9 a 14: son 6 valores."
+      ],
+      "verificar": [ { "fn": "diagonal", "args": [6, 9, 12, 4], "espera": { "min": 9, "max": 14, "cuantos": 6 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En un triángulo acutángulo ABC, H es el ortocentro e I el incentro. Si el ángulo BHC mide 130°, ¿cuánto mide el ángulo BIC?",
+      "respuesta": "115°.",
+      "pasos": [
+        "Con el ortocentro: BHC = 180° − A, así que A = 50°.",
+        "Con el incentro: BIC = 90° + A/2 = 90° + 25° = 115°.",
+        "La fórmula 90° − A/2 = 65° es la del excentro: ese punto queda fuera del triángulo."
+      ],
+      "verificar": [ { "fn": "ortoIncentro", "args": [130], "espera": 115 } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Dentro de un triángulo ABC con AB = 10 cm hay un punto P tal que PA = 5 cm y PB = 7 cm. Si el perímetro de ABC es entero, ¿cuál es el menor valor que puede tener?",
+      "respuesta": "23 cm.",
+      "pasos": [
+        "Para un punto interior, CA + CB > PA + PB (prolonga AP hasta BC y usa dos veces la desigualdad triangular).",
+        "Perímetro = 10 + CA + CB > 10 + 12 = 22.",
+        "El 22 no se alcanza (haría falta que P estuviera en C), así que el menor entero es 23 cm."
+      ],
+      "verificar": [ { "fn": "perimetroInterior", "args": [5, 7, 10], "espera": 23 } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En el triángulo ABC, el ángulo A mide 53° y el ángulo C mide 37°. La altura BH mide 72 cm. Las bisectrices de A y de C cortan a BH en P y Q. ¿Cuánto mide PQ? (Usa tan 37° = 3/4 y tan 53° = 4/3.)",
+      "respuesta": "5 cm.",
+      "pasos": [
+        "AH = 72/tan 53° = 54 cm y HC = 72/tan 37° = 96 cm.",
+        "En el triángulo AHP, el ángulo en A es 53°/2 y tan(53°/2) = 1/2: HP = 54/2 = 27 cm.",
+        "En el triángulo CHQ, tan(37°/2) = 1/3: HQ = 96/3 = 32 cm.",
+        "PQ = 32 − 27 = 5 cm."
+      ],
+      "verificar": [ { "fn": "mitades", "args": [53, 37, 72], "espera": { "HP": 27, "HQ": 32, "PQ": 5 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un triángulo ABC está inscrito en una circunferencia. La bisectriz de A pasa por el incentro I y corta a la circunferencia en M. Si AI = 6 cm e IM = 4 cm, ¿a qué distancia de A está el excentro relativo a BC?",
+      "respuesta": "14 cm.",
+      "pasos": [
+        "M es el punto medio del arco BC y equidista de B, de C, del incentro I y del excentro E.",
+        "Entonces ME = MI = 4 cm.",
+        "AE = AI + IM + ME = 6 + 4 + 4 = 14 cm."
+      ],
+      "verificar": [ { "fn": "arcoMedio", "args": [6, 4], "espera": { "AE": 14, "IE": 8 } } ]
+    }
+  ]
+}
