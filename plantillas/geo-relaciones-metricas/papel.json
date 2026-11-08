@@ -5,11 +5,11 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "En un triángulo rectángulo ABC, recto en B, la altura BH relativa a la hipotenusa la divide en AH = 4 cm y HC = 16 cm. ¿Cuánto miden la altura BH y el cateto AB? (c) En otra figura, AB es un diámetro de una circunferencia de centro O y las tangentes en A y en B son paralelas. Una tercera tangente toca en T y corta a esas dos en P y Q, con PA = 4 cm y QB = 9 cm. ¿Cuánto mide el radio?",
-      "respuesta": "BH = 8 cm y AB = 4√5 cm. (c) r = 6 cm.",
+      "enunciado": "En un triángulo rectángulo ABC, recto en B, la altura BH relativa a la hipotenusa la divide en AH = 4 cm y HC = 16 cm. (a) ¿Cuánto mide la altura BH? (b) ¿Cuánto mide el cateto AB? (c) En otra figura, AB es un diámetro de una circunferencia de centro O y las tangentes en A y en B son paralelas. Una tercera tangente toca en T y corta a esas dos en P y Q, con PA = 4 cm y QB = 9 cm. ¿Cuánto mide el radio?",
+      "respuesta": "(a) BH = 8 cm. (b) AB = 4√5 cm. (c) r = 6 cm.",
       "pasos": [
-        "La altura es media geométrica de las proyecciones: BH² = AH·HC = 4·16 = 64, así que BH = 8 cm (no el promedio, 10 cm).",
-        "La hipotenusa es AC = 4 + 16 = 20 cm.",
+        "(a) La altura es media geométrica de las proyecciones: BH² = AH·HC = 4·16 = 64, así que BH = 8 cm (no el promedio, 10 cm).",
+        "(b) La hipotenusa es AC = 4 + 16 = 20 cm.",
         "Cada cateto al cuadrado es la hipotenusa por su proyección: AB² = AC·AH = 20·4 = 80, así que AB = √80 = 4√5 cm.",
         "Comprobación con Pitágoras en ABH: 4² + 8² = 80.",
         "(c) Tangentes iguales: PT = 4 y TQ = 9. OP y OQ son bisectrices de dos ángulos que suman 180°, así que el ángulo POQ es recto y OT es su altura sobre PQ: r² = 4·9 = 36, r = 6 cm (no el promedio, 6,5)."
