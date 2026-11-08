@@ -1,0 +1,226 @@
+{
+  "plantilla": "calor-escalas",
+  "tolerancia": 1e-06,
+  "nota": "0 °C = 273 K; °F = 1,8·°C + 32; c del agua 4200 J/(kg·°C) (1 cal = 4,2 J); c del cuerpo 3500 J/(kg·°C); L de vaporización 2450 kJ/kg; g = 10 m/s². En conversion/inventada, lectura es °C si haciaX y °Ch si no. La dilatación usa la aproximación lineal de los exámenes (γ = 3α).",
+  "verificacion": "PENDIENTE",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "variacion",
+        "sub": "f-a-c",
+        "T1": 77,
+        "T2": 257
+      },
+      "esperado": {
+        "respuesta": 100,
+        "exacta": "100 °C"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "joule",
+        "sub": "altura",
+        "deltaT": 0.2,
+        "v0": 16
+      },
+      "esperado": {
+        "respuesta": 71.2,
+        "exacta": "71,2 m"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "dilatacion",
+        "sub": "densidad",
+        "rho0": 2830.24,
+        "coef": 2.4e-05,
+        "lineal": true,
+        "deltaT": 150
+      },
+      "esperado": {
+        "respuesta": 2800,
+        "exacta": "2 800 kg/m³"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "coincidencia",
+        "sub": "c-f",
+        "n": 1,
+        "delta": 0
+      },
+      "esperado": {
+        "respuesta": -40,
+        "exacta": "−40 °C"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "sudor",
+        "sub": "cuerpo",
+        "M": 49,
+        "deltaT": 0.5
+      },
+      "esperado": {
+        "respuesta": 35,
+        "exacta": "35 mL"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "variacion",
+        "sub": "c-a-k",
+        "T1": 10,
+        "T2": 95
+      },
+      "esperado": {
+        "respuesta": 85,
+        "exacta": "85 K"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "dilatacion",
+        "sub": "aparente",
+        "gamma": 0.00018,
+        "alfa": 9e-06,
+        "V0": 500,
+        "deltaT": 80
+      },
+      "esperado": {
+        "respuesta": 6.12,
+        "exacta": "6,12 cm³"
+      }
+    },
+    {
+      "semilla": 81,
+      "entrada": {
+        "tipo": "coincidencia",
+        "sub": "k-f",
+        "delta": 0
+      },
+      "esperado": {
+        "respuesta": 574.25,
+        "exacta": "574,25 K"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "conversion",
+        "sub": "inventada",
+        "fusion": 30,
+        "ebullicion": 230,
+        "lectura": 10,
+        "haciaX": true
+      },
+      "esperado": {
+        "respuesta": 50,
+        "exacta": "50 °Ch"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "variacion",
+        "sub": "inventada",
+        "fusion": -20,
+        "ebullicion": 180,
+        "T1": 20,
+        "T2": 40
+      },
+      "esperado": {
+        "respuesta": 40,
+        "exacta": "40 °Ch"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "conversion",
+        "sub": "k-a-c",
+        "K": 20
+      },
+      "esperado": {
+        "respuesta": -253,
+        "exacta": "−253 °C"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "conversion",
+        "sub": "f-a-c",
+        "F": 95
+      },
+      "esperado": {
+        "respuesta": 35,
+        "exacta": "35 °C"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "dilatacion",
+        "sub": "tanque",
+        "gamma": 0.0012,
+        "V0": 12,
+        "T2": 5,
+        "dV": 259.2
+      },
+      "esperado": {
+        "respuesta": 23,
+        "exacta": "23 °C"
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "tipo": "joule",
+        "sub": "deltaT",
+        "altura": 85,
+        "v0": 20
+      },
+      "esperado": {
+        "respuesta": 0.25,
+        "exacta": "0,25 °C"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "dilatacion",
+        "sub": "proposiciones",
+        "calor": true,
+        "afirmaciones": [
+          "C-volumen",
+          "C-peso",
+          "C-densidad"
+        ]
+      },
+      "esperado": {
+        "respuesta": "vf:VFV",
+        "exacta": "VFV"
+      }
+    },
+    {
+      "semilla": 91,
+      "entrada": {
+        "tipo": "sudor",
+        "sub": "calor",
+        "QkJ": 735
+      },
+      "esperado": {
+        "respuesta": 300,
+        "exacta": "300 g"
+      }
+    }
+  ]
+}

@@ -72,7 +72,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["estatica"],
+      "plantillas": ["estatica", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
     },
     {
@@ -89,7 +89,7 @@
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["dinamica"],
+      "plantillas": ["dinamica", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/dinamica-ideas-erroneas.md"
     },
     {
@@ -104,7 +104,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["gravitacion"],
+      "plantillas": ["gravitacion", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
@@ -206,7 +206,7 @@
       "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["calorimetria"],
+      "plantillas": ["calorimetria", "calor-escalas"],
       "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
     },
     {
