@@ -2,7 +2,7 @@
   "plantilla": "probabilidad-conteo",
   "tolerancia": 0.000001,
   "nota": "Probabilidades como fracción irreducible y conteos como enteros. En bayes, p son los porcentajes de cada causa y q el porcentaje del efecto en cada causa; condicion «no» quiere decir que se sabe que el efecto no ocurrió. En circular, las ubicaciones que solo difieren por un giro son la misma.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 17 casos con fracciones exactas en Python. Mesas redondas, filas, estante, bolsas y tiradores, por enumeración completa (permutaciones, giros contados una vez, extracciones ordenadas); Bayes y binomial, por fórmula directa con fracciones. Los 17 valores coinciden con esperado.exacta y no se hallaron alternativas defendibles ni enunciados ambiguos.",
   "casos": [
     {
       "semilla": 0,
