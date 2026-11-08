@@ -1,0 +1,126 @@
+{
+  "titulo": "Sistemas, raíces y potencias: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de plantear, ponle nombre a cada cantidad que no conoces y escribe qué la relaciona con los datos: cada condición del enunciado es una ecuación. Cuando termines, comprueba la respuesta en el enunciado original: reemplaza y mira si todo se cumple, también las condiciones como «por lo menos uno» o «a es positivo».",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un terreno rectangular tiene 60 m² de área y 34 m de perímetro. Escribe una ecuación de segundo grado cuyas raíces sean el largo y el ancho del terreno, y halla esas medidas.",
+      "respuesta": "x² − 17x + 60 = 0; el largo mide 12 m y el ancho, 5 m.",
+      "pasos": [
+        "El perímetro suma dos largos y dos anchos: largo + ancho = 34/2 = 17.",
+        "El área es largo · ancho = 60.",
+        "Dos números con suma 17 y producto 60 son las raíces de x² − 17x + 60 = 0.",
+        "Se factoriza: (x − 12)(x − 5) = 0, así que las medidas son 12 m y 5 m. Comprobación: 12 · 5 = 60 y 2(12 + 5) = 34."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una vereda de 1,5 m de ancho rodea un jardín rectangular, pegada a sus cuatro lados, y ocupa 75 m². Halla el perímetro del jardín.",
+      "respuesta": "44 m.",
+      "pasos": [
+        "Llama a y b al largo y al ancho del jardín. Con la vereda, el terreno mide (a + 3) por (b + 3).",
+        "Área de la vereda = (a + 3)(b + 3) − ab = 3(a + b) + 9: cuatro tiras pegadas a los lados y cuatro esquinas de 1,5 × 1,5 = 2,25 m².",
+        "3(a + b) + 9 = 75, así que a + b = 22.",
+        "Perímetro = 2(a + b) = 44 m. Si te olvidas de las esquinas sale 50 m, y si las cuentas dos veces sale 38 m."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Ana y Luis son albañiles y se ayudaron a construir sus casas. Ana trabajó 18 jornadas en total, entre su casa y la de Luis. En la casa de Ana se trabajaron 16 jornadas, sumando las de los dos. Por cada jornada en la casa del otro, Ana cobra S/ 90 y Luis, S/ 120. Al final, lo que cada uno le debía al otro era lo mismo. ¿Cuántas jornadas trabajó Ana en su propia casa y cuánto le debía Ana a Luis?",
+      "respuesta": "10 jornadas; S/ 720.",
+      "pasos": [
+        "Sean x las jornadas de Ana en su casa, r las de Ana en la casa de Luis y j las de Luis en la casa de Ana.",
+        "x + r = 18 (todo lo que trabajó Ana) y x + j = 16 (todo lo que se trabajó en la casa de Ana). Restando: r − j = 2.",
+        "Deudas iguales: Ana le debe 120·j a Luis y Luis le debe 90·r a Ana. 90r = 120j, o sea r/j = 4/3: r = 4k y j = 3k.",
+        "4k − 3k = 2, así que k = 2: r = 8 y j = 6. Entonces x = 18 − 8 = 10 jornadas.",
+        "Ana le debía a Luis 120 · 6 = S/ 720 (lo mismo que 90 · 8). Comprobación: x + j = 10 + 6 = 16."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En el mercado se compraron 20 frutas entre mangos de S/ 6, paltas de S/ 4 y plátanos de S/ 1, y se pagó S/ 70. Se compró por lo menos una fruta de cada tipo. ¿De cuántas maneras se pudo hacer la compra? ¿Cuál es la mayor cantidad posible de mangos?",
+      "respuesta": "De 3 maneras; a lo más 7 mangos.",
+      "pasos": [
+        "Con x mangos, y paltas y z plátanos: x + y + z = 20 y 6x + 4y + z = 70.",
+        "Resta la primera ecuación a la segunda: 5x + 3y = 50.",
+        "y tiene que ser entero: 50 − 5x debe ser múltiplo de 3. Eso pasa con x = 1, 4, 7 y 10.",
+        "x = 1: y = 15, z = 4. x = 4: y = 10, z = 6. x = 7: y = 5, z = 8. x = 10: y = 0, que no vale (por lo menos una palta).",
+        "Hay 3 maneras, y la mayor cantidad de mangos es 7 (con 5 paltas y 8 plátanos)."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Halla todos los valores de m para los que el sistema x + y = 6, x·y = m + 1 no tiene ninguna solución con x e y reales.",
+      "respuesta": "m ∈ ⟨8; +∞⟩.",
+      "pasos": [
+        "De la primera, y = 6 − x. En la segunda: x(6 − x) = m + 1, o sea x² − 6x + (m + 1) = 0.",
+        "Sin raíces reales cuando el discriminante es negativo: 36 − 4(m + 1) < 0.",
+        "m + 1 > 9, así que m > 8.",
+        "Con m = 8 el discriminante es 0 y sí hay solución (x = y = 3): el 8 no entra. Respuesta: ⟨8; +∞⟩."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Si x₁ y x₂ son las raíces de x² − 3x − 2 = 0, halla una ecuación de segundo grado cuyas raíces sean x₁² y x₂².",
+      "respuesta": "x² − 13x + 4 = 0.",
+      "pasos": [
+        "Por Vieta: x₁ + x₂ = 3 y x₁·x₂ = −2.",
+        "x₁² + x₂² = (x₁ + x₂)² − 2x₁x₂ = 9 − 2(−2) = 13. Ojo: no es 3² = 9, falta el doble producto.",
+        "x₁²·x₂² = (x₁x₂)² = (−2)² = 4.",
+        "La ecuación: x² − 13x + 4 = 0."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Los números reales x e y cumplen 4ˣ · 8ʸ = 2¹⁸ y x = 3y. Halla x + y.",
+      "respuesta": "8.",
+      "pasos": [
+        "En base 2: 4ˣ = (2²)ˣ = 2²ˣ y 8ʸ = (2³)ʸ = 2³ʸ. En una potencia de potencia los exponentes se multiplican.",
+        "Producto de igual base: 2²ˣ⁺³ʸ = 2¹⁸, así que 2x + 3y = 18.",
+        "Con x = 3y: 6y + 3y = 18, y = 2 y x = 6.",
+        "x + y = 8."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Resuelve por la regla de Cramer y halla z: x + y + z = 1; 2x + 3y + 4z = 5; 4x + 9y + 16z = 25.",
+      "respuesta": "z = 3.",
+      "pasos": [
+        "Las filas de la matriz de coeficientes son 1, a, a² con a = 2, b = 3, c = 4: es un determinante de Vandermonde.",
+        "Δ = (b − a)(c − a)(c − b) = (3 − 2)(4 − 2)(4 − 3) = 2.",
+        "Para Δz se cambia la columna de z por (1; 5; 25): es el mismo Vandermonde con 5 en lugar de 4. Δz = (3 − 2)(5 − 2)(5 − 3) = 6.",
+        "z = Δz/Δ = 6/2 = 3. Del mismo modo salen x = 1 e y = −3. Comprobación: 1 − 3 + 3 = 1; 2 − 9 + 12 = 5; 4 − 27 + 48 = 25."
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Sea A = [1, 4; 0, 2] (las filas separadas por «;»). Halla la traza de A + A² + A³ + A⁴.",
+      "respuesta": "34.",
+      "pasos": [
+        "A es triangular: al multiplicarla por sí misma, la diagonal se multiplica elemento a elemento. A² = [1, 12; 0, 4].",
+        "Por inducción, Aᵏ tiene en la diagonal 1ᵏ = 1 y 2ᵏ.",
+        "La traza de una suma es la suma de las trazas: (1 + 1 + 1 + 1) + (2 + 4 + 8 + 16) = 4 + 30 = 34.",
+        "Ojo: no es (traza A)ᵏ = 3ᵏ; esa cuenta daría 3 + 9 + 27 + 81 = 120."
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "La producción semanal de un taller es P(t) = 300 − a·|t − 8| chompas, donde t es la semana y a es un número positivo. En la semana 2 produjo 252 chompas. ¿Cuántas producirá en la semana 13?",
+      "respuesta": "260 chompas.",
+      "pasos": [
+        "Con el dato: 252 = 300 − a·|2 − 8| = 300 − 6a, así que a = 8. (Si quitas el valor absoluto sale a = −8, que no es positivo.)",
+        "P(13) = 300 − 8·|13 − 8| = 300 − 8·5 = 260 chompas."
+      ]
+    }
+  ]
+}

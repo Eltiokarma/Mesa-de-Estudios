@@ -1,0 +1,353 @@
+{
+  "plantilla": "sistemas-ecuaciones",
+  "tolerancia": 0.000001,
+  "nota": "Una semilla por tipo y subtipo, más entrada-1 y salida-1. Las respuestas numéricas van como número; las de texto, con su clave canónica: num:n/d (fracción reducida), int:(a;b) con [ ] para extremos cerrados y inf para infinito, y ec:A,B,C para Ax² + Bx + C = 0 con enteros primitivos y A > 0.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "enteros",
+        "sub": "maximo",
+        "p": 5,
+        "q": 4,
+        "r": 1,
+        "N": 20,
+        "S": 84
+      },
+      "esperado": {
+        "respuesta": 13,
+        "exacta": "13 cuadernos"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "tipo": "enteros",
+        "sub": "cuantas",
+        "p": 6,
+        "q": 4,
+        "r": 1,
+        "N": 21,
+        "S": 91
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "exponencial",
+        "sub": "razon",
+        "p": 3,
+        "m1": 4,
+        "m2": 2,
+        "N": 30,
+        "d": 2,
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 9,
+        "exacta": "9"
+      }
+    },
+    {
+      "semilla": 45,
+      "entrada": {
+        "tipo": "exponencial",
+        "sub": "resta",
+        "p": 2,
+        "m1": 2,
+        "m2": 4,
+        "N": 28,
+        "d": 2,
+        "pide": "xy"
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "exponencial",
+        "sub": "resta",
+        "p": 2,
+        "m1": 3,
+        "m2": 5,
+        "N": 30,
+        "d": 2,
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "franja",
+        "sub": "perimetro",
+        "w": 1,
+        "A": 44
+      },
+      "esperado": {
+        "respuesta": 40,
+        "exacta": "40 m"
+      }
+    },
+    {
+      "semilla": 102,
+      "entrada": {
+        "tipo": "franja",
+        "sub": "ancho",
+        "L": 5,
+        "W": 4,
+        "A": 90
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 m"
+      }
+    },
+    {
+      "semilla": 43,
+      "entrada": {
+        "tipo": "matriz",
+        "sub": "entrada",
+        "forma": "k",
+        "A": [
+          [
+            1,
+            0
+          ],
+          [
+            3,
+            1
+          ]
+        ],
+        "n": 14
+      },
+      "esperado": {
+        "respuesta": 42,
+        "exacta": "42"
+      }
+    },
+    {
+      "semilla": 61,
+      "entrada": {
+        "tipo": "matriz",
+        "sub": "traza",
+        "A": [
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": 53,
+        "exacta": "53"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "parametro",
+        "sub": "unica",
+        "S": 3,
+        "u": 3,
+        "w": 4
+      },
+      "esperado": {
+        "respuesta": "num:-7/12",
+        "exacta": "−7/12"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "parametro",
+        "sub": "diferencia",
+        "S": 3,
+        "u": 2,
+        "w": -1
+      },
+      "esperado": {
+        "respuesta": "int:(-inf;-5/8)",
+        "exacta": "⟨−∞; −5/8⟩"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "tipo": "parametro",
+        "sub": "suma",
+        "S": 5,
+        "u": 2,
+        "w": -6
+      },
+      "esperado": {
+        "respuesta": "int:(49/8;inf)",
+        "exacta": "⟨49/8; +∞⟩"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "trabajo",
+        "sub": "pago",
+        "a": 80,
+        "b": 60,
+        "T": 14,
+        "H": 16
+      },
+      "esperado": {
+        "respuesta": 480,
+        "exacta": "S/ 480"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "trabajo",
+        "sub": "propia",
+        "a": 80,
+        "b": 100,
+        "T": 20,
+        "H": 17
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "5 jornadas"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "valor-absoluto",
+        "signo": -1,
+        "c": 150,
+        "k": 7,
+        "t1": 1,
+        "v1": 114,
+        "t2": 20
+      },
+      "esperado": {
+        "respuesta": 72,
+        "exacta": "72 chompas"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "vandermonde",
+        "sub": "determinante",
+        "a": 2,
+        "b": 4,
+        "c": 3,
+        "d": 1
+      },
+      "esperado": {
+        "respuesta": "num:-2/1",
+        "exacta": "−2"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "vandermonde",
+        "sub": "variable",
+        "a": 5,
+        "b": 2,
+        "c": -2,
+        "d": 3,
+        "i": 2
+      },
+      "esperado": {
+        "respuesta": "num:-1/14",
+        "exacta": "−1/14"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "vandermonde",
+        "sub": "determinante",
+        "a": -1,
+        "b": 1,
+        "c": -2,
+        "d": 3
+      },
+      "esperado": {
+        "respuesta": "num:6/1",
+        "exacta": "6"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "vieta",
+        "sub": "rectangulo",
+        "L": 16,
+        "W": 5
+      },
+      "esperado": {
+        "respuesta": "ec:1,-21,80",
+        "exacta": "x² − 21x + 80 = 0"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "vieta",
+        "sub": "desplazadas",
+        "a": 1,
+        "b": -7,
+        "c": 3,
+        "k": 1
+      },
+      "esperado": {
+        "respuesta": "ec:1,-9,11",
+        "exacta": "x² − 9x + 11 = 0"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "vieta",
+        "sub": "cuadrados",
+        "a": 1,
+        "b": -4,
+        "c": 2
+      },
+      "esperado": {
+        "respuesta": "ec:1,-12,4",
+        "exacta": "x² − 12x + 4 = 0"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "vieta",
+        "sub": "inversas",
+        "a": 2,
+        "b": -7,
+        "c": -8
+      },
+      "esperado": {
+        "respuesta": "ec:8,7,-2",
+        "exacta": "8x² + 7x − 2 = 0"
+      }
+    }
+  ]
+}
