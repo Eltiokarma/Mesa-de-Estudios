@@ -2,18 +2,18 @@
   "plantilla": "configuracion-ubicacion",
   "tolerancia": 1e-9,
   "nota": "Configuraciones por la regla de Möller en el orden de llenado, con las anómalas Cr, Cu, Mo, Ag y Au; cationes: salen primero los electrones de mayor n y, a igual n, de mayor ℓ; abreviada con el gas noble más grande de menos electrones. Grupo de 1 a 18 y A/B de academia. Números cuánticos con cajas de mₗ = −ℓ a +ℓ y primero mₛ = +1/2. Las respuestas de texto se comparan por la clave (ver la cabecera de generador.js) y por el texto exacto de la alternativa correcta.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente a ciegas (subagente, 8 nov 2026): recalculó los 24 casos y 40 semillas extra (100 a 139) con un script propio en Python (Möller por n + ℓ con las anómalas Cr, Cu, Mo, Ag y Au, Hund, cajas de mₗ y vida media con fractions) y contrastó periodo, grupo y configuraciones de los neutros con los datos reales del paquete mendeleev. Las 64 coinciden con el generador y cada una tiene una sola alternativa correcta. Los casos que cambiaron tras la revisión los recalculó la conversación principal.",
   "casos": [
     {
       "semilla": 0,
       "entrada": {
         "tipo": "desapareados",
-        "Z": 24,
-        "carga": 2
+        "Z": 79,
+        "carga": 1
       },
       "esperado": {
-        "respuesta": 4,
-        "exacta": "4"
+        "respuesta": 0,
+        "exacta": "0"
       }
     },
     {
@@ -39,7 +39,7 @@
       },
       "esperado": {
         "respuesta": 60,
-        "exacta": "60 g"
+        "exacta": "60 mg"
       }
     },
     {
@@ -100,11 +100,11 @@
       "semilla": 6,
       "entrada": {
         "tipo": "ubicar",
-        "Z": 42
+        "Z": 43
       },
       "esperado": {
-        "respuesta": "ub:5:6",
-        "exacta": "periodo 5, grupo 6 (VIB)"
+        "respuesta": "ub:5:7",
+        "exacta": "periodo 5, grupo 7 (VIIB)"
       }
     },
     {
@@ -166,23 +166,23 @@
       "semilla": 11,
       "entrada": {
         "tipo": "desapareados",
-        "Z": 24,
-        "carga": 0
+        "Z": 80,
+        "carga": 2
       },
       "esperado": {
-        "respuesta": 6,
-        "exacta": "6"
+        "respuesta": 0,
+        "exacta": "0"
       }
     },
     {
       "semilla": 12,
       "entrada": {
         "tipo": "ubicar",
-        "Z": 79
+        "Z": 80
       },
       "esperado": {
-        "respuesta": "ub:6:11",
-        "exacta": "periodo 6, grupo 11 (IB)"
+        "respuesta": "ub:6:12",
+        "exacta": "periodo 6, grupo 12 (IIB)"
       }
     },
     {

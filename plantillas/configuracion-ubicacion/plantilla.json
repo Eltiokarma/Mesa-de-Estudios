@@ -4,7 +4,8 @@
   "formato": "predicciones",
   "unidades": [
     "quimica.tabla-periodica",
-    "quimica.estructura-atomica"
+    "quimica.estructura-atomica",
+    "quimica.materia-y-energia"
   ],
   "estado": "borrador",
   "version": "0.1.0",

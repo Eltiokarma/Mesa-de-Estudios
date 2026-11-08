@@ -160,6 +160,33 @@ test('el recálculo independiente coincide con el generador para todo Z de 1 a 8
   }
 });
 
+test('cada especie de las listas aparece en 3000 semillas', () => {
+  const vistos = { cation: new Set(), anion: new Set(), desapareados: new Set(), particulas: new Set(), 'atomo-ion': new Set(), anomala: new Set(), ubicar: new Set() };
+  for (let s = 0; s < 3000; s++) {
+    const d = gen.generar(s)._datos;
+    if (!vistos[d.tipo]) continue;
+    vistos[d.tipo].add(d.tipo === 'particulas' ? `${d.Z}:${d.A}:${d.carga}` : d.tipo === 'anomala' || d.tipo === 'ubicar' ? String(d.Z) : `${d.Z}:${d.carga}`);
+  }
+  const Z = s => gen.SIMBOLOS.indexOf(s), L = gen.LISTAS;
+  const faltan = (tipo, claves) => claves.filter(k => !vistos[tipo].has(k));
+  assert.deepEqual(faltan('cation', L.CATIONES.map(([s, q]) => `${Z(s)}:${q}`)), []);
+  assert.deepEqual(faltan('anion', L.ANIONES.map(([s, q]) => `${Z(s)}:${q}`)), []);
+  assert.deepEqual(faltan('desapareados', L.ESPECIES_D.map(([s, q]) => `${Z(s)}:${q}`)), []);
+  assert.deepEqual(faltan('particulas', L.NUCLIDOS.map(([z, a, q]) => `${z}:${a}:${q}`)), []);
+  assert.deepEqual(faltan('atomo-ion', L.IONES_CUERPO.map(([z, q]) => `${z}:${q}`)), []);
+  assert.deepEqual(faltan('anomala', L.ANOMALA_Z.map(String)), []);
+  assert.deepEqual(faltan('ubicar', L.UBICAR.map(String)), []);
+  assert.ok(vistos.ubicar.has('51') && vistos.ubicar.has('84'), 'Sb y Po deben salir en ubicar');
+});
+
+test('ubicar: ningún distractor repite el periodo y el grupo A/B de la correcta', () => {
+  for (let s = 0; s < 3000; s++) {
+    const p = gen.generar(s); if (p._datos.tipo !== 'ubicar') continue;
+    const correcta = p.alternativas.find(a => a.correcta).texto.replace(/grupo \d+ /, '');
+    for (const a of p.alternativas.filter(a => !a.correcta)) assert.notEqual(a.texto.replace(/grupo \d+ /, ''), correcta, `semilla ${s}`);
+  }
+});
+
 // ---------- papel.json ----------
 test('papel.json: de 5 a 10 problemas con respuesta, pasos y verificación, sin punto decimal', () => {
   assert.ok(papel.titulo && papel.indicacion);

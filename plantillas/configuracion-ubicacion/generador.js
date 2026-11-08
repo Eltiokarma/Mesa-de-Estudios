@@ -5,12 +5,12 @@
  * plantillas/atomo-y-tabla/ (Z = 1 a 36) no se toca; aquí se siguen sus mismas convenciones.
  *
  * Tipos de pregunta (campo _datos.tipo):
- *   ubicar        Z de 37 a 86 (bloques p y d, sin lantánidos): periodo y grupo (1 a 18 y A/B).
+ *   ubicar        Z de 37 a 86 (bloques p y d, sin lantánidos ni Nb, Ru, Rh, Pd, Pt): periodo y grupo (1 a 18 y A/B).
  *   familia       cuatro o cinco pares de números atómicos: ¿cuál par es de la misma familia (grupo)?
  *   cation        configuración abreviada de un catión (de transición o del bloque p).
  *   anion         configuración abreviada de un anión (Br⁻, I⁻, Se²⁻, Te²⁻, At⁻).
  *   desapareados  electrones desapareados de un ion o de un átomo (con Hund).
- *   anomala       configuración abreviada de Cr, Cu, Mo, Ag o Au.
+ *   anomala       configuración abreviada de Cr, Cu, Mo, Ag o Au, o de V o Ni (vecinos que NO son anómalos).
  *   cuanticos     (n; ℓ; mₗ; mₛ) del último electrón de un átomo neutro con Z de 37 a 86.
  *   contar        cuántos electrones de un átomo neutro tienen ℓ = 0, 1 o 2.
  *   particulas    neutrones y electrones de un ion con su número de masa A.
@@ -24,8 +24,8 @@
  *  - Configuraciones anómalas declaradas: solo Cr, Cu, Mo, Ag y Au (un electrón del s de afuera pasa al d:
  *    Cr [Ar] 4s1 3d5, Cu [Ar] 4s1 3d10, Mo [Kr] 5s1 4d5, Ag [Kr] 5s1 4d10, Au [Xe] 6s1 4f14 5d10). El Pd NO
  *    se usa. Tampoco se usan, en preguntas de configuración, Nb, Ru, Rh, Pd y Pt (su configuración real no es la
- *    de Möller ni la de la tabla de anómalas) ni los lantánidos (Z = 57 a 71). En 'ubicar' sí entran Nb, Ru, Rh,
- *    Pd y Pt: su grupo sale igual con la regla.
+ *    de Möller ni la de la tabla de anómalas) ni los lantánidos (Z = 57 a 71), en ningún tipo. El W sigue la regla
+ *    ([Xe] 6s2 4f14 5d4, que es también su configuración real).
  *  - Se escribe en el orden de llenado, también en los iones: "[Ar] 4s2 3d6", "[Xe] 6s1 4f14 5d10". La abreviada
  *    usa el gas noble más grande con MENOS electrones que la especie (I⁻: [Kr] 5s2 4d10 5p6, igual al Xe).
  *  - Cationes: salen primero los electrones de mayor n y, a igual n, los de mayor ℓ (5p antes que 5s; 4s antes
@@ -38,7 +38,7 @@
  *    llenan de mₗ = −ℓ a +ℓ, primero con mₛ = +1/2 en cada caja y luego con mₛ = −1/2 (se dice en "datos").
  *    Texto «(5; 1; 0; −1/2)».
  *  - Partículas: protones Z, neutrones A − Z, electrones Z − carga. Los A son de isótopos naturales reales.
- *  - Vida media: queda m = m₀/2^(t/T). No hay masas molares en este generador.
+ *  - Vida media: queda m = m₀/2^(t/T); masas en mg si la muestra es de un hospital, si no en g. No hay masas molares.
  *  - Números con coma decimal y a lo más dos decimales (P.formatear); un distractor que no se escribe exacto con
  *    dos decimales se descarta.
  *  - Respuesta: p.respuesta.valor es un número (desapareados, contar, vida-media) o una clave de texto:
@@ -60,6 +60,8 @@
   'use strict';
   const FUENTE = 'docs/investigacion/atomo-enlace-ideas-erroneas.md';
   const h = (id, extra, explicacion) => ({ id, ...extra, explicacion, respaldo: 'hipotesis', fuente: FUENTE });
+  const FUENTE_VM = 'docs/investigacion/cinetica-ideas-erroneas.md';
+  const hv = (id, extra, explicacion) => ({ id, ...extra, explicacion, respaldo: 'hipotesis', fuente: FUENTE_VM });
   const v = P.v;
   const f = x => P.formatear(x, 2);
 
@@ -73,7 +75,7 @@
     22: 'titanio', 23: 'vanadio', 24: 'cromo', 25: 'manganeso', 26: 'hierro', 27: 'cobalto', 28: 'níquel', 29: 'cobre',
     30: 'zinc', 34: 'selenio', 35: 'bromo', 37: 'rubidio', 38: 'estroncio', 39: 'itrio', 40: 'circonio', 42: 'molibdeno',
     43: 'tecnecio', 47: 'plata', 48: 'cadmio', 49: 'indio', 50: 'estaño', 51: 'antimonio', 52: 'telurio', 53: 'yodo', 54: 'xenón',
-    55: 'cesio', 56: 'bario', 72: 'hafnio', 73: 'tantalio', 74: 'wolframio', 75: 'renio', 76: 'osmio', 77: 'iridio',
+    55: 'cesio', 56: 'bario', 72: 'hafnio', 73: 'tantalio', 74: 'tungsteno (wolframio)', 75: 'renio', 76: 'osmio', 77: 'iridio',
     79: 'oro', 80: 'mercurio', 81: 'talio', 82: 'plomo', 83: 'bismuto', 84: 'polonio', 85: 'astato', 86: 'radón' };
   const zDe = s => SIMBOLOS.indexOf(s);
   const ZMAX = 86;
@@ -179,6 +181,7 @@
   const ELEMENTOS = [];
   for (let Z = 1; Z <= ZMAX; Z++) if (!LANTANIDO(Z)) ELEMENTOS.push({ Z, ...ubicacion(Z) });
   const elem = Z => ELEMENTOS.find(x => x.Z === Z);
+  const CAND_UBICAR = ELEMENTOS.filter(x => x.Z > 36 && conConfig(x.Z) && (x.bloque === 'p' || x.bloque === 'd') && x.grupo !== 18);
 
   // ---------- Números cuánticos ----------
   function cuanticos(s, i) {
@@ -210,8 +213,13 @@
   const partTxt = (n, e) => ({ clave: `part:${n}:${e}`, texto: `${n} neutrones y ${e} electrones` });
   const ionTxt = (e, c) => ({ clave: `ion:${e}|${c}`, texto: `${e} electrones; ${bonito(c)}` });
   const corto = x => Number.isFinite(x) && x > 0 && Math.abs(x * 100 - Math.round(x * 100)) < 1e-7;
-  const nombreDe = Z => NOMBRES[Z] ? `del ${NOMBRES[Z]}` : `del elemento de Z = ${Z}`;
-  const DATOS_MOLLER = 'Configuraciones en el orden de llenado (regla de Möller), abreviadas con el gas noble anterior.';
+  const FEM = [47];                                    // «la plata»; los demás nombres usados son masculinos
+  const el = Z => (FEM.includes(Z) ? 'la ' : 'el ') + NOMBRES[Z];
+  const del_ = Z => (FEM.includes(Z) ? 'de la ' : 'del ') + NOMBRES[Z];
+  const nombreDe = Z => NOMBRES[Z] ? del_(Z) : `del elemento de Z = ${Z}`;
+  const electrones = k => (k === 1 ? '1 electrón' : `${k} electrones`);
+  const cap1 = t => t[0].toUpperCase() + t.slice(1);
+  const DATOS_MOLLER = 'Configuraciones en el orden de llenado (regla de Möller), salvo Cr, Cu, Mo, Ag y Au, que son anómalas: un electrón del s de afuera pasa al d; abreviadas con el gas noble anterior.';
 
   // ---------- Armado ----------
   function generar(semilla) {
@@ -240,12 +248,12 @@
 
   // ---- ubicar ----
   function ubicar(rng, semilla) {
-    const cand = ELEMENTOS.filter(x => x.Z > 36 && (x.bloque === 'p' || x.bloque === 'd') && x.grupo !== 18);
+    const cand = CAND_UBICAR;
     const el = rng.elegir(cand), Z = el.Z, c = neutro(Z), ab = abreviar(c), ult = c[c.length - 1];
     const Pe = el.periodo, G = el.grupo, r = romanoDe(G), letra = grupoAB(G).slice(-1);
     const e = (n, l) => (c.find(s => s.n === n && s.l === l) || { e: 0 }).e;
     const errores = [];
-    if (r <= 7) {
+    if (r <= 7 && !(letra === 'B' && r < 4)) {
       const sw = ubTxt(r, deAB(Pe, letra));
       errores.push(h('QA-grupo-periodo-intercambiados', sw, `Intercambiaste grupo y periodo. El periodo es el mayor nivel n (${Pe}); el número del grupo sale de los electrones de valencia (${grupoAB(G)}).`));
     }
@@ -256,6 +264,7 @@
     } else {
       const sp = e(Pe, 0) + e(Pe, 1);
       errores.push(h('QA-grupo-solo-ultimo-subnivel', ubTxt(Pe, deAB(ult.e, 'A')), `Contaste solo los ${ult.e} electrones del ${nom(ult)}. Los electrones de valencia del bloque p son los de ${Pe}s más los de ${Pe}p: ${e(Pe, 0)} + ${e(Pe, 1)} = ${sp}.`));
+      errores.push(h('QA-periodo-del-gas-noble', ubTxt(Pe - 1, G), `Tomaste el periodo del gas noble de la abreviatura (${ab.match(/\[(\w+)\]/)[1]}, periodo ${Pe - 1}). Después del gas noble vienen electrones del nivel ${Pe}: el periodo es ${Pe}.`));
       errores.push(h('QA-grupo-a-sin-diez', ubTxt(Pe, sp), `Contaste bien ${sp} electrones de valencia, pero «${sp}» en la numeración de 1 a 18 es un grupo B (de transición). Termina en p: es el grupo ${ROM[sp]}A, que es el ${10 + sp}.`));
     }
     const variables = { Z: { nombre: 'número atómico', color: 'o' }, per: { nombre: 'periodo', color: 'i' }, gr: { nombre: 'grupo', color: 'h' } };
@@ -266,7 +275,8 @@
         ? [`Termina en ${bonito(nom(ult) + ult.e)}: bloque d. Grupo = ${Pe}s + ${Pe - 1}d = ${e(Pe, 0)} + ${ult.e} = `, v('gr', `${G} (${grupoAB(G)})`), '.']
         : [`Termina en ${bonito(nom(ult) + ult.e)}: bloque p. Electrones de valencia ${e(Pe, 0)} + ${e(Pe, 1)} = ${e(Pe, 0) + e(Pe, 1)}: grupo `, v('gr', `${grupoAB(G)} (${G})`), '.'],
     ];
-    return cerrar(rng, semilla, { correcta: ubTxt(Pe, G), errores, variables, solucion,
+    const mismo = e => { const [, pe, g] = e.clave.split(':').map(Number); return pe === Pe && grupoAB(g) === grupoAB(G); };
+    return cerrar(rng, semilla, { correcta: ubTxt(Pe, G), errores: errores.filter(e => !mismo(e)), variables, solucion,
       enunciado: ['Un elemento tiene ', v('Z', `número atómico ${Z}`), '.'],
       pregunta: ['¿En qué ', v('per', 'periodo'), ' y en qué ', v('gr', 'grupo'), ' de la tabla periódica está?'],
       datos: DATOS_MOLLER, _datos: { tipo: 'ubicar', Z } });
@@ -312,12 +322,21 @@
     ['Cu', 1], ['Cu', 2], ['Zn', 2], ['Mo', 3], ['Ag', 1], ['Cd', 2], ['Sn', 2], ['Sn', 4], ['Sb', 3], ['Au', 1], ['Au', 3],
     ['Hg', 2], ['Tl', 1], ['Pb', 2], ['Pb', 4], ['Bi', 3]];
   function erroresCation(Z, q) {
-    const base = neutro(Z), out = [];
-    out.push(h('QA-ion-quita-ultimos-llenados', conf(abreviar(quitarUltimos(base, q))), `Quitaste los electrones que entraron al final (los del ${nom(base[base.length - 1])}). Al formar un catión salen primero los de mayor n: los del nivel de afuera, aunque se hayan llenado antes.`));
-    out.push(h('QA-ion-config-del-atomo', conf(abreviar(base)), `Esa es la configuración del átomo neutro. El ion ${esp(Z, q)} tiene ${q} ${q > 1 ? 'electrones' : 'electrón'} menos.`));
+    const base = neutro(Z), out = [], ult = base[base.length - 1];
+    const explUltimos = ult.l === 1 && q > ult.e
+      ? `Después de los ${nom(ult)} quitaste ${electrones(q - ult.e)} del d; los siguientes en salir son los del s de mayor n.`
+      : `Quitaste ${q === 1 ? 'el electrón que entró' : 'los electrones que entraron'} al final (${q === 1 ? 'el' : 'los'} del ${nom(ult)}). Al formar un catión salen primero los de mayor n: los del nivel de afuera, aunque se hayan llenado antes.`;
+    out.push(h('QA-ion-quita-ultimos-llenados', conf(abreviar(quitarUltimos(base, q))), explUltimos));
+    out.push(h('QA-ion-config-del-atomo', conf(abreviar(base)), `Esa es la configuración del átomo neutro. El ion ${esp(Z, q)} tiene ${electrones(q)} menos.`));
     if (q > 1) out.push(h('QA-ion-quita-uno-de-s', conf(abreviar(quitarUltimos(quitarDeAfuera(base, 1), q - 1))), 'Quitaste un electrón del nivel de afuera y los demás de los últimos en llenarse. Todos salen primero del nivel de mayor n, hasta vaciarlo.'));
-    if (EXCEPCIONES[Z]) out.push(h('QA-ignora-anomalia', conf(abreviar(quitarDeAfuera(neutro(Z, true), q))), `Partiste de la configuración sin la anomalía. El ${NOMBRES[Z]} tiene un solo electrón en el s de afuera (${bonito(abreviar(base))}); de ahí se quitan los electrones.`));
-    out.push(h('QA-ion-suma-carga', conf(abreviar(agregar(base, q))), `Agregaste ${q} ${q > 1 ? 'electrones' : 'electrón'}. La carga positiva quiere decir que el ion PERDIÓ electrones.`));
+    if (EXCEPCIONES[Z]) out.push(h('QA-ignora-anomalia', conf(abreviar(quitarDeAfuera(neutro(Z, true), q))), `Partiste de la configuración sin la anomalía. ${cap1(el(Z))} tiene un solo electrón en el s de afuera (${bonito(abreviar(base))}); de ahí se quitan los electrones.`));
+    const afuera = Math.max(...base.map(x => x.n)), pA = base.find(x => x.n === afuera && x.l === 1);
+    if (pA) {
+      const r = clonar(base), sA = r.find(x => x.n === afuera && x.l === 0), pr = r.find(x => x.n === afuera && x.l === 1);
+      const deS = Math.min(q, sA.e); sA.e -= deS; pr.e -= q - deS;
+      if (pr.e >= 0) out.push(h('QA-ion-quita-s-antes-que-p', conf(abreviar(ordenar(r))), `Quitaste primero los del ${afuera}s, como en los metales de transición. Dentro del mismo nivel salen primero los de mayor ℓ: los ${afuera}p antes que los ${afuera}s.`));
+    }
+    out.push(h('QA-ion-suma-carga', conf(abreviar(agregar(base, q))), `Agregaste ${electrones(q)}. La carga positiva quiere decir que el ion PERDIÓ electrones.`));
     if (q > 1) out.push(h('QA-ion-quita-solo-uno', conf(abreviar(quitarDeAfuera(base, 1))), `Quitaste un solo electrón. La carga ${q}+ dice que salen ${q}.`));
     return out;
   }
@@ -330,7 +349,7 @@
       pregunta: ['¿Cuál es su ', v('c', 'configuración electrónica'), '?'], datos: DATOS_MOLLER,
       solucion: [
         ['Átomo neutro: ', v('Z', `Z = ${Z}`), ` → ${bonito(abreviar(base))}${EXCEPCIONES[Z] ? ' (configuración anómala: un electrón del s pasó al d)' : ''}.`],
-        ['Carga ', v('q', `${q}+`), `: salen ${q} ${q > 1 ? 'electrones' : 'electrón'}, primero del nivel de mayor n (n = ${afuera}) y, dentro de él, del subnivel de mayor ℓ.`],
+        ['Carga ', v('q', `${q}+`), `: ${q === 1 ? 'sale 1 electrón' : `salen ${q} electrones`}, primero del nivel de mayor n (n = ${afuera}) y, dentro de él, del subnivel de mayor ℓ.`],
         [`${esp(Z, q)}: `, v('c', bonito(abreviar(c))), '.'],
       ], _datos: { tipo: 'cation', Z, carga: q } });
   }
@@ -342,11 +361,11 @@
     const ult = base[base.length - 1];
     const nueva = clonar(base); nueva.push({ n: ult.n + 1, l: 0, e: k });
     const errores = [
-      h('QA-ion-config-del-atomo', conf(abreviar(base)), `Esa es la configuración del átomo neutro. El ion ${esp(Z, q)} ganó ${k} ${k > 1 ? 'electrones' : 'electrón'}.`),
+      h('QA-ion-config-del-atomo', conf(abreviar(base)), `Esa es la configuración del átomo neutro. El ion ${esp(Z, q)} ganó ${electrones(k)}.`),
       h('QA-anion-quita', conf(abreviar(quitarDeAfuera(base, k))), `Quitaste electrones. La carga negativa quiere decir que el ion GANÓ electrones.`),
-      h('QA-anion-capa-nueva', conf(abreviar(ordenar(nueva))), `Pusiste los electrones nuevos en el ${ult.n + 1}s. Todavía hay lugar en el ${nom(ult)}: los electrones entran ahí hasta completarlo.`),
+      h('QA-anion-capa-nueva', conf(abreviar(ordenar(nueva))), `Pusiste ${k === 1 ? 'el electrón nuevo' : 'los electrones nuevos'} en el ${ult.n + 1}s. Todavía hay lugar en el ${nom(ult)}: los electrones entran ahí hasta completarlo.`),
     ];
-    if (k > 1) errores.push(h('QA-ion-quita-solo-uno', conf(abreviar(agregar(base, 1))), `Agregaste un solo electrón. La carga ${k}− dice que entran ${k}.`));
+    if (k > 1) errores.push(h('QA-anion-agrega-solo-uno', conf(abreviar(agregar(base, 1))), `Agregaste un solo electrón. La carga ${k}− dice que entran ${k}.`));
     const variables = { Z: { nombre: 'número atómico', color: 'o' }, q: { nombre: 'carga', color: 'h' }, c: { nombre: 'configuración', color: 'd' } };
     const gas = SIMBOLOS[Z + k];
     return cerrar(rng, semilla, { correcta: conf(abreviar(c)), errores, variables,
@@ -354,29 +373,35 @@
       pregunta: ['¿Cuál es su ', v('c', 'configuración electrónica'), '?'], datos: DATOS_MOLLER,
       solucion: [
         ['Átomo neutro: ', v('Z', `Z = ${Z}`), ` → ${bonito(abreviar(base))}.`],
-        ['Carga ', v('q', `${k}−`), `: entran ${k} ${k > 1 ? 'electrones' : 'electrón'} al ${nom(ult)}, que queda lleno.`],
+        ['Carga ', v('q', `${k}−`), `: ${k === 1 ? 'entra 1 electrón' : `entran ${k} electrones`} al ${nom(ult)}, que queda lleno.`],
         [`${esp(Z, q)}: `, v('c', bonito(abreviar(c))), `, con ${Z + k} electrones, igual que el ${gas}.`],
       ], _datos: { tipo: 'anion', Z, carga: q } });
   }
 
   // ---- desapareados ----
-  const ESPECIES_D = [...CATIONES, ['Cr', 0], ['Cu', 0], ['Mo', 0], ['Ag', 0], ['Au', 0], ['Fe', 0], ['Co', 0], ['Mn', 0],
-    ['Tc', 0], ['W', 0], ['Os', 0], ['Ir', 0], ['Re', 0], ['Te', 0], ['I', 0], ['Sb', 0], ['Se', -2], ['I', -1]];
+  // Sin W (su configuración real coincide con la regla, pero varios libros la dan anómala) ni Mn, Tc, Re y Sb
+  // neutros (d⁵ s² y p³: los errores coinciden con la respuesta y no salen 4 alternativas).
+  const ESPECIES_D = [...CATIONES, ['Cr', 0], ['Cu', 0], ['Mo', 0], ['Ag', 0], ['Au', 0], ['Fe', 0], ['Co', 0],
+    ['Os', 0], ['Ir', 0], ['Te', 0], ['I', 0], ['Se', -2], ['I', -1]];
   function desapareados(rng, semilla) {
     const [s, q] = rng.elegir(ESPECIES_D), Z = zDe(s), base = neutro(Z), c = configDe(Z, q), correcta = desap(c);
-    const errores = [
-      h('QA-desap-sin-hund', { valor: desapSinHund(c) }, 'Apareaste los electrones antes de ocupar todas las cajas. Por la regla de Hund, cada orbital del subnivel recibe primero un electrón; recién después se aparean.'),
-    ];
+    const errores = [];
+    if (q === 0 && EXCEPCIONES[Z]) errores.push(h('QA-desap-olvida-s', { valor: correcta - 1 }, `Contaste solo el d y olvidaste el s¹, que también tiene un electrón solo.`));
+    errores.push(h('QA-desap-sin-hund', { valor: desapSinHund(c) }, 'Apareaste los electrones antes de ocupar todas las cajas. Por la regla de Hund, cada orbital del subnivel recibe primero un electrón; recién después se aparean.'));
     if (q > 0) {
-      errores.push(h('QA-ion-quita-ultimos-llenados', { valor: desap(quitarUltimos(base, q)) }, 'Quitaste los electrones que entraron al final. En un catión salen primero los del nivel de mayor n; con la configuración bien hecha cambian los desapareados.'));
-      errores.push(h('QA-ion-config-del-atomo', { valor: desap(base) }, `Contaste los desapareados del átomo neutro. El ion ${esp(Z, q)} perdió ${q} ${q > 1 ? 'electrones' : 'electrón'}.`));
+      errores.push(h('QA-ion-quita-ultimos-llenados', { valor: desap(quitarUltimos(base, q)) }, `Quitaste ${q === 1 ? 'el electrón que entró' : 'los electrones que entraron'} al final. En un catión salen primero los del nivel de mayor n; con la configuración bien hecha cambian los desapareados.`));
+      errores.push(h('QA-ion-config-del-atomo', { valor: desap(base) }, `Contaste los desapareados del átomo neutro. El ion ${esp(Z, q)} perdió ${electrones(q)}.`));
     }
-    if (q < 0) errores.push(h('QA-ion-config-del-atomo', { valor: desap(base) }, `Contaste los desapareados del átomo neutro. El ion ${esp(Z, q)} ganó ${-q} ${q < -1 ? 'electrones' : 'electrón'}.`));
-    if (EXCEPCIONES[Z]) errores.push(h('QA-ignora-anomalia', { valor: desap(quitarDeAfuera(neutro(Z, true), Math.max(q, 0))) }, `No aplicaste la anomalía del ${NOMBRES[Z]}: un electrón del s pasa al d (${bonito(abreviar(base))}).`));
+    if (q < 0) errores.push(h('QA-ion-config-del-atomo', { valor: desap(base) }, `Contaste los desapareados del átomo neutro. El ion ${esp(Z, q)} ganó ${electrones(-q)}.`));
+    if (EXCEPCIONES[Z]) errores.push(h('QA-ignora-anomalia', { valor: desap(quitarDeAfuera(neutro(Z, true), Math.max(q, 0))) }, `No aplicaste la anomalía ${del_(Z)}: un electrón del s pasa al d (${bonito(abreviar(base))}).`));
     const ab = abreviar(c);
-    const abiertos = c.filter(x => x.e < cap(x.l));
-    errores.push(h('QA-desap-cuenta-electrones', { valor: abiertos.length ? abiertos[abiertos.length - 1].e : 0 }, 'Contaste todos los electrones del último subnivel incompleto. Desapareados son solo los que están solos en su caja.'));
-    errores.push(h('QA-desap-cuenta-orbitales', { valor: abiertos.length ? 2 * abiertos[abiertos.length - 1].l + 1 : 1 }, 'Contaste los orbitales (las cajas) del subnivel, no los electrones que están solos en ellas.'));
+    const ref = c[c.length - 1];   // el último subnivel escrito
+    errores.push(h('QA-desap-cuenta-electrones', { valor: ref.e }, `Contaste todos los electrones del ${nom(ref)}. Desapareados son solo los que están solos en su caja.`));
+    errores.push(h('QA-desap-mitad-electrones', { valor: Math.floor(ref.e / 2) }, `Dividiste los electrones del ${nom(ref)} entre dos: eso cuenta los pares (orbitales llenos), no los electrones que quedan solos.`));
+    errores.push(h('QA-desap-cuenta-orbitales', { valor: 2 * ref.l + 1 }, `Contaste los orbitales (las cajas) del ${nom(ref)}, no los electrones que están solos en ellas.`));
+    const resto = ab.startsWith('[') ? ab.replace(/^\[\w+\] /, '').split(' ') : ab.split(' ');
+    const valencia = resto.reduce((t, x) => t + Number(x.replace(/^\d[spdf]/, '')), 0);
+    errores.push(h('QA-desap-total-valencia', { valor: valencia }, `Contaste todos los electrones que van después del gas noble (${bonito(resto.join(' '))}). Desapareados son solo los que quedan solos en su caja.`));
     const variables = { Z: { nombre: 'número atómico', color: 'o' }, q: { nombre: 'carga', color: 'h' }, d: { nombre: 'desapareados', color: 'd' } };
     const detalle = c.filter(x => x.e < cap(x.l)).map(x => `${bonito(nom(x) + x.e)} en ${2 * x.l + 1} caja${x.l ? 's' : ''} → ${desap([x])}`).join('; ');
     return cerrar(rng, semilla, { numero: true, ceroVale: true, correcta, errores, texto: x => String(x), variables,
@@ -385,32 +410,44 @@
       pregunta: ['¿Cuántos ', v('d', 'electrones desapareados'), ' tiene?'], datos: DATOS_MOLLER,
       solucion: [
         [`Configuración: ${bonito(ab)}.`],
-        [detalle ? `Subniveles incompletos (Hund, una flecha por caja antes de aparear): ${detalle}.` : 'Todos los subniveles están llenos.'],
+        [detalle ? `Subniveles incompletos (Hund, una flecha por caja antes de aparear): ${detalle}.` : 'Todos los subniveles están llenos: cada caja tiene dos flechas.'],
         ['Total: ', v('d', `${correcta} desapareado${correcta === 1 ? '' : 's'}`), correcta === 0 ? ' (diamagnético).' : '.'],
       ], _datos: { tipo: 'desapareados', Z, carga: q } });
   }
 
   // ---- anomala ----
+  // Las cinco anómalas declaradas y dos vecinos que NO lo son (V junto al Cr, Ni junto al Cu): en estos, la trampa es extender la anomalía.
+  const ANOMALA_Z = [24, 29, 42, 47, 79, 23, 28];
   function anomala(rng, semilla) {
-    const Z = rng.elegir([24, 29, 42, 47, 79]), c = neutro(Z), sin = neutro(Z, true), n = EXCEPCIONES[Z];
+    const Z = rng.elegir(ANOMALA_Z), c = neutro(Z), sin = neutro(Z, true), es = !!EXCEPCIONES[Z];
+    const n = Math.max(...c.map(x => x.n));
     const mismoN = x => abreviar(x).replace(new RegExp(`${n - 1}d`), `${n}d`);
-    const errores = [
-      h('QA-ignora-anomalia', conf(abreviar(sin)), `Seguiste la regla de llenado sin la anomalía. En el ${NOMBRES[Z]} un electrón del ${n}s pasa al ${n - 1}d: así el d queda ${c.find(x => x.l === 2 && x.n === n - 1).e === 5 ? 'semilleno' : 'lleno'}.`),
-      h('QA-d-mismo-n', conf(mismoN(c)), `Escribiste el subnivel d con el mismo n que el s. El d que se llena junto al ${n}s es el ${n - 1}d (n − 1).`),
-      h('QA-d-mismo-n', conf(mismoN(sin)), `Escribiste el subnivel d con el mismo n que el s y sin la anomalía. El d que va con el ${n}s es el ${n - 1}d, y en el ${NOMBRES[Z]} un electrón del s pasa al d.`),
-    ];
     const d = c.find(x => x.l === 2 && x.n === n - 1);
-    if (d.e === 5) { const dos = clonar(c); dos.find(x => x.l === 0 && x.n === n).e -= 1; dos.find(x => x.l === 2 && x.n === n - 1).e += 1;
-      errores.push(h('QA-anomalia-dos-electrones', conf(abreviar(ordenar(dos))), `Pasaste los dos electrones del ${n}s al d. Pasa uno solo: con él, el d queda semilleno (cinco cajas con una flecha cada una).`)); }
+    const mover = (x, k) => { const y = clonar(x); y.find(t => t.l === 0 && t.n === n).e -= k; y.find(t => t.l === 2 && t.n === n - 1).e += k; return ordenar(y); };
+    const errores = [];
+    if (es) {
+      errores.push(h('QA-ignora-anomalia', conf(abreviar(sin)), `Seguiste la regla de llenado sin la anomalía. En ${el(Z)} un electrón del ${n}s pasa al ${n - 1}d: así el d queda ${d.e === 5 ? 'semilleno' : 'lleno'}.`));
+      errores.push(h('QA-d-mismo-n', conf(mismoN(c)), `Escribiste el subnivel d con el mismo n que el s. El d que se llena junto al ${n}s es el ${n - 1}d (n − 1).`));
+      errores.push(h('QA-d-mismo-n', conf(mismoN(sin)), `Escribiste el subnivel d con el mismo n que el s y sin la anomalía. El d que va con el ${n}s es el ${n - 1}d, y en ${el(Z)} un electrón del s pasa al d.`));
+      if (d.e === 5) errores.push(h('QA-anomalia-dos-electrones', conf(abreviar(mover(c, 1))), `Pasaste los dos electrones del ${n}s al d. Pasa uno solo: con él, el d queda semilleno (cinco cajas con una flecha cada una).`));
+    } else {
+      if (d.e < 10) errores.push(h('QA-generaliza-anomalia', conf(abreviar(mover(c, 1))), `Extendiste la anomalía del cromo y del cobre ${FEM.includes(Z) ? 'a la' : 'al'} ${NOMBRES[Z]}. No la tiene: su configuración sigue la regla de llenado.`));
+      if (d.e < 9) errores.push(h('QA-generaliza-anomalia', conf(abreviar(mover(c, 2))), `Pasaste los dos electrones del ${n}s al d, como si ${el(Z)} fuera anómalo. No lo es: sigue la regla de llenado.`));
+      errores.push(h('QA-d-mismo-n', conf(mismoN(c)), `Escribiste el subnivel d con el mismo n que el s. El d que se llena junto al ${n}s es el ${n - 1}d (n − 1).`));
+    }
     const variables = { Z: { nombre: 'número atómico', color: 'o' }, c: { nombre: 'configuración', color: 'd' } };
     return cerrar(rng, semilla, { correcta: conf(abreviar(c)), errores, variables,
-      enunciado: [`Se estudia el ${NOMBRES[Z]} (`, v('Z', `Z = ${Z}`), ') en su estado fundamental.'],
+      enunciado: [`Se estudia ${el(Z)} (`, v('Z', `Z = ${Z}`), ') en su estado fundamental.'],
       pregunta: ['¿Cuál es su ', v('c', 'configuración electrónica'), '?'],
-      datos: 'Configuraciones en el orden de llenado, abreviadas con el gas noble anterior.',
-      solucion: [
+      datos: DATOS_MOLLER,
+      solucion: es ? [
         [`Por la regla de llenado saldría ${bonito(abreviar(sin))}.`],
-        [`El ${NOMBRES[Z]} es una de las configuraciones anómalas que se piden: un electrón del ${n}s pasa al ${n - 1}d, que queda ${d.e === 5 ? 'semilleno (d⁵)' : 'lleno (d¹⁰)'}.`],
-        ['Configuración: ', v('c', bonito(abreviar(c))), `, con ${desap(c)} ${desap(c) === 1 ? 'electrón' : 'electrones'} desapareado${desap(c) === 1 ? '' : 's'}.`],
+        [`${cap1(el(Z))} es una de las configuraciones anómalas que se piden: un electrón del ${n}s pasa al ${n - 1}d, que queda ${d.e === 5 ? 'semilleno (d⁵)' : 'lleno (d¹⁰)'}.`],
+        ['Configuración: ', v('c', bonito(abreviar(c))), `, con ${electrones(desap(c))} desapareado${desap(c) === 1 ? '' : 's'}.`],
+      ] : [
+        [`${cap1(el(Z))} no está entre las anómalas (Cr, Cu, Mo, Ag, Au): sigue la regla de llenado.`],
+        [`El ${n}s se llena antes que el ${n - 1}d; ningún electrón cambia de subnivel.`],
+        ['Configuración: ', v('c', bonito(abreviar(c))), `, con ${electrones(desap(c))} desapareado${desap(c) === 1 ? '' : 's'}.`],
       ], _datos: { tipo: 'anomala', Z } });
   }
 
@@ -431,7 +468,7 @@
     return cerrar(rng, semilla, { correcta: qnTxt(q), errores: rng.barajar(errores), variables,
       enunciado: ['Un átomo neutro tiene ', v('Z', `Z = ${Z}`), '.'],
       pregunta: ['¿Cuáles son los ', v('q', 'números cuánticos (n; ℓ; mₗ; mₛ)'), ' de su último electrón?'],
-      datos: 'Orden de llenado de Möller. En cada subnivel, las cajas se llenan de mₗ = −ℓ a mₗ = +ℓ: primero una flecha hacia arriba (mₛ = +1/2) en cada caja y luego las flechas hacia abajo (mₛ = −1/2).',
+      datos: DATOS_MOLLER + ' Se usa la configuración real, con su anomalía. El último electrón es el último que entra según el orden de llenado (electrón diferencial). En cada subnivel, las cajas se llenan de mₗ = −ℓ a mₗ = +ℓ: primero una flecha hacia arriba (mₛ = +1/2) en cada caja y luego las flechas hacia abajo (mₛ = −1/2).',
       solucion: [
         ['Configuración: ', v('Z', `Z = ${Z}`), ` → ${bonito(abreviar(c))}. El último subnivel escrito es el `, v('s', bonito(nom(s) + s.e)), '.'],
         [`n = ${s.n} y ℓ = ${s.l} (${LETRA[s.l]}). Hay ${k} caja${k > 1 ? 's' : ''}, de mₗ = −${s.l} a +${s.l}; el electrón número ${s.e} ${s.e <= k ? `es una flecha hacia arriba en la caja ${s.e}` : `es una flecha hacia abajo en la caja ${s.e - k}`}.`],
@@ -451,10 +488,10 @@
     ];
     if (l >= 1) errores.push(h('QA-l-confunde-subnivel', { valor: contarL(Z, l - 1) }, `Contaste los electrones ${LETRA[l - 1]}, como si ℓ = ${l} fuera el subnivel ${LETRA[l - 1]}. ℓ = 0 es s, ℓ = 1 es p, ℓ = 2 es d.`));
     if (l <= 1) errores.push(h('QA-l-confunde-subnivel', { valor: contarL(Z, l + 1) }, `Contaste los electrones ${LETRA[l + 1]}. ℓ = 0 es s, ℓ = 1 es p, ℓ = 2 es d.`));
-    if (EXCEPCIONES[Z]) errores.push(h('QA-ignora-anomalia', { valor: neutro(Z, true).filter(s => s.l === l).reduce((t, s) => t + s.e, 0) }, `No aplicaste la anomalía del ${NOMBRES[Z]}: un electrón del s pasa al d.`));
+    if (EXCEPCIONES[Z]) errores.push(h('QA-ignora-anomalia', { valor: neutro(Z, true).filter(s => s.l === l).reduce((t, s) => t + s.e, 0) }, `No aplicaste la anomalía ${del_(Z)}: un electrón del s pasa al d.`));
     const variables = { Z: { nombre: 'número atómico', color: 'o' }, l: { nombre: 'número cuántico ℓ', color: 'i' }, k: { nombre: 'electrones', color: 'd' } };
     return cerrar(rng, semilla, { numero: true, ceroVale: true, correcta, errores, texto: x => String(x), variables,
-      enunciado: [`Un átomo neutro de ${NOMBRES[Z] || 'un elemento'} tiene `, v('Z', `Z = ${Z}`), '.'],
+      enunciado: [NOMBRES[Z] ? `Un átomo neutro de ${NOMBRES[Z]} tiene ` : 'Un átomo neutro tiene ', v('Z', `Z = ${Z}`), '.'],
       pregunta: ['¿Cuántos ', v('k', 'electrones'), ' tienen número cuántico secundario ', v('l', `ℓ = ${l}`), '?'],
       datos: DATOS_MOLLER,
       solucion: [
@@ -476,14 +513,15 @@
       h('QA-electrones-ignora-carga', partTxt(n, Z), `Diste los electrones del átomo neutro (Z = ${Z}). El ion tiene carga: ${q > 0 ? 'perdió' : 'ganó'} electrones.`),
       h('QA-neutrones-menos-electrones', partTxt(A - e, e), `Para los neutrones restaste los electrones (A − e). Los neutrones son A menos los PROTONES: A − Z.`),
     ];
-    const variables = { A: { nombre: 'número de masa', color: 'i' }, Z: { nombre: 'número atómico', color: 'o' }, q: { nombre: 'carga', color: 'h' }, r: { nombre: 'partículas', color: 'd' } };
+    // Cuatro colores para cuatro variables: la carga va sin color.
+    const variables = { A: { nombre: 'número de masa', color: 'i' }, Z: { nombre: 'número atómico', color: 'o' }, n: { nombre: 'neutrones', color: 'd' }, e: { nombre: 'electrones', color: 'h' } };
     const qt = q > 0 ? `${q}+` : `${-q}−`;
     return cerrar(rng, semilla, { correcta: partTxt(n, e), errores, variables,
-      enunciado: [`El ion ${sup(A)}${esp(Z, q)} tiene `, v('A', `A = ${A}`), ', ', v('Z', `Z = ${Z}`), ' y carga ', v('q', qt), '.'],
-      pregunta: ['¿Cuántos ', v('r', 'neutrones y electrones'), ' tiene?'],
+      enunciado: [`El ion ${sup(A)}${esp(Z, q)} tiene `, v('A', `A = ${A}`), ', ', v('Z', `Z = ${Z}`), ` y carga ${qt}.`],
+      pregunta: ['¿Cuántos ', v('n', 'neutrones'), ' y cuántos ', v('e', 'electrones'), ' tiene?'],
       solucion: [
-        ['Neutrones: ', v('A', String(A)), ' − ', v('Z', String(Z)), ' = ', v('r', String(n)), '. La carga no cambia el núcleo.'],
-        ['Electrones: ', v('Z', String(Z)), q > 0 ? ' − ' : ' + ', v('q', String(Math.abs(q))), ' = ', v('r', String(e)), q > 0 ? ' (un catión perdió electrones).' : ' (un anión ganó electrones).'],
+        [v('n', 'Neutrones'), ': ', v('A', String(A)), ' − ', v('Z', String(Z)), ' = ', v('n', String(n)), '. La carga no cambia el núcleo.'],
+        [v('e', 'Electrones'), ': ', v('Z', String(Z)), `${q > 0 ? ' − ' : ' + '}${Math.abs(q)} = `, v('e', String(e)), q > 0 ? ' (un catión perdió electrones).' : ' (un anión ganó electrones).'],
       ], _datos: { tipo: 'particulas', Z, A, carga: q } });
   }
 
@@ -521,22 +559,23 @@
     const u = rng.elegir(UNIDADES_T), T = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30]);
     const variables = { m0: { nombre: 'masa inicial', color: 'o' }, T: { nombre: 'vida media', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, m: { nombre: 'lo que queda', color: 'd' } };
     const ctx = rng.elegir(['Un laboratorio guarda una muestra de un isótopo radiactivo', 'Un hospital recibe una muestra de un radioisótopo', 'Una fuente radiactiva de un equipo de medición contiene un isótopo']);
+    const mu = ctx.startsWith('Un hospital') ? 'mg' : 'g';   // en el hospital, dosis en miligramos
     if (sub === 'queda') {
       const m0 = rng.elegir([40, 48, 64, 80, 96, 120, 160, 200, 240, 320, 400, 480, 640]), n = rng.entero(2, 5), t = n * T, m = m0 / 2 ** n;
       if (!corto(m)) return null;
       const errores = [
-        h('QA-vm-divide-entre-2n', { valor: m0 / (2 * n) }, `Dividiste entre 2 × ${n}. Cada vida media la masa se divide entre 2 otra vez: después de ${n} vidas medias se divide entre 2^${n} = ${2 ** n}.`),
-        h('QA-vm-desintegrada', { valor: m0 - m }, `Esa es la masa que se desintegró. Lo que queda es ${f(m0)} − ${f(m0 - m)}.`),
-        h('QA-vm-una-vida-de-mas', { valor: m0 / 2 ** (n + 1) }, `Contaste una vida media de más. En ${f(t)} ${u} caben ${f(t)} ÷ ${T} = ${n} vidas medias.`),
-        h('QA-vm-una-vida-de-menos', { valor: m0 / 2 ** (n - 1) }, `Contaste una vida media de menos. En ${f(t)} ${u} caben ${f(t)} ÷ ${T} = ${n} vidas medias.`),
+        hv('QA-vm-divide-entre-2n', { valor: m0 / (2 * n) }, `Dividiste entre 2 × ${n}. Cada vida media la masa se divide entre 2 otra vez: después de ${n} vidas medias se divide entre 2^${n} = ${2 ** n}.`),
+        hv('QA-vm-desintegrada', { valor: m0 - m }, `Esa es la masa que se desintegró. Lo que queda es ${f(m0)} − ${f(m0 - m)}.`),
+        hv('QA-vm-una-vida-de-mas', { valor: m0 / 2 ** (n + 1) }, `Contaste una vida media de más. En ${f(t)} ${u} caben ${f(t)} ÷ ${T} = ${n} vidas medias.`),
+        hv('QA-vm-una-vida-de-menos', { valor: m0 / 2 ** (n - 1) }, `Contaste una vida media de menos. En ${f(t)} ${u} caben ${f(t)} ÷ ${T} = ${n} vidas medias.`),
       ];
-      return cerrar(rng, semilla, { numero: true, correcta: m, errores, unidad: 'g', variables,
-        enunciado: [`${ctx}: hay `, v('m0', `${f(m0)} g`), ' y su vida media es de ', v('T', `${T} ${u}`), '.'],
+      return cerrar(rng, semilla, { numero: true, correcta: m, errores, unidad: mu, variables,
+        enunciado: [`${ctx}: hay `, v('m0', `${f(m0)} ${mu}`), ' y su vida media es de ', v('T', `${T} ${u}`), '.'],
         pregunta: ['¿Qué masa del isótopo ', v('m', 'queda sin desintegrar'), ' después de ', v('t', `${f(t)} ${u}`), '?'],
         solucion: [
           ['Vidas medias que pasan: ', v('t', f(t)), ' ÷ ', v('T', String(T)), ` = ${n}.`],
-          [`Cada vida media queda la mitad: `, v('m0', f(m0)), ` → ${Array.from({ length: n }, (x, i) => f(m0 / 2 ** (i + 1))).join(' → ')} g.`],
-          ['Queda ', v('m', `${f(m)} g`), ` (${f(m0)} ÷ ${2 ** n}).`],
+          [`Cada vida media queda la mitad: `, v('m0', f(m0)), ` → ${Array.from({ length: n }, (x, i) => f(m0 / 2 ** (i + 1))).join(' → ')} ${mu}.`],
+          ['Queda ', v('m', `${f(m)} ${mu}`), ` (${f(m0)} ÷ ${2 ** n}).`],
         ], _datos: { tipo: 'vida-media', sub, m0, T, t, unidad: u } });
     }
     if (sub === 'tiempo') {
@@ -545,21 +584,23 @@
       if (!corto(m)) return null;
       const pct = 100 * (1 - 1 / 2 ** n);
       const errores = [
-        h('QA-vm-lineal', { valor: 2 * T * (1 - 1 / 2 ** n) }, `Supusiste que en cada vida media se desintegra la mitad de la masa INICIAL, siempre la misma cantidad. Se desintegra la mitad de lo que QUEDA: cada vez menos.`),
-        h('QA-vm-multiplica-fraccion', { valor: T * 2 ** n }, `Multiplicaste la vida media por ${2 ** n}. Que quede 1/${2 ** n} quiere decir que la masa se partió por la mitad ${n} veces: ${n} vidas medias.`),
-        h('QA-vm-una-vida-de-mas', { valor: (n + 1) * T }, `Contaste una vida media de más: de ${f(m0)} a ${f(m)} hay ${n} mitades.`),
-        h('QA-vm-una-vida-de-menos', { valor: (n - 1) * T }, `Contaste una vida media de menos: de ${f(m0)} a ${f(m)} hay ${n} mitades.`),
+        hv('QA-vm-lineal', { valor: 2 * T * (1 - 1 / 2 ** n) }, `Supusiste que en cada vida media se desintegra la mitad de la muestra INICIAL, siempre la misma cantidad. Se desintegra la mitad de lo que QUEDA: cada vez menos.`),
+        hv('QA-vm-multiplica-fraccion', { valor: T * 2 ** n }, `Multiplicaste la vida media por ${2 ** n}. Que quede 1/${2 ** n} quiere decir que la muestra se partió por la mitad ${n} veces: ${n} vidas medias.`),
+        hv('QA-vm-una-vida-de-mas', { valor: (n + 1) * T }, `Contaste una vida media de más: ${porcentaje ? `de 100 % a ${f(100 - pct)} %` : `de ${f(m0)} a ${f(m)}`} hay ${n} mitades.`),
+        hv('QA-vm-una-vida-de-menos', { valor: (n - 1) * T }, `Contaste una vida media de menos: ${porcentaje ? `de 100 % a ${f(100 - pct)} %` : `de ${f(m0)} a ${f(m)}`} hay ${n} mitades.`),
       ];
       const pregunta = porcentaje
-        ? ['¿Cuánto ', v('t', 'tiempo'), ' debe pasar para que se haya desintegrado el ', v('m', `${f(pct)} %`), ' de la muestra?']
-        : ['¿Cuánto ', v('t', 'tiempo'), ' debe pasar para que queden ', v('m', `${f(m)} g`), '?'];
-      return cerrar(rng, semilla, { numero: true, correcta, errores, unidad: u, variables,
-        enunciado: [`${ctx}: hay `, v('m0', `${f(m0)} g`), ' y su vida media es de ', v('T', `${T} ${u}`), '.'],
+        ? ['¿Cuánto ', v('t', 'tiempo'), ' debe pasar para que se haya desintegrado el ', v('pd', `${f(pct)} %`), ' de la muestra?']
+        : ['¿Cuánto ', v('t', 'tiempo'), ' debe pasar para que queden ', v('m', `${f(m)} ${mu}`), '?'];
+      // Con porcentaje no se da la masa: el color naranja pasa al porcentaje desintegrado.
+      const vars = porcentaje ? { pd: { nombre: 'porcentaje desintegrado', color: 'o' }, T: variables.T, t: variables.t, m: { nombre: 'porcentaje que queda', color: 'd' } } : variables;
+      return cerrar(rng, semilla, { numero: true, correcta, errores, unidad: u, variables: vars,
+        enunciado: porcentaje ? [`${ctx}, cuya vida media es de `, v('T', `${T} ${u}`), '.'] : [`${ctx}: hay `, v('m0', `${f(m0)} ${mu}`), ' y su vida media es de ', v('T', `${T} ${u}`), '.'],
         pregunta,
         solucion: [
-          porcentaje ? ['Si se desintegró el ', v('m', `${f(pct)} %`), ` queda el ${f(100 - pct)} %: 1/${2 ** n} de la muestra (${f(m)} g).`]
-            : ['Queda ', v('m', `${f(m)} g`), ' de ', v('m0', `${f(m0)} g`), `: 1/${2 ** n} de la muestra.`],
-          [`1/${2 ** n} = (1/2)^${n}: la masa se partió por la mitad ${n} veces.`],
+          porcentaje ? ['Si se desintegró el ', v('pd', `${f(pct)} %`), ' queda el ', v('m', `${f(100 - pct)} %`), `: 1/${2 ** n} de la muestra.`]
+            : ['Queda ', v('m', `${f(m)} ${mu}`), ' de ', v('m0', `${f(m0)} ${mu}`), `: 1/${2 ** n} de la muestra.`],
+          [`1/${2 ** n} = (1/2)^${n}: la muestra se partió por la mitad ${n} veces.`],
           ['Tiempo: ', `${n} × `, v('T', String(T)), ' = ', v('t', `${f(correcta)} ${u}`), '.'],
         ], _datos: { tipo: 'vida-media', sub, m0, T, n, porcentaje, unidad: u } });
     }
@@ -567,12 +608,13 @@
     const k1 = rng.entero(2, 3), k2 = rng.entero(1, 3), base = rng.elegir([5, 10, 15, 20, 25, 40]);
     const A0 = base * 2 ** (k1 + k2), A1 = base * 2 ** k2, A2 = base, t1 = k1 * T, t2 = (k1 + k2) * T;
     const errores = [
-      h('QA-vm-lee-tiempo-sin-mitad', { valor: t1 }, `Tomaste como vida media los ${f(t1)} ${u} de la primera medición. Pero en ese tiempo la actividad no bajó a la mitad: bajó de ${A0} a ${A1}, a la ${A0 / A1 === 4 ? 'cuarta' : 'octava'} parte.`),
-      h('QA-vm-divide-entre-fraccion', { valor: t1 / 2 ** k1 }, `Dividiste ${f(t1)} entre ${2 ** k1} porque quedó 1/${2 ** k1}. La actividad se partió por la mitad ${k1} veces: hay que dividir entre ${k1}.`),
-      h('QA-vm-intervalo', { valor: t2 - t1 }, `Tomaste el tiempo entre las dos mediciones (${f(t2)} − ${f(t1)}). En ese tramo la actividad bajó de ${A1} a ${A2}, a 1/${2 ** k2}: son ${k2} mitades, no una.`),
-      h('QA-vm-mitad-del-tiempo', { valor: t2 / 2 }, `Tomaste la mitad del tiempo total. La vida media es el tiempo en que la actividad baja a la mitad, no la mitad del tiempo.`),
+      hv('QA-vm-lee-tiempo-sin-mitad', { valor: t1 }, `Tomaste como vida media los ${f(t1)} ${u} de la primera medición. Pero en ese tiempo la actividad no bajó a la mitad: bajó de ${A0} a ${A1}, a la ${A0 / A1 === 4 ? 'cuarta' : 'octava'} parte.`),
+      hv('QA-vm-divide-entre-fraccion', { valor: t1 / 2 ** k1 }, `Dividiste ${f(t1)} entre ${2 ** k1} porque quedó 1/${2 ** k1}. La actividad se partió por la mitad ${k1} veces: hay que dividir entre ${k1}.`),
+      hv('QA-vm-intervalo', { valor: t2 - t1 }, `Tomaste el tiempo entre las dos mediciones (${f(t2)} − ${f(t1)}). En ese tramo la actividad bajó de ${A1} a ${A2}, a 1/${2 ** k2}: son ${k2} mitades, no una.`),
+      hv('QA-vm-mitad-del-tiempo', { valor: t2 / 2 }, `Tomaste la mitad del tiempo total. La vida media es el tiempo en que la actividad baja a la mitad, no la mitad del tiempo.`),
     ];
-    return cerrar(rng, semilla, { numero: true, correcta: T, errores, unidad: u, variables,
+    const varsL = { m0: { nombre: 'actividad inicial', color: 'o' }, T: variables.T, t: variables.t, m: { nombre: 'actividad medida', color: 'd' } };
+    return cerrar(rng, semilla, { numero: true, correcta: T, errores, unidad: u, variables: varsL,
       enunciado: [`${ctx}. Un detector mide su actividad: al empezar, `, v('m0', `${A0} desintegraciones por minuto`), '; a los ', v('t', `${f(t1)} ${u}`), ', ', v('m', String(A1)), '; y a los ', v('t', `${f(t2)} ${u}`), ', ', v('m', String(A2)), '.'],
       pregunta: ['¿Cuál es la ', v('T', 'vida media'), ' del isótopo?'],
       solucion: [
@@ -586,5 +628,6 @@
     particulas: particulasP, 'atomo-ion': atomoIon, 'vida-media': vidaMediaP };
 
   return { id: 'configuracion-ubicacion', titulo: 'Configuración y lugar en la tabla, hasta Z = 86', generar,
-    configuracion, ubicacion, ultimoElectron, particulas, contarL, vidaQueda, vidaTiempo, SIMBOLOS, EXCEPCIONES, conConfig };
+    configuracion, ubicacion, ultimoElectron, particulas, contarL, vidaQueda, vidaTiempo, SIMBOLOS, EXCEPCIONES, conConfig,
+    LISTAS: { CATIONES, ANIONES, ESPECIES_D, NUCLIDOS, IONES_CUERPO, ANOMALA_Z, UBICAR: CAND_UBICAR.map(x => x.Z) } };
 });

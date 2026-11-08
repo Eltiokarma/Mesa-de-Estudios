@@ -1,6 +1,6 @@
 {
   "titulo": "Configuración y lugar en la tabla: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la práctica, con unos 2 minutos por problema, como en el examen. Escribe la configuración en el orden de llenado (1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p) y abrévela con el gas noble anterior. Para los números cuánticos, llena las cajas de mₗ = −ℓ a +ℓ, primero con flechas hacia arriba (mₛ = +1/2).",
+  "indicacion": "Resuélvelos sin la práctica, con unos 2 minutos por problema, como en el examen. Escribe la configuración en el orden de llenado (1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p) y abrévela con el gas noble anterior. Ojo con las anómalas: en Cr, Cu, Mo, Ag y Au un electrón del s de afuera pasa al d. Para los números cuánticos, llena las cajas de mₗ = −ℓ a +ℓ, primero con flechas hacia arriba (mₛ = +1/2).",
   "problemas": [
     {
       "id": "p1",
@@ -12,7 +12,20 @@
         "El mayor nivel con electrones es el 5: periodo 5.",
         "Termina en p: bloque p. Electrones de valencia 5s² + 5p³ = 5, grupo VA, que en la numeración de 1 a 18 es el 10 + 5 = 15. Los 4d¹⁰ no cuentan: pertenecen a la capa anterior."
       ],
-      "verificar": [ { "fn": "ubicacion", "args": [51], "espera": { "periodo": 5, "grupo": 15, "grupoAB": "VA", "bloque": "p" } } ]
+      "verificar": [
+        {
+          "fn": "ubicacion",
+          "args": [
+            51
+          ],
+          "espera": {
+            "periodo": 5,
+            "grupo": 15,
+            "grupoAB": "VA",
+            "bloque": "p"
+          }
+        }
+      ]
     },
     {
       "id": "p2",
@@ -24,7 +37,20 @@
         "El último subnivel que se llena es el 5d, pero el mayor nivel con electrones es el 6 (el 6s²): periodo 6.",
         "Termina en d: bloque d, metal de transición. Grupo = 6s² + 5d⁵ = 7, es decir, VIIB."
       ],
-      "verificar": [ { "fn": "ubicacion", "args": [75], "espera": { "periodo": 6, "grupo": 7, "grupoAB": "VIIB", "bloque": "d" } } ]
+      "verificar": [
+        {
+          "fn": "ubicacion",
+          "args": [
+            75
+          ],
+          "espera": {
+            "periodo": 6,
+            "grupo": 7,
+            "grupoAB": "VIIB",
+            "bloque": "d"
+          }
+        }
+      ]
     },
     {
       "id": "p3",
@@ -36,7 +62,19 @@
         "Salen 3 electrones, primero los del nivel de mayor n: los dos del 4s y luego uno del 3d. Queda [Ar] 3d⁶ (no [Ar] 4s² 3d⁴).",
         "3d⁶ en 5 cajas: una flecha en cada caja y una sexta que se aparea. Quedan 4 cajas con una sola flecha: 4 desapareados."
       ],
-      "verificar": [ { "fn": "configuracion", "args": [27, 3], "espera": { "abreviada": "[Ar] 3d6", "desapareados": 4 } } ]
+      "verificar": [
+        {
+          "fn": "configuracion",
+          "args": [
+            27,
+            3
+          ],
+          "espera": {
+            "abreviada": "[Ar] 3d6",
+            "desapareados": 4
+          }
+        }
+      ]
     },
     {
       "id": "p4",
@@ -49,8 +87,28 @@
         "Ag⁺ pierde el electrón del nivel de mayor n, el 5s¹: [Kr] 4d¹⁰. Todas las cajas llenas: 0 desapareados."
       ],
       "verificar": [
-        { "fn": "configuracion", "args": [47, 0], "espera": { "abreviada": "[Kr] 5s1 4d10", "desapareados": 1 } },
-        { "fn": "configuracion", "args": [47, 1], "espera": { "abreviada": "[Kr] 4d10", "desapareados": 0 } }
+        {
+          "fn": "configuracion",
+          "args": [
+            47,
+            0
+          ],
+          "espera": {
+            "abreviada": "[Kr] 5s1 4d10",
+            "desapareados": 1
+          }
+        },
+        {
+          "fn": "configuracion",
+          "args": [
+            47,
+            1
+          ],
+          "espera": {
+            "abreviada": "[Kr] 4d10",
+            "desapareados": 0
+          }
+        }
       ]
     },
     {
@@ -64,8 +122,29 @@
         "El átomo es [Kr] 5s² 4d¹⁰ 5p⁴; los 2 electrones que entran completan el 5p: [Kr] 5s² 4d¹⁰ 5p⁶, igual que el xenón."
       ],
       "verificar": [
-        { "fn": "particulas", "args": [52, 128, -2], "espera": { "protones": 52, "neutrones": 76, "electrones": 54 } },
-        { "fn": "configuracion", "args": [52, -2], "espera": { "abreviada": "[Kr] 5s2 4d10 5p6" } }
+        {
+          "fn": "particulas",
+          "args": [
+            52,
+            128,
+            -2
+          ],
+          "espera": {
+            "protones": 52,
+            "neutrones": 76,
+            "electrones": 54
+          }
+        },
+        {
+          "fn": "configuracion",
+          "args": [
+            52,
+            -2
+          ],
+          "espera": {
+            "abreviada": "[Kr] 5s2 4d10 5p6"
+          }
+        }
       ]
     },
     {
@@ -78,7 +157,21 @@
         "Cinco cajas, de mₗ = −2 a +2. Los 5 electrones van uno por caja, todos con flecha hacia arriba (Hund).",
         "El quinto cae en la última caja: mₗ = +2 y mₛ = +1/2."
       ],
-      "verificar": [ { "fn": "ultimoElectron", "args": [43, 0], "espera": { "n": 4, "l": 2, "ml": 2, "ms": 0.5 } } ]
+      "verificar": [
+        {
+          "fn": "ultimoElectron",
+          "args": [
+            43,
+            0
+          ],
+          "espera": {
+            "n": 4,
+            "l": 2,
+            "ml": 2,
+            "ms": 0.5
+          }
+        }
+      ]
     },
     {
       "id": "p7",
@@ -91,8 +184,23 @@
         "5 × 6 = 30 días. No es lineal: no se pierden 100 g cada 6 días, sino la mitad de lo que queda."
       ],
       "verificar": [
-        { "fn": "vidaQueda", "args": [200, 6, 24], "espera": 12.5 },
-        { "fn": "vidaTiempo", "args": [6, 0.03125], "espera": 30 }
+        {
+          "fn": "vidaQueda",
+          "args": [
+            200,
+            6,
+            24
+          ],
+          "espera": 12.5
+        },
+        {
+          "fn": "vidaTiempo",
+          "args": [
+            6,
+            0.03125
+          ],
+          "espera": 30
+        }
       ]
     },
     {
@@ -106,8 +214,24 @@
         "Comprobación: de 300 a 75 también hay 2 mitades (300 → 150 → 75) en otras 16 horas."
       ],
       "verificar": [
-        { "fn": "vidaQueda", "args": [1200, 8, 16], "espera": 300 },
-        { "fn": "vidaQueda", "args": [1200, 8, 32], "espera": 75 }
+        {
+          "fn": "vidaQueda",
+          "args": [
+            1200,
+            8,
+            16
+          ],
+          "espera": 300
+        },
+        {
+          "fn": "vidaQueda",
+          "args": [
+            1200,
+            8,
+            32
+          ],
+          "espera": 75
+        }
       ]
     },
     {
@@ -121,9 +245,36 @@
         "Z = 42 es anómalo: [Kr] 5s¹ 4d⁵, bloque d, 1 + 5 = 6, pero es un grupo B: VIB (6). Mismo número romano no es misma familia."
       ],
       "verificar": [
-        { "fn": "ubicacion", "args": [34], "espera": { "grupo": 16, "grupoAB": "VIA" } },
-        { "fn": "ubicacion", "args": [52], "espera": { "grupo": 16, "grupoAB": "VIA" } },
-        { "fn": "ubicacion", "args": [42], "espera": { "grupo": 6, "grupoAB": "VIB" } }
+        {
+          "fn": "ubicacion",
+          "args": [
+            34
+          ],
+          "espera": {
+            "grupo": 16,
+            "grupoAB": "VIA"
+          }
+        },
+        {
+          "fn": "ubicacion",
+          "args": [
+            52
+          ],
+          "espera": {
+            "grupo": 16,
+            "grupoAB": "VIA"
+          }
+        },
+        {
+          "fn": "ubicacion",
+          "args": [
+            42
+          ],
+          "espera": {
+            "grupo": 6,
+            "grupoAB": "VIB"
+          }
+        }
       ]
     }
   ]
