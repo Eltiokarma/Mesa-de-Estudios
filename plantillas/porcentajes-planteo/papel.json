@@ -1,0 +1,116 @@
+{
+  "titulo": "Tanto por ciento, razones y conjuntos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la app, con unos 2 a 3 minutos por problema, como en el examen. Antes de calcular un porcentaje, pregúntate de qué es ese porcentaje: del total, de un grupo, del costo o de la venta. Cuando algo cambia varias veces, escribe el factor por el que se multiplica en cada paso. Y en los conjuntos, dibuja el diagrama con las condiciones antes de operar.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una caja con forma de paralelepípedo, el largo aumenta en un 20 %, el ancho disminuye en un 20 % y el alto aumenta en 1/4 de su medida. ¿En qué porcentaje varía el volumen?",
+      "respuesta": "Aumenta en 20 %.",
+      "pasos": [
+        "Cada cambio es un factor: el largo se multiplica por 1,2; el ancho, por 0,8; el alto, por 5/4 = 1,25.",
+        "El volumen es el producto de las tres medidas: queda multiplicado por 1,2 × 0,8 × 1,25 = 1,2.",
+        "1,2 es el 120 % del volumen original: aumenta en 20 %. Sumar 20 − 20 + 25 = 25 % no vale, porque los cambios se multiplican."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Cuatro hermanos compran una cocina de S/ 3000. Lucía pone 1/5 del precio; Mario, el 35 % del precio; y Nadia, 0,25 del precio. Óscar pone lo que falta. ¿Qué porcentaje del precio pone Óscar y cuántos soles son?",
+      "respuesta": "El 20 %, es decir, S/ 600.",
+      "pasos": [
+        "Todo como porcentaje del mismo precio: 1/5 = 20 %; 35 %; 0,25 = 25 %.",
+        "Entre los tres: 20 % + 35 % + 25 % = 80 %.",
+        "Óscar pone 100 % − 80 % = 20 % de S/ 3000 = S/ 600."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Si a un polo se le descuenta el 20 % y a un pantalón el 10 %, por los dos se paga S/ 112. Si se descuenta el 10 % al polo y el 20 % al pantalón, se paga S/ 109. ¿Cuál es el precio de lista del pantalón?",
+      "respuesta": "S/ 80.",
+      "pasos": [
+        "Sea x el precio del polo e y el del pantalón: 0,8x + 0,9y = 112 y 0,9x + 0,8y = 109.",
+        "Sumando: 1,7(x + y) = 221, así que x + y = 130. Restando la segunda de la primera: 0,1(y − x) = 3, así que y − x = 30.",
+        "y = (130 + 30)/2 = 80. El pantalón cuesta S/ 80 (y el polo, S/ 50). Comprobación: 0,8 × 50 + 0,9 × 80 = 40 + 72 = 112."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un comerciante vende 1/3 de un lote de chompas ganando el 20 %, luego la mitad de lo que le quedaba perdiendo el 10 %, y el resto ganando el 30 %. Los porcentajes son sobre el costo de cada parte. En total gana S/ 160. ¿Cuánto le costó el lote?",
+      "respuesta": "S/ 1200.",
+      "pasos": [
+        "Las partes: 1/3 del lote; la mitad de los 2/3 que quedaban, es decir, 1/3; y el resto, 1/3.",
+        "Ganancia como fracción del costo C: (1/3)(0,2) + (1/3)(−0,1) + (1/3)(0,3) = 0,4/3 = 2/15.",
+        "(2/15)·C = 160, así que C = 1200. Ojo: «la mitad de lo que le quedaba» es 1/3 del lote, no 1/2."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En una bodega, el azúcar es el 80 % del arroz y los fideos son el 75 % del azúcar. Hay 120 kg más de arroz que de fideos. Se vende el 25 % del arroz, el 50 % del azúcar y el 20 % de los fideos. ¿Cuántos kilogramos quedan en total?",
+      "respuesta": "489 kg.",
+      "pasos": [
+        "Con el arroz como base: azúcar = 0,8·arroz; fideos = 0,75 × 0,8·arroz = 0,6·arroz.",
+        "arroz − 0,6·arroz = 0,4·arroz = 120, así que hay 300 kg de arroz, 240 kg de azúcar y 180 kg de fideos.",
+        "Quedan 300 × 0,75 + 240 × 0,5 + 180 × 0,8 = 225 + 120 + 144 = 489 kg."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "En un centro de salud se atendió a 360 pacientes. El 41,6̅ % eran varones; de los varones, el 33,3̅ % llegó con fiebre; y del total de pacientes, el 27,7̅ % llegó con fiebre. ¿Cuántas mujeres llegaron sin fiebre?",
+      "respuesta": "160.",
+      "pasos": [
+        "Los periódicos a fracción: 41,6̅ % = 5/12; 33,3̅ % = 1/3; 27,7̅ % = 5/18.",
+        "Varones: 5/12 de 360 = 150; varones con fiebre: 1/3 de 150 = 50. Mujeres: 360 − 150 = 210.",
+        "Con fiebre en total: 5/18 de 360 = 100, así que mujeres con fiebre: 100 − 50 = 50. Mujeres sin fiebre: 210 − 50 = 160."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un bidón tiene 64 L de alcohol puro. Se saca 1/4 de lo que contiene y se completa con agua; se hace lo mismo 3 veces en total. ¿Cuántos litros de alcohol quedan?",
+      "respuesta": "27 L.",
+      "pasos": [
+        "En cada vez queda 3/4 del alcohol que había; el agua que entra no es alcohol.",
+        "64 × 3/4 = 48; 48 × 3/4 = 36; 36 × 3/4 = 27.",
+        "En un paso: 64 × (3/4)³ = 64 × 27/64 = 27 L. Restar 3 veces 16 L (quedarían 16 L) no vale: desde la segunda vez se saca una mezcla."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "Alquilar una cancha de fulbito cuesta un pago fijo más un monto por hora. Por 2 horas se pagan S/ 70 y por 5 horas, S/ 145. ¿Cuánto se paga por 8 horas?",
+      "respuesta": "S/ 220.",
+      "pasos": [
+        "De 2 a 5 horas el pago sube S/ 75 por 3 horas más: S/ 25 por hora.",
+        "El pago fijo: 70 − 2 × 25 = S/ 20.",
+        "Por 8 horas: 20 + 8 × 25 = S/ 220. No es 70 × 4 = 280, porque el pago fijo no se multiplica."
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "En una fiesta, por cada 3 varones hay 2 mujeres. Se retiran 8 parejas (un varón y una mujer cada una) y ahora hay 5 varones por cada 3 mujeres. ¿Cuántas personas había al inicio?",
+      "respuesta": "80 personas.",
+      "pasos": [
+        "Al inicio: 3t varones y 2t mujeres.",
+        "Después: (3t − 8)/(2t − 8) = 5/3, o sea, 9t − 24 = 10t − 40, así que t = 16.",
+        "Había 48 varones y 32 mujeres: 80 personas. Comprobación: 40 : 24 = 5 : 3."
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Los conjuntos A, B y C cumplen A ⊂ B y B ∩ C = ∅. Simplifica (A ∪ C) ∩ B.",
+      "respuesta": "A.",
+      "pasos": [
+        "Por la distributiva: (A ∪ C) ∩ B = (A ∩ B) ∪ (C ∩ B).",
+        "Como A ⊂ B, A ∩ B = A. Como B y C no tienen elementos comunes, C ∩ B = ∅.",
+        "Queda A ∪ ∅ = A. En el diagrama: A está dentro de B y C está fuera de B; de A ∪ C, lo que cae en B es justo A."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,375 @@
+{
+  "plantilla": "porcentajes-planteo",
+  "tolerancia": 0.000001,
+  "nota": "Porcentajes con coma decimal; los periódicos con raya (41,6̅ % = 5/12). Las razones se dan como clave razon:p/q y texto «p : q»; los conjuntos, con la clave conj:<regiones> (bit k = región k, con A = bit 0, B = bit 1 y C = bit 2) y el texto de la expresión simplificada. En sistema, a es el descuento del primer artículo y b el del segundo en la primera compra (T1); en T2 se cruzan.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "tramos",
+        "sub": "partes",
+        "f1": [
+          1,
+          4
+        ],
+        "f2": [
+          2,
+          3
+        ],
+        "r": [
+          10,
+          40,
+          -10
+        ],
+        "G": 240
+      },
+      "esperado": {
+        "respuesta": 1200,
+        "exacta": "S/ 1 200"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "llegadas",
+        "sub": "sucesivas",
+        "k1": 17,
+        "c": 5,
+        "d": 4,
+        "k2": 6,
+        "e": 9,
+        "f": 7,
+        "pideH": true
+      },
+      "esperado": {
+        "respuesta": 60,
+        "exacta": "60"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "sobrante",
+        "L": 2.5,
+        "s1": 90,
+        "s2": 70,
+        "vaso": 250,
+        "cm3": true
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "dimensiones",
+        "sub": "volumen",
+        "cambios": [
+          {
+            "n": -2,
+            "d": 5
+          },
+          {
+            "n": 1,
+            "d": 2
+          },
+          {
+            "p": -40
+          }
+        ]
+      },
+      "esperado": {
+        "respuesta": -46,
+        "exacta": "disminuye en 46 %"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "encadenados",
+        "p": 60,
+        "q": 25,
+        "D": 476,
+        "s": [
+          50,
+          20,
+          20
+        ]
+      },
+      "esperado": {
+        "respuesta": 616,
+        "exacta": "616 kg"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "afin",
+        "contexto": "m³",
+        "t1": 12,
+        "C1": 53,
+        "t2": 15,
+        "C2": 65,
+        "t3": 20
+      },
+      "esperado": {
+        "respuesta": 85,
+        "exacta": "S/ 85"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "partes",
+        "sub": "del-total",
+        "total": 3000,
+        "a": [
+          3,
+          20
+        ],
+        "b": 35,
+        "c": 20
+      },
+      "esperado": {
+        "respuesta": 30,
+        "exacta": "30 %"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "doble-entrada",
+        "sub": "carroll",
+        "N": 216,
+        "a": [
+          7,
+          12
+        ],
+        "b": [
+          1,
+          6
+        ],
+        "c": [
+          2,
+          9
+        ]
+      },
+      "esperado": {
+        "respuesta": 63,
+        "exacta": "63"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "extracciones",
+        "sub": "juntar",
+        "a": 7,
+        "b": 3,
+        "c": 1,
+        "d": 1,
+        "E": 10,
+        "VA": 40,
+        "VB": 40
+      },
+      "esperado": {
+        "respuesta": "razon:3/2",
+        "exacta": "3 : 2"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "extracciones",
+        "sub": "sucesivas",
+        "V": 81,
+        "f": [
+          2,
+          3
+        ],
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 L"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "sistema",
+        "a": 20,
+        "b": 40,
+        "T1": 340,
+        "T2": 318,
+        "pideSegundo": false
+      },
+      "esperado": {
+        "respuesta": 290,
+        "exacta": "S/ 290"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "partes",
+        "sub": "de-los-otros",
+        "total": 6000,
+        "a": [
+          1,
+          2
+        ],
+        "b": 10,
+        "c": 20
+      },
+      "esperado": {
+        "respuesta": 25,
+        "exacta": "25 %"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "tramos",
+        "sub": "venta-costo",
+        "dir": "costo-a-venta",
+        "r": 60
+      },
+      "esperado": {
+        "respuesta": 37.5,
+        "exacta": "37,5 %"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "conjuntos",
+        "condiciones": [
+          [
+            "sub",
+            "B",
+            "C"
+          ],
+          [
+            "sub",
+            "A",
+            "C"
+          ],
+          [
+            "disj",
+            "B",
+            "A"
+          ]
+        ],
+        "expr": [
+          "−",
+          [
+            "∪",
+            "A",
+            [
+              "'",
+              "B"
+            ]
+          ],
+          [
+            "∪",
+            "C",
+            "B"
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": "conj:1",
+        "exacta": "C'"
+      }
+    },
+    {
+      "semilla": 38,
+      "entrada": {
+        "tipo": "doble-entrada",
+        "sub": "tabla",
+        "N": 200,
+        "p": 20,
+        "q": 60,
+        "v": 40
+      },
+      "esperado": {
+        "respuesta": 40,
+        "exacta": "40 %"
+      }
+    },
+    {
+      "semilla": 57,
+      "entrada": {
+        "tipo": "llegadas",
+        "sub": "parejas",
+        "a": 5,
+        "b": 4,
+        "k": 7,
+        "c": 9,
+        "d": 7
+      },
+      "esperado": {
+        "respuesta": 126,
+        "exacta": "126"
+      }
+    },
+    {
+      "semilla": 96,
+      "entrada": {
+        "tipo": "dimensiones",
+        "sub": "area",
+        "cambios": [
+          {
+            "n": -1,
+            "d": 4
+          },
+          {
+            "n": 2,
+            "d": 5
+          }
+        ]
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "aumenta en 5 %"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "partes",
+        "sub": "de-los-otros",
+        "total": 3000,
+        "a": [
+          1,
+          2
+        ],
+        "b": 20,
+        "c": 10
+      },
+      "esperado": {
+        "respuesta": 25,
+        "exacta": "25 %"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "sistema",
+        "a": 25,
+        "b": 30,
+        "T1": 144,
+        "T2": 146,
+        "pideSegundo": false
+      },
+      "esperado": {
+        "respuesta": 80,
+        "exacta": "S/ 80"
+      }
+    }
+  ]
+}
