@@ -201,6 +201,18 @@ test('los textos están limpios: sin undefined, NaN, «−−», «+ −» ni gu
   }
 });
 
+test('cada segmento de enunciado, pregunta y solución es texto o {v, t} con t texto y v en variables', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    const partes = [...p.enunciado, ...p.pregunta];
+    for (const paso of p.solucion) { assert.ok(Array.isArray(paso), `semilla ${s}: paso que no es lista`); partes.push(...paso); }
+    for (const x of partes) {
+      if (typeof x === 'string') continue;
+      assert.ok(x && typeof x === 'object' && typeof x.t === 'string' && typeof x.v === 'string' && p.variables[x.v], `semilla ${s}: segmento inválido ${JSON.stringify(x)}`);
+    }
+  }
+});
+
 test('regla 4: cada clave de color usada existe en variables y usa colores de la app', () => {
   for (let s = 0; s < 300; s++) {
     const p = gen.generar(s);

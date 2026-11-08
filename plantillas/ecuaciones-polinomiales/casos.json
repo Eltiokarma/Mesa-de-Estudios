@@ -2,7 +2,7 @@
   "plantilla": "ecuaciones-polinomiales",
   "tolerancia": 0.000001,
   "nota": "Respuestas racionales exactas (respuesta = su valor numérico; exacta = el texto que ve el alumno) o conjuntos (respuesta = clave set:… con los elementos en orden creciente). Una semilla por tipo y subtipo, más entrada-1 y salida-1.",
-  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 18 casos con Python (Fraction y fuerza bruta sobre raíces racionales, ternas enteras y lados enteros); para las raíces conjugadas usó el factor cuadrático y para las sumas de potencias, las relaciones de Vieta. Los 18 valores coinciden con esperado; no hay discrepancias ni alternativas defendibles.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 18 casos con Python (Fraction y fuerza bruta sobre raíces racionales, ternas enteras y lados enteros); para las raíces conjugadas usó el factor cuadrático y para las sumas de potencias, las relaciones de Vieta. Los 18 valores coinciden con esperado; no hay discrepancias ni alternativas defendibles. Tras la revisión cambiaron tres casos (semillas 1, 39 y 62: 7 m, 6 y 440 cm²), recalculados aparte por la conversación principal.",
   "casos": [
     {
       "semilla": 0,
@@ -24,9 +24,9 @@
       "entrada": {
         "tipo": "parametro",
         "sub": "mayor",
-        "S": 14,
-        "R": 70,
-        "r": 2
+        "S": 13,
+        "R": 35,
+        "r": 1
       },
       "esperado": {
         "respuesta": 7,
@@ -211,11 +211,11 @@
       "entrada": {
         "tipo": "bicuadrada",
         "sub": "consecutivos",
-        "K": 272
+        "K": 1552
       },
       "esperado": {
-        "respuesta": 4,
-        "exacta": "4"
+        "respuesta": 6,
+        "exacta": "6"
       }
     },
     {
@@ -223,13 +223,13 @@
       "entrada": {
         "tipo": "caja",
         "sub": "recorte",
-        "L": 29,
+        "L": 30,
         "W": 18,
-        "V": 760
+        "V": 800
       },
       "esperado": {
-        "respuesta": 422,
-        "exacta": "422 cm²"
+        "respuesta": 440,
+        "exacta": "440 cm²"
       }
     },
     {

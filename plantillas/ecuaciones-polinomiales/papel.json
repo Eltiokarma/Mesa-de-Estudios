@@ -1,6 +1,6 @@
 {
   "titulo": "Raíces y coeficientes de una ecuación: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de hacer cuentas, pregúntate qué te dan los coeficientes (la suma, la suma de productos de dos en dos y el producto de las raíces, con sus signos y divididos entre el coeficiente principal) y qué te falta. Al final, mira el contexto: una medida, un precio o un tiempo no pueden ser negativos, y una ecuación sin raíces reales igual tiene raíces.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de hacer cuentas, pregúntate qué te dan los coeficientes (la suma, la suma de productos de dos en dos y el producto de las raíces, con sus signos y divididos entre el coeficiente principal) y qué te falta.",
   "problemas": [
     {
       "id": "p1",

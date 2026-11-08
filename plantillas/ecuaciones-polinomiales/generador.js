@@ -132,6 +132,9 @@
   // ---- vieta/cuadrados ----
   function cuadrados(rng) {
     const a = rng.elegir([1, 1, 2, 3]), b = noCero(rng, -9, 9), c = noCero(rng, -9, 9), d = noCero(rng, -9, 9);
+    if (b * b - 2 * a * c < 0) return null;
+    // Tres raíces reales: discriminante de la cúbica ≥ 0.
+    if (18 * a * b * c * d - 4 * b ** 3 * d + b * b * c * c - 4 * a * c ** 3 - 27 * a * a * d * d < 0) return null;
     const E = poli([a, b, c, d]) + ' = 0';
     const correcta = num(b * b - 2 * a * c, a * a);
     const S = fr(-b, a), Q = fr(c, a);
@@ -215,7 +218,7 @@
       enunciado: ['La ecuación ', v('E', E), `, donde m y n son constantes, tiene entre sus raíces a ${n2(r1)} y a ${n2(r2)}.`],
       pregunta: ['¿Cuál es la ', v('X', 'tercera raíz'), '?'],
       solucion: [
-        ['Las letras m y n no dejan usar la suma ni el producto, pero el coeficiente de x sí se conoce. Por Cardano-Vieta: ', v('Q', `x₁x₂ + x₁x₃ + x₂x₃ = c/a = ${fr(c, a)}`), '.'],
+        [`Las letras m y n no dejan usar la suma ni el producto, pero el coeficiente de x sí se conoce. Por Cardano-Vieta (en ax³ + bx² + cx + d = 0, con a = ${a} y c = ${n2(c)}): `, v('Q', `x₁x₂ + x₁x₃ + x₂x₃ = c/a = ${fr(c, a)}`), '.'],
         [`Con x₁ = ${n2(r1)} y x₂ = ${n2(r2)}: ${par(r1)}·${par(r2)} + (${n2(r1)} + ${par(r2)})·x₃ = ${fr(c, a)}, o sea ${n2(p12)} + ${par(s12)}·x₃ = ${fr(c, a)}.`],
         ['Despejando: ', v('X', `x₃ = (${fr(c, a)} − ${par(p12)})/${par(s12)} = ${correcta.texto}`), '.'],
       ],
@@ -232,8 +235,8 @@
     const correcta = num(k);
     const raices = [a - d, a, a + d];
     const errores = [
-      err('vieta-signo-producto', num(2 * a * a - R / a), `Tomaste el producto de las raíces con el signo cambiado (${n2(-R)}). En x³ + bx² + cx + d = 0 el producto es −d: aquí, ${n2(R)}. Si las raíces fueran las tuyas, no darían ese producto.`),
-      err('progresion-raices-iguales', num(3 * a * a), `Tomaste las tres raíces iguales a la del medio (${n2(a)}). Están en progresión, pero con una razón d ≠ 0 que sale del producto.`),
+      (2 * a * a - d * d > 0 && Number.isInteger(Math.sqrt(2 * a * a - d * d))) ? err('vieta-signo-producto', num(2 * a * a - R / a), `Tomaste el producto de las raíces con el signo cambiado (${n2(-R)}). En x³ + bx² + cx + d = 0 el producto es −d: aquí, ${n2(R)}. Si las raíces fueran las tuyas, no darían ese producto.`) : null,
+      err('progresion-raices-iguales', num(3 * a * a), `Tomaste las tres raíces iguales a la del medio (${n2(a)}). Están en progresión, pero con una razón r ≠ 0 que sale del producto.`),
       err('vieta-signo-suma-productos', num(-k), 'El coeficiente de x es la suma de productos de dos en dos con su signo: en x³ + bx² + cx + d = 0, x₁x₂ + x₁x₃ + x₂x₃ = +c. No se le cambia el signo.'),
       d !== 1 ? err('progresion-razon-uno', num(3 * a * a - 1), 'Supusiste que las raíces son enteros consecutivos (razón 1). La razón no se adivina: sale del producto de las raíces.') : null,
     ];
@@ -242,8 +245,8 @@
       enunciado: ['Las tres raíces de la ecuación ', v('E', E), ' están en progresión aritmética.'],
       pregunta: ['¿Cuánto vale ', v('X', 'k'), '?'],
       solucion: [
-        ['Llama a − d, a y a + d a las raíces. Su ', v('S', `suma es 3a = ${n2(S)}`), `, así que a = ${n2(a)}.`],
-        [`El producto (a − d)·a·(a + d) = a(a² − d²) es ${n2(R)}: ${par(a)}·(${n2(a * a)} − d²) = ${n2(R)}, de donde d² = ${n2(d * d)} y las raíces son ${raices.map(n2).join('; ')}.`],
+        ['Llama a − r, a y a + r a las raíces. Su ', v('S', `suma es 3a = ${n2(S)}`), `, así que a = ${n2(a)}.`],
+        [`El producto (a − r)·a·(a + r) = a(a² − r²) es ${n2(R)}: ${par(a)}·(${n2(a * a)} − r²) = ${n2(R)}, de donde r² = ${n2(d * d)} y las raíces son ${raices.map(n2).join('; ')}.`],
         [v('Q', 'Suma de productos de dos en dos'), `: ${par(raices[0])}·${par(raices[1])} + ${par(raices[0])}·${par(raices[2])} + ${par(raices[1])}·${par(raices[2])} = `, v('X', `k = ${correcta.texto}`), '.'],
       ],
       datos: { S, R },
@@ -281,7 +284,7 @@
 
   // ---- caja/recorte: caja sin tapa ----
   function recorte(rng) {
-    const W = rng.entero(10, 24), L = rng.entero(W, 30), x = rng.entero(1, Math.floor((W - 1) / 2));
+    const W = rng.entero(10, 24), L = rng.entero(W + 1, 30), x = rng.entero(1, Math.floor((W - 1) / 2));
     const vol = t => t * (L - 2 * t) * (W - 2 * t);
     const V = vol(x);
     const sol = []; for (let t = 1; 2 * t < W; t++) if (vol(t) === V) sol.push(t);
@@ -289,7 +292,7 @@
     const base = (L - 2 * x) * (W - 2 * x), lat = 2 * x * (L - 2 * x) + 2 * x * (W - 2 * x);
     const area = L * W - 4 * x * x;
     if (base + lat !== area) throw new Error('área de la caja');
-    const variables = { x: { nombre: 'lado del recorte', color: 'o' }, V: { nombre: 'volumen', color: 'i' }, B: { nombre: 'fondo', color: 'h' }, X: { nombre: 'cartón de la caja', color: 'd' } };
+    const variables = { x: { nombre: 'lado del recorte', color: 'o' }, V: { nombre: 'volumen', color: 'i' }, B: { nombre: 'área del fondo', color: 'h' }, X: { nombre: 'cartón de la caja', color: 'd' } };
     const u = 'cm²';
     const correcta = num(area, 1, u);
     const errores = [
@@ -303,10 +306,10 @@
       enunciado: [`De una lámina rectangular de cartón de ${L} cm por ${W} cm se recorta un cuadrado de `, v('x', 'x cm de lado'), ' en cada esquina, y se doblan las pestañas para formar una caja sin tapa de ', v('V', `${n2(V)} cm³`), '. El lado x es un número entero de centímetros.'],
       pregunta: ['¿Cuántos cm² de ', v('X', 'cartón tiene la caja'), '?'],
       solucion: [
-        ['El ', v('B', `fondo mide (${L} − 2x) por (${W} − 2x)`), ' y el alto es x: ', v('V', `x(${L} − 2x)(${W} − 2x) = ${n2(V)}`), '.'],
+        [`El fondo mide (${L} − 2x) por (${W} − 2x) y el alto es x: `, v('V', `x(${L} − 2x)(${W} − 2x) = ${n2(V)}`), '.'],
         [`Se prueba con enteros menores que ${W}/2: `, v('x', `x = ${x}`), ` da ${x}·${L - 2 * x}·${W - 2 * x} = ${n2(V)}, y ningún otro entero lo cumple.`],
         ['El cartón de la caja es la lámina menos los cuatro cuadrados: ', `${L}·${W} − 4·${x}² = ${L * W} − ${4 * x * x} = `, v('X', correcta.texto), '.'],
-        ['Comprobación: ', v('B', `fondo ${L - 2 * x}·${W - 2 * x} = ${base}`), ` más cuatro caras laterales (${2 * x * (L - 2 * x)} + ${2 * x * (W - 2 * x)} = ${lat}) dan ${area}.`],
+        ['Comprobación: ', `fondo ${L - 2 * x}·${W - 2 * x} = `, v('B', String(base)), ` más cuatro caras laterales (${2 * x * (L - 2 * x)} + ${2 * x * (W - 2 * x)} = ${lat}) dan ${area}.`],
       ],
       datos: { L, W, V },
     };
@@ -314,7 +317,7 @@
 
   // ---- bicuadrada/consecutivos ----
   function consecutivos(rng) {
-    const n = rng.entero(2, 6), K = (n - 1) ** 4 + (n + 1) ** 4, M = (K - 2) / 2;
+    const n = rng.entero(3, 9), K = (n - 1) ** 4 + (n + 1) ** 4, M = (K - 2) / 2;
     const clase = n % 2 === 0 ? 'impares' : 'pares';
     const variables = { n: { nombre: 'número del medio', color: 'o' }, K: { nombre: 'suma de las cuartas potencias', color: 'i' }, X: { nombre: 'el mayor', color: 'd' } };
     const correcta = num(n + 1);
@@ -341,7 +344,7 @@
   function precio(rng) {
     const b = rng.entero(1, 6), a = rng.entero(b + 1, 9);
     const K = a * a * b * b, M = a * a + b * b;
-    const producto = rng.elegir([['el kilo de palta', 'kilo de palta'], ['el kilo de queso', 'kilo de queso'], ['la docena de panes', 'docena de panes'], ['el kilo de quinua', 'kilo de quinua']]);
+    const producto = rng.elegir([['el kilo de palta', 'kilo de palta'], ['la docena de panes', 'docena de panes'], ['el kilo de quinua', 'kilo de quinua']]);
     const variables = { p: { nombre: 'precio', color: 'o' }, M: { nombre: 'lo que se obtiene', color: 'i' }, X: { nombre: 'diferencia de precios', color: 'd' } };
     const u = 'soles';
     const correcta = num(a - b, 1, u);
@@ -423,7 +426,7 @@
 
   // ---- parametro/mayor ----
   function mayor(rng) {
-    const r = rng.entero(1, 6), s = rng.entero(1, 9), t = rng.entero(1, 9);
+    const r = rng.entero(1, 3), s = rng.entero(1, 9), t = rng.entero(1, 9);
     if (s >= t || r === s || r === t || r > t) return null;
     const S = r + s + t, Q = r * s + r * t + s * t, R = r * s * t;
     const E = expr([[1, 3], [-S, 2], ['k', 1], [-R, 0]]) + ' = 0';
@@ -462,7 +465,7 @@
     const disc = b * b + 4 * k, rd = Math.round(Math.sqrt(Math.max(disc, 0)));
     const kMal = disc >= 0 && rd * rd === disc && (b + rd) % 2 === 0 && -k !== k ? conjunto([0, (-b - rd) / 2, (-b + rd) / 2]) : null;
     const errores = [
-      err('AL15', conjunto([p, q]), 'Dividiste entre x y perdiste la solución x = 0. En x(x² + bx + k) = 0 cada factor da soluciones: x = 0 también cumple P(0) = ' + n2(d) + '.', 'hipotesis', FA),
+      err('AL15', conjunto([p, q]), `Dividiste entre x y perdiste la solución x = 0. En x(${poli([1, b, k])}) = 0 cada factor da soluciones: x = 0 también cumple P(0) = ${n2(d)}.`, 'hipotesis', FA),
       err('raices-signo-cambiado', conjunto([0, -p, -q]), 'Cambiaste el signo de las raíces al leerlas de los factores: (x − a) = 0 da x = a, no x = −a.'),
       err('agrega-raiz-de-P', conjunto([0, p, q, r]), `Agregaste x = ${n2(r)}, que es raíz de P(x) = 0. Ahí P vale 0, no ${n2(d)}.`),
       kMal ? err('parametro-signo', kMal, 'Despejaste k con el signo cambiado. Revisa: al reemplazar la raíz dada, P debe dar 0.') : null,
@@ -585,7 +588,7 @@
     const g = P.frac(p, q);
     const errores = [
       err('olvida-coef-principal', num(g.n), `Ese es un divisor del término independiente, pero no es raíz: el coeficiente principal es ${q}, y los candidatos también se dividen entre sus divisores (±p/q).`),
-      err('raiz-racional-invertida', num(g.d, g.n), `Invertiste la fracción. Las raíces racionales tienen arriba un divisor del término independiente y abajo uno del coeficiente principal: ${P.textoFraccion(g)}.`),
+      (g.d % g.n === 0 && [r, s].includes(g.d / g.n)) ? null : err('raiz-racional-invertida', num(g.d, g.n), `Invertiste la fracción. Las raíces racionales tienen arriba un divisor del término independiente y abajo uno del coeficiente principal: ${P.textoFraccion(g)}.`),
       err('raiz-signo-cambiado', num(-p, q), `Cambiaste el signo: el factor ${expr([[q, 1], [-p, 0]])} se anula en x = ${P.textoFraccion(g)}.`),
     ];
     const coc1 = [q, c[1] + q * r, c[2] + r * (c[1] + q * r)];

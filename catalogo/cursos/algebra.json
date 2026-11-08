@@ -146,7 +146,7 @@
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": ["cuadrado-crece", "division-polinomios"],
+      "plantillas": ["cuadrado-crece", "division-polinomios", "ecuaciones-polinomiales"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -163,7 +163,7 @@
       "universidades": {"uni": {"semanas": [4, 10]}, "unmsm": {"temas": [9, 11]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["polinomios"],
+      "plantillas": ["polinomios", "ecuaciones-polinomiales"],
       "investigacion": null
     },
     {
@@ -230,7 +230,7 @@
       "universidades": {"uni": {"semanas": [12]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["numeros-complejos"],
+      "plantillas": ["numeros-complejos", "ecuaciones-polinomiales"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
