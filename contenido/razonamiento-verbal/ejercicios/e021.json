@@ -35,9 +35,9 @@
       "explicacion": "Es una causa y su efecto, pero al revés: el fuego causa el humo, y en la pareja base la causa va primero."
     },
     {
-      "t": "fósforo : vela",
+      "t": "leña : fogón",
       "codigo": "RV15",
-      "explicacion": "Las dos recuerdan el calor y el fuego, pero el fósforo no causa la vela: solo sirve para encenderla."
+      "explicacion": "Las dos recuerdan el calor y el fuego, pero la leña no causa el fogón: es lo que se quema en él."
     },
     {
       "t": "mango : sartén",
@@ -46,5 +46,11 @@
     }
   ],
   "origen": "propio",
-  "fecha": "2026-11-07"
+  "fecha": "2026-11-07",
+  "revision": {
+    "por": "subagente (resolución a ciegas de 3 ejercicios cada uno)",
+    "fecha": "2026-11-08",
+    "veredicto": "cambios",
+    "notas": "A ciegas: clave correcta, pero «la fricción produce calor» hace defendible «fabrica o da». «Fósforo : vela» pasó a «leña : fogón». Fuera del índice hasta resolver la etiqueta."
+  }
 }

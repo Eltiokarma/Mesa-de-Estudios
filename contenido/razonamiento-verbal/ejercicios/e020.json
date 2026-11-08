@@ -15,7 +15,7 @@
     "tipo": "relacion-analogia",
     "pide": "Antes de ver las alternativas: ¿qué relación hay entre las dos palabras?",
     "aceptada": "a-causa-b",
-    "explicacion": "Cuando un virus infecta el cuerpo, una de las reacciones es la fiebre: el virus es la causa.",
+    "explicacion": "Cuando un virus infecta el cuerpo, el cuerpo suele responder con fiebre: el virus es la causa.",
     "explicaciones": {
       "b-causa-a": "Es al revés: el virus causa la fiebre; la fiebre no causa el virus.",
       "a-produce-b": "El virus no fabrica la fiebre como la vaca da la leche: la fiebre es la reacción del cuerpo que el virus provoca."
@@ -46,5 +46,11 @@
     }
   ],
   "origen": "propio",
-  "fecha": "2026-11-07"
+  "fecha": "2026-11-07",
+  "revision": {
+    "por": "subagente (resolución a ciegas de 3 ejercicios cada uno)",
+    "fecha": "2026-11-08",
+    "veredicto": "cambios",
+    "notas": "A ciegas: clave correcta, pero «el virus te da fiebre» hace defendible «fabrica o da». Fuera del índice hasta resolver la etiqueta."
+  }
 }

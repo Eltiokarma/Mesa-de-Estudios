@@ -15,7 +15,7 @@
     "tipo": "relacion-analogia",
     "pide": "Antes de ver las alternativas: ¿qué relación hay entre las dos palabras?",
     "aceptada": "a-causa-b",
-    "explicacion": "Las lluvias fuertes en la sierra arrastran lodo y piedras por las quebradas: eso es el huaico.",
+    "explicacion": "Las lluvias intensas en la sierra arrastran lodo y piedras por las quebradas: eso es el huaico.",
     "explicaciones": {
       "b-causa-a": "Es al revés: la lluvia causa el huaico, no el huaico a la lluvia.",
       "a-produce-b": "La lluvia no fabrica ni da el huaico como la vaca da la leche: lo provoca, es su causa."
@@ -27,7 +27,7 @@
       "t": "sismo : tsunami",
       "correcta": true,
       "evidencia": [],
-      "explicacion": "Lo primero causa lo segundo, en el mismo orden: la lluvia fuerte causa el huaico y el sismo en el mar causa el tsunami."
+      "explicacion": "Lo primero causa lo segundo, en el mismo orden: la lluvia intensa causa el huaico y un sismo bajo el mar puede causar un tsunami."
     },
     {
       "t": "incendio : chispa",
@@ -52,5 +52,11 @@
       "afirmacion": "Los huaicos son flujos de lodo y piedras que bajan por las quebradas después de lluvias intensas; un sismo bajo el mar puede causar un tsunami.",
       "fuente": "INDECI e INGEMMET, información sobre peligros geológicos; IGP."
     }
-  ]
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 3 ejercicios cada uno)",
+    "fecha": "2026-11-08",
+    "veredicto": "cambios",
+    "notas": "A ciegas: clave correcta, pero en el paso previo «fabrica o da» compite con «causa» («la lluvia trae huaicos»). Fuera del índice hasta resolver la etiqueta en nucleo/lectura.js."
+  }
 }

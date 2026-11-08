@@ -33,7 +33,7 @@
     {
       "t": "actitud – coro",
       "codigo": "RV20",
-      "explicacion": "\"Actitud\" se parece en la forma, pero es la manera de comportarse; el talento para algo es la \"aptitud\"."
+      "explicacion": "\"Actitud\" se parece en la forma, pero es la manera de comportarse; la capacidad \"para\" algo es la \"aptitud\"."
     },
     {
       "t": "dificultad – coro",
@@ -41,11 +41,17 @@
       "explicacion": "Que no hubiera estudiado haría esperar dificultad: con \"aunque\", lo que sigue tiene que ir en contra de eso, no confirmarlo."
     },
     {
-      "t": "aptitud – recreo",
+      "t": "aptitud – equipo de fútbol",
       "codigo": "RV23",
-      "explicacion": "\"Invitó al recreo\" suena bien por sí solo, pero no tiene que ver con el canto: la segunda palabra tiene que seguir el sentido de toda la oración."
+      "explicacion": "\"El equipo de fútbol\" también es una actividad del colegio, pero no tiene que ver con el canto: la segunda palabra tiene que seguir el sentido de toda la oración."
     }
   ],
   "origen": "propio",
-  "fecha": "2026-11-07"
+  "fecha": "2026-11-07",
+  "revision": {
+    "por": "subagente (resolución a ciegas de 3 ejercicios cada uno)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien, una sola respuesta. «Recreo» era demasiado débil y pasó a «equipo de fútbol»; se aclaró actitud contra aptitud."
+  }
 }

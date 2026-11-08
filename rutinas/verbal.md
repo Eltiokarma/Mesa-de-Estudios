@@ -443,3 +443,28 @@ Las cuatro piezas de la lista están hechas, así que no empecé nada nuevo. Rev
 2. analogías de causa, que ya se pueden escribir con el cambio del núcleo;
 3. más textos de dificultad 3 en las unidades de la rutina original;
 4. apagar la rutina.
+
+---
+
+## 8 nov 2026 · Pedido de Gerson: oraciones incompletas y analogías de causa (e016 a e021)
+
+Gerson eligió las opciones 1 y 2 de la entrada anterior.
+
+**Oraciones incompletas con palabra (e016 a e018), unidad `sentido-contextual`.** Cada una tiene dos espacios y empieza con «aunque». El paso previo pregunta la relación entre las dos partes (oposición). Las incorrectas son:
+- RV20: el parónimo (actitud o aptitud, absorber o absolver, prejuicio o perjuicio);
+- RV24: leer el «aunque» como si fuera causa;
+- RV23: la palabra que encaja con lo inmediato pero no con toda la oración.
+
+El revisor a ciegas las resolvió bien, con una sola respuesta en cada una. Retoques: en e016, «recreo» era demasiado débil y pasó a «equipo de fútbol», y aclaré la diferencia entre actitud y aptitud. Las tres están aprobadas y en el índice.
+
+**Analogías de causa (e019 a e021):** LLUVIA : HUAICO, VIRUS : FIEBRE y FRICCIÓN : CALOR. Las claves salen bien, pero el revisor encontró que en el paso previo **«fabrica o da» sigue compitiendo con «causa»**. En el Perú se dice «el virus te da fiebre» y «frotarse da calor». Por eso quedan con `veredicto: "cambios"` y fuera del índice. Retoques aplicados: «lluvia intensa», «el cuerpo suele responder con fiebre» y «fósforo : vela» pasó a «leña : fogón».
+
+**Pruebas:** `banco.test.js` da 85 de 85. `npm test` da 4418 de 4420; las dos que fallan piden `npm run catalogo` (el catálogo de la app y `papel.json` de lectura-verbal), porque el índice cambió.
+
+**Pedidos para la integración:**
+1. Correr `npm run catalogo`.
+2. Resolver la etiqueta de `a-produce-b` en `nucleo/lectura.js`. Hay dos salidas:
+   - que diga solo productos materiales, por ejemplo «{a} fabrica u obtiene {b}» o «de {a} se saca {b}» (vaca y leche, abeja y miel), sin «da»;
+   - que el paso previo `relacion-analogia` acepte más de una respuesta (`aceptadas`), para tomar como buenas «causa» y «fabrica o da» en pares de fenómenos.
+
+   Cuando esté, reviso e019 a e021 y los meto al índice.

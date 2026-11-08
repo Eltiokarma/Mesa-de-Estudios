@@ -16,7 +16,7 @@
       "suma": "RV26",
       "causa": "RV24"
     },
-    "explicacion": "El fiscal pidió una pena dura y el juez hizo otra cosa: las dos partes se oponen, y por eso la oración empieza con \"aunque\".",
+    "explicacion": "El fiscal pidió una pena dura y el juez hizo otra cosa: las dos partes se oponen, y por eso la oración empieza con \"aunque\". El segundo espacio va después de \"porque\": tiene que dar la razón de la decisión.",
     "explicaciones": {
       "suma": "La decisión del juez no va en la misma dirección que el pedido del fiscal: va en contra.",
       "causa": "El pedido del fiscal no es la causa de la decisión del juez; la causa la da la segunda parte, con \"porque\"."
@@ -47,5 +47,11 @@
     }
   ],
   "origen": "propio",
-  "fecha": "2026-11-07"
+  "fecha": "2026-11-07",
+  "revision": {
+    "por": "subagente (resolución a ciegas de 3 ejercicios cada uno)",
+    "fecha": "2026-11-08",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien, una sola respuesta."
+  }
 }
