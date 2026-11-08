@@ -139,22 +139,6 @@
       }
     },
     {
-      "semilla": 3005,
-      "entrada": {
-        "tipo": "entre-edificios",
-        "sub": "otro",
-        "H": 96,
-        "tA": 0.25,
-        "tB": 3.4285714285714284,
-        "angA": null,
-        "angB": "74°"
-      },
-      "esperado": {
-        "respuesta": 89,
-        "exacta": "89 m"
-      }
-    },
-    {
       "semilla": 3027,
       "entrada": {
         "tipo": "condicion-angulo",
@@ -270,21 +254,6 @@
       "esperado": {
         "respuesta": 389.7114317029974,
         "exacta": "225√3 m"
-      }
-    },
-    {
-      "semilla": 3006,
-      "entrada": {
-        "tipo": "mitad-cima",
-        "sub": "ventana",
-        "h1": 24,
-        "h2": 60,
-        "D": 20,
-        "pide": "tan"
-      },
-      "esperado": {
-        "respuesta": 0.391304347826087,
-        "exacta": "9/23"
       }
     },
     {

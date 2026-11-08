@@ -198,3 +198,28 @@ for (const q of papel.problemas) test(`papel ${q.id}: la respuesta coincide con 
     assert.ok(Math.abs(r - c.espera) < 1e-6, `${q.id}: ${c.fn}(${c.args}) da ${r}, se esperaba ${c.espera}`);
   }
 });
+
+// ---------- Controles de la revisión ----------
+// El valor numérico de una alternativa (las claves «pq:p|q» valen p·π + q).
+const valorNum = x => (typeof x === 'string' ? (([p, q]) => Math.PI * Number(p) + Number(q))(x.slice(3).split('|')) : x);
+test('la correcta no es siempre la mayor ni la menor (máx. 60 % por subtipo, en 600 semillas)', () => {
+  const cuenta = {};
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), k = p._datos.tipo + '/' + (p._datos.sub || '') + (p._datos.pide ? '/' + p._datos.pide : '');
+    const vals = p.alternativas.map(a => valorNum(a.valor)), c = valorNum(p.respuesta.valor);
+    const extremo = c >= Math.max(...vals) - 1e-9 || c <= Math.min(...vals) + 1e-9;
+    cuenta[k] = cuenta[k] || [0, 0]; cuenta[k][0] += extremo ? 1 : 0; cuenta[k][1]++;
+  }
+  const malos = Object.entries(cuenta).filter(([, [e, t]]) => t >= 5 && e / t > 0.6).map(([k, [e, t]]) => `${k}: ${e}/${t}`);
+  assert.deepEqual(malos, []);
+});
+test('cada variable con color aparece en el problema y cada color usado está declarado; ids de error únicos', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), usadas = new Set();
+    for (const parte of [p.enunciado, p.pregunta, ...p.solucion]) for (const x of parte) if (x && typeof x === 'object') usadas.add(x.v);
+    for (const k of Object.keys(p.variables)) assert.ok(usadas.has(k), `semilla ${s}: la variable ${k} no se usa`);
+    for (const k of usadas) assert.ok(p.variables[k], `semilla ${s}: ${k} sin declarar`);
+    const ids = p.alternativas.filter(a => !a.correcta).map(a => a.error.id);
+    assert.equal(new Set(ids).size, ids.length, `semilla ${s}: ids repetidos ${ids}`);
+  }
+});

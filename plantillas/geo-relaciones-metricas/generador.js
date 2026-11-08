@@ -148,6 +148,8 @@
     if (esCuadrado(ch2) && Number.isInteger(d * sq(ch2) / 2)) SEMI_AREA.push({ d, m });
   }
 
+  // Catetos (a, b) e hipotenusa c con a·b/c y a²/c enteros: ternas primitivas escaladas por su hipotenusa.
+  const ESCALADAS = [[15, 20, 25], [30, 40, 50], [45, 60, 75], [65, 156, 169], [136, 255, 289]];
   const OPUESTO = { A: 'C', B: 'D', C: 'A', D: 'B' };
   const VECINOS = { A: ['B', 'D'], B: ['A', 'C'], C: ['B', 'D'], D: ['A', 'C'] };
 
@@ -192,6 +194,7 @@
         const variables = { m: { nombre: 'PA', color: 'o' }, n: { nombre: 'QB', color: 'i' }, r: { nombre: 'radio', color: 'h' }, x: { nombre: pide === 'r' ? 'radio' : 'diámetro AB', color: 'd' } };
         if (pide === 'r') delete variables.r;
         const ctx = rng.moneda();
+        if (ctx) u = 'cm';
         return {
           variables, unidad: u, correcta: k * sq(mn), datos: { sub, m, n, pide },
           enunciado: ctx
@@ -199,10 +202,11 @@
             : ['AB es un diámetro de una circunferencia de centro O; las rectas tangentes en A y en B son paralelas. Una tercera recta tangente toca la circunferencia en T y corta a las dos anteriores en P y en Q (del mismo lado de AB), con PA = ', v('m', L(m, u)), ' y QB = ', v('n', L(n, u)), '.'],
           pregunta: [pide === 'r' ? (ctx ? '¿Cuánto mide el radio del vidrio?' : '¿Cuánto mide el radio?') : '¿Cuánto mide el diámetro AB?'],
           errores: [
+            h('RM-tangente-da-PQ', m + n, `Esa es la longitud PQ = PT + TQ (la hipotenusa del triángulo POQ), no ${pide === 'r' ? 'el radio' : 'el diámetro'}.`),
             h('GE18-altura-promedio', k * (m + n) / 2, `Tomaste el radio como el promedio de PT y TQ. El radio OT es la altura del triángulo rectángulo POQ: su cuadrado es el producto PT·TQ, no un promedio.`),
             h('GE19-diametro-por-radio', pide === 'r' ? 2 * sq(mn) : sq(mn), pide === 'r' ? `Ese es el diámetro AB; el radio es la mitad.` : `Ese es el radio OT; el diámetro AB es el doble.`),
+            h('RM-diferencia-proyecciones', k * Math.abs(n - m), `Restaste QB − PA. El radio no sale de una resta: OT es la altura del triángulo rectángulo POQ, con OT² = PT·TQ.`),
             h('RM-sin-raiz', mn, `Te quedaste con r² = ${mn}: falta sacar la raíz cuadrada${pide === 'AB' ? ' (y luego duplicar)' : ''}.`),
-            h('RM-tangente-da-PQ', m + n, `Esa es la longitud PQ = PT + TQ (la hipotenusa del triángulo POQ), no ${pide === 'r' ? 'el radio' : 'el diámetro'}.`),
             pa('GE11-pitagoras-proyecciones', k * sq(m * m + n * n), `Aplicaste Pitágoras con PT y TQ, que están sobre la misma recta PQ: no forman un ángulo recto entre sí.`),
           ],
           solucion: [
@@ -216,8 +220,7 @@
         };
       }
       if (sub === 'h-catetos') {
-        const k = rng.elegir([1, 2, 3]);
-        let a = 15 * k, b = 20 * k;
+        let [a, b] = rng.elegir(ESCALADAS);
         if (rng.moneda()) [a, b] = [b, a];
         const c = Math.hypot(a, b);
         const pide = rng.elegir(['BH', 'AH']);
@@ -283,6 +286,7 @@
           errores: [
             h('GE18-altura-promedio', (m + n) / 2, `Promediaste las proyecciones. La altura no es su promedio sino su media geométrica: BH² = AH·HC.`),
             h('RM-sin-raiz', mn, `Calculaste BH² = ${m}·${n} = ${mn} y olvidaste sacar la raíz cuadrada.`),
+            h('RM-diferencia-proyecciones', Math.abs(n - m), `Restaste las proyecciones. La altura es su media geométrica: BH² = AH·HC.`),
             h('GE18-cateto-por-altura', sq(m * (m + n)), `Usaste AC·AH: eso da el cateto AB al cuadrado, no la altura BH.`),
             pa('GE11-pitagoras-proyecciones', sq(m * m + n * n), `Aplicaste Pitágoras con AH y HC como catetos. Están sobre la misma recta AC: no forman un ángulo recto entre sí.`),
           ],
@@ -318,6 +322,7 @@
       else for (;;) { d = rng.entero(6, 30); m = rng.entero(1, d - 1); if (2 * m !== d) break; }
       const variables = { d: { nombre: 'diámetro AB', color: 'o' }, m: { nombre: 'proyección AH', color: 'i' },
         ch: { nombre: 'altura CH', color: 'h' }, x: { nombre: sub === 'cuerda' ? 'cuerda AC' : 'área del triángulo ACB', color: 'd' } };
+      if (sub === 'cuerda') delete variables.ch;
       const ctx = rng.moneda();
       const enunciado = ctx
         ? ['La fachada de un horno de barro tiene forma de semicircunferencia apoyada sobre su diámetro AB = ', v('d', L(d, u)),
@@ -409,7 +414,7 @@
               ? 'Usaste el signo menos, que va con el ángulo agudo. Con el ángulo obtuso en A, el lado opuesto es más largo que con Pitágoras: va + 2·AB·m.'
               : 'Usaste el signo más, que va con el ángulo obtuso. Con el ángulo agudo en A, el lado opuesto es más corto que con Pitágoras: va − 2·AB·m.'),
             pa('GE11-pitagoras-sin-angulo-recto', sq(b * b + c * c), `Usaste Pitágoras, pero el ángulo en A no es recto: falta el término 2·AB·m.`),
-            h('RM-lado-por-proyeccion', sq(b * b + c * c + s * 2 * c * b), `En el término 2·AB·m pusiste el lado AC entero en vez de su proyección m.`),
+            h('RM-euclides-sin-lado', sq(b * b + c * c + s * 2 * m), `En el término 2·AB·m olvidaste multiplicar por AB: pusiste solo 2·m.`),
             h('RM-euclides-sin-doble', sq(b * b + c * c + s * c * m), `Olvidaste el 2 del término 2·AB·m.`),
           ],
           solucion: [
@@ -480,7 +485,7 @@
           h('RM-mediana-sin-mitad', sq(b * b + c * c - 2 * ma2), `Usaste AB² + AC² = 2·AM² + BC². En el teorema de la mediana va la mitad del cuadrado del lado: BC²/2.`),
           h('RM-mediana-mitad-lado', 2 * ma, `Tomaste BC como el doble de la mediana. Eso solo vale si el ángulo en A es recto.`),
           h('RM-sin-raiz', a * a, `Calculaste BC² = ${a * a} y olvidaste sacar la raíz cuadrada.`),
-          h('RM-mediana-despeje', sq((2 * b * b + 2 * c * c - 4 * ma2) / 2), `Al despejar, BC²/2 = ${(2 * b * b + 2 * c * c - 4 * ma2) / 2} y te quedaste con ese número como BC²: falta multiplicar por 2.`),
+          h('RM-mediana-despeje', sq(2 * b * b + 2 * c * c - 2 * ma2), `Al despejar te quedó BC² = 2·AB² + 2·AC² − 2·AM². Al multiplicar todo por 2, el término de la mediana es 4·AM².`),
         ],
         solucion: [
           ['Teorema de la mediana: AB² + AC² = 2·AM² + BC²/2.'],
@@ -519,8 +524,8 @@
         pregunta: [ctx ? `¿A qué distancia está el poste de la esquina ${X}?` : `¿Cuánto mide P${X}?`],
         errores: [
           h('RM-marlen-lineal', y + z - o, `Usaste la relación sin elevar al cuadrado (P${Y} + P${Z} − P${O}). El teorema junta los cuadrados de las distancias.`),
-          h('RM-marlen-pareja', sq(d[O] + d[Y] - d[Z]), `Emparejaste vértices vecinos. La relación junta vértices opuestos: PA² + PC² = PB² + PD².`),
-          h('RM-marlen-pareja', sq(d[O] + d[Z] - d[Y]), `Emparejaste vértices vecinos. La relación junta vértices opuestos: PA² + PC² = PB² + PD².`),
+          h('RM-marlen-pareja-1', sq(d[O] + d[Y] - d[Z]), `Emparejaste vértices vecinos. La relación junta vértices opuestos: PA² + PC² = PB² + PD².`),
+          h('RM-marlen-pareja-2', sq(d[O] + d[Z] - d[Y]), `Emparejaste vértices vecinos. La relación junta vértices opuestos: PA² + PC² = PB² + PD².`),
           h('RM-marlen-suma', sq(d[Y] + d[Z]), `Sumaste los cuadrados de P${Y} y P${Z} y no restaste el de P${O}.`),
           h('RM-sin-raiz', x2, `Calculaste P${X}² = ${x2} y olvidaste sacar la raíz cuadrada.`),
         ],
@@ -563,7 +568,7 @@
       return {
         variables, enunciado, correcta: B, angular: true, unidad: '°', errores,
         datos: { ab2, ac2, bc },
-        pregunta: [ctx ? '¿Qué ángulo forman las varillas AB y BC?' : '¿Cuánto mide el ángulo ABC?'],
+        pregunta: ['¿Cuánto mide el ángulo ABC?'],
         solucion: [
           ['Se traza la altura AH sobre la recta BC. Por Pitágoras en ABH y en ACH, AH² = AB² − BH² = AC² − HC². Entonces AB² − AC² = BH² − HC² (diferencia de cuadrados).'],
           ['Con BH medido desde B hacia C: BH = (BC² + AB² − AC²)/(2·BC) = (', v('bc', `${bc}`), `² + ${ab2} − ${ac2})/${2 * bc} = ${f(x)}.`],
@@ -601,11 +606,11 @@
           variables, enunciado, unidad: `${u}²`, correcta: S, datos: { sub, a, b, c },
           pregunta: [ctx ? '¿Cuánta tela tiene la vela (su área)?' : '¿Cuál es el área del triángulo?'],
           errores: [
-            pa('GE7-lado-como-altura', a * b / 2, `Usaste el lado AC como si fuera la altura sobre BC. El triángulo no es rectángulo: la altura es otra.`),
+            pa('GE7-lado-como-altura-AC', a * b / 2, `Usaste el lado AC como si fuera la altura sobre BC. El triángulo no es rectángulo: la altura es otra.`),
             h('RM-heron-perimetro', sq(Pm * (Pm - a) * (Pm - b) * (Pm - c)), `Usaste el perímetro entero en la fórmula de Herón. Va el semiperímetro p, la mitad.`),
             h('RM-sin-raiz', S * S, `Calculaste p(p − a)(p − b)(p − c) = ${f(S * S)} y olvidaste sacar la raíz cuadrada.`),
             h('RM-heron-sin-p', sq((s - a) * (s - b) * (s - c)), `En la fórmula de Herón te faltó el factor p.`),
-            pa('GE7-lado-como-altura', b * c / 2, `Usaste un lado como si fuera la altura. El triángulo no es rectángulo: la altura es otra.`),
+            pa('GE7-lado-como-altura-AB', b * c / 2, `Usaste un lado como si fuera la altura. El triángulo no es rectángulo: la altura es otra.`),
           ],
           solucion: [pasoHeron[0], [`Herón: área = √(p(p − a)(p − b)(p − c)) = √(${f(s)}·${f(s - a)}·${f(s - b)}·${f(s - c)}) = √${Math.round(S * S)} = `, v('x', `${f(S)} ${u}²`), '.']],
         };
@@ -613,13 +618,13 @@
       const alt = 2 * S / a;
       return {
         variables, enunciado, unidad: u, correcta: alt, datos: { sub, a, b, c },
-        pregunta: [ctx ? '¿Cuánto mide la altura de la vela desde A hasta el borde BC?' : '¿Cuánto mide la altura relativa al lado BC?'],
+        pregunta: [ctx ? '¿Cuánto mide la altura de la vela desde A hasta la recta que contiene el borde BC?' : '¿Cuánto mide la altura relativa al lado BC?'],
         errores: [
           h('RM-altura-sin-doble', S / a, `Dividiste el área entre BC. Como área = BC·h/2, la altura es 2·área/BC.`),
-          pa('GE8-pie-en-punto-medio', sq(b * b - a * a / 4), `Supusiste que la altura cae en el punto medio de BC. Eso solo pasa si AB = AC.`),
-          pa('GE8-pie-en-punto-medio', sq(c * c - a * a / 4), `Supusiste que la altura cae en el punto medio de BC. Eso solo pasa si AB = AC.`),
+          pa('GE8-pie-en-punto-medio-AC', sq(b * b - a * a / 4), `Supusiste que la altura cae en el punto medio de BC. Eso solo pasa si AB = AC.`),
+          pa('GE8-pie-en-punto-medio-AB', sq(c * c - a * a / 4), `Supusiste que la altura cae en el punto medio de BC. Eso solo pasa si AB = AC.`),
           pa('GE7-lado-como-altura', Math.min(b, c), `Tomaste un lado como altura. La altura es la perpendicular desde A a BC, más corta que AB y que AC.`),
-          h('RM-altura-es-area', S, `Ese es el área, no la altura.`),
+          h('RM-altura-con-semiperimetro', S / s, `Dividiste el área entre el semiperímetro: eso da el radio de la circunferencia inscrita. La altura es 2·área/BC.`),
         ],
         solucion: [...pasoHeron, ['Área = BC·h/2 → h = 2·', `${f(S)}/`, v('a', `${a}`), ' = ', v('x', L(alt, u)), '.']],
       };
@@ -628,7 +633,7 @@
     ptolomeo(rng, u) {
       const sub = rng.elegir(['trapecio', 'trapecio', 'heptagono']);
       if (sub === 'heptagono') {
-        const k = rng.elegir([2, 4, 6, 8, 10, 12]);
+        const k = rng.entero(1, 15);
         const variables = { k: { nombre: 'k de la relación', color: 'o' }, a: { nombre: 'lado AB', color: 'i' }, x: { nombre: 'perímetro', color: 'd' } };
         return {
           variables, unidad: u, correcta: 7 * k, datos: { sub, k },
@@ -637,8 +642,8 @@
           errores: [
             h('RM-heptagono-promedio', 14 * k, `Escribiste 1/AC + 1/AD = 2/AB, como si el lado fuera el promedio armónico de las diagonales. Ptolomeo da 1/AC + 1/AD = 1/AB.`),
             h('RM-heptagono-solo-lado', k, `Ese es el lado AB. Se pide el perímetro: son 7 lados iguales.`),
-            h('RM-heptagono-mitad', 7 * k / 2, `Tomaste el lado como la mitad de ${k}. La relación 1/AC + 1/AD = 1/AB da AB = ${k} directamente.`),
-            h('RM-heptagono-seis-lados', 6 * k, `Contaste 6 lados. El heptágono tiene 7.`),
+            h('RM-heptagono-promedio-lado', 2 * k, `Escribiste 1/AC + 1/AD = 2/AB (como si el lado fuera el promedio armónico de las diagonales) y te quedaste con el lado. Ptolomeo da 1/AC + 1/AD = 1/AB, y se pide el perímetro.`),
+            h('RM-heptagono-mitad-lado', k / 2, `Escribiste 1/AC + 1/AD = 1/(2·AB) y te quedaste con el lado. Ptolomeo da 1/AC + 1/AD = 1/AB, y se pide el perímetro.`),
           ],
           solucion: [
             ['Llamemos a al lado, b = AC (diagonal corta) y c = AD (diagonal larga). El cuadrilátero ACDE está inscrito en la circunferencia del heptágono: AC = b, CD = a, DE = a, EA = c, y sus diagonales son AD = c y CE = b.'],
@@ -667,7 +672,7 @@
           pa('GE11-pitagoras-sin-angulo-recto', sq(l * l + B * B), `Usaste Pitágoras con AB y AD, pero el ángulo entre ellos no es recto.`),
           h('RM-ptolomeo-sin-lados', sq(B * b), `Te olvidaste del producto de los lados no paralelos, AB·CD.`),
           h('RM-sin-raiz', d2, `Calculaste AC² = ${d2} y olvidaste sacar la raíz cuadrada.`),
-          pa('GE11-pitagoras-sin-angulo-recto', sq(l * l + b * b), `Usaste Pitágoras con AB y BC, pero el ángulo entre ellos no es recto.`),
+          pa('GE11-pitagoras-base-menor', sq(l * l + b * b), `Usaste Pitágoras con AB y BC, pero el ángulo entre ellos no es recto.`),
           h('RM-ptolomeo-suma-lados', sq(2 * l * l + B * b), `Sumaste AB² y CD² por separado: el producto de lados opuestos es AB·CD = ${l}·${l}, una sola vez.`),
         ],
         solucion: [
@@ -681,8 +686,7 @@
     'trapecio-perpendiculares'(rng, u) {
       const sub = rng.elegir(['altura', 'area']);
       if (sub === 'altura') {
-        const k = rng.elegir([1, 2, 3]);
-        let d1 = 15 * k, d2 = 20 * k;
+        let [d1, d2] = rng.elegir(ESCALADAS);
         if (rng.moneda()) [d1, d2] = [d2, d1];
         const S = Math.hypot(d1, d2), alt = d1 * d2 / S;
         const variables = { d1: { nombre: 'diagonal AC', color: 'o' }, d2: { nombre: 'diagonal BD', color: 'i' }, S: { nombre: 'suma de bases', color: 'h' }, x: { nombre: 'altura', color: 'd' } };
@@ -694,7 +698,7 @@
             : ['En el trapecio ABCD (BC ∥ AD), las diagonales son perpendiculares y miden AC = ', v('d1', L(d1, u)), ' y BD = ', v('d2', L(d2, u)), '.'],
           pregunta: ['¿Cuánto mide la altura del trapecio?'],
           errores: [
-            h('RM-trapecio-area', d1 * d2 / 2, `AC·BD/2 es el área del trapecio, no su altura.`),
+            h('RM-trapecio-diferencia', Math.abs(d2 - d1), `Restaste las diagonales. La altura sale del triángulo rectángulo que se forma al trasladar una diagonal: catetos multiplicados entre hipotenusa.`),
             h('RM-trapecio-promedio', (d1 + d2) / 2, `Promediaste las diagonales. La altura sale del triángulo rectángulo que se forma al trasladar una diagonal.`),
             pa('GE8-mediana-por-altura', S / 2, `Tomaste la mitad de la hipotenusa (la mediana del triángulo ACE). La altura relativa a la hipotenusa es otra: catetos multiplicados entre hipotenusa.`),
             h('RM-trapecio-raiz-diagonales', sq(d1 * d2), `Usaste h² = AC·BD. En el triángulo rectángulo ACE, la altura al cuadrado es el producto de las proyecciones sobre la hipotenusa, no el de los catetos.`),
@@ -721,6 +725,8 @@
         pregunta: ['¿Cuál es el área del trapecio?'],
         errores: [
           h('RM-trapecio-sin-mitad', d1 * d2, `Multiplicaste las diagonales y no dividiste entre 2.`),
+          h('RM-trapecio-triangulo-ACD', (S - b) * d1 * d2 / (2 * S), `Ese es el área del triángulo ACD (AD·h/2), una parte del trapecio. Con diagonales perpendiculares, el trapecio entero mide AC·BD/2.`),
+          h('RM-trapecio-triangulo-ABC', b * d1 * d2 / (2 * S), `Ese es el área del triángulo ABC (BC·h/2), una parte del trapecio. Con diagonales perpendiculares, el trapecio entero mide AC·BD/2.`),
           pa('GE7-diagonal-como-altura', S * d1 / 2, `Usaste la diagonal AC como altura. AC es inclinada; la altura es perpendicular a las bases.`),
           h('RM-trapecio-diagonales-iguales', d1 * d1 / 2, `Supusiste que las diagonales son iguales. Solo lo son en el trapecio isósceles; BD sale del triángulo rectángulo con hipotenusa AD + BC.`),
           pa('GE11-pitagoras-suma', d1 * raro / 2, `Para BD sumaste los cuadrados en vez de restarlos. La hipotenusa es AD + BC; BD es un cateto.`),
@@ -743,13 +749,13 @@
         const errores = pide === 'BC' ? [
           h('RM-cometa-mediana-como-diagonal', mal, `Usaste BM como si fuera la diagonal AC. M es el punto medio: AC = 2·BM.`),
           h('RM-cometa-da-AC', c, `Esa es la diagonal AC. BC es un cateto del triángulo ABC.`),
-          pa('GE8-mediana-por-lado', bm, `Tomaste BC igual a BM. BM es la mediana a la hipotenusa; BC sale de Pitágoras.`),
+          h('RM-cometa-mediana-por-lado', bm, `Tomaste BC igual a BM. BM es la mediana a la hipotenusa; BC sale de Pitágoras.`),
           pa('GE11-pitagoras-sumando', sq(c * c + a * a), `Sumaste los cuadrados: así se halla una hipotenusa. BC es un cateto: BC² = AC² − AB².`),
         ] : [
           h('RM-cometa-mediana-como-diagonal', 2 * (a + mal), `Usaste BM como si fuera la diagonal AC. M es el punto medio: AC = 2·BM.`),
           h('RM-cometa-medio-perimetro', a + b, `Sumaste solo AB y BC. La cometa tiene cuatro lados: AD = AB y DC = BC.`),
           h('RM-cometa-con-diagonal', 2 * a + b + c, `Contaste la diagonal AC como si fuera un lado. El perímetro solo suma el borde: AB + BC + CD + DA.`),
-          pa('GE8-mediana-por-lado', 2 * (a + bm), `Tomaste BC igual a BM. BM es la mediana a la hipotenusa; BC sale de Pitágoras.`),
+          h('RM-cometa-mediana-por-lado', 2 * (a + bm), `Tomaste BC igual a BM. BM es la mediana a la hipotenusa; BC sale de Pitágoras.`),
         ];
         return {
           variables, unidad: u, correcta: pide === 'BC' ? b : 2 * (a + b), datos: { sub, a, bm, pide }, errores,
@@ -764,10 +770,9 @@
         };
       }
       if (sub === 'isosceles-bisectriz') {
-        const k = rng.elegir([1, 2]);
-        let a = 15 * k, b = 20 * k;
+        let [a, b] = rng.elegir(ESCALADAS.filter(t => t[2] <= 169));
         if (rng.moneda()) [a, b] = [b, a];
-        const c = 25 * k, AH = a * a / c, BH = a * b / c, HD = a - AH, HC = c - AH, DC = c - a, BD2 = BH * BH + HD * HD;
+        const c = Math.hypot(a, b), AH = a * a / c, BH = a * b / c, HD = a - AH, HC = c - AH, DC = c - a, BD2 = BH * BH + HD * HD;
         const pide = rng.elegir(['HD', 'BD']);
         const variables = { a: { nombre: 'AB', color: 'o' }, b: { nombre: 'BC', color: 'i' }, ah: { nombre: 'AH', color: 'h' }, x: { nombre: pide, color: 'd' } };
         const errores = pide === 'HD' ? [
@@ -775,6 +780,7 @@
           pa('GE8-bisectriz-punto-medio', HC / 2, `Supusiste que la bisectriz BD parte HC por la mitad. La bisectriz divide el lado opuesto en la razón de los lados vecinos (BH : BC), no en dos mitades.`),
           h('RM-bisectriz-da-AH', AH, `Ese es AH, la proyección de AB. Falta usar que AD = AB.`),
           h('RM-bisectriz-da-BH', BH, `Esa es la altura BH, no el tramo HD.`),
+          h('RM-bisectriz-resta-altura', Math.min(Math.abs(a - BH), Math.abs(b - BH)), `Restaste un cateto menos la altura BH, como si fueran segmentos de una misma recta. HD sale de AD − AH, con AD = AB.`),
         ] : [
           h('RM-bisectriz-da-BH', BH, `Esa es la altura BH. La cerca BD va inclinada: BD² = BH² + HD².`),
           h('RM-isosceles-al-reves', a, `El triángulo isósceles es ABD con AB = AD, no con BD = AB.`),
@@ -793,7 +799,7 @@
           ],
         };
       }
-      const s = rng.elegir([2, 4, 6, 8, 10]);
+      const s = rng.elegir([2, 4, 6, 8, 10, 12, 14, 16]);
       const variables = { s: { nombre: 'AB = AD', color: 'o' }, dc: { nombre: 'DC', color: 'i' }, ae: { nombre: 'AE', color: 'h' }, x: { nombre: 'AC', color: 'd' } };
       const ctx = rng.moneda();
       return {
@@ -802,6 +808,7 @@
         pregunta: [ctx ? '¿Cuánto mide el camino AC?' : '¿Cuánto mide la diagonal AC?'],
         errores: [
           pa('GE11-pitagoras-sin-angulo-recto', 2 * s, `Usaste Pitágoras con AD y DC, pero el ángulo ADC mide 150°, no 90°. El ángulo recto está en BDC.`),
+          h('RM-equilatero-AD-mas-BC', 3 * s, `Sumaste AD + BC (${s} + ${2 * s}). AC no sigue el borde: es la diagonal, y sale de Pitágoras en el triángulo ACE.`),
           h('RM-equilatero-da-DC', s * sq(3), `Ese es DC. Falta llevarlo hasta A con el triángulo rectángulo de 30°.`),
           h('RM-proyeccion-al-reves', s, `Pusiste la proyección de DC hacia el lado de A (AE = AD − DE). El ángulo ADC es obtuso: C se proyecta sobre la prolongación de AD, más allá de D.`),
           h('RM-proyeccion-como-lado', 5 * s / 2, `Ese es AE, la proyección de AC sobre la recta AD. Falta Pitágoras con CE.`),

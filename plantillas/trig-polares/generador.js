@@ -137,14 +137,15 @@
     }
     if (nombre === 'circ-polo') {
       // Radio entero o raíz (√n); en el sentido polar → cartesiano solo enteros.
-      const raiz = rng.moneda(), R0 = raiz ? Math.sqrt(rng.elegir([2, 3, 5, 6, 7, 8, 10, 12])) : rng.entero(2, 9);
+      const raiz = rng.moneda(), n0 = raiz ? rng.elegir([2, 3, 5, 6, 7, 8, 10, 12]) : 0, R0 = raiz ? Math.sqrt(n0) : rng.entero(2, 9);
+      const cuadrado = R => Math.round(R * R * 1e9) / 1e9;
       const rasgos = dir => [
-        [R_(R0, ''), dir === 'a-polar' ? CP(R0 * R0, 'CP13-sin-raiz', `r² = x² + y² = ${num(R0 * R0)}: r es la raíz, ${num(R0)}.`)
+        [R_(R0, ''), dir === 'a-polar' ? CP(cuadrado(R0), 'CP13-sin-raiz', `r² = x² + y² = ${num(cuadrado(R0))}: r es la raíz, ${num(R0)}.`)
           : CP(Math.sqrt(R0), 'CP13-sin-raiz', `r = ${num(R0)} es √(x² + y²) = ${num(R0)}: al elevar al cuadrado queda ${num(R0 * R0)}, no ${num(R0)}.`),
           R_(2 * R0, 'TP-diametro', `Usaste el diámetro, ${num(2 * R0)}. El radio es ${num(R0)}.`)],
         [R_('const', ''), R_('cos', 'TP-agrega-coseno', 'Agregaste un cos θ: r = c·cos θ es otra circunferencia, que pasa por el polo.')],
       ];
-      const construir = ([R, forma]) => (forma === 'const' ? { polar: { forma: 'lin', K0: R, Kc: 0, Ks: 0 }, cart: [1, 1, 0, 0, -R * R] }
+      const construir = ([R, forma]) => (forma === 'const' ? { polar: { forma: 'lin', K0: R, Kc: 0, Ks: 0 }, cart: [1, 1, 0, 0, -cuadrado(R)] }
         : { polar: { forma: 'lin', K0: 0, Kc: R, Ks: 0 }, cart: Number.isInteger(R) ? [1, 1, -R, 0, 0] : null });
       return { nombre, rasgos, construir, raiz };
     }
@@ -207,7 +208,7 @@
     const idx = rasgos.map(() => 0);
     const rec = i => {
       if (i === rasgos.length) {
-        if (idx.every(x => x === 0)) return;
+        if (idx.every(x => x === 0) || idx.filter(x => x > 0).length > 2) return; // a lo más dos errores juntos
         const vals = rasgos.map((r, k) => r[idx[k]].valor), b = construir(vals);
         const eq = b && rep(b);
         if (!eq) return;

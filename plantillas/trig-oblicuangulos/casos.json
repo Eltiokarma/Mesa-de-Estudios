@@ -5,31 +5,31 @@
   "verificacion": "",
   "casos": [
     {
-      "semilla": 0,
+      "semilla": 3000,
       "entrada": {
         "tipo": "lado-minimo",
         "sub": "lados",
-        "A": 90,
-        "k": 10,
-        "S": 50
+        "A": 106,
+        "k": 5,
+        "S": 12
       },
       "esperado": {
-        "respuesta": 10,
-        "exacta": "10 m"
+        "respuesta": 5,
+        "exacta": "5 m"
       }
     },
     {
-      "semilla": 1,
+      "semilla": 3002,
       "entrada": {
         "tipo": "lado-minimo",
         "sub": "valor",
-        "A": 37,
-        "k": 20,
-        "S": 120
+        "A": 106,
+        "k": 5,
+        "S": 12
       },
       "esperado": {
-        "respuesta": 12.649110640673516,
-        "exacta": "4√10 m"
+        "respuesta": 8,
+        "exacta": "8 m"
       }
     },
     {
@@ -65,19 +65,20 @@
       }
     },
     {
-      "semilla": 4,
+      "semilla": 3014,
       "entrada": {
         "tipo": "ley-tangentes",
         "sub": "rectangulo",
-        "s": 24,
+        "s": 56,
         "k": [
           1,
-          6
-        ]
+          7
+        ],
+        "pide": "area"
       },
       "esperado": {
-        "respuesta": 70,
-        "exacta": "70 m²"
+        "respuesta": 384,
+        "exacta": "384 m²"
       }
     },
     {
@@ -95,16 +96,16 @@
       }
     },
     {
-      "semilla": 3008,
+      "semilla": 3039,
       "entrada": {
         "tipo": "doblez",
         "sub": "coseno",
-        "L": 12,
-        "W": 9
+        "L": 18,
+        "W": 3
       },
       "esperado": {
-        "respuesta": -0.28,
-        "exacta": "−7/25"
+        "respuesta": -0.9459459459459459,
+        "exacta": "−35/37"
       }
     },
     {
@@ -184,17 +185,17 @@
       }
     },
     {
-      "semilla": 27,
+      "semilla": 3038,
       "entrada": {
         "tipo": "circunradio",
         "sub": "perimetro",
-        "p": 24,
-        "A": 37,
+        "p": 128,
+        "A": 53,
         "B": 53
       },
       "esperado": {
-        "respuesta": 24,
-        "exacta": "24 m²"
+        "respuesta": 768,
+        "exacta": "768 m²"
       }
     },
     {
@@ -232,28 +233,29 @@
       }
     },
     {
-      "semilla": 76,
+      "semilla": 3025,
       "entrada": {
         "tipo": "doblez",
         "sub": "longitud",
-        "L": 16,
-        "W": 8
+        "L": 216,
+        "W": 36
       },
       "esperado": {
-        "respuesta": 10,
-        "exacta": "10 cm"
+        "respuesta": 111,
+        "exacta": "111 cm"
       }
     },
     {
       "semilla": "entrada-1",
       "entrada": {
-        "tipo": "ley-tangentes",
-        "sub": "constante",
-        "forma": "(a − b)·cot((A − B)/2) = k·(a + b)"
+        "tipo": "doblez",
+        "sub": "coseno",
+        "L": 18,
+        "W": 3
       },
       "esperado": {
-        "respuesta": "tan(C/2)",
-        "exacta": "tan(C/2)"
+        "respuesta": -0.9459459459459459,
+        "exacta": "−35/37"
       }
     },
     {
@@ -261,18 +263,22 @@
       "entrada": {
         "tipo": "circunradio",
         "sub": "en-funcion",
-        "pide": "radio"
+        "recto": "B",
+        "dato": "circunradio",
+        "pide": "perimetro"
       },
       "esperado": {
-        "respuesta": "p/(1 + senθ + cosθ)",
-        "exacta": "p/(1 + senθ + cosθ)"
+        "respuesta": "2R·(1 + senθ + cosθ)",
+        "exacta": "2R·(1 + senθ + cosθ)"
       }
     },
     {
-      "semilla": 3001,
+      "semilla": 3133,
       "entrada": {
         "tipo": "circunradio",
         "sub": "en-funcion",
+        "recto": "B",
+        "dato": "perimetro",
         "pide": "area"
       },
       "esperado": {
@@ -281,10 +287,12 @@
       }
     },
     {
-      "semilla": 3018,
+      "semilla": 3057,
       "entrada": {
         "tipo": "circunradio",
         "sub": "en-funcion",
+        "recto": "C",
+        "dato": "perimetro",
         "pide": "radio"
       },
       "esperado": {
@@ -293,10 +301,12 @@
       }
     },
     {
-      "semilla": 3029,
+      "semilla": 3700,
       "entrada": {
         "tipo": "ley-tangentes",
         "sub": "constante",
+        "molde": 1,
+        "letras": "abABC",
         "forma": "(a − b)/(a + b) = k·tan((A − B)/2)"
       },
       "esperado": {
@@ -305,10 +315,12 @@
       }
     },
     {
-      "semilla": 3019,
+      "semilla": 3928,
       "entrada": {
         "tipo": "ley-tangentes",
         "sub": "constante",
+        "molde": 3,
+        "letras": "abABC",
         "forma": "(a + b)·tan((A − B)/2) = k·(a − b)"
       },
       "esperado": {
@@ -317,16 +329,47 @@
       }
     },
     {
-      "semilla": 3003,
+      "semilla": 3153,
       "entrada": {
-        "tipo": "doblez",
-        "sub": "longitud",
-        "L": 50,
-        "W": 20
+        "tipo": "circunradio",
+        "sub": "en-funcion",
+        "recto": "B",
+        "dato": "perimetro",
+        "pide": "inradio"
       },
       "esperado": {
-        "respuesta": 29,
-        "exacta": "29 cm"
+        "respuesta": "p·(senθ + cosθ − 1)/(1 + senθ + cosθ)",
+        "exacta": "p·(senθ + cosθ − 1)/(1 + senθ + cosθ)"
+      }
+    },
+    {
+      "semilla": 3051,
+      "entrada": {
+        "tipo": "ley-tangentes",
+        "sub": "rectangulo",
+        "s": 20,
+        "k": [
+          2,
+          5
+        ],
+        "pide": "hipotenusa"
+      },
+      "esperado": {
+        "respuesta": 15.231546211727817,
+        "exacta": "2√58 m"
+      }
+    },
+    {
+      "semilla": 3062,
+      "entrada": {
+        "tipo": "doblez",
+        "sub": "pliegue",
+        "L": 98,
+        "W": 70
+      },
+      "esperado": {
+        "respuesta": 86.02325267042627,
+        "exacta": "10√74 cm"
       }
     }
   ]
