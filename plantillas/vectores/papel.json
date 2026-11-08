@@ -1,6 +1,6 @@
 {
   "titulo": "Flechas que se suman: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja siempre las flechas: los vectores no se suman como números, salvo que apunten hacia el mismo lado. Con dos vectores y el ángulo entre ellos, R² = a² + b² + 2ab·cos θ, y R siempre queda entre la resta y la suma de los módulos. Con muchos vectores, súmalos por componentes, cada una con su signo. En las fórmulas, cada término de una suma tiene la misma dimensión, y los números y los ángulos no tienen dimensión. Usa el triángulo notable de 37° y 53° (lados 3, 4 y 5), que es aproximado. El producto escalar a·b = ax·bx + ay·by también vale |a|·|b|·cos θ: si da cero (y ningún vector es nulo), los vectores son perpendiculares.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja siempre las flechas: los vectores no se suman como números, salvo que apunten hacia el mismo lado. Con dos vectores y el ángulo entre ellos, R² = a² + b² + 2ab·cos θ, y R siempre queda entre la resta y la suma de los módulos. Con muchos vectores, súmalos por componentes, cada una con su signo. En las fórmulas, cada término de una suma tiene la misma dimensión, y los números y los ángulos no tienen dimensión. Usa el triángulo notable de 37° y 53° (lados 3, 4 y 5), que es aproximado. El producto escalar a·b = ax·bx + ay·by también vale |a|·|b|·cos θ: si da cero (y ningún vector es nulo), los vectores son perpendiculares. En las figuras, junta flechas cola con punta hasta formar caminos o polígonos cerrados, y en los sólidos usa también coordenadas: final menos inicio. Si una condición fija el módulo y la dirección, revisa si hay dos sentidos.",
   "problemas": [
     {
       "id": "p1",
@@ -16,30 +16,21 @@
     },
     {
       "id": "p2",
-      "nivel": "básico",
-      "enunciado": "Dos vectores de módulo 5 cada uno salen del mismo punto y forman 60° entre sí. Halla el módulo de su resultante.",
-      "respuesta": "5√3, unos 8,66.",
+      "nivel": "intermedio",
+      "enunciado": "Sea el vector a = (−5; 12). a) Halla su módulo y su vector unitario. b) ¿El vector b = (12; 5) es perpendicular a a?",
+      "respuesta": "a) Módulo 13; unitario (−5/13; 12/13). b) Sí: a·b = 0.",
       "pasos": [
-        "R² = a² + b² + 2ab·cos θ = 25 + 25 + 2 · 5 · 5 · cos 60° = 50 + 50 · (1/2) = 75.",
-        "R = √75 = 5√3 ≈ 8,66.",
-        "Atajo: dos vectores iguales con ángulo θ dan R = 2a·cos(θ/2) = 10 · cos 30° = 5√3. Con 60° el paralelogramo es un rombo y R es su diagonal mayor."
+        "Módulo: √(25 + 144) = √169 = 13.",
+        "Unitario: se divide cada componente entre el módulo, (−5/13; 12/13). Su módulo es 1. No es (−5; 12), que mide 13.",
+        "Producto escalar: a·b = (−5)(12) + (12)(5) = −60 + 60 = 0. Si el producto escalar es cero y ninguno es nulo, los vectores son perpendiculares."
       ],
-      "verificar": [ { "fn": "resultante", "args": [5, 5, 60], "espera": { "R": 8.660254037844386, "R2": 75 } } ]
+      "verificar": [
+        { "fn": "unitario", "args": [{ "x": -5, "y": 12 }], "espera": { "x": -0.38461538461538464, "y": 0.9230769230769231, "moduloOriginal": 13 } },
+        { "fn": "escalar", "args": [{ "x": -5, "y": 12 }, { "x": 12, "y": 5 }], "espera": { "valor": 0 } }
+      ]
     },
     {
       "id": "p3",
-      "nivel": "básico",
-      "enunciado": "Dos vectores miden 7 y 3, y el ángulo entre ellos se puede cambiar. ¿Cuántos valores enteros puede tomar el módulo de la resultante?",
-      "respuesta": "7 valores: de 4 a 10.",
-      "pasos": [
-        "La resultante es máxima cuando los vectores apuntan hacia el mismo lado (θ = 0°): 7 + 3 = 10.",
-        "Es mínima cuando apuntan en sentidos opuestos (θ = 180°): 7 − 3 = 4. Nunca llega a 0, porque los módulos son distintos.",
-        "Entonces 4 ≤ R ≤ 10, y los enteros son 4, 5, 6, 7, 8, 9 y 10: siete valores."
-      ],
-      "verificar": [ { "fn": "rango", "args": [7, 3], "espera": { "minimo": 4, "maximo": 10 } } ]
-    },
-    {
-      "id": "p4",
       "nivel": "intermedio",
       "enunciado": "El vector a mide 10 y forma 53° con el eje x positivo. El vector b mide 6 y apunta hacia el eje x negativo. Halla el módulo y la dirección de a + b.",
       "respuesta": "8, vertical hacia arriba (90°).",
@@ -53,6 +44,19 @@
         { "fn": "vector", "args": [10, 53], "espera": { "x": 6, "y": 8 } },
         { "fn": "suma", "args": [[{ "x": 6, "y": 8 }, { "x": -6, "y": 0 }]], "espera": { "x": 0, "y": 8, "modulo": 8, "angulo": 90 } }
       ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un cuadrado ABCD de 4 cm de lado se trazan los vectores AB, AC y AD, todos desde el vértice A. ¿Cuánto mide su resultante?",
+      "respuesta": "8√2 cm, unos 11,3 cm.",
+      "pasos": [
+        "Por el paralelogramo, AB + AD = AC: los dos lados que salen de A suman la diagonal.",
+        "Entonces AB + AC + AD = AC + AC = 2·AC.",
+        "La diagonal del cuadrado mide 4√2 cm, así que la resultante mide 8√2 ≈ 11,3 cm, en la dirección de la diagonal.",
+        "Con coordenadas, A(0; 0): AB = (4; 0), AC = (4; 4) y AD = (0; 4); la suma es (8; 8)."
+      ],
+      "verificar": [ { "fn": "suma", "args": [[{ "x": 4, "y": 0 }, { "x": 4, "y": 4 }, { "x": 0, "y": 4 }]], "espera": { "x": 8, "y": 8, "modulo": 11.313708498984761 } } ]
     },
     {
       "id": "p5",
@@ -73,43 +77,41 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "En un cuadrado ABCD de 4 cm de lado se trazan los vectores AB, AC y AD, todos desde el vértice A. ¿Cuánto mide su resultante?",
-      "respuesta": "8√2 cm, unos 11,3 cm.",
+      "enunciado": "Los vectores a = (5; p) y b = (q; 2) tienen una resultante que está sobre el eje y y mide 10. Halla p y q. Ojo: hay más de una posibilidad.",
+      "respuesta": "q = −5, y p = 8 o p = −12.",
       "pasos": [
-        "Por el paralelogramo, AB + AD = AC: los dos lados que salen de A suman la diagonal.",
-        "Entonces AB + AC + AD = AC + AC = 2·AC.",
-        "La diagonal del cuadrado mide 4√2 cm, así que la resultante mide 8√2 ≈ 11,3 cm, en la dirección de la diagonal.",
-        "Con coordenadas, A(0; 0): AB = (4; 0), AC = (4; 4) y AD = (0; 4); la suma es (8; 8)."
+        "R = a + b = (5 + q; p + 2).",
+        "Si R está sobre el eje y, su componente x es 0: 5 + q = 0, así que q = −5.",
+        "Si mide 10, su componente y vale 10 o −10, porque R puede apuntar hacia arriba o hacia abajo: (p + 2)² = 100.",
+        "p + 2 = 10 da p = 8, y p + 2 = −10 da p = −12. Las dos cumplen todo lo que pide el enunciado."
       ],
-      "verificar": [ { "fn": "suma", "args": [[{ "x": 4, "y": 0 }, { "x": 4, "y": 4 }, { "x": 0, "y": 4 }]], "espera": { "x": 8, "y": 8, "modulo": 11.313708498984761 } } ]
+      "verificar": [ {"fn": "dosSentidos", "args": [[5, null], [null, 2], "y", 10], "espera": {"soluciones.0.incognitaEje": 8, "soluciones.1.incognitaEje": -12, "soluciones.0.incognitaOtra": -5, "soluciones.0.R": [0, 10], "soluciones.1.R": [0, -10]}} ]
     },
     {
       "id": "p7",
-      "nivel": "avanzado",
-      "enunciado": "En un hexágono regular ABCDEF de 3 cm de lado se trazan los cinco vectores que salen de A hacia los otros vértices: AB, AC, AD, AE y AF. Halla el módulo de su resultante.",
-      "respuesta": "18 cm.",
+      "nivel": "intermedio",
+      "enunciado": "En el triángulo OAB, llamamos a = OA y b = OB. El punto P está sobre el lado AB, de modo que AP : PB = 1 : 3 (P está más cerca de A). Escribe el vector OP en función de a y b.",
+      "respuesta": "OP = (3a + b)/4.",
       "pasos": [
-        "Se agrupan por pares simétricos respecto de la diagonal AD. AB + AF: sus partes perpendiculares a AD se anulan y queda un vector a lo largo de AD de 3 cm (la mitad de AD).",
-        "AC + AE: igual, queda un vector a lo largo de AD de 9 cm (vez y media AD).",
-        "AD mide 6 cm (dos lados). Total: 3 + 9 + 6 = 18 cm = 3·AD, sobre la diagonal AD.",
-        "No es la suma de los cinco módulos, 3 + 3√3 + 6 + 3√3 + 3: los vectores no apuntan hacia el mismo lado."
+        "Por el método del polígono, OP = OA + AP = a + AP.",
+        "AB = b − a, y AP es la cuarta parte de AB, porque el lado se parte en 1 + 3 = 4 trozos iguales: AP = (b − a)/4.",
+        "OP = a + (b − a)/4 = (4a + b − a)/4 = (3a + b)/4.",
+        "Atajo: cada extremo pesa el trozo opuesto. A pesa 3 (el trozo PB) y B pesa 1 (el trozo AP), y se divide entre 4. Como P está cerca de A, a pesa más. No es (a + 3b)/4, que pone a cada extremo el peso de su propio trozo."
       ],
-      "verificar": [ { "fn": "hexagono", "args": [3], "espera": { "modulo": 18, "enDiagonales": 3, "pares.AB+AF.x": 3, "pares.AC+AE.x": 9 } } ]
+      "verificar": [ {"fn": "division", "args": [[4, 0], [0, 4], 1, 3], "espera": {"pesoA": 0.75, "pesoB": 0.25, "textoA": "3/4", "textoB": "1/4"}} ]
     },
     {
       "id": "p8",
       "nivel": "intermedio",
-      "enunciado": "Sea el vector a = (−5; 12). a) Halla su módulo y su vector unitario. b) ¿El vector b = (12; 5) es perpendicular a a?",
-      "respuesta": "a) Módulo 13; unitario (−5/13; 12/13). b) Sí: a·b = 0.",
+      "enunciado": "Una caja tiene 4 cm de largo, 3 cm de fondo y 12 cm de alto. Abajo están los vértices A, B, C y D, y arriba E, F, G y H (E sobre A, F sobre B, G sobre C). Se trazan los vectores AB, BC y CG, uno a continuación del otro. ¿Cuánto mide su resultante?",
+      "respuesta": "13 cm.",
       "pasos": [
-        "Módulo: √(25 + 144) = √169 = 13.",
-        "Unitario: se divide cada componente entre el módulo, (−5/13; 12/13). Su módulo es 1. No es (−5; 12), que mide 13.",
-        "Producto escalar: a·b = (−5)(12) + (12)(5) = −60 + 60 = 0. Si el producto escalar es cero y ninguno es nulo, los vectores son perpendiculares."
+        "Los tres vectores van cola con punta: la resultante va de A a G, la diagonal de la caja.",
+        "Con coordenadas: A = (0; 0; 0) y G = (4; 3; 12). AG = G − A = (4; 3; 12).",
+        "|AG| = √(4² + 3² + 12²) = √(16 + 9 + 144) = √169 = 13 cm.",
+        "No es 4 + 3 + 12 = 19: los tres vectores apuntan en direcciones distintas. Y no se puede medir en el dibujo: en el papel la arista del fondo se ve inclinada, pero en la caja es perpendicular a las otras dos."
       ],
-      "verificar": [
-        { "fn": "unitario", "args": [{ "x": -5, "y": 12 }], "espera": { "x": -0.38461538461538464, "y": 0.9230769230769231, "moduloOriginal": 13 } },
-        { "fn": "escalar", "args": [{ "x": -5, "y": 12 }, { "x": 12, "y": 5 }], "espera": { "valor": 0 } }
-      ]
+      "verificar": [ {"fn": "sumaSolido", "args": [{"tipo": "caja", "a": 4, "b": 3, "c": 12}, [["A", "B"], ["B", "C"], ["C", "G"]]], "espera": {"x": 4, "y": 3, "z": 12, "modulo": 13, "errores.sumaModulos": 19}} ]
     },
     {
       "id": "p9",

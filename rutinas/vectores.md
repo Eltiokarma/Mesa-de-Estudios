@@ -37,3 +37,86 @@ Lo pedía el mapa («convendría además una opción para aceptar respuestas neg
 **Colores.** Los generadores usan la paleta de la app (`c-o`, `c-i`, `c-h`, `c-d`): A naranja, B turquesa, θ rojo, R verde. No hay colores nuevos.
 
 Playwright: los tres módulos funcionan a 390 y 1366 px, sin errores de consola ni desbordes.
+
+## Tarea 2: vectores 0.2.0 (`plantillas/vectores/`)
+
+La hicieron cuatro manos:
+- un constructor (subagente);
+- un verificador a ciegas, que leyó solo la cabecera del motor (líneas 1 a 81) y recalculó los casos 19 a 33 con fracciones exactas y otros métodos, sin discrepancias;
+- un revisor de contenido, que no encontró nada grave y sí 5 hallazgos medios, ya corregidos (respuestas que se veían antes de responder en C1b y C2b, un título que descartaba dos distractores, un color con tres usos en el experimento 7 y un texto sobre una perilla que no aparecía);
+- yo: integración, las pruebas, Playwright a 390 px y los commits.
+
+**Lo nuevo**
+- **Pestaña «Figuras»**, con 4 pasos:
+  - seis flechas entre P y Q, que se reducen a k·c, con los caminos que se sombrean;
+  - el cubo que se suma, y la caja con el botón «Ahora, una caja». Gira, ilumina las aristas paralelas, muestra las coordenadas y dibuja a trazos las aristas ocultas;
+  - el punto que se desliza (pesos cruzados en m:n);
+  - el baricentro (2/3 de la mediana) y el trapecio (semidiferencia de las bases).
+- **Pestaña «Componentes»**, con 3 pasos:
+  - la resultante sobre el eje: dos raíces y, después, la condición de sentido;
+  - el vector de largo dado y el unitario de 2a;
+  - girar los ejes: el módulo no cambia y las componentes sí, y el ángulo vuelve a ser notable con los ejes girados.
+- **Dos experimentos nuevos en «¿Qué pasa si…?»**:
+  - 6, el ángulo escondido: |A + B| = 2·|A − B| da 53°, y se ve el rombo;
+  - 7, la sombra y el área: escalar contra vectorial a 90°, y el triángulo con el sentido de a × b.
+- **Motor**: `division`, `baricentro`, `trapecio`, `reduccion`, `caja`, `cubo`, `tetraedro`, `sumaSolido`, `inversoSumaDiferencia`, `girarEjes`, `proyeccion`, `area`, `unitarioConModulo`, `dosSentidos` y `radical`. Son 34 casos (15 nuevos, verificados) y 67 pruebas. El papel sigue con 10 problemas, renumerados de p1 a p10 por dificultad; entraron los de división 1:3, la caja y la resultante sobre el eje.
+- **Códigos nuevos** (hipótesis): `VE-cuenta-repetido`, `VE-faltan-datos`, `VE-solido-plano`, `VE-sin-profundidad`, `VE-pesos-derechos`, `VE-pesos-mitades`, `VE-pesos-sin-dividir`, `VE-baricentro-invertido`, `VE-baricentro-mitad`, `VE-baricentro-tres-cuartos`, `VE-semisuma-por-semidiferencia`, `VE-sin-mitad`, `VE-una-sola-solucion`, `VE-raiz-que-no-cumple`, `VE-sin-solucion`, `VE-olvida-componente`, `VE-despeje-signo`, `VE-unitario-sin-escalar`, `VE-unitario-escalado`, `VE-componente-vs-modulo`, `VE-componentes-fijas`, `VE-modulo-depende-de-ejes`, `VE-angulo-en-otros-ejes`, `VE-diagonales-perpendiculares`, `VE-angulo-con-resultante`, `VE-perpendicular-todo-cero`, `VE-perpendicular-todo-maximo`, `VE-mano-derecha-invertida`, `VE-area-sin-mitad` y `VE-escalar-por-vectorial`.
+- **Comprobado**:
+  - La cabecera, las pestañas, `plantilla.json` y los títulos de los pasos bloqueados no sueltan respuestas; los pasos bloqueados se leen «Paso N, bloqueado».
+  - Playwright a 390×844 y 1366×768, en claro y en oscuro, con y sin movimiento reducido: sin errores ni desbordes.
+  - `pasada-celular.py` no dice QUEDA.
+  - `npm test`: 4489 en verde.
+- **Decisiones del constructor** que la principal puede revisar:
+  - Con el 3-4-5, la lectura de θ dice «θ ≈ 53°» (antes decía 53,1°, lo que chocaba con la respuesta de academia), también en los modos viejos.
+  - En el experimento 7, θ va en tinta, porque con θ en verde la sombra y el área no llegaban a ΔE00 de 20 contra a y b.
+- **Pendiente:**
+  - No se probó a mano el arrastre con el dedo (lo resuelve `Celular.arrastre`, como en las otras escenas).
+  - Falta subir `VERSION` de `app/sw.js` (no me toca) y actualizar `docs/pendientes.md`, `CLAUDE.md` y la hoja de ruta al integrar.
+
+### Colores nuevos de la escena (para `docs/diseno.md`)
+
+| Clave | Qué es | Claro | Oscuro |
+| --- | --- | --- | --- |
+| c | vector marcado (Figuras 1) | #775403 | #f9b924 |
+| z | aristas verticales del sólido | #654115 | #fcc37e |
+| g | AG del baricentro | #107293 | #24c4f9 |
+| k | MN del trapecio | #475223 | #cbff1f |
+| w | vector de largo dado | #950487 | #fb74ee |
+| D | diferencia a − b | #1d494e | #1fe9ff |
+| sb | sombra de b sobre a (proyección) | #6e6e0c | #fbfb56 |
+| ar | paralelogramo y a × b | #c7058d | #fa38c0 |
+
+Mediciones del revisor:
+- ΔE00 mínimo entre los colores que salen juntos: 22,6 en claro y 20,4 en oscuro.
+- Contraste: todos pasan AA; el más justo es `ar` en oscuro, con 4,57 sobre el chip.
+- Las aristas en x y en y del sólido reusan los colores x e y; el triángulo del experimento 7 va en tinta.
+
+## Tarea 3: decisión de núcleo para G4 a G7 (propuesta, sin implementar)
+
+**Recomiendo `armarTexto`. No recomiendo preguntar un escalar resumen** («halle m + n») como camino principal.
+
+**Por qué.** El escalar resumen borra justo las trampas que queremos medir:
+- En G5 (punto que divide m:n), los pesos cruzados (n/(m+n), m/(m+n)) y los derechos (m/(m+n), n/(m+n)) suman 1 los dos. Con «halle p + q», `VE-pesos-derechos` da la misma alternativa que la correcta y no se puede medir.
+- Pasa lo mismo con «m y n cambiados» en G4 (m + n no cambia) y con la semisuma contra la semidiferencia cuando se pregunta p + q.
+- El sentido opuesto (−v) a veces sobrevive al resumen y a veces no, según el resumen que se elija.
+
+Con un escalar, el distractor existe en el papel, pero `armar` lo descarta por repetido. La medición, que es la única fuente de datos del colegio, nunca lo vería. El resumen sirve como formato secundario, para imitar la forma del examen («halle α − β») solo donde no colapsa errores.
+
+**Propuesta de API** (compatible con lo que hay; `app/practica.js` no cambia, porque solo usa `texto`, `letra`, `correcta` y `error`):
+
+```js
+// nucleo/predicciones.js
+armarTexto({ correcta: { clave, texto }, errores: [{ id, clave, texto, explicacion, respaldo, fuente }], rng, total = 5 })
+// clave: forma canónica comparable, p. ej. '2/3|1/3' para (2/3)A + (1/3)B o '3|-4|0' para (3; −4; 0).
+// Se compara por clave (no por texto): así dos formas equivalentes no salen como dos opciones,
+// y un mismo texto con otra clave falla una prueba.
+// Devuelve el mismo formato que armar; valor = clave.
+```
+
+Y en `nucleo/probar-generador.js`, una opción `igual(a, b)` para comparar `respuesta.valor` con el recálculo independiente cuando no es un número. Por defecto queda `|a − b| < 1e-9`.
+
+**Lo que costaría:** unas 30 líneas en el núcleo, más sus pruebas. Además, un ayudante para escribir expresiones con fracciones («⅔A + ⅓B», «(3; −4)»), que conviene que viva en el núcleo para que G4, G5 y G7 escriban igual.
+
+**Variante, si la principal prefiere no tocar el núcleo:** G4 a G7 preguntan solo escalares, y se aceptan solo los tipos en los que el resumen no colapsa los errores; se quedan fuera los de pesos derechos y los de m y n cambiados. Es posible, pero se pierde lo más frecuente del libro (T4: 26 de 200).
+
+**Espero la aprobación de la principal antes de implementar nada de esto.**
