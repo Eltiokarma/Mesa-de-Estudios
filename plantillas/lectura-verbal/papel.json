@@ -878,159 +878,6 @@
       ]
     },
     {
-      "id": "t018",
-      "nivel": "avanzado (tipo UNI)",
-      "enunciado": "Lee el texto «Ríos que vuelan» y responde las 4 preguntas.",
-      "texto": {
-        "titulo": "Ríos que vuelan",
-        "parrafos": [
-          [
-            {
-              "n": 1,
-              "t": "Un árbol grande de la Amazonía puede sacar del suelo cientos de litros de agua en un solo día y soltarla al aire como vapor por sus hojas."
-            },
-            {
-              "n": 2,
-              "t": "Sumado en millones de árboles, ese vapor forma corrientes de aire húmedo que el viento lleva hacia el oeste y el sur, y que algunos científicos llaman «ríos voladores»."
-            },
-            {
-              "n": 3,
-              "t": "Al chocar con los Andes, parte de esa humedad sube, se enfría y cae como lluvia sobre la selva alta y los valles."
-            }
-          ],
-          [
-            {
-              "n": 4,
-              "t": "Solemos pensar que el bosque existe porque llueve."
-            },
-            {
-              "n": 5,
-              "t": "Lo que muestran estos estudios es que también ocurre al revés: en buena parte, llueve porque el bosque existe."
-            },
-            {
-              "n": 6,
-              "t": "Cuando se tala una zona grande, sale menos vapor hacia el aire, y la lluvia que depende de él puede disminuir lejos de allí, en lugares que nunca vieron caer un árbol."
-            },
-            {
-              "n": 7,
-              "t": "Esto convierte la tala en un problema que no se queda dentro de la frontera de quien la hace."
-            }
-          ],
-          [
-            {
-              "n": 8,
-              "t": "Cuidar el bosque amazónico es, entonces, también cuidar el agua de regiones que están a cientos de kilómetros."
-            }
-          ]
-        ]
-      },
-      "preguntas": [
-        {
-          "n": 1,
-          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
-          "enunciado": "¿Cuál es la idea principal del texto?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "Un árbol grande de la Amazonía puede soltar al aire, como vapor, cientos de litros de agua en un solo día."
-            },
-            {
-              "letra": "B",
-              "t": "El bosque amazónico ayuda a producir la lluvia de la que dependen él mismo y regiones lejanas."
-            },
-            {
-              "letra": "C",
-              "t": "Al chocar con los Andes, parte de la humedad cae como lluvia sobre la selva alta y los valles."
-            },
-            {
-              "letra": "D",
-              "t": "Los bosques son importantes para la vida del planeta."
-            },
-            {
-              "letra": "E",
-              "t": "La Amazonía es el bosque tropical más grande del mundo."
-            }
-          ]
-        },
-        {
-          "n": 2,
-          "enunciado": "En la oración 7, ¿a qué se refiere la palabra ESTO?",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "A los lugares que nunca vieron caer un árbol."
-            },
-            {
-              "letra": "B",
-              "t": "A que talar en un lugar puede reducir la lluvia en otros lugares lejanos."
-            },
-            {
-              "letra": "C",
-              "t": "A que el vapor de agua sale por las hojas de los árboles."
-            },
-            {
-              "letra": "D",
-              "t": "A que, cuando se tala, sale menos vapor hacia el aire."
-            }
-          ]
-        },
-        {
-          "n": 3,
-          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «Los ríos voladores llevan más agua que el río Amazonas.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
-          "enunciado": "Se deduce del texto que a las corrientes de aire húmedo de la oración 2 se las llama «ríos voladores» porque",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "pasan sobre los Andes como un río de agua líquida."
-            },
-            {
-              "letra": "B",
-              "t": "llevan agua de un lugar a otro, como un río."
-            },
-            {
-              "letra": "C",
-              "t": "así las llaman algunos científicos."
-            },
-            {
-              "letra": "D",
-              "t": "los ríos de la Amazonía se evaporan por completo."
-            }
-          ]
-        },
-        {
-          "n": 4,
-          "enunciado": "Si un país talara gran parte de su selva, según la lógica del texto, un país vecino que conservara la suya",
-          "alternativas": [
-            {
-              "letra": "A",
-              "t": "recibiría la misma lluvia de siempre, porque su bosque sigue intacto."
-            },
-            {
-              "letra": "B",
-              "t": "se convertiría de inmediato en un desierto."
-            },
-            {
-              "letra": "C",
-              "t": "podría recibir menos lluvia aunque no hubiera talado nada."
-            },
-            {
-              "letra": "D",
-              "t": "tendría que talar también su selva para compensar."
-            }
-          ]
-        }
-      ],
-      "respuesta": "Clave: 1: B · 2: B · 3: B · 4: C.",
-      "pasos": [
-        "Pregunta 1. Antes de las alternativas: la oración 5 o la oración 8. La oración 5 da la idea central (llueve porque el bosque existe) y la 8 saca la conclusión. También vale \"ninguna la dice completa\", porque la idea entera junta las dos.",
-        "Pregunta 1. Clave B. Junta la idea de la oración 5 (llueve porque el bosque existe) con la conclusión de la 8 (cuidarlo es cuidar el agua de regiones lejanas).",
-        "Pregunta 2. Clave B. \"Esto\" retoma lo que dice la oración 6: la tala reduce el vapor y la lluvia puede disminuir lejos. Por eso el problema \"no se queda dentro de la frontera\".",
-        "Pregunta 3. Antes de las alternativas: El texto no lo dice ni se deduce. El texto no compara la cantidad de agua de los ríos voladores con la del Amazonas. No se puede saber.",
-        "Pregunta 3. Clave B. El texto no lo explica, pero se deduce: esas corrientes llevan agua en forma de vapor y la dejan caer lejos (oraciones 2 y 3), como un río la lleva por el suelo.",
-        "Pregunta 4. Clave C. Según las oraciones 6 y 7, la tala reduce la lluvia lejos de donde ocurre, y el problema no se queda dentro de la frontera."
-      ]
-    },
-    {
       "id": "e002",
       "nivel": "analogía",
       "enunciado": "Resuelve el ejercicio.",
@@ -1197,6 +1044,47 @@
       "pasos": [
         "Antes de las alternativas: la oración II. La oración II dice que el chuño dura mucho, y la IV dice lo mismo con más precisión (\"durante años\"): la II está contenida en la IV y no aporta nada.",
         "Clave A. Repite lo que dice la IV, con menos precisión: es redundante."
+      ]
+    },
+    {
+      "id": "e016",
+      "nivel": "oración incompleta",
+      "enunciado": "Resuelve el ejercicio.",
+      "texto": {
+        "titulo": "Oración incompleta",
+        "lineas": [
+          "Aunque Rosa nunca había estudiado música, el profesor notó en ella una gran ___ para el canto y la invitó al ___ del colegio."
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué relación hay entre \"nunca había estudiado música\" y lo que el profesor notó en ella? Elige: «Suma (y, además)», «Oposición (pero, aunque, sin embargo)», «Causa o consecuencia (porque, por eso)».",
+          "enunciado": "Elige las palabras que completan mejor la oración.",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "aptitud – coro"
+            },
+            {
+              "letra": "B",
+              "t": "aptitud – equipo de fútbol"
+            },
+            {
+              "letra": "C",
+              "t": "dificultad – coro"
+            },
+            {
+              "letra": "D",
+              "t": "actitud – coro"
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: A.",
+      "pasos": [
+        "Antes de las alternativas: Oposición. Quien nunca estudió música no suele cantar bien, y aquí el profesor nota lo contrario: las dos partes se oponen, y por eso empieza con \"aunque\".",
+        "Clave A. \"Aunque\" anuncia algo inesperado: sin estudios, tenía talento (\"aptitud\") para cantar, y por eso la invitan al coro."
       ]
     }
   ]

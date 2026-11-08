@@ -39,8 +39,8 @@
   ];
   // Analogías: {a} y {b} se reemplazan por las palabras de la pareja base. Las que tienen dirección van en pares.
   const ANALOGIAS = [
-    { id: 'a-produce-b', t: '{a} fabrica o da {b}', inversa: 'b-produce-a' }, // como la vaca y la leche; «causa» es causa y efecto
-    { id: 'b-produce-a', t: '{b} fabrica o da {a}', inversa: 'a-produce-b' },
+    { id: 'a-produce-b', t: 'De {a} se obtiene {b}', inversa: 'b-produce-a' }, // material: de la vaca se obtiene leche; «causa» es causa y efecto (el virus no «se obtiene» fiebre)
+    { id: 'b-produce-a', t: 'De {b} se obtiene {a}', inversa: 'a-produce-b' },
     { id: 'a-parte-de-b', t: '{a} es parte de {b}', inversa: 'b-parte-de-a' },
     { id: 'b-parte-de-a', t: '{b} es parte de {a}', inversa: 'a-parte-de-b' },
     { id: 'a-usa-b', t: '{a} usa {b}', inversa: 'b-usa-a' },

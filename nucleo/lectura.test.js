@@ -120,7 +120,7 @@ test('analogía, plan de redacción y eliminación se califican con sus reglas',
   assert.equal(L.calificarPrevio(pa, 'b-produce-a', ANALOGIA).error, 'RV16'); // la inversa
   assert.equal(L.calificarPrevio(pa, 'a-parte-de-b', ANALOGIA).error, 'RV17');
   assert.equal(L.calificarPrevio(pa, 'sinonimos', ANALOGIA).error, 'RV17');
-  assert.equal(L.etiquetaPrevio(pa, 'b-produce-a', ANALOGIA), 'LECHE fabrica o da VACA');
+  assert.equal(L.etiquetaPrevio(pa, 'b-produce-a', ANALOGIA), 'De LECHE se obtiene VACA');
   const pp = PLAN.previo;
   assert.deepEqual(L.calificarPrevio(pp, ['II', 'I', 'III'], PLAN), { correcta: true, error: null, opcion: 'II-I-III' });
   assert.equal(L.calificarPrevio(pp, ['I', 'II', 'III'], PLAN).error, 'RV28'); // "Esta celebración" antes de nombrarla
