@@ -1,0 +1,408 @@
+{
+  "plantilla": "trig-ecuaciones",
+  "tolerancia": 0.000001,
+  "nota": "Ángulos en grados en entrada; respuesta en la unidad de modo (grados, radianes, horas, segundos, número de soluciones o m³). Intervalos semiabiertos: desde ≤ x < hasta.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "degradar",
+        "f1": "sen",
+        "p": 2,
+        "signo": -1,
+        "f2": "sen",
+        "q": 1,
+        "d": 0,
+        "modo": "grados",
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 900,
+        "exacta": "900°"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "tangente",
+        "p": 3,
+        "q": 1,
+        "signo": -1,
+        "k": "-√3",
+        "modo": "radianes",
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 5.235987755982989,
+        "exacta": "5π/3"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "degradar",
+        "f1": "sen",
+        "p": 4,
+        "signo": 1,
+        "f2": "sen",
+        "q": 1,
+        "d": 1,
+        "modo": "cuantas",
+        "pide": "cuantas"
+      },
+      "esperado": {
+        "respuesta": 14,
+        "exacta": "14 soluciones"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "horas",
+        "c": 20,
+        "p": 4,
+        "q": -6.928203230275509,
+        "pTxt": "4",
+        "qTxt": "-4√3",
+        "valor": 16,
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 20,
+        "exacta": "20 h"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "senales",
+        "forma": "cos-menos",
+        "Aesc": 3,
+        "B": 2,
+        "T": 24,
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 90,
+        "exacta": "90 s"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "coseno",
+        "alfa": 1,
+        "beta": -1,
+        "gamma": 1,
+        "T": 24,
+        "pide": "cuantas"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 veces"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "suma-producto",
+        "f1": "sen",
+        "p": 6,
+        "signo": -1,
+        "f2": "sen",
+        "q": 2,
+        "rhs": "0",
+        "m": 4,
+        "hasta": 360,
+        "modo": "cuantas",
+        "pide": "cuantas"
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 soluciones"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "tangente",
+        "p": 2,
+        "q": 1,
+        "signo": 1,
+        "k": "1",
+        "modo": "cuantas",
+        "pide": "cuantas"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 soluciones"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "degradar",
+        "f1": "cos",
+        "p": 3,
+        "signo": -1,
+        "f2": "cos",
+        "q": 2,
+        "d": 0,
+        "modo": "radianes",
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 28.274333882308134,
+        "exacta": "9π"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "cubica",
+        "k": -2,
+        "modo": "cuantas",
+        "pide": "cuantas"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 soluciones"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "lineal",
+        "fn": "cos",
+        "a": 2,
+        "b": 45,
+        "k": "√2/2",
+        "modo": "radianes",
+        "pide": "mayor",
+        "j": null
+      },
+      "esperado": {
+        "respuesta": 5.497787143782138,
+        "exacta": "7π/4"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "horas",
+        "c": 12,
+        "p": 4,
+        "q": 6.928203230275509,
+        "pTxt": "4",
+        "qTxt": "4√3",
+        "valor": 12,
+        "pide": "segunda"
+      },
+      "esperado": {
+        "respuesta": 20,
+        "exacta": "20 h"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "horas",
+        "c": 14,
+        "p": 2,
+        "q": -3.4641016151377544,
+        "pTxt": "2",
+        "qTxt": "-2√3",
+        "valor": 12,
+        "pide": "primera"
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2 h"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "tangente",
+        "p": 1,
+        "q": 1,
+        "signo": 1,
+        "k": "-√3/3",
+        "modo": "grados",
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 840,
+        "exacta": "840°"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "cubica",
+        "k": -1,
+        "modo": "cisterna",
+        "pide": "cisterna",
+        "h": 3
+      },
+      "esperado": {
+        "respuesta": 37.69911184307752,
+        "exacta": "12π m³"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "suma-producto",
+        "f1": "cos",
+        "p": 3,
+        "signo": 1,
+        "f2": "cos",
+        "q": 1,
+        "rhs": "cos m",
+        "m": 2,
+        "hasta": 360,
+        "modo": "radianes",
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 18.84955592153876,
+        "exacta": "6π"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "senales",
+        "forma": "pi-menos",
+        "Aesc": 1,
+        "B": 0,
+        "T": 24,
+        "pide": "cuantas"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 veces"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "tipo": "lineal",
+        "fn": "sen",
+        "a": 3,
+        "b": -30,
+        "k": "-1/2",
+        "modo": "grados",
+        "pide": "kesima",
+        "j": 3
+      },
+      "esperado": {
+        "respuesta": 120,
+        "exacta": "120°"
+      }
+    },
+    {
+      "semilla": 44,
+      "entrada": {
+        "tipo": "cubica",
+        "k": -1,
+        "modo": "radianes",
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 12.566370614359172,
+        "exacta": "4π"
+      }
+    },
+    {
+      "semilla": 55,
+      "entrada": {
+        "tipo": "lineal",
+        "fn": "cos",
+        "a": 3,
+        "b": 90,
+        "k": "1/2",
+        "modo": "radianes",
+        "pide": "suma",
+        "j": null
+      },
+      "esperado": {
+        "respuesta": 21.991148575128552,
+        "exacta": "7π"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "degradar",
+        "f1": "cos",
+        "p": 2,
+        "signo": -1,
+        "f2": "cos",
+        "q": 1,
+        "d": 0,
+        "modo": "segundos",
+        "pide": "suma"
+      },
+      "esperado": {
+        "respuesta": 30,
+        "exacta": "30 s"
+      }
+    },
+    {
+      "semilla": 152,
+      "entrada": {
+        "tipo": "tangente",
+        "p": 3,
+        "q": 1,
+        "signo": 1,
+        "k": "-√3",
+        "modo": "radianes",
+        "pide": "menor"
+      },
+      "esperado": {
+        "respuesta": 1.3089969389957472,
+        "exacta": "5π/12"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "cuadratica",
+        "sub": "coseno",
+        "alfa": 2,
+        "beta": -3,
+        "gamma": 3,
+        "T": 24,
+        "pide": "cuantas"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 veces"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "degradar",
+        "f1": "cos",
+        "p": 2,
+        "signo": -1,
+        "f2": "cos",
+        "q": 1,
+        "d": 0,
+        "modo": "cuantas",
+        "pide": "cuantas"
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 soluciones"
+      }
+    }
+  ]
+}

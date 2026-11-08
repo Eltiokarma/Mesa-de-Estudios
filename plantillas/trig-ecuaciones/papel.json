@@ -1,0 +1,110 @@
+{
+  "titulo": "Ecuaciones trigonométricas en un intervalo: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 3 minutos por problema. Antes de contar, escribe en qué rango se mueve el argumento (si x va de 0° a 360°, 3x va de 0° a 1080°). El seno y el coseno toman cada valor dos veces por vuelta, salvo en 1 y −1; la tangente se repite cada 180°. Si un producto es cero, cualquiera de sus factores puede serlo: no dividas entre una expresión que puede valer cero. Al final, revisa que cada solución esté dentro del intervalo y que la ecuación original exista en ella (sin cosenos imposibles ni secantes o tangentes que no existen).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Resuelve 2 cos(2x − 60°) = 1 en 0° ≤ x < 360°. ¿Cuánto suman sus soluciones?",
+      "respuesta": "Las soluciones son 0°, 60°, 180° y 240°; suman 480°.",
+      "pasos": [
+        "Con u = 2x − 60°, la ecuación es cos u = 1/2, y u va de −60° a 660° (sin llegar).",
+        "cos u = 1/2 en u = ±60° + 360°·n: u = −60°, 60°, 300° y 420°.",
+        "x = (u + 60°)/2: x = 0°, 60°, 180° y 240°.",
+        "Suma: 0° + 60° + 180° + 240° = 480°."
+      ],
+      "verificar": [{ "fn": "soluciones", "args": ["cos", "1/2", 2, -60, 0, 360], "espera": { "soluciones": [0, 60, 180, 240], "suma": 480 } }]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una rueda da dos vueltas completas: el ángulo x va de 0° a 720° (sin llegar). ¿En qué ángulos se cumple sen x = −√3/2?",
+      "respuesta": "En 240°, 300°, 600° y 660°: cuatro ángulos.",
+      "pasos": [
+        "El seno es negativo en el III y el IV cuadrante. El ángulo de referencia de √3/2 es 60°.",
+        "En la primera vuelta: 180° + 60° = 240° y 360° − 60° = 300°.",
+        "En la segunda vuelta se suma 360°: 600° y 660°.",
+        "Son cuatro ángulos; si solo das 240°, te quedas con uno de cuatro."
+      ],
+      "verificar": [{ "fn": "soluciones", "args": ["sen", "-√3/2", 1, 0, 0, 720], "espera": { "soluciones": [240, 300, 600, 660], "cuantas": 4 } }]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántas soluciones tiene sen 5x + sen x = 0 en 0° ≤ x < 360°?",
+      "respuesta": "10 soluciones.",
+      "pasos": [
+        "Suma a producto: sen 5x + sen x = 2 sen 3x · cos 2x.",
+        "sen 3x = 0: 3x = 0°, 180°, …, 900° ⇒ x = 0°, 60°, 120°, 180°, 240° y 300°.",
+        "cos 2x = 0: 2x = 90°, 270°, 450° y 630° ⇒ x = 45°, 135°, 225° y 315°.",
+        "Ninguna se repite: 6 + 4 = 10 soluciones."
+      ],
+      "verificar": [{ "fn": "union", "args": [[["sen", "0", 3], ["cos", "0", 2]]], "espera": { "cuantas": 10, "suma": 1620 } }]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Resuelve 2 cos² x + 5 cos x − 3 = 0 en 0° ≤ x < 360°.",
+      "respuesta": "x = 60° y x = 300°.",
+      "pasos": [
+        "Con c = cos x: 2c² + 5c − 3 = 0 ⇒ (2c − 1)(c + 3) = 0.",
+        "c = 1/2 o c = −3. El coseno nunca baja de −1: c = −3 se descarta.",
+        "cos x = 1/2 en 60° y en 360° − 60° = 300°.",
+        "Dos soluciones, no cuatro: la raíz imposible no aporta ángulos."
+      ],
+      "verificar": [{ "fn": "cuadraticaCoseno", "args": ["1/2", "-3"], "espera": { "soluciones": [60, 300], "cuantas": 2 } }]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántas soluciones tiene cos² 3x + cos² x = 1 en 0° ≤ x < 360°?",
+      "respuesta": "12 soluciones.",
+      "pasos": [
+        "Degrada: (1 + cos 6x)/2 + (1 + cos 2x)/2 = 1 ⇒ cos 6x + cos 2x = 0.",
+        "Suma a producto: 2 cos 4x · cos 2x = 0.",
+        "cos 4x = 0 da 8 ángulos: 22,5°, 67,5°, 112,5°, …, 337,5° (cada 45°).",
+        "cos 2x = 0 da 45°, 135°, 225° y 315°, que no se repiten con los anteriores: 8 + 4 = 12."
+      ],
+      "verificar": [{ "fn": "union", "args": [[["cos", "0", 4], ["cos", "0", 2]]], "espera": { "cuantas": 12 } }]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "La temperatura de una bodega, t horas después de la medianoche (0 ≤ t < 24), es T(t) = 10 + 3 sen(πt/12) + 3√3 cos(πt/12), en °C. ¿A qué horas la temperatura es 13 °C?",
+      "respuesta": "A las 6 h y a las 22 h.",
+      "pasos": [
+        "3 sen u + 3√3 cos u = 6 sen(u + 60°), con u = πt/12 = 15t°, porque √(9 + 27) = 6.",
+        "13 = 10 + 6 sen(u + 60°) ⇒ sen(u + 60°) = 1/2.",
+        "u + 60° va de 60° a 420°: vale 150° o 390°, así que u = 90° o u = 330°.",
+        "t = u/15°: t = 6 y t = 22."
+      ],
+      "verificar": [{ "fn": "temperatura", "args": [10, 3, 5.196152422706632, 13], "espera": { "R": 6, "phi": 60, "instantes": [6, 22] } }]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "¿Cuántas soluciones tiene cos 3x · sec x = −2 en 0° ≤ x < 360°?",
+      "respuesta": "4 soluciones: 60°, 120°, 240° y 300°.",
+      "pasos": [
+        "La secante exige cos x ≠ 0: fuera 90° y 270°.",
+        "cos 3x = 4cos³ x − 3cos x, así que la ecuación queda 4cos² x − 3 = −2 ⇒ cos² x = 1/4.",
+        "cos x = 1/2 da 60° y 300°; cos x = −1/2 da 120° y 240°.",
+        "Si hubieras pasado todo a un lado como cúbica, cos x = 0 aparecería como raíz: no vale."
+      ],
+      "verificar": [{ "fn": "cubicaSecante", "args": [-2], "espera": { "soluciones": [60, 120, 240, 300], "cuantas": 4 } }]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Resuelve (tan 2x + tan x)/(1 − tan 2x · tan x) = −1 en 0° ≤ x < 360°. ¿Cuál es la menor solución positiva?",
+      "respuesta": "105°.",
+      "pasos": [
+        "Es la tangente de una suma: tan 3x = −1.",
+        "3x = −45° + 180°·n ⇒ x = 45°, 105°, 165°, 225°, 285° y 345°.",
+        "En 45° y 225°, 2x = 90° o 450°: tan 2x no existe y la expresión original tampoco. Se descartan.",
+        "Quedan 105°, 165°, 285° y 345°; la menor es 105°."
+      ],
+      "verificar": [{ "fn": "tangenteSuma", "args": [2, 1, 1, "-1"], "espera": { "soluciones": [105, 165, 285, 345], "cuantas": 4 } }]
+    }
+  ]
+}
