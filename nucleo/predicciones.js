@@ -17,7 +17,8 @@
   function formatear(n, decimales = 2) {
     if (!Number.isFinite(n)) return String(n);
     const r = Math.round(n * 10 ** decimales) / 10 ** decimales;
-    const [ent, dec] = Math.abs(r).toFixed(decimales).replace(/0+$/, '').replace(/\.$/, '').split('.');
+    const fijo = Math.abs(r).toFixed(decimales);
+    const [ent, dec] = (decimales > 0 ? fijo.replace(/0+$/, '').replace(/\.$/, '') : fijo).split('.');
     const miles = ent.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     return (r < 0 ? '−' : '') + miles + (dec ? ',' + dec : '');
   }

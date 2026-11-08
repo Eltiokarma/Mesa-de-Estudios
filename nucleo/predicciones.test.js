@@ -64,3 +64,10 @@ test('armar sin formato da exactamente lo mismo que antes', () => {
   const alt = P.armar({ correcta: 2, errores, rng: Azar.crear(5), unidad: 'm' });
   assert.deepEqual(alt.map(a => a.texto).sort(), ['2 m', '3 m', '3,14 m'].sort());
 });
+
+test('formatear con 0 decimales no borra los ceros de los enteros', () => {
+  assert.equal(P.formatear(10, 0), '10');
+  assert.equal(P.formatear(1200, 0), '1 200');
+  assert.equal(P.formatear(2.5, 0), '3');
+  assert.equal(P.formatear(2.50), '2,5');
+});
