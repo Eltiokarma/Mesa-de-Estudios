@@ -93,5 +93,66 @@
     return rng.barajar(elegidas).map((a, i) => ({ letra: LETRAS[i], ...a }));
   }
 
-  return { formatear, radical, pi, v, armar, LETRAS };
+  // ---------- Respuestas que no son un número (expresión pA + qB, vector, par) ----------
+  // Fracciones exactas: { n, d } con d > 0 y reducidas. Aceptan enteros o pares [n, d].
+  const mcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a || 1; };
+  function frac(n, d = 1) {
+    if (Array.isArray(n)) [n, d] = n;
+    else if (n && typeof n === 'object') ({ n, d } = n);
+    if (!Number.isInteger(n) || !Number.isInteger(d) || d === 0) throw new Error(`frac: ${n}/${d} no es una fracción de enteros`);
+    const g = mcd(n, d), s = d < 0 ? -1 : 1;
+    return { n: s * n / g + 0, d: s * d / g };
+  }
+  // Texto con coma de exámenes peruanos y signo menos tipográfico: «2/3», «−1/2», «5».
+  const textoFraccion = q => { const f = frac(q); return (f.n < 0 ? '−' : '') + Math.abs(f.n) + (f.d === 1 ? '' : '/' + f.d); };
+
+  /*
+   * combinacion(coefs, nombres) → { clave, texto }: la expresión c₁A + c₂B + … con coeficientes exactos.
+   * Con denominador común d > 1 se escribe como en la academia: «(2A + B)/3»; si no, «2A − B».
+   * Todos cero: «0» (el vector nulo). La clave es canónica: dos formas iguales tienen la misma clave.
+   */
+  function combinacion(coefs, nombres) {
+    const fs = coefs.map(c => frac(c));
+    const clave = 'comb:' + fs.map((f, i) => `${nombres[i]}=${f.n}/${f.d}`).join(',');
+    const D = fs.reduce((a, f) => a * f.d / mcd(a, f.d), 1);
+    const nums = fs.map(f => f.n * (D / f.d));
+    let t = '';
+    nums.forEach((n, i) => {
+      if (n === 0) return;
+      const abs = Math.abs(n), termino = (abs === 1 ? '' : abs) + nombres[i];
+      t += t === '' ? (n < 0 ? '−' : '') + termino : (n < 0 ? ' − ' : ' + ') + termino;
+    });
+    if (t === '') return { clave, texto: '0' };
+    const varios = nums.filter(n => n !== 0).length > 1;
+    return { clave, texto: D === 1 ? t : (varios ? `(${t})/${D}` : `${t}/${D}`) };
+  }
+  // vector(comps) → { clave, texto }: «(3; −4)» o «(1/2; 0; −2)», con fracciones exactas.
+  function vector(comps) {
+    const fs = comps.map(c => frac(c));
+    return { clave: 'vec:' + fs.map(f => `${f.n}/${f.d}`).join(','), texto: `(${fs.map(textoFraccion).join('; ')})` };
+  }
+
+  /*
+   * armarTexto({ correcta: { clave, texto }, errores: [{ id, clave, texto, explicacion, respaldo, fuente }], rng, total })
+   * Como armar, pero para respuestas que no son un número. Se compara por clave (forma canónica):
+   * así dos formas equivalentes no salen como dos opciones. Si dos claves distintas se escriben igual,
+   * lanza un error (el alumno no podría distinguirlas). Devuelve el formato de armar, con valor = clave.
+   */
+  function armarTexto({ correcta, errores, rng, total = 5 }) {
+    const porClave = new Map([[correcta.clave, correcta.texto]]);
+    const textos = new Map([[correcta.texto, correcta.clave]]);
+    const elegidas = [{ valor: correcta.clave, texto: correcta.texto, correcta: true, error: null }];
+    for (const e of errores) {
+      if (elegidas.length >= total) break;
+      if (!e || !e.clave || !e.texto) continue;
+      if (porClave.has(e.clave)) continue; // el error da lo mismo que otra alternativa
+      if (textos.has(e.texto)) throw new Error(`armarTexto: «${e.texto}» se escribe igual que otra opción con otra clave`);
+      porClave.set(e.clave, e.texto); textos.set(e.texto, e.clave);
+      elegidas.push({ valor: e.clave, texto: e.texto, correcta: false,
+        error: { id: e.id, explicacion: e.explicacion, respaldo: e.respaldo, fuente: e.fuente || null } });
+    }
+    return rng.barajar(elegidas).map((a, i) => ({ letra: LETRAS[i], ...a }));
+  }
+
+  return { formatear, radical, pi, v, armar, LETRAS, frac, textoFraccion, combinacion, vector, armarTexto };
 });
