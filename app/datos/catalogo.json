@@ -116,7 +116,8 @@
       "circular-transmision",
       "circular-mcuv",
       "circular-enesimo-segundo",
-      "circular-encuentros"
+      "circular-encuentros",
+      "circular-mcu"
      ]
     },
     {
@@ -4584,6 +4585,21 @@
    "papel": null,
    "archivos": [
     "/plantillas/circular-enesimo-segundo/generador.js"
+   ]
+  },
+  "circular-mcu": {
+   "id": "circular-mcu",
+   "titulo": "Rpm, radianes y puntos que giran juntos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "#/practica/circular-mcu",
+   "papel": null,
+   "archivos": [
+    "/plantillas/circular-mcu/generador.js"
    ]
   },
   "circular-mcuv": {
