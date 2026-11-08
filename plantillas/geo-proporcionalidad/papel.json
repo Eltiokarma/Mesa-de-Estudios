@@ -1,0 +1,104 @@
+{
+  "titulo": "Paralelas, bisectrices y semejanza: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con 2 a 3 minutos por problema. Haz siempre un dibujo y marca qué segmentos se corresponden: en Thales y en la bisectriz se comparan razones (parte con parte o parte con todo, igual en los dos lados), nunca diferencias. En áreas de figuras semejantes, lo que se suma son las raíces.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Tres rectas paralelas cortan a una secante en A, B y C, y a otra secante en D, E y F (A y D en la primera paralela, B y E en la segunda, C y F en la tercera). Si AB = 4 cm, BC = 6 cm y DE = 10 cm, ¿cuánto mide EF?",
+      "respuesta": "15 cm.",
+      "pasos": [
+        "Por Thales, AB/BC = DE/EF.",
+        "4/6 = 10/EF, así que EF = 6 · 10/4 = 15 cm.",
+        "Si respondiste 12 cm, sumaste la diferencia (6 − 4 = 2) a DE: Thales conserva razones, no diferencias."
+      ],
+      "verificar": [ { "fn": "thalesTres", "args": [4, 6, 10], "espera": 15 } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En un triángulo ABC, AB = 9 m, AC = 6 m y BC = 10 m. La bisectriz del ángulo A corta a BC en D. ¿Cuánto miden BD y DC?",
+      "respuesta": "BD = 6 m y DC = 4 m.",
+      "pasos": [
+        "Teorema de la bisectriz: BD/DC = AB/AC = 9/6 = 3/2.",
+        "BC = 10 se reparte en 3 + 2 = 5 partes de 2 m: BD = 6 m y DC = 4 m.",
+        "La bisectriz no parte BC por la mitad (5 y 5): eso solo pasa si AB = AC."
+      ],
+      "verificar": [ { "fn": "bisectriz", "args": [10, 6, 9], "espera": { "BD": 6, "DC": 4 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Tres caminos paralelos son cruzados por dos carreteras. La primera carretera pasa por los pueblos A, B y C, con AB = 3 km y BC = 5 km. La segunda pasa por D, E y F (en los mismos caminos que A, B y C), y de D a F hay 24 km. ¿Qué distancia hay de D a E y de E a F?",
+      "respuesta": "DE = 9 km y EF = 15 km.",
+      "pasos": [
+        "Las paralelas reparten las dos carreteras en la misma razón: DE/DF = AB/AC y EF/DF = BC/AC.",
+        "AC = 3 + 5 = 8 km. DE = 24 · 3/8 = 9 km y EF = 24 · 5/8 = 15 km.",
+        "Comprobación: 9 + 15 = 24 km."
+      ],
+      "verificar": [ { "fn": "thalesTotal", "args": [3, 5, 24], "espera": { "DE": 9, "EF": 15 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Por un punto P interior a un triángulo se trazan paralelas a los tres lados. Quedan tres triángulos con un vértice en P, de áreas 9 m², 16 m² y 25 m², y tres paralelogramos. ¿Cuál es el área del triángulo grande?",
+      "respuesta": "144 m².",
+      "pasos": [
+        "Los tres triángulos son semejantes al grande, y sus lados correspondientes juntos forman el lado del grande.",
+        "Por eso se suman las raíces: √S = √9 + √16 + √25 = 3 + 4 + 5 = 12.",
+        "S = 12² = 144 m².",
+        "Sumar las áreas (50 m²) olvida los paralelogramos, que miden 2√(9·16) = 24, 2√(9·25) = 30 y 2√(16·25) = 40 m²: 50 + 94 = 144."
+      ],
+      "verificar": [ { "fn": "raicesAreas", "args": [9, 16, 25], "espera": 144 } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En una circunferencia, las cuerdas AB y CD se cortan en P. Si PA = 3 cm, PB = 8 cm y PC = 4 cm, ¿cuánto mide la cuerda CD?",
+      "respuesta": "10 cm.",
+      "pasos": [
+        "Los ángulos inscritos que abarcan el mismo arco son iguales: los triángulos APC y DPB son semejantes.",
+        "De la semejanza: PA · PB = PC · PD, es decir, 3 · 8 = 4 · PD, y PD = 6 cm.",
+        "CD = PC + PD = 4 + 6 = 10 cm."
+      ],
+      "verificar": [ { "fn": "cuerdas", "args": [3, 8, 4], "espera": 6 } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "En el triángulo ABC, AB = 11 cm, AC = 7 cm y BC = 6 cm, e I es su incentro. La paralela a BC por I corta a AB en M, y la paralela a AB por I corta a BC en N. ¿Cuál es el perímetro de BMIN?",
+      "respuesta": "11 cm.",
+      "pasos": [
+        "BI es bisectriz de B y MI ∥ BC: el ángulo MIB es igual al IBC, que es igual al MBI. El triángulo MBI es isósceles y MI = MB. BMIN es un rombo.",
+        "El incentro divide a la bisectriz de A en la razón AI/ID = (AB + AC)/BC = 18/6; entonces AI/AD = 18/24 y, por Thales, AM/AB = 18/24.",
+        "BM = 11 · 6/24 = 11/4 cm.",
+        "Perímetro = 4 · 11/4 = 11 cm."
+      ],
+      "verificar": [ { "fn": "rombo", "args": [6, 7, 11], "espera": { "lado": 2.75, "perimetro": 11 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En un patio hay tres estacas A, B y C con AB = 10 m, AC = 15 m y BC = 20 m. En el punto D de BC al que llega la bisectriz del ángulo A se para un poste vertical de 6 m. ¿Qué distancia hay de la punta del poste a la estaca B?",
+      "respuesta": "10 m.",
+      "pasos": [
+        "Teorema de la bisectriz en el suelo: BD/DC = 10/15, así que BD = 20 · 10/25 = 8 m.",
+        "El poste es perpendicular al suelo: la punta, D y B forman un triángulo rectángulo en D.",
+        "Distancia = √(8² + 6²) = √100 = 10 m."
+      ],
+      "verificar": [ { "fn": "mastil", "args": [20, 15, 10, 6], "espera": { "BD": 8, "TB": 10 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En el triángulo ABC, AB = 9 cm, AC = 6 cm y BC = 5 cm. La bisectriz del ángulo exterior en A corta a la prolongación de BC en E. ¿Cuánto mide CE?",
+      "respuesta": "10 cm.",
+      "pasos": [
+        "Teorema de la bisectriz exterior: BE/CE = AB/AC = 9/6 = 3/2.",
+        "E queda más allá de C, así que BE = 5 + CE: (5 + CE)/CE = 3/2.",
+        "10 + 2 · CE = 3 · CE, y CE = 10 cm (BE = 15 cm)."
+      ],
+      "verificar": [ { "fn": "bisectrizExterior", "args": [5, 6, 9], "espera": { "CE": 10, "BE": 15 } } ]
+    }
+  ]
+}
