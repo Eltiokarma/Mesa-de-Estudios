@@ -322,3 +322,140 @@ Para abrirlas hace falta permitir en la red de la sesión, como mínimo: eprints
 | Una tesis o informe peruano sobre conteo de figuras (repositorios PUCP, UNMSM, UNE, UCV) o resultados de la ECE con cubos | Dato local; hoy no existe ninguno encontrado | — | C |
 
 **Para completar en una tarde:** permitir en la red de la sesión `doi.org`, `jstor.org`, `link.springer.com`, `researchgate.net`, `files.eric.ed.gov` y `cimt.org.uk`, y leer las dos fuentes de prioridad A.
+
+## 6. Historia de la ciencia y la matemática (8 nov 2026, rutina de historia)
+
+Libros y artículos para verificar los ganchos de `docs/investigacion/historia-ganchos.md`. La sesión no pudo abrir ninguna fuente académica (el proxy respondió 403), así que todo lo de esta lista está sin leer. Prioridad: los que respaldan los 30 ★ (Faraday, Lavoisier, Locke y Urton, Middleton, Chang, Lafuente y Mazuecos, Lechtman, Maor, Hayes, Bellhouse, Friendly). Para verificar en una tarde, basta con permitir en la red de la sesión `mathshistory.st-andrews.ac.uk`, `plato.stanford.edu`, `scielo.org.pe`, `arxiv.org`, `jstor.org` y `archive.org`.
+
+### Física
+
+- Dugas, R. (1955/1988). *A History of Mechanics*. Dover. (Ímpetu, Stevin, Huygens y los choques, Descartes.)
+- Drake, S. (1978). *Galileo at Work: His Scientific Biography*. University of Chicago Press. (Plano inclinado, Pisa, folio 116v.)
+- Dijksterhuis, E. J. (1970). *Simon Stevin: Science in the Netherlands around 1600*. Martinus Nijhoff. (Clootcrans y la caída en Delft.)
+- Lenzen, V. F. y Multhauf, R. P. (1965). *Development of Gravity Pendulums in the 19th Century*. Smithsonian Institution, U.S. National Museum Bulletin 240. (Gratis en el Proyecto Gutenberg.)
+- Middleton, W. E. K. (1964). *The History of the Barometer*. Johns Hopkins Press. (Torricelli, Pascal, Périer.)
+- Chang, H. (2004). *Inventing Temperature: Measurement and Scientific Progress*. Oxford University Press. (Puntos de ebullición, termómetros, calórico; seguramente cita el hipsómetro.)
+- Lafuente, A. y Mazuecos, A. (1992). *Los caballeros del punto fijo: ciencia, política y aventura en la expedición geodésica hispanofrancesa al virreinato del Perú en el siglo XVIII*. Abya-Yala / CSIC. (Bouguer, La Condamine, Jorge Juan y Ulloa.)
+- Biografía académica de Caldas (datos de edición por confirmar): Arias de Greiff, J. (ed.), *Obras completas de Francisco José de Caldas* (Universidad Nacional de Colombia, 1966).
+- Williams, L. P. (1965). *Michael Faraday: A Biography*. Chapman & Hall.
+- Von Braun, W. y Ordway, F. I. (1966 y ediciones posteriores). *History of Rocketry and Space Travel*. Crowell. (La mención a Paulet.)
+- Una biografía documentada de Paulet o una publicación institucional de CONIDA (no identifiqué ninguna; la pista «Mejía/Paulet» no se pudo comprobar).
+- Cueto, M. (1989). *Excelencia científica en la periferia: actividades científicas e investigación biomédica en el Perú, 1890–1950*. GRADE / CONCYTEC. (Contexto serio de la ciencia peruana, útil para Antúnez de Mayolo y sus contemporáneos.)
+- Kipnis, N. (2005), artículo completo en *Science & Education* (Ørsted), y Segre, M. (1989) sobre Pisa.
+
+### Química
+
+- Brock, W. H. (1992). *The Fontana History of Chemistry* (reeditado como *The Chemical Tree*). Fontana / W. W. Norton.
+- Bensaude-Vincent, B. y Stengers, I. (1996). *A History of Chemistry*. Harvard University Press.
+- Poirier, J.-P. (1996). *Lavoisier: Chemist, Biologist, Economist*. University of Pennsylvania Press.
+- Gordin, M. D. (2004). *A Well-Ordered Thing: Dmitrii Mendeleev and the Shadow of the Periodic Table*. Basic Books.
+- Rocke, A. J. (2010). *Image and Reality: Kekulé, Kopp, and the Scientific Imagination*. University of Chicago Press.
+- Cushman, G. T. (2013). *Guano and the Opening of the Pacific World: A Global Ecological History*. Cambridge University Press.
+- Robins, N. A. (2011). *Mercury, Mining, and Empire: The Human and Ecological Cost of Colonial Silver Mining in the Andes*. Indiana University Press.
+- Brown, K. W. (2012). *A History of Mining in Latin America: From the Colonial Era to the Present*. University of New Mexico Press.
+- Smil, V. (2001). *Enriching the Earth: Fritz Haber, Carl Bosch, and the Transformation of World Food Production*. MIT Press.
+- Laidler, K. J. (1993). *The World of Physical Chemistry*. Oxford University Press. (Wilhelmy, Arrhenius, Guldberg y Waage.)
+- Acosta, J. de (1590). *Historia natural y moral de las Indias*. Edición de E. O'Gorman, Fondo de Cultura Económica.
+- Artículos para leer completos: Lechtman 1984 (*Sci. Am.* 250(6)); Lechtman, Erlij y Barry 1982 (*Am. Antiq.* 47); Shimada y Merkel 1991 (*Sci. Am.* 265(1)); Ramberg 2000 (*Ambix* 47); el artículo de *Apuntes* (U. del Pacífico) sobre Mariano de Rivero.
+
+### Aritmética
+
+- Ascher, M. y Ascher, R. (1981). *Code of the Quipu: A Study in Media, Mathematics, and Culture*. Ann Arbor: University of Michigan Press (reeditado por Dover como *Mathematics of the Incas*, 1997).
+- Locke, L. L. (1923). *The Ancient Quipu or Peruvian Knot Record*. Nueva York: American Museum of Natural History.
+- Urton, G. (2003). *Signs of the Inka Khipu*. Austin: University of Texas Press.
+- Imhausen, A. (2016). *Mathematics in Ancient Egypt: A Contextual History*. Princeton University Press.
+- Robson, E. (2008). *Mathematics in Ancient Iraq: A Social History*. Princeton University Press.
+- Sigler, L. E. (2002). *Fibonacci's Liber Abaci*. Nueva York: Springer.
+- Ore, O. (1953). *Cardano, the Gambling Scholar*. Princeton University Press (incluye la traducción del *Liber de ludo aleae*).
+- Hald, A. (1990). *A History of Probability and Statistics and Their Applications before 1750*. Nueva York: Wiley.
+- David, F. N. (1962). *Games, Gods and Gambling*. Londres: Griffin.
+- Plofker, K. (2009). *Mathematics in India*. Princeton University Press.
+- Dunnington, G. W. (1955; reed. 2004 MAA). *Carl Friedrich Gauss: Titan of Science*.
+- McDonald, L. (ed.). *Collected Works of Florence Nightingale*, vol. 14 (*The Crimean War*). Wilfrid Laurier University Press.
+- Watanabe, A. (2008). Biografía de Federico Villarreal (Lima; editorial por confirmar).
+- Lechtman, H. Artículos sobre la metalurgia andina (tumbaga y dorado por agotamiento); conviene un compendio.
+
+### Álgebra
+
+- Hart, Roger. 2011. *The Chinese Roots of Linear Algebra*. Johns Hopkins University Press. Para el *fangcheng* y el color exacto de las varillas.
+- Berggren, J. L. 2016 (2.ª ed.). *Episodes in the Mathematics of Medieval Islam*. Springer. Al-Juarismi con la traducción.
+- Katz, Victor J. 2009 (3.ª ed.). *A History of Mathematics: An Introduction*. Addison-Wesley. Referencia general para casi todas las filas «por confirmar».
+- Cajori, Florian. 1928-1929. *A History of Mathematical Notations*. Open Court (reimpresión de Dover). Signos =, <, √, |x|, f(x) y exponentes.
+- Stillwell, John. 2010 (3.ª ed.). *Mathematics and Its History*. Springer. Cúbica, complejos y teorema fundamental.
+- Derbyshire, John. 2006. *Unknown Quantity: A Real and Imaginary History of Algebra*. Joseph Henry Press (National Academies). Divulgación seria, con capítulo sobre Ruffini y Abel.
+- Ascher, Marcia y Robert Ascher. 1981. *Code of the Quipu*. University of Michigan Press. Para el gancho andino de conjuntos y lógica.
+- Dauben, Joseph W. 1979. *Georg Cantor: His Mathematics and Philosophy of the Infinite*. Harvard University Press (reimpr. Princeton 1990). Cartas a Dedekind y la frase de 1877.
+- Burkert, Walter. 1972. *Lore and Science in Ancient Pythagoreanism*. Harvard University Press. Para el mito de Hipaso.
+- Villarreal, Federico. Obras originales (1879 y siguientes) y estudios sobre él en *Pro Mathematica* (PUCP) y en la Universidad Nacional Federico Villarreal. Para fijar la fecha y el enunciado del método.
+- Singh, Parmanand. 1985. «The so-called Fibonacci numbers in ancient and medieval India». *Historia Mathematica* 12: 229-244 (artículo).
+
+### Geometría
+
+- Heath, T. L. (1921). *A History of Greek Mathematics*, 2 vols. Oxford: Clarendon Press (dominio público; reed. Dover).
+- Heath, T. L. (1908/1926). *The Thirteen Books of Euclid's Elements*, 3 vols. Cambridge University Press (reed. Dover).
+- Netz, R. y Noel, W. (2007). *The Archimedes Codex*. Londres: Weidenfeld & Nicolson.
+- Boyer, C. B. (1956). *History of Analytic Geometry*. Nueva York: Scripta Mathematica (reed. Dover, 2004).
+- Burkert, W. (1972). *Lore and Science in Ancient Pythagoreanism*. Cambridge (MA): Harvard University Press.
+- Richeson, D. S. (2008). *Euler's Gem: The Polyhedron Formula and the Birth of Topology*. Princeton University Press.
+- Martzloff, J.-C. (1997). *A History of Chinese Mathematics*. Berlín: Springer.
+- Imhausen, A. (2016). *Mathematics in Ancient Egypt: A Contextual History*. Princeton University Press.
+- Aveni, A. F. (ed.) (1990). *The Lines of Nazca*. Filadelfia: American Philosophical Society. Y Aveni (2000), *Between the Lines*, University of Texas Press.
+- Reiche, M. (1968). *Geheimnis der Wüste / Mystery on the Desert*. Stuttgart (edición de la autora).
+- Protzen, J.-P. (1993). *Inca Architecture and Construction at Ollantaytambo*. Nueva York: Oxford University Press.
+- Bauer, B. S. (1998). *The Sacred Landscape of the Inca: The Cusco Ceque System*. Austin: University of Texas Press.
+- Earls, J. (1989). *Planificación agrícola andina*. Lima: COFIDE / Universidad del Pacífico.
+- Washburn, D. K. y Crowe, D. W. (1988). *Symmetries of Culture*. Seattle: University of Washington Press.
+- Toomer, G. J. (1984). *Ptolemy's Almagest*. Londres: Duckworth (reed. Princeton, 1998).
+- Slocum, J. (2003). *The Tangram Book*. Nueva York: Sterling.
+- Livio, M. (2002). *The Golden Ratio*. Nueva York: Broadway Books (útil para el mito de φ, junto con Markowsky).
+
+### Trigonometría
+
+- Van Brummelen, Glen (2009). *The Mathematics of the Heavens and the Earth: The Early History of Trigonometry*. Princeton University Press.
+- Van Brummelen, Glen (2021). *The Doctrine of Triangles: A History of Modern Trigonometry*. Princeton University Press.
+- Maor, Eli (1998). *Trigonometric Delights*. Princeton University Press. (Etimología del seno, cap. 3.)
+- Toomer, G. J. (1984). *Ptolemy's Almagest* (traducción). Duckworth / Springer; reed. Princeton University Press, 1998.
+- Plofker, Kim (2009). *Mathematics in India*. Princeton University Press. (Aryabhata, jyā, el radio 3438.)
+- Keay, John (2000). *The Great Arc*. HarperCollins.
+- Ferreiro, Larrie D. (2011). *Measure of the Earth: The Enlightenment Expedition That Reshaped Our World*. Basic Books. (La misión de Quito.)
+- Lafuente, Antonio y Mazuecos, Antonio (1987). *Los caballeros del punto fijo*. Serbal / CSIC. (Jorge Juan y Ulloa.)
+- Bauer, Brian S. y Dearborn, David S. P. (1995). *Astronomy and Empire in the Ancient Andes*. University of Texas Press.
+- Nahin, Paul J. (1998). *An Imaginary Tale: The Story of √−1*. Princeton University Press.
+- Cajori, Florian (1928–1929). *A History of Mathematical Notations*, 2 vols. Open Court (reed. Dover).
+- Peck, Annie S. (1911). *A Search for the Apex of America*. Dodd, Mead.
+- Alder, Ken (2002). *The Measure of All Things*. Free Press. (El metro y el grado centesimal.)
+- Walker, Charles F. (2008). *Shaky Colonialism: The 1746 Earthquake-Tsunami in Lima*. Duke University Press. (Godin y la reconstrucción.)
+
+### Razonamiento matemático
+
+- Biggs, N. L., Lloyd, E. K. y Wilson, R. J. (1977). *Graph Theory 1736-1936*. Oxford, Clarendon Press. (Traducción de Euler 1736.)
+- Wilson, R. (2002; ed. rev. 2014). *Four Colors Suffice*. Princeton University Press.
+- Hadley, J. y Singmaster, D. (1992). «Problems to sharpen the young». *Mathematical Gazette* 76(475). (Artículo; conseguir el PDF por JSTOR.)
+- Swetz, F. J. (2008). *Legacy of the Luoshu* (2.ª ed.). A K Peters / CRC.
+- Slocum, J. y Sonneveld, D. (2006). *The 15 Puzzle*. Slocum Puzzle Foundation.
+- Sigler, L. E. (2002). *Fibonacci's Liber Abaci*. Springer.
+- Singmaster, D. *Sources in Recreational Mathematics: An Annotated Bibliography* (manuscrito en línea, varias versiones). Es la fuente para fechar casi cualquier acertijo de academia.
+- Ascher, M. y Ascher, R. (1997). *Mathematics of the Incas: Code of the Quipu*. Dover.
+- Urton, G. (2003). *Signs of the Inka Khipu*. University of Texas Press.
+- Bauer, B. S. (1998). *The Sacred Landscape of the Inca: The Cusco Ceque System*. University of Texas Press.
+- Hyslop, J. (1984). *The Inka Road System*. Academic Press.
+- Poole, R. (1998). *Time's Alteration: Calendar Reform in Early Modern England*. UCL Press.
+- Hacking, I. (1975; 2.ª ed. 2006). *The Emergence of Probability*. Cambridge University Press.
+- Rosenhouse, J. (2009). *The Monty Hall Problem*. Oxford University Press.
+- Smullyan, R. (1978). *What Is the Name of This Book?* Prentice-Hall.
+
+### Razonamiento verbal
+
+- Adorno, Rolena (2000). *Guaman Poma: Writing and Resistance in Colonial Peru*, 2.ª ed. University of Texas Press.
+- Urton, Gary (2003). *Signs of the Inka Khipu: Binary Coding in the Andean Knotted-String Records*. University of Texas Press.
+- Robinson, Andrew (2012). *Cracking the Egyptian Code: The Revolutionary Life of Jean-François Champollion*. Thames & Hudson / Oxford University Press.
+- Parkinson, Richard (1999). *Cracking Codes: The Rosetta Stone and Decipherment*. British Museum Press.
+- Friendly, Michael y Wainer, Howard (2021). *A History of Data Visualization and Graphic Communication*. Harvard University Press.
+- Johnson, Steven (2006). *The Ghost Map*. Riverhead. Divulgación; para los datos, Snow 1855 en el sitio de UCLA.
+- Scerri, Eric (2007). *The Periodic Table: Its Story and Its Significance*. Oxford University Press.
+- Baum, Richard y Sheehan, William (1997). *In Search of Planet Vulcan*. Plenum.
+- Finocchiaro, Maurice (1989). *The Galileo Affair: A Documentary History*. University of California Press.
+- Oreskes, Naomi (1999). *The Rejection of Continental Drift*. Oxford University Press.
+- Russell, Jeffrey Burton (1991). *Inventing the Flat Earth*. Praeger.
+- Mazzotti, José Antonio (1996). *Coros mestizos del Inca Garcilaso*. Fondo de Cultura Económica.
+- Sobre Carrión: los artículos de SciELO Perú (*Rev. Peru. Med. Exp. Salud Pública*, *An. Fac. Med. UNMSM*) y Schultz (1968), *Am. J. Trop. Med. Hyg.*
