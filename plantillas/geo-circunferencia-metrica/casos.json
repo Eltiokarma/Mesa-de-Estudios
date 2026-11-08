@@ -1,0 +1,287 @@
+{
+  "plantilla": "geo-circunferencia-metrica",
+  "tolerancia": 0.000001,
+  "nota": "Ángulos con la convención de academia: tan(53°/2) = 1/2, tan(37°/2) = 1/3, cos 37° = 4/5. Los ángulos que son mitad de un entero se escriben «53°/2». Longitudes en la unidad u del enunciado.",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "secantes",
+        "PA": 12,
+        "AB": 7,
+        "PC": 6
+      },
+      "esperado": {
+        "respuesta": 32,
+        "exacta": "32 m"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "inscriptible",
+        "L": 9,
+        "m": 6,
+        "pide": "MPC"
+      },
+      "esperado": {
+        "respuesta": 26.5,
+        "exacta": "53°/2"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "poncelet",
+        "sub": "perimetro",
+        "c": 10,
+        "r": 2
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24 cm"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "tangente",
+        "sub": "centro",
+        "t": 6,
+        "a": 2
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 cm"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "inscriptible",
+        "L": 12,
+        "m": 3,
+        "pide": "NPC"
+      },
+      "esperado": {
+        "respuesta": 18.5,
+        "exacta": "37°/2"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "tangente",
+        "sub": "secante",
+        "t": 10,
+        "a": 4
+      },
+      "esperado": {
+        "respuesta": 21,
+        "exacta": "21 m"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "cuerdas",
+        "sub": "cuarto",
+        "AE": 12,
+        "EB": 12,
+        "CE": 6
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24 m"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "pitot",
+        "sub": "general",
+        "AB": 11,
+        "BC": 5,
+        "CD": 9
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15 cm"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "arcos-cuerdas",
+        "sub": "cuerda",
+        "R": 25,
+        "AC": 40
+      },
+      "esperado": {
+        "respuesta": 22.360679774997898,
+        "exacta": "10√5 cm"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "tangentes-iguales",
+        "sub": "incirculo",
+        "a": 20,
+        "b": 15,
+        "c": 11
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 m"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "cuerdas",
+        "sub": "partes",
+        "L": 14,
+        "CE": 3,
+        "ED": 8
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 m"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "arcos-cuerdas",
+        "sub": "al-reves",
+        "R": 10,
+        "AB2": 80
+      },
+      "esperado": {
+        "respuesta": 16,
+        "exacta": "16 m"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "tangente",
+        "sub": "pt",
+        "a": 8,
+        "c": 16
+      },
+      "esperado": {
+        "respuesta": 13.856406460551018,
+        "exacta": "8√3 m"
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "tipo": "tangentes-iguales",
+        "sub": "esquina",
+        "L": 30,
+        "AM": 12
+      },
+      "esperado": {
+        "respuesta": 13,
+        "exacta": "13 m"
+      }
+    },
+    {
+      "semilla": 37,
+      "entrada": {
+        "tipo": "poncelet",
+        "sub": "radio",
+        "a": 20,
+        "b": 21
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 cm"
+      }
+    },
+    {
+      "semilla": 48,
+      "entrada": {
+        "tipo": "pitot",
+        "sub": "rectangulo",
+        "r": 2,
+        "ang": 53
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 m"
+      }
+    },
+    {
+      "semilla": 62,
+      "entrada": {
+        "tipo": "tangente",
+        "sub": "semicirculo",
+        "w": 24,
+        "h": 18
+      },
+      "esperado": {
+        "respuesta": 28.274333882308138,
+        "exacta": "9π cm"
+      }
+    },
+    {
+      "semilla": 74,
+      "entrada": {
+        "tipo": "tangente",
+        "sub": "razon",
+        "t2": 16,
+        "p": 1,
+        "q": 15
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15 cm"
+      }
+    },
+    {
+      "semilla": 111,
+      "entrada": {
+        "tipo": "pitot",
+        "sub": "isosceles",
+        "B": 36,
+        "b": 4
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 m"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "secantes",
+        "PA": 12,
+        "AB": 3,
+        "PC": 4
+      },
+      "esperado": {
+        "respuesta": 41,
+        "exacta": "41 m"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "cuerdas",
+        "sub": "partes",
+        "L": 20,
+        "CE": 4,
+        "ED": 21
+      },
+      "esperado": {
+        "respuesta": 14,
+        "exacta": "14 cm"
+      }
+    }
+  ]
+}
