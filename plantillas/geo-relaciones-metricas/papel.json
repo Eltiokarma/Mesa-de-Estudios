@@ -1,0 +1,121 @@
+{
+  "titulo": "Relaciones métricas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la práctica, con 2 a 3 minutos por problema, como en el examen. Dibuja siempre la figura y marca los ángulos rectos. Antes de usar una fórmula, pregúntate qué segmento es un lado, cuál es una proyección y cuál es una altura: casi todos los errores vienen de cambiar uno por otro.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En un triángulo rectángulo ABC, recto en B, la altura BH relativa a la hipotenusa la divide en AH = 4 cm y HC = 16 cm. ¿Cuánto miden la altura BH y el cateto AB?",
+      "respuesta": "BH = 8 cm y AB = 4√5 cm.",
+      "pasos": [
+        "La altura es media geométrica de las proyecciones: BH² = AH·HC = 4·16 = 64, así que BH = 8 cm (no el promedio, 10 cm).",
+        "La hipotenusa es AC = 4 + 16 = 20 cm.",
+        "Cada cateto al cuadrado es la hipotenusa por su proyección: AB² = AC·AH = 20·4 = 80, así que AB = √80 = 4√5 cm.",
+        "Comprobación con Pitágoras en ABH: 4² + 8² = 80."
+      ],
+      "verificar": [
+        { "fn": "alturaHipotenusa", "args": [4, 16], "espera": 8 },
+        { "fn": "catetoProyeccion", "args": [4, 16], "espera": 8.94427190999916 }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "AB es el diámetro de una semicircunferencia y mide 20 m. Desde un punto C del arco se traza CH perpendicular a AB, con AH = 5 m. ¿Cuánto mide la cuerda AC? ¿Cuál es el área del triángulo ACB?",
+      "respuesta": "AC = 10 m y el área es 50√3 m².",
+      "pasos": [
+        "El ángulo ACB está inscrito en una semicircunferencia: mide 90°.",
+        "Cuerda al cuadrado = diámetro × proyección: AC² = 20·5 = 100, así que AC = 10 m.",
+        "CH es la altura a la hipotenusa: CH² = AH·HB = 5·15 = 75, así que CH = 5√3 m.",
+        "Área = AB·CH/2 = 20·5√3/2 = 50√3 m². No sirve AH como altura: AH está sobre la base."
+      ],
+      "verificar": [
+        { "fn": "cuerdaSemicircunferencia", "args": [20, 5], "espera": 10 },
+        { "fn": "areaSemicircunferencia", "args": [20, 5], "espera": 86.60254037844388 }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Dos barras AB = 7 dm y AC = 8 dm salen del mismo punto A y forman un ángulo obtuso. La proyección de AC sobre la prolongación de BA mide 4 dm. (a) ¿Cuánto mide BC? (b) Si solo te dieran los tres lados 13 dm, 8 dm y 7 dm, ¿cómo obtendrías otra vez esa proyección?",
+      "respuesta": "(a) BC = 13 dm. (b) Con el mismo teorema despejado: m = (13² − 8² − 7²)/(2·7) = 4 dm.",
+      "pasos": [
+        "Teorema de Euclides para el ángulo obtuso: BC² = AB² + AC² + 2·AB·m.",
+        "BC² = 49 + 64 + 2·7·4 = 169, así que BC = 13 dm. Con el signo menos (el del ángulo agudo) saldría √57, demasiado corto.",
+        "Al revés: 169 es mayor que 49 + 64 = 113, así que el ángulo en A es obtuso; 169 = 113 + 14·m da m = 4 dm."
+      ],
+      "verificar": [
+        { "fn": "euclidesLado", "args": [8, 7, 4, true], "espera": 13 },
+        { "fn": "euclidesProyeccion", "args": [13, 8, 7], "espera": 4 }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un terreno triangular ABC tiene lados AB = 9 m, AC = 7 m y BC = 8 m. Se quiere tender un cable desde A hasta el punto medio M de BC. ¿Cuánto mide el cable?",
+      "respuesta": "7 m.",
+      "pasos": [
+        "Teorema de la mediana: AB² + AC² = 2·AM² + BC²/2 (la mitad del cuadrado del lado).",
+        "81 + 49 = 2·AM² + 64/2, o sea 130 = 2·AM² + 32.",
+        "AM² = 49 y AM = 7 m. Si olvidas el /2 de BC²/2, sale AM² = 33, que es un error."
+      ],
+      "verificar": [ { "fn": "mediana", "args": [8, 7, 9], "espera": 7 } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Dentro de una sala rectangular ABCD (las esquinas en ese orden) hay una lámpara colgada sobre el punto P del piso. P está a 6 m de A, a 7 m de B y a 9 m de C. ¿A qué distancia está de D?",
+      "respuesta": "2√17 m.",
+      "pasos": [
+        "Por P se trazan paralelas a los lados: cada distancia a una esquina es la hipotenusa de un triángulo rectángulo, y los catetos se repiten en esquinas opuestas.",
+        "Por eso PA² + PC² = PB² + PD² (se juntan las esquinas opuestas, A con C y B con D).",
+        "36 + 81 = 49 + PD², así que PD² = 68 y PD = 2√17 m."
+      ],
+      "verificar": [ { "fn": "marlen", "args": [36, 49, 81], "espera": 8.246211251235321 } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "En el triángulo ABC, AB = 15 cm, AC = 13 cm y BC = 4 cm. ¿Cuánto mide el ángulo ABC? (Usa cos 53° = 3/5.)",
+      "respuesta": "53°.",
+      "pasos": [
+        "Se traza AH perpendicular a la recta BC. En ABH y ACH: AH² = AB² − BH² = AC² − HC², así que AB² − AC² = BH² − HC².",
+        "Con BH medido desde B hacia C: BH = (BC² + AB² − AC²)/(2·BC) = (16 + 225 − 169)/8 = 9 cm.",
+        "BH = 9 es mayor que BC = 4: H cae fuera, más allá de C (el ángulo en C es obtuso). HC = 5 cm y AH = 12 cm.",
+        "El triángulo ABH es el 9-12-15 (un 3-4-5): cos B = 9/15 = 3/5, así que el ángulo ABC mide 53°."
+      ],
+      "verificar": [ { "fn": "anguloDiferenciaCuadrados", "args": [225, 169, 4], "espera": 53 } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Una vela triangular tiene bordes de 13 m, 14 m y 15 m. ¿Cuál es su área? ¿Cuánto mide su altura sobre el borde de 14 m?",
+      "respuesta": "Área: 84 m². Altura: 12 m.",
+      "pasos": [
+        "Semiperímetro: p = (13 + 14 + 15)/2 = 21.",
+        "Herón: área = √(21·8·7·6) = √7056 = 84 m².",
+        "Área = base·altura/2: 84 = 14·h/2, así que h = 12 m. Ojo: no es 84/14 = 6, falta el 2."
+      ],
+      "verificar": [
+        { "fn": "heron", "args": [13, 14, 15], "espera": 84 },
+        { "fn": "alturaHeron", "args": [14, 13, 15], "espera": 12 }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un trapecio isósceles ABCD tiene bases AD = 10 cm y BC = 4 cm, y lados AB = CD = √58 cm. (a) Con Ptolomeo, halla la diagonal AC. (b) Las diagonales resultan perpendiculares. Trasladando una de ellas, halla la altura del trapecio.",
+      "respuesta": "(a) AC = 7√2 cm. (b) La altura mide 7 cm.",
+      "pasos": [
+        "El trapecio isósceles se puede inscribir en una circunferencia, así que vale Ptolomeo: AC·BD = AB·CD + AD·BC.",
+        "Como AC = BD: AC² = 58 + 10·4 = 98, y AC = 7√2 cm.",
+        "Se traslada BD hasta C: se forma un triángulo rectángulo de catetos 7√2 y 7√2 con hipotenusa AD + BC = 14 cm (98 + 98 = 196 = 14²).",
+        "La altura del trapecio es la altura de ese triángulo sobre la hipotenusa: h = 7√2·7√2/14 = 98/14 = 7 cm."
+      ],
+      "verificar": [
+        { "fn": "diagonalTrapecioIsosceles", "args": [10, 4, 7.615773105863909], "espera": 9.899494936611665 },
+        { "fn": "alturaTrapecioPerpendiculares", "args": [9.899494936611665, 9.899494936611665], "espera": 7 }
+      ]
+    }
+  ]
+}

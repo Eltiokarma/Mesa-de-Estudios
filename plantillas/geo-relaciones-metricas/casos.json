@@ -1,0 +1,343 @@
+{
+  "plantilla": "geo-relaciones-metricas",
+  "tolerancia": 0.000001,
+  "nota": "Ángulos con la convención de academia (cos 37° = 4/5, cos 53° = 3/5). Longitudes en la unidad u del enunciado; áreas en u².",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "altura-hipotenusa",
+        "sub": "cateto",
+        "m": 9,
+        "n": 11
+      },
+      "esperado": {
+        "respuesta": 13.416407864998739,
+        "exacta": "6√5 m"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "marlen",
+        "falta": "A",
+        "dist": {
+          "B": 25,
+          "C": 144,
+          "D": 225
+        }
+      },
+      "esperado": {
+        "respuesta": 10.295630140987,
+        "exacta": "√106 cm"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "semicircunferencia",
+        "sub": "area",
+        "d": 26,
+        "m": 1
+      },
+      "esperado": {
+        "respuesta": 65,
+        "exacta": "65 cm²"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "mediana",
+        "sub": "lado",
+        "b": 5,
+        "c": 7,
+        "ma2": 12
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10 cm"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "altura-hipotenusa",
+        "sub": "h-catetos",
+        "a": 30,
+        "b": 40,
+        "pide": "BH"
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24 m"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "diferencia-cuadrados",
+        "ab2": 900,
+        "ac2": 1600,
+        "bc": 14
+      },
+      "esperado": {
+        "respuesta": 127,
+        "exacta": "127°"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "trapecio-perpendiculares",
+        "sub": "area",
+        "B": 13,
+        "b": 4,
+        "d1": 8
+      },
+      "esperado": {
+        "respuesta": 60,
+        "exacta": "60 m²"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "altura-hipotenusa",
+        "sub": "h-catetos",
+        "a": 45,
+        "b": 60,
+        "pide": "AH"
+      },
+      "esperado": {
+        "respuesta": 27,
+        "exacta": "27 cm"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "mediana",
+        "sub": "mediana",
+        "a": 10,
+        "b": 5,
+        "c": 9
+      },
+      "esperado": {
+        "respuesta": 5.291502622129181,
+        "exacta": "2√7 m"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "altura-hipotenusa",
+        "sub": "h",
+        "m": 11,
+        "n": 13
+      },
+      "esperado": {
+        "respuesta": 11.958260743101398,
+        "exacta": "√143 cm"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "semicircunferencia",
+        "sub": "cuerda",
+        "d": 26,
+        "m": 7
+      },
+      "esperado": {
+        "respuesta": 13.490737563232042,
+        "exacta": "√182 cm"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "ptolomeo",
+        "sub": "trapecio",
+        "B": 8,
+        "b": 2,
+        "l": 6
+      },
+      "esperado": {
+        "respuesta": 7.211102550927978,
+        "exacta": "2√13 cm"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "euclides",
+        "sub": "lado",
+        "b": 5,
+        "c": 11,
+        "m": 4,
+        "obtuso": false
+      },
+      "esperado": {
+        "respuesta": 7.615773105863909,
+        "exacta": "√58 m"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "marlen",
+        "falta": "C",
+        "dist": {
+          "A": 9,
+          "B": 16,
+          "D": 36
+        }
+      },
+      "esperado": {
+        "respuesta": 6.557438524302,
+        "exacta": "√43 cm"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "euclides",
+        "sub": "proyeccion",
+        "a": 12,
+        "b": 12,
+        "c": 10
+      },
+      "esperado": {
+        "respuesta": 5,
+        "exacta": "5 cm"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "heron",
+        "sub": "altura",
+        "a": 9,
+        "b": 17,
+        "c": 10
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 m"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "trapecio-perpendiculares",
+        "sub": "altura",
+        "d1": 20,
+        "d2": 15
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 m"
+      }
+    },
+    {
+      "semilla": 37,
+      "entrada": {
+        "tipo": "ptolomeo",
+        "sub": "heptagono",
+        "k": 6
+      },
+      "esperado": {
+        "respuesta": 42,
+        "exacta": "42 cm"
+      }
+    },
+    {
+      "semilla": 40,
+      "entrada": {
+        "tipo": "heron",
+        "sub": "area",
+        "a": 21,
+        "b": 17,
+        "c": 10
+      },
+      "esperado": {
+        "respuesta": 84,
+        "exacta": "84 m²"
+      }
+    },
+    {
+      "semilla": 50,
+      "entrada": {
+        "tipo": "euclides",
+        "sub": "lado",
+        "b": 14,
+        "c": 3,
+        "m": 13,
+        "obtuso": true
+      },
+      "esperado": {
+        "respuesta": 16.822603841260722,
+        "exacta": "√283 cm"
+      }
+    },
+    {
+      "semilla": 80,
+      "entrada": {
+        "tipo": "marlen",
+        "falta": "D",
+        "dist": {
+          "A": 100,
+          "B": 121,
+          "C": 25
+        }
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2 cm"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "diferencia-cuadrados",
+        "ab2": 225,
+        "ac2": 288,
+        "bc": 21
+      },
+      "esperado": {
+        "respuesta": 53,
+        "exacta": "53°"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "mediana",
+        "sub": "lado",
+        "b": 15,
+        "c": 17,
+        "ma2": 176
+      },
+      "esperado": {
+        "respuesta": 18,
+        "exacta": "18 cm"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "mediana",
+        "sub": "mediana",
+        "a": 6,
+        "b": 7,
+        "c": 9
+      },
+      "esperado": {
+        "respuesta": 7.483314773547883,
+        "exacta": "2√14 cm"
+      }
+    }
+  ]
+}
