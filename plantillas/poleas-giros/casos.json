@@ -1,0 +1,262 @@
+{
+  "plantilla": "poleas-giros",
+  "tolerancia": 0.000001,
+  "nota": "En «sentido», «cuantas» da cuántas poleas (contando A) giran en el sentido pedido y «cuales» da la clave set:… con las letras de las que giran en sentido antihorario. En «bloques», el desplazamiento de Y en cm con signo: + sube, − baja; una polea que gira en sentido horario sube la cuerda de su lado izquierdo. En «coincidencias», vueltas de A cuando los puntos se juntaron n veces sin contar el inicio.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver generador.js ni casos.json: leyó solo el enunciado, la pregunta y las alternativas, y calculó con fracciones exactas. Simuló los giros paso a paso con la convención de signos de cada unión y contó las coincidencias avanzando diente por diente. Los 14 casos coinciden y otros 30 problemas generados a ciegas también; en todos hay una sola alternativa correcta y ninguna ambigua.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "bloques",
+        "modo": "faja",
+        "d": 9,
+        "xSube": false,
+        "ladoX": "izq",
+        "ladoY": "der",
+        "rx": 12,
+        "ry": 30,
+        "pf": 24,
+        "qf": 25,
+        "cruzada": false
+      },
+      "esperado": {
+        "respuesta": 21.6,
+        "exacta": "sube 21,6 cm"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "coincidencias",
+        "modo": "engranajes",
+        "a": 12,
+        "b": 30,
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15 vueltas"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "coincidencias",
+        "modo": "engranajes",
+        "a": 20,
+        "b": 14,
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": 21,
+        "exacta": "21 vueltas"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "sentido",
+        "modo": "cuantas",
+        "n": 7,
+        "uniones": [
+          "contacto",
+          "abierta",
+          "cruzada",
+          "contacto",
+          "contacto",
+          "eje"
+        ],
+        "sA": "antihorario",
+        "pedido": "horario"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 poleas"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "bloques",
+        "modo": "eje",
+        "d": 24,
+        "xSube": false,
+        "ladoX": "der",
+        "ladoY": "der",
+        "rx": 10,
+        "ry": 8,
+        "pf": null,
+        "qf": null,
+        "cruzada": false
+      },
+      "esperado": {
+        "respuesta": -19.2,
+        "exacta": "baja 19,2 cm"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "sentido",
+        "modo": "cuales",
+        "n": 8,
+        "uniones": [
+          "cruzada",
+          "abierta",
+          "cruzada",
+          "cruzada",
+          "eje",
+          "contacto",
+          "contacto"
+        ],
+        "sA": "antihorario",
+        "pedido": "antihorario"
+      },
+      "esperado": {
+        "respuesta": "set:A,D,G",
+        "exacta": "A, D y G"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "coincidencias",
+        "modo": "tangentes",
+        "a": 20,
+        "b": 16,
+        "n": 1
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4 vueltas"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "sentido",
+        "modo": "cuales",
+        "n": 7,
+        "uniones": [
+          "cruzada",
+          "eje",
+          "abierta",
+          "contacto",
+          "abierta",
+          "eje"
+        ],
+        "sA": "antihorario",
+        "pedido": "antihorario"
+      },
+      "esperado": {
+        "respuesta": "set:A,E,F,G",
+        "exacta": "A, E, F y G"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "coincidencias",
+        "modo": "faja",
+        "a": 27,
+        "b": 12,
+        "n": 2
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 vueltas"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "coincidencias",
+        "modo": "tangentes",
+        "a": 8,
+        "b": 30,
+        "n": 2
+      },
+      "esperado": {
+        "respuesta": 30,
+        "exacta": "30 vueltas"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "bloques",
+        "modo": "eje",
+        "d": 6,
+        "xSube": false,
+        "ladoX": "der",
+        "ladoY": "der",
+        "rx": 15,
+        "ry": 16,
+        "pf": null,
+        "qf": null,
+        "cruzada": false
+      },
+      "esperado": {
+        "respuesta": -6.4,
+        "exacta": "baja 6,4 cm"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "coincidencias",
+        "modo": "faja",
+        "a": 10,
+        "b": 6,
+        "n": 2
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6 vueltas"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "sentido",
+        "modo": "cuantas",
+        "n": 8,
+        "uniones": [
+          "abierta",
+          "abierta",
+          "contacto",
+          "contacto",
+          "cruzada",
+          "eje",
+          "cruzada"
+        ],
+        "sA": "antihorario",
+        "pedido": "horario"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 poleas"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "bloques",
+        "modo": "faja",
+        "d": 6,
+        "xSube": false,
+        "ladoX": "der",
+        "ladoY": "der",
+        "rx": 25,
+        "ry": 20,
+        "pf": 10,
+        "qf": 15,
+        "cruzada": true
+      },
+      "esperado": {
+        "respuesta": 3.2,
+        "exacta": "sube 3,2 cm"
+      }
+    }
+  ]
+}

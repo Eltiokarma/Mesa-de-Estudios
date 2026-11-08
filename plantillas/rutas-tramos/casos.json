@@ -1,0 +1,448 @@
+{
+  "plantilla": "rutas-tramos",
+  "tolerancia": 0.000001,
+  "nota": "En «red», número de rutas de A al último pueblo sin repetir pueblo: en cada ruta se multiplican los caminos de sus tramos y las rutas se suman; los caminos se recorren en los dos sentidos. tramos = [i, j, caminos] con 0 = A. En «cuadricula», rutas de la esquina (0, 0) a la (m, n) solo hacia el este o el norte, con la esquina (px, py) cerrada o de paso obligado.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver generador.js ni casos.json: leyó solo el enunciado, la pregunta y las alternativas. En las redes enumeró por fuerza bruta los caminos simples del multigrafo, con las cantidades de cada tramo y la condición de pasar o no por un pueblo; en las cuadrículas, todas las secuencias de pasos al este y al norte. Los 14 casos coinciden y otros 30 problemas generados a ciegas también; en todos hay una sola alternativa correcta.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "red",
+        "k": 4,
+        "tramos": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            2
+          ],
+          [
+            2,
+            3,
+            2
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            3
+          ]
+        ],
+        "condicion": "pasa",
+        "por": 1
+      },
+      "esperado": {
+        "respuesta": 21,
+        "exacta": "21"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "red",
+        "k": 4,
+        "tramos": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            5
+          ],
+          [
+            2,
+            3,
+            2
+          ],
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            2
+          ]
+        ],
+        "condicion": "ninguna",
+        "por": null
+      },
+      "esperado": {
+        "respuesta": 73,
+        "exacta": "73"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "cuadricula",
+        "m": 6,
+        "n": 3,
+        "px": 3,
+        "py": 1,
+        "condicion": "obligado"
+      },
+      "esperado": {
+        "respuesta": 40,
+        "exacta": "40"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "cuadricula",
+        "m": 4,
+        "n": 3,
+        "px": 1,
+        "py": 2,
+        "condicion": "obligado"
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "red",
+        "k": 4,
+        "tramos": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            2,
+            3,
+            3
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            0,
+            3,
+            3
+          ]
+        ],
+        "condicion": "ninguna",
+        "por": null
+      },
+      "esperado": {
+        "respuesta": 42,
+        "exacta": "42"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "red",
+        "k": 4,
+        "tramos": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            3
+          ]
+        ],
+        "condicion": "ninguna",
+        "por": null
+      },
+      "esperado": {
+        "respuesta": 77,
+        "exacta": "77"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "cuadricula",
+        "m": 4,
+        "n": 4,
+        "px": 2,
+        "py": 3,
+        "condicion": "obligado"
+      },
+      "esperado": {
+        "respuesta": 30,
+        "exacta": "30"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "cuadricula",
+        "m": 4,
+        "n": 3,
+        "px": 3,
+        "py": 2,
+        "condicion": "cerrado"
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "cuadricula",
+        "m": 4,
+        "n": 4,
+        "px": 2,
+        "py": 1,
+        "condicion": "cerrado"
+      },
+      "esperado": {
+        "respuesta": 40,
+        "exacta": "40"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "cuadricula",
+        "m": 6,
+        "n": 3,
+        "px": 5,
+        "py": 2,
+        "condicion": "cerrado"
+      },
+      "esperado": {
+        "respuesta": 42,
+        "exacta": "42"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "red",
+        "k": 4,
+        "tramos": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            0,
+            3,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ]
+        ],
+        "condicion": "pasa",
+        "por": 1
+      },
+      "esperado": {
+        "respuesta": 76,
+        "exacta": "76"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "red",
+        "k": 4,
+        "tramos": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            5
+          ],
+          [
+            2,
+            3,
+            2
+          ],
+          [
+            0,
+            2,
+            2
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "condicion": "evita",
+        "por": 2
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "red",
+        "k": 5,
+        "tramos": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            2,
+            2
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            2
+          ],
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            1,
+            4,
+            2
+          ],
+          [
+            2,
+            4,
+            1
+          ]
+        ],
+        "condicion": "pasa",
+        "por": 1
+      },
+      "esperado": {
+        "respuesta": 112,
+        "exacta": "112"
+      }
+    },
+    {
+      "semilla": 47,
+      "entrada": {
+        "tipo": "red",
+        "k": 4,
+        "tramos": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            3
+          ],
+          [
+            0,
+            2,
+            2
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "condicion": "evita",
+        "por": 1
+      },
+      "esperado": {
+        "respuesta": 7,
+        "exacta": "7"
+      }
+    }
+  ]
+}

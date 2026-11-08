@@ -1,0 +1,14 @@
+{
+  "id": "poleas-giros",
+  "titulo": "Poleas: sentido de giro, bloques y coincidencias",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.ruedas-poleas-engranajes"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": null
+}
