@@ -1,0 +1,1389 @@
+<!doctype html>
+<html lang="es" data-curso="fisica">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El disco y sus flechas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4). Los que comparte con
+   tiro-parabolico conservan su color: v velocidad morado (#8a2aa8 / #ec62e6), acp aceleración centrípeta y a total
+   verde (#466d14 / #a3d65e; la total va a trazos), aT aceleración tangencial ocre (#4a3b00 / #ffde0a; flechas de 4 px
+   con halo), t tiempo naranja (#a05200 / #f0a04a), ω velocidad angular turquesa (#0f766e / #5ed9c8; también f y las
+   vueltas, porque f = ω/2π). Nuevos (docs/metodo/paleta.py): α aceleración angular azul (#056db3 / #10a7f9) y θ ángulo
+   girado azul pizarra en claro y lavanda en oscuro (#13394b / #8080ff). Entre los siete, la tinta y el gris, ΔE00
+   mínimo 20,5 en claro (θ con la tinta) y 20,4 en oscuro (tinta con gris); θ queda además a ΔE00 ≥ 20 de los colores de
+   los avisos (ok y warn), con los que no se mezclan las variables. Todos con
+   contraste AA ≥ 4,5 sobre el papel y sobre el chip .v (fondo 8 %). El vector posición r⃗, los radios, las distancias,
+   las ruedas y las cuerdas van en tinta. El morado de marca no se usa aquí. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-v:#8a2aa8; --c-a:#466d14; --c-t:#a05200; --c-w:#0f766e; --c-at:#4a3b00; --c-alfa:#056db3; --c-th:#13394b;
+  --suelo:#d9c8bb; --bloque:#f3e3d3;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-v:#ec62e6; --c-a:#a3d65e; --c-t:#f0a04a; --c-w:#5ed9c8; --c-at:#ffde0a; --c-alfa:#10a7f9; --c-th:#8080ff;
+  --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-v:#ec62e6; --c-a:#a3d65e; --c-t:#f0a04a; --c-w:#5ed9c8; --c-at:#ffde0a; --c-alfa:#10a7f9; --c-th:#8080ff;
+  --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+.tabs{flex-wrap:wrap; border-radius:20px}
+.top > *{min-width:0}
+@media (max-width:480px){ .tabs a{padding:8px 12px; font-size:.88rem} }
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+.map{display:grid; gap:8px; margin:0; padding:0; list-style:none}
+.map li{display:flex; gap:10px; align-items:baseline}
+.map b{font-family:var(--mono); min-width:4.6em; flex:none}
+
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-w{color:var(--c-w); background:color-mix(in srgb, var(--c-w) 8%, transparent)}
+.v-at{color:var(--c-at); background:color-mix(in srgb, var(--c-at) 8%, transparent)}
+.v-alfa{color:var(--c-alfa); background:color-mix(in srgb, var(--c-alfa) 8%, transparent)}
+.v-th{color:var(--c-th); background:color-mix(in srgb, var(--c-th) 8%, transparent)}
+.vec{display:inline-block; position:relative; padding-top:.2em}
+.vec::before{content:'→'; position:absolute; left:0; right:0; top:-.55em; text-align:center; font-size:.7em; line-height:1}
+.v-m{color:var(--ink); background:color-mix(in srgb, var(--ink) 8%, transparent)}
+.v.hl{background:none; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em; align-self:stretch; text-align:center}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+input.r-v{accent-color:var(--c-v)} input.r-a{accent-color:var(--c-a)} input.r-t{accent-color:var(--c-t)} input.r-w{accent-color:var(--c-w)} input.r-at{accent-color:var(--c-at)} input.r-alfa{accent-color:var(--c-alfa)} input.r-m{accent-color:var(--ink)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
+.chip.ok{border-color:var(--ok); color:var(--ok)}
+.chip.virt{border-style:dashed}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.exps{border-radius:20px}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.barra{display:grid; gap:6px}
+.fila{display:grid; grid-template-columns:7.2em 1fr; gap:8px; align-items:center; font-size:.86rem; font-weight:700}
+.tiras{display:flex; height:28px; border-radius:8px; overflow:hidden; background:var(--grid)}
+.tira{display:flex; align-items:center; justify-content:center; color:var(--card); font:700 .78rem var(--mono); white-space:nowrap; overflow:hidden; min-width:2px; border-right:2px solid var(--card)}
+.tira:last-child{border-right:0}
+
+.check{display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:.92rem; cursor:pointer; min-height:44px}
+.check input{width:20px; height:20px; accent-color:var(--ink)}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+.lista{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.lista button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.lista button.done{border-color:var(--ink); color:var(--ink)}
+.lista button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.lista button:disabled{opacity:.45; cursor:not-allowed}
+.lista.pastillas button{width:auto; border-radius:999px; padding:0 12px; min-height:36px}
+</style>
+<link rel="stylesheet" href="../../nucleo/pegatina.css">
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Cinemática · Problemas tipo admisión</p>
+      <h1>El disco y sus flechas</h1>
+      <p class="sub">Un disco que gira, un punto del borde y las flechas que lo acompañan: velocidad, aceleraciones y giro.</p>
+    </header>
+    <nav class="tabs" aria-label="Pestañas de la escena">
+      <a href="#paso-a-paso" id="tab1">El disco que acelera</a>
+      <a href="#flechas" id="tab2">Flechas</a>
+      <a href="#graficas" id="tab3">Gráficas</a>
+      <a href="#ruedas" id="tab4">Ruedas y poleas</a>
+      <a href="#que-pasa-si" id="tab5">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="El disco que acelera: un punto del borde con sus flechas">
+      <div class="lienzo"><canvas id="cv1" tabindex="-1" role="img" aria-label="El disco que acelera: un punto del borde con sus flechas"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="lista" id="lista1" aria-label="Pasos"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="k1"></p>
+        <h2 class="step-t" id="t1" tabindex="-1"></h2>
+      </div>
+      <div id="body1" class="body"></div>
+      <div class="nav">
+        <button id="prev1" type="button" class="btn">Anterior</button>
+        <button id="next1" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Flechas en el plano: posición, velocidad y aceleración">
+      <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Flechas en el plano: posición, velocidad y aceleración"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <ol class="lista" id="lista2" aria-label="Pasos"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2" tabindex="-1"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+      <div class="nav">
+        <button id="prev2" type="button" class="btn">Anterior</button>
+        <button id="next2" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m3" class="mode" hidden>
+    <section class="bench" aria-label="Gráficas del giro contra el tiempo">
+      <div class="lienzo"><canvas id="cv3" tabindex="-1" role="img" aria-label="Gráficas del giro contra el tiempo"></canvas></div>
+      <p class="sr" id="desc3" aria-live="polite"></p>
+      <div class="legend" id="ley3"></div>
+    </section>
+    <section class="guide">
+      <ol class="lista" id="lista3" aria-label="Pasos"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="k3"></p>
+        <h2 class="step-t" id="t3" tabindex="-1"></h2>
+      </div>
+      <div id="body3" class="body"></div>
+      <div class="nav">
+        <button id="prev3" type="button" class="btn">Anterior</button>
+        <button id="next3" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m4" class="mode" hidden>
+    <section class="bench" aria-label="Ruedas, poleas y fajas">
+      <div class="lienzo"><canvas id="cv4" tabindex="-1" role="img" aria-label="Ruedas, poleas y fajas"></canvas></div>
+      <p class="sr" id="desc4" aria-live="polite"></p>
+      <div class="legend" id="ley4"></div>
+    </section>
+    <section class="guide">
+      <ol class="lista" id="lista4" aria-label="Pasos"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="k4"></p>
+        <h2 class="step-t" id="t4" tabindex="-1"></h2>
+      </div>
+      <div id="body4" class="body"></div>
+      <div class="nav">
+        <button id="prev4" type="button" class="btn">Anterior</button>
+        <button id="next4" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m5" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos de giro">
+      <div class="lienzo"><canvas id="cv5" tabindex="-1" role="img" aria-label="Experimentos de giro"></canvas></div>
+      <p class="sr" id="desc5" aria-live="polite"></p>
+      <div class="legend" id="ley5"></div>
+    </section>
+    <section class="guide">
+      <ol class="lista pastillas" id="lista5" aria-label="Experimentos"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="k5"></p>
+        <h2 class="step-t" id="t5" tabindex="-1"></h2>
+      </div>
+      <div id="body5" class="body"></div>
+      <div class="nav">
+        <button id="prev5" type="button" class="btn">Anterior</button>
+        <button id="next5" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/movimiento-circular">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'movimiento-circular', unidad: 'fisica.movimiento-parabolico-y-circular', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la física sale de MotorCircular (motor.js); aquí solo se pinta y se escribe. */
+const M = MotorCircular, PI = Math.PI, TAU = 2*Math.PI;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length >= 5) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Un valor que el motor da como múltiplo de π (k = valor/π), escrito «kπ».
+const conPi = (k, d) => (Math.abs(k - 1) < 1e-9 ? 'π' : Math.abs(k + 1) < 1e-9 ? '−π' : fmt(k, d === undefined ? 2 : d) + 'π');
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const fuente = t => `<p class="fuente">${t}</p>`;
+const chip = t => `<span class="chip">${t}</span>`;
+// Vector con flechita encima (r⃗), sin depender de que la letra traiga la flecha combinable.
+const vec = x => `<span class="vec">${x}</span>`;
+function rotuloVec(ctx, c, x, y, t, color){
+  rotulo(ctx, c, x, y, t, color, 'left', 800);
+  ctx.font = `800 ${c.chico ? 11 : 12}px ${c.font}`; const w = ctx.measureText(t[0]).width;
+  flecha(ctx, x, y - 11, x + w + 2, y - 11, color, 1.4);
+}
+
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0 };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:250 })), dpr = Celular.dpr();
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === !!L.compacto) return; L.compacto = on; L.resize(); };
+  return L;
+}
+const altoLienzo = W => W >= 560 ? clamp(W*0.64, 340, 500) : clamp(W*0.92, 320, 380);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function circulo(ctx, x, y, r){ ctx.beginPath(); ctx.arc(x, y, Math.max(0, r), 0, TAU); }
+// Texto con un fondo del color del papel, que no se sale del lienzo.
+function rotulo(ctx, c, x, y, t, color, align, peso, W){
+  ctx.font = `${peso || 700} ${c.chico ? 11 : 12}px ${c.font}`; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width;
+  let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  if (W) x0 = clamp(x0, 4, W - w - 4);
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
+}
+function colores(W){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    v:g('--c-v'), a:g('--c-a'), t:g('--c-t'), w:g('--c-w'), at:g('--c-at'), alfa:g('--c-alfa'), th:g('--c-th'),
+    suelo:g('--suelo'), bloque:g('--bloque'), mono:g('--mono'), font:g('--font'), chico: W < 480 };
+}
+function flecha(ctx, x1, y1, x2, y2, color, w, dash){
+  const ang = Math.atan2(y2 - y1, x2 - x1), l = Math.hypot(x2 - x1, y2 - y1); if (l < 2) return;
+  const p = Math.min(9 + w, l*0.6);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round';
+  if (dash) ctx.setLineDash(dash);
+  linea(ctx, x1, y1, x2 - Math.cos(ang)*p*0.7, y2 - Math.sin(ang)*p*0.7);
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - Math.cos(ang - .45)*p, y2 - Math.sin(ang - .45)*p); ctx.lineTo(x2 - Math.cos(ang + .45)*p, y2 - Math.sin(ang + .45)*p);
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+// Flecha con halo del color del papel: aT (ocre) y las demás no se confunden con el dibujo de abajo.
+function flechaHalo(ctx, c, x1, y1, x2, y2, col, w, dash){ flecha(ctx, x1, y1, x2, y2, c.paper, w + 4); flecha(ctx, x1, y1, x2, y2, col, w, dash); }
+// Ángulo matemático (antihorario, desde +x) → punto en pantalla (y hacia abajo).
+const enDisco = (cx, cy, R, a) => [cx + R*Math.cos(a), cy - R*Math.sin(a)];
+/* Disco visto de frente: relleno, rayos que giran con él (giro en rad, antihorario) y una marca en el borde.
+   o = { rayos, marca:true, fase, etiqueta, llanta } */
+function disco(ctx, c, cx, cy, R, giro, o){
+  o = o || {};
+  ctx.save();
+  circulo(ctx, cx, cy, R); ctx.fillStyle = c.bloque; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = o.llanta ? 4 : 2; ctx.stroke();
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4;
+  const n = o.rayos === undefined ? 6 : o.rayos;
+  for (let k = 0; k < n; k++){ const a = giro + k*TAU/n; linea(ctx, cx, cy, ...enDisco(cx, cy, R*0.92, a)); }
+  circulo(ctx, cx, cy, 4); ctx.fillStyle = c.ink; ctx.fill();
+  ctx.restore();
+  const p = enDisco(cx, cy, R, giro + (o.fase || 0));
+  if (o.marca !== false){ ctx.save(); circulo(ctx, p[0], p[1], 6); ctx.fillStyle = c.ink; ctx.fill(); ctx.strokeStyle = c.card; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+    if (o.etiqueta) rotulo(ctx, c, p[0] + (p[0] >= cx ? 14 : -14), p[1] - 12, o.etiqueta, c.ink, p[0] >= cx ? 'left' : 'right', 800); }
+  return p;
+}
+// Flechas de un punto del borde en el ángulo a (rad): tangente (sentido antihorario si s = 1) y hacia el centro.
+function dirTangente(a, s){ return [-Math.sin(a)*(s || 1), -Math.cos(a)*(s || 1)]; }
+function dirCentro(a){ return [-Math.cos(a), Math.sin(a)]; }
+// Arco del ángulo girado θ desde el ángulo a0 (rad, antihorario), con su rótulo.
+function arcoGirado(ctx, c, cx, cy, R, a0, th, col, w){
+  if (Math.abs(th) < 1e-6) return;
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = w || 3; ctx.beginPath();
+  ctx.arc(cx, cy, R, -a0, -(a0 + th), th > 0); ctx.stroke(); ctx.restore();
+}
+function pasoBonito(rango, n){
+  const crudo = rango/n, p = Math.pow(10, Math.floor(Math.log10(crudo))), r = crudo/p;
+  return (r < 1.5 ? 1 : r < 3 ? 2 : r < 7 ? 5 : 10)*p;
+}
+// Ejes de una gráfica dentro de la caja b = {x, y, w, h} con rango R = {x0, x1, y0, y1}. Devuelve X(t) e Y(valor).
+function ejes(ctx, c, b, R, tit){
+  const X = v => b.x + (v - R.x0)/(R.x1 - R.x0)*b.w, Y = v => b.y + b.h - (v - R.y0)/(R.y1 - R.y0)*b.h;
+  const px = tit.pasoX || pasoBonito(R.x1 - R.x0, b.w < 260 ? 4 : 6), py = tit.pasoY || pasoBonito(R.y1 - R.y0, b.h < 90 ? 2 : 4);
+  ctx.save();
+  ctx.fillStyle = c.paper; ctx.fillRect(b.x, b.y, b.w, b.h);
+  ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+  ctx.font = `600 10px ${c.mono}`; ctx.textBaseline = 'top'; ctx.textAlign = 'center'; ctx.fillStyle = c.muted;
+  for (let v = Math.ceil(R.x0/px - 1e-9)*px; v <= R.x1 + 1e-9; v += px){
+    linea(ctx, X(v), b.y, X(v), b.y + b.h);
+    if (tit.numerosX !== false) ctx.fillText(fmt(v, px < 1 ? 1 : 0), clamp(X(v), b.x + 6, b.x + b.w - 6), b.y + b.h + 3);
+  }
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let v = Math.ceil(R.y0/py - 1e-9)*py; v <= R.y1 + 1e-9; v += py){ linea(ctx, b.x, Y(v), b.x + b.w, Y(v)); ctx.fillText(fmt(v, py < 1 ? 1 : 0), b.x - 4, Y(v)); }
+  ctx.restore();
+  ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4;
+  const y0 = R.y0 <= 0 && R.y1 >= 0 ? Y(0) : b.y + b.h;
+  linea(ctx, b.x, y0, b.x + b.w, y0); linea(ctx, b.x, b.y, b.x, b.y + b.h); ctx.restore();
+  ctx.font = `800 11px ${c.font}`;
+  if (tit.x){ ctx.fillStyle = tit.colX || c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(tit.x, b.x + b.w - 2, y0 - 3); }
+  if (tit.y){ ctx.fillStyle = tit.colY || c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(tit.y, b.x + 5, b.y + 3); }
+  return { X, Y, b, R };
+}
+function curva(ctx, ej, f, t0, t1, col, w, dash){
+  ctx.save(); ctx.beginPath(); ctx.rect(ej.b.x, ej.b.y - 2, ej.b.w, ej.b.h + 4); ctx.clip();
+  ctx.strokeStyle = col; ctx.lineWidth = w || 3; ctx.lineJoin = 'round'; if (dash) ctx.setLineDash(dash);
+  ctx.beginPath();
+  for (let k = 0; k <= 120; k++){ const t = t0 + (t1 - t0)*k/120, X = ej.X(t), Y = ej.Y(f(t)); k ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); }
+  ctx.stroke(); ctx.restore();
+}
+// Área entre f y g (o el eje) de t0 a t1.
+function area(ctx, ej, f, t0, t1, col, alpha, g){
+  if (t1 <= t0) return;
+  ctx.save(); ctx.beginPath();
+  for (let k = 0; k <= 80; k++){ const t = t0 + (t1 - t0)*k/80; k ? ctx.lineTo(ej.X(t), ej.Y(f(t))) : ctx.moveTo(ej.X(t), ej.Y(f(t))); }
+  for (let k = 80; k >= 0; k--){ const t = t0 + (t1 - t0)*k/80; ctx.lineTo(ej.X(t), ej.Y(g ? g(t) : 0)); }
+  ctx.closePath(); ctx.fillStyle = col; ctx.globalAlpha = alpha || .22; ctx.fill(); ctx.restore();
+}
+// Leyenda (los colores sin decir nada de las respuestas).
+const LEY = { v:['--c-v','v · velocidad'], acp:['--c-a','acp · aceleración centrípeta'], a:['--c-a','a · aceleración total (a trazos)'],
+  at:['--c-at','aT · aceleración tangencial'], t:['--c-t','t · tiempo'], w:['--c-w','ω · velocidad angular'], th:['--c-th','θ · ángulo girado'],
+  f:['--c-w','f · vueltas por segundo'], vueltas:['--c-w','vueltas (en la cinta)'], aN:['--c-a','a · aceleración'],
+  alfa:['--c-alfa','α · aceleración angular'], r:['--ink','<span class="vec">r</span> · vector posición (en tinta, como los radios)'] };
+function leyenda(el, claves){
+  el.innerHTML = claves.map(k => `<span><i style="background:var(${LEY[k][0]})"></i>${LEY[k][1]}</span>`).join('');
+}
+
+/* ================= Motor de pasos (el mismo en las cinco pestañas) =================
+   Cada paso: { id, t (título), corto, ley:[...], antes(E), q() (enunciado y pregunta), opts:[[letra, texto, código, respaldo]],
+   ok, fb:{ letra: texto }, despues(E, A) (lo que se mueve al responder), exp() (explicación), ctrl() y enlazar(E, A)
+   (perillas), dibujar(L, c, E, resp), desc(E, resp) }. Un paso sin opts no pide predicción.
+   Regla de Gerson: un paso (o experimento) solo se abre si todos los anteriores tienen respuesta; los respondidos se
+   revisitan. La pestaña entre modos no se bloquea. */
+function montar(cfg){
+  const $ = id => document.getElementById(id + cfg.n);
+  const pasos = cfg.pasos, cv = $('cv'), lista = $('lista'), cuerpo = $('body'), nombre = cfg.pastillas ? 'Experimento' : 'Paso';
+  const S = { n:0, pred:{}, t0:0, visto:{} };
+  let E = {}, anim = null, inmediato = false;
+  const L = crearLienzo(cv, cfg.alto || altoLienzo, draw);
+  const resp = p => (p.opts ? S.pred[p.id] : true);
+  function draw(){
+    if (!L.W) return;
+    const p = pasos[S.n], c = colores(L.W);
+    L.ctx.clearRect(0, 0, L.W, L.H);
+    p.dibujar(L, c, E, !!resp(p));
+  }
+  function decir(){ const p = pasos[S.n]; $('desc').textContent = p.desc ? p.desc(E, !!resp(p)) : ''; }
+  // Animación con la fracción acotada por los dos lados (algunos celulares dan un primer cuadro anterior a t0).
+  function animar(dur, paso, fin){
+    cancelAnimationFrame(anim);
+    if (RM || inmediato){ paso(1); draw(); if (fin) fin(); return; }
+    const t0 = performance.now();
+    const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(f); draw(); if (f < 1) anim = requestAnimationFrame(tick); else if (fin) fin(); };
+    anim = requestAnimationFrame(tick);
+  }
+  const A = { animar, draw, parar:() => cancelAnimationFrame(anim), raiz:document.getElementById(cfg.modo), decir, L, E:() => E, paso:() => pasos[S.n], resp:() => !!resp(pasos[S.n]) };
+  const libre = () => { const j = pasos.findIndex(p => p.opts && !S.pred[p.id]); return j < 0 ? pasos.length - 1 : j; };
+  function pintarLista(){
+    const lib = libre();
+    lista.innerHTML = pasos.map((p, k) => {
+      const txt = cfg.pastillas ? `${k + 1}. ${p.corto}` : `${k + 1}`;
+      if (k > lib) return `<li><button type="button" disabled aria-disabled="true" aria-label="${nombre} ${k + 1}, bloqueado">${txt}</button></li>`;
+      const cls = k === S.n ? 'on' : (resp(p) && S.visto[k] ? 'done' : '');
+      return `<li><button type="button" class="${cls}" data-k="${k}" aria-label="Ir al ${nombre.toLowerCase()} ${k + 1}: ${p.t}"${k === S.n ? ' aria-current="step"' : ''}>${txt}</button></li>`;
+    }).join('');
+    lista.querySelectorAll('button[data-k]').forEach(b => b.onclick = () => go(+b.dataset.k));
+  }
+  function nav(){
+    const p = pasos[S.n], falta = p.opts && !S.pred[p.id];
+    $('prev').disabled = S.n === 0;
+    $('next').disabled = S.n === pasos.length - 1 || !!falta;
+    $('next').textContent = falta ? 'Elige una opción' : (S.n === pasos.length - 1 ? 'Fin de la pestaña' : 'Siguiente');
+  }
+  function resultado(p){
+    const res = cuerpo.querySelector('.res'); if (!res) return;
+    res.innerHTML = (p.exp ? p.exp(E) : '') + (p.ctrl ? p.ctrl(E) : '');
+    if (p.enlazar) p.enlazar(E, A);
+  }
+  function go(n){
+    if (n < 0 || n >= pasos.length || n > libre()) return;
+    cancelAnimationFrame(anim);
+    S.n = n; S.visto[n] = true; S.t0 = Date.now();
+    const p = pasos[n];
+    E = {}; if (p.antes) p.antes(E);
+    $('k').textContent = `${nombre} ${n + 1} de ${pasos.length}`;
+    $('t').textContent = p.t;
+    leyenda($('ley'), typeof p.ley === 'function' ? p.ley(!!resp(p)) : p.ley || []);
+    cuerpo.innerHTML = `<div class="problem">${p.q(E)}</div>` + (p.opts ? `<div class="opts">${p.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" role="status"></p>` : '') + `<div class="res body"></div>`;
+    const btns = [...cuerpo.querySelectorAll('.opt')];
+    const pintar = () => {
+      const r = S.pred[p.id]; if (!r) return;
+      btns.forEach(b => { b.disabled = true; if (b.dataset.k === p.ok) b.classList.add('correct'); else if (b.dataset.k === r) b.classList.add('wrong'); });
+      const fb = cuerpo.querySelector('.fb');
+      fb.textContent = r === p.ok ? '¡Bien! ' + p.fb[r] : `Elegiste la ${r.toUpperCase()}. ${p.fb[r]} La correcta está marcada.`;
+      fb.className = 'fb ' + (r === p.ok ? 'ok' : 'mal');
+    };
+    btns.forEach(b => b.onclick = () => {
+      if (S.pred[p.id]) return;
+      const o = p.opts.find(q => q[0] === b.dataset.k);
+      S.pred[p.id] = o[0];
+      registrarPrediccion(p.id, o[0], o[0] === p.ok, o[2] || '', o[3] || '', S.t0);
+      pintar(); pintarLista(); nav(); L.compactar(false);
+      if (typeof p.ley === 'function') leyenda($('ley'), p.ley(true));
+      $('next').focus({ preventScroll:true });
+      if (window.innerWidth < 900) cuerpo.querySelector('.res').innerHTML = '<p class="hint">Mira el dibujo…</p>';
+      Celular.alResponder(L.cv, () => { inmediato = false; resultado(p); if (p.despues) p.despues(E, A); decir(); draw(); },
+        () => S.n === n && !A.raiz.hidden, { siNo: () => { if (S.n === n) resultado(p); } });
+    });
+    pintar();
+    if (resp(p)){ inmediato = true; if (p.opts) resultado(p); if (p.despues) p.despues(E, A); inmediato = false; }
+    L.compactar(!resp(p));
+    pintarLista(); nav(); decir(); draw();
+  }
+  $('next').addEventListener('click', () => go(S.n + 1));
+  $('prev').addEventListener('click', () => go(S.n - 1));
+  function marcar(k){ A.raiz.querySelectorAll('.v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k)); E.hl = k; draw(); }
+  A.raiz.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('[data-var]'); if (t) marcar(t.dataset.var); });
+  A.raiz.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('[data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+  A.raiz.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('[data-var]'); if (t) marcar(t.dataset.var); });
+  A.raiz.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('[data-var]')) marcar(null); });
+  alRedibujarTema(draw);
+  addEventListener('modo', () => { if (!A.raiz.hidden) L.resize(); else cancelAnimationFrame(anim); });
+  L.resize(); go(0);
+  return { go, S, A, L };
+}
+// Perilla: <input type=range> con su salida. Devuelve el HTML; enlazarPerilla conecta el evento.
+const perilla = (id, txt, clase, min, max, paso, val) => `<div class="slider"><label for="${id}"><span>${txt}</span><output id="${id}-o"></output></label><input id="${id}" class="${clase}" type="range" min="${min}" max="${max}" step="${paso}" value="${val}"></div>`;
+// Un ángulo de rad a texto en grados, sin decimales.
+const enGrados = th => fmt(th*180/PI, 0) + '°';
+</script>
+<script>
+/* ================= Pestaña 1: «El disco que acelera» (C8 y C9) =================
+   Disco de 40 cm de diámetro (R = 0,2 m) que parte del reposo con α = 4π rad/s² (2 vueltas/s²). */
+(function(){
+const R0 = 0.2, AL0 = 4*PI;
+const HIP = 'Las opciones incorrectas son hipótesis nuestras: errores que se repiten en las alternativas de los problemas de academia, sin un estudio con porcentaje.';
+// Zonas del lienzo: el disco y, si hace falta, una zona extra (a la derecha en pantalla grande, abajo en el celular).
+function zonas(L, extra, parte){
+  const { W, H } = L;
+  if (!extra) return { cx:W/2, cy:H/2, R:Math.min(W, H)*0.36 };
+  if (W >= 560){ const w = W*(parte || 0.42); return { cx:w/2, cy:H/2, R:Math.min(w, H)*0.36, ex:{ x:w + 8, y:14, w:W - w - 26, h:H - 40 } }; }
+  const h = H*(parte || 0.5); return { cx:W/2, cy:h/2 + 4, R:h*0.38, ex:{ x:44, y:h + 10, w:W - 60, h:H - h - 34 } };
+}
+// El disco con P y sus flechas en el instante t (desde el reposo con α). o = { flechas:{v,at,acp,a}, escalaA (px por m/s²), escalaV, arco }
+function discoEn(L, c, z, R, alfa, t, o){
+  const m = M.mcuv({ r:R, omega0:0, alfa, t }), a0 = o.a0 === undefined ? PI/2 : o.a0, a = a0 + m.theta, ctx = L.ctx;
+  if (o.arco) arcoGirado(ctx, c, z.cx, z.cy, z.R + 10, a0, m.theta, c.th, 3);
+  const p = disco(ctx, c, z.cx, z.cy, z.R, m.theta, { fase:a0, etiqueta:'P' });
+  const f = o.flechas || {}, [tx, ty] = dirTangente(a), [kx, ky] = dirCentro(a);
+  const eA = o.escalaA, eV = o.escalaV;
+  if (f.a && m.a > 1e-9){ flechaHalo(ctx, c, p[0], p[1], p[0] + (tx*m.at + kx*m.ac)*eA, p[1] + (ty*m.at + ky*m.ac)*eA, c.a, 2, [5, 4]); }
+  if (f.acp && m.ac*eA > 2){ flechaHalo(ctx, c, p[0], p[1], p[0] + kx*m.ac*eA, p[1] + ky*m.ac*eA, c.a, 3.4);
+    rotulo(ctx, c, p[0] + kx*m.ac*eA*0.55 + ky*12, p[1] + ky*m.ac*eA*0.55 - kx*12, 'acp', c.a, 'center', 800, L.W); }
+  if (f.at){ flechaHalo(ctx, c, p[0], p[1], p[0] + tx*m.at*eA, p[1] + ty*m.at*eA, c.at, 4);
+    rotulo(ctx, c, p[0] + tx*m.at*eA + tx*14, p[1] + ty*m.at*eA + ty*14 - 4, 'aT', c.at, 'center', 800, L.W); }
+  if (f.v && m.v*eV > 3){ flechaHalo(ctx, c, p[0] - kx*10, p[1] - ky*10, p[0] - kx*10 + tx*m.v*eV, p[1] - ky*10 + ty*m.v*eV, c.v, 3);
+    rotulo(ctx, c, p[0] - kx*24 + tx*m.v*eV, p[1] - ky*24 + ty*m.v*eV, 'v', c.v, 'center', 800, L.W); }
+  return m;
+}
+const reloj = (L, c, t, x, y) => rotulo(L.ctx, c, x === undefined ? 12 : x, y === undefined ? 16 : y, `t = ${fmt(t, 2)} s`, c.t, 'left', 800, L.W);
+
+const pasos = [
+ { id:'mc-p1', t:'El problema', ley:['v','at','acp','alfa'],
+   q:() => `Un disco de 40 cm de diámetro (radio ${V('m','R = 0,2 m')}) está quieto y empieza a girar con una aceleración angular constante ${V('alfa','α = 4π rad/s²')}: cada segundo gana 2 vueltas por segundo. Seguimos un punto ${V('m','P')} del borde, que al empezar está a la izquierda del centro, y sus flechas: la ${V('v','velocidad v')}, la ${V('at','aceleración tangencial aT')}, que va sobre la velocidad, y la ${V('a','aceleración centrípeta acp')}, que apunta al centro.`,
+   exp:() => '',
+   dibujar:(L, c) => { const z = zonas(L); disco(L.ctx, c, z.cx, z.cy, z.R*0.88, 0, { fase:PI, etiqueta:'P' }); reloj(L, c, 0); },
+   desc:() => 'Un disco quieto, visto de frente, con un punto P marcado en el borde, a la izquierda del centro.',
+   antes:() => {} },
+ { id:'mc-p2', t:'¿Qué flecha cambia?', ley:['v','at','acp','a','t'],
+   antes:E => { E.t = 0.15; },
+   q:() => `El disco ya empezó a girar. En el dibujo están las flechas de ${V('m','P')} en este instante. Mientras el disco gana rapidez, ¿qué pasa con el largo de las flechas ${V('at','aT')} y ${V('a','acp')}?`,
+   opts:[['a','aT se queda igual y acp crece',null,''],
+         ['b','Las dos crecen',"CI-at-crece",'hipotesis'],
+         ['c','Las dos se quedan igual',"CI-mcuv-flechas-fijas",'hipotesis'],
+         ['d','aT crece y acp se queda igual',"CI-at-ac-cambiadas",'hipotesis']],
+   ok:'a',
+   fb:{ a:'El módulo de aT = α·R no cambia (su dirección gira con P), porque α es constante. acp = ω²·R crece con la rapidez.',
+        b:'La que crece es acp = ω²·R. aT = α·R depende de α, que es constante: no crece aunque el disco vaya más rápido.',
+        c:'α constante deja fija solo a aT. acp = ω²·R crece porque ω crece.',
+        d:'Es al revés: aT = α·R no cambia y acp = ω²·R crece con ω.' },
+   despues:(E, A) => A.animar(4200, f => { E.t = 0.15 + 0.35*f; }),
+   exp:() => { const a = M.mcuv({ r:R0, omega0:0, alfa:AL0, t:0.15 }), b = M.mcuv({ r:R0, omega0:0, alfa:AL0, t:0.5 });
+     return `<div class="eqs"><div class="eq">${V('at','aT')} = ${V('alfa','α')}·R = 4π·0,2 = ${V('at','0,8π m/s²')}<span class="note">no depende del tiempo</span></div>
+     <div class="eq">${V('a','acp')} = ${V('w','ω²')}·R<span class="note">${V('w','ω')} = ${V('alfa','α')}·${V('t','t')} crece, y acp con su cuadrado</span></div></div>
+     <div class="chips">${chip(`a los 0,15 s: acp ≈ ${fmt(a.ac, 2)} m/s²`)}${chip(`a los 0,5 s: acp ≈ ${fmt(b.ac, 1)} m/s²`)}${chip(`aT ≈ ${fmt(a.at, 2)} m/s² siempre`)}</div>
+     <p>Mira el dibujo: la flecha ${V('at','ocre')} no cambia de largo; la ${V('a','verde')} que va al centro se alarga cada vez más rápido. La total, a trazos, se va inclinando hacia el centro.</p>${fuente(HIP)}`; },
+   dibujar:(L, c, E, r) => { const z = zonas(L);
+     discoEn(L, c, Object.assign({}, z, { R:z.R*0.88 }), R0, AL0, E.t, { a0:PI, flechas:{ v:true, at:true, acp:true, a:true }, escalaA:z.R*0.8/8, escalaV:z.R*0.6/1.3 });
+     reloj(L, c, E.t); },
+   desc:(E, r) => r ? 'El disco gira cada vez más rápido. La flecha de la aceleración tangencial no cambia; la centrípeta crece.' : 'El disco con el punto P y sus tres flechas en un instante.' },
+ { id:'mc-p3', t:'¿Cuándo son iguales?', ley:['at','acp','a','th'],
+   antes:E => { E.R = R0; E.alfa = AL0; E.t = 0; },
+   q:() => `Al arrancar, ${V('a','acp')} es cero y ${V('at','aT')} no. Como acp crece, en algún momento las dos son iguales. Desde que arrancó, ¿cuánto habrá girado el disco ${V('th','(θ)')} en ese momento?`,
+   opts:[['a','Medio radián (unos 29°), en cualquier disco',null,''],
+         ['b','Depende del radio: un disco más grande gira más antes','CI-cociente-depende-del-radio','hipotesis'],
+         ['c','45° (un octavo de vuelta), en cualquier disco','CI-angulo-a-con-girado','hipotesis'],
+         ['d','1 radián (unos 57°), en cualquier disco','CI-sin-el-dos','hipotesis']],
+   ok:'a',
+   fb:{ a:'acp/aT = ω²R/(αR) y, desde el reposo, ω² = 2αθ: la razón es 2θ. Son iguales cuando 2θ = 1.',
+        b:'El radio se cancela: acp/aT = ω²·R / (α·R). Mueve las perillas y verás que el disco se detiene siempre en el mismo ángulo.',
+        c:'45° es el ángulo entre la aceleración total y la velocidad cuando aT = acp, no lo que giró el disco.',
+        d:'Falta el 2 de ω² = 2αθ: la razón acp/aT vale 2θ, así que θ = ½ rad.' },
+   despues:(E, A) => { const d = M.desdeReposo({ r:E.R, alfa:E.alfa, razon:1 }); E.tFin = d.t; A.animar(2600, f => { E.t = d.t*f; }); },
+   exp:() => `<div class="eqs"><div class="eq">${fr(V('a','acp'), V('at','aT'))} = ${fr(V('w','ω') + '²·R', V('alfa','α') + '·R')} = ${fr('2' + V('alfa','α') + V('th','θ'), V('alfa','α'))} = 2${V('th','θ')}<span class="note">desde el reposo, ω² = 2αθ</span></div>
+     <div class="eq">acp = aT → 2${V('th','θ')} = 1 → ${V('th','θ = ½ rad')}</div></div>
+     <p>El radio y α se cancelan. Mueve las perillas: con cualquier disco, la flecha ${V('a','verde')} alcanza a la ${V('at','ocre')} cuando el arco ${V('th','azul')} mide medio radián. Con este truco, «¿cuándo acp es el doble de aT?» sale de una línea: 2θ = 2, θ = 1 rad.</p>${fuente(HIP)}`,
+   ctrl:E => `<div class="ctrls">${perilla('p3R', 'Radio R', 'r-m', 0.1, 1, 0.05, E.R)}${perilla('p3a', 'Aceleración angular α', 'r-alfa', 1, 20, 1, Math.round(E.alfa))}</div><div class="chips" id="p3c"></div>`,
+   enlazar:(E, A) => {
+     const raiz = A.raiz, r = raiz.querySelector('#p3R'), a = raiz.querySelector('#p3a');
+     const vivo = () => { const d = M.desdeReposo({ r:E.R, alfa:E.alfa, razon:1 });
+       raiz.querySelector('#p3R-o').textContent = `${fmt(E.R, 2)} m`; raiz.querySelector('#p3a-o').textContent = `${fmt(E.alfa, 1)} rad/s²`;
+       raiz.querySelector('#p3c').innerHTML = chip(`se igualan a los ${fmt(d.t, 2)} s`) + chip(`aT = acp ≈ ${fmt(d.at, 2)} m/s²`) + chip(`θ = ${fmt(d.theta, 1)} rad ≈ ${fmt(d.thetaGrados, 0)}°`); };
+     const otra = () => { E.R = +r.value; E.alfa = +a.value; vivo(); const d = M.desdeReposo({ r:E.R, alfa:E.alfa, razon:1 }); E.tFin = d.t; A.animar(1800, f => { E.t = d.t*f; }); };
+     r.oninput = otra; a.oninput = otra; vivo();
+   },
+   dibujar:(L, c, E, r) => {
+     const z = zonas(L), Rpx = z.R*(0.45 + 0.55*E.R), zz = Object.assign({}, z, { R:Rpx }), at = E.alfa*E.R;
+     const m = discoEn(L, c, zz, E.R, E.alfa, E.t, { flechas:{ at:true, acp:true, a:r }, escalaA:z.R*0.5/at, escalaV:1, arco:r });
+     reloj(L, c, E.t);
+     if (r && E.tFin && E.t >= E.tFin - 1e-9){ rotulo(L.ctx, c, L.W/2, L.H - 14, `acp = aT · θ = ${fmt(m.theta, 2)} rad`, c.th, 'center', 800, L.W); }
+   },
+   desc:(E, r) => r ? 'El disco gira desde el reposo y se detiene justo cuando las flechas tangencial y centrípeta miden lo mismo: ha girado medio radián, sea cual sea el radio.' : 'El disco quieto, con la flecha de la aceleración tangencial en P.' },
+ { id:'mc-p4', t:'Segundo a segundo', ley:['vueltas','t'],
+   antes:E => { E.t = 1; },
+   q:() => `El mismo disco, desde el reposo, da ${V('w','1 vuelta')} en el primer segundo. Abajo, la cinta es el borde «desenrollado»: cada tramo es lo que giró en un segundo. Durante el ${V('t','tercer segundo')} (de 2 s a 3 s), ¿cuántas veces lo del primer segundo gira?`,
+   opts:[['a','5 veces',null,''], ['b','3 veces','CI-enesimo-segundo','hipotesis'], ['c','9 veces','CI-enesimo-en-n-segundos','hipotesis'], ['d','1 vez: lo mismo','CI-giro-parejo','hipotesis']],
+   ok:'a',
+   fb:{ a:'Desde el reposo, lo girado va como t²: 1, 4, 9… En cada segundo, la diferencia: 1, 3, 5.',
+        b:'«El tercer segundo» no gira 3 veces lo del primero: cada segundo gira dos vueltas más que el anterior (1, 3, 5).',
+        c:'9 veces es lo que lleva en los tres primeros segundos juntos (va como t²). Solo en el tercero son 9 − 4 = 5.',
+        d:'Con α constante lo que crece parejo es ω, no lo girado: cada segundo va más rápido y gira más.' },
+   despues:(E, A) => { E.t = 0; A.animar(4400, f => { E.t = 3*f; }); },
+   exp:() => { const e = M.enesimoSegundo({ alfa:AL0, n:3 });
+     return `<div class="eqs"><div class="eq">${V('th','θ')} = ½·${V('alfa','α')}·${V('t','t²')}</div>
+     <div class="eq">3.er segundo: ${fmt(e.vueltasHasta, 0)} − 4 = ${V('w', fmt(e.vueltasN, 0) + ' vueltas')}</div></div>
+     <p>En 1, 2 y 3 s lleva ${fmt(e.segundos[0]/TAU, 0)}, ${fmt((e.segundos[0] + e.segundos[1])/TAU, 0)} y ${fmt(e.vueltasHasta, 0)} vueltas. En el tercer segundo gira la diferencia: ${fmt(e.vueltasN, 0)} vueltas, ${fmt(e.razon, 0)} veces lo del primero.</p>
+     <p>Desde el reposo, los segundos giran como los impares: 1, 3, 5, 7… (en el segundo n, 2n − 1 veces lo del primero). «En el tercer segundo» es un segundo solo; «en tres segundos» son los tres juntos.</p>${fuente(HIP)}`; },
+   dibujar:(L, c, E, r) => {
+     const z = zonas(L, true, 0.55), ctx = L.ctx, m = M.mcuv({ r:R0, omega0:0, alfa:AL0, t:E.t });
+     disco(ctx, c, z.cx, z.cy, z.R, m.theta, { fase:PI/2, etiqueta:'P' }); reloj(L, c, E.t);
+     const ex = z.ex, y = ex.y + ex.h*0.4, h = Math.min(28, ex.h*0.26), u = ex.w/16;
+     ctx.save(); ctx.fillStyle = c.grid; rr(ctx, ex.x, y - h/2, ex.w, h, 6); ctx.fill(); ctx.restore();
+     const lleva = r ? m.vueltas : 1;
+     ctx.save(); ctx.fillStyle = c.w; ctx.globalAlpha = .35; rr(ctx, ex.x, y - h/2, Math.min(9, lleva)*u, h, 6); ctx.fill(); ctx.restore();
+     const cortes = [[0, 1, '1.er s'], [1, 4, '2.º s'], [4, 9, '3.er s']];
+     cortes.forEach(([a, b, txt], k) => {
+       if (!r && k > 0) return;
+       if (lleva < a + 1e-9) return;
+       ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, ex.x + a*u, y - h/2 - 4, ex.x + a*u, y + h/2 + 4); if (lleva >= b - 1e-6) linea(ctx, ex.x + b*u, y - h/2 - 4, ex.x + b*u, y + h/2 + 4); ctx.restore();
+       rotulo(ctx, c, ex.x + (a + Math.min(b, lleva))/2*u, y - h/2 - 14 - (k % 2)*18, txt, c.t, 'center', 800, L.W);
+       if (lleva >= b - 1e-6) rotulo(ctx, c, ex.x + (a + b)/2*u, y + h/2 + 14 + (k % 2)*18, `${fmt(b - a, 0)} ${b - a === 1 ? 'vuelta' : 'vueltas'}`, c.w, 'center', 800, L.W);
+     });
+     rotulo(ctx, c, ex.x, ex.y + ex.h - 6, 'cinta: el borde desenrollado (en vueltas)', c.muted, 'left', 700, L.W);
+   },
+   desc:(E, r) => r ? 'La cinta se pinta segundo a segundo: 1, 3 y 5 vueltas.' : 'El disco y una cinta con lo que giró en el primer segundo: una vuelta.' },
+ { id:'mc-p5', t:'El análogo lineal', ley:['f','vueltas','t'],
+   antes:E => { E.f = 0; },
+   q:() => `La gráfica muestra cuántas ${V('w','vueltas por segundo (f)')} da el disco en cada instante: una recta que sube 2 cada segundo. ¿Cuántas vueltas da entre ${V('t','t = 1 s')} y ${V('t','t = 3 s')}?`,
+   opts:[['a','8 vueltas',null,''], ['b','4 vueltas','CI-rectangulo-omega0','hipotesis'], ['c','9 vueltas','K4-delta-t-contra-t','parcial'], ['d','16π vueltas (unas 50)','TR5-vuelta-un-radian','parcial']],
+   ok:'a',
+   fb:{ a:'Lo girado es el área bajo la recta entre 1 s y 3 s: un trapecio de alturas 2 y 6 y ancho 2 s.',
+        b:'4 es el rectángulo con la f del comienzo del tramo (2 vueltas/s por 2 s). Como acelera, hay que tomar el área bajo la recta, que es mayor.',
+        c:'9 vueltas es lo girado desde t = 0 hasta 3 s. El tramo empieza en 1 s: hay que restar lo de antes (1 vuelta).',
+        d:'16π es el ángulo en radianes. Una vuelta son 2π rad: 16π rad son 8 vueltas.' },
+   despues:(E, A) => A.animar(2600, f => { E.f = f; }),
+   exp:() => { const d = M.entre({ alfa:AL0, t1:1, t2:3 });
+     return `<div class="eqs"><div class="eq">vueltas = área = ${fr('(' + V('w', fmt(d.f1, 0)) + ' + ' + V('w', fmt(d.f2, 0)) + ')', '2')}·${V('t', fmt(d.dt, 0) + ' s')} = ${V('w', fmt(d.vueltas, 0) + ' vueltas')}</div>
+     <div class="eq">${V('th','θ')} = ${V('w','ω₁')}·Δ${V('t','t')} + ½·${V('alfa','α')}·Δ${V('t','t²')} = 4π·2 + ½·4π·4 = ${V('th','16π rad')}<span class="note">la fórmula del MRUV, con ω y α</span></div></div>
+     <p>Es el MRUV con otras letras: ${V('th','θ')} en vez de x, ${V('w','ω')} en vez de v y ${V('alfa','α')} en vez de a. El tramo «desenrollado» es la cinta: de la vuelta 1 a la 9.</p>
+     ${fuente('En un test de gráficas de MRUV, cuando la recta no pasaba por el origen, calculó bien la pendiente cerca de 1 de cada 4 (Beichner, 1994; cifra por verificar). Aquí suponemos el mismo descuido en el giro: no restar lo de antes. Leer radianes como vueltas es pariente de creer que una vuelta mide 1 radián, que el informe de trigonometría registra con respaldo parcial (Williams, s. f.). El rectángulo es hipótesis nuestra.')}`; },
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, ancho = W >= 560;
+     const b = { x:46, y:16, w:W - 62, h:(H - 40)*(ancho ? 0.72 : 0.66) };
+     const ej = ejes(ctx, c, b, { x0:0, x1:3.5, y0:0, y1:7 }, { x:'t (s)', colX:c.t, y:'f (vueltas/s)', colY:c.w, pasoX:0.5, pasoY:1 });
+     if (r){ const t2 = 1 + 2*E.f; area(ctx, ej, t => 2*t, 1, t2, c.w, .25); if (E.f >= 1) rotulo(ctx, c, ej.X(2.15), ej.Y(1.6), 'área = 8 vueltas', c.w, 'center', 800, W); }
+     curva(ctx, ej, t => 2*t, 0, 3.5, c.w, 3);
+     ctx.save(); ctx.strokeStyle = c.t; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.6; [1, 3].forEach(t => linea(ctx, ej.X(t), b.y, ej.X(t), b.y + b.h)); ctx.restore();
+     // La cinta desenrollada debajo (12 vueltas de largo). Antes de responder, solo la marca del 0.
+     const y = b.y + b.h + 34, u = b.w/12;
+     ctx.save(); ctx.fillStyle = c.grid; rr(ctx, b.x, y - 9, 12*u, 18, 5); ctx.fill(); ctx.restore();
+     if (r){ ctx.save(); ctx.fillStyle = c.w; ctx.globalAlpha = .35; rr(ctx, b.x + u, y - 9, 8*u*E.f, 18, 5); ctx.fill(); ctx.restore(); }
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; (r ? [0, 1, 9] : [0]).forEach(v => linea(ctx, b.x + v*u, y - 12, b.x + v*u, y + 12)); ctx.restore();
+     ctx.save(); ctx.font = `700 10px ${c.mono}`; ctx.fillStyle = c.w; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+     ctx.fillText('0', b.x, y + 13); if (r){ ctx.fillText('1 vuelta', b.x + u + 8, y + 13); ctx.fillText('9 vueltas', b.x + 9*u, y + 13); } ctx.restore();
+     rotulo(ctx, c, b.x + 4, y + 30, 'cinta: el borde desenrollado (en vueltas)', c.muted, 'left', 700, W);
+   },
+   desc:(E, r) => r ? 'Se sombrea el área bajo la recta entre 1 y 3 segundos: 8 vueltas.' : 'Gráfica de las vueltas por segundo contra el tiempo: una recta que sube 2 cada segundo, con marcas en 1 y 3 segundos.' },
+ { id:'mc-p6', t:'rpm', ley:['v','w','t'],
+   antes:E => { E.g = 0; },
+   q:() => `A los ${V('t','1,5 s')}, el tacómetro del disco marca ${V('w','180 rpm')} (vueltas por minuto). El disco mide 40 cm de diámetro. ¿Qué ${V('v','rapidez v')} tiene P en ese instante?`,
+   opts:[['a','1,2π m/s (unos 3,8 m/s)',null,''], ['b','0,6 m/s','CI-rpm-sin-2pi','hipotesis'], ['c','72π m/s (unos 226 m/s)','CI-rpm-sin-60','hipotesis'], ['d','2,4π m/s (unos 7,5 m/s)','CI-diametro-por-radio','hipotesis']],
+   ok:'a',
+   fb:{ a:'180 rpm son 3 vueltas por segundo: ω = 3·2π = 6π rad/s, y v = ω·R = 6π·0,2 = 1,2π m/s.',
+        b:'180/60 = 3 son vueltas por segundo, no rad/s: falta el 2π de cada vuelta.',
+        c:'180 son vueltas por minuto: hay que dividir entre 60 para tenerlas por segundo.',
+        d:'40 cm es el diámetro; en v = ω·R va el radio, 20 cm.' },
+   despues:(E, A) => A.animar(4000, f => { E.g = f; }),
+   exp:() => { const k = M.convertir({ rpm:180, d:0.4 });
+     return `<div class="eqs"><div class="eq">${V('w','ω')} = 180·${fr('2π rad', '60 s')} = ${V('w', conPi(k.omegaPi, 0) + ' rad/s')}<span class="note">una vuelta = 2π rad; un minuto = 60 s</span></div>
+     <div class="eq">${V('v','v')} = ${V('w','ω')}·R = ${conPi(k.omegaPi, 0)}·0,2 = ${V('v', conPi(k.vPi, 1) + ' m/s')} ≈ ${fmt(k.v, 1)} m/s</div></div>
+     <p>En el dibujo el disco gira diez veces más lento que el de verdad, para que se vea. Las tres trampas de las alternativas salen en muchos problemas de academia: olvidar el 2π, olvidar el 60 o usar el diámetro.</p>${fuente(HIP)}`; },
+   dibujar:(L, c, E, r) => {
+     const z = zonas(L), ctx = L.ctx, k = M.convertir({ rpm:180, d:0.4 }), giro = E.g*k.omega*0.4;
+     const p = disco(ctx, c, z.cx, z.cy, z.R, PI/6 + giro, { fase:PI/2 - PI/6, etiqueta:'P' });
+     // diámetro
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]); linea(ctx, z.cx - z.R, z.cy + z.R + 14, z.cx + z.R, z.cy + z.R + 14); ctx.restore();
+     rotulo(ctx, c, z.cx, z.cy + z.R + 14, '40 cm', c.ink, 'center', 800, L.W);
+     rotulo(ctx, c, L.W - 12, 16, '180 rpm', c.w, 'right', 800, L.W); reloj(L, c, 1.5);
+     if (r){ const a = PI/2 + giro, [tx, ty] = dirTangente(a); flechaHalo(ctx, c, p[0], p[1], p[0] + tx*z.R*0.8, p[1] + ty*z.R*0.8, c.v, 3.4);
+       rotulo(ctx, c, p[0] + tx*z.R*0.8 + tx*16, p[1] + ty*z.R*0.8 + ty*16, `v = ${conPi(k.vPi, 1)} m/s`, c.v, 'center', 800, L.W); }
+   },
+   desc:(E, r) => r ? 'P va a 1,2π metros por segundo, unos 3,8.' : 'El disco con su diámetro de 40 centímetros y el tacómetro en 180 rpm.' },
+ { id:'mc-p7', t:'El triángulo de aceleraciones', ley:['v','at','acp','a'],
+   antes:E => { E.f = 0; },
+   q:() => `Otra rueda, de ${V('m','2 m')} de radio, va acelerando. Un punto del borde va a ${V('v','4 m/s')} y su ${V('a','aceleración total a')} forma 53° con su velocidad. ¿Cuánto vale |a|? (sen 53° = 4/5)`,
+   opts:[['a','10 m/s²',null,''], ['b','14 m/s²','CI-a-suma-sin-pitagoras','hipotesis'], ['c','13,3 m/s²','CI-at-ac-cambiadas','hipotesis'], ['d','8 m/s²','CI-solo-centripeta','hipotesis']],
+   ok:'a',
+   fb:{ a:'acp = v²/R = 8 m/s² es el cateto opuesto a los 53°: |a| = 8/sen 53° = 10 m/s² (y aT = 6).',
+        b:'14 = 6 + 8 suma las dos componentes como números. Son perpendiculares: |a| = √(6² + 8²) = 10.',
+        c:'13,3 = 8/cos 53°: pone acp junto al ángulo, como si fuera la tangencial. La que va sobre v es aT; acp es el cateto opuesto.',
+        d:'8 m/s² es solo la centrípeta. La rueda acelera, así que también hay aT, y la total es mayor.' },
+   despues:(E, A) => A.animar(2400, f => { E.f = f; }),
+   exp:() => { const x = M.aceleracionTotal({ r:2, v:4, anguloAV:53 });
+     return `<div class="eqs"><div class="eq">${V('a','acp')} = ${fr(V('v','v') + '²', 'R')} = ${fr('16', '2')} = ${V('a', fmt(x.acp, 0) + ' m/s²')}<span class="note">el cateto opuesto a los 53°</span></div>
+     <div class="eq">|${V('a','a')}| = ${fr(V('a','acp'), 'sen 53°')} = ${fr('8', '4/5')} = ${V('a', fmt(x.a, 0) + ' m/s²')} · ${V('at','aT')} = ${V('at', fmt(x.at, 0) + ' m/s²')}<span class="note">un 3-4-5 por 2</span></div></div>
+     <p>Dibuja siempre el triángulo: ${V('at','aT')} sobre la velocidad, ${V('a','acp')} hacia el centro, y la total como hipotenusa. El ángulo dado está entre a y v; el cateto pegado a él es aT.</p>${fuente(HIP)}`; },
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, Rpx = Math.max(W, H)*0.9, cx = W*0.42, cy = H*0.2 + Rpx;
+     ctx.save(); circulo(ctx, cx, cy, Rpx); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+     const px = cx, py = cy - Rpx, s = Math.min(W*0.045, H*0.07);   // px por m/s²
+     ctx.save(); circulo(ctx, px, py, 6); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+     flechaHalo(ctx, c, px, py, px + 4*s*1.4, py, c.v, 3); rotulo(ctx, c, px + 4*s*1.4 + 8, py - 12, 'v = 4 m/s', c.v, 'left', 800, W);
+     const ang = 53*PI/180, la = 10*s, ax = Math.cos(ang)*la, ay = Math.sin(ang)*la;
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(px, py, 34, 0, ang); ctx.stroke(); ctx.restore();
+     rotulo(ctx, c, px + 44, py + 30, '53°', c.ink, 'left', 800, W);
+     if (!r){ ctx.save(); ctx.strokeStyle = c.a; ctx.lineWidth = 2; ctx.setLineDash([3, 5]); linea(ctx, px, py, px + ax*1.15, py + ay*1.15); ctx.restore();
+       rotulo(ctx, c, px + ax*1.15, py + ay*1.15 + 12, 'dirección de a', c.a, 'center', 700, W); }
+     else { const f = E.f;
+       flechaHalo(ctx, c, px, py, px + 6*s*f, py, c.at, 4); flechaHalo(ctx, c, px, py, px, py + 8*s*f, c.a, 3.4);
+       if (f > .3){ flechaHalo(ctx, c, px, py, px + ax*f, py + ay*f, c.a, 2, [5, 4]);
+         ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 3]); ctx.lineWidth = 1; linea(ctx, px + 6*s*f, py, px + ax*f, py + ay*f); linea(ctx, px, py + 8*s*f, px + ax*f, py + ay*f); ctx.restore(); }
+       if (f >= 1){ rotulo(ctx, c, px + 3*s, py - 12, 'aT = 6', c.at, 'center', 800, W); rotulo(ctx, c, px - 8, py + 4*s, 'acp = 8', c.a, 'right', 800, W); rotulo(ctx, c, px + ax + 8, py + ay + 8, '|a| = 10', c.a, 'left', 800, W); }
+     }
+     rotulo(ctx, c, cx, H - 12, 'hacia el centro (a 2 m)', c.muted, 'center', 700, W);
+   },
+   desc:(E, r) => r ? 'La aceleración total se descompone en la tangencial, de 6, y la centrípeta, de 8: mide 10 metros por segundo al cuadrado.' : 'Un punto de una rueda grande con su velocidad hacia la derecha y la dirección de la aceleración total a 53 grados.' },
+];
+montar({ n:1, modo:'m1', pasos });
+})();
+</script>
+<script>
+/* ================= Pestaña 2: «Flechas» (C6, C12 y C2) =================
+   MCU en el plano cartesiano: r, v y acp con sus componentes en î y ĵ. */
+(function(){
+const HIP = 'Las opciones incorrectas son hipótesis nuestras: errores que se repiten en las alternativas de los problemas de academia, sin un estudio con porcentaje.';
+// Plano con el origen en el centro de la circunferencia. Devuelve X(x), Y(y) (metros → píxeles).
+function plano(L, c, rango, radio){
+  const { ctx, W, H } = L, [x0, x1, y0, y1] = rango, s = Math.min((W - 20)/(x1 - x0), (H - 20)/(y1 - y0));
+  const ox = (W - s*(x1 - x0))/2 - s*x0, oy = (H - s*(y1 - y0))/2 + s*y1;
+  const X = x => ox + s*x, Y = y => oy - s*y;
+  ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+  for (let x = Math.ceil(x0*2)/2; x <= x1; x += 0.5) linea(ctx, X(x), Y(y0), X(x), Y(y1));
+  for (let y = Math.ceil(y0*2)/2; y <= y1; y += 0.5) linea(ctx, X(x0), Y(y), X(x1), Y(y));
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; flecha(ctx, X(x0), Y(0), X(x1), Y(0), c.muted, 1.4); flecha(ctx, X(0), Y(y0), X(0), Y(y1), c.muted, 1.4);
+  ctx.font = `800 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('x (m)', X(x1) - 2, Y(0) + 4);
+  ctx.textAlign = 'left'; ctx.fillText('y (m)', X(0) + 6, Y(y1) + 2);
+  circulo(ctx, X(0), Y(0), radio*s); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke();
+  ctx.restore();
+  return { X, Y, s };
+}
+const punto = (ctx, c, P, x, y, txt, dx, dy) => { ctx.save(); circulo(ctx, P.X(x), P.Y(y), 5.5); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore(); if (txt) rotulo(ctx, c, P.X(x) + (dx || 12), P.Y(y) + (dy || -12), txt, c.ink, 'center', 800); };
+// Vector u (en sus unidades) dibujado desde el punto (x, y) del plano con escala k (metros de dibujo por unidad).
+const vecEn = (ctx, c, P, x, y, u, k, col, w, dash) => flechaHalo(ctx, c, P.X(x), P.Y(y), P.X(x + u.x*k), P.Y(y + u.y*k), col, w || 3.2, dash);
+const mezcla = (a, b, f) => a + (b - a)*f;
+const RANGO = [-2.1, 3.2, -2.1, 2.2];
+
+// Paso 8: r = 1,5 m, ω = 2 rad/s, de arriba (90°) a la izquierda.
+const V8 = M.vectorial({ r:1.5, omega:2, theta0:90, t1:0, t2:PI/4 });
+// Paso 9: ω = −2 rad/s (horario), de arriba a la derecha.
+const V9 = M.vectorial({ r:1.5, omega:-2, theta0:90, t1:0, t2:PI/4 });
+const Q = { x:2.35, y:1.45 }, KV = 0.25, KA = 0.15;
+
+const pasos = [
+ { id:'mc-p8', t:'La flecha que se gira', ley:['r','v'],
+   antes:E => { E.f = 0; },
+   q:() => `Un punto gira en MCU, en sentido antihorario, por una circunferencia de 1,5 m de radio con centro en el origen, a ${V('v','3 m/s')}. Pasa por A (arriba) y, un cuarto de vuelta después, por B (a la izquierda). ¿Cuánto vale |Δ${V('v','v')}| = |${V('v','v')}B − ${V('v','v')}A|?`,
+   opts:[['a','3√2 m/s (unos 4,2 m/s)',null,''], ['b','0 m/s','CI-delta-v-cero','hipotesis'], ['c','6 m/s','CI-delta-v-suma','hipotesis'], ['d','3 m/s','CI-delta-v-igual-v','hipotesis']],
+   ok:'a',
+   fb:{ a:'Las dos velocidades miden 3 y son perpendiculares: Δv = (3; −3) m/s, de módulo 3√2.',
+        b:'La rapidez no cambia, pero la velocidad sí: es un vector que gira. Restadas, no se anulan.',
+        c:'6 = 3 + 3 sería si apuntaran en sentidos opuestos (media vuelta). En un cuarto de vuelta son perpendiculares.',
+        d:'3 m/s es la rapidez de cada una. La diferencia de dos flechas perpendiculares de 3 es la hipotenusa: 3√2.' },
+   despues:(E, A) => A.animar(2600, f => { E.f = f; }),
+   exp:() => `<div class="eqs"><div class="eq">${V('v','vA')} = (${fmt(V8.v1.x, 0)}; ${fmt(V8.v1.y, 0)}) m/s</div><div class="eq">${V('v','vB')} = (${fmt(V8.v2.x, 0)}; ${fmt(V8.v2.y, 0)}) m/s</div>
+     <div class="eq">Δ${V('v','v')} = (${fmt(V8.dv.x, 0)}; ${fmt(V8.dv.y, 0)}) m/s</div><div class="eq">|Δ${V('v','v')}| = 3√2 ≈ ${fmt(V8.modDv, 2)} m/s</div>
+</div>
+     <p>El desplazamiento de A a B es la cuerda AB = ${fmt(V8.cuerda, 2)} m, no el arco (${fmt(V8.arco, 2)} m), y tarda ${fmt(V8.dt, 2)} s. La velocidad media es Δ${vec('r')}/Δt ≈ ${fmt(V8.modVMedia, 2)} m/s y la aceleración media, Δ${V('v','v')}/Δt ≈ ${fmt(V8.modAMedia, 2)} m/s².</p>
+     <p>Las dos flechas ${V('v','moradas')} viajaron a un mismo origen: así se restan. Δv (a trazos) va de la punta de vA a la de vB. La velocidad media usa la cuerda, no el arco, y las dos medias se dividen entre el tiempo.</p>${fuente(HIP)}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, P = plano(L, c, RANGO, 1.5);
+     [[V8.p1, 'A'], [V8.p2, 'B']].forEach(([p, t]) => { flechaHalo(ctx, c, P.X(0), P.Y(0), P.X(p.x), P.Y(p.y), c.ink, 2.4); });
+     vecEn(ctx, c, P, V8.p1.x, V8.p1.y, V8.v1, KV, c.v); vecEn(ctx, c, P, V8.p2.x, V8.p2.y, V8.v2, KV, c.v);
+     punto(ctx, c, P, V8.p1.x, V8.p1.y, 'A', 14, -14); punto(ctx, c, P, V8.p2.x, V8.p2.y, 'B', -14, -14);
+     rotulo(ctx, c, P.X(V8.p1.x - 0.4), P.Y(V8.p1.y) + 16, 'vA', c.v, 'center', 800);
+     rotulo(ctx, c, P.X(V8.p2.x) + 22, P.Y(V8.p2.y - 0.5), 'vB', c.v, 'left', 800);
+     rotuloVec(ctx, c, P.X(0.12), P.Y(0.8), 'r', c.ink);
+     if (r){ const f = E.f, ax = mezcla(V8.p1.x, Q.x, f), ay = mezcla(V8.p1.y, Q.y, f), bx = mezcla(V8.p2.x, Q.x, f), by = mezcla(V8.p2.y, Q.y, f);
+       vecEn(ctx, c, P, ax, ay, V8.v1, KV, c.v, 2.4, [4, 3]); vecEn(ctx, c, P, bx, by, V8.v2, KV, c.v, 2.4, [4, 3]);
+       if (f >= 1){ const tA = { x:Q.x + V8.v1.x*KV, y:Q.y + V8.v1.y*KV }; vecEn(ctx, c, P, tA.x, tA.y, V8.dv, KV, c.v, 3.4, [7, 4]);
+         rotulo(ctx, c, P.X(Q.x + 0.15), P.Y(Q.y + 0.25), 'origen común', c.muted, 'center', 700);
+         rotulo(ctx, c, P.X(Q.x - 0.1), P.Y(Q.y - 0.95), `|Δv| ≈ ${fmt(V8.modDv, 1)} m/s`, c.v, 'center', 800, L.W); } }
+   },
+   desc:(E, r) => r ? 'Las dos velocidades se trasladan a un mismo origen y aparece su diferencia: 3 raíz de 2 metros por segundo.' : 'Una circunferencia en el plano, con los puntos A arriba y B a la izquierda, sus vectores posición y sus velocidades, perpendiculares.' },
+ { id:'mc-p9', t:'Las aceleraciones en A y en B', ley:r => (r ? ['r','v','acp'] : ['r','v','aN']),
+   antes:E => { E.f = 0; },
+   q:() => `Ahora el punto sigue en MCU en la misma circunferencia, pero en sentido horario: ${V('w','ω = −2 k̂ rad/s')}. Pasa por A (arriba) y, un cuarto de vuelta después, por B (a la derecha). ¿Cómo son sus aceleraciones en A y en B?`,
+   opts:[['a','Mismo módulo; en A apunta hacia abajo y en B hacia la izquierda',null,''],
+         ['b','Mismo módulo y misma dirección: es la misma flecha en A y en B','CI-mcu-a-constante','hipotesis'],
+         ['c','Mismo módulo; en A apunta hacia arriba y en B hacia la derecha','CI-acp-con-signo-de-omega','hipotesis'],
+         ['d','Mismo módulo; en A apunta hacia la derecha y en B hacia abajo','K3-a-en-direccion-del-movimiento','parcial']],
+   ok:'a',
+   fb:{ a:'acp es −ω² por el vector posición: siempre hacia el centro, gire hacia donde gire. En A apunta hacia abajo y en B hacia la izquierda.',
+        b:'El módulo es el mismo, ω²·r = 6 m/s², pero la dirección cambia con el punto: en A apunta hacia abajo y en B hacia la izquierda. Por eso la aceleración del MCU no es constante.',
+        c:'Eso es hacia afuera. ω entra al cuadrado en acp (−ω² por el vector posición): el signo del giro no la voltea. Apunta al centro también en sentido horario: hacia abajo en A y hacia la izquierda en B.',
+        d:'Hacia la derecha en A y hacia abajo en B va el punto: esa es la velocidad. La rapidez no cambia, así que no hay aceleración a lo largo del camino: toda va al centro.' },
+   despues:(E, A) => A.animar(3000, f => { E.f = f; }),
+   exp:() => `<div class="eqs"><div class="eq">${V('a','acp')} = −${V('w','ω²')}·${vec('r')}<span class="note">ω al cuadrado: el sentido de giro no la cambia</span></div>
+     <div class="eq">en A: ${vec('r')} = ${fmt(V9.p1.y, 1)} ĵ m → ${V('a','acp')} = ${fmt(V9.a1.y, 0)} ĵ m/s²</div><div class="eq">en B: ${vec('r')} = ${fmt(V9.p2.x, 1)} î m → ${V('a','acp')} = ${fmt(V9.a2.x, 0)} î m/s²</div></div>
+     <p>Las dos flechas ${V('a','verdes')} miden lo mismo, pero al llevarlas a un mismo origen apuntan distinto: una hacia abajo y otra hacia la izquierda. <b>La aceleración del MCU no es constante</b>: su módulo sí lo es, su dirección gira con el punto. Algunos libros de academia dan por verdadero lo contrario; no lo es.</p>
+     ${fuente('Creer que la aceleración apunta hacia donde se mueve el objeto está reportado, sin porcentaje en lo que leímos (Trowbridge y McDermott, 1981): respaldo parcial. Lo demás es hipótesis nuestra.')}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, P = plano(L, c, RANGO, 1.5);
+     [V9.p1, V9.p2].forEach(p => flechaHalo(ctx, c, P.X(0), P.Y(0), P.X(p.x), P.Y(p.y), c.ink, 2.4));
+     rotuloVec(ctx, c, P.X(-0.45), P.Y(0.8), 'r', c.ink);
+     vecEn(ctx, c, P, V9.p1.x, V9.p1.y, V9.v1, KV, c.v); vecEn(ctx, c, P, V9.p2.x, V9.p2.y, V9.v2, KV, c.v);
+     punto(ctx, c, P, V9.p1.x, V9.p1.y, 'A', -14, -14); punto(ctx, c, P, V9.p2.x, V9.p2.y, 'B', 14, 14);
+     // sentido horario
+     ctx.save(); ctx.strokeStyle = c.w; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(P.X(0), P.Y(0), 0.55*P.s, -PI*0.9, -PI*0.2); ctx.stroke(); ctx.restore();
+     { const a = -PI*0.2, x = P.X(0) + Math.cos(a)*0.55*P.s, y = P.Y(0) + Math.sin(a)*0.55*P.s; flecha(ctx, x - 6, y - 8, x + 2, y + 4, c.w, 2.4); }
+     rotulo(ctx, c, P.X(-0.35), P.Y(0.2), 'ω', c.w, 'center', 800);
+     if (r){ const f = E.f, g = Math.min(1, f*2), h = Math.max(0, f*2 - 1);
+       vecEn(ctx, c, P, V9.p1.x, V9.p1.y, V9.a1, KA*g, c.a, 3.4); vecEn(ctx, c, P, V9.p2.x, V9.p2.y, V9.a2, KA*g, c.a, 3.4);
+       if (h > 0){ const ax = mezcla(V9.p1.x, Q.x, h), ay = mezcla(V9.p1.y, Q.y, h), bx = mezcla(V9.p2.x, Q.x, h), by = mezcla(V9.p2.y, Q.y, h);
+         vecEn(ctx, c, P, ax, ay, V9.a1, KA, c.a, 2.6, [4, 3]); vecEn(ctx, c, P, bx, by, V9.a2, KA, c.a, 2.6, [4, 3]); }
+       if (h >= 1){ rotulo(ctx, c, P.X(Q.x + 0.1), P.Y(Q.y - 1.05), '−6 ĵ', c.a, 'center', 800, L.W); rotulo(ctx, c, P.X(Q.x - 0.5), P.Y(Q.y + 0.25), '−6 î', c.a, 'center', 800, L.W); }
+     }
+   },
+   desc:(E, r) => r ? 'Aparecen las aceleraciones en A y en B, las dos hacia el centro; al llevarlas a un mismo origen se ve que apuntan en direcciones distintas.' : 'La circunferencia con los puntos A arriba y B a la derecha, sus vectores posición y sus velocidades; el giro es horario.' },
+ { id:'mc-p10', t:'ω y α con la mano', ley:['w','alfa'],
+   antes:E => { E.t = 0; E.f = 0; },
+   q:() => `Una rueda horizontal gira en sentido antihorario visto desde arriba. Con la mano derecha (los dedos con el giro), ${V('w','ω')} apunta hacia arriba por el eje. Ahora la rueda frena. ¿Hacia dónde apunta ${V('alfa','α')}?`,
+   opts:[['a','Hacia abajo por el eje, contra ω',null,''], ['b','Hacia arriba por el eje, con ω','CI-alfa-siempre-con-omega','hipotesis'], ['c','Tangente al borde, contra la velocidad','CI-alfa-tangente','hipotesis'], ['d','Hacia el centro de la rueda','CI-alfa-al-centro','hipotesis']],
+   ok:'a',
+   fb:{ a:'α = Δω/Δt. ω apunta hacia arriba y se achica: el cambio apunta hacia abajo.',
+        b:'α va con ω solo si la rueda acelera. Si frena, ω se achica y el cambio apunta al revés.',
+        c:'Tangente al borde, contra la velocidad, va la aceleración tangencial de un punto (aT). α es de toda la rueda y va por el eje.',
+        d:'Hacia el centro apunta la aceleración centrípeta de un punto. α va por el eje, como ω.' },
+   despues:(E, A) => A.animar(3800, f => { E.t = 3*f; E.f = f; }),
+   exp:() => { const m0 = M.mcuv({ r:1, omega0:6, alfa:-2, t:0 }), m2 = M.mcuv({ r:1, omega0:6, alfa:-2, t:2 });
+     return `<div class="eqs"><div class="eq">${V('alfa','α')} = ${fr('Δ' + V('w','ω'), 'Δ' + V('t','t'))} = ${fr(V('w', fmt(m2.omega, 0) + ' k̂') + ' − ' + V('w', fmt(m0.omega, 0) + ' k̂'), V('t','2 s'))} = ${V('alfa','−2 k̂ rad/s²')}<span class="note">frena: contra ω</span></div></div>
+     <p>En el dibujo, la flecha ${V('w','turquesa')} de ω se achica hasta desaparecer, y ${V('alfa','α')} queda hacia abajo todo el tiempo. Si ω cambiara de sentido (la rueda empieza a girar al revés), α se calcula igual, con los vectores: no se restan los módulos.</p>${fuente(HIP)}`; },
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, cx = W/2, cy = H*0.6, rx = Math.min(W*0.36, H*0.55), ry = rx*0.32;
+     const m = M.mcuv({ r:1, omega0:6, alfa:-2, t:E.t, frena:true }), k = H*0.045;
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, cx, cy + ry + 50, cx, cy); ctx.restore();
+     ctx.save(); ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, 0, TAU); ctx.fillStyle = c.bloque; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+     // marca que gira (antihorario visto desde arriba: por delante va de izquierda a derecha)
+     const a = -PI/2 + m.theta; ctx.save(); circulo(ctx, cx + rx*Math.cos(a), cy - ry*Math.sin(a), 6); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+     ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.ellipse(cx, cy, rx + 12, ry + 6, 0, PI*0.15, PI*0.6); ctx.stroke(); ctx.restore();
+     flecha(ctx, cx + (rx + 12)*Math.cos(PI*0.2), cy + (ry + 6)*Math.sin(PI*0.2), cx + (rx + 12)*Math.cos(PI*0.13), cy + (ry + 6)*Math.sin(PI*0.13) - 2, c.muted, 1.6);
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, cx, cy, cx, cy - 20); ctx.restore();
+     if (m.omega > 1e-6){ flechaHalo(ctx, c, cx, cy - 4, cx, cy - 4 - m.omega*k, c.w, 4); rotulo(ctx, c, cx + 14, cy - 4 - m.omega*k + 6, 'ω', c.w, 'left', 800, W); }
+     if (r && E.f > 0.02){ flechaHalo(ctx, c, cx - 3, cy + ry + 4, cx - 3, cy + ry + 4 + 2*k*1.6, c.alfa, 4); rotulo(ctx, c, cx + 14, cy + ry + 4 + 2*k*1.2, 'α', c.alfa, 'left', 800, W); }
+     if (r) rotulo(ctx, c, 12, 16, `t = ${fmt(E.t, 1)} s · ω = ${fmt(m.omega, 1)} rad/s`, c.w, 'left', 800, W);
+   },
+   desc:(E, r) => r ? 'La flecha de ω, hacia arriba, se achica mientras la rueda frena; la de α apunta hacia abajo por el eje.' : 'Una rueda horizontal vista en perspectiva, con su eje vertical y la flecha de ω hacia arriba.' },
+ { id:'mc-p11', t:'Dos puntos del mismo disco', ley:['v','w','th'],
+   antes:E => { E.g = 0; },
+   q:() => `Un disco gira a 2 vueltas por segundo. La marca A está a 10 cm del eje y la B, en el mismo radio, a 30 cm. ¿Cómo es la ${V('v','rapidez')} de B comparada con la de A?`,
+   opts:[['a','3 veces la de A',null,''], ['b','Igual a la de A','v-igual-en-eje','hipotesis'], ['c','La tercera parte de la de A','inversa-en-eje','hipotesis'], ['d','9 veces la de A','radio-al-cuadrado','hipotesis']],
+   ok:'a',
+   fb:{ a:'Las dos giran con la misma ω; v = ω·r, y B está 3 veces más lejos del eje.',
+        b:'Lo que comparten es ω: dan las mismas vueltas. Pero B recorre una circunferencia 3 veces más larga en el mismo tiempo.',
+        c:'Es al revés: más lejos del eje, más camino por vuelta y más rapidez (v = ω·r).',
+        d:'v = ω·r va con el radio, no con su cuadrado: 3 veces más lejos, 3 veces más rápido.' },
+   despues:(E, A) => A.animar(4000, f => { E.g = f; }),
+   exp:() => { const x = M.rigido({ f:2, radios:[0.1, 0.3] }), lt = M.latitud({ R:6.4e6, lambda:60, periodo:86400 });
+     return `<div class="eqs"><div class="eq">${V('w','ω')} = 2·2π = ${V('w','4π rad/s')}<span class="note">la misma para A y B</span></div>
+     <div class="eq">${V('v','vA')} = 4π·0,1 = ${V('v', conPi(x.puntos[0].v/PI, 1) + ' m/s')}</div><div class="eq">${V('v','vB')} = 4π·0,3 = ${V('v', conPi(x.puntos[1].v/PI, 1) + ' m/s')}</div></div>
+     <p>La razón es ${fmt(x.razon, 0)}. Los dos arcos ${V('th','θ')} barren el mismo ángulo; el de B es 3 veces más largo. Lo mismo pasa en la Tierra: una persona a 60° de latitud gira en una circunferencia de radio R·cos 60°, la mitad, y va a ${fmt(lt.v, 0)} m/s, la mitad que en el ecuador (${fmt(lt.errores.vSinCoseno, 0)} m/s).</p>${fuente(HIP)}`; },
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, cx = W/2, cy = H/2, R = Math.min(W, H)*0.4, x = M.rigido({ f:2, radios:[0.1, 0.3] });
+     const giro = E.g*x.omega*0.5/2;   // cámara lenta: la mitad de un segundo, cuatro veces más lento
+     const k = R/0.32, a = PI/2 + giro;
+     if (r){ arcoGirado(ctx, c, cx, cy, 0.1*k, PI/2, giro, c.th, 3); arcoGirado(ctx, c, cx, cy, 0.3*k, PI/2, giro, c.th, 3); }
+     disco(ctx, c, cx, cy, R, giro, { marca:false, rayos:6 });
+     [[0.1, 'A', x.puntos[0].v], [0.3, 'B', x.puntos[1].v]].forEach(([rr2, t, v]) => { const p = enDisco(cx, cy, rr2*k, a);
+       ctx.save(); circulo(ctx, p[0], p[1], 6); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+       { const [tx, ty] = dirTangente(a); rotulo(ctx, c, p[0] - tx*16, p[1] - ty*16, t, c.ink, 'center', 800, W); }
+       if (r){ const [tx, ty] = dirTangente(a); flechaHalo(ctx, c, p[0], p[1], p[0] + tx*v*k*0.05, p[1] + ty*v*k*0.05, c.v, 3); } });
+     rotulo(ctx, c, 12, H - 14, 'A a 10 cm del eje · B a 30 cm', c.muted, 'left', 700, W);
+   },
+   desc:(E, r) => r ? 'El disco gira: A y B barren el mismo ángulo; la flecha de la velocidad de B es tres veces la de A.' : 'Un disco con dos marcas en el mismo radio: A a 10 centímetros del eje y B a 30.' },
+];
+montar({ n:2, modo:'m2', pasos });
+})();
+</script>
+<script>
+/* ================= Pestaña 3: «Gráficas» (C11 y C13) =================
+   θ-t, ω-t y α-t con el mismo eje de tiempo, y el disco al lado. */
+(function(){
+const HIP = 'Las opciones incorrectas son hipótesis nuestras: errores que se repiten en las alternativas de los problemas de academia, sin un estudio con porcentaje.';
+const NOMBRE = { theta:['θ (rad)', 'th'], omega:['ω (rad/s)', 'w'], alfa:['α (rad/s²)', 'alfa'] };
+/* G = { tmax, t, paneles:[{ clave, rango:[a,b], curvas:[{ f, dash, txt }], sombras:[{ f, g, t0, t1, alpha, txt, tx, ty }], tangente:{ f, df } }],
+         discos:[{ theta, txt }], ecuacion } */
+let ultimo = null;   // escala del tiempo en pantalla, para arrastrar el cursor
+function graficas(L, c, G){
+  const { ctx, W, H } = L, ancho = W >= 560, col = G.discos ? (ancho ? W*0.24 : 70) : 0;
+  const n = G.paneles.length, gap = 22, top = 8, alto = (H - top - 22 - gap*(n - 1))/Math.max(1, n);
+  { const x0 = 44, w = W - 56 - col; ultimo = { X:t => x0 + t/G.tmax*w, T:x => (x - x0)/w*G.tmax, y0:top, y1:H - 14 }; }
+  G.paneles.forEach((P, k) => {
+    const b = { x:44, y:top + k*(alto + gap), w:W - 56 - col, h:alto };
+    const [nom, kc] = NOMBRE[P.clave];
+    const ej = ejes(ctx, c, b, { x0:0, x1:G.tmax, y0:P.rango[0], y1:P.rango[1] }, { x: k === n - 1 ? 't (s)' : '', colX:c.t, y:nom, colY:c[kc], pasoX:1, pasoY:P.paso, numerosX: k === n - 1 });
+    (P.sombras || []).forEach(s => { area(ctx, ej, s.f, s.t0, s.t1, s.col || c.w, s.alpha || .25, s.g);
+      if (s.txt) rotulo(ctx, c, ej.X(s.tx), ej.Y(s.ty), s.txt, s.colTxt || c.w, 'center', 800, W); });
+    (P.curvas || []).forEach(q => { curva(ctx, ej, q.f, 0, q.hasta === undefined ? G.tmax : q.hasta, q.col || c[kc], 3, q.dash);
+      if (q.txt) rotulo(ctx, c, ej.X(q.tx), ej.Y(q.f(q.tx)) + (q.dy || -12), q.txt, q.col || c[kc], 'center', 800, W); });
+    if (P.tangente && G.t !== undefined){ const t = G.t, y = P.tangente.f(t), m = P.tangente.df(t), d = G.tmax*0.14;
+      ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip(); ctx.strokeStyle = c.w; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+      linea(ctx, ej.X(t - d), ej.Y(y - m*d), ej.X(t + d), ej.Y(y + m*d)); ctx.restore(); }
+    if (G.t !== undefined && G.cursor !== false){ ctx.save(); ctx.strokeStyle = c.t; ctx.lineWidth = 1.6; linea(ctx, ej.X(G.t), b.y, ej.X(G.t), b.y + b.h); ctx.restore();
+      (P.curvas || []).forEach(q => { if (q.punto === false) return; const y = q.f(G.t); if (y >= P.rango[0] && y <= P.rango[1]){ ctx.save(); circulo(ctx, ej.X(G.t), ej.Y(y), 4.5); ctx.fillStyle = q.col || c[kc]; ctx.fill(); ctx.restore(); } }); }
+    (P.marcas || []).forEach(mk => rotulo(ctx, c, ej.X(mk.t), ej.Y(mk.y) + (mk.dy || -14), mk.txt, mk.col || c.ink, 'center', 800, W));
+  });
+  if (G.discos){
+    const x0 = W - col, R = Math.min(col*0.38, (H - 40)/(2*G.discos.length) - 14);
+    G.discos.forEach((d, k) => { const cy = 12 + R + 8 + k*(2*R + 30), cx = x0 + col/2;
+      disco(ctx, c, cx, cy, R, d.theta, { fase:0, rayos:4 });
+      arcoGirado(ctx, c, cx, cy, R + 5, 0, d.giro || 0, c.th, 2.4);
+      if (d.txt) rotulo(ctx, c, cx, cy + R + 14, d.txt, c.ink, 'center', 800, W); });
+  }
+  if (G.t !== undefined) rotulo(ctx, c, W - col - 14, H - 10, `t = ${fmt(G.t, 2)} s`, c.t, 'right', 800, W);
+}
+const altoG = W => W >= 560 ? clamp(W*0.66, 360, 520) : clamp(W*1.0, 340, 400);
+
+// Paso 12: θ(t) = 12t − 2t²
+const H12 = M.horaria({ theta0:0, omega0:12, alfa:-4 });
+// Paso 13: ω-t de 6 a −6 en 6 s
+const G13 = M.grafica({ puntos:[[0, 6], [6, -6]] }), H13 = M.horaria({ theta0:0, omega0:6, alfa:-2 });
+// Paso 14: θ = 2 + 8t − 2t²
+const H14 = M.horaria({ coef:[2, 8, -2] });
+// Paso 15: A a 6 rad/s; B desde el reposo con 2 rad/s²
+const D15 = M.dosMoviles({ omega01:6, alfa1:0, omega02:0, alfa2:2 });
+
+const pasos = [
+ { id:'mc-p12', t:'¿Cuándo se detiene?', ley:['th','w','alfa','t'],
+   antes:E => { E.t = 0; },
+   q:() => `La gráfica muestra la posición angular ${V('th','θ')} de una marca de un disco contra el ${V('t','tiempo')}: una parábola que sube y vuelve a bajar hasta cero a los 6 s. ¿En qué instante el disco está quieto?`,
+   opts:[['a','A los 3 s',null,''], ['b','A los 6 s','G2-pendiente-es-altura','parcial'], ['c','En ningún instante','CI-nunca-se-detiene','hipotesis'], ['d','A los 0 s','CI-arranca-del-reposo','hipotesis']],
+   ok:'a',
+   fb:{ a:'ω es la pendiente de θ-t. En lo más alto de la parábola la recta tangente es horizontal: pendiente cero, ω = 0.',
+        b:'A los 6 s, θ vuelve a 0: la marca regresó a donde empezó, pero va girando (la curva baja empinada). Quieto es pendiente cero, no θ cero.',
+        c:'Para ir de subir a bajar, θ tiene que dejar de crecer un instante: en lo más alto la pendiente es cero.',
+        d:'En t = 0 la curva sube empinada: el disco no arranca del reposo, ya gira rápido. Quieto es donde la curva se acuesta.' },
+   despues:(E, A) => A.animar(4200, f => { E.t = 6*f; }),
+   exp:() => `<div class="eqs"><div class="eq">${V('w','ω')} = pendiente de ${V('th','θ')}-${V('t','t')} = 12 − 4${V('t','t')} → ${V('w','ω = 0')} en ${V('t', fmt(H12.tParada, 0) + ' s')}</div>
+     <div class="eq">${V('alfa','α')} = pendiente de ${V('w','ω')}-${V('t','t')} = ${V('alfa', fmt(H12.alfa, 0) + ' rad/s²')}<span class="note">la recta de abajo</span></div></div>
+     <p>La recta tangente a trazos se mueve con el cursor: su inclinación es ${V('w','ω')}. Arriba, en ${fmt(H12.thetaParada, 0)} rad, se acuesta: el disco se detiene y empieza a girar al revés. Entre 3 s y 6 s, θ baja: gira en el otro sentido.</p>
+     ${fuente('Con gráficas de MRUV, cerca de 1 de cada 4 alumnos confunde la pendiente con la altura (Beichner, 1994; cifra por verificar). Aquí lo llevamos al giro: tomar θ = 0 por «quieto» (respaldo parcial). Las otras dos opciones son hipótesis nuestras.')}`,
+   dibujar:(L, c, E, r) => { const pan = [{ clave:'theta', rango:[-8, 20], paso:5, curvas:[{ f:H12.theta }], tangente: r ? { f:H12.theta, df:H12.omega } : null }];
+     if (r) pan.push({ clave:'omega', rango:[-14, 14], paso:5, curvas:[{ f:H12.omega }] }, { clave:'alfa', rango:[-6, 2], paso:2, curvas:[{ f:() => H12.alfa }] });
+     graficas(L, c, { tmax:6.5, t: r ? E.t : undefined, paneles:pan, discos:[{ theta: r ? H12.theta(E.t) : 0 }] }); },
+   desc:(E, r) => r ? 'Aparecen las gráficas de ω y de α. La tangente a la parábola se acuesta a los 3 segundos: ahí ω vale cero.' : 'Gráfica θ-t: una parábola que sube hasta los 3 segundos y baja a cero a los 6.' },
+ { id:'mc-p13', t:'Ida y vuelta', ley:['w','th','t'],
+   antes:E => { E.t = 0; },
+   q:() => `La gráfica ${V('w','ω')}-${V('t','t')} de un disco es una recta que baja de 6 rad/s a −6 rad/s en 6 s: cruza el eje a los 3 s. Entre 0 y 6 s, ¿cuánto giró el disco en total, sumando lo que giró en cada sentido?`,
+   opts:[['a','18 rad',null,''], ['b','0 rad','CI-neto-por-recorrido','hipotesis'], ['c','2 rad','G4-pendiente-en-vez-de-area','parcial'], ['d','6 rad','G4-lee-el-eje','parcial']],
+   ok:'a',
+   fb:{ a:'Sobre el eje hay un triángulo de 9 rad y debajo otro de 9 rad. En total giró 9 + 9 = 18 rad.',
+        b:'0 rad = 9 − 9 es el desplazamiento angular: la marca volvió a donde empezó. Pero el disco giró 9 rad en un sentido y 9 en el otro: en total, 18.',
+        c:'2 es la pendiente de la recta (|α| = 2 rad/s²). Lo girado es el área bajo la recta.',
+        d:'−6 es lo que marca el eje a los 6 s: la ω final, no lo girado. Lo girado es el área.' },
+   despues:(E, A) => A.animar(4200, f => { E.t = 6*f; }),
+   exp:() => `<div class="eqs"><div class="eq">de 0 a 3 s: ${fr('3·6', '2')} = ${V('th','+9 rad')}</div><div class="eq">de 3 a 6 s: ${fr('3·6', '2')} = ${V('th','9 rad')} al revés</div>
+     <div class="eq">en total: 9 + 9 = ${V('th', fmt(G13.recorrido, 0) + ' rad')}</div><div class="eq">desplazamiento: 9 − 9 = ${V('th', fmt(G13.neto, 0) + ' rad')}</div></div>
+     <p>El área sobre el eje cuenta en un sentido y la de abajo en el otro. Mira el disco: avanza 9 rad, se detiene a los 3 s y retrocede otros 9: la marca vuelve a donde empezó. La gráfica de ${V('th','θ')} sube hasta 9 y baja a 0.</p>
+     ${fuente('En un test con 524 alumnos, sacar un cambio a partir del área de una gráfica a-t lo logró cerca de 1 de cada 4; en vez del área, hay quien calcula la pendiente o lee el eje (Beichner, 1994). Aquí es la misma lectura con una gráfica de giro (respaldo parcial). Confundir lo girado con el desplazamiento angular es hipótesis nuestra.')}`,
+   dibujar:(L, c, E, r) => { const pan = [{ clave:'omega', rango:[-8, 8], paso:4, curvas:[{ f:G13.omega }],
+       sombras: r ? [{ f:G13.omega, t0:0, t1:Math.min(E.t, 3), col:c.th, txt: E.t >= 3 ? '+9 rad' : '', tx:1.1, ty:2, colTxt:c.th }, { f:G13.omega, t0:3, t1:Math.max(3, E.t), col:c.muted, alpha:.3, txt: E.t >= 6 - 1e-9 ? '−9 rad' : '', tx:4.9, ty:-2, colTxt:c.th }] : [] }];
+     if (r) pan.push({ clave:'theta', rango:[0, 10], paso:2, curvas:[{ f:H13.theta, hasta:E.t }] });
+     graficas(L, c, { tmax:6.5, t: r ? E.t : undefined, paneles:pan, discos:[{ theta: r ? H13.theta(E.t) : 0, giro: r ? H13.theta(E.t) : 0 }] }); },
+   desc:(E, r) => r ? 'El área sobre el eje, 9 radianes, y la de abajo, otros 9: el disco avanza, se detiene a los 3 segundos y retrocede hasta donde empezó.' : 'Gráfica ω-t: una recta que baja de 6 a −6 radianes por segundo en 6 segundos y cruza el eje a los 3.' },
+ { id:'mc-p14', t:'De la ecuación al disco', ley:['th','w','alfa','t'],
+   antes:E => { E.t = 0; },
+   q:() => `La posición angular de una marca de un disco es θ = 2 + 8t − 2t² (θ en rad y t en s). ¿Cuánto vale su aceleración angular ${V('alfa','α')}?`,
+   opts:[['a','−4 rad/s²',null,''], ['b','−2 rad/s²','CI-coeficiente-como-alfa','hipotesis'], ['c','+4 rad/s²','CI-coeficiente-sin-signo','hipotesis'], ['d','+8 rad/s²','CI-lineal-como-alfa','hipotesis']],
+   ok:'a',
+   fb:{ a:'Comparando con θ = θ₀ + ω₀t + ½αt²: ½α = −2, así que α = −4 rad/s².',
+        b:'−2 es el coeficiente de t², que vale la mitad de α (θ = θ₀ + ω₀t + ½αt²). α = −4.',
+        c:'El coeficiente de t² es negativo: α también. El disco frena.',
+        d:'8 es el coeficiente de t: es ω₀, la velocidad angular al empezar, no α.' },
+   despues:(E, A) => A.animar(4000, f => { E.t = 5*f; }),
+   exp:() => `<div class="eqs"><div class="eq">${V('th','θ')} = ${V('th','2')} + ${V('w','8')}${V('t','t')} ${V('alfa','− 2')}${V('t','t²')}<span class="note">θ₀, ω₀ y ½α</span></div>
+     <div class="eq">½${V('alfa','α')} = −2 → ${V('alfa','α = ' + fmt(H14.alfa, 0) + ' rad/s²')}</div><div class="eq">${V('w','ω')} = 8 − 4${V('t','t')} = 0 en ${V('t', fmt(H14.tParada, 0) + ' s')}</div></div>
+     <p>Cada término tiene ya el color de su variable: el primero es dónde empieza la marca (${V('th','θ₀ = 2 rad')}), el segundo su giro inicial (${V('w','ω₀ = 8 rad/s')}) y el tercero, la mitad de ${V('alfa','α')}. Con el signo menos, el disco frena: a los 2 s se detiene y luego gira al revés.</p>${fuente(HIP)}`,
+   dibujar:(L, c, E, r) => {
+     if (!r){ const ctx = L.ctx; disco(ctx, c, L.W/2, L.H*0.42, Math.min(L.W, L.H)*0.26, 2, { fase:0 });
+       ctx.save(); ctx.font = `800 ${c.chico ? 18 : 22}px ${c.mono}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+       ctx.fillText('θ = 2 + 8t − 2t²', L.W/2, L.H*0.86); ctx.restore(); return; }
+     graficas(L, c, { tmax:5.5, t:E.t, paneles:[{ clave:'theta', rango:[-6, 12], paso:4, curvas:[{ f:H14.theta }] }, { clave:'omega', rango:[-14, 10], paso:4, curvas:[{ f:H14.omega }] },
+       { clave:'alfa', rango:[-6, 2], paso:2, curvas:[{ f:() => H14.alfa }] }], discos:[{ theta:H14.theta(E.t) }] }); },
+   desc:(E, r) => r ? 'Las tres gráficas: θ sube hasta los 2 segundos y baja; ω es una recta que baja y cruza el eje a los 2 segundos; α es constante, −4.' : 'Un disco y su ecuación: θ igual a 2 más 8t menos 2t al cuadrado.' },
+ { id:'mc-p15', t:'Dos discos en la misma gráfica', ley:['w','th','t'],
+   antes:E => { E.t = 0; },
+   q:() => `Dos discos iguales arrancan con sus marcas alineadas. El A gira a ${V('w','6 rad/s')} parejo (línea entera); el B sale del reposo con ${V('alfa','α = 2 rad/s²')} (a trazos). Cuando sus ${V('a','acp')} son iguales, ¿cuántos radianes separan sus marcas?`,
+   opts:[['a','9 rad',null,''], ['b','0 rad','K1-misma-posicion-misma-velocidad','parcial'], ['c','18 rad','CI-area-de-uno','hipotesis'], ['d','27 rad','CI-suma-areas','hipotesis']],
+   ok:'a',
+   fb:{ a:'Con el mismo radio, acp iguales quiere decir ω iguales: a los 3 s. La separación es el área entre las dos rectas: 18 − 9 = 9 rad.',
+        b:'Ir igual de rápido no es estar en el mismo lugar: a los 3 s A giró 18 rad y B solo 9.',
+        c:'18 rad es lo que giró A solo. Lo que los separa es la diferencia: el área entre las rectas.',
+        d:'27 rad suma lo que giraron los dos. Van en el mismo sentido: la separación es la resta, 18 − 9.' },
+   despues:(E, A) => A.animar(3600, f => { E.t = D15.tIgual*f; }),
+   exp:() => `<div class="eqs"><div class="eq">igual ${V('w','ω')}: 6 = 2${V('t','t')} → ${V('t','t = ' + fmt(D15.tIgual, 0) + ' s')}<span class="note">mismo radio: igual acp</span></div>
+     <div class="eq">A: ${V('th', fmt(D15.theta1, 0) + ' rad')} · B: ${V('th', fmt(D15.theta2, 0) + ' rad')}</div><div class="eq">separación: ${V('th', fmt(D15.separacion, 0) + ' rad')}<span class="note">el área entre las rectas</span></div></div>
+     <p>El triángulo sombreado entre las dos rectas es lo que A le sacó a B: mientras A iba más rápido, la separación crecía. A los 3 s van igual y, desde ahí, B empieza a descontar.</p>
+     ${fuente('Confundir «ir igual de rápido» con «estar en el mismo lugar» está reportado, sin porcentaje, en el movimiento en línea recta (Trowbridge y McDermott, 1980); aquí es la versión del giro, con respaldo parcial. Las otras dos opciones son hipótesis nuestras.')}`,
+   dibujar:(L, c, E, r) => {
+     const fA = () => 6, fB = t => 2*t, thA = t => 6*t, thB = t => t*t;
+     graficas(L, c, { tmax:5, t: r ? E.t : undefined, paneles:[{ clave:'omega', rango:[0, 10], paso:2,
+       curvas:[{ f:fA, txt:'A', tx:0.5 }, { f:fB, dash:[7, 5], txt:'B', tx:4.2, dy:12 }],
+       sombras: r ? [{ f:fA, g:fB, t0:0, t1:E.t, col:c.th, colTxt:c.th, txt: E.t >= D15.tIgual - 1e-9 ? '9 rad' : '', tx:1.1, ty:4.4 }] : [] }],
+       discos:[{ theta: r ? thA(E.t) : 0, txt:'A' }, { theta: r ? thB(E.t) : 0, txt:'B' }] }); },
+   desc:(E, r) => r ? 'Se sombrea el área entre las dos rectas hasta los 3 segundos: 9 radianes. Los dos discos muestran la separación de sus marcas.' : 'Dos rectas ω-t: A horizontal en 6, B que sube desde cero; se cruzan a los 3 segundos. Dos discos con sus marcas alineadas.' },
+];
+// Después de responder: un cursor de tiempo que se arrastra (o una perilla) mueve el disco y marca θ, ω y α en ese instante.
+const LEE = {
+  'mc-p12':[6.5, t => [H12.theta(t), H12.omega(t), H12.alfa]], 'mc-p13':[6, t => [H13.theta(t), H13.omega(t), H13.alfa]],
+  'mc-p14':[5.5, t => [H14.theta(t), H14.omega(t), H14.alfa]], 'mc-p15':[5, t => [6*t, 6, 0], t => [t*t, 2*t, 2]] };
+const lectura = (id, t) => LEE[id].slice(1).map((f, k) => { const [th, w, al] = f(t), q = LEE[id].length > 2 ? (k ? 'B: ' : 'A: ') : '';
+  return chip(`${q}${V('th','θ = ' + fmt(th, 1) + ' rad')}`) + chip(`${q}${V('w','ω = ' + fmt(w, 1) + ' rad/s')}`) + chip(`${q}${V('alfa','α = ' + fmt(al, 0) + ' rad/s²')}`); }).join('');
+let A3 = null;
+function sincronizar(){
+  if (!A3) return; const p = A3.paso(), E = A3.E(), el = A3.raiz.querySelector('#cur3'); if (!el || !LEE[p.id]) return;
+  el.value = E.t; A3.raiz.querySelector('#cur3-o').textContent = `${fmt(E.t, 2)} s`; A3.raiz.querySelector('#lee3').innerHTML = lectura(p.id, E.t);
+}
+pasos.forEach(p => {
+  const [tf] = LEE[p.id], dib = p.dibujar;
+  p.ctrl = E => `<div class="ctrls">${perilla('cur3', 'Tiempo (t): arrastra también el cursor naranja', 'r-t', 0, tf, 0.05, E.t)}</div><div class="chips" id="lee3"></div>`;
+  p.enlazar = (E, A) => { const el = A.raiz.querySelector('#cur3'); el.oninput = () => { A.parar(); E.t = +el.value; A.draw(); }; sincronizar(); };
+  p.dibujar = (L, c, E, r) => { dib(L, c, E, r); if (r) sincronizar(); };
+});
+const m3 = montar({ n:3, modo:'m3', pasos, alto:altoG });
+A3 = m3.A;
+Celular.arrastre(m3.L.cv, {
+  activo:() => A3.resp() && A3.E().t !== undefined && !!ultimo,
+  cerca:(p, r) => Math.abs(p.x - ultimo.X(A3.E().t)) < r && p.y > ultimo.y0 && p.y < ultimo.y1,
+  empezar:() => A3.parar(),
+  mover:p => { const E = A3.E(); E.t = clamp(ultimo.T(p.x), 0, LEE[A3.paso().id][0]); A3.draw(); },
+});
+})();
+</script>
+<script>
+/* ================= Pestaña 4: «Ruedas y poleas» (C3 y C7) ================= */
+(function(){
+const HIP = 'Las opciones incorrectas son hipótesis nuestras: errores que se repiten en las alternativas de los problemas de academia, sin un estudio con porcentaje.';
+// Tangentes exteriores de dos circunferencias (faja abierta): puntos de contacto arriba y abajo.
+function tangentes(x1, y1, r1, x2, y2, r2){
+  const b = Math.atan2(y2 - y1, x2 - x1), d = Math.hypot(x2 - x1, y2 - y1), g = Math.acos((r1 - r2)/d);
+  return [b - g, b + g].map(t => [[x1 + r1*Math.cos(t), y1 + r1*Math.sin(t)], [x2 + r2*Math.cos(t), y2 + r2*Math.sin(t)]]);
+}
+const P16 = M.poleaMovil({ v1:4, v2:2, r:0.1 });
+const T17 = M.transmisionMCUV({ r1:0.1, r2:0.3, alfa1:6, tipo:'faja' });
+const R18 = M.rodadura({ r:0.3, v:5 });
+
+const pasos = [
+ { id:'mc-p16', t:'La polea móvil', ley:['v','w'],
+   antes:E => { E.t = 0; },
+   q:() => `Un bloque cuelga de una polea móvil. De sus dos lados salen cuerdas hacia arriba: la de la izquierda sube a ${V('v','4 m/s')} y la de la derecha a ${V('v','2 m/s')}. ¿Qué ${V('v','velocidad')} tiene el bloque?`,
+   opts:[['a','3 m/s, hacia arriba',null,''], ['b','4 m/s, hacia arriba','CI-polea-movil-una-cuerda','hipotesis'], ['c','6 m/s, hacia arriba','CI-polea-movil-suma','hipotesis'], ['d','2 m/s, hacia arriba','CI-polea-movil-diferencia','hipotesis']],
+   ok:'a',
+   fb:{ a:'El centro de la polea va al promedio de sus dos lados: (4 + 2)/2 = 3 m/s. Como los lados van distinto, además gira.',
+        b:'4 m/s es la cuerda de la izquierda. El centro está entre las dos cuerdas y va al promedio: 3 m/s.',
+        c:'Sumar las dos daría el doble de lo que sube el centro. El centro va a la semisuma: (4 + 2)/2.',
+        d:'2 m/s es la diferencia. Esa diferencia hace girar la polea; el centro sube a la semisuma.' },
+   despues:(E, A) => A.animar(3400, f => { E.t = 0.5*f; }),
+   exp:() => `<div class="eqs"><div class="eq">${V('v','v bloque')} = ${fr(V('v','4') + ' + ' + V('v','2'), '2')} = ${V('v', fmt(P16.vBloque, 0) + ' m/s')}<span class="note">la semisuma</span></div>
+     <div class="eq">${V('w','ω')} = ${fr(V('v','4') + ' − ' + V('v','2'), '2·r')}<span class="note">con r = 10 cm, ${fmt(P16.omega, 0)} rad/s: la diferencia la hace girar</span></div></div>
+     <p>Mira las marcas: la cuerda de la izquierda sube más rápido que la de la derecha, el bloque sube a una velocidad intermedia y la polea gira. Si las dos cuerdas fueran iguales, la polea subiría sin girar; si una baja tanto como la otra sube, el centro se queda quieto.</p>${fuente(HIP)}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, s = H*0.16, rp = Math.min(W, H)*0.13, cx = W/2, yc = H*0.62 - P16.vBloque*E.t*s;
+     const giro = P16.omega*E.t;
+     // cuerdas
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; linea(ctx, cx - rp, 8, cx - rp, yc); linea(ctx, cx + rp, 8, cx + rp, yc);
+     ctx.beginPath(); ctx.arc(cx, yc, rp, PI, 0, true); ctx.stroke(); ctx.restore();
+     // marcas que suben con cada cuerda
+     [[cx - rp, 4], [cx + rp, 2]].forEach(([x, v]) => { for (let k = 0; k < 8; k++){ const y = ((k*0.32 - v*E.t)*s % (H)) + H*0.04 + (k*0.32 - v*E.t < 0 ? H : 0);
+       if (y < yc - 4 && y > 8){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, x - 6, y, x + 6, y); ctx.restore(); } } });
+     disco(ctx, c, cx, yc, rp*0.9, -giro, { marca:false, rayos:3 });
+     const by = yc + rp + 26, bw = rp*1.6, bh = rp*1.1;
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, cx, yc, cx, by); rr(ctx, cx - bw/2, by, bw, bh, 6); ctx.fillStyle = c.bloque; ctx.fill(); ctx.stroke(); ctx.restore();
+     flechaHalo(ctx, c, cx - rp - 22, H*0.42, cx - rp - 22, H*0.42 - 4*s*0.22, c.v, 3); rotulo(ctx, c, cx - rp - 26, H*0.42 + 14, '4 m/s', c.v, 'right', 800, W);
+     flechaHalo(ctx, c, cx + rp + 22, H*0.42, cx + rp + 22, H*0.42 - 2*s*0.22, c.v, 3); rotulo(ctx, c, cx + rp + 26, H*0.42 + 14, '2 m/s', c.v, 'left', 800, W);
+     if (r){ flechaHalo(ctx, c, cx + bw/2 + 18, by + bh, cx + bw/2 + 18, by + bh - 3*s*0.22, c.v, 3); rotulo(ctx, c, cx + bw/2 + 26, by + bh - 8, '3 m/s', c.v, 'left', 800, W); }
+     else rotulo(ctx, c, cx, by + bh/2, '?', c.ink, 'center', 800, W);
+   },
+   desc:(E, r) => r ? 'Las cuerdas suben a 4 y a 2 metros por segundo; el bloque sube a 3 y la polea gira.' : 'Una polea móvil con un bloque colgado; la cuerda izquierda sube a 4 metros por segundo y la derecha a 2.' },
+ { id:'mc-p17', t:'La reducción que acelera', ley:['alfa','at','w'],
+   antes:E => { E.t = 0; },
+   q:() => `Una rueda A de 10 cm de radio arranca desde el reposo con ${V('alfa','αA = 6 rad/s²')} y, con una faja que no resbala, mueve una rueda B de 30 cm. ¿Qué aceleración angular ${V('alfa','αB')} tiene B?`,
+   opts:[['a','2 rad/s²',null,''], ['b','6 rad/s²','CI-alfa-igual-con-faja','hipotesis'], ['c','18 rad/s²','RM5-proporcion-directa','hipotesis'], ['d','2/3 rad/s²','radio-al-cuadrado','hipotesis']],
+   ok:'a',
+   fb:{ a:'La faja no resbala: los bordes ganan rapidez al mismo ritmo, misma aT. αA·rA = αB·rB → αB = 6·10/30 = 2 rad/s².',
+        b:'Con faja se conserva lo del borde: v y también aT. α es igual solo en ruedas del mismo eje.',
+        c:'La rueda más grande no acelera más: su borde gana rapidez igual que el de la chica, pero repartida en una vuelta más larga. αB = 6·10/30.',
+        d:'La razón va con los radios, no con sus cuadrados: αB = 6·(10/30) = 2.' },
+   despues:(E, A) => A.animar(3400, f => { E.t = 1.6*f; }),
+   exp:() => `<div class="eqs"><div class="eq">${V('at','aT')} = ${V('alfa','αA')}·rA = 6·0,1 = ${V('at', fmt(T17.at1, 1) + ' m/s²')}<span class="note">la misma en los dos bordes</span></div>
+     <div class="eq">${V('alfa','αB')} = ${fr(V('at','aT'), 'rB')} = ${fr('0,6', '0,3')} = ${V('alfa', fmt(T17.alfa2, 0) + ' rad/s²')}</div></div>
+     <p>En una faja se conserva lo que pasa en el borde: la misma v en cada instante y, si aceleran, la misma ${V('at','aT')} (las flechas ocres miden igual). En un mismo eje, en cambio, se conservan ω y α.</p>${fuente(HIP)}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, s = Math.min(W*0.62, H*1.1)/0.8, cy = H*0.5, xA = W/2 - 0.3*s, xB = W/2 + 0.2*s, rA = 0.1*s, rB = 0.3*s;
+     const thA = 0.5*6*E.t*E.t, thB = 0.5*T17.alfa2*E.t*E.t;
+     const tg = tangentes(xA, cy, rA, xB, cy, rB);
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; tg.forEach(([p, q]) => linea(ctx, p[0], p[1], q[0], q[1])); ctx.restore();
+     disco(ctx, c, xA, cy, rA, thA, { rayos:3 }); disco(ctx, c, xB, cy, rB, thB, { rayos:5 });
+     rotulo(ctx, c, xA, cy + rA + 18, 'A · 10 cm', c.ink, 'center', 800, W); rotulo(ctx, c, xB, cy + rB + 16, 'B · 30 cm', c.ink, 'center', 800, W);
+     rotulo(ctx, c, xA, cy - rA - 30, 'αA = 6', c.alfa, 'center', 800, W);
+     if (r){ rotulo(ctx, c, xB, cy - rB - 30, `αB = ${fmt(T17.alfa2, 0)}`, c.alfa, 'center', 800, W);
+       const k = 70; tg.forEach(([p, q]) => { if (p[1] < cy){ flechaHalo(ctx, c, p[0], p[1] - 6, p[0] + T17.at1*k*Math.cos(Math.atan2(q[1] - p[1], q[0] - p[0])), p[1] - 6 + T17.at1*k*Math.sin(Math.atan2(q[1] - p[1], q[0] - p[0])), c.at, 4);
+         flechaHalo(ctx, c, q[0], q[1] - 6, q[0] + T17.at2*k*Math.cos(Math.atan2(q[1] - p[1], q[0] - p[0])), q[1] - 6 + T17.at2*k*Math.sin(Math.atan2(q[1] - p[1], q[0] - p[0])), c.at, 4); } });
+       rotulo(ctx, c, 12, 16, `t = ${fmt(E.t, 1)} s`, c.t, 'left', 800, W); }
+     else rotulo(ctx, c, xB, cy - rB - 30, 'αB = ?', c.alfa, 'center', 800, W);
+   },
+   desc:(E, r) => r ? 'Las dos ruedas arrancan; la grande gira más despacio y su aceleración angular es la tercera parte. Las aceleraciones tangenciales de los bordes son iguales.' : 'Una rueda chica A y una grande B unidas por una faja; A tiene aceleración angular 6.' },
+ { id:'mc-p18', t:'La rueda que rueda', ley:['v','w'],
+   antes:E => { E.t = 0; },
+   q:() => `Una rueda de 30 cm de radio rueda sin resbalar por el piso; su centro avanza a ${V('v','5 m/s')}. ¿A qué rapidez va el punto más alto de la rueda?`,
+   opts:[['a','10 m/s',null,''], ['b','5 m/s','CI-cir-todos-a-v','hipotesis'], ['c','0 m/s','CI-cir-arriba-quieto','hipotesis'], ['d','7,1 m/s','CI-cir-como-lateral','hipotesis']],
+   ok:'a',
+   fb:{ a:'El punto de apoyo no resbala: está quieto un instante. La rueda gira alrededor de él, y lo más alto está al doble de distancia que el centro.',
+        b:'Solo el centro va a 5 m/s. Además de avanzar, la rueda gira: arriba el giro suma y abajo resta.',
+        c:'Quieto está el punto de apoyo, abajo. Arriba, avance y giro van en el mismo sentido y se suman.',
+        d:'7,1 m/s = 5√2 es la rapidez de un punto lateral, a la altura del centro. Lo más alto está al doble de distancia del apoyo que el centro: va al doble, 10 m/s.' },
+   despues:(E, A) => A.animar(3600, f => { E.t = f; }),
+   exp:() => `<div class="eqs"><div class="eq">${V('w','ω')} = ${fr(V('v','v'), 'r')} = ${fr('5', '0,3')} ≈ ${V('w', fmt(R18.omega, 1) + ' rad/s')}<span class="note">alrededor del punto de apoyo</span></div>
+     <div class="eq">arriba: ${V('w','ω')}·2r = ${V('v', fmt(R18.arriba.modulo, 0) + ' m/s')} · adelante: ${V('w','ω')}·r√2 = ${V('v','5√2 ≈ ' + fmt(R18.adelante.modulo, 1) + ' m/s')} · apoyo: ${V('v','0')}</div></div>
+     <p>En cada instante la rueda gira alrededor del punto que toca el piso (el centro instantáneo). Las líneas a trazos van del apoyo a cada punto: cada flecha ${V('v','morada')} es perpendicular a su línea y mide ω por su largo. Por eso el barro sale disparado desde arriba y la parte de abajo de una llanta casi no se ve borrosa en las fotos.</p>${fuente(HIP)}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, R = Math.min(W*0.2, H*0.26), yS = H*0.8, cy = yS - R, recorre = W*0.3;
+     const cx = W*0.32 + recorre*E.t, giro = -(recorre*E.t)/R;
+     ctx.save(); ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(0, yS, W, 10); ctx.globalAlpha = 1; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, 0, yS, W, yS); ctx.restore();
+     disco(ctx, c, cx, cy, R, giro, { marca:false, llanta:true, rayos:6 });
+     const k = R/R18.arriba.modulo*1.0, pts = [['arriba', R18.arriba], ['adelante', R18.adelante], ['apoyo', R18.abajo]];
+     pts.forEach(([t, p]) => { const x = cx + p.x/0.3*R, y = cy - p.y/0.3*R;
+       ctx.save(); circulo(ctx, x, y, 5); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+       if (r && p.modulo > 0){ ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.2; linea(ctx, cx, yS, x, y); ctx.restore();
+         flechaHalo(ctx, c, x, y, x + p.vx*k, y - p.vy*k, c.v, 3.2); } });
+     flechaHalo(ctx, c, cx, cy, cx + R18.v*k, cy, c.v, 3.2);
+     rotulo(ctx, c, cx + R18.v*k + 8, cy - 12, '5 m/s', c.v, 'left', 800, W);
+     if (r){ rotulo(ctx, c, cx + 2*R18.v*k + 8, cy - R, '10 m/s', c.v, 'left', 800, W); rotulo(ctx, c, cx + R + R18.v*k + 8, cy + R18.v*k + 10, '7,1 m/s', c.v, 'left', 800, W); rotulo(ctx, c, cx - 12, yS + 18, 'apoyo: 0', c.ink, 'right', 800, W); }
+     else rotulo(ctx, c, cx, cy - R - 16, '¿?', c.v, 'center', 800, W);
+   },
+   desc:(E, r) => r ? 'La rueda avanza girando: el punto más alto va a 10 metros por segundo, el de adelante a unos 7,1 y el de apoyo está quieto.' : 'Una rueda sobre el piso con su centro avanzando a 5 metros por segundo; están marcados el punto más alto, el de adelante y el de apoyo.' },
+];
+montar({ n:4, modo:'m4', pasos });
+})();
+</script>
+<script>
+/* ================= Pestaña 5: «¿Qué pasa si…?» (C5, C4 y C8) =================
+   Pastillas con la regla de Gerson: un experimento se abre cuando todos los anteriores tienen respuesta. */
+(function(){
+const HIP = 'Las opciones incorrectas son hipótesis nuestras: errores que se repiten en las alternativas de los problemas de academia, sin un estudio con porcentaje.';
+const B19 = M.atraviesa({ L:1, v:200, modo:'cascaron' });
+const G20 = M.gotaDeRueda({ r:0.5, g:10 });
+const D21 = M.despegaDelDisco({ R:0.4, d:0.2, omega:3 });
+const R22 = M.reencuentroSalida({ periodo1:6, periodo2:10 }), E22 = M.encuentroPista({ omega1:TAU/6, omega2:TAU/10, sentido:'mismo' });
+const F23 = M.mcuv({ r:0.3, omega0:6, alfa:-2, t:5, frena:true }), L23 = M.mcuv({ r:0.3, omega0:6, alfa:-2, t:5 });
+const H23 = M.horaria({ omega0:6, alfa:-2, t1:0, t2:5 });
+
+const pasos = [
+ { id:'mc-q19', corto:'La bala y la esfera', t:'La bala y la esfera', ley:['w','v'],
+   antes:E => { E.f = 0; },
+   q:() => `Una esfera hueca de cartón, de 1 m de diámetro, gira sobre un eje vertical. Una bala horizontal, a ${V('v','200 m/s')}, la atraviesa pasando por el centro. ¿Con qué ${V('w','ω')} mínima la bala sale por el mismo agujero por el que entró, y la esfera queda con un solo agujero?`,
+   opts:[['a','200π rad/s',null,''], ['b','400π rad/s','CI-vuelta-entera','hipotesis'], ['c','100π rad/s','CI-diametro-por-radio','hipotesis'], ['d','π/5 rad/s','CI-ms-sin-convertir','hipotesis']],
+   ok:'a',
+   fb:{ a:'La bala tarda 1/200 s en cruzar el diámetro. En ese tiempo el agujero de entrada tiene que llegar al otro lado: media vuelta, π rad. ω = π/(1/200) = 200π rad/s.',
+        b:'Con una vuelta entera, el agujero de entrada vuelve a donde estaba, no al lado por donde sale la bala. Basta media vuelta.',
+        c:'Tomaste 1 m como radio: la bala recorrería 2 m y tardaría 10 ms. Pero 1 m es el diámetro, lo que la bala cruza: tarda 5 ms y ω = 200π rad/s.',
+        d:'Dividiste π entre 5 como si fueran 5 s. Son 5 ms = 0,005 s: ω = π/0,005 = 200π rad/s.' },
+   despues:(E, A) => A.animar(3600, f => { E.f = f; }),
+   exp:() => `<div class="eqs"><div class="eq">t = ${fr('1 m', V('v','200 m/s'))} = ${fmt(B19.t*1000, 0)} ms</div><div class="eq">${V('w','ω')} = ${fr('π', fmt(B19.t, 3) + ' s')} = ${V('w', conPi(B19.omegaPi, 0) + ' rad/s')}<span class="note">media vuelta mientras cruza</span></div></div>
+     <p>En cámara lenta: mientras la bala cruza, el agujero de entrada da media vuelta y llega justo al punto de salida. Con más vueltas enteras también sirve (π + 2πn), pero la mínima es media vuelta.</p>${fuente(HIP)}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, cx = W/2, cy = H/2, R = Math.min(W, H)*0.32;
+     disco(ctx, c, cx, cy, R, r ? PI*E.f : 0, { marca:false, rayos:0 });
+     const ang = PI + (r ? PI*E.f : 0), h = enDisco(cx, cy, R, ang);
+     ctx.save(); circulo(ctx, h[0], h[1], 7); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+     rotulo(ctx, c, h[0], h[1] - 18, 'agujero', c.ink, 'center', 700, W);
+     ctx.save(); ctx.strokeStyle = c.w; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(cx, cy, R*0.45, -PI*0.8, -PI*0.2); ctx.stroke(); ctx.restore();
+     rotulo(ctx, c, cx, cy - R*0.45 - 12, 'ω', c.w, 'center', 800, W);
+     const bx = r ? cx - R - 30 + (2*R + 30)*E.f : cx - R - 40;
+     ctx.save(); rr(ctx, bx - 14, cy - 4, 18, 8, 3); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+     flechaHalo(ctx, c, bx + 8, cy + 16, bx + 40, cy + 16, c.v, 2.6);
+     ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 5]); linea(ctx, cx - R - 40, cy, cx + R + 30, cy); ctx.restore();
+     if (r) rotulo(ctx, c, 12, 16, `t = ${fmt(B19.t*1000*E.f, 1)} ms · giró ${fmt(180*E.f, 0)}°`, c.t, 'left', 800, W);
+   },
+   desc:(E, r) => r ? 'En cámara lenta, la bala cruza la esfera mientras el agujero de entrada da media vuelta y llega al punto de salida.' : 'Una esfera vista desde arriba, girando, con el agujero de entrada a la izquierda y la bala que llega.' },
+ { id:'mc-q20', corto:'La gota de barro', t:'La gota de barro', ley:['w','v'],
+   antes:E => { E.f = 0; },
+   q:() => `Una rueda vertical de 50 cm de radio gira en su eje fijo. Una gota de barro sale del borde, a la altura del eje, con la velocidad del borde hacia arriba; sube y vuelve a caer al mismo lugar. ¿Con qué ${V('w','ω')} debe girar la rueda para que la gota caiga justo sobre el mismo punto, después de una vuelta? (g = 10 m/s²)`,
+   opts:[['a','unos 7,9 rad/s',null,''], ['b','unos 5,6 rad/s','CI-media-vuelta','hipotesis'], ['c','unos 11,2 rad/s','CI-solo-subida','hipotesis'], ['d','unos 3,2 rad/s','TR5-vuelta-un-radian','parcial']],
+   ok:'a',
+   fb:{ a:'La gota vuela 2v/g = 2ωr/g; la rueda gira ω por ese tiempo: 2ω²r/g = 2π, así que ω² = πg/r = 20π y ω ≈ 7,9 rad/s.',
+        b:'Unos 5,6 rad/s da media vuelta: cuando la gota vuelve, el punto está al otro lado de la rueda.',
+        c:'Unos 11,2 rad/s usa solo el tiempo de subida. La gota también tarda en bajar: el vuelo dura el doble.',
+        d:'Unos 3,2 rad/s toma la vuelta como 1 rad. Una vuelta son 2π rad: ω·t = 2π.' },
+   despues:(E, A) => A.animar(4200, f => { E.f = f; }),
+   exp:() => `<div class="eqs"><div class="eq">vuelo: t = ${fr('2' + V('v','v'), 'g')} = ${fr('2' + V('w','ω') + 'r', 'g')}</div><div class="eq">la rueda: ${V('w','ω')}·t = 2π</div>
+     <div class="eq">${V('w','ω²')} = ${fr('πg', 'r')} = ${fr('10π', '0,5')} = 20π → ${V('w','ω ≈ ' + fmt(G20.omega, 1) + ' rad/s')}</div></div>
+     <p>La gota sale a ${fmt(G20.v, 1)} m/s y vuela ${fmt(G20.t, 2)} s. El vuelo de la gota es un tiro vertical, como en la pestaña de tiro; el giro de la rueda, un MCU. Los dos duran lo mismo: esa es la ecuación. Más rápido gira la rueda, más alto sube la gota y más tarda.</p>${fuente('Tomar una vuelta por 1 radián es pariente de un error que el informe de trigonometría registra con respaldo parcial (Williams, s. f.). Las otras opciones son hipótesis nuestras.')}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, R = Math.min(W*0.26, H*0.24), cx = W*0.42, cy = H*0.66, k = R/G20.r;
+     const giro = r ? TAU*E.f : 0;
+     disco(ctx, c, cx, cy, R, giro, { fase:0, etiqueta:'P', rayos:6 });
+     const tt = G20.t*E.f, y = G20.v*tt - 5*tt*tt, gx = cx + R + 0, gy = cy - y*k;
+     if (r){ ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 4]); linea(ctx, gx, cy, gx, cy - G20.altura*k); ctx.restore(); }
+     ctx.save(); circulo(ctx, gx + 10, r ? gy : cy, 5); ctx.fillStyle = c.suelo; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
+     if (!r) flechaHalo(ctx, c, gx + 22, cy, gx + 22, cy - R*0.7, c.v, 3);
+     rotulo(ctx, c, gx + 22, (r ? gy : cy) + 2, 'gota', c.ink, 'left', 700, W);
+     ctx.save(); ctx.strokeStyle = c.w; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(cx, cy, R*0.4, -PI*0.8, -PI*0.2); ctx.stroke(); ctx.restore();
+     if (r) rotulo(ctx, c, 12, 16, `vuelo ${fmt(tt, 2)} s · la rueda giró ${fmt(360*E.f, 0)}°`, c.t, 'left', 800, W);
+   },
+   desc:(E, r) => r ? 'La gota sube y baja mientras la rueda da una vuelta; vuelve a P justo cuando P regresa.' : 'Una rueda vertical con el punto P a la altura del eje y una gota que sale de P hacia arriba.' },
+ { id:'mc-q21', corto:'La bolita que se suelta', t:'La bolita que se suelta', ley:['w','v'],
+   antes:E => { E.f = 0; },
+   q:() => `Sobre un disco horizontal liso, de 40 cm de radio, una bolita gira con él a 20 cm del centro, sujeta por un hilo. El disco gira a ${V('w','3 rad/s')}. Se corta el hilo. ¿Por dónde sale la bolita del disco?`,
+   opts:[['a','Por el borde, 60° adelante de donde se cortó el hilo, medido desde arriba (sin girar con el disco)',null,''],
+         ['b','Por el borde, en la prolongación del radio donde se cortó el hilo, medido desde arriba (sin girar con el disco)','D9-hacia-afuera','hipotesis'],
+         ['c','No sale: sigue girando con el disco','D9-sigue-curvando','parcial'],
+         ['d','Por el borde, 90° adelante de donde se cortó el hilo, medido desde arriba (sin girar con el disco)','CI-tangente-del-borde','hipotesis']],
+   ok:'a',
+   fb:{ a:'Sin hilo y sin roce, nada la desvía: sigue en línea recta, perpendicular al radio. Esa recta corta el borde donde cos φ = 20/40: φ = 60°.',
+        b:'No hay ninguna fuerza que la empuje hacia afuera. Sigue con la velocidad que tenía, que es perpendicular al radio.',
+        c:'Sin hilo y con el disco liso, nada la hace curvar: sigue en línea recta, con la velocidad que tenía.',
+        d:'90° sería si la recta perpendicular pasara por el centro; desde 20 cm corta el borde antes: cos φ = 20/40, φ = 60°.' },
+   despues:(E, A) => A.animar(4000, f => { E.f = f; }),
+   exp:() => `<div class="eqs"><div class="eq">${V('v','v')} = ${V('w','ω')}·d = 3·0,2 = ${V('v', fmt(D21.v, 1) + ' m/s')}<span class="note">perpendicular al radio</span></div>
+     <div class="eq">cos φ = ${fr('0,2', '0,4')} → φ = ${fmt(D21.anguloSalida, 0)}°</div></div>
+     <p>La bolita recorre ${fmt(D21.camino, 2)} m en ${fmt(D21.t, 2)} s.</p>
+     <p>Mientras la bolita va en línea recta, el disco sigue girando debajo (${fmt(D21.giroDisco, 0)}° en ese tiempo): visto desde el disco parece que se curva hacia atrás, pero desde arriba va recta.</p>
+     ${fuente('Que al soltarse un objeto siga curvándose es una idea reportada en la literatura, sin porcentaje en lo que leímos (McCloskey, Caramazza y Green, 1980): respaldo parcial. Lo demás es hipótesis nuestra.')}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, cx = W/2, cy = H/2 + 6, R = Math.min(W, H)*0.4, k = R/D21.R;
+     const giro = r ? D21.omega*D21.t*E.f : 0;
+     disco(ctx, c, cx, cy, R, giro, { marca:false, rayos:4 });
+     const s = r ? D21.v*D21.t*E.f : 0, bx = cx + D21.d*k, by = cy - s*k;
+     if (!r){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, cx, cy, bx, by); ctx.restore(); rotulo(ctx, c, (cx + bx)/2, cy + 12, 'hilo', c.ink, 'center', 700, W);
+       flechaHalo(ctx, c, bx, by, bx, by - 50, c.v, 3); }
+     if (r && E.f >= 1){ ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 4]); linea(ctx, cx, cy, cx + R, cy); linea(ctx, cx, cy, bx, by); ctx.restore();
+       ctx.save(); ctx.strokeStyle = c.ink; ctx.beginPath(); ctx.arc(cx, cy, 30, -PI/3, 0); ctx.stroke(); ctx.restore(); rotulo(ctx, c, cx + 40, cy - 16, '60°', c.ink, 'left', 800, W); }
+     if (r){ ctx.save(); ctx.strokeStyle = c.v; ctx.setLineDash([2, 4]); ctx.lineWidth = 2; linea(ctx, cx + D21.d*k, cy, bx, by); ctx.restore(); }
+     ctx.save(); circulo(ctx, bx, by, 7); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+     ctx.save(); ctx.strokeStyle = c.w; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(cx, cy, R*0.25, -PI*0.8, -PI*0.3); ctx.stroke(); ctx.restore();
+   },
+   desc:(E, r) => r ? 'La bolita sigue en línea recta, perpendicular al radio, y sale del disco 60 grados más adelante.' : 'Un disco visto desde arriba con una bolita a la mitad del radio, sujeta por un hilo al centro.' },
+ { id:'mc-q22', corto:'El reencuentro', t:'El reencuentro', ley:['t','w'],
+   antes:E => { E.t = 0; },
+   q:() => `En una pista circular, Ana da una vuelta cada ${V('t','6 s')} y Beto una cada ${V('t','10 s')}. Salen juntos del punto de salida, en el mismo sentido. ¿Cuándo vuelven a pasar juntos por la salida?`,
+   opts:[['a','A los 30 s',null,''], ['b','A los 15 s','CI-primer-encuentro-vs-salida','hipotesis'], ['c','A los 60 s','CI-mcm-como-producto','hipotesis'], ['d','A los 3,75 s','RM4-suma-en-alcance','hipotesis']],
+   ok:'a',
+   fb:{ a:'Ana pasa por la salida a los 6, 12, 18, 24, 30 s; Beto a los 10, 20, 30 s. El primero común es 30 s: 5 vueltas de Ana y 3 de Beto.',
+        b:'A los 15 s Ana alcanza a Beto, pero en el lado opuesto de la pista (lleva 2,5 vueltas). Juntos en la salida, recién a los 30 s.',
+        c:'60 = 6·10 también es un múltiplo común, pero no el primero: a los 30 s ya coinciden.',
+        d:'Sumar las rapideces sirve cuando van en sentidos contrarios. En el mismo sentido, y en la salida, hace falta el mínimo común múltiplo.' },
+   despues:(E, A) => A.animar(5200, f => { E.t = R22.t*f; }),
+   exp:() => `<div class="eqs"><div class="eq">salida: mcm(${V('t','6')}, ${V('t','10')}) = ${V('t', fmt(R22.t, 0) + ' s')} · Ana ${fmt(R22.vueltas1, 0)} vueltas, Beto ${fmt(R22.vueltas2, 0)}</div>
+     <div class="eq">primer alcance: ${fr('1', '1/6 − 1/10')} = ${V('t', fmt(R22.tEncuentro, 0) + ' s')}<span class="note">en el lado opuesto</span></div></div>
+     <p>En el dibujo se marca cada vez que Ana alcanza a Beto: el primero es a los 15 s, lejos de la salida; el segundo, a los 30 s, justo en la salida. Alcanzarse y volver juntos a la salida son preguntas distintas.</p>${fuente(HIP)}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, cx = W/2, cy = H/2 + 4, R = Math.min(W, H)*0.36;
+     ctx.save(); ctx.strokeStyle = c.suelo; ctx.globalAlpha = .6; ctx.lineWidth = 22; circulo(ctx, cx, cy, R); ctx.stroke(); ctx.restore();
+     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, cx, cy - R - 13, cx, cy - R + 13); ctx.restore();
+     rotulo(ctx, c, cx + 8, cy - R - 24, 'salida', c.ink, 'left', 800, W);
+     const st = E22.estado(E.t), pos = s => enDisco(cx, cy, R, PI/2 + s);
+     if (r){ [R22.tEncuentro, R22.t].forEach((te, k) => { if (E.t >= te - 1e-9){ const p = pos(E22.estado(te).a); ctx.save(); circulo(ctx, p[0], p[1], 12); ctx.strokeStyle = c.t; ctx.lineWidth = 2.4; ctx.stroke(); ctx.restore();
+       rotulo(ctx, c, p[0], p[1] + (k ? -26 : 26), `${fmt(te, 0)} s`, c.t, 'center', 800, W); } }); }
+     [['Ana', st.a, -8], ['Beto', st.b, 8]].forEach(([t, s, d]) => { const p = enDisco(cx, cy, R + d, PI/2 + s);
+       ctx.save(); circulo(ctx, p[0], p[1], 6.5); ctx.fillStyle = t === 'Ana' ? c.ink : c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); ctx.restore(); });
+     rotulo(ctx, c, cx, cy - 10, '● Ana  ○ Beto', c.ink, 'center', 700, W);
+     rotulo(ctx, c, cx, cy + 12, `t = ${fmt(E.t, 1)} s`, c.t, 'center', 800, W);
+   },
+   desc:(E, r) => r ? 'Ana alcanza a Beto a los 15 segundos en el lado opuesto, y a los 30 pasan juntos por la salida.' : 'Una pista circular con Ana y Beto en la salida.' },
+ { id:'mc-q23', corto:'La rueda que frena', t:'La rueda que frena', ley:['w','alfa','t'],
+   antes:E => { E.t = 0; },
+   q:() => `Una rueda de bicicleta gira a ${V('w','6 rad/s')} y frena de manera pareja con ${V('alfa','α = −2 rad/s²')}. ¿Cuánto gira en los primeros ${V('t','5 s')}?`,
+   opts:[['a','9 rad',null,''], ['b','5 rad','mcuv-sin-frenar','hipotesis'], ['c','30 rad','CI-rectangulo-omega0','hipotesis'], ['d','13 rad','CI-sigue-y-vuelve','hipotesis']],
+   ok:'a',
+   fb:{ a:'Se detiene a los 3 s (6 − 2·3 = 0), después de girar ½·6·3 = 9 rad. Un freno no la hace girar al revés: se queda quieta.',
+        b:'5 rad es lo que da θ = 6·5 − 5² con t = 5: la fórmula sigue después de detenerse y hace «desgirar» la rueda. Un freno no hace eso.',
+        c:'30 = 6·5 sería si no frenara. Va cada vez más lento: gira el triángulo bajo la recta ω-t, hasta que se detiene.',
+        d:'13 = 9 + 4 supone que, después de detenerse, gira 4 rad al revés. Con un freno se queda quieta.' },
+   despues:(E, A) => A.animar(4600, f => { E.t = 5*f; }),
+   exp:() => `<div class="eqs"><div class="eq">${V('w','ω')} = 6 − 2${V('t','t')} = 0 → ${V('t','t = ' + fmt(F23.tParada, 0) + ' s')}</div><div class="eq">${V('th','θ')} = ${fr('6·3', '2')} = ${V('th', fmt(F23.thetaParada, 0) + ' rad')}</div>
+     </div>
+     <p>Con un motor que la empuja al revés, la ecuación sí sigue: desplazamiento ${fmt(H23.neto, 0)} rad y recorrido ${fmt(H23.recorrido, 0)} rad.</p>
+     <p>Las dos ruedas tienen el mismo dato. La de la izquierda tiene freno: se detiene a los 3 s y ahí se queda. La de la derecha la mueve un motor que la empuja siempre hacia el otro lado: no hay nada que la detenga, así que se da la vuelta. Antes de reemplazar t, pregúntate qué hace que frene.</p>${fuente(HIP)}`,
+   dibujar:(L, c, E, r) => {
+     const ctx = L.ctx, W = L.W, H = L.H, R = Math.min(W*0.2, H*0.3), y = H*0.48;
+     const f = M.mcuv({ r:0.3, omega0:6, alfa:-2, t:E.t, frena:true }), l = M.mcuv({ r:0.3, omega0:6, alfa:-2, t:E.t });
+     const xs = r ? [W*0.27, W*0.73] : [W/2];
+     xs.forEach((x, k) => { const m = k ? l : f;
+       disco(ctx, c, x, y, R, m.theta, { fase:PI/2, rayos:6, llanta:true });
+       arcoGirado(ctx, c, x, y, R + 8, PI/2, m.theta, c.th, 3);
+       if (r){ rotulo(ctx, c, x, y + R + 24, k ? 'motor al revés' : 'con freno', c.ink, 'center', 800, W);
+         rotulo(ctx, c, x, y + R + 44, `θ = ${fmt(m.theta, 1)} rad`, c.th, 'center', 800, W); rotulo(ctx, c, x, y + R + 64, `ω = ${fmt(m.omega, 1)} rad/s`, c.w, 'center', 800, W); } });
+     rotulo(ctx, c, 12, 16, `t = ${fmt(E.t, 1)} s`, c.t, 'left', 800, W);
+   },
+   desc:(E, r) => r ? 'La rueda con freno se detiene a los 3 segundos tras girar 9 radianes; la del motor que empuja al revés se da la vuelta y termina en 5 radianes netos.' : 'Una rueda de bicicleta que gira y empieza a frenar.' },
+];
+montar({ n:5, modo:'m5', pasos, pastillas:true });
+})();
+</script>
+<script>
+/* ================= Pestañas (no se bloquean) ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#flechas', 'm2', 'tab2'], ['#graficas', 'm3', 'tab3'], ['#ruedas', 'm4', 'tab4'], ['#que-pasa-si', 'm5', 'tab5']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      const el = document.getElementById(m); if (!el) return;
+      el.hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

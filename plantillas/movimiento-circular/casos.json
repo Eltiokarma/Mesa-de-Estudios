@@ -1,0 +1,99 @@
+{
+ "plantilla": "movimiento-circular",
+ "unidades": "SI: m, s, rad, rad/s, rad/s², m/s y m/s². Ángulos de entrada en grados donde lo dice la cabecera de motor.js (anguloAV, desfase, lambda, theta0, angulo); ángulos girados (theta, neto, recorrido) en radianes. π se pasa como número (por ejemplo, 4π = 12.566370614359172).",
+ "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.aSuma, puntos.1.v, 2.omega para la tercera rueda de tren); los booleanos se comparan exactos. Ningún caso sale de una clave de un libro: todos los números son propios.",
+ "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin leer el código del motor más allá de su cabecera ni casos.json: recalculó los 45 casos con fracciones exactas y π como coeficiente; los vectoriales y de rodadura con números complejos, las gráficas ω-t por integración numérica y los reencuentros por barrido de tiempos racionales. Coinciden los 284 campos (solo difiere el formato del sentido, 1/−1 contra texto). Tras la revisión cambiaron seis casos (gráfica ω-t de 6 a −6 rad/s, la gota con r = 0,5 m, comoLateral en rodadura, diametroPorRadio y msSinConvertir en atraviesa, y dos errores repetidos quitados); la conversación principal los recalculó a mano: neto 0 y recorrido 18 rad, ω² = πg/r = 20π, 5√2, 100π y π/5 rad/s.",
+ "tolerancia": 1e-9,
+ "casos": [
+  { "nombre": "Paso 6: 180 rpm en un disco de 40 cm de diámetro → ω = 6π rad/s, v = 1,2π m/s (CI-rpm-sin-2pi: 0,6; CI-rpm-sin-60: 72π; CI-diametro-por-radio: 2,4π)", "fn": "convertir", "args": [ { "rpm": 180, "d": 0.4 } ], "espera": { "omega": 18.8495559215388, "omegaPi": 6, "f": 3, "periodo": 0.333333333333333, "r": 0.2, "v": 3.76991118430775, "vPi": 1.2, "errores.omegaSin2pi": 3, "errores.omegaSin60": 1130.97335529233, "errores.vSin2pi": 0.6, "errores.vSin60": 226.194671058465, "errores.vConDiametro": 7.5398223686155 }
+  },
+  { "nombre": "Periodo de 0,5 s → ω = 4π rad/s, 2 vueltas por segundo, 120 rpm; con r = 0,25 m, acp = 4π² m/s²", "fn": "convertir", "args": [ { "periodo": 0.5, "r": 0.25 } ], "espera": { "omega": 12.5663706143592, "omegaPi": 4, "f": 2, "rpm": 120, "v": 3.14159265358979, "acp": 39.4784176043574, "errores.omegaSin2pi": 2 }
+  },
+  { "nombre": "MCU: r = 0,5 m y 90 rpm → ω = 3π rad/s, v = 1,5π m/s, acp = 4,5π² m/s²", "fn": "mcu", "args": [ { "r": 0.5, "rpm": 90 } ], "espera": { "omega": 9.42477796076938, "v": 4.71238898038469, "periodo": 0.666666666666667, "frecuencia": 1.5, "ac": 44.4132198049021, "errores.acSinCuadrado": 9.42477796076938, "errores.acPorRadio": 11.1033049512255 }
+  },
+  { "nombre": "Paso 2: disco de 20 cm, α = 4π rad/s² desde el reposo; a los 0,5 s: ω = 2π, aT = 0,8π, acp = 0,8π² (aT no cambia)", "fn": "mcuv", "args": [ { "r": 0.2, "omega0": 0, "alfa": 12.566370614359172, "t": 0.5 } ], "espera": { "omega": 6.28318530717959, "theta": 1.5707963267949, "vueltas": 0.25, "v": 1.25663706143592, "at": 2.51327412287183, "ac": 7.89568352087149, "errores.aSuma": 10.4089576437433 }
+  },
+  { "nombre": "Paso 23: ω0 = 6 rad/s y α = −2 rad/s² con freno: se detiene a los 3 s tras girar 9 rad; a los 5 s sigue en 9 rad (sin freno, la fórmula da 5)", "fn": "mcuv", "args": [ { "r": 0.3, "omega0": 6, "alfa": -2, "t": 5, "frena": true } ], "espera": { "omega": 0, "theta": 9, "tParada": 3, "thetaParada": 9, "quieta": true, "errores.thetaSinDetenerse": 5, "errores.thetaSoloOmega0": 30 }
+  },
+  { "nombre": "Paso 23, sin freno: la misma ecuación sigue y a los 5 s el giro neto es 5 rad, con ω = −4 rad/s", "fn": "mcuv", "args": [ { "r": 0.3, "omega0": 6, "alfa": -2, "t": 5 } ], "espera": { "omega": -4, "theta": 5, "quieta": false }
+  },
+  { "nombre": "MCUV de tres datos: de 300 rpm a reposo en 10 s → α = −π rad/s², 25 vueltas", "fn": "mcuvDatos", "args": [ { "rpm0": 300, "rpm": 0, "t": 10 } ], "espera": { "omega0": 31.4159265358979, "omega": 0, "alfa": -3.14159265358979, "alfaV": -0.5, "theta": 157.07963267949, "vueltas": 25, "errores.vueltasRectanguloInicial": 50, "errores.vueltasPendiente": 0.5 }
+  },
+  { "nombre": "MCUV de tres datos: desde el reposo, 4 vueltas en 2 s → α = 4π rad/s², termina a 4 vueltas por segundo", "fn": "mcuvDatos", "args": [ { "f0": 0, "vueltas": 4, "t": 2, "r": 0.1 } ], "espera": { "alfa": 12.5663706143592, "alfaV": 2, "f": 4, "omega": 25.1327412287183, "at": 1.25663706143592, "ac": 63.1654681669719 }
+  },
+  { "nombre": "Tramos: desde el reposo, α = 2π durante 3 s, constante 4 s y frena con −3π durante 2 s → 9π + 24π + 6π = 39π rad, 19,5 vueltas", "fn": "mcuvTramos", "args": [ { "omega0": 0, "tramos": [ { "alfa": 6.283185307179586, "t": 3 }, { "alfa": 0, "t": 4 }, { "alfa": -9.42477796076938, "t": 2 } ] } ], "espera": { "omegaFinal": 0, "theta": 122.522113490002, "vueltas": 19.5, "tTotal": 9, "tramos.1.theta": 75.398223686155, "tramos.2.omega1": 0, "errores.vueltasRectangulos": 18, "errores.vueltasSoloAcelera": 4.5 }
+  },
+  { "nombre": "Paso 5: α = 4π rad/s² desde el reposo, entre t = 1 s y t = 3 s → 8 vueltas (rectángulos 4 y 12; desde t = 0, 9; 16π rad leídos como vueltas)", "fn": "entre", "args": [ { "alfa": 12.566370614359172, "t1": 1, "t2": 3 } ], "espera": { "omega1": 12.5663706143592, "omega2": 37.6991118430775, "f1": 2, "f2": 6, "theta": 50.2654824574367, "vueltas": 8, "dt": 2, "errores.rectanguloInicial": 4, "errores.rectanguloFinal": 12, "errores.desdeCero": 9, "errores.radianesComoVueltas": 50.2654824574367 }
+  },
+  { "nombre": "Paso 7: r = 2 m, v = 4 m/s y a a 53° de v → acp = 8, aT = 6, |a| = 10 m/s² (suma 14; cambiadas 40/3)", "fn": "aceleracionTotal", "args": [ { "r": 2, "v": 4, "anguloAV": 53 } ], "espera": { "acp": 8, "at": 6, "a": 10, "anguloAR": 37, "errores.aSuma": 14, "errores.atAcCambiadas": 13.3333333333333, "errores.atCambiada": 10.6666666666667, "errores.aSoloCentripeta": 8 }
+  },
+  { "nombre": "aT y acp sueltas: r = 0,5 m, ω = 4 rad/s y α = 6 rad/s² → aT = 3, acp = 8, |a| = √73", "fn": "aceleracionTotal", "args": [ { "r": 0.5, "omega": 4, "alfa": 6 } ], "espera": { "at": 3, "acp": 8, "a": 8.54400374531753, "tan": 2.66666666666667, "errores.aSuma": 11, "errores.anguloCambiado": 20.5560452195835 }
+  },
+  { "nombre": "Con ω0 y t: r = 1 m, ω0 = 1 rad/s, α = 2 rad/s², t = 1 s → ω = 3, acp = 9, aT = 2 (con ω0: 1)", "fn": "aceleracionTotal", "args": [ { "r": 1, "omega0": 1, "alfa": 2, "t": 1 } ], "espera": { "omega": 3, "acp": 9, "at": 2, "errores.acConOmega0": 1 }
+  },
+  { "nombre": "Paso 3: desde el reposo, acp = aT cuando el disco giró medio radián, con r = 0,2 m y α = 4π rad/s²", "fn": "desdeReposo", "args": [ { "r": 0.2, "alfa": 12.566370614359172, "razon": 1 } ], "espera": { "theta": 0.5, "vueltas": 0.0795774715459477, "t": 0.282094791773878, "omega": 3.54490770181103, "at": 2.51327412287183, "acp": 2.51327412287183, "anguloAV": 45, "errores.thetaSinElDos": 1, "errores.theta45": 0.785398163397448, "errores.thetaConRadio": 0.1 }
+  },
+  { "nombre": "Paso 3 con otro disco: r = 3 m y α = 0,5 rad/s², acp = aT otra vez a medio radián (t = √2 s)", "fn": "desdeReposo", "args": [ { "r": 3, "alfa": 0.5, "razon": 1 } ], "espera": { "theta": 0.5, "t": 1.4142135623731, "omega": 0.707106781186548, "at": 1.5, "acp": 1.5 }
+  },
+  { "nombre": "Desde el reposo, a forma 53° con v → acp/aT = 4/3, giró 2/3 rad", "fn": "desdeReposo", "args": [ { "r": 1, "alfa": 3, "anguloAV": 53 } ], "espera": { "razon": 1.33333333333333, "theta": 0.666666666666667, "omega": 2, "at": 3, "acp": 4 }
+  },
+  { "nombre": "Paso 8: MCU con r = 1,5 m y ω = 2 rad/s (v = 3 m/s); de arriba a la izquierda (90°) → |Δv| = 3√2, cuerda 1,5√2, arco 0,75π", "fn": "vectorial", "args": [ { "r": 1.5, "omega": 2, "theta0": 90, "t1": 0, "t2": 0.7853981633974483 } ], "espera": { "v": 3, "acp": 6, "p2.x": -1.5, "v1.x": -3, "v2.y": -3, "a1.y": -6, "a2.x": 6, "dv.x": 3, "dv.y": -3, "modDv": 4.24264068711929, "cuerda": 2.12132034355964, "arco": 2.35619449019234, "modVMedia": 2.70094894847132, "modAMedia": 5.40189789694264, "difA": 8.48528137423857, "errores.deltaVSuma": 6, "errores.vMediaConArco": 3 }
+  },
+  { "nombre": "Paso 9: con ω = −2 rad/s (horario) y r⃗ = 0,5 î m, acp⃗ = −2 î m/s² (hacia el centro, igual que con ω positiva) y v⃗ = −1 ĵ m/s", "fn": "vectorial", "args": [ { "r": 0.5, "omega": -2, "theta0": 0, "t1": 0, "t2": 0.7853981633974483 } ], "espera": { "a1.x": -2, "a1.y": 0, "v1.x": 0, "v1.y": -1, "p2.y": -0.5, "a2.y": 2, "difA": 2.82842712474619 }
+  },
+  { "nombre": "|Δv| para 60°: con v = 3 m/s, los dos puntos y Δv forman un triángulo equilátero: |Δv| = 3 m/s", "fn": "deltaV", "args": [ { "r": 2, "v": 3, "angulo": 60 } ], "espera": { "modDv": 3, "cuerda": 2, "arco": 2.0943951023932, "t": 0.698131700797732, "vMedia": 2.86478897565412, "aMedia": 4.29718346348117 }
+  },
+  { "nombre": "Paso 11: dos marcas a 10 cm y 30 cm del eje de un disco de 2 vueltas por segundo → v de 0,4π y 1,2π m/s, razón 3", "fn": "rigido", "args": [ { "f": 2, "radios": [ 0.1, 0.3 ] } ], "espera": { "omega": 12.5663706143592, "puntos.0.v": 1.25663706143592, "puntos.1.v": 3.76991118430775, "puntos.1.acp": 47.3741011252289, "razon": 3, "errores.razonInversa": 0.333333333333333, "errores.razonCuadrado": 9 }
+  },
+  { "nombre": "Latitud 60° en una esfera de 6400 km con periodo de 24 h: r = 3200 km y v la mitad que en el ecuador", "fn": "latitud", "args": [ { "R": 6400000, "lambda": 60, "periodo": 86400 } ], "espera": { "r": 3200000, "omega": 0.0000727220521664304, "v": 232.710566932577, "errores.vSinCoseno": 465.421133865155 }
+  },
+  { "nombre": "Faja: rueda de 10 cm a 30 rad/s mueve una de 25 cm → 12 rad/s (misma ω: 30; directa: 75)", "fn": "transmision", "args": [ { "r1": 0.1, "r2": 0.25, "omega1": 30, "tipo": "faja" } ], "espera": { "v1": 3, "omega2": 12, "v2": 3, "sentido2": 1, "errores.omegaIgualConFaja": 30, "errores.omegaDirecta": 75, "errores.omegaCuadrado": 4.8 }
+  },
+  { "nombre": "Tren: 60 rpm, engranaje de 5 a 15 cm y eje con una de 30 cm → 20 rpm, borde a 0,2π m/s, sentido contrario", "fn": "tren", "args": [ { "rpm1": 60, "ruedas": [ { "r": 0.05 }, { "r": 0.15, "union": "engranaje" }, { "r": 0.3, "union": "eje" } ] } ], "espera": { "2.omega": 2.0943951023932, "2.v": 0.628318530717959, "2.sentido": -1, "1.f": 0.333333333333333 }
+  },
+  { "nombre": "Polea escalonada: rueda de 20 cm a 6 rad/s con faja a la garganta de 10 cm; el bloque cuelga de la de 30 cm → 3,6 m/s", "fn": "poleaEscalonada", "args": [ { "r1": 0.2, "omega1": 6, "rEntra": 0.1, "rSale": 0.3, "union": "faja" } ], "espera": { "vEntra": 1.2, "omega2": 12, "vBloque": 3.6, "errores.bloqueRadioEquivocado": 1.2, "errores.omegaIgualConFaja": 1.8, "errores.omegaDirecta": 0.9 }
+  },
+  { "nombre": "Paso 16: polea móvil con cuerdas que suben a 4 m/s y 2 m/s → el bloque sube a 3 m/s; con r = 0,1 m gira a 10 rad/s", "fn": "poleaMovil", "args": [ { "v1": 4, "v2": 2, "r": 0.1 } ], "espera": { "vBloque": 3, "omega": 10, "errores.suma": 6, "errores.diferencia": 2 }
+  },
+  { "nombre": "Paso 17: faja de 10 cm a 30 cm con α1 = 6 rad/s² → α2 = 2 rad/s² (misma aT = 0,6 m/s²)", "fn": "transmisionMCUV", "args": [ { "r1": 0.1, "r2": 0.3, "alfa1": 6, "tipo": "faja" } ], "espera": { "alfa2": 2, "at1": 0.6, "at2": 0.6, "errores.alfaIgualConFaja": 6, "errores.alfaDirecta": 18, "errores.alfaCuadrado": 0.666666666666667 }
+  },
+  { "nombre": "Reducción en el eje: misma α", "fn": "transmisionMCUV", "args": [ { "r1": 0.1, "r2": 0.3, "alfa1": 6, "tipo": "eje" } ], "espera": { "alfa2": 6, "at2": 1.8 }
+  },
+  { "nombre": "Paso 18: rueda de 30 cm, centro a 5 m/s → arriba 10, adelante 5√2, abajo 0, ω = 50/3 rad/s (como lateral: 5√2)", "fn": "rodadura", "args": [ { "r": 0.3, "v": 5 } ], "espera": { "omega": 16.6666666666667, "arriba.vx": 10, "arriba.modulo": 10, "adelante.vx": 5, "adelante.vy": -5, "adelante.modulo": 7.07106781186548, "abajo.modulo": 0, "errores.comoLateral": 7.07106781186548 }
+  },
+  { "nombre": "Bobina: radio 20 cm apoyada en un eje de 10 cm, centro a 1 m/s → arriba 3 m/s, abajo −1 m/s (hacia atrás)", "fn": "rodadura", "args": [ { "r": 0.2, "v": 1, "rApoyo": 0.1 } ], "espera": { "omega": 10, "arriba.vx": 3, "abajo.vx": -1, "abajo.modulo": 1 }
+  },
+  { "nombre": "Paso 4: α = 4π rad/s² desde el reposo: en el 3.er segundo gira 5 veces lo del primero (10π rad = 5 vueltas); en 3 s, 9 vueltas", "fn": "enesimoSegundo", "args": [ { "alfa": 12.566370614359172, "n": 3 } ], "espera": { "thetaN": 31.4159265358979, "vueltasN": 5, "theta1": 6.28318530717959, "thetaHasta": 56.5486677646163, "vueltasHasta": 9, "razon": 5, "segundos.1": 18.8495559215388, "errores.razonN": 3, "errores.razonCuadrado": 9 }
+  },
+  { "nombre": "n-ésimo segundo desde ω0: ω0 = 2 rad/s y α = 2 rad/s², en el 4.º segundo gira 9 rad", "fn": "enesimoSegundo", "args": [ { "omega0": 2, "alfa": 2, "n": 4 } ], "espera": { "thetaN": 9, "theta1": 3, "thetaHasta": 24 }
+  },
+  { "nombre": "Paso 12: θ(t) = 12t − 2t² (rad) → se detiene a los 3 s, en θ = 18 rad; entre 0 y 5 s: neto 10, recorrido 26", "fn": "horaria", "args": [ { "theta0": 0, "omega0": 12, "alfa": -4, "t1": 0, "t2": 5 } ], "espera": { "tParada": 3, "thetaParada": 18, "neto": 10, "recorrido": 26 }
+  },
+  { "nombre": "Paso 14: θ = 2 + 8t − 2t² → α = −4 rad/s² (el coeficiente da −2; sin signo, +4; el lineal, 8); a los 1 s con r = 0,5: ω = 4, acp = 8, aT = −2", "fn": "horaria", "args": [ { "coef": [ 2, 8, -2 ], "t": 1, "r": 0.5 } ], "espera": { "alfa": -4, "omega0": 8, "tParada": 2, "thetaT": 8, "omegaT": 4, "at": -2, "acp": 8, "errores.coeficienteComoAlfa": -2, "errores.coeficienteSinSigno": 4, "errores.linealComoAlfa": 8 }
+  },
+  { "nombre": "Ecuación horaria entre 1 s y 3 s: θ = 5 + 4t + t² → neto 16 rad (θ(3) = 26 sin restar)", "fn": "horaria", "args": [ { "coef": [ 5, 4, 1 ], "t1": 1, "t2": 3 } ], "espera": { "alfa": 2, "neto": 16, "recorrido": 16, "errores.posicionPorGiro": 26 }
+  },
+  { "nombre": "Paso 13: ω-t de 6 rad/s a −6 rad/s en 6 s → cruza el eje a los 3 s; neto 0 rad, recorrido 18 rad (pendiente 2, eje 6)", "fn": "grafica", "args": [ { "puntos": [ [ 0, 6 ], [ 6, -6 ] ] } ], "espera": { "neto": 0, "recorrido": 18, "ceros.0": 3, "pendientes.0": -2, "errores.netoPorRecorrido": 0, "errores.pendiente": 2, "errores.leeEje": 6 }
+  },
+  { "nombre": "ω-t de tres tramos: sube de 0 a 4 en 2 s, sigue 3 s y baja a 0 en 1 s → 18 rad; entre 1 s y 4 s, 11 rad", "fn": "grafica", "args": [ { "puntos": [ [ 0, 0 ], [ 2, 4 ], [ 5, 4 ], [ 6, 0 ] ], "t1": 1, "t2": 4 } ], "espera": { "neto": 11, "recorrido": 11, "pendientes.0": 2, "pendientes.2": -4 }
+  },
+  { "nombre": "Paso 15: A a 6 rad/s constantes y B desde el reposo con 2 rad/s² → igual ω a los 3 s, separados 9 rad (área de A 18, suma 27)", "fn": "dosMoviles", "args": [ { "omega01": 6, "alfa1": 0, "omega02": 0, "alfa2": 2 } ], "espera": { "tIgual": 3, "omega": 6, "theta1": 18, "theta2": 9, "separacion": 9, "errores.areaDeUno": 18, "errores.sumaAreas": 27 }
+  },
+  { "nombre": "Paso 22: periodos 6 s y 10 s, mismo sentido → vuelven juntos a la salida a los 30 s (5 y 3 vueltas); el primer alcance es a los 15 s", "fn": "reencuentroSalida", "args": [ { "periodo1": 6, "periodo2": 10 } ], "espera": { "t": 30, "vueltas1": 5, "vueltas2": 3, "tEncuentro": 15, "encuentros": 2, "errores.producto": 60, "errores.conSuma": 3.75, "errores.periodoRapido": 6 }
+  },
+  { "nombre": "Reencuentro en sentidos contrarios: periodos 4 s y 6 s → en la salida a los 12 s; se cruzan cada 2,4 s (5 veces)", "fn": "reencuentroSalida", "args": [ { "periodo1": 4, "periodo2": 6, "sentido": "contrario" } ], "espera": { "t": 12, "tEncuentro": 2.4, "encuentros": 5, "errores.conResta": 12 }
+  },
+  { "nombre": "Periodos con decimales: 1,5 s y 2,5 s → 7,5 s", "fn": "reencuentroSalida", "args": [ { "periodo1": 1.5, "periodo2": 2.5 } ], "espera": { "t": 7.5, "vueltas1": 5, "vueltas2": 3 }
+  },
+  { "nombre": "Encuentro angular: 3 rad/s y 1 rad/s, mismo sentido, B 90° adelante → t = π/4 s", "fn": "encuentroPista", "args": [ { "omega1": 3, "omega2": 1, "theta0": 90, "sentido": "mismo" } ], "espera": { "t": 0.785398163397448, "brecha": 1.5707963267949, "vRel": 2, "errores.tConSuma": 0.392699081698724 }
+  },
+  { "nombre": "Paso 19: cascarón de 1 m de diámetro y bala a 200 m/s → media vuelta en 5 ms: ω mínima 200π rad/s (una vuelta: 400π; 180° entre 5 ms: 36 000)", "fn": "atraviesa", "args": [ { "L": 1, "v": 200, "modo": "cascaron" } ], "espera": { "t": 0.005, "omega": 628.318530717959, "omegaPi": 200, "f": 100, "errores.vueltaEntera": 1256.63706143592, "errores.omegaComoVueltas": 100, "errores.gradosSinRadianes": 36000, "errores.diametroPorRadio": 314.159265358979, "errores.msSinConvertir": 0.628318530717959 }
+  },
+  { "nombre": "Dos discos a 0,6 m con desfase de 60° y bala a 300 m/s → ω mínima 500π/3 rad/s", "fn": "atraviesa", "args": [ { "L": 0.6, "v": 300, "modo": "discos", "desfase": 60 } ], "espera": { "t": 0.002, "omega": 523.598775598299, "omegaPi": 166.666666666667, "errores.vueltaEntera": 3665.19142918809 }
+  },
+  { "nombre": "Paso 20: rueda de 50 cm de radio; la gota cae en el mismo punto tras una vuelta si ω = √(20π) ≈ 7,9 rad/s (media vuelta ≈ 5,6; solo la subida ≈ 11,2; 1 rad por vuelta ≈ 3,2)", "fn": "gotaDeRueda", "args": [ { "r": 0.5, "g": 10 } ], "espera": { "omega": 7.92665459521202, "v": 3.96332729760601, "t": 0.792665459521202, "errores.mediaVuelta": 5.60499121639793, "errores.soloSubida": 11.2099824327959, "errores.unRadian": 3.16227766016838 }
+  },
+  { "nombre": "Paso 21: disco liso de 40 cm, bolita a 20 cm, ω = 3 rad/s → sale a 60° adelante del radio donde se soltó, con v = 0,6 m/s, tras 0,2√3 m", "fn": "despegaDelDisco", "args": [ { "R": 0.4, "d": 0.2, "omega": 3 } ], "espera": { "v": 0.6, "camino": 0.346410161513776, "t": 0.577350269189626, "anguloSalida": 60, "giroDisco": 99.2392011759226 }
+  }
+ ]
+}

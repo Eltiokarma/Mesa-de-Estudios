@@ -1,0 +1,315 @@
+{
+ "titulo": "El disco y sus flechas: problemas para lápiz y papel",
+ "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja siempre: el disco con sus flechas, la gráfica ω-t o la recta desenrollada. Pasa rpm y vueltas a rad/s (una vuelta son 2π rad y un minuto son 60 s), usa el radio y no el diámetro, y deja π indicado si sale.",
+ "problemas": [
+  {
+   "id": "p1",
+   "nivel": "intermedio",
+   "enunciado": "Un ventilador arranca desde el reposo con una aceleración angular constante de π rad/s² durante 4 s. Después gira parejo durante 6 s y, al apagarlo, frena de manera uniforme hasta detenerse en 2 s. ¿Cuántas vueltas da en total?",
+   "respuesta": "36π rad, es decir, 18 vueltas.",
+   "pasos": [
+    "Tramo 1 (acelera): θ₁ = ½·α·t² = ½·π·4² = 8π rad. Al final va a ω = α·t = 4π rad/s.",
+    "Tramo 2 (parejo): θ₂ = ω·t = 4π·6 = 24π rad.",
+    "Tramo 3 (frena de 4π rad/s a 0 en 2 s): θ₃ = (ω₀ + ω)/2 · t = (4π + 0)/2 · 2 = 4π rad. Es el área de un triángulo en la gráfica ω-t.",
+    "Total: 8π + 24π + 4π = 36π rad. Una vuelta son 2π rad: 36π / 2π = 18 vueltas.",
+    "Ojo: si usas la ω de cada tramo como si fuera constante (rectángulos), te sale de más."
+   ],
+   "verificar": [
+    {
+     "fn": "mcuvTramos",
+     "args": [
+      {
+       "omega0": 0,
+       "tramos": [
+        {
+         "alfa": 3.141592653589793,
+         "t": 4
+        },
+        {
+         "alfa": 0,
+         "t": 6
+        },
+        {
+         "alfa": -6.283185307179586,
+         "t": 2
+        }
+       ]
+      }
+     ],
+     "espera": {
+      "theta": 113.09733552923255,
+      "vueltas": 18,
+      "omegaFinal": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "p2",
+   "nivel": "intermedio",
+   "enunciado": "Un punto del borde de una rueda que va acelerando tiene una aceleración total de 5 m/s², que forma 37° con su velocidad. En ese instante va a 3 m/s. ¿Cuál es el radio de la rueda? (sen 37° = 3/5)",
+   "respuesta": "3 m.",
+   "pasos": [
+    "La aceleración total se descompone en dos: aT, sobre la velocidad, y acp, hacia el centro. Forman un triángulo rectángulo con a como hipotenusa.",
+    "El ángulo de 37° está entre a y v, así que aT es el cateto junto al ángulo y acp el opuesto: aT = a·cos 37° = 5·4/5 = 4 m/s² y acp = a·sen 37° = 5·3/5 = 3 m/s².",
+    "acp = v²/R → R = v²/acp = 3²/3 = 3 m.",
+    "Si cambias seno por coseno, tomas acp = 4 y te sale 2,25 m: por eso conviene dibujar el triángulo antes de escribir."
+   ],
+   "verificar": [
+    {
+     "fn": "aceleracionTotal",
+     "args": [
+      {
+       "r": 3,
+       "v": 3,
+       "anguloAV": 37
+      }
+     ],
+     "espera": {
+      "a": 5,
+      "at": 4,
+      "acp": 3
+     }
+    }
+   ]
+  },
+  {
+   "id": "p3",
+   "nivel": "básico",
+   "enunciado": "Una rueda de alfarero arranca desde el reposo con aceleración angular constante y en su primer segundo da media vuelta. ¿Cuántas vueltas da durante el cuarto segundo? ¿Y en los cuatro primeros segundos?",
+   "respuesta": "3,5 vueltas en el cuarto segundo y 8 vueltas en los cuatro primeros.",
+   "pasos": [
+    "Desde el reposo, lo girado crece con t²: en 1, 2, 3 y 4 s lleva 1, 4, 9 y 16 veces lo del primer segundo.",
+    "En cada segundo gira la diferencia: 1, 3, 5 y 7 veces lo del primero (los impares).",
+    "Cuarto segundo: 7 · ½ = 3,5 vueltas.",
+    "Cuatro primeros segundos: 16 · ½ = 8 vueltas. «En el cuarto segundo» es un solo segundo; «en cuatro segundos» son los cuatro."
+   ],
+   "verificar": [
+    {
+     "fn": "enesimoSegundo",
+     "args": [
+      {
+       "theta1": 3.141592653589793,
+       "n": 4
+      }
+     ],
+     "espera": {
+      "vueltasN": 3.5,
+      "vueltasHasta": 8,
+      "razon": 7
+     }
+    }
+   ]
+  },
+  {
+   "id": "p4",
+   "nivel": "intermedio",
+   "enunciado": "Una partícula da vueltas en una circunferencia de 2 m de radio con centro en el origen, en sentido horario, con ω = −3 k̂ rad/s. Cuando pasa por la posición r⃗ = 2 ĵ m, ¿cuáles son su velocidad v⃗ y su aceleración centrípeta a⃗cp?",
+   "respuesta": "v⃗ = 6 î m/s y a⃗cp = −18 ĵ m/s².",
+   "pasos": [
+    "La rapidez es |ω|·R = 3·2 = 6 m/s. En sentido horario, por lo más alto de la circunferencia va hacia la derecha: v⃗ = 6 î m/s (también sale de ω⃗ × r⃗ = −3 k̂ × 2 ĵ = 6 î).",
+    "La aceleración centrípeta apunta del punto hacia el centro, sea cual sea el sentido de giro: a⃗cp = −ω²·r⃗ = −9·2 ĵ = −18 ĵ m/s².",
+    "Su módulo, v²/R = 36/2 = 18 m/s², no cambia; su dirección sí, porque siempre mira al centro."
+   ],
+   "verificar": [
+    {
+     "fn": "vectorial",
+     "args": [
+      {
+       "r": 2,
+       "omega": -3,
+       "theta0": 90,
+       "t1": 0,
+       "t2": 0.1
+      }
+     ],
+     "espera": {
+      "v1.x": 6,
+      "v1.y": 0,
+      "a1.x": 0,
+      "a1.y": -18
+     }
+    }
+   ]
+  },
+  {
+   "id": "p5",
+   "nivel": "intermedio",
+   "enunciado": "La gráfica ω-t de un disco es una recta que va de 8 rad/s en t = 0 a −4 rad/s en t = 6 s. Entre 0 y 6 s, ¿cuál es su desplazamiento angular y cuánto giró en total, sumando los dos sentidos?",
+   "respuesta": "Desplazamiento angular: 12 rad. Giró en total 20 rad.",
+   "pasos": [
+    "La recta corta el eje cuando ω = 0. Baja 12 rad/s en 6 s (α = −2 rad/s²), así que llega a cero a los 4 s.",
+    "De 0 a 4 s, triángulo sobre el eje: ½·4·8 = 16 rad en un sentido.",
+    "De 4 a 6 s, triángulo bajo el eje: ½·2·4 = 4 rad en el otro sentido.",
+    "Desplazamiento (con signo): 16 − 4 = 12 rad. Total girado: 16 + 4 = 20 rad."
+   ],
+   "verificar": [
+    {
+     "fn": "grafica",
+     "args": [
+      {
+       "puntos": [
+        [
+         0,
+         8
+        ],
+        [
+         6,
+         -4
+        ]
+       ]
+      }
+     ],
+     "espera": {
+      "neto": 12,
+      "recorrido": 20,
+      "ceros.0": 4
+     }
+    }
+   ]
+  },
+  {
+   "id": "p6",
+   "nivel": "intermedio",
+   "enunciado": "La posición angular de una rueda de 40 cm de radio es θ = 1 + 6t − 1,5t² (θ en rad, t en s). ¿Cuánto vale su aceleración angular? ¿En qué instante se detiene? ¿Cuánto valen aT y acp de un punto del borde en t = 1 s?",
+   "respuesta": "α = −3 rad/s²; se detiene a los 2 s; en t = 1 s, aT = −1,2 m/s² (frena) y acp = 3,6 m/s².",
+   "pasos": [
+    "Se compara con θ = θ₀ + ω₀t + ½αt²: θ₀ = 1 rad, ω₀ = 6 rad/s y ½α = −1,5, así que α = −3 rad/s². El coeficiente de t² es la mitad de α.",
+    "ω = ω₀ + αt = 6 − 3t. Se anula en t = 2 s.",
+    "En t = 1 s: ω = 3 rad/s. aT = α·r = −3·0,4 = −1,2 m/s² (el signo dice que frena) y acp = ω²·r = 9·0,4 = 3,6 m/s²."
+   ],
+   "verificar": [
+    {
+     "fn": "horaria",
+     "args": [
+      {
+       "coef": [
+        1,
+        6,
+        -1.5
+       ],
+       "t": 1,
+       "r": 0.4
+      }
+     ],
+     "espera": {
+      "alfa": -3,
+      "tParada": 2,
+      "omegaT": 3,
+      "at": -1.2,
+      "acp": 3.6
+     }
+    }
+   ]
+  },
+  {
+   "id": "p7",
+   "nivel": "básico",
+   "enunciado": "Un bloque cuelga de una polea móvil. La cuerda de la izquierda sube a 5 m/s y la de la derecha baja a 1 m/s. ¿Con qué velocidad se mueve el bloque y hacia dónde?",
+   "respuesta": "Sube a 2 m/s.",
+   "pasos": [
+    "El centro de la polea (y el bloque) va al promedio de las velocidades de los dos lados, con su signo.",
+    "Tomando positivo hacia arriba: v = (5 + (−1))/2 = 2 m/s.",
+    "Sale positivo: el bloque sube. Además la polea gira, porque sus dos lados no van igual."
+   ],
+   "verificar": [
+    {
+     "fn": "poleaMovil",
+     "args": [
+      {
+       "v1": 5,
+       "v2": -1
+      }
+     ],
+     "espera": {
+      "vBloque": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "p8",
+   "nivel": "básico",
+   "enunciado": "Un auto avanza a 72 km/h y sus llantas, de 35 cm de radio, ruedan sin resbalar. ¿Qué rapidez tiene el punto más alto de una llanta? ¿Y un punto del borde a la altura del eje, adelante?",
+   "respuesta": "El más alto, 40 m/s; el de adelante, 20√2 ≈ 28,3 m/s.",
+   "pasos": [
+    "72 km/h = 20 m/s: es la velocidad del centro de la llanta.",
+    "El punto de apoyo no resbala: está quieto un instante. La llanta gira alrededor de él con ω = v/R.",
+    "El punto más alto está a 2R del apoyo: va a ω·2R = 2v = 40 m/s.",
+    "El de adelante está a R√2 del apoyo: va a v√2 = 20√2 ≈ 28,3 m/s. El radio, 35 cm, no hace falta."
+   ],
+   "verificar": [
+    {
+     "fn": "rodadura",
+     "args": [
+      {
+       "r": 0.35,
+       "v": 20
+      }
+     ],
+     "espera": {
+      "arriba.modulo": 40,
+      "adelante.modulo": 28.284271247461902,
+      "abajo.modulo": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "p9",
+   "nivel": "intermedio",
+   "enunciado": "Dos discos de cartón están en un mismo eje, separados 1,2 m, y giran juntos. Una bala, paralela al eje, los atraviesa a 240 m/s. El agujero del segundo disco queda un cuarto de vuelta atrás del agujero del primero. ¿Cuál es la menor velocidad angular posible de los discos?",
+   "respuesta": "100π rad/s (50 vueltas por segundo).",
+   "pasos": [
+    "La bala tarda t = 1,2/240 = 0,005 s en ir de un disco al otro.",
+    "En ese tiempo los discos giran un cuarto de vuelta, π/2 rad (o un cuarto más vueltas enteras; la menor ω es sin vueltas extra).",
+    "ω = (π/2)/0,005 = 100π rad/s."
+   ],
+   "verificar": [
+    {
+     "fn": "atraviesa",
+     "args": [
+      {
+       "L": 1.2,
+       "v": 240,
+       "modo": "discos",
+       "desfase": 90
+      }
+     ],
+     "espera": {
+      "t": 0.005,
+      "omegaPi": 100
+     }
+    }
+   ]
+  },
+  {
+   "id": "p10",
+   "nivel": "intermedio",
+   "enunciado": "En una pista circular, Rosa da una vuelta cada 40 s y Teo una cada 72 s. Salen juntos del mismo punto y en el mismo sentido. ¿Cuándo vuelven a pasar juntos por la salida? ¿Y cuándo Rosa alcanza a Teo por primera vez?",
+   "respuesta": "Pasan juntos por la salida a los 360 s; el primer alcance es a los 90 s, lejos de la salida.",
+   "pasos": [
+    "Rosa pasa por la salida a los 40, 80, 120… s; Teo a los 72, 144, 216… s. El primero que se repite es 360 s (el mínimo común múltiplo de 40 y 72). Rosa dio 9 vueltas y Teo 5.",
+    "Para alcanzarlo, Rosa le tiene que sacar una vuelta: (1/40 − 1/72) vueltas por segundo = 1/90. Tarda 90 s.",
+    "A los 90 s Rosa lleva 2,25 vueltas: el alcance es a un cuarto de vuelta de la salida. El primer alcance y volver juntos a la salida no son lo mismo."
+   ],
+   "verificar": [
+    {
+     "fn": "reencuentroSalida",
+     "args": [
+      {
+       "periodo1": 40,
+       "periodo2": 72
+      }
+     ],
+     "espera": {
+      "t": 360,
+      "vueltas1": 9,
+      "vueltas2": 5,
+      "tEncuentro": 90
+     }
+    }
+   ]
+  }
+ ]
+}
