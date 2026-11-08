@@ -1,0 +1,70 @@
+{
+  "titulo": "Áreas de triángulos y polígonos por partes",
+  "indicacion": "Resuelve en tu cuaderno. Dibuja la figura, marca las alturas y busca qué triángulos comparten base o altura.",
+  "problemas": [
+    {
+      "id": "pt1",
+      "nivel": "básico",
+      "enunciado": "En una huerta rectangular PQRS, el punto E está en el lado QR con QE : ER = 2 : 3. Ya se sembró la parte triangular PQE, que mide 10 m². ¿Cuántos m² de la huerta faltan sembrar?",
+      "respuesta": "40 m²",
+      "pasos": ["PQE = PQ·QE/2 y QE es 2/5 de QR, así PQE es 2/10 = 1/5 del rectángulo.", "Rectángulo = 10·5 = 50 m².", "Falta: 50 − 10 = 40 m²."],
+      "verificar": [{ "fn": "rectanguloResto", "args": [10, 2, 3], "espera": 40 }]
+    },
+    {
+      "id": "pt2",
+      "nivel": "intermedio",
+      "enunciado": "Un triángulo KLM tiene KL = 12 cm, KM = 18 cm y un área de 60 cm². La bisectriz del ángulo K corta a LM en N. ¿Cuál es el área del triángulo KLN?",
+      "respuesta": "24 cm²",
+      "pasos": ["Teorema de la bisectriz: LN : NM = KL : KM = 12 : 18 = 2 : 3.", "KLN y KNM tienen la misma altura desde K.", "KLN = 60·2/5 = 24 cm²."],
+      "verificar": [{ "fn": "bisectriz", "args": [60, 12, 18], "espera": 24 }]
+    },
+    {
+      "id": "pt3",
+      "nivel": "intermedio",
+      "enunciado": "Las diagonales de un trapecio se cortan y forman cuatro triángulos. El que está sobre la base menor mide 4 m² y el que está sobre la base mayor mide 49 m². ¿Cuánto mide cada triángulo lateral y cuál es el área del trapecio?",
+      "respuesta": "14 m² cada lateral; 81 m² el trapecio",
+      "pasos": ["Cada lateral es √(4·49) = 14 m².", "Trapecio = 4 + 49 + 2·14 = 81 m².", "Comprueba: (√4 + √49)² = 9² = 81."],
+      "verificar": [{ "fn": "trapecioLateral", "args": [4, 49], "espera": 14 }, { "fn": "trapecioTotal", "args": [4, 49], "espera": 81 }]
+    },
+    {
+      "id": "pt4",
+      "nivel": "intermedio",
+      "enunciado": "En un terreno cuadrado ABCD de 30 m de lado, M es el punto medio de BC. El camino DM cruza a la diagonal AC en P. ¿Cuál es el área del triángulo DPC?",
+      "respuesta": "150 m²",
+      "pasos": ["PMC y PAD son semejantes con razón MC : AD = 1 : 2, así CP = AC/3.", "La distancia de P al lado DC es 30/3 = 10 m.", "DPC = 30·10/2 = 150 m²."],
+      "verificar": [{ "fn": "puntoMedio", "args": [30, "DPC"], "espera": 150 }]
+    },
+    {
+      "id": "pt5",
+      "nivel": "intermedio",
+      "enunciado": "Dentro de un patio cuadrado de 35 m de lado se marca otro cuadrado con un vértice en cada lado del patio; cada lado del cuadrado marcado forma 37° con el lado del patio en que se apoya. ¿Cuál es el área del cuadrado marcado?",
+      "respuesta": "625 m²",
+      "pasos": ["Si el lado marcado mide 5k, las esquinas son triángulos de catetos 3k y 4k.", "El lado del patio es 3k + 4k = 7k = 35, así k = 5.", "Área = (5·5)² = 625 m²."],
+      "verificar": [{ "fn": "notables", "args": [35, "interior"], "espera": 625 }]
+    },
+    {
+      "id": "pt6",
+      "nivel": "avanzado",
+      "enunciado": "Un hexágono con todos sus ángulos de 120° tiene lados consecutivos de 4, 6, 6, 8, 2 y 10 cm. ¿Cuál es su área?",
+      "respuesta": "50√3 cm²",
+      "pasos": ["Al prolongar los lados de 4, 6 y 2 cm se forma un triángulo equilátero de lado 4 + 6 + 6 = 16 cm.", "Las esquinas que sobran son equiláteros de lados 4, 6 y 2 cm.", "Área = (√3/4)(256 − 16 − 36 − 4) = 50√3 cm²."],
+      "verificar": [{ "fn": "hexagono", "args": [16, 4, 6, 2], "espera": 86.60254037844386 }]
+    },
+    {
+      "id": "pt7",
+      "nivel": "avanzado",
+      "enunciado": "Un toldo tiene forma de triángulo isósceles con 30° entre los lados iguales y una base de 8 m. Usa tan 75° = 2 + √3. ¿Cuál es el área del toldo?",
+      "respuesta": "(32 + 16√3) m²",
+      "pasos": ["La altura cae en el punto medio de la base: la mitad mide 4 m y el ángulo de la base es 75°.", "Altura = 4·(2 + √3).", "Área = 8·4(2 + √3)/2 = (32 + 16√3) m²."],
+      "verificar": [{ "fn": "isoscelesBase", "args": [8], "espera": 59.712812921102035 }]
+    },
+    {
+      "id": "pt8",
+      "nivel": "avanzado",
+      "enunciado": "En un triángulo rectángulo XYZ, recto en Y, la mediatriz de XZ corta a YZ en T, con YT = 7 m y TZ = 25 m. ¿Cuál es el área del triángulo XYZ?",
+      "respuesta": "384 m²",
+      "pasos": ["T está en la mediatriz de XZ: TX = TZ = 25.", "En el triángulo XYT: XY = √(25² − 7²) = 24.", "Área = (7 + 25)·24/2 = 384 m²."],
+      "verificar": [{ "fn": "mediatriz", "args": [7, 25], "espera": 384 }]
+    }
+  ]
+}

@@ -1,0 +1,321 @@
+{
+  "plantilla": "geo-areas-triangulares",
+  "tolerancia": 0.000001,
+  "nota": "Respuestas exactas q + p·√3; «respuesta» es su valor numérico. Ver la cabecera de generador.js para el significado de cada campo de «entrada».",
+  "verificacion": "",
+  "casos": [
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "notables",
+        "u": "dm",
+        "L": 28,
+        "pide": "interior"
+      },
+      "esperado": {
+        "respuesta": 400,
+        "exacta": "400 dm²"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "misma-altura",
+        "sub": "bisectriz-rectangulo",
+        "u": "m",
+        "a": 15,
+        "b": 12
+      },
+      "esperado": {
+        "respuesta": 50,
+        "exacta": "50 m²"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "notables",
+        "u": "cm",
+        "L": 14,
+        "pide": "AFG"
+      },
+      "esperado": {
+        "respuesta": 74,
+        "exacta": "74 cm²"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "punto-medio",
+        "u": "dm",
+        "l": 24,
+        "pieza": "ABMP"
+      },
+      "esperado": {
+        "respuesta": 240,
+        "exacta": "240 dm²"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "trapecio",
+        "sub": "lateral",
+        "u": "m",
+        "S1": 9,
+        "S2": 25
+      },
+      "esperado": {
+        "respuesta": 15,
+        "exacta": "15 m²"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "misma-altura",
+        "sub": "bisectriz",
+        "u": "cm",
+        "c": 6,
+        "b": 10,
+        "S": 8
+      },
+      "esperado": {
+        "respuesta": 3,
+        "exacta": "3 cm²"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "pitagoras",
+        "sub": "mediatriz",
+        "u": "dm",
+        "m": 5,
+        "n": 13,
+        "tasa": 0
+      },
+      "esperado": {
+        "respuesta": 108,
+        "exacta": "108 dm²"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "equilateros",
+        "sub": "estrella",
+        "u": "m",
+        "R": 8
+      },
+      "esperado": {
+        "respuesta": 349.7025033688163,
+        "exacta": "(128 + 128√3) m²"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "trapecio",
+        "sub": "total",
+        "u": "m",
+        "S1": 9,
+        "S2": 25
+      },
+      "esperado": {
+        "respuesta": 64,
+        "exacta": "64 m²"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "paralelas",
+        "sub": "diagonales",
+        "u": "dm",
+        "S1": 28,
+        "S2": 16,
+        "B": 8,
+        "b": 6,
+        "h": 7
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 dm²"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "equilateros",
+        "sub": "isosceles-lados",
+        "u": "cm",
+        "l": 20
+      },
+      "esperado": {
+        "respuesta": 100,
+        "exacta": "100 cm²"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "paralelas",
+        "sub": "trapecio-punto",
+        "u": "dm",
+        "B": 6,
+        "b": 2,
+        "h": 4,
+        "pide": "central"
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12 dm²"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "misma-altura",
+        "sub": "rectangulo-razon",
+        "u": "cm",
+        "m": 3,
+        "n": 2,
+        "T": 12
+      },
+      "esperado": {
+        "respuesta": 28,
+        "exacta": "28 cm²"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "punto-medio",
+        "u": "cm",
+        "l": 12,
+        "pieza": "APD"
+      },
+      "esperado": {
+        "respuesta": 48,
+        "exacta": "48 cm²"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "misma-altura",
+        "sub": "razon-segmentos",
+        "u": "m",
+        "S": 50,
+        "m": 2,
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10 m²"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "equilateros",
+        "sub": "hexagono",
+        "u": "m",
+        "L": 14,
+        "x": 8,
+        "y": 2,
+        "z": 4
+      },
+      "esperado": {
+        "respuesta": 48.49742261192856,
+        "exacta": "28√3 m²"
+      }
+    },
+    {
+      "semilla": 40,
+      "entrada": {
+        "tipo": "pitagoras",
+        "sub": "semicircunferencia",
+        "u": "m",
+        "d": 17,
+        "a": 8
+      },
+      "esperado": {
+        "respuesta": 60,
+        "exacta": "60 m²"
+      }
+    },
+    {
+      "semilla": 46,
+      "entrada": {
+        "tipo": "equilateros",
+        "sub": "isosceles-base",
+        "u": "cm",
+        "b": 6
+      },
+      "esperado": {
+        "respuesta": 33.588457268119896,
+        "exacta": "(18 + 9√3) cm²"
+      }
+    },
+    {
+      "semilla": 48,
+      "entrada": {
+        "tipo": "punto-medio",
+        "u": "cm",
+        "l": 24,
+        "pieza": "DPC"
+      },
+      "esperado": {
+        "respuesta": 96,
+        "exacta": "96 cm²"
+      }
+    },
+    {
+      "semilla": 49,
+      "entrada": {
+        "tipo": "equilateros",
+        "sub": "pentagono",
+        "u": "cm",
+        "L": 20,
+        "x": 2,
+        "y": 4,
+        "z": 4
+      },
+      "esperado": {
+        "respuesta": 159.3486742963367,
+        "exacta": "92√3 cm²"
+      }
+    },
+    {
+      "semilla": 55,
+      "entrada": {
+        "tipo": "notables",
+        "u": "dm",
+        "L": 21,
+        "pide": "esquina"
+      },
+      "esperado": {
+        "respuesta": 54,
+        "exacta": "54 dm²"
+      }
+    },
+    {
+      "semilla": 56,
+      "entrada": {
+        "tipo": "trapecio",
+        "sub": "desde-total",
+        "u": "cm",
+        "T": 98,
+        "a": 3,
+        "b": 4
+      },
+      "esperado": {
+        "respuesta": 18,
+        "exacta": "18 cm²"
+      }
+    }
+  ]
+}
