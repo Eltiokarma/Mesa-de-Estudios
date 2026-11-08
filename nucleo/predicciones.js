@@ -117,8 +117,10 @@
     const D = fs.reduce((a, f) => a * f.d / mcd(a, f.d), 1);
     const nums = fs.map(f => f.n * (D / f.d));
     let t = '';
-    nums.forEach((n, i) => {
-      if (n === 0) return;
+    // Si hay términos positivos, van primero: «(2b − a)/2», no «(−a + 2b)/2».
+    const orden = nums.map((n, i) => i).filter(i => nums[i] > 0).concat(nums.map((n, i) => i).filter(i => nums[i] < 0));
+    orden.forEach(i => {
+      const n = nums[i];
       const abs = Math.abs(n), termino = (abs === 1 ? '' : abs) + nombres[i];
       t += t === '' ? (n < 0 ? '−' : '') + termino : (n < 0 ? ' − ' : ' + ') + termino;
     });
