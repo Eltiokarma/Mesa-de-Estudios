@@ -1,0 +1,139 @@
+{
+  "plantilla": "vectores-division",
+  "tolerancia": 0.000001,
+  "nota": "Respuesta tal como la escribió el verificador; el generador la escribe igual.",
+  "verificacion": "Verificado aparte (subagente, 8 nov 2026) sin ver el generador ni el núcleo, con coordenadas concretas (triángulo, paralelogramo y trapecio no simétricos) y resolviendo x·a + y·b por determinantes con fracciones exactas; se revisó el orden de los vértices y el sentido de cada vector. Los 13 casos coinciden.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "baricentro",
+        "variante": "GM"
+      },
+      "esperado": {
+        "respuesta": "(u + w)/6"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "baricentro",
+        "variante": "AG"
+      },
+      "esperado": {
+        "respuesta": "(u + w)/3"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "paralelogramo",
+        "caso": "AM-BC"
+      },
+      "esperado": {
+        "respuesta": "(2a + b)/2"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "division",
+        "m": 3,
+        "n": 2
+      },
+      "esperado": {
+        "respuesta": "(2a + 3b)/5"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "trapecio",
+        "diagonales": true
+      },
+      "esperado": {
+        "respuesta": "(a − b)/2"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "paralelogramo",
+        "caso": "DM-BC"
+      },
+      "esperado": {
+        "respuesta": "(2a − b)/2"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "paralelogramo",
+        "caso": "BM-CD"
+      },
+      "esperado": {
+        "respuesta": "(2b − a)/2"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "baricentro",
+        "variante": "AM"
+      },
+      "esperado": {
+        "respuesta": "(u + w)/2"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "trapecio",
+        "diagonales": false
+      },
+      "esperado": {
+        "respuesta": "(a + b)/2"
+      }
+    },
+    {
+      "semilla": 34,
+      "entrada": {
+        "tipo": "paralelogramo",
+        "caso": "AM-tercio"
+      },
+      "esperado": {
+        "respuesta": "(3a + b)/3"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "paralelogramo",
+        "caso": "AM-CD"
+      },
+      "esperado": {
+        "respuesta": "(a + 2b)/2"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "paralelogramo",
+        "caso": "DM-BC"
+      },
+      "esperado": {
+        "respuesta": "(2a − b)/2"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "baricentro",
+        "variante": "AG"
+      },
+      "esperado": {
+        "respuesta": "(u + w)/3"
+      }
+    }
+  ]
+}
