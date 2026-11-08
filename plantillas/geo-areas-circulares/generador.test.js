@@ -29,6 +29,8 @@ function cuadricula(dentro, x0, x1, y0, y1, N = 500) {
   for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) if (dentro(x0 + (i + 0.5) * hx, y0 + (j + 0.5) * hy)) c++;
   return c * hx * hy;
 }
+function biseccionR(f, lo, hi) { for (let i = 0; i < 200; i++) { const m = (lo + hi) / 2; if (Math.sign(f(m)) === Math.sign(f(lo))) lo = m; else hi = m; } return lo; }
+const UNIDAD_HEX = {};
 const enDisco = (x, y, cx, cy, r) => (x - cx) ** 2 + (y - cy) ** 2 <= r * r;
 
 function recalcular(p) {
@@ -67,6 +69,12 @@ function recalcular(p) {
   if (d.tipo === 'sombreada') {
     if (d.sub === 'rect-tres') { const r = d.r; return aprox(cuadricula((x, y) => !(enDisco(x, y, 2 * r, r, r) || enDisco(x, y, 0, r, r) || enDisco(x, y, 4 * r, r, r)), 0, 4 * r, 0, 2 * r)); }
     if (d.sub === 'cuadrado-cuatro') { const r = d.r; return aprox(cuadricula((x, y) => ![[r, r], [3 * r, r], [r, 3 * r], [3 * r, 3 * r]].some(([a, b]) => enDisco(x, y, a, b, r)), 0, 4 * r, 0, 4 * r)); }
+    if (d.sub === 'logo-tangente') {
+      const r = d.r, l = 4 * r;
+      // Semicírculos de radio r en los puntos medios de los lados; el círculo central se busca por bisección (tangente a ellos).
+      const rc = biseccionR(t => Math.hypot(2 * r, 0) - (r + t), 0, 2 * r);
+      return aprox(cuadricula((x, y) => ![[2 * r, 0], [2 * r, l], [0, 2 * r], [l, 2 * r]].some(([a, b]) => enDisco(x, y, a, b, r)) && !enDisco(x, y, 2 * r, 2 * r, rc), 0, l, 0, l));
+    }
     const l = d.l; return aprox(cuadricula((x, y) => ![[0, 0], [l, 0], [0, l], [l, l]].some(([a, b]) => enDisco(x, y, a, b, l / 2)), 0, l, 0, l));
   }
   if (d.tipo === 'lunulas') {
@@ -74,6 +82,32 @@ function recalcular(p) {
     if (d.sub === 'dos-cuadrantes') { const l = d.l; return aprox(cuadricula((x, y) => enDisco(x, y, 0, 0, l) && enDisco(x, y, l, l, l), 0, l, 0, l)); }
     if (d.sub === 'cuadrante-dos-semis') { const R = d.R; return aprox(cuadricula((x, y) => enDisco(x, y, 0, 0, R) && !enDisco(x, y, R / 2, 0, R / 2) && !enDisco(x, y, 0, R / 2, R / 2), 0, R, 0, R)); }
     if (d.sub === 'cuadrante-semi') { const R = d.R; return aprox(cuadricula((x, y) => enDisco(x, y, 0, 0, R) && !enDisco(x, y, R / 2, 0, R / 2), 0, R, 0, R)); }
+    if (d.sub === 'hex-sector' || d.sub === 'hex-segmentos') {
+      // R por bisección: el área sombreada (medida en la cuadrícula con R de prueba escala con R²) debe ser el dato.
+      const V = k => [Math.cos(k * PI / 3), Math.sin(k * PI / 3)];
+      const lado = (P1, P2, x, y) => (P2[0] - P1[0]) * (y - P1[1]) - (P2[1] - P1[1]) * (x - P1[0]); // > 0 a la izquierda
+      const enTri = (A, B, C, x, y) => { const s1 = lado(A, B, x, y), s2 = lado(B, C, x, y), s3 = lado(C, A, x, y); return (s1 >= 0 && s2 >= 0 && s3 >= 0) || (s1 <= 0 && s2 <= 0 && s3 <= 0); };
+      let dentro;
+      if (d.sub === 'hex-sector') {
+        const piezas = [[0, 1, 2], [2, 3, 4], [4, 5, 0]].slice(0, d.n);
+        // Región = triángulo V(i)V(i+1)V(i+2) más el segmento sobre la cuerda V(i)V(i+1) (del lado opuesto a O).
+        dentro = (x, y) => x * x + y * y <= 1 && piezas.some(([i, j, k]) => enTri(V(i), V(j), V(k), x, y) || lado(V(i), V(j), x, y) < 0);
+      } else {
+        dentro = (x, y) => x * x + y * y <= 1 && [0, 1, 2, 3, 4, 5].some(i => lado(V(i), V(i + 1), x, y) < 0);
+      }
+      const clave = d.sub + (d.n || '');
+      const unidad = UNIDAD_HEX[clave] = UNIDAD_HEX[clave] || cuadricula(dentro, -1, 1, -1, 1, 900); // área con R = 1
+      const S = d.Spi * PI + (d.Sr3 || 0) * Math.sqrt(3);
+      return { x: 2 * PI * Math.sqrt(S / unidad), tol: 0.01 };
+    }
+    if (d.sub === 'cuadricula') {
+      const a = d.a, h = a / 2;
+      return aprox(cuadricula((x, y) =>
+        (x <= a && y <= a && enDisco(x, y, 0, 0, a)) ||
+        (x >= a && y <= a && !enDisco(x, y, a, 0, a)) ||
+        (x <= a && y >= a && !enDisco(x, y, 0, 3 * h, h)) ||
+        (x >= a && enDisco(x, y, a, 3 * h, h)), 0, 2 * a, 0, 2 * a));
+    }
     // Hipócrates: B(0, 0), A(0, a), C(b, 0); semicírculos hacia afuera (x ≤ 0 y y ≤ 0); se quita el disco de diámetro AC.
     const { a, b, c } = d;
     const grande = (x, y) => enDisco(x, y, b / 2, a / 2, c / 2);
@@ -121,7 +155,7 @@ test('salen todos los tipos y subtipos, y la forma de la correcta no la delata',
     for (const a of p.alternativas) assert.ok(!/,\d/.test(a.texto), `semilla ${s}: decimal en ${a.texto}`);
   }
   for (const t of ['corona/radios', 'corona/diametros', 'corona/razon-suma', 'corona/cuerda', 'sector/semicorona', 'sector/trapecio', 'sector/perimetro',
-    'concentricas/suma', 'concentricas/razon', 'cuadrantes/vueltas', 'sombreada/rect-tres', 'sombreada/cuadrado-cuatro', 'sombreada/cuadrado-esquinas',
+    'concentricas/suma', 'concentricas/razon', 'cuadrantes/vueltas', 'sombreada/rect-tres', 'sombreada/cuadrado-cuatro', 'sombreada/cuadrado-esquinas', 'sombreada/logo-tangente', 'lunulas/hex-sector', 'lunulas/hex-segmentos', 'lunulas/cuadricula',
     'lunulas/flor', 'lunulas/dos-cuadrantes', 'lunulas/cuadrante-dos-semis', 'lunulas/cuadrante-semi', 'lunulas/hipocrates', 'rueda/centro', 'rueda/vueltas']) {
     assert.ok(vistos.has(t), `no salió ${t}`);
   }

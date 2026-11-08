@@ -130,12 +130,12 @@
       "entrada": {
         "tipo": "sombreada",
         "sub": "cuadrado-cuatro",
-        "u": "dm",
-        "r": 6
+        "u": "cm",
+        "r": 5
       },
       "esperado": {
-        "respuesta": 123.61065788306979,
-        "exacta": "(576 − 144π) dm²"
+        "respuesta": 85.84073464102067,
+        "exacta": "(400 − 100π) cm²"
       }
     },
     {
@@ -157,22 +157,24 @@
       "semilla": 11,
       "entrada": {
         "tipo": "lunulas",
-        "sub": "cuadrante-dos-semis",
+        "sub": "hipocrates",
         "u": "m",
-        "R": 8
+        "a": 6,
+        "b": 8,
+        "c": 10
       },
       "esperado": {
-        "respuesta": 9.132741228718345,
-        "exacta": "(8π − 16) m²"
+        "respuesta": 24,
+        "exacta": "24 m²"
       }
     },
     {
       "semilla": 15,
       "entrada": {
         "tipo": "lunulas",
-        "sub": "dos-cuadrantes",
+        "sub": "cuadrante-dos-semis",
         "u": "m",
-        "l": 4
+        "R": 8
       },
       "esperado": {
         "respuesta": 9.132741228718345,
@@ -197,13 +199,14 @@
       "semilla": 20,
       "entrada": {
         "tipo": "lunulas",
-        "sub": "cuadrante-semi",
+        "sub": "hex-segmentos",
         "u": "cm",
-        "R": 20
+        "Spi": 64,
+        "Sr3": -96
       },
       "esperado": {
-        "respuesta": 157.07963267948966,
-        "exacta": "50π cm²"
+        "respuesta": 50.26548245743669,
+        "exacta": "16π cm"
       }
     },
     {
@@ -247,20 +250,33 @@
       }
     },
     {
-      "semilla": 50,
+      "semilla": 46,
       "entrada": {
         "tipo": "sombreada",
-        "sub": "cuadrado-esquinas",
+        "sub": "logo-tangente",
         "u": "dm",
-        "l": 20
+        "r": 5
       },
       "esperado": {
-        "respuesta": 85.84073464102067,
-        "exacta": "(400 − 100π) dm²"
+        "respuesta": 164.38055098076552,
+        "exacta": "(400 − 75π) dm²"
       }
     },
     {
-      "semilla": 53,
+      "semilla": 51,
+      "entrada": {
+        "tipo": "lunulas",
+        "sub": "cuadrante-semi",
+        "u": "cm",
+        "R": 8
+      },
+      "esperado": {
+        "respuesta": 25.132741228718345,
+        "exacta": "8π cm²"
+      }
+    },
+    {
+      "semilla": 60,
       "entrada": {
         "tipo": "sombreada",
         "sub": "rect-tres",
@@ -273,18 +289,56 @@
       }
     },
     {
-      "semilla": 103,
+      "semilla": 71,
       "entrada": {
         "tipo": "lunulas",
-        "sub": "hipocrates",
-        "u": "m",
-        "a": 12,
-        "b": 16,
-        "c": 20
+        "sub": "hex-sector",
+        "u": "cm",
+        "n": 2,
+        "Spi": 12
       },
       "esperado": {
-        "respuesta": 96,
-        "exacta": "96 m²"
+        "respuesta": 37.69911184307752,
+        "exacta": "12π cm"
+      }
+    },
+    {
+      "semilla": 76,
+      "entrada": {
+        "tipo": "lunulas",
+        "sub": "dos-cuadrantes",
+        "u": "cm",
+        "l": 6
+      },
+      "esperado": {
+        "respuesta": 20.548667764616276,
+        "exacta": "(18π − 36) cm²"
+      }
+    },
+    {
+      "semilla": 101,
+      "entrada": {
+        "tipo": "sombreada",
+        "sub": "cuadrado-esquinas",
+        "u": "dm",
+        "l": 20
+      },
+      "esperado": {
+        "respuesta": 85.84073464102067,
+        "exacta": "(400 − 100π) dm²"
+      }
+    },
+    {
+      "semilla": 102,
+      "entrada": {
+        "tipo": "lunulas",
+        "sub": "cuadricula",
+        "u": "m",
+        "a": 6
+      },
+      "esperado": {
+        "respuesta": 72,
+        "exacta": "72 m²"
       }
     }
   ]

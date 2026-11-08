@@ -163,7 +163,7 @@ test('salen todos los tipos y subtipos, y todas las alternativas tienen la misma
   }
   for (const t of ['misma-altura/rectangulo-razon', 'misma-altura/bisectriz', 'misma-altura/bisectriz-rectangulo', 'misma-altura/razon-segmentos',
     'paralelas/trapecio-punto', 'paralelas/diagonales', 'trapecio/total', 'trapecio/lateral', 'trapecio/desde-total',
-    'punto-medio/DPC', 'punto-medio/APD', 'punto-medio/ABMP', 'notables/interior', 'notables/esquina', 'notables/AFG',
+    'punto-medio/DPC', 'punto-medio/APD', 'punto-medio/PMC', 'punto-medio/ABMP', 'notables/interior', 'notables/esquina', 'notables/AFG',
     'equilateros/estrella', 'equilateros/hexagono', 'equilateros/pentagono', 'equilateros/isosceles-lados', 'equilateros/isosceles-base',
     'pitagoras/mediatriz', 'pitagoras/semicircunferencia']) {
     assert.ok(vistos.has(t), `no salió ${t}`);

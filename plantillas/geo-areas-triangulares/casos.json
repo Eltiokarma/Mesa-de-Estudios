@@ -2,19 +2,19 @@
   "plantilla": "geo-areas-triangulares",
   "tolerancia": 0.000001,
   "nota": "Respuestas exactas q + p·√3; «respuesta» es su valor numérico. Ver la cabecera de generador.js para el significado de cada campo de «entrada».",
-  "verificacion": "Verificador independiente (subagente, 8 nov 2026): resolvió los 22 casos a partir del enunciado, sin ver generador.js ni casos.json, con coordenadas y la fórmula del área por coordenadas (shoelace), y los hexágonos armados lado a lado con giros de 60°; comprobó que cada enunciado cuadra con sus datos y que la respuesta no cambia con la figura (bisectriz con A agudo u obtuso, P en cualquier punto de BC). Resultado: 22/22 coinciden en el valor y en la forma exacta q + p√3.",
+  "verificacion": "",
   "casos": [
     {
       "semilla": "entrada-1",
       "entrada": {
         "tipo": "notables",
         "u": "dm",
-        "L": 28,
+        "L": 49,
         "pide": "interior"
       },
       "esperado": {
-        "respuesta": 400,
-        "exacta": "400 dm²"
+        "respuesta": 1225,
+        "exacta": "1 225 dm²"
       }
     },
     {
@@ -23,12 +23,12 @@
         "tipo": "misma-altura",
         "sub": "bisectriz-rectangulo",
         "u": "m",
-        "a": 15,
-        "b": 12
+        "a": 30,
+        "b": 20
       },
       "esperado": {
-        "respuesta": 50,
-        "exacta": "50 m²"
+        "respuesta": 180,
+        "exacta": "180 m²"
       }
     },
     {
@@ -36,12 +36,12 @@
       "entrada": {
         "tipo": "notables",
         "u": "cm",
-        "L": 14,
+        "L": 28,
         "pide": "AFG"
       },
       "esperado": {
-        "respuesta": 74,
-        "exacta": "74 cm²"
+        "respuesta": 296,
+        "exacta": "296 cm²"
       }
     },
     {
@@ -49,12 +49,12 @@
       "entrada": {
         "tipo": "punto-medio",
         "u": "dm",
-        "l": 24,
+        "l": 60,
         "pieza": "ABMP"
       },
       "esperado": {
-        "respuesta": 240,
-        "exacta": "240 dm²"
+        "respuesta": 1500,
+        "exacta": "1 500 dm²"
       }
     },
     {
@@ -91,14 +91,27 @@
       "entrada": {
         "tipo": "pitagoras",
         "sub": "mediatriz",
-        "u": "dm",
-        "m": 5,
-        "n": 13,
+        "u": "m",
+        "m": 12,
+        "n": 20,
         "tasa": 0
       },
       "esperado": {
-        "respuesta": 108,
-        "exacta": "108 dm²"
+        "respuesta": 256,
+        "exacta": "256 m²"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "punto-medio",
+        "u": "cm",
+        "l": 48,
+        "pieza": "PMC"
+      },
+      "esperado": {
+        "respuesta": 192,
+        "exacta": "192 cm²"
       }
     },
     {
@@ -150,12 +163,25 @@
       "entrada": {
         "tipo": "equilateros",
         "sub": "isosceles-lados",
-        "u": "cm",
-        "l": 20
+        "u": "m",
+        "l": 24
       },
       "esperado": {
-        "respuesta": 100,
-        "exacta": "100 cm²"
+        "respuesta": 144,
+        "exacta": "144 m²"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "punto-medio",
+        "u": "cm",
+        "l": 42,
+        "pieza": "APD"
+      },
+      "esperado": {
+        "respuesta": 588,
+        "exacta": "588 cm²"
       }
     },
     {
@@ -163,15 +189,15 @@
       "entrada": {
         "tipo": "paralelas",
         "sub": "trapecio-punto",
-        "u": "dm",
-        "B": 6,
-        "b": 2,
-        "h": 4,
+        "u": "m",
+        "B": 7,
+        "b": 5,
+        "h": 2,
         "pide": "central"
       },
       "esperado": {
-        "respuesta": 12,
-        "exacta": "12 dm²"
+        "respuesta": 7,
+        "exacta": "7 m²"
       }
     },
     {
@@ -179,27 +205,14 @@
       "entrada": {
         "tipo": "misma-altura",
         "sub": "rectangulo-razon",
-        "u": "cm",
+        "u": "m",
         "m": 3,
-        "n": 2,
+        "n": 1,
         "T": 12
       },
       "esperado": {
-        "respuesta": 28,
-        "exacta": "28 cm²"
-      }
-    },
-    {
-      "semilla": 23,
-      "entrada": {
-        "tipo": "punto-medio",
-        "u": "cm",
-        "l": 12,
-        "pieza": "APD"
-      },
-      "esperado": {
-        "respuesta": 48,
-        "exacta": "48 cm²"
+        "respuesta": 20,
+        "exacta": "20 m²"
       }
     },
     {
@@ -239,12 +252,12 @@
         "tipo": "pitagoras",
         "sub": "semicircunferencia",
         "u": "m",
-        "d": 17,
-        "a": 8
+        "d": 34,
+        "a": 16
       },
       "esperado": {
-        "respuesta": 60,
-        "exacta": "60 m²"
+        "respuesta": 240,
+        "exacta": "240 m²"
       }
     },
     {
@@ -252,25 +265,12 @@
       "entrada": {
         "tipo": "equilateros",
         "sub": "isosceles-base",
-        "u": "cm",
-        "b": 6
+        "u": "m",
+        "b": 16
       },
       "esperado": {
-        "respuesta": 33.588457268119896,
-        "exacta": "(18 + 9√3) cm²"
-      }
-    },
-    {
-      "semilla": 48,
-      "entrada": {
-        "tipo": "punto-medio",
-        "u": "cm",
-        "l": 24,
-        "pieza": "DPC"
-      },
-      "esperado": {
-        "respuesta": 96,
-        "exacta": "96 cm²"
+        "respuesta": 238.85125168440814,
+        "exacta": "(128 + 64√3) m²"
       }
     },
     {
@@ -294,12 +294,12 @@
       "entrada": {
         "tipo": "notables",
         "u": "dm",
-        "L": 21,
+        "L": 42,
         "pide": "esquina"
       },
       "esperado": {
-        "respuesta": 54,
-        "exacta": "54 dm²"
+        "respuesta": 216,
+        "exacta": "216 dm²"
       }
     },
     {
@@ -315,6 +315,19 @@
       "esperado": {
         "respuesta": 18,
         "exacta": "18 cm²"
+      }
+    },
+    {
+      "semilla": 163,
+      "entrada": {
+        "tipo": "punto-medio",
+        "u": "cm",
+        "l": 18,
+        "pieza": "DPC"
+      },
+      "esperado": {
+        "respuesta": 54,
+        "exacta": "54 cm²"
       }
     }
   ]

@@ -13,7 +13,7 @@
  *                  sub 'bisectriz': triángulo ABC con AB = c, AC = b, área S; la bisectriz del ángulo A
  *                  corta BC en D → área del triángulo ABD.
  *                  sub 'bisectriz-rectangulo': rectángulo ABCD con AB = a, AD = b; la bisectriz del
- *                  ángulo recto DAB corta la diagonal BD en P → área del triángulo ABP.
+ *                  ángulo recto DAB corta la diagonal BD en P → área del triángulo ABP (a, b ≤ 30).
  *                  sub 'razon-segmentos': triángulo ABC de área S; D en BC con BD : DC = m : n; E punto
  *                  medio de AD → área del triángulo BED.
  *   paralelas      sub 'trapecio-punto': trapecio ABCD con AD ∥ BC, AD = B (base mayor), BC = b, altura h;
@@ -26,7 +26,7 @@
  *                  uno de los triángulos laterales. sub 'desde-total': dados T (área del trapecio) y la
  *                  razón de bases a : b → S1.
  *   punto-medio    cuadrado ABCD de lado l; M punto medio de BC; P = cruce de DM con la diagonal AC;
- *                  pieza ∈ 'DPC', 'APD', 'ABMP' → área de esa pieza.
+ *                  pieza ∈ 'DPC', 'APD', 'PMC', 'ABMP' → área de esa pieza (l múltiplo de 6; de 12 si es PMC).
  *   notables       cuadrado ABCD de lado L = 7k; cuadrado interior EFGH con E en AB, F en BC, G en CD,
  *                  H en DA, y el ángulo FEB = 37° (los cuatro triángulos de las esquinas son iguales);
  *                  pide 'interior' (EFGH), 'esquina' (triángulo EBF) o 'AFG' (triángulo AFG).
@@ -34,8 +34,10 @@
  *                  R; entonces l² = 2R²) con un triángulo equilátero hacia afuera sobre cada lado → área
  *                  de la estrella. sub 'hexagono': hexágono ABCDEF de ángulos de 120° con
  *                  AB = x, BC = L − x − y, CD = y, DE = L − y − z, EF = z, FA = L − z − x (campos L, x, y, z;
- *                  el enunciado da los seis lados) → área del hexágono. sub 'pentagono': igual, y se
- *                  prolongan FA y CB hasta cortarse en Q → área del pentágono QCDEF.
+ *                  el enunciado da los seis lados; al prolongar BC, DE y FA se forma el equilátero de lado L
+ *                  y las esquinas que sobran tienen lados AB, CD y EF) → área del hexágono.
+ *                  sub 'pentagono': igual, y se prolongan FA y CB hasta cortarse en Q → área del pentágono
+ *                  QCDEF (el hexágono más el equilátero QAB).
  *                  sub 'isosceles-lados': triángulo isósceles con lados iguales l y 30° entre ellos → área.
  *                  sub 'isosceles-base': lo mismo pero se da la base b → área.
  *   pitagoras      sub 'mediatriz': triángulo ABC recto en B; la mediatriz de AC corta BC en P con PB = m,
@@ -62,6 +64,7 @@
   const v = P.v;
   const e = (id, x, explicacion, respaldo = 'hipotesis', fuente = null) => ({ id, x, explicacion, respaldo, fuente });
   const gp = (id, x, explicacion) => e(id, x, explicacion, 'parcial', GE);
+  const gh = (id, x, explicacion) => e(id, x, explicacion, 'hipotesis', GE);
   const R3 = Math.sqrt(3);
 
   // ---------- Números exactos q + p·√3 ----------
@@ -107,6 +110,8 @@
   // (entero, k√3 o q + p√3); hacen falta al menos tres distintos.
   function cerrar(rng, semilla, o) {
     const u = o.unidad;
+    const visto = o.enunciado.map(x => (typeof x === 'string' ? x : x.t)).join('');
+    if (/terreno|sala|pared|jardín|huerta|parcela/i.test(visto) && !/^m/.test(u) && u !== 'kg') return null;
     const usar = o.errores.filter(er => valor(er.x) > 1e-9 && racional(er.x.q) && racional(er.x.p)
       && coefEnteros(er.x) && clase(er.x) === clase(o.correcta));
     if (new Set(usar.map(er => clave(er.x)).filter(k => k !== clave(o.correcta))).size < 3) return null;
@@ -153,7 +158,7 @@
 
   // Rectángulos AB = a, AD = b (a ≠ b, hasta 15) en los que el triángulo ABP sale entero.
   const PARES_BISECTRIZ = [];
-  for (let a = 2; a <= 15; a++) for (let b = 2; b <= 15; b++) if (a !== b && entero(a * a * b / (2 * (a + b)))) PARES_BISECTRIZ.push([a, b]);
+  for (let a = 2; a <= 30; a++) for (let b = 2; b <= 30; b++) if (a !== b && entero(a * a * b / (2 * (a + b)))) PARES_BISECTRIZ.push([a, b]);
 
   // ---------- misma-altura ----------
   function mismaAltura(rng, semilla, sub) {
@@ -170,7 +175,7 @@
       errores = [
         e('GE-tri-razon-al-resto', X(T * n / m), `Repartiste las áreas en la razón ${m} : ${n}, como si el resto fuera un triángulo con la misma altura que ABE. El resto es un cuadrilátero: primero halla el rectángulo entero.`),
         e('GE-tri-total', X(2 * T * (m + n) / m), `Ese es el área del rectángulo entero. Falta restar lo que ya se cubrió.`),
-        gp('GE6-mitades', X(T), `Supusiste que AE parte el rectángulo en dos partes iguales. Solo pasaría si E fuera el vértice C; aquí BE es ${m}/${m + n} de BC.`),
+        gh('GE6-mitades', X(T), `Supusiste que AE parte el rectángulo en dos partes iguales. Solo pasaría si E fuera el vértice C; aquí BE es ${m}/${m + n} de BC.`),
         e('GE-tri-solo-ACD', X(T * (m + n) / m), `Contaste solo el triángulo ACD, la mitad del rectángulo. Lo que falta también incluye el triángulo AEC.`),
       ];
       solucion = [
@@ -268,8 +273,7 @@
         e('GE-tri-otra-region', otra, pide === 'laterales' ? `Esa es el área de APD, el triángulo del centro. Se piden los dos de los costados.` : `Esa es la suma de ABP y PCD, los triángulos de los costados. Se pide el del centro.`),
         e('GE-tri-todo', tot, `Esa es el área del trapecio entero.`),
         e('GE-tri-sin-mitad', X(pide === 'laterales' ? b * h : B * h), `Olvidaste el 1/2 del área del triángulo: base por altura entre 2.`),
-        gp('GE6-depende-de-P', X((B + b) * h / 4), `Supusiste que el triángulo es la mitad del trapecio, como si P estuviera en un lugar especial. Con P en cualquier punto de BC, la altura de los triángulos es siempre la del trapecio.`),
-        e('GE-tri-resta-bases', X((B - b) * h / 2), `Restaste las bases. Los triángulos ABP y PCD tienen bases BP y PC sobre BC, que juntas suman BC.`),
+        gh('GE6-depende-de-P', X((B + b) * h / 4), `Supusiste que el triángulo es la mitad del trapecio, como si P estuviera en un lugar especial. Con P en cualquier punto de BC, la altura de los triángulos es siempre la del trapecio.`),
       ];
       solucion = pide === 'laterales' ? [
         ['ABP tiene base BP y PCD tiene base PC, las dos sobre BC; su altura es la distancia de BC a AD, ', v('h', `${h}`), '.'],
@@ -291,7 +295,7 @@
       pregunta = ['¿Cuál es el ', v('A', 'área del triángulo COD'), '?'];
       correcta = X(S1 - S2);
       errores = [
-        gp('GE6-se-ve', X(S2), `Igualaste COD con AOD. Los que tienen igual área son AOB y COD, los dos triángulos de los costados.`),
+        gh('GE6-se-ve', X(S2), `Igualaste COD con AOD. Los que tienen igual área son AOB y COD, los dos triángulos de los costados.`),
         e('GE-tri-todo', X(S1), `Ese es el área de ABD entero. COD es solo una parte de ACD.`),
         e('GE-tri-suma', X(S1 + S2), `Sumaste las dos áreas. ABD ya contiene a AOD: la parte que sobra es AOB.`),
         e('GE-tri-mitad', X((S1 - S2) / 2), `Dividiste entre 2 al final. AOB y COD son iguales, y AOB = ABD − AOD completo.`),
@@ -371,8 +375,8 @@
   // ---------- punto-medio en el cuadrado ----------
   const PIEZAS = { DPC: 'del triángulo DPC', PMC: 'del triángulo PMC', APD: 'del triángulo APD', ABMP: 'del cuadrilátero ABMP' };
   function puntoMedio(rng, semilla) {
-    const l = rng.elegir([6, 12, 18, 24]);
-    const pieza = rng.elegir(['DPC', 'APD', 'APD', 'ABMP', 'ABMP']);
+    const pieza = rng.elegir(['DPC', 'APD', 'PMC', 'ABMP', 'ABMP']);
+    const l = pieza === 'PMC' ? 12 * rng.entero(1, 5) : 6 * rng.entero(1, 10);
     const u = rng.elegir(['cm', 'dm']), u2 = u + '²';
     const ok = piezas(l, 2 * l / 3, 2 * l / 3), centro = piezas(l, l / 2, l / 2), inv = piezas(l, l / 3, l / 3);
     const variables = { l: { nombre: 'lado', color: 'o' }, A: { nombre: 'área de la pieza', color: 'd' } };
@@ -383,10 +387,14 @@
     const errores = [
       e('GE-tri-punto-centro', X(centro[pieza]), `Supusiste que P es el centro del cuadrado. P está sobre AC pero más cerca de C: los triángulos PMC y PAD son semejantes con razón MC : AD = 1 : 2, así que CP = AC/3.`),
       e('GE-tri-razon-invertida', X(inv[pieza]), `Pusiste P a un tercio de AC desde A. La razón 1 : 2 se cuenta desde C: CP : PA = MC : AD = 1 : 2.`),
-      e('GE-tri-sin-mitad', X(2 * ok[pieza]), `Olvidaste el 1/2 en el área de un triángulo.`),
+      ...(pieza === 'ABMP'
+        ? [e('GE-tri-falta-PMC', X(l * l / 2), `Olvidaste quitar PMC: al cuadrado le restaste solo APD y DPC. El cuadrilátero ABMP es el cuadrado menos APD, DPC y PMC.`)]
+        : [e('GE-tri-sin-mitad', X(2 * ok[pieza]), `Olvidaste el 1/2 en el área de un triángulo.`)]),
       ...(pieza === 'DPC' ? [e('GE-tri-otra-pieza', X(ok.PMC), `Esa es el área de PMC. DPC tiene base DC = ${l} y altura igual a la distancia de P a DC.`)] : []),
-      ...(pieza === 'APD' ? [gp('GE1-escala-lineal', X(2 * ok.PMC), `PAD y PMC son semejantes con razón 2 : 1, pero sus áreas están en razón 4 : 1, no 2 : 1.`)] : []),
-      ...(pieza === 'ABMP' ? [e('GE-tri-otra-region', X(l * l / 4 + ok.PMC), `Ese valor no descuenta bien las piezas: el cuadrilátero es el cuadrado menos APD, DPC y PMC.`)] : []),
+      ...(pieza === 'PMC' ? [
+        gp('GE1-escala-lineal', X(ok.APD / 2), `PMC y PAD son semejantes con razón 1 : 2, pero sus áreas están en razón 1 : 4, no 1 : 2.`),
+        e('GE-tri-triangulo-DMC', X(l * l / 4), `Ese es el triángulo DMC entero. PMC es solo la parte que queda entre la diagonal AC y el lado BC.`),
+      ] : []),
     ];
     const solucion = [
       ['Los triángulos PMC y PAD son semejantes (MC ∥ AD) con razón MC : AD = 1 : 2, así que P está a 1/3 de AC desde C y a 2/3 desde A.'],
@@ -400,7 +408,7 @@
   // ---------- notables 37° y 53° en el cuadrado ----------
   function notables(rng, semilla) {
     const pide = rng.elegir(['interior', 'interior', 'esquina', 'AFG']);
-    const k = pide === 'AFG' ? 2 * rng.entero(1, 3) : rng.entero(1, 5), L = 7 * k;
+    const k = pide === 'AFG' ? 2 * rng.entero(1, 5) : rng.entero(1, 10), L = 7 * k;
     const u = rng.elegir(['cm', 'dm']), u2 = u + '²';
     const variables = { L: { nombre: 'lado de la loseta', color: 'o' }, t: { nombre: 'ángulo de 37°', color: 'h' }, A: { nombre: 'área pedida', color: 'd' } };
     const enunciado = [rng.elegir(['Una loseta cuadrada ABCD', 'Un pañuelo cuadrado ABCD', 'Un cuadrado ABCD']), ' de lado ', v('L', `${L} ${u}`),
@@ -421,13 +429,12 @@
       e('GE-tri-sin-mitad', X(12 * kk), `Multiplicaste los catetos y no dividiste entre 2.`),
       gp('GE7-lado-como-altura', X(10 * kk), `Usaste la hipotenusa EF = ${5 * k} como base y un cateto como altura. En el triángulo rectángulo, base y altura son los catetos.`),
       e('GE-tri-las-cuatro', X(24 * kk), `Esa es la suma de los cuatro triángulos de las esquinas.`),
-      e('TR-cateto-por-hipotenusa', X(8 * kk), `Tomaste EB = ${4 * k} como hipotenusa. En EBF, EB es el cateto junto al ángulo de 37°: EB = 4k y BF = 3k con L = 7k.`),
+      e('GE-tri-mismo-cateto', X(8 * kk), `Usaste EB = ${4 * k} como base y también como altura: ${4 * k}·${4 * k}/2. La altura sobre EB es el otro cateto, BF = ${3 * k}.`),
     ];
     else errores = [
       e('GE-tri-mitad-cuadrado', X(25 * kk / 2), `Supusiste que AFG es la mitad del cuadrado EFGH. A no es un vértice de EFGH.`),
       e('GE-tri-sin-mitad', X(37 * kk), `Olvidaste dividir entre 2.`),
       e('GE-tri-mitad-loseta', X(49 * kk / 2), `Esa es la mitad de la loseta, el triángulo ACD o ABC. AFG no tiene sus vértices en C.`),
-      e('GE-tri-falta-un-triangulo', X(49 * kk - 21 * kk / 2 - 14 * kk), `Olvidaste restar el triángulo FCG. Alrededor de AFG hay tres triángulos: ABF, FCG y GDA.`),
     ];
     const solucion = [
       ['En EBF, el ángulo en E es ', v('t', '37°'), ': si EF = 5k, entonces EB = 4k y BF = 3k. Por los triángulos iguales, AE = BF = 3k.'],
@@ -455,54 +462,54 @@
       pregunta = ['¿Cuál es el ', v('A', 'área de la estrella'), '?'];
       correcta = X(l2, l2);
       errores = [
+        ...(conRadio ? [e('GE-tri-diametro-como-lado', X(4 * R * R, 4 * R * R), `Usaste el diámetro como lado. El diámetro es la diagonal del cuadrado inscrito: l = R√2.`)] : []),
         e('GE-tri-un-triangulo', X(l2, l2 / 4), `Sumaste un solo triángulo equilátero. Hay uno sobre cada lado: son cuatro.`),
         e('GE-tri-equilatero-sin-mitad', X(l2, 2 * l2), `Usaste l²√3/2 para cada triángulo: olvidaste el 1/2 de base por altura. El equilátero mide l²√3/4.`),
         e('GE-tri-dos-triangulos', X(l2, l2 / 2), `Sumaste solo dos triángulos. La estrella tiene uno sobre cada lado del cuadrado.`),
         ...(conRadio ? [
           e('GE-tri-radio-como-lado', X(R * R, R * R), `Usaste el radio como lado del cuadrado. El lado es la cuerda entre dos vértices: l = R√2, así l² = 2R² = ${2 * R * R}.`),
-          e('GE-tri-diametro-como-lado', X(4 * R * R, 4 * R * R), `Usaste el diámetro como lado. El diámetro es la diagonal del cuadrado inscrito: l = R√2.`),
         ] : []),
       ];
       solucion = [
         ...(conRadio ? [['La diagonal del cuadrado es el diámetro, 2·', v('l', `${R}`), `; el lado es l = ${R}√2 y l² = ${l2}.`]] : []),
-        [`Cuadrado: l² = ${l2}. Cada equilátero: l²√3/4 = ${l2 / 4}√3.`],
-        [v('A', 'Estrella'), ` = ${l2} + 4·${l2 / 4}√3 = `, v('A', textoX(correcta, u2)), '.'],
+        [`Cuadrado: l² = ${l2}. Cada equilátero: l²√3/4 = ${textoX(X(0, l2 / 4))}.`],
+        [v('A', 'Estrella'), ` = ${l2} + 4·${textoX(X(0, l2 / 4))} = `, v('A', textoX(correcta, u2)), '.'],
       ];
       datos = { tipo: 'equilateros', sub, u, ...(conRadio ? { R } : { l }) };
     } else if (sub === 'hexagono' || sub === 'pentagono') {
       const L = 2 * rng.entero(6, 12), x = 2 * rng.entero(1, 4), y = 2 * rng.entero(1, 4), z = 2 * rng.entero(1, 4);
       if (x + y >= L || y + z >= L || z + x >= L) return null;
       const lados = { AB: x, BC: L - x - y, CD: y, DE: L - y - z, EF: z, FA: L - z - x };
-      variables = { x: { nombre: 'AB', color: 'o' }, m: { nombre: 'BC', color: 'i' }, y: { nombre: 'CD', color: 'h' }, A: { nombre: 'área pedida', color: 'd' } };
+      variables = { x: { nombre: 'AB', color: 'o' }, y: { nombre: 'CD', color: 'i' }, z: { nombre: 'EF', color: 'h' }, A: { nombre: 'área pedida', color: 'd' } };
       enunciado = [rng.elegir(['Una mesa', 'Una baldosa', 'Una placa']), ' tiene forma de hexágono ABCDEF con todos sus ángulos interiores de 120°. Sus lados miden ',
-        v('x', `AB = ${x}`), ', ', v('m', `BC = ${lados.BC}`), ', ', v('y', `CD = ${y}`), `, DE = ${lados.DE}, EF = ${z} y FA = ${lados.FA}, en ${u}.`,
+        v('x', `AB = ${x}`), `, BC = ${lados.BC}, `, v('y', `CD = ${y}`), `, DE = ${lados.DE}, `, v('z', `EF = ${z}`), ` y FA = ${lados.FA}, en ${u}.`,
         ...(sub === 'pentagono' ? [' Se prolongan los lados FA y CB hasta que se cortan en el punto Q.'] : [])];
       pregunta = sub === 'hexagono' ? ['¿Cuál es el ', v('A', 'área del hexágono'), '?'] : ['¿Cuál es el ', v('A', 'área del pentágono QCDEF'), '?'];
       correcta = sub === 'hexagono' ? X(0, (L * L - x * x - y * y - z * z) / 4) : X(0, (L * L - y * y - z * z) / 4);
       errores = sub === 'hexagono' ? [
-        e('GE-tri-sin-recortes', X(0, L * L / 4), `Ese es el triángulo equilátero grande de lado ${L} que se forma al prolongar AB, CD y EF. Falta quitarle los tres triángulos de las esquinas.`),
+        e('GE-tri-sin-recortes', X(0, L * L / 4), `Ese es el triángulo equilátero grande de lado ${L} que se forma al prolongar BC, DE y FA. Falta quitarle los tres triángulos de las esquinas, de lados AB, CD y EF.`),
         e('GE-tri-equilatero-sin-mitad', X(0, (L * L - x * x - y * y - z * z) / 2), `Usaste l²√3/2 para cada equilátero: falta el 1/2 de base por altura.`),
         e('GE-tri-un-recorte', X(0, (L * L - x * x) / 4), `Quitaste un solo triángulo de esquina. Hay tres: de lados ${x}, ${y} y ${z}.`),
-        e('GE-tri-resta-lados', X(0, (L * L - (x + y + z) ** 2 / 3) / 4), `Juntaste los tres recortes en uno solo. Cada esquina es un equilátero aparte: se restan ${x}², ${y}² y ${z}² por separado.`),
+        e('GE-tri-lado-grande-corto', X(0, ((L - y) ** 2 - x * x - y * y - z * z) / 4), `Tomaste como lado del triángulo grande AB + BC = ${L - y}. El lado grande va de esquina a esquina: AB + BC + CD = ${L}.`),
       ] : [
         e('GE-tri-sin-triangulo', X(0, (L * L - x * x - y * y - z * z) / 4), `Ese es el hexágono. El pentágono le agrega el triángulo equilátero QAB, de lado ${x}.`),
-        e('GE-tri-sin-recortes', X(0, L * L / 4), `Ese es el triángulo grande de lado ${L}. Al pentágono todavía le faltan dos esquinas: las de lados ${y} y ${z}.`),
+        e('GE-tri-sin-recortes', X(0, L * L / 4), `Ese es el triángulo grande de lado ${L}, el que forman BC, DE y FA prolongados. Al pentágono todavía le faltan dos esquinas: las de lados CD = ${y} y EF = ${z}.`),
         e('GE-tri-equilatero-sin-mitad', X(0, (L * L - y * y - z * z) / 2), `Usaste l²√3/2 para cada equilátero: falta el 1/2 de base por altura.`),
         e('GE-tri-recorte-de-mas', X(0, (L * L - x * x - y * y) / 4), `Quitaste la esquina de lado ${x}, que el pentágono sí incluye, y dejaste la de lado ${z}.`),
       ];
       solucion = [
-        ['Con ángulos de 120°, al prolongar AB, CD y EF se forma un triángulo equilátero; cada esquina que sobra es un equilátero (sus ángulos son de 60°).'],
-        ['El lado del triángulo grande es ', v('x', `${x}`), ' + ', v('m', `${lados.BC}`), ' + ', v('y', `${y}`), ` = ${L}; las esquinas tienen lados ${x}, ${y} y ${z}.`],
+        ['Con ángulos de 120°, al prolongar BC, DE y FA se forma un triángulo equilátero; las tres esquinas que sobran son equiláteros (sus ángulos son de 60°) con lados ', v('x', 'AB'), ', ', v('y', 'CD'), ' y ', v('z', 'EF'), '.'],
+        ['El lado del triángulo grande es AB + BC + CD = ', v('x', `${x}`), ` + ${lados.BC} + `, v('y', `${y}`), ` = ${L}.`],
         sub === 'hexagono'
           ? [`Hexágono = (√3/4)(${L}² − ${x}² − ${y}² − ${z}²) = (√3/4)·${L * L - x * x - y * y - z * z}.`]
-          : [`El pentágono QCDEF es el triángulo grande sin las esquinas de lados ${y} y ${z} (la de lado ${x} es QAB): (√3/4)(${L}² − ${y}² − ${z}²).`],
+          : [`El pentágono QCDEF es el triángulo grande sin las esquinas de lados ${y} y ${z} (la esquina de lado AB = ${x} es el triángulo QAB, que el pentágono sí incluye): (√3/4)(${L}² − ${y}² − ${z}²).`],
         [v('A', 'Área'), ' = ', v('A', textoX(correcta, u2)), '.'],
       ];
       datos = { tipo: 'equilateros', sub, u, L, x, y, z };
     } else if (sub === 'isosceles-lados') {
-      const l = 4 * rng.entero(1, 6);
+      const l = 4 * rng.entero(1, 10);
       variables = { l: { nombre: 'lados iguales', color: 'o' }, t: { nombre: 'ángulo del vértice', color: 'h' }, A: { nombre: 'área', color: 'd' } };
-      enunciado = [rng.elegir(['Un terreno', 'Un banderín', 'Un triángulo']), ' tiene forma de triángulo isósceles ABC con ', v('l', `AB = AC = ${l} ${u}`), ' y un ángulo ', v('t', 'BAC de 30°'), '.'];
+      enunciado = [rng.elegir(['Un terreno', 'Un banderín', 'Una pieza de cartulina']), ' tiene forma de triángulo isósceles ABC con ', v('l', `AB = AC = ${l} ${u}`), ' y un ángulo ', v('t', 'BAC de 30°'), '.'];
       pregunta = ['¿Cuál es su ', v('A', 'área'), '?'];
       correcta = X(l * l / 4);
       errores = [
@@ -517,16 +524,15 @@
       ];
       datos = { tipo: 'equilateros', sub, u, l };
     } else {
-      const b = 2 * rng.entero(1, 5);
+      const b = 2 * rng.entero(1, 10);
       variables = { b: { nombre: 'base', color: 'i' }, t: { nombre: 'ángulo del vértice', color: 'h' }, A: { nombre: 'área', color: 'd' } };
-      enunciado = [rng.elegir(['Un terreno', 'Una vela de barco', 'Un triángulo']), ' tiene forma de triángulo isósceles ABC, con AB = AC, un ángulo ', v('t', 'BAC de 30°'), ' y la base ', v('b', `BC = ${b} ${u}`), '. Los ángulos de la base miden 75°; usa tan 75° = 2 + √3.'];
+      enunciado = [rng.elegir(['Un terreno', 'Una vela de barco', 'Una pieza de cartulina']), ' tiene forma de triángulo isósceles ABC, con AB = AC, un ángulo ', v('t', 'BAC de 30°'), ' y la base ', v('b', `BC = ${b} ${u}`), '. Los ángulos de la base miden 75°; usa tan 75° = 2 + √3.'];
       pregunta = ['¿Cuál es su ', v('A', 'área'), '?'];
       correcta = X(b * b / 2, b * b / 4);
       errores = [
         e('TR-tan15-por-tan75', X(b * b / 2, -b * b / 4), `Usaste tan 15° = 2 − √3. La altura AM forma con la base el ángulo de 75° en B: AM = BM·tan 75°.`),
         e('GE-tri-sin-mitad', X(b * b, b * b / 2), `Olvidaste el 1/2: área = BC·AM/2.`),
-        e('TR-tan75-mal', X(b * b / 4, b * b / 4), `Usaste tan 75° = 1 + √3. Con el triángulo de 15° y 75°, tan 75° = 2 + √3.`),
-        e('GE-tri-base-entera', X(b * b, b * b / 2), `Usaste toda la base en el triángulo rectángulo: AM = BC·tan 75°. La altura cae en el punto medio M, así BM = ${b / 2}.`),
+        e('TR-tan-suma-lineal', X(b * b / 4, b * b / 12), `Sumaste tangentes: tan 75° = tan 45° + tan 30° = 1 + √3/3. La tangente de una suma no es la suma de las tangentes; tan 75° = 2 + √3.`),
         e('GE-tri-altura-doble', X(2 * b * b, b * b), `Tomaste AM = BC·tan 75° y además no dividiste entre 2.`),
       ];
       solucion = [
@@ -540,10 +546,10 @@
   }
 
   // ---------- pitagoras: altura que sale de Pitágoras ----------
-  const TERNAS = [[3, 4, 5], [4, 3, 5], [5, 12, 13], [12, 5, 13], [8, 15, 17], [15, 8, 17], [7, 24, 25], [24, 7, 25]];
+  const TERNAS = [[3, 4, 5], [4, 3, 5], [5, 12, 13], [12, 5, 13], [8, 15, 17], [15, 8, 17], [7, 24, 25], [24, 7, 25], [20, 21, 29], [21, 20, 29], [9, 40, 41], [12, 35, 37]];
   function pitagoras(rng, semilla, sub) {
     const [p0, q0, h0] = rng.elegir(TERNAS);
-    const k = h0 !== 5 ? 1 : sub === 'semicircunferencia' ? 2 * rng.entero(1, 2) : rng.entero(1, 4);
+    const k = h0 === 5 ? rng.entero(1, sub === 'semicircunferencia' ? 6 : 4) : h0 <= 17 && sub === 'semicircunferencia' ? rng.entero(1, 2) : 1;
     const u = rng.elegir(['m', 'dm']), u2 = u + '²';
     let variables, enunciado, pregunta, correcta, errores, solucion, datos, unidad = u2;
     if (sub === 'mediatriz') {
@@ -562,7 +568,7 @@
         gp('GE7-lado-como-altura', X(f * (m + n) * n / 2), `Usaste PA = ${n} como altura. PA es inclinado; la altura sobre BC es el cateto AB, que sale de Pitágoras en el triángulo ABP.`),
         e('GE-tri-sin-mitad', X(f * (m + n) * AB), `Olvidaste el 1/2 del área del triángulo.`),
         e('GE-tri-base-incompleta', X(f * n * AB / 2), `Tomaste PC = ${n} como base. La base es todo BC = PB + PC = ${m + n}.`),
-        e('GE-tri-solo-ABP', X(f * m * AB / 2), `Ese es solo el triángulo ABP. El terreno es todo ABC, con base BC = ${m + n}.`),
+        e('GE-tri-solo-ABP', X(f * m * AB / 2), `Ese es solo el triángulo ABP. Se pide todo ABC, con base BC = ${m + n}.`),
       ];
       solucion = [
         ['P está en la mediatriz de AC, así que equidista de A y de C: PA = PC = ', v('n', `${n}`), '.'],

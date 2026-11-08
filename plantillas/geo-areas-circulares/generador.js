@@ -28,6 +28,9 @@
  *                  tangentes entre sí y a los lados → área fuera de los círculos.
  *                  sub 'cuadrado-esquinas': l; cuadrado de lado l con un cuarto de círculo de radio l/2
  *                  en cada esquina → área fuera de los cuartos.
+ *                  sub 'logo-tangente': r; cuadrado de lado 4r, cuatro semicírculos interiores de radio r
+ *                  con el tramo central de cada lado (de r a 3r) como diámetro, y la circunferencia
+ *                  central inscrita en el hueco (tangente a los cuatro, radio r) → área fuera de todo.
  *   lunulas        sub 'flor': l; cuadrado de lado l y cuatro semicírculos interiores con los lados
  *                  como diámetros → área de los cuatro pétalos (zonas cubiertas dos veces).
  *                  sub 'dos-cuadrantes': l; cuadrado de lado l, cuadrantes de radio l con centro en
@@ -39,6 +42,16 @@
  *                  sub 'hipocrates': a, b, c (catetos e hipotenusa); semicírculos exteriores sobre los
  *                  catetos y la semicircunferencia de diámetro c que pasa por el vértice recto →
  *                  suma de las dos lúnulas.
+ *                  sub 'hex-sector': hexágono regular ABCDEF y triángulo ACE inscritos en la misma
+ *                  circunferencia; se sombrean n regiones (n = 1, 2 o 3: ABC + segmento de AB, CDE +
+ *                  segmento de CD, EFA + segmento de EF); su área total es Spi·π (dato) → longitud 2πR.
+ *                  sub 'hex-segmentos': los seis segmentos entre la circunferencia y el hexágono suman
+ *                  Spi·π + Sr3·√3 (dato; Sr3 < 0) → longitud de la circunferencia (u, no u²).
+ *                  sub 'cuadricula': a = lado de una cuadrícula de 2 × 2 con esquinas (0; 0) y (2a; 2a);
+ *                  logo = (1) cuarto de círculo de centro (0; 0) y radio a en [0, a]²; (2) el cuadrado
+ *                  [a, 2a] × [0, a] sin el cuarto de círculo de centro (a; 0) y radio a; (3) el cuadrado
+ *                  [0, a] × [a, 2a] sin el semicírculo de centro (0; 3a/2) y radio a/2; (4) el semicírculo
+ *                  de centro (a; 3a/2) y radio a/2 con x ≥ a → área del logo.
  *   rueda          r (radio), n (vueltas, entero o media vuelta), conCentro (si el dato es lo que
  *                  avanzó el centro, D = 2πrn: campo Dpi = D/π) → longitud de la cicloide que
  *                  recorre un punto del borde que parte del suelo (dato del enunciado: 8r por vuelta).
@@ -393,7 +406,7 @@
 
   // ---------- sombreada: figura menos círculos tangentes ----------
   function sombreada(rng, semilla) {
-    const sub = rng.elegir(['rect-tres', 'cuadrado-cuatro', 'cuadrado-esquinas']);
+    const sub = rng.elegir(['rect-tres', 'cuadrado-cuatro', 'cuadrado-esquinas', 'logo-tangente']);
     const u = rng.elegir(['cm', 'dm']), u2 = u + '²';
     const variables = { L: { nombre: 'lado', color: 'o' }, r: { nombre: 'radio', color: 'i' }, A: { nombre: 'área sin pintar', color: 'd' } };
     let enunciado, pregunta, correcta, errores, solucion, datos;
@@ -431,7 +444,7 @@
         [v('A', 'Área libre'), ` = ${l * l} − ${4 * r * r}π = `, v('A', textoX(correcta, u2)), '.'],
       ];
       datos = { tipo: 'sombreada', sub, u, r };
-    } else {
+    } else if (sub === 'cuadrado-esquinas') {
       const l = 4 * rng.entero(1, 5);
       enunciado = [rng.elegir(['Una loseta cuadrada', 'Un pañuelo cuadrado', 'Un cuadrado']), ' de lado ', v('L', `${l} ${u}`),
         ' tiene pintado, en cada una de sus cuatro esquinas, un cuarto de círculo con centro en el vértice y radio igual a la mitad del lado.'];
@@ -447,14 +460,37 @@
         [v('A', 'Sin pintar'), ` = `, v('L', `${l}`), `² − ${l * l / 4}π = `, v('A', textoX(correcta, u2)), '.'],
       ];
       datos = { tipo: 'sombreada', sub, u, l };
+    } else if (sub === 'logo-tangente') {
+      const r = rng.entero(2, 6), l = 4 * r;
+      variables.c = { nombre: 'radio de la circunferencia central', color: 'h' };
+      enunciado = [rng.elegir(['El logo de un club se dibuja en un cuadrado', 'Una baldosa decorada es un cuadrado', 'En un cuadrado']), ' ABCD de lado ', v('L', `${l} ${u}`),
+        '. Sobre cada lado se dibuja, hacia adentro, un semicírculo cuyo diámetro es el tramo central del lado: va del punto que está a ', v('r', `${r} ${u}`),
+        ' de una esquina al punto que está a ', v('r', `${r} ${u}`), ' de la otra. En el centro del cuadrado hay una circunferencia inscrita en el hueco que dejan los semicírculos: toca a los cuatro. Se pinta la parte del cuadrado que queda fuera de los semicírculos y del círculo central.'];
+      pregunta = ['¿Cuál es el ', v('A', 'área pintada'), '?'];
+      correcta = X(16 * r * r, -3 * r * r);
+      errores = [
+        e('GE-circ-semi-como-circulo', X(16 * r * r, -5 * r * r), `Tomaste cada semicírculo como un círculo entero. Los cuatro semicírculos juntos suman dos círculos de radio ${r}.`),
+        e('GE-circ-falta-pieza', X(16 * r * r, -2 * r * r), `Restaste los semicírculos pero no el círculo central.`),
+        e('GE-circ-radio-central', X(16 * r * r, -2 * r * r - r * r / 4), `Tomaste el radio del círculo central como la mitad del radio de los semicírculos. El centro O está a ${2 * r} ${u} del centro de cada semicírculo; como se tocan, el radio central es ${2 * r} − ${r} = ${r}.`),
+        ge('GE19-longitud', X(16 * r * r, -6 * r), `Restaste longitudes (las de la circunferencia central y de los cuatro arcos) en vez de áreas.`),
+      ];
+      solucion = [
+        ['Cada semicírculo tiene diámetro ', `${l} − 2·${r} = ${2 * r}`, ': radio ', v('r', `${r}`), '. Su centro es el punto medio del lado, a ', `${2 * r} ${u}`, ' del centro O del cuadrado.'],
+        ['La circunferencia central toca a cada semicírculo: su radio es ', v('c', `${2 * r} − ${r} = ${r}`), '.'],
+        [`Figuras: 4 semicírculos (= 2 círculos) + 1 círculo = 3·π·${r}² = ${3 * r * r}π ${u2}.`],
+        [v('A', 'Pintado'), ` = ${l}² − ${3 * r * r}π = `, v('A', textoX(correcta, u2)), '.'],
+      ];
+      datos = { tipo: 'sombreada', sub, u, r };
     }
     return cerrar(rng, semilla, { variables, enunciado, pregunta, correcta, errores, solucion, unidad: u2, datos });
   }
 
   // ---------- lunulas: traslado de regiones y lúnulas ----------
   function lunulas(rng, semilla) {
-    const sub = rng.elegir(['flor', 'dos-cuadrantes', 'cuadrante-dos-semis', 'cuadrante-semi', 'hipocrates']);
+    const sub = rng.elegir(['flor', 'dos-cuadrantes', 'cuadrante-dos-semis', 'cuadrante-semi', 'hipocrates', 'hex-sector', 'hex-segmentos', 'cuadricula']);
     const u = rng.elegir(['cm', 'm']), u2 = u + '²';
+    if (sub === 'hex-sector' || sub === 'hex-segmentos') return hexagono(rng, semilla, sub, u);
+    if (sub === 'cuadricula') return cuadricula(rng, semilla, u);
     const variables = { L: { nombre: 'lado o radio', color: 'o' }, A: { nombre: 'área pedida', color: 'd' } };
     let enunciado, pregunta, correcta, errores, solucion, datos, mismaForma = true;
     if (sub === 'flor') {
@@ -555,6 +591,81 @@
       datos = { tipo: 'lunulas', sub, u, a, b, c };
     }
     return cerrar(rng, semilla, { variables, enunciado, pregunta, correcta, errores, solucion, unidad: u2, mismaForma, datos });
+  }
+
+  // ---------- hexágono y triángulo inscritos: de las áreas sombreadas a la longitud ----------
+  const PIEZAS_HEX = ['ABC con el segmento de la cuerda AB', 'CDE con el segmento de la cuerda CD', 'EFA con el segmento de la cuerda EF'];
+  function hexagono(rng, semilla, sub, u) {
+    const u2 = u + '²';
+    const variables = { S: { nombre: 'área sombreada', color: 'o' }, R: { nombre: 'radio', color: 'i' }, L: { nombre: 'longitud de la circunferencia', color: 'd' } };
+    let R, n = 0, Stxt, solucion, errores;
+    const base = 'En una circunferencia de centro O se inscriben el hexágono regular ABCDEF y el triángulo equilátero ACE.';
+    let enunciado;
+    if (sub === 'hex-sector') {
+      R = rng.entero(3, 9); n = rng.entero(1, 3);
+      const Spi = n * R * R / 6;
+      if (!racional(Spi)) return null;
+      Stxt = textoX(X(0, Spi), u2);
+      const lista = PIEZAS_HEX.slice(0, n);
+      enunciado = [base, ` Se sombrea${n > 1 ? 'n' : ''} ${n === 1 ? 'una región formada' : `${n} regiones, cada una formada`} por un triángulo que queda entre el hexágono y el triángulo (con dos lados del hexágono y un lado de ACE) y el segmento circular que está sobre uno de esos lados del hexágono: `,
+        lista.map(t => `el triángulo ${t}`).join(n === 3 ? ', ' : ' y ').replace(/, (el triángulo EFA)/, ' y $1'), '. El área sombreada total es ', v('S', Stxt), '.'];
+      errores = [
+        ge('GE19-diametro-radio', X(0, R), `Ese es π por el radio: usaste la fórmula con el radio en lugar del diámetro. La longitud es 2πR.`),
+        ge('GE19-longitud', X(0, R * R), `Ese es el área del círculo, πR². Se pide la longitud, 2πR.`),
+        ge('GE19-diametro', X(0, 4 * R), `Usaste 2R como radio en 2πR.`),
+      ];
+      solucion = [
+        ['OABC es un rombo de lado R (OA = AB = BC = CO). La diagonal AC lo parte en ABC y AOC, y la diagonal OB en OAB y OBC: cada mitad mide lo mismo, así el triángulo ABC tiene la misma área que OAB.'],
+        ['Cada región = triángulo OAB + segmento de AB = sector AOB de 60° = πR²/6 (se traslada el triángulo).'],
+        [`${n} regiones: ${n}·πR²/6 = `, v('S', Stxt), `, así R² = ${R * R} y `, v('R', `R = ${R} ${u}`), '.'],
+        [v('L', 'L'), ' = 2π·', v('R', `${R}`), ' = ', v('L', textoX(X(0, 2 * R), u)), '.'],
+      ];
+    } else {
+      R = 2 * rng.entero(2, 4);
+      Stxt = `(${nro(R * R)}π − ${nro(3 * R * R / 2)}√3) ${u2}`;
+      enunciado = [base, ' Se sombrean los seis segmentos circulares que quedan entre la circunferencia y el hexágono (cada uno entre un lado del hexágono y su arco). Su área total es ', v('S', Stxt), '.'];
+      errores = [
+        ge('GE19-diametro-radio', X(0, R), `Ese es π por el radio. La longitud es 2πR.`),
+        ge('GE19-longitud', X(0, R * R), `Ese es el área del círculo, πR². Se pide la longitud, 2πR.`),
+        ge('GE19-diametro', X(0, 4 * R), `Usaste 2R como radio en 2πR.`),
+      ];
+      solucion = [
+        ['Segmentos = círculo − hexágono = πR² − 6·(√3/4)R² = R²(π − 3√3/2).'],
+        ['Igualando con ', v('S', Stxt), `: R² = ${R * R}, así `, v('R', `R = ${R} ${u}`), '.'],
+        [v('L', 'L'), ' = 2π·', v('R', `${R}`), ' = ', v('L', textoX(X(0, 2 * R), u)), '.'],
+      ];
+    }
+    const pregunta = ['¿Cuál es la ', v('L', 'longitud de la circunferencia'), '?'];
+    return cerrar(rng, semilla, { variables, enunciado, pregunta, correcta: X(0, 2 * R), errores, solucion, unidad: u,
+      datos: sub === 'hex-sector' ? { tipo: 'lunulas', sub, u, n, Spi: n * R * R / 6 } : { tipo: 'lunulas', sub, u, Spi: R * R, Sr3: -3 * R * R / 2 } });
+  }
+
+  // ---------- cuadrícula: trasladar regiones curvas completa cuadrados ----------
+  function cuadricula(rng, semilla, u) {
+    const a = 2 * rng.entero(1, 5), u2 = u + '²', h = a / 2;
+    const variables = { a: { nombre: 'lado de la cuadrícula', color: 'o' }, A: { nombre: 'área del logo', color: 'd' } };
+    const c = x => nro(x);
+    const enunciado = [rng.elegir(['Un logo se dibuja', 'Un mosaico se arma', 'Una figura se pinta']), ' sobre una cuadrícula de 2 × 2 cuadrados de lado ', v('a', `${a} ${u}`),
+      `. Con coordenadas en ${u}, las esquinas de la cuadrícula son (0; 0), (${c(2 * a)}; 0), (${c(2 * a)}; ${c(2 * a)}) y (0; ${c(2 * a)}). El logo es la unión de cuatro piezas: `,
+      `(1) el cuarto de círculo de centro (0; 0) y radio ${c(a)}, dentro del cuadrado de (0; 0) a (${c(a)}; ${c(a)}); `,
+      `(2) el cuadrado de (${c(a)}; 0) a (${c(2 * a)}; ${c(a)}) sin el cuarto de círculo de centro (${c(a)}; 0) y radio ${c(a)}; `,
+      `(3) el cuadrado de (0; ${c(a)}) a (${c(a)}; ${c(2 * a)}) sin el semicírculo de centro (0; ${c(3 * h)}) y radio ${c(h)}; `,
+      `(4) el semicírculo de centro (${c(a)}; ${c(3 * h)}) y radio ${c(h)} que está a la derecha de la recta x = ${c(a)}.`];
+    const pregunta = ['¿Cuál es el ', v('A', 'área del logo'), '?'];
+    const correcta = X(2 * a * a);
+    const errores = [
+      e('GE-circ-cuadrados-tocados', X(4 * a * a), `Contaste los cuatro cuadrados de la cuadrícula como llenos. Las piezas curvas no llenan cada cuadrado: hay que trasladarlas.`),
+      e('GE-circ-sin-hueco', X(2 * a * a, a * a / 4), `Contaste la pieza 2 como un cuadrado entero. Le falta el cuarto de círculo de centro (${c(a)}; 0), que es justo el tamaño de la pieza 1.`),
+      e('GE-circ-semi-completa', X(3 * a * a), `Contaste como lleno el cuadrado de arriba a la derecha, pero ahí solo hay medio círculo; ese medio círculo llena el hueco de la pieza 3.`),
+      e('GE-circ-resta-en-vez-de-trasladar', X(2 * a * a, -a * a / 4), `Restaste el cuarto de círculo de la pieza 1 en lugar de sumarlo: la pieza 1 está pintada y tapa el hueco de la pieza 2.`),
+      e('GE-circ-un-traslado', X(a * a), `Encontraste un solo cuadrado completo. Son dos traslados: el cuarto de círculo llena el hueco de abajo y el semicírculo de la derecha llena el de arriba.`),
+    ];
+    const solucion = [
+      [`La pieza 1 (cuarto de círculo de radio ${c(a)}) tiene la misma forma y tamaño que el hueco de la pieza 2: al trasladarla ${c(a)} ${u} a la derecha, completa el cuadrado de abajo: ${c(a * a)} ${u2}.`],
+      [`El semicírculo 4 es igual al hueco de la pieza 3: trasladado ${c(a)} ${u} a la izquierda, completa el cuadrado de arriba: ${c(a * a)} ${u2}.`],
+      [v('A', 'Logo'), ' = 2·', v('a', `${c(a)}`), '² = ', v('A', textoX(correcta, u2)), '.'],
+    ];
+    return cerrar(rng, semilla, { variables, enunciado, pregunta, correcta, errores, solucion, unidad: u2, mismaForma: false, datos: { tipo: 'lunulas', sub: 'cuadricula', u, a } });
   }
 
   // ---------- rueda: la cicloide y las fracciones de vuelta ----------
