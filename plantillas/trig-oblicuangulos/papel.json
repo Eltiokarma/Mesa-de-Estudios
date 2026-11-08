@@ -1,0 +1,102 @@
+{
+  "titulo": "Triángulos que no son rectos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 3 minutos por problema. En el triángulo ABC, a es el lado opuesto a A, b el opuesto a B y c el opuesto a C. Ley de cosenos: a² = b² + c² − 2bc · cos A (si A es obtuso, cos A es negativo). Ley de senos: a/sen A = b/sen B = c/sen C = 2R, con R el radio de la circunferencia que pasa por los tres vértices. Ley de tangentes: (a − b)/(a + b) = tan((A − B)/2)/tan((A + B)/2). Área: (1/2) · b · c · sen A. Ángulos de academia: sen 37° = 3/5 y sen 53° = 4/5; sen(180° − x) = sen x y cos(180° − x) = −cos x.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un terreno triangular ABC tiene AB = 5 m, BC = 16 m y CA = 19 m. Un alambre va de A a un punto D del lado BC y mide 7 m. ¿Cuánto mide BD?",
+      "respuesta": "3 m.",
+      "pasos": [
+        "Con los tres lados: cos B = (AB² + BC² − CA²)/(2 · AB · BC) = (25 + 256 − 361)/160 = −1/2. B es obtuso (120°).",
+        "En ABD, con BD = x: 7² = 5² + x² − 2 · 5 · x · (−1/2), es decir, 49 = 25 + x² + 5x.",
+        "x² + 5x − 24 = 0, con raíces 3 y −8. La negativa no sirve: BD = 3 m."
+      ],
+      "verificar": [ { "fn": "ceviana", "args": [{ "a": 16, "b": 19, "c": 5, "d": 7 }], "espera": { "BD": 3, "DC": 13, "cosB": -0.5 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Desde el pie de un faro, un barco está a 3 km y otro a 5 km, y las direcciones hacia ellos forman 120°. ¿Qué distancia hay entre los barcos?",
+      "respuesta": "7 km.",
+      "pasos": [
+        "Ley de cosenos con el ángulo entre las dos distancias: D² = 3² + 5² − 2 · 3 · 5 · cos 120°.",
+        "cos 120° = −1/2, así que el término se suma: D² = 9 + 25 + 15 = 49.",
+        "D = 7 km. Con el signo cambiado saldría √19, menos que la distancia en 90° (√34): no puede ser, porque 120° abre más que 90°."
+      ],
+      "verificar": [ { "fn": "faro", "args": [{ "p": 3, "q": 5, "theta": 120 }], "espera": 7 } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Desde la luz de un faro, a 24 m sobre el mar, se ven dos barcos con ángulos de depresión de tangentes 3/4 y 1/2. Vistas desde el pie del faro, las direcciones hacia los barcos forman 60°. ¿Qué distancia separa a los barcos?",
+      "respuesta": "16√7 m.",
+      "pasos": [
+        "Distancias horizontales: 24 ÷ (3/4) = 32 m y 24 ÷ (1/2) = 48 m (altura por la cotangente).",
+        "El ángulo de 60° está en el plano del mar: D² = 32² + 48² − 2 · 32 · 48 · (1/2) = 1024 + 2304 − 1536 = 1792.",
+        "D = √1792 = 16√7 m. Si se usan las visuales desde la luz (40 m y 24√5 m), el ángulo no corresponde: no están en el plano del mar."
+      ],
+      "verificar": [ { "fn": "faro", "args": [{ "p": 32, "q": 48, "theta": 60 }], "espera": 42.33202097703345 } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En el triángulo ABC, a = 9, b = 3 y el ángulo C mide 60°. ¿Cuánto vale tan((A − B)/2)?",
+      "respuesta": "√3/2.",
+      "pasos": [
+        "(A + B)/2 = 90° − 30° = 60°, así que tan((A + B)/2) = √3.",
+        "Ley de tangentes: (9 − 3)/(9 + 3) = tan((A − B)/2)/√3.",
+        "tan((A − B)/2) = (1/2) · √3 = √3/2."
+      ],
+      "verificar": [ { "fn": "tanSemidiferencia", "args": [{ "a": 9, "b": 3, "C": 60 }], "espera": 0.8660254037844386 } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En el triángulo ABC, recto en A, los catetos miden AB = 12 cm y AC = 6 cm. La bisectriz del ángulo recto corta la hipotenusa en D. ¿Cuánto mide AD?",
+      "respuesta": "4√2 cm.",
+      "pasos": [
+        "Las áreas de ABD y ADC suman la de ABC, y cada parte tiene un ángulo de 45° en A.",
+        "(1/2) · 12 · AD · sen 45° + (1/2) · 6 · AD · sen 45° = (1/2) · 12 · 6, así que AD · 18 · (√2/2) = 72.",
+        "AD = 72/(9√2) = 8/√2 = 4√2 cm."
+      ],
+      "verificar": [ { "fn": "bisectriz", "args": [{ "b": 6, "c": 12, "A": 90 }], "espera": 5.656854249492381 } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Un terreno triangular tiene 36 m de perímetro y dos de sus ángulos miden 37° y 53°. Usa la ley de senos con el circunradio R para hallar su área.",
+      "respuesta": "54 m².",
+      "pasos": [
+        "El tercer ángulo mide 90°. Lados: 2R · sen 37°, 2R · sen 53° y 2R · sen 90°, que suman 2R(3/5 + 4/5 + 1) = 2R · 12/5 en total.",
+        "2R · 12/5 = 36, así que R = 15/2 m y los lados miden 9, 12 y 15 m.",
+        "Área = 2R² · sen 37° · sen 53° · sen 90° = 2 · (225/4) · (12/25) = 54 m² (o 9 · 12/2)."
+      ],
+      "verificar": [ { "fn": "areaPerimetro", "args": [{ "p": 36, "A": 37, "B": 53 }], "espera": 54 } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un triángulo ABC tiene el ángulo A de 120° y un área de 4√3 cm². Los lados AB y AC pueden variar. ¿Cuál es la menor longitud posible del lado BC?",
+      "respuesta": "4√3 cm (cuando AB = AC = 4 cm).",
+      "pasos": [
+        "Área: (1/2) · b · c · sen 120° = 4√3, así que b · c · (√3/2) = 8√3 y b · c = 16.",
+        "a² = b² + c² − 2bc · cos 120° = (b − c)² + 2bc + bc = (b − c)² + 48.",
+        "El mínimo es con b = c = 4: a² = 48 y a = 4√3 cm."
+      ],
+      "verificar": [ { "fn": "ladoMinimo", "args": [{ "S": 6.928203230275509, "A": 120 }], "espera": { "a": 6.928203230275509, "b": 4 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una hoja rectangular ABCD tiene AB = 8 cm y BC = 4 cm. Se dobla para que C caiga sobre A; el doblez corta AB en E. Con la hoja desdoblada, ¿cuánto mide AE y cuánto vale el coseno del ángulo AEC?",
+      "respuesta": "AE = 5 cm y cos AEC = −3/5.",
+      "pasos": [
+        "Todo punto del doblez está a la misma distancia de A que de C: AE = EC = x.",
+        "En el triángulo rectángulo EBC: x² = (8 − x)² + 4², así que 16x = 80 y x = 5 cm; EB = 3 cm.",
+        "cos BEC = 3/5. El ángulo AEC es su suplemento, obtuso: cos AEC = −3/5 (no +3/5)."
+      ],
+      "verificar": [ { "fn": "doblez", "args": [{ "L": 8, "W": 4 }], "espera": { "AE": 5, "cos": -0.6 } } ]
+    }
+  ]
+}
