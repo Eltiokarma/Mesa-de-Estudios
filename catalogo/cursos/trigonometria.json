@@ -31,7 +31,7 @@
       "universidades": {"uni": {"semanas": [2]}, "unmsm": {"temas": [2]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["cinta-radio"],
+      "plantillas": ["cinta-radio", "geo-areas-circulares"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -56,7 +56,7 @@
       "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [3, 12]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["circunferencia-trig"],
+      "plantillas": ["circunferencia-trig", "trig-angulos-verticales"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -104,7 +104,7 @@
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["circunferencia-trig"],
+      "plantillas": ["circunferencia-trig", "trig-oblicuangulos"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -121,7 +121,7 @@
       "universidades": {"uni": {"semanas": [5, 6]}, "unmsm": {"temas": [13, 14]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["circunferencia-trig"],
+      "plantillas": ["circunferencia-trig", "trig-extremos"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -136,7 +136,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["identidades-trig"],
+      "plantillas": ["identidades-trig", "trig-extremos", "trig-identidades"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -146,7 +146,7 @@
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": ["identidades-trig"],
+      "plantillas": ["identidades-trig", "trig-angulos-verticales", "trig-identidades"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -156,7 +156,7 @@
       "universidades": {"uni": {"semanas": [7, 8]}, "unmsm": {"temas": [9]}},
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": ["identidades-trig"],
+      "plantillas": ["identidades-trig", "trig-identidades"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -182,7 +182,7 @@
       "universidades": {"uni": {"semanas": [9, 10, 11]}, "unmsm": {"temas": [15, 16]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["circunferencia-trig"],
+      "plantillas": ["circunferencia-trig", "trig-extremos"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -197,7 +197,7 @@
       "universidades": {"uni": {"semanas": [11, 12]}, "unmsm": {"temas": [17, 18]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["funciones-trig-inversas"],
+      "plantillas": ["funciones-trig-inversas", "trig-inversas"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -212,7 +212,7 @@
       "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [11]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["circunferencia-trig"],
+      "plantillas": ["circunferencia-trig", "trig-ecuaciones"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -227,7 +227,7 @@
       "universidades": {"uni": {"semanas": [14]}, "unmsm": {"temas": [12]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["caso-ambiguo"],
+      "plantillas": ["caso-ambiguo", "trig-oblicuangulos"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -243,7 +243,7 @@
       "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["caso-ambiguo"],
+      "plantillas": ["caso-ambiguo", "trig-oblicuangulos"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
@@ -276,7 +276,7 @@
       "universidades": {"uni": {"semanas": [20]}},
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": ["coordenadas-polares"],
+      "plantillas": ["coordenadas-polares", "trig-polares"],
       "investigacion": null
     }
   ]
