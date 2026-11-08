@@ -47,7 +47,10 @@
      "potencial_visual": "alto",
      "grado": 3,
      "plantillas": [
-      "vectores"
+      "vectores",
+      "vectores-ley-cosenos",
+      "vectores-componentes",
+      "vectores-productos"
      ]
     },
     {
@@ -6132,6 +6135,51 @@
     "/plantillas/vectores/index.html",
     "/plantillas/vectores/motor.js",
     "/plantillas/vectores/papel.json"
+   ]
+  },
+  "vectores-componentes": {
+   "id": "vectores-componentes",
+   "titulo": "Componentes con triángulos notables",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "#/practica/vectores-componentes",
+   "papel": null,
+   "archivos": [
+    "/plantillas/vectores-componentes/generador.js"
+   ]
+  },
+  "vectores-ley-cosenos": {
+   "id": "vectores-ley-cosenos",
+   "titulo": "Dos vectores: la ley de cosenos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "#/practica/vectores-ley-cosenos",
+   "papel": null,
+   "archivos": [
+    "/plantillas/vectores-ley-cosenos/generador.js"
+   ]
+  },
+  "vectores-productos": {
+   "id": "vectores-productos",
+   "titulo": "Producto escalar y producto vectorial",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "#/practica/vectores-productos",
+   "papel": null,
+   "archivos": [
+    "/plantillas/vectores-productos/generador.js"
    ]
   }
  }

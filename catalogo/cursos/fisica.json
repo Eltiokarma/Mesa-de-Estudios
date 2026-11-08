@@ -18,7 +18,7 @@
       "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1, 2]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": ["vectores"],
+      "plantillas": ["vectores", "vectores-ley-cosenos", "vectores-componentes", "vectores-productos"],
       "investigacion": null
     },
     {

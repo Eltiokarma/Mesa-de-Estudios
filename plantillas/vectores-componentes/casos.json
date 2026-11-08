@@ -1,0 +1,492 @@
+{
+  "plantilla": "vectores-componentes",
+  "tolerancia": 0.000001,
+  "nota": "Ángulos con la convención de academia (37°/53° del triángulo 3-4-5).",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador ni el núcleo: recalculó cada caso desde el enunciado con aritmética exacta en Q(√2, √3) (fractions de Python), por componentes en vez de ley de cosenos, con la identidad de Lagrange para |A×B| y con Herón contra la fórmula del cordón para áreas. Resultado: todas las respuestas cuadran y los enunciados son coherentes con sus datos.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "modulo",
+        "fam": "F60",
+        "vectores": [
+          {
+            "modulo": "4",
+            "m": 4,
+            "angulo": 180
+          },
+          {
+            "modulo": "10",
+            "m": 10,
+            "angulo": 0
+          },
+          {
+            "modulo": "10",
+            "m": 10,
+            "angulo": 300
+          }
+        ],
+        "coef": [
+          1,
+          1,
+          1
+        ],
+        "cardinal": false,
+        "equilibrio": true
+      },
+      "esperado": {
+        "respuesta": 14,
+        "exacta": "14"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "modulo",
+        "fam": "F45",
+        "vectores": [
+          {
+            "modulo": "2√2",
+            "m": 2.8284271247461903,
+            "angulo": 45
+          },
+          {
+            "modulo": "1",
+            "m": 1,
+            "angulo": 270
+          },
+          {
+            "modulo": "3√2",
+            "m": 4.242640687119286,
+            "angulo": 225
+          }
+        ],
+        "coef": [
+          1,
+          1,
+          1
+        ],
+        "cardinal": true,
+        "equilibrio": false
+      },
+      "esperado": {
+        "respuesta": 2.23606797749979,
+        "exacta": "√5"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "combinacion",
+        "fam": "F60",
+        "vectores": [
+          {
+            "modulo": "4",
+            "m": 4,
+            "angulo": 60
+          },
+          {
+            "modulo": "10",
+            "m": 10,
+            "angulo": 240
+          },
+          {
+            "modulo": "8",
+            "m": 8,
+            "angulo": 120
+          }
+        ],
+        "coef": [
+          1,
+          2,
+          2
+        ],
+        "cardinal": false,
+        "equilibrio": false
+      },
+      "esperado": {
+        "respuesta": 16,
+        "exacta": "16"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "angulo",
+        "fam": "F60",
+        "vectores": [
+          {
+            "modulo": "8",
+            "m": 8,
+            "angulo": 180
+          },
+          {
+            "modulo": "8",
+            "m": 8,
+            "angulo": 60
+          }
+        ],
+        "coef": [
+          1,
+          1
+        ],
+        "cardinal": false,
+        "equilibrio": false
+      },
+      "esperado": {
+        "respuesta": 120,
+        "exacta": "120°"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "modulo",
+        "fam": "F30",
+        "vectores": [
+          {
+            "modulo": "6",
+            "m": 6,
+            "angulo": 30
+          },
+          {
+            "modulo": "4",
+            "m": 4,
+            "angulo": 210
+          },
+          {
+            "modulo": "2",
+            "m": 2,
+            "angulo": 270
+          }
+        ],
+        "coef": [
+          1,
+          1,
+          1
+        ],
+        "cardinal": false,
+        "equilibrio": true
+      },
+      "esperado": {
+        "respuesta": 2,
+        "exacta": "2"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "angulo",
+        "fam": "F30",
+        "vectores": [
+          {
+            "modulo": "8",
+            "m": 8,
+            "angulo": 90
+          },
+          {
+            "modulo": "8",
+            "m": 8,
+            "angulo": 330
+          }
+        ],
+        "coef": [
+          1,
+          1
+        ],
+        "cardinal": false,
+        "equilibrio": false
+      },
+      "esperado": {
+        "respuesta": 30,
+        "exacta": "30°"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "combinacion",
+        "fam": "F37",
+        "vectores": [
+          {
+            "modulo": "25",
+            "m": 25,
+            "angulo": 307
+          },
+          {
+            "modulo": "15",
+            "m": 15,
+            "angulo": 90
+          },
+          {
+            "modulo": "25",
+            "m": 25,
+            "angulo": 217
+          }
+        ],
+        "coef": [
+          2,
+          -1,
+          1
+        ],
+        "cardinal": false,
+        "equilibrio": false
+      },
+      "esperado": {
+        "respuesta": 70.71067811865476,
+        "exacta": "50√2"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "modulo",
+        "fam": "F37",
+        "vectores": [
+          {
+            "modulo": "25",
+            "m": 25,
+            "angulo": 90
+          },
+          {
+            "modulo": "20",
+            "m": 20,
+            "angulo": 127
+          },
+          {
+            "modulo": "25",
+            "m": 25,
+            "angulo": 270
+          },
+          {
+            "modulo": "10",
+            "m": 10,
+            "angulo": 217
+          }
+        ],
+        "coef": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "cardinal": false,
+        "equilibrio": true
+      },
+      "esperado": {
+        "respuesta": 22.360679774997898,
+        "exacta": "10√5"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "combinacion",
+        "fam": "F30",
+        "vectores": [
+          {
+            "modulo": "10",
+            "m": 10,
+            "angulo": 90
+          },
+          {
+            "modulo": "4",
+            "m": 4,
+            "angulo": 270
+          }
+        ],
+        "coef": [
+          2,
+          -1
+        ],
+        "cardinal": false,
+        "equilibrio": false
+      },
+      "esperado": {
+        "respuesta": 24,
+        "exacta": "24"
+      }
+    },
+    {
+      "semilla": 25,
+      "entrada": {
+        "tipo": "angulo",
+        "fam": "F37",
+        "vectores": [
+          {
+            "modulo": "25",
+            "m": 25,
+            "angulo": 0
+          },
+          {
+            "modulo": "15",
+            "m": 15,
+            "angulo": 90
+          },
+          {
+            "modulo": "30",
+            "m": 30,
+            "angulo": 217
+          },
+          {
+            "modulo": "5",
+            "m": 5,
+            "angulo": 180
+          }
+        ],
+        "coef": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "cardinal": false,
+        "equilibrio": false
+      },
+      "esperado": {
+        "respuesta": 217,
+        "exacta": "217°"
+      }
+    },
+    {
+      "semilla": 65,
+      "entrada": {
+        "tipo": "combinacion",
+        "fam": "F45",
+        "vectores": [
+          {
+            "modulo": "4√2",
+            "m": 5.656854249492381,
+            "angulo": 225
+          },
+          {
+            "modulo": "3",
+            "m": 3,
+            "angulo": 180
+          },
+          {
+            "modulo": "2",
+            "m": 2,
+            "angulo": 270
+          }
+        ],
+        "coef": [
+          3,
+          -2,
+          -2
+        ],
+        "cardinal": false,
+        "equilibrio": false
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10"
+      }
+    },
+    {
+      "semilla": 98,
+      "entrada": {
+        "tipo": "angulo",
+        "fam": "F45",
+        "vectores": [
+          {
+            "modulo": "6√2",
+            "m": 8.485281374238571,
+            "angulo": 45
+          },
+          {
+            "modulo": "√2",
+            "m": 1.4142135623730951,
+            "angulo": 225
+          }
+        ],
+        "coef": [
+          1,
+          1
+        ],
+        "cardinal": false,
+        "equilibrio": false
+      },
+      "esperado": {
+        "respuesta": 45,
+        "exacta": "45°"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "modulo",
+        "fam": "F30",
+        "vectores": [
+          {
+            "modulo": "4",
+            "m": 4,
+            "angulo": 150
+          },
+          {
+            "modulo": "2",
+            "m": 2,
+            "angulo": 90
+          },
+          {
+            "modulo": "2",
+            "m": 2,
+            "angulo": 210
+          }
+        ],
+        "coef": [
+          1,
+          1,
+          1
+        ],
+        "cardinal": false,
+        "equilibrio": false
+      },
+      "esperado": {
+        "respuesta": 6,
+        "exacta": "6"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "angulo",
+        "fam": "F30",
+        "vectores": [
+          {
+            "modulo": "4",
+            "m": 4,
+            "angulo": 150
+          },
+          {
+            "modulo": "2",
+            "m": 2,
+            "angulo": 270
+          },
+          {
+            "modulo": "6",
+            "m": 6,
+            "angulo": 210
+          },
+          {
+            "modulo": "8",
+            "m": 8,
+            "angulo": 90
+          }
+        ],
+        "coef": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "cardinal": false,
+        "equilibrio": false
+      },
+      "esperado": {
+        "respuesta": 150,
+        "exacta": "150°"
+      }
+    }
+  ]
+}

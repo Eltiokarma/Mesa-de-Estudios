@@ -1,0 +1,158 @@
+{
+  "plantilla": "vectores-productos",
+  "tolerancia": 0.000001,
+  "nota": "Ángulos con la convención de academia (37°/53° del triángulo 3-4-5).",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador ni el núcleo: recalculó cada caso desde el enunciado con aritmética exacta en Q(√2, √3) (fractions de Python), por componentes en vez de ley de cosenos, con la identidad de Lagrange para |A×B| y con Herón contra la fórmula del cordón para áreas. Resultado: todas las respuestas cuadran y los enunciados son coherentes con sus datos.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "modulo-cruz",
+        "A": 8,
+        "B": 12,
+        "t": 120
+      },
+      "esperado": {
+        "respuesta": 83.13843876330611,
+        "exacta": "48√3"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "escalar",
+        "a": [
+          -4,
+          -5,
+          -2
+        ],
+        "b": [
+          3,
+          -1,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": -11,
+        "exacta": "-11"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "perpendicular",
+        "a": [
+          4,
+          null,
+          2
+        ],
+        "b": [
+          -5,
+          3,
+          4
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "area",
+        "pts": [
+          [
+            4,
+            1
+          ],
+          [
+            -4,
+            5
+          ],
+          [
+            4,
+            2
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "angulo",
+        "a": [
+          2,
+          2,
+          -4
+        ],
+        "b": [
+          0,
+          -2,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": 150,
+        "exacta": "150°"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "tipo": "vectorial-z",
+        "a": [
+          1,
+          5,
+          0
+        ],
+        "b": [
+          -2,
+          2,
+          0
+        ]
+      },
+      "esperado": {
+        "respuesta": 12,
+        "exacta": "12"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "modulo-cruz",
+        "A": 5,
+        "B": 10,
+        "t": 37
+      },
+      "esperado": {
+        "respuesta": 30,
+        "exacta": "30"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "angulo",
+        "a": [
+          -4,
+          1,
+          -1
+        ],
+        "b": [
+          -3,
+          0,
+          3
+        ]
+      },
+      "esperado": {
+        "respuesta": 60,
+        "exacta": "60°"
+      }
+    }
+  ]
+}

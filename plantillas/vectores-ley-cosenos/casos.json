@@ -1,0 +1,101 @@
+{
+  "plantilla": "vectores-ley-cosenos",
+  "tolerancia": 0.000001,
+  "nota": "Ángulos con la convención de academia (37°/53° del triángulo 3-4-5).",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador ni el núcleo: recalculó cada caso desde el enunciado con aritmética exacta en Q(√2, √3) (fractions de Python), por componentes en vez de ley de cosenos, con la identidad de Lagrange para |A×B| y con Herón contra la fórmula del cordón para áreas. Resultado: todas las respuestas cuadran y los enunciados son coherentes con sus datos.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "resultante",
+        "a": 5,
+        "b": 8,
+        "t": 60
+      },
+      "esperado": {
+        "respuesta": 11.357816691600547,
+        "exacta": "√129"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "angulo-desde-R",
+        "a": 15,
+        "b": 4,
+        "t": 127,
+        "tres": false
+      },
+      "esperado": {
+        "respuesta": 127,
+        "exacta": "127°"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "diferencia",
+        "a": 4,
+        "b": 15,
+        "t": 53
+      },
+      "esperado": {
+        "respuesta": 13,
+        "exacta": "13"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "desde-max-min",
+        "M": 8,
+        "m": 2,
+        "t": 53
+      },
+      "esperado": {
+        "respuesta": 7.211102550927978,
+        "exacta": "2√13"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "suma-diferencia",
+        "a": 20,
+        "t": 53,
+        "k2": 4,
+        "alReves": false
+      },
+      "esperado": {
+        "respuesta": 53,
+        "exacta": "53°"
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "resultante",
+        "a": 12,
+        "b": 5,
+        "t": 143
+      },
+      "esperado": {
+        "respuesta": 8.54400374531753,
+        "exacta": "√73"
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "desde-max-min",
+        "M": 23,
+        "m": 7,
+        "t": 90
+      },
+      "esperado": {
+        "respuesta": 17,
+        "exacta": "17"
+      }
+    }
+  ]
+}

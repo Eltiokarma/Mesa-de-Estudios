@@ -1,0 +1,14 @@
+{
+  "id": "vectores-ley-cosenos",
+  "titulo": "Dos vectores: la ley de cosenos",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.magnitudes-y-vectores"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": null
+}
