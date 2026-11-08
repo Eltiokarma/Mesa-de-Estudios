@@ -1,7 +1,7 @@
 {
   "plantilla": "geo-triangulos-notables",
   "tolerancia": 0.000001,
-  "nota": "Longitudes en cm o m, ángulos en grados, costos en soles. Las respuestas de lados enteros son enteros; mitades usa tan 37° = 3/4 y tan 53° = 4/3 (academia). Los _datos traen todos los datos del enunciado (u es la unidad).",
+  "nota": "Longitudes en cm o m, ángulos en grados, costos en soles. Las respuestas de lados enteros son enteros; mitades usa tan 37° = 3/4, tan 53° = 4/3 y tan 74° = 24/7 (academia). Los _datos traen todos los datos del enunciado (u es la unidad).",
   "verificacion": "",
   "casos": [
     {
@@ -21,13 +21,13 @@
       "entrada": {
         "tipo": "angulos",
         "sub": "pies-alturas",
-        "pide": "AO-EF",
+        "pide": "OAB",
         "B": 49,
         "C": 46
       },
       "esperado": {
-        "respuesta": 90,
-        "exacta": "90°"
+        "respuesta": 44,
+        "exacta": "44°"
       }
     },
     {
@@ -73,14 +73,14 @@
       "entrada": {
         "tipo": "ortocentro",
         "pide": "AC",
-        "AF": 18,
-        "FB": 7,
+        "AF": 40,
+        "FB": 16,
         "u": "m",
-        "BC": 25
+        "BC": 34
       },
       "esperado": {
-        "respuesta": 30,
-        "exacta": "30 m"
+        "respuesta": 50,
+        "exacta": "50 m"
       }
     },
     {
@@ -115,8 +115,8 @@
       "semilla": 13,
       "entrada": {
         "tipo": "mitades",
-        "A": 37,
-        "C": 53,
+        "A": 53,
+        "C": 37,
         "h": 24,
         "u": "cm"
       },
@@ -158,13 +158,13 @@
       "entrada": {
         "tipo": "obtusangulo",
         "sub": "relacion",
-        "a": 6,
-        "b": 10,
-        "u": "cm"
+        "a": 14,
+        "b": 21,
+        "u": "m"
       },
       "esperado": {
-        "respuesta": 7,
-        "exacta": "7 cm"
+        "respuesta": 15,
+        "exacta": "15 m"
       }
     },
     {
@@ -232,11 +232,11 @@
       "entrada": {
         "tipo": "desigualdad",
         "sub": "contar",
-        "N": 13
+        "N": 17
       },
       "esperado": {
-        "respuesta": 5,
-        "exacta": "5"
+        "respuesta": 8,
+        "exacta": "8"
       }
     },
     {

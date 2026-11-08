@@ -1552,11 +1552,11 @@ const Q3 = { id:'solidos-trapecio-gira', ok:'b', opts:[
   ['a', `${piT(TM.errores.volumen.rectangulo)} cm³`, 'GE20-cono-sin-tercio-o-rectangulo-completo', 'hipotesis'],
   ['b', `${piT(TM.pi.volumen)} cm³`],
   ['c', `${piT(TM.errores.volumen.ejePerpendicular)} cm³`, 'revolucion-gira-sobre-otro-lado', 'hipotesis'],
-  ['d', `${piT(TM.errores.volumen.restaCono)} cm³`, 'revolucion-resta-el-cono', 'hipotesis']],
+  ['d', `${piT(TM.errores.volumen.ejeMenor)} cm³`, 'revolucion-resta-el-cono', 'hipotesis']],
   fb:{ b:`¡Bien! El lado de 3 da la vuelta como radio: la parte de 6 de alto barre un cilindro (π · 9 · 6 = ${piT(TM.piezas[0].piVolumen)}) y la punta, un cono de alto 10 − 6 = 4 (π · 9 · 4/3 = ${piT(TM.piezas[1].piVolumen)}). Juntos, ${piT(TM.pi.volumen)}.`,
     a:`Elegiste la A. ${piT(TM.errores.volumen.rectangulo)} es π · 3² · 10: un cilindro de todo el largo, como si la región fuera un rectángulo (o el cono sin su 1/3, que da lo mismo). La punta es un cono y lleva el tercio. La correcta está marcada.`,
     c:`Elegiste la C. ${piT(TM.errores.volumen.ejePerpendicular)} es el tronco de cono que sale al girar sobre el lado de 3. Aquí el eje es la base mayor: el lado de 3 hace de radio, no de altura. La correcta está marcada.`,
-    d:`Elegiste la D. ${piT(TM.errores.volumen.restaCono)} resta el cono (90π − 12π): eso sale al girar sobre la base menor, que deja un hueco con forma de cono. Girando sobre la mayor, la punta llena un cono que se suma. La correcta está marcada.` } };
+    d:`Elegiste la D. ${piT(TM.errores.volumen.ejeMenor)} resta el cono (90π − 12π): eso sale al girar sobre la base menor, que deja un hueco con forma de cono. Girando sobre la mayor, la punta llena un cono que se suma. La correcta está marcada.` } };
 const Q4 = { id:'solidos-globo-cono', ok:'d', opts:[
   ['a', '8/3 cm', 'GE8-incentro-como-baricentro', 'hipotesis'],
   ['b', `${fmt(GL.errores.rho.poncelet)} cm`, 'inradio-de-la-mitad-rectangula', 'hipotesis'],

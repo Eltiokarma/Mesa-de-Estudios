@@ -31,19 +31,19 @@ function biseccion(f, lo, hi) { for (let k = 0; k < 200; k++) { const m = (lo + 
 // alternativa («h·cot(α/2)», «h·tan 2θ»…) y se devuelve la única que da ese número.
 const FN = { sen: Math.sin, cos: Math.cos, tan: Math.tan, cot: x => 1 / Math.tan(x), sec: x => 1 / Math.cos(x), csc: x => 1 / Math.sin(x) };
 function evaluarPuente(texto, angulo) {
-  const m = texto.match(/^h·(sen|cos|tan|cot|sec|csc)(?: (\S+)|\((\S+)\))$/);
+  const m = texto.match(/^(?:([hHbk])·)?(sen|cos|tan|cot|sec|csc)(?: (\S+)|\((\S+)\))$/);
   assert.ok(m, `no se entiende «${texto}»`);
-  const arg = m[2] || m[3];               // α = 50°, o θ = 25° (2θ = 50°)
-  const valor = { 'α/2': 25, 'α': 50, '2α': 100, 'θ': 25, '2θ': 50, '4θ': 100 }[arg];
-  assert.ok(valor !== undefined && (angulo === 'α') === arg.includes('α'), `argumento ${arg}`);
-  return FN[m[1]](valor * Math.PI / 180);
+  const base = angulo.startsWith('2') ? 25 : 50;                     // la elevación siempre es 50°
+  const a = m[3] || m[4], q = a.match(/^(\d?)([^\d/]+)(\/2)?$/);
+  assert.ok(q && angulo.replace(/^2/, '') === q[2], `argumento ${a}`);
+  return FN[m[2]](base * (Number(q[1] || 1) / (q[3] ? 2 : 1)) * Math.PI / 180);
 }
 function recalcular(p) {
   const d = p._datos;
   if (d.tipo === 'puente-simbolico') {
     const B = [0, 0], T = [0, 1], P = [1 / Math.tan(50 * Math.PI / 180), 0];
     const BP = Math.hypot(P[0] - B[0], P[1] - B[1]), PT = Math.hypot(T[0] - P[0], T[1] - P[1]);
-    const objetivo = d.sub === 'suma' ? BP + PT : PT - BP;
+    const objetivo = d.sub === 'suma' || d.sub === 'razon' ? BP + PT : PT - BP;  // BT = 1, así la razón es lo mismo
     const buenas = p.alternativas.filter(a => cerca(evaluarPuente(a.texto, d.angulo), objetivo));
     assert.equal(buenas.length, 1, 'una sola alternativa vale lo pedido');
     return buenas[0].valor;
@@ -105,7 +105,7 @@ for (const c of casos.casos) {
 test('salen los ocho tipos y sus subtipos', () => {
   const vistos = new Set();
   for (let s = 0; s < 600; s++) { const d = gen.generar(s)._datos; vistos.add(d.tipo); if (d.sub) vistos.add(`${d.tipo}/${d.sub}`); }
-  for (const t of ['puente-simbolico', 'puente-simbolico/suma', 'puente-simbolico/resta', 'mismo-lado', 'ambos-lados', 'movimiento', 'entre-edificios', 'mitad-cima', 'objeto-elevado', 'dron-camino', 'condicion-angulo',
+  for (const t of ['puente-simbolico', 'puente-simbolico/suma', 'puente-simbolico/resta', 'puente-simbolico/razon', 'puente-simbolico/razon-resta', 'mismo-lado', 'ambos-lados', 'movimiento', 'entre-edificios', 'mitad-cima', 'objeto-elevado', 'dron-camino', 'condicion-angulo',
     'movimiento/auto', 'movimiento/dron', 'movimiento/camara', 'movimiento/avioneta', 'entre-edificios/muro', 'entre-edificios/otro',
     'objeto-elevado/tan', 'objeto-elevado/altura', 'objeto-elevado/pura', 'objeto-elevado/distancia']) assert.ok(vistos.has(t), `no sale ${t}`);
 });
@@ -115,7 +115,7 @@ test('alternativas sin decimales y con la misma unidad', () => {
     const p = gen.generar(s);
     for (const a of p.alternativas) assert.ok(!/,\d/.test(a.texto), `semilla ${s}: decimal en ${a.texto}`);
     if (typeof p.respuesta.valor === 'string') {   // simbólico: todas con la forma h·razón(ángulo)
-      assert.ok(p.alternativas.every(a => /^h·(sen|cos|tan|cot|sec|csc)[ (]/.test(a.texto)), `semilla ${s}: forma`);
+      assert.ok(p.alternativas.every(a => /^([hHbk]·)?(sen|cos|tan|cot|sec|csc)[ (]/.test(a.texto)), `semilla ${s}: forma`);
       continue;
     }
     const unidades = new Set(p.alternativas.map(a => a.texto.split(' ').pop().replace(/[\d/√]/g, '')));

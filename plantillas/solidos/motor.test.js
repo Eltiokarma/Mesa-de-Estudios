@@ -295,6 +295,8 @@ test('la región que gira: Pappus (V = 2π · distancia del centroide al eje · 
       cerca(T.pi.volumen, 2*G.x*G.A, `${eje}: Pappus`, 1e-9);
       cerca(T.piezas.reduce((s, p) => s + p.piVolumen, 0), T.pi.volumen, `${eje}: piezas`, 1e-9);
       sinChoques(T, `trapecio ${eje}`);
+      const vals = Object.values(T.errores.volumen);
+      vals.forEach((v, j) => vals.forEach((w, k) => { if (j < k) assert.ok(!casi(v, w), `${eje} B=${B} b=${b} h=${h}: dos errores dan ${v}`); }));
       const phi = rnd()*6.3; motor.girarPerfil(T.perfil, phi).forEach((p, j) => { cerca(Math.hypot(p[0], p[1]), T.perfil[j][0], 'girar no cambia la distancia al eje'); cerca(p[2], T.perfil[j][1], 'ni la altura'); });
     }
   }

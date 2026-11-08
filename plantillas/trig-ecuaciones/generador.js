@@ -150,8 +150,10 @@
     return armado(semilla, o, alternativas, o.correcta, unidad === 'grados' ? '°' : unidad === 'cuantas' ? '' : unidad === 'horas' ? 'h' : unidad === 'segundos' ? 's' : unidad);
   }
   function armado(semilla, o, alternativas, valor, unidad) {
+    const usadas = new Set([...o.enunciado, ...o.pregunta, ...o.solucion.flat()].filter(x => x && x.v).map(x => x.v));
+    const variables = Object.fromEntries(Object.entries(o.variables).filter(([k]) => usadas.has(k)));
     return {
-      id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
+      id: `${ID}#${semilla}`, variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion, respuesta: { valor, unidad: o.unidad || unidad }, _datos: o.datos,
     };
   }
@@ -227,7 +229,7 @@
       if (pide === 'kesima') errores.push(hi('TR22-primera', sols[0], 'Te quedaste con la primera solución. Piden otra: hay que listarlas todas en el intervalo y ordenarlas.'));
       else {
         const fuera = soluciones(fn, k, a, b, 360, 720)[0];
-        errores.push(pa('TR21-fuera-del-intervalo', fuera, `Esa solución pasa de ${angTxt(360, modo)}: queda fuera del intervalo. La mayor es la última que cae antes de ${angTxt(360, modo)}.`));
+        errores.push(hi('TR21-fuera-del-intervalo', fuera, Math.abs(fuera - 360) < 1e-9 ? `x = ${angTxt(360, modo)} no entra: el intervalo es menor estricto (x < ${angTxt(360, modo)}).` : `Esa solución pasa de ${angTxt(360, modo)}: queda fuera del intervalo. La mayor es la última que cae antes de ${angTxt(360, modo)}.`));
         errores.push(hi('TR22-primera', sols[0], 'Esa es la menor solución, no la mayor: hay que listar todas las del intervalo.'));
       }
       errores.push(h('TE-valor-del-argumento', tomar(uDe(sols)), `Ese es el valor del argumento ${u}, no el de x. Falta ${despeje}.`));
@@ -235,7 +237,8 @@
       errores.push(pa('TR11-cruza-seno-coseno', tomar(swap), `Resolviste ${otra}(${u}) = ${menos(k)}: cambiaste ${fn === 'sen' ? 'seno por coseno' : 'coseno por seno'}.`));
       if (k.startsWith('-')) errores.push(pa('TR12-sin-signo', tomar(soluciones(fn, opuesto(k), a, b, 0, 360)), `Resolviste con ${menos(opuesto(k))}, sin el signo menos. El valor negativo pone los ángulos en otros cuadrantes.`));
     }
-    const enunciado = ['Resuelve ', v('k', igualdad(fn, u, k)), ` en el intervalo ${intervaloTxt(modo)}.`];
+    const [izq, der] = igualdad(fn, u, k).split(' = ');
+    const enunciado = ['Resuelve ', `${izq} = `, v('k', der), ` en el intervalo ${intervaloTxt(modo)}.`];
     const base = NOT[fn][k];
     const bases = fn === 'sen' ? [base, 180 - base] : [base, -base];
     const solucion = [
@@ -326,7 +329,7 @@
     if (F.comun) {
       errores.push(pa('TR21-divide-entre-factor', tomar(porFac[1]), `Dividiste entre ${F.rhs.split(' ')[0]} ${M} y perdiste las soluciones de ${facTxt(fac[0])}. No se divide entre una expresión que puede valer cero: se factoriza.`));
       const sin2 = limpiar([...porFac[0], ...soluciones('cos', '1', d, 0, 0, 360)]);
-      errores.push(pa('TR16-sin-el-2', tomar(sin2), `Olvidaste el 2 de la transformación: ${F.f1} A + ${F.f2} B = 2·${F.f1 === 'cos' ? 'cos' : 'sen'}((A + B)/2)·cos((A − B)/2). Sin el 2 queda cos ${D} = 1, que no es.`));
+      errores.push(hi('TR16-sin-el-2', tomar(sin2), `Olvidaste el 2 de la transformación: ${F.f1} A + ${F.f2} B = 2·${F.f1 === 'cos' ? 'cos' : 'sen'}((A + B)/2)·cos((A − B)/2). Sin el 2 queda cos ${D} = 1, que no es.`));
     } else {
       errores.push(pa('TR21-solo-primer-factor', tomar(porFac[0]), `Te quedaste con ${facTxt(fac[0])} y olvidaste el otro factor: si un producto es cero, cualquiera de los dos factores puede serlo.`));
       errores.push(pa('TR21-solo-segundo-factor', tomar(porFac[1]), `Te quedaste con ${facTxt(fac[1])} y olvidaste el otro factor: si un producto es cero, cualquiera de los dos puede serlo.`));
@@ -336,7 +339,7 @@
     const repetidas = porFac[0].length + porFac[1].length > sols.length;
     if (repetidas) errores.push(h('TE-repite-comunes', pide === 'cuantas' ? porFac[0].length + porFac[1].length : sumar(porFac[0]) + sumar(porFac[1]), 'Contaste dos veces los ángulos que anulan a los dos factores a la vez. Cada solución se cuenta una sola vez.'));
     const en360 = fac.some(([fn, k, a]) => soluciones(fn, k, a, 0, 360, 361).some(x => Math.abs(x - 360) < 1e-9));
-    if (en360) errores.push(pa('TR21-incluye-extremo', pide === 'cuantas' ? sols.length + 1 : sumar(sols) + 360, `Contaste también x = ${angTxt(360, modo)}, que el intervalo deja fuera (es menor estricto).`));
+    if (en360) errores.push(hi('TR21-incluye-extremo', pide === 'cuantas' ? sols.length + 1 : sumar(sols) + 360, `Contaste también x = ${angTxt(360, modo)}, que el intervalo deja fuera (es menor estricto).`));
     const variables = { m: { nombre: 'semisuma', color: 'o' }, d: { nombre: 'semidiferencia', color: 'i' }, x: { nombre: 'soluciones', color: 'd' } };
     const enunciado = ['Resuelve ', `${lhs} = ${rhs}`, ` en el intervalo ${intervaloTxt(modo)}.`];
     const solucion = [
@@ -378,12 +381,12 @@
     const lhs = `${F.f1}²(${argA}) ${F.signo > 0 ? '+' : '−'} ${F.f2}²(${argB})`;
     const facTxt = ([fn, k, a]) => `${fn}(${arg(a)}) = 0`;
     const errores = [
-      h('TE-degrada-sin-doble', tomar(limpiar([].concat(...resolverFac([[F.fac, '0', S / 2], [F.fac, '0', Dd / 2]])))), 'Degradaste mal: cos² A = (1 + cos 2A)/2, con el ángulo doble. Si escribes cos A en vez de cos 2A, todos los ángulos salen a la mitad.'),
+      h('TE-degrada-sin-doble', tomar(limpiar([].concat(...resolverFac([[F.fac, '0', S / 2], [F.fac, '0', Dd / 2]])))), F.f1 === 'sen' && F.f2 === 'sen' ? 'Degradaste mal: sen² A = (1 − cos 2A)/2, con el ángulo doble. Si escribes cos A en vez de cos 2A, todos los ángulos salen a la mitad.' : F.f1 === 'cos' && F.f2 === 'cos' ? 'Degradaste mal: cos² A = (1 + cos 2A)/2, con el ángulo doble. Si escribes cos A en vez de cos 2A, todos los ángulos salen a la mitad.' : 'Degradaste mal: cos² A = (1 + cos 2A)/2 y sen² B = (1 − cos 2B)/2, con el ángulo doble. Si escribes cos A en vez de cos 2A, todos los ángulos salen a la mitad.'),
       pa('TR21-solo-primer-factor', tomar(porFac[0]), `Te quedaste con ${facTxt(fac[0])} y olvidaste el otro factor; cualquiera de los dos puede ser cero.`),
       pa('TR21-solo-segundo-factor', tomar(porFac[1]), `Te quedaste con ${facTxt(fac[1])} y olvidaste el otro factor; cualquiera de los dos puede ser cero.`),
     ];
     if (porFac[0].length + porFac[1].length > sols.length) errores.push(h('TE-repite-comunes', pide === 'cuantas' ? porFac[0].length + porFac[1].length : sumar(conv(porFac[0])) + sumar(conv(porFac[1])), 'Contaste dos veces los valores que anulan a los dos factores a la vez.'));
-    if (F.fac === 'sen') errores.push(pa('TR21-incluye-extremo', pide === 'cuantas' ? sols.length + 1 : correcta + (enT ? 12 : 360), `Contaste también el extremo ${enT ? 't = 12' : 'x = ' + angTxt(360, modo)}, que el intervalo deja fuera.`));
+    if (F.fac === 'sen') errores.push(hi('TR21-incluye-extremo', pide === 'cuantas' ? sols.length + 1 : correcta + (enT ? 12 : 360), `Contaste también el extremo ${enT ? 't = 12' : 'x = ' + angTxt(360, modo)}, que el intervalo deja fuera.`));
     const variables = { A: { nombre: 'primer ángulo', color: 'o' }, B: { nombre: 'segundo ángulo', color: 'i' }, x: { nombre: enT ? 'instantes' : 'soluciones', color: 'd' } };
     const intervalo = enT ? '0 ≤ t < 12' : intervaloTxt(modo);
     const enunciado = enT
@@ -407,41 +410,46 @@
   const VALIDAS = ['1/2', '-1/2', '1', '-1', '0'];
   const IMPOSIBLES = ['2', '-2', '3/2', '-3/2', '3'];
   const fr = t => { const neg = t.startsWith('-'), [n, d] = (neg ? t.slice(1) : t).split('/'); return [(neg ? -1 : 1) * Number(n), d ? Number(d) : 1]; };
+  // y(t) = α sen²(πt/q) + β cos(πt/q) con 0 ≤ t < T = 2q·vueltas (vueltas = 1, 3/2, 2 o 3).
+  const VALIDAS_C = ['1/2', '-1/2', '0', '1/2', '-1/2', '1', '-1', '0'];
+  const arcoT = q => (q === 1 ? 'πt' : `πt/${q}`);
   function cuadCoseno(rng, semilla) {
-    const r1 = rng.elegir(VALIDAS);
+    const r1 = rng.elegir(VALIDAS_C);
     const r2 = rng.moneda() ? rng.elegir(IMPOSIBLES) : rng.elegir(VALIDAS.filter(x => x !== r1));
     const [n1, d1] = fr(r1), [n2, d2] = fr(r2);
     const A = d1 * d2, B = -(d1 * n2 + d2 * n1), C = n1 * n2; // A c² + B c + C = 0
     // Con sen² x = 1 − cos² x: A sen² x − B cos x = A + C.
     const alfa = A, beta = -B, gamma = A + C;
     if (beta === 0) return null;
-    const T = rng.elegir([12, 24]), vueltas = T / 12;
+    const q = rng.elegir([3, 4, 6]), vueltas = rng.elegir([1, 1.5, 2, 3]), T = 2 * q * vueltas, H = 360 * vueltas;
+    const arco = arcoT(q), aT = x => x * q / 180;
     const raices = [r1, r2].filter(posible);
-    const porRaiz = raices.map(r => soluciones('cos', r, 1, 0, 0, 360 * vueltas));
-    const sols = limpiar([].concat(...porRaiz));
-    const correcta = sols.length;
+    const contar = h0 => limpiar([].concat(...raices.map(r => soluciones('cos', r, 1, 0, 0, h0)))).length;
+    const correcta = contar(H);
     if (!correcta) return null;
     const errores = [];
-    if (!posible(r2)) errores.push(pa('TR21-cuenta-imposible', correcta + 2 * vueltas, `Contaste cos(πt/6) = ${menos(r2)} como si tuviera soluciones. El coseno nunca pasa de 1 ni baja de −1: esa raíz se descarta.`));
+    if (!posible(r2)) errores.push(pa('TR21-cuenta-imposible', correcta + 2 * vueltas, `Contaste cos(${arco}) = ${menos(r2)} como si tuviera soluciones. El coseno nunca pasa de 1 ni baja de −1: esa raíz se descarta.`));
     errores.push(h('TE-cuenta-raices', 2, 'Contaste las raíces de la ecuación de segundo grado, no los instantes. Cada valor posible del coseno se alcanza en varios instantes.'));
-    errores.push(hi('TR22-una-por-raiz', raices.length * vueltas, 'Tomaste un solo ángulo por cada valor del coseno y por vuelta. Salvo en 1 y −1, el coseno toma cada valor dos veces por vuelta.'));
-    if (vueltas === 2) errores.push(h('TE-una-vuelta', limpiar([].concat(...raices.map(r => soluciones('cos', r, 1, 0, 0, 360)))).length, `Contaste solo una vuelta (0 ≤ t < 12). En 0 ≤ t < ${T}, el ángulo πt/6 da dos vueltas.`));
-    if (raices.some(r => r === '1' || r === '-1')) errores.push(h('TE-extremo-doble', correcta + vueltas, 'Contaste dos ángulos por vuelta para cos = 1 (o −1). Ahí el coseno llega a su tope una sola vez por vuelta.'));
-    if (raices.includes('1')) errores.push(pa('TR21-incluye-extremo', correcta + 1, `Contaste también t = ${T}, que el intervalo deja fuera.`));
+    errores.push(hi('TR22-una-por-raiz', raices.reduce((n, r) => n + familias('cos', r, 1, 0, 0, H)[0].length, 0), 'Tomaste un solo ángulo por cada valor del coseno y por vuelta. Salvo en 1 y −1, el coseno toma cada valor dos veces por vuelta.'));
+    if (vueltas !== 1) errores.push(h('TE-una-vuelta', contar(360), `Contaste solo una vuelta (0 ≤ t < ${2 * q}). En 0 ≤ t < ${f(T)}, el ángulo ${arco} da ${f(vueltas)} vueltas.`));
+    if (!Number.isInteger(vueltas)) errores.push(h('TE-vueltas-completas', contar(360 * Math.ceil(vueltas)), `Contaste ${Math.ceil(vueltas)} vueltas completas. En 0 ≤ t < ${f(T)}, el ángulo ${arco} da ${f(vueltas)} vueltas: la última queda por la mitad.`));
+    if (q !== 6) errores.push(h('TE-periodo-12', contar(30 * T), `Tomaste el periodo como 12 s, como si el ángulo fuera πt/6. Con ${arco}, una vuelta dura ${2 * q} s.`));
+    if (raices.some(r => r === '1' || r === '-1')) errores.push(h('TE-extremo-doble', correcta + raices.filter(r => r === '1' || r === '-1').reduce((n, r) => n + soluciones('cos', r, 1, 0, 0, H).length, 0), 'Contaste dos ángulos por vuelta para cos = 1 (o −1). Ahí el coseno llega a su tope una sola vez por vuelta.'));
+    if (raices.some(r => soluciones('cos', r, 1, 0, H, H + 1).some(x => Math.abs(x - H) < 1e-9))) errores.push(hi('TR21-incluye-extremo', correcta + 1, `Contaste también t = ${f(T)}, que el intervalo deja fuera.`));
     const variables = { a: { nombre: 'valor dado', color: 'o' }, c: { nombre: 'coseno', color: 'i' }, x: { nombre: 'instantes', color: 'd' } };
-    const expr = poli([[alfa, 'sen²(πt/6)'], [beta, 'cos(πt/6)']]);
-    const enunciado = ['Un sensor registra la señal y(t) = ', expr, ', con t en segundos. ', `Se observa durante 0 ≤ t < ${T}.`];
-    const pregunta = ['¿Cuántas veces, en ese tiempo, la señal toma el valor ', v('a', `y = ${f(gamma)}`), '?'];
-    const c = 'cos(πt/6)';
+    const expr = poli([[alfa, `sen²(${arco})`], [beta, `cos(${arco})`]]);
+    const enunciado = ['Un sensor registra la señal y(t) = ', expr, ', con t en segundos. ', `Se observa durante 0 ≤ t < ${f(T)}.`];
+    const pregunta = ['¿Cuántas veces, en ese tiempo, la señal toma el valor ', v('a', f(gamma)), '?'];
+    const sols = limpiar([].concat(...raices.map(r => soluciones('cos', r, 1, 0, 0, H))));
     const solucion = [
-      [`Cambia sen² por 1 − cos²: ${alfa === 1 ? '' : f(alfa)}(1 − cos²) ${beta < 0 ? '−' : '+'} ${Math.abs(beta) === 1 ? '' : f(Math.abs(beta)) + ' '}cos = `, v('a', f(gamma)), ` ⇒ ${poli([[A, 'c²'], [B, 'c'], [C, '']])} = 0, con c = ${c}.`],
+      [`Cambia sen² por 1 − cos²: ${alfa === 1 ? '' : f(alfa)}(1 − cos²) ${beta < 0 ? '−' : '+'} ${Math.abs(beta) === 1 ? '' : f(Math.abs(beta)) + ' '}cos = `, v('a', f(gamma)), ` ⇒ ${poli([[A, 'c²'], [B, 'c'], [C, '']])} = 0, con c = cos(${arco}).`],
       ['Factoriza: ', v('c', `c = ${menos(r1)}`), ' o ', v('c', `c = ${menos(r2)}`), '.'],
       posible(r2) ? ['Las dos raíces están entre −1 y 1: las dos valen.'] : [`c = ${menos(r2)} es imposible (el coseno está entre −1 y 1): se descarta.`],
-      [`En 0 ≤ t < ${T} el ángulo πt/6 da ${vueltas} vuelta${vueltas > 1 ? 's' : ''}: `, v('x', `t = ${sols.map(x => f(x / 30)).join('; ')}`), '.'],
+      [`En 0 ≤ t < ${f(T)} el ángulo ${arco} va de 0° a ${f(H)}° (${f(vueltas)} ${vueltas === 1 ? 'vuelta' : 'vueltas'}): `, v('x', `t = ${sols.map(x => f(aT(x))).join('; ')}`), '.'],
       ['Son ', v('x', cuantasTxt(correcta, 'veces')), '.'],
     ];
     return cerrar(rng, semilla, { modo: 'cuantas', palabra: 'veces', correcta, errores, variables, enunciado, pregunta, solucion,
-      datos: { tipo: 'cuadratica', sub: 'coseno', alfa, beta, gamma, T, pide: 'cuantas' } });
+      datos: { tipo: 'cuadratica', sub: 'coseno', alfa, beta, gamma, q, T, pide: 'cuantas' } });
   }
 
   // Dos señales que coinciden: s1 = A sen x + B (escrita con reducción) y s2 = cos 2x, x = πt/6.
@@ -454,7 +462,7 @@
     if (![r1, r2].some(posible)) return null;
     const forma = rng.elegir(['directa', 'pi-menos', 'pi-mas', 'cos-menos']);
     const Aesc = forma === 'pi-mas' ? -A : A;
-    const T = rng.elegir([12, 24]), vueltas = T / 12;
+    const T = rng.elegir([12, 18, 24, 36]), vueltas = T / 12;
     const pide = rng.elegir(['cuantas', 'suma']);
     const validas = [r1, r2].filter(posible);
     const porRaiz = validas.map(r => soluciones('sen', r, 1, 0, 0, 360 * vueltas));
@@ -471,7 +479,8 @@
     }
     errores.push(hi('TR22-una-raiz', tomar(porRaiz[0]), `Usaste solo sen(πt/6) = ${menos(validas[0])}${validas.length > 1 ? ` y olvidaste sen(πt/6) = ${menos(validas[1])}` : ' y no buscaste todos sus instantes'}.`));
     if (validas.length < 2 && pide === 'cuantas') errores.push(pa('TR21-cuenta-imposible', correcta + 2 * vueltas, `Contaste sen = ${menos([r1, r2].find(r => !posible(r)))} como si tuviera soluciones. El seno está entre −1 y 1: esa raíz se descarta.`));
-    if (vueltas === 2) errores.push(h('TE-una-vuelta', tomar(sols.filter(x => x < 360)), 'Tomaste solo los primeros 12 segundos. En 0 ≤ t < 24, el ángulo πt/6 da dos vueltas.'));
+    if (vueltas !== 1) errores.push(h('TE-una-vuelta', tomar(sols.filter(x => x < 360)), `Tomaste solo los primeros 12 segundos. En 0 ≤ t < ${T}, el ángulo πt/6 da ${f(vueltas)} vueltas.`));
+    if (!Number.isInteger(vueltas)) errores.push(h('TE-vueltas-completas', tomar(limpiar([].concat(...validas.map(r => soluciones('sen', r, 1, 0, 0, 360 * Math.ceil(vueltas)))))), `Contaste ${Math.ceil(vueltas)} vueltas completas; en ${T} s el ángulo πt/6 da ${f(vueltas)} vueltas.`));
     errores.push(h('TE-cuenta-raices', pide === 'cuantas' ? 2 : NaN, 'Contaste las raíces de la ecuación de segundo grado, no los instantes.'));
     const negs = [r1, r2].filter(r => r.startsWith('-') && posible(r));
     if (negs.length) errores.push(pa('TR12-sin-signo', tomar(limpiar([].concat(...validas.map(r => (r.startsWith('-') ? opuesto(r) : r)).map(r => soluciones('sen', r, 1, 0, 0, 360 * vueltas))))), 'Tomaste los ángulos del valor sin signo. Un seno negativo pone el ángulo en el III o el IV cuadrante.'));
@@ -485,33 +494,47 @@
       [`Reduce: s₁ = ${poli([[A, 'sen(πt/6)'], [B, '']])}. Y cos(πt/3) = 1 − 2 sen²(πt/6).`],
       ['Con ', v('s', `s = sen(πt/6)`), `: ${poli([[A, 's'], [B, '']])} = 1 − 2s² ⇒ ${poli([[2, 's²'], [A, 's'], [B - 1, '']])} = 0.`],
       ['Raíces: ', v('r', `s = ${menos(r1)}`), ' y ', v('r', `s = ${menos(r2)}`), `${validas.length < 2 ? `; s = ${menos([r1, r2].find(r => !posible(r)))} no puede ser un seno y se descarta` : ''}.`],
-      [`En 0 ≤ t < ${T} el ángulo πt/6 da ${vueltas} vuelta${vueltas > 1 ? 's' : ''}: `, v('t', `t = ${ts.map(f).join('; ')}`), '.'],
+      [`En 0 ≤ t < ${T} el ángulo πt/6 da ${f(vueltas)} vuelta${vueltas !== 1 ? 's' : ''}: `, v('t', `t = ${ts.map(f).join('; ')}`), '.'],
       [pide === 'cuantas' ? 'Coinciden ' : 'La suma es ', v('t', pide === 'cuantas' ? cuantasTxt(correcta, 'veces') : `${f(correcta)} s`), '.'],
     ];
     return cerrar(rng, semilla, { modo: pide === 'cuantas' ? 'cuantas' : 'segundos', palabra: 'veces', correcta, errores, variables, enunciado, pregunta, solucion,
       datos: { tipo: 'cuadratica', sub: 'senales', forma, Aesc, B, T, pide } });
   }
 
-  // ---------- cúbica en coseno con secante ----------
-  const CUB = { '-2': '1/2', '-1': '√2/2', '0': '√3/2', '1': '1' };
+  // ---------- cúbica en coseno (o en seno) con secante (o cosecante) ----------
+  // forma 'cos': cos 3x · sec x = k ⇒ 4cos² x − 3 = k (cos x ≠ 0); forma 'sen': sen 3x · csc x = k ⇒
+  // 3 − 4sen² x = k (sen x ≠ 0).
+  const CUB = { cos: { '-2': '1/2', '-1': '√2/2', '0': '√3/2', '1': '1' }, sen: { '2': '1/2', '1': '√2/2', '0': '√3/2', '-1': '1' } };
   function cubica(rng, semilla) {
-    const k = rng.elegir([-2, -1, 0, 1]), cK = CUB[String(k)];
-    const pide = rng.elegir(['cuantas', 'suma', 'cisterna']);
+    const forma = rng.elegir(['cos', 'sen']), fn = forma, rec = forma === 'cos' ? 'sec' : 'csc';
+    const k = Number(rng.elegir(Object.keys(CUB[forma]))), cK = CUB[forma][String(k)];
+    const pide = rng.elegir(['cuantas', 'cuantas', 'suma', 'cisterna']);
+    const H = pide === 'cisterna' ? 360 : rng.elegir([360, 360, 180, 720]);
     const modo = pide === 'cuantas' ? 'cuantas' : pide === 'cisterna' ? 'cisterna' : rng.elegir(['grados', 'radianes']);
-    const pos = soluciones('cos', cK, 1, 0, 0, 360), neg = soluciones('cos', opuesto(cK), 1, 0, 0, 360);
+    const mAng = modo === 'radianes' || modo === 'cisterna' ? 'radianes' : 'grados';
+    const pos = soluciones(fn, cK, 1, 0, 0, H), neg = soluciones(fn, opuesto(cK), 1, 0, 0, H);
     const sols = limpiar([...pos, ...neg]);
-    const prohib = [90, 270];
+    if (!sols.length) return null;
+    const prohib = soluciones(fn, '0', 1, 0, 0, H);
     const conProh = limpiar([...sols, ...prohib]);
-    const sinSec = Math.abs(k) <= 1 ? soluciones('cos', String(k) === '0' ? '0' : k === 1 ? '1' : '-1', 3, 0, 0, 360) : [];
-    const variables = { k: { nombre: 'valor dado', color: 'o' }, c: { nombre: 'coseno', color: 'i' }, x: { nombre: 'soluciones', color: 'd' }, V: { nombre: 'volumen', color: 'h' } };
-    const enunciado = ['Considera la ecuación ', v('k', `cos 3x · sec x = ${menos(String(k))}`), `, con ${modo === 'radianes' || modo === 'cisterna' ? '0 ≤ x < 2π' : '0° ≤ x < 360°'}.`];
-    const c2 = (3 + k) / 4;
+    const kKey = { 1: '1', 0: '0', '-1': '-1' }[String(k)];
+    const sinRec = kKey ? soluciones(fn, kKey, 3, 0, 0, H) : [];
+    const c2 = forma === 'cos' ? P.frac(3 + k, 4) : P.frac(3 - k, 4);
+    const ident = forma === 'cos' ? 'cos 3x = 4 cos³ x − 3 cos x' : 'sen 3x = 3 sen x − 4 sen³ x';
+    const cociente = forma === 'cos' ? '4 cos² x − 3' : '3 − 4 sen² x';
+    const intervalo = mAng === 'radianes' ? `0 ≤ x < ${rad(H)}` : `0° ≤ x < ${H}°`;
+    const variables = { k: { nombre: 'valor dado', color: 'o' }, c: { nombre: forma === 'cos' ? 'coseno' : 'seno', color: 'i' }, x: { nombre: 'soluciones', color: 'd' }, V: { nombre: 'volumen', color: 'h' } };
+    const enunciado = ['Considera la ecuación ', `${fn} 3x · ${rec} x = `, v('k', menos(String(k))), `, con ${intervalo}.`];
     const pasos = [
-      [`Como sec x = 1/cos x, hace falta cos x ≠ 0: x no puede ser ${angTxt(90, modo === 'grados' || modo === 'cuantas' ? 'grados' : 'radianes')} ni ${angTxt(270, modo === 'grados' || modo === 'cuantas' ? 'grados' : 'radianes')}.`],
-      ['Con cos 3x = 4cos³ x − 3cos x: ', `(4cos³ x − 3cos x)/cos x = ${menos(String(k))}`, ' ⇒ ', v('c', `cos² x = ${P.textoFraccion(P.frac(3 + k, 4))}`), ' (el factor cos x se simplifica porque no es cero).'],
-      ['Entonces ', v('c', `cos x = ±${cK}`), ': ', v('x', `x = ${lista(sols, modo === 'radianes' || modo === 'cisterna' ? 'radianes' : 'grados')}`), '.'],
+      [`Como ${rec} x = 1/${fn} x, hace falta ${fn} x ≠ 0: fuera ${lista(prohib, mAng)}.`],
+      [`Con ${ident}, la ecuación queda ${cociente} = `, v('k', menos(String(k))), ' ⇒ ', v('c', `${fn}² x = ${P.textoFraccion(c2)}`), ` (el factor ${fn} x se simplifica porque no es cero).`],
+      ['Entonces ', v('c', `${fn} x = ±${cK}`), ': ', v('x', `x = ${lista(sols, mAng)}`), '.'],
     ];
-    let correcta, errores, pregunta, solucion, unidad;
+    const prohTxt = lista(prohib, mAng);
+    const explProh = `Dejaste ${prohTxt}. Ahí ${fn} x = 0 y la ${rec === 'sec' ? 'secante' : 'cosecante'} no existe: no son soluciones.`;
+    const explPos = `De ${fn}² x = ${P.textoFraccion(c2)} tomaste solo ${fn} x = ${cK}. También vale ${fn} x = −${cK}.`;
+    const explSin = `Resolviste ${fn} 3x = ${menos(String(k))}, como si la ${rec === 'sec' ? 'secante' : 'cosecante'} no estuviera.`;
+    let correcta, errores, pregunta, solucion;
     if (pide === 'cisterna') {
       const h0 = rng.elegir([2, 3, 4, 5]);
       const vol = sumaG => { const S = sumaG * Math.PI / 180, r = S / (2 * Math.PI); return Math.PI * r * r * h0; };
@@ -519,35 +542,34 @@
       correcta = vol(S);
       if (!P.pi(correcta, '', 12)) return null;
       errores = [
-        pa('TR21-incluye-prohibidas', vol(sumar(conProh)), 'Sumaste también x = π/2 y x = 3π/2. Ahí cos x = 0 y la secante no existe: no son soluciones.'),
-        h('TE-solo-raiz-positiva', vol(sumar(pos)), `De cos² x = ${P.textoFraccion(P.frac(3 + k, 4))} tomaste solo cos x = ${cK}. También vale cos x = −${cK}.`),
+        pa('TR21-incluye-prohibidas', vol(sumar(conProh)), explProh),
+        h('TE-solo-raiz-positiva', vol(sumar(pos)), explPos),
         h('TE-perimetro-pi-r', Math.PI * (S * Math.PI / 180 / Math.PI) ** 2 * h0, 'Usaste perímetro = π·r. El perímetro de una circunferencia es 2π·r.'),
         h('TE-volumen-sin-cuadrado', Math.PI * (S * Math.PI / 180 / (2 * Math.PI)) * h0, 'Calculaste π·r·h: el volumen del cilindro es π·r²·h, con el radio al cuadrado.'),
       ];
-      if (sinSec.length) errores.push(h('TE-olvida-sec', vol(sumar(sinSec)), `Resolviste cos 3x = ${menos(String(k))}, como si la secante no estuviera.`));
-      const Sr = S * Math.PI / 180, r = Sr / (2 * Math.PI);
+      if (sinRec.length) errores.push(h('TE-olvida-sec', vol(sumar(sinRec)), explSin));
+      const r = S * Math.PI / 180 / (2 * Math.PI);
       enunciado.push(` La suma S de sus soluciones (en radianes), leída en metros, es el perímetro de la base circular de una cisterna de ${h0} m de altura.`);
       pregunta = ['¿Cuál es el ', v('V', 'volumen'), ' de la cisterna?'];
       solucion = [...pasos,
         ['S = ', `${rad(S)}`, ` m = 2π·r ⇒ r = ${f(r)} m.`],
         [v('V', 'V'), ` = π·r²·h = π·${f(r * r)}·${h0} = `, v('V', P.pi(correcta, 'm³')), '.']];
       return cerrar(rng, semilla, { modo: 'cisterna', texto: x => P.pi(x, 'm³'), unidad: 'm³', correcta, errores: errores.filter(e => P.pi(e.valor, '', 12)), variables, enunciado, pregunta, solucion,
-        datos: { tipo: 'cubica', k, modo: 'cisterna', pide, h: h0 } });
+        datos: { tipo: 'cubica', forma, k, hasta: H, modo: 'cisterna', pide, h: h0 } });
     }
     const tomar = xs => (pide === 'cuantas' ? xs.length : sumar(xs));
     correcta = tomar(sols);
-    errores = [
-      pa('TR21-incluye-prohibidas', tomar(conProh), `Dejaste x = ${angTxt(90, modo === 'radianes' ? 'radianes' : 'grados')} y x = ${angTxt(270, modo === 'radianes' ? 'radianes' : 'grados')}. Ahí cos x = 0 y la secante no existe: no son soluciones.`),
-      h('TE-solo-raiz-positiva', tomar(pos), `De cos² x = ${P.textoFraccion(P.frac(3 + k, 4))} tomaste solo cos x = ${cK}. También vale cos x = −${cK}.`),
-    ];
-    if (sinSec.length) errores.push(h('TE-olvida-sec', tomar(sinSec), `Resolviste cos 3x = ${menos(String(k))}, como si la secante no estuviera.`));
-    if (pide === 'cuantas') errores.push(h('TE-raices-cubica', 3, 'Contaste las raíces de la cúbica en cos x, no los ángulos. Además, la raíz cos x = 0 no vale.'));
-    if (k === 1) errores.push(pa('TR21-incluye-extremo', pide === 'cuantas' ? correcta + 1 : correcta + 360, 'Contaste también x = 360°, que el intervalo deja fuera.'));
-    errores.push(h('TE-cuenta-una-por-raiz', pide === 'cuantas' ? 2 : NaN, 'Contaste un ángulo por cada valor del coseno. Salvo ±1, cada valor del coseno aparece dos veces por vuelta.'));
+    if (!(correcta > 0)) return null;
+    errores = [pa('TR21-incluye-prohibidas', tomar(conProh), explProh), h('TE-solo-raiz-positiva', tomar(pos), explPos)];
+    if (sinRec.length) errores.push(h('TE-olvida-sec', tomar(sinRec), explSin));
+    if (pide === 'cuantas') errores.push(h('TE-raices-cubica', 3, `Contaste las raíces de la cúbica en ${fn} x, no los ángulos. Además, la raíz ${fn} x = 0 no vale.`));
+    if ([cK, opuesto(cK)].some(r => soluciones(fn, r, 1, 0, H, H + 1).some(x => Math.abs(x - H) < 1e-9))) errores.push(hi('TR21-incluye-extremo', pide === 'cuantas' ? correcta + 1 : correcta + H, `Contaste también x = ${angTxt(H, mAng)}, que el intervalo deja fuera.`));
+    if (H !== 360) errores.push(h('TE-una-vuelta-fija', tomar(limpiar([...soluciones(fn, cK, 1, 0, 0, 360), ...soluciones(fn, opuesto(cK), 1, 0, 0, 360)])), `Resolviste en una vuelta, 0 ≤ x < ${angTxt(360, mAng)}. El intervalo pedido es ${intervalo}.`));
+    errores.push(h('TE-cuenta-una-por-raiz', pide === 'cuantas' ? 2 : NaN, `Contaste un ángulo por cada valor del ${fn === 'cos' ? 'coseno' : 'seno'}. Salvo ±1, cada valor aparece dos veces por vuelta.`));
     pregunta = [preguntaDe(pide)];
     solucion = [...pasos, [pide === 'cuantas' ? 'Son ' : 'La suma es ', v('x', pide === 'cuantas' ? cuantasTxt(correcta) : angTxt(correcta, modo)), '.']];
     return cerrar(rng, semilla, { modo, correcta, errores, variables, enunciado, pregunta, solucion,
-      datos: { tipo: 'cubica', k, modo, pide } });
+      datos: { tipo: 'cubica', forma, k, hasta: H, modo, pide } });
   }
 
   // ---------- tangente de una suma con restricciones ----------
@@ -569,7 +591,7 @@
     const fuera = xs => xs.filter(x => !(prohibido(x, T.p) || prohibido(x, T.q)));
     const errores = [];
     if (malas.length) errores.push(pa('TR21-fuera-del-dominio', tomar(todas), `Dejaste ${lista(malas, modo)}: ahí ${prohibido(malas[0], T.p) ? `tan ${xk(T.p)}` : `tan ${xk(T.q)}`} no existe, así que la expresión de la izquierda no está definida. Se descarta.`));
-    errores.push(hi('TR22-solo-principal', tomar(fuera(soluciones('tan', k, M, 0, 0, 360 / M + 1e-6).filter(x => x < 180 / M + 1e-9))), `Tomaste solo el primer ángulo. La tangente se repite cada 180° del argumento: ${xk(M)} = ${f(NOT.tan[k])}° + 180°·n, y recién se divide entre ${M}.`));
+    errores.push(hi('TR22-solo-principal', tomar(fuera(soluciones('tan', k, M, 0, 0, 360 / M + 1e-6).filter(x => x < 180 / M + 1e-9))), `Tomaste solo el primer ángulo. La tangente se repite cada ${angTxt(180, modo)} del argumento: ${xk(M)} = ${angTxt(NOT.tan[k], modo)} + ${angTxt(180, modo)}·n, y recién se divide entre ${M}.`));
     errores.push(h('TE-periodo-360', tomar(fuera(todas.filter(x => Math.abs(((M * x - NOT.tan[k]) / 360) - Math.round((M * x - NOT.tan[k]) / 360)) < 1e-9))), 'Repetiste el ángulo cada 360° del argumento, como el seno. La tangente se repite cada 180°: faltan la mitad de las soluciones.'));
     if (k.startsWith('-')) errores.push(pa('TR12-sin-signo', tomar(fuera(soluciones('tan', opuesto(k), M, 0, 0, 360))), `Resolviste con ${menos(opuesto(k))}, sin el signo. La tangente negativa está en el II y IV cuadrante.`));
     if (T.signo > 0 && T.p !== T.q) errores.push(h('TE-producto-por-suma', tomar(fuera(soluciones('tan', k, T.p * T.q, 0, 0, 360))), `Juntaste los ángulos multiplicándolos (${xk(T.p * T.q)}). La fórmula de la tangente de una suma da tan(${xk(T.p)} + ${xk(T.q)}) = tan ${xk(M)}.`));
@@ -579,8 +601,8 @@
     const enunciado = ['Resuelve ', lhs, ' = ', v('k', menos(k)), ` en el intervalo ${intervaloTxt(modo)}.`];
     const solucion = [
       ['Es la tangente de ', T.signo > 0 ? 'una suma' : 'una diferencia', ': ', v('M', `tan ${xk(M)}`), ' = ', v('k', menos(k)), '.'],
-      [`tan ${xk(M)} = ${menos(k)} ⇒ ${xk(M)} = ${f(NOT.tan[k])}° + 180°·n ⇒ x = ${lista(todas, modo)}.`],
-      [`Para que la expresión exista, tan ${xk(T.p)}${T.p !== T.q ? ` y tan ${xk(T.q)}` : ''} deben estar definidas: `, malas.length ? v('mal', `se descarta ${lista(malas, modo)}`) : 'ninguna solución se descarta', '.'],
+      [`tan ${xk(M)} = ${menos(k)} ⇒ ${xk(M)} = ${angTxt(NOT.tan[k], modo)} + ${angTxt(180, modo)}·n ⇒ x = ${lista(todas, modo)}.`],
+      [`Para que la expresión exista, deben existir tan ${xk(T.p)}${T.p !== T.q ? ` y tan ${xk(T.q)}` : ''}: `, malas.length ? v('mal', `se descarta ${lista(malas, modo)}`) : 'ninguna solución se descarta', '.'],
       ['Quedan ', v('x', lista(sols, modo)), '.'],
       [{ cuantas: 'Son ', suma: 'La suma es ', menor: 'La menor positiva es ' }[pide], v('x', pide === 'cuantas' ? cuantasTxt(correcta) : angTxt(correcta, modo)), '.'],
     ];
@@ -594,7 +616,7 @@
     union: (factores, hasta = 360) => resumen(limpiar([].concat(...factores.map(([fn, k, a, b]) => soluciones(fn, k, a, b || 0, 0, hasta))))),
     cuadraticaCoseno: (r1, r2, hasta = 360) => resumen(limpiar([].concat(...[r1, r2].filter(posible).map(r => soluciones('cos', r, 1, 0, 0, hasta))))),
     cuadraticaSeno: (r1, r2, hasta = 360) => resumen(limpiar([].concat(...[r1, r2].filter(posible).map(r => soluciones('sen', r, 1, 0, 0, hasta))))),
-    cubicaSecante: k => { const c = CUB[String(k)]; return resumen(limpiar([...soluciones('cos', c, 1, 0, 0, 360), ...soluciones('cos', opuesto(c), 1, 0, 0, 360)])); },
+    cubicaSecante: k => { const c = CUB.cos[String(k)]; return resumen(limpiar([...soluciones('cos', c, 1, 0, 0, 360), ...soluciones('cos', opuesto(c), 1, 0, 0, 360)])); },
     tangenteSuma: (p, q, signo, k) => { const M = p + signo * q; return resumen(soluciones('tan', k, M, 0, 0, 360).filter(x => !(prohibido(x, p) || prohibido(x, q)))); },
     temperatura: (c, p, q, valor) => {
       // p sen u + q cos u = R sen(u + φ); los instantes t (horas) con 0 ≤ t < 24.

@@ -629,8 +629,7 @@
   //   'mayor':         la base B  → cilindro (radio h, alto b) + cono (radio h, alto B − b);
   //   'menor':         la base b  → cilindro (radio h, alto B) con un hueco cónico (radio h, alto B − b).
   // perfil: el borde de la región en el semiplano (ρ, z), con el eje en ρ = 0, desde abajo, para dibujar el sólido;
-  // trapecio: los cuatro vértices de la región en ese semiplano. Errores del volumen (hipótesis salvo GE20): girar sobre
-  // otro lado; el rectángulo completo (o el cono sin el 1/3, que da lo mismo); restar el cono en lugar de sumarlo.
+  // trapecio: los cuatro vértices de la región en ese semiplano. Errores del volumen (hipótesis salvo GE20): ver abajo.
   function revolucionTrapecio(d) {
     d = d || {};
     const B = numero(d.B, 'la base mayor', { positivo: true }), b = numero(d.b, 'la base menor', { positivo: true }), h = numero(d.h, 'el lado perpendicular', { positivo: true });
@@ -657,15 +656,24 @@
       piezas = [{ tipo: 'cilindro', r: h, h: B, piVolumen: limpio(rect) }, { tipo: 'hueco', r: h, h: c, g: limpio(g), piVolumen: limpio(-conoV) }];
       area = h * h + 2 * h * B + h * g;
     }
+    // Cada error, con su propio cálculo: girar sobre otro lado; el cilindro de todo el largo (rectángulo completo);
+    // en 'mayor', restar el cono al cilindro (cilindro − cono); en 'menor', sumarlo al cilindro de todo el largo
+    // (sin hueco y con el cono encima); en el tronco, sin el 1/3; en 'menor', el hueco sin su 1/3. En 'mayor' el
+    // cono sin el 1/3 da siempre lo mismo que el rectángulo completo (h²b + h²(B − b) = h²B): no se calcula aparte.
     const grupos = { volumen: {} };
     for (const e of Object.keys(vol)) if (e !== eje) grupos.volumen['eje' + e[0].toUpperCase() + e.slice(1)] = vol[e];
     grupos.volumen.rectangulo = rect;
-    if (eje === 'mayor') grupos.volumen.restaCono = rect - conoV;
-    if (eje === 'menor') grupos.volumen.sumaCono = cilMayor + conoV;
+    if (eje === 'mayor') grupos.volumen.restaCono = cilMayor - conoV;
+    if (eje === 'menor') { grupos.volumen.sumaCono = rect + conoV; grupos.volumen.huecoSinTercio = rect - 3 * conoV; }
     if (eje === 'perpendicular') grupos.volumen.sinTercio = 3 * tronco;
-    else grupos.volumen.conoSinTercio = eje === 'mayor' ? cilMayor + 3 * conoV : rect - 3 * conoV;
+    // Con algunos números dos errores dan lo mismo entre sí: se queda el primero y los otros van a 'repetidos'
+    // (la escena nunca ofrece dos opciones iguales).
+    const repetidos = { volumen: [] }, vistos = [];
+    for (const [k, v] of Object.entries(grupos.volumen)) {
+      if (vistos.some(x => iguales(limpio(x), limpio(v)))) { repetidos.volumen.push(k); delete grupos.volumen[k]; } else vistos.push(v);
+    }
     return Object.assign({ tipo: 'revolucionTrapecio', eje, B, b, h, g: limpio(g), alturaCono: c, trapecio, perfil, piezas,
-      areaTrapecio: limpio((B + b) * h / 2), pi: limpiar({ volumen: vol[eje], area }) }, separar({ volumen: vol[eje] }, grupos));
+      areaTrapecio: limpio((B + b) * h / 2), pi: limpiar({ volumen: vol[eje], area }), repetidos }, separar({ volumen: vol[eje] }, grupos));
   }
   // Un perfil (ρ, z) girado un ángulo φ (radianes) alrededor del eje z: puntos en 3D, para dibujar el giro.
   function girarPerfil(perfil, phi) {

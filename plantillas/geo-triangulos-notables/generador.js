@@ -37,12 +37,12 @@
  *                 pide ∠BIC (I incentro).
  *                 sub 'pies-alturas': triángulo acutángulo con ∠B = B y ∠C = C; E es el pie de la
  *                 altura desde B (en AC), F el de la altura desde C (en AB), O el circuncentro.
- *                 pide 'AEF' (∠AEF) o 'AO-EF' (ángulo entre AO y EF).
+ *                 pide 'AEF' (∠AEF), 'AFE' (∠AFE), 'OAB' (∠OAB) o 'AO-EF' (ángulo entre AO y EF).
  *   ortocentro    las alturas desde A y desde B se cortan en H; la recta CH corta a AB en F.
  *                 Se dan AF, FB y además AC (pide 'CF') o BC (pide 'AC').
- *   mitades       BH es la altura (H en AC), BH = h, ∠A = A, ∠C = C (37, 53 o 60); las bisectrices
+ *   mitades       BH es la altura (H en AC), BH = h, ∠A = A, ∠C = C (37, 53, 60 o 74); las bisectrices
  *                 de A y de C cortan a BH en P y Q. Se pide PQ. Convención de academia:
- *                 tan 37° = 3/4, tan 53° = 4/3, tan(37°/2) = 1/3, tan(53°/2) = 1/2.
+ *                 tan 37° = 3/4, tan 53° = 4/3, tan 74° = 24/7, tan(37°/2) = 1/3, tan(53°/2) = 1/2.
  *   arco          ABC inscrito; la bisectriz de A pasa por el incentro I, corta a la circunferencia
  *                 en M y llega al excentro E relativo a BC. Se dan AI = p e IM = q; pide 'AE' o 'IE'.
  *
@@ -69,8 +69,9 @@
   const isqrt = N => { let r = Math.floor(Math.sqrt(N)); while (r * r > N) r--; while ((r + 1) * (r + 1) <= N) r++; return r; };
   const mayorMenorQueRaiz = N => { const r = isqrt(N); return r * r === N ? r - 1 : r; };  // mayor entero x con x² < N
   const rango = (lo, hi) => ({ min: lo, max: hi, cuantos: Math.max(0, hi - lo + 1) });
-  const TAN = { 37: 3 / 4, 53: 4 / 3, 60: Math.sqrt(3) };
-  const TAN_MITAD = { 37: 1 / 3, 53: 1 / 2, 60: 1 / Math.sqrt(3) };
+  const TAN = { 37: 3 / 4, 53: 4 / 3, 60: Math.sqrt(3), 74: 24 / 7 };
+  const TAN_MITAD = { 37: 1 / 3, 53: 1 / 2, 60: 1 / Math.sqrt(3), 74: 3 / 4 };
+  const simple = (x, qmax) => { for (let q = 1; q <= qmax; q++) if (Math.abs(x * q - Math.round(x * q)) < 1e-9) return true; return false; };
   const calc = {
     tercerLado: (a, b) => rango(Math.abs(a - b) + 1, a + b - 1),
     diagonal: (p, q, r, s) => rango(Math.max(Math.abs(p - q), Math.abs(r - s)) + 1, Math.min(p + q, r + s) - 1),
@@ -120,7 +121,7 @@
     obtusangulo: ['entre-cuantos', 'entre-max', 'entre-min', 'perimetros', 'opuesto-cuantos', 'acutangulo', 'relacion'],
     angulos: ['incentro', 'excentro', 'int-ext', 'ortocentro', 'circuncentro', 'orto-incentro', 'orto-incentro', 'pies-alturas'],
   };
-  const PIDES = { diagonal: ['max', 'min', 'cuantos'], 'doble-angulo': ['max', 'min'], 'pies-alturas': ['AEF', 'AO-EF'], ortocentro: ['CF', 'AC'], arco: ['AE', 'IE'] };
+  const PIDES = { diagonal: ['max', 'min', 'cuantos'], 'doble-angulo': ['max', 'min'], 'pies-alturas': ['AEF', 'AFE', 'OAB', 'AO-EF'], ortocentro: ['CF', 'AC'], arco: ['AE', 'IE'] };
 
   function generar(semilla) {
     const rng = Azar.crear('geo-triangulos-notables|' + semilla);
@@ -143,6 +144,7 @@
     const texto = o.texto || (x => `${exacto(x)}${o.unidad ? ' ' + o.unidad : ''}`);
     if (!exacto(o.correcta)) return null;
     const conRaiz = exacto(o.correcta).includes('√');
+    o.errores = o.errores.filter(Boolean);
     if (o.unidad === '°') o.errores = o.errores.filter(e => e.valor < 180); // un ángulo de triángulo no llega a 180°
     const errores = o.errores.filter(e => exacto(e.valor) !== null && (conRaiz || !exacto(e.valor).includes('√')) && (!o.enteros || Number.isInteger(e.valor)));
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto });
@@ -194,7 +196,6 @@
         h('GT-limite-incluido', R.cuantos + 2, `Contaste también ${lo} y ${hiS}. Con esos valores no hay triángulo: las desigualdades son estrictas.`),
         h('GT-limite-incluido-uno', R.cuantos + 1, `Contaste uno de los extremos (${lo} o ${hiS}). Ninguno de los dos da triángulo.`),
         h('GT-solo-cota-superior', hiS - 1, `Usaste solo x < ${hiS} y contaste desde 1. Falta la otra condición: x > ${lo}.`),
-        h('GT-resta-sin-ajuste', hiS - lo, `Restaste ${hiS} − ${lo}. Esa resta no cuenta los enteros que hay estrictamente entre los dos: son ${hiS} − ${lo} − 1.`),
       ];
       const solucion = [paso1, ['Los valores van de ', `${R.min}`, ' a ', `${R.max}`, ': son ', v('x', `${R.max} − ${R.min} + 1 = ${R.cuantos}`), ' valores.']];
       return { correcta: R.cuantos, unidad: '', errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'desigualdad', sub, a, b, u } };
@@ -208,7 +209,7 @@
       if (soloABC[pide] === R[pide] && soloACD[pide] === R[pide]) return null; // la trampa no muerde
       u = 'm';
       const variables = { x: { nombre: 'diagonal AC', color: 'd' } };
-      const enunciado = [`Un terreno tiene forma de cuadrilátero ABCD, con AB = ${L(p)}, BC = ${L(q)}, CD = ${L(r)} y DA = ${L(s)}. Un `, v('x', 'sendero recto'), ' une las esquinas A y C, y su longitud es un número entero de metros.'];
+      const enunciado = [`Un terreno tiene forma de cuadrilátero ABCD (no necesariamente convexo), con AB = ${L(p)}, BC = ${L(q)}, CD = ${L(r)} y DA = ${L(s)}. Un `, v('x', 'sendero recto'), ' une las esquinas A y C, y su longitud es un número entero de metros.'];
       const que = { max: 'el mayor valor que puede tener', min: 'el menor valor que puede tener', cuantos: 'cuántos valores enteros puede tener' }[pide];
       const pregunta = [`¿Cuál es ${que.startsWith('cuántos') ? 'el número de valores enteros que puede tener' : que} el `, v('x', 'sendero AC'), '?'];
       const lim = { max: Math.min(hi1, hi2), min: Math.max(lo1, lo2), cuantos: R.cuantos + 2 }[pide];
@@ -238,7 +239,6 @@
         h('GT-limite-incluido', c + p + q, `Tomaste CA + CB = PA + PB. Eso solo pasaría con P sobre el borde (en C); con P dentro, CA + CB es estrictamente mayor que ${p + q}.`),
         h('GT-olvida-lado', p + q + 1, `Encontraste bien que CA + CB > ${p + q}, pero olvidaste sumar el lado AB = ${c} al perímetro.`),
         h('GT-semiperimetro', 2 * (p + q) + 1, `Usaste PA + PB < semiperímetro. La propiedad del punto interior es PA + PB < CA + CB, sin el lado AB.`),
-        h('GT-desigualdad-al-reves', c + p + q - 1, `Pusiste la desigualdad al revés: con P dentro, CA + CB es mayor que PA + PB, no menor.`),
       ];
       const solucion = [
         ['Se prolonga AP hasta cortar BC en Q. En el triángulo ACQ: CA + CQ > AQ = PA + PQ. En el triángulo PQB: PQ + QB > PB.'],
@@ -315,7 +315,7 @@
       return { correcta: R.min, unidad: u, errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'desigualdad', sub, c, m, u } };
     }
     // contar
-    const N = rng.entero(7, 24), correcta = calc.contarTriangulos(N);
+    const N = rng.entero(7, 36), correcta = calc.contarTriangulos(N);
     let conDeg = 0, todas = 0, ordenadas = 0, escalenos = 0;
     for (let a = 1; a <= N; a++) for (let b = a; b <= N; b++) {
       const c = N - a - b; if (c < b) continue;
@@ -333,9 +333,16 @@
       h('GT-solo-escalenos', escalenos, 'Contaste solo los triángulos con los tres lados distintos. Los isósceles (y el equilátero, si lo hay) también son triángulos.'),
     ];
     const cmax = Math.ceil(N / 2) - 1;
+    const ternas = [];
+    for (let c = Math.ceil(N / 3); c <= cmax; c++) {
+      const t = [];
+      for (let a = 1; a <= N; a++) { const b = N - c - a; if (a <= b && b <= c) t.push(`(${a}, ${b}, ${c})`); }
+      if (t.length) ternas.push(`con c = ${c}, ${t.join(', ')}`);
+    }
+    const ternasTxt = ternas.join('; ');
     const solucion = [
       ['Se ordenan los lados a ≤ b ≤ c, con a + b + c = ', v('N', `${N}`), '. La desigualdad triangular pide a + b > c, es decir, c < ', `${N}/2`, `: el lado mayor va de ${Math.ceil(N / 3)} a ${cmax}.`],
-      ['Para cada c se cuentan los pares a ≤ b ≤ c con a + b = ', `${N} − c`, '.'],
+      ['Para cada c se buscan a ≤ b ≤ c con a + b = ', `${N} − c`, ': ', ternasTxt, '.'],
       ['En total: ', v('x', `${correcta}`), ' triángulos.'],
     ];
     return { correcta, unidad: '', errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'desigualdad', sub, N } };
@@ -344,7 +351,7 @@
   // ---------- obtusángulo y acutángulo ----------
   function obtusangulo(rng, u, plan) {
     const sub = plan.sub, L = x => `${x} ${u}`;
-    const a = rng.entero(2, 15), b = rng.entero(3, 20);
+    const a = sub === 'relacion' ? rng.entero(3, 30) : rng.entero(2, 15), b = sub === 'relacion' ? rng.entero(4, 40) : rng.entero(3, 20);
     if (a >= b) return null;
     const variables = { a: { nombre: 'lado menor dado', color: 'o' }, b: { nombre: 'lado mayor dado', color: 'i' }, x: { nombre: 'tercer lado', color: 'd' } };
     const tri = calc.tercerLado(a, b);
@@ -369,9 +376,9 @@
         const pregunta = ['¿Cuántos valores enteros puede tener el ', v('x', 'tercer lado'), '?'];
         const errores = [
           h('GT-sin-condicion-obtuso', tri.cuantos, 'Usaste solo la desigualdad triangular. Falta la condición de obtusángulo: x² > a² + b².'),
-          h('GT-limite-incluido', R.cuantos + (cuadS ? 1 : 0) + 1, cuadS ? `Contaste también x = ${rS} (ángulo recto) o x = ${a + b} (lados sobre una recta). Ninguno de los dos da un triángulo obtusángulo.` : `Contaste también x = ${a + b}: con ese valor los lados quedan sobre una recta.`),
+          h('GT-limite-incluido', R.cuantos + 1, `Contaste también x = ${a + b}: con ese valor los lados quedan sobre una recta.`),
           h('GT-condicion-invertida', agudos.cuantos, 'Contaste los triángulos con ese ángulo agudo (x² < a² + b²). Para que sea obtuso, el lado opuesto tiene que ser mayor: x² > a² + b².'),
-          h('GT-limites-incluidos', R.cuantos + (cuadS ? 2 : 1) + 1, 'Contaste los extremos de los dos lados del intervalo. Las desigualdades son estrictas.'),
+          cuadS ? h('GT-limites-incluidos', R.cuantos + 2, `Contaste también x = ${rS} (ángulo recto) y x = ${a + b} (lados sobre una recta). Ninguno de los dos da un triángulo obtusángulo.`) : null,
         ];
         const solucion = [...pasos, ['Son ', v('x', `${R.max} − ${R.min} + 1 = ${R.cuantos}`), ' valores.']];
         return { correcta: R.cuantos, unidad: '', errores, variables, enunciado, pregunta, solucion, enteros: true, datos: { tipo: 'obtusangulo', sub, a, b, u } };
@@ -424,7 +431,8 @@
       const pregunta = ['¿Cuántos valores puede tener el ', v('x', 'tercer lado'), '?'];
       const errores = [
         h('GT-sin-condicion-obtuso', tri.cuantos, 'Usaste solo la desigualdad triangular. Falta la condición de obtusángulo: el lado opuesto al ángulo obtuso cumple b² > a² + x².'),
-        h('GT-limite-incluido', R.cuantos + (cuadD ? 1 : 0) + 1, cuadD ? `Contaste x = ${rD} (ángulo recto) o x = ${b - a} (lados sobre una recta). Ninguno da triángulo obtusángulo.` : `Contaste x = ${b - a}: con ese valor los lados quedan sobre una recta.`),
+        h('GT-limite-incluido', R.cuantos + 1, `Contaste también x = ${b - a}: con ese valor los lados quedan sobre una recta.`),
+        cuadD ? h('GT-limites-incluidos', R.cuantos + 2, `Contaste también x = ${rD} (ángulo recto) y x = ${b - a} (lados sobre una recta). Ninguno de los dos da un triángulo obtusángulo.`) : null,
         h('GT-obtuso-frente-a-x', calc.obtusoEntre(a, b).cuantos, 'Pusiste el ángulo obtuso frente al tercer lado. El enunciado lo pone frente al lado de ' + b + ': b² > a² + x².'),
         h('GT-condicion-invertida', agudo.cuantos, 'Contaste los triángulos con ese ángulo agudo (x² > b² − a²). Para que sea obtuso, x² < b² − a².'),
       ];
@@ -468,8 +476,8 @@
     const errores = [
       h('GT-sin-condicion-acutangulo', tri.cuantos, 'Usaste solo la desigualdad triangular. Para que los tres ángulos sean agudos, el cuadrado del lado mayor tiene que ser menor que la suma de los cuadrados de los otros dos.'),
       h('GT-una-sola-condicion', unaSola.cuantos, `Solo pediste que x sea agudo frente a x (x² < ${S2}). Si x es pequeño, el lado mayor es ${b}, y también se necesita ${b}² < ${a}² + x².`),
-      h('GT-limite-incluido', R.cuantos + (cuadS ? 1 : 0) + (cuadD ? 1 : 0), 'Contaste un valor con el que un ángulo es recto. Recto no es agudo: las desigualdades son estrictas.'),
-      h('GT-limite-incluido-uno', R.cuantos + 1, 'Contaste un valor de más en un extremo: con él, un ángulo deja de ser agudo.'),
+      cuadS || cuadD ? h('GT-limite-incluido', R.cuantos + (cuadS ? 1 : 0) + (cuadD ? 1 : 0), `Contaste ${[cuadD ? `x = ${rD}` : '', cuadS ? `x = ${rS}` : ''].filter(Boolean).join(' y ')}: con ese valor un ángulo es recto, y recto no es agudo.`) : null,
+      h('GT-supone-x-mayor', R.max - b + 1, `Supusiste que x es el lado mayor (x ≥ ${b}). También puede ser menor que ${b}, siempre que ${b}² < ${a}² + x².`),
     ];
     const solucion = [
       ['Si x es el lado mayor: x² < ', `${a}² + ${b}² = ${S2}`, ', o sea x < ', raizS, '.'],
@@ -506,14 +514,14 @@
         inc: h('GT-formula-incentro', 90 + A / 2, 'Usaste la fórmula del incentro (90° + A/2), que es para dos bisectrices interiores.'),
         ie: h('GT-formula-int-ext', A / 2, 'Usaste la fórmula de una bisectriz interior con una exterior (A/2).'),
         orto: h('GT-formula-ortocentro', 180 - A, 'Usaste la fórmula del ortocentro (180° − A).'),
-        circ: hi('GE15-central-por-inscrito', 2 * A, 'Usaste la fórmula del circuncentro (2A): ese es un ángulo central, que vale el doble del inscrito.'),
+        circ: h('GT-formula-circuncentro', 2 * A, 'Usaste la fórmula del circuncentro (2A): ese es un ángulo central, que vale el doble del inscrito.'),
       };
       let errores, solucion;
       if (sub === 'incentro') {
         errores = [E.exc, h('GT-sin-mitad', 90 + A, 'Olvidaste la mitad: las bisectrices toman la mitad de B y de C, y por eso queda A/2.'), E.ie, E.orto, E.circ];
         solucion = [['En el triángulo BIC: ∠BIC = 180° − B/2 − C/2 = 180° − (B + C)/2.'], ['Como B + C = 180° − A: ∠BIC = 180° − (180° − A)/2 = 90° + A/2.'], [v('x', '∠BIC'), ' = 90° + ', v('A', g(A)), '/2 = ', v('x', g(correcta)), '.']];
       } else if (sub === 'excentro') {
-        errores = [E.inc, h('GT-sin-mitad', 90 - A, 'Olvidaste la mitad: cada bisectriz exterior toma la mitad del ángulo exterior.'), E.ie, E.orto, h('GT-agudo-por-obtuso', 180 - (90 - A / 2), 'Ese es el suplemento del ángulo pedido. El ángulo en E del triángulo BEC es el agudo.')];
+        errores = [E.inc, h('GT-sin-mitad', 90 - A, 'Olvidaste la mitad: cada bisectriz exterior toma la mitad del ángulo exterior.'), E.ie, E.orto];
         solucion = [['Los ángulos exteriores en B y C miden 180° − B y 180° − C; sus bisectrices toman la mitad.'], ['En el triángulo BEC: ∠BEC = 180° − (180° − B)/2 − (180° − C)/2 = (B + C)/2 = 90° − A/2.'], [v('x', '∠BEC'), ' = 90° − ', v('A', g(A)), '/2 = ', v('x', g(correcta)), '.']];
       } else if (sub === 'int-ext') {
         errores = [h('GT-sin-mitad', A, 'Olvidaste la mitad: el ángulo exterior en C es A + B, y su mitad menos la mitad de B deja A/2.'), E.exc, E.inc, E.orto];
@@ -535,9 +543,8 @@
       const errores = [
         h('GT-angulo-H-como-A', 90 + theta / 2, `Usaste ∠BHC = ${g(theta)} como si fuera el ángulo A. Primero hay que hallar A: ∠BHC = 180° − A.`),
         h('GT-formula-excentro', 90 - A / 2, 'Usaste la fórmula del excentro (90° − A/2). El incentro está dentro del triángulo: ∠BIC = 90° + A/2, que es obtuso.'),
-        h('GT-agudo-por-obtuso', 180 - correcta, 'Diste el suplemento. ∠BIC es obtuso (90° + A/2), no agudo.'),
         h('GT-formula-int-ext', A / 2, 'Usaste A/2, la fórmula de una bisectriz interior con una exterior.'),
-        hi('GE15-central-por-inscrito', 2 * A, 'Usaste la fórmula del circuncentro (2A).'),
+        h('GT-formula-circuncentro', 2 * A, 'Usaste la fórmula del circuncentro (2A).'),
       ];
       const solucion = [
         ['Con el ortocentro: ∠BHC = 180° − A, así que A = 180° − ', v('A', g(theta)), ` = ${g(A)}.`],
@@ -552,6 +559,31 @@
     const pide = plan.pide;
     const variables2 = { B: { nombre: 'ángulo B', color: 'o' }, C: { nombre: 'ángulo C', color: 'i' }, x: { nombre: 'ángulo pedido', color: 'd' } };
     const enunciado = ['En el triángulo acutángulo ABC, ', v('B', `∠B = ${g(B)}`), ' y ', v('C', `∠C = ${g(C)}`), '. E es el pie de la altura trazada desde B (sobre AC), F es el pie de la altura trazada desde C (sobre AB) y O es el circuncentro.'];
+    if (pide === 'AFE' || pide === 'OAB') {
+      const afe = pide === 'AFE', correcta = afe ? C : 90 - C;
+      const pregunta = ['¿Cuánto mide el ángulo ', v('x', afe ? '∠AFE' : '∠OAB'), '?'];
+      const errores = afe ? [
+        h('GT-angulo-cruzado', B, 'Ese es el ángulo AEF. En el cuadrilátero inscriptible BCEF, el ángulo AFE (en F) es igual al ángulo del vértice opuesto, C.'),
+        h('GT-complemento', 90 - C, 'Ese es el ángulo OAB (el que forma AO con AB), no el ángulo AFE.'),
+        h('GT-angulo-A', A, 'Ese es el ángulo A. El triángulo AFE tiene el ángulo A, pero sus otros dos ángulos son B y C cruzados.'),
+        h('GT-suplemento', 180 - C, 'Ese es el ángulo BFE, el suplemento de AFE.'),
+      ] : [
+        h('GT-angulo-AFE', C, 'Ese es el ángulo AFE. El ángulo OAB sale del triángulo isósceles AOB: 90° − C.'),
+        h('GT-angulo-cruzado', 90 - B, 'Usaste B en vez de C. El ángulo central AOB abarca el arco AB, y el inscrito que abarca ese arco está en C.'),
+        h('GT-sin-mitad', 180 - 2 * C, 'Olvidaste dividir entre 2: en el triángulo isósceles AOB, los ángulos de la base suman 180° − 2C, y cada uno es la mitad.'),
+        h('GT-mitad-de-A', A / 2, 'Tomaste AO como bisectriz de A. AO no parte el ángulo A en dos: forma 90° − C con AB.'),
+      ];
+      const solucion = afe ? [
+        ['Los ángulos BEC y BFC son rectos: E y F están en la circunferencia de diámetro BC. BCEF es un cuadrilátero inscriptible.'],
+        ['En un cuadrilátero inscriptible, el ángulo exterior en un vértice es igual al ángulo interior del vértice opuesto.'],
+        [v('x', '∠AFE'), ' = ∠ECB = ', v('C', g(C)), '.'],
+      ] : [
+        ['El ángulo central AOB abarca el mismo arco AB que el inscrito C: ∠AOB = 2·', v('C', g(C)), ` = ${g(2 * C)}.`],
+        ['El triángulo AOB es isósceles (OA = OB): sus ángulos de la base miden (180° − ', `${g(2 * C)})/2.`],
+        [v('x', '∠OAB'), ' = 90° − ', v('C', g(C)), ' = ', v('x', g(correcta)), '.'],
+      ];
+      return { ...base, correcta, errores, variables: variables2, enunciado, pregunta, solucion, datos: { tipo: 'angulos', sub, pide, B, C } };
+    }
     if (pide === 'AEF') {
       const pregunta = ['¿Cuánto mide el ángulo ', v('x', '∠AEF'), '?'];
       const errores = [
@@ -585,7 +617,7 @@
   // ---------- ortocentro y Pitágoras ----------
   const CATETOS = (() => {
     const t = {};
-    for (const hh of [8, 12, 15, 16, 20, 24]) { t[hh] = []; for (let m = 1; m <= 40; m++) if (Number.isInteger(Math.sqrt(m * m + hh * hh))) t[hh].push(m); }
+    for (const hh of [8, 9, 12, 15, 16, 20, 21, 24, 30, 36]) { t[hh] = []; for (let m = 1; m <= 50; m++) if (Number.isInteger(Math.sqrt(m * m + hh * hh))) t[hh].push(m); }
     return t;
   })();
   function ortocentro(rng, u, plan) {
@@ -623,7 +655,7 @@
       h('GT-suma-catetos', AF + hh, 'Sumaste los catetos AF y CF. La hipotenusa sale de la suma de sus cuadrados.'),
       h('GT-da-la-canaleta', hh, 'Ese es CF, la altura. Falta el último paso: AC² = AF² + CF².'),
       h('GT-pitagoras-sin-altura', Math.hypot(BC, AF), 'Usaste BC como cateto de AFC. BC está en el otro triángulo rectángulo (BFC); primero se halla CF.'),
-      pa('GE11-resta', Math.sqrt(Math.abs(BC * BC - FB * FB - AF * AF)), 'Restaste AF² en vez de sumarlo. AC es la hipotenusa de AFC: AC² = CF² + AF².'),
+      hi('GE11-resta', Math.sqrt(Math.abs(BC * BC - FB * FB - AF * AF)), 'Restaste AF² en vez de sumarlo. AC es la hipotenusa de AFC: AC² = CF² + AF².'),
     ];
     const solucion = [
       ['Las tres alturas pasan por el ortocentro H. La canaleta CF pasa por H: es la tercera altura, perpendicular a AB.'],
@@ -635,17 +667,16 @@
 
   // ---------- bisectrices con 37°/2 y 53°/2 ----------
   function mitades(rng, u) {
-    const [A, C] = rng.elegir([[53, 37], [37, 53], [53, 37], [37, 53], [53, 60], [60, 53], [37, 60], [60, 37]]);
-    const has60 = A === 60 || C === 60, with53 = A === 53 || C === 53;
-    const paso = has60 ? (with53 ? 24 : 9) : 24;
-    const hh = paso * rng.entero(1, has60 ? 6 : 4);
+    const [A, C] = rng.elegir([[53, 37], [37, 53], [53, 37], [37, 53], [53, 60], [60, 53], [37, 60], [60, 37], [74, 53], [53, 74], [74, 60], [60, 74]]);
+    const hh = rng.elegir([8, 9, 12, 16, 18, 24, 27, 32, 36, 45, 48, 54, 64, 72, 96, 108, 144]);
     const { HP, HQ, PQ } = calc.mitades(A, C, hh);
-    if (!exacto(PQ) || !exacto(HP) || !exacto(HQ)) return null;
+    if (![PQ, HP, HQ].every(x => simple(x, 6)) || PQ <= 0) return null;
     const variables = { h: { nombre: 'altura BH', color: 'o' }, A: { nombre: 'ángulo A', color: 'i' }, C: { nombre: 'ángulo C', color: 'h' }, x: { nombre: 'PQ', color: 'd' } };
     const enunciado = ['En el triángulo ABC, ', v('A', `∠A = ${A}°`), ' y ', v('C', `∠C = ${C}°`), '. La altura BH (H en AC) mide ', v('h', `${hh} ${u}`), '. Las bisectrices de los ángulos A y C cortan a BH en P y Q, respectivamente.'];
-    const pregunta = ['¿Cuánto mide ', v('x', 'PQ'), '? (Usa los notables de academia: tan 37° = 3/4 y tan 53° = 4/3.)'];
-    const sw = { 37: 53, 53: 37, 60: 60 };
-    const TM = { 37: 1 / 3, 53: 1 / 2, 60: 1 / Math.sqrt(3) };
+    const con74 = A === 74 || C === 74;
+    const pregunta = ['¿Cuánto mide ', v('x', 'PQ'), `? (Usa los notables de academia: tan 37° = 3/4 y tan 53° = 4/3${con74 ? ' y tan 74° = 24/7' : ''}.)`];
+    const sw = { 37: 53, 53: 37, 60: 60, 74: 74 };
+    const TM = { 37: 1 / 3, 53: 1 / 2, 60: 1 / Math.sqrt(3), 74: 3 / 4 };
     const cruzado = Math.abs(hh / TAN[A] * TM[sw[A]] - hh / TAN[C] * TM[sw[C]]);
     const errores = [
       h('GT-suma-en-vez-de-resta', HP + HQ, 'Sumaste HP y HQ. P y Q están los dos sobre BH, medidos desde H: PQ es su diferencia.'),
@@ -654,7 +685,7 @@
       h('GT-mitad-de-la-distancia', Math.abs(hh / TAN[A] - hh / TAN[C]) / 2, 'Tomaste la mitad de la diferencia AH − HC. Las bisectrices no parten los segmentos por la mitad; hay que usar la tangente de la mitad del ángulo.'),
     ];
     const ah = x => (x === 60 ? `${exacto(hh / Math.sqrt(3))}` : `${exacto(hh / TAN[x])}`);
-    const tmTxt = { 37: '1/3', 53: '1/2', 60: '√3/3' };
+    const tmTxt = { 37: '1/3', 53: '1/2', 60: '√3/3', 74: '3/4' };
     const solucion = [
       ['En el triángulo rectángulo AHB: AH = BH/tan A = ', v('h', `${hh}`), '/tan ', v('A', `${A}°`), ` = ${ah(A)} ${u}.`],
       ['La bisectriz de A forma ', v('A', `${A}°/2`), ' con AC. En el triángulo AHP: HP = AH·tan(', `${A}°/2) = ${ah(A)}·(${tmTxt[A]}) = ${exacto(HP)} ${u}.`],

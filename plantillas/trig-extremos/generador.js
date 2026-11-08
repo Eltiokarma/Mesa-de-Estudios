@@ -92,8 +92,10 @@
       if (entero(o.correcta)) errores = errores.filter(e => entero(e.valor));
       alternativas = P.armar({ correcta: o.correcta, errores, rng, texto, negativos: true });
     }
+    const usadas = new Set([...o.enunciado, ...o.pregunta, ...o.solucion.flat()].filter(x => x && x.v).map(x => x.v));
+    const variables = Object.fromEntries(Object.entries(o.variables).filter(([k]) => usadas.has(k)));
     return {
-      id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
+      id: `${ID}#${semilla}`, variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
       alternativas, solucion: o.solucion,
       respuesta: { valor: o.claves ? o.correcta.clave : o.correcta, unidad: o.unidad || '' }, _datos: o.datos,
     };
@@ -123,7 +125,7 @@
     const S = Math.abs(a) + Math.abs(b);
     const pick = (M, m) => (pide === 'max' ? M : pide === 'min' ? m : M - m);
     return [
-      pa('TR16-suma-de-coeficientes', pick(c + S, c - S), `Tomaste ${pide === 'min' ? '−' : ''}(${Math.abs(a)} + ${Math.abs(b)}) como si sen x y cos x llegaran a su tope en el mismo ángulo. No pasa: el máximo de a·sen x + b·cos x es √(a² + b²).`),
+      hi('TR16-suma-de-coeficientes', pick(c + S, c - S), `Tomaste ${pide === 'min' ? '−' : ''}(${Math.abs(a)} + ${Math.abs(b)}) como si sen x y cos x llegaran a su tope en el mismo ángulo. No pasa: el máximo de a·sen x + b·cos x es √(a² + b²).`),
       h('TX-sin-raiz', pick(c + a * a + b * b, c - a * a - b * b), 'Usaste a² + b² sin sacar la raíz. La amplitud es √(a² + b²).'),
       h('TX-rango-del-seno', pick(c + 1, c - 1), 'Usaste que sen x y cos x están entre −1 y 1 como si la expresión entera también lo estuviera. Los coeficientes estiran el rango.'),
       h('TX-sin-constante', pick(R, -R), `Olvidaste sumar la constante ${f(c)} al final.`),
@@ -141,7 +143,7 @@
     const enunciado = ['Sea y = ', v('a', poli([[a, 'sen x']])), ' ', v('b', termino(b, 'cos x')), c ? conSigno(c) : '', ', con x real.'];
     const solucion = [
       ['Una suma a·sen x + b·cos x varía entre −√(a² + b²) y √(a² + b²).'],
-      [v('R', `√(${a}² + ${b}²)`.replace(/-/g, '−')), ` = √${a * a + b * b} = `, v('R', f(R)), '.'],
+      [v('R', `√(${a < 0 ? `(${f(a)})` : a}² + ${b < 0 ? `(${f(b)})` : b}²)`), ` = √${a * a + b * b} = `, v('R', f(R)), '.'],
       [`Entonces y va de ${f(c)} − ${f(R)} = ${f(c - R)} a ${f(c)} + ${f(R)} = ${f(c + R)}.`],
       [{ max: 'El máximo es ', min: 'El mínimo es ', diferencia: 'La diferencia es ' }[pide], v('y', f(correcta)), '.'],
     ];
@@ -159,13 +161,13 @@
     const errores = [
       ...errAB(pide, A, B, c, R).slice(0, 1),
       h('TX-olvida-constante-al-degradar', pick(d + R, d - R), `Al degradar, ${f(2 * B)} cos² x = ${f(B)}(1 + cos 2x) deja un ${f(B)} suelto que olvidaste: la constante es ${f(B)} ${d < 0 ? '−' : '+'} ${f(Math.abs(d))} = ${f(c)}.`),
-      h('TX-coeficientes-sin-mitad', pick(c + 2 * R, c - 2 * R), `Usaste ${f(2 * A)} y ${f(2 * B)} como coeficientes de sen 2x y cos 2x. Al usar 2 sen x cos x = sen 2x y 2cos² x = 1 + cos 2x, quedan ${f(A)} y ${f(B)}.`),
+      h('TX-coeficientes-sin-mitad', pick(c + 2 * R, c - 2 * R), `Usaste ${f(2 * A)} y ${f(2 * B)} como coeficientes de sen 2x y cos 2x. Al usar 2 sen x cos x = sen 2x y 2 cos² x = 1 + cos 2x, quedan ${f(A)} y ${f(B)}.`),
       h('TX-sin-constante', pick(R, -R), `Olvidaste sumar la constante ${f(c)} al final.`),
     ];
     const variables = { A: { nombre: 'coeficiente de sen 2x', color: 'o' }, B: { nombre: 'coeficiente de cos 2x', color: 'i' }, R: { nombre: 'amplitud', color: 'h' }, y: { nombre: 'valor pedido', color: 'd' } };
     const enunciado = ['Sea y = ', poli([[2 * A, 'sen x · cos x'], [2 * B, 'cos² x'], [d, '']]), ', con x real.'];
     const solucion = [
-      ['Usa 2 sen x cos x = sen 2x y 2cos² x = 1 + cos 2x: y = ', v('A', poli([[A, 'sen 2x']])), ' ', v('B', termino(B, 'cos 2x')), conSigno(c), '.'],
+      ['Usa 2 sen x cos x = sen 2x y 2 cos² x = 1 + cos 2x: y = ', v('A', poli([[A, 'sen 2x']])), ' ', v('B', termino(B, 'cos 2x')), conSigno(c), '.'],
       [v('R', `√(${f(A * A)} + ${f(B * B)}) = ${f(R)}`), ': la parte con 2x va de ', `${f(-R)} a ${f(R)}`, '.'],
       [`Entonces y va de ${f(c - R)} a ${f(c + R)}.`],
       [{ max: 'El máximo es ', min: 'El mínimo es ', diferencia: 'La diferencia es ' }[pide], v('y', f(correcta)), '.'],
@@ -237,41 +239,53 @@
     return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta: [PREG[pide]], solucion,
       datos: { tipo: 'cuadratica', sub, A: sub === 'seno' ? A : null, k, B, C, desde: dom ? dom[0] : null, hasta: dom ? dom[1] : null, pide } });
   }
-  // Temperatura T = C + B sen(πt/12) + k cos(πt/6): con u = πt/12, cos 2u = 1 − 2 sen² u.
+  // Temperatura T = C + B·base(u) + K·cos 2u, u = πt/per (per = 12: un día; per = 6: 12 horas).
+  // base sen: K = kk > 0 y cos 2u = 1 − 2 sen² u; base cos: K = −kk y cos 2u = 2 cos² u − 1. En los dos
+  // casos T = C + kk + B·s − 2kk·s², con s = base(u): vértice en s = B/(4kk) = ±1/2.
   function cuadHora(rng, semilla) {
+    const base = rng.elegir(['sen', 'cos']), per = rng.elegir([12, 12, 6]), ini = per === 12 && rng.moneda() ? 6 : 0;
     const kk = rng.elegir([1, 2, 3]), sv = rng.elegir([0.5, -0.5]), B = 4 * kk * sv, C = rng.entero(14, 22);
+    const K = base === 'sen' ? kk : -kk;
     const pide = rng.elegir(['hora', 'hora', 'max']);
     const T = s => C + kk + B * s - 2 * kk * s * s;
     const Tmax = T(sv);
-    const us = sv > 0 ? [30, 150] : [210, 330];
-    const ts = us.map(u => u / 15);
-    const correcta = pide === 'hora' ? ts[0] : Tmax;
+    const angulos = val => (base === 'sen' ? (val > 0 ? [30, 150] : [210, 330]) : (val > 0 ? [60, 300] : [120, 240]));
+    const aT = u => u * per / 180, reloj = t => (ini + t) % 24;
+    const us = angulos(sv), ts = us.map(aT);
+    const correcta = pide === 'hora' ? reloj(ts[0]) : Tmax;
+    const u1 = `πt/${per}`, u2 = per === 12 ? 'πt/6' : 'πt/3';
+    const tope = base === 'sen' ? (B > 0 ? 90 : 270) : (B > 0 ? 0 : 180);
+    const topeDoble = K > 0 ? 0 : 90;
     const errores = pide === 'hora' ? [
-      h('TX-maximo-donde-seno-1', B > 0 ? 6 : 18, `Pusiste el máximo donde sen(πt/12) llega a ${B > 0 ? '1' : '−1'}. Con el término en coseno, la temperatura es una parábola en el seno: su vértice no está en el tope.`),
-      hi('TR22-segunda-vez', ts[1], 'Esa es la segunda vez que llega al máximo; piden la primera.'),
-      pa('TR12-signo', (sv > 0 ? [210, 330] : [30, 150])[0] / 15, `Tomaste sen(πt/12) = ${fracTxt(-sv)}: el vértice está en sen = ${fracTxt(sv)}, con su signo.`),
-      h('TX-maximo-del-coseno', 12, 'Pusiste el máximo donde cos(πt/6) vale 1. Hay que juntar los dos términos en una sola variable.'),
+      h('TX-maximo-donde-la-base-es-1', reloj(aT(tope)), `Pusiste el máximo donde ${base}(${u1}) vale ${B > 0 ? '1' : '−1'}. Con el término en cos(${u2}), la temperatura es una parábola en ${base}(${u1}): su vértice no está en el tope.`),
+      hi('TR22-segunda-vez', reloj(ts[1]), 'Esa es la segunda vez que llega al máximo; piden la primera.'),
+      h('TX-signo-del-vertice', reloj(aT(angulos(-sv)[0])), `Tomaste ${base}(${u1}) = ${fracTxt(-sv)}: el vértice está en ${fracTxt(sv)}, con su signo.`),
+      h('TX-maximo-del-termino-doble', reloj(aT(topeDoble)), `Pusiste el máximo donde el término ${K === 1 ? '' : K === -1 ? '−' : fracTxt(K) + ' '}cos(${u2}) es máximo (t = ${f(aT(topeDoble))}). Los dos términos no llegan a su tope a la misma hora: hay que escribirlos con una sola variable.`),
+      ...(ini ? [h('TX-sin-sumar-hora-inicial', ts[0], `Ese es el valor de t, pero t se cuenta desde las ${ini}:00: la hora del reloj es ${ini} + t.`)] : []),
     ] : [
       h('TX-suma-de-maximos', C + Math.abs(B) + kk, `Sumaste el máximo de cada término (${f(Math.abs(B))} y ${f(kk)}). No ocurren a la misma hora.`),
-      h('TX-maximo-donde-seno-1', T(Math.sign(B)), `Evaluaste donde sen(πt/12) = ${B > 0 ? '1' : '−1'}. El máximo está en el vértice, sen = ${fracTxt(sv)}.`),
-      h('TX-coseno-doble-sin-2', C + kk + B * sv - kk * sv * sv, 'Usaste cos 2u = 1 − sen² u. Es cos 2u = 1 − 2 sen² u.'),
-      h('TX-sin-constante-del-coseno', Tmax - kk, `Olvidaste el ${f(kk)} que sale de ${f(kk)}·cos(πt/6) = ${f(kk)}(1 − 2 sen²(πt/12)).`),
+      h('TX-maximo-donde-la-base-es-1', T(Math.sign(B)), `Evaluaste donde ${base}(${u1}) = ${B > 0 ? '1' : '−1'}. El máximo está en el vértice, ${fracTxt(sv)}.`),
+      h('TX-coseno-doble-sin-2', C + kk + B * sv - kk * sv * sv, base === 'sen' ? 'Usaste cos 2u = 1 − sen² u. Es cos 2u = 1 − 2 sen² u.' : 'Usaste cos 2u = cos² u − 1. Es cos 2u = 2 cos² u − 1.'),
+      h('TX-sin-constante-del-coseno', Tmax - kk, `Olvidaste la constante que sale de ${K === 1 ? '' : K === -1 ? '−' : fracTxt(K) + ' '}cos(${u2}) = ${base === 'sen' ? `${kk === 1 ? "" : fracTxt(kk)}(1 − 2 sen²(${u1}))` : `−${kk === 1 ? "" : fracTxt(kk)}(2 cos²(${u1}) − 1)`}.`),
     ];
-    const variables = { s: { nombre: 'sen(πt/12)', color: 'i' }, T: { nombre: 'temperatura máxima', color: 'o' }, t: { nombre: 'hora del máximo', color: 'd' } };
-    const enunciado = ['La temperatura (en °C) de una sala de servidores, t horas después de la medianoche, es T(t) = ', poli([[C, ''], [B, 'sen(πt/12)'], [kk, 'cos(πt/6)']]), ', con 0 ≤ t < 24.'];
-    const pregunta = [pide === 'hora' ? '¿A qué hora (valor de t) llega por primera vez a su temperatura máxima?' : '¿Cuál es la temperatura máxima del día?'];
+    const variables = { s: { nombre: `${base}(${u1})`, color: 'i' }, T: { nombre: 'temperatura máxima', color: 'o' }, t: { nombre: 'hora del máximo', color: 'd' } };
+    const desde = ini ? `t horas después de las ${ini}:00 de la mañana` : per === 12 ? 't horas después de la medianoche' : 't horas después de encender el equipo';
+    const enunciado = [`La temperatura (en °C) de una sala de servidores, ${desde}, es T(t) = `, poli([[C, ''], [B, `${base}(${u1})`], [K, `cos(${u2})`]]), `, con 0 ≤ t < ${2 * per}.`];
+    const pregunta = [pide === 'hora' ? (ini ? '¿A qué hora del reloj (de 0 a 24 h) llega por primera vez a su temperatura máxima?' : '¿Para qué valor de t llega por primera vez a su temperatura máxima?') : '¿Cuál es la temperatura máxima en ese tiempo?'];
+    const ident = base === 'sen' ? 'cos 2u = 1 − 2 sen² u' : 'cos 2u = 2 cos² u − 1';
     const solucion = [
-      ['Con u = πt/12, cos(πt/6) = cos 2u = 1 − 2 sen² u. Llama ', v('s', 's = sen u'), '.'],
+      [`Con u = ${u1}, cos(${u2}) = ${ident}. Llama `, v('s', `s = ${base} u`), '.'],
       [`T = ${poli([[C + kk, ''], [B, 's'], [-2 * kk, 's²']])} = ${poli([[-2 * kk, '']])}(s ${sv < 0 ? '+' : '−'} 1/2)² ${conSigno(Tmax).trim()}.`],
       ['El máximo está en ', v('s', `s = ${fracTxt(sv)}`), ' y vale ', v('T', `${fracTxt(Tmax)} °C`), '.'],
-      [`sen u = ${fracTxt(sv)} con 0° ≤ u < 360°: u = ${us[0]}° o ${us[1]}°, es decir `, v('t', `t = ${f(ts[0])} o t = ${f(ts[1])}`), '.'],
-      [pide === 'hora' ? 'La primera vez es en ' : 'La temperatura máxima es ', pide === 'hora' ? v('t', `${f(ts[0])} h`) : v('T', `${fracTxt(Tmax)} °C`), '.'],
+      [`${base} u = ${fracTxt(sv)} con 0° ≤ u < 360°: u = ${us[0]}° o ${us[1]}°, es decir `, v('t', `t = ${f(ts[0])} o t = ${f(ts[1])}`), ini ? `; en el reloj, ${f(reloj(ts[0]))} h o ${f(reloj(ts[1]))} h.` : '.'],
+      [pide === 'hora' ? (ini ? 'La primera vez es a las ' : 'La primera vez es en ') : 'La temperatura máxima es ', pide === 'hora' ? v('t', `${f(correcta)} h`) : v('T', `${fracTxt(Tmax)} °C`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, unidad: pide === 'hora' ? 'h' : '°C',
-      datos: { tipo: 'cuadratica', sub: 'hora', k: kk, B, C, pide } });
+      datos: { tipo: 'cuadratica', sub: 'hora', base, per, ini, K, B, C, pide } });
   }
 
   // ---------- racional en coseno ----------
+  const limpio = (n, d) => fracTxt(n / d) === `${fracTxt(n)}/${d}`;
   function racional(rng, semilla) {
     const a = rng.elegir([1, 2, 3, -1, -2, -3]), d = rng.elegir([2, 3, 4, 5]), b = rng.entero(-4, 6);
     if (a * d === b || a === b) return null;
@@ -284,7 +298,7 @@
     const nM = b + Math.abs(a), nm = b - Math.abs(a);
     const errores = [
       h('TX-maximo-entre-maximo', pick(nM / (d + 1), nm / (d - 1)), 'Dividiste el máximo del numerador entre el máximo del denominador (y el mínimo entre el mínimo). Numerador y denominador dependen del mismo cos x: hay que despejar cos x o evaluar en cos x = 1 y cos x = −1.'),
-      h('TX-maximo-entre-minimo', pick(nM / (d - 1), nm / (d + 1)), 'Dividiste el mayor numerador entre el menor denominador como si pudieran ocurrir a la vez. Los dos dependen del mismo cos x.'),
+      h('TX-maximo-entre-minimo', pick(nM / (d - 1), nm / (d + 1)), `${{ max: 'Dividiste el mayor numerador entre el menor denominador', min: 'Dividiste el menor numerador entre el mayor denominador', suma: 'Dividiste el mayor numerador entre el menor denominador (y el menor entre el mayor)' }[pide]} como si pudieran ocurrir a la vez. Los dos dependen del mismo cos x.`),
       h('TX-coseno-cero', pick(b / d, b / d) * (pide === 'suma' ? 2 : 1), 'Evaluaste en cos x = 0. Los extremos de esta función están en los extremos de cos x, 1 y −1.'),
       h('TX-intercambia-extremos', pide === 'max' ? m : pide === 'min' ? M : M - m, pide === 'suma' ? 'Restaste el mínimo del máximo; piden la suma.' : `Ese es el ${pide === 'max' ? 'mínimo' : 'máximo'}: compara los dos valores antes de elegir.`),
     ];
@@ -293,7 +307,7 @@
     const solucion = [
       ['Despeja ', v('c', 'cos x'), ` en función de y: y(cos x + ${d}) = ${poli([[a, 'cos x'], [b, '']])} ⇒ `, v('c', `cos x = (${poli([[b, ''], [-d, 'y']])})/(y ${a < 0 ? '+' : '−'} ${Math.abs(a)})`), '.'],
       ['Como −1 ≤ cos x ≤ 1, y queda entre los valores de cos x = 1 y cos x = −1 (la función de cos x es monótona porque el denominador no se anula).'],
-      [`cos x = 1: y = (${fracTxt(a + b)})/${d + 1} = ${fracTxt(y1)}. cos x = −1: y = (${fracTxt(b - a)})/${d - 1} = ${fracTxt(ym)}.`],
+      [`cos x = 1: y = ${fracTxt(a + b)}/${d + 1}${limpio(a + b, d + 1) ? '' : ' = ' + fracTxt(y1)}. cos x = −1: y = ${fracTxt(b - a)}/${d - 1}${limpio(b - a, d - 1) ? '' : ' = ' + fracTxt(ym)}.`],
       ['Máximo ', v('M', fracTxt(M)), ' y mínimo ', v('M', fracTxt(m)), pide === 'suma' ? `: suman ` : '', pide === 'suma' ? v('y', fracTxt(correcta)) : '', '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta: [PREG[pide]], solucion,
@@ -309,9 +323,9 @@
     const correcta = intClave(lo, hi, lo === alc, hi === alc);
     const e = (id, int, explicacion) => ({ id, ...int, explicacion, respaldo: 'hipotesis', fuente: null });
     const errores = [
-      e('TX-ignora-restriccion', intClave(lo, hi, true, true), `Cerraste los dos extremos. Para simplificar hiciste falta 1 ${s > 0 ? '+' : '−'} cos x ≠ 0: cos x = ${s > 0 ? '−1' : '1'} queda fuera, y el valor ${fracTxt(excl)} no se alcanza.`),
+      e('TX-ignora-restriccion', intClave(lo, hi, true, true), `Cerraste los dos extremos. Para simplificar hizo falta 1 ${s > 0 ? '+' : '−'} cos x ≠ 0: cos x = ${s > 0 ? '−1' : '1'} queda fuera, y el valor ${fracTxt(excl)} no se alcanza.`),
       e('TX-excluye-el-otro', intClave(lo, hi, lo === excl, hi === excl), 'Abriste el extremo equivocado. El valor que no se alcanza es el que sale con el coseno prohibido.'),
-      e('TX-rango-del-coseno', intClave(n - Math.abs(m), n + Math.abs(m), true, true), `Tomaste y como ${fracTxt(m)}·cos x + ${fracTxt(n)}. Al simplificar queda ${fracTxt(m)}(1 ${s > 0 ? '−' : '+'} cos x) + ${fracTxt(n)}: falta el término constante.`),
+      e('TX-rango-del-coseno', intClave(n - Math.abs(m), n + Math.abs(m), true, true), `Tomaste y como ${poli([[m, 'cos x'], [n, '']])}. Al simplificar queda ${poli([[m, `(1 ${s > 0 ? '−' : '+'} cos x)`], [n, '']])}: falta el término constante.`),
       e('TX-signo-al-simplificar', intClave(Math.min(n, n - 2 * m), Math.max(n, n - 2 * m), Math.min(n, n - 2 * m) === n, Math.max(n, n - 2 * m) === n), `Simplificaste con el signo cambiado: sen² x = (1 − cos x)(1 + cos x), así que sen² x/(1 ${s > 0 ? '+' : '−'} cos x) = 1 ${s > 0 ? '−' : '+'} cos x.`),
     ];
     const variables = { c: { nombre: 'cos x', color: 'i' }, x: { nombre: 'valor prohibido', color: 'h' }, y: { nombre: 'rango', color: 'd' } };
@@ -342,6 +356,7 @@
     const [a0, b0] = rng.elegir(INT_SEC), E = extremosSec(a0, b0);
     if (Math.abs(E.absMax.s - E.max.s) < 1e-9 && rng.sig() < 0.7) return null; // casi siempre con la trampa |sec|
     const sub = rng.elegir(['max-f', 'otra']);
+    if (sub === 'otra') return secanteOtra(rng, semilla);
     const variables = { s: { nombre: 'sec x', color: 'i' }, x: { nombre: 'punto del máximo', color: 'h' }, y: { nombre: 'valor pedido', color: 'd' } };
     const intTxt = intervaloRad(a0, b0);
     if (sub === 'max-f') {
@@ -365,24 +380,40 @@
       return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta: [PREG[pide]], solucion,
         datos: { tipo: 'secante', sub, a, b, desde: a0, hasta: b0, pide } });
     }
-    const p = rng.elegir([1, 2, 3, 4, -2, -4]), q = rng.elegir([1, 2, -1, 3]);
-    const g = x => p * cos(x) + q * Math.round(Math.tan(x * GR) ** 2 * 1e9) / 1e9;
-    const correcta = g(E.max.g);
+    return null;
+  }
+  // g(x) = p·cos 2x + q·tan² x en el punto x₀ donde sec x es máxima; intervalos en el II y III
+  // cuadrante (secante negativa), casi siempre con x₀ en un extremo del intervalo (tan x₀ ≠ 0).
+  const INT_OTRA = [[120, 150], [210, 240], [135, 150], [210, 225], [120, 135], [225, 240], [120, 180], [180, 240]];
+  const redondo = x => Math.round(x * 1e9) / 1e9;
+  const SECT = { 120: '−2', 240: '−2', 135: '−√2', 225: '−√2', 150: '−2√3/3', 210: '−2√3/3', 180: '−1' };
+  const secTxt = g => SECT[g];
+  function secanteOtra(rng, semilla) {
+    const [a0, b0] = rng.elegir(INT_OTRA), E = extremosSec(a0, b0), intTxt = intervaloRad(a0, b0);
+    const p = rng.elegir([1, 2, 3, 4, -2, -4, 6]), q = rng.elegir([1, 2, -1, 3, -3]);
+    // Valores exactos de cos 2x y tan² x en los ángulos que pueden salir (NaN en los demás).
+    const C2 = { 120: -0.5, 135: 0, 150: 0.5, 180: 1, 210: 0.5, 225: 0, 240: -0.5 }, T2 = { 120: 3, 135: 1, 150: 1 / 3, 180: 0, 210: 1 / 3, 225: 1, 240: 3 };
+    const c2 = x => (x in C2 ? C2[x] : NaN), t2 = x => (x in T2 ? T2[x] : NaN);
+    const g = x => p * c2(x) + q * t2(x);
+    const x0 = E.max.g, correcta = g(x0);
+    const medio = (a0 + b0) / 2;
     const errores = [
-      h('TX-maximo-de-valor-absoluto', g(E.absMax.g), `Tomaste el punto donde |sec x| es mayor (${rad(E.absMax.g)}). Ahí sec x vale ${fracTxt(E.absMax.s)}: es el mínimo, no el máximo.`),
-      h('TX-punto-del-minimo', g(E.min.g), 'Ese es el punto donde la secante es mínima.'),
+      h('TX-maximo-de-valor-absoluto', g(E.absMax.g), `Tomaste el punto donde |sec x| es mayor (${rad(E.absMax.g)}). Ahí sec x vale ${secTxt(E.absMax.g)}: es el mínimo, no el máximo.`),
+      h('TX-punto-medio', g(medio), 'Evaluaste en el punto medio del intervalo. La secante es monótona en cada tramo: su máximo está donde |cos x| es mayor.'),
       h('TX-valor-de-la-secante', E.max.s, 'Diste el máximo de sec x; piden el valor de g en ese punto.'),
-      pa('TR12-signo-del-coseno', p * Math.abs(cos(E.max.g)) + q * Math.tan(E.max.g * GR) ** 2, `Usaste cos x sin su signo. En ${rad(E.max.g) || '0'}, cos x = ${fracTxt(cos(E.max.g))}.`),
+      h('TX-identidad-con-signo', -p * c2(x0) + q * t2(x0), 'Cambiaste el signo de cos 2x (como si cos 2x = 1 − 2 cos² x). Es cos 2x = 2 cos² x − 1.'),
     ];
-    const enunciado = [`En el intervalo ${intTxt}, `, v('s', 'sec x'), ' alcanza su valor máximo en un punto ', v('x', 'x₀'), '. Sea g(x) = ', poli([[p, 'cos x'], [q, 'tan² x']]), '.'];
+    if (!(a0 <= 180 && b0 >= 180)) errores.push(h('TX-supone-pi', g(180), `Pusiste el máximo en π, pero π no está en ${intTxt}. Sin π adentro, el máximo está en el extremo más cercano a π.`));
+    const variables = { s: { nombre: 'sec x', color: 'i' }, x: { nombre: 'punto del máximo', color: 'h' }, y: { nombre: 'valor pedido', color: 'd' } };
+    const enunciado = [`En el intervalo ${intTxt}, `, v('s', 'sec x'), ' alcanza su valor máximo en un punto ', v('x', 'x₀'), '. Sea g(x) = ', poli([[p, 'cos 2x'], [q, 'tan² x']]), '.'];
     const solucion = [
-      [`En ${intTxt}, sec x = 1/cos x no se anula ni cambia de signo: es ${E.max.s < 0 ? 'negativa' : 'positiva'}.`],
-      [E.max.s < 0 ? 'Con secante negativa, la mayor es la de menor valor absoluto: la más cercana a −1.' : 'Con secante positiva, la mayor es la de mayor valor absoluto: la del coseno más chico.'],
-      ['El máximo es ', v('s', `sec x = ${fracTxt(E.max.s)}`), ' en ', v('x', `x₀ = ${rad(E.max.g) || '0'}`), '.'],
-      [`g(x₀) = ${fracTxt(p)}·(${fracTxt(cos(E.max.g))}) + ${fracTxt(q)}·${fracTxt(Math.tan(E.max.g * GR) ** 2)} = `, v('y', fracTxt(correcta)), '.'],
+      [`En ${intTxt}, cos x es negativo y no se anula: sec x = 1/cos x es negativa.`],
+      ['Con secante negativa, la mayor es la de menor valor absoluto, donde |cos x| es más grande: la más cercana a π.'],
+      ['El máximo es ', v('s', `sec x = ${secTxt(x0)}`), ' en ', v('x', `x₀ = ${rad(x0)}`), '.'],
+      [`g(x₀) = ${fracTxt(p)}·(${fracTxt(c2(x0))}) ${q < 0 ? '−' : '+'} ${fracTxt(Math.abs(q))}·(${fracTxt(t2(x0))}) = `, v('y', fracTxt(correcta)), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta: ['¿Cuánto vale g(x₀)?'], solucion,
-      datos: { tipo: 'secante', sub, p, q, desde: a0, hasta: b0, pide: 'valor' } });
+      datos: { tipo: 'secante', sub: 'otra', p, q, desde: a0, hasta: b0, pide: 'valor' } });
   }
 
   // ---------- senoide: precio con un coseno ----------
@@ -402,7 +433,7 @@
       hi('TR22-otra-vez', otro, `Esa es la ${pide === 'primera' ? 'segunda' : 'primera'} vez que el precio vale ${f(V)}.`),
       h('TX-arcoseno', L * Math.abs(thS) / 180 || NaN, 'Despejaste con el seno. El modelo tiene coseno: cos(πt/L) = valor.'),
       hi('TR18-periodo', pide === 'primera' ? t1 / 2 : t2 / 2, `Tomaste ${L} como el periodo. En cos(πt/${L}) el periodo es 2π/(π/${L}) = ${2 * L}: con el periodo a la mitad, los instantes salen a la mitad.`),
-      pa('TR12-signo', pide === 'primera' ? L * (180 - th) / 180 : 2 * L - L * (180 - th) / 180, `Usaste cos(πt/${L}) = ${fracTxt(-c)}, con el signo cambiado. El precio ${c < 0 ? 'quedó bajo' : c > 0 ? 'quedó sobre' : 'pasa por'} el valor medio ${f(a)}.`),
+      hi('TR12-signo', pide === 'primera' ? L * (180 - th) / 180 : 2 * L - L * (180 - th) / 180, `Usaste cos(πt/${L}) = ${fracTxt(-c)}, con el signo cambiado. El precio ${c < 0 ? 'quedó bajo' : c > 0 ? 'quedó sobre' : 'pasa por'} el valor medio ${f(a)}.`),
       hi('TR19-amplitud-es-inicial', NaN, ''),
     ];
     // Con amplitud = precio inicial (sin valor medio): cos = V/P0.
@@ -421,6 +452,7 @@
       [pide === 'primera' ? 'La primera vez es a los ' : 'La segunda vez es a los ', v('t', `${f(correcta)} meses`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores: errores.filter(e => e.explicacion), variables, enunciado, pregunta, solucion, unidad: 'meses',
+      texto: x => (Math.abs(x - Math.round(x)) < 1e-9 && x > 0 ? `${f(x)} ${x === 1 ? 'mes' : 'meses'}` : null),
       datos: { tipo: 'senoide', L, P0, dato2, P2, V, pide } });
   }
 
@@ -445,7 +477,7 @@
     const D = k.some(x => Math.abs(x * 2) % 2 === 1) ? 2 : 1;
     const nums = k.map(x => Math.round(x * D));
     const no0 = nums.map((n, i) => [n, i]).filter(([n]) => n);
-    const orden = no0.filter(([n]) => n > 0).concat(no0.filter(([n]) => n < 0));
+    const orden = no0.filter(([n]) => n > 0).concat(no0.filter(([n, i]) => n < 0 && i > 0), no0.filter(([n, i]) => n < 0 && i === 0));
     let t = '';
     orden.forEach(([n, i]) => { const abs = Math.abs(n), cuerpo = i === 0 ? String(abs) : (abs === 1 ? '' : abs + ' ') + TER[i]; t += t === '' ? (n < 0 ? '−' : '') + cuerpo : (n < 0 ? ' − ' : ' + ') + cuerpo; });
     if (D === 1) return { clave, texto: t };
@@ -463,11 +495,15 @@
     const swap = kk => [kk[0], kk[2], kk[1], kk[3], kk[4]];
     const e = (id, kk, explicacion, resp = 'hipotesis') => ({ id, ...exprArea(kk), explicacion, respaldo: resp, fuente: resp === 'hipotesis' ? null : INF });
     const errores = [];
-    if (sgn < 0) errores.push(e('TR12-sin-signo', R.k, `Usaste el seno y el coseno como longitudes, sin signo. En el ${cuad} cuadrante, ${k.some((x, i) => x && (i === 1 || i === 3)) ? 'sen θ' : 'cos θ'} es negativo: para que el área salga positiva hay que cambiarle el signo.`, 'parcial'));
-    else errores.push(e('TR12-signo-de-mas', R.k.map(x => -x), `Le pusiste un signo menos que no hace falta. En el ${cuad} cuadrante, la expresión ya es positiva.`, 'parcial'));
+    const terminos = R.k.map((x, i) => [x, i]).filter(([x]) => x);
+    const motivo = terminos.length === 1
+      ? `${TER[terminos[0][1]]} es negativo`
+      : `la expresión ${exprArea(R.k).texto} sale negativa; el área es su opuesto`;
+    if (sgn < 0) errores.push(e('TR12-sin-signo', R.k, `Usaste las coordenadas como longitudes, sin signo. En el ${cuad} cuadrante, ${motivo}${terminos.length === 1 ? ': para que el área salga positiva hay que cambiarle el signo' : ''}.`, 'parcial'));
+    else errores.push(e('TR12-signo-de-mas', R.k.map(x => -x), `Le pusiste un signo menos que no hace falta. En el ${cuad} cuadrante, la expresión ya es positiva.`));
     errores.push(e('TR11-cruza-seno-coseno', swap(k), 'Cambiaste seno por coseno. En la C.T., cos θ es la abscisa de P (horizontal) y sen θ su ordenada (vertical).', 'parcial'));
     errores.push(e('TX-sin-mitad', k.map(x => x * (R.k.some(y => Math.abs(y) === 1) ? 0.5 : 2)), R.k.some(y => Math.abs(y) === 1) ? 'Dividiste entre 2 dos veces: la base de este triángulo mide 2, no 1.' : 'Olvidaste el 1/2: el área del triángulo es base por altura entre 2.'));
-    if (k.filter(x => x).length > 1) errores.push(e('TR12-signo-parcial', [k[0], -k[1], k[2], k[3], k[4]], 'Ajustaste el signo de una coordenada y no el de la otra. Revisa cada una en su cuadrante.', 'parcial'));
+    if (k.filter(x => x).length > 1) errores.push(e('TR12-signo-parcial', [k[0], -k[1], k[2], k[3], k[4]], 'Ajustaste el signo de una coordenada y no el de la otra. Revisa cada una en su cuadrante.'));
     errores.push(e('TX-cruza-y-sin-signo', swap(R.k), 'Cambiaste seno por coseno y además olvidaste el signo del cuadrante.'));
     if (k[4]) {
       errores.push(e('TX-tangente-por-seno', [0, k[4], 0, 0, 0], 'Usaste sen θ como la altura AT. AT está sobre la recta tangente en A: mide |tan θ|, no |sen θ|.'));
@@ -508,10 +544,10 @@
     if (notC[c2]) errores.push(h('TX-olvida-el-cuadrado', 2 * (2 * L * notC[c2] / 180) * hh, `Resolviste cos(πx/${2 * L}) = ${fracTxt(c2)} como si no hubiera cuadrado. Era cos² = ${fracTxt(c2)}; mejor degradar a cos(πx/${L}).`));
     errores.push(h('TX-angulo-doble-mal', 2 * (L * th / 360) * hh, `Al degradar usaste πx/${4 * L} en vez de πx/${L}: el ángulo doble de πx/${2 * L} es πx/${L}.`));
     const variables = { h: { nombre: 'altura de la puerta', color: 'o' }, x: { nombre: 'mitad del ancho', color: 'i' }, S: { nombre: 'área', color: 'd' } };
-    const enunciado = [`El perfil del techo de un galpón es y = ${d} + ${2 * A === 1 ? '' : 2 * A}cos²(πx/${2 * L}), con x e y en metros y −${L} ≤ x ≤ ${L} (el piso es y = 0). Se coloca una puerta rectangular centrada en x = 0, apoyada en el piso, de `, v('h', `${f(hh)} m de altura`), ', cuyas dos esquinas de arriba tocan el techo.'];
+    const enunciado = [`El perfil del techo de un galpón es y = ${d} + ${2 * A} cos²(πx/${2 * L}), con x e y en metros y −${L} ≤ x ≤ ${L} (el piso es y = 0). Se coloca una puerta rectangular centrada en x = 0, apoyada en el piso, de `, v('h', `${f(hh)} m de altura`), ', cuyas dos esquinas de arriba tocan el techo.'];
     const solucion = [
-      [`Degrada: 2cos²(πx/${2 * L}) = 1 + cos(πx/${L}), así que y = ${d + A} + ${A === 1 ? '' : A}cos(πx/${L}).`],
-      ['A la altura de la puerta: ', v('h', `${f(hh)}`), ` = ${d + A} + ${A === 1 ? '' : A}cos(πx/${L}) ⇒ cos(πx/${L}) = ${fracTxt(c)}.`],
+      [`Degrada: 2 cos²(πx/${2 * L}) = 1 + cos(πx/${L}), así que y = ${d + A} + ${A === 1 ? '' : A + ' '}cos(πx/${L}).`],
+      ['A la altura de la puerta: ', v('h', `${f(hh)}`), ` = ${d + A} + ${A === 1 ? '' : A + ' '}cos(πx/${L}) ⇒ cos(πx/${L}) = ${fracTxt(c)}.`],
       [`πx/${L} = ${th}° (con 0 ≤ x ≤ ${L}) ⇒ `, v('x', `x₀ = ${f(x0)} m`), `; la puerta va de −${f(x0)} a ${f(x0)}: ancho ${f(ancho)} m.`],
       ['Área = ', `${f(ancho)} · ${f(hh)} = `, v('S', `${f(correcta)} m²`), '.'],
     ];

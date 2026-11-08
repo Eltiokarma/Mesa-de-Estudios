@@ -86,7 +86,7 @@ function recalcular(p) {
     return pedido(enUnidad(raices(g, ...vuelta), d.modo), d.pide);
   }
   if (d.tipo === 'cuadratica' && d.sub === 'coseno') {
-    const u = t => Math.PI * t / 6;
+    const u = t => Math.PI * t / d.q;
     return pedido(raices(t => d.alfa * Math.sin(u(t)) ** 2 + d.beta * Math.cos(u(t)) - d.gamma, 0, d.T), d.pide);
   }
   if (d.tipo === 'cuadratica') {
@@ -98,7 +98,8 @@ function recalcular(p) {
     return pedido(raices(t => s1(t) + d.B - Math.cos(Math.PI * t / 3), 0, d.T), d.pide);
   }
   if (d.tipo === 'cubica') {
-    const xs = raices(x => Math.cos(3 * x) / Math.cos(x) - d.k, ...vuelta, x => Math.abs(Math.cos(x)) > 1e-6);
+    const g = d.forma === 'cos' ? Math.cos : Math.sin;
+    const xs = raices(x => g(3 * x) / g(x) - d.k, 0, d.hasta * R, x => Math.abs(g(x)) > 1e-6);
     if (d.pide === 'cisterna') { const r = suma(xs) / (2 * Math.PI); return Math.PI * r * r * d.h; }
     return pedido(enUnidad(xs, d.modo), d.pide);
   }

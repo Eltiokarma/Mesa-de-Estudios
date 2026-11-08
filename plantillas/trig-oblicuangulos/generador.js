@@ -25,12 +25,15 @@
  *   circunradio    { sub, R, A, B, a, p }. sub 'area-R': circunradio R y dos ángulos A y B (C = 180° − A − B);
  *                  respuesta S = 2R²·sen A·sen B·sen C. sub 'lado-R': lado a y su ángulo opuesto A; respuesta
  *                  R = a/(2 sen A). sub 'perimetro': perímetro p y ángulos A, B; respuesta el área.
- *   circunradio, sub 'en-funcion' (sale en cerca del 11 % de las semillas, por un sorteo aparte): triángulo ABC
- *                  recto en C con perímetro 2p y ángulo agudo θ en A. { sub, pide }: pide 'area' (respuesta
- *                  «p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))») o 'radio' («p/(1 + senθ + cosθ)»). Respuesta en texto.
- *   ley-tangentes, sub 'constante' (otro 11 %, sorteo aparte): { sub, forma }, forma es la identidad escrita con
- *                  una constante k (p. ej. «(a − b)/(a + b) = k·tan((A − B)/2)»); respuesta k en función de C, en texto
- *                  («tan(C/2)», «cot(C/2)»…).
+ *   circunradio, sub 'en-funcion' (cerca del 3 % de las semillas, por un sorteo aparte): triángulo ABC recto en
+ *                  `recto` ('C' o 'B') con ángulo agudo θ en A. { sub, recto, dato, pide }: dato 'perimetro' (perímetro 2p)
+ *                  o 'circunradio' (R); pide 'area', 'radio' (R), 'inradio' (r) o 'perimetro'. Respuesta en texto, p. ej.
+ *                  «p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))», «p/(1 + senθ + cosθ)», «R·(senθ + cosθ − 1)».
+ *   ley-tangentes, sub 'constante' (otro 3 %): { sub, molde, letras, forma }: forma es una identidad con una
+ *                  constante k (p. ej. «(b − c)/(b + c) = k·tan((B − C)/2)»; molde 1 a 6, letras 'abC', 'bcA' o 'acB'
+ *                  = los dos lados, sus ángulos y el tercer ángulo); respuesta k en texto («tan(A/2)», «cot(C/2)»…).
+ *                  En el resto de ley-tangentes, sub 'rectangulo' lleva pide 'area', 'cateto' (el mayor) o 'hipotenusa'.
+ *                  doblez tiene además sub 'pliegue': longitud del doblez EF = W·√(L² + W²)/L.
  *   lado-minimo    Ángulo A y área S fijos; los lados b y c varían. { sub, A, k, S }. S está en m² (S = k²·sen A / 2).
  *                  sub 'valor': el menor valor posible de a. sub 'lados': cuánto miden b y c cuando a es mínimo
  *                  (b = c = k).
@@ -92,7 +95,7 @@
   const BASE = {
     0: [0, 1], 8: [r2 / 10, 7 * r2 / 10], 16: [7 / 25, 24 / 25], 18.5: [1 / r10, 3 / r10], 26.5: [1 / r5, 2 / r5], 30: [1 / 2, r3 / 2],
     37: [3 / 5, 4 / 5], 45: [r2 / 2, r2 / 2], 53: [4 / 5, 3 / 5], 60: [r3 / 2, 1 / 2], 63.5: [2 / r5, 1 / r5], 71.5: [3 / r10, 1 / r10],
-    74: [24 / 25, 7 / 25], 82: [7 * r2 / 10, r2 / 10], 90: [1, 0],
+    32: [336 / 625, 527 / 625], 74: [24 / 25, 7 / 25], 82: [7 * r2 / 10, r2 / 10], 90: [1, 0],
   };
   function trig(g) {
     if (BASE[g]) return { sen: BASE[g][0], cos: BASE[g][1] };
@@ -138,7 +141,7 @@
   function generar(semilla) {
     // Un sorteo aparte decide si sale un problema simbólico; así el resto de semillas no cambia.
     const simb = Azar.crear(ID + '|simbolico|' + semilla).sig();
-    if (simb < 0.22) return simb < 0.11 ? circunradioSimbolico(semilla) : tangentesSimbolico(semilla);
+    if (simb < 0.06) return simb < 0.03 ? circunradioSimbolico(semilla) : tangentesSimbolico(semilla);
     const rng = Azar.crear(ID + '|' + semilla);
     const tipo = rng.elegir(TIPOS), pref = rng.sig();   // pref fija el subtipo en todos los intentos
     for (let intento = 0; intento < 200; intento++) {
@@ -158,6 +161,10 @@
     const errores = r.errores.filter(e => Number.isFinite(e.valor) && (negativos || e.valor > 0) && ok(e.valor));
     const texto = x => exacto(x) + (unidad ? ' ' + unidad : '');
     const alternativas = P.armar({ correcta, errores, rng, texto, negativos });
+    // La forma de la correcta (entero, raíz, fracción) debe aparecer también en algún distractor.
+    const clase = t => (t.includes('√') ? 'r' : '') + (t.includes('/') ? 'f' : '');
+    const cc = clase(alternativas.find(a => a.correcta).texto);
+    if (!alternativas.some(a => !a.correcta && clase(a.texto) === cc)) return null;
     return {
       id: `${ID}#${semilla}`, variables: r.variables, enunciado: r.enunciado, pregunta: r.pregunta, datos: '',
       alternativas, solucion: r.solucion, respuesta: { valor: correcta, unidad }, _datos: { tipo, ...r.datos },
@@ -206,7 +213,9 @@
       otraX > 0 ? h('OB-otra-raiz', Math.abs(aPide(otraX)), `La ecuación de segundo grado tiene otra raíz, ${ex(otraX)}, pero con ella D quedaría fuera del lado BC (que mide ${a}), más allá de C.`)
                 : h('OB-otra-raiz', aPide(-otraX), `La otra raíz de la ecuación es negativa (${ex(otraX)}): D quedaría al otro lado de B, fuera del terreno. No se toma su valor absoluto.`),
       h('TR24', aPide(signo), 'Cambiaste el signo del término 2·AB·BD·cos B en la ley de cosenos. Es AD² = AB² + BD² − 2·AB·BD·cos B; si B es obtuso, el coseno es negativo y el término termina sumando solo.'),
-      h('OB-pitagoras', aPide(Math.sqrt(Math.abs(d * d - c * c))), 'Usaste Pitágoras en el triángulo ABD, como si el ángulo B fuera recto. B no es recto: hay que hallar cos B con los tres lados del terreno.'),
+      h('OB-pitagoras', aPide(Math.sqrt(Math.abs(d * d - c * c))), d < c
+        ? 'Usaste Pitágoras como si AD fuera la altura (ángulo recto en D). Nada dice que el alambre sea perpendicular a BC: hay que hallar cos B con los tres lados del terreno.'
+        : 'Usaste Pitágoras en el triángulo ABD, como si el ángulo B fuera recto. B no es recto: hay que hallar cos B con los tres lados del terreno.'),
       h('OB-punto-medio', a / 2, 'Supusiste que D es el punto medio de BC. Nada lo dice: D se ubica con la longitud del alambre.'),
     ];
     // Ángulo equivocado: en el triángulo del segmento pedido se usa el coseno del otro vértice.
@@ -264,11 +273,17 @@
     let enunciado;
     const angTxt = ['. Vistas desde el pie del faro, las direcciones horizontales hacia los dos barcos forman un ángulo de ', v('t', `${theta}°`), '. El mar está en calma (es un plano horizontal).'];
     if (sub === 'directo') enunciado = ['Desde un faro se observan dos barcos. Uno está a ', v('p', `${pp} km`), ' del pie del faro y el otro a ', v('q', `${q} km`), ...angTxt];
-    else if (sub === 'depresion') enunciado = [`Desde la luz de un faro, a ${hh} m sobre el nivel del mar, se ve un barco con un ángulo de depresión de tangente `, v('p', fr(tA)), ' y otro con un ángulo de depresión de tangente ', v('q', fr(tB)), ...angTxt];
+    else if (sub === 'depresion') {
+      const NOMBRE = { '1': '45°', '3/4': '37°', '4/3': '53°', '7/24': '16°', '24/7': '74°' };
+      const dep = (t, k) => (NOMBRE[fr(t)] ? ['de ', v(k, NOMBRE[fr(t)])] : ['de tangente ', v(k, fr(t))]);
+      enunciado = [`Desde la luz de un faro, a ${hh} m sobre el nivel del mar, se ve un barco con un ángulo de depresión `, ...dep(tA, 'p'), ' y otro con un ángulo de depresión ', ...dep(tB, 'q'), ...angTxt];
+    }
     else enunciado = [`La luz de un faro está a ${hh} m sobre el nivel del mar. Un barco está a `, v('p', `${L1} m`), ' de la luz y otro a ', v('q', `${L2} m`), ' (distancias en línea recta desde la luz)', ...angTxt];
     const pregunta = ['¿Qué distancia separa a los dos barcos?'];
     const errores = [
-      h('TR24', Math.sqrt(pp * pp + q * q + 2 * pp * q * cos(theta)), 'Cambiaste el signo de la ley de cosenos. Es D² = p² + q² − 2pq·cos θ: con θ obtuso el coseno es negativo y el término ya suma solo.'),
+      h('TR24', Math.sqrt(pp * pp + q * q + 2 * pp * q * cos(theta)), theta < 90
+        ? 'Cambiaste −2pq·cos θ por +2pq·cos θ. La ley de cosenos es D² = p² + q² − 2pq·cos θ; con θ agudo ese término resta.'
+        : 'Cambiaste el signo de la ley de cosenos. Es D² = p² + q² − 2pq·cos θ: con θ obtuso el coseno es negativo y el término ya suma solo.'),
       h('OB-pitagoras', Math.sqrt(pp * pp + q * q), `Usaste Pitágoras, que solo vale si las direcciones forman 90°. Con ${theta}° falta el término −2pq·cos θ.`),
       h('OB-sin-raiz', correcta * correcta, `Calculaste D² y olvidaste sacar la raíz cuadrada.`),
       h('OB-resta-distancias', Math.abs(pp - q), 'Restaste las distancias como si los barcos estuvieran en la misma dirección. Forman un ángulo: va la ley de cosenos.'),
@@ -293,7 +308,8 @@
 
   // ---------- ley de tangentes ----------
   const COT_MEDIO = { 60: '√3', 90: '1', 120: '√3/3', 74: '4/3', 106: '3/4', 53: '2', 127: '1/2', 37: '3', 143: '1/3' };
-  const MEDIO = { 60: '30°', 90: '45°', 120: '60°', 74: '37°', 106: '53°', 53: '53°/2', 127: '127°/2', 37: '37°/2', 143: '143°/2' };
+  const COT_TXT = { 60: 'cot 30° = √3', 90: 'cot 45° = 1', 120: 'cot 60° = √3/3', 74: 'cot 37° = 4/3', 106: 'cot 53° = 3/4', 53: 'cot(53°/2) = 2',
+    127: 'cot(127°/2) = tan(53°/2) = 1/2', 37: 'cot(37°/2) = 3', 143: 'cot(143°/2) = tan(37°/2) = 1/3' };
   function leyTangentes(rng, pref) {
     const sub = pref < 0.6 ? 'semidiferencia' : 'rectangulo';
     if (sub === 'semidiferencia') {
@@ -307,42 +323,58 @@
       const pregunta = ['¿Cuánto vale tan((A − B)/2)?'];
       const errores = [
         h('OB-tangentes-invertida', (a + b) / (a - b) * ct, 'Pusiste la razón de lados al revés. En la ley de tangentes, la diferencia de lados va con la semidiferencia de ángulos: (a − b)/(a + b) = tan((A − B)/2)/tan((A + B)/2).'),
-        h('OB-tangente-de-C-medio', k / ct, `Usaste tan(C/2) en lugar de cot(C/2). (A + B)/2 = 90° − C/2, así que tan((A + B)/2) = cot(C/2) = ${COT_MEDIO[C]}.`),
+        h('OB-tangente-de-C-medio', k / ct, `Usaste tan(C/2) en lugar de cot(C/2). (A + B)/2 = 90° − C/2, así que tan((A + B)/2) = ${COT_TXT[C]}.`),
         h('OB-sin-semisuma', k, 'Te quedaste con (a − b)/(a + b). Falta multiplicar por tan((A + B)/2), que no vale 1 salvo que C sea recto.'),
         h('OB-angulo-sin-mitad', k * cot(C), 'Usaste cot C en vez de cot(C/2): en la ley de tangentes van los semiángulos.'),
       ];
       const solucion = [
         ['Ley de tangentes: (a − b)/(a + b) = tan((A − B)/2) / tan((A + B)/2).'],
-        ['A + B = 180° − ', v('C', `${C}°`), `, así que (A + B)/2 = 90° − ${MEDIO[C]} y tan((A + B)/2) = cot ${MEDIO[C]} = ${COT_MEDIO[C]}.`],
+        ['A + B = 180° − ', v('C', `${C}°`), `, así que (A + B)/2 = 90° − C/2 y tan((A + B)/2) = ${COT_TXT[C]}.`],
         ['(a − b)/(a + b) = (', v('a', `${a}`), ' − ', v('b', `${b}`), `)/(${a} + ${b}) = ${ex(k)}.`],
         ['tan((A − B)/2) = ', `${ex(k)} · ${COT_MEDIO[C]} = `, v('T', ex(correcta)), '.'],
       ];
       return { correcta, errores, variables, enunciado, pregunta, solucion, unidad: '', forma: 'mixta', datos: { sub, a, b, C } };
     }
-    const KS = [[1, 7], [1, 2], [1, 3], [1, 5], [1, 4], [2, 3], [3, 5], [2, 5], [1, 6]];
+    const KS = [[1, 7], [1, 2], [1, 3], [1, 5], [1, 4], [2, 3], [3, 5], [2, 5], [1, 6], [1, 8], [3, 7], [1, 9], [2, 7]];
+    const pide = rng.elegir(['area', 'area', 'cateto', 'hipotenusa']);
     const kk = rng.elegir(KS), kv = kk[0] / kk[1];
     const s = 2 * kk[1] * rng.entero(1, 4);
     const a = s * (1 + kv) / 2, b = s * (1 - kv) / 2;
     if (!Number.isInteger(Math.round(a * 1e9) / 1e9) || !Number.isInteger(Math.round(b * 1e9) / 1e9)) return null;
-    const correcta = a * b / 2;
+    const hip = Math.hypot(a, b);
+    const correcta = pide === 'area' ? a * b / 2 : pide === 'cateto' ? a : hip;
     const variables = {
-      s: { nombre: 'suma de catetos', color: 'o' }, k: { nombre: 'tan((A − B)/2)', color: 'i' }, d: { nombre: 'diferencia de catetos', color: 'd' }, S: { nombre: 'área', color: 'h' },
+      s: { nombre: 'suma de catetos', color: 'o' }, k: { nombre: 'tan((A − B)/2)', color: 'i' }, d: { nombre: 'diferencia de catetos', color: 'd' },
+      S: { nombre: pide === 'area' ? 'área' : pide === 'cateto' ? 'cateto mayor' : 'hipotenusa', color: 'h' },
     };
     const enunciado = ['Un terreno tiene forma de triángulo ABC, recto en C. Sus catetos BC = a y CA = b (con a > b) suman ', v('s', `${s} m`), ', y los ángulos agudos cumplen ', v('k', `tan((A − B)/2) = ${kk[0]}/${kk[1]}`), '.'];
-    const pregunta = ['¿Cuál es el área del terreno?'];
-    const errores = [
+    const pregunta = [pide === 'area' ? '¿Cuál es el área del terreno?' : pide === 'cateto' ? '¿Cuánto mide el cateto mayor?' : '¿Cuánto mide la hipotenusa AB?'];
+    const errores = pide === 'area' ? [
       h('OB-area-sin-mitad', a * b, 'Multiplicaste los catetos y olvidaste dividir entre 2: el área de un triángulo rectángulo es la mitad del producto de los catetos.'),
       h('OB-isosceles', s * s / 8, 'Tomaste los catetos iguales (la mitad de la suma cada uno). Si fueran iguales, A = B y tan((A − B)/2) sería 0.'),
       h('OB-suma-diferencia-como-catetos', s * (kv * s) / 2, 'Usaste la suma y la diferencia de los catetos como si fueran los catetos. Primero hay que despejar a y b.'),
       h('OB-tangente-como-razon', s * s * kv / ((1 + kv) ** 2) / 2, `Tomaste ${kk[0]}/${kk[1]} como la razón b/a. La ley de tangentes dice que (a − b)/(a + b) = tan((A − B)/2) / tan((A + B)/2).`),
+    ] : pide === 'cateto' ? [
+      h('OB-cateto-cambiado', b, 'Ese es el cateto menor, b = (suma − diferencia)/2.'),
+      h('OB-isosceles', s / 2, 'Tomaste los catetos iguales. Si lo fueran, A = B y tan((A − B)/2) sería 0.'),
+      h('OB-diferencia-como-cateto', kv * s, 'Esa es la diferencia a − b, no el cateto.'),
+      h('OB-sin-mitad', s + kv * s, 'Sumaste a + b y a − b, pero olvidaste dividir entre 2: (a + b) + (a − b) = 2a.'),
+    ] : [
+      h('OB-suma-catetos', s, 'Esa es la suma de los catetos. La hipotenusa sale con Pitágoras: c² = a² + b².'),
+      h('OB-sin-raiz', a * a + b * b, 'Ese es c²: falta sacar la raíz.'),
+      h('OB-isosceles', s * Math.SQRT2 / 2, 'Tomaste los catetos iguales (s/2 cada uno). Si lo fueran, A = B y tan((A − B)/2) sería 0.'),
+      h('OB-diferencia-como-cateto', Math.hypot(s, kv * s), 'Usaste la suma y la diferencia como si fueran los catetos. Primero hay que despejar a y b.'),
     ];
+    const ultimo = pide === 'area' ? ['Área = a·b/2 = ', `${ex(a)}·${ex(b)}/2 = `, v('S', `${ex(correcta)} m²`), '.']
+      : pide === 'cateto' ? ['El cateto mayor mide ', v('S', `${ex(a)} m`), '.']
+      : ['Hipotenusa: √(', `${ex(a)}² + ${ex(b)}²) = √${ex(a * a + b * b)} = `, v('S', `${ex(hip)} m`), '.'];
     const solucion = [
       ['Ley de tangentes: (a − b)/(a + b) = tan((A − B)/2) / tan((A + B)/2). Con C = 90°, (A + B)/2 = 45° y tan 45° = 1.'],
       ['a − b = ', v('s', `${s}`), ' · ', v('k', `${kk[0]}/${kk[1]}`), ' = ', v('d', `${ex(kv * s)}`), '.'],
       [`a = (${s} + ${ex(kv * s)})/2 = ${ex(a)} m y b = (${s} − ${ex(kv * s)})/2 = ${ex(b)} m.`],
-      ['Área = a·b/2 = ', `${ex(a)}·${ex(b)}/2 = `, v('S', `${ex(correcta)} m²`), '.'],
+      ultimo,
     ];
-    return { correcta, errores, variables, enunciado, pregunta, solucion, unidad: 'm²', datos: { sub, s, k: kk } };
+    return { correcta, errores, variables, enunciado, pregunta, solucion, unidad: pide === 'area' ? 'm²' : 'm', datos: { sub, s, k: kk, pide } };
   }
 
   // ---------- áreas y bisectriz ----------
@@ -398,7 +430,7 @@
 
   // ---------- circunradio ----------
   const JUEGOS = [[30, 60], [45, 45], [30, 30], [37, 53], [60, 60], [16, 74], [53, 53], [37, 37], [45, 90], [30, 90]];
-  const RACIONALES = [[37, 53], [16, 74], [53, 53], [37, 37]];
+  const RACIONALES = [[37, 53], [16, 74], [53, 53], [37, 37], [16, 37], [74, 74], [16, 16], [53, 74], [37, 16]];
   function circunradio(rng, pref) {
     const sub = porPref(pref, ['area-R', 'lado-R', 'perimetro']);
     const variables = { R: { nombre: 'circunradio', color: 'o' }, A: { nombre: 'ángulo A', color: 'i' }, B: { nombre: 'ángulo B', color: 'd' }, S: { nombre: sub === 'lado-R' ? 'circunradio' : 'área', color: 'h' } };
@@ -448,14 +480,14 @@
     }
     // perímetro: p = 2R·(sen A + sen B + sen C)
     let pp = null;
-    for (const x of rng.barajar(Array.from({ length: 120 }, (_, i) => i + 6))) {
+    for (const x of rng.barajar(Array.from({ length: 200 }, (_, i) => i + 6))) {
       const S = calc.areaPerimetro({ p: x, A, B });
       if (FORMAS.longitud(S) && FORMAS.longitud(S / 4) && FORMAS.longitud(x / (2 * suma))) { pp = x; break; }
     }
     if (pp === null) return null;
     const R = pp / (2 * suma), correcta = calc.areaPerimetro({ p: pp, A, B });
-    variables.R = { nombre: 'perímetro', color: 'o' };
-    const enunciado = ['Un terreno triangular ABC tiene un perímetro de ', v('R', `${pp} m`), '. Sus ángulos en A y en B miden ', v('A', `${A}°`), ' y ', v('B', `${B}°`), '.'];
+    delete variables.R; variables.p = { nombre: 'perímetro', color: 'o' };
+    const enunciado = ['Un terreno triangular ABC tiene un perímetro de ', v('p', `${pp} m`), '. Sus ángulos en A y en B miden ', v('A', `${A}°`), ' y ', v('B', `${B}°`), '.'];
     const pregunta = ['¿Cuál es el área del terreno?'];
     const errores = [
       h('OB-area-R-sin-2', correcta / 2, 'Usaste S = R²·sen A·sen B·sen C: falta el 2.'),
@@ -465,7 +497,7 @@
     ];
     const solucion = [
       [`C = 180° − ${A}° − ${B}° = ${C}°. Ley de senos: a = 2R·sen A, b = 2R·sen B, c = 2R·sen C.`],
-      ['Perímetro: ', v('R', `${pp}`), ` = 2R·(${ex(sen(A))} + ${ex(sen(B))} + ${ex(sen(C))}) = 2R·${ex(suma)} → R = ${ex(R)} m.`],
+      ['Perímetro: ', v('p', `${pp}`), ` = 2R·(${ex(sen(A))} + ${ex(sen(B))} + ${ex(sen(C))}) = 2R·${ex(suma)} → R = ${ex(R)} m.`],
       [`Lados: ${ex(2 * R * sen(A))}, ${ex(2 * R * sen(B))} y ${ex(2 * R * sen(C))} m.`],
       [`S = 2R²·sen A·sen B·sen C = 2·${entreP(ex(R))}²·${ex(prod)} = `, v('S', `${ex(correcta)} m²`), '.'],
     ];
@@ -475,9 +507,14 @@
   // ---------- lado mínimo con área y ángulo fijos ----------
   function ladoMinimo(rng, pref) {
     const sub = pref < 0.7 ? 'valor' : 'lados';
-    const A = rng.elegir([60, 90, 120, 53, 37, 127, 143]);
-    const K = { 60: [2, 4, 6, 8, 10], 120: [2, 4, 6, 8, 10], 90: [2, 4, 6, 8, 10], 53: [5, 10, 15], 127: [5, 10, 15], 37: [10, 20], 143: [10, 20] }[A];
-    const k = rng.elegir(K), S = k * k * sen(A) / 2;
+    const A = rng.elegir([30, 150, 45, 135, 60, 120, 90, 37, 53, 127, 143, 74, 106]);
+    let k = null;
+    for (const x of rng.barajar(Array.from({ length: 29 }, (_, i) => i + 2))) {
+      const Sx = x * x * sen(A) / 2;
+      if (exacto(Sx) && !exacto(Sx).includes('/') && FORMAS.longitud(calc.ladoMinimo({ S: Sx, A }).a)) { k = x; break; }
+    }
+    if (k === null) return null;
+    const S = k * k * sen(A) / 2;
     const { a } = calc.ladoMinimo({ S, A });
     const correcta = sub === 'valor' ? a : k;
     const variables = { A: { nombre: 'ángulo A', color: 'd' }, S: { nombre: 'área', color: 'o' }, a: { nombre: sub === 'valor' ? 'lado a mínimo' : 'lados b y c', color: 'h' } };
@@ -507,17 +544,18 @@
   }
 
   // ---------- doblez de un rectángulo ----------
-  const RAZONES = [[2, 1], [3, 1], [3, 2], [4, 3], [5, 2], [4, 1], [5, 1], [5, 3], [7, 1]];
+  const RAZONES = [[2, 1], [3, 1], [3, 2], [4, 3], [5, 2], [4, 1], [5, 1], [5, 3], [7, 1], [5, 4], [6, 1], [7, 3], [7, 4], [7, 5]];
   function doblez(rng, pref) {
-    const sub = pref < 0.65 ? 'coseno' : 'longitud';
+    const sub = pref < 0.5 ? 'coseno' : pref < 0.75 ? 'longitud' : 'pliegue';
     const [l, w] = rng.elegir(RAZONES);
-    const den = sub === 'longitud' ? 2 * l / mcd(2 * l, l * l + w * w) : 1;
+    const den = sub === 'longitud' ? 2 * l / mcd(2 * l, l * l + w * w) : sub === 'pliegue' ? l / mcd(l, w) : 1;
     const m = den * rng.entero(1, 3), L = l * m, W = w * m;
     const { AE, cos: cAEC } = calc.doblez({ L, W });
     const EB = L - AE;
-    const variables = { L: { nombre: 'lado AB', color: 'o' }, W: { nombre: 'lado BC', color: 'i' }, x: { nombre: 'AE = EC', color: 'd' }, r: { nombre: sub === 'coseno' ? 'cos AEC' : 'AE', color: 'h' } };
+    const EF = W * Math.sqrt(L * L + W * W) / L;
+    const variables = { L: { nombre: 'lado AB', color: 'o' }, W: { nombre: 'lado BC', color: 'i' }, x: { nombre: 'AE = EC', color: 'd' }, r: { nombre: sub === 'coseno' ? 'cos AEC' : sub === 'longitud' ? 'AE' : 'doblez EF', color: 'h' } };
     const enunciado = ['Una hoja rectangular ABCD tiene AB = ', v('L', `${L} cm`), ' y BC = ', v('W', `${W} cm`), '. Se dobla de modo que el vértice C cae exactamente sobre el vértice A; el doblez es un segmento que corta al lado AB en E y al lado CD en F.'];
-    const pregunta = [sub === 'coseno' ? 'Con la hoja ya desdoblada, ¿cuánto vale el coseno del ángulo AEC?' : '¿Cuánto mide AE?'];
+    const pregunta = [sub === 'coseno' ? 'Con la hoja ya desdoblada, ¿cuánto vale el coseno del ángulo AEC?' : sub === 'longitud' ? '¿Cuánto mide AE?' : '¿Cuánto mide el doblez EF?'];
     let correcta, errores;
     if (sub === 'coseno') {
       correcta = cAEC;
@@ -527,6 +565,14 @@
         p('TR9', -s, 'Ese es el seno con signo menos. En el triángulo rectángulo EBC, el coseno de BEC es EB/EC (adyacente sobre hipotenusa), no BC/EC.'),
         h('OB-doblez-seno', s, 'Ese es el seno del ángulo AEC (que es positivo, igual al de BEC). Se pide el coseno.'),
         h('OB-doblez-cotangente', -EB / W, 'Dividiste EB entre BC: eso es la cotangente de BEC, no su coseno. El coseno usa la hipotenusa EC.'),
+      ];
+    } else if (sub === 'pliegue') {
+      correcta = EF;
+      errores = [
+        h('OB-doblez-diagonal', Math.sqrt(L * L + W * W), 'Esa es la diagonal AC. El doblez no es la diagonal: es perpendicular a ella y pasa por su punto medio.'),
+        h('OB-doblez-ancho', W, 'Ese sería el doblez si fuera paralelo a BC. El doblez es perpendicular a AC, así que va inclinado y mide más que BC.'),
+        h('OB-doblez-mitad-pliegue', EF / 2, 'Esa es solo la mitad del doblez, de E al centro O de la hoja. EF = 2·OE.'),
+        h('OB-doblez-mitad-diagonal', Math.sqrt(L * L + W * W) / 2, 'Esa es la mitad de la diagonal AC (de A al centro O), no el doblez.'),
       ];
     } else {
       correcta = AE;
@@ -542,7 +588,8 @@
       ['En el triángulo rectángulo EBC: x² = (', v('L', `${L}`), ' − x)² + ', v('W', `${W}`), `² → 0 = ${L * L} − ${2 * L}x + ${W * W} → x = ${ex(AE)}.`],
       sub === 'coseno'
         ? [`EB = ${L} − ${ex(AE)} = ${ex(EB)}; cos BEC = EB/EC = ${ex(EB / AE)}. El ángulo AEC es su suplemento (obtuso): cos AEC = `, v('r', ex(correcta)), '.']
-        : ['AE = ', v('r', `${ex(correcta)} cm`), '.'],
+        : sub === 'longitud' ? ['AE = ', v('r', `${ex(correcta)} cm`), '.']
+        : [`El doblez corta AC en su punto medio O: AO = ${ex(Math.sqrt(L * L + W * W) / 2)} y OE = √(AE² − AO²) = ${ex(EF / 2)}. Por simetría OF = OE, así que EF = `, v('r', `${ex(correcta)} cm`), '.'],
     ];
     return { correcta, errores, variables, enunciado, pregunta, solucion, unidad: sub === 'coseno' ? '' : 'cm', forma: sub === 'coseno' ? 'fraccion' : 'longitud', negativos: sub === 'coseno', datos: { sub, L, W } };
   }
@@ -559,72 +606,115 @@
     };
   };
   const X = (id, texto, explicacion) => ({ id, clave: texto, texto, explicacion, respaldo: 'hipotesis', fuente: null });
+  const T = texto => ({ clave: texto, texto });
 
-  // Triángulo rectángulo con perímetro 2p y un ángulo agudo θ: lados 2R·senθ, 2R·cosθ y 2R.
+  // Triángulo rectángulo con un ángulo agudo θ en A: por la ley de senos, catetos 2R·senθ y 2R·cosθ, hipotenusa 2R.
+  // Dato: perímetro 2p o circunradio R. Se pide área, R, inradio r o perímetro, en función de θ.
   function circunradioSimbolico(semilla) {
-    return simbolico(semilla, 'circunradio', r => ({ sub: 'en-funcion', pide: r.pide }), rng => {
-      const pide = rng.sig() < 0.6 ? 'area' : 'radio';
-      const variables = { p: { nombre: 'semiperímetro', color: 'o' }, t: { nombre: 'ángulo agudo', color: 'i' }, R: { nombre: 'circunradio', color: 'd' }, S: { nombre: pide === 'area' ? 'área' : 'circunradio', color: 'h' } };
-      const enunciado = ['Un terreno tiene forma de triángulo ABC, recto en C. Su perímetro es fijo e igual a ', v('p', '2p'), ', y su ángulo agudo en A mide ', v('t', 'θ'), '. Sea R el radio de la circunferencia que pasa por A, B y C.'];
-      let correcta, errores, pregunta;
-      if (pide === 'area') {
-        correcta = { clave: 'p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))', texto: 'p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))' };
-        pregunta = ['¿Cuál es el área del terreno en función de θ?'];
-        errores = [
-          X('OB-area-sin-mitad', '2p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))', 'Te faltó el 1/2 del área: S = (1/2)·a·b = 2R²·senθ·cosθ, no 4R²·senθ·cosθ.'),
+    return simbolico(semilla, 'circunradio', r => ({ sub: 'en-funcion', recto: r.recto, dato: r.dato, pide: r.pide }), rng => {
+      const recto = rng.elegir(['C', 'B']), otro = recto === 'C' ? 'B' : 'C';
+      const dato = rng.moneda() ? 'perimetro' : 'circunradio';
+      const pide = rng.elegir(dato === 'perimetro' ? ['area', 'area', 'radio', 'inradio'] : ['perimetro', 'area', 'inradio']);
+      const catAd = recto === 'C' ? 'AC' : 'AB', hipo = recto === 'C' ? 'AB' : 'AC';
+      const NOMBRE = { area: 'área', radio: 'circunradio R', inradio: 'inradio r', perimetro: 'perímetro' };
+      const variables = { p: { nombre: dato === 'perimetro' ? 'perímetro' : 'circunradio', color: 'o' }, t: { nombre: 'ángulo agudo', color: 'i' }, R: { nombre: 'circunradio', color: 'd' }, S: { nombre: NOMBRE[pide], color: 'h' } };
+      const enunciado = [`Un terreno tiene forma de triángulo ABC, recto en ${recto}, y su ángulo agudo en A mide `, v('t', 'θ'), '.',
+        dato === 'perimetro' ? [' Su perímetro es fijo e igual a ', v('p', '2p'), '.'] : [' La circunferencia que pasa por A, B y C tiene radio ', v('p', 'R'), ', fijo.'],
+        pide === 'inradio' ? ' Sea r el radio de la circunferencia inscrita (tangente a los tres lados).' : (dato === 'perimetro' && pide === 'radio' ? ' Sea R el radio de la circunferencia que pasa por A, B y C.' : '')].flat();
+      const pregunta = [`¿Cuál es ${pide === 'area' ? 'el área del terreno' : pide === 'radio' ? 'el valor de R' : pide === 'inradio' ? 'el valor de r' : 'el perímetro del terreno'} en función de θ?`];
+      let correcta, errores;
+      const K = { // textos
+        Parea: 'p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))', Pradio: 'p/(1 + senθ + cosθ)', Pinradio: 'p·(senθ + cosθ − 1)/(1 + senθ + cosθ)',
+        Rperimetro: '2R·(1 + senθ + cosθ)', Rarea: '2R²·senθ·cosθ', Rinradio: 'R·(senθ + cosθ − 1)',
+      };
+      const clave = (dato === 'perimetro' ? 'P' : 'R') + pide;
+      correcta = T(K[clave]);
+      errores = {
+        Parea: [
+          X('OB-area-sin-mitad', '2p²·senθ·cosθ/((1 + senθ)·(1 + cosθ))', 'Te faltó el 1/2 del área: S = (1/2)·(cateto)·(cateto) = 2R²·senθ·cosθ, no 4R²·senθ·cosθ.'),
           X('OB-perimetro-como-semiperimetro', 'p²·senθ·cosθ/(4·(1 + senθ)·(1 + cosθ))', 'Tomaste p como el perímetro. El perímetro es 2p: 2R(1 + senθ + cosθ) = 2p.'),
           X('OB-sin-cuadrado', '2p²·senθ·cosθ/(1 + senθ + cosθ)', 'R lleva (1 + senθ + cosθ) en el denominador y en el área va R²: ese factor también se eleva al cuadrado.'),
           X('OB-cuadrado-repartido', 'p²·senθ·cosθ', '(1 + senθ + cosθ)² no es 1 + sen²θ + cos²θ: faltan los dobles productos. Se cumple (1 + senθ + cosθ)² = 2(1 + senθ)(1 + cosθ).'),
-        ];
-      } else {
-        correcta = { clave: 'p/(1 + senθ + cosθ)', texto: 'p/(1 + senθ + cosθ)' };
-        pregunta = ['¿Cuánto mide R en función de θ?'];
-        errores = [
-          X('OB-senos-sin-2R', '2p/(1 + senθ + cosθ)', 'Tomaste cada lado como R·sen del ángulo opuesto. La ley de senos da a = 2R·sen A: la hipotenusa es el diámetro, 2R.'),
+        ],
+        Pradio: [
+          X('OB-senos-sin-2R', '2p/(1 + senθ + cosθ)', 'Tomaste cada lado como R·sen del ángulo opuesto. La ley de senos da lado = 2R·sen(ángulo opuesto): la hipotenusa es el diámetro, 2R.'),
           X('OB-perimetro-como-semiperimetro', 'p/(2·(1 + senθ + cosθ))', 'Tomaste p como el perímetro. El perímetro es 2p.'),
           X('OB-sin-hipotenusa', 'p/(senθ + cosθ)', 'Sumaste solo los catetos. El perímetro también lleva la hipotenusa, 2R·sen 90° = 2R.'),
-        ];
-      }
-      const solucion = [
-        ['Ley de senos: BC = 2R·sen ', v('t', 'θ'), ', AC = 2R·cos θ (el ángulo B es 90° − θ) y AB = 2R·sen 90° = 2R: la hipotenusa es el diámetro.'],
-        ['Perímetro: 2R(1 + senθ + cosθ) = ', v('p', '2p'), ' → ', v('R', 'R = p/(1 + senθ + cosθ)'), '.'],
-        ...(pide === 'area' ? [
-          ['Área: (1/2)·BC·AC = 2R²·senθ·cosθ = 2p²·senθ·cosθ/(1 + senθ + cosθ)².'],
-          ['Con (1 + senθ + cosθ)² = 1 + sen²θ + cos²θ + 2senθ + 2cosθ + 2senθcosθ = 2(1 + senθ)(1 + cosθ): S = ', v('S', correcta.texto), '.'],
-        ] : [['R = ', v('S', correcta.texto), '.']]),
+        ],
+        Pinradio: [
+          X('OB-inradio-sin-mitad', '2p·(senθ + cosθ − 1)/(1 + senθ + cosθ)', 'En un triángulo rectángulo r = (cateto + cateto − hipotenusa)/2: te faltó dividir entre 2.'),
+          X('OB-inradio-como-circunradio', 'p/(1 + senθ + cosθ)', 'Ese es R, el radio de la circunferencia que pasa por los vértices. El inradio es el de la circunferencia inscrita.'),
+          X('OB-inradio-con-perimetro', 'p·(senθ + cosθ − 1)/(2·(1 + senθ + cosθ))', 'Usaste S = r·(perímetro). Es S = r·(semiperímetro) = r·p.'),
+        ],
+        Rperimetro: [
+          X('OB-senos-sin-2R', 'R·(1 + senθ + cosθ)', 'Tomaste cada lado como R·sen del ángulo opuesto. La ley de senos da lado = 2R·sen(ángulo opuesto).'),
+          X('OB-sin-hipotenusa', '2R·(senθ + cosθ)', 'Sumaste solo los catetos; falta la hipotenusa, que mide 2R.'),
+          X('OB-hipotenusa-como-radio', 'R·(1 + 2senθ + 2cosθ)', 'Tomaste la hipotenusa como R. En un triángulo rectángulo la hipotenusa es un diámetro: mide 2R.'),
+        ],
+        Rarea: [
+          X('OB-area-R-sin-2', 'R²·senθ·cosθ', 'Falta un 2: (1/2)·(2R·senθ)·(2R·cosθ) = 2R²·senθ·cosθ.'),
+          X('OB-area-sin-mitad', '4R²·senθ·cosθ', 'Multiplicaste los catetos sin el 1/2 del área.'),
+          X('OB-senos-sin-2R', 'R²·senθ·cosθ/2', 'Tomaste los catetos como R·senθ y R·cosθ. La ley de senos da 2R·senθ y 2R·cosθ.'),
+        ],
+        Rinradio: [
+          X('OB-inradio-sin-mitad', '2R·(senθ + cosθ − 1)', 'En un triángulo rectángulo r = (cateto + cateto − hipotenusa)/2: te faltó dividir entre 2.'),
+          X('OB-inradio-semiperimetro', 'R·(senθ + cosθ + 1)', 'Ese es el semiperímetro, (2R·senθ + 2R·cosθ + 2R)/2. El inradio resta la hipotenusa: r = (a + b − c)/2.'),
+          X('OB-inradio-sin-hipotenusa', 'R·(senθ + cosθ)', 'Te faltó restar la hipotenusa: r = (cateto + cateto − hipotenusa)/2.'),
+        ],
+      }[clave];
+      const pasos = [
+        [`Ley de senos: cada lado es 2R por el seno del ángulo opuesto. BC = 2R·sen `, v('t', 'θ'), `, ${catAd} = 2R·sen(90° − θ) = 2R·cosθ y la hipotenusa ${hipo} = 2R·sen 90° = 2R.`],
       ];
-      return { correcta, errores, variables, enunciado, pregunta, solucion, pide };
+      if (dato === 'perimetro') pasos.push(['Perímetro: 2R(1 + senθ + cosθ) = ', v('p', '2p'), ' → ', v('R', 'R = p/(1 + senθ + cosθ)'), '.']);
+      if (pide === 'area' && dato === 'perimetro') pasos.push(['Área: (1/2)·(2R·senθ)·(2R·cosθ) = 2R²·senθ·cosθ = 2p²·senθ·cosθ/(1 + senθ + cosθ)².'],
+        ['Con (1 + senθ + cosθ)² = 1 + sen²θ + cos²θ + 2senθ + 2cosθ + 2senθcosθ = 2(1 + senθ)(1 + cosθ): S = ', v('S', correcta.texto), '.']);
+      else if (pide === 'area') pasos.push(['Área: (1/2)·(2', v('p', 'R'), '·senθ)·(2R·cosθ) = ', v('S', correcta.texto), '.']);
+      else if (pide === 'radio') pasos.push(['R = ', v('S', correcta.texto), '.']);
+      else if (pide === 'perimetro') pasos.push(['Perímetro: 2', v('p', 'R'), '·senθ + 2R·cosθ + 2R = ', v('S', correcta.texto), '.']);
+      else pasos.push([`En un triángulo rectángulo, r = (cateto + cateto − hipotenusa)/2 = (2R·senθ + 2R·cosθ − 2R)/2 = R(senθ + cosθ − 1)`, dato === 'perimetro' ? ', y con R = p/(1 + senθ + cosθ): r = ' : ': r = ', v('S', correcta.texto), '.']);
+      return { correcta, errores, variables, enunciado, pregunta, solucion: pasos, recto, dato, pide };
     });
   }
 
-  // La «constante» de una forma de la ley de tangentes: (a − b)/(a + b) = tan((A − B)/2)·tan(C/2).
-  const FORMAS_TAN = [
-    { forma: '(a − b)/(a + b) = k·tan((A − B)/2)', k: 'tan' },
-    { forma: 'tan((A − B)/2) = k·(a − b)/(a + b)', k: 'cot' },
-    { forma: '(a + b)·tan((A − B)/2) = k·(a − b)', k: 'cot' },
-    { forma: '(a − b)·cot((A − B)/2) = k·(a + b)', k: 'tan' },
+  // La «constante» de una forma de la ley de tangentes: (x − y)/(x + y) = tan((X − Y)/2)·tan(Z/2).
+  const MOLDES = [
+    { forma: '(s1 − s2)/(s1 + s2) = k·tan((A1 − A2)/2)', k: 'tan' },
+    { forma: 'tan((A1 − A2)/2) = k·(s1 − s2)/(s1 + s2)', k: 'cot' },
+    { forma: '(s1 + s2)·tan((A1 − A2)/2) = k·(s1 − s2)', k: 'cot' },
+    { forma: '(s1 − s2)·cot((A1 − A2)/2) = k·(s1 + s2)', k: 'tan' },
+    { forma: '(s1 + s2)/(s1 − s2) = k·cot((A1 − A2)/2)', k: 'cot' },
+    { forma: 'cot((A1 − A2)/2) = k·(s1 + s2)/(s1 − s2)', k: 'tan' },
   ];
+  const LETRAS = [['a', 'b', 'A', 'B', 'C'], ['b', 'c', 'B', 'C', 'A'], ['a', 'c', 'A', 'C', 'B']];
   function tangentesSimbolico(semilla) {
-    return simbolico(semilla, 'ley-tangentes', r => ({ sub: 'constante', forma: r.forma }), rng => {
-      const F = rng.elegir(FORMAS_TAN);
+    return simbolico(semilla, 'ley-tangentes', r => ({ sub: 'constante', molde: r.molde, letras: r.letras, forma: r.forma }), rng => {
+      const molde = rng.entero(0, MOLDES.length - 1), F = MOLDES[molde], L = rng.elegir(LETRAS);
+      const [s1, s2, A1, A2, Z] = L;
+      const pon = t => t.replace(/s1/g, s1).replace(/s2/g, s2).replace(/A1/g, A1).replace(/A2/g, A2);
+      const forma = pon(F.forma);
       const otra = F.k === 'tan' ? 'cot' : 'tan';
-      const t = (fn, arg) => (arg === 'C' ? `${fn} C` : `${fn}(C/2)`);
-      const correcta = { clave: t(F.k, 'C/2'), texto: t(F.k, 'C/2') };
+      const t = (fn, medio = true) => (medio ? `${fn}(${Z}/2)` : `${fn} ${Z}`);
+      const kTxt = t(F.k), correcta = T(kTxt);
+      const semisuma = `tan((${A1} + ${A2})/2)`;
       const errores = [
-        X('OB-tangentes-invertida', t(otra, 'C/2'), `Al despejar, tan((A + B)/2) = cot(C/2) quedó del lado equivocado: dividir entre cot(C/2) es multiplicar por tan(C/2).`),
-        X('OB-angulo-sin-mitad', t(F.k, 'C'), 'En la ley de tangentes van los semiángulos: (A + B)/2 = 90° − C/2, no 90° − C.'),
-        X('OB-sin-semisuma', '1', 'Te olvidaste de tan((A + B)/2). Vale 1 solo si C = 90°; en general es cot(C/2).'),
-        X('OB-funcion-cambiada', t(F.k === 'tan' ? 'sen' : 'cos', 'C/2'), `tan(90° − C/2) es cot(C/2): la co-razón de la tangente es la cotangente, no el ${F.k === 'tan' ? 'seno' : 'coseno'}.`),
+        X('OB-tangentes-invertida', t(otra), F.k === 'tan'
+          ? `Pusiste ${t(otra)}. Como ${semisuma} = cot(${Z}/2), dividir entre cot(${Z}/2) es multiplicar por tan(${Z}/2): k = tan(${Z}/2).`
+          : `Pusiste ${t(otra)}. Al despejar, ${semisuma} = cot(${Z}/2) queda multiplicando: k = cot(${Z}/2).`),
+        X('OB-angulo-sin-mitad', t(F.k, false), `En la ley de tangentes van los semiángulos: (${A1} + ${A2})/2 = 90° − ${Z}/2, así que k = ${kTxt}, no ${t(F.k, false)}.`),
+        X('OB-sin-semisuma', '1', `Te olvidaste de ${semisuma} = cot(${Z}/2). Vale 1 solo si ${Z} = 90°; en general k = ${kTxt}.`),
+        X('OB-funcion-cambiada', t(F.k === 'tan' ? 'sen' : 'cos'), `La constante sale de ${semisuma} = tan(90° − ${Z}/2) = cot(${Z}/2) o de su inverso, tan(${Z}/2); aquí k = ${kTxt}, no ${t(F.k === 'tan' ? 'sen' : 'cos')}.`),
       ];
-      const variables = { k: { nombre: 'constante k', color: 'h' }, d: { nombre: 'semidiferencia (A − B)/2', color: 'o' }, s: { nombre: 'semisuma (A + B)/2', color: 'i' } };
-      const enunciado = ['En todo triángulo ABC, con a, b y c opuestos a A, B y C, se cumple ', F.forma, ', donde k depende solo del ángulo ', 'C', '.'];
+      const variables = { k: { nombre: 'constante k', color: 'h' }, d: { nombre: 'semidiferencia', color: 'o' }, s: { nombre: 'semisuma', color: 'i' } };
+      const enunciado = [`En todo triángulo ABC, con a, b y c opuestos a A, B y C, se cumple ${forma}, donde k depende solo del ángulo ${Z}.`];
       const pregunta = ['¿Qué es k?'];
+      const base = `(${s1} − ${s2})/(${s1} + ${s2}) = tan((${A1} − ${A2})/2)·tan(${Z}/2)`;
       const solucion = [
-        ['Ley de tangentes: (a − b)/(a + b) = tan', v('d', '((A − B)/2)'), ' / tan', v('s', '((A + B)/2)'), '.'],
-        ['Como A + B = 180° − C, ', v('s', '(A + B)/2 = 90° − C/2'), ' y tan((A + B)/2) = cot(C/2).'],
-        ['Así, (a − b)/(a + b) = tan((A − B)/2)·tan(C/2). Llevada a la forma dada: ', F.forma.replace('k', correcta.texto), ', es decir, ', v('k', `k = ${correcta.texto}`), '.'],
+        ['Ley de tangentes: ', `(${s1} − ${s2})/(${s1} + ${s2}) = `, v('d', `tan((${A1} − ${A2})/2)`), ' / ', v('s', semisuma), '.'],
+        [`Como ${A1} + ${A2} = 180° − ${Z}: `, v('s', `(${A1} + ${A2})/2 = 90° − ${Z}/2`), ` y ${semisuma} = cot(${Z}/2) = 1/tan(${Z}/2).`],
+        [`Así, ${base}.`],
+        [`Llevada a la forma pedida queda ${forma.replace('k', kTxt)}; por lo tanto `, v('k', `k = ${kTxt}`), '.'],
       ];
-      return { correcta, errores, variables, enunciado, pregunta, solucion, forma: F.forma };
+      return { correcta, errores, variables, enunciado, pregunta, solucion, molde: molde + 1, letras: L.join(''), forma };
     });
   }
 

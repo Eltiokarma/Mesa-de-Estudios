@@ -2,7 +2,7 @@
   "plantilla": "trig-extremos",
   "tolerancia": 0.000001,
   "nota": "Ángulos en grados en entrada. respuesta es un número, salvo en racional/simplifica (clave del intervalo int:inf:sup:cerradoIzq:cerradoDer) y en area-ct (clave area:c0|cs|cc|csc|ct).",
-  "verificacion": "Verificador independiente (subagente, 8 nov 2026): los 25 casos se resolvieron desde el enunciado. Extremos por muestreo denso con bordes y a mano, rangos con análisis del dominio (cos x ≠ 1), senoides por raíces y áreas de la C.T. por coordenadas con ajuste exacto en la base [1, sen θ, cos θ, sen θ cos θ, tan θ]. Coinciden los 25 en respuesta y exacta; sin discrepancias.",
+  "verificacion": "",
   "casos": [
     {
       "semilla": 0,
@@ -60,15 +60,15 @@
       "entrada": {
         "tipo": "secante",
         "sub": "otra",
-        "p": 2,
-        "q": 3,
-        "desde": 120,
-        "hasta": 180,
+        "p": 6,
+        "q": 2,
+        "desde": 210,
+        "hasta": 240,
         "pide": "valor"
       },
       "esperado": {
-        "respuesta": -2,
-        "exacta": "−2"
+        "respuesta": 3.6666666666666665,
+        "exacta": "11/3"
       }
     },
     {
@@ -184,14 +184,17 @@
       "entrada": {
         "tipo": "cuadratica",
         "sub": "hora",
-        "k": 2,
-        "B": 4,
-        "C": 22,
-        "pide": "max"
+        "base": "sen",
+        "per": 12,
+        "ini": 0,
+        "K": 3,
+        "B": 6,
+        "C": 15,
+        "pide": "hora"
       },
       "esperado": {
-        "respuesta": 25,
-        "exacta": "25 °C"
+        "respuesta": 2,
+        "exacta": "2 h"
       }
     },
     {
@@ -267,14 +270,17 @@
       "entrada": {
         "tipo": "cuadratica",
         "sub": "hora",
-        "k": 3,
-        "B": 6,
-        "C": 15,
+        "base": "cos",
+        "per": 12,
+        "ini": 6,
+        "K": -1,
+        "B": 2,
+        "C": 20,
         "pide": "hora"
       },
       "esperado": {
-        "respuesta": 2,
-        "exacta": "2 h"
+        "respuesta": 10,
+        "exacta": "10 h"
       }
     },
     {
@@ -323,7 +329,7 @@
       },
       "esperado": {
         "respuesta": "area:-1/2|1/2|-1/2|0/1|0/1",
-        "exacta": "(1/2)(sen θ − 1 − cos θ)"
+        "exacta": "(1/2)(sen θ − cos θ − 1)"
       }
     },
     {
@@ -378,15 +384,15 @@
       "entrada": {
         "tipo": "secante",
         "sub": "otra",
-        "p": 2,
-        "q": 3,
-        "desde": 180,
-        "hasta": 240,
+        "p": -2,
+        "q": -1,
+        "desde": 210,
+        "hasta": 225,
         "pide": "valor"
       },
       "esperado": {
-        "respuesta": -2,
-        "exacta": "−2"
+        "respuesta": -1.3333333333333333,
+        "exacta": "−4/3"
       }
     },
     {

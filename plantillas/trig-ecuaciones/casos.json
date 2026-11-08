@@ -2,7 +2,7 @@
   "plantilla": "trig-ecuaciones",
   "tolerancia": 0.000001,
   "nota": "Ángulos en grados en entrada; respuesta en la unidad de modo (grados, radianes, horas, segundos, número de soluciones o m³). Intervalos semiabiertos: desde ≤ x < hasta.",
-  "verificacion": "Verificador independiente (subagente, 8 nov 2026): los 24 casos se resolvieron desde el enunciado por fuerza bruta, con rejilla exacta de 1/240° y barrido de cambios de signo. Se excluyeron los puntos con tan, sec o el denominador indefinidos, y varios casos se resolvieron además por identidades. Coinciden los 24 en respuesta y exacta; sin discrepancias.",
+  "verificacion": "",
   "casos": [
     {
       "semilla": 0,
@@ -78,15 +78,15 @@
       "entrada": {
         "tipo": "cuadratica",
         "sub": "senales",
-        "forma": "cos-menos",
+        "forma": "pi-mas",
         "Aesc": 3,
         "B": 2,
-        "T": 24,
-        "pide": "suma"
+        "T": 18,
+        "pide": "cuantas"
       },
       "esperado": {
-        "respuesta": 90,
-        "exacta": "90 s"
+        "respuesta": 6,
+        "exacta": "6 veces"
       }
     },
     {
@@ -94,15 +94,16 @@
       "entrada": {
         "tipo": "cuadratica",
         "sub": "coseno",
-        "alfa": 1,
-        "beta": -1,
+        "alfa": 2,
+        "beta": 1,
         "gamma": 1,
-        "T": 24,
+        "q": 3,
+        "T": 18,
         "pide": "cuantas"
       },
       "esperado": {
-        "respuesta": 6,
-        "exacta": "6 veces"
+        "respuesta": 9,
+        "exacta": "9 veces"
       }
     },
     {
@@ -163,13 +164,16 @@
       "semilla": 9,
       "entrada": {
         "tipo": "cubica",
+        "forma": "cos",
         "k": -2,
-        "modo": "cuantas",
-        "pide": "cuantas"
+        "hasta": 360,
+        "modo": "cisterna",
+        "pide": "cisterna",
+        "h": 4
       },
       "esperado": {
-        "respuesta": 4,
-        "exacta": "4 soluciones"
+        "respuesta": 50.26548245743669,
+        "exacta": "16π m³"
       }
     },
     {
@@ -243,14 +247,15 @@
       "semilla": 22,
       "entrada": {
         "tipo": "cubica",
-        "k": -1,
-        "modo": "cisterna",
-        "pide": "cisterna",
-        "h": 3
+        "forma": "cos",
+        "k": -2,
+        "hasta": 360,
+        "modo": "cuantas",
+        "pide": "cuantas"
       },
       "esperado": {
-        "respuesta": 37.69911184307752,
-        "exacta": "12π m³"
+        "respuesta": 4,
+        "exacta": "4 soluciones"
       }
     },
     {
@@ -278,15 +283,15 @@
       "entrada": {
         "tipo": "cuadratica",
         "sub": "senales",
-        "forma": "pi-menos",
+        "forma": "directa",
         "Aesc": 1,
         "B": 0,
-        "T": 24,
+        "T": 18,
         "pide": "cuantas"
       },
       "esperado": {
-        "respuesta": 6,
-        "exacta": "6 veces"
+        "respuesta": 5,
+        "exacta": "5 veces"
       }
     },
     {
@@ -310,13 +315,16 @@
       "semilla": 44,
       "entrada": {
         "tipo": "cubica",
-        "k": -1,
-        "modo": "radianes",
-        "pide": "suma"
+        "forma": "cos",
+        "k": -2,
+        "hasta": 360,
+        "modo": "cisterna",
+        "pide": "cisterna",
+        "h": 2
       },
       "esperado": {
-        "respuesta": 12.566370614359172,
-        "exacta": "4π"
+        "respuesta": 25.132741228718345,
+        "exacta": "8π m³"
       }
     },
     {
@@ -371,19 +379,35 @@
       }
     },
     {
+      "semilla": 25,
+      "entrada": {
+        "tipo": "cubica",
+        "forma": "sen",
+        "k": 2,
+        "hasta": 720,
+        "modo": "cuantas",
+        "pide": "cuantas"
+      },
+      "esperado": {
+        "respuesta": 8,
+        "exacta": "8 soluciones"
+      }
+    },
+    {
       "semilla": "entrada-1",
       "entrada": {
         "tipo": "cuadratica",
         "sub": "coseno",
-        "alfa": 2,
-        "beta": -3,
-        "gamma": 3,
-        "T": 24,
+        "alfa": 1,
+        "beta": 1,
+        "gamma": 1,
+        "q": 3,
+        "T": 18,
         "pide": "cuantas"
       },
       "esperado": {
-        "respuesta": 6,
-        "exacta": "6 veces"
+        "respuesta": 9,
+        "exacta": "9 veces"
       }
     },
     {

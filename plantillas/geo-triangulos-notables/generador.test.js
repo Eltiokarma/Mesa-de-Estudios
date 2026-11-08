@@ -118,6 +118,8 @@ function recalcular(p) {
     if (d.sub === 'pies-alturas') {
       const T = porAngulos(d.B, d.C), E = pie(T.B, T.A, T.C), F = pie(T.C, T.A, T.B), O = circuncentro(T.A, T.B, T.C);
       if (d.pide === 'AEF') return Math.round(angulo(E, T.A, F) * 1e9) / 1e9;
+      if (d.pide === 'AFE') return Math.round(angulo(F, T.A, E) * 1e9) / 1e9;
+      if (d.pide === 'OAB') return Math.round(angulo(T.A, O, T.B) * 1e9) / 1e9;
       const c = Math.abs(punto(uni(sub(O, T.A)), uni(sub(F, E))));
       return Math.round(Math.acos(c) / RAD * 1e9) / 1e9;
     }
@@ -150,7 +152,7 @@ function recalcular(p) {
     return d.pide === 'CF' ? dist(C, F) : dist(C, A);
   }
   if (d.tipo === 'mitades') {
-    const TAN = { 37: 3 / 4, 53: 4 / 3, 60: Math.sqrt(3) };    // notables de academia (triángulo 3-4-5)
+    const TAN = { 37: 3 / 4, 53: 4 / 3, 60: Math.sqrt(3), 74: 24 / 7 };    // notables de academia (triángulo 3-4-5)
     const H = [0, 0], B = [0, d.h], A = [-d.h / TAN[d.A], 0], C = [d.h / TAN[d.C], 0];
     const P = corte(A, bis(A, B, C), H, [0, 1]), Q = corte(C, bis(C, A, B), H, [0, 1]);
     return dist(P, Q);
@@ -225,7 +227,7 @@ test('salen todos los tipos y subtipos; misma forma y misma unidad en las altern
     'desigualdad/diagonal/cuantos', 'desigualdad/punto-interior', 'desigualdad/doble-angulo/max', 'desigualdad/doble-angulo/min',
     'desigualdad/contar', 'desigualdad/punto-dos', 'desigualdad/isosceles-ceviana', 'obtusangulo/relacion', 'obtusangulo/entre-cuantos', 'obtusangulo/entre-max', 'obtusangulo/entre-min', 'obtusangulo/perimetros',
     'obtusangulo/opuesto-cuantos', 'obtusangulo/acutangulo', 'angulos/incentro', 'angulos/excentro', 'angulos/int-ext',
-    'angulos/ortocentro', 'angulos/circuncentro', 'angulos/orto-incentro', 'angulos/pies-alturas/AEF', 'angulos/pies-alturas/AO-EF',
+    'angulos/ortocentro', 'angulos/circuncentro', 'angulos/orto-incentro', 'angulos/pies-alturas/AEF', 'angulos/pies-alturas/AFE', 'angulos/pies-alturas/OAB', 'angulos/pies-alturas/AO-EF',
     'ortocentro/CF', 'ortocentro/AC', 'mitades', 'arco/AE', 'arco/IE'];
   assert.deepEqual([...vistos].sort(), esperados.sort());
 });

@@ -91,7 +91,7 @@
       if (Math.abs(p - r) < 1e-9 * Math.max(1, r)) return q === 1 ? P.formatear(r) : `${r}/${q}`;
     }
     const t = P.radical(x);
-    return /,/.test(t) ? null : t;
+    return /[,/]/.test(t) ? null : t; // «√241/2» se lee mal: no entra
   }
   const n = x => exacto(x) || P.formatear(x, 2);
   // Fracción con denominador pequeño (para que la respuesta sea «de academia»).
@@ -108,7 +108,7 @@
 
   function generar(semilla) {
     const rng = Azar.crear('geo-proporcionalidad|' + semilla);
-    const tipo = rng.elegir(['thales', 'thales', 'bisectriz', 'bisectriz', 'incentro', 'bis-semejanza', 'cuerdas', 'cuerdas', 'raices-areas', 'mastil']);
+    const tipo = rng.elegir(['thales', 'thales', 'thales', 'bisectriz', 'bisectriz', 'incentro', 'bis-semejanza', 'cuerdas', 'cuerdas', 'raices-areas', 'raices-areas', 'mastil', 'mastil']);
     // El subtipo (y lo que se pide) se eligen una sola vez: así los reintentos no sesgan el reparto.
     const sub = SUBS[tipo] ? rng.elegir(SUBS[tipo]) : null;
     const plan = { sub, pide: PIDES[sub] ? rng.elegir(PIDES[sub]) : null };
@@ -129,7 +129,7 @@
     if (!exacto(o.correcta) || (!exacto(o.correcta).includes('√') && !simple(o.correcta, 8))) return null;
     // Misma forma: si la correcta no lleva raíz, tampoco sus distractores.
     const conRaiz = exacto(o.correcta).includes('√');
-    const errores = o.errores.filter(e => exacto(e.valor) !== null && (conRaiz || !exacto(e.valor).includes('√')));
+    const errores = o.errores.filter(e => e && exacto(e.valor) !== null && (conRaiz || !exacto(e.valor).includes('√')));
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto });
     return {
       id: `geo-proporcionalidad#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
@@ -171,6 +171,7 @@
       const a = rng.entero(2, 12), b = rng.entero(2, 12), k = rng.entero(1, 6);
       if (a === b) return null;
       const g = mcd(a, b), d = (a + b) / g * k * rng.entero(1, 3);
+      if (d === a + b) return null; // con DF = AC las dos secantes se cortarían igual: sin gracia
       const { EF } = calc.thalesTotal(a, b, d);
       const variables = { a: { nombre: 'AB', color: 'o' }, b: { nombre: 'BC', color: 'i' }, d: { nombre: 'DF', color: 'h' }, x: { nombre: 'EF', color: 'd' } };
       const enunciado = ['Tres caminos rectos y paralelos, L₁, L₂ y L₃, son cortados por dos carreteras. La primera carretera pasa por los pueblos A, B y C (uno en cada camino, en ese orden) y la segunda por los pueblos D, E y F (D en L₁, E en L₂ y F en L₃). Se sabe que ',
@@ -178,7 +179,7 @@
       const pregunta = ['¿Qué distancia hay entre los pueblos ', v('x', 'E y F'), '?'];
       const errores = [
         hi('GE22-parte-equivocada', d * a / (a + b), 'Esa es la distancia DE: emparejaste EF con AB. EF corresponde a BC, porque los dos están entre L₂ y L₃.'),
-        hi('GE22-parte-parte', d * b / a, `Usaste EF/DF = BC/AB (parte sobre parte de un lado y parte sobre todo del otro). Debe ser la misma comparación en las dos secantes: EF/DF = BC/AC.`),
+        b >= a ? null : hi('GE22-parte-parte', d * b / a, `Usaste EF/DF = BC/AB (parte sobre parte de un lado y parte sobre todo del otro). Debe ser la misma comparación en las dos secantes: EF/DF = BC/AC.`),
         h('GP-mitad', d / 2, 'Partiste DF por la mitad, como si E fuera el punto medio. E divide a DF en la misma razón en que B divide a AC.'),
         h('GP-resta', d - b, `Restaste BC de DF. Los segmentos de dos secantes distintas no se restan: son proporcionales.`),
       ];
@@ -201,7 +202,7 @@
         : ['En el triángulo ABC, ', v('L', `BC = ${L(BC)}`), '. Se ubican M en AB y N en AC con MN ∥ BC, ', v('a', `AM = ${L(a)}`), ' y ', v('b', `MB = ${L(b)}`), '.'];
       const pregunta = ['¿Cuánto mide ', v('x', 'MN'), '?'];
       const errores = [
-        hi('GE22-parte-parte', BC * a / b, `Usaste MN/BC = AM/MB (parte sobre parte). Los triángulos AMN y ABC son semejantes: se compara AM con todo AB.`),
+        a >= b ? null : hi('GE22-parte-parte', BC * a / b, `Usaste MN/BC = AM/MB (parte sobre parte). Los triángulos AMN y ABC son semejantes: se compara AM con todo AB.`),
         hi('GE22-parte-equivocada', BC * b / (a + b), 'Usaste MB/AB en vez de AM/AB. MN está del lado de A: corresponde a AM.'),
         h('GP-base-media', BC / 2, 'Tomaste MN como base media (la mitad de BC). Eso solo pasa si M es el punto medio de AB.'),
         h('GP-resta', BC - b, 'Restaste MB de BC. Los lados de dos triángulos semejantes no se restan: se multiplican por la misma razón.'),
@@ -225,7 +226,7 @@
     const pregunta = ['¿Cuánto mide ', v('x', 'RC'), '?'];
     const errores = [
       hi('GE22-parte-equivocada', BC * a / (a + b), 'Esa es la medida de BR. Al pasar por Q, la razón se da vuelta: CR/RB = CQ/QA = PB/AP.'),
-      hi('GE22-parte-parte', BC * b / a, 'Usaste RC/BC = PB/AP (parte sobre parte). Con la paralela QR ∥ AB, se compara CR con todo CB, igual que CQ con todo CA.'),
+      b >= a ? null : hi('GE22-parte-parte', BC * b / a, 'Usaste RC/BC = PB/AP (parte sobre parte). Con la paralela QR ∥ AB, se compara CR con todo CB, igual que CQ con todo CA.'),
       h('GP-mitad', BC / 2, 'Supusiste que R es el punto medio de BC. R divide a BC en la misma razón en que Q divide a CA.'),
       h('GP-copia-segmento', b, 'Copiaste PB en RC. Los segmentos se trasladan por razones, no por longitudes: PB está en AB y RC en BC, que miden distinto.'),
     ];
@@ -255,7 +256,7 @@
         pa('GE8-bisectriz-mitad', a / 2, 'Supusiste que la bisectriz parte el lado opuesto por la mitad. Eso solo pasa si AB = AC; la bisectriz lo divide en la razón de los lados que la rodean.'),
         h('GP-bisectriz-invertida', a * b / (b + c), 'Pusiste la razón al revés: esa es la medida de DC. BD está junto a B, así que le corresponde el lado AB: BD/DC = AB/AC.'),
         h('GP-parte-sobre-parte', a * c / b, `Escribiste BD/BC = AB/AC: comparaste una parte con el todo de un lado y una parte con la otra parte del otro. Es BD/DC = AB/AC, con BD + DC = BC.`),
-        h('GP-copia-lado', c, 'Copiaste AB en BD, como si el triángulo ABD fuera isósceles. La bisectriz no hace iguales esos dos segmentos.'),
+        c < a ? h('GP-copia-lado', c, 'Copiaste AB en BD, como si el triángulo ABD fuera isósceles. La bisectriz no hace iguales esos dos segmentos.') : null,
       ];
       const solucion = [
         ['Teorema de la bisectriz interior: BD/DC = AB/AC = ', v('c', `${c}`), '/', v('b', `${b}`), '.'],
@@ -320,7 +321,7 @@
     const lados = [v('c', `AB = ${L(c)}`), ', ', v('b', `AC = ${L(b)}`), ' y ', v('a', `BC = ${L(a)}`)];
     if (sub === 'razon') {
       const r = calc.incentroRazon(a, b, c);
-      if (exacto(r) === null) return null;
+      if (exacto(r) === null || Number.isInteger(r)) return null; // entera, sería la única entera entre fracciones
       variables.x.nombre = 'AI/ID';
       const enunciado = ['En el triángulo ABC, ', ...lados, '. La bisectriz del ángulo A corta a BC en D, e I es el incentro del triángulo.'];
       const pregunta = ['¿Cuánto vale la razón ', v('x', 'AI/ID'), '?'];
@@ -404,7 +405,7 @@
     const L = x => `${n(x)} ${u}`;
     if (sub === 'cuadrado') {
       const pide = plan.pide;
-      const [Lb, p] = pide === 'AF' ? (k => rng.elegir(TRIPLES).map(x => x * k))(rng.entero(1, 5)) : [rng.entero(3, 20), rng.entero(1, 19)];
+      const [Lb, p] = pide === 'AF' ? (k => rng.elegir(TRIPLES).map(x => x * k))(rng.elegir([1, 2, 3, 4, 5, 7, 14])) : [rng.entero(3, 20), rng.entero(1, 19)];
       if (p >= Lb || mcd(Lb, p) !== 1 && pide === 'razon') return null;
       const { AE, AF } = calc.cuadrado(Lb, p);
       if (pide === 'AF' && !simple(AF, 12)) return null;
@@ -433,6 +434,8 @@
         h('GP-bisectriz-invertida', AE * p / (Lb + p), 'Esa es la medida de FE. AF está del lado de A, que corresponde al lado AB del cuadrado: AF/FE = AB/BE.'),
         h('GP-resta', AE - p, 'Restaste BE de AE. Los segmentos que corta la diagonal son proporcionales, no se obtienen restando.'),
         h('GP-copia-lado', Lb, 'Tomaste AF igual al lado del cuadrado, como si el triángulo ABF fuera isósceles. No lo es: el ángulo BAF no mide 45°.'),
+        h('GP-lado-por-AE', Lb * Lb / (Lb + p), 'Repartiste el lado del cuadrado en vez de AE. La bisectriz BF corta el lado AE del triángulo ABE: lo que se reparte es AE.'),
+        h('GP-be-por-ae', p * Lb / (Lb + p), 'Repartiste BE en vez de AE. La bisectriz BF corta el lado opuesto al vértice B, que es AE.'),
       ];
       const solucion = [
         ['AE por Pitágoras en el triángulo ABE: AE = √(', v('L', `${Lb}`), '² + ', v('p', `${p}`), `²) = ${n(AE)} ${u}.`],
@@ -465,7 +468,7 @@
   // ---------- cuerdas y ángulos inscritos ----------
   const ALTURAS = (() => {
     const t = {};
-    for (const hh of [8, 12, 15, 20, 24]) {
+    for (const hh of [8, 9, 12, 15, 16, 20, 21, 24, 30, 36]) {
       t[hh] = [];
       for (let m = 1; m < 60; m++) { const H = Math.sqrt(m * m + hh * hh); if (Number.isInteger(H)) t[hh].push(H); }
     }
@@ -499,10 +502,10 @@
     }
     if (sub === 'iguales') {
       u = 'm';
-      const s = rng.entero(3, 16), e = rng.entero(2, 15);
+      const s = rng.entero(3, 24), e = rng.entero(2, 23);
       if (e >= s || (s * s) % e !== 0) return null;
       const { AD, ED } = calc.cuerdasIguales(s, e);
-      if (ED > 80) return null;
+      if (ED > 150) return null;
       const variables = { s: { nombre: 'AB = AC', color: 'o' }, e: { nombre: 'AE', color: 'i' }, x: { nombre: 'ED', color: 'd' } };
       const enunciado = ['Un jardín tiene borde circular. Desde un punto A del borde salen dos caminos rectos iguales, ', v('s', `AB = AC = ${L(s)}`), ', hasta los puntos B y C del borde, y un camino recto une B con C. Otro camino recto sale de A, cruza BC en E y llega al borde en D. Se sabe que ', v('e', `AE = ${L(e)}`), '.'];
       const pregunta = ['¿Cuánto mide el tramo ', v('x', 'ED'), '?'];
@@ -521,7 +524,7 @@
       return { correcta: ED, errores, variables, enunciado, pregunta, solucion, datos: { tipo: 'cuerdas', sub, s, e, u } };
     }
     // diametro-altura
-    const hh = rng.elegir([8, 12, 12, 15, 20, 24, 24]);
+    const hh = rng.elegir([8, 9, 12, 15, 16, 20, 21, 24, 30, 36]);
     const op = ALTURAS[hh];
     if (op.length < 2) return null;
     const c = rng.elegir(op), b = rng.elegir(op);
@@ -550,7 +553,7 @@
     const k = rng.elegir([1, 1, 2, 3]);
     const m1 = rng.entero(1, 5), m2 = rng.entero(1, 6), m3 = rng.entero(1, 6);
     if (m1 === m2 && m2 === m3) return null;
-    const S1 = k * m1 * m1, S2 = k * m2 * m2, S3 = k * m3 * m3, S = calc.raicesAreas(S1, S2, S3);
+    const S1 = k * m1 * m1, S2 = k * m2 * m2, S3 = k * m3 * m3, S = k * (m1 + m2 + m3) ** 2; // = calc.raicesAreas, sin error de redondeo
     const A = x => `${n(x)} ${u}²`;
     const variables = { s1: { nombre: 'S₁', color: 'o' }, s2: { nombre: 'S₂', color: 'i' }, s3: { nombre: 'S₃', color: 'h' }, S: { nombre: 'área total', color: 'd' } };
     const ctx = rng.moneda(); if (ctx) u = 'm';
@@ -611,13 +614,13 @@
       pa('GE8-bisectriz-mitad', dist(a / 2), 'Pusiste el mástil en el punto medio de BC. La bisectriz parte BC en la razón AB/AC, no por la mitad.'),
       h('GP-bisectriz-invertida', dist(a * b / (b + c)), 'Usaste DC en vez de BD: BD está junto a B, así que le corresponde AB en la razón BD/DC = AB/AC.'),
       h('GP-suma-sin-pitagoras', BD + H, 'Sumaste BD y la altura. El mástil es perpendicular al suelo: la punta, D y B forman un triángulo rectángulo, y la distancia es su hipotenusa.'),
-      pa('GE11-resta', BD > H ? sq(BD * BD - H * H) : sq(H * H - BD * BD), 'Restaste los cuadrados. La distancia pedida es la hipotenusa del triángulo rectángulo (BD y la altura son los catetos): se suman.'),
+      hi('GE11-resta', BD > H ? sq(BD * BD - H * H) : sq(H * H - BD * BD), 'Restaste los cuadrados. La distancia pedida es la hipotenusa del triángulo rectángulo (BD y la altura son los catetos): se suman.'),
     ];
     const solucion = [
       ['Teorema de la bisectriz en el suelo: BD/DC = AB/AC = ', v('c', `${c}`), '/', v('b', `${b}`), '.'],
       [`BD = ${a}·${c}/${b + c} = ${n(BD)} ${u}.`],
       ['El mástil es perpendicular al suelo, así que es perpendicular a DB: el triángulo con vértices en la punta, D y B es rectángulo en D.'],
-      [v('x', 'Distancia'), ` = √(${n(BD)}² + `, v('H', `${H}`), `²) = √${n(BD * BD + H * H)} = `, v('x', L(TB)), '.'],
+      [v('x', 'Distancia'), ` = √(${n(BD)}² + `, v('H', `${H}`), `²) = ${exacto(TB) === '√' + n(BD * BD + H * H) ? '' : `√${n(BD * BD + H * H)} = `}`, v('x', L(TB)), '.'],
     ];
     return { correcta: TB, errores, variables, enunciado, pregunta, solucion, datos: { tipo: 'mastil', a, b, c, H, u } };
   }

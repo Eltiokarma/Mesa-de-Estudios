@@ -10,7 +10,7 @@ const { probarGenerador } = require('../../nucleo/probar-generador.js');
 // Camino independiente: se dibuja cada triángulo en el plano con el coseno de academia (3-4-5, 7-24-25) y se
 // mide todo con coordenadas (distancias, atan2, fórmula del cordón para áreas, búsqueda numérica de raíces y de
 // mínimos). El seno sale de √(1 − cos²) porque son ángulos de un triángulo.
-const COS = { 16: 24 / 25, 30: Math.sqrt(3) / 2, 37: 0.8, 45: Math.SQRT1_2, 53: 0.6, 60: 0.5, 74: 7 / 25, 90: 0 };
+const COS = { 16: 24 / 25, 32: 527 / 625, 30: Math.sqrt(3) / 2, 37: 0.8, 45: Math.SQRT1_2, 53: 0.6, 60: 0.5, 74: 7 / 25, 90: 0 };
 const cosA = g => (g in COS ? COS[g] : -COS[180 - g]);
 const senA = g => Math.sqrt(1 - cosA(g) ** 2);
 const cerca = (a, b) => Math.abs(a - b) < 1e-7 * Math.max(1, Math.abs(b));
@@ -43,11 +43,11 @@ function porAngulos(B, C) {
 // Simbólicos: se evalúa el texto de cada alternativa con un θ (o un triángulo) concreto, y se devuelve la única
 // alternativa que coincide con lo medido por coordenadas.
 function evaluar(texto, vars) {
-  let e = texto.replace(/p²/g, '(p*p)').replace(/senθ/g, 'S').replace(/cosθ/g, 'K').replace(/·/g, '*')
-    .replace(/(\d)\(/g, '$1*(').replace(/(\d)p/g, '$1*p').replace(/\)\(/g, ')*(');
-  e = e.replace(/(sen|cos|tan|cot)\(C\/2\)/g, (m, f) => `F.${f}(c/2)`).replace(/(sen|cos|tan|cot) C/g, (m, f) => `F.${f}(c)`);
+  let e = texto.replace(/−/g, '-').replace(/p²/g, '(p*p)').replace(/R²/g, '(R*R)').replace(/senθ/g, 'S').replace(/cosθ/g, 'K').replace(/·/g, '*')
+    .replace(/(\d)([pRSK(])/g, '$1*$2').replace(/\)\(/g, ')*(');
+  e = e.replace(/(sen|cos|tan|cot)\(([ABC])\/2\)/g, (m, f, l) => `F.${f}(z/2)`).replace(/(sen|cos|tan|cot) ([ABC])/g, (m, f) => `F.${f}(z)`);
   const F = { sen: Math.sin, cos: Math.cos, tan: Math.tan, cot: x => 1 / Math.tan(x) };
-  return Function('p', 'S', 'K', 'c', 'F', `return ${e};`)(vars.p, vars.S, vars.K, vars.c, F);
+  return Function('p', 'R', 'S', 'K', 'z', 'F', `return ${e};`)(vars.p, vars.R, vars.S, vars.K, vars.z, F);
 }
 function unicaQueVale(p, objetivo, vars) {
   const buenas = p.alternativas.filter(a => cerca(evaluar(a.texto, vars), objetivo));
@@ -57,20 +57,23 @@ function unicaQueVale(p, objetivo, vars) {
 function recalcular(p) {
   const d = p._datos;
   if (d.sub === 'en-funcion') {
-    // θ = 35° y p = 3: triángulo con hipotenusa 1, escalado hasta perímetro 2p; R es media hipotenusa.
+    // θ = 35°: triángulo con hipotenusa 1 por coordenadas, escalado a perímetro 2p = 6 o a circunradio R = 2.
     const t = 35 * Math.PI / 180, V = [[0, 0], [Math.cos(t), 0], [Math.cos(t), Math.sin(t)]];
-    const per = dist(V[0], V[1]) + dist(V[1], V[2]) + dist(V[2], V[0]), k = 6 / per;
-    const objetivo = d.pide === 'area' ? area(...V) * k * k : dist(V[0], V[2]) * k / 2;
-    return unicaQueVale(p, objetivo, { p: 3, S: Math.sin(t), K: Math.cos(t) });
+    const per = dist(V[0], V[1]) + dist(V[1], V[2]) + dist(V[2], V[0]);
+    const k = d.dato === 'perimetro' ? 6 / per : 4;                   // la hipotenusa (1) pasa a medir 2R = 4
+    const S = area(...V) * k * k, P = per * k, R = k / 2;
+    const r = 2 * S / P;                                               // S = r · semiperímetro
+    const objetivo = { area: S, radio: R, inradio: r, perimetro: P }[d.pide];
+    return unicaQueVale(p, objetivo, { p: 3, R: 2, S: Math.sin(t), K: Math.cos(t) });
   }
   if (d.sub === 'constante') {
-    // Triángulo con a = 7, b = 4 y C = 70°: se miden A y B, y k sale de despejar la forma dada.
-    const C = 70 * Math.PI / 180, Cv = [0, 0], Bv = [7, 0], Av = [4 * Math.cos(C), 4 * Math.sin(C)];
-    const A = anguloEn(Av, Bv, Cv), B = anguloEn(Bv, Av, Cv), a = 7, b = 4, td = Math.tan((A - B) / 2);
-    const k = { '(a − b)/(a + b) = k·tan((A − B)/2)': (a - b) / (a + b) / td, 'tan((A − B)/2) = k·(a − b)/(a + b)': td / ((a - b) / (a + b)),
-      '(a + b)·tan((A − B)/2) = k·(a − b)': (a + b) * td / (a - b), '(a − b)·cot((A − B)/2) = k·(a + b)': (a - b) / td / (a + b) }[d.forma];
-    assert.ok(Number.isFinite(k), 'forma desconocida');
-    return unicaQueVale(p, k, { c: C });
+    // Lados x = 7 e y = 4 con el ángulo Z = 70° entre ellos: se miden los otros dos ángulos y se despeja k.
+    const Z = 70 * Math.PI / 180, O = [0, 0], P1 = [7, 0], P2 = [4 * Math.cos(Z), 4 * Math.sin(Z)];
+    const X = anguloEn(P2, P1, O), Y = anguloEn(P1, P2, O), x = 7, y = 4, td = Math.tan((X - Y) / 2);
+    const k = [null, (x - y) / (x + y) / td, td / ((x - y) / (x + y)), (x + y) * td / (x - y), (x - y) / td / (x + y),
+      (x + y) / (x - y) * td, (1 / td) / ((x + y) / (x - y))][d.molde];
+    assert.ok(Number.isFinite(k), 'molde desconocido');
+    return unicaQueVale(p, k, { z: Z });
   }
   if (d.tipo === 'ceviana') {
     const B = [0, 0], C = [d.a, 0];
@@ -92,7 +95,8 @@ function recalcular(p) {
     }
     const k = d.k[0] / d.k[1];
     const a = raices(x => Math.tan((Math.atan2(x, d.s - x) - Math.atan2(d.s - x, x)) / 2) - k, d.s / 2 + 1e-9, d.s - 1e-9)[0];
-    return a * (d.s - a) / 2;
+    const bb = d.s - a;
+    return d.pide === 'cateto' ? a : d.pide === 'hipotenusa' ? Math.hypot(a, bb) : a * bb / 2;
   }
   if (d.tipo === 'areas') {
     const A = [0, 0], B = [d.c, 0], C = [d.b * cosA(d.A), d.b * senA(d.A)];
@@ -120,6 +124,7 @@ function recalcular(p) {
   if (d.tipo === 'doblez') {
     const A = [0, 0], C = [d.L, d.W];
     const e = raices(x => dist([x, 0], A) - dist([x, 0], C), 1e-9, d.L)[0];
+    if (d.sub === 'pliegue') return dist([e, 0], [d.L - e, d.W]);      // F es el simétrico de E respecto del centro
     return d.sub === 'longitud' ? e : Math.cos(anguloEn([e, 0], A, C));
   }
   throw new Error('tipo desconocido ' + d.tipo);
@@ -141,7 +146,7 @@ test('salen los siete tipos y sus subtipos', () => {
   for (let s = 0; s < 600; s++) { const d = gen.generar(s)._datos; vistos.add(d.tipo); vistos.add(`${d.tipo}/${d.sub || d.pide}`); }
   for (const t of ['circunradio/en-funcion', 'ley-tangentes/constante', 'ceviana/BD', 'ceviana/DC', 'faro/directo', 'faro/depresion', 'faro/visuales', 'ley-tangentes/semidiferencia', 'ley-tangentes/rectangulo',
     'areas/area', 'areas/bisectriz', 'circunradio/area-R', 'circunradio/lado-R', 'circunradio/perimetro', 'lado-minimo/valor', 'lado-minimo/lados',
-    'doblez/coseno', 'doblez/longitud']) assert.ok(vistos.has(t), `no sale ${t}`);
+    'doblez/coseno', 'doblez/longitud', 'doblez/pliegue']) assert.ok(vistos.has(t), `no sale ${t}`);
 });
 
 test('alternativas sin decimales, con una sola unidad y colores válidos', () => {

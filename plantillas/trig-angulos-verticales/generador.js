@@ -39,17 +39,18 @@
  *                     sub 'altura': da b, D y t = tan θ; respuesta a. sub 'pura': lo mismo en un triángulo ABC recto
  *                     en B con AB = D, E en BC con BE = b y tan(∠EAC) = t; respuesta EC (= a).
  *                     sub 'distancia': da a, b, t; las dos distancias D que cumplen t·D² − a·D + t·b(a + b) = 0;
- *                     pide 'menor' o 'mayor' de las dos; con pide 'traslado' hay un láser a D0 m (más lejos que
+ *                     pide 'menor' o 'mayor' de las dos; con pide 'traslado' hay un fotógrafo a D0 m (más lejos que
  *                     las dos) y la respuesta es lo mínimo que debe acercarse: D0 − (la mayor).
  *   dron-camino       Dron a altura h sobre el punto O del suelo; camino AB en el suelo alineado con O, con OA = p
  *                     y AB = L (A entre O y B); el camino se ve bajo θ con tan θ = t; el dron vuela más alto que X m.
  *                     { p, L, t, X }. Las alturas posibles cumplen t·h² − L·h + t·p(p + L) = 0; respuesta: la que
  *                     supera X.
- *   puente-simbolico  (sale en cerca del 11 % de las semillas, por un sorteo aparte) Pilar BT de altura h sobre el
- *                     tablero de un puente; un tirante une T con P del tablero, y desde P se ve T con elevación angulo
- *                     ('α' o '2θ'). { sub, angulo }. sub 'suma': recorrido BP + PT = h(cot + csc) = h·cot(mitad);
- *                     sub 'resta': PT − BP = h(csc − cot) = h·tan(mitad). Respuesta simbólica (texto, armarTexto),
- *                     p. ej. «h·cot(α/2)» o «h·tan θ».
+ *   puente-simbolico  (sale en cerca del 11 % de las semillas, por un sorteo aparte) Pilar, poste o antena BT de
+ *                     altura `altura` (letra h, H, b o k); un cable une T con P del piso, y desde P se ve T con elevación
+ *                     `angulo` ('α', '2θ', 'β', 'x', '2x' o 'φ'). { sub, angulo, altura, contexto }.
+ *                     sub 'suma': BP + PT = altura·(cot + csc) = altura·cot(angulo/2); sub 'resta': PT − BP =
+ *                     altura·tan(angulo/2); sub 'razon': (BP + PT)/BT = cot(angulo/2); sub 'razon-resta':
+ *                     (PT − BP)/BT = tan(angulo/2). Respuesta simbólica (texto), p. ej. «h·cot(α/2)», «tan θ».
  *   condicion-angulo  Elevación θ con una condición: { cond, valor, mayor45, d, pide }. cond 'suma' (sen θ + cos θ),
  *                     'producto' (sen θ·cos θ), 'tancot' (tan θ + cot θ) o 'doble' (sen 2θ) = valor; mayor45 dice si
  *                     θ > 45°. d: distancia horizontal del observador a la base de la torre. pide 'visual': distancia del
@@ -186,10 +187,6 @@
     }
   }
   // Elige d de una lista barajada para que f(d) sea limpia.
-  function elegirD(rng, f, ok = longitudLimpia, lista = D_LISTA, max = 3000) {
-    for (const d of rng.barajar(lista)) { const x = f(d); if (ok(x) && x <= max) return d; }
-    return null;
-  }
 
   const porPref = (pref, lista) => lista[Math.min(lista.length - 1, Math.floor(pref * lista.length))];
   function construir(rng, semilla, tipo, pref) {
@@ -204,6 +201,10 @@
     const errores = r.errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && limpio(e.valor));
     const texto = x => exacto(x) + (unidad ? ' ' + unidad : '');
     const alternativas = P.armar({ correcta, errores, rng, texto });
+    // La forma de la correcta (entero, raíz, fracción) debe aparecer también en algún distractor.
+    const clase = t => (t.includes('√') ? 'r' : '') + (t.includes('/') ? 'f' : '');
+    const cc = clase(alternativas.find(a => a.correcta).texto);
+    if (!alternativas.some(a => !a.correcta && clase(a.texto) === cc)) return null;
     return {
       id: `${ID}#${semilla}`, variables: r.variables, enunciado: r.enunciado, pregunta: r.pregunta, datos: '',
       alternativas, solucion: r.solucion, respuesta: { valor: correcta, unidad }, _datos: { tipo, ...r.datos },
@@ -214,55 +215,70 @@
   // ---------- Problema simbólico: el recorrido en el puente (cot y csc que se simplifican) ----------
   // csc x + cot x = (1 + cos x)/sen x = cot(x/2)   y   csc x − cot x = (1 − cos x)/sen x = tan(x/2).
   const razonTxt = (fn, arg) => (arg.includes('/') ? `${fn}(${arg})` : `${fn} ${arg}`);
+  const ANGULOS_SIMB = [['α', 'α/2', '2α'], ['2θ', 'θ', '4θ'], ['β', 'β/2', '2β'], ['x', 'x/2', '2x'], ['2x', 'x', '4x'], ['φ', 'φ/2', '2φ']];
   function puenteSimbolico(semilla) {
     const rng = Azar.crear(ID + '|simbolico|' + semilla + '|problema');
-    const sub = rng.moneda() ? 'suma' : 'resta';
-    const angulo = rng.moneda() ? 'α' : '2θ';
-    const [mitad, entero, doble] = angulo === 'α' ? ['α/2', 'α', '2α'] : ['θ', '2θ', '4θ'];
-    const T = (fn, arg) => { const t = `h·${razonTxt(fn, arg)}`; return { clave: t, texto: t }; };
+    const sub = rng.elegir(['suma', 'resta', 'razon', 'razon-resta']);
+    const [angulo, mitad, doble] = rng.elegir(ANGULOS_SIMB), entero = angulo;
+    const altura = rng.elegir(['h', 'H', 'b', 'k']);
+    const contexto = rng.elegir(['puente', 'poste', 'antena']);
+    const suma = sub === 'suma' || sub === 'razon', razon = sub.startsWith('razon');
+    const pre = razon ? '' : `${altura}·`;
+    const T = (fn, arg) => { const t = `${pre}${razonTxt(fn, arg)}`; return { clave: t, texto: t }; };
     const e = (id, fn, arg, explicacion) => ({ id, ...T(fn, arg), explicacion, respaldo: 'hipotesis', fuente: null });
-    const suma = sub === 'suma';
+    const x = angulo, xm = mitad.includes('/') ? `(${mitad})` : ` ${mitad}`;
     const correcta = T(suma ? 'cot' : 'tan', mitad);
     const errores = suma ? [
-      e('AV-mitad-invertida', 'tan', mitad, `Cambiaste las dos identidades: csc x + cot x = cot(x/2), y es csc x − cot x la que da tan(x/2).`),
-      e('AV-sin-mitad', 'cot', entero, `Sumar csc ${entero} no deja igual a cot ${entero}: (1 + cos x)/sen x se simplifica con el ángulo mitad, 1 + cos x = 2cos²(x/2) y sen x = 2 sen(x/2) cos(x/2).`),
-      e('AV-angulo-doble', 'cot', doble, 'Usaste el ángulo doble en vez del mitad. Al escribir 1 + cos x = 2cos²(x/2), el ángulo se parte en dos, no se duplica.'),
-      e('AV-funcion-cambiada', 'csc', mitad, 'Al simplificar, cos(x/2) queda arriba y sen(x/2) abajo: eso es cot(x/2), no csc(x/2).'),
+      e('AV-mitad-invertida', 'tan', mitad, `Cambiaste las dos identidades: cot ${x} + csc ${x} da cot${xm}; la que da tan${xm} es csc ${x} − cot ${x}.`),
+      e('AV-sin-mitad', 'cot', entero, `Simplificaste cot ${x} + csc ${x} como si diera cot ${x}, pero el csc ${x} no desaparece. Escribe todo con senos y cosenos: (cos ${x} + 1)/sen ${x}. Con 1 + cos ${x} = 2cos²${xm} y sen ${x} = 2 sen${xm}·cos${xm} queda cot${xm}.`),
+      e('AV-angulo-doble', 'cot', doble, `Usaste el ángulo doble en vez del mitad. Al escribir 1 + cos ${x} = 2cos²${xm}, el ángulo se parte en dos, no se duplica.`),
+      e('AV-funcion-cambiada', 'csc', mitad, `Al simplificar, cos${xm} queda arriba y sen${xm} abajo: eso es cot${xm}, no csc${xm}.`),
     ] : [
-      e('AV-mitad-invertida', 'cot', mitad, 'Cambiaste las dos identidades: csc x − cot x = tan(x/2), y es csc x + cot x la que da cot(x/2).'),
-      e('AV-sin-mitad', 'tan', entero, '(1 − cos x)/sen x no es tan x: con 1 − cos x = 2sen²(x/2) y sen x = 2 sen(x/2) cos(x/2) queda el ángulo mitad.'),
-      e('AV-angulo-doble', 'tan', doble, 'Usaste el ángulo doble en vez del mitad. Al escribir 1 − cos x = 2sen²(x/2), el ángulo se parte en dos, no se duplica.'),
-      e('AV-funcion-cambiada', 'sen', mitad, 'Al simplificar queda sen(x/2) arriba y cos(x/2) abajo: eso es tan(x/2), no sen(x/2).'),
+      e('AV-mitad-invertida', 'cot', mitad, `Cambiaste las dos identidades: csc ${x} − cot ${x} da tan${xm}; la que da cot${xm} es csc ${x} + cot ${x}.`),
+      e('AV-sin-mitad', 'tan', entero, `Simplificaste csc ${x} − cot ${x} como si diera tan ${x}. Escribe todo con senos y cosenos: (1 − cos ${x})/sen ${x}. Con 1 − cos ${x} = 2sen²${xm} y sen ${x} = 2 sen${xm}·cos${xm} queda tan${xm}.`),
+      e('AV-angulo-doble', 'tan', doble, `Usaste el ángulo doble en vez del mitad. Al escribir 1 − cos ${x} = 2sen²${xm}, el ángulo se parte en dos, no se duplica.`),
+      e('AV-funcion-cambiada', 'sen', mitad, `Al simplificar queda sen${xm} arriba y cos${xm} abajo: eso es tan${xm}, no sen${xm}.`),
     ];
     const variables = {
-      h: { nombre: 'altura del pilar', color: 'o' }, a: { nombre: 'ángulo de elevación', color: 'i' },
-      r: { nombre: suma ? 'recorrido' : 'diferencia de longitudes', color: 'h' },
+      h: { nombre: 'altura', color: 'o' }, a: { nombre: 'ángulo de elevación', color: 'i' },
+      r: { nombre: razon ? 'razón pedida' : suma ? 'recorrido' : 'diferencia de longitudes', color: 'h' },
     };
-    const enunciado = ['Sobre el tablero horizontal de un puente se levanta un pilar vertical BT de altura ', v('h', 'h'),
-      ' (B está en el tablero). Un tirante recto une la punta T con un punto P del tablero, y desde P la punta T se ve con un ángulo de elevación ', v('a', angulo), '.',
-      suma ? ' Un inspector camina por el tablero de B a P y luego sube por el tirante de P a T.' : ''];
-    const pregunta = [suma ? '¿Cuál es la expresión más simple del recorrido del inspector?' : '¿Cuánto más largo es el tirante PT que el tramo BP del tablero? Da la expresión más simple.'];
+    const escena = {
+      puente: ['Sobre el tablero horizontal de un puente se levanta un pilar vertical BT de altura ', v('h', altura), ' (B está en el tablero). Un tirante recto une la punta T con un punto P del tablero', 'el tablero', 'el tirante'],
+      poste: ['Un poste vertical BT de altura ', v('h', altura), ' se levanta sobre un suelo horizontal (B es su base). Un cable tensor recto une la punta T con un punto P del suelo', 'el suelo', 'el cable'],
+      antena: ['Una antena vertical BT de altura ', v('h', altura), ' está sobre una azotea plana (B es su base). Un viento de acero recto une la punta T con un punto P de la azotea', 'la azotea', 'el viento de acero'],
+    }[contexto];
+    const [ini, hAlt, fin, piso, cable] = [escena[0], escena[1], escena[2], escena[3], escena[4]];
+    const enunciado = [ini, hAlt, fin, ', y desde P la punta T se ve con un ángulo de elevación ', v('a', angulo), '.',
+      sub === 'suma' ? ` Una persona va de B a P por ${piso} y luego sube por ${cable} de P a T.` : ''];
+    const pregunta = [{
+      suma: '¿Cuál es la expresión más simple del recorrido BP + PT?',
+      resta: `¿Cuánto más largo es ${cable} PT que el tramo BP? Da la expresión más simple.`,
+      razon: '¿A qué es igual (BP + PT)/BT, en su forma más simple?',
+      'razon-resta': '¿A qué es igual (PT − BP)/BT, en su forma más simple?',
+    }[sub]];
+    const H = razon ? 'BT' : altura;
     const solucion = [
-      ['En el triángulo rectángulo PBT: BP = ', v('h', 'h'), `·cot ${angulo} y PT = `, v('h', 'h'), `·csc ${angulo}.`],
-      [suma ? `BP + PT = h(cot ${angulo} + csc ${angulo}) = h(cos ${angulo} + 1)/sen ${angulo}.` : `PT − BP = h(csc ${angulo} − cot ${angulo}) = h(1 − cos ${angulo})/sen ${angulo}.`],
-      [suma ? `1 + cos ${angulo} = 2cos²${mitad.includes('/') ? `(${mitad})` : mitad} y sen ${angulo} = 2 sen${mitad.includes('/') ? `(${mitad})` : ' ' + mitad}·cos${mitad.includes('/') ? `(${mitad})` : ' ' + mitad}.`
-            : `1 − cos ${angulo} = 2sen²${mitad.includes('/') ? `(${mitad})` : mitad} y sen ${angulo} = 2 sen${mitad.includes('/') ? `(${mitad})` : ' ' + mitad}·cos${mitad.includes('/') ? `(${mitad})` : ' ' + mitad}.`],
-      ['Se cancela el 2 y un factor: ', v('r', correcta.texto), '.'],
+      ['En el triángulo rectángulo PBT: BP = ', v('h', H), `·cot ${x} y PT = `, v('h', H), `·csc ${x}.`],
+      [suma ? `BP + PT = ${H}(cot ${x} + csc ${x}) = ${H}(cos ${x} + 1)/sen ${x}.` : `PT − BP = ${H}(csc ${x} − cot ${x}) = ${H}(1 − cos ${x})/sen ${x}.`],
+      [suma ? `1 + cos ${x} = 2cos²${xm} y sen ${x} = 2 sen${xm}·cos${xm}.` : `1 − cos ${x} = 2sen²${xm} y sen ${x} = 2 sen${xm}·cos${xm}.`],
+      [razon ? 'Se cancela el 2 y un factor; al dividir entre BT queda ' : 'Se cancela el 2 y un factor: ', v('r', correcta.texto), '.'],
     ];
     const alternativas = P.armarTexto({ correcta, errores, rng });
     return {
       id: `${ID}#${semilla}`, variables, enunciado, pregunta, datos: '', alternativas, solucion,
-      respuesta: { valor: correcta.clave, unidad: '' }, _datos: { tipo: 'puente-simbolico', sub, angulo },
+      respuesta: { valor: correcta.clave, unidad: '' }, _datos: { tipo: 'puente-simbolico', sub, angulo, altura, contexto },
     };
   }
 
   const OBJETOS = [
-    { obj: 'una torre de telecomunicaciones', el: 'la torre', base: 'la base de la torre', punta: 'la punta de la torre', quien: 'Ana' },
-    { obj: 'un cerro', el: 'el cerro', base: 'el pie del cerro (bajo la cima)', punta: 'la cima del cerro', quien: 'una topógrafa' },
-    { obj: 'un faro', el: 'el faro', base: 'la base del faro', punta: 'la luz del faro', quien: 'Luis' },
-    { obj: 'un poste de alumbrado', el: 'el poste', base: 'la base del poste', punta: 'el foco del poste', quien: 'Rosa' },
-    { obj: 'un edificio', el: 'el edificio', base: 'la base del edificio', punta: 'el borde de la azotea', quien: 'Jorge' },
+    { obj: 'una torre de telecomunicaciones', el: 'la torre', base: 'la base de la torre', punta: 'la punta de la torre', lo: 'la', quien: 'Ana', rango: [20, 150] },
+    { obj: 'un cerro', el: 'el cerro', base: 'el pie del cerro', punta: 'la cima del cerro', lo: 'la', quien: 'una topógrafa', rango: [100, 3000] },
+    { obj: 'un faro', el: 'el faro', base: 'la base del faro', punta: 'la luz del faro', lo: 'la', quien: 'Luis', rango: [15, 80] },
+    { obj: 'un poste de alumbrado', el: 'el poste', base: 'la base del poste', punta: 'el foco del poste', lo: 'lo', quien: 'Rosa', rango: [4, 15] },
+    { obj: 'un edificio', el: 'el edificio', base: 'la base del edificio', punta: 'el borde de la azotea', lo: 'lo', quien: 'Jorge', rango: [10, 150] },
   ];
+  const enRango = (x, [m, M]) => x >= m - 1e-9 && x <= M + 1e-9;
 
   // Errores comunes a «dos visuales y una distancia d»: H = d/(cot α ∓ cot β).
   function erroresDos({ d, tA, tB, suma, h0 = 0 }) {
@@ -284,8 +300,8 @@
     const h0 = racional && rng.sig() < 0.35 ? rng.elegir([1, 2]) : 0;
     const pide = h0 === 0 && rng.sig() < 0.35 ? 'distancia' : 'altura';
     const resp = d => { const Hv = calc.mismoLado({ d, tA: a.t, tB: b.t }); return pide === 'altura' ? Hv + h0 : Hv / b.t; };
-    const d = elegirD(rng, resp);
-    if (d === null) return null;
+    const d = rng.barajar(D_LISTA).find(x => longitudLimpia(resp(x)) && enRango(calc.mismoLado({ d: x, tA: a.t, tB: b.t }) + h0, ctx.rango));
+    if (d === undefined) return null;
     const Hv = calc.mismoLado({ d, tA: a.t, tB: b.t }), x = Hv / b.t;
     const correcta = resp(d);
     const variables = {
@@ -293,9 +309,9 @@
       d: { nombre: 'tramo que camina', color: 'd' }, H: { nombre: pide === 'altura' ? 'altura' : 'distancia del punto Q a la base', color: 'h' },
     };
     const enunciado = [`Desde un punto P del suelo, ${ctx.quien} ve ${ctx.punta} con un ángulo de elevación `, ...angulo('a', a, 'α'),
-      '. Camina ', v('d', `${d} m`), ` en línea recta hacia ${ctx.base} y, desde el punto Q al que llega, la ve con un ángulo de elevación `, ...angulo('b', b, 'β'), '.',
+      '. Camina ', v('d', `${d} m`), ` en línea recta hacia ${ctx.base} y, desde el punto Q al que llega, ${ctx.lo} ve con un ángulo de elevación `, ...angulo('b', b, 'β'), '.',
       h0 ? ` Mide los ángulos con un teodolito cuyo visor está a ${h0} m del suelo. El suelo es horizontal.` : ' El suelo es horizontal y los ángulos se miden desde el nivel del suelo.'];
-    const pregunta = [pide === 'altura' ? `¿Cuál es la altura ${deEl(ctx.el)}?` : `¿A qué distancia de ${ctx.base} está el punto Q?`];
+    const pregunta = [pide === 'altura' ? `¿Cuál es la altura ${deEl(ctx.el)}?` : `¿A qué distancia ${deEl(ctx.base)} está el punto Q?`];
     let errores = erroresDos({ d, tA: a.t, tB: b.t, h0: pide === 'altura' ? h0 : 0 });
     if (pide === 'altura') {
       errores.splice(1, 0, h('AV-resta-tangentes', d * (b.t - a.t) + h0, 'Restaste las tangentes y multiplicaste por d, como si las dos visuales salieran del mismo punto. Cada visual tiene su propia distancia a la base; se restan las cotangentes, que son las que miden distancias por el suelo.'));
@@ -329,17 +345,17 @@
     const [a, b] = rng.moneda() ? [a0, b0] : [b0, a0];
     const pide = rng.sig() < 0.3 ? 'distancia' : 'altura';
     const resp = d => { const H = calc.ambosLados({ d, tA: a.t, tB: b.t }); return pide === 'altura' ? H : H / a.t; };
-    const d = elegirD(rng, resp);
-    if (d === null) return null;
+    const d = rng.barajar(D_LISTA).find(x => longitudLimpia(resp(x)) && enRango(calc.ambosLados({ d: x, tA: a.t, tB: b.t }), ctx.rango));
+    if (d === undefined) return null;
     const H = calc.ambosLados({ d, tA: a.t, tB: b.t }), correcta = resp(d);
-    const quien = rng.elegir([['Dos cámaras de seguridad A y B', 'Las cámaras'], ['Dos estudiantes, en los puntos A y B,', 'Los estudiantes'], ['Dos topógrafos, en los puntos A y B,', 'Los topógrafos']]);
+    const quien = rng.elegir([['Dos guardaparques, en los puntos A y B,', 'Los guardaparques'], ['Dos estudiantes, en los puntos A y B,', 'Los estudiantes'], ['Dos topógrafos, en los puntos A y B,', 'Los topógrafos']]);
     const variables = {
       a: { nombre: 'ángulo de elevación desde A', color: 'o' }, b: { nombre: 'ángulo de elevación desde B', color: 'i' },
       d: { nombre: 'distancia AB', color: 'd' }, H: { nombre: pide === 'altura' ? 'altura' : 'distancia de A a la base', color: 'h' },
     };
     const enunciado = [`${quien[0]} están en el suelo horizontal, a ambos lados de ${ctx.obj}, y ${ctx.base} queda en el segmento AB. A y B están separados `, v('d', `${d} m`),
       `. Desde A se ve ${ctx.punta} con un ángulo de elevación `, ...angulo('a', a, 'α'), ' y desde B con un ángulo de elevación ', ...angulo('b', b, 'β'), '. Los ángulos se miden desde el nivel del suelo.'];
-    const pregunta = [pide === 'altura' ? `¿Cuál es la altura ${deEl(ctx.el)}?` : `¿A qué distancia de ${ctx.base} está el punto A?`];
+    const pregunta = [pide === 'altura' ? `¿Cuál es la altura ${deEl(ctx.el)}?` : `¿A qué distancia ${deEl(ctx.base)} está el punto A?`];
     let errores = erroresDos({ d, tA: a.t, tB: b.t, suma: true });
     if (pide === 'distancia') {
       errores = errores.map(e => ({ ...e, valor: e.valor / a.t }));
@@ -368,12 +384,13 @@
     if (sub === 'dron') for (const vv of [2, 3, 4, 5, 6, 8, 10]) for (const t of T) combos.push({ v: vv, t, dd: vv * t });
     else if (sub === 'avioneta') for (const vv of [180, 216, 252, 288, 360]) for (const v2 of [36, 54, 72, 90, 108]) for (const t of [2, 3, 4, 5, 6, 8, 10]) for (const sentido of ['opuesto', 'mismo'])
       combos.push({ v: vv, v2, t, sentido, dd: (sentido === 'opuesto' ? vv + v2 : vv - v2) * t / 3.6 });
-    else for (const vv of [18, 36, 54, 72, 90]) for (const t of T) combos.push({ v: vv, t, dd: vv * t / 3.6 });
+    else for (const vv of [18, 36, 54, 72, 90]) for (const t of sub === 'camara' ? [1, 2, 3, 4, 5, 6] : T) combos.push({ v: vv, t, dd: vv * t / 3.6 });
     combos = rng.barajar(combos);
-    const c = combos.find(o => Number.isInteger(Math.round(o.dd * 1e9) / 1e9) && longitudLimpia(calc.mismoLado({ d: o.dd, tA: a.t, tB: b.t })) && calc.mismoLado({ d: o.dd, tA: a.t, tB: b.t }) <= 3000);
+    const RANGO = { auto: [100, 3000], dron: [10, 300], camara: [8, 60], avioneta: [150, 3000] }[sub];
+    const c = combos.find(o => Number.isInteger(Math.round(o.dd * 1e9) / 1e9) && longitudLimpia(calc.mismoLado({ d: o.dd, tA: a.t, tB: b.t })) && enRango(calc.mismoLado({ d: o.dd, tA: a.t, tB: b.t }), RANGO));
     if (!c) return null;
     const d = Math.round(c.dd), H = calc.mismoLado({ d, tA: a.t, tB: b.t }), correcta = H;
-    const kmh = sub !== 'dron', na = nombre(a, 'α'), nb = complementarios ? `90° − ${a.txt}` : nombre(b, 'β');
+    const kmh = sub !== 'dron', na = nombre(a, 'α'), nb = complementarios ? `(90° − ${a.txt})` : ' ' + nombre(b, 'β');
     const variables = {
       a: { nombre: 'primer ángulo', color: 'o' }, b: { nombre: 'segundo ángulo', color: 'i' },
       d: { nombre: 'rapidez y tiempo', color: 'd' }, H: { nombre: 'altura', color: 'h' },
@@ -390,9 +407,9 @@
         ' y, ', tt, ' después, con un ángulo de depresión ', ...segundo, '. La casa está en el suelo horizontal; tómala como un punto.'];
       pregunta = ['¿A qué altura vuela el dron?'];
     } else if (sub === 'camara') {
-      enunciado = ['Una cámara está fija en lo alto de un poste vertical. Un auto se acerca al poste por una pista recta y horizontal con rapidez constante de ', rap, '. La cámara ve el auto con un ángulo de depresión ', ...angulo('a', a, 'α'),
+      enunciado = ['Una cámara está fija en lo alto de una torre de vigilancia vertical. Un auto se acerca a la torre por una pista recta y horizontal con rapidez constante de ', rap, '. La cámara ve el auto con un ángulo de depresión ', ...angulo('a', a, 'α'),
         ' y, ', tt, ' después, con un ángulo de depresión ', ...segundo, '.'];
-      pregunta = ['¿Cuál es la altura del poste?'];
+      pregunta = ['¿Cuál es la altura de la torre de vigilancia?'];
     } else {
       enunciado = ['Una avioneta vuela horizontalmente a ', rap, ' sobre una carretera recta. Por la carretera va un auto a ', v('d', `${c.v2} km/h`), c.sentido === 'opuesto' ? ', en sentido contrario, acercándose a la avioneta.' : ', en el mismo sentido y por delante de la avioneta, que lo va alcanzando.',
         ' El piloto ve el auto con un ángulo de depresión ', ...angulo('a', a, 'α'), ' y, ', tt, ' después, con un ángulo de depresión ', ...segundo, ' (el auto aún no queda bajo la avioneta).'];
@@ -412,10 +429,10 @@
     const solucion = [
       ['Avance horizontal entre las dos visuales: ', v('d', dTexto), '.'],
       sub === 'dron' || sub === 'camara' || sub === 'avioneta'
-        ? ['El ángulo de depresión es igual al de elevación desde el suelo (alternos internos entre paralelas horizontales). Así, con altura H, las distancias horizontales son H·cot ', v('a', na), ' y H·cot ', v('b', nb), '.']
-        : ['Con altura H, las distancias horizontales al pie del cerro son H·cot ', v('a', na), ' y H·cot ', v('b', nb), '.'],
+        ? ['El ángulo de depresión es igual al de elevación desde el suelo (alternos internos entre paralelas horizontales). Así, con altura H, las distancias horizontales son H·cot ', v('a', na), ' y H·cot', v('b', nb), '.']
+        : ['Con altura H, las distancias horizontales al pie del cerro son H·cot ', v('a', na), ' y H·cot', v('b', nb), '.'],
       complementarios ? [`Como el segundo ángulo es el complemento, su cotangente es tan ${a.txt}: d = H(cot ${a.txt} − tan ${a.txt}) = H(${ex(1 / a.t)} − ${ex(a.t)}).`]
-        : [`d = H(cot ${na} − cot ${nb}) = H(${ex(1 / a.t)} − ${ex(1 / b.t)}) = H·${ex(1 / a.t - 1 / b.t)}.`],
+        : [`d = H(cot ${na} − cot${nb}) = H(${ex(1 / a.t)} − ${ex(1 / b.t)}) = H·${ex(1 / a.t - 1 / b.t)}.`],
       ['H = ', `${d} ÷ ${entreP(ex(1 / a.t - 1 / b.t))} = `, v('H', `${ex(H)} m`), '.'],
     ];
     return { correcta, errores, variables, enunciado, pregunta, solucion,
@@ -425,11 +442,11 @@
   function entreEdificios(rng, pref) {
     const sub = pref < 0.5 ? 'muro' : 'otro';
     const [a, b] = par(rng, { soloRacional: true });
-    const Hs = rng.barajar(D_LISTA.filter(x => x >= 6 && x <= 120));
+    const Hs = rng.barajar(D_LISTA.filter(x => x >= 10 && x <= 150));
     let H = null;
     for (const x of Hs) {
       if (sub === 'muro') { if (longitudLimpia(calc.muro({ H: x, tA: a.t, tB: b.t }))) { H = x; break; } }
-      else { const D = x / b.t, hb = calc.otroEdificio({ H: x, tA: a.t, tB: b.t }); if (longitudLimpia(D) && longitudLimpia(hb) && hb > 0) { H = x; break; } }
+      else { const D = x / b.t, hb = calc.otroEdificio({ H: x, tA: a.t, tB: b.t }); if (longitudLimpia(D) && longitudLimpia(hb) && hb >= 3) { H = x; break; } }
     }
     if (H === null) return null;
     const na = nombre(a, 'α'), nb = nombre(b, 'β');
@@ -493,15 +510,13 @@
     const cand = todosTanDif(filtro);
     return cand.length ? rng.elegir(cand) : null;
   }
-  function todosTanDif(filtro) {
-    const cand = [];
-    for (let D = 4; D <= 30; D++) for (let h2 = 6; h2 <= 40; h2++) for (let h1 = 2; h1 < h2; h1++) {
-      if (!filtro(h1, h2, D)) continue;
-      const n = (h2 - h1) * D, dd = D * D + h1 * h2, g = mcd(n, dd);
-      if (dd / g <= 40 && n / g < dd / g) cand.push([h1, h2, D]);
-    }
-    return cand;
+  const TAN_DIF = [];
+  for (let D = 4; D <= 40; D++) for (let h2 = 6; h2 <= 60; h2++) for (let h1 = 2; h1 < h2; h1++) {
+    if (D === h1 || D === h2) continue;                       // con D = h1 o D = h2 las tangentes salen enteras y delatan
+    const n = (h2 - h1) * D, dd = D * D + h1 * h2, g = mcd(n, dd);
+    if (dd / g <= 60 && n / g < dd / g) TAN_DIF.push([h1, h2, D]);
   }
+  function todosTanDif(filtro) { return TAN_DIF.filter(c => filtro(...c)); }
 
   function mitadCima(rng, pref) {
     const sub = pref < 0.5 ? 'mitad' : 'ventana';
@@ -549,10 +564,16 @@
       const erroresAltura = (b, h2, D) => {
         const a = h2 - b, t = calc.tanVisto({ h1: b, h2, D }), ta = b / D, tbS = (t + ta) / (1 + t * ta);
         return [
-        p('TR16', D * t, 'Sumaste las tangentes: tomaste tan(α + θ) = tan α + tan θ. La tangente de una suma no se reparte así: es (tan α + tan θ)/(1 − tan α·tan θ).'),
+        p('TR16', D * t, sub === 'pura'
+          ? 'Sumaste las tangentes: tomaste tan(∠BAE + ∠EAC) = tan(∠BAE) + tan(∠EAC). La tangente de una suma lleva el denominador 1 − tan(∠BAE)·tan(∠EAC).'
+          : 'Sumaste las tangentes: tomaste tan(α + θ) = tan α + tan θ. La tangente de una suma no se reparte así: es (tan α + tan θ)/(1 − tan α·tan θ).'),
         h('AV-altura-total', a + b, sub === 'pura' ? 'Ese es el cateto BC completo. Se pide solo el tramo EC: falta restar BE.' : 'Esa es la altura de la punta de la antena sobre el suelo. Falta restar el edificio.'),
-        h('AV-signo-denominador', D * tbS - b, 'Usaste 1 + tan α·tan θ en el denominador: ese es el de la tangente de una diferencia. Aquí β = α + θ es una suma, y va 1 − tan α·tan θ.'),
-        h('AV-tangente-desde-punta', D / t - b, 'Dividiste la distancia entre tan θ: tomaste el ángulo en el otro vértice. tan β es la altura total sobre la distancia, no al revés.'),
+        h('AV-signo-denominador', D * tbS - b, sub === 'pura'
+          ? 'Usaste 1 + tan(∠BAE)·tan(∠EAC) en el denominador: ese es el de la tangente de una diferencia. ∠BAC = ∠BAE + ∠EAC es una suma, y va 1 − tan(∠BAE)·tan(∠EAC).'
+          : 'Usaste 1 + tan α·tan θ en el denominador: ese es el de la tangente de una diferencia. Aquí β = α + θ es una suma, y va 1 − tan α·tan θ.'),
+        h('AV-tangente-desde-punta', D / t - b, sub === 'pura'
+          ? 'Dividiste AB entre tan(∠EAC), como si ∠EAC estuviera en el vértice C. tan(∠BAC) es BC/AB: el cateto BC va arriba.'
+          : 'Dividiste la distancia entre tan θ, como si θ fuera la elevación medida desde el pie. tan β es la altura total sobre la distancia, no al revés.'),
         ];
       };
       let c = null;
@@ -599,13 +620,13 @@
     const D0 = pide === 'traslado' ? D2 + rng.entero(2, 20) : null;
     const correcta = pide === 'menor' ? D1 : pide === 'mayor' ? D2 : D0 - D2;
     variables.d = { nombre: pide === 'traslado' ? 'cuánto debe acercarse' : 'distancia a la base', color: 'd' };
-    const enunciado = ['Sobre la azotea de un edificio de ', v('b', `${b} m`), ' hay una antena vertical de ', v('a', `${a} m`), '. Un láser apoyado en el suelo horizontal, frente al edificio, ve la antena bajo un ángulo θ (entre las visuales a su pie y a su punta) con ', v('t', `tan θ = ${tt}`), '.',
-      pide === 'traslado' ? ` Hoy el láser está a ${D0} m de la base del edificio y se acerca a ella en línea recta.` : ' Hay dos posiciones del láser en las que eso ocurre.'];
+    const enunciado = ['Sobre la azotea de un edificio de ', v('b', `${b} m`), ' hay una antena vertical de ', v('a', `${a} m`), '. Un fotógrafo, con la cámara a ras del suelo horizontal frente al edificio, ve la antena bajo un ángulo θ (entre las visuales a su pie y a su punta) con ', v('t', `tan θ = ${tt}`), '.',
+      pide === 'traslado' ? ` Ahora está a ${D0} m de la base del edificio y quiere acercarse en línea recta.` : ' Hay dos puntos del suelo desde los que eso ocurre.'];
     const pregunta = [pide === 'menor' ? '¿A qué distancia de la base está la posición más cercana?' : pide === 'mayor' ? '¿A qué distancia de la base está la posición más lejana?' : '¿Cuánto debe acercarse, como mínimo, para ver la antena bajo ese ángulo θ?'];
     const errores = pide === 'traslado' ? [
-      h('AV-otra-raiz', D0 - D1, `Llevaste el láser hasta la posición de ${D1} m. Al acercarse desde ${D0} m, primero pasa por la de ${D2} m, y ahí ya ve la antena bajo θ: esa es la menor distancia que debe moverse.`),
-      h('AV-posicion-por-traslado', D2, `${D2} m es la posición final, medida desde la base. Se pide cuánto se mueve el láser: ${D0} − ${D2}.`),
-      h('AV-diferencia-raices', D2 - D1, 'Esa es la distancia entre las dos posiciones posibles, no lo que se mueve el láser desde donde está hoy.'),
+      h('AV-otra-raiz', D0 - D1, `Llevaste al fotógrafo hasta la posición de ${D1} m. Al acercarse desde ${D0} m, primero pasa por la de ${D2} m, y ahí ya ve la antena bajo θ: esa es la menor distancia que debe moverse.`),
+      h('AV-posicion-por-traslado', D2, `${D2} m es la posición final, medida desde la base. Se pide cuánto se mueve el fotógrafo: ${D0} − ${D2}.`),
+      h('AV-diferencia-raices', D2 - D1, 'Esa es la distancia entre las dos posiciones posibles, no lo que se mueve el fotógrafo desde donde está ahora.'),
       h('AV-angulo-desde-base', Math.abs(D0 - a / t), 'Tomaste tan θ = (antena)/(distancia), como si el ángulo se viera desde el pie de la antena. θ es la diferencia de dos elevaciones y se usa la tangente de la diferencia.'),
     ] : [
       h('AV-otra-raiz', pide === 'menor' ? D2 : D1, `Esa es la otra raíz de la ecuación: la posición ${pide === 'menor' ? 'más lejana' : 'más cercana'}. Las dos dan el mismo ángulo θ; se pide la ${pide === 'menor' ? 'más cercana' : 'más lejana'}.`),
@@ -614,7 +635,7 @@
       h('AV-diferencia-raices', D2 - D1, 'Esa es la distancia entre las dos posiciones, no la distancia a la base.'),
     ];
     const solucion = [
-      ['Con el láser a x de la base: tan α = ', v('b', `${b}`), '/x (pie de la antena) y tan β = ', `${a + b}/x (punta). θ = β − α.`],
+      ['Con el fotógrafo a x de la base: tan α = ', v('b', `${b}`), '/x (pie de la antena) y tan β = ', `${a + b}/x (punta). θ = β − α.`],
       ['tan θ = (', `${a + b}/x − ${b}/x) / (1 + ${a + b}·${b}/x²) = ${a}x / (x² + ${b * (a + b)}).`],
       [v('t', tt), ` = ${a}x / (x² + ${b * (a + b)}) → ${cuadratica(t, a, b * (a + b))} → x = ${D1} o x = ${D2}.`],
       pide === 'traslado' ? [`Desde ${D0} m, al acercarse primero llega a ${D2} m: se mueve `, v('d', `${D0} − ${D2} = ${correcta} m`), '.']
@@ -664,7 +685,8 @@
     const [vn, vd] = cond === 'suma' ? [x + y, hip] : cond === 'producto' ? [x * y, hip * hip] : cond === 'tancot' ? [hip * hip, x * y] : [2 * x * y, hip * hip];
     const g = mcd(vn, vd), valor = [vn / g, vd / g], vt = `${vn / g}/${vd / g}`;
     const pide = rng.moneda() ? 'visual' : 'altura';
-    const k = rng.entero(1, 3), d = ad * op * k;
+    const k = [1, 2, 3].find(x => enRango(ad * op * x * op / ad, [10, 200]) && rng.sig() < 0.7) ?? 1, d = ad * op * k;
+    if (!enRango(d * op / ad, [10, 200])) return null;
     const correcta = pide === 'visual' ? d * hip / ad : d * op / ad;
     const expr = { suma: 'sen θ + cos θ', producto: 'sen θ · cos θ', tancot: 'tan θ + cot θ', doble: 'sen 2θ' }[cond];
     const variables = {

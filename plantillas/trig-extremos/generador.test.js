@@ -65,11 +65,12 @@ function recalcular(p) {
   if (d.tipo === 'asenbcos' && d.sub === 'directa') return pedido(x => d.a * Math.sin(x) + d.b * Math.cos(x) + d.c, ...vuelta, d.pide);
   if (d.tipo === 'asenbcos') return pedido(x => 2 * d.A * Math.sin(x) * Math.cos(x) + 2 * d.B * Math.cos(x) ** 2 + d.d, ...vuelta, d.pide);
   if (d.tipo === 'cuadratica' && d.sub === 'hora') {
-    const T = t => d.C + d.B * Math.sin(Math.PI * t / 12) + d.k * Math.cos(Math.PI * t / 6);
-    const M = maximo(T, 0, 24);
+    const base = d.base === 'sen' ? Math.sin : Math.cos;
+    const T = t => d.C + d.B * base(Math.PI * t / d.per) + d.K * Math.cos(2 * Math.PI * t / d.per);
+    const fin = 2 * d.per, M = maximo(T, 0, fin);
     if (d.pide === 'max') return M;
-    // Primer instante del máximo: el primer pico (máximo local) que llega al valor máximo.
-    for (let t = 0; t < 24; t += 0.5) { const e = extremo(T, t, t + 0.5, 1, 200); if (Math.abs(e.valor - M) < 1e-9) return Math.round(e.x * 1e6) / 1e6; }
+    // Primer instante del máximo: el primer pico (máximo local) que llega al valor máximo; luego, al reloj.
+    for (let t = 0; t < fin; t += 0.5) { const e = extremo(T, t, t + 0.5, 1, 200); if (Math.abs(e.valor - M) < 1e-9) return (Math.round(e.x * 1e6) / 1e6 + d.ini) % 24; }
     return NaN;
   }
   if (d.tipo === 'cuadratica') {
@@ -87,7 +88,7 @@ function recalcular(p) {
     const [a, b] = [d.desde * R, d.hasta * R];
     if (d.sub === 'max-f') return pedido(x => d.a / Math.cos(x) + d.b, a, b, d.pide);
     const x0 = extremo(x => 1 / Math.cos(x), a, b, 1).x;
-    return d.p * Math.cos(x0) + d.q * Math.tan(x0) ** 2;
+    return d.p * Math.cos(2 * x0) + d.q * Math.tan(x0) ** 2;
   }
   if (d.tipo === 'senoide') {
     const a = d.dato2 === 'min' ? (d.P0 + d.P2) / 2 : d.P2, b = d.dato2 === 'min' ? (d.P0 - d.P2) / 2 : d.P0 - d.P2;
@@ -135,7 +136,7 @@ for (const c of casos.casos) {
 
 test('salen todos los tipos y las alternativas tienen la misma forma', () => {
   const tipos = new Set();
-  const forma = t => (/^[[⟨]/.test(t) ? 'int' : /θ/.test(t) ? 'expr' : / m²$/.test(t) ? 'm2' : / °C$/.test(t) ? 'C' : / h$/.test(t) ? 'h' : / meses$/.test(t) ? 'mes' : /^−?\d+(\/\d+)?$/.test(t) ? 'num' : 'otro');
+  const forma = t => (/^[[⟨]/.test(t) ? 'int' : /θ/.test(t) ? 'expr' : / m²$/.test(t) ? 'm2' : / °C$/.test(t) ? 'C' : / h$/.test(t) ? 'h' : / mes(es)?$/.test(t) ? 'mes' : /^−?\d+(\/\d+)?$/.test(t) ? 'num' : 'otro');
   for (let s = 0; s < 400; s++) {
     const p = gen.generar(s); tipos.add(p._datos.tipo + '-' + p._datos.sub);
     const formas = new Set(p.alternativas.map(a => forma(a.texto)));
