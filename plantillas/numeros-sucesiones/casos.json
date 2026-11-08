@@ -2,7 +2,7 @@
   "plantilla": "numeros-sucesiones",
   "tolerancia": 0.000001,
   "nota": "Respuestas enteras, salvo en fracciones (clave frac:n/d) y grifos (clave h:n/d, en horas). En grifos, a y n son cifras desconocidas; las bases van en los numerales. En divisores, los divisores propios son todos menos el mismo N, y los compuestos excluyen el 1 y los primos.",
-  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 19 casos con aritmética exacta en Python (Fraction), enumerando las bases válidas y los divisores, intersectando los conjuntos de las progresiones, armando las sucesiones intercaladas término a término y sumando término a término. Coinciden los 19; no se halló ninguna alternativa defendible distinta de la clave.",
+  "verificacion": "Verificador independiente (subagente, 8 nov 2026), sin ver el generador: resolvió los 19 casos con aritmética exacta en Python (Fraction), enumerando las bases válidas y los divisores, intersectando los conjuntos de las progresiones, armando las sucesiones intercaladas término a término y sumando término a término. Coinciden los 19; no se halló ninguna alternativa defendible distinta de la clave. Tras la revisión cambió un caso (semilla 0, grifos: 42 h), recalculado aparte por la conversación principal.",
   "casos": [
     {
       "semilla": 0,
@@ -11,30 +11,30 @@
         "numerales": [
           {
             "cifras": [
-              "a",
+              "n",
               5
             ],
-            "base": "n"
+            "base": 6
           },
           {
             "cifras": [
-              2,
-              4
+              3,
+              3
             ],
             "base": "a"
           },
           {
             "cifras": [
               2,
-              "n"
+              "a"
             ],
-            "base": 7
+            "base": "n"
           }
         ]
       },
       "esperado": {
-        "respuesta": "h:20/1",
-        "exacta": "20 h"
+        "respuesta": "h:42/1",
+        "exacta": "42 h"
       }
     },
     {

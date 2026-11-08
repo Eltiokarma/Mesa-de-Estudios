@@ -17,7 +17,7 @@
  *                Cubre «términos comunes entre dos progresiones aritméticas con MCM de razones».
  *   sumatoria    (sub cuadratica, producto, cubos) suma de ak² + bk + c, de k(k + p) o de cubos
  *                desde m hasta n. Cubre «sumatorias con fórmulas de suma de cuadrados».
- *   grupos       varias combis o secciones; de los que llegaron hay p varones por cada q mujeres; se
+ *   grupos       varios buses o secciones; de los que llegaron hay p varones por cada q mujeres; se
  *                pide el grupo que faltó. Cubre «elegir qué grupo falta usando que el total es
  *                múltiplo de cinco» (aquí, múltiplo de p + q).
  *   divisores    (sub cuenta, afirmaciones) N = 2ᵃ·3ᵇ·5ᶜ, directo o como producto de potencias
@@ -38,7 +38,7 @@
  * Notación: numerales con raya encima (a̅b̅) y base en subíndice entre paréntesis (2̅a̅₍₅₎), como
  * plantillas/numeracion; términos tₖ como plantillas/sucesiones. Respuestas enteras, salvo las
  * fracciones (fracciones y grifos), que van con armarTexto y clave canónica.
- * Errores: AR13 y AR7 del informe docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md
+ * Errores: AR13 del informe docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md
  * (parcial) y las trampas 20 a 25 de docs/clasificacion/trampas-admision-unmsm/aritmetica-algebra.md
  * (hipótesis, sin datos de postulantes).
  */
@@ -179,8 +179,8 @@
     const S = 3 * m, correcta = m + d;
     const X = m + al, Y = m + be, Z = m + ga;
     const d2 = -(Z - X) - d;              // la otra raíz de d² + (Z − X)d − (XZ − Y²) = 0
-    const variables = { S: { nombre: 'suma de los tres números', color: 'o' }, add: { nombre: 'lo que se suma a cada uno', color: 'i' },
-      r: { nombre: 'razón de la progresión aritmética', color: 'h' }, res: { nombre: 'mayor de los tres números', color: 'd' } };
+    const variables = { S: { nombre: 'suma de los tres números', color: 'o' }, add: { nombre: 'lo que se suma a cada número', color: 'i' },
+      r: { nombre: 'los tres números en progresión aritmética', color: 'h' }, res: { nombre: 'mayor de los tres números', color: 'd' } };
     const enunciado = ['Tres números enteros positivos están en progresión aritmética creciente y suman ', v('S', String(S)),
       '. Si al primero se le suma ', v('add', String(al)), ', al segundo ', v('add', String(be)), ' y al tercero ', v('add', String(ga)),
       ', los tres resultados, en ese orden, forman una progresión geométrica.'];
@@ -241,7 +241,7 @@
     const solucion = [
       [`Las fracciones simplificadas se devuelven a su forma: ${restituidas.join('; ')}.`],
       ['Numeradores: ', v('num', [1, 2, 3, 4, 5].map(num).join(', ')), ` (razón ${r}). Denominadores: `, v('den', [1, 2, 3, 4, 5].map(den).join(', ')), ` (razón ${s}).`],
-      [`${t(k)} = [`, v('num', `${a} + (${k} − 1)·${r}`), ']/[', v('den', `${b} + (${k} − 1)·${s}`), `] = ${correcta.n === num(k) ? '' : `${num(k)}/${den(k)} = `}`, v('res', correcta.texto), '.'],
+      [`${t(k)} = (`, v('num', `${a} + (${k} − 1)·${r}`), ')/(', v('den', `${b} + (${k} − 1)·${s}`), ') = ', ...(correcta.n === num(k) ? [v('res', correcta.texto), ', que ya es irreducible.'] : [`${num(k)}/${den(k)} = `, v('res', correcta.texto), '.'])],
     ];
     return cerrar(rng, semilla, { claves: true, correcta, errores, variables, enunciado, pregunta, solucion,
       datos: { tipo: 'fracciones', a, r, b, s, k } });
@@ -272,13 +272,13 @@
       e('poste-valla-sin-sumar-uno', correcta - 1, `Hiciste (${ultimo} − ${c0}) ÷ ${L} = ${correcta - 1}: eso cuenta los saltos entre términos comunes. Hay un término más que saltos: el primero, ${c0}.`, 'hipotesis', INF),
       e('AR13-producto-en-vez-de-mcm', Math.floor((lim - c0) / (r1 * r2)) + 1, `Tomaste ${r1}·${r2} = ${r1 * r2} como la razón de los comunes. Los comunes se repiten cada MCM(${r1}, ${r2}) = ${L}, que es menor que el producto porque ${r1} y ${r2} tienen el factor común ${G}.`, 'parcial', INF),
       e('AR13-mcd-en-vez-de-mcm', Math.floor((lim - c0) / G) + 1, `Usaste MCD(${r1}, ${r2}) = ${G} como razón de los comunes. Un término común tiene que avanzar a la vez un múltiplo de ${r1} y de ${r2}: el salto es el MCM, ${L}.`, 'parcial', INF),
-      e('tope-de-la-mas-larga', Math.floor((tope - c0) / L) + 1, `Contaste hasta ${tope}, el final de la progresión más larga. Un término común debe estar en las dos: no puede pasar de ${lim}.`),
+      e('tope-de-la-otra-progresion', Math.floor((tope - c0) / L) + 1, `Contaste hasta ${tope}, el último término de la otra progresión. Un término común debe estar en las dos: no puede pasar de ${lim}.`),
       e('sin-primer-comun', Math.floor(lim / L), `Dividiste ${lim} entre ${L}, como si los comunes empezaran en ${L}. Empiezan en ${c0}: hay que contar desde ahí.`),
     ];
     const solucion = [
       ['El primer término que está en ', v('A', 'A'), ' y en ', v('B', 'B'), ` es ${c0}.`],
       ['Desde ahí, los comunes se repiten cada ', v('L', `MCM(${r1}, ${r2}) = ${L}`), '.'],
-      [`No pueden pasar de ${lim}, que es donde termina la más corta: el último común es ${ultimo}.`],
+      [`No pueden pasar de ${lim}, el último término de la progresión que termina antes: el último común es ${ultimo}.`],
       [`Comunes: ${c0}, ${c0 + L}, …, ${ultimo}. Son (${ultimo} − ${c0})/`, v('L', String(L)), ' + 1 = ', v('res', String(correcta)), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion,
@@ -289,8 +289,11 @@
   const T1 = n => n * (n + 1) / 2, T2 = n => n * (n + 1) * (2 * n + 1) / 6;
   function sumatoria(rng, semilla) {
     const sb = rng.elegir(['cuadratica', 'cuadratica', 'producto', 'cubos']);
-    const variables = { cu: { nombre: 'suma de cuadrados (o de cubos)', color: 'o' }, li: { nombre: 'suma de los naturales', color: 'i' },
-      n: { nombre: 'último valor de k', color: 'h' }, res: { nombre: 'valor de la suma', color: 'd' } };
+    const variables = sb === 'cubos'
+      ? { gr: { nombre: 'suma de 1³ hasta el último cubo', color: 'o' }, ch: { nombre: 'suma de los cubos que no están en S', color: 'i' },
+        n: { nombre: 'último término', color: 'h' }, res: { nombre: 'valor de la suma', color: 'd' } }
+      : { cu: { nombre: 'suma de los cuadrados', color: 'o' }, li: { nombre: 'suma de los naturales', color: 'i' },
+        n: { nombre: 'último término', color: 'h' }, res: { nombre: 'valor de la suma', color: 'd' } };
     const pregunta = ['¿Cuánto vale ', v('res', 'S'), '?'];
     if (sb === 'cuadratica') {
       const p = rng.entero(1, 3), q = rng.entero(-4, 6), c = rng.entero(0, 9), n = rng.entero(10, 30);
@@ -322,7 +325,7 @@
         e('cuenta-mal-los-terminos', T2(N) + p * T1(N), `Tomaste ${N} (el último segundo factor) como número de términos. Los términos van de k = 1 a k = ${n}: son ${n}.`),
       ];
       const solucion = [
-        [`Cada término es k(k + ${p}) = k² + ${p}k, con k = 1, 2, …, `, v('n', String(n)), ': S = ', v('cu', '∑k²'), ` + ${p}·`, v('li', '∑k'), '.'],
+        [`Cada término es k(k + ${p}) = k² + ${p}k, con k = 1, 2, …, ${n}: S = `, v('cu', '∑k²'), ` + ${p}·`, v('li', '∑k'), '.'],
         [v('cu', `∑k² = ${n}·${n + 1}·${2 * n + 1}/6 = ${f(T2(n))}`), '; ', v('li', `∑k = ${n}·${n + 1}/2 = ${f(T1(n))}`), '.'],
         [`S = ${f(T2(n))} + ${p}·${f(T1(n))} = `, v('res', f(correcta)), '.'],
       ];
@@ -339,7 +342,7 @@
     ];
     const solucion = [
       ['S es la suma de 1³ a ', v('n', `${n}³`), ` menos la suma de 1³ a ${m - 1}³.`],
-      [v('cu', `1³ + … + ${n}³ = (${n}·${n + 1}/2)² = ${T1(n)}² = ${f(T1(n) ** 2)}`), '; ', v('cu', `1³ + … + ${m - 1}³ = ${T1(m - 1)}² = ${f(T1(m - 1) ** 2)}`), '.'],
+      [v('gr', `1³ + … + ${n}³ = (${n}·${n + 1}/2)² = ${T1(n)}² = ${f(T1(n) ** 2)}`), '; ', v('ch', `1³ + … + ${m - 1}³ = ${T1(m - 1)}² = ${f(T1(m - 1) ** 2)}`), '.'],
       [`S = ${f(T1(n) ** 2)} − ${f(T1(m - 1) ** 2)} = `, v('res', f(correcta)), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, datos: { tipo: 'sumatoria', sub: sb, m, n } });
@@ -356,29 +359,29 @@
     const buenos = gs.filter(g => (T - g) % s === 0);
     if (buenos.length !== 1) return null;
     const correcta = buenos[0];
-    const ctx = rng.elegir(['combis', 'secciones']);
+    const ctx = rng.elegir(['buses', 'secciones']);
     const nom = ['', 'Una', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis'];
     const lista = gs.slice(0, -1).join(', ') + ' y ' + gs[G - 1];
-    const variables = { g: { nombre: ctx === 'combis' ? 'escolares en cada combi' : 'alumnos de cada sección', color: 'o' },
+    const variables = { g: { nombre: ctx === 'buses' ? 'escolares en cada bus' : 'alumnos de cada sección', color: 'o' },
       raz: { nombre: 'razón entre varones y mujeres', color: 'i' }, T: { nombre: 'total de los grupos', color: 'h' },
-      res: { nombre: ctx === 'combis' ? 'escolares de la combi que no llegó' : 'alumnos de la sección que no fue', color: 'd' } };
+      res: { nombre: ctx === 'buses' ? 'escolares del bus que no llegó' : 'alumnos de la sección que no fue', color: 'd' } };
     const razTxt = `${pv} varones por cada ${pm} mujeres`;
-    const enunciado = ctx === 'combis'
-      ? [`${nom[G]} combis salieron de Juliaca hacia un desfile escolar con `, v('g', lista), ' escolares, respectivamente. Una de ellas se malogró en el camino y no llegó. Entre los escolares que llegaron hay ', v('raz', razTxt), '.']
+    const enunciado = ctx === 'buses'
+      ? [`${nom[G]} buses salieron de Juliaca hacia un desfile escolar con `, v('g', lista), ' escolares, respectivamente. Uno de ellos se malogró en el camino y no llegó. Entre los escolares que llegaron hay ', v('raz', razTxt), '.']
       : [`${nom[G]} secciones de un colegio tienen `, v('g', lista), ' alumnos. Todas fueron de paseo, menos una sección completa. Entre los que fueron hay ', v('raz', razTxt), '.'];
-    const pregunta = ctx === 'combis' ? ['¿Cuántos escolares iban en la ', v('res', 'combi que no llegó'), '?'] : ['¿Cuántos alumnos tiene la ', v('res', 'sección que no fue'), '?'];
+    const pregunta = ctx === 'buses' ? ['¿Cuántos escolares iban en el ', v('res', 'bus que no llegó'), '?'] : ['¿Cuántos alumnos tiene la ', v('res', 'sección que no fue'), '?'];
     const usados = new Set([correcta]);
     const elige = cond => { const x = gs.find(g => !usados.has(g) && cond(g)); if (x !== undefined) usados.add(x); return x; };
     const errores = [];
     const x1 = elige(g => g % s === 0);
     if (x1 !== undefined) errores.push(e('grupo-multiplo-de-la-suma', x1, `Buscaste un grupo que sea múltiplo de ${s}. El que debe ser múltiplo de ${s} es el total de los que llegaron: sin ese grupo quedan ${T - x1}, que no se puede repartir en ${pv} varones por cada ${pm} mujeres.`));
     const x2 = elige(g => (T - g) % pm === 0 || (T - g) % pv === 0);
-    if (x2 !== undefined) errores.push(e('multiplo-de-un-solo-termino', x2, `Sin ese grupo quedan ${T - x2}, que es múltiplo de ${(T - x2) % pm === 0 ? pm : pv}, pero no de ${s}. Si hay ${pv} varones por cada ${pm} mujeres, los que llegaron forman bloques de ${pv} + ${pm} = ${s}.`));
+    if (x2 !== undefined) errores.push(e('multiplo-de-un-solo-termino', x2, `Sin ese grupo quedan ${T - x2}, que es múltiplo de ${(T - x2) % pm === 0 ? pm : pv}, pero no de ${s}. Si hay ${pv} varones por cada ${pm} mujeres, los que llegaron forman bloques de ${pv} + ${pm} = ${s}: por ejemplo, ${2 * pv} varones y ${2 * pm} mujeres son ${2 * s}.`));
     const rT = T % s, rAlReves = (s - rT) % s;
     const x3 = elige(g => g % s === rAlReves);
     if (x3 !== undefined) errores.push(e('resto-al-reves', x3, `El total ${T} deja resto ${rT} al dividirlo entre ${s}; el grupo que se quita debe dejar ese mismo resto, no ${rAlReves}. Sin ese grupo quedan ${T - x3}, que no es múltiplo de ${s}.`));
     const x4 = elige(g => g === Math.max(...gs));
-    if (x4 !== undefined) errores.push(e('elige-sin-comprobar', x4, `Sin ese grupo quedan ${T - x4}, que no es múltiplo de ${s}: no se puede tener ${pv} varones por cada ${pm} mujeres.`));
+    if (x4 !== undefined) errores.push(e('elige-sin-comprobar', x4, `Elegiste ese grupo sin comprobar lo que queda. Sin ese grupo quedan ${T - x4}, que no es múltiplo de ${s}: no se puede tener ${pv} varones por cada ${pm} mujeres.`));
     const restos = gs.map(g => `${g} → ${g % s}`).join('; ');
     const solucion = [
       ['Con ', v('raz', razTxt), `, los que llegaron forman bloques de ${pv} + ${pm} = ${s} personas: su total es múltiplo de ${s}.`],
@@ -404,6 +407,16 @@
     compuestos: ex => cdDe(ex) - 4,
   };
   const MULTS = { 6: [1, 1, 0], 10: [1, 0, 1], 15: [0, 1, 1] };
+  const dice = (x, c, q) => (typeof x === 'function' ? x(c, q) : x);
+  // Potencias de primo con exponente 2 o más que dividen a N: «4, 8, 9 y 25».
+  function potenciasDe(ex) {
+    const l = [];
+    if (!ex.some(x => x >= 2)) return '';
+    PRIMOS3.forEach((pr, i) => { for (let k = 2; k <= ex[i]; k++) l.push(pr ** k); });
+    l.sort((a, b) => a - b);
+    const vis = l.slice(0, 5);
+    return vis.length === 1 ? String(vis[0]) : vis.slice(0, -1).join(', ') + (l.length > 5 ? ', ' + vis[vis.length - 1] + '…' : ' y ' + vis[vis.length - 1]);
+  }
   // Modelos de alumno: cada uno da su valor para una cantidad, o null si en esa cantidad no se equivoca.
   const MODELOS = [
     { id: 'exponentes-sin-sumar-uno', desc: 'Multiplicaste los exponentes sin sumarles 1.',
@@ -412,18 +425,20 @@
     { id: 'potencia-de-potencia-suma', desc: 'Al elevar cada base, sumaste los exponentes en vez de multiplicarlos.', solo: 'potencias',
       val: (q, c) => (c.exSuma ? (q === 'mult' ? CANT.mult(c.exSuma, c.mm) : CANT[q](c.exSuma)) : null),
       porque: 'Una potencia de potencia multiplica los exponentes: (2²)³ = 2⁶, no 2⁵.' },
-    { id: 'divisores-propios-como-totales', desc: 'Contaste los divisores propios como si fueran todos.',
+    { id: 'divisores-propios-como-totales', soloAfirmacion: true, desc: 'Contaste los divisores propios como si fueran todos.',
       val: (q, c) => (q === 'propios' ? cdDe(c.ex) : null), porque: 'Los propios son todos menos el mismo N: CD − 1.' },
     { id: 'unidad-como-compuesto', desc: 'Contaste el 1 entre los compuestos.',
       val: (q, c) => (q === 'compuestos' ? cdDe(c.ex) - 3 : null), porque: 'El 1 no es primo ni compuesto: compuestos = CD − (primos) − 1.' },
-    { id: 'potencias-de-primo-como-primos', desc: 'Quitaste como primos también las potencias de primos (4, 8, 9, 25…).',
-      val: (q, c) => (q === 'compuestos' ? cdDe(c.ex) - 1 - c.ex.reduce((a, b) => a + b, 0) : null), porque: 'Solo 2, 3 y 5 son divisores primos; 4, 8, 9 o 25 son compuestos.' },
+    { id: 'potencias-de-primo-como-primos', desc: c => `Quitaste como primos también las potencias de primos que dividen a N (${potenciasDe(c.ex)}).`,
+      val: (q, c) => (q === 'compuestos' ? cdDe(c.ex) - 1 - c.ex.reduce((a, b) => a + b, 0) : null), porque: c => `Solo 2, 3 y 5 son divisores primos; ${potenciasDe(c.ex)} son compuestos.` },
     { id: 'impares-sin-la-unidad', desc: 'Dejaste fuera el 1 de los impares.',
       val: (q, c) => (q === 'impares' ? (c.ex[1] + 1) * (c.ex[2] + 1) - 1 : null), porque: 'El 1 es un divisor impar: los impares son (b + 1)(c + 1), con el 1 incluido.' },
     { id: 'multiplos-un-solo-primo', desc: 'Para los múltiplos sacaste un solo primo del producto.',
       val: (q, c) => (q === 'mult' ? cdDe(c.ex.map((x, i) => x - (i === c.mm.indexOf(1) ? 1 : 0))) : null), porque: 'Un múltiplo de m tiene que llevar todos los primos de m: se cuentan los divisores de N/m.' },
-    { id: 'cuenta-el-complemento', desc: 'Restaste del total y contaste los que no cumplen la condición.',
-      val: (q, c) => (q === 'mult' ? cdDe(c.ex) - CANT.mult(c.ex, c.mm) : q === 'impares' ? cdDe(c.ex) - CANT.impares(c.ex) : null), porque: 'Lo que se pide son los divisores que sí la cumplen: los múltiplos son los divisores de N/m, y los impares, los divisores de la parte sin el 2.' },
+    { id: 'cuenta-el-complemento', desc: (c, q) => (q === 'impares' ? `Contaste los divisores pares (CD − impares = ${cdDe(c.ex)} − ${CANT.impares(c.ex)} = ${cdDe(c.ex) - CANT.impares(c.ex)}) en vez de los impares.`
+      : q === 'mult' ? `Contaste los divisores que no son múltiplos de ${c.m} (CD − múltiplos = ${cdDe(c.ex)} − ${CANT.mult(c.ex, c.mm)} = ${cdDe(c.ex) - CANT.mult(c.ex, c.mm)}) en vez de los múltiplos.`
+      : 'Restaste del total y contaste los que no cumplen la condición.'),
+      val: (q, c) => (q === 'mult' ? cdDe(c.ex) - CANT.mult(c.ex, c.mm) : q === 'impares' ? cdDe(c.ex) - CANT.impares(c.ex) : null), porque: (c, q) => (q === 'impares' ? 'Los impares son los divisores de la parte sin el 2.' : q === 'mult' ? `Los múltiplos de ${c.m} son los divisores de N/${c.m}.` : 'Se piden los divisores que sí cumplen la condición.') },
     { id: 'cuadrados-sin-el-cero', desc: 'Para los cuadrados no contaste el exponente 0.',
       val: (q, c) => (q === 'cuadrados' ? prod(c.ex.map(x => Math.floor(x / 2))) : null), porque: 'Un cuadrado perfecto lleva exponentes pares, y 0 también es par: hay ⌊e/2⌋ + 1 opciones por primo.' },
   ];
@@ -447,7 +462,7 @@
     const CD = cdDe(ex);
     if (CD > 400 || CD < 12) return null;
     const m = rng.elegir([6, 10, 15]), mm = MULTS[m];
-    const c = { ex, exSuma, mm };
+    const c = { ex, exSuma, mm, m };
     const valor = (q, mod) => { const x = mod ? mod.val(q, c) : null; return x === null || x === undefined ? (q === 'mult' ? CANT.mult(ex, mm) : CANT[q](ex)) : x; };
     const modelos = MODELOS.filter(M => !M.solo || M.solo === forma);
     const frase = {
@@ -459,7 +474,7 @@
       compuestos: x => `N tiene ${x} divisores compuestos.`,
     };
     const nombreQ = { total: 'divisores', mult: `divisores múltiplos de ${m}`, impares: 'divisores impares', cuadrados: 'divisores que son cuadrados perfectos', propios: 'divisores propios', compuestos: 'divisores compuestos' };
-    const variables = { N: { nombre: 'número N', color: 'o' }, ex: { nombre: 'exponentes de N', color: 'i' }, m: { nombre: 'condición del divisor', color: 'h' }, res: { nombre: 'lo que se pide', color: 'd' } };
+    const variables = { N: { nombre: 'número N', color: 'o' }, res: { nombre: 'lo que se pide', color: 'd' } };
     const desc = potTxt(ex);
     const pasoFactor = forma === 'directa' ? null
       : ['Se descompone cada base: ', `${b1} = ${factTxt(BASES[b1])} y ${b2} = ${factTxt(BASES[b2])}; al elevar se multiplican los exponentes y se juntan las bases iguales: `, v('N', `N = ${desc}`), '.'];
@@ -476,7 +491,7 @@
     if (sb === 'cuenta') {
       const q = rng.elegir(['total', 'mult', 'impares', 'cuadrados', 'propios', 'compuestos']);
       const correcta = valor(q, null);
-      const errores = modelos.map(M => { const x = M.val(q, c); return x === null || x === undefined || x === correcta ? null : e(M.id, x, `${M.desc} ${M.porque}`); });
+      const errores = modelos.filter(M => !M.soloAfirmacion).map(M => { const x = M.val(q, c); return x === null || x === undefined || x === correcta ? null : e(M.id, x, `${dice(M.desc, c, q)} ${dice(M.porque, c, q)}`); });
       if (q === 'total' || q === 'propios') {
         const ingenuo = forma === 'potencias' ? cdDe(ex.map((y, i) => (BASES[b1][i] ? BASES[b1][i] * p : 0))) * cdDe(ex.map((y, i) => (BASES[b2][i] ? BASES[b2][i] * q2 : 0))) - (q === 'propios' ? 1 : 0) : null;
         if (ingenuo !== null && ingenuo !== correcta && ex.some((y, i) => BASES[b1][i] && BASES[b2][i]))
@@ -488,7 +503,7 @@
       const solucion = [
         ...(pasoFactor ? [pasoFactor] : [['Ya está descompuesto: ', v('N', `N = ${desc}`), '.']]),
         ...(q === 'propios' || q === 'compuestos' ? [[`CD(N) = ${ex.map(y => `(${y} + 1)`).join('')} = ${CD}.`]] : []),
-        ['', v('res', pasoQ(q)), '.'],
+        [pasoQ(q).replace(/ = \d+$/, ' = '), v('res', String(correcta)), '.'],
       ];
       return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion,
         datos: { tipo: 'divisores', sub: sb, forma, b1, p, b2, q: q2, ex, pide: q, m } });
@@ -505,21 +520,21 @@
     const verdaderas = afs.filter(a => a.dice === valor(a.q, null)).length;
     const ROM = ['I', 'II', 'III', 'IV'];
     const juzga = M => afs.map((a, i) => (a.dice === valor(a.q, M) ? ROM[i] : null)).filter(Boolean);
-    const errores = modelos.map(M => {
+    const usaProp = qs.includes('propios');
+    const errores = modelos.filter(M => !(M.soloAfirmacion && usaProp)).map(M => {
       const si = juzga(M);
       if (si.length === verdaderas) return null;
       const lista = si.length === 0 ? 'no te parece verdadera ninguna' : si.length === 1 ? `te parece verdadera solo la ${si[0]}` : `te parecen verdaderas la ${si.slice(0, -1).join(', la ')} y la ${si[si.length - 1]}`;
-      return e(M.id, si.length, `${M.desc} Con eso ${lista}. ${M.porque}`);
+      return e(M.id, si.length, `${dice(M.desc, c, null)} Con eso ${lista}. ${dice(M.porque, c, null)}`);
     });
     const correcta = verdaderas;
-    const usaProp = qs.includes('propios');
     const enunciado = ['Sea ', v('N', `N = ${Ntxt}`), '. Se afirma:', ...afs.map((a, i) => ` ${ROM[i]}. ${frase[a.q](a.dice)}`),
       usaProp ? ' (Los divisores propios de N son todos sus divisores, menos el mismo N.)' : ''].filter(Boolean);
     const pregunta = ['¿Cuántas de las afirmaciones son ', v('res', 'verdaderas'), '?'];
     const texto = x => String(x);
     const solucion = [
       ...(pasoFactor ? [pasoFactor] : [['Ya está descompuesto: ', v('N', `N = ${desc}`), '.']]),
-      ...afs.map((a, i) => [`${ROM[i]}. `, v('m', pasoQ(a.q)), `: dice ${a.dice}, ${a.dice === valor(a.q, null) ? 'verdadera' : 'falsa'}.`]),
+      ...afs.map((a, i) => [`${ROM[i]}. ${pasoQ(a.q)}: dice ${a.dice}, ${a.dice === valor(a.q, null) ? 'verdadera' : 'falsa'}.`]),
       ['Son verdaderas ', v('res', String(correcta)), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, texto, negativos: true,
@@ -595,7 +610,7 @@
       const errores = [
         e('solo-la-proporcion-reducida', 10 * u + w, `Tomaste a = ${u} y b = ${w}, la proporción más chica. También sirven sus múltiplos (a = ${u}k, b = ${w}k) mientras las cifras no pasen de 9: el mayor es con k = ${K}.`),
         e('cifras-invertidas', 10 * b + a, `Ese es ${raya('ba')}: pusiste b como cifra de las decenas. En ${raya('ab')} la a va primero.`),
-        e('cifra-mayor-que-nueve', Number(`${a2}${b2}`), `Con k = ${K + 1} sale ${[a2 > 9 ? `a = ${a2}` : null, b2 > 9 ? `b = ${b2}` : null].filter(Boolean).join(' y ')}, y eso no es una cifra: en base 10 las cifras van de 0 a 9.`),
+        e('cifras-maximas-sin-relacion', 99, `Tomaste a = b = 9, las cifras más grandes. Pero a y b no son libres: deben cumplir a/b = ${u}/${w}, y 99/999 = 1/9.`),
       ];
       if (K >= 3) errores.push(e('no-llega-al-mayor-multiplo', 10 * u * (K - 1) + w * (K - 1), `Te quedaste en k = ${K - 1}. Con k = ${K} las cifras (${a} y ${b}) todavía son menores que 10.`));
       const solucion = [
@@ -665,7 +680,7 @@
           const den = f2.t * w.t + f1.t * w.t - f1.t * f2.t;
           if (den <= 0 || new Set(tr.map(q => q.t)).size < 3) continue;
           const num = f1.t * f2.t * w.t;
-          if (num % den === 0 && num / den <= 60) l.push({ al, nums: [f1, f2, w], T: num / den });
+          if (num % den === 0 && num / den <= 60 && !tr.some(q => q.t === num / den)) l.push({ al, nums: [f1, f2, w], T: num / den });
         }
       }
     }
@@ -687,7 +702,7 @@
     const inv = (p, q, r) => { const d = q * r + p * r + p * q; return hrs(p * q * r, d); };
     const errores = [
       et('suma-el-que-vacia', inv(x, y, z), `Sumaste el desagüe como si también llenara. En una hora el desagüe saca 1/${z} del tanque: se resta, 1/${x} + 1/${y} − 1/${z}.`),
-      et('AR7-suma-tiempos', x + y - z > 0 ? hrs(x + y - z, 1) : null, `Sumaste y restaste los tiempos (${x} + ${y} − ${z}). Lo que se suma es lo que hace cada uno en una hora: 1/${x} + 1/${y} − 1/${z}.`, 'parcial', INF),
+      et('suma-tiempos', x + y - z > 0 ? hrs(x + y - z, 1) : null, `Sumaste y restaste los tiempos (${x} + ${y} − ${z}). Lo que se suma es lo que hace cada uno en una hora: 1/${x} + 1/${y} − 1/${z}.`),
       et('olvida-el-desague', hrs(x * y, x + y), 'Ese es el tiempo con los dos grifos y el desagüe cerrado. El desagüe está abierto: resta 1/' + z + ' por hora.'),
     ];
     const xs = nums.map(nm => Number(nm.c.map(s => val(s, asg)).join('')));
@@ -699,7 +714,8 @@
     if (rel.length) {
       const s2 = rel[rel.length - 1], ts = nums.map(nm => decimal(nm, s2));
       const d = ts[1] * ts[2] + ts[0] * ts[2] - ts[0] * ts[1];
-      if (d > 0 && P.frac(ts[0] * ts[1] * ts[2], d).d <= 30) errores.push(et('cifra-igual-a-la-base', hrs(ts[0] * ts[1] * ts[2], d), `Dejaste que una cifra sea igual a la base (a = ${s2.a}, n = ${s2.n}). En base B las cifras van de 0 a B − 1.`));
+      const q3 = d > 0 ? P.frac(ts[0] * ts[1] * ts[2], d) : null;
+      if (q3 && q3.d <= 10 && q3.n / q3.d < 100) errores.push(et('cifra-igual-a-la-base', hrs(ts[0] * ts[1] * ts[2], d), `Dejaste que una cifra sea igual a la base (a = ${s2.a}, n = ${s2.n}). En cualquier base, cada cifra es menor que la base.`));
     }
     const cotas = nums.map(nm => {
       const B = typeof nm.base === 'string' ? nm.base : String(nm.base);
@@ -709,7 +725,7 @@
       return partes.length ? `en ${numTxt(nm)}: ${[...new Set(partes)].join(', ')}` : null;
     }).filter(Boolean);
     const solucion = [
-      [`Las cifras son menores que su base (y la primera no es 0): ${cotas.join('; ')}. La única opción es a = ${asg.a} y n = ${asg.n}.`],
+      [`En cualquier base, cada cifra es menor que la base (y la primera no es 0): ${cotas.join('; ')}. La única opción es a = ${asg.a} y n = ${asg.n}.`],
       ['En base 10: ', v('A', `${numTxt(nums[0])} = ${x}`), ', ', v('B', `${numTxt(nums[1])} = ${y}`), ' y ', v('C', `${numTxt(nums[2])} = ${z}`), ' horas.'],
       [`En una hora: 1/${x} + 1/${y} − 1/${z} = 1/${T} del tanque. Se llena en `, v('res', correcta.texto), '.'],
     ];

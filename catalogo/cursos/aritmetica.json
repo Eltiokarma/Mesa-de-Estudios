@@ -306,7 +306,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": ["numeracion"],
+      "plantillas": ["numeracion", "numeros-sucesiones"],
       "investigacion": null
     },
     {
@@ -365,7 +365,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": ["divisores"],
+      "plantillas": ["divisores", "numeros-sucesiones"],
       "investigacion": null
     },
     {
@@ -395,7 +395,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": ["divisores"],
+      "plantillas": ["divisores", "numeros-sucesiones"],
       "investigacion": null
     },
     {
@@ -480,7 +480,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": ["potenciacion"],
+      "plantillas": ["potenciacion", "numeros-sucesiones"],
       "investigacion": null
     },
     {
@@ -507,7 +507,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": ["sucesiones", "estadistica-datos"],
+      "plantillas": ["sucesiones", "estadistica-datos", "numeros-sucesiones"],
       "investigacion": null
     },
     {

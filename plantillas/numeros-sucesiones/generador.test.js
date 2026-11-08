@@ -152,6 +152,23 @@ test('alternativas con la misma forma y ningún distractor da la correcta', () =
   }
 });
 
+test('segmentos: string o {v, t} con t string y v declarada; toda variable declarada se usa', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s), usadas = new Set();
+    const revisa = seg => {
+      assert.ok(Array.isArray(seg), `semilla ${s}: segmento que no es lista`);
+      for (const x of seg) {
+        if (typeof x === 'string') continue;
+        assert.ok(x && typeof x === 'object' && typeof x.t === 'string' && typeof x.v === 'string', `semilla ${s}: segmento inválido ${JSON.stringify(x)}`);
+        assert.ok(p.variables[x.v], `semilla ${s}: ${x.v} no está en variables`);
+        usadas.add(x.v);
+      }
+    };
+    revisa(p.enunciado); revisa(p.pregunta); p.solucion.forEach(revisa);
+    for (const k of Object.keys(p.variables)) assert.ok(usadas.has(k), `semilla ${s} (${p._datos.tipo}): la variable ${k} no se usa`);
+  }
+});
+
 test('colores: cada segmento usa una variable definida, con un color de la app', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);
