@@ -161,3 +161,15 @@ Los G4 a G7 de esta rutina son los G3 a G6 del mapa; el G7 del mapa (productos) 
 - Playwright de los cuatro en la app, a 390 y 1366 px: sin errores ni desbordes.
 
 **Ojo con el historial:** los commits de G4, G5 y G6 no traen todavía el catálogo, que entró con el de G7. En esos tres commits intermedios fallaría la prueba de catálogo; en la punta de la rama está todo en verde.
+
+## Cierre: lo que queda del mapa
+
+La principal integró todo (sw v137). Lo que todavía vale la pena, en orden:
+
+1. **Barniol y Zavala (2014)**, *Test of understanding of vectors*. Es lo más valioso que queda: hoy casi todos los códigos `VE-…` son hipótesis, y este test mide justo suma de módulos, componentes, unitario, producto escalar y producto vectorial. Con él varios pasarían a parcial o documentado. Hay que conseguirlo; habría que sumarlo a `fuentes/por-conseguir.md`.
+2. **T6, proyección y cambio de ejes (6 de 200).** Sería un generador chico: la componente de A sobre B (A·B/|B|), la perpendicular, ejes girados un ángulo notable y la distancia de un punto a una recta. Trampas: `VE-componente-vs-modulo` y `VE-proyecciones-invertidas`, ya listas como códigos.
+3. **T8 inverso que falta en G1**, el rango del ángulo: «¿para qué θ, R está entre tal y tal?». Pide respuestas como intervalo (texto), y con `armarTexto` ya se puede.
+4. **T3 y T1b, cuadrícula y figuras irregulares (18 de 200).** Piden dibujo; conviene hacerlos como pasos de la escena, no como generador.
+5. **Notables extendidos** (16°/74° con 7-24-25, «medio 53°»). Hoy no están en el motor; sumarlos daría más variedad a G1 y G2, marcados como aproximados, igual que el 3-4-5.
+
+No recomiendo más generadores en vectores antes de tener los datos del colegio: con 8 módulos más la escena, la unidad está bien cubierta. Lo que falta es saber cuáles distractores eligen de verdad los alumnos.
